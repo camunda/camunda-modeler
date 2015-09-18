@@ -5,10 +5,18 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "exec": "electron ."
+    "start": "gulp run"
   },
   "author": "bpmn.io <http://bpmn.io>",
+  "dependencies": {
+    "electron-debug": "^0.2.0",
+    "electron-window": "^0.6.0"
+  },
   "devDependencies": {
-    "electron-prebuilt": "^0.33.0"
+    "electron-connect": "^0.3.3",
+    "electron-packager": "^5.0.2",
+    "electron-prebuilt": "^0.31.1",
+    "gulp": "^3.9.0",
+    "gulp-run": "^1.6.10"
   }
 }
