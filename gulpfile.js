@@ -3,19 +3,27 @@
 var gulp = require('gulp'),
     run = require('gulp-run'),
     packager = require('electron-packager'),
-    electron = require('electron-connect').server.create(),
-    _ = require('lodash');
+    electron = require('electron-connect').server.create();
 
-var ELECTRON_PACKAGER_VERSION='0.33.0'
-var PACKAGING_OPTS = {
-  name: 'camunda-modeler',
-  version: ELECTRON_PACKAGER_VERSION,
-  dir: '.',
-  out: 'distro',
-  //platform: 'all', # will be set in dist-<platform> task
-  arch: 'all',
-  overwrite: true
+
+var ELECTRON_PACKAGER_VERSION = '0.33.0';
+
+function getPackageOptions(platform) {
+  var options = {
+    name: 'camunda-modeler',
+    version: ELECTRON_PACKAGER_VERSION,
+    dir: '.',
+    out: 'distro',
+    //platform: 'all', # will be set in dist-<platform> task
+    arch: 'all',
+    overwrite: true
+  };
+
+  options.platform = platform;
+
+  return options;
 }
+
 
 gulp.task('serve', function () {
 
@@ -38,10 +46,7 @@ gulp.task('debug', function() {
 });
 
 gulp.task('dist-windows', function() {
-  var opts = {
-    platform: 'win32'
-  }
-  opts = _.merge(PACKAGING_OPTS, opts)
+  var opts = getPackageOptions('win32');
 
   return packager(opts, function(err, appPath) {
     return appPath;
@@ -49,10 +54,7 @@ gulp.task('dist-windows', function() {
 });
 
 gulp.task('dist-osx', function() {
-  var opts = {
-    platform: 'darwin'
-  }
-  opts = _.merge(PACKAGING_OPTS, opts)
+  var opts = getPackageOptions('darwin');
 
   return packager(opts, function(err, appPath) {
     return appPath;
@@ -60,16 +62,13 @@ gulp.task('dist-osx', function() {
 });
 
 gulp.task('dist-linux', function() {
-  var opts = {
-    platform: 'linux'
-  }
-  opts = _.merge(PACKAGING_OPTS, opts)
+  var opts = getPackageOptions('linux');
 
   return packager(opts, function(err, appPath) {
     return appPath;
   });
 });
 
-gulp.task('dist', ['dist-windows', 'dist-darwin', 'dist-linux']);
+gulp.task('dist', [ 'dist-windows', 'dist-darwin', 'dist-linux' ]);
 
 gulp.task('default', [ 'serve' ]);

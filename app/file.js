@@ -4,7 +4,6 @@ var fs = require('fs');
 var ipc = require('ipc');
 
 function File() {
-
   // Save
   ipc.on('text.save', function(evt, text) {
     this.save(text);
@@ -28,7 +27,7 @@ File.prototype.open = function open(browserWindow, filenames) {
 };
 
 File.prototype.save = function save(text) {
-  fs.writeFile(this.filename, text, { encoding: 'utf8' }, function(err) {
+  fs.writeFile(this.filename, text, { encoding: 'utf8' },  function(err) {
     if (err) {
       throw new Error(err);
     }
@@ -36,12 +35,3 @@ File.prototype.save = function save(text) {
 };
 
 module.exports = File;
-
-
-// main() }
-//     readFile() -> contents
-//     analyzing if encrypted -> true/false
-//     prompt for password -> returns password
-//     encrypt the text -> returns encrypted text
-//     write to file
-// }
