@@ -125,6 +125,13 @@ function menus(browserWindow, DESKTOP_PATH) {
 
             browserWindow.setFullScreen(true);
           }
+        },
+        {
+          label: 'Toggle DevTools',
+          accelerator: 'Command+Alt+J',
+          click: function() {
+            browserWindow.toggleDevTools();
+          }
         }
       ]
     },
