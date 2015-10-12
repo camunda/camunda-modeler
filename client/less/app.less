@@ -1,0 +1,323 @@
+@import "_normalize";
+
+@import "_angular";
+@import "_variables";
+@import "_icons";
+
+@import "_layout";
+
+@import "_close";
+@import "_dialog";
+
+
+
+body, html {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  font-size: 12px;
+  color: #444;
+
+  .flex-container(column);
+}
+
+.bio-header {
+  line-height: 40px;
+  height: 50px;
+  background: @background-color-header;
+  border-bottom: solid 1px @border-color;
+  flex: initial;
+}
+
+.bio-header > * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.logo {
+  color: @color-bpmnio;
+  font-size: 20px;
+  text-decoration: none;
+  margin: 5px 10px;
+}
+
+.current-file {
+  float: right;
+  font-family: monospace;
+  margin: 5px 10px;
+}
+
+.bio-content {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.bio-diagrams  {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.bio-diagrams > .chooser  {
+  flex: initial;
+}
+
+.bio-diagrams > .content {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+}
+
+.bio-diagram {
+  flex: 1;
+}
+
+.bio-landing-page {
+  margin: 20% auto 0 auto;
+  max-width: 300px;
+  text-align: center;
+
+  h1 {
+    font-weight: normal;
+  }
+}
+
+button[class*=" icon-"] {
+  border: none;
+  text-indent: -10000px;
+}
+
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs .tabbar a,
+.tabs .tabbar li {
+  vertical-align: middle;
+}
+
+.tabs .tab {
+  flex-grow: 0;
+  position: relative;
+
+  overflow: hidden;
+}
+
+.tabs .tab > * {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 100%;
+}
+
+.bio-diagram {
+  border: solid 1px @border-color;
+  background: white;
+}
+
+.bio-diagrams {
+  padding: 3px;
+  background: @background-color-default;
+}
+
+
+.bio-diagram .tab[data-tab="diagram"] {
+  order: 1;
+}
+
+.bio-diagram .tabbar-bottom {
+  order: 2;
+}
+
+.bio-diagram .tabbar-bottom ul {
+  border: 1px @border-color;
+  border-style: solid none;
+}
+
+.bio-diagram .tab[data-tab="xml"] {
+  order: 3;
+}
+
+.tabs .tabbar {
+  flex: initial;
+  z-index: 100;
+}
+
+.tabs textarea {
+  border: none;
+}
+
+.tabs .tabbar ul {
+  list-style: none;
+  margin: 0 0 0 -4px;
+  padding: 0;
+  background: @background-color-default;
+}
+
+.tabbar li,
+.tabbar a {
+  display: inline-block;
+}
+
+.tabbar a {
+  vertical-align: middle;
+  border: solid 1px @border-color;
+  margin: 2px 0 2px 4px;
+}
+
+.tabbar li.active a {
+  background: white;
+  margin-bottom: -1px;
+  border-bottom: none;
+
+  padding: 7px 10px;
+}
+
+.show-diagram .tab[data-tab="diagram"] {
+  flex-grow: 1;
+}
+
+.show-xml .tab[data-tab="xml"] {
+  flex-grow: 0.5;
+}
+
+
+.tabbar a[show-tab="diagram"] {
+  margin-top: -1px !important;
+}
+
+.tabbar a[show-tab="xml"] {
+  margin-bottom: -1px !important;
+}
+
+.show-diagram .tabbar a[show-tab="diagram"] {
+  border-top-color: @background-color-diagram;
+}
+
+.show-xml .tabbar a[show-tab="xml"] {
+  border-bottom-color: @background-color-diagram;
+}
+
+.tabs .tabbar a {
+  padding: 5px 10px;
+  background: @background-color-diagram;
+  text-decoration: none;
+}
+
+.tabs .tabbar-default a {
+  padding: 6px 10px;
+  margin-bottom: -2px;
+  background-color: #EAEAEA;
+  transition: background-color 0.15s ease;
+  border-radius: 3px 3px 0 0;
+
+  &:hover {
+    background-color: #fff;
+  }
+}
+
+.bio-diagram .tabbar-bottom a {
+  padding: 7px 10px;
+  width: 10em;
+  text-align: center;
+  margin-left: 24px;
+  margin-bottom: -3px;
+  background-color: #EAEAEA;
+  transition: background-color 0.15s ease;
+  border-radius: 3px 3px 0 0;
+
+  &:hover {
+    background-color: #fff;
+  }
+
+  &:first-child {
+    padding: 6px 10px;
+  }
+}
+
+.bio-diagram .tabbar-bottom ul {
+  margin: 0;
+}
+
+.bio-diagram .tabbar-bottom li.active-diagram a {
+  background: white;
+  margin-top: -1px;
+  margin-bottom: 5px;
+  border-top: none;
+  border-radius: 0 0 3px 3px;
+
+  padding: 6px 10px;
+}
+
+.bio-diagram .tabbar-bottom li.active-xml a {
+  background: white;
+  margin-top: 5px;
+  margin-bottom: -1px;
+
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+
+  padding: 6px 10px;
+}
+
+.menu-bar > * {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.menu-bar .placeholder {
+  background: #CCC;
+  width: 1px;
+  box-shadow: 0 0 1px #DDD;
+  height: 20px;
+  margin: 2px;
+}
+
+.menu-bar button {
+  border: none;
+  background: transparent;
+
+  text-align: center;
+
+  padding: 2px;
+
+  margin-right: 1px;
+  border-radius: 4px;
+
+  width: 25px;
+  height: 25px;
+
+  font-size: 14px;
+  outline: none;
+}
+
+.menu-bar button:not(.disabled):hover,
+.menu-bar button:not(.disabled):active {
+  background: #F3F3F4;
+}
+
+.menu-bar button:not(.disabled):hover {
+  border: solid 1px #CCC;
+}
+
+.menu-bar button:active:not(.disabled) {
+  border: solid 1px #BBB;
+  box-shadow: inset 0 3px 5px #AAA;
+}
+
+.menu-bar button.disabled {
+  color: #999;
+  cursor: default;
+}
+
+
+button.btn {
+  font-size: @control-font-size;
+  padding: 5px 7px;
+}

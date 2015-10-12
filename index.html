@@ -1,15 +1,119 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!DOCTYPE html>
+<html ng-app="app" ng-csp>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>Camunda Modeler</title>
-</head>
-<body class="dark">
-  <h1> HELLO WORLD</h1>
+    <link rel="stylesheet" href="dist/vendor/diagram-js/diagram-js.css" />
+    <link rel="stylesheet" href="dist/css/app.css" />
+  </head>
+  <body ng-cloak ng-controller="EditorController as editor">
 
-  <script src="client/main.js"></script>
-</body>
+    <div class="bio-header">
+      <a href="http://bpmn.io" target="_blank" class="logo">
+        <span class="icon-bpmn-io"></span>
+      </a>
+
+      <div class="menu-bar">
+
+        <button class="icon-new"
+                title="create new BPMN diagram"
+                ng-click="editor.newDiagram()">
+        </button>
+
+        <button class="icon-open"
+                title="open a BPMN diagram"
+                ng-click="editor.openDiagram()">
+        </button>
+
+        <button class="icon-save-normal"
+                title="save BPMN diagram"
+                ng-class="{ disabled: !editor.isUnsaved() }"
+                ng-click="editor.save()">
+        </button>
+
+        <button class="icon-save-as"
+                title="save BPMN diagram as..."
+                ng-class="{ disabled: !editor.isOpen() }"
+                ng-click="editor.save(true)">
+        </button>
+
+        <span class="placeholder"></span>
+
+        <button class="icon-undo"
+                title="undo"
+                ng-class="{ disabled: !editor.canUndo() }"
+                ng-click="editor.undo()">
+        </button>
+
+        <button class="icon-redo"
+                title="redo"
+                ng-class="{ disabled: !editor.canRedo() }"
+                ng-click="editor.redo()">
+        </button>
+      </div>
+    </div>
+
+    <div class="bio-content">
+
+      <div class="bio-diagrams tabs">
+
+        <div class="tabbar tabbar-default">
+          <ul>
+            <li class="entry" ng-repeat="diagram in editor.diagrams" ng-class="{ active: editor.isActive(diagram) }">
+              <a title="{{ diagram.path }}" ng-click="editor.showDiagram(diagram)">
+                <span ng-show="diagram.unsaved">*</span>
+                {{ diagram.name }}
+                <button class="close" ng-click="editor.closeDiagram(diagram)">×</button>
+              </a>
+            </li>
+            <li class="entry" ng-class="{ active: !editor.isOpen() }">
+              <a ng-click="editor.newDiagram()">+</a>
+            </li>
+          </ul>
+        </div>
+
+        <div ng-class="{'show-diagram': editor.isActiveView('diagram'), 'show-xml': editor.isActiveView('xml')}" class="content">
+
+          <div class="bio-diagram" ng-if="!editor.isOpen()">
+
+            <div class="bio-landing-page ">
+              <h1>No open BPMN diagram</h1>
+
+              <p>
+                <button ng-click="editor.newDiagram()">create diagram</button>
+              </p>
+
+              <p>
+                <button ng-click="editor.openDiagram()">open from file system</button>
+              </p>
+
+            </div>
+          </div>
+
+          <div class="bio-diagram tabs" ng-if="editor.isActive(diagram)" ng-repeat="diagram in editor.diagrams">
+
+            <div data-tab="diagram" class="tab">
+              <div diagram control="diagram.control"></div>
+            </div>
+
+            <div data-tab="xml" class="tab">
+              <textarea ng-change="diagram.control.redrawDiagram()" ng-model-options="{updateOn: 'default', debounce: {'default': 1000 }}" ng-model="diagram.control.xml" spellcheck="false"></textarea>
+            </div>
+
+            <div class="tabbar tabbar-bottom">
+              <ul>
+                <li ng-class="{ 'active-diagram': editor.isActiveView('diagram') }"><a ng-click="editor.toggleView('diagram')">Diagram</a></li>
+                <li ng-class="{ 'active-xml': editor.isActiveView('xml') }"><a ng-click="editor.toggleView('xml')">XML</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- script -->
+    <script src="dist/index.js"></script>
+  </body>
 </html>

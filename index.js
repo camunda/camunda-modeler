@@ -97,10 +97,7 @@ app.on('ready', function(evt) {
 
 app.on('editor-open', function(mainWindow) {
 
-  var createMenus = require('./app/menus');
-
-  var desktopPath = app.getPath('userDesktop');
-  createMenus(mainWindow, desktopPath);
+  app.emit('editor-create-menu', mainWindow);
 });
 
 

@@ -18,6 +18,11 @@ function WindowsIntegration(app, config) {
   app.on('editor-open', function(browserWindow) {
     checkFileAssociations(app, config);
   });
+
+  // editor menu
+  app.on('editor-create-menu', function(mainWindow) {
+    // TODO(nre): create
+  });
 }
 
 module.exports = WindowsIntegration;

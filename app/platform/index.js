@@ -13,9 +13,9 @@ function get(platform) {
       return require('./windows');
     } else
     if (platform === 'darwin') {
-      return require('./mac');
+      return require('./mac-os');
     } else
-    if (platform === 'darwin') {
+    if (platform === 'linux') {
       return require('./linux');
     }
   } catch (e) {

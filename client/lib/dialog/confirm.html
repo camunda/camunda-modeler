@@ -1,0 +1,13 @@
+<div class="content">
+  <p>{{ message }}</p>
+</div>
+
+<div class="buttons">
+
+  <button class="btn"
+          ng-repeat="button in buttons"
+          ng-click="dialog.close(button.key)"
+          ng-class="{ primary: button.defaultAction }" autofocus>
+    {{ button.label }}
+  </button>
+</div>

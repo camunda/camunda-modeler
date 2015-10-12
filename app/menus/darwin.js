@@ -1,17 +1,13 @@
 'use strict';
 
 // Electron Modules
-const darwinMenu = require('./menus/darwin');
-const linuxMenu = require('./menus/linux');
+const Menu = require('menu');
+const dialog = require('dialog');
+
+// Services
+const File = require('../file');
 
 
-module.exports = function(browserWindow, desktopPath) {
-  if (process.platform === 'darwin') {
-    console.log('Loading OSX menu..');
-    return darwinMenu(browserWindow, desktopPath);
-  }
-
-<<<<<<< HEAD
 function saveFile(title, browserWindow, file) {
   dialog.showSaveDialog(browserWindow, {
       title: title,
@@ -27,7 +23,7 @@ function saveFile(title, browserWindow, file) {
   });
 }
 
-function menus(browserWindow, DESKTOP_PATH) {
+function menus(browserWindow, desktopPath) {
 
   var menu = new Menu();
 
@@ -60,7 +56,7 @@ function menus(browserWindow, DESKTOP_PATH) {
           click: function() {
             dialog.showOpenDialog(browserWindow, {
                 title: 'Open bpmn file',
-                defaultPath: DESKTOP_PATH,
+                defaultPath: desktopPath,
                 properties: ['openFile'],
                 filters: [
                   { name: 'Bpmn', extensions: ['.bpmn'] },
@@ -151,10 +147,3 @@ function menus(browserWindow, DESKTOP_PATH) {
 }
 
 module.exports = menus;
-=======
-  if (process.platform === 'linux') {
-    console.log('Loading Linux menu..');
-    return linuxMenu(browserWindow, desktopPath);
-  }
-};
->>>>>>> feat(bpmn.io): add bpmn.io's chrome app boilerplate

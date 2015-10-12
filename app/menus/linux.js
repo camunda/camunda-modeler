@@ -1,17 +1,14 @@
 'use strict';
 
 // Electron Modules
-const darwinMenu = require('./menus/darwin');
-const linuxMenu = require('./menus/linux');
+const Menu = require('menu');
+const dialog = require('dialog');
+const electron = require('app');
+
+// Services
+const File = require('../file');
 
 
-module.exports = function(browserWindow, desktopPath) {
-  if (process.platform === 'darwin') {
-    console.log('Loading OSX menu..');
-    return darwinMenu(browserWindow, desktopPath);
-  }
-
-<<<<<<< HEAD
 function saveFile(title, browserWindow, file) {
   dialog.showSaveDialog(browserWindow, {
       title: title,
@@ -27,7 +24,7 @@ function saveFile(title, browserWindow, file) {
   });
 }
 
-function menus(browserWindow, DESKTOP_PATH) {
+function menus(browserWindow, desktopPath) {
 
   var menu = new Menu();
 
@@ -38,16 +35,17 @@ function menus(browserWindow, DESKTOP_PATH) {
       label: 'Camunda Modeler',
       submenu: [
         {
-          label: 'About Camunda Modeler',
-          selector: 'orderFrontStandardAboutPanel:'
+          label: 'About Camunda Modeler'
         },
         {
           type: 'separator'
         },
         {
           label: 'Quit',
-          accelerator: 'Command+Q',
-          selector: 'terminate:'
+          accelerator: 'Control+Q',
+          click: function() {
+            electron.quit();
+          }
         },
       ]
     },
@@ -56,11 +54,11 @@ function menus(browserWindow, DESKTOP_PATH) {
       submenu: [
         {
           label: 'Open File..',
-          accelerator: 'Command+O',
+          accelerator: 'Control+O',
           click: function() {
             dialog.showOpenDialog(browserWindow, {
                 title: 'Open bpmn file',
-                defaultPath: DESKTOP_PATH,
+                defaultPath: desktopPath,
                 properties: ['openFile'],
                 filters: [
                   { name: 'Bpmn', extensions: ['.bpmn'] },
@@ -71,9 +69,9 @@ function menus(browserWindow, DESKTOP_PATH) {
                 }
               });
           }
-        },{
+        }, {
           label: 'Save File',
-          accelerator: 'Command+S',
+          accelerator: 'Control+S',
           click: function() {
             var filename;
 
@@ -82,9 +80,9 @@ function menus(browserWindow, DESKTOP_PATH) {
             }
             saveFile('Save file', browserWindow, file);
           }
-        },{
+        }, {
           label: 'Save File As..',
-          accelerator: 'Command+Shift+S',
+          accelerator: 'Control+Shift+S',
           click: function() {
             saveFile('Save file as..', browserWindow, file);
           }
@@ -96,13 +94,11 @@ function menus(browserWindow, DESKTOP_PATH) {
       submenu: [
         {
           label: 'Undo',
-          accelerator: 'Command+Z',
-          selector: 'undo:'
+          accelerator: 'Control+Z'
         },
         {
           label: 'Redo',
-          accelerator: 'Shift+Command+Z',
-          selector: 'redo:'
+          accelerator: 'Shift+Control+Z'
         }
       ]
     },
@@ -111,17 +107,21 @@ function menus(browserWindow, DESKTOP_PATH) {
       submenu: [
         {
           label: 'Minimize',
-          accelerator: 'Command+M',
-          selector: 'performMiniaturize:'
+          accelerator: 'Control+M',
+          click: function() {
+            browserWindow.minimize();
+          }
         },
         {
-          label: 'Close',
-          accelerator: 'Command+W',
-          selector: 'performClose:'
+          label: 'Reload',
+          accelerator: 'Control+R',
+          click: function() {
+            browserWindow.reload();
+          }
         },
         {
           label: 'Fullscreen',
-          accelerator: 'Command+Enter',
+          accelerator: 'F11',
           click: function() {
             if (browserWindow.isFullScreen()) {
               return browserWindow.setFullScreen(false);
@@ -132,7 +132,7 @@ function menus(browserWindow, DESKTOP_PATH) {
         },
         {
           label: 'Toggle DevTools',
-          accelerator: 'Command+Alt+J',
+          accelerator: 'F12',
           click: function() {
             browserWindow.toggleDevTools();
           }
@@ -151,10 +151,3 @@ function menus(browserWindow, DESKTOP_PATH) {
 }
 
 module.exports = menus;
-=======
-  if (process.platform === 'linux') {
-    console.log('Loading Linux menu..');
-    return linuxMenu(browserWindow, desktopPath);
-  }
-};
->>>>>>> feat(bpmn.io): add bpmn.io's chrome app boilerplate
