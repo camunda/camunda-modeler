@@ -4,7 +4,7 @@
   "description": "Camunda desktop modeler for BPMN and CMMN, based on bpmn.io",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test/**/*Spec.js",
     "exec": "gulp run",
     "auto-exec": "gulp serve"
   },
