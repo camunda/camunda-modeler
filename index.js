@@ -1,32 +1,64 @@
 'use strict';
 
-const path = require('path');
+var path = require('path');
 
-const electron = require('app');
-const browserWindow = require('electron-window');
-const client = require('electron-connect').client;
-const shell = require('shell');
-const dialog = require('dialog');
+var BrowserWindow = require('electron-window');
+var ConnectClient = require('electron-connect').client;
+var Shell = require('shell');
 
-const os = require('os');
-const fs = require('fs');
-const exec = require('child_process').execSync;
+/**
+ * automatically report crash reports
+ *
+ * @see http://electron.atom.io/docs/v0.33.0/api/crash-reporter/
+ */
+// TODO(nre): do we want to do this?
+// require('crash-reporter').start();
 
-const winUtil = require('./utils/windowsUtil');
 
-// report crashes to the Electron project
-require('crash-reporter').start();
+var Platform = require('./app/platform'),
+    Config = require('./app/config');
 
-var mainWindow;
 
-function onReady(win, desktopPath) {
-  const menus = require('./app/menus');
+var app = require('app');
+var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
 
-  menus(win, desktopPath);
+
+/**
+ * The main editor window.
+ */
+app.mainWindow = null;
+
+/**
+ * The electron-connect client, that allows us to start and stop
+ * electron via an API
+ */
+app.connectClient = null;
+
+
+/**
+ * Open a new browser window, if non exists.
+ *
+ * @return {BrowserWindow}
+ */
+function open() {
+
+  if (!app.mainWindow) {
+    app.mainWindow = createEditorWindow();
+    app.connectClient = ConnectClient.create(app.mainWindow);
+  }
+
+  return app.mainWindow;
 }
 
-function createWin(callback) {
-  mainWindow = browserWindow.createWindow({
+
+/**
+ * Create the main window that represents the editor.
+ *
+ * @return {BrowserWindow}
+ */
+function createEditorWindow() {
+
+  var mainWindow = BrowserWindow.createWindow({
     resizable: true,
     title: 'Camunda Modeler'
   });
@@ -36,107 +68,42 @@ function createWin(callback) {
   var indexPath = path.resolve(__dirname, 'index.html');
 
   mainWindow.showUrl(indexPath, function () {
-    callback(mainWindow, electron.getPath('userDesktop'));
+    app.emit('editor-open', mainWindow);
   });
 
   mainWindow.webContents.on('will-navigate', function(evt, url) {
     evt.preventDefault();
 
-    shell.openExternal(url);
+    Shell.openExternal(url);
   });
 
   return mainWindow;
 }
 
-electron.on('open-url', function(evt) {
+
+// init default behavior
+
+app.on('open-url', function(evt) {
   evt.preventDefault();
 });
 
-electron.on('window-all-closed', function () {
-	if (process.platform !== 'darwin') {
-		electron.quit();
-	}
+app.on('activate-with-no-open-windows', function() {
+  open();
 });
 
-electron.on('activate-with-no-open-windows', function () {
-	if (!mainWindow) {
-		client.create(createWin(onReady));
-	}
+app.on('ready', function(evt) {
+  open();
 });
 
-electron.on('ready', function (evt) {
-  var exePath = electron.getPath('exe');
+app.on('editor-open', function(mainWindow) {
 
-  client.create(createWin(onReady));
+  var createMenus = require('./app/menus');
 
-  if (os.platform() === 'win32') {
-    setupWindows(exePath);
-  }
+  var desktopPath = app.getPath('userDesktop');
+  createMenus(mainWindow, desktopPath);
 });
 
-function setupWindows(exePath) {
-  var query = winUtil.queryRegistry().toString(),
-      escapedExePath = exePath.replace(/\\/g, '\\\\');
 
-  var hasExePath = new RegExp(escapedExePath, 'ig').test(query);
-  var hasNoKey = new RegExp('The system was unable to find the specified registry key or value\.', 'gi').test(query);
+// init platform specific stuff
 
-  // Prompt user for file association, whenever:
-  // - we cant't find association
-  //  if exePath doesn't match
-  // - check config file
-
-  if (hasNoKey || !hasExePath) {
-    loadConfigFile(function(config) {
-      if (config && config.fileAssociation === false) {
-        return;
-      }
-
-      suggestFileAssociation(exePath);
-    });
-  }
-}
-
-function suggestFileAssociation(exePath) {
-  promptUser('Do you want to associate your .bpmn files to the Camunda Modeler ?', function(answer) {
-    // answer returns the buttons array's index
-    if (answer === 0) {
-      winUtil.addToRegistry(exePath);
-      persistAnswer(true);
-    } else {
-      persistAnswer(false);
-    }
-  });
-}
-
-function promptUser(message, callback) {
-  dialog.showMessageBox({
-    type: 'question',
-    buttons: [ 'Yes', 'No' ],
-    title: 'Camunda Modeler',
-    message: message
-  }, callback);
-}
-
-function persistAnswer(answer) {
-  loadConfigFile(function(config, configPath) {
-    if (!config) {
-      fs.writeFile(configPath, JSON.stringify({ fileAssociation: answer }), { encoding: 'utf8' }, function() {});
-    }
-  });
-}
-
-function loadConfigFile(callback) {
-  var userDataPath = electron.getPath('userData'),
-      configPath = path.join(userDataPath, 'config.json');
-
-  fs.readFile(configPath, { encoding: 'utf8' }, function(err, data) {
-    if (err && err.code === 'ENOENT') {
-      return callback(false, configPath);
-    } else if (err) {
-      return;
-    } else {
-      return callback(JSON.parse(data), configPath);
-    }
-  });
-}
+Platform.init(process.platform, app, config);

@@ -1,0 +1,51 @@
+'use strict';
+
+/**
+ * Get initializer for the selected platform.
+ *
+ * @param {String} platform
+ *
+ * @return {Function}
+ */
+function get(platform) {
+  try {
+    if (platform === 'win32') {
+      return require('./windows');
+    } else
+    if (platform === 'darwin') {
+      return require('./mac');
+    } else
+    if (platform === 'darwin') {
+      return require('./linux');
+    }
+  } catch (e) {
+    // no integration; bad luck
+  }
+
+  return null;
+}
+
+module.exports.get = get;
+
+
+/**
+ * Initialize app on the given platform.
+ *
+ * @param {String} platform
+ * @param {ElectronApp} app
+ * @param {Config} config
+
+ * @return {ElectronApp}
+ */
+function init(platform, app, config) {
+
+  var initialize = get(platform);
+
+  if (initialize) {
+    initialize(app, config);
+  }
+
+  return app;
+}
+
+module.exports.init = init;
