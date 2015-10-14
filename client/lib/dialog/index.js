@@ -12,7 +12,6 @@ var ngModule = module.exports = angular.module('app.dialog', [
 ]);
 
 ngModule.factory('dialog', [ 'ngSimpleDialog', function(ngSimpleDialog) {
-
   return {
     confirm: function(message, choices, done) {
 
