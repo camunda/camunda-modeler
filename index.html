@@ -114,6 +114,12 @@
     </div>
 
     <!-- script -->
+    <script>
+      // make sure we can require electron implicits
+      // in a node style manner
+      window.require_electron = window.require;
+    </script>
+
     <script src="dist/index.js"></script>
   </body>
 </html>

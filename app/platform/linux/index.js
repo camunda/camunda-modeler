@@ -1,5 +1,7 @@
 'use strict';
 
+var menus = require('./MenusLinux');
+
 function LinuxIntegration(app) {
 
   // close handling
@@ -8,8 +10,8 @@ function LinuxIntegration(app) {
   });
 
   // editor menu
-  app.on('editor-create-menu', function(mainWindow) {
-    // TODO(nre): create
+  app.on('editor-create-menu', function(mainWindow, fileSystem) {
+    menus(mainWindow, fileSystem);
   });
 }
 

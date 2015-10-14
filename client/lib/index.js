@@ -1,4 +1,5 @@
 // expose jquery to window
+
 window.jQuery = require('jquery');
 
 var angular = require('angular');

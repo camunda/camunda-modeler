@@ -16,7 +16,8 @@ var Shell = require('shell');
 
 
 var Platform = require('./app/platform'),
-    Config = require('./app/config');
+    Config = require('./app/config'),
+    FileSystem = require('./app/FileSystem');
 
 
 var app = require('app');
@@ -96,8 +97,9 @@ app.on('ready', function(evt) {
 });
 
 app.on('editor-open', function(mainWindow) {
+  var fileSystem = new FileSystem(mainWindow);
 
-  app.emit('editor-create-menu', mainWindow);
+  app.emit('editor-create-menu', mainWindow, fileSystem);
 });
 
 

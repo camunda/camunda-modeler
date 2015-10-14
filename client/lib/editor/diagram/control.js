@@ -1,3 +1,5 @@
+'use strict';
+
 var domify = require('min-dom/lib/domify');
 
 var BpmnJS = require('bpmn-js/lib/Modeler'),

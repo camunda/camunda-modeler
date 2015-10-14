@@ -3,7 +3,7 @@
 // Electron Modules
 const Menu = require('menu');
 
-function menus(browserWindow, desktopPath) {
+function menus(browserWindow, fileSystem) {
 
   var menu = new Menu();
 

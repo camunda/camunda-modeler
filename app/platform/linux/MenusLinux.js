@@ -5,7 +5,7 @@ const Menu = require('menu');
 const electron = require('app');
 
 
-function menus(browserWindow, desktopPath) {
+function menus(browserWindow, fileSystem) {
 
   var menu = new Menu();
 

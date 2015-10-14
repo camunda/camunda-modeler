@@ -1,8 +1,8 @@
 'use strict';
 
-var files = require('../util/files'),
+var files = require('../util/filesElectron'),
     // workspace = require('../util/workspace'),
-    assign = require('lodash/object/assign'),
+    // assign = require('lodash/object/assign'),
     DiagramControl = require('./diagram/control');
 
 var onDrop = require('../util/on-drop');
@@ -54,9 +54,7 @@ function Editor($scope, dialog) {
       options = {};
     }
 
-    function handleSaving(err) {
-      console.log(err);
-
+    function handleSaving(err, diagram) {
       if (!err) {
         diagram.control.resetEditState();
       }
@@ -111,7 +109,6 @@ function Editor($scope, dialog) {
     var self = this;
 
     files.openFile(function(err, file) {
-
       if (err) {
         return console.error(err);
       }
