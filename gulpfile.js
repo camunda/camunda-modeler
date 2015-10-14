@@ -39,7 +39,8 @@ function getPackageOptions(platform) {
 // add custom browserify options here
 var browserifyOptions = {
   entries: [ './client/lib/index.js' ],
-  debug: true
+  debug: true,
+  transform: [ 'stringify' ]
 };
 
 // add transformations here
@@ -84,12 +85,12 @@ gulp.task('serve', function () {
   app.start();
 
   // Restart browser process
-  gulp.watch([ 'index.js', 'app/**/*.js'], app.restart);
+  gulp.watch([ 'index.js', './app/**/*.js'], app.restart);
 
   // Reload renderer process
   gulp.watch([ './client/**/*.js', 'index.html'], [ 'client:build', app.reload ]);
 
-  gulp.watch([ './client/less/*.less', [ 'client:less' ] ]);
+  gulp.watch([ './client/less/*.less', [ 'client:less', app.reload ] ]);
 });
 
 gulp.task('client:build:watch', function() {
@@ -101,29 +102,34 @@ gulp.task('client:build', function() {
 });
 
 gulp.task('client:less', function() {
-  return gulp.src('./client/less/app.less')
+  return gulp.src('client/less/app.less')
         .pipe(less({
           paths: [ './node_modules/' ]
         }))
-        .pipe(gulp.dest('./dist/css'));
+        .pipe(gulp.dest('dist/css'));
 });
 
 gulp.task('client:copy:css', function() {
-  return gulp.src('./node_modules/diagram-js/assets/diagram-js.css')
+  return gulp.src('node_modules/diagram-js/assets/diagram-js.css')
         .pipe(gulp.dest('dist/vendor/diagram-js'));
 });
 
 gulp.task('client:copy:icons', function() {
-  return gulp.src( './client/icons/*')
+  return gulp.src( 'client/icons/*')
         .pipe(gulp.dest('dist'));
 });
 
 gulp.task('client:copy:font', function() {
-  return gulp.src('./client/font/font/*')
+  return gulp.src('client/font/font/*')
         .pipe(gulp.dest('dist/font'));
 });
 
-gulp.task('client:copy', runSequence([ 'client:copy:font', 'client:copy:icons', 'client:copy:css' ]));
+gulp.task('client:copy:html', function() {
+  return gulp.src('client/lib/dialog/confirm.html')
+        .pipe(gulp.dest('dist'));
+});
+
+gulp.task('client:copy', runSequence([ 'client:copy:font', 'client:copy:icons', 'client:copy:css', 'client:copy:html' ]));
 
 gulp.task('debug', function() {
   return spawn(electron, [ '--debug-brk=5858' ], { stdio: 'inherit' });

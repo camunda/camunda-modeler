@@ -3,15 +3,13 @@
 var map = require('lodash/collection/map'),
     assign = require('lodash/object/assign');
 
-var angular = require('angular');
+var confirmTemplate = require('./confirm.html');
 
+var angular = require('angular');
 
 var ngModule = module.exports = angular.module('app.dialog', [
   require('ng-simple-dialog')
 ]);
-
-// var confirmTemplate = fs.readFile('./confirm.html', { encoding: 'utf8' });
-
 
 ngModule.factory('dialog', [ 'ngSimpleDialog', function(ngSimpleDialog) {
 
@@ -27,8 +25,8 @@ ngModule.factory('dialog', [ 'ngSimpleDialog', function(ngSimpleDialog) {
         buttons: buttons
       };
 
-      var dialog = ngSimpleDialog({
-        template: './confirm.html',
+      ngSimpleDialog({
+        template: confirmTemplate,
         scope: scope
       }).open().on('close', done);
     }
