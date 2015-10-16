@@ -1,6 +1,7 @@
 'use strict';
 
-var spawn = require('child_process').spawn;
+var spawn = require('child_process').spawn,
+    existsSync = require('fs').existsSync;
 
 var gulp = require('gulp'),
     less = require('gulp-less'),
@@ -10,31 +11,20 @@ var gulp = require('gulp'),
     errorify = require('errorify'),
     gutil = require('gulp-util'),
     browserify = require('browserify'),
-    runSequence = require('gulp-sequence');
+    runSequence = require('gulp-sequence'),
+    which = require('which');
 
 var packager = require('electron-packager'),
     electron = require('electron-prebuilt'),
-    app = require('electron-connect').server.create();
+    copyRecursive = require('ncp'),
+    app = require('electron-connect').server.create({ path: 'app/develop' });
 
-var assign = require('lodash/object/assign');
+var assign = require('lodash/object/assign'),
+    forEach = require('lodash/collection/forEach');
 
+var PACKAGE_JSON = require('./package.json'),
+    ELECTRON_VERSION = '0.33.0';
 
-var ELECTRON_PACKAGER_VERSION = '0.33.0';
-
-function getPackageOptions(platform) {
-  var options = {
-    name: 'camunda-modeler',
-    version: ELECTRON_PACKAGER_VERSION,
-    dir: '.',
-    out: 'distro',
-    arch: 'all',
-    overwrite: true
-  };
-
-  options.platform = platform;
-
-  return options;
-}
 
 // add custom browserify options here
 var browserifyOptions = {
@@ -46,7 +36,7 @@ var browserifyOptions = {
 // add transformations here
 // i.e. b.transform(coffeeify);
 
-function bundle(options) {
+function browserBundle(options) {
 
   var bundler,
       bundleOptions;
@@ -56,7 +46,7 @@ function bundle(options) {
              .bundle()
              .pipe(source('index.js'))
              .pipe(buffer())
-             .pipe(gulp.dest('dist'));
+             .pipe(gulp.dest('public/'));
   }
 
   if (options && options.watch) {
@@ -76,8 +66,138 @@ function bundle(options) {
 
   bundler.build = build;
 
-  return bundler;
+  return build();
 }
+
+function buildDistroIgnore() {
+
+  var ignore = [
+    'app/develop',
+    'distro',
+    'client',
+    'resources',
+    'test',
+    '.editorconfig',
+    '.gitignore',
+    '.jshintrc',
+    'gulpfile.js',
+    'README.md'
+  ];
+
+
+  forEach(PACKAGE_JSON.devDependencies, function(version, name) {
+    ignore.push('node_modules/' + name);
+  });
+
+  return new RegExp('(' + ignore.join('|') + ')');
+}
+
+var archiver = require('archiver'),
+    fs = require('fs');
+
+function createArchive(platform, path, done) {
+
+  return function(err) {
+
+    if (err) {
+      return done(err);
+    }
+
+    var archive,
+        dest = path,
+        output;
+
+    if (platform === 'win32') {
+      archive = archiver('zip', {});
+      dest += '.zip';
+    } else {
+      archive = archiver('tar', { gzip: true });
+      dest += '.tar.gz';
+    }
+
+    output = fs.createWriteStream(dest);
+
+    archive.pipe(output);
+    archive.on('end', done);
+    archive.on('error', done);
+
+    archive.directory(path, 'camunda-modeler').finalize();
+  };
+}
+
+function amendAndArchive(platform, paths, done) {
+
+  var idx = 0;
+
+  var platformAssets = __dirname + '/resources/' + platform;
+
+  function processNext(err) {
+
+    if (err) {
+      return done(err);
+    }
+
+    var currentPath = paths[idx++];
+
+    if (!currentPath) {
+      return done(err, paths);
+    }
+
+    var archive = createArchive(platform, currentPath, processNext);
+
+    if (existsSync(platformAssets)) {
+      copyRecursive(platformAssets, currentPath, archive);
+    } else {
+      archive();
+    }
+  }
+
+  processNext();
+}
+
+// package pre-built electron application for the given platform
+
+function electronPackage(platform) {
+  var opts = {
+    name: PACKAGE_JSON.name,
+    version: ELECTRON_VERSION,
+    dir: '.',
+    out: 'distro',
+    overwrite: true,
+    asar: true,
+    arch: 'all',
+    platform: platform,
+    icon: __dirname + '/resources/icons/icon_128'
+  };
+
+  opts['app-version'] = PACKAGE_JSON.version;
+  opts['ignore'] = buildDistroIgnore();
+
+  // make sure wine is available on linux systems
+  // if we are building the windows distribution
+  if (process.platform !== 'win32' && platform === 'win32') {
+    try {
+      which.sync('wine');
+    } catch(e) {
+      return function(done) {
+        gutil.log(gutil.colors.yellow('Skipping Windows packaging: wine is not found'));
+        done(null);
+      };
+    }
+  }
+
+  return function(done) {
+    packager(opts, function(err, paths) {
+
+      if (err) {
+        return done(err);
+      }
+
+      return amendAndArchive(platform, paths, done);
+    });
+  };
+}
+
 
 gulp.task('serve', function () {
 
@@ -85,84 +205,62 @@ gulp.task('serve', function () {
   app.start();
 
   // Restart browser process
-  gulp.watch([ 'index.js', './app/**/*.js'], app.restart);
+  gulp.watch([ 'app/**/*.js' ], app.restart);
 
   // Reload renderer process
-  gulp.watch([ './client/**/*.js', 'index.html'], [ 'client:build', app.reload ]);
+  gulp.watch([ 'client/lib/**/*.js' ], [ 'client:build', app.reload ]);
+  gulp.watch([ 'client/lib/index.html' ], [ 'client:copy:html', app.reload ]);
 
-  gulp.watch([ './client/less/*.less', [ 'client:less', app.reload ] ]);
+  gulp.watch([ 'client/less/**/*.less', [ 'client:less', app.reload ] ]);
 });
 
 gulp.task('client:build:watch', function() {
-  return bundle({ watch: true }).build();
+  return browserBundle({ watch: true });
 });
 
 gulp.task('client:build', function() {
-  return bundle().build();
+  return browserBundle();
 });
 
 gulp.task('client:less', function() {
   return gulp.src('client/less/app.less')
-        .pipe(less({
-          paths: [ './node_modules/' ]
-        }))
-        .pipe(gulp.dest('dist/css'));
+             .pipe(less({ paths: [ './node_modules/' ] }))
+             .pipe(gulp.dest('public/css'));
 });
 
 gulp.task('client:copy:css', function() {
   return gulp.src('node_modules/diagram-js/assets/diagram-js.css')
-        .pipe(gulp.dest('dist/vendor/diagram-js'));
-});
-
-gulp.task('client:copy:icons', function() {
-  return gulp.src( 'client/icons/*')
-        .pipe(gulp.dest('dist'));
+             .pipe(gulp.dest('public/vendor/diagram-js'));
 });
 
 gulp.task('client:copy:font', function() {
-  return gulp.src('client/font/font/*')
-        .pipe(gulp.dest('dist/font'));
+  return gulp.src('client/font/font/*').pipe(gulp.dest('public/font'));
 });
 
 gulp.task('client:copy:html', function() {
-  return gulp.src('client/lib/dialog/confirm.html')
-        .pipe(gulp.dest('dist'));
+  return gulp.src('client/lib/index.html').pipe(gulp.dest('public/'));
 });
 
-gulp.task('client:copy', runSequence([ 'client:copy:font', 'client:copy:icons', 'client:copy:css', 'client:copy:html' ]));
+gulp.task('client:copy', runSequence([
+  'client:copy:font',
+  'client:copy:css',
+  'client:copy:html'
+]));
 
 gulp.task('debug', function() {
   return spawn(electron, [ '--debug-brk=5858' ], { stdio: 'inherit' });
 });
 
-gulp.task('dist-windows', function() {
-  var opts = getPackageOptions('win32');
+gulp.task('package:windows', electronPackage('win32'));
+gulp.task('package:darwin', electronPackage('darwin'));
+gulp.task('package:linux', electronPackage('linux'));
 
-  return packager(opts, function(err, appPath) {
-    return appPath;
-  });
-});
-
-gulp.task('dist-osx', function() {
-  var opts = getPackageOptions('darwin');
-
-  return packager(opts, function(err, appPath) {
-    return appPath;
-  });
-});
-
-gulp.task('dist-linux', function() {
-  var opts = getPackageOptions('linux');
-
-  return packager(opts, function(err, appPath) {
-    return appPath;
-  });
-});
-
-gulp.task('dist', runSequence([ 'dist-windows', 'dist-darwin', 'dist-linux' ]));
+gulp.task('package', runSequence('package:windows', 'package:darwin', 'package:linux'));
 
 gulp.task('build', runSequence('client:build', 'client:less', 'client:copy'));
 
 gulp.task('auto-build', runSequence('build', 'serve'));
 
-gulp.task('default', [ 'build' ]);
+gulp.task('distro', runSequence('build', 'package'));
+
+gulp.task('default', runSequence('build'));
