@@ -28,6 +28,8 @@ var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
  */
 app.mainWindow = null;
 
+// Filepath where we store the path of a file that the user tried to open by association
+app.filePath = null;
 
 /**
  * Open a new browser window, if non exists.
@@ -79,18 +81,28 @@ function createEditorWindow() {
 //   evt.preventDefault();
 // });
 
-app.on('activate-with-no-open-windows', function() {
-  open();
+app.on('open-file', function(evt, filePath) {
+  app.filePath = filePath;
+
+  if (app.mainWindow) {
+    app.fileSystem.addFile(filePath);
+  }
 });
 
 app.on('ready', function(evt) {
-  open();
+  if (!app.mainWindow) {
+    open();
+  }
 });
 
 app.on('editor-open', function(mainWindow) {
-  new FileSystem(mainWindow, config);
+  app.fileSystem = new FileSystem(mainWindow, config);
 
   app.emit('editor-create-menu', mainWindow);
+
+  if (app.filePath) {
+    app.fileSystem.addFile(app.filePath);
+  }
 });
 
 

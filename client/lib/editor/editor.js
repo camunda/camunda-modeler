@@ -136,16 +136,16 @@ function Editor($scope) {
         return console.error(err);
       }
 
-      self._openDiagram(file);
-
-      $scope.$applyAsync();
+      self.addDiagram(file);
     });
   };
 
-  this._openDiagram = function(file) {
+  this.addDiagram = function(file) {
     if (file) {
       this.diagrams.push(file);
       this.showDiagram(file);
+
+      $scope.$applyAsync();
 
       this.persist();
     }
@@ -295,7 +295,7 @@ function Editor($scope) {
         return console.error(err);
       }
 
-      self._openDiagram(file);
+      self.addDiagram(file);
 
       $scope.$applyAsync();
     });

@@ -95,10 +95,32 @@ FileSystem.prototype._open = function(filePath, callback) {
     return;
   }
 
+  this._openFile(filePath, callback);
+};
+
+FileSystem.prototype._openFile = function(filePath, callback) {
   fs.readFile(filePath, this.encoding, function(err, file) {
     var diagramFile = createDiagramFile(filePath, file);
 
     callback(err, diagramFile);
+  });
+};
+
+FileSystem.prototype.addFile = function openFile(filePath) {
+  var self = this,
+      browserWindow = this.browserWindow;
+
+  this._openFile(filePath, function(err, diagramFile) {
+    if (err) {
+      return self.showGeneralErrorDialog();
+    }
+
+    browserWindow.webContents.send('editor.actions', {
+      event: 'file.add',
+      data: {
+        diagram: diagramFile
+      }
+    });
   });
 };
 

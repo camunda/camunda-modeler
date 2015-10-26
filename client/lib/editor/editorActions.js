@@ -15,6 +15,10 @@ function EditorActions(editor) {
       case 'file.save':
         editor.save(payload.data.create);
         break;
+      case 'file.add':
+        editor.addDiagram(payload.data.diagram);
+        break;
+
       case 'editor.new':
         editor.newDiagram();
         break;
@@ -47,7 +51,7 @@ function EditorActions(editor) {
       case 'editor.redo':
         editor.trigger('redo');
         break;
-        
+
       // Window
       case 'editor.stepZoom':
         editor.trigger('stepZoom', payload.data);
