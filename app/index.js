@@ -8,7 +8,7 @@ var Shell = require('shell');
 /**
  * automatically report crash reports
  *
- * @see http://electron.atom.io/docs/v0.33.0/api/crash-reporter/
+ * @see http://electron.atom.io/docs/v0.34.0/api/crash-reporter/
  */
 // TODO(nre): do we want to do this?
 // require('crash-reporter').start();
@@ -60,15 +60,12 @@ function createEditorWindow() {
 
   var indexPath = path.resolve(__dirname + '/../public/index.html');
 
-  console.log(indexPath);
-
   mainWindow.showUrl(indexPath, function () {
     app.emit('editor-open', mainWindow);
   });
 
   mainWindow.webContents.on('will-navigate', function(evt, url) {
     evt.preventDefault();
-
     Shell.openExternal(url);
   });
 
@@ -78,9 +75,9 @@ function createEditorWindow() {
 
 // init default behavior
 
-app.on('open-url', function(evt) {
-  evt.preventDefault();
-});
+// app.on('open-url', function(evt) {
+//   evt.preventDefault();
+// });
 
 app.on('activate-with-no-open-windows', function() {
   open();
@@ -91,15 +88,15 @@ app.on('ready', function(evt) {
 });
 
 app.on('editor-open', function(mainWindow) {
-  var fileSystem = new FileSystem(mainWindow);
+  new FileSystem(mainWindow, config);
 
-  app.emit('editor-create-menu', mainWindow, fileSystem);
+  app.emit('editor-create-menu', mainWindow);
 });
 
 
 // init platform specific stuff
 
-Platform.init(process.platform, app, config);
+Platform.init(process.platform, config);
 
 // expose app
 module.exports = app;

@@ -1,5 +1,7 @@
 'use strict';
 
+var app = require('app');
+
 /**
  * Get initializer for the selected platform.
  *
@@ -15,8 +17,9 @@ function get(platform) {
     if (platform === 'darwin') {
       return require('./mac-os');
     } else
-    if (platform === 'linux') {
-      return require('./linux');
+    if (platform == 'linux') {
+      var linux = require('./linux');
+      return linux;
     }
   } catch (e) {
     // no integration; bad luck
@@ -37,8 +40,7 @@ module.exports.get = get;
 
  * @return {ElectronApp}
  */
-function init(platform, app, config) {
-
+function init(platform, config) {
   var initialize = get(platform);
 
   if (initialize) {

@@ -1,6 +1,8 @@
 'use strict';
 
-var files = require('../util/filesElectron'),
+var files = require('../util/files'),
+    EditorActions = require('./editorActions'),
+    menuUpdater = require('./menuUpdater'),
     // workspace = require('../util/workspace'),
     // assign = require('lodash/object/assign'),
     DiagramControl = require('./diagram/control');
@@ -9,9 +11,20 @@ var onDrop = require('../util/on-drop');
 
 var dnd;
 
+
+function isInput(target) {
+  return target.type === 'textarea' || target.type === 'input';
+}
+
+function modifierPressed(evt) {
+  return evt.ctrlKey || evt.metaKey;
+}
+
 function Editor($scope, dialog) {
 
-  var idx = 0;
+  var self = this,
+      dirty = true,
+      idx = 0;
 
   this.currentDiagram = null;
   this.diagrams = [];
@@ -20,33 +33,43 @@ function Editor($scope, dialog) {
     xml: false
   };
 
+  // Start listening to Browser communication
+  new EditorActions(this);
+
   this.canUndo = function() {
-    return this.currentDiagram && this.currentDiagram.control.canUndo;
+    return this.currentDiagram && !!this.currentDiagram.control.canUndo;
   };
 
   this.canRedo = function() {
-    return this.currentDiagram && this.currentDiagram.control.canRedo;
+    return this.currentDiagram && !!this.currentDiagram.control.canRedo;
   };
 
   this.isUnsaved = function() {
-    return this.currentDiagram && this.currentDiagram.unsaved;
+    return this.currentDiagram && !!this.currentDiagram.unsaved;
   };
 
   this.isOpen = function() {
     return this.currentDiagram;
   };
 
-  this.undo = function() {
+  this.trigger = function(action, opts) {
     if (this.currentDiagram) {
-      this.currentDiagram.control.undo();
+      this.currentDiagram.control.editorActions.trigger(action, opts);
     }
   };
 
-  this.redo = function() {
-    if (this.currentDiagram) {
-      this.currentDiagram.control.redo();
+  // Caveat to get the `Modifier+A` to work with **Select Elements**
+  // If we don't do this, then the html elements will be highlighted
+  // and the desired behaviour won't work
+  window.addEventListener('keydown', function(evt) {
+    if (evt.keyCode === 65 && modifierPressed(evt) && !isInput(evt.target)) {
+      evt.preventDefault();
+
+      if (self.currentDiagram) {
+        self.currentDiagram.control.editorActions.trigger('selectElements');
+      }
     }
-  };
+  });
 
   this.saveDiagram = function(diagram, options, done) {
     if (typeof options === 'function') {
@@ -146,6 +169,23 @@ function Editor($scope, dialog) {
       if (!diagram.control) {
         diagram.control = new DiagramControl(diagram);
       }
+
+      if (dirty && diagrams.length === 1) {
+        menuUpdater.enableMenus();
+        dirty = false;
+      }
+
+      menuUpdater.update({
+        history: [ self.canUndo(), self.canRedo() ],
+        selection: diagram.control.hasSelection(),
+        saving: self.isUnsaved()
+      });
+    }
+
+    // Disable modeling actions when there is no open diagram
+    if (!diagram && !diagrams.length) {
+      menuUpdater.disableMenus();
+      dirty = true;
     }
 
     // this.persist();
@@ -227,6 +267,8 @@ function Editor($scope, dialog) {
 
     var self = this;
 
+    menuUpdater.disableMenus();
+
     // console.debug('[editor]', 'restoring workspace');
 
     // workspace.restore(function(err, config) {
@@ -266,46 +308,6 @@ function Editor($scope, dialog) {
       $scope.$applyAsync();
     });
 
-    function modifierPressed(event) {
-      return event.metaKey || event.ctrlKey;
-    }
-
-    document.addEventListener('keydown', function(e) {
-
-      if (!modifierPressed(e)) {
-        return;
-      }
-
-      // save - 83 (S) + meta/ctrl
-      if (e.keyCode === 83) {
-        e.preventDefault();
-        self.save();
-      }
-
-      // save as - 83 (S) + meta/ctrl + shift
-      if (e.keyCode === 83 && e.shiftKey) {
-        e.preventDefault();
-        self.save(true);
-      }
-
-      // open - 79 (O) + meta/ctrl
-      if (e.keyCode === 79) {
-        e.preventDefault();
-        self.openDiagram();
-      }
-
-      // new diagram - (T/N) 84 + meta/ctrl
-      if (e.keyCode === 84 || e.keyCode === 78) {
-        e.preventDefault();
-        self.newDiagram();
-      }
-
-      // close tab - (W) - 87 + meta/ctrl
-      if (e.keyCode === 87 && self.currentDiagram) {
-        e.preventDefault();
-        self.closeDiagram(self.currentDiagram);
-      }
-    });
   };
 
   this.init();

@@ -1,12 +1,12 @@
 'use strict';
 
-var menus = require('./MenusMac');
+var menusMac = require('./MenusMac');
 
 function MacOSIntegration(app) {
 
   // editor menu
-  app.on('editor-create-menu', function(mainWindow, fileSystem) {
-    menus(mainWindow, fileSystem);
+  app.on('editor-create-menu', function(mainWindow) {
+    menusMac(mainWindow);
   });
 }
 

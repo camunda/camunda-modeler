@@ -1,105 +1,84 @@
 'use strict';
 
-// Electron Modules
-const Menu = require('menu');
+var Menus = require('../Menus');
 
-function menus(browserWindow, fileSystem) {
+var app = require('app');
 
-  var menu = new Menu();
+var map = require('lodash/collection/map'),
+    findIndex = require('lodash/array/findIndex');
 
-  var template = [
+var MODELER_NAME = 'Camunda Modeler';
+
+
+var appMenu = {
+  label: MODELER_NAME,
+  submenu: [
     {
-      label: 'Camunda Modeler',
-      submenu: [
-        {
-          label: 'About Camunda Modeler',
-          selector: 'orderFrontStandardAboutPanel:'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Quit',
-          accelerator: 'Command+Q',
-          selector: 'terminate:'
-        },
-      ]
+      label: 'About ' + MODELER_NAME,
+      role: 'about'
     },
     {
-      label: 'File',
-      submenu: [
-        {
-          label: 'Open File..',
-          accelerator: 'Command+O',
-          click: function() {}
-        },{
-          label: 'Save File',
-          accelerator: 'Command+S',
-          click: function() {}
-        },{
-          label: 'Save File As..',
-          accelerator: 'Command+Shift+S',
-          click: function() {}
-        }
-      ]
+      type: 'separator'
     },
     {
-      label: 'Edit',
-      submenu: [
-        {
-          label: 'Undo',
-          accelerator: 'Command+Z',
-          selector: 'undo:'
-        },
-        {
-          label: 'Redo',
-          accelerator: 'Shift+Command+Z',
-          selector: 'redo:'
-        }
-      ]
-    },
-    {
-      label: 'Window',
-      submenu: [
-        {
-          label: 'Minimize',
-          accelerator: 'Command+M',
-          selector: 'performMiniaturize:'
-        },
-        {
-          label: 'Close',
-          accelerator: 'Command+W',
-          selector: 'performClose:'
-        },
-        {
-          label: 'Fullscreen',
-          accelerator: 'Command+Enter',
-          click: function() {
-            if (browserWindow.isFullScreen()) {
-              return browserWindow.setFullScreen(false);
-            }
-
-            browserWindow.setFullScreen(true);
-          }
-        },
-        {
-          label: 'Toggle DevTools',
-          accelerator: 'Command+Alt+J',
-          click: function() {
-            browserWindow.toggleDevTools();
-          }
-        }
-      ]
-    },
-    {
-      label: 'Help',
+      label: 'Services',
+      role: 'services',
       submenu: []
-    }
-  ];
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'Hide ' + MODELER_NAME,
+      accelerator: 'Command+H',
+      role: 'hide'
+    },
+    {
+      label: 'Hide Others',
+      accelerator: 'Command+Shift+H',
+      role: 'hideothers'
+    },
+    {
+      label: 'Show All',
+      role: 'unhide'
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'Quit',
+      accelerator: 'Command+Q',
+      click: function() {
+        app.quit();
+      }
+    },
+  ]
+};
 
-  menu = Menu.buildFromTemplate(template);
 
-  Menu.setApplicationMenu(menu);
+app.on('editor-template-created', function(template) {
+  template.unshift(appMenu);
+
+  template = editFileMenu(template);
+});
+
+function MenusMac(browserWindow) {
+  new Menus(browserWindow);
 }
 
-module.exports = menus;
+function editFileMenu(template) {
+  return map(template, function(menu, menuIdx) {
+    var entryIdx;
+
+    if (menu.label === 'File') {
+      entryIdx = findIndex(menu.submenu, { label: 'Quit' });
+
+      if (entryIdx) {
+        template[menuIdx].submenu.splice(entryIdx, 1);
+      }
+    }
+    return menu;
+  });
+}
+
+module.exports = MenusMac;

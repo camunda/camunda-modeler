@@ -3,7 +3,10 @@
 var domify = require('min-dom/lib/domify');
 
 var BpmnJS = require('bpmn-js/lib/Modeler'),
+    is = require('bpmn-js/lib/util/ModelUtil').is,
     DiagramJsOrigin = require('diagram-js-origin');
+
+var menuUpdater = require('../menuUpdater');
 
 
 function createBpmnJS(element) {
@@ -34,16 +37,30 @@ function DiagramControl(diagramFile) {
   }
 
   function imported(err, warnings) {
-    console.log(arguments);
-
     var canvas = modeler.get('canvas');
 
     if (self.viewbox) {
       canvas.viewbox(self.viewbox);
     }
 
-    self.attachKeyboard();
+    self.editorActions = modeler.get('editorActions');
   }
+
+  modeler.on('selection.changed', function(evt) {
+    var elements = modeler.get('selection').get(),
+        hasSelection = !!elements.length,
+        enabled = false;
+
+    if ((elements.length === 1 &&
+       !(is(elements[0], 'bpmn:Process') || is(elements[0], 'bpmn:Collaboration'))) ||
+       elements.length > 1) {
+      enabled = true;
+    }
+
+    menuUpdater.update({
+      selection: hasSelection
+    });
+  });
 
   modeler.on('commandStack.changed', function(e) {
     var commandStack = modeler.get('commandStack');
@@ -52,6 +69,11 @@ function DiagramControl(diagramFile) {
     self.canRedo = commandStack.canRedo();
 
     diagramFile.unsaved = (commandStackIdx !== commandStack._stackIdx);
+
+    menuUpdater.update({
+      history: [ self.canUndo, self.canRedo ],
+      saving: diagramFile.unsaved
+    });
   });
 
   modeler.on('commandStack.changed', apply);
@@ -77,12 +99,6 @@ function DiagramControl(diagramFile) {
 
       diagramFile.unsaved = true;
     }
-  };
-
-  this.attachKeyboard = function() {
-    var keyboard = modeler.get('keyboard');
-
-    keyboard.bind(document);
   };
 
   this.save = function(done) {
@@ -112,29 +128,29 @@ function DiagramControl(diagramFile) {
       } else {
         modeler.createDiagram(imported);
       }
-    } else {
-      self.attachKeyboard();
     }
   };
 
   this.detach = function() {
-    var parent = $el.parentNode,
-        keyboard = modeler.get('keyboard');
+    var parent = $el.parentNode;
 
     if (parent) {
       attachedScope = null;
       parent.removeChild($el);
     }
-
-    keyboard.unbind();
   };
 
-  this.undo = function() {
-    modeler.get('commandStack').undo();
+  this.triggerAction = function(action, opts) {
+    modeler.get('editorActions').trigger(action, opts);
   };
 
-  this.redo = function() {
-    modeler.get('commandStack').redo();
+  this.hasSelection = function() {
+    try {
+      var selection = modeler.get('selection');
+      return !!selection.get().length;
+    } catch (e) {
+      return false;
+    }
   };
 
   this.destroy = function() {

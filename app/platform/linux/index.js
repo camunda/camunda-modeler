@@ -1,6 +1,6 @@
 'use strict';
 
-var menus = require('./MenusLinux');
+var Menus = require('../Menus');
 
 function LinuxIntegration(app) {
 
@@ -10,8 +10,8 @@ function LinuxIntegration(app) {
   });
 
   // editor menu
-  app.on('editor-create-menu', function(mainWindow, fileSystem) {
-    menus(mainWindow, fileSystem);
+  app.on('editor-create-menu', function(mainWindow) {
+    new Menus(mainWindow);
   });
 }
 

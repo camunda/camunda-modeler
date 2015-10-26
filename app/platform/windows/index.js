@@ -2,13 +2,14 @@
 
 var dialog = require('dialog');
 
+var Menus = require('../Menus');
+
 var FileAssociations = require('./FileAssociations');
 
 var FILE_ASSOCIATION_KEY = 'fileAssociation';
 
 
 function WindowsIntegration(app, config) {
-
   // close handling
   app.on('window-all-closed', function () {
     app.quit();
@@ -22,6 +23,7 @@ function WindowsIntegration(app, config) {
   // editor menu
   app.on('editor-create-menu', function(mainWindow) {
     // TODO(nre): create
+    new Menus(mainWindow);
   });
 }
 
@@ -73,17 +75,6 @@ function associateEditor(executablePath, done) {
   }
 
   done(null);
-}
-
-
-function setupWindows(exePath) {
-  /*
-  var query = winUtil.queryRegistry().toString(),
-      escapedExePath = exePath.replace(/\\/g, '\\\\');
-
-  var hasExePath = new RegExp(escapedExePath, 'ig').test(query);
-  var hasNoKey = new RegExp('The system was unable to find the specified registry key or value\.', 'gi').test(query);
-  */
 }
 
 function suggestFileAssociation(done) {

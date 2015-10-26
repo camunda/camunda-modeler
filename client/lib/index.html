@@ -44,13 +44,13 @@
         <button class="icon-undo"
                 title="undo"
                 ng-class="{ disabled: !editor.canUndo() }"
-                ng-click="editor.undo()">
+                ng-click="editor.trigger('undo')">
         </button>
 
         <button class="icon-redo"
                 title="redo"
                 ng-class="{ disabled: !editor.canRedo() }"
-                ng-click="editor.redo()">
+                ng-click="editor.trigger('redo')">
         </button>
       </div>
     </div>

@@ -7,8 +7,8 @@ var ipc = require_electron('ipc');
  * Communicate with the Browser process.
  * Make sure that the callback is always called, even when there's an error.
  *
- * @param  {Event}   event
- * @param  {Arguments}   args
+ * @param  {Event} event
+ * @param  {Arguments} args
  * @param  {Function} callback
  */
 function send(event, args, callback) {
@@ -29,3 +29,26 @@ function send(event, args, callback) {
 }
 
 module.exports.send = send;
+
+
+function on(event, callback) {
+  ipc.on(event, callback);
+}
+
+module.exports.on = on;
+
+
+function once(event, callback) {
+  ipc.once(event, callback);
+}
+
+module.exports.once = once;
+
+
+function updateMenus(entries) {
+  send('menu.update', [ entries ], function() {
+    // do nothing
+  });
+}
+
+module.exports.updateMenus = updateMenus;
