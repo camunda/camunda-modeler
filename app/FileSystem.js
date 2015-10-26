@@ -28,11 +28,11 @@ function createDiagramFile(filePath, file) {
  *
  * @param  {Object} browserWindow   Main browser window
  */
-function FileSystem(browserWindow) {
+function FileSystem(browserWindow, config) {
   var self = this;
 
   this.browserWindow = browserWindow;
-  this.desktopPath = electron.getPath('userDesktop');
+  this.config = config;
   this.encoding = { encoding: 'utf8' };
 
 
@@ -42,7 +42,7 @@ function FileSystem(browserWindow) {
         return self.handleError('file.save.response', err);
       }
 
-      evt.sender.send('file.save.response', null, updatedDiagram);
+      browserWindow.webContents.send('file.save.response', null, updatedDiagram);
     });
   });
 
@@ -52,7 +52,7 @@ function FileSystem(browserWindow) {
         return self.handleError('file.open.response', err);
       }
 
-      evt.sender.send('file.open.response', null, diagramFile);
+      browserWindow.webContents.send('file.open.response', null, diagramFile);
     });
   });
 }
@@ -64,6 +64,7 @@ FileSystem.prototype.open = function(callback) {
     if (!filenames) {
       return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
     }
+
 
     self._open(filenames[0], callback);
   });
@@ -140,16 +141,23 @@ FileSystem.prototype.handleError = function(event, err) {
 };
 
 FileSystem.prototype.showOpenDialog = function(callback) {
-  var desktopPath = this.desktopPath;
+  var config = this.config,
+      defaultPath = config.get('defaultPath', electron.getPath('userDesktop'));
 
   dialog.showOpenDialog(this.browserWindow, {
       title: 'Open bpmn file',
-      defaultPath: desktopPath,
+      defaultPath: defaultPath,
       properties: [ 'openFile' ],
       filters: [
         { name: 'Bpmn', extensions: [ 'bpmn' ] }
       ]
-    }, callback);
+    }, function(filenames) {
+      if (filenames) {
+        config.set('defaultPath', path.dirname(filenames[0]));
+      }
+
+      callback(filenames);
+    });
 };
 
 FileSystem.prototype.showSaveAsDialog = function(callback) {
