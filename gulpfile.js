@@ -212,7 +212,7 @@ gulp.task('serve', function () {
   gulp.watch([ 'client/lib/**/*.js' ], [ 'client:build', app.reload ]);
   gulp.watch([ 'client/lib/index.html' ], [ 'client:copy:html', app.reload ]);
 
-  gulp.watch([ 'client/less/**/*.less', [ 'client:less', app.reload ] ]);
+  gulp.watch([ 'client/less/**.less' ], [ 'client:less', app.reload ]);
 });
 
 gulp.task('client:build:watch', function() {
