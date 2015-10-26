@@ -23,7 +23,7 @@ var assign = require('lodash/object/assign'),
     forEach = require('lodash/collection/forEach');
 
 var PACKAGE_JSON = require('./package.json'),
-    ELECTRON_VERSION = '0.33.0';
+    ELECTRON_VERSION = '0.34.0';
 
 
 // add custom browserify options here
@@ -59,6 +59,7 @@ function browserBundle(options) {
 
     bundler.on('update', build);
 
+    bundler.on('error', gutil.log);
     bundler.on('log', gutil.log);
   } else {
     bundler = browserify(browserifyOptions);
