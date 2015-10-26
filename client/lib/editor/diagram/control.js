@@ -8,14 +8,25 @@ var BpmnJS = require('bpmn-js/lib/Modeler'),
 
 var menuUpdater = require('../menuUpdater');
 
+var propertiesPanelModule = require('bpmn-js-properties-panel'),
+    camundaModdlePackage = require('bpmn-js-properties-panel/lib/provider/camunda/camunda-moddle');
 
-function createBpmnJS(element) {
+
+function createBpmnJS(element, propertiesPanel) {
+
+  var propertiesPanelConfig = {
+    'config.propertiesPanel': ['value', { parent: propertiesPanel }]
+  };
+
   return new BpmnJS({
     container: element,
     position: 'absolute',
     additionalModules: [
-      DiagramJsOrigin
-    ]
+      DiagramJsOrigin,
+      propertiesPanelModule,
+      propertiesPanelConfig
+    ],
+    moddleExtensions: {camunda: camundaModdlePackage}
   });
 }
 
@@ -23,7 +34,8 @@ function createBpmnJS(element) {
 function DiagramControl(diagramFile) {
 
   var $el = domify('<div>'),
-      modeler = this.modeler = createBpmnJS($el);
+      $propertiesPanel = domify('<div id="js-properties-panel">'),
+      modeler = this.modeler = createBpmnJS($el, $propertiesPanel);
 
   var self = this;
 
@@ -121,6 +133,7 @@ function DiagramControl(diagramFile) {
     attachedScope = scope;
 
     element.appendChild($el);
+    element.appendChild($propertiesPanel);
 
     if (!modeler.diagram) {
       if (diagramFile.contents) {
@@ -137,6 +150,7 @@ function DiagramControl(diagramFile) {
     if (parent) {
       attachedScope = null;
       parent.removeChild($el);
+      parent.removeChild($propertiesPanel);
     }
   };
 

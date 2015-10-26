@@ -12,6 +12,7 @@
   "author": "bpmn.io <http://bpmn.io>",
   "dependencies": {
     "bpmn-js": "^0.12.0",
+    "bpmn-js-properties-panel": "bpmn-io/bpmn-js-properties-panel#bootstrap-63",
     "electron-window": "^0.6.0",
     "lodash": "^3.0.0",
     "diagram-js": "^0.12.0",

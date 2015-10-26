@@ -246,6 +246,12 @@ gulp.task('client:copy:html', function() {
   return gulp.src('client/lib/index.html').pipe(gulp.dest('public/'));
 });
 
+gulp.task('properties-panel:less', function() {
+  gulp.src('node_modules/bpmn-js-properties-panel/styles/properties.less')
+      .pipe(less())
+      .pipe(gulp.dest('public/vendor/properties-panel'));
+});
+
 gulp.task('client:copy', runSequence([
   'client:copy:font',
   'client:copy:css',
@@ -262,7 +268,7 @@ gulp.task('package:linux', electronPackage('linux'));
 
 gulp.task('package', runSequence('package:windows', 'package:darwin', 'package:linux'));
 
-gulp.task('build', runSequence('client:build', 'client:less', 'client:copy'));
+gulp.task('build', runSequence('client:build', 'client:less', 'properties-panel:less', 'client:copy'));
 
 gulp.task('auto-build', runSequence('build', 'serve'));
 
