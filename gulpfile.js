@@ -268,4 +268,8 @@ gulp.task('auto-build', runSequence('build', 'serve'));
 
 gulp.task('distro', runSequence('build', 'package'));
 
+gulp.task('distro:windows', runSequence('build', 'package:windows'));
+gulp.task('distro:darwin', runSequence('build', 'package:darwin'));
+gulp.task('distro:linux', runSequence('build', 'package:linux'));
+
 gulp.task('default', runSequence('build'));
