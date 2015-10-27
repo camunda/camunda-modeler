@@ -55,6 +55,16 @@ function FileSystem(browserWindow, config) {
       browserWindow.webContents.send('file.open.response', null, diagramFile);
     });
   });
+
+  ipc.on('file.close', function(evt, diagramFile) {
+    self.close(diagramFile, function(err, updatedDiagram) {
+      if (err) {
+        return self.handleError('file.close.response', err);
+      }
+
+      browserWindow.webContents.send('file.close.response', null, updatedDiagram);
+    });
+  });
 }
 
 FileSystem.prototype.open = function(callback) {
@@ -64,7 +74,6 @@ FileSystem.prototype.open = function(callback) {
     if (!filenames) {
       return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
     }
-
 
     self._open(filenames[0], callback);
   });
@@ -127,6 +136,22 @@ FileSystem.prototype._save = function(filePath, diagramFile, callback) {
   });
 };
 
+FileSystem.prototype.close = function(diagramFile, callback) {
+  var self = this;
+
+  this.showCloseDialog(diagramFile.name, function(result) {
+    if (result === 0) {
+      return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
+    }
+    else if (result === 1) {
+      return callback(null, diagramFile);
+    }
+    else {
+      self.save(false, diagramFile, callback);
+    }
+  });
+};
+
 /**
  * Handle errors that the IPC has to deal with.
  *
@@ -166,6 +191,15 @@ FileSystem.prototype.showSaveAsDialog = function(callback) {
       filters: [
         { name: 'Bpmn', extensions: [ 'bpmn' ] }
       ]
+    }, callback);
+};
+
+FileSystem.prototype.showCloseDialog = function(name, callback) {
+  dialog.showMessageBox(this.browserWindow, {
+      title: 'Close diagram',
+      detail: 'Save changes to ' + name + ' before closing?',
+      type: 'question',
+      buttons: [ 'Cancel', 'Don\'t Save', 'Save' ]
     }, callback);
 };
 

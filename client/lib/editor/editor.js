@@ -20,7 +20,7 @@ function modifierPressed(evt) {
   return evt.ctrlKey || evt.metaKey;
 }
 
-function Editor($scope, dialog) {
+function Editor($scope) {
 
   var self = this,
       dirty = true,
@@ -219,20 +219,12 @@ function Editor($scope, dialog) {
     var self = this;
 
     if (diagram.unsaved) {
-      dialog.confirm('Save changes to ' + diagram.name + ' before closing?', {
-        cancel: { label: 'Cancel' },
-        close: { label: 'Don\'t Save'},
-        save: { label: 'Save', defaultAction: true }
-      }, function(result) {
-        if (result === 'save') {
-          self.saveDiagram(diagram, function(err) {
-            self._closeDiagram(diagram);
-          });
+      files.closeFile(diagram, function(err, diagramFile) {
+        if (err) {
+          return console.error(err);
         }
 
-        if (result === 'close') {
-          self._closeDiagram(diagram);
-        }
+        self._closeDiagram(diagram);
       });
     } else {
       self._closeDiagram(diagram);
@@ -313,7 +305,7 @@ function Editor($scope, dialog) {
   this.init();
 }
 
-Editor.$inject = [ '$scope', 'dialog' ];
+Editor.$inject = [ '$scope' ];
 
 module.exports = Editor;
 

@@ -18,10 +18,8 @@
     "diagram-js-origin": "^0.11.0",
     "angular": "^1.3.14",
     "jquery": "^2.1.1",
-    "min-dom": "^0.2.0",
     "open": "0.0.5",
-    "ng-simple-dialog": "^0.1.0",
-    "simple-dialog": "^0.1.0"
+    "min-dom": "^0.2.0"
   },
   "devDependencies": {
     "archiver": "^0.16.0",

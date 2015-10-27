@@ -6,8 +6,8 @@ var browser = require('./browser');
 
 
 /**
- * Opens a diagram file.
- * @method openFile
+ * Open a diagram file.
+ *
  * @param {Function} callback
  */
 function openFile(callback) {
@@ -18,9 +18,22 @@ module.exports.openFile = openFile;
 
 
 /**
+ * Close a diagram file.
+ *
+ * @param {Diagram} diagramFile
+ * @param {Function} callback
+ */
+function closeFile(diagramFile, callback) {
+  browser.send('file.close', [ diagramFile ], callback);
+}
+
+module.exports.closeFile = closeFile;
+
+
+/**
  * Save a diagram file.
  *
- * @param  {Diagram}   diagramFile
+ * @param  {Diagram}  diagramFile
  * @param  {Object}   options
  * @param  {Function} callback
  */
