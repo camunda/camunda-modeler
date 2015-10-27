@@ -11,7 +11,6 @@ var MODELER_NAME = 'Camunda Modeler';
 
 
 var appMenu = {
-  label: MODELER_NAME,
   submenu: [
     {
       label: 'About ' + MODELER_NAME,

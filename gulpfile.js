@@ -172,7 +172,11 @@ function electronPackage(platform) {
   };
 
   opts['app-version'] = PACKAGE_JSON.version;
-  opts['ignore'] = buildDistroIgnore();
+  opts.ignore = buildDistroIgnore();
+
+  if (process.platform === 'darwin') {
+    opts.name = 'Camunda Modeler';
+  }
 
   // make sure wine is available on linux systems
   // if we are building the windows distribution
