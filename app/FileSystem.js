@@ -9,6 +9,11 @@ var ipc = require('ipc'),
 
 var errorUtil = require('./util/error');
 
+var SUPPORTED_EXT = [
+  { name: 'bpmn', extensions: [ 'bpmn' ] },
+  { name: 'dmn', extensions: [ 'dmn' ] }
+];
+
 /**
  * General structure for the diagram's file as an object.
  *
@@ -81,10 +86,12 @@ FileSystem.prototype.open = function(callback) {
 
 FileSystem.prototype._open = function(filePath, callback) {
   var browserWindow = this.browserWindow,
-      self = this;
+      self = this,
+      extName = path.extname(filePath);
 
-  if (path.extname(filePath) !== '.bpmn') {
-    dialog.showErrorBox('Wrong file type', 'Please choose a .bpmn file!');
+  //TODO: use SUPPORTED_EXT instead, see also #26
+  if (extName !== '.bpmn' && extName !== '.dmn') {
+    dialog.showErrorBox('Wrong file type', 'Please choose a .bpmn or .dmn file!');
 
     this.open(function(err, diagramFile) {
       if (err) {
@@ -192,12 +199,10 @@ FileSystem.prototype.showOpenDialog = function(callback) {
       defaultPath = config.get('defaultPath', electron.getPath('userDesktop'));
 
   dialog.showOpenDialog(this.browserWindow, {
-      title: 'Open bpmn file',
+      title: 'Open diagram',
       defaultPath: defaultPath,
       properties: [ 'openFile' ],
-      filters: [
-        { name: 'Bpmn', extensions: [ 'bpmn' ] }
-      ]
+      filters: SUPPORTED_EXT
     }, function(filenames) {
       if (filenames) {
         config.set('defaultPath', path.dirname(filenames[0]));
@@ -209,10 +214,8 @@ FileSystem.prototype.showOpenDialog = function(callback) {
 
 FileSystem.prototype.showSaveAsDialog = function(callback) {
   dialog.showSaveDialog(this.browserWindow, {
-      title: 'Save bpmn as..',
-      filters: [
-        { name: 'Bpmn', extensions: [ 'bpmn' ] }
-      ]
+      title: 'Save diagram as..',
+      filters: SUPPORTED_EXT
     }, callback);
 };
 
