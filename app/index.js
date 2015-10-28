@@ -16,7 +16,8 @@ var Shell = require('shell');
 
 var Platform = require('./platform'),
     Config = require('./Config'),
-    FileSystem = require('./FileSystem');
+    FileSystem = require('./FileSystem'),
+    Workspace = require('./Workspace');
 
 
 var app = require('app');
@@ -57,6 +58,8 @@ function createEditorWindow() {
     resizable: true,
     title: 'Camunda Modeler'
   });
+
+  new Workspace(mainWindow, config);
 
   mainWindow.maximize();
 

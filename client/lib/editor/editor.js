@@ -3,13 +3,12 @@
 var files = require('../util/files'),
     EditorActions = require('./editorActions'),
     menuUpdater = require('./menuUpdater'),
-    // workspace = require('../util/workspace'),
-    // assign = require('lodash/object/assign'),
+    workspace = require('../util/workspace'),
+    assign = require('lodash/object/assign'),
     DiagramControl = require('./diagram/control');
 
-var onDrop = require('../util/on-drop');
-
-var dnd;
+// var onDrop = require('../util/on-drop');
+// var dnd;
 
 
 function isInput(target) {
@@ -23,9 +22,9 @@ function modifierPressed(evt) {
 function Editor($scope) {
 
   var self = this,
-      dirty = true,
-      idx = 0;
+      dirty = true;
 
+  this.idx = 0;
   this.currentDiagram = null;
   this.diagrams = [];
   this.views = {
@@ -72,6 +71,8 @@ function Editor($scope) {
   });
 
   this.saveDiagram = function(diagram, options, done) {
+    var self = this;
+
     if (typeof options === 'function') {
       done = options;
       options = {};
@@ -81,6 +82,8 @@ function Editor($scope) {
       if (!err) {
         diagram.control.resetEditState();
       }
+
+      self.persist();
 
       $scope.$applyAsync();
 
@@ -111,7 +114,7 @@ function Editor($scope) {
   this.newDiagram = function() {
 
     var diagram = {
-      name: 'diagram_' + (idx++) + '.bpmn',
+      name: 'diagram_' + (this.idx++) + '.bpmn',
       path: '[unsaved]'
     };
 
@@ -146,8 +149,6 @@ function Editor($scope) {
       this.showDiagram(file);
 
       $scope.$applyAsync();
-
-      this.persist();
     }
   };
 
@@ -157,7 +158,11 @@ function Editor($scope) {
    * @param  {DiagramFile} [diagram]
    */
   this.showDiagram = function(diagram) {
-    this.currentDiagram = diagram;
+    if (!this.isActive(diagram)) {
+      this.currentDiagram = diagram;
+
+      this.persist();
+    }
 
     var diagrams = this.diagrams;
 
@@ -187,8 +192,6 @@ function Editor($scope) {
       menuUpdater.disableMenus();
       dirty = true;
     }
-
-    // this.persist();
   };
 
   this._closeDiagram = function(diagram) {
@@ -203,6 +206,8 @@ function Editor($scope) {
 
     if (this.isActive(diagram)) {
       this.showDiagram(diagrams[idx] || diagrams[idx - 1]);
+    } else {
+      this.persist();
     }
 
     $scope.$applyAsync();
@@ -234,9 +239,9 @@ function Editor($scope) {
   };
 
   this.persist = function() {
-    // workspace.save(this, function() {
-    //   console.log(arguments);
-    // });
+    workspace.save(this, function() {
+      console.debug('[editor]', 'persist workspace');
+    });
   };
 
   this.toggleView = function(name) {
@@ -261,44 +266,34 @@ function Editor($scope) {
 
     menuUpdater.disableMenus();
 
-    // console.debug('[editor]', 'restoring workspace');
-
-    // workspace.restore(function(err, config) {
-    //   console.debug('[editor]', 'done');
-    //
-    //   if (!err) {
-    //     assign(self, config);
-    //   }
-    //
-    //   var openEntry = workspace.getOpenEntry();
-    //
-    //   if (openEntry) {
-    //     console.debug('[editor]', 'open diagram', openEntry);
-    //
-    //     files.loadFile(openEntry, function(err, diagram) {
-    //
-    //       if (!err) {
-    //         self.showDiagram(diagram);
-    //       }
-    //
-    //       $scope.$applyAsync();
-    //     });
-    //   } else {
-    //     self.showDiagram(config.active);
-    //     $scope.$applyAsync();
-    //   }
-    // });
-
-    onDiagramDrop(function(err, file) {
+    workspace.restore(function(err, config) {
+      console.debug('[editor]', 'restoring workspace', config);
 
       if (err) {
         return console.error(err);
       }
 
-      self.addDiagram(file);
+      assign(self, config);
 
-      $scope.$applyAsync();
+      if (config.currentDiagram) {
+        console.debug('[editor]', 'open diagram', config.currentDiagram);
+
+        self.showDiagram(config.currentDiagram);
+
+        $scope.$applyAsync();
+      }
     });
+
+    // onDiagramDrop(function(err, file) {
+    //
+    //   if (err) {
+    //     return console.error(err);
+    //   }
+    //
+    //   self.addDiagram(file);
+    //
+    //   $scope.$applyAsync();
+    // });
 
   };
 
@@ -310,26 +305,26 @@ Editor.$inject = [ '$scope' ];
 module.exports = Editor;
 
 
-function onDiagramDrop(callback) {
-
-  // Support dropping a single file onto this app.
-  dnd = onDrop('body', function(data) {
-    console.log(data);
-
-    var entry;
-
-    for (var i = 0; i < data.items.length; i++) {
-      var item = data.items[i];
-      if (item.kind == 'file' && item.webkitGetAsEntry()) {
-        entry = item.webkitGetAsEntry();
-        break;
-      }
-    }
-
-    if (entry) {
-      files.loadFile(entry, callback);
-    } else {
-      callback(new Error('not a diagram file'));
-    }
-  });
-}
+// function onDiagramDrop(callback) {
+//
+//   // Support dropping a single file onto this app.
+//   dnd = onDrop('body', function(data) {
+//     console.log(data);
+//
+//     var entry;
+//
+//     for (var i = 0; i < data.items.length; i++) {
+//       var item = data.items[i];
+//       if (item.kind == 'file' && item.webkitGetAsEntry()) {
+//         entry = item.webkitGetAsEntry();
+//         break;
+//       }
+//     }
+//
+//     if (entry) {
+//       files.loadFile(entry, callback);
+//     } else {
+//       callback(new Error('not a diagram file'));
+//     }
+//   });
+// }

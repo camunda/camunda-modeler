@@ -4,7 +4,6 @@ var fs = require('fs');
 
 
 function Config(configPath) {
-
   this._configPath = configPath;
   this._data = {};
 }
@@ -49,6 +48,10 @@ Config.prototype.saveSync = function() {
   fs.writeFileSync(this._configPath, JSON.stringify(this._data), { encoding: 'utf8' });
 };
 
+Config.prototype.save = function(callback) {
+  fs.writeFile(this._configPath, JSON.stringify(this._data), { encoding: 'utf8' }, callback);
+};
+
 
 Config.prototype.get = function(key, defaultValue) {
   var result = this._data[key];
@@ -61,8 +64,12 @@ Config.prototype.get = function(key, defaultValue) {
 };
 
 
-Config.prototype.set = function(key, value) {
+Config.prototype.set = function(key, value, callback) {
   this._data[key] = value;
+
+  if (callback && typeof callback === 'function') {
+    return this.save(callback);
+  }
 
   try {
     this.saveSync();

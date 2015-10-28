@@ -1,80 +1,55 @@
 'use strict';
 
-var loadFile = require('./files').loadFile,
-    asyncSeries = require('./async/series');
+var browser = require('./browser');
+
+var pick = require('lodash/object/pick'),
+    forEach = require('lodash/collection/forEach');
 
 
-module.exports.restore = function(done) {
-
-  chrome.storage.local.get('workspace', function(item) {
-
-    var workspace = item.workspace;
-
-    if (!workspace) {
-      return done(null, { diagrams: [], active: null });
-    }
-
-    function restore(entry, done) {
-
-      chrome.fileSystem.isRestorable(entry, function(restorable) {
-
-        if (!restorable) {
-          return done(null);
-        }
-
-        chrome.fileSystem.restoreEntry(entry, function(entry) {
-          loadFile(entry, done);
-        });
-      });
-    }
-
-    asyncSeries(workspace.diagrams, restore, function(err, diagrams) {
-      if (err) {
-        return done(err);
-      }
-
-      var active = diagrams[ workspace.activeIdx ];
-
-      diagrams = diagrams.filter(function(d) { return d; });
-
-      if (!active) {
-        active = diagrams[0];
-      }
-
-      var config = {
-        diagrams: diagrams,
-        active: active
-      };
-
-      return done(null, config);
-    });
-
-  });
-
-};
-
-
-module.exports.save = function(config) {
+function save(config, callback) {
 
   var diagrams = config.diagrams;
 
-  var diagramEntries = diagrams
-        .map(function(d) {
-          return d.entry ? chrome.fileSystem.retainEntry(d.entry) : null;
-        })
-        .filter(function(e) {
-          return e;
-        });
-
   var workspace = {
-    activeIdx: diagrams.indexOf(config.active),
-    diagrams: diagramEntries
+    activeIdx: 0
   };
 
-  chrome.storage.local.set({ workspace: workspace });
-};
+  workspace.diagrams = diagrams
+    .map(function(diagram) {
+      return pick(diagram, [ 'name', 'path', 'contents' ]);
+    })
+    .filter(function(diagram) {
+      if (diagram.path !== '[unsaved]') {
+        return true;
+      }
+    });
+
+  forEach(workspace.diagrams, function(diagram, idx) {
+    if (diagram.name === config.currentDiagram.name) {
+      workspace.activeIdx = idx;
+    }
+  });
+
+  console.debug('[workspace]', 'save', workspace);
+
+  browser.send('workspace.save', [ workspace ], callback);
+}
+
+module.exports.save = save;
 
 
-module.exports.getOpenEntry = function() {
-  return launchData && launchData.items && launchData.items[0] && launchData.items[0].entry;
-};
+function restore(callback) {
+  browser.send('workspace.restore', function(err, workspace) {
+    if (err) {
+      return callback(err);
+    }
+
+    workspace.currentDiagram = workspace.diagrams[workspace.activeIdx];
+
+    delete workspace.activeIdx;
+
+    callback(null, workspace);
+  });
+}
+
+module.exports.restore = restore;
