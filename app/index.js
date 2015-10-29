@@ -84,11 +84,14 @@ function createEditorWindow() {
 //   evt.preventDefault();
 // });
 
+// open-file event is only fired on Mac
 app.on('open-file', function(evt, filePath) {
+  evt.preventDefault();
+
   app.filePath = filePath;
 
   if (app.mainWindow) {
-    app.fileSystem.addFile(filePath);
+    app.emit('association-file-open', filePath);
   }
 });
 
@@ -103,9 +106,7 @@ app.on('editor-open', function(mainWindow) {
 
   app.emit('editor-create-menu', mainWindow);
 
-  if (app.filePath) {
-    app.fileSystem.addFile(app.filePath);
-  }
+  app.emit('association-file-open', app.filePath);
 });
 
 

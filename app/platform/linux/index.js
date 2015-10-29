@@ -13,6 +13,13 @@ function LinuxIntegration(app) {
   app.on('editor-create-menu', function(mainWindow) {
     new Menus(mainWindow);
   });
+
+  // modeler was opened through file association
+  app.on('association-file-open', function() {
+    if (/(\.bpmn$|\.dmn$)/.test(process.argv[2])) {
+      app.fileSystem.addFile(process.argv[2]);
+    }
+  });
 }
 
 module.exports = LinuxIntegration;
