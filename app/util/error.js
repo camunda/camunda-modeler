@@ -29,12 +29,8 @@ module.exports.isCancel = isCancel;
  */
 function normalizeError(err) {
   console.error(err);
-  
-  return {
-    name: err.name,
-    message: err.message,
-    stack: err.stack
-  };
+
+  return err.message;
 }
 
 module.exports.normalizeError = normalizeError;
