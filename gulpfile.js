@@ -1,6 +1,7 @@
 'use strict';
 
 var spawn = require('child_process').spawn,
+    path = require('path'),
     existsSync = require('fs').existsSync;
 
 var gulp = require('gulp'),
@@ -233,11 +234,6 @@ gulp.task('client:less', function() {
              .pipe(gulp.dest('public/css'));
 });
 
-gulp.task('client:copy:css', function() {
-  return gulp.src('node_modules/diagram-js/assets/diagram-js.css')
-             .pipe(gulp.dest('public/vendor/diagram-js'));
-});
-
 gulp.task('client:copy:font', function() {
   return gulp.src('client/font/font/*').pipe(gulp.dest('public/font'));
 });
@@ -246,15 +242,34 @@ gulp.task('client:copy:html', function() {
   return gulp.src('client/lib/index.html').pipe(gulp.dest('public/'));
 });
 
-gulp.task('properties-panel:less', function() {
-  gulp.src('node_modules/bpmn-js-properties-panel/styles/properties.less')
-      .pipe(less())
-      .pipe(gulp.dest('public/vendor/properties-panel'));
+gulp.task('diagram-js:css', function() {
+  return gulp.src('node_modules/diagram-js/assets/diagram-js.css')
+             .pipe(gulp.dest('public/vendor/diagram-js'));
 });
+
+gulp.task('properties-panel:less', function() {
+  return gulp.src('node_modules/bpmn-js-properties-panel/styles/properties.less')
+             .pipe(less())
+             .pipe(gulp.dest('public/vendor/properties-panel'));
+});
+
+gulp.task('dmn-js:less', function() {
+  return gulp.src('node_modules/dmn-js/styles/dmn-js.less')
+             .pipe(less({
+               paths: [ path.join('node_modules/dmn-js', 'node_modules') ]
+             }))
+             .pipe(gulp.dest('public/vendor/dmn-js'));
+});
+
+gulp.task('client:copy:vendor', runSequence([
+  'diagram-js:css',
+  'properties-panel:less',
+  'dmn-js:less'
+]));
 
 gulp.task('client:copy', runSequence([
   'client:copy:font',
-  'client:copy:css',
+  'client:copy:vendor',
   'client:copy:html'
 ]));
 

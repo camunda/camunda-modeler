@@ -3,8 +3,10 @@
 var domify = require('min-dom/lib/domify');
 
 var BpmnJS = require('bpmn-js/lib/Modeler'),
-    is = require('bpmn-js/lib/util/ModelUtil').is,
-    DiagramJsOrigin = require('diagram-js-origin');
+    DmnJS = require('dmn-js/lib/Modeler');
+
+var DiagramJsOrigin = require('diagram-js-origin'),
+    is = require('bpmn-js/lib/util/ModelUtil').is;
 
 var menuUpdater = require('../menuUpdater');
 
@@ -30,14 +32,31 @@ function createBpmnJS(element, propertiesPanel) {
   });
 }
 
+function createDmnJS(element) {
+  return new DmnJS({
+    container: element,
+    keyboard: { bindTo: document },
+    tableName: "DMN Table",
+    position: 'absolute'
+  });
+}
+
+function createModeler(type, $el, $propertiesPanel) {
+  if (type === 'dmn') {
+    return createDmnJS($el);
+  }
+  return createBpmnJS($el, $propertiesPanel);
+}
 
 function DiagramControl(diagramFile) {
 
   var $el = domify('<div>'),
       $propertiesPanel = domify('<div id="js-properties-panel">'),
-      modeler = this.modeler = createBpmnJS($el, $propertiesPanel);
+      modeler;
 
   var self = this;
+
+  modeler = createModeler(diagramFile.type, $el, $propertiesPanel);
 
   var commandStackIdx = -1,
       attachedScope;

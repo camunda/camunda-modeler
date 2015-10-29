@@ -9,9 +9,12 @@ var ipc = require('ipc'),
 
 var errorUtil = require('./util/error');
 
-var SUPPORTED_EXT = [
-  { name: 'bpmn', extensions: [ 'bpmn' ] },
-  { name: 'dmn', extensions: [ 'dmn' ] }
+//TODO: generate "all supported" entry
+var SUPPORTED_EXT_FILTER = [
+  { name: 'All supported', extensions: [ 'bpmn', 'dmn' ] },
+  { name: 'BPMN diagram', extensions: [ 'bpmn' ] },
+  { name: 'DMN table', extensions: [ 'dmn' ] },
+  { name: 'All files', extensions: [ '*' ] }
 ];
 
 /**
@@ -24,6 +27,7 @@ function createDiagramFile(filePath, file) {
   return {
     contents: file,
     name: path.basename(filePath),
+    type: path.extname(filePath).replace(/^\./, ''),
     path: filePath
   };
 }
@@ -89,8 +93,7 @@ FileSystem.prototype._open = function(filePath, callback) {
       self = this,
       extName = path.extname(filePath);
 
-  //TODO: use SUPPORTED_EXT instead, see also #26
-  if (extName !== '.bpmn' && extName !== '.dmn') {
+  if (!(/\.bpmn$|\.dmn$/.test(extName))) {
     dialog.showErrorBox('Wrong file type', 'Please choose a .bpmn or .dmn file!');
 
     this.open(function(err, diagramFile) {
@@ -202,7 +205,7 @@ FileSystem.prototype.showOpenDialog = function(callback) {
       title: 'Open diagram',
       defaultPath: defaultPath,
       properties: [ 'openFile' ],
-      filters: SUPPORTED_EXT
+      filters: SUPPORTED_EXT_FILTER
     }, function(filenames) {
       if (filenames) {
         config.set('defaultPath', path.dirname(filenames[0]));
@@ -215,7 +218,7 @@ FileSystem.prototype.showOpenDialog = function(callback) {
 FileSystem.prototype.showSaveAsDialog = function(callback) {
   dialog.showSaveDialog(this.browserWindow, {
       title: 'Save diagram as..',
-      filters: SUPPORTED_EXT
+      filters: SUPPORTED_EXT_FILTER
     }, callback);
 };
 
