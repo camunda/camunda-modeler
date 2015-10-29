@@ -25,6 +25,9 @@ function EditorActions(editor) {
       case 'editor.close':
         editor.closeDiagram(editor.currentDiagram);
         break;
+      case 'editor.quit':
+        editor.quit();
+        break;
 
       // Edit
       case 'editor.spaceTool':

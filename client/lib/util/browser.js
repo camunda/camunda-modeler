@@ -21,6 +21,8 @@ function send(event, args, callback) {
 
   ipc.once(event + '.response', function() {
     if (arguments[0] && typeof arguments[0] === 'object') {
+      console.debug('[browser]', event + '.response', arguments);
+
       return callback(new Error(arguments[0]));
     }
 

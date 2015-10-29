@@ -40,6 +40,7 @@ module.exports.closeFile = closeFile;
 function saveFile(diagramFile, options, callback) {
   var diagram = {
     path: diagramFile.path,
+    name: diagramFile.name,
     contents: diagramFile.contents
   };
 
@@ -56,3 +57,20 @@ function saveFile(diagramFile, options, callback) {
 }
 
 module.exports.saveFile = saveFile;
+
+/**
+ * Sends a list of unsaved diagrams so the user can have
+ * the choice of saving them before quitting.
+ *
+ * @param {Array} diagrams
+ * @param {Function} callback
+ */
+function quit(hasUnsavedChanges, callback) {
+  if (!callback) {
+    return browser.send('editor.quit', [ hasUnsavedChanges ], function() {});
+  }
+
+  browser.send('editor.quit', [ hasUnsavedChanges ], callback);
+}
+
+module.exports.quit = quit;

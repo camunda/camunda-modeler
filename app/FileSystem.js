@@ -3,13 +3,12 @@
 var fs = require('fs'),
     path = require('path');
 
-var ipc = require('ipc'),
-    electron = require('app'),
+var Ipc = require('ipc'),
+    app = require('app'),
     dialog = require('dialog');
 
 var errorUtil = require('./util/error');
 
-//TODO: generate "all supported" entry
 var SUPPORTED_EXT_FILTER = [
   { name: 'All supported', extensions: [ 'bpmn', 'dmn' ] },
   { name: 'BPMN diagram', extensions: [ 'bpmn' ] },
@@ -45,7 +44,7 @@ function FileSystem(browserWindow, config) {
   this.encoding = { encoding: 'utf8' };
 
 
-  ipc.on('file.save', function(evt, newDirectory, diagramFile) {
+  Ipc.on('file.save', function(evt, newDirectory, diagramFile) {
     self.save(newDirectory, diagramFile, function(err, updatedDiagram) {
       if (err) {
         return self.handleError('file.save.response', err);
@@ -55,7 +54,8 @@ function FileSystem(browserWindow, config) {
     });
   });
 
-  ipc.on('file.open', function(evt) {
+
+  Ipc.on('file.open', function(evt) {
     self.open(function(err, diagramFile) {
       if (err) {
         return self.handleError('file.open.response', err);
@@ -65,13 +65,35 @@ function FileSystem(browserWindow, config) {
     });
   });
 
-  ipc.on('file.close', function(evt, diagramFile) {
+
+  Ipc.on('file.close', function(evt, diagramFile) {
     self.close(diagramFile, function(err, updatedDiagram) {
       if (err) {
         return self.handleError('file.close.response', err);
       }
 
       browserWindow.webContents.send('file.close.response', null, updatedDiagram);
+    });
+  });
+
+
+  Ipc.on('editor.quit', function(evt, hasUnsavedChanges) {
+    if (hasUnsavedChanges === false) {
+      self.browserWindow.webContents.send('editor.quit.response', null);
+
+      return app.emit('app-quit-allowed');
+    }
+
+    self.quit(function(err, answer) {
+      if (err) {
+        return self.handleError('editor.quit.response', err);
+      }
+
+      self.browserWindow.webContents.send('editor.quit.response', null, answer);
+
+      if (answer === 'quit') {
+        app.emit('app-quit-allowed');
+      }
     });
   });
 }
@@ -139,16 +161,12 @@ FileSystem.prototype.save = function(newDirectory, diagramFile, callback) {
 
   // Save as..
   if (newDirectory || diagramFile.path === '[unsaved]') {
-    this.showSaveAsDialog(function(filename) {
-      var extension = path.extname(filename);
-
+    this.showSaveAsDialog(diagramFile.name, function(filename) {
       if (!filename) {
         return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
       }
 
-      if (extension === '') {
-        filename += '.bpmn';
-      }
+      filename = self.sanitizeFilename(filename);
 
       self._save(filename, diagramFile, callback);
     });
@@ -158,6 +176,10 @@ FileSystem.prototype.save = function(newDirectory, diagramFile, callback) {
 };
 
 FileSystem.prototype._save = function(filePath, diagramFile, callback) {
+  if (!callback) {
+    return fs.writeFileSync(filePath, diagramFile.contents, this.encoding);
+  }
+
   fs.writeFile(filePath, diagramFile.contents, this.encoding,  function(err) {
     var diagram = {
       name: path.basename(filePath),
@@ -184,6 +206,22 @@ FileSystem.prototype.close = function(diagramFile, callback) {
   });
 };
 
+FileSystem.prototype.quit = function(callback) {
+
+  this.showQuitDialog(function(promptResult) {
+    switch (promptResult) {
+      case 'save':
+        callback(null, 'save');
+        break;
+      case 'quit':
+        callback(null, 'quit');
+        break;
+      default:
+        callback(new Error(errorUtil.CANCELLATION_MESSAGE));
+    }
+  });
+};
+
 /**
  * Handle errors that the IPC has to deal with.
  *
@@ -199,40 +237,106 @@ FileSystem.prototype.handleError = function(event, err) {
 
 FileSystem.prototype.showOpenDialog = function(callback) {
   var config = this.config,
-      defaultPath = config.get('defaultPath', electron.getPath('userDesktop'));
+      defaultPath = config.get('defaultPath', app.getPath('userDesktop'));
 
-  dialog.showOpenDialog(this.browserWindow, {
+  var opts = {
       title: 'Open diagram',
       defaultPath: defaultPath,
       properties: [ 'openFile' ],
       filters: SUPPORTED_EXT_FILTER
-    }, function(filenames) {
-      if (filenames) {
-        config.set('defaultPath', path.dirname(filenames[0]));
-      }
+  };
 
-      callback(filenames);
-    });
+  if (!callback) {
+    return dialog.showOpenDialog(this.browserWindow, opts);
+  }
+
+  dialog.showOpenDialog(this.browserWindow, opts, function(filenames) {
+    if (filenames) {
+      config.set('defaultPath', path.dirname(filenames[0]));
+    }
+
+    callback(filenames);
+  });
 };
 
-FileSystem.prototype.showSaveAsDialog = function(callback) {
-  dialog.showSaveDialog(this.browserWindow, {
-      title: 'Save diagram as..',
-      filters: SUPPORTED_EXT_FILTER
-    }, callback);
+FileSystem.prototype.showSaveAsDialog = function(name, callback) {
+  var config = this.config,
+      defaultPath = config.get('defaultPath', app.getPath('userDesktop')),
+      title;
+
+  if (typeof name === 'function') {
+    callback = name;
+    name = 'diagram';
+  }
+
+  title = 'Save ' + name + ' as..';
+
+  var opts = {
+    title: title,
+    filters: SUPPORTED_EXT_FILTER,
+    defaultPath: defaultPath
+  };
+
+  if (!callback) {
+    return dialog.showSaveDialog(this.browserWindow, opts);
+  }
+
+  dialog.showSaveDialog(this.browserWindow, opts, callback);
 };
 
 FileSystem.prototype.showCloseDialog = function(name, callback) {
-  dialog.showMessageBox(this.browserWindow, {
-      title: 'Close diagram',
-      detail: 'Save changes to ' + name + ' before closing?',
-      type: 'question',
-      buttons: [ 'Cancel', 'Don\'t Save', 'Save' ]
-    }, callback);
+  var opts = {
+    title: 'Close diagram',
+    message: 'Save changes to ' + name + ' before closing?',
+    type: 'question',
+    buttons: [ 'Cancel', 'Don\'t Save', 'Save' ]
+  };
+
+  if (!callback) {
+    return dialog.showMessageBox(this.browserWindow, opts);
+  }
+
+  dialog.showMessageBox(this.browserWindow, opts, callback);
+};
+
+FileSystem.prototype.showQuitDialog = function(callback) {
+  var opts = {
+    title: 'Quit Modeler',
+    message: 'You have some unsaved diagrams.' + '\n' + 'Do you want to save them before quitting ?',
+    type: 'question',
+    buttons: [ 'Yes', 'Quit', 'Cancel' ]
+  };
+
+  if (!callback) {
+    return dialog.showMessageBox(this.browserWindow, opts);
+  }
+
+  dialog.showMessageBox(this.browserWindow, opts, function(result) {
+    switch (result) {
+      case 0:
+        callback('save');
+        break;
+      case 1:
+        callback('quit');
+        break;
+      default:
+        callback('cancel');
+    }
+  });
 };
 
 FileSystem.prototype.showGeneralErrorDialog = function() {
   dialog.showErrorBox('Error', 'There was an internal error.' + '\n' + 'Please try again.');
+};
+
+FileSystem.prototype.sanitizeFilename = function(filename) {
+  var extension = path.extname(filename);
+
+  if (extension === '') {
+    return filename + '.bpmn';
+  }
+
+  return filename;
 };
 
 module.exports = FileSystem;

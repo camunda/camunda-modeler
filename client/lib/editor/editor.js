@@ -4,8 +4,10 @@ var files = require('../util/files'),
     EditorActions = require('./editorActions'),
     menuUpdater = require('./menuUpdater'),
     workspace = require('../util/workspace'),
-    assign = require('lodash/object/assign'),
     DiagramControl = require('./diagram/control');
+
+var assign = require('lodash/object/assign'),
+    forEach = require('lodash/collection/forEach');
 
 // var onDrop = require('../util/on-drop');
 // var dnd;
@@ -258,6 +260,85 @@ function Editor($scope) {
 
   this.isActiveView = function(name) {
     return this.views[name];
+  };
+
+
+  this.saveBeforeQuit = function() {
+    var self = this,
+        idx,
+        diagram;
+
+    if (this.unsavedDiagrams.length === 0) {
+      this.diagrams = this.savedDiagrams;
+
+      self.persist();
+
+      return files.quit(false);
+    }
+
+    diagram = this.unsavedDiagrams[0];
+
+    idx = this.diagrams.indexOf(diagram);
+
+    this.currentDiagram = diagram;
+
+    console.debug('[editor]', 'currentDiagram', diagram);
+
+    $scope.$applyAsync();
+
+    files.saveFile(diagram, { create: true }, function(err, savedDiagram) {
+      self.unsavedDiagrams.shift();
+
+      if (idx !== -1) {
+        self.diagrams.splice(idx, 1);
+      }
+
+      if (!err) {
+        self.savedDiagrams.push(savedDiagram);
+      }
+
+      self.saveBeforeQuit();
+    });
+  };
+
+  this.quit = function() {
+    var self = this,
+        hasUnsavedChanges;
+
+    this.unsavedDiagrams = [];
+    this.savedDiagrams = [];
+
+    forEach(this.diagrams, function(diagram) {
+      if (diagram.path === '[unsaved]' || diagram.unsaved) {
+        self.unsavedDiagrams.push(diagram);
+      } else{
+        self.savedDiagrams.push(diagram);
+      }
+    });
+
+    forEach(self.savedDiagrams, function(diagram) {
+      var idx = self.diagrams.indexOf(diagram);
+
+      if (idx !== -1) {
+        self.diagrams.splice(idx, 1);
+      }
+    });
+
+    hasUnsavedChanges = !!this.unsavedDiagrams.length;
+
+    files.quit(hasUnsavedChanges, function(err, answer) {
+      if (err) {
+        return console.error(err);
+      }
+
+      if (answer !== 'save') {
+        return;
+      }
+
+      console.debug('[editor]', 'quit');
+
+      self.saveBeforeQuit();
+    });
   };
 
   this.init = function() {

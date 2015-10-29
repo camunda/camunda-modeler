@@ -5,6 +5,7 @@ var path = require('path');
 var BrowserWindow = require('electron-window');
 var Shell = require('shell');
 
+
 /**
  * automatically report crash reports
  *
@@ -32,6 +33,9 @@ app.mainWindow = null;
 // Filepath where we store the path of a file that the user tried to open by association
 app.filePath = null;
 
+// We need this check so we can quit after checking for unsaved diagrams
+app.dirty = true;
+
 /**
  * Open a new browser window, if non exists.
  *
@@ -44,6 +48,20 @@ function open() {
   }
 
   app.emit('editor-create', app.mainWindow);
+}
+
+/**
+ * Gets triggered whenever the user tries to exit the modeler
+ *
+ * @param  {Object}   Event
+ */
+function beforeQuit(evt) {
+  if (app.dirty) {
+    evt.preventDefault();
+
+    // Triggers the check for unsaved diagrams
+    app.mainWindow.webContents.send('editor.actions', { event: 'editor.quit' });
+  }
 }
 
 
@@ -107,6 +125,26 @@ app.on('editor-open', function(mainWindow) {
   app.emit('editor-create-menu', mainWindow);
 
   app.emit('association-file-open', app.filePath);
+
+  if (app.filePath) {
+    app.fileSystem.addFile(app.filePath);
+  }
+
+  // This event gets triggered on graphical OS'es when the user
+  // tries to quit the modeler by clicking the little 'x' button
+  app.mainWindow.on('close', beforeQuit);
+});
+
+// This event is triggered if the user tries to exit the modeler
+// by using the menu or keybinding
+app.on('before-quit', beforeQuit);
+
+// This is a custom event that is fired by us when there are no
+// open diagrams left with unsaved changes
+app.on('app-quit-allowed', function() {
+  app.dirty = false;
+
+  app.quit();
 });
 
 
