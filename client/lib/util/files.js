@@ -74,3 +74,18 @@ function quit(hasUnsavedChanges, callback) {
 }
 
 module.exports.quit = quit;
+
+
+/**
+ * Sends an error message and a callback function
+ *
+ * @param  {String}   message
+ * @param  {Function} callback
+ */
+function importError(message, callback) {
+  callback = callback || function() {};
+
+  return browser.send('editor.import.error', [ message ], callback);
+}
+
+module.exports.importError = importError;

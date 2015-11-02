@@ -5,7 +5,8 @@ var fs = require('fs'),
 
 var Ipc = require('ipc'),
     app = require('app'),
-    dialog = require('dialog');
+    Dialog = require('dialog'),
+    open = require('open');
 
 var errorUtil = require('./util/error');
 
@@ -100,6 +101,15 @@ function FileSystem(browserWindow, config) {
       }
     });
   });
+
+
+  Ipc.on('editor.import.error', function(evt, trace) {
+    self.handleImportError(trace, function(result) {
+      self.browserWindow.webContents.send('editor.actions', { event: 'editor.close' });
+
+      self.browserWindow.webContents.send('editor.import.error.response', result);
+    });
+  });
 }
 
 FileSystem.prototype.open = function(callback) {
@@ -120,7 +130,7 @@ FileSystem.prototype._open = function(filePath, callback) {
       extName = path.extname(filePath);
 
   if (!(/\.bpmn$|\.dmn$/.test(extName))) {
-    dialog.showErrorBox('Wrong file type', 'Please choose a .bpmn or .dmn file!');
+    Dialog.showErrorBox('Wrong file type', 'Please choose a .bpmn or .dmn file!');
 
     this.open(function(err, diagramFile) {
       if (err) {
@@ -226,6 +236,24 @@ FileSystem.prototype.quit = function(callback) {
   });
 };
 
+FileSystem.prototype.handleImportError = function(trace, callback) {
+
+  this.showImportError(trace, function(answer) {
+    switch (answer) {
+      case 1:
+        open('https://forum.bpmn.io/');
+        callback('forum');
+        break;
+      case 2:
+        open('https://github.com/bpmn-io/bpmn-js/issues');
+        callback('tracker');
+        break;
+      default:
+        callback('close');
+    }
+  });
+};
+
 /**
  * Handle errors that the IPC has to deal with.
  *
@@ -251,10 +279,10 @@ FileSystem.prototype.showOpenDialog = function(callback) {
   };
 
   if (!callback) {
-    return dialog.showOpenDialog(this.browserWindow, opts);
+    return Dialog.showOpenDialog(this.browserWindow, opts);
   }
 
-  dialog.showOpenDialog(this.browserWindow, opts, function(filenames) {
+  Dialog.showOpenDialog(this.browserWindow, opts, function(filenames) {
     if (filenames) {
       config.set('defaultPath', path.dirname(filenames[0]));
     }
@@ -282,10 +310,10 @@ FileSystem.prototype.showSaveAsDialog = function(name, callback) {
   };
 
   if (!callback) {
-    return dialog.showSaveDialog(this.browserWindow, opts);
+    return Dialog.showSaveDialog(this.browserWindow, opts);
   }
 
-  dialog.showSaveDialog(this.browserWindow, opts, callback);
+  Dialog.showSaveDialog(this.browserWindow, opts, callback);
 };
 
 FileSystem.prototype.showCloseDialog = function(name, callback) {
@@ -297,10 +325,10 @@ FileSystem.prototype.showCloseDialog = function(name, callback) {
   };
 
   if (!callback) {
-    return dialog.showMessageBox(this.browserWindow, opts);
+    return Dialog.showMessageBox(this.browserWindow, opts);
   }
 
-  dialog.showMessageBox(this.browserWindow, opts, callback);
+  Dialog.showMessageBox(this.browserWindow, opts, callback);
 };
 
 FileSystem.prototype.showQuitDialog = function(callback) {
@@ -312,10 +340,10 @@ FileSystem.prototype.showQuitDialog = function(callback) {
   };
 
   if (!callback) {
-    return dialog.showMessageBox(this.browserWindow, opts);
+    return Dialog.showMessageBox(this.browserWindow, opts);
   }
 
-  dialog.showMessageBox(this.browserWindow, opts, function(result) {
+  Dialog.showMessageBox(this.browserWindow, opts, function(result) {
     switch (result) {
       case 0:
         callback('save');
@@ -329,8 +357,29 @@ FileSystem.prototype.showQuitDialog = function(callback) {
   });
 };
 
+FileSystem.prototype.showImportError = function(trace, callback) {
+  var opts = {
+    type: 'error',
+    title: 'Importing Error',
+    buttons: [ 'Close', 'Forum', 'Issue Tracker' ],
+    message: 'Ooops, we could not display the diagram!',
+    detail: [
+      'You believe your input is valid BPMN 2.0 XML ?',
+      'Consult our forum or file an issue in our issue tracker.',
+      '',
+      trace
+    ].join('\n')
+  };
+
+  if (!callback) {
+    return Dialog.showMessageBox(this.browserWindow, opts);
+  }
+
+  Dialog.showMessageBox(this.browserWindow, opts, callback);
+};
+
 FileSystem.prototype.showGeneralErrorDialog = function() {
-  dialog.showErrorBox('Error', 'There was an internal error.' + '\n' + 'Please try again.');
+  Dialog.showErrorBox('Error', 'There was an internal error.' + '\n' + 'Please try again.');
 };
 
 FileSystem.prototype.sanitizeFilename = function(filename) {

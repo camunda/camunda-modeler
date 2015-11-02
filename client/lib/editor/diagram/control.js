@@ -13,6 +13,7 @@ var menuUpdater = require('../menuUpdater');
 var propertiesPanelModule = require('bpmn-js-properties-panel'),
     camundaModdlePackage = require('bpmn-js-properties-panel/lib/provider/camunda/camunda-moddle');
 
+var files = require('../../util/files');
 
 function createBpmnJS(element, propertiesPanel) {
 
@@ -68,13 +69,19 @@ function DiagramControl(diagramFile) {
   }
 
   function imported(err, warnings) {
-    var canvas = modeler.get('canvas');
+    var canvas;
+
+    if (err) {
+      return self.handleImportError(err.message);
+    }
+
+    canvas = modeler.get('canvas');
 
     if (self.viewbox) {
       canvas.viewbox(self.viewbox);
     }
 
-    self.editorActions = modeler.get('editorActions');
+    self.modelerActions = modeler.get('editorActions');
   }
 
   modeler.on('selection.changed', function(evt) {
@@ -173,10 +180,6 @@ function DiagramControl(diagramFile) {
     }
   };
 
-  this.triggerAction = function(action, opts) {
-    modeler.get('editorActions').trigger(action, opts);
-  };
-
   this.hasSelection = function() {
     try {
       var selection = modeler.get('selection');
@@ -188,6 +191,12 @@ function DiagramControl(diagramFile) {
 
   this.destroy = function() {
     modeler.destroy();
+  };
+
+  this.handleImportError = function(message) {
+    files.importError(message, function(err) {
+      console.log(err);
+    });
   };
 }
 

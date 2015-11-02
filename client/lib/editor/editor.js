@@ -35,7 +35,7 @@ function Editor($scope) {
   };
 
   // Start listening to Browser communication
-  new EditorActions(this);
+  this.editorActions = new EditorActions(this);
 
   this.canUndo = function() {
     return this.currentDiagram && !!this.currentDiagram.control.canUndo;
@@ -55,7 +55,7 @@ function Editor($scope) {
 
   this.trigger = function(action, opts) {
     if (this.currentDiagram) {
-      this.currentDiagram.control.editorActions.trigger(action, opts);
+      this.currentDiagram.control.modelerActions.trigger(action, opts);
     }
   };
 
@@ -67,7 +67,7 @@ function Editor($scope) {
       evt.preventDefault();
 
       if (self.currentDiagram) {
-        self.currentDiagram.control.editorActions.trigger('selectElements');
+        self.currentDiagram.control.modelerActions.trigger('selectElements');
       }
     }
   });
