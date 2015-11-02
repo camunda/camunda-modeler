@@ -345,8 +345,6 @@ function Editor($scope) {
 
     var self = this;
 
-    menuUpdater.disableMenus();
-
     workspace.restore(function(err, config) {
       console.debug('[editor]', 'restoring workspace', config);
 
@@ -362,6 +360,8 @@ function Editor($scope) {
         self.showDiagram(config.currentDiagram);
 
         $scope.$applyAsync();
+      } else {
+        menuUpdater.disableMenus();
       }
     });
 
