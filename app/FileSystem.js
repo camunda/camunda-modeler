@@ -50,6 +50,8 @@ function FileSystem(browserWindow, config) {
         return self.handleError('file.save.response', err);
       }
 
+      app.emit('editor-add-recent', updatedDiagram.path);
+
       browserWindow.webContents.send('file.save.response', null, updatedDiagram);
     });
   });
@@ -60,6 +62,8 @@ function FileSystem(browserWindow, config) {
       if (err) {
         return self.handleError('file.open.response', err);
       }
+
+      app.emit('editor-add-recent', diagramFile.path);
 
       browserWindow.webContents.send('file.open.response', null, diagramFile);
     });

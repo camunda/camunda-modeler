@@ -15,6 +15,10 @@ function MacOSIntegration(app) {
       app.fileSystem.addFile(filePath);
     }
   });
+
+  app.on('editor-add-recent', function(path) {
+    app.addRecentDocument(path);
+  });
 }
 
 module.exports = MacOSIntegration;

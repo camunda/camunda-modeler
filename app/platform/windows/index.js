@@ -32,6 +32,10 @@ function WindowsIntegration(app, config) {
       app.fileSystem.addFile(process.argv[2]);
     }
   });
+
+  app.on('editor-add-recent', function(path) {
+    app.addRecentDocument(path);
+  });
 }
 
 module.exports = WindowsIntegration;
