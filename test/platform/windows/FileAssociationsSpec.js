@@ -28,11 +28,16 @@ describe('app/platform/windows - FileAssociations', function() {
 
 
   it('should add to registry', function() {
+    var query;
+
     // when
     FileAssociations.register(TEST_EXECUTABLE);
 
+    query = FileAssociations.query();
+
     // then
-    expect(FileAssociations.query()).to.eql(TEST_EXECUTABLE);
+    expect(query).to.have.length(1);
+    expect(query[0]).to.equal(TEST_EXECUTABLE);
   });
 
 

@@ -8,12 +8,15 @@ var Ipc = require('ipc'),
     Dialog = require('dialog'),
     open = require('open');
 
-var errorUtil = require('./util/error');
+var errorUtil = require('./util/error'),
+    parseUtil = require('./util/parse');
+
+var SUPPORTED_EXT = [ 'bpmn', 'dmn', 'bpmn20.xml', 'dmn11.xml' ];
 
 var SUPPORTED_EXT_FILTER = [
-  { name: 'All supported', extensions: [ 'bpmn', 'dmn' ] },
-  { name: 'BPMN diagram', extensions: [ 'bpmn' ] },
-  { name: 'DMN table', extensions: [ 'dmn' ] },
+  { name: 'All supported', extensions: SUPPORTED_EXT },
+  { name: 'BPMN diagram', extensions: [ 'bpmn', 'bpmn20.xml' ] },
+  { name: 'DMN table', extensions: [ 'dmn', 'dmn11.xml' ] },
   { name: 'All files', extensions: [ '*' ] }
 ];
 
@@ -27,7 +30,7 @@ function createDiagramFile(filePath, file) {
   return {
     contents: file,
     name: path.basename(filePath),
-    notation: path.extname(filePath).replace(/^\./, ''),
+    notation: parseUtil.notation(filePath),
     path: filePath
   };
 }
@@ -129,10 +132,9 @@ FileSystem.prototype.open = function(callback) {
 
 FileSystem.prototype._open = function(filePath, callback) {
   var browserWindow = this.browserWindow,
-      self = this,
-      extName = path.extname(filePath);
+      self = this;
 
-  if (!(/\.bpmn$|\.dmn$/.test(extName))) {
+  if (!this.isExtAllowed(filePath)) {
     Dialog.showErrorBox('Wrong file type', 'Please choose a .bpmn or .dmn file!');
 
     this.open(function(err, diagramFile) {
@@ -393,6 +395,12 @@ FileSystem.prototype.sanitizeFilename = function(filename) {
   }
 
   return filename;
+};
+
+FileSystem.prototype.isExtAllowed = function isExtAllowed(filePath) {
+  var extension = parseUtil.extname(filePath);
+
+  return extension && SUPPORTED_EXT.indexOf(extension) !== -1;
 };
 
 module.exports = FileSystem;
