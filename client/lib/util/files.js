@@ -16,6 +16,17 @@ function openFile(callback) {
 
 module.exports.openFile = openFile;
 
+/**
+ * Add a diagram file from a path (drag and drop).
+ *
+ * @param {Function} callback
+ */
+function addFile(filePath, callback) {
+  browser.send('file.add', [ filePath ], callback);
+}
+
+module.exports.addFile = addFile;
+
 
 /**
  * Close a diagram file.

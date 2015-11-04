@@ -141,7 +141,7 @@ function DiagramControl(diagramFile) {
       if (diagramFile.contents) {
         modeler.importXML(diagramFile.contents, imported);
       } else {
-        modeler.createDiagram(imported);
+        modeler.createTemplate(imported);
       }
     }
   };

@@ -57,6 +57,9 @@ function FileSystem(browserWindow, config) {
     });
   });
 
+  Ipc.on('file.add', function(evt, path) {
+    self.addFile(path);
+  });
 
   Ipc.on('file.open', function(evt) {
     self.open(function(err, diagramFile) {
@@ -152,7 +155,7 @@ FileSystem.prototype._openFile = function(filePath, callback) {
   });
 };
 
-FileSystem.prototype.addFile = function openFile(filePath) {
+FileSystem.prototype.addFile = function(filePath) {
   var self = this,
       browserWindow = this.browserWindow;
 

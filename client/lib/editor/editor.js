@@ -4,13 +4,11 @@ var files = require('../util/files'),
     EditorActions = require('./editorActions'),
     menuUpdater = require('./menuUpdater'),
     workspace = require('../util/workspace'),
+    onDrop = require('../util/onDrop'),
     DiagramControl = require('./diagram/control');
 
 var assign = require('lodash/object/assign'),
     forEach = require('lodash/collection/forEach');
-
-// var onDrop = require('../util/on-drop');
-// var dnd;
 
 
 function isInput(target) {
@@ -356,6 +354,12 @@ function Editor($scope) {
   this.init = function() {
 
     var self = this;
+
+    onDrop('body', function(e) {
+      files.addFile(e.files[0].path, function() {
+        // do nothing
+      });
+    });
 
     workspace.restore(function(err, config) {
       console.debug('[editor]', 'restoring workspace', config);
