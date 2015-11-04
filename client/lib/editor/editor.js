@@ -113,11 +113,12 @@ function Editor($scope) {
     }
   };
 
-  this.newDiagram = function() {
+  this.newDiagram = function(notation) {
 
     var diagram = {
-      name: 'diagram_' + (this.idx++) + '.bpmn',
-      path: '[unsaved]'
+      name: 'diagram_' + (this.idx++) + '.' + notation,
+      path: '[unsaved]',
+      notation: notation
     };
 
     this.showDiagram(diagram);
@@ -160,15 +161,21 @@ function Editor($scope) {
    * @param  {DiagramFile} [diagram]
    */
   this.showDiagram = function(diagram) {
+    var menuEntriesUpdate = {},
+        diagrams,
+        notation;
+
     if (!this.isActive(diagram)) {
       this.currentDiagram = diagram;
 
       this.persist();
     }
 
-    var diagrams = this.diagrams;
+    diagrams = this.diagrams;
 
     if (diagram) {
+      notation = diagram.notation;
+
       if (diagrams.indexOf(diagram) === -1) {
         diagrams.push(diagram);
       }
@@ -177,22 +184,27 @@ function Editor($scope) {
         diagram.control = new DiagramControl(diagram);
       }
 
-      if (dirty && diagrams.length === 1) {
+      if (dirty && diagrams.length >= 1) {
         menuUpdater.enableMenus();
         dirty = false;
       }
 
-      menuUpdater.update({
+      menuEntriesUpdate = {
         history: [ self.canUndo(), self.canRedo() ],
-        selection: diagram.control.hasSelection(),
         saving: self.isUnsaved()
-      });
+      };
+
+      if (diagram.notation === 'bpmn') {
+        menuEntriesUpdate.selection = diagram.control.hasSelection();
+      }
+
+      menuUpdater.update(notation, menuEntriesUpdate);
     }
 
     // Disable modeling actions when there is no open diagram
-    if (!diagram && !diagrams.length) {
+    if (!diagrams.length) {
       menuUpdater.disableMenus();
-      dirty = true;
+      dirty = false;
     }
   };
 
@@ -358,12 +370,15 @@ function Editor($scope) {
         console.debug('[editor]', 'open diagram', config.currentDiagram);
 
         self.showDiagram(config.currentDiagram);
-
-        $scope.$applyAsync();
       } else {
-        menuUpdater.disableMenus();
+        setTimeout(function() {
+          menuUpdater.disableMenus();
+        }, 100);
       }
+
+      $scope.$applyAsync();
     });
+
 
     // onDiagramDrop(function(err, file) {
     //

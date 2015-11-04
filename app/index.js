@@ -5,7 +5,6 @@ var path = require('path');
 var BrowserWindow = require('electron-window');
 var Shell = require('shell');
 
-
 /**
  * automatically report crash reports
  *
@@ -35,6 +34,12 @@ app.filePath = null;
 
 // We need this check so we can quit after checking for unsaved diagrams
 app.dirty = true;
+
+
+// TODO: Perhaps find a more solid approach to this
+function whichNotation(filePath) {
+  return path.extname(filePath).replace(/^\./, '');
+}
 
 /**
  * Open a new browser window, if non exists.
@@ -122,7 +127,9 @@ app.on('ready', function(evt) {
 app.on('editor-open', function(mainWindow) {
   app.fileSystem = new FileSystem(mainWindow, config);
 
-  app.emit('editor-create-menu', mainWindow);
+  app.emit('editor-create-menu', mainWindow, whichNotation(app.filePath));
+
+  mainWindow.webContents.send('editor-bootstrap');
 
   app.emit('association-file-open', app.filePath);
 

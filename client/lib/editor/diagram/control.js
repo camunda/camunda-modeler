@@ -1,63 +1,29 @@
 'use strict';
 
+var is = require('bpmn-js/lib/util/ModelUtil').is;
+
+var menuUpdater = require('../menuUpdater'),
+    files = require('../../util/files');
+
+var createModeler = require('./modeler');
+
 var domify = require('min-dom/lib/domify');
 
-var BpmnJS = require('bpmn-js/lib/Modeler'),
-    DmnJS = require('dmn-js/lib/Modeler');
 
-var DiagramJsOrigin = require('diagram-js-origin'),
-    is = require('bpmn-js/lib/util/ModelUtil').is;
-
-var menuUpdater = require('../menuUpdater');
-
-var propertiesPanelModule = require('bpmn-js-properties-panel'),
-    camundaModdlePackage = require('bpmn-js-properties-panel/lib/provider/camunda/camunda-moddle');
-
-var files = require('../../util/files');
-
-function createBpmnJS(element, propertiesPanel) {
-
-  var propertiesPanelConfig = {
-    'config.propertiesPanel': ['value', { parent: propertiesPanel }]
-  };
-
-  return new BpmnJS({
-    container: element,
-    position: 'absolute',
-    additionalModules: [
-      DiagramJsOrigin,
-      propertiesPanelModule,
-      propertiesPanelConfig
-    ],
-    moddleExtensions: {camunda: camundaModdlePackage}
-  });
+function isNotation(diagram, notation) {
+  return diagram.notation && diagram.notation === notation;
 }
 
-function createDmnJS(element) {
-  return new DmnJS({
-    container: element,
-    keyboard: { bindTo: document },
-    tableName: "DMN Table",
-    position: 'absolute'
-  });
-}
-
-function createModeler(type, $el, $propertiesPanel) {
-  if (type === 'dmn') {
-    return createDmnJS($el);
-  }
-  return createBpmnJS($el, $propertiesPanel);
-}
 
 function DiagramControl(diagramFile) {
-
-  var $el = domify('<div>'),
-      $propertiesPanel = domify('<div id="js-properties-panel">'),
-      modeler;
-
   var self = this;
 
-  modeler = createModeler(diagramFile.type, $el, $propertiesPanel);
+  var $el = domify('<div>'),
+      $propertiesPanel = domify('<div id="js-properties-panel">');
+
+  console.debug('[control]', diagramFile);
+
+  var modeler = createModeler(diagramFile.notation, $el, $propertiesPanel);
 
   var commandStackIdx = -1,
       attachedScope;
@@ -75,19 +41,29 @@ function DiagramControl(diagramFile) {
       return self.handleImportError(err.message);
     }
 
-    canvas = modeler.get('canvas');
+    if (isNotation(diagramFile, 'bpmn')) {
+      canvas = modeler.get('canvas');
 
-    if (self.viewbox) {
-      canvas.viewbox(self.viewbox);
+      if (self.viewbox) {
+        canvas.viewbox(self.viewbox);
+      }
+
+      self.modelerActions = modeler.get('editorActions');
     }
-
-    self.modelerActions = modeler.get('editorActions');
   }
 
   modeler.on('selection.changed', function(evt) {
-    var elements = modeler.get('selection').get(),
-        hasSelection = !!elements.length,
-        enabled = false;
+    var elements,
+        hasSelection,
+        enabled;
+
+    if (!isNotation(diagramFile, 'bpmn')) {
+      return;
+    }
+
+    elements = modeler.get('selection').get();
+    hasSelection = !!elements.length;
+    enabled = false;
 
     if ((elements.length === 1 &&
        !(is(elements[0], 'bpmn:Process') || is(elements[0], 'bpmn:Collaboration'))) ||
@@ -95,7 +71,7 @@ function DiagramControl(diagramFile) {
       enabled = true;
     }
 
-    menuUpdater.update({
+    menuUpdater.update(diagramFile.type, {
       selection: hasSelection
     });
   });
@@ -108,7 +84,7 @@ function DiagramControl(diagramFile) {
 
     diagramFile.unsaved = (commandStackIdx !== commandStack._stackIdx);
 
-    menuUpdater.update({
+    menuUpdater.update(diagramFile.type, {
       history: [ self.canUndo, self.canRedo ],
       saving: diagramFile.unsaved
     });
@@ -195,7 +171,7 @@ function DiagramControl(diagramFile) {
 
   this.handleImportError = function(message) {
     files.importError(message, function(err) {
-      console.log(err);
+      console.error('[import error]', err);
     });
   };
 }

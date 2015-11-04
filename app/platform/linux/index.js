@@ -10,8 +10,12 @@ function LinuxIntegration(app) {
   });
 
   // editor menu
-  app.on('editor-create-menu', function(mainWindow) {
-    new Menus(mainWindow);
+  app.on('editor-create-menu', function(mainWindow, notation) {
+    var positions = {
+      edit: 1
+    };
+
+    new Menus(mainWindow, notation, positions);
   });
 
   // modeler was opened through file association

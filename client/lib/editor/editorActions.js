@@ -57,40 +57,43 @@ EditorActions.prototype.getActions = function (payload) {
         editor.quit();
       }
     },
-    'editor.spaceTool': {
+
+    // Edit (bpmn)
+    'bpmn.spaceTool': {
       handler: function() {
         editor.trigger('spaceTool');
       },
       ignoreIfActiveInput: true
     },
-    'editor.lassoTool': {
+    'bpmn.lassoTool': {
       handler: function() {
         editor.trigger('lassoTool');
       },
       ignoreIfActiveInput: true
     },
-    'editor.directEditing': {
+    'bpmn.directEditing': {
       handler: function() {
         editor.trigger('directEditing');
       },
       ignoreIfActiveInput: true
     },
-    'editor.moveCanvas': {
+    'bpmn.moveCanvas': {
       handler: function() {
         editor.trigger('moveCanvas', payload.data);
       },
       ignoreIfActiveInput: true
     },
-    'editor.selectElements': {
+    'bpmn.selectElements': {
       handler: function() {
         editor.trigger('selectElements', payload.data);
       }
     },
-    'editor.removeSelection': {
+    'bpmn.removeSelection': {
       handler: function() {
         editor.trigger('removeSelection', payload.data);
       }
     },
+
     'editor.undo': {
       handler: function() {
         editor.trigger('undo');

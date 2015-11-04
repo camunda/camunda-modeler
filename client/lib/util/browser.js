@@ -47,8 +47,8 @@ function once(event, callback) {
 module.exports.once = once;
 
 
-function updateMenus(entries) {
-  send('menu.update', [ entries ], function() {
+function updateMenus(notation, entries) {
+  send('menu.update', [ notation, entries ], function() {
     // do nothing
   });
 }

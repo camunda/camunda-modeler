@@ -27,7 +27,7 @@ function createDiagramFile(filePath, file) {
   return {
     contents: file,
     name: path.basename(filePath),
-    type: path.extname(filePath).replace(/^\./, ''),
+    notation: path.extname(filePath).replace(/^\./, ''),
     path: filePath
   };
 }

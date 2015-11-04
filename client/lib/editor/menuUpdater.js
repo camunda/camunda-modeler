@@ -153,7 +153,7 @@ module.exports.disableMenus = disableMenus;
     ]
   }]
 */
-function update(items) {
+function update(notation, items) {
   var updateItems = {},
       menusUpdate = [];
 
@@ -190,7 +190,7 @@ function update(items) {
     });
   });
 
-  browser.updateMenus(menusUpdate);
+  browser.updateMenus(notation, menusUpdate);
 }
 
 module.exports.update = update;

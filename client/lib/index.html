@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app" ng-csp>
+<html ng-csp>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -21,7 +21,7 @@
 
         <button class="icon-new"
                 title="create new BPMN diagram"
-                ng-click="editor.newDiagram()">
+                ng-click="editor.newDiagram('bpmn')">
         </button>
 
         <button class="icon-open"
@@ -54,6 +54,14 @@
                 ng-class="{ disabled: !editor.canRedo() }"
                 ng-click="editor.trigger('redo')">
         </button>
+
+        <span class="placeholder"></span>
+
+        <button class="button-dmn"
+                title="new DMN diagram"
+                ng-click="editor.newDiagram('dmn')">
+                DMN
+        </button>
       </div>
     </div>
 
@@ -71,7 +79,7 @@
               </a>
             </li>
             <li class="entry" ng-class="{ active: !editor.isOpen() }">
-              <a ng-click="editor.newDiagram()">+</a>
+              <a ng-click="editor.newDiagram('bpmn')">+</a>
             </li>
           </ul>
         </div>
@@ -84,7 +92,7 @@
               <h1>No open BPMN diagram</h1>
 
               <p>
-                <button ng-click="editor.newDiagram()">create diagram</button>
+                <button ng-click="editor.newDiagram('bpmn')">create diagram</button>
               </p>
 
               <p>

@@ -10,30 +10,44 @@ var app = require('app');
 var menusTemplate = require('./menusTemplate');
 
 
-function Menus(browserWindow) {
+function Menus(browserWindow, notation, positions) {
   var self = this;
 
   this.browserWindow = browserWindow;
 
-  Ipc.on('menu.update', function(evt, entries) {
+  // An object with the index to specfic menus
+  this.positions = positions;
+
+  Ipc.on('menu.update', function(evt, updateNotation, entries) {
+    if (Array.isArray(updateNotation)) {
+      entries = updateNotation;
+      updateNotation = undefined;
+    }
+
+    if (self.isNewNotation('edit', updateNotation)) {
+      self.createMenus(updateNotation);
+    }
+
     self.updateMenu(entries);
 
     browserWindow.webContents.send('menu.update.response', null);
   });
 
-  this.init();
+  this.createMenus(notation);
 }
 
-Menus.prototype.init = function() {
-  var template = menusTemplate(this.browserWindow);
+Menus.prototype.createMenus = function(notation) {
+  var template = menusTemplate(this.browserWindow, notation);
 
   app.emit('editor-template-created', template);
 
-  this.attachMenus(template);
+  this.attachMenus(template, notation);
 };
 
-Menus.prototype.attachMenus = function(template) {
+Menus.prototype.attachMenus = function(template, notation) {
   this.menu = Menu.buildFromTemplate(template);
+
+  this.setNotation('edit', notation);
 
   Menu.setApplicationMenu(this.menu);
 };
@@ -106,6 +120,23 @@ Menus.prototype._updateEntry = function(menuIdx, entryIdx, data) {
   forEach(data, function(val, property) {
     entry[property] = val;
   });
+};
+
+Menus.prototype.isNewNotation = function(menuId, notation) {
+  var position = this.positions[menuId];
+
+  return notation && this.menu.items[position].notation !== notation;
+};
+
+Menus.prototype.setNotation = function(menuId, notation) {
+  var position = this.positions[menuId];
+
+  if (!notation) {
+    notation = 'bpmn';
+  }
+
+  // BPMN should be the default on init
+  this.menu.items[position].notation = notation;
 };
 
 
