@@ -35,7 +35,8 @@ function DiagramControl(diagramFile) {
   }
 
   function imported(err, warnings) {
-    var canvas;
+    var canvas,
+        propPanel;
 
     if (err) {
       return self.handleImportError(err.message);
@@ -49,6 +50,13 @@ function DiagramControl(diagramFile) {
       }
 
       self.modelerActions = modeler.get('editorActions');
+    }
+
+    // Hide the properties panel on diagram creation
+    propPanel = $propertiesPanel.children[1];
+
+    if (propPanel && propPanel.classList.contains('djs-properties-panel')) {
+      propPanel.classList.add('hidden');
     }
   }
 
