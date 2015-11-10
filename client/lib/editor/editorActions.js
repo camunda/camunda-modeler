@@ -23,7 +23,7 @@ function EditorActions(editor) {
   });
 }
 
-EditorActions.prototype.getActions = function (payload) {
+EditorActions.prototype.getActions = function(payload) {
   var editor = this.editor;
 
   var actions = {
@@ -44,7 +44,7 @@ EditorActions.prototype.getActions = function (payload) {
     },
     'editor.new': {
       handler: function() {
-        editor.newDiagram();
+        editor.newDiagram(payload.diagramType);
       }
     },
     'editor.close': {

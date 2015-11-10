@@ -1,7 +1,7 @@
 'use strict';
 
 var app = require('app'),
-    open = require('open');
+    browserOpen = require('open');
 
 var CANVAS_MOVE_SPEED = 20;
 
@@ -129,9 +129,6 @@ function getEditMenu(browserWindow, notation) {
   // Base editing actions
   var baseSubmenu = [
     {
-      type: 'separator'
-    },
-    {
       id: 'undo',
       label: 'Undo',
       accelerator: 'CommandOrControl+Z',
@@ -142,10 +139,13 @@ function getEditMenu(browserWindow, notation) {
     {
       id: 'redo',
       label: 'Redo',
-      accelerator: 'CommandOrControl+Shift+Z',
+      accelerator: 'CommandOrControl+Y',
       click: function() {
         browserWindow.webContents.send('editor.actions', { event: 'editor.redo' });
       }
+    },
+    {
+      type: 'separator'
     }
   ];
 
@@ -155,7 +155,7 @@ function getEditMenu(browserWindow, notation) {
     id: 'edit',
     label: 'Edit',
     notation: notation,
-    submenu: modelingActions.concat(baseSubmenu)
+    submenu: baseSubmenu.concat(modelingActions)
   };
 }
 
@@ -167,14 +167,33 @@ module.exports = function(browserWindow, notation) {
       {
         id: 'newFile',
         label: 'New File',
-        accelerator: 'CommandOrControl+T',
-        click: function() {
-          browserWindow.webContents.send('editor.actions', { event: 'editor.new' });
-        }
+        submenu: [
+          {
+            id: 'newBpmnFile',
+            label: 'BPMN Diagram',
+            accelerator: 'CommandOrControl+T',
+            click: function() {
+              browserWindow.webContents.send('editor.actions', {
+                event: 'editor.new',
+                diagramType: 'bpmn'
+              });
+            }
+          },
+          {
+            id: 'newDmnFile',
+            label: 'DMN Table',
+            click: function() {
+              browserWindow.webContents.send('editor.actions', {
+                event: 'editor.new',
+                diagramType: 'dmn'
+              });
+            }
+          }
+        ]
       },
       {
         id: 'openFile',
-        label: 'Open File..',
+        label: 'Open File...',
         accelerator: 'CommandOrControl+O',
         click: function() {
           browserWindow.webContents.send('editor.actions', { event: 'file.open' });
@@ -312,30 +331,24 @@ module.exports = function(browserWindow, notation) {
     label: 'Help',
     submenu: [
       {
-        label: 'BPMN Modeling Reference',
+        label: 'Forum (bpmn.io)',
         click: function() {
-          open('https://camunda.org/bpmn/reference/');
-        }
-      },
-      {
-        label: 'BPMN 2.0 Tutorial',
-        click: function() {
-          open('https://camunda.org/bpmn/tutorial/');
-        }
-      },
-      {
-        label: 'BPMN 2.0 Best Practices',
-        click: function() {
-          open('https://camunda.org/bpmn/examples/');
+          browserOpen('https://forum.bpmn.io/');
         }
       },
       {
         type: 'separator'
       },
       {
-        label: 'Forum (bpmn.io)',
+        label: 'BPMN 2.0 Tutorial',
         click: function() {
-          open('https://forum.bpmn.io/');
+          browserOpen('https://camunda.org/bpmn/tutorial/');
+        }
+      },
+      {
+        label: 'BPMN Modeling Reference',
+        click: function() {
+          browserOpen('https://camunda.org/bpmn/reference/');
         }
       }
     ]

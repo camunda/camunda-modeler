@@ -5,7 +5,8 @@ var Menus = require('../Menus');
 var app = require('app');
 
 var map = require('lodash/collection/map'),
-    findIndex = require('lodash/array/findIndex');
+    findIndex = require('lodash/array/findIndex'),
+    find = require('lodash/array/find');
 
 var MODELER_NAME = 'Camunda Modeler';
 
@@ -68,6 +69,11 @@ function MenusMac(browserWindow) {
 function editFileMenu(template) {
   return map(template, function(menu, menuIdx) {
     var entryIdx;
+
+    if (menu.label === 'Edit') {
+      var redoMenu = find(menu.submenu, { label: 'Redo' });
+      redoMenu.accelerator = 'CommandOrControl+Shift+Z';
+    }
 
     if (menu.label === 'File') {
       entryIdx = findIndex(menu.submenu, { label: 'Quit' });
