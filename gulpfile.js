@@ -214,11 +214,11 @@ gulp.task('serve', function () {
   gulp.watch([ 'app/**/*.js' ], app.restart);
 
   // Removed renderer process reloading, because we need to manually bootstrap angular
-  gulp.watch([ 'client/lib/**/*.js' ], [ 'client:build', app.restart ]);
+  gulp.watch([ 'client/lib/**/*.js' ], [ 'client:build', app.reload ]);
 
-  gulp.watch([ 'client/lib/index.html' ], [ 'client:copy:html', app.restart ]);
+  gulp.watch([ 'client/lib/index.html' ], [ 'client:copy:html', app.reload ]);
 
-  gulp.watch([ 'client/less/**.less' ], [ 'client:less', app.restart ]);
+  gulp.watch([ 'client/less/**.less' ], [ 'client:less', app.reload ]);
 });
 
 gulp.task('client:build:watch', function() {

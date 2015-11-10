@@ -53,6 +53,8 @@ function open() {
   }
 
   app.emit('editor-create', app.mainWindow);
+
+  app.emit('editor-create-menu', app.mainWindow, whichNotation(app.filePath));
 }
 
 /**
@@ -126,8 +128,6 @@ app.on('ready', function(evt) {
 
 app.on('editor-open', function(mainWindow) {
   app.fileSystem = new FileSystem(mainWindow, config);
-
-  app.emit('editor-create-menu', mainWindow, whichNotation(app.filePath));
 
   mainWindow.webContents.send('editor-bootstrap');
 
