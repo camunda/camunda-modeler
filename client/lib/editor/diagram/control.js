@@ -18,12 +18,12 @@ function isNotation(diagram, notation) {
 function DiagramControl(diagramFile) {
   var self = this;
 
-  var $el = domify('<div>'),
-      $propertiesPanel = domify('<div id="js-properties-panel">');
+  var $el = domify('<div class="container">'),
+      $propertiesEl = domify('<div class="container">');
 
   console.debug('[control]', diagramFile);
 
-  var modeler = createModeler(diagramFile.notation, $el, $propertiesPanel);
+  var modeler = createModeler(diagramFile.notation, $el, $propertiesEl);
 
   var commandStackIdx = -1,
       attachedScope;
@@ -35,8 +35,7 @@ function DiagramControl(diagramFile) {
   }
 
   function imported(err, warnings) {
-    var canvas,
-        propPanel;
+    var canvas;
 
     if (err) {
       return self.handleImportError(err.message);
@@ -50,13 +49,6 @@ function DiagramControl(diagramFile) {
       }
 
       self.modelerActions = modeler.get('editorActions');
-    }
-
-    // Hide the properties panel on diagram creation
-    propPanel = $propertiesPanel.children[1];
-
-    if (propPanel && propPanel.classList.contains('djs-properties-panel')) {
-      propPanel.classList.add('hidden');
     }
   }
 
@@ -142,8 +134,8 @@ function DiagramControl(diagramFile) {
   this.attach = function(scope, element) {
     attachedScope = scope;
 
-    element.appendChild($el);
-    element.appendChild($propertiesPanel);
+    element.querySelector('.bio-canvas').appendChild($el);
+    element.querySelector('.bio-properties-panel').appendChild($propertiesEl);
 
     if (!modeler.diagram) {
       if (diagramFile.contents) {
@@ -155,12 +147,12 @@ function DiagramControl(diagramFile) {
   };
 
   this.detach = function() {
-    var parent = $el.parentNode;
+    var $elParent = $el.parentNode;
 
-    if (parent) {
+    if ($elParent) {
       attachedScope = null;
-      parent.removeChild($el);
-      parent.removeChild($propertiesPanel);
+      $elParent.removeChild($el);
+      $propertiesEl.parentNode.removeChild($propertiesEl);
     }
   };
 

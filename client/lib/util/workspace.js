@@ -14,6 +14,8 @@ function save(config, callback) {
     activeIdx: 0
   };
 
+  workspace.propertiesPanel = config.propertiesPanel;
+
   workspace.diagrams = diagrams
     .map(function(diagram) {
       return pick(diagram, [ 'name', 'path', 'contents', 'notation' ]);

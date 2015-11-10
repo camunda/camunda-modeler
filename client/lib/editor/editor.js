@@ -29,7 +29,10 @@ function Editor($scope) {
   this.diagrams = [];
   this.views = {
     diagram: true,
-    xml: false
+    xml: false,
+  };
+  this.propertiesPanel = {
+    open: true
   };
 
   // Start listening to Browser communication
@@ -45,6 +48,15 @@ function Editor($scope) {
 
   this.isUnsaved = function() {
     return this.currentDiagram && !!this.currentDiagram.unsaved;
+  };
+
+  this.isPropertiesPanelOpen = function() {
+    return this.propertiesPanel.open;
+  };
+
+  this.togglePropertiesPanel = function() {
+    this.propertiesPanel.open = !this.propertiesPanel.open;
+    this.persist();
   };
 
   this.isOpen = function() {
@@ -380,21 +392,12 @@ function Editor($scope) {
         }, 100);
       }
 
+      if (config.propertiesPanel) {
+        self.propertiesPanel = config.propertiesPanel;
+      }
+
       $scope.$applyAsync();
     });
-
-
-    // onDiagramDrop(function(err, file) {
-    //
-    //   if (err) {
-    //     return console.error(err);
-    //   }
-    //
-    //   self.addDiagram(file);
-    //
-    //   $scope.$applyAsync();
-    // });
-
   };
 
   this.init();
@@ -403,28 +406,3 @@ function Editor($scope) {
 Editor.$inject = [ '$scope' ];
 
 module.exports = Editor;
-
-
-// function onDiagramDrop(callback) {
-//
-//   // Support dropping a single file onto this app.
-//   dnd = onDrop('body', function(data) {
-//     console.log(data);
-//
-//     var entry;
-//
-//     for (var i = 0; i < data.items.length; i++) {
-//       var item = data.items[i];
-//       if (item.kind == 'file' && item.webkitGetAsEntry()) {
-//         entry = item.webkitGetAsEntry();
-//         break;
-//       }
-//     }
-//
-//     if (entry) {
-//       files.loadFile(entry, callback);
-//     } else {
-//       callback(new Error('not a diagram file'));
-//     }
-//   });
-// }
