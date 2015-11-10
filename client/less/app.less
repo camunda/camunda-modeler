@@ -6,8 +6,8 @@
 
 @import "_layout";
 
+@import "_menu-bar";
 @import "_close";
-
 
 
 body, html {
@@ -25,11 +25,8 @@ body, html {
   background: @background-color-header;
   border-bottom: solid 1px @border-color;
   flex: initial;
-}
 
-.bio-header > * {
-  display: inline-block;
-  vertical-align: middle;
+  .flex-container(row);
 }
 
 .logo {
@@ -266,61 +263,6 @@ button[class*=" icon-"] {
   padding: 6px 10px;
 }
 
-.menu-bar > * {
-  vertical-align: middle;
-  display: inline-block;
-}
-
-.menu-bar .placeholder {
-  background: #CCC;
-  width: 1px;
-  box-shadow: 0 0 1px #DDD;
-  height: 20px;
-  margin: 2px;
-}
-
-.menu-bar button {
-  border: none;
-  background: transparent;
-
-  text-align: center;
-
-  padding: 2px;
-
-  margin-right: 1px;
-  border-radius: 4px;
-
-  width: 25px;
-  height: 25px;
-
-  font-size: 14px;
-  outline: none;
-}
-
-.menu-bar button:not(.disabled):hover,
-.menu-bar button:not(.disabled):active {
-  background: #F3F3F4;
-}
-
-.menu-bar button:not(.disabled):hover {
-  border: solid 1px #CCC;
-}
-
-.menu-bar button:active:not(.disabled) {
-  border: solid 1px #BBB;
-  box-shadow: inset 0 3px 5px #AAA;
-}
-
-.menu-bar button.disabled {
-  color: #999;
-  cursor: default;
-}
-
-button.btn {
-  font-size: @control-font-size;
-  padding: 5px 7px;
-}
-
 /**
  * diagram + properties panel
  */
@@ -377,4 +319,9 @@ button.btn {
 
     position: absolute;
   }
+}
+
+button.btn {
+  font-size: @control-font-size;
+  padding: 5px 7px;
 }

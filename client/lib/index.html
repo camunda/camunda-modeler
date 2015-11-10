@@ -17,44 +17,7 @@
         <span class="icon-bpmn-io"></span>
       </a>
 
-      <div class="menu-bar">
-
-        <button class="icon-new"
-                title="create new BPMN diagram"
-                ng-click="editor.newDiagram('bpmn')">
-        </button>
-
-        <button class="icon-open"
-                title="open a BPMN diagram"
-                ng-click="editor.openDiagram()">
-        </button>
-
-        <button class="icon-save-normal"
-                title="save BPMN diagram"
-                ng-class="{ disabled: !editor.isUnsaved() }"
-                ng-click="editor.save()">
-        </button>
-
-        <button class="icon-save-as"
-                title="save BPMN diagram as..."
-                ng-class="{ disabled: !editor.isOpen() }"
-                ng-click="editor.save(true)">
-        </button>
-
-        <span class="placeholder"></span>
-
-        <button class="icon-undo"
-                title="undo"
-                ng-class="{ disabled: !editor.canUndo() }"
-                ng-click="editor.trigger('undo')">
-        </button>
-
-        <button class="icon-redo"
-                title="redo"
-                ng-class="{ disabled: !editor.canRedo() }"
-                ng-click="editor.trigger('redo')">
-        </button>
-      </div>
+      <div menu-bar editor="editor"></div>
     </div>
 
     <div class="bio-content">
