@@ -62,6 +62,10 @@ function browserBundle(options) {
 
     bundler.on('error', gutil.log);
     bundler.on('log', gutil.log);
+
+    // reload app on rebuild
+    bundler.on('log', app.reload.bind(app, null, null));
+
   } else {
     bundler = browserify(browserifyOptions);
   }
@@ -213,9 +217,6 @@ gulp.task('serve', function () {
   // Restart browser process
   gulp.watch([ 'app/**/*.js' ], app.restart);
 
-  // Removed renderer process reloading, because we need to manually bootstrap angular
-  gulp.watch([ 'client/lib/**/*.js' ], [ 'client:build', app.reload ]);
-
   gulp.watch([ 'client/lib/index.html' ], [ 'client:copy:html', app.reload ]);
 
   gulp.watch([ 'client/less/**.less' ], [ 'client:less', app.reload ]);
@@ -231,7 +232,7 @@ gulp.task('client:build', function() {
 
 gulp.task('client:less', function() {
   return gulp.src('client/less/app.less')
-             .pipe(less({ paths: [ './node_modules/' ] }))
+             .pipe(less({ paths: [ 'node_modules' ] }))
              .pipe(gulp.dest('public/css'));
 });
 
@@ -284,9 +285,9 @@ gulp.task('package:linux', electronPackage('linux'));
 
 gulp.task('package', runSequence('package:windows', 'package:darwin', 'package:linux'));
 
-gulp.task('build', runSequence('client:build', 'client:less', 'properties-panel:less', 'client:copy'));
+gulp.task('build', runSequence('client:build', 'client:less', 'client:copy'));
 
-gulp.task('auto-build', runSequence('build', 'serve'));
+gulp.task('auto-build', runSequence(['client:build:watch', 'client:less', 'client:copy', 'serve']));
 
 gulp.task('distro', runSequence('build', 'package'));
 
