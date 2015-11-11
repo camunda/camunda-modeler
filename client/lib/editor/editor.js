@@ -54,6 +54,10 @@ function Editor($scope) {
     return this.propertiesPanel.open;
   };
 
+  this.hasProperties = function(diagram) {
+    return diagram.notation === 'bpmn';
+  };
+
   this.togglePropertiesPanel = function() {
     this.propertiesPanel.open = !this.propertiesPanel.open;
     this.persist();

@@ -62,7 +62,9 @@
             <div data-tab="diagram" class="tab">
               <div class="bio-diagram-contents" diagram control="diagram.control">
                 <div class="bio-canvas"></div>
-                <div class="bio-properties-panel" ng-class="{ hidden: !editor.isPropertiesPanelOpen() }">
+                <div class="bio-properties-panel"
+                     ng-show="editor.hasProperties(diagram)"
+                     ng-class="{ hidden: !editor.isPropertiesPanelOpen() }">
                   <a class="toggle" ng-click="editor.togglePropertiesPanel()"></a>
                 </div>
               </div>
