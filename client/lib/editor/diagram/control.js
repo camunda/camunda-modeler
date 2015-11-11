@@ -47,8 +47,6 @@ function DiagramControl(diagramFile) {
       if (self.viewbox) {
         canvas.viewbox(self.viewbox);
       }
-
-      self.modelerActions = modeler.get('editorActions');
     }
   }
 
@@ -162,6 +160,14 @@ function DiagramControl(diagramFile) {
       return !!selection.get().length;
     } catch (e) {
       return false;
+    }
+  };
+
+  this.trigger = function(action, options) {
+    var editorActions = modeler.get('editorActions', false);
+
+    if (editorActions) {
+      editorActions.trigger(action, options);
     }
   };
 

@@ -65,7 +65,7 @@ function Editor($scope) {
 
   this.trigger = function(action, opts) {
     if (this.currentDiagram) {
-      this.currentDiagram.control.modelerActions.trigger(action, opts);
+      this.currentDiagram.control.trigger(action, opts);
     }
   };
 
@@ -77,7 +77,7 @@ function Editor($scope) {
       evt.preventDefault();
 
       if (self.currentDiagram) {
-        self.currentDiagram.control.modelerActions.trigger('selectElements');
+        self.currentDiagram.control.trigger('selectElements');
       }
     }
   });
