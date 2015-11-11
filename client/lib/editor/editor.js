@@ -8,6 +8,7 @@ var files = require('../util/files'),
     DiagramControl = require('./diagram/control');
 
 var assign = require('lodash/object/assign'),
+    find = require('lodash/collection/find'),
     forEach = require('lodash/collection/forEach');
 
 
@@ -148,9 +149,21 @@ function Editor($scope) {
   };
 
   this.addDiagram = function(file) {
+
+    var existingDiagram;
+
     if (file) {
-      this.diagrams.push(file);
-      this.showDiagram(file);
+
+      existingDiagram = find(this.diagrams, function(d) {
+        return d.path === file.path;
+      });
+
+      if (existingDiagram) {
+        this.showDiagram(existingDiagram);
+      } else {
+        this.diagrams.push(file);
+        this.showDiagram(file);
+      }
 
       $scope.$applyAsync();
     }
