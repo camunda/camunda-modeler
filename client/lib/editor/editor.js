@@ -73,19 +73,6 @@ function Editor($scope) {
     }
   };
 
-  // Caveat to get the `Modifier+A` to work with **Select Elements**
-  // If we don't do this, then the html elements will be highlighted
-  // and the desired behaviour won't work
-  window.addEventListener('keydown', function(evt) {
-    if (evt.keyCode === 65 && modifierPressed(evt) && !isInput(evt.target)) {
-      evt.preventDefault();
-
-      if (self.currentDiagram) {
-        self.currentDiagram.control.trigger('selectElements');
-      }
-    }
-  });
-
   this.saveDiagram = function(diagram, options, done) {
     var self = this;
 
@@ -405,6 +392,40 @@ function Editor($scope) {
   };
 
   this.init();
+
+
+  function handleGlobalKey(evt) {
+
+    // Caveat to get the `Modifier+A` to work with **Select Elements**
+    // If we don't do this, then the html elements will be highlighted
+    // and the desired behaviour won't work
+
+    var diagram = self.currentDiagram;
+
+    if (!diagram || isInput(evt.target) || !modifierPressed(evt)) {
+      return;
+    }
+
+    if (evt.keyCode === 65) { // MOD + A
+      evt.preventDefault();
+
+      diagram.control.trigger('selectElements');
+    }
+
+    if (evt.keyCode === 90 && evt.shiftKey) { // MOD + SHIFT + Z
+      evt.preventDefault();
+
+      diagram.control.trigger('redo');
+    }
+  }
+
+  // hook into global short cuts for fixing Modifier+A (select all)
+  // and allowing Modifier+SHIFT+Z (redo)
+  window.addEventListener('keydown', handleGlobalKey);
+
+  $scope.$on('$destroy', function() {
+    window.removeEventListener('keydown', handleGlobalKey);
+  });
 }
 
 Editor.$inject = [ '$scope' ];
