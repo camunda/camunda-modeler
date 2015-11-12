@@ -39,7 +39,7 @@ function Menus(browserWindow, notation, positions) {
 Menus.prototype.createMenus = function(notation) {
   var template = menusTemplate(this.browserWindow, notation);
 
-  app.emit('editor-template-created', template);
+  app.emit('editor:template-created', template);
 
   this.attachMenus(template, notation);
 };

@@ -10,6 +10,6 @@ var app = require('../');
  */
 app.connectClient = null;
 
-app.on('editor-create', function(window) {
+app.on('editor:create', function(window) {
   app.connectClient = ConnectClient.create(window);
 });

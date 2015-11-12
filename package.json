@@ -11,17 +11,17 @@
   },
   "author": "bpmn.io <http://bpmn.io>",
   "dependencies": {
+    "angular": "^1.3.14",
     "bpmn-js": "^0.12.0",
     "bpmn-js-properties-panel": "^0.1.0",
-    "dmn-js": "^0.2.0",
-    "electron-window": "^0.6.0",
-    "lodash": "^3.0.0",
     "diagram-js": "^0.12.0",
     "diagram-js-origin": "^0.12.0",
-    "angular": "^1.3.14",
+    "dmn-js": "^0.2.0",
+    "electron-window": "^0.6.0",
     "jquery": "^2.1.1",
-    "open": "^0.0.5",
-    "min-dom": "^0.2.0"
+    "lodash": "^3.0.0",
+    "min-dom": "^0.2.0",
+    "open": "^0.0.5"
   },
   "devDependencies": {
     "archiver": "^0.16.0",
@@ -30,7 +30,7 @@
     "electron-connect": "^0.3.3",
     "electron-debug": "^0.2.0",
     "electron-packager": "^5.1.0",
-    "electron-prebuilt": "^0.34.0",
+    "electron-prebuilt": "^0.34.3",
     "errorify": "^0.3.1",
     "gulp": "^3.9.0",
     "gulp-less": "^3.0.3",

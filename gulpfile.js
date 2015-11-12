@@ -24,7 +24,7 @@ var assign = require('lodash/object/assign'),
     forEach = require('lodash/collection/forEach');
 
 var PACKAGE_JSON = require('./package.json'),
-    ELECTRON_VERSION = '0.34.0';
+    ELECTRON_VERSION = '0.34.3';
 
 
 // add custom browserify options here
@@ -212,7 +212,7 @@ function electronPackage(platform) {
 gulp.task('serve', function () {
 
   // Start browser process
-  app.start();
+  app.start(__dirname + '/resources/diagram/simple.bpmn');
 
   // Restart browser process
   gulp.watch([ 'app/**/*.js' ], app.restart);

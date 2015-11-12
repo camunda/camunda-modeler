@@ -57,7 +57,7 @@ function FileSystem(browserWindow, config) {
         return self.handleError('file.save.response', err);
       }
 
-      app.emit('editor-add-recent', updatedDiagram.path);
+      app.emit('editor:add-recent', updatedDiagram.path);
 
       browserWindow.webContents.send('file.save.response', null, updatedDiagram);
     });
@@ -73,7 +73,7 @@ function FileSystem(browserWindow, config) {
         return self.handleError('file.open.response', err);
       }
 
-      app.emit('editor-add-recent', diagramFile.path);
+      app.emit('editor:add-recent', diagramFile.path);
 
       browserWindow.webContents.send('file.open.response', null, diagramFile);
     });
@@ -95,7 +95,7 @@ function FileSystem(browserWindow, config) {
     if (hasUnsavedChanges === false) {
       self.browserWindow.webContents.send('editor.quit.response', null);
 
-      return app.emit('app-quit-allowed');
+      return app.emit('editor:quit-allowed');
     }
 
     self.quit(function(err, answer) {
@@ -105,7 +105,7 @@ function FileSystem(browserWindow, config) {
 
       self.browserWindow.webContents.send('editor.quit.response', null, answer);
       if (answer === 'quit') {
-        app.emit('app-quit-allowed');
+        app.emit('editor:quit-allowed');
       }
     });
   });

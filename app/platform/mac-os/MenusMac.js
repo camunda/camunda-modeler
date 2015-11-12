@@ -57,7 +57,7 @@ function appMenu() {
   };
 }
 
-app.on('editor-template-created', function(template) {
+app.on('editor:template-created', function(template) {
   template.unshift(appMenu());
 
   template = editFileMenu(template);

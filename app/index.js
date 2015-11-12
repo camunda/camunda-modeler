@@ -17,24 +17,34 @@ var Shell = require('shell');
 var Platform = require('./platform'),
     Config = require('./Config'),
     FileSystem = require('./FileSystem'),
-    Workspace = require('./Workspace');
-
+    Workspace = require('./Workspace'),
+    SingleInstance = require('./SingleInstance'),
+    Cli = require('./Cli');
 
 var app = require('app');
 var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
 
+var platform = Platform.create(process.platform, app, config);
 
-/**
- * The main editor window.
- */
+// make app a singleton
+if (config.get('single-instance', true)) {
+  SingleInstance.init();
+}
+
+
+// The main editor window.
 app.mainWindow = null;
 
-// Filepath where we store the path of a file that the user tried to open by association
-app.filePath = null;
+// List of files that should be opened by the editor
+app.openFiles = [];
 
 // We need this check so we can quit after checking for unsaved diagrams
 app.dirty = true;
 
+
+function delay(fn, timeout) {
+  return setTimeout(fn, timeout || 0);
+}
 
 // TODO: Perhaps find a more solid approach to this
 function whichNotation(filePath) {
@@ -48,13 +58,24 @@ function whichNotation(filePath) {
  */
 function open() {
 
-  if (!app.mainWindow) {
-    app.mainWindow = createEditorWindow();
+  var mainWindow = app.mainWindow;
+
+  if (!mainWindow) {
+    mainWindow = app.mainWindow = createEditorWindow();
+
+    // This event gets triggered on graphical OS'es when the user
+    // tries to quit the modeler by clicking the little 'x' button
+    mainWindow.on('close', beforeQuit);
+
+    // dereference the main window on close
+    mainWindow.on('closed', function() {
+      app.mainWindow = null;
+    });
   }
 
-  app.emit('editor-create', app.mainWindow);
+  app.emit('editor:create', mainWindow);
 
-  app.emit('editor-create-menu', app.mainWindow, whichNotation(app.filePath));
+  app.emit('editor:create-menu', mainWindow);
 }
 
 /**
@@ -63,12 +84,14 @@ function open() {
  * @param  {Object}   Event
  */
 function beforeQuit(evt) {
-  if (app.dirty) {
-    evt.preventDefault();
-
-    // Triggers the check for unsaved diagrams
-    app.mainWindow.webContents.send('editor.actions', { event: 'editor.quit' });
+  if (!app.dirty) {
+    return;
   }
+
+  evt.preventDefault();
+
+  // Triggers the check for unsaved diagrams
+  app.mainWindow.webContents.send('editor.actions', { event: 'editor.quit' });
 }
 
 
@@ -91,7 +114,7 @@ function createEditorWindow() {
   var indexPath = path.resolve(__dirname + '/../public/index.html');
 
   mainWindow.showUrl(indexPath, function () {
-    app.emit('editor-open', mainWindow);
+    app.emit('editor:open', mainWindow);
   });
 
   mainWindow.webContents.on('will-navigate', function(evt, url) {
@@ -103,63 +126,88 @@ function createEditorWindow() {
 }
 
 
-// init default behavior
+//////// open file handling //////////////////////////////
 
-// app.on('open-url', function(evt) {
-//   evt.preventDefault();
-// });
+app.on('open-url', function(evt) {
+  console.log('app:open-url', evt);
+
+  evt.preventDefault();
+});
 
 // open-file event is only fired on Mac
 app.on('open-file', function(evt, filePath) {
-  evt.preventDefault();
+  console.log('app:open-file', evt, filePath);
 
-  app.filePath = filePath;
+  if (evt) {
+    evt.preventDefault();
+  }
 
   if (app.mainWindow) {
-    app.emit('association-file-open', filePath);
+    app.emit('editor:file-open', filePath);
+  } else {
+    app.emit('editor:defer-file-open', filePath);
   }
 });
 
-app.on('ready', function(evt) {
-  if (!app.mainWindow) {
-    open();
-  }
+app.on('editor:file-open', function(filePath) {
+  console.log('app:editor:file-open', filePath);
+
+  app.fileSystem.addFile(filePath);
 });
 
-app.on('editor-open', function(mainWindow) {
+app.on('editor:defer-file-open', function(filePath) {
+  console.log('app:editor:defer-file-open', filePath);
+
+  app.openFiles.push(filePath);
+});
+
+app.on('editor:deferred-file-open', function() {
+  app.openFiles.forEach(function(filePath) {
+    app.fileSystem.addFile(filePath);
+  });
+});
+
+app.on('editor:cmd', function(argv, cwd) {
+  console.log('app:editor:cmd', argv, cwd);
+
+  var files = Cli.extractFiles(argv, cwd);
+
+  files.forEach(function(f) {
+    app.emit('open-file', null, f);
+  });
+});
+
+
+app.on('editor:open', function(mainWindow) {
   app.fileSystem = new FileSystem(mainWindow, config);
 
-  mainWindow.webContents.send('editor-bootstrap');
-
-  app.emit('association-file-open', app.filePath);
-
-  if (app.filePath) {
-    app.fileSystem.addFile(app.filePath);
-  }
-
-  // This event gets triggered on graphical OS'es when the user
-  // tries to quit the modeler by clicking the little 'x' button
-  app.mainWindow.on('close', beforeQuit);
+  delay(function() {
+    app.emit('editor:deferred-file-open');
+  }, 1000);
 });
 
-// This event is triggered if the user tries to exit the modeler
-// by using the menu or keybinding
+//////// shutdown ////////////////////////////////////
+
 app.on('before-quit', beforeQuit);
 
 // This is a custom event that is fired by us when there are no
 // open diagrams left with unsaved changes
-app.on('app-quit-allowed', function() {
-
-  // allow actual quit (via beforeQuit)
+app.on('editor:quit-allowed', function() {
   app.dirty = false;
 
   app.quit();
 });
 
 
-// init platform specific stuff
+//////// initialization //////////////////////////////
 
-Platform.init(process.platform, config);
+app.on('ready', function(evt) {
+  open();
+});
+
+app.emit('editor:init');
+
+app.emit('editor:cmd', process.argv, process.cwd());
 
 // expose app
 module.exports = app;

@@ -10,19 +10,21 @@ var FileAssociations = require('./FileAssociations'),
 var FILE_ASSOCIATION_KEY = 'fileAssociation';
 
 
-function WindowsIntegration(app, config) {
+function WindowsPlatform(app, config) {
+
   // close handling
   app.on('window-all-closed', function () {
     app.quit();
   });
 
-  // check + setup file associations
-  app.on('editor-open', function(browserWindow) {
+  // setup file associations + deferred open file
+  // specified via command-line
+  app.on('editor:open', function(browserWindow) {
     checkFileAssociations(app, config);
   });
 
   // editor menu
-  app.on('editor-create-menu', function(mainWindow, notation) {
+  app.on('editor:create-menu', function(mainWindow, notation) {
     var positions = {
       edit: 1
     };
@@ -30,21 +32,12 @@ function WindowsIntegration(app, config) {
     new Menus(mainWindow, notation, positions);
   });
 
-  // modeler was opened through file association
-  app.on('association-file-open', function() {
-    var filePath = process.argv[1];
-
-    if (parseUtil.hasExtension(filePath)) {
-      app.fileSystem.addFile(filePath);
-    }
-  });
-
-  app.on('editor-add-recent', function(path) {
+  app.on('editor:add-recent', function(path) {
     app.addRecentDocument(path);
   });
 }
 
-module.exports = WindowsIntegration;
+module.exports = WindowsPlatform;
 
 
 /**
