@@ -16,7 +16,7 @@ function Menus(browserWindow, notation, positions) {
   this.browserWindow = browserWindow;
 
   // An object with the index to specfic menus
-  this.positions = positions;
+  this.positions = positions || {};
 
   Ipc.on('menu.update', function(evt, updateNotation, entries) {
     if (Array.isArray(updateNotation)) {
@@ -134,7 +134,6 @@ Menus.prototype.setNotation = function(menuId, notation) {
   if (!notation) {
     notation = 'bpmn';
   }
-
   // BPMN should be the default on init
   this.menu.items[position].notation = notation;
 };

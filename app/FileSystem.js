@@ -104,7 +104,6 @@ function FileSystem(browserWindow, config) {
       }
 
       self.browserWindow.webContents.send('editor.quit.response', null, answer);
-
       if (answer === 'quit') {
         app.emit('app-quit-allowed');
       }
@@ -134,8 +133,7 @@ FileSystem.prototype.open = function(callback) {
 };
 
 FileSystem.prototype._openFile = function(filePath, callback) {
-  var browserWindow = this.browserWindow,
-      self = this;
+  var self = this;
 
   fs.readFile(filePath, this.encoding, function(err, file) {
 
@@ -144,21 +142,12 @@ FileSystem.prototype._openFile = function(filePath, callback) {
     if (!diagramFile.notation) {
       Dialog.showMessageBox({
         type: 'warning',
-        title: 'Unknown file type',
+        title: 'Unrecognized file format',
         buttons: [ 'Close' ],
-        message: [
-          'The file ""' + diagramFile.name + '"" is not a "bpmn" or "dmn" file.',
-          'Please try again!'
-        ].join('\n')
+        message: 'The file "' + diagramFile.name + '" is not a BPMN or DMN file.'
       });
 
-      self.open(function(err, diagramFile) {
-        if (err) {
-          return self.handleError('file.open.response', err);
-        }
-        browserWindow.webContents.send('file.open.response', null, diagramFile);
-      });
-      return;
+      return self.open(callback);
     }
 
     callback(err, diagramFile);

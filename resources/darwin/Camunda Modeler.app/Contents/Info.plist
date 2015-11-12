@@ -28,14 +28,36 @@
         <key>CFBundleTypeIconFile</key>
         <string>XML</string>
         <key>CFBundleTypeName</key>
-        <string>Bpmn Document</string>
+        <string>BPMN Document</string>
         <key>CFBundleTypeRole</key>
         <string>Editor</string>
-        <key>LSTypeIsPackage</key>
-        <false/>
-        <key>NSPersistentStoreTypeKey</key>
-        <string>XML</string>
+        <key>LSHandlerRank</key>
+        <string>Alternate</string>
       </dict>
+      <key>CFBundleTypeExtensions</key>
+      <array>
+        <string>dmn</string>
+      </array>
+      <key>CFBundleTypeIconFile</key>
+      <string>XML</string>
+      <key>CFBundleTypeName</key>
+      <string>DMN Document</string>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Alternate</string>
+      <key>CFBundleTypeExtensions</key>
+      <array>
+        <string>xml</string>
+      </array>
+      <key>CFBundleTypeIconFile</key>
+      <string>XML</string>
+      <key>CFBundleTypeName</key>
+      <string>XML Document</string>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Alternate</string>
     </array>
     <key>CFBundleVersion</key>
     <string>0.34.0</string>
@@ -55,10 +77,10 @@
     <string>10.8.0</string>
     <key>NSMainNibFile</key>
     <string>MainMenu</string>
-    <key>NSHighResolutionCapable</key>
-    <true/>
     <key>NSPrincipalClass</key>
     <string>AtomApplication</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
     <key>NSSupportsAutomaticGraphicsSwitching</key>
     <true/>
   </dict>

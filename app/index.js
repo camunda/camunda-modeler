@@ -149,6 +149,8 @@ app.on('before-quit', beforeQuit);
 // This is a custom event that is fired by us when there are no
 // open diagrams left with unsaved changes
 app.on('app-quit-allowed', function() {
+
+  // allow actual quit (via beforeQuit)
   app.dirty = false;
 
   app.quit();

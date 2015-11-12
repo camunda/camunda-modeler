@@ -18,11 +18,11 @@ function get(platform) {
       return require('./mac-os');
     } else
     if (platform == 'linux') {
-      var linux = require('./linux');
-      return linux;
+      return require('./linux');
     }
   } catch (e) {
     // no integration; bad luck
+    console.log(e);
   }
 
   return null;

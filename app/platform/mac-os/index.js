@@ -23,6 +23,12 @@ function MacOSIntegration(app) {
   app.on('editor-add-recent', function(path) {
     app.addRecentDocument(path);
   });
+
+  app.on('app-quit-allowed', function() {
+    // app.quit() not working under Mac OSX,
+    // fallback to a solution that always works ;-)
+    process.exit(0);
+  });
 }
 
 module.exports = MacOSIntegration;
