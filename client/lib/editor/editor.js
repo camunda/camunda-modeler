@@ -23,7 +23,7 @@ function modifierPressed(evt) {
 function Editor($scope) {
 
   var self = this,
-      dirty = true;
+      dirty = false;
 
   this.idx = 0;
   this.currentDiagram = null;
@@ -198,9 +198,9 @@ function Editor($scope) {
         diagram.control = new DiagramControl(diagram);
       }
 
-      if (dirty && diagrams.length >= 1) {
+      if (!dirty && diagrams.length >= 1) {
         menuUpdater.enableMenus();
-        dirty = false;
+        dirty = true;
       }
 
       menuEntriesUpdate = {
