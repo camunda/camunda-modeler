@@ -52,7 +52,8 @@ function saveFile(diagramFile, options, callback) {
   var diagram = {
     path: diagramFile.path,
     name: diagramFile.name,
-    contents: diagramFile.contents
+    contents: diagramFile.contents,
+    notation: diagramFile.notation
   };
 
   browser.send('file.save', [ options.create, diagram ], function(err, updatedDiagram) {

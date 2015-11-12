@@ -13,10 +13,13 @@ var errorUtil = require('./util/error'),
 
 var SUPPORTED_EXT = [ 'bpmn', 'dmn', 'bpmn20.xml', 'dmn11.xml' ];
 
+var SUPPORTED_EXT_BPMN = { name: 'BPMN diagram', extensions: [ 'bpmn', 'bpmn20.xml' ] },
+    SUPPORTED_EXT_DMN = { name: 'DMN table', extensions: [ 'dmn', 'dmn11.xml' ] };
+
 var SUPPORTED_EXT_FILTER = [
   { name: 'All supported', extensions: SUPPORTED_EXT },
-  { name: 'BPMN diagram', extensions: [ 'bpmn', 'bpmn20.xml' ] },
-  { name: 'DMN table', extensions: [ 'dmn', 'dmn11.xml' ] },
+  SUPPORTED_EXT_BPMN,
+  SUPPORTED_EXT_DMN,
   { name: 'All files', extensions: [ '*' ] }
 ];
 
@@ -180,7 +183,7 @@ FileSystem.prototype.save = function(newDirectory, diagramFile, callback) {
 
   // Save as..
   if (newDirectory || diagramFile.path === '[unsaved]') {
-    this.showSaveAsDialog(diagramFile.name, function(filename) {
+    this.showSaveAsDialog(diagramFile, function(filename) {
       if (!filename) {
         return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
       }
@@ -296,21 +299,23 @@ FileSystem.prototype.showOpenDialog = function(callback) {
   });
 };
 
-FileSystem.prototype.showSaveAsDialog = function(name, callback) {
+FileSystem.prototype.showSaveAsDialog = function(diagramFile, callback) {
   var config = this.config,
-      defaultPath = config.get('defaultPath', app.getPath('userDesktop')),
-      title;
+      defaultPath = config.get('defaultPath', app.getPath('userDesktop'));
 
-  if (typeof name === 'function') {
-    callback = name;
-    name = 'diagram';
+  var notation = diagramFile.notation,
+      name = diagramFile.name,
+      filters = [];
+
+  if (notation === 'bpmn') {
+    filters.push(SUPPORTED_EXT_BPMN);
+  } else {
+    filters.push(SUPPORTED_EXT_DMN);
   }
 
-  title = 'Save ' + name + ' as..';
-
   var opts = {
-    title: title,
-    filters: SUPPORTED_EXT_FILTER,
+    title: 'Save ' + name + ' as..',
+    filters: filters,
     defaultPath: defaultPath
   };
 
