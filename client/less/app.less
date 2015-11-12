@@ -20,8 +20,8 @@ body, html {
 }
 
 .bio-header {
-  line-height: 40px;
-  height: 50px;
+  line-height: 35px;
+  height: 45px;
   background: @background-color-header;
   border-bottom: solid 1px @border-color;
   flex: initial;
@@ -87,33 +87,73 @@ button[class*=" icon-"] {
 
 .tabs {
   .flex-container(column);
-}
 
-.tabs .tabbar a,
-.tabs .tabbar li {
-  vertical-align: middle;
-}
+  .tabbar {
+    flex: initial;
+    z-index: 100;
 
-.tabs .tab {
-  flex-grow: 0;
-  position: relative;
+    ul {
+      list-style: none;
+      margin: 0 0 0 -4px;
+      padding: 0;
+      background: @background-color-default;
 
-  overflow: hidden;
-}
+      .flex-container(row);
+    }
 
-.tabs .tab > * {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+    li {
+      flex: initial;
+      margin: 4px 0 -1px 4px;
+    }
 
-  width: 100%;
-}
+    li.active {
+      margin-top: 3px;
+      margin-bottom: -1px;
+    }
 
-.bio-diagram {
-  border: solid 1px @border-color;
-  background: white;
+    a {
+      display: inline-block;
+
+      vertical-align: middle;
+      border: solid 1px @border-color;
+
+      padding: 5px 10px;
+      background: @background-color-diagram;
+      text-decoration: none;
+    }
+
+    li.active a {
+      background: white;
+      border-bottom: none;
+
+      padding: 7px 10px;
+    }
+
+    &.tabbar-default a {
+      cursor: pointer;
+      padding: 6px 10px;
+      background-color: #EAEAEA;
+      transition: background-color 0.15s ease;
+      border-radius: 3px 3px 0 0;
+
+      &:hover {
+        background-color: #fff;
+      }
+    }
+  }
+
+  .tabs {
+
+    .tab {
+      flex: initial;
+
+      overflow: hidden;
+
+      &.active {
+        flex: 1;
+      }
+    }
+  }
 }
 
 .bio-diagrams {
@@ -121,146 +161,9 @@ button[class*=" icon-"] {
   background: @background-color-default;
 }
 
-
-.bio-diagram .tab[data-tab="diagram"] {
-  order: 1;
-}
-
-.bio-diagram .tabbar-bottom {
-  order: 2;
-}
-
-.bio-diagram .tabbar-bottom ul {
-  border: 1px @border-color;
-  border-style: solid none;
-}
-
-.bio-diagram .tab[data-tab="xml"] {
-  order: 3;
-}
-
-.bio-diagram .tab[data-tab="xml"] textarea {
-  border: none;
-}
-
-.tabs .tabbar {
-  flex: initial;
-  z-index: 100;
-}
-
-.tabs .tabbar ul {
-  list-style: none;
-  margin: 0 0 0 -4px;
-  padding: 0;
-  background: @background-color-default;
-}
-
-.tabbar li,
-.tabbar a {
-  display: inline-block;
-}
-
-.tabbar a {
-  vertical-align: middle;
+.bio-diagram {
   border: solid 1px @border-color;
-  margin: 2px 0 2px 4px;
-}
-
-.tabbar li.active a {
   background: white;
-  margin-bottom: -1px;
-  border-bottom: none;
-
-  padding: 7px 10px;
-}
-
-.show-diagram .tab[data-tab="diagram"] {
-  flex-grow: 1;
-}
-
-.show-xml .tab[data-tab="xml"] {
-  flex-grow: 0.5;
-}
-
-
-.tabbar a[show-tab="diagram"] {
-  margin-top: -1px !important;
-}
-
-.tabbar a[show-tab="xml"] {
-  margin-bottom: -1px !important;
-}
-
-.show-diagram .tabbar a[show-tab="diagram"] {
-  border-top-color: @background-color-diagram;
-}
-
-.show-xml .tabbar a[show-tab="xml"] {
-  border-bottom-color: @background-color-diagram;
-}
-
-.tabs .tabbar a {
-  padding: 5px 10px;
-  background: @background-color-diagram;
-  text-decoration: none;
-}
-
-.tabs .tabbar-default a {
-  cursor: pointer;
-  padding: 6px 10px;
-  margin-bottom: -2px;
-  background-color: #EAEAEA;
-  transition: background-color 0.15s ease;
-  border-radius: 3px 3px 0 0;
-
-  &:hover {
-    background-color: #fff;
-  }
-}
-
-.bio-diagram .tabbar-bottom a {
-  padding: 7px 10px;
-  cursor: pointer;
-  width: 10em;
-  text-align: center;
-  margin-left: 24px;
-  margin-bottom: -3px;
-  background-color: #EAEAEA;
-  transition: background-color 0.15s ease;
-  border-radius: 3px 3px 0 0;
-
-  &:hover {
-    background-color: #fff;
-  }
-
-  &:first-child {
-    padding: 6px 10px;
-  }
-}
-
-.bio-diagram .tabbar-bottom ul {
-  margin: 0;
-}
-
-.bio-diagram .tabbar-bottom li.active-diagram a {
-  background: white;
-  margin-top: -1px;
-  margin-bottom: 5px;
-  border-top: none;
-  border-radius: 0 0 3px 3px;
-
-  padding: 6px 10px;
-}
-
-.bio-diagram .tabbar-bottom li.active-xml a {
-  background: white;
-  margin-top: 5px;
-  margin-bottom: -1px;
-
-  border-bottom: none;
-  border-radius: 3px 3px 0 0;
-
-  padding: 6px 10px;
 }
 
 /**
@@ -270,31 +173,37 @@ button[class*=" icon-"] {
 .bio-diagram-contents {
   .flex-container(row);
 
-  .container {
-    width: 100%;
-    height: 100%;
+  .bio-canvas,
+  .bio-properties-panel {
+    position: relative;
   }
 
   .bio-canvas {
-    position: relative;
     flex: 1;
   }
 
   .bio-properties-panel {
     flex: initial;
   }
+
+  .container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+  }
 }
 
 .bio-properties-panel {
   width: 260px;
-  height: 100%;
-
-  position: relative;
 
   border-left: 1px solid @border-color;
 
+  background-color: #F8F8F8;
+
   &.hidden {
-    width: 0;
+    flex: 0;
     border: none;
 
     .container {
@@ -319,9 +228,4 @@ button[class*=" icon-"] {
 
     position: absolute;
   }
-}
-
-button.btn {
-  font-size: @control-font-size;
-  padding: 5px 7px;
 }

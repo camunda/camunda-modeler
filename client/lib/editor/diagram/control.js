@@ -105,21 +105,13 @@ function DiagramControl(diagramFile) {
     diagramFile.unsaved = false;
   };
 
-  this.redrawDiagram = function() {
-    if (self.xml !== diagramFile.contents) {
-      modeler.importXML(self.xml, imported);
-
-      diagramFile.unsaved = true;
-    }
-  };
-
   this.save = function(done) {
     modeler.saveXML({ format: true }, function(err, xml) {
       if (typeof done === 'function') {
         done(err, xml);
       }
 
-      self.xml = diagramFile.contents = xml;
+      diagramFile.contents = xml;
 
       apply();
     });

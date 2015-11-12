@@ -39,7 +39,7 @@
           </ul>
         </div>
 
-        <div ng-class="{'show-diagram': editor.isActiveView('diagram'), 'show-xml': editor.isActiveView('xml')}" class="content">
+        <div class="content">
 
           <div class="bio-diagram" ng-if="!editor.isOpen()">
 
@@ -57,28 +57,17 @@
             </div>
           </div>
 
-          <div class="bio-diagram tabs" ng-if="editor.isActive(diagram)" ng-repeat="diagram in editor.diagrams">
+          <div class="bio-diagram tabs"
+               ng-repeat="diagram in editor.diagrams"
+               ng-if="editor.isActive(diagram)">
 
-            <div data-tab="diagram" class="tab">
-              <div class="bio-diagram-contents" diagram control="diagram.control">
-                <div class="bio-canvas"></div>
-                <div class="bio-properties-panel"
-                     ng-show="editor.hasProperties(diagram)"
-                     ng-class="{ hidden: !editor.isPropertiesPanelOpen() }">
-                  <a class="toggle" ng-click="editor.togglePropertiesPanel()"></a>
-                </div>
+            <div class="tab active bio-diagram-contents" diagram control="diagram.control">
+              <div class="bio-canvas"></div>
+              <div class="bio-properties-panel"
+                   ng-show="editor.hasProperties(diagram)"
+                   ng-class="{ hidden: !editor.isPropertiesPanelOpen() }">
+                <a class="toggle" ng-click="editor.togglePropertiesPanel()"></a>
               </div>
-            </div>
-
-            <div data-tab="xml" class="tab">
-              <textarea ng-change="diagram.control.redrawDiagram()" ng-model-options="{updateOn: 'default', debounce: {'default': 1000 }}" ng-model="diagram.control.xml" spellcheck="false"></textarea>
-            </div>
-
-            <div class="tabbar tabbar-bottom">
-              <ul>
-                <li ng-class="{ 'active-diagram': editor.isActiveView('diagram') }"><a ng-click="editor.toggleView('diagram')">Diagram</a></li>
-                <li ng-class="{ 'active-xml': editor.isActiveView('xml') }"><a ng-click="editor.toggleView('xml')">XML</a></li>
-              </ul>
             </div>
           </div>
         </div>
