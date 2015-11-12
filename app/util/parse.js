@@ -21,7 +21,7 @@ function extname(filePath) {
 function notation(filePath) {
   var extension = extname(filePath);
 
-  if (extension) {
+  if (!extension) {
     return false;
   }
 
