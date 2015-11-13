@@ -7,7 +7,6 @@
 @import "_layout";
 
 @import "_menu-bar";
-@import "_close";
 
 
 body, html {
@@ -84,9 +83,64 @@ button[class*=" icon-"] {
   text-indent: -10000px;
 }
 
-
 .tabs {
   .flex-container(column);
+
+  .close-marker,
+  .dirty-marker {
+    display: none;
+    line-height: 8px;
+    width: 12px;
+  }
+
+  .close {
+
+    outline: none;
+
+    .close-marker {
+      display: inline-block;
+    }
+  }
+
+  .close.dirty {
+
+    .dirty-marker {
+      display: block;
+    }
+
+    .close-marker {
+      display: none;
+    }
+  }
+
+  .close.dirty:hover {
+
+    .dirty-marker {
+      display: none;
+    }
+
+    .close-marker {
+      display: inline-block;
+    }
+  }
+
+  .dirty-marker {
+    margin-top: -4px;
+    color: #EFAF0F;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .close {
+    border: none;
+    background: none;
+    font-size: 18px;
+    padding: 0;
+    margin: -3px 0 -3px 2px;
+    vertical-align: middle;
+    line-height: 1;
+    cursor: pointer;
+  }
 
   .tabbar {
     flex: initial;
@@ -103,12 +157,11 @@ button[class*=" icon-"] {
 
     li {
       flex: initial;
-      margin: 4px 0 -1px 4px;
+      margin: 5px 0 -1px 4px;
     }
 
     li.active {
       margin-top: 3px;
-      margin-bottom: -1px;
     }
 
     a {
@@ -125,7 +178,7 @@ button[class*=" icon-"] {
     li.active a {
       background: white;
       border-bottom: none;
-
+      border-top: solid 2px @color-bpmnio;
       padding: 7px 10px;
     }
 
@@ -134,7 +187,7 @@ button[class*=" icon-"] {
       padding: 6px 10px;
       background-color: #EAEAEA;
       transition: background-color 0.15s ease;
-      border-radius: 3px 3px 0 0;
+      border-radius: 2px 2px 0 0;
 
       &:hover {
         background-color: #fff;

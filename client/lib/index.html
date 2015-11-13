@@ -13,10 +13,6 @@
   <body ng-cloak ng-controller="EditorController as editor">
 
     <div class="bio-header">
-      <a href="http://bpmn.io" class="logo">
-        <span class="icon-bpmn-io"></span>
-      </a>
-
       <div menu-bar editor="editor"></div>
     </div>
 
@@ -28,9 +24,13 @@
           <ul>
             <li class="entry" ng-repeat="diagram in editor.diagrams" ng-class="{ active: editor.isActive(diagram) }">
               <a title="{{ diagram.path }}" ng-click="editor.showDiagram(diagram)">
-                <span ng-show="diagram.unsaved">*</span>
                 {{ diagram.name }}
-                <button class="close" ng-click="editor.closeDiagram(diagram)">×</button>
+                <button class="close"
+                        ng-click="editor.closeDiagram(diagram)"
+                        ng-class="{ dirty: diagram.unsaved }">
+                  <span class="close-marker">×</span>
+                  <span class="dirty-marker">&cir;</span>
+                </button>
               </a>
             </li>
             <li class="entry" ng-class="{ active: !editor.isOpen() }">
@@ -44,7 +44,7 @@
           <div class="bio-diagram" ng-if="!editor.isOpen()">
 
             <div class="bio-landing-page ">
-              <h1>No open BPMN diagram</h1>
+              <h1>No open diagram</h1>
 
               <p>
                 <button ng-click="editor.newDiagram('bpmn')">create diagram</button>
