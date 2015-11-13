@@ -4,7 +4,8 @@ var dialog = require('dialog');
 
 var Menus = require('../Menus');
 
-var FileAssociations = require('./FileAssociations');
+var FileAssociations = require('./FileAssociations'),
+    parseUtil = require('../../util/parse');
 
 var FILE_ASSOCIATION_KEY = 'fileAssociation';
 
@@ -31,8 +32,10 @@ function WindowsIntegration(app, config) {
 
   // modeler was opened through file association
   app.on('association-file-open', function() {
-    if (app.fileSystem.isExtAllowed(process.argv[2])) {
-      app.fileSystem.addFile(process.argv[2]);
+    var filePath = process.argv[1];
+
+    if (parseUtil.hasExtension(filePath)) {
+      app.fileSystem.addFile(filePath);
     }
   });
 

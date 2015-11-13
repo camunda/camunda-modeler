@@ -11,10 +11,10 @@ var Ipc = require('ipc'),
 var errorUtil = require('./util/error'),
     parseUtil = require('./util/parse');
 
-var SUPPORTED_EXT = [ 'bpmn', 'dmn', 'bpmn20.xml', 'dmn11.xml' ];
+var SUPPORTED_EXT = [ 'bpmn', 'dmn', 'xml' ];
 
-var SUPPORTED_EXT_BPMN = { name: 'BPMN diagram', extensions: [ 'bpmn', 'bpmn20.xml' ] },
-    SUPPORTED_EXT_DMN = { name: 'DMN table', extensions: [ 'dmn', 'dmn11.xml' ] };
+var SUPPORTED_EXT_BPMN = { name: 'BPMN diagram', extensions: [ 'bpmn', 'xml' ] },
+    SUPPORTED_EXT_DMN = { name: 'DMN table', extensions: [ 'dmn', 'xml' ] };
 
 var SUPPORTED_EXT_FILTER = [
   { name: 'All supported', extensions: SUPPORTED_EXT },
@@ -33,7 +33,7 @@ function createDiagramFile(filePath, file) {
   return {
     contents: file,
     name: path.basename(filePath),
-    notation: parseUtil.notation(filePath),
+    notation: parseUtil.extractNotation(file),
     path: filePath
   };
 }
@@ -129,32 +129,37 @@ FileSystem.prototype.open = function(callback) {
       return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
     }
 
-    self._open(filenames[0], callback);
+    self._openFile(filenames[0], callback);
   });
 };
 
-FileSystem.prototype._open = function(filePath, callback) {
+FileSystem.prototype._openFile = function(filePath, callback) {
   var browserWindow = this.browserWindow,
       self = this;
 
-  if (!this.isExtAllowed(filePath)) {
-    Dialog.showErrorBox('Wrong file type', 'Please choose a .bpmn or .dmn file!');
-
-    this.open(function(err, diagramFile) {
-      if (err) {
-        return self.handleError('file.open.response', err);
-      }
-      browserWindow.webContents.send('file.open.response', null, diagramFile);
-    });
-    return;
-  }
-
-  this._openFile(filePath, callback);
-};
-
-FileSystem.prototype._openFile = function(filePath, callback) {
   fs.readFile(filePath, this.encoding, function(err, file) {
+
     var diagramFile = createDiagramFile(filePath, file);
+
+    if (!diagramFile.notation) {
+      Dialog.showMessageBox({
+        type: 'warning',
+        title: 'Unknown file type',
+        buttons: [ 'Close' ],
+        message: [
+          'The file ""' + diagramFile.name + '"" is not a "bpmn" or "dmn" file.',
+          'Please try again!'
+        ].join('\n')
+      });
+
+      self.open(function(err, diagramFile) {
+        if (err) {
+          return self.handleError('file.open.response', err);
+        }
+        browserWindow.webContents.send('file.open.response', null, diagramFile);
+      });
+      return;
+    }
 
     callback(err, diagramFile);
   });
@@ -188,7 +193,7 @@ FileSystem.prototype.save = function(newDirectory, diagramFile, callback) {
         return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
       }
 
-      filename = self.sanitizeFilename(filename);
+      filename = self.sanitizeFilename(filename, diagramFile.notation);
 
       self._save(filename, diagramFile, callback);
     });
@@ -392,20 +397,14 @@ FileSystem.prototype.showGeneralErrorDialog = function() {
   Dialog.showErrorBox('Error', 'There was an internal error.' + '\n' + 'Please try again.');
 };
 
-FileSystem.prototype.sanitizeFilename = function(filename) {
+FileSystem.prototype.sanitizeFilename = function(filename, notation) {
   var extension = path.extname(filename);
 
   if (extension === '') {
-    return filename + '.bpmn';
+    return filename + '.' + notation;
   }
 
   return filename;
-};
-
-FileSystem.prototype.isExtAllowed = function isExtAllowed(filePath) {
-  var extension = parseUtil.extname(filePath);
-
-  return extension && SUPPORTED_EXT.indexOf(extension) !== -1;
 };
 
 module.exports = FileSystem;

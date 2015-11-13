@@ -1,5 +1,7 @@
 'use strict';
 
+var parseUtil = require('../../util/parse');
+
 var Menus = require('../Menus');
 
 function LinuxIntegration(app) {
@@ -20,8 +22,10 @@ function LinuxIntegration(app) {
 
   // modeler was opened through file association
   app.on('association-file-open', function() {
-    if (app.fileSystem.isExtAllowed(process.argv[1])) {
-      app.fileSystem.addFile(process.argv[1]);
+    var filePath = process.argv[1];
+
+    if (parseUtil.hasExtension(filePath)) {
+      app.fileSystem.addFile(filePath);
     }
   });
 }

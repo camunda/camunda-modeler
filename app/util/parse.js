@@ -1,31 +1,35 @@
 'use strict';
 
-module.exports.extname = extname;
+var forEach = require('lodash/collection/forEach');
 
-function extname(filePath) {
-  var pattern,
-      match;
-
-  filePath = filePath || '';
-
-  pattern = /(bpmn20|dmn11)*\.(\w+)$/;
-  match = filePath.match(pattern);
-
-  if (!match) {
-    return false;
+var IDENTIFIERS = [
+  {
+    type: 'bpmn',
+    identifier: 'http://www.omg.org/spec/BPMN'
+  },
+  {
+    type: 'dmn',
+    identifier: 'http://www.omg.org/spec/DMN'
   }
+];
 
-  return match[0].replace(/^\./, '');
+function extractNotation(file) {
+  var notation = null;
+
+  forEach(IDENTIFIERS, function(elem) {
+    if (file.indexOf(elem.identifier) !== -1) {
+      notation = elem.type;
+    }
+  });
+
+  return notation;
 }
 
-function notation(filePath) {
-  var extension = extname(filePath);
+module.exports.extractNotation = extractNotation;
 
-  if (!extension) {
-    return false;
-  }
 
-  return extension.match(/^[A-z]+/)[0];
+function hasExtension(filePath) {
+  return filePath && /\.(\w)+$/.test(filePath);
 }
 
-module.exports.notation = notation;
+module.exports.hasExtension = hasExtension;

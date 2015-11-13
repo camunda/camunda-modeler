@@ -6,7 +6,7 @@ var forEach = require('lodash/collection/forEach'),
     unique = require('lodash/array/uniq');
 
 
-var EXTENSIONS = ['bpmn', 'dmn', 'bpmn20.xml', 'dmn11.xml'];
+var EXTENSIONS = [ 'bpmn', 'dmn' ];
 
 var REG_KEY_NOT_FOUND_PATTERN = /The system was unable to find the specified registry key or value/;
 
