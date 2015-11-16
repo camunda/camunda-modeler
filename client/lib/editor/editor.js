@@ -11,7 +11,6 @@ var assign = require('lodash/object/assign'),
     find = require('lodash/collection/find'),
     forEach = require('lodash/collection/forEach');
 
-
 function isInput(target) {
   return target.type === 'textarea' || target.type === 'input';
 }
@@ -208,9 +207,7 @@ function Editor($scope) {
         saving: self.isUnsaved()
       };
 
-      if (diagram.notation === 'bpmn') {
-        menuEntriesUpdate.selection = diagram.control.hasSelection();
-      }
+      menuEntriesUpdate.selection = diagram.control.hasSelection();
 
       menuUpdater.update(notation, menuEntriesUpdate);
     }

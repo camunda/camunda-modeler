@@ -23,7 +23,7 @@ function getEditMenu(browserWindow, notation) {
       }
     },
     {
-      id: 'directEditing',
+      id: 'bpmn:directEditing',
       label: 'Direct Editing',
       accelerator: 'E',
       click: function() {
@@ -98,7 +98,7 @@ function getEditMenu(browserWindow, notation) {
       }
     },
     {
-      id: 'removeSelected',
+      id: 'bpmn:removeSelected',
       label: 'Remove Selected',
       accelerator: 'Delete',
       click: function() {
@@ -110,17 +110,88 @@ function getEditMenu(browserWindow, notation) {
   // DMN modeling actions
   var dmnActions = [
     {
-      label: 'Add Cell',
-      accelerator: 'A',
+      label: 'Add Rule...',
+      submenu: [
+        {
+          id: 'dmn:addRule',
+          label: 'At End',
+          accelerator: '',
+          click: function() {
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.addRule' });
+          }
+        },
+        {
+          id: 'dmn:addRuleAbove',
+          label: 'Above Selected',
+          accelerator: '',
+          click: function() {
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.addRuleAbove' });
+          }
+        },
+        {
+          id: 'dmn:addRuleBelow',
+          label: 'Below Selected',
+          accelerator: '',
+          click: function() {
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.addRuleBelow' });
+          }
+        }
+      ]
+    },
+    {
+      id: 'dmn:clearRule',
+      label: 'Clear Rule',
+      accelerator: '',
       click: function() {
-        browserWindow.webContents.send('editor.actions', { event: 'dmn.addCell' });
+        browserWindow.webContents.send('editor.actions', { event: 'dmn.clearRule' });
       }
     },
     {
-      label: 'Remove Cell',
-      accelerator: 'R',
+      id: 'dmn:removeRule',
+      label: 'Remove Rule',
+      accelerator: '',
       click: function() {
-        browserWindow.webContents.send('editor.actions', { event: 'dmn.removeCell' });
+        browserWindow.webContents.send('editor.actions', { event: 'dmn.removeRule' });
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'Add Clause...',
+      submenu: [
+        {
+          id: 'dmn:addClause',
+          label: 'At End',
+          accelerator: '',
+          click: function() {
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.addClause' });
+          }
+        },
+        {
+          id: 'dmn:addClauseLeft',
+          label: 'Left of selected',
+          accelerator: '',
+          click: function() {
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.addClauseLeft' });
+          }
+        },
+        {
+          id: 'dmn:addClauseRight',
+          label: 'Right of selected',
+          accelerator: '',
+          click: function() {
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.addClauseRight' });
+          }
+        }
+      ]
+    },
+    {
+      id: 'dmn:removeClause',
+      label: 'Remove Clause',
+      accelerator: '',
+      click: function() {
+        browserWindow.webContents.send('editor.actions', { event: 'dmn.removeClause' });
       }
     }
   ];

@@ -58,7 +58,7 @@ EditorActions.prototype.getActions = function(payload) {
       }
     },
 
-    // Edit (bpmn)
+    // Edit (BPMN)
     'bpmn.spaceTool': {
       handler: function() {
         editor.trigger('spaceTool');
@@ -86,12 +86,69 @@ EditorActions.prototype.getActions = function(payload) {
     'bpmn.selectElements': {
       handler: function() {
         editor.trigger('selectElements', payload.data);
-      }
+      },
+      ignoreIfActiveInput: true
     },
     'bpmn.removeSelection': {
       handler: function() {
         editor.trigger('removeSelection', payload.data);
       }
+    },
+    // Edit (DMN)
+    'dmn.ruleAdd': {
+      handler: function() {
+        editor.trigger('ruleAdd');
+      },
+      ignoreIfActiveInput: true
+    },
+    'dmn.ruleAddAbove': {
+      handler: function() {
+        editor.trigger('ruleAddAbove');
+      },
+      ignoreIfActiveInput: true
+    },
+    'dmn.ruleAddBelow': {
+      handler: function() {
+        editor.trigger('ruleAddBelow');
+      },
+      ignoreIfActiveInput: true
+    },
+    'dmn.ruleRemove': {
+      handler: function() {
+        editor.trigger('ruleRemove');
+      },
+      ignoreIfActiveInput: true
+    },
+    'dmn.ruleClear': {
+      handler: function() {
+        editor.trigger('ruleClear');
+      },
+      ignoreIfActiveInput: true
+    },
+
+    'dmn.clauseAdd': {
+      handler: function() {
+        editor.trigger('clauseAdd');
+      },
+      ignoreIfActiveInput: true
+    },
+    'dmn.clauseAddLeft': {
+      handler: function() {
+        editor.trigger('clauseAddLeft');
+      },
+      ignoreIfActiveInput: true
+    },
+    'dmn.clauseAddRight': {
+      handler: function() {
+        editor.trigger('clauseAddRight');
+      },
+      ignoreIfActiveInput: true
+    },
+    'dmn.clauseRemove': {
+      handler: function() {
+        editor.trigger('clauseRemove');
+      },
+      ignoreIfActiveInput: true
     },
 
     'editor.undo': {
@@ -120,8 +177,8 @@ EditorActions.prototype.getActions = function(payload) {
 };
 
 /**
- * Returns true, if an input or textarea element is currently active
- */
+* Returns true, if an input or textarea element is currently active
+*/
 EditorActions.prototype.isInputActive = function() {
   var tagName = document.activeElement.tagName;
 

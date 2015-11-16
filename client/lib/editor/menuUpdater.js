@@ -11,10 +11,18 @@ var FILE_ID = 'file',
     UNDO_ID = 'undo',
     REDO_ID = 'redo',
     SAVE_ID = 'save',
-    SAVE_AS_ID = 'saveAs',
-    CLOSE_TAB_ID = 'closeTab',
-    DIRECT_EDITING_ID = 'directEditing',
-    REMOVE_SELECTION_ID = 'removeSelected';
+    SELECTION_IDS = [
+      'bpmn:directEditing',
+      'bpmn:removeSelected',
+      'dmn:addRuleAbove',
+      'dmn:addRuleBelow',
+      'dmn:clearRule',
+      'dmn:removeRule',
+      'dmn:addClause',
+      'dmn:addClauseLeft',
+      'dmn:addClauseRight',
+      'dmn:removeClause'
+    ];
 
 
 function history(canUndo, canRedo) {
@@ -46,21 +54,16 @@ function saving(canSave) {
 }
 
 function selection(enabled) {
-  return [
-    {
-      id: REMOVE_SELECTION_ID,
+  return SELECTION_IDS.map(function(id) {
+    return {
+      id: id,
       data: {
         enabled: enabled
       }
-    },
-    {
-      id: DIRECT_EDITING_ID,
-      data: {
-        enabled: enabled
-      }
-    }
-  ];
+    };
+  });
 }
+
 
 function enableMenus() {
   var enabled = true;
@@ -77,7 +80,7 @@ function enableMenus() {
       id: EDIT_ID,
       data: {
         enabled: enabled,
-        excludes: [ 'undo', 'redo', 'removeSelected', 'directEditing' ]
+        excludes: [ 'undo', 'redo' ].concat(SELECTION_IDS)
       }
     },
     {

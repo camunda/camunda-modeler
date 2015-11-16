@@ -50,6 +50,7 @@ function DiagramControl(diagramFile) {
     }
   }
 
+  // BPMN
   modeler.on('selection.changed', function(evt) {
     var elements,
         hasSelection,
@@ -71,6 +72,17 @@ function DiagramControl(diagramFile) {
 
     menuUpdater.update(diagramFile.type, {
       selection: hasSelection
+    });
+  });
+
+  // DMN
+  modeler.on('selection.changed', function(evt) {
+    if (!isNotation(diagramFile, 'dmn')) {
+      return;
+    }
+
+    menuUpdater.update('dmn', {
+      selection: evt.newSelection !== null
     });
   });
 
