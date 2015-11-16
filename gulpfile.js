@@ -255,6 +255,10 @@ gulp.task('properties-panel:less', function() {
              .pipe(gulp.dest('public/vendor/properties-panel'));
 });
 
+gulp.task('dmn-js:copy:font', function() {
+  return gulp.src('node_modules/dmn-js/fonts/dmn.*').pipe(gulp.dest('public/vendor/fonts'));
+});
+
 gulp.task('dmn-js:less', function() {
   return gulp.src('node_modules/dmn-js/styles/dmn-js.less')
              .pipe(less({
@@ -266,7 +270,8 @@ gulp.task('dmn-js:less', function() {
 gulp.task('client:copy:vendor', runSequence([
   'diagram-js:css',
   'properties-panel:less',
-  'dmn-js:less'
+  'dmn-js:less',
+  'dmn-js:copy:font'
 ]));
 
 gulp.task('client:copy', runSequence([
