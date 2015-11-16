@@ -1,11 +1,10 @@
 {
-  "name": "bpmn-io",
+  "name": "app",
   "css_prefix_text": "icon-",
   "css_use_suffix": false,
   "hinting": true,
   "units_per_em": 1000,
   "ascent": 850,
-  "copyright": "camunda Services GmbH",
   "glyphs": [
     {
       "uid": "e3738aef5412e284050a33839d2a2908",

@@ -237,7 +237,7 @@ gulp.task('client:less', function() {
 });
 
 gulp.task('client:copy:font', function() {
-  return gulp.src('client/font/font/*').pipe(gulp.dest('public/font'));
+  return gulp.src('client/font/*').pipe(gulp.dest('public/font'));
 });
 
 gulp.task('client:copy:html', function() {
