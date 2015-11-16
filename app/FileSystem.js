@@ -92,22 +92,9 @@ function FileSystem(browserWindow, config) {
 
 
   Ipc.on('editor.quit', function(evt, hasUnsavedChanges) {
-    if (hasUnsavedChanges === false) {
-      self.browserWindow.webContents.send('editor.quit.response', null);
+    self.browserWindow.webContents.send('editor.quit.response', null);
 
-      return app.emit('editor:quit-allowed');
-    }
-
-    self.quit(function(err, answer) {
-      if (err) {
-        return self.handleError('editor.quit.response', err);
-      }
-
-      self.browserWindow.webContents.send('editor.quit.response', null, answer);
-      if (answer === 'quit') {
-        app.emit('editor:quit-allowed');
-      }
-    });
+    return app.emit('editor:quit-allowed');
   });
 
 
@@ -210,7 +197,7 @@ FileSystem.prototype.close = function(diagramFile, callback) {
   var self = this;
 
   this.showCloseDialog(diagramFile.name, function(result) {
-    if (result === 0) {
+    if (result === 2) {
       return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
     }
     else if (result === 1) {
@@ -218,22 +205,6 @@ FileSystem.prototype.close = function(diagramFile, callback) {
     }
     else {
       self.save(false, diagramFile, callback);
-    }
-  });
-};
-
-FileSystem.prototype.quit = function(callback) {
-
-  this.showQuitDialog(function(promptResult) {
-    switch (promptResult) {
-      case 'save':
-        callback(null, 'save');
-        break;
-      case 'quit':
-        callback(null, 'quit');
-        break;
-      default:
-        callback(new Error(errorUtil.CANCELLATION_MESSAGE));
     }
   });
 };
@@ -325,7 +296,7 @@ FileSystem.prototype.showCloseDialog = function(name, callback) {
     title: 'Close diagram',
     message: 'Save changes to ' + name + ' before closing?',
     type: 'question',
-    buttons: [ 'Cancel', 'Don\'t Save', 'Save' ]
+    buttons: [ 'Save', 'Don\'t Save', 'Cancel' ]
   };
 
   if (!callback) {
@@ -333,32 +304,6 @@ FileSystem.prototype.showCloseDialog = function(name, callback) {
   }
 
   Dialog.showMessageBox(this.browserWindow, opts, callback);
-};
-
-FileSystem.prototype.showQuitDialog = function(callback) {
-  var opts = {
-    title: 'Quit Modeler',
-    message: 'You have some unsaved diagrams.' + '\n' + 'Do you want to save them before quitting ?',
-    type: 'question',
-    buttons: [ 'Yes', 'Quit', 'Cancel' ]
-  };
-
-  if (!callback) {
-    return Dialog.showMessageBox(this.browserWindow, opts);
-  }
-
-  Dialog.showMessageBox(this.browserWindow, opts, function(result) {
-    switch (result) {
-      case 0:
-        callback('save');
-        break;
-      case 1:
-        callback('quit');
-        break;
-      default:
-        callback('cancel');
-    }
-  });
 };
 
 FileSystem.prototype.showImportError = function(trace, callback) {

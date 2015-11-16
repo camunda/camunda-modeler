@@ -77,15 +77,11 @@ module.exports.saveFile = saveFile;
  * @param {Array} diagrams
  * @param {Function} callback
  */
-function quit(hasUnsavedChanges, callback) {
-  if (!callback) {
-    return browser.send('editor.quit', [ hasUnsavedChanges ], function() {});
-  }
-
-  browser.send('editor.quit', [ hasUnsavedChanges ], callback);
+function quitEditor() {
+  return browser.send('editor.quit', function() {});
 }
 
-module.exports.quit = quit;
+module.exports.quitEditor = quitEditor;
 
 
 /**

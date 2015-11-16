@@ -299,7 +299,7 @@ function Editor($scope) {
 
       self.persist();
 
-      return files.quit(false);
+      return files.quitEditor();
     }
 
     diagram = this.unsavedDiagrams[0];
@@ -312,7 +312,7 @@ function Editor($scope) {
 
     $scope.$applyAsync();
 
-    files.saveFile(diagram, { create: true }, function(err, savedDiagram) {
+    files.closeFile(diagram, function(err, savedDiagram) {
       self.unsavedDiagrams.shift();
 
       if (idx !== -1) {
@@ -352,19 +352,11 @@ function Editor($scope) {
 
     hasUnsavedChanges = !!this.unsavedDiagrams.length;
 
-    files.quit(hasUnsavedChanges, function(err, answer) {
-      if (err) {
-        return console.error(err);
-      }
+    if (hasUnsavedChanges) {
+      return self.saveBeforeQuit();
+    }
 
-      if (answer !== 'save') {
-        return;
-      }
-
-      console.debug('[editor]', 'quit');
-
-      self.saveBeforeQuit();
-    });
+    files.quitEditor();
   };
 
   this.init = function() {
