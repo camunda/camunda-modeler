@@ -14,12 +14,17 @@ function isNotation(diagram, notation) {
   return diagram.notation && diagram.notation === notation;
 }
 
+function forceFocus(evt) {
+  evt.currentTarget.focus();
+}
 
 function DiagramControl(diagramFile) {
   var self = this;
 
-  var $el = domify('<div class="container">'),
+  var $el = domify('<div class="container" tabindex="0">'),
       $propertiesEl = domify('<div class="container">');
+
+  $el.addEventListener('mousedown', forceFocus, true);
 
   console.debug('[control]', diagramFile);
 
