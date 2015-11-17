@@ -98,57 +98,48 @@ EditorActions.prototype.getActions = function(payload) {
     'dmn.ruleAdd': {
       handler: function() {
         editor.trigger('ruleAdd');
-      },
-      ignoreIfActiveInput: true
+      }
     },
     'dmn.ruleAddAbove': {
       handler: function() {
         editor.trigger('ruleAddAbove');
-      },
-      ignoreIfActiveInput: true
+      }
     },
     'dmn.ruleAddBelow': {
       handler: function() {
         editor.trigger('ruleAddBelow');
-      },
-      ignoreIfActiveInput: true
+      }
     },
     'dmn.ruleRemove': {
       handler: function() {
         editor.trigger('ruleRemove');
-      },
-      ignoreIfActiveInput: true
+      }
     },
     'dmn.ruleClear': {
       handler: function() {
         editor.trigger('ruleClear');
-      },
-      ignoreIfActiveInput: true
+      }
     },
 
     'dmn.clauseAdd': {
       handler: function() {
         editor.trigger('clauseAdd');
-      },
-      ignoreIfActiveInput: true
+      }
     },
     'dmn.clauseAddLeft': {
       handler: function() {
         editor.trigger('clauseAddLeft');
-      },
-      ignoreIfActiveInput: true
+      }
     },
     'dmn.clauseAddRight': {
       handler: function() {
         editor.trigger('clauseAddRight');
-      },
-      ignoreIfActiveInput: true
+      }
     },
     'dmn.clauseRemove': {
       handler: function() {
         editor.trigger('clauseRemove');
-      },
-      ignoreIfActiveInput: true
+      }
     },
 
     'editor.undo': {

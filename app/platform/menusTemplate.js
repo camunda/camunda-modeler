@@ -113,45 +113,45 @@ function getEditMenu(browserWindow, notation) {
       label: 'Add Rule...',
       submenu: [
         {
-          id: 'dmn:addRule',
+          id: 'dmn:ruleAdd',
           label: 'At End',
           accelerator: '',
           click: function() {
-            browserWindow.webContents.send('editor.actions', { event: 'dmn.addRule' });
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.ruleAdd' });
           }
         },
         {
-          id: 'dmn:addRuleAbove',
+          id: 'dmn:ruleAddAbove',
           label: 'Above Selected',
           accelerator: '',
           click: function() {
-            browserWindow.webContents.send('editor.actions', { event: 'dmn.addRuleAbove' });
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.ruleAddAbove' });
           }
         },
         {
-          id: 'dmn:addRuleBelow',
+          id: 'dmn:ruleAddBelow',
           label: 'Below Selected',
           accelerator: '',
           click: function() {
-            browserWindow.webContents.send('editor.actions', { event: 'dmn.addRuleBelow' });
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.ruleAddBelow' });
           }
         }
       ]
     },
     {
-      id: 'dmn:clearRule',
+      id: 'dmn:ruleClear',
       label: 'Clear Rule',
       accelerator: '',
       click: function() {
-        browserWindow.webContents.send('editor.actions', { event: 'dmn.clearRule' });
+        browserWindow.webContents.send('editor.actions', { event: 'dmn.ruleClear' });
       }
     },
     {
-      id: 'dmn:removeRule',
+      id: 'dmn:ruleRemove',
       label: 'Remove Rule',
       accelerator: '',
       click: function() {
-        browserWindow.webContents.send('editor.actions', { event: 'dmn.removeRule' });
+        browserWindow.webContents.send('editor.actions', { event: 'dmn.ruleRemove' });
       }
     },
     {
@@ -161,37 +161,37 @@ function getEditMenu(browserWindow, notation) {
       label: 'Add Clause...',
       submenu: [
         {
-          id: 'dmn:addClause',
+          id: 'dmn:clauseAdd',
           label: 'At End',
           accelerator: '',
           click: function() {
-            browserWindow.webContents.send('editor.actions', { event: 'dmn.addClause' });
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.clauseAdd' });
           }
         },
         {
-          id: 'dmn:addClauseLeft',
+          id: 'dmn:clauseAddLeft',
           label: 'Left of selected',
           accelerator: '',
           click: function() {
-            browserWindow.webContents.send('editor.actions', { event: 'dmn.addClauseLeft' });
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.clauseAddLeft' });
           }
         },
         {
-          id: 'dmn:addClauseRight',
+          id: 'dmn:clauseAddRight',
           label: 'Right of selected',
           accelerator: '',
           click: function() {
-            browserWindow.webContents.send('editor.actions', { event: 'dmn.addClauseRight' });
+            browserWindow.webContents.send('editor.actions', { event: 'dmn.clauseAddRight' });
           }
         }
       ]
     },
     {
-      id: 'dmn:removeClause',
+      id: 'dmn:clauseRemove',
       label: 'Remove Clause',
       accelerator: '',
       click: function() {
-        browserWindow.webContents.send('editor.actions', { event: 'dmn.removeClause' });
+        browserWindow.webContents.send('editor.actions', { event: 'dmn.clauseRemove' });
       }
     }
   ];
