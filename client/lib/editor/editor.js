@@ -5,15 +5,12 @@ var files = require('../util/files'),
     menuUpdater = require('./menuUpdater'),
     workspace = require('../util/workspace'),
     onDrop = require('../util/onDrop'),
+    isInput = require('../util/dom').isInput,
     DiagramControl = require('./diagram/control');
 
 var assign = require('lodash/object/assign'),
     find = require('lodash/collection/find'),
     forEach = require('lodash/collection/forEach');
-
-function isInput(target) {
-  return target.type === 'textarea' || target.type === 'input';
-}
 
 function modifierPressed(evt) {
   return evt.ctrlKey || evt.metaKey;

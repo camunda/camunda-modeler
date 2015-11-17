@@ -1,6 +1,7 @@
 'use strict';
 
-var browser = require('../util/browser');
+var browser = require('../util/browser'),
+    isInput = require('../util/dom').isInput;
 
 // TODO: Unregistering event
 
@@ -171,9 +172,9 @@ EditorActions.prototype.getActions = function(payload) {
 * Returns true, if an input or textarea element is currently active
 */
 EditorActions.prototype.isInputActive = function() {
-  var tagName = document.activeElement.tagName;
+  var element = document.activeElement;
 
-  return tagName === 'TEXTAREA' || tagName === 'INPUT';
+  return isInput(element);
 };
 
 module.exports = EditorActions;
