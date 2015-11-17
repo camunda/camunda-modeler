@@ -256,7 +256,7 @@ gulp.task('properties-panel:less', function() {
 });
 
 gulp.task('dmn-js:copy:font', function() {
-  return gulp.src('node_modules/dmn-js/fonts/dmn.*').pipe(gulp.dest('public/vendor/fonts'));
+  return gulp.src('node_modules/dmn-js/fonts/dmn-js.*').pipe(gulp.dest('public/vendor/fonts'));
 });
 
 gulp.task('dmn-js:less', function() {
