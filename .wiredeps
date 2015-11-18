@@ -5,6 +5,9 @@
     "angular": {
       "version": "1.4.7"
     },
+    "camunda-bpmn-moddle": {
+      "version": "camunda/camunda-bpmn-moddle"
+    },
     "bpmn-js": {
       "version": "bpmn-io/bpmn-js",
       "dependencies": {
