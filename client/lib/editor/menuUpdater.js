@@ -14,14 +14,18 @@ var FILE_ID = 'file',
     SELECTION_IDS = [
       'bpmn:directEditing',
       'bpmn:removeSelected',
-      'dmn:addRuleAbove',
-      'dmn:addRuleBelow',
-      'dmn:clearRule',
-      'dmn:removeRule',
-      'dmn:addClause',
-      'dmn:addClauseLeft',
-      'dmn:addClauseRight',
-      'dmn:removeClause'
+    ],
+    DMN_RULES = [
+      'dmn:ruleAddAbove',
+      'dmn:ruleAddBelow',
+      'dmn:ruleClear',
+      'dmn:ruleRemove',
+    ],
+    DMN_CLAUSES = [
+      'dmn:clauseAdd',
+      'dmn:clauseAddLeft',
+      'dmn:clauseAddRight',
+      'dmn:clauseRemove'
     ];
 
 
@@ -53,15 +57,40 @@ function saving(canSave) {
   ];
 }
 
+
 function selection(enabled) {
-  return SELECTION_IDS.map(function(id) {
-    return {
-      id: id,
-      data: {
-        enabled: enabled
-      }
-    };
-  });
+  var selectionIds = [];
+
+  if (typeof enabled === 'object') {
+    forEach(DMN_RULES, function(id) {
+      selectionIds.push({
+        id: id,
+        data: {
+          enabled: enabled.rule
+        }
+      });
+    });
+
+    forEach(DMN_CLAUSES, function(id) {
+      selectionIds.push({
+        id: id,
+        data: {
+          enabled: enabled.input || enabled.output
+        }
+      });
+    });
+  } else {
+    forEach(SELECTION_IDS, function(id) {
+      selectionIds.push({
+        id: id,
+        data: {
+          enabled: enabled
+        }
+      });
+    });
+  }
+
+  return selectionIds;
 }
 
 
@@ -80,7 +109,7 @@ function enableMenus() {
       id: EDIT_ID,
       data: {
         enabled: enabled,
-        excludes: [ 'undo', 'redo' ].concat(SELECTION_IDS)
+        excludes: [ 'undo', 'redo' ].concat(SELECTION_IDS, DMN_RULES, DMN_CLAUSES)
       }
     },
     {

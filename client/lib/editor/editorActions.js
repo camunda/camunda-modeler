@@ -124,7 +124,7 @@ EditorActions.prototype.getActions = function(payload) {
 
     'dmn.clauseAdd': {
       handler: function() {
-        editor.trigger('clauseAdd');
+        editor.trigger('clauseAdd', payload.data.type);
       }
     },
     'dmn.clauseAddLeft': {

@@ -66,15 +66,17 @@ Menus.prototype.updateMenu = function (entries) {
       if (menuEntry.id === updatedMenu.id) {
         submenuItems = menuEntry.submenu.items;
 
-        // If data is not an array means that we want to update "all "
+        // If data is not an array means that we want to update "all"
         // Update all data besides any that are inside an `excludes` array
         if (!Array.isArray(updatedMenu.data)) {
           this.updateMenuEntries(submenuItems, menuIdx, updatedMenu.data);
           return false;
         }
+
         forEach(updatedMenu.data, function(entry) {
           this.updateMenuEntry(submenuItems, menuIdx, entry.id, entry.data);
         }, this);
+
         return false;
       }
     }, this);
@@ -96,8 +98,11 @@ Menus.prototype.updateMenuEntries = function(menuEntry, menuIdx, data) {
     if (this.isExcluded(excludes, existingEntry.id) || !existingEntry.label) {
       return;
     }
-
     this._updateEntry(menuIdx, entryIdx, data);
+
+    if (existingEntry.submenu) {
+      this._updateNested(menuIdx, entryIdx, data, excludes);
+    }
   }, this);
 
 };
@@ -105,10 +110,38 @@ Menus.prototype.updateMenuEntries = function(menuEntry, menuIdx, data) {
 Menus.prototype.updateMenuEntry = function(menuEntry, menuIdx, entryId, data) {
 
   forEach(menuEntry, function(existingEntry, entryIdx) {
+    // This is the normal scenario
     if (existingEntry.id === entryId) {
-
       this._updateEntry(menuIdx, entryIdx, data);
+
+    // this scenario searches for entries that are submenus f.ex: Add Rule.. (DMN)
+    } else if (existingEntry.submenu) {
+      this._updateNested(menuIdx, entryIdx, data, entryId);
     }
+  }, this);
+};
+
+// The fourth argument can either be an array of excluded properties or an ID of the
+// menu entry that is to be changed
+Menus.prototype._updateNested = function(menuIdx, entryIdx, data, optional) {
+  var menu = this.menu.items[menuIdx],
+      entry = menu.submenu.items[entryIdx],
+      excludes = optional,
+      entryId;
+
+  if (typeof optional === 'string') {
+    entryId = optional;
+    excludes = false;
+  }
+
+  forEach(entry.submenu.items, function(submenuEntry, submenuIdx) {
+    // We don't wanna update excluded properties or properties that don't match the expected ID
+    if ((this.isExcluded(excludes, submenuEntry.id) || !submenuEntry.label || !submenuEntry.id) ||
+       (entryId && entry.submenu.items[submenuIdx].id !== entryId)) {
+      return;
+    }
+
+    this._insertData(entry.submenu.items[submenuIdx], data);
   }, this);
 };
 
@@ -117,6 +150,10 @@ Menus.prototype._updateEntry = function(menuIdx, entryIdx, data) {
   var menu = this.menu.items[menuIdx],
       entry = menu.submenu.items[entryIdx];
 
+  this._insertData(entry, data);
+};
+
+Menus.prototype._insertData = function (entry, data) {
   forEach(data, function(val, property) {
     entry[property] = val;
   });

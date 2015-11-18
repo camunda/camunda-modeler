@@ -110,7 +110,8 @@ function getEditMenu(browserWindow, notation) {
   // DMN modeling actions
   var dmnActions = [
     {
-      label: 'Add Rule...',
+      id: 'dmn:addRules',
+      label: 'Add Rule..',
       submenu: [
         {
           id: 'dmn:ruleAdd',
@@ -158,15 +159,35 @@ function getEditMenu(browserWindow, notation) {
       type: 'separator'
     },
     {
-      label: 'Add Clause...',
+      id: 'dmn:addClauses',
+      label: 'Add Clause..',
       submenu: [
         {
-          id: 'dmn:clauseAdd',
-          label: 'At End',
+          label: 'Input',
           accelerator: '',
           click: function() {
-            browserWindow.webContents.send('editor.actions', { event: 'dmn.clauseAdd' });
+            browserWindow.webContents.send('editor.actions', {
+              event: 'dmn.clauseAdd',
+              data: {
+                type: 'input'
+              }
+            });
           }
+        },
+        {
+          label: 'Output',
+          accelerator: '',
+          click: function() {
+            browserWindow.webContents.send('editor.actions', {
+              event: 'dmn.clauseAdd',
+              data: {
+                type: 'output'
+              }
+            });
+          }
+        },
+        {
+          type: 'separator'
         },
         {
           id: 'dmn:clauseAddLeft',

@@ -204,7 +204,17 @@ function Editor($scope) {
         saving: self.isUnsaved()
       };
 
-      menuEntriesUpdate.selection = diagram.control.hasSelection();
+      if (notation === 'bpmn') {
+        menuEntriesUpdate.selection = diagram.control.hasSelection();
+      }
+
+      if (notation === 'dmn') {
+        menuEntriesUpdate.selection = {
+          rule: false,
+          input: false,
+          output: false
+        };
+      }
 
       menuUpdater.update(notation, menuEntriesUpdate);
     }

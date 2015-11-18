@@ -9,6 +9,8 @@ var createModeler = require('./modeler');
 
 var domify = require('min-dom/lib/domify');
 
+var getEntriesType = require('dmn-js/lib/util/SelectionUtil').getEntriesType;
+
 
 function isNotation(diagram, notation) {
   return diagram.notation && diagram.notation === notation;
@@ -75,19 +77,23 @@ function DiagramControl(diagramFile) {
       enabled = true;
     }
 
-    menuUpdater.update(diagramFile.type, {
+    menuUpdater.update('bpmn', {
       selection: hasSelection
     });
   });
 
   // DMN
   modeler.on('selection.changed', function(evt) {
+    var activeEntriesType;
+
     if (!isNotation(diagramFile, 'dmn')) {
       return;
     }
 
+    activeEntriesType = getEntriesType(evt.newSelection);
+
     menuUpdater.update('dmn', {
-      selection: evt.newSelection !== null
+      selection: activeEntriesType
     });
   });
 
@@ -99,7 +105,7 @@ function DiagramControl(diagramFile) {
 
     diagramFile.unsaved = (commandStackIdx !== commandStack._stackIdx);
 
-    menuUpdater.update(diagramFile.type, {
+    menuUpdater.update(diagramFile.notation, {
       history: [ self.canUndo, self.canRedo ],
       saving: diagramFile.unsaved
     });
