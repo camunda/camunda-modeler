@@ -5,8 +5,7 @@ var fs = require('fs'),
 
 var Ipc = require('ipc'),
     app = require('app'),
-    Dialog = require('dialog'),
-    open = require('open');
+    Dialog = require('dialog');
 
 var errorUtil = require('./util/error'),
     parseUtil = require('./util/parse');
@@ -123,7 +122,6 @@ FileSystem.prototype._openFile = function(filePath, callback) {
   var self = this;
 
   fs.readFile(filePath, this.encoding, function(err, file) {
-
     var diagramFile = createDiagramFile(filePath, file);
 
     if (!diagramFile.notation) {
@@ -137,7 +135,22 @@ FileSystem.prototype._openFile = function(filePath, callback) {
       return self.open(callback);
     }
 
-    callback(err, diagramFile);
+    if (err) {
+      return callback(err);
+    }
+
+    if (parseUtil.hasActivitiURL(diagramFile.contents)) {
+
+      self.showNamespaceDialog(function(answer) {
+        if (answer === 0) {
+          diagramFile.contents = parseUtil.replaceNamespace(diagramFile.contents);
+        }
+
+        callback(null, diagramFile);
+      });
+    } else {
+      callback(null, diagramFile);
+    }
   });
 };
 
@@ -325,6 +338,22 @@ FileSystem.prototype.showImportError = function(trace, callback) {
   }
 
   Dialog.showMessageBox(this.browserWindow, opts, callback);
+};
+
+FileSystem.prototype.showNamespaceDialog = function(callback) {
+  var opts = {
+    type: 'warning',
+    title: 'Deprecated <activiti> namespace detected',
+    buttons: [ 'Yes', 'No' ],
+    message: 'Would you like to convert your diagram to the <camunda> namespace?',
+    detail: [
+      'This will allow you to maintain execution related properties.',
+      '',
+      '<camunda> namespace support works from Camunda BPM version 7.4.0, 7.3.3, 7.2.6 onwards.'
+    ].join('\n')
+  };
+
+  callback(Dialog.showMessageBox(this.browserWindow, opts));
 };
 
 FileSystem.prototype.showGeneralErrorDialog = function() {
