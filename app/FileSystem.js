@@ -125,12 +125,7 @@ FileSystem.prototype._openFile = function(filePath, callback) {
     var diagramFile = createDiagramFile(filePath, file);
 
     if (!diagramFile.notation) {
-      Dialog.showMessageBox({
-        type: 'warning',
-        title: 'Unrecognized file format',
-        buttons: [ 'Close' ],
-        message: 'The file "' + diagramFile.name + '" is not a BPMN or DMN file.'
-      });
+      self.showUnrecognizedFileDialog(diagramFile.name);
 
       return self.open(callback);
     }
@@ -224,7 +219,7 @@ FileSystem.prototype.close = function(diagramFile, callback) {
 
 FileSystem.prototype.handleImportError = function(trace, callback) {
 
-  this.showImportError(trace, function(answer) {
+  this.showImportErrorDialog(trace, function(answer) {
     switch (answer) {
       case 1:
         open('https://forum.bpmn.io/');
@@ -255,7 +250,8 @@ FileSystem.prototype.handleError = function(event, err) {
 
 FileSystem.prototype.showOpenDialog = function(callback) {
   var config = this.config,
-      defaultPath = config.get('defaultPath', app.getPath('userDesktop'));
+      defaultPath = config.get('defaultPath', app.getPath('userDesktop')),
+      filenames;
 
   var opts = {
       title: 'Open diagram',
@@ -264,17 +260,13 @@ FileSystem.prototype.showOpenDialog = function(callback) {
       filters: SUPPORTED_EXT_FILTER
   };
 
-  if (!callback) {
-    return Dialog.showOpenDialog(this.browserWindow, opts);
+  filenames = Dialog.showOpenDialog(this.browserWindow, opts);
+
+  if (filenames) {
+    config.set('defaultPath', path.dirname(filenames[0]));
   }
 
-  Dialog.showOpenDialog(this.browserWindow, opts, function(filenames) {
-    if (filenames) {
-      config.set('defaultPath', path.dirname(filenames[0]));
-    }
-
-    callback(filenames);
-  });
+  callback(filenames);
 };
 
 FileSystem.prototype.showSaveAsDialog = function(diagramFile, callback) {
@@ -297,11 +289,7 @@ FileSystem.prototype.showSaveAsDialog = function(diagramFile, callback) {
     defaultPath: defaultPath
   };
 
-  if (!callback) {
-    return Dialog.showSaveDialog(this.browserWindow, opts);
-  }
-
-  Dialog.showSaveDialog(this.browserWindow, opts, callback);
+  callback(Dialog.showSaveDialog(this.browserWindow, opts));
 };
 
 FileSystem.prototype.showCloseDialog = function(name, callback) {
@@ -312,14 +300,10 @@ FileSystem.prototype.showCloseDialog = function(name, callback) {
     buttons: [ 'Save', 'Don\'t Save', 'Cancel' ]
   };
 
-  if (!callback) {
-    return Dialog.showMessageBox(this.browserWindow, opts);
-  }
-
-  Dialog.showMessageBox(this.browserWindow, opts, callback);
+  callback(Dialog.showMessageBox(this.browserWindow, opts));
 };
 
-FileSystem.prototype.showImportError = function(trace, callback) {
+FileSystem.prototype.showImportErrorDialog = function(trace, callback) {
   var opts = {
     type: 'error',
     title: 'Importing Error',
@@ -333,11 +317,16 @@ FileSystem.prototype.showImportError = function(trace, callback) {
     ].join('\n')
   };
 
-  if (!callback) {
-    return Dialog.showMessageBox(this.browserWindow, opts);
-  }
+  callback(Dialog.showMessageBox(this.browserWindow, opts));
+};
 
-  Dialog.showMessageBox(this.browserWindow, opts, callback);
+FileSystem.prototype.showUnrecognizedFileDialog = function(name) {
+  Dialog.showMessageBox({
+    type: 'warning',
+    title: 'Unrecognized file format',
+    buttons: [ 'Close' ],
+    message: 'The file "' + name + '" is not a BPMN or DMN file.'
+  });
 };
 
 FileSystem.prototype.showNamespaceDialog = function(callback) {
