@@ -55,10 +55,16 @@ function checkFileAssociations(app, config) {
 
   needsAssociation(userChoice, function(err, associate) {
 
+    if (err) {
+      return console.error('[file association] failed to check', err);
+    }
+
     if (associate) {
 
       associateEditor(executablePath, function(err) {
-        // haha, don't care
+        if (err) {
+          return console.error('[file association] failed to associate', err);
+        }
       });
     }
 

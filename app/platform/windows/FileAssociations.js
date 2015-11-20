@@ -10,10 +10,14 @@ var EXTENSIONS = [ 'bpmn', 'dmn' ];
 
 var REG_KEY_NOT_FOUND_PATTERN = /The system was unable to find the specified registry key or value/;
 
-var REG_COMMAND_RESULT_PATTERN = /.*REG_SZ\s+(.*) -- %1$/m;
+var REG_COMMAND_RESULT_PATTERN = /.*REG_SZ\s+"(.*)" -- "%1"$/m;
 
 function exec(cmd) {
-  return execSync(cmd, { encoding: 'utf-8', stdio: [ 'pipe', 'pipe', 'pipe' ] });
+  var result = execSync(cmd, { encoding: 'utf-8', stdio: [ 'pipe', 'pipe', 'pipe' ] });
+
+  console.log('[file associations] exec\n> %s\n%s', cmd, result);
+
+  return result;
 }
 
 function createKey(extension) {
@@ -44,7 +48,7 @@ module.exports.register = function(exePath) {
   forEach(EXTENSIONS, function(extension) {
     var regKey = createKey(extension);
 
-    exec('reg ADD ' + regKey.command + ' /d "\"' + exePath + '\" -- \"%1\"" /f');
+    exec('reg ADD ' + regKey.command + ' /d "\\"' + exePath + '\\" -- \\"%1\\"" /f');
     exec('reg ADD ' + regKey.icon + ' /d "' + exePath + ',0" /f');
   });
 
