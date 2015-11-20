@@ -1,6 +1,6 @@
 {
   "name": "camunda-modeler",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Camunda desktop modeler for BPMN and CMMN, based on bpmn.io",
   "main": "app/index.js",
   "scripts": {

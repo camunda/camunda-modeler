@@ -179,8 +179,20 @@ function electronPackage(platform) {
   opts['app-version'] = PACKAGE_JSON.version;
   opts.ignore = buildDistroIgnore();
 
-  if (process.platform === 'darwin') {
+  if (platform === 'darwin') {
     opts.name = 'Camunda Modeler';
+  }
+
+  if (platform === 'win32') {
+    opts['version-string'] = {
+      CompanyName: 'camunda Services GmbH',
+      LegalCopyright: 'camunda Services GmbH, 2015',
+      FileDescription: 'Camunda Modeler',
+      OriginalFilename: 'camunda-modeler.exe',
+      ProductVersion: PACKAGE_JSON.version,
+      ProductName: 'Camunda Modeler',
+      InternalName: 'camunda-modeler'
+    };
   }
 
   // make sure wine is available on linux systems
