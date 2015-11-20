@@ -52,11 +52,19 @@ function checkFile(maybePath, cwd) {
 
   var absolutePath = path.resolve(cwd, maybePath);
 
-  if (fs.lstatSync(absolutePath).isFile()) {
-    return absolutePath;
-  } else {
-    return null;
+  var stats;
+
+  try {
+    stats = fs.lstatSync(absolutePath);
+
+    if (stats.isFile()) {
+      return absolutePath;
+    }
+  } catch (e) {
+    // file not found or the like...
   }
+
+  return null;
 }
 
 module.exports.checkFile = checkFile;
