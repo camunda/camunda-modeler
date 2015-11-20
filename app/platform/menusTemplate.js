@@ -442,6 +442,15 @@ module.exports = function(browserWindow, notation) {
         click: function() {
           browserOpen('https://camunda.org/bpmn/reference/');
         }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'DMN 1.1 Tutorial',
+        click: function() {
+          browserOpen('https://camunda.org/dmn/tutorial/');
+        }
       }
     ]
   };
