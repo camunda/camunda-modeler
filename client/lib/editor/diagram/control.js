@@ -35,6 +35,8 @@ function DiagramControl(diagramFile) {
   var commandStackIdx = -1,
       attachedScope;
 
+  this.warnings = false;
+
   function apply() {
     if (attachedScope) {
       attachedScope.$applyAsync();
@@ -46,6 +48,13 @@ function DiagramControl(diagramFile) {
 
     if (err) {
       return self.handleImportError(err.message);
+    }
+
+    if (warnings) {
+      console.debug('[warnings]', warnings);
+      diagramFile.warnings = warnings;
+
+      apply();
     }
 
     if (isNotation(diagramFile, 'bpmn')) {
@@ -198,6 +207,32 @@ function DiagramControl(diagramFile) {
     files.importError(message, function(err) {
       console.error('[import error]', err);
     });
+  };
+
+  this.getWarnings = function() {
+    return diagramFile.warnings;
+  };
+
+  this.hasWarnings = function() {
+    if (this.warnings) {
+      return false;
+    }
+
+    return diagramFile.warnings && diagramFile.warnings.length > 0;
+  };
+
+  this.clearWarnings = function() {
+    delete diagramFile.warnings;
+
+    this.warnings = false;
+
+    apply();
+  };
+
+  this.openWarningConsole = function() {
+    this.warnings = true;
+
+    apply();
   };
 }
 

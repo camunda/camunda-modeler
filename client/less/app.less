@@ -12,7 +12,13 @@
 @import "_menu-bar";
 
 
-* {
+.bio-header,
+.bio-properties-panel,
+.bio-warning-dialog,
+.bio-canvas,
+.tabbar,
+.bio-console h4,
+.bio-console button, {
   -webkit-user-select: none;
 }
 
@@ -82,6 +88,63 @@ body, html {
 
   h1 {
     font-weight: normal;
+  }
+}
+
+.bio-warning-dialog {
+  position: fixed;
+  top: 120px;
+  left: 33%;
+  width: 450px;
+  text-align: center;
+
+  background: @color-light-gray;
+  padding: 10px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  border-radius: 2px;
+  line-height: 22px;
+  z-index: 1000;
+
+  button {
+    font-size: 0.9em;
+  }
+
+  button.close {
+    cursor: pointer;
+    float: right;
+    position: absolute;
+    top: 5px;
+    right: 7px;
+  }
+}
+
+.bio-console {
+  border-top: 1px solid #999;
+  padding-top: 0.5em;
+
+  h4 {
+    margin-top: 0;
+    margin-left: 1.2em;
+    display: inline-block;
+  }
+
+  .bio-warning {
+    height: 200px;
+    overflow: auto;
+    width: 100%;
+    float: left;
+    clear: both;
+
+    pre {
+      margin: 0;
+    }
+  }
+
+  button.close {
+    float: right;
+    display: inline-block;
+    clear: both;
+    margin-right: 0.5em;
   }
 }
 

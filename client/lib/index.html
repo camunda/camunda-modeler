@@ -64,6 +64,16 @@
                ng-if="editor.isActive(diagram)">
 
             <div class="tab active bio-diagram-contents" diagram control="diagram.control">
+
+              <div class="bio-warning-dialog" ng-if="diagram.control.hasWarnings()">
+                Diagram may not render correctly due to import warnings.
+
+                <button ng-click="diagram.control.openWarningConsole()">Show details</button>
+                <button class="close" ng-click="diagram.control.clearWarnings()">
+                  <span class="close-marker">×</span>
+                </button>
+              </div>
+
               <div class="bio-canvas"></div>
               <div class="bio-properties-panel"
                    ng-show="editor.hasProperties(diagram)"
@@ -71,6 +81,21 @@
                 <a class="toggle" ng-click="editor.togglePropertiesPanel()"></a>
               </div>
             </div>
+
+            <div ng-show="diagram.control.warnings" class="bio-console">
+              <h4>Import Warnings</h4>
+              <button class="close" ng-click="diagram.control.clearWarnings()">
+                <span class="close-marker">×</span>
+              </button>
+              <div class="bio-warning">
+                <pre>
+                  <code ng-repeat="warnings in diagram.control.getWarnings()">
+  {{ warnings.message }}
+                  </code>
+                </pre>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
