@@ -98,7 +98,7 @@ function suggestFileAssociation(done) {
     type: 'question',
     buttons: [ 'Yes', 'No' ],
     title: 'Camunda Modeler',
-    message: 'Do you want to associate your .bpmn files to the Camunda Modeler ?'
+    message: 'Do you want to associate your .bpmn and .dmn files to the Camunda Modeler?'
   }, function(answer) {
     // return true, if the user agreed
     done(null, answer === 0);
