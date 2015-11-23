@@ -10,6 +10,8 @@ var fs = require('fs'),
  *
  * @param {Array<String>} args
  * @param {String} cwd
+ *
+ * @return {Array<String>}
  */
 function extractFiles(args, cwd) {
 
@@ -35,6 +37,8 @@ function extractFiles(args, cwd) {
     }
   }
 
+  console.log('[cli]', files);
+
   return files;
 }
 
@@ -59,8 +63,11 @@ function checkFile(maybePath, cwd) {
 
     if (stats.isFile()) {
       return absolutePath;
+    } else {
+      console.log('[cli]', 'cannot open directory', absolutePath);
     }
   } catch (e) {
+    console.log('[cli]', e.message, absolutePath);
     // file not found or the like...
   }
 
