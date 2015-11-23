@@ -51,14 +51,14 @@ function FileSystem(browserWindow, config) {
 
 
   Ipc.on('file.save', function(evt, newDirectory, diagramFile) {
-    self.save(newDirectory, diagramFile, function(err, updatedDiagram) {
+    self.save(newDirectory, diagramFile, function(err, updatedDiagram, isSaved) {
       if (err) {
         return self.handleError('file.save.response', err);
       }
 
       app.emit('editor:add-recent', updatedDiagram.path);
 
-      browserWindow.webContents.send('file.save.response', null, updatedDiagram);
+      browserWindow.webContents.send('file.save.response', null, updatedDiagram, isSaved);
     });
   });
 
@@ -80,12 +80,12 @@ function FileSystem(browserWindow, config) {
 
 
   Ipc.on('file.close', function(evt, diagramFile) {
-    self.close(diagramFile, function(err, updatedDiagram) {
+    self.close(diagramFile, function(err, updatedDiagram, isSaved) {
       if (err) {
         return self.handleError('file.close.response', err);
       }
 
-      browserWindow.webContents.send('file.close.response', null, updatedDiagram);
+      browserWindow.webContents.send('file.close.response', null, updatedDiagram, isSaved);
     });
   });
 
@@ -197,7 +197,7 @@ FileSystem.prototype._save = function(filePath, diagramFile, callback) {
       path: filePath
     };
 
-    callback(err, diagram);
+    callback(err, diagram, true);
   });
 };
 
@@ -209,7 +209,7 @@ FileSystem.prototype.close = function(diagramFile, callback) {
       return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
     }
     else if (result === 1) {
-      return callback(null, diagramFile);
+      return callback(null, diagramFile, false);
     }
     else {
       self.save(false, diagramFile, callback);

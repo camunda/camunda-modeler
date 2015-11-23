@@ -2,8 +2,11 @@
 
 var browser = require('./browser');
 
-// module.exports.loadFile = loadFile;
 
+// As long as we are using Angular, we need to give it a timeframe (delay) to update itself
+// before showing any kind of dialogs. The reason for this is that the dialogs are synchronous
+// and they don't allow the client side to render itself while being shown.
+var SET_TIMEOUT_DELAY = 100;
 
 /**
  * Open a diagram file.
@@ -11,7 +14,9 @@ var browser = require('./browser');
  * @param {Function} callback
  */
 function openFile(callback) {
-  browser.send('file.open', callback);
+  setTimeout(function() {
+    browser.send('file.open', callback);
+  }, SET_TIMEOUT_DELAY);
 }
 
 module.exports.openFile = openFile;
@@ -22,7 +27,9 @@ module.exports.openFile = openFile;
  * @param {Function} callback
  */
 function addFile(filePath, callback) {
-  browser.send('file.add', [ filePath ], callback);
+  setTimeout(function() {
+    browser.send('file.add', [ filePath ], callback);
+  }, SET_TIMEOUT_DELAY);
 }
 
 module.exports.addFile = addFile;
@@ -35,7 +42,9 @@ module.exports.addFile = addFile;
  * @param {Function} callback
  */
 function closeFile(diagramFile, callback) {
-  browser.send('file.close', [ diagramFile ], callback);
+  setTimeout(function() {
+    browser.send('file.close', [ diagramFile ], callback);
+  }, SET_TIMEOUT_DELAY);
 }
 
 module.exports.closeFile = closeFile;
@@ -56,16 +65,18 @@ function saveFile(diagramFile, options, callback) {
     notation: diagramFile.notation
   };
 
-  browser.send('file.save', [ options.create, diagram ], function(err, updatedDiagram) {
-    if (err) {
-      return callback(err);
-    }
+  setTimeout(function() {
+    browser.send('file.save', [ options.create, diagram ], function(err, updatedDiagram) {
+      if (err) {
+        return callback(err);
+      }
 
-    diagramFile.name = updatedDiagram.name;
-    diagramFile.path = updatedDiagram.path;
+      diagramFile.name = updatedDiagram.name;
+      diagramFile.path = updatedDiagram.path;
 
-    callback(err, diagramFile);
-  });
+      callback(err, diagramFile);
+    });
+  }, SET_TIMEOUT_DELAY);
 }
 
 module.exports.saveFile = saveFile;
@@ -78,7 +89,9 @@ module.exports.saveFile = saveFile;
  * @param {Function} callback
  */
 function quitEditor() {
-  return browser.send('editor.quit', function() {});
+  setTimeout(function() {
+    browser.send('editor.quit', function() {});
+  }, SET_TIMEOUT_DELAY);
 }
 
 module.exports.quitEditor = quitEditor;
@@ -93,7 +106,9 @@ module.exports.quitEditor = quitEditor;
 function importError(message, callback) {
   callback = callback || function() {};
 
-  return browser.send('editor.import.error', [ message ], callback);
+  setTimeout(function() {
+    browser.send('editor.import.error', [ message ], callback);
+  }, SET_TIMEOUT_DELAY);
 }
 
 module.exports.importError = importError;

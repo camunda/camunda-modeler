@@ -78,7 +78,7 @@ function Editor($scope) {
       options = {};
     }
 
-    function handleSaving(err, diagram) {
+    function handleSaving(err, diagram, isSaved) {
       if (!err) {
         diagram.control.resetEditState();
       }
@@ -310,16 +310,21 @@ function Editor($scope) {
 
     idx = this.diagrams.indexOf(diagram);
 
-    this.currentDiagram = diagram;
+    this.showDiagram(diagram);
 
-    console.debug('[editor]', 'currentDiagram', diagram);
+    console.debug('[editor]', 'currentDiagram', diagram.name);
 
     $scope.$applyAsync();
 
-    files.closeFile(diagram, function(err, savedDiagram) {
+    files.closeFile(diagram, function(err, savedDiagram, isSaved) {
       self.unsavedDiagrams.shift();
 
-      if (idx !== -1) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      if (idx !== -1 && !isSaved && savedDiagram.path === '[unsaved]') {
         self.diagrams.splice(idx, 1);
       }
 
@@ -339,18 +344,10 @@ function Editor($scope) {
     this.savedDiagrams = [];
 
     forEach(this.diagrams, function(diagram) {
-      if (diagram.path === '[unsaved]' || diagram.unsaved) {
+      if (diagram.unsaved || (diagram.path === '[unsaved]' && diagram.unsaved)) {
         self.unsavedDiagrams.push(diagram);
-      } else{
+      } else if (!diagram.unsaved && diagram.path !== '[unsaved]'){
         self.savedDiagrams.push(diagram);
-      }
-    });
-
-    forEach(self.savedDiagrams, function(diagram) {
-      var idx = self.diagrams.indexOf(diagram);
-
-      if (idx !== -1) {
-        self.diagrams.splice(idx, 1);
       }
     });
 
