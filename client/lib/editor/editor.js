@@ -365,7 +365,13 @@ function Editor($scope) {
     var self = this;
 
     onDrop('body', function(e) {
-      files.addFile(e.files[0].path, function() {
+      var file = e.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      files.addFile(file.path, function() {
         // do nothing
       });
     });
