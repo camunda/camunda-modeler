@@ -1,17 +1,14 @@
 'use strict';
 
-var chai = require('chai'),
-    expect = chai.expect;
-
 var fs = require('fs'),
     path = require('path');
 
 var map = require('lodash/collection/map'),
     forEach = require('lodash/collection/forEach');
 
-var parse = require('../../app/util/parse');
+var parse = require('../../../app/util/parse');
 
-var FIXTURES_PATH = path.join(__dirname, '../fixtures');
+var FIXTURES_PATH = path.join(__dirname, '../../fixtures');
 
 var filesPath = {
   bpmn: path.join(FIXTURES_PATH, 'basic.bpmn20.xml'),

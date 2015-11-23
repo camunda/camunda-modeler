@@ -1,8 +1,5 @@
 'use strict';
 
-var chai = require('chai'),
-    expect = chai.expect;
-
 var FileAssociations = require('../../../app/platform/windows/FileAssociations');
 
 

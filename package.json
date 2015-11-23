@@ -4,8 +4,8 @@
   "description": "Camunda desktop modeler for BPMN and CMMN, based on bpmn.io",
   "main": "app/index.js",
   "scripts": {
-    "test": "mocha test/**/*Spec.js",
-    "auto-test": "mocha -w test/**/*Spec.js",
+    "test": "mocha -r test/expect test/spec/**",
+    "auto-test": "mocha -r test/expect -w test/spec/**",
     "build": "gulp build",
     "distro": "gulp distro",
     "auto-build": "gulp auto-build"
