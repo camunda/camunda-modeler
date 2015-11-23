@@ -1,6 +1,9 @@
 # Camunda Modeler
 
-An integrated modeling solution based on bpmn.io and dmn.io
+[![Build Status](https://travis-ci.org/camunda/bpmn-io-modeler.svg?branch=master)](https://travis-ci.org/camunda/bpmn-io-modeler)
+
+An integrated modeling solution based on bpmn.io and dmn.io.
+
 
 ## Nightly Builds
 
