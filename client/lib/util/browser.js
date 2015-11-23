@@ -19,15 +19,20 @@ function send(event, args, callback) {
 
   ipc.send.apply(null, [ event ].concat(args));
 
-  ipc.once(event + '.response', function() {
-    if (arguments[0] && typeof arguments[0] === 'object') {
-      console.debug('[browser]', event + '.response', arguments);
+  if (callback) {
+    ipc.once(event + '.response', function() {
 
-      return callback(new Error(arguments[0]));
-    }
+      var args = Array.prototype.slice.call(arguments);
 
-    callback.apply(null, Array.prototype.slice.call(arguments));
-  });
+      if (args[0] && typeof args[0] === 'object') {
+        console.debug('[browser]', event + '.response', args);
+
+        return callback(new Error(args[0]));
+      }
+
+      callback.apply(null, args);
+    });
+  }
 }
 
 module.exports.send = send;
