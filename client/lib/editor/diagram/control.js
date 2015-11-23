@@ -26,8 +26,6 @@ function DiagramControl(diagramFile) {
   var $el = domify('<div class="container" tabindex="0">'),
       $propertiesEl = domify('<div class="container">');
 
-  $el.addEventListener('mousedown', forceFocus, true);
-
   console.debug('[control]', diagramFile);
 
   var modeler = createModeler(diagramFile.notation, $el, $propertiesEl);
@@ -36,6 +34,10 @@ function DiagramControl(diagramFile) {
       attachedScope;
 
   this.warnings = false;
+
+  if (isNotation(diagramFile, 'bpmn')) {
+    $el.addEventListener('mousedown', forceFocus, true);
+  }
 
   function apply() {
     if (attachedScope) {
