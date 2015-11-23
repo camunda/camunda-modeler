@@ -104,6 +104,10 @@ function FileSystem(browserWindow, config) {
       self.browserWindow.webContents.send('editor.import.error.response', result);
     });
   });
+
+  Ipc.on('editor.ready', function(evt) {
+    app.emit('editor:ready');
+  });
 }
 
 FileSystem.prototype.open = function(callback) {

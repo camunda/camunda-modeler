@@ -162,6 +162,8 @@ app.on('editor:defer-file-open', function(filePath) {
 });
 
 app.on('editor:deferred-file-open', function() {
+  console.log('app:editor:deferred-file-open', app.openFiles);
+
   app.openFiles.forEach(function(filePath) {
     app.fileSystem.addFile(filePath);
   });
@@ -172,6 +174,7 @@ app.on('editor:cmd', function(argv, cwd) {
 
   var files = Cli.extractFiles(argv, cwd);
 
+  console.log(files);
   files.forEach(function(f) {
     app.emit('open-file', null, f);
   });
@@ -179,11 +182,16 @@ app.on('editor:cmd', function(argv, cwd) {
 
 
 app.on('editor:open', function(mainWindow) {
-  app.fileSystem = new FileSystem(mainWindow, config);
+  console.log('app:editor:open');
 
-  delay(function() {
-    app.emit('editor:deferred-file-open');
-  }, 1000);
+  app.fileSystem = new FileSystem(mainWindow, config);
+});
+
+
+app.on('editor:ready', function() {
+  console.log('app:editor:ready');
+
+  app.emit('editor:deferred-file-open');
 });
 
 //////// shutdown ////////////////////////////////////
