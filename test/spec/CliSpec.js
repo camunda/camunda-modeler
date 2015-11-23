@@ -22,7 +22,7 @@ describe('cli', function() {
     });
 
 
-    it('parse Linux args, extra parameters', function() {
+    it('parse Linux args, just diagram file', function() {
 
       // given
       var args = [ 'app', '../fixtures/random.xml' ];
@@ -50,6 +50,19 @@ describe('cli', function() {
       });
 
 
+      it('parse Windows args, just diagram file', function() {
+
+        // given
+        var args = [ 'app', '..\\\\fixtures\\\\random.xml' ];
+
+        // when
+        var files = Cli.extractFiles(args, __dirname);
+
+        // then
+        expect(files).to.eql([ path.resolve('test/fixtures/random.xml') ]);
+      });
+
+
       it('parse Windows args, double backslash', function() {
 
         // given
@@ -61,10 +74,13 @@ describe('cli', function() {
         // then
         expect(files).to.eql([ path.resolve('test/fixtures/random.xml') ]);
       });
+
     } else {
+
       it.skip('parse Windows args');
 
       it.skip('parse Windows args, double backslash');
+
     }
   });
 
