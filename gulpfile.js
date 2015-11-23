@@ -13,7 +13,8 @@ var gulp = require('gulp'),
     gutil = require('gulp-util'),
     browserify = require('browserify'),
     runSequence = require('gulp-sequence'),
-    which = require('which');
+    which = require('which'),
+    mocha = require('gulp-mocha');
 
 var packager = require('electron-packager'),
     electron = require('electron-prebuilt'),
@@ -279,6 +280,11 @@ gulp.task('dmn-js:less', function() {
              .pipe(gulp.dest('public/vendor/dmn-js'));
 });
 
+gulp.task('test', function() {
+  return gulp.src('test/spec/**/*.js', { read: false })
+        .pipe(mocha({ require: [ './test/expect' ] }));
+});
+
 gulp.task('client:copy:vendor', runSequence([
   'diagram-js:css',
   'properties-panel:less',
@@ -302,9 +308,9 @@ gulp.task('package:linux', electronPackage('linux'));
 
 gulp.task('package', runSequence('package:windows', 'package:darwin', 'package:linux'));
 
-gulp.task('build', runSequence('client:build', 'client:less', 'client:copy'));
+gulp.task('build', runSequence('client:build', 'client:less', 'client:copy', 'test'));
 
-gulp.task('auto-build', runSequence(['client:build:watch', 'client:less', 'client:copy', 'serve']));
+gulp.task('auto-build', runSequence([ 'client:build:watch', 'client:less', 'client:copy', 'serve' ]));
 
 gulp.task('distro', runSequence('build', 'package'));
 
