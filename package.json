@@ -6,7 +6,7 @@
   "scripts": {
     "test": "gulp test",
     "auto-test": "mocha -r test/expect -w test/spec/**",
-    "build": "gulp build",
+    "all": "gulp",
     "distro": "gulp distro",
     "auto-build": "gulp auto-build"
   },

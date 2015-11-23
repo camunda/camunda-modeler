@@ -308,14 +308,14 @@ gulp.task('package:linux', electronPackage('linux'));
 
 gulp.task('package', runSequence('package:windows', 'package:darwin', 'package:linux'));
 
-gulp.task('build', runSequence('client:build', 'client:less', 'client:copy', 'test'));
+gulp.task('build', runSequence('client:build', 'client:less', 'client:copy'));
 
 gulp.task('auto-build', runSequence([ 'client:build:watch', 'client:less', 'client:copy', 'serve' ]));
 
-gulp.task('distro', runSequence('build', 'package'));
+gulp.task('distro', runSequence('test', 'build', 'package'));
 
 gulp.task('distro:windows', runSequence('build', 'package:windows'));
 gulp.task('distro:darwin', runSequence('build', 'package:darwin'));
 gulp.task('distro:linux', runSequence('build', 'package:linux'));
 
-gulp.task('default', runSequence('build'));
+gulp.task('default', runSequence('test', 'build'));
