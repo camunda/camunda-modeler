@@ -1,20 +1,22 @@
 {
-	"node": true,
-	"esnext": true,
-	"bitwise": true,
-	"curly": true,
+  "node": true,
+  "esnext": true,
+  "bitwise": true,
+  "curly": true,
   "browser": true,
-	"immed": true,
-	"newcap": true,
-	"noarg": true,
-	"undef": true,
-	"unused": "vars",
-	"strict": true,
-	"globals": {
-		"require_electron": false,
+  "immed": true,
+  "newcap": true,
+  "noarg": true,
+  "undef": true,
+  "unused": "vars",
+  "strict": true,
+  "expr": true,
+  "globals": {
+    "require_electron": false,
     "describe": false,
     "it": false,
     "afterEach": false,
-    "before": false
-	}
+    "before": false,
+    "expect": false
+  }
 }
