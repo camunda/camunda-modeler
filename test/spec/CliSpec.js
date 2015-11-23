@@ -22,6 +22,19 @@ describe('cli', function() {
     });
 
 
+    it('parse Linux args, extra parameters', function() {
+
+      // given
+      var args = [ 'app', '../fixtures/random.xml' ];
+
+      // when
+      var files = Cli.extractFiles(args, __dirname);
+
+      // then
+      expect(files).to.eql([ path.resolve('test/fixtures/random.xml') ]);
+    });
+
+
     if (process.platform === 'win32') {
 
       it('parse Windows args', function() {
