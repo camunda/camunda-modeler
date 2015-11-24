@@ -418,45 +418,106 @@ function Editor($scope) {
   this.init();
 
 
+  /**
+   * Handles keys and keyboard shortcuts and prevents their default behavior.
+   *
+   * @param  {Event} evt
+   */
   function handleGlobalKey(evt) {
-
-    // Caveat to get the `Modifier+A` to work with **Select Elements**
-    // If we don't do this, then the html elements will be highlighted
-    // and the desired behaviour won't work
 
     var diagram = self.currentDiagram;
 
-    if (!diagram || isInput(evt.target) || !modifierPressed(evt)) {
+    var target = evt.target;
+
+    if (!diagram || !modifierPressed(evt)) {
       return;
     }
 
-    if (evt.keyCode === 65) { // MOD + A
+    /**
+     * Select all
+     * MOD + A
+     *
+     * Caveat to get the 'Modifier+A' to work with 'Select Elements'
+     * If we don't do this, then the html elements will be highlighted
+     * and the desired behaviour won't work.
+     */
+    if (evt.keyCode === 65 && !isInput(target)) {
       evt.preventDefault();
 
       diagram.control.trigger('selectElements');
     }
 
-    if (evt.keyCode === 90 && evt.shiftKey) { // MOD + SHIFT + Z
+    /**
+     * Undo
+     * MOD + Z
+     *
+     * Get 'Modifier+Z' to work with 'Undo'. This is needed to prevent
+     * undesired behavior if for example a text field is selected.
+     * This only applies to shortcuts without a pressed shift key, otherwise
+     * it would also react to MOD + SHIFT + Z which triggers 'Redo'.
+     */
+    if (evt.keyCode === 90 && !evt.shiftKey) {
+      evt.preventDefault();
+
+      diagram.control.trigger('undo');
+    }
+
+    /**
+     * Redo
+     * MOD + Y
+     *
+     * Get 'Modifier+Y' to work with 'Redo'. This is needed to prevent
+     * undesired behavior if for example a text field is selected.
+     */
+    if (evt.keyCode === 89) {
       evt.preventDefault();
 
       diagram.control.trigger('redo');
     }
 
-    if (evt.keyCode === 107 && modifierPressed(evt)) { // NUMPAD +
-      diagram.control.trigger('stepZoom', { value: 1 });
+    /**
+     * Redo
+     * MOD + SHIFT + Z
+     *
+     * Get 'Modifier+Shift+Z' to work with 'Redo'. This is needed to prevent
+     * undesired behavior if for example a text field is selected.
+     */
+    if (evt.keyCode === 90 && evt.shiftKey) {
+      evt.preventDefault();
 
-      return true;
+      diagram.control.trigger('redo');
     }
 
-    if (evt.keyCode === 109 && modifierPressed(evt)) { // NUMPAD -
-      diagram.control.trigger('stepZoom', { value: -1 });
+    /**
+     * Zoom In
+     * MOD + NUMPAD PLUS
+     *
+     * Get 'Modifier+NumpadPlus' to work with 'Zoom In'
+     * This is needed to trigger zooming in addition to the regular
+     * plus key on the keyboard.
+     */
+    if (evt.keyCode === 107 && modifierPressed(evt)) {
+      evt.preventDefault();
 
-      return true;
+      diagram.control.trigger('stepZoom', { value: 1 });
+    }
+
+    /**
+     * Zoom Out
+     * MOD + NUMPAD MINUS
+     *
+     * Get 'Modifier+NumpadMinus' to work with 'Zoom Out'
+     * This is needed to trigger zooming in addition to the regular
+     * minus key on the keyboard.
+     */
+    if (evt.keyCode === 109 && modifierPressed(evt)) {
+      evt.preventDefault();
+
+      diagram.control.trigger('stepZoom', { value: -1 });
     }
   }
 
-  // hook into global short cuts for fixing Modifier+A (select all)
-  // and allowing Modifier+SHIFT+Z (redo)
+  // hook into global short cuts
   window.addEventListener('keydown', handleGlobalKey);
 
   $scope.$on('$destroy', function() {
