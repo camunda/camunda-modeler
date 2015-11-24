@@ -429,6 +429,18 @@ function Editor($scope) {
 
       diagram.control.trigger('redo');
     }
+
+    if (evt.keyCode === 107 && modifierPressed(evt)) { // NUMPAD +
+      diagram.control.trigger('stepZoom', { value: 1 });
+
+      return true;
+    }
+
+    if (evt.keyCode === 109 && modifierPressed(evt)) { // NUMPAD -
+      diagram.control.trigger('stepZoom', { value: -1 });
+
+      return true;
+    }
   }
 
   // hook into global short cuts for fixing Modifier+A (select all)
