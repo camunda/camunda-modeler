@@ -223,11 +223,15 @@ button[class*=" icon-"] {
       background: @background-color-default;
 
       .flex-container(row);
+
+      flex-wrap: wrap;
     }
 
     li {
       flex: initial;
       margin: 5px 0 -1px 4px;
+
+      white-space: nowrap;
     }
 
     li.active {
