@@ -295,7 +295,13 @@ FileSystem.prototype.showSaveAsDialog = function(diagramFile, callback) {
     noLink: true
   };
 
-  callback(Dialog.showSaveDialog(this.browserWindow, opts));
+  var filePath = Dialog.showSaveDialog(this.browserWindow, opts);
+
+  if (filePath) {
+    config.set('defaultPath', path.dirname(filePath));
+  }
+
+  callback(filePath);
 };
 
 FileSystem.prototype.showCloseDialog = function(name, callback) {
