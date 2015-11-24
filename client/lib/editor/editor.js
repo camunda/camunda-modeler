@@ -12,6 +12,8 @@ var assign = require('lodash/object/assign'),
     find = require('lodash/collection/find'),
     forEach = require('lodash/collection/forEach');
 
+var emptyFn = function() {};
+
 function modifierPressed(evt) {
   return evt.ctrlKey || evt.metaKey;
 }
@@ -106,7 +108,9 @@ function Editor($scope) {
 
     if (active) {
       this.saveDiagram(active, { create: create || false }, function(err) {
-        console.log(err);
+        if(err) {
+          console.error(err);
+        }
       });
     }
   };
@@ -270,10 +274,11 @@ function Editor($scope) {
     $scope.$applyAsync();
   };
 
-  this.persist = function() {
-    workspace.save(this, function() {
-      console.debug('[editor]', 'persist workspace');
-    });
+  this.persist = function(callback) {
+    console.debug('[editor]', 'persist workspace');
+    callback = callback || emptyFn;
+
+    workspace.save(this, callback);
   };
 
   this.toggleView = function(name) {
@@ -301,9 +306,11 @@ function Editor($scope) {
     if (this.unsavedDiagrams.length === 0) {
       this.diagrams = this.savedDiagrams;
 
-      self.persist();
-
-      return files.quitEditor();
+      return self.persist(function() {
+        // quit the editor after finishing persisting
+        // this callback is needed to avoid race conditions
+        files.quitEditor();
+      });
     }
 
     diagram = this.unsavedDiagrams[0];

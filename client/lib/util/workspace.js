@@ -18,7 +18,7 @@ function save(config, callback) {
 
   workspace.diagrams = diagrams
     .map(function(diagram) {
-      return pick(diagram, [ 'name', 'path', 'contents', 'notation' ]);
+      return pick(diagram, [ 'path' ]);
     })
     .filter(function(diagram) {
       if (diagram.path !== '[unsaved]') {
