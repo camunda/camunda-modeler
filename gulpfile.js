@@ -190,6 +190,8 @@ function electronPackage(platform) {
       LegalCopyright: 'camunda Services GmbH, 2015',
       FileDescription: 'Camunda Modeler',
       OriginalFilename: 'camunda-modeler.exe',
+      // inherited by electron
+      // FileVersion: ELECTRON_VERSION,
       ProductVersion: PACKAGE_JSON.version,
       ProductName: 'Camunda Modeler',
       InternalName: 'camunda-modeler'
