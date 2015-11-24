@@ -1,10 +1,10 @@
 'use strict';
 
-var fs = require('fs');
-
 var forEach = require('lodash/collection/forEach');
 
 var Ipc = require('ipc');
+
+var FileSystem = require('./FileSystem');
 
 
 function Workspace(browserWindow, config) {
@@ -19,16 +19,12 @@ function Workspace(browserWindow, config) {
     }
 
     forEach(workspace.diagrams, function(diagram) {
-      var contents;
-
       try {
-        contents = fs.readFileSync(diagram.path, { encoding: 'utf8' });
+        diagrams.push(FileSystem.readDiagram(diagram.path));
 
-        diagram.contents = contents;
-
-        diagrams.push(diagram);
-      } catch (e) {
-        contents = null;
+        console.log('[workspace]', 'restore', diagram.path);
+      } catch (err) {
+        console.error('[workspace]', 'failed to restore file ', diagram.path, err);
       }
     });
 

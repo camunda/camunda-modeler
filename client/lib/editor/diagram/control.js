@@ -49,6 +49,8 @@ function DiagramControl(diagramFile) {
     var canvas;
 
     if (err) {
+      console.debug('[control] import error', err);
+
       return self.handleImportError(err.message);
     }
 
@@ -163,6 +165,9 @@ function DiagramControl(diagramFile) {
 
     if (!modeler.diagram) {
       if (diagramFile.contents) {
+
+        console.debug('[control] import\n', diagramFile.contents);
+
         modeler.importXML(diagramFile.contents, imported);
       } else {
         if (isNotation(diagramFile, 'bpmn')) {
@@ -206,9 +211,10 @@ function DiagramControl(diagramFile) {
   };
 
   this.handleImportError = function(message) {
-    files.importError(message, function(err) {
-      console.error('[import error]', err);
-    });
+
+    console.error('[import error]', message);
+
+    files.importError(diagramFile, message);
   };
 
   this.getWarnings = function() {

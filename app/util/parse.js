@@ -17,11 +17,11 @@ var ACTIVITI_NS = 'http://activiti.org/bpmn',
     CAMUNDA_NS = 'http://camunda.org/schema/1.0/bpmn';
 
 
-function extractNotation(file) {
+function extractNotation(xmlContents) {
   var notation = null;
 
   forEach(IDENTIFIERS, function(elem) {
-    if (file.indexOf(elem.identifier) !== -1) {
+    if (xmlContents.indexOf(elem.identifier) !== -1) {
       notation = elem.type;
     }
   });
@@ -88,7 +88,7 @@ module.exports.replacePrefix = replacePrefix;
 
 function replaceNamespace(data) {
   var xml = data;
-  
+
   var prefix = grabNamespacePrefix(xml);
 
   xml = replaceActivitiURL(xml);

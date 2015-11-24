@@ -2,11 +2,18 @@
 
 var browser = require('./browser');
 
+var pick = require('lodash/object/pick');
+
 
 // As long as we are using Angular, we need to give it a timeframe (delay) to update itself
 // before showing any kind of dialogs. The reason for this is that the dialogs are synchronous
 // and they don't allow the client side to render itself while being shown.
 var SET_TIMEOUT_DELAY = 100;
+
+
+function copyDiagram(diagramFile) {
+  return pick(diagramFile, [ 'path', 'name', 'contents', 'notation' ]);
+}
 
 /**
  * Open a diagram file.
@@ -49,7 +56,6 @@ function closeFile(diagramFile, callback) {
 
 module.exports.closeFile = closeFile;
 
-
 /**
  * Save a diagram file.
  *
@@ -58,12 +64,7 @@ module.exports.closeFile = closeFile;
  * @param  {Function} callback
  */
 function saveFile(diagramFile, options, callback) {
-  var diagram = {
-    path: diagramFile.path,
-    name: diagramFile.name,
-    contents: diagramFile.contents,
-    notation: diagramFile.notation
-  };
+  var diagram = copyDiagram(diagramFile);
 
   setTimeout(function() {
     browser.send('file.save', [ options.create, diagram ], function(err, updatedDiagram) {
@@ -100,14 +101,13 @@ module.exports.quitEditor = quitEditor;
 /**
  * Sends an error message and a callback function
  *
- * @param  {String}   message
- * @param  {Function} callback
+ * @param {DiagramFile} diagramFile
+ * @param {String}   message
+ * @param {Function} callback
  */
-function importError(message, callback) {
-  callback = callback || function() {};
-
+function importError(diagramFile, message, callback) {
   setTimeout(function() {
-    browser.send('editor.import.error', [ message ], callback);
+    browser.send('editor.import.error', [ copyDiagram(diagramFile), message ], callback);
   }, SET_TIMEOUT_DELAY);
 }
 

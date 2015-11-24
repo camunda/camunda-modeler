@@ -78,7 +78,7 @@ function Editor($scope) {
       options = {};
     }
 
-    function handleSaving(err, diagram, isSaved) {
+    function handleSaving(err, diagram) {
       if (!err) {
         diagram.control.resetEditState();
       }
@@ -316,7 +316,7 @@ function Editor($scope) {
 
     $scope.$applyAsync();
 
-    files.closeFile(diagram, function(err, savedDiagram, isSaved) {
+    files.closeFile(diagram, function(err, savedDiagram) {
       self.unsavedDiagrams.shift();
 
       if (err) {
@@ -324,12 +324,17 @@ function Editor($scope) {
         return;
       }
 
-      if (idx !== -1 && !isSaved && savedDiagram.path === '[unsaved]') {
+      if (idx !== -1 && !savedDiagram) {
         self.diagrams.splice(idx, 1);
       }
 
-      if (!err) {
+      // keep diagram if it was saved
+      if (savedDiagram) {
         self.savedDiagrams.push(savedDiagram);
+      } else
+      // or if it was previously saved
+      if (diagram.path !== '[unsaved]') {
+        self.savedDiagrams.push(diagram);
       }
 
       self.saveBeforeQuit();

@@ -24,6 +24,9 @@ var SUPPORTED_EXT_FILTER = [
   { name: 'All files', extensions: [ '*' ] }
 ];
 
+
+var FILE_ENCODING = { encoding: 'utf8' };
+
 /**
  * General structure for the diagram's file as an object.
  *
@@ -49,18 +52,16 @@ function FileSystem(browserWindow, config) {
 
   this.browserWindow = browserWindow;
   this.config = config;
-  this.encoding = { encoding: 'utf8' };
-
 
   Ipc.on('file.save', function(evt, newDirectory, diagramFile) {
-    self.save(newDirectory, diagramFile, function(err, updatedDiagram, isSaved) {
+    self.save(newDirectory, diagramFile, function(err, updatedDiagram) {
       if (err) {
         return self.handleError('file.save.response', err);
       }
 
       app.emit('editor:add-recent', updatedDiagram.path);
 
-      browserWindow.webContents.send('file.save.response', null, updatedDiagram, isSaved);
+      browserWindow.webContents.send('file.save.response', null, updatedDiagram);
     });
   });
 
@@ -82,12 +83,12 @@ function FileSystem(browserWindow, config) {
 
 
   Ipc.on('file.close', function(evt, diagramFile) {
-    self.close(diagramFile, function(err, updatedDiagram, isSaved) {
+    self.close(diagramFile, function(err, updatedDiagram) {
       if (err) {
         return self.handleError('file.close.response', err);
       }
 
-      browserWindow.webContents.send('file.close.response', null, updatedDiagram, isSaved);
+      browserWindow.webContents.send('file.close.response', null, updatedDiagram);
     });
   });
 
@@ -99,11 +100,11 @@ function FileSystem(browserWindow, config) {
   });
 
 
-  Ipc.on('editor.import.error', function(evt, trace) {
-    self.handleImportError(trace, function(result) {
-      self.browserWindow.webContents.send('editor.actions', { event: 'editor.close' });
-
+  Ipc.on('editor.import.error', function(evt, diagramFile, trace) {
+    self.handleImportError(diagramFile, trace, function(result) {
       self.browserWindow.webContents.send('editor.import.error.response', result);
+
+      self.browserWindow.webContents.send('editor.actions', { event: 'editor.close' });
     });
   });
 
@@ -127,32 +128,32 @@ FileSystem.prototype.open = function(callback) {
 FileSystem.prototype._openFile = function(filePath, callback) {
   var self = this;
 
-  fs.readFile(filePath, this.encoding, function(err, file) {
-    var diagramFile = createDiagramFile(filePath, file);
+  var diagramFile;
+
+  try {
+    diagramFile = readDiagram(filePath);
 
     if (!diagramFile.notation) {
       self.showUnrecognizedFileDialog(diagramFile.name);
 
       return self.open(callback);
     }
+  } catch (err) {
+    return callback(err);
+  }
 
-    if (err) {
-      return callback(err);
-    }
+  if (parseUtil.hasActivitiURL(diagramFile.contents)) {
 
-    if (parseUtil.hasActivitiURL(diagramFile.contents)) {
+    self.showNamespaceDialog(function(answer) {
+      if (answer === 0) {
+        diagramFile.contents = parseUtil.replaceNamespace(diagramFile.contents);
+      }
 
-      self.showNamespaceDialog(function(answer) {
-        if (answer === 0) {
-          diagramFile.contents = parseUtil.replaceNamespace(diagramFile.contents);
-        }
-
-        callback(null, diagramFile);
-      });
-    } else {
       callback(null, diagramFile);
-    }
-  });
+    });
+  } else {
+    callback(null, diagramFile);
+  }
 };
 
 FileSystem.prototype.addFile = function(filePath) {
@@ -193,18 +194,14 @@ FileSystem.prototype.save = function(newDirectory, diagramFile, callback) {
 };
 
 FileSystem.prototype._save = function(filePath, diagramFile, callback) {
-  if (!callback) {
-    return fs.writeFileSync(filePath, diagramFile.contents, this.encoding);
+
+  try {
+    var newDiagramFile = writeDiagram(filePath, diagramFile);
+
+    callback(null, newDiagramFile);
+  } catch (err) {
+    callback(err);
   }
-
-  fs.writeFile(filePath, diagramFile.contents, this.encoding,  function(err) {
-    var diagram = {
-      name: path.basename(filePath),
-      path: filePath
-    };
-
-    callback(err, diagram, true);
-  });
 };
 
 FileSystem.prototype.close = function(diagramFile, callback) {
@@ -215,17 +212,19 @@ FileSystem.prototype.close = function(diagramFile, callback) {
       return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
     }
     else if (result === 1) {
-      return callback(null, diagramFile, false);
+      // omitting the diagram to indicate that
+      // stuff was not saved...
+      return callback(null);
     }
     else {
-      self.save(false, diagramFile, callback);
+      self.save(null, diagramFile, callback);
     }
   });
 };
 
-FileSystem.prototype.handleImportError = function(trace, callback) {
+FileSystem.prototype.handleImportError = function(diagramFile, trace, callback) {
 
-  this.showImportErrorDialog(trace, function(answer) {
+  this.showImportErrorDialog(diagramFile.name, trace, function(answer) {
     switch (answer) {
       case 1:
         browserOpen('https://forum.bpmn.io/');
@@ -312,15 +311,15 @@ FileSystem.prototype.showCloseDialog = function(name, callback) {
   callback(Dialog.showMessageBox(this.browserWindow, opts));
 };
 
-FileSystem.prototype.showImportErrorDialog = function(trace, callback) {
+FileSystem.prototype.showImportErrorDialog = function(fileName, trace, callback) {
   var opts = {
     type: 'error',
     title: 'Importing Error',
     buttons: [ 'Close', 'Forum', 'Issue Tracker' ],
-    message: 'Ooops, we could not display the diagram!',
+    message: 'Ooops, we could not display this diagram!',
     detail: [
-      'You believe your input is valid BPMN 2.0 XML ?',
-      'Consult our forum or file an issue in our issue tracker.',
+      'Do you believe "' + fileName + '" is valid BPMN or DMN diagram?',
+      'If so, please consult our forum or file an issue in our issue tracker.',
       '',
       trace
     ].join('\n'),
@@ -372,3 +371,33 @@ FileSystem.prototype.sanitizeFilename = function(filename, notation) {
 };
 
 module.exports = FileSystem;
+
+
+
+function readDiagram(diagramPath) {
+
+  var contents = fs.readFileSync(diagramPath, FILE_ENCODING);
+
+  // trim leading and trailing whitespace
+  // this fixes obscure import errors for non-strict
+  // xml exports
+  contents = contents.replace(/(^\s*|\s*$)/g, '');
+
+  return createDiagramFile(diagramPath, contents);
+}
+
+module.exports.readDiagram = readDiagram;
+
+
+var assign = require('lodash/object/assign');
+
+function writeDiagram(diagramPath, diagramFile) {
+  fs.writeFileSync(diagramPath, diagramFile.contents, FILE_ENCODING);
+
+  return assign({}, diagramFile, {
+    name: path.basename(diagramPath),
+    path: diagramPath
+  });
+}
+
+module.exports.writeDiagram = writeDiagram;
