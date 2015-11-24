@@ -5,9 +5,8 @@ var fs = require('fs'),
 
 var Ipc = require('ipc'),
     app = require('app'),
+    browserOpen = require('./util/browser-open'),
     Dialog = require('dialog');
-
-var browserOpen = require('open');
 
 var errorUtil = require('./util/error'),
     parseUtil = require('./util/parse');

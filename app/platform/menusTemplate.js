@@ -1,7 +1,8 @@
 'use strict';
 
 var app = require('app'),
-    browserOpen = require('open');
+    browserOpen = require('../util/browser-open');
+
 
 var CANVAS_MOVE_SPEED = 20;
 

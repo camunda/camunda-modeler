@@ -22,8 +22,7 @@
     "electron-window": "^0.6.0",
     "jquery": "^2.1.1",
     "lodash": "^3.0.0",
-    "min-dom": "^0.2.0",
-    "open": "^0.0.5"
+    "min-dom": "^0.2.0"
   },
   "devDependencies": {
     "archiver": "^0.16.0",
