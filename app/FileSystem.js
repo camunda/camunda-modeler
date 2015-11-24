@@ -7,6 +7,8 @@ var Ipc = require('ipc'),
     app = require('app'),
     Dialog = require('dialog');
 
+var browserOpen = require('open');
+
 var errorUtil = require('./util/error'),
     parseUtil = require('./util/parse');
 
@@ -226,11 +228,11 @@ FileSystem.prototype.handleImportError = function(trace, callback) {
   this.showImportErrorDialog(trace, function(answer) {
     switch (answer) {
       case 1:
-        open('https://forum.bpmn.io/');
+        browserOpen('https://forum.bpmn.io/');
         callback('forum');
         break;
       case 2:
-        open('https://github.com/bpmn-io/bpmn-js/issues');
+        browserOpen('https://github.com/bpmn-io/bpmn-js/issues');
         callback('tracker');
         break;
       default:
@@ -258,10 +260,11 @@ FileSystem.prototype.showOpenDialog = function(callback) {
       filenames;
 
   var opts = {
-      title: 'Open diagram',
-      defaultPath: defaultPath,
-      properties: [ 'openFile' ],
-      filters: SUPPORTED_EXT_FILTER
+    title: 'Open diagram',
+    defaultPath: defaultPath,
+    properties: [ 'openFile' ],
+    filters: SUPPORTED_EXT_FILTER,
+    noLink: true
   };
 
   filenames = Dialog.showOpenDialog(this.browserWindow, opts);
@@ -290,7 +293,8 @@ FileSystem.prototype.showSaveAsDialog = function(diagramFile, callback) {
   var opts = {
     title: 'Save ' + name + ' as..',
     filters: filters,
-    defaultPath: defaultPath
+    defaultPath: defaultPath,
+    noLink: true
   };
 
   callback(Dialog.showSaveDialog(this.browserWindow, opts));
@@ -301,7 +305,8 @@ FileSystem.prototype.showCloseDialog = function(name, callback) {
     title: 'Close diagram',
     message: 'Save changes to ' + name + ' before closing?',
     type: 'question',
-    buttons: [ 'Save', 'Don\'t Save', 'Cancel' ]
+    buttons: [ 'Save', 'Don\'t Save', 'Cancel' ],
+    noLink: true
   };
 
   callback(Dialog.showMessageBox(this.browserWindow, opts));
@@ -318,7 +323,8 @@ FileSystem.prototype.showImportErrorDialog = function(trace, callback) {
       'Consult our forum or file an issue in our issue tracker.',
       '',
       trace
-    ].join('\n')
+    ].join('\n'),
+    noLink: true
   };
 
   callback(Dialog.showMessageBox(this.browserWindow, opts));
@@ -329,7 +335,8 @@ FileSystem.prototype.showUnrecognizedFileDialog = function(name) {
     type: 'warning',
     title: 'Unrecognized file format',
     buttons: [ 'Close' ],
-    message: 'The file "' + name + '" is not a BPMN or DMN file.'
+    message: 'The file "' + name + '" is not a BPMN or DMN file.',
+    noLink: true
   });
 };
 
@@ -343,7 +350,8 @@ FileSystem.prototype.showNamespaceDialog = function(callback) {
       'This will allow you to maintain execution related properties.',
       '',
       '<camunda> namespace support works from Camunda BPM version 7.4.0, 7.3.3, 7.2.6 onwards.'
-    ].join('\n')
+    ].join('\n'),
+    noLink: true
   };
 
   callback(Dialog.showMessageBox(this.browserWindow, opts));
