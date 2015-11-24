@@ -91,60 +91,64 @@ body, html {
   }
 }
 
+a {
+  text-decoration: none;
+}
+
 .bio-warning-dialog {
-  position: fixed;
-  top: 120px;
-  left: 33%;
+
+  position: absolute;
+  top: 20px;
+  left: 50%;
   width: 450px;
   text-align: center;
-
-  background: @color-light-gray;
+  background: #FFFFDB;
   padding: 10px 20px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   border-radius: 2px;
   line-height: 22px;
   z-index: 1000;
+  margin-left: -225px;
 
-  button {
-    font-size: 0.9em;
-  }
-
-  button.close {
+  .close {
     cursor: pointer;
     float: right;
-    position: absolute;
-    top: 5px;
-    right: 7px;
   }
 }
 
 .bio-console {
   border-top: 1px solid #999;
-  padding-top: 0.5em;
+
+  position: relative;
+  height: 200px;
 
   h4 {
-    margin-top: 0;
-    margin-left: 1.2em;
-    display: inline-block;
+    padding: 5px;
+    margin: 0;
   }
 
-  .bio-warning {
-    height: 200px;
+  .bio-warnings {
+    position: absolute;
+
+    top: 20px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
     overflow: auto;
-    width: 100%;
-    float: left;
-    clear: both;
 
     pre {
-      margin: 0;
+      margin: 5px;
+    }
+
+    code {
+      display: block;
     }
   }
 
-  button.close {
+  .close {
     float: right;
     display: inline-block;
-    clear: both;
-    margin-right: 0.5em;
   }
 }
 
