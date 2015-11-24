@@ -17,8 +17,6 @@ function send(event, args, callback) {
     args = [];
   }
 
-  ipc.send.apply(null, [ event ].concat(args));
-
   if (callback) {
     ipc.once(event + '.response', function() {
 
@@ -33,6 +31,8 @@ function send(event, args, callback) {
       callback.apply(null, args);
     });
   }
+
+  ipc.send.apply(null, [ event ].concat(args));
 }
 
 module.exports.send = send;
