@@ -117,7 +117,7 @@ function getEditMenu(browserWindow, notation) {
         {
           id: 'dmn:ruleAdd',
           label: 'At End',
-          accelerator: '',
+          accelerator: 'CommandOrControl+D',
           click: function() {
             browserWindow.webContents.send('editor.actions', { event: 'dmn.ruleAdd' });
           }
@@ -125,7 +125,6 @@ function getEditMenu(browserWindow, notation) {
         {
           id: 'dmn:ruleAddAbove',
           label: 'Above Selected',
-          accelerator: '',
           click: function() {
             browserWindow.webContents.send('editor.actions', { event: 'dmn.ruleAddAbove' });
           }
@@ -133,7 +132,6 @@ function getEditMenu(browserWindow, notation) {
         {
           id: 'dmn:ruleAddBelow',
           label: 'Below Selected',
-          accelerator: '',
           click: function() {
             browserWindow.webContents.send('editor.actions', { event: 'dmn.ruleAddBelow' });
           }
@@ -143,7 +141,6 @@ function getEditMenu(browserWindow, notation) {
     {
       id: 'dmn:ruleClear',
       label: 'Clear Rule',
-      accelerator: '',
       click: function() {
         browserWindow.webContents.send('editor.actions', { event: 'dmn.ruleClear' });
       }
@@ -151,7 +148,6 @@ function getEditMenu(browserWindow, notation) {
     {
       id: 'dmn:ruleRemove',
       label: 'Remove Rule',
-      accelerator: '',
       click: function() {
         browserWindow.webContents.send('editor.actions', { event: 'dmn.ruleRemove' });
       }
@@ -165,7 +161,6 @@ function getEditMenu(browserWindow, notation) {
       submenu: [
         {
           label: 'Input',
-          accelerator: '',
           click: function() {
             browserWindow.webContents.send('editor.actions', {
               event: 'dmn.clauseAdd',
@@ -177,7 +172,6 @@ function getEditMenu(browserWindow, notation) {
         },
         {
           label: 'Output',
-          accelerator: '',
           click: function() {
             browserWindow.webContents.send('editor.actions', {
               event: 'dmn.clauseAdd',
@@ -193,7 +187,6 @@ function getEditMenu(browserWindow, notation) {
         {
           id: 'dmn:clauseAddLeft',
           label: 'Left of selected',
-          accelerator: '',
           click: function() {
             browserWindow.webContents.send('editor.actions', { event: 'dmn.clauseAddLeft' });
           }
@@ -201,7 +194,6 @@ function getEditMenu(browserWindow, notation) {
         {
           id: 'dmn:clauseAddRight',
           label: 'Right of selected',
-          accelerator: '',
           click: function() {
             browserWindow.webContents.send('editor.actions', { event: 'dmn.clauseAddRight' });
           }
@@ -211,7 +203,6 @@ function getEditMenu(browserWindow, notation) {
     {
       id: 'dmn:clauseRemove',
       label: 'Remove Clause',
-      accelerator: '',
       click: function() {
         browserWindow.webContents.send('editor.actions', { event: 'dmn.clauseRemove' });
       }
