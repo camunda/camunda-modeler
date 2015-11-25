@@ -118,8 +118,12 @@ function createArchive(platform, path, done) {
       archive = archiver('zip', {});
       dest += '.zip';
     } else {
-      archive = archiver('tar', { gzip: true });
+      if (platform === 'darwin') {
+        dest = dest.replace(/Camunda Modeler/, 'camunda-modeler');
+      }
+
       dest += '.tar.gz';
+      archive = archiver('tar', { gzip: true });
     }
 
     output = fs.createWriteStream(dest);
