@@ -1,8 +1,9 @@
+> Looking for the legacy [Camunda Eclipse plug-in](https://github.com/camunda/camunda-eclipse-plugin)?
+
+
 # Camunda Modeler
 
 [![Build Status](https://travis-ci.org/camunda/camunda-modeler.svg?branch=master)](https://travis-ci.org/camunda/camunda-modeler)
-
-> Looking for the deprecated [Camunda Eclipse plug-in](https://github.com/camunda/camunda-eclipse-plugin)?
 
 An integrated modeling solution for BPMN and DMN based on [bpmn.io](http://bpmn.io).
 
