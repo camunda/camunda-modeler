@@ -1,6 +1,6 @@
 # Camunda Modeler
 
-[![Build Status](https://travis-ci.org/camunda/bpmn-io-modeler.svg?branch=master)](https://travis-ci.org/camunda/bpmn-io-modeler)
+[![Build Status](https://travis-ci.org/camunda/camunda-modeler.svg?branch=master)](https://travis-ci.org/camunda/camunda-modeler)
 
 > Looking for the deprecated [Camunda Eclipse plug-in](https://github.com/camunda/camunda-eclipse-plugin)?
 
