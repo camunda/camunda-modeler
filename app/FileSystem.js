@@ -353,7 +353,7 @@ FileSystem.prototype.showNamespaceDialog = function(callback) {
     detail: [
       'This will allow you to maintain execution related properties.',
       '',
-      '<camunda> namespace support works from Camunda BPM version 7.4.0, 7.3.3, 7.2.6 onwards.'
+      '<camunda> namespace support works from Camunda BPM versions 7.4.0, 7.3.3, 7.2.6 onwards.'
     ].join('\n'),
     noLink: true
   };
