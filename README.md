@@ -2,7 +2,9 @@
 
 [![Build Status](https://travis-ci.org/camunda/bpmn-io-modeler.svg?branch=master)](https://travis-ci.org/camunda/bpmn-io-modeler)
 
-An integrated modeling solution based on bpmn.io and dmn.io.
+> Looking for the deprecated [Camunda Eclipse plug-in](https://github.com/camunda/camunda-eclipse-plugin)?
+
+An integrated modeling solution for BPMN and DMN based on [bpmn.io](http://bpmn.io).
 
 
 ## Nightly Builds
