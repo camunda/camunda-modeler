@@ -6,6 +6,7 @@ var BpmnJS = require('bpmn-js/lib/Modeler'),
 var DiagramJsOrigin = require('diagram-js-origin');
 
 var propertiesPanelModule = require('bpmn-js-properties-panel'),
+    propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda'),
     camundaModdlePackage = require('camunda-bpmn-moddle/resources/camunda');
 
 
@@ -21,6 +22,7 @@ function createBpmnJS($el, $propertiesPanel) {
     additionalModules: [
       DiagramJsOrigin,
       propertiesPanelModule,
+      propertiesProviderModule,
       propertiesPanelConfig
     ],
     moddleExtensions: { camunda: camundaModdlePackage }
