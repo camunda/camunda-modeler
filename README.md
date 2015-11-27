@@ -7,10 +7,27 @@
 
 An integrated modeling solution for BPMN and DMN based on [bpmn.io](http://bpmn.io).
 
+![Camunda Modeler](https://raw.githubusercontent.com/camunda/camunda-modeler/master/docs/screenshot.png)
 
-## Nightly Builds
 
-To try out the latest project state check the [nightly builds](https://camunda.org/release/camunda-modeler-desktop/nightly/) of the master branch.
+## Resources
+
+* [Issues](https://github.com/camunda/camunda-modeler/issues)
+* [Website](http://camunda.org/bpmn/tool)
+* [Downloads](http://camunda.org/release/camunda-modeler) (see also [nightly builds](http://camunda.org/release/camunda-modeler/nightly))
+
+
+## Building the Application
+
+```
+npm install
+
+# spin up
+npm run auto-test
+
+# run test cases
+npm run all
+```
 
 
 ## License
