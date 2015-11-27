@@ -1,7 +1,7 @@
 {
   "name": "camunda-modeler",
   "version": "0.2.0",
-  "description": "Camunda desktop modeler for BPMN and CMMN, based on bpmn.io",
+  "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
   "main": "app/index.js",
   "scripts": {
     "test": "gulp test",
