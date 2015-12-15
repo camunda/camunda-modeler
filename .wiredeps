@@ -5,6 +5,9 @@
     "angular": {
       "version": "1.4.7"
     },
+    "selection-update": {
+      "version": "0.1.2"
+    },
     "camunda-bpmn-moddle": {
       "version": "camunda/camunda-bpmn-moddle"
     },
