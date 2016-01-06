@@ -174,18 +174,33 @@ FileSystem.prototype.addFile = function(filePath) {
 };
 
 FileSystem.prototype.save = function(newDirectory, diagramFile, callback) {
-  var self = this;
+  var self = this,
+      args = Array.prototype.slice.call(arguments);
 
   // Save as..
   if (newDirectory || diagramFile.path === '[unsaved]') {
-    this.showSaveAsDialog(diagramFile, function(filename) {
-      if (!filename) {
+    this.showSaveAsDialog(diagramFile, function(filePath) {
+
+      if (!filePath) {
         return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
       }
 
-      filename = self.sanitizeFilename(filename, diagramFile.notation);
+      var saveFilePath = ensureExtension(filePath, diagramFile.notation);
 
-      self._save(filename, diagramFile, callback);
+      // display an additional override warning if
+      // filePath.defaultExtension would override an existing file
+      if (filePath !== saveFilePath && existsFile(saveFilePath)) {
+        return self.showExistingFileDialog(path.basename(saveFilePath), function(result) {
+          if (result === 0) {
+            return self._save(saveFilePath, diagramFile, callback);
+          } else {
+            return self.save.apply(self, args);
+          }
+        });
+      } else {
+        // ok to save
+        self._save(saveFilePath, diagramFile, callback);
+      }
     });
   } else {
     this._save(diagramFile.path, diagramFile, callback);
@@ -344,6 +359,17 @@ FileSystem.prototype.showUnrecognizedFileDialog = function(name) {
   });
 };
 
+FileSystem.prototype.showExistingFileDialog = function(name, callback) {
+  var opts = {
+    type: 'warning',
+    title: 'Existing file',
+    buttons: [ 'Overwrite', 'Cancel' ],
+    message: 'The file "' + name + '" already exists. Do you want to overwrite it ?'
+  };
+
+  callback(Dialog.showMessageBox(this.browserWindow, opts));
+};
+
 FileSystem.prototype.showNamespaceDialog = function(callback) {
   var opts = {
     type: 'warning',
@@ -365,15 +391,6 @@ FileSystem.prototype.showGeneralErrorDialog = function() {
   Dialog.showErrorBox('Error', 'There was an internal error.' + '\n' + 'Please try again.');
 };
 
-FileSystem.prototype.sanitizeFilename = function(filename, notation) {
-  var extension = path.extname(filename);
-
-  if (extension === '') {
-    return filename + '.' + notation;
-  }
-
-  return filename;
-};
 
 module.exports = FileSystem;
 
@@ -406,3 +423,33 @@ function writeDiagram(diagramPath, diagramFile) {
 }
 
 module.exports.writeDiagram = writeDiagram;
+
+
+function existsFile(filePath) {
+  try {
+    fs.statSync(filePath);
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+module.exports.existsFile = existsFile;
+
+/**
+ * Ensure that the file path has an extension,
+ * defaulting to defaultExtension if non is present.
+ *
+ * @param {String} filePath
+ * @param {String} defaultExtension
+ *
+ * @return {String} filePath that definitely has an extension
+ */
+function ensureExtension(filePath, defaultExtension) {
+  var extension = path.extname(filePath);
+
+  return extension ? filePath : filePath + '.' + defaultExtension;
+}
+
+module.exports.ensureExtension = ensureExtension;
