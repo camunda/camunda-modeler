@@ -230,6 +230,24 @@ function getEditMenu(browserWindow, notation) {
     },
     {
       type: 'separator'
+    },
+    {
+      label: 'Cut',
+      accelerator: 'CommandOrControl+X',
+      role: 'cut'
+    },
+    {
+      label: 'Copy',
+      accelerator: 'CommandOrControl+C',
+      role: 'copy'
+    },
+    {
+      label: 'Paste',
+      accelerator: 'CommandOrControl+V',
+      role: 'paste'
+    },
+    {
+      type: 'separator'
     }
   ];
 
