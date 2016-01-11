@@ -3,6 +3,8 @@
 var BpmnJS = require('bpmn-js/lib/Modeler'),
     DmnJS = require('dmn-js/lib/Modeler');
 
+var BpmnJSExecutableFix = require('./extensions/executable-fix');
+
 var DiagramJsOrigin = require('diagram-js-origin');
 
 var propertiesPanelModule = require('bpmn-js-properties-panel'),
@@ -13,7 +15,7 @@ var propertiesPanelModule = require('bpmn-js-properties-panel'),
 function createBpmnJS($el, $propertiesPanel) {
 
   var propertiesPanelConfig = {
-    'config.propertiesPanel': ['value', { parent: $propertiesPanel }]
+    'config.propertiesPanel': ['value', { parent: $propertiesPanel }],
   };
 
   return new BpmnJS({
@@ -21,6 +23,7 @@ function createBpmnJS($el, $propertiesPanel) {
     position: 'absolute',
     additionalModules: [
       DiagramJsOrigin,
+      BpmnJSExecutableFix,
       propertiesPanelModule,
       propertiesProviderModule,
       propertiesPanelConfig
