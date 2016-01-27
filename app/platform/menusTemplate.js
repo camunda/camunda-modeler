@@ -10,10 +10,10 @@ function getEditMenu(browserWindow, notation) {
   // BPMN modeling actions
   var bpmnActions = [
     {
-      label: 'Space Tool',
-      accelerator: 'S',
+      label: 'Hand Tool',
+      accelerator: 'H',
       click: function() {
-        browserWindow.webContents.send('editor.actions', { event: 'bpmn.spaceTool' });
+        browserWindow.webContents.send('editor.actions', { event: 'bpmn.handTool' });
       }
     },
     {
@@ -21,6 +21,13 @@ function getEditMenu(browserWindow, notation) {
       accelerator: 'L',
       click: function() {
         browserWindow.webContents.send('editor.actions', { event: 'bpmn.lassoTool' });
+      }
+    },
+    {
+      label: 'Space Tool',
+      accelerator: 'S',
+      click: function() {
+        browserWindow.webContents.send('editor.actions', { event: 'bpmn.spaceTool' });
       }
     },
     {

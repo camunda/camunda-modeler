@@ -60,6 +60,12 @@ EditorActions.prototype.getActions = function(payload) {
     },
 
     // Edit (BPMN)
+    'bpmn.handTool': {
+      handler: function() {
+        editor.trigger('handTool');
+      },
+      ignoreIfActiveInput: true
+    },
     'bpmn.spaceTool': {
       handler: function() {
         editor.trigger('spaceTool');
