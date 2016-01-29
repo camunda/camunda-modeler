@@ -101,6 +101,7 @@ function getEditMenu(browserWindow, notation) {
     {
       label: 'Select All',
       accelerator: 'CommandOrControl+A',
+      role: 'selectall',
       click: function() {
         browserWindow.webContents.send('editor.actions', { event: 'bpmn.selectElements' });
       }
