@@ -18,6 +18,10 @@ function modifierPressed(evt) {
   return evt.ctrlKey || evt.metaKey;
 }
 
+function isMac() {
+  return window.navigator.platform === 'MacIntel';
+}
+
 function Editor($scope) {
 
   var self = this,
@@ -425,11 +429,51 @@ function Editor($scope) {
    */
   function handleGlobalKey(evt) {
 
-    var diagram = self.currentDiagram;
+    var diagram = self.currentDiagram,
+        tool;
 
     var target = evt.target;
 
-    if (!diagram || !modifierPressed(evt)) {
+    if (!diagram) {
+      return;
+    }
+
+    /**
+     * Tools (keybinding)
+     *
+     * Lasso (L)
+     * Space (S)
+     * Hand (H)
+     *
+     * This is necessary for the time being, because in Mac OS X the A - Z
+     * accelerators (keybindings) are being swallen by the renderer process
+     */
+    if (isMac() && !modifierPressed(evt) && !isInput(target)) {
+      switch(evt.keyCode) {
+        case 76:
+          // Lasso tool
+          tool = 'lassoTool'
+          break;
+        case 83:
+          // Space tool
+          tool = 'spaceTool'
+          break;
+        case 72:
+          // Hand tool
+          tool = 'handTool'
+          break;
+        default:
+        // do nothing
+      }
+
+      if (tool) {
+        evt.preventDefault();
+
+        diagram.control.trigger(tool);
+      }
+    }
+
+    if (!modifierPressed(evt)) {
       return;
     }
 
