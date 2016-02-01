@@ -18,7 +18,7 @@
     "camunda-bpmn-moddle": "^0.2.5",
     "diagram-js": "^0.13.0",
     "diagram-js-origin": "^0.13.0",
-    "dmn-js": "^0.4.0",
+    "dmn-js": "^0.4.1",
     "electron-window": "^0.6.0",
     "jquery": "^2.1.1",
     "lodash": "^3.0.0",
