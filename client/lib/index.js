@@ -9,12 +9,11 @@ global.h = require('vdom/h');
 
 var Logger = require('base/logger'),
     Events = require('base/events'),
+    Workspace = require('external/workspace'),
     FileSystem = require('external/file-system'),
     Dialog = require('external/dialog');
 
 var App = require('./app');
-
-var EmptyTab = require('app/tabs/empty-tab');
 
 var mainLoop = require('util/dom/main-loop');
 
@@ -28,22 +27,11 @@ domReady(function() {
     logger: new Logger(),
     events: new Events(),
     dialog: new Dialog(),
-    fileSystem: new FileSystem()
+    fileSystem: new FileSystem(),
+    workspace: new Workspace()
   });
 
   app.on('app:run', function() {
-
-    var debuggerTab = new EmptyTab({
-      id: 'debugger',
-      label: 'DO DEBUG',
-      title: 'Create new Diagram',
-      render: function() {
-        return <h1> DEBUG YEA </h1>;
-      }
-    });
-
-    app.emit('tab:add', debuggerTab, { select: true });
-
     app.createDiagram('bpmn');
   });
 

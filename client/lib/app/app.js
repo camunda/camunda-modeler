@@ -119,6 +119,38 @@ function App(options) {
 
   this.activeTab = this.tabs[0];
 
+  this.events.on('workspace:restore', () => {
+
+    this.workspace.restore((err, session) => {
+      if (err) {
+        debug('workspace restore: ');
+
+        return;
+      }
+
+      if (!session || !session.tabs.length) {
+        return;
+      }
+
+      this.createDiagramTabs(session.tabs);
+
+      this.activeTab = session.tabs[0];
+    });
+  });
+
+  this.events.on('workspace:persist', () => {
+
+    this.workspace.persist(this, function(err, session) {
+      if (err) {
+        return;
+      }
+
+      debug('workspace persisted', session);
+
+      // do something
+    });
+  });
+
   this.events.on('tools:update-edit-state', (tab, newState) => {
 
     var button;
@@ -174,6 +206,8 @@ function App(options) {
 
     this.logger.info('switch to <%s> tab', tab.id);
 
+    this.events.emit('workspace:persist');
+
     this.events.emit('changed');
   });
 
@@ -198,6 +232,8 @@ function App(options) {
     if (tab === this.activeTab) {
       events.emit('tab:select', tabs[idx - 1] || tabs[idx]);
     }
+
+    events.emit('workspace:persist');
 
     events.emit('changed');
   });
@@ -425,6 +461,8 @@ App.prototype.saveTab = function(tab, options, done) {
     // finally saved...
     tab.setFile(savedFile);
 
+    this.events.emit('workspace:persist');
+
     return done(null, savedFile);
   };
 
@@ -500,6 +538,24 @@ App.prototype.filesDropped = function(files) {
 
   // create tabs for files
   this.createDiagramTabs(actualFiles);
+};
+
+App.prototype.restoreCallback = function(err, session) {
+  if (err) {
+    debug('workspace restore: ');
+
+    return;
+  }
+
+  if (!session || !session.tabs.length) {
+    this.activeTab = this.tabs[0];
+
+    return;
+  }
+
+  this.createDiagramTabs(session.tabs);
+
+  this.activeTab = session.tabs[0];
 };
 
 /**

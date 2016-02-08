@@ -3,6 +3,7 @@
 var Dialog = require('test/helper/mock/dialog'),
     Events = require('test/helper/mock/events'),
     FileSystem = require('test/helper/mock/file-system'),
+    Workspace = require('test/helper/mock/workspace'),
     Logger = require('test/helper/mock/logger');
 
 var App = require('app');
@@ -41,12 +42,13 @@ function createDmnFile(xml) {
 
 describe('App', function() {
 
-  var events, logger, fileSystem, dialog, app;
+  var events, logger, fileSystem, workspace, dialog, app;
 
   beforeEach(function() {
     dialog = new Dialog();
     events = new Events();
     fileSystem = new FileSystem();
+    workspace = new Workspace();
     logger = new Logger();
 
     // given
@@ -54,6 +56,7 @@ describe('App', function() {
       dialog: dialog,
       events: events,
       fileSystem: fileSystem,
+      workspace: workspace,
       logger: logger
     });
   });
@@ -430,6 +433,135 @@ describe('App', function() {
 
       // then
       expect(createDiagram).to.have.been.calledWith('bpmn');
+    });
+
+  });
+
+  describe('workspace', function() {
+
+    describe('#persist', function () {
+
+      beforeEach(function() {
+        render(app);
+      });
+
+      it('should persist the current open tab', function() {
+        // given
+        var bpmnFile = createBpmnFile(bpmnXML),
+            session;
+
+        // when
+        app.createDiagramTabs([ bpmnFile ]);
+
+        session = app.workspace.get();
+
+        // then
+        expect(session.tabs).to.have.length(1);
+        expect(session.tabs[0]).to.have.keys([ 'name', 'path', 'contents', 'layout', 'type' ]);
+      });
+
+
+      it('should persist the active tab', function() {
+        // given
+        var bpmnFile = createBpmnFile(bpmnXML),
+            dmnFile = createDmnFile(dmnXML),
+            session;
+
+        // when
+        app.createDiagramTabs([ bpmnFile, dmnFile ]);
+
+        app.events.emit('tab:select', app.tabs[0]);
+
+        session = app.workspace.get();
+
+        // then
+        expect(session.tabs).to.have.length(2);
+        expect(session.activeTabIndex).to.equal(0);
+      });
+
+
+      it('should not persist a closed tab', function() {
+        // given
+        var bpmnFile = createBpmnFile(bpmnXML),
+            dmnFile = createDmnFile(dmnXML),
+            session;
+
+        // when
+        app.createDiagramTabs([ bpmnFile, dmnFile ]);
+
+        app.events.emit('tab:close', app.tabs[0]);
+
+        session = app.workspace.get();
+
+        // then
+        expect(session.tabs).to.have.length(1);
+        expect(session.tabs[0].type).to.equal('dmn');
+      });
+
+
+      it('should not persist a unsaved tab', function() {
+        var dmnFile = createDmnFile(dmnXML),
+            session;
+
+        // given / when
+        app.createDiagramTabs([{
+          name: 'diagram_1.bpmn',
+          path: '[unsaved]',
+          contents: bpmnXML,
+          fileType: 'bpmn'
+        }, {
+          name: 'diagram_2.bpmn',
+          path: '[unsaved]',
+          contents: bpmnXML,
+          fileType: 'bpmn'
+        }, dmnFile ]);
+
+        session = app.workspace.get();
+
+        // then
+        expect(session.tabs).to.have.length(1);
+        expect(session.tabs[0].type).to.equal('dmn');
+      });
+
+    });
+
+    describe('#restore', function () {
+
+      beforeEach(function() {
+        render(app);
+      });
+
+      it('should restore', function() {
+        // given
+        var bpmnFile = createBpmnFile(bpmnXML),
+            dmnFile = createDmnFile(dmnXML),
+            session;
+
+        // when
+        app.createDiagramTabs([ bpmnFile ]);
+
+        workspace.setSessionRestore();
+
+        app.createDiagramTabs([{
+          name: 'diagram_2.bpmn',
+          path: 'diagram_2.bpmn',
+          contents: bpmnXML,
+          fileType: 'bpmn'
+        }, dmnFile ]);
+
+        app.events.emit('workspace:restore');
+
+        session = app.workspace.get();
+
+        // then
+        expect(app.tabs).to.have.length(4);
+        expect(app.activeTab.name).to.equal('diagram_1.bpmn');
+
+        expect(session.tabs).to.have.length(1);
+        expect(session.tabs[0].type).to.equal('bpmn');
+        expect(session.tabs[0].name).to.equal('diagram_1.bpmn');
+      });
+
     });
 
   });
