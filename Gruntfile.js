@@ -91,7 +91,19 @@ module.exports = function(grunt) {
           'public/css/style.css': 'client/styles/app.less'
         }
       }
+    },
+    
+    watch: {
+      less: {
+        files: 'client/{lib,styles}/**/*.less',
+        tasks: [ 'less' ]
+      },
+      copy: {
+        files: 'client/lib/index.html',
+        tasks: [ 'copy' ]
+      }
     }
+
   });
 
   grunt.loadTasks('tasks');
@@ -99,11 +111,26 @@ module.exports = function(grunt) {
 
   // tasks
 
+  grunt.registerTask('lint', [ 'eslint' ]);
+  
   grunt.registerTask('test', [ 'karma:single' ]);
 
   grunt.registerTask('auto-test', [ 'karma:unit' ]);
 
-  grunt.registerTask('build:client', [ 'clean', 'browserify', 'less', 'copy' ]);
+  grunt.registerTask('auto-build', [
+    'clean',
+    'browserify:client:watch',
+    'less',
+    'copy',
+    'watch'
+  ]);
+  
+  grunt.registerTask('build-client', [
+    'clean',
+    'browserify:client',
+    'less',
+    'copy'
+  ]);
 
-  grunt.registerTask('default', [ 'eslint', 'test', 'build:client' ]);
+  grunt.registerTask('default', [ 'lint', 'test', 'build-client' ]);
 };
