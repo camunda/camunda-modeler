@@ -1,23 +1,56 @@
-// expose jquery to window
 'use strict';
 
-window.jQuery = require('jquery');
+var domReady = require('domready');
 
-var angular = require('angular');
+var Delegator = require('dom-delegator');
 
-var ngModule = module.exports = angular.module('app', [
-  require('./editor').name,
-  require('./menu-bar').name
-]);
+// provide vdom utility
+global.h = require('vdom/h');
+
+var Logger = require('base/logger'),
+    Events = require('base/events'),
+    FileSystem = require('external/file-system'),
+    Dialog = require('external/dialog');
+
+var App = require('./app');
+
+var EmptyTab = require('app/tabs/empty-tab');
+
+var mainLoop = require('util/dom/main-loop');
+
+// init dom-delegator
+Delegator();
 
 
-// emit an event to show the backend
-// we are ready to receive events
+domReady(function() {
 
-var browser = require('./util/browser');
+  var app = new App({
+    logger: new Logger(),
+    events: new Events(),
+    dialog: new Dialog(),
+    fileSystem: new FileSystem()
+  });
 
-ngModule.run(function() {
-  setTimeout(function() {
-    browser.send('editor.ready');
-  }, 100);
+  app.on('app:run', function() {
+
+    var debuggerTab = new EmptyTab({
+      id: 'debugger',
+      label: 'DO DEBUG',
+      title: 'Create new Diagram',
+      render: function() {
+        return <h1> DEBUG YEA </h1>;
+      }
+    });
+
+    app.emit('tab:add', debuggerTab, { select: true });
+
+    app.createDiagram('bpmn');
+  });
+
+  mainLoop(app, document.body);
+
+  app.run();
 });
+
+
+require('debug').enable('*');

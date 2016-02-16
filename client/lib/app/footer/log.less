@@ -1,0 +1,39 @@
+
+.log {
+
+  .header {
+    margin: 0 5px 5px 5px;
+    text-align: right;
+  }
+
+  > .resize-handle {
+    .no-user-select;
+
+    margin-top: 7px;
+    padding-top: 3px;
+
+    cursor: ns-resize;
+
+    &:before {
+      content: '';
+      height: 1px;
+      background: #CCC;
+      display: block;
+    }
+  }
+
+  > .entries {
+
+    font-family: monospace;
+
+    background: #FCFCFC;
+
+    overflow: auto;
+
+    padding: 5px;
+
+    > .entry {
+      padding: 0 5px;
+    }
+  }
+}

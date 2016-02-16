@@ -1,0 +1,70 @@
+/**
+ * multi-button definition
+ */
+
+.multi-button() {
+
+  position: relative;
+
+  > .separator {
+    height: 16px;
+    margin: -2px 2px 0 2px;
+
+    visibility: hidden;
+  }
+
+  > .caret {
+    margin-top: -3px;
+  }
+
+  button {
+    padding: 0 2px;
+  }
+
+  &:hover,
+  &.active {
+
+    .separator {
+      visibility: visible;
+    }
+  }
+
+  .dropdown {
+    display: none;
+    text-align: left;
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    font-size: 13px;
+
+    line-height: 24px;
+
+    background: white;
+    border: solid 1px #CCC;
+
+    position: absolute;
+    top: 26px;
+    left: 2px;
+
+    width: 160px;
+    z-index: 1000;
+
+    li {
+      padding: 0 3px;
+      cursor: pointer;
+
+      &:hover,
+      &.active {
+        background: #D6EBFF;
+      }
+    }
+  }
+
+  &.active {
+    .dropdown {
+      display: block;
+    }
+  }
+}

@@ -1,0 +1,50 @@
+@import "footer/log";
+
+@import "tabs/bpmn/bpmn-tab";
+@import "tabs/dmn/dmn-tab";
+
+@import "base/components/menu-bar";
+@import "base/components/tabbed";
+
+@import "util/dom/file-drop";
+
+
+.app {
+
+  .flex-container(column);
+
+  height: 100%;
+  overflow: hidden;
+
+  .menu-bar {
+    .flex-container(row);
+    .flex-fill(initial);
+
+    > * {
+      .flex-fill(initial);
+    }
+  }
+
+  .tabbed {
+    .flex-container(column);
+    .flex-fill(1);
+
+    > .tabs {
+      .flex-container(row);
+      .flex-fill(initial);
+
+      > .tab {
+        .flex-fill(initial);
+      }
+    }
+
+    > .content {
+      .flex-container(column);
+      .flex-fill(1);
+    }
+  }
+
+  .footer {
+    .flex-fill(initial);
+  }
+}
