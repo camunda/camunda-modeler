@@ -31,7 +31,10 @@ module.exports = function(grunt) {
     var done = function() {};
     
     var browserifyOptions = {
-      builtins: false,
+      builtins: {
+        assert: require.resolve('assert/'),
+        events: require.resolve('events/')
+      },
       paths: [ 'client/lib' ],
       insertGlobalVars: {
         process: function () {
