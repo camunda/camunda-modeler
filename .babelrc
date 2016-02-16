@@ -1,0 +1,7 @@
+{
+  "plugins": [
+    "syntax-jsx",
+    [ "transform-react-jsx", { "pragma": "h" } ],
+    [ "transform-es2015-arrow-functions" ]
+  ]
+}

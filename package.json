@@ -4,47 +4,87 @@
   "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
   "main": "app/index.js",
   "scripts": {
-    "test": "gulp test",
-    "auto-test": "mocha -r test/expect -w test/spec/**",
-    "all": "gulp",
-    "distro": "gulp distro",
-    "auto-build": "gulp auto-build"
+    "test": "grunt test",
+    "auto-test": "grunt test:watch",
+    "all": "grunt",
+    "distro": "grunt distro",
+    "dev": "grunt auto-build"
   },
-  "author": "bpmn.io <http://bpmn.io>",
+  "author": "Camunda BPM <http://camunda.org>",
+  "browserify": {
+    "transform": [
+      "babelify",
+      [
+        "stringify",
+        {
+          "extensions": [
+            ".bpmn",
+            ".dmn",
+            ".xml",
+            ".css"
+          ]
+        }
+      ]
+    ]
+  },
   "dependencies": {
-    "angular": "^1.3.14",
+    "bootstrap": "^3.3.6",
     "bpmn-js": "^0.13.3",
     "bpmn-js-properties-panel": "^0.6.0",
     "camunda-bpmn-moddle": "^0.3.0",
     "diagram-js": "^0.13.3",
+    "debug": "^2.2.0",
     "diagram-js-origin": "^0.13.0",
-    "dmn-js": "^0.4.1",
-    "electron-window": "^0.6.0",
-    "jquery": "^2.1.1",
-    "lodash": "^3.0.0",
-    "min-dom": "^0.2.0"
+    "dmn-js": "^0.3.1",
+    "dom-delegator": "^13.1.0",
+    "domify": "^1.4.0",
+    "domready": "^1.0.8",
+    "events": "^1.1.0",
+    "format": "^0.2.1",
+    "ids": "^0.1.2",
+    "inherits": "^2.0.1",
+    "lodash": "^3.10.1",
+    "next-tick": "^0.2.2",
+    "raf": "^3.1.0",
+    "virtual-hook": "^1.0.1",
+    "virtual-dom": "^2.1.1"
   },
   "devDependencies": {
     "archiver": "^0.16.0",
+    "babel-plugin-syntax-jsx": "^6.1.18",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.3.13",
+    "babel-plugin-transform-react-jsx": "^6.2.0",
+    "babelify": "^7.2.0",
+    "bootstrap": "^3.3.6",
     "browserify": "^11.2.0",
     "chai": "^2.2.0",
     "concat-stream": "^1.5.1",
+    "chai": "^3.5.0",
     "electron-connect": "^0.3.3",
     "electron-debug": "^0.2.0",
     "electron-packager": "^5.1.0",
     "electron-prebuilt": "^0.34.3",
     "errorify": "^0.3.1",
-    "gulp": "^3.9.0",
-    "gulp-less": "^3.0.3",
-    "gulp-mocha": "^2.2.0",
-    "gulp-sequence": "^0.4.1",
-    "gulp-util": "^3.0.6",
+    "eslint": "^2.1.0",
+    "eslint-plugin-react": "^3.16.1",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-copy": "^0.8.2",
+    "grunt-contrib-less": "^1.2.0",
+    "grunt-eslint": "^18.0.0",
+    "grunt-karma": "^0.12.1",
+    "grunt-release": "^0.13.0",
+    "karma-browserify": "^5.0.1",
+    "karma-mocha": "^0.2.2",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-sinon-chai": "^1.2.0-rc1",
+    "load-grunt-tasks": "^3.4.0",
     "mocha": "^2.3.3",
     "ncp": "^2.0.0",
-    "stringify": "^3.1.0",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.4.0",
+    "stringify": "^3.2.0",
+    "time-grunt": "^1.3.0",
+    "vtree-select": "^2.0.0",
+    "watchify": "^3.7.0",
     "which": "^1.2.0"
   }
 }
