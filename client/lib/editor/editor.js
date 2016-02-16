@@ -381,15 +381,19 @@ function Editor($scope) {
     var self = this;
 
     onDrop('body', function(e) {
-      var file = e.files[0];
-
-      if (!file) {
+      if (!e.files || e.files.length < 1) {
         return;
       }
 
-      files.addFile(file.path, function() {
-        // do nothing
+      forEach(e.files, function (file) {
+        if (!file) {
+          return;
+        }
+        files.addFile(file.path, function() {
+          // do nothing
+        });
       });
+
     });
 
     workspace.restore(function(err, config) {
