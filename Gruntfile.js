@@ -101,9 +101,25 @@ module.exports = function(grunt) {
       copy: {
         files: 'client/lib/index.html',
         tasks: [ 'copy' ]
+      },
+      client: {
+        files: 'public/**/*',
+        options: {
+          livereload: true
+        }
+      }
+    },
+
+    connect: {
+      client: {
+        options: {
+          base: 'public',
+          port: 3010,
+          livereload: true,
+          open: true
+        }
       }
     }
-
   });
 
   grunt.loadTasks('tasks');
@@ -122,6 +138,7 @@ module.exports = function(grunt) {
     'browserify:client:watch',
     'less',
     'copy',
+    'connect',
     'watch'
   ]);
   
