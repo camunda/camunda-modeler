@@ -52,7 +52,7 @@ function appMenu() {
         click: function() {
           app.quit();
         }
-      },
+      }
     ]
   };
 }

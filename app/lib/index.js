@@ -13,7 +13,6 @@ var Shell = require('shell');
 // TODO(nre): do we want to do this?
 // require('crash-reporter').start();
 
-
 var Platform = require('./platform'),
     Config = require('./Config'),
     FileSystem = require('./FileSystem'),
@@ -24,13 +23,12 @@ var Platform = require('./platform'),
 var app = require('app');
 var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
 
-var platform = Platform.create(process.platform, app, config);
+Platform.create(process.platform, app, config);
 
 // make app a singleton
 if (config.get('single-instance', true)) {
   SingleInstance.init();
 }
-
 
 // The main editor window.
 app.mainWindow = null;
@@ -40,16 +38,6 @@ app.openFiles = [];
 
 // We need this check so we can quit after checking for unsaved diagrams
 app.dirty = true;
-
-
-function delay(fn, timeout) {
-  return setTimeout(fn, timeout || 0);
-}
-
-// TODO: Perhaps find a more solid approach to this
-function whichNotation(filePath) {
-  return path.extname(filePath).replace(/^\./, '');
-}
 
 /**
  * Open a new browser window, if non exists.
@@ -68,7 +56,7 @@ function open() {
     mainWindow.on('close', beforeQuit);
 
     // dereference the main window on close
-    mainWindow.on('closed', function() {
+    mainWindow.on('closed', function () {
       app.mainWindow = null;
     });
   }
@@ -91,9 +79,10 @@ function beforeQuit(evt) {
   evt.preventDefault();
 
   // Triggers the check for unsaved diagrams
-  app.mainWindow.webContents.send('editor.actions', { event: 'editor.quit' });
+  app.mainWindow.webContents.send('editor.actions', {
+    event: 'editor.quit'
+  });
 }
-
 
 /**
  * Create the main window that represents the editor.
@@ -117,7 +106,7 @@ function createEditorWindow() {
     app.emit('editor:open', mainWindow);
   });
 
-  mainWindow.webContents.on('will-navigate', function(evt, url) {
+  mainWindow.webContents.on('will-navigate', function (evt, url) {
     evt.preventDefault();
     Shell.openExternal(url);
   });
@@ -125,17 +114,16 @@ function createEditorWindow() {
   return mainWindow;
 }
 
-
 //////// open file handling //////////////////////////////
 
-app.on('open-url', function(evt) {
+app.on('open-url', function (evt) {
   console.log('app:open-url', evt);
 
   evt.preventDefault();
 });
 
 // open-file event is only fired on Mac
-app.on('open-file', function(evt, filePath) {
+app.on('open-file', function (evt, filePath) {
   console.log('app:open-file', evt, filePath);
 
   if (evt) {
@@ -149,46 +137,44 @@ app.on('open-file', function(evt, filePath) {
   }
 });
 
-app.on('editor:file-open', function(filePath) {
+app.on('editor:file-open', function (filePath) {
   console.log('app:editor:file-open', filePath);
 
   app.fileSystem.addFile(filePath);
 });
 
-app.on('editor:defer-file-open', function(filePath) {
+app.on('editor:defer-file-open', function (filePath) {
   console.log('app:editor:defer-file-open', filePath);
 
   app.openFiles.push(filePath);
 });
 
-app.on('editor:deferred-file-open', function() {
+app.on('editor:deferred-file-open', function () {
   console.log('app:editor:deferred-file-open', app.openFiles);
 
-  app.openFiles.forEach(function(filePath) {
+  app.openFiles.forEach(function (filePath) {
     app.fileSystem.addFile(filePath);
   });
 });
 
-app.on('editor:cmd', function(argv, cwd) {
+app.on('editor:cmd', function (argv, cwd) {
   console.log('app:editor:cmd', argv, cwd);
 
   var files = Cli.extractFiles(argv, cwd);
 
   console.log(files);
-  files.forEach(function(f) {
+  files.forEach(function (f) {
     app.emit('open-file', null, f);
   });
 });
 
-
-app.on('editor:open', function(mainWindow) {
+app.on('editor:open', function (mainWindow) {
   console.log('app:editor:open');
 
   app.fileSystem = new FileSystem(mainWindow, config);
 });
 
-
-app.on('editor:ready', function() {
+app.on('editor:ready', function () {
   console.log('app:editor:ready');
 
   app.emit('editor:deferred-file-open');
@@ -200,16 +186,15 @@ app.on('before-quit', beforeQuit);
 
 // This is a custom event that is fired by us when there are no
 // open diagrams left with unsaved changes
-app.on('editor:quit-allowed', function() {
+app.on('editor:quit-allowed', function () {
   app.dirty = false;
 
   app.quit();
 });
 
-
 //////// initialization //////////////////////////////
 
-app.on('ready', function(evt) {
+app.on('ready', function (evt) {
   open();
 });
 

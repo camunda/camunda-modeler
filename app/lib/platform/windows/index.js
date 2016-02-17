@@ -4,8 +4,7 @@ var dialog = require('dialog');
 
 var Menus = require('../Menus');
 
-var FileAssociations = require('./FileAssociations'),
-    parseUtil = require('../../util/parse');
+var FileAssociations = require('./FileAssociations');
 
 var FILE_ASSOCIATION_KEY = 'fileAssociation';
 

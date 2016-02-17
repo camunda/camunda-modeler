@@ -18,9 +18,8 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     eslint: {
-      client: [ 'client/{lib,test}/**/*.js' ]
-      // TODO(nre): restructure back-end and enable
-      // app: [ 'app/{lib,test}/**/*.js' ]
+      client: [ 'client/{lib,test}/**/*.js' ],
+      app: [ 'app/{lib,test,develop}/**/*.js' ]
     },
 
     release: {

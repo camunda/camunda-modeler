@@ -1,7 +1,5 @@
 'use strict';
 
-var parseUtil = require('../../util/parse');
-
 var Menus = require('../Menus');
 
 function LinuxPlatform(app) {

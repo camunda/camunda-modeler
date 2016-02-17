@@ -30,7 +30,7 @@ function loadFile(type) {
 
 describe('app/util - parse', function() {
 
-  describe("#extractNotation", function () {
+  describe('#extractNotation', function () {
 
     it('should identify bpmn file', function () {
       // given

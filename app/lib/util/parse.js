@@ -2,16 +2,13 @@
 
 var forEach = require('lodash/collection/forEach');
 
-var IDENTIFIERS = [
-  {
-    type: 'bpmn',
-    identifier: 'http://www.omg.org/spec/BPMN'
-  },
-  {
-    type: 'dmn',
-    identifier: 'http://www.omg.org/spec/DMN'
-  }
-];
+var IDENTIFIERS = [{
+  type: 'bpmn',
+  identifier: 'http://www.omg.org/spec/BPMN'
+}, {
+  type: 'dmn',
+  identifier: 'http://www.omg.org/spec/DMN'
+}];
 
 var ACTIVITI_NS = 'http://activiti.org/bpmn',
     CAMUNDA_NS = 'http://camunda.org/schema/1.0/bpmn';
@@ -20,7 +17,7 @@ var ACTIVITI_NS = 'http://activiti.org/bpmn',
 function extractNotation(xmlContents) {
   var notation = null;
 
-  forEach(IDENTIFIERS, function(elem) {
+  forEach(IDENTIFIERS, function (elem) {
     if (xmlContents.indexOf(elem.identifier) !== -1) {
       notation = elem.type;
     }
@@ -56,7 +53,7 @@ module.exports.replaceActivitiURL = replaceActivitiURL;
 
 
 function grabNamespacePrefix(xml) {
-  var pattern =  /xmlns\:([A-z0-9.-]+)\=\"http\:\/\/activiti\.org\/bpmn\"/,
+  var pattern = /xmlns\:([A-z0-9.-]+)\=\"http\:\/\/activiti\.org\/bpmn\"/,
       match = xml.match(pattern);
 
   if (!match) {
@@ -70,13 +67,13 @@ module.exports.grabNamespacePrefix = grabNamespacePrefix;
 
 
 function replacePrefix(prefix, xml) {
-  var patterns =  [
+  var patterns = [
     new RegExp('(xmlns:)[A-z0-9.-]+(="http://camunda.org/schema/1.0/bpmn")'),
     new RegExp('(\\s)' + prefix + '(:[A-z0-9-.]+)', 'g'),
     new RegExp('(<|</)' + prefix + '(:[A-z0-9-.]+(>|\\s))', 'g')
   ];
 
-  forEach(patterns, function(pattern) {
+  forEach(patterns, function (pattern) {
     xml = xml.replace(pattern, '$1camunda$2');
   });
 
