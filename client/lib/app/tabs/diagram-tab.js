@@ -64,7 +64,7 @@ function DiagramTab(options, viewOptions) {
   };
 
   this.updateState = function(newState) {
-    this.events.emit('tools:update-edit-state', this, newState);
+    this.events.emit('tools:state-changed', this, newState);
   };
 
   this.triggerAction = function(action, options) {

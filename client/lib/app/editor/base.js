@@ -15,7 +15,7 @@ function Editor(options) {
 
 
   this.updateEditorActions = function(state) {
-    this.events.emit('tools:update-edit-state', this, state);
+    this.events.emit('tools:state-changed', this, state);
   };
 }
 

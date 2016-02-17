@@ -21,6 +21,9 @@ function DmnSupport(options) {
 
   ensureOpts([ 'app', 'events' ], options);
 
+  // TODO(nikku): remove events and register as diagram
+  // provider on app (via API) instead (!!)
+
   var events = options.events,
       app = options.app;
 
@@ -58,7 +61,7 @@ function DmnSupport(options) {
         id: ids.next()
       });
 
-      events.emit('tab:add', tab, options);
+      app.addTab(tab, options);
     }
   });
 

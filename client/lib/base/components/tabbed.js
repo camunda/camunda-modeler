@@ -9,14 +9,13 @@ var CloseHandle = require('./misc/close-handle');
 
 function Tabbed(options) {
 
-  ensureOpts([ 'events' ], options);
-
+  ensureOpts([ 'onClose', 'onSelect' ], options);
 
   this.render = function() {
 
-    var events = options.events;
-
-    var tabs = options.tabs,
+    var onClose = options.onClose,
+        onSelect = options.onSelect,
+        tabs = options.tabs,
         activeTab = options.active;
 
     var html =
@@ -29,7 +28,7 @@ function Tabbed(options) {
                 throw new Error('no id specified');
               }
 
-              var action = tab.action || events.composeEmitter('tab:select', tab);
+              var action = tab.action || onSelect.bind(null, tab);
 
               return (
                 <div className={ tab === activeTab ? 'active tab' : 'tab'}
@@ -41,7 +40,7 @@ function Tabbed(options) {
                   { tab.label }
                   { tab.closable
                       ? <CloseHandle dirty={ tab.dirty }
-                                     onClick={ events.composeEmitter('tab:close', tab) } />
+                                     onClick={ onClose.bind(null, tab) } />
                       : null }
                 </div>
               );

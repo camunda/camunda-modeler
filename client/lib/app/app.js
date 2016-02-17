@@ -114,13 +114,21 @@ function App(options) {
       id: 'empty-tab',
       label: '+',
       title: 'Create new Diagram',
-      action: this.compose('triggerAction', 'create-bpmn-diagram')
+      action: this.compose('triggerAction', 'create-bpmn-diagram'),
+      closable: false
     })
   ];
 
   this.activeTab = this.tabs[0];
 
-  this.events.on('tools:update-edit-state', (tab, newState) => {
+
+  this.events.on('workspace:changed', debounce(() => {
+    this.persistWorkspace(function(err) {
+      debug('workspace persisted?', err);
+    });
+  }, 100));
+
+  this.events.on('tools:state-changed', (tab, newState) => {
 
     var button;
 
@@ -136,7 +144,7 @@ function App(options) {
     });
 
     if (tab === this.activeTab) {
-      debug('update-edit-state', newState);
+      debug('state-changed', newState);
 
       button = find(this.menuEntries, { id: 'save' });
 
@@ -162,71 +170,6 @@ function App(options) {
 
     this.events.emit('changed');
   });
-
-  this.events.on('tab:select', tab => {
-
-    var exists = contains(this.tabs, tab);
-
-    if (!exists) {
-      throw new Error('non existing tab');
-    }
-
-    this.activeTab = tab;
-
-    this.logger.info('switch to <%s> tab', tab.id);
-
-    this.events.emit('workspace:changed');
-
-    this.events.emit('changed');
-  });
-
-  this.events.on('tab:close', tab => {
-    debug('close tab', tab);
-
-    var tabs = this.tabs,
-        events = this.events;
-
-    var exists = contains(tabs, tab);
-
-    if (!exists) {
-      return;
-    }
-
-    var idx = tabs.indexOf(tab);
-
-    // remove tab from selection
-    tabs.splice(idx, 1);
-
-    // if tab was active, select previous (if exists) or next tab
-    if (tab === this.activeTab) {
-      events.emit('tab:select', tabs[idx - 1] || tabs[idx]);
-    }
-
-    events.emit('workspace:changed');
-
-    events.emit('changed');
-  });
-
-  this.events.on('tab:add', (tab, config) => {
-
-    var tabs = this.tabs,
-        events = this.events;
-
-    tabs.splice(tabs.length - 1, 0, tab);
-
-    if (config && config.select) {
-      events.emit('tab:select', tab);
-    }
-
-    events.emit('workspace:changed');
-    events.emit('changed');
-  });
-
-  this.events.on('workspace:changed', debounce(() => {
-    this.persistWorkspace(function(err) {
-      debug('workspace persisted?', err);
-    });
-  }, 100));
 
 
   ///////// public API yea! //////////////////////////////////////
@@ -267,7 +210,8 @@ App.prototype.render = function() {
         className="main"
         tabs={ this.tabs }
         active={ this.activeTab }
-        events={ this.events } />
+        onSelect={ this.compose('selectTab') }
+        onClose={ this.compose('closeTab') } />
       <Footer
         layout={ this.layout }
         log={ this.logger }
@@ -339,6 +283,15 @@ App.prototype.triggerAction = function(action, options) {
 
   if (action === 'create-dmn-diagram') {
     return this.createDiagram('dmn');
+  }
+
+  if (action === 'close-active-tab') {
+
+    if (activeTab.closable !== false) {
+      return this.closeTab(this.activeTab);
+    }
+
+    return;
   }
 
   if (action === 'open-diagram') {
@@ -437,7 +390,7 @@ App.prototype.saveTab = function(tab, options, done) {
     // finally saved...
     tab.setFile(savedFile);
 
-    this.events.emit('workspace:persist');
+    this.events.emit('workspace:changed');
 
     return done(null, savedFile);
   };
@@ -514,6 +467,89 @@ App.prototype.filesDropped = function(files) {
 
   // create tabs for files
   this.createDiagramTabs(actualFiles);
+};
+
+/**
+ * Select the given tab.
+ *
+ * @param {Tab} tab
+ */
+App.prototype.selectTab = function(tab) {
+
+  var tabs = this.tabs,
+      events = this.events;
+
+  var exists = contains(tabs, tab);
+
+  if (!exists) {
+    throw new Error('non existing tab');
+  }
+
+  if (this.activeTab === tab) {
+    return;
+  }
+
+  this.activeTab = tab;
+
+  events.emit('tab:select', tab);
+
+  this.logger.info('switch to <%s> tab', tab.id);
+
+  events.emit('workspace:changed');
+  events.emit('changed');
+};
+
+/**
+ * Close the given tab.
+ *
+ * @param {Tab} tab
+ */
+App.prototype.closeTab = function(tab) {
+
+  debug('close tab', tab);
+
+  var tabs = this.tabs,
+      events = this.events;
+
+  var exists = contains(tabs, tab);
+
+  if (!exists) {
+    return;
+  }
+
+  // TODO(nikku): ask to save if unsaved
+
+  events.emit('tab:close', tab);
+
+  var idx = tabs.indexOf(tab);
+
+  // remove tab from selection
+  tabs.splice(idx, 1);
+
+  // if tab was active, select previous (if exists) or next tab
+  if (tab === this.activeTab) {
+    this.selectTab(tabs[idx - 1] || tabs[idx]);
+  }
+
+  events.emit('workspace:changed');
+  events.emit('changed');
+};
+
+App.prototype.addTab = function(tab, config) {
+
+  var tabs = this.tabs,
+      events = this.events;
+
+  tabs.splice(tabs.length - 1, 0, tab);
+
+  events.emit('tab:add', tab);
+
+  if (config && config.select) {
+    this.selectTab(tab);
+  }
+
+  events.emit('workspace:changed');
+  events.emit('changed');
 };
 
 /**

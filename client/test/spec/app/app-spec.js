@@ -473,7 +473,7 @@ describe('App', function() {
               dmnFile = createDmnFile(dmnXML);
 
           app.createDiagramTabs([ bpmnFile, dmnFile ]);
-          app.events.emit('tab:select', app.tabs[0]);
+          app.selectTab(app.tabs[0]);
 
           // when
           app.persistWorkspace(function(err, config) {
@@ -592,7 +592,7 @@ describe('App', function() {
 
         // when
         app.createDiagramTabs([ bpmnFile, dmnFile ]);
-        app.events.emit('tab:select', app.tabs[1]);
+        app.selectTab(app.tabs[1]);
 
         // then
         app.events.on('workspace:persisted', function(err, config) {
@@ -615,7 +615,7 @@ describe('App', function() {
 
         // when
         app.createDiagramTabs([ bpmnFile, dmnFile ]);
-        app.events.emit('tab:close', app.tabs[1]);
+        app.closeTab(app.tabs[1]);
 
         // then
         app.events.on('workspace:persisted', function(err, config) {
