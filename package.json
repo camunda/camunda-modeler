@@ -40,6 +40,7 @@
     "dom-delegator": "^13.1.0",
     "domify": "^1.4.0",
     "domready": "^1.0.8",
+    "electron-window": "^0.6.2",
     "events": "^1.1.0",
     "format": "^0.2.1",
     "ids": "^0.1.2",
@@ -47,8 +48,8 @@
     "lodash": "^3.10.1",
     "next-tick": "^0.2.2",
     "raf": "^3.1.0",
-    "virtual-hook": "^1.0.1",
-    "virtual-dom": "^2.1.1"
+    "virtual-dom": "^2.1.1",
+    "virtual-hook": "^1.0.1"
   },
   "devDependencies": {
     "archiver": "^0.16.0",
