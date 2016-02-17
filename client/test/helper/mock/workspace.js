@@ -1,32 +1,35 @@
 'use strict';
 
-var inherits = require('inherits');
-
-var BaseWorkspace = require('../../../lib/external/workspace');
-
 /**
  * Workspace Mock API used by app
  */
 function Workspace() {
-  BaseWorkspace.call(this);
 
-  this.restoreSession = null;
-
-  this.setSessionRestore = function() {
-    this.restoreSession = this._session;
+  this.setSaved = function(workspace) {
+    this.savedWorkspace = workspace;
   };
 
-  this.get = function() {
-    return this._session;
+  this.getSaved = function(workspace) {
+    return this.savedWorkspace;
   };
 
-  this.restore = function(done) {
-    this._session = this.restoreSession;
+  /**
+   * Mocked {Workspace#save}.
+   */
+  this.save = function(config, done) {
+    this.setSaved(config);
+    
+    done(null, config);
+  };
 
-    done(null, this._session);
+  /**
+   * Mocked {Workspace#load}.
+   */
+  this.load = function(defaultResult, done) {
+    var saved = this.getSaved();
+    
+    done(saved instanceof Error ? saved : null, saved || defaultResult);
   };
 }
-
-inherits(Workspace, BaseWorkspace);
 
 module.exports = Workspace;

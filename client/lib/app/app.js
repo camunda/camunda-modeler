@@ -3,7 +3,8 @@
 var merge = require('lodash/object/merge'),
     bind = require('lodash/function/bind'),
     assign = require('lodash/object/assign'),
-    find = require('lodash/collection/find');
+    find = require('lodash/collection/find'),
+    debounce = require('lodash/function/debounce');
 
 var inherits = require('inherits');
 
@@ -119,38 +120,6 @@ function App(options) {
 
   this.activeTab = this.tabs[0];
 
-  this.events.on('workspace:restore', () => {
-
-    this.workspace.restore((err, session) => {
-      if (err) {
-        debug('workspace restore: ');
-
-        return;
-      }
-
-      if (!session || !session.tabs.length) {
-        return;
-      }
-
-      this.createDiagramTabs(session.tabs);
-
-      this.activeTab = session.tabs[0];
-    });
-  });
-
-  this.events.on('workspace:persist', () => {
-
-    this.workspace.persist(this, function(err, session) {
-      if (err) {
-        return;
-      }
-
-      debug('workspace persisted', session);
-
-      // do something
-    });
-  });
-
   this.events.on('tools:update-edit-state', (tab, newState) => {
 
     var button;
@@ -206,7 +175,7 @@ function App(options) {
 
     this.logger.info('switch to <%s> tab', tab.id);
 
-    this.events.emit('workspace:persist');
+    this.events.emit('workspace:changed');
 
     this.events.emit('changed');
   });
@@ -233,7 +202,7 @@ function App(options) {
       events.emit('tab:select', tabs[idx - 1] || tabs[idx]);
     }
 
-    events.emit('workspace:persist');
+    events.emit('workspace:changed');
 
     events.emit('changed');
   });
@@ -249,8 +218,15 @@ function App(options) {
       events.emit('tab:select', tab);
     }
 
+    events.emit('workspace:changed');
     events.emit('changed');
   });
+
+  this.events.on('workspace:changed', debounce(() => {
+    this.persistWorkspace(function(err) {
+      debug('workspace persisted?', err);
+    });
+  }, 100));
 
 
   ///////// public API yea! //////////////////////////////////////
@@ -540,22 +516,101 @@ App.prototype.filesDropped = function(files) {
   this.createDiagramTabs(actualFiles);
 };
 
-App.prototype.restoreCallback = function(err, session) {
-  if (err) {
-    debug('workspace restore: ');
+/**
+ * Persist the current workspace state
+ *
+ * @param {Function} done
+ */
+App.prototype.persistWorkspace = function(done) {
 
-    return;
-  }
+  var config = {
+    tabs: [],
+    activeTab: -1
+  };
 
-  if (!session || !session.tabs.length) {
-    this.activeTab = this.tabs[0];
+  // store tabs
+  this.tabs.forEach((tab, idx) => {
 
-    return;
-  }
+    var file = tab.file;
 
-  this.createDiagramTabs(session.tabs);
+    // do not persist unsaved files
+    if (!file || file.path === '[unsaved]') {
+      return;
+    }
 
-  this.activeTab = session.tabs[0];
+    config.tabs.push({
+      name: file.name,
+      contents: file.contents,
+      path: file.path,
+      fileType: file.fileType
+    });
+
+    // store saved active tab index
+    if (tab === this.activeTab) {
+      config.activeTab = config.tabs.length - 1;
+    }
+  });
+
+  // store layout
+  config.layout = this.layout;
+
+  // let others store stuff, too
+  this.events.emit('workspace:persist', config);
+
+  // actually save
+  this.workspace.save(config, (err, config) => {
+    this.events.emit('workspace:persisted', err, config);
+
+    done(err, config);
+  });
+};
+
+/**
+ * Restore previously saved workspace, if any exists.
+ *
+ * @param {Function} done
+ */
+App.prototype.restoreWorkspace = function(done) {
+
+  var defaultConfig = {
+    tabs: [],
+    layout: {
+      propertiesPanel: {
+        open: false,
+        width: 250
+      },
+      log: {
+        open: false,
+        height: 150
+      }
+    }
+  };
+
+  this.workspace.load(defaultConfig, (err, config) => {
+
+    if (err) {
+      debug('workspace load error', err);
+
+      return done(err);
+    }
+
+    // restore tabs
+    if (config.tabs) {
+      this.createDiagramTabs(config.tabs);
+    }
+
+    if (config.activeTab !== undefined) {
+      this.activeTab = this.tabs[config.activeTab];
+    }
+
+    this.events.emit('changed');
+
+    this.events.emit('workspace:restored');
+
+    // we are done
+    done(null, config);
+  });
+
 };
 
 /**
@@ -563,6 +618,14 @@ App.prototype.restoreCallback = function(err, session) {
  */
 App.prototype.run = function() {
   this.events.emit('app:run');
+
+  this.restoreWorkspace(function(err) {
+    if (err) {
+      debug('workspace restore error', err);
+    } else {
+      debug('workspace restored');
+    }
+  });
 };
 
 

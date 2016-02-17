@@ -437,129 +437,230 @@ describe('App', function() {
 
   });
 
+
   describe('workspace', function() {
 
-    describe('#persist', function () {
+    describe('api', function() {
 
-      beforeEach(function() {
-        render(app);
-      });
+      describe('#persistWorkspace', function() {
 
-      it('should persist the current open tab', function() {
-        // given
-        var bpmnFile = createBpmnFile(bpmnXML),
-            session;
+        it('should persist empty', function(done) {
 
-        // when
-        app.createDiagramTabs([ bpmnFile ]);
+          // when
+          app.persistWorkspace(function(err, config) {
 
-        session = app.workspace.get();
+            // then
+            expect(err).not.to.exist;
 
-        // then
-        expect(session.tabs).to.have.length(1);
-        expect(session.tabs[0]).to.have.keys([ 'name', 'path', 'contents', 'layout', 'type' ]);
-      });
+            expect(config).to.have.keys([
+              'tabs',
+              'activeTab',
+              'layout'
+            ]);
 
+            expect(config.tabs).to.have.length(0);
+            expect(config.activeTab).to.eql(-1);
 
-      it('should persist the active tab', function() {
-        // given
-        var bpmnFile = createBpmnFile(bpmnXML),
-            dmnFile = createDmnFile(dmnXML),
-            session;
-
-        // when
-        app.createDiagramTabs([ bpmnFile, dmnFile ]);
-
-        app.events.emit('tab:select', app.tabs[0]);
-
-        session = app.workspace.get();
-
-        // then
-        expect(session.tabs).to.have.length(2);
-        expect(session.activeTabIndex).to.equal(0);
-      });
+            done();
+          });
+        });
 
 
-      it('should not persist a closed tab', function() {
-        // given
-        var bpmnFile = createBpmnFile(bpmnXML),
-            dmnFile = createDmnFile(dmnXML),
-            session;
+        it('should persist tabs', function(done) {
 
-        // when
-        app.createDiagramTabs([ bpmnFile, dmnFile ]);
+          // given
+          var bpmnFile = createBpmnFile(bpmnXML),
+              dmnFile = createDmnFile(dmnXML);
 
-        app.events.emit('tab:close', app.tabs[0]);
+          app.createDiagramTabs([ bpmnFile, dmnFile ]);
+          app.events.emit('tab:select', app.tabs[0]);
 
-        session = app.workspace.get();
+          // when
+          app.persistWorkspace(function(err, config) {
 
-        // then
-        expect(session.tabs).to.have.length(1);
-        expect(session.tabs[0].type).to.equal('dmn');
+            expect(err).not.to.exist;
+
+            expect(config).to.have.keys([
+              'tabs',
+              'activeTab',
+              'layout'
+            ]);
+
+            expect(config.tabs).to.eql([ bpmnFile, dmnFile ]);
+
+            expect(config.activeTab).to.eql(0);
+
+            done();
+          });
+        });
+
       });
 
 
-      it('should not persist a unsaved tab', function() {
-        var dmnFile = createDmnFile(dmnXML),
-            session;
+      describe('#restoreWorkspace', function() {
 
-        // given / when
-        app.createDiagramTabs([{
-          name: 'diagram_1.bpmn',
-          path: '[unsaved]',
-          contents: bpmnXML,
-          fileType: 'bpmn'
-        }, {
-          name: 'diagram_2.bpmn',
-          path: '[unsaved]',
-          contents: bpmnXML,
-          fileType: 'bpmn'
-        }, dmnFile ]);
+        it('should restore saved', function(done) {
 
-        session = app.workspace.get();
+          // given
+          var bpmnFile = createBpmnFile(bpmnXML),
+              dmnFile = createDmnFile(dmnXML);
 
-        // then
-        expect(session.tabs).to.have.length(1);
-        expect(session.tabs[0].type).to.equal('dmn');
+          workspace.setSaved({
+            tabs: [ bpmnFile, dmnFile ],
+            activeTab: 1,
+            layout: {
+              propertiesPanel: {
+                open: false,
+                width: 250
+              },
+              log: {
+                open: false,
+                height: 150
+              }
+            }
+          });
+
+          // when
+          app.restoreWorkspace(function(err) {
+
+            // then
+            expect(err).not.to.exist;
+
+            // two tabs + empty tab are open
+            expect(app.tabs).to.have.length(3);
+            expect(app.activeTab).to.eql(app.tabs[1]);
+
+            done();
+          });
+        });
+
+
+        it('should restore default', function(done) {
+
+          // given
+          workspace.setSaved(null);
+
+          // when
+          app.restoreWorkspace(function(err) {
+
+            // then
+            expect(err).not.to.exist;
+
+            // empty tab is open
+            expect(app.tabs).to.have.length(1);
+
+            // empty tab is selected, too
+            expect(app.tabs[0]).to.eql(app.activeTab);
+
+            done();
+          });
+        });
+
       });
 
     });
 
-    describe('#restore', function () {
 
-      beforeEach(function() {
-        render(app);
-      });
+    describe('persist behavior', function() {
 
-      it('should restore', function() {
+      it('should save on new tab', function(done) {
+
         // given
-        var bpmnFile = createBpmnFile(bpmnXML),
-            dmnFile = createDmnFile(dmnXML),
-            session;
+        var bpmnFile = createBpmnFile(bpmnXML);
 
         // when
         app.createDiagramTabs([ bpmnFile ]);
 
-        workspace.setSessionRestore();
+        // then
+        app.events.on('workspace:persisted', function(err, config) {
 
-        app.createDiagramTabs([{
-          name: 'diagram_2.bpmn',
-          path: 'diagram_2.bpmn',
-          contents: bpmnXML,
-          fileType: 'bpmn'
-        }, dmnFile ]);
+          expect(err).not.to.exists;
 
-        app.events.emit('workspace:restore');
+          expect(config.tabs).to.have.length(1);
+          expect(config.activeTab).to.eql(0);
 
-        session = app.workspace.get();
+          done();
+        });
+      });
+
+
+      it('should save on tab change', function(done) {
+
+        // given
+        var bpmnFile = createBpmnFile(bpmnXML),
+            dmnFile = createDmnFile(dmnXML);
+
+        // when
+        app.createDiagramTabs([ bpmnFile, dmnFile ]);
+        app.events.emit('tab:select', app.tabs[1]);
 
         // then
-        expect(app.tabs).to.have.length(4);
-        expect(app.activeTab.name).to.equal('diagram_1.bpmn');
+        app.events.on('workspace:persisted', function(err, config) {
 
-        expect(session.tabs).to.have.length(1);
-        expect(session.tabs[0].type).to.equal('bpmn');
-        expect(session.tabs[0].name).to.equal('diagram_1.bpmn');
+          expect(err).not.to.exists;
+
+          expect(config.tabs).to.have.length(2);
+          expect(config.activeTab).to.eql(1);
+
+          done();
+        });
+      });
+
+
+      it('should save on tab close', function(done) {
+
+        // given
+        var bpmnFile = createBpmnFile(bpmnXML),
+            dmnFile = createDmnFile(dmnXML);
+
+        // when
+        app.createDiagramTabs([ bpmnFile, dmnFile ]);
+        app.events.emit('tab:close', app.tabs[1]);
+
+        // then
+        app.events.on('workspace:persisted', function(err, config) {
+
+          expect(err).not.to.exists;
+
+          expect(config.tabs).to.have.length(1);
+          expect(config.activeTab).to.eql(0);
+
+          done();
+        });
+      });
+
+
+      it('should not save unsaved tabs', function(done) {
+
+        // when
+        app.createDiagram('bpmn');
+
+        // then
+        app.events.on('workspace:persisted', function(err, config) {
+          expect(err).not.to.exist;
+
+          expect(config.tabs).to.have.length(0);
+
+          done();
+        });
+
+      });
+
+    });
+
+
+    describe('restore behavior', function() {
+
+      it('should restore on run', function() {
+
+        // given
+        var restoreWorkspace = spy(app, 'restoreWorkspace');
+
+        // when
+        app.run();
+
+        // then
+        expect(restoreWorkspace).to.have.been.called;
       });
 
     });
