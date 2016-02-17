@@ -132,6 +132,16 @@ module.exports = function(grunt) {
           open: true
         }
       }
+    },
+
+    mochaTest: {
+      app: {
+        src: ['./app/test/spec/**/*.js'],
+        options: {
+          reporter: 'spec',
+          require: [ './app/test/expect' ]
+        }
+      }
     }
   });
 
@@ -141,7 +151,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('lint', [ 'eslint' ]);
 
-  grunt.registerTask('test', [ 'karma:single' ]);
+  grunt.registerTask('test', [ 'karma:single', 'mochaTest:app']);
 
   grunt.registerTask('auto-test', [ 'karma:unit' ]);
 

@@ -1,6 +1,6 @@
 'use strict';
 
-var FileAssociations = require('../../../../app/platform/windows/FileAssociations');
+var FileAssociations = require('../../../../lib/platform/windows/FileAssociations');
 
 
 // only run these tests on windows

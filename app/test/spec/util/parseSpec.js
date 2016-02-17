@@ -6,7 +6,7 @@ var fs = require('fs'),
 var map = require('lodash/collection/map'),
     forEach = require('lodash/collection/forEach');
 
-var parse = require('../../../app/util/parse');
+var parse = require('../../../lib/util/parse');
 
 var FIXTURES_PATH = path.join(__dirname, '../../fixtures');
 

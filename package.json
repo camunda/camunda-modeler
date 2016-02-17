@@ -75,6 +75,7 @@
     "grunt-electron": "^2.0.1",
     "grunt-eslint": "^18.0.0",
     "grunt-karma": "^0.12.1",
+    "grunt-mocha-test": "^0.12.7",
     "grunt-release": "^0.13.0",
     "karma-browserify": "^5.0.1",
     "karma-mocha": "^0.2.2",

@@ -1,6 +1,6 @@
 'use strict';
 
-var Cli = require('../../app/Cli');
+var Cli = require('../../lib/Cli');
 
 var path = require('path');
 
@@ -18,7 +18,7 @@ describe('cli', function() {
       var files = Cli.extractFiles(args, __dirname);
 
       // then
-      expect(files).to.eql([ path.resolve('test/fixtures/random.xml') ]);
+      expect(files).to.eql([ path.resolve('app/test/fixtures/random.xml') ]);
     });
 
 
@@ -31,7 +31,7 @@ describe('cli', function() {
       var files = Cli.extractFiles(args, __dirname);
 
       // then
-      expect(files).to.eql([ path.resolve('test/fixtures/random.xml') ]);
+      expect(files).to.eql([ path.resolve('app/test/fixtures/random.xml') ]);
     });
 
 
@@ -46,7 +46,7 @@ describe('cli', function() {
         var files = Cli.extractFiles(args, __dirname);
 
         // then
-        expect(files).to.eql([ path.resolve('test/fixtures/random.xml') ]);
+        expect(files).to.eql([ path.resolve('app/test/fixtures/random.xml') ]);
       });
 
 
@@ -59,7 +59,7 @@ describe('cli', function() {
         var files = Cli.extractFiles(args, __dirname);
 
         // then
-        expect(files).to.eql([ path.resolve('test/fixtures/random.xml') ]);
+        expect(files).to.eql([ path.resolve('app/test/fixtures/random.xml') ]);
       });
 
 
@@ -72,7 +72,7 @@ describe('cli', function() {
         var files = Cli.extractFiles(args, __dirname);
 
         // then
-        expect(files).to.eql([ path.resolve('test/fixtures/random.xml') ]);
+        expect(files).to.eql([ path.resolve('app/test/fixtures/random.xml') ]);
       });
 
     } else {
