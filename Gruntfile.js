@@ -1,5 +1,6 @@
 'use strict';
 
+
 module.exports = function(grunt) {
 
   require('load-grunt-tasks')(grunt);
@@ -15,9 +16,9 @@ module.exports = function(grunt) {
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('package.json'),
-    
+
     eslint: {
-      client: [ 'client/{lib,test}/**/*.js' ],
+      client: [ 'client/{lib,test}/**/*.js' ]
       // TODO(nre): restructure back-end and enable
       // app: [ 'app/{lib,test}/**/*.js' ]
     },
@@ -32,9 +33,9 @@ module.exports = function(grunt) {
     },
 
     clean: {
-      client: [ 'public' ]
+      client: [ 'public' , 'distro']
     },
-    
+
     karma: {
       options: {
         configFile: 'client/test/config/karma.unit.js'
@@ -77,7 +78,7 @@ module.exports = function(grunt) {
         ]
       }
     },
-    
+
     less: {
       app: {
         options: {
@@ -92,7 +93,19 @@ module.exports = function(grunt) {
         }
       }
     },
-    
+
+    distro: {
+      darwin: {
+        platform: 'darwin'
+      },
+      windows: {
+        platform: 'win32'
+      },
+      linux: {
+        platform: 'linux'
+      }
+    },
+
     watch: {
       less: {
         files: 'client/{lib,styles}/**/*.less',
@@ -124,11 +137,10 @@ module.exports = function(grunt) {
 
   grunt.loadTasks('tasks');
 
-
   // tasks
 
   grunt.registerTask('lint', [ 'eslint' ]);
-  
+
   grunt.registerTask('test', [ 'karma:single' ]);
 
   grunt.registerTask('auto-test', [ 'karma:unit' ]);
@@ -141,7 +153,9 @@ module.exports = function(grunt) {
     'connect',
     'watch'
   ]);
-  
+
+  grunt.registerTask('package', [ 'distro:darwin', 'distro:windows', 'distro:linux' ]);
+
   grunt.registerTask('build-client', [
     'clean',
     'browserify:client',
@@ -149,5 +163,5 @@ module.exports = function(grunt) {
     'copy'
   ]);
 
-  grunt.registerTask('default', [ 'lint', 'test', 'build-client' ]);
+  grunt.registerTask('default', [ 'lint', 'test', 'build-client', 'package' ]);
 };

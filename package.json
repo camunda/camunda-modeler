@@ -72,6 +72,7 @@
     "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-less": "^1.2.0",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-electron": "^2.0.1",
     "grunt-eslint": "^18.0.0",
     "grunt-karma": "^0.12.1",
     "grunt-release": "^0.13.0",
