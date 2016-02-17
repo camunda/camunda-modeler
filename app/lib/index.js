@@ -111,7 +111,7 @@ function createEditorWindow() {
 
   mainWindow.maximize();
 
-  var indexPath = path.resolve(__dirname + '/../public/index.html');
+  var indexPath = path.resolve(__dirname + '/../../public/index.html');
 
   mainWindow.showUrl(indexPath, function () {
     app.emit('editor:open', mainWindow);

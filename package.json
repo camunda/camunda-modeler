@@ -2,7 +2,7 @@
   "name": "camunda-modeler",
   "version": "0.5.1",
   "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
-  "main": "app/index.js",
+  "main": "app/lib/index.js",
   "scripts": {
     "test": "grunt test",
     "auto-test": "grunt test:watch",
