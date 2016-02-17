@@ -79,7 +79,7 @@ module.exports = function(grunt) {
         try {
           which.sync('wine');
         } catch (e) {
-          console.log('Skipping Windows packaging: wine is not found');
+          grunt.log.writeln('Skipping Windows packaging: wine is not found'['red']);
           return done();
         }
       }
