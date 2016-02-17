@@ -120,6 +120,13 @@ module.exports = function(grunt) {
         options: {
           livereload: true
         }
+      },
+      app: {
+        files: 'app/**/*',
+        options: {
+          livereload: true
+        },
+        tasks: [ 'mochaTest:app' ]
       }
     },
 
@@ -154,6 +161,8 @@ module.exports = function(grunt) {
   grunt.registerTask('test', [ 'karma:single', 'mochaTest:app']);
 
   grunt.registerTask('auto-test', [ 'karma:unit' ]);
+
+  grunt.registerTask('auto-test-app', [ 'mochaTest', 'watch:app' ]);
 
   grunt.registerTask('auto-build', [
     'clean',
