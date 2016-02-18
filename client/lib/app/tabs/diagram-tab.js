@@ -22,7 +22,10 @@ var assign = require('lodash/object/assign'),
  */
 function DiagramTab(options, viewOptions) {
 
-  ensureOpts([ 'events', 'file' ], options);
+  ensureOpts([
+    'events',
+    'file'
+  ], options);
 
   Tab.call(this, options);
 
@@ -81,13 +84,17 @@ function DiagramTab(options, viewOptions) {
    * @return {Object}
    */
   this.save = function(done) {
-    if (this.activeView.save) {
-      this.activeView.save(done);
-    }
-  };
+    if (this.activeView.saveXML) {
 
-  this.updateState = function(newState) {
-    this.events.emit('tools:state-changed', this, newState);
+      this.activeView.saveXML((err, xml) => {
+
+        if (err) {
+          return done(err);
+        }
+
+        return done(null, assign(this.file, { contents: xml }));
+      });
+    }
   };
 
   this.triggerAction = function(action, options) {
@@ -100,6 +107,8 @@ function DiagramTab(options, viewOptions) {
     this.file = file;
     this.label = file.name,
     this.title = file.path,
+
+    this.activeView.setXML(file.contents);
 
     this.events.emit('changed');
   };
@@ -167,13 +176,17 @@ DiagramTab.prototype.createViews = function(options) {
     var id = definition.id,
         opts = assign({}, options, {
           id: options.id + '#' + id,
-          label: definition.label,
-          tab: this,
-          file: undefined
+          label: definition.label
         });
 
     var ViewComponent = definition.component;
 
-    return new ViewComponent(opts);
+    var component = new ViewComponent(opts);
+
+    component.on('layout:changed', this.events.composeEmitter('layout:update'));
+
+    component.on('state-updated', this.events.composeEmitter('tools:state-changed', this));
+
+    return component;
   });
 };
