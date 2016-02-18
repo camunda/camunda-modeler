@@ -1,8 +1,11 @@
 'use strict';
 
+const electron = require('electron');
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+
 var path = require('path');
 
-var BrowserWindow = require('electron-window');
 var Shell = require('shell');
 
 /**
@@ -17,21 +20,37 @@ var Platform = require('./platform'),
     Config = require('./Config'),
     FileSystem = require('./FileSystem'),
     Workspace = require('./Workspace'),
-    SingleInstance = require('./SingleInstance'),
     Cli = require('./Cli');
 
-var app = require('app');
 var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
 
 Platform.create(process.platform, app, config);
 
+// The main editor window.
+var mainWindow = null;
+
 // make app a singleton
 if (config.get('single-instance', true)) {
-  SingleInstance.init();
-}
 
-// The main editor window.
-app.mainWindow = null;
+  var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
+
+    app.emit('editor:cmd', commandLine, workingDirectory);
+
+    // focus existing running instance window
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore();
+      }
+      mainWindow.focus();
+    }
+
+    return true;
+  });
+
+  if (shouldQuit) {
+    app.quit();
+  }
+}
 
 // List of files that should be opened by the editor
 app.openFiles = [];
@@ -45,11 +64,8 @@ app.dirty = true;
  * @return {BrowserWindow}
  */
 function open() {
-
-  var mainWindow = app.mainWindow;
-
   if (!mainWindow) {
-    mainWindow = app.mainWindow = createEditorWindow();
+    mainWindow = createEditorWindow();
 
     // This event gets triggered on graphical OS'es when the user
     // tries to quit the modeler by clicking the little 'x' button
@@ -57,7 +73,7 @@ function open() {
 
     // dereference the main window on close
     mainWindow.on('closed', function () {
-      app.mainWindow = null;
+      mainWindow = null;
     });
   }
 
@@ -79,7 +95,7 @@ function beforeQuit(evt) {
   evt.preventDefault();
 
   // Triggers the check for unsaved diagrams
-  app.mainWindow.webContents.send('editor.actions', {
+  mainWindow.webContents.send('editor.actions', {
     event: 'editor.quit'
   });
 }
@@ -91,7 +107,7 @@ function beforeQuit(evt) {
  */
 function createEditorWindow() {
 
-  var mainWindow = BrowserWindow.createWindow({
+  var mainWindow = new BrowserWindow({
     resizable: true,
     title: 'Camunda Modeler'
   });
@@ -100,9 +116,11 @@ function createEditorWindow() {
 
   mainWindow.maximize();
 
-  var indexPath = path.resolve(__dirname + '/../../public/index.html');
+  var indexPath = 'file://' + path.resolve(__dirname + '/../../public/index.html');
 
-  mainWindow.showUrl(indexPath, function () {
+  mainWindow.loadURL(indexPath);
+
+  mainWindow.webContents.on('did-finish-load', function() {
     app.emit('editor:open', mainWindow);
   });
 
@@ -130,7 +148,7 @@ app.on('open-file', function (evt, filePath) {
     evt.preventDefault();
   }
 
-  if (app.mainWindow) {
+  if (mainWindow) {
     app.emit('editor:file-open', filePath);
   } else {
     app.emit('editor:defer-file-open', filePath);

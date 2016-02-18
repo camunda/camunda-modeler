@@ -11,7 +11,8 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('distro', function(target) {
     var packageJson = require('../package.json');
-    var electronVersion = '0.34.3';
+
+    var electronVersion = packageJson.devDependencies['electron-prebuilt'];
 
     var platform = this.data.platform;
     var done = this.async();
