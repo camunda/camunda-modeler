@@ -1,6 +1,5 @@
 'use strict';
 
-
 module.exports = function(grunt) {
 
   require('load-grunt-tasks')(grunt);
@@ -116,26 +115,16 @@ module.exports = function(grunt) {
       },
       client: {
         files: 'public/**/*',
+        tasks: [ 'app:reload' ],
         options: {
-          livereload: true
+          spawn: false
         }
       },
       app: {
         files: 'app/**/*',
+        tasks: [ 'app:restart' ],
         options: {
-          livereload: true
-        },
-        tasks: [ 'mochaTest:app' ]
-      }
-    },
-
-    connect: {
-      client: {
-        options: {
-          base: 'public',
-          port: 3010,
-          livereload: true,
-          open: true
+          spawn: false
         }
       }
     },
@@ -163,15 +152,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('auto-test-app', [ 'mochaTest', 'watch:app' ]);
 
-  grunt.registerTask('auto-build', [
-    'clean',
-    'browserify:client:watch',
-    'less',
-    'copy',
-    'connect',
-    'watch'
-  ]);
-
   grunt.registerTask('package', [ 'distro:darwin', 'distro:windows', 'distro:linux' ]);
 
   grunt.registerTask('build-client', [
@@ -182,4 +162,23 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('default', [ 'lint', 'test', 'build-client', 'package' ]);
+
+  // Development setup tasks
+  var server = require('electron-connect').server.create({ path: 'app/develop' });
+  grunt.registerTask('app:start', function() {
+    server.start(__dirname + '/resources/diagram/simple.bpmn');
+  });
+
+  grunt.registerTask('app:restart', server.restart);
+
+  grunt.registerTask('app:reload', server.reload);
+
+  grunt.registerTask('auto-build', [
+    'clean',
+    'browserify:client:watch',
+    'less',
+    'copy',
+    'app:start',
+    'watch'
+  ]);
 };
