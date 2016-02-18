@@ -3,7 +3,7 @@
 var fs = require('fs'),
     path = require('path');
 
-var Ipc = require('ipc'),
+var Ipc = require('electron').ipcMain,
     app = require('app'),
     browserOpen = require('./util/browser-open'),
     Dialog = require('dialog');

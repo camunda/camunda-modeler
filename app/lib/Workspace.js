@@ -2,7 +2,7 @@
 
 var forEach = require('lodash/collection/forEach');
 
-var Ipc = require('ipc');
+var Ipc = require('electron').ipcMain;
 
 var FileSystem = require('./FileSystem');
 
