@@ -4,6 +4,8 @@
 
 var Hook = require('virtual-hook');
 
+var nextTick = require('next-tick');
+
 function AppendHook(callback) {
   return Hook({
     hook: function hook(node) {
@@ -11,7 +13,9 @@ function AppendHook(callback) {
         return;
       }
 
-      callback(node);
+      nextTick(function() {
+        callback(node);
+      });
     }
   });
 }

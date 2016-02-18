@@ -6,12 +6,13 @@ var inherits = require('inherits');
 
 var h = require('vdom/h');
 
-var ensureOpts = require('util/ensure-opts');
+var isUnsaved = require('util/file/is-unsaved'),
+    ensureOpts = require('util/ensure-opts');
 
 var Tab = require('base/components/tab');
 
 var assign = require('lodash/object/assign'),
-    forEach = require('lodash/collection/forEach');
+    find = require('lodash/collection/find');
 
 
 /**
@@ -29,25 +30,47 @@ function DiagramTab(options, viewOptions) {
 
   this.activeView = this.views[0];
 
-  this.showView = function(id) {
+  this.showView = function(id, options) {
 
-    var view;
+    var file = this.file,
+        view = this.getView(id),
+        oldView = this.activeView;
 
-    if (typeof id === 'string') {
-      view = find(this.views, { id: this.id + '#' + id });
-    } else {
-      view = id;
-    }
+    options = options || {};
 
-    if (!view) {
-      throw new Error('no view ' + id);
-    }
+    // export xml
+    this.activeView.saveXML((err, xml) => {
+      if (err) {
+        return;
+      }
 
-    this.activeView = view;
+      if (file.contents !== xml) {
+        file.contents = xml;
+      }
 
-    debug('show view %s', view.id);
+      this.activeView = view;
 
-    this.events.emit('changed');
+      debug('show view %s', view.id);
+
+      this.events.emit('changed');
+
+      // import xml
+      view.setXML(xml);
+
+      view.once('imported', function(err, data) {
+        if (err) {
+          this.activeView = oldView;
+
+          debug('show view %s', oldView.id);
+
+          this.events.emit('changed');
+          return;
+        }
+
+        this.events.emit('changed');
+      });
+
+    });
   };
 
   /**
@@ -78,11 +101,27 @@ function DiagramTab(options, viewOptions) {
     this.label = file.name,
     this.title = file.path,
 
-    forEach(this.views, function(view) {
-      view.setFile(file);
-    });
-
     this.events.emit('changed');
+  };
+
+  this.getView = function(id) {
+    var view;
+
+    if (typeof id === 'string') {
+      view = find(this.views, { id: this.id + '#' + id });
+    } else {
+      view = id;
+    }
+
+    if (!view) {
+      throw new Error('no view ' + id);
+    }
+
+    return view;
+  };
+
+  this.isUnsaved = function() {
+    return isUnsaved(this.file);
   };
 
   this.render = function() {
@@ -122,7 +161,6 @@ module.exports = DiagramTab;
 
 
 DiagramTab.prototype.createViews = function(options) {
-
   debug('create views', options.viewDefinitions);
 
   return options.viewDefinitions.map(definition => {
@@ -130,7 +168,8 @@ DiagramTab.prototype.createViews = function(options) {
         opts = assign({}, options, {
           id: options.id + '#' + id,
           label: definition.label,
-          tab: this
+          tab: this,
+          file: undefined
         });
 
     var ViewComponent = definition.component;

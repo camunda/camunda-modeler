@@ -432,6 +432,25 @@ App.prototype.saveTab = function(tab, options, done) {
 };
 
 /**
+ * Allows changing the current active tab and displaying it.
+ *
+ * @param  {Tab} tab
+ */
+App.prototype.selectTab = function(tab) {
+  var exists = contains(this.tabs, tab);
+
+  if (!exists) {
+    throw new Error('non existing tab');
+  }
+
+  this.activeTab = tab;
+
+  this.logger.info('switch to <%s> tab', tab.id);
+
+  this.events.emit('changed');
+};
+
+/**
  * Save the given file and invoke callback with (err, savedFile).
  *
  * @param {File} file

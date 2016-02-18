@@ -8,11 +8,16 @@ var isFunction = require('lodash/lang/isFunction'),
 
 var slice = require('util/slice');
 
+var inherits = require('inherits');
+
+var EventEmitter = require('events');
+
 
 /**
  * A base component
  */
 function BaseComponent(options) {
+  EventEmitter.call(this);
 
   // apply properties
   assign(this, options);
@@ -61,5 +66,7 @@ function BaseComponent(options) {
     };
   };
 }
+
+inherits(BaseComponent, EventEmitter);
 
 module.exports = BaseComponent;

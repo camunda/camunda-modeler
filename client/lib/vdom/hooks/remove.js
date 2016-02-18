@@ -4,6 +4,8 @@
 
 var Hook = require('virtual-hook');
 
+var nextTick = require('next-tick');
+
 function RemoveHook(callback) {
   return Hook({
     unhook: function unhook(node) {
@@ -11,7 +13,9 @@ function RemoveHook(callback) {
         return;
       }
 
-      callback(node);
+      nextTick(function() {
+        callback(node);
+      });
     }
   });
 }

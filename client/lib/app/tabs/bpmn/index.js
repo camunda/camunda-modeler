@@ -29,7 +29,7 @@ function BpmnSupport(options) {
 
   var createdTabs = 0;
 
-  events.on('create-diagram', type => {
+  events.on('create-diagram', (type) => {
 
     // increment counter
     createdTabs++;

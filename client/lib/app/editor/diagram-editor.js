@@ -2,9 +2,7 @@
 
 var inherits = require('inherits');
 
-var BaseEditor = require('./base');
-
-var assign = require('lodash/object/assign');
+var BaseComponent = require('base/component');
 
 var domify = require('domify');
 
@@ -20,122 +18,160 @@ var debug = require('debug')('diagram-editor');
  */
 function DiagramEditor(options) {
 
-  ensureOpts([
-    'logger',
-    'events',
-    'layout',
-    'file'
-  ], options);
+  BaseComponent.call(this, options);
 
-  BaseEditor.call(this, options);
+  ensureOpts([ 'layout' ], options);
+
 
   // elements to insert modeler and properties panel into
-  this.$el = domify('<div class="diagram-parent"></div>'),
+  this.$el = domify('<div class="diagram-parent"></div>');
 
-  // last successfully imported xml diagram
+  // diagram contents
+  this.newXML = null;
+
+  // last well imported xml diagram
   this.lastXML = null;
+
+  // if we are mounted
+  this.mounted = false;
 
   // last state since save for dirty checking
   this.lastStackIndex = -1;
 
-  // if we are mouted
-  this.mounted = false;
+  // update edit state with every shown
+  this.on('updated', (ctx) => {
+    this.updateState();
+
+    this.emit('shown', ctx);
+  });
 }
 
-inherits(DiagramEditor, BaseEditor);
+inherits(DiagramEditor, BaseComponent);
 
 module.exports = DiagramEditor;
 
 
-DiagramEditor.prototype.triggerImport = function() {
+DiagramEditor.prototype.update = function() {
 
-  var file = this.file,
-      lastXML = this.lastXML,
-      logger = this.logger,
-      modeler = this.getModeler();
+  // only do actual work if mounted
+  if (!this.mounted) {
+    debug('[#update] skipping (not mounted)');
 
-  // check if import / reimport of diagram is needed
-  if (file.contents !== lastXML) {
-
-    if (!lastXML) {
-      logger.info('ref:' + this.id, 'diagram <%s> opening', this.id);
-    } else {
-      logger.info('ref:' + this.id, 'diagram <%s> contents changed, reopening', this.id);
-    }
-
-    this.lastXML = file.contents;
-
-    modeler.importXML(file.contents, (err, warnings) => {
-
-      // remember stuff relevant for detecting
-      // reimport + dirty state changes
-      this.lastStackIndex = this.getStackIndex();
-
-      logger.info('diagram <%s> opened', this.id);
-
-      if (err) {
-        logger.info('ERROR: %s', err.message);
-      }
-
-      if (warnings.length) {
-        logger.info('WARNINGS: \n%s', warnings.join('\n'));
-      }
-    });
-
-    return true;
+    return;
   }
+
+  var modeler = this.getModeler(),
+      lastXML = this.lastXML,
+      newXML = this.newXML;
+
+  // reimport in XML change
+  if (!newXML || lastXML === newXML) {
+    debug('[#update] skipping (no change)');
+
+    this.emit('updated', {});
+
+    return;
+  }
+
+  debug('[#update] import');
+
+  this.emit('import', newXML);
+
+  modeler.importXML(newXML, (err, warnings) => {
+
+    // remember stuff relevant for detecting
+    // reimport + dirty state changes
+    this.lastStackIndex = this.getStackIndex();
+
+    this.lastXML = newXML;
+
+    var importContext = {
+      err: err,
+      warnings: warnings
+    };
+
+    debug('[#update] imported', importContext);
+
+    this.emit('imported', importContext);
+
+    this.emit('updated', importContext);
+  });
 };
 
-DiagramEditor.prototype.mountCanvas = function(node) {
+DiagramEditor.prototype.mountEditor = function(node) {
 
-  debug('mount canvas');
+  debug('mount');
+
+  this.emit('mount');
 
   // (1) append element
   node.appendChild(this.$el);
   this.mounted = true;
 
-  // (2) check if we need update / reopen
-  if (this.triggerImport()) {
-    return;
-  }
+  this.emit('mounted');
 
-  // (3) update edit state
-  this.updateState();
+  // (2) attempt import
+  this.update();
 };
 
-DiagramEditor.prototype.unmountCanvas = function(node) {
-  debug('unmount canvas');
+DiagramEditor.prototype.unmountEditor = function(node) {
+  this.emit('unmount');
 
+  debug('unmount');
+
+  this.mounted = false;
   node.removeChild(this.$el);
+
+  this.emit('unmounted');
 };
 
-DiagramEditor.prototype.setFile = function(newFile) {
-  this.file = newFile;
-
-  // update dirty state
-  // unless we reimport anyway
-  if (this.mounted && this.triggerImport()) {
-    return;
-  }
-
-  this.lastStackIndex = this.getStackIndex();
-
-  this.updateState();
-};
-
-DiagramEditor.prototype.save = function(done) {
+DiagramEditor.prototype.saveXML = function(done) {
 
   var modeler = this.getModeler();
 
+  if (this.warnings) {
+    return done(null, this.lastXML);
+  }
+
+  debug('#saveXML - save');
+
+  this.emit('save');
+
   modeler.saveXML({ format: true }, (err, xml) => {
+
+    var saveContext = { error: err, xml: xml };
+
+    debug('#saveXML - saved', saveContext);
+
+    this.emit('saved', saveContext);
+
     if (err) {
       return done(err);
     }
 
-    this.lastXML = xml;
+    this.lastXML = this.newXML = xml;
 
-    var newFile = assign({}, this.file, { contents: xml });
-
-    done(null, newFile);
+    done(null, xml);
   });
+};
+
+DiagramEditor.prototype.setXML = function(xml) {
+
+  // (1) mark new xml
+  this.newXML = xml;
+
+  // (2) attempt import
+  this.update();
+};
+
+// TODO(nikku): finish or remove
+
+DiagramEditor.prototype.showWarnings = function() {
+  // todo later
+};
+
+DiagramEditor.prototype.closeWarningsOverlay = function() {
+  delete this.warnings;
+
+  // this.events.emit('changed');
 };

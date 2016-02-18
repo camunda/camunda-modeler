@@ -1,31 +1,18 @@
 'use strict';
 
-var BpmnEditor = require('app/tabs/bpmn/bpmn-editor');
-
-var select = require('test/helper/vdom').select,
-    render = require('test/helper/vdom').render,
-    simulateEvent = require('test/helper/vdom').simulateEvent;
+var XMLEditor = require('app/editor/xml-editor');
 
 var initialXML = require('app/tabs/bpmn/initial.bpmn');
 
 var spy = require('test/helper/util/spy');
 
-function findPropertiesToggle(tree) {
-  return select('[ref=properties-toggle]', tree);
-}
 
-
-describe('BpmnEditor', function() {
+describe('XMLEditor', function() {
 
   var editor;
 
   beforeEach(function() {
-
-    editor = new BpmnEditor({
-      layout: {
-        propertiesPanel: {}
-      }
-    });
+    editor = new XMLEditor({});
   });
 
 
@@ -38,7 +25,7 @@ describe('BpmnEditor', function() {
 
       // then
       // editor got mounted
-      expect($el.childNodes).to.have.length(1);
+      expect($el.childNodes.length).to.eql(1);
 
       done();
     });
@@ -66,6 +53,25 @@ describe('BpmnEditor', function() {
 
     // when
     editor.unmountEditor($el);
+  });
+
+
+  it('should initialize codemirror', function(done) {
+
+    // given
+    var $el = document.createElement('div');
+
+    editor.once('shown', function() {
+
+      // then
+      // codemirror got initialized
+      expect(editor.codemirror).to.exist;
+
+      done();
+    });
+
+    // when
+    editor.mountEditor($el);
   });
 
 
@@ -209,6 +215,7 @@ describe('BpmnEditor', function() {
       editor.mountEditor($el);
     });
 
+
     it('should not import without XML');
 
   });
@@ -292,7 +299,7 @@ describe('BpmnEditor', function() {
 
           // then
           expect(context).to.eql({
-            undo: false,
+            undo: true,
             redo: false,
             dirty: false
           });
@@ -304,7 +311,7 @@ describe('BpmnEditor', function() {
         // updating to new file
         editor.setXML(newXML);
 
-      }, 300);
+      });
 
       editor.setXML(initialXML);
       editor.mountEditor($el);
@@ -313,133 +320,42 @@ describe('BpmnEditor', function() {
   });
 
 
-  it('should initialize modeler', function(done) {
+  describe('history', function() {
 
-    // given
-    var $el = document.createElement('div');
-
-    editor.once('mounted', function() {
-
-      // then
-
-      // modeler got initialized
-      expect(editor.modeler).to.exist;
-
-      done();
-    });
-
-    // when
-    editor.mountEditor($el);
-  });
-
-
-  describe('properties panel', function() {
-
-    it('should close', function(done) {
-
+    it('should append to history on new XML', function(done) {
       // given
-      var editor = new BpmnEditor({
-        layout: {
-          propertiesPanel: {
-            open: true,
-            width: 150
-          }
-        }
-      });
+      var newXML = require('test/fixtures/other.bpmn');
 
-      var tree = render(editor);
-
-      var element = findPropertiesToggle(tree);
-
-      editor.once('layout:changed', function(newLayout) {
-
-        // then
-        expect(newLayout).to.eql({
-          propertiesPanel: {
-            open: false,
-            width: 150
-          }
-        });
-
-        done();
-      });
+      var $el = document.createElement('div');
 
       // when
-      // close toggle
-      simulateEvent(element, 'click');
-    });
+      editor.once('shown', function() {
 
+        editor.once('updated', function(context) {
 
-    it('should open', function(done) {
+          // when
+          // shouldn't change beyond first import (beginning of history)
+          editor.triggerAction('undo');
+          editor.triggerAction('undo');
 
-      // given
-      var editor = new BpmnEditor({
-        layout: {
-          propertiesPanel: {
-            open: false,
-            width: 150
-          }
-        }
-      });
+          // then
+          expect(editor.newXML).to.equal(initialXML);
 
-      var tree = render(editor);
+          // when
+          editor.triggerAction('redo');
 
-      var element = findPropertiesToggle(tree);
+          // then
+          expect(editor.newXML).to.equal(newXML);
 
-      editor.once('layout:changed', function(newLayout) {
-
-        // then
-        expect(newLayout).to.eql({
-          propertiesPanel: {
-            open: true,
-            width: 150
-          }
+          done();
         });
 
-        done();
+        // updating to new file
+        editor.setXML(newXML);
       });
 
-      // when
-      // open toggle
-      simulateEvent(element, 'click');
-    });
-
-
-    it('should resize', function(done) {
-
-      // given
-      var editor = new BpmnEditor({
-        layout: {
-          propertiesPanel: {
-            open: true,
-            width: 150
-          }
-        }
-      });
-
-      var tree = render(editor);
-
-      var element = findPropertiesToggle(tree);
-
-
-      editor.once('layout:changed', function(newLayout) {
-
-        // then
-        expect(newLayout).to.eql({
-          propertiesPanel: {
-            open: true,
-            width: 100
-          }
-        });
-
-        done();
-      });
-
-      // when
-      // dragging toggle
-      simulateEvent(element, 'dragstart', { screenX: 0, screenY: 0 });
-      simulateEvent(element, 'drag', { screenX: 50, screenY: 0 });
-
+      editor.setXML(initialXML);
+      editor.mountEditor($el);
     });
 
   });

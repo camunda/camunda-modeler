@@ -102,8 +102,8 @@ DmnEditor.prototype.render = function() {
     <div className="dmn-editor" key={ this.id }>
       <div className="diagram-container"
            tabIndex="0"
-           onAppend={ this.compose('mountCanvas') }
-           onRemove={ this.compose('unmountCanvas') }>
+           onAppend={ this.compose('mountEditor') }
+           onRemove={ this.compose('unmountEditor') }>
       </div>
     </div>
   );

@@ -4,8 +4,8 @@ var inherits = require('inherits');
 
 var assign = require('lodash/object/assign');
 
-var BpmnEditor = require('./bpmn-editor'),
-    XMLEditor = require('../../editor/xml-editor'),
+var BpmnDiagramEditor = require('./bpmn-editor'),
+    XmlEditor = require('../../editor/xml-editor'),
     DiagramTab = require('../diagram-tab');
 
 
@@ -22,8 +22,8 @@ function BpmnTab(options) {
 
   options = assign({
     viewDefinitions: [
-      { id: 'diagram', label: 'Diagram', component: BpmnEditor },
-      { id: 'xml', label: 'XML', component: XMLEditor }
+      { id: 'diagram', label: 'Diagram', component: BpmnDiagramEditor },
+      { id: 'xml', label: 'XML', component: XmlEditor }
     ]
   }, options);
 

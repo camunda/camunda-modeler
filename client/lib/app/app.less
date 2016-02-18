@@ -6,6 +6,8 @@
 @import "base/components/menu-bar";
 @import "base/components/tabbed";
 
+@import "editor/xml-editor";
+
 @import "util/dom/file-drop";
 
 
@@ -39,6 +41,8 @@
     }
 
     > .content {
+      height: 100%;
+      
       .flex-container(column);
       .flex-fill(1);
     }

@@ -18,7 +18,8 @@ var arg = require('test/helper/util/arg'),
     spy = require('test/helper/util/spy');
 
 var bpmnXML = require('app/tabs/bpmn/initial.bpmn'),
-    dmnXML = require('app/tabs/dmn/initial.dmn');
+    dmnXML = require('app/tabs/dmn/initial.dmn'),
+    otherBpmn = require('test/fixtures/other.bpmn');
 
 
 function createBpmnFile(xml) {
@@ -149,6 +150,28 @@ describe('App', function() {
 
   });
 
+  describe('xml support', function () {
+
+    it('should render xml-view', function() {
+      // given
+      var openFile = createBpmnFile(bpmnXML),
+          activeTab;
+
+      // when
+      app.createDiagramTabs([ openFile ]);
+
+      activeTab = app.activeTab;
+
+      activeTab.activeView = activeTab.getView('xml');
+
+      var tree = render(app);
+
+      // then
+      // expect BPMN tab with editor to be shown
+      expect(select('.xml-editor', tree)).to.exist;
+    });
+
+  });
 
   describe('file drop', function() {
 
