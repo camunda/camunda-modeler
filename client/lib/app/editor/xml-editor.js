@@ -3,8 +3,7 @@
 var inherits = require('inherits'),
     domify = require('domify');
 
-var assign = require('lodash/object/assign'),
-    debounce = require('lodash/function/debounce');
+var assign = require('lodash/object/assign');
 
 var BaseComponent = require('base/component');
 
@@ -19,12 +18,10 @@ require('codemirror/mode/xml/xml');
 require('codemirror/addon/fold/xml-fold');
 require('codemirror/addon/edit/closetag');
 
-var DEBOUNCE_DELAY = 250;
-
-
-/*
-  Todo:
-  - fix editor height (css)
+/**
+ * A xml editor
+ *
+ * @param {Object} options
  */
 function XMLEditor(options) {
 
@@ -69,8 +66,8 @@ XMLEditor.prototype.render = function() {
 
   return (
     <div className="xml-editor" key={ this.id + '#xml' }
-         onAppend={this.compose('mountEditor')}
-         onRemove={this.compose('unmountEditor')}>
+         onAppend={ this.compose('mountEditor') }
+         onRemove={ this.compose('unmountEditor') }>
     </div>
   );
 };
@@ -151,19 +148,19 @@ XMLEditor.prototype.update = function() {
 
   this.emit('imported', newXML);
 
-  // on initial import, reset history to prevent
-  // undo by the user
-  if (!lastXML) {
-    codemirror.doc.clearHistory();
-  }
-
   this.lastXML = newXML;
 
   this.emit('updated', {});
 };
 
 
-XMLEditor.prototype.getCodeMirror = function () {
+/**
+ * Get or create an instance of the underlying
+ * CodeMirror text editor.
+ *
+ * @return {CodeMirror}
+ */
+XMLEditor.prototype.getCodeMirror = function() {
   var $el = this.$el,
       textarea;
 
@@ -186,9 +183,16 @@ XMLEditor.prototype.getCodeMirror = function () {
     autoCloseTags: true
   });
 
-  codemirror.on('changes', debounce(() => {
+  codemirror.on('changes', (cm) => {
+
+    // on initial import, reset history to prevent
+    // undo by the user
+    if (!this.lastXML) {
+      cm.doc.clearHistory();
+    }
+
     this.updateState();
-  }, DEBOUNCE_DELAY));
+  });
 
   return codemirror;
 };
@@ -203,10 +207,6 @@ XMLEditor.prototype.triggerAction = function(action, options) {
   if (action === 'redo') {
     codemirror.doc.redo();
   }
-
-  this.newXML = codemirror.getValue();
-
-  this.updateState();
 };
 
 XMLEditor.prototype.saveXML = function(done) {
