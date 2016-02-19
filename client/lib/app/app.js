@@ -234,7 +234,8 @@ App.prototype.createComponent = function(Component, options) {
   var actualOptions = assign(options || {}, {
     events: this.events,
     layout: this.layout,
-    logger: this.logger
+    logger: this.logger,
+    dialog: this.dialog
   });
 
   return new Component(actualOptions);

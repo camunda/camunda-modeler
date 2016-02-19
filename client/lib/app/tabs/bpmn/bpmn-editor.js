@@ -118,15 +118,6 @@ BpmnEditor.prototype.triggerAction = function(action, options) {
   }
 };
 
-BpmnEditor.prototype.loadXml = function(xml, opts, done) {
-  if (typeof opts === 'function') {
-    done = opts;
-    opts = {};
-  }
-
-  this.updateDiagram(xml);
-};
-
 BpmnEditor.prototype.getModeler = function() {
 
   if (!this.modeler) {

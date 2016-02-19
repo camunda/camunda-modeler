@@ -51,6 +51,10 @@ inherits(DiagramEditor, BaseComponent);
 module.exports = DiagramEditor;
 
 
+/**
+ * Update the editor contents because they changed
+ * or we re-mounted.
+ */
 DiagramEditor.prototype.update = function() {
 
   // only do actual work if mounted
@@ -68,7 +72,7 @@ DiagramEditor.prototype.update = function() {
   if (!newXML || lastXML === newXML) {
     debug('[#update] skipping (no change)');
 
-    this.emit('updated', {});
+    this.emit('updated', this.lastImport);
 
     return;
   }
@@ -85,8 +89,8 @@ DiagramEditor.prototype.update = function() {
 
     this.lastXML = newXML;
 
-    var importContext = {
-      err: err,
+    var importContext = this.lastImport = {
+      error: err,
       warnings: warnings
     };
 
@@ -129,11 +133,7 @@ DiagramEditor.prototype.saveXML = function(done) {
 
   var modeler = this.getModeler();
 
-  if (this.warnings) {
-    return done(null, this.lastXML);
-  }
-
-  debug('#saveXML - save');
+  debug('[#saveXML] save');
 
   this.emit('save');
 
@@ -141,7 +141,7 @@ DiagramEditor.prototype.saveXML = function(done) {
 
     var saveContext = { error: err, xml: xml };
 
-    debug('#saveXML - saved', saveContext);
+    debug('[#saveXML] saved', saveContext);
 
     this.emit('saved', saveContext);
 
@@ -155,7 +155,20 @@ DiagramEditor.prototype.saveXML = function(done) {
   });
 };
 
-DiagramEditor.prototype.setXML = function(xml) {
+/**
+ * Set XML on the editor. Specify an optional
+ * callback if you'd like to be notified of the result.
+ *
+ * @param {String} xml
+ * @param {Function} [done]
+ */
+DiagramEditor.prototype.setXML = function(xml, done) {
+
+  if (done) {
+    this.once('updated', function(context) {
+      done(context && context.error, context && context.warnings);
+    });
+  }
 
   // (1) mark new xml
   this.newXML = xml;

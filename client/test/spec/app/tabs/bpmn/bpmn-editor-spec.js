@@ -78,8 +78,6 @@ describe('BpmnEditor', function() {
 
       // wait for diagram shown / imported
       editor.on('shown', function(context) {
-
-        expect(context).to.exist;
         done();
       });
 
@@ -318,7 +316,7 @@ describe('BpmnEditor', function() {
     // given
     var $el = document.createElement('div');
 
-    editor.once('mounted', function() {
+    editor.once('imported', function() {
 
       // then
 
@@ -329,6 +327,8 @@ describe('BpmnEditor', function() {
     });
 
     // when
+    editor.setXML(initialXML);
+
     editor.mountEditor($el);
   });
 

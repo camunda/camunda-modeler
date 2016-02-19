@@ -1,7 +1,8 @@
 'use strict';
 
 var Events = require('test/helper/mock/events'),
-    Logger = require('test/helper/mock/logger');
+    Logger = require('test/helper/mock/logger'),
+    Dialog = require('test/helper/mock/dialog');
 
 var BpmnTab = require('app/tabs/bpmn/bpmn-tab');
 
@@ -30,13 +31,12 @@ function createFile(options) {
 
 describe('BpmnTab', function() {
 
-  var events, logger;
-
-  // var unsavedFile = { path: '[unsaved]' };
+  var events, logger, dialog;
 
   beforeEach(function() {
     events = new Events();
     logger = new Logger();
+    dialog = new Dialog();
   });
 
   function createBpmnTab(id, file) {
@@ -45,6 +45,7 @@ describe('BpmnTab', function() {
       dirty: true,
       id: id,
       events: events,
+      dialog: dialog,
       file: file || createFile(),
       layout: {
         propertiesPanel: {}
@@ -55,9 +56,11 @@ describe('BpmnTab', function() {
     return new BpmnTab(options);
   }
 
+
   describe('render', function () {
 
-    it('should render a tab -> show diagram', function() {
+    it('should render view <diagram>', function() {
+
       // given
       var tab = createBpmnTab('diagram_1');
 
@@ -72,15 +75,15 @@ describe('BpmnTab', function() {
     });
 
 
-    it('should render a tab -> show xml', function() {
+    it('should render view <xml>', function() {
+
       // given
-      var tab = createBpmnTab('diagram_1'),
-          tree;
+      var tab = createBpmnTab('diagram_1');
 
       // when
-      tab.activeView = tab.getView('xml');
+      tab.setView(tab.getView('xml'));
 
-      tree = render(tab);
+      var tree = render(tab);
 
       // then
       expect(select('.diagram-tab', tree)).to.exist;
@@ -89,9 +92,29 @@ describe('BpmnTab', function() {
       expect(select('.bpmn-editor', tree)).to.not.exist;
     });
 
+
+    it('should switch view', function() {
+
+      // given
+      var tab = createBpmnTab('diagram_1');
+
+      var showView = spy(tab, 'showView');
+
+      var tree = render(tab);
+
+      // when
+      var xmlSwitch = select('[ref=xml-switch]', tree);
+      simulateEvent(xmlSwitch, 'click');
+
+      // then
+      expect(showView).to.have.been.called;
+    });
+
   });
 
-  describe.only('integration', function () {
+
+  describe('integration', function () {
+
     var tab, xmlEditor, bpmnEditor;
 
     beforeEach(function() {
@@ -101,7 +124,10 @@ describe('BpmnTab', function() {
       xmlEditor = tab.getView('xml');
     });
 
-    it('should switch from diagram view to xml view', function() {
+
+    it('should switch from <diagram> to <xml> view', function() {
+
+      bpmnTab.saveXML
       // when
       tab.showView('xml');
 
@@ -132,7 +158,7 @@ describe('BpmnTab', function() {
 
     it.skip('should NOT switch to diagram with xml view errors', function() {
       // given
-      bpmnEditor.saveXml = function(done) {
+      bpmnEditor.saveXML = function(done) {
         done(null, initialXML);
       };
 
@@ -165,7 +191,7 @@ describe('BpmnTab', function() {
 
     it('should show warnings', function() {
       // given
-      bpmnEditor.saveXml = function(done) {
+      bpmnEditor.saveXML = function(done) {
         done(null, initialXML);
       };
 
@@ -190,7 +216,7 @@ describe('BpmnTab', function() {
 
     it('should STILL show warnings', function() {
       // given
-      bpmnEditor.saveXml = function(done) {
+      bpmnEditor.saveXML = function(done) {
         done(null, initialXML);
       };
 
@@ -217,7 +243,7 @@ describe('BpmnTab', function() {
       var tree;
 
       // given
-      bpmnEditor.saveXml = function(done) {
+      bpmnEditor.saveXML = function(done) {
         done(null, initialXML);
       };
 
