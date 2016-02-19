@@ -88,16 +88,17 @@ function open() {
  * @param  {Object}   Event
  */
 function beforeQuit(evt) {
-  if (!app.dirty) {
-    return;
-  }
-
-  evt.preventDefault();
-
-  // Triggers the check for unsaved diagrams
-  mainWindow.webContents.send('editor.actions', {
-    event: 'editor.quit'
-  });
+  // TODO: reimplement checking modified tabs on quit
+  // if (!app.dirty) {
+  //   return;
+  // }
+  //
+  // evt.preventDefault();
+  //
+  // // Triggers the check for unsaved diagrams
+  // mainWindow.webContents.send('editor.actions', {
+  //   event: 'editor.quit'
+  // });
 }
 
 /**
@@ -206,7 +207,6 @@ app.on('before-quit', beforeQuit);
 // open diagrams left with unsaved changes
 app.on('editor:quit-allowed', function () {
   app.dirty = false;
-
   app.quit();
 });
 
