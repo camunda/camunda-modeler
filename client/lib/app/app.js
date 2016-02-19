@@ -421,11 +421,12 @@ App.prototype.saveTab = function(tab, options, done) {
     if (saveAs) {
       dialog.saveAs(file, (err, suggestedFile) => {
 
-        debug('save %s as %s', tab.id, suggestedFile.path);
-
         if (err) {
+          debug('save %s err', tab.id, err);
           return done(err);
         }
+
+        debug('save %s as %s', tab.id, suggestedFile.path);
 
         newFile = assign({}, file, suggestedFile);
 
@@ -473,7 +474,6 @@ App.prototype.filesDropped = function(files) {
   var dialog = this.dialog;
 
   function withType(file) {
-
     var type = parseFileType(file);
 
     if (!type) {

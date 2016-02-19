@@ -189,8 +189,8 @@ app.on('editor:cmd', function (argv, cwd) {
 
 app.on('editor:open', function (mainWindow) {
   console.log('app:editor:open');
-
-  app.fileSystem = new FileSystem(mainWindow, config);
+  // TODO: FileSystem must be a singleton
+  app.fileSystem = app.fileSystem || new FileSystem(mainWindow, config);
 });
 
 app.on('editor:ready', function () {

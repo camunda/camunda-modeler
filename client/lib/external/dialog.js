@@ -1,5 +1,8 @@
 'use strict';
 
+const ipcRenderer = require('electron').ipcRenderer;
+var debug = require('debug')('Dialog');
+
 /**
  * Dialog API used by app
  */
@@ -12,9 +15,10 @@ function Dialog() {
    * @param {Function} done
    */
   this.saveAs = function(file, done) {
-    var newName = file.name + '_x';
-
-    done(null, { name: newName, path: '/foo/bar/' + newName });
+    ipcRenderer.once('file:save-as:res', function(event, err, args) {
+      done(err, args);
+    });
+    ipcRenderer.send('file:save-as:req', true, file);
   };
 
   /**
@@ -24,6 +28,8 @@ function Dialog() {
    * @param {Function} done
    */
   this.saveError = function(file, done) {
+    debug('---> Dialog.saveError:', file);
+    // TODO: implement
     done(null);
   };
 
@@ -33,7 +39,10 @@ function Dialog() {
    * @param {Function} done
    */
   this.open = function(done) {
-    done(null);
+    ipcRenderer.once('file:open:res', function(event, err, args) {
+      done(err, args);
+    });
+    ipcRenderer.send('file:open:req');
   };
 
   /**
@@ -43,6 +52,8 @@ function Dialog() {
    * @param {Function} done
    */
   this.openError = function(err, done) {
+    debug('---> Dialog.openError: ', err);
+    // TODO: implement
     done(null);
   };
 
@@ -52,6 +63,8 @@ function Dialog() {
    * @param {Function} done
    */
   this.unrecognizedFileError = function(file, done) {
+    debug('---> Dialog.unrecognizedFileError');
+    // TODO: implement
     done(null);
   };
 

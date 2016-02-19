@@ -23,7 +23,7 @@ module.exports = function(grunt) {
     var data = this.data;
 
     var srcFile = data.src,
-      targetFile = data.target;
+        targetFile = data.target;
 
     // completion handler; do not block per default
     var done = function() {};
@@ -33,6 +33,7 @@ module.exports = function(grunt) {
         assert: require.resolve('assert/'),
         events: require.resolve('events/')
       },
+      ignoreMissing: true,
       paths: ['client/lib'],
       insertGlobalVars: {
         process: function() {

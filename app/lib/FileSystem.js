@@ -48,7 +48,7 @@ function createDiagramFile(filePath, file) {
   return {
     contents: file,
     name: path.basename(filePath),
-    notation: parseUtil.extractNotation(file),
+    fileType: parseUtil.extractNotation(file),
     path: filePath
   };
 }
@@ -64,15 +64,24 @@ function FileSystem(browserWindow, config) {
   this.browserWindow = browserWindow;
   this.config = config;
 
-  Ipc.on('file.save', function (evt, newDirectory, diagramFile) {
-    self.save(newDirectory, diagramFile, function (err, updatedDiagram) {
+  Ipc.on('file:save:req', function (evt, diagramFile) {
+    self.save(diagramFile, function (err, updatedDiagram) {
+
       if (err) {
-        return self.handleError('file.save.response', err);
+        return evt.sender.send('file.save.response', err);
       }
-
       app.emit('editor:add-recent', updatedDiagram.path);
+      evt.sender.send('file.save.response', null, updatedDiagram);
+    });
+  });
 
-      browserWindow.webContents.send('file.save.response', null, updatedDiagram);
+  Ipc.on('file:save-as:req', function (evt, newDirectory, diagramFile) {
+    self.saveAs(diagramFile, function (err, updatedDiagram) {
+      if (err) {
+        return evt.sender.send('file:save-as:res', err);
+      }
+      app.emit('editor:add-recent', updatedDiagram.path);
+      evt.sender.send('file:save-as:res', null, updatedDiagram);
     });
   });
 
@@ -80,15 +89,13 @@ function FileSystem(browserWindow, config) {
     self.addFile(path);
   });
 
-  Ipc.on('file.open', function (evt) {
+  Ipc.on('file:open:req', function (evt) {
     self.open(function (err, diagramFile) {
       if (err) {
-        return self.handleError('file.open.response', err);
+        return evt.sender.send('file:open:res', err);
       }
-
       app.emit('editor:add-recent', diagramFile.path);
-
-      browserWindow.webContents.send('file.open.response', null, diagramFile);
+      evt.sender.send('file:open:res', null, diagramFile);
     });
   });
 
@@ -146,7 +153,7 @@ FileSystem.prototype._openFile = function (filePath, callback) {
   try {
     diagramFile = readDiagram(filePath);
 
-    if (!diagramFile.notation) {
+    if (!diagramFile.fileType) {
       self.showUnrecognizedFileDialog(diagramFile.name);
 
       return self.open(callback);
@@ -187,41 +194,40 @@ FileSystem.prototype.addFile = function (filePath) {
   });
 };
 
-FileSystem.prototype.save = function (newDirectory, diagramFile, callback) {
+FileSystem.prototype.saveAs = function (diagramFile, callback) {
   var self = this,
       args = Array.prototype.slice.call(arguments);
 
-  // Save as..
-  if (newDirectory || diagramFile.path === '[unsaved]') {
-    this.showSaveAsDialog(diagramFile, function (filePath) {
+  this.showSaveAsDialog(diagramFile, function (filePath) {
+    if (!filePath) {
+      return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
+    }
 
-      if (!filePath) {
-        return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
-      }
+    var saveFilePath = ensureExtension(filePath, diagramFile.fileType);
 
-      var saveFilePath = ensureExtension(filePath, diagramFile.notation);
+    // display an additional override warning if
+    // filePath.defaultExtension would override an existing file
+    if (filePath !== saveFilePath && existsFile(saveFilePath)) {
+      return self.showExistingFileDialog(path.basename(saveFilePath), function (result) {
+        if (result === 0) {
+          return self._save(saveFilePath, diagramFile, callback);
+        } else {
+          return self.saveAs.apply(self, args);
+        }
+      });
+    } else {
+      // ok to save
+      self._save(saveFilePath, diagramFile, callback);
+    }
+  });
+};
 
-      // display an additional override warning if
-      // filePath.defaultExtension would override an existing file
-      if (filePath !== saveFilePath && existsFile(saveFilePath)) {
-        return self.showExistingFileDialog(path.basename(saveFilePath), function (result) {
-          if (result === 0) {
-            return self._save(saveFilePath, diagramFile, callback);
-          } else {
-            return self.save.apply(self, args);
-          }
-        });
-      } else {
-        // ok to save
-        self._save(saveFilePath, diagramFile, callback);
-      }
-    });
-  } else {
-    this._save(diagramFile.path, diagramFile, callback);
-  }
+FileSystem.prototype.save = function (diagramFile, callback) {
+  this._save(diagramFile.path, diagramFile, callback);
 };
 
 FileSystem.prototype._save = function (filePath, diagramFile, callback) {
+  console.log('--->', filePath, diagramFile);
 
   try {
     var newDiagramFile = writeDiagram(filePath, diagramFile);
@@ -305,11 +311,11 @@ FileSystem.prototype.showSaveAsDialog = function (diagramFile, callback) {
   var config = this.config,
       defaultPath = config.get('defaultPath', app.getPath('userDesktop'));
 
-  var notation = diagramFile.notation,
+  var fileType = diagramFile.fileType,
       name = diagramFile.name,
       filters = [];
 
-  if (notation === 'bpmn') {
+  if (fileType === 'bpmn') {
     filters.push(SUPPORTED_EXT_BPMN);
   } else {
     filters.push(SUPPORTED_EXT_DMN);
@@ -318,10 +324,9 @@ FileSystem.prototype.showSaveAsDialog = function (diagramFile, callback) {
   var opts = {
     title: 'Save ' + name + ' as..',
     filters: filters,
-    defaultPath: defaultPath,
+    defaultPath: defaultPath + '/' + name,
     noLink: true
   };
-
   var filePath = Dialog.showSaveDialog(this.browserWindow, opts);
 
   if (filePath) {
