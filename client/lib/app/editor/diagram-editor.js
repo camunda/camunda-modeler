@@ -2,6 +2,8 @@
 
 var inherits = require('inherits');
 
+var assign = require('lodash/object/assign');
+
 var BaseComponent = require('base/component');
 
 var domify = require('domify');
@@ -32,18 +34,13 @@ function DiagramEditor(options) {
   // last well imported xml diagram
   this.lastXML = null;
 
-  // if we are mounted
+  // are we mounted
   this.mounted = false;
 
-  // last state since save for dirty checking
-  this.lastStackIndex = -1;
-
-  // update edit state with every shown
-  this.on('updated', (ctx) => {
-    this.updateState();
-
-    this.emit('shown', ctx);
-  });
+  // the editors initial state
+  this.initialState = {
+    dirty: false
+  };
 }
 
 inherits(DiagramEditor, BaseComponent);
@@ -81,17 +78,14 @@ DiagramEditor.prototype.update = function() {
 
   this.emit('import', newXML);
 
+  this.lastXML = newXML;
+
   modeler.importXML(newXML, (err, warnings) => {
-
-    // remember stuff relevant for detecting
-    // reimport + dirty state changes
-    this.lastStackIndex = this.getStackIndex();
-
-    this.lastXML = newXML;
 
     var importContext = this.lastImport = {
       error: err,
-      warnings: warnings
+      warnings: warnings,
+      xml: newXML
     };
 
     debug('[#update] imported', importContext);
@@ -156,18 +150,16 @@ DiagramEditor.prototype.saveXML = function(done) {
 };
 
 /**
- * Set XML on the editor. Specify an optional
- * callback if you'd like to be notified of the result.
+ * Set XML on the editor, passing the initial (dirty)
+ * state with it.
  *
  * @param {String} xml
- * @param {Function} [done]
+ * @param {Object} initialState
  */
-DiagramEditor.prototype.setXML = function(xml, done) {
+DiagramEditor.prototype.setXML = function(xml, initialState) {
 
-  if (done) {
-    this.once('updated', function(context) {
-      done(context && context.error, context && context.warnings);
-    });
+  if (initialState) {
+    this.initialState = assign({ xml: xml }, initialState);
   }
 
   // (1) mark new xml
@@ -175,16 +167,4 @@ DiagramEditor.prototype.setXML = function(xml, done) {
 
   // (2) attempt import
   this.update();
-};
-
-// TODO(nikku): finish or remove
-
-DiagramEditor.prototype.showWarnings = function() {
-  // todo later
-};
-
-DiagramEditor.prototype.closeWarningsOverlay = function() {
-  delete this.warnings;
-
-  // this.events.emit('changed');
 };

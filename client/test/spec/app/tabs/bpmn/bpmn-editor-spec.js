@@ -10,10 +10,6 @@ var initialXML = require('app/tabs/bpmn/initial.bpmn');
 
 var spy = require('test/helper/util/spy');
 
-function findPropertiesToggle(tree) {
-  return select('[ref=properties-toggle]', tree);
-}
-
 
 describe('BpmnEditor', function() {
 
@@ -233,7 +229,7 @@ describe('BpmnEditor', function() {
       });
 
       // when
-      editor.setXML(initialXML);
+      editor.setXML(initialXML, {});
 
       editor.mountEditor($el);
     });
@@ -270,7 +266,7 @@ describe('BpmnEditor', function() {
       });
 
       // (1) mount
-      editor.setXML(initialXML);
+      editor.setXML(initialXML, {});
 
       editor.mountEditor($el);
     });
@@ -292,7 +288,7 @@ describe('BpmnEditor', function() {
           expect(context).to.eql({
             undo: false,
             redo: false,
-            dirty: false
+            dirty: true
           });
 
           done();
@@ -304,7 +300,32 @@ describe('BpmnEditor', function() {
 
       }, 300);
 
-      editor.setXML(initialXML);
+      editor.setXML(initialXML, {});
+      editor.mountEditor($el);
+    });
+
+
+    it('should reflect initial dirty state', function(done) {
+
+      // given
+      var $el = document.createElement('div');
+
+      // wait for diagram shown / imported
+      editor.once('state-updated', function(context) {
+
+        // then
+        expect(context).to.eql({
+          undo: false,
+          redo: false,
+          dirty: true
+        });
+
+        done();
+      });
+
+      // when
+      editor.setXML(initialXML, { dirty: true });
+
       editor.mountEditor($el);
     });
 
@@ -333,7 +354,59 @@ describe('BpmnEditor', function() {
   });
 
 
+  it('should keep last import results', function(done) {
+
+    // given
+    var $el = document.createElement('div');
+
+    editor.once('imported', function(context) {
+      // then
+      expect(context).to.exist;
+
+      expect(editor.lastImport).to.exist;
+      done();
+    });
+
+    // when
+    editor.setXML(initialXML);
+
+    editor.mountEditor($el);
+  });
+
+
+  it('should respond with last import results if no XML change', function(done) {
+
+    // given
+    var $el = document.createElement('div');
+
+    editor.once('shown', function() {
+
+      var lastImport = editor.lastImport;
+
+      editor.once('shown', function(context) {
+        // then
+        expect(context).to.equal(lastImport);
+
+        done();
+      });
+
+      // when
+      // set same XML again
+      editor.setXML(initialXML);
+    });
+
+    editor.setXML(initialXML);
+
+    editor.mountEditor($el);
+  });
+
+
   describe('properties panel', function() {
+
+    function selectPropertiesToggle(tree) {
+      return select('[ref=properties-toggle]', tree);
+    }
+
 
     it('should close', function(done) {
 
@@ -349,7 +422,7 @@ describe('BpmnEditor', function() {
 
       var tree = render(editor);
 
-      var element = findPropertiesToggle(tree);
+      var element = selectPropertiesToggle(tree);
 
       editor.once('layout:changed', function(newLayout) {
 
@@ -384,7 +457,7 @@ describe('BpmnEditor', function() {
 
       var tree = render(editor);
 
-      var element = findPropertiesToggle(tree);
+      var element = selectPropertiesToggle(tree);
 
       editor.once('layout:changed', function(newLayout) {
 
@@ -419,7 +492,7 @@ describe('BpmnEditor', function() {
 
       var tree = render(editor);
 
-      var element = findPropertiesToggle(tree);
+      var element = selectPropertiesToggle(tree);
 
 
       editor.once('layout:changed', function(newLayout) {
@@ -440,6 +513,109 @@ describe('BpmnEditor', function() {
       simulateEvent(element, 'dragstart', { screenX: 0, screenY: 0 });
       simulateEvent(element, 'drag', { screenX: 50, screenY: 0 });
 
+    });
+
+  });
+
+
+  describe('import warnings overlay', function() {
+
+    it('should hide without import information', function() {
+
+      // given
+      editor.lastImport = null;
+
+      // when
+      var tree = render(editor);
+
+      // then
+      expect(select('[ref=warnings-overlay]', tree)).not.to.exist;
+    });
+
+
+    it('should hide if no warnings', function() {
+
+      // given
+      editor.lastImport = {
+        warnings: []
+      };
+
+      // when
+      var tree = render(editor);
+
+      // then
+      expect(select('[ref=warnings-overlay]', tree)).not.to.exist;
+    });
+
+
+    it('should show if warnings', function() {
+
+      // given
+      editor.lastImport = {
+        warnings: [
+          new Error('foo bar')
+        ]
+      };
+
+      // when
+      var tree = render(editor);
+
+      // then
+      expect(select('[ref=warnings-overlay]', tree)).to.exist;
+    });
+
+
+    it('should hide', function() {
+
+      // given
+      editor.lastImport = {
+        warnings: [
+          new Error('foo bar')
+        ]
+      };
+
+      // when
+      var tree = render(editor);
+
+      var hideWarningsElement = select('[ref=warnings-hide-link]', tree);
+
+      simulateEvent(hideWarningsElement, 'click');
+
+      // then
+      // we simply discard the last import information
+      expect(editor.lastImport).not.to.exist;
+    });
+
+
+    it('should show details', function(done) {
+
+      // given
+      editor.lastImport = {
+        warnings: [
+          new Error('foo bar'),
+          new Error('foo BABA')
+        ]
+      };
+
+      editor.once('log', function(messages) {
+
+        // then
+        expect(messages).to.eql([
+          [ 'warn', ' ' ],
+          [ 'warn', 'Imported BPMN diagram with 2 warnings' ],
+          [ 'warn', '> foo bar' ],
+          [ 'warn', '> foo BABA']
+        ]);
+
+        done();
+      });
+
+      // when
+      var tree = render(editor);
+
+      var showDetailsElement = select('[ref=warnings-details-link]', tree);
+
+      simulateEvent(showDetailsElement, 'click');
     });
 
   });

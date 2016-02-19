@@ -62,30 +62,36 @@ DiagramTab.prototype.showView = function(id) {
 
     if (err) {
       debug('[#showView] view export error %s', err);
+
+      this.dialog.exportError(err, () => {});
+
       return;
     }
 
     newView.once('shown', (results) => {
-      debug('[#showView] view shown', err);
 
       var error = results && results.error;
 
       if (error) {
+        debug('[#showView] view shown with error', err);
 
         // show error dialog
-        this.dialog.openError(results.error, () => {
+        this.dialog.importError(results.error, () => {
+          debug('[#showView] reset to old view');
 
           // set the old view
           this.setView(oldView);
         });
+      } else {
+        debug('[#showView] view shown');
       }
     });
 
-    // sync XML contents
-    newView.setXML(xml);
-
     // set new view
     this.setView(newView);
+
+    // sync XML contents
+    newView.setXML(xml);
   });
 
 };
@@ -137,6 +143,20 @@ DiagramTab.prototype.createViews = function(options) {
 
     component.on('state-updated', this.events.composeEmitter('tools:state-changed', this));
 
+    component.on('changed', this.events.composeEmitter('changed'));
+
+    /**
+     * messages = [ [ category, message ]* ]
+     */
+    component.on('log', (messages) => {
+
+      messages.forEach((m) => {
+        this.logger[m[0]](m[1]);
+      });
+
+      this.events.emit('log:toggle', { open: true });
+    });
+
     return component;
   });
 };
@@ -145,8 +165,6 @@ DiagramTab.prototype.createViews = function(options) {
  * Save the tab, calling back with (err, file).
  *
  * @param {Function} done
- *
- * @return {Object}
  */
 DiagramTab.prototype.save = function(done) {
   if (this.activeView.saveXML) {
@@ -167,7 +185,9 @@ DiagramTab.prototype.setFile = function(file) {
   this.label = file.name,
   this.title = file.path,
 
-  this.activeView.setXML(file.contents);
+  this.views.forEach(function(view) {
+    view.setXML(file.contents, { dirty: isUnsaved(file) });
+  });
 
   this.events.emit('changed');
 };

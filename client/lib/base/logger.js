@@ -8,7 +8,7 @@ var format = require('format');
 
 var Emitter = require('events');
 
-var CATEGORIES = [ 'info', 'debug', 'error' ];
+var CATEGORIES = [ 'info', 'debug', 'warn', 'error' ];
 
 var REF_PATTERN = /^ref\:/;
 

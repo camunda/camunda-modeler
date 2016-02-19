@@ -11,9 +11,22 @@
  .bpmn-warnings {
     flex: 0;
     z-index: 5000;
-    height: 30px;
+    text-align: center;
+    height: 0;
     position: absolute;
-    left: 40%;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    .alert {
+      text-align: left;
+      margin: 20px auto;
+      display: inline-block;
+      background: #FFFEC1;
+      border-radius: 3px;
+      padding: 10px 14px;
+      border: solid 1px #CCC;
+    }
   }
 
   > .diagram-container {

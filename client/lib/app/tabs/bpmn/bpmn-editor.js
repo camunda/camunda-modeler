@@ -4,6 +4,8 @@ var inherits = require('inherits');
 
 var DiagramEditor = require('../../editor/diagram-editor');
 
+var CloseHandle = require('base/components/misc/close-handle');
+
 var BpmnJS = require('bpmn-js/lib/Modeler');
 
 var diagramOriginModule = require('diagram-js-origin'),
@@ -31,6 +33,43 @@ function BpmnEditor(options) {
 
   // elements to insert modeler and properties panel into
   this.$propertiesEl = domify('<div class="properties-parent"></div>');
+
+  this.on('imported', (context) => {
+
+    var xml = context.xml;
+
+    var initialState = this.initialState;
+
+    // we are back at start, unset reimport flag
+    if (xml === initialState.xml) {
+      initialState.reimported = false;
+    } else
+
+    // reimport, we are going to be dirty always
+    if ('stackIndex' in initialState) {
+      initialState.reimported = true;
+    }
+
+    initialState.stackIndex = -1;
+  });
+
+  this.on('updated', (ctx) => {
+
+    var modeler = this.modeler,
+        initialState = this.initialState;
+
+    // log stack index on first imported
+    // update after loading
+    if (isImported(modeler) && !('stackIndex' in initialState)) {
+      initialState.stackIndex = this.getStackIndex();
+    }
+
+    // on updated, update state and emit <shown> event
+    this.updateState();
+
+    this.emit('shown', ctx);
+  });
+
 }
 
 inherits(BpmnEditor, DiagramEditor);
@@ -42,19 +81,26 @@ BpmnEditor.prototype.updateState = function() {
 
   var modeler = this.getModeler(),
       commandStack,
-      lastStackIndex = this.lastStackIndex;
+      initialState = this.initialState;
 
-  var stateContext = {};
+  var stateContext = {},
+      dirty;
 
   // no diagram to harvest, good day maam!
   if (isImported(modeler)) {
     commandStack = modeler.get('commandStack');
 
+    dirty = (
+      initialState.dirty ||
+      initialState.reimported ||
+      initialState.stackIndex !== commandStack._stackIdx
+    );
+
     // TODO(nikku): complete / more updates?
     stateContext = {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
-      dirty: commandStack._stackIdx !== lastStackIndex
+      dirty: dirty
     };
   }
 
@@ -128,9 +174,7 @@ BpmnEditor.prototype.getModeler = function() {
     // hook up with modeler change events
     this.modeler.on([
       'commandStack.changed',
-      'selection.changed',
-      'import.success',
-      'import.error'
+      'selection.changed'
     ], this.updateState, this);
   }
 
@@ -160,18 +204,25 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
 BpmnEditor.prototype.render = function() {
 
   var propertiesLayout = this.layout.propertiesPanel,
-      warnings;
+      warningsOverlay;
 
   var propertiesStyle = {
     width: (propertiesLayout.open ? propertiesLayout.width : 0) + 'px'
   };
 
-  if (this.warnings) {
-    warnings = (
-      <div className="bpmn-warnings">
-        There are {this.warnings.length} warnings!
-        <button onClick={ this.compose('showWarnings')}>Show XML</button>
-        <button onClick={ this.compose('closeWarningsOverlay')}>x</button>
+  var warnings = getWarnings(this.lastImport);
+
+  if (warnings) {
+
+    warningsOverlay = (
+      <div className="warnings-overlay bpmn-warnings" ref="warnings-overlay">
+        <div className="alert">
+          Imported with { warningsStr(warnings) }.&nbsp;
+
+          <a href onClick={ this.compose('showWarnings') } ref="warnings-details-link">Show Details</a>.
+
+          <CloseHandle onClick={ this.compose('hideWarnings') } ref="warnings-hide-link" />
+        </div>
       </div>
     );
   }
@@ -196,12 +247,51 @@ BpmnEditor.prototype.render = function() {
              onRemove={ this.compose('unmountProperties') }>
         </div>
       </div>
-      {warnings}
+      { warningsOverlay }
     </div>
   );
 };
 
 
+BpmnEditor.prototype.showWarnings = function() {
+
+  var warnings = getWarnings(this.lastImport);
+
+  if (!warnings) {
+    return;
+  }
+
+  var messages = warnings.map(function(warning) {
+    return [ 'warn', '> ' + warning.message ];
+  });
+
+  // prepend summary message
+  messages.unshift([ 'warn', 'Imported BPMN diagram with ' + warningsStr(warnings) ]);
+  messages.unshift([ 'warn', ' ' ]);
+
+  this.emit('log', messages);
+};
+
+BpmnEditor.prototype.hideWarnings = function() {
+  this.lastImport = null;
+
+  this.emit('changed');
+};
+
 function isImported(modeler) {
   return !!modeler.definitions;
+}
+
+
+function warningsStr(warnings) {
+  var count = warnings.length;
+
+  return count + ' warning' + (count !== 1 ? 's' : '');
+}
+
+
+function getWarnings(lastImport) {
+  var warnings = lastImport && lastImport.warnings;
+
+  return warnings && warnings.length ? warnings : null;
 }

@@ -242,7 +242,7 @@ describe('XMLEditor', function() {
       });
 
       // when
-      editor.setXML(initialXML);
+      editor.setXML(initialXML, {});
 
       editor.mountEditor($el);
     });
@@ -279,7 +279,7 @@ describe('XMLEditor', function() {
       });
 
       // (1) mount
-      editor.setXML(initialXML);
+      editor.setXML(initialXML, {});
 
       editor.mountEditor($el);
     });
@@ -301,7 +301,7 @@ describe('XMLEditor', function() {
           expect(context).to.eql({
             undo: true,
             redo: false,
-            dirty: false
+            dirty: true
           });
 
           done();
@@ -313,7 +313,32 @@ describe('XMLEditor', function() {
 
       });
 
-      editor.setXML(initialXML);
+      editor.setXML(initialXML, {});
+      editor.mountEditor($el);
+    });
+
+
+    it('should reflect initial dirty state', function(done) {
+
+      // given
+      var $el = document.createElement('div');
+
+      // wait for diagram shown / imported
+      editor.once('state-updated', function(context) {
+
+        // then
+        expect(context).to.eql({
+          undo: false,
+          redo: false,
+          dirty: true
+        });
+
+        done();
+      });
+
+      // when
+      editor.setXML(initialXML, { dirty: true });
+
       editor.mountEditor($el);
     });
 

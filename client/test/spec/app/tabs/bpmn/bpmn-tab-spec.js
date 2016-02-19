@@ -113,7 +113,10 @@ describe('BpmnTab', function() {
   });
 
 
-  describe('integration', function () {
+  describe('views', function () {
+
+    var otherXML = require('test/fixtures/other.bpmn');
+
 
     var tab, xmlEditor, bpmnEditor;
 
@@ -127,145 +130,86 @@ describe('BpmnTab', function() {
 
     it('should switch from <diagram> to <xml> view', function() {
 
-      bpmnTab.saveXML
+      // given
+      bpmnEditor.saveXML = function(done) {
+        done(null, initialXML);
+      };
+
+      var setXML = spy(xmlEditor, 'setXML');
+
       // when
       tab.showView('xml');
 
       // then
       expect(tab.activeView).to.equal(xmlEditor);
 
-      expect(xmlEditor.newXML).to.equal(initialXML);
+      expect(setXML).to.have.been.calledWith(initialXML);
     });
 
 
-    it('should share same XML between xml -> diagram', function() {
+    it('should switch from <xml> to <diagram> view', function() {
+
       // given
-      var otherXML = require('test/fixtures/other.bpmn');
+      tab.activeView = xmlEditor;
+
+      xmlEditor.saveXML = function(done) {
+        done(null, otherXML);
+      };
+
+      var setXML = spy(bpmnEditor, 'setXML');
+
+      // when
+      tab.showView('diagram');
+
+      // then
+      expect(tab.activeView).to.equal(bpmnEditor);
+
+      expect(setXML).to.have.been.calledWith(otherXML);
+    });
+
+
+    it('should handle export errors', function() {
+
+      // given
+      var exportError = new Error('could not save');
+
+      bpmnEditor.saveXML = function(done) {
+        done(exportError);
+      };
 
       // when
       tab.showView('xml');
 
-      xmlEditor.setXML(otherXML);
+      // then
+      expect(tab.activeView).to.equal(bpmnEditor);
 
+      expect(dialog.exportError).to.have.been.calledWith(exportError);
+    });
+
+
+    it('should handle view import errors and switch back', function() {
+
+      // given
+      var importError = new Error('could not open');
+
+      tab.activeView = xmlEditor;
+
+      xmlEditor.saveXML = function(done) {
+        done(null, otherXML);
+      };
+
+      bpmnEditor.setXML = function(xml) {
+        // trigger shown with import error
+        this.emit('shown', { error: importError });
+      };
+
+      // when
       tab.showView('diagram');
 
       // then
       expect(tab.activeView).to.equal(xmlEditor);
 
-      expect(bpmnEditor.newXML).to.equal(otherXML);
-    });
-
-
-    it.skip('should NOT switch to diagram with xml view errors', function() {
-      // given
-      bpmnEditor.saveXML = function(done) {
-        done(null, initialXML);
-      };
-
-      bpmnEditor.loadXml = function(xml, opts, done) {
-        done(new Error('cannot load xml'));
-      };
-
-      tab.showView('xml');
-
-      // when
-      tab.showView('diagram');
-
-      // then
-      expect(tab.activeView.id).to.equal(xmlEditor.id);
-    });
-
-  });
-
-  describe('warnings', function () {
-    var tab, xmlEditor, bpmnEditor;
-
-    beforeEach(function() {
-      tab = createBpmnTab('diagram_1');
-
-      bpmnEditor = tab.getView('diagram');
-      xmlEditor = tab.getView('xml');
-
-      xmlEditor.mountEditor(document.createElement('div'));
-    });
-
-    it('should show warnings', function() {
-      // given
-      bpmnEditor.saveXML = function(done) {
-        done(null, initialXML);
-      };
-
-      // when
-      tab.showView('xml');
-
-      bpmnEditor.loadXml = function(xml, opts, done) {
-        bpmnEditor.warnings = { warnings: [ 'foo', 'bar' ]};
-
-        done(null);
-      };
-
-      tab.showView('diagram');
-
-      var tree = render(tab);
-
-      // then
-      expect(bpmnEditor.warnings).to.exist;
-      expect(select('.bpmn-warnings', tree)).to.exist;
-    });
-
-
-    it('should STILL show warnings', function() {
-      // given
-      bpmnEditor.saveXML = function(done) {
-        done(null, initialXML);
-      };
-
-      // when
-      tab.showView('xml');
-
-      bpmnEditor.loadXml = function(xml, opts, done) {
-        bpmnEditor.warnings = { warnings: [ 'foo', 'bar' ]};
-
-        done(null);
-      };
-
-      tab.showView('diagram');
-
-      var tree = render(tab);
-
-      // then
-      expect(bpmnEditor.warnings).to.exist;
-      expect(select('.bpmn-warnings', tree)).to.exist;
-    });
-
-
-    it('should close warnings overlay', function() {
-      var tree;
-
-      // given
-      bpmnEditor.saveXML = function(done) {
-        done(null, initialXML);
-      };
-
-      // when
-      tab.showView('xml');
-
-      bpmnEditor.loadXml = function(xml, opts, done) {
-        bpmnEditor.warnings = { warnings: [ 'foo', 'bar' ]};
-
-        done(null);
-      };
-
-      tab.showView('diagram');
-
-      // when
-      bpmnEditor.closeWarningsOverlay();
-
-      tree = render(tab);
-
-      // then
-      expect(bpmnEditor.warnings).to.not.exist;
-      expect(select('.bpmn-warnings', tree)).to.not.exist;
+      expect(dialog.importError).to.have.been.calledWith(importError);
     });
 
   });

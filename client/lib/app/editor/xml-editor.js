@@ -1,7 +1,9 @@
 'use strict';
 
 var inherits = require('inherits'),
-    domify = require('domify'),
+    domify = require('domify');
+
+var assign = require('lodash/object/assign'),
     debounce = require('lodash/function/debounce');
 
 var BaseComponent = require('base/component');
@@ -40,6 +42,10 @@ function XMLEditor(options) {
   // if we are mounted
   this.mounted = false;
 
+  // the editors initial state
+  this.initialState = {
+    dirty: false
+  };
 
   // update edit state with every shown
   this.on('updated', (ctx) => {
@@ -74,13 +80,18 @@ XMLEditor.prototype.updateState = function() {
   var codemirror = this.getCodeMirror(),
       history = codemirror.doc.historySize();
 
+  var initialState = this.initialState || { xml: this.lastXML };
+
   var stateContext = {};
 
   // TODO(nikku): complete / more updates?
   stateContext = {
     undo: !!history.undo,
     redo: !!history.redo,
-    dirty: this.lastXML !== codemirror.getValue()
+    dirty: (
+      initialState.dirty ||
+      initialState.xml !== codemirror.getValue()
+    )
   };
 
   this.emit('state-updated', stateContext);
@@ -124,10 +135,11 @@ XMLEditor.prototype.update = function() {
 
   var codemirror = this.getCodeMirror(),
       lastXML = this.lastXML,
+      currentXML = codemirror.getValue(),
       newXML = this.newXML;
 
   // reimport in XML change
-  if (!newXML || lastXML === newXML) {
+  if (!newXML || lastXML === newXML || newXML === currentXML) {
     debug('[#update] skipping (no change)');
 
     this.emit('updated', {});
@@ -216,36 +228,22 @@ XMLEditor.prototype.saveXML = function(done) {
   done(null, xml);
 };
 
-XMLEditor.prototype.setXML = function(xml) {
+/**
+ * Set XML on the editor, passing the initial (dirty)
+ * state with it.
+ *
+ * @param {String} xml
+ * @param {Object} initialState
+ */
+XMLEditor.prototype.setXML = function(xml, initialState) {
+
+  if (initialState) {
+    this.initialState = assign({ xml: xml }, initialState);
+  }
 
   // (1) mark new xml
   this.newXML = xml;
 
   // (2) attempt import
   this.update();
-};
-
-XMLEditor.prototype.loadXML = function(xml, opts, done) {
-  var newXML = xml;
-
-  if (typeof opts === 'function') {
-    done = opts;
-    opts = {};
-  }
-
-  if (opts.xml) {
-    newXML = opts.xml;
-  }
-
-  this.setXML(newXML);
-
-  if (opts.warnings) {
-    this.showWarnings(opts.warnings);
-  }
-
-  this.emit('view:shown');
-};
-
-XMLEditor.prototype.showWarnings = function(warnings) {
-
 };

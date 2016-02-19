@@ -80,6 +80,25 @@ function Dialog() {
     done(null);
   };
 
+  /**
+   * Displays an error that a diagram export has failed.
+   *
+   * @param {Error} err
+   * @param {Function} done
+   */
+  this.exportError = function(err, done) {
+    done(null);
+  };
+
+  /**
+   * Displays an error that a diagram import has failed.
+   *
+   * @param {Error} err
+   * @param {Function} done
+   */
+  this.importError = function(err, done) {
+    done(null);
+  };
 
   this._clear = function() {
     this._resetSpies();

@@ -155,10 +155,17 @@ function App(options) {
     }
   });
 
-  this.events.on('log:toggle', () => {
+  this.events.on('log:toggle', (options) => {
+
+    var open = options && options.open;
+
+    if (typeof open === 'undefined') {
+      open = !(this.layout.log && this.layout.log.open);
+    }
+
     this.events.emit('layout:update', {
       log: {
-        open: !(this.layout.log && this.layout.log.open)
+        open: open
       }
     });
   });

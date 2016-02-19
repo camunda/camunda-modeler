@@ -17,7 +17,12 @@ function CloseHandle(options) {
       className += ' dirty';
     }
 
-    return <span className={ className } onClick={ options.onClick } tabIndex="0"></span>;
+    return (
+      <span className={ className }
+            onClick={ options.onClick }
+            tabIndex="0"
+            ref={ options.ref }></span>
+    );
   };
 }
 
