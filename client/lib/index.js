@@ -11,7 +11,8 @@ var Logger = require('base/logger'),
     Events = require('base/events'),
     Workspace = require('external/workspace'),
     FileSystem = require('external/file-system'),
-    Dialog = require('external/dialog');
+    Dialog = require('external/dialog'),
+    Triggers = require('external/triggers');
 
 var App = require('./app');
 
@@ -30,6 +31,9 @@ domReady(function() {
     fileSystem: new FileSystem(),
     workspace: new Workspace()
   });
+
+  // Setting up external triggers
+  new Triggers(app);
 
   app.on('app:run', function() {
     app.createDiagram('bpmn');

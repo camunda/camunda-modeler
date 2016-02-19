@@ -5,7 +5,7 @@ var forEach = require('lodash/collection/forEach');
 // Electron Modules
 var Menu = require('menu');
 var Ipc = require('electron').ipcMain;
-var app = require('app');
+var app = require('electron').app;
 
 var menusTemplate = require('./menusTemplate');
 

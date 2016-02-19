@@ -274,19 +274,13 @@ module.exports = function (browserWindow, notation) {
         label: 'BPMN Diagram',
         accelerator: 'CommandOrControl+T',
         click: function () {
-          browserWindow.webContents.send('editor.actions', {
-            event: 'editor.new',
-            diagramType: 'bpmn'
-          });
+          browserWindow.webContents.send('file:create:bpmn');
         }
       }, {
         id: 'newDmnFile',
         label: 'DMN Table',
         click: function () {
-          browserWindow.webContents.send('editor.actions', {
-            event: 'editor.new',
-            diagramType: 'dmn'
-          });
+          browserWindow.webContents.send('file:create:dmn');
         }
       }]
     }, {
@@ -294,9 +288,7 @@ module.exports = function (browserWindow, notation) {
       label: 'Open File...',
       accelerator: 'CommandOrControl+O',
       click: function () {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'file.open'
-        });
+        browserWindow.webContents.send('file:open');
       }
     }, {
       type: 'separator'
@@ -305,23 +297,13 @@ module.exports = function (browserWindow, notation) {
       label: 'Save File',
       accelerator: 'CommandOrControl+S',
       click: function () {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'file.save',
-          data: {
-            create: false
-          }
-        });
+        browserWindow.webContents.send('file:save');
       }
     }, {
       label: 'Save File As..',
       accelerator: 'CommandOrControl+Shift+S',
       click: function () {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'file.save',
-          data: {
-            create: true
-          }
-        });
+        browserWindow.webContents.send('file:save-as');
       }
     }, {
       type: 'separator'
@@ -329,9 +311,7 @@ module.exports = function (browserWindow, notation) {
       label: 'Close Tab',
       accelerator: 'CommandOrControl+W',
       click: function () {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'editor.close'
-        });
+        browserWindow.webContents.send('file:close');
       }
     }, {
       id: 'quit',
