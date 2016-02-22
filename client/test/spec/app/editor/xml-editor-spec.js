@@ -347,7 +347,13 @@ describe('XMLEditor', function() {
 
   describe('history', function() {
 
+    function getXML(editor) {
+      return editor.codemirror.getValue();
+    }
+
+
     it('should append to history on new XML', function(done) {
+
       // given
       var newXML = require('test/fixtures/other.bpmn');
 
@@ -359,18 +365,20 @@ describe('XMLEditor', function() {
         editor.once('updated', function(context) {
 
           // when
-          // shouldn't change beyond first import (beginning of history)
+          // shouldn't change beyond first import
+          // (beginning of history)
+          editor.triggerAction('undo');
           editor.triggerAction('undo');
           editor.triggerAction('undo');
 
           // then
-          expect(editor.newXML).to.equal(initialXML);
+          expect(getXML(editor)).to.equal(initialXML);
 
           // when
           editor.triggerAction('redo');
 
           // then
-          expect(editor.newXML).to.equal(newXML);
+          expect(getXML(editor)).to.equal(newXML);
 
           done();
         });

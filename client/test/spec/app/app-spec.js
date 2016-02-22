@@ -18,8 +18,7 @@ var arg = require('test/helper/util/arg'),
     spy = require('test/helper/util/spy');
 
 var bpmnXML = require('app/tabs/bpmn/initial.bpmn'),
-    dmnXML = require('app/tabs/dmn/initial.dmn'),
-    otherBpmn = require('test/fixtures/other.bpmn');
+    dmnXML = require('app/tabs/dmn/initial.dmn');
 
 
 function createBpmnFile(xml) {
