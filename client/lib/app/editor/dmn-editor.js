@@ -2,7 +2,7 @@
 
 var inherits = require('inherits');
 
-var DiagramEditor = require('../../editor/diagram-editor');
+var DiagramEditor = require('./diagram-editor');
 
 var DmnJS = require('dmn-js/lib/Modeler');
 
@@ -100,7 +100,7 @@ DmnEditor.prototype.render = function() {
 
   return (
     <div className="dmn-editor" key={ this.id }>
-      <div className="diagram-container"
+      <div className="editor-container"
            tabIndex="0"
            onAppend={ this.compose('mountEditor') }
            onRemove={ this.compose('unmountEditor') }>

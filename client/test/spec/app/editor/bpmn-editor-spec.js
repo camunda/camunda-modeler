@@ -1,12 +1,13 @@
 'use strict';
 
-var BpmnEditor = require('app/tabs/bpmn/bpmn-editor');
+var BpmnEditor = require('app/editor/bpmn-editor');
 
 var select = require('test/helper/vdom').select,
     render = require('test/helper/vdom').render,
     simulateEvent = require('test/helper/vdom').simulateEvent;
 
-var initialXML = require('app/tabs/bpmn/initial.bpmn');
+var initialXML = require('app/tabs/bpmn/initial.bpmn'),
+    otherXML = require('test/fixtures/other.bpmn');
 
 var spy = require('test/helper/util/spy');
 
@@ -275,7 +276,7 @@ describe('BpmnEditor', function() {
     it('should update on new XML', function(done) {
 
       // given
-      var newXML = require('test/fixtures/other.bpmn');
+      var newXML = otherXML;
 
       var $el = document.createElement('div');
 

@@ -12,8 +12,7 @@ var select = require('test/helper/vdom').select,
 
 var initialXML = require('app/tabs/bpmn/initial.bpmn');
 
-var spy = require('test/helper/util/spy'),
-    delay = require('test/helper/util/delay');
+var spy = require('test/helper/util/spy');
 
 
 function createFile(options) {

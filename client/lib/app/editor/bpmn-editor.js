@@ -2,7 +2,7 @@
 
 var inherits = require('inherits');
 
-var DiagramEditor = require('../../editor/diagram-editor');
+var DiagramEditor = require('./diagram-editor');
 
 var CloseHandle = require('base/components/misc/close-handle');
 
@@ -19,6 +19,8 @@ var dragger = require('util/dom/dragger');
 
 var debug = require('debug')('bpmn-editor');
 
+var ensureOpts = require('util/ensure-opts');
+
 var copy = require('util/copy');
 
 
@@ -28,6 +30,8 @@ var copy = require('util/copy');
  * @param {Object} options
  */
 function BpmnEditor(options) {
+
+  ensureOpts([ 'layout' ], options);
 
   DiagramEditor.call(this, options);
 
@@ -229,7 +233,7 @@ BpmnEditor.prototype.render = function() {
 
   return (
     <div className="bpmn-editor" key={ this.id + '#bpmn' }>
-      <div className="diagram-container"
+      <div className="editor-container"
            tabIndex="0"
            onAppend={ this.compose('mountEditor') }
            onRemove={ this.compose('unmountEditor') }>

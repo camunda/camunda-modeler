@@ -2,7 +2,8 @@
 
 var XMLEditor = require('app/editor/xml-editor');
 
-var initialXML = require('app/tabs/bpmn/initial.bpmn');
+var initialXML = require('app/tabs/bpmn/initial.bpmn'),
+    otherXML = require('test/fixtures/other.bpmn');
 
 var spy = require('test/helper/util/spy');
 
@@ -288,7 +289,7 @@ describe('XMLEditor', function() {
     it('should update on new XML', function(done) {
 
       // given
-      var newXML = require('test/fixtures/other.bpmn');
+      var newXML = otherXML;
 
       var $el = document.createElement('div');
 

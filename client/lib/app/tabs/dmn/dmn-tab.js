@@ -4,7 +4,7 @@ var inherits = require('inherits');
 
 var assign = require('lodash/object/assign');
 
-var DmnEditor = require('./dmn-editor'),
+var DmnEditor = require('../../editor/dmn-editor'),
     XMLEditor = require('../../editor/xml-editor'),
     DiagramTab = require('../diagram-tab');
 

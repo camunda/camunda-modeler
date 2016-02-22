@@ -3,9 +3,7 @@
 var inherits = require('inherits'),
     domify = require('domify');
 
-var assign = require('lodash/object/assign');
-
-var BaseComponent = require('base/component');
+var BaseEditor = require('./base-editor');
 
 var debug = require('debug')('xml-editor');
 
@@ -25,24 +23,7 @@ require('codemirror/addon/edit/closetag');
  */
 function XMLEditor(options) {
 
-  BaseComponent.call(this, options);
-
-  // container for codemirror
-  this.$el = domify('<div class="xml-container"></div>');
-
-  // diagram contents
-  this.newXML = null;
-
-  // last well imported xml diagram
-  this.lastXML = null;
-
-  // if we are mounted
-  this.mounted = false;
-
-  // the editors initial state
-  this.initialState = {
-    dirty: false
-  };
+  BaseEditor.call(this, options);
 
   // update edit state with every shown
   this.on('updated', (ctx) => {
@@ -52,15 +33,17 @@ function XMLEditor(options) {
   });
 
   this.on('shown', () => {
+
     // let code mirror update its look and feel
     this.getCodeMirror().refresh();
   });
 
 }
 
-inherits(XMLEditor, BaseComponent);
+inherits(XMLEditor, BaseEditor);
 
 module.exports = XMLEditor;
+
 
 XMLEditor.prototype.render = function() {
 
@@ -94,32 +77,6 @@ XMLEditor.prototype.updateState = function() {
   this.emit('state-updated', stateContext);
 };
 
-XMLEditor.prototype.mountEditor = function(node) {
-
-  debug('mount');
-
-  this.emit('mount');
-
-  // (1) append element
-  node.appendChild(this.$el);
-  this.mounted = true;
-
-  this.emit('mounted');
-
-  // (2) attempt import
-  this.update();
-};
-
-XMLEditor.prototype.unmountEditor = function (node) {
-  this.emit('unmount');
-
-  debug('unmount');
-
-  this.mounted = false;
-  node.removeChild(this.$el);
-
-  this.emit('unmounted');
-};
 
 XMLEditor.prototype.update = function() {
 
@@ -226,24 +183,4 @@ XMLEditor.prototype.saveXML = function(done) {
   this.emit('saved', saveContext);
 
   done(null, xml);
-};
-
-/**
- * Set XML on the editor, passing the initial (dirty)
- * state with it.
- *
- * @param {String} xml
- * @param {Object} initialState
- */
-XMLEditor.prototype.setXML = function(xml, initialState) {
-
-  if (initialState) {
-    this.initialState = assign({ xml: xml }, initialState);
-  }
-
-  // (1) mark new xml
-  this.newXML = xml;
-
-  // (2) attempt import
-  this.update();
 };
