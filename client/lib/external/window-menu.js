@@ -1,11 +1,20 @@
 'use strict';
 
 var browser = require('util/browser');
+var debug = require('debug')('window-menu');
 
-var debug = require('debug')('Triggers');
 
+/**
+ * Application Window Menu integration
+ */
+function WindowMenu(app) {
 
-module.exports = function Triggers(app) {
+  // Notifying menu about client state change
+  app.on('state:changed', function (state) {
+    debug('---> state:changed: ', state);
+    browser.send('menu:update', state);
+  });
+
   // Menu actions
   browser.on('file:create:bpmn', function(err, args) {
     debug('file:create:bpmn');
@@ -75,4 +84,7 @@ module.exports = function Triggers(app) {
     // TODO: implement in the client
     // app.triggerAction('direct-edit');
   });
-};
+
+}
+
+module.exports = WindowMenu;

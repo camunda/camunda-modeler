@@ -4,7 +4,7 @@ var Dialog = require('test/helper/mock/dialog'),
     Events = require('test/helper/mock/events'),
     FileSystem = require('test/helper/mock/file-system'),
     Workspace = require('test/helper/mock/workspace'),
-    Logger = require('test/helper/mock/logger');
+    Logger = require('base/logger');
 
 var App = require('app');
 
@@ -59,6 +59,7 @@ describe('App', function() {
       workspace: workspace,
       logger: logger
     });
+
   });
 
 
@@ -597,7 +598,7 @@ describe('App', function() {
         app.createTabs([ bpmnFile ]);
 
         // then
-        app.events.on('workspace:persisted', function(err, config) {
+        app.on('workspace:persisted', function(err, config) {
 
           expect(err).not.to.exists;
 
@@ -620,7 +621,7 @@ describe('App', function() {
         app.selectTab(app.tabs[1]);
 
         // then
-        app.events.on('workspace:persisted', function(err, config) {
+        app.on('workspace:persisted', function(err, config) {
 
           expect(err).not.to.exists;
 
@@ -643,7 +644,7 @@ describe('App', function() {
         app.closeTab(app.tabs[1]);
 
         // then
-        app.events.on('workspace:persisted', function(err, config) {
+        app.on('workspace:persisted', function(err, config) {
 
           expect(err).not.to.exists;
 
@@ -661,7 +662,7 @@ describe('App', function() {
         app.createDiagram('bpmn');
 
         // then
-        app.events.on('workspace:persisted', function(err, config) {
+        app.on('workspace:persisted', function(err, config) {
           expect(err).not.to.exist;
 
           expect(config.tabs).to.have.length(0);
@@ -686,6 +687,53 @@ describe('App', function() {
 
         // then
         expect(restoreWorkspace).to.have.been.called;
+      });
+
+    });
+
+  });
+
+
+  describe('event emitter', function() {
+
+    describe('state:update', function() {
+
+      it('should emit on application start', function(done) {
+
+        // given
+        app.once('state:update', function(partialState) {
+
+          // then
+          expect(partialState).to.have.property('tabs', 1);
+
+          done();
+        });
+
+        // when
+        app.run();
+      });
+
+
+      it('should emit on file open', function(done)  {
+
+        // given
+        dialog.setOpenResponse({
+          name: 'diagram_1.bpmn',
+          path: 'diagram_1.bpmn',
+          contents: bpmnXML
+        });
+
+        app.once('state:update', function(partialState) {
+
+          // then
+          expect(partialState).to.have.property('tabs', 2);
+          expect(partialState).to.have.property('diagramType', 'bpmn');
+
+          done();
+        });
+
+        // when
+        app.openDiagram();
       });
 
     });

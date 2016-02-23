@@ -9,10 +9,11 @@ global.h = require('vdom/h');
 
 var Logger = require('base/logger'),
     Events = require('base/events'),
+    State = require('app/state'),
     Workspace = require('external/workspace'),
     FileSystem = require('external/file-system'),
     Dialog = require('external/dialog'),
-    Menu = require('external/menu');
+    Menu = require('external/window-menu');
 
 var App = require('./app');
 
@@ -20,7 +21,6 @@ var mainLoop = require('util/dom/main-loop');
 
 // init dom-delegator
 Delegator();
-
 
 domReady(function() {
 
@@ -32,7 +32,8 @@ domReady(function() {
     workspace: new Workspace()
   });
 
-  // Setting up external menu
+  // Setting up external components
+  new State(app);
   new Menu(app);
 
   mainLoop(app, document.body);

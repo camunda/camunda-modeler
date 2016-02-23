@@ -1,7 +1,7 @@
 'use strict';
 
 var Events = require('test/helper/mock/events'),
-    Logger = require('test/helper/mock/logger'),
+    Logger = require('base/logger'),
     Dialog = require('test/helper/mock/dialog');
 
 var BpmnTab = require('app/tabs/bpmn/bpmn-tab');

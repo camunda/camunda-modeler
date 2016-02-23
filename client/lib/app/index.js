@@ -138,8 +138,6 @@ function App(options) {
       if (key in newState) {
         button = find(this.menuEntries, { id: key });
         button.disabled = !newState[key];
-
-        this.events.emit('changed');
       }
     });
 
@@ -150,9 +148,16 @@ function App(options) {
 
       tab.dirty = newState.dirty;
       button.disabled = !tab.dirty;
-
-      this.events.emit('changed');
     }
+
+    this.events.emit('state:update', {
+      diagramType: tab.file.fileType,
+      undo: newState.undo,
+      redo: newState.redo,
+      dirty: newState.dirty
+    });
+    this.events.emit('changed');
+
   });
 
   this.events.on('log:toggle', (options) => {
@@ -522,6 +527,10 @@ App.prototype.selectTab = function(tab) {
   this.logger.info('switch to <%s> tab', tab.id);
 
   events.emit('workspace:changed');
+  events.emit('state:update', {
+    diagramType: tab.file ? tab.file.fileType : null,
+    tabs: this.tabs.length
+  });
   events.emit('changed');
 };
 
@@ -557,8 +566,10 @@ App.prototype.closeTab = function(tab) {
     this.selectTab(tabs[idx - 1] || tabs[idx]);
   }
 
-  events.emit('tab:closed', tab);
   events.emit('workspace:changed');
+  events.emit('state:update', {
+    tabs: this.tabs.length
+  });
   events.emit('changed');
 };
 
@@ -680,8 +691,6 @@ App.prototype.restoreWorkspace = function(done) {
  * Start application.
  */
 App.prototype.run = function() {
-  this.events.emit('app:run');
-
   this.restoreWorkspace(function(err) {
     if (err) {
       debug('workspace restore error', err);
@@ -689,6 +698,10 @@ App.prototype.run = function() {
       debug('workspace restored');
     }
   });
+  this.events.emit('state:update', {
+    tabs: this.tabs.length
+  });
+  this.events.emit('changed');
 };
 
 
