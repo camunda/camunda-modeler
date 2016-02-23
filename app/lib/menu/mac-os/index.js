@@ -61,6 +61,7 @@ MacMenuBuilder.prototype.appendRedo = function () {
   this.menu.append(new MenuItem({
     id: 'redo',
     label: 'Redo',
+    enabled: this.opts.state.redo,
     accelerator: 'CommandOrControl+Shift+Z',
     click: function (menuItem, win) {
       win.webContents.send('editor:redo');
@@ -71,7 +72,7 @@ MacMenuBuilder.prototype.appendRedo = function () {
 MacMenuBuilder.prototype.build = function () {
   this.appendAppMenu()
     .appendFileMenu(
-      new MacMenuBuilder()
+      new this.constructor(this.opts)
       .appendNewFile()
       .appendOpenFile()
       .appendSeparator()
@@ -81,13 +82,7 @@ MacMenuBuilder.prototype.build = function () {
       .appendCloseTab()
       .get()
     )
-    .appendEditMenu(
-      new MenuBuilder()
-      .appendBaseEditActions()
-      .appendBpmnActions()
-      .appendDmnActions()
-      .get()
-    )
+    .appendEditMenu()
     .appendWindowMenu()
     .appendHelpMenu();
   this.setMenu();

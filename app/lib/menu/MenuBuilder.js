@@ -10,7 +10,7 @@ var MenuBuilder = module.exports = function MenuBuilder(opts) {
   this.opts = merge({
     appName: 'Camunda Modeler',
     canvasMoveSpeed: 20,
-    menuState: {}
+    state: {}
   }, opts);
   if (this.opts.template) {
     this.menu = Menu.buildFromTemplate(this.opts.template);
@@ -70,6 +70,7 @@ MenuBuilder.prototype.appendSaveFile = function (submenu) {
   this.menu.append(new MenuItem({
     id: 'save',
     label: 'Save File',
+    enabled: this.opts.state.save,
     accelerator: 'CommandOrControl+S',
     click: function (menuItem, win) {
       win.webContents.send('file:save');
@@ -82,6 +83,7 @@ MenuBuilder.prototype.appendSaveAsFile = function (submenu) {
   this.menu.append(new MenuItem({
     label: 'Save File As..',
     accelerator: 'CommandOrControl+Shift+S',
+    enabled: this.opts.state.saveAs,
     click: function (menuItem, win) {
       win.webContents.send('file:save-as');
     }
@@ -92,6 +94,7 @@ MenuBuilder.prototype.appendSaveAsFile = function (submenu) {
 MenuBuilder.prototype.appendCloseTab = function (submenu) {
   this.menu.append(new MenuItem({
     label: 'Close Tab',
+    enabled: this.opts.state.closeTab,
     accelerator: 'CommandOrControl+W',
     click: function (menuItem, win) {
       win.webContents.send('file:close');
@@ -117,6 +120,7 @@ MenuBuilder.prototype.appendRedo = function () {
   this.menu.append(new MenuItem({
     id: 'redo',
     label: 'Redo',
+    enabled: this.opts.state.redo,
     accelerator: 'CommandOrControl+Y',
     click: function (menuItem, win) {
       win.webContents.send('editor:redo');
@@ -128,6 +132,7 @@ MenuBuilder.prototype.appendBaseEditActions = function () {
   this.menu.append(new MenuItem({
     id: 'undo',
     label: 'Undo',
+    enabled: this.opts.state.undo,
     accelerator: 'CommandOrControl+Z',
     click: function (menuItem, win) {
       win.webContents.send('editor:undo');
@@ -368,12 +373,21 @@ MenuBuilder.prototype.appendDmnActions = function () {
   return this;
 };
 
-MenuBuilder.prototype.appendEditMenu = function (submenu) {
-  this.menu.append(new MenuItem({
-    id: 'edit',
-    label: 'Edit',
-    submenu: submenu
-  }));
+MenuBuilder.prototype.appendEditMenu = function () {
+  if (this.opts.state.edit) {
+    var builder = new this.constructor(this.opts)
+      .appendBaseEditActions();
+    if (this.opts.state.bpmn) {
+      builder.appendBpmnActions();
+    }
+    if (this.opts.state.dmn) {
+      builder.appendDmnActions();
+    }
+    this.menu.append(new MenuItem({
+      label: 'Edit',
+      submenu: builder.get()
+    }));
+  }
   return this;
 };
 
@@ -494,7 +508,7 @@ MenuBuilder.prototype.get = function () {
 
 MenuBuilder.prototype.build = function () {
   return this.appendFileMenu(
-      new MenuBuilder()
+      new this.constructor(this.opts)
       .appendNewFile()
       .appendOpenFile()
       .appendSeparator()
@@ -505,13 +519,7 @@ MenuBuilder.prototype.build = function () {
       .appendQuit()
       .get()
     )
-    .appendEditMenu(
-      new MenuBuilder()
-      .appendBaseEditActions()
-      .appendBpmnActions()
-      .appendDmnActions()
-      .get()
-    )
+    .appendEditMenu()
     .appendWindowMenu()
     .appendHelpMenu()
     .setMenu();
