@@ -3,8 +3,8 @@
 var fs = require('fs'),
     path = require('path');
 
-var Ipc = require('electron').ipcMain,
-    app = require('app'),
+var ipcMain = require('electron').ipcMain,
+    app = require('electron').app,
     browserOpen = require('./util/browser-open'),
     Dialog = require('dialog');
 
@@ -64,7 +64,7 @@ function FileSystem(browserWindow, config) {
   this.browserWindow = browserWindow;
   this.config = config;
 
-  Ipc.on('file:save:req', function (evt, diagramFile) {
+  ipcMain.on('file:save:req', function (evt, diagramFile) {
     self.save(diagramFile, function (err, updatedDiagram) {
 
       if (err) {
@@ -75,7 +75,7 @@ function FileSystem(browserWindow, config) {
     });
   });
 
-  Ipc.on('file:save-as:req', function (evt, newDirectory, diagramFile) {
+  ipcMain.on('file:save-as:req', function (evt, newDirectory, diagramFile) {
     self.saveAs(diagramFile, function (err, updatedDiagram) {
       if (err) {
         return evt.sender.send('file:save-as:res', err);
@@ -85,11 +85,11 @@ function FileSystem(browserWindow, config) {
     });
   });
 
-  Ipc.on('file.add', function (evt, path) {
+  ipcMain.on('file.add', function (evt, path) {
     self.addFile(path);
   });
 
-  Ipc.on('file:open:req', function (evt) {
+  ipcMain.on('file:open:req', function (evt) {
     self.open(function (err, diagramFile) {
       if (err) {
         return evt.sender.send('file:open:res', err);
@@ -100,7 +100,7 @@ function FileSystem(browserWindow, config) {
   });
 
 
-  Ipc.on('file.close', function (evt, diagramFile) {
+  ipcMain.on('file.close', function (evt, diagramFile) {
     self.close(diagramFile, function (err, updatedDiagram) {
       if (err) {
         return self.handleError('file.close.response', err);
@@ -111,14 +111,14 @@ function FileSystem(browserWindow, config) {
   });
 
 
-  Ipc.on('editor.quit', function (evt, hasUnsavedChanges) {
+  ipcMain.on('editor.quit', function (evt, hasUnsavedChanges) {
     self.browserWindow.webContents.send('editor.quit.response', null);
 
     return app.emit('editor:quit-allowed');
   });
 
 
-  Ipc.on('editor.import.error', function (evt, diagramFile, trace) {
+  ipcMain.on('editor.import.error', function (evt, diagramFile, trace) {
     self.handleImportError(diagramFile, trace, function (result) {
       self.browserWindow.webContents.send('editor.import.error.response', result);
 
@@ -128,7 +128,7 @@ function FileSystem(browserWindow, config) {
     });
   });
 
-  Ipc.on('editor.ready', function (evt) {
+  ipcMain.on('editor.ready', function (evt) {
     app.emit('editor:ready');
   });
 }
