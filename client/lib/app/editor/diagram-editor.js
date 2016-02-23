@@ -15,6 +15,40 @@ var debug = require('debug')('diagram-editor');
 function DiagramEditor(options) {
 
   BaseEditor.call(this, options);
+
+  this.on('imported', (context) => {
+    var xml = context.xml;
+
+    var initialState = this.initialState;
+
+    // we are back at start, unset reimport flag
+    if (xml === initialState.xml) {
+      initialState.reimported = false;
+    } else
+
+    // reimport, we are going to be dirty always
+    if ('stackIndex' in initialState) {
+      initialState.reimported = true;
+    }
+
+    initialState.stackIndex = -1;
+  });
+
+  this.on('updated', (context) => {
+    var modeler = this.modeler,
+        initialState = this.initialState;
+
+    // log stack index on first imported
+    // update after loading
+    if (isImported(modeler) && !('stackIndex' in initialState)) {
+      initialState.stackIndex = this.getStackIndex();
+    }
+
+    // on updated, update state and emit <shown> event
+    this.updateState();
+
+    this.emit('shown', context);
+  });
 }
 
 inherits(DiagramEditor, BaseEditor);
@@ -96,3 +130,7 @@ DiagramEditor.prototype.saveXML = function(done) {
     done(null, xml);
   });
 };
+
+function isImported(modeler) {
+  return !!modeler.definitions;
+}

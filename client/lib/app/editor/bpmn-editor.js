@@ -37,43 +37,6 @@ function BpmnEditor(options) {
 
   // elements to insert modeler and properties panel into
   this.$propertiesEl = domify('<div class="properties-parent"></div>');
-
-  this.on('imported', (context) => {
-
-    var xml = context.xml;
-
-    var initialState = this.initialState;
-
-    // we are back at start, unset reimport flag
-    if (xml === initialState.xml) {
-      initialState.reimported = false;
-    } else
-
-    // reimport, we are going to be dirty always
-    if ('stackIndex' in initialState) {
-      initialState.reimported = true;
-    }
-
-    initialState.stackIndex = -1;
-  });
-
-  this.on('updated', (ctx) => {
-
-    var modeler = this.modeler,
-        initialState = this.initialState;
-
-    // log stack index on first imported
-    // update after loading
-    if (isImported(modeler) && !('stackIndex' in initialState)) {
-      initialState.stackIndex = this.getStackIndex();
-    }
-
-    // on updated, update state and emit <shown> event
-    this.updateState();
-
-    this.emit('shown', ctx);
-  });
-
 }
 
 inherits(BpmnEditor, DiagramEditor);
