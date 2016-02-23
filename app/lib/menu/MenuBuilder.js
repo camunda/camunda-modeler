@@ -25,7 +25,6 @@ MenuBuilder.prototype.appendAppMenu = function () {
 
 MenuBuilder.prototype.appendFileMenu = function (submenu) {
   this.menu.append(new MenuItem({
-    id: 'file',
     label: 'File',
     submenu: submenu
   }));
@@ -34,17 +33,14 @@ MenuBuilder.prototype.appendFileMenu = function (submenu) {
 
 MenuBuilder.prototype.appendNewFile = function () {
   this.menu.append(new MenuItem({
-    id: 'newFile',
     label: 'New File',
     submenu: Menu.buildFromTemplate([{
-      id: 'newBpmnFile',
       label: 'BPMN Diagram',
       accelerator: 'CommandOrControl+T',
       click: function (menuItem, win) {
         win.webContents.send('file:create:bpmn');
       }
     }, {
-      id: 'newDmnFile',
       label: 'DMN Table',
       click: function (menuItem, win) {
         win.webContents.send('file:create:dmn');
@@ -56,7 +52,6 @@ MenuBuilder.prototype.appendNewFile = function () {
 
 MenuBuilder.prototype.appendOpenFile = function (submenu) {
   this.menu.append(new MenuItem({
-    id: 'openFile',
     label: 'Open File...',
     accelerator: 'CommandOrControl+O',
     click: function (menuItem, win) {
@@ -68,7 +63,6 @@ MenuBuilder.prototype.appendOpenFile = function (submenu) {
 
 MenuBuilder.prototype.appendSaveFile = function (submenu) {
   this.menu.append(new MenuItem({
-    id: 'save',
     label: 'Save File',
     enabled: this.opts.state.save,
     accelerator: 'CommandOrControl+S',
@@ -105,7 +99,6 @@ MenuBuilder.prototype.appendCloseTab = function (submenu) {
 
 MenuBuilder.prototype.appendQuit = function (submenu) {
   this.menu.append(new MenuItem({
-    id: 'quit',
     label: 'Quit',
     accelerator: 'CommandOrControl+Q',
     click: function (menuItem, win) {
@@ -118,7 +111,6 @@ MenuBuilder.prototype.appendQuit = function (submenu) {
 
 MenuBuilder.prototype.appendRedo = function () {
   this.menu.append(new MenuItem({
-    id: 'redo',
     label: 'Redo',
     enabled: this.opts.state.redo,
     accelerator: 'CommandOrControl+Y',
@@ -130,7 +122,6 @@ MenuBuilder.prototype.appendRedo = function () {
 
 MenuBuilder.prototype.appendBaseEditActions = function () {
   this.menu.append(new MenuItem({
-    id: 'undo',
     label: 'Undo',
     enabled: this.opts.state.undo,
     accelerator: 'CommandOrControl+Z',
@@ -183,7 +174,6 @@ MenuBuilder.prototype.appendBpmnActions = function () {
     }
   }));
   this.menu.append(new MenuItem({
-    id: 'bpmn:directEditing',
     label: 'Direct Editing',
     accelerator: 'E',
     click: function (menuItem, win) {
@@ -256,7 +246,6 @@ MenuBuilder.prototype.appendBpmnActions = function () {
     }
   }));
   this.menu.append(new MenuItem({
-    id: 'bpmn:removeSelected',
     label: 'Remove Selected',
     accelerator: 'Delete',
     click: function (menuItem, win) {
@@ -270,10 +259,8 @@ MenuBuilder.prototype.appendBpmnActions = function () {
 
 MenuBuilder.prototype.appendDmnActions = function () {
   this.menu.append(new MenuItem({
-    id: 'dmn:addRules',
     label: 'Add Rule..',
     submenu: Menu.buildFromTemplate([{
-      id: 'dmn:ruleAdd',
       label: 'At End',
       accelerator: 'CommandOrControl+D',
       click: function (menuItem, win) {
@@ -282,7 +269,6 @@ MenuBuilder.prototype.appendDmnActions = function () {
         });
       }
     }, {
-      id: 'dmn:ruleAddAbove',
       label: 'Above Selected',
       click: function (menuItem, win) {
         win.webContents.send('editor.actions', {
@@ -290,7 +276,6 @@ MenuBuilder.prototype.appendDmnActions = function () {
         });
       }
     }, {
-      id: 'dmn:ruleAddBelow',
       label: 'Below Selected',
       click: function (menuItem, win) {
         win.webContents.send('editor.actions', {
@@ -300,7 +285,6 @@ MenuBuilder.prototype.appendDmnActions = function () {
     }])
   }));
   this.menu.append(new MenuItem({
-    id: 'dmn:ruleClear',
     label: 'Clear Rule',
     click: function (menuItem, win) {
       win.webContents.send('editor.actions', {
@@ -309,7 +293,6 @@ MenuBuilder.prototype.appendDmnActions = function () {
     }
   }));
   this.menu.append(new MenuItem({
-    id: 'dmn:ruleRemove',
     label: 'Remove Rule',
     click: function (menuItem, win) {
       win.webContents.send('editor.actions', {
@@ -319,7 +302,6 @@ MenuBuilder.prototype.appendDmnActions = function () {
   }));
   this.appendSeparator();
   this.menu.append(new MenuItem({
-    id: 'dmn:addClauses',
     label: 'Add Clause..',
     submenu: Menu.buildFromTemplate([{
       label: 'Input',
@@ -344,7 +326,6 @@ MenuBuilder.prototype.appendDmnActions = function () {
     }, {
       type: 'separator'
     }, {
-      id: 'dmn:clauseAddLeft',
       label: 'Left of selected',
       click: function (menuItem, win) {
         win.webContents.send('editor.actions', {
@@ -352,7 +333,6 @@ MenuBuilder.prototype.appendDmnActions = function () {
         });
       }
     }, {
-      id: 'dmn:clauseAddRight',
       label: 'Right of selected',
       click: function (menuItem, win) {
         win.webContents.send('editor.actions', {
@@ -362,7 +342,6 @@ MenuBuilder.prototype.appendDmnActions = function () {
     }])
   }));
   this.menu.append(new MenuItem({
-    id: 'dmn:clauseRemove',
     label: 'Remove Clause',
     click: function (menuItem, win) {
       win.webContents.send('editor.actions', {
@@ -393,10 +372,8 @@ MenuBuilder.prototype.appendEditMenu = function () {
 
 MenuBuilder.prototype.appendWindowMenu = function (submenu) {
   this.menu.append(new MenuItem({
-    id: 'window',
     label: 'Window',
     submenu: submenu || Menu.buildFromTemplate([{
-      id: 'zoomIn',
       label: 'Zoom In',
       accelerator: 'CommandOrControl+=',
       click: function (menuItem, win) {
@@ -408,7 +385,6 @@ MenuBuilder.prototype.appendWindowMenu = function (submenu) {
         });
       }
     }, {
-      id: 'zoomIn',
       label: 'Zoom Out',
       accelerator: 'CommandOrControl+-',
       click: function (menuItem, win) {
@@ -420,7 +396,6 @@ MenuBuilder.prototype.appendWindowMenu = function (submenu) {
         });
       }
     }, {
-      id: 'zoomDefault',
       label: 'Zoom Default',
       accelerator: 'CommandOrControl+0',
       click: function (menuItem, win) {
@@ -434,14 +409,12 @@ MenuBuilder.prototype.appendWindowMenu = function (submenu) {
     }, {
       type: 'separator'
     }, {
-      id: 'reload',
       label: 'Reload',
       accelerator: 'CommandOrControl+R',
       click: function (menuItem, win) {
         win.reload();
       }
     }, {
-      id: 'fullscreen',
       label: 'Fullscreen',
       accelerator: 'F11',
       click: function (menuItem, win) {
@@ -452,7 +425,6 @@ MenuBuilder.prototype.appendWindowMenu = function (submenu) {
         win.setFullScreen(true);
       }
     }, {
-      id: 'devTools',
       label: 'Toggle DevTools',
       accelerator: 'F12',
       click: function (menuItem, win) {

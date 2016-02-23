@@ -48,7 +48,6 @@ MacMenuBuilder.prototype.appendAppMenu = function () {
 
 MacMenuBuilder.prototype.newFile = function() {
   return new MenuItem({
-    id: 'redo',
     label: 'Redo',
     accelerator: 'CommandOrControl+Shift+Z',
     click: function (menuItem, win) {
@@ -59,7 +58,6 @@ MacMenuBuilder.prototype.newFile = function() {
 
 MacMenuBuilder.prototype.appendRedo = function () {
   this.menu.append(new MenuItem({
-    id: 'redo',
     label: 'Redo',
     enabled: this.opts.state.redo,
     accelerator: 'CommandOrControl+Shift+Z',
