@@ -1,69 +1,78 @@
 'use strict';
 
-const ipcRenderer = require('electron').ipcRenderer;
+var browser = require('util/browser');
+
 var debug = require('debug')('Triggers');
 
 
-module.exports = function Triggers(clientApi) {
+module.exports = function Triggers(app) {
   // Menu actions
-  ipcRenderer.on('file:create:bpmn', function (event, err, args) {
+  browser.on('file:create:bpmn', function(err, args) {
     debug('file:create:bpmn');
-    clientApi.triggerAction('create-bpmn-diagram');
+
+    app.triggerAction('create-bpmn-diagram');
   });
 
-  ipcRenderer.on('file:create:dmn', function (event, err, args) {
+  browser.on('file:create:dmn', function(err, args) {
     debug('file:create:dmn');
-    clientApi.triggerAction('create-dmn-diagram');
+
+    app.triggerAction('create-dmn-diagram');
   });
 
-  ipcRenderer.on('file:open', function (event, err, args) {
+  browser.on('file:open', function(err, args) {
     debug('file:open');
-    clientApi.triggerAction('open-diagram');
+
+    app.triggerAction('open-diagram');
   });
 
-  ipcRenderer.on('file:save', function (event, err, args) {
+  browser.on('file:save', function(err, args) {
     debug('file:save');
-    clientApi.triggerAction('save');
+
+    app.triggerAction('save');
   });
 
-  ipcRenderer.on('file:save-as', function (event, err, args) {
+  browser.on('file:save-as', function(err, args) {
     debug('file:save-as');
-    clientApi.triggerAction('save-as');
+
+    app.triggerAction('save-as');
   });
 
-  ipcRenderer.on('file:close', function (event, err, args) {
+  browser.on('file:close', function(err, args) {
     debug('file:close');
-    clientApi.triggerAction('close-active-tab');
+
+    app.triggerAction('close-active-tab');
   });
 
-  ipcRenderer.on('editor:undo', function (event, err, args) {
+  browser.on('editor:undo', function(err, args) {
     debug('file:undo');
-    clientApi.triggerAction('undo');
+
+    app.triggerAction('undo');
   });
 
-  ipcRenderer.on('editor:redo', function (event, err, args) {
+  browser.on('editor:redo', function(err, args) {
     debug('file:redo');
-    clientApi.triggerAction('redo');
+
+    app.triggerAction('redo');
   });
 
-  ipcRenderer.on('editor:hand-tool', function (event, err, args) {
+  browser.on('editor:hand-tool', function(err, args) {
     debug('editor:hand-tool');
     // TODO: implement in the client
-    // clientApi.triggerAction('hand-tool');
+    // app.triggerAction('hand-tool');
   });
-  ipcRenderer.on('editor:lasso-tool', function (event, err, args) {
+  browser.on('editor:lasso-tool', function(err, args) {
     debug('editor:lasso-tool');
     // TODO: implement in the client
-    // clientApi.triggerAction('lasso-tool');
+    // app.triggerAction('lasso-tool');
   });
-  ipcRenderer.on('editor:space-tool', function (event, err, args) {
+  browser.on('editor:space-tool', function(err, args) {
     debug('editor:space-tool');
     // TODO: implement in the client
-    // clientApi.triggerAction('space-tool');
+    // app.triggerAction('space-tool');
   });
-  ipcRenderer.on('editor:direct-edit', function (event, err, args) {
+  browser.on('editor:direct-edit', function(err, args) {
     debug('editor:direct-edit');
     // TODO: implement in the client
-    // clientApi.triggerAction('direct-edit');
+    // app.triggerAction('direct-edit');
   });
 };

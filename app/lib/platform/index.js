@@ -1,36 +1,9 @@
 'use strict';
 
-/**
- * Get initializer for the selected platform.
- *
- * An initializer is a function that accepts (app, config) as an argument.
- *
- * @param {String} platform
- *
- * @return {Function}
- */
-function get(platform) {
-  if (platform === 'win32') {
-    return require('./windows');
-  } else
-  if (platform === 'darwin') {
-    return require('./mac-os');
-  } else
-  if (platform == 'linux') {
-    return require('./linux');
-  } else {
-    // not platform init, bad luck :-(
-    return function() { };
-  }
-}
+var requirePlatform = require('../util/requirePlatform');
 
-module.exports.get = get;
-
-
-function create(platform, app, config) {
-  var Platform = get(platform);
+module.exports.create = function create(platform, app, config) {
+  var Platform = requirePlatform(platform, __dirname);
 
   return new Platform(app, config);
-}
-
-module.exports.create = create;
+};

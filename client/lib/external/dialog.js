@@ -1,6 +1,6 @@
 'use strict';
 
-const ipcRenderer = require('electron').ipcRenderer;
+var browser = require('util/browser');
 var debug = require('debug')('Dialog');
 
 /**
@@ -15,10 +15,7 @@ function Dialog() {
    * @param {Function} done
    */
   this.saveAs = function(file, done) {
-    ipcRenderer.once('file:save-as:res', function(event, err, args) {
-      done(err, args);
-    });
-    ipcRenderer.send('file:save-as:req', true, file);
+    browser.send('file:save-as', [ true, file ], done);
   };
 
   /**
@@ -39,10 +36,7 @@ function Dialog() {
    * @param {Function} done
    */
   this.open = function(done) {
-    ipcRenderer.once('file:open:res', function(event, err, args) {
-      done(err, args);
-    });
-    ipcRenderer.send('file:open:req');
+    browser.send('file:open', done);
   };
 
   /**

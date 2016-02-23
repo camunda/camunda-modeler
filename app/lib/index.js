@@ -1,8 +1,8 @@
 'use strict';
 
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
+var electron = require('electron');
+var app = electron.app;
+var BrowserWindow = electron.BrowserWindow;
 
 var path = require('path');
 
@@ -20,13 +20,15 @@ var Platform = require('./platform'),
     Config = require('./Config'),
     FileSystem = require('./FileSystem'),
     Workspace = require('./Workspace'),
+    Menu = require('./menu'),
     Cli = require('./Cli');
+
 
 var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
 
 Platform.create(process.platform, app, config);
 
-var Menu = require('./menu');
+// bootstrap the application's menus
 new Menu(process.platform);
 
 // The main editor window.

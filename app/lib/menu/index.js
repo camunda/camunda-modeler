@@ -1,15 +1,17 @@
 'use strict';
 
-var r = require('../util/requirePlatform');
-var ipcMain = require('electron').ipcMain;
+var renderer = require('../util/renderer');
 
-module.exports = function Menu(platform) {
-  var MenuBuilder = r(platform, __dirname, require('./MenuBuilder'));
+var requirePlatform = require('../util/requirePlatform');
+
+
+function Menu(platform) {
+  var MenuBuilder = requirePlatform(platform, __dirname);
 
   // Replacing Electron default menu until application loads
   new MenuBuilder().build();
 
-  ipcMain.on('menu:update', function (evt, clientState) {
+  renderer.on('menu:update', function(clientState) {
 
     function atLeastOneTabOpen(state) {
       return state.tabs > 1;
@@ -24,18 +26,18 @@ module.exports = function Menu(platform) {
     }
 
     var menuState = {
-      save: atLeastOneTabOpen(clientState),
-      saveAs: atLeastOneTabOpen(clientState),
-      closeTab: atLeastOneTabOpen(clientState),
       dmn: isDmn(clientState),
       bpmn: isBpmn(clientState),
       undo: clientState.undo,
       redo: clientState.redo,
-      edit: atLeastOneTabOpen(clientState)
+      edit: atLeastOneTabOpen(clientState),
+      save: atLeastOneTabOpen(clientState),
+      saveAs: atLeastOneTabOpen(clientState),
+      closeTab: atLeastOneTabOpen(clientState)
     };
 
-    new MenuBuilder({
-      state: menuState
-    }).build();
+    new MenuBuilder({ state: menuState }).build();
   });
-};
+}
+
+module.exports = Menu;

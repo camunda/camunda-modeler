@@ -1,11 +1,14 @@
 'use strict';
 
-const ipcRenderer = require('electron').ipcRenderer;
+var browser = require('util/browser');
+
 var debug = require('debug')('Menu');
+
 var Triggers = require('./menu-triggers');
 
-module.exports = function Menu(clientApi) {
-  new Triggers(clientApi);
+
+function Menu(app) {
+  new Triggers(app);
 
   var clientState = {
     diagramType : 'bpmn',
@@ -31,25 +34,25 @@ module.exports = function Menu(clientApi) {
     tabs : 1
   };
 
-  clientApi.on('tools:state-changed', function (tab, state) {
+  app.on('tools:state-changed', function (tab, state) {
     debug('---> tools:state-changed: ', tab, state);
 
     clientState.diagramType = tab.file.fileType;
     clientState.undo = state.undo;
     clientState.redo = state.redo;
     clientState.dirty = state.dirty;
-    clientState.tabs = clientApi.tabs.length;
+    clientState.tabs = app.tabs.length;
 
-    ipcRenderer.send('menu:update', clientState);
+    browser.send('menu:update', clientState);
   });
 
-  clientApi.on('tab:closed', function (tab) {
+  app.on('tab:closed', function (tab) {
     debug('---> tab:closed: ', tab);
 
-    clientState.tabs = clientApi.tabs.length;
+    clientState.tabs = app.tabs.length;
 
-    ipcRenderer.send('menu:update', clientState);
+    browser.send('menu:update', clientState);
   });
+}
 
-
-};
+module.exports = Menu;

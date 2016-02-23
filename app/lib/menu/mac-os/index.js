@@ -1,16 +1,21 @@
 'use strict';
 
 var inherits = require('inherits');
+
 var MenuItem = require('menu-item');
+
 var MenuBuilder = require('../MenuBuilder');
 
-var MacMenuBuilder = module.exports = function MacMenuBuilder(options) {
+
+function MacMenuBuilder(options) {
   MenuBuilder.call(this, options);
-};
+}
 
 inherits(MacMenuBuilder, MenuBuilder);
 
-MacMenuBuilder.prototype.appendAppMenu = function () {
+module.exports = MacMenuBuilder;
+
+MacMenuBuilder.prototype.appendAppMenu = function() {
   var subMenu = new MacMenuBuilder({
     template: [{
       label: 'About ' + this.opts.appName,
@@ -43,31 +48,32 @@ MacMenuBuilder.prototype.appendAppMenu = function () {
     label: this.opts.appName,
     submenu: subMenu
   }));
+
   return this;
 };
 
 MacMenuBuilder.prototype.newFile = function() {
   return new MenuItem({
     label: 'Redo',
-    accelerator: 'CommandOrControl+Shift+Z',
+    accelerator: 'Command+Shift+Z',
     click: function (menuItem, win) {
       win.webContents.send('editor:redo');
     }
   });
 };
 
-MacMenuBuilder.prototype.appendRedo = function () {
+MacMenuBuilder.prototype.appendRedo = function() {
   this.menu.append(new MenuItem({
     label: 'Redo',
     enabled: this.opts.state.redo,
-    accelerator: 'CommandOrControl+Shift+Z',
+    accelerator: 'Command+Shift+Z',
     click: function (menuItem, win) {
       win.webContents.send('editor:redo');
     }
   }));
 };
 
-MacMenuBuilder.prototype.build = function () {
+MacMenuBuilder.prototype.build = function() {
   this.appendAppMenu()
     .appendFileMenu(
       new this.constructor(this.opts)
@@ -84,5 +90,6 @@ MacMenuBuilder.prototype.build = function () {
     .appendWindowMenu()
     .appendHelpMenu();
   this.setMenu();
+
   return this;
 };
