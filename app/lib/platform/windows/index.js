@@ -2,12 +2,9 @@
 
 var dialog = require('dialog');
 
-var Menus = require('../Menus');
-
 var FileAssociations = require('./FileAssociations');
 
 var FILE_ASSOCIATION_KEY = 'fileAssociation';
-
 
 function WindowsPlatform(app, config) {
 
@@ -20,15 +17,6 @@ function WindowsPlatform(app, config) {
   // specified via command-line
   app.on('editor:open', function(browserWindow) {
     checkFileAssociations(app, config);
-  });
-
-  // editor menu
-  app.on('editor:create-menu', function(mainWindow, notation) {
-    var positions = {
-      edit: 1
-    };
-
-    new Menus(mainWindow, notation, positions);
   });
 
   app.on('editor:add-recent', function(path) {

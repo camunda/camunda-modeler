@@ -26,6 +26,9 @@ var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
 
 Platform.create(process.platform, app, config);
 
+var Menu = require('./menu');
+new Menu(process.platform);
+
 // The main editor window.
 var mainWindow = null;
 
