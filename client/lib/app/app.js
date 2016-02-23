@@ -557,7 +557,8 @@ App.prototype.closeTab = function(tab) {
   if (tab === this.activeTab) {
     this.selectTab(tabs[idx - 1] || tabs[idx]);
   }
-
+  
+  events.emit('tab:closed', tab);
   events.emit('workspace:changed');
   events.emit('changed');
 };

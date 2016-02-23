@@ -12,7 +12,7 @@ var Logger = require('base/logger'),
     Workspace = require('external/workspace'),
     FileSystem = require('external/file-system'),
     Dialog = require('external/dialog'),
-    Triggers = require('external/triggers');
+    Menu = require('external/menu');
 
 var App = require('./app');
 
@@ -32,8 +32,8 @@ domReady(function() {
     workspace: new Workspace()
   });
 
-  // Setting up external triggers
-  new Triggers(app);
+  // Setting up external menu
+  new Menu(app);
 
   app.on('app:run', function() {
     app.createDiagram('bpmn');
