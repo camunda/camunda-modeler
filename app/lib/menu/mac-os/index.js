@@ -46,7 +46,18 @@ MacMenuBuilder.prototype.appendAppMenu = function () {
   return this;
 };
 
-MenuBuilder.prototype.appendRedo = function () {
+MacMenuBuilder.prototype.newFile = function() {
+  return new MenuItem({
+    id: 'redo',
+    label: 'Redo',
+    accelerator: 'CommandOrControl+Shift+Z',
+    click: function (menuItem, win) {
+      win.webContents.send('editor:redo');
+    }
+  });
+};
+
+MacMenuBuilder.prototype.appendRedo = function () {
   this.menu.append(new MenuItem({
     id: 'redo',
     label: 'Redo',
