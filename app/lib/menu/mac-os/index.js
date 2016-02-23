@@ -1,14 +1,14 @@
 'use strict';
 
+var inherits = require('inherits');
 var MenuItem = require('menu-item');
-
 var MenuBuilder = require('../MenuBuilder');
 
 var MacMenuBuilder = module.exports = function MacMenuBuilder(options) {
   MenuBuilder.call(this, options);
 };
 
-MacMenuBuilder.prototype = Object.create(MenuBuilder.prototype);
+inherits(MacMenuBuilder, MenuBuilder);
 
 MacMenuBuilder.prototype.appendAppMenu = function () {
   var subMenu = new MacMenuBuilder({
