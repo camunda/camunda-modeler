@@ -35,10 +35,6 @@ domReady(function() {
   // Setting up external menu
   new Menu(app);
 
-  app.on('app:run', function() {
-    app.createDiagram('bpmn');
-  });
-
   mainLoop(app, document.body);
 
   app.run();
