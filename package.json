@@ -11,6 +11,10 @@
     "dev": "grunt auto-build"
   },
   "author": "Camunda BPM <http://camunda.org>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/camunda/camunda-modeler"
+  },
   "browserify": {
     "transform": [
       "babelify",
