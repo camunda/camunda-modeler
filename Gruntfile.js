@@ -161,10 +161,13 @@ module.exports = function(grunt) {
     'copy'
   ]);
 
+  grunt.registerTask('dev', [ 'lint', 'test', 'build-client' ]);
+
   grunt.registerTask('default', [ 'lint', 'test', 'build-client', 'package' ]);
 
   // Development setup tasks
   var server = require('electron-connect').server.create({ path: 'app/develop' });
+
   grunt.registerTask('app:start', function() {
     server.start(__dirname + '/resources/diagram/simple.bpmn');
   });
