@@ -28,6 +28,7 @@
     "archiver": "^0.16.0",
     "browserify": "^11.2.0",
     "chai": "^2.2.0",
+    "concat-stream": "^1.5.1",
     "electron-connect": "^0.3.3",
     "electron-debug": "^0.2.0",
     "electron-packager": "^5.1.0",

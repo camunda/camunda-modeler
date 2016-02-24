@@ -18,7 +18,7 @@ var gulp = require('gulp'),
 
 var packager = require('electron-packager'),
     electron = require('electron-prebuilt'),
-    copyRecursive = require('ncp'),
+    cpr = require('ncp'),
     app = require('electron-connect').server.create({ path: 'app/develop' });
 
 var assign = require('lodash/object/assign'),
@@ -102,68 +102,116 @@ function buildDistroIgnore() {
 var archiver = require('archiver'),
     fs = require('fs');
 
-function createArchive(platform, path, done) {
+/**
+ * Async map a collection through a given iterator
+ * and pass (err, mapping results) to the given done function.
+ *
+ * @param {Array<Object>} collection
+ * @param {Function} iterator
+ * @param {Function} done
+ */
+function asyncMap(collection, iterator, done) {
 
-  return function(err) {
+  var idx = -1;
 
-    if (err) {
-      return done(err);
+  var results = [];
+
+  function next() {
+    idx++;
+
+    if (idx === collection.length) {
+      return done(null, results);
     }
 
-    var archive,
-        dest = path,
-        output;
+    iterator(collection[idx], function(err, result) {
 
-    if (platform === 'win32') {
-      archive = archiver('zip', {});
-      dest += '.zip';
-    } else {
-      if (platform === 'darwin') {
-        dest = dest.replace(/Camunda Modeler/, 'camunda-modeler');
+      if (err) {
+        return done(err);
       }
 
-      dest += '.tar.gz';
-      archive = archiver('tar', { gzip: true });
-    }
+      results.push(result);
 
-    output = fs.createWriteStream(dest);
-
-    archive.pipe(output);
-    archive.on('end', done);
-    archive.on('error', done);
-
-    archive.directory(path, 'camunda-modeler').finalize();
-  };
-}
-
-function amendAndArchive(platform, paths, done) {
-
-  var idx = 0;
-
-  var platformAssets = __dirname + '/resources/' + platform;
-
-  function processNext(err) {
-
-    if (err) {
-      return done(err);
-    }
-
-    var currentPath = paths[idx++];
-
-    if (!currentPath) {
-      return done(err, paths);
-    }
-
-    var archive = createArchive(platform, currentPath, processNext);
-
-    if (existsSync(platformAssets)) {
-      copyRecursive(platformAssets, currentPath, archive);
-    } else {
-      archive();
-    }
+      next();
+    });
   }
 
-  processNext();
+  next();
+}
+
+var concat = require('concat-stream');
+
+function replacePlaceholders(read, write, file) {
+
+  if (!/(version|Info\.plist)$/.test(file.name)) {
+    return read.pipe(write);
+  }
+
+  read.pipe(concat(function(body) {
+
+    var bodyStr = body.toString('utf-8');
+    var replacedBodyStr = bodyStr.replace(/<%= pkg\.version %>/g, PACKAGE_JSON.version);
+
+    write.end(replacedBodyStr);
+  }));
+}
+
+function createArchive(platform, path, done) {
+
+  var archive,
+      dest = path,
+      output;
+
+  if (platform === 'win32') {
+    archive = archiver('zip', {});
+    dest += '.zip';
+  } else {
+    if (platform === 'darwin') {
+      dest = dest.replace(/Camunda Modeler/, 'camunda-modeler');
+    }
+
+    dest += '.tar.gz';
+    archive = archiver('tar', { gzip: true });
+  }
+
+  output = fs.createWriteStream(dest);
+
+  archive.pipe(output);
+  archive.on('end', done);
+  archive.on('error', done);
+
+  archive.directory(path, 'camunda-modeler').finalize();
+}
+
+function amendAndArchive(platform, distroPaths, done) {
+
+  var additionalAssets = [
+    __dirname + '/resources/platform/' + platform,
+    __dirname + '/resources/platform/base'
+  ];
+
+  function createDistro(distroPath, done) {
+
+    function copyAssets(assetDirectory, done) {
+
+      if (existsSync(assetDirectory)) {
+        cpr(assetDirectory, distroPath, { transform: replacePlaceholders }, done);
+      } else {
+        done();
+      }
+    }
+
+    function archive(err) {
+      if (err) {
+        return done(err);
+      }
+
+      createArchive(platform, distroPath, done);
+    }
+
+    asyncMap(additionalAssets, copyAssets, archive);
+  }
+
+  asyncMap(distroPaths, createDistro, done);
 }
 
 // package pre-built electron application for the given platform
