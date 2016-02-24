@@ -4,27 +4,30 @@ var fs = require('fs');
 var which = require('which');
 var forEach = require('lodash/collection/forEach');
 var packager = require('electron-packager');
-var copyRecursive = require('ncp');
+var cpr = require('ncp');
 var archiver = require('archiver');
+var concat = require('concat-stream');
+
+var PACKAGE_JSON = require('../package.json');
+
 
 module.exports = function(grunt) {
 
   grunt.registerMultiTask('distro', function(target) {
-    var packageJson = require('../package.json');
 
-    var electronVersion = packageJson.devDependencies['electron-prebuilt'];
+    var electronVersion = PACKAGE_JSON.devDependencies['electron-prebuilt'];
 
     var platform = this.data.platform;
     var done = this.async();
 
     var options = {
-      name: packageJson.name,
+      name: PACKAGE_JSON.name,
       dir: __dirname + '/../',
       out: __dirname + '/../distro',
       version: electronVersion,
       platform: platform,
       arch: 'all',
-      'app-version': packageJson.version,
+      'app-version': PACKAGE_JSON.version,
       overwrite: true,
       asar: true,
       icon: __dirname + '/../resources/icons/icon_128',
@@ -50,7 +53,7 @@ module.exports = function(grunt) {
         'README.md'
       ];
 
-      forEach(packageJson.devDependencies, function(version, name) {
+      forEach(PACKAGE_JSON.devDependencies, function(version, name) {
         ignore.push('node_modules/' + name);
       });
 
@@ -69,7 +72,7 @@ module.exports = function(grunt) {
         OriginalFilename: 'camunda-modeler.exe',
         // inherited by electron
         // FileVersion: electronVersion,
-        ProductVersion: packageJson.version,
+        ProductVersion: PACKAGE_JSON.version,
         ProductName: 'Camunda Modeler',
         InternalName: 'camunda-modeler'
       };
@@ -95,72 +98,119 @@ module.exports = function(grunt) {
 
       return amendAndArchive(platform, paths, done);
     });
+  });
+}
 
-    function amendAndArchive(platform, paths, done) {
 
-      var idx = 0;
+function replacePlaceholders(read, write, file) {
 
-      var platformAssets = __dirname + '/../resources/' + platform;
+  if (!/(version|Info\.plist)$/.test(file.name)) {
+    return read.pipe(write);
+  }
 
-      function processNext(err) {
+  read.pipe(concat(function(body) {
 
-        if (err) {
-          return done(err);
-        }
+    var bodyStr = body.toString('utf-8');
+    var replacedBodyStr = bodyStr.replace(/<%= pkg\.version %>/g, PACKAGE_JSON.version);
 
-        var currentPath = paths[idx++];
+    write.end(replacedBodyStr);
+  }));
+}
 
-        if (!currentPath) {
-          return done(err, paths);
-        }
 
-        var archive = createArchive(platform, currentPath, processNext);
+function createArchive(platform, path, done) {
 
-        if (fs.existsSync(platformAssets)) {
-          copyRecursive(platformAssets, currentPath, archive);
-        } else {
-          archive();
-        }
+  var archive,
+      dest = path,
+      output;
+
+  if (platform === 'win32') {
+    archive = archiver('zip', {});
+    dest += '.zip';
+  } else {
+    if (platform === 'darwin') {
+      dest = dest.replace(/Camunda Modeler/, 'camunda-modeler');
+    }
+
+    dest += '.tar.gz';
+    archive = archiver('tar', { gzip: true });
+  }
+
+  output = fs.createWriteStream(dest);
+
+  archive.pipe(output);
+  archive.on('end', done);
+  archive.on('error', done);
+
+  archive.directory(path, 'camunda-modeler').finalize();
+}
+
+
+function amendAndArchive(platform, distroPaths, done) {
+
+  var additionalAssets = [
+    __dirname + '/../resources/platform/base',
+    __dirname + '/../resources/platform/' + platform
+  ];
+
+  function createDistro(distroPath, done) {
+
+    function copyAssets(assetDirectory, done) {
+
+      if (fs.existsSync(assetDirectory)) {
+        cpr(assetDirectory, distroPath, { transform: replacePlaceholders }, done);
+      } else {
+        done();
+      }
+    }
+
+    function archive(err) {
+      if (err) {
+        return done(err);
       }
 
-      processNext();
+      createArchive(platform, distroPath, done);
     }
 
-    function createArchive(platform, path, done) {
+    asyncMap(additionalAssets, copyAssets, archive);
+  }
 
-      return function(err) {
+  asyncMap(distroPaths, createDistro, done);
+}
 
-        if (err) {
-          return done(err);
-        }
 
-        var archive,
-          dest = path,
-          output;
+/**
+ * Async map a collection through a given iterator
+ * and pass (err, mapping results) to the given done function.
+ *
+ * @param {Array<Object>} collection
+ * @param {Function} iterator
+ * @param {Function} done
+ */
+function asyncMap(collection, iterator, done) {
 
-        if (platform === 'win32') {
-          archive = archiver('zip', {});
-          dest += '.zip';
-        } else {
-          if (platform === 'darwin') {
-            dest = dest.replace(/Camunda Modeler/, 'camunda-modeler');
-          }
+  var idx = -1;
 
-          dest += '.tar.gz';
-          archive = archiver('tar', {
-            gzip: true
-          });
-        }
+  var results = [];
 
-        output = fs.createWriteStream(dest);
+  function next() {
+    idx++;
 
-        archive.pipe(output);
-        archive.on('end', done);
-        archive.on('error', done);
-
-        archive.directory(path, 'camunda-modeler').finalize();
-      };
+    if (idx === collection.length) {
+      return done(null, results);
     }
-  });
 
-};
+    iterator(collection[idx], function(err, result) {
+
+      if (err) {
+        return done(err);
+      }
+
+      results.push(result);
+
+      next();
+    });
+  }
+
+  next();
+}
