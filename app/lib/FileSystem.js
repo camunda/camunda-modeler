@@ -3,9 +3,9 @@
 var fs = require('fs'),
     path = require('path');
 
-var ipcMain = require('electron').ipcMain,
-    app = require('electron').app,
+var app = require('electron').app,
     browserOpen = require('./util/browser-open'),
+    renderer = require('./util/renderer'),
     Dialog = require('dialog');
 
 var errorUtil = require('./util/error'),
@@ -61,82 +61,74 @@ function createDiagramFile(filePath, file) {
 function FileSystem(browserWindow, config) {
   var self = this;
 
-  this.browserWindow = browserWindow;
   this.config = config;
+  this.browserWindow = browserWindow;
 
-  ipcMain.on('file:save:req', function (evt, diagramFile) {
-    self.save(diagramFile, function (err, updatedDiagram) {
-
+  renderer.on('file:save-as', function(newDirectory, diagramFile, done) {
+    self.saveAs(diagramFile, function(err, updatedDiagram) {
       if (err) {
-        return evt.sender.send('file.save.response', err);
+        return done(err);
       }
+
       app.emit('editor:add-recent', updatedDiagram.path);
-      evt.sender.send('file.save.response', null, updatedDiagram);
+
+      done(null, updatedDiagram);
     });
   });
 
-  ipcMain.on('file:save-as:req', function (evt, newDirectory, diagramFile) {
-    self.saveAs(diagramFile, function (err, updatedDiagram) {
-      if (err) {
-        return evt.sender.send('file:save-as:res', err);
-      }
-      app.emit('editor:add-recent', updatedDiagram.path);
-      evt.sender.send('file:save-as:res', null, updatedDiagram);
-    });
-  });
-
-  ipcMain.on('file.add', function (evt, path) {
+  renderer.on('file:add', function(path, done) {
     self.addFile(path);
+
+    done(null);
   });
 
-  ipcMain.on('file:open:req', function (evt) {
+  renderer.on('file:open', function(done) {
     self.open(function (err, diagramFile) {
       if (err) {
-        return evt.sender.send('file:open:res', err);
+        return done(err);
       }
+
       app.emit('editor:add-recent', diagramFile.path);
-      evt.sender.send('file:open:res', null, diagramFile);
+
+      done(null, diagramFile);
     });
   });
 
-
-  ipcMain.on('file.close', function (evt, diagramFile) {
-    self.close(diagramFile, function (err, updatedDiagram) {
+  renderer.on('file:close', function(diagramFile, done) {
+    self.close(diagramFile, function(err, updatedDiagram) {
       if (err) {
-        return self.handleError('file.close.response', err);
+        return done(err);
       }
 
-      browserWindow.webContents.send('file.close.response', null, updatedDiagram);
+      done(null, updatedDiagram);
     });
   });
 
+  renderer.on('editor:quit', function(hasUnsavedChanges, done) {
+    done(null);
 
-  ipcMain.on('editor.quit', function (evt, hasUnsavedChanges) {
-    self.browserWindow.webContents.send('editor.quit.response', null);
-
-    return app.emit('editor:quit-allowed');
+    app.emit('editor:quit-allowed');
   });
 
-
-  ipcMain.on('editor.import.error', function (evt, diagramFile, trace) {
+  renderer.on('editor:import-error', function(diagramFile, trace, done) {
     self.handleImportError(diagramFile, trace, function (result) {
-      self.browserWindow.webContents.send('editor.import.error.response', result);
+      done(result);
 
-      self.browserWindow.webContents.send('editor.actions', {
-        event: 'editor.close'
+      renderer.send('editor:actions', {
+        event: 'editor:close'
       });
     });
   });
 
-  ipcMain.on('editor.ready', function (evt) {
+  renderer.on('editor:ready', function(evt) {
     app.emit('editor:ready');
   });
 }
 
-FileSystem.prototype.open = function (callback) {
+FileSystem.prototype.open = function(callback) {
   var self = this;
 
-  this.showOpenDialog(function (filenames) {
+  this.showOpenDialog(function(filenames) {
     if (!filenames) {
       return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
     }
@@ -145,7 +137,7 @@ FileSystem.prototype.open = function (callback) {
   });
 };
 
-FileSystem.prototype._openFile = function (filePath, callback) {
+FileSystem.prototype._openFile = function(filePath, callback) {
   var self = this;
 
   var diagramFile;
@@ -164,7 +156,7 @@ FileSystem.prototype._openFile = function (filePath, callback) {
 
   if (parseUtil.hasActivitiURL(diagramFile.contents)) {
 
-    self.showNamespaceDialog(function (answer) {
+    self.showNamespaceDialog(function(answer) {
       if (answer === 0) {
         diagramFile.contents = parseUtil.replaceNamespace(diagramFile.contents);
       }
@@ -176,7 +168,7 @@ FileSystem.prototype._openFile = function (filePath, callback) {
   }
 };
 
-FileSystem.prototype.addFile = function (filePath) {
+FileSystem.prototype.addFile = function(filePath) {
   var self = this,
       browserWindow = this.browserWindow;
 
@@ -194,11 +186,11 @@ FileSystem.prototype.addFile = function (filePath) {
   });
 };
 
-FileSystem.prototype.saveAs = function (diagramFile, callback) {
+FileSystem.prototype.saveAs = function(diagramFile, callback) {
   var self = this,
       args = Array.prototype.slice.call(arguments);
 
-  this.showSaveAsDialog(diagramFile, function (filePath) {
+  this.showSaveAsDialog(diagramFile, function(filePath) {
     if (!filePath) {
       return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
     }
@@ -222,11 +214,11 @@ FileSystem.prototype.saveAs = function (diagramFile, callback) {
   });
 };
 
-FileSystem.prototype.save = function (diagramFile, callback) {
+FileSystem.prototype.save = function(diagramFile, callback) {
   this._save(diagramFile.path, diagramFile, callback);
 };
 
-FileSystem.prototype._save = function (filePath, diagramFile, callback) {
+FileSystem.prototype._save = function(filePath, diagramFile, callback) {
   console.log('--->', filePath, diagramFile);
 
   try {
@@ -238,7 +230,7 @@ FileSystem.prototype._save = function (filePath, diagramFile, callback) {
   }
 };
 
-FileSystem.prototype.close = function (diagramFile, callback) {
+FileSystem.prototype.close = function(diagramFile, callback) {
   var self = this;
 
   this.showCloseDialog(diagramFile.name, function (result) {
@@ -254,7 +246,7 @@ FileSystem.prototype.close = function (diagramFile, callback) {
   });
 };
 
-FileSystem.prototype.handleImportError = function (diagramFile, trace, callback) {
+FileSystem.prototype.handleImportError = function(diagramFile, trace, callback) {
 
   this.showImportErrorDialog(diagramFile.name, trace, function (answer) {
     switch (answer) {
@@ -272,20 +264,8 @@ FileSystem.prototype.handleImportError = function (diagramFile, trace, callback)
   });
 };
 
-/**
- * Handle errors that the IPC has to deal with.
- *
- * @param  {String} event
- * @param  {Error} err
- */
-FileSystem.prototype.handleError = function (event, err) {
-  if (!errorUtil.isCancel(err)) {
-    this.showGeneralErrorDialog();
-  }
-  this.browserWindow.webContents.send(event, errorUtil.normalizeError(err));
-};
 
-FileSystem.prototype.showOpenDialog = function (callback) {
+FileSystem.prototype.showOpenDialog = function(callback) {
   var config = this.config,
       defaultPath = config.get('defaultPath', app.getPath('userDesktop')),
       filenames;
@@ -307,7 +287,7 @@ FileSystem.prototype.showOpenDialog = function (callback) {
   callback(filenames);
 };
 
-FileSystem.prototype.showSaveAsDialog = function (diagramFile, callback) {
+FileSystem.prototype.showSaveAsDialog = function(diagramFile, callback) {
   var config = this.config,
       defaultPath = config.get('defaultPath', app.getPath('userDesktop'));
 
@@ -336,7 +316,7 @@ FileSystem.prototype.showSaveAsDialog = function (diagramFile, callback) {
   callback(filePath);
 };
 
-FileSystem.prototype.showCloseDialog = function (name, callback) {
+FileSystem.prototype.showCloseDialog = function(name, callback) {
   var opts = {
     title: 'Close diagram',
     message: 'Save changes to ' + name + ' before closing?',
@@ -348,7 +328,7 @@ FileSystem.prototype.showCloseDialog = function (name, callback) {
   callback(Dialog.showMessageBox(this.browserWindow, opts));
 };
 
-FileSystem.prototype.showImportErrorDialog = function (fileName, trace, callback) {
+FileSystem.prototype.showImportErrorDialog = function(fileName, trace, callback) {
   var opts = {
     type: 'error',
     title: 'Importing Error',
@@ -366,7 +346,7 @@ FileSystem.prototype.showImportErrorDialog = function (fileName, trace, callback
   callback(Dialog.showMessageBox(this.browserWindow, opts));
 };
 
-FileSystem.prototype.showUnrecognizedFileDialog = function (name) {
+FileSystem.prototype.showUnrecognizedFileDialog = function(name) {
   Dialog.showMessageBox({
     type: 'warning',
     title: 'Unrecognized file format',
@@ -376,7 +356,7 @@ FileSystem.prototype.showUnrecognizedFileDialog = function (name) {
   });
 };
 
-FileSystem.prototype.showExistingFileDialog = function (name, callback) {
+FileSystem.prototype.showExistingFileDialog = function(name, callback) {
   var opts = {
     type: 'warning',
     title: 'Existing file',
@@ -387,7 +367,7 @@ FileSystem.prototype.showExistingFileDialog = function (name, callback) {
   callback(Dialog.showMessageBox(this.browserWindow, opts));
 };
 
-FileSystem.prototype.showNamespaceDialog = function (callback) {
+FileSystem.prototype.showNamespaceDialog = function(callback) {
   var opts = {
     type: 'warning',
     title: 'Deprecated <activiti> namespace detected',
@@ -404,7 +384,7 @@ FileSystem.prototype.showNamespaceDialog = function (callback) {
   callback(Dialog.showMessageBox(this.browserWindow, opts));
 };
 
-FileSystem.prototype.showGeneralErrorDialog = function () {
+FileSystem.prototype.showGeneralErrorDialog = function() {
   Dialog.showErrorBox('Error', 'There was an internal error.' + '\n' + 'Please try again.');
 };
 
