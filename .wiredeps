@@ -1,18 +1,12 @@
 {
   "name": "camunda-modeler",
-  "version": "1.0.0",
+  "version": "0.4.1",
   "dependencies": {
     "angular": {
-      "version": "1.4.7"
-    },
-    "selection-update": {
-      "version": "0.1.2"
-    },
-    "camunda-bpmn-moddle": {
-      "version": "camunda/camunda-bpmn-moddle"
+      "version": "1.5.0"
     },
     "bpmn-js": {
-      "version": "bpmn-io/bpmn-js",
+      "version": "0.13.2",
       "dependencies": {
         "bpmn-moddle": {
           "version": "bpmn-io/bpmn-moddle",
@@ -36,11 +30,8 @@
         "diagram-js-direct-editing": {
           "version": "bpmn-io/diagram-js-direct-editing"
         },
-        "didi": {
-          "version": "0.0.4"
-        },
         "ids": {
-          "version": "0.1.1",
+          "version": "0.1.2",
           "dependencies": {
             "hat": {
               "version": "0.0.3"
@@ -58,10 +49,58 @@
     "bpmn-js-properties-panel": {
       "version": "bpmn-io/bpmn-js-properties-panel",
       "dependencies": {
+        "ids": {
+          "version": "0.1.2",
+          "dependencies": {
+            "hat": {
+              "version": "0.0.3"
+            }
+          }
+        },
         "inherits": {
           "version": "2.0.1"
+        },
+        "lodash": {
+          "version": "3.10.1"
+        },
+        "min-dom": {
+          "version": "0.2.0",
+          "dependencies": {
+            "component-classes": {
+              "version": "1.2.4",
+              "dependencies": {
+                "component-indexof": {
+                  "version": "0.0.3"
+                }
+              }
+            },
+            "component-closest": {
+              "version": "0.1.4"
+            },
+            "component-delegate": {
+              "version": "0.2.3"
+            },
+            "component-event": {
+              "version": "0.1.4"
+            },
+            "component-matches-selector": {
+              "version": "0.1.5"
+            },
+            "component-query": {
+              "version": "0.0.3"
+            },
+            "domify": {
+              "version": "1.4.0"
+            }
+          }
+        },
+        "selection-update": {
+          "version": "0.1.2"
         }
       }
+    },
+    "camunda-bpmn-moddle": {
+      "version": "camunda/camunda-bpmn-moddle"
     },
     "diagram-js": {
       "version": "bpmn-io/diagram-js",
@@ -73,7 +112,7 @@
           "version": "0.4.2"
         },
         "hammerjs": {
-          "version": "2.0.4"
+          "version": "2.0.6"
         },
         "inherits": {
           "version": "2.0.1"
@@ -90,35 +129,13 @@
       "version": "bpmn-io/diagram-js-origin"
     },
     "dmn-js": {
-      "version": "bpmn-io/dmn-js",
+      "version": "0.4.1",
       "dependencies": {
-        "dmn-moddle": {
-          "version": "0.2.3",
-          "dependencies": {
-            "moddle": {
-              "version": "bpmn-io/moddle"
-            },
-            "moddle-xml": {
-              "version": "bpmn-io/moddle-xml",
-              "dependencies": {
-                "sax": {
-                  "version": "0.6.1"
-                },
-                "tiny-stack": {
-                  "version": "0.1.0"
-                }
-              }
-            }
-          }
-        },
-        "table-js": {
-          "version": "bpmn-io/table-js"
-        },
         "bootstrap": {
-          "version": "3.3.5"
+          "version": "3.3.6"
         },
         "brfs": {
-          "version": "1.4.1",
+          "version": "1.4.3",
           "dependencies": {
             "quote-stream": {
               "version": "1.0.2",
@@ -132,10 +149,10 @@
               }
             },
             "resolve": {
-              "version": "1.1.6"
+              "version": "1.1.7"
             },
             "static-module": {
-              "version": "1.1.3",
+              "version": "1.3.0",
               "dependencies": {
                 "concat-stream": {
                   "version": "1.4.10",
@@ -147,7 +164,7 @@
                       "version": "1.1.13",
                       "dependencies": {
                         "core-util-is": {
-                          "version": "1.0.1"
+                          "version": "1.0.2"
                         },
                         "isarray": {
                           "version": "0.0.1"
@@ -166,7 +183,7 @@
                       "version": "1.1.13",
                       "dependencies": {
                         "core-util-is": {
-                          "version": "1.0.1"
+                          "version": "1.0.2"
                         },
                         "isarray": {
                           "version": "0.0.1"
@@ -221,7 +238,7 @@
                   "version": "1.0.1",
                   "dependencies": {
                     "function-bind": {
-                      "version": "1.0.2"
+                      "version": "1.1.0"
                     }
                   }
                 },
@@ -240,7 +257,7 @@
                   "version": "1.0.33",
                   "dependencies": {
                     "core-util-is": {
-                      "version": "1.0.1"
+                      "version": "1.0.2"
                     },
                     "isarray": {
                       "version": "0.0.1"
@@ -288,19 +305,19 @@
               }
             },
             "through2": {
-              "version": "2.0.0",
+              "version": "2.0.1",
               "dependencies": {
                 "readable-stream": {
-                  "version": "2.0.4",
+                  "version": "2.0.5",
                   "dependencies": {
                     "core-util-is": {
-                      "version": "1.0.1"
+                      "version": "1.0.2"
                     },
                     "isarray": {
                       "version": "0.0.1"
                     },
                     "process-nextick-args": {
-                      "version": "1.0.3"
+                      "version": "1.0.6"
                     },
                     "string_decoder": {
                       "version": "0.10.31"
@@ -318,13 +335,13 @@
           }
         },
         "diagram-js": {
-          "version": "bpmn-io/diagram-js",
+          "version": "0.11.0",
           "dependencies": {
             "eve": {
               "version": "0.4.2"
             },
             "hammerjs": {
-              "version": "2.0.4"
+              "version": "2.0.6"
             },
             "snapsvg": {
               "version": "https://github.com/Nikku/Snap.svg/archive/v0.3.0-browserify.tar.gz"
@@ -334,8 +351,27 @@
         "didi": {
           "version": "0.0.4"
         },
+        "dmn-moddle": {
+          "version": "0.2.3",
+          "dependencies": {
+            "moddle": {
+              "version": "0.6.3"
+            },
+            "moddle-xml": {
+              "version": "0.8.0",
+              "dependencies": {
+                "sax": {
+                  "version": "0.6.1"
+                },
+                "tiny-stack": {
+                  "version": "0.1.0"
+                }
+              }
+            }
+          }
+        },
         "ids": {
-          "version": "0.1.1",
+          "version": "0.1.2",
           "dependencies": {
             "hat": {
               "version": "0.0.3"
@@ -347,11 +383,17 @@
         },
         "object-refs": {
           "version": "0.1.1"
+        },
+        "selection-update": {
+          "version": "0.1.2"
+        },
+        "table-js": {
+          "version": "0.4.0"
         }
       }
     },
     "electron-window": {
-      "version": "0.6.0",
+      "version": "0.6.2",
       "dependencies": {
         "is-electron-renderer": {
           "version": "2.0.0"
@@ -362,7 +404,7 @@
       }
     },
     "jquery": {
-      "version": "2.1.4"
+      "version": "2.2.1"
     },
     "lodash": {
       "version": "3.10.1"
