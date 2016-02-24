@@ -60,9 +60,9 @@
       <string>Alternate</string>
     </array>
     <key>CFBundleVersion</key>
-    <string><%= pkg.version %></string>
+    <string><%= buildVersion %></string>
     <key>CFBundleShortVersionString</key>
-    <string><%= pkg.version %></string>
+    <string><%= appVersion %></string>
     <key>DTSDKBuild</key>
     <string>14D125</string>
     <key>DTSDKName</key>

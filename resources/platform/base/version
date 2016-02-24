@@ -1,1 +1,1 @@
-v<%= pkg.version %>
+v<%= appVersion %> (build <%= buildVersion %>)

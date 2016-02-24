@@ -92,6 +92,7 @@
     "mocha": "^2.3.3",
     "ncp": "^2.0.0",
     "phantomjs-prebuilt": "^2.1.4",
+    "semver": "^5.1.0",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "stringify": "^3.2.0",

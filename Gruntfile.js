@@ -92,6 +92,21 @@ module.exports = function(grunt) {
       }
     },
 
+    /**
+     * Builds the distribution for all available platforms.
+     *
+     * Accepts the following flags:
+     *
+     *  --build=buildNumber
+     *  --app-version=someVersion
+     *  --nightly
+     *
+     *  Nightly will build a new minor version based on the
+     *  current application version.
+     *
+     * NOTE: Because of a grunt bug (https://github.com/gruntjs/grunt/issues/920)
+     * you need to specify the --nightly parameter last.
+     */
     distro: {
       darwin: {
         platform: 'darwin'
@@ -156,8 +171,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('auto-test-app', [ 'mochaTest', 'watch:app' ]);
 
-  grunt.registerTask('package', [ 'distro:darwin', 'distro:windows', 'distro:linux' ]);
-
   grunt.registerTask('build-client', [
     'clean',
     'browserify:client',
@@ -167,7 +180,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('dev', [ 'lint', 'test', 'build-client' ]);
 
-  grunt.registerTask('default', [ 'lint', 'test', 'build-client', 'package' ]);
+  grunt.registerTask('default', [ 'lint', 'test', 'build-client', 'distro' ]);
 
   // Development setup tasks
   var server = require('electron-connect').server.create({ path: 'app/develop' });

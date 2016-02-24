@@ -1,5 +1,7 @@
 'use strict';
 
+var semver = require('semver');
+
 var fs = require('fs');
 var which = require('which');
 var forEach = require('lodash/collection/forEach');
@@ -15,10 +17,28 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('distro', function(target) {
 
+    var nightly = grunt.option('nightly');
+
+    var buildVersion = grunt.option('build') || '0000';
+
+    var appVersion = grunt.option('app-version');
+
+    if (!appVersion) {
+      appVersion = PACKAGE_JSON.version;
+
+      if (nightly) {
+        appVersion = semver.inc(appVersion, 'minor') + '-nightly';
+      }
+    }
+
     var electronVersion = PACKAGE_JSON.devDependencies['electron-prebuilt'];
 
     var platform = this.data.platform;
     var done = this.async();
+
+    grunt.log.writeln(
+      'Assembling distribution(s) ' +
+      '{ version: ' + appVersion + ', build: ' + buildVersion + ' }');
 
     var options = {
       name: PACKAGE_JSON.name,
@@ -27,38 +47,14 @@ module.exports = function(grunt) {
       version: electronVersion,
       platform: platform,
       arch: 'all',
-      'app-version': PACKAGE_JSON.version,
       overwrite: true,
       asar: true,
       icon: __dirname + '/../resources/icons/icon_128',
       ignore: buildDistroIgnore()
     };
 
-    function buildDistroIgnore() {
-
-      var ignore = [
-        'app/develop',
-        'distro',
-        'client',
-        'resources',
-        'app/test',
-        '.babelrc',
-        '.editorconfig',
-        '.eslintrc',
-        '.gitignore',
-        '.travis.yml',
-        '.wiredeps',
-        'Gruntfile.js',
-        'gulpfile.js',
-        'README.md'
-      ];
-
-      forEach(PACKAGE_JSON.devDependencies, function(version, name) {
-        ignore.push('node_modules/' + name);
-      });
-
-      return new RegExp('(' + ignore.join('|') + ')');
-    }
+    options['app-version'] = appVersion;
+    options['build-version'] = buildVersion;
 
     if (platform === 'darwin') {
       options.name = 'Camunda Modeler';
@@ -67,12 +63,9 @@ module.exports = function(grunt) {
     if (platform === 'win32') {
       options['version-string'] = {
         CompanyName: 'camunda Services GmbH',
-        LegalCopyright: 'camunda Services GmbH, 2015',
+        LegalCopyright: 'camunda Services GmbH, 2015-2016',
         FileDescription: 'Camunda Modeler',
         OriginalFilename: 'camunda-modeler.exe',
-        // inherited by electron
-        // FileVersion: electronVersion,
-        ProductVersion: PACKAGE_JSON.version,
         ProductName: 'Camunda Modeler',
         InternalName: 'camunda-modeler'
       };
@@ -96,25 +89,47 @@ module.exports = function(grunt) {
         return done(err);
       }
 
-      return amendAndArchive(platform, paths, done);
+      var replacements = {
+        appVersion: appVersion,
+        buildVersion: buildVersion
+      };
+
+      return amendAndArchive(platform, paths, replacements, done);
     });
   });
-}
+};
 
 
-function replacePlaceholders(read, write, file) {
+/**
+ * Return function that acts as a replacer for the given
+ * template variables for a ncp transform stream.
+ *
+ * Variables are passed as objects, replacement patterns
+ * have to look like `<%= varName %>`. If not found,
+ * replacements default to empty string.
+ *
+ * @param {Object} replacements
+ *
+ * @return {Function}
+ */
+function createReplacer(replacements) {
 
-  if (!/(version|Info\.plist)$/.test(file.name)) {
-    return read.pipe(write);
-  }
+  return function replacePlaceholders(read, write, file) {
 
-  read.pipe(concat(function(body) {
+    if (!/(version|Info\.plist)$/.test(file.name)) {
+      return read.pipe(write);
+    }
 
-    var bodyStr = body.toString('utf-8');
-    var replacedBodyStr = bodyStr.replace(/<%= pkg\.version %>/g, PACKAGE_JSON.version);
+    read.pipe(concat(function(body) {
 
-    write.end(replacedBodyStr);
-  }));
+      var bodyStr = body.toString('utf-8');
+      var replacedBodyStr = bodyStr.replace(/<%= ([^\s]+) %>/g, function(_, name) {
+        return replacements[name] || '';
+      });
+
+      write.end(replacedBodyStr);
+    }));
+  };
 }
 
 
@@ -146,7 +161,9 @@ function createArchive(platform, path, done) {
 }
 
 
-function amendAndArchive(platform, distroPaths, done) {
+function amendAndArchive(platform, distroPaths, replacements, done) {
+
+  var replaceTemplates = createReplacer(replacements);
 
   var additionalAssets = [
     __dirname + '/../resources/platform/base',
@@ -158,7 +175,7 @@ function amendAndArchive(platform, distroPaths, done) {
     function copyAssets(assetDirectory, done) {
 
       if (fs.existsSync(assetDirectory)) {
-        cpr(assetDirectory, distroPath, { transform: replacePlaceholders }, done);
+        cpr(assetDirectory, distroPath, { transform: replaceTemplates }, done);
       } else {
         done();
       }
@@ -213,4 +230,31 @@ function asyncMap(collection, iterator, done) {
   }
 
   next();
+}
+
+
+function buildDistroIgnore() {
+
+  var ignore = [
+    'app/develop',
+    'distro',
+    'client',
+    'resources',
+    'app/test',
+    '.babelrc',
+    '.editorconfig',
+    '.eslintrc',
+    '.gitignore',
+    '.travis.yml',
+    '.wiredeps',
+    'Gruntfile.js',
+    'gulpfile.js',
+    'README.md'
+  ];
+
+  forEach(PACKAGE_JSON.devDependencies, function(version, name) {
+    ignore.push('node_modules/' + name);
+  });
+
+  return new RegExp('(' + ignore.join('|') + ')');
 }
