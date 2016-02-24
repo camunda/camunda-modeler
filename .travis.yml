@@ -1,8 +1,8 @@
 language: node_js
-node_js: '0.12'
+node_js: '4.0'
 
 script:
-  - npm run all
+  - grunt
 
 before_install:
   - npm install -g wiredeps
