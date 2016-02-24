@@ -64,7 +64,19 @@ function FileSystem(browserWindow, config) {
   this.config = config;
   this.browserWindow = browserWindow;
 
-  renderer.on('file:save-as', function(newDirectory, diagramFile, done) {
+  renderer.on('file:save', function(diagramFile, done) {
+    self.save(diagramFile, function(err, updatedDiagram) {
+      if (err) {
+        return done(err);
+      }
+
+      app.emit('editor:add-recent', updatedDiagram.path);
+
+      done(null, updatedDiagram);
+    });
+  });
+
+  renderer.on('file:save-as', function(diagramFile, done) {
     self.saveAs(diagramFile, function(err, updatedDiagram) {
       if (err) {
         return done(err);

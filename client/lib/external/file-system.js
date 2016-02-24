@@ -1,5 +1,8 @@
 'use strict';
 
+var browser = require('util/browser');
+var debug = require('debug')('FileSystem');
+
 /**
  * File system API used by app.
  */
@@ -24,9 +27,7 @@ function FileSystem() {
    * @param {Function} done
    */
   this.writeFile = function(file, done) {
-
-    // TODO: implement
-    done(null, file);
+    browser.send('file:save', [ file ], done);
   };
 }
 

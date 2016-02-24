@@ -15,7 +15,7 @@ function Dialog() {
    * @param {Function} done
    */
   this.saveAs = function(file, done) {
-    browser.send('file:save-as', [ true, file ], done);
+    browser.send('file:save-as', [ file ], done);
   };
 
   /**
