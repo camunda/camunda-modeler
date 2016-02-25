@@ -8,6 +8,8 @@ var CloseHandle = require('base/components/misc/close-handle');
 
 var BpmnJS = require('bpmn-js/lib/Modeler');
 
+var is = require('bpmn-js/lib/util/ModelUtil').is;
+
 var diagramOriginModule = require('diagram-js-origin'),
     propertiesPanelModule = require('bpmn-js-properties-panel'),
     propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda'),
@@ -63,11 +65,22 @@ BpmnEditor.prototype.updateState = function() {
       initialState.stackIndex !== commandStack._stackIdx
     );
 
+    // direct editing function (annotations)
+    var elements = modeler.get('selection').get();
+    var editable = false;
+
+    if ((elements.length === 1 &&
+        !(is(elements[0], 'bpmn:Process') || is(elements[0], 'bpmn:Collaboration'))) ||
+      elements.length > 1) {
+      editable = true;
+    }
+
     // TODO(nikku): complete / more updates?
     stateContext = {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
-      dirty: dirty
+      dirty: dirty,
+      editable: editable
     };
   }
 
@@ -129,6 +142,15 @@ BpmnEditor.prototype.triggerAction = function(action, options) {
   if (action === 'redo') {
     modeler.get('commandStack').redo();
   }
+
+  var editorActions = modeler.get('editorActions', false);
+
+  if (!editorActions) {
+    return;
+  }
+
+  // forward other actions to editor actions
+  editorActions.trigger(action, options);
 };
 
 BpmnEditor.prototype.getModeler = function() {

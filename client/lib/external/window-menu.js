@@ -64,25 +64,28 @@ function WindowMenu(app) {
     app.triggerAction('redo');
   });
 
-  browser.on('editor:hand-tool', function(err, args) {
-    debug('editor:hand-tool');
-    // TODO: implement in the client
-    // app.triggerAction('hand-tool');
+  browser.on('editor:handTool', function(err, args) {
+    debug('editor:handTool');
+
+    app.triggerAction('handTool');
   });
-  browser.on('editor:lasso-tool', function(err, args) {
-    debug('editor:lasso-tool');
-    // TODO: implement in the client
-    // app.triggerAction('lasso-tool');
+
+  browser.on('editor:lassoTool', function(err, args) {
+    debug('editor:lassoTool');
+
+    app.triggerAction('lassoTool');
   });
-  browser.on('editor:space-tool', function(err, args) {
-    debug('editor:space-tool');
-    // TODO: implement in the client
-    // app.triggerAction('space-tool');
+
+  browser.on('editor:spaceTool', function(err, args) {
+    debug('editor:spaceTool');
+
+    app.triggerAction('spaceTool');
   });
-  browser.on('editor:direct-edit', function(err, args) {
-    debug('editor:direct-edit');
-    // TODO: implement in the client
-    // app.triggerAction('direct-edit');
+
+  browser.on('editor:directEditing', function(err, args) {
+    debug('editor:directEditing');
+    
+    app.triggerAction('directEditing');
   });
 
 }

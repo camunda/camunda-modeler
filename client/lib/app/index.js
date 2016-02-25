@@ -154,7 +154,8 @@ function App(options) {
       diagramType: tab.file.fileType,
       undo: newState.undo,
       redo: newState.redo,
-      dirty: newState.dirty
+      dirty: newState.dirty,
+      editable: newState.editable
     });
 
     this.events.emit('changed');

@@ -36,6 +36,17 @@ domReady(function() {
   new State(app);
   new Menu(app);
 
+  // REVIEW: Workaround for menu keyboard bindings on Mac.
+  // Can be removed, once migrated on to Electron >= 0.36.x
+  function isMac() {
+    return window.navigator.platform === 'MacIntel';
+  }
+  if (isMac) {
+    var Shortcuts = require('app/shortcuts');
+    new Shortcuts(app, window).bind();
+  }
+
+
   mainLoop(app, document.body);
 
   app.run();

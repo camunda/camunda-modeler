@@ -28,6 +28,7 @@ function Menu(platform) {
     var menuState = {
       dmn: isDmn(clientState),
       bpmn: isBpmn(clientState),
+      editable: clientState.editable,
       undo: clientState.undo,
       redo: clientState.redo,
       edit: atLeastOneTabOpen(clientState),

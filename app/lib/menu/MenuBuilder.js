@@ -177,7 +177,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Hand Tool',
     accelerator: 'H',
     click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:hand-tool');
+      browserWindow.webContents.send('editor:handTool');
     }
   }));
 
@@ -185,7 +185,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Lasso Tool',
     accelerator: 'L',
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:lasso-tool');
+      browserWindow.webContents.send('editor:lassoTool');
     }
   }));
 
@@ -193,15 +193,16 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Space Tool',
     accelerator: 'S',
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:space-tool');
+      browserWindow.webContents.send('editor:spaceTool');
     }
   }));
 
   this.menu.append(new MenuItem({
     label: 'Direct Editing',
     accelerator: 'E',
+    enabled: this.opts.state.editable,
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:direct-edit');
+      browserWindow.webContents.send('editor:directEditing');
     }
   }));
 
