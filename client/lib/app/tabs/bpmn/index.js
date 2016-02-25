@@ -37,7 +37,7 @@ function BpmnSupport(options) {
     if (type === 'bpmn') {
       debug('create BPMN file');
 
-      app.createDiagramTab({
+      app.createTab({
         fileType: type,
         name: 'diagram_' + createdTabs + '.bpmn',
         path: '[unsaved]',

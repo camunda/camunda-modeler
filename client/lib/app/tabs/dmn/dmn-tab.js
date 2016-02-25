@@ -6,11 +6,11 @@ var assign = require('lodash/object/assign');
 
 var DmnEditor = require('../../editor/dmn-editor'),
     XMLEditor = require('../../editor/xml-editor'),
-    DiagramTab = require('../diagram-tab');
+    MultiEditorTab = require('../multi-editor-tab');
 
 
 /**
- * A tab displaying a BPMN diagram.
+ * A tab displaying a DMN diagram.
  *
  * @param {Object} options
  */
@@ -21,15 +21,15 @@ function DmnTab(options) {
   }
 
   options = assign({
-    viewDefinitions: [
+    editorDefinitions: [
       { id: 'table', label: 'Table', component: DmnEditor },
       { id: 'xml', label: 'XML', component: XMLEditor }
     ]
   }, options);
 
-  DiagramTab.call(this, options);
+  MultiEditorTab.call(this, options);
 }
 
-inherits(DmnTab, DiagramTab);
+inherits(DmnTab, MultiEditorTab);
 
 module.exports = DmnTab;

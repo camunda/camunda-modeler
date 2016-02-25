@@ -67,7 +67,7 @@ describe('BpmnTab', function() {
       var tree = render(tab);
 
       // then
-      expect(select('.diagram-tab', tree)).to.exist;
+      expect(select('.multi-editor-tab', tree)).to.exist;
       expect(select('.bpmn-editor', tree)).to.exist;
 
       expect(select('.xml-editor', tree)).to.not.exist;
@@ -80,12 +80,12 @@ describe('BpmnTab', function() {
       var tab = createBpmnTab('diagram_1');
 
       // when
-      tab.setView(tab.getView('xml'));
+      tab.setEditor(tab.getEditor('xml'));
 
       var tree = render(tab);
 
       // then
-      expect(select('.diagram-tab', tree)).to.exist;
+      expect(select('.multi-editor-tab', tree)).to.exist;
       expect(select('.xml-editor', tree)).to.exist;
 
       expect(select('.bpmn-editor', tree)).to.not.exist;
@@ -97,7 +97,7 @@ describe('BpmnTab', function() {
       // given
       var tab = createBpmnTab('diagram_1');
 
-      var showView = spy(tab, 'showView');
+      var showEditor = spy(tab, 'showEditor');
 
       var tree = render(tab);
 
@@ -106,7 +106,7 @@ describe('BpmnTab', function() {
       simulateEvent(xmlSwitch, 'click');
 
       // then
-      expect(showView).to.have.been.called;
+      expect(showEditor).to.have.been.called;
     });
 
   });
@@ -122,8 +122,8 @@ describe('BpmnTab', function() {
     beforeEach(function() {
       tab = createBpmnTab('diagram_1');
 
-      bpmnEditor = tab.getView('diagram');
-      xmlEditor = tab.getView('xml');
+      bpmnEditor = tab.getEditor('diagram');
+      xmlEditor = tab.getEditor('xml');
     });
 
 
@@ -137,10 +137,10 @@ describe('BpmnTab', function() {
       var setXML = spy(xmlEditor, 'setXML');
 
       // when
-      tab.showView('xml');
+      tab.showEditor('xml');
 
       // then
-      expect(tab.activeView).to.equal(xmlEditor);
+      expect(tab.activeEditor).to.equal(xmlEditor);
 
       expect(setXML).to.have.been.calledWith(initialXML);
     });
@@ -149,7 +149,7 @@ describe('BpmnTab', function() {
     it('should switch from <xml> to <diagram> view', function() {
 
       // given
-      tab.activeView = xmlEditor;
+      tab.activeEditor = xmlEditor;
 
       xmlEditor.saveXML = function(done) {
         done(null, otherXML);
@@ -158,10 +158,10 @@ describe('BpmnTab', function() {
       var setXML = spy(bpmnEditor, 'setXML');
 
       // when
-      tab.showView('diagram');
+      tab.showEditor('diagram');
 
       // then
-      expect(tab.activeView).to.equal(bpmnEditor);
+      expect(tab.activeEditor).to.equal(bpmnEditor);
 
       expect(setXML).to.have.been.calledWith(otherXML);
     });
@@ -177,10 +177,10 @@ describe('BpmnTab', function() {
       };
 
       // when
-      tab.showView('xml');
+      tab.showEditor('xml');
 
       // then
-      expect(tab.activeView).to.equal(bpmnEditor);
+      expect(tab.activeEditor).to.equal(bpmnEditor);
 
       expect(dialog.exportError).to.have.been.calledWith(exportError);
     });
@@ -191,7 +191,7 @@ describe('BpmnTab', function() {
       // given
       var importError = new Error('could not open');
 
-      tab.activeView = xmlEditor;
+      tab.activeEditor = xmlEditor;
 
       xmlEditor.saveXML = function(done) {
         done(null, otherXML);
@@ -203,10 +203,10 @@ describe('BpmnTab', function() {
       };
 
       // when
-      tab.showView('diagram');
+      tab.showEditor('diagram');
 
       // then
-      expect(tab.activeView).to.equal(xmlEditor);
+      expect(tab.activeEditor).to.equal(xmlEditor);
 
       expect(dialog.importError).to.have.been.calledWith(importError);
     });

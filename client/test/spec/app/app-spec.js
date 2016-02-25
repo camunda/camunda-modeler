@@ -95,7 +95,7 @@ describe('App', function() {
       var openFile = createBpmnFile(bpmnXML);
 
       // when
-      app.createDiagramTabs([ openFile ]);
+      app.createTabs([ openFile ]);
 
       // then
       expect(app.activeTab.file).to.eql(openFile);
@@ -133,7 +133,7 @@ describe('App', function() {
       var openFile = createDmnFile(dmnXML);
 
       // when
-      app.createDiagramTabs([ openFile ]);
+      app.createTabs([ openFile ]);
 
       // then
       expect(app.activeTab.file).to.eql(openFile);
@@ -149,19 +149,21 @@ describe('App', function() {
 
   });
 
+
   describe('xml support', function () {
 
     it('should render xml-view', function() {
+
       // given
       var openFile = createBpmnFile(bpmnXML),
           activeTab;
 
       // when
-      app.createDiagramTabs([ openFile ]);
+      app.createTabs([ openFile ]);
 
       activeTab = app.activeTab;
 
-      activeTab.activeView = activeTab.getView('xml');
+      activeTab.activeEditor = activeTab.getEditor('xml');
 
       var tree = render(app);
 
@@ -171,6 +173,7 @@ describe('App', function() {
     });
 
   });
+
 
   describe('file drop', function() {
 
@@ -310,7 +313,7 @@ describe('App', function() {
       // install save mock for tab
       app.on('tab:select', patchSaveAnswer(file));
 
-      app.createDiagramTabs([ file ]);
+      app.createTabs([ file ]);
 
       // when
       app.triggerAction('save');
@@ -333,7 +336,7 @@ describe('App', function() {
       // install save mock for tab
       app.on('tab:select', patchSaveAnswer(file));
 
-      app.createDiagramTabs([ file ]);
+      app.createTabs([ file ]);
 
       // when
       app.triggerAction('save-as');
@@ -357,7 +360,7 @@ describe('App', function() {
       // install save mock for tab
       app.on('tab:select', patchSaveAnswer(saveError));
 
-      app.createDiagramTabs([ file ]);
+      app.createTabs([ file ]);
 
       // when
       app.triggerAction('save');
@@ -494,7 +497,7 @@ describe('App', function() {
           var bpmnFile = createBpmnFile(bpmnXML),
               dmnFile = createDmnFile(dmnXML);
 
-          app.createDiagramTabs([ bpmnFile, dmnFile ]);
+          app.createTabs([ bpmnFile, dmnFile ]);
           app.selectTab(app.tabs[0]);
 
           // when
@@ -591,7 +594,7 @@ describe('App', function() {
         var bpmnFile = createBpmnFile(bpmnXML);
 
         // when
-        app.createDiagramTabs([ bpmnFile ]);
+        app.createTabs([ bpmnFile ]);
 
         // then
         app.events.on('workspace:persisted', function(err, config) {
@@ -613,7 +616,7 @@ describe('App', function() {
             dmnFile = createDmnFile(dmnXML);
 
         // when
-        app.createDiagramTabs([ bpmnFile, dmnFile ]);
+        app.createTabs([ bpmnFile, dmnFile ]);
         app.selectTab(app.tabs[1]);
 
         // then
@@ -636,7 +639,7 @@ describe('App', function() {
             dmnFile = createDmnFile(dmnXML);
 
         // when
-        app.createDiagramTabs([ bpmnFile, dmnFile ]);
+        app.createTabs([ bpmnFile, dmnFile ]);
         app.closeTab(app.tabs[1]);
 
         // then

@@ -37,7 +37,7 @@ function DmnSupport(options) {
     if (type === 'dmn') {
       debug('create DMN file');
 
-      app.createDiagramTab({
+      app.createTab({
         fileType: type,
         name: 'diagram_' + createdTabs + '.dmn',
         path: '[unsaved]',

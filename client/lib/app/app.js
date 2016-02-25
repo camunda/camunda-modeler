@@ -273,7 +273,7 @@ App.prototype.openDiagram = function() {
         });
 
       } else {
-        this.createDiagramTabs([ assign(file, { fileType: type }) ]);
+        this.createTabs([ assign(file, { fileType: type }) ]);
       }
     }
   });
@@ -330,18 +330,17 @@ App.prototype.createDiagram = function(type) {
 
 
 /**
- * Create diagram tabs for the given files and
- * select the last tab.
+ * Create tabs for the given files and select the last tab.
  *
  * @param {Array<File>} files
  */
-App.prototype.createDiagramTabs = function(files) {
+App.prototype.createTabs = function(files) {
 
   var lastFile = files[files.length - 1];
 
   files.forEach(file => {
 
-    this.createDiagramTab(file, {
+    this.createTab(file, {
       select: file === lastFile,
       dirty: file.path === '[unsaved]'
     });
@@ -354,7 +353,7 @@ App.prototype.createDiagramTabs = function(files) {
  * @param {File} file
  * @param {Object} options
  */
-App.prototype.createDiagramTab = function(file, options) {
+App.prototype.createTab = function(file, options) {
   this.events.emit('create-tab', file, options);
 };
 
@@ -493,7 +492,7 @@ App.prototype.filesDropped = function(files) {
   var actualFiles = files.map(withType).filter(withoutEmpty);
 
   // create tabs for files
-  this.createDiagramTabs(actualFiles);
+  this.createTabs(actualFiles);
 };
 
 /**
@@ -557,7 +556,7 @@ App.prototype.closeTab = function(tab) {
   if (tab === this.activeTab) {
     this.selectTab(tabs[idx - 1] || tabs[idx]);
   }
-  
+
   events.emit('tab:closed', tab);
   events.emit('workspace:changed');
   events.emit('changed');
@@ -660,7 +659,7 @@ App.prototype.restoreWorkspace = function(done) {
 
     // restore tabs
     if (config.tabs) {
-      this.createDiagramTabs(config.tabs);
+      this.createTabs(config.tabs);
     }
 
     if (config.activeTab !== undefined) {
