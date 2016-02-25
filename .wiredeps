@@ -16,6 +16,7 @@
     "scroll-tabs": {
       "version": "0.2.0"
     },
+
     "bpmn-js": {
       "version": "bpmn-io/bpmn-js",
       "dependencies": {
@@ -129,6 +130,9 @@
     },
     "camunda-bpmn-moddle": {
       "version": "camunda/camunda-bpmn-moddle"
+    },
+    "canvg-client": {
+      "version": "0.0.1"
     },
     "codemirror": {
       "version": "5.12.0"
