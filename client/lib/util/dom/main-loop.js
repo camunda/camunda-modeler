@@ -11,13 +11,21 @@ var debounce = require('lodash/function/debounce');
 var debug = require('debug')('main-loop');
 
 
-module.exports = function mainLoop(app, parent) {
+/**
+ * Instantiates a main loop that updates the given
+ * parentNode with the contents of the app whenever
+ * the app changed (indicated via a `changed` event).
+ *
+ * @param {App} app
+ * @param {DOMElement} parentNode
+ */
+function mainLoop(app, parentNode) {
 
   var tree = app.render();
 
   var rootNode = createElement(tree);
 
-  parent.appendChild(rootNode);
+  parentNode.appendChild(rootNode);
 
 
   function update() {
@@ -35,4 +43,6 @@ module.exports = function mainLoop(app, parent) {
   // main loop
   app.on('changed', debounce(update, 1));
 
-};
+}
+
+module.exports = mainLoop;
