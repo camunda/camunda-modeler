@@ -7,6 +7,7 @@ var inherits = require('inherits');
 var h = require('vdom/h');
 
 var isUnsaved = require('util/file/is-unsaved'),
+    replaceFileExt = require('util/file/replace-file-ext'),
     ensureOpts = require('util/ensure-opts');
 
 var Tab = require('base/components/tab');
@@ -35,7 +36,7 @@ function MultiEditorTab(options) {
 
   this.editors = this.createEditors(options);
 
-  this.activeEditor = this.editors[0];
+  this.setEditor(this.editors[0]);
 
   // initialize with passed file, if any
   if (options.file) {
@@ -51,6 +52,32 @@ inherits(MultiEditorTab, Tab);
 
 module.exports = MultiEditorTab;
 
+
+MultiEditorTab.prototype.exportAs = function(type, done) {
+  if (this.activeEditor.exportAs) {
+    this.activeEditor.exportAs(type, (err, newFile) => {
+      var file = this.file,
+          path = file.path,
+          name;
+
+      if (err) {
+        return done(err);
+      }
+
+      name = replaceFileExt(file.name, type);
+
+      if (file.path !== '[unsaved]') {
+        path = replaceFileExt(file.path, type);
+      }
+
+      assign(newFile, { name: name, path: path, fileType: type });
+
+      done(null, newFile);
+    });
+  } else {
+    done(new Error('<exportAs> not implemented for the current tab'));
+  }
+};
 
 MultiEditorTab.prototype.showEditor = function(id) {
 
@@ -121,6 +148,9 @@ MultiEditorTab.prototype.getEditor = function(id) {
 
 MultiEditorTab.prototype.setEditor = function(editor) {
   this.activeEditor = editor;
+
+  this.emit('focus');
+
   this.events.emit('changed');
 };
 
@@ -134,7 +164,7 @@ MultiEditorTab.prototype.setEditor = function(editor) {
 MultiEditorTab.prototype.createEditors = function(options) {
   debug('create editors', options.editorDefinitions);
 
-  return options.editorDefinitions.map(definition => {
+  return options.editorDefinitions.map((definition) => {
     var id = definition.id,
         opts = assign({}, options, {
           id: options.id + '#' + id,
@@ -150,6 +180,10 @@ MultiEditorTab.prototype.createEditors = function(options) {
 
     component.on('state-updated', (state) => {
       this.dirty = state.dirty;
+
+      if (typeof this.dirty === 'undefined') {
+        this.dirty = state.dirty = isUnsaved(this.file);
+      }
 
       var newState = assign({}, {
         diagramType: this.file ? this.file.fileType : null,
@@ -233,7 +267,7 @@ MultiEditorTab.prototype.render = function() {
 
       <div className="tabs">
         {
-          this.editors.map(editor => {
+          this.editors.map((editor) => {
             return (
               <div className={ 'tab ' + (this.activeEditor === editor ? 'active' : '') }
                    tabIndex="0"

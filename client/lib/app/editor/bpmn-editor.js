@@ -22,6 +22,8 @@ var ensureOpts = require('util/ensure-opts'),
     dragger = require('util/dom/dragger'),
     copy = require('util/copy');
 
+var generateImage = require('app/util/generate-image');
+
 var debug = require('debug')('bpmn-editor');
 
 
@@ -92,13 +94,20 @@ BpmnEditor.prototype.triggerEditorActions = function(action, options) {
 BpmnEditor.prototype.updateState = function() {
 
   var modeler = this.getModeler(),
-      commandStack,
-      initialState = this.initialState;
+      initialState = this.initialState,
+      commandStack;
 
-  var stateContext = {},
-      elementsSelected,
+  var elementsSelected,
       elements,
       dirty;
+
+  var stateContext = {
+    bpmn: true,
+    undo: !!initialState.undo,
+    redo: !!initialState.redo,
+    dirty: initialState.dirty,
+    exportAs: [ 'png', 'jpeg', 'svg' ]
+  };
 
   // no diagram to harvest, good day maam!
   if (isImported(modeler)) {
@@ -118,16 +127,14 @@ BpmnEditor.prototype.updateState = function() {
       elementsSelected = true;
     }
 
-
-    stateContext = {
+    stateContext = assign(stateContext, {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
-      dirty: dirty,
       elementsSelected: elementsSelected,
+      dirty: dirty,
       zoom: true,
-      editable: true,
-      bpmn: true
-    };
+      editable: true
+    });
   }
 
   this.emit('state-updated', stateContext);
@@ -217,6 +224,26 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
       propertiesPanelConfig
     ],
     moddleExtensions: { camunda: camundaModdlePackage }
+  });
+};
+
+BpmnEditor.prototype.exportAs = function(type, done) {
+  var modeler = this.getModeler();
+
+  modeler.saveSVG((err, svg) => {
+    var file = {};
+
+    if (err) {
+      return done(err);
+    }
+
+    if (type !== 'svg') {
+      assign(file, { contents: generateImage(type, svg) });
+    } else {
+      assign(file, { contents: svg });
+    }
+
+    done(null, file);
   });
 };
 

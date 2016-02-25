@@ -5,6 +5,7 @@ var merge = require('lodash/object/merge'),
     assign = require('lodash/object/assign'),
     find = require('lodash/collection/find'),
     filter = require('lodash/collection/filter'),
+    map = require('lodash/collection/map'),
     debounce = require('lodash/function/debounce');
 
 var inherits = require('inherits');
@@ -60,6 +61,26 @@ function App(options) {
     }
   };
 
+  var EXPORT_BUTTONS = {
+    png: {
+      id: 'png',
+      action: this.compose('triggerAction', 'export-tab', { type: 'png' }),
+      label: 'Export as PNG',
+      icon: 'icon-picture',
+      primary: true
+    },
+    jpeg: {
+      id: 'jpeg',
+      action: this.compose('triggerAction', 'export-tab', { type: 'jpeg' }),
+      label: 'Export as JPEG'
+    },
+    svg: {
+      id: 'svg',
+      action: this.compose('triggerAction', 'export-tab', { type: 'svg' }),
+      label: 'Export as SVG'
+    }
+  };
+
   this.menuEntries = [
     MultiButton({
       id: 'create',
@@ -106,6 +127,14 @@ function App(options) {
       icon: 'icon-redo',
       action: this.compose('triggerAction', 'redo'),
       disabled: true
+    }),
+    Separator(),
+    MultiButton({
+      id: 'export-as',
+      disabled: true,
+      choices: map(EXPORT_BUTTONS, function(btn) {
+        return btn;
+      })
     })
   ];
 
@@ -140,17 +169,28 @@ function App(options) {
       return;
     }
 
+    // update undo/redo/export based on state
+    [ 'undo', 'redo' ].forEach((key) => {
+      this.updateMenuEntry(key, !newState[key]);
+    });
+
     debug('tools:state-changed', newState);
 
-    // undo/redo buttons
-    [ 'undo', 'redo' ].forEach((key) => {
-      var enabled = (
-        key in newState
-        && newState[key]
-      );
-      button = find(this.menuEntries, { id: key });
-      button.disabled = !enabled;
+    // update export button state
+    button = find(this.menuEntries, { id: 'export-as' });
+
+    button.choices = (newState['exportAs'] || []).map((type) => {
+      return EXPORT_BUTTONS[type];
     });
+
+    if (button.choices.length) {
+      button.disabled = false;
+      button.choices[0] = assign({}, button.choices[0], { icon: 'icon-picture', primary: true });
+    } else {
+      button.disabled = true;
+      button.choices[0] = { icon: 'icon-picture', primary: true, label: 'Export as Image' };
+    }
+
 
     // tab dirty state
     tab.dirty = newState.dirty;
@@ -160,8 +200,8 @@ function App(options) {
     // tab provides a save action
     [ 'save', 'save-as' ].forEach((key) => {
       var enabled = 'save' in newState;
-      button = find(this.menuEntries, { id: key });
-      button.disabled = !enabled;
+
+      this.updateMenuEntry(key, !enabled);
     });
 
     this.events.emit('changed');
@@ -189,7 +229,6 @@ function App(options) {
 
     this.events.emit('changed');
   });
-
 
   ///////// public API yea! //////////////////////////////////////
 
@@ -362,6 +401,10 @@ App.prototype.triggerAction = function(action, options) {
     return this.saveTab(activeTab, { saveAs: true });
   }
 
+  if (action === 'export-tab') {
+    return this.exportTab(activeTab, options.type);
+  }
+
   // forward other actions to active tab
   activeTab.triggerAction(action, options);
 };
@@ -414,6 +457,43 @@ App.prototype.createTab = function(file, options) {
 };
 
 /**
+ * Export the given tab with an image type.
+ *
+ * @param {Tab} tab
+ * @param {String} [type]
+ * @param {Function} [done]
+ */
+App.prototype.exportTab = function(tab, type, done) {
+  if (!tab) {
+    throw new Error('need tab to save');
+  }
+
+  if (!tab.save) {
+    throw new Error('tab cannot #save');
+  }
+
+  done = done || function(err, suggestedFile) {
+    if (isErrorOrCancel(err, suggestedFile)) {
+      debug('export error or canceled! %s', err || suggestedFile);
+
+      return;
+    }
+
+    debug('exported %s \n%s', tab.id, suggestedFile.contents);
+  };
+
+  tab.exportAs(type, (err, file) => {
+    if (err) {
+      debug('export error! %s', err);
+
+      return done(err);
+    }
+
+    this._saveTab(tab, file, true, done);
+  });
+};
+
+/**
  * Save the given tab with optional new name and
  * path (passed via options).
  *
@@ -448,9 +528,10 @@ App.prototype.saveTab = function(tab, options, done) {
 
   var updateTab = (err, savedFile) => {
 
-    if (err) {
-      debug('save error! %s', err);
-      return done(err);
+    if (isErrorOrCancel(err, savedFile)) {
+      debug('save error! %s', err || savedFile);
+
+      return done(err, savedFile);
     }
 
     debug('saved %s', tab.id);
@@ -477,11 +558,11 @@ App.prototype.saveTab = function(tab, options, done) {
 
     saveAs = isUnsaved(file) || options && options.saveAs;
 
-    this._saveTab(tab, file, saveAs, updateTab, done);
+    this._saveTab(tab, file, saveAs, updateTab);
   });
 };
 
-App.prototype._saveTab = function(tab, file, saveAs, updateTab, done) {
+App.prototype._saveTab = function(tab, file, saveAs, done) {
   var dialog = this.dialog,
       newFile;
 
@@ -494,19 +575,19 @@ App.prototype._saveTab = function(tab, file, saveAs, updateTab, done) {
       }
 
       if (suggestedFile === 'no-overwrite') {
-        return this._saveTab(tab, file, saveAs, updateTab, done);
+        return this._saveTab(tab, file, saveAs, done);
       }
 
       debug('save %s as %s', tab.id, suggestedFile.path);
 
       newFile = assign({}, file, suggestedFile);
 
-      this.saveFile(newFile, updateTab);
+      this.saveFile(newFile, done);
     });
   } else {
     newFile = assign({}, file);
 
-    this.saveFile(newFile, updateTab);
+    this.saveFile(newFile, done);
   }
 };
 
@@ -608,9 +689,9 @@ App.prototype.closeTab = function(tab, done) {
 
   dialog.close(file, (err, result) => {
     if (isErrorOrCancel(err, result)) {
-      debug('close-tab canceled: %s', err || result);
+      debug('close-tab error or canceled: %s', err || result);
 
-      done(err);
+      done(err, result);
       return;
     }
 
@@ -770,6 +851,20 @@ App.prototype.restoreWorkspace = function(done) {
 
 };
 
+
+/**
+ * Enables/disables any (button) menu entries
+ *
+ * @param  {String} id
+ * @param  {Boolean} isDisabled
+ */
+App.prototype.updateMenuEntry = function (id, isDisabled) {
+  var button = find(this.menuEntries, { id: id });
+
+  button.disabled = isDisabled;
+
+  this.events.emit('changed');
+};
 
 /**
  * Start application.

@@ -213,4 +213,67 @@ describe('BpmnTab', function() {
 
   });
 
+
+  describe('export as', function() {
+    var tab;
+
+    beforeEach(function(done) {
+      var bpmnEditor;
+
+      tab = createBpmnTab('diagram_1');
+
+      bpmnEditor = tab.getEditor('diagram');
+
+      bpmnEditor.mountEditor(document.createElement('div'));
+
+      bpmnEditor.on('imported', function() {
+        done();
+      });
+    });
+
+    function expectImage(file, type) {
+
+      expect(file).to.eql({
+        contents: 'data:,',
+        name: 'diagram_1.' + type,
+        path: 'diagram_1.' + type,
+        fileType: type
+      });
+    }
+
+    it('should export a png', function() {
+
+      // when
+      tab.exportAs('png', function(err, file) {
+
+        // then
+        expectImage(file, 'png');
+      });
+    });
+
+    it('should export a jpeg', function() {
+
+      // when
+      tab.exportAs('jpeg', function(err, file) {
+
+        // then
+        expectImage(file, 'jpeg');
+      });
+    });
+
+    it('should export a svg', function() {
+
+      // when
+      tab.exportAs('svg', function(err, file) {
+
+        // then
+        expect(file.name).to.eql('diagram_1.svg');
+        expect(file.path).to.eql('diagram_1.svg');
+        expect(file.fileType).to.eql('svg');
+        expect(file.contents).to.contain('http://www.w3.org/2000/svg');
+      });
+    });
+
+  });
+
 });

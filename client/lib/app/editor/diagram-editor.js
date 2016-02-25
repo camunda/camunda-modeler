@@ -155,5 +155,5 @@ DiagramEditor.prototype.triggerEditorActions = function() {
 };
 
 function isImported(modeler) {
-  return !!modeler.definitions;
+  return modeler && !!modeler.definitions;
 }

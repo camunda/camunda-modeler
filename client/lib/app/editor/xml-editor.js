@@ -69,6 +69,7 @@ XMLEditor.prototype.updateState = function() {
       initialState.dirty ||
       initialState.xml !== codemirror.getValue()
     ),
+    exportAs: false,
     editable: true
   };
 
@@ -81,7 +82,7 @@ XMLEditor.prototype.update = function() {
   // only do actual work if mounted
   if (!this.mounted) {
     debug('[#update] skipping (not mounted)');
-
+    
     return;
   }
 

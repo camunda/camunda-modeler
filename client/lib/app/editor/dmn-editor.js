@@ -2,7 +2,8 @@
 
 var inherits = require('inherits');
 
-var bind = require('lodash/function/bind');
+var bind = require('lodash/function/bind'),
+    assign = require('lodash/object/assign');
 
 var DiagramEditor = require('./diagram-editor');
 
@@ -56,11 +57,18 @@ DmnEditor.prototype.triggerEditorActions = function(action, options) {
 DmnEditor.prototype.updateState = function() {
 
   var modeler = this.getModeler(),
-      commandStack,
-      initialState = this.initialState;
+      initialState = this.initialState,
+      commandStack;
 
-  var stateContext = {},
-      dirty;
+  var dirty;
+
+  var stateContext = {
+    dmn: true,
+    undo: !!initialState.undo,
+    redo: !!initialState.redo,
+    dirty: initialState.dirty,
+    exportAs: false
+  };
 
   // no diagram to harvest, good day maam!
   if (isImported(modeler)) {
@@ -75,15 +83,14 @@ DmnEditor.prototype.updateState = function() {
     var element = modeler.get('selection').get();
     var elementType = getEntriesType(element);
 
-    stateContext = {
+    stateContext = assign(stateContext, {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
       dirty: dirty,
       dmnRuleEditing: elementType.rule,
       dmnClauseEditing: elementType.input || elementType.output,
-      editable: true,
-      dmn: true
-    };
+      editable: true
+    });
   }
 
   this.emit('state-updated', stateContext);

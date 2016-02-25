@@ -222,9 +222,11 @@ function describeEditor(name, options) {
     describe('editor state', function() {
 
       it('should update on import', function(done) {
-
         // given
         var $el = document.createElement('div');
+
+        // when
+        editor.mountEditor($el);
 
         // wait for diagram shown / imported
         editor.once('state-updated', function(context) {
@@ -237,10 +239,7 @@ function describeEditor(name, options) {
           done();
         });
 
-        // when
         editor.setXML(initialXML, {});
-
-        editor.mountEditor($el);
       });
 
 
@@ -312,9 +311,6 @@ function describeEditor(name, options) {
 
       it('should reflect initial dirty state', function(done) {
 
-        // given
-        var $el = document.createElement('div');
-
         // wait for diagram shown / imported
         editor.once('state-updated', function(context) {
 
@@ -329,7 +325,7 @@ function describeEditor(name, options) {
         // when
         editor.setXML(initialXML, { dirty: true });
 
-        editor.mountEditor($el);
+        editor.mountEditor(document.createElement('div'));
       });
 
     });

@@ -70,20 +70,20 @@ module.exports = MultiButton;
 function getPrimaryAction(isDisabled, choices) {
   var primaryChoices;
 
+  if (isDisabled) {
+    return {
+      label: choices[0].label,
+      icon: choices[0].icon,
+      action: function() {}
+    };
+  }
+
   primaryChoices = choices.filter(function(c) {
     return c.primary;
   });
 
   if (primaryChoices.length !== 1) {
     throw new Error('must define exactly one primary=true choice');
-  }
-
-  if (isDisabled) {
-    return {
-      label: primaryChoices[0].label,
-      icon: primaryChoices[0].icon,
-      action: function() {}
-    };
   }
 
   return primaryChoices[0];

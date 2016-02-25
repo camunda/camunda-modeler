@@ -1,7 +1,7 @@
 'use strict';
 
 function isUnsaved(file) {
-  return file.path === '[unsaved]';
+  return file && file.path === '[unsaved]';
 }
 
 module.exports = isUnsaved;

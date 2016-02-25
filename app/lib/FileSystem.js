@@ -9,23 +9,8 @@ var assign = require('lodash/object/assign'),
 var ensureOptions = require('./util/ensure-opts');
 
 
-var FILE_ENCODING = {
-  encoding: 'utf8'
-};
+var ENCODING_UTF8 = 'utf8';
 
-/**
- * General structure for the diagram's file as an object.
- *
- * @param  {String} filePath
- * @param  {String} file
- */
-function createDiagramFile(filePath, file) {
-  return {
-    contents: file,
-    name: path.basename(filePath),
-    path: filePath
-  };
-}
 
 /**
  * Interface for handling files.
@@ -121,6 +106,7 @@ FileSystem.prototype.saveAs = function(diagramFile, callback) {
   }));
 };
 
+
 FileSystem.prototype.save = function(diagramFile, callback) {
   var filePath = diagramFile.path;
 
@@ -133,34 +119,92 @@ FileSystem.prototype.save = function(diagramFile, callback) {
   }
 };
 
-function readFile(diagramPath) {
 
-  var contents = fs.readFileSync(diagramPath, FILE_ENCODING);
+/**
+ * Create a file descriptor from a given path
+ * and the files contents.
+ *
+ * @param {String} filePath
+ * @param {String} fileContents
+ *
+ * @return {FileDescriptor}
+ */
+function createFileDescriptor(filePath, fileContents) {
+  return {
+    contents: fileContents,
+    name: path.basename(filePath),
+    path: filePath
+  };
+}
 
-  // trim leading and trailing whitespace
-  // this fixes obscure import errors for non-strict
-  // xml exports
-  contents = contents.replace(/(^\s*|\s*$)/g, '');
+/**
+ * Read a file.
+ *
+ * @param {String} filePath
+ * @param {String} [encoding=utf8]
+ *
+ * @return {FileDescriptor}
+ */
+function readFile(filePath, encoding) {
 
-  return createDiagramFile(diagramPath, contents);
+  encoding = encoding || ENCODING_UTF8;
+
+  var fileContents = fs.readFileSync(filePath, encoding);
+
+  // TODO(nikku): remove this behavior and move to client
+  if (encoding === ENCODING_UTF8) {
+
+    // trim leading and trailing whitespace
+    // this fixes obscure import errors for non-strict
+    // xml exports
+    fileContents = fileContents.replace(/(^\s*|\s*$)/g, '');
+  }
+
+  return createFileDescriptor(filePath, fileContents);
 }
 
 module.exports.readFile = readFile;
 
 
+/**
+ * Write a file.
+ *
+ * @param {String} filePath
+ * @param {FileDescriptor} file
+ *
+ * @return {FileDescriptor} written file
+ */
+function writeFile(filePath, file) {
+  var contents = file.contents,
+      encoding;
 
-function writeFile(diagramPath, diagramFile) {
-  fs.writeFileSync(diagramPath, diagramFile.contents, FILE_ENCODING);
+  var match = /^data:(image\/[^;]+);base64,(.*)$/.exec(contents);
 
-  return assign({}, diagramFile, {
-    name: path.basename(diagramPath),
-    path: diagramPath
+  if (match) {
+    encoding = 'base64';
+    contents = match[2];
+  } else {
+    encoding = ENCODING_UTF8;
+  }
+
+  fs.writeFileSync(filePath, contents, encoding);
+
+  return assign({}, file, {
+    name: path.basename(filePath),
+    path: filePath
   });
 }
 
 module.exports.writeFile = writeFile;
 
 
+/**
+ * Check whether a file exists.
+ *
+ * @param {String} filePath
+ *
+ * @return {Boolean}
+ */
 function existsFile(filePath) {
   try {
     fs.statSync(filePath);
@@ -172,6 +216,7 @@ function existsFile(filePath) {
 }
 
 module.exports.existsFile = existsFile;
+
 
 /**
  * Ensure that the file path has an extension,

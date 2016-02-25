@@ -12,7 +12,8 @@ var select = require('test/helper/vdom').select,
     render = require('test/helper/vdom').render,
     simulateEvent = require('test/helper/vdom').simulateEvent;
 
-var assign = require('lodash/object/assign');
+var assign = require('lodash/object/assign'),
+    find = require('lodash/collection/find');
 
 var arg = require('test/helper/util/arg'),
     spy = require('test/helper/util/spy');
@@ -694,6 +695,8 @@ describe('App', function() {
 
     it('should bind redo');
 
+    it('should bind export-png');
+
   });
 
 
@@ -957,7 +960,7 @@ describe('App', function() {
 
     var tab;
 
-    beforeEach( () => {
+    beforeEach(function() {
       function SomeEditor() {
         BaseEditor.call(this, {});
       }
@@ -979,13 +982,14 @@ describe('App', function() {
     });
 
 
-    describe('focus', () => {
+    describe('focus', function() {
 
-      it('should be emitted on the active tab once selected', done => {
-
-        // given
+      it('should be emitted on the active tab once selected', function(done) {
+        // when
         app.addTab(tab);
+        // then
         expect(app.activeTab).not.to.eql(tab);
+
 
         tab.on('focus', () => {
           // then
@@ -995,7 +999,6 @@ describe('App', function() {
 
         // when
         app.selectTab(tab);
-
       });
 
     });
@@ -1035,6 +1038,227 @@ describe('App', function() {
 
         // when
         app.selectTab(tab);
+
+      });
+
+    });
+
+  });
+
+
+  describe('export', function () {
+
+    describe('api', function () {
+
+      function createTab(file) {
+        app.createTabs([ file ]);
+
+        return app.tabs[0];
+      }
+
+      it('should export image', function(done) {
+
+        // given
+        var tab = createTab(createBpmnFile(bpmnXML)),
+            exportedFile = {
+              name: 'diagram_1.png',
+              path: 'diagram_1.png',
+              contents: 'foo',
+              fileType: 'png'
+            };
+
+        tab.activeEditor.exportAs = function(type, callback) {
+          callback(null, { contents: 'foo' });
+        };
+
+        dialog.setResponse('saveAs', exportedFile);
+
+        // when
+        app.exportTab(tab, 'png', function(err, file) {
+
+          // then
+          expect(file.name).to.equal('diagram_1.png');
+          expect(file.path).to.equal('diagram_1.png');
+          expect(file.contents).to.equal('foo');
+          expect(file.fileType).to.equal('png');
+
+          expect(dialog.saveAs).to.have.been.calledWith(exportedFile);
+
+          done();
+        });
+      });
+
+
+      it('should not export on error', function(done) {
+
+        // given
+        var tab = createTab(createBpmnFile(bpmnXML)),
+            exportError = new Error('export failed');
+
+        tab.activeEditor.exportAs = function(type, callback) {
+          callback(exportError);
+        };
+
+        // when
+        app.exportTab(tab, 'svg', function(err, svg) {
+
+          // then
+          expect(err).to.equal(exportError);
+
+          expect(dialog.saveAs).to.not.have.been.called;
+
+          done();
+        });
+      });
+
+
+      it('should not export with DMN', function(done) {
+
+        // given
+        var tab = createTab(createDmnFile(dmnXML));
+
+        // when
+        app.exportTab(tab, 'svg', function(err, svg) {
+
+          // then
+          expect(err.message).to.equal('<exportAs> not implemented for the current tab');
+
+          expect(dialog.saveAs).to.not.have.been.called;
+
+          done();
+        });
+      });
+
+    });
+
+
+    describe('menu-bar', function () {
+
+      it('should be enabled when exporting is allowed', function(done) {
+        // given
+        var bpmnFile = createBpmnFile(bpmnXML),
+            exportButton = find(app.menuEntries, { id: 'export-as' }),
+            activeEditor;
+
+        // when
+        app.createTabs([ bpmnFile ]);
+
+        activeEditor = app.activeTab.activeEditor;
+
+        app.once('tools:state-changed', function() {
+          // then
+          expect(exportButton.disabled).to.be.false;
+
+          done();
+        });
+
+        activeEditor.mountEditor(document.createElement('div'));
+      });
+
+      it('should show export as "jpeg" and "svg"', function(done) {
+        // given
+        var bpmnFile = createBpmnFile(bpmnXML),
+            exportButton = find(app.menuEntries, { id: 'export-as' }),
+            bpmnTab;
+
+        app.createTabs([ bpmnFile ]);
+
+        bpmnTab = app.activeTab;
+
+        app.once('tools:state-changed', function() {
+
+          // then
+          expect(exportButton.choices).to.have.length(2);
+
+          expect(exportButton.choices[0].id).to.equal('jpeg');
+          expect(exportButton.choices[1].id).to.equal('svg');
+
+          done();
+        });
+
+        // when
+        app.emit('tools:state-changed', bpmnTab, { exportAs: [ 'jpeg', 'svg' ] });
+      });
+
+      describe('should update export button state', function() {
+
+        it('when there are no open tabs', function() {
+          // given
+          var exportButton = find(app.menuEntries, { id: 'export-as' });
+
+          // then
+          expect(exportButton.disabled).to.be.true;
+        });
+
+
+        it('when closing a tab where it was enabled', function() {
+          // given
+          var bpmnFile = createBpmnFile(bpmnXML),
+              exportButton;
+
+          app.createTabs([ bpmnFile ]);
+
+          app.closeTab(app.activeTab);
+
+          exportButton = find(app.menuEntries, { id: 'export-as' });
+
+          // then
+          expect(exportButton.disabled).to.be.true;
+        });
+
+
+        it('when switching tabs', function(done) {
+          // given
+          var bpmnFile = createBpmnFile(bpmnXML),
+              dmnFile = createDmnFile(dmnXML),
+              exportButton = find(app.menuEntries, { id: 'export-as' }),
+              bpmnTab,
+              activeEditor;
+
+          app.createTabs([ bpmnFile, dmnFile ]);
+
+          bpmnTab = app.tabs[0];
+
+          activeEditor = bpmnTab.activeEditor;
+
+          activeEditor.mountEditor(document.createElement('div'));
+
+          app.once('tools:state-changed', function() {
+            // then
+            expect(exportButton.disabled).to.be.false;
+
+            done();
+          });
+
+          // when -> selecting bpmn tab
+          app.selectTab(bpmnTab);
+        });
+
+
+        it('when switching editor views', function(done) {
+          // given
+          var bpmnFile = createBpmnFile(bpmnXML),
+              exportButton = find(app.menuEntries, { id: 'export-as' }),
+              activeTab, xmlEditor;
+
+          app.createTabs([ bpmnFile ]);
+
+          activeTab = app.activeTab;
+
+          xmlEditor = activeTab.getEditor('xml');
+
+          xmlEditor.mountEditor(document.createElement('div'));
+
+          app.once('tools:state-changed', function() {
+            // then
+            expect(exportButton.disabled).to.be.true;
+
+            done();
+          });
+
+          // when -> on xml view
+          activeTab.setEditor(xmlEditor);
+        });
 
       });
 
