@@ -122,5 +122,5 @@ BaseEditor.prototype.setXML = function(xml, initialState) {
 
 
 function needsOverride() {
-  throw new Error('need to implement this in a subclass');
+  return new Error('need to implement this in a subclass');
 }
