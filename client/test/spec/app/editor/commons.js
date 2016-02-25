@@ -27,7 +27,7 @@ function describeEditor(name, options) {
   /**
    * A common describe for all mountable editors
    */
-  describeFn(name + ' - base -', function() {
+  describeFn(name + ' - base', function() {
 
     var editor;
 

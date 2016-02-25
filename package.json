@@ -86,6 +86,7 @@
     "karma-mocha": "^0.2.2",
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-sinon-chai": "^1.2.0-rc1",
+    "karma-spec-reporter": "0.0.24",
     "load-grunt-tasks": "^3.4.0",
     "lolex": "^1.4.0",
     "mocha": "^2.3.3",
