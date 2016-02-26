@@ -8,7 +8,7 @@ var BaseComponent = require('base/component');
 
 var domify = require('domify');
 
-var debug = require('debug')('diagram-editor');
+var debug = require('debug')('base-editor');
 
 
 /**

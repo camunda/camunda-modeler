@@ -265,42 +265,36 @@ MenuBuilder.prototype.appendDmnActions = function () {
       label: 'At End',
       accelerator: 'CommandOrControl+D',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'dmn.ruleAdd'
-        });
+        browserWindow.webContents.send('dmn.ruleAdd');
       }
     }, {
       label: 'Above Selected',
+      enabled: this.opts.state.dmnRuleEditing,
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'dmn.ruleAddAbove'
-        });
+        browserWindow.webContents.send('dmn.ruleAddAbove');
       }
     }, {
       label: 'Below Selected',
+      enabled: this.opts.state.dmnRuleEditing,
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'dmn.ruleAddBelow'
-        });
+        browserWindow.webContents.send('dmn.ruleAddBelow');
       }
     }])
   }));
 
   this.menu.append(new MenuItem({
     label: 'Clear Rule',
+    enabled: this.opts.state.dmnRuleEditing,
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor.actions', {
-        event: 'dmn.ruleClear'
-      });
+      browserWindow.webContents.send('dmn.ruleClear');
     }
   }));
 
   this.menu.append(new MenuItem({
     label: 'Remove Rule',
+    enabled: this.opts.state.dmnRuleEditing,
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor.actions', {
-        event: 'dmn.ruleRemove'
-      });
+      browserWindow.webContents.send('dmn.ruleRemove');
     }
   }));
 
@@ -311,48 +305,35 @@ MenuBuilder.prototype.appendDmnActions = function () {
     submenu: Menu.buildFromTemplate([{
       label: 'Input',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'dmn.clauseAdd',
-          data: {
-            type: 'input'
-          }
-        });
+        browserWindow.webContents.send('dmn.clauseAdd.input');
       }
     }, {
       label: 'Output',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'dmn.clauseAdd',
-          data: {
-            type: 'output'
-          }
-        });
+        browserWindow.webContents.send('dmn.clauseAdd.output');
       }
     }, {
       type: 'separator'
     }, {
       label: 'Left of selected',
+      enabled: this.opts.state.dmnClauseEditing,
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'dmn.clauseAddLeft'
-        });
+        browserWindow.webContents.send('dmn.clauseAddLeft');
       }
     }, {
       label: 'Right of selected',
+      enabled: this.opts.state.dmnClauseEditing,
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'dmn.clauseAddRight'
-        });
+        browserWindow.webContents.send('dmn.clauseAddRight');
       }
     }])
   }));
 
   this.menu.append(new MenuItem({
     label: 'Remove Clause',
+    enabled: this.opts.state.dmnClauseEditing,
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor.actions', {
-        event: 'dmn.clauseRemove'
-      });
+      browserWindow.webContents.send('dmn.clauseRemove');
     }
   }));
 

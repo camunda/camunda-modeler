@@ -131,6 +131,29 @@ DiagramEditor.prototype.saveXML = function(done) {
   });
 };
 
+
+DiagramEditor.prototype.triggerAction = function(action, options) {
+
+  var modeler = this.getModeler();
+
+  if (action === 'undo') {
+    modeler.get('commandStack').undo();
+  }
+
+  if (action === 'redo') {
+    modeler.get('commandStack').redo();
+  }
+
+  var editorActions = modeler.get('editorActions', false);
+
+  if (!editorActions) {
+    return;
+  }
+
+  // forward other actions to editor actions
+  editorActions.trigger(action, options);
+};
+
 function isImported(modeler) {
   return !!modeler.definitions;
 }

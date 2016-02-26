@@ -130,7 +130,7 @@ function App(options) {
 
   this.events.on('tools:state-changed', (tab, newState) => {
 
-    var button;
+    var stateUpdate, button;
 
     // update buttons based on undo/redo state
     [ 'undo', 'redo' ].forEach((key) => {
@@ -150,15 +150,11 @@ function App(options) {
       button.disabled = !tab.dirty;
     }
 
-    this.events.emit('state:update', {
-      diagramType: tab.file.fileType,
-      undo: newState.undo,
-      redo: newState.redo,
-      dirty: newState.dirty,
-      editable: newState.editable,
-      elementsSelected: newState.elementsSelected
-    });
+    stateUpdate = assign({
+      diagramType: tab.file.fileType
+    }, newState);
 
+    this.events.emit('state:update', stateUpdate);
     this.events.emit('changed');
   });
 

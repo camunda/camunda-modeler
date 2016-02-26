@@ -8,6 +8,8 @@ var DiagramEditor = require('./diagram-editor');
 
 var DmnJS = require('dmn-js/lib/Modeler');
 
+var getEntriesType = require('dmn-js/lib/util/SelectionUtil').getEntriesType;
+
 
 /**
  * A BPMN 2.0 diagram editing component.
@@ -46,11 +48,16 @@ DmnEditor.prototype.updateState = function() {
       initialState.stackIndex !== commandStack._stackIdx
     );
 
+    var element = modeler.get('selection').get();
+    var elementType = getEntriesType(element);
+
     // TODO(nikku): complete / more updates?
     stateContext = {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
-      dirty: dirty
+      dirty: dirty,
+      dmnRuleEditing: elementType.rule,
+      dmnClauseEditing: elementType.input || elementType.output
     };
   }
 
@@ -63,18 +70,6 @@ DmnEditor.prototype.getStackIndex = function() {
   return isImported(modeler) ? modeler.get('commandStack')._stackIdx : -1;
 };
 
-DmnEditor.prototype.triggerAction = function(action, options) {
-
-  var modeler = this.getModeler();
-
-  if (action === 'undo') {
-    modeler.get('commandStack').undo();
-  }
-
-  if (action === 'redo') {
-    modeler.get('commandStack').redo();
-  }
-};
 
 DmnEditor.prototype.getModeler = function() {
 

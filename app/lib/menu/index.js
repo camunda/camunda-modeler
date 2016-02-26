@@ -28,14 +28,16 @@ function Menu(platform) {
     var menuState = {
       dmn: isDmn(clientState),
       bpmn: isBpmn(clientState),
-      editable: clientState.editable,
-      undo: clientState.undo,
-      redo: clientState.redo,
+      editable: !!clientState.editable,
+      undo: !!clientState.undo,
+      redo: !!clientState.redo,
       edit: atLeastOneTabOpen(clientState),
       save: atLeastOneTabOpen(clientState),
       saveAs: atLeastOneTabOpen(clientState),
       closeTab: atLeastOneTabOpen(clientState),
-      elementsSelected: clientState.elementsSelected
+      elementsSelected: !!clientState.elementsSelected,
+      dmnRuleEditing: !!clientState.dmnRuleEditing,
+      dmnClauseEditing: !!clientState.dmnClauseEditing
     };
 
     new MenuBuilder({ state: menuState }).build();
