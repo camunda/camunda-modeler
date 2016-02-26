@@ -84,9 +84,8 @@ function DiagramControl(diagramFile) {
     hasSelection = !!elements.length;
     enabled = false;
 
-    if ((elements.length === 1 &&
-       !(is(elements[0], 'bpmn:Process') || is(elements[0], 'bpmn:Collaboration'))) ||
-       elements.length > 1) {
+    if (elements.length === 1 &&
+       !(is(elements[0], 'bpmn:Process') || is(elements[0], 'bpmn:Collaboration'))) {
       enabled = true;
     }
 
