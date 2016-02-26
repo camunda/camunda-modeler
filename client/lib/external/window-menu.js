@@ -45,7 +45,20 @@ function WindowMenu(app) {
   listenOnMenuAction('dmn.clauseAddLeft', 'clauseAddLeft');
   listenOnMenuAction('dmn.clauseAddRight', 'clauseAddRight');
   listenOnMenuAction('dmn.clauseRemove', 'clauseRemove');
+  listenOnMenuZoomAction('editor:stepZoom:in', 'stepZoom', 1);
+  listenOnMenuZoomAction('editor:stepZoom:out', 'stepZoom', -1);
+  listenOnMenuZoomAction('editor:zoom', 'zoom', 1);
 
+
+  function listenOnMenuZoomAction(actionEvent, targetEvent, value) {
+    browser.on(actionEvent, function(err, args) {
+      debug('Received action from menu: ' + actionEvent);
+
+      app.triggerAction(targetEvent, {
+        value: value
+      });
+    });
+  }
 
   function listenOnMenuAction(actionEvent, targetEvent) {
     browser.on(actionEvent, function(err, args) {

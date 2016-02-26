@@ -368,34 +368,19 @@ MenuBuilder.prototype.appendWindowMenu = function(submenu) {
       label: 'Zoom In',
       accelerator: 'CommandOrControl+=',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'editor.stepZoom',
-          data: {
-            value: 1
-          }
-        });
+        browserWindow.webContents.send('editor:stepZoom:in');
       }
     }, {
       label: 'Zoom Out',
       accelerator: 'CommandOrControl+-',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'editor.stepZoom',
-          data: {
-            value: -1
-          }
-        });
+        browserWindow.webContents.send('editor:stepZoom:out');
       }
     }, {
       label: 'Zoom Default',
       accelerator: 'CommandOrControl+0',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'editor.zoom',
-          data: {
-            value: 1
-          }
-        });
+        browserWindow.webContents.send('editor:zoom');
       }
     }, {
       type: 'separator'
