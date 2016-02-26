@@ -106,7 +106,11 @@ module.exports = function(grunt) {
 
     watch: {
       less: {
-        files: 'client/{lib,styles}/**/*.less',
+        files: [
+          'client/{lib,styles}/**/*.less',
+          'node_modules/dmn-js/styles/**/*.less',
+          'node_modules/bpmn-js-properties-panel/styles/**/*.less'
+        ],
         tasks: [ 'less' ]
       },
       copy: {
