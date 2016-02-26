@@ -373,6 +373,149 @@ describe('App', function() {
   });
 
 
+  describe('tab closing', function () {
+
+    it('should show <close dialog> when closing a dirty tab', function() {
+      // given
+      var file = createBpmnFile(bpmnXML),
+          tab;
+
+      file.path = '[unsaved]';
+
+      app.createTabs([ file ]);
+
+      tab = app.activeTab;
+
+      // when
+      app.closeTab(tab);
+
+      // then
+      expect(dialog.close).to.have.been.called;
+    });
+
+
+    it('should NOT show <close dialog> when closing a "clean" tab', function() {
+      // given
+      var file = createBpmnFile(bpmnXML),
+          tab;
+
+      app.createTabs([ file ]);
+
+      tab = app.activeTab;
+
+      // when
+      app.closeTab(tab);
+
+      // then
+      expect(dialog.close).to.not.have.been.called;
+    });
+
+
+    it('should save file and close tab', function(done) {
+      // given
+      var file = createBpmnFile(bpmnXML),
+          initialTab;
+
+      var expectedFile = assign({}, file, { path: '/foo/bar', name: 'bar' });
+
+      file.path = '[unsaved]';
+
+      app.createTabs([ file ]);
+
+      initialTab = app.activeTab;
+
+      app.saveTab = function(tab, cb) {
+        tab.setFile(expectedFile);
+
+        cb(null, expectedFile);
+      };
+
+      // when
+      dialog.setCloseResponse('save');
+
+      app.closeTab(initialTab, function(err, tab) {
+
+        // then
+        expect(tab.file).to.equal(expectedFile);
+        expect(app.tabs).to.not.contain(initialTab);
+
+        expect(dialog.close).to.have.been.called;
+
+        done();
+      });
+    });
+
+
+    it('should NOT save file and close tab', function(done) {
+      // given
+      var file = createBpmnFile(bpmnXML),
+          initialTab;
+
+      var expectedFile = assign({}, file, { path: '/foo/bar', name: 'bar' });
+
+      file.path = '[unsaved]';
+
+      app.createTabs([ file ]);
+
+      initialTab = app.activeTab;
+
+      app.saveTab = function(tab, cb) {
+        tab.setFile(expectedFile);
+
+        cb(null, expectedFile);
+      };
+
+      // when
+      dialog.setCloseResponse(null);
+
+      app.closeTab(initialTab, function(err, tab) {
+
+        // then
+        expect(tab.file).to.equal(file);
+        expect(app.tabs).to.not.contain(initialTab);
+
+        expect(dialog.close).to.have.been.called;
+
+        done();
+      });
+    });
+
+
+    it('should cancel tab closing', function(done) {
+      // given
+      var file = createBpmnFile(bpmnXML),
+          initialTab;
+
+      var expectedFile = assign({}, file, { path: '/foo/bar', name: 'bar' });
+
+      file.path = '[unsaved]';
+
+      app.createTabs([ file ]);
+
+      initialTab = app.activeTab;
+
+      app.saveTab = function(tab, cb) {
+        tab.setFile(expectedFile);
+
+        cb(null, expectedFile);
+      };
+
+      // when
+      dialog.setCloseResponse(new Error('user canceled'));
+
+      app.closeTab(initialTab, function(err, tab) {
+
+        // then
+        expect(app.tabs).to.contain(initialTab);
+
+        expect(dialog.close).to.have.been.called;
+
+        done();
+      });
+    });
+
+  });
+
   describe('menu-bar', function() {
 
     var tree;

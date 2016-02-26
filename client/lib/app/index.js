@@ -156,8 +156,8 @@ function App(options) {
       redo: newState.redo,
       dirty: newState.dirty
     });
-    this.events.emit('changed');
 
+    this.events.emit('changed');
   });
 
   this.events.on('log:toggle', (options) => {
@@ -382,6 +382,11 @@ App.prototype.saveTab = function(tab, options, done) {
     throw new Error('tab cannot #save');
   }
 
+  if (typeof options === 'function') {
+    done = options;
+    options = undefined;
+  }
+
   done = done || function(err) {
     if (err) {
       dialog.saveError(err, function() {
@@ -539,20 +544,63 @@ App.prototype.selectTab = function(tab) {
  *
  * @param {Tab} tab
  */
-App.prototype.closeTab = function(tab) {
+App.prototype.closeTab = function(tab, done) {
 
   debug('close tab', tab);
 
   var tabs = this.tabs,
-      events = this.events;
+      dialog = this.dialog,
+      file;
 
   var exists = contains(tabs, tab);
 
   if (!exists) {
-    return;
+    throw new Error('non existing tab');
   }
 
-  // TODO(nikku): ask to save if unsaved
+  done = done || function(err) {
+    if (err) {
+      debug('error: %s', err);
+    }
+  };
+
+  // close normally when file is already saved
+  if (!tab.dirty) {
+    return this._closeTab(tab, done);
+  }
+
+  file = tab.file;
+
+  dialog.close(file, (err, result) => {
+    if (err) {
+      debug('close-tab canceled: %s', err);
+
+      done(err);
+      return;
+    }
+
+    // close without saving
+    if (!result) {
+      return this._closeTab(tab, done);
+    }
+
+    // save and then close the tab
+    this.saveTab(tab, (err, savedFile) => {
+      if (err) {
+        debug('save-tab error: %s', err);
+
+        done(err);
+        return;
+      }
+
+      this._closeTab(tab, done);
+    });
+  });
+};
+
+App.prototype._closeTab = function(tab, done) {
+  var tabs = this.tabs,
+      events = this.events;
 
   events.emit('tab:close', tab);
 
@@ -567,10 +615,14 @@ App.prototype.closeTab = function(tab) {
   }
 
   events.emit('workspace:changed');
+
   events.emit('state:update', {
     tabs: this.tabs.length
   });
+
   events.emit('changed');
+
+  done(null, tab);
 };
 
 App.prototype.addTab = function(tab, config) {

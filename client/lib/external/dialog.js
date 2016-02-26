@@ -19,7 +19,7 @@ function Dialog() {
   };
 
   /**
-   * Open save error dialog and callback with (err).
+   * Open 'save error' dialog and callback with (err).
    *
    * @param {File} file
    * @param {Function} done
@@ -31,7 +31,7 @@ function Dialog() {
   };
 
   /**
-   * Open an open dialog and callback with (err, file).
+   * Open an 'open' dialog and callback with (err, file).
    *
    * @param {Function} done
    */
@@ -40,7 +40,7 @@ function Dialog() {
   };
 
   /**
-   * Display open error dialog and callback with (err).
+   * Display 'open error' dialog and callback with (err).
    *
    * @param {Error} err
    * @param {Function} done
@@ -52,7 +52,16 @@ function Dialog() {
   };
 
   /**
-   * Open unrecognized file error dialog and invoke callback with (err).
+   * Open a 'close' dialog and callback with (err, file).
+   *
+   * @param {Function} done
+   */
+  this.close = function(file, done) {
+    browser.send('file:close', file, done);
+  };
+
+  /**
+   * Open 'unrecognized file error' dialog and invoke callback with (err).
    *
    * @param {Function} done
    */

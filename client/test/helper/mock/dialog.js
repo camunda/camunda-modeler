@@ -11,10 +11,15 @@ var spyOn = require('test/helper/util/spy-on');
 function Dialog() {
 
   this.openResponse = null;
+  this.closeResponse = null;
   this.saveAsResponse = null;
 
   this.setOpenResponse = function(fileOrError) {
     this.openResponse = fileOrError;
+  };
+
+  this.setCloseResponse = function(fileOrError) {
+    this.closeResponse = fileOrError;
   };
 
   this.setSaveAsResponse = function(fileOrError) {
@@ -69,6 +74,20 @@ function Dialog() {
    */
   this.openError = function(err, done) {
     done(null);
+  };
+
+  /**
+   * Open a 'close' dialog and callback with (err, file).
+   *
+   * @param {Function} done
+   */
+  this.close = function(file, done) {
+    
+    if (this.closeResponse instanceof Error) {
+      done(this.closeResponse);
+    } else {
+      done(null, this.closeResponse);
+    }
   };
 
   /**

@@ -95,12 +95,12 @@ function FileSystem(browserWindow, config) {
   });
 
   renderer.on('file:close', function(diagramFile, done) {
-    self.close(diagramFile, function(err, updatedDiagram) {
+    self.close(diagramFile, function(err, result) {
       if (err) {
         return done(err);
       }
 
-      done(null, updatedDiagram);
+      done(null, result);
     });
   });
 
@@ -231,17 +231,16 @@ FileSystem.prototype._save = function(filePath, diagramFile, callback) {
 };
 
 FileSystem.prototype.close = function(diagramFile, callback) {
-  var self = this;
-
   this.showCloseDialog(diagramFile.name, function (result) {
     if (result === 2) {
-      return callback(new Error(errorUtil.CANCELLATION_MESSAGE));
+      // cancel
+      callback(new Error(errorUtil.CANCELLATION_MESSAGE));
     } else if (result === 1) {
       // omitting the diagram to indicate that
       // stuff was not saved...
-      return callback(null);
+      callback(null);
     } else {
-      self.save(null, diagramFile, callback);
+      callback(null, 'save');
     }
   });
 };
