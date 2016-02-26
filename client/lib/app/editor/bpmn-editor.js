@@ -68,11 +68,15 @@ BpmnEditor.prototype.updateState = function() {
     // direct editing function (annotations)
     var elements = modeler.get('selection').get();
     var editable = false;
+    var elementsSelected = false;
 
-    if ((elements.length === 1 &&
-        !(is(elements[0], 'bpmn:Process') || is(elements[0], 'bpmn:Collaboration'))) ||
-      elements.length > 1) {
+    if (elements.length === 1 &&
+        !(is(elements[0], 'bpmn:Process') || is(elements[0], 'bpmn:Collaboration'))) {
       editable = true;
+    }
+
+    if (elements.length >= 1) {
+      elementsSelected = true;
     }
 
     // TODO(nikku): complete / more updates?
@@ -80,7 +84,8 @@ BpmnEditor.prototype.updateState = function() {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
       dirty: dirty,
-      editable: editable
+      editable: editable,
+      elementsSelected: elementsSelected
     };
   }
 

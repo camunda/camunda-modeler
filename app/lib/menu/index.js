@@ -34,7 +34,8 @@ function Menu(platform) {
       edit: atLeastOneTabOpen(clientState),
       save: atLeastOneTabOpen(clientState),
       saveAs: atLeastOneTabOpen(clientState),
-      closeTab: atLeastOneTabOpen(clientState)
+      closeTab: atLeastOneTabOpen(clientState),
+      elementsSelected: clientState.elementsSelected
     };
 
     new MenuBuilder({ state: menuState }).build();

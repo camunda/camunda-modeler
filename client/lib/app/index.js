@@ -155,7 +155,8 @@ function App(options) {
       undo: newState.undo,
       redo: newState.redo,
       dirty: newState.dirty,
-      editable: newState.editable
+      editable: newState.editable,
+      elementsSelected: newState.elementsSelected
     });
 
     this.events.emit('changed');

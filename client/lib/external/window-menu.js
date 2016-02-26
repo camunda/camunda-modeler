@@ -11,82 +11,50 @@ function WindowMenu(app) {
 
   // Notifying menu about client state change
   app.on('state:changed', function (state) {
-    debug('---> state:changed: ', state);
+    debug('Notifying menu about client state change', state);
     browser.send('menu:update', state);
   });
 
   // Menu actions
-  browser.on('file:create:bpmn', function(err, args) {
-    debug('file:create:bpmn');
+  function listenOnMenuAction(actionEvent, targetEvent) {
+    browser.on(actionEvent, function(err, args) {
+      debug('Received action from menu: ' + actionEvent);
 
-    app.triggerAction('create-bpmn-diagram');
-  });
+      app.triggerAction(targetEvent, args);
+    });
+  }
 
-  browser.on('file:create:dmn', function(err, args) {
-    debug('file:create:dmn');
+  listenOnMenuAction('file:create:bpmn', 'create-bpmn-diagram');
+  listenOnMenuAction('file:create:dmn', 'create-dmn-diagram');
+  listenOnMenuAction('file:open', 'open-diagram');
+  listenOnMenuAction('file:save', 'save');
+  listenOnMenuAction('file:save-as', 'save-as');
+  listenOnMenuAction('file:close', 'close-active-tab');
+  listenOnMenuAction('editor:undo', 'undo');
+  listenOnMenuAction('editor:redo', 'redo');
+  listenOnMenuAction('editor:handTool', 'handTool');
+  listenOnMenuAction('editor:lassoTool', 'lassoTool');
+  listenOnMenuAction('editor:spaceTool', 'spaceTool');
+  listenOnMenuAction('editor:directEditing', 'directEditing');
+  listenOnMenuAction('editor:selectElements', 'selectElements');
+  listenOnMenuAction('editor:removeSelection', 'removeSelection');
 
-    app.triggerAction('create-dmn-diagram');
-  });
 
-  browser.on('file:open', function(err, args) {
-    debug('file:open');
+  function listenOnMenuCanvasAction(actionEvent, direction) {
+    browser.on(actionEvent, function(err, args) {
+      debug('Received action from menu: ' + actionEvent);
 
-    app.triggerAction('open-diagram');
-  });
+      app.triggerAction('moveCanvas', {
+        speed: 20,
+        direction: direction
+      });
+    });
+  }
 
-  browser.on('file:save', function(err, args) {
-    debug('file:save');
-
-    app.triggerAction('save');
-  });
-
-  browser.on('file:save-as', function(err, args) {
-    debug('file:save-as');
-
-    app.triggerAction('save-as');
-  });
-
-  browser.on('file:close', function(err, args) {
-    debug('file:close');
-
-    app.triggerAction('close-active-tab');
-  });
-
-  browser.on('editor:undo', function(err, args) {
-    debug('file:undo');
-
-    app.triggerAction('undo');
-  });
-
-  browser.on('editor:redo', function(err, args) {
-    debug('file:redo');
-
-    app.triggerAction('redo');
-  });
-
-  browser.on('editor:handTool', function(err, args) {
-    debug('editor:handTool');
-
-    app.triggerAction('handTool');
-  });
-
-  browser.on('editor:lassoTool', function(err, args) {
-    debug('editor:lassoTool');
-
-    app.triggerAction('lassoTool');
-  });
-
-  browser.on('editor:spaceTool', function(err, args) {
-    debug('editor:spaceTool');
-
-    app.triggerAction('spaceTool');
-  });
-
-  browser.on('editor:directEditing', function(err, args) {
-    debug('editor:directEditing');
-    
-    app.triggerAction('directEditing');
-  });
+  listenOnMenuCanvasAction('editor:moveCanvas:up', 'up');
+  listenOnMenuCanvasAction('editor:moveCanvas:down', 'down');
+  listenOnMenuCanvasAction('editor:moveCanvas:left', 'left');
+  listenOnMenuCanvasAction('editor:moveCanvas:right', 'right');
 
 }
 

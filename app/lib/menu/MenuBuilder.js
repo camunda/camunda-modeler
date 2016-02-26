@@ -12,7 +12,6 @@ var merge = require('lodash/object/merge');
 function MenuBuilder(opts) {
   this.opts = merge({
     appName: 'Camunda Modeler',
-    canvasMoveSpeed: 20,
     state: {}
   }, opts);
 
@@ -216,49 +215,25 @@ MenuBuilder.prototype.appendBpmnActions = function() {
       label: 'Move Up',
       accelerator: 'Up',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'bpmn.moveCanvas',
-          data: {
-            speed: self.opts.canvasMoveSpeed,
-            direction: 'up'
-          }
-        });
+        browserWindow.webContents.send('editor:moveCanvas:up');
       }
     }, {
       label: 'Move Left',
       accelerator: 'Left',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'bpmn.moveCanvas',
-          data: {
-            speed: self.opts.canvasMoveSpeed,
-            direction: 'left'
-          }
-        });
+        browserWindow.webContents.send('editor:moveCanvas:left');
       }
     }, {
       label: 'Move Down',
       accelerator: 'Down',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'bpmn.moveCanvas',
-          data: {
-            speed: self.opts.canvasMoveSpeed,
-            direction: 'down'
-          }
-        });
+        browserWindow.webContents.send('editor:moveCanvas:down');
       }
     }, {
       label: 'Move Right',
       accelerator: 'Right',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor.actions', {
-          event: 'bpmn.moveCanvas',
-          data: {
-            speed: self.opts.canvasMoveSpeed,
-            direction: 'right'
-          }
-        });
+        browserWindow.webContents.send('editor:moveCanvas:right');
       }
     }])
   }));
@@ -266,21 +241,17 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Select All',
     accelerator: 'CommandOrControl+A',
-    role: 'selectall',
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor.actions', {
-        event: 'bpmn.selectElements'
-      });
+      browserWindow.webContents.send('editor:selectElements');
     }
   }));
 
   this.menu.append(new MenuItem({
     label: 'Remove Selected',
     accelerator: 'Delete',
+    enabled: this.opts.state.elementsSelected,
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor.actions', {
-        event: 'bpmn.removeSelection'
-      });
+      browserWindow.webContents.send('editor:removeSelection');
     }
   }));
 
