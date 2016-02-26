@@ -456,15 +456,18 @@ function Editor($scope) {
       switch(evt.keyCode) {
         case 76:
           // Lasso tool
-          tool = 'lassoTool'
+          tool = 'lassoTool';
           break;
         case 83:
           // Space tool
-          tool = 'spaceTool'
+          tool = 'spaceTool';
           break;
         case 72:
           // Hand tool
-          tool = 'handTool'
+          tool = 'handTool';
+          break;
+        case 69:
+          tool = 'directEditing';
           break;
         default:
         // do nothing
