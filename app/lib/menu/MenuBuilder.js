@@ -170,8 +170,6 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
 };
 
 MenuBuilder.prototype.appendBpmnActions = function() {
-  var self = this;
-
   this.menu.append(new MenuItem({
     label: 'Hand Tool',
     accelerator: 'H',
