@@ -4,6 +4,8 @@ var inherits = require('inherits');
 
 var Tab = require('base/components/tab');
 
+var ensureOpts = require('util/ensure-opts');
+
 
 function EmptyTab(options) {
 
@@ -11,11 +13,23 @@ function EmptyTab(options) {
     return new EmptyTab(options);
   }
 
+  ensureOpts([
+    'app'
+  ], options);
+
   this.render = function() {
 
     var html =
-      <div className="FOOO">
-        <h1>I am an empty tab!!!</h1>
+      <div className="empty-tab">
+        <h1>No open diagram</h1>
+        <p>
+          <button onClick={ this.app.compose('triggerAction', 'create-bpmn-diagram') }>create BPMN diagram</button>
+          <span> or </span>
+          <button onClick={ this.app.compose('triggerAction', 'create-dmn-diagram') }>create DMN table</button>
+        </p>
+        <p>
+          <button onClick={ this.app.compose('triggerAction', 'open-diagram') }>open from file system</button>
+        </p>
       </div>;
 
     return html;

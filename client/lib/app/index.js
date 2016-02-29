@@ -115,7 +115,8 @@ function App(options) {
       label: '+',
       title: 'Create new Diagram',
       action: this.compose('triggerAction', 'create-bpmn-diagram'),
-      closable: false
+      closable: false,
+      app: this
     })
   ];
 
@@ -298,7 +299,7 @@ App.prototype.triggerAction = function(action, options) {
 
   if (action === 'close-active-tab') {
 
-    if (activeTab.closable !== false) {
+    if (activeTab.closable) {
       return this.closeTab(this.activeTab);
     }
 
