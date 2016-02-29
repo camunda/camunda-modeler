@@ -2,30 +2,27 @@
 
 var inherits = require('inherits');
 
+var assign = require('lodash/object/assign');
+
+var domify = require('domify');
+
 var DiagramEditor = require('./diagram-editor');
 
 var CloseHandle = require('base/components/misc/close-handle');
 
 var BpmnJS = require('bpmn-js/lib/Modeler');
 
-var is = require('bpmn-js/lib/util/ModelUtil').is;
-
 var diagramOriginModule = require('diagram-js-origin'),
     propertiesPanelModule = require('bpmn-js-properties-panel'),
     propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda'),
     camundaModdlePackage = require('camunda-bpmn-moddle/resources/camunda');
 
-var domify = require('domify');
-
-var dragger = require('util/dom/dragger');
+var ensureOpts = require('util/ensure-opts'),
+    dragger = require('util/dom/dragger'),
+    copy = require('util/copy');
 
 var debug = require('debug')('bpmn-editor');
 
-var ensureOpts = require('util/ensure-opts');
-
-var copy = require('util/copy');
-
-var assign = require('lodash/object/assign');
 
 /**
  * A BPMN 2.0 diagram editing component.
@@ -47,8 +44,8 @@ inherits(BpmnEditor, DiagramEditor);
 module.exports = BpmnEditor;
 
 
-BpmnEditor.prototype.triggerAction = function(action, options) {
-  this.constructor.super_.prototype.triggerAction.apply(this, [action, options]);
+BpmnEditor.prototype.triggerEditorActions = function(action, options) {
+  var opts = options || {};
 
   var modeler = this.getModeler();
 
@@ -58,34 +55,36 @@ BpmnEditor.prototype.triggerAction = function(action, options) {
     return;
   }
 
-
   if ('moveCanvas' === action) {
-    options = assign({}, {speed: 20}, options);
+    opts = assign({ speed: 20 }, options);
   }
 
   if ('zoomIn' === action) {
     action = 'stepZoom';
-    options = {
+
+    opts = {
       value: 1
     };
   }
 
   if ('zoomOut' === action) {
     action = 'stepZoom';
-    options = {
+
+    opts = {
       value: -1
     };
   }
 
   if ('zoom' === action) {
-    options = assign({}, {
+    opts = assign({
       value: 1
     }, options);
   }
 
+  debug('editor-actions', action, opts);
 
   // forward other actions to editor actions
-  editorActions.trigger(action, options);
+  editorActions.trigger(action, opts);
 };
 
 
@@ -96,6 +95,8 @@ BpmnEditor.prototype.updateState = function() {
       initialState = this.initialState;
 
   var stateContext = {},
+      elementsSelected,
+      elements,
       dirty;
 
   // no diagram to harvest, good day maam!
@@ -108,15 +109,9 @@ BpmnEditor.prototype.updateState = function() {
       initialState.stackIndex !== commandStack._stackIdx
     );
 
-    // direct editing function (annotations)
-    var elements = modeler.get('selection').get();
-    var editable = false;
-    var elementsSelected = false;
-
-    if (elements.length === 1 &&
-        !(is(elements[0], 'bpmn:Process') || is(elements[0], 'bpmn:Collaboration'))) {
-      editable = true;
-    }
+    // direct editing function
+    elements = modeler.get('selection').get();
+    elementsSelected = false;
 
     if (elements.length >= 1) {
       elementsSelected = true;
@@ -127,7 +122,6 @@ BpmnEditor.prototype.updateState = function() {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
       dirty: dirty,
-      editable: editable,
       elementsSelected: elementsSelected
     };
   }

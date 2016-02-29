@@ -6,6 +6,8 @@ var BaseEditor = require('./base-editor');
 
 var debug = require('debug')('diagram-editor');
 
+var needsOverride = require('util/needs-override');
+
 
 /**
  * Base diagram editor.
@@ -137,12 +139,19 @@ DiagramEditor.prototype.triggerAction = function(action, options) {
   var modeler = this.getModeler();
 
   if (action === 'undo') {
-    modeler.get('commandStack').undo();
+    return modeler.get('commandStack').undo();
   }
 
   if (action === 'redo') {
-    modeler.get('commandStack').redo();
+    return modeler.get('commandStack').redo();
   }
+
+  this.triggerEditorActions(action, options);
+};
+
+
+DiagramEditor.prototype.triggerEditorActions = function() {
+  throw needsOverride();
 };
 
 function isImported(modeler) {

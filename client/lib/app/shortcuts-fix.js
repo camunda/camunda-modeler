@@ -2,32 +2,29 @@
 
 var debug = require('debug')('shortcuts');
 
-function Shortcuts(app, window) {
 
-  this.window = window;
+function modifierPressed(evt) {
+  return evt.ctrlKey || evt.metaKey;
+}
+
+function ShortcutsFix(app) {
 
   this.bind = () => {
     debug('adding keyboard shortcuts bindings');
-    this.window.addEventListener('keydown', this.handler);
-    return this;
+
+    window.addEventListener('keydown', this.handler);
   };
 
   this.unbind = () => {
     debug('removing keyboard shortcuts bindings');
-    this.window.removeEventListener('keydown', this.handler);
-    return this;
+
+    window.removeEventListener('keydown', this.handler);
   };
 
   this.handler = (event) => {
+    var tool;
+
     debug('===> here', event);
-
-    function isMac() {
-      return window.navigator.platform === 'MacIntel';
-    }
-
-    function modifierPressed(evt) {
-      return event.ctrlKey || event.metaKey;
-    }
 
     /**
      * Tools (keybinding)
@@ -40,8 +37,8 @@ function Shortcuts(app, window) {
      * This is necessary for the time being, because in Mac OS X the A - Z
      * accelerators (keybindings) are being swallen by the renderer process
      */
-    if (isMac() && !modifierPressed(event)) {
-      var tool;
+    if (!modifierPressed(event)) {
+
       switch (event.keyCode) {
       case 76:
         tool = 'lassoTool';
@@ -61,6 +58,7 @@ function Shortcuts(app, window) {
 
       if (tool) {
         event.preventDefault();
+
         app.triggerAction(tool);
       }
     }
@@ -68,4 +66,4 @@ function Shortcuts(app, window) {
 
 }
 
-module.exports = Shortcuts;
+module.exports = ShortcutsFix;

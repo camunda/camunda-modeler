@@ -10,6 +10,8 @@ var DmnJS = require('dmn-js/lib/Modeler');
 
 var getEntriesType = require('dmn-js/lib/util/SelectionUtil').getEntriesType;
 
+var debug = require('debug')('dmn-editor');
+
 
 /**
  * A BPMN 2.0 diagram editing component.
@@ -25,8 +27,8 @@ inherits(DmnEditor, DiagramEditor);
 module.exports = DmnEditor;
 
 
-DmnEditor.prototype.triggerAction = function(action, options) {
-  this.constructor.super_.prototype.triggerAction.apply(this, [action, options]);
+DmnEditor.prototype.triggerEditorActions = function(action, options) {
+  var opts = options || {};
 
   var modeler = this.getModeler();
 
@@ -36,8 +38,14 @@ DmnEditor.prototype.triggerAction = function(action, options) {
     return;
   }
 
+  if (action === 'clauseAdd') {
+    opts = options.type;
+  }
+
+  debug('editor-actions', action, options);
+
   // forward other actions to editor actions
-  editorActions.trigger(action, options);
+  editorActions.trigger(action, opts);
 };
 
 

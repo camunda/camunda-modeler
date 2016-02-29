@@ -17,7 +17,11 @@ var Logger = require('base/logger'),
 
 var App = require('./app');
 
-var mainLoop = require('util/dom/main-loop');
+var mainLoop = require('util/dom/main-loop'),
+    isMac = require('util/is-mac');
+
+var ShortcutsFix = require('app/shortcuts-fix');
+
 
 // init dom-delegator
 Delegator();
@@ -36,16 +40,9 @@ domReady(function() {
   new State(app);
   new Menu(app);
 
-  // REVIEW: Workaround for menu keyboard bindings on Mac.
-  // Can be removed, once migrated on to Electron >= 0.36.x
-  function isMac() {
-    return window.navigator.platform === 'MacIntel';
+  if (isMac()) {
+    new ShortcutsFix(app).bind();
   }
-  if (isMac) {
-    var Shortcuts = require('app/shortcuts');
-    new Shortcuts(app, window).bind();
-  }
-
 
   mainLoop(app, document.body);
 

@@ -10,6 +10,8 @@ var domify = require('domify');
 
 var debug = require('debug')('base-editor');
 
+var needsOverride = require('util/needs-override');
+
 
 /**
  * Base editor.
@@ -119,8 +121,3 @@ BaseEditor.prototype.setXML = function(xml, initialState) {
   // (2) attempt import
   this.update();
 };
-
-
-function needsOverride() {
-  return new Error('need to implement this in a subclass');
-}

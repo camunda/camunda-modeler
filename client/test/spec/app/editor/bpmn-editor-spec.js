@@ -44,13 +44,19 @@ describe('BpmnEditor', function() {
     beforeEach(function(done) {
       // given
       var $el = document.createElement('div');
+
       editor.mountEditor($el);
+
       editor.setXML(initialXML);
+
       editor.once('imported', function() {
         // editor initialized
         var modeler = editor.getModeler();
+
         var editorActions = modeler.get('editorActions', false);
+
         trigger = spy(editorActions, 'trigger');
+
         done();
       });
     });
@@ -80,19 +86,21 @@ describe('BpmnEditor', function() {
         direction: 'up',
         speed: moveSpeed
       });
+
       expect(trigger.getCall(1)).to.have.been.calledWith('moveCanvas', {
         direction: 'down',
         speed: moveSpeed
       });
+
       expect(trigger.getCall(2)).to.have.been.calledWith('moveCanvas', {
         direction: 'left',
         speed: moveSpeed
       });
+
       expect(trigger.getCall(3)).to.have.been.calledWith('moveCanvas', {
         direction: 'right',
         speed: moveSpeed
       });
-
     });
 
 
@@ -105,7 +113,6 @@ describe('BpmnEditor', function() {
       expect(trigger).to.have.been.calledWith('stepZoom', {
         value: 1
       });
-
     });
 
 
@@ -118,7 +125,6 @@ describe('BpmnEditor', function() {
       expect(trigger).to.have.been.calledWith('stepZoom', {
         value: -1
       });
-
     });
 
 
@@ -131,7 +137,6 @@ describe('BpmnEditor', function() {
       expect(trigger).to.have.been.calledWith('zoom', {
         value: 1
       });
-
     });
 
   });

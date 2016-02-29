@@ -197,7 +197,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Direct Editing',
     accelerator: 'E',
-    enabled: this.opts.state.editable,
+    enabled: this.opts.state.elementsSelected,
     click: function(menuItem, browserWindow) {
       browserWindow.webContents.send('menu:action', 'directEditing');
     }
@@ -311,12 +311,16 @@ MenuBuilder.prototype.appendDmnActions = function () {
     submenu: Menu.buildFromTemplate([{
       label: 'Input',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'clauseAdd', 'input');
+        browserWindow.webContents.send('menu:action', 'clauseAdd', {
+          type: 'input'
+        });
       }
     }, {
       label: 'Output',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'clauseAdd', 'output');
+        browserWindow.webContents.send('menu:action', 'clauseAdd', {
+          type: 'output'
+        });
       }
     }, {
       type: 'separator'
