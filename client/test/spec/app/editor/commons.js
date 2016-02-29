@@ -230,11 +230,9 @@ function describeEditor(name, options) {
         editor.once('state-updated', function(context) {
 
           // then
-          expect(context).to.eql({
-            undo: false,
-            redo: false,
-            dirty: false
-          });
+          expect(context).to.have.property('undo', false);
+          expect(context).to.have.property('redo', false);
+          expect(context).to.have.property('dirty', false);
 
           done();
         });
@@ -263,11 +261,9 @@ function describeEditor(name, options) {
           editor.once('state-updated', function(context) {
 
             // then
-            expect(context).to.eql({
-              undo: false,
-              redo: false,
-              dirty: false
-            });
+            expect(context).to.have.property('undo', false);
+            expect(context).to.have.property('redo', false);
+            expect(context).to.have.property('dirty', false);
 
             done();
           });
@@ -296,11 +292,9 @@ function describeEditor(name, options) {
           editor.once('state-updated', function(context) {
 
             // then
-            expect(context).to.eql({
-              undo: hasGlobalUndo,
-              redo: false,
-              dirty: true
-            });
+            expect(context).to.have.property('undo', hasGlobalUndo);
+            expect(context).to.have.property('redo', false);
+            expect(context).to.have.property('dirty', true);
 
             done();
           });
@@ -325,11 +319,9 @@ function describeEditor(name, options) {
         editor.once('state-updated', function(context) {
 
           // then
-          expect(context).to.eql({
-            undo: false,
-            redo: false,
-            dirty: true
-          });
+          expect(context).to.have.property('undo', false);
+          expect(context).to.have.property('redo', false);
+          expect(context).to.have.property('dirty', true);
 
           done();
         });
