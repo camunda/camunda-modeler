@@ -52,23 +52,13 @@ MacMenuBuilder.prototype.appendAppMenu = function() {
   return this;
 };
 
-MacMenuBuilder.prototype.newFile = function() {
-  return new MenuItem({
-    label: 'Redo',
-    accelerator: 'Command+Shift+Z',
-    click: function (menuItem, win) {
-      win.webContents.send('editor:redo');
-    }
-  });
-};
-
 MacMenuBuilder.prototype.appendRedo = function() {
   this.menu.append(new MenuItem({
     label: 'Redo',
     enabled: this.opts.state.redo,
     accelerator: 'Command+Shift+Z',
-    click: function (menuItem, win) {
-      win.webContents.send('editor:redo');
+    click: function (menuItem, browserWindow) {
+      browserWindow.webContents.send('menu:action', 'redo');
     }
   }));
 };

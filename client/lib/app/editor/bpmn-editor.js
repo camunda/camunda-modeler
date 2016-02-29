@@ -25,6 +25,7 @@ var ensureOpts = require('util/ensure-opts');
 
 var copy = require('util/copy');
 
+var assign = require('lodash/object/assign');
 
 /**
  * A BPMN 2.0 diagram editing component.
@@ -44,6 +45,48 @@ function BpmnEditor(options) {
 inherits(BpmnEditor, DiagramEditor);
 
 module.exports = BpmnEditor;
+
+
+BpmnEditor.prototype.triggerAction = function(action, options) {
+  this.constructor.super_.prototype.triggerAction.apply(this, [action, options]);
+
+  var modeler = this.getModeler();
+
+  var editorActions = modeler.get('editorActions', false);
+
+  if (!editorActions) {
+    return;
+  }
+
+
+  if ('moveCanvas' === action) {
+    options = assign({}, {speed: 20}, options);
+  }
+
+  if ('zoomIn' === action) {
+    action = 'stepZoom';
+    options = {
+      value: 1
+    };
+  }
+
+  if ('zoomOut' === action) {
+    action = 'stepZoom';
+    options = {
+      value: -1
+    };
+  }
+
+  if ('zoom' === action) {
+    options = assign({}, {
+      value: 1
+    }, options);
+  }
+
+
+  // forward other actions to editor actions
+  editorActions.trigger(action, options);
+};
 
 
 BpmnEditor.prototype.updateState = function() {

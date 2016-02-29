@@ -25,6 +25,22 @@ inherits(DmnEditor, DiagramEditor);
 module.exports = DmnEditor;
 
 
+DmnEditor.prototype.triggerAction = function(action, options) {
+  this.constructor.super_.prototype.triggerAction.apply(this, [action, options]);
+
+  var modeler = this.getModeler();
+
+  var editorActions = modeler.get('editorActions', false);
+
+  if (!editorActions) {
+    return;
+  }
+
+  // forward other actions to editor actions
+  editorActions.trigger(action, options);
+};
+
+
 /**
  * Update editor state after changes in the
  * underlying diagram or XML.

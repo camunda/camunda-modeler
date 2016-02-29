@@ -143,15 +143,6 @@ DiagramEditor.prototype.triggerAction = function(action, options) {
   if (action === 'redo') {
     modeler.get('commandStack').redo();
   }
-
-  var editorActions = modeler.get('editorActions', false);
-
-  if (!editorActions) {
-    return;
-  }
-
-  // forward other actions to editor actions
-  editorActions.trigger(action, options);
 };
 
 function isImported(modeler) {

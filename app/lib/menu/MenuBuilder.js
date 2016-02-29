@@ -44,12 +44,12 @@ MenuBuilder.prototype.appendNewFile = function() {
       label: 'BPMN Diagram',
       accelerator: 'CommandOrControl+T',
       click: function (menuItem, browserWindow) {
-        browserWindow.webContents.send('file:create:bpmn');
+        browserWindow.webContents.send('menu:action', 'create-bpmn-diagram');
       }
     }, {
       label: 'DMN Table',
       click: function (menuItem, browserWindow) {
-        browserWindow.webContents.send('file:create:dmn');
+        browserWindow.webContents.send('menu:action', 'create-dmn-diagram');
       }
     }])
   }));
@@ -62,7 +62,7 @@ MenuBuilder.prototype.appendOpenFile = function(submenu) {
     label: 'Open File...',
     accelerator: 'CommandOrControl+O',
     click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('file:open');
+      browserWindow.webContents.send('menu:action', 'open-diagram');
     }
   }));
 
@@ -75,7 +75,7 @@ MenuBuilder.prototype.appendSaveFile = function(submenu) {
     enabled: this.opts.state.save,
     accelerator: 'CommandOrControl+S',
     click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('file:save');
+      browserWindow.webContents.send('menu:action', 'save');
     }
   }));
 
@@ -88,7 +88,7 @@ MenuBuilder.prototype.appendSaveAsFile = function(submenu) {
     accelerator: 'CommandOrControl+Shift+S',
     enabled: this.opts.state.saveAs,
     click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('file:save-as');
+      browserWindow.webContents.send('menu:action', 'save-as');
     }
   }));
 
@@ -101,7 +101,7 @@ MenuBuilder.prototype.appendCloseTab = function(submenu) {
     enabled: this.opts.state.closeTab,
     accelerator: 'CommandOrControl+W',
     click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('file:close');
+      browserWindow.webContents.send('menu:action', 'close-active-tab');
     }
   }));
 
@@ -127,7 +127,7 @@ MenuBuilder.prototype.appendRedo = function() {
     enabled: this.opts.state.redo,
     accelerator: 'CommandOrControl+Y',
     click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:redo');
+      browserWindow.webContents.send('menu:action', 'redo');
     }
   }));
 };
@@ -138,7 +138,7 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
     enabled: this.opts.state.undo,
     accelerator: 'CommandOrControl+Z',
     click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:undo');
+      browserWindow.webContents.send('menu:action', 'undo');
     }
   }));
 
@@ -176,7 +176,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Hand Tool',
     accelerator: 'H',
     click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:handTool');
+      browserWindow.webContents.send('menu:action', 'handTool');
     }
   }));
 
@@ -184,7 +184,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Lasso Tool',
     accelerator: 'L',
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:lassoTool');
+      browserWindow.webContents.send('menu:action', 'lassoTool');
     }
   }));
 
@@ -192,7 +192,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Space Tool',
     accelerator: 'S',
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:spaceTool');
+      browserWindow.webContents.send('menu:action', 'spaceTool');
     }
   }));
 
@@ -201,7 +201,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     accelerator: 'E',
     enabled: this.opts.state.editable,
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:directEditing');
+      browserWindow.webContents.send('menu:action', 'directEditing');
     }
   }));
 
@@ -215,25 +215,33 @@ MenuBuilder.prototype.appendBpmnActions = function() {
       label: 'Move Up',
       accelerator: 'Up',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor:moveCanvas:up');
+        browserWindow.webContents.send('menu:action', 'moveCanvas', {
+          direction: 'up'
+        });
       }
     }, {
       label: 'Move Left',
       accelerator: 'Left',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor:moveCanvas:left');
+        browserWindow.webContents.send('menu:action', 'moveCanvas', {
+          direction: 'left'
+        });
       }
     }, {
       label: 'Move Down',
       accelerator: 'Down',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor:moveCanvas:down');
+        browserWindow.webContents.send('menu:action', 'moveCanvas', {
+          direction: 'down'
+        });
       }
     }, {
       label: 'Move Right',
       accelerator: 'Right',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor:moveCanvas:right');
+        browserWindow.webContents.send('menu:action', 'moveCanvas', {
+          direction: 'right'
+        });
       }
     }])
   }));
@@ -242,7 +250,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Select All',
     accelerator: 'CommandOrControl+A',
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:selectElements');
+      browserWindow.webContents.send('menu:action', 'selectElements');
     }
   }));
 
@@ -251,7 +259,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     accelerator: 'Delete',
     enabled: this.opts.state.elementsSelected,
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('editor:removeSelection');
+      browserWindow.webContents.send('menu:action', 'removeSelection');
     }
   }));
 
@@ -265,19 +273,19 @@ MenuBuilder.prototype.appendDmnActions = function () {
       label: 'At End',
       accelerator: 'CommandOrControl+D',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('dmn.ruleAdd');
+        browserWindow.webContents.send('menu:action', 'ruleAdd');
       }
     }, {
       label: 'Above Selected',
       enabled: this.opts.state.dmnRuleEditing,
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('dmn.ruleAddAbove');
+        browserWindow.webContents.send('menu:action', 'ruleAddAbove');
       }
     }, {
       label: 'Below Selected',
       enabled: this.opts.state.dmnRuleEditing,
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('dmn.ruleAddBelow');
+        browserWindow.webContents.send('menu:action', 'ruleAddBelow');
       }
     }])
   }));
@@ -286,7 +294,7 @@ MenuBuilder.prototype.appendDmnActions = function () {
     label: 'Clear Rule',
     enabled: this.opts.state.dmnRuleEditing,
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('dmn.ruleClear');
+      browserWindow.webContents.send('menu:action', 'ruleClear');
     }
   }));
 
@@ -294,7 +302,7 @@ MenuBuilder.prototype.appendDmnActions = function () {
     label: 'Remove Rule',
     enabled: this.opts.state.dmnRuleEditing,
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('dmn.ruleRemove');
+      browserWindow.webContents.send('menu:action', 'ruleRemove');
     }
   }));
 
@@ -305,12 +313,12 @@ MenuBuilder.prototype.appendDmnActions = function () {
     submenu: Menu.buildFromTemplate([{
       label: 'Input',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('dmn.clauseAdd.input');
+        browserWindow.webContents.send('menu:action', 'clauseAdd', 'input');
       }
     }, {
       label: 'Output',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('dmn.clauseAdd.output');
+        browserWindow.webContents.send('menu:action', 'clauseAdd', 'output');
       }
     }, {
       type: 'separator'
@@ -318,13 +326,13 @@ MenuBuilder.prototype.appendDmnActions = function () {
       label: 'Left of selected',
       enabled: this.opts.state.dmnClauseEditing,
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('dmn.clauseAddLeft');
+        browserWindow.webContents.send('menu:action', 'clauseAddLeft');
       }
     }, {
       label: 'Right of selected',
       enabled: this.opts.state.dmnClauseEditing,
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('dmn.clauseAddRight');
+        browserWindow.webContents.send('menu:action', 'clauseAddRight');
       }
     }])
   }));
@@ -333,7 +341,7 @@ MenuBuilder.prototype.appendDmnActions = function () {
     label: 'Remove Clause',
     enabled: this.opts.state.dmnClauseEditing,
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('dmn.clauseRemove');
+      browserWindow.webContents.send('menu:action', 'clauseRemove');
     }
   }));
 
@@ -368,19 +376,19 @@ MenuBuilder.prototype.appendWindowMenu = function(submenu) {
       label: 'Zoom In',
       accelerator: 'CommandOrControl+=',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor:stepZoom:in');
+        browserWindow.webContents.send('menu:action', 'zoomIn');
       }
     }, {
       label: 'Zoom Out',
       accelerator: 'CommandOrControl+-',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor:stepZoom:out');
+        browserWindow.webContents.send('menu:action', 'zoomOut');
       }
     }, {
       label: 'Zoom Default',
       accelerator: 'CommandOrControl+0',
       click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('editor:zoom');
+        browserWindow.webContents.send('menu:action', 'zoom');
       }
     }, {
       type: 'separator'

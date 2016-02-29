@@ -1,7 +1,6 @@
 'use strict';
 
 var browser = require('util/browser');
-var debug = require('debug')('FileSystem');
 
 /**
  * File system API used by app.
