@@ -9,6 +9,15 @@ var domify = require('domify');
  * Add a dragger that calls back the passed function with
  * { args..., event, delta } on drag.
  *
+ * @example
+ *
+ * function dragMove(event, delta) {
+ *   // we are dragging (!!)
+ * }
+ *
+ * domElement.addEventListener('dragstart', dragger(dragMove));
+ *
+ *
  * @param {Function} fn
  *
  * @return {Function} drag start callback function
