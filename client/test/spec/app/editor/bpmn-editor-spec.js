@@ -11,6 +11,8 @@ var select = require('test/helper/vdom').select,
 var initialXML = require('app/tabs/bpmn/initial.bpmn'),
     otherXML = require('test/fixtures/other.bpmn');
 
+var spy = require('test/helper/util/spy');
+
 function createEditor() {
   return new BpmnEditor({
     layout: {
@@ -32,6 +34,106 @@ describe('BpmnEditor', function() {
 
   beforeEach(function() {
     editor = createEditor();
+  });
+
+
+  describe('custom events', function(done) {
+
+    var trigger;
+
+    beforeEach(function(done) {
+      // given
+      var $el = document.createElement('div');
+      editor.mountEditor($el);
+      editor.setXML(initialXML);
+      editor.once('imported', function() {
+        // editor initialized
+        var modeler = editor.getModeler();
+        var editorActions = modeler.get('editorActions', false);
+        trigger = spy(editorActions, 'trigger');
+        done();
+      });
+    });
+
+
+    it('"moveCanvas" should have default speed set to "20"', function() {
+
+      // given
+      var moveSpeed = 20;
+
+      // when
+      editor.triggerAction('moveCanvas', {
+        direction: 'up'
+      });
+      editor.triggerAction('moveCanvas', {
+        direction: 'down'
+      });
+      editor.triggerAction('moveCanvas', {
+        direction: 'left'
+      });
+      editor.triggerAction('moveCanvas', {
+        direction: 'right'
+      });
+
+      // then
+      expect(trigger.getCall(0)).to.have.been.calledWith('moveCanvas', {
+        direction: 'up',
+        speed: moveSpeed
+      });
+      expect(trigger.getCall(1)).to.have.been.calledWith('moveCanvas', {
+        direction: 'down',
+        speed: moveSpeed
+      });
+      expect(trigger.getCall(2)).to.have.been.calledWith('moveCanvas', {
+        direction: 'left',
+        speed: moveSpeed
+      });
+      expect(trigger.getCall(3)).to.have.been.calledWith('moveCanvas', {
+        direction: 'right',
+        speed: moveSpeed
+      });
+
+    });
+
+
+    it('"zoomIn" should call "stepZoom" event with positive value', function() {
+
+      // when
+      editor.triggerAction('zoomIn');
+
+      // then
+      expect(trigger).to.have.been.calledWith('stepZoom', {
+        value: 1
+      });
+
+    });
+
+
+    it('"zoomOut" should call "stepZoom" event with negative value', function () {
+
+      // when
+      editor.triggerAction('zoomOut');
+
+      // then
+      expect(trigger).to.have.been.calledWith('stepZoom', {
+        value: -1
+      });
+
+    });
+
+
+    it('"zoom" should call "zoom" event with value "1"', function () {
+
+      // when
+      editor.triggerAction('zoom');
+
+      // then
+      expect(trigger).to.have.been.calledWith('zoom', {
+        value: 1
+      });
+
+    });
+
   });
 
 
