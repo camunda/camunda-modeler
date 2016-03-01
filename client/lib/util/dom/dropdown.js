@@ -98,9 +98,12 @@ module.exports = dropdown;
 
 function getParent(element, className, depth) {
 
-  while (element && depth) {
+  var targetClassName;
 
-    if (element.className.split && element.className.split(/\s/g).indexOf(className) !== -1) {
+  while (element && element !== document.body && depth) {
+    targetClassName = element.className;
+
+    if (targetClassName && targetClassName.split(/\s/g).indexOf(className) !== -1) {
       return element;
     }
 
