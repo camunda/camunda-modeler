@@ -1,11 +1,11 @@
 'use strict';
 
 var browserify = require('browserify'),
-  watchify = require('watchify'),
-  errorify = require('errorify');
+    watchify = require('watchify'),
+    errorify = require('errorify');
 
 var fs = require('fs'),
-  path = require('path');
+    path = require('path');
 
 module.exports = function(grunt) {
 

@@ -20,16 +20,28 @@ var Platform = require('./platform'),
     Config = require('./Config'),
     FileSystem = require('./FileSystem'),
     Workspace = require('./Workspace'),
+    Dialog = require('./Dialog'),
     Menu = require('./menu'),
     Cli = require('./Cli');
+
+var browserOpen = require('./util/browser-open'),
+    renderer = require('./util/renderer');
 
 
 var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
 
 Platform.create(process.platform, app, config);
 
+
 // bootstrap the application's menus
 new Menu(process.platform);
+
+// bootstrap dialog
+var dialog = new Dialog({
+  dialog: electron.dialog,
+  config: config,
+  userDesktopPath: app.getPath('userDesktop')
+});
 
 // The main editor window.
 var mainWindow = null;
@@ -138,6 +150,47 @@ function createEditorWindow() {
   return mainWindow;
 }
 
+//////// client life-cycle //////////////////////////////
+renderer.on('editor:quit', function(hasUnsavedChanges, done) {
+  done(null);
+
+  app.emit('editor:quit-allowed');
+});
+
+renderer.on('editor:import-error', function(diagramFile, trace, done) {
+
+  var answer = dialog.showDialog('importError', { name: diagramFile.name, trace: trace });
+
+  switch (answer) {
+  case 'forum':
+    browserOpen('https://forum.bpmn.io/');
+    done('forum');
+    break;
+  case 'issue-tracker':
+    browserOpen('https://github.com/bpmn-io/bpmn-js/issues');
+    done('tracker');
+    break;
+  default:
+    done('cancel');
+  }
+
+  done(null, answer);
+});
+
+renderer.on('editor:close-tab', function(diagramFile, done) {
+  var answer = dialog.showDialog('close', { name: diagramFile.name });
+
+  done(null, answer);
+});
+
+renderer.on('editor:ready', function () {
+  console.log('editor:ready', app.openFiles);
+
+  app.openFiles.forEach(function (filePath) {
+    app.fileSystem.addFile(filePath);
+  });
+});
+
 //////// open file handling //////////////////////////////
 
 app.on('open-url', function (evt) {
@@ -173,14 +226,6 @@ app.on('editor:defer-file-open', function (filePath) {
   app.openFiles.push(filePath);
 });
 
-app.on('editor:deferred-file-open', function () {
-  console.log('app:editor:deferred-file-open', app.openFiles);
-
-  app.openFiles.forEach(function (filePath) {
-    app.fileSystem.addFile(filePath);
-  });
-});
-
 app.on('editor:cmd', function (argv, cwd) {
   console.log('app:editor:cmd', argv, cwd);
 
@@ -194,14 +239,11 @@ app.on('editor:cmd', function (argv, cwd) {
 
 app.on('editor:open', function (mainWindow) {
   console.log('app:editor:open');
+
   // TODO: FileSystem must be a singleton
-  app.fileSystem = app.fileSystem || new FileSystem(mainWindow, config);
-});
-
-app.on('editor:ready', function () {
-  console.log('app:editor:ready');
-
-  app.emit('editor:deferred-file-open');
+  app.fileSystem = app.fileSystem || new FileSystem({
+    dialog: dialog
+  });
 });
 
 //////// shutdown ////////////////////////////////////

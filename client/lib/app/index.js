@@ -264,7 +264,7 @@ App.prototype.openDiagram = function() {
         debug('open-diagram canceled: %s', err);
       });
 
-    } else if (!file) {
+    } else if (!file || file === 'cancel') {
       debug('open-diagram canceled: no file');
 
     } else {
@@ -410,8 +410,7 @@ App.prototype.saveTab = function(tab, options, done) {
     return done(null, savedFile);
   };
 
-  var newFile,
-      saveAs;
+  var saveAs;
 
   debug('saving %s', tab.id);
 
@@ -425,26 +424,37 @@ App.prototype.saveTab = function(tab, options, done) {
 
     saveAs = isUnsaved(file) || options && options.saveAs;
 
-    if (saveAs) {
-      dialog.saveAs(file, (err, suggestedFile) => {
+    this._saveTab(tab, file, saveAs, updateTab, done);
+  });
+};
 
-        if (err) {
-          debug('save %s err', tab.id, err);
-          return done(err);
-        }
+App.prototype._saveTab = function(tab, file, saveAs, updateTab, done) {
+  var dialog = this.dialog,
+      newFile;
 
-        debug('save %s as %s', tab.id, suggestedFile.path);
+  if (saveAs) {
+    dialog.saveAs(file, (err, suggestedFile) => {
 
-        newFile = assign({}, file, suggestedFile);
+      if (isErrorOrCancel(err, suggestedFile)) {
+        debug('save %s err', tab.id, err);
+        return done(err);
+      }
 
-        this.saveFile(newFile, updateTab);
-      });
-    } else {
-      newFile = assign({}, file);
+      if (suggestedFile === 'no-overwrite') {
+        return this._saveTab(tab, file, saveAs, updateTab, done);
+      }
+
+      debug('save %s as %s', tab.id, suggestedFile.path);
+
+      newFile = assign({}, file, suggestedFile);
 
       this.saveFile(newFile, updateTab);
-    }
-  });
+    });
+  } else {
+    newFile = assign({}, file);
+
+    this.saveFile(newFile, updateTab);
+  }
 };
 
 /**
@@ -556,11 +566,13 @@ App.prototype.closeTab = function(tab, done) {
     throw new Error('non existing tab');
   }
 
-  done = done || function(err) {
-    if (err) {
-      debug('error: %s', err);
-    }
-  };
+  if (!done || typeof done !== 'function') {
+    done = function(err) {
+      if (err) {
+        debug('error: %s', err);
+      }
+    };
+  }
 
   // close normally when file is already saved
   if (!tab.dirty) {
@@ -570,7 +582,7 @@ App.prototype.closeTab = function(tab, done) {
   file = tab.file;
 
   dialog.close(file, (err, result) => {
-    if (err) {
+    if (isErrorOrCancel(err, result)) {
       debug('close-tab canceled: %s', err);
 
       done(err);
@@ -578,7 +590,7 @@ App.prototype.closeTab = function(tab, done) {
     }
 
     // close without saving
-    if (!result) {
+    if (result === 'close') {
       return this._closeTab(tab, done);
     }
 
@@ -759,4 +771,8 @@ function contains(collection, element) {
   return collection.some(function(e) {
     return e === element;
   });
+}
+
+function isErrorOrCancel(err, userChoice) {
+  return err || userChoice === 'cancel';
 }

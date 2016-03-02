@@ -466,7 +466,7 @@ describe('App', function() {
       };
 
       // when
-      dialog.setCloseResponse(null);
+      dialog.setCloseResponse('close');
 
       app.closeTab(initialTab, function(err, tab) {
 

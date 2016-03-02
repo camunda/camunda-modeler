@@ -15,7 +15,7 @@ function Dialog() {
    * @param {Function} done
    */
   this.saveAs = function(file, done) {
-    browser.send('file:save-as', [ file ], done);
+    browser.send('file:save-as', file, done);
   };
 
   /**
@@ -57,7 +57,7 @@ function Dialog() {
    * @param {Function} done
    */
   this.close = function(file, done) {
-    browser.send('file:close', file, done);
+    browser.send('editor:close-tab', file, done);
   };
 
   /**

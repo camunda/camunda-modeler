@@ -26,7 +26,7 @@ function FileSystem() {
    * @param {Function} done
    */
   this.writeFile = function(file, done) {
-    browser.send('file:save', [ file ], done);
+    browser.send('file:save', file, done);
   };
 }
 

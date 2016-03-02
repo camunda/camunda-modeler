@@ -150,7 +150,7 @@ module.exports = function(grunt) {
 
     mochaTest: {
       app: {
-        src: ['./app/test/spec/**/*.js'],
+        src: [ './app/test/spec/**/*.js' ],
         options: {
           reporter: 'spec',
           require: [ './app/test/expect' ]
@@ -168,8 +168,6 @@ module.exports = function(grunt) {
   grunt.registerTask('test', [ 'karma:single', 'mochaTest:app']);
 
   grunt.registerTask('auto-test', [ 'karma:unit' ]);
-
-  grunt.registerTask('auto-test-app', [ 'mochaTest', 'watch:app' ]);
 
   grunt.registerTask('build-client', [
     'clean',
