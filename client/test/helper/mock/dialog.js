@@ -13,17 +13,10 @@ function Dialog() {
   this.openResponse = null;
   this.closeResponse = null;
   this.saveAsResponse = null;
+  this.namespaceResponse = null;
 
-  this.setOpenResponse = function(fileOrError) {
-    this.openResponse = fileOrError;
-  };
-
-  this.setCloseResponse = function(fileOrError) {
-    this.closeResponse = fileOrError;
-  };
-
-  this.setSaveAsResponse = function(fileOrError) {
-    this.saveAsResponse = fileOrError;
+  this.setResponse = function(type, fileOrError) {
+    this[type + 'Response'] = fileOrError;
   };
 
 
@@ -82,11 +75,25 @@ function Dialog() {
    * @param {Function} done
    */
   this.close = function(file, done) {
-    
+
     if (this.closeResponse instanceof Error) {
       done(this.closeResponse);
     } else {
       done(null, this.closeResponse);
+    }
+  };
+
+  /**
+   * Open a 'name' dialog and callback with (err, answer).
+   *
+   * @param {Function} done
+  */
+  this.convertNamespace = function(done) {
+
+    if (this.namespaceResponse instanceof Error) {
+      done(this.namespaceResponse);
+    } else {
+      done(null, this.namespaceResponse);
     }
   };
 

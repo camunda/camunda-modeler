@@ -36,7 +36,7 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
       return {
         title: 'Open diagram',
         defaultPath: defaultPath,
-        properties: [ 'openFile' ],
+        properties: [ 'openFile', 'multiSelections' ],
         filters: filterExtensions([ 'supported', 'bpmn', 'dmn', 'all' ])
       };
     },
@@ -114,7 +114,8 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
         type: 'warning',
         title: 'Deprecated <activiti> namespace detected',
         buttons: [
-          { id: 'cancel', label: 'No' },
+          { id: 'cancel', label: 'Cancel' },
+          { id: 'no', label: 'No' },
           { id: 'yes', label: 'Yes' }
         ],
         message: 'Would you like to convert your diagram to the <camunda> namespace?',
@@ -151,7 +152,7 @@ Dialog.prototype.setDefaultPath = function(filenames) {
 
   this.defaultPath = dirname;
 
-  return defaultPath;
+  return filenames;
 };
 
 Dialog.prototype.showDialog = function(type, opts) {

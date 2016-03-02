@@ -18,6 +18,7 @@ var arg = require('test/helper/util/arg'),
     spy = require('test/helper/util/spy');
 
 var bpmnXML = require('app/tabs/bpmn/initial.bpmn'),
+    activitiXML = require('test/fixtures/activiti.xml'),
     dmnXML = require('app/tabs/dmn/initial.dmn');
 
 var inherits = require('inherits');
@@ -233,7 +234,7 @@ describe('App', function() {
 
       var expectedFile = assign({ fileType: 'bpmn' }, openFile);
 
-      dialog.setOpenResponse(openFile);
+      dialog.setResponse('open', [ openFile ]);
 
       // when
       app.openDiagram();
@@ -254,7 +255,7 @@ describe('App', function() {
 
       var expectedFile = assign({ fileType: 'dmn' }, openFile);
 
-      dialog.setOpenResponse(openFile);
+      dialog.setResponse('open', [ openFile ]);
 
       // when
       app.openDiagram();
@@ -270,7 +271,7 @@ describe('App', function() {
       var lastTab = app.activeTab,
           openError = new Error('foo');
 
-      dialog.setOpenResponse(openError);
+      dialog.setResponse('open', openError);
 
       // when
       app.openDiagram();
@@ -293,7 +294,7 @@ describe('App', function() {
             contents: require('./no-bpmn.bpmn')
           };
 
-      dialog.setOpenResponse(openFile);
+      dialog.setResponse('open', [openFile]);
 
       // when
       app.openDiagram();
@@ -303,6 +304,120 @@ describe('App', function() {
 
       // still displaying last tab
       expect(app.activeTab).to.eql(lastTab);
+    });
+
+
+    it('should open multiple files', function() {
+
+      var bpmnTab, dmnTab;
+
+      // given
+      var bpmnFile = {
+        name: 'diagram_1.bpmn',
+        path: 'diagram_1.bpmn',
+        contents: bpmnXML
+      };
+
+      var dmnFile = {
+        name: 'diagram_1.dmn',
+        path: 'diagram_1.dmn',
+        contents: dmnXML
+      };
+
+      var expectedBpmnFile = assign({ fileType: 'bpmn' }, bpmnFile),
+          expectedDmnFile = assign({ fileType: 'dmn' }, dmnFile);
+
+      dialog.setResponse('open', [ bpmnFile, dmnFile ]);
+
+      // when
+      app.openDiagram();
+
+      bpmnTab = app.tabs[0];
+
+      dmnTab = app.tabs[1];
+
+      // then
+      expect(bpmnTab.file).to.eql(expectedBpmnFile);
+      expect(dmnTab.file).to.eql(expectedDmnFile);
+    });
+
+
+    it('should open bpmn file and NOT activiti file', function() {
+
+      // given
+      var bpmnFile = {
+        name: 'diagram_1.bpmn',
+        path: 'diagram_1.bpmn',
+        contents: bpmnXML
+      };
+
+      var activitiFile = {
+        name: 'activiti.xml',
+        path: 'activiti.xml',
+        contents: activitiXML
+      };
+
+      var expectedBpmnFile = assign({ fileType: 'bpmn' }, bpmnFile);
+
+      dialog.setResponse('open', [ bpmnFile, activitiFile ]);
+
+      dialog.setResponse('namespace', 'cancel');
+
+      // when
+      app.openDiagram();
+
+      // then
+      expect(dialog.convertNamespace).to.have.been.called;
+
+      expect(app.activeTab.file).to.eql(expectedBpmnFile);
+
+      expect(app.tabs).to.have.length(2);
+    });
+
+
+    it('should open activiti file with convertion', function() {
+      // given
+      var activitiFile = {
+        name: 'activiti.xml',
+        path: 'activiti.xml',
+        contents: activitiXML
+      };
+
+      var expectedActivitiFile = assign({ fileType: 'bpmn' }, activitiFile);
+
+      dialog.setResponse('open', [ activitiFile ]);
+
+      dialog.setResponse('namespace', 'yes');
+
+      // when
+      app.openDiagram();
+
+      // then
+      expect(app.activeTab.file.name).to.eql('activiti.xml');
+
+      expect(app.activeTab.file).to.not.eql(expectedActivitiFile);
+    });
+
+
+    it('should open activiti file without convertion', function() {
+      // given
+      var activitiFile = {
+        name: 'activiti.xml',
+        path: 'activiti.xml',
+        contents: activitiXML
+      };
+
+      var expectedActivitiFile = assign({ fileType: 'bpmn' }, activitiFile);
+
+      dialog.setResponse('open', [ activitiFile ]);
+
+      dialog.setResponse('namespace', 'no');
+
+      // when
+      app.openDiagram();
+
+      // then
+      expect(app.activeTab.file).to.eql(expectedActivitiFile);
     });
 
   });
@@ -335,7 +450,7 @@ describe('App', function() {
       var expectedFile = assign({}, file, { path: '/foo/bar', name: 'bar' });
 
 
-      dialog.setSaveAsResponse(expectedFile);
+      dialog.setResponse('saveAs', expectedFile);
 
       app.createTabs([ file ]);
 
@@ -432,7 +547,7 @@ describe('App', function() {
       };
 
       // when
-      dialog.setCloseResponse('save');
+      dialog.setResponse('close', 'save');
 
       app.closeTab(initialTab, function(err, tab) {
 
@@ -467,7 +582,7 @@ describe('App', function() {
       };
 
       // when
-      dialog.setCloseResponse('close');
+      dialog.setResponse('close', 'close');
 
       app.closeTab(initialTab, function(err, tab) {
 
@@ -502,7 +617,7 @@ describe('App', function() {
       };
 
       // when
-      dialog.setCloseResponse(new Error('user canceled'));
+      dialog.setResponse('close', new Error('user canceled'));
 
       app.closeTab(initialTab, function(err, tab) {
 

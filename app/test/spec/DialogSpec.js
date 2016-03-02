@@ -45,7 +45,7 @@ describe('Dialog', function() {
     openDialogArg = getDialogArgs(electronDialog.showOpenDialog);
 
     // then
-    expect(openResult).to.equal(newPath);
+    expect(openResult).to.contain(newPath);
 
     expect(electronDialog.showOpenDialog).to.have.been.called;
 

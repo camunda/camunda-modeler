@@ -57,7 +57,7 @@ function Dialog() {
    * @param {Function} done
    */
   this.close = function(file, done) {
-    browser.send('editor:close-tab', file, done);
+    browser.send('dialog:close-tab', file, done);
   };
 
   /**
@@ -66,9 +66,25 @@ function Dialog() {
    * @param {Function} done
    */
   this.unrecognizedFileError = function(file, done) {
-    debug('---> Dialog.unrecognizedFileError');
-    // TODO: implement
-    done(null);
+    browser.send('dialog:unrecognized-file', file, done);
+  };
+
+  /**
+   * Open 'namespace' dialog and invoke callback with (err, answer).
+   *
+   * @param {Function} done
+   */
+  this.convertNamespace = function(done) {
+    browser.send('dialog:convert-namespace', done);
+  };
+
+  /**
+   * Open 'unrecognized file error' dialog and invoke callback with (err).
+   *
+   * @param {Function} done
+   */
+  this.name = function(file, done) {
+    browser.send('dialog:unrecognized-file', file, done);
   };
 
   /**

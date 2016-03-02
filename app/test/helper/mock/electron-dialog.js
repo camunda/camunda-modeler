@@ -8,14 +8,11 @@ var spyOn = require('../../util/spy-on');
  */
 function ElectronDialog() {
 
-  this.openResponse = null;
-  this.closeResponse = null;
-  this.saveAsResponse = null;
+  this.response = null;
 
   this.setResponse = function(fileOrError) {
     this.response = fileOrError;
   };
-
 
   this.showOpenDialog = function() {
     return this.response;

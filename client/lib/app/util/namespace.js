@@ -2,31 +2,8 @@
 
 var forEach = require('lodash/collection/forEach');
 
-var IDENTIFIERS = [{
-  type: 'bpmn',
-  identifier: 'http://www.omg.org/spec/BPMN'
-}, {
-  type: 'dmn',
-  identifier: 'http://www.omg.org/spec/DMN'
-}];
-
 var ACTIVITI_NS = 'http://activiti.org/bpmn',
     CAMUNDA_NS = 'http://camunda.org/schema/1.0/bpmn';
-
-
-function extractNotation(xmlContents) {
-  var notation = null;
-
-  forEach(IDENTIFIERS, function (elem) {
-    if (xmlContents.indexOf(elem.identifier) !== -1) {
-      notation = elem.type;
-    }
-  });
-
-  return notation;
-}
-
-module.exports.extractNotation = extractNotation;
 
 
 function hasExtension(filePath) {
@@ -83,7 +60,7 @@ function replacePrefix(prefix, xml) {
 module.exports.replacePrefix = replacePrefix;
 
 
-function replaceNamespace(data) {
+function replace(data) {
   var xml = data;
 
   var prefix = grabNamespacePrefix(xml);
@@ -93,4 +70,4 @@ function replaceNamespace(data) {
   return replacePrefix(prefix, xml);
 }
 
-module.exports.replaceNamespace = replaceNamespace;
+module.exports.replace = replace;

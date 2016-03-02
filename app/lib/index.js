@@ -43,6 +43,11 @@ var dialog = new Dialog({
   userDesktopPath: app.getPath('userDesktop')
 });
 
+// bootstrap filesystem
+var fileSystem = new FileSystem({
+  dialog: dialog
+});
+
 // The main editor window.
 var mainWindow = null;
 
@@ -157,7 +162,24 @@ renderer.on('editor:quit', function(hasUnsavedChanges, done) {
   app.emit('editor:quit-allowed');
 });
 
-renderer.on('editor:import-error', function(diagramFile, trace, done) {
+renderer.on('editor:ready', function(done) {
+  done(null);
+  app.emit('editor:deferred-file-open');
+});
+
+renderer.on('dialog:unrecognized-file', function(file, done) {
+  dialog.showDialog('unrecognizedFile', { name: file.name});
+
+  done(null);
+});
+
+renderer.on('dialog:convert-namespace', function(done) {
+  var answer = dialog.showDialog('namespace');
+
+  done(null, answer);
+});
+
+renderer.on('dialog:import-error', function(diagramFile, trace, done) {
 
   var answer = dialog.showDialog('importError', { name: diagramFile.name, trace: trace });
 
@@ -177,17 +199,65 @@ renderer.on('editor:import-error', function(diagramFile, trace, done) {
   done(null, answer);
 });
 
-renderer.on('editor:close-tab', function(diagramFile, done) {
+renderer.on('dialog:close-tab', function(diagramFile, done) {
   var answer = dialog.showDialog('close', { name: diagramFile.name });
 
   done(null, answer);
 });
 
-renderer.on('editor:ready', function () {
-  console.log('editor:ready', app.openFiles);
 
-  app.openFiles.forEach(function (filePath) {
-    app.fileSystem.addFile(filePath);
+function saveCallback(saveAction, diagramFile, done) {
+  saveAction.apply(fileSystem, [ diagramFile, (err, updatedDiagram) => {
+    if (err) {
+      return done(err);
+    }
+
+    if (updatedDiagram !== 'cancel') {
+      // TODO: allow adding multiple files on 'add-recent'
+      // app.emit('editor:add-recent', updatedDiagram.path);
+    }
+
+    done(null, updatedDiagram);
+  }]);
+}
+
+renderer.on('file:save-as', function(diagramFile, done) {
+  saveCallback(fileSystem.saveAs, diagramFile, done);
+});
+
+renderer.on('file:save', function(diagramFile, done) {
+  saveCallback(fileSystem.save, diagramFile, done);
+});
+
+renderer.on('file:add', function(path, done) {
+  fileSystem.addFile(path, function(err, diagramFile) {
+    if (err) {
+      return done(err);
+    }
+
+    renderer.send('editor.actions', {
+      event: 'file.add',
+      data: {
+        diagram: diagramFile
+      }
+    });
+
+    done(null);
+  });
+});
+
+renderer.on('file:open', function(done) {
+  fileSystem.open(function (err, diagramFiles) {
+    if (err) {
+      return done(err);
+    }
+
+    if (diagramFiles !== 'cancel') {
+      // TODO: allow adding multiple files on 'add-recent'
+      // app.emit('editor:add-recent', diagramFiles[0].path);
+    }
+
+    done(null, diagramFiles);
   });
 });
 
@@ -217,13 +287,21 @@ app.on('open-file', function (evt, filePath) {
 app.on('editor:file-open', function (filePath) {
   console.log('app:editor:file-open', filePath);
 
-  app.fileSystem.addFile(filePath);
+  fileSystem.addFile(filePath);
 });
 
 app.on('editor:defer-file-open', function (filePath) {
   console.log('app:editor:defer-file-open', filePath);
 
   app.openFiles.push(filePath);
+});
+
+app.on('editor:deferred-file-open', function () {
+  console.log('app:editor:deferred-file-open', app.openFiles);
+
+  app.openFiles.forEach(function (filePath) {
+    fileSystem.addFile(filePath);
+  });
 });
 
 app.on('editor:cmd', function (argv, cwd) {

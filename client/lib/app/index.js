@@ -4,6 +4,7 @@ var merge = require('lodash/object/merge'),
     bind = require('lodash/function/bind'),
     assign = require('lodash/object/assign'),
     find = require('lodash/collection/find'),
+    filter = require('lodash/collection/filter'),
     debounce = require('lodash/function/debounce');
 
 var inherits = require('inherits');
@@ -23,13 +24,12 @@ var EmptyTab = require('./tabs/empty-tab');
 
 var Footer = require('./footer');
 
-var ensureOpts = require('util/ensure-opts');
-
-var isUnsaved = require('util/file/is-unsaved');
-
-var parseFileType = require('./util/parse-file-type');
-
-var fileDrop = require('./util/dom/file-drop');
+var ensureOpts = require('util/ensure-opts'),
+    series = require('util/async/series'),
+    isUnsaved = require('util/file/is-unsaved'),
+    parseFileType = require('./util/parse-file-type'),
+    namespace = require('./util/namespace'),
+    fileDrop = require('./util/dom/file-drop');
 
 var debug = require('debug')('app');
 
@@ -267,27 +267,62 @@ App.prototype.openDiagram = function() {
 
   var dialog = this.dialog;
 
-  dialog.open((err, file) => {
+  dialog.open((err, files) => {
     if (err) {
       dialog.openError(err, function() {
         debug('open-diagram canceled: %s', err);
       });
 
-    } else if (!file || file === 'cancel') {
+      return;
+    }
+
+    if (!files || files === 'cancel') {
       debug('open-diagram canceled: no file');
 
-    } else {
+      return;
+    }
+
+    series(files, (file, done) => {
       var type = parseFileType(file);
 
       if (!type) {
-        dialog.unrecognizedFileError(file, function() {
+        dialog.unrecognizedFileError(file, function(err) {
           debug('open-diagram canceled: unrecognized file type', file);
+
+          done(null);
         });
 
       } else {
-        this.createTabs([ assign(file, { fileType: type }) ]);
+        if (namespace.hasActivitiURL(file.contents)) {
+
+          dialog.convertNamespace(function(err, answer) {
+            if (isErrorOrCancel(err, answer)) {
+              debug('open-diagram canceled: %s', err || answer);
+
+              return done(err);
+            }
+
+            if (answer === 'yes') {
+              file.contents = namespace.replace(file.contents);
+            }
+
+            done(null, assign(file, { fileType: type }));
+          });
+        } else {
+          done(null, assign(file, { fileType: type }));
+        }
       }
-    }
+    }, (err, diagramFiles) => {
+      if (err) {
+        return debug('open-diagram canceled: %s', err);
+      }
+
+      diagramFiles = filter(diagramFiles, function(diagramFile) {
+        return !!diagramFile;
+      });
+
+      this.createTabs(diagramFiles);
+    });
   });
 };
 
@@ -347,8 +382,17 @@ App.prototype.createDiagram = function(type) {
  * @param {Array<File>} files
  */
 App.prototype.createTabs = function(files) {
+  var lastFile;
 
-  var lastFile = files[files.length - 1];
+  if (!Array.isArray(files)) {
+    files = [ files ];
+  }
+
+  if (!files.length) {
+    return;
+  }
+
+  lastFile = files[files.length - 1];
 
   files.forEach(file => {
 
@@ -445,7 +489,7 @@ App.prototype._saveTab = function(tab, file, saveAs, updateTab, done) {
     dialog.saveAs(file, (err, suggestedFile) => {
 
       if (isErrorOrCancel(err, suggestedFile)) {
-        debug('save %s err', tab.id, err);
+        debug('save %s err', tab.id, err || suggestedFile);
         return done(err);
       }
 
@@ -564,7 +608,7 @@ App.prototype.closeTab = function(tab, done) {
 
   dialog.close(file, (err, result) => {
     if (isErrorOrCancel(err, result)) {
-      debug('close-tab canceled: %s', err);
+      debug('close-tab canceled: %s', err || result);
 
       done(err);
       return;

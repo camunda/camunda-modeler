@@ -25,7 +25,8 @@
             ".bpmn",
             ".dmn",
             ".xml",
-            ".css"
+            ".css",
+            ".png"
           ]
         }
       ]

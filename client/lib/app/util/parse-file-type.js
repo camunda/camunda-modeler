@@ -10,7 +10,7 @@ var TYPES = {
 
 module.exports = function parseType(file) {
 
-  var type;
+  var type = null;
 
   forEach(TYPES, function(ns, t) {
     if (file.contents.indexOf(ns) !== -1) {

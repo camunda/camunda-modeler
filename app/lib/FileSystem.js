@@ -3,13 +3,10 @@
 var fs = require('fs'),
     path = require('path');
 
-var assign = require('lodash/object/assign');
+var assign = require('lodash/object/assign'),
+    forEach = require('lodash/collection/forEach');
 
-var app = require('electron').app;
-
-var parseUtil = require('./util/parse'),
-    renderer = require('./util/renderer'),
-    ensureOptions = require('./util/ensure-opts');
+var ensureOptions = require('./util/ensure-opts');
 
 
 var FILE_ENCODING = {
@@ -26,7 +23,6 @@ function createDiagramFile(filePath, file) {
   return {
     contents: file,
     name: path.basename(filePath),
-    fileType: parseUtil.extractNotation(file),
     path: filePath
   };
 }
@@ -37,62 +33,18 @@ function createDiagramFile(filePath, file) {
  * @param  {Object} browserWindow   Main browser window
  */
 function FileSystem(options) {
-  var self = this;
-
   ensureOptions([ 'dialog' ], options);
 
   this.dialog = options.dialog;
-
-
-  function saveCallback(saveAction, diagramFile, done) {
-    saveAction.apply(self, [diagramFile,
-      (err, updatedDiagram) => {
-        if (err) {
-          return done(err);
-        }
-
-        if (updatedDiagram !== 'cancel') {
-          app.emit('editor:add-recent', updatedDiagram.path);
-        }
-
-        done(null, updatedDiagram);
-      }
-    ]);
-  }
-
-  renderer.on('file:save-as', function(diagramFile, done) {
-    saveCallback(self.saveAs, diagramFile, done);
-  });
-
-  renderer.on('file:save', function(diagramFile, done) {
-    saveCallback(self.save, diagramFile, done);
-  });
-
-
-  renderer.on('file:add', function(path, done) {
-    self.addFile(path);
-
-    done(null);
-  });
-
-  renderer.on('file:open', function(done) {
-    self.open(function (err, diagramFile) {
-      if (err) {
-        return done(err);
-      }
-
-      app.emit('editor:add-recent', diagramFile.path);
-
-      done(null, diagramFile);
-    });
-  });
 }
 
 module.exports = FileSystem;
 
 
 FileSystem.prototype.open = function(callback) {
-  var dialog = this.dialog;
+  var self = this,
+      dialog = this.dialog,
+      files = [];
 
   var filenames = dialog.showDialog('open');
 
@@ -100,55 +52,46 @@ FileSystem.prototype.open = function(callback) {
     return callback(null, 'cancel');
   }
 
-  self._openFile(filenames[0], callback);
+  forEach(filenames, function(filename, idx) {
+    var file = self._openFile(filename);
+
+    if (!file.contents) {
+      callback(file);
+
+      return false;
+    }
+
+    files.push(file);
+  });
+
+  callback(null, files);
 };
 
-FileSystem.prototype._openFile = function(filePath, callback) {
-  var dialog = this.dialog;
 
-  var diagramFile, answer;
+FileSystem.prototype._openFile = function(filePath) {
+  var diagramFile;
 
   try {
     diagramFile = readFile(filePath);
-
-    if (!diagramFile.fileType) {
-      dialog.showDialog('unrecognizedFile', { name: diagramFile.name });
-
-      return this.open(callback);
-    }
   } catch (err) {
-    return callback(err);
+    return err;
   }
 
-  if (parseUtil.hasActivitiURL(diagramFile.contents)) {
-
-    answer = dialog.showDialog('namespace');
-
-    if (answer === 'yes') {
-      diagramFile.contents = parseUtil.replaceNamespace(diagramFile.contents);
-    }
-
-    callback(null, diagramFile);
-  } else {
-    callback(null, diagramFile);
-  }
+  return diagramFile;
 };
 
-FileSystem.prototype.addFile = function(filePath) {
+FileSystem.prototype.addFile = function(filePath, callback) {
   var dialog = this.dialog;
 
-  this._openFile(filePath, function (err, diagramFile) {
-    if (err) {
-      return dialog.showGeneralErrorDialog();
-    }
+  var diagramFile = this._openFile(filePath);
 
-    renderer.send('editor.actions', {
-      event: 'file.add',
-      data: {
-        diagram: diagramFile
-      }
-    });
-  });
+  if (!diagramFile.contents) {
+    dialog.showGeneralErrorDialog();
+
+    return callback(diagramFile);
+  }
+
+  callback(null, diagramFile);
 };
 
 FileSystem.prototype.saveAs = function(diagramFile, callback) {
@@ -179,11 +122,7 @@ FileSystem.prototype.saveAs = function(diagramFile, callback) {
 };
 
 FileSystem.prototype.save = function(diagramFile, callback) {
-  this._save(diagramFile.path, diagramFile, callback);
-};
-
-FileSystem.prototype._save = function(filePath, diagramFile, callback) {
-  console.log('--->', filePath);
+  var filePath = diagramFile.path;
 
   try {
     var newDiagramFile = writeFile(filePath, diagramFile);
@@ -193,7 +132,6 @@ FileSystem.prototype._save = function(filePath, diagramFile, callback) {
     callback(err);
   }
 };
-
 
 function readFile(diagramPath) {
 
