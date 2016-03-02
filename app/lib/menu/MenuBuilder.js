@@ -12,7 +12,19 @@ var merge = require('lodash/object/merge');
 function MenuBuilder(opts) {
   this.opts = merge({
     appName: 'Camunda Modeler',
-    state: {}
+    state: {
+      dmn: false,
+      bpmn: false,
+      undo: false,
+      redo: false,
+      editable: false,
+      zoom: false,
+      save: false,
+      closable: false,
+      elementsSelected: false,
+      dmnRuleEditing: false,
+      dmnClauseEditingfalse: false
+    }
   }, opts);
 
   if (this.opts.template) {
@@ -86,7 +98,7 @@ MenuBuilder.prototype.appendSaveAsFile = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Save File As..',
     accelerator: 'CommandOrControl+Shift+S',
-    enabled: this.opts.state.saveAs,
+    enabled: this.opts.state.save,
     click: function (menuItem, browserWindow) {
       browserWindow.webContents.send('menu:action', 'save-as');
     }
@@ -98,7 +110,7 @@ MenuBuilder.prototype.appendSaveAsFile = function(submenu) {
 MenuBuilder.prototype.appendCloseTab = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Close Tab',
-    enabled: this.opts.state.closeTab,
+    enabled: this.opts.state.closable,
     accelerator: 'CommandOrControl+W',
     click: function (menuItem, browserWindow) {
       browserWindow.webContents.send('menu:action', 'close-active-tab');
@@ -351,7 +363,7 @@ MenuBuilder.prototype.appendDmnActions = function () {
 };
 
 MenuBuilder.prototype.appendEditMenu = function() {
-  if (this.opts.state.edit) {
+  if (this.opts.state.editable) {
     var builder = new this.constructor(this.opts).appendBaseEditActions();
 
     if (this.opts.state.bpmn) {
@@ -371,52 +383,61 @@ MenuBuilder.prototype.appendEditMenu = function() {
   return this;
 };
 
-MenuBuilder.prototype.appendWindowMenu = function(submenu) {
-  this.menu.append(new MenuItem({
-    label: 'Window',
-    submenu: submenu || Menu.buildFromTemplate([{
+MenuBuilder.prototype.appendWindowMenu = function() {
+
+  var submenu = [];
+
+  if (this.opts.state.zoom) {
+    submenu.push({
       label: 'Zoom In',
       accelerator: 'CommandOrControl+=',
-      click: function(menuItem, browserWindow) {
+      click: function (menuItem, browserWindow) {
         browserWindow.webContents.send('menu:action', 'zoomIn');
       }
     }, {
       label: 'Zoom Out',
       accelerator: 'CommandOrControl+-',
-      click: function(menuItem, browserWindow) {
+      click: function (menuItem, browserWindow) {
         browserWindow.webContents.send('menu:action', 'zoomOut');
       }
     }, {
       label: 'Zoom Default',
       accelerator: 'CommandOrControl+0',
-      click: function(menuItem, browserWindow) {
+      click: function (menuItem, browserWindow) {
         browserWindow.webContents.send('menu:action', 'zoom');
       }
     }, {
       type: 'separator'
-    }, {
-      label: 'Reload',
-      accelerator: 'CommandOrControl+R',
-      click: function(menuItem, browserWindow) {
-        browserWindow.reload();
-      }
-    }, {
-      label: 'Fullscreen',
-      accelerator: 'F11',
-      click: function(menuItem, browserWindow) {
-        if (browserWindow.isFullScreen()) {
-          return browserWindow.setFullScreen(false);
-        }
+    });
+  }
 
-        browserWindow.setFullScreen(true);
+  submenu.push({
+    label: 'Reload',
+    accelerator: 'CommandOrControl+R',
+    click: function(menuItem, browserWindow) {
+      browserWindow.reload();
+    }
+  }, {
+    label: 'Fullscreen',
+    accelerator: 'F11',
+    click: function(menuItem, browserWindow) {
+      if (browserWindow.isFullScreen()) {
+        return browserWindow.setFullScreen(false);
       }
-    }, {
-      label: 'Toggle DevTools',
-      accelerator: 'F12',
-      click: function(menuItem, browserWindow) {
-        browserWindow.toggleDevTools();
-      }
-    }])
+
+      browserWindow.setFullScreen(true);
+    }
+  }, {
+    label: 'Toggle DevTools',
+    accelerator: 'F12',
+    click: function(menuItem, browserWindow) {
+      browserWindow.toggleDevTools();
+    }
+  });
+
+  this.menu.append(new MenuItem({
+    label: 'Window',
+    submenu: Menu.buildFromTemplate(submenu)
   }));
   return this;
 };

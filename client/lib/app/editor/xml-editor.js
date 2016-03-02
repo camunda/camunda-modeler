@@ -62,16 +62,14 @@ XMLEditor.prototype.updateState = function() {
 
   var initialState = this.initialState || { xml: this.lastXML };
 
-  var stateContext = {};
-
-  // TODO(nikku): complete / more updates?
-  stateContext = {
+  var stateContext = {
     undo: !!history.undo,
     redo: !!history.redo,
     dirty: (
       initialState.dirty ||
       initialState.xml !== codemirror.getValue()
-    )
+    ),
+    editable: true
   };
 
   this.emit('state-updated', stateContext);

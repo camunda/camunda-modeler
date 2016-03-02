@@ -10,7 +10,7 @@ var debug = require('debug')('window-menu');
 function WindowMenu(app) {
 
   // Updating Menu
-  app.on('state:changed', function (state) {
+  app.on('tools:state-changed', function (tab, state) {
     debug('Notifying menu about client state change', state);
 
     browser.send('menu:update', state);

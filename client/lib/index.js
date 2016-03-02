@@ -9,7 +9,6 @@ global.h = require('vdom/h');
 
 var Logger = require('base/logger'),
     Events = require('base/events'),
-    State = require('app/state'),
     Workspace = require('external/workspace'),
     FileSystem = require('external/file-system'),
     Dialog = require('external/dialog'),
@@ -37,7 +36,6 @@ domReady(function() {
   });
 
   // Setting up external components
-  new State(app);
   new Menu(app);
 
   if (isMac()) {

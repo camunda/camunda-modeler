@@ -14,7 +14,8 @@ function EmptyTab(options) {
   }
 
   ensureOpts([
-    'app'
+    'app',
+    'events'
   ], options);
 
   this.render = function() {
@@ -36,6 +37,10 @@ function EmptyTab(options) {
   };
 
   Tab.call(this, options);
+
+  this.on('focus', () => {
+    this.events.emit('tools:state-changed', this, {});
+  });
 }
 
 inherits(EmptyTab, Tab);

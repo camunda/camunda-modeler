@@ -20,6 +20,10 @@ var arg = require('test/helper/util/arg'),
 var bpmnXML = require('app/tabs/bpmn/initial.bpmn'),
     dmnXML = require('app/tabs/dmn/initial.dmn');
 
+var inherits = require('inherits');
+var MultiEditorTab = require('app/tabs/multi-editor-tab');
+var BaseEditor = require('app/editor/base-editor');
+
 
 function createBpmnFile(xml) {
   return {
@@ -311,10 +315,9 @@ describe('App', function() {
       // given
       var file = createBpmnFile(bpmnXML);
 
-      // install save mock for tab
-      app.on('tab:select', patchSaveAnswer(file));
-
       app.createTabs([ file ]);
+
+      patchSaveAnswer(app, file);
 
       // when
       app.triggerAction('save');
@@ -334,10 +337,9 @@ describe('App', function() {
 
       dialog.setSaveAsResponse(expectedFile);
 
-      // install save mock for tab
-      app.on('tab:select', patchSaveAnswer(file));
-
       app.createTabs([ file ]);
+
+      patchSaveAnswer(app, file);
 
       // when
       app.triggerAction('save-as');
@@ -358,10 +360,9 @@ describe('App', function() {
 
       var saveError = new Error('something went wrong');
 
-      // install save mock for tab
-      app.on('tab:select', patchSaveAnswer(saveError));
-
       app.createTabs([ file ]);
+
+      patchSaveAnswer(app, saveError);
 
       // when
       app.triggerAction('save');
@@ -839,15 +840,61 @@ describe('App', function() {
 
   describe('event emitter', function() {
 
-    describe('state:update', function() {
+    var tab;
+
+    beforeEach( () => {
+      function SomeEditor() {
+        BaseEditor.call(this, {});
+      }
+
+      inherits(SomeEditor, BaseEditor);
+
+      SomeEditor.prototype.update = function() {
+        this.emit('state-updated', { editorStateProperty: 'smth' });
+      };
+
+      tab = new MultiEditorTab({
+        editorDefinitions: [
+          { id: 'someEditor', label: 'SomeEditor', component: SomeEditor }
+        ],
+        id: 'someId',
+        events: events,
+        dialog: dialog
+      });
+    });
+
+
+    describe('focus', () => {
+
+      it('should be emitted on the active tab once selected', done => {
+
+        // given
+        app.addTab(tab);
+        expect(app.activeTab).not.to.eql(tab);
+
+        tab.on('focus', () => {
+          // then
+          expect(app.activeTab).to.eql(tab);
+          done();
+        });
+
+        // when
+        app.selectTab(tab);
+
+      });
+
+    });
+
+
+    describe('tools:state-changed', function() {
 
       it('should emit on application start', function(done) {
 
         // given
-        app.once('state:update', function(partialState) {
+        app.once('tools:state-changed', function(tab, state) {
 
           // then
-          expect(partialState).to.have.property('tabs', 1);
+          expect(state).to.eql({});
 
           done();
         });
@@ -857,26 +904,23 @@ describe('App', function() {
       });
 
 
-      it('should emit on file open', function(done)  {
+      it('should emit on editor "state-updated" event', function(done)  {
 
         // given
-        dialog.setOpenResponse({
-          name: 'diagram_1.bpmn',
-          path: 'diagram_1.bpmn',
-          contents: bpmnXML
-        });
+        app.addTab(tab);
 
-        app.once('state:update', function(partialState) {
+        app.on('tools:state-changed', function(tab, state) {
 
           // then
-          expect(partialState).to.have.property('tabs', 2);
-          expect(partialState).to.have.property('diagramType', 'bpmn');
+          expect(state).to.have.property('save', true);
+          expect(state).to.have.property('editorStateProperty', 'smth');
 
           done();
         });
 
         // when
-        app.openDiagram();
+        app.selectTab(tab);
+
       });
 
     });
@@ -886,9 +930,8 @@ describe('App', function() {
 });
 
 
-function patchSaveAnswer(answer) {
-
-  return function(tab) {
+function patchSaveAnswer(app, answer) {
+  app.tabs.forEach(tab => {
     tab.save = function(done) {
       if (answer instanceof Error) {
         done(answer);
@@ -896,5 +939,5 @@ function patchSaveAnswer(answer) {
         done(null, answer);
       }
     };
-  };
+  });
 }

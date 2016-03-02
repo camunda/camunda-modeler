@@ -75,13 +75,14 @@ DmnEditor.prototype.updateState = function() {
     var element = modeler.get('selection').get();
     var elementType = getEntriesType(element);
 
-    // TODO(nikku): complete / more updates?
     stateContext = {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
       dirty: dirty,
       dmnRuleEditing: elementType.rule,
-      dmnClauseEditing: elementType.input || elementType.output
+      dmnClauseEditing: elementType.input || elementType.output,
+      editable: true,
+      dmn: true
     };
   }
 

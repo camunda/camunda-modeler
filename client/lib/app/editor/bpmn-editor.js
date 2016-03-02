@@ -117,12 +117,15 @@ BpmnEditor.prototype.updateState = function() {
       elementsSelected = true;
     }
 
-    // TODO(nikku): complete / more updates?
+
     stateContext = {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
       dirty: dirty,
-      elementsSelected: elementsSelected
+      elementsSelected: elementsSelected,
+      zoom: true,
+      editable: true,
+      bpmn: true
     };
   }
 

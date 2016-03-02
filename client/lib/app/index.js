@@ -116,7 +116,8 @@ function App(options) {
       title: 'Create new Diagram',
       action: this.compose('triggerAction', 'create-bpmn-diagram'),
       closable: false,
-      app: this
+      app: this,
+      events: this.events
     })
   ];
 
@@ -129,33 +130,40 @@ function App(options) {
     });
   }, 100));
 
+
   this.events.on('tools:state-changed', (tab, newState) => {
 
-    var stateUpdate, button;
+    var button;
 
-    // update buttons based on undo/redo state
-    [ 'undo', 'redo' ].forEach((key) => {
-
-      if (key in newState) {
-        button = find(this.menuEntries, { id: key });
-        button.disabled = !newState[key];
-      }
-    });
-
-    if (tab === this.activeTab) {
-      debug('state-changed', newState);
-
-      button = find(this.menuEntries, { id: 'save' });
-
-      tab.dirty = newState.dirty;
-      button.disabled = !tab.dirty;
+    if (this.activeTab !== tab) {
+      debug('Warning: state updated on incative tab! This should never happen!');
+      return;
     }
 
-    stateUpdate = assign({
-      diagramType: tab.file.fileType
-    }, newState);
+    debug('tools:state-changed', newState);
 
-    this.events.emit('state:update', stateUpdate);
+    // undo/redo buttons
+    [ 'undo', 'redo' ].forEach((key) => {
+      var enabled = (
+        key in newState
+        && newState[key]
+      );
+      button = find(this.menuEntries, { id: key });
+      button.disabled = !enabled;
+    });
+
+    // tab dirty state
+    tab.dirty = newState.dirty;
+
+    // save and saveAs buttons
+    // should work all the time as long as the
+    // tab provides a save action
+    [ 'save', 'save-as' ].forEach((key) => {
+      var enabled = 'save' in newState;
+      button = find(this.menuEntries, { id: key });
+      button.disabled = !enabled;
+    });
+
     this.events.emit('changed');
   });
 
@@ -459,25 +467,6 @@ App.prototype._saveTab = function(tab, file, saveAs, updateTab, done) {
 };
 
 /**
- * Allows changing the current active tab and displaying it.
- *
- * @param  {Tab} tab
- */
-App.prototype.selectTab = function(tab) {
-  var exists = contains(this.tabs, tab);
-
-  if (!exists) {
-    throw new Error('non existing tab');
-  }
-
-  this.activeTab = tab;
-
-  this.logger.info('switch to <%s> tab', tab.id);
-
-  this.events.emit('changed');
-};
-
-/**
  * Save the given file and invoke callback with (err, savedFile).
  *
  * @param {File} file
@@ -514,38 +503,29 @@ App.prototype.filesDropped = function(files) {
   this.createTabs(actualFiles);
 };
 
+
 /**
  * Select the given tab.
  *
  * @param {Tab} tab
  */
 App.prototype.selectTab = function(tab) {
+  debug('selecting tab with id: ' + tab.id);
 
-  var tabs = this.tabs,
-      events = this.events;
-
-  var exists = contains(tabs, tab);
+  var exists = contains(this.tabs, tab);
 
   if (!exists) {
     throw new Error('non existing tab');
   }
 
-  if (this.activeTab === tab) {
-    return;
-  }
-
   this.activeTab = tab;
 
-  events.emit('tab:select', tab);
+  this.activeTab.emit('focus');
 
   this.logger.info('switch to <%s> tab', tab.id);
 
-  events.emit('workspace:changed');
-  events.emit('state:update', {
-    diagramType: tab.file ? tab.file.fileType : null,
-    tabs: this.tabs.length
-  });
-  events.emit('changed');
+  this.events.emit('workspace:changed');
+  this.events.emit('changed');
 };
 
 /**
@@ -626,10 +606,6 @@ App.prototype._closeTab = function(tab, done) {
   }
 
   events.emit('workspace:changed');
-
-  events.emit('state:update', {
-    tabs: this.tabs.length
-  });
 
   events.emit('changed');
 
@@ -750,19 +726,20 @@ App.prototype.restoreWorkspace = function(done) {
 
 };
 
+
 /**
  * Start application.
  */
 App.prototype.run = function() {
+
+  this.selectTab(this.tabs[0]);
+
   this.restoreWorkspace(function(err) {
     if (err) {
       debug('workspace restore error', err);
     } else {
       debug('workspace restored');
     }
-  });
-  this.events.emit('state:update', {
-    tabs: this.tabs.length
   });
   this.events.emit('changed');
 };

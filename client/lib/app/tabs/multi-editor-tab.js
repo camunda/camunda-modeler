@@ -23,9 +23,12 @@ var assign = require('lodash/object/assign'),
 function MultiEditorTab(options) {
 
   ensureOpts([
+    // externals / communication structure
+    // communicate via events not this.emit :'-(
     'events',
-    'file',
-    'dialog'
+    'dialog',
+    'id',
+    'editorDefinitions'
   ], options);
 
   Tab.call(this, options);
@@ -38,6 +41,10 @@ function MultiEditorTab(options) {
   if (options.file) {
     this.setFile(options.file);
   }
+
+  this.on('focus', () => {
+    this.activeEditor.update();
+  });
 }
 
 inherits(MultiEditorTab, Tab);
@@ -141,7 +148,17 @@ MultiEditorTab.prototype.createEditors = function(options) {
 
     component.on('layout:changed', this.events.composeEmitter('layout:update'));
 
-    component.on('state-updated', this.events.composeEmitter('tools:state-changed', this));
+    component.on('state-updated', (state) => {
+      this.dirty = state.dirty;
+
+      var newState = assign({}, {
+        diagramType: this.file ? this.file.fileType : null,
+        save: true,
+        closable: true
+      }, state);
+
+      this.events.emit('tools:state-changed', this, newState);
+    });
 
     component.on('changed', this.events.composeEmitter('changed'));
 
