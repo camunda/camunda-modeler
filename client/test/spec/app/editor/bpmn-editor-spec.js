@@ -288,6 +288,34 @@ describe('BpmnEditor', function() {
     });
 
 
+    it('should notify modeler about change', function() {
+
+      // given
+      var editor = new BpmnEditor({
+        layout: {
+          propertiesPanel: {
+            open: false,
+            width: 150
+          }
+        }
+      });
+
+      var tree = render(editor);
+
+      var element = selectPropertiesToggle(tree);
+
+      // mock for sake of testing
+      var notifySpy = spy(editor, 'notifyModeler');
+
+      // when
+      // open toggle
+      simulateEvent(element, 'click');
+
+      // then
+      expect(notifySpy).to.have.been.calledWith('propertiesPanel.resized');
+    });
+
+
     it('should resize', function(done) {
 
       // given

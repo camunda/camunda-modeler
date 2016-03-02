@@ -159,6 +159,8 @@ BpmnEditor.prototype.resizeProperties = function onDrag(panelLayout, event, delt
       width: newWidth
     }
   });
+
+  this.notifyModeler('propertiesPanel.resized');
 };
 
 BpmnEditor.prototype.toggleProperties = function() {
@@ -171,6 +173,8 @@ BpmnEditor.prototype.toggleProperties = function() {
       width: !config.open ? (config.width > 25 ? config.width : 250) : config.width
     }
   });
+
+  this.notifyModeler('propertiesPanel.resized');
 };
 
 
@@ -286,6 +290,22 @@ BpmnEditor.prototype.hideWarnings = function() {
   this.lastImport = null;
 
   this.emit('changed');
+};
+
+/**
+ * Notify initialized modeler about an event.
+ *
+ * @param {String} eventName
+ */
+BpmnEditor.prototype.notifyModeler = function(eventName) {
+
+  var modeler = this.getModeler();
+
+  try {
+    modeler.get('eventBus').fire(eventName);
+  } catch (e) {
+    // we don't care
+  }
 };
 
 function isImported(modeler) {
