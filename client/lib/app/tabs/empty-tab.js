@@ -2,6 +2,8 @@
 
 var inherits = require('inherits');
 
+var assign = require('lodash/object/assign');
+
 var Tab = require('base/components/tab');
 
 var ensureOpts = require('util/ensure-opts');
@@ -12,6 +14,8 @@ function EmptyTab(options) {
   if (!(this instanceof EmptyTab)) {
     return new EmptyTab(options);
   }
+
+  options = assign({ empty: true }, options);
 
   ensureOpts([
     'app',

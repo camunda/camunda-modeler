@@ -52,6 +52,7 @@
     "lodash": "^3.10.1",
     "next-tick": "^0.2.2",
     "raf": "^3.1.0",
+    "scroll-tabs": "^0.2.0",
     "virtual-dom": "^2.1.1",
     "virtual-hook": "^1.0.1"
   },
