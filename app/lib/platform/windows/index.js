@@ -8,19 +8,10 @@ var FILE_ASSOCIATION_KEY = 'fileAssociation';
 
 function WindowsPlatform(app, config) {
 
-  // close handling
-  app.on('window-all-closed', function () {
-    app.quit();
-  });
-
   // setup file associations + deferred open file
   // specified via command-line
   app.on('editor:open', function(browserWindow) {
     checkFileAssociations(app, config);
-  });
-
-  app.on('editor:add-recent', function(path) {
-    app.addRecentDocument(path);
   });
 }
 

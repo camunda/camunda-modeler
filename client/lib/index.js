@@ -21,6 +21,8 @@ var mainLoop = require('util/dom/main-loop'),
 
 var ShortcutsFix = require('app/shortcuts-fix');
 
+var browser = require('util/browser');
+
 
 // init dom-delegator
 Delegator();
@@ -41,6 +43,10 @@ domReady(function() {
   if (isMac()) {
     new ShortcutsFix(app).bind();
   }
+
+  app.on('quitting', () => {
+    browser.send('app:quit');
+  });
 
   mainLoop(app, document.body);
 

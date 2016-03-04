@@ -418,6 +418,10 @@ App.prototype.triggerAction = function(action, options) {
   if (action === 'save-all') {
     return this.saveAllTabs();
   }
+  
+  if (action === 'quit') {
+    return this.quit();
+  }
 
   // forward other actions to active tab
   activeTab.triggerAction(action, options);
@@ -738,20 +742,21 @@ App.prototype.closeTab = function(tab, done) {
 
   file = tab.file;
 
-  dialog.close(file, (err, answer) => {
+  dialog.close(file, (err, result) => {
+    debug('---->', err, result);
 
-    if (isCancel(answer)) {
+    if (isCancel(result)) {
       err = userCanceled();
     }
 
     if (err) {
-      debug('close-tab canceled: %s', err);
+      debug('close-tab canceled: %s', err, result);
 
-      return done(err);
+      return done(err, result);
     }
 
     // close without saving
-    if (answer === 'close') {
+    if (result === 'close') {
       return this._closeTab(tab, done);
     }
 
@@ -936,6 +941,35 @@ App.prototype.run = function() {
     }
   });
   this.events.emit('changed');
+};
+
+App.prototype.quit = function() {
+  debug('initiating application quit');
+
+  var self = this;
+
+  function processTab(tab) {
+    if (tab.empty) {
+      debug('shutting down application');
+      return self.emit('quitting');
+    }
+    self.closeTab(tab, (err, status) => {
+      if (!err && status !== 'cancel') {
+        debug('tab closed');
+        debug('...processing next tab');
+        // Make sure newly selected tab is rendered
+        setTimeout(() => {
+          processTab(self.activeTab);
+        }, 100);
+      } else {
+        debug('quit aborted');
+        self.emit('quit-aborted');
+      }
+    });
+  }
+
+  processTab(this.activeTab);
+
 };
 
 

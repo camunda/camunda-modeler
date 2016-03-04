@@ -48,8 +48,6 @@ var fileSystem = new FileSystem({
   dialog: dialog
 });
 
-// The main editor window.
-var mainWindow = null;
 
 // make app a singleton
 if (config.get('single-instance', true)) {
@@ -59,69 +57,23 @@ if (config.get('single-instance', true)) {
     app.emit('editor:cmd', commandLine, workingDirectory);
 
     // focus existing running instance window
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) {
-        mainWindow.restore();
+    if (app.mainWindow) {
+      if (app.mainWindow.isMinimized()) {
+        app.mainWindow.restore();
       }
-      mainWindow.focus();
+      app.mainWindow.focus();
     }
 
     return true;
   });
 
   if (shouldQuit) {
-    app.quit();
+    app.emit('app:quit');
   }
 }
 
 // List of files that should be opened by the editor
 app.openFiles = [];
-
-// We need this check so we can quit after checking for unsaved diagrams
-app.dirty = true;
-
-/**
- * Open a new browser window, if non exists.
- *
- * @return {BrowserWindow}
- */
-function open() {
-  if (!mainWindow) {
-    mainWindow = createEditorWindow();
-
-    // This event gets triggered on graphical OS'es when the user
-    // tries to quit the modeler by clicking the little 'x' button
-    mainWindow.on('close', beforeQuit);
-
-    // dereference the main window on close
-    mainWindow.on('closed', function () {
-      mainWindow = null;
-    });
-  }
-
-  app.emit('editor:create', mainWindow);
-
-  app.emit('editor:create-menu', mainWindow);
-}
-
-/**
- * Gets triggered whenever the user tries to exit the modeler
- *
- * @param  {Object}   Event
- */
-function beforeQuit(evt) {
-  // TODO: reimplement checking modified tabs on quit
-  // if (!app.dirty) {
-  //   return;
-  // }
-  //
-  // evt.preventDefault();
-  //
-  // // Triggers the check for unsaved diagrams
-  // mainWindow.webContents.send('editor.actions', {
-  //   event: 'editor.quit'
-  // });
-}
 
 /**
  * Create the main window that represents the editor.
@@ -130,7 +82,7 @@ function beforeQuit(evt) {
  */
 function createEditorWindow() {
 
-  var mainWindow = new BrowserWindow({
+  var mainWindow = app.mainWindow = new BrowserWindow({
     resizable: true,
     title: 'Camunda Modeler'
   });
@@ -139,9 +91,7 @@ function createEditorWindow() {
 
   mainWindow.maximize();
 
-  var indexPath = 'file://' + path.resolve(__dirname + '/../../public/index.html');
-
-  mainWindow.loadURL(indexPath);
+  mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../public/index.html'));
 
   mainWindow.webContents.on('did-finish-load', function() {
     app.emit('editor:open', mainWindow);
@@ -155,13 +105,7 @@ function createEditorWindow() {
   return mainWindow;
 }
 
-//////// client life-cycle //////////////////////////////
-renderer.on('editor:quit', function(hasUnsavedChanges, done) {
-  done(null);
-
-  app.emit('editor:quit-allowed');
-});
-
+//////// client life-cycle /////////////////////////////
 renderer.on('editor:ready', function(done) {
   done(null);
   app.emit('editor:deferred-file-open');
@@ -277,7 +221,7 @@ app.on('open-file', function (evt, filePath) {
     evt.preventDefault();
   }
 
-  if (mainWindow) {
+  if (app.mainWindow) {
     app.emit('editor:file-open', filePath);
   } else {
     app.emit('editor:defer-file-open', filePath);
@@ -310,40 +254,62 @@ app.on('editor:cmd', function (argv, cwd) {
   var files = Cli.extractFiles(argv, cwd);
 
   console.log(files);
-  files.forEach(function (f) {
-    app.emit('open-file', null, f);
+  files.forEach(function (file) {
+    app.emit('open-file', null, file);
   });
 });
 
-app.on('editor:open', function (mainWindow) {
-  console.log('app:editor:open');
+/**
+ * Adding recent open files. Currently not supported on Linux.
+ */
+app.on('editor:add-recent', function(path) {
+  app.addRecentDocument(path);
+});
 
-  // TODO: FileSystem must be a singleton
-  app.fileSystem = app.fileSystem || new FileSystem({
+
+/**
+ * Application entry point
+ * Emitted when Electron has finished initialization.
+ */
+app.on('ready', function (evt) {
+
+  app.fileSystem = new FileSystem({
     dialog: dialog
   });
+
+  var mainWindow = app.mainWindow = createEditorWindow();
+
+  // Setting up application exit logic
+  mainWindow.on('close', (e) => {
+    if (!app.closable) {
+      console.log('---> Window close triggered: delegating to client to process request');
+      e.preventDefault();
+      renderer.send('menu:action', 'quit');
+    } else {
+      console.log('---> Closing main window');
+      app.emit('app:quit');
+    }
+  });
+
+  function quit() {
+    console.log('---> Quitting application');
+    app.closable = true;
+    app.quit();
+  }
+
+  renderer.on('app:quit', quit);
+  app.on('window-all-closed', quit);
+
+  mainWindow.on('closed', () => {
+    // dereference the main window on close
+    app.mainWindow = null;
+  });
+
+
+  app.emit('window:created', mainWindow);
+  app.emit('editor:cmd', process.argv, process.cwd());
 });
 
-//////// shutdown ////////////////////////////////////
-
-app.on('before-quit', beforeQuit);
-
-// This is a custom event that is fired by us when there are no
-// open diagrams left with unsaved changes
-app.on('editor:quit-allowed', function () {
-  app.dirty = false;
-  app.quit();
-});
-
-//////// initialization //////////////////////////////
-
-app.on('ready', function (evt) {
-  open();
-});
-
-app.emit('editor:init');
-
-app.emit('editor:cmd', process.argv, process.cwd());
 
 // expose app
 module.exports = app;

@@ -27,6 +27,8 @@ var inherits = require('inherits');
 var MultiEditorTab = require('app/tabs/multi-editor-tab');
 var BaseEditor = require('app/editor/base-editor');
 
+var Tab = require('base/components/tab');
+
 
 function createBpmnFile(xml) {
   return {
@@ -65,6 +67,95 @@ describe('App', function() {
       fileSystem: fileSystem,
       workspace: workspace,
       logger: logger
+    });
+
+  });
+
+
+  describe('"quit" action', () => {
+    var tab;
+    var dirty;
+    var file;
+
+    beforeEach(() => {
+      dirty = true;
+      file = createBpmnFile(bpmnXML);
+
+      function SomeTab() {
+        this.on('focus', () => {
+          this.events.emit('tools:state-changed', this, {
+            dirty: dirty
+          });
+        });
+
+        Tab.call(this, {
+          events: events
+        });
+      }
+
+      inherits(SomeTab, Tab);
+
+      SomeTab.prototype.save = function(done) {
+        done(null, file);
+      };
+
+      SomeTab.prototype.setFile = function() {};
+
+      app.addTab(new SomeTab());
+      app.addTab(new SomeTab());
+
+      tab = new SomeTab();
+      app.addTab(tab);
+      app.selectTab(tab);
+      expect(app.activeTab).to.eql(tab);
+
+      // includes empty tab
+      expect(app.tabs).to.have.lengthOf(4);
+    });
+
+
+    it('should emit "quitting" event and close all tabs on successful exit', done => {
+      // given
+      dialog.setResponse('close', file);
+
+      app.on('quitting', () => {
+        // then
+        expect(app.tabs).to.have.lengthOf(1);
+        done();
+      });
+
+      // when
+      app.triggerAction('quit');
+    });
+
+
+    it('should emit "quit-aborted" event when closing tab results in error', done => {
+      // given
+      dialog.setResponse('close', new Error('user canceled'));
+
+      app.on('quit-aborted', () => {
+        // then
+        expect(app.tabs).to.have.lengthOf(4);
+        done();
+      });
+
+      // when
+      app.triggerAction('quit');
+    });
+
+
+    it('should emit "quit-aborted" event when closing tab is being canceled', done => {
+      // given
+      dialog.setResponse('close', 'cancel');
+
+      app.on('quit-aborted', () => {
+        // then
+        expect(app.tabs).to.have.lengthOf(4);
+        done();
+      });
+
+      // when
+      app.triggerAction('quit');
     });
 
   });

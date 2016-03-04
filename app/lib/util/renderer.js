@@ -2,8 +2,7 @@
 
 var ipcMain = require('electron').ipcMain;
 
-var app = require('electron').app,
-    browserWindow = app.browserWindow;
+var app = require('electron').app;
 
 
 
@@ -29,7 +28,7 @@ module.exports.on = on;
 function send() {
   var args = Array.prototype.slice.call(arguments);
 
-  browserWindow.webContents.send.apply(browserWindow.webContents, args);
+  app.mainWindow.webContents.send.apply(app.mainWindow.webContents, args);
 }
 
 module.exports.send = send;

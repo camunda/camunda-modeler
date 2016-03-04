@@ -3,7 +3,6 @@
 var Menu = require('menu');
 var MenuItem = require('menu-item');
 
-var app = require('electron').app;
 var browserOpen = require('../util/browser-open');
 
 var merge = require('lodash/object/merge');
@@ -138,8 +137,7 @@ MenuBuilder.prototype.appendQuit = function(submenu) {
     label: 'Quit',
     accelerator: 'CommandOrControl+Q',
     click: function (menuItem, browserWindow) {
-      // TODO: delegate to the client quit event
-      app.quit();
+      browserWindow.webContents.send('menu:action', 'quit');
     }
   }));
 
