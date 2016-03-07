@@ -88,43 +88,48 @@ function App(options) {
         {
           id: 'create-bpmn-diagram',
           action: this.compose('triggerAction', 'create-bpmn-diagram'),
-          label: 'Create new BPMN diagram',
+          label: 'Create new BPMN Diagram',
           icon: 'icon-new',
           primary: true
         },
         {
           id: 'create-dmn-diagram',
           action: this.compose('triggerAction', 'create-dmn-diagram'),
-          label: 'Create new DMN diagram'
+          label: 'Create new DMN Table'
         }
       ]
     }),
     Button({
       id: 'open',
       icon: 'icon-open',
+      label: 'Open a Diagram',
       action: this.compose('triggerAction', 'open-diagram')
     }),
     Separator(),
     Button({
       id: 'save',
       icon: 'icon-save-normal',
+      label: 'Save Diagram',
       action: this.compose('triggerAction', 'save')
     }),
     Button({
       id: 'save-as',
       icon: 'icon-save-as',
+      label: 'Save Diagram as...',
       action: this.compose('triggerAction', 'save-as')
     }),
     Separator(),
     Button({
       id: 'undo',
       icon: 'icon-undo',
+      label: 'Undo',
       action: this.compose('triggerAction', 'undo'),
       disabled: true
     }),
     Button({
       id: 'redo',
       icon: 'icon-redo',
+      label: 'Redo',
       action: this.compose('triggerAction', 'redo'),
       disabled: true
     }),
