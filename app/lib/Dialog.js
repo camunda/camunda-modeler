@@ -151,15 +151,12 @@ Dialog.prototype.setDefaultPath = function(filenames) {
   config.set('defaultPath', dirname);
 
   this.defaultPath = dirname;
-
-  return filenames;
 };
 
 Dialog.prototype.showDialog = function(type, opts) {
   var dialog = this.dialog,
       dialogOptions = this.getDialogOptions(type, opts),
       buttons = dialogOptions.buttons,
-      filenames,
       result;
 
   // windows needs this property
@@ -172,10 +169,12 @@ Dialog.prototype.showDialog = function(type, opts) {
   }
 
   if (type === 'open') {
-    filenames = dialog.showOpenDialog(dialogOptions);
+    result = dialog.showOpenDialog(dialogOptions);
+
   } else
   if (type === 'save') {
-    filenames = dialog.showSaveDialog(dialogOptions);
+    result = dialog.showSaveDialog(dialogOptions);
+
   } else {
     result = dialog.showMessageBox(dialogOptions);
 
@@ -184,8 +183,8 @@ Dialog.prototype.showDialog = function(type, opts) {
   }
 
   // save last used path to config
-  if (filenames) {
-    result = this.setDefaultPath(filenames);
+  if (type === 'open' || type === 'save') {
+    this.setDefaultPath(result);
   }
 
   return result;

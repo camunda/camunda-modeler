@@ -315,7 +315,7 @@ App.prototype.openDiagram = function() {
       return;
     }
 
-    if (!files || files === 'cancel') {
+    if (!files) {
       debug('open-diagram canceled: no file');
 
       return;
@@ -328,17 +328,21 @@ App.prototype.openDiagram = function() {
         dialog.unrecognizedFileError(file, function(err) {
           debug('open-diagram canceled: unrecognized file type', file);
 
-          done(null);
+          return done(err);
         });
 
       } else {
         if (namespace.hasActivitiURL(file.contents)) {
 
-          dialog.convertNamespace(function(err, answer) {
-            if (isErrorOrCancel(err, answer)) {
-              debug('open-diagram canceled: %s', err || answer);
+          dialog.convertNamespace((err, answer) => {
+            if (err) {
+              debug('open-diagram error: %s', err);
 
               return done(err);
+            }
+
+            if (isCancel(answer)) {
+              return done(null);
             }
 
             if (answer === 'yes') {
@@ -356,8 +360,8 @@ App.prototype.openDiagram = function() {
         return debug('open-diagram canceled: %s', err);
       }
 
-      diagramFiles = filter(diagramFiles, function(diagramFile) {
-        return !!diagramFile;
+      diagramFiles = filter(diagramFiles, (file) => {
+        return !!file;
       });
 
       this.createTabs(diagramFiles);
@@ -473,13 +477,11 @@ App.prototype.exportTab = function(tab, type, done) {
   }
 
   done = done || function(err, suggestedFile) {
-    if (isErrorOrCancel(err, suggestedFile)) {
-      debug('export error or canceled! %s', err || suggestedFile);
-
-      return;
+    if (err) {
+      debug('export canceled: %s', err);
+    } else {
+      debug('exported %s \n%s', tab.id, suggestedFile.contents);
     }
-
-    debug('exported %s \n%s', tab.id, suggestedFile.contents);
   };
 
   tab.exportAs(type, (err, file) => {
@@ -528,10 +530,10 @@ App.prototype.saveTab = function(tab, options, done) {
 
   var updateTab = (err, savedFile) => {
 
-    if (isErrorOrCancel(err, savedFile)) {
-      debug('save error! %s', err || savedFile);
+    if (err) {
+      debug('not gonna update tab: %s', err);
 
-      return done(err, savedFile);
+      return done(err);
     }
 
     debug('saved %s', tab.id);
@@ -569,13 +571,13 @@ App.prototype._saveTab = function(tab, file, saveAs, done) {
   if (saveAs) {
     dialog.saveAs(file, (err, suggestedFile) => {
 
-      if (isErrorOrCancel(err, suggestedFile)) {
-        debug('save %s err', tab.id, err || suggestedFile);
-        return done(err);
+      if (!suggestedFile) {
+        err = userCanceled();
       }
 
-      if (suggestedFile === 'no-overwrite') {
-        return this._saveTab(tab, file, saveAs, done);
+      if (err) {
+        debug('save %s err', tab.id, err);
+        return done(err);
       }
 
       debug('save %s as %s', tab.id, suggestedFile.path);
@@ -687,16 +689,20 @@ App.prototype.closeTab = function(tab, done) {
 
   file = tab.file;
 
-  dialog.close(file, (err, result) => {
-    if (isErrorOrCancel(err, result)) {
-      debug('close-tab error or canceled: %s', err || result);
+  dialog.close(file, (err, answer) => {
 
-      done(err, result);
-      return;
+    if (isCancel(answer)) {
+      err = userCanceled();
+    }
+
+    if (err) {
+      debug('close-tab canceled: %s', err);
+
+      return done(err);
     }
 
     // close without saving
-    if (result === 'close') {
+    if (answer === 'close') {
       return this._closeTab(tab, done);
     }
 
@@ -890,6 +896,10 @@ function contains(collection, element) {
   });
 }
 
-function isErrorOrCancel(err, userChoice) {
-  return err || userChoice === 'cancel';
+function isCancel(userChoice) {
+  return userChoice === 'cancel';
+}
+
+function userCanceled() {
+  return new Error('user canceled');
 }

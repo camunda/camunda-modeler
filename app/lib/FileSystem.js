@@ -34,7 +34,7 @@ FileSystem.prototype.open = function(callback) {
   var filenames = dialog.showDialog('open');
 
   if (!filenames) {
-    return callback(null, 'cancel');
+    return callback(null);
   }
 
   forEach(filenames, function(filename, idx) {
@@ -81,29 +81,49 @@ FileSystem.prototype.addFile = function(filePath, callback) {
 
 FileSystem.prototype.saveAs = function(diagramFile, callback) {
   var dialog = this.dialog,
-      answer;
+      filePath,
+      actualFilePath,
+      savedFile,
+      overrideAnswer;
 
-  var filePath = dialog.showDialog('save', { name: diagramFile.name, fileType: diagramFile.fileType });
+  while (!savedFile) {
 
-  if (!filePath) {
-    return callback(null, 'cancel');
-  }
+    filePath = dialog.showDialog('save', {
+      name: diagramFile.name,
+      fileType: diagramFile.fileType
+    });
 
-  var saveFilePath = ensureExtension(filePath, diagramFile.fileType);
-
-  // display an additional override warning if
-  // filePath.defaultExtension would override an existing file
-  if (filePath !== saveFilePath && existsFile(saveFilePath)) {
-    answer = dialog.showDialog('existingFile', { name: diagramFile.name });
-
-    if (answer !== 'overwrite') {
-      return callback(null, answer);
+    // -> user cancel on save as file chooser
+    if (!filePath) {
+      break;
     }
+
+    actualFilePath = ensureExtension(filePath, diagramFile.fileType);
+
+    // display an additional override warning if
+    // filePath.defaultExtension would override an existing file
+    if (filePath !== actualFilePath && existsFile(actualFilePath)) {
+
+      overrideAnswer = dialog.showDialog('existingFile', { name: diagramFile.name });
+
+      // -> user cancel, abort everything
+      if (overrideAnswer === 'cancel') {
+        break;
+      }
+
+      // -> user wants to try again
+      if (overrideAnswer === 'no-override') {
+        continue;
+      }
+    }
+
+    // everything ok up to here -> we got a file
+    savedFile = assign({}, diagramFile, {
+      path: actualFilePath
+    });
   }
 
-  callback(null, assign(diagramFile, {
-    path: saveFilePath
-  }));
+  callback(null, savedFile);
 };
 
 
