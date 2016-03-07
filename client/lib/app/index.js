@@ -443,7 +443,6 @@ App.prototype.createDiagram = function(type) {
  * @param {Array<File>} files
  */
 App.prototype.createTabs = function(files) {
-  var lastFile;
 
   if (!Array.isArray(files)) {
     files = [ files ];
@@ -453,15 +452,10 @@ App.prototype.createTabs = function(files) {
     return;
   }
 
-  lastFile = files[files.length - 1];
-
-  files.forEach(file => {
-
-    this.createTab(file, {
-      select: file === lastFile,
-      dirty: file.path === '[unsaved]'
-    });
+  files.forEach((file) => {
+    this.createTab(file);
   });
+
 };
 
 /**
@@ -471,7 +465,19 @@ App.prototype.createTabs = function(files) {
  * @param {Object} options
  */
 App.prototype.createTab = function(file, options) {
-  this.events.emit('create-tab', file, options);
+  var tabs = this.tabs;
+
+  var existingTab = find(tabs, (t) => {
+    var tabPath = (t.file ? t.file.path : null);
+    return file.path === tabPath;
+  });
+
+  if (existingTab) {
+    this.selectTab(existingTab);
+  } else {
+    this.events.emit('create-tab', file, options);
+  }
+
 };
 
 
@@ -656,31 +662,26 @@ App.prototype.saveFile = function(file, done) {
   this.fileSystem.writeFile(file, done);
 };
 
+
+/**
+ * Handles file dragging directly into modeler window
+ *
+ * @param {Array<File>} files File definitions passed on dragging
+ */
 App.prototype.filesDropped = function(files) {
 
-  var dialog = this.dialog;
-
-  function withType(file) {
+  files.forEach((file) => {
     var type = parseFileType(file);
 
     if (!type) {
-      dialog.unrecognizedFileError(file, function() {
+      this.dialog.unrecognizedFileError(file, function() {
         debug('file drop rejected: unrecognized file type', file);
       });
     } else {
-      return assign(file, { fileType: type });
+      this.createTab(assign({}, file, { fileType: type }));
     }
-  }
+  });
 
-  function withoutEmpty(f) {
-    return f;
-  }
-
-  // parse type + filter unrecognized files
-  var actualFiles = files.map(withType).filter(withoutEmpty);
-
-  // create tabs for files
-  this.createTabs(actualFiles);
 };
 
 
@@ -788,7 +789,11 @@ App.prototype._closeTab = function(tab, done) {
 
   // if tab was active, select previous (if exists) or next tab
   if (tab === this.activeTab) {
-    this.selectTab(tabs[idx - 1] || tabs[idx]);
+    // REVIEW: assumption is that empty tab is always there or there will be a tab left to be active.
+    var newActiveTab = tabs[idx - 1] || tabs[idx];
+    if (newActiveTab){
+      this.selectTab(newActiveTab);
+    }
   }
 
   events.emit('workspace:changed');
@@ -798,18 +803,14 @@ App.prototype._closeTab = function(tab, done) {
   done(null, tab);
 };
 
-App.prototype.addTab = function(tab, config) {
+App.prototype.addTab = function(tab) {
 
   var tabs = this.tabs,
       events = this.events;
 
+  // REVIEW: assumption is that empty tab is always there is the last tab.
+  // so inserting as 'last - 1' tab
   tabs.splice(tabs.length - 1, 0, tab);
-
-  events.emit('tab:add', tab);
-
-  if (config && config.select) {
-    this.selectTab(tab);
-  }
 
   events.emit('workspace:changed');
   events.emit('changed');
@@ -944,6 +945,7 @@ App.prototype.run = function() {
   this.events.emit('changed');
 };
 
+
 App.prototype.quit = function() {
   debug('initiating application quit');
 
@@ -952,6 +954,7 @@ App.prototype.quit = function() {
   });
 
   series(dirtyTabs, (tab, done) => {
+
     this.selectTab(tab);
 
     // Make sure newly selected tab is rendered

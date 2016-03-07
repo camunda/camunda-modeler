@@ -42,7 +42,7 @@ function DmnSupport(options) {
         name: 'diagram_' + createdTabs + '.dmn',
         path: '[unsaved]',
         contents: initialXML
-      }, { select: true });
+      });
     }
   });
 
@@ -62,6 +62,7 @@ function DmnSupport(options) {
       });
 
       app.addTab(tab, options);
+      app.selectTab(tab);
     }
   });
 

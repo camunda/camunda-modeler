@@ -42,7 +42,7 @@ function BpmnSupport(options) {
         name: 'diagram_' + createdTabs + '.bpmn',
         path: '[unsaved]',
         contents: initialXML
-      }, { select: true });
+      });
     }
   });
 
@@ -62,6 +62,7 @@ function BpmnSupport(options) {
       });
 
       app.addTab(tab, options);
+      app.selectTab(tab);
     }
   });
 

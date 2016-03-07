@@ -73,23 +73,24 @@ describe('App', function() {
 
 
   describe('quit', function() {
-    var tab, dirty, file;
+    var file, SomeTab;
 
     beforeEach(function() {
-      dirty = true;
       file = createBpmnFile(bpmnXML);
 
-      function SomeTab() {
+      SomeTab = function SomeTab(dirty) {
+        this.dirty = dirty;
+
         this.on('focus', () => {
           this.events.emit('tools:state-changed', this, {
-            dirty: dirty
+            dirty: this.dirty
           });
         });
 
         Tab.call(this, {
           events: events
         });
-      }
+      };
 
       inherits(SomeTab, Tab);
 
@@ -99,29 +100,23 @@ describe('App', function() {
 
       SomeTab.prototype.setFile = function() {};
 
-      app.addTab(new SomeTab());
-      app.addTab(new SomeTab());
+      app.tabs = [];
 
-      tab = new SomeTab();
-
-      app.addTab(tab);
-
-      app.selectTab(tab);
     });
 
-    it('should emit "quitting" event and close all tabs on successful exit', function(done) {
+    it('should emit "quitting" event and close all dirty tabs on successful exit', function(done) {
       // given
       dialog.setResponse('close', file);
 
+      app.addTab(new SomeTab(false));
+      app.addTab(new SomeTab(true));
+      app.addTab(new SomeTab(false));
+      app.addTab(new SomeTab(true));
 
-      app.on('quit', function() {
-        // then
-        expect(app.tabs).to.have.length(4);
-      });
 
       app.on('quitting', function() {
         // then
-        expect(app.tabs).to.have.length(3);
+        expect(app.tabs).to.have.length(2);
 
         done();
       });
@@ -135,9 +130,13 @@ describe('App', function() {
       // given
       dialog.setResponse('close', new Error('user canceled'));
 
+      app.addTab(new SomeTab(false));
+      app.addTab(new SomeTab(true));
+      app.addTab(new SomeTab(true));
+
       app.on('quit-aborted', function() {
         // then
-        expect(app.tabs).to.have.length(4);
+        expect(app.tabs).to.have.length(3);
 
         done();
       });
@@ -151,9 +150,13 @@ describe('App', function() {
       // given
       dialog.setResponse('close', 'cancel');
 
+      app.addTab(new SomeTab(true));
+      app.addTab(new SomeTab(false));
+      app.addTab(new SomeTab(true));
+
       app.on('quit-aborted', function() {
         // then
-        expect(app.tabs).to.have.length(4);
+        expect(app.tabs).to.have.length(3);
 
         done();
       });
@@ -439,6 +442,47 @@ describe('App', function() {
     });
 
 
+    it('should not open new tab for the same file', function() {
+
+      var bpmnTab, dmnTab;
+
+      // given
+      var bpmnFile = {
+        name: 'diagram_1.bpmn',
+        path: 'diagram_1.bpmn',
+        contents: bpmnXML
+      };
+
+      var dmnFile = {
+        name: 'diagram_1.dmn',
+        path: 'diagram_1.dmn',
+        contents: dmnXML
+      };
+
+      var expectedBpmnFile = assign({ fileType: 'bpmn' }, bpmnFile),
+          expectedDmnFile = assign({ fileType: 'dmn' }, dmnFile);
+
+      dialog.setResponse('open', [ bpmnFile, dmnFile ]);
+      app.tabs = [];
+
+      // when
+      app.openDiagram();
+      app.openDiagram();
+      app.openDiagram();
+      app.openDiagram();
+      app.openDiagram();
+
+      dmnTab = app.tabs[0];
+      bpmnTab = app.tabs[1];
+
+      // then
+      expect(bpmnTab.file).to.eql(expectedBpmnFile);
+      expect(dmnTab.file).to.eql(expectedDmnFile);
+      expect(app.tabs).length.to.be(2);
+
+    });
+
+
     it('should open bpmn file and NOT activiti file', function() {
 
       // given
@@ -571,14 +615,12 @@ describe('App', function() {
       var saveTab = spy(app, 'saveTab');
 
       var file1 = createBpmnFile(bpmnXML);
-      file1.path = '[unsaved]';
-
       var file2 = createDmnFile(dmnXML);
-      file2.path = '[unsaved]';
 
       app.tabs = [];
 
-      app.createTabs([ file1, file2 ]);
+      app.createTab(file1, {dirty: true});
+      app.createTab(file2, {dirty: true});
 
       patchSaveAnswer(app, file1);
 
@@ -604,14 +646,12 @@ describe('App', function() {
       var saveTab = spy(app, 'saveTab');
 
       var file1 = createBpmnFile(bpmnXML);
-      file1.path = '[unsaved]';
-
       var file2 = createDmnFile(dmnXML);
-      file2.path = '[unsaved]';
 
       app.tabs = [];
 
-      app.createTabs([ file1, file2 ]);
+      app.createTab(file1, {dirty: true});
+      app.createTab(file2, {dirty: true});
 
       patchSaveAnswer(app, new Error('canceled'));
 
@@ -637,13 +677,12 @@ describe('App', function() {
       var saveTab = spy(app, 'saveTab');
 
       var file1 = createBpmnFile(bpmnXML);
-
       var file2 = createDmnFile(dmnXML);
-      file2.path = '[unsaved]';
 
       app.tabs = [];
 
-      app.createTabs([ file1, file2 ]);
+      app.createTab(file1);
+      app.createTab(file2, {dirty: true});
 
       var dmnTab = app.tabs[0];
 
@@ -698,7 +737,7 @@ describe('App', function() {
 
       file.path = '[unsaved]';
 
-      app.createTabs([ file ]);
+      app.createTab(file, {dirty: true});
 
       tab = app.activeTab;
 
@@ -736,7 +775,7 @@ describe('App', function() {
 
       file.path = '[unsaved]';
 
-      app.createTabs([ file ]);
+      app.createTab(file, {dirty: true});
 
       initialTab = app.activeTab;
 
@@ -771,7 +810,7 @@ describe('App', function() {
 
       file.path = '[unsaved]';
 
-      app.createTabs([ file ]);
+      app.createTab(file, {dirty: true});
 
       initialTab = app.activeTab;
 
@@ -802,19 +841,11 @@ describe('App', function() {
       var file = createBpmnFile(bpmnXML),
           initialTab;
 
-      var expectedFile = assign({}, file, { path: '/foo/bar', name: 'bar' });
-
       file.path = '[unsaved]';
 
-      app.createTabs([ file ]);
+      app.createTab(file, {dirty: true});
 
       initialTab = app.activeTab;
-
-      app.saveTab = function(tab, cb) {
-        tab.setFile(expectedFile);
-
-        cb(null, expectedFile);
-      };
 
       // when
       dialog.setResponse('close', new Error('user canceled'));

@@ -142,7 +142,7 @@ function readFile(dropFile, done) {
 
     done(null, {
       name: dropFile.name,
-      path: dropFile.path || '[unsaved]',
+      path: dropFile.path,
       contents: e.target.result
     });
   };
