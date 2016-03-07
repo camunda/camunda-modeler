@@ -402,11 +402,12 @@ App.prototype.triggerAction = function(action, options) {
   }
 
   // handle special actions
-  if (action === 'save') {
+  if (action === 'save' && activeTab.save) {
+
     return this.saveTab(activeTab);
   }
 
-  if (action === 'save-as') {
+  if (action === 'save-as' && activeTab.save) {
     return this.saveTab(activeTab, { saveAs: true });
   }
 
@@ -514,10 +515,6 @@ App.prototype.saveTab = function(tab, options, done) {
 
   if (!tab) {
     throw new Error('need tab to save');
-  }
-
-  if (!tab.save) {
-    throw new Error('tab cannot #save');
   }
 
   if (typeof options === 'function') {
