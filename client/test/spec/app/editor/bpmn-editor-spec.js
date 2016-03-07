@@ -42,6 +42,7 @@ describe('BpmnEditor', function() {
     var trigger;
 
     beforeEach(function(done) {
+
       // given
       var $el = document.createElement('div');
 
@@ -454,6 +455,37 @@ describe('BpmnEditor', function() {
       var showDetailsElement = select('[ref=warnings-details-link]', tree);
 
       simulateEvent(showDetailsElement, 'click');
+    });
+
+  });
+
+
+  describe('saveXML', function() {
+
+    var testXML = require('./process-missing-executable.bpmn');
+
+
+    it('should serialize isExecutable', function(done) {
+
+      // given
+      var $el = document.createElement('div');
+
+      editor.once('shown', function() {
+
+        editor.saveXML(function(err, xml) {
+
+          // then
+          // make sure we serialize isExecutable, even if false
+          expect(xml).to.contain('isExecutable="false"');
+
+          done();
+        });
+      });
+
+      // when
+      editor.setXML(testXML);
+
+      editor.mountEditor($el);
     });
 
   });
