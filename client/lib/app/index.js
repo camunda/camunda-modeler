@@ -418,7 +418,7 @@ App.prototype.triggerAction = function(action, options) {
   if (action === 'save-all') {
     return this.saveAllTabs();
   }
-  
+
   if (action === 'quit') {
     return this.quit();
   }
@@ -946,29 +946,38 @@ App.prototype.run = function() {
 App.prototype.quit = function() {
   debug('initiating application quit');
 
-  var self = this;
+  var dirtyTabs = this.tabs.filter(tab => {
+    return tab.dirty;
+  });
 
-  function processTab(tab) {
-    if (tab.empty) {
-      debug('shutting down application');
-      return self.emit('quitting');
+  series(dirtyTabs, (tab, done) => {
+
+    this.selectTab(tab);
+
+    // Make sure newly selected tab is rendered
+    setTimeout(() => {
+      this.closeTab(tab, (err, status) => {
+
+        if (err || isCancel(status)) {
+          err = err || userCanceled();
+          return done(err);
+        }
+
+        debug('tab closed, processing next tab...');
+
+        done();
+      });
+    }, 150);
+
+  }, (err) => {
+    if (err) {
+      debug('quit aborted');
+      return this.events.emit('quit-aborted');
     }
-    self.closeTab(tab, (err, status) => {
-      if (!err && status !== 'cancel') {
-        debug('tab closed');
-        debug('...processing next tab');
-        // Make sure newly selected tab is rendered
-        setTimeout(() => {
-          processTab(self.activeTab);
-        }, 100);
-      } else {
-        debug('quit aborted');
-        self.emit('quit-aborted');
-      }
-    });
-  }
+    debug('shutting down application');
+    return this.events.emit('quitting');
+  });
 
-  processTab(this.activeTab);
 
 };
 

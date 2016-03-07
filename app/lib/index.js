@@ -99,6 +99,7 @@ function createEditorWindow() {
 
   mainWindow.webContents.on('will-navigate', function (evt, url) {
     evt.preventDefault();
+
     Shell.openExternal(url);
   });
 
@@ -108,6 +109,7 @@ function createEditorWindow() {
 //////// client life-cycle /////////////////////////////
 renderer.on('editor:ready', function(done) {
   done(null);
+
   app.emit('editor:deferred-file-open');
 });
 
@@ -156,9 +158,8 @@ function saveCallback(saveAction, diagramFile, done) {
       return done(err);
     }
 
-    if (updatedDiagram !== 'cancel') {
-      // TODO: allow adding multiple files on 'add-recent'
-      // app.emit('editor:add-recent', updatedDiagram.path);
+    if (updatedDiagram && updatedDiagram !== 'cancel') {
+      app.emit('app:add-recent-file', updatedDiagram.path);
     }
 
     done(null, updatedDiagram);
@@ -173,32 +174,16 @@ renderer.on('file:save', function(diagramFile, done) {
   saveCallback(fileSystem.save, diagramFile, done);
 });
 
-renderer.on('file:add', function(path, done) {
-  fileSystem.addFile(path, function(err, diagramFile) {
-    if (err) {
-      return done(err);
-    }
-
-    renderer.send('editor.actions', {
-      event: 'file.add',
-      data: {
-        diagram: diagramFile
-      }
-    });
-
-    done(null);
-  });
-});
-
 renderer.on('file:open', function(done) {
   fileSystem.open(function (err, diagramFiles) {
     if (err) {
       return done(err);
     }
 
-    if (diagramFiles !== 'cancel') {
-      // TODO: allow adding multiple files on 'add-recent'
-      // app.emit('editor:add-recent', diagramFiles[0].path);
+    if (diagramFiles && diagramFiles !== 'cancel') {
+      diagramFiles.forEach(file => {
+        app.emit('app:add-recent-file', file.path);
+      });
     }
 
     done(null, diagramFiles);
@@ -230,8 +215,8 @@ app.on('open-file', function (evt, filePath) {
 
 app.on('editor:file-open', function (filePath) {
   console.log('app:editor:file-open', filePath);
-
-  fileSystem.addFile(filePath);
+  // todo
+  // fileSystem.addFile(filePath);
 });
 
 app.on('editor:defer-file-open', function (filePath) {
@@ -243,9 +228,10 @@ app.on('editor:defer-file-open', function (filePath) {
 app.on('editor:deferred-file-open', function () {
   console.log('app:editor:deferred-file-open', app.openFiles);
 
-  app.openFiles.forEach(function (filePath) {
-    fileSystem.addFile(filePath);
-  });
+  // todo
+  // app.openFiles.forEach(function (filePath) {
+    // fileSystem.addFile(filePath);
+  // });
 });
 
 app.on('editor:cmd', function (argv, cwd) {
@@ -253,17 +239,11 @@ app.on('editor:cmd', function (argv, cwd) {
 
   var files = Cli.extractFiles(argv, cwd);
 
-  console.log(files);
+  console.log('app:editor:cmd files:', files);
+
   files.forEach(function (file) {
     app.emit('open-file', null, file);
   });
-});
-
-/**
- * Adding recent open files. Currently not supported on Linux.
- */
-app.on('editor:add-recent', function(path) {
-  app.addRecentDocument(path);
 });
 
 
@@ -280,24 +260,30 @@ app.on('ready', function (evt) {
   var mainWindow = app.mainWindow = createEditorWindow();
 
   // Setting up application exit logic
-  mainWindow.on('close', (e) => {
+  mainWindow.on('close', function(evt) {
     if (!app.closable) {
-      console.log('---> Window close triggered: delegating to client to process request');
-      e.preventDefault();
+      evt.preventDefault();
+
+      console.log('mainWindow:close', 'delegating "quit" to client');
+
       renderer.send('menu:action', 'quit');
     } else {
-      console.log('---> Closing main window');
+      console.log('mainWindow:close', 'closing main window');
+
       app.emit('app:quit');
     }
   });
 
   function quit() {
-    console.log('---> Quitting application');
     app.closable = true;
+
+    console.log('app:quit', 'Quitting application');
+
     app.quit();
   }
 
   renderer.on('app:quit', quit);
+
   app.on('window-all-closed', quit);
 
   mainWindow.on('closed', () => {
@@ -307,6 +293,7 @@ app.on('ready', function (evt) {
 
 
   app.emit('window:created', mainWindow);
+
   app.emit('editor:cmd', process.argv, process.cwd());
 });
 

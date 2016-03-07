@@ -13,6 +13,13 @@ function WindowsPlatform(app, config) {
   app.on('editor:open', function(browserWindow) {
     checkFileAssociations(app, config);
   });
+
+  /**
+   * Adding recent open files.
+   */
+  app.on('app:add-recent-file', function(path) {
+    app.addRecentDocument(path);
+  });
 }
 
 module.exports = WindowsPlatform;

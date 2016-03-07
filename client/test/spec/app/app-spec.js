@@ -72,10 +72,8 @@ describe('App', function() {
   });
 
 
-  describe('"quit" action', () => {
-    var tab;
-    var dirty;
-    var file;
+  describe('quit', () => {
+    var tab, dirty, file;
 
     beforeEach(() => {
       dirty = true;
@@ -105,22 +103,32 @@ describe('App', function() {
       app.addTab(new SomeTab());
 
       tab = new SomeTab();
+
       app.addTab(tab);
+
       app.selectTab(tab);
+
       expect(app.activeTab).to.eql(tab);
 
       // includes empty tab
-      expect(app.tabs).to.have.lengthOf(4);
+      expect(app.tabs).to.have.length(4);
     });
 
 
-    it('should emit "quitting" event and close all tabs on successful exit', done => {
+    it('should emit "quitting" event and close all tabs on successful exit', function(done) {
       // given
       dialog.setResponse('close', file);
 
-      app.on('quitting', () => {
+
+      app.on('quit', function() {
         // then
-        expect(app.tabs).to.have.lengthOf(1);
+        expect(app.tabs).to.have.length(4);
+      });
+
+      app.on('quitting', function() {
+        // then
+        expect(app.tabs).to.have.length(3);
+
         done();
       });
 
@@ -129,13 +137,14 @@ describe('App', function() {
     });
 
 
-    it('should emit "quit-aborted" event when closing tab results in error', done => {
+    it('should emit "quit-aborted" event when closing tab results in error', function(done) {
       // given
       dialog.setResponse('close', new Error('user canceled'));
 
-      app.on('quit-aborted', () => {
+      app.on('quit-aborted', function() {
         // then
-        expect(app.tabs).to.have.lengthOf(4);
+        expect(app.tabs).to.have.length(4);
+
         done();
       });
 
@@ -144,13 +153,14 @@ describe('App', function() {
     });
 
 
-    it('should emit "quit-aborted" event when closing tab is being canceled', done => {
+    it('should emit "quit-aborted" event when closing tab is being canceled', function(done) {
       // given
       dialog.setResponse('close', 'cancel');
 
-      app.on('quit-aborted', () => {
+      app.on('quit-aborted', function() {
         // then
-        expect(app.tabs).to.have.lengthOf(4);
+        expect(app.tabs).to.have.length(4);
+
         done();
       });
 
