@@ -415,6 +415,10 @@ App.prototype.triggerAction = function(action, options) {
     return this.exportTab(activeTab, options.type);
   }
 
+  if (action === 'save-all') {
+    return this.saveAllTabs();
+  }
+
   // forward other actions to active tab
   activeTab.triggerAction(action, options);
 };
@@ -464,6 +468,48 @@ App.prototype.createTabs = function(files) {
  */
 App.prototype.createTab = function(file, options) {
   this.events.emit('create-tab', file, options);
+};
+
+
+/**
+ * Save all open tabs
+ */
+App.prototype.saveAllTabs = function() {
+
+  debug('saving all open tabs');
+
+  var self = this;
+
+  var initialActiveTab = this.activeTab;
+
+  series(this.tabs, (tab, done) => {
+    if (!tab.save || !tab.dirty) {
+      // Skipping tabs that cannot save or are dirty
+      return done(null);
+    }
+
+    this.selectTab(tab);
+
+    setTimeout(function() {
+      self.saveTab(tab, (err, file) => {
+        if (err) {
+          return done(err);
+        }
+
+        // Continue only if file has been saved
+        return done(null);
+      });
+    }, 100);
+  }, (err, tabs) => {
+    if (err) {
+      return debug('save all -> aborted');
+    }
+
+    debug('save all finished successfully');
+
+    // restore active tab
+    this.selectTab(initialActiveTab);
+  });
 };
 
 /**
@@ -542,6 +588,7 @@ App.prototype.saveTab = function(tab, options, done) {
 
     // finally saved...
     tab.setFile(savedFile);
+    tab.dirty = false;
 
     this.events.emit('workspace:changed');
 

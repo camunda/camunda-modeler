@@ -16,6 +16,7 @@ var assign = require('lodash/object/assign'),
     find = require('lodash/collection/find');
 
 var arg = require('test/helper/util/arg'),
+    delay = require('test/helper/util/delay'),
     spy = require('test/helper/util/spy');
 
 var bpmnXML = require('app/tabs/bpmn/initial.bpmn'),
@@ -469,7 +470,106 @@ describe('App', function() {
     });
 
 
-    it('should fail on Error', function() {
+    it('should save all diagram files', function(done) {
+
+      // given
+      var saveTab = spy(app, 'saveTab');
+
+      var file1 = createBpmnFile(bpmnXML);
+      file1.path = '[unsaved]';
+
+      var file2 = createDmnFile(dmnXML);
+      file2.path = '[unsaved]';
+
+      app.tabs = [];
+
+      app.createTabs([ file1, file2 ]);
+
+      patchSaveAnswer(app, file1);
+
+      // when
+      app.triggerAction('save-all');
+
+      // then
+      delay(function() {
+        expect(saveTab).to.have.been.calledTwice;
+
+        app.tabs.forEach(function(tab) {
+          expect(tab.dirty).to.be.false;
+
+          done();
+        });
+      }, 300);
+    });
+
+
+    it('should stop save all diagram files when canceled', function(done) {
+
+      // given
+      var saveTab = spy(app, 'saveTab');
+
+      var file1 = createBpmnFile(bpmnXML);
+      file1.path = '[unsaved]';
+
+      var file2 = createDmnFile(dmnXML);
+      file2.path = '[unsaved]';
+
+      app.tabs = [];
+
+      app.createTabs([ file1, file2 ]);
+
+      patchSaveAnswer(app, new Error('canceled'));
+
+      // when
+      app.triggerAction('save-all');
+
+      // then
+      delay(function() {
+        expect(saveTab).to.have.been.calledOnce;
+
+        app.tabs.forEach(function(tab) {
+          expect(tab.dirty).to.be.true;
+
+          done();
+        });
+      }, 300);
+    });
+
+
+    it('should only save dirty diagrams', function(done) {
+
+      // given
+      var saveTab = spy(app, 'saveTab');
+
+      var file1 = createBpmnFile(bpmnXML);
+
+      var file2 = createDmnFile(dmnXML);
+      file2.path = '[unsaved]';
+
+      app.tabs = [];
+
+      app.createTabs([ file1, file2 ]);
+
+      var dmnTab = app.tabs[0];
+
+      dmnTab.save = function(done) {
+        done(null, file2);
+      };
+
+      // when
+      app.triggerAction('save-all');
+
+      // then
+      delay(function() {
+        expect(saveTab).to.have.been.calledOnce;
+        expect(saveTab).to.have.been.calledWith(dmnTab, arg.any);
+
+        done();
+      }, 300);
+    });
+
+
+    it('should fail on Error', function(done) {
 
       // given
       var file = createBpmnFile(bpmnXML);
@@ -484,7 +584,11 @@ describe('App', function() {
       app.triggerAction('save');
 
       // then
-      expect(dialog.saveError).to.have.been.calledWith(saveError, arg.any);
+      delay(function() {
+        expect(dialog.saveError).to.have.been.calledWith(saveError, arg.any);
+
+        done();
+      }, 300);
     });
 
   });
@@ -987,13 +1091,13 @@ describe('App', function() {
       it('should be emitted on the active tab once selected', function(done) {
         // when
         app.addTab(tab);
-        // then
+
         expect(app.activeTab).not.to.eql(tab);
 
-
-        tab.on('focus', () => {
+        tab.on('focus', function() {
           // then
           expect(app.activeTab).to.eql(tab);
+
           done();
         });
 
@@ -1038,7 +1142,6 @@ describe('App', function() {
 
         // when
         app.selectTab(tab);
-
       });
 
     });
@@ -1270,7 +1373,7 @@ describe('App', function() {
 
 
 function patchSaveAnswer(app, answer) {
-  app.tabs.forEach(tab => {
+  app.tabs.forEach(function(tab) {
     tab.save = function(done) {
       if (answer instanceof Error) {
         done(answer);

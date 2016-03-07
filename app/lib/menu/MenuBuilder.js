@@ -107,6 +107,19 @@ MenuBuilder.prototype.appendSaveAsFile = function(submenu) {
   return this;
 };
 
+MenuBuilder.prototype.appendSaveAllFiles = function(submenu) {
+  this.menu.append(new MenuItem({
+    label: 'Save All Files',
+    accelerator: 'CommandOrControl+Alt+S',
+    enabled: this.opts.state.save,
+    click: function (menuItem, browserWindow) {
+      browserWindow.webContents.send('menu:action', 'save-all');
+    }
+  }));
+
+  return this;
+};
+
 MenuBuilder.prototype.appendCloseTab = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Close Tab',
@@ -495,6 +508,7 @@ MenuBuilder.prototype.build = function() {
       .appendSeparator()
       .appendSaveFile()
       .appendSaveAsFile()
+      .appendSaveAllFiles()
       .appendSeparator()
       .appendCloseTab()
       .appendQuit()
