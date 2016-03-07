@@ -446,9 +446,9 @@ MenuBuilder.prototype.appendHelpMenu = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Help',
     submenu: submenu || Menu.buildFromTemplate([{
-      label: 'Forum (bpmn.io)',
+      label: 'Give Feedback',
       click: function(menuItem, browserWindow) {
-        browserOpen('https://forum.bpmn.io/');
+        browserOpen('https://forum.camunda.org/c/modeler');
       }
     }, {
       type: 'separator'
