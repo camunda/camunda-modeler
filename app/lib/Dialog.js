@@ -64,22 +64,22 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
       };
     },
     importError: function(options) {
-      ensureOptions([ 'name', 'trace' ], options);
+      ensureOptions([ 'name', 'errorDetails' ], options);
 
       return {
         type: 'error',
         title: 'Importing Error',
         buttons: [
           { id: 'cancel', label: 'Close' },
-          { id: 'forum', label: 'Forum' },
-          { id: 'issue-tracker', label: 'Issue Tracker' }
+          { id: 'ask-forum', label: 'Ask in Forum' }
         ],
         message: 'Ooops, we could not display this diagram!',
         detail: [
-          'Do you believe "' + options.name + '" is valid BPMN or DMN diagram?',
-          'If so, please consult our forum or file an issue in our issue tracker.',
+          options.errorDetails,
           '',
-          options.trace
+          'Do you believe "' + options.name + '" is valid BPMN or DMN diagram?',
+          '',
+          'Post this error with your diagram in our forum for help.'
         ].join('\n')
       };
     },

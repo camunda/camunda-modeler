@@ -125,24 +125,19 @@ renderer.on('dialog:convert-namespace', function(done) {
   done(null, answer);
 });
 
-renderer.on('dialog:import-error', function(diagramFile, trace, done) {
+renderer.on('dialog:import-error', function(filename, errorDetails, done) {
 
-  var answer = dialog.showDialog('importError', { name: diagramFile.name, trace: trace });
+  var answer = dialog.showDialog('importError', {
+    name: filename,
+    errorDetails: errorDetails
+  });
 
-  switch (answer) {
-  case 'forum':
-    browserOpen('https://forum.bpmn.io/');
-    done('forum');
-    break;
-  case 'issue-tracker':
-    browserOpen('https://github.com/bpmn-io/bpmn-js/issues');
-    done('tracker');
-    break;
-  default:
-    done('cancel');
+  if (answer === 'ask-forum') {
+    browserOpen('https://forum.camunda.org/c/modeler');
   }
 
-  done(null, answer);
+  // the answer is irrelevant for the client
+  done(null);
 });
 
 renderer.on('dialog:close-tab', function(diagramFile, done) {

@@ -23,7 +23,7 @@ function DmnTab(options) {
   options = assign({
     editorDefinitions: [
       { id: 'table', label: 'Table', component: DmnEditor },
-      { id: 'xml', label: 'XML', component: XMLEditor }
+      { id: 'xml', label: 'XML', isFallback: true, component: XMLEditor }
     ]
   }, options);
 

@@ -122,7 +122,7 @@ function Dialog() {
    * @param {Error} err
    * @param {Function} done
    */
-  this.importError = function(err, done) {
+  this.importError = function(filename, trace, done) {
     done(null);
   };
 

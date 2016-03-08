@@ -12,7 +12,8 @@ var select = require('test/helper/vdom').select,
 
 var initialXML = require('app/tabs/bpmn/initial.bpmn');
 
-var spy = require('test/helper/util/spy');
+var spy = require('test/helper/util/spy'),
+    arg = require('test/helper/util/arg');
 
 
 function createFile(options) {
@@ -167,48 +168,77 @@ describe('BpmnTab', function() {
     });
 
 
-    it('should handle export errors', function() {
+    describe('error handling', function() {
 
-      // given
-      var exportError = new Error('could not save');
+      it('should handle export errors', function() {
 
-      bpmnEditor.saveXML = function(done) {
-        done(exportError);
-      };
+        // given
+        var exportError = new Error('could not save');
 
-      // when
-      tab.showEditor('xml');
+        bpmnEditor.saveXML = function(done) {
+          done(exportError);
+        };
 
-      // then
-      expect(tab.activeEditor).to.equal(bpmnEditor);
+        // when
+        tab.showEditor('xml');
 
-      expect(dialog.exportError).to.have.been.calledWith(exportError);
-    });
+        // then
+        expect(tab.activeEditor).to.equal(bpmnEditor);
+
+        expect(dialog.exportError).to.have.been.calledWith(exportError);
+      });
 
 
-    it('should handle view import errors and switch back', function() {
+      it('should switch to fallback editor on import error', function() {
 
-      // given
-      var importError = new Error('could not open');
+        // given
+        var importError = new Error('could not open');
 
-      tab.activeEditor = xmlEditor;
+        tab.activeEditor = xmlEditor;
 
-      xmlEditor.saveXML = function(done) {
-        done(null, otherXML);
-      };
+        xmlEditor.saveXML = function(done) {
+          done(null, otherXML);
+        };
 
-      bpmnEditor.setXML = function(xml) {
-        // trigger shown with import error
-        this.emit('shown', { error: importError });
-      };
+        bpmnEditor.setXML = function(xml) {
+          // trigger shown with import error
+          this.emit('shown', { error: importError });
+        };
 
-      // when
-      tab.showEditor('diagram');
+        // when
+        tab.showEditor('diagram');
 
-      // then
-      expect(tab.activeEditor).to.equal(xmlEditor);
+        // then
+        expect(tab.activeEditor).to.equal(xmlEditor);
 
-      expect(dialog.importError).to.have.been.calledWith(importError);
+        expect(dialog.importError).to.have.been.calledWith(
+          'diagram_1.bpmn',
+          importError.message,
+          arg.any);
+      });
+
+
+      it('should handle fallback editor import error', function() {
+
+        // given
+        var importError = new Error('could not open');
+
+        tab.activeEditor = xmlEditor;
+
+        xmlEditor.setXML = function(xml) {
+          // trigger shown with import error
+          this.emit('shown', { error: importError });
+        };
+
+        // when
+        xmlEditor.setXML('foo');
+
+        // then
+        expect(tab.activeEditor).to.equal(xmlEditor);
+
+        expect(dialog.importError).to.not.have.been.called;
+      });
+
     });
 
   });

@@ -23,7 +23,7 @@ function BpmnTab(options) {
   options = assign({
     editorDefinitions: [
       { id: 'diagram', label: 'Diagram', component: BpmnEditor },
-      { id: 'xml', label: 'XML', component: XMLEditor }
+      { id: 'xml', label: 'XML', isFallback: true, component: XMLEditor }
     ]
   }, options);
 

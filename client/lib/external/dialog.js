@@ -103,8 +103,8 @@ function Dialog() {
    * @param {Error} err
    * @param {Function} done
    */
-  this.importError = function(err, done) {
-    done(null);
+  this.importError = function(filename, errorDetails, done) {
+    browser.send('dialog:import-error', [ filename, errorDetails ], done);
   };
 }
 

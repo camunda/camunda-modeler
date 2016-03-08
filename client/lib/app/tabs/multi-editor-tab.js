@@ -44,7 +44,12 @@ function MultiEditorTab(options) {
   }
 
   this.on('focus', () => {
-    this.activeEditor.update();
+
+    if (!this.activeEditor && this.editors.length) {
+      this.showEditor(this.editors[0]);
+    } else {
+      this.activeEditor.update();
+    }
   });
 }
 
@@ -79,9 +84,19 @@ MultiEditorTab.prototype.exportAs = function(type, done) {
   }
 };
 
-MultiEditorTab.prototype.showEditor = function(id) {
 
-  var newEditor = this.getEditor(id),
+/**
+ * Show editor by reference or id.
+ *
+ * @param {String|Editor} editor
+ */
+MultiEditorTab.prototype.showEditor = function(editor) {
+
+  if (typeof editor === 'string') {
+    editor = this.getEditor(editor);
+  }
+
+  var newEditor = editor,
       oldEditor = this.activeEditor;
 
   // no need to switch editors, if same
@@ -101,25 +116,6 @@ MultiEditorTab.prototype.showEditor = function(id) {
 
       return;
     }
-
-    newEditor.once('shown', (results) => {
-
-      var error = results && results.error;
-
-      if (error) {
-        debug('[#showEditor] editor shown with error', err);
-
-        // show error dialog
-        this.dialog.importError(results.error, () => {
-          debug('[#showEditor] reset to old editor');
-
-          // set the old editor
-          this.setEditor(oldEditor);
-        });
-      } else {
-        debug('[#showEditor] editor shown');
-      }
-    });
 
     // set new editor
     this.setEditor(newEditor);
@@ -174,11 +170,44 @@ MultiEditorTab.prototype.createEditors = function(options) {
 
     var EditorComponent = definition.component;
 
-    var component = new EditorComponent(opts);
+    var editor = new EditorComponent(opts);
 
-    component.on('layout:changed', this.events.composeEmitter('layout:update'));
+    if (definition.isFallback) {
+      this.fallbackEditor = editor;
+    }
 
-    component.on('state-updated', (state) => {
+    // handle import errors
+    editor.on('shown', (context) => {
+      var dialog = this.dialog;
+
+      var error = context.error,
+          file;
+
+      // don't do anything if the current editor is the fallback editor
+      if (editor === this.fallbackEditor) {
+        return;
+      }
+
+      if (error) {
+        file = this.file;
+
+        // show import error dialog
+        dialog.importError(file.name, error.message, (err, answer) => {
+          if (err) {
+            return;
+          }
+
+          debug('reset to fallback editor');
+
+          // switch to fallback editor
+          this.setEditor(this.fallbackEditor);
+        });
+      }
+    });
+
+    editor.on('layout:changed', this.events.composeEmitter('layout:update'));
+
+    editor.on('state-updated', (state) => {
       this.dirty = state.dirty;
 
       if (typeof this.dirty === 'undefined') {
@@ -194,12 +223,12 @@ MultiEditorTab.prototype.createEditors = function(options) {
       this.events.emit('tools:state-changed', this, newState);
     });
 
-    component.on('changed', this.events.composeEmitter('changed'));
+    editor.on('changed', this.events.composeEmitter('changed'));
 
     /**
      * messages = [ [ category, message ]* ]
      */
-    component.on('log', (messages) => {
+    editor.on('log', (messages) => {
 
       messages.forEach((m) => {
         this.logger[m[0]](m[1]);
@@ -208,7 +237,7 @@ MultiEditorTab.prototype.createEditors = function(options) {
       this.events.emit('log:toggle', { open: true });
     });
 
-    return component;
+    return editor;
   });
 };
 
