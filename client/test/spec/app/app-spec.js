@@ -72,10 +72,10 @@ describe('App', function() {
   });
 
 
-  describe('quit', () => {
+  describe('quit', function() {
     var tab, dirty, file;
 
-    beforeEach(() => {
+    beforeEach(function() {
       dirty = true;
       file = createBpmnFile(bpmnXML);
 
@@ -107,13 +107,7 @@ describe('App', function() {
       app.addTab(tab);
 
       app.selectTab(tab);
-
-      expect(app.activeTab).to.eql(tab);
-
-      // includes empty tab
-      expect(app.tabs).to.have.length(4);
     });
-
 
     it('should emit "quitting" event and close all tabs on successful exit', function(done) {
       // given

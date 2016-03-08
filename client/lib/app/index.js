@@ -705,6 +705,7 @@ App.prototype.selectTab = function(tab) {
   this.logger.info('switch to <%s> tab', tab.id);
 
   this.events.emit('workspace:changed');
+
   this.events.emit('changed');
 };
 
@@ -946,12 +947,11 @@ App.prototype.run = function() {
 App.prototype.quit = function() {
   debug('initiating application quit');
 
-  var dirtyTabs = this.tabs.filter(tab => {
+  var dirtyTabs = this.tabs.filter(function(tab) {
     return tab.dirty;
   });
 
   series(dirtyTabs, (tab, done) => {
-
     this.selectTab(tab);
 
     // Make sure newly selected tab is rendered
@@ -960,25 +960,26 @@ App.prototype.quit = function() {
 
         if (err || isCancel(status)) {
           err = err || userCanceled();
+
           return done(err);
         }
 
         debug('tab closed, processing next tab...');
 
-        done();
+        done(null);
       });
     }, 150);
 
   }, (err) => {
     if (err) {
       debug('quit aborted');
+
       return this.events.emit('quit-aborted');
     }
     debug('shutting down application');
+
     return this.events.emit('quitting');
   });
-
-
 };
 
 
