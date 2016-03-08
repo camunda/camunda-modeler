@@ -16,10 +16,7 @@ var Logger = require('base/logger'),
 
 var App = require('./app');
 
-var mainLoop = require('util/dom/main-loop'),
-    isMac = require('util/is-mac');
-
-var ShortcutsFix = require('app/shortcuts-fix');
+var mainLoop = require('util/dom/main-loop');
 
 var browser = require('util/browser');
 
@@ -39,10 +36,6 @@ domReady(function() {
 
   // Setting up external components
   new Menu(app);
-
-  if (isMac()) {
-    new ShortcutsFix(app).bind();
-  }
 
   app.on('quitting', () => {
     browser.send('app:quit');
