@@ -236,17 +236,14 @@ MultiEditorTab.prototype.createEditors = function(options) {
     editor.on('layout:changed', this.events.composeEmitter('layout:update'));
 
     editor.on('state-updated', (state) => {
-      this.dirty = state.dirty;
 
-      if (typeof this.dirty === 'undefined') {
-        this.dirty = state.dirty = this.isUnsaved();
-      }
+      this.dirty = this.isUnsaved() || state.dirty;
 
       var newState = assign({
         diagramType: this.getDiagramType(),
         save: true,
         closable: true
-      }, state);
+      }, state, { dirty: this.dirty });
 
       this.events.emit('tools:state-changed', this, newState);
     });
@@ -294,8 +291,8 @@ MultiEditorTab.prototype.save = function(done) {
 
 MultiEditorTab.prototype.setFile = function(file) {
   this.file = file;
-  this.label = file.name,
-  this.title = file.path,
+  this.label = file.name;
+  this.title = file.path;
   this.dirty = isUnsaved(file);
 
   this.editors.forEach(function(editor) {
@@ -306,7 +303,7 @@ MultiEditorTab.prototype.setFile = function(file) {
 };
 
 MultiEditorTab.prototype.isUnsaved = function() {
-  return isUnsaved(this.file) || this.dirty;
+  return isUnsaved(this.file);
 };
 
 MultiEditorTab.prototype.getDiagramType = function() {
