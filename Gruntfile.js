@@ -145,6 +145,23 @@ module.exports = function(grunt) {
         options: {
           spawn: false
         }
+      },
+      mocha: {
+        files: 'app/**/*',
+        tasks: [ 'mochaTest:app' ]
+      }
+    },
+
+    /**
+     * Watch, but focus on only a subset of the
+     * defined watch tasks.
+     */
+    focus: {
+      client: {
+        exclude: [ 'mocha' ]
+      },
+      app: {
+        include: [ 'mocha' ]
       }
     },
 
@@ -165,9 +182,11 @@ module.exports = function(grunt) {
 
   grunt.registerTask('lint', [ 'eslint' ]);
 
-  grunt.registerTask('test', [ 'karma:single', 'mochaTest:app']);
+  grunt.registerTask('test', [ 'karma:single', 'mochaTest:app' ]);
 
   grunt.registerTask('auto-test', [ 'karma:unit' ]);
+
+  grunt.registerTask('auto-test-app', [ 'mochaTest:app', 'focus:app' ]);
 
   grunt.registerTask('build-client', [
     'clean',
@@ -197,6 +216,6 @@ module.exports = function(grunt) {
     'less',
     'copy',
     'app:start',
-    'watch'
+    'focus:client'
   ]);
 };
