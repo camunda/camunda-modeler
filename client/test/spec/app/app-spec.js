@@ -570,11 +570,10 @@ describe('App', function() {
     it('should save BPMN file', function() {
 
       // given
-      var file = createBpmnFile(bpmnXML);
+      var file = createBpmnFile(bpmnXML),
+          tab = app.openTab(file);
 
-      app.openTabs([ file ]);
-
-      patchTabSave(app.tabs, file);
+      patchSave(tab, file);
 
       // when
       app.triggerAction('save');
@@ -587,15 +586,14 @@ describe('App', function() {
     it('should save-as BPMN file', function() {
 
       // given
-      var file = createBpmnFile(bpmnXML);
+      var file = createBpmnFile(bpmnXML),
+          tab = app.openTab(file);
 
       var expectedFile = assign({}, file, { path: '/foo/bar', name: 'bar' });
 
       dialog.setResponse('saveAs', expectedFile);
 
-      app.openTabs([ file ]);
-
-      patchTabSave(app.tabs, file);
+      patchSave(tab);
 
       // when
       app.triggerAction('save-as');
@@ -609,110 +607,6 @@ describe('App', function() {
     });
 
 
-    it('should save all diagram files', function() {
-
-      // given
-      var saveTab = spy(app, 'saveTab');
-
-      var bpmnFile = createBpmnFile(bpmnXML, UNSAVED_FILE);
-      var dmnFile = createDmnFile(dmnXML, UNSAVED_FILE);
-
-      var tabs = app.openTabs([ bpmnFile, dmnFile ]);
-
-      patchTabSave(tabs, bpmnFile);
-
-      dialog.setResponse('saveAs', { path: bpmnFile.name });
-
-      // when
-      app.triggerAction('save-all');
-
-      // then
-      expect(saveTab).to.have.been.calledTwice;
-
-      tabs.forEach(function(tab) {
-        expect(tab.dirty).to.be.false;
-      });
-    });
-
-
-    it('should abort save all diagram files when canceled', function() {
-
-      // given
-      var saveTab = spy(app, 'saveTab');
-
-      var bpmnFile = createBpmnFile(bpmnXML, UNSAVED_FILE);
-      var dmnFile = createDmnFile(dmnXML, UNSAVED_FILE);
-
-      var tabs = app.openTabs([ bpmnFile, dmnFile ]);
-
-      var bpmnTab = tabs[0],
-          dmnTab = tabs[1];
-
-      patchTabSave(bpmnTab, bpmnFile);
-
-      // when
-      app.triggerAction('save-all');
-
-      // then
-      expect(saveTab).to.have.been.calledOnce;
-
-      expect(bpmnTab.dirty).to.be.true;
-      expect(dmnTab.dirty).to.be.true;
-    });
-
-
-    it('should abort save all on export error', function() {
-
-      // given
-      var saveTab = spy(app, 'saveTab');
-
-      var bpmnFile = createBpmnFile(bpmnXML, UNSAVED_FILE);
-      var dmnFile = createDmnFile(dmnXML, UNSAVED_FILE);
-
-      var tabs = app.openTabs([ bpmnFile, dmnFile ]);
-
-      var bpmnTab = tabs[0],
-          dmnTab = tabs[1];
-
-      // fail exporting the first tab already
-      patchTabSave(bpmnTab, new Error('failed to save diagram'));
-
-      // when
-      app.triggerAction('save-all');
-
-      // then
-      expect(saveTab).to.have.been.calledOnce;
-
-      expect(bpmnTab.dirty).to.be.true;
-      expect(dmnTab.dirty).to.be.true;
-    });
-
-
-    it('should only save dirty diagrams', function() {
-
-      // given
-      var saveTab = spy(app, 'saveTab');
-
-      var bpmnFile = createBpmnFile(bpmnXML);
-      var dmnFile = createDmnFile(dmnXML, UNSAVED_FILE);
-
-      var tabs = app.openTabs([ bpmnFile, dmnFile ]);
-
-      var dmnTab = tabs[1];
-
-      dmnTab.save = function(done) {
-        done(null, dmnFile);
-      };
-
-      // when
-      app.triggerAction('save-all');
-
-      // then
-      expect(saveTab).to.have.been.calledOnce;
-      expect(saveTab).to.have.been.calledWith(dmnTab, arg.any);
-    });
-
-
     it('should fail on Error', function() {
 
       // given
@@ -721,13 +615,151 @@ describe('App', function() {
 
       var saveError = new Error('something went wrong');
 
-      patchTabSave(tab, saveError);
+      patchSave(tab, saveError);
 
       // when
       app.triggerAction('save');
 
       // then
       expect(dialog.saveError).to.have.been.calledWith(saveError, arg.any);
+    });
+
+
+    describe('save all', function() {
+
+      it('should reset dirty state', function() {
+
+        // given
+        var saveTab = spy(app, 'saveTab');
+
+        var bpmnFile = createBpmnFile(bpmnXML, UNSAVED_FILE);
+        var dmnFile = createDmnFile(dmnXML, UNSAVED_FILE);
+
+        var tabs = app.openTabs([ bpmnFile, dmnFile ]);
+
+        patchSave(tabs);
+
+        dialog.setResponse('saveAs', { path: bpmnFile.name });
+
+        // when
+        app.triggerAction('save-all');
+
+        // then
+        expect(saveTab).to.have.been.calledTwice;
+
+        tabs.forEach(function(tab) {
+          expect(tab.dirty).to.be.false;
+        });
+      });
+
+
+      it('should abort when canceled', function() {
+
+        // given
+        var saveTab = spy(app, 'saveTab');
+
+        var bpmnFile = createBpmnFile(bpmnXML, UNSAVED_FILE);
+        var dmnFile = createDmnFile(dmnXML, UNSAVED_FILE);
+
+        var tabs = app.openTabs([ bpmnFile, dmnFile ]);
+
+        var bpmnTab = tabs[0],
+            dmnTab = tabs[1];
+
+        patchSave(bpmnTab);
+
+        // when
+        app.triggerAction('save-all');
+
+        // then
+        expect(saveTab).to.have.been.calledOnce;
+
+        expect(bpmnTab.dirty).to.be.true;
+        expect(dmnTab.dirty).to.be.true;
+      });
+
+
+      it('should abort on export error', function() {
+
+        // given
+        var saveTab = spy(app, 'saveTab');
+
+        var bpmnFile = createBpmnFile(bpmnXML, UNSAVED_FILE);
+        var dmnFile = createDmnFile(dmnXML, UNSAVED_FILE);
+
+        var tabs = app.openTabs([ bpmnFile, dmnFile ]);
+
+        var bpmnTab = tabs[0],
+            dmnTab = tabs[1];
+
+        // fail exporting the first tab already
+        patchSave(bpmnTab, new Error('failed to save diagram'));
+
+        // when
+        app.triggerAction('save-all');
+
+        // then
+        expect(saveTab).to.have.been.calledOnce;
+
+        expect(bpmnTab.dirty).to.be.true;
+        expect(dmnTab.dirty).to.be.true;
+      });
+
+
+      it('should save dirty diagrams only', function() {
+
+        // given
+        var saveTab = spy(app, 'saveTab');
+
+        var bpmnFile = createBpmnFile(bpmnXML);
+        var dmnFile = createDmnFile(dmnXML, UNSAVED_FILE);
+
+        var tabs = app.openTabs([ bpmnFile, dmnFile ]);
+
+        var dmnTab = tabs[1];
+
+        patchSave(dmnTab, function(done) {
+          done(null, dmnFile);
+        });
+
+        // when
+        app.triggerAction('save-all');
+
+        // then
+        expect(saveTab).to.have.been.calledOnce;
+        expect(saveTab).to.have.been.calledWith(dmnTab, arg.any);
+      });
+
+
+      // TODO(nikku): needs to be implemented properly
+      it.skip('should select tab before saving', function() {
+
+        // given
+        var tabs = app.openTabs([
+          createBpmnFile(bpmnXML, UNSAVED_FILE),
+          createBpmnFile(bpmnXML, UNSAVED_FILE),
+          createBpmnFile(bpmnXML, UNSAVED_FILE)
+        ]);
+
+        var activeTab = app.activeTab;
+
+        var savingTab = tabs[1];
+
+        patchSave(tabs);
+
+        patchSave(savingTab, function(done) {
+          expect(app.activeTab).to.eql(savingTab);
+
+          done(null, savingTab.file);
+        });
+
+        // when
+        app.saveTab(savingTab);
+
+          // then
+        expect(app.activeTab).to.eql(activeTab);
+      });
+
     });
 
   });
@@ -737,8 +769,8 @@ describe('App', function() {
 
     it('should close showing close dialog on dirty tab', function() {
       // given
-      var file = createBpmnFile(bpmnXML, UNSAVED_FILE),
-          openTab = app.openTab(file);
+      var bpmnFile = createBpmnFile(bpmnXML, UNSAVED_FILE),
+          openTab = app.openTab(bpmnFile);
 
       // when
       app.closeTab(openTab);
@@ -838,7 +870,36 @@ describe('App', function() {
       });
     });
 
+
+    // TODO(nikku): needs to be implemented properly
+    it.skip('should select tab before closing', function() {
+
+      // given
+      var tabs = app.openTabs([
+        createBpmnFile(bpmnXML, UNSAVED_FILE),
+        createBpmnFile(bpmnXML, UNSAVED_FILE),
+        createBpmnFile(bpmnXML, UNSAVED_FILE)
+      ]);
+
+      var activeTab = app.activeTab;
+
+      var closingTab = tabs[1];
+
+      patchSave(closingTab, function(done) {
+        expect(app.activeTab).to.eql(closingTab);
+
+        done(null, closingTab.file);
+      });
+
+      // when
+      app.closeTab(closingTab);
+
+        // then
+      expect(app.activeTab).to.eql(activeTab);
+    });
+
   });
+
 
   describe('menu-bar', function() {
 
@@ -1168,6 +1229,7 @@ describe('App', function() {
     var tab;
 
     beforeEach(function() {
+
       function SomeEditor() {
         BaseEditor.call(this, {});
       }
@@ -1478,20 +1540,29 @@ describe('App', function() {
 });
 
 
-function patchTabSave(tabs, answer) {
+/**
+ * Patch save on a tab or a list of tabs.
+ *
+ * @param {Tab|Array<Tab>} tabs
+ * @param {Error|FileDescriptor|Function} answer
+ */
+function patchSave(tabs, answer) {
 
   if (!('length' in tabs)) {
     tabs = [ tabs ];
   }
 
   tabs.forEach(function(tab) {
-    tab.save = function(done) {
+
+    var fn = typeof answer === 'function' ? answer : function(done) {
       if (answer instanceof Error) {
-        done(answer);
-      } else {
-        done(null, answer);
+        return done(answer);
       }
+
+      return done(null, answer || tab.file);
     };
+
+    tab.save = fn;
   });
 }
 
