@@ -830,7 +830,7 @@ App.prototype.closeTab = function(tab, done) {
     }
 
     // close without saving
-    if (result === 'close') {
+    if (isDiscard(result)) {
       return this._closeTab(tab, done);
     }
 
@@ -1060,6 +1060,10 @@ function contains(collection, element) {
   return collection.some(function(e) {
     return e === element;
   });
+}
+
+function isDiscard(userChoice) {
+  return userChoice === 'discard';
 }
 
 function isCancel(userChoice) {

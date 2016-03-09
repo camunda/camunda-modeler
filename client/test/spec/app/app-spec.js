@@ -835,6 +835,8 @@ describe('App', function() {
         cb(null, expectedFile);
       };
 
+      var saveTab = spy(app, 'saveTab');
+
       // when
       dialog.setResponse('close', 'discard');
 
@@ -844,6 +846,8 @@ describe('App', function() {
         expect(app.tabs).to.not.contain(openTab);
 
         expect(dialog.close).to.have.been.called;
+
+        expect(saveTab).to.have.not.been.called;
 
         done();
       });
