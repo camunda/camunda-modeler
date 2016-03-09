@@ -386,31 +386,8 @@ App.prototype.triggerAction = function(action, options) {
     return this.createDiagram('dmn');
   }
 
-  if (action === 'close-active-tab') {
-
-    if (activeTab.closable) {
-      return this.closeTab(this.activeTab);
-    }
-
-    return;
-  }
-
   if (action === 'open-diagram') {
     return this.openDiagram();
-  }
-
-  // handle special actions
-  if (action === 'save' && activeTab.save) {
-
-    return this.saveTab(activeTab);
-  }
-
-  if (action === 'save-as' && activeTab.save) {
-    return this.saveTab(activeTab, { saveAs: true });
-  }
-
-  if (action === 'export-tab') {
-    return this.exportTab(activeTab, options.type);
   }
 
   if (action === 'save-all') {
@@ -421,8 +398,30 @@ App.prototype.triggerAction = function(action, options) {
     return this.quit();
   }
 
-  // forward other actions to active tab
-  activeTab.triggerAction(action, options);
+  if (activeTab) {
+
+    if (action === 'close-active-tab') {
+      if (activeTab.closable) {
+        this.closeTab(this.activeTab);
+      }
+    }
+
+    // handle special actions
+    if (action === 'save' && activeTab.save) {
+      return this.saveTab(activeTab);
+    }
+
+    if (action === 'save-as' && activeTab.save) {
+      return this.saveTab(activeTab, { saveAs: true });
+    }
+
+    if (action === 'export-tab' && activeTab.exportAs) {
+      return this.exportTab(activeTab, options.type);
+    }
+
+    // forward other actions to active tab
+    activeTab.triggerAction(action, options);
+  }
 };
 
 /**
@@ -752,7 +751,8 @@ App.prototype.filesDropped = function(files) {
 
 
 /**
- * Select the given tab.
+ * Select the given tab. May also be used to deselect all tabs
+ * (empty selection) when passing null.
  *
  * @param {Tab} tab
  */
@@ -761,15 +761,17 @@ App.prototype.selectTab = function(tab) {
 
   var exists = contains(this.tabs, tab);
 
-  if (!exists) {
+  if (tab && !exists) {
     throw new Error('non existing tab');
   }
 
   this.activeTab = tab;
 
-  this.activeTab.emit('focus');
+  if (tab) {
+    tab.emit('focus');
 
-  this.logger.info('switch to <%s> tab', tab.id);
+    this.logger.info('switch to <%s> tab', tab.id);
+  }
 
   this.events.emit('workspace:changed');
 
@@ -858,18 +860,14 @@ App.prototype._closeTab = function(tab, done) {
 
   // if tab was active, select previous (if exists) or next tab
   if (tab === this.activeTab) {
-    // REVIEW: assumption is that empty tab is always there or there will be a tab left to be active.
-    var newActiveTab = tabs[idx - 1] || tabs[idx];
-    if (newActiveTab){
-      this.selectTab(newActiveTab);
-    }
+    this.selectTab(tabs[idx - 1] || tabs[idx]);
   }
 
   events.emit('workspace:changed');
 
   events.emit('changed');
 
-  return done(null);
+  return done();
 };
 
 /**
