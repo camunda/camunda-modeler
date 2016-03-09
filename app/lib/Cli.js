@@ -37,8 +37,6 @@ function extractFiles(args, cwd) {
     }
   }
 
-  console.log('[cli]', files);
-
   return files;
 }
 
@@ -64,10 +62,10 @@ function checkFile(maybePath, cwd) {
     if (stats.isFile()) {
       return absolutePath;
     } else {
-      console.log('[cli]', 'cannot open directory', absolutePath);
+      console.log('[cli] [WARN]', 'cannot open directory', absolutePath);
     }
   } catch (e) {
-    console.log('[cli]', e.message, absolutePath);
+    console.log('[cli] [WARN]', e.message, absolutePath);
     // file not found or the like...
   }
 
