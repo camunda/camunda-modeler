@@ -11,3 +11,8 @@ var app = require('../lib');
 app.on('window:created', function(window) {
   app.connectClient = ConnectClient.create(window);
 });
+
+// make sure the app quits and does not hang
+app.on('before-quit', function() {
+  app.exit(0);
+});
