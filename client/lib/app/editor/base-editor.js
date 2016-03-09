@@ -103,6 +103,15 @@ BaseEditor.prototype.saveXML = function(done) {
 };
 
 /**
+ * Will the editor lose it's history while importing new xml
+ *
+ * @param {String} xml
+ */
+BaseEditor.prototype.isHistoryLost = function(xml) {
+  return false;
+};
+
+/**
  * Set XML on the editor, passing the initial (dirty)
  * state with it.
  *

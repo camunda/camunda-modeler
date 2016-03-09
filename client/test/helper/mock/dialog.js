@@ -14,6 +14,7 @@ function Dialog() {
   this.closeResponse = null;
   this.saveAsResponse = null;
   this.namespaceResponse = null;
+  this.reimportWarningResponse = null;
 
   this.setResponse = function(type, fileOrError) {
     this[type + 'Response'] = fileOrError;
@@ -94,6 +95,20 @@ function Dialog() {
       done(this.namespaceResponse);
     } else {
       done(null, this.namespaceResponse);
+    }
+  };
+
+  /**
+   * Open a 'name' dialog and callback with (err, answer).
+   *
+   * @param {Function} done
+  */
+  this.reimportWarning = function(done) {
+
+    if (this.reimportWarningResponse instanceof Error) {
+      done(this.reimportWarningResponse);
+    } else {
+      done(null, this.reimportWarningResponse);
     }
   };
 

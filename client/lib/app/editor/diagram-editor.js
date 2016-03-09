@@ -150,6 +150,11 @@ DiagramEditor.prototype.triggerAction = function(action, options) {
 };
 
 
+DiagramEditor.prototype.isHistoryLost = function(xml) {
+  return this.lastXML !== xml;
+};
+
+
 DiagramEditor.prototype.triggerEditorActions = function() {
   throw needsOverride();
 };

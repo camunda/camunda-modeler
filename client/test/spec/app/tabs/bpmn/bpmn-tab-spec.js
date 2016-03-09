@@ -241,6 +241,75 @@ describe('BpmnTab', function() {
 
     });
 
+
+    describe('reimport BPMN warning', function() {
+
+      it('should show warning import changes', function() {
+
+        // given
+        tab.activeEditor = xmlEditor;
+
+        xmlEditor.saveXML = function(done) {
+          done(null, otherXML);
+        };
+
+        dialog.setResponse('reimportWarning', 'switch');
+
+        // when
+        tab.showEditor('diagram');
+
+        // then
+        expect(tab.activeEditor).to.equal(bpmnEditor);
+
+        expect(dialog.reimportWarning).to.have.been.called;
+      });
+
+
+      it('should show warning and discard changes', function() {
+
+        // given
+        tab.activeEditor = xmlEditor;
+
+        xmlEditor.saveXML = function(done) {
+          done(null, otherXML);
+        };
+
+        dialog.setResponse('reimportWarning', 'discard');
+
+        // when
+        tab.showEditor('diagram');
+
+        // then
+        expect(tab.activeEditor).to.equal(bpmnEditor);
+
+        expect(bpmnEditor.newXML).to.equal(initialXML);
+
+        expect(dialog.reimportWarning).to.have.been.called;
+      });
+
+
+      it('should show warning and cancel switch', function() {
+
+        // given
+        tab.activeEditor = xmlEditor;
+
+        xmlEditor.saveXML = function(done) {
+          done(null, otherXML);
+        };
+
+        dialog.setResponse('reimportWarning', 'cancel');
+
+        // when
+        tab.showEditor('diagram');
+
+        // then
+        expect(tab.activeEditor).to.equal(xmlEditor);
+
+        expect(dialog.reimportWarning).to.have.been.called;
+      });
+
+    });
+
   });
 
 

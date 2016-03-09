@@ -119,6 +119,12 @@ renderer.on('dialog:unrecognized-file', function(file, done) {
   done(null);
 });
 
+renderer.on('dialog:reimport-warning', function(done) {
+  var answer = dialog.showDialog('reimportWarning');
+
+  done(null, answer);
+});
+
 renderer.on('dialog:convert-namespace', function(done) {
   var answer = dialog.showDialog('namespace');
 

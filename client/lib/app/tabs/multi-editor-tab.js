@@ -84,13 +84,13 @@ MultiEditorTab.prototype.exportAs = function(type, done) {
   }
 };
 
-
 /**
  * Show editor by reference or id.
  *
  * @param {String|Editor} editor
  */
 MultiEditorTab.prototype.showEditor = function(editor) {
+  var dialog = this.dialog;
 
   if (typeof editor === 'string') {
     editor = this.getEditor(editor);
@@ -117,13 +117,30 @@ MultiEditorTab.prototype.showEditor = function(editor) {
       return;
     }
 
-    // set new editor
-    this.setEditor(newEditor);
+    if (newEditor.isHistoryLost(xml)) {
+      dialog.reimportWarning((err, answer) => {
+        if (err || answer === 'cancel') {
+          return;
+        }
 
-    // sync XML contents
-    newEditor.setXML(xml);
+        if (answer === 'discard') {
+          return this.setEditor(newEditor);
+        }
+
+        this.switchEditor(newEditor, xml);
+      });
+    } else {
+      this.switchEditor(newEditor, xml);
+    }
   });
+};
 
+MultiEditorTab.prototype.switchEditor = function(newEditor, xml) {
+  // set new editor
+  this.setEditor(newEditor);
+
+  // sync XML contents
+  newEditor.setXML(xml);
 };
 
 MultiEditorTab.prototype.getEditor = function(id) {

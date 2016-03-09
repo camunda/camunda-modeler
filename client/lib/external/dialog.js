@@ -70,6 +70,15 @@ function Dialog() {
   };
 
   /**
+   * Open 'reimport warning' dialog and invoke callback with (err, answer).
+   *
+   * @param {Function} done
+   */
+  this.reimportWarning = function(done) {
+    browser.send('dialog:reimport-warning', done);
+  };
+
+  /**
    * Open 'namespace' dialog and invoke callback with (err, answer).
    *
    * @param {Function} done

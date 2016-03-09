@@ -82,7 +82,7 @@ XMLEditor.prototype.update = function() {
   // only do actual work if mounted
   if (!this.mounted) {
     debug('[#update] skipping (not mounted)');
-    
+
     return;
   }
 

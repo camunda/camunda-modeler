@@ -106,7 +106,24 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
           { id: 'no-overwrite', label: 'No' },
           { id: 'overwrite', label: 'Overwrite' }
         ],
-        message: 'The file "' + options.name + '" already exists. Do you want to overwrite it ?'
+        message: 'The file "' + options.name + '" already exists. Do you want to overwrite it?'
+      };
+    },
+    reimportWarning: function(options) {
+
+      return {
+        type: 'warning',
+        title: 'Import warning',
+        buttons: [
+          { id: 'cancel', label: 'Cancel' },
+          { id: 'switch', label: 'Switch' },
+          { id: 'discard', label: 'Discard changes' }
+        ],
+        message: [
+          'Your diagram\'s undo history will be lost due to xml changes.',
+          '',
+          'Do you want to proceed?'
+        ].join('\n')
       };
     },
     namespace: function() {
