@@ -121,7 +121,7 @@ BaseEditor.prototype.isHistoryLost = function(xml) {
 BaseEditor.prototype.setXML = function(xml, initialState) {
 
   if (initialState) {
-    this.initialState = assign({ xml: xml }, initialState);
+    this.initialState = assign({}, initialState, { xml: xml });
   }
 
   // (1) mark new xml

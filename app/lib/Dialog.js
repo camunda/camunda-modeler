@@ -59,7 +59,7 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
         buttons: [
           { id: 'cancel', label: 'Cancel' },
           { id: 'save', label: 'Save' },
-          { id: 'close', label: 'Don\'t Save'}
+          { id: 'discard', label: 'Don\'t Save'}
         ]
       };
     },

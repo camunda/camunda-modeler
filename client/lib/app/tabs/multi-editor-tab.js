@@ -28,6 +28,7 @@ function MultiEditorTab(options) {
     // communicate via events not this.emit :'-(
     'events',
     'dialog',
+    // editor tab definition (file is optional)
     'id',
     'editorDefinitions'
   ], options);
@@ -58,36 +59,37 @@ inherits(MultiEditorTab, Tab);
 module.exports = MultiEditorTab;
 
 
+/**
+ * Export the tab contents as the given type.
+ *
+ * Type can be any of png|svg|... depending on what
+ * the currently active underlying editor supports.
+ *
+ * @param {String} type
+ * @param {Function} done to be invoked with (err, exportedFile)
+ */
 MultiEditorTab.prototype.exportAs = function(type, done) {
-  if (this.activeEditor.exportAs) {
-    this.activeEditor.exportAs(type, (err, newFile) => {
-      var file = this.file,
-          path = file.path,
-          name;
 
-      if (err) {
-        return done(err);
-      }
+  var activeEditor = this.activeEditor;
 
-      name = replaceFileExt(file.name, type);
-
-      if (file.path !== '[unsaved]') {
-        path = replaceFileExt(file.path, type);
-      }
-
-      assign(newFile, { name: name, path: path, fileType: type });
-
-      done(null, newFile);
-    });
-  } else {
-    done(new Error('<exportAs> not implemented for the current tab'));
+  if (!activeEditor.exportAs) {
+    return done(unsupportedExportAs());
   }
+
+  activeEditor.exportAs(type, (err, newFile) => {
+
+    if (err) {
+      return done(err);
+    }
+
+    done(null, assign({}, newFile, withExtension(this.file, type)));
+  });
 };
 
 /**
- * Show editor by reference or id.
+ * Show a contained editor by editor id or direct reference.
  *
- * @param {String|Editor} editor
+ * @param  {String|BaseEditor} editor
  */
 MultiEditorTab.prototype.showEditor = function(editor) {
   var dialog = this.dialog;
@@ -143,6 +145,13 @@ MultiEditorTab.prototype.switchEditor = function(newEditor, xml) {
   newEditor.setXML(xml);
 };
 
+/**
+ * Get an editor by editor id.
+ *
+ * @param {String|BaseEditor} id
+ *
+ * @return {BaseEditor}
+ */
 MultiEditorTab.prototype.getEditor = function(id) {
   var editor;
 
@@ -158,6 +167,8 @@ MultiEditorTab.prototype.getEditor = function(id) {
 
   return editor;
 };
+
+// TODO(nikku): <REALLY BAD NAME....> we are going to set the _ACTIVE_ editor here
 
 MultiEditorTab.prototype.setEditor = function(editor) {
   this.activeEditor = editor;
@@ -228,11 +239,11 @@ MultiEditorTab.prototype.createEditors = function(options) {
       this.dirty = state.dirty;
 
       if (typeof this.dirty === 'undefined') {
-        this.dirty = state.dirty = isUnsaved(this.file);
+        this.dirty = state.dirty = this.isUnsaved();
       }
 
-      var newState = assign({}, {
-        diagramType: this.file ? this.file.fileType : null,
+      var newState = assign({
+        diagramType: this.getDiagramType(),
         save: true,
         closable: true
       }, state);
@@ -264,35 +275,42 @@ MultiEditorTab.prototype.createEditors = function(options) {
  * @param {Function} done
  */
 MultiEditorTab.prototype.save = function(done) {
-  if (this.activeEditor.saveXML) {
 
-    this.activeEditor.saveXML((err, xml) => {
+  var activeEditor = this.activeEditor;
 
-      if (err) {
-        return done(err);
-      }
-
-      return done(null, assign(this.file, { contents: xml }));
-    });
+  if (!activeEditor.saveXML) {
+    return done(unsupportedSave());
   }
 
-  // TODO(nikku): handle missing activeEditor.saveXML (?)
+  activeEditor.saveXML((err, xml) => {
+
+    if (err) {
+      return done(err);
+    }
+
+    return done(null, assign({}, this.file, { contents: xml }));
+  });
 };
 
 MultiEditorTab.prototype.setFile = function(file) {
   this.file = file;
   this.label = file.name,
   this.title = file.path,
+  this.dirty = isUnsaved(file);
 
   this.editors.forEach(function(editor) {
-    editor.setXML(file.contents, { dirty: isUnsaved(file) });
+    editor.setXML(file.contents, {});
   });
 
   this.events.emit('changed');
 };
 
 MultiEditorTab.prototype.isUnsaved = function() {
-  return isUnsaved(this.file);
+  return isUnsaved(this.file) || this.dirty;
+};
+
+MultiEditorTab.prototype.getDiagramType = function() {
+  return this.file && this.file.fileType;
 };
 
 MultiEditorTab.prototype.triggerAction = function(action, options) {
@@ -328,3 +346,30 @@ MultiEditorTab.prototype.render = function() {
     </div>
   );
 };
+
+
+function unsupportedExportAs() {
+  return new Error('<exportAs> not supported for the current tab');
+}
+
+
+function unsupportedSave() {
+  return new Error('<save> not supported for current tab');
+}
+
+
+/**
+ * Returns a copy of the file with the given extension.
+ *
+ * @param {FileDescriptor} file
+ * @param {String} extension
+ *
+ * @return {FileDescriptor}
+ */
+function withExtension(file, extension) {
+  return {
+    name: replaceFileExt(file.name, extension),
+    path: !isUnsaved(file.path) ? replaceFileExt(file.path, extension) : file.path,
+    fileType: extension
+  };
+}

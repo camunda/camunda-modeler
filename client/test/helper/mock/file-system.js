@@ -40,7 +40,14 @@ function FileSystem() {
    * @param {Function} done
    */
   this.writeFile = function(file, done) {
-    done(null, file);
+
+    // make sure the file has a well defined
+    // path after save (expected behavior...)
+    if (file.path === '[unsaved]') {
+      throw new Error('incorrect file path');
+    }
+
+    done(null, assign({}, file));
   };
 
   this._clear = function() {

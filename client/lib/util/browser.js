@@ -27,8 +27,6 @@ function send(event, args, callback) {
     ipcRenderer.once(event + ':response', function(evt, args) {
 
       if (args[0]) {
-        console.debug('[browser]', event + ':response', args);
-
         return callback(new Error(args[0]));
       }
 

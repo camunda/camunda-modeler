@@ -18,8 +18,8 @@ var MultiButton = require('base/components/buttons/multi-button'),
     Button = require('base/components/buttons/button'),
     Separator = require('base/components/buttons/separator');
 
-var BpmnSupport = require('./tabs/bpmn'),
-    DmnSupport = require('./tabs/dmn');
+var BpmnProvider = require('./tabs/bpmn/provider'),
+    DmnProvider = require('./tabs/dmn/provider');
 
 var EmptyTab = require('./tabs/empty-tab');
 
@@ -196,10 +196,6 @@ function App(options) {
       button.choices[0] = { icon: 'icon-picture', primary: true, label: 'Export as Image' };
     }
 
-
-    // tab dirty state
-    tab.dirty = newState.dirty;
-
     // save and saveAs buttons
     // should work all the time as long as the
     // tab provides a save action
@@ -256,8 +252,10 @@ function App(options) {
 
   // bootstrap support for diagram files
 
-  this.createComponent(BpmnSupport, { app: this });
-  this.createComponent(DmnSupport, { app: this });
+  this.tabProviders = [
+    this.createComponent(BpmnProvider, { app: this }),
+    this.createComponent(DmnProvider, { app: this })
+  ];
 }
 
 inherits(App, BaseComponent);
@@ -369,7 +367,7 @@ App.prototype.openDiagram = function() {
         return !!file;
       });
 
-      this.createTabs(diagramFiles);
+      this.openTabs(diagramFiles);
     });
   });
 };
@@ -431,53 +429,72 @@ App.prototype.triggerAction = function(action, options) {
  * Create diagram of the specific type.
  *
  * @param {String} type
+ * @return {Tab} created diagram tab
  */
 App.prototype.createDiagram = function(type) {
-  this.events.emit('create-diagram', type);
+  var tabProvider = this._findTabProvider(type);
+
+  var file = tabProvider.createNewFile();
+
+  return this.openTab(file);
 };
 
 
 /**
- * Create tabs for the given files and select the last tab.
+ * Open tabs for the given files and make sure an appropriate
+ * tab is selected and tabs are not opened twice.
  *
- * @param {Array<File>} files
+ * This method does not do any validation on the file internals
+ * and assumes the creation of tabs for given files does not fail
+ * (tabs should be robust and handle opening errors internally).
+ *
+ * @param {Array<FileDescriptor>} files
+ * @return {Array<Tab>} return the opened tabs
  */
-App.prototype.createTabs = function(files) {
+App.prototype.openTabs = function(files) {
 
   if (!Array.isArray(files)) {
-    files = [ files ];
+    throw new Error('expected Array<FileDescriptor> argument');
   }
 
   if (!files.length) {
     return;
   }
 
-  files.forEach((file) => {
-    this.createTab(file);
+  var openedTabs = files.map((file) => {
+
+    // make sure we do not double open tabs
+    // for the same file
+    return this.findTab(file) || this._createTab(file);
   });
 
+  // select the last opened tab
+  this.selectTab(openedTabs[openedTabs.length - 1]);
+
+  return openedTabs;
 };
 
 /**
- * Create a new tab from the given file.
+ * Open a single tab.
  *
- * @param {File} file
+ * @param {FileDescriptor} file
+ * @return {Tab} the opened tab
+ */
+App.prototype.openTab = function(file) {
+  return this.openTabs([ file ])[0];
+};
+
+/**
+ * Create a new tab from the given file and add it
+ * to the application.
+ *
+ * @param {FileDescriptor} file
  * @param {Object} options
  */
-App.prototype.createTab = function(file, options) {
-  var tabs = this.tabs;
+App.prototype._createTab = function(file, options) {
+  var tabProvider = this._findTabProvider(file.fileType);
 
-  var existingTab = find(tabs, (t) => {
-    var tabPath = (t.file ? t.file.path : null);
-    return file.path === tabPath;
-  });
-
-  if (existingTab) {
-    this.selectTab(existingTab);
-  } else {
-    this.events.emit('create-tab', file, options);
-  }
-
+  return this._addTab(tabProvider.createTab(file));
 };
 
 
@@ -488,37 +505,33 @@ App.prototype.saveAllTabs = function() {
 
   debug('saving all open tabs');
 
-  var self = this;
-
-  var initialActiveTab = this.activeTab;
+  var activeTab = this.activeTab;
 
   series(this.tabs, (tab, done) => {
     if (!tab.save || !tab.dirty) {
-      // Skipping tabs that cannot save or are dirty
+      // skipping tabs that cannot save or are dirty
       return done(null);
     }
 
     this.selectTab(tab);
 
-    setTimeout(function() {
-      self.saveTab(tab, (err, file) => {
-        if (err) {
-          return done(err);
-        }
+    this.saveTab(tab, function(err, savedFile) {
 
-        // Continue only if file has been saved
-        return done(null);
-      });
-    }, 100);
-  }, (err, tabs) => {
+      if (err || !savedFile) {
+        return done(err || userCanceled());
+      }
+
+      return done(null, savedFile);
+    });
+  }, (err) => {
     if (err) {
-      return debug('save all -> aborted');
+      return debug('save all canceled', err);
     }
 
-    debug('save all finished successfully');
+    debug('save all finished');
 
     // restore active tab
-    this.selectTab(initialActiveTab);
+    this.selectTab(activeTab);
   });
 };
 
@@ -538,32 +551,73 @@ App.prototype.exportTab = function(tab, type, done) {
     throw new Error('tab cannot #save');
   }
 
-  done = done || function(err, suggestedFile) {
+  done = done || function(err, savedFile) {
     if (err) {
-      debug('export canceled: %s', err);
+      debug('export error: %s', err);
+    } else if (!savedFile) {
+      debug('export user canceled');
     } else {
-      debug('exported %s \n%s', tab.id, suggestedFile.contents);
+      debug('exported %s \n%s', tab.id, savedFile.contents);
     }
   };
 
   tab.exportAs(type, (err, file) => {
     if (err) {
-      debug('export error! %s', err);
-
       return done(err);
     }
 
-    this._saveTab(tab, file, true, done);
+    this.saveFile(file, true, done);
   });
+};
+
+/**
+ * Find the open tab for the given file, if any.
+ *
+ * @param {FileDescriptor} file
+ * @return {Tab}
+ */
+App.prototype.findTab = function(file) {
+
+  if (isUnsaved(file)) {
+    return null;
+  }
+
+  return find(this.tabs, function(t) {
+    var tabPath = (t.file ? t.file.path : null);
+    return file.path === tabPath;
+  });
+};
+
+/**
+ * Find a tab provider for the given file type.
+ *
+ * @param {String} fileType
+ *
+ * @return {TabProvider}
+ */
+App.prototype._findTabProvider = function(fileType) {
+
+  var tabProvider = find(this.tabProviders, function(provider) {
+    return provider.canCreate(fileType);
+  });
+
+  if (!tabProvider) {
+    throw noTabProvider(fileType);
+  }
+
+  return tabProvider;
 };
 
 /**
  * Save the given tab with optional new name and
  * path (passed via options).
  *
+ * The saved file is passed as the second argument to the
+ * provided callback, unless the user canceled the save operation.
+ *
  * @param {Tab} tab
  * @param {Object} [options]
- * @param {Function} [done]
+ * @param {Function} [done] invoked with (err, savedFile)
  */
 App.prototype.saveTab = function(tab, options, done) {
 
@@ -590,15 +644,18 @@ App.prototype.saveTab = function(tab, options, done) {
 
     if (err) {
       debug('not gonna update tab: %s', err);
-
       return done(err);
+    }
+
+    if (!savedFile) {
+      debug('save file canceled');
+      return done();
     }
 
     debug('saved %s', tab.id);
 
     // finally saved...
     tab.setFile(savedFile);
-    tab.dirty = false;
 
     this.events.emit('workspace:changed');
 
@@ -619,47 +676,42 @@ App.prototype.saveTab = function(tab, options, done) {
 
     saveAs = isUnsaved(file) || options && options.saveAs;
 
-    this._saveTab(tab, file, saveAs, updateTab);
+    this.saveFile(file, saveAs, updateTab);
   });
 };
 
-App.prototype._saveTab = function(tab, file, saveAs, done) {
-  var dialog = this.dialog,
-      newFile;
-
-  if (saveAs) {
-    dialog.saveAs(file, (err, suggestedFile) => {
-
-      if (!suggestedFile) {
-        err = userCanceled();
-      }
-
-      if (err) {
-        debug('save %s err', tab.id, err);
-        return done(err);
-      }
-
-      debug('save %s as %s', tab.id, suggestedFile.path);
-
-      newFile = assign({}, file, suggestedFile);
-
-      this.saveFile(newFile, done);
-    });
-  } else {
-    newFile = assign({}, file);
-
-    this.saveFile(newFile, done);
-  }
-};
 
 /**
  * Save the given file and invoke callback with (err, savedFile).
  *
- * @param {File} file
+ * @param {FileDescriptor} file
+ * @param {Boolean} saveAs whether to ask the user for a file name
  * @param {Function} done
  */
-App.prototype.saveFile = function(file, done) {
-  this.fileSystem.writeFile(file, done);
+App.prototype.saveFile = function(file, saveAs, done) {
+  var dialog = this.dialog,
+      fileSystem = this.fileSystem;
+
+  if (!saveAs) {
+    return fileSystem.writeFile(assign({}, file), done);
+  }
+
+  dialog.saveAs(file, (err, suggestedFile) => {
+
+    if (err) {
+      debug('save file error', err);
+      return done(err);
+    }
+
+    if (!suggestedFile) {
+      debug('save file canceled');
+      return done();
+    }
+
+    debug('save file %s as %s', file.name, suggestedFile.path);
+
+    fileSystem.writeFile(assign({}, file, suggestedFile), done);
+  });
 };
 
 
@@ -670,18 +722,32 @@ App.prototype.saveFile = function(file, done) {
  */
 App.prototype.filesDropped = function(files) {
 
-  files.forEach((file) => {
+  var dialog = this.dialog;
+
+  function withType(file) {
     var type = parseFileType(file);
 
     if (!type) {
-      this.dialog.unrecognizedFileError(file, function() {
+      dialog.unrecognizedFileError(file, function() {
         debug('file drop rejected: unrecognized file type', file);
       });
-    } else {
-      this.createTab(assign({}, file, { fileType: type }));
-    }
-  });
 
+      // we skip this file
+      return null;
+    } else {
+      return assign({}, file, { fileType: type });
+    }
+  }
+
+  function withoutEmpty(f) {
+    return f;
+  }
+
+  // parse type + filter unrecognized files
+  var actualFiles = files.map(withType).filter(withoutEmpty);
+
+  // create tabs for files
+  this.openTabs(actualFiles);
 };
 
 
@@ -711,9 +777,12 @@ App.prototype.selectTab = function(tab) {
 };
 
 /**
- * Close the given tab.
+ * Close the given tab. If the user aborts the operation
+ * (i.e. cancels it via dialog choice) the callback will
+ * be evaluated with (null, 'canceled').
  *
  * @param {Tab} tab
+ * @param {Function} [done] passed with (err, status=(canceled, ...))
  */
 App.prototype.closeTab = function(tab, done) {
 
@@ -729,7 +798,7 @@ App.prototype.closeTab = function(tab, done) {
     throw new Error('non existing tab');
   }
 
-  if (!done || typeof done !== 'function') {
+  if (typeof done !== 'function') {
     done = function(err) {
       if (err) {
         debug('error: %s', err);
@@ -748,13 +817,14 @@ App.prototype.closeTab = function(tab, done) {
     debug('---->', err, result);
 
     if (isCancel(result)) {
-      err = userCanceled();
+      debug('close-tab canceled: %s', err);
+
+      return done(userCanceled());
     }
 
     if (err) {
-      debug('close-tab canceled: %s', err, result);
-
-      return done(err, result);
+      debug('close-tab error: %s', err);
+      return done(err);
     }
 
     // close without saving
@@ -767,11 +837,10 @@ App.prototype.closeTab = function(tab, done) {
       if (err) {
         debug('save-tab error: %s', err);
 
-        done(err);
-        return;
+        return done(err);
       }
 
-      this._closeTab(tab, done);
+      return this._closeTab(tab, done);
     });
   });
 };
@@ -800,20 +869,28 @@ App.prototype._closeTab = function(tab, done) {
 
   events.emit('changed');
 
-  done(null, tab);
+  return done(null);
 };
 
-App.prototype.addTab = function(tab) {
+/**
+ * Add a tab to the app at an appropriate position.
+ *
+ * @param {Tab} tab
+ * @return {Tab} the added tab
+ */
+App.prototype._addTab = function(tab) {
 
   var tabs = this.tabs,
       events = this.events;
 
-  // REVIEW: assumption is that empty tab is always there is the last tab.
-  // so inserting as 'last - 1' tab
+  // always add tab right before the EMPTY_TAB
+  // TODO(vlad): make adding before empty tab more explicit
   tabs.splice(tabs.length - 1, 0, tab);
 
   events.emit('workspace:changed');
   events.emit('changed');
+
+  return tab;
 };
 
 /**
@@ -896,7 +973,7 @@ App.prototype.restoreWorkspace = function(done) {
 
     // restore tabs
     if (config.tabs) {
-      this.createTabs(config.tabs);
+      this.openTabs(config.tabs);
     }
 
     if (config.activeTab !== undefined) {
@@ -958,20 +1035,15 @@ App.prototype.quit = function() {
     this.selectTab(tab);
 
     // Make sure newly selected tab is rendered
-    setTimeout(() => {
-      this.closeTab(tab, (err, status) => {
+    this.closeTab(tab, (err) => {
+      if (err) {
+        return done(err);
+      }
 
-        if (err || isCancel(status)) {
-          err = err || userCanceled();
+      debug('tab closed, processing next tab...');
 
-          return done(err);
-        }
-
-        debug('tab closed, processing next tab...');
-
-        done(null);
-      });
-    }, 150);
+      done(null);
+    });
 
   }, (err) => {
     if (err) {
@@ -998,4 +1070,8 @@ function isCancel(userChoice) {
 
 function userCanceled() {
   return new Error('user canceled');
+}
+
+function noTabProvider(fileType) {
+  throw new Error('missing provider for file <' + fileType + '>');
 }

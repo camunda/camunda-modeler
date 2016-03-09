@@ -28,11 +28,16 @@ function Dialog() {
    * @param {Function} done
    */
   this.saveAs = function(file, done) {
-
     if (this.saveAsResponse instanceof Error) {
       done(this.saveAsResponse);
     } else {
-      done(null, assign({}, file, this.saveAsResponse));
+      // make sure we return with a proper
+      // file.path (as we expect from an actual implementation)
+      var response = null;
+      if (this.saveAsResponse) {
+        response = assign({}, file, this.saveAsResponse);
+      }
+      done(null, response);
     }
   };
 
