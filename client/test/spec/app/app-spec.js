@@ -1064,19 +1064,21 @@ describe('App', function() {
           var bpmnFile = createBpmnFile(bpmnXML),
               dmnFile = createDmnFile(dmnXML);
 
+          var layout = {
+            propertiesPanel: {
+              open: false,
+              width: 250
+            },
+            log: {
+              open: false,
+              height: 150
+            }
+          };
+
           workspace.setSaved({
             tabs: [ bpmnFile, dmnFile ],
             activeTab: 1,
-            layout: {
-              propertiesPanel: {
-                open: false,
-                width: 250
-              },
-              log: {
-                open: false,
-                height: 150
-              }
-            }
+            layout: layout
           });
 
           // when
@@ -1088,6 +1090,7 @@ describe('App', function() {
             // two tabs + empty tab are open
             expect(app.tabs).to.have.length(3);
             expect(app.activeTab).to.eql(app.tabs[1]);
+            expect(app.layout).to.eql(layout);
 
             done();
           });

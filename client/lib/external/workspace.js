@@ -1,23 +1,25 @@
 'use strict';
 
+var browser = require('util/browser');
+
 /**
  * Workspace API used by app
  */
 function Workspace() {
-  
+
   /**
    * Saves an editor configuration.
-   * 
+   *
    * @param {Config} config
    * @param {Function} done
    */
   this.save = function(config, done) {
-    done(null, config);
+    browser.send('workspace:save', config, done);
   };
 
   /**
    * Load a previously saved workspace.
-   * 
+   *
    * The passed default result passed will be returned
    * if no workspace was saved previously.
    *
@@ -25,7 +27,7 @@ function Workspace() {
    * @param {Function} done
    */
   this.load = function(defaultResult, done) {
-    done(null, defaultResult);
+    browser.send('workspace:restore', defaultResult, done);
   };
 
 }

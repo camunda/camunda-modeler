@@ -982,6 +982,8 @@ App.prototype.restoreWorkspace = function(done) {
       this.activeTab = this.tabs[config.activeTab];
     }
 
+    this.events.emit('layout:update', config.layout);
+
     this.events.emit('changed');
 
     this.events.emit('workspace:restored');
@@ -1055,7 +1057,13 @@ App.prototype.quit = function() {
     }
     debug('shutting down application');
 
-    return this.events.emit('quitting');
+    this.persistWorkspace((err) => {
+      if (err) {
+        return debug('workspace persisted?', err);
+      }
+
+      return this.events.emit('quitting');
+    });
   });
 };
 

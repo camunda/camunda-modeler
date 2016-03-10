@@ -2,25 +2,29 @@
 
 var forEach = require('lodash/collection/forEach');
 
-var Ipc = require('electron').ipcMain;
+var fs = require('fs');
 
-var FileSystem = require('./FileSystem');
+var renderer = require('./util/renderer');
 
 
 function Workspace(browserWindow, config) {
   this._workspace = {};
 
-  Ipc.on('workspace.restore', function(evt) {
-    var diagrams = [],
+  renderer.on('workspace:restore', function(defaultConfig, done) {
+    var tabs = [],
         workspace = config.get('workspace', null);
 
     if (!workspace) {
-      return browserWindow.webContents.send('workspace.restore.response', new Error('Workspace is empty'));
+      return done(null, defaultConfig);
     }
 
-    forEach(workspace.diagrams, function(diagram) {
+    forEach(workspace.tabs, function(diagram) {
       try {
-        diagrams.push(FileSystem.readDiagram(diagram.path));
+        var contents = fs.readFileSync(diagram.path, { encoding: 'utf8' });
+
+        diagram.contents = contents;
+
+        tabs.push(diagram);
 
         console.log('[workspace]', 'restore', diagram.path);
       } catch (err) {
@@ -28,18 +32,21 @@ function Workspace(browserWindow, config) {
       }
     });
 
-    workspace.diagrams = diagrams;
+    workspace.tabs = tabs;
 
-    browserWindow.webContents.send('workspace.restore.response', null, workspace);
+    done(null, workspace);
   });
 
-  Ipc.on('workspace.save', function(evt, workspace) {
+  renderer.on('workspace:save', function(workspace, done) {
 
     config.set('workspace', workspace, function(err) {
       if (err) {
-        return browserWindow.webContents.send('workspace.save.response', err);
+        return done(err);
       }
-      browserWindow.webContents.send('workspace.save.response', null);
+
+      console.log('[workspace]', 'save', workspace);
+
+      done(null);
     });
   });
 }
