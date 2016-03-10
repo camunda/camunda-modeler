@@ -732,7 +732,7 @@ describe('App', function() {
 
 
       // TODO(nikku): needs to be implemented properly
-      it.skip('should select tab before saving', function() {
+      it('should select tab before saving', function() {
 
         // given
         var tabs = app.openTabs([
@@ -756,7 +756,7 @@ describe('App', function() {
         // when
         app.saveTab(savingTab);
 
-          // then
+        // then
         expect(app.activeTab).to.eql(activeTab);
       });
 
@@ -889,11 +889,10 @@ describe('App', function() {
 
       var closingTab = tabs[1];
 
-      patchSave(closingTab, function(done) {
+      app.dialog.close = function(file, done) {
         expect(app.activeTab).to.eql(closingTab);
-
-        done(null, closingTab.file);
-      });
+        done(null, null);
+      };
 
       // when
       app.closeTab(closingTab);

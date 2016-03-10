@@ -512,8 +512,6 @@ App.prototype.saveAllTabs = function() {
       return done(null);
     }
 
-    this.selectTab(tab);
-
     this.saveTab(tab, function(err, savedFile) {
 
       if (err || !savedFile) {
@@ -661,11 +659,17 @@ App.prototype.saveTab = function(tab, options, done) {
     return done(null, savedFile);
   };
 
-  var saveAs;
-
   debug('saving %s', tab.id);
 
+  // keep track of current active tab
+  var activeTab = this.activeTab;
+
+  // making sure tab is selected before save
+  this.selectTab(tab);
+
   tab.save((err, file) => {
+    // restore last active tab
+    this.selectTab(activeTab);
 
     if (err) {
       return done(err);
@@ -673,7 +677,7 @@ App.prototype.saveTab = function(tab, options, done) {
 
     debug('exported %s \n%s', tab.id, file.contents);
 
-    saveAs = isUnsaved(file) || options && options.saveAs;
+    var saveAs = isUnsaved(file) || options && options.saveAs;
 
     this.saveFile(file, saveAs, updateTab);
   });
