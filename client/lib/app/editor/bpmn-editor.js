@@ -20,6 +20,7 @@ var diagramOriginModule = require('diagram-js-origin'),
 
 var ensureOpts = require('util/ensure-opts'),
     dragger = require('util/dom/dragger'),
+    isInputActive = require('util/dom/is-input').active,
     copy = require('util/copy');
 
 var generateImage = require('app/util/generate-image');
@@ -84,6 +85,12 @@ BpmnEditor.prototype.triggerEditorActions = function(action, options) {
     }, options);
   }
 
+  // ignore all editor actions (besides the following three)
+  // if there's a current active input or textarea
+  if ([ 'removeSelection', 'stepZoom', 'zoom' ].indexOf(action) === -1 && isInputActive()) {
+    return;
+  }
+
   debug('editor-actions', action, opts);
 
   // forward other actions to editor actions
@@ -95,7 +102,8 @@ BpmnEditor.prototype.updateState = function() {
 
   var modeler = this.getModeler(),
       initialState = this.initialState,
-      commandStack;
+      commandStack,
+      inputActive;
 
   var elementsSelected,
       elements,
@@ -127,13 +135,16 @@ BpmnEditor.prototype.updateState = function() {
       elementsSelected = true;
     }
 
+    inputActive = isInputActive();
+
     stateContext = assign(stateContext, {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
-      elementsSelected: elementsSelected,
+      elementsSelected: elementsSelected && !inputActive,
       dirty: dirty,
       zoom: true,
-      editable: true
+      editable: true,
+      inactiveInput: !inputActive
     });
   }
 
@@ -274,7 +285,7 @@ BpmnEditor.prototype.render = function() {
   }
 
   return (
-    <div className="bpmn-editor" key={ this.id + '#bpmn' }>
+    <div className="bpmn-editor" key={ this.id + '#bpmn' } onFocusin={ this.compose('updateState') }>
       <div className="editor-container"
            tabIndex="0"
            onAppend={ this.compose('mountEditor') }

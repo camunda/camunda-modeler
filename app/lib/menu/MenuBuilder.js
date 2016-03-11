@@ -187,8 +187,6 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
     role: 'paste'
   }));
 
-  this.appendSeparator();
-
   return this;
 };
 
@@ -196,6 +194,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Hand Tool',
     accelerator: 'H',
+    enabled: this.opts.state.inactiveInput,
     click: function (menuItem, browserWindow) {
       browserWindow.webContents.send('menu:action', 'handTool');
     }
@@ -204,6 +203,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Lasso Tool',
     accelerator: 'L',
+    enabled: this.opts.state.inactiveInput,
     click: function(menuItem, browserWindow) {
       browserWindow.webContents.send('menu:action', 'lassoTool');
     }
@@ -212,6 +212,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Space Tool',
     accelerator: 'S',
+    enabled: this.opts.state.inactiveInput,
     click: function(menuItem, browserWindow) {
       browserWindow.webContents.send('menu:action', 'spaceTool');
     }
@@ -378,10 +379,14 @@ MenuBuilder.prototype.appendEditMenu = function() {
     var builder = new this.constructor(this.opts).appendBaseEditActions();
 
     if (this.opts.state.bpmn) {
+      builder.appendSeparator();
+
       builder.appendBpmnActions();
     }
 
     if (this.opts.state.dmn) {
+      builder.appendSeparator();
+
       builder.appendDmnActions();
     }
 
