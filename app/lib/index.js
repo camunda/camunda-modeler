@@ -44,7 +44,7 @@ var dialog = new Dialog({
 });
 
 // bootstrap filesystem
-var fileSystem = new FileSystem({
+app.fileSystem = new FileSystem({
   dialog: dialog
 });
 
@@ -61,6 +61,7 @@ if (config.get('single-instance', true)) {
       if (app.mainWindow.isMinimized()) {
         app.mainWindow.restore();
       }
+
       app.mainWindow.focus();
     }
 
@@ -74,37 +75,6 @@ if (config.get('single-instance', true)) {
 
 // List of files that should be opened by the editor
 app.openFiles = [];
-
-/**
- * Create the main window that represents the editor.
- *
- * @return {BrowserWindow}
- */
-function createEditorWindow() {
-
-  var mainWindow = app.mainWindow = new BrowserWindow({
-    resizable: true,
-    title: 'Camunda Modeler'
-  });
-
-  new Workspace(mainWindow, config);
-
-  mainWindow.maximize();
-
-  mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../public/index.html'));
-
-  mainWindow.webContents.on('did-finish-load', function() {
-    app.emit('editor:open', mainWindow);
-  });
-
-  mainWindow.webContents.on('will-navigate', function (evt, url) {
-    evt.preventDefault();
-
-    Shell.openExternal(url);
-  });
-
-  return mainWindow;
-}
 
 //////// client life-cycle /////////////////////////////
 renderer.on('editor:ready', function(done) {
@@ -154,7 +124,7 @@ renderer.on('dialog:close-tab', function(diagramFile, done) {
 
 
 function saveCallback(saveAction, diagramFile, done) {
-  saveAction.apply(fileSystem, [ diagramFile, (err, updatedDiagram) => {
+  saveAction.apply(app.fileSystem, [ diagramFile, (err, updatedDiagram) => {
     if (err) {
       return done(err);
     }
@@ -168,15 +138,15 @@ function saveCallback(saveAction, diagramFile, done) {
 }
 
 renderer.on('file:save-as', function(diagramFile, done) {
-  saveCallback(fileSystem.saveAs, diagramFile, done);
+  saveCallback(app.fileSystem.saveAs, diagramFile, done);
 });
 
 renderer.on('file:save', function(diagramFile, done) {
-  saveCallback(fileSystem.save, diagramFile, done);
+  saveCallback(app.fileSystem.save, diagramFile, done);
 });
 
 renderer.on('file:open', function(done) {
-  fileSystem.open(function (err, diagramFiles) {
+  app.fileSystem.open(function (err, diagramFiles) {
     if (err) {
       return done(err);
     }
@@ -249,51 +219,84 @@ app.on('editor:cmd', function (argv, cwd) {
 
 
 /**
+ * Create the main window that represents the editor.
+ *
+ * @return {BrowserWindow}
+ */
+app.createEditorWindow = function () {
+
+  var mainWindow = app.mainWindow = new BrowserWindow({
+    resizable: true,
+    title: 'Camunda Modeler'
+  });
+
+  new Workspace(config);
+
+  mainWindow.maximize();
+
+  mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../public/index.html'));
+
+  mainWindow.webContents.on('did-finish-load', function() {
+    app.emit('editor:open', mainWindow);
+  });
+
+  mainWindow.webContents.on('will-navigate', function (evt, url) {
+    evt.preventDefault();
+
+    Shell.openExternal(url);
+  });
+
+  // handling case when user clicks on window close button
+  mainWindow.on('close', function(e) {
+    console.log('Initiating close of main window');
+
+    if (app.quitAllowed) {
+      // dereferencing main window on close
+      console.log('Main window closed');
+
+      return app.mainWindow = null;
+    }
+
+    // preventing window from closing until client allows to do so
+    e.preventDefault();
+
+    console.log('Asking client to allow application quit');
+
+    app.emit('app:quit-denied');
+
+    renderer.send('menu:action', 'quit');
+  });
+
+  app.emit('app:window-created', mainWindow);
+
+  // only set by client, when it is ok to exit
+  app.quitAllowed = false;
+};
+
+
+/**
  * Application entry point
  * Emitted when Electron has finished initialization.
  */
 app.on('ready', function (evt) {
 
-  app.fileSystem = new FileSystem({
-    dialog: dialog
+  // quit command from menu/shortcut
+  app.on('app:quit', function quit() {
+    console.log('Initiating termination of the application');
+
+    renderer.send('menu:action', 'quit');
   });
 
-  var mainWindow = app.mainWindow = createEditorWindow();
+  // client quit verification event
+  renderer.on('app:quit-allowed', function () {
+    console.log('Quit allowed');
 
-  // Setting up application exit logic
-  mainWindow.on('close', function(evt) {
-    if (!app.closable) {
-      evt.preventDefault();
+    app.quitAllowed = true;
 
-      console.log('mainWindow:close', 'delegating "quit" to client');
-
-      renderer.send('menu:action', 'quit');
-    } else {
-      console.log('mainWindow:close', 'closing main window');
-
-      app.emit('app:quit');
-    }
+    app.mainWindow.close();
   });
 
-  function quit() {
-    app.closable = true;
-
-    console.log('app:quit', 'Quitting application');
-
-    app.quit();
-  }
-
-  renderer.on('app:quit', quit);
-
-  app.on('window-all-closed', quit);
-
-  mainWindow.on('closed', () => {
-    // dereference the main window on close
-    app.mainWindow = null;
-  });
-
-
-  app.emit('window:created', mainWindow);
+  app.createEditorWindow();
 
   app.emit('editor:cmd', process.argv, process.cwd());
 });

@@ -38,7 +38,7 @@ domReady(function() {
   new Menu(app);
 
   app.on('quitting', () => {
-    browser.send('app:quit');
+    browser.send('app:quit-allowed');
   });
 
   mainLoop(app, document.body);

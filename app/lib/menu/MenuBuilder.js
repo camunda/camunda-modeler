@@ -1,7 +1,9 @@
 'use strict';
 
-var Menu = require('menu');
-var MenuItem = require('menu-item');
+var electron = require('electron'),
+    Menu = electron.Menu,
+    MenuItem = electron.MenuItem,
+    app = electron.app;
 
 var browserOpen = require('../util/browser-open');
 
@@ -136,8 +138,8 @@ MenuBuilder.prototype.appendQuit = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Quit',
     accelerator: 'CommandOrControl+Q',
-    click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'quit');
+    click: function () {
+      app.emit('app:quit');
     }
   }));
 

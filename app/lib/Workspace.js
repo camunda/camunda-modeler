@@ -7,7 +7,7 @@ var fs = require('fs');
 var renderer = require('./util/renderer');
 
 
-function Workspace(browserWindow, config) {
+function Workspace(config) {
   this._workspace = {};
 
   renderer.on('workspace:restore', function(defaultConfig, done) {
