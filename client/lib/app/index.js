@@ -158,9 +158,14 @@ function App(options) {
   this.activeTab = this.tabs[0];
 
 
-  this.events.on('workspace:changed', debounce(() => {
-    this.persistWorkspace(function(err) {
+  this.events.on('workspace:changed', debounce((done) => {
+    this.persistWorkspace((err) => {
       debug('workspace persisted?', err);
+
+      // this is something we want to prevent a race condition when quitting the app
+      if (done) {
+        done(err);
+      }
     });
   }, 100));
 
@@ -1057,12 +1062,10 @@ App.prototype.quit = function() {
     }
     debug('shutting down application');
 
-    this.persistWorkspace((err) => {
-      if (err) {
-        return debug('workspace persisted?', err);
-      }
-
-      return this.events.emit('quitting');
+    // we have to use the event based workspace persisting
+    // or there will be race conditions on quit
+    this.events.emit('workspace:changed', () => {
+      this.events.emit('quitting');
     });
   });
 };
