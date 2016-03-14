@@ -44,7 +44,7 @@ function Workspace(config) {
         return done(err);
       }
 
-      console.log('[workspace]', 'save', workspace);
+      console.log('[workspace]', 'save');
 
       done(null);
     });

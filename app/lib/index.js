@@ -54,7 +54,7 @@ if (config.get('single-instance', true)) {
 
   var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
 
-    app.emit('editor:cmd', commandLine, workingDirectory);
+    app.emit('app:parse-cmd', commandLine, workingDirectory);
 
     // focus existing running instance window
     if (app.mainWindow) {
@@ -64,8 +64,6 @@ if (config.get('single-instance', true)) {
 
       app.mainWindow.focus();
     }
-
-    return true;
   });
 
   if (shouldQuit) {
@@ -73,15 +71,7 @@ if (config.get('single-instance', true)) {
   }
 }
 
-// List of files that should be opened by the editor
-app.openFiles = [];
-
 //////// client life-cycle /////////////////////////////
-renderer.on('editor:ready', function(done) {
-  done(null);
-
-  app.emit('editor:deferred-file-open');
-});
 
 renderer.on('dialog:unrecognized-file', function(file, done) {
   dialog.showDialog('unrecognizedFile', { name: file.name});
@@ -161,60 +151,46 @@ renderer.on('file:open', function(done) {
   });
 });
 
+
 //////// open file handling //////////////////////////////
 
-app.on('open-url', function (evt) {
-  console.log('app:open-url', evt);
+// list of files that should be opened by the editor
+app.openFiles = [];
 
-  evt.preventDefault();
-});
-
-// open-file event is only fired on Mac
-app.on('open-file', function (evt, filePath) {
-  console.log('app:open-file', evt, filePath);
-
-  if (evt) {
-    evt.preventDefault();
-  }
-
-  if (app.mainWindow) {
-    app.emit('editor:file-open', filePath);
-  } else {
-    app.emit('editor:defer-file-open', filePath);
-  }
-});
-
-app.on('editor:file-open', function (filePath) {
-  console.log('app:editor:file-open', filePath);
-  // todo
-  // fileSystem.addFile(filePath);
-});
-
-app.on('editor:defer-file-open', function (filePath) {
-  console.log('app:editor:defer-file-open', filePath);
-
-  app.openFiles.push(filePath);
-});
-
-app.on('editor:deferred-file-open', function () {
-  console.log('app:editor:deferred-file-open', app.openFiles);
-
-  // todo
-  // app.openFiles.forEach(function (filePath) {
-    // fileSystem.addFile(filePath);
-  // });
-});
-
-app.on('editor:cmd', function (argv, cwd) {
-  console.log('app:editor:cmd', argv, cwd);
+app.on('app:parse-cmd', function (argv, cwd) {
+  console.log('app:parse-cmd', argv.join(' '), cwd);
 
   var files = Cli.extractFiles(argv, cwd);
 
-  console.log('app:editor:cmd files:', files);
-
   files.forEach(function (file) {
-    app.emit('open-file', null, file);
+    app.emit('app:open-file', file);
   });
+});
+
+app.on('app:open-file', function (filePath) {
+  console.log('app:open-file', filePath);
+
+  if (!app.clientReady) {
+    // defer file open
+    return app.openFiles.push(filePath);
+  }
+
+  // open file immediately
+  renderer.send('client:open-file', FileSystem.readFile(filePath));
+});
+
+app.on('app:client-ready', function () {
+  console.log('app:client-ready');
+
+  var filePath;
+  while((filePath=app.openFiles.pop())){
+    renderer.send('client:open-file', FileSystem.readFile(filePath));
+  }
+});
+
+renderer.on('client:ready', function() {
+  app.clientReady = true;
+  app.emit('app:client-ready');
 });
 
 
@@ -251,10 +227,10 @@ app.createEditorWindow = function () {
     console.log('Initiating close of main window');
 
     if (app.quitAllowed) {
-      // dereferencing main window on close
-      console.log('Main window closed');
-
-      return app.mainWindow = null;
+      // dereferencing main window and resetting client state
+      app.clientReady = false;
+      app.mainWindow = null;
+      return console.log('Main window closed');
     }
 
     // preventing window from closing until client allows to do so
@@ -298,7 +274,7 @@ app.on('ready', function (evt) {
 
   app.createEditorWindow();
 
-  app.emit('editor:cmd', process.argv, process.cwd());
+  app.emit('app:parse-cmd', process.argv, process.cwd());
 });
 
 

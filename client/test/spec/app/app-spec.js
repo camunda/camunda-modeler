@@ -73,6 +73,19 @@ describe('App', function() {
   });
 
 
+  describe('run', function() {
+
+    it('should emit "ready" event', function (done) {
+      // then
+      app.on('ready', done);
+
+      // when
+      app.run();
+    });
+
+  });
+
+
   describe('quit', function() {
     var file, SomeTab;
 

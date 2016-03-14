@@ -4,6 +4,8 @@ var domReady = require('domready');
 
 var Delegator = require('dom-delegator');
 
+var debug = require('debug')('app-client');
+
 // provide vdom utility
 global.h = require('vdom/h');
 
@@ -37,8 +39,19 @@ domReady(function() {
   // Setting up external components
   new Menu(app);
 
+  app.on('ready', () => {
+    debug('client is ready');
+    browser.send('client:ready');
+  });
+
   app.on('quitting', () => {
+    debug('client is quitting');
     browser.send('app:quit-allowed');
+  });
+
+  browser.on('client:open-file', (e, file) => {
+    debug('opening external file: ', file);
+    app.filesDropped([file]);
   });
 
   mainLoop(app, document.body);

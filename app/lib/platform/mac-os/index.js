@@ -10,6 +10,28 @@ function MacOSPlatform(app) {
   });
 
   /**
+   * Do not open URLs.
+   * Please see "https://github.com/atom/electron/blob/master/docs/api/app.md#event-open-url-os-x"
+   * for more info.
+   */
+  app.on('open-url', function (e) {
+    console.log('application does not support opening URLs');
+    e.preventDefault();
+  });
+
+  /**
+   * Emitted when the user wants to open a file with the application.
+   * Please see "https://github.com/atom/electron/blob/master/docs/api/app.md#event-open-file-os-x"
+   * for more info.
+   */
+  app.on('open-file', function (e, filePath) {
+    if (e) {
+      e.preventDefault();
+    }
+    app.emit('app:open-file', filePath);
+  });
+
+  /**
    * Setting forced quit flag.
    * Quitting if window is already closed.
    */
@@ -48,10 +70,20 @@ function MacOSPlatform(app) {
   /**
    * Recreating window app activation through system dock
    */
-  app.on('activate', function () {
+  function checkAppWindow() {
     if (!app.mainWindow){
       app.createEditorWindow();
     }
+  }
+
+  /**
+   * Making sure create window will be created only after app
+   * has fully initialised.
+   */
+  app.on('ready', function () {
+    app.on('activate', checkAppWindow);
+    app.on('app:parse-cmd', checkAppWindow);
+    app.on('app:open-file', checkAppWindow);
   });
 
 }

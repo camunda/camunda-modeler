@@ -206,7 +206,9 @@ module.exports = function(grunt) {
     server.start(__dirname + '/resources/diagram/simple.bpmn');
   });
 
-  grunt.registerTask('app:restart', server.restart);
+  grunt.registerTask('app:restart', function() {
+    server.restart(__dirname + '/resources/diagram/simple.bpmn');
+  });
 
   grunt.registerTask('app:reload', server.reload);
 

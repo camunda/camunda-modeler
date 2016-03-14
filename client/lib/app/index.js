@@ -1021,13 +1021,15 @@ App.prototype.run = function() {
 
   this.selectTab(this.tabs[0]);
 
-  this.restoreWorkspace(function(err) {
+  this.restoreWorkspace((err) => {
     if (err) {
       debug('workspace restore error', err);
     } else {
       debug('workspace restored');
     }
+    this.events.emit('ready');
   });
+
   this.events.emit('changed');
 };
 
