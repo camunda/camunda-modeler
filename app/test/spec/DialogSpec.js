@@ -77,7 +77,7 @@ describe('Dialog', function() {
     expect(electronDialog.showSaveDialog).to.have.been.called;
 
     expect(saveDialogArg.title).to.equal('Save diagram_1.dmn as..');
-    expect(saveDialogArg.defaultPath).to.equal(path.join(USER_DESKTOP_PATH, 'diagram_1.dmn'));
+    expect(path.join(saveDialogArg.defaultPath)).to.equal(path.join(USER_DESKTOP_PATH, 'diagram_1.dmn'));
   });
 
 

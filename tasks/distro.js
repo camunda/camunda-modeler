@@ -10,6 +10,8 @@ var cpr = require('ncp');
 var archiver = require('archiver');
 var concat = require('concat-stream');
 
+var path = require('path');
+
 var PACKAGE_JSON = require('../package.json');
 
 
@@ -40,16 +42,22 @@ module.exports = function(grunt) {
       'Assembling distribution(s) ' +
       '{ version: ' + appVersion + ', build: ' + buildVersion + ' }');
 
+    var iconPath = path.join(__dirname, '../resources/icons/icon_128'),
+        dirPath = path.join(__dirname, '..'),
+        outPath = path.join(__dirname, '../distro');
+
+    grunt.log.writeln(iconPath, dirPath, outPath);
+
     var options = {
       name: PACKAGE_JSON.name,
-      dir: __dirname + '/../',
-      out: __dirname + '/../distro',
+      dir: dirPath,
+      out: outPath,
       version: electronVersion,
       platform: platform,
       arch: 'all',
       overwrite: true,
       asar: true,
-      icon: __dirname + '/../resources/icons/icon_128',
+      icon: iconPath,
       ignore: buildDistroIgnore()
     };
 
