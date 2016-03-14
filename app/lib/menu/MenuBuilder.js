@@ -56,13 +56,13 @@ MenuBuilder.prototype.appendNewFile = function() {
     submenu: Menu.buildFromTemplate([{
       label: 'BPMN Diagram',
       accelerator: 'CommandOrControl+T',
-      click: function (menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'create-bpmn-diagram');
+      click: function () {
+        app.emit('menu:action', 'create-bpmn-diagram');
       }
     }, {
       label: 'DMN Table',
-      click: function (menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'create-dmn-diagram');
+      click: function () {
+        app.emit('menu:action', 'create-dmn-diagram');
       }
     }])
   }));
@@ -74,8 +74,8 @@ MenuBuilder.prototype.appendOpenFile = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Open File...',
     accelerator: 'CommandOrControl+O',
-    click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'open-diagram');
+    click: function () {
+      app.emit('menu:action', 'open-diagram');
     }
   }));
 
@@ -87,8 +87,8 @@ MenuBuilder.prototype.appendSaveFile = function(submenu) {
     label: 'Save File',
     enabled: this.opts.state.save,
     accelerator: 'CommandOrControl+S',
-    click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'save');
+    click: function () {
+      app.emit('menu:action', 'save');
     }
   }));
 
@@ -100,8 +100,8 @@ MenuBuilder.prototype.appendSaveAsFile = function(submenu) {
     label: 'Save File As..',
     accelerator: 'CommandOrControl+Shift+S',
     enabled: this.opts.state.save,
-    click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'save-as');
+    click: function () {
+      app.emit('menu:action', 'save-as');
     }
   }));
 
@@ -113,8 +113,8 @@ MenuBuilder.prototype.appendSaveAllFiles = function(submenu) {
     label: 'Save All Files',
     accelerator: 'CommandOrControl+Alt+S',
     enabled: this.opts.state.save,
-    click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'save-all');
+    click: function () {
+      app.emit('menu:action', 'save-all');
     }
   }));
 
@@ -126,8 +126,8 @@ MenuBuilder.prototype.appendCloseTab = function(submenu) {
     label: 'Close Tab',
     enabled: this.opts.state.closable,
     accelerator: 'CommandOrControl+W',
-    click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'close-active-tab');
+    click: function () {
+      app.emit('menu:action', 'close-active-tab');
     }
   }));
 
@@ -151,8 +151,8 @@ MenuBuilder.prototype.appendRedo = function() {
     label: 'Redo',
     enabled: this.opts.state.redo,
     accelerator: 'CommandOrControl+Y',
-    click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'redo');
+    click: function () {
+      app.emit('menu:action', 'redo');
     }
   }));
 };
@@ -162,8 +162,8 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
     label: 'Undo',
     enabled: this.opts.state.undo,
     accelerator: 'CommandOrControl+Z',
-    click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'undo');
+    click: function () {
+      app.emit('menu:action', 'undo');
     }
   }));
 
@@ -197,8 +197,8 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Hand Tool',
     accelerator: 'H',
     enabled: this.opts.state.inactiveInput,
-    click: function (menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'handTool');
+    click: function () {
+      app.emit('menu:action', 'handTool');
     }
   }));
 
@@ -206,8 +206,8 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Lasso Tool',
     accelerator: 'L',
     enabled: this.opts.state.inactiveInput,
-    click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'lassoTool');
+    click: function() {
+      app.emit('menu:action', 'lassoTool');
     }
   }));
 
@@ -215,8 +215,8 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Space Tool',
     accelerator: 'S',
     enabled: this.opts.state.inactiveInput,
-    click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'spaceTool');
+    click: function() {
+      app.emit('menu:action', 'spaceTool');
     }
   }));
 
@@ -224,8 +224,8 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Direct Editing',
     accelerator: 'E',
     enabled: this.opts.state.elementsSelected,
-    click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'directEditing');
+    click: function() {
+      app.emit('menu:action', 'directEditing');
     }
   }));
 
@@ -238,32 +238,32 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
       accelerator: 'Up',
-      click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'moveCanvas', {
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
           direction: 'up'
         });
       }
     }, {
       label: 'Move Left',
       accelerator: 'Left',
-      click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'moveCanvas', {
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
           direction: 'left'
         });
       }
     }, {
       label: 'Move Down',
       accelerator: 'Down',
-      click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'moveCanvas', {
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
           direction: 'down'
         });
       }
     }, {
       label: 'Move Right',
       accelerator: 'Right',
-      click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'moveCanvas', {
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
           direction: 'right'
         });
       }
@@ -273,8 +273,8 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Select All',
     accelerator: 'CommandOrControl+A',
-    click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'selectElements');
+    click: function() {
+      app.emit('menu:action', 'selectElements');
     }
   }));
 
@@ -282,8 +282,8 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Remove Selected',
     accelerator: 'Delete',
     enabled: this.opts.state.elementsSelected,
-    click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'removeSelection');
+    click: function() {
+      app.emit('menu:action', 'removeSelection');
     }
   }));
 
@@ -296,20 +296,20 @@ MenuBuilder.prototype.appendDmnActions = function () {
     submenu: Menu.buildFromTemplate([{
       label: 'At End',
       accelerator: 'CommandOrControl+D',
-      click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'ruleAdd');
+      click: function() {
+        app.emit('menu:action', 'ruleAdd');
       }
     }, {
       label: 'Above Selected',
       enabled: this.opts.state.dmnRuleEditing,
-      click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'ruleAddAbove');
+      click: function() {
+        app.emit('menu:action', 'ruleAddAbove');
       }
     }, {
       label: 'Below Selected',
       enabled: this.opts.state.dmnRuleEditing,
-      click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'ruleAddBelow');
+      click: function() {
+        app.emit('menu:action', 'ruleAddBelow');
       }
     }])
   }));
@@ -317,16 +317,16 @@ MenuBuilder.prototype.appendDmnActions = function () {
   this.menu.append(new MenuItem({
     label: 'Clear Rule',
     enabled: this.opts.state.dmnRuleEditing,
-    click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'ruleClear');
+    click: function() {
+      app.emit('menu:action', 'ruleClear');
     }
   }));
 
   this.menu.append(new MenuItem({
     label: 'Remove Rule',
     enabled: this.opts.state.dmnRuleEditing,
-    click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'ruleRemove');
+    click: function() {
+      app.emit('menu:action', 'ruleRemove');
     }
   }));
 
@@ -336,15 +336,15 @@ MenuBuilder.prototype.appendDmnActions = function () {
     label: 'Add Clause..',
     submenu: Menu.buildFromTemplate([{
       label: 'Input',
-      click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'clauseAdd', {
+      click: function() {
+        app.emit('menu:action', 'clauseAdd', {
           type: 'input'
         });
       }
     }, {
       label: 'Output',
-      click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'clauseAdd', {
+      click: function() {
+        app.emit('menu:action', 'clauseAdd', {
           type: 'output'
         });
       }
@@ -353,14 +353,14 @@ MenuBuilder.prototype.appendDmnActions = function () {
     }, {
       label: 'Left of selected',
       enabled: this.opts.state.dmnClauseEditing,
-      click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'clauseAddLeft');
+      click: function() {
+        app.emit('menu:action', 'clauseAddLeft');
       }
     }, {
       label: 'Right of selected',
       enabled: this.opts.state.dmnClauseEditing,
-      click: function(menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'clauseAddRight');
+      click: function() {
+        app.emit('menu:action', 'clauseAddRight');
       }
     }])
   }));
@@ -368,8 +368,8 @@ MenuBuilder.prototype.appendDmnActions = function () {
   this.menu.append(new MenuItem({
     label: 'Remove Clause',
     enabled: this.opts.state.dmnClauseEditing,
-    click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'clauseRemove');
+    click: function() {
+      app.emit('menu:action', 'clauseRemove');
     }
   }));
 
@@ -409,20 +409,20 @@ MenuBuilder.prototype.appendWindowMenu = function() {
     submenu.push({
       label: 'Zoom In',
       accelerator: 'CommandOrControl+=',
-      click: function (menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'zoomIn');
+      click: function () {
+        app.emit('menu:action', 'zoomIn');
       }
     }, {
       label: 'Zoom Out',
       accelerator: 'CommandOrControl+-',
-      click: function (menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'zoomOut');
+      click: function () {
+        app.emit('menu:action', 'zoomOut');
       }
     }, {
       label: 'Zoom Default',
       accelerator: 'CommandOrControl+0',
-      click: function (menuItem, browserWindow) {
-        browserWindow.webContents.send('menu:action', 'zoom');
+      click: function () {
+        app.emit('menu:action', 'zoom');
       }
     }, {
       type: 'separator'
@@ -453,10 +453,13 @@ MenuBuilder.prototype.appendWindowMenu = function() {
     }
   });
 
-  this.menu.append(new MenuItem({
-    label: 'Window',
-    submenu: Menu.buildFromTemplate(submenu)
-  }));
+
+  if (app.mainWindow){
+    this.menu.append(new MenuItem({
+      label: 'Window',
+      submenu: Menu.buildFromTemplate(submenu)
+    }));
+  }
   return this;
 };
 
@@ -465,26 +468,26 @@ MenuBuilder.prototype.appendHelpMenu = function(submenu) {
     label: 'Help',
     submenu: submenu || Menu.buildFromTemplate([{
       label: 'Give Feedback',
-      click: function(menuItem, browserWindow) {
+      click: function() {
         browserOpen('https://forum.camunda.org/c/modeler');
       }
     }, {
       type: 'separator'
     }, {
       label: 'BPMN 2.0 Tutorial',
-      click: function(menuItem, browserWindow) {
+      click: function() {
         browserOpen('https://camunda.org/bpmn/tutorial/');
       }
     }, {
       label: 'BPMN Modeling Reference',
-      click: function(menuItem, browserWindow) {
+      click: function() {
         browserOpen('https://camunda.org/bpmn/reference/');
       }
     }, {
       type: 'separator'
     }, {
       label: 'DMN 1.1 Tutorial',
-      click: function(menuItem, browserWindow) {
+      click: function() {
         browserOpen('https://camunda.org/dmn/tutorial/');
       }
     }])

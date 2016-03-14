@@ -10,7 +10,7 @@ function WindowsPlatform(app, config) {
 
   // setup file associations + deferred open file
   // specified via command-line
-  app.on('editor:open', function(browserWindow) {
+  app.on('app:client-ready', function() {
     checkFileAssociations(app, config);
   });
 

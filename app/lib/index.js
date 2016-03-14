@@ -30,6 +30,8 @@ var browserOpen = require('./util/browser-open'),
 
 var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
 
+new Workspace(config);
+
 Platform.create(process.platform, app, config);
 
 
@@ -194,6 +196,8 @@ renderer.on('client:ready', function() {
 });
 
 
+
+
 /**
  * Create the main window that represents the editor.
  *
@@ -206,18 +210,12 @@ app.createEditorWindow = function () {
     title: 'Camunda Modeler'
   });
 
-  new Workspace(config);
-
   mainWindow.maximize();
 
   mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../public/index.html'));
 
-  mainWindow.webContents.on('did-finish-load', function() {
-    app.emit('editor:open', mainWindow);
-  });
-
-  mainWindow.webContents.on('will-navigate', function (evt, url) {
-    evt.preventDefault();
+  mainWindow.webContents.on('will-navigate', function (e, url) {
+    e.preventDefault();
 
     Shell.openExternal(url);
   });
@@ -254,7 +252,7 @@ app.createEditorWindow = function () {
  * Application entry point
  * Emitted when Electron has finished initialization.
  */
-app.on('ready', function (evt) {
+app.on('ready', function () {
 
   // quit command from menu/shortcut
   app.on('app:quit', function quit() {
