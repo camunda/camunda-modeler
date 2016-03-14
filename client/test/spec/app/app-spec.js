@@ -1114,6 +1114,9 @@ describe('App', function() {
             // empty tab is selected, too
             expect(app.tabs[0]).to.eql(app.activeTab);
 
+            // empty tab is selected, too
+            expect(app.activeTab).to.exist;
+
             done();
           });
         });

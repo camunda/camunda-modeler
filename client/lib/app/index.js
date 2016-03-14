@@ -979,11 +979,11 @@ App.prototype.restoreWorkspace = function(done) {
     }
 
     // restore tabs
-    if (config.tabs) {
+    if (config.tabs && config.tabs.length) {
       this.openTabs(config.tabs);
     }
 
-    if (config.activeTab !== undefined) {
+    if (config.activeTab && config.activeTab !== -1) {
       this.activeTab = this.tabs[config.activeTab];
     }
 
