@@ -15,7 +15,7 @@ module.exports = Config;
  * Loads the current configuration, defaulting to reseting
  * if loading fails.
  *
- * @throws {Error} if reading the file or deserializing failes.
+ * @throws {Error} if reading the file or deserializing fails.
  */
 Config.prototype.loadSync = function() {
 
@@ -34,8 +34,6 @@ Config.prototype.loadSync = function() {
     }
 
     console.error('config: failed to load', err);
-
-    throw err;
   }
 };
 
