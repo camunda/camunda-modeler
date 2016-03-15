@@ -249,7 +249,11 @@ BpmnEditor.prototype.exportAs = function(type, done) {
     }
 
     if (type !== 'svg') {
-      assign(file, { contents: generateImage(type, svg) });
+      try {
+        assign(file, { contents: generateImage(type, svg) });
+      } catch (err) {
+        return done(err);
+      }
     } else {
       assign(file, { contents: svg });
     }

@@ -1,6 +1,6 @@
 'use strict';
 
-var canvg = require('canvg-client');
+var canvg = require('canvg-browser');
 
 // list of defined encodings
 var ENCODINGS = [ 'image/png', 'image/jpeg' ];
@@ -8,6 +8,7 @@ var ENCODINGS = [ 'image/png', 'image/jpeg' ];
 
 function generateImage(type, svg) {
   var encoding = 'image/' + type,
+      context,
       canvas;
 
   if (ENCODINGS.indexOf(encoding) === -1) {
@@ -17,6 +18,15 @@ function generateImage(type, svg) {
   canvas = document.createElement('canvas');
 
   canvg(canvas, svg);
+
+  // make the background white for every format
+  context = canvas.getContext('2d');
+
+  context.globalCompositeOperation = 'destination-over';
+
+  context.fillStyle = 'white';
+
+  context.fillRect(0, 0, canvas.width, canvas.height);
 
   return canvas.toDataURL(encoding);
 }

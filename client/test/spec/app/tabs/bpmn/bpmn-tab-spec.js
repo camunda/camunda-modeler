@@ -340,6 +340,7 @@ describe('BpmnTab', function() {
       });
     }
 
+
     it('should export a png', function() {
 
       // when
@@ -349,6 +350,7 @@ describe('BpmnTab', function() {
         expectImage(file, 'png');
       });
     });
+
 
     it('should export a jpeg', function() {
 
@@ -360,6 +362,7 @@ describe('BpmnTab', function() {
       });
     });
 
+
     it('should export a svg', function() {
 
       // when
@@ -370,6 +373,17 @@ describe('BpmnTab', function() {
         expect(file.path).to.eql('diagram_1.svg');
         expect(file.fileType).to.eql('svg');
         expect(file.contents).to.contain('http://www.w3.org/2000/svg');
+      });
+    });
+
+
+    it('should return an error on unknown type', function() {
+
+      // when
+      tab.exportAs('foo', function(err, file) {
+
+        // then
+        expect(err.message).to.equal('<foo> is an unknown type for converting svg to image');
       });
     });
 

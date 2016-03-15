@@ -26,6 +26,7 @@
             ".dmn",
             ".xml",
             ".css",
+            ".svg",
             ".png"
           ]
         }
@@ -38,7 +39,7 @@
     "bpmn-js": "^0.13.3",
     "bpmn-js-properties-panel": "^0.6.0",
     "camunda-bpmn-moddle": "^0.3.0",
-    "canvg-client": "0.0.1",
+    "canvg-browser": "^1.0.0",
     "codemirror": "^5.11.0",
     "debug": "^2.2.0",
     "diagram-js": "^0.13.3",
