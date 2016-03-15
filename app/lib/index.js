@@ -69,7 +69,7 @@ if (config.get('single-instance', true)) {
   });
 
   if (shouldQuit) {
-    app.emit('app:quit');
+    app.quit();
   }
 }
 
