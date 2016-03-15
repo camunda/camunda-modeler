@@ -15,18 +15,20 @@ function Menu(platform) {
   new MenuBuilder().build();
 
 
-  app.on('menu:action', function (action) {
+  app.on('menu:action', function(action) {
     if (app.mainWindow) {
       return renderer.send('menu:action', action);
     }
-    app.once('app:client-ready', function () {
+
+    app.once('app:client-ready', function() {
       renderer.send('menu:action', action);
     });
+
     app.createEditorWindow();
   });
-  
 
-  app.on('window-all-closed', function (){
+
+  app.on('window-all-closed', function() {
     new MenuBuilder().build();
   });
 

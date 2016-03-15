@@ -39,19 +39,24 @@ domReady(function() {
   // Setting up external components
   new Menu(app);
 
-  app.on('ready', () => {
+  app.on('ready', function() {
     debug('client is ready');
+
     browser.send('client:ready');
   });
 
-  app.on('quitting', () => {
+  app.on('quitting', function() {
     debug('client is quitting');
+
     browser.send('app:quit-allowed');
   });
 
-  browser.on('client:open-file', (e, file) => {
-    debug('opening external file: ', file);
-    app.filesDropped([file]);
+  browser.on('client:open-files', function(files) {
+    debug('opening external files: ', files);
+
+    if (files && files.length) {
+      app.openTabs(files);
+    }
   });
 
   mainLoop(app, document.body);

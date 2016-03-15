@@ -14,9 +14,10 @@ function MacOSPlatform(app) {
    * Please see "https://github.com/atom/electron/blob/master/docs/api/app.md#event-open-url-os-x"
    * for more info.
    */
-  app.on('open-url', function (e) {
-    console.log('application does not support opening URLs');
+  app.on('open-url', function(e) {
     e.preventDefault();
+
+    console.log('application does not support opening URLs');
   });
 
   /**
@@ -24,7 +25,7 @@ function MacOSPlatform(app) {
    * Please see "https://github.com/atom/electron/blob/master/docs/api/app.md#event-open-file-os-x"
    * for more info.
    */
-  app.on('open-file', function (e, filePath) {
+  app.on('open-file', function(e, filePath) {
     if (e) {
       e.preventDefault();
     }
@@ -35,7 +36,7 @@ function MacOSPlatform(app) {
    * Setting forced quit flag.
    * Quitting if window is already closed.
    */
-  app.on('app:quit', function () {
+  app.on('app:quit', function() {
     app.terminating = true;
 
     if (!app.mainWindow) {
@@ -47,7 +48,7 @@ function MacOSPlatform(app) {
    * Listens to 'quit-denied' event that is
    * only emitted when user directly closes window.
    */
-  app.on('app:quit-denied', function () {
+  app.on('app:quit-denied', function() {
     app.terminating = false;
   });
 
@@ -55,7 +56,7 @@ function MacOSPlatform(app) {
    * Once window is closed, determining whether quit was
    * called or the window was closed.
    */
-  app.on('window-all-closed', function (e) {
+  app.on('window-all-closed', function(e) {
     if (app.terminating) {
       return app.quit();
     }
@@ -77,10 +78,10 @@ function MacOSPlatform(app) {
   }
 
   /**
-   * Making sure create window will be created only after app
-   * has fully initialised.
+   * Making sure create window will be created only after the app
+   * has finished initialising.
    */
-  app.on('ready', function () {
+  app.on('ready', function() {
     app.on('activate', checkAppWindow);
     app.on('app:parse-cmd', checkAppWindow);
     app.on('app:open-file', checkAppWindow);

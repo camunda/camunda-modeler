@@ -8,6 +8,8 @@ var path = require('path');
 
 var Shell = require('shell');
 
+var forEach = require('lodash/collection/forEach');
+
 /**
  * automatically report crash reports
  *
@@ -170,6 +172,8 @@ app.on('app:parse-cmd', function (argv, cwd) {
 });
 
 app.on('app:open-file', function (filePath) {
+  var file;
+
   console.log('app:open-file', filePath);
 
   if (!app.clientReady) {
@@ -177,25 +181,37 @@ app.on('app:open-file', function (filePath) {
     return app.openFiles.push(filePath);
   }
 
+  try {
+    file = FileSystem.readFile(filePath);
+  } catch (e) {
+    return dialog.showDialog('unrecognizedFile', { name: path.basename(filePath) });
+  }
+
   // open file immediately
-  renderer.send('client:open-file', FileSystem.readFile(filePath));
+  renderer.send('client:open-file', file);
 });
 
 app.on('app:client-ready', function () {
+  var files = [];
+
   console.log('app:client-ready');
 
-  var filePath;
-  while((filePath=app.openFiles.pop())){
-    renderer.send('client:open-file', FileSystem.readFile(filePath));
-  }
+  forEach(app.openFiles, function(filePath) {
+    try {
+      files.push(FileSystem.readFile(filePath));
+    } catch (e) {
+      dialog.showDialog('unrecognizedFile', { name: path.basename(filePath) });
+    }
+  });
+
+  renderer.send('client:open-files', files);
 });
 
 renderer.on('client:ready', function() {
   app.clientReady = true;
+
   app.emit('app:client-ready');
 });
-
-
 
 
 /**
@@ -226,8 +242,9 @@ app.createEditorWindow = function () {
 
     if (app.quitAllowed) {
       // dereferencing main window and resetting client state
-      app.clientReady = false;
       app.mainWindow = null;
+      app.clientReady = false;
+      
       return console.log('Main window closed');
     }
 
@@ -252,17 +269,17 @@ app.createEditorWindow = function () {
  * Application entry point
  * Emitted when Electron has finished initialization.
  */
-app.on('ready', function () {
+app.on('ready', function() {
 
   // quit command from menu/shortcut
-  app.on('app:quit', function quit() {
+  app.on('app:quit', function() {
     console.log('Initiating termination of the application');
 
     renderer.send('menu:action', 'quit');
   });
 
   // client quit verification event
-  renderer.on('app:quit-allowed', function () {
+  renderer.on('app:quit-allowed', function() {
     console.log('Quit allowed');
 
     app.quitAllowed = true;
