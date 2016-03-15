@@ -1,7 +1,6 @@
 {
   "rules": {
     "indent": [ 2, 2, { "VariableDeclarator": { "var": 2, "let": 2, "const": 3 } } ],
-    "linebreak-style": [ 2, "unix" ],
     "no-unused-vars": [ 2, { "args": "none" } ],
     "quotes": [ 2, "single" ],
     "react/jsx-no-undef": 1,

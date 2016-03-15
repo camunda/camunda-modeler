@@ -18,7 +18,10 @@ module.exports = function(grunt) {
 
     eslint: {
       client: [ 'client/{lib,test}/**/*.js' ],
-      app: [ 'app/{lib,test,develop}/**/*.js' ]
+      app: [ 'app/{lib,test,develop}/**/*.js' ],
+      options: {
+        fix: true
+      }
     },
 
     release: {
