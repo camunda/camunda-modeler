@@ -68,7 +68,8 @@ Logger.prototype.addEntry = function(category, args) {
   var entry = {
     category: category,
     ref: ref,
-    message: format.apply(null, args)
+    message: format.apply(null, args),
+    timestamp: new Date().toISOString()
   };
 
   this.entries.push(entry);

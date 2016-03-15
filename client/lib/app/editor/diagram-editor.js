@@ -98,6 +98,12 @@ DiagramEditor.prototype.update = function() {
       xml: newXML
     };
 
+    if (warnings){
+      warnings.forEach(w => {
+        this.logger.warn('%s', w.message);
+      });
+    }
+
     debug('[#update] imported', importContext);
 
     this.emit('imported', importContext);

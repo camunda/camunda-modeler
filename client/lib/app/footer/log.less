@@ -2,14 +2,36 @@
 .log {
 
   .header {
-    margin: 0 5px 5px 5px;
+    margin-right: 5px;
     text-align: right;
+  }
+
+  .log-toggle, .log-clear {
+    display: inline-block;
+    border: solid 1px #ccc;
+    border-radius: 2px;
+    padding: 4px;
+    cursor: default;
+
+    &:hover {
+      background: @color-light-gray;
+    }
+  }
+
+  .separator {
+    background: #CCC;
+    width: 1px;
+    box-shadow: 0 0 1px #EEE;
+    height: 24px;
+    margin: 0 10px;
+    display: inline-block;
+    vertical-align: bottom;;
   }
 
   > .resize-handle {
     .no-user-select;
 
-    margin-top: 7px;
+    margin-top: 2px;
     padding-top: 3px;
 
     cursor: ns-resize;

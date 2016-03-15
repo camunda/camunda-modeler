@@ -749,8 +749,6 @@ App.prototype.selectTab = function(tab) {
 
   if (tab) {
     tab.emit('focus');
-
-    this.logger.info('switch to <%s> tab', tab.id);
   }
 
   this.events.emit('workspace:changed');

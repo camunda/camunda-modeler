@@ -12,6 +12,9 @@ var copy = require('util/copy');
 
 var isEscape = require('util/event/is-escape');
 
+var format = require('util').format;
+var padding = require('util/padding');
+
 
 function Log(options) {
 
@@ -50,6 +53,10 @@ function Log(options) {
     });
   };
 
+  this.clearLog = function() {
+    options.log.clear();
+  };
+
   this.render = function() {
 
     var compose = this.compose;
@@ -66,7 +73,11 @@ function Log(options) {
 
     return (
       <div className="log">
-        <div className="header" onClick={ compose('toggleLog') }>LOG YEA</div>
+        <div className="header" >
+          <div className="log-toggle" onClick={ compose('toggleLog') }>Toggle log</div>
+          <span className="separator"></span>
+          <div className="log-clear" onClick={ compose('clearLog') }>Clear log</div>
+        </div>
         <div className="resize-handle"
              draggable="true"
              onDragStart={ dragger(compose('resizeLog', copy(logLayout))) }></div>
@@ -81,12 +92,14 @@ function Log(options) {
 
                     var action = e.action;
 
+                    var msg = format('%s  %s  %s', e.timestamp, padding.padRight(e.category.toUpperCase(), 5), e.message);
+
                     var html =
                       <div className="entry" scrollTo={ e === focusedEntry }>
                         {
                           action
-                            ? <a href="#" onClick={ action }>{ e.message }</a>
-                            : <span>{ e.message }</span>
+                            ? <a href="#" onClick={ action }>{ msg }</a>
+                            : <span>{ msg }</span>
                         }
                       </div>;
 

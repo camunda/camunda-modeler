@@ -79,6 +79,8 @@ MultiEditorTab.prototype.exportAs = function(type, done) {
   activeEditor.exportAs(type, (err, newFile) => {
 
     if (err) {
+      this.logger.error('%s', err.message);
+
       return done(err);
     }
 
@@ -218,6 +220,9 @@ MultiEditorTab.prototype.createEditors = function(options) {
 
       if (error) {
         file = this.file;
+
+        this.logger.error('failed to import content for file "%s"', file.name);
+        this.logger.error('%s', error.message);
 
         // show import error dialog
         dialog.importError(file.name, error.message, (err, answer) => {
