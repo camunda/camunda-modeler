@@ -25,9 +25,12 @@ function MenuBuilder(opts) {
       closable: false,
       elementsSelected: false,
       dmnRuleEditing: false,
-      dmnClauseEditingfalse: false
+      dmnClauseEditingfalse: false,
+      development: false
     }
   }, opts);
+
+  this.opts.state.development = app.developmentMode;
 
   if (this.opts.template) {
     this.menu = Menu.buildFromTemplate(this.opts.template);
@@ -470,11 +473,21 @@ MenuBuilder.prototype.appendWindowMenu = function() {
     });
   }
 
+  if (this.opts.state.development || this.opts.state.devtools) {
+    submenu.push({
+      label: 'Reload',
+      accelerator: 'CommandOrControl+R',
+      click: function(menuItem, browserWindow) {
+        browserWindow.reload();
+      }
+    });
+  }
+
   submenu.push({
-    label: 'Reload',
-    accelerator: 'CommandOrControl+R',
+    label: 'Toggle DevTools',
+    accelerator: 'F12',
     click: function(menuItem, browserWindow) {
-      browserWindow.reload();
+      browserWindow.toggleDevTools();
     }
   }, {
     label: 'Fullscreen',
@@ -485,12 +498,6 @@ MenuBuilder.prototype.appendWindowMenu = function() {
       }
 
       browserWindow.setFullScreen(true);
-    }
-  }, {
-    label: 'Toggle DevTools',
-    accelerator: 'F12',
-    click: function(menuItem, browserWindow) {
-      browserWindow.toggleDevTools();
     }
   });
 

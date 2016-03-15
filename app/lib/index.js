@@ -36,9 +36,11 @@ new Workspace(config);
 
 Platform.create(process.platform, app, config);
 
+// variable for developing (reloading and devtools toggling)
+app.developmentMode = false;
 
 // bootstrap the application's menus
-new Menu(process.platform);
+app.menu = new Menu(process.platform);
 
 // bootstrap dialog
 var dialog = new Dialog({

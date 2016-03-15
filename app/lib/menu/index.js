@@ -1,5 +1,7 @@
 'use strict';
 
+var assign = require('lodash/object/assign');
+
 var renderer = require('../util/renderer');
 
 var requirePlatform = require('../util/requirePlatform');
@@ -9,7 +11,7 @@ var electron = require('electron'),
 
 
 function Menu(platform) {
-  var MenuBuilder = requirePlatform(platform, __dirname);
+  var MenuBuilder = this.MenuBuilder = requirePlatform(platform, __dirname);
 
   // Replacing Electron default menu until application loads
   new MenuBuilder().build();
@@ -34,8 +36,24 @@ function Menu(platform) {
 
 
   renderer.on('menu:update', function(state) {
+    var mainWindow = app.mainWindow,
+        isDevToolsOpened = false;
+
+    if (mainWindow) {
+      isDevToolsOpened = mainWindow.isDevToolsOpened();
+
+      state = assign(state, { devtools: isDevToolsOpened });
+    }
+
     new MenuBuilder({ state: state }).build();
   });
 }
 
 module.exports = Menu;
+
+
+Menu.prototype.rebuild = function() {
+  var MenuBuilder = this.MenuBuilder;
+
+  new MenuBuilder().build();
+};
