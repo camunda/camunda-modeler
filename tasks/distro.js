@@ -46,8 +46,6 @@ module.exports = function(grunt) {
         dirPath = path.join(__dirname, '..'),
         outPath = path.join(__dirname, '../distro');
 
-    grunt.log.writeln(iconPath, dirPath, outPath);
-
     var options = {
       name: PACKAGE_JSON.name,
       dir: dirPath,

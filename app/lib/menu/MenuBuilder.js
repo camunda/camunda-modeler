@@ -519,25 +519,37 @@ MenuBuilder.prototype.appendHelpMenu = function(submenu) {
       click: function() {
         browserOpen('https://forum.camunda.org/c/modeler');
       }
-    }, {
+    },
+    {
       type: 'separator'
-    }, {
+    },
+    {
       label: 'BPMN 2.0 Tutorial',
       click: function() {
         browserOpen('https://camunda.org/bpmn/tutorial/');
       }
-    }, {
+    },
+    {
       label: 'BPMN Modeling Reference',
       click: function() {
         browserOpen('https://camunda.org/bpmn/reference/');
       }
-    }, {
+    },
+    {
       type: 'separator'
-    }, {
+    },
+    {
       label: 'DMN 1.1 Tutorial',
       click: function() {
         browserOpen('https://camunda.org/dmn/tutorial/');
       }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'Version ' + app.version,
+      enabled: false
     }])
   }));
 

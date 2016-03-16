@@ -4,7 +4,8 @@ var electron = require('electron');
 var app = electron.app;
 var BrowserWindow = electron.BrowserWindow;
 
-var path = require('path');
+var fs = require('fs'),
+    path = require('path');
 
 var Shell = require('shell');
 
@@ -38,6 +39,21 @@ Platform.create(process.platform, app, config);
 
 // variable for developing (reloading and devtools toggling)
 app.developmentMode = false;
+
+function loadPackageJSON() {
+  try {
+    var basepath = path.resolve(__dirname, '../..', 'package.json'),
+        pkg = fs.readFileSync(basepath, { encoding: 'utf8' });
+
+    return JSON.parse(pkg);
+  } catch(e) {
+    return {};
+  }
+}
+
+var PACKAGE_JSON = loadPackageJSON();
+
+app.version = PACKAGE_JSON.version;
 
 // bootstrap the application's menus
 app.menu = new Menu(process.platform);
