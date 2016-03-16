@@ -8,7 +8,7 @@ var format = require('format');
 
 var Emitter = require('events');
 
-var CATEGORIES = [ 'info', 'debug', 'warn', 'error' ];
+var CATEGORIES = [ 'info', 'debug', 'warning', 'error' ];
 
 var REF_PATTERN = /^ref\:/;
 
@@ -68,8 +68,7 @@ Logger.prototype.addEntry = function(category, args) {
   var entry = {
     category: category,
     ref: ref,
-    message: format.apply(null, args),
-    timestamp: new Date().toISOString()
+    message: format.apply(null, args)
   };
 
   this.entries.push(entry);

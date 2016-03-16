@@ -1,19 +1,15 @@
 'use strict';
 
+var format = require('util').format;
+
 var BaseComponent = require('base/component');
 
 var inherits = require('inherits');
 
-var ensureOpts = require('util/ensure-opts');
-
-var dragger = require('util/dom/dragger');
-
-var copy = require('util/copy');
-
-var isEscape = require('util/event/is-escape');
-
-var format = require('util').format;
-var padding = require('util/padding');
+var ensureOpts = require('util/ensure-opts'),
+    dragger = require('util/dom/dragger'),
+    copy = require('util/copy'),
+    isEscape = require('util/event/is-escape');
 
 
 function Log(options) {
@@ -58,41 +54,51 @@ function Log(options) {
   };
 
   this.render = function() {
+    var clearButton;
 
-    var compose = this.compose;
-
-    var entries = options.log.entries;
+    var entries = options.log.entries,
+        logLayout = options.layout.log;
 
     var focusedEntry = entries[entries.length - 1];
-
-    var logLayout = options.layout.log;
 
     var logStyle = {
       height: (logLayout.open ? logLayout.height : 0) + 'px'
     };
 
+    if (logLayout.open && (entries && entries.length)) {
+      clearButton = (
+        <div className="log-clear-container">
+          <span className="separator"></span>
+          <div className="log-clear" onClick={ this.compose('clearLog') }>Clear log</div>
+        </div>
+      );
+    }
+
     return (
       <div className="log">
         <div className="header" >
-          <div className="log-toggle" onClick={ compose('toggleLog') }>Toggle log</div>
-          <span className="separator"></span>
-          <div className="log-clear" onClick={ compose('clearLog') }>Clear log</div>
+          <div className="log-toggle" onClick={ this.compose('toggleLog') }>Log</div>
+          { clearButton }
         </div>
         <div className="resize-handle"
              draggable="true"
-             onDragStart={ dragger(compose('resizeLog', copy(logLayout))) }></div>
+             onDragStart={ dragger( this.compose('resizeLog', copy(logLayout))) }></div>
         {
           logLayout.open
             ? <div className="entries"
                    style={ logStyle }
                    tabIndex="0"
-                   onKeydown={ compose('closeOnEscape') }>
+                   onKeydown={ this.compose('closeOnEscape') }>
                 {
                   entries.map(function(e) {
 
                     var action = e.action;
 
-                    var msg = format('%s  %s  %s', e.timestamp, padding.padRight(e.category.toUpperCase(), 5), e.message);
+                    var msg = format('%s  %s', '[' + e.category + ']', e.message);
+
+                    if (!e.message) {
+                      msg = ' ';
+                    }
 
                     var html =
                       <div className="entry" scrollTo={ e === focusedEntry }>

@@ -12,10 +12,19 @@
     border-radius: 2px;
     padding: 4px;
     cursor: default;
+    -webkit-user-select: none;
 
     &:hover {
       background: @color-light-gray;
     }
+  }
+
+  .log-clear-container {
+    display: inline-block;
+  }
+
+  .log-toggle {
+    padding: 4px 10px;
   }
 
   .separator {
@@ -25,7 +34,7 @@
     height: 24px;
     margin: 0 10px;
     display: inline-block;
-    vertical-align: bottom;;
+    vertical-align: bottom;
   }
 
   > .resize-handle {

@@ -298,7 +298,7 @@ BpmnEditor.prototype.render = function() {
       </div>
       <WarningsOverlay warnings={ warnings }
                        onShowDetails={ this.compose('openLogger') }
-                       onClose={ this.compose('hideWarnings') } />;
+                       onClose={ this.compose('hideWarnings') } />
     </div>
   );
 };

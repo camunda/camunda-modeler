@@ -210,22 +210,20 @@ MultiEditorTab.prototype.createEditors = function(options) {
     editor.on('shown', (context) => {
       var dialog = this.dialog;
 
-      var error = context.error,
-          file;
-
       // don't do anything if the current editor is the fallback editor
       if (editor === this.fallbackEditor) {
         return;
       }
+      
+      // context can be undefined here if lastImport is undefined
+      var error = context ? context.error : null;
 
       if (error) {
-        file = this.file;
-
-        this.logger.error('failed to import content for file "%s"', file.name);
+        this.logger.error('failed to import content for file "%s"', this.file.name);
         this.logger.error('%s', error.message);
 
         // show import error dialog
-        dialog.importError(file.name, error.message, (err, answer) => {
+        dialog.importError(this.file.name, error.message, (err, answer) => {
           if (err) {
             return;
           }
