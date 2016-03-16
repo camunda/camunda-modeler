@@ -175,8 +175,7 @@ function App(options) {
     var button;
 
     if (this.activeTab !== tab) {
-      debug('Warning: state updated on incative tab! This should never happen!');
-      return;
+      return debug('Warning: state updated on incative tab! This should never happen!');
     }
 
     // update undo/redo/export based on state
@@ -270,7 +269,7 @@ module.exports = App;
 
 App.prototype.render = function() {
   var html =
-    <div className="app" onDragover={ fileDrop(this.compose('filesDropped')) }>
+    <div className="app" onDragover={ fileDrop(this.compose('openFiles')) }>
       <MenuBar entries={ this.menuEntries } />
       <Tabbed
         className="main"
@@ -308,6 +307,62 @@ App.prototype.createComponent = function(Component, options) {
 };
 
 /**
+ * Opens bare files descriptors, that have not been yet validated or processed.
+ *
+ * @param  {Array<FileDescriptor>} files
+ */
+App.prototype.openFiles = function(files) {
+
+  var dialog = this.dialog;
+
+  series(files, (file, done) => {
+    var type = parseFileType(file);
+
+    if (!type) {
+      dialog.unrecognizedFileError(file, function(err) {
+        debug('open-diagram canceled: unrecognized file type', file);
+
+        return done(err);
+      });
+
+    } else {
+      if (namespace.hasActivitiURL(file.contents)) {
+
+        dialog.convertNamespace((err, answer) => {
+          if (err) {
+            debug('open-diagram error: %s', err);
+
+            return done(err);
+          }
+
+          if (isCancel(answer)) {
+            return done(null);
+          }
+
+          if (answer === 'yes') {
+            file.contents = namespace.replace(file.contents);
+          }
+
+          done(null, assign({}, file, { fileType: type }));
+        });
+      } else {
+        done(null, assign({}, file, { fileType: type }));
+      }
+    }
+  }, (err, diagramFiles) => {
+    if (err) {
+      return debug('open-diagram canceled: %s', err);
+    }
+
+    diagramFiles = filter(diagramFiles, (file) => {
+      return !!file;
+    });
+
+    this.openTabs(diagramFiles);
+  });
+};
+
+/**
  * Open a new tab based on a file chosen by the user.
  */
 App.prototype.openDiagram = function() {
@@ -316,64 +371,16 @@ App.prototype.openDiagram = function() {
 
   dialog.open((err, files) => {
     if (err) {
-      dialog.openError(err, function() {
+      return dialog.openError(err, function() {
         debug('open-diagram canceled: %s', err);
       });
-
-      return;
     }
 
     if (!files) {
-      debug('open-diagram canceled: no file');
-
-      return;
+      return debug('open-diagram canceled: no file');
     }
 
-    series(files, (file, done) => {
-      var type = parseFileType(file);
-
-      if (!type) {
-        dialog.unrecognizedFileError(file, function(err) {
-          debug('open-diagram canceled: unrecognized file type', file);
-
-          return done(err);
-        });
-
-      } else {
-        if (namespace.hasActivitiURL(file.contents)) {
-
-          dialog.convertNamespace((err, answer) => {
-            if (err) {
-              debug('open-diagram error: %s', err);
-
-              return done(err);
-            }
-
-            if (isCancel(answer)) {
-              return done(null);
-            }
-
-            if (answer === 'yes') {
-              file.contents = namespace.replace(file.contents);
-            }
-
-            done(null, assign(file, { fileType: type }));
-          });
-        } else {
-          done(null, assign(file, { fileType: type }));
-        }
-      }
-    }, (err, diagramFiles) => {
-      if (err) {
-        return debug('open-diagram canceled: %s', err);
-      }
-
-      diagramFiles = filter(diagramFiles, (file) => {
-        return !!file;
-      });
-
-      this.openTabs(diagramFiles);
-    });
+    this.openFiles(files);
   });
 };
 
@@ -720,42 +727,6 @@ App.prototype.saveFile = function(file, saveAs, done) {
 
     fileSystem.writeFile(assign({}, file, suggestedFile), done);
   });
-};
-
-
-/**
- * Handles file dragging directly into modeler window
- *
- * @param {Array<File>} files File definitions passed on dragging
- */
-App.prototype.filesDropped = function(files) {
-
-  var dialog = this.dialog;
-
-  function withType(file) {
-    var type = parseFileType(file);
-
-    if (!type) {
-      dialog.unrecognizedFileError(file, function() {
-        debug('file drop rejected: unrecognized file type', file);
-      });
-
-      // we skip this file
-      return null;
-    } else {
-      return assign({}, file, { fileType: type });
-    }
-  }
-
-  function withoutEmpty(f) {
-    return f;
-  }
-
-  // parse type + filter unrecognized files
-  var actualFiles = files.map(withType).filter(withoutEmpty);
-
-  // create tabs for files
-  this.openTabs(actualFiles);
 };
 
 

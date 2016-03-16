@@ -295,7 +295,7 @@ describe('App', function() {
   });
 
 
-  describe('file drop', function() {
+  describe('file open', function() {
 
     it('should open suitable files', function() {
 
@@ -315,7 +315,7 @@ describe('App', function() {
       var droppedFiles = [ validFile, invalidFile ];
 
       // when
-      app.filesDropped(droppedFiles);
+      app.openFiles(droppedFiles);
 
       // then
       // only one file got added

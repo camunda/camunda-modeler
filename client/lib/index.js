@@ -51,12 +51,10 @@ domReady(function() {
     browser.send('app:quit-allowed');
   });
 
-  browser.on('client:open-files', function(files) {
+  browser.on('client:open-files', function(e, files) {
     debug('opening external files: ', files);
 
-    if (files && files.length) {
-      app.openTabs(files);
-    }
+    app.openFiles(files);
   });
 
   mainLoop(app, document.body);

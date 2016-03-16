@@ -188,7 +188,7 @@ app.on('app:open-file', function (filePath) {
   }
 
   // open file immediately
-  renderer.send('client:open-file', file);
+  renderer.send('client:open-files', [ file ]);
 });
 
 app.on('app:client-ready', function () {
@@ -244,7 +244,7 @@ app.createEditorWindow = function () {
       // dereferencing main window and resetting client state
       app.mainWindow = null;
       app.clientReady = false;
-      
+
       return console.log('Main window closed');
     }
 
