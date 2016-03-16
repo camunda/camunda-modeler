@@ -19,6 +19,7 @@ function MenuBuilder(opts) {
       undo: false,
       redo: false,
       editable: false,
+      searchable: false,
       zoom: false,
       save: false,
       closable: false,
@@ -229,9 +230,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     }
   }));
 
-  this.menu.append(new MenuItem({
-    type: 'separator'
-  }));
+  this.appendSeparator();
 
   this.menu.append(new MenuItem({
     label: 'Move Canvas',
@@ -376,6 +375,42 @@ MenuBuilder.prototype.appendDmnActions = function () {
   return this;
 };
 
+
+
+MenuBuilder.prototype.appendSearchActions = function() {
+  this.menu.append(new MenuItem({
+    label: 'Find',
+    accelerator: 'CommandOrControl + F',
+    click: function() {
+      app.emit('menu:action', 'find');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Find Next',
+    accelerator: 'Shift + CommandOrControl + N',
+    click: function() {
+      app.emit('menu:action', 'findNext');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Find Previous',
+    accelerator: 'Shift + CommandOrControl + P',
+    click: function() {
+      app.emit('menu:action', 'findPrev');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Replace',
+    accelerator: 'Shift + CommandOrControl + F',
+    click: function() {
+      app.emit('menu:action', 'replace');
+    }
+  }));
+};
+
 MenuBuilder.prototype.appendEditMenu = function() {
   if (this.opts.state.editable) {
     var builder = new this.constructor(this.opts).appendBaseEditActions();
@@ -390,6 +425,12 @@ MenuBuilder.prototype.appendEditMenu = function() {
       builder.appendSeparator();
 
       builder.appendDmnActions();
+    }
+
+    if (this.opts.state.searchable) {
+      builder.appendSeparator();
+
+      builder.appendSearchActions();
     }
 
     this.menu.append(new MenuItem({

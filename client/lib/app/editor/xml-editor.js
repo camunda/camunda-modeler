@@ -16,6 +16,12 @@ require('codemirror/mode/xml/xml');
 require('codemirror/addon/fold/xml-fold');
 require('codemirror/addon/edit/closetag');
 
+// search addons
+require('codemirror/addon/search/search');
+require('codemirror/addon/search/searchcursor');
+require('codemirror/addon/search/jump-to-line');
+require('codemirror/addon/dialog/dialog');
+
 /**
  * A xml editor
  *
@@ -70,7 +76,8 @@ XMLEditor.prototype.updateState = function() {
       initialState.xml !== codemirror.getValue()
     ),
     exportAs: false,
-    editable: true
+    editable: true,
+    searchable: true
   };
 
   this.emit('state-updated', stateContext);
@@ -163,6 +170,23 @@ XMLEditor.prototype.triggerAction = function(action, options) {
   if (action === 'redo') {
     codemirror.doc.redo();
   }
+
+  if (action === 'find') {
+    codemirror.execCommand('find');
+  }
+
+  if (action === 'findNext') {
+    codemirror.execCommand('findNext');
+  }
+
+  if (action === 'findPrev') {
+    codemirror.execCommand('findPrev');
+  }
+
+  if (action === 'replace') {
+    codemirror.execCommand('replace');
+  }
+
 };
 
 XMLEditor.prototype.saveXML = function(done) {
