@@ -4,6 +4,7 @@ var debug = require('debug')('dmn-provider');
 
 var ensureOpts = require('util/ensure-opts');
 
+var isUnsaved = require('util/file/is-unsaved');
 
 var initialXML = require('./initial.dmn');
 
@@ -34,7 +35,7 @@ function DmnProvider(options) {
     return {
       fileType: 'dmn',
       name: 'diagram_' + createdFiles + '.dmn',
-      path: '[unsaved]',
+      path: isUnsaved.PATH,
       contents: initialXML
     };
   };

@@ -981,7 +981,7 @@ App.prototype.persistWorkspace = function(done) {
     var file = tab.file;
 
     // do not persist unsaved files
-    if (!file || file.path === '[unsaved]') {
+    if (isUnsaved(file)) {
       return;
     }
 

@@ -4,6 +4,7 @@ var debug = require('debug')('bpmn-provider');
 
 var ensureOpts = require('util/ensure-opts');
 
+var isUnsaved = require('util/file/is-unsaved');
 
 var initialXML = require('./initial.bpmn');
 
@@ -34,7 +35,7 @@ function BpmnProvider(options) {
     return {
       fileType: 'bpmn',
       name: 'diagram_' + createdFiles + '.bpmn',
-      path: '[unsaved]',
+      path: isUnsaved.PATH,
       contents: initialXML
     };
   };
