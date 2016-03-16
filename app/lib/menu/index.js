@@ -35,18 +35,21 @@ function Menu(platform) {
   });
 
 
-  renderer.on('menu:update', function(state) {
+  function rebuildMenu(state){
     var mainWindow = app.mainWindow,
         isDevToolsOpened = false;
 
-    if (mainWindow) {
+    if (!state.hasOwnProperty('devtools') && mainWindow) {
       isDevToolsOpened = mainWindow.isDevToolsOpened();
 
       state = assign(state, { devtools: isDevToolsOpened });
     }
 
     new MenuBuilder({ state: state }).build();
-  });
+  }
+
+  renderer.on('menu:update', rebuildMenu);
+  app.on('menu:update', rebuildMenu);
 }
 
 module.exports = Menu;

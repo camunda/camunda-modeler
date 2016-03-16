@@ -7,7 +7,8 @@ var electron = require('electron'),
 
 var browserOpen = require('../util/browser-open');
 
-var merge = require('lodash/object/merge');
+var merge = require('lodash/object/merge'),
+    assign = require('lodash/object/assign');
 
 
 function MenuBuilder(opts) {
@@ -27,7 +28,8 @@ function MenuBuilder(opts) {
       dmnRuleEditing: false,
       dmnClauseEditingfalse: false,
       exportAs: false,
-      development: false
+      development: false,
+      devtools: false
     }
   }, opts);
 
@@ -524,8 +526,29 @@ MenuBuilder.prototype.appendWindowMenu = function() {
   submenu.push({
     label: 'Toggle DevTools',
     accelerator: 'F12',
-    click: function(menuItem, browserWindow) {
-      browserWindow.toggleDevTools();
+    click: (menuItem, browserWindow) => {
+      
+      var isDevToolsOpened = browserWindow.isDevToolsOpened();
+
+      if (isDevToolsOpened) {
+
+        app.mainWindow.once('devtools-closed', () => {
+          app.emit('menu:update', assign({}, this.opts.state, {
+            devtools: false
+          }));
+        });
+
+        browserWindow.closeDevTools();
+      } else {
+
+        app.mainWindow.once('devtools-opened', () => {
+          app.emit('menu:update', assign({}, this.opts.state, {
+            devtools: true
+          }));
+        });
+
+        browserWindow.openDevTools();
+      }
     }
   }, {
     label: 'Fullscreen',
