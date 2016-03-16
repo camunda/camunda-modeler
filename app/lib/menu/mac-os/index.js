@@ -74,6 +74,7 @@ MacMenuBuilder.prototype.build = function() {
       .appendSaveAsFile()
       .appendSaveAllFiles()
       .appendSeparator()
+      .appendExportAs()
       .appendCloseTab()
       .get()
     )

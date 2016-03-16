@@ -17,9 +17,9 @@ function Menu(platform) {
   new MenuBuilder().build();
 
 
-  app.on('menu:action', function(action) {
+  app.on('menu:action', function(action, options) {
     if (app.mainWindow) {
-      return renderer.send('menu:action', action);
+      return renderer.send('menu:action', action, options);
     }
 
     app.once('app:client-ready', function() {

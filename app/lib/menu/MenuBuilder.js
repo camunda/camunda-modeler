@@ -26,6 +26,7 @@ function MenuBuilder(opts) {
       elementsSelected: false,
       dmnRuleEditing: false,
       dmnClauseEditingfalse: false,
+      exportAs: false,
       development: false
     }
   }, opts);
@@ -121,6 +122,43 @@ MenuBuilder.prototype.appendSaveAllFiles = function(submenu) {
       app.emit('menu:action', 'save-all');
     }
   }));
+
+  return this;
+};
+
+MenuBuilder.prototype.appendExportAs = function(submenu) {
+  var exportState = this.opts.state.exportAs;
+
+  function canExport(type) {
+    return (exportState || []).indexOf(type) !== -1;
+  }
+
+  this.menu.append(new MenuItem({
+    label: 'Export As..',
+    submenu: submenu || Menu.buildFromTemplate([{
+      label: 'PNG Image',
+      enabled: canExport('png'),
+      click: function () {
+        app.emit('menu:action', 'export-tab', { type: 'png' });
+      }
+    },
+    {
+      label: 'JPEG Image',
+      enabled: canExport('jpeg'),
+      click: function () {
+        app.emit('menu:action', 'export-tab', { type: 'jpeg' });
+      }
+    },
+    {
+      label: 'SVG Image',
+      enabled: canExport('svg'),
+      click: function () {
+        app.emit('menu:action', 'export-tab', { type: 'svg' });
+      }
+    }])
+  }));
+
+  this.appendSeparator();
 
   return this;
 };
@@ -578,6 +616,7 @@ MenuBuilder.prototype.build = function() {
       .appendSaveAsFile()
       .appendSaveAllFiles()
       .appendSeparator()
+      .appendExportAs()
       .appendCloseTab()
       .appendQuit()
       .get()
