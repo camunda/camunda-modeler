@@ -8,6 +8,8 @@ var debug = require('debug')('diagram-editor');
 
 var needsOverride = require('util/needs-override');
 
+var getWarnings = require('app/util/get-warnings');
+
 
 /**
  * Base diagram editor.
@@ -19,7 +21,8 @@ function DiagramEditor(options) {
   BaseEditor.call(this, options);
 
   this.on('imported', (context) => {
-    var xml = context.xml;
+    var xml = context.xml,
+        warnings = context.warnings;
 
     var initialState = this.initialState;
 
@@ -34,6 +37,10 @@ function DiagramEditor(options) {
     }
 
     initialState.stackIndex = -1;
+
+    if (warnings && warnings.length) {
+      this.showWarnings();
+    }
   });
 
   this.on('updated', (context) => {
@@ -98,12 +105,6 @@ DiagramEditor.prototype.update = function() {
       xml: newXML
     };
 
-    if (warnings){
-      warnings.forEach(w => {
-        this.logger.warn('%s', w.message);
-      });
-    }
-
     debug('[#update] imported', importContext);
 
     this.emit('imported', importContext);
@@ -164,6 +165,44 @@ DiagramEditor.prototype.isHistoryLost = function(xml) {
 DiagramEditor.prototype.triggerEditorActions = function() {
   throw needsOverride();
 };
+
+
+DiagramEditor.prototype.showWarnings = function() {
+
+  var warnings = getWarnings(this.lastImport);
+
+  if (!warnings) {
+    return;
+  }
+
+  var messages = warnings.map(function(warning) {
+    return [ 'warning', '> ' + warning.message ];
+  });
+
+  // prepend summary message
+  messages.unshift([ 'warning', 'Imported ' + this.name.toUpperCase() + ' diagram with ' + warningsStr(warnings) ]);
+
+  messages.push([ 'warning', '' ]);
+
+  this.emit('log', messages);
+};
+
+DiagramEditor.prototype.hideWarnings = function() {
+  this.lastImport = null;
+
+  this.emit('changed');
+};
+
+DiagramEditor.prototype.openLogger = function() {
+  this.emit('log:toggle', { open: true });
+};
+
+
+function warningsStr(warnings) {
+  var count = warnings.length;
+
+  return count + ' warning' + (count !== 1 ? 's' : '');
+}
 
 function isImported(modeler) {
   return modeler && !!modeler.definitions;

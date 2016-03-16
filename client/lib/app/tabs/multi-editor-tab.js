@@ -255,6 +255,8 @@ MultiEditorTab.prototype.createEditors = function(options) {
 
     editor.on('changed', this.events.composeEmitter('changed'));
 
+    editor.on('log:toggle', this.events.composeEmitter('log:toggle'));
+
     /**
      * messages = [ [ category, message ]* ]
      */
@@ -263,8 +265,6 @@ MultiEditorTab.prototype.createEditors = function(options) {
       messages.forEach((m) => {
         this.logger[m[0]](m[1]);
       });
-
-      this.events.emit('log:toggle', { open: true });
     });
 
     return editor;

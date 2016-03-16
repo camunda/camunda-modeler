@@ -436,15 +436,10 @@ describe('BpmnEditor', function() {
         ]
       };
 
-      editor.once('log', function(messages) {
+      editor.once('log:toggle', function(state) {
 
         // then
-        expect(messages).to.eql([
-          [ 'warn', ' ' ],
-          [ 'warn', 'Imported BPMN diagram with 2 warnings' ],
-          [ 'warn', '> foo bar' ],
-          [ 'warn', '> foo BABA']
-        ]);
+        expect(state.open).to.be.true;
 
         done();
       });

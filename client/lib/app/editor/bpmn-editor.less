@@ -4,30 +4,12 @@
 
 .bpmn-editor {
   .flex-container(row);
+  
+  .warnings-overlay;
+
   flex-grow: 1;
 
   overflow: hidden;
-
- .bpmn-warnings {
-    flex: 0;
-    z-index: 5000;
-    text-align: center;
-    height: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-
-    .alert {
-      text-align: left;
-      margin: 20px auto;
-      display: inline-block;
-      background: #FFFEC1;
-      border-radius: 3px;
-      padding: 10px 14px;
-      border: solid 1px #CCC;
-    }
-  }
 
   > .editor-container {
     flex: 1;

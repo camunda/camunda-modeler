@@ -8,8 +8,6 @@ var domify = require('domify');
 
 var DiagramEditor = require('./diagram-editor');
 
-var CloseHandle = require('base/components/misc/close-handle');
-
 var BpmnJS = require('bpmn-js/lib/Modeler');
 
 var diagramOriginModule = require('diagram-js-origin'),
@@ -17,6 +15,10 @@ var diagramOriginModule = require('diagram-js-origin'),
     propertiesPanelModule = require('bpmn-js-properties-panel'),
     propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda'),
     camundaModdlePackage = require('camunda-bpmn-moddle/resources/camunda');
+
+var WarningsOverlay = require('base/components/warnings-overlay');
+
+var getWarnings = require('app/util/get-warnings');
 
 var ensureOpts = require('util/ensure-opts'),
     dragger = require('util/dom/dragger'),
@@ -38,6 +40,8 @@ function BpmnEditor(options) {
   ensureOpts([ 'layout' ], options);
 
   DiagramEditor.call(this, options);
+
+  this.name = 'bpmn';
 
   // elements to insert modeler and properties panel into
   this.$propertiesEl = domify('<div class="properties-parent"></div>');
@@ -264,29 +268,13 @@ BpmnEditor.prototype.exportAs = function(type, done) {
 
 BpmnEditor.prototype.render = function() {
 
-  var propertiesLayout = this.layout.propertiesPanel,
-      warningsOverlay;
+  var propertiesLayout = this.layout.propertiesPanel;
 
   var propertiesStyle = {
     width: (propertiesLayout.open ? propertiesLayout.width : 0) + 'px'
   };
 
   var warnings = getWarnings(this.lastImport);
-
-  if (warnings) {
-
-    warningsOverlay = (
-      <div className="warnings-overlay bpmn-warnings" ref="warnings-overlay">
-        <div className="alert">
-          Imported with { warningsStr(warnings) }.&nbsp;
-
-          <a href onClick={ this.compose('showWarnings') } ref="warnings-details-link">Show Details</a>.
-
-          <CloseHandle onClick={ this.compose('hideWarnings') } ref="warnings-hide-link" />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="bpmn-editor" key={ this.id + '#bpmn' } onFocusin={ this.compose('updateState') }>
@@ -308,35 +296,11 @@ BpmnEditor.prototype.render = function() {
              onRemove={ this.compose('unmountProperties') }>
         </div>
       </div>
-      { warningsOverlay }
+      <WarningsOverlay warnings={ warnings }
+                       onShowDetails={ this.compose('openLogger') }
+                       onClose={ this.compose('hideWarnings') } />;
     </div>
   );
-};
-
-
-BpmnEditor.prototype.showWarnings = function() {
-
-  var warnings = getWarnings(this.lastImport);
-
-  if (!warnings) {
-    return;
-  }
-
-  var messages = warnings.map(function(warning) {
-    return [ 'warn', '> ' + warning.message ];
-  });
-
-  // prepend summary message
-  messages.unshift([ 'warn', 'Imported BPMN diagram with ' + warningsStr(warnings) ]);
-  messages.unshift([ 'warn', ' ' ]);
-
-  this.emit('log', messages);
-};
-
-BpmnEditor.prototype.hideWarnings = function() {
-  this.lastImport = null;
-
-  this.emit('changed');
 };
 
 /**
@@ -357,18 +321,4 @@ BpmnEditor.prototype.notifyModeler = function(eventName) {
 
 function isImported(modeler) {
   return !!modeler.definitions;
-}
-
-
-function warningsStr(warnings) {
-  var count = warnings.length;
-
-  return count + ' warning' + (count !== 1 ? 's' : '');
-}
-
-
-function getWarnings(lastImport) {
-  var warnings = lastImport && lastImport.warnings;
-
-  return warnings && warnings.length ? warnings : null;
 }

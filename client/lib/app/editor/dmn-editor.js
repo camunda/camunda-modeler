@@ -7,6 +7,10 @@ var bind = require('lodash/function/bind'),
 
 var DiagramEditor = require('./diagram-editor');
 
+var WarningsOverlay = require('base/components/warnings-overlay');
+
+var getWarnings = require('app/util/get-warnings');
+
 var DmnJS = require('dmn-js/lib/Modeler');
 
 var getEntriesType = require('dmn-js/lib/util/SelectionUtil').getEntriesType;
@@ -21,6 +25,16 @@ var debug = require('debug')('dmn-editor');
  */
 function DmnEditor(options) {
   DiagramEditor.call(this, options);
+
+  this.name = 'dmn';
+
+  this.on('imported', (context) => {
+    var warnings = context.warnings;
+
+    if (warnings && warnings.length) {
+      console.log(warnings);
+    }
+  });
 }
 
 inherits(DmnEditor, DiagramEditor);
@@ -128,6 +142,7 @@ DmnEditor.prototype.createModeler = function($el) {
 };
 
 DmnEditor.prototype.render = function() {
+  var warnings = getWarnings(this.lastImport);
 
   return (
     <div className="dmn-editor" key={ this.id }>
@@ -136,6 +151,9 @@ DmnEditor.prototype.render = function() {
            onAppend={ this.compose('mountEditor') }
            onRemove={ this.compose('unmountEditor') }>
       </div>
+      <WarningsOverlay warnings={ warnings }
+                       onShowDetails={ this.compose('openLogger') }
+                       onClose={ this.compose('hideWarnings') } />;
     </div>
   );
 };
