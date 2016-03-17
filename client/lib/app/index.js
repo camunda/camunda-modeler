@@ -286,6 +286,7 @@ App.prototype.render = function() {
   return html;
 };
 
+
 /**
  * Create new application component with wired globals.
  *
@@ -305,6 +306,7 @@ App.prototype.createComponent = function(Component, options) {
 
   return new Component(actualOptions);
 };
+
 
 /**
  * Opens bare files descriptors, that have not been yet validated or processed.
@@ -362,6 +364,7 @@ App.prototype.openFiles = function(files) {
   });
 };
 
+
 /**
  * Open a new tab based on a file chosen by the user.
  */
@@ -383,6 +386,7 @@ App.prototype.openDiagram = function() {
     this.openFiles(files);
   });
 };
+
 
 App.prototype.triggerAction = function(action, options) {
 
@@ -410,6 +414,10 @@ App.prototype.triggerAction = function(action, options) {
     return this.quit();
   }
 
+  if (action === 'close-all-tabs') {
+    return this.closeAllTabs();
+  }
+
   if (activeTab) {
 
     if (action === 'close-active-tab') {
@@ -435,6 +443,7 @@ App.prototype.triggerAction = function(action, options) {
     activeTab.triggerAction(action, options);
   }
 };
+
 
 /**
  * Create diagram of the specific type.
@@ -485,6 +494,7 @@ App.prototype.openTabs = function(files) {
   return openedTabs;
 };
 
+
 /**
  * Open a single tab.
  *
@@ -494,6 +504,7 @@ App.prototype.openTabs = function(files) {
 App.prototype.openTab = function(file) {
   return this.openTabs([ file ])[0];
 };
+
 
 /**
  * Create a new tab from the given file and add it
@@ -544,6 +555,7 @@ App.prototype.saveAllTabs = function() {
   });
 };
 
+
 /**
  * Export the given tab with an image type.
  *
@@ -579,6 +591,7 @@ App.prototype.exportTab = function(tab, type, done) {
   });
 };
 
+
 /**
  * Find the open tab for the given file, if any.
  *
@@ -596,6 +609,7 @@ App.prototype.findTab = function(file) {
     return file.path === tabPath;
   });
 };
+
 
 /**
  * Find a tab provider for the given file type.
@@ -616,6 +630,7 @@ App.prototype._findTabProvider = function(fileType) {
 
   return tabProvider;
 };
+
 
 /**
  * Save the given tab with optional new name and
@@ -756,6 +771,7 @@ App.prototype.selectTab = function(tab) {
   this.events.emit('changed');
 };
 
+
 /**
  * Close the given tab. If the user aborts the operation
  * (i.e. cancels it via dialog choice) the callback will
@@ -825,6 +841,13 @@ App.prototype.closeTab = function(tab, done) {
   });
 };
 
+
+/**
+ * Close given tab and select other tab, if current one is active.
+ *
+ * @param  {Tab}   tab
+ * @param  {Function} done
+ */
 App.prototype._closeTab = function(tab, done) {
   var tabs = this.tabs,
       events = this.events;
@@ -848,6 +871,7 @@ App.prototype._closeTab = function(tab, done) {
   return done();
 };
 
+
 /**
  * Add a tab to the app at an appropriate position.
  *
@@ -868,6 +892,7 @@ App.prototype._addTab = function(tab) {
 
   return tab;
 };
+
 
 /**
  * Persist the current workspace state
@@ -917,6 +942,7 @@ App.prototype.persistWorkspace = function(done) {
     done(err, config);
   });
 };
+
 
 /**
  * Restore previously saved workspace, if any exists.
@@ -983,6 +1009,7 @@ App.prototype.updateMenuEntry = function (id, isDisabled) {
   this.events.emit('changed');
 };
 
+
 /**
  * Start application.
  */
@@ -1003,14 +1030,21 @@ App.prototype.run = function() {
 };
 
 
-App.prototype.quit = function() {
-  debug('initiating application quit');
+/**
+ * Close all given tabs in a sequence.
+ * Aborts if user cancels any of the dialogs.
+ *
+ * @param  {Array<Tab>} tabs
+ * @param  {Function} cb
+ */
+App.prototype._closeTabs = function(tabs, cb) {
+  cb = cb || function(err) {
+    if (err) {
+      debug('error: %s', err);
+    }
+  };
 
-  var dirtyTabs = this.tabs.filter(function(tab) {
-    return tab.dirty;
-  });
-
-  series(dirtyTabs, (tab, done) => {
+  series(tabs, (tab, done) => {
 
     this.selectTab(tab);
 
@@ -1024,8 +1058,33 @@ App.prototype.quit = function() {
 
       done(null);
     });
+  }, cb);
+};
 
-  }, (err) => {
+
+/**
+ * Closes all tabs that have external files associated with them.
+ */
+App.prototype.closeAllTabs = function() {
+  var tabs = this.tabs.filter(function(tab) {
+    return !!tab.file;
+  });
+
+  this._closeTabs(tabs);
+};
+
+
+/**
+ * Initiates application quit.
+ */
+App.prototype.quit = function() {
+  debug('initiating application quit');
+
+  var dirtyTabs = this.tabs.filter(function(tab) {
+    return tab.dirty;
+  });
+
+  this._closeTabs(dirtyTabs, (err) => {
     if (err) {
       debug('quit aborted');
 

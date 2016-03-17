@@ -914,6 +914,67 @@ describe('App', function() {
       expect(app.activeTab).to.eql(activeTab);
     });
 
+
+    it('should close all tabs', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML);
+      var dmnFile = createDmnFile(dmnXML);
+
+      var tabs = app.openTabs([ bpmnFile, dmnFile ]);
+
+      // when
+      app.closeAllTabs();
+
+      // then
+      tabs.forEach(function(tab) {
+        expect(app.tabs).to.not.contain(tab);
+      });
+    });
+
+
+    it('should close all tabs and prompt on unsaved', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML, UNSAVED_FILE);
+      var dmnFile = createDmnFile(dmnXML);
+
+      var tabs = app.openTabs([ bpmnFile, dmnFile ]);
+
+      dialog.setResponse('close', 'discard');
+
+      // when
+      app.closeAllTabs();
+
+      // then
+      expect(dialog.close).to.have.been.calledOnce;
+
+      tabs.forEach(function(tab) {
+        expect(app.tabs).to.not.contain(tab);
+      });
+    });
+
+
+    it('should abort closing all tabs on cancel', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML);
+      var dmnFile = createDmnFile(dmnXML, UNSAVED_FILE);
+
+      var tabs = app.openTabs([ bpmnFile, dmnFile ]);
+
+      dialog.setResponse('close', 'cancel');
+
+      // when
+      app.closeAllTabs();
+      
+      // then
+      expect(dialog.close).to.have.been.calledOnce;
+
+      expect(app.tabs).to.not.contain(tabs[0]);
+      expect(app.tabs).to.contain(tabs[1]);
+    });
+
   });
 
 

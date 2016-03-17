@@ -175,6 +175,14 @@ MenuBuilder.prototype.appendCloseTab = function(submenu) {
     }
   }));
 
+  this.menu.append(new MenuItem({
+    label: 'Close All Tabs',
+    enabled: this.opts.state.closable,
+    click: function () {
+      app.emit('menu:action', 'close-all-tabs');
+    }
+  }));
+
   return this;
 };
 
@@ -527,7 +535,7 @@ MenuBuilder.prototype.appendWindowMenu = function() {
     label: 'Toggle DevTools',
     accelerator: 'F12',
     click: (menuItem, browserWindow) => {
-      
+
       var isDevToolsOpened = browserWindow.isDevToolsOpened();
 
       if (isDevToolsOpened) {
