@@ -186,7 +186,7 @@ app.on('app:open-file', function (filePath) {
   }
 
   try {
-    file = FileSystem.readFile(filePath);
+    file = app.fileSystem.readFile(filePath);
   } catch (e) {
     return dialog.showDialog('unrecognizedFile', { name: path.basename(filePath) });
   }
@@ -202,7 +202,7 @@ app.on('app:client-ready', function () {
 
   forEach(app.openFiles, function(filePath) {
     try {
-      files.push(FileSystem.readFile(filePath));
+      files.push(app.fileSystem.readFile(filePath));
     } catch (e) {
       dialog.showDialog('unrecognizedFile', { name: path.basename(filePath) });
     }

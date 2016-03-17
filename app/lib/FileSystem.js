@@ -4,12 +4,14 @@ var fs = require('fs'),
     path = require('path');
 
 var assign = require('lodash/object/assign'),
+    pick = require('lodash/object/pick'),
     forEach = require('lodash/collection/forEach');
 
 var ensureOptions = require('./util/ensure-opts');
 
 
 var ENCODING_UTF8 = 'utf8';
+var FILE_PROPERTIES = ['path', 'name', 'contents', 'lastModified', 'fileType'];
 
 
 /**
@@ -57,7 +59,7 @@ FileSystem.prototype._openFile = function(filePath) {
   var diagramFile;
 
   try {
-    diagramFile = readFile(filePath);
+    diagramFile = this.readFile(filePath);
   } catch (err) {
     return err;
   }
@@ -65,19 +67,6 @@ FileSystem.prototype._openFile = function(filePath) {
   return diagramFile;
 };
 
-FileSystem.prototype.addFile = function(filePath, callback) {
-  var dialog = this.dialog;
-
-  var diagramFile = this._openFile(filePath);
-
-  if (!diagramFile.contents) {
-    dialog.showGeneralErrorDialog();
-
-    return callback(diagramFile);
-  }
-
-  callback(null, diagramFile);
-};
 
 FileSystem.prototype.saveAs = function(diagramFile, callback) {
   var dialog = this.dialog,
@@ -88,10 +77,10 @@ FileSystem.prototype.saveAs = function(diagramFile, callback) {
 
   while (!savedFile) {
 
-    filePath = dialog.showDialog('save', {
+    filePath = dialog.showDialog('save', createFileDescriptor({
       name: diagramFile.name,
       fileType: diagramFile.fileType
-    });
+    }));
 
     // -> user cancel on save as file chooser
     if (!filePath) {
@@ -118,7 +107,7 @@ FileSystem.prototype.saveAs = function(diagramFile, callback) {
     }
 
     // everything ok up to here -> we got a file
-    savedFile = assign({}, diagramFile, {
+    savedFile = createFileDescriptor(diagramFile, {
       path: actualFilePath
     });
   }
@@ -131,7 +120,7 @@ FileSystem.prototype.save = function(diagramFile, callback) {
   var filePath = diagramFile.path;
 
   try {
-    var newDiagramFile = writeFile(filePath, diagramFile);
+    var newDiagramFile = this.writeFile(filePath, diagramFile);
 
     callback(null, newDiagramFile);
   } catch (err) {
@@ -141,23 +130,6 @@ FileSystem.prototype.save = function(diagramFile, callback) {
 
 
 /**
- * Create a file descriptor from a given path
- * and the files contents.
- *
- * @param {String} filePath
- * @param {String} fileContents
- *
- * @return {FileDescriptor}
- */
-function createFileDescriptor(filePath, fileContents) {
-  return {
-    contents: fileContents,
-    name: path.basename(filePath),
-    path: filePath
-  };
-}
-
-/**
  * Read a file.
  *
  * @param {String} filePath
@@ -165,7 +137,7 @@ function createFileDescriptor(filePath, fileContents) {
  *
  * @return {FileDescriptor}
  */
-function readFile(filePath, encoding) {
+FileSystem.prototype.readFile = function(filePath, encoding) {
 
   encoding = encoding || ENCODING_UTF8;
 
@@ -180,11 +152,14 @@ function readFile(filePath, encoding) {
     fileContents = fileContents.replace(/(^\s*|\s*$)/g, '');
   }
 
-  return createFileDescriptor(filePath, fileContents);
-}
+  var stats = fs.statSync(filePath);
 
-module.exports.readFile = readFile;
-
+  return createFileDescriptor({
+    path: filePath,
+    contents: fileContents,
+    lastModified: stats.mtime.getTime()
+  });
+};
 
 /**
  * Write a file.
@@ -194,7 +169,7 @@ module.exports.readFile = readFile;
  *
  * @return {FileDescriptor} written file
  */
-function writeFile(filePath, file) {
+FileSystem.prototype.writeFile = function(filePath, file) {
   var contents = file.contents,
       encoding;
 
@@ -209,13 +184,41 @@ function writeFile(filePath, file) {
 
   fs.writeFileSync(filePath, contents, encoding);
 
-  return assign({}, file, {
-    name: path.basename(filePath),
-    path: filePath
-  });
-}
+  var stats = fs.statSync(filePath);
 
-module.exports.writeFile = writeFile;
+  return createFileDescriptor(file, {
+    path: filePath,
+    lastModified: stats.mtime.getTime()
+  });
+};
+
+
+/**
+ * Create a file descriptor from optional old file and new file properties.
+ * Assures only known properties are used.
+ *
+ * @param {FileDescriptor} oldFile
+ * @param {FileDescriptor} newFile
+ *
+ * @return {FileDescriptor}
+ */
+function createFileDescriptor(oldFile, newFile) {
+  // no old file supplied
+  if (arguments.length == 1){
+    newFile = oldFile;
+    oldFile = {};
+  } else {
+    oldFile = pick(oldFile, FILE_PROPERTIES);
+  }
+
+  newFile = pick(newFile, FILE_PROPERTIES);
+
+  if (newFile.path) {
+    newFile.name = path.basename(newFile.path);
+  }
+
+  return assign({}, oldFile, newFile);
+}
 
 
 /**
@@ -235,8 +238,6 @@ function existsFile(filePath) {
   }
 }
 
-module.exports.existsFile = existsFile;
-
 
 /**
  * Ensure that the file path has an extension,
@@ -252,5 +253,3 @@ function ensureExtension(filePath, defaultExtension) {
 
   return extension ? filePath : filePath + '.' + defaultExtension;
 }
-
-module.exports.ensureExtension = ensureExtension;

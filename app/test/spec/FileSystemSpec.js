@@ -14,6 +14,14 @@ var TEST_FILE_PATH = os.tmpdir() + '/camunda-modeler.fs.test';
 
 describe('FileSystem', function() {
 
+  var fileSystem;
+
+  beforeEach(function () {
+    fileSystem = new FileSystem({
+      dialog: {}
+    });
+  });
+
   after(function() {
     try {
       fs.unlinkSync(TEST_FILE_PATH);
@@ -28,9 +36,9 @@ describe('FileSystem', function() {
     };
 
     // when
-    FileSystem.writeFile(TEST_FILE_PATH, file);
+    fileSystem.writeFile(TEST_FILE_PATH, file);
 
-    var readFile = FileSystem.readFile(TEST_FILE_PATH, 'base64');
+    var readFile = fileSystem.readFile(TEST_FILE_PATH, 'base64');
 
     // then
     expect(readFile.contents).to.match(/iVBOR/);
@@ -44,9 +52,9 @@ describe('FileSystem', function() {
     };
 
     // when
-    FileSystem.writeFile(TEST_FILE_PATH, file);
+    fileSystem.writeFile(TEST_FILE_PATH, file);
 
-    var readFile = FileSystem.readFile(TEST_FILE_PATH);
+    var readFile = fileSystem.readFile(TEST_FILE_PATH);
 
     // then
     expect(readFile.contents).to.eql('FOO BAR');
@@ -60,9 +68,9 @@ describe('FileSystem', function() {
     };
 
     // when
-    FileSystem.writeFile(TEST_FILE_PATH, file);
+    fileSystem.writeFile(TEST_FILE_PATH, file);
 
-    var readFile = FileSystem.readFile(TEST_FILE_PATH);
+    var readFile = fileSystem.readFile(TEST_FILE_PATH);
 
     // then
     expect(readFile.contents).to.eql('FOO BAR');
