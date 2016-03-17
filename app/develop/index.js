@@ -19,4 +19,6 @@ app.on('before-quit', function() {
 
 app.developmentMode = true;
 
-app.menu.rebuild();
+app.on('app:window-created', function() {
+  app.menu.rebuild();
+});
