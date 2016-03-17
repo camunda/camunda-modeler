@@ -117,7 +117,7 @@ describe('BpmnEditor', function() {
     });
 
 
-    it('"zoomOut" should call "stepZoom" event with negative value', function () {
+    it('"zoomOut" should call "stepZoom" event with negative value', function() {
 
       // when
       editor.triggerAction('zoomOut');
@@ -129,7 +129,7 @@ describe('BpmnEditor', function() {
     });
 
 
-    it('"zoom" should call "zoom" event with value "1"', function () {
+    it('"zoom" should call "zoom" event with value "1"', function() {
 
       // when
       editor.triggerAction('zoom');

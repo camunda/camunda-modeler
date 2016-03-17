@@ -18,7 +18,7 @@ function getFile(type) {
 
 describe('util - namespace', function() {
 
-  describe('#hasExtension', function () {
+  describe('#hasExtension', function() {
 
     it('should identify an extension', function() {
       // given
@@ -56,7 +56,7 @@ describe('util - namespace', function() {
     });
   }
 
-  describe('activiti namespace', function () {
+  describe('activiti namespace', function() {
 
     var activitiFixtures = [ 'activiti', 'activitiComplex' ];
 
@@ -107,7 +107,7 @@ describe('util - namespace', function() {
     });
 
 
-    it('should replace Activiti namespace with camunda', function () {
+    it('should replace Activiti namespace with camunda', function() {
       // given
       var activitiExpected = getFile('activitiExpected'),
           activitiComplexExpected = getFile('activitiComplexExpected');
@@ -121,7 +121,7 @@ describe('util - namespace', function() {
     });
 
 
-    it('should replace Activiti namespace with camunda complex', function () {
+    it('should replace Activiti namespace with camunda complex', function() {
       // given
       var xml = [
         'xmlns:activiti-bkw.d2="http://activiti.org/bpmn"',

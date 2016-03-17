@@ -152,14 +152,27 @@ FileSystem.prototype.readFile = function(filePath, encoding) {
     fileContents = fileContents.replace(/(^\s*|\s*$)/g, '');
   }
 
-  var stats = fs.statSync(filePath);
-
   return createFileDescriptor({
     path: filePath,
     contents: fileContents,
-    lastModified: stats.mtime.getTime()
+    lastModified: getLastModifiedTicks(filePath)
   });
 };
+
+/**
+ * Return last modified for the given file path.
+ *
+ * @param {String} path
+ *
+ * @return {Integer}
+ */
+FileSystem.prototype.readFileStats = function(file) {
+  return createFileDescriptor(file, {
+    lastModified: getLastModifiedTicks(file.path)
+  });
+};
+
+
 
 /**
  * Write a file.
@@ -184,13 +197,28 @@ FileSystem.prototype.writeFile = function(filePath, file) {
 
   fs.writeFileSync(filePath, contents, encoding);
 
-  var stats = fs.statSync(filePath);
-
   return createFileDescriptor(file, {
-    path: filePath,
-    lastModified: stats.mtime.getTime()
+    lastModified: getLastModifiedTicks(filePath)
   });
 };
+
+
+/**
+ * Return last modified for the given file path.
+ *
+ * @param {String} path
+ *
+ * @return {Integer}
+ */
+function getLastModifiedTicks(path) {
+  try {
+    var stats = fs.statSync(path);
+    return stats.mtime.getTime() || 0;
+  } catch (err) {
+    console.error('Could not get file stats for the path: ' + path);
+    return 0;
+  }
+}
 
 
 /**
@@ -204,7 +232,7 @@ FileSystem.prototype.writeFile = function(filePath, file) {
  */
 function createFileDescriptor(oldFile, newFile) {
   // no old file supplied
-  if (arguments.length == 1){
+  if (arguments.length == 1) {
     newFile = oldFile;
     oldFile = {};
   } else {

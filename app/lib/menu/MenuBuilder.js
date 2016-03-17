@@ -61,12 +61,12 @@ MenuBuilder.prototype.appendNewFile = function() {
     submenu: Menu.buildFromTemplate([{
       label: 'BPMN Diagram',
       accelerator: 'CommandOrControl+T',
-      click: function () {
+      click: function() {
         app.emit('menu:action', 'create-bpmn-diagram');
       }
     }, {
       label: 'DMN Table',
-      click: function () {
+      click: function() {
         app.emit('menu:action', 'create-dmn-diagram');
       }
     }])
@@ -79,7 +79,7 @@ MenuBuilder.prototype.appendOpenFile = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Open File...',
     accelerator: 'CommandOrControl+O',
-    click: function () {
+    click: function() {
       app.emit('menu:action', 'open-diagram');
     }
   }));
@@ -92,7 +92,7 @@ MenuBuilder.prototype.appendSaveFile = function(submenu) {
     label: 'Save File',
     enabled: this.opts.state.save,
     accelerator: 'CommandOrControl+S',
-    click: function () {
+    click: function() {
       app.emit('menu:action', 'save');
     }
   }));
@@ -105,7 +105,7 @@ MenuBuilder.prototype.appendSaveAsFile = function(submenu) {
     label: 'Save File As..',
     accelerator: 'CommandOrControl+Shift+S',
     enabled: this.opts.state.save,
-    click: function () {
+    click: function() {
       app.emit('menu:action', 'save-as');
     }
   }));
@@ -118,7 +118,7 @@ MenuBuilder.prototype.appendSaveAllFiles = function(submenu) {
     label: 'Save All Files',
     accelerator: 'CommandOrControl+Alt+S',
     enabled: this.opts.state.save,
-    click: function () {
+    click: function() {
       app.emit('menu:action', 'save-all');
     }
   }));
@@ -138,21 +138,21 @@ MenuBuilder.prototype.appendExportAs = function(submenu) {
     submenu: submenu || Menu.buildFromTemplate([{
       label: 'PNG Image',
       enabled: canExport('png'),
-      click: function () {
+      click: function() {
         app.emit('menu:action', 'export-tab', { type: 'png' });
       }
     },
     {
       label: 'JPEG Image',
       enabled: canExport('jpeg'),
-      click: function () {
+      click: function() {
         app.emit('menu:action', 'export-tab', { type: 'jpeg' });
       }
     },
     {
       label: 'SVG Image',
       enabled: canExport('svg'),
-      click: function () {
+      click: function() {
         app.emit('menu:action', 'export-tab', { type: 'svg' });
       }
     }])
@@ -168,7 +168,7 @@ MenuBuilder.prototype.appendTabItems = function() {
     label: 'Close Tab',
     enabled: this.opts.state.closable,
     accelerator: 'CommandOrControl+W',
-    click: function () {
+    click: function() {
       app.emit('menu:action', 'close-active-tab');
     }
   }));
@@ -176,7 +176,7 @@ MenuBuilder.prototype.appendTabItems = function() {
   this.menu.append(new MenuItem({
     label: 'Close All Tabs',
     enabled: this.opts.state.closable,
-    click: function () {
+    click: function() {
       app.emit('menu:action', 'close-all-tabs');
     }
   }));
@@ -196,7 +196,7 @@ MenuBuilder.prototype.appendSelectTab = function() {
   this.menu.append(new MenuItem({
     label: 'Select Next Tab',
     accelerator: 'Control+TAB',
-    click: function () {
+    click: function() {
       app.emit('menu:action', 'select-tab', 'next');
     }
   }));
@@ -204,7 +204,7 @@ MenuBuilder.prototype.appendSelectTab = function() {
   this.menu.append(new MenuItem({
     label: 'Select Previous Tab',
     accelerator: 'Control+SHIFT+TAB',
-    click: function () {
+    click: function() {
       app.emit('menu:action', 'select-tab', 'previous');
     }
   }));
@@ -218,7 +218,7 @@ MenuBuilder.prototype.appendQuit = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Quit',
     accelerator: 'CommandOrControl+Q',
-    click: function () {
+    click: function() {
       app.emit('app:quit');
     }
   }));
@@ -231,7 +231,7 @@ MenuBuilder.prototype.appendRedo = function() {
     label: 'Redo',
     enabled: this.opts.state.redo,
     accelerator: 'CommandOrControl+Y',
-    click: function () {
+    click: function() {
       app.emit('menu:action', 'redo');
     }
   }));
@@ -242,7 +242,7 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
     label: 'Undo',
     enabled: this.opts.state.undo,
     accelerator: 'CommandOrControl+Z',
-    click: function () {
+    click: function() {
       app.emit('menu:action', 'undo');
     }
   }));
@@ -277,7 +277,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     label: 'Hand Tool',
     accelerator: 'H',
     enabled: this.opts.state.inactiveInput,
-    click: function () {
+    click: function() {
       app.emit('menu:action', 'handTool');
     }
   }));
@@ -368,7 +368,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   return this;
 };
 
-MenuBuilder.prototype.appendDmnActions = function () {
+MenuBuilder.prototype.appendDmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Add Rule..',
     submenu: Menu.buildFromTemplate([{
@@ -529,19 +529,19 @@ MenuBuilder.prototype.appendWindowMenu = function() {
     submenu.push({
       label: 'Zoom In',
       accelerator: 'CommandOrControl+=',
-      click: function () {
+      click: function() {
         app.emit('menu:action', 'zoomIn');
       }
     }, {
       label: 'Zoom Out',
       accelerator: 'CommandOrControl+-',
-      click: function () {
+      click: function() {
         app.emit('menu:action', 'zoomOut');
       }
     }, {
       label: 'Zoom Default',
       accelerator: 'CommandOrControl+0',
-      click: function () {
+      click: function() {
         app.emit('menu:action', 'zoom');
       }
     }, {

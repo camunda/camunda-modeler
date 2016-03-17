@@ -5,6 +5,7 @@
     "space-before-blocks": [ 2, "always"],
     "indent": [ 2, 2, { "VariableDeclarator": { "var": 2, "let": 2, "const": 3 } } ],
     "no-unused-vars": [ 2, { "args": "none" } ],
+    "space-before-function-paren": [ 2, "never" ],
     "quotes": [ 2, "single" ],
     "react/jsx-no-undef": 1,
     "react/jsx-pascal-case": 1,

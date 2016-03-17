@@ -115,6 +115,18 @@ function Dialog() {
   this.importError = function(filename, errorDetails, done) {
     browser.send('dialog:import-error', [ filename, errorDetails ], done);
   };
+
+  /**
+   * Displays a message indicating that content has been changed externally.
+   * Callbacks with (err, answer).
+   *
+   * @param {Function} done
+   */
+  this.contentChanged = function(done) {
+    browser.send('dialog:content-changed', function functionName(err, answer) {
+      done(answer);
+    });
+  };
 }
 
 module.exports = Dialog;

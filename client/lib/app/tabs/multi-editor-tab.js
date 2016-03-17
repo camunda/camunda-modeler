@@ -116,7 +116,7 @@ MultiEditorTab.prototype.showEditor = function(editor) {
     if (err) {
       debug('[#showEditor] editor export error %s', err);
 
-      this.dialog.exportError(err, () => {});
+      this.dialog.exportError(err, function() {});
 
       return;
     }
@@ -214,7 +214,7 @@ MultiEditorTab.prototype.createEditors = function(options) {
       if (editor === this.fallbackEditor) {
         return;
       }
-      
+
       // context can be undefined here if lastImport is undefined
       var error = context ? context.error : null;
 

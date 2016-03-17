@@ -15,9 +15,9 @@ function getFile(type) {
 }
 
 
-describe('util - parse file type', function () {
+describe('util - parse file type', function() {
 
-  it('should identify bpmn file', function () {
+  it('should identify bpmn file', function() {
     // given
     var bpmnFile = getFile('bpmn');
 
@@ -29,7 +29,7 @@ describe('util - parse file type', function () {
   });
 
 
-  it('should identify dmn file', function () {
+  it('should identify dmn file', function() {
     // given
     var dmnFile = getFile('dmn');
 
@@ -41,7 +41,7 @@ describe('util - parse file type', function () {
   });
 
 
-  it('should return null on random xml file', function () {
+  it('should return null on random xml file', function() {
     // given
     var randomFile = getFile('random');
 
@@ -53,7 +53,7 @@ describe('util - parse file type', function () {
   });
 
 
-  it('should return null on nyan cat image', function () {
+  it('should return null on nyan cat image', function() {
     // given
     var nyanCatImage = getFile('nyan');
 

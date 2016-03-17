@@ -533,9 +533,8 @@ App.prototype.openTab = function(file) {
  * to the application.
  *
  * @param {FileDescriptor} file
- * @param {Object} options
  */
-App.prototype._createTab = function(file, options) {
+App.prototype._createTab = function(file) {
   var tabProvider = this._findTabProvider(file.fileType);
 
   return this._addTab(tabProvider.createTab(file));
@@ -774,7 +773,7 @@ App.prototype.saveFile = function(file, saveAs, done) {
  * @param {Tab} tab
  */
 App.prototype.selectTab = function(tab) {
-  debug('selecting tab with id: ' + tab.id);
+  debug('selecting tab');
 
   var exists = contains(this.tabs, tab);
 
@@ -786,7 +785,10 @@ App.prototype.selectTab = function(tab) {
 
   if (tab) {
     tab.emit('focus');
+
+    this.recheckTabContent(tab);
   }
+
 
   this.events.emit('workspace:changed');
 
@@ -985,12 +987,7 @@ App.prototype.persistWorkspace = function(done) {
       return;
     }
 
-    config.tabs.push({
-      name: file.name,
-      contents: file.contents,
-      path: file.path,
-      fileType: file.fileType
-    });
+    config.tabs.push(assign({}, file));
 
     // store saved active tab index
     if (tab === this.activeTab) {
@@ -1070,7 +1067,7 @@ App.prototype.restoreWorkspace = function(done) {
  * @param  {String} id
  * @param  {Boolean} isDisabled
  */
-App.prototype.updateMenuEntry = function (id, isDisabled) {
+App.prototype.updateMenuEntry = function(id, isDisabled) {
   var button = find(this.menuEntries, { id: id });
 
   button.disabled = isDisabled;
@@ -1169,6 +1166,62 @@ App.prototype.quit = function() {
 };
 
 
+/**
+ * Checks tab content for external changes
+ * @param  {Tab} tab
+ */
+App.prototype.recheckTabContent = function(tab) {
+  debug('[recheckTabContent]: checking tab for external content changes');
+
+  if (isUnsaved(tab.file)) {
+    return debug('[recheckTabContent]: tab content has no link to external storage');
+  }
+
+  var setNewFile = (file) => {
+    tab.setFile(assign({}, tab.file, file));
+    this.events.emit('workspace:changed');
+  };
+
+  this.fileSystem.readFileStats(tab.file, (err, statsFile) => {
+    if (err) {
+      return debug('[recheckTabContent]: could not read file properties', err);
+    }
+
+    debug('[recheckTabContent]: old lastModified "%s"', new Date(tab.file.lastModified).toISOString());
+    debug('[recheckTabContent]: new lastModified "%s"', new Date(statsFile.lastModified).toISOString());
+
+    if (!(statsFile.lastModified > tab.file.lastModified)) {
+      return debug('[recheckTabContent]: content not changed');
+    }
+
+    debug('[recheckTabContent]: file has been changed externally');
+
+    // notifying user about external changes
+    this.dialog.contentChanged((answer) => {
+
+      if (isOk(answer)) {
+        debug('[recheckTabContent]: ok, reloading latest file');
+
+        this.fileSystem.readFile(tab.file, function(err, updatedFile) {
+          if (err) {
+            return debug('[recheckTabContent]: could not read file', err);
+          }
+
+          setNewFile(updatedFile);
+        });
+
+      } else if (isCancel(answer)) {
+        debug('[recheckTabContent]: canceled, updating "lastModified" flag');
+
+        setNewFile(statsFile);
+      }
+
+    });
+
+  });
+};
+
+
 function contains(collection, element) {
   return collection.some(function(e) {
     return e === element;
@@ -1181,6 +1234,10 @@ function isDiscard(userChoice) {
 
 function isCancel(userChoice) {
   return userChoice === 'cancel';
+}
+
+function isOk(userChoice) {
+  return userChoice === 'ok';
 }
 
 function userCanceled() {

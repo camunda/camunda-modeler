@@ -7,20 +7,20 @@ if (process.platform === 'win32') {
 
   var TEST_EXECUTABLE = 'C:\\bar\\foo.exe';
 
-  describe('app/platform/windows - FileAssociations', function () {
+  describe('app/platform/windows - FileAssociations', function() {
 
-    afterEach(function () {
+    afterEach(function() {
       FileAssociations.deregister();
     });
 
 
-    it('should not exist, initially', function () {
+    it('should not exist, initially', function() {
       // assume
       expect(FileAssociations.query()).not.to.exist;
     });
 
 
-    it('should add to registry', function () {
+    it('should add to registry', function() {
       var query;
 
       // when
@@ -34,7 +34,7 @@ if (process.platform === 'win32') {
     });
 
 
-    it('should remove from registry', function () {
+    it('should remove from registry', function() {
 
       // given
       FileAssociations.register(TEST_EXECUTABLE);

@@ -32,6 +32,17 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
 
 
   this._dialogs = {
+    contentChanged: function() {
+      return {
+        title: 'File changed',
+        message: 'The file has been changed externally.\nWould you like to reload it?',
+        type: 'question',
+        buttons: [
+          { id: 'ok', label: 'Reload' },
+          { id: 'cancel', label: 'Cancel' }
+        ]
+      };
+    },
     open: function() {
       return {
         title: 'Open diagram',

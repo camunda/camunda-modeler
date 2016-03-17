@@ -15,9 +15,15 @@ function Dialog() {
   this.saveAsResponse = null;
   this.namespaceResponse = null;
   this.reimportWarningResponse = null;
+  this.contentChangedResponse = null;
 
   this.setResponse = function(type, fileOrError) {
     this[type + 'Response'] = fileOrError;
+  };
+
+
+  this.contentChanged = function(done) {
+    done(this.contentChangedResponse);
   };
 
 

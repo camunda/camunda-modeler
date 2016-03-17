@@ -57,7 +57,7 @@ describe('BpmnTab', function() {
   }
 
 
-  describe('render', function () {
+  describe('render', function() {
 
     it('should render view <diagram>', function() {
 
@@ -113,7 +113,7 @@ describe('BpmnTab', function() {
   });
 
 
-  describe('views', function () {
+  describe('views', function() {
 
     var otherXML = require('test/fixtures/other.bpmn');
 

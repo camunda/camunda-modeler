@@ -5,7 +5,7 @@ var generateImage = require('app/util/generate-image');
 var exampleSVG = require('test/fixtures/diagram.svg');
 
 
-describe('generateImage', function () {
+describe('generateImage', function() {
 
   it('should generate a PNG from SVG', function() {
     // when

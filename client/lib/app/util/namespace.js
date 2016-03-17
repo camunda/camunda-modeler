@@ -50,7 +50,7 @@ function replacePrefix(prefix, xml) {
     new RegExp('(<|</)' + prefix + '(:[A-z0-9-.]+(>|\\s))', 'g')
   ];
 
-  forEach(patterns, function (pattern) {
+  forEach(patterns, function(pattern) {
     xml = xml.replace(pattern, '$1camunda$2');
   });
 

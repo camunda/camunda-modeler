@@ -105,7 +105,7 @@ describe('Dialog', function() {
   });
 
 
-  it('should show general error dialog', function () {
+  it('should show general error dialog', function() {
     var title = 'Error',
         message = 'There was an internal error.' + '\n' + 'Please try again.';
 

@@ -8,16 +8,28 @@ var browser = require('util/browser');
 function FileSystem() {
 
   /**
-   * Read file and callback with (err, readFile).
+   * Read file and callback with (err, file).
    *
-   * @param {File} file
+   * @param {String} filePath
    * @param {Function} done
    */
   this.readFile = function(file, done) {
-
-    // TODO: implement
-    done(null, file);
+    browser.send('file:read', file, done);
   };
+
+
+  /**
+   * Read file attributes, but skip content.
+   * Callback with (err, file).
+   *
+   * @param {String} filePath
+   * @param {Function} done
+   */
+  this.readFileStats = function(file, done) {
+    browser.send('file:read-stats', file, done);
+  };
+
+
 
   /**
    * Write file and callback with (err, updatedFile).

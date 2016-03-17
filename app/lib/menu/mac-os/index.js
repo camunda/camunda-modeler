@@ -57,7 +57,7 @@ MacMenuBuilder.prototype.appendRedo = function() {
     label: 'Redo',
     enabled: this.opts.state.redo,
     accelerator: 'Command+Shift+Z',
-    click: function (menuItem, browserWindow) {
+    click: function(menuItem, browserWindow) {
       browserWindow.webContents.send('menu:action', 'redo');
     }
   }));

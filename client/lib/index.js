@@ -57,6 +57,12 @@ domReady(function() {
     app.openFiles(files);
   });
 
+  browser.on('client:window-focused', function(e) {
+    debug('window focused');
+
+    app.recheckTabContent(app.activeTab);
+  });
+
   mainLoop(app, document.body);
 
   app.run();

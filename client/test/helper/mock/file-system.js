@@ -10,15 +10,16 @@ var spyOn = require('test/helper/util/spy-on');
  */
 function FileSystem() {
 
-  this.files = {};
+  this.file;
+  this.statsFile;
 
-  /**
-   * Set contents for files to be served.
-   *
-   * @param {Object} files { path -> contents } mapping
-   */
-  this.setFileContents = function(files) {
-    assign(this.files, files);
+
+  this.setFile = function(file) {
+    this.file = file;
+  };
+
+  this.setStatsFile = function(file) {
+    this.statsFile = file;
   };
 
   /**
@@ -28,9 +29,7 @@ function FileSystem() {
    * @param {Function} done
    */
   this.readFile = function(file, done) {
-    var contents = this.files[file.path];
-
-    done(null, assign({}, file, { contents: contents }));
+    done(null, assign({}, this.file));
   };
 
   /**
@@ -48,6 +47,12 @@ function FileSystem() {
     }
 
     done(null, assign({}, file));
+  };
+
+  this.readFileStats = function(file, done) {
+    done(null, assign({}, this.statsFile || {
+      lastModified: new Date().getTime()
+    }));
   };
 
   this._clear = function() {

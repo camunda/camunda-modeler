@@ -34,7 +34,17 @@ function createBpmnFile(xml, overrides) {
     name: 'diagram_1.bpmn',
     path: 'diagram_1.bpmn',
     contents: xml,
-    fileType: 'bpmn'
+    fileType: 'bpmn',
+    lastModified: new Date().getTime()
+  }, overrides);
+}
+
+function createBpmnActivityFile(overrides) {
+  return assign({
+    name: 'activiti.xml',
+    path: 'activiti.xml',
+    contents: activitiXML,
+    lastModified: new Date().getTime()
   }, overrides);
 }
 
@@ -43,7 +53,8 @@ function createDmnFile(xml, overrides) {
     name: 'diagram_1.dmn',
     path: 'diagram_1.dmn',
     contents: xml,
-    fileType: 'dmn'
+    fileType: 'dmn',
+    lastModified: new Date().getTime()
   }, overrides);
 }
 
@@ -193,13 +204,144 @@ describe('App', function() {
       // then
       expect(app.fileHistory).to.have.length(0);
     });
+  });
+
+
+  describe('check external file modifications', function() {
+
+    var openFile;
+
+    beforeEach(function() {
+      openFile = createBpmnFile(bpmnXML);
+    });
+
+
+    describe('given file has been modified', function() {
+      var tab;
+      var statsFile;
+      var newFile;
+
+      beforeEach(function() {
+        // given
+        statsFile = assign({}, openFile, {
+          lastModified: new Date().getTime() + 2000
+        });
+        app.fileSystem.setStatsFile(statsFile);
+
+        newFile = assign({}, statsFile, {
+          content: 'NEW CONTENT'
+        });
+        app.fileSystem.setFile(newFile);
+
+        tab = app._createTab(openFile);
+      });
+
+
+      it('should call file reload dialog', function() {
+        // when
+        app.recheckTabContent(tab);
+
+        // then
+        expect(dialog.contentChanged).to.have.been.calledWith(arg.any);
+      });
+
+
+      it('should set new file on tab if reload accepted', function() {
+        // given
+        dialog.setResponse('contentChanged', 'ok');
+
+        // when
+        app.recheckTabContent(tab);
+
+        // then
+        expect(tab.file).to.eql(newFile);
+      });
+
+
+      it('should update "lastModified" flag and not change content on cancel', function() {
+        // given
+        dialog.setResponse('contentChanged', 'cancel');
+
+        // when
+        app.recheckTabContent(tab);
+
+        // then
+        expect(tab.file).to.eql(assign({}, openFile, { lastModified: statsFile.lastModified }));
+        expect(tab.file).to.not.eql(newFile);
+      });
+
+    });
+
+
+    describe('given file has NOT been modified', function() {
+      var tab;
+
+      beforeEach(function() {
+        // given
+        app.fileSystem.setStatsFile(assign({}, openFile));
+
+        tab = app._createTab(openFile);
+      });
+
+
+      it('should NOT call file reload dialog', function() {
+        // when
+        app.recheckTabContent(tab);
+
+        // then
+        expect(dialog.contentChanged).to.have.not.been.calledWith(arg.any);
+      });
+
+
+      it('tab should keep old file', function() {
+        // when
+        app.recheckTabContent(tab);
+
+        // then
+        expect(tab.file).to.equal(openFile);
+      });
+
+    });
+
+
+    describe('should be called', function() {
+      var recheckTabContent;
+
+      beforeEach(function() {
+        recheckTabContent = spy(app, 'recheckTabContent');
+        app.fileSystem.setFile(assign({}, openFile));
+        app.fileSystem.setStatsFile(assign({}, openFile));
+      });
+
+
+      it('on opening tab', function() {
+        // when
+        var tab = app.openTab(openFile);
+
+        // then
+        expect(recheckTabContent).to.have.been.calledWith(tab);
+      });
+
+
+      it('on selecting tab', function() {
+        // given
+        var tab = app._createTab(openFile);
+
+        // when
+        app.selectTab(tab);
+
+        // then
+        expect(recheckTabContent).to.have.been.calledWith(tab);
+      });
+
+    });
 
   });
 
 
   describe('run', function() {
 
-    it('should emit "ready" event', function (done) {
+    it('should emit "ready" event', function(done) {
       // then
       app.on('ready', done);
 
@@ -394,7 +536,7 @@ describe('App', function() {
   });
 
 
-  describe('xml support', function () {
+  describe('xml support', function() {
 
     it('should render xml-view', function() {
 
@@ -424,17 +566,12 @@ describe('App', function() {
     it('should open suitable files', function() {
 
       // given
-      var validFile = {
-        name: 'diagram_1.bpmn',
-        path: 'diagram_1.bpmn',
-        contents: bpmnXML
-      };
+      var validFile = createBpmnFile(bpmnXML);
 
-      var invalidFile = {
+      var invalidFile = createBpmnFile('FOO BAR', {
         name: 'text.txt',
-        path: '[unsaved]',
-        contents: 'FOO BAR'
-      };
+        path: '[unsaved]'
+      });
 
       var droppedFiles = [ validFile, invalidFile ];
 
@@ -446,12 +583,7 @@ describe('App', function() {
       expect(app.tabs.length).to.eql(2);
 
       // valid diagram got opened
-      expect(app.activeTab.file).to.eql({
-        name: 'diagram_1.bpmn',
-        path: 'diagram_1.bpmn',
-        contents: bpmnXML,
-        fileType: 'bpmn'
-      });
+      expect(app.activeTab.file).to.eql(assign({}, validFile));
 
       expect(dialog.unrecognizedFileError).to.have.been.calledWith(invalidFile, arg.any);
     });
@@ -464,11 +596,7 @@ describe('App', function() {
     it('should open BPMN file', function() {
 
       // given
-      var openFile = {
-        name: 'diagram_1.bpmn',
-        path: 'diagram_1.bpmn',
-        contents: bpmnXML
-      };
+      var openFile = createBpmnFile(bpmnXML);
 
       var expectedFile = assign({ fileType: 'bpmn' }, openFile);
 
@@ -485,11 +613,7 @@ describe('App', function() {
     it('should open DMN file', function() {
 
       // given
-      var openFile = {
-        name: 'diagram_1.dmn',
-        path: 'diagram_1.dmn',
-        contents: dmnXML
-      };
+      var openFile = createDmnFile(dmnXML);
 
       var expectedFile = assign({ fileType: 'dmn' }, openFile);
 
@@ -526,11 +650,9 @@ describe('App', function() {
 
       // given
       var lastTab = app.activeTab,
-          openFile = {
-            name: 'diagram_1.bpmn',
-            path: 'diagram_1.bpmn',
+          openFile = createBpmnFile(bpmnXML, {
             contents: require('./no-bpmn.bpmn')
-          };
+          });
 
       dialog.setResponse('open', [openFile]);
 
@@ -550,17 +672,9 @@ describe('App', function() {
       var bpmnTab, dmnTab;
 
       // given
-      var bpmnFile = {
-        name: 'diagram_1.bpmn',
-        path: 'diagram_1.bpmn',
-        contents: bpmnXML
-      };
+      var bpmnFile = createBpmnFile(bpmnXML);
 
-      var dmnFile = {
-        name: 'diagram_1.dmn',
-        path: 'diagram_1.dmn',
-        contents: dmnXML
-      };
+      var dmnFile = createDmnFile(dmnXML);
 
       var expectedBpmnFile = assign({ fileType: 'bpmn' }, bpmnFile),
           expectedDmnFile = assign({ fileType: 'dmn' }, dmnFile);
@@ -585,17 +699,9 @@ describe('App', function() {
       var bpmnTab, dmnTab;
 
       // given
-      var bpmnFile = {
-        name: 'diagram_1.bpmn',
-        path: 'diagram_1.bpmn',
-        contents: bpmnXML
-      };
+      var bpmnFile = createBpmnFile(bpmnXML);
 
-      var dmnFile = {
-        name: 'diagram_1.dmn',
-        path: 'diagram_1.dmn',
-        contents: dmnXML
-      };
+      var dmnFile = createDmnFile(dmnXML);
 
       var expectedBpmnFile = assign({ fileType: 'bpmn' }, bpmnFile),
           expectedDmnFile = assign({ fileType: 'dmn' }, dmnFile);
@@ -624,17 +730,10 @@ describe('App', function() {
     it('should open bpmn file and NOT activiti file', function() {
 
       // given
-      var bpmnFile = {
-        name: 'diagram_1.bpmn',
-        path: 'diagram_1.bpmn',
-        contents: bpmnXML
-      };
 
-      var activitiFile = {
-        name: 'activiti.xml',
-        path: 'activiti.xml',
-        contents: activitiXML
-      };
+      var bpmnFile = createBpmnFile(bpmnXML);
+
+      var activitiFile = createBpmnActivityFile();
 
       var expectedBpmnFile = assign({ fileType: 'bpmn' }, bpmnFile);
 
@@ -656,13 +755,9 @@ describe('App', function() {
 
     it('should open activiti file with convertion', function() {
       // given
-      var activitiFile = {
-        name: 'activiti.xml',
-        path: 'activiti.xml',
-        contents: activitiXML
-      };
+      var activitiFile = createBpmnActivityFile();
 
-      var expectedActivitiFile = assign({ fileType: 'bpmn' }, activitiFile);
+      var expectedActivitiFile = assign({}, activitiFile, { fileType: 'bpmn' });
 
       dialog.setResponse('open', [ activitiFile ]);
 
@@ -680,13 +775,9 @@ describe('App', function() {
 
     it('should open activiti file without convertion', function() {
       // given
-      var activitiFile = {
-        name: 'activiti.xml',
-        path: 'activiti.xml',
-        contents: activitiXML
-      };
+      var activitiFile = createBpmnActivityFile();
 
-      var expectedActivitiFile = assign({ fileType: 'bpmn' }, activitiFile);
+      var expectedActivitiFile = assign({}, activitiFile, { fileType: 'bpmn' });
 
       dialog.setResponse('open', [ activitiFile ]);
 
@@ -1549,9 +1640,9 @@ describe('App', function() {
   });
 
 
-  describe('export', function () {
+  describe('export', function() {
 
-    describe('api', function () {
+    describe('api', function() {
 
       function createTab(file) {
         app.openTabs([ file ]);
@@ -1635,7 +1726,7 @@ describe('App', function() {
     });
 
 
-    describe('menu-bar', function () {
+    describe('menu-bar', function() {
 
       it('should be enabled when exporting is allowed', function(done) {
         // given

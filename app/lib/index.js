@@ -120,6 +120,12 @@ renderer.on('dialog:close-tab', function(diagramFile, done) {
   done(null, answer);
 });
 
+renderer.on('dialog:content-changed', function(done) {
+  var answer = dialog.showDialog('contentChanged');
+
+  done(null, answer);
+});
+
 
 function saveCallback(saveAction, diagramFile, done) {
   saveAction.apply(app.fileSystem, [ diagramFile, (err, updatedDiagram) => {
@@ -143,8 +149,16 @@ renderer.on('file:save', function(diagramFile, done) {
   saveCallback(app.fileSystem.save, diagramFile, done);
 });
 
+renderer.on('file:read', function(diagramFile, done) {
+  done(null, app.fileSystem.readFile(diagramFile.path));
+});
+
+renderer.on('file:read-stats', function(diagramFile, done) {
+  done(null, app.fileSystem.readFileStats(diagramFile));
+});
+
 renderer.on('file:open', function(done) {
-  app.fileSystem.open(function (err, diagramFiles) {
+  app.fileSystem.open(function(err, diagramFiles) {
     if (err) {
       return done(err);
     }
@@ -165,17 +179,17 @@ renderer.on('file:open', function(done) {
 // list of files that should be opened by the editor
 app.openFiles = [];
 
-app.on('app:parse-cmd', function (argv, cwd) {
+app.on('app:parse-cmd', function(argv, cwd) {
   console.log('app:parse-cmd', argv.join(' '), cwd);
 
   var files = Cli.extractFiles(argv, cwd);
 
-  files.forEach(function (file) {
+  files.forEach(function(file) {
     app.emit('app:open-file', file);
   });
 });
 
-app.on('app:open-file', function (filePath) {
+app.on('app:open-file', function(filePath) {
   var file;
 
   console.log('app:open-file', filePath);
@@ -195,7 +209,7 @@ app.on('app:open-file', function (filePath) {
   renderer.send('client:open-files', [ file ]);
 });
 
-app.on('app:client-ready', function () {
+app.on('app:client-ready', function() {
   var files = [];
 
   console.log('app:client-ready');
@@ -223,7 +237,7 @@ renderer.on('client:ready', function() {
  *
  * @return {BrowserWindow}
  */
-app.createEditorWindow = function () {
+app.createEditorWindow = function() {
 
   var mainWindow = app.mainWindow = new BrowserWindow({
     resizable: true,
@@ -234,7 +248,7 @@ app.createEditorWindow = function () {
 
   mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../public/index.html'));
 
-  mainWindow.webContents.on('will-navigate', function (e, url) {
+  mainWindow.webContents.on('will-navigate', function(e, url) {
     e.preventDefault();
 
     Shell.openExternal(url);
@@ -260,6 +274,11 @@ app.createEditorWindow = function () {
     app.emit('app:quit-denied');
 
     renderer.send('menu:action', 'quit');
+  });
+
+  mainWindow.on('focus', function() {
+    console.log('Window focused');
+    renderer.send('client:window-focused');
   });
 
   app.emit('app:window-created', mainWindow);
