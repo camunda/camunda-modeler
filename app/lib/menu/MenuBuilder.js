@@ -28,12 +28,10 @@ function MenuBuilder(opts) {
       dmnRuleEditing: false,
       dmnClauseEditingfalse: false,
       exportAs: false,
-      development: false,
+      development: app.developmentMode,
       devtools: false
     }
   }, opts);
-
-  this.opts.state.development = app.developmentMode;
 
   if (this.opts.template) {
     this.menu = Menu.buildFromTemplate(this.opts.template);
