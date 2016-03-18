@@ -109,6 +109,11 @@ BpmnEditor.prototype.updateState = function() {
       commandStack,
       inputActive;
 
+  // ignore change events during import
+  if (initialState.importing) {
+    return;
+  }
+
   var elementsSelected,
       elements,
       dirty;
@@ -216,6 +221,16 @@ BpmnEditor.prototype.getModeler = function() {
       'commandStack.changed',
       'selection.changed'
     ], this.updateState, this);
+
+    // add importing flag (high priority)
+    this.modeler.on('import.parse.start', 1500, () => {
+      this.initialState.importing = true;
+    });
+
+    // remove importing flag (high priority)
+    this.modeler.on('import.done', 1500, () => {
+      this.initialState.importing = false;
+    });
   }
 
   return this.modeler;
