@@ -46,7 +46,7 @@ function loadPackageJSON() {
         pkg = fs.readFileSync(basepath, { encoding: 'utf8' });
 
     return JSON.parse(pkg);
-  } catch(e) {
+  } catch (e) {
     return {};
   }
 }
@@ -96,7 +96,7 @@ if (config.get('single-instance', true)) {
 //////// client life-cycle /////////////////////////////
 
 renderer.on('dialog:unrecognized-file', function(file, done) {
-  dialog.showDialog('unrecognizedFile', { name: file.name});
+  dialog.showDialog('unrecognizedFile', { name: file.name });
 
   done(null);
 });

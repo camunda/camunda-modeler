@@ -35,7 +35,7 @@ function Menu(platform) {
   });
 
 
-  function rebuildMenu(state){
+  function rebuildMenu(state) {
     var mainWindow = app.mainWindow,
         isDevToolsOpened = false;
 

@@ -72,7 +72,7 @@ function MacOSPlatform(app) {
    * Recreating window app activation through system dock
    */
   function checkAppWindow() {
-    if (!app.mainWindow){
+    if (!app.mainWindow) {
       app.createEditorWindow();
     }
   }

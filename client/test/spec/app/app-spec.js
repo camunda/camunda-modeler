@@ -73,6 +73,76 @@ describe('App', function() {
   });
 
 
+  describe('cycle through tabs', function() {
+    var tabs, emptyTabIndex, emptyTab;
+
+    beforeEach(function() {
+      var file1 = createBpmnFile(bpmnXML);
+      var file2 = createDmnFile(dmnXML);
+      var file3 = createDmnFile(dmnXML, UNSAVED_FILE);
+
+      tabs = app.openTabs([ file1, file2, file3 ]);
+
+      emptyTabIndex = app.tabs.length - 1;
+      emptyTab = app.tabs[emptyTabIndex];
+    });
+
+
+    it('should select next tab', function() {
+      // given
+      app.selectTab(tabs[0]);
+
+      // when
+      app.triggerAction('select-tab', 'next');
+
+      // then
+      expect(app.activeTab).to.eql(tabs[1]);
+    });
+
+
+    it('should select previous tab', function() {
+      // given
+      app.selectTab(tabs[2]);
+
+      // when
+      app.triggerAction('select-tab', 'previous');
+
+      // then
+      expect(app.activeTab).to.eql(tabs[1]);
+    });
+
+
+    it('should not select empty tab on next', function() {
+      // given
+      app.selectTab(tabs[emptyTabIndex - 1]);
+
+      // when
+      app.triggerAction('select-tab', 'next');
+
+      // then
+      expect(app.activeTab).to.not.eql(emptyTab);
+      expect(app.activeTab).to.eql(tabs[0]);
+    });
+
+
+    it('should not select empty tab on previous', function() {
+      // given
+      var emptyTabIndex = app.tabs.length - 1;
+      var emptyTab = app.tabs[emptyTabIndex];
+
+      app.selectTab(tabs[0]);
+
+      // when
+      app.triggerAction('select-tab', 'previous');
+
+      // then
+      expect(app.activeTab).to.not.eql(emptyTab);
+      expect(app.activeTab).to.eql(tabs[emptyTabIndex - 1]);
+    });
+
+  });
+
+
   describe('open last tab', function() {
 
     it('should open last closed file', function() {
@@ -1048,7 +1118,7 @@ describe('App', function() {
 
       // when
       app.closeAllTabs();
-      
+
       // then
       expect(dialog.close).to.have.been.calledOnce;
 

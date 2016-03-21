@@ -397,6 +397,19 @@ App.prototype.triggerAction = function(action, options) {
 
   var activeTab = this.activeTab;
 
+  if (action === 'select-tab') {
+    if (options === 'next') {
+      this.selectNext();
+
+    }
+
+    if (options === 'previous') {
+      this.selectPrevious();
+    }
+
+    return;
+  }
+
   if (action === 'create-bpmn-diagram') {
     return this.createDiagram('bpmn');
   }
@@ -425,30 +438,32 @@ App.prototype.triggerAction = function(action, options) {
     return this.reopenLastTab();
   }
 
-  if (activeTab) {
-
-    if (action === 'close-active-tab') {
-      if (activeTab.closable) {
-        return this.closeTab(this.activeTab);
-      }
-    }
-
-    // handle special actions
-    if (action === 'save' && activeTab.save) {
-      return this.saveTab(activeTab);
-    }
-
-    if (action === 'save-as' && activeTab.save) {
-      return this.saveTab(activeTab, { saveAs: true });
-    }
-
-    if (action === 'export-tab' && activeTab.exportAs) {
-      return this.exportTab(activeTab, options.type);
-    }
-
-    // forward other actions to active tab
-    activeTab.triggerAction(action, options);
+  // Actions below require active tab
+  if (!activeTab) {
+    return;
   }
+
+  if (action === 'close-active-tab') {
+    if (activeTab.closable) {
+      return this.closeTab(this.activeTab);
+    }
+  }
+
+  // handle special actions
+  if (action === 'save' && activeTab.save) {
+    return this.saveTab(activeTab);
+  }
+
+  if (action === 'save-as' && activeTab.save) {
+    return this.saveTab(activeTab, { saveAs: true });
+  }
+
+  if (action === 'export-tab' && activeTab.exportAs) {
+    return this.exportTab(activeTab, options.type);
+  }
+
+  // forward other actions to active tab
+  activeTab.triggerAction(action, options);
 };
 
 
@@ -780,6 +795,49 @@ App.prototype.selectTab = function(tab) {
 
 
 /**
+ * Select next or previous non-empty tab.
+ * Defaults to previous tab.
+ *
+ * @param  {Boolean} isNext
+ */
+App.prototype._selectWithDirection = function(isNext) {
+  var nonEmptyTabs = filter(this.tabs, function(t) {
+    return !t.empty;
+  });
+
+  if (nonEmptyTabs.length < 2) {
+    return;
+  }
+
+  var i = nonEmptyTabs.indexOf(this.activeTab);
+
+  if (isNext) {
+    i = (i + 1) % nonEmptyTabs.length;
+  } else {
+    i = (i - 1 + nonEmptyTabs.length) % nonEmptyTabs.length;
+  }
+
+  this.selectTab(nonEmptyTabs[i]);
+};
+
+
+/**
+ * Select next non-empty tab
+ */
+App.prototype.selectNext = function() {
+  this._selectWithDirection(true);
+};
+
+
+/**
+ * Select previus non-empty tab
+ */
+App.prototype.selectPrevious = function() {
+  this._selectWithDirection(false);
+};
+
+
+/**
  * Close the given tab. If the user aborts the operation
  * (i.e. cancels it via dialog choice) the callback will
  * be evaluated with (null, 'canceled').
@@ -1078,7 +1136,7 @@ App.prototype.closeAllTabs = function() {
 
 App.prototype.reopenLastTab = function() {
   var file = this.fileHistory.pop();
-  if (file){
+  if (file) {
     this.openFiles([ file ]);
   }
 };

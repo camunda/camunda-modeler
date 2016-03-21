@@ -76,6 +76,7 @@ MacMenuBuilder.prototype.build = function() {
       .appendSeparator()
       .appendExportAs()
       .appendTabItems()
+      .appendSelectTab()
       .get()
     )
     .appendEditMenu()

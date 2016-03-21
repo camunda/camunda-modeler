@@ -163,7 +163,7 @@ MenuBuilder.prototype.appendExportAs = function(submenu) {
   return this;
 };
 
-MenuBuilder.prototype.appendTabItems = function(submenu) {
+MenuBuilder.prototype.appendTabItems = function() {
   this.menu.append(new MenuItem({
     label: 'Close Tab',
     enabled: this.opts.state.closable,
@@ -186,6 +186,26 @@ MenuBuilder.prototype.appendTabItems = function(submenu) {
     accelerator: 'CommandOrControl+Shift+T',
     click: function() {
       app.emit('menu:action', 'reopen-last-tab');
+    }
+  }));
+
+  return this;
+};
+
+MenuBuilder.prototype.appendSelectTab = function() {
+  this.menu.append(new MenuItem({
+    label: 'Select Next Tab',
+    accelerator: 'Control+TAB',
+    click: function () {
+      app.emit('menu:action', 'select-tab', 'next');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Select Previous Tab',
+    accelerator: 'Control+SHIFT+TAB',
+    click: function () {
+      app.emit('menu:action', 'select-tab', 'previous');
     }
   }));
 
@@ -577,7 +597,7 @@ MenuBuilder.prototype.appendWindowMenu = function() {
   });
 
 
-  if (app.mainWindow){
+  if (app.mainWindow) {
     this.menu.append(new MenuItem({
       label: 'Window',
       submenu: Menu.buildFromTemplate(submenu)
@@ -655,6 +675,7 @@ MenuBuilder.prototype.build = function() {
       .appendSeparator()
       .appendExportAs()
       .appendTabItems()
+      .appendSelectTab()
       .appendQuit()
       .get()
     )
