@@ -163,7 +163,7 @@ MenuBuilder.prototype.appendExportAs = function(submenu) {
   return this;
 };
 
-MenuBuilder.prototype.appendCloseTab = function(submenu) {
+MenuBuilder.prototype.appendTabItems = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Close Tab',
     enabled: this.opts.state.closable,
@@ -178,6 +178,14 @@ MenuBuilder.prototype.appendCloseTab = function(submenu) {
     enabled: this.opts.state.closable,
     click: function () {
       app.emit('menu:action', 'close-all-tabs');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Reopen Last Tab',
+    accelerator: 'CommandOrControl+Shift+T',
+    click: function() {
+      app.emit('menu:action', 'reopen-last-tab');
     }
   }));
 
@@ -646,7 +654,7 @@ MenuBuilder.prototype.build = function() {
       .appendSaveAllFiles()
       .appendSeparator()
       .appendExportAs()
-      .appendCloseTab()
+      .appendTabItems()
       .appendQuit()
       .get()
     )

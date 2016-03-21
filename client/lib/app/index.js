@@ -158,6 +158,9 @@ function App(options) {
   this.activeTab = this.tabs[0];
 
 
+  this.fileHistory = [];
+
+
   this.events.on('workspace:changed', debounce((done) => {
     this.persistWorkspace((err) => {
       debug('workspace persisted?', err);
@@ -418,11 +421,15 @@ App.prototype.triggerAction = function(action, options) {
     return this.closeAllTabs();
   }
 
+  if (action === 'reopen-last-tab') {
+    return this.reopenLastTab();
+  }
+
   if (activeTab) {
 
     if (action === 'close-active-tab') {
       if (activeTab.closable) {
-        this.closeTab(this.activeTab);
+        return this.closeTab(this.activeTab);
       }
     }
 
@@ -864,6 +871,10 @@ App.prototype._closeTab = function(tab, done) {
     this.selectTab(tabs[idx - 1] || tabs[idx]);
   }
 
+  if (!isUnsaved(tab.file)) {
+    this.fileHistory.push(tab.file);
+  }
+
   events.emit('workspace:changed');
 
   events.emit('changed');
@@ -1045,19 +1056,10 @@ App.prototype._closeTabs = function(tabs, cb) {
   };
 
   series(tabs, (tab, done) => {
-
     this.selectTab(tab);
 
-    // Make sure newly selected tab is rendered
-    this.closeTab(tab, (err) => {
-      if (err) {
-        return done(err);
-      }
-
-      debug('tab closed, processing next tab...');
-
-      done(null);
-    });
+    // TODO: make sure newly selected tab is rendered
+    this.closeTab(tab, done);
   }, cb);
 };
 
@@ -1071,6 +1073,14 @@ App.prototype.closeAllTabs = function() {
   });
 
   this._closeTabs(tabs);
+};
+
+
+App.prototype.reopenLastTab = function() {
+  var file = this.fileHistory.pop();
+  if (file){
+    this.openFiles([ file ]);
+  }
 };
 
 

@@ -73,6 +73,60 @@ describe('App', function() {
   });
 
 
+  describe('open last tab', function() {
+
+    it('should open last closed file', function() {
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML),
+          openTab = app.openTab(bpmnFile);
+
+      app.closeTab(openTab);
+
+      var openFiles = spy(app, 'openFiles');
+
+      // when
+      app.reopenLastTab();
+
+      // then
+      expect(openFiles).calledWith([ bpmnFile ]);
+      expect(app.activeTab.file).to.eql(bpmnFile);
+    });
+
+
+    it('should not open any files if history is empty', function() {
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML);
+
+      app.openTab(bpmnFile);
+
+      var openFiles = spy(app, 'openFiles');
+
+      // when
+      app.reopenLastTab();
+
+      // then
+      expect(openFiles).notCalled;
+      expect(app.fileHistory).to.have.length(0);
+    });
+
+
+    it('should remove opened file from history', function() {
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML),
+          openTab = app.openTab(bpmnFile);
+
+      app.closeTab(openTab);
+
+      // when
+      app.reopenLastTab();
+
+      // then
+      expect(app.fileHistory).to.have.length(0);
+    });
+
+  });
+
+
   describe('run', function() {
 
     it('should emit "ready" event', function (done) {
@@ -779,6 +833,33 @@ describe('App', function() {
 
 
   describe('tab closing', function() {
+
+    it('should keep history of closed file', function() {
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML),
+          openTab = app.openTab(bpmnFile);
+
+      // when
+      app.closeTab(openTab);
+
+      // then
+      expect(app.fileHistory).to.have.length(1);
+      expect(app.fileHistory[0]).to.eql(bpmnFile);
+    });
+
+
+    it('should not track unsaved files', function() {
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML, UNSAVED_FILE),
+          openTab = app.openTab(bpmnFile);
+
+      // when
+      app.closeTab(openTab);
+
+      // then
+      expect(app.fileHistory).to.have.length(0);
+    });
+
 
     it('should close showing close dialog on dirty tab', function() {
       // given
