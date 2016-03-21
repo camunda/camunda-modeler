@@ -71,7 +71,7 @@ function fileDrop(fn) {
       return;
     }
 
-    // make us a drop zome
+    // make us a drop zone
     event.preventDefault();
 
     dataTransfer.dropEffect = 'copy';
