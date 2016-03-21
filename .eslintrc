@@ -7,7 +7,8 @@
     "react/jsx-pascal-case": 1,
     "react/jsx-uses-vars": 1,
     "semi": [ 2, "always" ],
-    "no-console": 0
+    "no-console": 0,
+    "mocha/no-exclusive-tests": 2
   },
   "env": {
     "es6": true,
@@ -22,7 +23,8 @@
     },
   },
   "plugins": [
-    "react"
+    "react",
+    "mocha"
   ],
   "globals": {
     "expect": false,

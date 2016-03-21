@@ -17,10 +17,20 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     eslint: {
-      client: [ 'client/{lib,test}/**/*.js' ],
-      app: [ 'app/{lib,test,develop}/**/*.js' ],
-      options: {
-        fix: true
+      check: {
+        src: [
+          'client/{lib,test}/**/*.js',
+          'app/{lib,test,develop}/**/*.js'
+        ]
+      },
+      fix: {
+        src: [
+          'client/{lib,test}/**/*.js',
+          'app/{lib,test,develop}/**/*.js'
+        ],
+        options: {
+          fix: true
+        }
       }
     },
 
@@ -183,7 +193,9 @@ module.exports = function(grunt) {
 
   // tasks
 
-  grunt.registerTask('lint', [ 'eslint' ]);
+  grunt.registerTask('lint', [ 'eslint:check' ]);
+
+  grunt.registerTask('lint-fix', [ 'eslint:fix' ]);
 
   grunt.registerTask('test', [ 'karma:single', 'mochaTest:app' ]);
 
