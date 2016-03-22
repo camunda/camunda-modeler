@@ -44,7 +44,7 @@ module.exports = function(grunt) {
     },
 
     clean: {
-      client: [ 'public' , 'distro']
+      client: [ 'public' , 'distro' ]
     },
 
     karma: {
