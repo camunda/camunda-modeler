@@ -1,8 +1,8 @@
 'use strict';
 
-var electron = require('electron');
-var app = electron.app;
-var BrowserWindow = electron.BrowserWindow;
+var electron = require('electron'),
+    app = electron.app,
+    BrowserWindow = electron.BrowserWindow;
 
 var path = require('path');
 
@@ -19,12 +19,12 @@ var forEach = require('lodash/collection/forEach');
 // require('crash-reporter').start();
 
 var Platform = require('./platform'),
-    Config = require('./Config'),
-    FileSystem = require('./FileSystem'),
-    Workspace = require('./Workspace'),
-    Dialog = require('./Dialog'),
+    Config = require('./config'),
+    FileSystem = require('./file-system'),
+    Workspace = require('./workspace'),
+    Dialog = require('./dialog'),
     Menu = require('./menu'),
-    Cli = require('./Cli');
+    Cli = require('./cli');
 
 var browserOpen = require('./util/browser-open'),
     renderer = require('./util/renderer');

@@ -4,7 +4,7 @@ var inherits = require('inherits');
 
 var MenuItem = require('menu-item');
 
-var MenuBuilder = require('../MenuBuilder');
+var MenuBuilder = require('../menu-builder');
 
 
 function MacMenuBuilder(options) {

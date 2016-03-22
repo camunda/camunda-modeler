@@ -4,7 +4,7 @@ var assign = require('lodash/object/assign');
 
 var renderer = require('../util/renderer');
 
-var requirePlatform = require('../util/requirePlatform');
+var requirePlatform = require('../util/require-platform');
 
 var electron = require('electron'),
     app = electron.app;

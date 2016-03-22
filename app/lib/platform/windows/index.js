@@ -2,7 +2,7 @@
 
 var dialog = require('dialog');
 
-var FileAssociations = require('./FileAssociations');
+var FileAssociations = require('./file-associations');
 
 var FILE_ASSOCIATION_KEY = 'fileAssociation';
 

@@ -3,7 +3,7 @@
 var fs = require('fs'),
     os = require('os');
 
-var FileSystem = require('../../lib/FileSystem');
+var FileSystem = require('../../lib/file-system');
 
 var BASE64_ENCODED =
       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNby' +

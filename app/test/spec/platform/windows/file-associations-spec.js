@@ -1,6 +1,6 @@
 'use strict';
 
-var FileAssociations = require('../../../../lib/platform/windows/FileAssociations');
+var FileAssociations = require('../../../../lib/platform/windows/file-associations');
 
 // only run these tests on windows
 if (process.platform === 'win32') {

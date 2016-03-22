@@ -1,9 +1,8 @@
 'use strict';
 
-var ipcMain = require('electron').ipcMain;
-
-var app = require('electron').app;
-
+var electron = require('electron'),
+    ipcMain = electron.ipcMain,
+    app = electron.app;
 
 
 function on(event, callback) {

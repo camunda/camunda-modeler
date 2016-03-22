@@ -2,7 +2,7 @@
 
 var inherits = require('inherits');
 
-var MenuBuilder = require('../MenuBuilder');
+var MenuBuilder = require('../menu-builder');
 
 
 function LinuxMenuBuilder(options) {

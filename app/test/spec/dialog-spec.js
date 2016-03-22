@@ -2,7 +2,7 @@
 
 var path = require('path');
 
-var Dialog = require('../../lib/Dialog');
+var Dialog = require('../../lib/dialog');
 
 var ElectronDialog = require('../helper/mock/electron-dialog'),
     Config = require('../helper/mock/config');

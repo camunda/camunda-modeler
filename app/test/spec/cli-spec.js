@@ -1,6 +1,6 @@
 'use strict';
 
-var Cli = require('../../lib/Cli');
+var Cli = require('../../lib/cli');
 
 var path = require('path');
 
