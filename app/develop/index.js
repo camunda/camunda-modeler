@@ -2,7 +2,15 @@
 
 var ConnectClient = require('electron-connect').client;
 
+var getAppVersion = require('../util/get-version');
+
 var app = require('../lib');
+
+app.developmentMode = true;
+
+app.version = getAppVersion(require('../../package'), {
+  nightly: 'dev'
+});
 
 /**
  * The electron-connect client, that allows us to start and stop
@@ -16,8 +24,6 @@ app.on('app:window-created', function(window) {
 app.on('before-quit', function() {
   app.exit(0);
 });
-
-app.developmentMode = true;
 
 app.on('app:window-created', function() {
   app.menu.rebuild();

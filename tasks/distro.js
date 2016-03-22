@@ -1,7 +1,5 @@
 'use strict';
 
-var semver = require('semver');
-
 var fs = require('fs');
 var which = require('which');
 var forEach = require('lodash/collection/forEach');
@@ -14,6 +12,9 @@ var path = require('path');
 
 var PACKAGE_JSON = require('../package.json');
 
+var getAppVersion = require('../app/util/get-version'),
+    patchPkgVersion = require('../app/util/patch-pkg-version');
+
 
 module.exports = function(grunt) {
 
@@ -23,20 +24,24 @@ module.exports = function(grunt) {
 
     var buildVersion = grunt.option('build') || '0000';
 
-    var appVersion = grunt.option('app-version');
+    var appVersion = grunt.option('app-version') || getAppVersion(PACKAGE_JSON, {
+      nightly: nightly ? 'nightly' : false
+    });
 
-    if (!appVersion) {
-      appVersion = PACKAGE_JSON.version;
-
-      if (nightly) {
-        appVersion = semver.inc(appVersion, 'minor') + '-nightly';
-      }
-    }
+    // monkey patch version in package.json
+    patchPkgVersion(appVersion);
 
     var electronVersion = PACKAGE_JSON.devDependencies['electron-prebuilt'];
 
     var platform = this.data.platform;
-    var done = this.async();
+
+    var __done = this.async();
+    var done = function(err) {
+      // restore old version in package.json
+      patchPkgVersion(PACKAGE_JSON.version);
+
+      __done(err);
+    };
 
     grunt.log.writeln(
       'Assembling distribution(s) ' +
