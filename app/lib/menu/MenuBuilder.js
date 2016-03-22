@@ -209,6 +209,8 @@ MenuBuilder.prototype.appendSelectTab = function() {
     }
   }));
 
+  this.appendSeparator();
+
   return this;
 };
 
