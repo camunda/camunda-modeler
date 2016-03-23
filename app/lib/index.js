@@ -15,11 +15,12 @@ var forEach = require('lodash/collection/forEach');
  *
  * @see http://electron.atom.io/docs/v0.34.0/api/crash-reporter/
  */
-// TODO(nre): do we want to do this?
+// TODO(nikku): do we want to do this?
 // require('crash-reporter').start();
 
 var Platform = require('./platform'),
     Config = require('./config'),
+    ClientConfig = require('./client-config'),
     FileSystem = require('./file-system'),
     Workspace = require('./workspace'),
     Dialog = require('./dialog'),
@@ -29,10 +30,7 @@ var Platform = require('./platform'),
 var browserOpen = require('./util/browser-open'),
     renderer = require('./util/renderer');
 
-
 var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
-
-new Workspace(config);
 
 Platform.create(process.platform, app, config);
 
@@ -42,7 +40,16 @@ app.developmentMode = false;
 app.version = require('../../package').version;
 
 // bootstrap the application's menus
+//
+// TODO(nikku): remove app.menu binding when development
+// mode bootstrap issue is fixed in electron-connect
 app.menu = new Menu(process.platform);
+
+// bootstrap workspace behavior
+new Workspace(config);
+
+// bootstrap client config behavior
+var clientConfig = new ClientConfig();
 
 // bootstrap dialog
 var dialog = new Dialog({
@@ -52,7 +59,7 @@ var dialog = new Dialog({
 });
 
 // bootstrap filesystem
-app.fileSystem = new FileSystem({
+var fileSystem = new FileSystem({
   dialog: dialog
 });
 
@@ -128,7 +135,7 @@ renderer.on('dialog:content-changed', function(done) {
 
 
 function saveCallback(saveAction, diagramFile, done) {
-  saveAction.apply(app.fileSystem, [ diagramFile, (err, updatedDiagram) => {
+  saveAction.apply(fileSystem, [ diagramFile, (err, updatedDiagram) => {
     if (err) {
       return done(err);
     }
@@ -141,24 +148,32 @@ function saveCallback(saveAction, diagramFile, done) {
   }]);
 }
 
+renderer.on('config:load', function(done) {
+  try {
+    done(null, clientConfig.load());
+  } catch (e) {
+    done(e);
+  }
+});
+
 renderer.on('file:save-as', function(diagramFile, done) {
-  saveCallback(app.fileSystem.saveAs, diagramFile, done);
+  saveCallback(fileSystem.saveAs, diagramFile, done);
 });
 
 renderer.on('file:save', function(diagramFile, done) {
-  saveCallback(app.fileSystem.save, diagramFile, done);
+  saveCallback(fileSystem.save, diagramFile, done);
 });
 
 renderer.on('file:read', function(diagramFile, done) {
-  done(null, app.fileSystem.readFile(diagramFile.path));
+  done(null, fileSystem.readFile(diagramFile.path));
 });
 
 renderer.on('file:read-stats', function(diagramFile, done) {
-  done(null, app.fileSystem.readFileStats(diagramFile));
+  done(null, fileSystem.readFileStats(diagramFile));
 });
 
 renderer.on('file:open', function(done) {
-  app.fileSystem.open(function(err, diagramFiles) {
+  fileSystem.open(function(err, diagramFiles) {
     if (err) {
       return done(err);
     }
@@ -200,7 +215,7 @@ app.on('app:open-file', function(filePath) {
   }
 
   try {
-    file = app.fileSystem.readFile(filePath);
+    file = fileSystem.readFile(filePath);
   } catch (e) {
     return dialog.showDialog('unrecognizedFile', { name: path.basename(filePath) });
   }
@@ -216,7 +231,7 @@ app.on('app:client-ready', function() {
 
   forEach(app.openFiles, function(filePath) {
     try {
-      files.push(app.fileSystem.readFile(filePath));
+      files.push(fileSystem.readFile(filePath));
     } catch (e) {
       dialog.showDialog('unrecognizedFile', { name: path.basename(filePath) });
     }

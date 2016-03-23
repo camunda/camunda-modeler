@@ -8,7 +8,6 @@ var renderer = require('./util/renderer');
 
 
 function Workspace(config) {
-  this._workspace = {};
 
   renderer.on('workspace:restore', function(defaultConfig, done) {
     var tabs = [],

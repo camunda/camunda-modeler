@@ -44,11 +44,11 @@ function App(options) {
     'logger',
     'events',
     'dialog',
-    'fileSystem'
+    'fileSystem',
+    'config'
   ], options);
 
   BaseComponent.call(this, options);
-
 
   this.layout = {
     propertiesPanel: {
@@ -305,7 +305,8 @@ App.prototype.createComponent = function(Component, options) {
     events: this.events,
     layout: this.layout,
     logger: this.logger,
-    dialog: this.dialog
+    dialog: this.dialog,
+    config: this.config
   });
 
   return new Component(actualOptions);
@@ -1018,7 +1019,7 @@ App.prototype.persistWorkspace = function(done) {
  */
 App.prototype.restoreWorkspace = function(done) {
 
-  var defaultConfig = {
+  var defaultWorkspace = {
     tabs: [],
     layout: {
       propertiesPanel: {
@@ -1032,7 +1033,7 @@ App.prototype.restoreWorkspace = function(done) {
     }
   };
 
-  this.workspace.load(defaultConfig, (err, config) => {
+  this.workspace.load(defaultWorkspace, (err, workspaceConfig) => {
 
     if (err) {
       debug('workspace load error', err);
@@ -1041,26 +1042,49 @@ App.prototype.restoreWorkspace = function(done) {
     }
 
     // restore tabs
-    if (config.tabs && config.tabs.length) {
-      this.openTabs(config.tabs);
+    if (workspaceConfig.tabs && workspaceConfig.tabs.length) {
+      this.openTabs(workspaceConfig.tabs);
     }
 
-    if (config.activeTab && config.activeTab !== -1) {
-      this.activeTab = this.tabs[config.activeTab];
+    if (workspaceConfig.activeTab && workspaceConfig.activeTab !== -1) {
+      this.activeTab = this.tabs[workspaceConfig.activeTab];
     }
 
-    this.events.emit('layout:update', config.layout);
+    this.events.emit('layout:update', workspaceConfig.layout);
 
     this.events.emit('changed');
 
     this.events.emit('workspace:restored');
 
     // we are done
-    done(null, config);
+    done(null, workspaceConfig);
   });
 
 };
 
+/**
+ * Load the application configuration.
+ *
+ * @param {Function} done
+ */
+App.prototype.loadConfig = function(done) {
+
+  this.config.load((err) => {
+
+    if (err) {
+      debug('configuration load error', err);
+
+      return done(err);
+    }
+
+    this.events.emit('changed');
+
+    this.events.emit('configuration:loaded');
+
+    // we are done
+    done(null);
+  });
+};
 
 /**
  * Enables/disables any (button) menu entries
@@ -1082,15 +1106,29 @@ App.prototype.updateMenuEntry = function(id, isDisabled) {
  */
 App.prototype.run = function() {
 
+  // initialization sequence
+  //
+  // (0) select empty tab
+  // (1) load configuration
+  // (2) restore workspace
+  // (3) indicate ready
+
   this.selectTab(this.tabs[0]);
 
-  this.restoreWorkspace((err) => {
+  this.loadConfig((err) => {
+
     if (err) {
-      debug('workspace restore error', err);
-    } else {
-      debug('workspace restored');
+      this.logger.warn('Failed to load config', err);
     }
-    this.events.emit('ready');
+
+    this.restoreWorkspace((err) => {
+      if (err) {
+        debug('workspace restore error', err);
+      } else {
+        debug('workspace restored');
+      }
+      this.events.emit('ready');
+    });
   });
 
   this.events.emit('changed');

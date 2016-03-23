@@ -25,6 +25,10 @@ app.on('before-quit', function() {
   app.exit(0);
 });
 
+// workaround development mode not properly bootstrapping
+// application on linux
+//
+// TODO(nikku): remove when fixed in electron-connect
 app.on('app:window-created', function() {
   app.menu.rebuild();
 });

@@ -1,6 +1,7 @@
 'use strict';
 
-var Dialog = require('test/helper/mock/dialog'),
+var Config = require('test/helper/mock/config'),
+    Dialog = require('test/helper/mock/dialog'),
     Events = require('test/helper/mock/events'),
     FileSystem = require('test/helper/mock/file-system'),
     Workspace = require('test/helper/mock/workspace'),
@@ -63,22 +64,25 @@ var UNSAVED_FILE = { path: '[unsaved]' };
 
 describe('App', function() {
 
-  var events, logger, fileSystem, workspace, dialog, app;
+  var app, config, dialog,
+      events, fileSystem, logger,
+      workspace;
 
   beforeEach(function() {
+    config = new Config();
     dialog = new Dialog();
     events = new Events();
     fileSystem = new FileSystem();
-    workspace = new Workspace();
     logger = new Logger();
+    workspace = new Workspace();
 
-    // given
     app = new App({
+      config: config,
       dialog: dialog,
       events: events,
       fileSystem: fileSystem,
-      workspace: workspace,
-      logger: logger
+      logger: logger,
+      workspace: workspace
     });
 
   });
@@ -1379,19 +1383,19 @@ describe('App', function() {
         it('should persist empty', function(done) {
 
           // when
-          app.persistWorkspace(function(err, config) {
+          app.persistWorkspace(function(err, workspaceConfig) {
 
             // then
             expect(err).not.to.exist;
 
-            expect(config).to.have.keys([
+            expect(workspaceConfig).to.have.keys([
               'tabs',
               'activeTab',
               'layout'
             ]);
 
-            expect(config.tabs).to.have.length(0);
-            expect(config.activeTab).to.eql(-1);
+            expect(workspaceConfig.tabs).to.have.length(0);
+            expect(workspaceConfig.activeTab).to.eql(-1);
 
             done();
           });
@@ -1408,19 +1412,19 @@ describe('App', function() {
           app.selectTab(app.tabs[0]);
 
           // when
-          app.persistWorkspace(function(err, config) {
+          app.persistWorkspace(function(err, workspaceConfig) {
 
             expect(err).not.to.exist;
 
-            expect(config).to.have.keys([
+            expect(workspaceConfig).to.have.keys([
               'tabs',
               'activeTab',
               'layout'
             ]);
 
-            expect(config.tabs).to.eql([ bpmnFile, dmnFile ]);
+            expect(workspaceConfig.tabs).to.eql([ bpmnFile, dmnFile ]);
 
-            expect(config.activeTab).to.eql(0);
+            expect(workspaceConfig.activeTab).to.eql(0);
 
             done();
           });
@@ -1510,12 +1514,12 @@ describe('App', function() {
         app.openTabs([ bpmnFile ]);
 
         // then
-        app.on('workspace:persisted', function(err, config) {
+        app.on('workspace:persisted', function(err, workspaceConfig) {
 
           expect(err).not.to.exists;
 
-          expect(config.tabs).to.have.length(1);
-          expect(config.activeTab).to.eql(0);
+          expect(workspaceConfig.tabs).to.have.length(1);
+          expect(workspaceConfig.activeTab).to.eql(0);
 
           done();
         });
@@ -1533,12 +1537,12 @@ describe('App', function() {
         app.selectTab(app.tabs[1]);
 
         // then
-        app.on('workspace:persisted', function(err, config) {
+        app.on('workspace:persisted', function(err, workspaceConfig) {
 
           expect(err).not.to.exists;
 
-          expect(config.tabs).to.have.length(2);
-          expect(config.activeTab).to.eql(1);
+          expect(workspaceConfig.tabs).to.have.length(2);
+          expect(workspaceConfig.activeTab).to.eql(1);
 
           done();
         });
@@ -1556,12 +1560,12 @@ describe('App', function() {
         app.closeTab(app.tabs[1]);
 
         // then
-        app.on('workspace:persisted', function(err, config) {
+        app.on('workspace:persisted', function(err, workspaceConfig) {
 
           expect(err).not.to.exists;
 
-          expect(config.tabs).to.have.length(1);
-          expect(config.activeTab).to.eql(0);
+          expect(workspaceConfig.tabs).to.have.length(1);
+          expect(workspaceConfig.activeTab).to.eql(0);
 
           done();
         });
@@ -1574,10 +1578,10 @@ describe('App', function() {
         app.createDiagram('bpmn');
 
         // then
-        app.on('workspace:persisted', function(err, config) {
+        app.on('workspace:persisted', function(err, workspaceConfig) {
           expect(err).not.to.exist;
 
-          expect(config.tabs).to.have.length(0);
+          expect(workspaceConfig.tabs).to.have.length(0);
 
           done();
         });
@@ -1599,6 +1603,41 @@ describe('App', function() {
 
         // then
         expect(restoreWorkspace).to.have.been.called;
+      });
+
+    });
+
+  });
+
+
+  describe('config', function() {
+
+    it('should provide entries after load', function() {
+
+      // given
+      config.setLoadResult({ foo: 'bar' });
+
+      // when
+      app.loadConfig(function(err) {
+
+        // then
+        expect(app.config._entries).to.eql({ foo: 'bar' });
+      });
+    });
+
+
+    describe('load behavior', function() {
+
+      it('should load on run', function() {
+
+        // given
+        var loadConfig = spy(app, 'loadConfig');
+
+        // when
+        app.run();
+
+        // then
+        expect(loadConfig).to.have.been.called;
       });
 
     });

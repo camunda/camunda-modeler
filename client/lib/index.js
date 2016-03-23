@@ -14,6 +14,7 @@ var Logger = require('base/logger'),
     Workspace = require('external/workspace'),
     FileSystem = require('external/file-system'),
     Dialog = require('external/dialog'),
+    Config = require('external/config'),
     Menu = require('external/window-menu');
 
 var App = require('./app');
@@ -33,7 +34,8 @@ domReady(function() {
     events: new Events(),
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
-    workspace: new Workspace()
+    workspace: new Workspace(),
+    config: new Config()
   });
 
   // Setting up external components
