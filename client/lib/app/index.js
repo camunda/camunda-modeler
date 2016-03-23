@@ -1206,6 +1206,10 @@ App.prototype.recheckTabContent = function(tab) {
 
   rdebug('checking');
 
+  if (typeof tab.file.lastModified === 'undefined') {
+    return rdebug('skipping (missing tab.file.lastChanged)');
+  }
+
   var setNewFile = (file) => {
     tab.setFile(assign({}, tab.file, file));
     this.events.emit('workspace:changed');
