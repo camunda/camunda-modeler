@@ -12,8 +12,6 @@ function ClientConfig() {
    * @return {Object}
    */
   this.load = function() {
-    console.log('[client-config]', 'load');
-
     return {};
   };
 }

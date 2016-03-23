@@ -149,6 +149,8 @@ function saveCallback(saveAction, diagramFile, done) {
 }
 
 renderer.on('config:load', function(done) {
+  console.log('[client-config]', 'load');
+
   try {
     done(null, clientConfig.load());
   } catch (e) {

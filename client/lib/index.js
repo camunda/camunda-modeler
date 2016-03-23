@@ -9,13 +9,13 @@ var debug = require('debug')('app-client');
 // provide vdom utility
 global.h = require('vdom/h');
 
-var Logger = require('base/logger'),
-    Events = require('base/events'),
-    Workspace = require('external/workspace'),
-    FileSystem = require('external/file-system'),
+var Config = require('external/config'),
     Dialog = require('external/dialog'),
-    Config = require('external/config'),
-    Menu = require('external/window-menu');
+    Events = require('base/events'),
+    FileSystem = require('external/file-system'),
+    Logger = require('base/logger'),
+    Menu = require('external/window-menu'),
+    Workspace = require('external/workspace');
 
 var App = require('./app');
 
@@ -30,12 +30,12 @@ Delegator();
 domReady(function() {
 
   var app = new App({
-    logger: new Logger(),
-    events: new Events(),
+    config: new Config(),
     dialog: new Dialog(),
+    events: new Events(),
     fileSystem: new FileSystem(),
-    workspace: new Workspace(),
-    config: new Config()
+    logger: new Logger(),
+    workspace: new Workspace()
   });
 
   // Setting up external components
