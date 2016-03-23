@@ -16,7 +16,6 @@
     "scroll-tabs": {
       "version": "0.2.0"
     },
-
     "bpmn-js": {
       "version": "bpmn-io/bpmn-js",
       "dependencies": {
@@ -473,6 +472,9 @@
           "version": "0.4.0"
         }
       }
+    },
+    "drag-tabs": {
+      "version": "0.1.0"
     },
     "dom-delegator": {
       "version": "13.1.0",
