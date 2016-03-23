@@ -306,6 +306,9 @@ BpmnEditor.prototype.render = function() {
              onDragstart={ dragger(this.compose('resizeProperties', copy(propertiesLayout))) }>
           Properties Panel
         </div>
+        <div className="resize-handle"
+             draggable="true"
+             onDragStart={ dragger(this.compose('resizeProperties', copy(propertiesLayout))) }></div>
         <div className="properties-container"
              onAppend={ this.compose('mountProperties') }
              onRemove={ this.compose('unmountProperties') }>
