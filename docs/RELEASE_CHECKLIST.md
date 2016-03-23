@@ -6,6 +6,7 @@
 * [ ] semantic release (`grunt release {minor|major|patch}`)
 * [ ] wait for CI infrastructure to build the release
 * [ ] integration test [released artifacts](https://camunda.org/release/camunda-modeler/) once built
-* [ ] write blog post
+* [ ] write blog post on [blog.camunda.org](https://blog.camunda.org/)
+* [ ] update download version on camunda.org
 * [ ] spread the word
 ```
