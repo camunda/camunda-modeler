@@ -1165,17 +1165,19 @@ App.prototype.quit = function() {
   });
 };
 
+var rdebug = require('debug')('app - external change');
 
 /**
  * Checks tab content for external changes
  * @param  {Tab} tab
  */
 App.prototype.recheckTabContent = function(tab) {
-  debug('[recheckTabContent]: checking tab for external content changes');
 
   if (isUnsaved(tab.file)) {
-    return debug('[recheckTabContent]: tab content has no link to external storage');
+    return rdebug('skipping (unsaved)');
   }
+
+  rdebug('checking');
 
   var setNewFile = (file) => {
     tab.setFile(assign({}, tab.file, file));
@@ -1184,34 +1186,35 @@ App.prototype.recheckTabContent = function(tab) {
 
   this.fileSystem.readFileStats(tab.file, (err, statsFile) => {
     if (err) {
-      return debug('[recheckTabContent]: could not read file properties', err);
+      return rdebug('file check error', err);
     }
 
-    debug('[recheckTabContent]: old lastModified "%s"', new Date(tab.file.lastModified).toISOString());
-    debug('[recheckTabContent]: new lastModified "%s"', new Date(statsFile.lastModified).toISOString());
+    rdebug('last modified { tab: %s, stats: %s }',
+      tab.file.lastModified || 0,
+      statsFile.lastModified);
 
     if (!(statsFile.lastModified > tab.file.lastModified)) {
-      return debug('[recheckTabContent]: content not changed');
+      return rdebug('unchanged');
     }
 
-    debug('[recheckTabContent]: file has been changed externally');
+    rdebug('external change');
 
     // notifying user about external changes
     this.dialog.contentChanged((answer) => {
 
       if (isOk(answer)) {
-        debug('[recheckTabContent]: ok, reloading latest file');
+        rdebug('reloading');
 
         this.fileSystem.readFile(tab.file, function(err, updatedFile) {
           if (err) {
-            return debug('[recheckTabContent]: could not read file', err);
+            return rdebug('reloading failed', err);
           }
 
           setNewFile(updatedFile);
         });
 
       } else if (isCancel(answer)) {
-        debug('[recheckTabContent]: canceled, updating "lastModified" flag');
+        rdebug('NOT reloading');
 
         setNewFile(statsFile);
       }
