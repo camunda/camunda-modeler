@@ -993,6 +993,63 @@ describe('App', function() {
   });
 
 
+  describe('tab dragging', function() {
+    var tabs;
+
+    beforeEach(function() {
+      var bpmnFile = createBpmnFile(bpmnXML),
+          dmnFile = createDmnFile(dmnXML);
+
+      app.openTabs([ bpmnFile, dmnFile ]);
+
+      tabs = app.tabs;
+    });
+
+
+    it('should drag tab to new position', function() {
+      // given
+      var dragTab = app.tabs[0],
+          targetTab = app.tabs[1];
+
+      // when
+      app.shiftTab(dragTab, 1);
+
+      // then
+      expect(tabs[0]).to.equal(targetTab);
+      expect(tabs[1]).to.equal(dragTab);
+    });
+
+
+    it('should not drag tab when target and drag tab are the same', function() {
+      // given
+      var dragTab = app.tabs[0];
+
+      var selectTab = spy(app, 'selectTab');
+
+      // when
+      app.shiftTab(dragTab, 0);
+
+      // then
+      expect(tabs[0]).to.equal(dragTab);
+      expect(selectTab).to.not.have.been.called;
+    });
+
+
+    it('should not shift tabs when no drag tab is provided', function() {
+      // given
+      var dragTab = null;
+
+      var selectTab = spy(app, 'selectTab');
+
+      // when
+      app.shiftTab(dragTab, 1);
+
+      // then
+      expect(selectTab).to.not.have.been.called;
+    });
+
+  });
+
   describe('tab closing', function() {
 
     it('should keep history of closed file', function() {
@@ -1304,7 +1361,7 @@ describe('App', function() {
       var createDiagram = spy(app, 'createDiagram');
 
       // when
-      simulateEvent(element, 'click');
+      simulateEvent(element, 'mousedown');
 
       // then
       expect(createDiagram).to.have.been.calledWith('bpmn');

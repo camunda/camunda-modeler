@@ -1,16 +1,21 @@
 'use strict';
 
+var inherits = require('inherits');
+
 var h = require('vdom/h');
 
-var ensureOpts = require('util/ensure-opts');
+var BaseComponent = require('base/component');
 
-var scrollTabs = require('util/dom/scroll-tabs');
+var ensureOpts = require('util/ensure-opts'),
+    scrollTabs = require('util/dom/scroll-tabs'),
+    dragTabs = require('util/dom/drag-tabs');
 
 var find = require('lodash/collection/find');
 
-var CloseHandle = require('./misc/close-handle');
+var CloseHandle = require('base/components/misc/close-handle');
 
-var SCROLL_TABS_OPTIONS = {
+
+var TABS_OPTS = {
   selectors: {
     tabsContainer: '.tabs-container',
     tab: '.tab',
@@ -24,10 +29,13 @@ function Tabbed(options) {
 
   ensureOpts([ 'onClose', 'onSelect' ], options);
 
+  BaseComponent.call(this, options);
+
   this.render = function() {
 
     var onClose = options.onClose,
         onSelect = options.onSelect,
+        onDragTab = options.onDragTab,
         tabs = options.tabs,
         activeTab = options.active;
 
@@ -39,13 +47,23 @@ function Tabbed(options) {
       }
     };
 
+    var onPositionChanged = (context) => {
+      var dragTab = context.dragTab,
+          newIdx = context.newIndex;
+
+      var tab = find(tabs, { id: dragTab.tabId });
+
+      onDragTab(tab, newIdx);
+    };
+
     var html =
       <div className={ 'tabbed ' + (options.className || '') }>
         <div className="tabs"
-             scroll={ scrollTabs(SCROLL_TABS_OPTIONS, onScroll) }>
+             scroll={ scrollTabs(TABS_OPTS, onScroll) }
+             drag={ dragTabs(TABS_OPTS, onPositionChanged) } >
           <div className="scroll-tabs-button scroll-tabs-left">‹</div>
           <div className="scroll-tabs-button scroll-tabs-right">›</div>
-          <div className="tabs-container">
+          <div className="tabs-container" >
             {
               tabs.map(tab => {
 
@@ -60,10 +78,10 @@ function Tabbed(options) {
                 return (
                   <div className={ className }
                        key={ tab.id }
+                       ref={ tab.id }
                        tabId={ tab.id }
                        title={ tab.title }
-                       onClick={ action }
-                       ref={ tab.id }
+                       onMousedown={ action }
                        tabIndex="0">
                     { tab.label }
                     { tab.closable
@@ -84,5 +102,7 @@ function Tabbed(options) {
     return html;
   };
 }
+
+inherits(Tabbed, BaseComponent);
 
 module.exports = Tabbed;

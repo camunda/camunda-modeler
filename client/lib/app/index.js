@@ -157,7 +157,6 @@ function App(options) {
 
   this.activeTab = this.tabs[0];
 
-
   this.fileHistory = [];
 
 
@@ -272,14 +271,16 @@ module.exports = App;
 
 App.prototype.render = function() {
   var html =
-    <div className="app" onDragover={ fileDrop(this.compose('openFiles')) }>
+    <div className="app">
       <MenuBar entries={ this.menuEntries } />
       <Tabbed
         className="main"
         tabs={ this.tabs }
         active={ this.activeTab }
+        onDragTab={ this.compose('shiftTab') }
         onSelect={ this.compose('selectTab') }
-        onClose={ this.compose('closeTab') } />
+        onClose={ this.compose('closeTab') }
+        onDragover={ fileDrop(this.compose('openFiles')) } />
       <Footer
         layout={ this.layout }
         log={ this.logger }
@@ -1091,6 +1092,32 @@ App.prototype.run = function() {
     }
     this.events.emit('ready');
   });
+
+  this.events.emit('changed');
+};
+
+
+/**
+ * Shifts a dragged tab to a new position (index based)
+ *
+ * @param  {Tab} tab
+ * @param  {Number} newIdx
+ */
+App.prototype.shiftTab = function(tab, newIdx) {
+  var tabs = this.tabs,
+      tabIdx;
+
+  if (!tab) {
+    return;
+  }
+
+  tabIdx = tabs.indexOf(tab);
+
+  tabs.splice(tabIdx, 1);
+
+  tabs.splice(newIdx, 0, tab);
+
+  this.events.emit('workspace:changed');
 
   this.events.emit('changed');
 };

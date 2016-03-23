@@ -48,6 +48,7 @@
     "dom-delegator": "^13.1.0",
     "domify": "^1.4.0",
     "domready": "^1.0.8",
+    "drag-tabs": "^0.1.0",
     "events": "^1.1.0",
     "format": "^0.2.1",
     "ids": "^0.2.0",
