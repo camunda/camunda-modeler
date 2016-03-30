@@ -12,9 +12,9 @@ An integrated modeling solution for BPMN and DMN based on [bpmn.io](http://bpmn.
 
 ## Resources
 
-* [Issues](https://github.com/camunda/camunda-modeler/issues)
-* [Website](http://camunda.org/bpmn/tool)
-* [Downloads](http://camunda.org/release/camunda-modeler) (see also [nightly builds](http://camunda.org/release/camunda-modeler/nightly))
+* [Give Feedback](https://forum.camunda.org/c/modeler)
+* [Download](http://camunda.org/release/camunda-modeler) (see also [nightly builds](http://camunda.org/release/camunda-modeler/nightly))
+* [Report a Bug](https://github.com/camunda/camunda-modeler/issues)
 
 
 ## Building the Application
