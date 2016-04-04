@@ -91,7 +91,7 @@ BpmnEditor.prototype.triggerEditorActions = function(action, options) {
 
   // ignore all editor actions (besides the following three)
   // if there's a current active input or textarea
-  if ([ 'removeSelection', 'stepZoom', 'zoom' ].indexOf(action) === -1 && isInputActive()) {
+  if ([ 'removeSelection', 'stepZoom', 'zoom', 'find' ].indexOf(action) === -1 && isInputActive()) {
     return;
   }
 

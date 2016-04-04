@@ -136,6 +136,8 @@ module.exports = function(grunt) {
       less: {
         files: [
           'client/{lib,styles}/**/*.less',
+          'node_modules/diagram-js/assets/**/*.less',
+          'node_modules/diagram-js/assets/**/*.css',
           'node_modules/dmn-js/styles/**/*.less',
           'node_modules/bpmn-js-properties-panel/styles/**/*.less'
         ],
@@ -218,11 +220,11 @@ module.exports = function(grunt) {
   var server = require('electron-connect').server.create({ path: 'app/develop' });
 
   grunt.registerTask('app:start', function() {
-    server.start(__dirname + '/resources/diagram/simple.bpmn');
+    server.start(__dirname + '/resources/diagram/complex.bpmn');
   });
 
   grunt.registerTask('app:restart', function() {
-    server.restart(__dirname + '/resources/diagram/simple.bpmn');
+    server.restart(__dirname + '/resources/diagram/complex.bpmn');
   });
 
   grunt.registerTask('app:reload', server.reload);
