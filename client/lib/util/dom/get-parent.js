@@ -7,8 +7,13 @@ function getParent(element, className, depth) {
   while (element && element !== document.body && depth) {
     targetClassName = element.className;
 
-    if (targetClassName && targetClassName.split(/\s/g).indexOf(className) !== -1) {
-      return element;
+    if (targetClassName) {
+      // unwrap actual className for SVGElements
+      targetClassName = targetClassName.baseVal || targetClassName;
+
+      if (targetClassName.split(/\s/g).indexOf(className) !== -1) {
+        return element;
+      }
     }
 
     depth--;
