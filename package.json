@@ -11,6 +11,7 @@
     "dev": "grunt auto-build"
   },
   "author": "Camunda BPM <http://camunda.org>",
+  "license": "SEE LICENSE IN LICENSE",
   "repository": {
     "type": "git",
     "url": "https://github.com/camunda/camunda-modeler"
