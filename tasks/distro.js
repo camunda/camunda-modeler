@@ -64,7 +64,9 @@ module.exports = function(grunt) {
       ignore: buildDistroIgnore()
     };
 
+    options['app-copyright'] = 'camunda Services GmbH, 2015-2016';
     options['app-version'] = appVersion;
+
     options['build-version'] = buildVersion;
 
     if (platform === 'darwin') {
@@ -74,7 +76,6 @@ module.exports = function(grunt) {
     if (platform === 'win32') {
       options['version-string'] = {
         CompanyName: 'camunda Services GmbH',
-        LegalCopyright: 'camunda Services GmbH, 2015-2016',
         FileDescription: 'Camunda Modeler',
         OriginalFilename: 'camunda-modeler.exe',
         ProductName: 'Camunda Modeler',
@@ -248,10 +249,13 @@ function buildDistroIgnore() {
 
   var ignore = [
     'app/develop',
-    'distro',
-    'client',
-    'resources',
     'app/test',
+    'app/util',
+    'client',
+    'distro',
+    'docs',
+    'resources',
+    'tasks',
     '.babelrc',
     '.editorconfig',
     '.eslintrc',
@@ -267,5 +271,5 @@ function buildDistroIgnore() {
     ignore.push('node_modules/' + name);
   });
 
-  return new RegExp('(' + ignore.join('|') + ')');
+  return new RegExp('^/(' + ignore.join('|') + ')');
 }
