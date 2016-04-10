@@ -271,7 +271,7 @@ module.exports = App;
 
 App.prototype.render = function() {
   var html =
-    <div className="app">
+    <div className="app" onDragover={ fileDrop(this.compose('openFiles')) }>
       <MenuBar entries={ this.menuEntries } />
       <Tabbed
         className="main"
@@ -279,8 +279,7 @@ App.prototype.render = function() {
         active={ this.activeTab }
         onDragTab={ this.compose('shiftTab') }
         onSelect={ this.compose('selectTab') }
-        onClose={ this.compose('closeTab') }
-        onDragover={ fileDrop(this.compose('openFiles')) } />
+        onClose={ this.compose('closeTab') } />
       <Footer
         layout={ this.layout }
         log={ this.logger }
