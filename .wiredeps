@@ -196,7 +196,7 @@
       "version": "bpmn-io/diagram-js-origin"
     },
     "dmn-js": {
-      "version": "0.4.1",
+      "version": "bpmn-io/dmn-js",
       "dependencies": {
         "brfs": {
           "version": "1.4.3",
@@ -416,7 +416,7 @@
           "version": "0.0.4"
         },
         "dmn-moddle": {
-          "version": "0.2.3",
+          "version": "bpmn-io/dmn-moddle",
           "dependencies": {
             "moddle": {
               "version": "0.6.3"
@@ -469,7 +469,7 @@
           "version": "0.1.2"
         },
         "table-js": {
-          "version": "0.4.0"
+          "version": "bpmn-io/table-js"
         }
       }
     },
