@@ -71,7 +71,7 @@
     "chai": "^3.5.0",
     "concat-stream": "^1.5.1",
     "electron-connect": "^0.3.7",
-    "electron-packager": "^6.0.0",
+    "electron-packager": "^5.1.0",
     "electron-prebuilt": "0.36.12",
     "errorify": "^0.3.1",
     "eslint": "^2.1.0",
