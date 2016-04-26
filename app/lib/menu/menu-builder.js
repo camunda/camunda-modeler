@@ -266,13 +266,19 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
   this.menu.append(new MenuItem({
     label: 'Copy',
     accelerator: 'CommandOrControl+C',
-    role: 'copy'
+    role: 'copy',
+    click: function() {
+      app.emit('menu:action', 'copy');
+    }
   }));
 
   this.menu.append(new MenuItem({
     label: 'Paste',
     accelerator: 'CommandOrControl+V',
-    role: 'paste'
+    role: 'paste',
+    click: function() {
+      app.emit('menu:action', 'paste');
+    }
   }));
 
   return this;

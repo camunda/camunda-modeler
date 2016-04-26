@@ -11,21 +11,29 @@ function ShortcutsFix(app) {
 
   this.bind = () => {
     debug('adding keyboard shortcuts bindings');
+
     if (!this.binded) {
       window.addEventListener('keydown', this.handler);
+
       this.binded = true;
+
       return debug('added');
     }
+
     debug('skipped');
   };
 
   this.unbind = () => {
     debug('removing keyboard shortcuts bindings');
+
     if (this.binded) {
       window.removeEventListener('keydown', this.handler);
+
       this.binded = false;
+
       return debug('removed');
     }
+
     debug('skipped');
   };
 
@@ -33,12 +41,18 @@ function ShortcutsFix(app) {
     triggerActionForCtrlKeyEvent(e, 'a', 'selectElements');
     triggerActionForCtrlKeyEvent(e, 'z', 'undo');
     triggerActionForCtrlKeyEvent(e, 'y', 'redo');
+
+    triggerActionForCtrlKeyEvent(e, 'c', 'copy');
+    triggerActionForCtrlKeyEvent(e, 'v', 'paste');
   };
 
   function triggerActionForCtrlKeyEvent(event, key, action) {
-    if ( event.ctrlKey && ( String.fromCharCode(event.which).toLowerCase() === key && !isInputActive()) ) {
+
+    if (event.ctrlKey && ( String.fromCharCode(event.which).toLowerCase() === key && !isInputActive())) {
       debug('triggering "' + action + '" for Ctrl+' + key);
+
       event.preventDefault();
+
       app.triggerAction(action);
     }
   }
