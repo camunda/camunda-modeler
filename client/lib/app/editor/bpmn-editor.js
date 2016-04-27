@@ -46,6 +46,12 @@ function BpmnEditor(options) {
 
   // elements to insert modeler and properties panel into
   this.$propertiesEl = domify('<div class="properties-parent"></div>');
+
+  this.openContextMenu = function(evt) {
+    evt.preventDefault();
+
+    this.emit('context-menu:open');
+  };
 }
 
 inherits(BpmnEditor, DiagramEditor);
@@ -294,7 +300,10 @@ BpmnEditor.prototype.render = function() {
   var warnings = getWarnings(this.lastImport);
 
   return (
-    <div className="bpmn-editor" key={ this.id + '#bpmn' } onFocusin={ this.compose('updateState') }>
+    <div className="bpmn-editor"
+         key={ this.id + '#bpmn' }
+         onFocusin={ this.compose('updateState') }
+         onContextmenu={ this.compose('openContextMenu') }>
       <div className="editor-container"
            tabIndex="0"
            onAppend={ this.compose('mountEditor') }

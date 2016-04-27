@@ -15,6 +15,7 @@ var Config = require('external/config'),
     FileSystem = require('external/file-system'),
     Logger = require('base/logger'),
     Menu = require('external/window-menu'),
+    ContextMenu = require('external/context-menu'),
     Workspace = require('external/workspace');
 
 var App = require('./app');
@@ -40,6 +41,7 @@ domReady(function() {
 
   // Setting up external components
   new Menu(app);
+  new ContextMenu(app);
 
   app.on('ready', function() {
     debug('client is ready');

@@ -243,6 +243,37 @@ MenuBuilder.prototype.appendRedo = function() {
   }));
 };
 
+MenuBuilder.prototype.appendCopyPaste = function(includeRole) {
+
+  var copyEntry = {
+    label: 'Copy',
+    accelerator: 'CommandOrControl+C',
+    click: function() {
+      app.emit('menu:action', 'copy');
+    }
+  };
+
+  var pasteEntry = {
+    label: 'Paste',
+    accelerator: 'CommandOrControl+V',
+    click: function() {
+      app.emit('menu:action', 'paste');
+    }
+  };
+
+  if (includeRole) {
+    copyEntry.role = 'copy';
+
+    pasteEntry.role = 'paste';
+  }
+
+  this.menu.append(new MenuItem(copyEntry));
+
+  this.menu.append(new MenuItem(pasteEntry));
+
+  return this;
+};
+
 MenuBuilder.prototype.appendBaseEditActions = function() {
   this.menu.append(new MenuItem({
     label: 'Undo',
@@ -263,23 +294,7 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
     role: 'cut'
   }));
 
-  this.menu.append(new MenuItem({
-    label: 'Copy',
-    accelerator: 'CommandOrControl+C',
-    role: 'copy',
-    click: function() {
-      app.emit('menu:action', 'copy');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Paste',
-    accelerator: 'CommandOrControl+V',
-    role: 'paste',
-    click: function() {
-      app.emit('menu:action', 'paste');
-    }
-  }));
+  this.appendCopyPaste(true);
 
   return this;
 };
@@ -723,4 +738,12 @@ MenuBuilder.prototype.setMenu = function() {
   Menu.setApplicationMenu(this.menu);
 
   return this;
+};
+
+MenuBuilder.prototype.buildContextMenu = function() {
+  return this.appendCopyPaste();
+};
+
+MenuBuilder.prototype.openPopup = function() {
+  return this.menu.popup();
 };

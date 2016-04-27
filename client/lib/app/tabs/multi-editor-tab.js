@@ -255,6 +255,8 @@ MultiEditorTab.prototype.createEditors = function(options) {
 
     editor.on('log:toggle', this.events.composeEmitter('log:toggle'));
 
+    editor.on('context-menu:open', this.events.composeEmitter('context-menu:open'));
+
     /**
      * messages = [ [ category, message ]* ]
      */

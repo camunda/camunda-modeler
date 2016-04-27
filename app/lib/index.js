@@ -21,6 +21,7 @@ var forEach = require('lodash/collection/forEach');
 var Platform = require('./platform'),
     Config = require('./config'),
     ClientConfig = require('./client-config'),
+    ContextMenu = require('./context-menu'),
     FileSystem = require('./file-system'),
     Workspace = require('./workspace'),
     Dialog = require('./dialog'),
@@ -44,6 +45,9 @@ app.version = require('../../package').version;
 // TODO(nikku): remove app.menu binding when development
 // mode bootstrap issue is fixed in electron-connect
 app.menu = new Menu(process.platform);
+
+// bootstrap context-menu
+new ContextMenu();
 
 // bootstrap workspace behavior
 new Workspace(config);
