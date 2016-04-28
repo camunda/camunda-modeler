@@ -1,10 +1,14 @@
 'use strict';
 
+var path = require('path');
+
+var ElementTemplates = require('./element-templates');
+
 /**
  * A configuration that is provided
  * to the client during bootstrapping.
  */
-function ClientConfig() {
+function ClientConfig(app) {
 
   /**
    * Load the configuration.
@@ -12,8 +16,23 @@ function ClientConfig() {
    * @return {Object}
    */
   this.load = function() {
-    return {};
+    return {
+      'bpmn.elementTemplates': loadTemplates(app)
+    };
   };
 }
 
 module.exports = ClientConfig;
+
+
+function loadTemplates(app) {
+
+  var templatePaths = [
+    app.getPath('userData'),
+    app.developmentMode ? process.cwd() : path.dirname(app.getPath('exe'))
+  ];
+
+  return ElementTemplates.load(templatePaths).get();
+}
+
+module.exports.loadTemplates = loadTemplates;

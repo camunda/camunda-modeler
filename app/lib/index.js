@@ -53,7 +53,7 @@ new ContextMenu();
 new Workspace(config);
 
 // bootstrap client config behavior
-var clientConfig = new ClientConfig();
+var clientConfig = new ClientConfig(app);
 
 // bootstrap dialog
 var dialog = new Dialog({

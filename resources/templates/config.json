@@ -1,0 +1,193 @@
+[
+  {
+    "label": "MailTask",
+    "id": "com.camunda.example.MailTask",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Recipient",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "target": "recipient"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Template",
+        "type": "Text",
+        "description": "By the way, you can use freemarker templates ${...} here",
+        "value": "Hello ${firstName}!",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "target": "messageBody",
+          "scriptFormat": "freemarker"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Result Variable",
+        "type": "String",
+        "value": "mailResult",
+        "binding": {
+          "type": "camunda:outputParameter",
+          "source": "${mailResult}",
+          "scriptFormat": "freemarker"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      }
+    ]
+  },
+  {
+    "label": "AsyncAwesomeTask",
+    "id": "com.camunda.example.AwesomeTask",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": [
+      {
+        "id": "1",
+        "label": "Are you awesome?",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "target": "camunda:asyncBefore"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "async-before": false
+    }
+  },
+  {
+    "label": "Custom ServiceTask",
+    "id": "com.camunda.example.CustomServiceTask",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Delegate to Call",
+        "type": "String",
+        "editable": false,
+        "value": "com.camunda.example.FooDelegate",
+        "binding": {
+          "type": "property",
+          "target": "camunda:delegateExpression"
+        }
+      }
+    ],
+    "entriesVisible": true
+  },
+  {
+    "label": "VIP-Order Path",
+    "id": "e.com.merce.FastPath",
+    "appliesTo": [
+      "bpmn:SequenceFlow"
+    ],
+    "properties": [
+      {
+        "label": "VIP-Ordering",
+        "type": "String",
+        "editable": false,
+        "value": "${ customer.vip }",
+        "binding": {
+          "type": "property",
+          "target": "conditionExpression"
+        }
+      },
+      {
+        "label": "Label",
+        "type": "Text",
+        "value": "YEY YEA!",
+        "binding": {
+          "type": "property",
+          "target": "name"
+        }
+      }
+    ]
+  },
+  {
+    "label": "WS Caller Task",
+    "id": "com.camunda.example.WsCaller",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Web Service URL",
+        "description": "Specify the url of the web service to talk to",
+        "type": "String",
+        "binding": {
+          "type": "camunda:property",
+          "name": "webServiceUrl"
+        },
+        "constraints": {
+          "notEmpty": true,
+          "pattern": {
+            "value": "https://.*",
+            "message": "Must be https URL"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "label": "Check Invoice Task",
+    "id": "com.camunda.example.CheckInvoiceTask",
+    "appliesTo": [
+      "bpmn:UserTask"
+    ],
+    "properties": [
+      {
+        "label": "Candidate Users",
+        "description": "Users able to carry out this task",
+        "type": "String",
+        "value": "Walt, Jeff, Lisa",
+        "binding": {
+          "type": "property",
+          "target": "camunda:candidateUsers"
+        },
+        "constraints": {
+          "notEmpty": true,
+          "pattern": {
+            "value": "\\s*(\\w+,\\s?)*\\w+\\s*",
+            "message": "Use comma separated list of user names"
+          }
+        }
+      },
+      {
+        "label": "Candidate Groups",
+        "description": "Groups able to carry out this task",
+        "type": "String",
+        "value": "Backoffice",
+        "binding": {
+          "type": "property",
+          "target": "camunda:candidateGroups"
+        },
+        "constraints": {
+          "notEmpty": true,
+          "pattern": {
+            "value": "\\s*(\\w+,\\s?)*\\w+\\s*",
+            "message": "Use comma separated list of group names"
+          }
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "candidateUsers": false,
+      "candidateGroups": false
+    }
+  }
+]

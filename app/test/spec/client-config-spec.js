@@ -8,7 +8,13 @@ describe('ClientConfig', function() {
   var clientConfig;
 
   beforeEach(function() {
-    clientConfig = new ClientConfig();
+    var app = {
+      getPath: function(type) {
+        return '';
+      }
+    };
+
+    clientConfig = new ClientConfig(app);
   });
 
 
@@ -18,7 +24,9 @@ describe('ClientConfig', function() {
     var cfg = clientConfig.load();
 
     // then
-    expect(cfg).to.eql({});
+    expect(cfg).to.have.keys([
+      'bpmn.elementTemplates'
+    ]);
   });
 
 });

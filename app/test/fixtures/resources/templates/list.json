@@ -1,0 +1,10 @@
+[
+  {
+    "id": "com.foo.Bar",
+    "FOO": "BAR"
+  },
+
+  {
+    "id": "com.foo.Bar"
+  }
+]

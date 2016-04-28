@@ -548,6 +548,9 @@
     "format": {
       "version": "0.2.2"
     },
+    "glob": {
+      "version": "7.0.3"
+    },
     "ids": {
       "version": "0.2.0",
       "dependencies": {
