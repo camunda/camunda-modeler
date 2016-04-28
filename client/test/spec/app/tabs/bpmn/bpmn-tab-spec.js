@@ -1,6 +1,7 @@
 'use strict';
 
-var Events = require('test/helper/mock/events'),
+var Config = require('test/helper/mock/config'),
+    Events = require('test/helper/mock/events'),
     Logger = require('base/logger'),
     Dialog = require('test/helper/mock/dialog');
 
@@ -31,12 +32,13 @@ function createFile(options) {
 
 describe('BpmnTab', function() {
 
-  var events, logger, dialog;
+  var events, logger, dialog, config;
 
   beforeEach(function() {
     events = new Events();
     logger = new Logger();
     dialog = new Dialog();
+    config = new Config();
   });
 
   function createBpmnTab(id, file) {
@@ -44,6 +46,7 @@ describe('BpmnTab', function() {
       closable: true,
       dirty: true,
       id: id,
+      config: config,
       events: events,
       dialog: dialog,
       file: file || createFile(),

@@ -184,7 +184,7 @@ DiagramEditor.prototype.showWarnings = function() {
 
   messages.push([ 'warning', '' ]);
 
-  this.emit('log', messages);
+  this.log(messages);
 };
 
 DiagramEditor.prototype.hideWarnings = function() {
@@ -193,7 +193,15 @@ DiagramEditor.prototype.hideWarnings = function() {
   this.emit('changed');
 };
 
-DiagramEditor.prototype.openLogger = function() {
+DiagramEditor.prototype.log = function(messages, open) {
+  this.emit('log', messages);
+
+  if (open) {
+    this.openLog();
+  }
+};
+
+DiagramEditor.prototype.openLog = function() {
   this.emit('log:toggle', { open: true });
 };
 

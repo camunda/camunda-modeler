@@ -152,7 +152,7 @@ DmnEditor.prototype.render = function() {
            onRemove={ this.compose('unmountEditor') }>
       </div>
       <WarningsOverlay warnings={ warnings }
-                       onShowDetails={ this.compose('openLogger') }
+                       onShowDetails={ this.compose('openLog') }
                        onClose={ this.compose('hideWarnings') } />;
     </div>
   );

@@ -4,6 +4,8 @@ var describeEditor = require('./commons').describeEditor;
 
 var BpmnEditor = require('app/editor/bpmn-editor');
 
+var Config = require('test/helper/mock/config');
+
 var select = require('test/helper/vdom').select,
     render = require('test/helper/vdom').render,
     simulateEvent = require('test/helper/vdom').simulateEvent;
@@ -15,6 +17,7 @@ var spy = require('test/helper/util/spy');
 
 function createEditor() {
   return new BpmnEditor({
+    config: new Config(),
     layout: {
       propertiesPanel: {}
     }
@@ -165,6 +168,40 @@ describe('BpmnEditor', function() {
   });
 
 
+  it('should load element templates', function(done) {
+
+    // given
+    editor.config.set('bpmn.elementTemplates', [
+      {
+        label: 'FOO',
+        id: 'foo',
+        appliesTo: [
+          'bpmn:ServiceTask'
+        ],
+        properties: []
+      }
+    ]);
+
+    var $el = document.createElement('div');
+
+    editor.once('imported', function(context) {
+
+      var elementTemplates = editor.modeler.get('elementTemplates');
+
+      // then
+      expect(elementTemplates).to.exist;
+      expect(elementTemplates.get('foo')).to.exist;
+
+      done();
+    });
+
+    // when
+    editor.setXML(initialXML);
+
+    editor.mountEditor($el);
+  });
+
+
   it('should keep last import results', function(done) {
 
     // given
@@ -218,16 +255,20 @@ describe('BpmnEditor', function() {
       return select('[ref=properties-toggle]', tree);
     }
 
+    function createEditorWithLayout(layout) {
+      return new BpmnEditor({
+        config: new Config(),
+        layout: layout
+      });
+    }
 
     it('should close', function(done) {
 
       // given
-      var editor = new BpmnEditor({
-        layout: {
-          propertiesPanel: {
-            open: true,
-            width: 150
-          }
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: true,
+          width: 150
         }
       });
 
@@ -257,12 +298,10 @@ describe('BpmnEditor', function() {
     it('should open', function(done) {
 
       // given
-      var editor = new BpmnEditor({
-        layout: {
-          propertiesPanel: {
-            open: false,
-            width: 150
-          }
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: false,
+          width: 150
         }
       });
 
@@ -292,12 +331,10 @@ describe('BpmnEditor', function() {
     it('should notify modeler about change', function() {
 
       // given
-      var editor = new BpmnEditor({
-        layout: {
-          propertiesPanel: {
-            open: false,
-            width: 150
-          }
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: false,
+          width: 150
         }
       });
 
@@ -320,12 +357,10 @@ describe('BpmnEditor', function() {
     it('should resize', function(done) {
 
       // given
-      var editor = new BpmnEditor({
-        layout: {
-          propertiesPanel: {
-            open: true,
-            width: 150
-          }
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: true,
+          width: 150
         }
       });
 
