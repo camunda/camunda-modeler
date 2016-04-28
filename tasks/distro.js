@@ -2,11 +2,14 @@
 
 var fs = require('fs');
 var which = require('which');
-var forEach = require('lodash/collection/forEach');
+var difference = require('lodash/array/difference');
+var union = require('lodash/array/union');
 var packager = require('electron-packager');
 var cpr = require('ncp');
 var archiver = require('archiver');
 var concat = require('concat-stream');
+
+var execSync = require('child_process').execSync;
 
 var path = require('path');
 
@@ -244,10 +247,34 @@ function asyncMap(collection, iterator, done) {
   next();
 }
 
+function npmls(args) {
+
+  var cmd = 'npm ls --parseable ' + (args || '');
+
+  try {
+    var result = execSync(cmd, { encoding: 'utf-8' });
+
+    return result.toString('utf-8').split('\n');
+  } catch (e) {
+    console.error('Failed to ' + cmd);
+    console.error(e);
+
+    process.exit(1);
+  }
+}
 
 function buildDistroIgnore() {
 
-  var ignore = [
+  var basePath = path.resolve(__dirname, '..');
+
+  var prodDepsPaths = npmls('--prod'),
+      allDepsPaths = npmls();
+
+  var ignoreDeps = difference(allDepsPaths, prodDepsPaths).map(function(d) {
+    return path.relative(basePath, d);
+  });
+
+  var ignore = union([
     'app/develop',
     'app/test',
     'app/util',
@@ -265,11 +292,7 @@ function buildDistroIgnore() {
     'Gruntfile.js',
     'gulpfile.js',
     'README.md'
-  ];
-
-  forEach(PACKAGE_JSON.devDependencies, function(version, name) {
-    ignore.push('node_modules/' + name);
-  });
+  ], ignoreDeps);
 
   return new RegExp('^/(' + ignore.join('|') + ')');
 }
