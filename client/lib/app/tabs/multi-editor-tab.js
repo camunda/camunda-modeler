@@ -267,6 +267,10 @@ MultiEditorTab.prototype.createEditors = function(options) {
       });
     });
 
+    this.events.on('window:resized', function() {
+      editor.emit('window:resized');
+    });
+
     return editor;
   });
 };

@@ -52,6 +52,9 @@ function BpmnEditor(options) {
 
     this.emit('context-menu:open');
   };
+
+  // let canvas know that the window has been resized
+  this.on('window:resized', this.compose('resizeCanvas'));
 }
 
 inherits(BpmnEditor, DiagramEditor);
@@ -287,6 +290,13 @@ BpmnEditor.prototype.exportAs = function(type, done) {
 
     done(null, file);
   });
+};
+
+BpmnEditor.prototype.resizeCanvas = function() {
+  var modeler = this.getModeler(),
+      canvas = modeler.get('canvas');
+
+  canvas.resized();
 };
 
 BpmnEditor.prototype.render = function() {

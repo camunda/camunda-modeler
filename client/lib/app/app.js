@@ -262,6 +262,9 @@ function App(options) {
     this.createComponent(BpmnProvider, { app: this }),
     this.createComponent(DmnProvider, { app: this })
   ];
+
+  // let other components know that the window has been resized
+  window.addEventListener('resize', this.events.composeEmitter('window:resized'));
 }
 
 inherits(App, BaseComponent);
