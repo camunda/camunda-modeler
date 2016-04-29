@@ -14,7 +14,7 @@
       "version": "3.3.6"
     },
     "scroll-tabs": {
-      "version": "0.2.0"
+      "version": "0.2.1"
     },
     "bpmn-js": {
       "version": "bpmn-io/bpmn-js",
@@ -470,6 +470,14 @@
         },
         "table-js": {
           "version": "bpmn-io/table-js"
+        },
+        "ids": {
+          "version": "0.1.0",
+          "dependencies": {
+            "hat": {
+              "version": "0.0.3"
+            }
+          }
         }
       }
     },
