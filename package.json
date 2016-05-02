@@ -35,6 +35,7 @@
     ]
   },
   "dependencies": {
+    "glob": "^7.0.3",
     "inherits": "^2.0.1",
     "lodash": "^3.10.1"
   },
@@ -62,7 +63,6 @@
     "domify": "^1.4.0",
     "domready": "^1.0.8",
     "drag-tabs": "^0.1.0",
-    "glob": "^7.0.3",
     "electron-connect": "^0.3.7",
     "electron-packager": "^5.1.0",
     "electron-prebuilt": "0.36.12",
