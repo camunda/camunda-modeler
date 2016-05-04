@@ -8,6 +8,8 @@ var BpmnEditor = require('../../editor/bpmn-editor'),
     XMLEditor = require('../../editor/xml-editor'),
     MultiEditorTab = require('../multi-editor-tab');
 
+var ensureOpts = require('util/ensure-opts');
+
 
 /**
  * A tab displaying a BPMN diagram.
@@ -19,6 +21,10 @@ function BpmnTab(options) {
   if (!(this instanceof BpmnTab)) {
     return new BpmnTab(options);
   }
+
+  ensureOpts([
+    'metaData'
+  ], options);
 
   options = assign({
     editorDefinitions: [

@@ -42,7 +42,8 @@ function BpmnEditor(options) {
 
   ensureOpts([
     'layout',
-    'config'
+    'config',
+    'metaData'
   ], options);
 
   DiagramEditor.call(this, options);
@@ -60,6 +61,15 @@ function BpmnEditor(options) {
 
   // let canvas know that the window has been resized
   this.on('window:resized', this.compose('resizeCanvas'));
+
+  // set current modeler version and name to the diagram
+  this.on('save', () => {
+    var definitions = this.getModeler().definitions;
+    if (definitions) {
+      definitions.exporter = options.metaData.name;
+      definitions.exporterVersion = options.metaData.version;
+    }
+  });
 }
 
 inherits(BpmnEditor, DiagramEditor);

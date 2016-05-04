@@ -48,7 +48,8 @@ function BpmnProvider(options) {
     return app.createComponent(BpmnTab, {
       file: file,
       closable: true,
-      id: ids.next()
+      id: ids.next(),
+      metaData: app.metaData
     });
   };
 

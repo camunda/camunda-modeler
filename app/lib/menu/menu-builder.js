@@ -13,7 +13,7 @@ var merge = require('lodash/object/merge'),
 
 function MenuBuilder(opts) {
   this.opts = merge({
-    appName: 'Camunda Modeler',
+    appName: app.name,
     state: {
       dmn: false,
       bpmn: false,

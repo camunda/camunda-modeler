@@ -39,6 +39,13 @@ Platform.create(process.platform, app, config);
 app.developmentMode = false;
 
 app.version = require('../../package').version;
+app.name = 'Camunda Modeler';
+
+// this is shared variable between main and renderer processes
+global.metaData = {
+  version: app.version,
+  name: app.name
+};
 
 // bootstrap the application's menus
 //

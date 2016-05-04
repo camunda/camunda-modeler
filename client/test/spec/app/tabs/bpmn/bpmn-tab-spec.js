@@ -53,7 +53,8 @@ describe('BpmnTab', function() {
       layout: {
         propertiesPanel: {}
       },
-      logger: logger
+      logger: logger,
+      metaData: {}
     };
 
     return new BpmnTab(options);

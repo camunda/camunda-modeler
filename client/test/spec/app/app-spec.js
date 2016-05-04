@@ -82,7 +82,8 @@ describe('App', function() {
       events: events,
       fileSystem: fileSystem,
       logger: logger,
-      workspace: workspace
+      workspace: workspace,
+      metaData: {}
     });
 
   });

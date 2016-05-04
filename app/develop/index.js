@@ -12,6 +12,12 @@ app.version = getAppVersion(require('../../package'), {
   nightly: 'dev'
 });
 
+if (!global.metaData) {
+  global.metaData = {};
+}
+
+global.metaData.version = app.version;
+
 /**
  * The electron-connect client, that allows us to start and stop
  * electron via an API

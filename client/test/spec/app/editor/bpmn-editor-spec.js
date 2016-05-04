@@ -20,6 +20,10 @@ function createEditor() {
     config: new Config(),
     layout: {
       propertiesPanel: {}
+    },
+    metaData: {
+      version: '1.2.3',
+      name: 'Camunda Modeler FTW'
     }
   });
 }
@@ -258,7 +262,8 @@ describe('BpmnEditor', function() {
     function createEditorWithLayout(layout) {
       return new BpmnEditor({
         config: new Config(),
-        layout: layout
+        layout: layout,
+        metaData: {}
       });
     }
 
@@ -507,6 +512,30 @@ describe('BpmnEditor', function() {
           // then
           // make sure we serialize isExecutable, even if false
           expect(xml).to.contain('isExecutable="false"');
+
+          done();
+        });
+      });
+
+      // when
+      editor.setXML(testXML);
+
+      editor.mountEditor($el);
+    });
+
+
+    it('should set "exported" & "exporterVersion" attributes', function(done) {
+      // given
+      var $el = document.createElement('div');
+
+      editor.once('shown', function() {
+
+        editor.saveXML(function(err, xml) {
+
+          // then
+          // make sure we serialize isExecutable, even if false
+          expect(xml).to.contain('exporter="Camunda Modeler FTW"');
+          expect(xml).to.contain('exporterVersion="1.2.3"');
 
           done();
         });

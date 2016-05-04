@@ -45,7 +45,8 @@ function App(options) {
     'events',
     'dialog',
     'fileSystem',
-    'config'
+    'config',
+    'metaData'
   ], options);
 
   BaseComponent.call(this, options);

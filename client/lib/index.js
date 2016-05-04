@@ -24,6 +24,8 @@ var mainLoop = require('util/dom/main-loop');
 
 var browser = require('util/browser');
 
+var remote = require('remote');
+var metaData = remote.getGlobal('metaData');
 
 // init dom-delegator
 Delegator();
@@ -36,7 +38,8 @@ domReady(function() {
     events: new Events(),
     fileSystem: new FileSystem(),
     logger: new Logger(),
-    workspace: new Workspace()
+    workspace: new Workspace(),
+    metaData: metaData
   });
 
   // Setting up external components
