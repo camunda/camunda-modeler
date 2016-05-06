@@ -4,6 +4,9 @@ var inherits = require('inherits');
 
 var MenuItem = require('menu-item');
 
+var electron = require('electron'),
+    app = electron.app;
+
 var MenuBuilder = require('../menu-builder');
 
 
@@ -58,10 +61,23 @@ MacMenuBuilder.prototype.appendRedo = function() {
     enabled: this.opts.state.redo,
     accelerator: 'Command+Shift+Z',
     click: function(menuItem, browserWindow) {
-      browserWindow.webContents.send('menu:action', 'redo');
+      app.emit('menu:action', 'redo');
     }
   }));
 };
+
+
+MenuBuilder.prototype.appendRemoveSelection = function() {
+  this.menu.append(new MenuItem({
+    label: 'Remove Selected',
+    accelerator: 'Control+D',
+    enabled: this.opts.state.elementsSelected,
+    click: function() {
+      app.emit('menu:action', 'removeSelection');
+    }
+  }));
+};
+
 
 MacMenuBuilder.prototype.build = function() {
   this.appendAppMenu()

@@ -402,6 +402,13 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     }
   }));
 
+  this.appendRemoveSelection();
+
+  return this;
+};
+
+
+MenuBuilder.prototype.appendRemoveSelection = function() {
   this.menu.append(new MenuItem({
     label: 'Remove Selected',
     accelerator: 'Delete',
@@ -410,9 +417,8 @@ MenuBuilder.prototype.appendBpmnActions = function() {
       app.emit('menu:action', 'removeSelection');
     }
   }));
-
-  return this;
 };
+
 
 MenuBuilder.prototype.appendDmnActions = function() {
   this.menu.append(new MenuItem({
