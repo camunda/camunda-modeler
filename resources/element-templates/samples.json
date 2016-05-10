@@ -1,6 +1,6 @@
 [
   {
-    "label": "MailTask",
+    "name": "MailTask",
     "id": "com.camunda.example.MailTask",
     "appliesTo": [
       "bpmn:ServiceTask"
@@ -47,7 +47,7 @@
     ]
   },
   {
-    "label": "AsyncAwesomeTask",
+    "name": "AsyncAwesomeTask",
     "id": "com.camunda.example.AwesomeTask",
     "appliesTo": [
       "bpmn:Task"
@@ -70,7 +70,7 @@
     }
   },
   {
-    "label": "Custom ServiceTask",
+    "name": "Custom ServiceTask",
     "id": "com.camunda.example.CustomServiceTask",
     "appliesTo": [
       "bpmn:ServiceTask"
@@ -94,7 +94,7 @@
     }
   },
   {
-    "label": "VIP-Order Path",
+    "name": "VIP-Order Path",
     "id": "e.com.merce.FastPath",
     "appliesTo": [
       "bpmn:SequenceFlow"
@@ -122,7 +122,7 @@
     ]
   },
   {
-    "label": "WS Caller Task",
+    "name": "WS Caller Task",
     "id": "com.camunda.example.WsCaller",
     "appliesTo": [
       "bpmn:ServiceTask"
@@ -147,7 +147,7 @@
     ]
   },
   {
-    "label": "Check Invoice Task",
+    "name": "Check Invoice Task",
     "id": "com.camunda.example.CheckInvoiceTask",
     "appliesTo": [
       "bpmn:UserTask"
