@@ -60,7 +60,7 @@ function findTemplates(path) {
     realpath: true
   };
 
-  return glob.sync('resources/templates/**/*.json', globOptions);
+  return glob.sync('resources/element-templates/**/*.json', globOptions);
 }
 
 module.exports.findTemplates = findTemplates;
