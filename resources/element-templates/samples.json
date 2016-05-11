@@ -11,7 +11,7 @@
         "type": "String",
         "binding": {
           "type": "camunda:inputParameter",
-          "target": "recipient"
+          "name": "recipient"
         },
         "constraints": {
           "notEmpty": true
@@ -24,7 +24,7 @@
         "value": "Hello ${firstName}!",
         "binding": {
           "type": "camunda:inputParameter",
-          "target": "messageBody",
+          "name": "messageBody",
           "scriptFormat": "freemarker"
         },
         "constraints": {
@@ -60,7 +60,7 @@
         "value": true,
         "binding": {
           "type": "property",
-          "target": "camunda:asyncBefore"
+          "name": "camunda:asyncBefore"
         }
       }
     ],
@@ -83,7 +83,7 @@
         "value": "com.camunda.example.FooDelegate",
         "binding": {
           "type": "property",
-          "target": "camunda:delegateExpression"
+          "name": "camunda:delegateExpression"
         }
       }
     ],
@@ -107,7 +107,7 @@
         "value": "${ customer.vip }",
         "binding": {
           "type": "property",
-          "target": "conditionExpression"
+          "name": "conditionExpression"
         }
       },
       {
@@ -116,7 +116,7 @@
         "value": "YEY YEA!",
         "binding": {
           "type": "property",
-          "target": "name"
+          "name": "name"
         }
       }
     ]
@@ -160,7 +160,7 @@
         "value": "Walt, Jeff, Lisa",
         "binding": {
           "type": "property",
-          "target": "camunda:candidateUsers"
+          "name": "camunda:candidateUsers"
         },
         "constraints": {
           "notEmpty": true,
@@ -177,7 +177,7 @@
         "value": "Backoffice",
         "binding": {
           "type": "property",
-          "target": "camunda:candidateGroups"
+          "name": "camunda:candidateGroups"
         },
         "constraints": {
           "notEmpty": true,
