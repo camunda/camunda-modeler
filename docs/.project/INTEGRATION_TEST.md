@@ -1,6 +1,15 @@
 # Integration Test
 
-Run on nightly builds on supported platforms.
+We use a number of pre-defined steps to ensure the stability of our releases through integration tests.
+
+__Target:__ Perform tests on nightly builds on supported platforms.
+
+
+### Test Procedure
+
+* [] `npm run all`
+* [] test platform release from `distro` folder
+* [] click like crazy (see [below](#test-checklist))
 
 
 ### Test Checklist
@@ -18,10 +27,5 @@ Manual integration test for now:
 * [ ] icons are present
 * [ ] OS specific menus are being displayed
 * [ ] menu bar (icons, correctly disabled + enabled)
-
-
-Test result artifacts:
-
-* `npm run all`
-* test platform release in `distro` folder
-* click like crazy
+* [ ] external change detection works
+* [ ] image export (SVG, PNG) works

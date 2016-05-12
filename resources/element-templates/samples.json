@@ -1,17 +1,38 @@
 [
   {
-    "name": "MailTask",
+    "name": "Mail Task",
     "id": "com.camunda.example.MailTask",
     "appliesTo": [
       "bpmn:ServiceTask"
     ],
     "properties": [
       {
-        "label": "Recipient",
+        "label": "Implementation Type",
+        "type": "String",
+        "value": "com.mycompany.MailTaskImpl",
+        "editable": false,
+        "binding": {
+          "type": "property",
+          "name": "camunda:javaDelegate"
+        }
+      },
+      {
+        "label": "Sender",
         "type": "String",
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "recipient"
+          "name": "sender"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Receivers",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "receivers"
         },
         "constraints": {
           "notEmpty": true
@@ -19,9 +40,9 @@
       },
       {
         "label": "Template",
-        "type": "Text",
         "description": "By the way, you can use freemarker templates ${...} here",
         "value": "Hello ${firstName}!",
+        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
           "name": "messageBody",
@@ -32,16 +53,22 @@
         }
       },
       {
-        "label": "Result Variable",
+        "label": "Result Status",
+        "description": "The process variable to which to assign the send result to",
         "type": "String",
-        "value": "mailResult",
+        "value": "mailSendResult",
         "binding": {
           "type": "camunda:outputParameter",
-          "source": "${mailResult}",
-          "scriptFormat": "freemarker"
-        },
-        "constraints": {
-          "notEmpty": true
+          "source": "${ resultStatus }"
+        }
+      },
+      {
+        "label": "Send Async?",
+        "type": "Boolean",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
         }
       }
     ]
@@ -54,7 +81,6 @@
     ],
     "properties": [
       {
-        "id": "1",
         "label": "Are you awesome?",
         "type": "Boolean",
         "value": true,
@@ -185,6 +211,20 @@
             "value": "\\s*(\\w+,\\s?)*\\w+\\s*",
             "message": "Use comma separated list of group names"
           }
+        }
+      },
+      {
+        "label": "Task Priority",
+        "type": "Dropdown",
+        "value": "50",
+        "choices": [
+          { "name": "low", "value": "20" },
+          { "name": "medium", "value": "50" },
+          { "name": "height", "value": "100" }
+        ],
+        "binding": {
+          "type": "property",
+          "name": "camunda:priority"
         }
       }
     ],

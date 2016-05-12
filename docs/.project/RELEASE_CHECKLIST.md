@@ -1,4 +1,9 @@
-# RELEASE CHECKLIST
+# Release Checklist
+
+A list of things to perform with every Camunda Modeler release.
+
+__Hint:__ Create a release issue and copy the template below into it.
+
 
 ```markdown
 * [ ] make sure dependencies are released (`rm -rf node_modules && npm i && grunt` works)
