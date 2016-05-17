@@ -178,7 +178,8 @@ BpmnEditor.prototype.updateState = function() {
       dirty: dirty,
       zoom: true,
       editable: true,
-      inactiveInput: !inputActive
+      inactiveInput: !inputActive,
+      paste: !modeler.get('clipboard').isEmpty()
     });
   }
 
@@ -241,10 +242,16 @@ BpmnEditor.prototype.getModeler = function() {
     // lazily instantiate and cache
     this.modeler = this.createModeler(this.$el, this.$propertiesEl);
 
+    // manually setting the tree, as it is set after the event trigger in CopyPaste
+    this.modeler.on('elements.copy', (e, data) => {
+      this.modeler.get('clipboard').set(data.context.tree);
+    });
+
     // hook up with modeler change events
     this.modeler.on([
       'commandStack.changed',
-      'selection.changed'
+      'selection.changed',
+      'elements.copy'
     ], this.updateState, this);
 
     // add importing flag (high priority)
