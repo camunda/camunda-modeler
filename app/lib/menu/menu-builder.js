@@ -247,6 +247,7 @@ MenuBuilder.prototype.appendCopyPaste = function() {
 
   var copyEntry = {
     label: 'Copy',
+    enabled: !this.opts.state.inactiveInput || this.opts.state.elementsSelected,
     accelerator: 'CommandOrControl+C',
     click: function() {
       app.emit('menu:action', 'copy');
