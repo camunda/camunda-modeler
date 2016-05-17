@@ -243,7 +243,7 @@ MenuBuilder.prototype.appendRedo = function() {
   }));
 };
 
-MenuBuilder.prototype.appendCopyPaste = function(includeRole) {
+MenuBuilder.prototype.appendCopyPaste = function() {
 
   var copyEntry = {
     label: 'Copy',
@@ -261,9 +261,14 @@ MenuBuilder.prototype.appendCopyPaste = function(includeRole) {
     }
   };
 
-  if (includeRole) {
-    copyEntry.role = 'copy';
+  if (!this.opts.state.inactiveInput) {
+    this.menu.append(new MenuItem({
+      label: 'Cut',
+      accelerator: 'CommandOrControl+X',
+      role: 'cut'
+    }));
 
+    copyEntry.role = 'copy';
     pasteEntry.role = 'paste';
   }
 
@@ -288,13 +293,7 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
 
   this.appendSeparator();
 
-  this.menu.append(new MenuItem({
-    label: 'Cut',
-    accelerator: 'CommandOrControl+X',
-    role: 'cut'
-  }));
-
-  this.appendCopyPaste(true);
+  this.appendCopyPaste();
 
   return this;
 };

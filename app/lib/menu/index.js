@@ -13,10 +13,14 @@ var electron = require('electron'),
 function Menu(platform) {
   var MenuBuilder = this.MenuBuilder = requirePlatform(platform, __dirname);
 
-  // Replacing Electron default menu until application loads
+  // replace Electron default menu until application loads
   new MenuBuilder().build();
 
+  // keep latest context menu reference for client popup triggers
+  var contextMenu;
 
+  // handle menu actions
+  // make sure there is active client before sending action
   app.on('menu:action', function(action, options) {
     if (app.mainWindow) {
       return renderer.send('menu:action', action, options);
@@ -29,7 +33,7 @@ function Menu(platform) {
     app.createEditorWindow();
   });
 
-
+  // rebuild default menu on window closing while app is still running
   app.on('window-all-closed', function() {
     new MenuBuilder().build();
   });
@@ -45,11 +49,23 @@ function Menu(platform) {
       state = assign(state, { devtools: isDevToolsOpened });
     }
 
+    // rebuild main application menu
     new MenuBuilder({ state: state }).build();
+
+    // rebuild context menu based on current state
+    contextMenu = new MenuBuilder({ state: state }).buildContextMenu();
   }
 
+  // handle state updates from client
   renderer.on('menu:update', rebuildMenu);
+
+  // handle DevTools opening/closing specific state
   app.on('menu:update', rebuildMenu);
+
+  // handle context menu trigger from client
+  renderer.on('context-menu:open', function() {
+    contextMenu.openPopup();
+  });
 }
 
 module.exports = Menu;
