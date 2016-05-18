@@ -664,43 +664,51 @@ MenuBuilder.prototype.appendWindowMenu = function() {
 MenuBuilder.prototype.appendHelpMenu = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Help',
-    submenu: submenu || Menu.buildFromTemplate([{
-      label: 'Give Feedback',
-      click: function() {
-        browserOpen('https://forum.camunda.org/c/modeler');
+    submenu: submenu || Menu.buildFromTemplate([
+      {
+        label: 'Documentation',
+        click: function() {
+          browserOpen('https://docs.camunda.org/manual/latest/modeler/camunda-modeler');
+        }
+      },
+      {
+        label: 'User Forum',
+        click: function() {
+          browserOpen('https://forum.camunda.org/c/modeler');
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'BPMN 2.0 Tutorial',
+        click: function() {
+          browserOpen('https://camunda.org/bpmn/tutorial/');
+        }
+      },
+      {
+        label: 'BPMN Modeling Reference',
+        click: function() {
+          browserOpen('https://camunda.org/bpmn/reference/');
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'DMN 1.1 Tutorial',
+        click: function() {
+          browserOpen('https://camunda.org/dmn/tutorial/');
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Version ' + app.version,
+        enabled: false
       }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'BPMN 2.0 Tutorial',
-      click: function() {
-        browserOpen('https://camunda.org/bpmn/tutorial/');
-      }
-    },
-    {
-      label: 'BPMN Modeling Reference',
-      click: function() {
-        browserOpen('https://camunda.org/bpmn/reference/');
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'DMN 1.1 Tutorial',
-      click: function() {
-        browserOpen('https://camunda.org/dmn/tutorial/');
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'Version ' + app.version,
-      enabled: false
-    }])
+    ])
   }));
 
   return this;
