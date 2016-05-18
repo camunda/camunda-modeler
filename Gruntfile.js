@@ -224,7 +224,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('app:restart', function() {
-    server.restart(__dirname + '/resources/diagram/complex.bpmn');
+    server.restart();
   });
 
   grunt.registerTask('app:reload', server.reload);
