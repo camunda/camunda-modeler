@@ -670,7 +670,6 @@ App.prototype._findTabProvider = function(fileType) {
  * @param {Function} [done] invoked with (err, savedFile)
  */
 App.prototype.saveTab = function(tab, options, done) {
-
   var dialog = this.dialog;
 
   if (!tab) {
@@ -745,11 +744,33 @@ App.prototype.saveTab = function(tab, options, done) {
  * @param {Function} done
  */
 App.prototype.saveFile = function(file, saveAs, done) {
+  var self = this;
+
   var dialog = this.dialog,
       fileSystem = this.fileSystem;
 
+  function handleFileError(err, savedFile) {
+    if (err) {
+      return dialog.savingDenied(function(err, choice) {
+        if (err) {
+          debug('save file canceled: %s', err);
+
+          return done(err);
+        }
+
+        if (isCancel(choice)) {
+          return;
+        }
+
+        self.saveFile(file, { saveAs: true }, done);
+      });
+    }
+
+    done(null, savedFile);
+  }
+
   if (!saveAs) {
-    return fileSystem.writeFile(assign({}, file), done);
+    return fileSystem.writeFile(assign({}, file), handleFileError);
   }
 
   dialog.saveAs(file, (err, suggestedFile) => {
@@ -766,7 +787,7 @@ App.prototype.saveFile = function(file, saveAs, done) {
 
     debug('save file %s as %s', file.name, suggestedFile.path);
 
-    fileSystem.writeFile(assign({}, file, suggestedFile), done);
+    fileSystem.writeFile(assign({}, file, suggestedFile), handleFileError);
   });
 };
 
@@ -1201,6 +1222,7 @@ App.prototype.closeAllTabs = function() {
 
 App.prototype.reopenLastTab = function() {
   var file = this.fileHistory.pop();
+
   if (file) {
     this.openFiles([ file ]);
   }
@@ -1253,6 +1275,7 @@ App.prototype.recheckTabContent = function(tab) {
 
   var setNewFile = (file) => {
     tab.setFile(assign({}, tab.file, file));
+
     this.events.emit('workspace:changed');
   };
 

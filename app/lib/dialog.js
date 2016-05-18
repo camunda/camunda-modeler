@@ -153,6 +153,20 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
           '<camunda> namespace support works from Camunda BPM versions 7.4.0, 7.3.3, 7.2.6 onwards.'
         ].join('\n')
       };
+    },
+    savingDenied: function(options) {
+      return {
+        type: 'warning',
+        title: 'Cannot save file',
+        buttons: [
+          { id: 'cancel', label: 'Cancel' },
+          { id: 'save-as', label: 'Save File as..' }
+        ],
+        message: [
+          'We cannot save or overwrite the current file.',
+          'Do you want to save the file as.. ?'
+        ].join('\n')
+      };
     }
   };
 

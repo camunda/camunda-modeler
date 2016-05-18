@@ -107,6 +107,16 @@ function Dialog() {
   };
 
   /**
+   * Displays an error that saving the diagram was denied.
+   *
+   * @param {Error} err
+   * @param {Function} done
+   */
+  this.savingDenied = function(done) {
+    browser.send('dialog:saving-denied', done);
+  };
+
+  /**
    * Displays an error that a diagram import has failed.
    *
    * @param {Error} err

@@ -840,6 +840,57 @@ describe('App', function() {
     });
 
 
+    it('should fail on saving denied error and cancel interaction', function() {
+
+      // given
+      var file = createBpmnFile(bpmnXML),
+          tab = app.openTab(file);
+
+      var saveFileSpy = spy(app, 'saveFile');
+
+      patchSave(tab, file);
+
+      var savingDenied = new Error('saving-denied');
+
+      fileSystem.setResponse('writeFile', savingDenied);
+
+      dialog.setResponse('savingDenied', 'cancel');
+
+      // when
+      app.triggerAction('save');
+
+      // then
+      expect(dialog.savingDenied).to.have.been.called;
+
+      expect(saveFileSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should fail on saving denied error and trigger save-as', function() {
+
+      // given
+      var file = createBpmnFile(bpmnXML),
+          tab = app.openTab(file);
+
+      var saveFileSpy = spy(app, 'saveFile');
+
+      patchSave(tab, file);
+
+      var savingDenied = new Error('saving-denied');
+
+      fileSystem.setResponse('writeFile', savingDenied);
+
+      dialog.setResponse('savingDenied', 'save-as');
+
+      // when
+      app.triggerAction('save');
+
+      // then
+      expect(dialog.savingDenied).to.have.been.called;
+      expect(saveFileSpy).to.have.been.calledTwice;
+    });
+
+
     it('should fail on Error', function() {
 
       // given

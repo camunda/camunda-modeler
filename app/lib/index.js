@@ -134,6 +134,12 @@ renderer.on('dialog:close-tab', function(diagramFile, done) {
   done(null, answer);
 });
 
+renderer.on('dialog:saving-denied', function(done) {
+  var answer = dialog.showDialog('savingDenied');
+
+  done(null, answer);
+});
+
 renderer.on('dialog:content-changed', function(done) {
   var answer = dialog.showDialog('contentChanged');
 

@@ -13,6 +13,12 @@ function FileSystem() {
   this.file;
   this.statsFile;
 
+  this.writeFileResponse = null;
+
+  this.setResponse = function(type, fileOrError) {
+    this[type + 'Response'] = fileOrError;
+  };
+
 
   this.setFile = function(file) {
     this.file = file;
@@ -39,6 +45,15 @@ function FileSystem() {
    * @param {Function} done
    */
   this.writeFile = function(file, done) {
+
+    if (this.writeFileResponse) {
+
+      if (this.writeFileResponse instanceof Error) {
+        done(this.writeFileResponse);
+      } else {
+        done(null, this.writeFileResponse);
+      }
+    }
 
     // make sure the file has a well defined
     // path after save (expected behavior...)

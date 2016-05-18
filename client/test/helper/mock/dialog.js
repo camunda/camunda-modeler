@@ -13,6 +13,7 @@ function Dialog() {
   this.openResponse = null;
   this.closeResponse = null;
   this.saveAsResponse = null;
+  this.savingDeniedResponse = null;
   this.namespaceResponse = null;
   this.reimportWarningResponse = null;
   this.contentChangedResponse = null;
@@ -55,6 +56,20 @@ function Dialog() {
    */
   this.saveError = function(file, done) {
     done(null);
+  };
+
+  /**
+   * Open saving denied error dialog and callback with (err).
+   *
+   * @param {File} file
+   * @param {Function} done
+   */
+  this.savingDenied = function(done) {
+    if (this.savingDeniedResponse instanceof Error) {
+      done(this.savingDeniedResponse);
+    } else {
+      done(null, this.savingDeniedResponse);
+    }
   };
 
   /**
