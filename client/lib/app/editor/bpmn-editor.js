@@ -242,16 +242,11 @@ BpmnEditor.prototype.getModeler = function() {
     // lazily instantiate and cache
     this.modeler = this.createModeler(this.$el, this.$propertiesEl);
 
-    // manually setting the tree, as it is set after the event trigger in CopyPaste
-    this.modeler.on('elements.copy', (e, data) => {
-      this.modeler.get('clipboard').set(data.context.tree);
-    });
-
     // hook up with modeler change events
     this.modeler.on([
       'commandStack.changed',
       'selection.changed',
-      'elements.copy'
+      'elements.copied'
     ], this.updateState, this);
 
     // add importing flag (high priority)
