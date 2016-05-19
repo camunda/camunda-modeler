@@ -4,7 +4,8 @@ var forEach = require('lodash/collection/forEach');
 
 var TYPES = {
   bpmn: 'http://www.omg.org/spec/BPMN',
-  dmn: 'http://www.omg.org/spec/DMN'
+  dmn: 'http://www.omg.org/spec/DMN',
+  cmmn: 'http://www.omg.org/spec/CMMN'
 };
 
 

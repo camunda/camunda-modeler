@@ -80,7 +80,8 @@ module.exports = function(grunt) {
           {
             src: [
               'client/fonts/{app,bpmn}.*',
-              'node_modules/dmn-js/fonts/dmn-js.*'
+              'node_modules/dmn-js/fonts/dmn-js.*',
+              'node_modules/cmmn-js/assets/cmmn-font/font/cmmn.*'
             ],
             dest: 'public/fonts',
             expand: true,

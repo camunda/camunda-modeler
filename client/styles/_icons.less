@@ -20,6 +20,17 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'cmmn';
+  src: url('../fonts/cmmn.eot?99253374');
+  src: url('../fonts/cmmn.eot?99253374#iefix') format('embedded-opentype'),
+  url('../fonts/cmmn.woff?99253374') format('woff'),
+  url('../fonts/cmmn.ttf?99253374') format('truetype'),
+  url('../fonts/cmmn.svg?99253374#bpmn-io') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 [class^="icon-"]:before,
 [class*=" icon-"]:before,
 [class^="bpmn-icon-"]:before,
@@ -47,6 +58,11 @@
 [class^="bpmn-icon-"]:before,
 [class*=" bpmn-icon-"]:before {
   font-family: "bpmn";
+}
+
+[class^="cmmn-icon-"]:before,
+[class*=" cmmn-icon-"]:before {
+  font-family: "cmmn";
 }
 
 @import "_icon_codes";

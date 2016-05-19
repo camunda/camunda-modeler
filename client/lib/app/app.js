@@ -19,7 +19,8 @@ var MultiButton = require('base/components/buttons/multi-button'),
     Separator = require('base/components/buttons/separator');
 
 var BpmnProvider = require('./tabs/bpmn/provider'),
-    DmnProvider = require('./tabs/dmn/provider');
+    DmnProvider = require('./tabs/dmn/provider'),
+    CmmnProvider = require('./tabs/cmmn/provider');
 
 var EmptyTab = require('./tabs/empty-tab');
 
@@ -97,6 +98,10 @@ function App(options) {
           id: 'create-dmn-diagram',
           action: this.compose('triggerAction', 'create-dmn-diagram'),
           label: 'Create new DMN Table'
+        },{
+          id: 'create-cmmn-diagram',
+          action: this.compose('triggerAction', 'create-cmmn-diagram'),
+          label: 'Create new CMMN Diagram'
         }
       ]
     }),
@@ -261,7 +266,8 @@ function App(options) {
 
   this.tabProviders = [
     this.createComponent(BpmnProvider, { app: this }),
-    this.createComponent(DmnProvider, { app: this })
+    this.createComponent(DmnProvider, { app: this }),
+    this.createComponent(CmmnProvider, { app: this })
   ];
 
   // let other components know that the window has been resized
@@ -421,6 +427,10 @@ App.prototype.triggerAction = function(action, options) {
 
   if (action === 'create-dmn-diagram') {
     return this.createDiagram('dmn');
+  }
+
+  if (action === 'create-cmmn-diagram') {
+    return this.createDiagram('cmmn');
   }
 
   if (action === 'open-diagram') {

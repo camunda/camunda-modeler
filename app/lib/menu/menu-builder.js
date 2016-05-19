@@ -16,6 +16,7 @@ function MenuBuilder(opts) {
     appName: app.name,
     state: {
       dmn: false,
+      cmmn: false,
       bpmn: false,
       undo: false,
       redo: false,
@@ -68,6 +69,11 @@ MenuBuilder.prototype.appendNewFile = function() {
       label: 'DMN Table',
       click: function() {
         app.emit('menu:action', 'create-dmn-diagram');
+      }
+    },{
+      label: 'CMMN Diagram',
+      click: function() {
+        app.emit('menu:action', 'create-cmmn-diagram');
       }
     }])
   }));
@@ -409,6 +415,95 @@ MenuBuilder.prototype.appendBpmnActions = function() {
 };
 
 
+MenuBuilder.prototype.appendCmmnActions = function() {
+  this.menu.append(new MenuItem({
+    label: 'Hand Tool',
+    accelerator: 'H',
+    enabled: this.opts.state.inactiveInput,
+    click: function() {
+      app.emit('menu:action', 'handTool');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Lasso Tool',
+    accelerator: 'L',
+    enabled: this.opts.state.inactiveInput,
+    click: function() {
+      app.emit('menu:action', 'lassoTool');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Space Tool',
+    accelerator: 'S',
+    enabled: this.opts.state.inactiveInput,
+    click: function() {
+      app.emit('menu:action', 'spaceTool');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Direct Editing',
+    accelerator: 'E',
+    enabled: this.opts.state.elementsSelected,
+    click: function() {
+      app.emit('menu:action', 'directEditing');
+    }
+  }));
+
+  this.appendSeparator();
+
+  this.menu.append(new MenuItem({
+    label: 'Move Canvas',
+    submenu: Menu.buildFromTemplate([{
+      label: 'Move Up',
+      accelerator: 'Up',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'up'
+        });
+      }
+    }, {
+      label: 'Move Left',
+      accelerator: 'Left',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'left'
+        });
+      }
+    }, {
+      label: 'Move Down',
+      accelerator: 'Down',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'down'
+        });
+      }
+    }, {
+      label: 'Move Right',
+      accelerator: 'Right',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'right'
+        });
+      }
+    }])
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Select All',
+    accelerator: 'CommandOrControl+A',
+    click: function() {
+      app.emit('menu:action', 'selectElements');
+    }
+  }));
+
+  this.appendRemoveSelection();
+
+  return this;
+};
+
 MenuBuilder.prototype.appendRemoveSelection = function() {
   this.menu.append(new MenuItem({
     label: 'Remove Selected',
@@ -508,7 +603,6 @@ MenuBuilder.prototype.appendDmnActions = function() {
 };
 
 
-
 MenuBuilder.prototype.appendSearchActions = function() {
   this.menu.append(new MenuItem({
     label: 'Find',
@@ -557,6 +651,12 @@ MenuBuilder.prototype.appendEditMenu = function() {
       builder.appendSeparator();
 
       builder.appendDmnActions();
+    }
+
+    if (this.opts.state.cmmn) {
+      builder.appendSeparator();
+
+      builder.appendCmmnActions();
     }
 
     if (this.opts.state.searchable) {

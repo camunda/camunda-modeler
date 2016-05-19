@@ -26,14 +26,13 @@ function EmptyTab(options) {
 
     var html =
       <div className="empty-tab">
-        <h1>No open diagram</h1>
-        <p>
-          <button onClick={ this.app.compose('triggerAction', 'create-bpmn-diagram') }>create BPMN diagram</button>
+        <p className="buttons-create">
+          <span>Create a </span>
+          <button onClick={ this.app.compose('triggerAction', 'create-bpmn-diagram') }>BPMN diagram</button>
           <span> or </span>
-          <button onClick={ this.app.compose('triggerAction', 'create-dmn-diagram') }>create DMN table</button>
-        </p>
-        <p>
-          <button onClick={ this.app.compose('triggerAction', 'open-diagram') }>open from file system</button>
+          <button onClick={ this.app.compose('triggerAction', 'create-dmn-diagram') }>DMN table</button>
+          <span> or </span>
+          <button onClick={ this.app.compose('triggerAction', 'create-cmmn-diagram') }>CMMN diagram</button>
         </p>
       </div>;
 

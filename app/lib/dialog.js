@@ -48,7 +48,7 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
         title: 'Open diagram',
         defaultPath: defaultPath,
         properties: [ 'openFile', 'multiSelections' ],
-        filters: filterExtensions([ 'supported', 'bpmn', 'dmn', 'all' ])
+        filters: filterExtensions([ 'supported', 'bpmn', 'dmn', 'cmmn', 'all' ])
       };
     },
     save: function(options) {

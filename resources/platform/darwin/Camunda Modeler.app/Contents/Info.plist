@@ -34,30 +34,48 @@
         <key>LSHandlerRank</key>
         <string>Alternate</string>
       </dict>
-      <key>CFBundleTypeExtensions</key>
-      <array>
-        <string>dmn</string>
-      </array>
-      <key>CFBundleTypeIconFile</key>
-      <string>XML</string>
-      <key>CFBundleTypeName</key>
-      <string>DMN Document</string>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>LSHandlerRank</key>
-      <string>Alternate</string>
-      <key>CFBundleTypeExtensions</key>
-      <array>
-        <string>xml</string>
-      </array>
-      <key>CFBundleTypeIconFile</key>
-      <string>XML</string>
-      <key>CFBundleTypeName</key>
-      <string>XML Document</string>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>LSHandlerRank</key>
-      <string>Alternate</string>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>dmn</string>
+        </array>
+        <key>CFBundleTypeIconFile</key>
+        <string>XML</string>
+        <key>CFBundleTypeName</key>
+        <string>DMN Document</string>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>LSHandlerRank</key>
+        <string>Alternate</string>
+      </dict>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>cmmn</string>
+        </array>
+        <key>CFBundleTypeIconFile</key>
+        <string>XML</string>
+        <key>CFBundleTypeName</key>
+        <string>CMMN Document</string>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>LSHandlerRank</key>
+        <string>Alternate</string>
+      </dict>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>xml</string>
+        </array>
+        <key>CFBundleTypeIconFile</key>
+        <string>XML</string>
+        <key>CFBundleTypeName</key>
+        <string>XML Document</string>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>LSHandlerRank</key>
+        <string>Alternate</string>
+      </dict>
     </array>
     <key>CFBundleVersion</key>
     <string><%= buildVersion %></string>
