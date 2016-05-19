@@ -114,8 +114,9 @@ CmmnEditor.prototype.updateState = function() {
 
   var stateContext = {
     cmmn: true,
+    copy: false,
     paste: false,
-    save: false, // TODO (paddy): remove when save is possible
+    save: true,
     undo: !!initialState.undo,
     redo: !!initialState.redo,
     dirty: initialState.dirty,

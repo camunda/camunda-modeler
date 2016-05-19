@@ -21,6 +21,8 @@ function MenuBuilder(opts) {
       undo: false,
       redo: false,
       editable: false,
+      copy: false,
+      paste: false,
       searchable: false,
       zoom: false,
       save: false,
@@ -253,7 +255,7 @@ MenuBuilder.prototype.appendCopyPaste = function() {
 
   var copyEntry = {
     label: 'Copy',
-    enabled: !this.opts.state.inactiveInput || this.opts.state.elementsSelected,
+    enabled: !this.opts.state.inactiveInput || (this.opts.state.elementsSelected && this.opts.state.copy),
     accelerator: 'CommandOrControl+C',
     click: function() {
       app.emit('menu:action', 'copy');

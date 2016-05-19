@@ -178,6 +178,7 @@ BpmnEditor.prototype.updateState = function() {
       dirty: dirty,
       zoom: true,
       editable: true,
+      copy: true,
       inactiveInput: !inputActive,
       paste: !modeler.get('clipboard').isEmpty()
     });
