@@ -17,8 +17,8 @@ __Target:__ Perform tests on nightly builds on supported platforms.
 Manual integration test for now:
 
 * [ ] double click in FS opens file in editor (existing instance _?_)
-* [ ] creating files (BPMN, DMN)
-* [ ] opening files (BPMN, DMN)
+* [ ] creating files (BPMN, DMN, CMMN)
+* [ ] opening files (BPMN, DMN, CMMN)
 * [ ] saving files
 * [ ] properties panel (BPMN)
 * [ ] key bindings work (Mac = CMD, CMD+SHIFT+Z, Other = CTRL)
