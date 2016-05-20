@@ -2,7 +2,8 @@
 
 var inherits = require('inherits');
 
-var assign = require('lodash/object/assign');
+var assign = require('lodash/object/assign'),
+    debounce = require('lodash/function/debounce');
 
 var domify = require('domify');
 
@@ -65,11 +66,16 @@ function BpmnEditor(options) {
   // set current modeler version and name to the diagram
   this.on('save', () => {
     var definitions = this.getModeler().definitions;
+
     if (definitions) {
       definitions.exporter = options.metaData.name;
       definitions.exporterVersion = options.metaData.version;
     }
   });
+
+  // trigger the palette resizal whenever we focus a tab or the layout is updated
+  this.on('focus', debounce(this.resizeCanvas, 50));
+  this.on('layout:update', debounce(this.resizeCanvas, 50));
 }
 
 inherits(BpmnEditor, DiagramEditor);

@@ -36,9 +36,6 @@ function CmmnEditor(options) {
   DiagramEditor.call(this, options);
 
   this.name = 'cmmn';
-
-  // let canvas know that the window has been resized
-  this.on('window:resized', this.compose('resizeCanvas'));
 }
 
 inherits(CmmnEditor, DiagramEditor);

@@ -51,6 +51,8 @@ function MultiEditorTab(options) {
     } else {
       this.activeEditor.update();
     }
+
+    this.activeEditor.emit('focus');
   });
 }
 
@@ -269,6 +271,10 @@ MultiEditorTab.prototype.createEditors = function(options) {
 
     this.events.on('window:resized', function() {
       editor.emit('window:resized');
+    });
+
+    this.events.on('layout:update', function() {
+      editor.emit('layout:update');
     });
 
     return editor;
