@@ -506,9 +506,10 @@ describe('BpmnEditor', function() {
       var $el = document.createElement('div');
 
       editor.once('shown', function() {
+        // make sure diagram is dirty, so it is exported with 'saveXML'
+        editor.initialState.stackIndex = 0;
 
         editor.saveXML(function(err, xml) {
-
           // then
           // make sure we serialize isExecutable, even if false
           expect(xml).to.contain('isExecutable="false"');
@@ -529,6 +530,8 @@ describe('BpmnEditor', function() {
       var $el = document.createElement('div');
 
       editor.once('shown', function() {
+        // make sure diagram is dirty, so it is exported with 'saveXML'
+        editor.initialState.stackIndex = 0;
 
         editor.saveXML(function(err, xml) {
 
@@ -543,6 +546,9 @@ describe('BpmnEditor', function() {
 
       // when
       editor.setXML(testXML);
+
+      // make sure diagram is dirty, so it is exported with 'saveXML'
+      editor.dirty = true;
 
       editor.mountEditor($el);
     });

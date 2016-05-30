@@ -116,13 +116,15 @@ DiagramEditor.prototype.update = function() {
 
 DiagramEditor.prototype.saveXML = function(done) {
 
-  var modeler = this.getModeler();
+  var modeler = this.getModeler(),
+      commandStack = modeler.get('commandStack'),
+      initialState = this.initialState;
 
   debug('[#saveXML] save');
 
   this.emit('save');
 
-  modeler.saveXML({ format: true }, (err, xml) => {
+  var savedCallback = (err, xml) => {
 
     var saveContext = { error: err, xml: xml };
 
@@ -137,7 +139,13 @@ DiagramEditor.prototype.saveXML = function(done) {
     this.lastXML = this.newXML = xml;
 
     done(null, xml);
-  });
+  };
+
+  if (!(initialState.stackIndex !== commandStack._stackIdx)) {
+    return savedCallback(null, this.lastXML);
+  }
+
+  modeler.saveXML({ format: true }, savedCallback);
 };
 
 

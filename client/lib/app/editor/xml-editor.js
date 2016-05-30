@@ -68,12 +68,14 @@ XMLEditor.prototype.updateState = function() {
 
   var initialState = this.initialState || { xml: this.lastXML };
 
+  var xml = codemirror.getValue();
+
   var stateContext = {
     undo: !!history.undo,
     redo: !!history.redo,
     dirty: (
       initialState.dirty ||
-      initialState.xml !== codemirror.getValue()
+      initialState.xml !== xml
     ),
     exportAs: false,
     editable: true,

@@ -42,6 +42,7 @@ describe('BpmnTab', function() {
   });
 
   function createBpmnTab(id, file) {
+
     var options = {
       closable: true,
       dirty: true,
@@ -169,6 +170,36 @@ describe('BpmnTab', function() {
       expect(tab.activeEditor).to.equal(bpmnEditor);
 
       expect(setXML).to.have.been.calledWith(otherXML);
+    });
+
+
+    describe('switching state', function() {
+
+      it('should update when switching views', function(done) {
+
+        tab.activeEditor = bpmnEditor;
+
+        bpmnEditor.saveXML = function(done) {
+          done(null, initialXML);
+        };
+
+        // wait for diagram shown / imported
+        xmlEditor.once('state-updated', function(context) {
+
+          // then
+          expect(context).to.have.property('undo', false);
+          expect(context).to.have.property('redo', false);
+          expect(context).to.have.property('dirty', false);
+
+          done();
+        });
+
+        // when
+        tab.showEditor(xmlEditor);
+
+        xmlEditor.mountEditor(document.createElement('div'));
+      });
+
     });
 
 
