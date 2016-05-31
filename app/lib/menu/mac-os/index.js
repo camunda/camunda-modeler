@@ -2,10 +2,9 @@
 
 var inherits = require('inherits');
 
-var MenuItem = require('menu-item');
-
 var electron = require('electron'),
-    app = electron.app;
+    app = electron.app,
+    MenuItem = electron.MenuItem;
 
 var MenuBuilder = require('../menu-builder');
 

@@ -6,7 +6,7 @@ var electron = require('electron'),
 
 var path = require('path');
 
-var Shell = require('shell');
+var Shell = electron.shell;
 
 var forEach = require('lodash/collection/forEach');
 

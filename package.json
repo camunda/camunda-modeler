@@ -41,7 +41,7 @@
     "lodash": "^3.10.1"
   },
   "devDependencies": {
-    "archiver": "^0.16.0",
+    "archiver": "^1.0.0",
     "assert": "~1.3.0",
     "babel-plugin-syntax-jsx": "^6.1.18",
     "babel-plugin-transform-es2015-arrow-functions": "^6.3.13",
@@ -67,7 +67,7 @@
     "drag-tabs": "^0.1.0",
     "electron-connect": "^0.4.2",
     "electron-packager": "^5.1.0",
-    "electron-prebuilt": "0.36.12",
+    "electron-prebuilt": "1.2.0",
     "errorify": "^0.3.1",
     "eslint": "^2.1.0",
     "eslint-plugin-mocha": "^2.0.0",

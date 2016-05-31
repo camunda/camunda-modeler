@@ -44,7 +44,8 @@ module.exports = function(grunt) {
     },
 
     clean: {
-      client: [ 'public' , 'distro' ]
+      client: 'public',
+      distro: 'distro'
     },
 
     karma: {
@@ -207,7 +208,7 @@ module.exports = function(grunt) {
   grunt.registerTask('auto-test-app', [ 'mochaTest:app', 'focus:app' ]);
 
   grunt.registerTask('build-client', [
-    'clean',
+    'clean:client',
     'browserify:client',
     'less',
     'copy'
@@ -215,7 +216,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('dev', [ 'lint', 'test', 'build-client' ]);
 
-  grunt.registerTask('default', [ 'lint', 'test', 'build-client', 'distro' ]);
+  grunt.registerTask('default', [ 'lint', 'test', 'build-client', 'clean:distro', 'distro' ]);
 
   // Development setup tasks
   var server = require('electron-connect').server.create({ path: 'app/develop' });
@@ -231,7 +232,7 @@ module.exports = function(grunt) {
   grunt.registerTask('app:reload', server.reload);
 
   grunt.registerTask('auto-build', [
-    'clean',
+    'clean:client',
     'browserify:client:watch',
     'less',
     'copy',

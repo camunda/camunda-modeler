@@ -24,8 +24,8 @@ var mainLoop = require('util/dom/main-loop');
 
 var browser = require('util/browser');
 
-var remote = require('remote');
-var metaData = remote.getGlobal('metaData');
+var remote = require('electron').remote,
+    metaData = remote.getGlobal('metaData');
 
 // init dom-delegator
 Delegator();
