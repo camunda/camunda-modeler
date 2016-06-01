@@ -20,7 +20,7 @@ function WindowMenu(app) {
 
     // fix for Ctrl+A shortcut that does not work reliably on Windows And Linux
     if (!isMac()) {
-      state.bpmn ? this.fix.bind() : this.fix.unbind();
+      state.bpmn || state.cmmn ? this.fix.bind() : this.fix.unbind();
     }
 
     browser.send('menu:update', state);
