@@ -807,6 +807,21 @@ MenuBuilder.prototype.appendHelpMenu = function(submenu) {
         type: 'separator'
       },
       {
+        label: 'CMMN 1.1 Tutorial',
+        click: function() {
+          browserOpen('https://docs.camunda.org/get-started/cmmn11/');
+        }
+      },
+      {
+        label: 'CMMN Modeling Reference',
+        click: function() {
+          browserOpen('https://docs.camunda.org/manual/latest/reference/cmmn11/');
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
         label: 'Version ' + app.version,
         enabled: false
       }
