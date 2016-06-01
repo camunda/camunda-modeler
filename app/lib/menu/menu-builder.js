@@ -457,6 +457,16 @@ MenuBuilder.prototype.appendCmmnActions = function() {
   this.appendSeparator();
 
   this.menu.append(new MenuItem({
+    label: 'Find',
+    accelerator: 'CommandOrControl + F',
+    click: function() {
+      app.emit('menu:action', 'find');
+    }
+  }));
+
+  this.appendSeparator();
+
+  this.menu.append(new MenuItem({
     label: 'Move Canvas',
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
