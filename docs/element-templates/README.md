@@ -1,3 +1,6 @@
+> The feature Element Templates may be subject to change in the future. As an example, this may lead to changes in the way you configure templates in JSON.
+
+
 # Element Templates
 
 Element templates allow you create pre-defined configurations for BPMN elements such as service and user tasks. Once applied via the properties panel they provide configured custom inputs to the user.
