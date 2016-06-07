@@ -446,6 +446,15 @@ MenuBuilder.prototype.appendCmmnActions = function() {
   }));
 
   this.menu.append(new MenuItem({
+    label: 'Global Connect Tool',
+    accelerator: 'C',
+    enabled: this.opts.state.inactiveInput,
+    click: function() {
+      app.emit('menu:action', 'globalConnectTool');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
     label: 'Direct Editing',
     accelerator: 'E',
     enabled: this.opts.state.elementsSelected,
