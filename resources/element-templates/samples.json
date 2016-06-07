@@ -165,7 +165,7 @@
         "constraints": {
           "notEmpty": true,
           "pattern": {
-            "value": "https://.*",
+            "value": "^https://.*",
             "message": "Must be https URL"
           }
         }
