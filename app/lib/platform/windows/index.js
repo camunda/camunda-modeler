@@ -1,6 +1,6 @@
 'use strict';
 
-var dialog = require('dialog');
+var dialog = require('electron').dialog;
 
 var FileAssociations = require('./file-associations');
 
