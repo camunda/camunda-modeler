@@ -83,7 +83,7 @@ Let us consider the following example that defines a template for a mail sending
       "editable": false,
       "binding": {
         "type": "property",
-        "name": "camunda:javaDelegate"
+        "name": "camunda:class"
       }
     },
     {
@@ -138,7 +138,7 @@ Let us consider the following example that defines a template for a mail sending
 
 The example defines five custom fields, each mapped to different technical properties:
 
-* _Implementation Type_ is mapped to the `camunda:javaDelegate` property in BPMN 2.0 XML
+* _Implementation Type_ is mapped to the `camunda:class` property in BPMN 2.0 XML
 * _Sender_, _Receivers_ and _Template_ properties are mapped to [input parameters]()
 * _Result Status_ is mapped back from the Java Delegate into a process variable via an [output parameter]()
 
