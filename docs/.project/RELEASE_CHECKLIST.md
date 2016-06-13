@@ -14,4 +14,6 @@ __Hint:__ Create a release issue and copy the template below into it.
 * [ ] write blog post on [blog.camunda.org](https://blog.camunda.org/)
 * [ ] update download version on camunda.org
 * [ ] spread the word
+    * [ ] ping Michael (customer mail)
+    * [ ] tweet
 ```
