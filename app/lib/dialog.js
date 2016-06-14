@@ -225,7 +225,7 @@ Dialog.prototype.showDialog = function(type, opts) {
   }
 
   // save last used path to config
-  if (type === 'open' || type === 'save') {
+  if (result && (type === 'open' || type === 'save')) {
     this.setDefaultPath(result);
   }
 
