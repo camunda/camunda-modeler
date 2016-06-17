@@ -2,21 +2,30 @@
 
 var inherits = require('inherits');
 
-var assign = require('lodash/object/assign');
+var assign = require('lodash/object/assign'),
+    debounce = require('lodash/function/debounce');
+
+var domify = require('domify');
 
 var DiagramEditor = require('./diagram-editor');
 
-var ensureOpts = require('util/ensure-opts'),
-    isInputActive = require('util/dom/is-input').active;
+var CmmnJS = require('cmmn-js/lib/Modeler');
+
+var DiagramJSOrigin = require('diagram-js-origin'),
+    propertiesPanelModule = require('cmmn-js-properties-panel'),
+    propertiesProviderModule = require('cmmn-js-properties-panel/lib/provider/camunda'),
+    camundaModdlePackage = require('camunda-cmmn-moddle/resources/camunda');
 
 var WarningsOverlay = require('base/components/warnings-overlay');
 
-var getWarnings = require('app/util/get-warnings'),
-    generateImage = require('app/util/generate-image');
+var getWarnings = require('app/util/get-warnings');
 
-var CmmnJS = require('cmmn-js/lib/Modeler');
+var ensureOpts = require('util/ensure-opts'),
+    dragger = require('util/dom/dragger'),
+    isInputActive = require('util/dom/is-input').active,
+    copy = require('util/copy');
 
-var DiagramJSOrigin = require('diagram-js-origin');
+var generateImage = require('app/util/generate-image');
 
 var debug = require('debug')('cmmn-editor');
 
@@ -29,6 +38,7 @@ var debug = require('debug')('cmmn-editor');
 function CmmnEditor(options) {
 
   ensureOpts([
+    'layout',
     'config',
     'metaData'
   ], options);
@@ -47,6 +57,15 @@ function CmmnEditor(options) {
     }
   });
 
+  // elements to insert modeler and properties panel into
+  this.$propertiesEl = domify('<div class="properties-parent"></div>');
+
+  // let canvas know that the window has been resized
+  this.on('window:resized', this.compose('resizeCanvas'));
+
+  // trigger the palette resizal whenever we focus a tab or the layout is updated
+  this.on('focus', debounce(this.resizeCanvas, 50));
+  this.on('layout:update', debounce(this.resizeCanvas, 50));
 }
 
 inherits(CmmnEditor, DiagramEditor);
@@ -165,12 +184,54 @@ CmmnEditor.prototype.updateState = function() {
 };
 
 
+CmmnEditor.prototype.mountProperties = function(node) {
+  debug('mount properties');
+
+  node.appendChild(this.$propertiesEl);
+};
+
+CmmnEditor.prototype.unmountProperties = function(node) {
+  debug('unmount properties');
+
+  node.removeChild(this.$propertiesEl);
+};
+
+CmmnEditor.prototype.resizeProperties = function onDrag(panelLayout, event, delta) {
+
+  var oldWidth = panelLayout.open ? panelLayout.width : 0;
+
+  var newWidth = Math.max(oldWidth + delta.x * -1, 0);
+
+  this.emit('layout:changed', {
+    propertiesPanel: {
+      open: newWidth > 25,
+      width: newWidth
+    }
+  });
+
+  this.notifyModeler('propertiesPanel.resized');
+};
+
+CmmnEditor.prototype.toggleProperties = function() {
+
+  var config = this.layout.propertiesPanel;
+
+  this.emit('layout:changed', {
+    propertiesPanel: {
+      open: !config.open,
+      width: !config.open ? (config.width > 25 ? config.width : 250) : config.width
+    }
+  });
+
+  this.notifyModeler('propertiesPanel.resized');
+};
+
 CmmnEditor.prototype.getModeler = function() {
 
   if (!this.modeler) {
 
     // lazily instantiate and cache
-    this.modeler = this.createModeler(this.$el);
+    this.modeler = this.createModeler(this.$el, this.$propertiesEl);
 
     // hook up with modeler change events
     this.modeler.on([
@@ -193,12 +254,22 @@ CmmnEditor.prototype.getModeler = function() {
 };
 
 
-CmmnEditor.prototype.createModeler = function($el) {
+CmmnEditor.prototype.createModeler = function($el, $propertiesEl) {
+
+  var propertiesPanelConfig = {
+    'config.propertiesPanel': [ 'value', { parent: $propertiesEl } ]
+  };
 
   return new CmmnJS({
     container: $el,
-
-    additionalModules: [ DiagramJSOrigin ]
+    position: 'absolute',
+    additionalModules: [
+      DiagramJSOrigin,
+      propertiesPanelModule,
+      propertiesProviderModule,
+      propertiesPanelConfig
+    ],
+    moddleExtensions: { camunda: camundaModdlePackage }
   });
 };
 
@@ -256,6 +327,12 @@ CmmnEditor.prototype.resizeCanvas = function() {
 
 CmmnEditor.prototype.render = function() {
 
+  var propertiesLayout = this.layout.propertiesPanel;
+
+  var propertiesStyle = {
+    width: (propertiesLayout.open ? propertiesLayout.width : 0) + 'px'
+  };
+
   var warnings = getWarnings(this.lastImport);
 
   return (
@@ -267,11 +344,43 @@ CmmnEditor.prototype.render = function() {
            onAppend={ this.compose('mountEditor') }
            onRemove={ this.compose('unmountEditor') }>
       </div>
+      <div className="properties" style={ propertiesStyle } tabIndex="0">
+        <div className="toggle"
+             ref="properties-toggle"
+             draggable="true"
+             onClick={ this.compose('toggleProperties') }
+             onDragstart={ dragger(this.compose('resizeProperties', copy(propertiesLayout))) }>
+          Properties Panel
+        </div>
+        <div className="resize-handle"
+             draggable="true"
+             onDragStart={ dragger(this.compose('resizeProperties', copy(propertiesLayout))) }></div>
+        <div className="properties-container"
+             onAppend={ this.compose('mountProperties') }
+             onRemove={ this.compose('unmountProperties') }>
+        </div>
+      </div>
       <WarningsOverlay warnings={ warnings }
-                 onShowDetails={ this.compose('openLog') }
-                 onClose={ this.compose('hideWarnings') } />
+                       onShowDetails={ this.compose('openLog') }
+                       onClose={ this.compose('hideWarnings') } />
     </div>
   );
+};
+
+/**
+ * Notify initialized modeler about an event.
+ *
+ * @param {String} eventName
+ */
+CmmnEditor.prototype.notifyModeler = function(eventName) {
+
+  var modeler = this.getModeler();
+
+  try {
+    modeler.get('eventBus').fire(eventName);
+  } catch (e) {
+    // we don't care
+  }
 };
 
 function isImported(modeler) {

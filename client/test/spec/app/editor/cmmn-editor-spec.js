@@ -13,9 +13,14 @@ var select = require('test/helper/vdom').select,
 var initialXML = require('app/tabs/cmmn/initial.cmmn'),
     otherXML = require('test/fixtures/other.cmmn');
 
+var spy = require('test/helper/util/spy');
+
 function createEditor() {
   return new CmmnEditor({
     config: new Config(),
+    layout: {
+      propertiesPanel: {}
+    },
     metaData: {
       version: '1.2.3',
       name: 'Camunda Modeler FTW'
@@ -59,6 +64,150 @@ describe('CmmnEditor', function() {
     editor.setXML(initialXML);
 
     editor.mountEditor($el);
+  });
+
+
+  describe('properties panel', function() {
+
+    function selectPropertiesToggle(tree) {
+      return select('[ref=properties-toggle]', tree);
+    }
+
+    function createEditorWithLayout(layout) {
+      return new CmmnEditor({
+        config: new Config(),
+        layout: layout,
+        metaData: {}
+      });
+    }
+
+    it('should close', function(done) {
+
+      // given
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: true,
+          width: 150
+        }
+      });
+
+      var tree = render(editor);
+
+      var element = selectPropertiesToggle(tree);
+
+      editor.once('layout:changed', function(newLayout) {
+
+        // then
+        expect(newLayout).to.eql({
+          propertiesPanel: {
+            open: false,
+            width: 150
+          }
+        });
+
+        done();
+      });
+
+      // when
+      // close toggle
+      simulateEvent(element, 'click');
+    });
+
+
+    it('should open', function(done) {
+
+      // given
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: false,
+          width: 150
+        }
+      });
+
+      var tree = render(editor);
+
+      var element = selectPropertiesToggle(tree);
+
+      editor.once('layout:changed', function(newLayout) {
+
+        // then
+        expect(newLayout).to.eql({
+          propertiesPanel: {
+            open: true,
+            width: 150
+          }
+        });
+
+        done();
+      });
+
+      // when
+      // open toggle
+      simulateEvent(element, 'click');
+    });
+
+
+    it('should notify modeler about change', function() {
+
+      // given
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: false,
+          width: 150
+        }
+      });
+
+      var tree = render(editor);
+
+      var element = selectPropertiesToggle(tree);
+
+      // mock for sake of testing
+      var notifySpy = spy(editor, 'notifyModeler');
+
+      // when
+      // open toggle
+      simulateEvent(element, 'click');
+
+      // then
+      expect(notifySpy).to.have.been.calledWith('propertiesPanel.resized');
+    });
+
+
+    it('should resize', function(done) {
+
+      // given
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: true,
+          width: 150
+        }
+      });
+
+      var tree = render(editor);
+
+      var element = selectPropertiesToggle(tree);
+
+
+      editor.once('layout:changed', function(newLayout) {
+
+        // then
+        expect(newLayout).to.eql({
+          propertiesPanel: {
+            open: true,
+            width: 100
+          }
+        });
+
+        done();
+      });
+
+      // when
+      // dragging toggle
+      simulateEvent(element, 'dragstart', { screenX: 0, screenY: 0 });
+      simulateEvent(element, 'drag', { screenX: 50, screenY: 0 });
+
+    });
+
   });
 
 

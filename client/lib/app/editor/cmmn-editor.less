@@ -1,3 +1,4 @@
+@import "cmmn-js-properties-panel/styles/properties";
 @import (less) "diagram-js/assets/diagram-js.css";
 
 .cmmn-editor {
@@ -19,4 +20,58 @@
       .full-size();
     }
   }
+
+  > .properties {
+    flex: initial;
+    .flex-container(row);
+
+    position: relative;
+    outline: none;
+
+    background: #f8f8f8;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+
+    .toggle {
+      position: absolute;
+      left: -74px;
+      top: 40%;
+      background: #f8f8f8;
+      padding: 7px 10px;
+
+      transform: rotate(-90deg);
+      white-space: nowrap;
+      font-size: 13px;
+
+      border: solid 1px #CCC;
+      border-bottom: none;
+      border-radius: 2px 2px 0 0;
+    }
+
+    .resize-handle {
+      .no-user-select;
+
+      margin-left: -5px;
+      cursor: ew-resize;
+
+      &:before {
+        content: '';
+        width: 5px;
+        display: block;
+      }
+    }
+
+    .properties-container {
+      flex: 1;
+      position: relative;
+
+      border-left: solid 1px #CCC;
+    }
+
+    .properties-parent {
+      .full-size();
+
+      overflow-y: auto;
+    }
+  }
+
 }

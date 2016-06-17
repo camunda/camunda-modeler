@@ -52,6 +52,9 @@ describe('CmmnTab', function() {
       events: events,
       dialog: dialog,
       file: file || createFile(),
+      layout: {
+        propertiesPanel: {}
+      },
       logger: logger,
       metaData: {}
     };

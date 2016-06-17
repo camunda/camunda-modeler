@@ -130,6 +130,9 @@
     "camunda-bpmn-moddle": {
       "version": "camunda/camunda-bpmn-moddle"
     },
+    "camunda-cmmn-moddle": {
+      "version": "camunda/camunda-cmmn-moddle"
+    },
     "canvg-browser": {
       "version": "1.0.0"
     },
@@ -188,6 +191,59 @@
         },
         "object-refs": {
           "version": "0.1.1"
+        }
+      }
+    },
+    "cmmn-js-properties-panel": {
+      "version": "bpmn-io/cmmn-js-properties-panel",
+      "dependencies": {
+        "ids": {
+          "version": "0.2.0",
+          "dependencies": {
+            "hat": {
+              "version": "0.0.3"
+            }
+          }
+        },
+        "inherits": {
+          "version": "2.0.1"
+        },
+        "lodash": {
+          "version": "3.10.1"
+        },
+        "min-dom": {
+          "version": "0.2.0",
+          "dependencies": {
+            "component-classes": {
+              "version": "1.2.4",
+              "dependencies": {
+                "component-indexof": {
+                  "version": "0.0.3"
+                }
+              }
+            },
+            "component-closest": {
+              "version": "0.1.4"
+            },
+            "component-delegate": {
+              "version": "0.2.3"
+            },
+            "component-event": {
+              "version": "0.1.4"
+            },
+            "component-matches-selector": {
+              "version": "0.1.5"
+            },
+            "component-query": {
+              "version": "0.0.3"
+            },
+            "domify": {
+              "version": "1.4.0"
+            }
+          }
+        },
+        "selection-update": {
+          "version": "0.1.2"
         }
       }
     },
