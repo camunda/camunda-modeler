@@ -36,6 +36,17 @@ function CmmnEditor(options) {
   DiagramEditor.call(this, options);
 
   this.name = 'cmmn';
+
+  // set current modeler version and name to the diagram
+  this.on('save', () => {
+    var definitions = this.getModeler().definitions;
+
+    if (definitions) {
+      definitions.exporter = options.metaData.name;
+      definitions.exporterVersion = options.metaData.version;
+    }
+  });
+
 }
 
 inherits(CmmnEditor, DiagramEditor);

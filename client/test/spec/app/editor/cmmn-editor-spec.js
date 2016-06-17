@@ -159,4 +159,39 @@ describe('CmmnEditor', function() {
 
   });
 
+
+  describe('saveXML', function() {
+
+    var testXML = require('./exporter.cmmn');
+
+    it('should set "exported" & "exporterVersion" attributes', function(done) {
+      // given
+      var $el = document.createElement('div');
+
+      editor.once('shown', function() {
+        // make sure diagram is dirty, so it is exported with 'saveXML'
+        editor.initialState.stackIndex = 0;
+
+        editor.saveXML(function(err, xml) {
+
+          // then
+          // make sure we serialize isExecutable, even if false
+          expect(xml).to.contain('exporter="Camunda Modeler FTW"');
+          expect(xml).to.contain('exporterVersion="1.2.3"');
+
+          done();
+        });
+      });
+
+      // when
+      editor.setXML(testXML);
+
+      // make sure diagram is dirty, so it is exported with 'saveXML'
+      editor.dirty = true;
+
+      editor.mountEditor($el);
+    });
+
+  });
+
 });
