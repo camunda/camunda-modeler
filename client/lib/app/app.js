@@ -83,71 +83,151 @@ function App(options) {
     }
   };
 
-  this.menuEntries = [
-    MultiButton({
-      id: 'create',
-      choices: [
-        {
-          id: 'create-bpmn-diagram',
-          action: this.compose('triggerAction', 'create-bpmn-diagram'),
-          label: 'Create new BPMN Diagram',
-          icon: 'icon-new',
-          primary: true
-        },
-        {
-          id: 'create-dmn-diagram',
-          action: this.compose('triggerAction', 'create-dmn-diagram'),
-          label: 'Create new DMN Table'
-        },{
-          id: 'create-cmmn-diagram',
-          action: this.compose('triggerAction', 'create-cmmn-diagram'),
-          label: 'Create new CMMN Diagram'
-        }
+  this.menuEntries = {
+    modeler: {
+      visible: true,
+      name: 'modeler',
+      buttons: [
+        MultiButton({
+          id: 'create',
+          choices: [
+            {
+              id: 'create-bpmn-diagram',
+              action: this.compose('triggerAction', 'create-bpmn-diagram'),
+              label: 'Create new BPMN Diagram',
+              icon: 'icon-new',
+              primary: true
+            },
+            {
+              id: 'create-dmn-diagram',
+              action: this.compose('triggerAction', 'create-dmn-diagram'),
+              label: 'Create new DMN Table'
+            },{
+              id: 'create-cmmn-diagram',
+              action: this.compose('triggerAction', 'create-cmmn-diagram'),
+              label: 'Create new CMMN Diagram'
+            }
+          ]
+        }),
+        Button({
+          id: 'open',
+          group: 'modeler',
+          icon: 'icon-open',
+          label: 'Open a Diagram',
+          action: this.compose('triggerAction', 'open-diagram')
+        }),
+        Separator(),
+        Button({
+          id: 'save',
+          group: 'modeler',
+          icon: 'icon-save-normal',
+          label: 'Save Diagram',
+          action: this.compose('triggerAction', 'save')
+        }),
+        Button({
+          id: 'save-as',
+          group: 'modeler',
+          icon: 'icon-save-as',
+          label: 'Save Diagram as...',
+          action: this.compose('triggerAction', 'save-as')
+        }),
+        Separator(),
+        Button({
+          id: 'undo',
+          group: 'modeler',
+          icon: 'icon-undo',
+          label: 'Undo',
+          action: this.compose('triggerAction', 'undo'),
+          disabled: true
+        }),
+        Button({
+          id: 'redo',
+          group: 'modeler',
+          icon: 'icon-redo',
+          label: 'Redo',
+          action: this.compose('triggerAction', 'redo'),
+          disabled: true
+        }),
+        Separator(),
+        MultiButton({
+          id: 'export-as',
+          group: 'modeler',
+          disabled: true,
+          choices: map(EXPORT_BUTTONS, function(btn) {
+            return btn;
+          })
+        })
       ]
-    }),
-    Button({
-      id: 'open',
-      icon: 'icon-open',
-      label: 'Open a Diagram',
-      action: this.compose('triggerAction', 'open-diagram')
-    }),
-    Separator(),
-    Button({
-      id: 'save',
-      icon: 'icon-save-normal',
-      label: 'Save Diagram',
-      action: this.compose('triggerAction', 'save')
-    }),
-    Button({
-      id: 'save-as',
-      icon: 'icon-save-as',
-      label: 'Save Diagram as...',
-      action: this.compose('triggerAction', 'save-as')
-    }),
-    Separator(),
-    Button({
-      id: 'undo',
-      icon: 'icon-undo',
-      label: 'Undo',
-      action: this.compose('triggerAction', 'undo'),
-      disabled: true
-    }),
-    Button({
-      id: 'redo',
-      icon: 'icon-redo',
-      label: 'Redo',
-      action: this.compose('triggerAction', 'redo'),
-      disabled: true
-    }),
-    Separator(),
-    MultiButton({
-      id: 'export-as',
-      disabled: true,
-      choices: map(EXPORT_BUTTONS, function(btn) {
-        return btn;
-      })
-    })
-  ];
+    },
+    bpmn: {
+      visible: false,
+      name: 'bpmn',
+      buttons: [
+        Separator(),
+        Button({
+          id: 'align-left',
+          icon: 'icon-align-left-tool',
+          label: 'Align Elements to the Left',
+          action: this.compose('triggerAction', 'alignElements', {
+            type: 'left'
+          })
+        }),
+        Button({
+          id: 'align-center',
+          icon: 'icon-align-horizontal-center-tool',
+          label: 'Align Elements to the Center',
+          action: this.compose('triggerAction', 'alignElements', {
+            type: 'center'
+          })
+        }),
+        Button({
+          id: 'align-right',
+          icon: 'icon-align-right-tool',
+          label: 'Align Elements to the Right',
+          action: this.compose('triggerAction', 'alignElements', {
+            type: 'right'
+          })
+        }),
+        Button({
+          id: 'align-top',
+          icon: 'icon-align-top-tool',
+          label: 'Align Elements to the Top',
+          action: this.compose('triggerAction', 'alignElements', {
+            type: 'top'
+          })
+        }),
+        Button({
+          id: 'align-middle',
+          icon: 'icon-align-vertical-center-tool',
+          label: 'Align Elements to the Middle',
+          action: this.compose('triggerAction', 'alignElements', {
+            type: 'middle'
+          })
+        }),
+        Button({
+          id: 'align-bottom',
+          icon: 'icon-align-bottom-tool',
+          label: 'Align Elements to the Middle',
+          action: this.compose('triggerAction', 'alignElements', {
+            type: 'bottom'
+          })
+        }),
+        Separator(),
+        Button({
+          id: 'distribute-horizontally',
+          icon: 'icon-distribute-horizontally-tool',
+          label: 'Distribute Elements Horizontally',
+          action: this.compose('triggerAction', 'distributeHorizontally')
+        }),
+        Button({
+          id: 'distribute-bottom',
+          icon: 'icon-distribute-vertically-tool',
+          label: 'Distribute Elements Vertically',
+          action: this.compose('triggerAction', 'distributeVertically')
+        })
+      ]
+    }
+  };
 
   this.tabs = [
     EmptyTab({
@@ -188,13 +268,23 @@ function App(options) {
 
     // update undo/redo/export based on state
     [ 'undo', 'redo' ].forEach((key) => {
-      this.updateMenuEntry(key, !newState[key]);
+      this.updateMenuEntry('modeler', key, !newState[key]);
     });
 
     debug('tools:state-changed', newState);
 
+    [ 'bpmn', 'cmmn', 'dmn' ].forEach((key) => {
+      if (newState[key] && this.menuEntries[key]) {
+
+        this.menuEntries[key].visible = true;
+      } else if (this.menuEntries[key]) {
+
+        this.menuEntries[key].visible = false;
+      }
+    });
+
     // update export button state
-    button = find(this.menuEntries, { id: 'export-as' });
+    button = find(this.menuEntries.modeler.buttons, { id: 'export-as' });
 
     button.choices = (newState['exportAs'] || []).map((type) => {
       return EXPORT_BUTTONS[type];
@@ -214,7 +304,7 @@ function App(options) {
     [ 'save', 'save-as' ].forEach((key) => {
       var enabled = 'save' in newState;
 
-      this.updateMenuEntry(key, !enabled);
+      this.updateMenuEntry('modeler', key, !enabled);
     });
 
     this.events.emit('changed');
@@ -1126,8 +1216,8 @@ App.prototype.loadConfig = function(done) {
  * @param  {String} id
  * @param  {Boolean} isDisabled
  */
-App.prototype.updateMenuEntry = function(id, isDisabled) {
-  var button = find(this.menuEntries, { id: id });
+App.prototype.updateMenuEntry = function(group, id, isDisabled) {
+  var button = find(this.menuEntries[group].buttons, { id: id });
 
   button.disabled = isDisabled;
 

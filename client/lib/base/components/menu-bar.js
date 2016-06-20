@@ -2,6 +2,7 @@
 
 var h = require('vdom/h');
 
+var forEach = require('lodash/collection/forEach');
 
 function MenuBar(options) {
 
@@ -11,14 +12,27 @@ function MenuBar(options) {
 
   this.render = function() {
 
-    var entries = options.entries;
+    var entries = options.entries,
+        groups = [];
+
+    forEach(entries, function(group) {
+      if (group.visible) {
+        groups.push(group);
+      }
+    });
 
     var html = <div className="menu-bar">
-      {
-        entries.map(e => {
-          return <div className="entry" key={ e.id }>{ h(e) }</div>;
-        })
-      }
+    {
+      groups.map(function(group) {
+        return <div className={ 'group ' + group.name }>
+          {
+            group.buttons.map(e => {
+              return <div className="entry" key={ e.id }>{ h(e) }</div>;
+            })
+          }
+        </div>;
+      })
+    }
     </div>;
 
     return html;

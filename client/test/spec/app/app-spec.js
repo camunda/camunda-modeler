@@ -1879,7 +1879,7 @@ describe('App', function() {
       it('should be enabled when exporting is allowed', function(done) {
         // given
         var bpmnFile = createBpmnFile(bpmnXML),
-            exportButton = find(app.menuEntries, { id: 'export-as' }),
+            exportButton = find(app.menuEntries.modeler.buttons, { id: 'export-as' }),
             activeEditor;
 
         // when
@@ -1901,7 +1901,7 @@ describe('App', function() {
       it('should show export as "jpeg" and "svg"', function(done) {
         // given
         var bpmnFile = createBpmnFile(bpmnXML),
-            exportButton = find(app.menuEntries, { id: 'export-as' }),
+            exportButton = find(app.menuEntries.modeler.buttons, { id: 'export-as' }),
             bpmnTab;
 
         app.openTabs([ bpmnFile ]);
@@ -1928,7 +1928,7 @@ describe('App', function() {
 
         it('when there are no open tabs', function() {
           // given
-          var exportButton = find(app.menuEntries, { id: 'export-as' });
+          var exportButton = find(app.menuEntries.modeler.buttons, { id: 'export-as' });
 
           // then
           expect(exportButton.disabled).to.be.true;
@@ -1944,7 +1944,7 @@ describe('App', function() {
 
           app.closeTab(app.activeTab);
 
-          exportButton = find(app.menuEntries, { id: 'export-as' });
+          exportButton = find(app.menuEntries.modeler.buttons, { id: 'export-as' });
 
           // then
           expect(exportButton.disabled).to.be.true;
@@ -1955,7 +1955,7 @@ describe('App', function() {
           // given
           var bpmnFile = createBpmnFile(bpmnXML),
               dmnFile = createDmnFile(dmnXML),
-              exportButton = find(app.menuEntries, { id: 'export-as' }),
+              exportButton = find(app.menuEntries.modeler.buttons, { id: 'export-as' }),
               bpmnTab,
               activeEditor;
 
@@ -1982,7 +1982,7 @@ describe('App', function() {
         it('when switching editor views', function(done) {
           // given
           var bpmnFile = createBpmnFile(bpmnXML),
-              exportButton = find(app.menuEntries, { id: 'export-as' }),
+              exportButton = find(app.menuEntries.modeler.buttons, { id: 'export-as' }),
               activeTab, xmlEditor;
 
           app.openTabs([ bpmnFile ]);

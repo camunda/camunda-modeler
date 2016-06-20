@@ -94,6 +94,10 @@ BpmnEditor.prototype.triggerEditorActions = function(action, options) {
     return;
   }
 
+  if ('alignElements' === action) {
+    opts = options;
+  }
+
   if ('moveCanvas' === action) {
     opts = assign({ speed: 20 }, options);
   }
@@ -118,6 +122,22 @@ BpmnEditor.prototype.triggerEditorActions = function(action, options) {
     opts = assign({
       value: 1
     }, options);
+  }
+
+  if ('distributeHorizontally' === action) {
+    action = 'distributeElements';
+
+    opts = {
+      type: 'horizontal'
+    };
+  }
+
+  if ('distributeVertically' === action) {
+    action = 'distributeElements';
+
+    opts = {
+      type: 'vertical'
+    };
   }
 
   // ignore all editor actions (besides the following three)

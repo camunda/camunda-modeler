@@ -11,13 +11,17 @@
   line-height: 30px;
 }
 
-.menu-bar > .entry {
+.menu-bar .group {
+  display: flex;
+}
+
+.menu-bar .group > .entry {
   flex: initial;
 
   margin-left: 5px;
 }
 
-.menu-bar .separator {
+.menu-bar .group .separator {
   background: #CCC;
   width: 1px;
   box-shadow: 0 0 1px #EEE;
@@ -27,15 +31,15 @@
   vertical-align: middle;
 }
 
-.menu-bar button {
+.menu-bar .group button {
   border: none;
   background: transparent;
 
   vertical-align: middle;
 }
 
-.menu-bar > .entry > button,
-.menu-bar > .entry .multi-button {
+.menu-bar .group > .entry > button,
+.menu-bar .group > .entry .multi-button {
   border-radius: 3px;
 
   padding: 5px;
@@ -66,16 +70,16 @@
   }
 }
 
-.menu-bar button {
+.menu-bar .group button {
   font-size: 14px;
   outline: none;
 }
 
-.menu-bar .multi-button {
+.menu-bar .group .multi-button {
   .multi-button;
 }
 
-.menu-bar .caret {
+.menu-bar .group .caret {
   display: inline-block;
   width: 0;
   height: 0;

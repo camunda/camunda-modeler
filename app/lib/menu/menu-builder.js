@@ -357,6 +357,79 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.appendSeparator();
 
   this.menu.append(new MenuItem({
+    label: 'Align Elements',
+    enabled: this.opts.state.elementsSelected,
+    submenu: Menu.buildFromTemplate([
+      {
+        label: 'Align Left',
+        click: function() {
+          app.emit('menu:action', 'alignElements', {
+            type: 'left'
+          });
+        }
+      }, {
+        label: 'Align Right',
+        click: function() {
+          app.emit('menu:action', 'alignElements', {
+            type: 'right'
+          });
+        }
+      }, {
+        label: 'Align Center',
+        click: function() {
+          app.emit('menu:action', 'alignElements', {
+            type: 'center'
+          });
+        }
+      }, {
+        label: 'Align Top',
+        click: function() {
+          app.emit('menu:action', 'alignElements', {
+            type: 'top'
+          });
+        }
+      }, {
+        label: 'Align Bottom',
+        click: function() {
+          app.emit('menu:action', 'alignElements', {
+            type: 'bottom'
+          });
+        }
+      }, {
+        label: 'Align Middle',
+        click: function() {
+          app.emit('menu:action', 'alignElements', {
+            type: 'middle'
+          });
+        }
+      }
+    ])
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Distribute Elements',
+    enabled: this.opts.state.elementsSelected,
+    submenu: Menu.buildFromTemplate([
+      {
+        label: 'Distribute Horizontally',
+        enabled: this.opts.state.elementsSelected,
+        click: function() {
+          app.emit('menu:action', 'distributeHorizontally');
+        }
+      },
+      {
+        label: 'Distribute Vertically',
+        enabled: this.opts.state.elementsSelected,
+        click: function() {
+          app.emit('menu:action', 'distributeVertically');
+        }
+      }
+    ])
+  }));
+
+  this.appendSeparator();
+
+  this.menu.append(new MenuItem({
     label: 'Find',
     accelerator: 'CommandOrControl + F',
     click: function() {
@@ -455,7 +528,7 @@ MenuBuilder.prototype.appendCmmnActions = function() {
   }));
 
   this.menu.append(new MenuItem({
-    label: 'Direct Editing',
+    label: 'Edit Label',
     accelerator: 'E',
     enabled: this.opts.state.elementsSelected,
     click: function() {
