@@ -11,6 +11,7 @@ function createEditor() {
   return new XMLEditor({});
 }
 
+
 describeEditor('XMLEditor', {
   createEditor: createEditor,
   initialXML: initialXML,

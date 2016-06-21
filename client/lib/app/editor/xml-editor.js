@@ -43,7 +43,6 @@ function XMLEditor(options) {
     // let code mirror update its look and feel
     this.getCodeMirror().refresh();
   });
-
 }
 
 inherits(XMLEditor, BaseEditor);
@@ -54,9 +53,12 @@ module.exports = XMLEditor;
 XMLEditor.prototype.render = function() {
 
   return (
-    <div className="xml-editor" key={ this.id + '#xml' }
-         onAppend={ this.compose('mountEditor') }
-         onRemove={ this.compose('unmountEditor') }>
+    <div className="xml-editor" key={ this.id + '#xml' }>
+      <div className="editor-container"
+           tabIndex="0"
+           onAppend={ this.compose('mountEditor') }
+           onRemove={ this.compose('unmountEditor') }>
+      </div>
     </div>
   );
 };
