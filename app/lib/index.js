@@ -102,48 +102,36 @@ renderer.on('dialog:unrecognized-file', function(file, done) {
 });
 
 renderer.on('dialog:reimport-warning', function(done) {
-  var answer = dialog.showDialog('reimportWarning');
 
-  done(null, answer);
+  dialog.showDialog('reimportWarning', done);
 });
 
 renderer.on('dialog:convert-namespace', function(done) {
-  var answer = dialog.showDialog('namespace');
-
-  done(null, answer);
+  dialog.showDialog('namespace', done);
 });
 
 renderer.on('dialog:import-error', function(filename, errorDetails, done) {
 
-  var answer = dialog.showDialog('importError', {
-    name: filename,
-    errorDetails: errorDetails
+  dialog.showDialog('importError', { name: filename, errorDetails: errorDetails }, function(answer) {
+    if (answer === 'ask-forum') {
+      browserOpen('https://forum.camunda.org/c/modeler');
+    }
+
+    // the answer is irrelevant for the client
+    done(null);
   });
-
-  if (answer === 'ask-forum') {
-    browserOpen('https://forum.camunda.org/c/modeler');
-  }
-
-  // the answer is irrelevant for the client
-  done(null);
 });
 
 renderer.on('dialog:close-tab', function(diagramFile, done) {
-  var answer = dialog.showDialog('close', { name: diagramFile.name });
-
-  done(null, answer);
+  dialog.showDialog('close', { name: diagramFile.name }, done);
 });
 
 renderer.on('dialog:saving-denied', function(done) {
-  var answer = dialog.showDialog('savingDenied');
-
-  done(null, answer);
+  dialog.showDialog('savingDenied', done);
 });
 
 renderer.on('dialog:content-changed', function(done) {
-  var answer = dialog.showDialog('contentChanged');
-
-  done(null, answer);
+  dialog.showDialog('contentChanged', done);
 });
 
 

@@ -33,29 +33,29 @@ FileSystem.prototype.open = function(callback) {
       dialog = this.dialog,
       files = [];
 
-  var filenames = dialog.showDialog('open');
-
-  if (!filenames) {
-    return callback(null);
-  }
-
-  forEach(filenames, function(filename, idx) {
-    var file = self._openFile(filename);
-
-    if (!file.contents) {
-      callback(file);
-
-      return false;
+  dialog.showDialog('open', function(err, filenames) {
+    if (!filenames) {
+      return callback(null);
     }
 
-    files.push(file);
-  });
+    forEach(filenames, function(filename, idx) {
+      var file = self._openFile(filename);
 
-  callback(null, files);
+      if (!file.contents) {
+        callback(file);
+
+        return false;
+      }
+
+      files.push(file);
+    });
+
+    callback(null, files);
+  });
 };
 
 
-FileSystem.prototype._openFile = function(filePath) {
+FileSystem.prototype._openFile = function(filePath, callback) {
   var diagramFile;
 
   try {
@@ -69,50 +69,35 @@ FileSystem.prototype._openFile = function(filePath) {
 
 
 FileSystem.prototype.saveAs = function(diagramFile, callback) {
-  var dialog = this.dialog,
-      filePath,
-      actualFilePath,
-      savedFile,
-      overrideAnswer;
+  var dialog = this.dialog;
 
-  while (!savedFile) {
+  var fileType = diagramFile.fileType;
 
-    filePath = dialog.showDialog('save', createFileDescriptor({
-      name: diagramFile.name,
-      fileType: diagramFile.fileType
-    }));
+  function done(actualFilePath) {
+    var savedFile;
+
+    if (actualFilePath) {
+      // everything ok up to here -> we got a file
+      savedFile = createFileDescriptor(diagramFile, {
+        path: actualFilePath
+      });
+    }
+
+    callback(null, savedFile);
+  }
+
+  dialog.showDialog('save', createFileDescriptor({
+    name: diagramFile.name,
+    fileType: fileType
+  }), function(err, filePath) {
 
     // -> user cancel on save as file chooser
     if (!filePath) {
-      break;
+      return done(null);
     }
 
-    actualFilePath = ensureExtension(filePath, diagramFile.fileType);
-
-    // display an additional override warning if
-    // filePath.defaultExtension would override an existing file
-    if (filePath !== actualFilePath && existsFile(actualFilePath)) {
-
-      overrideAnswer = dialog.showDialog('existingFile', { name: diagramFile.name });
-
-      // -> user cancel, abort everything
-      if (overrideAnswer === 'cancel') {
-        break;
-      }
-
-      // -> user wants to try again
-      if (overrideAnswer === 'no-override') {
-        continue;
-      }
-    }
-
-    // everything ok up to here -> we got a file
-    savedFile = createFileDescriptor(diagramFile, {
-      path: actualFilePath
-    });
-  }
-
-  callback(null, savedFile);
+    done(ensureExtension(filePath, fileType));
+  });
 };
 
 
@@ -246,24 +231,6 @@ function createFileDescriptor(oldFile, newFile) {
   }
 
   return assign({}, oldFile, newFile);
-}
-
-
-/**
- * Check whether a file exists.
- *
- * @param {String} filePath
- *
- * @return {Boolean}
- */
-function existsFile(filePath) {
-  try {
-    fs.statSync(filePath);
-
-    return true;
-  } catch (e) {
-    return false;
-  }
 }
 
 

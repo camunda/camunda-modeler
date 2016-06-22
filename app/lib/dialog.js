@@ -195,11 +195,17 @@ Dialog.prototype.setDefaultPath = function(filenames) {
   this.defaultPath = dirname;
 };
 
-Dialog.prototype.showDialog = function(type, opts) {
+Dialog.prototype.showDialog = function(type, opts, done) {
+  var self = this;
+
+  if (typeof opts === 'function') {
+    done = opts;
+    opts = undefined;
+  }
+
   var dialog = this.dialog,
       dialogOptions = this.getDialogOptions(type, opts),
-      buttons = dialogOptions.buttons,
-      result;
+      buttons = dialogOptions.buttons;
 
   // windows needs this property
   dialogOptions.noLink = true;
@@ -210,28 +216,39 @@ Dialog.prototype.showDialog = function(type, opts) {
     });
   }
 
+  done = done || function(err, result) {
+    console.log(result);
+  };
+
+  function dialogCallback(answer) {
+    var result;
+
+    if (type !== 'open' && type !== 'save') {
+      // get the button ID according to the result
+      result = buttons[answer].id;
+    } else {
+      result = answer;
+    }
+
+    // save last used path to config
+    if (result && (type === 'open' || type === 'save')) {
+      self.setDefaultPath(result);
+    }
+
+    done(null, result);
+  }
+
   if (type === 'open') {
-    result = dialog.showOpenDialog(dialogOptions);
+    dialog.showOpenDialog(dialogOptions, dialogCallback);
 
   } else
   if (type === 'save') {
-    result = dialog.showSaveDialog(dialogOptions);
+    dialog.showSaveDialog(dialogOptions, dialogCallback);
 
   } else {
-    result = dialog.showMessageBox(dialogOptions);
-
-    // get the button ID according to the result
-    result = buttons[result].id;
+    dialog.showMessageBox(dialogOptions, dialogCallback);
   }
-
-  // save last used path to config
-  if (result && (type === 'open' || type === 'save')) {
-    this.setDefaultPath(result);
-  }
-
-  return result;
 };
-
 
 Dialog.prototype.showGeneralErrorDialog = function() {
   var dialog = this.dialog;

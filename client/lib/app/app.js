@@ -333,6 +333,8 @@ function App(options) {
     this.events.emit('changed');
   });
 
+  this.events.on('dialog-overlay:toggle', this.compose('toggleDialogOverlay'));
+
   ///////// public API yea! //////////////////////////////////////
 
   /**
@@ -370,8 +372,15 @@ module.exports = App;
 
 
 App.prototype.render = function() {
+  var dialogOverlayClasses = 'dialog-overlay';
+
+  if (this._activeDialogOverlay) {
+    dialogOverlayClasses += ' active';
+  }
+
   var html =
     <div className="app" onDragover={ fileDrop(this.compose('openFiles')) }>
+      <div className={ dialogOverlayClasses }></div>
       <MenuBar entries={ this.menuEntries } />
       <Tabbed
         className="main"
@@ -387,6 +396,13 @@ App.prototype.render = function() {
     </div>;
 
   return html;
+};
+
+
+App.prototype.toggleDialogOverlay = function(isOpened) {
+  this._activeDialogOverlay = isOpened;
+
+  this.events.emit('changed');
 };
 
 

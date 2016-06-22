@@ -14,16 +14,16 @@ function ElectronDialog() {
     this.response = fileOrError;
   };
 
-  this.showOpenDialog = function() {
-    return this.response;
+  this.showOpenDialog = function(opts, callback) {
+    callback(this.response);
   };
 
-  this.showSaveDialog = function() {
-    return this.response;
+  this.showSaveDialog = function(opts, callback) {
+    callback(this.response);
   };
 
-  this.showMessageBox = function() {
-    return this.response;
+  this.showMessageBox = function(opts, callback) {
+    callback(this.response);
   };
 
   this.showErrorBox = function(title, message) {

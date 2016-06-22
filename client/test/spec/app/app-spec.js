@@ -70,8 +70,8 @@ describe('App', function() {
 
   beforeEach(function() {
     config = new Config();
-    dialog = new Dialog();
     events = new Events();
+    dialog = new Dialog(events);
     fileSystem = new FileSystem();
     logger = new Logger();
     workspace = new Workspace();
@@ -209,6 +209,46 @@ describe('App', function() {
       // then
       expect(app.fileHistory).to.have.length(0);
     });
+  });
+
+
+  describe('dialog overlay', function() {
+
+    it('should open overlay when dialog is called', function(done) {
+
+      // given
+      var openFile = createBpmnFile(bpmnXML);
+
+      dialog.setResponse('open', [ openFile ]);
+
+      // when
+      app.on('dialog-overlay:toggle', function(isOpened) {
+
+        expect(isOpened).to.be.true;
+
+        done();
+      });
+
+      app.openDiagram();
+    });
+
+
+    it('should close overlay when dialog is closed', function() {
+
+      // given
+      var openFile = createBpmnFile(bpmnXML),
+          closeOverlay = spy(dialog, '_closeOverlay');
+
+      dialog.setResponse('open', [ openFile ]);
+
+
+      // when
+      app.openDiagram();
+
+      // then
+      expect(closeOverlay).to.have.been.called;
+    });
+
   });
 
 

@@ -31,11 +31,12 @@ var remote = require('electron').remote,
 Delegator();
 
 domReady(function() {
+  var events = new Events();
 
   var app = new App({
     config: new Config(),
-    dialog: new Dialog(),
-    events: new Events(),
+    dialog: new Dialog(events),
+    events: events,
     fileSystem: new FileSystem(),
     logger: new Logger(),
     workspace: new Workspace(),
@@ -68,6 +69,12 @@ domReady(function() {
     debug('window focused');
 
     app.recheckTabContent(app.activeTab);
+  });
+
+  browser.on('dialog-overlay:toggle', function(e, isOpened) {
+    debug('toggle dialog overlay', isOpened);
+
+    app.toggleDialogOverlay(isOpened);
   });
 
   mainLoop(app, document.body);

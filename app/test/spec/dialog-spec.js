@@ -30,78 +30,85 @@ describe('Dialog', function() {
   });
 
 
-  it('should show open dialog', function() {
+  it('should show open dialog', function(done) {
     // given
     var newBasePath = path.join(USER_PATH, 'bpmn'),
         newPath = path.join(newBasePath, 'diagram_1.bpmn'),
-        openDialogArg,
-        openResult;
+        openDialogArg;
 
-    electronDialog.setResponse([newPath]);
+    electronDialog.setResponse([ newPath ]);
 
     // when
-    openResult = dialog.showDialog('open');
+    dialog.showDialog('open', function(err, openResult) {
 
-    openDialogArg = getDialogArgs(electronDialog.showOpenDialog);
+      openDialogArg = getDialogArgs(electronDialog.showOpenDialog);
 
-    // then
-    expect(openResult).to.contain(newPath);
+      // then
+      expect(openResult).to.contain(newPath);
 
-    expect(electronDialog.showOpenDialog).to.have.been.called;
+      expect(electronDialog.showOpenDialog).to.have.been.called;
 
-    expect(openDialogArg.title).to.equal('Open diagram');
-    expect(openDialogArg.defaultPath).to.equal(USER_DESKTOP_PATH);
+      expect(openDialogArg.title).to.equal('Open diagram');
+      expect(openDialogArg.defaultPath).to.equal(USER_DESKTOP_PATH);
+
+      done();
+    });
+
   });
 
 
-  it('should show save dialog', function() {
+  it('should show save dialog', function(done) {
     // given
     var newBasePath = path.join(USER_PATH, 'dmn'),
         newPath = path.join(newBasePath, 'diagram_1.dmn'),
-        saveDialogArg,
-        saveResult;
+        saveDialogArg;
 
     electronDialog.setResponse(newPath);
 
     // when
-    saveResult = dialog.showDialog('save', {
+    dialog.showDialog('save', {
       name: 'diagram_1.dmn',
       fileType: 'dmn'
+    }, function(err, saveResult) {
+      saveDialogArg = getDialogArgs(electronDialog.showSaveDialog);
+
+      // then
+      expect(saveResult).to.equal(newPath);
+
+      expect(electronDialog.showSaveDialog).to.have.been.called;
+
+      expect(saveDialogArg.title).to.equal('Save diagram_1.dmn as..');
+      expect(path.join(saveDialogArg.defaultPath)).to.equal(path.join(USER_DESKTOP_PATH, 'diagram_1.dmn'));
+
+      done();
     });
 
-    saveDialogArg = getDialogArgs(electronDialog.showSaveDialog);
-
-    // then
-    expect(saveResult).to.equal(newPath);
-
-    expect(electronDialog.showSaveDialog).to.have.been.called;
-
-    expect(saveDialogArg.title).to.equal('Save diagram_1.dmn as..');
-    expect(path.join(saveDialogArg.defaultPath)).to.equal(path.join(USER_DESKTOP_PATH, 'diagram_1.dmn'));
   });
 
 
-  it('should show message dialog -> close', function() {
+  it('should show message dialog -> close', function(done) {
     // given
-    var messageBoxArg,
-        closeResult;
+    var messageBoxArg;
 
     electronDialog.setResponse(1);
 
     // when
-    closeResult = dialog.showDialog('close', {
+    dialog.showDialog('close', {
       name: 'diagram_1.bpmn'
+    }, function(err, closeResult) {
+      messageBoxArg = getDialogArgs(electronDialog.showMessageBox);
+
+      // then
+      expect(closeResult).to.equal('save');
+
+      expect(electronDialog.showMessageBox).to.have.been.called;
+
+      expect(messageBoxArg.title).to.equal('Close diagram');
+      expect(messageBoxArg.buttons).to.eql([ 'Cancel', 'Save', 'Don\'t Save' ]);
+
+      done();
     });
 
-    messageBoxArg = getDialogArgs(electronDialog.showMessageBox);
-
-    // then
-    expect(closeResult).to.equal('save');
-
-    expect(electronDialog.showMessageBox).to.have.been.called;
-
-    expect(messageBoxArg.title).to.equal('Close diagram');
-    expect(messageBoxArg.buttons).to.eql([ 'Cancel', 'Save', 'Don\'t Save' ]);
   });
 
 
@@ -117,7 +124,7 @@ describe('Dialog', function() {
   });
 
 
-  it('should set last used path to config via open', function() {
+  it('should set last used path to config via open', function(done) {
     // given
     var newPath = path.join(USER_PATH, 'bpmn', 'diagram_1.bpmn'),
         defaultPath = path.dirname(newPath);
@@ -125,14 +132,17 @@ describe('Dialog', function() {
     electronDialog.setResponse(newPath);
 
     // when
-    dialog.showDialog('open');
+    dialog.showDialog('open', function() {
+      // then
+      expect(config.get('defaultPath')).to.equal(defaultPath);
 
-    // then
-    expect(config.get('defaultPath')).to.equal(defaultPath);
+      done();
+    });
+
   });
 
 
-  it('should set last used path to config via save', function() {
+  it('should set last used path to config via save', function(done) {
     // given
     var newPath = path.join(USER_PATH, 'dmn', 'diagram_1.dmn'),
         defaultPath = path.dirname(newPath);
@@ -143,10 +153,14 @@ describe('Dialog', function() {
     dialog.showDialog('save', {
       name: 'diagram_1.dmn',
       fileType: 'dmn'
+    }, function() {
+
+      // then
+      expect(config.get('defaultPath')).to.equal(defaultPath);
+
+      done();
     });
 
-    // then
-    expect(config.get('defaultPath')).to.equal(defaultPath);
   });
 
 });

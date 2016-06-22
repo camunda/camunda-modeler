@@ -4,11 +4,15 @@ var assign = require('lodash/object/assign');
 
 var spyOn = require('test/helper/util/spy-on');
 
+var BaseDialog = require('../../../lib/external/base-dialog');
+
 
 /**
  * A mock dialog implementation.
  */
-function Dialog() {
+function Dialog(events) {
+
+  BaseDialog.call(this, events);
 
   this.openResponse = null;
   this.closeResponse = null;
@@ -27,6 +31,19 @@ function Dialog() {
     done(this.contentChangedResponse);
   };
 
+  this._doOpen = function(args, callback) {
+    var _args;
+
+    args.shift();
+
+    _args = args;
+
+    if (!(args[0] instanceof Error)) {
+      _args.unshift(null);
+    }
+
+    callback.apply(null, _args);
+  };
 
   /**
    * Ask for how to save the file and callback with (err, file).
@@ -78,12 +95,7 @@ function Dialog() {
    * @param {Function} done
    */
   this.open = function(done) {
-
-    if (this.openResponse instanceof Error) {
-      done(this.openResponse);
-    } else {
-      done(null, this.openResponse);
-    }
+    this._open('file:open', this.openResponse, done);
   };
 
   /**
