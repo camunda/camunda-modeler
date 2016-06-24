@@ -54,6 +54,14 @@ function MultiEditorTab(options) {
 
     this.activeEditor.emit('focus');
   });
+
+  this.on('destroy', () => {
+    var editor = this.activeEditor;
+
+    if (editor) {
+      this.activeEditor.destroy();
+    }
+  });
 }
 
 inherits(MultiEditorTab, Tab);

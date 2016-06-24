@@ -114,6 +114,15 @@ DiagramEditor.prototype.update = function() {
 };
 
 
+DiagramEditor.prototype.destroy = function() {
+  var modeler = this.getModeler();
+
+  if (modeler.destroy) {
+    modeler.destroy();
+  }
+};
+
+
 DiagramEditor.prototype.saveXML = function(done) {
 
   var modeler = this.getModeler(),

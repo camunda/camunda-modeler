@@ -1283,6 +1283,31 @@ describe('App', function() {
     });
 
 
+    it('should emit "destroy" on tab closing', function(done) {
+      // given
+      var file = createBpmnFile(bpmnXML),
+          openTab = app.openTab(file),
+          activeEditor = openTab.activeEditor;
+
+      var tabDestroyListener = spy(function() {}),
+          editorDestroySpy;
+
+      openTab.on('destroy', tabDestroyListener);
+
+      editorDestroySpy = spy(activeEditor, 'destroy');
+
+      // when
+      app.closeTab(openTab, function(err) {
+
+        // then
+        expect(tabDestroyListener).to.have.been.called;
+        expect(editorDestroySpy).to.have.been.called;
+
+        done();
+      });
+    });
+
+
     // TODO(nikku): needs to be implemented properly
     it.skip('should select tab before closing', function() {
 

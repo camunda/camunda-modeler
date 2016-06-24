@@ -1061,6 +1061,8 @@ App.prototype._closeTab = function(tab, done) {
   var tabs = this.tabs,
       events = this.events;
 
+  tab.emit('destroy');
+
   events.emit('tab:close', tab);
 
   var idx = tabs.indexOf(tab);
