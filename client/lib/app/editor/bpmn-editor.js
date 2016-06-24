@@ -124,6 +124,14 @@ BpmnEditor.prototype.triggerEditorActions = function(action, options) {
     }, options);
   }
 
+  if ('zoomFit' === action) {
+    action = 'zoom';
+
+    opts = assign({
+      value: 'fit-viewport'
+    }, options);
+  }
+
   if ('distributeHorizontally' === action) {
     action = 'distributeElements';
 

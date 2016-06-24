@@ -786,10 +786,16 @@ MenuBuilder.prototype.appendWindowMenu = function() {
         app.emit('menu:action', 'zoomOut');
       }
     }, {
-      label: 'Zoom Default',
+      label: 'Zoom to Actual Size',
       accelerator: 'CommandOrControl+0',
       click: function() {
         app.emit('menu:action', 'zoom');
+      }
+    }, {
+      label: 'Zoom to Fit Diagram',
+      accelerator: 'CommandOrControl+1',
+      click: function() {
+        app.emit('menu:action', 'zoomFit');
       }
     }, {
       type: 'separator'

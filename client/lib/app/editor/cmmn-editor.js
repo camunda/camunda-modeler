@@ -110,6 +110,15 @@ CmmnEditor.prototype.triggerEditorActions = function(action, options) {
     }, options);
   }
 
+
+  if ('zoomFit' === action) {
+    action = 'zoom';
+
+    opts = assign({
+      value: 'fit-viewport'
+    }, options);
+  }
+
   // ignore all editor actions (besides the following three)
   // if there's a current active input or textarea
   if ([ 'removeSelection', 'stepZoom', 'zoom' ].indexOf(action) === -1 && isInputActive()) {

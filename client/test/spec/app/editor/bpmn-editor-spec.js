@@ -147,6 +147,18 @@ describe('BpmnEditor', function() {
       });
     });
 
+
+    it('"zoom" should call "zoom" event with value "fit-viewport"', function() {
+
+      // when
+      editor.triggerAction('zoomFit');
+
+      // then
+      expect(trigger).to.have.been.calledWith('zoom', {
+        value: 'fit-viewport'
+      });
+    });
+
   });
 
 
