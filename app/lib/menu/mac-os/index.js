@@ -65,19 +65,6 @@ MacMenuBuilder.prototype.appendRedo = function() {
   }));
 };
 
-
-MenuBuilder.prototype.appendRemoveSelection = function() {
-  this.menu.append(new MenuItem({
-    label: 'Remove Selected',
-    accelerator: 'Control+D',
-    enabled: this.opts.state.elementsSelected,
-    click: function() {
-      app.emit('menu:action', 'removeSelection');
-    }
-  }));
-};
-
-
 MacMenuBuilder.prototype.build = function() {
   this.appendAppMenu()
     .appendFileMenu(
