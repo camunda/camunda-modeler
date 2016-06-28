@@ -1286,22 +1286,28 @@ describe('App', function() {
     it('should emit "destroy" on tab closing', function(done) {
       // given
       var file = createBpmnFile(bpmnXML),
-          openTab = app.openTab(file),
-          activeEditor = openTab.activeEditor;
+          openTab = app.openTab(file);
 
-      var tabDestroyListener = spy(function() {}),
-          editorDestroySpy;
+      var tabDestroyListener = spy(function() {});
+      var listenerRemoveSpy = spy(app.events, 'removeListener');
 
       openTab.on('destroy', tabDestroyListener);
 
-      editorDestroySpy = spy(activeEditor, 'destroy');
+      var editorSpies = openTab.editors.map(function(editor) {
+        return spy(editor, 'destroy');
+      });
 
       // when
       app.closeTab(openTab, function(err) {
 
         // then
         expect(tabDestroyListener).to.have.been.called;
-        expect(editorDestroySpy).to.have.been.called;
+        editorSpies.forEach(function(spy) {
+          expect(spy).to.have.been.called;
+        });
+
+        // make sure we remove global listeners
+        expect(listenerRemoveSpy.callCount).to.eql(4);
 
         done();
       });

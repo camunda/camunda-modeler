@@ -193,6 +193,7 @@ XMLEditor.prototype.triggerAction = function(action, options) {
 
 };
 
+
 XMLEditor.prototype.saveXML = function(done) {
   var codemirror = this.getCodeMirror(),
       xml;
@@ -210,4 +211,11 @@ XMLEditor.prototype.saveXML = function(done) {
   this.emit('saved', saveContext);
 
   done(null, xml);
+};
+
+
+XMLEditor.prototype.destroy = function() {
+  if (this.codemirror) {
+    this.codemirror.toTextArea();
+  }
 };

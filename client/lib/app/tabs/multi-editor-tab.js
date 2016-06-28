@@ -56,11 +56,18 @@ function MultiEditorTab(options) {
   });
 
   this.on('destroy', () => {
-    var editor = this.activeEditor;
 
-    if (editor) {
-      this.activeEditor.destroy();
+    if (this.editors) {
+      this.editors.forEach(function(editor) {
+        editor.destroy();
+      });
     }
+
+    this._globalListeners.forEach((gl) => {
+      this.events.removeListener(gl.eventName, gl.callback);
+    });
+
+    this._globalListeners = [];
   });
 }
 
@@ -186,7 +193,9 @@ MultiEditorTab.prototype.setEditor = function(editor) {
 MultiEditorTab.prototype.createEditors = function(options) {
   debug('create editors', options.editorDefinitions);
 
-  return options.editorDefinitions.map((definition) => {
+  this._globalListeners = [];
+
+  var editors = options.editorDefinitions.map((definition) => {
     var id = definition.id,
         opts = assign({}, options, {
           id: options.id + '#' + id,
@@ -263,16 +272,28 @@ MultiEditorTab.prototype.createEditors = function(options) {
       });
     });
 
-    this.events.on('window:resized', function() {
-      editor.emit('window:resized');
+    this._globalListeners.push({
+      eventName: 'window:resized',
+      callback: function() {
+        editor.emit('window:resized');
+      }
     });
 
-    this.events.on('layout:update', function() {
-      editor.emit('layout:update');
+    this._globalListeners.push({
+      eventName: 'layout:update',
+      callback: function() {
+        editor.emit('layout:update');
+      }
     });
 
     return editor;
   });
+
+  this._globalListeners.forEach((gl) => {
+    this.events.on(gl.eventName, gl.callback);
+  });
+
+  return editors;
 };
 
 /**

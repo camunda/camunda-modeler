@@ -67,6 +67,7 @@ BaseEditor.prototype.mountEditor = function(node) {
   this.update();
 };
 
+
 /**
  * Plug that into the virtual dom life-cycle to unmount
  * the editor on dom remove.
@@ -84,6 +85,7 @@ BaseEditor.prototype.unmountEditor = function(node) {
   this.emit('unmounted');
 };
 
+
 /**
  * Update the editor contents because they changed
  * or we re-mounted.
@@ -91,6 +93,7 @@ BaseEditor.prototype.unmountEditor = function(node) {
 BaseEditor.prototype.update = function() {
   throw needsOverride();
 };
+
 
 /**
  * Save the editor contents as XML and pass the results
@@ -102,6 +105,7 @@ BaseEditor.prototype.saveXML = function(done) {
   throw needsOverride();
 };
 
+
 /**
  * Will the editor lose it's history while importing new xml
  *
@@ -110,6 +114,7 @@ BaseEditor.prototype.saveXML = function(done) {
 BaseEditor.prototype.isHistoryLost = function(xml) {
   return false;
 };
+
 
 /**
  * Set XML on the editor, passing the initial (dirty)
@@ -129,4 +134,12 @@ BaseEditor.prototype.setXML = function(xml, initialState) {
 
   // (2) attempt import
   this.update();
+};
+
+
+/**
+ * Clean up resources and any bindings.
+ */
+BaseEditor.prototype.destroy = function() {
+  throw needsOverride();
 };
