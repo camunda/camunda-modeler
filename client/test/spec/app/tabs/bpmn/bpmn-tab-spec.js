@@ -1,7 +1,7 @@
 'use strict';
 
 var Config = require('test/helper/mock/config'),
-    Events = require('test/helper/mock/events'),
+    Events = require('base/events'),
     Logger = require('base/logger'),
     Dialog = require('test/helper/mock/dialog');
 

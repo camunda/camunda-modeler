@@ -2,7 +2,7 @@
 
 var Config = require('test/helper/mock/config'),
     Dialog = require('test/helper/mock/dialog'),
-    Events = require('test/helper/mock/events'),
+    Events = require('base/events'),
     FileSystem = require('test/helper/mock/file-system'),
     Workspace = require('test/helper/mock/workspace'),
     Logger = require('base/logger');

@@ -1,6 +1,6 @@
 'use strict';
 
-var Events = require('test/helper/mock/events'),
+var Events = require('base/events'),
     Dialog = require('test/helper/mock/dialog');
 
 var MultiEditorTab = require('app/tabs/multi-editor-tab');
