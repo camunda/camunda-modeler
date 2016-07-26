@@ -448,9 +448,9 @@ App.prototype.openFiles = function(files) {
       });
 
     } else {
-      if (namespace.hasActivitiURL(file.contents)) {
+      if (namespace.hasOldNamespace(file.contents)) {
 
-        dialog.convertNamespace((err, answer) => {
+        dialog.convertNamespace(type, (err, answer) => {
           if (err) {
             debug('open-diagram error: %s', err);
 
@@ -462,7 +462,7 @@ App.prototype.openFiles = function(files) {
           }
 
           if (answer === 'yes') {
-            file.contents = namespace.replace(file.contents);
+            file.contents = namespace.replace(file.contents, type);
           }
 
           done(null, assign({}, file, { fileType: type }));

@@ -9,7 +9,8 @@ var files = {
   activiti: require('test/fixtures/activiti.xml'),
   activitiExpected: require('test/fixtures/activitiExpected.xml'),
   activitiComplex: require('test/fixtures/activitiComplex.xml'),
-  activitiComplexExpected: require('test/fixtures/activitiComplexExpected.xml')
+  activitiComplexExpected: require('test/fixtures/activitiComplexExpected.xml'),
+  oldDMN: require('test/fixtures/old-dmn.dmn')
 };
 
 function getFile(type) {
@@ -50,11 +51,42 @@ describe('util - namespace', function() {
     });
   }
 
-  function testCollection(collection, fn) {
+  function testCollection(collection, fn, optional) {
     return map(collection, function(element) {
-      return fn(element);
+      return fn(element, optional);
     });
   }
+
+  describe('dmn namespace url', function() {
+
+    var activitiFixtures = [ 'oldDMN' ];
+
+    before(function() {
+      activitiFixtures = map(activitiFixtures, function(filePath) {
+        return getFile(filePath);
+      });
+    });
+
+    it('should find the old DMN namespace URL', function() {
+      // when
+      var results = testCollection(activitiFixtures, namespace.hasOldNamespace);
+
+      // then
+      expectCollection(results, true);
+    });
+
+
+    it('should replace the old DMN namespace URL with new one', function() {
+      // when
+      var camundaNamespaced = testCollection(activitiFixtures, namespace.replace, 'dmn');
+
+      var results = testCollection(camundaNamespaced, namespace.hasOldNamespace);
+
+      // then
+      expectCollection(results, false);
+    });
+
+  });
 
   describe('activiti namespace', function() {
 
@@ -68,7 +100,7 @@ describe('util - namespace', function() {
 
     it('should find Activiti namespace URL', function() {
       // when
-      var results = testCollection(activitiFixtures, namespace.hasActivitiURL);
+      var results = testCollection(activitiFixtures, namespace.hasOldNamespace);
 
       // then
       expectCollection(results, true);
@@ -77,9 +109,9 @@ describe('util - namespace', function() {
 
     it('should replace Activiti namespace URL with Camunda\'s', function() {
       // when
-      var camundaNamespaced = testCollection(activitiFixtures, namespace.replaceActivitiURL);
+      var camundaNamespaced = testCollection(activitiFixtures, namespace.replace, 'bpmn');
 
-      var results = testCollection(camundaNamespaced, namespace.hasActivitiURL);
+      var results = testCollection(camundaNamespaced, namespace.hasOldNamespace);
 
       // then
       expectCollection(results, false);
@@ -113,7 +145,7 @@ describe('util - namespace', function() {
           activitiComplexExpected = getFile('activitiComplexExpected');
 
       // when
-      var results = testCollection(activitiFixtures, namespace.replace);
+      var results = testCollection(activitiFixtures, namespace.replace, 'bpmn');
 
       // then
       expect(results[0]).to.equal(activitiExpected);
@@ -130,7 +162,7 @@ describe('util - namespace', function() {
       ].join('\n');
 
       // when
-      var result = namespace.replace(xml);
+      var result = namespace.replace(xml, 'bpmn');
 
       // then
       expect(result).to.equal([

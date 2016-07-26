@@ -135,8 +135,8 @@ function Dialog(events) {
    *
    * @param {Function} done
    */
-  this.convertNamespace = function(done) {
-    this._open('dialog:convert-namespace', done);
+  this.convertNamespace = function(type, done) {
+    this._open('dialog:convert-namespace', type, done);
   };
 
   /**

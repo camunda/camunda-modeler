@@ -127,7 +127,7 @@ function Dialog(events) {
    *
    * @param {Function} done
   */
-  this.convertNamespace = function(done) {
+  this.convertNamespace = function(type, done) {
 
     if (this.namespaceResponse instanceof Error) {
       done(this.namespaceResponse);

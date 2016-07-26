@@ -120,21 +120,39 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
         message: 'The file "' + options.name + '" already exists. Do you want to overwrite it?'
       };
     },
-    namespace: function() {
+    namespace: function(options) {
+      var oldNs = '',
+          newNs = '',
+          details = [];
+
+      ensureOptions([ 'type' ], options);
+
+      if (options.type === 'bpmn') {
+        oldNs = '<activiti>';
+        newNs = '<camunda>';
+
+        details = [
+          'This will allow you to maintain execution related properties.',
+          '',
+          '<camunda> namespace support works from Camunda BPM versions 7.4.0, 7.3.3, 7.2.6 onwards.'
+        ];
+      }
+
+      if (options.type === 'dmn') {
+        oldNs = 'DMN';
+        newNs = 'new DMN';
+      }
+
       return {
         type: 'warning',
-        title: 'Deprecated <activiti> namespace detected',
+        title: 'Deprecated ' + oldNs + ' namespace detected',
         buttons: [
           { id: 'cancel', label: 'Cancel' },
           { id: 'no', label: 'No' },
           { id: 'yes', label: 'Yes' }
         ],
-        message: 'Would you like to convert your diagram to the <camunda> namespace?',
-        detail: [
-          'This will allow you to maintain execution related properties.',
-          '',
-          '<camunda> namespace support works from Camunda BPM versions 7.4.0, 7.3.3, 7.2.6 onwards.'
-        ].join('\n')
+        message: 'Would you like to convert your diagram to the ' + newNs + ' namespace?',
+        detail: details.join('\n')
       };
     },
     savingDenied: function(options) {
