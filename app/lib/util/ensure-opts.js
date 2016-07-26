@@ -9,6 +9,10 @@ var hasProperty = require('./has-property');
 
 module.exports = function ensureOpts(expectedOptions, options) {
 
+  if (typeof options !== 'object') {
+    throw new Error('"options" must be an object');
+  }
+
   var missingOptions = [];
 
   forEach(expectedOptions, function(value, key) {
