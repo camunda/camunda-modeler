@@ -173,6 +173,29 @@ describe('CmmnTab', function() {
 
     describe('error handling', function() {
 
+
+      it('should log modeler errors', function(done) {
+
+        // given
+        var modeler = cmmnEditor.getModeler(),
+            eventBus = modeler.get('eventBus');
+
+        cmmnEditor.on('log:toggle', function(options) {
+
+          // then
+          expect(logger.entries).to.include({
+            category: 'error', ref: null, message: 'foo BABA' });
+
+          expect(options.open).to.be.true;
+
+          done();
+        });
+
+        // when
+        eventBus.fire('error', { error: 'foo BABA' });
+      });
+
+
       it('should handle export errors', function() {
 
         // given

@@ -293,6 +293,12 @@ BpmnEditor.prototype.getModeler = function() {
     this.modeler.on('import.done', 1500, () => {
       this.initialState.importing = false;
     });
+
+    // log errors into log
+    this.modeler.on('error', 1500, (error) => {
+      this.emit('log', [[ 'error', error.error ]]);
+      this.emit('log:toggle', { open: true });
+    });
   }
 
   return this.modeler;

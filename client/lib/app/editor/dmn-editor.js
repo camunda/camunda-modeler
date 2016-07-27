@@ -136,6 +136,12 @@ DmnEditor.prototype.getModeler = function() {
       'commandStack.changed',
       'selection.changed'
     ], bind(this.updateState, this));
+
+    // log errors into log
+    this.modeler.on('error', bind((error) => {
+      this.emit('log', [[ 'error', error.error ]]);
+      this.emit('log:toggle', { open: true });
+    }, this));
   }
 
   return this.modeler;
