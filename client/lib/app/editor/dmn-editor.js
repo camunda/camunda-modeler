@@ -3,6 +3,7 @@
 var inherits = require('inherits');
 
 var bind = require('lodash/function/bind'),
+    debounce = require('lodash/function/debounce'),
     assign = require('lodash/object/assign');
 
 var DiagramEditor = require('./diagram-editor');
@@ -35,6 +36,9 @@ function DmnEditor(options) {
       console.log(warnings);
     }
   });
+
+  this.on('window:resized', debounce(this.resizeTable, 50));
+  this.on('layout:update', debounce(this.resizeTable, 50));
 }
 
 inherits(DmnEditor, DiagramEditor);
@@ -138,7 +142,20 @@ DmnEditor.prototype.getModeler = function() {
 };
 
 DmnEditor.prototype.createModeler = function($el) {
-  return new DmnJS({ container: $el });
+  return new DmnJS({ container: $el, minColWidth: 200 });
+};
+
+DmnEditor.prototype.resizeTable = function() {
+  var modeler = this.getModeler(),
+      sheet;
+
+  if (!isImported(modeler)) {
+    return;
+  }
+
+  sheet = modeler.get('sheet');
+
+  sheet.resized();
 };
 
 DmnEditor.prototype.render = function() {
