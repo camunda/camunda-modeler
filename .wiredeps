@@ -312,14 +312,31 @@
     "dmn-js": {
       "version": "bpmn-io/dmn-js",
       "dependencies": {
+        "diagram-js": {
+          "version": "0.11.0",
+          "dependencies": {
+            "eve": {
+              "version": "0.4.2"
+            },
+            "hammerjs": {
+              "version": "2.0.6"
+            },
+            "snapsvg": {
+              "version": "https://github.com/Nikku/Snap.svg/archive/v0.3.0-browserify.tar.gz"
+            }
+          }
+        },
+        "didi": {
+          "version": "0.0.4"
+        },
         "dmn-moddle": {
           "version": "bpmn-io/dmn-moddle",
           "dependencies": {
             "moddle": {
-              "version": "bpmn-io/moddle"
+              "version": "0.6.3"
             },
             "moddle-xml": {
-              "version": "bpmn-io/moddle-xml",
+              "version": "0.8.0",
               "dependencies": {
                 "sax": {
                   "version": "0.6.1"
@@ -331,25 +348,50 @@
             }
           }
         },
+        "min-dom": {
+          "version": "0.2.0",
+          "dependencies": {
+            "component-classes": {
+              "version": "1.2.4",
+              "dependencies": {
+                "component-indexof": {
+                  "version": "0.0.3"
+                }
+              }
+            },
+            "component-closest": {
+              "version": "0.1.4"
+            },
+            "component-delegate": {
+              "version": "0.2.3"
+            },
+            "component-event": {
+              "version": "0.1.4"
+            },
+            "component-matches-selector": {
+              "version": "0.1.5"
+            },
+            "component-query": {
+              "version": "0.0.3"
+            }
+          }
+        },
+        "object-refs": {
+          "version": "0.1.1"
+        },
+        "selection-update": {
+          "version": "0.1.2"
+        },
         "table-js": {
           "version": "bpmn-io/table-js"
         },
-        "bootstrap": {
-          "version": "3.3.6"
-        },
         "ids": {
-          "version": "0.1.1",
+          "version": "0.1.0",
           "dependencies": {
             "hat": {
               "version": "0.0.3"
             }
           }
-        },
-        "inherits": {
-          "version": "2.0.1"
-        },
-        "object-refs": {
-          "version": "0.1.1"
         },
         "stringify": {
           "version": "3.2.1",
