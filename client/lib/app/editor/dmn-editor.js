@@ -37,6 +37,7 @@ function DmnEditor(options) {
     }
   });
 
+  this.on('focus', debounce(this.resizeTable, 50));
   this.on('window:resized', debounce(this.resizeTable, 50));
   this.on('layout:update', debounce(this.resizeTable, 50));
 }
@@ -60,7 +61,7 @@ DmnEditor.prototype.triggerEditorActions = function(action, options) {
   if (action === 'clauseAdd') {
     opts = options.type;
   }
-
+  
   debug('editor-actions', action, options);
 
   // forward other actions to editor actions
