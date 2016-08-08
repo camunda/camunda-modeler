@@ -693,6 +693,16 @@ MenuBuilder.prototype.appendDmnActions = function() {
     }
   }));
 
+  this.appendSeparator();
+
+  this.menu.append(new MenuItem({
+    label: 'Toggle Editing Mode',
+    accelerator: 'CommandOrControl + M',
+    click: function() {
+      app.emit('menu:action', 'toggleEditingMode');
+    }
+  }));
+
   return this;
 };
 
@@ -944,19 +954,19 @@ MenuBuilder.prototype.get = function() {
 MenuBuilder.prototype.build = function() {
   return this.appendFileMenu(
       new this.constructor(this.opts)
-      .appendNewFile()
-      .appendOpen()
-      .appendSeparator()
-      .appendSwitchTab()
-      .appendSaveFile()
-      .appendSaveAsFile()
-      .appendSaveAllFiles()
-      .appendSeparator()
-      .appendExportAs()
-      .appendCloseTab()
-      .appendSeparator()
-      .appendQuit()
-      .get()
+        .appendNewFile()
+        .appendOpen()
+        .appendSeparator()
+        .appendSwitchTab()
+        .appendSaveFile()
+        .appendSaveAsFile()
+        .appendSaveAllFiles()
+        .appendSeparator()
+        .appendExportAs()
+        .appendCloseTab()
+        .appendSeparator()
+        .appendQuit()
+        .get()
     )
     .appendEditMenu()
     .appendWindowMenu()
