@@ -35,7 +35,7 @@ module.exports.hasOldNamespace = hasOldNamespace;
 
 
 function replaceNamespaceURL(xml, oldNs, newNs) {
-  var pattern = new RegExp(oldNs);
+  var pattern = new RegExp(oldNs, 'g');
 
   return xml.replace(pattern, newNs);
 }
