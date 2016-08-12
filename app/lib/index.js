@@ -6,8 +6,6 @@ var electron = require('electron'),
 
 var path = require('path');
 
-var Shell = electron.shell;
-
 var forEach = require('lodash/collection/forEach');
 
 /**
@@ -112,7 +110,7 @@ renderer.on('dialog:convert-namespace', function(type, done) {
 
 renderer.on('dialog:import-error', function(filename, errorDetails, done) {
 
-  dialog.showDialog('importError', { name: filename, errorDetails: errorDetails }, function(answer) {
+  dialog.showDialog('importError', { name: filename, errorDetails: errorDetails }, function(err, answer) {
     if (answer === 'ask-forum') {
       browserOpen('https://forum.camunda.org/c/modeler');
     }
@@ -266,10 +264,10 @@ app.createEditorWindow = function() {
 
   mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../public/index.html'));
 
-  mainWindow.webContents.on('will-navigate', function(e, url) {
-    e.preventDefault();
+  mainWindow.webContents.on('new-window', function(event, url) {
+    event.preventDefault();
 
-    Shell.openExternal(url);
+    browserOpen(url);
   });
 
   // handling case when user clicks on window close button
