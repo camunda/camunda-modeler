@@ -1,21 +1,23 @@
 'use strict';
 
-var isInputActive = require('util/dom/is-input').active;
+var isInput = require('util/dom/is-input').isInput;
+
+var domClosest = require('min-dom/lib/closest');
 
 var debug = require('debug')('shortcuts');
 
 
 function ShortcutsFix(app) {
 
-  this.binded = false;
+  this.bound = false;
 
   this.bind = () => {
     debug('adding keyboard shortcuts bindings');
 
-    if (!this.binded) {
+    if (!this.bound) {
       window.addEventListener('keydown', this.handler);
 
-      this.binded = true;
+      this.bound = true;
 
       return debug('added');
     }
@@ -26,10 +28,10 @@ function ShortcutsFix(app) {
   this.unbind = () => {
     debug('removing keyboard shortcuts bindings');
 
-    if (this.binded) {
+    if (this.bound) {
       window.removeEventListener('keydown', this.handler);
 
-      this.binded = false;
+      this.bound = false;
 
       return debug('removed');
     }
@@ -38,17 +40,30 @@ function ShortcutsFix(app) {
   };
 
   this.handler = (e) => {
-    triggerActionForCtrlKeyEvent(e, 'a', 'selectElements');
-    triggerActionForCtrlKeyEvent(e, 'z', 'undo');
-    triggerActionForCtrlKeyEvent(e, 'y', 'redo');
 
-    triggerActionForCtrlKeyEvent(e, 'c', 'copy');
-    triggerActionForCtrlKeyEvent(e, 'v', 'paste');
+    var activeElement = document.activeElement;
+
+    if (event.ctrlKey) {
+
+      if (!isInput(activeElement)) {
+        triggerKeyAction(e, 'a', 'selectElements');
+
+        triggerKeyAction(e, 'c', 'copy');
+        triggerKeyAction(e, 'v', 'paste');
+      }
+
+      if (!isInput(activeElement) || isPropertiesInput(activeElement)) {
+        triggerKeyAction(e, 'z', 'undo');
+        triggerKeyAction(e, 'y', 'redo');
+      }
+    }
   };
 
-  function triggerActionForCtrlKeyEvent(event, key, action) {
+  function triggerKeyAction(event, key, action) {
 
-    if (event.ctrlKey && ( String.fromCharCode(event.which).toLowerCase() === key && !isInputActive())) {
+    var pressedKey = String.fromCharCode(event.which).toLowerCase();
+
+    if (pressedKey === key) {
       debug('triggering "' + action + '" for Ctrl+' + key);
 
       event.preventDefault();
@@ -60,3 +75,10 @@ function ShortcutsFix(app) {
 
 
 module.exports = ShortcutsFix;
+
+
+///////// helpers ///////////////////////////////////////
+
+function isPropertiesInput(el) {
+  return el && domClosest(el, '.properties');
+}
