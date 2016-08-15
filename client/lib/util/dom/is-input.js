@@ -1,7 +1,11 @@
 'use strict';
 
 function isInput(element) {
-  return element.tagName === 'TEXTAREA' || element.tagName === 'INPUT';
+  return (
+    element.tagName === 'TEXTAREA' ||
+    element.tagName === 'INPUT' ||
+    element.contentEditable === 'true'
+  );
 }
 
 module.exports.isInput = isInput;
