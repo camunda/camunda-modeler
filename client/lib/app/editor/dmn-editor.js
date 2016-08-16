@@ -61,7 +61,7 @@ DmnEditor.prototype.triggerEditorActions = function(action, options) {
   if (action === 'clauseAdd') {
     opts = options.type;
   }
-  
+
   debug('editor-actions', action, options);
 
   // forward other actions to editor actions
@@ -80,6 +80,11 @@ DmnEditor.prototype.updateState = function() {
       commandStack;
 
   var dirty;
+
+  // ignore change events during import
+  if (initialState.importing) {
+    return;
+  }
 
   var stateContext = {
     dmn: true,
@@ -132,11 +137,21 @@ DmnEditor.prototype.getModeler = function() {
     // TODO(nikku): remove bind once dmn-js supports
     //              additional that argument in Modeler#on
 
+    // add importing flag (high priority)
+    this.modeler.on('import.parse.start', 1500, () => {
+      this.initialState.importing = true;
+    });
+
+    // remove importing flag (high priority)
+    this.modeler.on('import.done', 1500, () => {
+      this.initialState.importing = false;
+    });
+
     // hook up with modeler change events
     this.modeler.on([
       'commandStack.changed',
       'selection.changed'
-    ], bind(this.updateState, this));
+    ], this.updateState, this);
 
     // log errors into log
     this.modeler.on('error', bind((error) => {
@@ -183,5 +198,5 @@ DmnEditor.prototype.render = function() {
 };
 
 function isImported(modeler) {
-  return !!modeler.table;
+  return !!modeler.definitions;
 }
