@@ -1,6 +1,7 @@
 'use strict';
 
-var browser = require('util/browser');
+var browser = require('util/browser'),
+    isMac = require('util/is-mac');
 
 var ShortcutsFix = require('./shortcuts-fix');
 
@@ -37,7 +38,3 @@ function WindowMenu(app) {
 }
 
 module.exports = WindowMenu;
-
-function isMac() {
-  return window.navigator.platform === 'MacIntel';
-}

@@ -8,6 +8,7 @@
 @import "base/components/menu-bar";
 @import "base/components/tabbed";
 @import "base/components/warnings-overlay";
+@import "base/components/modal-overlay";
 
 @import "editor/xml-editor";
 
@@ -46,16 +47,4 @@
   .footer {
     .flex-fill(initial);
   }
-
-  .dialog-overlay.active {
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 100%;
-
-    z-index: 10000;
-  }
-
 }

@@ -212,6 +212,54 @@ describe('App', function() {
   });
 
 
+  describe('modal-overlay', function() {
+
+    it('should render modal-dialog', function() {
+
+      app.toggleOverlay(true);
+
+      var tree = render(app);
+
+      // then
+      // expect BPMN tab with editor to be shown
+      expect(select('.dialog-overlay.active', tree)).to.exist;
+    });
+
+
+    it('should render keyboard shortcuts modal and close it', function() {
+
+      app.toggleOverlay('shortcuts');
+
+      var tree = render(app);
+
+      // then
+      // expect BPMN tab with editor to be shown
+      expect(select('.keyboard-shortcuts', tree)).to.exist;
+
+      app.toggleOverlay(false);
+
+      tree = render(app);
+
+      // then
+      // expect BPMN tab with editor to be shown
+      expect(select('.keyboard-shortcuts', tree)).to.not.exist;
+    });
+
+
+    it('should render overlay even if the passed content does not exist', function() {
+
+      app.toggleOverlay('foo');
+
+      var tree = render(app);
+
+      // then
+      // expect BPMN tab with editor to be shown
+      expect(select('.dialog-overlay.active', tree)).to.exist;
+    });
+
+  });
+
+
   describe('dialog overlay', function() {
 
     it('should open overlay when dialog is called', function(done) {

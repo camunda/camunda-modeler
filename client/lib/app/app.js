@@ -12,7 +12,8 @@ var inherits = require('inherits');
 
 var BaseComponent = require('base/component'),
     MenuBar = require('base/components/menu-bar'),
-    Tabbed = require('base/components/tabbed');
+    Tabbed = require('base/components/tabbed'),
+    ModalOverlay = require('base/components/modal-overlay');
 
 var MultiButton = require('base/components/buttons/multi-button'),
     Button = require('base/components/buttons/button'),
@@ -250,7 +251,7 @@ function App(options) {
     this.persistWorkspace((err) => {
       debug('workspace persisted?', err);
 
-      // this is something we want to prevent a race condition when quitting the app
+      // this is to prevent a race condition when quitting the app
       if (done) {
         done(err);
       }
@@ -333,7 +334,7 @@ function App(options) {
     this.events.emit('changed');
   });
 
-  this.events.on('dialog-overlay:toggle', this.compose('toggleDialogOverlay'));
+  this.events.on('dialog-overlay:toggle', this.compose('toggleOverlay'));
 
   ///////// public API yea! //////////////////////////////////////
 
@@ -372,15 +373,13 @@ module.exports = App;
 
 
 App.prototype.render = function() {
-  var dialogOverlayClasses = 'dialog-overlay';
-
-  if (this._activeDialogOverlay) {
-    dialogOverlayClasses += ' active';
-  }
 
   var html =
     <div className="app" onDragover={ fileDrop(this.compose('openFiles')) }>
-      <div className={ dialogOverlayClasses }></div>
+      <ModalOverlay
+        isActive={ this._activeOverlay }
+        content={ this._overlayContent }
+        events={ this.events } />
       <MenuBar entries={ this.menuEntries } />
       <Tabbed
         className="main"
@@ -399,8 +398,17 @@ App.prototype.render = function() {
 };
 
 
-App.prototype.toggleDialogOverlay = function(isOpened) {
-  this._activeDialogOverlay = isOpened;
+App.prototype.toggleOverlay = function(isOpened) {
+
+  if (typeof isOpened === 'string') {
+    this._activeOverlay = true;
+
+    this._overlayContent = isOpened;
+  } else {
+    this._activeOverlay = isOpened;
+
+    this._overlayContent = null;
+  }
 
   this.events.emit('changed');
 };
@@ -561,6 +569,10 @@ App.prototype.triggerAction = function(action, options) {
 
   if (action === 'reopen-last-tab') {
     return this.reopenLastTab();
+  }
+
+  if (action === 'show-shortcuts') {
+    return this.toggleOverlay('shortcuts');
   }
 
   // Actions below require active tab

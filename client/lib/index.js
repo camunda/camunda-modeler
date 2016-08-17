@@ -74,7 +74,7 @@ domReady(function() {
   browser.on('dialog-overlay:toggle', function(e, isOpened) {
     debug('toggle dialog overlay', isOpened);
 
-    app.toggleDialogOverlay(isOpened);
+    app.toggleOverlay(isOpened);
   });
 
   mainLoop(app, document.body);

@@ -896,6 +896,12 @@ MenuBuilder.prototype.appendHelpMenu = function(submenu) {
         }
       },
       {
+        label: 'Keyboard Shortcuts',
+        click: function(menuItem, browserWindow) {
+          app.emit('menu:action', 'show-shortcuts');
+        }
+      },
+      {
         type: 'separator'
       },
       {
