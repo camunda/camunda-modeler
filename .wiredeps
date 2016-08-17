@@ -366,17 +366,14 @@
             }
           }
         },
-        "didi": {
-          "version": "0.0.4"
-        },
         "dmn-moddle": {
           "version": "bpmn-io/dmn-moddle",
           "dependencies": {
             "moddle": {
-              "version": "0.6.3"
+              "version": "bpmn-io/moddle"
             },
             "moddle-xml": {
-              "version": "0.8.0",
+              "version": "bpmn-io/moddle-xml",
               "dependencies": {
                 "sax": {
                   "version": "0.6.1"
@@ -554,6 +551,34 @@
     },
     "lodash": {
       "version": "3.10.1"
+    },
+    "min-dom": {
+      "version": "0.2.0",
+      "dependencies": {
+        "component-classes": {
+          "version": "1.2.6",
+          "dependencies": {
+            "component-indexof": {
+              "version": "0.0.3"
+            }
+          }
+        },
+        "component-closest": {
+          "version": "0.1.4"
+        },
+        "component-delegate": {
+          "version": "0.2.4"
+        },
+        "component-event": {
+          "version": "0.1.4"
+        },
+        "component-matches-selector": {
+          "version": "0.1.6"
+        },
+        "component-query": {
+          "version": "0.0.3"
+        }
+      }
     },
     "next-tick": {
       "version": "0.2.2"
