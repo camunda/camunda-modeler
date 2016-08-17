@@ -555,6 +555,10 @@ App.prototype.triggerAction = function(action, options) {
     return this.closeAllTabs();
   }
 
+  if (action === 'close-other-tabs') {
+    return this.closeOtherTabs();
+  }
+
   if (action === 'reopen-last-tab') {
     return this.reopenLastTab();
   }
@@ -1332,6 +1336,20 @@ App.prototype._closeTabs = function(tabs, cb) {
 App.prototype.closeAllTabs = function() {
   var tabs = this.tabs.filter(function(tab) {
     return !!tab.file;
+  });
+
+  this._closeTabs(tabs);
+};
+
+
+/**
+ * Closes all tabs besides the current active one.
+ */
+App.prototype.closeOtherTabs = function() {
+  var activeTab = this.activeTab;
+
+  var tabs = this.tabs.filter(function(tab) {
+    return tab.closable && activeTab !== tab;
   });
 
   this._closeTabs(tabs);

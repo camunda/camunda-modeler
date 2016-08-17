@@ -1359,6 +1359,25 @@ describe('App', function() {
     });
 
 
+    it('should close other tabs', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML);
+      var dmnFile = createDmnFile(dmnXML);
+
+      app.openTabs([ bpmnFile, dmnFile ]);
+
+      var activeTab = app.activeTab;
+
+      // when
+      app.closeOtherTabs();
+
+      // then
+      expect(app.tabs).to.contain(activeTab);
+      expect(app.tabs[1].id).to.equal('empty-tab');
+    });
+
+
     it('should close all tabs and prompt on unsaved', function() {
 
       // given

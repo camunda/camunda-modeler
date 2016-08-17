@@ -198,6 +198,14 @@ MenuBuilder.prototype.appendCloseTab = function() {
     }
   }));
 
+  this.menu.append(new MenuItem({
+    label: 'Close Other Tabs',
+    enabled: this.opts.state.closable,
+    click: function() {
+      app.emit('menu:action', 'close-other-tabs');
+    }
+  }));
+
   return this;
 };
 
