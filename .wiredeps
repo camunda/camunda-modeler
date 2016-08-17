@@ -41,34 +41,6 @@
         "diagram-js-direct-editing": {
           "version": "bpmn-io/diagram-js-direct-editing"
         },
-        "min-dom": {
-          "version": "0.2.0",
-          "dependencies": {
-            "component-classes": {
-              "version": "1.2.4",
-              "dependencies": {
-                "component-indexof": {
-                  "version": "0.0.3"
-                }
-              }
-            },
-            "component-closest": {
-              "version": "0.1.4"
-            },
-            "component-delegate": {
-              "version": "0.2.3"
-            },
-            "component-event": {
-              "version": "0.1.4"
-            },
-            "component-matches-selector": {
-              "version": "0.1.5"
-            },
-            "component-query": {
-              "version": "0.0.3"
-            }
-          }
-        },
         "object-refs": {
           "version": "0.1.1"
         }
@@ -85,42 +57,8 @@
             }
           }
         },
-        "inherits": {
-          "version": "2.0.1"
-        },
         "lodash": {
           "version": "3.10.1"
-        },
-        "min-dom": {
-          "version": "0.2.0",
-          "dependencies": {
-            "component-classes": {
-              "version": "1.2.4",
-              "dependencies": {
-                "component-indexof": {
-                  "version": "0.0.3"
-                }
-              }
-            },
-            "component-closest": {
-              "version": "0.1.4"
-            },
-            "component-delegate": {
-              "version": "0.2.3"
-            },
-            "component-event": {
-              "version": "0.1.4"
-            },
-            "component-matches-selector": {
-              "version": "0.1.5"
-            },
-            "component-query": {
-              "version": "0.0.3"
-            },
-            "domify": {
-              "version": "1.4.0"
-            }
-          }
         },
         "selection-update": {
           "version": "0.1.2"
@@ -161,34 +99,6 @@
         "diagram-js-direct-editing": {
           "version": "bpmn-io/diagram-js-direct-editing"
         },
-        "min-dom": {
-          "version": "0.2.0",
-          "dependencies": {
-            "component-classes": {
-              "version": "1.2.6",
-              "dependencies": {
-                "component-indexof": {
-                  "version": "0.0.3"
-                }
-              }
-            },
-            "component-closest": {
-              "version": "0.1.4"
-            },
-            "component-delegate": {
-              "version": "0.2.4"
-            },
-            "component-event": {
-              "version": "0.1.4"
-            },
-            "component-matches-selector": {
-              "version": "0.1.6"
-            },
-            "component-query": {
-              "version": "0.0.3"
-            }
-          }
-        },
         "object-refs": {
           "version": "0.1.1"
         }
@@ -205,42 +115,8 @@
             }
           }
         },
-        "inherits": {
-          "version": "2.0.1"
-        },
         "lodash": {
           "version": "3.10.1"
-        },
-        "min-dom": {
-          "version": "0.2.0",
-          "dependencies": {
-            "component-classes": {
-              "version": "1.2.4",
-              "dependencies": {
-                "component-indexof": {
-                  "version": "0.0.3"
-                }
-              }
-            },
-            "component-closest": {
-              "version": "0.1.4"
-            },
-            "component-delegate": {
-              "version": "0.2.3"
-            },
-            "component-event": {
-              "version": "0.1.4"
-            },
-            "component-matches-selector": {
-              "version": "0.1.5"
-            },
-            "component-query": {
-              "version": "0.0.3"
-            },
-            "domify": {
-              "version": "1.4.0"
-            }
-          }
         },
         "selection-update": {
           "version": "0.1.2"
@@ -270,34 +146,6 @@
         "hammerjs": {
           "version": "2.0.6"
         },
-        "min-dom": {
-          "version": "0.2.0",
-          "dependencies": {
-            "component-classes": {
-              "version": "1.2.4",
-              "dependencies": {
-                "component-indexof": {
-                  "version": "0.0.3"
-                }
-              }
-            },
-            "component-closest": {
-              "version": "0.1.4"
-            },
-            "component-delegate": {
-              "version": "0.2.3"
-            },
-            "component-event": {
-              "version": "0.1.4"
-            },
-            "component-matches-selector": {
-              "version": "0.1.5"
-            },
-            "component-query": {
-              "version": "0.0.3"
-            }
-          }
-        },
         "object-refs": {
           "version": "0.1.1"
         },
@@ -324,39 +172,8 @@
             "hammerjs": {
               "version": "2.0.6"
             },
-            "inherits": {
-              "version": "2.0.1"
-            },
             "lodash": {
               "version": "3.0.1"
-            },
-            "min-dom": {
-              "version": "0.2.0",
-              "dependencies": {
-                "component-classes": {
-                  "version": "1.2.4",
-                  "dependencies": {
-                    "component-indexof": {
-                      "version": "0.0.3"
-                    }
-                  }
-                },
-                "component-closest": {
-                  "version": "0.1.4"
-                },
-                "component-delegate": {
-                  "version": "0.2.3"
-                },
-                "component-event": {
-                  "version": "0.1.4"
-                },
-                "component-matches-selector": {
-                  "version": "0.1.5"
-                },
-                "component-query": {
-                  "version": "0.0.3"
-                }
-              }
             },
             "object-refs": {
               "version": "0.1.1"
@@ -382,34 +199,6 @@
                   "version": "0.1.0"
                 }
               }
-            }
-          }
-        },
-        "min-dom": {
-          "version": "0.2.0",
-          "dependencies": {
-            "component-classes": {
-              "version": "1.2.4",
-              "dependencies": {
-                "component-indexof": {
-                  "version": "0.0.3"
-                }
-              }
-            },
-            "component-closest": {
-              "version": "0.1.4"
-            },
-            "component-delegate": {
-              "version": "0.2.3"
-            },
-            "component-event": {
-              "version": "0.1.4"
-            },
-            "component-matches-selector": {
-              "version": "0.1.5"
-            },
-            "component-query": {
-              "version": "0.0.3"
             }
           }
         },
