@@ -453,6 +453,14 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.appendSeparator();
 
   this.menu.append(new MenuItem({
+    label: 'Move Elements to Origin',
+    accelerator: 'CommandOrControl+Shift+0',
+    click: function() {
+      app.emit('menu:action', 'moveToOrigin');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
     label: 'Move Canvas',
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
