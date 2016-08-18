@@ -57,7 +57,7 @@ function BpmnEditor(options) {
   this.openContextMenu = function(evt) {
     evt.preventDefault();
 
-    this.emit('context-menu:open');
+    this.emit('context-menu:open', 'bpmn');
   };
 
   // let canvas know that the window has been resized

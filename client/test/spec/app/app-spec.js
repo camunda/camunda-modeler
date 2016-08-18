@@ -1210,6 +1210,19 @@ describe('App', function() {
     });
 
 
+    it('should close tab when providing a valid tab id', function() {
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML),
+          openTab = app.openTab(bpmnFile);
+
+      // when
+      app.closeTab(openTab.id);
+
+      // then
+      expect(app.tabs).to.not.contain(openTab);
+    });
+
+
     it('should not track unsaved files', function() {
       // given
       var bpmnFile = createBpmnFile(bpmnXML, UNSAVED_FILE),
@@ -1422,6 +1435,44 @@ describe('App', function() {
 
       // then
       expect(app.tabs).to.contain(activeTab);
+      expect(app.tabs[1].id).to.equal('empty-tab');
+    });
+
+
+    it('should close other tabs with provided tab', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML);
+      var dmnFile = createDmnFile(dmnXML);
+
+      app.openTabs([ bpmnFile, dmnFile ]);
+
+      var tab = app.tabs[0];
+
+      // when
+      app.closeOtherTabs(tab);
+
+      // then
+      expect(app.tabs).to.contain(tab);
+      expect(app.tabs[1].id).to.equal('empty-tab');
+    });
+
+
+    it('should close other tabs with provided tab id', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML);
+      var dmnFile = createDmnFile(dmnXML);
+
+      app.openTabs([ bpmnFile, dmnFile ]);
+
+      var tab = app.tabs[0];
+
+      // when
+      app.closeOtherTabs(tab.id);
+
+      // then
+      expect(app.tabs).to.contain(tab);
       expect(app.tabs[1].id).to.equal('empty-tab');
     });
 

@@ -11,10 +11,10 @@ var debug = require('debug')('context-menu');
 function ContextMenu(app) {
 
   // Updating Menu
-  app.on('context-menu:open', function() {
+  app.on('context-menu:open', function(type, attrs) {
     debug('[context-menu] open');
 
-    browser.send('context-menu:open');
+    browser.send('context-menu:open', type, attrs);
   });
 }
 

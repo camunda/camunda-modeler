@@ -5,7 +5,7 @@ var electron = require('electron'),
     app = electron.app;
 
 
-function on(event, callback) {
+function on(event, callback, that) {
   var responseEvent = event + ':response';
 
   ipcMain.on(event, function(evt) {
@@ -17,7 +17,7 @@ function on(event, callback) {
       evt.sender.send(responseEvent, _args);
     }
 
-    callback.apply(null, args.concat(done));
+    callback.apply(that || null, args.concat(done));
   });
 }
 

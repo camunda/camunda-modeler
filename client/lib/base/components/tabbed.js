@@ -27,7 +27,7 @@ var TABS_OPTS = {
 
 function Tabbed(options) {
 
-  ensureOpts([ 'onClose', 'onSelect' ], options);
+  ensureOpts([ 'onClose', 'onSelect', 'onContextMenu' ], options);
 
   BaseComponent.call(this, options);
 
@@ -36,6 +36,7 @@ function Tabbed(options) {
     var onClose = options.onClose,
         onSelect = options.onSelect,
         onDragTab = options.onDragTab,
+        onContextMenu = options.onContextMenu,
         tabs = options.tabs,
         activeTab = options.active;
 
@@ -82,6 +83,7 @@ function Tabbed(options) {
                        tabId={ tab.id }
                        title={ tab.title }
                        onMousedown={ action }
+                       onContextmenu={ onContextMenu.bind(null, tab) }
                        tabIndex="0">
                     { tab.label }
                     { tab.closable

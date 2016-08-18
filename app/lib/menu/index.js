@@ -16,8 +16,8 @@ function Menu(platform) {
   // replace Electron default menu until application loads
   new MenuBuilder().build();
 
-  // keep latest context menu reference for client popup triggers
-  var contextMenu;
+  // keep the last state cached to be used by the context menu
+  this.__cachedState = null;
 
   // handle menu actions
   // make sure there is active client before sending action
@@ -52,20 +52,28 @@ function Menu(platform) {
     // rebuild main application menu
     new MenuBuilder({ state: state }).build();
 
-    // rebuild context menu based on current state
-    contextMenu = new MenuBuilder({ state: state }).buildContextMenu();
+    this.__cachedState = state;
   }
 
   // handle state updates from client
-  renderer.on('menu:update', rebuildMenu);
+  renderer.on('menu:update', rebuildMenu, this);
 
   // handle DevTools opening/closing specific state
-  app.on('menu:update', rebuildMenu);
+  app.on('menu:update', rebuildMenu, this);
 
   // handle context menu trigger from client
-  renderer.on('context-menu:open', function() {
+  renderer.on('context-menu:open', function(type, attrs) {
+    var state = this.__cachedState;
+
+    var contextMenu = new MenuBuilder({ state: state }).buildContextMenu(type, attrs);
+
+    // don't open a context menu if no type has been provided
+    if (!contextMenu) {
+      return;
+    }
+
     contextMenu.openPopup();
-  });
+  }, this);
 }
 
 module.exports = Menu;

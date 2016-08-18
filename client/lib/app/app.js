@@ -387,6 +387,7 @@ App.prototype.render = function() {
         active={ this.activeTab }
         onDragTab={ this.compose('shiftTab') }
         onSelect={ this.compose('selectTab') }
+        onContextMenu={ this.compose('openTabContextMenu') }
         onClose={ this.compose('closeTab') } />
       <Footer
         layout={ this.layout }
@@ -397,6 +398,16 @@ App.prototype.render = function() {
   return html;
 };
 
+App.prototype.openTabContextMenu = function(tab, evt) {
+  // do not open a context-menu on the 'empty tab'
+  if (tab.empty) {
+    return;
+  }
+
+  debug('opening context-menu', tab);
+
+  this.emit('context-menu:open', 'tab', { tabId: tab.id });
+};
 
 App.prototype.toggleOverlay = function(isOpened) {
 
@@ -563,8 +574,12 @@ App.prototype.triggerAction = function(action, options) {
     return this.closeAllTabs();
   }
 
+  if (action === 'close-tab') {
+    return this.closeTab(options.tabId);
+  }
+
   if (action === 'close-other-tabs') {
-    return this.closeOtherTabs();
+    return this.closeOtherTabs(options.tabId);
   }
 
   if (action === 'reopen-last-tab') {
@@ -930,8 +945,13 @@ App.prototype.saveFile = function(file, saveAs, done) {
  *
  * @param {Tab} tab
  */
-App.prototype.selectTab = function(tab) {
+App.prototype.selectTab = function(tab, evt) {
   debug('selecting tab');
+
+  // **hacky stuff** only select tab if it's done with left click
+  if (evt && evt.button !== 0) {
+    return;
+  }
 
   var exists = contains(this.tabs, tab);
 
@@ -1011,9 +1031,14 @@ App.prototype.closeTab = function(tab, done) {
 
   var tabs = this.tabs,
       dialog = this.dialog,
+      exists,
       file;
 
-  var exists = contains(tabs, tab);
+  if (typeof tab === 'string') {
+    tab = exists = find(this.tabs, { id: tab });
+  } else {
+    exists = contains(tabs, tab);
+  }
 
   if (!exists) {
     throw new Error('non existing tab');
@@ -1357,11 +1382,17 @@ App.prototype.closeAllTabs = function() {
 /**
  * Closes all tabs besides the current active one.
  */
-App.prototype.closeOtherTabs = function() {
-  var activeTab = this.activeTab;
+App.prototype.closeOtherTabs = function(tab) {
+  if (tab && typeof tab === 'string') {
+    tab = find(this.tabs, { id: tab });
+  } else {
+    tab = contains(this.tabs, tab) ? tab : null;
+  }
+
+  var openedTab = tab || this.activeTab;
 
   var tabs = this.tabs.filter(function(tab) {
-    return tab.closable && activeTab !== tab;
+    return tab.closable && openedTab !== tab;
   });
 
   this._closeTabs(tabs);

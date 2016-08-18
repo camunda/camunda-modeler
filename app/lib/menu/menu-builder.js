@@ -83,7 +83,7 @@ MenuBuilder.prototype.appendNewFile = function() {
   return this;
 };
 
-MenuBuilder.prototype.appendOpen = function(submenu) {
+MenuBuilder.prototype.appendOpen = function() {
   this.menu.append(new MenuItem({
     label: 'Open File...',
     accelerator: 'CommandOrControl+O',
@@ -92,7 +92,12 @@ MenuBuilder.prototype.appendOpen = function(submenu) {
     }
   }));
 
+  this.appendReopenLastTab();
 
+  return this;
+};
+
+MenuBuilder.prototype.appendReopenLastTab = function() {
   this.menu.append(new MenuItem({
     label: 'Reopen Last File',
     accelerator: 'CommandOrControl+Shift+T',
@@ -104,7 +109,7 @@ MenuBuilder.prototype.appendOpen = function(submenu) {
   return this;
 };
 
-MenuBuilder.prototype.appendSaveFile = function(submenu) {
+MenuBuilder.prototype.appendSaveFile = function() {
   this.menu.append(new MenuItem({
     label: 'Save File',
     enabled: this.opts.state.save,
@@ -117,7 +122,7 @@ MenuBuilder.prototype.appendSaveFile = function(submenu) {
   return this;
 };
 
-MenuBuilder.prototype.appendSaveAsFile = function(submenu) {
+MenuBuilder.prototype.appendSaveAsFile = function() {
   this.menu.append(new MenuItem({
     label: 'Save File As..',
     accelerator: 'CommandOrControl+Shift+S',
@@ -130,7 +135,7 @@ MenuBuilder.prototype.appendSaveAsFile = function(submenu) {
   return this;
 };
 
-MenuBuilder.prototype.appendSaveAllFiles = function(submenu) {
+MenuBuilder.prototype.appendSaveAllFiles = function() {
   this.menu.append(new MenuItem({
     label: 'Save All Files',
     accelerator: 'CommandOrControl+Alt+S',
@@ -994,8 +999,47 @@ MenuBuilder.prototype.setMenu = function() {
   return this;
 };
 
-MenuBuilder.prototype.buildContextMenu = function() {
-  return this.appendCopyPaste();
+MenuBuilder.prototype.appendContextCloseTab = function(attrs) {
+  this.menu.append(new MenuItem({
+    label: 'Close Tab',
+    enabled: this.opts.state.closable,
+    accelerator: 'CommandOrControl+W',
+    click: function() {
+      app.emit('menu:action', 'close-tab', attrs);
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Close All Tabs',
+    enabled: this.opts.state.closable,
+    click: function() {
+      app.emit('menu:action', 'close-all-tabs');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Close Other Tabs',
+    enabled: this.opts.state.closable,
+    click: function() {
+      app.emit('menu:action', 'close-other-tabs', attrs);
+    }
+  }));
+
+  return this;
+};
+
+MenuBuilder.prototype.buildContextMenu = function(type, attrs) {
+  if (type === 'bpmn') {
+    return this.appendCopyPaste();
+  }
+
+  if (type === 'tab') {
+    return this.appendNewFile()
+      .appendSeparator()
+      .appendContextCloseTab(attrs)
+      .appendSeparator()
+      .appendReopenLastTab();
+  }
 };
 
 MenuBuilder.prototype.openPopup = function() {
