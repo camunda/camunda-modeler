@@ -54,7 +54,7 @@ function ModalOverlay(options) {
         </tbody>
       </table>
       <p>
-        Find additional short cuts on individual items in the application menu.
+        Find additional shortcuts on individual items in the application menu.
       </p>
     </div>
   );
