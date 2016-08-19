@@ -2,8 +2,7 @@
 
 var inherits = require('inherits');
 
-var assign = require('lodash/object/assign'),
-    debounce = require('lodash/function/debounce');
+var assign = require('lodash/object/assign');
 
 var domify = require('domify');
 
@@ -61,7 +60,7 @@ function BpmnEditor(options) {
   };
 
   // let canvas know that the window has been resized
-  this.on('window:resized', this.compose('resizeCanvas'));
+  this.on('window:resized', this.compose('resize'));
 
   // set current modeler version and name to the diagram
   this.on('save', () => {
@@ -72,10 +71,6 @@ function BpmnEditor(options) {
       definitions.exporterVersion = options.metaData.version;
     }
   });
-
-  // trigger the palette resizal whenever we focus a tab or the layout is updated
-  this.on('focus', debounce(this.resizeCanvas, 50));
-  this.on('layout:update', debounce(this.resizeCanvas, 50));
 }
 
 inherits(BpmnEditor, DiagramEditor);
@@ -359,7 +354,8 @@ BpmnEditor.prototype.exportAs = function(type, done) {
   });
 };
 
-BpmnEditor.prototype.resizeCanvas = function() {
+// trigger the palette resizal whenever we focus a tab or the layout is updated
+BpmnEditor.prototype.resize = function() {
   var modeler = this.getModeler(),
       canvas = modeler.get('canvas');
 
@@ -403,7 +399,7 @@ BpmnEditor.prototype.render = function() {
         </div>
       </div>
       <WarningsOverlay warnings={ warnings }
-                       onShowDetails={ this.compose('openLog') }
+                       onOpenLog={ this.compose('openLog') }
                        onClose={ this.compose('hideWarnings') } />
     </div>
   );

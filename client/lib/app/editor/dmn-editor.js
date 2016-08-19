@@ -3,7 +3,6 @@
 var inherits = require('inherits');
 
 var bind = require('lodash/function/bind'),
-    debounce = require('lodash/function/debounce'),
     assign = require('lodash/object/assign');
 
 var DiagramEditor = require('./diagram-editor');
@@ -36,10 +35,6 @@ function DmnEditor(options) {
       console.log(warnings);
     }
   });
-
-  this.on('focus', debounce(this.resizeTable, 50));
-  this.on('window:resized', debounce(this.resizeTable, 50));
-  this.on('layout:update', debounce(this.resizeTable, 50));
 }
 
 inherits(DmnEditor, DiagramEditor);
@@ -167,7 +162,7 @@ DmnEditor.prototype.createModeler = function($el) {
   return new DmnJS({ container: $el, minColWidth: 200 });
 };
 
-DmnEditor.prototype.resizeTable = function() {
+DmnEditor.prototype.resize = function() {
   var modeler = this.getModeler(),
       sheet;
 
@@ -191,7 +186,7 @@ DmnEditor.prototype.render = function() {
            onRemove={ this.compose('unmountEditor') }>
       </div>
       <WarningsOverlay warnings={ warnings }
-                       onShowDetails={ this.compose('openLog') }
+                       onOpenLog={ this.compose('openLog') }
                        onClose={ this.compose('hideWarnings') } />;
     </div>
   );

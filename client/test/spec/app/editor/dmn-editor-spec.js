@@ -19,7 +19,8 @@ function createEditor() {
 describeEditor('DmnEditor', {
   createEditor: createEditor,
   initialXML: initialXML,
-  otherXML: otherXML
+  otherXML: otherXML,
+  isDiagramEditor: true
 });
 
 

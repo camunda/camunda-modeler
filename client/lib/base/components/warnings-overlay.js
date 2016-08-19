@@ -7,7 +7,7 @@ var ensureOpts = require('util/ensure-opts');
 
 function WarningsOverlay(options) {
 
-  ensureOpts([ 'onShowDetails', 'onClose' ], options);
+  ensureOpts([ 'onOpenLog', 'onClose' ], options);
 
   if (!(this instanceof WarningsOverlay)) {
     return new WarningsOverlay(options);
@@ -27,7 +27,7 @@ function WarningsOverlay(options) {
         <div className="alert">
           Imported with { warningsStr(warnings) }.&nbsp;
 
-          <div className="warnings-show" onClick={ options.onShowDetails } ref="warnings-details-link">Show Details</div>
+          <div className="warnings-show" onClick={ options.onOpenLog } ref="warnings-details-link">Open Log</div>
 
           <CloseHandle onClick={ options.onClose } ref="warnings-hide-link" />
         </div>

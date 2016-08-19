@@ -42,15 +42,20 @@ function Log(options) {
   };
 
   this.toggleLog = function() {
+    var entries = options.log.entries;
+
     events.emit('layout:update', {
       log: {
-        open: !options.layout.log.open
+        open: !options.layout.log.open,
+        cleared: !entries.length
       }
     });
   };
 
   this.clearLog = function() {
     options.log.clear();
+
+    this.toggleLog();
   };
 
   this.render = function() {

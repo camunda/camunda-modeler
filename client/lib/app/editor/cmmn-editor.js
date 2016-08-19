@@ -2,8 +2,7 @@
 
 var inherits = require('inherits');
 
-var assign = require('lodash/object/assign'),
-    debounce = require('lodash/function/debounce');
+var assign = require('lodash/object/assign');
 
 var domify = require('domify');
 
@@ -59,13 +58,6 @@ function CmmnEditor(options) {
 
   // elements to insert modeler and properties panel into
   this.$propertiesEl = domify('<div class="properties-parent"></div>');
-
-  // let canvas know that the window has been resized
-  this.on('window:resized', this.compose('resizeCanvas'));
-
-  // trigger the palette resizal whenever we focus a tab or the layout is updated
-  this.on('focus', debounce(this.resizeCanvas, 50));
-  this.on('layout:update', debounce(this.resizeCanvas, 50));
 }
 
 inherits(CmmnEditor, DiagramEditor);
@@ -332,7 +324,8 @@ CmmnEditor.prototype.logTemplateWarnings = function(warnings) {
 };
 
 
-CmmnEditor.prototype.resizeCanvas = function() {
+// trigger the palette resizal whenever we focus a tab or the layout is updated
+CmmnEditor.prototype.resize = function() {
   var modeler = this.getModeler(),
       canvas = modeler.get('canvas');
 
@@ -376,7 +369,7 @@ CmmnEditor.prototype.render = function() {
         </div>
       </div>
       <WarningsOverlay warnings={ warnings }
-                       onShowDetails={ this.compose('openLog') }
+                       onOpenLog={ this.compose('openLog') }
                        onClose={ this.compose('hideWarnings') } />
     </div>
   );

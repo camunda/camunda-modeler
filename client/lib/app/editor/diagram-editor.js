@@ -2,6 +2,8 @@
 
 var inherits = require('inherits');
 
+var debounce = require('lodash/function/debounce');
+
 var BaseEditor = require('./base-editor');
 
 var debug = require('debug')('diagram-editor');
@@ -58,6 +60,18 @@ function DiagramEditor(options) {
 
     this.emit('shown', context);
   });
+
+  this.on('layout:update', function(evt) {
+    var log = evt.log;
+
+    if (log && log.cleared) {
+      this.hideWarnings();
+    }
+  });
+
+  this.on('focus', debounce(this.resize, 50));
+  this.on('window:resized', debounce(this.resize, 50));
+  this.on('layout:update', debounce(this.resize, 50));
 }
 
 inherits(DiagramEditor, BaseEditor);
@@ -184,6 +198,11 @@ DiagramEditor.prototype.triggerEditorActions = function() {
 };
 
 
+DiagramEditor.prototype.resize = function() {
+  throw needsOverride();
+};
+
+
 DiagramEditor.prototype.showWarnings = function() {
 
   var warnings = getWarnings(this.lastImport);
@@ -220,6 +239,8 @@ DiagramEditor.prototype.log = function(messages, open) {
 
 DiagramEditor.prototype.openLog = function() {
   this.emit('log:toggle', { open: true });
+
+  this.hideWarnings();
 };
 
 

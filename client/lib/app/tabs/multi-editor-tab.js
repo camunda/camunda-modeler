@@ -274,15 +274,15 @@ MultiEditorTab.prototype.createEditors = function(options) {
 
     this._globalListeners.push({
       eventName: 'window:resized',
-      callback: function() {
-        editor.emit('window:resized');
+      callback: function(evt) {
+        editor.emit('window:resized', evt);
       }
     });
 
     this._globalListeners.push({
       eventName: 'layout:update',
-      callback: function() {
-        editor.emit('layout:update');
+      callback: function(evt) {
+        editor.emit('layout:update', evt);
       }
     });
 
