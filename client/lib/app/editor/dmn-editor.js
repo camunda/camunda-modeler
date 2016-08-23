@@ -187,7 +187,7 @@ DmnEditor.prototype.render = function() {
       </div>
       <WarningsOverlay warnings={ warnings }
                        onOpenLog={ this.compose('openLog') }
-                       onClose={ this.compose('hideWarnings') } />;
+                       onClose={ this.compose('hideWarnings') } />
     </div>
   );
 };
