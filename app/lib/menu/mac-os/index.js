@@ -84,6 +84,7 @@ MacMenuBuilder.prototype.build = function() {
     )
     .appendEditMenu()
     .appendWindowMenu()
+    .appendPluginsMenu()
     .appendHelpMenu();
   this.setMenu();
 

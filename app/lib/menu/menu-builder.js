@@ -34,7 +34,8 @@ function MenuBuilder(opts) {
       exportAs: false,
       development: app.developmentMode,
       devtools: false
-    }
+    },
+    plugins: []
   }, opts);
 
   if (this.opts.template) {
@@ -970,6 +971,35 @@ MenuBuilder.prototype.appendWindowMenu = function() {
   return this;
 };
 
+MenuBuilder.prototype.appendPluginsMenu = function() {
+  if (this.opts.plugins.length === 0) {
+    return this;
+  }
+
+  var submenu = this.opts.plugins
+    .map(Plugin => {
+      var plugin = Plugin(app, this.opts.state);
+
+      return plugin.map(menuDescriptor => {
+        return new MenuItem({
+          label: menuDescriptor.label,
+          accelerator: menuDescriptor.accelerator,
+          enabled: menuDescriptor.enabled(),
+          click: menuDescriptor.action,
+          submenu: menuDescriptor.submenu
+        });
+      });
+    })
+    .reduce((previous, elem) => elem.concat(previous));
+
+  this.menu.append(new MenuItem({
+    label: 'Plugins',
+    submenu: Menu.buildFromTemplate(submenu)
+  }));
+
+  return this;
+};
+
 MenuBuilder.prototype.appendHelpMenu = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Help',
@@ -1075,6 +1105,7 @@ MenuBuilder.prototype.build = function() {
     )
     .appendEditMenu()
     .appendWindowMenu()
+    .appendPluginsMenu()
     .appendHelpMenu()
     .setMenu();
 };

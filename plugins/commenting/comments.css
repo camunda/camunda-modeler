@@ -1,0 +1,54 @@
+.comments-overlay {
+  background: #CCC;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.comments-overlay.expanded {
+  z-index: 100;
+  position: absolute; /* for z-index to work */
+}
+
+.comments-overlay .toggle {
+  white-space: nowrap;
+}
+
+.comments-overlay.expanded .comment-count,
+.comments-overlay .content {
+  display: none;
+}
+
+.comments-overlay .comment-count {
+  display: inline;
+}
+
+.comments-overlay.expanded .content {
+  display: block;
+}
+
+.comments-overlay .comment {
+  border-top: dotted 1px #666;
+  margin-top: 4px;
+  padding-top: 4px;
+  white-space: pre-wrap;
+
+  position: relative;
+}
+
+.comments-overlay .comment .delete {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+
+  text-decoration: none;
+
+  display: none;
+}
+
+.comments-overlay .comment:hover .delete {
+  display: block;
+}
+
+.comments-overlay .edit {
+
+}

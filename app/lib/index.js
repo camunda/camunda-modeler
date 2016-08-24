@@ -23,7 +23,8 @@ var Platform = require('./platform'),
     Workspace = require('./workspace'),
     Dialog = require('./dialog'),
     Menu = require('./menu'),
-    Cli = require('./cli');
+    Cli = require('./cli'),
+    PluginsManager = require('./plugin-manager');
 
 var browserOpen = require('./util/browser-open'),
     renderer = require('./util/renderer');
@@ -44,11 +45,23 @@ global.metaData = {
   name: app.name
 };
 
+var pluginsManager = app.pluginsManager = new PluginsManager({
+  paths: [
+    app.getPath('userData'),
+    path.dirname(app.getPath('exe')),
+    process.cwd()
+  ]
+});
+
 // bootstrap the application's menus
 //
 // TODO(nikku): remove app.menu binding when development
 // mode bootstrap issue is fixed in electron-connect
-app.menu = new Menu(process.platform);
+app.menu = new Menu(process.platform,
+  pluginsManager.getPlugins()
+    .filter(p => p.menu)
+    .map(p => p.menu)
+  );
 
 // bootstrap workspace behavior
 new Workspace(config);

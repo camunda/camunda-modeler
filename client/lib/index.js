@@ -14,7 +14,8 @@ var Config = require('external/config'),
     Logger = require('base/logger'),
     Menu = require('external/window-menu'),
     ContextMenu = require('external/context-menu'),
-    Workspace = require('external/workspace');
+    Workspace = require('external/workspace'),
+    Plugins = require('external/plugins');
 
 var App = require('./app');
 
@@ -35,6 +36,7 @@ domReady(function() {
     fileSystem: new FileSystem(),
     logger: new Logger(),
     workspace: new Workspace(),
+    plugins: new Plugins(),
     metaData: metaData
   });
 

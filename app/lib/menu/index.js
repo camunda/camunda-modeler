@@ -10,7 +10,7 @@ var electron = require('electron'),
     app = electron.app;
 
 
-function Menu(platform) {
+function Menu(platform, plugins) {
   var MenuBuilder = this.MenuBuilder = requirePlatform(platform, __dirname);
 
   // replace Electron default menu until application loads
@@ -35,7 +35,9 @@ function Menu(platform) {
 
   // rebuild default menu on window closing while app is still running
   app.on('window-all-closed', function() {
-    new MenuBuilder().build();
+    new MenuBuilder({
+      plugins: plugins
+    }).build();
   });
 
 
@@ -50,7 +52,10 @@ function Menu(platform) {
     }
 
     // rebuild main application menu
-    new MenuBuilder({ state: state }).build();
+    new MenuBuilder({
+      state: state,
+      plugins: plugins
+    }).build();
 
     this.__cachedState = state;
   }
@@ -65,7 +70,10 @@ function Menu(platform) {
   renderer.on('context-menu:open', function(type, attrs) {
     var state = this.__cachedState;
 
-    var contextMenu = new MenuBuilder({ state: state }).buildContextMenu(type, attrs);
+    var contextMenu = new MenuBuilder({
+      state: state,
+      plugins: plugins
+    }).buildContextMenu(type, attrs);
 
     // don't open a context menu if no type has been provided
     if (!contextMenu) {

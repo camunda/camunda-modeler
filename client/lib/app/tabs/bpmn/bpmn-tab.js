@@ -23,7 +23,8 @@ function BpmnTab(options) {
   }
 
   ensureOpts([
-    'metaData'
+    'metaData',
+    'plugins'
   ], options);
 
   options = assign({

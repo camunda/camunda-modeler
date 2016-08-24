@@ -45,7 +45,8 @@ function BpmnEditor(options) {
   ensureOpts([
     'layout',
     'config',
-    'metaData'
+    'metaData',
+    'plugins'
   ], options);
 
   DiagramEditor.call(this, options);
@@ -330,7 +331,7 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
     'config.propertiesPanel': [ 'value', { parent: $propertiesEl } ]
   };
 
-  return new BpmnJS({
+  var modeler =  new BpmnJS({
     container: $el,
     position: 'absolute',
     additionalModules: [
@@ -341,10 +342,12 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
       propertiesProviderModule,
       propertiesPanelConfig,
       camundaModdleExtension
-    ],
+    ].concat(this.plugins.get('bpmn.modeler.additionalModules')),
     elementTemplates: elementTemplatesLoader,
     moddleExtensions: { camunda: camundaModdlePackage }
   });
+
+  return modeler;
 };
 
 BpmnEditor.prototype.exportAs = function(type, done) {

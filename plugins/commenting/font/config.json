@@ -1,0 +1,22 @@
+{
+  "name": "bpmn-js-comments",
+  "css_prefix_text": "icon-",
+  "css_use_suffix": false,
+  "hinting": true,
+  "units_per_em": 1000,
+  "ascent": 850,
+  "glyphs": [
+    {
+      "uid": "c709da589c923ba3c2ad48d9fc563e93",
+      "css": "delete",
+      "code": 59394,
+      "src": "entypo"
+    },
+    {
+      "uid": "16890362e811b4cb8de36282b071fe30",
+      "css": "comment",
+      "code": 59392,
+      "src": "entypo"
+    }
+  ]
+}

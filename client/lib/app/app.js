@@ -49,6 +49,7 @@ function App(options) {
     'dialog',
     'fileSystem',
     'config',
+    'plugins',
     'metaData'
   ], options);
 
@@ -381,11 +382,10 @@ function App(options) {
    */
   this.emit = bind(this.events.emit, this.events);
 
-
   // bootstrap support for diagram files
 
   this.tabProviders = [
-    this.createComponent(BpmnProvider, { app: this }),
+    this.createComponent(BpmnProvider, { app: this, plugins: this.plugins }),
     this.createComponent(DmnProvider, { app: this }),
     this.createComponent(CmmnProvider, { app: this })
   ];
@@ -1305,6 +1305,7 @@ App.prototype.run = function() {
 
   // initialization sequence
   //
+  // (-1) load plugins
   // (0) select empty tab
   // (1) load configuration
   // (2) restore workspace
@@ -1312,14 +1313,16 @@ App.prototype.run = function() {
 
   this.selectTab(this.tabs[0]);
 
-  this.restoreWorkspace((err) => {
-    if (err) {
-      debug('workspace restore error', err);
-    } else {
-      debug('workspace restored');
-    }
+  this.plugins.load(() => {
 
-    this.events.emit('ready');
+    this.restoreWorkspace((err) => {
+      if (err) {
+        debug('workspace restore error', err);
+      } else {
+        debug('workspace restored');
+      }
+      this.events.emit('ready');
+    });
   });
 
   this.events.emit('changed');
