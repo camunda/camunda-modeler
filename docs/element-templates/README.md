@@ -12,7 +12,12 @@ Element templates allow you create pre-defined configurations for BPMN elements 
 
 To use element templates put a JSON file with the templates ([see definition below](#define-templates)) into the `resources/element-templates` directory relative to the modeler executable or the modelers data directory. Restart the modeler to let it recognize the templates.
 
-> The location of the modelers data directory differs across operating systems. On Windows it is situated under `%APPDATA%/camunda-modeler`. Mac OSX users find it under `~/Library/Application Support/...`.
+The location of the modelers data directory differs across operating systems:
+  **Windows**: `%APPDATA%/camunda-modeler`
+  **Mac OS X**: `~/Library/Application Support/camunda-modeler`
+
+> For example, add a JSON file to the following folder: `~/Library/Application Support/camunda-modeler/resources/element-templates` (Mac) or `%APPDATA%/camunda-modeler/resources/element-templates` (Windows).
+You may have to create the `resources` and `element-templates` folders.
 
 
 ## Using Templates
