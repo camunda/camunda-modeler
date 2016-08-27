@@ -14,6 +14,10 @@ To use element templates put a JSON file with the templates ([see definition bel
 
 > The location of the modelers data directory differs across operating systems. On Windows it is situated under `%APPDATA%/camunda-modeler`. Mac OSX users find it under `~/Library/Application Support/...`.
 
+### Example:
+**Mac**: Add the JSON file to the following folder: `~/Library/Application Support/camunda-modeler/resources/element-templates`
+You may have to create the `resources` and `element-templates` folders.
+
 
 ## Using Templates
 
