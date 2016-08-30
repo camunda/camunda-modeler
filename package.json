@@ -52,7 +52,7 @@
     "bpmn-js": "^0.16.2",
     "bpmn-js-properties-panel": "^0.8.0",
     "browserify": "^13.0.0",
-    "camunda-bpmn-moddle": "^0.5.0",
+    "camunda-bpmn-moddle": "^0.8.0",
     "camunda-cmmn-moddle": "^0.1.1",
     "canvg-browser": "^1.0.0",
     "chai": "^3.5.0",
