@@ -39,7 +39,7 @@
           }
         },
         "diagram-js-direct-editing": {
-          "version": "bpmn-io/diagram-js-direct-editing"
+          "version": "0.16.1"
         },
         "object-refs": {
           "version": "0.1.1"
@@ -97,7 +97,7 @@
           }
         },
         "diagram-js-direct-editing": {
-          "version": "bpmn-io/diagram-js-direct-editing"
+          "version": "0.15.1"
         },
         "object-refs": {
           "version": "0.1.1"
@@ -155,7 +155,7 @@
       }
     },
     "diagram-js-origin": {
-      "version": "bpmn-io/diagram-js-origin"
+      "version": "0.14.1"
     },
     "dmn-js": {
       "version": "bpmn-io/dmn-js",
