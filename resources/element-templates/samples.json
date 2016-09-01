@@ -13,7 +13,7 @@
         "editable": false,
         "binding": {
           "type": "property",
-          "name": "camunda:javaDelegate"
+          "name": "camunda:class"
         }
       },
       {
