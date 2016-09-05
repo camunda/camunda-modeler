@@ -717,6 +717,35 @@ MenuBuilder.prototype.appendDmnActions = function() {
   this.appendSeparator();
 
   this.menu.append(new MenuItem({
+    label: 'Insert New Line',
+    accelerator: 'CommandOrControl + Enter',
+    enabled: this.opts.state.dmnRuleEditing,
+    click: function() {
+      app.emit('menu:action', 'insertNewLine');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Select Next Row',
+    accelerator: 'Enter',
+    enabled: this.opts.state.dmnRuleEditing,
+    click: function() {
+      app.emit('menu:action', 'selectNextRow');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Select Previous Row',
+    accelerator: 'Shift + Enter',
+    enabled: this.opts.state.dmnRuleEditing,
+    click: function() {
+      app.emit('menu:action', 'selectPreviousRow');
+    }
+  }));
+
+  this.appendSeparator();
+
+  this.menu.append(new MenuItem({
     label: 'Toggle Editing Mode',
     accelerator: 'CommandOrControl + M',
     click: function() {

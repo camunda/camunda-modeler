@@ -7,7 +7,7 @@ var domClosest = require('min-dom/lib/closest');
 var debug = require('debug')('shortcuts');
 
 
-function ShortcutsFix(app) {
+function ShortcutsFix(app, isMac) {
 
   this.bound = false;
 
@@ -42,6 +42,27 @@ function ShortcutsFix(app) {
   this.handler = (e) => {
 
     var activeElement = document.activeElement;
+
+    // DMN HACK: we need to trigger preventDefault;
+    if (event.key === 'Enter') {
+      e.preventDefault();
+
+      if (event.ctrlKey || event.metaKey) {
+
+        app.triggerAction('insertNewLine');
+      } else if (event.shiftKey) {
+
+        app.triggerAction('selectPreviousRow');
+      } else {
+
+        app.triggerAction('selectNextRow');
+      }
+    }
+
+    // END OF HACK;
+    if (isMac) {
+      return;
+    }
 
     if (event.ctrlKey) {
 
