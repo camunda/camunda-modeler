@@ -221,13 +221,9 @@ module.exports = function(grunt) {
   // Development setup tasks
   var server = require('electron-connect').server.create({ path: 'app/develop' });
 
-  grunt.registerTask('app:start', function() {
-    server.start(__dirname + '/resources/diagram/complex.bpmn');
-  });
+  grunt.registerTask('app:start', server.start);
 
-  grunt.registerTask('app:restart', function() {
-    server.restart();
-  });
+  grunt.registerTask('app:restart', server.restart);
 
   grunt.registerTask('app:reload', server.reload);
 
