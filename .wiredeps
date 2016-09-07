@@ -39,7 +39,7 @@
           }
         },
         "diagram-js-direct-editing": {
-          "version": "0.16.1"
+          "version": "0.17.0"
         },
         "object-refs": {
           "version": "0.1.1"
