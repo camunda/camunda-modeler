@@ -96,6 +96,9 @@
             }
           }
         },
+        "diagram-js": {
+          "version": "0.16.3"
+        },
         "diagram-js-direct-editing": {
           "version": "0.15.1"
         },
