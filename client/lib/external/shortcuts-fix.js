@@ -44,7 +44,7 @@ function ShortcutsFix(app, isMac) {
     var activeElement = document.activeElement;
 
     // DMN HACK: we need to trigger preventDefault;
-    if (event.key === 'Enter') {
+    if (isDmnInput(activeElement) && event.key === 'Enter') {
       e.preventDefault();
 
       if (event.ctrlKey || event.metaKey) {
@@ -102,4 +102,8 @@ module.exports = ShortcutsFix;
 
 function isPropertiesInput(el) {
   return el && domClosest(el, '.properties');
+}
+
+function isDmnInput(el) {
+  return el && domClosest(el, '.dmn-editor');
 }
