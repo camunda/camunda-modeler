@@ -164,7 +164,7 @@
       "version": "bpmn-io/dmn-js",
       "dependencies": {
         "diagram-js": {
-          "version": "0.16.0",
+          "version": "0.17.0",
           "dependencies": {
             "didi": {
               "version": "0.1.0"
