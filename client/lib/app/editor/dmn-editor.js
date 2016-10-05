@@ -11,9 +11,9 @@ var WarningsOverlay = require('base/components/warnings-overlay');
 
 var getWarnings = require('app/util/get-warnings');
 
-var DmnJS = require('dmn-js/lib/Modeler');
+var DmnJS = require('dmn-js/lib/table/Modeler');
 
-var getEntriesType = require('dmn-js/lib/util/SelectionUtil').getEntriesType;
+var getEntriesType = require('dmn-js/lib/table/util/SelectionUtil').getEntriesType;
 
 var debug = require('debug')('dmn-editor');
 
