@@ -156,7 +156,7 @@
     "properties": [
       {
         "label": "Web Service URL",
-        "description": "Specify the url of the web service to talk to",
+        "description": "Specify the url of the web service to talk to.",
         "type": "String",
         "binding": {
           "type": "camunda:property",
@@ -166,8 +166,16 @@
           "notEmpty": true,
           "pattern": {
             "value": "^https://.*",
-            "message": "Must be https URL"
+            "message": "Must be https URL."
           }
+        }
+      },
+      {
+        "type": "Hidden",
+        "value": "com.camunda.example.WsCaller",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
         }
       }
     ]
@@ -233,5 +241,114 @@
       "candidateUsers": false,
       "candidateGroups": false
     }
+  },
+  {
+    "name": "Caller",
+    "id": "com.camunda.example.Caller",
+    "appliesTo": [
+      "bpmn:CallActivity"
+    ],
+    "properties": [
+      {
+        "label": "Called Process",
+        "type": "String",
+        "editable": false,
+        "value": "calledProcess",
+        "binding": {
+          "type": "property",
+          "name": "calledElement"
+        }
+      },
+      {
+        "label": "Input source variable",
+        "type": "String",
+        "value": "var_local",
+        "binding": {
+          "type": "camunda:in",
+          "target": "var_called_source"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Output target (source variable)",
+        "type": "String",
+        "value": "var_called",
+        "binding": {
+          "type": "camunda:out",
+          "source": "var_local_source"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Input sourceExpression",
+        "type": "String",
+        "value": "${expr_local}",
+        "binding": {
+          "type": "camunda:in",
+          "target": "var_called_expr",
+          "expression": true
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Output target (sourceExpression)",
+        "type": "String",
+        "value": "var_local_expr",
+        "binding": {
+          "type": "camunda:out",
+          "sourceExpression": "${expr_called}"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Input all",
+        "type": "Hidden",
+        "binding": {
+          "type": "camunda:in",
+          "variables": "all"
+        }
+      },
+      {
+        "label": "Output all",
+        "type": "Hidden",
+        "binding": {
+          "type": "camunda:out",
+          "variables": "all"
+        }
+      },
+      {
+        "label": "Input all local",
+        "type": "Hidden",
+        "binding": {
+          "type": "camunda:in",
+          "variables": "local"
+        }
+      },
+      {
+        "label": "Output all local",
+        "type": "Hidden",
+        "binding": {
+          "type": "camunda:out",
+          "variables": "local"
+        }
+      },
+      {
+        "label": "Input business key",
+        "description": "Provide the expression retrieving the business key.",
+        "type": "String",
+        "value": "${execution.processBusinessKey}",
+        "binding": {
+          "type": "camunda:in:businessKey"
+        }
+      }
+    ]
   }
 ]
