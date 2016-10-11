@@ -165,7 +165,7 @@ module.exports = function(grunt) {
       },
       mocha: {
         files: 'app/**/*',
-        tasks: [ 'mochaTest:app' ]
+        tasks: [ 'mochaTest:watch' ]
       }
     },
 
@@ -183,12 +183,20 @@ module.exports = function(grunt) {
     },
 
     mochaTest: {
-      app: {
-        src: [ './app/test/spec/**/*.js' ],
+      single: {
         options: {
           reporter: 'spec',
           require: [ './app/test/expect' ]
-        }
+        },
+        src: [ './app/test/spec/**/*.js' ]
+      },
+      watch: {
+        options: {
+          noFail: true,
+          reporter: 'spec',
+          require: [ './app/test/expect' ]
+        },
+        src: [ './app/test/spec/**/*.js' ]
       }
     }
   });
@@ -201,11 +209,11 @@ module.exports = function(grunt) {
 
   grunt.registerTask('lint-fix', [ 'eslint:fix' ]);
 
-  grunt.registerTask('test', [ 'karma:single', 'mochaTest:app' ]);
+  grunt.registerTask('test', [ 'karma:single', 'mochaTest:single' ]);
 
   grunt.registerTask('auto-test', [ 'karma:unit' ]);
 
-  grunt.registerTask('auto-test-app', [ 'mochaTest:app', 'focus:app' ]);
+  grunt.registerTask('auto-test-app', [ 'mochaTest:watch', 'focus:app' ]);
 
   grunt.registerTask('build-client', [
     'clean:client',
