@@ -12,9 +12,15 @@ function on(event, callback, that) {
     var args = Array.prototype.slice.call(arguments).slice(1);
 
     function done() {
-      var _args =  Array.prototype.slice.call(arguments);
+      var args =  Array.prototype.slice.call(arguments).map(function(e) {
+        if (e instanceof Error) {
+          return { message: e.message };
+        }
 
-      evt.sender.send(responseEvent, _args);
+        return e;
+      });
+
+      evt.sender.send(responseEvent, args);
     }
 
     callback.apply(that || null, args.concat(done));

@@ -7,9 +7,9 @@ var ipcRenderer = require('electron').ipcRenderer;
  * Communicate with the Browser process.
  * Make sure that the callback is always called, even when there's an error.
  *
- * @param  {Event} event
- * @param  {Arguments} args
- * @param  {Function} callback
+ * @param {Event} event
+ * @param {Object|Array<Object>} args
+ * @param {Function} callback
  */
 function send(event, args, callback) {
   var _args = args;
@@ -26,8 +26,8 @@ function send(event, args, callback) {
   if (callback) {
     ipcRenderer.once(event + ':response', function(evt, args) {
 
-      if (args[0]) {
-        return callback(new Error(args[0]));
+      if (typeof args[0] === 'string') {
+        args[0] = new Error(args[0]);
       }
 
       callback.apply(null, args);
