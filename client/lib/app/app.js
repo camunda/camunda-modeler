@@ -1216,6 +1216,7 @@ App.prototype.restoreWorkspace = function(done) {
     }
   };
 
+
   this.workspace.load(defaultWorkspace, (err, workspaceConfig) => {
 
     if (err) {
@@ -1243,30 +1244,6 @@ App.prototype.restoreWorkspace = function(done) {
     done(null, workspaceConfig);
   });
 
-};
-
-/**
- * Load the application configuration.
- *
- * @param {Function} done
- */
-App.prototype.loadConfig = function(done) {
-
-  this.config.load((err) => {
-
-    if (err) {
-      debug('configuration load error', err);
-
-      return done(err);
-    }
-
-    this.events.emit('changed');
-
-    this.events.emit('configuration:loaded');
-
-    // we are done
-    done(null);
-  });
 };
 
 /**
@@ -1298,20 +1275,14 @@ App.prototype.run = function() {
 
   this.selectTab(this.tabs[0]);
 
-  this.loadConfig((err) => {
-
+  this.restoreWorkspace((err) => {
     if (err) {
-      this.logger.warn('Failed to load config', err);
+      debug('workspace restore error', err);
+    } else {
+      debug('workspace restored');
     }
 
-    this.restoreWorkspace((err) => {
-      if (err) {
-        debug('workspace restore error', err);
-      } else {
-        debug('workspace restored');
-      }
-      this.events.emit('ready');
-    });
+    this.events.emit('ready');
   });
 
   this.events.emit('changed');

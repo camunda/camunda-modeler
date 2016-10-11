@@ -19,6 +19,8 @@ var diagramOriginModule = require('diagram-js-origin'),
 
 var WarningsOverlay = require('base/components/warnings-overlay');
 
+var isUnsaved = require('util/file/is-unsaved');
+
 var getWarnings = require('app/util/get-warnings');
 
 var ensureOpts = require('util/ensure-opts'),
@@ -27,8 +29,6 @@ var ensureOpts = require('util/ensure-opts'),
     copy = require('util/copy');
 
 var generateImage = require('app/util/generate-image');
-
-var validateElementTemplates = require('bpmn-js-properties-panel/lib/provider/camunda/element-templates/util/validate');
 
 var debug = require('debug')('bpmn-editor');
 
@@ -294,21 +294,28 @@ BpmnEditor.prototype.getModeler = function() {
       this.emit('log', [[ 'error', error.error ]]);
       this.emit('log:toggle', { open: true });
     });
+
+    this.modeler.on('elementTemplates.errors', (e) => {
+      this.logTemplateWarnings(e.errors);
+    });
   }
 
   return this.modeler;
 };
 
 
+BpmnEditor.prototype.loadTemplates = function(done) {
+
+  var file = this.file;
+
+  var diagram = isUnsaved(file) ? null : { path: file.path };
+
+  this.config.get('bpmn.elementTemplates', diagram, done);
+};
+
 BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
 
-  var elementTemplates = this.config.get('bpmn.elementTemplates');
-
-  var errors = validateElementTemplates(elementTemplates);
-
-  if (errors.length) {
-    this.logTemplateWarnings(errors);
-  }
+  var elementTemplatesLoader = this.loadTemplates.bind(this);
 
   var propertiesPanelConfig = {
     'config.propertiesPanel': [ 'value', { parent: $propertiesEl } ]
@@ -325,7 +332,7 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
       propertiesProviderModule,
       propertiesPanelConfig
     ],
-    elementTemplates: elementTemplates,
+    elementTemplates: elementTemplatesLoader,
     moddleExtensions: { camunda: camundaModdlePackage }
   });
 };

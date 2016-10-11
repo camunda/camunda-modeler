@@ -375,6 +375,14 @@
     "next-tick": {
       "version": "0.2.2"
     },
+    "parents": {
+      "version": "1.0.1",
+      "dependencies": {
+        "path-platform": {
+          "version": "0.11.15"
+        }
+      }
+    },
     "raf": {
       "version": "3.2.0",
       "dependencies": {

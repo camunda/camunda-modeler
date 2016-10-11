@@ -1851,41 +1851,6 @@ describe('App', function() {
   });
 
 
-  describe('config', function() {
-
-    it('should provide entries after load', function() {
-
-      // given
-      config.setLoadResult({ foo: 'bar' });
-
-      // when
-      app.loadConfig(function(err) {
-
-        // then
-        expect(app.config._entries).to.eql({ foo: 'bar' });
-      });
-    });
-
-
-    describe('load behavior', function() {
-
-      it('should load on run', function() {
-
-        // given
-        var loadConfig = spy(app, 'loadConfig');
-
-        // when
-        app.run();
-
-        // then
-        expect(loadConfig).to.have.been.called;
-      });
-
-    });
-
-  });
-
-
   describe('event emitter', function() {
 
     var tab;

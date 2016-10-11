@@ -136,6 +136,15 @@ BaseEditor.prototype.setXML = function(xml, initialState) {
   this.update();
 };
 
+/**
+ * Sets the file that this editor displays.
+ *
+ * @param {FileDescriptor} file
+ */
+BaseEditor.prototype.setFile = function(file) {
+  this.file = file;
+  this.setXML(file.contents, {});
+};
 
 /**
  * Clean up resources and any bindings.

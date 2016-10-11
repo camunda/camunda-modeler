@@ -138,7 +138,6 @@ MultiEditorTab.prototype.showEditor = function(editor) {
     }
 
     this.switchEditor(newEditor, xml);
-
   });
 };
 
@@ -326,7 +325,7 @@ MultiEditorTab.prototype.setFile = function(file) {
   this.dirty = isUnsaved(file);
 
   this.editors.forEach(function(editor) {
-    editor.setXML(file.contents, {});
+    editor.setFile(file);
   });
 
   this.events.emit('changed');

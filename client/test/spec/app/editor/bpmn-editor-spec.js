@@ -184,37 +184,86 @@ describe('BpmnEditor', function() {
   });
 
 
-  it('should load element templates', function(done) {
+  describe('element templates', function() {
 
-    // given
-    editor.config.set('bpmn.elementTemplates', [
-      {
-        label: 'FOO',
-        id: 'foo',
-        appliesTo: [
-          'bpmn:ServiceTask'
-        ],
-        properties: []
-      }
-    ]);
+    it('should load', function(done) {
 
-    var $el = document.createElement('div');
+      // given
+      editor.config.provide('bpmn.elementTemplates', function(key, diagram, done) {
 
-    editor.once('imported', function(context) {
+        var templates = [
+          {
+            label: 'FOO',
+            id: 'foo',
+            appliesTo: [
+              'bpmn:ServiceTask'
+            ],
+            properties: []
+          }
+        ];
 
-      var elementTemplates = editor.modeler.get('elementTemplates');
+        done(null, templates);
+      });
 
-      // then
-      expect(elementTemplates).to.exist;
-      expect(elementTemplates.get('foo')).to.exist;
+      var $el = document.createElement('div');
 
-      done();
+      editor.once('imported', function(context) {
+
+        var elementTemplates = editor.modeler.get('elementTemplates');
+
+        // then
+        expect(elementTemplates).to.exist;
+        expect(elementTemplates.get('foo')).to.exist;
+
+        done();
+      });
+
+      // when
+      editor.setXML(initialXML);
+
+      editor.mountEditor($el);
     });
 
-    // when
-    editor.setXML(initialXML);
 
-    editor.mountEditor($el);
+    it('should log load error', function(done) {
+
+      var templatesLoaded;
+
+      // given
+      editor.config.provide('bpmn.elementTemplates', function(key, diagram, done) {
+        templatesLoaded = function() {
+          done(new Error('foo bar'));
+        };
+      });
+
+      var $el = document.createElement('div');
+
+      var loggedWarnings;
+
+      editor.once('log', function(entries) {
+        loggedWarnings = entries;
+      });
+
+      editor.once('imported', function(context) {
+
+        // when
+        templatesLoaded();
+
+        // then
+        expect(loggedWarnings).to.eql([
+          [ 'warning', 'Some element templates could not be parsed' ],
+          [ 'warning', '> foo bar' ],
+          [ 'warning', '' ]
+        ]);
+
+        done();
+      });
+
+      editor.setXML(initialXML);
+
+      editor.mountEditor($el);
+    });
+
   });
 
 

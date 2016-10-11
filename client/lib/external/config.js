@@ -6,6 +6,11 @@ var browser = require('util/browser');
 
 var BaseConfig = require('../base/config');
 
+var slice = function(arr, begin, end) {
+  return Array.prototype.slice.call(arr, begin, end);
+};
+
+
 /**
  * Config API used by app
  */
@@ -14,22 +19,27 @@ function ExternalConfig() {
   BaseConfig.call(this);
 
   /**
-   * Load the application configuration.
+   * Get a configuration entry by key.
    *
-   * The passed default result passed will be returned
-   * if no configuration was provided.
-   *
-   * @param {Function} done
+   * @param {String} key
+   * @param {Object...} arguments
+   * @param {Function} done callback
    */
-  this.load = function(done) {
-    browser.send('config:load', (err, config) => {
+  this.get = function(key, done) {
+    key = arguments[0];
+    done = arguments[arguments.length - 1];
 
-      if (!err) {
-        this.setAll(config);
-      }
+    if (typeof key !== 'string') {
+      throw new Error('key must be a string');
+    }
 
-      done(err);
-    });
+    if (typeof done !== 'function') {
+      throw new Error('done callback must be a function');
+    }
+
+    var args = slice(arguments, 0, -1);
+
+    browser.send('client-config:get', args, done);
   };
 
 }

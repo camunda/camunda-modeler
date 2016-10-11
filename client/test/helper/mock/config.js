@@ -1,36 +1,30 @@
 'use strict';
 
-var inherits = require('inherits');
-
-var BaseConfig = require('base/config');
-
-/**
- * Config Mock API used by app
- */
 function MockConfig() {
 
-  BaseConfig.call(this);
-
-  this.setLoadResult = function(loadResult) {
-    this._loadResult = loadResult;
-  };
+  this._providers = {};
 
   /**
-   * Mocked {Config#load}.
+   * Mocked {@link BaseConfig#get}.
    */
-  this.load = function(done) {
-    var loadResult = this._loadResult;
+  this.get = function(key) {
 
-    if (loadResult instanceof Error) {
-      return done(loadResult);
+    var done = arguments[arguments.length - 1];
+
+    var fn = this._providers[key];
+
+    if (fn) {
+      // apply provider
+      fn.apply(null, arguments);
+    } else {
+      // do nothing &-)
+      done();
     }
+  };
 
-    this.setAll(loadResult);
-
-    return done(null);
+  this.provide = function(key, fn) {
+    this._providers[key] = fn;
   };
 }
-
-inherits(MockConfig, BaseConfig);
 
 module.exports = MockConfig;

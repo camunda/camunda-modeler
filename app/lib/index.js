@@ -147,13 +147,18 @@ function saveCallback(saveAction, diagramFile, done) {
   }]);
 }
 
-renderer.on('config:load', function(done) {
-  console.log('[client-config]', 'load');
+renderer.on('client-config:get', function() {
+
+  var args = Array.prototype.slice.call(arguments);
+
+  var done = args[args.length - 1];
 
   try {
-    done(null, clientConfig.load());
+    clientConfig.get.apply(clientConfig, arguments);
   } catch (e) {
-    done(e);
+    if (typeof done === 'function') {
+      done(e);
+    }
   }
 });
 
