@@ -350,5 +350,46 @@
         }
       }
     ]
+  },
+  {
+    "name": "Execution Listener",
+    "id": "com.camunda.example.ExecutionListener",
+    "appliesTo": [
+      "bpmn:Activity",
+      "bpmn:Event",
+      "bpmn:Gateway"
+    ],
+    "properties": [
+      {
+        "value": "println execution.eventName",
+        "type": "Hidden",
+        "binding": {
+          "type": "camunda:executionListener",
+          "event": "start",
+          "scriptFormat": "groovy"
+        }
+      },
+      {
+        "value": "println end",
+        "type": "Hidden",
+        "binding": {
+          "type": "camunda:executionListener",
+          "event": "end",
+          "scriptFormat": "groovy"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "executionListeners": false,
+      "listener-event-type": false,
+      "listener-type": false,
+      "listener-value": false,
+      "listener-script-value": false,
+      "listener-fields": false,
+      "listener-field-name": false,
+      "listener-field-type": false,
+      "listener-field-value": false
+    }
   }
 ]
