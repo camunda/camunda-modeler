@@ -64,7 +64,7 @@
     "debug": "^2.2.0",
     "diagram-js": "^0.17.0",
     "diagram-js-origin": "^0.14.1",
-    "dmn-js": "^0.6.2",
+    "dmn-js": "^0.7.0",
     "dom-delegator": "^13.1.0",
     "domify": "^1.4.0",
     "domready": "^1.0.8",
