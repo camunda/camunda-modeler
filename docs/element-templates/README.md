@@ -69,7 +69,7 @@ As seen in the code snippet a template consist of a number of important componen
 
 ### Defining Template Properties
 
-With each template you Template define a number of user-editable fields as well as their mapping to BPMN 2.0 XML as well as Camunda extension elements.
+With each template you define a number of user-editable fields as well as their mapping to BPMN 2.0 XML as well as Camunda extension elements.
 
 Let us consider the following example that defines a template for a mail sending task:
 
@@ -155,15 +155,15 @@ All but the _Implementation Type_ are editable by the user through the propertie
 As seen in the example the important attributes in a property definition are:
 
 * `label`: A descriptive text shown with the property
-* `type`: Defining the visual apperance in the properties panel (may be any of `String`, `Text`, `Boolean` or `Dropdown`)
+* `type`: Defining the visual apperance in the properties panel (may be any of `String`, `Text`, `Boolean`, `Dropdown` or `Hidden`)
 * `value`: An optional default value to be used if the property to be bound is not yet set
-* `binding`: Specifying how the property is mapped to BPMN or Camunda extension elements and attributes (may be any of `property`, `camunda:property`, `camunda:inputParameter`, `camunda:outputParameter`)
+* `binding`: Specifying how the property is mapped to BPMN or Camunda extension elements and attributes (may be any of `property`, `camunda:property`, `camunda:inputParameter`, `camunda:outputParameter`, `camunda:in`, `camunda:out`, `camunda:executionListener`)
 * `constraints`: A list of editing constraints to apply to the template
 
 
 #### Types
 
-The input types `String`, `Text`, `Boolean` and `Dropdown` are available. As seen above `String` maps to a single-line input, `Text` maps to a multi-line input.
+The input types `String`, `Text`, `Boolean`, `Dropdown` and `Hidden` are available. As seen above `String` maps to a single-line input, `Text` maps to a multi-line input.
 
 
 ###### Boolean / Checkbox Type
@@ -202,13 +202,15 @@ The resulting properties panel control looks like this:
 
 #### Bindings
 
-The four ways exist to map a custom field to the underlying BPMN 2.0 XML:
+The following ways exist to map a custom field to the underlying BPMN 2.0 XML:
 
 * `property`: Maps to a named property in the BPMN 2.0 XML, i.e. `<bpmn:serviceTask {name}={userInput} />`
 * `camunda:property`: Maps to a `<camunda:property name="{name}" value="{userInput}" />` extension element
-* `camunda:inputParameter`: Maps to a `<camunda:inputParameter name="{name}" />`
-* `camunda:outputParameter`: Maps to a `<camunda:outputParameter name="{userInput}" />`
-
+* `camunda:inputParameter`: Maps to `<camunda:inputParameter name="{name}" />`
+* `camunda:outputParameter`: Maps to `<camunda:outputParameter name="{userInput}" />`
+* `camunda:in`: Maps to `<camunda:in target="{target}" />`
+* `camunda:out`: Maps to `<camunda:out source="{source}" />`
+* `camunda:executionListener`: Maps to `<camunda:executionListener event="{event}" />`
 
 #### Constraints
 
