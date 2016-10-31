@@ -223,25 +223,25 @@
           }
         },
         "stringify": {
-          "version": "3.2.1",
+          "version": "5.1.0",
           "dependencies": {
             "html-minifier": {
               "version": "0.6.9",
               "dependencies": {
                 "change-case": {
-                  "version": "2.1.6"
+                  "version": "2.3.1"
                 },
                 "clean-css": {
-                  "version": "2.2.23"
+                  "version": "2.4.20"
                 },
                 "cli": {
-                  "version": "0.6.6"
+                  "version": "0.11.3"
                 },
                 "relateurl": {
                   "version": "0.2.7"
                 },
                 "uglify-js": {
-                  "version": "2.4.24"
+                  "version": "2.6.4"
                 }
               }
             },
