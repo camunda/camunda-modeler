@@ -226,13 +226,13 @@
           "version": "5.1.0",
           "dependencies": {
             "html-minifier": {
-              "version": "0.6.9",
+              "version": "1.1.1",
               "dependencies": {
                 "change-case": {
                   "version": "2.3.1"
                 },
                 "clean-css": {
-                  "version": "2.4.20"
+                  "version": "3.4.20"
                 },
                 "cli": {
                   "version": "0.11.3"
@@ -245,16 +245,16 @@
                 }
               }
             },
-            "stream-spec": {
-              "version": "0.3.5",
+            "browserify-transform-tools": {
+              "version": "1.5.3",
               "dependencies": {
-                "macgyver": {
-                  "version": "1.10.1"
+                "falafel": {
+                  "version": "1.0.1"
+                },
+                "through": {
+                  "version": "2.3.8"
                 }
               }
-            },
-            "through": {
-              "version": "2.3.4"
             }
           }
         }
