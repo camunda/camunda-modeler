@@ -39,7 +39,7 @@
           }
         },
         "diagram-js-direct-editing": {
-          "version": "0.17.0"
+          "version": "bpmn-io/diagram-js-direct-editing"
         },
         "object-refs": {
           "version": "0.1.1"
@@ -96,11 +96,8 @@
             }
           }
         },
-        "diagram-js": {
-          "version": "0.16.3"
-        },
         "diagram-js-direct-editing": {
-          "version": "0.15.1"
+          "version": "bpmn-io/diagram-js-direct-editing"
         },
         "object-refs": {
           "version": "0.1.1"
@@ -151,14 +148,11 @@
         },
         "object-refs": {
           "version": "0.1.1"
-        },
-        "snapsvg": {
-          "version": "https://github.com/Nikku/Snap.svg/archive/v0.3.0-browserify.tar.gz"
         }
       }
     },
     "diagram-js-origin": {
-      "version": "0.14.1"
+      "version": "bpmn-io/diagram-js-origin"
     },
     "dmn-js": {
       "version": "bpmn-io/dmn-js",
@@ -185,6 +179,9 @@
               "version": "https://github.com/Nikku/Snap.svg/archive/v0.3.0-browserify.tar.gz"
             }
           }
+        },
+        "diagram-js-direct-editing": {
+          "version": "^0.17.0"
         },
         "dmn-moddle": {
           "version": "bpmn-io/dmn-moddle",
@@ -390,6 +387,9 @@
           "version": "0.2.0"
         }
       }
+    },
+    "tiny-svg": {
+      "version": "^0.1.0"
     },
     "virtual-dom": {
       "version": "2.1.1",
