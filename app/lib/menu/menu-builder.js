@@ -70,9 +70,14 @@ MenuBuilder.prototype.appendNewFile = function() {
     }, {
       label: 'DMN Table',
       click: function() {
+        app.emit('menu:action', 'create-dmn-table');
+      }
+    }, {
+      label: 'DMN Diagram',
+      click: function() {
         app.emit('menu:action', 'create-dmn-diagram');
       }
-    },{
+    }, {
       label: 'CMMN Diagram',
       click: function() {
         app.emit('menu:action', 'create-cmmn-diagram');
@@ -632,126 +637,165 @@ MenuBuilder.prototype.appendRemoveSelection = function() {
 
 
 MenuBuilder.prototype.appendDmnActions = function() {
-  this.menu.append(new MenuItem({
-    label: 'Add Rule..',
-    submenu: Menu.buildFromTemplate([{
-      label: 'At End',
-      accelerator: 'CommandOrControl+D',
+  var activeEditor = this.opts.state.dmn;
+
+  if (activeEditor === 'diagram') {
+    // DRD EDITOR
+
+    this.menu.append(new MenuItem({
+      label: 'Lasso Tool',
+      accelerator: 'L',
+      enabled: this.opts.state.inactiveInput,
       click: function() {
-        app.emit('menu:action', 'ruleAdd');
+        app.emit('menu:action', 'lassoTool');
       }
-    }, {
-      label: 'Above Selected',
+    }));
+
+    this.menu.append(new MenuItem({
+      label: 'Direct Editing',
+      accelerator: 'E',
+      enabled: this.opts.state.elementsSelected,
+      click: function() {
+        app.emit('menu:action', 'directEditing');
+      }
+    }));
+
+    this.appendSeparator();
+
+    this.menu.append(new MenuItem({
+      label: 'Select All',
+      accelerator: 'CommandOrControl+A',
+      click: function() {
+        app.emit('menu:action', 'selectElements');
+      }
+    }));
+
+    this.appendRemoveSelection();
+
+  } else {
+    // TABLE EDITOR
+
+    this.menu.append(new MenuItem({
+      label: 'Add Rule..',
+      submenu: Menu.buildFromTemplate([{
+        label: 'At End',
+        accelerator: 'CommandOrControl+D',
+        click: function() {
+          app.emit('menu:action', 'ruleAdd');
+        }
+      }, {
+        label: 'Above Selected',
+        enabled: this.opts.state.dmnRuleEditing,
+        click: function() {
+          app.emit('menu:action', 'ruleAddAbove');
+        }
+      }, {
+        label: 'Below Selected',
+        enabled: this.opts.state.dmnRuleEditing,
+        click: function() {
+          app.emit('menu:action', 'ruleAddBelow');
+        }
+      }])
+    }));
+
+    this.menu.append(new MenuItem({
+      label: 'Clear Rule',
       enabled: this.opts.state.dmnRuleEditing,
       click: function() {
-        app.emit('menu:action', 'ruleAddAbove');
+        app.emit('menu:action', 'ruleClear');
       }
-    }, {
-      label: 'Below Selected',
+    }));
+
+    this.menu.append(new MenuItem({
+      label: 'Remove Rule',
       enabled: this.opts.state.dmnRuleEditing,
       click: function() {
-        app.emit('menu:action', 'ruleAddBelow');
+        app.emit('menu:action', 'ruleRemove');
       }
-    }])
-  }));
+    }));
 
-  this.menu.append(new MenuItem({
-    label: 'Clear Rule',
-    enabled: this.opts.state.dmnRuleEditing,
-    click: function() {
-      app.emit('menu:action', 'ruleClear');
-    }
-  }));
+    this.appendSeparator();
 
-  this.menu.append(new MenuItem({
-    label: 'Remove Rule',
-    enabled: this.opts.state.dmnRuleEditing,
-    click: function() {
-      app.emit('menu:action', 'ruleRemove');
-    }
-  }));
+    this.menu.append(new MenuItem({
+      label: 'Add Clause..',
+      submenu: Menu.buildFromTemplate([{
+        label: 'Input',
+        click: function() {
+          app.emit('menu:action', 'clauseAdd', {
+            type: 'input'
+          });
+        }
+      }, {
+        label: 'Output',
+        click: function() {
+          app.emit('menu:action', 'clauseAdd', {
+            type: 'output'
+          });
+        }
+      }, {
+        type: 'separator'
+      }, {
+        label: 'Left of selected',
+        enabled: this.opts.state.dmnClauseEditing,
+        click: function() {
+          app.emit('menu:action', 'clauseAddLeft');
+        }
+      }, {
+        label: 'Right of selected',
+        enabled: this.opts.state.dmnClauseEditing,
+        click: function() {
+          app.emit('menu:action', 'clauseAddRight');
+        }
+      }])
+    }));
 
-  this.appendSeparator();
-
-  this.menu.append(new MenuItem({
-    label: 'Add Clause..',
-    submenu: Menu.buildFromTemplate([{
-      label: 'Input',
-      click: function() {
-        app.emit('menu:action', 'clauseAdd', {
-          type: 'input'
-        });
-      }
-    }, {
-      label: 'Output',
-      click: function() {
-        app.emit('menu:action', 'clauseAdd', {
-          type: 'output'
-        });
-      }
-    }, {
-      type: 'separator'
-    }, {
-      label: 'Left of selected',
+    this.menu.append(new MenuItem({
+      label: 'Remove Clause',
       enabled: this.opts.state.dmnClauseEditing,
       click: function() {
-        app.emit('menu:action', 'clauseAddLeft');
+        app.emit('menu:action', 'clauseRemove');
       }
-    }, {
-      label: 'Right of selected',
-      enabled: this.opts.state.dmnClauseEditing,
+    }));
+
+    this.appendSeparator();
+
+    this.menu.append(new MenuItem({
+      label: 'Insert New Line',
+      accelerator: 'CommandOrControl + Enter',
+      enabled: this.opts.state.dmnRuleEditing,
       click: function() {
-        app.emit('menu:action', 'clauseAddRight');
+        app.emit('menu:action', 'insertNewLine');
       }
-    }])
-  }));
+    }));
 
-  this.menu.append(new MenuItem({
-    label: 'Remove Clause',
-    enabled: this.opts.state.dmnClauseEditing,
-    click: function() {
-      app.emit('menu:action', 'clauseRemove');
-    }
-  }));
+    this.menu.append(new MenuItem({
+      label: 'Select Next Row',
+      accelerator: 'Enter',
+      enabled: this.opts.state.dmnRuleEditing,
+      click: function() {
+        app.emit('menu:action', 'selectNextRow');
+      }
+    }));
 
-  this.appendSeparator();
+    this.menu.append(new MenuItem({
+      label: 'Select Previous Row',
+      accelerator: 'Shift + Enter',
+      enabled: this.opts.state.dmnRuleEditing,
+      click: function() {
+        app.emit('menu:action', 'selectPreviousRow');
+      }
+    }));
 
-  this.menu.append(new MenuItem({
-    label: 'Insert New Line',
-    accelerator: 'CommandOrControl + Enter',
-    enabled: this.opts.state.dmnRuleEditing,
-    click: function() {
-      app.emit('menu:action', 'insertNewLine');
-    }
-  }));
+    this.appendSeparator();
 
-  this.menu.append(new MenuItem({
-    label: 'Select Next Row',
-    accelerator: 'Enter',
-    enabled: this.opts.state.dmnRuleEditing,
-    click: function() {
-      app.emit('menu:action', 'selectNextRow');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Select Previous Row',
-    accelerator: 'Shift + Enter',
-    enabled: this.opts.state.dmnRuleEditing,
-    click: function() {
-      app.emit('menu:action', 'selectPreviousRow');
-    }
-  }));
-
-  this.appendSeparator();
-
-  this.menu.append(new MenuItem({
-    label: 'Toggle Editing Mode',
-    accelerator: 'CommandOrControl + M',
-    click: function() {
-      app.emit('menu:action', 'toggleEditingMode');
-    }
-  }));
+    this.menu.append(new MenuItem({
+      label: 'Toggle Editing Mode',
+      accelerator: 'CommandOrControl + M',
+      click: function() {
+        app.emit('menu:action', 'toggleEditingMode');
+      }
+    }));
+  }
 
   return this;
 };

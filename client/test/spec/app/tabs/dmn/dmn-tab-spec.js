@@ -7,7 +7,7 @@ var Config = require('test/helper/mock/config'),
 
 var DmnTab = require('app/tabs/dmn/dmn-tab');
 
-var initialXML = require('app/tabs/dmn/initial.dmn');
+var initialXML = require('app/tabs/dmn/table.dmn');
 
 function createFile(options) {
 
@@ -61,7 +61,7 @@ describe('DmnTab', function() {
     beforeEach(function() {
       tab = createDmnTab('diagram_1');
 
-      dmnEditor = tab.getEditor('table');
+      dmnEditor = tab.getEditor('dmn-editor');
     });
 
 

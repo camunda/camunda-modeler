@@ -100,10 +100,16 @@ function App(options) {
               primary: true
             },
             {
+              id: 'create-dmn-table',
+              action: this.compose('triggerAction', 'create-dmn-table'),
+              label: 'Create new DMN Table'
+            },
+            {
               id: 'create-dmn-diagram',
               action: this.compose('triggerAction', 'create-dmn-diagram'),
-              label: 'Create new DMN Table'
-            },{
+              label: 'Create new DMN Diagram (DRD)'
+            },
+            {
               id: 'create-cmmn-diagram',
               action: this.compose('triggerAction', 'create-cmmn-diagram'),
               label: 'Create new CMMN Diagram'
@@ -554,6 +560,10 @@ App.prototype.triggerAction = function(action, options) {
     return this.createDiagram('dmn');
   }
 
+  if (action === 'create-dmn-table') {
+    return this.createDiagram('dmn', { isTable: true });
+  }
+
   if (action === 'create-cmmn-diagram') {
     return this.createDiagram('cmmn');
   }
@@ -625,10 +635,10 @@ App.prototype.triggerAction = function(action, options) {
  * @param {String} type
  * @return {Tab} created diagram tab
  */
-App.prototype.createDiagram = function(type) {
+App.prototype.createDiagram = function(type, attrs) {
   var tabProvider = this._findTabProvider(type);
 
-  var file = tabProvider.createNewFile();
+  var file = tabProvider.createNewFile(attrs);
 
   return this.openTab(file);
 };

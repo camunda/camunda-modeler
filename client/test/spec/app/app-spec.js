@@ -21,7 +21,7 @@ var arg = require('test/helper/util/arg'),
 
 var bpmnXML = require('app/tabs/bpmn/initial.bpmn'),
     activitiXML = require('test/fixtures/activiti.xml'),
-    dmnXML = require('app/tabs/dmn/initial.dmn');
+    dmnXML = require('app/tabs/dmn/table.dmn');
 
 var inherits = require('inherits');
 var MultiEditorTab = require('app/tabs/multi-editor-tab');
@@ -2000,24 +2000,6 @@ describe('App', function() {
 
           // then
           expect(err).to.equal(exportError);
-
-          expect(dialog.saveAs).to.not.have.been.called;
-
-          done();
-        });
-      });
-
-
-      it('should not export with DMN', function(done) {
-
-        // given
-        var tab = createTab(createDmnFile(dmnXML));
-
-        // when
-        app.exportTab(tab, 'svg', function(err, svg) {
-
-          // then
-          expect(err.message).to.equal('<exportAs> not supported for the current tab');
 
           expect(dialog.saveAs).to.not.have.been.called;
 

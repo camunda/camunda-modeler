@@ -252,7 +252,8 @@ MultiEditorTab.prototype.createEditors = function(options) {
         closable: true
       }, state, { dirty: this.dirty });
 
-      this.events.emit('tools:state-changed', this, newState);
+      // propagate state changed
+      this.stateChanged(newState);
     });
 
     editor.on('changed', this.events.composeEmitter('changed'));
@@ -343,6 +344,10 @@ MultiEditorTab.prototype.triggerAction = function(action, options) {
   if (this.activeEditor.triggerAction) {
     this.activeEditor.triggerAction(action, options);
   }
+};
+
+MultiEditorTab.prototype.stateChanged = function(newState) {
+  this.events.emit('tools:state-changed', this, newState);
 };
 
 MultiEditorTab.prototype.render = function() {

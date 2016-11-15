@@ -136,12 +136,18 @@ DiagramEditor.prototype.destroy = function() {
   }
 };
 
-
+// This allows an easier replacing of this method f.ex: DMN needs
 DiagramEditor.prototype.saveXML = function(done) {
-
   var modeler = this.getModeler(),
-      commandStack = modeler.get('commandStack'),
-      initialState = this.initialState;
+      commandStack = modeler.get('commandStack');
+
+  this._saveXML(modeler, commandStack._stackIdx, done);
+};
+
+
+DiagramEditor.prototype._saveXML = function(modeler, commandStackIdx, done) {
+
+  var initialState = this.initialState;
 
   debug('[#saveXML] save');
 
@@ -164,7 +170,7 @@ DiagramEditor.prototype.saveXML = function(done) {
     done(null, xml);
   };
 
-  if (!(initialState.stackIndex !== commandStack._stackIdx)) {
+  if (!(initialState.stackIndex !== commandStackIdx)) {
     return savedCallback(null, this.lastXML);
   }
 
