@@ -158,7 +158,7 @@
       "version": "bpmn-io/dmn-js",
       "dependencies": {
         "diagram-js": {
-          "version": "0.17.0",
+          "version": "0.18.1",
           "dependencies": {
             "didi": {
               "version": "0.1.0"
@@ -174,9 +174,6 @@
             },
             "object-refs": {
               "version": "0.1.1"
-            },
-            "snapsvg": {
-              "version": "https://github.com/Nikku/Snap.svg/archive/v0.3.0-browserify.tar.gz"
             }
           }
         },
