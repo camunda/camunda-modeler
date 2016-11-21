@@ -228,27 +228,31 @@ function describeEditor(name, options) {
 
     describe('editor state', function() {
 
-      // todo: remove skip once dmn is able to correctly manage it's state
-      it.skip('should update on import', function(done) {
-        // given
-        var $el = document.createElement('div');
+      // TODO(ricardomatias): remove skip once dmn is able
+      // to correctly manage it's state
+      if (name !== 'DmnEditor') {
 
-        // when
-        editor.mountEditor($el);
+        it('should update on import', function(done) {
+          // given
+          var $el = document.createElement('div');
 
-        // wait for diagram shown / imported
-        editor.once('state-updated', function(context) {
+          // when
+          editor.mountEditor($el);
 
-          // then
-          expect(context).to.have.property('undo', false);
-          expect(context).to.have.property('redo', false);
-          expect(context).to.have.property('dirty', false);
+          // wait for diagram shown / imported
+          editor.once('state-updated', function(context) {
 
-          done();
+            // then
+            expect(context).to.have.property('undo', false);
+            expect(context).to.have.property('redo', false);
+            expect(context).to.have.property('dirty', false);
+
+            done();
+          });
+
+          editor.setXML(initialXML, {});
         });
-
-        editor.setXML(initialXML, {});
-      });
+      }
 
 
       it('should update on re-mount', function(done) {
@@ -285,36 +289,41 @@ function describeEditor(name, options) {
         editor.mountEditor($el);
       });
 
-      // todo: remove skip once dmn is able to correctly manage it's state
-      it.skip('should update on new XML', function(done) {
 
-        // given
-        var newXML = otherXML;
+      // TODO(ricardomatias): remove skip once dmn is able
+      // to correctly manage it's state
+      if (name !== 'DmnEditor') {
 
-        var $el = document.createElement('div');
+        it('should update on new XML', function(done) {
 
-        // when
-        editor.once('shown', function() {
+          // given
+          var newXML = otherXML;
 
-          editor.once('state-updated', function(context) {
-
-            // then
-            expect(context).to.have.property('undo', hasGlobalUndo);
-            expect(context).to.have.property('redo', false);
-            expect(context).to.have.property('dirty', true);
-
-            done();
-          });
+          var $el = document.createElement('div');
 
           // when
-          // updating to new file
-          editor.setXML(newXML);
+          editor.once('shown', function() {
 
-        }, 300);
+            editor.once('state-updated', function(context) {
 
-        editor.setXML(initialXML, {});
-        editor.mountEditor($el);
-      });
+              // then
+              expect(context).to.have.property('undo', hasGlobalUndo);
+              expect(context).to.have.property('redo', false);
+              expect(context).to.have.property('dirty', true);
+
+              done();
+            });
+
+            // when
+            // updating to new file
+            editor.setXML(newXML);
+
+          }, 300);
+
+          editor.setXML(initialXML, {});
+          editor.mountEditor($el);
+        });
+      }
 
 
       it('should reflect initial dirty state', function(done) {
