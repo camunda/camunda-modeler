@@ -5,7 +5,7 @@
   "main": "app/lib/index.js",
   "scripts": {
     "test": "grunt test",
-    "auto-test": "grunt test:watch",
+    "auto-test": "grunt auto-test",
     "all": "grunt",
     "distro": "grunt distro",
     "dev": "grunt auto-build"
