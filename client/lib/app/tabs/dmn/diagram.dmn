@@ -4,7 +4,7 @@
       <biodi:bounds x="200" y="200" width="180" height="80"/>
     </extensionElements>
     <decisionTable>
-      <output typeRef="string"/ id="output_1">
+      <output typeRef="string" id="output_1" />
     </decisionTable>
   </decision>
 </definitions>
