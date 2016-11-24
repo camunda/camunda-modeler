@@ -65,10 +65,11 @@ DmnEditor.prototype.triggerEditorActions = function(action, options) {
     opts = options.type;
   }
 
+
   debug('editor-actions', action, options);
 
   // ignore all editor actions if there's a current active input or textarea
-  if ([ 'insertNewLine' ].indexOf(action) === -1 && isInputActive()) {
+  if ([ 'insertNewLine', 'selectNextRow', 'selectPreviousRow' ].indexOf(action) === -1 && isInputActive()) {
     return;
   }
 
@@ -87,7 +88,8 @@ DmnEditor.prototype.updateState = function() {
       initialState = this.initialState,
       tableCommandStack, diagramCommandStack, commandStack;
 
-  var dirty, elements, elementsSelected, inputActive, elementType, editorState, diagramStackIdx, tableStackIdx,
+  var dirty, elements, elementsSelected, inputActive, elementType,
+      editorState, diagramStackIdx, tableStackIdx,
       stackIdx = -1;
 
   // ignore change events during import
@@ -96,14 +98,15 @@ DmnEditor.prototype.updateState = function() {
   }
 
   var stateContext = {
-    dmn: this.getActiveEditorName(),
+    dmn: true,
+    activeEditor: this.getActiveEditorName(),
     undo: !!initialState.undo,
     redo: !!initialState.redo,
     dirty: initialState.dirty,
     exportAs: false
   };
 
-  if (stateContext.dmn === 'diagram') {
+  if (stateContext.activeEditor === 'diagram') {
     stateContext.exportAs = [ 'png', 'jpeg', 'svg' ];
   }
 
@@ -113,7 +116,8 @@ DmnEditor.prototype.updateState = function() {
     diagramCommandStack = modeler.get('commandStack');
     tableCommandStack = modeler.table.get('commandStack');
 
-    if (stateContext.dmn === 'table') {
+    if (stateContext.activeEditor === 'table') {
+
       elements = modeler.table.get('selection').get();
       elementType = getEntriesType(elements);
 
@@ -123,7 +127,7 @@ DmnEditor.prototype.updateState = function() {
       };
 
       commandStack = tableCommandStack;
-    } else {
+    } else if (stateContext.activeEditor) {
       // direct editing function
       elements = modeler.get('selection').get();
       elementsSelected = false;
@@ -172,9 +176,22 @@ DmnEditor.prototype.getStackIndex = function() {
 };
 
 DmnEditor.prototype.getActiveEditorName = function() {
-  var modeler = this.getModeler();
+  var modeler = this.getModeler(),
+      name, decision;
 
-  return modeler === modeler.getActiveEditor() ? 'diagram' : 'table';
+  if (modeler === modeler.getActiveEditor()) {
+    name = 'diagram';
+  } else {
+    decision = modeler.table.getCurrentDecision();
+
+    if (decision && decision.literalExpression) {
+      name = 'literal-expression';
+    } else {
+      name = 'table';
+    }
+  }
+
+  return name;
 };
 
 

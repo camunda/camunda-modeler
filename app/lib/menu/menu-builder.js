@@ -16,6 +16,7 @@ function MenuBuilder(opts) {
     appName: app.name,
     state: {
       dmn: false,
+      activeEditor: null,
       cmmn: false,
       bpmn: false,
       undo: false,
@@ -637,10 +638,11 @@ MenuBuilder.prototype.appendRemoveSelection = function() {
 
 
 MenuBuilder.prototype.appendDmnActions = function() {
-  var activeEditor = this.opts.state.dmn;
+  var activeEditor = this.opts.state.activeEditor;
 
   if (activeEditor === 'diagram') {
     // DRD EDITOR
+    this.appendSeparator();
 
     this.menu.append(new MenuItem({
       label: 'Lasso Tool',
@@ -672,8 +674,10 @@ MenuBuilder.prototype.appendDmnActions = function() {
 
     this.appendRemoveSelection();
 
-  } else {
+  } else if (activeEditor === 'table') {
     // TABLE EDITOR
+
+    this.appendSeparator();
 
     this.menu.append(new MenuItem({
       label: 'Add Rule..',
@@ -846,8 +850,6 @@ MenuBuilder.prototype.appendEditMenu = function() {
     }
 
     if (this.opts.state.dmn) {
-      builder.appendSeparator();
-
       builder.appendDmnActions();
     }
 
