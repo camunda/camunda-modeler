@@ -364,12 +364,11 @@ MultiEditorTab.prototype.render = function() {
         {
           this.editors.map((editor) => {
             return (
-              <div className={ 'tab ' + (this.activeEditor === editor ? 'active' : '') }
-                   tabIndex="0"
+              <a className={ 'tab ' + (this.activeEditor === editor ? 'active' : '') }
                    ref={ editor.shortId + '-switch' }
                    onClick={ compose('showEditor', editor) }>
                 { editor.label }
-              </div>
+              </a>
             );
           })
         }
