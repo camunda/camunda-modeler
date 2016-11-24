@@ -47,8 +47,9 @@ inherits(DmnEditor, DiagramEditor);
 
 module.exports = DmnEditor;
 
-
-DmnEditor.prototype.triggerEditorActions = function(action, options) {
+// Need to replace the method from DiagramEditor,
+// so that we trigger the correct commandStack undo/redo
+DmnEditor.prototype.triggerAction = function(action, options) {
   var opts = options || {};
 
   var modeler = this.getModeler();
@@ -88,8 +89,8 @@ DmnEditor.prototype.updateState = function() {
       initialState = this.initialState,
       tableCommandStack, diagramCommandStack, commandStack;
 
-  var dirty, elements, elementsSelected, inputActive, elementType,
-      editorState, diagramStackIdx, tableStackIdx,
+  var dirty, elements, elementsSelected,
+      inputActive, elementType, editorState,
       stackIdx = -1;
 
   // ignore change events during import
@@ -146,11 +147,8 @@ DmnEditor.prototype.updateState = function() {
       commandStack = diagramCommandStack;
     }
 
-    diagramStackIdx = diagramCommandStack._stackIdx;
-    tableStackIdx = tableCommandStack._stackIdx;
-
     // we have to do this, in order to keep track if there are changes in any of the commandStacks
-    stackIdx = diagramStackIdx > tableStackIdx ? diagramStackIdx : tableStackIdx;
+    stackIdx = this.getStackIndex();
 
     dirty = (
       initialState.dirty ||
@@ -170,9 +168,18 @@ DmnEditor.prototype.updateState = function() {
 };
 
 DmnEditor.prototype.getStackIndex = function() {
-  var modeler = this.getModeler().getActiveEditor();
+  var modeler = this.getModeler(),
+      diagramStackIdx, tableStackIdx;
 
-  return isImported(modeler) ? modeler.get('commandStack')._stackIdx : -1;
+  if (isImported(modeler)) {
+    diagramStackIdx = modeler.get('commandStack')._stackIdx;
+
+    tableStackIdx = modeler.table.get('commandStack')._stackIdx;
+
+    return diagramStackIdx > tableStackIdx ? diagramStackIdx : tableStackIdx;
+  }
+
+  return -1;
 };
 
 DmnEditor.prototype.getActiveEditorName = function() {
@@ -304,9 +311,9 @@ DmnEditor.prototype.exportAs = function(type, done) {
 
 DmnEditor.prototype.saveXML = function(done) {
   var modeler = this.getModeler(),
-      commandStack = modeler.getActiveEditor().get('commandStack');
+      commandStackIdx = this.getStackIndex();
 
-  this._saveXML(modeler, commandStack._stackIdx, done);
+  this._saveXML(modeler, commandStackIdx, done);
 };
 
 DmnEditor.prototype.render = function() {

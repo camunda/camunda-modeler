@@ -21,6 +21,7 @@ var arg = require('test/helper/util/arg'),
 
 var bpmnXML = require('app/tabs/bpmn/initial.bpmn'),
     activitiXML = require('test/fixtures/activiti.xml'),
+    drdXML = require('test/fixtures/drd.dmn'),
     dmnXML = require('app/tabs/dmn/table.dmn');
 
 var inherits = require('inherits');
@@ -1130,6 +1131,60 @@ describe('App', function() {
 
         // then
         expect(app.activeTab).to.eql(activeTab);
+      });
+
+    });
+
+    describe('dmn', function() {
+
+      it('should save DMN when switching dmn editors', function(done) {
+        // given
+        var file = createDmnFile(drdXML),
+            dmnTab = app.openTab(file);
+
+        var dmnEditor = dmnTab.activeEditor;
+
+        var $el = document.createElement('div');
+
+       // wait for diagram shown / imported
+        dmnEditor.on('shown', function(context) {
+
+          var modeler = dmnEditor.modeler,
+              elementFactory = modeler.get('elementFactory'),
+              canvas = modeler.get('canvas'),
+              modeling = modeler.get('modeling'),
+              drdReplace = modeler.get('drdReplace'),
+              tableOpts = {
+                type: 'dmn:Decision',
+                table: true,
+                expression: false
+              };
+
+          var decision = elementFactory.createShape({ type: 'dmn:Decision' });
+
+          modeling.createShape(decision, { x: 300, y: 400 }, canvas.getRootElement());
+
+          decision = drdReplace.replaceElement(decision, tableOpts);
+
+          modeler.on('view.switch', function() {
+            var lastXML = dmnEditor.lastXML;
+
+            dmnEditor.saveXML(function(err, xml) {
+              if (err) {
+                return done(err);
+              }
+
+              expect(xml).to.not.equal(lastXML);
+              expect(xml.match(/decisionTable/g)).to.have.length(4);
+
+              done();
+            });
+          });
+
+          modeler.showDecision(decision);
+        });
+
+        dmnEditor.mountEditor($el);
       });
 
     });
