@@ -348,7 +348,6 @@ CmmnEditor.prototype.render = function() {
          key={ this.id + '#cmmn' }
          onFocusin={ this.compose('updateState') }>
       <div className="editor-container"
-           tabIndex="0"
            onAppend={ this.compose('mountEditor') }
            onRemove={ this.compose('unmountEditor') }>
       </div>

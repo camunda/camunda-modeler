@@ -385,7 +385,6 @@ BpmnEditor.prototype.render = function() {
          onFocusin={ this.compose('updateState') }
          onContextmenu={ this.compose('openContextMenu') }>
       <div className="editor-container"
-           tabIndex="0"
            onAppend={ this.compose('mountEditor') }
            onRemove={ this.compose('unmountEditor') }>
       </div>

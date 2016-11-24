@@ -315,7 +315,6 @@ DmnEditor.prototype.render = function() {
   return (
     <div className="dmn-editor" key={ this.id }>
       <div className="editor-container"
-           tabIndex="0"
            onAppend={ this.compose('mountEditor') }
            onRemove={ this.compose('unmountEditor') }>
       </div>
