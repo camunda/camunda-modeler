@@ -53,9 +53,9 @@ Manual integration tests:
 
 * [ ] create a new DMN diagram
 * [ ] build [this diagram](./test.dmn.png) from scratch
-* [ ] back up `Go on Holidays` by a decision table
-* [ ] back up `Which Season` by a decision table
-* [ ] back up `Which Region` by a literal expression
+* [ ] morph `Go on Holidays` to a decision table
+* [ ] morph `Which Season` to a decision table
+* [ ] moprh `Which Region` to a literal expression
 * [ ] double click onto green overlay on `Go on Holidays` jumps into table editing mode
 * [ ] changing name reflects in DRD
 * [ ] save file on disk as `test.dmn` from table editing mode
