@@ -46,12 +46,26 @@ module.exports = DmnTab;
 // based on whether it displays table or drd diagram.
 DmnTab.prototype.stateChanged = function(newState) {
 
-  var editorName = newState.dmn,
-      editor;
+  var isDMN = newState.dmn,
+      editor, activeEditorName, label;
 
-  if (editorName) {
+  if (isDMN) {
     editor = this.getEditor('dmn-editor');
-    editor.name = editor.label = (editorName === 'table' ? 'Table' : 'Diagram');
+
+    activeEditorName = editor.getActiveEditorName();
+
+    switch (activeEditorName) {
+    case 'table':
+      label = 'Table';
+      break;
+    case 'diagram':
+      label = 'Diagram';
+      break;
+    default:
+      label = 'Literal Expression';
+    }
+
+    editor.name = editor.label = label;
   }
 
   MultiEditorTab.prototype.stateChanged.call(this, newState);
