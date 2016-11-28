@@ -365,7 +365,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   }));
 
   this.menu.append(new MenuItem({
-    label: 'Direct Editing',
+    label: 'Edit Label',
     accelerator: 'E',
     enabled: this.opts.state.elementsSelected,
     click: function() {
@@ -654,7 +654,7 @@ MenuBuilder.prototype.appendDmnActions = function() {
     }));
 
     this.menu.append(new MenuItem({
-      label: 'Direct Editing',
+      label: 'Edit Label',
       accelerator: 'E',
       enabled: this.opts.state.elementsSelected,
       click: function() {
