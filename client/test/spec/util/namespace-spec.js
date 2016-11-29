@@ -9,8 +9,7 @@ var files = {
   activiti: require('test/fixtures/activiti.xml'),
   activitiExpected: require('test/fixtures/activitiExpected.xml'),
   activitiComplex: require('test/fixtures/activitiComplex.xml'),
-  activitiComplexExpected: require('test/fixtures/activitiComplexExpected.xml'),
-  oldDMN: require('test/fixtures/old-dmn.dmn')
+  activitiComplexExpected: require('test/fixtures/activitiComplexExpected.xml')
 };
 
 function getFile(type) {
@@ -56,37 +55,6 @@ describe('util - namespace', function() {
       return fn(element, optional);
     });
   }
-
-  describe('dmn namespace url', function() {
-
-    var activitiFixtures = [ 'oldDMN' ];
-
-    before(function() {
-      activitiFixtures = map(activitiFixtures, function(filePath) {
-        return getFile(filePath);
-      });
-    });
-
-    it('should find the old DMN namespace URL', function() {
-      // when
-      var results = testCollection(activitiFixtures, namespace.hasOldNamespace);
-
-      // then
-      expectCollection(results, true);
-    });
-
-
-    it('should replace the old DMN namespace URL with new one', function() {
-      // when
-      var camundaNamespaced = testCollection(activitiFixtures, namespace.replace, 'dmn');
-
-      var results = testCollection(camundaNamespaced, namespace.hasOldNamespace);
-
-      // then
-      expectCollection(results, false);
-    });
-
-  });
 
   describe('activiti namespace', function() {
 
