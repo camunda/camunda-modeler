@@ -61,6 +61,7 @@ function dropdown() {
 
     if (getParent(target, 'multi-button', 5) && !
         getParent(target, 'dropdown', 3)) {
+
       return;
     }
 
@@ -71,21 +72,18 @@ function dropdown() {
 
     var target = event.target;
 
-    var isPrimary = getParent(target, 'primary', 2),
-        isDropdown = getParent(target, 'dropdown', 3);
+    var isDropdown = getParent(target, 'dropdown', 3);
 
     var currentTarget = el = event.currentTarget;
 
     var classes = currentTarget.classList;
 
     if (!classes.contains('active')) {
-      if (!isPrimary) {
-        document.body.addEventListener('mouseup', up);
-        currentTarget.addEventListener('mouseover', hover);
-        currentTarget.addEventListener('mouseout', out);
+      document.body.addEventListener('mouseup', up);
+      currentTarget.addEventListener('mouseover', hover);
+      currentTarget.addEventListener('mouseout', out);
 
-        classes.add('active');
-      }
+      classes.add('active');
     } else {
       if (!isDropdown) {
         close();
