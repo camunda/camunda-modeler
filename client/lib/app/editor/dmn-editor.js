@@ -231,9 +231,24 @@ DmnEditor.prototype.getModeler = function() {
       'selection.changed'
     ], this.updateState, this);
 
+    this.setupSimpleModeListener(this.modeler.table);
+
     // Make sure that we export if there any changes in one of the editors
     this.modeler.on('view.switch', function(context) {
+      var table = this.modeler.table,
+          simpleMode = table.get('simpleMode');
+
       this.initialState.stackIndex = -1;
+
+      if (context.fromTable) {
+        return;
+      }
+
+      if (this._isSimpleModeActive) {
+        simpleMode.activate();
+      } else {
+        simpleMode.deactivate();
+      }
     }, this);
 
     // log errors into log
@@ -314,6 +329,20 @@ DmnEditor.prototype.saveXML = function(done) {
       commandStackIdx = this.getStackIndex();
 
   this._saveXML(modeler, commandStackIdx, done);
+};
+
+DmnEditor.prototype.setupSimpleModeListener = function(table) {
+  var eventBus = table.get('eventBus');
+
+  this._isSimpleModeActive = true;
+
+  eventBus.on('simpleMode.activated', function() {
+    this._isSimpleModeActive = true;
+  }, this);
+
+  eventBus.on('simpleMode.deactivated', function() {
+    this._isSimpleModeActive = false;
+  }, this);
 };
 
 DmnEditor.prototype.render = function() {

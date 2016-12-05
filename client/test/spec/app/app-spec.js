@@ -1185,7 +1185,7 @@ describe('App', function() {
                 type: 'dmn:Decision',
                 table: true,
                 expression: false
-              };
+              }, lastXML;
 
           var decision = elementFactory.createShape({ type: 'dmn:Decision' });
 
@@ -1193,22 +1193,59 @@ describe('App', function() {
 
           decision = drdReplace.replaceElement(decision, tableOpts);
 
-          modeler.on('view.switch', function() {
-            var lastXML = dmnEditor.lastXML;
-
-            dmnEditor.saveXML(function(err, xml) {
-              if (err) {
-                return done(err);
-              }
-
-              expect(xml).to.not.equal(lastXML);
-              expect(xml.match(/decisionTable/g)).to.have.length(4);
-
-              done();
-            });
-          });
-
           modeler.showDecision(decision);
+
+          lastXML = dmnEditor.lastXML;
+
+          dmnEditor.saveXML(function(err, xml) {
+            if (err) {
+              return done(err);
+            }
+
+            expect(xml).to.not.equal(lastXML);
+            expect(xml.match(/decisionTable/g)).to.have.length(4);
+
+            done();
+          });
+        });
+
+        dmnEditor.mountEditor($el);
+      });
+
+
+      it('should persist a global advanced/simple mode state', function(done) {
+        // given
+        var file = createDmnFile(drdXML),
+            dmnTab = app.openTab(file);
+
+        var dmnEditor = dmnTab.activeEditor;
+
+        var $el = document.createElement('div');
+
+        // wait for diagram shown / imported
+        dmnEditor.on('shown', function(context) {
+
+          var modeler = dmnEditor.modeler,
+              elementRegistry = modeler.get('elementRegistry'),
+              simpleMode = modeler.table.get('simpleMode'),
+              decision = elementRegistry.get('Decision_13nychf');
+
+          // go to table
+          modeler.showDecision(decision);
+
+          // switch do advance mode
+          simpleMode.deactivate();
+
+          // go back to DRD
+          modeler.showDRD();
+
+          // go back to table view
+          modeler.showDecision(decision);
+
+          // validate advance mode
+          expect(simpleMode.isActive()).to.be.false;
+
+          done();
         });
 
         dmnEditor.mountEditor($el);
