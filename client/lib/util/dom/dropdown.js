@@ -19,7 +19,7 @@ var getParent = require('util/dom/get-parent');
  *
  * @return {Function} mouseDown initializer for dropdown
  */
-function dropdown() {
+function dropdown(parent) {
 
   var el, activeDropdown;
 
@@ -59,7 +59,7 @@ function dropdown() {
 
     var target = event.target;
 
-    if (getParent(target, 'multi-button', 5) && !
+    if (getParent(target, parent, 5) && !
         getParent(target, 'dropdown', 3)) {
 
       return;

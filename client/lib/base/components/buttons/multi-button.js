@@ -44,7 +44,7 @@ function MultiButton(options) {
     }
 
     var html =
-      <button className={ 'multi-button ' + disabled } onMousedown={ dropdown() }>
+      <button className={ 'multi-button ' + disabled } onMousedown={ dropdown('multi-button') }>
         <span className="primary"
               title={ primaryChoice.label || '' }>
           <span className={ primaryChoice.icon }></span>

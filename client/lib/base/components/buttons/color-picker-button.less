@@ -1,0 +1,65 @@
+/**
+ * color-picker-button definition
+ */
+
+ .color-picker-button() {
+
+   position: relative;
+
+   button {
+     padding: 0 2px;
+   }
+
+   &.active {
+     .dropdown-container .dropdown {
+       display: block;
+     }
+   }
+
+   &:hover,
+   &.active {
+     .dropdown-container .separator {
+       visibility: visible;
+     }
+   }
+
+   .dropdown-container {
+     display: inline-block;
+
+     .dropdown {
+       display: none;
+       width: 78px;
+
+       list-style: none;
+       padding: 2px;
+       margin: 0;
+
+       background: white;
+       border: solid 1px #CCC;
+
+       position: absolute;
+       top: 26px;
+       left: 2px;
+
+       z-index: 1000;
+
+       li {
+         display: inline-block;
+         width: 16px;
+         height: 16px;
+         box-sizing: border-box;
+
+         margin: 4px 4px 0 4px;
+         padding: 0 5px;
+
+         border: 2px solid transparent;
+
+         &:hover,
+         &.active {
+           cursor: pointer;
+         }
+       }
+     }
+   }
+
+ }
