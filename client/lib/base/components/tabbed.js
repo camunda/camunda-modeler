@@ -57,6 +57,20 @@ function Tabbed(options) {
       onDragTab(tab, newIdx);
     };
 
+    var canTriggerAction = (fn) => {
+      return (evt) => {
+        // **hacky stuff** only select tab if it's done with left click
+        // don't select tab if we're closing the tab with the 'close-handle'
+        if (evt.target && (evt.button !== 0 || evt.target.classList.contains('close-handle'))) {
+          evt.preventDefault();
+
+          return false;
+        }
+
+        fn(evt);
+      };
+    };
+
     var html =
       <div className={ 'tabbed ' + (options.className || '') }>
         <div className="tabs"
@@ -82,7 +96,7 @@ function Tabbed(options) {
                        ref={ tab.id }
                        tabId={ tab.id }
                        title={ tab.title }
-                       onMousedown={ action }
+                       onMousedown={ canTriggerAction(action) }
                        onContextmenu={ onContextMenu.bind(null, tab) }
                        tabIndex="0">
                     { tab.label }

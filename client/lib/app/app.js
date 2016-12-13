@@ -982,11 +982,6 @@ App.prototype.saveFile = function(file, saveAs, done) {
 App.prototype.selectTab = function(tab, evt) {
   debug('selecting tab');
 
-  // **hacky stuff** only select tab if it's done with left click
-  if (evt && evt.button !== 0) {
-    return;
-  }
-
   var exists = contains(this.tabs, tab);
 
   if (tab && !exists) {
