@@ -876,7 +876,8 @@ App.prototype.saveTab = function(tab, options, done) {
 
     if (!savedFile) {
       debug('save file canceled');
-      return done();
+
+      return done(null, 'cancel');
     }
 
     debug('saved %s', tab.id);
@@ -1115,6 +1116,12 @@ App.prototype.closeTab = function(tab, done) {
         debug('save-tab error: %s', err);
 
         return done(err);
+      }
+
+      if (isCancel(savedFile)) {
+        debug('close-tab canceled: %s', err);
+
+        return done(userCanceled());
       }
 
       return this._closeTab(tab, done);

@@ -1039,7 +1039,7 @@ describe('App', function() {
         var bpmnTab = tabs[0],
             dmnTab = tabs[1];
 
-        patchSave(bpmnTab);
+        patchSave(bpmnTab, userCanceled());
 
         // when
         app.triggerAction('save-all');
@@ -1393,6 +1393,40 @@ describe('App', function() {
         expect(app.tabs).to.contain(openTab);
 
         expect(dialog.close).to.have.been.called;
+
+        done();
+      });
+    });
+
+
+    it('should cancel tab closing when cancelling save as dialog on cancel', function(done) {
+      // given
+      var file = createBpmnFile(bpmnXML, UNSAVED_FILE),
+          openTab = app.openTab(file),
+          saveTab;
+
+      var $el = document.createElement('div');
+
+      app.saveTab = function(tab, cb) {
+        cb(null, 'cancel');
+      };
+
+      saveTab = spy(app, 'saveTab');
+
+      app.activeTab.activeEditor.mountEditor($el);
+
+      // when
+      dialog.setResponse('close', 'save');
+      dialog.setResponse('saveAs', userCanceled());
+
+      app.closeTab(openTab, function(err) {
+
+        // then
+        expect(err).to.eql(userCanceled());
+        expect(app.tabs).to.contain(openTab);
+
+        expect(dialog.close).to.have.been.called;
+        expect(saveTab).to.have.been.called;
 
         done();
       });
