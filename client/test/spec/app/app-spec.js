@@ -701,6 +701,30 @@ describe('App', function() {
 
       // then
       expect(app.activeTab.file).to.eql(expectedFile);
+
+      expect(dialog.open).to.have.been.calledWith(null);
+    });
+
+
+    it('should open BPMN file and provide the current open file\'s path', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML),
+          dmnFile = createDmnFile(dmnXML);
+
+      app.openTabs([ bpmnFile ]);
+
+      var expectedFile = assign({ fileType: 'dmn' }, dmnFile);
+
+      dialog.setResponse('open', [ dmnFile ]);
+
+      // when
+      app.openDiagram();
+
+      // then
+      expect(app.activeTab.file).to.eql(expectedFile);
+
+      expect(dialog.open).to.have.been.calledWith(bpmnFile.path);
     });
 
 

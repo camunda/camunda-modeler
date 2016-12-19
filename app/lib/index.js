@@ -178,8 +178,8 @@ renderer.on('file:read-stats', function(diagramFile, done) {
   done(null, fileSystem.readFileStats(diagramFile));
 });
 
-renderer.on('file:open', function(done) {
-  fileSystem.open(function(err, diagramFiles) {
+renderer.on('file:open', function(filePath, done) {
+  fileSystem.open(filePath, function(err, diagramFiles) {
     if (err) {
       return done(err);
     }

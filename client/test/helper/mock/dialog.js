@@ -94,7 +94,7 @@ function Dialog(events) {
    *
    * @param {Function} done
    */
-  this.open = function(done) {
+  this.open = function(filePath, done) {
     this._open('file:open', this.openResponse, done);
   };
 

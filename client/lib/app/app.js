@@ -538,7 +538,9 @@ App.prototype.openDiagram = function() {
 
   var dialog = this.dialog;
 
-  dialog.open((err, files) => {
+  var cwd = getFilePath(this.activeTab);
+
+  dialog.open(cwd, (err, files) => {
     if (err) {
       return dialog.openError(err, function() {
         debug('open-diagram canceled: %s', err);
@@ -1532,4 +1534,12 @@ function userCanceled() {
 
 function noTabProvider(fileType) {
   throw new Error('missing provider for file <' + fileType + '>');
+}
+
+function getFilePath(tab) {
+  if (isUnsaved(tab && tab.file)) {
+    return null;
+  }
+
+  return tab.file.path;
 }

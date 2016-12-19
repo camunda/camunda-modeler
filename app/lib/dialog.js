@@ -26,10 +26,15 @@ module.exports = Dialog;
 
 Dialog.prototype.getDialogOptions = function(type, opts) {
   var config = this.config,
-      userDesktopPath = this.userDesktopPath;
+      userDesktopPath = this.userDesktopPath,
+      defaultPath;
 
-  var defaultPath = config.get('defaultPath', userDesktopPath);
-
+  // filepath is passed if a saved file is focused
+  if (opts && opts.filePath) {
+    defaultPath = path.dirname(opts.filePath);
+  } else {
+    defaultPath = config.get('defaultPath', userDesktopPath);
+  }
 
   this._dialogs = {
     contentChanged: function() {

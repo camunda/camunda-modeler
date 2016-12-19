@@ -39,7 +39,7 @@ describe('Dialog', function() {
     electronDialog.setResponse([ newPath ]);
 
     // when
-    dialog.showDialog('open', function(err, openResult) {
+    dialog.showDialog('open', {}, function(err, openResult) {
 
       openDialogArg = getDialogArgs(electronDialog.showOpenDialog);
 
@@ -133,6 +133,24 @@ describe('Dialog', function() {
 
     // when
     dialog.showDialog('open', function() {
+      // then
+      expect(config.get('defaultPath')).to.equal(defaultPath);
+
+      done();
+    });
+
+  });
+
+
+  it('should set last used path to config via open (active file\'s path)', function(done) {
+    // given
+    var newPath = path.join(USER_PATH, 'bpmn', 'diagram_1.bpmn'),
+        defaultPath = path.dirname(newPath);
+
+    electronDialog.setResponse(newPath);
+
+    // when
+    dialog.showDialog('open', { filePath: '/Users/ricardo/bpmn' }, function() {
       // then
       expect(config.get('defaultPath')).to.equal(defaultPath);
 
