@@ -33,18 +33,18 @@
 
     .toggle {
       position: absolute;
-      left: -74px;
+      left: -29px;
       top: 40%;
       background: #f8f8f8;
       padding: 7px 10px;
-
       transform: rotate(-90deg);
       white-space: nowrap;
       font-size: 13px;
-
       border: solid 1px #CCC;
       border-bottom: none;
       border-radius: 2px 2px 0 0;
+      transform-origin: top left;
+      z-index: 10;
     }
 
     .resize-handle {
@@ -52,6 +52,8 @@
 
       margin-left: -5px;
       cursor: ew-resize;
+      z-index: 11;
+      position: relative;
 
       &:before {
         content: '';
