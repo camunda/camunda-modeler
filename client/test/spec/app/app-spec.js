@@ -1718,11 +1718,43 @@ describe('App', function() {
 
       var createDiagram = spy(app, 'createDiagram');
 
+      var clickEvent = new Event('click');
+
+      // left click
+      clickEvent.button = 0;
+
       // when
-      simulateEvent(element, 'mousedown');
+      simulateEvent(element, clickEvent);
 
       // then
       expect(createDiagram).to.have.been.calledWith('bpmn');
+    });
+
+
+    it('should prevent tab selection on close', function() {
+
+      // given
+      app.createDiagram('bpmn');
+
+      // given
+      var tree = render(app);
+
+      var tabNode = select('.tabbed .tab:nth-child(1)', tree);
+      var closeHandleNode = select('.close-handle', tabNode);
+
+      // assume
+      expect(tabNode).to.exist;
+      expect(closeHandleNode).to.exist;
+
+      var clickEvent = new Event('click');
+
+      var stopPropagationSpy = spy(clickEvent, 'stopPropagation');
+
+      // when
+      simulateEvent(closeHandleNode, clickEvent);
+
+      // then
+      expect(stopPropagationSpy).to.have.been.called;
     });
 
   });
