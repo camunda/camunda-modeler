@@ -54,7 +54,7 @@ function simulateEvent(element, event, data) {
 
   if (/^drag/.test(eventName)) {
 
-    listener = element.properties['on' + event];
+    listener = element.properties['on' + eventName];
 
     if (!listener) {
 
