@@ -12,6 +12,8 @@ var ensureOpts = require('util/ensure-opts'),
 
 var find = require('lodash/collection/find');
 
+var noop = function() {};
+
 var CloseHandle = require('base/components/misc/close-handle');
 
 
@@ -27,16 +29,20 @@ var TABS_OPTS = {
 
 function Tabbed(options) {
 
-  ensureOpts([ 'onClose', 'onSelect', 'onContextMenu' ], options);
+  ensureOpts([
+    'onClose',
+    'onSelect',
+    'onContextMenu'
+  ], options);
 
   BaseComponent.call(this, options);
 
   this.render = function() {
 
-    var onClose = options.onClose,
-        onSelect = options.onSelect,
+    var onClose = options.onClose || noop,
+        onSelect = options.onSelect || noop,
         onDragTab = options.onDragTab,
-        onContextMenu = options.onContextMenu,
+        onContextMenu = options.onContextMenu || noop,
         tabs = options.tabs,
         activeTab = options.active;
 
@@ -57,20 +63,6 @@ function Tabbed(options) {
       onDragTab(tab, newIdx);
     };
 
-    var canTriggerAction = (fn) => {
-      return (evt) => {
-        // **hacky stuff** only select tab if it's done with left click
-        // don't select tab if we're closing the tab with the 'close-handle'
-        if (evt.target && (evt.button !== 0 || evt.target.classList.contains('close-handle'))) {
-          evt.preventDefault();
-
-          return false;
-        }
-
-        fn(evt);
-      };
-    };
-
     var html =
       <div className={ 'tabbed ' + (options.className || '') }>
         <div className="tabs"
@@ -86,9 +78,31 @@ function Tabbed(options) {
                   throw new Error('no id specified');
                 }
 
-                var action = tab.action || onSelect.bind(null, tab);
+                function handleContextMenu(event) {
+                  return onContextMenu(tab);
+                }
 
-                var className = [ tab === activeTab ? 'active' : '', 'tab', tab.empty ? 'empty' : '' ].join(' ');
+                function handleSelect(event) {
+                  if (event.button !== 0) {
+                    return;
+                  }
+
+                  var triggerAction = tab.action || onSelect;
+
+                  return triggerAction(tab);
+                }
+
+                function handleClose(event) {
+                  event.stopPropagation();
+
+                  return onClose(tab);
+                }
+
+                var className = [
+                  tab === activeTab ? 'active' : '',
+                  'tab',
+                  tab.empty ? 'empty' : ''
+                ].join(' ');
 
                 return (
                   <div className={ className }
@@ -96,13 +110,13 @@ function Tabbed(options) {
                        ref={ tab.id }
                        tabId={ tab.id }
                        title={ tab.title }
-                       onMousedown={ canTriggerAction(action) }
-                       onContextmenu={ onContextMenu.bind(null, tab) }
+                       onClick={ handleSelect }
+                       onContextmenu={ handleContextMenu }
                        tabIndex="0">
                     { tab.label }
                     { tab.closable
                         ? <CloseHandle dirty={ tab.dirty }
-                                       onClick={ onClose.bind(null, tab) } />
+                                       onClick={ handleClose } />
                         : null }
                   </div>
                 );

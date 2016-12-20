@@ -979,7 +979,7 @@ App.prototype.saveFile = function(file, saveAs, done) {
  *
  * @param {Tab} tab
  */
-App.prototype.selectTab = function(tab, evt) {
+App.prototype.selectTab = function(tab) {
   debug('selecting tab');
 
   var exists = contains(this.tabs, tab);
