@@ -23,17 +23,6 @@ var HOOKS = {
   scrollTo: ScrollToHook
 };
 
-var ELEMENT_EVENTS = [
-  'drag',
-  'dragend',
-  'dragenter',
-  'dragexit',
-  'dragleave',
-  'dragover',
-  'dragstart',
-  'drop'
-];
-
 /**
  * A jsx compatible implementation of `virtual-dom/h`.
  *
@@ -72,10 +61,6 @@ module.exports = function() {
 
   throw new Error('element or constructor expected as first argument');
 };
-
-function canDelegate(eventName) {
-  return ELEMENT_EVENTS.indexOf(eventName) === -1;
-}
 
 /**
  * Prepare hooks passed with a vdom element.
@@ -127,11 +112,7 @@ function prepareHooks(options) {
         throw new Error(key + ' value must be fn');
       }
 
-      if (canDelegate(eventName)) {
-        key = 'ev-' + eventName;
-      } else {
-        key = 'on' + eventName;
-      }
+      key = 'on' + eventName;
     }
 
     newOptions[key] = value;

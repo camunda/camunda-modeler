@@ -2,8 +2,6 @@
 
 var domReady = require('domready');
 
-var Delegator = require('dom-delegator');
-
 var debug = require('debug')('app-client');
 
 // provide vdom utility
@@ -26,9 +24,6 @@ var browser = require('util/browser');
 
 var remote = require('electron').remote,
     metaData = remote.getGlobal('metaData');
-
-// init dom-delegator
-Delegator();
 
 domReady(function() {
   var events = new Events();
