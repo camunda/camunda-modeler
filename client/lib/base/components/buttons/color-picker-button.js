@@ -47,6 +47,7 @@ function ColorPickerButton(options) {
           ref={ this.id }
           onMousedown={ dropdown('color-picker-button') }>
         { this.icon ? <span className={ this.icon }></span> : null }
+        <span className="caret"></span>
         { dropdownWidget }
       </button>;
 

@@ -172,6 +172,22 @@ function App(options) {
       name: 'bpmn',
       buttons: [
         Separator(),
+        ColorPickerButton({
+          id: 'set-color',
+          icon: 'icon-set-color',
+          label: 'Set Color',
+          action: this.compose('triggerAction', 'setColor'),
+          disabled: true,
+          colors: [
+            { fill: undefined, stroke: undefined, label: 'None' }, // default
+            { fill: '#BBDEFB', stroke: '#1E88E5', label: 'Blue' }, // blue
+            { fill: '#FFE0B2', stroke: '#FB8C00', label: 'Orange' }, // orange
+            { fill: '#C8E6C9', stroke: '#43A047', label: 'Green' }, // green
+            { fill: '#FFCDD2', stroke: '#E53935', label: 'Red' }, // red
+            { fill: '#E1BEE7', stroke: '#8E24AA', label: 'Purple' } // purple
+          ]
+        }),
+        Separator(),
         Button({
           id: 'align-left',
           icon: 'icon-align-left-tool',
@@ -232,22 +248,6 @@ function App(options) {
           icon: 'icon-distribute-vertically-tool',
           label: 'Distribute Elements Vertically',
           action: this.compose('triggerAction', 'distributeVertically')
-        }),
-        Separator(),
-        ColorPickerButton({
-          id: 'set-color',
-          icon: 'icon-set-color',
-          label: 'Set Color',
-          action: this.compose('triggerAction', 'setColor'),
-          disabled: true,
-          colors: [
-            { fill: undefined, stroke: undefined, label: 'None' }, // default
-            { fill: '#BBDEFB', stroke: '#1E88E5', label: 'Blue' }, // blue
-            { fill: '#FFE0B2', stroke: '#FB8C00', label: 'Orange' }, // orange
-            { fill: '#C8E6C9', stroke: '#43A047', label: 'Green' }, // green
-            { fill: '#FFCDD2', stroke: '#E53935', label: 'Red' }, // red
-            { fill: '#E1BEE7', stroke: '#8E24AA', label: 'Purple' } // purple
-          ]
         })
       ]
     }

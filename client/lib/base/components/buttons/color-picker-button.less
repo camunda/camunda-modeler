@@ -2,64 +2,69 @@
  * color-picker-button definition
  */
 
- .color-picker-button() {
+.color-picker-button() {
 
-   position: relative;
+  position: relative;
 
-   button {
-     padding: 0 2px;
-   }
+  button {
+    padding: 0 2px;
+  }
 
-   &.active {
-     .dropdown-container .dropdown {
-       display: block;
-     }
-   }
+  &.active {
+    .dropdown-container .dropdown {
+      display: block;
+    }
+  }
 
-   &:hover,
-   &.active {
-     .dropdown-container .separator {
-       visibility: visible;
-     }
-   }
+  &:hover,
+  &.active {
+    .dropdown-container .separator {
+      visibility: visible;
+    }
+  }
 
-   .dropdown-container {
-     display: inline-block;
+  .caret {
+    margin-left: 5px;
+    margin-top: -3px;
+  }
 
-     .dropdown {
-       display: none;
-       width: 78px;
+  .dropdown-container {
+    display: inline-block;
 
-       list-style: none;
-       padding: 2px;
-       margin: 0;
+    .dropdown {
+      display: none;
+      width: 78px;
 
-       background: white;
-       border: solid 1px #CCC;
+      list-style: none;
+      padding: 2px;
+      margin: 0;
 
-       position: absolute;
-       top: 26px;
-       left: 2px;
+      background: white;
+      border: solid 1px #CCC;
 
-       z-index: 1000;
+      position: absolute;
+      top: 26px;
+      left: 2px;
 
-       li {
-         display: inline-block;
-         width: 16px;
-         height: 16px;
-         box-sizing: border-box;
+      z-index: 1000;
 
-         margin: 4px 4px 0 4px;
-         padding: 0 5px;
+      li {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        box-sizing: border-box;
 
-         border: 2px solid transparent;
+        margin: 4px 4px 0 4px;
+        padding: 0 5px;
 
-         &:hover,
-         &.active {
-           cursor: pointer;
-         }
-       }
-     }
-   }
+        border: 1px solid transparent;
 
- }
+        &:hover,
+        &.active {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+}
