@@ -39,7 +39,6 @@
     "glob": "^7.0.3",
     "inherits": "^2.0.1",
     "lodash": "^3.10.1",
-    "min-dom": "^0.2.0",
     "parents": "^1.0.1"
   },
   "devDependencies": {
@@ -100,6 +99,7 @@
     "load-grunt-tasks": "^3.4.0",
     "lolex": "^1.4.0",
     "mocha": "^3.1.2",
+    "min-dom": "^0.2.0",
     "ncp": "^2.0.0",
     "next-tick": "^0.2.2",
     "phantomjs-prebuilt": "^2.1.4",
