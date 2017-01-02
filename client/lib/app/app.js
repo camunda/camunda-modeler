@@ -608,11 +608,11 @@ App.prototype.triggerAction = function(action, options) {
   }
 
   if (action === 'close-tab') {
-    return this.closeTab(options.tabId);
+    return this.closeTab(options && options.tabId);
   }
 
   if (action === 'close-other-tabs') {
-    return this.closeOtherTabs(options.tabId);
+    return this.closeOtherTabs(options && options.tabId);
   }
 
   if (action === 'reopen-last-tab') {
