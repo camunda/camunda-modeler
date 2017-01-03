@@ -108,7 +108,7 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
         buttons: [
           { id: 'cancel', label: 'Close' }
         ],
-        message: 'The file "' + options.name + '" is not a BPMN or DMN file.'
+        message: 'The file "' + options.name + '" is not a BPMN, DMN or CMMN file.'
       };
     },
     existingFile: function(options) {
