@@ -42,7 +42,7 @@
     "parents": "^1.0.1"
   },
   "devDependencies": {
-    "archiver": "^1.0.0",
+    "archiver": "~1.2.0",
     "assert": "~1.3.0",
     "babel-plugin-syntax-jsx": "^6.1.18",
     "babel-plugin-transform-es2015-arrow-functions": "^6.3.13",
