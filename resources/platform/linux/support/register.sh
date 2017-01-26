@@ -2,6 +2,7 @@
 #
 # Resolve the location of the Camunda Modeler installation.
 # This includes resolving any symlinks.
+
 PRG=$0
 while [ -h "$PRG" ]; do
     ls=`ls -ld "$PRG"`
@@ -18,6 +19,7 @@ CAMUNDA_MODELER_BIN=`dirname "$PRG"`
 # absolutize dir
 oldpwd=`pwd`
 cd "${CAMUNDA_MODELER_BIN}"
+cd ".."
 CAMUNDA_MODELER_BIN=`pwd`
 cd "${oldpwd}"
 
@@ -35,7 +37,7 @@ Type=Application
 Categories=Development
 Terminal=false
 StartupNotify=true
-Exec="$CAMUNDA_MODELER_BIN/camunda-modeler/camunda-modeler" %f
+Exec="$CAMUNDA_MODELER_BIN/camunda-modeler" %f
 MimeType=application/bpmn;application/cmmn;application/dmn
 Icon=$ICON_NAME.png
 X-Ayatana-Desktop-Shortcuts=NewWindow;RepositoryBrowser
@@ -44,11 +46,15 @@ EOF
 # seems necessary to refresh immediately:
 chmod 644 $DESKTOP_FILE
 
+echo "Installing icons and desktop entry..."
 xdg-desktop-menu install $DESKTOP_FILE
-xdg-icon-resource install --size  16 "$CAMUNDA_MODELER_BIN/icon_16.png"  $ICON_NAME
-xdg-icon-resource install --size  48 "$CAMUNDA_MODELER_BIN/icon_48.png"  $ICON_NAME
-xdg-icon-resource install --size 128 "$CAMUNDA_MODELER_BIN/icon_128.png"  $ICON_NAME
-xdg-mime install "$CAMUNDA_MODELER_BIN/camunda-modeler-mime-types.xml"
+xdg-icon-resource install --size  16 "$CAMUNDA_MODELER_BIN/support/icon_16.png"  $ICON_NAME
+xdg-icon-resource install --size  48 "$CAMUNDA_MODELER_BIN/support/icon_48.png"  $ICON_NAME
+xdg-icon-resource install --size 128 "$CAMUNDA_MODELER_BIN/support/icon_128.png"  $ICON_NAME
+echo "Registering mime types..."
+xdg-mime install "$CAMUNDA_MODELER_BIN/support/camunda-modeler-mime-types.xml"
 
 rm $DESKTOP_FILE
 rm -R $TMP_DIR
+
+echo "Done."
