@@ -392,6 +392,8 @@ function App(options) {
 
   // let other components know that the window has been resized
   window.addEventListener('resize', this.events.composeEmitter('window:resized'));
+
+  window.addEventListener('focusin', this.events.composeEmitter('input:focused'));
 }
 
 inherits(App, BaseComponent);

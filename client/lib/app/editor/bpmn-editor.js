@@ -25,7 +25,8 @@ var getWarnings = require('app/util/get-warnings');
 
 var ensureOpts = require('util/ensure-opts'),
     dragger = require('util/dom/dragger'),
-    isInputActive = require('util/dom/is-input').active,
+    isInput = require('util/dom/is-input'),
+    isInputActive = isInput.active,
     copy = require('util/copy');
 
 var generateImage = require('app/util/generate-image');
@@ -61,6 +62,13 @@ function BpmnEditor(options) {
 
   // let canvas know that the window has been resized
   this.on('window:resized', this.compose('resize'));
+
+  // update state so that it reflects that an 'input' is active
+  this.on('input:focused', function(event) {
+    if (isInput.isInput(event.target)) {
+      this.updateState();
+    }
+  });
 
   // set current modeler version and name to the diagram
   this.on('save', () => {

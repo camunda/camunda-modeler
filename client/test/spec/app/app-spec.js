@@ -1481,7 +1481,7 @@ describe('App', function() {
         });
 
         // make sure we remove global listeners
-        expect(listenerRemoveSpy.callCount).to.eql(4);
+        expect(listenerRemoveSpy.callCount).to.eql(6);
 
         done();
       });

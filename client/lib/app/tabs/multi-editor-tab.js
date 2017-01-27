@@ -286,6 +286,13 @@ MultiEditorTab.prototype.createEditors = function(options) {
       }
     });
 
+    this._globalListeners.push({
+      eventName: 'input:focused',
+      callback: function(evt) {
+        editor.emit('input:focused', evt);
+      }
+    });
+
     return editor;
   });
 

@@ -13,6 +13,10 @@ module.exports.isInput = isInput;
 function active(element) {
   element = element || document.activeElement;
 
+  if (!element) {
+    element = document.getSelection().focusNode;
+  }
+
   return isInput(element);
 }
 

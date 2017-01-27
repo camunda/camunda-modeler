@@ -291,14 +291,15 @@ MenuBuilder.prototype.appendCopyPaste = function() {
   };
 
   if (!this.opts.state.inactiveInput) {
+    assign(copyEntry, { enabled: true, click: function() {}, role: 'copy' });
+
+    assign(pasteEntry, { enabled: true, click: function() {}, role: 'paste' });
+
     this.menu.append(new MenuItem({
       label: 'Cut',
       accelerator: 'CommandOrControl+X',
       role: 'cut'
     }));
-
-    copyEntry.role = 'copy';
-    pasteEntry.role = 'paste';
   }
 
   this.menu.append(new MenuItem(copyEntry));

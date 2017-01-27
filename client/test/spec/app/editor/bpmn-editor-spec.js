@@ -184,6 +184,18 @@ describe('BpmnEditor', function() {
   });
 
 
+  it('should call state if input is active', function() {
+    // given
+    var stateSpy = spy(editor, 'updateState');
+
+    // when
+    editor.emit('input:focused', { target: { tagName: 'TEXTAREA' } });
+
+    // then
+    expect(stateSpy).to.have.been.called;
+  });
+
+
   describe('element templates', function() {
 
     it('should load', function(done) {
