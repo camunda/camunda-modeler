@@ -260,6 +260,7 @@ function buildDistroIgnore() {
     '.travis.yml',
     '.wiredeps',
     'Gruntfile.js',
+    'npm-shrinkwrap.json',
     'README.md'
   ];
 
