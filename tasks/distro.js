@@ -61,7 +61,7 @@ module.exports = function(grunt) {
       ignore: buildDistroIgnore()
     };
 
-    options['app-copyright'] = 'camunda Services GmbH, 2015-2016';
+    options['app-copyright'] = 'camunda Services GmbH, 2015-2017';
     options['app-version'] = appVersion;
 
     options['build-version'] = buildVersion;
