@@ -329,6 +329,7 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
 };
 
 MenuBuilder.prototype.appendBpmnActions = function() {
+
   this.menu.append(new MenuItem({
     label: 'Hand Tool',
     accelerator: 'H',
@@ -504,13 +505,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     }])
   }));
 
-  this.menu.append(new MenuItem({
-    label: 'Select All',
-    accelerator: 'CommandOrControl+A',
-    click: function() {
-      app.emit('menu:action', 'selectElements');
-    }
-  }));
+  this.appendSelectAll();
 
   this.appendRemoveSelection();
 
@@ -613,13 +608,7 @@ MenuBuilder.prototype.appendCmmnActions = function() {
     }])
   }));
 
-  this.menu.append(new MenuItem({
-    label: 'Select All',
-    accelerator: 'CommandOrControl+A',
-    click: function() {
-      app.emit('menu:action', 'selectElements');
-    }
-  }));
+  this.appendSelectAll();
 
   this.appendRemoveSelection();
 
@@ -635,6 +624,25 @@ MenuBuilder.prototype.appendRemoveSelection = function() {
       app.emit('menu:action', 'removeSelection');
     }
   }));
+};
+
+
+MenuBuilder.prototype.appendSelectAll = function() {
+  var selectAll = {
+    label: 'Select All',
+    accelerator: 'CommandOrControl+A',
+    click: function() {
+      app.emit('menu:action', 'selectElements');
+    }
+  };
+
+  if (!this.opts.state.inactiveInput) {
+    assign(selectAll, { enabled: true, click: function() {}, role: 'selectall' });
+  }
+
+  this.menu.append(new MenuItem(selectAll));
+
+  return this;
 };
 
 
@@ -665,13 +673,7 @@ MenuBuilder.prototype.appendDmnActions = function() {
 
     this.appendSeparator();
 
-    this.menu.append(new MenuItem({
-      label: 'Select All',
-      accelerator: 'CommandOrControl+A',
-      click: function() {
-        app.emit('menu:action', 'selectElements');
-      }
-    }));
+    this.appendSelectAll();
 
     this.appendRemoveSelection();
 
