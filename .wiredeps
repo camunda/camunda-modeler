@@ -116,7 +116,7 @@
       }
     },
     "dmn-js": {
-      "version": "0.8.4",
+      "version": "0.8.5",
       "dependencies": {
         "diagram-js-direct-editing": {
           "version": "0.17.1"
