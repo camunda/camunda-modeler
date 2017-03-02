@@ -10,14 +10,27 @@ Element templates allow you create pre-defined configurations for BPMN elements 
 
 ## Configuring Templates
 
-To use element templates put a JSON file with the templates ([see definition below](#define-templates)) into the `resources/element-templates` directory relative to the modeler executable or the modelers data directory. Restart the modeler to let it recognize the templates.
+Element templates are defined in [JSON files](#defining-templates) in the directory `resources/element-templates`.
+That directory is searched for in different locations:
+
+* relative to the modeler executable
+* relative to the modeler data directory
+* in a `.camunda` directory the path hierachy of the currently opened diagram
+
+Reopen the diagram or reload/restart the modeler to let it recognize new templates.
+
+
+#### Example Setup
 
 The location of the modelers data directory differs across operating systems:
-  **Windows**: `%APPDATA%/camunda-modeler`
-  **Mac OS X**: `~/Library/Application Support/camunda-modeler`
 
-> For example, add a JSON file to the following folder: `~/Library/Application Support/camunda-modeler/resources/element-templates` (Mac) or `%APPDATA%/camunda-modeler/resources/element-templates` (Windows).
-You may have to create the `resources` and `element-templates` folders.
+* **Windows**: `%APPDATA%/camunda-modeler`
+* **Mac OS X**: `~/Library/Application Support/camunda-modeler`
+
+On Mac, add a JSON file to the folder `~/Library/Application Support/camunda-modeler/resources/element-templates`, on Windows use the `%APPDATA%/camunda-modeler/resources/element-templates` folder. You may have to create the `resources` and `element-templates` folders.
+
+For local template discovery, create a `.camunda/resources/element-templates` folder relative in the directory
+or any parent directory of the diagrams you are editing.
 
 
 ## Using Templates
@@ -248,6 +261,32 @@ Together with the `pattern` constraint you may define your custom error messages
 ### Controling Default Entry Visibility
 
 _TODO_
+
+
+## Default Templates
+
+A default template provides properties that are automatically applied for
+all newly created elements of a specific kind.
+
+To mark a template as _default_ set the `isDefault` property on the template to `true`:
+
+```json
+[
+  {
+    "name": "Template 1",
+    "id": "sometemplate",
+    "isDefault": true,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      ...
+    ]
+  }
+]
+```
+
+Other templates may not be applied, once an element is subject to a default template.
 
 
 ## Development Workflow
