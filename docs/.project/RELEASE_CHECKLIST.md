@@ -12,6 +12,7 @@ __Hint:__ Create a release issue and copy the template below into it.
 * [ ] wait for CI infrastructure to build the release
 * [ ] execute [integration test](https://github.com/camunda/camunda-modeler/blob/master/docs/.project/INTEGRATION_TEST.md) on [released artifacts](https://camunda.org/release/camunda-modeler/)
     * [ ] Works on my machine
+    * [ ] Works on Mac
     * [ ] Works on Windows
 * [ ] write blog post on [blog.camunda.org](https://blog.camunda.org/)
 * [ ] update download version on camunda.org
