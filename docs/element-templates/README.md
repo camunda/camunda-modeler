@@ -10,14 +10,12 @@ Element templates allow you create pre-defined configurations for BPMN elements 
 
 ## Configuring Templates
 
-Element templates are defined in [JSON files](#defining-templates) in the directory `resources/element-templates`.
-That directory is searched for in different locations:
+Element templates are defined as [JSON files](#defining-templates) and are searched for in
 
-* relative to the modeler executable
-* relative to the modeler data directory
-* in a `.camunda` directory the path hierachy of the currently opened diagram
+* the `resources/element-templates` folder, relative to the modelers executable _or_ relative to the modelers data directory (see below)
+* the `.camunda/element-templates` directory, anywhere in the path hierachy of the currently opened diagram
 
-Reopen the diagram or reload/restart the modeler to let it recognize new templates.
+New templates will be recognized on diagram reopen or modeler reload/restart.
 
 
 #### Example Setup
