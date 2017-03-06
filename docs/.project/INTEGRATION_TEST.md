@@ -41,6 +41,19 @@ Manual integration tests:
 * [ ] add input mapping
 * [ ] verify results in XML tab
 
+##### Keep implementation Details (Copy/Paste and Morph)
+
+Based on the [test diagram](./test.bpmn.png):
+
+* [ ] Add Form configuration (FormField + FormData) to "Inspect Invoice" UserTask
+    * [ ] Copy / Paste task; properties are kept
+    * [ ] Change task to ServiceTask; properties are gone from XML
+* [ ] Add Properties, Input/Output Mapping, `asyncBefore` and implementation to "Check" ServiceTask
+    * [ ] Copy / Paste task; properties are kept
+    * [ ] Change task to BusinessRuleTask; properties are kept
+    * [ ] Change task to UserTask; implementation property is gone from XML
+
+
 ####  CMMN modeling
 
 * [ ] create a new CMMN diagram
