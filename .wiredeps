@@ -91,7 +91,7 @@
       }
     },
     "diagram-js": {
-      "version": "0.18.4",
+      "version": "0.19.3",
       "dependencies": {
         "didi": {
           "version": "0.1.1"
@@ -118,6 +118,23 @@
     "dmn-js": {
       "version": "0.8.5",
       "dependencies": {
+        "diagram-js": {
+          "version": "0.18.4",
+          "dependencies": {
+            "didi": {
+              "version": "0.1.1"
+            },
+            "hammerjs": {
+              "version": "2.0.8"
+            },
+            "object-refs": {
+              "version": "0.1.1"
+            },
+            "tiny-svg": {
+              "version": "0.1.1"
+            }
+          }
+        },
         "diagram-js-direct-editing": {
           "version": "0.17.1"
         },

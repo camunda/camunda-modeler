@@ -62,7 +62,7 @@ Plugins.prototype.get = function(type) {
 
   var plugins = this.getAll()
       .filter(p => p.type === type)
-      .map(p => p.module);
+      .map(p => p.plugin);
 
   return plugins;
 };

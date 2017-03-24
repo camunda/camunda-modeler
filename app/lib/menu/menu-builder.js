@@ -977,18 +977,44 @@ MenuBuilder.prototype.appendPluginsMenu = function() {
   }
 
   var submenu = this.opts.plugins
-    .map(Plugin => {
-      var plugin = Plugin(app, this.opts.state);
+    .map(p => {
 
-      return plugin.map(menuDescriptor => {
-        return new MenuItem({
-          label: menuDescriptor.label,
-          accelerator: menuDescriptor.accelerator,
-          enabled: menuDescriptor.enabled(),
-          click: menuDescriptor.action,
-          submenu: menuDescriptor.submenu
-        });
-      });
+      var label = p.name;
+
+      if (p.error) {
+        label = label.concat(' <error>');
+      }
+
+      var menuItemDescriptor = {
+        label: label,
+        enabled: false
+      };
+
+      if (p.menu) {
+
+        try {
+          var menuEntries = p.menu(app, this.opts.state);
+
+          menuItemDescriptor.enabled = true;
+          menuItemDescriptor.submenu = Menu.buildFromTemplate(
+            menuEntries.map(menuDescriptor => {
+              return new MenuItem({
+                label: menuDescriptor.label,
+                accelerator: menuDescriptor.accelerator,
+                enabled: menuDescriptor.enabled(),
+                click: menuDescriptor.action,
+                submenu: menuDescriptor.submenu
+              });
+            })
+          );
+        } catch (e) {
+          console.error(e);
+          menuItemDescriptor.label = menuItemDescriptor.label.concat(' <error>');
+          menuItemDescriptor.enabled = false;
+        }
+      }
+
+      return [ new MenuItem(menuItemDescriptor) ];
     })
     .reduce((previous, elem) => elem.concat(previous));
 

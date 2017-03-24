@@ -4,7 +4,8 @@ var describeEditor = require('./commons').describeEditor;
 
 var BpmnEditor = require('app/editor/bpmn-editor');
 
-var Config = require('test/helper/mock/config');
+var Config = require('test/helper/mock/config'),
+    Plugins = require('test/helper/mock/plugins');
 
 var select = require('test/helper/vdom').select,
     render = require('test/helper/vdom').render,
@@ -18,6 +19,7 @@ var spy = require('test/helper/util/spy');
 function createEditor() {
   return new BpmnEditor({
     config: new Config(),
+    plugins: new Plugins(),
     layout: {
       propertiesPanel: {}
     },
@@ -335,6 +337,7 @@ describe('BpmnEditor', function() {
     function createEditorWithLayout(layout) {
       return new BpmnEditor({
         config: new Config(),
+        plugins: new Plugins(),
         layout: layout,
         metaData: {}
       });

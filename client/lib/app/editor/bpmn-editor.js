@@ -331,6 +331,8 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
     'config.propertiesPanel': [ 'value', { parent: $propertiesEl } ]
   };
 
+  var pluginModules = this.plugins.get('bpmn.modeler.additionalModules');
+
   var modeler =  new BpmnJS({
     container: $el,
     position: 'absolute',
@@ -342,10 +344,12 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
       propertiesProviderModule,
       propertiesPanelConfig,
       camundaModdleExtension
-    ].concat(this.plugins.get('bpmn.modeler.additionalModules')),
+    ].concat(pluginModules),
     elementTemplates: elementTemplatesLoader,
     moddleExtensions: { camunda: camundaModdlePackage }
   });
+
+  window.moddler = modeler;
 
   return modeler;
 };

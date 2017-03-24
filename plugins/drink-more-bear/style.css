@@ -1,6 +1,0 @@
-body::before {
-  content: 'Drink more 🍺 and be 💪!';
-  position: absolute;
-  right: 0;
-  font-size: 5em;
-}

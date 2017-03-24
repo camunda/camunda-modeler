@@ -5,6 +5,7 @@ var Config = require('test/helper/mock/config'),
     Events = require('base/events'),
     FileSystem = require('test/helper/mock/file-system'),
     Workspace = require('test/helper/mock/workspace'),
+    Plugins = require('test/helper/mock/plugins'),
     Logger = require('base/logger');
 
 var App = require('app');
@@ -67,7 +68,7 @@ describe('App', function() {
 
   var app, config, dialog,
       events, fileSystem, logger,
-      workspace;
+      workspace, plugins;
 
   beforeEach(function() {
     config = new Config();
@@ -76,6 +77,7 @@ describe('App', function() {
     fileSystem = new FileSystem();
     logger = new Logger();
     workspace = new Workspace();
+    plugins = new Plugins();
 
     app = new App({
       config: config,
@@ -84,6 +86,7 @@ describe('App', function() {
       fileSystem: fileSystem,
       logger: logger,
       workspace: workspace,
+      plugins: plugins,
       metaData: {}
     });
 
