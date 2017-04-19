@@ -58,13 +58,11 @@ module.exports = function(grunt) {
       prune: true,
       asar: true,
       icon: iconPath,
-      ignore: buildDistroIgnore()
+      ignore: buildDistroIgnore(),
+      appVersion: appVersion,
+      appCopyright: 'camunda Services GmbH, 2015-2017',
+      buildVersion: buildVersion
     };
-
-    options['app-copyright'] = 'camunda Services GmbH, 2015-2017';
-    options['app-version'] = appVersion;
-
-    options['build-version'] = buildVersion;
 
     if (platform === 'darwin') {
       options.name = 'Camunda Modeler';
