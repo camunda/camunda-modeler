@@ -62,6 +62,7 @@
     "concat-stream": "^1.5.1",
     "debug": "^2.2.0",
     "diagram-js": "^0.19.3",
+    "diagram-js-minimap": "^0.3.0",
     "diagram-js-origin": "^0.15.2",
     "dmn-js": "^0.8.6",
     "domify": "^1.4.0",
