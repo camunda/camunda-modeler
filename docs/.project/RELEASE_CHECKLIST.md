@@ -17,6 +17,6 @@ __Hint:__ Create a release issue and copy the template below into it.
 * [ ] write blog post on [blog.camunda.org](https://blog.camunda.org/)
 * [ ] update download version on [camunda.org](https://github.com/camunda/camunda.org-new/blob/master/inc/config.php)
 * [ ] spread the word
-    * [ ] ping Michael (customer mail)
+    * [ ] `@alle` to trigger customer mail
     * [ ] tweet
 ```
