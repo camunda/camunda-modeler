@@ -50,7 +50,7 @@
     "babelify": "^7.2.0",
     "bootstrap": "^3.3.6",
     "bpmn-js": "^0.20.6",
-    "bpmn-js-properties-panel": "^0.13.1",
+    "bpmn-js-properties-panel": "^0.14.0",
     "browserify": "^13.0.0",
     "camunda-bpmn-moddle": "^0.11.0",
     "camunda-cmmn-moddle": "^0.2.0",
