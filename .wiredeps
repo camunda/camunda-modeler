@@ -150,7 +150,7 @@
       }
     },
     "dmn-js": {
-      "version": "0.8.6",
+      "version": "0.9.0",
       "dependencies": {
         "diagram-js": {
           "version": "0.18.4",
