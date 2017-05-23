@@ -1,7 +1,10 @@
 'use strict';
 
+var Ids = require('ids');
+
 var ipcRenderer = require('electron').ipcRenderer;
 
+var ids = new Ids();
 
 /**
  * Communicate with the Browser process.
@@ -23,9 +26,10 @@ function send(event, args, callback) {
     _args = [];
   }
 
-  if (callback) {
-    ipcRenderer.once(event + ':response', function(evt, args) {
+  var id = ids.next();
 
+  if (callback) {
+    ipcRenderer.once(event + ':response:' + id, function(evt, args) {
       if (typeof args[0] === 'string') {
         args[0] = new Error(args[0]);
       }
@@ -34,7 +38,7 @@ function send(event, args, callback) {
     });
   }
 
-  ipcRenderer.send.apply(null, [ event ].concat(_args));
+  ipcRenderer.send.apply(null, [ event, id ].concat(_args));
 }
 
 module.exports.send = send;

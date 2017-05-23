@@ -6,10 +6,8 @@ var electron = require('electron'),
 
 
 function on(event, callback, that) {
-  var responseEvent = event + ':response';
-
-  ipcMain.on(event, function(evt) {
-    var args = Array.prototype.slice.call(arguments).slice(1);
+  ipcMain.on(event, function(evt, id) {
+    var args = Array.prototype.slice.call(arguments).slice(2);
 
     function done() {
       var args =  Array.prototype.slice.call(arguments).map(function(e) {
@@ -19,6 +17,8 @@ function on(event, callback, that) {
 
         return e;
       });
+
+      var responseEvent = event + ':response:' + id;
 
       evt.sender.send(responseEvent, args);
     }
