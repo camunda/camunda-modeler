@@ -54,7 +54,8 @@ describe('BpmnTab', function() {
       dialog: dialog,
       file: file || createFile(),
       layout: {
-        propertiesPanel: {}
+        propertiesPanel: {},
+        minimap: {}
       },
       logger: logger,
       plugins: plugins,

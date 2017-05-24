@@ -1875,6 +1875,9 @@ describe('App', function() {
             log: {
               open: false,
               height: 150
+            },
+            minimap: {
+              open: true
             }
           };
 

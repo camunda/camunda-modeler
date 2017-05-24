@@ -52,6 +52,8 @@ function BpmnEditor(options) {
 
   DiagramEditor.call(this, options);
 
+  this.layout = options.layout;
+
   this.name = 'bpmn';
 
   // elements to insert modeler and properties panel into
@@ -275,6 +277,13 @@ BpmnEditor.prototype.toggleProperties = function() {
   this.notifyModeler('propertiesPanel.resized');
 };
 
+BpmnEditor.prototype.toggleMinimap = function(open) {
+  this.emit('layout:changed', {
+    minimap: {
+      open: open
+    }
+  });
+};
 
 BpmnEditor.prototype.getModeler = function() {
 
@@ -309,6 +318,10 @@ BpmnEditor.prototype.getModeler = function() {
     this.modeler.on('elementTemplates.errors', (e) => {
       this.logTemplateWarnings(e.errors);
     });
+
+    this.modeler.on('minimap.toggle', (e) => {
+      this.toggleMinimap(e.open);
+    });
   }
 
   return this.modeler;
@@ -327,6 +340,8 @@ BpmnEditor.prototype.loadTemplates = function(done) {
 BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
 
   var elementTemplatesLoader = this.loadTemplates.bind(this);
+
+  var minimapLayout = this.layout && this.layout.minimap || { open: false };
 
   var propertiesPanelConfig = {
     'config.propertiesPanel': [ 'value', { parent: $propertiesEl } ]
@@ -348,10 +363,11 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
       camundaModdleExtension
     ].concat(pluginModules),
     elementTemplates: elementTemplatesLoader,
-    moddleExtensions: { camunda: camundaModdlePackage }
+    moddleExtensions: { camunda: camundaModdlePackage },
+    minimap: {
+      open: minimapLayout.open
+    }
   });
-
-  window.moddler = modeler;
 
   return modeler;
 };
@@ -390,11 +406,24 @@ BpmnEditor.prototype.resize = function() {
 
 BpmnEditor.prototype.render = function() {
 
-  var propertiesLayout = this.layout.propertiesPanel;
+  var layout = this.layout,
+      propertiesLayout = layout.propertiesPanel,
+      minimapLayout = layout.minimap || { open: false };
 
   var propertiesStyle = {
     width: (propertiesLayout.open ? propertiesLayout.width : 0) + 'px'
   };
+
+  // update minimap state based on global toggle,
+  // if state changed
+  var modeler = this.modeler,
+      minimap = modeler && modeler.get('minimap');
+
+  if (minimap) {
+    if (minimapLayout.open != minimap.isOpen()) {
+      minimap.toggle(minimapLayout.open);
+    }
+  }
 
   var warnings = getWarnings(this.lastImport);
 

@@ -225,6 +225,12 @@
       "search": [
         "set-color-tool"
       ]
+    },
+    {
+      "uid": "c62cbc7fa604e32cc19731a3bb29be79",
+      "css": "map",
+      "code": 62072,
+      "src": "fontawesome"
     }
   ]
 }

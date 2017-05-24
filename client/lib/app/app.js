@@ -63,6 +63,9 @@ function App(options) {
     log: {
       open: false,
       height: 150
+    },
+    minimap: {
+      open: true
     }
   };
 

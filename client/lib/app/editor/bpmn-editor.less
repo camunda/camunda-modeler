@@ -79,4 +79,43 @@
       overflow-y: auto;
     }
   }
+
+  .djs-minimap {
+    .djs-minimap-toggle {
+      width: 46px;
+      height: 46px;
+      line-height: 46px;
+      cursor: default;
+      text-align: center;
+      color: #777;
+
+      &:before {
+        font-style: normal;
+        font-weight: normal;
+        speak: none;
+        display: inline-block;
+        text-decoration: inherit;
+        width: 1em;
+        text-align: center;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1em;
+        content: '\f278';
+        font-family: 'app';
+        font-size: 22px;
+        margin-top: -2px;
+        margin-left: -2px;
+        vertical-align: middle;
+      }
+
+      &:hover {
+        background-color: rgb(250, 250, 250) !important;
+        color: #ff7400;
+      }
+    }
+
+    &.open .djs-minimap-toggle:hover {
+      background-color: #666 !important;
+    }
+  }
 }

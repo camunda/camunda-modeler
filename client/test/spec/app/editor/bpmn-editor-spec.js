@@ -21,7 +21,8 @@ function createEditor() {
     config: new Config(),
     plugins: new Plugins(),
     layout: {
-      propertiesPanel: {}
+      propertiesPanel: {},
+      minimap: {}
     },
     metaData: {
       version: '1.2.3',
@@ -416,6 +417,9 @@ describe('BpmnEditor', function() {
         propertiesPanel: {
           open: false,
           width: 150
+        },
+        minimap: {
+          open: true
         }
       });
 
