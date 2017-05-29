@@ -24,7 +24,7 @@ module.exports = {
 ```
 The modeler will automatically load your plugins on startup.
 
-## Changing the appearance of the modeler
+### Changing the appearance of the modeler
 
 You can change the appearance of the modeler with CSS.
 
@@ -44,7 +44,7 @@ module.exports = {
 };
 ```
 
-## Adding menu entries to the modeler
+### Adding menu entries to the modeler
 
 You can add new menu entries to the modelers menu.
 
@@ -80,7 +80,7 @@ You can use a Node.js module here since the modeler is built with [Electron](htt
 
 For more information on how the modelers menu works have a look at its implementation [here](https://github.com/camunda/camunda-modeler/blob/master/app/lib/menu/menu-builder.js).
 
-## Extend the modeling tools for BPMN, CMMN and DMN
+### Extend the modeling tools for BPMN, CMMN and DMN
 
 > Currently you can only extend bpmn-js
 
@@ -134,3 +134,9 @@ npm run client
 ```
 
 Finally, put the folder into the `plugins` directory relative to your Camunda Modeler installation directory. You can now use your plugin!
+
+
+## Additional Resources
+
+* [Example Plugins](https://github.com/camunda/camunda-modeler-plugins)
+* [Plugin Starter Project](https://github.com/camunda/camunda-modeler-plugin-example)
