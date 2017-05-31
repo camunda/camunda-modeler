@@ -2,7 +2,7 @@
 
 var Ids = require('ids');
 
-var ipcRenderer = require('electron').ipcRenderer;
+var ipcRenderer = window.require('electron').ipcRenderer;
 
 var ids = new Ids();
 

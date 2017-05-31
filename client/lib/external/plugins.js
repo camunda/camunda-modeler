@@ -1,6 +1,6 @@
 'use strict';
 
-var remote = require('electron').remote;
+var remote = window.require('electron').remote;
 
 /**
  * Provides access to externally loaded bundles for different app

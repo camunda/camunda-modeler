@@ -23,7 +23,7 @@ var mainLoop = require('util/dom/main-loop');
 
 var browser = require('util/browser');
 
-var remote = require('electron').remote,
+var remote = window.require('electron').remote,
     metaData = remote.getGlobal('metaData');
 
 domReady(function() {
