@@ -65,7 +65,7 @@ function App(options) {
       height: 150
     },
     minimap: {
-      open: true
+      open: false
     }
   };
 
