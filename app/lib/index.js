@@ -52,6 +52,9 @@ var pluginsManager = app.pluginsManager = new PluginsManager({
   ]
 });
 
+// set global modeler directory
+global.modelerDirectory = process.cwd();
+
 // bootstrap the application's menus
 //
 // TODO(nikku): remove app.menu binding when development

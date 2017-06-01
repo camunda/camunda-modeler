@@ -26,6 +26,19 @@ var browser = require('util/browser');
 var remote = window.require('electron').remote,
     metaData = remote.getGlobal('metaData');
 
+// get global modeler directory
+// expose modeler and plugins directory through global getters
+var modelerDirectory = remote.getGlobal('modelerDirectory');
+var pluginsDirectory = modelerDirectory + '/plugins/';
+
+window.getModelerDirectory = function() {
+  return modelerDirectory;
+};
+
+window.getPluginsDirectory = function() {
+  return pluginsDirectory;
+};
+
 domReady(function() {
   var events = new Events();
 
