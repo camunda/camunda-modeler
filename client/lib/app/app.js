@@ -178,7 +178,7 @@ function App(options) {
         Separator(),
         ColorPickerButton({
           id: 'set-color',
-          icon: 'icon-set-color',
+          icon: 'icon-set-color-tool',
           label: 'Set Color',
           action: this.compose('triggerAction', 'setColor'),
           disabled: true,
