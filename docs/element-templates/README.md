@@ -29,6 +29,10 @@ On Mac, add a JSON file to the folder `~/Library/Application Support/camunda-mod
 For local template discovery, create a `.camunda/element-templates` folder relative in the directory
 or any parent directory of the diagrams you are editing.
 
+### Example:
+**Mac**: Add the JSON file to the following folder: `~/Library/Application Support/camunda-modeler/resources/element-templates`
+You may have to create the `resources` and `element-templates` folders.
+
 
 ## Using Templates
 
