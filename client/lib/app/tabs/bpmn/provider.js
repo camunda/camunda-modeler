@@ -20,7 +20,7 @@ var ids = require('ids')();
  */
 function BpmnProvider(options) {
 
-  ensureOpts([ 'app' ], options);
+  ensureOpts([ 'app', 'plugins' ], options);
 
   var app = options.app;
 
@@ -49,7 +49,8 @@ function BpmnProvider(options) {
       file: file,
       closable: true,
       id: ids.next(),
-      metaData: app.metaData
+      metaData: app.metaData,
+      plugins: options.plugins
     });
   };
 

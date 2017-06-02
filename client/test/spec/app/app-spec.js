@@ -5,6 +5,7 @@ var Config = require('test/helper/mock/config'),
     Events = require('base/events'),
     FileSystem = require('test/helper/mock/file-system'),
     Workspace = require('test/helper/mock/workspace'),
+    Plugins = require('test/helper/mock/plugins'),
     Logger = require('base/logger');
 
 var App = require('app');
@@ -21,7 +22,8 @@ var arg = require('test/helper/util/arg'),
 
 var bpmnXML = require('app/tabs/bpmn/initial.bpmn'),
     activitiXML = require('test/fixtures/activiti.xml'),
-    dmnXML = require('app/tabs/dmn/initial.dmn');
+    drdXML = require('test/fixtures/drd.dmn'),
+    dmnXML = require('app/tabs/dmn/table.dmn');
 
 var inherits = require('inherits');
 var MultiEditorTab = require('app/tabs/multi-editor-tab');
@@ -66,7 +68,7 @@ describe('App', function() {
 
   var app, config, dialog,
       events, fileSystem, logger,
-      workspace;
+      workspace, plugins;
 
   beforeEach(function() {
     config = new Config();
@@ -75,6 +77,7 @@ describe('App', function() {
     fileSystem = new FileSystem();
     logger = new Logger();
     workspace = new Workspace();
+    plugins = new Plugins();
 
     app = new App({
       config: config,
@@ -83,6 +86,7 @@ describe('App', function() {
       fileSystem: fileSystem,
       logger: logger,
       workspace: workspace,
+      plugins: plugins,
       metaData: {}
     });
 
@@ -209,6 +213,54 @@ describe('App', function() {
       // then
       expect(app.fileHistory).to.have.length(0);
     });
+  });
+
+
+  describe('modal-overlay', function() {
+
+    it('should render modal-dialog', function() {
+
+      app.toggleOverlay(true);
+
+      var tree = render(app);
+
+      // then
+      // expect BPMN tab with editor to be shown
+      expect(select('.dialog-overlay.active', tree)).to.exist;
+    });
+
+
+    it('should render keyboard shortcuts modal and close it', function() {
+
+      app.toggleOverlay('shortcuts');
+
+      var tree = render(app);
+
+      // then
+      // expect BPMN tab with editor to be shown
+      expect(select('.keyboard-shortcuts', tree)).to.exist;
+
+      app.toggleOverlay(false);
+
+      tree = render(app);
+
+      // then
+      // expect BPMN tab with editor to be shown
+      expect(select('.keyboard-shortcuts', tree)).to.not.exist;
+    });
+
+
+    it('should render overlay even if the passed content does not exist', function() {
+
+      app.toggleOverlay('foo');
+
+      var tree = render(app);
+
+      // then
+      // expect BPMN tab with editor to be shown
+      expect(select('.dialog-overlay.active', tree)).to.exist;
+    });
+
   });
 
 
@@ -652,6 +704,30 @@ describe('App', function() {
 
       // then
       expect(app.activeTab.file).to.eql(expectedFile);
+
+      expect(dialog.open).to.have.been.calledWith(null);
+    });
+
+
+    it('should open BPMN file and provide the current open file\'s path', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML),
+          dmnFile = createDmnFile(dmnXML);
+
+      app.openTabs([ bpmnFile ]);
+
+      var expectedFile = assign({ fileType: 'dmn' }, dmnFile);
+
+      dialog.setResponse('open', [ dmnFile ]);
+
+      // when
+      app.openDiagram();
+
+      // then
+      expect(app.activeTab.file).to.eql(expectedFile);
+
+      expect(dialog.open).to.have.been.calledWith(bpmnFile.path);
     });
 
 
@@ -990,7 +1066,7 @@ describe('App', function() {
         var bpmnTab = tabs[0],
             dmnTab = tabs[1];
 
-        patchSave(bpmnTab);
+        patchSave(bpmnTab, userCanceled());
 
         // when
         app.triggerAction('save-all');
@@ -1086,6 +1162,97 @@ describe('App', function() {
 
     });
 
+    describe('dmn', function() {
+
+      it('should save DMN when switching dmn editors', function(done) {
+        // given
+        var file = createDmnFile(drdXML),
+            dmnTab = app.openTab(file);
+
+        var dmnEditor = dmnTab.activeEditor;
+
+        var $el = document.createElement('div');
+
+       // wait for diagram shown / imported
+        dmnEditor.on('shown', function(context) {
+
+          var modeler = dmnEditor.modeler,
+              elementFactory = modeler.get('elementFactory'),
+              canvas = modeler.get('canvas'),
+              modeling = modeler.get('modeling'),
+              drdReplace = modeler.get('drdReplace'),
+              tableOpts = {
+                type: 'dmn:Decision',
+                table: true,
+                expression: false
+              }, lastXML;
+
+          var decision = elementFactory.createShape({ type: 'dmn:Decision' });
+
+          modeling.createShape(decision, { x: 300, y: 400 }, canvas.getRootElement());
+
+          decision = drdReplace.replaceElement(decision, tableOpts);
+
+          modeler.showDecision(decision);
+
+          lastXML = dmnEditor.lastXML;
+
+          dmnEditor.saveXML(function(err, xml) {
+            if (err) {
+              return done(err);
+            }
+
+            expect(xml).to.not.equal(lastXML);
+            expect(xml.match(/decisionTable/g)).to.have.length(4);
+
+            done();
+          });
+        });
+
+        dmnEditor.mountEditor($el);
+      });
+
+
+      it('should persist a global advanced/simple mode state', function(done) {
+        // given
+        var file = createDmnFile(drdXML),
+            dmnTab = app.openTab(file);
+
+        var dmnEditor = dmnTab.activeEditor;
+
+        var $el = document.createElement('div');
+
+        // wait for diagram shown / imported
+        dmnEditor.on('shown', function(context) {
+
+          var modeler = dmnEditor.modeler,
+              elementRegistry = modeler.get('elementRegistry'),
+              simpleMode = modeler.table.get('simpleMode'),
+              decision = elementRegistry.get('Decision_13nychf');
+
+          // go to table
+          modeler.showDecision(decision);
+
+          // switch do advance mode
+          simpleMode.deactivate();
+
+          // go back to DRD
+          modeler.showDRD();
+
+          // go back to table view
+          modeler.showDecision(decision);
+
+          // validate advance mode
+          expect(simpleMode.isActive()).to.be.false;
+
+          done();
+        });
+
+        dmnEditor.mountEditor($el);
+      });
+
+    });
+
   });
 
 
@@ -1159,6 +1326,19 @@ describe('App', function() {
       // then
       expect(app.fileHistory).to.have.length(1);
       expect(app.fileHistory[0]).to.eql(bpmnFile);
+    });
+
+
+    it('should close tab when providing a valid tab id', function() {
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML),
+          openTab = app.openTab(bpmnFile);
+
+      // when
+      app.closeTab(openTab.id);
+
+      // then
+      expect(app.tabs).to.not.contain(openTab);
     });
 
 
@@ -1283,6 +1463,40 @@ describe('App', function() {
     });
 
 
+    it('should cancel tab closing when cancelling save as dialog on cancel', function(done) {
+      // given
+      var file = createBpmnFile(bpmnXML, UNSAVED_FILE),
+          openTab = app.openTab(file),
+          saveTab;
+
+      var $el = document.createElement('div');
+
+      app.saveTab = function(tab, cb) {
+        cb(null, 'cancel');
+      };
+
+      saveTab = spy(app, 'saveTab');
+
+      app.activeTab.activeEditor.mountEditor($el);
+
+      // when
+      dialog.setResponse('close', 'save');
+      dialog.setResponse('saveAs', userCanceled());
+
+      app.closeTab(openTab, function(err) {
+
+        // then
+        expect(err).to.eql(userCanceled());
+        expect(app.tabs).to.contain(openTab);
+
+        expect(dialog.close).to.have.been.called;
+        expect(saveTab).to.have.been.called;
+
+        done();
+      });
+    });
+
+
     it('should emit "destroy" on tab closing', function(done) {
       // given
       var file = createBpmnFile(bpmnXML),
@@ -1307,7 +1521,7 @@ describe('App', function() {
         });
 
         // make sure we remove global listeners
-        expect(listenerRemoveSpy.callCount).to.eql(4);
+        expect(listenerRemoveSpy.callCount).to.eql(6);
 
         done();
       });
@@ -1356,6 +1570,63 @@ describe('App', function() {
       tabs.forEach(function(tab) {
         expect(app.tabs).to.not.contain(tab);
       });
+    });
+
+
+    it('should close other tabs', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML);
+      var dmnFile = createDmnFile(dmnXML);
+
+      app.openTabs([ bpmnFile, dmnFile ]);
+
+      var activeTab = app.activeTab;
+
+      // when
+      app.closeOtherTabs();
+
+      // then
+      expect(app.tabs).to.contain(activeTab);
+      expect(app.tabs[1].id).to.equal('empty-tab');
+    });
+
+
+    it('should close other tabs with provided tab', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML);
+      var dmnFile = createDmnFile(dmnXML);
+
+      app.openTabs([ bpmnFile, dmnFile ]);
+
+      var tab = app.tabs[0];
+
+      // when
+      app.closeOtherTabs(tab);
+
+      // then
+      expect(app.tabs).to.contain(tab);
+      expect(app.tabs[1].id).to.equal('empty-tab');
+    });
+
+
+    it('should close other tabs with provided tab id', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML);
+      var dmnFile = createDmnFile(dmnXML);
+
+      app.openTabs([ bpmnFile, dmnFile ]);
+
+      var tab = app.tabs[0];
+
+      // when
+      app.closeOtherTabs(tab.id);
+
+      // then
+      expect(app.tabs).to.contain(tab);
+      expect(app.tabs[1].id).to.equal('empty-tab');
     });
 
 
@@ -1487,11 +1758,43 @@ describe('App', function() {
 
       var createDiagram = spy(app, 'createDiagram');
 
+      var clickEvent = new Event('click');
+
+      // left click
+      clickEvent.button = 0;
+
       // when
-      simulateEvent(element, 'mousedown');
+      simulateEvent(element, clickEvent);
 
       // then
       expect(createDiagram).to.have.been.calledWith('bpmn');
+    });
+
+
+    it('should prevent tab selection on close', function() {
+
+      // given
+      app.createDiagram('bpmn');
+
+      // given
+      var tree = render(app);
+
+      var tabNode = select('.tabbed .tab:nth-child(1)', tree);
+      var closeHandleNode = select('.close-handle', tabNode);
+
+      // assume
+      expect(tabNode).to.exist;
+      expect(closeHandleNode).to.exist;
+
+      var clickEvent = new Event('click');
+
+      var stopPropagationSpy = spy(clickEvent, 'stopPropagation');
+
+      // when
+      simulateEvent(closeHandleNode, clickEvent);
+
+      // then
+      expect(stopPropagationSpy).to.have.been.called;
     });
 
   });
@@ -1572,6 +1875,9 @@ describe('App', function() {
             log: {
               open: false,
               height: 150
+            },
+            minimap: {
+              open: true
             }
           };
 
@@ -1733,41 +2039,6 @@ describe('App', function() {
   });
 
 
-  describe('config', function() {
-
-    it('should provide entries after load', function() {
-
-      // given
-      config.setLoadResult({ foo: 'bar' });
-
-      // when
-      app.loadConfig(function(err) {
-
-        // then
-        expect(app.config._entries).to.eql({ foo: 'bar' });
-      });
-    });
-
-
-    describe('load behavior', function() {
-
-      it('should load on run', function() {
-
-        // given
-        var loadConfig = spy(app, 'loadConfig');
-
-        // when
-        app.run();
-
-        // then
-        expect(loadConfig).to.have.been.called;
-      });
-
-    });
-
-  });
-
-
   describe('event emitter', function() {
 
     var tab;
@@ -1917,24 +2188,6 @@ describe('App', function() {
 
           // then
           expect(err).to.equal(exportError);
-
-          expect(dialog.saveAs).to.not.have.been.called;
-
-          done();
-        });
-      });
-
-
-      it('should not export with DMN', function(done) {
-
-        // given
-        var tab = createTab(createDmnFile(dmnXML));
-
-        // when
-        app.exportTab(tab, 'svg', function(err, svg) {
-
-          // then
-          expect(err.message).to.equal('<exportAs> not supported for the current tab');
 
           expect(dialog.saveAs).to.not.have.been.called;
 

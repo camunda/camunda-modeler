@@ -4,7 +4,8 @@ var describeEditor = require('./commons').describeEditor;
 
 var BpmnEditor = require('app/editor/bpmn-editor');
 
-var Config = require('test/helper/mock/config');
+var Config = require('test/helper/mock/config'),
+    Plugins = require('test/helper/mock/plugins');
 
 var select = require('test/helper/vdom').select,
     render = require('test/helper/vdom').render,
@@ -18,8 +19,10 @@ var spy = require('test/helper/util/spy');
 function createEditor() {
   return new BpmnEditor({
     config: new Config(),
+    plugins: new Plugins(),
     layout: {
-      propertiesPanel: {}
+      propertiesPanel: {},
+      minimap: {}
     },
     metaData: {
       version: '1.2.3',
@@ -31,7 +34,8 @@ function createEditor() {
 describeEditor('BpmnEditor', {
   createEditor: createEditor,
   initialXML: initialXML,
-  otherXML: otherXML
+  otherXML: otherXML,
+  isDiagramEditor: true
 });
 
 
@@ -42,7 +46,6 @@ describe('BpmnEditor', function() {
   beforeEach(function() {
     editor = createEditor();
   });
-
 
   describe('custom events', function(done) {
 
@@ -184,37 +187,98 @@ describe('BpmnEditor', function() {
   });
 
 
-  it('should load element templates', function(done) {
-
+  it('should call state if input is active', function() {
     // given
-    editor.config.set('bpmn.elementTemplates', [
-      {
-        label: 'FOO',
-        id: 'foo',
-        appliesTo: [
-          'bpmn:ServiceTask'
-        ],
-        properties: []
-      }
-    ]);
-
-    var $el = document.createElement('div');
-
-    editor.once('imported', function(context) {
-
-      var elementTemplates = editor.modeler.get('elementTemplates');
-
-      // then
-      expect(elementTemplates).to.exist;
-      expect(elementTemplates.get('foo')).to.exist;
-
-      done();
-    });
+    var stateSpy = spy(editor, 'updateState');
 
     // when
-    editor.setXML(initialXML);
+    editor.emit('input:focused', { target: { tagName: 'TEXTAREA' } });
 
-    editor.mountEditor($el);
+    // then
+    expect(stateSpy).to.have.been.called;
+  });
+
+
+  describe('element templates', function() {
+
+    it('should load', function(done) {
+
+      // given
+      editor.config.provide('bpmn.elementTemplates', function(key, diagram, done) {
+
+        var templates = [
+          {
+            label: 'FOO',
+            id: 'foo',
+            appliesTo: [
+              'bpmn:ServiceTask'
+            ],
+            properties: []
+          }
+        ];
+
+        done(null, templates);
+      });
+
+      var $el = document.createElement('div');
+
+      editor.once('imported', function(context) {
+
+        var elementTemplates = editor.modeler.get('elementTemplates');
+
+        // then
+        expect(elementTemplates).to.exist;
+        expect(elementTemplates.get('foo')).to.exist;
+
+        done();
+      });
+
+      // when
+      editor.setXML(initialXML);
+
+      editor.mountEditor($el);
+    });
+
+
+    it('should log load error', function(done) {
+
+      var templatesLoaded;
+
+      // given
+      editor.config.provide('bpmn.elementTemplates', function(key, diagram, done) {
+        templatesLoaded = function() {
+          done(new Error('foo bar'));
+        };
+      });
+
+      var $el = document.createElement('div');
+
+      var loggedWarnings;
+
+      editor.once('log', function(entries) {
+        loggedWarnings = entries;
+      });
+
+      editor.once('imported', function(context) {
+
+        // when
+        templatesLoaded();
+
+        // then
+        expect(loggedWarnings).to.eql([
+          [ 'warning', 'Some element templates could not be parsed' ],
+          [ 'warning', '> foo bar' ],
+          [ 'warning', '' ]
+        ]);
+
+        done();
+      });
+
+      editor.setXML(initialXML);
+
+      editor.mountEditor($el);
+    });
+
   });
 
 
@@ -274,6 +338,7 @@ describe('BpmnEditor', function() {
     function createEditorWithLayout(layout) {
       return new BpmnEditor({
         config: new Config(),
+        plugins: new Plugins(),
         layout: layout,
         metaData: {}
       });
@@ -352,6 +417,9 @@ describe('BpmnEditor', function() {
         propertiesPanel: {
           open: false,
           width: 150
+        },
+        minimap: {
+          open: true
         }
       });
 
@@ -403,105 +471,6 @@ describe('BpmnEditor', function() {
       // dragging toggle
       simulateEvent(element, 'dragstart', { screenX: 0, screenY: 0 });
       simulateEvent(element, 'drag', { screenX: 50, screenY: 0 });
-
-    });
-
-  });
-
-
-  describe('import warnings overlay', function() {
-
-    it('should hide without import information', function() {
-
-      // given
-      editor.lastImport = null;
-
-      // when
-      var tree = render(editor);
-
-      // then
-      expect(select('[ref=warnings-overlay]', tree)).not.to.exist;
-    });
-
-
-    it('should hide if no warnings', function() {
-
-      // given
-      editor.lastImport = {
-        warnings: []
-      };
-
-      // when
-      var tree = render(editor);
-
-      // then
-      expect(select('[ref=warnings-overlay]', tree)).not.to.exist;
-    });
-
-
-    it('should show if warnings', function() {
-
-      // given
-      editor.lastImport = {
-        warnings: [
-          new Error('foo bar')
-        ]
-      };
-
-      // when
-      var tree = render(editor);
-
-      // then
-      expect(select('[ref=warnings-overlay]', tree)).to.exist;
-    });
-
-
-    it('should hide', function() {
-
-      // given
-      editor.lastImport = {
-        warnings: [
-          new Error('foo bar')
-        ]
-      };
-
-      // when
-      var tree = render(editor);
-
-      var hideWarningsElement = select('[ref=warnings-hide-link]', tree);
-
-      simulateEvent(hideWarningsElement, 'click');
-
-      // then
-      // we simply discard the last import information
-      expect(editor.lastImport).not.to.exist;
-    });
-
-
-    it('should show details', function(done) {
-
-      // given
-      editor.lastImport = {
-        warnings: [
-          new Error('foo bar'),
-          new Error('foo BABA')
-        ]
-      };
-
-      editor.once('log:toggle', function(state) {
-
-        // then
-        expect(state.open).to.be.true;
-
-        done();
-      });
-
-      // when
-      var tree = render(editor);
-
-      var showDetailsElement = select('[ref=warnings-details-link]', tree);
-
-      simulateEvent(showDetailsElement, 'click');
     });
 
   });

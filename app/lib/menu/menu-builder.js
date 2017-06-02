@@ -16,6 +16,7 @@ function MenuBuilder(opts) {
     appName: app.name,
     state: {
       dmn: false,
+      activeEditor: null,
       cmmn: false,
       bpmn: false,
       undo: false,
@@ -33,7 +34,8 @@ function MenuBuilder(opts) {
       exportAs: false,
       development: app.developmentMode,
       devtools: false
-    }
+    },
+    plugins: []
   }, opts);
 
   if (this.opts.template) {
@@ -70,9 +72,14 @@ MenuBuilder.prototype.appendNewFile = function() {
     }, {
       label: 'DMN Table',
       click: function() {
+        app.emit('menu:action', 'create-dmn-table');
+      }
+    }, {
+      label: 'DMN Diagram',
+      click: function() {
         app.emit('menu:action', 'create-dmn-diagram');
       }
-    },{
+    }, {
       label: 'CMMN Diagram',
       click: function() {
         app.emit('menu:action', 'create-cmmn-diagram');
@@ -83,7 +90,7 @@ MenuBuilder.prototype.appendNewFile = function() {
   return this;
 };
 
-MenuBuilder.prototype.appendOpen = function(submenu) {
+MenuBuilder.prototype.appendOpen = function() {
   this.menu.append(new MenuItem({
     label: 'Open File...',
     accelerator: 'CommandOrControl+O',
@@ -92,7 +99,12 @@ MenuBuilder.prototype.appendOpen = function(submenu) {
     }
   }));
 
+  this.appendReopenLastTab();
 
+  return this;
+};
+
+MenuBuilder.prototype.appendReopenLastTab = function() {
   this.menu.append(new MenuItem({
     label: 'Reopen Last File',
     accelerator: 'CommandOrControl+Shift+T',
@@ -104,7 +116,7 @@ MenuBuilder.prototype.appendOpen = function(submenu) {
   return this;
 };
 
-MenuBuilder.prototype.appendSaveFile = function(submenu) {
+MenuBuilder.prototype.appendSaveFile = function() {
   this.menu.append(new MenuItem({
     label: 'Save File',
     enabled: this.opts.state.save,
@@ -117,7 +129,7 @@ MenuBuilder.prototype.appendSaveFile = function(submenu) {
   return this;
 };
 
-MenuBuilder.prototype.appendSaveAsFile = function(submenu) {
+MenuBuilder.prototype.appendSaveAsFile = function() {
   this.menu.append(new MenuItem({
     label: 'Save File As..',
     accelerator: 'CommandOrControl+Shift+S',
@@ -130,7 +142,7 @@ MenuBuilder.prototype.appendSaveAsFile = function(submenu) {
   return this;
 };
 
-MenuBuilder.prototype.appendSaveAllFiles = function(submenu) {
+MenuBuilder.prototype.appendSaveAllFiles = function() {
   this.menu.append(new MenuItem({
     label: 'Save All Files',
     accelerator: 'CommandOrControl+Alt+S',
@@ -195,6 +207,14 @@ MenuBuilder.prototype.appendCloseTab = function() {
     enabled: this.opts.state.closable,
     click: function() {
       app.emit('menu:action', 'close-all-tabs');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Close Other Tabs',
+    enabled: this.opts.state.closable,
+    click: function() {
+      app.emit('menu:action', 'close-other-tabs');
     }
   }));
 
@@ -272,14 +292,15 @@ MenuBuilder.prototype.appendCopyPaste = function() {
   };
 
   if (!this.opts.state.inactiveInput) {
+    assign(copyEntry, { enabled: true, click: function() {}, role: 'copy' });
+
+    assign(pasteEntry, { enabled: true, click: function() {}, role: 'paste' });
+
     this.menu.append(new MenuItem({
       label: 'Cut',
       accelerator: 'CommandOrControl+X',
       role: 'cut'
     }));
-
-    copyEntry.role = 'copy';
-    pasteEntry.role = 'paste';
   }
 
   this.menu.append(new MenuItem(copyEntry));
@@ -309,6 +330,7 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
 };
 
 MenuBuilder.prototype.appendBpmnActions = function() {
+
   this.menu.append(new MenuItem({
     label: 'Hand Tool',
     accelerator: 'H',
@@ -346,7 +368,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   }));
 
   this.menu.append(new MenuItem({
-    label: 'Direct Editing',
+    label: 'Edit Label',
     accelerator: 'E',
     enabled: this.opts.state.elementsSelected,
     click: function() {
@@ -440,6 +462,14 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.appendSeparator();
 
   this.menu.append(new MenuItem({
+    label: 'Move Elements to Origin',
+    accelerator: 'CommandOrControl+Shift+0',
+    click: function() {
+      app.emit('menu:action', 'moveToOrigin');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
     label: 'Move Canvas',
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
@@ -476,13 +506,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     }])
   }));
 
-  this.menu.append(new MenuItem({
-    label: 'Select All',
-    accelerator: 'CommandOrControl+A',
-    click: function() {
-      app.emit('menu:action', 'selectElements');
-    }
-  }));
+  this.appendSelectAll();
 
   this.appendRemoveSelection();
 
@@ -585,13 +609,7 @@ MenuBuilder.prototype.appendCmmnActions = function() {
     }])
   }));
 
-  this.menu.append(new MenuItem({
-    label: 'Select All',
-    accelerator: 'CommandOrControl+A',
-    click: function() {
-      app.emit('menu:action', 'selectElements');
-    }
-  }));
+  this.appendSelectAll();
 
   this.appendRemoveSelection();
 
@@ -610,98 +628,182 @@ MenuBuilder.prototype.appendRemoveSelection = function() {
 };
 
 
+MenuBuilder.prototype.appendSelectAll = function() {
+  var selectAll = {
+    label: 'Select All',
+    accelerator: 'CommandOrControl+A',
+    click: function() {
+      app.emit('menu:action', 'selectElements');
+    }
+  };
+
+  if (!this.opts.state.inactiveInput) {
+    assign(selectAll, { enabled: true, click: function() {}, role: 'selectall' });
+  }
+
+  this.menu.append(new MenuItem(selectAll));
+
+  return this;
+};
+
+
 MenuBuilder.prototype.appendDmnActions = function() {
-  this.menu.append(new MenuItem({
-    label: 'Add Rule..',
-    submenu: Menu.buildFromTemplate([{
-      label: 'At End',
-      accelerator: 'CommandOrControl+D',
+  var activeEditor = this.opts.state.activeEditor;
+
+  if (activeEditor === 'diagram') {
+    // DRD EDITOR
+    this.appendSeparator();
+
+    this.menu.append(new MenuItem({
+      label: 'Lasso Tool',
+      accelerator: 'L',
+      enabled: this.opts.state.inactiveInput,
       click: function() {
-        app.emit('menu:action', 'ruleAdd');
+        app.emit('menu:action', 'lassoTool');
       }
-    }, {
-      label: 'Above Selected',
+    }));
+
+    this.menu.append(new MenuItem({
+      label: 'Edit Label',
+      accelerator: 'E',
+      enabled: this.opts.state.elementsSelected,
+      click: function() {
+        app.emit('menu:action', 'directEditing');
+      }
+    }));
+
+    this.appendSeparator();
+
+    this.appendSelectAll();
+
+    this.appendRemoveSelection();
+
+  } else if (activeEditor === 'table') {
+    // TABLE EDITOR
+
+    this.appendSeparator();
+
+    this.menu.append(new MenuItem({
+      label: 'Add Rule..',
+      submenu: Menu.buildFromTemplate([{
+        label: 'At End',
+        accelerator: 'CommandOrControl+D',
+        click: function() {
+          app.emit('menu:action', 'ruleAdd');
+        }
+      }, {
+        label: 'Above Selected',
+        enabled: this.opts.state.dmnRuleEditing,
+        click: function() {
+          app.emit('menu:action', 'ruleAddAbove');
+        }
+      }, {
+        label: 'Below Selected',
+        enabled: this.opts.state.dmnRuleEditing,
+        click: function() {
+          app.emit('menu:action', 'ruleAddBelow');
+        }
+      }])
+    }));
+
+    this.menu.append(new MenuItem({
+      label: 'Clear Rule',
       enabled: this.opts.state.dmnRuleEditing,
       click: function() {
-        app.emit('menu:action', 'ruleAddAbove');
+        app.emit('menu:action', 'ruleClear');
       }
-    }, {
-      label: 'Below Selected',
+    }));
+
+    this.menu.append(new MenuItem({
+      label: 'Remove Rule',
       enabled: this.opts.state.dmnRuleEditing,
       click: function() {
-        app.emit('menu:action', 'ruleAddBelow');
+        app.emit('menu:action', 'ruleRemove');
       }
-    }])
-  }));
+    }));
 
-  this.menu.append(new MenuItem({
-    label: 'Clear Rule',
-    enabled: this.opts.state.dmnRuleEditing,
-    click: function() {
-      app.emit('menu:action', 'ruleClear');
-    }
-  }));
+    this.appendSeparator();
 
-  this.menu.append(new MenuItem({
-    label: 'Remove Rule',
-    enabled: this.opts.state.dmnRuleEditing,
-    click: function() {
-      app.emit('menu:action', 'ruleRemove');
-    }
-  }));
+    this.menu.append(new MenuItem({
+      label: 'Add Clause..',
+      submenu: Menu.buildFromTemplate([{
+        label: 'Input',
+        click: function() {
+          app.emit('menu:action', 'clauseAdd', {
+            type: 'input'
+          });
+        }
+      }, {
+        label: 'Output',
+        click: function() {
+          app.emit('menu:action', 'clauseAdd', {
+            type: 'output'
+          });
+        }
+      }, {
+        type: 'separator'
+      }, {
+        label: 'Left of selected',
+        enabled: this.opts.state.dmnClauseEditing,
+        click: function() {
+          app.emit('menu:action', 'clauseAddLeft');
+        }
+      }, {
+        label: 'Right of selected',
+        enabled: this.opts.state.dmnClauseEditing,
+        click: function() {
+          app.emit('menu:action', 'clauseAddRight');
+        }
+      }])
+    }));
 
-  this.appendSeparator();
-
-  this.menu.append(new MenuItem({
-    label: 'Add Clause..',
-    submenu: Menu.buildFromTemplate([{
-      label: 'Input',
-      click: function() {
-        app.emit('menu:action', 'clauseAdd', {
-          type: 'input'
-        });
-      }
-    }, {
-      label: 'Output',
-      click: function() {
-        app.emit('menu:action', 'clauseAdd', {
-          type: 'output'
-        });
-      }
-    }, {
-      type: 'separator'
-    }, {
-      label: 'Left of selected',
+    this.menu.append(new MenuItem({
+      label: 'Remove Clause',
       enabled: this.opts.state.dmnClauseEditing,
       click: function() {
-        app.emit('menu:action', 'clauseAddLeft');
+        app.emit('menu:action', 'clauseRemove');
       }
-    }, {
-      label: 'Right of selected',
-      enabled: this.opts.state.dmnClauseEditing,
+    }));
+
+    this.appendSeparator();
+
+    this.menu.append(new MenuItem({
+      label: 'Insert New Line',
+      accelerator: 'CommandOrControl + Enter',
+      enabled: this.opts.state.dmnRuleEditing,
       click: function() {
-        app.emit('menu:action', 'clauseAddRight');
+        app.emit('menu:action', 'insertNewLine');
       }
-    }])
-  }));
+    }));
 
-  this.menu.append(new MenuItem({
-    label: 'Remove Clause',
-    enabled: this.opts.state.dmnClauseEditing,
-    click: function() {
-      app.emit('menu:action', 'clauseRemove');
-    }
-  }));
+    this.menu.append(new MenuItem({
+      label: 'Select Next Row',
+      accelerator: 'Enter',
+      enabled: this.opts.state.dmnRuleEditing,
+      click: function() {
+        app.emit('menu:action', 'selectNextRow');
+      }
+    }));
 
-  this.appendSeparator();
+    this.menu.append(new MenuItem({
+      label: 'Select Previous Row',
+      accelerator: 'Shift + Enter',
+      enabled: this.opts.state.dmnRuleEditing,
+      click: function() {
+        app.emit('menu:action', 'selectPreviousRow');
+      }
+    }));
 
-  this.menu.append(new MenuItem({
-    label: 'Toggle Editing Mode',
-    accelerator: 'CommandOrControl + M',
-    click: function() {
-      app.emit('menu:action', 'toggleEditingMode');
-    }
-  }));
+    this.appendSeparator();
+
+    this.menu.append(new MenuItem({
+      label: 'Toggle Editing Mode',
+      accelerator: 'CommandOrControl + M',
+      click: function() {
+        app.emit('menu:action', 'toggleEditingMode');
+      }
+    }));
+  }
 
   return this;
 };
@@ -752,8 +854,6 @@ MenuBuilder.prototype.appendEditMenu = function() {
     }
 
     if (this.opts.state.dmn) {
-      builder.appendSeparator();
-
       builder.appendDmnActions();
     }
 
@@ -871,6 +971,61 @@ MenuBuilder.prototype.appendWindowMenu = function() {
   return this;
 };
 
+MenuBuilder.prototype.appendPluginsMenu = function() {
+  if (this.opts.plugins.length === 0) {
+    return this;
+  }
+
+  var submenu = this.opts.plugins
+    .map(p => {
+
+      var label = p.name;
+
+      if (p.error) {
+        label = label.concat(' <error>');
+      }
+
+      var menuItemDescriptor = {
+        label: label,
+        enabled: false
+      };
+
+      if (p.menu) {
+
+        try {
+          var menuEntries = p.menu(app, this.opts.state);
+
+          menuItemDescriptor.enabled = true;
+          menuItemDescriptor.submenu = Menu.buildFromTemplate(
+            menuEntries.map(menuDescriptor => {
+              return new MenuItem({
+                label: menuDescriptor.label,
+                accelerator: menuDescriptor.accelerator,
+                enabled: menuDescriptor.enabled(),
+                click: menuDescriptor.action,
+                submenu: menuDescriptor.submenu
+              });
+            })
+          );
+        } catch (e) {
+          console.error(e);
+          menuItemDescriptor.label = menuItemDescriptor.label.concat(' <error>');
+          menuItemDescriptor.enabled = false;
+        }
+      }
+
+      return [ new MenuItem(menuItemDescriptor) ];
+    })
+    .reduce((previous, elem) => elem.concat(previous));
+
+  this.menu.append(new MenuItem({
+    label: 'Plugins',
+    submenu: Menu.buildFromTemplate(submenu)
+  }));
+
+  return this;
+};
+
 MenuBuilder.prototype.appendHelpMenu = function(submenu) {
   this.menu.append(new MenuItem({
     label: 'Help',
@@ -885,6 +1040,12 @@ MenuBuilder.prototype.appendHelpMenu = function(submenu) {
         label: 'User Forum',
         click: function() {
           browserOpen('https://forum.camunda.org/c/modeler');
+        }
+      },
+      {
+        label: 'Keyboard Shortcuts',
+        click: function(menuItem, browserWindow) {
+          app.emit('menu:action', 'show-shortcuts');
         }
       },
       {
@@ -970,6 +1131,7 @@ MenuBuilder.prototype.build = function() {
     )
     .appendEditMenu()
     .appendWindowMenu()
+    .appendPluginsMenu()
     .appendHelpMenu()
     .setMenu();
 };
@@ -980,8 +1142,47 @@ MenuBuilder.prototype.setMenu = function() {
   return this;
 };
 
-MenuBuilder.prototype.buildContextMenu = function() {
-  return this.appendCopyPaste();
+MenuBuilder.prototype.appendContextCloseTab = function(attrs) {
+  this.menu.append(new MenuItem({
+    label: 'Close Tab',
+    enabled: this.opts.state.closable,
+    accelerator: 'CommandOrControl+W',
+    click: function() {
+      app.emit('menu:action', 'close-tab', attrs);
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Close All Tabs',
+    enabled: this.opts.state.closable,
+    click: function() {
+      app.emit('menu:action', 'close-all-tabs');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Close Other Tabs',
+    enabled: this.opts.state.closable,
+    click: function() {
+      app.emit('menu:action', 'close-other-tabs', attrs);
+    }
+  }));
+
+  return this;
+};
+
+MenuBuilder.prototype.buildContextMenu = function(type, attrs) {
+  if (type === 'bpmn') {
+    return this.appendCopyPaste();
+  }
+
+  if (type === 'tab') {
+    return this.appendNewFile()
+      .appendSeparator()
+      .appendContextCloseTab(attrs)
+      .appendSeparator()
+      .appendReopenLastTab();
+  }
 };
 
 MenuBuilder.prototype.openPopup = function() {

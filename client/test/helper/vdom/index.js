@@ -50,11 +50,9 @@ function simulateEvent(element, event, data) {
     eventName = event.type;
   }
 
-  var fn, listener, evHook;
+  var listener = element.properties['on' + eventName];
 
   if (/^drag/.test(eventName)) {
-
-    listener = element.properties['on' + event];
 
     if (!listener) {
 
@@ -68,21 +66,12 @@ function simulateEvent(element, event, data) {
         listener = listener['onDrag' + eventName.replace(/drag/, '')];
       }
     }
-
-    fn = listener;
-  } else {
-    evHook = element.properties['ev-' + eventName];
-
-    // guard
-    expect(evHook).to.exist;
-
-    fn = evHook.value;
   }
 
   // guard
-  expect(fn).to.exist;
+  expect(listener).to.exist;
 
-  return fn(event);
+  return listener(event);
 }
 
 module.exports.simulateEvent = simulateEvent;

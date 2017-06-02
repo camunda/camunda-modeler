@@ -10,9 +10,24 @@ Element templates allow you create pre-defined configurations for BPMN elements 
 
 ## Configuring Templates
 
-To use element templates put a JSON file with the templates ([see definition below](#define-templates)) into the `resources/element-templates` directory relative to the modeler executable or the modelers data directory. Restart the modeler to let it recognize the templates.
+Element templates are defined as [JSON files](#defining-templates) and are searched for in the `resources/element-templates` folder, relative to the modelers executable _or_ relative to the modelers data directory (see below).
 
-> The location of the modelers data directory differs across operating systems. On Windows it is situated under `%APPDATA%/camunda-modeler`. Mac OSX users find it under `~/Library/Application Support/...`.
+Alternatively, they can be stored in a `.camunda/element-templates` directory that resides, relative to the currently opened diagram, anywhere in the diagrams path hierachy.
+
+New templates will be recognized on diagram reopen or modeler reload/restart.
+
+
+#### Example Setup
+
+The location of the modelers data directory differs across operating systems:
+
+* **Windows**: `%APPDATA%/camunda-modeler`
+* **Mac OS X**: `~/Library/Application Support/camunda-modeler`
+
+On Mac, add a JSON file to the folder `~/Library/Application Support/camunda-modeler/resources/element-templates`, on Windows use the `%APPDATA%/camunda-modeler/resources/element-templates` folder. You may have to create the `resources` and `element-templates` folders.
+
+For local template discovery, create a `.camunda/element-templates` folder relative in the directory
+or any parent directory of the diagrams you are editing.
 
 
 ## Using Templates
@@ -64,7 +79,7 @@ As seen in the code snippet a template consist of a number of important componen
 
 ### Defining Template Properties
 
-With each template you Template define a number of user-editable fields as well as their mapping to BPMN 2.0 XML as well as Camunda extension elements.
+With each template you define a number of user-editable fields as well as their mapping to BPMN 2.0 XML as well as Camunda extension elements.
 
 Let us consider the following example that defines a template for a mail sending task:
 
@@ -150,15 +165,15 @@ All but the _Implementation Type_ are editable by the user through the propertie
 As seen in the example the important attributes in a property definition are:
 
 * `label`: A descriptive text shown with the property
-* `type`: Defining the visual apperance in the properties panel (may be any of `String`, `Text`, `Boolean` or `Dropdown`)
+* `type`: Defining the visual apperance in the properties panel (may be any of `String`, `Text`, `Boolean`, `Dropdown` or `Hidden`)
 * `value`: An optional default value to be used if the property to be bound is not yet set
-* `binding`: Specifying how the property is mapped to BPMN or Camunda extension elements and attributes (may be any of `property`, `camunda:property`, `camunda:inputParameter`, `camunda:outputParameter`)
+* `binding`: Specifying how the property is mapped to BPMN or Camunda extension elements and attributes (may be any of `property`, `camunda:property`, `camunda:inputParameter`, `camunda:outputParameter`, `camunda:in`, `camunda:out`, `camunda:executionListener`)
 * `constraints`: A list of editing constraints to apply to the template
 
 
 #### Types
 
-The input types `String`, `Text`, `Boolean` and `Dropdown` are available. As seen above `String` maps to a single-line input, `Text` maps to a multi-line input.
+The input types `String`, `Text`, `Boolean`, `Dropdown` and `Hidden` are available. As seen above `String` maps to a single-line input, `Text` maps to a multi-line input.
 
 
 ###### Boolean / Checkbox Type
@@ -197,13 +212,15 @@ The resulting properties panel control looks like this:
 
 #### Bindings
 
-The four ways exist to map a custom field to the underlying BPMN 2.0 XML:
+The following ways exist to map a custom field to the underlying BPMN 2.0 XML:
 
 * `property`: Maps to a named property in the BPMN 2.0 XML, i.e. `<bpmn:serviceTask {name}={userInput} />`
 * `camunda:property`: Maps to a `<camunda:property name="{name}" value="{userInput}" />` extension element
-* `camunda:inputParameter`: Maps to a `<camunda:inputParameter name="{name}" />`
-* `camunda:outputParameter`: Maps to a `<camunda:outputParameter name="{userInput}" />`
-
+* `camunda:inputParameter`: Maps to `<camunda:inputParameter name="{name}" />`
+* `camunda:outputParameter`: Maps to `<camunda:outputParameter name="{userInput}" />`
+* `camunda:in`: Maps to `<camunda:in target="{target}" />`
+* `camunda:out`: Maps to `<camunda:out source="{source}" />`
+* `camunda:executionListener`: Maps to `<camunda:executionListener event="{event}" />`
 
 #### Constraints
 
@@ -241,6 +258,32 @@ Together with the `pattern` constraint you may define your custom error messages
 ### Controling Default Entry Visibility
 
 _TODO_
+
+
+## Default Templates
+
+A default template provides properties that are automatically applied for
+all newly created elements of a specific kind.
+
+To mark a template as _default_ set the `isDefault` property on the template to `true`:
+
+```json
+[
+  {
+    "name": "Template 1",
+    "id": "sometemplate",
+    "isDefault": true,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      ...
+    ]
+  }
+]
+```
+
+Other templates may not be applied, once an element is subject to a default template.
 
 
 ## Development Workflow

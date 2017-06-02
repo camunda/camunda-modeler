@@ -2,6 +2,8 @@
 
 var inherits = require('inherits');
 
+var debounce = require('lodash/function/debounce');
+
 var BaseEditor = require('./base-editor');
 
 var debug = require('debug')('diagram-editor');
@@ -58,6 +60,18 @@ function DiagramEditor(options) {
 
     this.emit('shown', context);
   });
+
+  this.on('layout:update', function(evt) {
+    var log = evt.log;
+
+    if (log && log.cleared) {
+      this.hideWarnings();
+    }
+  });
+
+  this.on('focus', debounce(this.resize, 50));
+  this.on('window:resized', debounce(this.resize, 50));
+  this.on('layout:update', debounce(this.resize, 50));
 }
 
 inherits(DiagramEditor, BaseEditor);
@@ -122,12 +136,18 @@ DiagramEditor.prototype.destroy = function() {
   }
 };
 
-
+// This allows an easier replacing of this method f.ex: DMN needs
 DiagramEditor.prototype.saveXML = function(done) {
-
   var modeler = this.getModeler(),
-      commandStack = modeler.get('commandStack'),
-      initialState = this.initialState;
+      commandStack = modeler.get('commandStack');
+
+  this._saveXML(modeler, commandStack._stackIdx, done);
+};
+
+
+DiagramEditor.prototype._saveXML = function(modeler, commandStackIdx, done) {
+
+  var initialState = this.initialState;
 
   debug('[#saveXML] save');
 
@@ -150,7 +170,7 @@ DiagramEditor.prototype.saveXML = function(done) {
     done(null, xml);
   };
 
-  if (!(initialState.stackIndex !== commandStack._stackIdx)) {
+  if (!(initialState.stackIndex !== commandStackIdx)) {
     return savedCallback(null, this.lastXML);
   }
 
@@ -180,6 +200,11 @@ DiagramEditor.prototype.isHistoryLost = function(xml) {
 
 
 DiagramEditor.prototype.triggerEditorActions = function() {
+  throw needsOverride();
+};
+
+
+DiagramEditor.prototype.resize = function() {
   throw needsOverride();
 };
 
@@ -220,6 +245,8 @@ DiagramEditor.prototype.log = function(messages, open) {
 
 DiagramEditor.prototype.openLog = function() {
   this.emit('log:toggle', { open: true });
+
+  this.hideWarnings();
 };
 
 

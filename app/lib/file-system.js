@@ -28,12 +28,12 @@ function FileSystem(options) {
 module.exports = FileSystem;
 
 
-FileSystem.prototype.open = function(callback) {
+FileSystem.prototype.open = function(filePath, callback) {
   var self = this,
       dialog = this.dialog,
       files = [];
 
-  dialog.showDialog('open', function(err, filenames) {
+  dialog.showDialog('open', { filePath: filePath }, function(err, filenames) {
     if (!filenames) {
       return callback(null);
     }
@@ -67,11 +67,16 @@ FileSystem.prototype._openFile = function(filePath, callback) {
   return diagramFile;
 };
 
+FileSystem.prototype.getFilePath = function(diagramFile) {
+  return diagramFile.path !== '[unsaved]' ? diagramFile.path : null;
+};
 
 FileSystem.prototype.saveAs = function(diagramFile, callback) {
   var dialog = this.dialog;
 
   var fileType = diagramFile.fileType;
+
+  var dialogPath = { filePath: this.getFilePath(diagramFile) };
 
   function done(actualFilePath) {
     var savedFile;
@@ -86,10 +91,10 @@ FileSystem.prototype.saveAs = function(diagramFile, callback) {
     callback(null, savedFile);
   }
 
-  dialog.showDialog('save', createFileDescriptor({
+  dialog.showDialog('save', assign(createFileDescriptor({
     name: diagramFile.name,
     fileType: fileType
-  }), function(err, filePath) {
+  }), dialogPath), function(err, filePath) {
 
     // -> user cancel on save as file chooser
     if (!filePath) {

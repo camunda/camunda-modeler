@@ -2,8 +2,7 @@
 
 var inherits = require('inherits');
 
-var assign = require('lodash/object/assign'),
-    debounce = require('lodash/function/debounce');
+var assign = require('lodash/object/assign');
 
 var domify = require('domify');
 
@@ -22,7 +21,8 @@ var getWarnings = require('app/util/get-warnings');
 
 var ensureOpts = require('util/ensure-opts'),
     dragger = require('util/dom/dragger'),
-    isInputActive = require('util/dom/is-input').active,
+    isInput = require('util/dom/is-input'),
+    isInputActive = isInput.active,
     copy = require('util/copy');
 
 var generateImage = require('app/util/generate-image');
@@ -57,15 +57,15 @@ function CmmnEditor(options) {
     }
   });
 
+  // update state so that it reflects that an 'input' is active
+  this.on('input:focused', function(event) {
+    if (isInput.isInput(event.target)) {
+      this.updateState();
+    }
+  });
+
   // elements to insert modeler and properties panel into
   this.$propertiesEl = domify('<div class="properties-parent"></div>');
-
-  // let canvas know that the window has been resized
-  this.on('window:resized', this.compose('resizeCanvas'));
-
-  // trigger the palette resizal whenever we focus a tab or the layout is updated
-  this.on('focus', debounce(this.resizeCanvas, 50));
-  this.on('layout:update', debounce(this.resizeCanvas, 50));
 }
 
 inherits(CmmnEditor, DiagramEditor);
@@ -332,7 +332,8 @@ CmmnEditor.prototype.logTemplateWarnings = function(warnings) {
 };
 
 
-CmmnEditor.prototype.resizeCanvas = function() {
+// trigger the palette resizal whenever we focus a tab or the layout is updated
+CmmnEditor.prototype.resize = function() {
   var modeler = this.getModeler(),
       canvas = modeler.get('canvas');
 
@@ -355,7 +356,6 @@ CmmnEditor.prototype.render = function() {
          key={ this.id + '#cmmn' }
          onFocusin={ this.compose('updateState') }>
       <div className="editor-container"
-           tabIndex="0"
            onAppend={ this.compose('mountEditor') }
            onRemove={ this.compose('unmountEditor') }>
       </div>
@@ -376,7 +376,7 @@ CmmnEditor.prototype.render = function() {
         </div>
       </div>
       <WarningsOverlay warnings={ warnings }
-                       onShowDetails={ this.compose('openLog') }
+                       onOpenLog={ this.compose('openLog') }
                        onClose={ this.compose('hideWarnings') } />
     </div>
   );

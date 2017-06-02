@@ -2,14 +2,10 @@
 
 var fs = require('fs');
 var which = require('which');
-var difference = require('lodash/array/difference');
-var union = require('lodash/array/union');
 var packager = require('electron-packager');
 var cpr = require('ncp');
 var archiver = require('archiver');
 var concat = require('concat-stream');
-
-var execSync = require('child_process').execSync;
 
 var path = require('path');
 
@@ -34,8 +30,6 @@ module.exports = function(grunt) {
     // monkey patch version in package.json
     patchPkgVersion(appVersion);
 
-    var electronVersion = PACKAGE_JSON.devDependencies['electron-prebuilt'];
-
     var platform = this.data.platform;
 
     var __done = this.async();
@@ -47,7 +41,7 @@ module.exports = function(grunt) {
     };
 
     grunt.log.writeln(
-      'Assembling distribution(s) ' +
+      'Assembling distribution(s) for ' + platform + ' ' +
       '{ version: ' + appVersion + ', build: ' + buildVersion + ' }');
 
     var iconPath = path.join(__dirname, '../resources/icons/icon_128'),
@@ -58,26 +52,24 @@ module.exports = function(grunt) {
       name: PACKAGE_JSON.name,
       dir: dirPath,
       out: outPath,
-      version: electronVersion,
       platform: platform,
-      arch: 'all',
+      arch: [ 'ia32', 'x64' ],
       overwrite: true,
+      prune: true,
       asar: true,
       icon: iconPath,
-      ignore: buildDistroIgnore()
+      ignore: buildDistroIgnore(),
+      appVersion: appVersion,
+      appCopyright: 'camunda Services GmbH, 2015-2017',
+      buildVersion: buildVersion
     };
-
-    options['app-copyright'] = 'camunda Services GmbH, 2015-2016';
-    options['app-version'] = appVersion;
-
-    options['build-version'] = buildVersion;
 
     if (platform === 'darwin') {
       options.name = 'Camunda Modeler';
     }
 
     if (platform === 'win32') {
-      options['version-string'] = {
+      options['win32metadata'] = {
         CompanyName: 'camunda Services GmbH',
         FileDescription: 'Camunda Modeler',
         OriginalFilename: 'camunda-modeler.exe',
@@ -247,34 +239,10 @@ function asyncMap(collection, iterator, done) {
   next();
 }
 
-function npmls(args) {
-
-  var cmd = 'npm ls --parseable ' + (args || '');
-
-  try {
-    var result = execSync(cmd, { encoding: 'utf-8' });
-
-    return result.toString('utf-8').split('\n');
-  } catch (e) {
-    console.error('Failed to ' + cmd);
-    console.error(e);
-
-    process.exit(1);
-  }
-}
 
 function buildDistroIgnore() {
 
-  var basePath = path.resolve(__dirname, '..');
-
-  var prodDepsPaths = npmls('--prod'),
-      allDepsPaths = npmls();
-
-  var ignoreDeps = difference(allDepsPaths, prodDepsPaths).map(function(d) {
-    return path.relative(basePath, d);
-  });
-
-  var ignore = union([
+  var ignore = [
     'app/develop',
     'app/test',
     'app/util',
@@ -290,9 +258,9 @@ function buildDistroIgnore() {
     '.travis.yml',
     '.wiredeps',
     'Gruntfile.js',
-    'gulpfile.js',
+    'npm-shrinkwrap.json',
     'README.md'
-  ], ignoreDeps);
+  ];
 
   return new RegExp('^/(' + ignore.join('|') + ')');
 }

@@ -6,8 +6,6 @@ var ensureOpts = require('util/ensure-opts');
 
 var dropdown = require('util/dom/dropdown');
 
-var Separator = require('./separator');
-
 var BaseComponent = require('base/component');
 
 
@@ -30,8 +28,6 @@ function MultiButton(options) {
     if (!this.disabled) {
       dropdownWidget = (
         <div className="dropdown-container">
-          <Separator />
-
           <span className="caret"></span>
 
           <ul className="dropdown">
@@ -48,10 +44,9 @@ function MultiButton(options) {
     }
 
     var html =
-      <button className={ 'multi-button ' + disabled } onMousedown={ dropdown() }>
+      <button className={ 'multi-button ' + disabled } onMousedown={ dropdown('multi-button') }>
         <span className="primary"
-              title={ primaryChoice.label || '' }
-              onClick={ primaryChoice.action }>
+              title={ primaryChoice.label || '' }>
           <span className={ primaryChoice.icon }></span>
         </span>
 

@@ -138,7 +138,6 @@ MultiEditorTab.prototype.showEditor = function(editor) {
     }
 
     this.switchEditor(newEditor, xml);
-
   });
 };
 
@@ -253,7 +252,8 @@ MultiEditorTab.prototype.createEditors = function(options) {
         closable: true
       }, state, { dirty: this.dirty });
 
-      this.events.emit('tools:state-changed', this, newState);
+      // propagate state changed
+      this.stateChanged(newState);
     });
 
     editor.on('changed', this.events.composeEmitter('changed'));
@@ -274,15 +274,22 @@ MultiEditorTab.prototype.createEditors = function(options) {
 
     this._globalListeners.push({
       eventName: 'window:resized',
-      callback: function() {
-        editor.emit('window:resized');
+      callback: function(evt) {
+        editor.emit('window:resized', evt);
       }
     });
 
     this._globalListeners.push({
       eventName: 'layout:update',
-      callback: function() {
-        editor.emit('layout:update');
+      callback: function(evt) {
+        editor.emit('layout:update', evt);
+      }
+    });
+
+    this._globalListeners.push({
+      eventName: 'input:focused',
+      callback: function(evt) {
+        editor.emit('input:focused', evt);
       }
     });
 
@@ -326,7 +333,7 @@ MultiEditorTab.prototype.setFile = function(file) {
   this.dirty = isUnsaved(file);
 
   this.editors.forEach(function(editor) {
-    editor.setXML(file.contents, {});
+    editor.setFile(file);
   });
 
   this.events.emit('changed');
@@ -346,6 +353,10 @@ MultiEditorTab.prototype.triggerAction = function(action, options) {
   }
 };
 
+MultiEditorTab.prototype.stateChanged = function(newState) {
+  this.events.emit('tools:state-changed', this, newState);
+};
+
 MultiEditorTab.prototype.render = function() {
 
   var compose = this.compose;
@@ -360,12 +371,11 @@ MultiEditorTab.prototype.render = function() {
         {
           this.editors.map((editor) => {
             return (
-              <div className={ 'tab ' + (this.activeEditor === editor ? 'active' : '') }
-                   tabIndex="0"
+              <a className={ 'tab ' + (this.activeEditor === editor ? 'active' : '') }
                    ref={ editor.shortId + '-switch' }
                    onClick={ compose('showEditor', editor) }>
                 { editor.label }
-              </div>
+              </a>
             );
           })
         }

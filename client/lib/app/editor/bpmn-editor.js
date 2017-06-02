@@ -2,8 +2,7 @@
 
 var inherits = require('inherits');
 
-var assign = require('lodash/object/assign'),
-    debounce = require('lodash/function/debounce');
+var assign = require('lodash/object/assign');
 
 var domify = require('domify');
 
@@ -14,22 +13,25 @@ var BpmnJS = require('bpmn-js/lib/Modeler');
 var diagramOriginModule = require('diagram-js-origin'),
     executableFixModule = require('./bpmn/executable-fix'),
     clipboardModule = require('./bpmn/clipboard'),
+    minimapModule = require('diagram-js-minimap'),
     propertiesPanelModule = require('bpmn-js-properties-panel'),
     propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda'),
-    camundaModdlePackage = require('camunda-bpmn-moddle/resources/camunda');
+    camundaModdlePackage = require('camunda-bpmn-moddle/resources/camunda'),
+    camundaModdleExtension = require('camunda-bpmn-moddle/lib');
 
 var WarningsOverlay = require('base/components/warnings-overlay');
+
+var isUnsaved = require('util/file/is-unsaved');
 
 var getWarnings = require('app/util/get-warnings');
 
 var ensureOpts = require('util/ensure-opts'),
     dragger = require('util/dom/dragger'),
-    isInputActive = require('util/dom/is-input').active,
+    isInput = require('util/dom/is-input'),
+    isInputActive = isInput.active,
     copy = require('util/copy');
 
 var generateImage = require('app/util/generate-image');
-
-var validateElementTemplates = require('bpmn-js-properties-panel/lib/provider/camunda/element-templates/util/validate');
 
 var debug = require('debug')('bpmn-editor');
 
@@ -44,10 +46,13 @@ function BpmnEditor(options) {
   ensureOpts([
     'layout',
     'config',
-    'metaData'
+    'metaData',
+    'plugins'
   ], options);
 
   DiagramEditor.call(this, options);
+
+  this.layout = options.layout;
 
   this.name = 'bpmn';
 
@@ -57,11 +62,18 @@ function BpmnEditor(options) {
   this.openContextMenu = function(evt) {
     evt.preventDefault();
 
-    this.emit('context-menu:open');
+    this.emit('context-menu:open', 'bpmn');
   };
 
   // let canvas know that the window has been resized
-  this.on('window:resized', this.compose('resizeCanvas'));
+  this.on('window:resized', this.compose('resize'));
+
+  // update state so that it reflects that an 'input' is active
+  this.on('input:focused', function(event) {
+    if (isInput.isInput(event.target)) {
+      this.updateState();
+    }
+  });
 
   // set current modeler version and name to the diagram
   this.on('save', () => {
@@ -72,10 +84,6 @@ function BpmnEditor(options) {
       definitions.exporterVersion = options.metaData.version;
     }
   });
-
-  // trigger the palette resizal whenever we focus a tab or the layout is updated
-  this.on('focus', debounce(this.resizeCanvas, 50));
-  this.on('layout:update', debounce(this.resizeCanvas, 50));
 }
 
 inherits(BpmnEditor, DiagramEditor);
@@ -269,6 +277,13 @@ BpmnEditor.prototype.toggleProperties = function() {
   this.notifyModeler('propertiesPanel.resized');
 };
 
+BpmnEditor.prototype.toggleMinimap = function(open) {
+  this.emit('layout:changed', {
+    minimap: {
+      open: open
+    }
+  });
+};
 
 BpmnEditor.prototype.getModeler = function() {
 
@@ -299,40 +314,62 @@ BpmnEditor.prototype.getModeler = function() {
       this.emit('log', [[ 'error', error.error ]]);
       this.emit('log:toggle', { open: true });
     });
+
+    this.modeler.on('elementTemplates.errors', (e) => {
+      this.logTemplateWarnings(e.errors);
+    });
+
+    this.modeler.on('minimap.toggle', (e) => {
+      this.toggleMinimap(e.open);
+    });
   }
 
   return this.modeler;
 };
 
 
+BpmnEditor.prototype.loadTemplates = function(done) {
+
+  var file = this.file;
+
+  var diagram = isUnsaved(file) ? null : { path: file.path };
+
+  this.config.get('bpmn.elementTemplates', diagram, done);
+};
+
 BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
 
-  var elementTemplates = this.config.get('bpmn.elementTemplates');
+  var elementTemplatesLoader = this.loadTemplates.bind(this);
 
-  var errors = validateElementTemplates(elementTemplates);
-
-  if (errors.length) {
-    this.logTemplateWarnings(errors);
-  }
+  var minimapLayout = this.layout && this.layout.minimap || { open: false };
 
   var propertiesPanelConfig = {
     'config.propertiesPanel': [ 'value', { parent: $propertiesEl } ]
   };
 
-  return new BpmnJS({
+  var pluginModules = this.plugins.get('bpmn.modeler.additionalModules');
+
+  var modeler =  new BpmnJS({
     container: $el,
     position: 'absolute',
     additionalModules: [
       clipboardModule,
+      minimapModule,
       diagramOriginModule,
       executableFixModule,
       propertiesPanelModule,
       propertiesProviderModule,
-      propertiesPanelConfig
-    ],
-    elementTemplates: elementTemplates,
-    moddleExtensions: { camunda: camundaModdlePackage }
+      propertiesPanelConfig,
+      camundaModdleExtension
+    ].concat(pluginModules),
+    elementTemplates: elementTemplatesLoader,
+    moddleExtensions: { camunda: camundaModdlePackage },
+    minimap: {
+      open: minimapLayout.open
+    }
   });
+
+  return modeler;
 };
 
 BpmnEditor.prototype.exportAs = function(type, done) {
@@ -359,7 +396,8 @@ BpmnEditor.prototype.exportAs = function(type, done) {
   });
 };
 
-BpmnEditor.prototype.resizeCanvas = function() {
+// trigger the palette resizal whenever we focus a tab or the layout is updated
+BpmnEditor.prototype.resize = function() {
   var modeler = this.getModeler(),
       canvas = modeler.get('canvas');
 
@@ -368,11 +406,24 @@ BpmnEditor.prototype.resizeCanvas = function() {
 
 BpmnEditor.prototype.render = function() {
 
-  var propertiesLayout = this.layout.propertiesPanel;
+  var layout = this.layout,
+      propertiesLayout = layout.propertiesPanel,
+      minimapLayout = layout.minimap || { open: false };
 
   var propertiesStyle = {
     width: (propertiesLayout.open ? propertiesLayout.width : 0) + 'px'
   };
+
+  // update minimap state based on global toggle,
+  // if state changed
+  var modeler = this.modeler,
+      minimap = modeler && modeler.get('minimap');
+
+  if (minimap) {
+    if (minimapLayout.open != minimap.isOpen()) {
+      minimap.toggle(minimapLayout.open);
+    }
+  }
 
   var warnings = getWarnings(this.lastImport);
 
@@ -382,7 +433,6 @@ BpmnEditor.prototype.render = function() {
          onFocusin={ this.compose('updateState') }
          onContextmenu={ this.compose('openContextMenu') }>
       <div className="editor-container"
-           tabIndex="0"
            onAppend={ this.compose('mountEditor') }
            onRemove={ this.compose('unmountEditor') }>
       </div>
@@ -403,7 +453,7 @@ BpmnEditor.prototype.render = function() {
         </div>
       </div>
       <WarningsOverlay warnings={ warnings }
-                       onShowDetails={ this.compose('openLog') }
+                       onOpenLog={ this.compose('openLog') }
                        onClose={ this.compose('hideWarnings') } />
     </div>
   );

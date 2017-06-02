@@ -6,11 +6,12 @@
     text-align: right;
   }
 
-  .log-toggle, .log-clear {
+  .log-button {
     display: inline-block;
     border: solid 1px #ccc;
     border-radius: 2px;
     padding: 4px;
+    margin-right: 8px;
     cursor: default;
     -webkit-user-select: none;
 
@@ -19,12 +20,17 @@
     }
   }
 
-  .log-clear-container {
+  .log-button:last-child {
+    margin-right: 0;
+  }
+
+  .log-button-container {
     display: inline-block;
   }
 
-  .log-toggle {
+  .log-button-toggle {
     padding: 4px 10px;
+    margin-right: 0;
   }
 
   .separator {

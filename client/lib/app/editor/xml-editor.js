@@ -19,7 +19,6 @@ require('codemirror/addon/edit/closetag');
 // search addons
 require('codemirror/addon/search/search');
 require('codemirror/addon/search/searchcursor');
-require('codemirror/addon/search/jump-to-line');
 require('codemirror/addon/dialog/dialog');
 
 /**
@@ -176,7 +175,7 @@ XMLEditor.prototype.triggerAction = function(action, options) {
   }
 
   if (action === 'find') {
-    codemirror.execCommand('find');
+    codemirror.execCommand('findPersistent');
   }
 
   if (action === 'findNext') {

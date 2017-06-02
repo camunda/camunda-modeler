@@ -5,19 +5,25 @@ var electron = require('electron'),
     app = electron.app;
 
 
-function on(event, callback) {
-  var responseEvent = event + ':response';
-
-  ipcMain.on(event, function(evt) {
-    var args = Array.prototype.slice.call(arguments).slice(1);
+function on(event, callback, that) {
+  ipcMain.on(event, function(evt, id) {
+    var args = Array.prototype.slice.call(arguments).slice(2);
 
     function done() {
-      var _args =  Array.prototype.slice.call(arguments);
+      var args =  Array.prototype.slice.call(arguments).map(function(e) {
+        if (e instanceof Error) {
+          return { message: e.message };
+        }
 
-      evt.sender.send(responseEvent, _args);
+        return e;
+      });
+
+      var responseEvent = event + ':response:' + id;
+
+      evt.sender.send(responseEvent, args);
     }
 
-    callback.apply(null, args.concat(done));
+    callback.apply(that || null, args.concat(done));
   });
 }
 

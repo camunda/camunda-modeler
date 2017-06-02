@@ -9,6 +9,7 @@ var inherits = require('inherits');
 var ensureOpts = require('util/ensure-opts'),
     dragger = require('util/dom/dragger'),
     copy = require('util/copy'),
+    selectText = require('util/dom/select-text'),
     isEscape = require('util/event/is-escape');
 
 
@@ -42,19 +43,35 @@ function Log(options) {
   };
 
   this.toggleLog = function() {
+    var entries = options.log.entries;
+
     events.emit('layout:update', {
       log: {
-        open: !options.layout.log.open
+        open: !options.layout.log.open,
+        cleared: !entries.length
       }
     });
   };
 
   this.clearLog = function() {
     options.log.clear();
+
+    this.toggleLog();
+  };
+
+  this.copyLog = function() {
+
+    var element = document
+      .getElementsByClassName('log')[0]
+      .getElementsByClassName('entries')[0];
+
+    selectText(element);
+
+    document.execCommand('copy');
   };
 
   this.render = function() {
-    var clearButton;
+    var buttons;
 
     var entries = options.log.entries,
         logLayout = options.layout.log;
@@ -66,10 +83,12 @@ function Log(options) {
     };
 
     if (logLayout.open && (entries && entries.length)) {
-      clearButton = (
-        <div className="log-clear-container">
+
+      buttons = (
+        <div className="log-button-container">
           <span className="separator"></span>
-          <div className="log-clear" onClick={ this.compose('clearLog') }>Clear log</div>
+          <div className="log-button" onClick={ this.compose('copyLog') }>Copy log</div>
+          <div className="log-button" onClick={ this.compose('clearLog') }>Clear log</div>
         </div>
       );
     }
@@ -77,8 +96,8 @@ function Log(options) {
     return (
       <div className="log">
         <div className="header" >
-          <div className="log-toggle" onClick={ this.compose('toggleLog') }>Log</div>
-          { clearButton }
+          <div className="log-button log-button-toggle" onClick={ this.compose('toggleLog') }>Log</div>
+          { buttons }
         </div>
         <div className="resize-handle"
              draggable="true"

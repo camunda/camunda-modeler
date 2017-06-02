@@ -12,9 +12,11 @@ var inherits = require('inherits');
 
 var BaseComponent = require('base/component'),
     MenuBar = require('base/components/menu-bar'),
-    Tabbed = require('base/components/tabbed');
+    Tabbed = require('base/components/tabbed'),
+    ModalOverlay = require('base/components/modal-overlay');
 
 var MultiButton = require('base/components/buttons/multi-button'),
+    ColorPickerButton = require('base/components/buttons/color-picker-button'),
     Button = require('base/components/buttons/button'),
     Separator = require('base/components/buttons/separator');
 
@@ -47,6 +49,7 @@ function App(options) {
     'dialog',
     'fileSystem',
     'config',
+    'plugins',
     'metaData'
   ], options);
 
@@ -60,6 +63,9 @@ function App(options) {
     log: {
       open: false,
       height: 150
+    },
+    minimap: {
+      open: false
     }
   };
 
@@ -99,10 +105,16 @@ function App(options) {
               primary: true
             },
             {
+              id: 'create-dmn-table',
+              action: this.compose('triggerAction', 'create-dmn-table'),
+              label: 'Create new DMN Table'
+            },
+            {
               id: 'create-dmn-diagram',
               action: this.compose('triggerAction', 'create-dmn-diagram'),
-              label: 'Create new DMN Table'
-            },{
+              label: 'Create new DMN Diagram (DRD)'
+            },
+            {
               id: 'create-cmmn-diagram',
               action: this.compose('triggerAction', 'create-cmmn-diagram'),
               label: 'Create new CMMN Diagram'
@@ -163,6 +175,22 @@ function App(options) {
       visible: false,
       name: 'bpmn',
       buttons: [
+        Separator(),
+        ColorPickerButton({
+          id: 'set-color',
+          icon: 'icon-set-color-tool',
+          label: 'Set Color',
+          action: this.compose('triggerAction', 'setColor'),
+          disabled: true,
+          colors: [
+            { fill: undefined, stroke: undefined, label: 'None' }, // default
+            { fill: '#BBDEFB', stroke: '#1E88E5', label: 'Blue' }, // blue
+            { fill: '#FFE0B2', stroke: '#FB8C00', label: 'Orange' }, // orange
+            { fill: '#C8E6C9', stroke: '#43A047', label: 'Green' }, // green
+            { fill: '#FFCDD2', stroke: '#E53935', label: 'Red' }, // red
+            { fill: '#E1BEE7', stroke: '#8E24AA', label: 'Purple' } // purple
+          ]
+        }),
         Separator(),
         Button({
           id: 'align-left',
@@ -250,7 +278,7 @@ function App(options) {
     this.persistWorkspace((err) => {
       debug('workspace persisted?', err);
 
-      // this is something we want to prevent a race condition when quitting the app
+      // this is to prevent a race condition when quitting the app
       if (done) {
         done(err);
       }
@@ -307,6 +335,10 @@ function App(options) {
       this.updateMenuEntry('modeler', key, !enabled);
     });
 
+    // update set color button state
+    button = find(this.menuEntries.bpmn.buttons, { id: 'set-color' });
+    button.disabled = !newState.elementsSelected;
+
     this.events.emit('changed');
   });
 
@@ -333,7 +365,7 @@ function App(options) {
     this.events.emit('changed');
   });
 
-  this.events.on('dialog-overlay:toggle', this.compose('toggleDialogOverlay'));
+  this.events.on('dialog-overlay:toggle', this.compose('toggleOverlay'));
 
   ///////// public API yea! //////////////////////////////////////
 
@@ -353,17 +385,18 @@ function App(options) {
    */
   this.emit = bind(this.events.emit, this.events);
 
-
   // bootstrap support for diagram files
 
   this.tabProviders = [
-    this.createComponent(BpmnProvider, { app: this }),
+    this.createComponent(BpmnProvider, { app: this, plugins: this.plugins }),
     this.createComponent(DmnProvider, { app: this }),
     this.createComponent(CmmnProvider, { app: this })
   ];
 
   // let other components know that the window has been resized
   window.addEventListener('resize', this.events.composeEmitter('window:resized'));
+
+  window.addEventListener('focusin', this.events.composeEmitter('input:focused'));
 }
 
 inherits(App, BaseComponent);
@@ -372,15 +405,13 @@ module.exports = App;
 
 
 App.prototype.render = function() {
-  var dialogOverlayClasses = 'dialog-overlay';
-
-  if (this._activeDialogOverlay) {
-    dialogOverlayClasses += ' active';
-  }
 
   var html =
     <div className="app" onDragover={ fileDrop(this.compose('openFiles')) }>
-      <div className={ dialogOverlayClasses }></div>
+      <ModalOverlay
+        isActive={ this._activeOverlay }
+        content={ this._overlayContent }
+        events={ this.events } />
       <MenuBar entries={ this.menuEntries } />
       <Tabbed
         className="main"
@@ -388,6 +419,7 @@ App.prototype.render = function() {
         active={ this.activeTab }
         onDragTab={ this.compose('shiftTab') }
         onSelect={ this.compose('selectTab') }
+        onContextMenu={ this.compose('openTabContextMenu') }
         onClose={ this.compose('closeTab') } />
       <Footer
         layout={ this.layout }
@@ -398,9 +430,28 @@ App.prototype.render = function() {
   return html;
 };
 
+App.prototype.openTabContextMenu = function(tab, evt) {
+  // do not open a context-menu on the 'empty tab'
+  if (tab.empty) {
+    return;
+  }
 
-App.prototype.toggleDialogOverlay = function(isOpened) {
-  this._activeDialogOverlay = isOpened;
+  debug('opening context-menu', tab);
+
+  this.emit('context-menu:open', 'tab', { tabId: tab.id });
+};
+
+App.prototype.toggleOverlay = function(isOpened) {
+
+  if (typeof isOpened === 'string') {
+    this._activeOverlay = true;
+
+    this._overlayContent = isOpened;
+  } else {
+    this._activeOverlay = isOpened;
+
+    this._overlayContent = null;
+  }
 
   this.events.emit('changed');
 };
@@ -492,7 +543,9 @@ App.prototype.openDiagram = function() {
 
   var dialog = this.dialog;
 
-  dialog.open((err, files) => {
+  var cwd = getFilePath(this.activeTab);
+
+  dialog.open(cwd, (err, files) => {
     if (err) {
       return dialog.openError(err, function() {
         debug('open-diagram canceled: %s', err);
@@ -535,6 +588,10 @@ App.prototype.triggerAction = function(action, options) {
     return this.createDiagram('dmn');
   }
 
+  if (action === 'create-dmn-table') {
+    return this.createDiagram('dmn', { isTable: true });
+  }
+
   if (action === 'create-cmmn-diagram') {
     return this.createDiagram('cmmn');
   }
@@ -555,8 +612,20 @@ App.prototype.triggerAction = function(action, options) {
     return this.closeAllTabs();
   }
 
+  if (action === 'close-tab') {
+    return this.closeTab(options && options.tabId);
+  }
+
+  if (action === 'close-other-tabs') {
+    return this.closeOtherTabs(options && options.tabId);
+  }
+
   if (action === 'reopen-last-tab') {
     return this.reopenLastTab();
+  }
+
+  if (action === 'show-shortcuts') {
+    return this.toggleOverlay('shortcuts');
   }
 
   // Actions below require active tab
@@ -594,10 +663,10 @@ App.prototype.triggerAction = function(action, options) {
  * @param {String} type
  * @return {Tab} created diagram tab
  */
-App.prototype.createDiagram = function(type) {
+App.prototype.createDiagram = function(type, attrs) {
   var tabProvider = this._findTabProvider(type);
 
-  var file = tabProvider.createNewFile();
+  var file = tabProvider.createNewFile(attrs);
 
   return this.openTab(file);
 };
@@ -814,7 +883,8 @@ App.prototype.saveTab = function(tab, options, done) {
 
     if (!savedFile) {
       debug('save file canceled');
-      return done();
+
+      return done(null, 'cancel');
     }
 
     debug('saved %s', tab.id);
@@ -995,9 +1065,14 @@ App.prototype.closeTab = function(tab, done) {
 
   var tabs = this.tabs,
       dialog = this.dialog,
+      exists,
       file;
 
-  var exists = contains(tabs, tab);
+  if (typeof tab === 'string') {
+    tab = exists = find(this.tabs, { id: tab });
+  } else {
+    exists = contains(tabs, tab);
+  }
 
   if (!exists) {
     throw new Error('non existing tab');
@@ -1043,6 +1118,12 @@ App.prototype.closeTab = function(tab, done) {
         debug('save-tab error: %s', err);
 
         return done(err);
+      }
+
+      if (isCancel(savedFile)) {
+        debug('close-tab canceled: %s', err);
+
+        return done(userCanceled());
       }
 
       return this._closeTab(tab, done);
@@ -1175,6 +1256,7 @@ App.prototype.restoreWorkspace = function(done) {
     }
   };
 
+
   this.workspace.load(defaultWorkspace, (err, workspaceConfig) => {
 
     if (err) {
@@ -1205,30 +1287,6 @@ App.prototype.restoreWorkspace = function(done) {
 };
 
 /**
- * Load the application configuration.
- *
- * @param {Function} done
- */
-App.prototype.loadConfig = function(done) {
-
-  this.config.load((err) => {
-
-    if (err) {
-      debug('configuration load error', err);
-
-      return done(err);
-    }
-
-    this.events.emit('changed');
-
-    this.events.emit('configuration:loaded');
-
-    // we are done
-    done(null);
-  });
-};
-
-/**
  * Enables/disables any (button) menu entries
  *
  * @param  {String} id
@@ -1250,6 +1308,7 @@ App.prototype.run = function() {
 
   // initialization sequence
   //
+  // (-1) load plugins
   // (0) select empty tab
   // (1) load configuration
   // (2) restore workspace
@@ -1257,11 +1316,7 @@ App.prototype.run = function() {
 
   this.selectTab(this.tabs[0]);
 
-  this.loadConfig((err) => {
-
-    if (err) {
-      this.logger.warn('Failed to load config', err);
-    }
+  this.plugins.load(() => {
 
     this.restoreWorkspace((err) => {
       if (err) {
@@ -1332,6 +1387,26 @@ App.prototype._closeTabs = function(tabs, cb) {
 App.prototype.closeAllTabs = function() {
   var tabs = this.tabs.filter(function(tab) {
     return !!tab.file;
+  });
+
+  this._closeTabs(tabs);
+};
+
+
+/**
+ * Closes all tabs besides the current active one.
+ */
+App.prototype.closeOtherTabs = function(tab) {
+  if (tab && typeof tab === 'string') {
+    tab = find(this.tabs, { id: tab });
+  } else {
+    tab = contains(this.tabs, tab) ? tab : null;
+  }
+
+  var openedTab = tab || this.activeTab;
+
+  var tabs = this.tabs.filter(function(tab) {
+    return tab.closable && openedTab !== tab;
   });
 
   this._closeTabs(tabs);
@@ -1462,4 +1537,12 @@ function userCanceled() {
 
 function noTabProvider(fileType) {
   throw new Error('missing provider for file <' + fileType + '>');
+}
+
+function getFilePath(tab) {
+  if (isUnsaved(tab && tab.file)) {
+    return null;
+  }
+
+  return tab.file.path;
 }

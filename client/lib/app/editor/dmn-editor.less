@@ -4,15 +4,28 @@
   .warnings-overlay;
 
   .flex-container(row);
+
   flex-grow: 1;
 
-  overflow: scroll;
+  overflow: hidden;
 
   > .editor-container {
     flex: 1;
 
+    position: relative;
     outline: none;
 
-    padding: 15px;
+    > .editor-parent {
+
+      > div {
+        .full-size();
+      }
+
+      .dmn-table {
+        overflow: scroll;
+        padding: 15px;
+      }
+    }
   }
+
 }

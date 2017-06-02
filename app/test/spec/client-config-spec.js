@@ -2,31 +2,84 @@
 
 var ClientConfig = require('../../lib/client-config');
 
+var path = require('path');
+
 
 describe('ClientConfig', function() {
 
-  var clientConfig;
+  describe('<bpmn.elementTemplates>', function() {
 
-  beforeEach(function() {
-    var app = {
-      getPath: function(type) {
-        return '';
-      }
-    };
+    var clientConfig;
 
-    clientConfig = new ClientConfig(app);
-  });
+    var GLOBAL_SEARCH_PATH = '';
+
+    beforeEach(function() {
+      var app = {
+        getPath: function(type) {
+          if (type === 'userData') {
+            return GLOBAL_SEARCH_PATH;
+          } else {
+            return path.resolve('/non/existing');
+          }
+        }
+      };
+
+      clientConfig = new ClientConfig(app);
+    });
 
 
-  it('should provide configuration with load', function() {
+    it('should provide', function(done) {
 
-    // when
-    var cfg = clientConfig.load();
+      // given
+      var fakeDiagram = {
+        path: path.join(__dirname, '/../fixtures/element-templates/foo/bar.bpmn')
+      };
 
-    // then
-    expect(cfg).to.have.keys([
-      'bpmn.elementTemplates'
-    ]);
+      GLOBAL_SEARCH_PATH = path.join(__dirname, '/../fixtures/element-templates');
+
+      // when
+      clientConfig.get('bpmn.elementTemplates', fakeDiagram, function(err, templates) {
+
+        if (err) {
+          return done(err);
+        }
+
+        // then
+        expect(err).not.to.exist;
+
+        // local templates loaded first
+        expect(templates).to.eql([
+          { id: 'com.foo.Bar' }, // local (!!!)
+          { id: 'com.foo.Bar', FOO: 'BAR' },
+          { id: 'single', FOO: 'BAR' }
+        ]);
+
+        done();
+      });
+
+    });
+
+
+    it('should propagate JSON parse error', function(done) {
+
+      // given
+      var fakeDiagram = null;
+
+      GLOBAL_SEARCH_PATH = path.join(__dirname, '/../fixtures/element-templates/broken');
+
+      // when
+      clientConfig.get('bpmn.elementTemplates', fakeDiagram, function(err, templates) {
+
+        // then
+        expect(err).to.exist;
+
+        expect(err.message).to.match(/template .* parse error: Unexpected token I.*/);
+
+        done();
+      });
+
+    });
+
   });
 
 });

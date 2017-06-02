@@ -3,7 +3,8 @@
 var Config = require('test/helper/mock/config'),
     Events = require('base/events'),
     Logger = require('base/logger'),
-    Dialog = require('test/helper/mock/dialog');
+    Dialog = require('test/helper/mock/dialog'),
+    Plugins = require('test/helper/mock/plugins');
 
 var BpmnTab = require('app/tabs/bpmn/bpmn-tab');
 
@@ -32,13 +33,14 @@ function createFile(options) {
 
 describe('BpmnTab', function() {
 
-  var events, logger, dialog, config;
+  var events, logger, dialog, config, plugins;
 
   beforeEach(function() {
     events = new Events();
     logger = new Logger();
     dialog = new Dialog();
     config = new Config();
+    plugins = new Plugins();
   });
 
   function createBpmnTab(id, file) {
@@ -52,9 +54,11 @@ describe('BpmnTab', function() {
       dialog: dialog,
       file: file || createFile(),
       layout: {
-        propertiesPanel: {}
+        propertiesPanel: {},
+        minimap: {}
       },
       logger: logger,
+      plugins: plugins,
       metaData: {}
     };
 

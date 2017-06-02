@@ -2,8 +2,6 @@
 
 var domReady = require('domready');
 
-var Delegator = require('dom-delegator');
-
 var debug = require('debug')('app-client');
 
 // provide vdom utility
@@ -16,7 +14,8 @@ var Config = require('external/config'),
     Logger = require('base/logger'),
     Menu = require('external/window-menu'),
     ContextMenu = require('external/context-menu'),
-    Workspace = require('external/workspace');
+    Workspace = require('external/workspace'),
+    Plugins = require('external/plugins');
 
 var App = require('./app');
 
@@ -24,11 +23,8 @@ var mainLoop = require('util/dom/main-loop');
 
 var browser = require('util/browser');
 
-var remote = require('electron').remote,
+var remote = window.require('electron').remote,
     metaData = remote.getGlobal('metaData');
-
-// init dom-delegator
-Delegator();
 
 domReady(function() {
   var events = new Events();
@@ -40,6 +36,7 @@ domReady(function() {
     fileSystem: new FileSystem(),
     logger: new Logger(),
     workspace: new Workspace(),
+    plugins: new Plugins(),
     metaData: metaData
   });
 
@@ -74,7 +71,7 @@ domReady(function() {
   browser.on('dialog-overlay:toggle', function(e, isOpened) {
     debug('toggle dialog overlay', isOpened);
 
-    app.toggleDialogOverlay(isOpened);
+    app.toggleOverlay(isOpened);
   });
 
   mainLoop(app, document.body);

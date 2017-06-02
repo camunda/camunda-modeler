@@ -6,11 +6,12 @@ var ensureOpts = require('util/ensure-opts');
 
 var isUnsaved = require('util/file/is-unsaved');
 
-var initialXML = require('./initial.dmn');
+var tableXML = require('./table.dmn'),
+    diagramXML = require('./diagram.dmn');
 
 var DmnTab = require('./dmn-tab');
 
-var ids = require('ids')();
+var ids = require('ids')([ 32, 36, 1 ]);
 
 // TODO(vlad): add shared super type for DMN/BPMN providers
 /**
@@ -26,17 +27,27 @@ function DmnProvider(options) {
 
   var createdFiles = 0;
 
-  this.createNewFile = function() {
+  this.createNewFile = function(attrs) {
+    var xml;
+
+    attrs = attrs || {};
+
     // increment counter
     createdFiles++;
 
     debug('create DMN file');
 
+    xml = attrs.isTable ? tableXML : diagramXML;
+
+    // make ID ROBUST
+    xml = xml.replace('id="definitions"', 'id="definitions_' + ids.next() + '"');
+
     return {
       fileType: 'dmn',
       name: 'diagram_' + createdFiles + '.dmn',
       path: isUnsaved.PATH,
-      contents: initialXML
+      contents: xml,
+      loadDiagram: !attrs.isTable
     };
   };
 

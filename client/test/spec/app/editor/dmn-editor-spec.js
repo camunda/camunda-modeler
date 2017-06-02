@@ -4,7 +4,7 @@ var describeEditor = require('./commons').describeEditor;
 
 var DmnEditor = require('app/editor/dmn-editor');
 
-var initialXML = require('app/tabs/dmn/initial.dmn'),
+var initialXML = require('app/tabs/dmn/table.dmn'),
     otherXML = require('./other.dmn');
 
 
@@ -19,7 +19,8 @@ function createEditor() {
 describeEditor('DmnEditor', {
   createEditor: createEditor,
   initialXML: initialXML,
-  otherXML: otherXML
+  otherXML: otherXML,
+  isDiagramEditor: true
 });
 
 

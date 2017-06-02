@@ -4,13 +4,18 @@ var ensureOpts = require('util/ensure-opts');
 
 var spy = require('test/helper/util/spy');
 
+var select = require('test/helper/vdom').select,
+    render = require('test/helper/vdom').render,
+    simulateEvent = require('test/helper/vdom').simulateEvent;
+
 
 function describeEditor(name, options) {
 
   ensureOpts([
     'createEditor',
     'initialXML',
-    'otherXML'
+    'otherXML',
+    'isDiagramEditor'
   ], options);
 
   var createEditor = options.createEditor;
@@ -22,6 +27,8 @@ function describeEditor(name, options) {
   var describeFn = options.only ? describe.only : describe;
 
   var hasGlobalUndo = !!options.globalUndo;
+
+  var isDiagramEditor = options.isDiagramEditor;
 
 
   /**
@@ -221,26 +228,31 @@ function describeEditor(name, options) {
 
     describe('editor state', function() {
 
-      it('should update on import', function(done) {
-        // given
-        var $el = document.createElement('div');
+      // TODO(ricardomatias): remove skip once dmn is able
+      // to correctly manage it's state
+      if (name !== 'DmnEditor') {
 
-        // when
-        editor.mountEditor($el);
+        it('should update on import', function(done) {
+          // given
+          var $el = document.createElement('div');
 
-        // wait for diagram shown / imported
-        editor.once('state-updated', function(context) {
+          // when
+          editor.mountEditor($el);
 
-          // then
-          expect(context).to.have.property('undo', false);
-          expect(context).to.have.property('redo', false);
-          expect(context).to.have.property('dirty', false);
+          // wait for diagram shown / imported
+          editor.once('state-updated', function(context) {
 
-          done();
+            // then
+            expect(context).to.have.property('undo', false);
+            expect(context).to.have.property('redo', false);
+            expect(context).to.have.property('dirty', false);
+
+            done();
+          });
+
+          editor.setXML(initialXML, {});
         });
-
-        editor.setXML(initialXML, {});
-      });
+      }
 
 
       it('should update on re-mount', function(done) {
@@ -278,35 +290,40 @@ function describeEditor(name, options) {
       });
 
 
-      it('should update on new XML', function(done) {
+      // TODO(ricardomatias): remove skip once dmn is able
+      // to correctly manage it's state
+      if (name !== 'DmnEditor') {
 
-        // given
-        var newXML = otherXML;
+        it('should update on new XML', function(done) {
 
-        var $el = document.createElement('div');
+          // given
+          var newXML = otherXML;
 
-        // when
-        editor.once('shown', function() {
-
-          editor.once('state-updated', function(context) {
-
-            // then
-            expect(context).to.have.property('undo', hasGlobalUndo);
-            expect(context).to.have.property('redo', false);
-            expect(context).to.have.property('dirty', true);
-
-            done();
-          });
+          var $el = document.createElement('div');
 
           // when
-          // updating to new file
-          editor.setXML(newXML);
+          editor.once('shown', function() {
 
-        }, 300);
+            editor.once('state-updated', function(context) {
 
-        editor.setXML(initialXML, {});
-        editor.mountEditor($el);
-      });
+              // then
+              expect(context).to.have.property('undo', hasGlobalUndo);
+              expect(context).to.have.property('redo', false);
+              expect(context).to.have.property('dirty', true);
+
+              done();
+            });
+
+            // when
+            // updating to new file
+            editor.setXML(newXML);
+
+          }, 300);
+
+          editor.setXML(initialXML, {});
+          editor.mountEditor($el);
+        });
+      }
 
 
       it('should reflect initial dirty state', function(done) {
@@ -330,6 +347,135 @@ function describeEditor(name, options) {
 
     });
 
+    // ** From here downwards, only test editors that inherit from DiagramEditor **
+    if (!isDiagramEditor) {
+      return;
+    }
+
+    describe('import warnings overlay', function() {
+
+      it('should hide without import information', function() {
+
+        // given
+        editor.lastImport = null;
+
+        // when
+        var tree = render(editor);
+
+        // then
+        expect(select('[ref=warnings-overlay]', tree)).not.to.exist;
+      });
+
+
+      it('should hide if no warnings', function() {
+
+        // given
+        editor.lastImport = {
+          warnings: []
+        };
+
+        // when
+        var tree = render(editor);
+
+        // then
+        expect(select('[ref=warnings-overlay]', tree)).not.to.exist;
+      });
+
+
+      it('should show if warnings', function() {
+
+        // given
+        editor.lastImport = {
+          warnings: [
+            new Error('foo bar')
+          ]
+        };
+
+        // when
+        var tree = render(editor);
+
+        // then
+        expect(select('[ref=warnings-overlay]', tree)).to.exist;
+      });
+
+
+      it('should hide', function() {
+
+        // given
+        editor.lastImport = {
+          warnings: [
+            new Error('foo bar')
+          ]
+        };
+
+        // when
+        var tree = render(editor);
+
+        var hideWarningsElement = select('[ref=warnings-hide-link]', tree);
+
+        simulateEvent(hideWarningsElement, 'click');
+
+        // then
+        // we simply discard the last import information
+        expect(editor.lastImport).not.to.exist;
+      });
+
+
+      it('should open log', function(done) {
+
+        // given
+        editor.lastImport = {
+          warnings: [
+            new Error('foo bar'),
+            new Error('foo BABA')
+          ]
+        };
+
+        editor.once('log:toggle', function(state) {
+
+          // then
+          expect(state.open).to.be.true;
+
+          tree = render(editor);
+
+          // then expect warnings overlay to not be there
+          expect(select('[ref=warnings-details]', tree)).to.not.exist;
+
+          done();
+        });
+
+        // when
+        var tree = render(editor);
+
+        var openLogElement = select('[ref=warnings-details-link]', tree);
+
+        simulateEvent(openLogElement, 'click');
+      });
+
+
+      it('should close warnings overlay when log is cleared', function(done) {
+
+        // given
+        var hideWarningsSpy = spy(editor, 'hideWarnings');
+
+        editor.once('layout:update', function(newLayout) {
+
+          // then
+          expect(hideWarningsSpy).to.have.been.called;
+
+          done();
+        });
+
+        // when
+        editor.emit('layout:update', {
+          log: {
+            open: false,
+            cleared: true
+          }
+        });
+      });
+
+    });
   });
 
 }

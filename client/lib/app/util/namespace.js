@@ -3,13 +3,10 @@
 var forEach = require('lodash/collection/forEach');
 
 var ACTIVITI_NS = 'http://activiti.org/bpmn',
-    CAMUNDA_NS = 'http://camunda.org/schema/1.0/bpmn',
-    OLD_DMN_NS = 'http://www.omg.org/spec/DMN/20151101/dmn11.xsd',
-    DMN_NS = 'http://www.omg.org/spec/DMN/20151101/dmn.xsd';
+    CAMUNDA_NS = 'http://camunda.org/schema/1.0/bpmn';
 
 var NOTATIONS = {
-  bpmn: [ ACTIVITI_NS, CAMUNDA_NS ],
-  dmn: [ OLD_DMN_NS, DMN_NS ]
+  bpmn: [ ACTIVITI_NS, CAMUNDA_NS ]
 };
 
 function has(arr, item) {
@@ -24,7 +21,7 @@ module.exports.hasExtension = hasExtension;
 
 
 function hasOldNamespace(xml) {
-  var result = [ ACTIVITI_NS, OLD_DMN_NS ].map(function(ns) {
+  var result = [ ACTIVITI_NS ].map(function(ns) {
     return has(xml, ns);
   });
 

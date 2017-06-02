@@ -1,6 +1,7 @@
 'use strict';
 
-var browser = require('util/browser');
+var browser = require('util/browser'),
+    isMac = require('util/is-mac');
 
 var ShortcutsFix = require('./shortcuts-fix');
 
@@ -12,16 +13,13 @@ var debug = require('debug')('window-menu');
  */
 function WindowMenu(app) {
 
-  this.fix = new ShortcutsFix(app);
+  this.fix = new ShortcutsFix(app, isMac());
+
+  this.fix.bind();
 
   // Updating Menu
   app.on('tools:state-changed', (tab, state) => {
     debug('Notifying menu about client state change', state);
-
-    // fix for Ctrl+A shortcut that does not work reliably on Windows And Linux
-    if (!isMac()) {
-      state.bpmn || state.cmmn ? this.fix.bind() : this.fix.unbind();
-    }
 
     browser.send('menu:update', state);
   });
@@ -37,7 +35,3 @@ function WindowMenu(app) {
 }
 
 module.exports = WindowMenu;
-
-function isMac() {
-  return window.navigator.platform === 'MacIntel';
-}

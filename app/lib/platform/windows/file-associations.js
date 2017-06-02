@@ -8,7 +8,8 @@ var forEach = require('lodash/collection/forEach'),
 
 var EXTENSIONS = [ 'bpmn', 'dmn', 'cmmn' ];
 
-var REG_KEY_NOT_FOUND_PATTERN = /The system was unable to find the specified registry key or value/;
+var REG_KEY_NOT_FOUND_PATTERN_EN = /The system was unable to find the specified registry key or value/;
+var REG_KEY_NOT_FOUND_PATTERN_DE = /Wert wurde nicht gefunden/;
 
 var REG_COMMAND_RESULT_PATTERN = /.*REG_SZ\s+"(.*)" -- "%1"$/m;
 
@@ -36,7 +37,8 @@ function ignoreNotFound(fn) {
   try {
     return fn();
   } catch (err) {
-    if (REG_KEY_NOT_FOUND_PATTERN.test(err.message)) {
+    if (REG_KEY_NOT_FOUND_PATTERN_EN.test(err.message) ||
+        REG_KEY_NOT_FOUND_PATTERN_DE.test(err.message)) {
       return null;
     } else {
       throw err;

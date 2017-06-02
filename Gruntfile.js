@@ -80,8 +80,7 @@ module.exports = function(grunt) {
         files: [
           {
             src: [
-              'client/fonts/{app,bpmn}.*',
-              'node_modules/dmn-js/fonts/dmn-js.*',
+              'client/fonts/{app,bpmn,dmn}.*',
               'node_modules/cmmn-js/assets/cmmn-font/font/cmmn.*'
             ],
             dest: 'public/fonts',
@@ -165,7 +164,7 @@ module.exports = function(grunt) {
       },
       mocha: {
         files: 'app/**/*',
-        tasks: [ 'mochaTest:app' ]
+        tasks: [ 'mochaTest:watch' ]
       }
     },
 
@@ -183,12 +182,20 @@ module.exports = function(grunt) {
     },
 
     mochaTest: {
-      app: {
-        src: [ './app/test/spec/**/*.js' ],
+      single: {
         options: {
           reporter: 'spec',
           require: [ './app/test/expect' ]
-        }
+        },
+        src: [ './app/test/spec/**/*.js' ]
+      },
+      watch: {
+        options: {
+          noFail: true,
+          reporter: 'spec',
+          require: [ './app/test/expect' ]
+        },
+        src: [ './app/test/spec/**/*.js' ]
       }
     }
   });
@@ -201,11 +208,11 @@ module.exports = function(grunt) {
 
   grunt.registerTask('lint-fix', [ 'eslint:fix' ]);
 
-  grunt.registerTask('test', [ 'karma:single', 'mochaTest:app' ]);
+  grunt.registerTask('test', [ 'karma:single', 'mochaTest:single' ]);
 
   grunt.registerTask('auto-test', [ 'karma:unit' ]);
 
-  grunt.registerTask('auto-test-app', [ 'mochaTest:app', 'focus:app' ]);
+  grunt.registerTask('auto-test-app', [ 'mochaTest:watch', 'focus:app' ]);
 
   grunt.registerTask('build-client', [
     'clean:client',
@@ -221,13 +228,9 @@ module.exports = function(grunt) {
   // Development setup tasks
   var server = require('electron-connect').server.create({ path: 'app/develop' });
 
-  grunt.registerTask('app:start', function() {
-    server.start(__dirname + '/resources/diagram/complex.bpmn');
-  });
+  grunt.registerTask('app:start', server.start);
 
-  grunt.registerTask('app:restart', function() {
-    server.restart();
-  });
+  grunt.registerTask('app:restart', server.restart);
 
   grunt.registerTask('app:reload', server.reload);
 

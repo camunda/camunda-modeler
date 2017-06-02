@@ -6,6 +6,7 @@ var debug = require('debug')('file-drop');
 
 var domify = require('domify');
 
+var every = require('lodash/collection/every');
 
 var OVERLAY_HTML = '<div class="drop-overlay">' +
                      '<div class="box">' +
@@ -57,6 +58,17 @@ function fileDrop(fn) {
     });
   }
 
+  function isDragAllowed(dataTransfer) {
+
+    if (!dataTransfer || !dataTransfer.items.length) {
+      return false;
+    }
+
+    return every(dataTransfer.items, function(item) {
+      return item.type === 'file' || item.kind === 'file';
+    });
+  }
+
   /** drag over */
   var onDragover = function onDragover() {
 
@@ -67,7 +79,7 @@ function fileDrop(fn) {
     var dataTransfer = event.dataTransfer,
         target = event.target;
 
-    if (!dataTransfer || !dataTransfer.items.length) {
+    if (!isDragAllowed(dataTransfer)) {
       return;
     }
 

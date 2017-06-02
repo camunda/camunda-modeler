@@ -23,7 +23,8 @@ var Platform = require('./platform'),
     Workspace = require('./workspace'),
     Dialog = require('./dialog'),
     Menu = require('./menu'),
-    Cli = require('./cli');
+    Cli = require('./cli'),
+    PluginsManager = require('./plugin-manager');
 
 var browserOpen = require('./util/browser-open'),
     renderer = require('./util/renderer');
@@ -44,11 +45,27 @@ global.metaData = {
   name: app.name
 };
 
+var pluginsManager = app.pluginsManager = new PluginsManager({
+  paths: [
+    app.getPath('userData'),
+    process.cwd()
+  ]
+});
+
 // bootstrap the application's menus
 //
 // TODO(nikku): remove app.menu binding when development
 // mode bootstrap issue is fixed in electron-connect
-app.menu = new Menu(process.platform);
+app.menu = new Menu(process.platform,
+  pluginsManager.getPlugins()
+    .map(p => {
+      return {
+        menu: p.menu,
+        name: p.name,
+        error: p.error
+      };
+    })
+  );
 
 // bootstrap workspace behavior
 new Workspace(config);
@@ -147,13 +164,18 @@ function saveCallback(saveAction, diagramFile, done) {
   }]);
 }
 
-renderer.on('config:load', function(done) {
-  console.log('[client-config]', 'load');
+renderer.on('client-config:get', function() {
+
+  var args = Array.prototype.slice.call(arguments);
+
+  var done = args[args.length - 1];
 
   try {
-    done(null, clientConfig.load());
+    clientConfig.get.apply(clientConfig, arguments);
   } catch (e) {
-    done(e);
+    if (typeof done === 'function') {
+      done(e);
+    }
   }
 });
 
@@ -173,8 +195,8 @@ renderer.on('file:read-stats', function(diagramFile, done) {
   done(null, fileSystem.readFileStats(diagramFile));
 });
 
-renderer.on('file:open', function(done) {
-  fileSystem.open(function(err, diagramFiles) {
+renderer.on('file:open', function(filePath, done) {
+  fileSystem.open(filePath, function(err, diagramFiles) {
     if (err) {
       return done(err);
     }

@@ -31,7 +31,8 @@ function createEditor() {
 describeEditor('CmmnEditor', {
   createEditor: createEditor,
   initialXML: initialXML,
-  otherXML: otherXML
+  otherXML: otherXML,
+  isDiagramEditor: true
 });
 
 
@@ -42,8 +43,6 @@ describe('CmmnEditor', function() {
   beforeEach(function() {
     editor = createEditor();
   });
-
-
 
   it('should initialize modeler', function(done) {
 
@@ -208,102 +207,15 @@ describe('CmmnEditor', function() {
 
     });
 
-  });
-
-
-  describe('import warnings overlay', function() {
-
-    it('should hide without import information', function() {
-
+    it('should call state if input is active', function() {
       // given
-      editor.lastImport = null;
+      var stateSpy = spy(editor, 'updateState');
 
       // when
-      var tree = render(editor);
+      editor.emit('input:focused', { target: { tagName: 'TEXTAREA' } });
 
       // then
-      expect(select('[ref=warnings-overlay]', tree)).not.to.exist;
-    });
-
-
-    it('should hide if no warnings', function() {
-
-      // given
-      editor.lastImport = {
-        warnings: []
-      };
-
-      // when
-      var tree = render(editor);
-
-      // then
-      expect(select('[ref=warnings-overlay]', tree)).not.to.exist;
-    });
-
-
-    it('should show if warnings', function() {
-
-      // given
-      editor.lastImport = {
-        warnings: [
-          new Error('foo bar')
-        ]
-      };
-
-      // when
-      var tree = render(editor);
-
-      // then
-      expect(select('[ref=warnings-overlay]', tree)).to.exist;
-    });
-
-
-    it('should hide', function() {
-
-      // given
-      editor.lastImport = {
-        warnings: [
-          new Error('foo bar')
-        ]
-      };
-
-      // when
-      var tree = render(editor);
-
-      var hideWarningsElement = select('[ref=warnings-hide-link]', tree);
-
-      simulateEvent(hideWarningsElement, 'click');
-
-      // then
-      // we simply discard the last import information
-      expect(editor.lastImport).not.to.exist;
-    });
-
-
-    it('should show details', function(done) {
-
-      // given
-      editor.lastImport = {
-        warnings: [
-          new Error('foo bar'),
-          new Error('foo BABA')
-        ]
-      };
-
-      editor.once('log:toggle', function(state) {
-
-        // then
-        expect(state.open).to.be.true;
-
-        done();
-      });
-
-      // when
-      var tree = render(editor);
-
-      var showDetailsElement = select('[ref=warnings-details-link]', tree);
-
-      simulateEvent(showDetailsElement, 'click');
+      expect(stateSpy).to.have.been.called;
     });
 
   });

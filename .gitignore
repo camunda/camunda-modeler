@@ -2,3 +2,5 @@
 node_modules
 distro/
 public/
+plugins/**
+!docs/plugins/**

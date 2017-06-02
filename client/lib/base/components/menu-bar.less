@@ -1,4 +1,5 @@
 @import "buttons/multi-button";
+@import "buttons/color-picker-button";
 
 /**
  * menu-bar related styles
@@ -39,7 +40,8 @@
 }
 
 .menu-bar .group > .entry > button,
-.menu-bar .group > .entry .multi-button {
+.menu-bar .group > .entry .multi-button,
+.menu-bar .group > .entry .color-picker-button {
   border-radius: 3px;
 
   padding: 5px;
@@ -77,6 +79,10 @@
 
 .menu-bar .group .multi-button {
   .multi-button;
+}
+
+.menu-bar .group .color-picker-button {
+  .color-picker-button;
 }
 
 .menu-bar .group .caret {

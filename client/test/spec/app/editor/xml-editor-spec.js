@@ -16,7 +16,8 @@ describeEditor('XMLEditor', {
   createEditor: createEditor,
   initialXML: initialXML,
   otherXML: otherXML,
-  globalUndo: true
+  globalUndo: true,
+  isDiagramEditor: false
 });
 
 

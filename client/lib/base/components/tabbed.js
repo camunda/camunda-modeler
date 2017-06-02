@@ -12,6 +12,8 @@ var ensureOpts = require('util/ensure-opts'),
 
 var find = require('lodash/collection/find');
 
+var noop = function() {};
+
 var CloseHandle = require('base/components/misc/close-handle');
 
 
@@ -27,15 +29,20 @@ var TABS_OPTS = {
 
 function Tabbed(options) {
 
-  ensureOpts([ 'onClose', 'onSelect' ], options);
+  ensureOpts([
+    'onClose',
+    'onSelect',
+    'onContextMenu'
+  ], options);
 
   BaseComponent.call(this, options);
 
   this.render = function() {
 
-    var onClose = options.onClose,
-        onSelect = options.onSelect,
+    var onClose = options.onClose || noop,
+        onSelect = options.onSelect || noop,
         onDragTab = options.onDragTab,
+        onContextMenu = options.onContextMenu || noop,
         tabs = options.tabs,
         activeTab = options.active;
 
@@ -71,9 +78,31 @@ function Tabbed(options) {
                   throw new Error('no id specified');
                 }
 
-                var action = tab.action || onSelect.bind(null, tab);
+                function handleContextMenu(event) {
+                  return onContextMenu(tab);
+                }
 
-                var className = [ tab === activeTab ? 'active' : '', 'tab', tab.empty ? 'empty' : '' ].join(' ');
+                function handleSelect(event) {
+                  if (event.button !== 0) {
+                    return;
+                  }
+
+                  var triggerAction = tab.action || onSelect;
+
+                  return triggerAction(tab);
+                }
+
+                function handleClose(event) {
+                  event.stopPropagation();
+
+                  return onClose(tab);
+                }
+
+                var className = [
+                  tab === activeTab ? 'active' : '',
+                  'tab',
+                  tab.empty ? 'empty' : ''
+                ].join(' ');
 
                 return (
                   <div className={ className }
@@ -81,12 +110,13 @@ function Tabbed(options) {
                        ref={ tab.id }
                        tabId={ tab.id }
                        title={ tab.title }
-                       onMousedown={ action }
+                       onClick={ handleSelect }
+                       onContextmenu={ handleContextMenu }
                        tabIndex="0">
                     { tab.label }
                     { tab.closable
                         ? <CloseHandle dirty={ tab.dirty }
-                                       onClick={ onClose.bind(null, tab) } />
+                                       onClick={ handleClose } />
                         : null }
                   </div>
                 );
