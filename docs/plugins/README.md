@@ -8,7 +8,10 @@ Plugins allow you to plug into different parts of the modeler.
 
 ## Plugging into the Camunda Modeler
 
-You can plug into the modeler in order to change its appearance, add new menu entries or extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js). Adding a plugin is as easy as putting the files into the directory `{MODELER_LOCATION}/plugins`. So let's dive into how to add your own plugins.
+You can plug into the modeler in order to change its appearance, add new menu entries or extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js). Adding a plugin is as easy as putting the files into the directory `{MODELER_LOCATION}/plugins`.
+On macOS you have to create the `plugins` folder in this directoy: `/Users/{USER_NAME}/Library/Application Support/camunda-modeler` 
+
+So let's dive into how to add your own plugins.
 
 Regardless of the type of your plugin you have to export it as a [Node.js module](https://nodejs.org/api/modules.html). In order for the modeler to recognize your plugin the filename must be `index.js`.
 
