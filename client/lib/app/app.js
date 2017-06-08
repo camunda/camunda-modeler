@@ -1058,8 +1058,9 @@ App.prototype.selectPrevious = function() {
  *
  * @param {Tab} tab
  * @param {Function} [done] passed with (err, status=(canceled, ...))
+ * @param {Object} [hints]
  */
-App.prototype.closeTab = function(tab, done) {
+App.prototype.closeTab = function(tab, done, hints) {
 
   debug('close tab', tab);
 
@@ -1078,6 +1079,15 @@ App.prototype.closeTab = function(tab, done) {
     throw new Error('non existing tab');
   }
 
+  if (typeof done === 'object') {
+    hints = done;
+    done = function(err) {
+      if (err) {
+        debug('error: %s', err);
+      }
+    };
+  }
+
   if (typeof done !== 'function') {
     done = function(err) {
       if (err) {
@@ -1085,6 +1095,8 @@ App.prototype.closeTab = function(tab, done) {
       }
     };
   }
+
+  hints = hints || {};
 
   // close normally when file is already saved
   if (!tab.dirty) {
@@ -1109,7 +1121,11 @@ App.prototype.closeTab = function(tab, done) {
 
     // close without saving
     if (isDiscard(result)) {
-      return this._closeTab(tab, done);
+      if (hints.skipIfDiscardChanges) {
+        return done();
+      } else {
+        return this._closeTab(tab, done);
+      }
     }
 
     // save and then close the tab
@@ -1364,19 +1380,31 @@ App.prototype.shiftTab = function(tab, newIdx) {
  *
  * @param  {Array<Tab>} tabs
  * @param  {Function} cb
+ * @param  {Object} hints
  */
-App.prototype._closeTabs = function(tabs, cb) {
+App.prototype._closeTabs = function(tabs, cb, hints) {
+  if (typeof cb === 'object') {
+    hints = cb;
+    cb = function(err) {
+      if (err) {
+        debug('error: %s', err);
+      }
+    };
+  }
+
   cb = cb || function(err) {
     if (err) {
       debug('error: %s', err);
     }
   };
 
+  hints = hints || {};
+
   series(tabs, (tab, done) => {
     this.selectTab(tab);
 
     // TODO: make sure newly selected tab is rendered
-    this.closeTab(tab, done);
+    this.closeTab(tab, done, hints);
   }, cb);
 };
 
@@ -1445,6 +1473,8 @@ App.prototype.quit = function() {
     this.events.emit('workspace:changed', () => {
       this.events.emit('quitting');
     });
+  }, {
+    skipIfDiscardChanges: true
   });
 };
 

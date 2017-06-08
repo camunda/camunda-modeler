@@ -1313,6 +1313,7 @@ describe('App', function() {
 
   });
 
+
   describe('tab closing', function() {
 
     it('should keep history of closed file', function() {
@@ -1649,6 +1650,30 @@ describe('App', function() {
       tabs.forEach(function(tab) {
         expect(app.tabs).to.not.contain(tab);
       });
+    });
+
+
+    it('should not close tabs with extisting files if hints provided', function() {
+
+      // given
+      var bpmnFile = createBpmnFile(bpmnXML, UNSAVED_FILE);
+      var dmnFile = createDmnFile(dmnXML);
+
+      var tabs = app.openTabs([ bpmnFile, dmnFile ]);
+
+      var bpmnTab = tabs[0];
+      var dmnTab = tabs[1];
+
+      dialog.setResponse('close', 'discard');
+
+      // when
+      app._closeTabs(tabs, { skipIfDiscardChanges: true });
+
+      // then
+      expect(dialog.close).to.have.been.calledOnce;
+
+      expect(app.tabs).to.contain(bpmnTab);
+      expect(app.tabs).to.not.contain(dmnTab);
     });
 
 
