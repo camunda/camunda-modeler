@@ -1,15 +1,13 @@
-> The feature Plugins is experimental and may be subject to change in the future.
-
 # Plugins :electric_plug:
 
-Plugins allow you to plug into different parts of the modeler.
+Plugins allow you to change the appearance and behavior of the Camunda Modeler and add new features.
 
 ![Camunda Modeler Plugins](./plugins.png)
 
 ## Plugging into the Camunda Modeler
 
 You can plug into the modeler in order to change its appearance, add new menu entries or extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js). Adding a plugin is as easy as putting the files into the directory `{MODELER_LOCATION}/plugins`.
-On macOS you have to create the `plugins` folder in this directoy: `/Users/{USER_NAME}/Library/Application Support/camunda-modeler` 
+On macOS you have to create the `plugins` folder in this directoy: `/Users/{USER_NAME}/Library/Application Support/camunda-modeler`
 
 So let's dive into how to add your own plugins.
 
@@ -29,7 +27,7 @@ The modeler will automatically load your plugins on startup.
 
 ### Changing the appearance of the modeler
 
-You can change the appearance of the modeler with CSS.
+You can change the appearance of the modeler using CSS.
 
 Your stylesheet might look like this:
 
@@ -130,6 +128,17 @@ registerClientPlugin({
 });
 ```
 
+You can use the globally available functions `getModelerDirectory` and `getPluginsDirectory` to load additional resources:
+
+```javascript
+function LoggingPlugin(eventBus, canvas) {
+  var img = document.createElement(img);
+  img.src = getPluginsDirectory + '/logging-plugin/image.png';
+
+  canvas.getContainer().appendChild(img);
+}
+```
+
 Bundle your plugin:
 
 ```
@@ -138,6 +147,11 @@ npm run client
 
 Finally, put the folder into the `plugins` directory relative to your Camunda Modeler installation directory. You can now use your plugin!
 
+### Development Workflow
+
+When creating a plugin you can place the directory containing your plugin in the aforementioned `plugins` directory.
+
+Plugins will be loaded on application startup (menu plugins) or reload (style and modeling tool plugins). To reload the application, open the developer tools F12 and press CtrlOrCmd+R. This will clear all unsaved diagrams!
 
 ## Additional Resources
 
