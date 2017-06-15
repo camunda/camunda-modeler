@@ -24,7 +24,7 @@ var Platform = require('./platform'),
     Dialog = require('./dialog'),
     Menu = require('./menu'),
     Cli = require('./cli'),
-    PluginsManager = require('./plugin-manager');
+    Plugins = require('./plugins');
 
 var browserOpen = require('./util/browser-open'),
     renderer = require('./util/renderer');
@@ -45,7 +45,7 @@ global.metaData = {
   name: app.name
 };
 
-var pluginsManager = app.pluginsManager = new PluginsManager({
+var plugins = app.plugins = new Plugins({
   paths: [
     app.getPath('userData'),
     process.cwd()
@@ -60,7 +60,7 @@ global.modelerDirectory = process.cwd();
 // TODO(nikku): remove app.menu binding when development
 // mode bootstrap issue is fixed in electron-connect
 app.menu = new Menu(process.platform,
-  pluginsManager.getPlugins()
+  plugins.getPlugins()
     .map(p => {
       return {
         menu: p.menu,

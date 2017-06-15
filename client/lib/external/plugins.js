@@ -7,7 +7,7 @@ var remote = window.require('electron').remote;
  * integration layers.
  */
 function Plugins() {
-  this.pluginsManager = remote.app.pluginsManager;
+  this.plugins = remote.app.plugins;
 }
 
 /**
@@ -16,11 +16,11 @@ function Plugins() {
  * @return {Array}
  */
 Plugins.prototype.load = function(done) {
-  this.pluginsManager.getPlugins()
+  this.plugins.getPlugins()
     .filter(p => p.style)
     .forEach(p => loadStyle(p.style));
 
-  var scripts = this.pluginsManager.getPlugins()
+  var scripts = this.plugins.getPlugins()
     .filter(p => p.script);
 
   var counter = scripts.length;

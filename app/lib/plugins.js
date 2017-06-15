@@ -10,7 +10,7 @@ var path = require('path'),
  * @param {Array}  options.path locations where to search for 'plugins'
  *                              folder and 'camunda-modeler.js' descriptors
  */
-function PluginsManager(options) {
+function Plugins(options) {
   this.options = options || {};
 
   this.plugins = findPlugins(options.paths)
@@ -59,7 +59,7 @@ function PluginsManager(options) {
     });
 }
 
-PluginsManager.prototype.getPlugins = function() {
+Plugins.prototype.getPlugins = function() {
   return this.plugins;
 };
 
@@ -83,4 +83,4 @@ function findPlugins(paths) {
   return plugins;
 }
 
-module.exports = PluginsManager;
+module.exports = Plugins;
