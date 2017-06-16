@@ -4,7 +4,8 @@ var slice = require('util/slice');
 
 var debug = require('debug')('file-drop');
 
-var domify = require('domify');
+var domify = require('domify'),
+    domEvent = require('min-dom/lib/event');
 
 var every = require('lodash/collection/every');
 
@@ -33,6 +34,16 @@ function fileDrop(fn) {
 
   var overlay;
 
+  /** prevent drop onto other elements which would show default behaviour */
+  domEvent.bind(document, 'dragover', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  domEvent.bind(document, 'drop', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  });
 
   /** handle actual drop */
   function onDrop(event) {
