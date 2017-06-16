@@ -7,8 +7,6 @@ var debug = require('debug')('file-drop');
 var domify = require('domify'),
     domEvent = require('min-dom/lib/event');
 
-var every = require('lodash/collection/every');
-
 var OVERLAY_HTML = '<div class="drop-overlay">' +
                      '<div class="box">' +
                         '<div>Drop diagrams here</div>' +
@@ -75,9 +73,15 @@ function fileDrop(fn) {
       return false;
     }
 
-    return every(dataTransfer.items, function(item) {
-      return item.type === 'file' || item.kind === 'file';
-    });
+    var hasFile = false;
+
+    for (var i = 0; i < dataTransfer.items.length; i++) {
+      if (dataTransfer.items[i].type === 'file' || dataTransfer.items[i].kind === 'file') {
+        hasFile = true;
+      }
+    }
+
+    return hasFile;
   }
 
   /** drag over */
