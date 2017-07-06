@@ -9,7 +9,9 @@ var files = {
   activiti: require('test/fixtures/activiti.xml'),
   activitiExpected: require('test/fixtures/activitiExpected.xml'),
   activitiComplex: require('test/fixtures/activitiComplex.xml'),
-  activitiComplexExpected: require('test/fixtures/activitiComplexExpected.xml')
+  activitiComplexExpected: require('test/fixtures/activitiComplexExpected.xml'),
+  activitiCamunda: require('test/fixtures/activitiCamunda.xml'),
+  activitiCamundaExpected: require('test/fixtures/activitiCamundaExpected.xml')
 };
 
 function getFile(type) {
@@ -58,7 +60,7 @@ describe('util - namespace', function() {
 
   describe('activiti namespace', function() {
 
-    var activitiFixtures = [ 'activiti', 'activitiComplex' ];
+    var activitiFixtures = [ 'activiti', 'activitiComplex', 'activitiCamunda' ];
 
     before(function() {
       activitiFixtures = map(activitiFixtures, function(filePath) {
@@ -110,7 +112,8 @@ describe('util - namespace', function() {
     it('should replace Activiti namespace with camunda', function() {
       // given
       var activitiExpected = getFile('activitiExpected'),
-          activitiComplexExpected = getFile('activitiComplexExpected');
+          activitiComplexExpected = getFile('activitiComplexExpected'),
+          activitiCamundaExpected = getFile('activitiCamundaExpected');
 
       // when
       var results = testCollection(activitiFixtures, namespace.replace, 'bpmn');
@@ -118,6 +121,7 @@ describe('util - namespace', function() {
       // then
       expect(results[0]).to.equal(activitiExpected);
       expect(results[1]).to.equal(activitiComplexExpected);
+      expect(results[2]).to.equal(activitiCamundaExpected);
     });
 
 

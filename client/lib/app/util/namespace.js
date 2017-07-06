@@ -40,8 +40,18 @@ function replaceNamespaceURL(xml, oldNs, newNs) {
 module.exports.replaceNamespaceURL = replaceNamespaceURL;
 
 
+/**
+ * Get namespace prefix from XML
+ *
+ * @param {String} xml
+ *
+ * @return {String} prefix
+ *
+ * xmlns:prefix="http://camunda.org/schema/1.0/bpmn"
+ * xmlns:prefix="http://activiti.org/bpmn"
+ */
 function grabNamespacePrefix(xml) {
-  var pattern = /xmlns\:([A-z0-9.-]+)\=\"http\:\/\/activiti\.org\/bpmn\"/,
+  var pattern = /xmlns\:([A-z0-9.-]+)\=\"http\:\/\/(activiti\.org|camunda\.org\/schema\/1\.0)\/bpmn\"/,
       match = xml.match(pattern);
 
   if (!match) {
