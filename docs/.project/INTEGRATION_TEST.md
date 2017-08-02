@@ -69,7 +69,7 @@ Based on the [test diagram](./test.bpmn.png):
 * [ ] morph `Go on Holidays` to a decision table
 * [ ] morph `Which Season` to a decision table
 * [ ] moprh `Which Region` to a literal expression
-* [ ] double click onto green overlay on `Go on Holidays` jumps into table editing mode
+* [ ] click onto green overlay on `Go on Holidays` jumps into table editing mode
 * [ ] changing name reflects in DRD
 * [ ] save file on disk as `test.dmn` from table editing mode
 * [ ] save file on disk as `test2.dmn` from diagram mode
