@@ -23,6 +23,8 @@ var WarningsOverlay = require('base/components/warnings-overlay');
 
 var isUnsaved = require('util/file/is-unsaved');
 
+var applyElementTemplates = require('app/util/element-templates').applyElementTemplates;
+
 var getWarnings = require('app/util/get-warnings');
 
 var ensureOpts = require('util/ensure-opts'),
@@ -69,10 +71,33 @@ function BpmnEditor(options) {
   this.on('window:resized', this.compose('resize'));
 
   // update state so that it reflects that an 'input' is active
-  this.on('input:focused', function(event) {
+  this.on('input:focused', (event) => {
     if (isInput.isInput(event.target)) {
       this.updateState();
     }
+  });
+
+  // apply default element templates only to initial diagram
+  this.on('imported', (event) => {
+
+    if (event.isInitial) {
+      var modeler = this.getModeler();
+
+      var elementRegistry = modeler.get('elementRegistry');
+
+      var elements = elementRegistry.getAll();
+
+      applyElementTemplates(elements, modeler);
+
+      var commandStack = modeler.get('commandStack');
+
+      commandStack.clear();
+
+      this.initialState.forceSaveXML = true;
+
+      this.file.isInitial = false;
+    }
+
   });
 
   // set current modeler version and name to the diagram
@@ -170,7 +195,6 @@ BpmnEditor.prototype.triggerEditorActions = function(action, options) {
 
 
 BpmnEditor.prototype.updateState = function() {
-
   var modeler = this.getModeler(),
       initialState = this.initialState,
       commandStack,

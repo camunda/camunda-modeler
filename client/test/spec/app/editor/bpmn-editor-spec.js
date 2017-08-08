@@ -279,6 +279,148 @@ describe('BpmnEditor', function() {
       editor.mountEditor($el);
     });
 
+
+    it('should apply default templates on import of initial diagram [StartEvent]', function(done) {
+
+      // given
+      editor.config.provide('bpmn.elementTemplates', function(key, diagram, done) {
+
+        var templates = [
+          {
+            label: 'FOO',
+            id: 'foo',
+            appliesTo: [
+              'bpmn:StartEvent'
+            ],
+            properties: [{
+              label: 'Label',
+              type: 'Text',
+              value: 'bar',
+              binding: {
+                type: 'property',
+                name: 'name'
+              }
+            }],
+            isDefault: true
+          }
+        ];
+
+        done(null, templates);
+      });
+
+      var $el = document.createElement('div');
+        
+      editor.once('imported', function(context) {
+      
+        var modeler = editor.getModeler();
+
+        var elementRegistry = modeler.get('elementRegistry');
+
+        var startEvent = elementRegistry.get('StartEvent_1').businessObject;
+
+        expect(startEvent.modelerTemplate).to.eql('foo');
+        expect(startEvent.name).to.eql('bar');
+
+        done();
+      });
+
+      // when
+      editor.setFile({ contents: initialXML, isInitial: true });
+
+      editor.mountEditor($el);
+    });
+
+
+    it('should apply default templates on import of initial diagram [Process]', function(done) {
+
+      // given
+      editor.config.provide('bpmn.elementTemplates', function(key, diagram, done) {
+
+        var templates = [
+          {
+            label: 'FOO',
+            id: 'foo',
+            appliesTo: [
+              'bpmn:Process'
+            ],
+            properties: [{
+              label: 'Label',
+              type: 'Text',
+              value: 'bar',
+              binding: {
+                type: 'property',
+                name: 'name'
+              }
+            }],
+            isDefault: true
+          }
+        ];
+
+        done(null, templates);
+      });
+
+      var $el = document.createElement('div');
+        
+      editor.once('imported', function(context) {        
+        var modeler = editor.getModeler();
+
+        var canvas = modeler.get('canvas');
+
+        var process = canvas.getRootElement().businessObject;
+
+        expect(process.modelerTemplate).to.eql('foo');
+        expect(process.name).to.eql('bar');
+
+        done();
+      });
+      
+      // when
+      editor.setFile({ contents: initialXML, isInitial: true });
+
+      editor.mountEditor($el);
+    });
+
+
+    it('should not apply default templates on import of exisiting diagram [Process]', function(done) {
+
+      // given
+      editor.config.provide('bpmn.elementTemplates', function(key, diagram, done) {
+
+        var templates = [
+          {
+            label: 'FOO',
+            id: 'foo',
+            appliesTo: [
+              'bpmn:Process'
+            ],
+            properties: [],
+            isDefault: true
+          }
+        ];
+
+        done(null, templates);
+      });
+
+      var $el = document.createElement('div');
+
+      editor.once('imported', function() {
+        var modeler = editor.getModeler();
+
+        var canvas = modeler.get('canvas');
+
+        var process = canvas.getRootElement().businessObject;
+
+        expect(process.modelerTemplate).to.be.undefined;
+
+        done();
+      });
+
+      // when
+      editor.setFile({ contents: initialXML });
+
+      editor.mountEditor($el);
+    });
+
   });
 
 

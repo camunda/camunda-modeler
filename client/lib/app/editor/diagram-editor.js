@@ -111,12 +111,15 @@ DiagramEditor.prototype.update = function() {
 
   this.lastXML = newXML;
 
+  var isInitial = !!(this.file && this.file.isInitial);
+
   modeler.importXML(newXML, (err, warnings) => {
 
     var importContext = this.lastImport = {
       error: err,
       warnings: warnings,
-      xml: newXML
+      xml: newXML,
+      isInitial: isInitial
     };
 
     debug('[#update] imported', importContext);
@@ -170,7 +173,7 @@ DiagramEditor.prototype._saveXML = function(modeler, commandStackIdx, done) {
     done(null, xml);
   };
 
-  if (!(initialState.stackIndex !== commandStackIdx)) {
+  if (!(initialState.stackIndex !== commandStackIdx) && !initialState.forceSaveXML) {
     return savedCallback(null, this.lastXML);
   }
 

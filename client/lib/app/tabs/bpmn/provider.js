@@ -36,7 +36,8 @@ function BpmnProvider(options) {
       fileType: 'bpmn',
       name: 'diagram_' + createdFiles + '.bpmn',
       path: isUnsaved.PATH,
-      contents: initialXML
+      contents: initialXML,
+      isInitial: true
     };
   };
 

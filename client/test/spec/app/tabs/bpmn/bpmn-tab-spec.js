@@ -189,7 +189,7 @@ describe('BpmnTab', function() {
 
         // wait for diagram shown / imported
         xmlEditor.once('state-updated', function(context) {
-
+        
           // then
           expect(context).to.have.property('undo', false);
           expect(context).to.have.property('redo', false);
