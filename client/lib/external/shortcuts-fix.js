@@ -43,25 +43,20 @@ function ShortcutsFix(app, isMac) {
 
     var activeElement = document.activeElement;
 
-    // todo(ricardo): DMN HACK: we need to trigger preventDefault;
-    if (isDmnInput(activeElement) && event.key === 'Enter' &&
-        app.activeTab.activeEditor.getActiveEditorName() !== 'literal-expression') {
-
+    // prevent default behavior when editing DMN decision table
+    if (isEnter(event.key)
+        && isTableSelected(app)) {
       e.preventDefault();
 
       if (event.ctrlKey || event.metaKey) {
-
         app.triggerAction('insertNewLine');
       } else if (event.shiftKey) {
-
         app.triggerAction('selectPreviousRow');
       } else {
-
         app.triggerAction('selectNextRow');
       }
     }
 
-    // END OF HACK;
     if (isMac) {
       return;
     }
@@ -70,7 +65,6 @@ function ShortcutsFix(app, isMac) {
 
       if (!isInput(activeElement)) {
         triggerKeyAction(e, 'a', 'selectElements');
-
         triggerKeyAction(e, 'c', 'copy');
         triggerKeyAction(e, 'v', 'paste');
       }
@@ -106,6 +100,26 @@ function isPropertiesInput(el) {
   return el && domClosest(el, '.properties');
 }
 
-function isDmnInput(el) {
-  return el && domClosest(el, '.dmn-table');
+function isEnter(key) {
+  return key === 'Enter';
+}
+
+function isTableSelected(app) {
+  if (app.activeTab && app.activeTab.activeEditor) {
+    var activeEditor = app.activeTab.activeEditor;
+
+    if (activeEditor.getActiveEditorName) {
+      var activeEditorName = activeEditor.getActiveEditorName();
+
+      if (activeEditorName === 'table') {
+        return activeEditor
+          .getModeler()
+          .table
+          .get('selection')
+          .get() !== null;
+      }
+    }
+  }
+
+  return false;
 }
