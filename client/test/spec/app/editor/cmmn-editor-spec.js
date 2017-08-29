@@ -66,6 +66,77 @@ describe('CmmnEditor', function() {
   });
 
 
+  describe('custom events', function() {
+
+    function createEditorWithLayout(layout) {
+      return new CmmnEditor({
+        config: new Config(),
+        layout: layout,
+        metaData: {}
+      });
+    }
+
+    it('"toggleProperties" should toggle properties panel', function(done) {
+
+      // given
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: true,
+          width: 250
+        }
+      });
+
+      render(editor);
+
+      editor.once('layout:changed', function(newLayout) {
+
+        // then
+        expect(newLayout).to.eql({
+          propertiesPanel: {
+            open: false
+          }
+        });
+
+        done();
+      });
+
+      // when
+      editor.triggerAction('toggleProperties');
+    });
+
+
+    it('"resetProperties" should reset properties panel', function(done) {
+
+      // given
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: true,
+          width: 500
+        }
+      });
+
+      render(editor);
+
+      editor.once('layout:changed', function(newLayout) {
+
+        // then
+        expect(newLayout).to.eql({
+          propertiesPanel: {
+            open: false,
+            width: 250
+          }
+        });
+
+        done();
+      });
+
+      // when
+      editor.triggerAction('resetProperties');
+    });
+
+  });
+
+
   describe('properties panel', function() {
 
     function selectPropertiesToggle(tree) {

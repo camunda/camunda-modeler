@@ -51,6 +51,15 @@ describe('BpmnEditor', function() {
 
     var trigger;
 
+    function createEditorWithLayout(layout) {
+      return new BpmnEditor({
+        config: new Config(),
+        plugins: new Plugins(),
+        layout: layout,
+        metaData: {}
+      });
+    }
+
     beforeEach(function(done) {
 
       // given
@@ -160,6 +169,65 @@ describe('BpmnEditor', function() {
       expect(trigger).to.have.been.calledWith('zoom', {
         value: 'fit-viewport'
       });
+    });
+
+
+    it('"toggleProperties" should toggle properties panel', function(done) {
+
+      // given
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: true,
+          width: 250
+        }
+      });
+
+      render(editor);
+
+      editor.once('layout:changed', function(newLayout) {
+
+        // then
+        expect(newLayout).to.eql({
+          propertiesPanel: {
+            open: false
+          }
+        });
+
+        done();
+      });
+
+      // when
+      editor.triggerAction('toggleProperties');
+    });
+
+
+    it('"resetProperties" should reset properties panel', function(done) {
+
+      // given
+      var editor = createEditorWithLayout({
+        propertiesPanel: {
+          open: true,
+          width: 500
+        }
+      });
+
+      render(editor);
+
+      editor.once('layout:changed', function(newLayout) {
+
+        // then
+        expect(newLayout).to.eql({
+          propertiesPanel: {
+            open: false,
+            width: 250
+          }
+        });
+
+        done();
+      });
+
+      // when
+      editor.triggerAction('resetProperties');
     });
 
   });
@@ -309,9 +377,9 @@ describe('BpmnEditor', function() {
       });
 
       var $el = document.createElement('div');
-        
+
       editor.once('imported', function(context) {
-      
+
         var modeler = editor.getModeler();
 
         var elementRegistry = modeler.get('elementRegistry');
@@ -360,8 +428,8 @@ describe('BpmnEditor', function() {
       });
 
       var $el = document.createElement('div');
-        
-      editor.once('imported', function(context) {        
+
+      editor.once('imported', function(context) {
         var modeler = editor.getModeler();
 
         var canvas = modeler.get('canvas');
@@ -373,7 +441,7 @@ describe('BpmnEditor', function() {
 
         done();
       });
-      
+
       // when
       editor.setFile({ contents: initialXML, isInitial: true });
 

@@ -912,6 +912,24 @@ MenuBuilder.prototype.appendWindowMenu = function() {
     });
   }
 
+  if (this.opts.state.bpmn || this.opts.state.cmmn) {
+    submenu.push({
+      label: 'Toggle Properties Panel',
+      accelerator: 'CommandOrControl+P',
+      click: function() {
+        app.emit('menu:action', 'toggleProperties');
+      }
+    }, {
+      label: 'Reset Properties Panel',
+      accelerator: 'CommandOrControl+Shift+P',
+      click: function() {
+        app.emit('menu:action', 'resetProperties');
+      }
+    }, {
+      type: 'separator'
+    });
+  }
+
   if (this.opts.state.development || this.opts.state.devtools) {
     submenu.push({
       label: 'Reload',

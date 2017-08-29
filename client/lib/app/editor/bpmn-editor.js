@@ -127,6 +127,31 @@ BpmnEditor.prototype.triggerEditorActions = function(action, options) {
     return;
   }
 
+  if ('toggleProperties' === action) {
+    this.emit('layout:changed', {
+      propertiesPanel: {
+        open: !this.layout.propertiesPanel.open
+      }
+    });
+
+    this.notifyModeler('propertiesPanel.resized');
+
+    return;
+  }
+
+  if ('resetProperties' === action) {
+    this.emit('layout:changed', {
+      propertiesPanel: {
+        open: false,
+        width: 250
+      }
+    });
+
+    this.notifyModeler('propertiesPanel.resized');
+
+    return;
+  }
+
   if ('alignElements' === action) {
     opts = options;
   }
