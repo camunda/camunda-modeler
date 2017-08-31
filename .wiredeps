@@ -1,6 +1,6 @@
 {
   "name": "camunda-modeler",
-  "version": "1.6.0",
+  "version": "1.10.0",
   "dependencies": {
     "bpmn-js": {
       "version": "bpmn-io/bpmn-js",
@@ -42,7 +42,7 @@
           }
         },
         "diagram-js-direct-editing": {
-          "version": "0.18.0"
+          "version": "0.19.0"
         },
         "object-refs": {
           "version": "0.1.1"
@@ -125,7 +125,7 @@
       }
     },
     "diagram-js": {
-      "version": "0.18.4",
+      "version": "0.21.1",
       "dependencies": {
         "didi": {
           "version": "0.1.1"
@@ -201,7 +201,7 @@
           "version": "0.1.2"
         },
         "table-js": {
-          "version": "0.6.3",
+          "version": "0.6.4",
           "dependencies": {
             "diagram-js": {
               "version": "0.16.3",
