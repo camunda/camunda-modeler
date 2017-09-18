@@ -2,7 +2,8 @@
 
 Plugins allow you to change the appearance and behavior of the Camunda Modeler and add new features.
 
-![Camunda Modeler Plugins](./plugins.png)
+![Camunda Modeler Plugins](./screencast.gif)
+<p align="center">Using the Camunda Modeler with a Plugin</p>
 
 ## Plugging into the Camunda Modeler
 
