@@ -1,287 +1,866 @@
 {
   "name": "camunda-modeler",
   "version": "1.10.0",
+  "lockfileVersion": 1,
+  "requires": true,
   "dependencies": {
+    "acorn": {
+      "version": "5.1.2"
+    },
+    "align-text": {
+      "version": "0.1.4",
+      "requires": {
+        "kind-of": "3.2.2",
+        "longest": "1.0.1",
+        "repeat-string": "1.6.1"
+      }
+    },
+    "amdefine": {
+      "version": "1.0.1"
+    },
+    "async": {
+      "version": "0.2.10"
+    },
+    "balanced-match": {
+      "version": "1.0.0"
+    },
+    "bootstrap": {
+      "version": "3.3.7"
+    },
     "bpmn-js": {
       "version": "bpmn-io/bpmn-js",
-      "dependencies": {
-        "bpmn-moddle": {
-          "version": "bpmn-io/bpmn-moddle",
-          "dependencies": {
-            "moddle": {
-              "version": "1.0.0"
-            },
-            "moddle-xml": {
-              "version": "1.0.0",
-              "dependencies": {
-                "sax": {
-                  "version": "0.6.1"
-                },
-                "tiny-stack": {
-                  "version": "0.1.0"
-                }
-              }
-            }
-          }
-        },
-        "diagram-js": {
-          "version": "bpmn-io/diagram-js",
-          "dependencies": {
-            "didi": {
-              "version": "0.1.1"
-            },
-            "hammerjs": {
-              "version": "2.0.8"
-            },
-            "object-refs": {
-              "version": "0.1.1"
-            },
-            "tiny-svg": {
-              "version": "0.1.1"
-            }
-          }
-        },
-        "diagram-js-direct-editing": {
-          "version": "0.19.0"
-        },
-        "object-refs": {
-          "version": "0.1.1"
-        },
-        "tiny-svg": {
-          "version": "0.1.1"
-        }
+      "requires": {
+        "bpmn-moddle": "0.14.0",
+        "diagram-js": "0.21.1",
+        "diagram-js-direct-editing": "0.19.0",
+        "diagram-js-origin": "0.15.2",
+        "ids": "0.2.0",
+        "inherits": "2.0.3",
+        "lodash": "3.10.1",
+        "min-dom": "0.2.0",
+        "object-refs": "0.1.1",
+        "tiny-svg": "0.1.1"
       }
     },
     "bpmn-js-properties-panel": {
       "version": "bpmn-io/bpmn-js-properties-panel",
-      "dependencies": {
-        "selection-update": {
-          "version": "0.1.2"
-        }
+      "requires": {
+        "ids": "0.2.0",
+        "inherits": "2.0.3",
+        "lodash": "3.10.1",
+        "min-dom": "0.2.0",
+        "scroll-tabs": "0.2.1",
+        "selection-update": "0.1.2"
       }
+    },
+    "bpmn-moddle": {
+      "version": "bpmn-io/bpmn-moddle",
+      "requires": {
+        "lodash": "3.10.1",
+        "moddle": "1.0.0",
+        "moddle-xml": "1.0.0"
+      }
+    },
+    "brace-expansion": {
+      "version": "1.1.8",
+      "requires": {
+        "balanced-match": "1.0.0",
+        "concat-map": "0.0.1"
+      }
+    },
+    "browser-split": {
+      "version": "0.0.1"
+    },
+    "browserify-transform-tools": {
+      "version": "1.7.0",
+      "requires": {
+        "falafel": "2.1.0",
+        "through": "2.3.8"
+      }
+    },
+    "camel-case": {
+      "version": "1.2.2",
+      "requires": {
+        "sentence-case": "1.1.3",
+        "upper-case": "1.1.3"
+      }
+    },
+    "camelcase": {
+      "version": "1.2.1"
+    },
+    "camelize": {
+      "version": "1.0.0"
     },
     "camunda-bpmn-moddle": {
       "version": "camunda/camunda-bpmn-moddle"
     },
     "camunda-cmmn-moddle": {
-      "version": "0.3.0"
+      "version": "camunda/camunda-cmmn-moddle"
+    },
+    "canvg-browser": {
+      "version": "1.0.0",
+      "requires": {
+        "rgbcolor": "0.0.4",
+        "stackblur": "1.0.0",
+        "xmldom": "0.1.27"
+      }
+    },
+    "center-align": {
+      "version": "0.1.3",
+      "requires": {
+        "align-text": "0.1.4",
+        "lazy-cache": "1.0.4"
+      }
+    },
+    "change-case": {
+      "version": "2.3.1",
+      "requires": {
+        "camel-case": "1.2.2",
+        "constant-case": "1.1.2",
+        "dot-case": "1.1.2",
+        "is-lower-case": "1.1.3",
+        "is-upper-case": "1.1.2",
+        "lower-case": "1.1.4",
+        "lower-case-first": "1.0.2",
+        "param-case": "1.1.2",
+        "pascal-case": "1.1.2",
+        "path-case": "1.1.2",
+        "sentence-case": "1.1.3",
+        "snake-case": "1.1.2",
+        "swap-case": "1.1.2",
+        "title-case": "1.1.2",
+        "upper-case": "1.1.3",
+        "upper-case-first": "1.1.2"
+      }
+    },
+    "clean-css": {
+      "version": "3.4.28",
+      "requires": {
+        "commander": "2.8.1",
+        "source-map": "0.4.4"
+      }
+    },
+    "cli": {
+      "version": "0.11.3",
+      "requires": {
+        "exit": "0.1.2",
+        "glob": "7.1.2"
+      }
+    },
+    "cliui": {
+      "version": "2.1.0",
+      "requires": {
+        "center-align": "0.1.3",
+        "right-align": "0.1.3",
+        "wordwrap": "0.0.2"
+      }
     },
     "cmmn-js": {
-      "version": "0.7.4",
+      "version": "bpmn-io/cmmn-js",
+      "requires": {
+        "cmmn-moddle": "0.3.4",
+        "diagram-js": "0.18.4",
+        "diagram-js-direct-editing": "0.17.1",
+        "ids": "0.2.0",
+        "inherits": "2.0.3",
+        "lodash": "3.10.1",
+        "min-dom": "0.2.0",
+        "object-refs": "0.1.1",
+        "tiny-svg": "0.1.1"
+      },
       "dependencies": {
-        "cmmn-moddle": {
-          "version": "0.3.4",
-          "dependencies": {
-            "moddle": {
-              "version": "0.8.0"
-            },
-            "moddle-xml": {
-              "version": "0.12.0",
-              "dependencies": {
-                "sax": {
-                  "version": "0.6.1"
-                },
-                "tiny-stack": {
-                  "version": "0.1.0"
-                }
-              }
-            }
-          }
-        },
         "diagram-js": {
           "version": "0.18.4",
-          "dependencies": {
-            "didi": {
-              "version": "0.1.1"
-            },
-            "hammerjs": {
-              "version": "2.0.8"
-            },
-            "object-refs": {
-              "version": "0.1.1"
-            },
-            "tiny-svg": {
-              "version": "0.1.1"
-            }
+          "requires": {
+            "didi": "0.1.1",
+            "hammerjs": "2.0.8",
+            "inherits": "2.0.3",
+            "lodash": "3.10.1",
+            "min-dom": "0.2.0",
+            "object-refs": "0.1.1",
+            "tiny-svg": "0.1.1"
           }
         },
         "diagram-js-direct-editing": {
-          "version": "0.17.1"
-        },
-        "object-refs": {
-          "version": "0.1.1"
-        },
-        "tiny-svg": {
-          "version": "0.1.1"
+          "version": "0.17.1",
+          "requires": {
+            "lodash": "3.10.1",
+            "min-dom": "0.2.0"
+          }
         }
       }
     },
     "cmmn-js-properties-panel": {
-      "version": "0.3.0",
+      "version": "bpmn-io/cmmn-js-properties-panel",
+      "requires": {
+        "ids": "0.2.0",
+        "inherits": "2.0.3",
+        "lodash": "3.10.1",
+        "min-dom": "0.2.0",
+        "scroll-tabs": "0.2.1",
+        "selection-update": "0.1.2"
+      }
+    },
+    "cmmn-moddle": {
+      "version": "bpmn-io/cmmn-moddle",
+      "requires": {
+        "lodash": "3.10.1",
+        "moddle": "0.8.0",
+        "moddle-xml": "0.12.0"
+      },
       "dependencies": {
-        "selection-update": {
-          "version": "0.1.2"
+        "moddle": {
+          "version": "0.8.0",
+          "requires": {
+            "lodash": "3.10.1"
+          }
+        },
+        "moddle-xml": {
+          "version": "0.12.0",
+          "requires": {
+            "lodash": "3.10.1",
+            "moddle": "0.8.0",
+            "sax": "0.6.1",
+            "tiny-stack": "0.1.0"
+          }
         }
       }
+    },
+    "codemirror": {
+      "version": "5.12.0"
+    },
+    "commander": {
+      "version": "2.8.1",
+      "requires": {
+        "graceful-readlink": "1.0.1"
+      }
+    },
+    "component-classes": {
+      "version": "1.2.6",
+      "requires": {
+        "component-indexof": "0.0.3"
+      }
+    },
+    "component-closest": {
+      "version": "0.1.4",
+      "requires": {
+        "component-matches-selector": "0.1.6"
+      }
+    },
+    "component-delegate": {
+      "version": "0.2.4",
+      "requires": {
+        "component-closest": "0.1.4",
+        "component-event": "0.1.4"
+      }
+    },
+    "component-event": {
+      "version": "0.1.4"
+    },
+    "component-indexof": {
+      "version": "0.0.3"
+    },
+    "component-matches-selector": {
+      "version": "0.1.6",
+      "requires": {
+        "component-query": "0.0.3"
+      }
+    },
+    "component-query": {
+      "version": "0.0.3"
+    },
+    "concat-map": {
+      "version": "0.0.1"
+    },
+    "concat-stream": {
+      "version": "1.5.2",
+      "requires": {
+        "inherits": "2.0.3",
+        "readable-stream": "2.0.6",
+        "typedarray": "0.0.6"
+      }
+    },
+    "constant-case": {
+      "version": "1.1.2",
+      "requires": {
+        "snake-case": "1.1.2",
+        "upper-case": "1.1.3"
+      }
+    },
+    "core-util-is": {
+      "version": "1.0.2"
+    },
+    "css.escape": {
+      "version": "1.5.1"
+    },
+    "debug": {
+      "version": "2.6.9",
+      "requires": {
+        "ms": "2.0.0"
+      }
+    },
+    "decamelize": {
+      "version": "1.2.0"
     },
     "diagram-js": {
-      "version": "0.21.1",
-      "dependencies": {
-        "didi": {
-          "version": "0.1.1"
-        },
-        "hammerjs": {
-          "version": "2.0.8"
-        },
-        "object-refs": {
-          "version": "0.1.1"
-        },
-        "tiny-svg": {
-          "version": "0.1.1"
-        }
+      "version": "bpmn-io/diagram-js",
+      "requires": {
+        "didi": "0.1.1",
+        "hammerjs": "2.0.8",
+        "inherits": "2.0.3",
+        "lodash": "3.10.1",
+        "min-dom": "0.2.0",
+        "object-refs": "0.1.1",
+        "tiny-svg": "0.1.1"
       }
     },
-    "diagram-js-origin": {
-      "version": "0.15.1",
-      "dependencies": {
-        "tiny-svg": {
-          "version": "0.1.1"
-        }
+    "diagram-js-direct-editing": {
+      "version": "bpmn-io/diagram-js-direct-editing",
+      "requires": {
+        "lodash": "3.10.1",
+        "min-dom": "0.2.0"
       }
     },
     "diagram-js-minimap": {
-      "version": "0.5.4"
+      "version": "0.5.4",
+      "requires": {
+        "css.escape": "1.5.1",
+        "lodash": "3.10.1",
+        "min-dom": "0.2.0",
+        "tiny-svg": "0.1.1"
+      }
+    },
+    "diagram-js-origin": {
+      "version": "0.15.2",
+      "requires": {
+        "tiny-svg": "0.1.1"
+      }
+    },
+    "didi": {
+      "version": "0.1.1"
     },
     "dmn-js": {
-      "version": "0.9.0",
+      "version": "bpmn-io/dmn-js",
+      "requires": {
+        "bootstrap": "3.3.7",
+        "diagram-js": "0.18.4",
+        "diagram-js-direct-editing": "0.17.1",
+        "dmn-moddle": "0.6.0",
+        "ids": "0.2.0",
+        "inherits": "2.0.3",
+        "lodash": "3.10.1",
+        "min-dom": "0.2.0",
+        "object-refs": "0.1.1",
+        "selection-update": "0.1.2",
+        "stringify": "5.1.0",
+        "table-js": "0.6.4",
+        "tiny-svg": "0.1.1"
+      },
       "dependencies": {
         "diagram-js": {
           "version": "0.18.4",
-          "dependencies": {
-            "didi": {
-              "version": "0.1.1"
-            },
-            "hammerjs": {
-              "version": "2.0.8"
-            },
-            "object-refs": {
-              "version": "0.1.1"
-            },
-            "tiny-svg": {
-              "version": "0.1.1"
-            }
+          "requires": {
+            "didi": "0.1.1",
+            "hammerjs": "2.0.8",
+            "inherits": "2.0.3",
+            "lodash": "3.10.1",
+            "min-dom": "0.2.0",
+            "object-refs": "0.1.1",
+            "tiny-svg": "0.1.1"
           }
         },
         "diagram-js-direct-editing": {
-          "version": "0.17.1"
-        },
-        "dmn-moddle": {
-          "version": "0.6.0",
-          "dependencies": {
-            "moddle": {
-              "version": "1.0.0"
-            },
-            "moddle-xml": {
-              "version": "1.0.0",
-              "dependencies": {
-                "sax": {
-                  "version": "0.6.1"
-                },
-                "tiny-stack": {
-                  "version": "0.1.0"
-                }
-              }
-            }
+          "version": "0.17.1",
+          "requires": {
+            "lodash": "3.10.1",
+            "min-dom": "0.2.0"
           }
-        },
-        "object-refs": {
-          "version": "0.1.1"
-        },
-        "selection-update": {
-          "version": "0.1.2"
-        },
-        "table-js": {
-          "version": "0.6.4",
-          "dependencies": {
-            "diagram-js": {
-              "version": "0.16.3",
-              "dependencies": {
-                "eve": {
-                  "version": "0.4.2"
-                },
-                "hammerjs": {
-                  "version": "2.0.8"
-                },
-                "snapsvg": {
-                  "version": "0.3.0"
-                }
-              }
-            },
-            "didi": {
-              "version": "0.1.1"
-            }
-          }
-        },
-        "tiny-svg": {
-          "version": "0.1.1"
         }
       }
     },
+    "dmn-moddle": {
+      "version": "bpmn-io/dmn-moddle",
+      "requires": {
+        "lodash": "3.10.1",
+        "moddle": "1.0.0",
+        "moddle-xml": "1.0.0"
+      }
+    },
+    "dom-walk": {
+      "version": "0.1.1"
+    },
+    "domify": {
+      "version": "1.4.0"
+    },
+    "domready": {
+      "version": "1.0.8"
+    },
+    "dot-case": {
+      "version": "1.1.2",
+      "requires": {
+        "sentence-case": "1.1.3"
+      }
+    },
+    "drag-tabs": {
+      "version": "0.1.0",
+      "requires": {
+        "events": "1.1.1",
+        "inherits": "2.0.3",
+        "lodash": "3.10.1",
+        "min-dom": "0.2.0",
+        "raf": "3.4.0"
+      }
+    },
+    "error": {
+      "version": "4.4.0",
+      "requires": {
+        "camelize": "1.0.0",
+        "string-template": "0.2.1",
+        "xtend": "4.0.1"
+      }
+    },
+    "ev-store": {
+      "version": "7.0.0",
+      "requires": {
+        "individual": "3.0.0"
+      }
+    },
+    "eve": {
+      "version": "0.4.2"
+    },
+    "events": {
+      "version": "1.1.1"
+    },
+    "exit": {
+      "version": "0.1.2"
+    },
+    "falafel": {
+      "version": "2.1.0",
+      "requires": {
+        "acorn": "5.1.2",
+        "foreach": "2.0.5",
+        "isarray": "0.0.1",
+        "object-keys": "1.0.11"
+      }
+    },
+    "foreach": {
+      "version": "2.0.5"
+    },
+    "fs.realpath": {
+      "version": "1.0.0"
+    },
     "glob": {
-      "version": "7.1.1",
-      "dependencies": {
-        "fs.realpath": {
-          "version": "1.0.0"
-        },
-        "inflight": {
-          "version": "1.0.6",
-          "dependencies": {
-            "wrappy": {
-              "version": "1.0.2"
-            }
-          }
-        },
-        "minimatch": {
-          "version": "3.0.3",
-          "dependencies": {
-            "brace-expansion": {
-              "version": "1.1.6",
-              "dependencies": {
-                "balanced-match": {
-                  "version": "0.4.2"
-                },
-                "concat-map": {
-                  "version": "0.0.1"
-                }
-              }
-            }
-          }
-        },
-        "once": {
-          "version": "1.4.0",
-          "dependencies": {
-            "wrappy": {
-              "version": "1.0.2"
-            }
-          }
-        },
-        "path-is-absolute": {
-          "version": "1.0.1"
-        }
+      "version": "7.1.2",
+      "requires": {
+        "fs.realpath": "1.0.0",
+        "inflight": "1.0.6",
+        "inherits": "2.0.3",
+        "minimatch": "3.0.4",
+        "once": "1.4.0",
+        "path-is-absolute": "1.0.1"
+      }
+    },
+    "global": {
+      "version": "4.3.2",
+      "requires": {
+        "min-document": "2.19.0",
+        "process": "0.5.2"
+      }
+    },
+    "graceful-readlink": {
+      "version": "1.0.1"
+    },
+    "hammerjs": {
+      "version": "2.0.8"
+    },
+    "hat": {
+      "version": "0.0.3"
+    },
+    "html-minifier": {
+      "version": "1.1.1",
+      "requires": {
+        "change-case": "2.3.1",
+        "clean-css": "3.4.28",
+        "cli": "0.11.3",
+        "concat-stream": "1.5.2",
+        "relateurl": "0.2.7",
+        "uglify-js": "2.6.4"
+      }
+    },
+    "ids": {
+      "version": "0.2.0",
+      "requires": {
+        "hat": "0.0.3"
+      }
+    },
+    "individual": {
+      "version": "3.0.0"
+    },
+    "inflight": {
+      "version": "1.0.6",
+      "requires": {
+        "once": "1.4.0",
+        "wrappy": "1.0.2"
       }
     },
     "inherits": {
       "version": "2.0.3"
     },
+    "is-buffer": {
+      "version": "1.1.5"
+    },
+    "is-lower-case": {
+      "version": "1.1.3",
+      "requires": {
+        "lower-case": "1.1.4"
+      }
+    },
+    "is-object": {
+      "version": "1.0.1"
+    },
+    "is-upper-case": {
+      "version": "1.1.2",
+      "requires": {
+        "upper-case": "1.1.3"
+      }
+    },
+    "isarray": {
+      "version": "0.0.1"
+    },
+    "kind-of": {
+      "version": "3.2.2",
+      "requires": {
+        "is-buffer": "1.1.5"
+      }
+    },
+    "lazy-cache": {
+      "version": "1.0.4"
+    },
     "lodash": {
       "version": "3.10.1"
     },
+    "longest": {
+      "version": "1.0.1"
+    },
+    "lower-case": {
+      "version": "1.1.4"
+    },
+    "lower-case-first": {
+      "version": "1.0.2",
+      "requires": {
+        "lower-case": "1.1.4"
+      }
+    },
+    "min-document": {
+      "version": "2.19.0",
+      "requires": {
+        "dom-walk": "0.1.1"
+      }
+    },
+    "min-dom": {
+      "version": "0.2.0",
+      "requires": {
+        "component-classes": "1.2.6",
+        "component-closest": "0.1.4",
+        "component-delegate": "0.2.4",
+        "component-event": "0.1.4",
+        "component-matches-selector": "0.1.6",
+        "component-query": "0.0.3",
+        "domify": "1.4.0"
+      }
+    },
+    "minimatch": {
+      "version": "3.0.4",
+      "requires": {
+        "brace-expansion": "1.1.8"
+      }
+    },
+    "moddle": {
+      "version": "bpmn-io/moddle",
+      "requires": {
+        "lodash": "3.10.1"
+      }
+    },
+    "moddle-xml": {
+      "version": "bpmn-io/moddle-xml",
+      "requires": {
+        "lodash": "3.10.1",
+        "moddle": "1.0.0",
+        "sax": "0.6.1",
+        "tiny-stack": "0.1.0"
+      }
+    },
+    "ms": {
+      "version": "2.0.0"
+    },
+    "next-tick": {
+      "version": "0.2.2"
+    },
+    "object-keys": {
+      "version": "1.0.11"
+    },
+    "object-refs": {
+      "version": "0.1.1"
+    },
+    "once": {
+      "version": "1.4.0",
+      "requires": {
+        "wrappy": "1.0.2"
+      }
+    },
+    "param-case": {
+      "version": "1.1.2",
+      "requires": {
+        "sentence-case": "1.1.3"
+      }
+    },
     "parents": {
       "version": "1.0.1",
+      "requires": {
+        "path-platform": "0.11.15"
+      }
+    },
+    "pascal-case": {
+      "version": "1.1.2",
+      "requires": {
+        "camel-case": "1.2.2",
+        "upper-case-first": "1.1.2"
+      }
+    },
+    "path-case": {
+      "version": "1.1.2",
+      "requires": {
+        "sentence-case": "1.1.3"
+      }
+    },
+    "path-is-absolute": {
+      "version": "1.0.1"
+    },
+    "path-platform": {
+      "version": "0.11.15"
+    },
+    "performance-now": {
+      "version": "2.1.0"
+    },
+    "process": {
+      "version": "0.5.2"
+    },
+    "process-nextick-args": {
+      "version": "1.0.7"
+    },
+    "raf": {
+      "version": "3.4.0",
+      "requires": {
+        "performance-now": "2.1.0"
+      }
+    },
+    "readable-stream": {
+      "version": "2.0.6",
+      "requires": {
+        "core-util-is": "1.0.2",
+        "inherits": "2.0.3",
+        "isarray": "1.0.0",
+        "process-nextick-args": "1.0.7",
+        "string_decoder": "0.10.31",
+        "util-deprecate": "1.0.2"
+      },
       "dependencies": {
-        "path-platform": {
-          "version": "0.11.15"
+        "isarray": {
+          "version": "1.0.0"
         }
+      }
+    },
+    "relateurl": {
+      "version": "0.2.7"
+    },
+    "repeat-string": {
+      "version": "1.6.1"
+    },
+    "rgbcolor": {
+      "version": "0.0.4"
+    },
+    "right-align": {
+      "version": "0.1.3",
+      "requires": {
+        "align-text": "0.1.4"
+      }
+    },
+    "sax": {
+      "version": "0.6.1"
+    },
+    "scroll-tabs": {
+      "version": "0.2.1",
+      "requires": {
+        "events": "1.1.1",
+        "inherits": "2.0.3",
+        "lodash": "3.10.1",
+        "min-dom": "0.2.0"
+      }
+    },
+    "selection-update": {
+      "version": "0.1.2"
+    },
+    "sentence-case": {
+      "version": "1.1.3",
+      "requires": {
+        "lower-case": "1.1.4"
+      }
+    },
+    "snake-case": {
+      "version": "1.1.2",
+      "requires": {
+        "sentence-case": "1.1.3"
+      }
+    },
+    "snapsvg": {
+      "version": "https://github.com/Nikku/Snap.svg/archive/v0.3.0-browserify.tar.gz"
+    },
+    "source-map": {
+      "version": "0.4.4",
+      "requires": {
+        "amdefine": "1.0.1"
+      }
+    },
+    "stackblur": {
+      "version": "1.0.0"
+    },
+    "string-template": {
+      "version": "0.2.1"
+    },
+    "string_decoder": {
+      "version": "0.10.31"
+    },
+    "stringify": {
+      "version": "5.1.0",
+      "requires": {
+        "browserify-transform-tools": "1.7.0",
+        "html-minifier": "1.1.1"
+      }
+    },
+    "swap-case": {
+      "version": "1.1.2",
+      "requires": {
+        "lower-case": "1.1.4",
+        "upper-case": "1.1.3"
+      }
+    },
+    "table-js": {
+      "version": "bpmn-io/table-js",
+      "requires": {
+        "diagram-js": "0.16.3",
+        "didi": "0.1.1",
+        "inherits": "2.0.3",
+        "lodash": "3.10.1",
+        "min-dom": "0.2.0"
+      },
+      "dependencies": {
+        "diagram-js": {
+          "version": "0.16.3",
+          "requires": {
+            "didi": "0.1.1",
+            "eve": "0.4.2",
+            "hammerjs": "2.0.8",
+            "inherits": "2.0.3",
+            "lodash": "3.10.1",
+            "min-dom": "0.2.0",
+            "object-refs": "0.1.1",
+            "snapsvg": "https://github.com/Nikku/Snap.svg/archive/v0.3.0-browserify.tar.gz"
+          }
+        }
+      }
+    },
+    "through": {
+      "version": "2.3.8"
+    },
+    "tiny-stack": {
+      "version": "0.1.0"
+    },
+    "tiny-svg": {
+      "version": "0.1.1"
+    },
+    "title-case": {
+      "version": "1.1.2",
+      "requires": {
+        "sentence-case": "1.1.3",
+        "upper-case": "1.1.3"
+      }
+    },
+    "typedarray": {
+      "version": "0.0.6"
+    },
+    "uglify-js": {
+      "version": "2.6.4",
+      "requires": {
+        "async": "0.2.10",
+        "source-map": "0.5.7",
+        "uglify-to-browserify": "1.0.2",
+        "yargs": "3.10.0"
+      },
+      "dependencies": {
+        "source-map": {
+          "version": "0.5.7"
+        }
+      }
+    },
+    "uglify-to-browserify": {
+      "version": "1.0.2"
+    },
+    "upper-case": {
+      "version": "1.1.3"
+    },
+    "upper-case-first": {
+      "version": "1.1.2",
+      "requires": {
+        "upper-case": "1.1.3"
+      }
+    },
+    "util-deprecate": {
+      "version": "1.0.2"
+    },
+    "virtual-dom": {
+      "version": "2.1.1",
+      "requires": {
+        "browser-split": "0.0.1",
+        "error": "4.4.0",
+        "ev-store": "7.0.0",
+        "global": "4.3.2",
+        "is-object": "1.0.1",
+        "next-tick": "0.2.2",
+        "x-is-array": "0.1.0",
+        "x-is-string": "0.1.0"
+      }
+    },
+    "virtual-hook": {
+      "version": "1.0.1"
+    },
+    "window-size": {
+      "version": "0.1.0"
+    },
+    "wordwrap": {
+      "version": "0.0.2"
+    },
+    "wrappy": {
+      "version": "1.0.2"
+    },
+    "x-is-array": {
+      "version": "0.1.0"
+    },
+    "x-is-string": {
+      "version": "0.1.0"
+    },
+    "xmldom": {
+      "version": "0.1.27"
+    },
+    "xtend": {
+      "version": "4.0.1"
+    },
+    "yargs": {
+      "version": "3.10.0",
+      "requires": {
+        "camelcase": "1.2.1",
+        "cliui": "2.1.0",
+        "decamelize": "1.2.0",
+        "window-size": "0.1.0"
       }
     }
   }

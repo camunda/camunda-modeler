@@ -1,9 +1,9 @@
 language: node_js
-node_js: '4.0'
+node_js: 'node'
 
 script:
-  - grunt
+  - npm run all
 
 before_install:
-  - npm install -g wiredeps
-  - wiredeps --branch=$TRAVIS_BRANCH --tag=$TRAVIS_TAG --verbose
+  - npm install -g wiredeps@0.2
+  - wiredeps --default-branch=master -branch=$TRAVIS_BRANCH --tag=$TRAVIS_TAG --verbose
