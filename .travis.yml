@@ -7,3 +7,4 @@ script:
 before_install:
   - npm install -g wiredeps@0.2
   - wiredeps --default-branch=master -branch=$TRAVIS_BRANCH --tag=$TRAVIS_TAG --verbose
+  - (cd client && wiredeps --default-branch=master -branch=$TRAVIS_BRANCH --tag=$TRAVIS_TAG --verbose)

@@ -183,7 +183,7 @@ describe('CmmnTab', function() {
         cmmnEditor.on('log:toggle', function(options) {
 
           // then
-          expect(logger.entries).to.include({
+          expect(logger.entries).to.deep.include({
             category: 'error', ref: null, message: 'foo BABA' });
 
           expect(options.open).to.be.true;

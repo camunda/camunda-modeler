@@ -34,7 +34,7 @@ module.exports = function(grunt) {
         events: require.resolve('events/')
       },
       ignoreMissing: true,
-      paths: ['client/lib'],
+      paths: ['lib'],
       insertGlobalVars: {
         process: function() {
           return 'undefined';

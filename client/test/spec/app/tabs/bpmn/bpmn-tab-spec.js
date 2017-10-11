@@ -189,7 +189,7 @@ describe('BpmnTab', function() {
 
         // wait for diagram shown / imported
         xmlEditor.once('state-updated', function(context) {
-        
+
           // then
           expect(context).to.have.property('undo', false);
           expect(context).to.have.property('redo', false);
@@ -219,8 +219,9 @@ describe('BpmnTab', function() {
         bpmnEditor.on('log:toggle', function(options) {
 
           // then
-          expect(logger.entries).to.include({
-            category: 'error', ref: null, message: 'foo BABA' });
+          expect(logger.entries).to.deep.include({
+            category: 'error', ref: null, message: 'foo BABA'
+          });
 
           expect(options.open).to.be.true;
 

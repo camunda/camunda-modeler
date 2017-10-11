@@ -1,7 +1,5 @@
 'use strict';
 
-var format = require('util').format;
-
 var BaseComponent = require('base/component');
 
 var inherits = require('inherits');
@@ -113,9 +111,11 @@ function Log(options) {
 
                     var action = e.action;
 
-                    var msg = format('%s  %s', '[' + e.category + ']', e.message);
+                    var msg;
 
-                    if (!e.message) {
+                    if (e.message) {
+                      msg = e.message + '  [' + e.category + ']';
+                    } else {
                       msg = ' ';
                     }
 

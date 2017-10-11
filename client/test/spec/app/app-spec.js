@@ -195,7 +195,7 @@ describe('App', function() {
       app.reopenLastTab();
 
       // then
-      expect(openFiles).notCalled;
+      expect(openFiles).not.to.have.been.called;
       expect(app.fileHistory).to.have.length(0);
     });
 
@@ -843,7 +843,7 @@ describe('App', function() {
       // then
       expect(bpmnTab.file).to.eql(expectedBpmnFile);
       expect(dmnTab.file).to.eql(expectedDmnFile);
-      expect(app.tabs).length.to.be(2);
+      expect(app.tabs).to.have.length(2);
 
     });
 
@@ -1448,13 +1448,15 @@ describe('App', function() {
       var file = createBpmnFile(bpmnXML, UNSAVED_FILE),
           openTab = app.openTab(file);
 
+      var canceledError = userCanceled();
+
       // when
-      dialog.setResponse('close', userCanceled());
+      dialog.setResponse('close', canceledError);
 
       app.closeTab(openTab, function(err) {
 
         // then
-        expect(err).to.eql(userCanceled());
+        expect(err).to.eql(canceledError);
         expect(app.tabs).to.contain(openTab);
 
         expect(dialog.close).to.have.been.called;
@@ -1482,12 +1484,11 @@ describe('App', function() {
 
       // when
       dialog.setResponse('close', 'save');
-      dialog.setResponse('saveAs', userCanceled());
 
       app.closeTab(openTab, function(err) {
 
         // then
-        expect(err).to.eql(userCanceled());
+        expect(err.message).to.eql(userCanceled().message);
         expect(app.tabs).to.contain(openTab);
 
         expect(dialog.close).to.have.been.called;
@@ -1970,7 +1971,7 @@ describe('App', function() {
         // then
         app.on('workspace:persisted', function(err, workspaceConfig) {
 
-          expect(err).not.to.exists;
+          expect(err).not.to.exist;
 
           expect(workspaceConfig.tabs).to.have.length(1);
           expect(workspaceConfig.activeTab).to.eql(0);
@@ -1993,7 +1994,7 @@ describe('App', function() {
         // then
         app.on('workspace:persisted', function(err, workspaceConfig) {
 
-          expect(err).not.to.exists;
+          expect(err).not.to.exist;
 
           expect(workspaceConfig.tabs).to.have.length(2);
           expect(workspaceConfig.activeTab).to.eql(1);
@@ -2016,7 +2017,7 @@ describe('App', function() {
         // then
         app.on('workspace:persisted', function(err, workspaceConfig) {
 
-          expect(err).not.to.exists;
+          expect(err).not.to.exist;
 
           expect(workspaceConfig.tabs).to.have.length(1);
           expect(workspaceConfig.activeTab).to.eql(0);

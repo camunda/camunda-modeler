@@ -38,9 +38,9 @@ Building the master branch may fail due to snapshot dependencies being missing.
 If that is the case, link them into the modeler project using the [wiredeps](https://github.com/nikku/wiredeps) utility:
 
 ```
-npm install wiredeps
+npm install -g wiredeps
 
-node_modules/.bin/wiredeps
+wiredeps
 ```
 
 ### Development Setup
