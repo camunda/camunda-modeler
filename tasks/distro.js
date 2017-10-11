@@ -251,7 +251,6 @@ function buildDistroIgnore() {
     'docs',
     'resources',
     'tasks',
-    '.babelrc',
     '.editorconfig',
     '.eslintrc',
     '.gitignore',
@@ -259,6 +258,7 @@ function buildDistroIgnore() {
     '.wiredeps',
     'Gruntfile.js',
     'npm-shrinkwrap.json',
+    'package-lock.json',
     'README.md'
   ];
 
