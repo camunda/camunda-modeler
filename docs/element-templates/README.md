@@ -222,6 +222,53 @@ The following ways exist to map a custom field to the underlying BPMN 2.0 XML:
 * `camunda:out`: Maps to `<camunda:out source="{source}" />`
 * `camunda:executionListener`: Maps to `<camunda:executionListener event="{event}" />`
 
+
+#### Scoped Bindings
+
+As of Camunda Modeler `v1.11.0` we support special scoped bindings that allow you to configure nested elements, such as [connectors](https://docs.camunda.org/manual/7.7/user-guide/process-engine/connectors/#use-connectors).
+
+```json
+{
+  "name": "ConnectorGetTask",
+  "id": "my.connector.http.get.Task",
+  "appliesTo": [
+    "bpmn:Task"
+  ],
+  "properties": [],
+  "scopes": {
+    "camunda:Connector": {
+      "properties": [
+        {
+          "label": "ConnectorId",
+          "type": "String",
+          "value": "My Connector HTTP - GET",
+          "binding": {
+            "type": "property",
+            "name": "connectorId"
+          }
+        },
+        ...
+      ]
+    }
+  }
+}
+```
+
+The example shows how a connector is configured as part of the task.
+On task creation, the connector is created with it and the connector bindings are
+exposed to user in a separate custom fields section.
+
+![Scoped Custom Fields](./scope-custom-fields.png)
+
+
+__Supported Scopes__
+
+
+| Name | Target |
+| ------------- | ------------- |
+| `camunda:Connector` | [Connectors](https://docs.camunda.org/manual/7.7/user-guide/process-engine/connectors/) |
+
+
 #### Constraints
 
 Custom Fields may have a number of constraints associated with them:
