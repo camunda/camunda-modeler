@@ -15,7 +15,7 @@
     "test": "run-p *:test",
     "auto-test": "run-p *:auto-test",
     "clean": "grunt clean",
-    "all": "run-s clean client:all app:all",
+    "all": "run-s clean client:all \"app:all -- {@}\" --",
     "distro": "grunt distro",
     "dev": "run-p *:dev",
     "postinstall": "(cd client && npm install)"
