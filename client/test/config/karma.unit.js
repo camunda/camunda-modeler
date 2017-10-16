@@ -4,22 +4,34 @@ var path = require('path');
 var puppeteer = require('puppeteer');
 
 // configures browsers to run test against
-// any of [ 'ChromeHeadless', 'Chrome', 'Firefox', 'IE' ]
+// any of [ 'PhantomJS', 'ChromeHeadless', 'Chrome', 'Firefox', 'IE' ]
 var TEST_BROWSERS = ((process.env.TEST_BROWSERS || '').replace(/^\s+|\s+$/, '') || 'ChromeHeadless').split(/\s*,\s*/g);
 
-process.env.CHROME_BIN = puppeteer.executablePath();
+
+// force PhantomJS usage on build Jenkins
+if (process.env.JENKINS_URL) {
+  console.log('Detected build Jenkins; using TEST_BROWSERS=PhantomJS');
+
+  TEST_BROWSERS = [ 'PhantomJS' ];
+}
 
 // workaround https://github.com/GoogleChrome/puppeteer/issues/290
-if (process.platform === 'linux') {
-  TEST_BROWSERS = TEST_BROWSERS.map(function(browser) {
-    if (browser === 'ChromeHeadless') {
-      return 'ChromeHeadless_Linux';
-    } else {
-      return browser;
-    }
-  });
+TEST_BROWSERS = TEST_BROWSERS.map(function(browser) {
 
-}
+  if (browser === 'ChromeHeadless') {
+
+    process.env.CHROME_BIN = puppeteer.executablePath();
+
+    if (process.platform === 'linux') {
+
+      // run no sandbox headless chrome
+      return 'ChromeHeadless_Linux';
+    }
+  }
+
+  return browser;
+});
+
 
 var basePath = '../../';
 
