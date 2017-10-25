@@ -66,6 +66,9 @@ module.exports = function(grunt) {
 
     if (platform === 'darwin') {
       options.name = 'Camunda Modeler';
+      if (grunt.option('sign')) {
+        options.osxSign = grunt.option('sign');
+      }
     }
 
     if (platform === 'win32') {
