@@ -349,8 +349,8 @@
       "version": "bpmn-io/dmn-js",
       "requires": {
         "bootstrap": "3.3.7",
-        "diagram-js": "0.18.4",
-        "diagram-js-direct-editing": "0.17.1",
+        "diagram-js": "0.21.1",
+        "diagram-js-direct-editing": "0.19.0",
         "dmn-moddle": "0.6.0",
         "ids": "0.2.0",
         "inherits": "2.0.3",
