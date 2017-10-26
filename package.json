@@ -18,7 +18,8 @@
     "all": "run-s clean client:all \"app:all -- {@}\" --",
     "distro": "grunt distro",
     "dev": "run-p *:dev",
-    "postinstall": "(cd client && npm install)"
+    "postinstall": "(cd client && npm install)",
+    "release": "np --no-publish"
   },
   "author": "Camunda BPM <http://camunda.org>",
   "license": "SEE LICENSE IN LICENSE",
@@ -50,10 +51,10 @@
     "grunt-eslint": "^18.0.0",
     "grunt-focus": "^0.1.1",
     "grunt-mocha-test": "^0.13.2",
-    "grunt-release": "^0.13.0",
     "load-grunt-tasks": "^3.4.0",
     "mocha": "^3.1.2",
     "ncp": "^2.0.0",
+    "np": "^2.16.0",
     "npm-run-all": "^4.1.1",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.8.0",

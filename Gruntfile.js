@@ -26,15 +26,6 @@ module.exports = function(grunt) {
       }
     },
 
-    release: {
-      options: {
-        tagName: 'v<%= version %>',
-        commitMessage: 'chore(project): release v<%= version %>',
-        tagMessage: 'chore(project): tag v<%= version %>',
-        npm: false
-      }
-    },
-
     clean: {
       client: 'public',
       distro: 'distro'
