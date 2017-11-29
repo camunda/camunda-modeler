@@ -49,7 +49,7 @@ function CmmnEditor(options) {
 
   // set current modeler version and name to the diagram
   this.on('save', () => {
-    var definitions = this.getModeler().definitions;
+    var definitions = this.getModeler().getDefinitions();
 
     if (definitions) {
       definitions.exporter = options.metaData.name;
@@ -424,5 +424,5 @@ CmmnEditor.prototype.notifyModeler = function(eventName) {
 };
 
 function isImported(modeler) {
-  return !!modeler.definitions;
+  return modeler.getDefinitions();
 }

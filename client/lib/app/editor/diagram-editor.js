@@ -260,5 +260,12 @@ function warningsStr(warnings) {
 }
 
 function isImported(modeler) {
-  return modeler && !!modeler.definitions;
+  return (
+    modeler && (
+      // dmn-js@current
+      modeler.definitions ||
+      // bpmn-js / cmmn-js @ current
+      (typeof modeler.getDefinitions === 'function' && modeler.getDefinitions())
+    )
+  );
 }
