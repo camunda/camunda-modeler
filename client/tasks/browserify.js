@@ -42,7 +42,18 @@ module.exports = function(grunt) {
         Buffer: function() {
           return 'undefined';
         }
-      }
+      },
+      transform: [
+        [ 'babelify', { global: true } ],
+        [ 'stringify', {
+          'extensions': [
+            '.bpmn',
+            '.dmn',
+            '.cmmn'
+          ]
+        } ],
+        [ 'envify', { global: true } ]
+      ]
     };
 
     var b;

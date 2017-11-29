@@ -1,4 +1,5 @@
-@import "dmn-js/styles/dmn-js";
+@import (less) "dmn-js-drd/assets/css/dmn-js-drd.css";
+@import (less) "dmn-js-decision-table/assets/css/dmn-js-decision-table.css";
 
 .dmn-editor {
   .warnings-overlay;
@@ -21,9 +22,11 @@
         .full-size();
       }
 
-      .dmn-table {
-        overflow: scroll;
-        padding: 15px;
+      .decision-table-container {
+        overflow: auto;
+        padding: 10px;
+        height: 100%;
+        max-height: 100%;
       }
     }
   }

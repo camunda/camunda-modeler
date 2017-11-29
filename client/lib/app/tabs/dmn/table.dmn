@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-             id="definitions"
-             name="definitions"
+             id="Definitions_{{ ID }}"
+             name="DRD"
              namespace="http://camunda.org/schema/1.0/dmn">
-  <decision id="decision" name="">
-    <decisionTable id="decisionTable">
-      <input id="input1" label="">
-        <inputExpression id="inputExpression1" typeRef="string">
+  <decision id="Decision_13nyxhf" name="Decision 1">
+    <decisionTable id="decisionTable_1">
+      <input id="input_1">
+        <inputExpression id="inputExpression_1" typeRef="string">
           <text></text>
         </inputExpression>
       </input>
-      <output id="output1" label="" name="" typeRef="string">
-      </output>
+      <output id="output_1" typeRef="string"></output>
     </decisionTable>
   </decision>
 </definitions>

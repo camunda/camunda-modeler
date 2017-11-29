@@ -13,7 +13,6 @@ var DmnTab = require('./dmn-tab');
 
 var ids = require('ids')([ 32, 36, 1 ]);
 
-// TODO(vlad): add shared super type for DMN/BPMN providers
 /**
  * Add ability to create and open DMN tables.
  *
@@ -28,26 +27,25 @@ function DmnProvider(options) {
   var createdFiles = 0;
 
   this.createNewFile = function(attrs) {
-    var xml;
 
     attrs = attrs || {};
+
+    var xml;
 
     // increment counter
     createdFiles++;
 
     debug('create DMN file');
 
-    xml = attrs.isTable ? tableXML : diagramXML;
-
     // make ID ROBUST
-    xml = xml.replace('id="definitions"', 'id="definitions_' + ids.next() + '"');
+    xml = (attrs.isTable ? tableXML : diagramXML)
+            .replace('{{ ID }}', ids.next());
 
     return {
       fileType: 'dmn',
       name: 'diagram_' + createdFiles + '.dmn',
       path: isUnsaved.PATH,
-      contents: xml,
-      loadDiagram: !attrs.isTable
+      contents: xml
     };
   };
 

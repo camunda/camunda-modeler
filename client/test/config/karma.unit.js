@@ -81,6 +81,21 @@ module.exports = function(karma) {
     // browserify configuration
     browserify: {
       debug: true,
+      transform: [
+        [ 'babelify', { global: true } ],
+        [ 'envify', { global: true } ],
+        [ 'stringify', {
+          'extensions': [
+            '.bpmn',
+            '.dmn',
+            '.cmmn',
+            '.xml',
+            '.css',
+            '.svg',
+            '.png'
+          ]
+        } ]
+      ],
       paths: [
         absoluteLibPath,
         absoluteBasePath

@@ -17,19 +17,13 @@ var DmnEditor = require('../../editor/dmn-editor'),
  * @param {Object} options
  */
 function DmnTab(options) {
-  var label = 'Table';
-
   if (!(this instanceof DmnTab)) {
     return new DmnTab(options);
   }
 
-  if (options.file) {
-    label = options.file.loadDiagram ? 'Diagram' : 'Table';
-  }
-
   options = assign({
     editorDefinitions: [
-      { id: 'dmn-editor', label: label, component: DmnEditor },
+      { id: 'dmn-editor', label: 'Diagram', component: DmnEditor },
       { id: 'xml', label: 'XML', isFallback: true, component: XMLEditor }
     ]
   }, options);

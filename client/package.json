@@ -3,29 +3,10 @@
   "version": "0.0.0",
   "description": "Camunda Modeler client application",
   "scripts": {
-    "test": "grunt test",
-    "auto-test": "grunt auto-test",
-    "all": "grunt",
-    "dev": "grunt auto-build"
-  },
-  "browserify": {
-    "transform": [
-      "babelify",
-      [
-        "stringify",
-        {
-          "extensions": [
-            ".bpmn",
-            ".dmn",
-            ".cmmn",
-            ".xml",
-            ".css",
-            ".svg",
-            ".png"
-          ]
-        }
-      ]
-    ]
+    "test": "NODE_ENV=test grunt test",
+    "auto-test": "NODE_ENV=test grunt auto-test",
+    "all": "NODE_ENV=production grunt",
+    "dev": "NODE_ENV=development grunt auto-build"
   },
   "dependencies": {
     "bpmn-js": "^0.25.2",
@@ -63,6 +44,7 @@
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "chai": "^4.1.2",
+    "envify": "^4.1.0",
     "errorify": "^0.3.1",
     "eslint": "^2.1.0",
     "eslint-plugin-mocha": "^2.0.0",

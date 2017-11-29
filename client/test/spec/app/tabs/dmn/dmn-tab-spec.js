@@ -75,7 +75,7 @@ describe('DmnTab', function() {
 
         modeler.importXML(initialXML, function() {
 
-          var eventBus = modeler.get('eventBus');
+          var eventBus = modeler.getActiveViewer().get('eventBus');
 
           dmnEditor.on('log:toggle', function(options) {
 

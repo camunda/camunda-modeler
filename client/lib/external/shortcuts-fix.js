@@ -114,9 +114,9 @@ function isTableSelected(app) {
       if (activeEditorName === 'table') {
         return activeEditor
           .getModeler()
-          .table
-          .get('selection')
-          .get() !== null;
+            .getActiveViewer()
+              .get('selection')
+                .get() !== null;
       }
     }
   }

@@ -1162,6 +1162,7 @@ describe('App', function() {
 
     });
 
+
     describe('dmn', function() {
 
       it('should save DMN when switching dmn editors', function(done) {
@@ -1173,79 +1174,55 @@ describe('App', function() {
 
         var $el = document.createElement('div');
 
-       // wait for diagram shown / imported
-        dmnEditor.on('shown', function(context) {
+        // wait for diagram shown / imported
+        dmnEditor.once('shown', function(context) {
 
           var modeler = dmnEditor.modeler,
-              elementFactory = modeler.get('elementFactory'),
-              canvas = modeler.get('canvas'),
-              modeling = modeler.get('modeling'),
-              drdReplace = modeler.get('drdReplace'),
+              drdJS  = modeler.getActiveViewer(),
+              elementFactory = drdJS.get('elementFactory'),
+              canvas = drdJS.get('canvas'),
+              modeling = drdJS.get('modeling'),
+              drdReplace = drdJS.get('drdReplace'),
               tableOpts = {
                 type: 'dmn:Decision',
                 table: true,
                 expression: false
-              }, lastXML;
+              },
+              lastXML;
 
           var decision = elementFactory.createShape({ type: 'dmn:Decision' });
 
-          modeling.createShape(decision, { x: 300, y: 400 }, canvas.getRootElement());
-
+          decision = modeling.createShape(decision, { x: 300, y: 400 }, canvas.getRootElement());
           decision = drdReplace.replaceElement(decision, tableOpts);
 
-          modeler.showDecision(decision);
+          var decisionView = modeler.getViews().filter(function(v) {
+            return v.element === decision.businessObject;
+          })[0];
 
           lastXML = dmnEditor.lastXML;
 
-          dmnEditor.saveXML(function(err, xml) {
+          // when (1) opening
+          modeler.open(decisionView, function(err) {
+
             if (err) {
               return done(err);
             }
 
-            expect(xml).to.not.equal(lastXML);
-            expect(xml.match(/decisionTable/g)).to.have.length(4);
+            // and (2) saving
+            // dmn editor saves with changed XML
+            dmnEditor.saveXML(function(err, xml) {
 
-            done();
+              if (err) {
+                return done(err);
+              }
+
+              expect(xml).to.not.equal(lastXML);
+              expect(xml.match(/decisionTable/g)).to.have.length(4);
+
+              done();
+            });
           });
-        });
 
-        dmnEditor.mountEditor($el);
-      });
-
-
-      it('should persist a global advanced/simple mode state', function(done) {
-        // given
-        var file = createDmnFile(drdXML),
-            dmnTab = app.openTab(file);
-
-        var dmnEditor = dmnTab.activeEditor;
-
-        var $el = document.createElement('div');
-
-        // wait for diagram shown / imported
-        dmnEditor.on('shown', function(context) {
-
-          var modeler = dmnEditor.modeler,
-              elementRegistry = modeler.get('elementRegistry'),
-              simpleMode = modeler.table.get('simpleMode'),
-              decision = elementRegistry.get('Decision_13nychf');
-
-          // go to table
-          modeler.showDecision(decision);
-
-          // switch do advance mode
-          simpleMode.deactivate();
-
-          // go back to DRD
-          modeler.showDRD();
-
-          // go back to table view
-          modeler.showDecision(decision);
-
-          // validate advance mode
-          expect(simpleMode.isActive()).to.be.false;
-
-          done();
         });
 
         dmnEditor.mountEditor($el);

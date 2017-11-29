@@ -2,8 +2,7 @@
 
 var inherits = require('inherits');
 
-var bind = require('lodash/function/bind'),
-    assign = require('lodash/object/assign');
+var assign = require('lodash/object/assign');
 
 var DiagramEditor = require('./diagram-editor');
 
@@ -11,13 +10,12 @@ var WarningsOverlay = require('base/components/warnings-overlay');
 
 var getWarnings = require('app/util/get-warnings');
 
-var DmnJS = require('dmn-js/lib/Modeler'),
-    diagramOriginModule = require('diagram-js-origin');
+import DmnJS from './dmn/CamundaDmnEditor';
+
+var diagramOriginModule = require('diagram-js-origin');
 
 var generateImage = require('app/util/generate-image'),
     isInputActive = require('util/dom/is-input').active;
-
-var getEntriesType = require('dmn-js/lib/table/util/SelectionUtil').getEntriesType;
 
 var debug = require('debug')('dmn-editor');
 
@@ -56,7 +54,7 @@ DmnEditor.prototype.triggerAction = function(action, options) {
 
   modeler = modeler.getActiveEditor();
 
-  var editorActions = modeler.get('editorActions', false);
+  var editorActions = modeler.getActiveViewer().get('editorActions', false);
 
   if (!editorActions) {
     return;
@@ -83,15 +81,9 @@ DmnEditor.prototype.triggerAction = function(action, options) {
  * Update editor state after changes in the
  * underlying diagram or XML.
  */
-DmnEditor.prototype.updateState = function() {
+DmnEditor.prototype.updateState = function(options = {}) {
 
-  var modeler = this.getModeler(),
-      initialState = this.initialState,
-      tableCommandStack, diagramCommandStack, commandStack;
-
-  var dirty, elements, elementsSelected,
-      inputActive, elementType, editorState,
-      stackIdx = -1;
+  var initialState = this.initialState;
 
   // ignore change events during import
   if (initialState.importing) {
@@ -103,7 +95,7 @@ DmnEditor.prototype.updateState = function() {
     activeEditor: this.getActiveEditorName(),
     undo: !!initialState.undo,
     redo: !!initialState.redo,
-    dirty: initialState.dirty,
+    dirty: initialState.dirty || options.contentChanged || false,
     exportAs: false
   };
 
@@ -111,94 +103,25 @@ DmnEditor.prototype.updateState = function() {
     stateContext.exportAs = [ 'png', 'jpeg', 'svg' ];
   }
 
-  // no diagram to harvest, good day maam!
-  if (isImported(modeler)) {
-
-    diagramCommandStack = modeler.get('commandStack');
-    tableCommandStack = modeler.table.get('commandStack');
-
-    if (stateContext.activeEditor === 'table') {
-
-      elements = modeler.table.get('selection').get();
-      elementType = getEntriesType(elements);
-
-      editorState = {
-        dmnRuleEditing: elementType.rule,
-        dmnClauseEditing: elementType.input || elementType.output
-      };
-
-      commandStack = tableCommandStack;
-    } else if (stateContext.activeEditor) {
-      // direct editing function
-      elements = modeler.get('selection').get();
-      elementsSelected = false;
-
-      if (elements.length >= 1) {
-        elementsSelected = true;
-      }
-
-      inputActive = isInputActive();
-
-      editorState = {
-        elementsSelected: elementsSelected && !inputActive,
-        inactiveInput: !inputActive
-      };
-
-      commandStack = diagramCommandStack;
-    }
-
-    // we have to do this, in order to keep track if there are changes in any of the commandStacks
-    stackIdx = this.getStackIndex();
-
-    dirty = (
-      initialState.dirty ||
-      initialState.reimported ||
-      initialState.stackIndex !== stackIdx
-    );
-
-    stateContext = assign(stateContext, {
-      undo: commandStack.canUndo(),
-      redo: commandStack.canRedo(),
-      dirty: dirty,
-      editable: true
-    }, editorState);
-  }
-
   this.emit('state-updated', stateContext);
 };
 
 DmnEditor.prototype.getStackIndex = function() {
-  var modeler = this.getModeler(),
-      diagramStackIdx, tableStackIdx;
-
-  if (isImported(modeler)) {
-    diagramStackIdx = modeler.get('commandStack')._stackIdx;
-
-    tableStackIdx = modeler.table.get('commandStack')._stackIdx;
-
-    return diagramStackIdx > tableStackIdx ? diagramStackIdx : tableStackIdx;
-  }
-
-  return -1;
+  // TODO(nikku): extract meaningful stack index (if possible at all?)
+  return (--this._stackIdx);
 };
 
 DmnEditor.prototype.getActiveEditorName = function() {
-  var modeler = this.getModeler(),
-      name, decision;
 
-  if (modeler === modeler.getActiveEditor()) {
-    name = 'diagram';
-  } else {
-    decision = modeler.table.getCurrentDecision();
+  var modeler = this.getModeler();
 
-    if (decision && decision.literalExpression) {
-      name = 'literal-expression';
-    } else {
-      name = 'table';
-    }
+  var activeView = modeler.getActiveView();
+
+  switch (activeView && activeView.type) {
+  case 'decision-table': return 'table';
+  case 'literal-expression': return 'literal-expression';
+  default: return 'diagram';
   }
-
-  return name;
 };
 
 
@@ -220,66 +143,41 @@ DmnEditor.prototype.getModeler = function() {
     });
 
     // hook up with modeler change events
-    this.modeler.on([
-      'commandStack.changed',
-      'selection.changed',
-      'view.switch'
-    ], this.updateState, this);
+    // TODO(nikku): hook up with change events?
 
-    this.modeler.table.on([
-      'commandStack.changed',
-      'selection.changed'
-    ], this.updateState, this);
+    var updateState = (options = {}) => (event) => {
+      this.updateState(options, event);
+    };
 
-    this.setupSimpleModeListener(this.modeler.table);
+    this.modeler.on('views.changed', updateState());
 
-    // Make sure that we export if there any changes in one of the editors
-    this.modeler.on('view.switch', function(context) {
-      var table = this.modeler.table,
-          simpleMode = table.get('simpleMode');
+    this.modeler.on('view.contentChanged', updateState({ contentChanged: true }));
 
-      this.initialState.stackIndex = -1;
+    this.modeler.on('view.selectionChanged', updateState());
 
-      if (context.fromTable) {
-        return;
-      }
-
-      if (this._isSimpleModeActive) {
-        simpleMode.activate();
-      } else {
-        simpleMode.deactivate();
-      }
-    }, this);
-
-    // log errors into log
-    this.modeler.on('error', bind((error) => {
-      this.emit('log', [[ 'error', error.error ]]);
+    // log editor errors
+    this.modeler.on('error', ({ error, viewer }) => {
+      this.emit('log', [ [ 'error', error ] ]);
       this.emit('log:toggle', { open: true });
-    }, this));
+    });
   }
 
   return this.modeler;
 };
 
 DmnEditor.prototype.createModeler = function($el) {
-  var file = this.file,
-      loadDiagram = false;
-
-  if (file && file.loadDiagram) {
-    loadDiagram = file.loadDiagram;
-  }
-
   return new DmnJS({
-    loadDiagram: loadDiagram,
-    position: 'absolute',
-    container: $el,
-    table: {
+    'position': 'absolute',
+    'container': $el,
+    'decision-table': {
       minColWidth: 200,
       tableName: 'DMN Table'
     },
-    additionalModules: [
-      diagramOriginModule
-    ]
+    'drd': {
+      additionalModules: [
+        diagramOriginModule
+      ]
+    }
   });
 };
 
@@ -291,19 +189,23 @@ DmnEditor.prototype.resize = function() {
     return;
   }
 
+  var viewer = modeler.getActiveViewer();
+
   if (this.getActiveEditorName() === 'diagram') {
-    sheetOrCanvas = modeler.get('canvas');
+    sheetOrCanvas = viewer.get('canvas');
   } else {
-    sheetOrCanvas = modeler.table.get('sheet');
+    sheetOrCanvas = viewer.get('sheet');
   }
 
-  sheetOrCanvas.resized();
+  if (typeof sheetOrCanvas.resized === 'function') {
+    sheetOrCanvas.resized();
+  }
 };
 
 DmnEditor.prototype.exportAs = function(type, done) {
-  var modeler = this.getModeler();
+  var drdJS = this.getModeler().getActiveViewer();
 
-  modeler.saveSVG((err, svg) => {
+  drdJS.saveSVG((err, svg) => {
     var file = {};
 
     if (err) {
@@ -331,20 +233,6 @@ DmnEditor.prototype.saveXML = function(done) {
   this._saveXML(modeler, commandStackIdx, done);
 };
 
-DmnEditor.prototype.setupSimpleModeListener = function(table) {
-  var eventBus = table.get('eventBus');
-
-  this._isSimpleModeActive = true;
-
-  eventBus.on('simpleMode.activated', function() {
-    this._isSimpleModeActive = true;
-  }, this);
-
-  eventBus.on('simpleMode.deactivated', function() {
-    this._isSimpleModeActive = false;
-  }, this);
-};
-
 DmnEditor.prototype.render = function() {
   var warnings = getWarnings(this.lastImport);
 
@@ -362,5 +250,5 @@ DmnEditor.prototype.render = function() {
 };
 
 function isImported(modeler) {
-  return !!modeler.definitions;
+  return modeler.getDefinitions();
 }
