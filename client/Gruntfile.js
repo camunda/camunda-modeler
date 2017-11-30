@@ -86,7 +86,6 @@ module.exports = function(grunt) {
           '{lib,styles}/**/*.less',
           'node_modules/diagram-js/assets/**/*.less',
           'node_modules/diagram-js/assets/**/*.css',
-          'node_modules/dmn-js/styles/**/*.less',
           'node_modules/bpmn-js-properties-panel/styles/**/*.less'
         ],
         tasks: [ 'less' ]
