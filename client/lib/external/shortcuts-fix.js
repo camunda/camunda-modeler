@@ -43,20 +43,6 @@ function ShortcutsFix(app, isMac) {
 
     var activeElement = document.activeElement;
 
-    // prevent default behavior when editing DMN decision table
-    if (isEnter(event.key)
-        && isTableSelected(app)) {
-      e.preventDefault();
-
-      if (event.ctrlKey || event.metaKey) {
-        app.triggerAction('insertNewLine');
-      } else if (event.shiftKey) {
-        app.triggerAction('selectPreviousRow');
-      } else {
-        app.triggerAction('selectNextRow');
-      }
-    }
-
     if (isMac) {
       return;
     }

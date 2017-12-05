@@ -2,7 +2,8 @@
 
 var inherits = require('inherits');
 
-var assign = require('lodash/object/assign');
+var assign = require('lodash/object/assign'),
+    forEach = require('lodash/collection/forEach');
 
 var DiagramEditor = require('./diagram-editor');
 
@@ -52,25 +53,13 @@ DmnEditor.prototype.triggerAction = function(action, options) {
 
   var modeler = this.getModeler();
 
-  modeler = modeler.getActiveEditor();
-
   var editorActions = modeler.getActiveViewer().get('editorActions', false);
 
   if (!editorActions) {
     return;
   }
 
-  if (action === 'clauseAdd') {
-    opts = options.type;
-  }
-
-
   debug('editor-actions', action, options);
-
-  // ignore all editor actions if there's a current active input or textarea
-  if ([ 'insertNewLine', 'selectNextRow', 'selectPreviousRow' ].indexOf(action) === -1 && isInputActive()) {
-    return;
-  }
 
   // forward other actions to editor actions
   editorActions.trigger(action, opts);
@@ -90,17 +79,57 @@ DmnEditor.prototype.updateState = function(options = {}) {
     return;
   }
 
+  var inputActive = isInputActive();
+
+  var modeler = this.getModeler();
+
+  var activeViewer = modeler.getActiveViewer();
+
+  var commandStack = activeViewer.get('commandStack');
+
+  var dirty = (
+    initialState.dirty ||
+    initialState.reimported ||
+    initialState.stackIndex !== this.getStackIndex()
+  );
+
   var stateContext = {
     dmn: true,
     activeEditor: this.getActiveEditorName(),
-    undo: !!initialState.undo,
-    redo: !!initialState.redo,
-    dirty: initialState.dirty || options.contentChanged || false,
-    exportAs: false
+    undo: commandStack.canUndo(),
+    redo: commandStack.canRedo(),
+    dirty: dirty,
+    exportAs: false,
+    editable: true,
+    inactiveInput: !inputActive
   };
 
   if (stateContext.activeEditor === 'diagram') {
     stateContext.exportAs = [ 'png', 'jpeg', 'svg' ];
+  }
+  
+  var activeView = modeler.getActiveView();
+
+  var selection;
+
+  if (activeView.type === 'decision-table') {
+    var decisionTableViewer = modeler.getActiveViewer();
+
+    selection = decisionTableViewer.get('selection');
+
+    if (selection.hasSelection()) {
+      stateContext.dmnClauseEditing = true;
+      stateContext.dmnRuleEditing = true;
+    } else {
+      stateContext.dmnClauseEditing = false;
+      stateContext.dmnRuleEditing = false;
+    }
+  } else if (activeView.type === 'drd') {
+    var drdViewer = modeler.getActiveViewer();
+
+    selection = drdViewer.get('selection');
+    
+    stateContext.elementsSelected = !!selection.get().length;
   }
 
   this.emit('state-updated', stateContext);
@@ -108,7 +137,18 @@ DmnEditor.prototype.updateState = function(options = {}) {
 
 DmnEditor.prototype.getStackIndex = function() {
   // TODO(nikku): extract meaningful stack index (if possible at all?)
-  return (--this._stackIdx);
+  // TODO(philippfromme): when switching viewer command stack of previous viewer is reset
+  // therefore dirty checking doesn't work anymore
+
+  var stackIdx = -1;
+
+  forEach(this.getModeler()._viewers, viewer => {
+    var commandStack = viewer.get('commandStack');
+
+    stackIdx += commandStack._stackIdx + 1;
+  });
+
+  return stackIdx;
 };
 
 DmnEditor.prototype.getActiveEditorName = function() {
