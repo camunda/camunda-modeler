@@ -77,68 +77,72 @@ DmnEditor.prototype.triggerAction = function(action, options) {
  */
 DmnEditor.prototype.updateState = function(options = {}) {
 
-  var initialState = this.initialState;
+  var modeler = this.getModeler(),
+      initialState = this.initialState;
 
   // ignore change events during import
   if (initialState.importing) {
     return;
   }
 
-  var modeler = this.getModeler();
-
-  var activeViewer = modeler.getActiveViewer();
-
-  var commandStack = activeViewer.get('commandStack');
-
-  var dirty = (
-    initialState.dirty ||
-    initialState.reimported ||
-    initialState.stackIndex !== this.getStackIndex()
-  );
-
   var stateContext = {
     dmn: true,
     activeEditor: this.getActiveEditorName(),
-    undo: commandStack.canUndo(),
-    redo: commandStack.canRedo(),
-    dirty: dirty,
-    exportAs: false,
-    editable: true
+    undo: !!initialState.undo,
+    redo: !!initialState.redo,
+    dirty: initialState.dirty,
+    exportAs: false
   };
 
-  if (stateContext.activeEditor === 'diagram') {
-    stateContext.exportAs = [ 'png', 'jpeg', 'svg' ];
-  }
+  // no diagram to harvest, good day maam!
+  if (isImported(modeler)) {
+    var activeView = modeler.getActiveView(),
+        activeViewer = modeler.getActiveViewer(),
+        commandStack = activeViewer.get('commandStack');
   
-  var activeView = modeler.getActiveView();
+    var selection;
+  
+    if (activeView.type === 'decision-table') {
+      var decisionTableViewer = modeler.getActiveViewer();
+  
+      selection = decisionTableViewer.get('selection');
+  
+      if (selection.hasSelection()) {
+        stateContext.dmnClauseEditing = true;
+        stateContext.dmnRuleEditing = true;
+      } else {
+        stateContext.dmnClauseEditing = false;
+        stateContext.dmnRuleEditing = false;
+      }
+    } else if (activeView.type === 'drd') {
+      var drdViewer = modeler.getActiveViewer();
+  
+      selection = drdViewer.get('selection');
+      
+      stateContext.elementsSelected = !!selection.get().length;
 
-  var selection;
-
-  if (activeView.type === 'decision-table') {
-    var decisionTableViewer = modeler.getActiveViewer();
-
-    selection = decisionTableViewer.get('selection');
-
-    if (selection.hasSelection()) {
-      stateContext.dmnClauseEditing = true;
-      stateContext.dmnRuleEditing = true;
-    } else {
-      stateContext.dmnClauseEditing = false;
-      stateContext.dmnRuleEditing = false;
-    }
-  } else if (activeView.type === 'drd') {
-    var drdViewer = modeler.getActiveViewer();
-
-    selection = drdViewer.get('selection');
+      // TODO(philippfromme): fix, this always returns false
+      // when wrapping this with setTimeout it works as expected
+      var inputActive = isInputActive();
     
-    stateContext.elementsSelected = !!selection.get().length;
+      stateContext.inactiveInput = !inputActive;
+
+      stateContext.exportAs = [ 'png', 'jpeg', 'svg' ];
+    }
+
+    var dirty = (
+      initialState.dirty ||
+      initialState.reimported ||
+      initialState.stackIndex !== this.getStackIndex()
+    );
+  
+    stateContext = assign(stateContext, {
+      undo: commandStack.canUndo(),
+      redo: commandStack.canRedo(),
+      dirty: dirty,
+      editable: true
+    });
   }
-
-  // TODO(philippfromme): fix, this always returns false
-  // when wrapping this with setTimeout it works as expected
-  var inputActive = isInputActive();
-
-  stateContext.inactiveInput = !inputActive;
 
   this.emit('state-updated', stateContext);
 };
