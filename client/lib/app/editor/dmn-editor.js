@@ -37,6 +37,11 @@ function DmnEditor(options) {
     if (warnings && warnings.length) {
       console.log(warnings);
     }
+
+    // TODO(philippfromme): makes sure XML is always saved
+    // since we have more than one command stack in some cases XML wouldn't be saved
+    // XML editor then wouldn't show actual XML
+    this.initialState.forceSaveXML = true;
   });
 
   this._stackIdx = -1;
@@ -79,8 +84,6 @@ DmnEditor.prototype.updateState = function(options = {}) {
     return;
   }
 
-  var inputActive = isInputActive();
-
   var modeler = this.getModeler();
 
   var activeViewer = modeler.getActiveViewer();
@@ -100,8 +103,7 @@ DmnEditor.prototype.updateState = function(options = {}) {
     redo: commandStack.canRedo(),
     dirty: dirty,
     exportAs: false,
-    editable: true,
-    inactiveInput: !inputActive
+    editable: true
   };
 
   if (stateContext.activeEditor === 'diagram') {
@@ -131,6 +133,12 @@ DmnEditor.prototype.updateState = function(options = {}) {
     
     stateContext.elementsSelected = !!selection.get().length;
   }
+
+  // TODO(philippfromme): fix, this always returns false
+  // when wrapping this with setTimeout it works as expected
+  var inputActive = isInputActive();
+
+  stateContext.inactiveInput = !inputActive;
 
   this.emit('state-updated', stateContext);
 };

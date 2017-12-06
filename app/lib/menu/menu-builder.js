@@ -655,25 +655,23 @@ MenuBuilder.prototype.appendDmnActions = function() {
   if (activeEditor === 'diagram') {
 
     // DRD editor
-    this.appendSeparator();
+    // this.menu.append(new MenuItem({
+    //   label: 'Lasso Tool',
+    //   accelerator: 'L',
+    //   enabled: this.opts.state.inactiveInput,
+    //   click: function() {
+    //     app.emit('menu:action', 'lassoTool');
+    //   }
+    // }));
 
-    this.menu.append(new MenuItem({
-      label: 'Lasso Tool',
-      accelerator: 'L',
-      enabled: this.opts.state.inactiveInput,
-      click: function() {
-        app.emit('menu:action', 'lassoTool');
-      }
-    }));
-
-    this.menu.append(new MenuItem({
-      label: 'Edit Label',
-      accelerator: 'E',
-      enabled: this.opts.state.elementsSelected,
-      click: function() {
-        app.emit('menu:action', 'directEditing');
-      }
-    }));
+    // this.menu.append(new MenuItem({
+    //   label: 'Edit Label',
+    //   accelerator: 'E',
+    //   enabled: this.opts.state.elementsSelected,
+    //   click: function() {
+    //     app.emit('menu:action', 'directEditing');
+    //   }
+    // }));
 
     this.appendSeparator();
 

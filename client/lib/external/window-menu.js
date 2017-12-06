@@ -21,6 +21,11 @@ function WindowMenu(app) {
   app.on('tools:state-changed', (tab, state) => {
     debug('Notifying menu about client state change', state);
 
+    // temporary fixes https://github.com/camunda/camunda-modeler/issues/708
+    if (app.activeTab !== tab) {
+      return debug('Warning: state updated on incative tab! This should never happen!');
+    }
+
     browser.send('menu:update', state);
   });
 

@@ -21,7 +21,7 @@
     "diagram-js": "^0.22.1",
     "diagram-js-minimap": "^0.5.5",
     "diagram-js-origin": "^0.15.2",
-    "dmn-js": "^0.11.0",
+    "dmn-js": "^1.1.1",
     "domify": "^1.4.0",
     "domready": "^1.0.8",
     "drag-tabs": "^0.1.0",
@@ -39,6 +39,7 @@
     "vtree-select": "^2.0.0"
   },
   "devDependencies": {
+    "babel-plugin-inferno": "^3.3.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.2.0",
     "babel-preset-env": "^1.6.0",

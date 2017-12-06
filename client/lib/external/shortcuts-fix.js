@@ -85,27 +85,3 @@ module.exports = ShortcutsFix;
 function isPropertiesInput(el) {
   return el && domClosest(el, '.properties');
 }
-
-function isEnter(key) {
-  return key === 'Enter';
-}
-
-function isTableSelected(app) {
-  if (app.activeTab && app.activeTab.activeEditor) {
-    var activeEditor = app.activeTab.activeEditor;
-
-    if (activeEditor.getActiveEditorName) {
-      var activeEditorName = activeEditor.getActiveEditorName();
-
-      if (activeEditorName === 'table') {
-        return activeEditor
-          .getModeler()
-            .getActiveViewer()
-              .get('selection')
-                .get() !== null;
-      }
-    }
-  }
-
-  return false;
-}
