@@ -167,7 +167,7 @@ As seen in the example the important attributes in a property definition are:
 * `label`: A descriptive text shown with the property
 * `type`: Defining the visual apperance in the properties panel (may be any of `String`, `Text`, `Boolean`, `Dropdown` or `Hidden`)
 * `value`: An optional default value to be used if the property to be bound is not yet set
-* `binding`: Specifying how the property is mapped to BPMN or Camunda extension elements and attributes (may be any of `property`, `camunda:property`, `camunda:inputParameter`, `camunda:outputParameter`, `camunda:in`, `camunda:out`, `camunda:executionListener`)
+* `binding`: Specifying how the property is mapped to BPMN or Camunda extension elements and attributes (may be any of `property`, `camunda:property`, `camunda:inputParameter`, `camunda:outputParameter`, `camunda:in`, `camunda:out`, `camunda:executionListener`, `camunda:field`)
 * `constraints`: A list of editing constraints to apply to the template
 
 
@@ -221,6 +221,7 @@ The following ways exist to map a custom field to the underlying BPMN 2.0 XML:
 * `camunda:in`: Maps to `<camunda:in target="{target}" />`
 * `camunda:out`: Maps to `<camunda:out source="{source}" />`
 * `camunda:executionListener`: Maps to `<camunda:executionListener event="{event}" />`
+* `camunda:field`: Maps to `<camunda:field name="{name}" />`
 
 
 #### Scoped Bindings
