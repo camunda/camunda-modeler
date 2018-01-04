@@ -317,7 +317,8 @@
         "lodash": "3.10.1",
         "min-dom": "0.2.0",
         "object-refs": "0.1.1",
-        "tiny-svg": "0.1.3"
+        "tiny-svg": "0.1.3",
+        "path-intersection": "1.0.2"
       }
     },
     "diagram-js-direct-editing": {
@@ -635,6 +636,9 @@
       "requires": {
         "sentence-case": "1.1.3"
       }
+    },
+    "path-intersection": {
+      "version": "1.0.2"
     },
     "path-is-absolute": {
       "version": "1.0.1"
