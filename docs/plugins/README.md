@@ -120,13 +120,10 @@ module.exports = {
 Make sure to require your file in `client.js`:
 
 ```javascript
-var registerClientPlugin = require('./registerClientPlugin');
-var module = require('./LoggingPlugin');
+var registerBpmnJSPlugin = require('camunda-modeler-plugin-helpers').registerBpmnJSPlugin;
+var plugin = require('./LoggingPlugin');
 
-registerClientPlugin({
-  type: 'bpmn.modeler.additionalModules',
-  module: module
-});
+registerBpmnJSPlugin(plugin);
 ```
 
 You can use the globally available functions `getModelerDirectory` and `getPluginsDirectory` to load additional resources:
@@ -143,7 +140,7 @@ function LoggingPlugin(eventBus, canvas) {
 Bundle your plugin:
 
 ```
-npm run client
+npm run build
 ```
 
 Finally, put the folder into the `plugins` directory relative to your Camunda Modeler installation directory. You can now use your plugin!
