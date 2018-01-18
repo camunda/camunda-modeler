@@ -67,11 +67,12 @@ describe('DmnTab', function() {
 
     describe('error handling', function() {
 
-
       it('should log modeler errors', function(done) {
 
         // given
         var modeler = dmnEditor.getModeler();
+
+        var error = new Error('foo BABA');
 
         modeler.importXML(initialXML, function() {
 
@@ -81,7 +82,10 @@ describe('DmnTab', function() {
 
             // then
             expect(logger.entries).to.deep.include({
-              category: 'error', ref: null, message: 'foo BABA' });
+              category: 'error',
+              ref: null,
+              message: error.stack
+            });
 
             expect(options.open).to.be.true;
 
@@ -89,7 +93,9 @@ describe('DmnTab', function() {
           });
 
           // when
-          eventBus.fire('error', { error: 'foo BABA' });
+          eventBus.fire('error', {
+            error: error
+          });
         });
 
       });

@@ -209,18 +209,21 @@ describe('BpmnTab', function() {
 
     describe('error handling', function() {
 
-
       it('should log modeler errors', function(done) {
 
         // given
         var modeler = bpmnEditor.getModeler(),
             eventBus = modeler.get('eventBus');
 
+        var error = new Error('foo BABA');
+
         bpmnEditor.on('log:toggle', function(options) {
 
           // then
           expect(logger.entries).to.deep.include({
-            category: 'error', ref: null, message: 'foo BABA'
+            category: 'error',
+            ref: null,
+            message: error.stack
           });
 
           expect(options.open).to.be.true;
@@ -228,8 +231,11 @@ describe('BpmnTab', function() {
           done();
         });
 
+
         // when
-        eventBus.fire('error', { error: 'foo BABA' });
+        eventBus.fire('error', {
+          error: error
+        });
       });
 
 

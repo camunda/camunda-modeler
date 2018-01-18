@@ -180,11 +180,16 @@ describe('CmmnTab', function() {
         var modeler = cmmnEditor.getModeler(),
             eventBus = modeler.get('eventBus');
 
+        var error = new Error('foo BABA');
+
         cmmnEditor.on('log:toggle', function(options) {
 
           // then
           expect(logger.entries).to.deep.include({
-            category: 'error', ref: null, message: 'foo BABA' });
+            category: 'error',
+            ref: null,
+            message: error.stack
+          });
 
           expect(options.open).to.be.true;
 
@@ -192,7 +197,9 @@ describe('CmmnTab', function() {
         });
 
         // when
-        eventBus.fire('error', { error: 'foo BABA' });
+        eventBus.fire('error', {
+          error: error
+        });
       });
 
 
