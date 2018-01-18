@@ -99,14 +99,14 @@ DmnEditor.prototype.updateState = function(options = {}) {
     var activeView = modeler.getActiveView(),
         activeViewer = modeler.getActiveViewer(),
         commandStack = activeViewer.get('commandStack');
-  
+
     var selection;
-  
+
     if (activeView.type === 'decision-table') {
       var decisionTableViewer = modeler.getActiveViewer();
-  
+
       selection = decisionTableViewer.get('selection');
-  
+
       if (selection.hasSelection()) {
         stateContext.dmnClauseEditing = true;
         stateContext.dmnRuleEditing = true;
@@ -116,15 +116,15 @@ DmnEditor.prototype.updateState = function(options = {}) {
       }
     } else if (activeView.type === 'drd') {
       var drdViewer = modeler.getActiveViewer();
-  
+
       selection = drdViewer.get('selection');
-      
+
       stateContext.elementsSelected = !!selection.get().length;
 
       // TODO(philippfromme): fix, this always returns false
       // when wrapping this with setTimeout it works as expected
       var inputActive = isInputActive();
-    
+
       stateContext.inactiveInput = !inputActive;
 
       stateContext.exportAs = [ 'png', 'jpeg', 'svg' ];
@@ -135,7 +135,7 @@ DmnEditor.prototype.updateState = function(options = {}) {
       initialState.reimported ||
       initialState.stackIndex !== this.getStackIndex()
     );
-  
+
     stateContext = assign(stateContext, {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
@@ -208,8 +208,11 @@ DmnEditor.prototype.getModeler = function() {
     this.modeler.on('view.selectionChanged', updateState());
 
     // log editor errors
+    // log errors into log
     this.modeler.on('error', ({ error, viewer }) => {
-      this.emit('log', [ [ 'error', error ] ]);
+      this.emit('log', [
+        [ 'error', error.stack ]
+      ]);
       this.emit('log:toggle', { open: true });
     });
   }
