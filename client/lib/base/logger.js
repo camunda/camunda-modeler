@@ -55,21 +55,26 @@ CATEGORIES.forEach(function(category) {
 
 Logger.prototype.addEntry = function(category, args) {
 
-  var ref = args[0];
+  // fail-safe
+  try {
+    var ref = args[0];
 
-  if (REF_PATTERN.test(ref)) {
-    ref = ref.replace(REF_PATTERN, '');
+    if (REF_PATTERN.test(ref)) {
+      ref = ref.replace(REF_PATTERN, '');
 
-    args.shift();
-  } else {
-    ref = null;
+      args.shift();
+    } else {
+      ref = null;
+    }
+
+    var entry = {
+      category: category,
+      ref: ref,
+      message: format.apply(null, args)
+    };
+
+    this.entries.push(entry);
+  } catch (e) {
+    console.error(e);
   }
-
-  var entry = {
-    category: category,
-    ref: ref,
-    message: format.apply(null, args)
-  };
-
-  this.entries.push(entry);
 };
