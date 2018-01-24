@@ -10,22 +10,6 @@ module.exports = function(grunt) {
 
     pkg: grunt.file.readJSON('package.json'),
 
-    eslint: {
-      check: {
-        src: [
-          '{lib,test}/**/*.js'
-        ]
-      },
-      fix: {
-        src: [
-          '{lib,test}/**/*.js'
-        ],
-        options: {
-          fix: true
-        }
-      }
-    },
-
     karma: {
       options: {
         configFile: 'test/config/karma.unit.js'
@@ -101,10 +85,6 @@ module.exports = function(grunt) {
 
   // tasks
 
-  grunt.registerTask('lint', [ 'eslint:check' ]);
-
-  grunt.registerTask('lint-fix', [ 'eslint:fix' ]);
-
   grunt.registerTask('test', [ 'karma:single' ]);
 
   grunt.registerTask('auto-test', [ 'karma:unit' ]);
@@ -116,7 +96,6 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'lint',
     'test',
     'build-client'
   ]);
