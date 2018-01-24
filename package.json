@@ -36,7 +36,7 @@
   "devDependencies": {
     "archiver": "~1.2.0",
     "chai": "^3.5.0",
-    "electron": "^1.6.10",
+    "electron": "1.7.11",
     "electron-connect": "^0.6.1",
     "electron-packager": "^9.1.0",
     "eslint": "^2.1.0",
