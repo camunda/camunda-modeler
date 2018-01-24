@@ -51,7 +51,7 @@ module.exports.replaceNamespaceURL = replaceNamespaceURL;
  * xmlns:prefix="http://activiti.org/bpmn"
  */
 function grabNamespacePrefix(xml) {
-  var pattern = /xmlns\:([A-z0-9.-]+)\=\"http\:\/\/(activiti\.org|camunda\.org\/schema\/1\.0)\/bpmn\"/,
+  var pattern = /xmlns:([A-z0-9.-]+)="http:\/\/(activiti\.org|camunda\.org\/schema\/1\.0)\/bpmn"/,
       match = xml.match(pattern);
 
   if (!match) {

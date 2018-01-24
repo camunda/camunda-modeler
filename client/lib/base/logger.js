@@ -10,7 +10,7 @@ var Emitter = require('events');
 
 var CATEGORIES = [ 'info', 'debug', 'warning', 'error' ];
 
-var REF_PATTERN = /^ref\:/;
+var REF_PATTERN = /^ref:/;
 
 
 /**

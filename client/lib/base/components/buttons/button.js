@@ -21,10 +21,11 @@ function Button(options) {
   this.render = function() {
 
     return (
-      <button className={ this.disabled ? 'disabled' : '' }
-              title={ this.label || '' }
-              ref={ this.id }
-              onClick={ this.action }>
+      <button
+        className={ this.disabled ? 'disabled' : '' }
+        title={ this.label || '' }
+        ref={ this.id }
+        onClick={ this.action }>
         { this.icon ? <span className={ this.icon }></span> : null }
       </button>
     );

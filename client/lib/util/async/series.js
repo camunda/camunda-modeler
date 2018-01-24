@@ -11,7 +11,7 @@ module.exports = function(items, fn, done) {
         if (err) {
           return done(err);
         }
-        
+
         results.push(result);
 
         return series(remaining.shift());

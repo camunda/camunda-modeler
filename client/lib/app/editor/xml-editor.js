@@ -53,10 +53,11 @@ XMLEditor.prototype.render = function() {
 
   return (
     <div className="xml-editor" key={ this.id + '#xml' }>
-      <div className="editor-container"
-           tabIndex="0"
-           onAppend={ this.compose('mountEditor') }
-           onRemove={ this.compose('unmountEditor') }>
+      <div
+        className="editor-container"
+        tabIndex="0"
+        onAppend={ this.compose('mountEditor') }
+        onRemove={ this.compose('unmountEditor') }>
       </div>
     </div>
   );

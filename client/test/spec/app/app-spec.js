@@ -1529,7 +1529,7 @@ describe('App', function() {
       // when
       app.closeTab(closingTab);
 
-        // then
+      // then
       expect(app.activeTab).to.eql(activeTab);
     });
 

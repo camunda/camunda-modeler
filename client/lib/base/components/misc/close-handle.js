@@ -18,10 +18,11 @@ function CloseHandle(options) {
     }
 
     return (
-      <span className={ className }
-            onClick={ options.onClick }
-            tabIndex="0"
-            ref={ options.ref }></span>
+      <span
+        className={ className }
+        onClick={ options.onClick }
+        tabIndex="0"
+        ref={ options.ref }></span>
     );
   };
 }

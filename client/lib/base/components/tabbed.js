@@ -65,9 +65,10 @@ function Tabbed(options) {
 
     var html =
       <div className={ 'tabbed ' + (options.className || '') }>
-        <div className="tabs"
-             scroll={ scrollTabs(TABS_OPTS, onScroll) }
-             drag={ dragTabs(TABS_OPTS, onPositionChanged) } >
+        <div
+          className="tabs"
+          scroll={ scrollTabs(TABS_OPTS, onScroll) }
+          drag={ dragTabs(TABS_OPTS, onPositionChanged) } >
           <div className="scroll-tabs-button scroll-tabs-left">‹</div>
           <div className="scroll-tabs-button scroll-tabs-right">›</div>
           <div className="tabs-container" >
@@ -106,18 +107,18 @@ function Tabbed(options) {
 
                 return (
                   <div className={ className }
-                       key={ tab.id }
-                       ref={ tab.id }
-                       tabId={ tab.id }
-                       title={ tab.title }
-                       onClick={ handleSelect }
-                       onContextmenu={ handleContextMenu }
-                       tabIndex="0">
+                    key={ tab.id }
+                    ref={ tab.id }
+                    tabId={ tab.id }
+                    title={ tab.title }
+                    onClick={ handleSelect }
+                    onContextmenu={ handleContextMenu }
+                    tabIndex="0">
                     { tab.label }
                     { tab.closable
-                        ? <CloseHandle dirty={ tab.dirty }
-                                       onClick={ handleClose } />
-                        : null }
+                      ? <CloseHandle dirty={ tab.dirty }
+                        onClick={ handleClose } />
+                      : null }
                   </div>
                 );
               })

@@ -479,33 +479,44 @@ BpmnEditor.prototype.render = function() {
   var warnings = getWarnings(this.lastImport);
 
   return (
-    <div className="bpmn-editor"
-         key={ this.id + '#bpmn' }
-         onFocusin={ this.compose('updateState') }
-         onContextmenu={ this.compose('openContextMenu') }>
-      <div className="editor-container"
-           onAppend={ this.compose('mountEditor') }
-           onRemove={ this.compose('unmountEditor') }>
+    <div
+      className="bpmn-editor"
+      key={ this.id + '#bpmn' }
+      onFocusin={ this.compose('updateState') }
+      onContextmenu={ this.compose('openContextMenu') }>
+      <div
+        className="editor-container"
+        onAppend={ this.compose('mountEditor') }
+        onRemove={ this.compose('unmountEditor') }>
       </div>
       <div className="properties" style={ propertiesStyle } tabIndex="0">
-        <div className="toggle"
-             ref="properties-toggle"
-             draggable="true"
-             onClick={ this.compose('toggleProperties') }
-             onDragstart={ dragger(this.compose('resizeProperties', copy(propertiesLayout))) }>
+        <div
+          className="toggle"
+          ref="properties-toggle"
+          draggable="true"
+          onClick={ this.compose('toggleProperties') }
+          onDragstart={
+            dragger(this.compose('resizeProperties', copy(propertiesLayout)))
+          }>
           Properties Panel
         </div>
-        <div className="resize-handle"
-             draggable="true"
-             onDragStart={ dragger(this.compose('resizeProperties', copy(propertiesLayout))) }></div>
-        <div className="properties-container"
-             onAppend={ this.compose('mountProperties') }
-             onRemove={ this.compose('unmountProperties') }>
+        <div
+          className="resize-handle"
+          draggable="true"
+          onDragStart={
+            dragger(this.compose('resizeProperties', copy(propertiesLayout)))
+          }>
+        </div>
+        <div
+          className="properties-container"
+          onAppend={ this.compose('mountProperties') }
+          onRemove={ this.compose('unmountProperties') }>
         </div>
       </div>
-      <WarningsOverlay warnings={ warnings }
-                       onOpenLog={ this.compose('openLog') }
-                       onClose={ this.compose('hideWarnings') } />
+      <WarningsOverlay
+        warnings={ warnings }
+        onOpenLog={ this.compose('openLog') }
+        onClose={ this.compose('hideWarnings') } />
     </div>
   );
 };

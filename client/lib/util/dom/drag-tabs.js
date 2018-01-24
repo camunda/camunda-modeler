@@ -34,7 +34,7 @@ function DragTabsHook(options, onPositionChanged) {
           dragger = dragTabs(node, options);
 
           dragger.on('drag', onPositionChanged);
-          
+
           dragger.on('cancel', onPositionChanged);
         }
 

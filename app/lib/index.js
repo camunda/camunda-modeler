@@ -59,7 +59,8 @@ global.modelerDirectory = process.cwd();
 //
 // TODO(nikku): remove app.menu binding when development
 // mode bootstrap issue is fixed in electron-connect
-app.menu = new Menu(process.platform,
+app.menu = new Menu(
+  process.platform,
   plugins.getPlugins()
     .map(p => {
       return {
@@ -68,7 +69,7 @@ app.menu = new Menu(process.platform,
         error: p.error
       };
     })
-  );
+);
 
 // bootstrap workspace behavior
 new Workspace(config);

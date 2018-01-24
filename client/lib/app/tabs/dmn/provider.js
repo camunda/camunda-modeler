@@ -38,8 +38,10 @@ function DmnProvider(options) {
     debug('create DMN file');
 
     // make ID ROBUST
-    xml = (attrs.isTable ? tableXML : diagramXML)
-            .replace('{{ ID }}', ids.next());
+    xml = (
+      (attrs.isTable ? tableXML : diagramXML)
+        .replace('{{ ID }}', ids.next())
+    );
 
     return {
       fileType: 'dmn',

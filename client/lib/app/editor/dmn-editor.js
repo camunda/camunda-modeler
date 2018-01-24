@@ -293,13 +293,15 @@ DmnEditor.prototype.render = function() {
 
   return (
     <div className="dmn-editor" key={ this.id }>
-      <div className="editor-container"
-           onAppend={ this.compose('mountEditor') }
-           onRemove={ this.compose('unmountEditor') }>
+      <div
+        className="editor-container"
+        onAppend={ this.compose('mountEditor') }
+        onRemove={ this.compose('unmountEditor') }>
       </div>
-      <WarningsOverlay warnings={ warnings }
-                       onOpenLog={ this.compose('openLog') }
-                       onClose={ this.compose('hideWarnings') } />
+      <WarningsOverlay
+        warnings={ warnings }
+        onOpenLog={ this.compose('openLog') }
+        onClose={ this.compose('hideWarnings') } />
     </div>
   );
 };

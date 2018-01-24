@@ -59,9 +59,10 @@ function dropdown(parent) {
 
     var target = event.target;
 
-    if (getParent(target, parent, 5) && !
-        getParent(target, 'dropdown', 3)) {
-
+    if (
+      getParent(target, parent, 5) &&
+      !getParent(target, 'dropdown', 3)
+    ) {
       return;
     }
 

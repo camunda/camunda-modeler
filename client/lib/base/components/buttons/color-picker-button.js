@@ -42,10 +42,11 @@ function ColorPickerButton(options) {
     }
 
     var html =
-      <button className={ 'color-picker-button ' + disabled }
-          title={ this.label }
-          ref={ this.id }
-          onMousedown={ dropdown('color-picker-button') }>
+      <button
+        className={ 'color-picker-button ' + disabled }
+        title={ this.label }
+        ref={ this.id }
+        onMousedown={ dropdown('color-picker-button') }>
         { this.icon ? <span className={ this.icon }></span> : null }
         <span className="caret"></span>
         { dropdownWidget }

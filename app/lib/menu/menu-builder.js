@@ -680,7 +680,7 @@ MenuBuilder.prototype.appendDmnActions = function() {
     this.appendRemoveSelection();
 
   } else if (activeEditor === 'table') {
-    
+
     // decision table editor
     this.appendSeparator();
 
@@ -1084,21 +1084,21 @@ MenuBuilder.prototype.get = function() {
 
 MenuBuilder.prototype.build = function() {
   return this.appendFileMenu(
-      new this.constructor(this.opts)
-        .appendNewFile()
-        .appendOpen()
-        .appendSeparator()
-        .appendSwitchTab()
-        .appendSaveFile()
-        .appendSaveAsFile()
-        .appendSaveAllFiles()
-        .appendSeparator()
-        .appendExportAs()
-        .appendCloseTab()
-        .appendSeparator()
-        .appendQuit()
-        .get()
-    )
+    new this.constructor(this.opts)
+      .appendNewFile()
+      .appendOpen()
+      .appendSeparator()
+      .appendSwitchTab()
+      .appendSaveFile()
+      .appendSaveAsFile()
+      .appendSaveAllFiles()
+      .appendSeparator()
+      .appendExportAs()
+      .appendCloseTab()
+      .appendSeparator()
+      .appendQuit()
+      .get()
+  )
     .appendEditMenu()
     .appendWindowMenu()
     .appendPluginsMenu()

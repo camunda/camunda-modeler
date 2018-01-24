@@ -29,7 +29,7 @@ module.exports = function get(platform, path, defaultExport) {
   else if (platform == 'linux') {
     return resolvePlatform(path + '/linux');
   }
-  
+
   else {
     // not platform init, bad luck :-(
     throw new Error('your platform < ' + platform + ' > is not supported.');

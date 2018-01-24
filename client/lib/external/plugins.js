@@ -60,9 +60,11 @@ Plugins.prototype.get = function(type) {
     throw new Error('Plugin type is not provided!');
   }
 
-  var plugins = this.getAll()
+  var plugins = (
+    this.getAll()
       .filter(p => p.type === type)
-      .map(p => p.plugin);
+      .map(p => p.plugin)
+  );
 
   return plugins;
 };

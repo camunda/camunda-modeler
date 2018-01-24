@@ -18,7 +18,7 @@ function Workspace() {
    */
   this.save = function(config, done) {
     this.setSaved(config);
-    
+
     done(null, config);
   };
 
@@ -27,7 +27,7 @@ function Workspace() {
    */
   this.load = function(defaultResult, done) {
     var saved = this.getSaved();
-    
+
     done(saved instanceof Error ? saved : null, saved || defaultResult);
   };
 }
