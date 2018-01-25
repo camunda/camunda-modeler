@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg">
-<metadata>Copyright (C) 2017 by original authors @ fontello.com</metadata>
+<metadata>Copyright (C) 2018 by original authors @ fontello.com</metadata>
 <defs>
 <font id="app" horiz-adv-x="1000" >
 <font-face font-family="app" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
@@ -15,6 +15,8 @@
 <glyph glyph-name="align-right-tool" unicode="&#xe803;" d="M214 848l0-285 36 0 534 0 0-71-356 0 0-286 35 0 321 0 0-71-570 0 0-285 36 0 534 0 72 0 0 285 0 71 0 286 0 71 0 285-72 0-570 0z m71-71l499 0 0-143-499 0 0 143z m214-357l285 0 0-142-285 0 0 142z m-214-356l499 0 0-143-499 0 0 143z" horiz-adv-x="1000" />
 
 <glyph glyph-name="align-top-tool" unicode="&#xe804;" d="M0 706l0-72 0-570 285 0 0 36 0 534 71 0 0-356 286 0 0 35 0 321 71 0 0-570 285 0 0 36 0 534 0 72-285 0-713 0z m71-72l143 0 0-499-143 0 0 499z m357 0l142 0 0-285-142 0 0 285z m356 0l143 0 0-499-143 0 0 499z" horiz-adv-x="1000" />
+
+<glyph glyph-name="deploy" unicode="&#xe805;" d="M714 29q0 14-10 25t-25 10-25-10-11-25 11-25 25-11 25 11 10 25z m143 0q0 14-10 25t-26 10-25-10-10-25 10-25 25-11 26 11 10 25z m72 125v-179q0-22-16-38t-38-16h-821q-23 0-38 16t-16 38v179q0 22 16 38t38 15h238q12-31 39-51t62-20h143q34 0 61 20t40 51h238q22 0 38-15t16-38z m-182 361q-9-22-33-22h-143v-250q0-15-10-25t-25-11h-143q-15 0-25 11t-11 25v250h-143q-23 0-33 22-9 22 8 39l250 250q10 10 25 10t25-10l250-250q18-17 8-39z" horiz-adv-x="928.6" />
 
 <glyph glyph-name="distribute-horizontally-tool" unicode="&#xe806;" d="M214 706l0-72 0-71-214 0 0-36 0-534 285 0 0 570 0 71 178 0 0-71-107 0 0-36 0-392 286 0 0 428-107 0 0 71 178 0 0-71 0-36 0-534 285 0 0 570-214 0 0 71 0 72-570 0z m-143-214l143 0 0-428-143 0 0 428z m357 0l142 0 0-286-142 0 0 286z m356 0l143 0 0-428-143 0 0 428z" horiz-adv-x="1000" />
 

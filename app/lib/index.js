@@ -24,7 +24,8 @@ var Platform = require('./platform'),
     Dialog = require('./dialog'),
     Menu = require('./menu'),
     Cli = require('./cli'),
-    Plugins = require('./plugins');
+    Plugins = require('./plugins'),
+    deployBPMN = require('./deploy');
 
 var browserOpen = require('./util/browser-open'),
     renderer = require('./util/renderer');
@@ -151,6 +152,10 @@ renderer.on('dialog:saving-denied', function(done) {
 
 renderer.on('dialog:content-changed', function(done) {
   dialog.showDialog('contentChanged', done);
+});
+
+renderer.on('deploy:bpmn', function(data, done) {
+  return deployBPMN({ data: data, done: done, config: config });
 });
 
 

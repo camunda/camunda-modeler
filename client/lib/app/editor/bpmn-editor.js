@@ -6,6 +6,8 @@ var assign = require('lodash/object/assign');
 
 var domify = require('domify');
 
+var domClosest = require('min-dom/lib/closest');
+
 var DiagramEditor = require('./diagram-editor');
 
 var BpmnJS = require('bpmn-js/lib/Modeler');
@@ -72,7 +74,7 @@ function BpmnEditor(options) {
 
   // update state so that it reflects that an 'input' is active
   this.on('input:focused', (event) => {
-    if (isInput.isInput(event.target)) {
+    if (isInput.isInput(event.target) && domClosest(event.target, '.bpmn-editor')) {
       this.updateState();
     }
   });

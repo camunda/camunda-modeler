@@ -15,13 +15,12 @@ var Config = require('external/config'),
     Menu = require('external/window-menu'),
     ContextMenu = require('external/context-menu'),
     Workspace = require('external/workspace'),
-    Plugins = require('external/plugins');
+    Plugins = require('external/plugins'),
+    browser = require('util/browser');
 
 var App = require('./app');
 
 var mainLoop = require('util/dom/main-loop');
-
-var browser = require('util/browser');
 
 var remote = window.require('electron').remote,
     metaData = remote.getGlobal('metaData');
@@ -50,7 +49,8 @@ domReady(function() {
     logger: new Logger(),
     workspace: new Workspace(),
     plugins: new Plugins(),
-    metaData: metaData
+    metaData: metaData,
+    browser: browser
   });
 
   // Setting up external components

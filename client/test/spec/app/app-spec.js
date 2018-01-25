@@ -30,6 +30,8 @@ var MultiEditorTab = require('app/tabs/multi-editor-tab');
 var BaseEditor = require('app/editor/base-editor');
 
 var Tab = require('base/components/tab');
+var browser = require('test/helper/mock/browser');
+
 
 
 function createBpmnFile(xml, overrides) {
@@ -87,7 +89,8 @@ describe('App', function() {
       logger: logger,
       workspace: workspace,
       plugins: plugins,
-      metaData: {}
+      metaData: {},
+      browser: browser
     });
 
   });
@@ -247,6 +250,27 @@ describe('App', function() {
       // then
       // expect BPMN tab with editor to be shown
       expect(select('.keyboard-shortcuts', tree)).to.not.exist;
+    });
+
+    it('should render endpoints configuration modal and close it', function() {
+      // when
+      // endpointConfig is toggled first time
+      app.toggleOverlay('endpointConfig');
+      var tree = render(app);
+
+
+      // then
+      // config modal should show
+      expect(select('.endpoint-configuration', tree)).to.exist;
+
+      // when
+      // endpointConfig is toggled second time
+      app.toggleOverlay(false);
+      tree = render(app);
+
+      // then
+      // config modal should disappear
+      expect(select('.endpoint-configuration', tree)).to.not.exist;
     });
 
 
@@ -1820,7 +1844,8 @@ describe('App', function() {
             expect(workspaceConfig).to.have.keys([
               'tabs',
               'activeTab',
-              'layout'
+              'layout',
+              'endpoints'
             ]);
 
             expect(workspaceConfig.tabs).to.have.length(0);
@@ -1848,7 +1873,8 @@ describe('App', function() {
             expect(workspaceConfig).to.have.keys([
               'tabs',
               'activeTab',
-              'layout'
+              'layout',
+              'endpoints'
             ]);
 
             expect(workspaceConfig.tabs).to.eql([ bpmnFile, dmnFile ]);
@@ -1857,6 +1883,32 @@ describe('App', function() {
 
             done();
           });
+        });
+
+        it('should persist endpoints', function(done) {
+          // given
+          var endpoints = ['first/endpoint', 'second/endpoint'];
+
+          // when
+          app.persistEndpoints(endpoints);
+
+          // then
+          app.persistWorkspace(function(err, workspaceConfig) {
+
+            expect(err).not.to.exist;
+
+            expect(workspaceConfig).to.have.keys([
+              'tabs',
+              'activeTab',
+              'layout',
+              'endpoints'
+            ]);
+
+            expect(workspaceConfig.endpoints).to.eql(endpoints);
+
+            done();
+          });
+
         });
 
       });
@@ -1884,10 +1936,13 @@ describe('App', function() {
             }
           };
 
+          var endpoints = ['first/endpoint', 'second/enpoint'];
+
           workspace.setSaved({
             tabs: [ bpmnFile, dmnFile ],
             activeTab: 1,
-            layout: layout
+            layout: layout,
+            endpoints: endpoints
           });
 
           // when
@@ -1900,6 +1955,7 @@ describe('App', function() {
             expect(app.tabs).to.have.length(3);
             expect(app.activeTab).to.eql(app.tabs[1]);
             expect(app.layout).to.eql(layout);
+            expect(app.endpoints).to.eql(endpoints);
 
             done();
           });
@@ -1925,6 +1981,9 @@ describe('App', function() {
 
             // empty tab is selected, too
             expect(app.activeTab).to.exist;
+
+            // default enpoint
+            expect(app.endpoints).to.eql(['http://localhost:8080/engine-rest/deployment/create']);
 
             done();
           });
@@ -2018,6 +2077,25 @@ describe('App', function() {
           done();
         });
 
+      });
+
+      it('should save when clicking save in endpoint config', function(done) {
+        //given
+        app.toggleOverlay('endpointConfig');
+        var tree = render(app);
+        var input = select('#endpoint-url', tree);
+        var configForm = select('.endpoint-configuration-form', tree);
+        simulateEvent(input, 'change', { target: { value: 'some/endpoint' } });
+
+        //when
+        simulateEvent(configForm, 'submit', { preventDefault: () => {} });
+
+        // then
+        app.on('workspace:persisted', function(err, workspaceConfig) {
+          expect(err).not.to.exist;
+          expect(workspaceConfig.endpoints).to.eql(['some/endpoint']);
+          done();
+        });
       });
 
     });
@@ -2334,6 +2412,34 @@ describe('App', function() {
       });
 
     });
+
+  });
+
+  it('should deploy bpmn file', function(done) {
+    // given
+    var browser = app.browser;
+    var send = spy(browser, 'send');
+    var bpmnFile = createBpmnFile(bpmnXML);
+
+    app.saveTab = function(tab, cb) {
+      tab.setFile(bpmnFile);
+
+      cb(null, bpmnFile);
+    };
+
+    app.openTab(bpmnFile);
+
+    app.triggerAction('deploy-bpmn', function(err) {
+      if (err) {
+        done('Error: ', err);
+      }
+
+      // then
+      expect(send).calledWith('deploy:bpmn', { file: bpmnFile }, arg.any);
+      done();
+    });
+
+
 
   });
 

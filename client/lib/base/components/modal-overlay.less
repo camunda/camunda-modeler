@@ -34,6 +34,34 @@
     border-radius: 2px;
     height: auto;
     z-index: 1001;
+
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      label {
+        margin-right: 10px;
+        font-weight: bolder;
+        font-size: 12px;
+      }
+
+      input[type="text"] {
+        padding: 4px;
+        flex: 1 1 auto;
+        font-size: 12px;
+        max-width: 400px;
+      }
+
+      button[type="submit"] {
+        margin-left: 10px;
+      }
+
+      button[type="button"] {
+        margin-left: 5px;
+      }
+
+    }
   }
 
   &.content .overlay-container .binding {
