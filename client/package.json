@@ -22,7 +22,7 @@
     "diagram-js-minimap": "^0.5.5",
     "diagram-js-origin": "^0.19.0",
     "dmn-font": "^0.4.0",
-    "dmn-js": "^1.3.1",
+    "dmn-js": "^1.3.0",
     "domify": "^1.4.0",
     "domready": "^1.0.8",
     "drag-tabs": "^0.1.0",

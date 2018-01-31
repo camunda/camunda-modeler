@@ -63,7 +63,9 @@ module.exports = function(karma) {
 
     browsers: TEST_BROWSERS,
 
-    browserNoActivityTimeout: 30000,
+    browserNoActivityTimeout: 100000,
+
+    browserDisconnectTolerance: 2,
 
     customLaunchers: {
       ChromeHeadless_Linux: {

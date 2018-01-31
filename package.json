@@ -1,6 +1,6 @@
 {
   "name": "camunda-modeler",
-  "version": "1.12.0-alpha-1",
+  "version": "1.12.0-alpha-2",
   "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
   "main": "app/lib/index.js",
   "scripts": {
