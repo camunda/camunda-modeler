@@ -4,16 +4,11 @@ var path = require('path');
 var puppeteer = require('puppeteer');
 
 // configures browsers to run test against
-// any of [ 'PhantomJS', 'ChromeHeadless', 'Chrome', 'Firefox', 'IE' ]
-var TEST_BROWSERS = ((process.env.TEST_BROWSERS || '').replace(/^\s+|\s+$/, '') || 'ChromeHeadless').split(/\s*,\s*/g);
-
-
-// force PhantomJS usage on build Jenkins
-if (process.env.JENKINS_URL) {
-  console.log('Detected build Jenkins; using TEST_BROWSERS=PhantomJS');
-
-  TEST_BROWSERS = [ 'PhantomJS' ];
-}
+// any of [ 'ChromeHeadless', 'Chrome' ]
+var TEST_BROWSERS =
+  (process.env.TEST_BROWSERS || 'ChromeHeadless')
+    .replace(/^\s+|\s+$/, '')
+    .split(/\s*,\s*/g);
 
 // workaround https://github.com/GoogleChrome/puppeteer/issues/290
 TEST_BROWSERS = TEST_BROWSERS.map(function(browser) {
