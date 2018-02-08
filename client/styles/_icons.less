@@ -9,34 +9,12 @@
   font-style: normal;
 }
 
-@font-face {
-  font-family: 'bpmn';
-  src: url('../fonts/bpmn.eot?99253374');
-  src: url('../fonts/bpmn.eot?99253374#iefix') format('embedded-opentype'),
-  url('../fonts/bpmn.woff?99253374') format('woff'),
-  url('../fonts/bpmn.ttf?99253374') format('truetype'),
-  url('../fonts/bpmn.svg?99253374#bpmn-io') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'cmmn';
-  src: url('../fonts/cmmn.eot?99253374');
-  src: url('../fonts/cmmn.eot?99253374#iefix') format('embedded-opentype'),
-  url('../fonts/cmmn.woff?99253374') format('woff'),
-  url('../fonts/cmmn.ttf?99253374') format('truetype'),
-  url('../fonts/cmmn.svg?99253374#bpmn-io') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-
 @import (less) "dmn-font/dist/css/dmn-embedded.css";
 
 [class^="icon-"]:before,
-[class*=" icon-"]:before,
-[class^="bpmn-icon-"]:before,
-[class*=" bpmn-icon-"]:before {
+[class*=" icon-"]:before {
+  font-family: "app";
+
   font-style: normal;
   font-weight: normal;
   speak: none;
@@ -50,21 +28,6 @@
   text-transform: none;
 
   line-height: 1em;
-}
-
-[class^="icon-"]:before,
-[class*=" icon-"]:before {
-  font-family: "app";
-}
-
-[class^="bpmn-icon-"]:before,
-[class*=" bpmn-icon-"]:before {
-  font-family: "bpmn";
-}
-
-[class^="cmmn-icon-"]:before,
-[class*=" cmmn-icon-"]:before {
-  font-family: "cmmn";
 }
 
 @import "_icon_codes";

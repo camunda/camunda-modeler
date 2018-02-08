@@ -34,16 +34,33 @@ module.exports = function(grunt) {
           { src: 'lib/index.html', dest: '../public/index.html' }
         ]
       },
-      fonts: {
+      app_fonts: {
         files: [
           {
-            src: [
-              'fonts/{app,bpmn,dmn}.*',
-              'node_modules/cmmn-js/assets/cmmn-font/font/cmmn.*'
-            ],
+            src: 'fonts/app.*',
             dest: '../public/fonts',
             expand: true,
             flatten: true
+          }
+        ]
+      },
+      cmmn_js: {
+        files: [
+          {
+            cwd: 'node_modules/cmmn-js/dist/',
+            src: [ '!**/*.js', '**/*' ],
+            dest: '../public/vendor/cmmn-js/',
+            expand: true
+          }
+        ]
+      },
+      bpmn_js: {
+        files: [
+          {
+            cwd: 'node_modules/bpmn-js/dist/',
+            src: [ '!**/*.js', '**/*' ],
+            dest: '../public/vendor/bpmn-js/',
+            expand: true
           }
         ]
       }
@@ -68,8 +85,7 @@ module.exports = function(grunt) {
       less: {
         files: [
           '{lib,styles}/**/*.less',
-          'node_modules/diagram-js/assets/**/*.less',
-          'node_modules/diagram-js/assets/**/*.css',
+          'node_modules/diagram-js/assets/**.css',
           'node_modules/bpmn-js-properties-panel/styles/**/*.less'
         ],
         tasks: [ 'less' ]
