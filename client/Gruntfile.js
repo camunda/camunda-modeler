@@ -63,6 +63,16 @@ module.exports = function(grunt) {
             expand: true
           }
         ]
+      },
+      diagram_js: {
+        files: [
+          {
+            cwd: 'node_modules/diagram-js/',
+            src: [ '!**/*.js', 'assets/**/*' ],
+            dest: '../public/vendor/diagram-js/',
+            expand: true
+          }
+        ]
       }
     },
 
