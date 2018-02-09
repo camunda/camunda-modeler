@@ -31,14 +31,17 @@ module.exports = function(grunt) {
     copy: {
       html: {
         files: [
-          { src: 'lib/index.html', dest: '../public/index.html' }
+          {
+            src: 'lib/index.html',
+            dest: '../public/index.html'
+          }
         ]
       },
       app_fonts: {
         files: [
           {
             src: 'fonts/app.*',
-            dest: '../public/fonts',
+            dest: '../public/fonts/',
             expand: true,
             flatten: true
           }
@@ -48,7 +51,7 @@ module.exports = function(grunt) {
         files: [
           {
             cwd: 'node_modules/cmmn-js/dist/',
-            src: [ '!**/*.js', '**/*' ],
+            src: [ '**/*', '!**/*.js' ],
             dest: '../public/vendor/cmmn-js/',
             expand: true
           }
@@ -58,7 +61,7 @@ module.exports = function(grunt) {
         files: [
           {
             cwd: 'node_modules/bpmn-js/dist/',
-            src: [ '!**/*.js', '**/*' ],
+            src: [ '**/*', '!**/*.js' ],
             dest: '../public/vendor/bpmn-js/',
             expand: true
           }
