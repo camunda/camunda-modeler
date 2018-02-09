@@ -5,12 +5,22 @@ var fs = require('fs');
 var got = require('got');
 var FormData = require('form-data');
 
+module.exports = function(options, cb) {
+  var deploymentName   = options.data && options.data.deploymentName,
+      tenantId         = options.data && options.data.tenantId || '',
+      file             = options.data && options.data.file || {},
+      done             = cb || function() {},
+      config           = options.config;
 
-module.exports = function(options, done) {
-  var data = options.data,
-      config = options.config;
 
-  var file = data.file || {};
+  if (!deploymentName) {
+    return done(
+      new Error(
+        'Failed to deploy process, deployment name must be provided.'
+      )
+    );
+  }
+
   if (!file.fileType || !file.name || !file.path) {
     return done(
       new Error(
@@ -28,11 +38,10 @@ module.exports = function(options, done) {
     );
   }
 
-  var deploymentName = file.name.split('.' + file.fileType)[0];
-
   const form = new FormData();
 
   form.append('deployment-name', deploymentName);
+  form.append('tenant-id', tenantId);
   form.append(file.name, fs.createReadStream(file.path));
 
   got.post(url, {

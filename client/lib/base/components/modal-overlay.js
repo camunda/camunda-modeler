@@ -50,7 +50,7 @@ function ModalOverlay(options) {
     <div className="endpoint-configuration">
       <h2>Deployment Endpoint Configuration</h2>
       <form className="endpoint-configuration-form" onSubmit={this.compose(this.submitEndpointConfigForm)}>
-        <div className="form-row">
+        <div className="form-row form-flex-row">
           <label
             htmlFor="endpoint-url">
             Endpoint URL
@@ -115,9 +115,68 @@ function ModalOverlay(options) {
     </div>
   );
 
+  /**
+   * Deployment configuration
+   */
+
+  var deploymentName, tenantId;
+  this.updateDeploymentName = function(e) {
+    deploymentName = e.target.value;
+  };
+  this.updateTenantId = function(e) {
+    tenantId = e.target.value;
+  };
+
+  this.submitDeploymentConfigForm = function(e) {
+    e.preventDefault();
+    events.emit('deploy:bpmn', {
+      deploymentName: deploymentName,
+      tenantId: tenantId
+    }, (err) => {
+      if (err) {
+        console.error(err);
+      }
+
+      this.closeOverlay();
+    });
+  };
+
+  var deploymentConfig = (
+    <div className="deployment-configuration">
+      <h2>Deployment Configuration</h2>
+      <form className="deployment-configuration-form" onSubmit={this.compose(this.submitDeploymentConfigForm)}>
+        <div className="form-row form-flex-row">
+          <label htmlFor="deployment-name">Deployment Name</label>
+          <input
+            id="deployment-name"
+            type="text"
+            onChange={this.compose(this.updateDeploymentName)}
+            required/>
+        </div>
+        <div className="form-row form-flex-row">
+          <label htmlFor="tenant-id">Tenant Id</label>
+          <input
+            id="tenant-id"
+            type="text"
+            onChange={this.compose(this.updateTenantId)}/>
+        </div>
+        <div className="form-row form-btn-row">
+          <button type="submit"> Deploy </button>
+          <button
+            type="button"
+            className='hide-dialog'
+            onClick={ this.compose(this.closeOverlay, true) }>
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+
   var availableContent = {
     shortcuts: SHORTCUTS_OVERLAY,
-    endpointConfig: ENDPOINT_CONFIG_OVERLAY
+    endpointConfig: ENDPOINT_CONFIG_OVERLAY,
+    deploymentConfig: deploymentConfig
   };
 
   this.getContent = function(content) {

@@ -261,7 +261,7 @@ function App(options) {
               id: 'deploy-bpmn',
               icon: 'icon-deploy',
               label: 'Deploy Current Process',
-              action: this.compose('triggerAction', 'deploy-bpmn'),
+              action: this.compose('triggerAction', 'show-deployment-config'),
               primary: true
             },
             {
@@ -294,6 +294,10 @@ function App(options) {
 
   this.events.on('deploy:endpoint:update', endpoints => {
     this.persistEndpoints(endpoints);
+  });
+
+  this.events.on('deploy:bpmn', (payload, done) => {
+    this.triggerAction('deploy-bpmn', payload, done);
   });
 
   this.events.on('workspace:changed', debounce((done) => {
@@ -591,7 +595,22 @@ App.prototype.openDiagram = function() {
 };
 
 
-App.prototype.triggerAction = function(action, options) {
+App.prototype.triggerAction = function(action, firstArg, secondArg) {
+
+  /**
+   * done: callback passed
+   * this makes sure to support passing callback to this function
+   * callback can be passed in 2nd or 3rd position
+   */
+  var options = firstArg,
+      done    = function() {};
+
+  if (typeof firstArg === 'function') {
+    done = firstArg;
+    options = secondArg;
+  } else if (typeof secondArg === 'function') {
+    done = secondArg;
+  }
 
   debug('trigger-action', action, options);
 
@@ -684,6 +703,10 @@ App.prototype.triggerAction = function(action, options) {
     return this.exportTab(activeTab, options.type);
   }
 
+  if (action === 'show-deployment-config') {
+    return this.toggleOverlay('deploymentConfig');
+  }
+
   if (action === 'show-engine-config') {
     return this.toggleOverlay('endpointConfig');
   }
@@ -691,18 +714,18 @@ App.prototype.triggerAction = function(action, options) {
   if (action === 'deploy-bpmn') {
     // make sure to save the active tab's file before deploying
     return this.saveTab(activeTab, function(err) {
-      // get callback if it's passed
-      var done = (typeof options === 'function') ?
-        options:
-        function() {};
-
       if (err) {
         console.error('deploy:bpmn ' + err);
         return done(err);
       }
 
-      var file = activeTab.file;
-      browser.send('deploy:bpmn', { file: file }, function(err, response) {
+      var payload = {
+        file: activeTab.file,
+        deploymentName: options.deploymentName,
+        tenantId: options.tenantId
+      };
+
+      browser.send('deploy:bpmn', payload, function(err, response) {
         if (err) {
           console.error('deploy:bpmn ' + err);
           return done(err);

@@ -274,6 +274,54 @@ describe('App', function() {
     });
 
 
+    describe('deployment configuration modal', function() {
+      it('should render deployment configuration modal and close it', function() {
+        // when
+        // endpointConfig is toggled first time
+        app.toggleOverlay('deploymentConfig');
+        var tree = render(app);
+
+
+        // then
+        // config modal should show
+        expect(select('.deployment-configuration', tree)).to.exist;
+
+        // when
+        // endpointConfig is toggled second time
+        app.toggleOverlay(false);
+        tree = render(app);
+
+        // then
+        // config modal should disappear
+        expect(select('.deployment-configuration', tree)).to.not.exist;
+      });
+
+      it('should only submit deployment configuration form if there is a deployment name', function() {
+        // when
+        // endpointConfig is toggled first time
+        app.saveTab = function() {};
+        app.toggleOverlay('deploymentConfig');
+        var tree = render(app);
+        var deploymentNameInput = select('#deployment-name]', tree);
+
+        //then
+        expect(deploymentNameInput.properties.required).to.be.true;
+
+
+        //when
+        var triggerAction = spy(app, 'triggerAction');
+        var deploymentConfigForm = select('.deployment-configuration-form', tree);
+        simulateEvent(deploymentConfigForm, 'submit', { preventDefault: function() {} });
+
+        //then
+        expect(triggerAction).to.be.called;
+
+
+      });
+
+    });
+
+
     it('should render overlay even if the passed content does not exist', function() {
 
       app.toggleOverlay('foo');
@@ -2419,7 +2467,14 @@ describe('App', function() {
     // given
     var browser = app.browser;
     var send = spy(browser, 'send');
+
     var bpmnFile = createBpmnFile(bpmnXML);
+    var tenantId = 'some tenant id';
+    var deploymentName = 'some deployment name';
+    var payload = {
+      deploymentName: deploymentName,
+      tenantId: tenantId
+    };
 
     app.saveTab = function(tab, cb) {
       tab.setFile(bpmnFile);
@@ -2429,13 +2484,19 @@ describe('App', function() {
 
     app.openTab(bpmnFile);
 
-    app.triggerAction('deploy-bpmn', function(err) {
+    app.triggerAction('deploy-bpmn', payload, function(err) {
+      // then
       if (err) {
         done('Error: ', err);
       }
 
-      // then
-      expect(send).calledWith('deploy:bpmn', { file: bpmnFile }, arg.any);
+      var expectedPayload = {
+        file: bpmnFile,
+        deploymentName: deploymentName,
+        tenantId: tenantId
+      };
+
+      expect(send).calledWith('deploy:bpmn', expectedPayload, arg.any);
       done();
     });
 
