@@ -231,6 +231,12 @@
       "css": "map",
       "code": 62072,
       "src": "fontawesome"
+    },
+    {
+      "uid": "eeec3208c90b7b48e804919d0d2d4a41",
+      "css": "deploy",
+      "code": 59397,
+      "src": "fontawesome"
     }
   ]
 }
