@@ -155,7 +155,22 @@ renderer.on('dialog:content-changed', function(done) {
 });
 
 renderer.on('deploy:bpmn', function(data, done) {
-  return deployBPMN({ data: data, done: done, config: config });
+
+  deployBPMN({
+    data: data,
+    config: config
+  }, function(err, result) {
+
+    if (err) {
+      console.error('failed to deploy', err);
+
+      // must stringify errors before passing them to client
+      err = err.message;
+    }
+
+    done(err, result);
+  });
+
 });
 
 
