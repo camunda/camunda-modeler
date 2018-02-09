@@ -40,7 +40,6 @@ module.exports = function(karma) {
     basePath: basePath,
 
     frameworks: [
-      'es6-shim',
       'browserify',
       'mocha',
       'sinon-chai'
