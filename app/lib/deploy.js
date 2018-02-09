@@ -1,38 +1,45 @@
 'use strict';
 
-var request = require('request');
 var fs = require('fs');
 
-module.exports = function(options) {
-  var data   = options.data,
-      done   = options.done,
+var got = require('got');
+var FormData = require('form-data');
+
+
+module.exports = function(options, done) {
+  var data = options.data,
       config = options.config;
 
   var file = data.file || {};
   if (!file.fileType || !file.name || !file.path) {
-    return done('Failed to deploy process, file name and path must be provided.');
+    return done(
+      new Error(
+        'Failed to deploy process, file name and path must be provided.'
+      )
+    );
   }
 
   var url = (config.get('workspace').endpoints || [])[0];
   if (!url) {
-    return done('Failed to deploy process, endpoint url must not be empty.');
+    return done(
+      new Error(
+        'Failed to deploy process, endpoint url must not be empty.'
+      )
+    );
   }
 
-  var deploymentName = file.name.split('.'+file.fileType)[0];
-  var formData = { 'deployment-name': deploymentName };
-  formData[file.name] = fs.createReadStream(file.path);
+  var deploymentName = file.name.split('.' + file.fileType)[0];
 
-  var DEPLOY_CONFIG = {
-    url: url,
-    formData: formData
-  };
+  const form = new FormData();
 
-  request.post(DEPLOY_CONFIG, function(err, res, body) {
-    if (err) {
-      return done(JSON.stringify(err));
-    } else if (res.statusCode !== 200) {
-      return done('Failed to deploy process, server responded with status code ' + res.statusCode + '.');
-    }
-    return done(err, body);
+  form.append('deployment-name', deploymentName);
+  form.append(file.name, fs.createReadStream(file.path));
+
+  got.post(url, {
+    body: form
+  }).then(function(response) {
+    done(null, response.body);
+  }).catch(function(error) {
+    done(error);
   });
 };
