@@ -10,7 +10,7 @@ var initialXML = require('./initial.bpmn');
 
 var BpmnTab = require('./bpmn-tab');
 
-var ids = require('ids')();
+var ids = require('ids')([ 32, 36, 1 ]);
 
 
 /**
@@ -32,11 +32,14 @@ function BpmnProvider(options) {
 
     debug('create BPMN file');
 
+    // make ID ROBUST
+    var xml = initialXML.replace('{{ ID }}', ids.next());
+
     return {
       fileType: 'bpmn',
       name: 'diagram_' + createdFiles + '.bpmn',
       path: isUnsaved.PATH,
-      contents: initialXML,
+      contents: xml,
       isInitial: true
     };
   };

@@ -10,7 +10,7 @@ var initialXML = require('./initial.cmmn');
 
 var CmmnTab = require('./cmmn-tab');
 
-var ids = require('ids')();
+var ids = require('ids')([ 32, 36, 1 ]);
 
 
 /**
@@ -32,11 +32,14 @@ function CmmnProvider(options) {
 
     debug('create CMMN file');
 
+    // make ID ROBUST
+    var xml = initialXML.replace('{{ ID }}', ids.next());
+
     return {
       fileType: 'cmmn',
       name: 'diagram_' + createdFiles + '.cmmn',
       path: isUnsaved.PATH,
-      contents: initialXML
+      contents: xml
     };
   };
 

@@ -21,6 +21,7 @@ var arg = require('test/helper/util/arg'),
     spy = require('test/helper/util/spy');
 
 var bpmnXML = require('app/tabs/bpmn/initial.bpmn'),
+    cmmnXML = require('app/tabs/cmmn/initial.cmmn'),
     activitiXML = require('test/fixtures/activiti.xml'),
     drdXML = require('test/fixtures/drd.dmn'),
     dmnXML = require('app/tabs/dmn/table.dmn');
@@ -31,7 +32,6 @@ var BaseEditor = require('app/editor/base-editor');
 
 var Tab = require('base/components/tab');
 var browser = require('test/helper/mock/browser');
-
 
 
 function createBpmnFile(xml, overrides) {
@@ -59,6 +59,16 @@ function createDmnFile(xml, overrides) {
     path: 'diagram_1.dmn',
     contents: xml,
     fileType: 'dmn',
+    lastModified: new Date().getTime()
+  }, overrides);
+}
+
+function createCmmnFile(xml, overrides) {
+  return assign({
+    name: 'diagram_1.cmmn',
+    path: 'diagram_1.cmmn',
+    contents: xml,
+    fileType: 'cmmn',
     lastModified: new Date().getTime()
   }, overrides);
 }
@@ -586,11 +596,19 @@ describe('App', function() {
     it('should create new BPMN tab', function() {
 
       // when
-      app.createDiagram('bpmn');
-
-      var tree = render(app);
+      var newTab = app.createDiagram('bpmn');
 
       // then
+      expect(newTab).to.exist;
+
+      expect(app.activeTab).to.equal(newTab);
+
+      // open file is a BPMN file
+      expectNewDiagramFile(newTab.file, 'bpmn');
+
+      // and editor is rendered, too
+      var tree = render(app);
+
       // expect BPMN tab with editor to be shown
       expect(select('.bpmn-editor', tree)).to.exist;
     });
@@ -624,11 +642,19 @@ describe('App', function() {
     it('should create new DMN tab', function() {
 
       // when
-      app.createDiagram('dmn');
-
-      var tree = render(app);
+      var newTab = app.createDiagram('dmn');
 
       // then
+      expect(newTab).to.exist;
+
+      expect(app.activeTab).to.equal(newTab);
+
+      // open file is a DMN file
+      expectNewDiagramFile(newTab.file, 'dmn');
+
+      // and editor is rendered, too
+      var tree = render(app);
+
       // expect DMN tab with editor to be shown
       expect(select('.dmn-editor', tree)).to.exist;
     });
@@ -650,8 +676,54 @@ describe('App', function() {
       var tree = render(app);
 
       // then
-      // expect BPMN tab with editor to be shown
+      // expect DMN tab with editor to be shown
       expect(select('.dmn-editor', tree)).to.exist;
+    });
+
+  });
+
+
+  describe('cmmn support', function() {
+
+    it('should create new DMN tab', function() {
+
+      // when
+      var newTab = app.createDiagram('cmmn');
+
+      // then
+      expect(newTab).to.exist;
+
+      expect(app.activeTab).to.equal(newTab);
+
+      // open file is a CMMN file
+      expectNewDiagramFile(newTab.file, 'cmmn');
+
+      // and editor is rendered, too
+      var tree = render(app);
+
+      // expect CMMN tab with editor to be shown
+      expect(select('.cmmn-editor', tree)).to.exist;
+    });
+
+
+    it('should open passed CMMN diagram file', function() {
+
+      // given
+      var openFile = createCmmnFile(cmmnXML);
+
+      // when
+      app.openTabs([ openFile ]);
+
+      // then
+      expect(app.activeTab.file).to.eql(openFile);
+
+      // and rendered ...
+
+      var tree = render(app);
+
+      // then
+      // expect CMMN tab with editor to be shown
+      expect(select('.cmmn-editor', tree)).to.exist;
     });
 
   });
@@ -2415,6 +2487,7 @@ describe('App', function() {
 
   });
 
+
   it('should deploy bpmn file', function(done) {
     // given
     var browser = app.browser;
@@ -2475,4 +2548,22 @@ function patchSave(tabs, answer) {
 
 function userCanceled() {
   return new Error('user canceled');
+}
+
+
+function expectNewDiagramFile(diagramFile, expectedType) {
+
+  expect(diagramFile).to.exist;
+  expect(diagramFile.fileType).to.eql(expectedType);
+
+  expect(
+    definitionsId(diagramFile.contents)
+  ).to.match(/^[0-9a-zA-Z]{6,10}$/);
+}
+
+function definitionsId(contents) {
+
+  var match = /id="Definitions_([^"]+)"/.exec(contents);
+
+  return match && match[1];
 }
