@@ -9,7 +9,7 @@
     "dev": "NODE_ENV=development grunt auto-build"
   },
   "dependencies": {
-    "bpmn-js": "^0.27.0",
+    "bpmn-js": "^0.27.1",
     "bpmn-js-properties-panel": "^0.20.0",
     "camunda-bpmn-moddle": "^0.13.0",
     "camunda-cmmn-moddle": "^1.0.0",
