@@ -24,7 +24,11 @@
           "name": "sender"
         },
         "constraints": {
-          "notEmpty": true
+          "notEmpty": true,
+          "pattern": {
+            "value": "^[A-z0-9._%+-]+@[A-z0-9.-]+\\.[A-z]{2,}$",
+            "message": "Must be a valid email."
+          }
         }
       },
       {
