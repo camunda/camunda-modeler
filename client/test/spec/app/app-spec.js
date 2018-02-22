@@ -1965,7 +1965,11 @@ describe('App', function() {
               'tabs',
               'activeTab',
               'layout',
-              'endpoints'
+              'endpoints',
+              'authType',
+              'authUser',
+              'authPassword',
+              'authToken'
             ]);
 
             expect(workspaceConfig.tabs).to.have.length(0);
@@ -1994,7 +1998,11 @@ describe('App', function() {
               'tabs',
               'activeTab',
               'layout',
-              'endpoints'
+              'endpoints',
+              'authType',
+              'authUser',
+              'authPassword',
+              'authToken'
             ]);
 
             expect(workspaceConfig.tabs).to.eql([ bpmnFile, dmnFile ]);
@@ -2021,7 +2029,11 @@ describe('App', function() {
               'tabs',
               'activeTab',
               'layout',
-              'endpoints'
+              'endpoints',
+              'authType',
+              'authUser',
+              'authPassword',
+              'authToken'
             ]);
 
             expect(workspaceConfig.endpoints).to.eql(endpoints);

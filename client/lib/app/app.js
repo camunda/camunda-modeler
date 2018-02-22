@@ -296,6 +296,22 @@ function App(options) {
     this.persistEndpoints(endpoints);
   });
 
+  this.events.on('deploy:authType:update', authType => {
+    this.persistAuthType(authType);
+  });
+
+  this.events.on('deploy:authUser:update', authUser => {
+    this.persistAuthUser(authUser);
+  });
+
+  this.events.on('deploy:authPassword:update', authPassword => {
+    this.persistAuthPassword(authPassword);
+  });
+
+  this.events.on('deploy:authToken:update', authToken => {
+    this.persistAuthToken(authToken);
+  });
+
   this.events.on('deploy:bpmn', (payload, done) => {
     this.triggerAction('deploy-bpmn', payload, done);
   });
@@ -445,7 +461,11 @@ App.prototype.render = function() {
         isActive={ this._activeOverlay }
         content={ this._overlayContent }
         events={ this.events }
-        endpoints={ this.endpoints }/>
+        endpoints={ this.endpoints }
+        authType={ this.authType }
+        authUser={ this.authUser }
+        authPassword={ this.authPassword }
+        authToken={ this.authToken }/>
       <MenuBar entries={ this.menuEntries } />
       <Tabbed
         className="main"
@@ -1326,6 +1346,10 @@ App.prototype.persistWorkspace = function(done) {
 
   //store bpmn deploy url
   config.endpoints = this.endpoints;
+  config.authType = this.authType;
+  config.authUser = this.authUser;
+  config.authPassword = this.authPassword;
+  config.authToken = this.authToken;
 
   // actually save
   this.workspace.save(config, (err, config) => {
@@ -1357,7 +1381,11 @@ App.prototype.restoreWorkspace = function(done) {
     },
     endpoints: [
       'http://localhost:8080/engine-rest/deployment/create'
-    ]
+    ],
+    authType: 'none',
+    authUser: '',
+    authPassword: '',
+    authToken: ''
   };
 
 
@@ -1379,6 +1407,10 @@ App.prototype.restoreWorkspace = function(done) {
     }
 
     this.endpoints = workspaceConfig.endpoints || defaultWorkspace.endpoints;
+    this.authType = workspaceConfig.authType || defaultWorkspace.authType;
+    this.authUser = workspaceConfig.authUser || defaultWorkspace.authUser;
+    this.authPassword = workspaceConfig.authPassword || defaultWorkspace.authPassword;
+    this.authToken = workspaceConfig.authToken || defaultWorkspace.authToken;
 
     this.events.emit('layout:update', workspaceConfig.layout);
 
@@ -1575,6 +1607,26 @@ App.prototype.quit = function() {
  */
 App.prototype.persistEndpoints = function(_endpoints) {
   this.endpoints = _endpoints;
+  this.events.emit('workspace:changed');
+};
+
+App.prototype.persistAuthType = function(_authType) {
+  this.authType = _authType;
+  this.events.emit('workspace:changed');
+};
+
+App.prototype.persistAuthUser = function(_authUser) {
+  this.authUser = _authUser;
+  this.events.emit('workspace:changed');
+};
+
+App.prototype.persistAuthPassword = function(_authPassword) {
+  this.authPassword = _authPassword;
+  this.events.emit('workspace:changed');
+};
+
+App.prototype.persistAuthToken = function(_authToken) {
+  this.authToken = _authToken;
   this.events.emit('workspace:changed');
 };
 

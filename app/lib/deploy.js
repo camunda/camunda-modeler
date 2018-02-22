@@ -38,6 +38,25 @@ module.exports = function(options, cb) {
     );
   }
 
+  var authHeaders = {};
+  var authType = config.get('workspace').authType || 'none';
+  var authUser = config.get('workspace').authUser;
+  var authPassword = config.get('workspace').authPassword;
+  var authToken = config.get('workspace').authToken;
+
+  if (authType === 'token') {
+    authHeaders = {
+      Authorization: 'Bearer ' + authToken
+    };
+  }
+
+  if (authType === 'basic') {
+    var base64encodedData = new Buffer(authUser + ':' + authPassword).toString('base64');
+    authHeaders = {
+      Authorization: 'Basic ' + base64encodedData
+    };
+  }
+
   const form = new FormData();
 
   form.append('deployment-name', deploymentName);
@@ -45,7 +64,8 @@ module.exports = function(options, cb) {
   form.append(file.name, fs.createReadStream(file.path));
 
   got.post(url, {
-    body: form
+    body: form,
+    headers: authHeaders
   }).then(function(response) {
     done(null, response.body);
   }).catch(function(error) {
