@@ -4,14 +4,16 @@ var inherits = require('inherits');
 
 var domClosest = require('min-dom/lib/closest');
 
-var BaseComponent = require('base/component');
+var BaseComponent = require('base/component'),
+    DeploymentConfig = require('./overlays/deployment-config-overlay'),
+    Shortcuts = require('./overlays/shortcuts-overlay'),
+    EndpointConfig = require('./overlays/endpoint-config-overlay');
 
-var isMac = require('util/is-mac'),
-    ensureOpts = require('util/ensure-opts');
+var ensureOpts = require('util/ensure-opts');
 
 
 function ModalOverlay(options) {
-  ensureOpts([ 'events', 'isActive', 'content', 'endpoints' ], options);
+  ensureOpts([ 'events', 'isActive', 'content', 'endpoints', 'initializeState' ], options);
 
   BaseComponent.call(this, options);
 
@@ -33,150 +35,36 @@ function ModalOverlay(options) {
     events.emit('dialog-overlay:toggle', false);
   };
 
-  // endpoint configuration modal
-  var endpoint = (options.endpoints || [])[0];
+  /**
+   * Shortcuts
+   */
+  var SHORTCUTS_OVERLAY = <Shortcuts />;
 
-  this.updateEndpoint = function(e) {
-    endpoint = e.target.value;
-  };
 
-  this.submitEndpointConfigForm = function(e) {
-    e.preventDefault();
-    events.emit('deploy:endpoint:update', [ endpoint ]);
-    this.closeOverlay();
-  };
+  /**
+   * Endpoint configuration
+   */
+  var ENDPOINT_CONFIG_OVERLAY = <EndpointConfig
+    closeOverlay={this.compose(this.closeOverlay, true)}
+    events={this.events}
+    endpoints={options.endpoints}/>;
 
-  var ENDPOINT_CONFIG_OVERLAY = (
-    <div className="endpoint-configuration">
-      <h2>Deployment Endpoint Configuration</h2>
-      <form className="endpoint-configuration-form" onSubmit={this.compose(this.submitEndpointConfigForm)}>
-        <div className="form-row form-flex-row">
-          <label
-            htmlFor="endpoint-url">
-            Endpoint URL
-          </label>
-          <input
-            id='endpoint-url'
-            type='text'
-            value={endpoint}
-            onChange={this.compose(this.updateEndpoint)}/>
-          <button type="submit"> Save </button>
-          <button
-            type="button"
-            className='hide-dialog'
-            onClick={ this.compose(this.closeOverlay, true) }>
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-
-  // shortcuts modal
-  var modifierKey = 'Control';
-
-  if (isMac()) {
-    modifierKey = 'Command';
-  }
-
-  var SHORTCUTS_OVERLAY = (
-    <div className="keyboard-shortcuts">
-      <h2>Keyboard Shortcuts</h2>
-      <p>
-        The following special shortcuts can be used on opened diagrams.
-      </p>
-      <table>
-        <tbody>
-          <tr>
-            <td>Add Line Feed (in text box)</td>
-            <td className="binding"><code>Shift + Enter</code></td>
-          </tr>
-          <tr>
-            <td>Scrolling (Vertical)</td>
-            <td className="binding">{ modifierKey } + Mouse Wheel</td>
-          </tr>
-          <tr>
-            <td>Scrolling (Horizontal)</td>
-            <td className="binding">{ modifierKey } + Shift + Mouse Wheel</td>
-          </tr>
-          <tr>
-            <td>Add element to selection</td>
-            <td className="binding">{ modifierKey } + Mouse Click</td>
-          </tr>
-          <tr>
-            <td>Select multiple elements (Lasso Tool)</td>
-            <td className="binding">{ modifierKey } + Mouse Drag</td>
-          </tr>
-        </tbody>
-      </table>
-      <p>
-        Find additional shortcuts on individual items in the application menu.
-      </p>
-    </div>
-  );
 
   /**
    * Deployment configuration
    */
 
-  var deploymentName, tenantId;
-  this.updateDeploymentName = function(e) {
-    deploymentName = e.target.value;
-  };
-  this.updateTenantId = function(e) {
-    tenantId = e.target.value;
-  };
-
-  this.submitDeploymentConfigForm = function(e) {
-    e.preventDefault();
-    events.emit('deploy:bpmn', {
-      deploymentName: deploymentName,
-      tenantId: tenantId
-    }, (err) => {
-      if (err) {
-        console.error(err);
-      }
-
-      this.closeOverlay();
-    });
-  };
-
-  var deploymentConfig = (
-    <div className="deployment-configuration">
-      <h2>Deployment Configuration</h2>
-      <form className="deployment-configuration-form" onSubmit={this.compose(this.submitDeploymentConfigForm)}>
-        <div className="form-row form-flex-row">
-          <label htmlFor="deployment-name">Deployment Name</label>
-          <input
-            id="deployment-name"
-            type="text"
-            onChange={this.compose(this.updateDeploymentName)}
-            required/>
-        </div>
-        <div className="form-row form-flex-row">
-          <label htmlFor="tenant-id">Tenant Id</label>
-          <input
-            id="tenant-id"
-            type="text"
-            onChange={this.compose(this.updateTenantId)}/>
-        </div>
-        <div className="form-row form-btn-row">
-          <button type="submit"> Deploy </button>
-          <button
-            type="button"
-            className='hide-dialog'
-            onClick={ this.compose(this.closeOverlay, true) }>
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+  var DEPLOYMENT_CONFIG_OVERLAY = <DeploymentConfig
+    closeOverlay={this.compose(this.closeOverlay, true)}
+    events={this.events}
+    initializeState={this.initializeState}
+    setState={this.setState}
+  />;
 
   var availableContent = {
     shortcuts: SHORTCUTS_OVERLAY,
     endpointConfig: ENDPOINT_CONFIG_OVERLAY,
-    deploymentConfig: deploymentConfig
+    deploymentConfig: DEPLOYMENT_CONFIG_OVERLAY
   };
 
   this.getContent = function(content) {

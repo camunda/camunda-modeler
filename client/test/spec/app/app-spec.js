@@ -262,12 +262,14 @@ describe('App', function() {
       expect(select('.keyboard-shortcuts', tree)).to.not.exist;
     });
 
+
     it('should render endpoints configuration modal and close it', function() {
+
       // when
       // endpointConfig is toggled first time
       app.toggleOverlay('endpointConfig');
-      var tree = render(app);
 
+      var tree = render(app);
 
       // then
       // config modal should show
@@ -276,6 +278,7 @@ describe('App', function() {
       // when
       // endpointConfig is toggled second time
       app.toggleOverlay(false);
+
       tree = render(app);
 
       // then
@@ -285,12 +288,14 @@ describe('App', function() {
 
 
     describe('deployment configuration modal', function() {
+
       it('should render deployment configuration modal and close it', function() {
+
         // when
         // endpointConfig is toggled first time
         app.toggleOverlay('deploymentConfig');
-        var tree = render(app);
 
+        var tree = render(app);
 
         // then
         // config modal should show
@@ -299,6 +304,7 @@ describe('App', function() {
         // when
         // endpointConfig is toggled second time
         app.toggleOverlay(false);
+
         tree = render(app);
 
         // then
@@ -306,27 +312,68 @@ describe('App', function() {
         expect(select('.deployment-configuration', tree)).to.not.exist;
       });
 
+
       it('should only submit deployment configuration form if there is a deployment name', function() {
+
         // when
         // endpointConfig is toggled first time
         app.saveTab = function() {};
+
         app.toggleOverlay('deploymentConfig');
+
         var tree = render(app);
+
         var deploymentNameInput = select('#deployment-name]', tree);
 
         //then
         expect(deploymentNameInput.properties.required).to.be.true;
 
-
         //when
         var triggerAction = spy(app, 'triggerAction');
+
         var deploymentConfigForm = select('.deployment-configuration-form', tree);
+
         simulateEvent(deploymentConfigForm, 'submit', { preventDefault: function() {} });
 
         //then
         expect(triggerAction).to.be.called;
+      });
 
 
+      it('should show deployment status', function() {
+
+        // given
+        const LOADING = 'loading',
+              ERROR = 'error',
+              SUCCESS = 'success';
+
+        // when
+        app.toggleOverlay('deploymentConfig');
+
+        app.setState({ DeploymentConfig: { status: LOADING } });
+
+        var tree = render(app);
+
+
+        // then
+        // config modal should show
+        expect(select('.deployment-configuration .icon-loading', tree)).to.exist;
+
+        //when
+        app.setState({ DeploymentConfig: { status: ERROR } });
+        tree = render(app);
+
+        // then
+        // config modal should show
+        expect(select('.deployment-configuration .status.error', tree)).to.exist;
+
+        // when
+        app.setState({ DeploymentConfig: { status: SUCCESS } });
+        tree = render(app);
+
+        // then
+        // config modal should show
+        expect(select('.deployment-configuration .status.success', tree)).to.exist;
       });
 
     });
@@ -2575,6 +2622,70 @@ describe('App', function() {
 
 
 
+  });
+
+  describe('state management', function() {
+
+    it('app should have empty initial state', function() {
+      expect(app.state).to.eql({});
+    });
+
+
+    it('component state should be initialized with its initial state', function() {
+
+      // given
+      var initializeState = app.initializeState.bind(app);
+
+      var expectedComponentState = { foo: 'bar' };
+
+      var SomeComponent = function(options) {
+        this.initialState = expectedComponentState;
+
+        options.initializeState({
+          self: this,
+          key: 'SomeComponent'
+        });
+      };
+
+      // when
+      var someComponent = new SomeComponent({ initializeState: initializeState });
+
+      // then
+      var expectedAppState = { 'SomeComponent': expectedComponentState };
+
+      expect(someComponent.state).to.eql(expectedComponentState);
+      expect(app.state).to.eql(expectedAppState);
+    });
+
+
+    it('component setState should change component state', function() {
+
+      // given
+      var initializeState = app.initializeState.bind(app);
+
+      var SomeComponent = function(options) {
+        this.initialState = { foo: 'bar' };
+
+        options.initializeState({
+          self: this,
+          key: 'SomeComponent'
+        });
+      };
+
+      // when
+      var someComponent = new SomeComponent({ initializeState: initializeState });
+
+      var expectedComponentState = { foo: 'foo' };
+
+      someComponent.setState(expectedComponentState);
+
+
+      // then
+      var expectedAppState = { 'SomeComponent': expectedComponentState };
+
+      expect(someComponent.state).to.eql(expectedComponentState);
+      expect(app.state).to.eql(expectedAppState);
+    });
   });
 
 });

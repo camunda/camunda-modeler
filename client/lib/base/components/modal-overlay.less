@@ -35,6 +35,10 @@
     height: auto;
     z-index: 1001;
 
+    button:disabled, input:disabled {
+      color: #808080;
+    }
+
     .form-row {
       padding: 5px 0;
       button[type="button"] {
@@ -63,6 +67,13 @@
         flex: 1 1 auto;
         font-size: 12px;
         max-width: 400px;
+        border: 1px solid #ccc;
+      }
+
+      input[type="text"]:focus {
+        outline: none;
+        border-color: #52B415;
+        box-shadow: 0 0 1px 2px rgba(82, 180, 21, 0.2);
       }
 
       button[type="submit"] {
@@ -73,6 +84,19 @@
         margin-left: 5px;
       }
 
+    }
+
+
+    .status {
+      margin-bottom: 15px;
+
+      &.success {
+        color: #468847;
+      }
+
+      &.error {
+        color: #ff0033;
+      }
     }
   }
 

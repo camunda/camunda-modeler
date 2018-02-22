@@ -55,6 +55,9 @@ function App(options) {
 
   BaseComponent.call(this, options);
 
+
+  this.state = {};
+
   this.layout = {
     propertiesPanel: {
       open: false,
@@ -442,6 +445,7 @@ App.prototype.render = function() {
   var html =
     <div className="app" onDragover={ fileDrop(this.compose('openFiles')) }>
       <ModalOverlay
+        initializeState={this.initializeState.bind(this)}
         isActive={ this._activeOverlay }
         content={ this._overlayContent }
         events={ this.events }
@@ -602,7 +606,8 @@ App.prototype.triggerAction = function(action, firstArg, secondArg) {
    * this makes sure to support passing callback to this function
    * callback can be passed in 2nd or 3rd position
    */
-  var options = firstArg,
+  var self    = this,
+      options = firstArg,
       done    = function() {};
 
   if (typeof firstArg === 'function') {
@@ -704,7 +709,17 @@ App.prototype.triggerAction = function(action, firstArg, secondArg) {
   }
 
   if (action === 'show-deployment-config') {
-    return this.toggleOverlay('deploymentConfig');
+    // clear state of deployment modal
+    this.setState({ DeploymentConfig: { } });
+
+    // save tab before opening deployment modal
+    return this.saveTab(activeTab, function(err) {
+      if (err) {
+        console.error('deploy:bpmn ' + err);
+        return done(err);
+      }
+      return self.toggleOverlay('deploymentConfig');
+    });
   }
 
   if (action === 'show-engine-config') {
@@ -712,26 +727,18 @@ App.prototype.triggerAction = function(action, firstArg, secondArg) {
   }
 
   if (action === 'deploy-bpmn') {
-    // make sure to save the active tab's file before deploying
-    return this.saveTab(activeTab, function(err) {
+    var payload = {
+      file: activeTab.file,
+      deploymentName: options.deploymentName,
+      tenantId: options.tenantId
+    };
+
+    return browser.send('deploy:bpmn', payload, function(err) {
       if (err) {
         console.error('deploy:bpmn ' + err);
         return done(err);
       }
-
-      var payload = {
-        file: activeTab.file,
-        deploymentName: options.deploymentName,
-        tenantId: options.tenantId
-      };
-
-      browser.send('deploy:bpmn', payload, function(err, response) {
-        if (err) {
-          console.error('deploy:bpmn ' + err);
-          return done(err);
-        }
-        return done();
-      });
+      return done();
     });
   }
   // forward other actions to active tab
@@ -1640,6 +1647,54 @@ App.prototype.recheckTabContent = function(tab) {
     });
 
   });
+};
+
+/**
+ * Sets new App state
+ * @param newState
+ */
+App.prototype.setState = function(newState) {
+  this.state = assign({}, this.state, newState);
+};
+
+/**
+ * Initializes state of a specific component
+ * @param key
+ * @param value
+ */
+App.prototype.initializeState = function(options) {
+  if (!options || options && (!options.key || !options.self)) {
+    return new Error('key must be provided');
+  }
+
+  var self = options.self,
+      key = options.key,
+      initialState = options.self.initialState,
+      newAppState = {};
+
+
+  if (this.state[key]) {
+    self.state = this.state[key];
+  } else {
+    newAppState[key] = initialState;
+
+    this.setState(newAppState);
+
+    self.state = newAppState[key];
+  }
+
+
+  self.setState = (newState) => {
+    var state = this.state[key];
+
+    newAppState[key] = assign({}, state, newState);
+
+    this.setState(newAppState);
+
+    self.state = newAppState[key];
+
+    this.emit('changed');
+  };
 };
 
 
