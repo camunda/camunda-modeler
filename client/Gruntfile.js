@@ -57,6 +57,16 @@ module.exports = function(grunt) {
           }
         ]
       },
+      dmn_js: {
+        files: [
+          {
+            cwd: 'node_modules/dmn-js/dist/',
+            src: [ '**/*', '!**/*.js' ],
+            dest: '../public/vendor/dmn-js/',
+            expand: true
+          }
+        ]
+      },
       bpmn_js: {
         files: [
           {
