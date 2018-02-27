@@ -169,11 +169,7 @@ DmnEditor.prototype.getActiveEditorName = function() {
 
   var activeView = modeler.getActiveView();
 
-  switch (activeView && activeView.type) {
-  case 'decision-table': return 'table';
-  case 'literal-expression': return 'literal-expression';
-  default: return 'diagram';
-  }
+  return activeView && activeView.type;
 };
 
 
@@ -237,8 +233,7 @@ DmnEditor.prototype.createModeler = function($el) {
 };
 
 DmnEditor.prototype.resize = function() {
-  var modeler = this.getModeler(),
-      sheetOrCanvas;
+  var modeler = this.getModeler();
 
   if (!isImported(modeler)) {
     return;
@@ -246,14 +241,15 @@ DmnEditor.prototype.resize = function() {
 
   var viewer = modeler.getActiveViewer();
 
-  if (this.getActiveEditorName() === 'diagram') {
-    sheetOrCanvas = viewer.get('canvas');
-  } else {
-    sheetOrCanvas = viewer.get('sheet');
-  }
-
-  if (typeof sheetOrCanvas.resized === 'function') {
-    sheetOrCanvas.resized();
+  // notify active editor that the view
+  // got resized
+  switch (this.getActiveEditorName()) {
+  case 'drd':
+    viewer.get('canvas').resized();
+    break;
+  case 'decisionTable':
+    viewer.get('sheet').resized();
+    break;
   }
 };
 
