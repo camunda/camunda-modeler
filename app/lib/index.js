@@ -154,7 +154,7 @@ renderer.on('dialog:content-changed', function(done) {
   dialog.showDialog('contentChanged', done);
 });
 
-renderer.on('deploy:bpmn', function(data, done) {
+renderer.on('deploy', function(data, done) {
 
   deployBPMN({
     data: data,

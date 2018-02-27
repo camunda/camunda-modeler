@@ -40,7 +40,7 @@ var DeploymentConfig = function(options) {
 
     this.setState({ status: LOADING });
 
-    events.emit('deploy:bpmn', {
+    events.emit('deploy', {
       deploymentName: this.deploymentName,
       tenantId: this.tenantId
     }, (err) => {
@@ -54,9 +54,7 @@ var DeploymentConfig = function(options) {
       } else {
         this.setState({
           status: SUCCESS,
-          message: 'Process deployed successfully.',
-          deploymentName: this.deploymentName,
-          tenantId: this.tenantId
+          message: 'Deployment was done successfully.'
         });
       }
 

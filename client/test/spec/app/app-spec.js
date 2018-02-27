@@ -2582,45 +2582,97 @@ describe('App', function() {
 
   });
 
+  describe('diagram deployment', function() {
+    var browser,
+        send,
+        dmnFile,
+        bpmnFile,
+        tenantId,
+        deploymentName,
+        payload;
 
-  it('should deploy bpmn file', function(done) {
-    // given
-    var browser = app.browser;
-    var send = spy(browser, 'send');
+    before(function() {
+      browser = app.browser;
 
-    var bpmnFile = createBpmnFile(bpmnXML);
-    var tenantId = 'some tenant id';
-    var deploymentName = 'some deployment name';
-    var payload = {
-      deploymentName: deploymentName,
-      tenantId: tenantId
-    };
+      send = spy(browser, 'send');
 
-    app.saveTab = function(tab, cb) {
-      tab.setFile(bpmnFile);
+      bpmnFile = createBpmnFile(bpmnXML);
+      dmnFile = createDmnFile(dmnXML);
 
-      cb(null, bpmnFile);
-    };
+      tenantId = 'some tenant id';
 
-    app.openTab(bpmnFile);
+      deploymentName = 'some deployment name';
 
-    app.triggerAction('deploy-bpmn', payload, function(err) {
-      // then
-      if (err) {
-        done('Error: ', err);
-      }
-
-      var expectedPayload = {
-        file: bpmnFile,
+      payload = {
         deploymentName: deploymentName,
         tenantId: tenantId
       };
+    });
 
-      expect(send).calledWith('deploy:bpmn', expectedPayload, arg.any);
-      done();
+    afterEach(function() {
+      spy = null;
     });
 
 
+    it('should deploy bpmn file', function(done) {
+
+      // given
+      app.saveTab = function(tab, cb) {
+        tab.setFile(bpmnFile);
+        cb(null, bpmnFile);
+      };
+
+      app.openTab(bpmnFile);
+
+      app.triggerAction('deploy', payload, function(err) {
+
+        // then
+        if (err) {
+          done('Error: ', err);
+        }
+
+        var expectedPayload = {
+          file: bpmnFile,
+          deploymentName: deploymentName,
+          tenantId: tenantId
+        };
+
+        expect(send).calledWith('deploy', expectedPayload, arg.any);
+
+        done();
+      });
+    });
+
+
+    it('should deploy dmn file', function(done) {
+
+      // given
+      app.saveTab = function(tab, cb) {
+        tab.setFile(dmnFile);
+
+        cb(null, dmnFile);
+      };
+
+      app.openTab(dmnFile);
+
+      app.triggerAction('deploy', payload, function(err) {
+
+        // then
+        if (err) {
+          done('Error: ', err);
+        }
+
+        var expectedPayload = {
+          file: dmnFile,
+          deploymentName: deploymentName,
+          tenantId: tenantId
+        };
+
+        expect(send).calledWith('deploy', expectedPayload, arg.any);
+
+        done();
+      });
+    });
 
   });
 

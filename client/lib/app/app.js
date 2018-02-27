@@ -256,20 +256,25 @@ function App(options) {
           label: 'Distribute Elements Vertically',
           action: this.compose('triggerAction', 'distributeVertically')
         }),
+      ]
+    },
+    editor: {
+      visible: false,
+      buttons: [
         Separator(),
         MultiButton({
           id: 'deploy',
           choices: [
             {
-              id: 'deploy-bpmn',
+              id: 'deploy-btn',
               icon: 'icon-deploy',
-              label: 'Deploy Current Process',
+              label: 'Deploy Current Diagram',
               action: this.compose('triggerAction', 'show-deployment-config'),
               primary: true
             },
             {
               id: 'deploy-endpoint-config',
-              label: 'Configure BPMN Deployment',
+              label: 'Configure Deployment',
               action: this.compose('triggerAction', 'show-engine-config')
             }
           ]
@@ -299,8 +304,8 @@ function App(options) {
     this.persistEndpoints(endpoints);
   });
 
-  this.events.on('deploy:bpmn', (payload, done) => {
-    this.triggerAction('deploy-bpmn', payload, done);
+  this.events.on('deploy', (payload, done) => {
+    this.triggerAction('deploy', payload, done);
   });
 
   this.events.on('workspace:changed', debounce((done) => {
@@ -317,7 +322,7 @@ function App(options) {
 
   this.events.on('tools:state-changed', (tab, newState) => {
 
-    var button;
+    var button, selectedEditor;
 
     if (this.activeTab !== tab) {
       return debug('Warning: state updated on incative tab! This should never happen!');
@@ -339,6 +344,17 @@ function App(options) {
         this.menuEntries[key].visible = false;
       }
     });
+
+    // check if the selected tab is an editor to make the editor option visible or not
+    selectedEditor = [ 'bpmn', 'cmmn', 'dmn' ].filter(key => newState[key])[0];
+
+    if (selectedEditor) {
+      this.menuEntries.editor.visible = true;
+      this.menuEntries.editor.name = selectedEditor;
+    } else {
+      this.menuEntries.editor.visible = false;
+      this.menuEntries.editor.name = null;
+    }
 
     // update export button state
     button = find(this.menuEntries.modeler.buttons, { id: 'export-as' });
@@ -368,11 +384,6 @@ function App(options) {
     button = find(this.menuEntries.bpmn.buttons, { id: 'set-color' });
     button.disabled = !newState.elementsSelected;
 
-    // update deploy status
-    if (typeof newState.deployDisabled !== 'undefined') {
-      button = find(this.menuEntries.bpmn.buttons, { id: 'deploy-bpmn' });
-      button.disabled = newState.deployDisabled;
-    }
 
 
     this.events.emit('changed');
@@ -709,15 +720,19 @@ App.prototype.triggerAction = function(action, firstArg, secondArg) {
   }
 
   if (action === 'show-deployment-config') {
+
     // clear state of deployment modal
     this.setState({ DeploymentConfig: { } });
 
     // save tab before opening deployment modal
     return this.saveTab(activeTab, function(err) {
+
       if (err) {
         console.error('deploy:bpmn ' + err);
+
         return done(err);
       }
+
       return self.toggleOverlay('deploymentConfig');
     });
   }
@@ -726,21 +741,34 @@ App.prototype.triggerAction = function(action, firstArg, secondArg) {
     return this.toggleOverlay('endpointConfig');
   }
 
-  if (action === 'deploy-bpmn') {
-    var payload = {
-      file: activeTab.file,
-      deploymentName: options.deploymentName,
-      tenantId: options.tenantId
-    };
+  if (action === 'deploy') {
 
-    return browser.send('deploy:bpmn', payload, function(err) {
+    // make sure to save the active tab's file before deploying
+    return this.saveTab(activeTab, function(err) {
       if (err) {
-        console.error('deploy:bpmn ' + err);
+        console.error('deploy ' + err);
+
         return done(err);
       }
-      return done();
+
+      var payload = {
+        file: activeTab.file,
+        deploymentName: options.deploymentName,
+        tenantId: options.tenantId
+      };
+
+      browser.send('deploy', payload, function(err, response) {
+        if (err) {
+          console.error('deploy ' + err);
+
+          return done(err);
+        }
+
+        return done();
+      });
     });
   }
+
   // forward other actions to active tab
   activeTab.triggerAction(action, options);
 };
