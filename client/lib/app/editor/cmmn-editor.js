@@ -6,6 +6,8 @@ var assign = require('lodash/object/assign');
 
 var domify = require('domify');
 
+var domClosest = require('min-dom/lib/closest');
+
 var DiagramEditor = require('./diagram-editor');
 
 var CmmnJS = require('cmmn-js/lib/Modeler');
@@ -59,7 +61,7 @@ function CmmnEditor(options) {
 
   // update state so that it reflects that an 'input' is active
   this.on('input:focused', function(event) {
-    if (isInput.isInput(event.target)) {
+    if (isInput.isInput(event.target) && domClosest(event.target, '.cmmn-editor')) {
       this.updateState();
     }
   });

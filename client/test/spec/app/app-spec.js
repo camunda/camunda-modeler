@@ -2587,6 +2587,7 @@ describe('App', function() {
         send,
         dmnFile,
         bpmnFile,
+        cmmnFile,
         tenantId,
         deploymentName,
         payload;
@@ -2598,6 +2599,7 @@ describe('App', function() {
 
       bpmnFile = createBpmnFile(bpmnXML);
       dmnFile = createDmnFile(dmnXML);
+      cmmnFile = createDmnFile(cmmnXML);
 
       tenantId = 'some tenant id';
 
@@ -2672,6 +2674,38 @@ describe('App', function() {
 
         done();
       });
+    });
+
+
+    it('should deploy cmmn file', function(done) {
+
+      // given
+      app.saveTab = function(tab, cb) {
+        tab.setFile(cmmnFile);
+
+        cb(null, cmmnFile);
+      };
+
+      app.openTab(cmmnFile);
+
+      app.triggerAction('deploy', payload, function(err) {
+
+        // then
+        if (err) {
+          done('Error: ', err);
+        }
+
+        var expectedPayload = {
+          file: cmmnFile,
+          deploymentName: deploymentName,
+          tenantId: tenantId
+        };
+
+        expect(send).calledWith('deploy', expectedPayload, arg.any);
+
+        done();
+      });
+
     });
 
   });

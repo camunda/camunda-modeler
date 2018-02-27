@@ -48,6 +48,9 @@ var EndpointConfig = function(options) {
               type='text'
               value={ endpoint }
               onChange={ this.compose(this.updateEndpoint.bind(this)) } />
+          </div>
+
+          <div className="form-row form-btn-row">
             <button type="submit">
               Save
             </button>

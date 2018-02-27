@@ -278,12 +278,22 @@ describe('CmmnEditor', function() {
 
     });
 
+
     it('should call state if input is active', function() {
+
       // given
       var stateSpy = spy(editor, 'updateState');
 
+      var targetMock = document.createElement('div');
+
+      targetMock.className = 'cmmn-editor';
+
+      var inputMock = document.createElement('input');
+
+      targetMock.appendChild(inputMock);
+
       // when
-      editor.emit('input:focused', { target: { tagName: 'TEXTAREA' } });
+      editor.emit('input:focused', { target: inputMock });
 
       // then
       expect(stateSpy).to.have.been.called;
