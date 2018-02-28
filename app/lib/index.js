@@ -6,7 +6,10 @@ var electron = require('electron'),
 
 var path = require('path');
 
-var forEach = require('lodash/collection/forEach');
+var forEach = require('lodash/collection/forEach'),
+    got     = require('got'),
+    fs      = require('fs'),
+    FormData = require('form-data');
 
 /**
  * automatically report crash reports
@@ -25,7 +28,7 @@ var Platform = require('./platform'),
     Menu = require('./menu'),
     Cli = require('./cli'),
     Plugins = require('./plugins'),
-    deployBPMN = require('./deploy');
+    deploy = require('./createDeployer')({ got, fs, FormData });
 
 var browserOpen = require('./util/browser-open'),
     renderer = require('./util/renderer');
@@ -155,20 +158,27 @@ renderer.on('dialog:content-changed', function(done) {
 });
 
 renderer.on('deploy', function(data, done) {
+  var workspaceConfig = config.get('workspace', { endpoints: [] });
 
-  deployBPMN({
-    data: data,
-    config: config
-  }, function(err, result) {
+  var endpoint = (workspaceConfig.endpoints || [])[0];
+
+  if (!endpoint) {
+
+    let err = new Error('no deploy endpoint configured');
+
+    console.error('failed to deploy', err);
+    return done(err.message);
+  }
+
+  deploy(endpoint.url, data, function(err, result) {
 
     if (err) {
       console.error('failed to deploy', err);
 
-      // must stringify errors before passing them to client
-      err = err.message;
+      return done(err.message);
     }
 
-    done(err, result);
+    done(null, result);
   });
 
 });
