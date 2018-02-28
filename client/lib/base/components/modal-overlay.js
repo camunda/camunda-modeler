@@ -5,9 +5,9 @@ var inherits = require('inherits');
 var domClosest = require('min-dom/lib/closest');
 
 var BaseComponent = require('base/component'),
-    DeploymentConfig = require('./overlays/deployment-config-overlay'),
+    DeployDiagramOverlay = require('./overlays/deploy-diagram-overlay'),
     Shortcuts = require('./overlays/shortcuts-overlay'),
-    EndpointConfig = require('./overlays/endpoint-config-overlay');
+    ConfigureEndpointOverlay = require('./overlays/configure-endpoint-overlay');
 
 var ensureOpts = require('util/ensure-opts');
 
@@ -35,36 +35,27 @@ function ModalOverlay(options) {
     events.emit('dialog-overlay:toggle', false);
   };
 
-  /**
-   * Shortcuts
-   */
   var SHORTCUTS_OVERLAY = <Shortcuts />;
 
+  var CONFIGURE_ENDPOINT_OVERLAY = (
+    <ConfigureEndpointOverlay
+      closeOverlay={this.compose(this.closeOverlay, true)}
+      events={this.events}
+      endpoints={options.endpoints}/>
+  );
 
-  /**
-   * Endpoint configuration
-   */
-  var ENDPOINT_CONFIG_OVERLAY = <EndpointConfig
-    closeOverlay={this.compose(this.closeOverlay, true)}
-    events={this.events}
-    endpoints={options.endpoints}/>;
-
-
-  /**
-   * Deployment configuration
-   */
-
-  var DEPLOYMENT_CONFIG_OVERLAY = <DeploymentConfig
-    closeOverlay={this.compose(this.closeOverlay, true)}
-    events={this.events}
-    initializeState={this.initializeState}
-    setState={this.setState}
-  />;
+  var DEPLOY_DIAGRAM_OVERLAY = (
+    <DeployDiagramOverlay
+      closeOverlay={this.compose(this.closeOverlay, true)}
+      events={this.events}
+      initializeState={this.initializeState}
+      setState={this.setState} />
+  );
 
   var availableContent = {
     shortcuts: SHORTCUTS_OVERLAY,
-    endpointConfig: ENDPOINT_CONFIG_OVERLAY,
-    deploymentConfig: DEPLOYMENT_CONFIG_OVERLAY
+    configureEndpoint: CONFIGURE_ENDPOINT_OVERLAY,
+    deployDiagram: DEPLOY_DIAGRAM_OVERLAY
   };
 
   this.getContent = function(content) {

@@ -9,9 +9,14 @@ var INITIAL = 'initial',
     ERROR = 'error';
 
 
-var DeploymentConfig = function(options) {
+function DeployDiagramOverlay(options) {
 
-  ensureOpts([ 'events', 'initializeState', 'closeOverlay', 'setState'], options);
+  ensureOpts([
+    'events',
+    'initializeState',
+    'closeOverlay',
+    'setState'
+  ], options);
 
   BaseComponent.call(this, options);
 
@@ -21,35 +26,31 @@ var DeploymentConfig = function(options) {
     status: INITIAL
   };
 
-  this.initializeState({ self: this, key: DeploymentConfig.name });
+  this.initializeState({
+    self: this,
+    key: DeployDiagramOverlay.name
+  });
 
-  this.deploymentName = this.state.deploymentName;
-
-  this.tenantId = this.state.tenantId;
-
-  this.updateDeploymentName = function(e) {
-    this.deploymentName = e.target.value;
-  };
-
-  this.updateTenantId = function(e) {
-    this.tenantId = e.target.value;
-  };
-
-  this.submitDeploymentConfigForm = function(e) {
+  this.submitDeploymentConfigForm = (e) => {
     e.preventDefault();
+
+    var form = e.target;
+
+    var deploymentName = form['deployment-name'].value;
+    var tenantId = form['tenant-id'].value;
 
     this.setState({ status: LOADING });
 
     events.emit('deploy', {
-      deploymentName: this.deploymentName,
-      tenantId: this.tenantId
+      deploymentName,
+      tenantId
     }, (err) => {
       if (err) {
         this.setState({
           status: ERROR,
           message: err.message,
-          deploymentName: this.deploymentName,
-          tenantId: this.tenantId
+          deploymentName,
+          tenantId
         });
       } else {
         this.setState({
@@ -57,6 +58,12 @@ var DeploymentConfig = function(options) {
           message: 'Deployment was done successfully.'
         });
       }
+
+      setTimeout(() => {
+        this.setState({
+          status: INITIAL
+        });
+      }, 5000);
 
     });
   };
@@ -85,39 +92,53 @@ var DeploymentConfig = function(options) {
     return (
       <div className="deployment-configuration">
 
-        <h2>Deployment Configuration</h2>
+        <h2>Deploy Diagram</h2>
+
+        <p className="intro">
+          Specify deployment details and deploy this diagram to Camunda.
+        </p>
 
         { status }
 
         <form
-          className="deployment-configuration-form"
-          onSubmit={ this.submitDeploymentConfigForm.bind(this) }>
+          className="ca-form"
+          onSubmit={ this.submitDeploymentConfigForm }>
 
-          <div className="form-row form-flex-row">
+          <div>
             <label htmlFor="deployment-name">Deployment Name</label>
-            <input
-              id="deployment-name"
-              type="text"
-              onChange={ this.updateDeploymentName.bind(this) }
-              disabled={ isLoading }
-              required/>
           </div>
 
-          <div className="form-row form-flex-row">
+          <div>
+            <input
+              id="deployment-name"
+              name="deployment-name"
+              type="text"
+              disabled={ isLoading }
+              required
+              autofocus />
+          </div>
+
+          <div>
             <label htmlFor="tenant-id">Tenant Id</label>
+          </div>
+
+          <div>
             <input
               id="tenant-id"
+              name="tenant-id"
               type="text"
-              onChange={ this.updateTenantId.bind(this) }
               disabled={ isLoading } />
           </div>
 
-          <div className="form-row form-btn-row">
+          <div></div>
+
+          <div>
             <button
               type="submit"
               disabled={ isLoading }>
-              { buttonStatus } Deploy
+              Deploy { buttonStatus }
             </button>
+
             <button
               type="button"
               className='hide-dialog'
@@ -131,8 +152,8 @@ var DeploymentConfig = function(options) {
       </div>
     );
   };
-};
+}
 
-inherits(DeploymentConfig, BaseComponent);
+inherits(DeployDiagramOverlay, BaseComponent);
 
-module.exports = DeploymentConfig;
+module.exports = DeployDiagramOverlay;

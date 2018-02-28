@@ -267,7 +267,7 @@ describe('App', function() {
 
       // when
       // endpointConfig is toggled first time
-      app.toggleOverlay('endpointConfig');
+      app.toggleOverlay('configureEndpoint');
 
       var tree = render(app);
 
@@ -289,11 +289,11 @@ describe('App', function() {
 
     describe('deployment configuration modal', function() {
 
-      it('should render deployment configuration modal and close it', function() {
+      it('should render modal and close it', function() {
 
         // when
         // endpointConfig is toggled first time
-        app.toggleOverlay('deploymentConfig');
+        app.toggleOverlay('deployDiagram');
 
         var tree = render(app);
 
@@ -313,17 +313,17 @@ describe('App', function() {
       });
 
 
-      it('should only submit deployment configuration form if there is a deployment name', function() {
+      it('should only submit form with deployment name', function() {
 
         // when
         // endpointConfig is toggled first time
         app.saveTab = function() {};
 
-        app.toggleOverlay('deploymentConfig');
+        app.toggleOverlay('deployDiagram');
 
         var tree = render(app);
 
-        var deploymentNameInput = select('#deployment-name]', tree);
+        var deploymentNameInput = select('#deployment-name', tree);
 
         //then
         expect(deploymentNameInput.properties.required).to.be.true;
@@ -331,9 +331,19 @@ describe('App', function() {
         //when
         var triggerAction = spy(app, 'triggerAction');
 
-        var deploymentConfigForm = select('.deployment-configuration-form', tree);
+        var deploymentConfigForm = select('.deployment-configuration form', tree);
 
-        simulateEvent(deploymentConfigForm, 'submit', { preventDefault: function() {} });
+        simulateEvent(deploymentConfigForm, 'submit', {
+          preventDefault: function() { },
+          target: {
+            'deployment-name': {
+              value: 'foo'
+            },
+            'tenant-id': {
+              value: ''
+            }
+          }
+        });
 
         //then
         expect(triggerAction).to.be.called;
@@ -348,9 +358,13 @@ describe('App', function() {
               SUCCESS = 'success';
 
         // when
-        app.toggleOverlay('deploymentConfig');
+        app.toggleOverlay('deployDiagram');
 
-        app.setState({ DeploymentConfig: { status: LOADING } });
+        app.setState({
+          DeployDiagramOverlay: {
+            status: LOADING
+          }
+        });
 
         var tree = render(app);
 
@@ -360,7 +374,11 @@ describe('App', function() {
         expect(select('.deployment-configuration .icon-loading', tree)).to.exist;
 
         //when
-        app.setState({ DeploymentConfig: { status: ERROR } });
+        app.setState({
+          DeployDiagramOverlay: {
+            status: ERROR
+          }
+        });
         tree = render(app);
 
         // then
@@ -368,7 +386,11 @@ describe('App', function() {
         expect(select('.deployment-configuration .status.error', tree)).to.exist;
 
         // when
-        app.setState({ DeploymentConfig: { status: SUCCESS } });
+        app.setState({
+          DeployDiagramOverlay: {
+            status: SUCCESS
+          }
+        });
         tree = render(app);
 
         // then
@@ -2248,11 +2270,16 @@ describe('App', function() {
 
       it('should save when clicking save in endpoint config', function(done) {
         //given
-        app.toggleOverlay('endpointConfig');
+        app.toggleOverlay('configureEndpoint');
         var tree = render(app);
         var input = select('#endpoint-url', tree);
-        var configForm = select('.endpoint-configuration-form', tree);
-        simulateEvent(input, 'change', { target: { value: 'some/endpoint' } });
+        var configForm = select('.endpoint-configuration form', tree);
+
+        simulateEvent(input, 'change', {
+          target: {
+            value: 'some/endpoint'
+          }
+        });
 
         //when
         simulateEvent(configForm, 'submit', { preventDefault: () => {} });

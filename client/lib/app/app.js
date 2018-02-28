@@ -269,13 +269,13 @@ function App(options) {
               id: 'deploy-btn',
               icon: 'icon-deploy',
               label: 'Deploy Current Diagram',
-              action: this.compose('triggerAction', 'show-deployment-config'),
+              action: this.compose('triggerAction', 'open-deployment-overlay'),
               primary: true
             },
             {
               id: 'deploy-endpoint-config',
-              label: 'Configure Deployment',
-              action: this.compose('triggerAction', 'show-engine-config')
+              label: 'Configure Deployment Endpoint',
+              action: this.compose('triggerAction', 'open-endpoint-overlay')
             }
           ]
         })
@@ -719,7 +719,7 @@ App.prototype.triggerAction = function(action, firstArg, secondArg) {
     return this.exportTab(activeTab, options.type);
   }
 
-  if (action === 'show-deployment-config') {
+  if (action === 'open-deployment-overlay') {
 
     // clear state of deployment modal
     this.setState({ DeploymentConfig: { } });
@@ -733,12 +733,12 @@ App.prototype.triggerAction = function(action, firstArg, secondArg) {
         return done(err);
       }
 
-      return self.toggleOverlay('deploymentConfig');
+      return self.toggleOverlay('deployDiagram');
     });
   }
 
-  if (action === 'show-engine-config') {
-    return this.toggleOverlay('endpointConfig');
+  if (action === 'open-endpoint-overlay') {
+    return this.toggleOverlay('configureEndpoint');
   }
 
   if (action === 'deploy') {

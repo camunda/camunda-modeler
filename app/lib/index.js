@@ -160,9 +160,9 @@ renderer.on('dialog:content-changed', function(done) {
 renderer.on('deploy', function(data, done) {
   var workspaceConfig = config.get('workspace', { endpoints: [] });
 
-  var endpoint = (workspaceConfig.endpoints || [])[0];
+  var endpointUrl = (workspaceConfig.endpoints || [])[0];
 
-  if (!endpoint) {
+  if (!endpointUrl) {
 
     let err = new Error('no deploy endpoint configured');
 
@@ -170,7 +170,7 @@ renderer.on('deploy', function(data, done) {
     return done(err.message);
   }
 
-  deploy(endpoint.url, data, function(err, result) {
+  deploy(endpointUrl, data, function(err, result) {
 
     if (err) {
       console.error('failed to deploy', err);
