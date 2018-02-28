@@ -49,15 +49,18 @@ global.metaData = {
   name: app.name
 };
 
+// get directory of executable
+var appPath = path.dirname(app.getPath('exe'));
+
 var plugins = app.plugins = new Plugins({
   paths: [
     app.getPath('userData'),
-    process.cwd()
+    appPath
   ]
 });
 
 // set global modeler directory
-global.modelerDirectory = process.cwd();
+global.modelerDirectory = appPath;
 
 // bootstrap the application's menus
 //
