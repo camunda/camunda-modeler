@@ -52,7 +52,7 @@ module.exports = function findTemplates(searchPaths) {
 
 
 
-//////////// helpers ///////////////////////////////////////////
+// helpers //////////////////
 
 /**
  * Locate element templates in 'element-templates'

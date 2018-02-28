@@ -10,7 +10,7 @@ function on(event, callback, that) {
     var args = Array.prototype.slice.call(arguments).slice(2);
 
     function done() {
-      var args =  Array.prototype.slice.call(arguments).map(function(e) {
+      var args = Array.prototype.slice.call(arguments).map(function(e) {
         if (e instanceof Error) {
           return { message: e.message };
         }

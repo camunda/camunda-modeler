@@ -9,7 +9,7 @@ var BaseDialog = require('external/base-dialog');
 var EventEmitter = require('events');
 
 
-function TestDialog(events)  {
+function TestDialog(events) {
   BaseDialog.call(this, events);
 
   var openDialogs = [];

@@ -7,8 +7,8 @@ var electron = require('electron'),
 var path = require('path');
 
 var forEach = require('lodash/collection/forEach'),
-    got     = require('got'),
-    fs      = require('fs'),
+    got = require('got'),
+    fs = require('fs'),
     FormData = require('form-data');
 
 /**
@@ -116,7 +116,7 @@ if (config.get('single-instance', true)) {
   }
 }
 
-//////// client life-cycle /////////////////////////////
+// client life-cycle //////////////////
 
 renderer.on('dialog:unrecognized-file', function(file, done) {
   dialog.showDialog('unrecognizedFile', { name: file.name });
@@ -246,7 +246,7 @@ renderer.on('file:open', function(filePath, done) {
 });
 
 
-//////// open file handling //////////////////////////////
+// open file handling //////////////////
 
 // list of files that should be opened by the editor
 app.openFiles = [];

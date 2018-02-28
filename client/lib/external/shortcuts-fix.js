@@ -80,7 +80,7 @@ function ShortcutsFix(app, isMac) {
 module.exports = ShortcutsFix;
 
 
-///////// helpers ///////////////////////////////////////
+// helpers //////////////////
 
 function isPropertiesInput(el) {
   return el && domClosest(el, '.properties');

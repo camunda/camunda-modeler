@@ -325,10 +325,10 @@ describe('App', function() {
 
         var deploymentNameInput = select('#deployment-name', tree);
 
-        //then
+        // then
         expect(deploymentNameInput.properties.required).to.be.true;
 
-        //when
+        // when
         var triggerAction = spy(app, 'triggerAction');
 
         var deploymentConfigForm = select('.deployment-configuration form', tree);
@@ -345,7 +345,7 @@ describe('App', function() {
           }
         });
 
-        //then
+        // then
         expect(triggerAction).to.be.called;
       });
 
@@ -373,7 +373,7 @@ describe('App', function() {
         // config modal should show
         expect(select('.deployment-configuration .icon-loading', tree)).to.exist;
 
-        //when
+        // when
         app.setState({
           DeployDiagramOverlay: {
             status: ERROR
@@ -1391,7 +1391,7 @@ describe('App', function() {
         dmnEditor.once('shown', function(context) {
 
           var modeler = dmnEditor.modeler,
-              drdJS  = modeler.getActiveViewer(),
+              drdJS = modeler.getActiveViewer(),
               elementFactory = drdJS.get('elementFactory'),
               canvas = drdJS.get('canvas'),
               modeling = drdJS.get('modeling'),
@@ -2269,7 +2269,7 @@ describe('App', function() {
       });
 
       it('should save when clicking save in endpoint config', function(done) {
-        //given
+        // given
         app.toggleOverlay('configureEndpoint');
         var tree = render(app);
         var input = select('#endpoint-url', tree);
@@ -2281,7 +2281,7 @@ describe('App', function() {
           }
         });
 
-        //when
+        // when
         simulateEvent(configForm, 'submit', { preventDefault: () => {} });
 
         // then
@@ -2382,7 +2382,7 @@ describe('App', function() {
       });
 
 
-      it('should emit on editor "state-updated" event', function(done)  {
+      it('should emit on editor "state-updated" event', function(done) {
 
         // given
         app._addTab(tab);

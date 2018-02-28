@@ -80,7 +80,7 @@ function DeployDiagramOverlay(options) {
     var status = '';
 
     if (this.state.status === SUCCESS) {
-      status =  <div className="status success">
+      status = <div className="status success">
         <strong>Success: </strong> { this.state.message }
       </div>;
     } else if (this.state.status === ERROR) {

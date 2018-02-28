@@ -402,7 +402,7 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
 
   var pluginModules = this.plugins.get('bpmn.modeler.additionalModules');
 
-  var modeler =  new BpmnJS({
+  var modeler = new BpmnJS({
     container: $el,
     position: 'absolute',
     additionalModules: [

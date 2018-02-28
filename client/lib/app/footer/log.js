@@ -93,7 +93,7 @@ function Log(options) {
 
     return (
       <div className="log">
-        <div className="header" >
+        <div className="header">
           <div
             className="log-button log-button-toggle"
             onClick={ this.compose('toggleLog') }>
@@ -105,7 +105,7 @@ function Log(options) {
           className="resize-handle"
           draggable="true"
           onDragStart={
-            dragger( this.compose('resizeLog', copy(logLayout)))
+            dragger(this.compose('resizeLog', copy(logLayout)))
           }></div>
         {
           logLayout.open
@@ -128,13 +128,13 @@ function Log(options) {
                   }
 
                   var html =
-                      <div className="entry" scrollTo={ e === focusedEntry }>
-                        {
-                          action
-                            ? <a href="#" onClick={ action }>{ msg }</a>
-                            : <span>{ msg }</span>
-                        }
-                      </div>;
+                    <div className="entry" scrollTo={ e === focusedEntry }>
+                      {
+                        action
+                          ? <a href="#" onClick={ action }>{ msg }</a>
+                          : <span>{ msg }</span>
+                      }
+                    </div>;
 
                   return html;
                 })

@@ -3,7 +3,7 @@
 var sinon = require('sinon');
 
 var got = require('../helper/mock/got'),
-    fs  = require('../helper/mock/fs'),
+    fs = require('../helper/mock/fs'),
     FormData = require('../helper/mock/form-data');
 
 var deploy = require('../../lib/createDeployer')({ got, fs, FormData });
@@ -19,7 +19,7 @@ describe('deploy', function() {
 
   it('should deploy with provided parameters', function(done) {
 
-    //given
+    // given
     const data = {
       deploymentName: 'some deployment name',
       tenantId: 'some tenant id',
@@ -37,10 +37,10 @@ describe('deploy', function() {
     expectedForm.append(data.file.name, fs.createReadStream(data.file.path));
     expectedForm.append('tenant-id', data.tenantId);
 
-    //when
+    // when
     deploy(url, data, () => {
 
-      //then
+      // then
       expect(postSpy).to.have.been.calledWith(url, { body: expectedForm });
 
       done();
@@ -51,7 +51,7 @@ describe('deploy', function() {
 
   it('should not add empty tenant id to deployment', function(done) {
 
-    //given
+    // given
     const data = {
       deploymentName: 'some deployment name',
       tenantId: undefined,
@@ -68,10 +68,10 @@ describe('deploy', function() {
     expectedForm.append('deployment-name', data.deploymentName);
     expectedForm.append(data.file.name, fs.createReadStream(data.file.path));
 
-    //when
+    // when
     deploy(url, data, () => {
 
-      //then
+      // then
       expect(postSpy).to.have.been.calledWith(url, { body: expectedForm });
 
       done();

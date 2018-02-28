@@ -414,7 +414,7 @@ function App(options) {
 
   this.events.on('dialog-overlay:toggle', this.compose('toggleOverlay'));
 
-  ///////// public API yea! //////////////////////////////////////
+  // public API yea! //////////////////
 
   /**
    * Listen to an app event
@@ -456,11 +456,11 @@ App.prototype.render = function() {
   var html =
     <div className="app" onDragover={ fileDrop(this.compose('openFiles')) }>
       <ModalOverlay
-        initializeState={this.initializeState.bind(this)}
+        initializeState={ this.initializeState.bind(this) }
         isActive={ this._activeOverlay }
         content={ this._overlayContent }
         events={ this.events }
-        endpoints={ this.endpoints }/>
+        endpoints={ this.endpoints } />
       <MenuBar entries={ this.menuEntries } />
       <Tabbed
         className="main"
@@ -617,9 +617,9 @@ App.prototype.triggerAction = function(action, firstArg, secondArg) {
    * this makes sure to support passing callback to this function
    * callback can be passed in 2nd or 3rd position
    */
-  var self    = this,
+  var self = this,
       options = firstArg,
-      done    = function() {};
+      done = function() {};
 
   if (typeof firstArg === 'function') {
     done = firstArg;
@@ -1359,7 +1359,7 @@ App.prototype.persistWorkspace = function(done) {
   // let others store stuff, too
   this.events.emit('workspace:persist', config);
 
-  //store bpmn deploy url
+  // store bpmn deploy url
   config.endpoints = this.endpoints;
 
   // actually save

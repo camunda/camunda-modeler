@@ -54,7 +54,7 @@ module.exports = ElementTemplatesProvider;
 
 
 
-/////////// helpers ///////////////////////////
+// helpers //////////////////
 
 function suffixAll(paths, suffix) {
 

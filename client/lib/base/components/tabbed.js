@@ -68,10 +68,10 @@ function Tabbed(options) {
         <div
           className="tabs"
           scroll={ scrollTabs(TABS_OPTS, onScroll) }
-          drag={ dragTabs(TABS_OPTS, onPositionChanged) } >
+          drag={ dragTabs(TABS_OPTS, onPositionChanged) }>
           <div className="scroll-tabs-button scroll-tabs-left">‹</div>
           <div className="scroll-tabs-button scroll-tabs-right">›</div>
-          <div className="tabs-container" >
+          <div className="tabs-container">
             {
               tabs.map(tab => {
 

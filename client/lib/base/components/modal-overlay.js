@@ -39,17 +39,17 @@ function ModalOverlay(options) {
 
   var CONFIGURE_ENDPOINT_OVERLAY = (
     <ConfigureEndpointOverlay
-      closeOverlay={this.compose(this.closeOverlay, true)}
-      events={this.events}
-      endpoints={options.endpoints}/>
+      closeOverlay={ this.compose(this.closeOverlay, true) }
+      events={ this.events }
+      endpoints={ options.endpoints } />
   );
 
   var DEPLOY_DIAGRAM_OVERLAY = (
     <DeployDiagramOverlay
-      closeOverlay={this.compose(this.closeOverlay, true)}
-      events={this.events}
-      initializeState={this.initializeState}
-      setState={this.setState} />
+      closeOverlay={ this.compose(this.closeOverlay, true) }
+      events={ this.events }
+      initializeState={ this.initializeState }
+      setState={ this.setState } />
   );
 
   var availableContent = {
