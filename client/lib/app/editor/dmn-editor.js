@@ -220,14 +220,15 @@ DmnEditor.prototype.createModeler = function($el) {
   return new DmnJS({
     'position': 'absolute',
     'container': $el,
-    'decision-table': {
-      minColWidth: 200,
-      tableName: 'DMN Table'
-    },
     'drd': {
       additionalModules: [
         diagramOriginModule
       ]
+    },
+    common: {
+      keyboard: {
+        bindTo: $el
+      }
     }
   });
 };
