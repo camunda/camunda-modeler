@@ -33,23 +33,4 @@ export default class CamundaDmnEditor extends DmnJS {
 
   }
 
-  _getInitialView(views) {
-
-    return find(views, function(view) {
-
-      var element = view.element;
-
-      // can open decision, no problem
-      if (is(element, 'dmn:Decision')) {
-        return true;
-      }
-
-      if (is(element, 'dmn:Definitions')) {
-        return containsDi(element);
-      }
-
-      return false;
-    });
-  }
-
 }
