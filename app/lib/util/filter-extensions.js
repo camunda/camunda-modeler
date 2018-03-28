@@ -1,6 +1,9 @@
 'use strict';
 
-var map = require('lodash/collection/map');
+var {
+  map
+} = require('min-dash');
+
 
 var EXTENSIONS = {
   all: {

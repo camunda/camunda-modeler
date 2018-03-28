@@ -6,8 +6,11 @@ var electron = require('electron'),
 
 var path = require('path');
 
-var forEach = require('lodash/collection/forEach'),
-    got = require('got'),
+var {
+  forEach
+} = require('min-dash');
+
+var got = require('got'),
     fs = require('fs'),
     FormData = require('form-data');
 

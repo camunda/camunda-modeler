@@ -2,7 +2,9 @@
 
 var path = require('path');
 
-var map = require('lodash/collection/map');
+var {
+  map
+} = require('min-dash');
 
 var filterExtensions = require('./util/filter-extensions'),
     ensureOptions = require('./util/ensure-opts');

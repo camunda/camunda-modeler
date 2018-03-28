@@ -2,8 +2,10 @@
 
 var execSync = require('child_process').execSync;
 
-var forEach = require('lodash/collection/forEach'),
-    unique = require('lodash/array/uniq');
+var {
+  forEach,
+  uniqueBy
+} = require('min-dash');
 
 
 var EXTENSIONS = [ 'bpmn', 'dmn', 'cmmn' ];
@@ -75,7 +77,7 @@ module.exports.query = function() {
       }
     });
 
-    return unique(keys);
+    return uniqueBy((e) => e, keys);
   });
 };
 

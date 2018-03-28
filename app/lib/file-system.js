@@ -3,9 +3,11 @@
 var fs = require('fs'),
     path = require('path');
 
-var assign = require('lodash/object/assign'),
-    pick = require('lodash/object/pick'),
-    forEach = require('lodash/collection/forEach');
+var {
+  assign,
+  pick,
+  forEach
+} = require('min-dash');
 
 var ensureOptions = require('./util/ensure-opts');
 

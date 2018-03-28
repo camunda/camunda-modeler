@@ -1,6 +1,8 @@
 'use strict';
 
-var forEach = require('lodash/collection/forEach');
+var {
+  forEach
+} = require('min-dash');
 
 var fs = require('fs');
 

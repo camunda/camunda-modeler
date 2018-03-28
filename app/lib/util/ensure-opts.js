@@ -1,8 +1,9 @@
 'use strict';
 
-var forEach = require('lodash/collection/forEach');
-
-var isNumber = require('lodash/lang/isNumber');
+var {
+  forEach,
+  isNumber
+} = require('min-dash');
 
 var hasProperty = require('./has-property');
 

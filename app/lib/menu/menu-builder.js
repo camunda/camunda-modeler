@@ -7,8 +7,10 @@ var electron = require('electron'),
 
 var browserOpen = require('../util/browser-open');
 
-var merge = require('lodash/object/merge'),
-    assign = require('lodash/object/assign');
+var {
+  merge,
+  assign
+} = require('min-dash');
 
 
 function MenuBuilder(opts) {

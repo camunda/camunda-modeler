@@ -1,6 +1,8 @@
 'use strict';
 
-var assign = require('lodash/object/assign');
+var {
+  assign
+} = require('min-dash');
 
 var renderer = require('../util/renderer');
 

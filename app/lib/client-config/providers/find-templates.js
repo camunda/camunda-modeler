@@ -4,7 +4,9 @@ var fs = require('fs');
 
 var glob = require('glob');
 
-var isArray = require('lodash/lang/isArray');
+var {
+  isArray
+} = require('min-dash');
 
 
 /**
