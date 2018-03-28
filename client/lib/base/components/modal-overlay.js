@@ -2,7 +2,9 @@
 
 var inherits = require('inherits');
 
-var domClosest = require('min-dom/lib/closest');
+import {
+  closest as domClosest
+} from 'min-dom';
 
 var BaseComponent = require('base/component'),
     DeployDiagramOverlay = require('./overlays/deploy-diagram-overlay'),

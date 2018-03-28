@@ -4,9 +4,10 @@ var inherits = require('inherits');
 
 var assign = require('lodash/object/assign');
 
-var domify = require('domify');
-
-var domClosest = require('min-dom/lib/closest');
+import {
+  domify,
+  closest as domClosest
+} from 'min-dom';
 
 var DiagramEditor = require('./diagram-editor');
 
