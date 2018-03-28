@@ -2,8 +2,10 @@
 
 var h = global.h = require('vdom/h');
 
-var isString = require('lodash/lang/isString'),
-    assign = require('lodash/object/assign');
+import {
+  assign,
+  isString
+} from 'min-dash';
 
 var treeSelect = require('vtree-select');
 

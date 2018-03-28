@@ -6,7 +6,9 @@ var diff = require('virtual-dom/diff'),
     patch = require('virtual-dom/patch'),
     createElement = require('virtual-dom/create-element');
 
-var debounce = require('lodash/function/debounce');
+import {
+  debounce
+} from 'min-dash';
 
 var debug = require('debug')('main-loop');
 

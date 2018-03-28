@@ -1,6 +1,8 @@
 'use strict';
 
-var forEach = require('lodash/collection/forEach');
+import {
+  forEach
+} from 'min-dash';
 
 var TYPES = {
   bpmn: 'http://www.omg.org/spec/BPMN',

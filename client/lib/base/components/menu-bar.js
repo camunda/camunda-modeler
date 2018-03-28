@@ -2,7 +2,10 @@
 
 var h = require('vdom/h');
 
-var forEach = require('lodash/collection/forEach');
+import {
+  forEach
+} from 'min-dash';
+
 
 function MenuBar(options) {
 

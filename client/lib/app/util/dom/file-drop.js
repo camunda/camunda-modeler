@@ -6,7 +6,7 @@ var debug = require('debug')('file-drop');
 
 import {
   domify,
-  closest as domClosest
+  event as domEvent
 } from 'min-dom';
 
 var OVERLAY_HTML = '<div class="drop-overlay">' +

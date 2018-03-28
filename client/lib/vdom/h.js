@@ -4,11 +4,13 @@ var h = require('virtual-dom/h');
 
 var createComponent = require('./create-component');
 
-var isArray = require('lodash/lang/isArray'),
-    isObject = require('lodash/lang/isObject'),
-    isString = require('lodash/lang/isString'),
-    isFunction = require('lodash/lang/isFunction'),
-    forEach = require('lodash/collection/forEach');
+import {
+  isArray,
+  isObject,
+  isString,
+  isFunction,
+  forEach
+} from 'min-dash';
 
 var slice = require('util/slice'),
     bind = require('util/bind');

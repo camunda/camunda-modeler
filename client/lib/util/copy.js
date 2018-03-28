@@ -1,6 +1,8 @@
 'use strict';
 
-var assign = require('lodash/object/assign');
+import {
+  assign
+} from 'min-dash';
 
 module.exports = function(obj) {
   return assign({}, obj);

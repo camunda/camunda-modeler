@@ -7,8 +7,9 @@ var MultiEditorTab = require('app/tabs/multi-editor-tab');
 
 var TestEditor = require('./test-editor');
 
-var assign = require('lodash/object/assign');
-
+import {
+  assign
+} from 'min-dash';
 
 function createFile(overrides) {
 

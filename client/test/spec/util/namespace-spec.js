@@ -1,7 +1,9 @@
 'use strict';
 
-var map = require('lodash/collection/map'),
-    forEach = require('lodash/collection/forEach');
+import {
+  map,
+  forEach
+} from 'min-dash';
 
 var namespace = require('app/util/namespace');
 

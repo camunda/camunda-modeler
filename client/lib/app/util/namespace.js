@@ -1,6 +1,8 @@
 'use strict';
 
-var forEach = require('lodash/collection/forEach');
+import {
+  forEach
+} from 'min-dash';
 
 var ACTIVITI_NS = 'http://activiti.org/bpmn',
     CAMUNDA_NS = 'http://camunda.org/schema/1.0/bpmn';

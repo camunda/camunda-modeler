@@ -6,7 +6,9 @@ var inherits = require('inherits');
 
 var EventEmitter = require('events');
 
-var isArray = require('lodash/lang/isArray');
+import {
+  isArray
+} from 'min-dash';
 
 var slice = require('util/slice');
 

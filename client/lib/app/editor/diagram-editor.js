@@ -2,7 +2,9 @@
 
 var inherits = require('inherits');
 
-var debounce = require('lodash/function/debounce');
+import {
+  debounce
+} from 'min-dash';
 
 var BaseEditor = require('./base-editor');
 
@@ -69,9 +71,9 @@ function DiagramEditor(options) {
     }
   });
 
-  this.on('focus', debounce(this.resize, 50));
-  this.on('window:resized', debounce(this.resize, 50));
-  this.on('layout:update', debounce(this.resize, 50));
+  this.on('focus', debounce(this.resize.bind(this), 50));
+  this.on('window:resized', debounce(this.resize.bind(this), 50));
+  this.on('layout:update', debounce(this.resize.bind(this), 50));
 }
 
 inherits(DiagramEditor, BaseEditor);

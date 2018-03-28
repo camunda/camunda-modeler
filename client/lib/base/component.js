@@ -2,9 +2,11 @@
 
 var debug = require('debug')('base-component');
 
-var isFunction = require('lodash/lang/isFunction'),
-    isArray = require('lodash/lang/isArray'),
-    assign = require('lodash/object/assign');
+import {
+  isFunction,
+  isArray,
+  assign
+} from 'min-dash';
 
 var slice = require('util/slice');
 

@@ -1,6 +1,8 @@
 'use strict';
 
-var forEach = require('lodash/collection/forEach');
+import {
+  forEach
+} from 'min-dash';
 
 var getDefaultTemplate = require('bpmn-js-properties-panel/lib/provider/camunda/element-templates/Helper').getDefaultTemplate;
 

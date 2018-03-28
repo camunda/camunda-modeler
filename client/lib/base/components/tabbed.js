@@ -10,7 +10,10 @@ var ensureOpts = require('util/ensure-opts'),
     scrollTabs = require('util/dom/scroll-tabs'),
     dragTabs = require('util/dom/drag-tabs');
 
-var find = require('lodash/collection/find');
+import {
+  find,
+  matchPattern
+} from 'min-dash';
 
 var noop = function() {};
 
@@ -47,7 +50,7 @@ function Tabbed(options) {
         activeTab = options.active;
 
     var onScroll = (node) => {
-      var tab = find(options.tabs, { id: node.tabId });
+      var tab = find(options.tabs, matchPattern({ id: node.tabId }));
 
       if (tab) {
         onSelect(tab);
@@ -58,7 +61,7 @@ function Tabbed(options) {
       var dragTab = context.dragTab,
           newIdx = context.newIndex;
 
-      var tab = find(tabs, { id: dragTab.tabId });
+      var tab = find(tabs, matchPattern({ id: dragTab.tabId }));
 
       onDragTab(tab, newIdx);
     };

@@ -2,8 +2,10 @@
 
 var inherits = require('inherits');
 
-var assign = require('lodash/object/assign'),
-    forEach = require('lodash/collection/forEach');
+import {
+  assign,
+  forEach
+} from 'min-dash';
 
 var DiagramEditor = require('./diagram-editor');
 

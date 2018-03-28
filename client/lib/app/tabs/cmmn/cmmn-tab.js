@@ -2,7 +2,9 @@
 
 var inherits = require('inherits');
 
-var assign = require('lodash/object/assign');
+import {
+  assign
+} from 'min-dash';
 
 var CmmnEditor = require('../../editor/cmmn-editor'),
     XMLEditor = require('../../editor/xml-editor'),

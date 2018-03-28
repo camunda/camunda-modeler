@@ -1,12 +1,15 @@
 'use strict';
 
-var merge = require('lodash/object/merge'),
-    bind = require('lodash/function/bind'),
-    assign = require('lodash/object/assign'),
-    find = require('lodash/collection/find'),
-    filter = require('lodash/collection/filter'),
-    map = require('lodash/collection/map'),
-    debounce = require('lodash/function/debounce');
+import {
+  merge,
+  bind,
+  assign,
+  find,
+  filter,
+  map,
+  matchPattern,
+  debounce
+} from 'min-dash';
 
 var inherits = require('inherits');
 
@@ -357,7 +360,9 @@ function App(options) {
     }
 
     // update export button state
-    button = find(this.menuEntries.modeler.buttons, { id: 'export-as' });
+    button = find(this.menuEntries.modeler.buttons, matchPattern({
+      id: 'export-as'
+    }));
 
     button.choices = (newState['exportAs'] || []).map((type) => {
       return EXPORT_BUTTONS[type];
@@ -381,7 +386,9 @@ function App(options) {
     });
 
     // update set color button state
-    button = find(this.menuEntries.bpmn.buttons, { id: 'set-color' });
+    button = find(this.menuEntries.bpmn.buttons, matchPattern({
+      id: 'set-color'
+    }));
     button.disabled = !newState.elementsSelected;
 
 
@@ -1187,7 +1194,7 @@ App.prototype.closeTab = function(tab, done, hints) {
       file;
 
   if (typeof tab === 'string') {
-    tab = exists = find(this.tabs, { id: tab });
+    tab = exists = find(this.tabs, matchPattern({ id: tab }));
   } else {
     exists = contains(tabs, tab);
   }
@@ -1434,7 +1441,9 @@ App.prototype.restoreWorkspace = function(done) {
  * @param  {Boolean} isDisabled
  */
 App.prototype.updateMenuEntry = function(group, id, isDisabled) {
-  var button = find(this.menuEntries[group].buttons, { id: id });
+  var button = find(this.menuEntries[group].buttons, matchPattern({
+    id: id
+  }));
 
   button.disabled = isDisabled;
 
@@ -1551,7 +1560,7 @@ App.prototype.closeAllTabs = function() {
  */
 App.prototype.closeOtherTabs = function(tab) {
   if (tab && typeof tab === 'string') {
-    tab = find(this.tabs, { id: tab });
+    tab = find(this.tabs, matchPattern({ id: tab }));
   } else {
     tab = contains(this.tabs, tab) ? tab : null;
   }

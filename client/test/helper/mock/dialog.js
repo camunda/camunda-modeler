@@ -1,6 +1,8 @@
 'use strict';
 
-var assign = require('lodash/object/assign');
+import {
+  assign
+} from 'min-dash';
 
 var spyOn = require('test/helper/util/spy-on');
 
