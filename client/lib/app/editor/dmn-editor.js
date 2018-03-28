@@ -102,7 +102,7 @@ DmnEditor.prototype.updateState = function(options = {}) {
 
     var selection;
 
-    if (activeView.type === 'decision-table') {
+    if (activeView.type === 'decisionTable') {
       var decisionTableViewer = modeler.getActiveViewer();
 
       selection = decisionTableViewer.get('selection');

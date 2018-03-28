@@ -652,26 +652,26 @@ MenuBuilder.prototype.appendSelectAll = function() {
 MenuBuilder.prototype.appendDmnActions = function() {
   var activeEditor = this.opts.state.activeEditor;
 
-  if (activeEditor === 'diagram') {
+  if (activeEditor === 'drd') {
 
     // DRD editor
-    // this.menu.append(new MenuItem({
-    //   label: 'Lasso Tool',
-    //   accelerator: 'L',
-    //   enabled: this.opts.state.inactiveInput,
-    //   click: function() {
-    //     app.emit('menu:action', 'lassoTool');
-    //   }
-    // }));
+    this.menu.append(new MenuItem({
+      label: 'Lasso Tool',
+      accelerator: 'L',
+      enabled: this.opts.state.inactiveInput,
+      click: function() {
+        app.emit('menu:action', 'lassoTool');
+      }
+    }));
 
-    // this.menu.append(new MenuItem({
-    //   label: 'Edit Label',
-    //   accelerator: 'E',
-    //   enabled: this.opts.state.elementsSelected,
-    //   click: function() {
-    //     app.emit('menu:action', 'directEditing');
-    //   }
-    // }));
+    this.menu.append(new MenuItem({
+      label: 'Edit Label',
+      accelerator: 'E',
+      enabled: this.opts.state.elementsSelected,
+      click: function() {
+        app.emit('menu:action', 'directEditing');
+      }
+    }));
 
     this.appendSeparator();
 
@@ -679,11 +679,9 @@ MenuBuilder.prototype.appendDmnActions = function() {
 
     this.appendRemoveSelection();
 
-  } else if (activeEditor === 'table') {
+  } else if (activeEditor === 'decisionTable') {
 
     // decision table editor
-    this.appendSeparator();
-
     this.menu.append(new MenuItem({
       label: 'Add Rule..',
       submenu: Menu.buildFromTemplate([{
@@ -751,6 +749,24 @@ MenuBuilder.prototype.appendDmnActions = function() {
       enabled: this.opts.state.dmnClauseEditing,
       click: function() {
         app.emit('menu:action', 'removeClause');
+      }
+    }));
+
+    this.appendSeparator();
+
+    this.menu.append(new MenuItem({
+      label: 'Select Cell Above',
+      enabled: this.opts.state.dmnClauseEditing,
+      click: function() {
+        app.emit('menu:action', 'selectCellAbove');
+      }
+    }));
+
+    this.menu.append(new MenuItem({
+      label: 'Select Cell Below',
+      enabled: this.opts.state.dmnClauseEditing,
+      click: function() {
+        app.emit('menu:action', 'selectCellBelow');
       }
     }));
   }
