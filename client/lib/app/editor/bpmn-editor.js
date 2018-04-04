@@ -13,9 +13,9 @@ import {
 
 var DiagramEditor = require('./diagram-editor');
 
-var BpmnJS = require('bpmn-js/lib/Modeler');
+var BpmnJS = require('bpmn-js/lib/Modeler').default;
 
-var diagramOriginModule = require('diagram-js-origin'),
+var diagramOriginModule = require('diagram-js-origin').default,
     executableFixModule = require('./bpmn/executable-fix'),
     clipboardModule = require('./bpmn/clipboard'),
     minimapModule = require('diagram-js-minimap'),
