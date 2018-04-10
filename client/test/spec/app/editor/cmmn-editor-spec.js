@@ -273,8 +273,8 @@ describe('CmmnEditor', function() {
 
       // when
       // dragging toggle
-      simulateEvent(element, 'dragstart', { screenX: 0, screenY: 0 });
-      simulateEvent(element, 'drag', { screenX: 50, screenY: 0 });
+      simulateEvent(element, 'dragstart', { clientX: 0, clientY: 0 });
+      simulateEvent(element, 'drag', { clientX: 50, clientY: 0 });
 
     });
 
