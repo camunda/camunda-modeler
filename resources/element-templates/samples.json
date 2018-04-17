@@ -44,7 +44,7 @@
       },
       {
         "label": "Template",
-        "description": "By the way, you can use freemarker templates ${...} here",
+        "description": "By the way, you can use <a href=\"https://freemarker.apache.org/\">freemarker templates</a> here",
         "value": "Hello ${firstName}!",
         "type": "Text",
         "binding": {
