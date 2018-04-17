@@ -255,7 +255,7 @@ function buildDistroIgnore() {
     '.eslintrc',
     '.gitignore',
     '.travis.yml',
-    '.wiredeps',
+    'CHANGELOG.md',
     'Gruntfile.js',
     'npm-shrinkwrap.json',
     'package-lock.json',
