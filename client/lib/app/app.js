@@ -559,8 +559,12 @@ App.prototype.openFiles = function(files) {
         });
       }
 
+      var options = {
+        fileType: fileType,
+        name: file.name
+      };
 
-      dialog.openEmptyFile(fileType, (err, answer) => {
+      dialog.openEmptyFile(options, (err, answer) => {
 
         if (isCancel(answer)) {
           return done();

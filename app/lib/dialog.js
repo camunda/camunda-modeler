@@ -177,6 +177,8 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
       };
     },
     emptyFile: function(options) {
+      ensureOptions([ 'fileType', 'name' ], options);
+
       var type = options.fileType.toUpperCase();
 
       return {
@@ -190,7 +192,10 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
           { id: 'cancel', label: 'Cancel' },
           { id: 'create', label: 'Create' }
         ],
-        message: 'The ' + type + ' file is empty. Would you like to create a new diagram?'
+        message: [
+          'The file "' + options.name + '" is empty.',
+          'Would you like to create a new ' + type + ' diagram?'
+        ].join('\n')
       };
     }
   };

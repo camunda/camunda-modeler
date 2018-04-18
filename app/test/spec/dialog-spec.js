@@ -93,7 +93,8 @@ describe('Dialog', function() {
 
     // when
     dialog.showDialog('emptyFile', {
-      fileType: 'bpmn'
+      fileType: 'bpmn',
+      name: 'foo.bpmn'
     }, function(err, result) {
       var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
 
@@ -102,7 +103,10 @@ describe('Dialog', function() {
       expect(electronDialog.showMessageBox).to.have.been.called;
 
       expect(dialogArgs.title).to.equal('Empty BPMN file');
-      expect(dialogArgs.message).to.equal('The BPMN file is empty. Would you like to create a new diagram?');
+      expect(dialogArgs.message).to.equal([
+        'The file "foo.bpmn" is empty.',
+        'Would you like to create a new BPMN diagram?'
+      ].join('\n'));
 
       done();
     });

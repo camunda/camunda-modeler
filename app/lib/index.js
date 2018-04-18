@@ -163,8 +163,11 @@ renderer.on('dialog:content-changed', function(done) {
   dialog.showDialog('contentChanged', done);
 });
 
-renderer.on('dialog:empty-file', function(fileType, done) {
-  dialog.showDialog('emptyFile', { fileType: fileType }, done);
+renderer.on('dialog:empty-file', function(options, done) {
+  dialog.showDialog('emptyFile', {
+    fileType: options.fileType,
+    name: options.name
+  }, done);
 });
 
 renderer.on('deploy', function(data, done) {

@@ -107,11 +107,13 @@ function Dialog(events) {
   /**
    * Display 'empty file' dialog and callback with (type).
    *
-   * @param {String} type
+   * @param {Object} options
+   * @param {String} options.fileType
+   * @param {String} options.name
    * @param {Function} done
    */
-  this.openEmptyFile = function(type, done) {
-    this._open('dialog:empty-file', type, done);
+  this.openEmptyFile = function(options, done) {
+    this._open('dialog:empty-file', options, done);
   };
 
   /**
