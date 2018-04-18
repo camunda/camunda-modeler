@@ -86,7 +86,31 @@ describe('Dialog', function() {
   });
 
 
+  it('should show empty file dialog', function(done) {
+
+    // given
+    electronDialog.setResponse(1); // 'Create' button
+
+    // when
+    dialog.showDialog('emptyFile', {
+      fileType: 'bpmn'
+    }, function(err, result) {
+      var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+
+      expect(result).to.equal('create');
+
+      expect(electronDialog.showMessageBox).to.have.been.called;
+
+      expect(dialogArgs.title).to.equal('Empty BPMN file');
+      expect(dialogArgs.message).to.equal('The BPMN file is empty. Would you like to create a new diagram?');
+
+      done();
+    });
+  });
+
+
   it('should show message dialog -> close', function(done) {
+
     // given
     var messageBoxArg;
 

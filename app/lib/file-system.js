@@ -43,12 +43,6 @@ FileSystem.prototype.open = function(filePath, callback) {
     forEach(filenames, function(filename, idx) {
       var file = self._openFile(filename);
 
-      if (!file.contents) {
-        callback(file);
-
-        return false;
-      }
-
       files.push(file);
     });
 
@@ -70,7 +64,7 @@ FileSystem.prototype._openFile = function(filePath, callback) {
 };
 
 FileSystem.prototype.getFilePath = function(diagramFile) {
-  return diagramFile.path !== '[unsaved]' ? diagramFile.path : null;
+  return diagramFile.path !== '' ? diagramFile.path : null;
 };
 
 FileSystem.prototype.saveAs = function(diagramFile, callback) {

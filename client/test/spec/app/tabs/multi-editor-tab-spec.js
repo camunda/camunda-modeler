@@ -22,7 +22,7 @@ function createFile(overrides) {
 }
 
 var SAVED_FILE = createFile(),
-    UNSAVED_FILE = createFile({ path: '[unsaved]' });
+    UNSAVED_FILE = createFile({ path: '', isUnsaved: true });
 
 
 describe('MultiEditorTab', function() {

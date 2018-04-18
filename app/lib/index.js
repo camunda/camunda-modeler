@@ -163,6 +163,10 @@ renderer.on('dialog:content-changed', function(done) {
   dialog.showDialog('contentChanged', done);
 });
 
+renderer.on('dialog:empty-file', function(fileType, done) {
+  dialog.showDialog('emptyFile', { fileType: fileType }, done);
+});
+
 renderer.on('deploy', function(data, done) {
   var workspaceConfig = config.get('workspace', { endpoints: [] });
 

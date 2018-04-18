@@ -175,6 +175,23 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
           'Do you want to save the file as.. ?'
         ].join('\n')
       };
+    },
+    emptyFile: function(options) {
+      var type = options.fileType.toUpperCase();
+
+      return {
+        type: 'question',
+        title: [
+          'Empty ',
+          type,
+          ' file'
+        ].join(''),
+        buttons: [
+          { id: 'cancel', label: 'Cancel' },
+          { id: 'create', label: 'Create' }
+        ],
+        message: 'The ' + type + ' file is empty. Would you like to create a new diagram?'
+      };
     }
   };
 

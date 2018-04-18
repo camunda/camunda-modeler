@@ -1,11 +1,7 @@
 'use strict';
 
-var defaultPath = '[unsaved]';
-
 function isUnsaved(file) {
-  return !file || file.path === defaultPath;
+  return !file || !!file.isUnsaved;
 }
-
-isUnsaved.PATH = defaultPath;
 
 module.exports = isUnsaved;

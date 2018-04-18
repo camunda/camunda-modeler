@@ -99,8 +99,19 @@ function Dialog(events) {
    */
   this.openError = function(err, done) {
     debug('---> Dialog.openError: ', err);
-    // TODO: implement
+
+    // TODO(nikku): implement
     done(null);
+  };
+
+  /**
+   * Display 'empty file' dialog and callback with (type).
+   *
+   * @param {String} type
+   * @param {Function} done
+   */
+  this.openEmptyFile = function(type, done) {
+    this._open('dialog:empty-file', type, done);
   };
 
   /**

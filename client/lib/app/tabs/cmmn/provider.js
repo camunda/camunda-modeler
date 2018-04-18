@@ -4,8 +4,6 @@ var debug = require('debug')('cmmn-provider');
 
 var ensureOpts = require('util/ensure-opts');
 
-var isUnsaved = require('util/file/is-unsaved');
-
 var initialXML = require('./initial.cmmn');
 
 var CmmnTab = require('./cmmn-tab');
@@ -26,9 +24,8 @@ function CmmnProvider(options) {
 
   var createdFiles = 0;
 
-  this.createNewFile = function() {
-    // increment counter
-    createdFiles++;
+  this.createNewFile = function(attrs) {
+    attrs = attrs || {};
 
     debug('create CMMN file');
 
@@ -37,9 +34,10 @@ function CmmnProvider(options) {
 
     return {
       fileType: 'cmmn',
-      name: 'diagram_' + createdFiles + '.cmmn',
-      path: isUnsaved.PATH,
-      contents: xml
+      name: attrs.name || 'diagram_' + (++createdFiles) + '.cmmn',
+      path: attrs.path || '',
+      contents: xml,
+      isUnsaved: true
     };
   };
 

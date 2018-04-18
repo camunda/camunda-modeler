@@ -47,7 +47,6 @@ function FileSystem() {
    * @param {Function} done
    */
   this.writeFile = function(file, done) {
-
     if (this.writeFileResponse) {
 
       if (this.writeFileResponse instanceof Error) {
@@ -59,9 +58,11 @@ function FileSystem() {
 
     // make sure the file has a well defined
     // path after save (expected behavior...)
-    if (file.path === '[unsaved]') {
+    if (file.path === '') {
       throw new Error('incorrect file path');
     }
+
+    file.isUnsaved = false;
 
     done(null, assign({}, file));
   };

@@ -545,39 +545,75 @@ App.prototype.openFiles = function(files) {
   var dialog = this.dialog;
 
   series(files, (file, done) => {
-    var type = parseFileType(file);
 
-    if (!type) {
-      dialog.unrecognizedFileError(file, function(err) {
-        debug('open-diagram canceled: unrecognized file type', file);
+    if (!file.contents.length) {
 
-        return done(err);
-      });
+      // handle empty files
+      var fileType = file.name.split('.').pop();
 
-    } else {
-      if (namespace.hasOldNamespace(file.contents)) {
+      if ([ 'bpmn', 'dmn', 'cmmn' ].indexOf(fileType) === -1) {
+        return dialog.unrecognizedFileError(file, function(err) {
+          debug('open-diagram canceled: unrecognized file type', file);
 
-        dialog.convertNamespace(type, (err, answer) => {
-          if (err) {
-            debug('open-diagram error: %s', err);
-
-            return done(err);
-          }
-
-          if (isCancel(answer)) {
-            return done(null);
-          }
-
-          if (answer === 'yes') {
-            file.contents = namespace.replace(file.contents, type);
-          }
-
-          done(null, assign({}, file, { fileType: type }));
+          return done(err);
         });
-      } else {
-        done(null, assign({}, file, { fileType: type }));
       }
+
+
+      dialog.openEmptyFile(fileType, (err, answer) => {
+
+        if (isCancel(answer)) {
+          return done();
+        }
+
+        if (answer === 'create') {
+          var tabProvider = this._findTabProvider(fileType);
+
+          return done(null, tabProvider.createNewFile({
+            name: file.name,
+            path: file.path
+          }));
+        }
+      });
+    } else {
+      var type = parseFileType(file);
+
+      if (!type) {
+        dialog.unrecognizedFileError(file, function(err) {
+          debug('open-diagram canceled: unrecognized file type', file);
+
+          return done(err);
+        });
+
+      } else {
+
+        // handle old namespaces
+        if (namespace.hasOldNamespace(file.contents)) {
+
+          dialog.convertNamespace(type, (err, answer) => {
+            if (err) {
+              debug('open-diagram error: %s', err);
+
+              return done(err);
+            }
+
+            if (isCancel(answer)) {
+              return done(null);
+            }
+
+            if (answer === 'yes') {
+              file.contents = namespace.replace(file.contents, type);
+            }
+
+            done(null, assign({}, file, { fileType: type }));
+          });
+        } else {
+          done(null, assign({}, file, { fileType: type }));
+        }
+      }
+
     }
+
   }, (err, diagramFiles) => {
     if (err) {
       return debug('open-diagram canceled: %s', err);
@@ -596,7 +632,6 @@ App.prototype.openFiles = function(files) {
  * Open a new tab based on a file chosen by the user.
  */
 App.prototype.openDiagram = function() {
-
   var dialog = this.dialog;
 
   var cwd = getFilePath(this.activeTab);
@@ -1039,7 +1074,7 @@ App.prototype.saveTab = function(tab, options, done) {
 
     debug('exported %s \n%s', tab.id, file.contents);
 
-    var saveAs = isUnsaved(file) || options && options.saveAs;
+    var saveAs = !file.path || options && options.saveAs;
 
     this.saveFile(file, saveAs, updateTab);
   });
@@ -1080,6 +1115,8 @@ App.prototype.saveFile = function(file, saveAs, done) {
   }
 
   if (!saveAs) {
+    file.isUnsaved = false;
+
     return fileSystem.writeFile(assign({}, file), handleFileError);
   }
 
@@ -1096,6 +1133,8 @@ App.prototype.saveFile = function(file, saveAs, done) {
     }
 
     debug('save file %s as %s', file.name, suggestedFile.path);
+
+    file.isUnsaved = false;
 
     fileSystem.writeFile(assign({}, file, suggestedFile), handleFileError);
   });

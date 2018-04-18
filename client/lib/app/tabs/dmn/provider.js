@@ -4,8 +4,6 @@ var debug = require('debug')('dmn-provider');
 
 var ensureOpts = require('util/ensure-opts');
 
-var isUnsaved = require('util/file/is-unsaved');
-
 var tableXML = require('./table.dmn'),
     diagramXML = require('./diagram.dmn');
 
@@ -27,27 +25,22 @@ function DmnProvider(options) {
   var createdFiles = 0;
 
   this.createNewFile = function(attrs) {
-
     attrs = attrs || {};
-
-    var xml;
-
-    // increment counter
-    createdFiles++;
 
     debug('create DMN file');
 
     // make ID ROBUST
-    xml = (
+    var xml = (
       (attrs.isTable ? tableXML : diagramXML)
         .replace('{{ ID }}', ids.next())
     );
 
     return {
       fileType: 'dmn',
-      name: 'diagram_' + createdFiles + '.dmn',
-      path: isUnsaved.PATH,
-      contents: xml
+      name: attrs.name || 'diagram_' + (++createdFiles) + '.dmn',
+      path: attrs.path || '',
+      contents: xml,
+      isUnsaved: true
     };
   };
 
