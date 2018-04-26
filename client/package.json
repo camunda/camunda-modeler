@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "description": "Camunda Modeler client application",
   "scripts": {
-    "test": "NODE_ENV=test grunt test",
-    "auto-test": "NODE_ENV=test grunt auto-test",
-    "all": "NODE_ENV=production grunt",
-    "dev": "NODE_ENV=development grunt auto-build"
+    "test": "cross-env NODE_ENV=test grunt test",
+    "auto-test": "cross-env NODE_ENV=test grunt auto-test",
+    "all": "cross-env NODE_ENV=production grunt",
+    "dev": "cross-env NODE_ENV=development grunt auto-build"
   },
   "dependencies": {
     "bpmn-js": "^1.2.0",
@@ -50,6 +50,7 @@
     "babelify": "^8.0.0",
     "browserify": "^16.1.1",
     "chai": "^4.1.2",
+    "cross-env": "^5.1.4",
     "envify": "^4.1.0",
     "errorify": "^0.3.1",
     "grunt": "^1.0.2",
