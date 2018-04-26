@@ -23,7 +23,7 @@ var diagramOriginModule = require('diagram-js-origin').default,
     propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda'),
     camundaModdlePackage = require('camunda-bpmn-moddle/resources/camunda'),
     camundaModdleExtension = require('camunda-bpmn-moddle/lib'),
-    signavioCompat = require('bpmn-js-signavio-compat');
+    signavioCompat = require('bpmn-js-signavio-compat').default;
 
 var WarningsOverlay = require('base/components/warnings-overlay');
 
