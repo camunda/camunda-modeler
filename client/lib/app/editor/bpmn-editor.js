@@ -22,7 +22,8 @@ var diagramOriginModule = require('diagram-js-origin').default,
     propertiesPanelModule = require('bpmn-js-properties-panel'),
     propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda'),
     camundaModdlePackage = require('camunda-bpmn-moddle/resources/camunda'),
-    camundaModdleExtension = require('camunda-bpmn-moddle/lib');
+    camundaModdleExtension = require('camunda-bpmn-moddle/lib'),
+    signavioCompat = require('bpmn-js-signavio-compat');
 
 var WarningsOverlay = require('base/components/warnings-overlay');
 
@@ -416,7 +417,8 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
       propertiesPanelModule,
       propertiesProviderModule,
       propertiesPanelConfig,
-      camundaModdleExtension
+      camundaModdleExtension,
+      signavioCompat
     ].concat(pluginModules),
     elementTemplates: elementTemplatesLoader,
     moddleExtensions: { camunda: camundaModdlePackage },
