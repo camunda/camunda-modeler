@@ -7,6 +7,10 @@ import {
   forEach
 } from 'min-dash';
 
+import {
+  closest as domClosest
+} from 'min-dom';
+
 var DiagramEditor = require('./diagram-editor');
 
 var WarningsOverlay = require('base/components/warnings-overlay');
@@ -18,6 +22,7 @@ import DmnJS from './dmn/CamundaDmnEditor';
 var diagramOriginModule = require('diagram-js-origin');
 
 var generateImage = require('app/util/generate-image'),
+    isInput = require('util/dom/is-input'),
     isInputActive = require('util/dom/is-input').active;
 
 var debug = require('debug')('dmn-editor');
@@ -47,6 +52,13 @@ function DmnEditor(options) {
   });
 
   this._stackIdx = -1;
+
+  // update state so that it reflects that an 'input' is active
+  this.on('input:focused', function(event) {
+    if (isInput.isInput(event.target) && domClosest(event.target, '.dmn-editor')) {
+      this.updateState();
+    }
+  });
 }
 
 inherits(DmnEditor, DiagramEditor);
