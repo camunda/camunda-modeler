@@ -316,6 +316,31 @@ renderer.on('client:ready', function() {
   app.emit('app:client-ready');
 });
 
+app.on('web-contents-created', (event, webContents) => {
+
+  // open all external links in new window
+  webContents.on('new-window', function(event, url) {
+    event.preventDefault();
+
+    browserOpen(url);
+  });
+
+  // disable web-view (not used)
+  webContents.on('will-attach-webview', () => {
+    event.preventDefault();
+  });
+
+  // open in-page links externally by default
+  // @see https://github.com/electron/electron/issues/1344#issuecomment-171516636
+  webContents.on('will-navigate', (event, url) => {
+
+    if (url !== webContents.getURL()) {
+      event.preventDefault();
+
+      browserOpen(url);
+    }
+  });
+});
 
 /**
  * Create the main window that represents the editor.
@@ -332,12 +357,6 @@ app.createEditorWindow = function() {
   mainWindow.maximize();
 
   mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../public/index.html'));
-
-  mainWindow.webContents.on('new-window', function(event, url) {
-    event.preventDefault();
-
-    browserOpen(url);
-  });
 
   // handling case when user clicks on window close button
   mainWindow.on('close', function(e) {

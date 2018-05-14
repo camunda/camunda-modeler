@@ -18,8 +18,6 @@ var Config = require('external/config'),
     Plugins = require('external/plugins'),
     browser = require('util/browser');
 
-var domDelegate = require('min-dom').delegate;
-
 var App = require('./app');
 
 var mainLoop = require('util/dom/main-loop');
@@ -92,17 +90,6 @@ domReady(function() {
   mainLoop(app, document.body);
 
   app.run();
-});
-
-
-// open links externally by default
-// @see https://github.com/electron/electron/issues/1344#issuecomment-171516636
-var shell = window.require('electron').shell;
-
-domDelegate.bind(document, 'a[href^="http"]', 'click', function(event) {
-  event.preventDefault();
-
-  shell.openExternal(event.delegateTarget.href);
 });
 
 require('debug').enable('*');
