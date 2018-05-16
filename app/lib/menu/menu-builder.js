@@ -1174,5 +1174,5 @@ MenuBuilder.prototype.buildContextMenu = function(type, attrs) {
 };
 
 MenuBuilder.prototype.openPopup = function() {
-  return this.menu.popup();
+  return this.menu.popup({});
 };
