@@ -241,7 +241,7 @@ function App(options) {
         Button({
           id: 'align-bottom',
           icon: 'icon-align-bottom-tool',
-          label: 'Align Elements to the Middle',
+          label: 'Align Elements to the Bottom',
           action: this.compose('triggerAction', 'alignElements', {
             type: 'bottom'
           })
