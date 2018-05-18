@@ -2,6 +2,8 @@
 
 var inherits = require('inherits');
 
+var Loader = require('./loader');
+
 import {
   assign
 } from 'min-dash';
@@ -388,6 +390,7 @@ CmmnEditor.prototype.render = function() {
       className="cmmn-editor"
       key={ this.id + '#cmmn' }
       onFocusin={ this.compose('updateState') }>
+      <Loader hidden={ !!this.lastXML } />
       <div
         className="editor-container"
         onAppend={ this.compose('mountEditor') }

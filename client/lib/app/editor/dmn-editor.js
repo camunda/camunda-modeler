@@ -2,6 +2,8 @@
 
 var inherits = require('inherits');
 
+var Loader = require('./loader');
+
 import {
   assign,
   forEach
@@ -304,6 +306,7 @@ DmnEditor.prototype.render = function() {
 
   return (
     <div className="dmn-editor" key={ this.id }>
+      <Loader hidden={ !!this.lastXML } />
       <div
         className="editor-container"
         onAppend={ this.compose('mountEditor') }

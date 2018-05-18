@@ -2,6 +2,8 @@
 
 var inherits = require('inherits');
 
+var Loader = require('./loader');
+
 import {
   assign
 } from 'min-dash';
@@ -491,6 +493,7 @@ BpmnEditor.prototype.render = function() {
       key={ this.id + '#bpmn' }
       onFocusin={ this.compose('updateState') }
       onContextmenu={ this.compose('openContextMenu') }>
+      <Loader hidden={ !!this.lastXML } />
       <div
         className="editor-container"
         onAppend={ this.compose('mountEditor') }
