@@ -1,7 +1,8 @@
 {
   "name": "camunda-modeler-client",
-  "version": "0.0.0",
+  "version": "1.16.2",
   "description": "Camunda Modeler client application",
+  "private": true,
   "scripts": {
     "test": "cross-env NODE_ENV=test grunt test",
     "auto-test": "cross-env NODE_ENV=test grunt auto-test",

@@ -24,7 +24,7 @@ module.exports = function(grunt) {
     browserify: {
       client: {
         src: 'lib/index.js',
-        target: '../public/index.js'
+        target: '../app/public/index.js'
       }
     },
 
@@ -33,7 +33,7 @@ module.exports = function(grunt) {
         files: [
           {
             src: 'lib/index.html',
-            dest: '../public/index.html'
+            dest: '../app/public/index.html'
           }
         ]
       },
@@ -41,7 +41,7 @@ module.exports = function(grunt) {
         files: [
           {
             src: 'fonts/app.*',
-            dest: '../public/fonts/',
+            dest: '../app/public/fonts/',
             expand: true,
             flatten: true
           }
@@ -52,7 +52,7 @@ module.exports = function(grunt) {
           {
             cwd: 'node_modules/cmmn-js/dist/',
             src: [ '**/*', '!**/*.js' ],
-            dest: '../public/vendor/cmmn-js/',
+            dest: '../app/public/vendor/cmmn-js/',
             expand: true
           }
         ]
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
           {
             cwd: 'node_modules/dmn-js/dist/',
             src: [ '**/*', '!**/*.js' ],
-            dest: '../public/vendor/dmn-js/',
+            dest: '../app/public/vendor/dmn-js/',
             expand: true
           }
         ]
@@ -72,7 +72,7 @@ module.exports = function(grunt) {
           {
             cwd: 'node_modules/bpmn-js/dist/',
             src: [ '**/*', '!**/*.js' ],
-            dest: '../public/vendor/bpmn-js/',
+            dest: '../app/public/vendor/bpmn-js/',
             expand: true
           }
         ]
@@ -82,7 +82,7 @@ module.exports = function(grunt) {
           {
             cwd: 'node_modules/diagram-js/',
             src: [ '!**/*.js', 'assets/**/*' ],
-            dest: '../public/vendor/diagram-js/',
+            dest: '../app/public/vendor/diagram-js/',
             expand: true
           }
         ]
@@ -109,7 +109,7 @@ module.exports = function(grunt) {
           ]
         },
         files: {
-          '../public/css/style.css': 'styles/app.less'
+          '../app/public/css/style.css': 'styles/app.less'
         }
       }
     },

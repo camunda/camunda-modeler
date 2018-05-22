@@ -1,0 +1,73 @@
+{
+  "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+  "directories": {
+    "output": "distro"
+  },
+  "extraFiles": [
+    {
+      "from": "resources/platform/base",
+      "to": ".",
+      "filter": [ "**/*" ]
+    }
+  ],
+  "files": [
+    {
+      "filter": [
+        "**",
+        "!test",
+        "!dev.js"
+      ]
+    }
+  ],
+  "afterPack": "./tasks/after-pack.js",
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [ "x64" ]
+      },
+      {
+        "target": "zip",
+        "arch": [ "x64", "ia32" ]
+      }
+    ]
+  },
+  "linux": {
+    "category": "Education",
+    "target": [
+      {
+        "target": "tar.gz",
+        "arch": [ "x64", "ia32" ]
+      }
+    ]
+  },
+  "mac": {
+    "target": [
+      "dmg",
+      "zip"
+    ]
+  },
+  "fileAssociations": [
+    {
+      "ext": "bpmn",
+      "name": "CamundaModeler.BPMN",
+      "description": "BPMN file",
+      "role": "Editor",
+      "mimeType": "application/bpmn"
+    },
+    {
+      "ext": "dmn",
+      "name": "CamundaModeler.DMN",
+      "description": "DMN file",
+      "role": "Editor",
+      "mimeType": "application/dmn"
+    },
+    {
+      "ext": "cmmn",
+      "name": "CamundaModeler.CMMN",
+      "description": "CMMN file",
+      "role": "Editor",
+      "mimeType": "application/cmmn"
+    }
+  ]
+}

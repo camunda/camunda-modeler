@@ -43,7 +43,7 @@ Platform.create(process.platform, app, config);
 // variable for developing (reloading and devtools toggling)
 app.developmentMode = false;
 
-app.version = require('../../package').version;
+app.version = require('../package').version;
 app.name = 'Camunda Modeler';
 
 // this is shared variable between main and renderer processes
@@ -356,15 +356,21 @@ app.on('web-contents-created', (event, webContents) => {
  */
 app.createEditorWindow = function() {
 
-  var mainWindow = app.mainWindow = new BrowserWindow({
+  var windowOptions = {
     resizable: true,
     show: false,
     title: 'Camunda Modeler'
-  });
+  };
+
+  if (process.platform === 'linux') {
+    windowOptions.icon = path.join(__dirname + '/../resources/favicon.png');
+  }
+
+  var mainWindow = app.mainWindow = new BrowserWindow(windowOptions);
 
   dialog.setActiveWindow(mainWindow);
 
-  mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../public/index.html'));
+  mainWindow.loadURL('file://' + path.resolve(__dirname + '/../public/index.html'));
 
   // handling case when user clicks on window close button
   mainWindow.on('close', function(e) {
