@@ -1,15 +1,9 @@
 {
-  "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+  "appId": "com.camunda.CamundaModeler",
+  "productName": "Camunda Modeler",
   "directories": {
     "output": "distro"
   },
-  "extraFiles": [
-    {
-      "from": "resources/platform/base",
-      "to": ".",
-      "filter": [ "**/*" ]
-    }
-  ],
   "files": [
     {
       "filter": [
@@ -33,7 +27,7 @@
     ]
   },
   "linux": {
-    "category": "Education",
+    "category": "Development",
     "target": [
       {
         "target": "tar.gz",

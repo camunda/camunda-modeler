@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-const argv = require('yargs').argv
+
+const argv = require('yargs').argv;
 
 const exec = require('execa').sync;
 
@@ -12,30 +13,53 @@ const {
   publish
 } = argv;
 
-const availablePlatforms = {
-  win: 1,
-  linux: 1,
-  mac: 1
-};
-
-var nightlyOptions = [];
-
-let nightlyVersion = nightly && getVersion(pkg, nightly && {
+let nightlyVersion = nightly && getVersion(pkg, {
   nightly: 'nightly'
 });
 
 if (nightlyVersion) {
 
-  nightlyOptions = [
-    `-c.buildVersion=${nightlyVersion}`,
-    '-c.artifactName=${productName}-${os}-${arch}.${ext}'
+  const publishNightlyArgs = [
+    'publish',
+    `--repo-version=${nightlyVersion}`,
+    '--skip-npm',
+    '--skip-git',
+    '--yes'
   ];
+
+  console.log(`
+Setting ${pkg.name} version to nightly
+
+---
+
+lerna ${ publishNightlyArgs.join(' ') }
+
+---
+`);
+
+  exec('lerna', publishNightlyArgs, {
+    stdio: 'inherit'
+  });
 }
 
-const platforms =
-  Object.keys(availablePlatforms)
-    .map(k => argv[k] && k)
-    .filter(k => k);
+const replaceVersion = nightlyVersion
+  ? s => s.replace('${version}', 'nightly')
+  : s => s;
+
+const artifactOptions = [
+  '-c.artifactName=${name}-${version}-${os}-${arch}.${ext}',
+  '-c.dmg.artifactName=${name}-${version}-${os}.${ext}',
+  '-c.nsis.artifactName=${name}-${version}-${os}-setup.${ext}',
+  '-c.nsisWeb.artifactName=${name}-${version}-${os}-web-setup.${ext}'
+].map(replaceVersion);
+
+// interpret shorthand target options
+// --win, --linux, --mac
+const platforms = [
+  argv.win ? 'win' : null,
+  argv.linux ? 'linux': null,
+  argv.mac ? 'mac' : null
+].filter(f => f);
 
 const platformOptions = platforms.map(p => `--${p}`);
 
@@ -58,15 +82,17 @@ const args = [
   ...archOptions,
   ...signingOptions,
   ...platformOptions,
-  ...nightlyOptions,
-  ...publishOptions
+  ...publishOptions,
+  ...artifactOptions
 ];
 
 console.log(`
 Building ${pkg.name} distro
 
+---
+
   version: ${nightlyVersion || pkg.version}
-  platforms: [${ platforms }]
+  platforms: [${ platforms.length && platforms || 'current' }]
   publish: ${publish || false}
 
 ---

@@ -7,6 +7,7 @@
     "test": "cross-env NODE_ENV=test grunt test",
     "auto-test": "cross-env NODE_ENV=test grunt auto-test",
     "all": "cross-env NODE_ENV=production grunt",
+    "build": "cross-env NODE_ENV=production grunt build",
     "dev": "cross-env NODE_ENV=development grunt auto-build"
   },
   "dependencies": {
