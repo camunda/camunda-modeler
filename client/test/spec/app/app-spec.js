@@ -2515,13 +2515,15 @@ describe('App', function() {
             };
 
         tab.activeEditor.exportAs = function(type, callback) {
+          expect(type).to.eql('png');
+
           callback(null, { contents: 'foo' });
         };
 
-        dialog.setResponse('saveAs', exportedFile);
+        dialog.setResponse('exportAs', exportedFile);
 
         // when
-        app.exportTab(tab, 'png', function(err, file) {
+        app.exportTab(tab, [ 'png', 'jpeg', 'svg' ], function(err, file) {
 
           // then
           expect(file.name).to.equal('diagram_1.png');
@@ -2529,30 +2531,91 @@ describe('App', function() {
           expect(file.contents).to.equal('foo');
           expect(file.fileType).to.equal('png');
 
-          expect(dialog.saveAs).to.have.been.calledWith(exportedFile);
+          done();
+        });
+      });
+
+
+      it('should not export on unknown image type', function(done) {
+
+        // given
+        var tab = createTab(createBpmnFile(bpmnXML)),
+            exportedFile = {
+              name: 'diagram_1.unknown',
+              path: 'diagram_1.unknown',
+              contents: 'foo',
+              fileType: 'unknown',
+              isUnsaved: false
+            };
+
+        tab.activeEditor.exportAs = function(type, callback) {
+          throw new Error('unexpected call');
+        };
+
+        dialog.setResponse('exportAs', exportedFile);
+
+        // when
+        app.exportTab(tab, [ 'png', 'jpeg', 'svg' ], function(err, file) {
+
+          // then
+          expect(err).to.exist;
+          expect(err.message).to.eql('cannot export to <unknown>');
 
           done();
         });
       });
 
 
-      it('should not export on error', function(done) {
+      it('should not export on user cancel', function(done) {
+
+        // given
+        var tab = createTab(createBpmnFile(bpmnXML));
+
+        tab.activeEditor.exportAs = function(type, callback) {
+          throw new Error('unexpected call');
+        };
+
+        dialog.setResponse('exportAs', null);
+
+        // when
+        app.exportTab(tab, [ 'png', 'jpeg', 'svg' ], function(err, file) {
+
+          // then
+          expect(err.message).to.eql(userCanceled().message);
+
+          done();
+        });
+      });
+
+
+      it('should not export on tab#exportAs error', function(done) {
 
         // given
         var tab = createTab(createBpmnFile(bpmnXML)),
-            exportError = new Error('export failed');
+            exportError = new Error('export failed'),
+            exportedFile = {
+              name: 'diagram_1.svg',
+              path: 'diagram_1.svg',
+              contents: 'foo',
+              fileType: 'svg',
+              isUnsaved: false
+            };
+
+        fileSystem.writeFile = function() {
+          throw new Error('unexpected call');
+        };
 
         tab.activeEditor.exportAs = function(type, callback) {
           callback(exportError);
         };
 
+        dialog.setResponse('exportAs', exportedFile);
+
         // when
-        app.exportTab(tab, 'svg', function(err, svg) {
+        app.exportTab(tab, [ 'svg' ], function(err, svg) {
 
           // then
           expect(err).to.equal(exportError);
-
-          expect(dialog.saveAs).to.not.have.been.called;
 
           done();
         });
@@ -2604,8 +2667,10 @@ describe('App', function() {
           // then
           expect(exportButton.choices).to.have.length(2);
 
-          expect(exportButton.choices[0].id).to.equal('jpeg');
-          expect(exportButton.choices[1].id).to.equal('svg');
+          expect(exportButton.choices).to.eql([
+            'jpeg',
+            'svg'
+          ]);
 
           done();
         });

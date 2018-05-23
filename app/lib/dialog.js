@@ -26,19 +26,19 @@ function Dialog(options) {
 module.exports = Dialog;
 
 
-Dialog.prototype.getDialogOptions = function(type, opts) {
+Dialog.prototype.getDialogOptions = function(type, options) {
   var config = this.config,
       userDesktopPath = this.userDesktopPath,
       defaultPath;
 
   // filepath is passed if a saved file is focused
-  if (opts && opts.filePath) {
-    defaultPath = path.dirname(opts.filePath);
+  if (options && options.filePath) {
+    defaultPath = path.dirname(options.filePath);
   } else {
     defaultPath = config.get('defaultPath', userDesktopPath);
   }
 
-  this._dialogs = {
+  const dialogs = {
     contentChanged: function() {
       return {
         title: 'File changed',
@@ -55,14 +55,27 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
         title: 'Open diagram',
         defaultPath: defaultPath,
         properties: [ 'openFile', 'multiSelections' ],
-        filters: filterExtensions([ 'supported', 'bpmn', 'dmn', 'cmmn', 'all' ])
+        filters: filterExtensions([
+          'supported',
+          'bpmn', 'dmn', 'cmmn',
+          'all'
+        ])
+      };
+    },
+    exportAs: function(options) {
+      ensureOptions([ 'name', 'filters' ], options);
+
+      return {
+        title: 'Export ' + options.name + ' as...',
+        defaultPath: defaultPath + '/' + options.name,
+        filters: options.filters
       };
     },
     save: function(options) {
       ensureOptions([ 'name', 'fileType' ], options);
 
       return {
-        title: 'Save ' + options.name + ' as..',
+        title: 'Save ' + options.name + ' as...',
         defaultPath: defaultPath + '/' + options.name,
         filters: filterExtensions([ options.fileType, 'all' ])
       };
@@ -200,7 +213,7 @@ Dialog.prototype.getDialogOptions = function(type, opts) {
     }
   };
 
-  return this._dialogs[type](opts);
+  return dialogs[type](options);
 };
 
 Dialog.prototype.setDefaultPath = function(filenames) {
@@ -253,7 +266,7 @@ Dialog.prototype.showDialog = function(type, opts, done) {
   function dialogCallback(answer) {
     var result;
 
-    if (type !== 'open' && type !== 'save') {
+    if (type !== 'open' && type !== 'save' && type !== 'exportAs') {
       // get the button ID according to the result
       result = buttons[answer].id;
     } else {
@@ -261,7 +274,7 @@ Dialog.prototype.showDialog = function(type, opts, done) {
     }
 
     // save last used path to config
-    if (result && (type === 'open' || type === 'save')) {
+    if (result && (type === 'open' || type === 'save' || type === 'exportAs')) {
       self.setDefaultPath(result);
     }
 
@@ -272,7 +285,7 @@ Dialog.prototype.showDialog = function(type, opts, done) {
     dialog.showOpenDialog(dialogOptions, dialogCallback);
 
   } else
-  if (type === 'save') {
+  if (type === 'save' || type === 'exportAs') {
     dialog.showSaveDialog(dialogOptions, dialogCallback);
 
   } else {

@@ -64,6 +64,17 @@ function Dialog(events) {
    * Ask for how to save the file and callback with (err, file).
    *
    * @param {File} file
+   * @param {Array<FileFilter>} filters
+   * @param {Function} done
+   */
+  this.exportAs = function(file, filters, done) {
+    this._open('file:export-as', file, filters, done);
+  };
+
+  /**
+   * Ask for how to save the file and callback with (err, file).
+   *
+   * @param {File} file
    * @param {Function} done
    */
   this.saveAs = function(file, done) {

@@ -6,10 +6,6 @@ var browser = require('util/browser');
 
 var BaseConfig = require('../base/config');
 
-var slice = function(arr, begin, end) {
-  return Array.prototype.slice.call(arr, begin, end);
-};
-
 
 /**
  * Config API used by app
@@ -37,9 +33,9 @@ function ExternalConfig() {
       throw new Error('done callback must be a function');
     }
 
-    var args = slice(arguments, 0, -1);
+    var args = slice(arguments);
 
-    browser.send('client-config:get', args, done);
+    browser.send.apply(browser, [ 'client-config:get' ].concat(args));
   };
 
 }
@@ -47,3 +43,10 @@ function ExternalConfig() {
 inherits(ExternalConfig, BaseConfig);
 
 module.exports = ExternalConfig;
+
+
+// helpers /////////////////////
+
+function slice(arr, begin, end) {
+  return Array.prototype.slice.call(arr, begin, end);
+}

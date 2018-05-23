@@ -197,8 +197,12 @@ renderer.on('deploy', function(data, done) {
 });
 
 
-function saveCallback(saveAction, diagramFile, done) {
-  saveAction.apply(fileSystem, [ diagramFile, (err, updatedDiagram) => {
+function saveCallback(saveAction, ...args) {
+
+  var done = args[args.length - 1];
+  var actualArgs = args.slice(0, args.length - 1);
+
+  saveAction.apply(fileSystem, [ ...actualArgs, (err, updatedDiagram) => {
     if (err) {
       return done(err);
     }
@@ -211,14 +215,12 @@ function saveCallback(saveAction, diagramFile, done) {
   }]);
 }
 
-renderer.on('client-config:get', function() {
-
-  var args = Array.prototype.slice.call(arguments);
+renderer.on('client-config:get', function(...args) {
 
   var done = args[args.length - 1];
 
   try {
-    clientConfig.get.apply(clientConfig, arguments);
+    clientConfig.get(...args);
   } catch (e) {
     if (typeof done === 'function') {
       done(e);
@@ -228,6 +230,10 @@ renderer.on('client-config:get', function() {
 
 renderer.on('file:save-as', function(diagramFile, done) {
   saveCallback(fileSystem.saveAs, diagramFile, done);
+});
+
+renderer.on('file:export-as', function(diagramFile, filters, done) {
+  saveCallback(fileSystem.exportAs, diagramFile, filters, done);
 });
 
 renderer.on('file:save', function(diagramFile, done) {

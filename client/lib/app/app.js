@@ -6,7 +6,6 @@ import {
   assign,
   find,
   filter,
-  map,
   matchPattern,
   debounce
 } from 'min-dash';
@@ -40,6 +39,11 @@ var ensureOpts = require('util/ensure-opts'),
 
 var debug = require('debug')('app');
 
+var EXPORT_OPTIONS = {
+  'png': 'PNG image',
+  'jpeg': 'JPEG image',
+  'svg': 'SVG image'
+};
 
 /**
  * The main application entry point
@@ -72,26 +76,6 @@ function App(options) {
     },
     minimap: {
       open: false
-    }
-  };
-
-  var EXPORT_BUTTONS = {
-    png: {
-      id: 'png',
-      action: this.compose('triggerAction', 'export-tab', { type: 'png' }),
-      label: 'Export as PNG',
-      icon: 'icon-picture',
-      primary: true
-    },
-    jpeg: {
-      id: 'jpeg',
-      action: this.compose('triggerAction', 'export-tab', { type: 'jpeg' }),
-      label: 'Export as JPEG'
-    },
-    svg: {
-      id: 'svg',
-      action: this.compose('triggerAction', 'export-tab', { type: 'svg' }),
-      label: 'Export as SVG'
     }
   };
 
@@ -167,13 +151,13 @@ function App(options) {
           disabled: true
         }),
         Separator(),
-        MultiButton({
+        Button({
           id: 'export-as',
           group: 'modeler',
-          disabled: true,
-          choices: map(EXPORT_BUTTONS, function(btn) {
-            return btn;
-          })
+          label: 'Export as Image',
+          icon: 'icon-picture',
+          action: this.compose('triggerAction', 'export-tab'),
+          disabled: true
         })
       ]
     },
@@ -364,16 +348,12 @@ function App(options) {
       id: 'export-as'
     }));
 
-    button.choices = (newState['exportAs'] || []).map((type) => {
-      return EXPORT_BUTTONS[type];
-    });
+    button.choices = (newState['exportAs'] || []);
 
     if (button.choices.length) {
       button.disabled = false;
-      button.choices[0] = assign({}, button.choices[0], { icon: 'icon-picture', primary: true });
     } else {
       button.disabled = true;
-      button.choices[0] = { icon: 'icon-picture', primary: true, label: 'Export as Image' };
     }
 
     // save and saveAs buttons
@@ -762,7 +742,18 @@ App.prototype.triggerAction = function(action, firstArg, secondArg) {
   }
 
   if (action === 'export-tab' && activeTab.exportAs) {
-    return this.exportTab(activeTab, options.type);
+
+    let exportButton = find(this.menuEntries.modeler.buttons, matchPattern({
+      id: 'export-as'
+    }));
+
+    let choices = exportButton.choices;
+
+    if (!choices.length) {
+      return;
+    }
+
+    return this.exportTab(activeTab, choices);
   }
 
   if (action === 'open-deployment-overlay') {
@@ -934,10 +925,10 @@ App.prototype.saveAllTabs = function() {
  * Export the given tab with an image type.
  *
  * @param {Tab} tab
- * @param {String} [type]
+ * @param {Array<String>} choices
  * @param {Function} [done]
  */
-App.prototype.exportTab = function(tab, type, done) {
+App.prototype.exportTab = function(tab, choices, done) {
   if (!tab) {
     throw new Error('need tab to save');
   }
@@ -956,13 +947,38 @@ App.prototype.exportTab = function(tab, type, done) {
     }
   };
 
-  tab.exportAs(type, (err, file) => {
-    if (err) {
-      return done(err);
+  var exportOptions = choices.map((c) => {
+    return {
+      name: EXPORT_OPTIONS[c],
+      extensions: [ c ]
+    };
+  });
+
+
+  var dialog = this.dialog,
+      fileSystem = this.fileSystem;
+
+  dialog.exportAs(tab.file, exportOptions, (err, suggestedFile) => {
+
+    if (err || !suggestedFile) {
+      return done(err || userCanceled());
     }
 
-    this.saveFile(file, true, done);
+    var type = suggestedFile.fileType;
+
+    if (!EXPORT_OPTIONS[type]) {
+      return done(new Error('cannot export to <' + type + '>'));
+    }
+
+    tab.exportAs(type, (err, file) => {
+      if (err) {
+        return done(err);
+      }
+
+      fileSystem.writeFile(assign({}, file, { path: suggestedFile.path }), done);
+    });
   });
+
 };
 
 

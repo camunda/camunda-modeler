@@ -19,6 +19,7 @@ function Dialog(events) {
   this.openResponse = null;
   this.closeResponse = null;
   this.saveAsResponse = null;
+  this.exportAsResponse = null;
   this.savingDeniedResponse = null;
   this.namespaceResponse = null;
   this.reimportWarningResponse = null;
@@ -63,6 +64,27 @@ function Dialog(events) {
       var response = null;
       if (this.saveAsResponse) {
         response = assign({}, file, this.saveAsResponse);
+      }
+      done(null, response);
+    }
+  };
+
+  /**
+   * Ask for how to export the given file and callback with (err, file).
+   *
+   * @param {File} file
+   * @param {Array<String>} exportOptions
+   * @param {Function} done
+   */
+  this.exportAs = function(file, exportOptions, done) {
+    if (this.exportAsResponse instanceof Error) {
+      done(this.exportAsResponse);
+    } else {
+      // make sure we return with a proper
+      // file.path (as we expect from an actual implementation)
+      var response = null;
+      if (this.exportAsResponse) {
+        response = assign({}, file, this.exportAsResponse);
       }
       done(null, response);
     }

@@ -67,6 +67,34 @@ FileSystem.prototype.getFilePath = function(diagramFile) {
   return diagramFile.path !== '' ? diagramFile.path : null;
 };
 
+FileSystem.prototype.exportAs = function(diagramFile, filters, callback) {
+  var dialog = this.dialog;
+
+  var dialogOptions = {
+    filePath: this.getFilePath(diagramFile),
+    name: diagramFile.name.replace(/\.[^.]+$/, ''),
+    filters
+  };
+
+  dialog.showDialog('exportAs', dialogOptions, function(err, filePath) {
+
+    var savedFile;
+
+    if (filePath) {
+
+      let fileType = path.extname(filePath).replace(/^\./, '');
+
+      // everything ok up to here -> we got a file
+      savedFile = createFileDescriptor(diagramFile, {
+        path: filePath,
+        fileType
+      });
+    }
+
+    callback(null, savedFile);
+  });
+};
+
 FileSystem.prototype.saveAs = function(diagramFile, callback) {
   var dialog = this.dialog;
 

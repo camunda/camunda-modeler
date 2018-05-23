@@ -157,36 +157,17 @@ MenuBuilder.prototype.appendSaveAllFiles = function() {
   return this;
 };
 
-MenuBuilder.prototype.appendExportAs = function(submenu) {
+MenuBuilder.prototype.appendExportAs = function() {
   var exportState = this.opts.state.exportAs;
 
-  function canExport(type) {
-    return (exportState || []).indexOf(type) !== -1;
-  }
+  var enabled = exportState && exportState.length > 0;
 
   this.menu.append(new MenuItem({
-    label: 'Export As..',
-    submenu: submenu || Menu.buildFromTemplate([{
-      label: 'PNG Image',
-      enabled: canExport('png'),
-      click: function() {
-        app.emit('menu:action', 'export-tab', { type: 'png' });
-      }
-    },
-    {
-      label: 'JPEG Image',
-      enabled: canExport('jpeg'),
-      click: function() {
-        app.emit('menu:action', 'export-tab', { type: 'jpeg' });
-      }
-    },
-    {
-      label: 'SVG Image',
-      enabled: canExport('svg'),
-      click: function() {
-        app.emit('menu:action', 'export-tab', { type: 'svg' });
-      }
-    }])
+    label: 'Export As Image',
+    enabled: enabled,
+    click: function() {
+      app.emit('menu:action', 'export-tab', exportState || []);
+    }
   }));
 
   this.appendSeparator();

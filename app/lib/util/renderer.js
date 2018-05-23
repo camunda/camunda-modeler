@@ -6,11 +6,11 @@ var electron = require('electron'),
 
 
 function on(event, callback, that) {
-  ipcMain.on(event, function(evt, id) {
-    var args = Array.prototype.slice.call(arguments).slice(2);
 
-    function done() {
-      var args = Array.prototype.slice.call(arguments).map(function(e) {
+  ipcMain.on(event, function(evt, id, args) {
+
+    function done(...doneArgs) {
+      var actualArgs = doneArgs.map(function(e) {
         if (e instanceof Error) {
           return { message: e.message };
         }
@@ -20,10 +20,10 @@ function on(event, callback, that) {
 
       var responseEvent = event + ':response:' + id;
 
-      evt.sender.send(responseEvent, args);
+      evt.sender.send(responseEvent, actualArgs);
     }
 
-    callback.apply(that || null, args.concat(done));
+    callback.apply(that || null, [ ...args, done ]);
   });
 }
 

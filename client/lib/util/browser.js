@@ -8,22 +8,20 @@ var ids = new Ids();
 
 /**
  * Communicate with the Browser process.
- * Make sure that the callback is always called, even when there's an error.
+ *
+ * Make sure that the callback is always called,
+ * even when there's an error.
  *
  * @param {Event} event
- * @param {Object|Array<Object>} args
+ * @param {...Object} args
  * @param {Function} callback
  */
-function send(event, args, callback) {
-  var _args = args;
+function send(event, ...args) {
 
-  if (typeof arguments[arguments.length - 1] !== 'function') {
-    _args = Array.prototype.slice.call(arguments).slice(1);
-  }
+  var callback = args[args.length - 1];
 
-  if (typeof args === 'function') {
-    callback = args;
-    _args = [];
+  if (typeof callback === 'function') {
+    args = args.slice(0, -1);
   }
 
   var id = ids.next();
@@ -38,7 +36,7 @@ function send(event, args, callback) {
     });
   }
 
-  ipcRenderer.send.apply(null, [ event, id ].concat(_args));
+  ipcRenderer.send(event, id, args);
 }
 
 module.exports.send = send;
