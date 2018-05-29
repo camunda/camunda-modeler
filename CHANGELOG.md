@@ -11,6 +11,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: speed up BPMN diagram import by only rendering non-empty labels
 * `FEAT`: show loader when opening huge diagrams ([#704](https://github.com/camunda/camunda-modeler/issues/704))
 * `FEAT`: export image using native type chooser ([#171](https://github.com/camunda/camunda-modeler/issues/171))
+* `CHORE`: improve text rendering in BPMN diagrams
 * `FIX`: correct BPMN editor align button tooltip ([#590](https://github.com/camunda/camunda-modeler/issues/590))
 * `FIX`: make `cycle` option for BPMN intermediate timer events available again ([#792](https://github.com/camunda/camunda-modeler/issues/792))
 * `FIX`: correct edit menu on direct editing activation ([#708](https://github.com/camunda/camunda-modeler/issues/708))
