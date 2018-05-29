@@ -12,9 +12,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correct BPMN editor align button tooltip ([#590](https://github.com/camunda/camunda-modeler/issues/590))
 * `FIX`: make `cycle` option for BPMN intermediate timer events available again ([#792](https://github.com/camunda/camunda-modeler/issues/792))
 * `FIX`: correct edit menu on direct editing activation ([#708](https://github.com/camunda/camunda-modeler/issues/708))
+* `FIX`: prevent BPMN element deletion when pressing `DEL` in BPMN properties panel ([#680](https://github.com/camunda/camunda-modeler/issues/680))
 * `CHORE`: update to `Electron@2`
 * `CHORE`: update to `bpmn-js@2.1.0`
-* `CHORE`: update to `bpmn-js-properties-panel@0.25.0`
+* `CHORE`: update to `bpmn-js-properties-panel@0.25.1`
 
 ## 1.14.0
 
