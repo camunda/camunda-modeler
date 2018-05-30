@@ -19,7 +19,8 @@ var FILE_PROPERTIES = ['path', 'name', 'contents', 'lastModified', 'fileType'];
 /**
  * Interface for handling files.
  *
- * @param  {Object} browserWindow   Main browser window
+ * @param {Object} options
+ * @param {Dialog} options.dialog
  */
 function FileSystem(options) {
   ensureOptions([ 'dialog' ], options);

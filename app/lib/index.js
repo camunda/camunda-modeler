@@ -229,6 +229,7 @@ renderer.on('client-config:get', function(...args) {
 });
 
 renderer.on('file:save-as', function(diagramFile, done) {
+
   saveCallback(fileSystem.saveAs, diagramFile, done);
 });
 
@@ -360,9 +361,12 @@ app.createEditorWindow = function() {
     title: 'Camunda Modeler'
   });
 
+  dialog.setActiveWindow(mainWindow);
+
   mainWindow.maximize();
 
   mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../public/index.html'));
+
 
   // handling case when user clicks on window close button
   mainWindow.on('close', function(e) {
@@ -371,6 +375,8 @@ app.createEditorWindow = function() {
     if (app.quitAllowed) {
       // dereferencing main window and resetting client state
       app.mainWindow = null;
+      dialog.setActiveWindow(null);
+
       app.clientReady = false;
 
       return console.log('Main window closed');

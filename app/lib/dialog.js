@@ -247,6 +247,7 @@ Dialog.prototype.showDialog = function(type, opts, done) {
   }
 
   var dialog = this.dialog,
+      browserWindow = this.browserWindow,
       dialogOptions = this.getDialogOptions(type, opts),
       buttons = dialogOptions.buttons;
 
@@ -282,19 +283,26 @@ Dialog.prototype.showDialog = function(type, opts, done) {
   }
 
   if (type === 'open') {
-    dialog.showOpenDialog(dialogOptions, dialogCallback);
+    dialog.showOpenDialog(browserWindow, dialogOptions, dialogCallback);
 
   } else
   if (type === 'save' || type === 'exportAs') {
-    dialog.showSaveDialog(dialogOptions, dialogCallback);
+    dialog.showSaveDialog(browserWindow, dialogOptions, dialogCallback);
 
   } else {
-    dialog.showMessageBox(dialogOptions, dialogCallback);
+    dialog.showMessageBox(browserWindow, dialogOptions, dialogCallback);
   }
 };
 
 Dialog.prototype.showGeneralErrorDialog = function() {
   var dialog = this.dialog;
 
-  dialog.showErrorBox('Error', 'There was an internal error.' + '\n' + 'Please try again.');
+  dialog.showErrorBox(
+    'Error',
+    'There was an internal error.' + '\n' + 'Please try again.'
+  );
+};
+
+Dialog.prototype.setActiveWindow = function(browserWindow) {
+  this.browserWindow = browserWindow;
 };
