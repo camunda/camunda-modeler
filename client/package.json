@@ -19,7 +19,7 @@
     "cmmn-js-properties-panel": "^0.5.0",
     "codemirror": "^5.37.0",
     "debug": "^3.1.0",
-    "diagram-js": "^2.1.1",
+    "diagram-js": "^2.2.0",
     "diagram-js-minimap": "^0.5.5",
     "diagram-js-origin": "^1.1.1",
     "dmn-js": "^4.4.0",
