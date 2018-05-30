@@ -12,7 +12,7 @@ var USER_PATH = '/users/bpmn.io/',
 
 
 function getDialogArgs(method) {
-  return method.args[0][0];
+  return method.args[0][1];
 }
 
 describe('Dialog', function() {
