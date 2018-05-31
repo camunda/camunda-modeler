@@ -3,7 +3,7 @@
 /**
  * Create deploy API factory fn.
  */
-function createDeployer({ got, fs, FormData }) {
+function createDeployer({ fetch, fs, FormData }) {
 
   /**
    * Deploy diagram to the given endpoint URL.
@@ -47,13 +47,12 @@ function createDeployer({ got, fs, FormData }) {
 
     form.append(file.name, fs.createReadStream(file.path));
 
-    got.post(url, {
-      body: form
-    }).then(function(response) {
-      cb(null, response.body);
-    }).catch(function(error) {
-      cb(error);
-    });
+    fetch(url, { method: 'POST', body: form })
+      .then(res => res.json())
+      .then(json => cb(null, json))
+      .catch(function(error) {
+        cb(error);
+      });
   };
 }
 

@@ -10,7 +10,7 @@ var {
   forEach
 } = require('min-dash');
 
-var got = require('got'),
+var fetch = require('node-fetch'),
     fs = require('fs'),
     FormData = require('form-data');
 
@@ -31,7 +31,7 @@ var Platform = require('./platform'),
     Menu = require('./menu'),
     Cli = require('./cli'),
     Plugins = require('./plugins'),
-    deploy = require('./createDeployer')({ got, fs, FormData });
+    deploy = require('./createDeployer')({ fetch, fs, FormData });
 
 var browserOpen = require('./util/browser-open'),
     renderer = require('./util/renderer');

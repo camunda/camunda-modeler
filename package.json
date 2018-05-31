@@ -31,9 +31,9 @@
   "dependencies": {
     "form-data": "^2.3.1",
     "glob": "^7.0.3",
-    "got": "^8.3.1",
     "inherits": "^2.0.1",
     "min-dash": "^3.1.0",
+    "node-fetch": "^2.1.2",
     "parents": "^1.0.1"
   },
   "devDependencies": {

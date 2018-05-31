@@ -1,3 +1,6 @@
 {
-  "extends": "plugin:bpmn-io/mocha"
+  "extends": "plugin:bpmn-io/mocha",
+  "env": {
+    "es6": true
+  }
 }
