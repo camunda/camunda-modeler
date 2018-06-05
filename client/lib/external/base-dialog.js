@@ -192,7 +192,7 @@ function Dialog(events) {
    * @param {Function} done
    */
   this.importError = function(filename, errorDetails, done) {
-    this._open('dialog:import-error', [ filename, errorDetails ], done);
+    this._open('dialog:import-error', filename, errorDetails, done);
   };
 
   /**
@@ -202,7 +202,7 @@ function Dialog(events) {
    * @param {Function} done
    */
   this.contentChanged = function(done) {
-    this._open('dialog:content-changed', function functionName(err, answer) {
+    this._open('dialog:content-changed', function(err, answer) {
       done(answer);
     });
   };
