@@ -86,6 +86,16 @@ module.exports = function(grunt) {
             expand: true
           }
         ]
+      },
+      diagram_js_minimap: {
+        files: [
+          {
+            cwd: 'node_modules/diagram-js-minimap',
+            src: [ 'assets/**/*' ],
+            dest: '../public/vendor/diagram-js-minimap/',
+            expand: true
+          }
+        ]
       }
     },
 
