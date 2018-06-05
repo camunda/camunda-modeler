@@ -9,7 +9,7 @@ jobs:
     - stage: test
       node_js: node
       language: node_js
-      script: "npm run all"
+      script: "npm run all -- --x64"
     - stage: "distro [windows+linux]"
       os: linux
       services: docker
