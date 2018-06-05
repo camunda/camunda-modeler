@@ -94,6 +94,11 @@ Based on the [test diagram](./test.bpmn.png):
     * [ ] `.dmn`
 
 
+#### Error Handling
+
+* [ ] Open [`broken.bpmn`](./broken.bpmn) and verify a proper error message is shown (_No diagram to display_)
+
+
 #### Other (platform specific)
 
 * [ ] key bindings work (Mac = CMD, CMD+SHIFT+Z, Other = CTRL)
