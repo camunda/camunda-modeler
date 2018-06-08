@@ -20,7 +20,7 @@
     "codemirror": "^5.37.0",
     "debug": "^3.1.0",
     "diagram-js": "^2.2.0",
-    "diagram-js-minimap": "^1.0.0",
+    "diagram-js-minimap": "^1.1.0",
     "diagram-js-origin": "^1.1.1",
     "dmn-js": "^4.4.0",
     "domify": "^1.4.0",
