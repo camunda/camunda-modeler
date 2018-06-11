@@ -25,7 +25,7 @@
     "dmn-js": "^4.4.0",
     "domify": "^1.4.0",
     "domready": "^1.0.8",
-    "drag-tabs": "^0.1.0",
+    "drag-tabs": "^0.2.2",
     "events": "^2.0.0",
     "format": "^0.2.1",
     "ids": "^0.2.2",
@@ -34,7 +34,7 @@
     "min-dom": "^3.1.0",
     "next-tick": "^1.0.0",
     "raf": "^3.1.0",
-    "scroll-tabs": "^0.2.0",
+    "scroll-tabs": "^0.3.2",
     "virtual-dom": "^2.1.1",
     "virtual-hook": "^1.0.1",
     "vtree-select": "^2.0.0"
