@@ -1,7 +1,5 @@
 'use strict';
 
-var domReady = require('domready');
-
 var debug = require('debug')('app-client');
 
 // provide vdom utility
@@ -38,7 +36,7 @@ window.getPluginsDirectory = function() {
   return pluginsDirectory;
 };
 
-domReady(function() {
+function bootstrap() {
   var events = new Events();
 
   var app = new App({
@@ -92,6 +90,10 @@ domReady(function() {
   mainLoop(app, document.body);
 
   app.run();
-});
+}
 
+// enable un-filtered logging
 require('debug').enable('*');
+
+// bootstap application
+bootstrap();
