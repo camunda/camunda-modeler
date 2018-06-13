@@ -2252,14 +2252,13 @@ describe('App', function() {
             // empty tab is open
             expect(app.tabs).to.have.length(1);
 
-            // empty tab is selected, too
-            expect(app.tabs[0]).to.eql(app.activeTab);
-
-            // empty tab is selected, too
-            expect(app.activeTab).to.exist;
+            // no tab is active
+            expect(app.activeTab).not.to.exist;
 
             // default enpoint
-            expect(app.endpoints).to.eql(['http://localhost:8080/engine-rest/deployment/create']);
+            expect(app.endpoints).to.eql([
+              'http://localhost:8080/engine-rest/deployment/create'
+            ]);
 
             done();
           });

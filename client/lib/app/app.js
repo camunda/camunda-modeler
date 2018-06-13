@@ -282,7 +282,7 @@ function App(options) {
     })
   ];
 
-  this.activeTab = this.tabs[0];
+  this.activeTab = null;
 
   this.fileHistory = [];
 
@@ -835,9 +835,11 @@ App.prototype.createDiagram = function(type, attrs) {
  * (tabs should be robust and handle opening errors internally).
  *
  * @param {Array<FileDescriptor>} files
+ * @param {Boolean} [select=true] whether to select the last opened tab
+ *
  * @return {Array<Tab>} return the opened tabs
  */
-App.prototype.openTabs = function(files) {
+App.prototype.openTabs = function(files, select) {
 
   if (!Array.isArray(files)) {
     throw new Error('expected Array<FileDescriptor> argument');
@@ -854,8 +856,10 @@ App.prototype.openTabs = function(files) {
     return this.findTab(file) || this._createTab(file);
   });
 
-  // select the last opened tab
-  this.selectTab(openedTabs[openedTabs.length - 1]);
+  if (select !== false) {
+    // select the last opened tab
+    this.selectTab(openedTabs[openedTabs.length - 1]);
+  }
 
   return openedTabs;
 };
@@ -1472,11 +1476,17 @@ App.prototype.restoreWorkspace = function(done) {
 
     // restore tabs
     if (workspaceConfig.tabs && workspaceConfig.tabs.length) {
-      this.openTabs(workspaceConfig.tabs);
+      this.openTabs(workspaceConfig.tabs, false);
     }
 
+    var activeTab;
+
     if (workspaceConfig.activeTab && workspaceConfig.activeTab !== -1) {
-      this.activeTab = this.tabs[workspaceConfig.activeTab];
+      activeTab = this.tabs[workspaceConfig.activeTab];
+    }
+
+    if (activeTab) {
+      this.selectTab(activeTab);
     }
 
     this.endpoints = workspaceConfig.endpoints || defaultWorkspace.endpoints;
@@ -1523,11 +1533,15 @@ App.prototype.run = function() {
   // (2) restore workspace
   // (3) indicate ready
 
-  this.selectTab(this.tabs[0]);
-
   this.plugins.load(() => {
 
     this.restoreWorkspace((err) => {
+
+      // ensure a tab is selected
+      if (!this.activeTab) {
+        this.selectTab(this.tabs[0]);
+      }
+
       if (err) {
         debug('workspace restore error', err);
       } else {
