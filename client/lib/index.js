@@ -60,6 +60,8 @@ domReady(function() {
   app.on('ready', function() {
     debug('client is ready');
 
+    document.body.classList.remove('loading');
+
     browser.send('client:ready');
   });
 
