@@ -358,15 +358,13 @@ app.createEditorWindow = function() {
 
   var mainWindow = app.mainWindow = new BrowserWindow({
     resizable: true,
+    show: false,
     title: 'Camunda Modeler'
   });
 
   dialog.setActiveWindow(mainWindow);
 
-  mainWindow.maximize();
-
   mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../public/index.html'));
-
 
   // handling case when user clicks on window close button
   mainWindow.on('close', function(e) {
@@ -395,6 +393,14 @@ app.createEditorWindow = function() {
   mainWindow.on('focus', function() {
     console.log('Window focused');
     renderer.send('client:window-focused');
+  });
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
+
+  mainWindow.webContents.on('dom-ready', function() {
+    mainWindow.maximize();
   });
 
   app.emit('app:window-created', mainWindow);
