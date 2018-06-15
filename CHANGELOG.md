@@ -6,7 +6,15 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 1.16.0
+
+* `FEAT`: show loader on application startup
+* `FEAT`: resize text annotation when editing via properties panel ([#631](https://github.com/camunda/camunda-modeler/issues/631))
+* `FIX`: correct error message on import error ([#821](https://github.com/camunda/camunda-modeler/issues/821))
+* `FIX`: create/update labels when updating element name via properties panel ([#824](https://github.com/camunda/camunda-modeler/issues/824))
 * `FIX`: correct target attribute in signal payload not being removed from BPMN 2.0 XML ([#818](https://github.com/camunda/camunda-modeler/issues/818))
+* `CHORE`: update to `bpmn-js@2.2.0`
+* `CHORE`: update to `diagram-js-minimap@1`
 
 ## 1.15.1
 
