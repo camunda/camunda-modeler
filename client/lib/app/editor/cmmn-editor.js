@@ -151,12 +151,6 @@ CmmnEditor.prototype.triggerEditorActions = function(action, options) {
     }, options);
   }
 
-  // ignore all editor actions (besides the following three)
-  // if there's a current active input or textarea
-  if ([ 'removeSelection', 'stepZoom', 'zoom' ].indexOf(action) === -1 && isInputActive()) {
-    return;
-  }
-
   debug('editor-actions', action, opts);
 
   // forward other actions to editor actions
@@ -213,7 +207,7 @@ CmmnEditor.prototype.updateState = function() {
     stateContext = assign(stateContext, {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
-      elementsSelected: elementsSelected && !inputActive,
+      elementsSelected: elementsSelected,
       dirty: dirty,
       zoom: true,
       editable: true,
