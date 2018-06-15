@@ -355,7 +355,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Edit Label',
     accelerator: 'E',
-    enabled: this.opts.state.elementsSelected,
+    enabled: this.opts.state.elementsSelected && this.opts.state.inactiveInput,
     click: function() {
       app.emit('menu:action', 'directEditing');
     }
@@ -365,7 +365,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
 
   this.menu.append(new MenuItem({
     label: 'Align Elements',
-    enabled: this.opts.state.elementsSelected,
+    enabled: this.opts.state.elementsSelected && this.opts.inactiveInput,
     submenu: Menu.buildFromTemplate([
       {
         label: 'Align Left',
@@ -415,7 +415,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
 
   this.menu.append(new MenuItem({
     label: 'Distribute Elements',
-    enabled: this.opts.state.elementsSelected,
+    enabled: this.opts.state.elementsSelected && this.opts.inactiveInput,
     submenu: Menu.buildFromTemplate([
       {
         label: 'Distribute Horizontally',
@@ -439,6 +439,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Find',
     accelerator: 'CommandOrControl + F',
+    enabled: this.opts.state.inactiveInput,
     click: function() {
       app.emit('menu:action', 'find');
     }
@@ -449,6 +450,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Move Elements to Origin',
     accelerator: 'CommandOrControl+Shift+0',
+    enabled: this.opts.state.inactiveInput,
     click: function() {
       app.emit('menu:action', 'moveToOrigin');
     }
@@ -456,6 +458,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
 
   this.menu.append(new MenuItem({
     label: 'Move Canvas',
+    enabled: this.opts.state.inactiveInput,
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
       accelerator: 'Up',
@@ -539,7 +542,7 @@ MenuBuilder.prototype.appendCmmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Edit Label',
     accelerator: 'E',
-    enabled: this.opts.state.elementsSelected,
+    enabled: this.opts.state.elementsSelected && this.opts.state.inactiveInput,
     click: function() {
       app.emit('menu:action', 'directEditing');
     }
@@ -550,6 +553,7 @@ MenuBuilder.prototype.appendCmmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Find',
     accelerator: 'CommandOrControl + F',
+    enabled: this.opts.state.inactiveInput,
     click: function() {
       app.emit('menu:action', 'find');
     }
@@ -559,6 +563,7 @@ MenuBuilder.prototype.appendCmmnActions = function() {
 
   this.menu.append(new MenuItem({
     label: 'Move Canvas',
+    enabled: this.opts.state.inactiveInput,
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
       accelerator: 'Up',
@@ -650,7 +655,7 @@ MenuBuilder.prototype.appendDmnActions = function() {
     this.menu.append(new MenuItem({
       label: 'Edit Label',
       accelerator: 'E',
-      enabled: this.opts.state.elementsSelected,
+      enabled: this.opts.state.elementsSelected && this.opts.state.inactiveInput,
       click: function() {
         app.emit('menu:action', 'directEditing');
       }

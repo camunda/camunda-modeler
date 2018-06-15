@@ -137,8 +137,6 @@ DmnEditor.prototype.updateState = function(options = {}) {
 
       stateContext.elementsSelected = !!selection.get().length;
 
-      // TODO(philippfromme): fix, this always returns false
-      // when wrapping this with setTimeout it works as expected
       var inputActive = isInputActive();
 
       stateContext.inactiveInput = !inputActive;
