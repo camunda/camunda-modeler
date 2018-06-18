@@ -353,7 +353,9 @@ BpmnEditor.prototype.getModeler = function() {
     this.modeler.on([
       'commandStack.changed',
       'selection.changed',
-      'elements.copied'
+      'elements.copied',
+      'directEditing.activate',
+      'directEditing.deactivate'
     ], this.updateState, this);
 
     // add importing flag (high priority)
