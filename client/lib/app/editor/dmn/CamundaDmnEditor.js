@@ -16,6 +16,10 @@ export default class CamundaDmnEditor extends DmnJS {
         this._emit('view.selectionChanged', event);
       });
 
+      viewer.on([ 'directEditing.activate', 'directEditing.deactivate' ], event => {
+        this._emit('view.directEditingChanged', event);
+      });
+
       viewer.on('error', ({ error }) => {
         this._emit('error', {
           viewer,

@@ -277,7 +277,9 @@ CmmnEditor.prototype.getModeler = function() {
     // hook up with modeler change events
     this.modeler.on([
       'commandStack.changed',
-      'selection.changed'
+      'selection.changed',
+      'directEditing.activate',
+      'directEditing.deactivate'
     ], this.updateState, this);
 
     // add importing flag (high priority)
