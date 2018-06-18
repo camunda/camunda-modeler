@@ -6,6 +6,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 1.16.1
+
+* `FIX`: correct bpmn-js version used in lock file
+* `CHORE`: update to `bpmn-js@2.2.1`
+
 ## 1.16.0
 
 * `FEAT`: show loader on application startup
