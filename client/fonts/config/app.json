@@ -237,6 +237,12 @@
       "css": "deploy",
       "code": 59397,
       "src": "fontawesome"
+    },
+    {
+      "uid": "3c24ee33c9487bbf18796ca6dffa1905",
+      "css": "minimize",
+      "code": 59401,
+      "src": "fontawesome"
     }
   ]
 }
