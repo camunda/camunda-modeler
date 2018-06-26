@@ -22,7 +22,7 @@
     "diagram-js": "^2.2.0",
     "diagram-js-minimap": "^1.1.1",
     "diagram-js-origin": "^1.1.1",
-    "dmn-js": "^4.4.0",
+    "dmn-js": "^5.0.0",
     "domify": "^1.4.0",
     "drag-tabs": "^0.2.2",
     "events": "^2.0.0",
@@ -40,9 +40,6 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
-    "babel-plugin-inferno": "^5.0.1",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-object-assign": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.2.0",
     "babel-preset-env": "^1.6.0",
