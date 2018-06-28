@@ -6,6 +6,13 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 1.16.2
+
+* `FIX`: correctly update editor actions on direct editing ([#790](https://github.com/camunda/camunda-modeler/issues/790), [#834](https://github.com/camunda/camunda-modeler/issues/834))
+* `FIX`: use `Arial` as default font when exporting SVG ([#840](https://github.com/camunda/camunda-modeler/issues/840))
+* `CHORE`: update to `dmn-js@5.1.0`
+* `CHORE`: update to `bpmn-js@2.3.1`
+
 ## 1.16.1
 
 * `FIX`: correct bpmn-js version used in lock file
