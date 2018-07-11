@@ -50,8 +50,9 @@ const artifactOptions = [
   '-c.artifactName=${name}-${version}-${os}-${arch}.${ext}',
   '-c.dmg.artifactName=${name}-${version}-${os}.${ext}',
   '-c.nsis.artifactName=${name}-${version}-${os}-setup.${ext}',
-  '-c.nsisWeb.artifactName=${name}-${version}-${os}-web-setup.${ext}'
-].map(replaceVersion);
+  '-c.nsisWeb.artifactName=${name}-${version}-${os}-web-setup.${ext}',
+  argv.compress === false && '-c.compression=store'
+].filter(f => f).map(replaceVersion);
 
 // interpret shorthand target options
 // --win, --linux, --mac
