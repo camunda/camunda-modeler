@@ -79,7 +79,7 @@
   }
 
   .djs-minimap {
-    
+
     .toggle:hover {
       color: rgb(255, 116, 0);
     }
@@ -92,15 +92,23 @@
 
     &.open {
       .toggle {
-        padding: 2px 6px 0px 0;
+        padding: 3px 5px;
+        margin-right: 4px;
+
+        line-height: 24px;
         text-align: right;
+
+        opacity: 0.5;
       }
 
       .toggle:before {
-        content: '\e809';
+        content: '\e80a';
         font-family: 'app';
-        font-size: 18px;
-        line-height: 24px;
+        font-size: 14px;
+      }
+
+      .toggle:hover {
+        opacity: 1;
       }
     }
 
