@@ -1703,6 +1703,10 @@ var rdebug = require('debug')('app - external change');
  */
 App.prototype.recheckTabContent = function(tab) {
 
+  if (tab.empty) {
+    return rdebug('skipping (empty tab)');
+  }
+
   if (isUnsaved(tab.file)) {
     return rdebug('skipping (unsaved)');
   }
