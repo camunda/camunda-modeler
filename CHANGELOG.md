@@ -6,6 +6,13 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: improve minimap, round two
+* `FEAT`: support boundary event to activity loops ([#776](https://github.com/camunda/camunda-modeler/issues/776))
+* `FEAT`: support activity to activity loops
+* `CHORE`: update to `diagram-js-minimap@1.2.2`
+* `CHORE`: update to `cmmn-js@0.15.0`
+* `FIX`: correct minimap collapse icon
+
 ## 1.16.2
 
 * `FIX`: correctly update editor actions on direct editing ([#790](https://github.com/camunda/camunda-modeler/issues/790), [#834](https://github.com/camunda/camunda-modeler/issues/834))
