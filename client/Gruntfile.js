@@ -1,5 +1,16 @@
 'use strict';
 
+const {
+  dirname
+} = require('path');
+
+function resolvePath(path) {
+
+  const match = /^([^/]*)(.*)$/.exec(path);
+
+  return dirname(require.resolve(match[1] + '/package.json')) + match[2];
+}
+
 module.exports = function(grunt) {
 
   require('load-grunt-tasks')(grunt);
@@ -50,7 +61,7 @@ module.exports = function(grunt) {
       cmmn_js: {
         files: [
           {
-            cwd: 'node_modules/cmmn-js/dist/',
+            cwd: resolvePath('cmmn-js/dist/'),
             src: [ '**/*', '!**/*.js' ],
             dest: '../app/public/vendor/cmmn-js/',
             expand: true
@@ -60,7 +71,7 @@ module.exports = function(grunt) {
       dmn_js: {
         files: [
           {
-            cwd: 'node_modules/dmn-js/dist/',
+            cwd: resolvePath('dmn-js/dist/'),
             src: [ '**/*', '!**/*.js' ],
             dest: '../app/public/vendor/dmn-js/',
             expand: true
@@ -70,7 +81,7 @@ module.exports = function(grunt) {
       bpmn_js: {
         files: [
           {
-            cwd: 'node_modules/bpmn-js/dist/',
+            cwd: resolvePath('bpmn-js/dist/'),
             src: [ '**/*', '!**/*.js' ],
             dest: '../app/public/vendor/bpmn-js/',
             expand: true
@@ -80,7 +91,7 @@ module.exports = function(grunt) {
       diagram_js: {
         files: [
           {
-            cwd: 'node_modules/diagram-js/',
+            cwd: resolvePath('diagram-js/'),
             src: [ '!**/*.js', 'assets/**/*' ],
             dest: '../app/public/vendor/diagram-js/',
             expand: true
@@ -90,9 +101,9 @@ module.exports = function(grunt) {
       diagram_js_minimap: {
         files: [
           {
-            cwd: 'node_modules/diagram-js-minimap',
+            cwd: resolvePath('diagram-js-minimap'),
             src: [ 'assets/**/*' ],
-            dest: '../public/vendor/diagram-js-minimap/',
+            dest: '../app/public/vendor/diagram-js-minimap/',
             expand: true
           }
         ]
@@ -118,8 +129,8 @@ module.exports = function(grunt) {
       less: {
         files: [
           '{lib,styles}/**/*.less',
-          'node_modules/diagram-js/assets/**.css',
-          'node_modules/bpmn-js-properties-panel/styles/**/*.less'
+          resolvePath('diagram-js/assets/**.css'),
+          resolvePath('bpmn-js-properties-panel/styles/**/*.less')
         ],
         tasks: [ 'less' ]
       },
