@@ -5,7 +5,7 @@
   "private": true,
   "main": "lib/index.js",
   "author": {
-    "name": "camunda Services GmbH",
+    "name": "Camunda Services GmbH",
     "email": "info@camunda.com",
     "url": "https://camunda.com"
   },
