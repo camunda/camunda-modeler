@@ -33,17 +33,6 @@ npm run all
 ```
 
 
-### Build a Snapshot (the master branch)
-
-Building the master branch may fail due to snapshot dependencies being missing.
-If that is the case, link them into the modeler project using the [wiredeps](https://github.com/nikku/wiredeps) utility:
-
-```
-npm install -g wiredeps
-
-wiredeps
-```
-
 ### Development Setup
 
 Spin up the application for development, all strings attached:
