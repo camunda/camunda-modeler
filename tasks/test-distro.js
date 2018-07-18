@@ -48,7 +48,8 @@ const expectedFiles = {
       name: 'camunda-modeler-${version}-win-${arch}.zip',
       archs,
       contents: [
-        'Camunda Modeler.exe'
+        'Camunda Modeler.exe',
+        'support/register_fileassoc.bat'
       ]
     },
     'camunda-modeler-${version}-win-setup.exe'
@@ -58,7 +59,8 @@ const expectedFiles = {
       name: 'camunda-modeler-${version}-linux-${arch}.tar.gz',
       archs,
       contents: [
-        'camunda-modeler-${version}-linux-${arch}/camunda-modeler'
+        'camunda-modeler-${version}-linux-${arch}/camunda-modeler',
+        'camunda-modeler-${version}-linux-${arch}/support/xdg_register.sh'
       ]
     }
   ],
