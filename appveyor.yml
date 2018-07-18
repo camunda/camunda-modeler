@@ -8,6 +8,6 @@ install:
 test_script:
   - node --version
   - npm --version
-  - npm run all
+  - npm run all -- --x64 --no-compress
 
 build: off
