@@ -53,7 +53,7 @@ xdg-icon-resource install --size  16 "$CAMUNDA_MODELER_BIN/support/icon_16.png" 
 xdg-icon-resource install --size  48 "$CAMUNDA_MODELER_BIN/support/icon_48.png"  $ICON_NAME
 xdg-icon-resource install --size 128 "$CAMUNDA_MODELER_BIN/support/icon_128.png"  $ICON_NAME
 echo "Registering mime types..."
-xdg-mime install "$CAMUNDA_MODELER_BIN/support/camunda-modeler-mime-types.xml"
+xdg-mime install "$CAMUNDA_MODELER_BIN/support/mime-types.xml"
 
 rm $DESKTOP_FILE
 rm -R $TMP_DIR
