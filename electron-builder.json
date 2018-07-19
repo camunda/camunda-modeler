@@ -1,9 +1,6 @@
 {
   "appId": "com.camunda.CamundaModeler",
   "productName": "Camunda Modeler",
-  "directories": {
-    "output": "distro"
-  },
   "files": [
     {
       "filter": [

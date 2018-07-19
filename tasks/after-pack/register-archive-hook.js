@@ -46,9 +46,9 @@ module.exports = function registerArchiveHook(context) {
       );
 
       const unpackedPath =
-        `distro/${ platformName }-${ arch === 0 ? 'ia32-' : ''}unpacked`;
+        `dist/${ platformName }-${ arch === 0 ? 'ia32-' : ''}unpacked`;
 
-      const archivePath = `distro/${artifactName}`;
+      const archivePath = `dist/${artifactName}`;
 
       // Linux + Mac distro
       if (targetName === 'tar.gz') {

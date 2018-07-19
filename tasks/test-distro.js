@@ -139,7 +139,7 @@ async function verifyArchives(platforms, version) {
     return name.replace('${version}', version);
   }
 
-  const distroDir = path.join(__dirname, '../distro');
+  const distroDir = path.join(__dirname, '../dist');
 
   for (const platform of platforms) {
 
