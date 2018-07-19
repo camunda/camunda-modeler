@@ -10,7 +10,8 @@ const pkg = require('../app/package');
 
 const {
   nightly,
-  publish
+  publish,
+  config
 } = argv;
 
 let nightlyVersion = nightly && getVersion(pkg, {
@@ -69,7 +70,7 @@ const publishOptions = typeof publish !== undefined ? [
 ] : [];
 
 const signingOptions = [
-  `-c.forceCodeSigning=${!!publish}`
+  `-c.forceCodeSigning=${false}`
 ];
 
 if (publish && (argv.ia32 || argv.x64)) {
@@ -80,6 +81,7 @@ if (publish && (argv.ia32 || argv.x64)) {
 const archOptions = [ 'x64', 'ia32' ].filter(a => argv[a]).map(a => `--${a}`);
 
 const args = [
+  ...[ config && `-c=${config}` ].filter(f => f),
   ...archOptions,
   ...signingOptions,
   ...platformOptions,
