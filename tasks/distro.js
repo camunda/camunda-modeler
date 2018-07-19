@@ -66,8 +66,10 @@ const platforms = [
 const platformOptions = platforms.map(p => `--${p}`);
 
 const publishOptions = typeof publish !== undefined ? [
-  `--publish=${ publish ? 'always' : 'never' }`
-] : [];
+  `--publish=${ publish ? 'always' : 'never' }`,
+  publish && nightly && '-c.publish.provider=s3',
+  publish && nightly && '-c.publish.bucket=bpmn-io-testbucket'
+].filter(f => f) : [];
 
 const signingOptions = [
   `-c.forceCodeSigning=${false}`
