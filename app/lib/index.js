@@ -103,21 +103,24 @@ var fileSystem = new FileSystem({
 // make app a singleton
 if (config.get('single-instance', true)) {
 
-  var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
+  const gotLock = app.requestSingleInstanceLock();
 
-    app.emit('app:parse-cmd', commandLine, workingDirectory);
+  if (gotLock) {
 
-    // focus existing running instance window
-    if (app.mainWindow) {
-      if (app.mainWindow.isMinimized()) {
-        app.mainWindow.restore();
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+
+      app.emit('app:parse-cmd', commandLine, workingDirectory);
+
+      // focus existing running instance window
+      if (app.mainWindow) {
+        if (app.mainWindow.isMinimized()) {
+          app.mainWindow.restore();
+        }
+
+        app.mainWindow.focus();
       }
-
-      app.mainWindow.focus();
-    }
-  });
-
-  if (shouldQuit) {
+    });
+  } else {
     app.quit();
   }
 }
