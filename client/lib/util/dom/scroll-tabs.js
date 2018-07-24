@@ -2,7 +2,7 @@
 
 /* global window */
 
-var scrollTabs = require('scroll-tabs');
+var scrollTabs = require('scroll-tabs').default;
 
 var nextTick = require('next-tick');
 

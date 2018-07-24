@@ -2,7 +2,7 @@
 
 /* global window */
 
-var dragTabs = require('drag-tabs');
+var dragTabs = require('drag-tabs').default;
 
 var nextTick = require('next-tick');
 
