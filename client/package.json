@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "bpmn-js": "^2.4.0",
-    "bpmn-js-properties-panel": "^0.25.2",
+    "bpmn-js-properties-panel": "^0.26.0",
     "bpmn-js-signavio-compat": "^1.0.1",
     "camunda-bpmn-moddle": "^3.0.0",
     "camunda-cmmn-moddle": "^1.0.0",
