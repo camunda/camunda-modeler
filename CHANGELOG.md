@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 2.0.0-0
+
+_This is a pre-release_.
+
 * `FEAT`: improve minimap, round two
 * `FEAT`: support boundary event to activity loops ([#776](https://github.com/camunda/camunda-modeler/issues/776))
 * `FEAT`: support activity to activity loops
