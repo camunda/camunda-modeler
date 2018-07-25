@@ -16,6 +16,7 @@ ___Note:__ Yet to be released changes appear here._
 * `CHORE`: drop in-app Windows file association behavior in favor of external support script ([`a07b693a`](https://github.com/camunda/camunda-modeler/commits/a07b693a9648715af0410cc13f5c58dcbea2f3df))
 * `FIX`: correct minimap collapse icon
 * `FIX`: correct app icons ([#503](https://github.com/camunda/camunda-modeler/issues/503))
+* `FIX`: prevent creation of duplicate flows in BPMN editor
 
 ## 1.16.2
 
