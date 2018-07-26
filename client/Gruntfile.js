@@ -107,6 +107,16 @@ module.exports = function(grunt) {
             expand: true
           }
         ]
+      },
+      dmn_js_properties_panel: {
+        files: [
+          {
+            cwd: resolvePath('dmn-js-properties-panel'),
+            src: [ 'dist/assets/**/*' ],
+            dest: '../app/public/vendor/dmn-js-properties-panel/',
+            expand: true
+          }
+        ]
       }
     },
 
