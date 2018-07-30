@@ -68,7 +68,7 @@ const platformOptions = platforms.map(p => `--${p}`);
 const publishOptions = typeof publish !== undefined ? [
   `--publish=${ publish ? 'always' : 'never' }`,
   publish && nightly && '-c.publish.provider=s3',
-  publish && nightly && '-c.publish.bucket=bpmn-io-testbucket'
+  publish && nightly && '-c.publish.bucket=camunda-modeler-nightly'
 ].filter(f => f) : [];
 
 const signingOptions = [
