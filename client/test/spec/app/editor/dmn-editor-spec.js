@@ -180,62 +180,76 @@ describe('DmnEditor', function() {
     });
 
 
-    it('should open', function(done) {
+    describe('drd', function() {
 
-      // given
-      var editor = createEditorWithLayout({
-        propertiesPanel: {
-          open: false,
-          width: 150
-        }
-      });
+      it('should open via toggle', function(done) {
 
-      var tree = render(editor);
-
-      var element = selectPropertiesToggle(tree);
-
-      editor.once('layout:changed', function(newLayout) {
-
-        // then
-        expect(newLayout).to.eql({
+        // given
+        var editor = createEditorWithLayout({
           propertiesPanel: {
-            open: true,
+            open: false,
             width: 150
           }
         });
 
-        done();
+        // simulate activeEditor=drd
+        editor.getActiveEditorName = function() {
+          return 'drd';
+        };
+
+        var tree = render(editor);
+
+        var element = selectPropertiesToggle(tree);
+
+        editor.once('layout:changed', function(newLayout) {
+
+          // then
+          expect(newLayout).to.eql({
+            propertiesPanel: {
+              open: true,
+              width: 150
+            }
+          });
+
+          done();
+        });
+
+        // when
+        // open toggle
+        simulateEvent(element, 'click');
       });
 
-      // when
-      // open toggle
-      simulateEvent(element, 'click');
-    });
 
+      it('should notify modeler about change', function() {
 
-    it('should notify modeler about change', function() {
+        // given
+        var editor = createEditorWithLayout({
+          propertiesPanel: {
+            open: false,
+            width: 150
+          }
+        });
 
-      // given
-      var editor = createEditorWithLayout({
-        propertiesPanel: {
-          open: false,
-          width: 150
-        }
+        // simulate activeEditor=drd
+        editor.getActiveEditorName = function() {
+          return 'drd';
+        };
+
+        var tree = render(editor);
+
+        var element = selectPropertiesToggle(tree);
+
+        // mock for sake of testing
+        var notifySpy = spy(editor, 'notifyModeler');
+
+        // when
+        // open toggle
+        simulateEvent(element, 'click');
+
+        // then
+        expect(notifySpy).to.have.been.calledWith('propertiesPanel.resized');
       });
 
-      var tree = render(editor);
-
-      var element = selectPropertiesToggle(tree);
-
-      // mock for sake of testing
-      var notifySpy = spy(editor, 'notifyModeler');
-
-      // when
-      // open toggle
-      simulateEvent(element, 'click');
-
-      // then
-      expect(notifySpy).to.have.been.calledWith('propertiesPanel.resized');
     });
 
 

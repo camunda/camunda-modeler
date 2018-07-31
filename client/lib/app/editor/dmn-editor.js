@@ -439,6 +439,8 @@ DmnEditor.prototype.render = function() {
     width: (propertiesLayout.open ? propertiesLayout.width : 0) + 'px'
   };
 
+  var showPropertiesToggle = this.getActiveEditorName() === 'drd' || propertiesLayout.open;
+
   return (
     <div className="dmn-editor" key={ this.id }>
       <Loader hidden={ !!this.lastXML } />
@@ -448,16 +450,20 @@ DmnEditor.prototype.render = function() {
         onRemove={ this.compose('unmountEditor') }>
       </div>
       <div className="properties" style={ propertiesStyle } tabIndex="0">
-        <div
-          className="toggle"
-          ref="properties-toggle"
-          draggable="true"
-          onClick={ this.compose('toggleProperties') }
-          onDragstart={
-            dragger(this.compose('resizeProperties', copy(propertiesLayout)))
-          }>
-          Properties Panel
-        </div>
+        {
+          showPropertiesToggle
+            ? <div
+              className="toggle"
+              ref="properties-toggle"
+              draggable="true"
+              onClick={ this.compose('toggleProperties') }
+              onDragstart={
+                dragger(this.compose('resizeProperties', copy(propertiesLayout)))
+              }>
+              Properties Panel
+            </div>
+            : null
+        }
         <div
           className="resize-handle"
           draggable="true"
