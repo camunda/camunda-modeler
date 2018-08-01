@@ -26,6 +26,7 @@ _This is a pre-release_.
 * `FEAT`: sign executables on Windows and MacOS ([#787](https://github.com/camunda/camunda-modeler/issues/787))
 * `CHORE`: update to `diagram-js-minimap@1.2.2`
 * `CHORE`: update to `cmmn-js@0.15.0`
+* `CHORE`: update to `bpmn-js@2.4.0`
 * `CHORE`: drop in-app Windows file association behavior in favor of external support script ([`a07b693a`](https://github.com/camunda/camunda-modeler/commits/a07b693a9648715af0410cc13f5c58dcbea2f3df))
 * `FIX`: correct minimap collapse icon
 * `FIX`: correct app icons ([#503](https://github.com/camunda/camunda-modeler/issues/503))
