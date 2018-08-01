@@ -25,7 +25,7 @@
     "diagram-js": "^2.5.1",
     "diagram-js-minimap": "^1.2.0",
     "diagram-js-origin": "^1.1.1",
-    "dmn-js": "^5.1.1",
+    "dmn-js": "^5.1.2",
     "dmn-js-properties-panel": "^0.1.1",
     "domify": "^1.4.0",
     "drag-tabs": "^1.0.2",

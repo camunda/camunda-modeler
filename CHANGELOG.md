@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 2.0.0-2
+
+* `FIX`: properly reflect decision id changes in decision table and literal expression editors
+
 ## 2.0.0-1
 
 _This is a pre-release_.
