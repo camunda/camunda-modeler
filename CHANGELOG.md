@@ -6,6 +6,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: add DMN properties panel, avaliable for all DMN editors ([#847](https://github.com/camunda/camunda-modeler/issues/847))
+* `FEAT`: add ability to edit `camunda:historyTimeToLive` on `dmn:Decision` elements
+* `FEAT`: add ability to edit `camunda:versionTag` on `dmn:Decision` elements ([#802](https://github.com/camunda/camunda-modeler/issues/802))
+* `FEAT`: edit `dmn:Definitions` `name` and `id` properties via properties panel
+
 ## 2.0.0-0
 
 _This is a pre-release_.
