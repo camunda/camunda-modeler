@@ -8,6 +8,8 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 2.0.0-2
 
+_This is a pre-release_.
+
 * `FIX`: properly reflect decision id changes in decision table and literal expression editors
 
 ## 2.0.0-1
