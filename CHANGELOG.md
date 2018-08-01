@@ -9,7 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add DMN properties panel, avaliable for all DMN editors ([#847](https://github.com/camunda/camunda-modeler/issues/847))
 * `FEAT`: add ability to edit `camunda:historyTimeToLive` on `dmn:Decision` elements
 * `FEAT`: add ability to edit `camunda:versionTag` on `dmn:Decision` elements ([#802](https://github.com/camunda/camunda-modeler/issues/802))
-* `FEAT`: edit `dmn:Definitions` `name` and `id` properties via properties panel
+* `CHORE`: drop `dmn:Definitions` `name` and `id` editing from DRD editor; you may edit these properties via the DMN properties panel ([`653eb607`](https://github.com/camunda/camunda-modeler/commits/653eb607183c6cf0457b8023a2d61cf8343da7fb))
 
 ## 2.0.0-0
 
