@@ -83,31 +83,31 @@ class TabLinks extends Component {
 
           return (
             <TabLink
-              key={tab.id}
-              className={classes.join(" ")}
-              onClick={() => selectTab(tab) }
+              key={ tab.id }
+              className={ classes.join(" ") }
+              onClick={ () => selectTab(tab) }
             >
               {tab.name}
               <Close
                 className={ 'close'.concat(tab.dirty ? ' dirty' : '') }
-                onClick={e => {
+                onClick={ e => {
                   e.preventDefault();
                   e.stopPropagation();
 
                   closeTab(tab);
-                }}
+                } }
               />
             </TabLink>
           );
         })}
         <TabLink
           key="empty-tab"
-          className={"tab-link".concat(
+          className={ "tab-link".concat(
             tabs.length ? "" : " active"
-          )}
-          onClick={() => {
+          ) }
+          onClick={ () => {
             createTab('bpmn', "bpmn");
-          }}
+          } }
         >
           +
         </TabLink>
