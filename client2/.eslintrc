@@ -1,0 +1,6 @@
+{
+  "extends": "plugin:bpmn-io/jsx",
+  "env": {
+    "browser": true
+  }
+}
