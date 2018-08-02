@@ -96,6 +96,6 @@ export default function WithCachedState(Comp) {
   }
 
   return React.forwardRef((props, ref) => {
-    return <LazyInitiating {...props} forwardedRef={ref} />;
+    return <LazyInitiating { ...props } forwardedRef={ ref } />;
   });
 }

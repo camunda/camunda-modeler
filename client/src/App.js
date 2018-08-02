@@ -321,12 +321,12 @@ class App extends Component {
                 { events => {
                   return (
                     <MultiButton>
-                      <Button onClick={() => {
+                      <Button onClick={ () => {
                         events.fire('triggerEditorAction', { editorAction: 'selectElements' });
-                      }}>Select All</Button>
-                      <Button onClick={() => {
+                      } }>Select All</Button>
+                      <Button onClick={ () => {
                         events.fire('setColor', { fill: 'white', stroke: '#489d12' });
-                      }}>Set Color</Button>
+                      } }>Set Color</Button>
                     </MultiButton>
                   );
                 } }
@@ -334,28 +334,28 @@ class App extends Component {
               <Button
                 primary
                 className="primary"
-                onClick={() => {
+                onClick={ () => {
                   this.createTab('bpmn', "bpmn");
-                }}
+                } }
               >
                 Create BPMN Tab
               </Button>
               <Button
                 primary
                 className="primary"
-                onClick={() => {
+                onClick={ () => {
                   this.createTab('dmn', "dmn");
-                }}
+                } }
               >
                 Create DMN Tab
               </Button>
               <Button
-                style={{ display: 'none' }}
+                style={ { display: 'none' } }
                 primary
                 className="primary"
-                onClick={() => {
+                onClick={ () => {
                   this.createTab('xml', "xml");
-                }}
+                } }
               >
                 Create XML Tab
               </Button>
@@ -384,7 +384,7 @@ function WithCache(Comp) {
   return (props) => (
     <CacheContext.Consumer>
       {
-        (cache) => <Comp {...props} cache={ cache } />
+        (cache) => <Comp { ...props } cache={ cache } />
       }
     </CacheContext.Consumer>
   );

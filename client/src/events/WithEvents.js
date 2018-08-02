@@ -14,7 +14,7 @@ export default function WithCache(Comp) {
       return (
         <EventsContext.Consumer>{
           (events) => {
-            return <Comp {...props} events={ events } />
+            return <Comp { ...props } events={ events } />
           }
         }</EventsContext.Consumer>
       );

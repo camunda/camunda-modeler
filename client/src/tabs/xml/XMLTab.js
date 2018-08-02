@@ -30,9 +30,9 @@ export default class XMLTab extends Component {
     } = this.props;
 
     return (
-      <Fragment key={tab.id}>
+      <Fragment key={ tab.id }>
         <Fill name="buttons">
-          <Button onClick={() => console.log("click")}>DMN Button 1</Button>
+          <Button onClick={ () => console.log("click") }>DMN Button 1</Button>
           <Button>DMN Button 2</Button>
           <Button>DMN Button 3</Button>
         </Fill>

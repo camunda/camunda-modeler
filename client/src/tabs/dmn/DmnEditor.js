@@ -108,7 +108,7 @@ class DmnEditor extends CachedComponent {
 
     return modeler.getViews().reduce((dirty, view) => {
       const viewer = modeler._getViewer(view);
-      
+
       const commandStack = viewer.get('commandStack', false);
 
       if (!commandStack) {
@@ -130,7 +130,7 @@ class DmnEditor extends CachedComponent {
 
     const newSecondaryTabs = views.map(view => {
       const { element } = view;
-      
+
       const newSecondaryTab = {
         element,
         id: element.id,
@@ -192,7 +192,7 @@ class DmnEditor extends CachedComponent {
   }
 
   checkImport = () => {
-    
+
     console.log('%DmnEditor#checkImport', 'background: steelblue; color: white; padding: 2px 4px');
     const {
       modeler
@@ -203,7 +203,7 @@ class DmnEditor extends CachedComponent {
       xml
     } = this.props;
 
-    if (xml !== modeler.lastXML) {      
+    if (xml !== modeler.lastXML) {
       modeler.lastXML = xml;
 
       window.modeler = modeler;
@@ -238,7 +238,7 @@ class DmnEditor extends CachedComponent {
     let view = modeler.getView(element);
 
     if (!view) {
-      
+
       // try to find view based on ID
       // after re-import reference comparison won't work anymore
       view = modeler.getViews().find(view => view.element.id === element.id);
@@ -282,11 +282,11 @@ class DmnEditor extends CachedComponent {
 
     return (
       <Fragment>
-        <EventListener event="triggerEditorAction" handler={this.handleTriggerEditorAction} />
+        <EventListener event="triggerEditorAction" handler={ this.handleTriggerEditorAction } />
 
         <Fill name="buttons">
-          <Button disabled={ !this.state.undo } onClick={this.undo}>Undo</Button>
-          <Button disabled={ !this.state.redo } onClick={this.redo}>Redo</Button>
+          <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
+          <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
         </Fill>
         <Container innerRef={ this.ref }></Container>
       </Fragment>
