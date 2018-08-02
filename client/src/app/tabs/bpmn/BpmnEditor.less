@@ -1,0 +1,77 @@
+:local(.BpmnEditor) {
+  display: flex;
+  flex: 1;
+
+  flex-direction: row;
+
+  .diagram {
+    flex: 1;
+    position: relative;
+  }
+
+  .properties {
+    flex: 0;
+
+    flex: initial;
+
+    position: relative;
+    outline: none;
+
+    background: #f8f8f8;
+    border-left: solid 1px #CCC;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+
+    .toggle {
+      position: absolute;
+      left: -30px;
+      top: 50%;
+      background: #f8f8f8;
+      padding: 7px 10px;
+      transform: rotate(-90deg);
+      white-space: nowrap;
+      font-size: 13px;
+      border: solid 1px #CCC;
+      border-bottom: none;
+      border-radius: 2px 2px 0 0;
+      transform-origin: top left;
+      z-index: 10;
+      cursor: default;
+      user-select: none;
+    }
+
+    .resize-handle {
+      margin-left: -5px;
+      cursor: ew-resize;
+      z-index: 11;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 5px;
+      user-select: none;
+    }
+
+    .properties-container {
+      overflow: auto;
+      max-height: 100%;
+    }
+  }
+
+  /**
+   * Fix properties tabbing
+   */
+  .bpp-properties-tabs-links > .bpp-active a {
+    position: relative;
+
+    &:before {
+      content: '';
+      z-index: 5;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      border-bottom: solid 3px #f8f8f8;
+      position: absolute;
+    }
+  }
+
+}

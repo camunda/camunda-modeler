@@ -1,6 +1,26 @@
 {
-  "extends": "plugin:bpmn-io/jsx",
+  "extends": [
+    "plugin:bpmn-io/es6",
+    "plugin:bpmn-io/jsx",
+    "plugin:bpmn-io/mocha"
+  ],
+  "rules": {
+    "import/first": "error",
+    "import/no-amd": "error",
+    "import/no-webpack-loader-syntax": "error",
+    "react/jsx-uses-react": "error",
+    "react/react-in-jsx-scope": "error"
+  },
+  "plugins": [
+    "import"
+  ],
   "env": {
-    "browser": true
+    "browser": true,
+    "es6": true
+  },
+  "settings": {
+    "react": {
+      "version": "16.4"
+    }
   }
 }
