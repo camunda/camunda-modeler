@@ -318,6 +318,8 @@ app.on('app:client-ready', function() {
   });
 
   renderer.send('client:open-files', files);
+
+  renderer.send('client:started');
 });
 
 renderer.on('client:ready', function() {
@@ -373,7 +375,13 @@ app.createEditorWindow = function() {
 
   dialog.setActiveWindow(mainWindow);
 
-  mainWindow.loadURL('file://' + path.resolve(__dirname + '/../public/index.html'));
+  var url = 'file://' + path.resolve(__dirname + '/../public/index.html');
+
+  if (app.developmentMode) {
+    url = 'http://localhost:3000';
+  }
+
+  mainWindow.loadURL(url);
 
   // handling case when user clicks on window close button
   mainWindow.on('close', function(e) {

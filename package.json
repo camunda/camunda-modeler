@@ -4,7 +4,7 @@
   "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
-    "app:dev": "electron app/dev",
+    "app:dev": "electron ./app/dev.js",
     "app:test": "mocha -r ./app/test/expect --recursive app/test",
     "client:build": "(cd client && npm run build)",
     "client:auto-test": "(cd client && npm run auto-test)",
@@ -18,7 +18,7 @@
     "distro:test-archives": "node tasks/test-distro.js",
     "build": "run-s client:build \"distro -- {@}\" \"distro:test-archives -- {@}\" --",
     "lint": "eslint .",
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap --hoist",
     "release": "lerna publish --force-publish",
     "test": "run-s *:test"
   },
@@ -40,16 +40,16 @@
     "electron-builder": "^20.17.0",
     "electron-publisher-s3": "^20.17.2",
     "electron-reloader": "^0.2.0",
-    "eslint": "^4.16.0",
-    "eslint-plugin-bpmn-io": "^0.5.2",
+    "eslint": "^5.3.0",
+    "eslint-plugin-bpmn-io": "^0.6.0",
+    "eslint-plugin-import": "^2.14.0",
     "execa": "^0.10.0",
-    "lerna": "^2.11.0",
+    "lerna": "^3.2.1",
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.5",
-    "sinon": "^4.5.0",
-    "sinon-chai": "^2.8.0",
+    "sinon": "^6.1.5",
+    "sinon-chai": "^3.2.0",
     "which": "^1.2.0",
     "yargs": "^11.0.0"
-  },
-  "dependencies": {}
+  }
 }
