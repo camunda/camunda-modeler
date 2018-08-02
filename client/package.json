@@ -14,12 +14,14 @@
     "react-dom": "16.3.2",
     "styled-components": "^3.3.2"
   },
+  "homepage": ".",
   "devDependencies": {
     "react-scripts": "1.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
+    "postbuild": "del-cli ../app/public && mv build ../app/public",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
