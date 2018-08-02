@@ -17,7 +17,7 @@ export default function WithCache(Comp) {
         <CacheContext.Consumer>{
           (cache) => {
             return <Comp
-              {...rest}
+              { ...rest }
               cache={ cache }
               ref={ forwardedRef } />
           }
@@ -27,6 +27,6 @@ export default function WithCache(Comp) {
   }
 
   return React.forwardRef((props, ref) => {
-    return <WithCache {...props} forwardedRef={ref} />;
+    return <WithCache { ...props } forwardedRef={ ref } />;
   });
 }

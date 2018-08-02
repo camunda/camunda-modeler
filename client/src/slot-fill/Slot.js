@@ -19,7 +19,7 @@ export default class Slot extends Component {
                 return fill.name === name;
               })
               .map(fill => {
-                return <Fragment key={fill.id}>{fill.children}</Fragment>;
+                return <Fragment key={ fill.id }>{fill.children}</Fragment>;
               })
           );
         }

@@ -206,13 +206,13 @@ class BpmnEditor extends CachedComponent {
 
     return (
       <Fragment>
-        <EventListener event="triggerEditorAction" handler={this.handleTriggerEditorAction} />
-        <EventListener event="setColor" handler={this.handleSetColor} />
+        <EventListener event="triggerEditorAction" handler={ this.handleTriggerEditorAction } />
+        <EventListener event="setColor" handler={ this.handleSetColor } />
 
         <Fill name="buttons">
-          <Button disabled={ !this.state.undo } onClick={this.undo}>Undo</Button>
-          <Button disabled={ !this.state.redo } onClick={this.redo}>Redo</Button>
-          <Button disabled={ !this.state.align } onClick={() => this.align('left')}>Align Left</Button>
+          <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
+          <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
+          <Button disabled={ !this.state.align } onClick={ () => this.align('left') }>Align Left</Button>
         </Fill>
 
         <Container innerRef={ this.ref }></Container>
