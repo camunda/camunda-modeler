@@ -1,0 +1,112 @@
+@import "misc/close-handle";
+
+.tabbed {
+
+  > .tabs {
+    .no-user-select;
+
+    z-index: 100;
+
+    .tab {
+      background: #F6F6F6;
+      cursor: default;
+
+      &.active {
+        background: white;
+      }
+
+      &:hover:not(.active) {
+        background: #FAFAFA;
+      }
+
+      display: inline-block;
+    }
+
+    > .tabs-container {
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+
+  &.main {
+
+    margin: 5px;
+
+    > .tabs {
+
+      position: relative;
+      top: 1px;
+
+      line-height: 26px;
+
+      .tabs-container {
+        padding: 3px 0 0 0;
+      }
+
+      .scroll-tabs-button {
+        padding: 0 5px;
+        margin: 0;
+        position: relative;
+        top: 3px;
+        cursor: pointer;
+        font-size: 16px;
+
+        &:hover {
+          font-weight: bold;
+        }
+
+        &.scroll-tabs-left {
+          float: left;
+        }
+
+        &.scroll-tabs-right {
+          float: right;
+        }
+      }
+
+      &:not(.scroll-tabs-overflow) {
+        .scroll-tabs-button {
+          display: none;
+        }
+      }
+
+      &.scroll-tabs-overflow {
+        .empty {
+          display: none;
+        }
+
+        /* TODO(nikku): this is a border-cut-of-during-scroll fix */
+        .tabs-container {
+          padding-left: 1px;
+          padding-right: 1px;
+        }
+      }
+
+      .tab {
+        border: solid 1px #CCC;
+        border-radius: 2px 2px 0 0;
+
+        margin: 0 0 0 0;
+        padding: 0 9px;
+
+        outline: none;
+
+        &.active {
+          margin-top: -3px;
+          border-color: @color-bpmnio #CCC transparent;
+          border-top-width: 3px;
+        }
+      }
+
+      .tab + .tab {
+        margin-left: 5px;
+      }
+    }
+
+    > .content {
+      border: solid 1px #CCC;
+
+      border-radius: 0 2px 2px 2px;
+    }
+  }
+}
