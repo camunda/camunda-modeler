@@ -1,0 +1,79 @@
+
+.log {
+
+  .header {
+    margin-right: 5px;
+    text-align: right;
+  }
+
+  .log-button {
+    display: inline-block;
+    border: solid 1px #ccc;
+    border-radius: 2px;
+    padding: 4px;
+    margin-right: 8px;
+    cursor: default;
+    -webkit-user-select: none;
+
+    &:hover {
+      background: @color-light-gray;
+    }
+  }
+
+  .log-button:last-child {
+    margin-right: 0;
+  }
+
+  .log-button-container {
+    display: inline-block;
+  }
+
+  .log-button-toggle {
+    padding: 4px 10px;
+    margin-right: 0;
+  }
+
+  .separator {
+    background: #CCC;
+    width: 1px;
+    box-shadow: 0 0 1px #EEE;
+    height: 24px;
+    margin: 0 10px;
+    display: inline-block;
+    vertical-align: bottom;
+  }
+
+  > .resize-handle {
+    .no-user-select;
+
+    margin-top: 2px;
+    padding-top: 3px;
+
+    cursor: ns-resize;
+
+    &:before {
+      content: '';
+      height: 1px;
+      background: #CCC;
+      display: block;
+    }
+  }
+
+  > .entries {
+
+    font-size: @monospace-font-size;
+    font-family: @monospace-font-family;
+
+    white-space: pre-wrap;
+
+    background: #FCFCFC;
+
+    overflow: auto;
+
+    padding: 5px;
+
+    > .entry {
+      padding: 0 5px;
+    }
+  }
+}
