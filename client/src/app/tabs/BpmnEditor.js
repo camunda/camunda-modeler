@@ -31,7 +31,7 @@ const Container = styled.div`
   bottom: 0;
 `;
 
-class BpmnEditor extends CachedComponent {
+export class BpmnEditor extends CachedComponent {
 
   constructor(props) {
     super(props);

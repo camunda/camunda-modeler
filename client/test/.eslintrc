@@ -1,0 +1,7 @@
+{
+  "extends": [
+    "plugin:bpmn-io/mocha",
+    "plugin:bpmn-io/jsx",
+    "react-app"
+  ]
+}

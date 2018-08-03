@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 import WithEvents from './WithEvents';
 
-class EventListener extends Component {
+export class EventListener extends Component {
   componentDidMount() {
     const { events, event, priority, handler } = this.props;
 
@@ -12,7 +12,7 @@ class EventListener extends Component {
   componentWillUnmount() {
     const { events, event, handler } = this.props;
 
-    events.on(event, handler);
+    events.off(event, handler);
   }
 
   render() {
