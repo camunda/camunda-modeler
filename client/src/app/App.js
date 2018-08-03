@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 import styled, { injectGlobal } from 'styled-components';
 
@@ -39,7 +39,7 @@ injectGlobal`
       font-family: Arial, sans-serif;
       font-size: 12px;
     }
-    
+
     html,
     body,
     #root {
@@ -63,7 +63,7 @@ injectGlobal`
       -webkit-animation-fill-mode: both;
       animation-fill-mode: both;
     }
-      
+
     @-webkit-keyframes bounce {
       0%, 20%, 53%, 80%, 100% {
         -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
@@ -71,27 +71,27 @@ injectGlobal`
         -webkit-transform: translate3d(0,0,0);
         transform: translate3d(0,0,0);
       }
-      
+
       40%, 43% {
         -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
         transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
         -webkit-transform: translate3d(0, -30px, 0);
         transform: translate3d(0, -30px, 0);
       }
-      
+
       70% {
         -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
         transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
         -webkit-transform: translate3d(0, -15px, 0);
         transform: translate3d(0, -15px, 0);
       }
-      
+
       90% {
         -webkit-transform: translate3d(0,-4px,0);
         transform: translate3d(0,-4px,0);
       }
     }
-      
+
     @keyframes bounce {
       0%, 20%, 53%, 80%, 100% {
         -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
@@ -99,26 +99,26 @@ injectGlobal`
         -webkit-transform: translate3d(0,0,0);
         transform: translate3d(0,0,0);
       }
-    
+
       40%, 43% {
         -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
         transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
         -webkit-transform: translate3d(0, -30px, 0);
         transform: translate3d(0, -30px, 0);
       }
-    
+
       70% {
         -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
         transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
         -webkit-transform: translate3d(0, -15px, 0);
         transform: translate3d(0, -15px, 0);
       }
-      
+
       90% {
         -webkit-transform: translate3d(0,-4px,0);
         transform: translate3d(0,-4px,0);
       }
-    } 
+    }
   }
 `;
 
@@ -287,6 +287,10 @@ class App extends Component {
     tabId++;
 
     return tabId;
+  }
+
+  componentDidMount() {
+    this.props.globals.eventBus.emit('app:ready');
   }
 
   render() {
