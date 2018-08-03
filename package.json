@@ -43,13 +43,13 @@
     "eslint": "^4.16.0",
     "eslint-plugin-bpmn-io": "^0.5.2",
     "execa": "^0.10.0",
-    "lerna": "^2.11.0",
+    "karma-webpack": "^2.0.6",
+    "lerna": "^2.8.0",
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.1",
-    "sinon": "^4.5.0",
+    "sinon": "^6.1.4",
     "sinon-chai": "^2.8.0",
     "which": "^1.2.0",
     "yargs": "^11.0.0"
-  },
-  "dependencies": {}
+  }
 }

@@ -1,0 +1,14 @@
+{
+  "plugins": [
+    "syntax-dynamic-import",
+    "transform-object-assign",
+    "transform-object-rest-spread",
+    "transform-class-properties"
+  ],
+  "presets": [
+    [ "env", {
+      "modules": false
+    } ],
+    "react"
+  ]
+}
