@@ -16,6 +16,7 @@
   },
   "homepage": ".",
   "devDependencies": {
+    "eslint-plugin-react": "^7.10.0",
     "react-scripts": "1.1.4"
   },
   "scripts": {
