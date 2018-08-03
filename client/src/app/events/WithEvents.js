@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import EventsContext from './EventsContext';
 
 
-export default function WithCache(Comp) {
+export default function WithEvents(Comp) {
 
   return class WithEventsComponent extends Component {
 
