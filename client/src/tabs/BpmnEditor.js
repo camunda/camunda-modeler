@@ -53,7 +53,7 @@ class BpmnEditor extends CachedComponent {
 
     modeler.attachTo(this.ref.current);
 
-    const propertiesPanel = modeler.get('propertiesPanel');
+    // const propertiesPanel = modeler.get('propertiesPanel');
 
     // propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
@@ -69,7 +69,7 @@ class BpmnEditor extends CachedComponent {
 
     modeler.detach();
 
-    const propertiesPanel = modeler.get('propertiesPanel');
+    // const propertiesPanel = modeler.get('propertiesPanel');
 
     // propertiesPanel.detach();
   }
