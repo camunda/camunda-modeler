@@ -8,8 +8,10 @@
     "bpmn-js": "^2.3.0",
     "bpmn-js-properties-panel": "^0.25.2",
     "codemirror": "^5.39.0",
+    "debug": "^2.6.9",
     "diagram-js": "^2.4.0",
     "dmn-js": "^5.0.0",
+    "mitt": "^1.1.3",
     "react": "16.3.2",
     "react-dom": "16.3.2",
     "styled-components": "^3.3.2"
