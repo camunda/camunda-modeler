@@ -1,3 +1,5 @@
+> :warning: __The feature Plugins may be subject to change in the future.__ As an example, this may lead to breaking changes regarding the configuration and consuption of plugins.
+
 # Plugins :electric_plug:
 
 Plugins allow you to change the appearance and behavior of the Camunda Modeler and add new features.
