@@ -4,6 +4,13 @@ import FillContext from './FillContext';
 import SlotContext from './SlotContext';
 
 
+/**
+ * The slot fill root component that provides
+ * access to registered fills and a fillContext
+ * that may be used to register a new fill.
+ *
+ * <Slot> and <Fill> must be nested inside this context.
+ */
 export default class SlotFillRoot extends Component {
 
   constructor(props) {
@@ -17,20 +24,22 @@ export default class SlotFillRoot extends Component {
 
     this.fillContext = {
 
-      addFill: (id, name, children) => {
+      /**
+       * Add the given fill to the list of fills.
+       *
+       * @return {Number} id assigned to the fill
+       */
+      addFill: (newFill) => {
+
+        let id = newFill.id;
+
         if (!id) {
-          id = this.uid++;
+          id = newFill.id = this.uid++;
         }
 
         this.setState((state) => {
 
           let found = false;
-
-          const newFill = {
-            id,
-            name,
-            children
-          };
 
           const newFills = state.fills.map(function(fill) {
 
@@ -55,10 +64,13 @@ export default class SlotFillRoot extends Component {
         return id;
       },
 
-      removeFill: (id) => {
+      /**
+       * Remove the given fill from the list of fills.
+       */
+      removeFill: (fill) => {
         this.setState((state) => {
           return {
-            fills: state.fills.filter(f => f.id !== id)
+            fills: state.fills.filter(f => f.id !== fill.id)
           };
         });
       }
