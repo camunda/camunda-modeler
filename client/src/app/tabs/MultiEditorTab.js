@@ -2,8 +2,6 @@ import React from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { WithApp } from '../App';
-
 import {
   WithCache,
   WithCachedState,
@@ -94,11 +92,18 @@ class MultiEditorTab extends CachedComponent {
   }
 
   dirtyChanged = (dirty) => {
-    const { app, tab, xml } = this.props;
+    console.log(new Error());
+
+    const { tab, xml } = this.props;
 
     const { lastXML } = this.getCached();
 
-    app.updateTab(tab, { dirty: dirty || (lastXML ? (xml !== lastXML) : false) });
+    this.props.onChanged(
+      tab,
+      {
+        dirty: dirty || (lastXML ? (xml !== lastXML) : false)
+      }
+    );
   }
 
   switchSecondaryTab = (secondaryTab) => {
@@ -212,4 +217,4 @@ class MultiEditorTab extends CachedComponent {
 }
 
 
-export default WithCache(WithCachedState(WithApp(MultiEditorTab)));
+export default WithCache(WithCachedState(MultiEditorTab));

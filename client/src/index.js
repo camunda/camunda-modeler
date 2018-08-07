@@ -24,6 +24,11 @@ eventBus.on('app:ready', function() {
   backend.send('client:ready');
 });
 
+eventBus.on('app:fileOpen', function(event) {
+  backend.send('file:open', event.cwd);
+});
+
+
 // TODO(nikku): implement this hooking into the app
 backend.on('menu:action', function(e, action) {
   if (action === 'quit') {
@@ -36,7 +41,7 @@ backend.on('menu:action', function(e, action) {
 backend.on('client:open-files', function(e, files) {
   log('opening external files: ', files);
 
-  eventBus.emit('app:open-files', {
+  eventBus.emit('client:open-files', {
     files
   });
 });
@@ -44,7 +49,7 @@ backend.on('client:open-files', function(e, files) {
 backend.on('client:window-focused', function(e) {
   log('window focused');
 
-  eventBus.emit('app:window-focused');
+  eventBus.emit('client:window-focused');
 });
 
 

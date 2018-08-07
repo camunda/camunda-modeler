@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Tab = styled.div`
+const Tab = styled.div`
   position: relative;
   z-index: 1;
   border: solid 1px #ddd;
@@ -11,3 +11,5 @@ export const Tab = styled.div`
   align-items: center;
   height: 500px;
 `;
+
+export default Tab;

@@ -1,9 +1,3 @@
-import { Button } from './Button';
-import { MultiButton } from './MultiButton';
-import { Tab } from './Tab';
-
-export {
-  Button,
-  MultiButton,
-  Tab
-}
+export { default as Button } from './Button';
+export { default as MultiButton } from './MultiButton';
+export { default as Tab } from './Tab';

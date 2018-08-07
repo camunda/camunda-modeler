@@ -24,9 +24,10 @@ const initialXML = `
 
 export default class BpmnTab extends Component {
 
-  render() {    
+  render() {
     const {
-      tab
+      tab,
+      onChanged
     } = this.props;
 
     return (
@@ -35,6 +36,7 @@ export default class BpmnTab extends Component {
           id={ `${ tab.id }` }
           tab={ tab }
           xml={ initialXML }
+          onChanged={ onChanged }
           editors={ [
             {
               type: 'bpmn',
