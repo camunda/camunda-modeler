@@ -6,18 +6,14 @@ import FillContext from './FillContext';
 export default class Fill extends Component {
 
   render() {
-    const {
-      children,
-      name
-    } = this.props;
+
+    const props = this.props;
 
     return (
       <FillContext.Consumer>{
         (context) => {
           return (
-            <ActualFill name={ name } context={ context }>
-              { children }
-            </ActualFill>
+            <ActualFill { ...props } fillContext={ context } />
           );
         }
       }</FillContext.Consumer>
@@ -29,36 +25,35 @@ export default class Fill extends Component {
 class ActualFill extends Component {
 
   componentWillUnmount() {
-    const {
-      context
-    } = this.props;
-
-    context.removeFill(this.id);
+    this._deregister();
   }
 
   componentDidMount() {
-
-    const {
-      name,
-      children,
-      context
-    } = this.props;
-
-    this.id = context.addFill(this.id, name, children);
+    this._register();
   }
 
   componentDidUpdate() {
-
-    const {
-      name,
-      children,
-      context
-    } = this.props;
-
-    this.id = context.addFill(this.id, name, children);
+    this._register();
   }
 
   render() {
     return null;
+  }
+
+  _deregister() {
+    const {
+      fillContext
+    } = this.props;
+
+    fillContext.removeFill(this);
+  }
+
+  _register() {
+
+    const {
+      fillContext
+    } = this.props;
+
+    fillContext.addFill(this);
   }
 }
