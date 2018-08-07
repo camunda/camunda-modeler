@@ -1,3 +1,10 @@
+import {
+  isFunction
+} from 'min-dash';
+
+const __DESTROY = '__destroy';
+
+
 export default class Cache {
 
   constructor() {
@@ -19,8 +26,8 @@ export default class Cache {
       if (k.indexOf(key) === 0) {
         const entry = this._entries[k];
 
-        if ('__destroy' in entry) {
-          entry.__destroy();
+        if (isFunction(entry[__DESTROY])) {
+          entry[__DESTROY]();
         }
 
         delete this._entries[k];
