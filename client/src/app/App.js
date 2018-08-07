@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import styled, { injectGlobal } from 'styled-components';
-
 import { CacheContext } from './cached';
 
 import {
@@ -11,138 +9,32 @@ import {
 
 import { EventsContext } from './events';
 
-import Buttons from "./Buttons";
+import Toolbar from './Toolbar';
 import TabLinks from './TabLinks';
-import EmptyTab from "./EmptyTab";
+import EmptyTab from './EmptyTab';
 
 import { Button, MultiButton, Tab } from './primitives';
 
-export const AppContext = React.createContext();
-
-export function WithApp(Comp) {
-  return (props) => {
-    return (
-      <AppContext.Consumer>
-        {
-          app => <Comp { ...props } app={ app } />
-        }
-      </AppContext.Consumer>
-    );
-  }
-}
-
-injectGlobal`
-  * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      font-size: 12px;
-    }
-
-    html,
-    body,
-    #root {
-      height: 100%;
-    }
-
-    body {
-      margin: 10px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .bounce {
-      -webkit-animation-name: bounce;
-      animation-name: bounce;
-      -webkit-transform-origin: center bottom;
-      -ms-transform-origin: center bottom;
-      transform-origin: center bottom;
-      -webkit-animation-duration: 1s;
-      animation-duration: 1s;
-      -webkit-animation-fill-mode: both;
-      animation-fill-mode: both;
-    }
-
-    @-webkit-keyframes bounce {
-      0%, 20%, 53%, 80%, 100% {
-        -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-        transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-        -webkit-transform: translate3d(0,0,0);
-        transform: translate3d(0,0,0);
-      }
-
-      40%, 43% {
-        -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
-        transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
-        -webkit-transform: translate3d(0, -30px, 0);
-        transform: translate3d(0, -30px, 0);
-      }
-
-      70% {
-        -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
-        transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
-        -webkit-transform: translate3d(0, -15px, 0);
-        transform: translate3d(0, -15px, 0);
-      }
-
-      90% {
-        -webkit-transform: translate3d(0,-4px,0);
-        transform: translate3d(0,-4px,0);
-      }
-    }
-
-    @keyframes bounce {
-      0%, 20%, 53%, 80%, 100% {
-        -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-        transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-        -webkit-transform: translate3d(0,0,0);
-        transform: translate3d(0,0,0);
-      }
-
-      40%, 43% {
-        -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
-        transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
-        -webkit-transform: translate3d(0, -30px, 0);
-        transform: translate3d(0, -30px, 0);
-      }
-
-      70% {
-        -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
-        transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
-        -webkit-transform: translate3d(0, -15px, 0);
-        transform: translate3d(0, -15px, 0);
-      }
-
-      90% {
-        -webkit-transform: translate3d(0,-4px,0);
-        transform: translate3d(0,-4px,0);
-      }
-    }
-  }
-`;
-
-const Container = styled.div`
-  height: 100%;
-`;
+import Css from './App.css';
 
 let tabId = 0;
 
-const tabLoaded = { };
+const tabLoaded = {
+  empty: EmptyTab
+};
 
-const Logo = styled.img`
-  width: 50px;
-  animation-name: bounce;
-  animation-duration: 1s;
-`;
 
-const logo = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20960%20960%22%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M960%2060v839c0%2033-27%2061-60%2061H60c-33%200-60-27-60-60V60C0%2027%2027%200%2060%200h839c34%200%2061%2027%2061%2060z%22%2F%3E%3Cpath%20fill%3D%22%23DDD%22%20d%3D%22M217%20548a205%20205%200%200%200-144%2058%20202%20202%200%200%200-4%20286%20202%20202%200%200%200%20285%203%20200%20200%200%200%200%2048-219%20203%20203%200%200%200-185-128zM752%206a206%20206%200%200%200-192%20285%20206%20206%200%200%200%20269%20111%20207%20207%200%200%200%20111-260A204%20204%200%200%200%20752%206zM62%200A62%2062%200%200%200%200%2062v398l60%2046a259%20259%200%200%201%2089-36c5-28%2010-57%2014-85l99%202%2012%2085a246%20246%200%200%201%2088%2038l70-52%2069%2071-52%2068c17%2030%2029%2058%2035%2090l86%2014-2%20100-86%2012a240%20240%200%200%201-38%2089l43%2058h413c37%200%2060-27%2060-61V407a220%20220%200%200%201-44%2040l21%2085-93%2039-45-76a258%20258%200%200%201-98%201l-45%2076-94-39%2022-85a298%20298%200%200%201-70-69l-86%2022-38-94%2076-45a258%20258%200%200%201-1-98l-76-45%2040-94%2085%2022a271%20271%200%200%201%2041-47z%22%2F%3E%3C%2Fsvg%3E';
+const LOGO_SRC = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20960%20960%22%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M960%2060v839c0%2033-27%2061-60%2061H60c-33%200-60-27-60-60V60C0%2027%2027%200%2060%200h839c34%200%2061%2027%2061%2060z%22%2F%3E%3Cpath%20fill%3D%22%23DDD%22%20d%3D%22M217%20548a205%20205%200%200%200-144%2058%20202%20202%200%200%200-4%20286%20202%20202%200%200%200%20285%203%20200%20200%200%200%200%2048-219%20203%20203%200%200%200-185-128zM752%206a206%20206%200%200%200-192%20285%20206%20206%200%200%200%20269%20111%20207%20207%200%200%200%20111-260A204%20204%200%200%200%20752%206zM62%200A62%2062%200%200%200%200%2062v398l60%2046a259%20259%200%200%201%2089-36c5-28%2010-57%2014-85l99%202%2012%2085a246%20246%200%200%201%2088%2038l70-52%2069%2071-52%2068c17%2030%2029%2058%2035%2090l86%2014-2%20100-86%2012a240%20240%200%200%201-38%2089l43%2058h413c37%200%2060-27%2060-61V407a220%20220%200%200%201-44%2040l21%2085-93%2039-45-76a258%20258%200%200%201-98%201l-45%2076-94-39%2022-85a298%20298%200%200%201-70-69l-86%2022-38-94%2076-45a258%20258%200%200%201-1-98l-76-45%2040-94%2085%2022a271%20271%200%200%201%2041-47z%22%2F%3E%3C%2Fsvg%3E';
 
 function TabLoading() {
-  return <Tab><Logo className="bounce" src={ logo } /></Tab>;
+  return (
+    <Tab>
+      <img className={ Css.Logo } src={ LOGO_SRC } alt="bpmn.io logo" />
+    </Tab>
+  );
 }
 
-class App extends Component {
+class AppComponent extends Component {
 
   constructor(props, context) {
     super();
@@ -226,6 +118,10 @@ class App extends Component {
     });
   }
 
+  openFile = () => {
+    this.props.globals.eventBus.emit('app:fileOpen', { cwd: null });
+  }
+
   updateTab = (tab, properties) => {
     console.log('%cApp#updateTab', 'color: #52B415');
     let { activeTab, tabs } = this.state;
@@ -263,8 +159,16 @@ class App extends Component {
       loader = import('./tabs/dmn');
     }
 
-    if (type === 'xml') {
-      loader = import('./tabs/xml');
+    if (!loader) {
+      loader = Promise.resolve({
+        default: function ErrorTab() {
+          return (
+            <Tab>
+              <div><span>Cannot open tab: no provider for { type }.</span></div>
+            </Tab>
+          );
+        }
+      });
     }
 
     loader.then((c) => {
@@ -300,84 +204,94 @@ class App extends Component {
 
     const Tab = this.state.Tab || EmptyTab;
 
-    const { closeTab, createTab, selectTab, updateTab } = this;
-
-    const app = {
-      activeTab,
-      tabs,
+    const {
       closeTab,
       createTab,
+      openFile,
       selectTab,
       updateTab
-    };
+    } = this;
 
     console.log('%cApp#render', 'background: #52B415; color: white; padding: 2px 4px');
 
     return (
-      <Container className="app">
+      <div className={ Css.App }>
         <SlotFillRoot>
-          <AppContext.Provider
-            value={ app }
-          >
 
-            <Fill name="buttons">
-              <EventsContext.Consumer>
-                { events => {
-                  return (
-                    <MultiButton>
-                      <Button onClick={ () => {
-                        events.fire('triggerEditorAction', { editorAction: 'selectElements' });
-                      } }>Select All</Button>
-                      <Button onClick={ () => {
-                        events.fire('setColor', { fill: 'white', stroke: '#489d12' });
-                      } }>Set Color</Button>
-                    </MultiButton>
-                  );
-                } }
-              </EventsContext.Consumer>
-              <Button
-                primary
-                className="primary"
-                onClick={ () => {
-                  this.createTab('bpmn', "bpmn");
-                } }
-              >
-                Create BPMN Tab
-              </Button>
-              <Button
-                primary
-                className="primary"
-                onClick={ () => {
-                  this.createTab('dmn', "dmn");
-                } }
-              >
-                Create DMN Tab
-              </Button>
-              <Button
-                style={ { display: 'none' } }
-                primary
-                className="primary"
-                onClick={ () => {
-                  this.createTab('xml', "xml");
-                } }
-              >
-                Create XML Tab
-              </Button>
-            </Fill>
+          <Toolbar />
 
-            <Buttons />
+          <Fill name="buttons" group="editor">
+            <EventsContext.Consumer>
+              { events => {
+                return (
+                  <MultiButton>
+                    <Button onClick={ () => {
+                      events.fire('triggerEditorAction', { editorAction: 'selectElements' });
+                    } }>Select All</Button>
+                    <Button onClick={ () => {
+                      events.fire('setColor', { fill: 'white', stroke: '#489d12' });
+                    } }>Set Color</Button>
+                  </MultiButton>
+                );
+              } }
+            </EventsContext.Consumer>
+          </Fill>
 
-            <TabLinks />
+          <Fill name="buttons" group="general">
+            <Button onClick={ openFile }>
+              Open file
+            </Button>
 
-            <div className="tab">
-              <Tab key={ activeTab.id } tab={ activeTab } />
-            </div>
-          </AppContext.Provider>
+            <Button
+              primary
+              onClick={ () => {
+                createTab('bpmn', 'bpmn');
+              } }
+            >
+              Create BPMN Tab
+            </Button>
+
+            <Button
+              primary
+              onClick={ () => {
+                createTab('dmn', 'dmn');
+              } }
+            >
+              Create DMN Tab
+            </Button>
+
+            <Button
+              primary
+              onClick={ () => {
+                createTab('cmmn', 'cmmn');
+              } }
+            >
+              Create CMMN Tab
+            </Button>
+          </Fill>
+
+          <TabLinks
+            tabs={ tabs }
+            activeTab={ activeTab }
+            onSelect={ selectTab }
+            onClose={ closeTab }
+            onCreate={ () => {
+              createTab('bpmn', 'bpmn');
+            } } />
+
+          <div className={ Css.ActiveTab }>
+            <Tab
+              key={ activeTab.id }
+              tab={ activeTab }
+              onChanged={ updateTab }
+            />
+          </div>
         </SlotFillRoot>
-      </Container>
+      </div>
     );
   }
 }
+
 
 /**
  * Passes cache to wrapped component WITHOUT forwarding refs.
@@ -394,4 +308,4 @@ function WithCache(Comp) {
   );
 }
 
-export default WithCache(App);
+export default WithCache(AppComponent);

@@ -2,8 +2,6 @@ import React, { Component } from "react";
 
 import styled from 'styled-components';
 
-import { WithApp } from './App';
-
 const Container = styled.div`
   margin-top: 10px;
   flex: initial;
@@ -58,17 +56,17 @@ const Close = styled.span`
   }
 `;
 
-class TabLinks extends Component {
+export default class TabLinks extends Component {
+
   render() {
-    const { app } = this.props;
 
     const {
       activeTab,
-      closeTab,
-      createTab,
-      selectTab,
-      tabs
-    } = app;
+      tabs,
+      onSelect,
+      onClose,
+      onCreate
+    } = this.props;
 
     console.log('%cTabLinks#render', 'background: #52B415; color: white; padding: 2px 4px');
 
@@ -85,7 +83,7 @@ class TabLinks extends Component {
             <TabLink
               key={ tab.id }
               className={ classes.join(" ") }
-              onClick={ () => selectTab(tab) }
+              onClick={ () => onSelect(tab) }
             >
               {tab.name}
               <Close
@@ -94,7 +92,7 @@ class TabLinks extends Component {
                   e.preventDefault();
                   e.stopPropagation();
 
-                  closeTab(tab);
+                  onClose(tab);
                 } }
               />
             </TabLink>
@@ -105,9 +103,7 @@ class TabLinks extends Component {
           className={ "tab-link".concat(
             tabs.length ? "" : " active"
           ) }
-          onClick={ () => {
-            createTab('bpmn', "bpmn");
-          } }
+          onClick={ onCreate }
         >
           +
         </TabLink>
@@ -115,5 +111,3 @@ class TabLinks extends Component {
     );
   }
 }
-
-export default WithApp(TabLinks);
