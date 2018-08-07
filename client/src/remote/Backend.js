@@ -32,7 +32,7 @@ export default class Backend {
     return new Promise((resolve, reject) => {
 
       this.once(event + ':response:' + id, function(evt, args) {
-        if (typeof args[0] === 'string') {
+        if (isString(args[0])) {
           args[0] = new Error(args[0]);
 
           return reject(...args);
