@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const MultiButton = styled.div`
+const MultiButton = styled.div`
   display: inline-block;
 
   > button {
@@ -20,3 +20,6 @@ export const MultiButton = styled.div`
     }
   }
 `;
+
+
+export default MultiButton;

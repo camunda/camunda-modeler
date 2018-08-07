@@ -1,0 +1,16 @@
+:local(.Container) {
+  padding: 5px;
+  border: solid 1px #ddd;
+  border-radius: 2px;
+  flex: initial;
+}
+
+:local(.Container) > div,
+:local(.Container) > button {
+  display: inline;
+  margin-right: 5px;
+}
+
+:local(.Container) > *:last-child {
+  margin-right: 0;
+}

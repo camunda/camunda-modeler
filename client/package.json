@@ -7,6 +7,7 @@
   "dependencies": {
     "bpmn-js": "^2.3.0",
     "bpmn-js-properties-panel": "^0.25.2",
+    "classnames": "^2.2.6",
     "codemirror": "^5.39.0",
     "debug": "^2.6.9",
     "diagram-js": "^2.4.0",

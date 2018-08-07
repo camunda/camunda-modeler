@@ -1,0 +1,11 @@
+:local(.App) {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+:local(.Logo) {
+  width: 50px;
+  animation-name: loading;
+  animation-duration: 1s;
+}
