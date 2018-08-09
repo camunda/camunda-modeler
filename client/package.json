@@ -48,8 +48,7 @@
     "react-scripts": "1.1.4",
     "react-test-renderer": "^16.4.2",
     "sinon": "^6.1.4",
-    "sinon-chai": "^2.14.0",
-    "webpack": "^4.16.0"
+    "sinon-chai": "^2.14.0"
   },
   "scripts": {
     "start": "react-scripts start",
