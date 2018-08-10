@@ -40,19 +40,22 @@ class RenderChildren extends Component {
   }
 }
 
-var spy = sinon.spy(BpmnEditor, 'createCachedState');
-
 
 describe('BpmnEditor', function() {
 
   var container;
+  var createCachedSpy;
+
 
   beforeEach(function() {
+
+    createCachedSpy = sinon.spy(BpmnEditor, 'createCachedState');
+
     container = TestContainer.get(this);
   });
 
   afterEach(function () {
-    sinon.restore();
+    createCachedSpy.restore();
   });
 
 
@@ -60,7 +63,7 @@ describe('BpmnEditor', function() {
     var cachedState = {
       modeler: new Modeler()
     };
-    
+
     // we have to render the actual component without HoCs
     // so we can access the instance afterwards
     var wrapper = shallow(<BpmnEditor
@@ -77,7 +80,7 @@ describe('BpmnEditor', function() {
 
   it('should create modeler if no cached modeler', function() {
 
-    var slotFillRoot = ReactDOM(
+    var slotFillRoot = ReactDOM.render(
       <SlotFillRoot>
         <BpmnEditorWithCachedState id="foo" xml={ diagramXML } />
       </SlotFillRoot>,
@@ -90,7 +93,7 @@ describe('BpmnEditor', function() {
       modeler
     } = bpmnEditor.getCached();
 
-    expect(spy).to.have.been.called;
+    expect(createCachedSpy).to.have.been.calledOnce;
     expect(modeler).to.exist;
   });
 
@@ -127,12 +130,12 @@ describe('BpmnEditor', function() {
       renderChildren.setState({
         renderChildren: true
       });
-      
+
       setTimeout(function() {
         console.log('%cexpecting', 'background: yellow; padding: 2px 4px');
-  
-        expect(spy).to.have.been.calledOnce;
-  
+
+        expect(createCachedSpy).to.have.been.calledOnce;
+
         console.log('success');
       }, 0);
 
@@ -156,7 +159,7 @@ describe('BpmnEditor', function() {
     } = bpmnEditor.getCached();
 
     modeler.on('import.done', function() {
-      
+
       bpmnEditor.getXML(function(xml) {
 
         expect(xml).to.exist;
