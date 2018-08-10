@@ -62,7 +62,6 @@ module.exports = function(karma) {
 
 
     webpack: {
-      mode: 'development',
       module: {
         rules: [
           {
