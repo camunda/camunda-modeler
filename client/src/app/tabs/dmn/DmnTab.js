@@ -43,7 +43,8 @@ export default class DmnTab extends Component {
 
   render() {
     const {
-      tab
+      tab,
+      onChanged
     } = this.props;
 
     return (
@@ -52,6 +53,7 @@ export default class DmnTab extends Component {
           id={ `${ tab.id }` }
           tab={ tab }
           xml={ initialXML }
+          onChanged={ onChanged }
           editors={ [
             {
               type: 'dmn',
