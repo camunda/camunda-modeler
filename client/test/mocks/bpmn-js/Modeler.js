@@ -3,11 +3,11 @@ export default function Modeler() {
     this.xml = xml;
 
     done && done();
-  }
+  };
 
   this.saveXML = function(done) {
     done(this.xml);
-  }
+  };
 
   this.attachTo = function() {};
 

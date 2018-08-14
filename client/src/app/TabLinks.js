@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 import styled from 'styled-components';
 
@@ -73,16 +73,16 @@ export default class TabLinks extends Component {
     return (
       <Container className="tab-links">
         {tabs.map(tab => {
-          const classes = ["tab-link"];
+          const classes = ['tab-link'];
 
           if (tab === activeTab) {
-            classes.push("active");
+            classes.push('active');
           }
 
           return (
             <TabLink
               key={ tab.id }
-              className={ classes.join(" ") }
+              className={ classes.join(' ') }
               onClick={ () => onSelect(tab) }
             >
               {tab.name}
@@ -100,8 +100,8 @@ export default class TabLinks extends Component {
         })}
         <TabLink
           key="empty-tab"
-          className={ "tab-link".concat(
-            tabs.length ? "" : " active"
+          className={ 'tab-link'.concat(
+            tabs.length ? '' : ' active'
           ) }
           onClick={ onCreate }
         >

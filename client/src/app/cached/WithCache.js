@@ -19,7 +19,7 @@ export default function WithCache(Comp) {
             return <Comp
               { ...rest }
               cache={ cache }
-              ref={ forwardedRef } />
+              ref={ forwardedRef } />;
           }
         }</CacheContext.Consumer>
       );
