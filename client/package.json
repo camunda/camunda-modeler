@@ -62,11 +62,11 @@
     "url-loader": "0.6.2",
     "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
+    "webpack-serve": "^2.0.2"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development webpack-dev-server --progress --watch --hot --port 3000",
-    "build": "cross-env NODE_ENV=production webpack",
+    "start": "webpack-serve --config ./webpack.config.js --no-clipboard --port 3000",
+    "build": "webpack",
     "postbuild": "del-cli ../app/public && mv build ../app/public",
     "dev": "run-s start",
     "auto-test": "npm test -- --auto-watch --no-single-run",
