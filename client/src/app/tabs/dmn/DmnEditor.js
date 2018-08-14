@@ -19,8 +19,8 @@ import 'dmn-js/dist/assets/dmn-font/css/dmn-embedded.css';
 import 'dmn-js/dist/assets/dmn-js-decision-table-controls.css';
 import 'dmn-js/dist/assets/dmn-js-decision-table.css';
 import 'dmn-js/dist/assets/dmn-js-drd.css';
-import 'dmn-js/dist/assets/dmn-js-literal-expression.css'
-import 'dmn-js/dist/assets/dmn-js-shared.css'
+import 'dmn-js/dist/assets/dmn-js-literal-expression.css';
+import 'dmn-js/dist/assets/dmn-js-shared.css';
 
 import styled from 'styled-components';
 
@@ -89,7 +89,7 @@ class DmnEditor extends CachedComponent {
       'saveXML.done',
       'attach'
     ].forEach((event) => {
-      modeler[fn](event, this.updateActions)
+      modeler[fn](event, this.updateActions);
     });
 
     modeler[fn]('views.changed', this.viewsChanged);

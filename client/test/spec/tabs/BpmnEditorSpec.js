@@ -54,7 +54,7 @@ describe('BpmnEditor', function() {
     container = TestContainer.get(this);
   });
 
-  afterEach(function () {
+  afterEach(function() {
     createCachedSpy.restore();
   });
 

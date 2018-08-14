@@ -11,7 +11,7 @@ import React, { Component } from 'react';
  *
  * The resulting component must be called
  * with the `id` and `cache` prop.
- * 
+ *
  * Forwards refs, too.
  *
  * @param {Component} Comp
@@ -74,7 +74,6 @@ export default function WithCachedState(Comp) {
       console.log('%cLazyInstantiating#render', 'background: #52B415; color: white; padding: 2px 4px');
 
       const {
-        cache,
         forwardedRef,
         ...rest
       } = this.props;
@@ -92,7 +91,7 @@ export default function WithCachedState(Comp) {
           cachedState={ cachedState }
           setCachedState={ this.setCachedState } />
       );
-    };
+    }
   }
 
   return React.forwardRef((props, ref) => {

@@ -26,7 +26,7 @@ describe('events', function() {
     expect(spy).to.have.been.called;
   });
 
-  
+
   it('should remove event listener', function() {
     var spy = sinon.spy();
 

@@ -47,7 +47,7 @@ export default function create(options) {
 
   Object.defineProperty(instance, 'lastXML', {
     get() {
-      return this.getValue()
+      return this.getValue();
     }
   });
 
