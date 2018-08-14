@@ -1,14 +1,13 @@
 'use strict';
 
-const NODE_ENV = process.env.NODE_ENV;
-const DEV = NODE_ENV !== 'production';
+const DEV = process.env.WEBPACK_SERVE;
 
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 
 module.exports = {
-  mode: NODE_ENV,
+  mode: DEV ? 'development' : 'production',
   entry: {
     bundle: ['./src/index.js']
   },
@@ -61,7 +60,7 @@ module.exports = {
     ])
   ],
   // ship source map during development only
-  devtool: DEV && 'cheap-module-source-map',
+  devtool: DEV && 'cheap-eval-source-map',
   // don't bundle shims for node globals
   node: {
     dgram: 'empty',
