@@ -71,7 +71,7 @@ module.exports = function(karma) {
             use: 'babel-loader'
           },
           {
-            test: /\.css|\.bpmn$|\.cmmn$|\.dmn$/,
+            test: /\.css|\.bpmn$|\.cmmn$|\.dmn$|\.less$/,
             use: 'raw-loader'
           }
         ]
