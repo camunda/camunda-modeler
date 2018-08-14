@@ -67,7 +67,7 @@
   "scripts": {
     "start": "webpack-serve --config ./webpack.config.js --no-clipboard --port 3000",
     "build": "webpack",
-    "postbuild": "del-cli ../app/public && mv build ../app/public",
+    "postbuild": "del-cli --force ../app/public && mv build ../app/public",
     "dev": "run-s start",
     "auto-test": "npm test -- --auto-watch --no-single-run",
     "test": "karma start karma.config.js"
