@@ -1,9 +1,5 @@
 {
   "extends": [
-    "plugin:bpmn-io/mocha",
-    "plugin:bpmn-io/jsx"
-  ],
-  "rules": {
-    "no-unused-expressions": 0
-  }
+    "plugin:bpmn-io/mocha"
+  ]
 }
