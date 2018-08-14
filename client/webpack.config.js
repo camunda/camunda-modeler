@@ -56,7 +56,10 @@ module.exports = {
   plugins: [
     new CaseSensitivePathsPlugin(),
     new CopyWebpackPlugin([
-      { from: './public' }
+      {
+        from: './public',
+        transform: DEV && applyDevCSP
+      }
     ])
   ],
   // ship source map during development only
@@ -70,3 +73,28 @@ module.exports = {
     child_process: 'empty',
   }
 };
+
+
+
+// helpers //////////////////////
+
+
+/**
+ * Patch index.html CSP directive to make sure we can use
+ * unsafe-eval in development mode. It is the fastest way
+ * to get per module source maps.
+ */
+function applyDevCSP(content, path) {
+  if (/index\.html$/.test(path)) {
+    const html = content.toString('utf8');
+
+    return (
+      html.replace(
+        'script-src \'self\'',
+        'script-src \'self\' \'unsafe-eval\''
+      )
+    );
+  }
+
+  return content;
+}
