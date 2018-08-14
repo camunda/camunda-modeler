@@ -1,7 +1,7 @@
 {
   "extends": [
-    "plugin:bpmn-io/jsx",
-    "react-app"
+    "react-app",
+    "plugin:bpmn-io/jsx"
   ],
   "env": {
     "browser": true

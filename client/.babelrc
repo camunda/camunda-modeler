@@ -6,9 +6,7 @@
     "transform-class-properties"
   ],
   "presets": [
-    [ "env", {
-      "modules": false
-    } ],
+    [ "env", { "modules": false } ],
     "react"
   ]
 }
