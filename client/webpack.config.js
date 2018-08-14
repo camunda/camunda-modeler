@@ -35,6 +35,14 @@ module.exports = {
             ]
           },
           {
+            test: /\.less$/,
+            use: [
+              'style-loader',
+              'css-loader',
+              'less-loader'
+            ]
+          },
+          {
             // exclude files served otherwise
             exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
             loader: 'file-loader',

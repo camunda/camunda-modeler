@@ -4,7 +4,7 @@ import Slot from './slot-fill/Slot';
 
 import {
   Container
-} from './Toolbar.css';
+} from './Toolbar.less';
 
 export default class Toolbar extends Component {
   render() {
