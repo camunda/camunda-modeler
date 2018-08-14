@@ -1,17 +1,8 @@
 /* global sinon */
 
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-
-import TestRenderer from 'react-test-renderer';
-import ShallowRenderer from 'react-test-renderer/shallow';
+import React from 'react';
 
 import { shallow } from 'enzyme';
-
-import {
-  findRenderedComponentWithType,
-  findRenderedDOMComponentWithClass
-} from 'react-dom/test-utils';
 
 import mitt from 'mitt';
 
@@ -22,7 +13,6 @@ import { TabLoading } from '../../src/app/App';
 import BpmnTab from '../../src/app/tabs/BpmnTab';
 
 import {
-  default as AppWithCache,
   AppComponent
 } from '../../src/app/App';
 
@@ -41,7 +31,7 @@ describe('App', function() {
     globals = {
       eventBus: mitt(),
       backend: new Backend()
-    }
+    };
   });
 
 
@@ -63,60 +53,60 @@ describe('App', function() {
 
       // when
       var wrapper = shallow(<AppComponent cache={ new Cache() } globals={ globals } />);
-  
+
       // then
       var instance = wrapper.instance();
-  
+
       expect(instance.state.Tab).to.equal(TabLoading);
     });
-  
-  
+
+
     it('should load tab', function() {
-      
+
       // when
       var wrapper = shallow(<AppComponent cache={ new Cache() } globals={ globals } />);
-  
+
       // then
       // right now there's no way of knowing when loading the tab has finished
       // setTimout will make test fail since render is beeing reset after each test
       setTimeout(function() {
         var instance = wrapper.instance();
-    
+
         expect(instance.state.Tab).to.equal(BpmnTab);
       }, 1000);
     });
-  
-  
+
+
     it('should select tab', function() {
-  
+
       // given
       var wrapper = shallow(<AppComponent cache={ new Cache() } globals={ globals } />);
-  
+
       var instance = wrapper.instance();
-  
+
       var bpmnTab = {
         type: 'bpmn',
         name: 'foo.bpmn',
         content: null,
         id: 'foo'
       };
-      
+
       var dmnTab = {
         type: 'dmn',
         name: 'bar.dmn',
         content: null,
         id: 'dmn'
       };
-  
+
       instance.setState({
         tabs: [ bpmnTab, dmnTab ],
         activeTab: bpmnTab,
         Tab: BpmnTab
       });
-  
+
       // when
       instance.selectTab(dmnTab);
-  
+
       // then
       expect(instance.state.activeTab).to.equal(dmnTab);
     });
@@ -126,32 +116,32 @@ describe('App', function() {
 
       // given
       var wrapper = shallow(<AppComponent cache={ new Cache() } globals={ globals } />);
-  
+
       var instance = wrapper.instance();
-  
+
       var bpmnTab = {
         type: 'bpmn',
         name: 'foo.bpmn',
         content: null,
         id: 'foo'
       };
-      
+
       var dmnTab = {
         type: 'dmn',
         name: 'bar.dmn',
         content: null,
         id: 'dmn'
       };
-  
+
       instance.setState({
         tabs: [ bpmnTab, dmnTab ],
         activeTab: bpmnTab,
         Tab: BpmnTab
       });
-  
+
       // when
       instance.closeTab(bpmnTab);
-  
+
       // then
       expect(instance.state.tabs).to.have.length(1);
       expect(instance.state.activeTab).to.equal(dmnTab);
@@ -159,7 +149,7 @@ describe('App', function() {
 
   });
 
-  
+
   describe('events', function() {
 
     it('should fire "app:ready"', function() {

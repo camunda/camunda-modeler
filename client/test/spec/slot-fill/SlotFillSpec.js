@@ -41,7 +41,7 @@ class RenderButtons extends Component {
 
     this.state = {
       renderButton: true
-    }
+    };
   }
 
   render() {
@@ -68,7 +68,7 @@ describe('slot-fill', function() {
 
   describe('FillContext', function() {
 
-    it('should have access to fill context', function() {    
+    it('should have access to fill context', function() {
       ReactDOM.render(
         <SlotFillRoot>
           <FillContext.Consumer>
@@ -90,7 +90,7 @@ describe('slot-fill', function() {
 
   describe('SlotContext', function() {
 
-    it('should have access to slot context', function() {    
+    it('should have access to slot context', function() {
       ReactDOM.render(
         <SlotFillRoot>
           <SlotContext.Consumer>
@@ -179,11 +179,11 @@ describe('slot-fill', function() {
 
   });
 
-  
+
   describe('Slot', function() {
-  
+
     it('should render fills', function() {
-      
+
       // when
       var slotFillRoot = ReactDOM.render(
         <SlotFillRoot>

@@ -95,7 +95,7 @@ export class AppComponent extends Component {
       }
 
     } else {
-      activeTab = this.state.activeTab
+      activeTab = this.state.activeTab;
     }
 
     this.setState({

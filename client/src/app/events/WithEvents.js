@@ -14,10 +14,10 @@ export default function WithEvents(Comp) {
       return (
         <EventsContext.Consumer>{
           (events) => {
-            return <Comp { ...props } events={ events } />
+            return <Comp { ...props } events={ events } />;
           }
         }</EventsContext.Consumer>
       );
     }
-  }
+  };
 }

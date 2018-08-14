@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment } from 'react';
 
 import XMLEditor from './XMLEditor';
 
-import { Fill } from "../../slot-fill";
+import { Fill } from '../../slot-fill';
 
 import { Button, Tab } from '../../primitives';
 
@@ -32,7 +32,7 @@ export default class XMLTab extends Component {
     return (
       <Fragment key={ tab.id }>
         <Fill name="buttons">
-          <Button onClick={ () => console.log("click") }>DMN Button 1</Button>
+          <Button onClick={ () => console.log('click') }>DMN Button 1</Button>
           <Button>DMN Button 2</Button>
           <Button>DMN Button 3</Button>
         </Fill>

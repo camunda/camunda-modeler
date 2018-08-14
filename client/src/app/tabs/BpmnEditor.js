@@ -87,7 +87,7 @@ export class BpmnEditor extends CachedComponent {
       'selection.changed',
       'attach'
     ].forEach((event) => {
-      modeler[fn](event, this.updateActions)
+      modeler[fn](event, this.updateActions);
     });
 
     modeler[fn]('commandStack.changed', (e) => {
