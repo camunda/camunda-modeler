@@ -123,30 +123,29 @@ class DmnEditor extends CachedComponent {
 
     const {
       setCachedState,
-      secondaryTabsChanged
+      onSheetsChanged
     } = this.props;
 
-    let newActiveSecondaryTab;
+    let activeSheet;
 
-    const newSecondaryTabs = views.map(view => {
+    const sheets = views.map(view => {
       const { element } = view;
 
-      const newSecondaryTab = {
+      const newSheet = {
         element,
         id: element.id,
-        name: getSecondaryTabName(view),
-        order: -1,
-        type: 'dmn'
+        name: getSheetName(view),
+        order: -1
       };
 
       if (view === activeView) {
-        newActiveSecondaryTab = newSecondaryTab;
+        activeSheet = newSheet;
       }
 
-      return newSecondaryTab;
+      return newSheet;
     });
 
-    secondaryTabsChanged('dmn', newSecondaryTabs, newActiveSecondaryTab);
+    onSheetsChanged(sheets, activeSheet);
 
     // needs to be called last
     setCachedState({
@@ -199,7 +198,7 @@ class DmnEditor extends CachedComponent {
     } = this.getCached();
 
     const {
-      secondaryTab,
+      activeSheet,
       xml
     } = this.props;
 
@@ -211,21 +210,21 @@ class DmnEditor extends CachedComponent {
       modeler.importXML(xml, (err) => {
         console.log('%cimporting', 'background: steelblue; color: white; padding: 2px 4px');
 
-        console.log('tab:', secondaryTab);
+        console.log('tab:', activeSheet);
 
         // open diagram view by default
         const definitions = modeler.getDefinitions();
 
-        if (secondaryTab && secondaryTab.element) {
-          this.open(secondaryTab.element);
+        if (activeSheet && activeSheet.element) {
+          this.open(activeSheet.element);
         } else {
           this.open(definitions);
         }
       });
     } else {
-      secondaryTab
-        && secondaryTab.element
-        && this.open(secondaryTab.element);
+      activeSheet
+        && activeSheet.element
+        && this.open(activeSheet.element);
     }
   }
 
@@ -316,7 +315,7 @@ const viewNames = {
   literalExpression: 'Literal Expression'
 };
 
-function getSecondaryTabName(view) {
+function getSheetName(view) {
   if (view.type === 'drd') {
     return 'Diagram';
   }

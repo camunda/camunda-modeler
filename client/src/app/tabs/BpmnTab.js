@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-import MultiEditorTab from './MultiEditorTab';
+import MultiSheetTab from './MultiSheetTab';
 
 import BpmnEditor from './BpmnEditor';
 import XMLEditor from './xml/XMLEditor';
@@ -32,12 +32,12 @@ export default class BpmnTab extends Component {
 
     return (
       <Fragment key={ tab.id }>
-        <MultiEditorTab
+        <MultiSheetTab
           id={ `${ tab.id }` }
           tab={ tab }
           xml={ initialXML }
           onChanged={ onChanged }
-          editors={ [
+          providers={ [
             {
               type: 'bpmn',
               editor: BpmnEditor,
@@ -46,7 +46,7 @@ export default class BpmnTab extends Component {
             {
               type: 'xml',
               editor: XMLEditor,
-              fallbackEditor: true,
+              isFallback: true,
               defaultName: 'XML'
             }
           ] } />
