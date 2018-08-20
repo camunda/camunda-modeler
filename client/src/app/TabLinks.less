@@ -1,0 +1,69 @@
+:local(.TabLinks) {
+  margin-top: 10px;
+  flex: initial;
+
+  .tab-link {
+    position: relative;
+    display: inline-block;
+    min-width: 30px;
+    margin-right: 5px;
+    padding: 7px 6px;
+    text-align: center;
+    border-top: solid 2px #ddd;
+    border-right: solid 1px #ddd;
+    border-left: solid 1px #ddd;
+    border-radius: 2px 2px 0 0;
+    background: #fff;
+    cursor: default;
+
+    margin-bottom: -1px;
+    position: relative;
+
+    &.active,
+    &:hover {
+      border-top-color: #489d12;
+
+      &:before {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        border-bottom: solid 3px white;
+        z-index: 5;
+      }
+    }
+  }
+
+  .close {
+    display: inline-block;
+    margin: -1px 0 1px 5px;
+    padding: 0 2px;
+    font-size: 18px;
+    line-height: 9px;
+    vertical-align: middle;
+    width: 13px;
+    padding: 2px 0 0 1px;
+
+    &:before {
+      content: '×';
+    }
+  }
+
+
+  .tab-link.dirty .close {
+
+    &:not(:hover) {
+      color: orange;
+      margin: -3px 0 2px 5px;
+      padding: 0;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    &:not(:hover):before {
+      content: '○';
+    }
+  }
+
+}

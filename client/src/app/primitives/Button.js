@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 
 import classNames from 'classnames';
 
-import {
-  Base,
-  Disabled,
-  Primary,
-} from './Button.css';
+import style from './Button.less';
 
 
 export default class Button extends Component {
@@ -16,15 +12,16 @@ export default class Button extends Component {
     const {
       disabled,
       primary,
+      className,
       ...rest
     } = this.props;
 
     return (
       <button className={
-        classNames(Base, {
-          [Disabled]: disabled,
-          [Primary]: primary
-        })
+        classNames(style.Button, {
+          disabled,
+          primary
+        }, className)
       } { ...rest } />
     );
   }

@@ -1,18 +1,28 @@
-:local(.Container) {
+:local(.ToolbarContainer) {
 
-  padding: 5px;
+  padding: 2px;
   border: solid 1px #ddd;
   border-radius: 2px;
   flex: initial;
 
-  > div,
-  > button {
-    display: inline;
-    margin-right: 5px;
+  display: flex;
+  flex-direction: row;
+  flex-align: left;
+
+  > * {
+    margin: 2px 4px;
+    display: block;
   }
 
-  > *:last-child {
-    margin-right: 0;
+  > * + * {
+    margin-left: 0;
   }
 
+  > .separator {
+    background: #CCC;
+    width: 1px;
+    box-shadow: 0 0 1px #EEE;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 }
