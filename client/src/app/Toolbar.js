@@ -3,17 +3,23 @@ import React, { Component } from 'react';
 import Slot from './slot-fill/Slot';
 
 import {
-  Container
+  ToolbarContainer
 } from './Toolbar.less';
 
 export default class Toolbar extends Component {
   render() {
     return (
-      <div className={ Container }>
-        <Slot name="buttons" group={ groupButtons } separator={ (key) => <hr key={ key } /> } />
+      <div className={ ToolbarContainer }>
+        <Slot name="buttons" group={ groupButtons } separator={ (key) => <Separator key={ key } /> } />
       </div>
     );
   }
+}
+
+function Separator(props) {
+  return (
+    <span className={ 'separator' } { ...props }></span>
+  );
 }
 
 

@@ -1,25 +1,13 @@
-import styled from 'styled-components';
+import React from 'react';
 
-const MultiButton = styled.div`
-  display: inline-block;
+import style from './Button.less';
 
-  > button {
-    margin: 0;
-    border-radius: 0;
-    border-left: none;
+import classNames from 'classnames';
 
-    &:first-child {
-      border-left: solid 1px #ddd;
-      border-top-left-radius: 2px;
-      border-bottom-left-radius: 2px;
-    }
-
-    &:last-child {
-      border-top-right-radius: 2px;
-      border-bottom-right-radius: 2px;
-    }
-  }
-`;
-
-
-export default MultiButton;
+export default function MultiButton(props) {
+  return (
+    <div className={ classNames(style.MultiButton, props.className) }>
+      { props.children }
+    </div>
+  );
+}

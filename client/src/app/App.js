@@ -15,7 +15,7 @@ import EmptyTab from './EmptyTab';
 
 import { Button, MultiButton, Tab } from './primitives';
 
-import Css from './App.css';
+import css from './App.less';
 
 let tabId = 0;
 
@@ -29,7 +29,7 @@ const LOGO_SRC = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org
 export function TabLoading() {
   return (
     <Tab>
-      <img className={ Css.Logo } src={ LOGO_SRC } alt="bpmn.io logo" />
+      <img className={ css.Logo } src={ LOGO_SRC } alt="bpmn.io logo" />
     </Tab>
   );
 }
@@ -215,7 +215,7 @@ export class AppComponent extends Component {
     console.log('%cApp#render', 'background: #52B415; color: white; padding: 2px 4px');
 
     return (
-      <div className={ Css.App }>
+      <div className={ css.App }>
         <SlotFillRoot>
 
           <Toolbar />
@@ -270,21 +270,23 @@ export class AppComponent extends Component {
             </Button>
           </Fill>
 
-          <TabLinks
-            tabs={ tabs }
-            activeTab={ activeTab }
-            onSelect={ selectTab }
-            onClose={ closeTab }
-            onCreate={ () => {
-              createTab('bpmn', 'bpmn');
-            } } />
+          <div className="tabs">
+            <TabLinks
+              tabs={ tabs }
+              activeTab={ activeTab }
+              onSelect={ selectTab }
+              onClose={ closeTab }
+              onCreate={ () => {
+                createTab('bpmn', 'bpmn');
+              } } />
 
-          <div className={ Css.ActiveTab }>
-            <Tab
-              key={ activeTab.id }
-              tab={ activeTab }
-              onChanged={ updateTab }
-            />
+            <div className="tab-container">
+              <Tab
+                key={ activeTab.id }
+                tab={ activeTab }
+                onChanged={ updateTab }
+              />
+            </div>
           </div>
         </SlotFillRoot>
       </div>
