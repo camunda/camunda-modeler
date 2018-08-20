@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 
-import MultiSheetTab from './MultiSheetTab';
+import MultiSheetTab from '../MultiSheetTab';
 
 import BpmnEditor from './BpmnEditor';
-import XMLEditor from './xml/XMLEditor';
+import XMLEditor from '../xml/XMLEditor';
 
 const initialXML = `
   <?xml version="1.0" encoding="UTF-8"?>
