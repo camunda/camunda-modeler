@@ -187,6 +187,12 @@ export class BpmnEditor extends CachedComponent {
     modeler.get('editorActions').trigger(context.editorAction);
   }
 
+  saveDiagram = () => {
+    modeler.saveXML((err, result) => {
+      console.log(result);
+    });
+  }
+
   handleSetColor = (event, context) => {
     const {
       modeler
@@ -213,6 +219,7 @@ export class BpmnEditor extends CachedComponent {
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
           <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
           <Button disabled={ !this.state.align } onClick={ () => this.align('left') }>Align Left</Button>
+          <Button onClick={ this.saveDiagram }>Save Diagram</Button>
         </Fill>
 
         <Container innerRef={ this.ref }></Container>
