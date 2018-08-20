@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-import MultiEditorTab from '../MultiEditorTab';
+import MultiSheetTab from '../MultiSheetTab';
 
 import DmnEditor from './DmnEditor';
 import XMLEditor from '../xml/XMLEditor';
@@ -49,12 +49,12 @@ export default class DmnTab extends Component {
 
     return (
       <Fragment key={ tab.id }>
-        <MultiEditorTab
+        <MultiSheetTab
           id={ `${ tab.id }` }
           tab={ tab }
           xml={ initialXML }
           onChanged={ onChanged }
-          editors={ [
+          providers={ [
             {
               type: 'dmn',
               editor: DmnEditor,
@@ -63,7 +63,7 @@ export default class DmnTab extends Component {
             {
               type: 'xml',
               editor: XMLEditor,
-              fallbackEditor: true,
+              isFallback: true,
               defaultName: 'XML'
             }
           ] } />

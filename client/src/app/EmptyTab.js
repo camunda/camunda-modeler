@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 
 import Slot from './slot-fill/Slot';
 
-import { Tab } from './primitives';
-
+import {
+  Tab
+} from './primitives';
 
 export default class EmptyTab extends Component {
   render() {
