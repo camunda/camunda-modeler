@@ -1,35 +1,31 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
-import { Fill } from '../slot-fill';
+import { Fill } from '../../slot-fill';
 
-import { Button } from '../primitives';
+import { Button } from '../../primitives';
 
 import {
   WithCache,
   WithCachedState,
   CachedComponent
-} from '../cached';
+} from '../../cached';
 
-import { EventListener } from '../events';
+import { EventListener } from '../../events';
 
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
 
+import 'bpmn-js-properties-panel/styles/properties.less';
+
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 
-import styled from 'styled-components';
+import {
+  bpmnContainer
+} from './BpmnEditor.less';
 
-
-const Container = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-`;
 
 export class BpmnEditor extends CachedComponent {
 
@@ -53,9 +49,9 @@ export class BpmnEditor extends CachedComponent {
 
     modeler.attachTo(this.ref.current);
 
-    // const propertiesPanel = modeler.get('propertiesPanel');
+    const propertiesPanel = modeler.get('propertiesPanel');
 
-    // propertiesPanel.attachTo(this.propertiesPanelRef.current);
+    propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
     this.checkImport();
   }
@@ -69,9 +65,9 @@ export class BpmnEditor extends CachedComponent {
 
     modeler.detach();
 
-    // const propertiesPanel = modeler.get('propertiesPanel');
+    const propertiesPanel = modeler.get('propertiesPanel');
 
-    // propertiesPanel.detach();
+    propertiesPanel.detach();
   }
 
 
@@ -188,6 +184,10 @@ export class BpmnEditor extends CachedComponent {
   }
 
   saveDiagram = () => {
+    const {
+      modeler
+    } = this.getCached();
+
     modeler.saveXML((err, result) => {
       console.log(result);
     });
@@ -211,7 +211,7 @@ export class BpmnEditor extends CachedComponent {
     console.log('%cBpmnEditor#render', 'background: blue; color: white; padding: 2px 4px', this.state);
 
     return (
-      <Fragment>
+      <div className={ bpmnContainer }>
         <EventListener event="triggerEditorAction" handler={ this.handleTriggerEditorAction } />
         <EventListener event="setColor" handler={ this.handleSetColor } />
 
@@ -222,9 +222,14 @@ export class BpmnEditor extends CachedComponent {
           <Button onClick={ this.saveDiagram }>Save Diagram</Button>
         </Fill>
 
-        <Container innerRef={ this.ref }></Container>
-        <div ref={ this.propertiesPanelRef }></div>
-      </Fragment>
+        <div className="diagram" ref={ this.ref }></div>
+
+        <div className="properties">
+          <div className="toggle">Properties Panel</div>
+          <div className="resize-handle"></div>
+          <div className="properties-container" ref={ this.propertiesPanelRef }></div>
+        </div>
+      </div>
     );
   }
 

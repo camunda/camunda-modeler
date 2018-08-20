@@ -178,7 +178,7 @@ export class AppComponent extends Component {
     var loader;
 
     if (type === 'bpmn') {
-      loader = import('./tabs/BpmnTab');
+      loader = import('./tabs/bpmn');
     }
 
     if (type === 'dmn') {

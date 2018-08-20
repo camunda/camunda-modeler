@@ -1,20 +1,9 @@
 .tab-base() {
   border: solid 1px #ddd;
-  flex: 1;
 }
 
 :local(.tabContainer) {
-  height: 100%;
-  width: 100%;
   position: relative;
-
-  > .contents {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-  }
 
   display: flex;
   flex: 1;
@@ -106,6 +95,10 @@
 
     &:before {
       content: '×';
+    }
+
+    &:hover {
+      color: orange;
     }
   }
 
