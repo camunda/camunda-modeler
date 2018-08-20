@@ -29,7 +29,7 @@ const LOGO_SRC = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org
 export function TabLoading() {
   return (
     <Tab>
-      <img className={ css.Logo } src={ LOGO_SRC } alt="bpmn.io logo" />
+      <img className={ css.logo } src={ LOGO_SRC } alt="bpmn.io logo" />
     </Tab>
   );
 }
