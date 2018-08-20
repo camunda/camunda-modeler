@@ -94,7 +94,8 @@ export class AppComponent extends Component {
     });
   }
 
-  closeTab = tab => {
+  closeTab = (tab) => {
+
     const tabs = this.state.tabs.filter(t => t !== tab);
 
     let activeTab;
@@ -139,20 +140,30 @@ export class AppComponent extends Component {
 
   updateTab = (tab, properties) => {
     console.log('%cApp#updateTab', 'color: #52B415');
+
     let { activeTab, tabs } = this.state;
 
-    // TODO: fix, comparison by reference won't work
-    const index = tabs.indexOf(tab);
+    const updatedTabs = tabs.map((t) => {
 
-    const updatedTab = Object.assign(tab, properties);
+      if (t.id === tab.id) {
+        return {
+          ...t,
+          ...properties
+        };
+      } else {
+        return t;
+      }
+    });
 
-    tabs.splice(index, 1, updatedTab);
-
-    activeTab = tab === activeTab ? updatedTab : activeTab;
+    const newActiveTab = (
+      activeTab.id === tab.id ?
+        updatedTabs.find(t => t.id === tab.id) :
+        activeTab
+    );
 
     this.setState({
-      tabs,
-      activeTab
+      tabs: updatedTabs,
+      activeTab: newActiveTab
     });
   }
 
