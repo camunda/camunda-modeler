@@ -9,7 +9,7 @@ import {
 export default class EmptyTab extends Component {
   render() {
     return (
-      <Tab>
+      <Tab className="tab">
         <Slot name="empty-tab-buttons" />
       </Tab>
     );

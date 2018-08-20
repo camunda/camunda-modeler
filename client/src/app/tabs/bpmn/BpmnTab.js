@@ -35,7 +35,7 @@ export default class BpmnTab extends Component {
         <MultiSheetTab
           id={ `${ tab.id }` }
           tab={ tab }
-          xml={ initialXML }
+          xml={ tab.content || initialXML }
           onChanged={ onChanged }
           providers={ [
             {

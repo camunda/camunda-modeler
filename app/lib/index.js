@@ -318,6 +318,8 @@ app.on('app:client-ready', function() {
   });
 
   renderer.send('client:open-files', files);
+
+  renderer.send('client:started');
 });
 
 renderer.on('client:ready', function() {

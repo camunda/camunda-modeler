@@ -1,5 +1,6 @@
 .tab-base() {
   border: solid 1px #ddd;
+  flex: 1;
 }
 
 :local(.tabContainer) {
@@ -72,6 +73,10 @@
       border-radius: 0 0 2px 2px;
       padding: 5px 7px;
       margin-top: -1px;
+
+      &:first-child {
+        margin-left: 10px;
+      }
 
       &.active {
         &:before {
