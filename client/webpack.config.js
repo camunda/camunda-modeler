@@ -30,14 +30,14 @@ module.exports = {
             test: /\.css$/,
             use: [
               'style-loader',
-              'css-loader'
+              cssLoader()
             ]
           },
           {
             test: /\.less$/,
             use: [
               'style-loader',
-              'css-loader',
+              cssLoader(),
               'less-loader'
             ]
           },
@@ -78,6 +78,20 @@ module.exports = {
 
 // helpers //////////////////////
 
+
+function cssLoader() {
+
+  if (DEV) {
+    return {
+      loader: 'css-loader',
+      options: {
+        localIdentName: '[path][name]__[local]--[hash:base64:5]'
+      }
+    };
+  } else {
+    return 'css-loader';
+  }
+}
 
 /**
  * Patch index.html CSP directive to make sure we can use
