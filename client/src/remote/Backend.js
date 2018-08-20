@@ -33,12 +33,12 @@ export default class Backend {
 
       this.once(event + ':response:' + id, function(evt, args) {
         if (isString(args[0])) {
-          args[0] = new Error(args[0]);
-
-          return reject(...args);
+          return reject(new Error(args[0]));
         }
 
-        return resolve(...args);
+        var actualArgs = args.slice(1);
+
+        return resolve(...actualArgs);
       });
 
       this.ipcRenderer.send(event, id, args);
@@ -50,8 +50,24 @@ export default class Backend {
     this.ipcRenderer.on(event, callback);
   }
 
+  off(event, callback) {
+    this.ipcRenderer.off(event, callback);
+  }
+
   once(event, callback) {
     this.ipcRenderer.once(event, callback);
+  }
+
+  sendQuitAllowed = () => {
+    this.send('app:quit-allowed');
+  }
+
+  sendQuitAborted = () => {
+    this.send('app:quit-aborted');
+  }
+
+  sendReady = () => {
+    this.send('client:ready');
   }
 
 }
