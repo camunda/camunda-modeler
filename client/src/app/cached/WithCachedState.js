@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 
 /**
@@ -16,9 +16,9 @@ import React, { Component } from 'react';
  *
  * @param {Component} Comp
  */
-export default function WithCachedState(Comp) {
+export default function(Comp) {
 
-  class LazyInitiating extends Component {
+  class WithCachedState extends PureComponent {
 
     constructor(props) {
       super(props);
@@ -45,7 +45,15 @@ export default function WithCachedState(Comp) {
             ? Comp.createCachedState()
             : {};
 
-        cachedState = cache.add(id, initialCachedState);
+        const {
+          __destroy,
+          ...cached
+        } = initialCachedState;
+
+        cachedState = cache.add(id, {
+          cached,
+          __destroy
+        });
       }
 
       this.state = cachedState;
@@ -59,8 +67,10 @@ export default function WithCachedState(Comp) {
       } = this.props;
 
       const newState = {
-        ...this.state,
-        ...state,
+        cached: {
+          ...this.state.cached,
+          ...state
+        },
         __destroy: this.state.__destroy
       };
 
@@ -81,20 +91,20 @@ export default function WithCachedState(Comp) {
       const {
         // eslint-disable-next-line
         __destroy,
-        ...cachedState
+        cached
       } = this.state;
 
       return (
         <Comp
           { ...rest }
           ref={ forwardedRef }
-          cachedState={ cachedState }
+          cachedState={ cached }
           setCachedState={ this.setCachedState } />
       );
     }
   }
 
   return React.forwardRef((props, ref) => {
-    return <LazyInitiating { ...props } forwardedRef={ ref } />;
+    return <WithCachedState { ...props } forwardedRef={ ref } />;
   });
 }

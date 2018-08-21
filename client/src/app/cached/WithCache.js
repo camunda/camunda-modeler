@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import CacheContext from './CacheContext';
 
@@ -8,7 +8,7 @@ import CacheContext from './CacheContext';
  */
 export default function WithCache(Comp) {
 
-  class WithCache extends Component {
+  class WithCache extends PureComponent {
     render() {
       console.log('%cWithCache#render', 'background: #52B415; color: white; padding: 2px 4px');
       const { forwardedRef, ...rest } = this.props;
