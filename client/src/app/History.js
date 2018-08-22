@@ -99,6 +99,6 @@ export default class History {
       return false;
     });
 
-    this.idx = idx - 1;
+    this.idx = idx;
   }
 }

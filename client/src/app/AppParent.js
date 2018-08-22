@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 
-import debug from 'debug';
+// import debug from 'debug';
 
 import App from './App';
 
 
-const log = debug('AppParent');
+const log = console.log;
+// debug('AppParent');
 
 
 export default class AppParent extends Component {
@@ -16,17 +17,17 @@ export default class AppParent extends Component {
     this.appRef = React.createRef();
   }
 
-  triggerAction = (event, action) => {
-    log('trigger action', action);
+  triggerAction = (event, action, options) => {
+    log('trigger action', action, options);
 
     const {
       backend
     } = this.props.globals;
 
-    const promise = this.getApp().triggerAction(action);
+    const result = this.getApp().triggerAction(action, options);
 
     if (action === 'quit') {
-      promise.then(
+      Promise.resolve(result).then(
         backend.sendQuitAllowed,
         backend.sendQuitAborted
       );
