@@ -17,6 +17,9 @@ module.exports = {
     chunkFilename: '[name].[id].js',
     crossOriginLoading: DEV ? 'anonymous' : false
   },
+  resolve: DEV && {
+    mainFields: [ 'browser', 'dev:module', 'module', 'main' ]
+  } || { },
   module: {
     rules: [
       {
@@ -71,7 +74,7 @@ module.exports = {
     fs: 'empty',
     net: 'empty',
     tls: 'empty',
-    child_process: 'empty',
+    child_process: 'empty'
   }
 };
 
