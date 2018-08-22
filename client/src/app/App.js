@@ -526,7 +526,7 @@ export class App extends Component {
 
             <Button
               primary
-              onClick={ () => this.handleCreate('dmn')  }
+              onClick={ () => this.handleCreate('dmn') }
             >
               Create DMN Tab
             </Button>
