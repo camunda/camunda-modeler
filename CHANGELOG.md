@@ -6,6 +6,12 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 2.0.0-4
+
+_This is a pre-release_.
+
+* `CHORE`: bump `electron` version
+
 ## 2.0.0-3
 
 _This is a pre-release_.
