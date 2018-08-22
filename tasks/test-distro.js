@@ -52,8 +52,7 @@ const expectedFiles = {
         'support/register_fileassoc.bat',
         'VERSION'
       ]
-    },
-    'camunda-modeler-${version}-win-setup.exe'
+    }
   ],
   linux: [
     {
