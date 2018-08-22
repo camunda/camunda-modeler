@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 import MultiSheetTab from '../MultiSheetTab';
 
@@ -31,26 +31,24 @@ export default class BpmnTab extends Component {
     } = this.props;
 
     return (
-      <Fragment key={ tab.id }>
-        <MultiSheetTab
-          id={ `${ tab.id }` }
-          tab={ tab }
-          xml={ tab.content || initialXML }
-          onChanged={ onChanged }
-          providers={ [
-            {
-              type: 'bpmn',
-              editor: BpmnEditor,
-              defaultName: 'Diagram'
-            },
-            {
-              type: 'xml',
-              editor: XMLEditor,
-              isFallback: true,
-              defaultName: 'XML'
-            }
-          ] } />
-      </Fragment>
+      <MultiSheetTab
+        id={ `${ tab.id }` }
+        tab={ tab }
+        xml={ tab.content || initialXML }
+        onChanged={ onChanged }
+        providers={ [
+          {
+            type: 'bpmn',
+            editor: BpmnEditor,
+            defaultName: 'Diagram'
+          },
+          {
+            type: 'xml',
+            editor: XMLEditor,
+            isFallback: true,
+            defaultName: 'XML'
+          }
+        ] } />
     );
   }
 }
