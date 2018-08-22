@@ -14,7 +14,8 @@ module.exports = {
   output: {
     path: __dirname + '/build',
     filename: '[name].js',
-    chunkFilename: '[name].[id].js'
+    chunkFilename: '[name].[id].js',
+    crossOriginLoading: DEV ? 'anonymous' : false
   },
   module: {
     rules: [
@@ -63,7 +64,7 @@ module.exports = {
     ])
   ],
   // ship source map during development only
-  devtool: DEV && 'cheap-eval-source-map',
+  devtool: DEV && 'cheap-module-source-map',
   // don't bundle shims for node globals
   node: {
     dgram: 'empty',
@@ -104,8 +105,8 @@ function applyDevCSP(content, path) {
 
     return (
       html.replace(
-        'script-src \'self\'',
-        'script-src \'self\' \'unsafe-eval\''
+        '<meta http-equiv="Content-Security-Policy" content="script-src \'self\'" />',
+        ''
       )
     );
   }

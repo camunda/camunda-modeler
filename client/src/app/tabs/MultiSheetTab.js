@@ -77,6 +77,10 @@ class MultiSheetTab extends CachedComponent {
     );
   }
 
+  triggerAction = (action, options) => {
+    this.editorRef.current.triggerAction(action, options);
+  }
+
   switchSheet = (sheet) => {
 
     const {
@@ -92,9 +96,6 @@ class MultiSheetTab extends CachedComponent {
         activeSheet: sheet
       });
     }
-
-    console.log(sheet);
-    console.log(this.editorRef.current);
 
     this.editorRef.current.getXML((xml) => {
       this.setCached({

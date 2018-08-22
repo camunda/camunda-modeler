@@ -70,4 +70,8 @@ export default class Backend {
     this.send('client:ready');
   }
 
+  updateMenu = (state) => {
+    this.send('menu:update', state);
+  }
+
 }

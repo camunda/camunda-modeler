@@ -41,6 +41,16 @@ const initialXML = `
 
 export default class DmnTab extends Component {
 
+  constructor() {
+    super();
+
+    this.tabRef = React.createRef();
+  }
+
+  triggerAction(action, options) {
+    this.tabRef.current.triggerAction(action, options);
+  }
+
   render() {
     const {
       tab,
@@ -54,6 +64,7 @@ export default class DmnTab extends Component {
           tab={ tab }
           xml={ tab.content || initialXML }
           onChanged={ onChanged }
+          ref={ this.tabRef }
           providers={ [
             {
               type: 'dmn',

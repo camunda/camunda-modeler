@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { CacheContext } from './cached';
+import { WithCache } from './cached';
 
 import {
   Fill,
@@ -8,8 +8,6 @@ import {
 } from './slot-fill';
 
 import classNames from 'classnames';
-
-import { EventsContext } from './events';
 
 import Toolbar from './Toolbar';
 import EmptyTab from './EmptyTab';
@@ -22,7 +20,7 @@ import {
   Tab
 } from './primitives';
 
-import AppBackendBridge from './AppBackendBridge';
+import History from './History';
 
 import css from './App.less';
 
@@ -32,6 +30,10 @@ const tabLoaded = {
   empty: EmptyTab
 };
 
+const EMPTY_TAB = {
+  id: '__empty',
+  type: 'empty'
+};
 
 const LOGO_SRC = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20960%20960%22%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M960%2060v839c0%2033-27%2061-60%2061H60c-33%200-60-27-60-60V60C0%2027%2027%200%2060%200h839c34%200%2061%2027%2061%2060z%22%2F%3E%3Cpath%20fill%3D%22%23DDD%22%20d%3D%22M217%20548a205%20205%200%200%200-144%2058%20202%20202%200%200%200-4%20286%20202%20202%200%200%200%20285%203%20200%20200%200%200%200%2048-219%20203%20203%200%200%200-185-128zM752%206a206%20206%200%200%200-192%20285%20206%20206%200%200%200%20269%20111%20207%20207%200%200%200%20111-260A204%20204%200%200%200%20752%206zM62%200A62%2062%200%200%200%200%2062v398l60%2046a259%20259%200%200%201%2089-36c5-28%2010-57%2014-85l99%202%2012%2085a246%20246%200%200%201%2088%2038l70-52%2069%2071-52%2068c17%2030%2029%2058%2035%2090l86%2014-2%20100-86%2012a240%20240%200%200%201-38%2089l43%2058h413c37%200%2060-27%2060-61V407a220%20220%200%200%201-44%2040l21%2085-93%2039-45-76a258%20258%200%200%201-98%201l-45%2076-94-39%2022-85a298%20298%200%200%201-70-69l-86%2022-38-94%2076-45a258%20258%200%200%201-1-98l-76-45%2040-94%2085%2022a271%20271%200%200%201%2041-47z%22%2F%3E%3C%2Fsvg%3E';
 
@@ -41,84 +43,156 @@ export class App extends Component {
   constructor(props, context) {
     super();
 
-    this._emptyTab = {
-      type: 'empty',
-      id: '__empty'
-    };
-
-    const initialTab = {
-      type: 'bpmn',
-      content: null,
-      id: 'diagram_0',
-      name: 'diagram_0.bpmn'
-    };
 
     this.state = {
-      tabs: [
-        initialTab
-      ],
-      activeTab: initialTab,
-      Tab: this.loadTab(initialTab)
+      tabs: [],
+      activeTab: null
     };
+
+    this.tabHistory = new History();
+
+    this.tabRef = React.createRef();
   }
 
-  createTab = (type, fileExtension) => {
-    const id = this.getNextTabId();
+  createTab = (type = 'bpmn') => {
+    const id = nextId();
 
-    const name = `diagram_${id}.${fileExtension}`;
+    const name = `diagram_${id}.${type}`;
 
     const tab = {
-      type,
+      id,
       name,
-      content: null,
-      id
+      type
     };
 
-    this.setState({
-      tabs: [...this.state.tabs, tab],
-      activeTab: tab,
-      Tab: this.loadTab(tab)
+    this.addTab(tab);
+
+    this.showTab(tab);
+  }
+
+  /**
+   * Add a tab to the tab list.
+   */
+  addTab(tab) {
+
+    console.log('Add tab', tab.type);
+
+    this.setState((state) => {
+      const {
+        tabs,
+        activeTab
+      } = state;
+
+      if (tabs.indexOf(tab) !== -1) {
+        throw new Error('tab exists');
+      }
+
+      const insertIdx = tabs.indexOf(activeTab) + 1;
+
+      return {
+        tabs: [
+          ...tabs.slice(0, insertIdx),
+          tab,
+          ...tabs.slice(insertIdx)
+        ]
+      };
+    });
+  }
+
+
+  /**
+   * Show the tab.
+   *
+   * @param {Tab} tab
+   */
+  showTab = (tab) => {
+
+    const {
+      activeTab
+    } = this.state;
+
+    if (tab === activeTab) {
+      return;
+    }
+
+    const tabHistory = this.tabHistory;
+
+    tabHistory.push(tab);
+
+    this.setActiveTab(tab);
+  }
+
+  /**
+   * Navigate shown tabs in given direction.
+   */
+  navigate(direction) {
+
+    const {
+      activeTab,
+      tabs
+    } = this.state;
+
+    // next tab in line as a fallback to history
+    // navigation
+    const fallbackTab = getNextTab(tabs, activeTab, direction);
+
+    const tabHistory = this.tabHistory;
+
+    const nextActiveTab = tabHistory.navigate(direction, fallbackTab);
+
+    this.setActiveTab(nextActiveTab);
+  }
+
+  setActiveTab(tab) {
+
+    this.setState((state) => {
+      const {
+        activeTab
+      } = state;
+
+      if (activeTab === tab) {
+        return;
+      }
+
+      const navigationHistory = this.tabHistory;
+
+      if (navigationHistory.get() !== tab) {
+        navigationHistory.push(tab);
+      }
+
+      return {
+        activeTab: tab,
+        Tab: this.loadTab(tab)
+      };
     });
   }
 
   closeTab = (tab) => {
 
-    const tabs = this.state.tabs.filter(t => t !== tab);
+    const {
+      activeTab,
+      tabs
+    } = this.state;
 
-    let activeTab;
+    const newTabs = tabs.filter(t => t !== tab);
 
-    if (this.state.activeTab === tab) {
-
-      if (tabs.length) {
-        let index = Math.max(0, tabs.indexOf(tab) - 1);
-
-        activeTab = tabs[index];
-      } else {
-        activeTab = this._emptyTab;
-      }
-
-    } else {
-      activeTab = this.state.activeTab;
+    // open previous tab, if it exists
+    if (activeTab === tab) {
+      this.navigate(-1);
     }
 
+    this.tabHistory.purge(tab);
+
     this.setState({
-      tabs: tabs,
-      activeTab: activeTab,
-      Tab: this.loadTab(activeTab)
+      tabs: newTabs
     }, () => {
       this.props.cache.destroy(tab.id);
     });
+
   }
 
   selectTab = tab => {
-    if (tab === this.state.activeTab) {
-      return;
-    }
-
-    this.setState({
-      activeTab: tab,
-      Tab: this.loadTab(tab)
-    });
+    this.setActiveTab(tab);
   }
 
   showOpenDialog = () => {
@@ -129,26 +203,25 @@ export class App extends Component {
 
   openFiles = (files) => {
 
+    if (!files.length) {
+      return;
+    }
+
     const newTabs = files.map((f) => {
 
       return {
         name: f.name,
         content: f.contents,
         type: f.name.substring(f.name.lastIndexOf('.') + 1),
-        id: this.getNextTabId()
+        id: nextId()
       };
     });
 
-    const newActiveTab = newTabs[newTabs.length - 1] || this.state.activeTab;
-
-    this.setState({
-      tabs: [
-        ...this.state.tabs,
-        ...newTabs
-      ],
-      activeTab: newActiveTab,
-      Tab: this.loadTab(newActiveTab)
+    newTabs.forEach((tab) => {
+      this.addTab(tab);
     });
+
+    this.selectTab(newTabs[newTabs.length - 1]);
   }
 
   updateTab = (tab, properties) => {
@@ -159,10 +232,15 @@ export class App extends Component {
     const updatedTabs = tabs.map((t) => {
 
       if (t.id === tab.id) {
-        return {
+
+        const newTab = {
           ...t,
           ...properties
         };
+
+        this.tabHistory.replace(t, newTab);
+
+        return newTab;
       } else {
         return t;
       }
@@ -220,89 +298,125 @@ export class App extends Component {
     return LoadingTab;
   }
 
-  getNextTabId() {
-    tabId++;
+  componentDidMount() {
 
-    return tabId;
+    setTimeout(() => {
+      this.createTab('bpmn');
+      this.createTab('bpmn');
+      this.createTab('bpmn');
+      this.createTab('dmn');
+      this.createTab('dmn');
+      this.createTab('dmn');
+      this.createTab('cmmn');
+      this.createTab('bpmn');
+    });
+
+    this.props.onReady();
   }
 
-  componentDidMount() {
-    this.props.globals.eventBus.emit('app:ready');
+  componentDidUpdate(prevProps, prevState) {
+
+    const {
+      activeTab
+    } = this.state;
+
+    // TODO: move this outside of app
+    if (prevState.activeTab !== activeTab) {
+      this.props.onToolStateChanged(activeTab, {});
+    }
+  }
+
+  handleCreate = (type) => {
+    this.createTab(type);
+  }
+
+  handleOpen = () => {
+    this.showOpenDialog();
+  }
+
+  handleNavigate = (direction) => {
+    this.navigate(direction);
+  }
+
+  triggerAction = (action, options) => {
+
+    if (action === 'open-diagram') {
+      return this.showOpenDialog();
+    }
+
+    if (action === 'quit') {
+      return this.quit();
+    }
+
+    const tab = this.tabRef.current;
+
+    console.log('trigger action', action, options);
+
+    return tab.triggerAction(action, options);
+  }
+
+  quit() {
+    return true;
+  }
+
+  composeAction = (...args) => (event) => {
+    console.log(event, args);
+
+    this.triggerAction(...args);
   }
 
   render() {
-    const activeTab = this.state.activeTab || this._emptyTab;
+    const activeTab = this.state.activeTab || EMPTY_TAB;
 
     const { tabs } = this.state;
 
     const Tab = this.state.Tab || EmptyTab;
 
-    const {
-      closeTab,
-      createTab,
-      showOpenDialog,
-      selectTab,
-      updateTab
-    } = this;
-
     console.log('%cApp#render', 'background: #52B415; color: white; padding: 2px 4px');
 
     return (
       <div className={ css.app }>
-        <AppBackendBridge
-          app={ this }
-          backend={ this.props.globals.backend }
-        />
 
         <SlotFillRoot>
 
           <Toolbar />
 
           <Fill name="buttons" group="editor">
-            <EventsContext.Consumer>
-              { events => {
-                return (
-                  <MultiButton>
-                    <Button onClick={ () => {
-                      events.fire('triggerEditorAction', { editorAction: 'selectElements' });
-                    } }>Select All</Button>
-                    <Button onClick={ () => {
-                      events.fire('setColor', { fill: 'white', stroke: '#489d12' });
-                    } }>Set Color</Button>
-                  </MultiButton>
-                );
-              } }
-            </EventsContext.Consumer>
+            <MultiButton>
+              <Button onClick={ this.composeAction('selectElements') }>Select All</Button>
+              <Button onClick={ this.composeAction('setColor', { fill: 'white', stroke: '#489d12' }) }>
+                Set Color
+              </Button>
+            </MultiButton>
           </Fill>
 
           <Fill name="buttons" group="general">
-            <Button onClick={ showOpenDialog }>
+            <Button onClick={ this.handleOpen }>
               Open file
             </Button>
 
+            <MultiButton>
+              <Button onClick={ () => this.handleNavigate(-1) }>&laquo;</Button>
+              <Button onClick={ () => this.handleNavigate(1) }>&raquo;</Button>
+            </MultiButton>
+
             <Button
               primary
-              onClick={ () => {
-                createTab('bpmn', 'bpmn');
-              } }
+              onClick={ () => this.handleCreate('bpmn') }
             >
               Create BPMN Tab
             </Button>
 
             <Button
               primary
-              onClick={ () => {
-                createTab('dmn', 'dmn');
-              } }
+              onClick={ () => this.handleCreate('dmn')  }
             >
               Create DMN Tab
             </Button>
 
             <Button
               primary
-              onClick={ () => {
-                createTab('cmmn', 'cmmn');
-              } }
+              onClick={ () => this.handleCreate('cmmn') }
             >
               Create CMMN Tab
             </Button>
@@ -313,17 +427,16 @@ export class App extends Component {
               className="primary"
               tabs={ tabs }
               activeTab={ activeTab }
-              onSelect={ selectTab }
-              onClose={ closeTab }
-              onCreate={ () => {
-                createTab('bpmn', 'bpmn');
-              } } />
+              onSelect={ this.selectTab }
+              onClose={ this.closeTab }
+              onCreate={ this.createTab } />
 
             <TabContainer className="main">
               <Tab
                 key={ activeTab.id }
                 tab={ activeTab }
-                onChanged={ updateTab }
+                onChanged={ this.updateTab }
+                ref={ this.tabRef }
               />
             </TabContainer>
           </div>
@@ -335,41 +448,71 @@ export class App extends Component {
 
 
 function missingProvider(type) {
-  return function MissingProviderTab(props) {
-    return (
-      <Tab>
-        <span>Cannot open tab: no provider for { type }.</span>
-      </Tab>
-    );
-  };
-}
+  return class MissingProviderTab extends Component {
 
-function LoadingTab() {
-  return (
-    <Tab className="loader">
-      <img className={ classNames(css.logo, 'loading') } src={ LOGO_SRC } alt="bpmn.io logo" />
-    </Tab>
-  );
-}
-
-
-/**
- * Passes cache to wrapped component WITHOUT forwarding refs.
- *
- * @param {Component} Comp
- */
-function WithCache(Comp) {
-  return class AppWithCache extends Component {
     render() {
       return (
-        <CacheContext.Consumer>
-          {
-            (cache) => <Comp { ...this.props } cache={ cache } />
-          }
-        </CacheContext.Consumer>
+        <Tab>
+          <span>Cannot open tab: no provider for { type }.</span>
+        </Tab>
       );
     }
   };
 }
 
+class LoadingTab extends Component {
+
+  render() {
+    return (
+      <Tab className="loader">
+        <img className={ classNames(css.logo, 'loading') } src={ LOGO_SRC } alt="bpmn.io logo" />
+      </Tab>
+    );
+  }
+
+}
+
+
+function nextId() {
+  tabId++;
+
+  return tabId;
+}
+
+function getNextTab(tabs, activeTab, direction) {
+  let nextIdx = tabs.indexOf(activeTab) + direction;
+
+  if (nextIdx === -1) {
+    nextIdx = tabs.length - 1;
+  }
+
+  if (nextIdx === tabs.length) {
+    nextIdx = 0;
+  }
+
+  return tabs[nextIdx];
+}
+
+
+/**
+
+
+  shouldComponentUpdate(newProps, newState) {
+
+    function compare(type, o, n) {
+
+      Object.keys(o).forEach(function(k) {
+        if (o[k] !== n[k]) {
+          console.log('%s[%s] changed', type, k, o[k], n[k]);
+        }
+      });
+    }
+
+    compare('props', this.props, newProps);
+    compare('state', this.state, newState);
+
+    return true;
+  }
+
+ */
 export default WithCache(App);
