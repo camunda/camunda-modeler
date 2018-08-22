@@ -11,7 +11,7 @@
     "dev": "cross-env NODE_ENV=development grunt auto-build"
   },
   "dependencies": {
-    "bpmn-js": "^2.4.1",
+    "bpmn-js": "^2.5.0",
     "bpmn-js-properties-panel": "^0.26.1",
     "bpmn-js-signavio-compat": "^1.0.1",
     "camunda-bpmn-moddle": "^3.0.0",
@@ -22,7 +22,7 @@
     "cmmn-js-properties-panel": "^0.6.0",
     "codemirror": "^5.37.0",
     "debug": "^3.1.0",
-    "diagram-js": "^2.5.1",
+    "diagram-js": "^2.6.0",
     "diagram-js-minimap": "^1.2.0",
     "diagram-js-origin": "^1.1.1",
     "dmn-js": "^5.1.2",
