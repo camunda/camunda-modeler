@@ -54,7 +54,7 @@ export class App extends Component {
     this.tabRef = React.createRef();
   }
 
-  createTab = (type = 'bpmn') => {
+  createDiagram = (type = 'bpmn', options) => {
     const id = nextId();
 
     const name = `diagram_${id}.${type}`;
@@ -145,25 +145,23 @@ export class App extends Component {
 
   setActiveTab(tab) {
 
-    this.setState((state) => {
-      const {
-        activeTab
-      } = state;
+    const {
+      activeTab
+    } = this.state;
 
-      if (activeTab === tab) {
-        return;
-      }
+    if (activeTab === tab) {
+      return;
+    }
 
-      const navigationHistory = this.tabHistory;
+    const navigationHistory = this.tabHistory;
 
-      if (navigationHistory.get() !== tab) {
-        navigationHistory.push(tab);
-      }
+    if (navigationHistory.get() !== tab) {
+      navigationHistory.push(tab);
+    }
 
-      return {
-        activeTab: tab,
-        Tab: this.loadTab(tab)
-      };
+    this.setState({
+      activeTab: tab,
+      Tab: this.loadTab(tab)
     });
   }
 
@@ -222,6 +220,25 @@ export class App extends Component {
     });
 
     this.selectTab(newTabs[newTabs.length - 1]);
+  }
+
+  /**
+   * Mark the active tab as shown.
+   */
+  handleTabShown = () => {
+
+    const {
+      shownTabs,
+      activeTab
+    } = this.state;
+
+
+    this.setState({
+      shownTabs: {
+        ...shownTabs,
+        [activeTab.id]: true
+      }
+    });
   }
 
   updateTab = (tab, properties) => {
@@ -301,14 +318,14 @@ export class App extends Component {
   componentDidMount() {
 
     setTimeout(() => {
-      this.createTab('bpmn');
-      this.createTab('bpmn');
-      this.createTab('bpmn');
-      this.createTab('dmn');
-      this.createTab('dmn');
-      this.createTab('dmn');
-      this.createTab('cmmn');
-      this.createTab('bpmn');
+      this.createDiagram('bpmn');
+      this.createDiagram('bpmn');
+      this.createDiagram('bpmn');
+      this.createDiagram('dmn');
+      this.createDiagram('dmn');
+      this.createDiagram('dmn');
+      this.createDiagram('cmmn');
+      this.createDiagram('bpmn');
     });
 
     this.props.onReady();
@@ -322,12 +339,15 @@ export class App extends Component {
 
     // TODO: move this outside of app
     if (prevState.activeTab !== activeTab) {
-      this.props.onToolStateChanged(activeTab, {});
+
+      this.props.onToolStateChanged(activeTab, {
+        closable: activeTab !== EMPTY_TAB
+      });
     }
   }
 
   handleCreate = (type) => {
-    this.createTab(type);
+    this.createDiagram(type);
   }
 
   handleOpen = () => {
@@ -338,14 +358,104 @@ export class App extends Component {
     this.navigate(direction);
   }
 
+  saveAllTabs = () => {
+    // TODO(nikku): implement
+    console.error('NOT IMPLEMENTED');
+  }
+
+  closeTabs = (matcher) => {
+
+    const {
+      tabs
+    } = this.state;
+
+    const allTabs = tabs.slice();
+
+    allTabs.filter(matcher).forEach((tab) => {
+      console.log('CLOSING', tab);
+
+      this.closeTab(tab);
+    });
+  }
+
+  reopenLastTab = () => {
+    // TODO(nikku): implement
+    console.error('NOT IMPLEMENTED');
+  }
+
+  showShortcuts = () => {
+    // TODO(nikku): implement
+    console.error('NOT IMPLEMENTED');
+  }
+
   triggerAction = (action, options) => {
+
+    console.log('App#triggerAction %s %o', action, options);
+
+    if (action === 'select-tab') {
+      if (options === 'next') {
+        this.navigate(1);
+      }
+
+      if (options === 'previous') {
+        this.navigate(-1);
+      }
+
+      return;
+    }
+
+    if (action === 'create-bpmn-diagram') {
+      return this.createDiagram('bpmn');
+    }
+
+    if (action === 'create-dmn-diagram') {
+      return this.createDiagram('dmn');
+    }
+
+    if (action === 'create-dmn-table') {
+      return this.createDiagram('dmn', { isTable: true });
+    }
+
+    if (action === 'create-cmmn-diagram') {
+      return this.createDiagram('cmmn');
+    }
 
     if (action === 'open-diagram') {
       return this.showOpenDialog();
     }
 
+    if (action === 'save-all') {
+      return this.saveAllTabs();
+    }
+
     if (action === 'quit') {
       return this.quit();
+    }
+
+    if (action === 'close-all-tabs') {
+      return this.closeTabs(t => true);
+    }
+
+    if (action === 'close-tab') {
+      return this.closeTabs(t => t.id === options.tabId);
+    }
+
+    if (action === 'close-active-tab') {
+      let activeId = this.state.activeTab.id;
+
+      return this.closeTabs(t => t.id === activeId);
+    }
+
+    if (action === 'close-other-tabs') {
+      return this.closeTabs(t => t.id !== options.tabId);
+    }
+
+    if (action === 'reopen-last-tab') {
+      return this.reopenLastTab();
+    }
+
+    if (action === 'show-shortcuts') {
+      return this.showShortcuts();
     }
 
     const tab = this.tabRef.current;
@@ -429,13 +539,14 @@ export class App extends Component {
               activeTab={ activeTab }
               onSelect={ this.selectTab }
               onClose={ this.closeTab }
-              onCreate={ this.createTab } />
+              onCreate={ this.createDiagram } />
 
             <TabContainer className="main">
               <Tab
                 key={ activeTab.id }
                 tab={ activeTab }
                 onChanged={ this.updateTab }
+                onShown={ this.handleTabShown }
                 ref={ this.tabRef }
               />
             </TabContainer>
