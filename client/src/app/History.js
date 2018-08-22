@@ -17,11 +17,11 @@ export default class History {
    */
   push(element) {
     this.elements = [
-      ...this.elements.slice(this.idx),
+      ...this.elements.slice(0, this.idx + 1),
       element
     ];
 
-    this.idx = this.elements.length - 1;
+    this.idx++;
   }
 
   /**

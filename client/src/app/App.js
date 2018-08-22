@@ -153,10 +153,12 @@ export class App extends Component {
       return;
     }
 
-    const navigationHistory = this.tabHistory;
+    if (tab !== EMPTY_TAB) {
+      const navigationHistory = this.tabHistory;
 
-    if (navigationHistory.get() !== tab) {
-      navigationHistory.push(tab);
+      if (navigationHistory.get() !== tab) {
+        navigationHistory.push(tab);
+      }
     }
 
     this.setState({
@@ -174,9 +176,14 @@ export class App extends Component {
 
     const newTabs = tabs.filter(t => t !== tab);
 
-    // open previous tab, if it exists
     if (activeTab === tab) {
-      this.navigate(-1);
+
+      // open previous tab, if it exists
+      if (tabs.length > 1) {
+        this.navigate(-1);
+      } else {
+        this.setActiveTab(EMPTY_TAB);
+      }
     }
 
     this.tabHistory.purge(tab);
@@ -294,9 +301,7 @@ export class App extends Component {
     }
 
     if (!loader) {
-      loader = Promise.resolve({
-        default: missingProvider(type)
-      });
+      return missingProvider(type);
     }
 
     loader.then((c) => {
@@ -447,7 +452,9 @@ export class App extends Component {
     }
 
     if (action === 'close-other-tabs') {
-      return this.closeTabs(t => t.id !== options.tabId);
+      let activeId = options && options.tabId || this.state.activeTab.id;
+
+      return this.closeTabs(t => t.id !== activeId);
     }
 
     if (action === 'reopen-last-tab') {
@@ -558,24 +565,28 @@ export class App extends Component {
 }
 
 
-function missingProvider(type) {
-  return class MissingProviderTab extends Component {
+function missingProvider(providerType) {
+  class MissingProviderTab extends Component {
 
     render() {
       return (
-        <Tab>
-          <span>Cannot open tab: no provider for { type }.</span>
+        <Tab key="missing-provider">
+          <span>
+            Cannot open tab: no provider for { providerType }.
+          </span>
         </Tab>
       );
     }
-  };
+  }
+
+  return MissingProviderTab;
 }
 
 class LoadingTab extends Component {
 
   render() {
     return (
-      <Tab className="loader">
+      <Tab className="loader" key="loading">
         <img className={ classNames(css.logo, 'loading') } src={ LOGO_SRC } alt="bpmn.io logo" />
       </Tab>
     );
