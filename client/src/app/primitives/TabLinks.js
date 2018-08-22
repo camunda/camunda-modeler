@@ -55,7 +55,7 @@ export default class TabLinks extends Component {
             className={ classNames('tab', {
               active: tabs.length === 0
             }) }
-            onClick={ onCreate }
+            onClick={ () => onCreate() }
           >
             +
           </span>
