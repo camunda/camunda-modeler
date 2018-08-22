@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { App } from './app';
+import { AppParent } from './app';
 
 import mitt from 'mitt';
 
@@ -20,7 +20,5 @@ const globals = {
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(
-  <App
-    globals={ globals }
-  />, rootElement
+  <AppParent globals={ globals } />, rootElement
 );

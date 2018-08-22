@@ -10,8 +10,6 @@ import {
   CachedComponent
 } from '../../cached';
 
-import { EventListener } from '../../events';
-
 import DmnModeler from './DmnModeler';
 
 import 'dmn-js/dist/assets/diagram-js.css';
@@ -254,14 +252,14 @@ class DmnEditor extends CachedComponent {
     }
   }
 
-  handleTriggerEditorAction = (event, context) => {
+  triggerAction = (action, options) => {
     const {
       modeler
     } = this.getCached();
 
     modeler.getActiveViewer()
       .get('editorActions')
-      .trigger(context.editorAction);
+      .trigger(action);
   }
 
   getXML(done) {
@@ -281,7 +279,6 @@ class DmnEditor extends CachedComponent {
 
     return (
       <Fragment>
-        <EventListener event="triggerEditorAction" handler={ this.handleTriggerEditorAction } />
 
         <Fill name="buttons">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
