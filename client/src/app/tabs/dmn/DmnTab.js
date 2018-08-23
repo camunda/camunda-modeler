@@ -1,49 +1,21 @@
-import React, { Component } from 'react';
-
-import MultiSheetTab from '../MultiSheetTab';
-
 import DmnEditor from './DmnEditor';
 import XMLEditor from '../xml/XMLEditor';
 
+import { createTab } from '../EditorTab';
 
-export default class DmnTab extends Component {
 
-  constructor() {
-    super();
-
-    this.tabRef = React.createRef();
+const DmnTab = createTab('DmnTab', [
+  {
+    type: 'dmn',
+    editor: DmnEditor,
+    defaultName: 'Diagram'
+  },
+  {
+    type: 'xml',
+    editor: XMLEditor,
+    isFallback: true,
+    defaultName: 'XML'
   }
+]);
 
-  triggerAction(action, options) {
-    this.tabRef.current.triggerAction(action, options);
-  }
-
-  render() {
-    const {
-      tab,
-      onChanged
-    } = this.props;
-
-    return (
-      <MultiSheetTab
-        id={ `${ tab.id }` }
-        tab={ tab }
-        xml={ tab.file.contents }
-        onChanged={ onChanged }
-        ref={ this.tabRef }
-        providers={ [
-          {
-            type: 'dmn',
-            editor: DmnEditor,
-            defaultName: 'Diagram'
-          },
-          {
-            type: 'xml',
-            editor: XMLEditor,
-            isFallback: true,
-            defaultName: 'XML'
-          }
-        ] } />
-    );
-  }
-}
+export default DmnTab;
