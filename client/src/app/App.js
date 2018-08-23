@@ -24,8 +24,6 @@ import History from './History';
 
 import css from './App.less';
 
-let tabId = 0;
-
 const tabLoaded = {
   empty: EmptyTab
 };
@@ -347,18 +345,6 @@ export class App extends Component {
     }
   }
 
-  handleCreate = (type) => {
-    this.createDiagram(type);
-  }
-
-  handleOpen = () => {
-    this.showOpenDialog();
-  }
-
-  handleNavigate = (direction) => {
-    this.navigate(direction);
-  }
-
   saveAllTabs = () => {
     // TODO(nikku): implement
     console.error('NOT IMPLEMENTED');
@@ -502,32 +488,32 @@ export class App extends Component {
           </Fill>
 
           <Fill name="buttons" group="general">
-            <Button onClick={ this.handleOpen }>
+            <Button onClick={ this.composeAction('open-diagram') }>
               Open file
             </Button>
 
             <MultiButton>
-              <Button onClick={ () => this.handleNavigate(-1) }>&laquo;</Button>
-              <Button onClick={ () => this.handleNavigate(1) }>&raquo;</Button>
+              <Button onClick={ this.composeAction('select-tab', 'previous') }>&laquo;</Button>
+              <Button onClick={ this.composeAction('select-tab', 'next') }>&raquo;</Button>
             </MultiButton>
 
             <Button
               primary
-              onClick={ () => this.handleCreate('bpmn') }
+              onClick={ this.composeAction('create-bpmn-diagram') }
             >
               Create BPMN Tab
             </Button>
 
             <Button
               primary
-              onClick={ () => this.handleCreate('dmn') }
+              onClick={ this.composeAction('create-dmn-diagram') }
             >
               Create DMN Tab
             </Button>
 
             <Button
               primary
-              onClick={ () => this.handleCreate('cmmn') }
+              onClick={ this.composeAction('create-cmmn-diagram') }
             >
               Create CMMN Tab
             </Button>
@@ -540,7 +526,7 @@ export class App extends Component {
               activeTab={ activeTab }
               onSelect={ this.selectTab }
               onClose={ this.closeTab }
-              onCreate={ this.createDiagram } />
+              onCreate={ this.composeAction('create-bpmn-diagram') } />
 
             <TabContainer className="main">
               <Tab
