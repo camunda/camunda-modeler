@@ -47,7 +47,11 @@ export class App extends Component {
       activeTab: null
     };
 
+    // TODO(nikku): make state
     this.tabHistory = new History();
+
+    // TODO(nikku): make state
+    this.closedTabs = new History();
 
     this.tabRef = React.createRef();
   }
@@ -180,6 +184,8 @@ export class App extends Component {
     }
 
     this.tabHistory.purge(tab);
+
+    this.closedTabs.push(tab);
 
     this.setState({
       tabs: newTabs
@@ -366,8 +372,13 @@ export class App extends Component {
   }
 
   reopenLastTab = () => {
-    // TODO(nikku): implement
-    console.error('NOT IMPLEMENTED');
+
+    const lastTab = this.closedTabs.pop();
+
+    if (lastTab) {
+      this.addTab(lastTab);
+      this.showTab(lastTab);
+    }
   }
 
   showShortcuts = () => {
