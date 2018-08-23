@@ -48,7 +48,7 @@ export default class TabsProvider {
 
     const counter = (
       type in createdByType
-        ? (createdByType[type]++)
+        ? (++createdByType[type])
         : (createdByType[type] = 1)
     );
 
