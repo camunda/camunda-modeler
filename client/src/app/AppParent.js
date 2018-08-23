@@ -32,6 +32,8 @@ export default class AppParent extends Component {
         backend.sendQuitAborted
       );
     }
+
+    result.catch(() => console.error);
   }
 
   openFiles = (event, files) => {

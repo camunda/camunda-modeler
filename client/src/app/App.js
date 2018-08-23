@@ -20,6 +20,9 @@ import {
   Tab
 } from './primitives';
 
+import pDefer from 'p-defer';
+import pSeries from 'p-series';
+
 import History from './History';
 
 import css from './App.less';
@@ -44,7 +47,8 @@ export class App extends Component {
 
     this.state = {
       tabs: [],
-      activeTab: null
+      activeTab: null,
+      dirtyTabs: {}
     };
 
     // TODO(nikku): make state
@@ -66,7 +70,7 @@ export class App extends Component {
 
     this.addTab(tab);
 
-    this.showTab(tab);
+    return this.showTab(tab);
   }
 
   /**
@@ -105,18 +109,19 @@ export class App extends Component {
   showTab = (tab) => {
 
     const {
-      activeTab
+      activeTab,
+      tabShown
     } = this.state;
 
     if (tab === activeTab) {
-      return;
+      return tabShown.promise;
     }
 
     const tabHistory = this.tabHistory;
 
     tabHistory.push(tab);
 
-    this.setActiveTab(tab);
+    return this.setActiveTab(tab);
   }
 
   /**
@@ -137,17 +142,18 @@ export class App extends Component {
 
     const nextActiveTab = tabHistory.navigate(direction, fallbackTab);
 
-    this.setActiveTab(nextActiveTab);
+    return this.setActiveTab(nextActiveTab);
   }
 
   setActiveTab(tab) {
 
     const {
-      activeTab
+      activeTab,
+      tabShown
     } = this.state;
 
     if (activeTab === tab) {
-      return;
+      return tabShown.promise;
     }
 
     if (tab !== EMPTY_TAB) {
@@ -158,18 +164,43 @@ export class App extends Component {
       }
     }
 
+    const deferred = pDefer();
+
     this.setState({
       activeTab: tab,
-      Tab: this.loadTab(tab)
+      Tab: this.loadTab(tab),
+      tabShown: deferred
     });
+
+    return deferred.promise;
   }
 
-  closeTab = (tab) => {
+  closeTab = async (tab) => {
+
+    if (this.isDirty(tab)) {
+      await this.saveTab(tab);
+    }
+
+    await this._removeTab(tab);
+  }
+
+  isDirty = (tab) => {
+    return !(tab.file && tab.file.path) || this.state.dirtyTabs[tab.id];
+  }
+
+  _removeTab(tab) {
 
     const {
+      tabs,
       activeTab,
-      tabs
+      openedTabs
     } = this.state;
+
+    const {
+      ...newOpenedTabs
+    } = openedTabs;
+
+    delete newOpenedTabs[tab.id];
 
     const newTabs = tabs.filter(t => t !== tab);
 
@@ -188,21 +219,25 @@ export class App extends Component {
     this.closedTabs.push(tab);
 
     this.setState({
-      tabs: newTabs
+      tabs: newTabs,
+      newOpenedTabs
     }, () => {
       this.props.cache.destroy(tab.id);
     });
-
   }
 
   selectTab = tab => {
-    this.setActiveTab(tab);
+    return this.setActiveTab(tab);
   }
 
-  showOpenDialog = () => {
-    this.props.globals.dialog.openFile(null).then((files) => {
-      this.openFiles(files);
-    });
+  askSave = (file) => {
+    return this.props.globals.dialog.askSave({ name: file.name });
+  }
+
+  showOpenDialog = async () => {
+    const files = await this.props.globals.dialog.openFile(null);
+
+    await this.openFiles(files);
   }
 
   openFiles = (files) => {
@@ -240,27 +275,52 @@ export class App extends Component {
   /**
    * Mark the active tab as shown.
    */
-  handleTabShown = () => {
+  handleTabShown = (tab) => {
 
     const {
-      shownTabs,
-      activeTab
+      openedTabs,
+      activeTab,
+      tabShown
     } = this.state;
 
+    console.log('TAB SHOWN', tab);
+
+    if (tab === activeTab) {
+      tabShown.resolve();
+    } else {
+      tabShown.reject(new Error('tab miss-match'));
+    }
 
     this.setState({
-      shownTabs: {
-        ...shownTabs,
+      openedTabs: {
+        ...openedTabs,
         [activeTab.id]: true
       }
     });
   }
 
-  updateTab = (tab, properties) => {
-    console.log('%cApp#updateTab', 'color: #52B415');
+  handleTabChanged = (tab, properties) => {
+    console.log('%cApp#handleTabChanged', 'color: #52B415');
 
-    let { activeTab, tabs } = this.state;
+    let {
+      activeTab,
+      dirtyTabs,
+      tabs
+    } = this.state;
 
+    if ('dirty' in properties) {
+
+      const newDirtyTabs = {
+        ...dirtyTabs,
+        [tab.id]: properties.dirty
+      };
+
+      return this.setState({
+        dirtyTabs: newDirtyTabs
+      });
+    }
+
+    // TODO(nikku): SEPARATE METHOD
     const updatedTabs = tabs.map((t) => {
 
       if (t.id === tab.id) {
@@ -346,14 +406,41 @@ export class App extends Component {
     if (prevState.activeTab !== activeTab) {
 
       this.props.onToolStateChanged(activeTab, {
-        closable: activeTab !== EMPTY_TAB
+        closable: activeTab !== EMPTY_TAB,
+        dirty: this.isDirty(activeTab)
       });
     }
   }
 
+  async saveTab(tab) {
+    await this.showTab(tab);
+
+    const action = await this.askSave(tab);
+
+    if (action === 'cancel') {
+      throw new Error('user canceled');
+    }
+
+    if (action === 'save') {
+      const contents = await this.tabRef.current.triggerAction('save');
+
+      // TODO(nikku): actually save using backend
+      // TODO(nikku): update dirty state once saved
+      console.log('saved contents', contents);
+    }
+  }
+
   saveAllTabs = () => {
-    // TODO(nikku): implement
-    console.error('NOT IMPLEMENTED');
+
+    const {
+      tabs
+    } = this.state;
+
+    const saveTasks = tabs.filter(this.isDirty).map((tab) => {
+      return () => this.saveTab(tab);
+    });
+
+    return pSeries(saveTasks);
   }
 
   closeTabs = (matcher) => {
@@ -364,11 +451,11 @@ export class App extends Component {
 
     const allTabs = tabs.slice();
 
-    allTabs.filter(matcher).forEach((tab) => {
-      console.log('CLOSING', tab);
-
-      this.closeTab(tab);
+    const closeTasks = allTabs.filter(matcher).map((tab) => {
+      return () => this.closeTab(tab);
     });
+
+    return pSeries(closeTasks);
   }
 
   reopenLastTab = () => {
@@ -377,8 +464,11 @@ export class App extends Component {
 
     if (lastTab) {
       this.addTab(lastTab);
-      this.showTab(lastTab);
+
+      return this.showTab(lastTab);
     }
+
+    return Promise.reject(new Error('no last tab'));
   }
 
   showShortcuts = () => {
@@ -435,7 +525,7 @@ export class App extends Component {
     }
 
     if (action === 'close-tab') {
-      return this.closeTabs(t => t.id === options.tabId);
+      return this.closeTabs(t => options && t.id === options.tabId);
     }
 
     if (action === 'close-active-tab') {
@@ -469,8 +559,8 @@ export class App extends Component {
     return true;
   }
 
-  composeAction = (...args) => (event) => {
-    this.triggerAction(...args);
+  composeAction = (...args) => async (event) => {
+    await this.triggerAction(...args);
   }
 
   render() {
@@ -534,16 +624,19 @@ export class App extends Component {
             <TabLinks
               className="primary"
               tabs={ tabs }
+              isDirty={ this.isDirty }
               activeTab={ activeTab }
               onSelect={ this.selectTab }
-              onClose={ this.closeTab }
+              onClose={ (tab) => {
+                this.triggerAction('close-tab', { tabId: tab.id }).catch(console.error);
+              } }
               onCreate={ this.composeAction('create-bpmn-diagram') } />
 
             <TabContainer className="main">
               <Tab
                 key={ activeTab.id }
                 tab={ activeTab }
-                onChanged={ this.updateTab }
+                onChanged={ this.handleTabChanged }
                 onShown={ this.handleTabShown }
                 ref={ this.tabRef }
               />
@@ -558,6 +651,10 @@ export class App extends Component {
 
 function missingProvider(providerType) {
   class MissingProviderTab extends Component {
+
+    componentDidMount() {
+      this.props.onShown(this.props.tab);
+    }
 
     render() {
       return (

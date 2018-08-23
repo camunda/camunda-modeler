@@ -14,4 +14,8 @@ export default class Dialog {
     });
   }
 
+  askSave(file) {
+    return this.backend.send('dialog:close-tab', file);
+  }
+
 }
