@@ -29,6 +29,15 @@ export default function create(options) {
 
   var instance = CodeMirror(function(_el) {
     el = _el;
+  }, {
+    autoCloseTags: true,
+    lineWrapping: true,
+    lineNumbers: true,
+    mode: {
+      name: 'application/xml',
+      htmlMode: false
+    },
+    tabSize: 2
   });
 
   instance.attachTo = function(parentNode) {
