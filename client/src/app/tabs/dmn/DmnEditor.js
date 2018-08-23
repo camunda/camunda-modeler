@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { Fill } from '../../slot-fill';
 
@@ -20,24 +20,10 @@ import 'dmn-js/dist/assets/dmn-js-drd.css';
 import 'dmn-js/dist/assets/dmn-js-literal-expression.css';
 import 'dmn-js/dist/assets/dmn-js-shared.css';
 
-import styled from 'styled-components';
+import {
+  dmnContainer
+} from './DmnEditor.less';
 
-const Container = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  .dmn-decision-table-container,
-  .viewer-container {
-    padding: 10px;
-  }
-
-  .djs-overlay .drill-down-overlay {
-    padding: 0px 5px 2px;
-  }
-`;
 
 class DmnEditor extends CachedComponent {
 
@@ -278,14 +264,15 @@ class DmnEditor extends CachedComponent {
     console.log('%cDmnEditor#render', 'background: red; color: white; padding: 2px 4px', this.state);
 
     return (
-      <Fragment>
+      <div className={ dmnContainer }>
 
         <Fill name="buttons">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
           <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
         </Fill>
-        <Container innerRef={ this.ref }></Container>
-      </Fragment>
+
+        <div className="diagram" ref={ this.ref }></div>
+      </div>
     );
   }
 
