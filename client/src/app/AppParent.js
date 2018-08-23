@@ -72,8 +72,12 @@ export default class AppParent extends Component {
   componentWillUnmount() {
 
     const {
+      globals
+    } = this.props;
+
+    const {
       backend
-    } = this.props.globals;
+    } = globals;
 
     backend.off('menu:action', this.triggerAction);
 
@@ -81,10 +85,16 @@ export default class AppParent extends Component {
   }
 
   render() {
+    const {
+      tabsProvider,
+      globals
+    } = this.props;
+
     return (
       <App
         ref={ this.appRef }
-        globals={ this.props.globals }
+        tabsProvider={ tabsProvider }
+        globals={ globals }
         onToolStateChanged={ this.handleToolStateChanged }
         onReady={ this.handleReady }
       />
