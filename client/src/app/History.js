@@ -30,7 +30,7 @@ export default class History {
   pop() {
     const element = this.elements.pop();
 
-    this.navigate(-1);
+    this.idx = Math.min(this.elements.length - 1, this.idx);
 
     return element;
   }
