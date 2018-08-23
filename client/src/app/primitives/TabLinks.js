@@ -4,6 +4,8 @@ import classNames from 'classnames';
 
 import { linksContainer } from './Tabbed.less';
 
+const noop = () => {};
+
 
 export default class TabLinks extends Component {
 
@@ -14,6 +16,7 @@ export default class TabLinks extends Component {
       tabs,
       isDirty,
       onSelect,
+      onContextMenu,
       onClose,
       onCreate,
       className
@@ -32,7 +35,8 @@ export default class TabLinks extends Component {
                 active: tab === activeTab,
                 dirty: isDirty && isDirty(tab)
               }) }
-              onClick={ () => onSelect(tab) }
+              onClick={ () => onSelect(tab, event) }
+              onContextMenu={ (event) => (onContextMenu || noop)(tab, event) }
             >
               {tab.name}
               {
