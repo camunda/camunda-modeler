@@ -60,6 +60,36 @@ class XMLEditor extends CachedComponent {
     this.checkImport();
   }
 
+  triggerAction(action) {
+    const {
+      editor
+    } = this.getCached();
+
+    if (action === 'undo') {
+      editor.doc.undo();
+    }
+
+    if (action === 'redo') {
+      editor.doc.redo();
+    }
+
+    if (action === 'find') {
+      editor.execCommand('findPersistent');
+    }
+
+    if (action === 'findNext') {
+      editor.execCommand('findNext');
+    }
+
+    if (action === 'findPrev') {
+      editor.execCommand('findPrev');
+    }
+
+    if (action === 'replace') {
+      editor.execCommand('replace');
+    }
+  }
+
   checkImport() {
     const {
       editor
