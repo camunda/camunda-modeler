@@ -77,11 +77,24 @@ class MultiSheetTab extends CachedComponent {
     );
   }
 
-  triggerAction = (action, options) => {
-    this.editorRef.current.triggerAction(action, options);
+  triggerAction = async (action, options) => {
+
+    const editor = this.editorRef.current;
+
+    if (action === 'save') {
+      const xml = await editor.getXML();
+
+      this.setState({
+        lastXML: xml
+      });
+
+      return xml;
+    }
+
+    return editor.triggerAction(action, options);
   }
 
-  switchSheet = (sheet) => {
+  switchSheet = async (sheet) => {
 
     const {
       activeSheet
@@ -97,14 +110,12 @@ class MultiSheetTab extends CachedComponent {
       });
     }
 
-    var xmlPromise = Promise.resolve(this.editorRef.current.getXML());
+    var xml = await this.editorRef.current.getXML();
 
-    xmlPromise.then((xml) => {
-      this.setCached({
-        activeSheet: sheet,
-        lastXML: xml
-      });
-    }, console.error);
+    this.setCached({
+      activeSheet: sheet,
+      lastXML: xml
+    });
   }
 
   getDefaultSheets = () => {

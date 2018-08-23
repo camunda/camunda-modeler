@@ -12,6 +12,7 @@ export default class TabLinks extends Component {
     const {
       activeTab,
       tabs,
+      isDirty,
       onSelect,
       onClose,
       onCreate,
@@ -29,7 +30,7 @@ export default class TabLinks extends Component {
               key={ tab.id }
               className={ classNames('tab', {
                 active: tab === activeTab,
-                dirty: tab.dirty
+                dirty: isDirty && isDirty(tab)
               }) }
               onClick={ () => onSelect(tab) }
             >
