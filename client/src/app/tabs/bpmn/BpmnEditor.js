@@ -10,8 +10,6 @@ import {
   CachedComponent
 } from '../../cached';
 
-import { EventListener } from '../../events';
-
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 
 import propertiesPanelModule from 'bpmn-js-properties-panel';
@@ -212,8 +210,6 @@ export class BpmnEditor extends CachedComponent {
 
     return (
       <div className={ bpmnContainer }>
-        <EventListener event="triggerEditorAction" handler={ this.handleTriggerEditorAction } />
-        <EventListener event="setColor" handler={ this.handleSetColor } />
 
         <Fill name="buttons">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
