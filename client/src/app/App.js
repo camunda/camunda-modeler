@@ -418,7 +418,7 @@ export class App extends Component {
     }
   }
 
-  async saveTab(tab) {
+  async saveTab(tab, options = {}) {
     await this.showTab(tab);
 
     const action = await this.askSave(tab);
@@ -430,9 +430,20 @@ export class App extends Component {
     if (action === 'save') {
       const contents = await this.tabRef.current.triggerAction('save');
 
-      // TODO(nikku): actually save using backend
-      // TODO(nikku): update dirty state once saved
-      console.log('saved contents', contents);
+      // unsaved ?
+      if (!tab.file.path) {
+        options = {
+          ...options,
+          saveAs: true
+        };
+      }
+
+      const newFile = await this.props.globals.fileSystem.writeFile({
+        ...tab.file,
+        contents
+      }, options);
+
+      tab.file = newFile;
     }
   }
 
@@ -484,6 +495,11 @@ export class App extends Component {
 
   triggerAction = (action, options) => {
 
+    const {
+      activeTab
+    } = this.state;
+
+
     console.log('App#triggerAction %s %o', action, options);
 
     if (action === 'select-tab') {
@@ -520,6 +536,14 @@ export class App extends Component {
 
     if (action === 'save-all') {
       return this.saveAllTabs();
+    }
+
+    if (action === 'save') {
+      return this.saveTab(activeTab);
+    }
+
+    if (action === 'save-as') {
+      return this.saveTab(activeTab, { saveAs: true });
     }
 
     if (action === 'quit') {

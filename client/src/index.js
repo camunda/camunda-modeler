@@ -7,7 +7,8 @@ import mitt from 'mitt';
 
 import {
   backend,
-  dialog
+  dialog,
+  fileSystem
 } from './remote';
 
 const eventBus = mitt();
@@ -17,7 +18,8 @@ const tabsProvider = new TabsProvider();
 const globals = {
   backend,
   dialog,
-  eventBus
+  eventBus,
+  fileSystem
 };
 
 const rootElement = document.getElementById('root');
