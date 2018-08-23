@@ -178,7 +178,7 @@ export class App extends Component {
   closeTab = async (tab) => {
 
     if (this.isDirty(tab)) {
-      await this.saveTab(tab);
+      await this.saveTab(tab, { ask: true });
     }
 
     await this._removeTab(tab);
@@ -309,9 +309,7 @@ export class App extends Component {
     console.log('%cApp#handleTabChanged', 'color: #52B415');
 
     let {
-      activeTab,
       dirtyTabs,
-      tabs
     } = this.state;
 
     if ('dirty' in properties) {
@@ -325,34 +323,23 @@ export class App extends Component {
         dirtyTabs: newDirtyTabs
       });
     }
+  }
 
-    // TODO(nikku): SEPARATE METHOD
-    const updatedTabs = tabs.map((t) => {
+  tabSaved(tab, newFile) {
 
-      if (t.id === tab.id) {
+    const {
+      dirtyTabs,
+      tabs
+    } = this.state;
 
-        const newTab = {
-          ...t,
-          ...properties
-        };
-
-        this.tabHistory.replace(t, newTab);
-
-        return newTab;
-      } else {
-        return t;
-      }
-    });
-
-    const newActiveTab = (
-      activeTab.id === tab.id ?
-        updatedTabs.find(t => t.id === tab.id) :
-        activeTab
-    );
+    tab.file = newFile;
 
     this.setState({
-      tabs: updatedTabs,
-      activeTab: newActiveTab
+      tabs: [ ...tabs ],
+      dirtyTabs: {
+        ...dirtyTabs,
+        [tab.id]: false
+      }
     });
   }
 
@@ -413,6 +400,7 @@ export class App extends Component {
 
       this.props.onToolStateChanged(activeTab, {
         closable: activeTab !== EMPTY_TAB,
+        save: activeTab !== EMPTY_TAB,
         dirty: this.isDirty(activeTab)
       });
     }
@@ -421,7 +409,12 @@ export class App extends Component {
   async saveTab(tab, options = {}) {
     await this.showTab(tab);
 
-    const action = await this.askSave(tab);
+    let {
+      saveAs,
+      ask
+    } = options;
+
+    const action = ask ? await this.askSave(tab) : 'save';
 
     if (action === 'cancel') {
       throw new Error('user canceled');
@@ -432,18 +425,15 @@ export class App extends Component {
 
       // unsaved ?
       if (!tab.file.path) {
-        options = {
-          ...options,
-          saveAs: true
-        };
+        saveAs = true;
       }
 
       const newFile = await this.props.globals.fileSystem.writeFile({
         ...tab.file,
         contents
-      }, options);
+      }, { saveAs });
 
-      tab.file = newFile;
+      this.tabSaved(tab, newFile);
     }
   }
 
