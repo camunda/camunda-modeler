@@ -248,15 +248,22 @@ class DmnEditor extends CachedComponent {
       .trigger(action);
   }
 
-  getXML(done) {
+  getXML() {
     const {
       modeler
     } = this.getCached();
 
-    modeler.saveXML({ format: true }, (err, xml) => {
-      modeler.lastXML = xml;
+    return new Promise((resolve, reject) => {
 
-      done(xml);
+      modeler.saveXML({ format: true }, (err, xml) => {
+        modeler.lastXML = xml;
+
+        if (err) {
+          return reject(err);
+        }
+
+        return resolve(xml);
+      });
     });
   }
 

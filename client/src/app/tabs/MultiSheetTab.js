@@ -97,12 +97,14 @@ class MultiSheetTab extends CachedComponent {
       });
     }
 
-    this.editorRef.current.getXML((xml) => {
+    var xmlPromise = Promise.resolve(this.editorRef.current.getXML());
+
+    xmlPromise.then((xml) => {
       this.setCached({
         activeSheet: sheet,
         lastXML: xml
       });
-    });
+    }, console.error);
   }
 
   getDefaultSheets = () => {

@@ -12,20 +12,8 @@ import {
 
 import CodeMirror from './CodeMirror';
 
-import styled from 'styled-components';
+import { xmlContainer } from './XMLEditor.less';
 
-
-const Container = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-
-  .CodeMirror {
-    height: 100%;
-  }
-`;
 
 class XMLEditor extends CachedComponent {
 
@@ -96,25 +84,25 @@ class XMLEditor extends CachedComponent {
     dirtyChanged(editor.lastXML !== editor.getValue());
   }
 
-  getXML(done) {
+  getXML() {
     const {
       editor
     } = this.getCached();
 
-    done(editor.getValue());
+    return editor.getValue();
   }
 
   render() {
     console.log('%cXMLEditor#render', 'background: orange; color: white; padding: 2px 4px', this.state);
 
     return (
-      <Fragment>
+      <div className={ xmlContainer }>
         <Fill name="buttons">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
           <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
         </Fill>
-        <Container innerRef={ this.ref }></Container>
-      </Fragment>
+        <div className="content" ref={ this.ref }></div>
+      </div>
     );
   }
 
