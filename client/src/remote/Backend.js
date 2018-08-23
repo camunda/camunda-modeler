@@ -70,6 +70,10 @@ export default class Backend {
     this.send('client:ready');
   }
 
+  showContextMenu = (type, options) => {
+    this.send('context-menu:open', type, options);
+  }
+
   updateMenu = (state) => {
     this.send('menu:update', state);
   }

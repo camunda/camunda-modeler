@@ -272,6 +272,12 @@ export class App extends Component {
     return tabs.find(t => t.file && t.file.path === file.path);
   }
 
+  openTabMenu = (tab, event) => {
+    event.preventDefault();
+
+    this.props.onContextMenu('tab', { tabId: tab.id });
+  }
+
   /**
    * Mark the active tab as shown.
    */
@@ -627,6 +633,7 @@ export class App extends Component {
               isDirty={ this.isDirty }
               activeTab={ activeTab }
               onSelect={ this.selectTab }
+              onContextMenu={ this.openTabMenu }
               onClose={ (tab) => {
                 this.triggerAction('close-tab', { tabId: tab.id }).catch(console.error);
               } }

@@ -42,6 +42,10 @@ export default class AppParent extends Component {
     this.getApp().openFiles(files);
   }
 
+  handleContextMenu = (type, options) => {
+    this.getBackend().showContextMenu(type, options);
+  }
+
   handleToolStateChanged = (tab, state) => {
     this.getBackend().updateMenu(state);
   }
@@ -98,6 +102,7 @@ export default class AppParent extends Component {
         tabsProvider={ tabsProvider }
         globals={ globals }
         onToolStateChanged={ this.handleToolStateChanged }
+        onContextMenu={ this.handleContextMenu }
         onReady={ this.handleReady }
       />
     );
