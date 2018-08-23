@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { AppParent } from './app';
+import { AppParent, TabsProvider } from './app';
 
 import mitt from 'mitt';
 
@@ -12,6 +12,8 @@ import {
 
 const eventBus = mitt();
 
+const tabsProvider = new TabsProvider();
+
 const globals = {
   backend,
   dialog,
@@ -20,5 +22,8 @@ const globals = {
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(
-  <AppParent globals={ globals } />, rootElement
+  <AppParent
+    globals={ globals }
+    tabsProvider={ tabsProvider }
+  />, rootElement
 );

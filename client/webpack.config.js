@@ -31,6 +31,10 @@ module.exports = {
       {
         oneOf: [
           {
+            test: /\.(bpmn|cmmn|dmn)$/,
+            use: 'raw-loader'
+          },
+          {
             test: /\.css$/,
             use: [
               'style-loader',

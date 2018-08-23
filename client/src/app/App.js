@@ -55,15 +55,12 @@ export class App extends Component {
   }
 
   createDiagram = (type = 'bpmn', options) => {
-    const id = nextId();
 
-    const name = `diagram_${id}.${type}`;
+    const {
+      tabsProvider
+    } = this.props;
 
-    const tab = {
-      id,
-      name,
-      type
-    };
+    const tab = tabsProvider.createTab(type, options);
 
     this.addTab(tab);
 
@@ -74,8 +71,6 @@ export class App extends Component {
    * Add a tab to the tab list.
    */
   addTab(tab) {
-
-    console.log('Add tab', tab.type);
 
     this.setState((state) => {
       const {
@@ -208,25 +203,34 @@ export class App extends Component {
 
   openFiles = (files) => {
 
+    const {
+      tabsProvider
+    } = this.props;
+
     if (!files.length) {
       return;
     }
 
-    const newTabs = files.map((f) => {
+    files.filter(
+      file => !this.findOpenTab(file)
+    ).map(
+      file => tabsProvider.createTabForFile(file)
+    ).forEach(
+      tab => this.addTab(tab)
+    );
 
-      return {
-        name: f.name,
-        content: f.contents,
-        type: f.name.substring(f.name.lastIndexOf('.') + 1),
-        id: nextId()
-      };
-    });
+    const tab = this.findOpenTab(files[files.length - 1]);
 
-    newTabs.forEach((tab) => {
-      this.addTab(tab);
-    });
+    this.selectTab(tab);
+  }
 
-    this.selectTab(newTabs[newTabs.length - 1]);
+  findOpenTab(file) {
+
+    const {
+      tabs
+    } = this.state;
+
+    return tabs.find(t => t.file && t.file.path === file.path);
   }
 
   /**
@@ -290,23 +294,15 @@ export class App extends Component {
       return tabLoaded[type];
     }
 
-    var loader;
+    const {
+      tabsProvider
+    } = this.props;
 
-    if (type === 'bpmn') {
-      loader = import('./tabs/bpmn');
-    }
+    var tabComponent = tabsProvider.getTabComponent(type) || missingProvider(type);
 
-    if (type === 'dmn') {
-      loader = import('./tabs/dmn');
-    }
+    Promise.resolve(tabComponent).then((c) => {
 
-    if (!loader) {
-      return missingProvider(type);
-    }
-
-    loader.then((c) => {
-
-      var Tab = c.default;
+      var Tab = c.default || c;
 
       tabLoaded[type] = Tab;
 
@@ -418,7 +414,7 @@ export class App extends Component {
     }
 
     if (action === 'create-dmn-table') {
-      return this.createDiagram('dmn', { isTable: true });
+      return this.createDiagram('dmn', { table: true });
     }
 
     if (action === 'create-cmmn-diagram') {
@@ -477,8 +473,6 @@ export class App extends Component {
   }
 
   composeAction = (...args) => (event) => {
-    console.log(event, args);
-
     this.triggerAction(...args);
   }
 
@@ -592,13 +586,6 @@ class LoadingTab extends Component {
     );
   }
 
-}
-
-
-function nextId() {
-  tabId++;
-
-  return tabId;
 }
 
 function getNextTab(tabs, activeTab, direction) {
