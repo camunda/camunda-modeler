@@ -380,12 +380,9 @@ export class App extends Component {
     setTimeout(() => {
       this.createDiagram('bpmn');
       this.createDiagram('bpmn');
-      this.createDiagram('bpmn');
       this.createDiagram('dmn');
-      this.createDiagram('dmn');
-      this.createDiagram('dmn');
+      this.createDiagram('dmn', { table: true });
       this.createDiagram('cmmn');
-      this.createDiagram('bpmn');
     });
 
     this.props.onReady();
