@@ -185,7 +185,7 @@ export class App extends Component {
   }
 
   isDirty = (tab) => {
-    return !(tab.file && tab.file.path) || this.state.dirtyTabs[tab.id];
+    return isNew(tab) || this.state.dirtyTabs[tab.id];
   }
 
   _removeTab(tab) {
@@ -216,7 +216,9 @@ export class App extends Component {
 
     this.tabHistory.purge(tab);
 
-    this.closedTabs.push(tab);
+    if (!isNew(tab)) {
+      this.closedTabs.push(tab);
+    }
 
     this.setState({
       tabs: newTabs,
@@ -424,7 +426,7 @@ export class App extends Component {
       const contents = await this.tabRef.current.triggerAction('save');
 
       // unsaved ?
-      if (!tab.file.path) {
+      if (isNew(tab)) {
         saveAs = true;
       }
 
@@ -717,6 +719,9 @@ function getNextTab(tabs, activeTab, direction) {
   return tabs[nextIdx];
 }
 
+function isNew(tab) {
+  return tab.file && !tab.file.path;
+}
 
 /**
 
