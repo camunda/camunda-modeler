@@ -68,8 +68,9 @@ class DmnEditor extends CachedComponent {
       modeler
     } = this.getCached();
 
+    modeler[fn]('import.done', this.handleImported);
+
     [
-      'import.done',
       'saveXML.done',
       'attach'
     ].forEach((event) => {
@@ -78,11 +79,7 @@ class DmnEditor extends CachedComponent {
 
     modeler[fn]('views.changed', this.viewsChanged);
 
-    modeler[fn]('view.contentChanged', () => {
-      this.updateActions();
-
-      this.props.dirtyChanged(this.checkDirty());
-    });
+    modeler[fn]('view.contentChanged', this.viewContentChanged);
   }
 
   checkDirty = () => {
@@ -101,6 +98,46 @@ class DmnEditor extends CachedComponent {
 
       return dirty || commandStack.canUndo();
     }, false);
+  }
+
+  viewContentChanged = () => {
+    this.updateActions();
+
+    this.props.dirtyChanged(this.checkDirty());
+  }
+
+  handleImported = (event) => {
+
+    const {
+      error,
+      warmings
+    } = event;
+
+    const {
+      modeler
+    } = this.getCached();
+
+    const {
+      activeSheet
+    } = this.props;
+
+    if (error) {
+      console.error('imported with error', error);
+
+      return;
+    }
+
+    if (warmings.length) {
+      console.error('imported with warnings', warmings);
+    }
+
+    const initialView = modeler._getInitialView(modeler._views);
+
+    if (activeSheet && activeSheet.element) {
+      this.open(activeSheet.element);
+    } else {
+      this.open(initialView.element);
+    }
   }
 
   viewsChanged = ({ activeView, views }) => {
@@ -136,6 +173,8 @@ class DmnEditor extends CachedComponent {
       activeView,
       views
     });
+
+    this.updateActions();
   }
 
   undo = () => {
@@ -160,6 +199,10 @@ class DmnEditor extends CachedComponent {
     } = this.getCached();
 
     const activeViewer = modeler.getActiveViewer();
+
+    if (!activeViewer) {
+      return;
+    }
 
     const commandStack = activeViewer.get('commandStack');
 
@@ -191,20 +234,7 @@ class DmnEditor extends CachedComponent {
 
       window.modeler = modeler;
 
-      modeler.importXML(xml, (err) => {
-        console.log('%cimporting', 'background: steelblue; color: white; padding: 2px 4px');
-
-        console.log('tab:', activeSheet);
-
-        // open diagram view by default
-        const definitions = modeler.getDefinitions();
-
-        if (activeSheet && activeSheet.element) {
-          this.open(activeSheet.element);
-        } else {
-          this.open(definitions);
-        }
-      });
+      modeler.importXML(xml, { open: false });
     } else {
       activeSheet
         && activeSheet.element
