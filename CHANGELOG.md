@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 2.0.0-6
+
+* `CHORE`: update to `bpmn-js@2.5.1`
+
 ## 2.0.0-5
 
 _This is a pre-release_.
