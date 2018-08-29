@@ -41,7 +41,7 @@ class RenderChildren extends Component {
 }
 
 
-describe.only('BpmnEditor', function() {
+describe('BpmnEditor', function() {
 
   let container, createCachedSpy;
 
@@ -135,7 +135,7 @@ describe.only('BpmnEditor', function() {
   });
 
 
-  it('#getXML', async function() {
+  it.skip('#getXML', function(done) {
     const slotFillRoot = ReactDOM.render(
       <SlotFillRoot>
         <BpmnEditorWithCachedState id="foo" xml={ diagramXML } />
@@ -149,12 +149,14 @@ describe.only('BpmnEditor', function() {
       modeler
     } = bpmnEditor.getCached();
 
-    modeler.on('import.done', function() {
+    modeler.on('import.done', async function() {
 
       const xml = await bpmnEditor.getXML();
-      
+
       expect(xml).to.exist;
       expect(xml).to.eql(diagramXML);
+
+      done();
     });
 
   });
