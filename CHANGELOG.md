@@ -8,6 +8,8 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 2.0.0-6
 
+_This is a pre-release_.
+
 * `CHORE`: update to `bpmn-js@2.5.1`
 
 ## 2.0.0-5
