@@ -34,8 +34,6 @@ export class BpmnEditor extends CachedComponent {
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
-
-    console.log('%cBpmnEditor#constructor', 'background: blue; color: white; padding: 2px 4px');
   }
 
   componentDidMount() {
@@ -129,12 +127,6 @@ export class BpmnEditor extends CachedComponent {
     const commandStack = modeler.get('commandStack');
     const selection = modeler.get('selection');
 
-    console.log('%cBpmnEditor#setState', 'background: blue; color: white; padding: 2px 4px', {
-      undo: commandStack.canUndo(),
-      redo: commandStack.canRedo(),
-      align: selection.get().length > 1
-    });
-
     this.setState({
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
@@ -152,8 +144,6 @@ export class BpmnEditor extends CachedComponent {
     if (xml !== modeler.lastXML) {
 
       modeler.lastXML = xml;
-
-      console.log('%cimporting', 'background: steelblue; color: white; padding: 2px 4px');
 
       modeler.importXML(xml, function(err) {
 
@@ -213,8 +203,6 @@ export class BpmnEditor extends CachedComponent {
   }
 
   render() {
-    console.log('%cBpmnEditor#render', 'background: blue; color: white; padding: 2px 4px', this.state);
-
     return (
       <div className={ bpmnContainer }>
 

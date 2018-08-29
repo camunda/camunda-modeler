@@ -1,172 +1,107 @@
-/* global sinon */
-
 import React from 'react';
 
 import { shallow } from 'enzyme';
 
-import mitt from 'mitt';
-
-import { Cache } from '../../src/app/cached';
-
-import { TabLoading } from '../../src/app/App';
-
-import BpmnTab from '../../src/app/tabs/BpmnTab';
-
 import {
-  AppComponent
+  App
 } from '../../src/app/App';
 
-function Backend() {
-  this.send = function() {};
-  this.on = function() {};
-  this.once = function() {};
+// mocks //////////
+// TODO(philippfromme): where to put these mocks?
+class TabsProvider {
+  createTab(type) {
+    return {
+      file: {
+        name: 'diagram_1.bpmn',
+        contents: '<contents>',
+        path: null
+      },
+      id: 'diagram_1',
+      name: 'diagram_1.bpmn',
+      title: 'unsaved',
+      type
+    };
+  }
+
+  getTabComponent(type) {
+    return null;
+  }
+}
+
+class Dialog {
+  constructor() {
+    this.askSaveResponse = null;
+    this.openFileResponse = null;
+  }
+
+  setAskSaveResponse(response) {
+    this.askSaveResponse = response;
+  }
+
+  setOpenFileResponse(response) {
+    this.this.openFileResponse = response;
+  }
+
+  askSave() {
+    return this.askSaveResponse;
+  }
+
+  openFile() {
+    return this.openFileResponse;
+  }
+}
+
+class FileSystem {
+  writeFile() {
+
+    // TODO: what do files look like?
+    return {};
+  }
+}
+
+const globals = {
+  dialog: new Dialog(),
+  fileSystem: new FileSystem()
+};
+
+function noop() {}
+
+function createApp(options = {}) {
+  return shallow(<App
+    tabsProvider={ options.tabsProvider || new TabsProvider() }
+    global={ options.globals || globals }
+    onReady={ options.onReady || noop }
+    onToolStateChanged={ options.onToolStateChanged || noop } />);
 }
 
 
 describe('App', function() {
 
-  var globals;
-
-  beforeEach(function() {
-    globals = {
-      eventBus: mitt(),
-      backend: new Backend()
-    };
-  });
-
-
   it('should render', function() {
 
     // when
-    var wrapper = shallow(<AppComponent cache={ new Cache() } globals={ globals } />);
+    const instance = createApp().instance();
 
     // then
-    var instance = wrapper.instance();
-
     expect(instance).to.exist;
   });
 
 
   describe('tabs', function() {
 
-    it('should initially be loading tab', function() {
+    it('should open tab');
 
-      // when
-      var wrapper = shallow(<AppComponent cache={ new Cache() } globals={ globals } />);
+    it('should open tabs');
 
-      // then
-      var instance = wrapper.instance();
+    it('show tab');
 
-      expect(instance.state.Tab).to.equal(TabLoading);
-    });
+    it('should navigate tab <');
 
+    it('should navigate tab >');
 
-    it('should load tab', function() {
+    it('should close tab');
 
-      // when
-      var wrapper = shallow(<AppComponent cache={ new Cache() } globals={ globals } />);
-
-      // then
-      // right now there's no way of knowing when loading the tab has finished
-      // setTimout will make test fail since render is beeing reset after each test
-      setTimeout(function() {
-        var instance = wrapper.instance();
-
-        expect(instance.state.Tab).to.equal(BpmnTab);
-      }, 1000);
-    });
-
-
-    it('should select tab', function() {
-
-      // given
-      var wrapper = shallow(<AppComponent cache={ new Cache() } globals={ globals } />);
-
-      var instance = wrapper.instance();
-
-      var bpmnTab = {
-        type: 'bpmn',
-        name: 'foo.bpmn',
-        content: null,
-        id: 'foo'
-      };
-
-      var dmnTab = {
-        type: 'dmn',
-        name: 'bar.dmn',
-        content: null,
-        id: 'dmn'
-      };
-
-      instance.setState({
-        tabs: [ bpmnTab, dmnTab ],
-        activeTab: bpmnTab,
-        Tab: BpmnTab
-      });
-
-      // when
-      instance.selectTab(dmnTab);
-
-      // then
-      expect(instance.state.activeTab).to.equal(dmnTab);
-    });
-
-
-    it('should close tab', function() {
-
-      // given
-      var wrapper = shallow(<AppComponent cache={ new Cache() } globals={ globals } />);
-
-      var instance = wrapper.instance();
-
-      var bpmnTab = {
-        type: 'bpmn',
-        name: 'foo.bpmn',
-        content: null,
-        id: 'foo'
-      };
-
-      var dmnTab = {
-        type: 'dmn',
-        name: 'bar.dmn',
-        content: null,
-        id: 'dmn'
-      };
-
-      instance.setState({
-        tabs: [ bpmnTab, dmnTab ],
-        activeTab: bpmnTab,
-        Tab: BpmnTab
-      });
-
-      // when
-      instance.closeTab(bpmnTab);
-
-      // then
-      expect(instance.state.tabs).to.have.length(1);
-      expect(instance.state.activeTab).to.equal(dmnTab);
-    });
-
-  });
-
-
-  describe('events', function() {
-
-    it('should fire "app:ready"', function() {
-
-      // given
-      var eventBus = globals.eventBus;
-
-      var spy = sinon.spy();
-
-      eventBus.on('app:ready', spy);
-
-      // when
-      shallow(<AppComponent cache={ new Cache() } globals={ globals } />);
-
-      // then
-      expect(spy).to.have.been.called;
-    });
+    it('should close tabs');
 
   });
 
