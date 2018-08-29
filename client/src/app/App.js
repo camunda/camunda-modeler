@@ -308,8 +308,6 @@ export class App extends Component {
   }
 
   handleTabChanged = (tab, properties) => {
-    console.log('%cApp#handleTabChanged', 'color: #52B415');
-
     let {
       dirtyTabs,
     } = this.state;
@@ -588,8 +586,6 @@ export class App extends Component {
     const { tabs } = this.state;
 
     const Tab = this.state.Tab || EmptyTab;
-
-    console.log('%cApp#render', 'background: #52B415; color: white; padding: 2px 4px');
 
     return (
       <div className={ css.app }>

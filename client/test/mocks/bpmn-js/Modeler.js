@@ -1,19 +1,37 @@
-export default function Modeler() {
-  this.importXML = function(xml, done) {
+class PropertiesPanel {
+  attachTo() {}
+
+  detach() {}
+}
+
+export default class Modeler {
+  constructor() {
+    this.xml = null;
+  }
+
+  importXML(xml, done) {
     this.xml = xml;
 
     done && done();
-  };
+  }
 
-  this.saveXML = function(done) {
+  saveXML(done) {
     done(this.xml);
-  };
+  }
 
-  this.attachTo = function() {};
+  attachTo() {}
 
-  this.detach = function() {};
+  detach() {}
 
-  this.on = function() {};
+  on() {}
 
-  this.off = function() {};
+  off() {}
+
+  get(module) {
+    if (module === 'propertiesPanel') {
+      return new PropertiesPanel();
+    }
+
+    return null;
+  }
 }

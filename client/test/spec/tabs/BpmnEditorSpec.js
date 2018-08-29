@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 import {
   default as BpmnEditorWithCachedState,
   BpmnEditor
-} from '../../../src/app/tabs/BpmnEditor';
+} from '../../../src/app/tabs/bpmn/BpmnEditor';
 
 import { SlotFillRoot } from '../../../src/app/slot-fill';
 
@@ -41,10 +41,9 @@ class RenderChildren extends Component {
 }
 
 
-describe('BpmnEditor', function() {
+describe.only('BpmnEditor', function() {
 
-  var container;
-  var createCachedSpy;
+  let container, createCachedSpy;
 
 
   beforeEach(function() {
@@ -60,19 +59,19 @@ describe('BpmnEditor', function() {
 
 
   it('should render', function() {
-    var cachedState = {
+    const cachedState = {
       modeler: new Modeler()
     };
 
     // we have to render the actual component without HoCs
-    // so we can access the instance afterwards
-    var wrapper = shallow(<BpmnEditor
+    // so we can access the instance afterwards (only instance of root can be accessed)
+    const wrapper = shallow(<BpmnEditor
       id="foo"
       xml={ diagramXML }
       cachedState={ cachedState }
       setCachedState={ function() {} } />);
 
-    var instance = wrapper.instance();
+    const instance = wrapper.instance();
 
     expect(instance).to.exist;
   });
@@ -80,14 +79,14 @@ describe('BpmnEditor', function() {
 
   it('should create modeler if no cached modeler', function() {
 
-    var slotFillRoot = ReactDOM.render(
+    const slotFillRoot = ReactDOM.render(
       <SlotFillRoot>
         <BpmnEditorWithCachedState id="foo" xml={ diagramXML } />
       </SlotFillRoot>,
       container
     );
 
-    var bpmnEditor = findRenderedComponentWithType(slotFillRoot, BpmnEditor);
+    const bpmnEditor = findRenderedComponentWithType(slotFillRoot, BpmnEditor);
 
     const {
       modeler
@@ -100,7 +99,7 @@ describe('BpmnEditor', function() {
 
   it('should use existing modeler if cached modeler', function() {
 
-    var slotFillRoot = ReactDOM.render(
+    const slotFillRoot = ReactDOM.render(
       <SlotFillRoot>
         <RenderChildren>
           <BpmnEditorWithCachedState id="foo" xml={ diagramXML } />
@@ -109,8 +108,8 @@ describe('BpmnEditor', function() {
       container
     );
 
-    var renderChildren = findRenderedComponentWithType(slotFillRoot, RenderChildren);
-    var bpmnEditor = findRenderedComponentWithType(slotFillRoot, BpmnEditor);
+    const renderChildren = findRenderedComponentWithType(slotFillRoot, RenderChildren);
+    const bpmnEditor = findRenderedComponentWithType(slotFillRoot, BpmnEditor);
 
     const {
       modeler
@@ -118,25 +117,17 @@ describe('BpmnEditor', function() {
 
     expect(modeler).to.exist;
 
-    console.log('%cset renderChildren = false', 'background: yellow; padding: 2px 4px');
-
     renderChildren.setState({
       renderChildren: false
     });
 
     setTimeout(function() {
-      console.log('%cset renderChildren = true', 'background: yellow; padding: 2px 4px');
-
       renderChildren.setState({
         renderChildren: true
       });
 
       setTimeout(function() {
-        console.log('%cexpecting', 'background: yellow; padding: 2px 4px');
-
         expect(createCachedSpy).to.have.been.calledOnce;
-
-        console.log('success');
       }, 0);
 
     }, 0);
@@ -144,15 +135,15 @@ describe('BpmnEditor', function() {
   });
 
 
-  it('#getXML', function() {
-    var slotFillRoot = ReactDOM.render(
+  it('#getXML', async function() {
+    const slotFillRoot = ReactDOM.render(
       <SlotFillRoot>
         <BpmnEditorWithCachedState id="foo" xml={ diagramXML } />
       </SlotFillRoot>,
       container
     );
 
-    var bpmnEditor = findRenderedComponentWithType(slotFillRoot, BpmnEditor);
+    const bpmnEditor = findRenderedComponentWithType(slotFillRoot, BpmnEditor);
 
     const {
       modeler
@@ -160,12 +151,10 @@ describe('BpmnEditor', function() {
 
     modeler.on('import.done', function() {
 
-      bpmnEditor.getXML(function(xml) {
-
-        expect(xml).to.exist;
-        expect(xml).to.eql(diagramXML);
-      });
-
+      const xml = await bpmnEditor.getXML();
+      
+      expect(xml).to.exist;
+      expect(xml).to.eql(diagramXML);
     });
 
   });
