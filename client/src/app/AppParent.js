@@ -33,7 +33,9 @@ export default class AppParent extends Component {
       );
     }
 
-    result.catch(() => console.error);
+    if (result && 'catch' in result) {
+      result.catch(() => console.error);
+    }
   }
 
   openFiles = (event, files) => {
