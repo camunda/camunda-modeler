@@ -66,7 +66,7 @@ describe('slot-fill', function() {
   });
 
 
-  describe('FillContext', function() {
+  describe('<SlotFillRoot>', function() {
 
     it('should have access to fill context', function() {
       ReactDOM.render(
@@ -85,10 +85,6 @@ describe('slot-fill', function() {
       );
     });
 
-  });
-
-
-  describe('SlotContext', function() {
 
     it('should have access to slot context', function() {
       ReactDOM.render(
@@ -109,9 +105,9 @@ describe('slot-fill', function() {
   });
 
 
-  describe('Fill', function() {
+  describe('<Fill>', function() {
 
-    it('should add fill', function() {
+    it('should register fill', function() {
       var slotFillRoot = ReactDOM.render(
         <SlotFillRoot>
           <Fill />
@@ -123,7 +119,7 @@ describe('slot-fill', function() {
     });
 
 
-    it('should remove fill', function() {
+    it('should unregister fill', function() {
       var slotFillRoot = ReactDOM.render(
         <SlotFillRoot>
           <RenderChildren>
@@ -180,7 +176,7 @@ describe('slot-fill', function() {
   });
 
 
-  describe('Slot', function() {
+  describe('<Slot>', function() {
 
     it('should render fills', function() {
 
