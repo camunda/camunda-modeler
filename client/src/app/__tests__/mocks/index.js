@@ -2,6 +2,15 @@ import { Component } from 'react';
 
 class FakeTab extends Component {
 
+  componentDidMount() {
+    const {
+      tab,
+      onShown
+    } = this.props;
+
+    onShown(tab);
+  }
+
   render() {
     return null;
   }

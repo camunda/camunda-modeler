@@ -173,7 +173,8 @@ export class App extends Component {
     this.setState({
       activeTab: tab,
       Tab: this.loadTab(tab),
-      tabShown: deferred
+      tabShown: deferred,
+      tabState: 'loading'
     });
 
     return deferred.promise;
@@ -315,7 +316,8 @@ export class App extends Component {
       openedTabs: {
         ...openedTabs,
         [activeTab.id]: true
-      }
+      },
+      tabState: 'shown'
     });
   }
 
@@ -386,21 +388,28 @@ export class App extends Component {
   }
 
   componentDidMount() {
-    this.props.onReady();
+    const {
+      onReady
+    } = this.props;
+
+    if (typeof onReady === 'function') {
+      onReady();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
 
     const {
-      activeTab
+      activeTab,
+      tabState
     } = this.state;
 
     const {
       onTabChanged,
+      onTabShown,
       onToolStateChanged
     } = this.props;
 
-    // TODO: move this outside of app
     if (prevState.activeTab !== activeTab) {
 
       if (typeof onToolStateChanged === 'function') {
@@ -414,6 +423,14 @@ export class App extends Component {
       if (typeof onTabChanged === 'function') {
         onTabChanged(activeTab, prevState.activeTab);
       }
+    }
+
+    if (tabState === 'shown' && prevState.tabState !== 'shown') {
+
+      if (typeof onTabShown === 'function') {
+        onTabShown(activeTab);
+      }
+
     }
 
   }
