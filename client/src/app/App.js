@@ -140,11 +140,13 @@ export class App extends Component {
 
     // next tab in line as a fallback to history
     // navigation
-    const fallbackTab = getNextTab(tabs, activeTab, direction);
+    const nextFn = function() {
+      return getNextTab(tabs, activeTab, direction);
+    };
 
     const tabHistory = this.tabHistory;
 
-    const nextActiveTab = tabHistory.navigate(direction, fallbackTab);
+    const nextActiveTab = tabHistory.navigate(direction, nextFn);
 
     return this.setActiveTab(nextActiveTab);
   }
@@ -193,13 +195,18 @@ export class App extends Component {
     return isNew(tab) || this.state.dirtyTabs[tab.id];
   }
 
-  _removeTab(tab) {
+  async _removeTab(tab) {
 
     const {
       tabs,
       activeTab,
       openedTabs
     } = this.state;
+
+    const {
+      tabHistory,
+      closedTabs
+    } = this;
 
     const {
       ...newOpenedTabs
@@ -209,25 +216,30 @@ export class App extends Component {
 
     const newTabs = tabs.filter(t => t !== tab);
 
-    if (activeTab === tab) {
-
-      // open previous tab, if it exists
-      if (tabs.length > 1) {
-        this.navigate(-1);
-      } else {
-        this.setActiveTab(EMPTY_TAB);
-      }
-    }
-
-    this.tabHistory.purge(tab);
+    tabHistory.purge(tab);
 
     if (!isNew(tab)) {
-      this.closedTabs.push(tab);
+      closedTabs.push(tab);
+    }
+
+    if (activeTab === tab) {
+
+      const tabIdx = tabs.indexOf(tab);
+
+      // open previous tab, if it exists
+      const nextActive = (
+        tabHistory.get() ||
+        newTabs[tabIdx] ||
+        newTabs[tabIdx - 1] ||
+        EMPTY_TAB
+      );
+
+      await this.setActiveTab(nextActive);
     }
 
     this.setState({
       tabs: newTabs,
-      newOpenedTabs
+      openedTabs: newOpenedTabs
     }, () => {
       this.props.cache.destroy(tab.id);
     });
