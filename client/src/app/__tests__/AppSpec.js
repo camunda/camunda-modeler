@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import {
+  shallow,
+  mount
+} from 'enzyme';
 
 import {
   App,
@@ -12,6 +15,10 @@ import {
   Dialog,
   TabsProvider
 } from './mocks';
+
+
+/* global sinon */
+const { spy } = sinon;
 
 
 describe('<App />', function() {
@@ -209,13 +216,68 @@ describe('<App />', function() {
 
     describe('loading', function() {
 
-      it('should lazy-load', function() {
+      it('should support life-cycle', async function() {
 
+        // given
+        const events = [];
+
+        const onTabChanged = spy(function(tab, oldTab) {
+          events.push([ 'tab-changed', tab ]);
+
+          app.handleTabShown(tab);
+        });
+
+        const onTabShown = spy(function(tab) {
+          events.push([ 'tab-shown', tab ]);
+        });
+
+        const {
+          app
+        } = createApp({
+          onTabChanged,
+          onTabShown
+        });
+
+        // when
+        const tab = await app.createDiagram('bpmn');
+
+        // then
+        expect(events).to.eql([
+          [ 'tab-changed', tab ],
+          [ 'tab-shown', tab ]
+        ]);
       });
 
 
-      it('should support life-cycle', function() {
+      it('should lazy load via tabsProvider', async function() {
 
+        // given
+        const events = [];
+
+        const onTabChanged = spy(function(tab, oldTab) {
+          events.push([ 'tab-changed', tab ]);
+        });
+
+        const onTabShown = spy(function(tab) {
+          events.push([ 'tab-shown', tab ]);
+        });
+
+        const {
+          app
+        } = createApp({
+          onTabChanged,
+          onTabShown
+        }, mount);
+
+        // when
+        const tab = await app.createDiagram('bpmn');
+
+
+        // then
+        expect(events).to.eql([
+          [ 'tab-changed', tab ],
+          [ 'tab-shown', tab ]
+        ]);
       });
 
     });
@@ -244,29 +306,43 @@ describe('<App />', function() {
 });
 
 
-const globals = {
-  dialog: new Dialog(),
-  fileSystem: new FileSystem()
-};
-
-const cache = {
+class Cache {
   destroy() { }
-};
+}
 
-function noop() {}
 
-function createApp(options = {}) {
+function createApp(options = {}, mountFn=shallow) {
 
   let app;
 
-  const tree = shallow(
+  const cache = options.cache || new Cache();
+
+  const globals = options.globals || {
+    dialog: new Dialog(),
+    fileSystem: new FileSystem()
+  };
+
+  const tabsProvider = options.tabsProvider || new TabsProvider();
+
+  const onTabChanged = options.onTabChanged || function(newTab) {
+    setTimeout(() => {
+      app.handleTabShown(newTab);
+    }, 0);
+  };
+
+  const onTabShown = options.onTabShown;
+  const onToolStateChanged = options.onToolStateChanged;
+  const onReady = options.onReady;
+
+  const tree = mountFn(
     <App
-      tabsProvider={ options.tabsProvider || new TabsProvider() }
-      global={ options.globals || globals }
-      onReady={ options.onReady || noop }
-      onToolStateChanged={ options.onToolStateChanged || noop }
-      onTabChanged={ newTab => setTimeout(() => app.handleTabShown(newTab), 0) }
       cache={ cache }
+      globals={ globals }
+      tabsProvider={ tabsProvider }
+      onReady={ onReady }
+      onTabChanged={ onTabChanged }
+      onTabShown={ onTabShown }
+      onToolStateChanged={ onToolStateChanged }
     />
   );
 
