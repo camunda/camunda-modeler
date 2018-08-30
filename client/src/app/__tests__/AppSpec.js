@@ -94,10 +94,6 @@ describe('<App>', function() {
       const file2 = createFile('2.bpmn');
 
       // when
-      setTimeout(function() {
-        app.handleTabShown(app.findOpenTab(file2));
-      }, 6);
-
       const openedTabs = await app.openFiles([ file1, file2 ]);
 
       // then
@@ -210,9 +206,110 @@ describe('<App>', function() {
 
     describe('saving', function() {
 
-      it('should save new tab');
+      let askSaveSpy;
+      let writeFileSpy;
 
-      it('should save file-backed tab');
+      let app;
+
+      beforeEach(function() {
+
+        // given
+        const dialog = new Dialog();
+        const fileSystem = new FileSystem();
+
+        dialog.setAskSaveResponse(Promise.resolve('save'));
+
+        askSaveSpy = spy(dialog, 'askSave');
+        writeFileSpy = spy(fileSystem, 'writeFile');
+
+        const rendered = createApp({
+          globals: {
+            dialog,
+            fileSystem
+          }
+        }, mount);
+
+        app = rendered.app;
+      });
+
+
+      it('should save new file', async function() {
+
+        // given
+        const tab = await app.createDiagram();
+
+        const fileName = tab.file.name;
+
+        // when
+        await app.triggerAction('save');
+
+        // then
+        expect(askSaveSpy).not.to.have.been.called;
+
+        expect(writeFileSpy).to.have.been.calledWith(
+          { name: fileName, contents: 'CONTENTS', path: null },
+          { saveAs: true }
+        );
+      });
+
+
+      it('should save existing tab', async function() {
+
+        // given
+        const file = createFile('1.bpmn');
+
+        await app.openFiles([ file ]);
+
+        // when
+        await app.triggerAction('save');
+
+        // then
+        expect(askSaveSpy).not.to.have.been.called;
+
+        expect(writeFileSpy).to.have.been.calledWith(
+          { ...file, contents: 'CONTENTS' },
+          { saveAs: false }
+        );
+      });
+
+
+      it('should save as existing tab', async function() {
+
+        // given
+        const file = createFile('1.bpmn');
+
+        await app.openFiles([ file ]);
+
+        // when
+        await app.triggerAction('save-as');
+
+        // then
+        expect(askSaveSpy).not.to.have.been.called;
+
+        expect(writeFileSpy).to.have.been.calledWith(
+          { ...file, contents: 'CONTENTS' },
+          { saveAs: true }
+        );
+      });
+
+
+      it('should ask to save on close', async function() {
+
+        // given
+        const tab = await app.createDiagram();
+
+        // when
+        await app.triggerAction('close-tab', { tabId: tab.id });
+
+        // then
+        expect(askSaveSpy).to.have.been.calledOnce;
+
+        expect(writeFileSpy).to.have.been.calledWith(
+          { name: 'diagram_1.bpmn', path: null, contents: 'CONTENTS' },
+          { saveAs: true }
+        );
+      });
+
 
       it('should save all tabs');
 
@@ -460,6 +557,11 @@ class Cache {
 
 
 function createApp(options = {}, mountFn=shallow) {
+
+  if (typeof options === 'function') {
+    mountFn = options;
+    options = {};
+  }
 
   let app;
 

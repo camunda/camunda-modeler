@@ -11,6 +11,14 @@ class FakeTab extends Component {
     onShown(tab);
   }
 
+  triggerAction(action, options) {
+    console.log('FakeTab#triggerAction', action, options);
+
+    if (action === 'save') {
+      return 'CONTENTS';
+    }
+  }
+
   render() {
     return null;
   }
