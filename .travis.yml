@@ -1,8 +1,8 @@
 cache:
   directories:
-  - node_modules
-  - $HOME/.cache/electron
-  - $HOME/.cache/electron-builder
+    - "$HOME/.npm"
+    - "$HOME/.cache/electron"
+    - "$HOME/.cache/electron-builder"
 
 jobs:
   include:
@@ -56,7 +56,7 @@ jobs:
       script: npm run build -- --mac --nightly --publish
 
 before_cache:
-  - rm -rf $HOME/.cache/electron-builder/wine
+  - rm -rf "$HOME/.cache/electron-builder/wine"
 
 stages:
   - test
