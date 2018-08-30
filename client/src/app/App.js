@@ -12,6 +12,8 @@ import classNames from 'classnames';
 import Toolbar from './Toolbar';
 import EmptyTab from './EmptyTab';
 
+import debug from 'debug';
+
 import {
   Button,
   MultiButton,
@@ -26,6 +28,8 @@ import pSeries from 'p-series';
 import History from './History';
 
 import css from './App.less';
+
+const log = debug('App');
 
 const tabLoaded = {
   empty: EmptyTab
@@ -531,7 +535,7 @@ export class App extends Component {
     } = this.state;
 
 
-    console.log('App#triggerAction %s %o', action, options);
+    log('App#triggerAction %s %o', action, options);
 
     if (action === 'select-tab') {
       if (options === 'next') {
@@ -610,8 +614,6 @@ export class App extends Component {
     }
 
     const tab = this.tabRef.current;
-
-    console.log('trigger action', action, options);
 
     return tab.triggerAction(action, options);
   }

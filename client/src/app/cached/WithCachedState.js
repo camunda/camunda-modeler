@@ -81,7 +81,6 @@ export default function(Comp) {
 
 
     render() {
-      console.log('%cLazyInstantiating#render', 'background: #52B415; color: white; padding: 2px 4px');
 
       const {
         forwardedRef,
