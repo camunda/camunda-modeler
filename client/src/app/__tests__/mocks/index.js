@@ -18,10 +18,15 @@ class FakeTab extends Component {
 }
 
 
+
 export class TabsProvider {
 
-  constructor() {
+  constructor(resolveTab) {
     this.uuid = 0;
+
+    this.resolveTab = resolveTab || function(type) {
+      return Promise.resolve({ default: FakeTab });
+    };
   }
 
   createTab(type) {
@@ -46,7 +51,7 @@ export class TabsProvider {
   }
 
   getTabComponent(type) {
-    return Promise.resolve({ default: FakeTab });
+    return this.resolveTab(type);
   }
 
 }
