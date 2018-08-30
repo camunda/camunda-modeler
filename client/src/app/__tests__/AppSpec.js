@@ -21,9 +21,9 @@ import {
 const { spy } = sinon;
 
 
-describe('<App />', function() {
+describe('<App>', function() {
 
-  describe('component', function() {
+  describe('props', function() {
 
     it('tabsProvider');
 
@@ -146,70 +146,75 @@ describe('<App />', function() {
 
   describe('tabs', function() {
 
-    it('should close active', async function() {
+    describe('closing', function() {
 
-      // given
-      const {
-        app
-      } = createApp();
+      it('should close active', async function() {
 
-      const file1 = createFile('1.bpmn');
-      const file2 = createFile('2.bpmn');
+        // given
+        const {
+          app
+        } = createApp();
 
-      await app.openFiles([ file1, file2 ]);
+        const file1 = createFile('1.bpmn');
+        const file2 = createFile('2.bpmn');
 
-      const tab = app.state.activeTab;
+        await app.openFiles([ file1, file2 ]);
 
-      // when
-      await app.closeTab(tab);
+        const tab = app.state.activeTab;
 
-      // then
-      const {
-        tabs,
-        activeTab
-      } = app.state;
+        // when
+        await app.closeTab(tab);
 
-      expect(tabs).not.to.contain(tab);
+        // then
+        const {
+          tabs,
+          activeTab
+        } = app.state;
 
-      // existing tab is focussed
-      expect(activeTab).to.eql(app.findOpenTab(file1));
+        expect(tabs).not.to.contain(tab);
+
+        // existing tab is focussed
+        expect(activeTab).to.eql(app.findOpenTab(file1));
+      });
+
+
+      it('should close all', async function() {
+
+        // given
+        const {
+          app
+        } = createApp();
+
+        const file1 = createFile('1.bpmn');
+        const file2 = createFile('2.bpmn');
+
+        await app.openFiles([ file1, file2 ]);
+
+        // when
+        await app.closeTabs(t => true);
+
+        // then
+        const {
+          tabs,
+          activeTab
+        } = app.state;
+
+        expect(tabs).to.be.empty;
+
+        // existing tab is focussed
+        expect(activeTab).to.equal(EMPTY_TAB);
+      });
+
     });
 
 
-    it('should close all', async function() {
+    describe('saving', function() {
 
-      // given
-      const {
-        app
-      } = createApp();
+      it('should save new tab');
 
-      const file1 = createFile('1.bpmn');
-      const file2 = createFile('2.bpmn');
+      it('should save file-backed tab');
 
-      await app.openFiles([ file1, file2 ]);
-
-      // when
-      await app.closeTabs(t => true);
-
-      // then
-      const {
-        tabs,
-        activeTab
-      } = app.state;
-
-      expect(tabs).to.be.empty;
-
-      // existing tab is focussed
-      expect(activeTab).to.equal(EMPTY_TAB);
-    });
-
-
-    it('should save', function() {
-
-    });
-
-
-    it('should save all', function() {
+      it('should save all tabs');
 
     });
 
