@@ -31,7 +31,7 @@ const tabLoaded = {
   empty: EmptyTab
 };
 
-const EMPTY_TAB = {
+export const EMPTY_TAB = {
   id: '__empty',
   type: 'empty'
 };
@@ -47,7 +47,7 @@ export class App extends Component {
 
     this.state = {
       tabs: [],
-      activeTab: null,
+      activeTab: EMPTY_TAB,
       dirtyTabs: {}
     };
 
@@ -60,17 +60,19 @@ export class App extends Component {
     this.tabRef = React.createRef();
   }
 
-  createDiagram = (type = 'bpmn', options) => {
+  createDiagram = async (type = 'bpmn', options) => {
 
     const {
       tabsProvider
     } = this.props;
 
-    const tab = tabsProvider.createTab(type, options);
+    const tab = this.addTab(
+      tabsProvider.createTab(type, options)
+    );
 
-    this.addTab(tab);
+    await this.showTab(tab);
 
-    return this.showTab(tab);
+    return tab;
   }
 
   /**
@@ -98,6 +100,8 @@ export class App extends Component {
         ]
       };
     });
+
+    return tab;
   }
 
 
@@ -242,27 +246,37 @@ export class App extends Component {
     await this.openFiles(files);
   }
 
-  openFiles = (files) => {
+  openFiles = async (files) => {
 
     const {
       tabsProvider
     } = this.props;
 
     if (!files.length) {
-      return;
+      return [];
     }
 
-    files.filter(
-      file => !this.findOpenTab(file)
-    ).map(
-      file => tabsProvider.createTabForFile(file)
-    ).forEach(
-      tab => this.addTab(tab)
+    // open tabs from last to first to
+    // keep display order in tact
+    const openedTabs = files.slice().reverse().map(
+      file => {
+        let tab = this.findOpenTab(file);
+
+        if (!tab) {
+          tab = this.addTab(
+            tabsProvider.createTabForFile(file)
+          );
+        }
+
+        return tab;
+      }
     );
 
-    const tab = this.findOpenTab(files[files.length - 1]);
+    await this.selectTab(openedTabs[0]);
 
-    this.selectTab(tab);
+    // open tabs from last to first to
+    // keep display order in tact
+    return openedTabs.reverse();
   }
 
   findOpenTab(file) {
@@ -290,8 +304,6 @@ export class App extends Component {
       activeTab,
       tabShown
     } = this.state;
-
-    console.log('TAB SHOWN', tab);
 
     if (tab === activeTab) {
       tabShown.resolve();
@@ -374,15 +386,6 @@ export class App extends Component {
   }
 
   componentDidMount() {
-
-    setTimeout(() => {
-      this.createDiagram('bpmn');
-      this.createDiagram('bpmn');
-      this.createDiagram('dmn');
-      this.createDiagram('dmn', { table: true });
-      this.createDiagram('cmmn');
-    });
-
     this.props.onReady();
   }
 
@@ -392,15 +395,27 @@ export class App extends Component {
       activeTab
     } = this.state;
 
+    const {
+      onTabChanged,
+      onToolStateChanged
+    } = this.props;
+
     // TODO: move this outside of app
     if (prevState.activeTab !== activeTab) {
 
-      this.props.onToolStateChanged(activeTab, {
-        closable: activeTab !== EMPTY_TAB,
-        save: activeTab !== EMPTY_TAB,
-        dirty: this.isDirty(activeTab)
-      });
+      if (typeof onToolStateChanged === 'function') {
+        onToolStateChanged(activeTab, {
+          closable: activeTab !== EMPTY_TAB,
+          save: activeTab !== EMPTY_TAB,
+          dirty: this.isDirty(activeTab)
+        });
+      }
+
+      if (typeof onTabChanged === 'function') {
+        onTabChanged(activeTab, prevState.activeTab);
+      }
     }
+
   }
 
   async saveTab(tab, options = {}) {
