@@ -51,28 +51,33 @@ export default class History {
     }
   }
 
-  navigate(direction, newElement) {
+  navigate(direction, nextFn) {
 
     let newIndex = this.idx + direction;
 
     // insert element to front
     if (newIndex === -1) {
-      this.elements = [
-        newElement,
-        ...this.elements
-      ];
 
-      newIndex = 0;
+      const next = nextFn();
+
+      if (next) {
+        this.elements = [
+          next,
+          ...this.elements
+        ];
+
+        newIndex = 0;
+      }
     }
 
     // add element to end
     if (newIndex === this.elements.length) {
+      const next = nextFn(direction);
+
       this.elements = [
         ...this.elements,
-        newElement
+        next
       ];
-
-      newIndex = this.elements.length - 1;
     }
 
     this.idx = newIndex;
@@ -84,6 +89,7 @@ export default class History {
    * Remove all instances of element in the history.
    */
   purge(element) {
+
     var idx = this.idx;
 
     this.elements = this.elements.filter((e, i) => {
@@ -92,7 +98,7 @@ export default class History {
         return true;
       }
 
-      if (i < this.idx) {
+      if (i <= this.idx) {
         idx--;
       }
 

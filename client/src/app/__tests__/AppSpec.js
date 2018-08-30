@@ -90,8 +90,8 @@ describe('<App />', function() {
         app
       } = createApp();
 
-      const file1 = createFile('foo.bpmn');
-      const file2 = createFile('bar.bpmn');
+      const file1 = createFile('1.bpmn');
+      const file2 = createFile('2.bpmn');
 
       // when
       setTimeout(function() {
@@ -118,8 +118,8 @@ describe('<App />', function() {
         app
       } = createApp();
 
-      const file1 = createFile('foo.bpmn');
-      const file2 = createFile('bar.bpmn');
+      const file1 = createFile('1.bpmn');
+      const file2 = createFile('2.bpmn');
 
       await app.openFiles([ file1, file2 ]);
 
@@ -153,8 +153,8 @@ describe('<App />', function() {
         app
       } = createApp();
 
-      const file1 = createFile('foo.bpmn');
-      const file2 = createFile('bar.bpmn');
+      const file1 = createFile('1.bpmn');
+      const file2 = createFile('2.bpmn');
 
       await app.openFiles([ file1, file2 ]);
 
@@ -183,8 +183,8 @@ describe('<App />', function() {
         app
       } = createApp();
 
-      const file1 = createFile('foo.bpmn');
-      const file2 = createFile('bar.bpmn');
+      const file1 = createFile('1.bpmn');
+      const file2 = createFile('2.bpmn');
 
       await app.openFiles([ file1, file2 ]);
 
@@ -285,17 +285,160 @@ describe('<App />', function() {
 
     describe('navigation', function() {
 
+      let app, openedTabs;
+
+      beforeEach(async function() {
+        const rendered = createApp();
+
+        app = rendered.app;
+
+        const file1 = createFile('1.bpmn');
+        const file2 = createFile('2.bpmn');
+
+        openedTabs = [
+          await app.createDiagram(),
+          ...(await app.openFiles([ file1, file2 ])),
+          await app.createDiagram(),
+        ];
+
+        // assume
+        const {
+          tabs,
+          activeTab
+        } = app.state;
+
+        expect(tabs).to.eql(openedTabs);
+        expect(activeTab).to.eql(openedTabs[3]);
+      });
+
+
       it('should select tab', async function() {
 
+        // when
+        await app.selectTab(openedTabs[0]);
+
+        // then
+        const {
+          activeTab
+        } = app.state;
+
+        expect(activeTab).to.eql(openedTabs[0]);
       });
 
 
-      it('should navigate', function() {
+      describe('should navigate', function() {
+
+        it('back', async function() {
+
+          // when
+          await app.navigate(-1);
+
+          // then
+          const {
+            activeTab
+          } = app.state;
+
+          expect(activeTab).to.eql(openedTabs[2]);
+        });
+
+
+        it('forward', async function() {
+
+          // when
+          await app.navigate(1);
+
+          // then
+          const {
+            activeTab
+          } = app.state;
+
+          expect(activeTab).to.eql(openedTabs[0]);
+        });
 
       });
 
 
-      it('should reopen last', function() {
+      describe('should reopen last', function() {
+
+        it('saved', async function() {
+
+          // given
+          const savedTab = openedTabs[2];
+          const file = savedTab.file;
+
+          await app.closeTab(savedTab);
+
+          // when
+          await app.triggerAction('reopen-last-tab');
+
+          // then
+          const {
+            activeTab
+          } = app.state;
+
+          expect(activeTab.file).to.eql(file);
+        });
+
+
+        it('reject unsaved', async function() {
+
+          // given
+          const newTab = openedTabs[3];
+
+          await app.closeTab(newTab);
+
+          // when
+          try {
+            await app.triggerAction('reopen-last-tab');
+
+            expect.fail('expected exception');
+          } catch (e) {
+            expect(e.message).to.eql('no last tab');
+          }
+        });
+
+
+        it('after all closed', async function() {
+
+          // given
+          await app.closeTabs((t) => true);
+
+          // when
+          await app.triggerAction('reopen-last-tab');
+          await app.triggerAction('reopen-last-tab');
+
+          // then
+          const {
+            activeTab,
+            tabs
+          } = app.state;
+
+          const expectedOpen = [
+            app.findOpenTab(openedTabs[2].file),
+            app.findOpenTab(openedTabs[1].file)
+          ];
+
+          expect(tabs).to.eql(expectedOpen);
+          expect(activeTab).to.eql(expectedOpen[1]);
+        });
+
+      });
+
+
+      describe('__internal__', function() {
+
+        it('should reset state on all closed', async function() {
+
+          // when
+          await app.triggerAction('close-all-tabs');
+
+          // then
+          const tabHistory = app.tabHistory;
+
+          expect(tabHistory.elements).to.be.empty;
+          expect(tabHistory.idx).to.eql(-1);
+          expect(tabHistory.get()).not.to.exist;
+        });
 
       });
 
@@ -325,9 +468,7 @@ function createApp(options = {}, mountFn=shallow) {
   const tabsProvider = options.tabsProvider || new TabsProvider();
 
   const onTabChanged = options.onTabChanged || function(newTab) {
-    setTimeout(() => {
-      app.handleTabShown(newTab);
-    }, 0);
+    app.handleTabShown(newTab);
   };
 
   const onTabShown = options.onTabShown;
