@@ -469,9 +469,7 @@ export class App extends Component {
       const contents = await this.tabRef.current.triggerAction('save');
 
       // unsaved ?
-      if (isNew(tab)) {
-        saveAs = true;
-      }
+      saveAs = saveAs || isNew(tab);
 
       const newFile = await this.props.globals.fileSystem.writeFile({
         ...tab.file,
