@@ -22,8 +22,6 @@ export default class TabLinks extends Component {
       className
     } = this.props;
 
-    console.log('%cTabLinks#render', 'background: #52B415; color: white; padding: 2px 4px');
-
     return (
       <div className={ classNames(linksContainer, className) }>
         {tabs.map(tab => {
