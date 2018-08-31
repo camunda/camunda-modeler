@@ -108,7 +108,7 @@ export default class DropdownButton extends Component {
         <div
           className="dropdown"
           onClick={ this.onDropdownClick }
-          >
+        >
           { this.props.children }
         </div>
       );
