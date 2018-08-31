@@ -16,6 +16,7 @@ import debug from 'debug';
 
 import {
   Button,
+  DropdownButton,
   MultiButton,
   TabLinks,
   TabContainer,
@@ -638,45 +639,36 @@ export class App extends Component {
 
           <Toolbar />
 
-          <Fill name="buttons" group="editor">
-            <MultiButton>
-              <Button onClick={ this.composeAction('selectElements') }>Select All</Button>
-              <Button onClick={ this.composeAction('setColor', { fill: 'white', stroke: '#489d12' }) }>
-                Set Color
-              </Button>
-            </MultiButton>
-          </Fill>
-
           <Fill name="buttons" group="general">
+            <DropdownButton
+              text="File"
+              items={ [
+                {
+                  text: 'Create new BPMN diagram',
+                  onClick: this.composeAction('create-bpmn-diagram')
+                },
+                {
+                  text: 'Create new DMN table',
+                  onClick: this.composeAction('create-dmn-diagram')
+                },
+                {
+                  text: 'Create new DMN diagram (DRD)',
+                  onClick: () => console.log('DMN diagram')
+                },
+                {
+                  text: 'Create new CMMN diagram',
+                  onClick: this.composeAction('create-cmmn-diagram')
+                }
+              ] } />
+
             <Button onClick={ this.composeAction('open-diagram') }>
               Open file
             </Button>
+          </Fill>
 
-            <MultiButton>
-              <Button onClick={ this.composeAction('select-tab', 'previous') }>&laquo;</Button>
-              <Button onClick={ this.composeAction('select-tab', 'next') }>&raquo;</Button>
-            </MultiButton>
-
-            <Button
-              primary
-              onClick={ this.composeAction('create-bpmn-diagram') }
-            >
-              Create BPMN Tab
-            </Button>
-
-            <Button
-              primary
-              onClick={ this.composeAction('create-dmn-diagram') }
-            >
-              Create DMN Tab
-            </Button>
-
-            <Button
-              primary
-              onClick={ this.composeAction('create-cmmn-diagram') }
-            >
-              Create CMMN Tab
-            </Button>
+          <Fill name="buttons" group="navigation">
+            <Button onClick={ this.composeAction('select-tab', 'previous') }>&laquo;</Button>
+            <Button onClick={ this.composeAction('select-tab', 'next') }>&raquo;</Button>
           </Fill>
 
           <div className="tabs">
