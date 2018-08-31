@@ -61,7 +61,7 @@ class MultiSheetTab extends CachedComponent {
     });
   }
 
-  dirtyChanged = (dirty) => {
+  handleChanged = (dirty) => {
 
     const { tab, xml } = this.props;
 
@@ -73,6 +73,22 @@ class MultiSheetTab extends CachedComponent {
         dirty: dirty || (lastXML ? (xml !== lastXML) : false)
       }
     );
+  }
+
+  handleContextMenu = (event, context) => {
+
+    const {
+      activeSheet
+    } = this.getCached();
+
+    const {
+      onContextMenu
+    } = this.props;
+
+    if (typeof onContextMenu === 'function') {
+      onContextMenu(event, activeSheet.type, context);
+    }
+
   }
 
   triggerAction = async (action, options) => {
@@ -190,7 +206,8 @@ class MultiSheetTab extends CachedComponent {
             xml={ lastXML || xml }
             activeSheet={ activeSheet }
             onSheetsChanged={ this.sheetsChanged }
-            dirtyChanged={ this.dirtyChanged } />
+            onContextMenu={ this.handleContextMenu }
+            onChanged={ this.handleChanged } />
         </TabContainer>
 
         <TabLinks

@@ -172,7 +172,7 @@ export class BpmnEditor extends CachedComponent {
     } = this.getCached();
 
     const {
-      dirtyChanged
+      onChanged
     } = this.props;
 
     // TODO(nikku): complete state updating
@@ -188,9 +188,9 @@ export class BpmnEditor extends CachedComponent {
       setColor: selectionLength
     };
 
-    if (typeof dirtyChanged === 'function') {
+    if (typeof onChanged === 'function') {
       if (this.state.undo !== newState.undo) {
-        dirtyChanged(newState.undo);
+        onChanged(newState.undo);
       }
     }
 
@@ -273,6 +273,17 @@ export class BpmnEditor extends CachedComponent {
     });
   }
 
+  handleContextMenu = (event) => {
+
+    const {
+      onContextMenu
+    } = this.props;
+
+    if (typeof onContextMenu === 'function') {
+      onContextMenu(event);
+    }
+  }
+
   resize = () => {
     const {
       modeler
@@ -349,6 +360,7 @@ export class BpmnEditor extends CachedComponent {
           className="diagram"
           ref={ this.ref }
           onFocus={ this.updateState }
+          onContextMenu={ this.handleContextMenu }
         ></div>
 
         <div className="properties">
