@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import { Fill } from '../../slot-fill';
 
-import { Button } from '../../primitives';
+import {
+  Button,
+  DropdownButton
+} from '../../primitives';
 
 import {
   WithCache,
@@ -21,6 +24,32 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 
 import css from './BpmnEditor.less';
+
+const COLORS = [{
+  title: 'White',
+  fill: 'white',
+  stroke: 'black'
+}, {
+  title: 'Blue',
+  fill: 'rgb(187, 222, 251)',
+  stroke: 'rgb(30, 136, 229)'
+}, {
+  title: 'Orange',
+  fill: 'rgb(255, 224, 178)',
+  stroke: 'rgb(251, 140, 0)'
+}, {
+  title: 'Green',
+  fill: 'rgb(200, 230, 201)',
+  stroke: 'rgb(67, 160, 71)'
+}, {
+  title: 'Red',
+  fill: 'rgb(255, 205, 210)',
+  stroke: 'rgb(229, 57, 53)'
+}, {
+  title: 'Purple',
+  fill: 'rgb(225, 190, 231)',
+  stroke: 'rgb(142, 36, 170)'
+}];
 
 
 export class BpmnEditor extends CachedComponent {
@@ -125,10 +154,13 @@ export class BpmnEditor extends CachedComponent {
     const commandStack = modeler.get('commandStack');
     const selection = modeler.get('selection');
 
+    const selectionLength = selection.get().length;
+
     this.setState({
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
-      align: selection.get().length > 1
+      align: selectionLength > 1,
+      setColor: selectionLength
     });
   }
 
@@ -168,12 +200,12 @@ export class BpmnEditor extends CachedComponent {
     });
   }
 
-  handleTriggerEditorAction = (event, context) => {
+  handleTriggerEditorAction = (editorAction, context) => {
     const {
       modeler
     } = this.getCached();
 
-    modeler.get('editorActions').trigger(context.editorAction);
+    modeler.get('editorActions').trigger(editorAction, context);
   }
 
   saveDiagram = () => {
@@ -186,29 +218,53 @@ export class BpmnEditor extends CachedComponent {
     });
   }
 
-  handleSetColor = (event, context) => {
-    const {
-      modeler
-    } = this.getCached();
-
-    const selection = modeler.get('selection').get();
-
-    if (!selection.length) {
-      return;
-    }
-
-    modeler.get('modeling').setColor(selection, context);
+  handleSetColor = (fill, stroke) => {
+    this.handleTriggerEditorAction('setColor', {
+      fill,
+      stroke
+    });
   }
 
   render() {
     return (
       <div className={ css.BpmnEditor }>
 
-        <Fill name="buttons">
+        <Fill name="toolbar" group="general">
+          <Button onClick={ this.saveDiagram }>Save Diagram</Button>
+        </Fill>
+
+        <Fill name="toolbar" group="commandstack">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
           <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
+        </Fill>
+
+        <Fill name="toolbar" group="image-export">
+          <Button onClick={ () => console.log('Export Image') }>Export Image</Button>
+        </Fill>
+
+        <Fill name="toolbar" group="color">
+          <DropdownButton
+            disabled={ !this.state.setColor }
+            text="Set Color">
+            {
+              COLORS.map((color, index) => {
+                const { fill, stroke, title } = color;
+
+                return (
+                  <Color
+                    fill={ fill }
+                    key={ index }
+                    stroke={ stroke }
+                    title={ title }
+                    onClick={ () => this.handleSetColor(fill, stroke) } />
+                );
+              })
+            }
+          </DropdownButton>
+        </Fill>
+
+        <Fill name="toolbar" group="align">
           <Button disabled={ !this.state.align } onClick={ () => this.align('left') }>Align Left</Button>
-          <Button onClick={ this.saveDiagram }>Save Diagram</Button>
         </Fill>
 
         <div className="diagram" ref={ this.ref }></div>
@@ -242,3 +298,27 @@ export class BpmnEditor extends CachedComponent {
 
 
 export default WithCache(WithCachedState(BpmnEditor));
+
+class Color extends Component {
+  render() {
+    const {
+      fill,
+      onClick,
+      stroke,
+      title,
+      ...rest
+    } = this.props;
+
+    return (
+      <div
+        className={ css.Color }
+        onClick={ onClick }
+        style={ {
+          backgroundColor: fill,
+          borderColor: stroke
+        } }
+        title={ title }
+        { ...rest }></div>
+    );
+  }
+}

@@ -127,7 +127,7 @@ class XMLEditor extends CachedComponent {
 
     return (
       <div className={ css.XMLEditor }>
-        <Fill name="buttons">
+        <Fill name="toolbar">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
           <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
         </Fill>

@@ -31,7 +31,7 @@ export default class XMLTab extends Component {
 
     return (
       <Fragment key={ tab.id }>
-        <Fill name="buttons">
+        <Fill name="toolbar">
           <Button onClick={ () => console.log('click') }>DMN Button 1</Button>
           <Button>DMN Button 2</Button>
           <Button>DMN Button 3</Button>

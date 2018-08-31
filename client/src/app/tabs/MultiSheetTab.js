@@ -181,8 +181,6 @@ class MultiSheetTab extends CachedComponent {
 
     const Editor = activeSheet.provider.editor;
 
-    console.log('%cMultiSheetTab#render', 'background: #52B415; color: white; padding: 2px 4px');
-
     return (
       <div className={ css.MultiSheetTab }>
         <TabContainer className="content tab">
