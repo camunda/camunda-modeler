@@ -10,15 +10,7 @@ import {
   CachedComponent
 } from '../../cached';
 
-import DmnModeler from './DmnModeler';
-
-import 'dmn-js/dist/assets/diagram-js.css';
-import 'dmn-js/dist/assets/dmn-font/css/dmn-embedded.css';
-import 'dmn-js/dist/assets/dmn-js-decision-table-controls.css';
-import 'dmn-js/dist/assets/dmn-js-decision-table.css';
-import 'dmn-js/dist/assets/dmn-js-drd.css';
-import 'dmn-js/dist/assets/dmn-js-literal-expression.css';
-import 'dmn-js/dist/assets/dmn-js-shared.css';
+import CamundaDmnModeler from './DmnModeler';
 
 import css from './DmnEditor.less';
 
@@ -31,6 +23,9 @@ class DmnEditor extends CachedComponent {
     this.state = {};
 
     this.ref = React.createRef();
+    this.propertiesPanelRef = React.createRef();
+
+    // TODO(nikku): detach editor properties panel
   }
 
   componentDidMount() {
@@ -42,6 +37,7 @@ class DmnEditor extends CachedComponent {
 
     modeler.attachTo(this.ref.current);
 
+    // TODO(nikku): dynamically attach editor properties panel
     this.checkImport();
   }
 
@@ -52,6 +48,7 @@ class DmnEditor extends CachedComponent {
 
     this.listen('off');
 
+    // TODO(nikku): detach editor properties panel
     modeler.detach();
   }
 
@@ -309,13 +306,19 @@ class DmnEditor extends CachedComponent {
         </Fill>
 
         <div className="diagram" ref={ this.ref }></div>
+
+        <div className="properties">
+          <div className="toggle">Properties Panel</div>
+          <div className="resize-handle"></div>
+          <div className="properties-container" ref={ this.propertiesPanelRef }></div>
+        </div>
       </div>
     );
   }
 
   static createCachedState() {
 
-    const modeler = new DmnModeler();
+    const modeler = new CamundaDmnModeler();
 
     return {
       modeler,
