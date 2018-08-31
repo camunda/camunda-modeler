@@ -239,7 +239,7 @@ export class BpmnEditor extends CachedComponent {
           <Button onClick={ this.saveDiagram }>Save Diagram</Button>
         </Fill>
 
-        <Fill name="toolbar" group="commandstack">
+        <Fill name="toolbar" group="command">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
           <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
         </Fill>
