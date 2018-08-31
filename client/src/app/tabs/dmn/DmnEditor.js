@@ -31,8 +31,6 @@ class DmnEditor extends CachedComponent {
     this.state = {};
 
     this.ref = React.createRef();
-
-    console.log('%cDmnEditor#constructor', 'background: red; color: white; padding: 2px 4px');
   }
 
   componentDidMount() {
@@ -204,11 +202,6 @@ class DmnEditor extends CachedComponent {
 
     const commandStack = activeViewer.get('commandStack');
 
-    console.log('%cDmnEditor#setState', 'background: red; color: white; padding: 2px 4px', {
-      undo: commandStack.canUndo(),
-      redo: commandStack.canRedo()
-    });
-
     this.setState({
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo()
@@ -216,8 +209,6 @@ class DmnEditor extends CachedComponent {
   }
 
   checkImport = () => {
-
-    console.log('%DmnEditor#checkImport', 'background: steelblue; color: white; padding: 2px 4px');
     const {
       modeler
     } = this.getCached();
@@ -261,7 +252,6 @@ class DmnEditor extends CachedComponent {
 
     if (!activeView
       || activeView.element !== element) {
-      console.log('%copening view for element ' + view.element.id, 'background: steelblue; color: white; padding: 2px 4px');
       modeler.open(view);
     }
   }
@@ -296,12 +286,10 @@ class DmnEditor extends CachedComponent {
   }
 
   render() {
-    console.log('%cDmnEditor#render', 'background: red; color: white; padding: 2px 4px', this.state);
-
     return (
       <div className={ css.DmnEditor }>
 
-        <Fill name="buttons">
+        <Fill name="toolbar">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
           <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
         </Fill>
