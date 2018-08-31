@@ -28,15 +28,15 @@ export function createTab(tabName, providers) {
     render() {
       const {
         tab,
-        onChanged
+        ...otherProps
       } = this.props;
 
       return (
         <MultiSheetTab
           id={ tab.id }
           tab={ tab }
+          { ...otherProps }
           xml={ tab.file.contents }
-          onChanged={ onChanged }
           ref={ this.tabRef }
           providers={ providers } />
       );

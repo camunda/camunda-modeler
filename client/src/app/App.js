@@ -305,10 +305,16 @@ export class App extends Component {
     return tabs.find(t => t.file && t.file.path === file.path);
   }
 
-  openTabMenu = (tab, event) => {
+  openTabLinksMenu = (tab, event) => {
     event.preventDefault();
 
     this.props.onContextMenu('tab', { tabId: tab.id });
+  }
+
+  openTabMenu = (event, type, context) => {
+    event.preventDefault();
+
+    this.props.onContextMenu(type);
   }
 
   /**
@@ -677,11 +683,12 @@ export class App extends Component {
               isDirty={ this.isDirty }
               activeTab={ activeTab }
               onSelect={ this.selectTab }
-              onContextMenu={ this.openTabMenu }
+              onContextMenu={ this.openTabLinksMenu }
               onClose={ (tab) => {
                 this.triggerAction('close-tab', { tabId: tab.id }).catch(console.error);
               } }
-              onCreate={ this.composeAction('create-bpmn-diagram') } />
+              onCreate={ this.composeAction('create-bpmn-diagram') }
+            />
 
             <TabContainer className="main">
               <Tab
@@ -689,6 +696,7 @@ export class App extends Component {
                 tab={ activeTab }
                 onChanged={ this.handleTabChanged }
                 onShown={ this.handleTabShown }
+                onContextMenu={ this.openTabMenu }
                 ref={ this.tabRef }
               />
             </TabContainer>
