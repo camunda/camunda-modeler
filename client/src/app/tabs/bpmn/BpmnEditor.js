@@ -13,15 +13,8 @@ import {
   CachedComponent
 } from '../../cached';
 
-import BpmnModeler from 'bpmn-js/lib/Modeler';
+import CamundaBpmnModeler from './modeler';
 
-import propertiesPanelModule from 'bpmn-js-properties-panel';
-import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
-
-import 'bpmn-js-properties-panel/styles/properties.less';
-
-import 'bpmn-js/dist/assets/diagram-js.css';
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 
 import css from './BpmnEditor.less';
 
@@ -77,6 +70,7 @@ export class BpmnEditor extends CachedComponent {
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
     this.checkImport();
+    this.resize();
   }
 
   componentWillUnmount() {
@@ -106,14 +100,14 @@ export class BpmnEditor extends CachedComponent {
       'selection.changed',
       'attach'
     ].forEach((event) => {
-      modeler[fn](event, this.updateActions);
+      modeler[fn](event, this.updateState);
     });
 
-    modeler[fn]('commandStack.changed', (e) => {
-      const commandStack = modeler.get('commandStack');
+    modeler[fn]('elementTemplates.errors', this.handleElementTemplateErrors);
 
-      this.props.dirtyChanged(commandStack.canUndo());
-    });
+    modeler[fn]('error', 1500, this.handleError);
+
+    modeler[fn]('minimap.toggle', this.handleMinimapToggle);
   }
 
   componentDidUpdate(previousProps) {
@@ -146,22 +140,61 @@ export class BpmnEditor extends CachedComponent {
     modeler.get('alignElements').trigger(selection, type);
   }
 
-  updateActions = (event) => {
+  handleMinimapToggle = (event) => {
+    console.warn('minimap toggle', event.open);
+
+    // TODO(nikku): persist minimap toggle state
+  }
+
+  handleElementTemplateErrors = (event) => {
+    const {
+      errors
+    } = event;
+
+    console.warn('element template errors', errors);
+
+    // TODO(nikku): handle element template errors
+  }
+
+  handleError = (event) => {
+    const {
+      error
+    } = event;
+
+    console.warn('modeling error', error);
+
+    // TODO(nikku): handle modeling error
+  }
+
+  updateState = (event) => {
     const {
       modeler
     } = this.getCached();
 
+    const {
+      dirtyChanged
+    } = this.props;
+
+    // TODO(nikku): complete state updating
     const commandStack = modeler.get('commandStack');
     const selection = modeler.get('selection');
 
     const selectionLength = selection.get().length;
 
-    this.setState({
+    const newState = {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
       align: selectionLength > 1,
       setColor: selectionLength
-    });
+    };
+
+    if (typeof dirtyChanged === 'function') {
+      if (this.state.undo !== newState.undo) {
+        dirtyChanged(newState.undo);
+      }
+    }
+
+    this.setState(newState);
   }
 
   checkImport() {
@@ -175,6 +208,8 @@ export class BpmnEditor extends CachedComponent {
 
       modeler.lastXML = xml;
 
+      // TODO(nikku): handle errors
+      // TODO(nikku): apply default element templates to initial diagram
       modeler.importXML(xml, function(err) {
 
       });
@@ -188,6 +223,8 @@ export class BpmnEditor extends CachedComponent {
 
     return new Promise((resolve, reject) => {
 
+      // TODO(nikku): set current modeler version and name to the diagram
+
       modeler.saveXML({ format: true }, (err, xml) => {
         modeler.lastXML = xml;
 
@@ -200,12 +237,17 @@ export class BpmnEditor extends CachedComponent {
     });
   }
 
-  handleTriggerEditorAction = (editorAction, context) => {
+  triggerAction = (action, context) => {
     const {
       modeler
     } = this.getCached();
 
-    modeler.get('editorActions').trigger(editorAction, context);
+    if (action === 'resize') {
+      return this.resize();
+    }
+
+    // TODO(nikku): handle all editor actions
+    modeler.get('editorActions').trigger(action, context);
   }
 
   saveDiagram = () => {
@@ -219,16 +261,26 @@ export class BpmnEditor extends CachedComponent {
   }
 
   handleSetColor = (fill, stroke) => {
-    this.handleTriggerEditorAction('setColor', {
+    this.triggerAction('setColor', {
       fill,
       stroke
     });
   }
 
   handleDistributeElements = (type) => {
-    this.handleTriggerEditorAction('distributeElements', {
+    this.triggerAction('distributeElements', {
       type
     });
+  }
+
+  resize = () => {
+    const {
+      modeler
+    } = this.getCached();
+
+    const canvas = modeler.get('canvas');
+
+    canvas.resized();
   }
 
   render() {
@@ -293,7 +345,11 @@ export class BpmnEditor extends CachedComponent {
           <Button>Configure Deployment Endpoint</Button>
         </Fill>
 
-        <div className="diagram" ref={ this.ref }></div>
+        <div
+          className="diagram"
+          ref={ this.ref }
+          onFocus={ this.updateState }
+        ></div>
 
         <div className="properties">
           <div className="toggle">Properties Panel</div>
@@ -305,11 +361,10 @@ export class BpmnEditor extends CachedComponent {
   }
 
   static createCachedState() {
-    const modeler = new BpmnModeler({
-      additionalModules: [
-        propertiesPanelModule,
-        propertiesProviderModule
-      ]
+
+    // TODO(nikku): wire element template loading
+    const modeler = new CamundaBpmnModeler({
+      position: 'absolute'
     });
 
     return {
