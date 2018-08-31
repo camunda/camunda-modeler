@@ -11,9 +11,7 @@ import {
   CachedComponent
 } from '../cached';
 
-import {
-  multiSheetContainer
-} from './MultiSheetTab.less';
+import css from './MultiSheetTab.less';
 
 
 class MultiSheetTab extends CachedComponent {
@@ -186,7 +184,7 @@ class MultiSheetTab extends CachedComponent {
     console.log('%cMultiSheetTab#render', 'background: #52B415; color: white; padding: 2px 4px');
 
     return (
-      <div className={ multiSheetContainer }>
+      <div className={ css.MultiSheetTab }>
         <TabContainer className="content tab">
           <Editor
             ref={ this.editorRef }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import classNames from 'classnames';
 
-import { linksContainer } from './Tabbed.less';
+import css from './Tabbed.less';
 
 const noop = () => {};
 
@@ -23,7 +23,7 @@ export default class TabLinks extends Component {
     } = this.props;
 
     return (
-      <div className={ classNames(linksContainer, className) }>
+      <div className={ classNames(css.LinksContainer, className) }>
         {tabs.map(tab => {
 
           return (
