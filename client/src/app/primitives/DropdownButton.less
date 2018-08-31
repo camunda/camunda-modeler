@@ -1,0 +1,40 @@
+:local(.DropdownButton) {
+
+  .caret {
+    margin-left: 5px;
+    margin-top: -3px;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    border-top: 3px dashed;
+    border-top: 3px solid;
+    border-right: 3px solid transparent;
+    border-left: 3px solid transparent;
+  }
+  
+  > .dropdown {
+    position: absolute;
+    text-align: left;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    line-height: 24px;
+    background: white;
+    border: solid 1px #CCC;
+    z-index: 1000;
+  
+    > .item {
+      display: block;
+      width: 100%;
+      white-space: nowrap;
+      padding: 0 5px;
+      cursor: pointer;
+  
+      &:hover {
+        background: #D6EBFF;
+      }
+    }
+  }
+}

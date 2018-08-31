@@ -11,7 +11,6 @@ export default class Button extends Component {
 
     const {
       disabled,
-      primary,
       className,
       ...rest
     } = this.props;
@@ -19,8 +18,7 @@ export default class Button extends Component {
     return (
       <button className={
         classNames(css.Button, {
-          disabled,
-          primary
+          disabled
         }, className)
       } { ...rest } />
     );
