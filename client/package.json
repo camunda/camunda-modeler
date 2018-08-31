@@ -2,7 +2,7 @@
   "name": "camunda-modeler-client",
   "version": "2.2.4",
   "description": "Camunda Modeler client application",
-  "keywords": [],
+  "private": true,
   "main": "src/index.js",
   "dependencies": {
     "bpmn-js": "^3.0.3",
