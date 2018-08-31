@@ -63,6 +63,7 @@ describe('<App>', function() {
     // when
     await app.createDiagram('bpmn');
     await app.createDiagram('dmn');
+    await app.createDiagram('cmmn');
     await app.createDiagram();
 
     // then
@@ -74,10 +75,11 @@ describe('<App>', function() {
     expect(tabs.map(tab => tab.type)).to.eql([
       'bpmn',
       'dmn',
+      'cmmn',
       'bpmn'
     ]);
 
-    expect(activeTab).to.eql(tabs[2]);
+    expect(activeTab).to.eql(tabs[3]);
   });
 
 
