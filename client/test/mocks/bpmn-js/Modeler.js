@@ -32,6 +32,14 @@ export default class Modeler {
       return new PropertiesPanel();
     }
 
+    if (module === 'canvas') {
+      return {
+        resized() { }
+      };
+    }
+
     return null;
   }
 }
+
+Modeler.prototype._modules = [];
