@@ -21,4 +21,5 @@ __Hint:__ Create a release issue and copy the template below into it.
 * [ ] spread the word
     * [ ] `@alle` to trigger customer mail
     * [ ] tweet
+* [ ] Close [current milestone](https://github.com/camunda/camunda-modeler/milestones)
 ```
