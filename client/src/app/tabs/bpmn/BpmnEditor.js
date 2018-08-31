@@ -225,6 +225,12 @@ export class BpmnEditor extends CachedComponent {
     });
   }
 
+  handleDistributeElements = (type) => {
+    this.handleTriggerEditorAction('distributeElements', {
+      type
+    });
+  }
+
   render() {
     return (
       <div className={ css.BpmnEditor }>
@@ -265,6 +271,25 @@ export class BpmnEditor extends CachedComponent {
 
         <Fill name="toolbar" group="align">
           <Button disabled={ !this.state.align } onClick={ () => this.align('left') }>Align Left</Button>
+          <Button disabled={ !this.state.align } onClick={ () => this.align('center') }>Align Center</Button>
+          <Button disabled={ !this.state.align } onClick={ () => this.align('right') }>Align Right</Button>
+          <Button disabled={ !this.state.align } onClick={ () => this.align('top') }>Align Top</Button>
+          <Button disabled={ !this.state.align } onClick={ () => this.align('middle') }>Align Middle</Button>
+          <Button disabled={ !this.state.align } onClick={ () => this.align('bottom') }>Align Bottom</Button>
+        </Fill>
+
+        <Fill name="toolbar" group="distribute">
+          <Button
+            disabled={ !this.state.align }
+            onClick={ () => this.handleDistributeElements('horizontal') }>Distribute Horizontally</Button>
+          <Button
+            disabled={ !this.state.align }
+            onClick={ () => this.handleDistributeElements('vertical') }>Distribute Vertically</Button>
+        </Fill>
+
+        <Fill name="toolbar" group="deploy">
+          <Button>Deploy Current Diagram</Button>
+          <Button>Configure Deployment Endpoint</Button>
         </Fill>
 
         <div className="diagram" ref={ this.ref }></div>
