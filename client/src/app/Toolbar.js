@@ -10,7 +10,7 @@ export default class Toolbar extends Component {
   render() {
     return (
       <div className={ ToolbarContainer }>
-        <Slot name="buttons" group={ groupButtons } separator={ (key) => <Separator key={ key } /> } />
+        <Slot name="toolbar" group={ groupButtons } separator={ (key) => <Separator key={ key } /> } />
       </div>
     );
   }

@@ -45,17 +45,28 @@ export default class DropdownButton extends Component {
   }
 
   onItemClick = item => {
-    return () => {
+    if (typeof item.onClick === 'function') {
+      item.onClick();
+    }
+  }
 
-      if (typeof item.onClick === 'function') {
-        item.onClick();
-      }
+  onDropdownClick = () => {
+    const {
+      closeOnClick
+    } = this.props;
 
+    if (closeOnClick !== false) {
       this.close();
-    };
+    }
   }
 
   toggle = () => {
+    const { disabled } = this.props;
+
+    if (disabled) {
+      return;
+    }
+
     const { active } = this.state;
 
     this.setState({
@@ -81,7 +92,10 @@ export default class DropdownButton extends Component {
                 <li
                   key={ index }
                   className="item"
-                  onClick={ this.onItemClick(item) }>
+                  onClick={ () => {
+                    this.onItemClick(item);
+                    this.onDropdownClick();
+                  } }>
                   { item.text }
                 </li>
               );
@@ -91,7 +105,10 @@ export default class DropdownButton extends Component {
       );
     } else {
       return (
-        <div className="dropdown">
+        <div
+          className="dropdown"
+          onClick={ this.onDropdownClick }
+          >
           { this.props.children }
         </div>
       );

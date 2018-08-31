@@ -17,7 +17,6 @@ import debug from 'debug';
 import {
   Button,
   DropdownButton,
-  MultiButton,
   TabLinks,
   TabContainer,
   Tab
@@ -639,7 +638,7 @@ export class App extends Component {
 
           <Toolbar />
 
-          <Fill name="buttons" group="general">
+          <Fill name="toolbar" group="general">
             <DropdownButton
               text="File"
               items={ [
@@ -666,7 +665,7 @@ export class App extends Component {
             </Button>
           </Fill>
 
-          <Fill name="buttons" group="navigation">
+          <Fill name="toolbar" group="navigation">
             <Button onClick={ this.composeAction('select-tab', 'previous') }>&laquo;</Button>
             <Button onClick={ this.composeAction('select-tab', 'next') }>&raquo;</Button>
           </Fill>

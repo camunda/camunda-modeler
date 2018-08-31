@@ -47,12 +47,23 @@ describe('DropdownButton', function() {
   });
 
 
+  it('should NOT open dropdown if disabled', function() {
+
+    // given
+    const wrapper = shallow(<DropdownButton disabled={ true } />);
+
+    // when
+    wrapper.find('button').simulate('click');
+
+    // then
+    expect(wrapper.exists('.dropdown')).to.be.false;
+  });
+
+
 
   describe('close', function() {
 
-    let wrapper;
-
-    beforeEach(function() {
+    function openDropdown(props) {
 
       const items = [{
         text: 'foo'
@@ -60,16 +71,21 @@ describe('DropdownButton', function() {
         text: 'bar'
       }];
 
-      wrapper = shallow(<DropdownButton items={ items } />);
+      const wrapper = shallow(<DropdownButton items={ items } { ...props } />);
 
       // open dropdown
       wrapper.setState({
         active: true
       });
-    });
+
+      return wrapper;
+    }
 
 
     it('should close dropdown on item click', function() {
+
+      // given
+      const wrapper = openDropdown();
 
       // when
       const item = wrapper.find('.item').first();
@@ -84,11 +100,31 @@ describe('DropdownButton', function() {
     // TODO(philippfromme): fix
     it.skip('should close dropdown on global click', function() {
 
+      // given
+      const wrapper = openDropdown();
+
       // when
       document.body.click();
 
       // then
       expect(wrapper.state().active).to.be.false;
+    });
+
+
+    it('should NOT close on click if specified', function() {
+
+      // given
+      const wrapper = openDropdown({
+        closeOnClick: false
+      });
+
+      // when
+      const item = wrapper.find('.item').first();
+
+      item.simulate('click');
+
+      // then
+      expect(wrapper.state().active).to.be.true;
     });
 
   });
