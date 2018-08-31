@@ -12,7 +12,7 @@ import {
 
 import CodeMirror from './CodeMirror';
 
-import { xmlContainer } from './XMLEditor.less';
+import css from './XMLEditor.less';
 
 
 class XMLEditor extends CachedComponent {
@@ -126,7 +126,7 @@ class XMLEditor extends CachedComponent {
     console.log('%cXMLEditor#render', 'background: orange; color: white; padding: 2px 4px', this.state);
 
     return (
-      <div className={ xmlContainer }>
+      <div className={ css.XMLEditor }>
         <Fill name="buttons">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
           <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>

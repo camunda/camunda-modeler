@@ -20,9 +20,7 @@ import 'dmn-js/dist/assets/dmn-js-drd.css';
 import 'dmn-js/dist/assets/dmn-js-literal-expression.css';
 import 'dmn-js/dist/assets/dmn-js-shared.css';
 
-import {
-  dmnContainer
-} from './DmnEditor.less';
+import css from './DmnEditor.less';
 
 
 class DmnEditor extends CachedComponent {
@@ -301,7 +299,7 @@ class DmnEditor extends CachedComponent {
     console.log('%cDmnEditor#render', 'background: red; color: white; padding: 2px 4px', this.state);
 
     return (
-      <div className={ dmnContainer }>
+      <div className={ css.DmnEditor }>
 
         <Fill name="buttons">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>

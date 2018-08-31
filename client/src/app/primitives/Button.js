@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import classNames from 'classnames';
 
-import style from './Button.less';
+import css from './Button.less';
 
 
 export default class Button extends Component {
@@ -18,7 +18,7 @@ export default class Button extends Component {
 
     return (
       <button className={
-        classNames(style.Button, {
+        classNames(css.Button, {
           disabled,
           primary
         }, className)

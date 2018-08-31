@@ -20,9 +20,7 @@ import 'bpmn-js-properties-panel/styles/properties.less';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 
-import {
-  bpmnContainer
-} from './BpmnEditor.less';
+import css from './BpmnEditor.less';
 
 
 export class BpmnEditor extends CachedComponent {
@@ -204,7 +202,7 @@ export class BpmnEditor extends CachedComponent {
 
   render() {
     return (
-      <div className={ bpmnContainer }>
+      <div className={ css.BpmnEditor }>
 
         <Fill name="buttons">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
