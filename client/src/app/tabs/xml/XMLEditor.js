@@ -105,13 +105,17 @@ class XMLEditor extends CachedComponent {
   }
 
   handleChange = () => {
-    const { dirtyChanged } = this.props;
+    const {
+      onChange
+    } = this.props;
 
     const {
       editor
     } = this.getCached();
 
-    dirtyChanged(editor.lastXML !== editor.getValue());
+    if (typeof onChange === 'function') {
+      onChange(editor.lastXML !== editor.getValue());
+    }
   }
 
   getXML() {
