@@ -1,7 +1,6 @@
 import CmmnModeler from 'cmmn-js/lib/Modeler';
 
 import diagramOriginModule from 'diagram-js-origin';
-import minimapModule from 'diagram-js-minimap';
 
 import camundaModdlePackage from 'camunda-cmmn-moddle/resources/camunda';
 
@@ -38,7 +37,6 @@ const defaultModules = CmmnModeler.prototype._modules;
 
 const extensionModules = [
   diagramOriginModule,
-  minimapModule,
   propertiesPanelModule,
   propertiesProviderModule
 ];
