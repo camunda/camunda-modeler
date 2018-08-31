@@ -20,6 +20,10 @@ export default class TabsProvider {
       return import('./tabs/bpmn');
     }
 
+    if (type === 'cmmn') {
+      return import('./tabs/cmmn');
+    }
+
     if (type === 'dmn') {
       return import('./tabs/dmn');
     }
