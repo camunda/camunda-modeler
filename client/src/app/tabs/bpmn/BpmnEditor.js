@@ -235,8 +235,9 @@ export class BpmnEditor extends CachedComponent {
     return (
       <div className={ css.BpmnEditor }>
 
-        <Fill name="toolbar" group="general">
+        <Fill name="toolbar" group="save">
           <Button onClick={ this.saveDiagram }>Save Diagram</Button>
+          <Button onClick={ this.saveDiagram }>Save Diagram As</Button>
         </Fill>
 
         <Fill name="toolbar" group="command">
