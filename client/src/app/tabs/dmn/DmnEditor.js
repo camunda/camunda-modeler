@@ -289,6 +289,11 @@ class DmnEditor extends CachedComponent {
     return (
       <div className={ css.DmnEditor }>
 
+        <Fill name="toolbar" group="save">
+          <Button onClick={ () => {} }>Save Diagram</Button>
+          <Button onClick={ () => {} }>Save Diagram As</Button>
+        </Fill>
+
         <Fill name="toolbar" group="command">
           <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
           <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
