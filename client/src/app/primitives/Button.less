@@ -1,54 +1,22 @@
 :local(.Button) {
+  box-sizing: border-box;
+  border-radius: 3px;
   padding: 5px;
-  background: white;
-  border: solid 1px #ddd;
-  border-radius: 2px;
+  border: solid 1px transparent;
+  background: transparent;
+  vertical-align: middle;
+  font-size: 14px;
   outline: none;
-
-  &:hover {
-    background: #eee;
-  }
-
-  &.primary {
-    background: #489d12;
-    color: white;
-    border-color: #489d12;
-
-    &:hover {
-      background: #2F8400;
-      border-color: #2F8400;
-    }
-  }
+  color: #444;
 
   &.disabled {
-    background: #CCC;
-
-    &:hover,
-    &:active {
-      background: #CCC;
-    }
-  }
-}
-
-
-:local(.MultiButton) {
-  display: inline-block;
-
-  > button {
-    margin: 0;
-    border-radius: 0;
-    border-left: none;
-
-    &:first-child {
-      border-left: solid 1px #ddd;
-      border-top-left-radius: 2px;
-      border-bottom-left-radius: 2px;
-    }
-
-    &:last-child {
-      border-top-right-radius: 2px;
-      border-bottom-right-radius: 2px;
-    }
+    color: #999;
+    cursor: default;
   }
 
+  &:not(.disabled):hover,
+  &.active {
+    background: #F8F8F8;
+    border: solid 1px #ccc;
+  }
 }
