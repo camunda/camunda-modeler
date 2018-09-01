@@ -4,7 +4,8 @@ import { Fill } from '../../slot-fill';
 
 import {
   Button,
-  DropdownButton
+  DropdownButton,
+  Icon
 } from '../../primitives';
 
 import {
@@ -299,25 +300,38 @@ export class BpmnEditor extends CachedComponent {
       <div className={ css.BpmnEditor }>
 
         <Fill name="toolbar" group="save">
-          <Button onClick={ this.saveDiagram }>Save Diagram</Button>
-          <Button onClick={ this.saveDiagram }>Save Diagram As</Button>
+          <Button onClick={ this.saveDiagram } title="Save diagram">
+            <Icon name="save" />
+          </Button>
+          <Button onClick={ this.saveDiagram } title="Save diagram as...">
+            <Icon name="save-as" />
+          </Button>
         </Fill>
 
         <Fill name="toolbar" group="command">
-          <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
-          <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
+          <Button disabled={ !this.state.undo } onClick={ this.undo }>
+            <Icon name="undo" />
+          </Button>
+          <Button disabled={ !this.state.redo } onClick={ this.redo }>
+            <Icon name="redo" />
+          </Button>
         </Fill>
 
         <Fill name="toolbar" group="image-export">
-          <Button onClick={ () => console.log('Export Image') }>Export Image</Button>
+          <Button
+            title="Export as image"
+            onClick={ () => console.log('Export Image') }
+          >
+            <Icon name="picture" />
+          </Button>
         </Fill>
 
         <Fill name="toolbar" group="color">
           <DropdownButton
+            title="Set element color"
             disabled={ !this.state.setColor }
-            text="Set Color">
-            {
-              COLORS.map((color, index) => {
+            items={
+              () => COLORS.map((color, index) => {
                 const { fill, stroke, title } = color;
 
                 return (
@@ -330,30 +344,76 @@ export class BpmnEditor extends CachedComponent {
                 );
               })
             }
+          >
+            <Icon name="set-color-tool" />
           </DropdownButton>
         </Fill>
 
         <Fill name="toolbar" group="align">
-          <Button disabled={ !this.state.align } onClick={ () => this.align('left') }>Align Left</Button>
-          <Button disabled={ !this.state.align } onClick={ () => this.align('center') }>Align Center</Button>
-          <Button disabled={ !this.state.align } onClick={ () => this.align('right') }>Align Right</Button>
-          <Button disabled={ !this.state.align } onClick={ () => this.align('top') }>Align Top</Button>
-          <Button disabled={ !this.state.align } onClick={ () => this.align('middle') }>Align Middle</Button>
-          <Button disabled={ !this.state.align } onClick={ () => this.align('bottom') }>Align Bottom</Button>
+          <Button
+            title="Align elements left"
+            disabled={ !this.state.align }
+            onClick={ () => this.align('left') }
+          >
+            <Icon name="align-left-tool" />
+          </Button>
+          <Button
+            title="Align elements center"
+            disabled={ !this.state.align }
+            onClick={ () => this.align('center') }
+          >
+            <Icon name="align-center-tool" />
+          </Button>
+          <Button
+            title="Align elements right"
+            disabled={ !this.state.align }
+            onClick={ () => this.align('right') }
+          >
+            <Icon name="align-right-tool" />
+          </Button>
+          <Button
+            title="Align elements top"
+            disabled={ !this.state.align }
+            onClick={ () => this.align('top') }>
+            <Icon name="align-top-tool" />
+          </Button>
+          <Button
+            title="Align elements middle"
+            disabled={ !this.state.align }
+            onClick={ () => this.align('middle') }
+          >
+            <Icon name="align-middle-tool" />
+          </Button>
+          <Button
+            title="Align elements bottom"
+            disabled={ !this.state.align }
+            onClick={ () => this.align('bottom') }
+          >
+            <Icon name="align-bottom-tool" />
+          </Button>
         </Fill>
 
         <Fill name="toolbar" group="distribute">
           <Button
+            title="Distribute elements horizontally"
             disabled={ !this.state.align }
-            onClick={ () => this.handleDistributeElements('horizontal') }>Distribute Horizontally</Button>
+            onClick={ () => this.handleDistributeElements('horizontal') }
+          >
+            <Icon name="distribute-horizontal-tool" />
+          </Button>
           <Button
+            title="Distribute elements vertically"
             disabled={ !this.state.align }
-            onClick={ () => this.handleDistributeElements('vertical') }>Distribute Vertically</Button>
+            onClick={ () => this.handleDistributeElements('vertical') }
+          >
+            <Icon name="distribute-vertical-tool" />
+          </Button>
         </Fill>
 
         <Fill name="toolbar" group="deploy">
-          <Button>Deploy Current Diagram</Button>
-          <Button>Configure Deployment Endpoint</Button>
+          <Button title="Deploy diagram">
+            <Icon name="deploy" />
+          </Button>
         </Fill>
 
         <div
