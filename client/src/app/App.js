@@ -19,7 +19,8 @@ import {
   DropdownButton,
   TabLinks,
   TabContainer,
-  Tab
+  Tab,
+  Icon
 } from './primitives';
 
 import pDefer from 'p-defer';
@@ -646,7 +647,7 @@ export class App extends Component {
 
           <Fill name="toolbar" group="general">
             <DropdownButton
-              text="File"
+              title="Create diagram"
               items={ [
                 {
                   text: 'Create new BPMN diagram',
@@ -664,10 +665,16 @@ export class App extends Component {
                   text: 'Create new CMMN diagram',
                   onClick: this.composeAction('create-cmmn-diagram')
                 }
-              ] } />
+              ] }
+            >
+              <Icon name="new" />
+            </DropdownButton>
 
-            <Button onClick={ this.composeAction('open-diagram') }>
-              Open file
+            <Button
+              title="Open diagram"
+              onClick={ this.composeAction('open-diagram') }
+            >
+              <Icon name="open" />
             </Button>
           </Fill>
 

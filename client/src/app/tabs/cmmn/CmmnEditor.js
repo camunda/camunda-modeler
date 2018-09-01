@@ -3,7 +3,8 @@ import React from 'react';
 import { Fill } from '../../slot-fill';
 
 import {
-  Button
+  Button,
+  Icon
 } from '../../primitives';
 
 import {
@@ -244,17 +245,22 @@ export class CmmnEditor extends CachedComponent {
     return (
       <div className={ css.CmmnEditor }>
 
-        <Fill name="toolbar" group="commandstack">
-          <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
-          <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
+        <Fill name="toolbar" group="command">
+          <Button disabled={ !this.state.undo } onClick={ this.undo }>
+            <Icon name="undo" />
+          </Button>
+          <Button disabled={ !this.state.redo } onClick={ this.redo }>
+            <Icon name="redo" />
+          </Button>
         </Fill>
 
         <Fill name="toolbar" group="image-export">
-          <Button onClick={ () => console.log('Export Image') }>Export Image</Button>
-        </Fill>
-
-        <Fill name="toolbar" group="align">
-          <Button disabled={ !this.state.align } onClick={ () => this.align('left') }>Align Left</Button>
+          <Button
+            title="Export as image"
+            onClick={ () => console.log('Export Image') }
+          >
+            <Icon name="picture" />
+          </Button>
         </Fill>
 
         <div
