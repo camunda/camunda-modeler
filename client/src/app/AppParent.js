@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 
-// import debug from 'debug';
+import debug from 'debug';
 
 import App from './App';
 
 
-const log = console.log;
-// debug('AppParent');
+const log = debug('AppParent');
 
 
 export default class AppParent extends Component {
