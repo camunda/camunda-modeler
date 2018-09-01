@@ -37,7 +37,11 @@ describe('DropdownButton', function() {
   it('should open dropdown', function() {
 
     // given
-    const wrapper = shallow(<DropdownButton />);
+    const wrapper = shallow(
+      <DropdownButton
+        items={ () => <span /> }
+      />
+    );
 
     // when
     wrapper.find('button').simulate('click');
