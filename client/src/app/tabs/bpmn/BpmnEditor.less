@@ -72,6 +72,41 @@
     }
   }
 
+  .djs-minimap {
+
+    .toggle:hover {
+      color: rgb(255, 116, 0);
+    }
+
+    &:not(.open) .toggle:before {
+      content: '\f278';
+      font-family: 'app';
+      font-size: 20px;
+    }
+
+    &.open {
+      .toggle {
+        padding: 3px 5px;
+        margin-right: 4px;
+
+        line-height: 24px;
+        text-align: right;
+
+        opacity: 0.5;
+      }
+
+      .toggle:before {
+        content: '\e80a';
+        font-family: 'app';
+        font-size: 14px;
+      }
+
+      .toggle:hover {
+        opacity: 1;
+      }
+    }
+  }
+
 }
 
 :local(.Color) {
