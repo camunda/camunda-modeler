@@ -5,7 +5,8 @@ import { Fill } from '../../slot-fill';
 import {
   Button,
   DropdownButton,
-  Icon
+  Icon,
+  Loader
 } from '../../primitives';
 
 import {
@@ -209,10 +210,16 @@ export class BpmnEditor extends CachedComponent {
 
       modeler.lastXML = xml;
 
+      this.setState({
+        loading: true
+      });
+
       // TODO(nikku): handle errors
       // TODO(nikku): apply default element templates to initial diagram
-      modeler.importXML(xml, function(err) {
-
+      modeler.importXML(xml, (err) => {
+        this.setState({
+          loading: false
+        });
       });
     }
   }
@@ -296,8 +303,15 @@ export class BpmnEditor extends CachedComponent {
   }
 
   render() {
+
+    const {
+      loading
+    } = this.state;
+
     return (
       <div className={ css.BpmnEditor }>
+
+        <Loader hidden={ !loading } />
 
         <Fill name="toolbar" group="save">
           <Button onClick={ this.saveDiagram } title="Save diagram">
