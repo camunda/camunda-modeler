@@ -7,7 +7,7 @@ import { shallow } from 'enzyme';
 import { Button } from '..';
 
 
-describe('Button', function() {
+describe('<Button>', function() {
 
   it('should render', function() {
     shallow(<Button />);
