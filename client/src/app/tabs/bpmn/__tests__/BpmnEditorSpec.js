@@ -41,7 +41,7 @@ class RenderChildren extends Component {
 }
 
 
-describe('BpmnEditor', function() {
+describe('<BpmnEditor>', function() {
 
   let container, createCachedSpy;
 

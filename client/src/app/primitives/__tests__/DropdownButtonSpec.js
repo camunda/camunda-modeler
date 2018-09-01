@@ -7,7 +7,7 @@ import { shallow } from 'enzyme';
 import { DropdownButton } from '..';
 
 
-describe('DropdownButton', function() {
+describe('<DropdownButton>', function() {
 
   it('should render', function() {
     shallow(<DropdownButton />);
