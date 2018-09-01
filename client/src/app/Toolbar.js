@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 
 import Slot from './slot-fill/Slot';
 
-import {
-  ToolbarContainer
-} from './Toolbar.less';
+import css from './Toolbar.less';
 
 export default class Toolbar extends Component {
   render() {
     return (
-      <div className={ ToolbarContainer }>
+      <div className={ css.Toolbar }>
         <Slot name="toolbar" group={ groupButtons } separator={ (key) => <Separator key={ key } /> } />
       </div>
     );
