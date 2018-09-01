@@ -80,8 +80,18 @@ export default class DropdownButton extends Component {
     });
   }
 
-  renderDropdown() {
-    const { items } = this.props;
+  renderDropdown(items) {
+
+    if (typeof items === 'function') {
+      return (
+        <div
+          className="dropdown"
+          onClick={ this.onDropdownClick }
+        >
+          { items() }
+        </div>
+      );
+    }
 
     if (items && items.length) {
       return (
@@ -103,17 +113,9 @@ export default class DropdownButton extends Component {
           }
         </ul>
       );
-    } else {
-      return (
-        <div
-          className="dropdown"
-          onClick={ this.onDropdownClick }
-        >
-          { this.props.children }
-        </div>
-      );
     }
 
+    return null;
   }
 
   render() {
@@ -122,6 +124,8 @@ export default class DropdownButton extends Component {
       disabled,
       text,
       className,
+      items,
+      children,
       ...rest
     } = this.props;
 
@@ -130,7 +134,8 @@ export default class DropdownButton extends Component {
     } = this.state;
 
     return (
-      <div ref={ this.ref }
+      <div
+        ref={ this.ref }
         className={
           classNames(
             dropdownButtonCss.DropdownButton,
@@ -141,18 +146,22 @@ export default class DropdownButton extends Component {
             className
           )
         }
-        { ...rest }>
-        <button className={
-          classNames(buttonCss.Button, {
-            disabled,
-            active
-          })
-        } onClick={ this.toggle }>
-          { text }
+        { ...rest }
+      >
+        <button
+          className={
+            classNames(buttonCss.Button, {
+              disabled,
+              active
+            })
+          }
+          onClick={ this.toggle }
+        >
+          { text || children }
           <span className="caret"></span>
         </button>
         {
-          active && this.renderDropdown()
+          active && this.renderDropdown(items)
         }
       </div>
 
