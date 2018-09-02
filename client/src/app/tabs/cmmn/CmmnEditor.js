@@ -1,12 +1,5 @@
 import React from 'react';
 
-import { Fill } from '../../slot-fill';
-
-import {
-  Button,
-  Icon
-} from '../../primitives';
-
 import {
   WithCache,
   WithCachedState,
@@ -131,21 +124,15 @@ export class CmmnEditor extends CachedComponent {
 
     // TODO(nikku): complete state updating
     const commandStack = modeler.get('commandStack');
-    const selection = modeler.get('selection');
-
-    const selectionLength = selection.get().length;
 
     const newState = {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
-      align: selectionLength > 1,
-      setColor: selectionLength
+      canExport: [ 'svg', 'png' ]
     };
 
     if (typeof onChanged === 'function') {
-      if (this.state.undo !== newState.undo) {
-        onChanged(newState.undo);
-      }
+      onChanged(newState);
     }
 
     this.setState(newState);
@@ -244,24 +231,6 @@ export class CmmnEditor extends CachedComponent {
   render() {
     return (
       <div className={ css.CmmnEditor }>
-
-        <Fill name="toolbar" group="command">
-          <Button disabled={ !this.state.undo } onClick={ this.undo }>
-            <Icon name="undo" />
-          </Button>
-          <Button disabled={ !this.state.redo } onClick={ this.redo }>
-            <Icon name="redo" />
-          </Button>
-        </Fill>
-
-        <Fill name="toolbar" group="image-export">
-          <Button
-            title="Export as image"
-            onClick={ () => console.log('Export Image') }
-          >
-            <Icon name="picture" />
-          </Button>
-        </Fill>
 
         <div
           className="diagram"

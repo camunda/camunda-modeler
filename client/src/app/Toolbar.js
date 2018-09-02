@@ -26,7 +26,8 @@ function groupButtons(buttonFills) {
   const defaultGroups = [
     'general',
     'save',
-    'editor'
+    'editor',
+    'export'
   ];
 
   const groups = [];

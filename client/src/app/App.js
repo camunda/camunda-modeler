@@ -50,7 +50,8 @@ export class App extends Component {
     this.state = {
       tabs: [],
       activeTab: EMPTY_TAB,
-      dirtyTabs: {}
+      dirtyTabs: {},
+      tabState: {}
     };
 
     // TODO(nikku): make state
@@ -178,7 +179,8 @@ export class App extends Component {
       activeTab: tab,
       Tab: this.loadTab(tab),
       tabShown: deferred,
-      tabState: 'loading'
+      tabState: {},
+      tabLoadingState: 'loading'
     });
 
     return deferred.promise;
@@ -337,13 +339,15 @@ export class App extends Component {
         ...openedTabs,
         [activeTab.id]: true
       },
-      tabState: 'shown'
+      tabLoadingState: 'shown'
     });
   }
 
   handleTabChanged = (tab, properties) => {
+
     let {
       dirtyTabs,
+      tabState
     } = this.state;
 
     if ('dirty' in properties) {
@@ -353,10 +357,18 @@ export class App extends Component {
         [tab.id]: properties.dirty
       };
 
-      return this.setState({
+      this.setState({
         dirtyTabs: newDirtyTabs
       });
     }
+
+
+    this.setState({
+      tabState: {
+        ...tabState,
+        ...properties
+      }
+    });
   }
 
   tabSaved(tab, newFile) {
@@ -421,7 +433,7 @@ export class App extends Component {
 
     const {
       activeTab,
-      tabState
+      tabLoadingState
     } = this.state;
 
     const {
@@ -445,7 +457,7 @@ export class App extends Component {
       }
     }
 
-    if (tabState === 'shown' && prevState.tabState !== 'shown') {
+    if (tabLoadingState === 'shown' && prevState.tabLoadingState !== 'shown') {
 
       if (typeof onTabShown === 'function') {
         onTabShown(activeTab);
@@ -631,7 +643,10 @@ export class App extends Component {
   render() {
     const activeTab = this.state.activeTab || EMPTY_TAB;
 
-    const { tabs } = this.state;
+    const {
+      tabs,
+      tabState
+    } = this.state;
 
     const Tab = this.state.Tab || EmptyTab;
 
@@ -674,6 +689,42 @@ export class App extends Component {
               <Icon name="open" />
             </Button>
           </Fill>
+
+          <Fill name="toolbar" group="save">
+            <Button
+              disabled={ !this.isDirty(activeTab) }
+              onClick={ this.composeAction('save') }
+              title="Save diagram"
+            >
+              <Icon name="save" />
+            </Button>
+            <Button
+              onClick={ this.composeAction('save-as') }
+              title="Save diagram as..."
+            >
+              <Icon name="save-as" />
+            </Button>
+          </Fill>
+
+          <Fill name="toolbar" group="editor">
+            <Button disabled={ !tabState.undo } onClick={ this.composeAction('undo') }>
+              <Icon name="undo" />
+            </Button>
+            <Button disabled={ !tabState.redo } onClick={ this.composeAction('redo') }>
+              <Icon name="redo" />
+            </Button>
+          </Fill>
+
+          {
+            tabState.canExport && <Fill name="toolbar" group="export">
+              <Button
+                title="Export as image"
+                onClick={ this.composeAction('export-as-image') }
+              >
+                <Icon name="picture" />
+              </Button>
+            </Fill>
+          }
 
           <div className="tabs">
             <TabLinks

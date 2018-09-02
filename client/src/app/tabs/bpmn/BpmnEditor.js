@@ -187,13 +187,12 @@ export class BpmnEditor extends CachedComponent {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
       align: selectionLength > 1,
-      setColor: selectionLength
+      setColor: selectionLength,
+      canExport: [ 'svg', 'png' ]
     };
 
     if (typeof onChanged === 'function') {
-      if (this.state.undo !== newState.undo) {
-        onChanged(newState.undo);
-      }
+      onChanged(newState);
     }
 
     this.setState(newState);
@@ -312,33 +311,6 @@ export class BpmnEditor extends CachedComponent {
       <div className={ css.BpmnEditor }>
 
         <Loader hidden={ !loading } />
-
-        <Fill name="toolbar" group="save">
-          <Button onClick={ this.saveDiagram } title="Save diagram">
-            <Icon name="save" />
-          </Button>
-          <Button onClick={ this.saveDiagram } title="Save diagram as...">
-            <Icon name="save-as" />
-          </Button>
-        </Fill>
-
-        <Fill name="toolbar" group="command">
-          <Button disabled={ !this.state.undo } onClick={ this.undo }>
-            <Icon name="undo" />
-          </Button>
-          <Button disabled={ !this.state.redo } onClick={ this.redo }>
-            <Icon name="redo" />
-          </Button>
-        </Fill>
-
-        <Fill name="toolbar" group="image-export">
-          <Button
-            title="Export as image"
-            onClick={ () => console.log('Export Image') }
-          >
-            <Icon name="picture" />
-          </Button>
-        </Fill>
 
         <Fill name="toolbar" group="color">
           <DropdownButton
