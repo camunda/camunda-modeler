@@ -36,6 +36,13 @@ describe('<App>', function() {
   });
 
 
+  describe('shared buttons', function() {
+
+    it('should offer save, save-as, export, undo, redo if supported by tab');
+
+  });
+
+
   it('should render empty tab', function() {
 
     // when
