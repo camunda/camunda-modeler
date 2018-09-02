@@ -191,6 +191,10 @@ class DmnEditor extends CachedComponent {
       modeler
     } = this.getCached();
 
+    const {
+      onChanged
+    } = this.props;
+
     const activeViewer = modeler.getActiveViewer();
 
     if (!activeViewer) {
@@ -199,10 +203,18 @@ class DmnEditor extends CachedComponent {
 
     const commandStack = activeViewer.get('commandStack');
 
-    this.setState({
+    const newState = {
       undo: commandStack.canUndo(),
-      redo: commandStack.canRedo()
-    });
+      redo: commandStack.canRedo(),
+      canExport: 'saveSVG' in activeViewer ? [ 'svg', 'png' ] : false
+    };
+
+    if (typeof onChanged === 'function') {
+      onChanged(newState);
+    }
+
+    this.setState(newState);
+
   }
 
   checkImport = () => {
@@ -285,20 +297,6 @@ class DmnEditor extends CachedComponent {
   render() {
     return (
       <div className={ css.DmnEditor }>
-
-        <Fill name="toolbar" group="save">
-          <Button onClick={ () => {} }>Save Diagram</Button>
-          <Button onClick={ () => {} }>Save Diagram As</Button>
-        </Fill>
-
-        <Fill name="toolbar" group="command">
-          <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
-          <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
-        </Fill>
-
-        <Fill name="toolbar" group="image-export">
-          <Button onClick={ () => console.log('Export Image') }>Export Image</Button>
-        </Fill>
 
         <Fill name="toolbar" group="deploy">
           <Button>Deploy Current Diagram</Button>

@@ -61,15 +61,20 @@ class MultiSheetTab extends CachedComponent {
     });
   }
 
-  handleChanged = (dirty) => {
+  handleChanged = (newState) => {
 
     const { tab, xml } = this.props;
+
+    const {
+      dirty
+    } = newState;
 
     const { lastXML } = this.getCached();
 
     this.props.onChanged(
       tab,
       {
+        ...newState,
         dirty: dirty || (lastXML ? (xml !== lastXML) : false)
       }
     );
