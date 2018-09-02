@@ -707,10 +707,18 @@ export class App extends Component {
           </Fill>
 
           <Fill name="toolbar" group="editor">
-            <Button disabled={ !tabState.undo } onClick={ this.composeAction('undo') }>
+            <Button
+              disabled={ !tabState.undo }
+              onClick={ this.composeAction('undo') }
+              title="Undo last action"
+            >
               <Icon name="undo" />
             </Button>
-            <Button disabled={ !tabState.redo } onClick={ this.composeAction('redo') }>
+            <Button
+              disabled={ !tabState.redo }
+              onClick={ this.composeAction('redo') }
+              title="Redo last action"
+            >
               <Icon name="redo" />
             </Button>
           </Fill>
