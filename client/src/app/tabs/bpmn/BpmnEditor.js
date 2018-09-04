@@ -397,9 +397,15 @@ export class BpmnEditor extends CachedComponent {
         </Fill>
 
         <Fill name="toolbar" group="deploy">
-          <Button title="Deploy diagram">
+          <DropdownButton title="Deploy Current Diagram" items={ [{
+            text: 'Deploy Current Diagram',
+            onClick: () => console.log('Deploy Current Diagram')
+          }, {
+            text: 'Configure Deployment Endpoint',
+            onClick: () => console.log('Configure Deployment Endpoint')
+          }] }>
             <Icon name="deploy" />
-          </Button>
+          </DropdownButton>
         </Fill>
 
         <div
