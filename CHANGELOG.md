@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 2.0.1
+
+* `FIX`: correct MacOS app icon size ([#901](https://github.com/camunda/camunda-modeler/issues/901))
+
 ## 2.0.0
 
 * `CHORE`: update to `bpmn-js-properties-panel@0.26.2`
