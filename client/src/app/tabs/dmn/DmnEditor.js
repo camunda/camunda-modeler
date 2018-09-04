@@ -96,7 +96,7 @@ class DmnEditor extends CachedComponent {
   viewContentChanged = () => {
     this.updateActions();
 
-    this.props.dirtyChanged(this.checkDirty());
+    this.props.onChanged(this.checkDirty());
   }
 
   handleImported = (event) => {
