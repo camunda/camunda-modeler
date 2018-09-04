@@ -667,11 +667,11 @@ export class App extends Component {
                 },
                 {
                   text: 'Create new DMN table',
-                  onClick: this.composeAction('create-dmn-diagram')
+                  onClick: this.composeAction('create-dmn-table')
                 },
                 {
                   text: 'Create new DMN diagram (DRD)',
-                  onClick: () => console.log('DMN diagram')
+                  onClick: this.composeAction('create-dmn-diagram')
                 },
                 {
                   text: 'Create new CMMN diagram',
