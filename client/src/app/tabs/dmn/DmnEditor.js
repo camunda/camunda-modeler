@@ -2,7 +2,10 @@ import React from 'react';
 
 import { Fill } from '../../slot-fill';
 
-import { Button } from '../../primitives';
+import {
+  DropdownButton,
+  Icon
+} from '../../primitives';
 
 import {
   WithCache,
@@ -299,8 +302,15 @@ class DmnEditor extends CachedComponent {
       <div className={ css.DmnEditor }>
 
         <Fill name="toolbar" group="deploy">
-          <Button>Deploy Current Diagram</Button>
-          <Button>Configure Deployment Endpoint</Button>
+          <DropdownButton title="Deploy Current Diagram" items={ [{
+            text: 'Deploy Current Diagram',
+            onClick: () => console.log('Deploy Current Diagram')
+          }, {
+            text: 'Configure Deployment Endpoint',
+            onClick: () => console.log('Configure Deployment Endpoint')
+          }] }>
+            <Icon name="deploy" />
+          </DropdownButton>
         </Fill>
 
         <div className="diagram" ref={ this.ref }></div>
