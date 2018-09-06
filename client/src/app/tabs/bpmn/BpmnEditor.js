@@ -17,6 +17,9 @@ import {
 
 import CamundaBpmnModeler from './modeler';
 
+import { active as isInputActive } from '../../../util/dom/is-input';
+
+import { getBpmnEditMenu } from './getBpmnEditMenu';
 
 import css from './BpmnEditor.less';
 
@@ -177,22 +180,47 @@ export class BpmnEditor extends CachedComponent {
       onChanged
     } = this.props;
 
-    // TODO(nikku): complete state updating
     const commandStack = modeler.get('commandStack');
     const selection = modeler.get('selection');
+    const canPaste = !modeler.get('clipboard').isEmpty();
 
     const selectionLength = selection.get().length;
 
-    const newState = {
-      undo: commandStack.canUndo(),
-      redo: commandStack.canRedo(),
+    const inputActive = isInputActive();
+
+    const editMenu = getBpmnEditMenu({
       align: selectionLength > 1,
+      canCopy: !!selectionLength,
+      canPaste,
+      canRedo: commandStack.canRedo(),
+      canUndo: commandStack.canUndo(),
+      distribute: selectionLength > 2,
+      editLabel: !inputActive && !!selectionLength,
+      find: !inputActive,
+      globalConnectTool: !inputActive,
+      handTool: !inputActive,
+      lassoTool: !inputActive,
+      moveToOrigin: !inputActive,
+      moveSelection: !inputActive && !!selectionLength,
+      spaceTool: !inputActive,
+      moveCanvas: !inputActive,
+      removeSelected: !!selectionLength
+    });
+
+    const newState = {
+      align: selectionLength > 1,
+      canExport: [ 'svg', 'png' ],
+      distribute: selectionLength > 2,
+      redo: commandStack.canRedo(),
       setColor: selectionLength,
-      canExport: [ 'svg', 'png' ]
+      undo: commandStack.canUndo()
     };
 
     if (typeof onChanged === 'function') {
-      onChanged(newState);
+      onChanged({
+        ...newState,
+        editMenu
+      });
     }
 
     this.setState(newState);
@@ -382,14 +410,14 @@ export class BpmnEditor extends CachedComponent {
         <Fill name="toolbar" group="distribute">
           <Button
             title="Distribute elements horizontally"
-            disabled={ !this.state.align }
+            disabled={ !this.state.distribute }
             onClick={ () => this.handleDistributeElements('horizontal') }
           >
             <Icon name="distribute-horizontal-tool" />
           </Button>
           <Button
             title="Distribute elements vertically"
-            disabled={ !this.state.align }
+            disabled={ !this.state.distribute }
             onClick={ () => this.handleDistributeElements('vertical') }
           >
             <Icon name="distribute-vertical-tool" />
