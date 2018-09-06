@@ -11,8 +11,9 @@ import {
 } from '../App';
 
 import {
-  FileSystem,
+  Backend,
   Dialog,
+  FileSystem,
   TabsProvider
 } from './mocks';
 
@@ -27,11 +28,39 @@ describe('<App>', function() {
 
     it('tabsProvider');
 
-    it('onToolStateChanged');
-
     it('onReady');
 
     it('onContextMenu');
+
+    describe('globals', function() {
+
+      describe('backend', function() {
+
+        it('should call Backend#sendUpdateMenu on tab change', function() {
+
+          // given
+          const backend = new Backend();
+
+          const spy = sinon.spy(backend, 'sendUpdateMenu');
+
+          const {
+            app
+          } = createApp({
+            globals: {
+              backend
+            }
+          });
+
+          // when
+          app.handleTabChanged();
+
+          // then
+          expect(spy).to.have.been.called;
+        });
+
+      });
+
+    });
 
   });
 
@@ -588,7 +617,6 @@ function createApp(options = {}, mountFn=shallow) {
   };
 
   const onTabShown = options.onTabShown;
-  const onToolStateChanged = options.onToolStateChanged;
   const onReady = options.onReady;
 
   const tree = mountFn(
@@ -599,7 +627,6 @@ function createApp(options = {}, mountFn=shallow) {
       onReady={ onReady }
       onTabChanged={ onTabChanged }
       onTabShown={ onTabShown }
-      onToolStateChanged={ onToolStateChanged }
     />
   );
 

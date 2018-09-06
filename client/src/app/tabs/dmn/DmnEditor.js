@@ -15,6 +15,14 @@ import {
 
 import CamundaDmnModeler from './DmnModeler';
 
+import { active as isInputActive } from '../../../util/dom/is-input';
+
+import {
+  getDmnDrdEditMenu,
+  getDmnDecisionTableEditMenu,
+  getDmnLiteralExpressionEditMenu
+} from './getDmnEditMenu';
+
 import css from './DmnEditor.less';
 
 
@@ -68,9 +76,12 @@ class DmnEditor extends CachedComponent {
 
     [
       'saveXML.done',
-      'attach'
+      'attach',
+      // TODO(philippfromme): fix, this will result in endless update loop
+      // 'view.selectionChanged',
+      'view.directEditingChanged'
     ].forEach((event) => {
-      modeler[fn](event, this.updateActions);
+      modeler[fn](event, this.handleChanged);
     });
 
     modeler[fn]('views.changed', this.viewsChanged);
@@ -97,7 +108,7 @@ class DmnEditor extends CachedComponent {
   }
 
   viewContentChanged = () => {
-    this.updateActions();
+    this.handleChanged();
 
     this.props.onChanged(this.checkDirty());
   }
@@ -170,7 +181,7 @@ class DmnEditor extends CachedComponent {
       views
     });
 
-    this.updateActions();
+    this.handleChanged();
   }
 
   undo = () => {
@@ -189,7 +200,7 @@ class DmnEditor extends CachedComponent {
     modeler.getActiveViewer().get('commandStack').redo();
   }
 
-  updateActions = (event) => {
+  handleChanged = (event) => {
     const {
       modeler
     } = this.getCached();
@@ -198,7 +209,8 @@ class DmnEditor extends CachedComponent {
       onChanged
     } = this.props;
 
-    const activeViewer = modeler.getActiveViewer();
+    const activeViewer = modeler.getActiveViewer(),
+          activeView = modeler.getActiveView();
 
     if (!activeViewer) {
       return;
@@ -206,18 +218,47 @@ class DmnEditor extends CachedComponent {
 
     const commandStack = activeViewer.get('commandStack');
 
-    const newState = {
-      undo: commandStack.canUndo(),
+    const inputActive = isInputActive();
+
+    const editMenuState = {
       redo: commandStack.canRedo(),
-      canExport: 'saveSVG' in activeViewer ? [ 'svg', 'png' ] : false
+      undo: commandStack.canUndo()
+    };
+
+    let editMenu;
+
+    if (activeView.type === 'drd') {
+      editMenu = getDmnDrdEditMenu({
+        ...editMenuState,
+        editLabel: !inputActive && !!activeViewer.get('selection').get().length,
+        lassoTool: !inputActive,
+        removeSelected: false
+      });
+    } else if (activeView.type === 'decisionTable') {
+      editMenu = getDmnDecisionTableEditMenu({
+        ...editMenuState,
+        hasSelection: activeViewer.get('selection').hasSelection()
+      });
+    } else if (activeView.type === 'literalExpression') {
+      editMenu = getDmnLiteralExpressionEditMenu({
+        ...editMenuState
+      });
+    }
+
+    const newState = {
+      canExport: 'saveSVG' in activeViewer ? [ 'svg', 'png' ] : false,
+      redo: commandStack.canRedo(),
+      undo: commandStack.canUndo()
     };
 
     if (typeof onChanged === 'function') {
-      onChanged(newState);
+      onChanged({
+        ...newState,
+        editMenu
+      });
     }
 
     this.setState(newState);
-
   }
 
   checkImport = () => {

@@ -1,9 +1,5 @@
 import React from 'react';
 
-import { Fill } from '../../slot-fill';
-
-import { Button } from '../../primitives';
-
 import {
   WithCache,
   WithCachedState,
@@ -14,6 +10,8 @@ import CodeMirror from './CodeMirror';
 
 import css from './XMLEditor.less';
 
+import { getXMLEditMenu } from './getXMLEditMenu';
+
 
 class XMLEditor extends CachedComponent {
 
@@ -23,9 +21,6 @@ class XMLEditor extends CachedComponent {
     this.state = {};
 
     this.ref = React.createRef();
-
-    console.log('%cXMLEditor#constructor', 'background: orange; color: white; padding: 2px 4px', this.state);
-
   }
 
   shouldComponentUpdate(nextProps) {
@@ -106,16 +101,47 @@ class XMLEditor extends CachedComponent {
 
   handleChange = () => {
     const {
-      onChange
+      onChanged
     } = this.props;
+
+    const {
+      lastXML
+    } = this.state;
 
     const {
       editor
     } = this.getCached();
 
-    if (typeof onChange === 'function') {
-      onChange(editor.lastXML !== editor.getValue());
+    // on initial import, reset history to prevent
+    // undo by the user
+    if (!lastXML) {
+      editor.doc.clearHistory();
     }
+
+    const history = editor.doc.historySize();
+
+    const editMenu = getXMLEditMenu({
+      canRedo: !!history.redo,
+      canUndo: !!history.undo
+    });
+
+    const newState = {
+      canExport: false,
+      redo: !!history.redo,
+      undo: !!history.undo
+    };
+
+    if (typeof onChanged === 'function') {
+      onChanged({
+        ...newState,
+        editMenu
+      });
+    }
+
+    this.setState({
+      ...newState,
+      lastXML: this.getXML()
+    });
   }
 
   getXML() {
@@ -127,14 +153,8 @@ class XMLEditor extends CachedComponent {
   }
 
   render() {
-    console.log('%cXMLEditor#render', 'background: orange; color: white; padding: 2px 4px', this.state);
-
     return (
       <div className={ css.XMLEditor }>
-        <Fill name="toolbar">
-          <Button disabled={ !this.state.undo } onClick={ this.undo }>Undo</Button>
-          <Button disabled={ !this.state.redo } onClick={ this.redo }>Redo</Button>
-        </Fill>
         <div className="content" ref={ this.ref }></div>
       </div>
     );

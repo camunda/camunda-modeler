@@ -243,593 +243,63 @@ MenuBuilder.prototype.appendQuit = function(submenu) {
   return this;
 };
 
-MenuBuilder.prototype.appendRedo = function() {
-  this.menu.append(new MenuItem({
-    label: 'Redo',
-    enabled: this.opts.state.redo,
-    accelerator: 'CommandOrControl+Y',
-    click: function() {
-      app.emit('menu:action', 'redo');
-    }
-  }));
-};
+MenuBuilder.prototype.appendMenuItem = function(builder, menuItem) {
+  var submenu;
 
-MenuBuilder.prototype.appendCopyPaste = function() {
-
-  var copyEntry = {
-    label: 'Copy',
-    enabled: !this.opts.state.inactiveInput || (this.opts.state.elementsSelected && this.opts.state.copy),
-    accelerator: 'CommandOrControl+C',
-    click: function() {
-      app.emit('menu:action', 'copy');
-    }
-  };
-
-  var pasteEntry = {
-    label: 'Paste',
-    enabled: !this.opts.state.inactiveInput || this.opts.state.paste,
-    accelerator: 'CommandOrControl+V',
-    click: function() {
-      app.emit('menu:action', 'paste');
-    }
-  };
-
-  if (!this.opts.state.inactiveInput) {
-    assign(copyEntry, { enabled: true, click: function() {}, role: 'copy' });
-
-    assign(pasteEntry, { enabled: true, click: function() {}, role: 'paste' });
-
-    this.menu.append(new MenuItem({
-      label: 'Cut',
-      accelerator: 'CommandOrControl+X',
-      role: 'cut'
+  if (menuItem.submenu) {
+    submenu = Menu.buildFromTemplate(menuItem.submenu.map(submenuEntry => {
+      return assign(submenuEntry, {
+        click: function() {
+          app.emit('menu:action', submenuEntry.action, submenuEntry.options);
+        }
+      });
     }));
   }
 
-  this.menu.append(new MenuItem(copyEntry));
-
-  this.menu.append(new MenuItem(pasteEntry));
-
-  return this;
-};
-
-MenuBuilder.prototype.appendBaseEditActions = function() {
-  this.menu.append(new MenuItem({
-    label: 'Undo',
-    enabled: this.opts.state.undo,
-    accelerator: 'CommandOrControl+Z',
+  builder.menu.append(new MenuItem({
+    label: menuItem.label,
+    accelerator: menuItem.accelerator,
+    enabled: menuItem.enabled !== undefined ? menuItem.enabled : true,
     click: function() {
-      app.emit('menu:action', 'undo');
-    }
-  }));
-
-  this.appendRedo();
-
-  this.appendSeparator();
-
-  if (this.opts.state.copy) {
-    this.appendCopyPaste();
-  }
-
-  return this;
-};
-
-MenuBuilder.prototype.appendBpmnActions = function() {
-
-  this.menu.append(new MenuItem({
-    label: 'Hand Tool',
-    accelerator: 'H',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'handTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Lasso Tool',
-    accelerator: 'L',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'lassoTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Space Tool',
-    accelerator: 'S',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'spaceTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Global Connect Tool',
-    accelerator: 'C',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'globalConnectTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Edit Label',
-    accelerator: 'E',
-    enabled: this.opts.state.elementsSelected && this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'directEditing');
-    }
-  }));
-
-  this.appendSeparator();
-
-  this.menu.append(new MenuItem({
-    label: 'Align Elements',
-    enabled: this.opts.state.elementsSelected && this.opts.inactiveInput,
-    submenu: Menu.buildFromTemplate([
-      {
-        label: 'Align Left',
-        click: function() {
-          app.emit('menu:action', 'alignElements', {
-            type: 'left'
-          });
-        }
-      }, {
-        label: 'Align Right',
-        click: function() {
-          app.emit('menu:action', 'alignElements', {
-            type: 'right'
-          });
-        }
-      }, {
-        label: 'Align Center',
-        click: function() {
-          app.emit('menu:action', 'alignElements', {
-            type: 'center'
-          });
-        }
-      }, {
-        label: 'Align Top',
-        click: function() {
-          app.emit('menu:action', 'alignElements', {
-            type: 'top'
-          });
-        }
-      }, {
-        label: 'Align Bottom',
-        click: function() {
-          app.emit('menu:action', 'alignElements', {
-            type: 'bottom'
-          });
-        }
-      }, {
-        label: 'Align Middle',
-        click: function() {
-          app.emit('menu:action', 'alignElements', {
-            type: 'middle'
-          });
-        }
-      }
-    ])
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Distribute Elements',
-    enabled: this.opts.state.elementsSelected && this.opts.inactiveInput,
-    submenu: Menu.buildFromTemplate([
-      {
-        label: 'Distribute Horizontally',
-        enabled: this.opts.state.elementsSelected,
-        click: function() {
-          app.emit('menu:action', 'distributeHorizontally');
-        }
-      },
-      {
-        label: 'Distribute Vertically',
-        enabled: this.opts.state.elementsSelected,
-        click: function() {
-          app.emit('menu:action', 'distributeVertically');
-        }
-      }
-    ])
-  }));
-
-  this.appendSeparator();
-
-  this.menu.append(new MenuItem({
-    label: 'Find',
-    accelerator: 'CommandOrControl + F',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'find');
-    }
-  }));
-
-  this.appendSeparator();
-
-  this.menu.append(new MenuItem({
-    label: 'Move Elements to Origin',
-    accelerator: 'CommandOrControl+Shift+0',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'moveToOrigin');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Move Canvas',
-    enabled: this.opts.state.inactiveInput,
-    submenu: Menu.buildFromTemplate([{
-      label: 'Move Up',
-      accelerator: 'Up',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'up'
-        });
-      }
-    }, {
-      label: 'Move Left',
-      accelerator: 'Left',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'left'
-        });
-      }
-    }, {
-      label: 'Move Down',
-      accelerator: 'Down',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'down'
-        });
-      }
-    }, {
-      label: 'Move Right',
-      accelerator: 'Right',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'right'
-        });
-      }
-    }])
-  }));
-
-  this.appendSelectAll();
-
-  this.appendRemoveSelection();
-
-  return this;
-};
-
-
-MenuBuilder.prototype.appendCmmnActions = function() {
-  this.menu.append(new MenuItem({
-    label: 'Hand Tool',
-    accelerator: 'H',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'handTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Lasso Tool',
-    accelerator: 'L',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'lassoTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Space Tool',
-    accelerator: 'S',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'spaceTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Global Connect Tool',
-    accelerator: 'C',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'globalConnectTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Edit Label',
-    accelerator: 'E',
-    enabled: this.opts.state.elementsSelected && this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'directEditing');
-    }
-  }));
-
-  this.appendSeparator();
-
-  this.menu.append(new MenuItem({
-    label: 'Find',
-    accelerator: 'CommandOrControl + F',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'find');
-    }
-  }));
-
-  this.appendSeparator();
-
-  this.menu.append(new MenuItem({
-    label: 'Move Canvas',
-    enabled: this.opts.state.inactiveInput,
-    submenu: Menu.buildFromTemplate([{
-      label: 'Move Up',
-      accelerator: 'Up',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'up'
-        });
-      }
-    }, {
-      label: 'Move Left',
-      accelerator: 'Left',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'left'
-        });
-      }
-    }, {
-      label: 'Move Down',
-      accelerator: 'Down',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'down'
-        });
-      }
-    }, {
-      label: 'Move Right',
-      accelerator: 'Right',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'right'
-        });
-      }
-    }])
-  }));
-
-  this.appendSelectAll();
-
-  this.appendRemoveSelection();
-
-  return this;
-};
-
-MenuBuilder.prototype.appendRemoveSelection = function() {
-  this.menu.append(new MenuItem({
-    label: 'Remove Selected',
-    accelerator: 'Delete',
-    enabled: this.opts.state.elementsSelected,
-    click: function() {
-      app.emit('menu:action', 'removeSelection');
-    }
+      app.emit('menu:action', menuItem.action, menuItem.options);
+    },
+    submenu: submenu
   }));
 };
 
+MenuBuilder.prototype.getEditMenu = function(menuItems) {
+  var builder = new this.constructor(this.opts);
 
-MenuBuilder.prototype.appendSelectAll = function() {
-  var selectAll = {
-    label: 'Select All',
-    accelerator: 'CommandOrControl+A',
-    click: function() {
-      app.emit('menu:action', 'selectElements');
+  menuItems.forEach((menuItem, index) => {
+
+    if (Array.isArray(menuItem)) {
+      if (index !== 0) {
+        builder.appendSeparator();
+      }
+
+      menuItem.forEach((menuItem) => {
+        this.appendMenuItem(builder, menuItem);
+      });
+    } else {
+      this.appendMenuItem(builder, menuItem);
     }
-  };
 
-  if (!this.opts.state.inactiveInput) {
-    assign(selectAll, { enabled: true, click: function() {}, role: 'selectall' });
-  }
+  });
 
-  this.menu.append(new MenuItem(selectAll));
-
-  return this;
-};
-
-
-MenuBuilder.prototype.appendDmnActions = function() {
-  var activeEditor = this.opts.state.activeEditor;
-
-  if (activeEditor === 'drd') {
-
-    // DRD editor
-    this.menu.append(new MenuItem({
-      label: 'Lasso Tool',
-      accelerator: 'L',
-      enabled: this.opts.state.inactiveInput,
-      click: function() {
-        app.emit('menu:action', 'lassoTool');
-      }
-    }));
-
-    this.menu.append(new MenuItem({
-      label: 'Edit Label',
-      accelerator: 'E',
-      enabled: this.opts.state.elementsSelected && this.opts.state.inactiveInput,
-      click: function() {
-        app.emit('menu:action', 'directEditing');
-      }
-    }));
-
-    this.appendSeparator();
-
-    this.appendSelectAll();
-
-    this.appendRemoveSelection();
-
-  } else if (activeEditor === 'decisionTable') {
-
-    // decision table editor
-    this.menu.append(new MenuItem({
-      label: 'Add Rule..',
-      submenu: Menu.buildFromTemplate([{
-        label: 'At End',
-        accelerator: 'CommandOrControl+D',
-        click: function() {
-          app.emit('menu:action', 'addRule');
-        }
-      }, {
-        label: 'Above Selected',
-        enabled: this.opts.state.dmnRuleEditing,
-        click: function() {
-          app.emit('menu:action', 'addRuleAbove');
-        }
-      }, {
-        label: 'Below Selected',
-        enabled: this.opts.state.dmnRuleEditing,
-        click: function() {
-          app.emit('menu:action', 'addRuleBelow');
-        }
-      }])
-    }));
-
-    this.menu.append(new MenuItem({
-      label: 'Remove Rule',
-      enabled: this.opts.state.dmnRuleEditing,
-      click: function() {
-        app.emit('menu:action', 'removeRule');
-      }
-    }));
-
-    this.appendSeparator();
-
-    this.menu.append(new MenuItem({
-      label: 'Add Clause..',
-      submenu: Menu.buildFromTemplate([{
-        label: 'Input',
-        click: function() {
-          app.emit('menu:action', 'addInput');
-        }
-      }, {
-        label: 'Output',
-        click: function() {
-          app.emit('menu:action', 'addOutput');
-        }
-      }, {
-        type: 'separator'
-      }, {
-        label: 'Left of selected',
-        enabled: this.opts.state.dmnClauseEditing,
-        click: function() {
-          app.emit('menu:action', 'addClauseLeft');
-        }
-      }, {
-        label: 'Right of selected',
-        enabled: this.opts.state.dmnClauseEditing,
-        click: function() {
-          app.emit('menu:action', 'addClauseRight');
-        }
-      }])
-    }));
-
-    this.menu.append(new MenuItem({
-      label: 'Remove Clause',
-      enabled: this.opts.state.dmnClauseEditing,
-      click: function() {
-        app.emit('menu:action', 'removeClause');
-      }
-    }));
-
-    this.appendSeparator();
-
-    this.menu.append(new MenuItem({
-      label: 'Select Cell Above',
-      enabled: this.opts.state.dmnClauseEditing,
-      click: function() {
-        app.emit('menu:action', 'selectCellAbove');
-      }
-    }));
-
-    this.menu.append(new MenuItem({
-      label: 'Select Cell Below',
-      enabled: this.opts.state.dmnClauseEditing,
-      click: function() {
-        app.emit('menu:action', 'selectCellBelow');
-      }
-    }));
-  }
-
-  return this;
-};
-
-
-MenuBuilder.prototype.appendSearchActions = function() {
-  this.menu.append(new MenuItem({
-    label: 'Find',
-    accelerator: 'CommandOrControl + F',
-    click: function() {
-      app.emit('menu:action', 'find');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Find Next',
-    accelerator: 'Shift + CommandOrControl + N',
-    click: function() {
-      app.emit('menu:action', 'findNext');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Find Previous',
-    accelerator: 'Shift + CommandOrControl + P',
-    click: function() {
-      app.emit('menu:action', 'findPrev');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Replace',
-    accelerator: 'Shift + CommandOrControl + F',
-    click: function() {
-      app.emit('menu:action', 'replace');
-    }
-  }));
+  return builder.get();
 };
 
 MenuBuilder.prototype.appendEditMenu = function() {
-  if (this.opts.state.editable) {
-    var builder = new this.constructor(this.opts).appendBaseEditActions();
+  var subMenu;
 
-    if (this.opts.state.bpmn) {
-      builder.appendSeparator();
-
-      builder.appendBpmnActions();
-    }
-
-    if (this.opts.state.dmn) {
-      builder.appendDmnActions();
-    }
-
-    if (this.opts.state.cmmn) {
-      builder.appendSeparator();
-
-      builder.appendCmmnActions();
-    }
-
-    if (this.opts.state.searchable) {
-      builder.appendSeparator();
-
-      builder.appendSearchActions();
-    }
-
-    this.menu.append(new MenuItem({
-      label: 'Edit',
-      submenu: builder.get()
-    }));
+  if (this.opts.state.editMenu) {
+    subMenu = this.getEditMenu(this.opts.state.editMenu, this.opts);
   }
 
-
+  this.menu.append(new MenuItem({
+    label: 'Edit',
+    submenu: subMenu
+  }));
 
   return this;
 };
