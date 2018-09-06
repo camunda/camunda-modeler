@@ -94,3 +94,7 @@ export class FileSystem {
     return {};
   }
 }
+
+export class Backend {
+  sendUpdateMenu() {}
+}

@@ -8,8 +8,11 @@ import {
 
 import CamundaCmmnModeler from './modeler';
 
-
 import css from './CmmnEditor.less';
+
+import { active as isInputActive } from '../../../util/dom/is-input';
+
+import { getCmmnEditMenu } from './getCmmnEditMenu';
 
 
 export class CmmnEditor extends CachedComponent {
@@ -122,17 +125,38 @@ export class CmmnEditor extends CachedComponent {
       onChanged
     } = this.props;
 
-    // TODO(nikku): complete state updating
     const commandStack = modeler.get('commandStack');
+    const selection = modeler.get('selection');
+
+    const selectionLength = selection.get().length;
+
+    const inputActive = isInputActive();
+
+    const editMenu = getCmmnEditMenu({
+      canRedo: commandStack.canRedo(),
+      canUndo: commandStack.canUndo(),
+      editLabel: !inputActive && !!selectionLength,
+      find: !inputActive,
+      globalConnectTool: !inputActive,
+      handTool: !inputActive,
+      lassoTool: !inputActive,
+      spaceTool: !inputActive,
+      moveCanvas: !inputActive,
+      moveSelection: !inputActive && !!selectionLength,
+      removeSelected: !!selectionLength
+    });
 
     const newState = {
-      undo: commandStack.canUndo(),
+      canExport: [ 'svg', 'png' ],
       redo: commandStack.canRedo(),
-      canExport: [ 'svg', 'png' ]
+      undo: commandStack.canUndo()
     };
 
     if (typeof onChanged === 'function') {
-      onChanged(newState);
+      onChanged({
+        ...newState,
+        editMenu
+      });
     }
 
     this.setState(newState);

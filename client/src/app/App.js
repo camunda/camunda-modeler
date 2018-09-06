@@ -343,7 +343,7 @@ export class App extends Component {
     });
   }
 
-  handleTabChanged = (tab, properties) => {
+  handleTabChanged = (tab, properties = {}) => {
 
     let {
       dirtyTabs,
@@ -362,13 +362,16 @@ export class App extends Component {
       });
     }
 
+    tabState = {
+      ...tabState,
+      ...properties
+    };
 
     this.setState({
-      tabState: {
-        ...tabState,
-        ...properties
-      }
+      tabState
     });
+
+    this.updateMenu(tabState);
   }
 
   tabSaved(tab, newFile) {
@@ -438,19 +441,10 @@ export class App extends Component {
 
     const {
       onTabChanged,
-      onTabShown,
-      onToolStateChanged
+      onTabShown
     } = this.props;
 
     if (prevState.activeTab !== activeTab) {
-
-      if (typeof onToolStateChanged === 'function') {
-        onToolStateChanged(activeTab, {
-          closable: activeTab !== EMPTY_TAB,
-          save: activeTab !== EMPTY_TAB,
-          dirty: this.isDirty(activeTab)
-        });
-      }
 
       if (typeof onTabChanged === 'function') {
         onTabChanged(activeTab, prevState.activeTab);
@@ -542,6 +536,10 @@ export class App extends Component {
     console.error('NOT IMPLEMENTED');
   }
 
+  updateMenu = (state) => {
+    this.props.globals.backend.sendUpdateMenu(state);
+  }
+
   triggerAction = (action, options) => {
 
     const {
@@ -625,6 +623,10 @@ export class App extends Component {
 
     if (action === 'show-shortcuts') {
       return this.showShortcuts();
+    }
+
+    if (action === 'update-menu') {
+      return this.updateMenu();
     }
 
     const tab = this.tabRef.current;
