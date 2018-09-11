@@ -486,6 +486,10 @@ export class App extends Component {
         contents
       }, { saveAs });
 
+      if (!newFile) {
+        throw new Error('user canceled');
+      }
+
       this.tabSaved(tab, newFile);
     }
   }
