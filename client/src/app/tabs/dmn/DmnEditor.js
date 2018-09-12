@@ -25,6 +25,8 @@ import {
 
 import css from './DmnEditor.less';
 
+import generateImage from '../../util/generateImage';
+
 
 class DmnEditor extends CachedComponent {
 
@@ -362,6 +364,38 @@ class DmnEditor extends CachedComponent {
 
         return resolve(xml);
       });
+    });
+  }
+
+  exportAs(type) {
+    const {
+      modeler
+    } = this.getCached();
+
+    const viewer = modeler.getActiveViewer();
+
+    return new Promise((resolve, reject) => {
+
+      viewer.saveSVG((err, svg) => {
+        let contents;
+
+        if (err) {
+          reject(err);
+        }
+
+        if (type !== 'svg') {
+          try {
+            contents = generateImage(type, svg);
+          } catch (err) {
+            return reject(err);
+          }
+        } else {
+          contents = svg;
+        }
+
+        resolve(contents);
+      });
+
     });
   }
 

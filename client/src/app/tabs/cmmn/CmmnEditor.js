@@ -14,6 +14,8 @@ import { active as isInputActive } from '../../../util/dom/is-input';
 
 import { getCmmnEditMenu } from './getCmmnEditMenu';
 
+import generateImage from '../../util/generateImage';
+
 
 export class CmmnEditor extends CachedComponent {
 
@@ -198,6 +200,36 @@ export class CmmnEditor extends CachedComponent {
 
         return resolve(xml);
       });
+    });
+  }
+
+  exportAs(type) {
+    const {
+      modeler
+    } = this.getCached();
+
+    return new Promise((resolve, reject) => {
+
+      modeler.saveSVG((err, svg) => {
+        let contents;
+
+        if (err) {
+          reject(err);
+        }
+
+        if (type !== 'svg') {
+          try {
+            contents = generateImage(type, svg);
+          } catch (err) {
+            return reject(err);
+          }
+        } else {
+          contents = svg;
+        }
+
+        resolve(contents);
+      });
+
     });
   }
 
