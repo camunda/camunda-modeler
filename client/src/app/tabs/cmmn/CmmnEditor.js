@@ -115,7 +115,7 @@ export class CmmnEditor extends CachedComponent {
 
     console.warn('modeling error', error);
 
-    // TODO(nikku): handle modeling error
+    this.props.onError(error);
   }
 
   updateState = (event) => {
@@ -175,9 +175,10 @@ export class CmmnEditor extends CachedComponent {
 
       modeler.lastXML = xml;
 
-      // TODO(nikku): handle errors
       modeler.importXML(xml, function(err) {
-
+        if (err) {
+          this.props.onError(err);
+        }
       });
     }
   }
@@ -195,6 +196,8 @@ export class CmmnEditor extends CachedComponent {
         modeler.lastXML = xml;
 
         if (err) {
+          this.props.onError(err);
+
           return reject(err);
         }
 
@@ -214,6 +217,8 @@ export class CmmnEditor extends CachedComponent {
         let contents;
 
         if (err) {
+          this.props.onError(err);
+
           reject(err);
         }
 
@@ -221,6 +226,8 @@ export class CmmnEditor extends CachedComponent {
           try {
             contents = generateImage(type, svg);
           } catch (err) {
+            this.props.onError(err);
+
             return reject(err);
           }
         } else {
@@ -244,16 +251,6 @@ export class CmmnEditor extends CachedComponent {
 
     // TODO(nikku): handle all editor actions
     modeler.get('editorActions').trigger(action, context);
-  }
-
-  saveDiagram = () => {
-    const {
-      modeler
-    } = this.getCached();
-
-    modeler.saveXML((err, result) => {
-      console.log(result);
-    });
   }
 
   handleSetColor = (fill, stroke) => {

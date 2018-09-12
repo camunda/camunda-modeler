@@ -343,6 +343,12 @@ export class App extends Component {
     });
   }
 
+  handleTabError = (tab, error) => {
+    console.warn('App#handleTabError', tab, error);
+
+    // TODO: show error in log
+  }
+
   handleTabChanged = (tab, properties = {}) => {
 
     let {
@@ -799,6 +805,7 @@ export class App extends Component {
                 key={ activeTab.id }
                 tab={ activeTab }
                 onChanged={ this.handleTabChanged }
+                onError={ this.handleTabError }
                 onShown={ this.handleTabShown }
                 onContextMenu={ this.openTabMenu }
                 ref={ this.tabRef }
