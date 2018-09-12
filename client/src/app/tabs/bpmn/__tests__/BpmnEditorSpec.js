@@ -144,7 +144,7 @@ describe('<BpmnEditor>', function() {
     expect(xml).to.eql(diagramXML);
   });
 
-  describe.only('#exportAs', function() {
+  describe('#exportAs', function() {
 
     let bpmnEditor;
 
