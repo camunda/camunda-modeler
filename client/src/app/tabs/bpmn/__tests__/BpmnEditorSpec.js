@@ -135,30 +135,59 @@ describe('<BpmnEditor>', function() {
   });
 
 
-  it.skip('#getXML', function(done) {
-    const slotFillRoot = ReactDOM.render(
-      <SlotFillRoot>
-        <BpmnEditorWithCachedState id="foo" xml={ diagramXML } />
-      </SlotFillRoot>,
-      container
-    );
+  it('#getXML', async function() {
+    const bpmnEditor = renderBpmnEditor(diagramXML, container);
 
-    const bpmnEditor = findRenderedComponentWithType(slotFillRoot, BpmnEditor);
+    const xml = await bpmnEditor.getXML();
 
-    const {
-      modeler
-    } = bpmnEditor.getCached();
+    expect(xml).to.exist;
+    expect(xml).to.eql(diagramXML);
+  });
 
-    modeler.on('import.done', async function() {
+  describe.only('#exportAs', function() {
 
-      const xml = await bpmnEditor.getXML();
+    let bpmnEditor;
 
-      expect(xml).to.exist;
-      expect(xml).to.eql(diagramXML);
+    beforeEach(function() {
+      bpmnEditor = renderBpmnEditor(diagramXML, container);
+    });
 
-      done();
+
+    it('svg', async function() {
+      const contents = await bpmnEditor.exportAs('svg');
+
+      expect(contents).to.exist;
+      expect(contents).to.equal('<svg />');
+    });
+
+
+    it('png', async function() {
+      const contents = await bpmnEditor.exportAs('png');
+
+      expect(contents).to.exist;
+      expect(contents).to.contain('data:image/png');
+    });
+
+
+    it('jpeg', async function() {
+      const contents = await bpmnEditor.exportAs('jpeg');
+
+      expect(contents).to.exist;
+      expect(contents).to.contain('data:image/jpeg');
     });
 
   });
 
+
 });
+
+function renderBpmnEditor(xml, container) {
+  const slotFillRoot = ReactDOM.render(
+    <SlotFillRoot>
+      <BpmnEditorWithCachedState id="foo" xml={ diagramXML } />
+    </SlotFillRoot>,
+    container
+  );
+
+  return findRenderedComponentWithType(slotFillRoot, BpmnEditor);
+}
