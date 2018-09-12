@@ -23,8 +23,6 @@ import { getBpmnEditMenu } from './getBpmnEditMenu';
 
 import css from './BpmnEditor.less';
 
-import { assign } from 'min-dash';
-
 import generateImage from '../../util/generateImage';
 
 const COLORS = [{
