@@ -4,3 +4,4 @@ dist/
 app/public/
 plugins/**
 !docs/plugins/**
+.vscode
