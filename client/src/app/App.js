@@ -544,6 +544,42 @@ export class App extends Component {
     this.props.globals.backend.sendUpdateMenu(state);
   }
 
+  async exportAs(tab) {
+    const filters = [{
+      name: 'PNG Image',
+      extensions: [ 'png' ]
+    }, {
+      name: 'JPEG Image',
+      extensions: [ 'jpeg' ]
+    }, {
+      name: 'SVG Image',
+      extensions: [ 'svg' ]
+    }];
+
+    const suggestedFile = await this.askExportAs(tab, filters);
+
+    if (!suggestedFile) {
+      throw new Error('user canceled');
+    }
+
+    const {
+      fileType
+    } = suggestedFile;
+
+    const contents = await this.tabRef.current.triggerAction('export-as', {
+      fileType
+    });
+
+    this.props.globals.fileSystem.writeFile({
+      ...suggestedFile,
+      contents
+    });
+  }
+
+  askExportAs = (file, filters) => {
+    return this.props.globals.dialog.askExportAs(file, filters);
+  }
+
   triggerAction = (action, options) => {
 
     const {
@@ -631,6 +667,10 @@ export class App extends Component {
 
     if (action === 'update-menu') {
       return this.updateMenu();
+    }
+
+    if (action === 'export-as') {
+      return this.exportAs(activeTab);
     }
 
     const tab = this.tabRef.current;
@@ -733,7 +773,7 @@ export class App extends Component {
             tabState.canExport && <Fill name="toolbar" group="export">
               <Button
                 title="Export as image"
-                onClick={ this.composeAction('export-as-image') }
+                onClick={ this.composeAction('export-as') }
               >
                 <Icon name="picture" />
               </Button>

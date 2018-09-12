@@ -15,8 +15,12 @@ export default class Modeler {
     done && done();
   }
 
-  saveXML(done) {
-    done(this.xml);
+  saveXML(options, done) {
+    done(null, this.xml);
+  }
+
+  saveSVG(done) {
+    done(null, '<svg />');
   }
 
   attachTo() {}

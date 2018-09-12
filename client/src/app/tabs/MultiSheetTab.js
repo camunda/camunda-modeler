@@ -108,6 +108,10 @@ class MultiSheetTab extends CachedComponent {
       });
 
       return xml;
+    } else if (action === 'export-as') {
+      const { fileType } = options;
+
+      return await editor.exportAs(fileType);
     }
 
     return editor.triggerAction(action, options);

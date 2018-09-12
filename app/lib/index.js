@@ -232,7 +232,6 @@ renderer.on('client-config:get', function(...args) {
 });
 
 renderer.on('file:save-as', function(diagramFile, done) {
-
   saveCallback(fileSystem.saveAs, diagramFile, done);
 });
 
