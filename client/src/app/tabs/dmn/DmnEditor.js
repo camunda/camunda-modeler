@@ -110,6 +110,8 @@ class DmnEditor extends CachedComponent {
     modeler[fn]('views.changed', this.viewsChanged);
 
     modeler[fn]('view.contentChanged', this.viewContentChanged);
+
+    modeler[fn]('error', this.handleError);
   }
 
   checkDirty = () => {
@@ -153,6 +155,8 @@ class DmnEditor extends CachedComponent {
 
     if (error) {
       console.error('imported with error', error);
+
+      this.props.onError(error);
 
       return;
     }
@@ -284,6 +288,16 @@ class DmnEditor extends CachedComponent {
     this.setState(newState);
   }
 
+  handleError = (event) => {
+    const {
+      error
+    } = event;
+
+    console.warn('modeling error', error);
+
+    this.props.onError(error);
+  }
+
   checkImport = () => {
     const {
       modeler
@@ -353,6 +367,8 @@ class DmnEditor extends CachedComponent {
         modeler.lastXML = xml;
 
         if (err) {
+          this.props.onError(err);
+
           return reject(err);
         }
 
@@ -381,6 +397,8 @@ class DmnEditor extends CachedComponent {
           try {
             contents = generateImage(type, svg);
           } catch (err) {
+            this.props.onError(err);
+
             return reject(err);
           }
         } else {

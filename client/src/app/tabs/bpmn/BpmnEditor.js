@@ -160,7 +160,9 @@ export class BpmnEditor extends CachedComponent {
 
     console.warn('element template errors', errors);
 
-    // TODO(nikku): handle element template errors
+    errors.forEach(error => {
+      this.props.onError(error);
+    });
   }
 
   handleError = (event) => {
@@ -170,7 +172,7 @@ export class BpmnEditor extends CachedComponent {
 
     console.warn('modeling error', error);
 
-    // TODO(nikku): handle modeling error
+    this.props.onError(error);
   }
 
   updateState = (event) => {
@@ -245,6 +247,10 @@ export class BpmnEditor extends CachedComponent {
       // TODO(nikku): handle errors
       // TODO(nikku): apply default element templates to initial diagram
       modeler.importXML(xml, (err) => {
+        if (err) {
+          this.props.onError(err);
+        }
+
         this.setState({
           loading: false
         });
@@ -265,6 +271,8 @@ export class BpmnEditor extends CachedComponent {
         modeler.lastXML = xml;
 
         if (err) {
+          this.props.onError(err);
+
           return reject(err);
         }
 
@@ -284,6 +292,8 @@ export class BpmnEditor extends CachedComponent {
         let contents;
 
         if (err) {
+          this.props.onError(err);
+
           reject(err);
         }
 
@@ -291,6 +301,8 @@ export class BpmnEditor extends CachedComponent {
           try {
             contents = generateImage(type, svg);
           } catch (err) {
+            this.props.onError(err);
+
             return reject(err);
           }
         } else {
@@ -314,16 +326,6 @@ export class BpmnEditor extends CachedComponent {
 
     // TODO(nikku): handle all editor actions
     modeler.get('editorActions').trigger(action, context);
-  }
-
-  saveDiagram = () => {
-    const {
-      modeler
-    } = this.getCached();
-
-    modeler.saveXML((err, result) => {
-      console.log(result);
-    });
   }
 
   handleSetColor = (fill, stroke) => {
