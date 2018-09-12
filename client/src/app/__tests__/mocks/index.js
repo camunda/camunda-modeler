@@ -17,6 +17,10 @@ class FakeTab extends Component {
     if (action === 'save') {
       return 'CONTENTS';
     }
+
+    if (action === 'export-as') {
+      return 'CONTENTS';
+    }
   }
 
   render() {
@@ -74,12 +78,20 @@ export class Dialog {
     this.askSaveResponse = response;
   }
 
+  setAskExportAsResponse(response) {
+    this.askExportAsResponse = response;
+  }
+
   setOpenFileResponse(response) {
-    this.this.openFileResponse = response;
+    this.openFileResponse = response;
   }
 
   askSave() {
     return this.askSaveResponse;
+  }
+
+  askExportAs() {
+    return this.askExportAsResponse;
   }
 
   openFile() {

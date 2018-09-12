@@ -18,4 +18,8 @@ export default class Dialog {
     return this.backend.send('dialog:close-tab', file);
   }
 
+  askExportAs(file, filters) {
+    return this.backend.send('file:export-as', file, filters);
+  }
+
 }

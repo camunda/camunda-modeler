@@ -354,6 +354,61 @@ describe('<App>', function() {
     });
 
 
+    describe('exporting', function() {
+
+      let askExportAsSpy;
+      let writeFileSpy;
+
+      let app;
+
+      beforeEach(function() {
+
+        // given
+        const dialog = new Dialog();
+        const fileSystem = new FileSystem();
+
+        dialog.setAskExportAsResponse(Promise.resolve({
+          fileType: 'svg',
+          name: 'foo.svg',
+          path: 'foo'
+        }));
+
+        askExportAsSpy = spy(dialog, 'askExportAs');
+        writeFileSpy = spy(fileSystem, 'writeFile');
+
+        const rendered = createApp({
+          globals: {
+            dialog,
+            fileSystem
+          }
+        }, mount);
+
+        app = rendered.app;
+      });
+
+
+      it.only('should export SVG', async function() {
+
+        // given
+        await app.createDiagram();
+
+        // when
+        await app.triggerAction('export-as');
+
+        // then
+        expect(askExportAsSpy).to.have.been.called;
+
+        expect(writeFileSpy).to.have.been.calledWith({
+          contents: 'CONTENTS',
+          fileType: 'svg',
+          name: 'foo.svg',
+          path: 'foo'
+        });
+      });
+
+    });
+
+
     describe('loading', function() {
 
       it('should support life-cycle', async function() {
