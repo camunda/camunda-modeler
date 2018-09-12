@@ -12,6 +12,10 @@ class FakeTab extends Component {
   }
 
   triggerAction(action, options) {
+    const {
+      tab
+    } = this.props;
+
     console.log('FakeTab#triggerAction', action, options);
 
     if (action === 'save') {
@@ -20,6 +24,10 @@ class FakeTab extends Component {
 
     if (action === 'export-as') {
       return 'CONTENTS';
+    }
+
+    if (action === 'error') {
+      this.props.onError(tab, options);
     }
   }
 

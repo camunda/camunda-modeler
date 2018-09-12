@@ -80,6 +80,12 @@ class MultiSheetTab extends CachedComponent {
     );
   }
 
+  handleError = (error) => {
+    const { tab } = this.props;
+
+    this.props.onError(tab, error);
+  }
+
   handleContextMenu = (event, context) => {
 
     const {
@@ -216,7 +222,8 @@ class MultiSheetTab extends CachedComponent {
             activeSheet={ activeSheet }
             onSheetsChanged={ this.sheetsChanged }
             onContextMenu={ this.handleContextMenu }
-            onChanged={ this.handleChanged } />
+            onChanged={ this.handleChanged }
+            onError={ this.handleError } />
         </TabContainer>
 
         <TabLinks

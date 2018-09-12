@@ -387,7 +387,7 @@ describe('<App>', function() {
       });
 
 
-      it.only('should export SVG', async function() {
+      it('should export SVG', async function() {
 
         // given
         await app.createDiagram();
@@ -635,6 +635,51 @@ describe('<App>', function() {
           expect(tabHistory.get()).not.to.exist;
         });
 
+      });
+
+    });
+
+
+    describe('errors', function() {
+
+      let app, openedTabs;
+
+      beforeEach(async function() {
+        const rendered = createApp(mount);
+
+        app = rendered.app;
+
+        const file1 = createFile('1.bpmn');
+
+        openedTabs = [
+          ...(await app.openFiles([ file1 ])),
+        ];
+
+        // assume
+        const {
+          tabs,
+          activeTab
+        } = app.state;
+
+        expect(tabs).to.eql(openedTabs);
+        expect(activeTab).to.eql(openedTabs[0]);
+      });
+
+
+      // TODO(philippfromme): spy is not called, why?
+      it.skip('should error', function() {
+
+        // given
+        const handleTabErrorSpy = sinon.spy(app, 'handleTabError');
+
+        const tab = app.tabRef.current;
+
+        // when
+        tab.triggerAction('error', 'foo');
+
+        // then
+        expect(handleTabErrorSpy).to.have.been.called;
+        // expect(handleTabErrorSpy).to.have.been.calledWith(openedTabs[0], 'foo');
       });
 
     });
