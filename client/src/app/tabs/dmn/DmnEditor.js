@@ -46,9 +46,31 @@ class DmnEditor extends CachedComponent {
 
     this.listen('on');
 
+    // update properties panel parent in all configs
+    [ 'drd', 'decisionTable', 'literalExpression' ].forEach(viewer => {
+
+      modeler._options[ viewer ].propertiesPanel = {
+        parent: this.propertiesPanelRef.current
+      };
+
+      // viewers only exist if cached modeler
+      if (modeler._viewers[ viewer ]) {
+        const config = modeler._viewers[ viewer ].get('config');
+
+        config.propertiesPanel = {
+          parent: this.propertiesPanelRef.current
+        };
+      }
+
+    });
+
+    // if cached modeler event must be fired manually
+    if (modeler.getActiveViewer()) {
+      modeler.getActiveViewer().get('eventBus').fire('attach');
+    }
+
     modeler.attachTo(this.ref.current);
 
-    // TODO(nikku): dynamically attach editor properties panel
     this.checkImport();
   }
 
@@ -59,7 +81,6 @@ class DmnEditor extends CachedComponent {
 
     this.listen('off');
 
-    // TODO(nikku): detach editor properties panel
     modeler.detach();
   }
 
