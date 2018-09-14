@@ -27,18 +27,26 @@ import css from './DmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 
+import { merge } from 'min-dash';
+
+import classNames from 'classnames';
+
 
 class DmnEditor extends CachedComponent {
 
   constructor(props) {
     super(props);
 
-    this.state = {};
+    const {
+      layout
+    } = this.props;
+
+    this.state = {
+      layout
+    };
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
-
-    // TODO(nikku): detach editor properties panel
   }
 
   componentDidMount() {
@@ -112,6 +120,8 @@ class DmnEditor extends CachedComponent {
     modeler[fn]('view.contentChanged', this.viewContentChanged);
 
     modeler[fn]('error', this.handleError);
+
+    modeler[fn]('minimap.toggle', this.handleMinimapToggle);
   }
 
   checkDirty = () => {
@@ -298,6 +308,44 @@ class DmnEditor extends CachedComponent {
     this.props.onError(error);
   }
 
+  handleMinimapToggle = (event) => {
+    this.handleLayoutChange({
+      minimap: {
+        open: event.open
+      }
+    });
+  }
+
+  handlePropertiesPanelToggle = () => {
+    const {
+      layout
+    } = this.state;
+
+    this.handleLayoutChange({
+      propertiesPanel: {
+        open: !layout.propertiesPanel.open
+      }
+    });
+  }
+
+  handleLayoutChange(newLayout) {
+    const {
+      onLayoutChanged
+    } = this.props;
+
+    const {
+      layout
+    } = this.state;
+
+    newLayout = merge(layout, newLayout);
+
+    this.setState({
+      layout: newLayout
+    });
+
+    onLayoutChanged(newLayout);
+  }
+
   checkImport = () => {
     const {
       modeler
@@ -412,6 +460,12 @@ class DmnEditor extends CachedComponent {
   }
 
   render() {
+    const {
+      layout
+    } = this.state;
+
+    const propertiesPanelOpen = layout.propertiesPanel && layout.propertiesPanel.open;
+
     return (
       <div className={ css.DmnEditor }>
 
@@ -429,8 +483,8 @@ class DmnEditor extends CachedComponent {
 
         <div className="diagram" ref={ this.ref }></div>
 
-        <div className="properties">
-          <div className="toggle">Properties Panel</div>
+        <div className={ classNames('properties', { 'open': propertiesPanelOpen }) }>
+          <div className="toggle" onClick={ this.handlePropertiesPanelToggle }>Properties Panel</div>
           <div className="resize-handle"></div>
           <div className="properties-container" ref={ this.propertiesPanelRef }></div>
         </div>
@@ -438,9 +492,16 @@ class DmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState() {
+  static createCachedState(props) {
+    const {
+      layout
+    } = props;
 
-    const modeler = new CamundaDmnModeler();
+    const modeler = new CamundaDmnModeler({
+      minimap: {
+        open: layout.minimap.open
+      }
+    });
 
     return {
       modeler,

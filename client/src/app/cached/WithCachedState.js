@@ -42,7 +42,7 @@ export default function(Comp) {
 
         const initialCachedState =
           'createCachedState' in Comp
-            ? Comp.createCachedState()
+            ? Comp.createCachedState(this.props)
             : {};
 
         const {

@@ -16,13 +16,23 @@ import { getCmmnEditMenu } from './getCmmnEditMenu';
 
 import generateImage from '../../util/generateImage';
 
+import { merge } from 'min-dash';
+
+import classNames from 'classnames';
+
 
 export class CmmnEditor extends CachedComponent {
 
   constructor(props) {
     super(props);
 
-    this.state = {};
+    const {
+      layout
+    } = this.props;
+
+    this.state = {
+      layout
+    };
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
@@ -76,6 +86,8 @@ export class CmmnEditor extends CachedComponent {
     });
 
     modeler[fn]('error', 1500, this.handleError);
+
+    modeler[fn]('minimap.toggle', this.handleMinimapToggle);
   }
 
   componentDidUpdate(previousProps) {
@@ -280,7 +292,51 @@ export class CmmnEditor extends CachedComponent {
     canvas.resized();
   }
 
+  handleMinimapToggle = (event) => {
+    this.handleLayoutChange({
+      minimap: {
+        open: event.open
+      }
+    });
+  }
+
+  handlePropertiesPanelToggle = () => {
+    const {
+      layout
+    } = this.state;
+
+    this.handleLayoutChange({
+      propertiesPanel: {
+        open: !layout.propertiesPanel.open
+      }
+    });
+  }
+
+  handleLayoutChange(newLayout) {
+    const {
+      onLayoutChanged
+    } = this.props;
+
+    const {
+      layout
+    } = this.state;
+
+    newLayout = merge(layout, newLayout);
+
+    this.setState({
+      layout: newLayout
+    });
+
+    onLayoutChanged(newLayout);
+  }
+
   render() {
+    const {
+      layout
+    } = this.state;
+
+    const propertiesPanelOpen = layout.propertiesPanel && layout.propertiesPanel.open;
+
     return (
       <div className={ css.CmmnEditor }>
 
@@ -291,8 +347,8 @@ export class CmmnEditor extends CachedComponent {
           onContextMenu={ this.handleContextMenu }
         ></div>
 
-        <div className="properties">
-          <div className="toggle">Properties Panel</div>
+        <div className={ classNames('properties', { 'open': propertiesPanelOpen }) }>
+          <div className="toggle" onClick={ this.handlePropertiesPanelToggle }>Properties Panel</div>
           <div className="resize-handle"></div>
           <div className="properties-container" ref={ this.propertiesPanelRef }></div>
         </div>
@@ -300,11 +356,18 @@ export class CmmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState() {
+  static createCachedState(props) {
+
+    const {
+      layout
+    } = props;
 
     // TODO(nikku): wire element template loading
     const modeler = new CamundaCmmnModeler({
-      position: 'absolute'
+      position: 'absolute',
+      minimap: {
+        open: layout.minimap.open
+      }
     });
 
     return {
