@@ -81,9 +81,12 @@ class MultiSheetTab extends CachedComponent {
   }
 
   handleError = (error) => {
-    const { tab } = this.props;
+    const {
+      onError,
+      tab
+    } = this.props;
 
-    this.props.onError(tab, error);
+    onError(tab, error);
   }
 
   handleContextMenu = (event, context) => {
@@ -100,6 +103,14 @@ class MultiSheetTab extends CachedComponent {
       onContextMenu(event, activeSheet.type, context);
     }
 
+  }
+
+  handleLayoutChanged = (newLayout) => {
+    const {
+      onLayoutChanged
+    } = this.props;
+
+    onLayoutChanged(newLayout);
   }
 
   triggerAction = async (action, options) => {
@@ -199,7 +210,8 @@ class MultiSheetTab extends CachedComponent {
 
     let {
       id,
-      xml
+      xml,
+      layout
     } = this.props;
 
     if (!sheets) {
@@ -219,11 +231,13 @@ class MultiSheetTab extends CachedComponent {
             ref={ this.editorRef }
             id={ `${id}-${activeSheet.id}` }
             xml={ lastXML || xml }
+            layout={ layout }
             activeSheet={ activeSheet }
             onSheetsChanged={ this.sheetsChanged }
             onContextMenu={ this.handleContextMenu }
             onChanged={ this.handleChanged }
-            onError={ this.handleError } />
+            onError={ this.handleError }
+            onLayoutChanged={ this.handleLayoutChanged } />
         </TabContainer>
 
         <TabLinks

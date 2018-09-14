@@ -29,6 +29,10 @@ import History from './History';
 
 import css from './App.less';
 
+import {
+  merge
+} from 'min-dash';
+
 const log = debug('App');
 
 const tabLoaded = {
@@ -51,7 +55,17 @@ export class App extends Component {
       tabs: [],
       activeTab: EMPTY_TAB,
       dirtyTabs: {},
-      tabState: {}
+      tabState: {},
+      layout: {
+
+        // TODO get layout from workspace
+        minimap: {
+          open: true
+        },
+        propertiesPanel: {
+          open: true
+        }
+      }
     };
 
     // TODO(nikku): make state
@@ -315,6 +329,20 @@ export class App extends Component {
     event.preventDefault();
 
     this.props.onContextMenu(type);
+  }
+
+  handleLayoutChanged = (newLayout) => {
+    const {
+      layout
+    } = this.state;
+
+    this.setState({
+      layout: merge(layout, newLayout)
+    });
+
+    console.log('App#onLayoutChanged', merge(layout, newLayout));
+
+    // TODO persist to workspace
   }
 
   /**
@@ -697,7 +725,8 @@ export class App extends Component {
 
     const {
       tabs,
-      tabState
+      tabState,
+      layout
     } = this.state;
 
     const Tab = this.state.Tab || EmptyTab;
@@ -804,9 +833,11 @@ export class App extends Component {
               <Tab
                 key={ activeTab.id }
                 tab={ activeTab }
+                layout={ layout }
                 onChanged={ this.handleTabChanged }
                 onError={ this.handleTabError }
                 onShown={ this.handleTabShown }
+                onLayoutChanged={ this.handleLayoutChanged }
                 onContextMenu={ this.openTabMenu }
                 ref={ this.tabRef }
               />

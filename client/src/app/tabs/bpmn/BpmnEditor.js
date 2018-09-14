@@ -25,6 +25,10 @@ import css from './BpmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 
+import classNames from 'classnames';
+
+import { merge } from 'min-dash';
+
 const COLORS = [{
   title: 'White',
   fill: 'white',
@@ -57,7 +61,13 @@ export class BpmnEditor extends CachedComponent {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    const {
+      layout
+    } = this.props;
+
+    this.state = {
+      layout
+    };
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
@@ -148,9 +158,11 @@ export class BpmnEditor extends CachedComponent {
   }
 
   handleMinimapToggle = (event) => {
-    console.warn('minimap toggle', event.open);
-
-    // TODO(nikku): persist minimap toggle state
+    this.handleLayoutChange({
+      minimap: {
+        open: event.open
+      }
+    });
   }
 
   handleElementTemplateErrors = (event) => {
@@ -353,6 +365,36 @@ export class BpmnEditor extends CachedComponent {
     }
   }
 
+  handlePropertiesPanelToggle = () => {
+    const {
+      layout
+    } = this.state;
+
+    this.handleLayoutChange({
+      propertiesPanel: {
+        open: !layout.propertiesPanel.open
+      }
+    });
+  }
+
+  handleLayoutChange(newLayout) {
+    const {
+      onLayoutChanged
+    } = this.props;
+
+    const {
+      layout
+    } = this.state;
+
+    newLayout = merge(layout, newLayout);
+
+    this.setState({
+      layout: newLayout
+    });
+
+    onLayoutChanged(newLayout);
+  }
+
   resize = () => {
     const {
       modeler
@@ -364,10 +406,12 @@ export class BpmnEditor extends CachedComponent {
   }
 
   render() {
-
     const {
+      layout,
       loading
     } = this.state;
+
+    const propertiesPanelOpen = layout.propertiesPanel && layout.propertiesPanel.open;
 
     return (
       <div className={ css.BpmnEditor }>
@@ -477,8 +521,8 @@ export class BpmnEditor extends CachedComponent {
           onContextMenu={ this.handleContextMenu }
         ></div>
 
-        <div className="properties">
-          <div className="toggle">Properties Panel</div>
+        <div className={ classNames('properties', { 'open': propertiesPanelOpen }) }>
+          <div className="toggle" onClick={ this.handlePropertiesPanelToggle }>Properties Panel</div>
           <div className="resize-handle"></div>
           <div className="properties-container" ref={ this.propertiesPanelRef }></div>
         </div>
@@ -486,11 +530,18 @@ export class BpmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState() {
+  static createCachedState(props) {
+
+    const {
+      layout
+    } = props;
 
     // TODO(nikku): wire element template loading
     const modeler = new CamundaBpmnModeler({
-      position: 'absolute'
+      position: 'absolute',
+      minimap: {
+        open: layout.minimap.open
+      }
     });
 
     return {
