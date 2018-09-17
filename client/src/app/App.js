@@ -30,6 +30,7 @@ import History from './History';
 import css from './App.less';
 
 import {
+  assign,
   merge
 } from 'min-dash';
 
@@ -44,29 +45,20 @@ export const EMPTY_TAB = {
   type: 'empty'
 };
 
+const INITIAL_STATE = {
+  activeTab: -1,
+  dirtyTabs: {},
+  layout: {},
+  tabs: [],
+  tabState: {}
+};
 
 export class App extends Component {
 
   constructor(props, context) {
     super();
 
-
-    this.state = {
-      tabs: [],
-      activeTab: EMPTY_TAB,
-      dirtyTabs: {},
-      tabState: {},
-      layout: {
-
-        // TODO get layout from workspace
-        minimap: {
-          open: true
-        },
-        propertiesPanel: {
-          open: true
-        }
-      }
-    };
+    this.state = INITIAL_STATE;
 
     // TODO(nikku): make state
     this.tabHistory = new History();
@@ -207,6 +199,8 @@ export class App extends Component {
     }
 
     await this._removeTab(tab);
+
+    this.saveWorkspace();
   }
 
   isDirty = (tab) => {
@@ -338,11 +332,69 @@ export class App extends Component {
 
     this.setState({
       layout: merge(layout, newLayout)
+    }, () => {
+
+      // wait for new state
+      this.saveWorkspace();
+    });
+  }
+
+  saveWorkspace = () => {
+    console.log('App#saveWorkspace');
+
+    const {
+      workspace
+    } = this.props.globals;
+
+    const {
+      activeTab,
+      tabs,
+      layout
+    } = this.state;
+
+    const config = {
+      files: [],
+      activeTab: -1
+    };
+
+    // save tabs
+    tabs.forEach((tab, index) => {
+      const {
+        file
+      } = tab;
+
+      // do not save unsaved tabs
+      if (isNew(tab)) {
+        return;
+      }
+
+      if (tab === activeTab) {
+        config.activeTab = index;
+      }
+
+      config.files.push(assign({}, file));
     });
 
-    console.log('App#onLayoutChanged', merge(layout, newLayout));
+    // save layout
+    config.layout = layout;
 
-    // TODO persist to workspace
+    console.log('saving workspace', config);
+
+    workspace.save(config);
+  }
+
+  restoreWorkspace = () => {
+    const {
+      workspace
+    } = this.props.globals;
+
+    const defaultConfig = {
+      activeTab: -1,
+      files: [],
+      layout: {}
+    };
+
+    return workspace.restore(defaultConfig);
   }
 
   /**
@@ -368,6 +420,8 @@ export class App extends Component {
         [activeTab.id]: true
       },
       tabLoadingState: 'shown'
+    }, () => {
+      this.saveWorkspace();
     });
   }
 
@@ -423,6 +477,8 @@ export class App extends Component {
         ...dirtyTabs,
         [tab.id]: false
       }
+    }, () => {
+      this.saveWorkspace();
     });
   }
 
@@ -456,7 +512,7 @@ export class App extends Component {
     return LoadingTab;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const {
       onReady
     } = this.props;
@@ -464,6 +520,24 @@ export class App extends Component {
     if (typeof onReady === 'function') {
       onReady();
     }
+
+    const {
+      activeTab,
+      files,
+      layout
+    } = await this.restoreWorkspace();
+
+    await this.openFiles(files);
+
+    if (activeTab === -1) {
+      this.selectTab(this.state.tabs[ this.state.tabs.length - 1 ]);
+    } else {
+      this.selectTab(this.state.tabs[ activeTab ]);
+    }
+
+    this.setState({
+      layout: merge(this.state.layout, layout)
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -901,25 +975,4 @@ function isNew(tab) {
   return tab.file && !tab.file.path;
 }
 
-/**
-
-
-  shouldComponentUpdate(newProps, newState) {
-
-    function compare(type, o, n) {
-
-      Object.keys(o).forEach(function(k) {
-        if (o[k] !== n[k]) {
-          console.log('%s[%s] changed', type, k, o[k], n[k]);
-        }
-      });
-    }
-
-    compare('props', this.props, newProps);
-    compare('state', this.state, newState);
-
-    return true;
-  }
-
- */
 export default WithCache(App);

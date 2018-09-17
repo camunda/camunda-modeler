@@ -118,3 +118,19 @@ export class FileSystem {
 export class Backend {
   sendUpdateMenu() {}
 }
+
+export class Workspace {
+  constructor(config) {
+    this.config = config;
+  }
+
+  save() {}
+
+  restore(defaultConfig) {
+    return this.config || defaultConfig;
+  }
+
+  setConfig(config) {
+    this.config = config;
+  }
+}

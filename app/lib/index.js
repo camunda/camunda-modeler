@@ -276,11 +276,12 @@ app.openFiles = [];
 app.on('app:parse-cmd', function(argv, cwd) {
   console.log('app:parse-cmd', argv.join(' '), cwd);
 
-  var files = Cli.extractFiles(argv, cwd);
+  // will result in opening dev.js as file
+  // var files = Cli.extractFiles(argv, cwd);
 
-  files.forEach(function(file) {
-    app.emit('app:open-file', file);
-  });
+  // files.forEach(function(file) {
+  //   app.emit('app:open-file', file);
+  // });
 });
 
 app.on('app:open-file', function(filePath) {
@@ -316,7 +317,7 @@ app.on('app:client-ready', function() {
     }
   });
 
-  renderer.send('client:open-files', files);
+  // renderer.send('client:open-files', files);
 
   renderer.send('client:started');
 });

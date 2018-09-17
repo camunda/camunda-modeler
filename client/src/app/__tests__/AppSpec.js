@@ -14,8 +14,11 @@ import {
   Backend,
   Dialog,
   FileSystem,
-  TabsProvider
+  TabsProvider,
+  Workspace
 } from './mocks';
+
+import mitt from 'mitt';
 
 
 /* global sinon */
@@ -40,6 +43,9 @@ describe('<App>', function() {
 
           // given
           const backend = new Backend();
+          const eventBus = new mitt();
+          const fileSystem = new FileSystem();
+          const workspace = new Workspace();
 
           const spy = sinon.spy(backend, 'sendUpdateMenu');
 
@@ -47,7 +53,10 @@ describe('<App>', function() {
             app
           } = createApp({
             globals: {
-              backend
+              backend,
+              eventBus,
+              fileSystem,
+              workspace
             }
           });
 
@@ -86,7 +95,7 @@ describe('<App>', function() {
     } = app.state;
 
     expect(tabs).to.be.empty;
-    expect(activeTab).to.equal(EMPTY_TAB);
+    expect(activeTab).to.equal(-1);
   });
 
 
@@ -253,7 +262,9 @@ describe('<App>', function() {
 
         // given
         const dialog = new Dialog();
+        const eventBus = new mitt();
         const fileSystem = new FileSystem();
+        const workspace = new Workspace();
 
         dialog.setAskSaveResponse(Promise.resolve('save'));
 
@@ -263,7 +274,9 @@ describe('<App>', function() {
         const rendered = createApp({
           globals: {
             dialog,
-            fileSystem
+            eventBus,
+            fileSystem,
+            workspace
           }
         }, mount);
 
@@ -365,7 +378,9 @@ describe('<App>', function() {
 
         // given
         const dialog = new Dialog();
+        const eventBus = mitt();
         const fileSystem = new FileSystem();
+        const workspace = new Workspace();
 
         dialog.setAskExportAsResponse(Promise.resolve({
           fileType: 'svg',
@@ -379,7 +394,9 @@ describe('<App>', function() {
         const rendered = createApp({
           globals: {
             dialog,
-            fileSystem
+            eventBus,
+            fileSystem,
+            workspace
           }
         }, mount);
 
@@ -682,6 +699,174 @@ describe('<App>', function() {
 
     });
 
+
+    describe('workspace', function() {
+
+      describe('restore workspace', function() {
+
+        let app,
+            eventBus,
+            restoreSpy,
+            tab,
+            workspace;
+
+        beforeEach(async function() {
+          tab = new TabsProvider().createTabForFile(createFile('1.bpmn'));
+
+          eventBus = mitt();
+
+          workspace = new Workspace({
+            activeTab: 0,
+            files: [ tab.file ],
+            layout: {
+              minimap: {
+                open: true
+              },
+              propertiesPanel: {
+                open: false
+              }
+            }
+          });
+
+          restoreSpy = spy(workspace, 'restore');
+
+          const rendered = createApp({
+            globals: {
+              dialog: new Dialog(),
+              eventBus,
+              fileSystem: new FileSystem(),
+              workspace
+            }
+          }, mount);
+
+          app = rendered.app;
+        });
+
+
+        it.skip('should retrieve workspace on mount', function() {
+
+          // then
+          expect(restoreSpy).to.have.been.called;
+
+          expect(app.state.tabs).to.eql([ tab ]);
+
+          // TODO(fix): layout will be requested in componentDidMount
+          expect(app.state.layout).to.eql({
+            minimap: {
+              open: true
+            },
+            propertiesPanel: {
+              open: false
+            }
+          });
+        });
+
+      });
+
+
+      describe('save workspace', function() {
+
+        let app, openedTabs, workspace;
+
+        beforeEach(async function() {
+          workspace = new Workspace();
+
+          const rendered = createApp({
+            globals: {
+              dialog: new Dialog(),
+              eventBus: mitt(),
+              fileSystem: new FileSystem(),
+              workspace
+            }
+          }, mount);
+
+          app = rendered.app;
+
+          const file1 = createFile('1.bpmn');
+          const file2 = createFile('2.bpmn');
+
+          openedTabs = await app.openFiles([ file1, file2 ]);
+
+          // assume
+          const {
+            tabs,
+            activeTab
+          } = app.state;
+
+          expect(tabs).to.eql(openedTabs);
+          expect(activeTab).to.eql(openedTabs[1]);
+        });
+
+
+        it('should save workspace on tab save', async function() {
+
+          // given
+          const saveSpy = spy(workspace, 'save');
+
+          // when
+          await app.saveTab(openedTabs[0]);
+
+          // then
+          expect(saveSpy).to.have.been.calledWith({
+            activeTab: 0,
+            layout: {},
+            files: [{
+              name: '1.bpmn',
+              path: '1.bpmn'
+            }, {
+              name: '2.bpmn',
+              path: '2.bpmn'
+            }]
+          });
+        });
+
+
+        it('should save workspace on tab select', async function() {
+
+          // given
+          const saveSpy = spy(workspace, 'save');
+
+          // when
+          await app.selectTab(openedTabs[0]);
+
+          // then
+          expect(saveSpy).to.have.been.calledWith({
+            activeTab: 0,
+            layout: {},
+            files: [{
+              name: '1.bpmn',
+              path: '1.bpmn'
+            }, {
+              name: '2.bpmn',
+              path: '2.bpmn'
+            }]
+          });
+        });
+
+
+        it('should save workspace on tab close', async function() {
+
+          // given
+          const saveSpy = spy(workspace, 'save');
+
+          // when
+          await app.closeTab(openedTabs[1]);
+
+          // then
+          expect(saveSpy).to.have.been.calledWith({
+            activeTab: 0,
+            layout: {},
+            files: [{
+              name: '1.bpmn',
+              path: '1.bpmn'
+            }]
+          });
+        });
+
+      });
+
+    });
+
   });
 
 });
@@ -705,7 +890,9 @@ function createApp(options = {}, mountFn=shallow) {
 
   const globals = options.globals || {
     dialog: new Dialog(),
-    fileSystem: new FileSystem()
+    eventBus: mitt(),
+    fileSystem: new FileSystem(),
+    workspace: new Workspace()
   };
 
   const tabsProvider = options.tabsProvider || new TabsProvider();

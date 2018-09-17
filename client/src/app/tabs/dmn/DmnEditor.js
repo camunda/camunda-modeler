@@ -31,6 +31,8 @@ import { merge } from 'min-dash';
 
 import classNames from 'classnames';
 
+import defaultLayout from '../defaultLayout';
+
 
 class DmnEditor extends CachedComponent {
 
@@ -42,7 +44,7 @@ class DmnEditor extends CachedComponent {
     } = this.props;
 
     this.state = {
-      layout
+      layout: merge({}, defaultLayout, layout)
     };
 
     this.ref = React.createRef();
@@ -167,7 +169,7 @@ class DmnEditor extends CachedComponent {
       return this.handleError({ error });
     }
 
-    if (warnings.length) {
+    if (warnings && warnings.length) {
       console.error('imported with warnings', warnings);
     }
 
@@ -472,7 +474,7 @@ class DmnEditor extends CachedComponent {
       layout
     } = this.state;
 
-    const propertiesPanelOpen = layout.propertiesPanel && layout.propertiesPanel.open;
+    const propertiesPanel = layout.propertiesPanel || defaultLayout.propertiesPanel;
 
     return (
       <div className={ css.DmnEditor }>
@@ -491,7 +493,7 @@ class DmnEditor extends CachedComponent {
 
         <div className="diagram" ref={ this.ref }></div>
 
-        <div className={ classNames('properties', { 'open': propertiesPanelOpen }) }>
+        <div className={ classNames('properties', { 'open': propertiesPanel.open }) }>
           <div className="toggle" onClick={ this.handlePropertiesPanelToggle }>Properties Panel</div>
           <div className="resize-handle"></div>
           <div className="properties-container" ref={ this.propertiesPanelRef }></div>
@@ -505,9 +507,11 @@ class DmnEditor extends CachedComponent {
       layout
     } = props;
 
+    const minimap = layout.minimap || defaultLayout.minimap;
+
     const modeler = new CamundaDmnModeler({
       minimap: {
-        open: layout.minimap.open
+        open: minimap.open
       }
     });
 

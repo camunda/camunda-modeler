@@ -51,15 +51,15 @@ export default class AppParent extends Component {
 
     this.getBackend().sendReady();
 
-    setTimeout(() => {
-      const app = this.getApp();
+    // setTimeout(() => {
+    //   const app = this.getApp();
 
-      app.createDiagram('bpmn');
-      app.createDiagram('bpmn');
-      app.createDiagram('dmn');
-      app.createDiagram('dmn', { table: true });
-      app.createDiagram('cmmn');
-    }, 0);
+    //   app.createDiagram('bpmn');
+    //   app.createDiagram('bpmn');
+    //   app.createDiagram('dmn');
+    //   app.createDiagram('dmn', { table: true });
+    //   app.createDiagram('cmmn');
+    // }, 0);
 
   }
 
