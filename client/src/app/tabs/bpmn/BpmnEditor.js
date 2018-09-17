@@ -170,21 +170,24 @@ export class BpmnEditor extends CachedComponent {
       errors
     } = event;
 
-    console.warn('element template errors', errors);
-
     errors.forEach(error => {
-      this.props.onError(error);
+      this.handleError({ error });
     });
   }
 
   handleError = (event) => {
+
+    debugger
+
     const {
       error
     } = event;
 
-    console.warn('modeling error', error);
+    const {
+      onError
+    } = this.props;
 
-    this.props.onError(error);
+    onError(error);
   }
 
   updateState = (event) => {
@@ -247,7 +250,9 @@ export class BpmnEditor extends CachedComponent {
       modeler
     } = this.getCached();
 
-    const xml = this.props.xml;
+    const {
+      xml
+    } = this.props;
 
     if (xml !== modeler.lastXML) {
 
@@ -257,11 +262,12 @@ export class BpmnEditor extends CachedComponent {
         loading: true
       });
 
-      // TODO(nikku): handle errors
       // TODO(nikku): apply default element templates to initial diagram
       modeler.importXML(xml, (err) => {
         if (err) {
-          this.props.onError(err);
+          return this.handleError({
+            error: err
+          });
         }
 
         this.setState({
@@ -284,7 +290,9 @@ export class BpmnEditor extends CachedComponent {
         modeler.lastXML = xml;
 
         if (err) {
-          this.props.onError(err);
+          this.handleError({
+            error: err
+          });
 
           return reject(err);
         }
@@ -305,16 +313,20 @@ export class BpmnEditor extends CachedComponent {
         let contents;
 
         if (err) {
-          this.props.onError(err);
+          this.handleError({
+            error: err
+          });
 
-          reject(err);
+          return reject(err);
         }
 
         if (type !== 'svg') {
           try {
             contents = generateImage(type, svg);
           } catch (err) {
-            this.props.onError(err);
+            this.handleError({
+              error: err
+            });
 
             return reject(err);
           }

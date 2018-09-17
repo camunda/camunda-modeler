@@ -152,7 +152,7 @@ class DmnEditor extends CachedComponent {
 
     const {
       error,
-      warmings
+      warnings
     } = event;
 
     const {
@@ -164,15 +164,11 @@ class DmnEditor extends CachedComponent {
     } = this.props;
 
     if (error) {
-      console.error('imported with error', error);
-
-      this.props.onError(error);
-
-      return;
+      return this.handleError({ error });
     }
 
-    if (warmings.length) {
-      console.error('imported with warnings', warmings);
+    if (warnings.length) {
+      console.error('imported with warnings', warnings);
     }
 
     const initialView = modeler._getInitialView(modeler._views);
@@ -309,9 +305,11 @@ class DmnEditor extends CachedComponent {
       error
     } = event;
 
-    console.warn('modeling error', error);
+    const {
+      onError
+    } = this.props;
 
-    this.props.onError(error);
+    onError(error);
   }
 
   handleMinimapToggle = (event) => {
@@ -421,7 +419,9 @@ class DmnEditor extends CachedComponent {
         modeler.lastXML = xml;
 
         if (err) {
-          this.props.onError(err);
+          this.handleError({
+            error: err
+          });
 
           return reject(err);
         }
@@ -444,14 +444,16 @@ class DmnEditor extends CachedComponent {
         let contents;
 
         if (err) {
-          reject(err);
+          return reject(err);
         }
 
         if (type !== 'svg') {
           try {
             contents = generateImage(type, svg);
           } catch (err) {
-            this.props.onError(err);
+            this.handleError({
+              error: err
+            });
 
             return reject(err);
           }
