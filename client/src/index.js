@@ -8,7 +8,8 @@ import mitt from 'mitt';
 import {
   backend,
   dialog,
-  fileSystem
+  fileSystem,
+  workspace
 } from './remote';
 
 const eventBus = mitt();
@@ -19,7 +20,8 @@ const globals = {
   backend,
   dialog,
   eventBus,
-  fileSystem
+  fileSystem,
+  workspace
 };
 
 const rootElement = document.getElementById('root');

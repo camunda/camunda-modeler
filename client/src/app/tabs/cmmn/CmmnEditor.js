@@ -20,6 +20,8 @@ import { merge } from 'min-dash';
 
 import classNames from 'classnames';
 
+import defaultLayout from '../defaultLayout';
+
 
 export class CmmnEditor extends CachedComponent {
 
@@ -31,7 +33,7 @@ export class CmmnEditor extends CachedComponent {
     } = this.props;
 
     this.state = {
-      layout
+      layout: merge({}, defaultLayout, layout)
     };
 
     this.ref = React.createRef();
@@ -348,7 +350,7 @@ export class CmmnEditor extends CachedComponent {
       layout
     } = this.state;
 
-    const propertiesPanelOpen = layout.propertiesPanel && layout.propertiesPanel.open;
+    const propertiesPanel = layout.propertiesPanel || defaultLayout.propertiesPanel;
 
     return (
       <div className={ css.CmmnEditor }>
@@ -360,7 +362,7 @@ export class CmmnEditor extends CachedComponent {
           onContextMenu={ this.handleContextMenu }
         ></div>
 
-        <div className={ classNames('properties', { 'open': propertiesPanelOpen }) }>
+        <div className={ classNames('properties', { 'open': propertiesPanel.open }) }>
           <div className="toggle" onClick={ this.handlePropertiesPanelToggle }>Properties Panel</div>
           <div className="resize-handle"></div>
           <div className="properties-container" ref={ this.propertiesPanelRef }></div>
@@ -375,11 +377,13 @@ export class CmmnEditor extends CachedComponent {
       layout
     } = props;
 
+    const minimap = layout.minimap || defaultLayout.minimap;
+
     // TODO(nikku): wire element template loading
     const modeler = new CamundaCmmnModeler({
       position: 'absolute',
       minimap: {
-        open: layout.minimap.open
+        open: minimap.open
       }
     });
 

@@ -12,20 +12,20 @@ var renderer = require('./util/renderer');
 function Workspace(config) {
 
   renderer.on('workspace:restore', function(defaultConfig, done) {
-    var tabs = [],
+    var files = [],
         workspace = config.get('workspace', null);
 
     if (!workspace) {
       return done(null, defaultConfig);
     }
 
-    forEach(workspace.tabs, function(diagram) {
+    forEach(workspace.files, function(diagram) {
       try {
         var contents = fs.readFileSync(diagram.path, { encoding: 'utf8' });
 
         diagram.contents = contents;
 
-        tabs.push(diagram);
+        files.push(diagram);
 
         console.log('[workspace]', 'restore', diagram.path);
       } catch (err) {
@@ -33,7 +33,7 @@ function Workspace(config) {
       }
     });
 
-    workspace.tabs = tabs;
+    workspace.files = files;
 
     done(null, workspace);
   });
