@@ -29,6 +29,8 @@ import classNames from 'classnames';
 
 import { merge } from 'min-dash';
 
+import defaultLayout from '../defaultLayout';
+
 const COLORS = [{
   title: 'White',
   fill: 'white',
@@ -66,7 +68,7 @@ export class BpmnEditor extends CachedComponent {
     } = this.props;
 
     this.state = {
-      layout
+      layout: merge({}, defaultLayout, layout)
     };
 
     this.ref = React.createRef();
@@ -420,7 +422,7 @@ export class BpmnEditor extends CachedComponent {
       loading
     } = this.state;
 
-    const propertiesPanelOpen = layout.propertiesPanel && layout.propertiesPanel.open;
+    const propertiesPanel = layout.propertiesPanel || defaultLayout.propertiesPanel;
 
     return (
       <div className={ css.BpmnEditor }>
@@ -530,7 +532,7 @@ export class BpmnEditor extends CachedComponent {
           onContextMenu={ this.handleContextMenu }
         ></div>
 
-        <div className={ classNames('properties', { 'open': propertiesPanelOpen }) }>
+        <div className={ classNames('properties', { 'open': propertiesPanel.open }) }>
           <div className="toggle" onClick={ this.handlePropertiesPanelToggle }>Properties Panel</div>
           <div className="resize-handle"></div>
           <div className="properties-container" ref={ this.propertiesPanelRef }></div>
@@ -545,11 +547,13 @@ export class BpmnEditor extends CachedComponent {
       layout
     } = props;
 
+    const minimap = layout.minimap || defaultLayout.minimap;
+
     // TODO(nikku): wire element template loading
     const modeler = new CamundaBpmnModeler({
       position: 'absolute',
       minimap: {
-        open: layout.minimap.open
+        open: minimap.open
       }
     });
 

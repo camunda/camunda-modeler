@@ -150,6 +150,55 @@ describe('<BpmnEditor>', function() {
       expect(bpmnEditor.state.layout.propertiesPanel.open).to.be.false;
     });
 
+
+    it('should handle missing layout', function() {
+
+      // when
+      const {
+        bpmnEditor
+      } = renderBpmnEditor(diagramXML, {
+        layout: {}
+      });
+
+      // then
+      expect(bpmnEditor.state.layout).to.eql({
+        minimap: {
+          open: false
+        },
+        propertiesPanel: {
+          open: true
+        }
+      });
+    });
+
+
+    it('it should apply received layout', function() {
+
+      // when
+      const {
+        bpmnEditor
+      } = renderBpmnEditor(diagramXML, {
+        layout: {
+          minimap: {
+            open: true
+          },
+          propertiesPanel: {
+            open: false
+          }
+        }
+      });
+
+      // then
+      expect(bpmnEditor.state.layout).to.eql({
+        minimap: {
+          open: true
+        },
+        propertiesPanel: {
+          open: false
+        }
+      });
+    });
+
   });
 
 
@@ -198,9 +247,6 @@ function renderBpmnEditor(xml, options = {}) {
     onLayoutChanged
   } = options;
 
-  const minimap = layout && layout.minimap,
-        propertiesPanel = layout && layout.propertiesPanel;
-
   const slotFillRoot = mount(
     <SlotFillRoot>
       <BpmnEditorWithCachedState
@@ -208,12 +254,12 @@ function renderBpmnEditor(xml, options = {}) {
         xml={ xml }
         onLayoutChanged={ onLayoutChanged || noop }
         onError={ onError || noop }
-        layout={ {
+        layout={ layout || {
           minimap: {
-            open: minimap ? minimap.open : true
+            open: false
           },
           propertiesPanel: {
-            open: propertiesPanel ? propertiesPanel.open : true
+            open: true
           }
         } } />
     </SlotFillRoot>
