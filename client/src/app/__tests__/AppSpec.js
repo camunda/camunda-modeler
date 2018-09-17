@@ -651,9 +651,7 @@ describe('<App>', function() {
 
         const file1 = createFile('1.bpmn');
 
-        openedTabs = [
-          ...(await app.openFiles([ file1 ])),
-        ];
+        openedTabs = await app.openFiles([ file1 ]);
 
         // assume
         const {
