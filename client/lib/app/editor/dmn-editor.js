@@ -198,7 +198,8 @@ DmnEditor.prototype.updateState = function(options = {}) {
       undo: commandStack.canUndo(),
       redo: commandStack.canRedo(),
       dirty: dirty,
-      editable: true
+      editable: true,
+      copy: true
     });
   }
 
