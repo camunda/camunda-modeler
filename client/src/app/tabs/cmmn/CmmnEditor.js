@@ -125,9 +125,11 @@ export class CmmnEditor extends CachedComponent {
       error
     } = event;
 
-    console.warn('modeling error', error);
+    const {
+      onError
+    } = this.props;
 
-    this.props.onError(error);
+    onError(error);
   }
 
   updateState = (event) => {
@@ -180,15 +182,19 @@ export class CmmnEditor extends CachedComponent {
       modeler
     } = this.getCached();
 
-    const xml = this.props.xml;
+    const {
+      xml
+    } = this.props;
 
     if (xml !== modeler.lastXML) {
 
       modeler.lastXML = xml;
 
-      modeler.importXML(xml, function(err) {
+      modeler.importXML(xml, (err) => {
         if (err) {
-          this.props.onError(err);
+          this.handleError({
+            error: err
+          });
         }
       });
     }
@@ -207,7 +213,9 @@ export class CmmnEditor extends CachedComponent {
         modeler.lastXML = xml;
 
         if (err) {
-          this.props.onError(err);
+          this.handleError({
+            error: err
+          });
 
           return reject(err);
         }
@@ -228,16 +236,20 @@ export class CmmnEditor extends CachedComponent {
         let contents;
 
         if (err) {
-          this.props.onError(err);
+          this.handleError({
+            error: err
+          });
 
-          reject(err);
+          return reject(err);
         }
 
         if (type !== 'svg') {
           try {
             contents = generateImage(type, svg);
           } catch (err) {
-            this.props.onError(err);
+            this.handleError({
+              error: err
+            });
 
             return reject(err);
           }

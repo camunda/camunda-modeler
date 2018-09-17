@@ -18,7 +18,7 @@ import { insertCSS } from 'test/helper';
 insertCSS('test.css', '.test-content-container { position: relative; }');
 
 
-describe.only('<BpmnEditor>', function() {
+describe('<BpmnEditor>', function() {
 
   let createCachedSpy;
 
@@ -116,8 +116,10 @@ describe.only('<BpmnEditor>', function() {
         bpmnEditor,
         wrapper
       } = renderBpmnEditor(diagramXML, {
-        propertiesPanel: {
-          open: false
+        layout: {
+          propertiesPanel: {
+            open: false
+          }
         }
       });
 
@@ -150,22 +152,62 @@ describe.only('<BpmnEditor>', function() {
 
   });
 
+
+  describe('errors', function() {
+
+    // TODO
+    it('should handle template error');
+
+
+    // TODO(philippfromme): why does import not return error?
+    it.skip('should handle import error', function() {
+
+      // given
+      const onErrorSpy = sinon.spy();
+
+      const errorXML = 'foo';
+
+      // when
+      renderBpmnEditor(errorXML, {
+        onError: onErrorSpy
+      });
+
+      // then
+      expect(onErrorSpy).to.have.been.called;
+    });
+
+    it('should handle export error', function() {
+      // TODO(philippfromme): how to make #getXML throw?
+    });
+
+
+    it('should handle export error', function() {
+      // TODO(philippfromme): how to make #exportAs throw?
+    });
+
+  });
+
 });
 
 function noop() {}
 
 function renderBpmnEditor(xml, options = {}) {
   const {
-    minimap,
-    propertiesPanel
+    layout,
+    onError,
+    onLayoutChanged
   } = options;
+
+  const minimap = layout && layout.minimap,
+        propertiesPanel = layout && layout.propertiesPanel;
 
   const slotFillRoot = mount(
     <SlotFillRoot>
       <BpmnEditorWithCachedState
         id="foo"
-        xml={ diagramXML }
-        onLayoutChanged={ options.onLayoutChanged || noop }
+        xml={ xml }
+        onLayoutChanged={ onLayoutChanged || noop }
+        onError={ onError || noop }
         layout={ {
           minimap: {
             open: minimap ? minimap.open : true
