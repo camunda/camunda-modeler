@@ -19,7 +19,7 @@
     "build": "run-s client:build \"distro -- {@}\" \"distro:test-archives -- {@}\" --",
     "lint": "eslint .",
     "postinstall": "lerna bootstrap",
-    "release": "lerna publish",
+    "release": "lerna publish --force-publish",
     "test": "run-s *:test"
   },
   "author": "Camunda <http://camunda.com>",
