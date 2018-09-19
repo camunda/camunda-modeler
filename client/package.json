@@ -11,6 +11,7 @@
     "camunda-bpmn-moddle": "^3.0.0",
     "camunda-cmmn-moddle": "^1.0.0",
     "camunda-dmn-moddle": "^1.0.0",
+    "canvg-browser": "^1.0.0",
     "classnames": "^2.2.6",
     "cmmn-js": "^0.15.1",
     "cmmn-js-properties-panel": "^0.6.0",
