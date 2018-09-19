@@ -177,8 +177,6 @@ export class BpmnEditor extends CachedComponent {
 
   handleError = (event) => {
 
-    debugger
-
     const {
       error
     } = event;
