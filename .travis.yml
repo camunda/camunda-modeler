@@ -16,8 +16,8 @@ jobs:
       language: generic
       script:
       - |
-        docker run --rm \
-          --env-file <(env | grep -E 'DEBUG|NODE_|ELECTRON_|NPM_|CI|TRAVIS|WIN_CSC_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_') \
+        ENVS=`env | grep -iE '^(DEBUG|NODE_|ELECTRON_|NPM_|CI|TRAVIS|WIN_CSC_|CSC_|GH_|AWS_|BUILD_)([A-Z]|_)*=' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
+        docker run $ENVS --rm \
           -v ${PWD}:/project \
           -v ~/.cache/electron:/root/.cache/electron \
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
@@ -38,8 +38,8 @@ jobs:
       language: generic
       script:
       - |
-        docker run --rm \
-          --env-file <(env | grep -E 'DEBUG|NODE_|ELECTRON_|NPM_|CI|TRAVIS|WIN_CSC_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_') \
+        ENVS=`env | grep -iE '^(DEBUG|NODE_|ELECTRON_|NPM_|CI|TRAVIS|WIN_CSC_|CSC_|GH_|AWS_|BUILD_)([A-Z]|_)*=' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
+        docker run $ENVS --rm \
           -v ${PWD}:/project \
           -v ~/.cache/electron:/root/.cache/electron \
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
