@@ -166,7 +166,8 @@ describe('<BpmnEditor>', function() {
           open: false
         },
         propertiesPanel: {
-          open: true
+          open: true,
+          width: 250
         }
       });
     });
@@ -183,7 +184,8 @@ describe('<BpmnEditor>', function() {
             open: true
           },
           propertiesPanel: {
-            open: false
+            open: false,
+            width: 50
           }
         }
       });
@@ -194,7 +196,8 @@ describe('<BpmnEditor>', function() {
           open: true
         },
         propertiesPanel: {
-          open: false
+          open: false,
+          width: 50
         }
       });
     });
