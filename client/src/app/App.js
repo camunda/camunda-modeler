@@ -517,18 +517,23 @@ export class App extends Component {
       onReady();
     }
 
+    const config = await this.restoreWorkspace();
+
     const {
       activeTab,
       files,
       layout
-    } = await this.restoreWorkspace();
+    } = config;
 
     await this.openFiles(files);
 
-    if (activeTab === -1) {
+    // ensure backwards compatibility
+    const activeTabId = config.activeTabId || activeTab;
+
+    if (activeTabId === -1) {
       this.selectTab(this.state.tabs[ this.state.tabs.length - 1 ]);
     } else {
-      this.selectTab(this.state.tabs[ activeTab ]);
+      this.selectTab(this.state.tabs[ activeTabId ]);
     }
 
     this.setState({

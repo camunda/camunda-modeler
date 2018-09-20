@@ -19,7 +19,8 @@ function Workspace(config) {
       return done(null, defaultConfig);
     }
 
-    forEach(workspace.files, function(diagram) {
+    // ensure backwards compatibility
+    forEach((workspace.files || workspace.tabs), function(diagram) {
       try {
         var contents = fs.readFileSync(diagram.path, { encoding: 'utf8' });
 
