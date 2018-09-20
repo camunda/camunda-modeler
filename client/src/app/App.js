@@ -199,8 +199,6 @@ export class App extends Component {
     }
 
     await this._removeTab(tab);
-
-    this.saveWorkspace();
   }
 
   isDirty = (tab) => {
@@ -332,14 +330,12 @@ export class App extends Component {
 
     this.setState({
       layout: merge(layout, newLayout)
-    }, () => {
-
-      // wait for new state
-      this.saveWorkspace();
     });
   }
 
   saveWorkspace = () => {
+    console.log('saveWorkspace');
+
     const {
       workspace
     } = this.props.globals;
@@ -416,8 +412,6 @@ export class App extends Component {
         [activeTab.id]: true
       },
       tabLoadingState: 'shown'
-    }, () => {
-      this.saveWorkspace();
     });
   }
 
@@ -473,8 +467,6 @@ export class App extends Component {
         ...dirtyTabs,
         [tab.id]: false
       }
-    }, () => {
-      this.saveWorkspace();
     });
   }
 
@@ -568,6 +560,8 @@ export class App extends Component {
 
     }
 
+    // TODO(philippfromme): only save workspace if necessary
+    this.saveWorkspace();
   }
 
   async saveTab(tab, options = {}) {
