@@ -340,8 +340,6 @@ export class App extends Component {
   }
 
   saveWorkspace = () => {
-    console.log('App#saveWorkspace');
-
     const {
       workspace
     } = this.props.globals;
@@ -377,8 +375,6 @@ export class App extends Component {
 
     // save layout
     config.layout = layout;
-
-    console.log('saving workspace', config);
 
     workspace.save(config);
   }
