@@ -19,10 +19,6 @@
     border-left: solid 1px #CCC;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 
-    &:not(.open) .properties-container {
-      width: 0px;
-    }
-
     .toggle {
       position: absolute;
       left: -30px;
@@ -54,8 +50,12 @@
     }
 
     .properties-container {
-      overflow: auto;
-      max-height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow-y: auto;
     }
   }
 

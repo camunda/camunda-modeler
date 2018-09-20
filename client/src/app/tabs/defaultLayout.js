@@ -3,6 +3,7 @@ export default {
     open: false
   },
   propertiesPanel: {
-    open: true
+    open: true,
+    width: 250
   }
 };
