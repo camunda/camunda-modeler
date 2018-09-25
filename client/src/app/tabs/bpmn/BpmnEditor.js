@@ -15,6 +15,8 @@ import {
   CachedComponent
 } from '../../cached';
 
+import PropertiesContainer from '../PropertiesContainer';
+
 import CamundaBpmnModeler from './modeler';
 
 import { active as isInputActive } from '../../../util/dom/is-input';
@@ -24,14 +26,6 @@ import { getBpmnEditMenu } from './getBpmnEditMenu';
 import css from './BpmnEditor.less';
 
 import generateImage from '../../util/generateImage';
-
-import dragger from '../../../util/dom/dragger';
-
-import classNames from 'classnames';
-
-import { merge } from 'min-dash';
-
-import defaultLayout from '../defaultLayout';
 
 
 const COLORS = [{
@@ -66,13 +60,7 @@ export class BpmnEditor extends CachedComponent {
   constructor(props) {
     super(props);
 
-    const {
-      layout
-    } = this.props;
-
-    this.state = {
-      layout: merge({}, defaultLayout, layout)
-    };
+    this.state = {};
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
@@ -379,65 +367,14 @@ export class BpmnEditor extends CachedComponent {
     }
   }
 
-  handlePropertiesPanelToggle = () => {
-    const {
-      layout
-    } = this.state;
-
-    this.handleLayoutChange({
-      propertiesPanel: {
-        open: !layout.propertiesPanel.open
-      }
-    });
-  }
-
   handleLayoutChange(newLayout) {
     const {
       onLayoutChanged
     } = this.props;
 
-    const {
-      layout
-    } = this.state;
-
-    newLayout = merge(layout, newLayout);
-
-    this.setState({
-      layout: newLayout
-    });
-
-    onLayoutChanged(newLayout);
-  }
-
-  /**
-   * Returns dragger with cached properties panel width.
-   */
-  handlePropertiesPanelResize = (width) => {
-
-    return dragger((event, delta) => {
-      const {
-        x
-      } = delta;
-
-      const {
-        onLayoutChanged
-      } = this.props;
-
-      const newWidth = width - x;
-
-      const open = newWidth > 25;
-
-      this.setState({
-        layout: merge(this.state.layout, {
-          propertiesPanel: {
-            open,
-            width: (open ? newWidth : 0)
-          }
-        })
-      }, () => {
-        onLayoutChanged(this.state.layout);
-      });
-    });
+    if (typeof onLayoutChanged === 'function') {
+      onLayoutChanged(newLayout);
+    }
   }
 
   resize = () => {
@@ -451,16 +388,15 @@ export class BpmnEditor extends CachedComponent {
   }
 
   render() {
+
     const {
       layout,
-      loading
+      onLayoutChanged
+    } = this.props;
+
+    const {
+      loading,
     } = this.state;
-
-    const propertiesPanel = layout.propertiesPanel || defaultLayout.propertiesPanel;
-
-    const propertiesPanelStyle = {
-      width: propertiesPanel.open ? propertiesPanel.width : 0
-    };
 
     return (
       <div className={ css.BpmnEditor }>
@@ -570,20 +506,11 @@ export class BpmnEditor extends CachedComponent {
           onContextMenu={ this.handleContextMenu }
         ></div>
 
-        <div
-          className={ classNames('properties', { 'open': propertiesPanel.open }) }
-          style={ propertiesPanelStyle }>
-          <div
-            className="toggle"
-            onClick={ this.handlePropertiesPanelToggle }
-            draggable="true"
-            onDragStart={ this.handlePropertiesPanelResize(propertiesPanel.width) }>Properties Panel</div>
-          <div
-            className="resize-handle"
-            draggable="true"
-            onDragStart={ this.handlePropertiesPanelResize(propertiesPanel.width) }></div>
-          <div className="properties-container" ref={ this.propertiesPanelRef }></div>
-        </div>
+        <PropertiesContainer
+          className="properties"
+          layout={ layout }
+          ref={ this.propertiesPanelRef }
+          onLayoutChanged={ onLayoutChanged } />
       </div>
     );
   }
@@ -594,7 +521,7 @@ export class BpmnEditor extends CachedComponent {
       layout
     } = props;
 
-    const minimap = layout.minimap || defaultLayout.minimap;
+    const minimap = layout.minimap;
 
     // TODO(nikku): wire element template loading
     const modeler = new CamundaBpmnModeler({

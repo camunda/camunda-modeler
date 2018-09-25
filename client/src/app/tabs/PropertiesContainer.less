@@ -1,0 +1,52 @@
+:local(.PropertiesContainer) {
+
+  position: relative;
+  outline: none;
+
+  background: #f8f8f8;
+
+  &.open {
+    border-left: solid 1px #CCC;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .toggle {
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    background: #f8f8f8;
+    padding: 7px 10px;
+    transform: rotate(-90deg);
+    white-space: nowrap;
+    font-size: 13px;
+    border: solid 1px #CCC;
+    border-bottom: none;
+    border-radius: 2px 2px 0 0;
+    transform-origin: top left;
+    z-index: 10;
+    cursor: default;
+    user-select: none;
+  }
+
+  .resize-handle {
+    margin-left: -5px;
+    cursor: ew-resize;
+    z-index: 11;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5px;
+    user-select: none;
+  }
+
+  .properties-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+  }
+
+}
