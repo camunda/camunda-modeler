@@ -75,50 +75,58 @@ describe('<App>', function() {
   });
 
 
-  it('should render empty tab', function() {
+  describe('no tabs', function() {
 
-    // when
-    const {
-      app
-    } = createApp();
+    it('should render empty tab', function() {
 
-    // then
-    const {
-      tabs,
-      activeTab
-    } = app.state;
+      // when
+      const {
+        app
+      } = createApp();
 
-    expect(tabs).to.be.empty;
-    expect(activeTab).to.equal(-1);
+      // then
+      const {
+        tabs,
+        activeTab
+      } = app.state;
+
+      expect(tabs).to.be.empty;
+      expect(activeTab).to.equal(-1);
+    });
+
   });
 
 
-  it('should create diagrams', async function() {
-    // given
-    const {
-      app
-    } = createApp();
+  describe('diagram creation', function() {
 
-    // when
-    await app.createDiagram('bpmn');
-    await app.createDiagram('dmn');
-    await app.createDiagram('cmmn');
-    await app.createDiagram();
+    it('should create + open as tabs', async function() {
+      // given
+      const {
+        app
+      } = createApp();
 
-    // then
-    const {
-      tabs,
-      activeTab
-    } = app.state;
+      // when
+      await app.createDiagram('bpmn');
+      await app.createDiagram('dmn');
+      await app.createDiagram('cmmn');
+      await app.createDiagram();
 
-    expect(tabs.map(tab => tab.type)).to.eql([
-      'bpmn',
-      'dmn',
-      'cmmn',
-      'bpmn'
-    ]);
+      // then
+      const {
+        tabs,
+        activeTab
+      } = app.state;
 
-    expect(activeTab).to.eql(tabs[3]);
+      expect(tabs.map(tab => tab.type)).to.eql([
+        'bpmn',
+        'dmn',
+        'cmmn',
+        'bpmn'
+      ]);
+
+      expect(activeTab).to.eql(tabs[3]);
+    });
+
   });
 
 
@@ -181,668 +189,504 @@ describe('<App>', function() {
   });
 
 
-  describe('tabs', function() {
+  describe('tab closing', function() {
 
-    describe('closing', function() {
+    it('should close active', async function() {
 
-      it('should close active', async function() {
+      // given
+      const {
+        app
+      } = createApp();
 
-        // given
-        const {
-          app
-        } = createApp();
+      const file1 = createFile('1.bpmn');
+      const file2 = createFile('2.bpmn');
 
-        const file1 = createFile('1.bpmn');
-        const file2 = createFile('2.bpmn');
+      await app.openFiles([ file1, file2 ]);
 
-        await app.openFiles([ file1, file2 ]);
+      const tab = app.state.activeTab;
 
-        const tab = app.state.activeTab;
+      // when
+      await app.closeTab(tab);
+
+      // then
+      const {
+        tabs,
+        activeTab
+      } = app.state;
+
+      expect(tabs).not.to.contain(tab);
+
+      // existing tab is focussed
+      expect(activeTab).to.eql(app.findOpenTab(file1));
+    });
+
+
+    it('should close all', async function() {
+
+      // given
+      const {
+        app
+      } = createApp();
+
+      const file1 = createFile('1.bpmn');
+      const file2 = createFile('2.bpmn');
+
+      await app.openFiles([ file1, file2 ]);
+
+      // when
+      await app.closeTabs(t => true);
+
+      // then
+      const {
+        tabs,
+        activeTab
+      } = app.state;
+
+      expect(tabs).to.be.empty;
+
+      // existing tab is focussed
+      expect(activeTab).to.equal(EMPTY_TAB);
+    });
+
+  });
+
+
+  describe('tab saving', function() {
+
+    let askSaveSpy;
+    let writeFileSpy;
+
+    let app;
+
+    beforeEach(function() {
+
+      // given
+      const dialog = new Dialog();
+      const fileSystem = new FileSystem();
+
+      dialog.setAskSaveResponse(Promise.resolve('save'));
+
+      askSaveSpy = spy(dialog, 'askSave');
+      writeFileSpy = spy(fileSystem, 'writeFile');
+
+      const rendered = createApp({
+        globals: {
+          dialog,
+          fileSystem
+        }
+      }, mount);
+
+      app = rendered.app;
+    });
+
+
+    it('should save new file', async function() {
+
+      // given
+      const tab = await app.createDiagram();
+
+      const fileName = tab.file.name;
+
+      // when
+      await app.triggerAction('save');
+
+      // then
+      expect(askSaveSpy).not.to.have.been.called;
+
+      expect(writeFileSpy).to.have.been.calledWith(
+        { name: fileName, contents: 'CONTENTS', path: null },
+        { saveAs: true }
+      );
+    });
+
+
+    it('should save existing tab', async function() {
+
+      // given
+      const file = createFile('1.bpmn');
+
+      await app.openFiles([ file ]);
+
+      // when
+      await app.triggerAction('save');
+
+      // then
+      expect(askSaveSpy).not.to.have.been.called;
+
+      expect(writeFileSpy).to.have.been.calledWith(
+        { ...file, contents: 'CONTENTS' },
+        { saveAs: false }
+      );
+    });
+
+
+    it('should save as existing tab', async function() {
+
+      // given
+      const file = createFile('1.bpmn');
+
+      await app.openFiles([ file ]);
+
+      // when
+      await app.triggerAction('save-as');
+
+      // then
+      expect(askSaveSpy).not.to.have.been.called;
+
+      expect(writeFileSpy).to.have.been.calledWith(
+        { ...file, contents: 'CONTENTS' },
+        { saveAs: true }
+      );
+    });
+
+
+    it('should ask to save on close', async function() {
+
+      // given
+      const tab = await app.createDiagram();
+
+      // when
+      await app.triggerAction('close-tab', { tabId: tab.id });
+
+      // then
+      expect(askSaveSpy).to.have.been.calledOnce;
+
+      expect(writeFileSpy).to.have.been.calledWith(
+        { name: 'diagram_1.bpmn', path: null, contents: 'CONTENTS' },
+        { saveAs: true }
+      );
+    });
+
+
+    it('should save all tabs');
+
+  });
+
+
+  describe('tab exporting', function() {
+
+    let askExportAsSpy;
+    let writeFileSpy;
+
+    let app;
+
+    beforeEach(function() {
+
+      // given
+      const dialog = new Dialog();
+      const fileSystem = new FileSystem();
+
+      dialog.setAskExportAsResponse(Promise.resolve({
+        fileType: 'svg',
+        name: 'foo.svg',
+        path: 'foo'
+      }));
+
+      askExportAsSpy = spy(dialog, 'askExportAs');
+      writeFileSpy = spy(fileSystem, 'writeFile');
+
+      const rendered = createApp({
+        globals: {
+          dialog,
+          fileSystem
+        }
+      }, mount);
+
+      app = rendered.app;
+    });
+
+
+    it('should export SVG', async function() {
+
+      // given
+      await app.createDiagram();
+
+      // when
+      await app.triggerAction('export-as');
+
+      // then
+      expect(askExportAsSpy).to.have.been.called;
+
+      expect(writeFileSpy).to.have.been.calledWith({
+        contents: 'CONTENTS',
+        fileType: 'svg',
+        name: 'foo.svg',
+        path: 'foo'
+      });
+    });
+
+  });
+
+
+  describe('tab loading', function() {
+
+    it('should support life-cycle', async function() {
+
+      // given
+      const events = [];
+
+      const onTabChanged = spy(function(tab, oldTab) {
+        events.push([ 'tab-changed', tab ]);
+
+        app.handleTabShown(tab);
+      });
+
+      const onTabShown = spy(function(tab) {
+        events.push([ 'tab-shown', tab ]);
+      });
+
+      const {
+        app
+      } = createApp({
+        onTabChanged,
+        onTabShown
+      });
+
+      // when
+      const tab = await app.createDiagram('bpmn');
+
+      // then
+      expect(events).to.eql([
+        [ 'tab-changed', tab ],
+        [ 'tab-shown', tab ]
+      ]);
+    });
+
+
+    it('should lazy load via tabsProvider', async function() {
+
+      // given
+      const events = [];
+
+      const onTabChanged = spy(function(tab, oldTab) {
+        events.push([ 'tab-changed', tab ]);
+      });
+
+      const onTabShown = spy(function(tab) {
+        events.push([ 'tab-shown', tab ]);
+      });
+
+      const {
+        app
+      } = createApp({
+        onTabChanged,
+        onTabShown
+      }, mount);
+
+      // when
+      const tab = await app.createDiagram('bpmn');
+
+
+      // then
+      expect(events).to.eql([
+        [ 'tab-changed', tab ],
+        [ 'tab-shown', tab ]
+      ]);
+    });
+
+  });
+
+
+  describe('tab navigation', function() {
+
+    let app, openedTabs;
+
+    beforeEach(async function() {
+      const rendered = createApp();
+
+      app = rendered.app;
+
+      const file1 = createFile('1.bpmn');
+      const file2 = createFile('2.bpmn');
+
+      openedTabs = [
+        await app.createDiagram(),
+        ...(await app.openFiles([ file1, file2 ])),
+        await app.createDiagram(),
+      ];
+
+      // assume
+      const {
+        tabs,
+        activeTab
+      } = app.state;
+
+      expect(tabs).to.eql(openedTabs);
+      expect(activeTab).to.eql(openedTabs[3]);
+    });
+
+
+    it('should select tab', async function() {
+
+      // when
+      await app.selectTab(openedTabs[0]);
+
+      // then
+      const {
+        activeTab
+      } = app.state;
+
+      expect(activeTab).to.eql(openedTabs[0]);
+    });
+
+
+    describe('should navigate', function() {
+
+      it('back', async function() {
 
         // when
-        await app.closeTab(tab);
+        await app.navigate(-1);
 
         // then
         const {
-          tabs,
           activeTab
         } = app.state;
 
-        expect(tabs).not.to.contain(tab);
-
-        // existing tab is focussed
-        expect(activeTab).to.eql(app.findOpenTab(file1));
+        expect(activeTab).to.eql(openedTabs[2]);
       });
 
 
-      it('should close all', async function() {
-
-        // given
-        const {
-          app
-        } = createApp();
-
-        const file1 = createFile('1.bpmn');
-        const file2 = createFile('2.bpmn');
-
-        await app.openFiles([ file1, file2 ]);
+      it('forward', async function() {
 
         // when
-        await app.closeTabs(t => true);
+        await app.navigate(1);
 
         // then
         const {
-          tabs,
           activeTab
         } = app.state;
 
-        expect(tabs).to.be.empty;
-
-        // existing tab is focussed
-        expect(activeTab).to.equal(EMPTY_TAB);
+        expect(activeTab).to.eql(openedTabs[0]);
       });
 
     });
 
 
-    describe('saving', function() {
+    describe('should reopen last', function() {
 
-      let askSaveSpy;
-      let writeFileSpy;
-
-      let app;
-
-      beforeEach(function() {
+      it('saved', async function() {
 
         // given
-        const dialog = new Dialog();
-        const fileSystem = new FileSystem();
+        const savedTab = openedTabs[2];
+        const file = savedTab.file;
 
-        dialog.setAskSaveResponse(Promise.resolve('save'));
-
-        askSaveSpy = spy(dialog, 'askSave');
-        writeFileSpy = spy(fileSystem, 'writeFile');
-
-        const rendered = createApp({
-          globals: {
-            dialog,
-            fileSystem
-          }
-        }, mount);
-
-        app = rendered.app;
-      });
-
-
-      it('should save new file', async function() {
-
-        // given
-        const tab = await app.createDiagram();
-
-        const fileName = tab.file.name;
+        await app.closeTab(savedTab);
 
         // when
-        await app.triggerAction('save');
+        await app.triggerAction('reopen-last-tab');
 
         // then
-        expect(askSaveSpy).not.to.have.been.called;
-
-        expect(writeFileSpy).to.have.been.calledWith(
-          { name: fileName, contents: 'CONTENTS', path: null },
-          { saveAs: true }
-        );
-      });
-
-
-      it('should save existing tab', async function() {
-
-        // given
-        const file = createFile('1.bpmn');
-
-        await app.openFiles([ file ]);
-
-        // when
-        await app.triggerAction('save');
-
-        // then
-        expect(askSaveSpy).not.to.have.been.called;
-
-        expect(writeFileSpy).to.have.been.calledWith(
-          { ...file, contents: 'CONTENTS' },
-          { saveAs: false }
-        );
-      });
-
-
-      it('should save as existing tab', async function() {
-
-        // given
-        const file = createFile('1.bpmn');
-
-        await app.openFiles([ file ]);
-
-        // when
-        await app.triggerAction('save-as');
-
-        // then
-        expect(askSaveSpy).not.to.have.been.called;
-
-        expect(writeFileSpy).to.have.been.calledWith(
-          { ...file, contents: 'CONTENTS' },
-          { saveAs: true }
-        );
-      });
-
-
-      it('should ask to save on close', async function() {
-
-        // given
-        const tab = await app.createDiagram();
-
-        // when
-        await app.triggerAction('close-tab', { tabId: tab.id });
-
-        // then
-        expect(askSaveSpy).to.have.been.calledOnce;
-
-        expect(writeFileSpy).to.have.been.calledWith(
-          { name: 'diagram_1.bpmn', path: null, contents: 'CONTENTS' },
-          { saveAs: true }
-        );
-      });
-
-
-      it('should save all tabs');
-
-    });
-
-
-    describe('exporting', function() {
-
-      let askExportAsSpy;
-      let writeFileSpy;
-
-      let app;
-
-      beforeEach(function() {
-
-        // given
-        const dialog = new Dialog();
-        const fileSystem = new FileSystem();
-
-        dialog.setAskExportAsResponse(Promise.resolve({
-          fileType: 'svg',
-          name: 'foo.svg',
-          path: 'foo'
-        }));
-
-        askExportAsSpy = spy(dialog, 'askExportAs');
-        writeFileSpy = spy(fileSystem, 'writeFile');
-
-        const rendered = createApp({
-          globals: {
-            dialog,
-            fileSystem
-          }
-        }, mount);
-
-        app = rendered.app;
-      });
-
-
-      it('should export SVG', async function() {
-
-        // given
-        await app.createDiagram();
-
-        // when
-        await app.triggerAction('export-as');
-
-        // then
-        expect(askExportAsSpy).to.have.been.called;
-
-        expect(writeFileSpy).to.have.been.calledWith({
-          contents: 'CONTENTS',
-          fileType: 'svg',
-          name: 'foo.svg',
-          path: 'foo'
-        });
-      });
-
-    });
-
-
-    describe('loading', function() {
-
-      it('should support life-cycle', async function() {
-
-        // given
-        const events = [];
-
-        const onTabChanged = spy(function(tab, oldTab) {
-          events.push([ 'tab-changed', tab ]);
-
-          app.handleTabShown(tab);
-        });
-
-        const onTabShown = spy(function(tab) {
-          events.push([ 'tab-shown', tab ]);
-        });
-
         const {
-          app
-        } = createApp({
-          onTabChanged,
-          onTabShown
-        });
+          activeTab
+        } = app.state;
 
-        // when
-        const tab = await app.createDiagram('bpmn');
-
-        // then
-        expect(events).to.eql([
-          [ 'tab-changed', tab ],
-          [ 'tab-shown', tab ]
-        ]);
+        expect(activeTab.file).to.eql(file);
       });
 
 
-      it('should lazy load via tabsProvider', async function() {
+      it('reject unsaved', async function() {
 
         // given
-        const events = [];
+        const newTab = openedTabs[3];
 
-        const onTabChanged = spy(function(tab, oldTab) {
-          events.push([ 'tab-changed', tab ]);
-        });
-
-        const onTabShown = spy(function(tab) {
-          events.push([ 'tab-shown', tab ]);
-        });
-
-        const {
-          app
-        } = createApp({
-          onTabChanged,
-          onTabShown
-        }, mount);
+        await app.closeTab(newTab);
 
         // when
-        const tab = await app.createDiagram('bpmn');
+        try {
+          await app.triggerAction('reopen-last-tab');
 
-
-        // then
-        expect(events).to.eql([
-          [ 'tab-changed', tab ],
-          [ 'tab-shown', tab ]
-        ]);
+          expect.fail('expected exception');
+        } catch (e) {
+          expect(e.message).to.eql('no last tab');
+        }
       });
 
-    });
 
+      it('after all closed', async function() {
 
-    describe('navigation', function() {
+        // given
+        await app.closeTabs((t) => true);
 
-      let app, openedTabs;
+        // when
+        await app.triggerAction('reopen-last-tab');
+        await app.triggerAction('reopen-last-tab');
 
-      beforeEach(async function() {
-        const rendered = createApp();
+        // then
+        const {
+          activeTab,
+          tabs
+        } = app.state;
 
-        app = rendered.app;
-
-        const file1 = createFile('1.bpmn');
-        const file2 = createFile('2.bpmn');
-
-        openedTabs = [
-          await app.createDiagram(),
-          ...(await app.openFiles([ file1, file2 ])),
-          await app.createDiagram(),
+        const expectedOpen = [
+          app.findOpenTab(openedTabs[2].file),
+          app.findOpenTab(openedTabs[1].file)
         ];
 
-        // assume
-        const {
-          tabs,
-          activeTab
-        } = app.state;
-
-        expect(tabs).to.eql(openedTabs);
-        expect(activeTab).to.eql(openedTabs[3]);
-      });
-
-
-      it('should select tab', async function() {
-
-        // when
-        await app.selectTab(openedTabs[0]);
-
-        // then
-        const {
-          activeTab
-        } = app.state;
-
-        expect(activeTab).to.eql(openedTabs[0]);
-      });
-
-
-      describe('should navigate', function() {
-
-        it('back', async function() {
-
-          // when
-          await app.navigate(-1);
-
-          // then
-          const {
-            activeTab
-          } = app.state;
-
-          expect(activeTab).to.eql(openedTabs[2]);
-        });
-
-
-        it('forward', async function() {
-
-          // when
-          await app.navigate(1);
-
-          // then
-          const {
-            activeTab
-          } = app.state;
-
-          expect(activeTab).to.eql(openedTabs[0]);
-        });
-
-      });
-
-
-      describe('should reopen last', function() {
-
-        it('saved', async function() {
-
-          // given
-          const savedTab = openedTabs[2];
-          const file = savedTab.file;
-
-          await app.closeTab(savedTab);
-
-          // when
-          await app.triggerAction('reopen-last-tab');
-
-          // then
-          const {
-            activeTab
-          } = app.state;
-
-          expect(activeTab.file).to.eql(file);
-        });
-
-
-        it('reject unsaved', async function() {
-
-          // given
-          const newTab = openedTabs[3];
-
-          await app.closeTab(newTab);
-
-          // when
-          try {
-            await app.triggerAction('reopen-last-tab');
-
-            expect.fail('expected exception');
-          } catch (e) {
-            expect(e.message).to.eql('no last tab');
-          }
-        });
-
-
-        it('after all closed', async function() {
-
-          // given
-          await app.closeTabs((t) => true);
-
-          // when
-          await app.triggerAction('reopen-last-tab');
-          await app.triggerAction('reopen-last-tab');
-
-          // then
-          const {
-            activeTab,
-            tabs
-          } = app.state;
-
-          const expectedOpen = [
-            app.findOpenTab(openedTabs[2].file),
-            app.findOpenTab(openedTabs[1].file)
-          ];
-
-          expect(tabs).to.eql(expectedOpen);
-          expect(activeTab).to.eql(expectedOpen[1]);
-        });
-
-      });
-
-
-      describe('__internal__', function() {
-
-        it('should reset state on all closed', async function() {
-
-          // when
-          await app.triggerAction('close-all-tabs');
-
-          // then
-          const tabHistory = app.tabHistory;
-
-          expect(tabHistory.elements).to.be.empty;
-          expect(tabHistory.idx).to.eql(-1);
-          expect(tabHistory.get()).not.to.exist;
-        });
-
+        expect(tabs).to.eql(expectedOpen);
+        expect(activeTab).to.eql(expectedOpen[1]);
       });
 
     });
 
 
-    describe('errors', function() {
+    describe('__internal__', function() {
 
-      let app, openedTabs;
-
-      beforeEach(async function() {
-        const rendered = createApp(mount);
-
-        app = rendered.app;
-
-        const file1 = createFile('1.bpmn');
-
-        openedTabs = await app.openFiles([ file1 ]);
-
-        // assume
-        const {
-          tabs,
-          activeTab
-        } = app.state;
-
-        expect(tabs).to.eql(openedTabs);
-        expect(activeTab).to.eql(openedTabs[0]);
-      });
-
-
-      // TODO(philippfromme): spy is not called, why?
-      it.skip('should error', function() {
-
-        // given
-        const handleTabErrorSpy = sinon.spy(app, 'handleTabError');
-
-        const tab = app.tabRef.current;
+      it('should reset state on all closed', async function() {
 
         // when
-        tab.triggerAction('error', 'foo');
+        await app.triggerAction('close-all-tabs');
 
         // then
-        expect(handleTabErrorSpy).to.have.been.called;
-        // expect(handleTabErrorSpy).to.have.been.calledWith(openedTabs[0], 'foo');
+        const tabHistory = app.tabHistory;
+
+        expect(tabHistory.elements).to.be.empty;
+        expect(tabHistory.idx).to.eql(-1);
+        expect(tabHistory.get()).not.to.exist;
       });
 
     });
 
-
-    describe('workspace', function() {
-
-      describe('restore workspace', function() {
-
-        let app,
-            eventBus,
-            restoreSpy,
-            tab,
-            workspace;
-
-        beforeEach(async function() {
-          tab = new TabsProvider().createTabForFile(createFile('1.bpmn'));
-
-          workspace = new Workspace({
-            activeTab: 0,
-            files: [ tab.file ],
-            layout: {
-              minimap: {
-                open: true
-              },
-              propertiesPanel: {
-                open: false
-              }
-            }
-          });
-
-          restoreSpy = spy(workspace, 'restore');
-
-          const rendered = createApp({
-            globals: {
-              workspace
-            }
-          }, mount);
-
-          app = rendered.app;
-        });
+  });
 
 
-        it.skip('should retrieve workspace on mount', function() {
+  describe('tab errors', function() {
 
-          // then
-          expect(restoreSpy).to.have.been.called;
+    let app, openedTabs;
 
-          expect(app.state.tabs).to.eql([ tab ]);
+    beforeEach(async function() {
+      const rendered = createApp(mount);
 
-          // TODO(fix): layout will be requested in componentDidMount
-          expect(app.state.layout).to.eql({
-            minimap: {
-              open: true
-            },
-            propertiesPanel: {
-              open: false
-            }
-          });
-        });
+      app = rendered.app;
 
-      });
+      const file1 = createFile('1.bpmn');
 
+      openedTabs = await app.openFiles([ file1 ]);
 
-      describe('save workspace', function() {
+      // assume
+      const {
+        tabs,
+        activeTab
+      } = app.state;
 
-        let app, openedTabs, workspace;
-
-        beforeEach(async function() {
-          workspace = new Workspace();
-
-          const rendered = createApp({
-            globals: {
-              workspace
-            }
-          }, mount);
-
-          app = rendered.app;
-
-          const file1 = createFile('1.bpmn');
-          const file2 = createFile('2.bpmn');
-
-          openedTabs = await app.openFiles([ file1, file2 ]);
-
-          // assume
-          const {
-            tabs,
-            activeTab
-          } = app.state;
-
-          expect(tabs).to.eql(openedTabs);
-          expect(activeTab).to.eql(openedTabs[1]);
-        });
+      expect(tabs).to.eql(openedTabs);
+      expect(activeTab).to.eql(openedTabs[0]);
+    });
 
 
-        it('should save workspace on tab save', async function() {
+    // TODO(philippfromme): spy is not called, why?
+    it.skip('should error', function() {
 
-          // given
-          const saveSpy = spy(workspace, 'save');
+      // given
+      const handleTabErrorSpy = sinon.spy(app, 'handleTabError');
 
-          // when
-          await app.saveTab(openedTabs[0]);
+      const tab = app.tabRef.current;
 
-          // then
-          expect(saveSpy).to.have.been.calledWith({
-            activeTab: 0,
-            layout: {},
-            files: [{
-              name: '1.bpmn',
-              path: '1.bpmn'
-            }, {
-              name: '2.bpmn',
-              path: '2.bpmn'
-            }]
-          });
-        });
+      // when
+      tab.triggerAction('error', 'foo');
 
-
-        it('should save workspace on tab select', async function() {
-
-          // given
-          const saveSpy = spy(workspace, 'save');
-
-          // when
-          await app.selectTab(openedTabs[0]);
-
-          // then
-          expect(saveSpy).to.have.been.calledWith({
-            activeTab: 0,
-            layout: {},
-            files: [{
-              name: '1.bpmn',
-              path: '1.bpmn'
-            }, {
-              name: '2.bpmn',
-              path: '2.bpmn'
-            }]
-          });
-        });
-
-
-        it('should save workspace on tab close', async function() {
-
-          // given
-          const saveSpy = spy(workspace, 'save');
-
-          // when
-          await app.closeTab(openedTabs[1]);
-
-          // then
-          expect(saveSpy).to.have.been.calledWith({
-            activeTab: 0,
-            layout: {},
-            files: [{
-              name: '1.bpmn',
-              path: '1.bpmn'
-            }]
-          });
-        });
-
-      });
-
+      // then
+      expect(handleTabErrorSpy).to.have.been.called;
+      // expect(handleTabErrorSpy).to.have.been.calledWith(openedTabs[0], 'foo');
     });
 
   });
