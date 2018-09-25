@@ -1,5 +1,7 @@
 var path = require('path');
 
+var { DefinePlugin } = require('webpack');
+
 var absoluteBasePath = path.resolve(__dirname);
 
 /* global process */
@@ -76,6 +78,13 @@ module.exports = function(karma) {
           }
         ]
       },
+      plugins: [
+        new DefinePlugin({
+          'process.env': {
+            NODE_ENV: JSON.stringify('test')
+          }
+        })
+      ],
       resolve: {
         modules: [
           'node_modules',
