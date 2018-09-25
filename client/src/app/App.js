@@ -7,6 +7,8 @@ import {
   SlotFillRoot
 } from './slot-fill';
 
+import { debounce } from 'min-dash';
+
 import Toolbar from './Toolbar';
 import EmptyTab from './EmptyTab';
 
@@ -33,6 +35,7 @@ import {
   merge
 } from 'min-dash';
 
+
 const log = debug('App');
 
 const tabLoaded = {
@@ -52,6 +55,7 @@ const INITIAL_STATE = {
   tabState: {}
 };
 
+
 export class App extends Component {
 
   constructor(props, context) {
@@ -66,6 +70,10 @@ export class App extends Component {
     this.closedTabs = new History();
 
     this.tabRef = React.createRef();
+
+    if (process.env.NODE_ENV !== 'test') {
+      this.workspaceChanged = debounce(this.workspaceChanged, 300);
+    }
   }
 
   createDiagram = async (type = 'bpmn', options) => {
@@ -452,7 +460,6 @@ export class App extends Component {
     if (typeof onReady === 'function') {
       onReady();
     }
-
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -466,40 +473,51 @@ export class App extends Component {
 
     const {
       onTabChanged,
-      onWorkspaceChanged,
       onTabShown
     } = this.props;
 
     if (prevState.activeTab !== activeTab) {
-
       if (typeof onTabChanged === 'function') {
         onTabChanged(activeTab, prevState.activeTab);
       }
     }
 
     if (tabLoadingState === 'shown' && prevState.tabLoadingState !== 'shown') {
-
       if (typeof onTabShown === 'function') {
         onTabShown(activeTab);
       }
-
     }
-
 
     if (
       activeTab !== prevState.activeTab ||
       tabs !== prevState.tabs ||
       layout !== prevState.layout
     ) {
-      if (typeof onWorkspaceChanged === 'function') {
-        onWorkspaceChanged({
-          tabs,
-          activeTab,
-          layout
-        });
-      }
+      this.workspaceChanged();
+    }
+  }
+
+  workspaceChanged = () => {
+
+    const {
+      onWorkspaceChanged
+    } = this.props;
+
+    if (typeof onWorkspaceChanged !== 'function') {
+      return;
     }
 
+    const {
+      layout,
+      tabs,
+      activeTab
+    } = this.state;
+
+    onWorkspaceChanged({
+      tabs,
+      activeTab,
+      layout
+    });
   }
 
   setLayout(layout) {
