@@ -31,10 +31,6 @@ import History from './History';
 
 import css from './App.less';
 
-import {
-  merge
-} from 'min-dash';
-
 
 const log = debug('App');
 
@@ -335,8 +331,9 @@ export class App extends Component {
       layout
     } = this.state;
 
-    this.setState({
-      layout: merge(layout, newLayout)
+    this.setLayout({
+      ...layout,
+      ...newLayout
     });
   }
 
