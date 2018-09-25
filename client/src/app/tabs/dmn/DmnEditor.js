@@ -112,8 +112,6 @@ class DmnEditor extends CachedComponent {
     modeler[fn]('view.contentChanged', this.viewContentChanged);
 
     modeler[fn]('error', this.handleError);
-
-    modeler[fn]('minimap.toggle', this.handleMinimapToggle);
   }
 
   checkDirty = () => {
@@ -298,24 +296,6 @@ class DmnEditor extends CachedComponent {
     onError(error);
   }
 
-  handleMinimapToggle = (event) => {
-    this.handleLayoutChange({
-      minimap: {
-        open: event.open
-      }
-    });
-  }
-
-  handleLayoutChange(newLayout) {
-    const {
-      onLayoutChanged
-    } = this.props;
-
-    if (typeof onLayoutChanged === 'function') {
-      onLayoutChanged(newLayout);
-    }
-  }
-
   checkImport = () => {
     const {
       modeler
@@ -475,18 +455,8 @@ class DmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState(props) {
-    const {
-      layout
-    } = props;
-
-    const minimap = layout.minimap;
-
-    const modeler = new CamundaDmnModeler({
-      minimap: {
-        open: minimap.open
-      }
-    });
+  static createCachedState() {
+    const modeler = new CamundaDmnModeler();
 
     return {
       modeler,
