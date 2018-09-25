@@ -13,6 +13,8 @@ import {
   CachedComponent
 } from '../../cached';
 
+import PropertiesContainer from '../PropertiesContainer';
+
 import CamundaDmnModeler from './DmnModeler';
 
 import { active as isInputActive } from '../../../util/dom/is-input';
@@ -27,27 +29,13 @@ import css from './DmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 
-import dragger from '../../../util/dom/dragger';
-
-import { merge } from 'min-dash';
-
-import classNames from 'classnames';
-
-import defaultLayout from '../defaultLayout';
-
 
 class DmnEditor extends CachedComponent {
 
   constructor(props) {
     super(props);
 
-    const {
-      layout
-    } = this.props;
-
-    this.state = {
-      layout: merge({}, defaultLayout, layout)
-    };
+    this.state = { };
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
@@ -324,34 +312,14 @@ class DmnEditor extends CachedComponent {
     });
   }
 
-  handlePropertiesPanelToggle = () => {
-    const {
-      layout
-    } = this.state;
-
-    this.handleLayoutChange({
-      propertiesPanel: {
-        open: !layout.propertiesPanel.open
-      }
-    });
-  }
-
   handleLayoutChange(newLayout) {
     const {
       onLayoutChanged
     } = this.props;
 
-    const {
-      layout
-    } = this.state;
-
-    newLayout = merge(layout, newLayout);
-
-    this.setState({
-      layout: newLayout
-    });
-
-    onLayoutChanged(newLayout);
+    if (typeof onLayoutChanged === 'function') {
+      onLayoutChanged(newLayout);
+    }
   }
 
   checkImport = () => {
@@ -471,47 +439,19 @@ class DmnEditor extends CachedComponent {
     });
   }
 
-  /**
-   * Returns dragger with cached properties panel width.
-   */
-  handlePropertiesPanelResize = (width) => {
-
-    return dragger((event, delta) => {
-      const {
-        x
-      } = delta;
-
-      const {
-        onLayoutChanged
-      } = this.props;
-
-      const newWidth = width - x;
-
-      const open = newWidth > 25;
-
-      this.setState({
-        layout: merge(this.state.layout, {
-          propertiesPanel: {
-            open,
-            width: (open ? newWidth : 0)
-          }
-        })
-      }, () => {
-        onLayoutChanged(this.state.layout);
-      });
-    });
-  }
-
   render() {
     const {
-      layout
-    } = this.state;
+      layout,
+      onLayoutChanged
+    } = this.props;
 
-    const propertiesPanel = layout.propertiesPanel || defaultLayout.propertiesPanel;
+    const {
+      modeler
+    } = this.getCached();
 
-    const propertiesPanelStyle = {
-      width: propertiesPanel.open ? propertiesPanel.width : 0
-    };
+    const activeView = modeler.getActiveView();
+
+    const hideIfCollapsed = activeView && activeView.type !== 'drd';
 
     return (
       <div className={ css.DmnEditor }>
@@ -530,20 +470,13 @@ class DmnEditor extends CachedComponent {
 
         <div className="diagram" ref={ this.ref }></div>
 
-        <div
-          className={ classNames('properties', { 'open': propertiesPanel.open }) }
-          style={ propertiesPanelStyle }>
-          <div
-            className="toggle"
-            onClick={ this.handlePropertiesPanelToggle }
-            draggable="true"
-            onDragStart={ this.handlePropertiesPanelResize(propertiesPanel.width) }>Properties Panel</div>
-          <div
-            className="resize-handle"
-            draggable="true"
-            onDragStart={ this.handlePropertiesPanelResize(propertiesPanel.width) }></div>
-          <div className="properties-container" ref={ this.propertiesPanelRef }></div>
-        </div>
+        <PropertiesContainer
+          className="properties"
+          layout={ layout }
+          ref={ this.propertiesPanelRef }
+          hideIfCollapsed={ hideIfCollapsed }
+          onLayoutChanged={ onLayoutChanged } />
+
       </div>
     );
   }
@@ -553,7 +486,7 @@ class DmnEditor extends CachedComponent {
       layout
     } = props;
 
-    const minimap = layout.minimap || defaultLayout.minimap;
+    const minimap = layout.minimap;
 
     const modeler = new CamundaDmnModeler({
       minimap: {
