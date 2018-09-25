@@ -78,8 +78,6 @@ export class CmmnEditor extends CachedComponent {
     });
 
     modeler[fn]('error', 1500, this.handleError);
-
-    modeler[fn]('minimap.toggle', this.handleMinimapToggle);
   }
 
   componentDidUpdate(previousProps) {
@@ -297,24 +295,6 @@ export class CmmnEditor extends CachedComponent {
     canvas.resized();
   }
 
-  handleMinimapToggle = (event) => {
-    this.handleLayoutChange({
-      minimap: {
-        open: event.open
-      }
-    });
-  }
-
-  handleLayoutChange(newLayout) {
-    const {
-      onLayoutChanged
-    } = this.props;
-
-    if (typeof onLayoutChanged === 'function') {
-      onLayoutChanged(newLayout);
-    }
-  }
-
   render() {
     const {
       layout,
@@ -341,20 +321,10 @@ export class CmmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState(props) {
+  static createCachedState() {
 
-    const {
-      layout
-    } = props;
-
-    const minimap = layout.minimap;
-
-    // TODO(nikku): wire element template loading
     const modeler = new CamundaCmmnModeler({
-      position: 'absolute',
-      minimap: {
-        open: minimap.open
-      }
+      position: 'absolute'
     });
 
     return {

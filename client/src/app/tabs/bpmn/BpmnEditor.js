@@ -67,6 +67,11 @@ export class BpmnEditor extends CachedComponent {
   }
 
   componentDidMount() {
+
+    const {
+      layout
+    } = this.props;
+
     const {
       modeler
     } = this.getCached();
@@ -74,6 +79,12 @@ export class BpmnEditor extends CachedComponent {
     this.listen('on');
 
     modeler.attachTo(this.ref.current);
+
+    const minimap = modeler.get('minimap');
+
+    if (layout.minimap) {
+      minimap.toggle(layout.minimap && !!layout.minimap.open);
+    }
 
     const propertiesPanel = modeler.get('propertiesPanel');
 
@@ -516,20 +527,11 @@ export class BpmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState(props) {
-
-    const {
-      layout
-    } = props;
-
-    const minimap = layout.minimap;
+  static createCachedState() {
 
     // TODO(nikku): wire element template loading
     const modeler = new CamundaBpmnModeler({
-      position: 'absolute',
-      minimap: {
-        open: minimap.open
-      }
+      position: 'absolute'
     });
 
     return {
