@@ -333,61 +333,6 @@ export class App extends Component {
     });
   }
 
-  saveWorkspace = () => {
-    console.log('saveWorkspace');
-
-    const {
-      workspace
-    } = this.props.globals;
-
-    const {
-      activeTab,
-      tabs,
-      layout
-    } = this.state;
-
-    const config = {
-      files: [],
-      activeTab: -1
-    };
-
-    // save tabs
-    tabs.forEach((tab, index) => {
-      const {
-        file
-      } = tab;
-
-      // do not save unsaved tabs
-      if (isNew(tab)) {
-        return;
-      }
-
-      if (tab === activeTab) {
-        config.activeTab = index;
-      }
-
-      config.files.push(assign({}, file));
-    });
-
-    // save layout
-    config.layout = layout;
-
-    workspace.save(config);
-  }
-
-  restoreWorkspace = () => {
-    const {
-      workspace
-    } = this.props.globals;
-
-    const defaultConfig = {
-      activeTab: -1,
-      files: [],
-      layout: {}
-    };
-
-    return workspace.restore(defaultConfig);
-  }
 
   /**
    * Mark the active tab as shown.
@@ -500,7 +445,7 @@ export class App extends Component {
     return LoadingTab;
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const {
       onReady
     } = this.props;
@@ -509,39 +454,20 @@ export class App extends Component {
       onReady();
     }
 
-    const config = await this.restoreWorkspace();
-
-    const {
-      activeTab,
-      files,
-      layout
-    } = config;
-
-    await this.openFiles(files);
-
-    // ensure backwards compatibility
-    const activeTabId = config.activeTabId || activeTab;
-
-    if (activeTabId === -1) {
-      this.selectTab(this.state.tabs[ this.state.tabs.length - 1 ]);
-    } else {
-      this.selectTab(this.state.tabs[ activeTabId ]);
-    }
-
-    this.setState({
-      layout: merge(this.state.layout, layout)
-    });
   }
 
   componentDidUpdate(prevProps, prevState) {
 
     const {
       activeTab,
-      tabLoadingState
+      tabs,
+      tabLoadingState,
+      layout
     } = this.state;
 
     const {
       onTabChanged,
+      onWorkspaceChanged,
       onTabShown
     } = this.props;
 
@@ -560,8 +486,27 @@ export class App extends Component {
 
     }
 
-    // TODO(philippfromme): only save workspace if necessary
-    this.saveWorkspace();
+
+    if (
+      activeTab !== prevState.activeTab ||
+      tabs !== prevState.tabs ||
+      layout !== prevState.layout
+    ) {
+      if (typeof onWorkspaceChanged === 'function') {
+        onWorkspaceChanged({
+          tabs,
+          activeTab,
+          layout
+        });
+      }
+    }
+
+  }
+
+  setLayout(layout) {
+    this.setState({
+      layout
+    });
   }
 
   async saveTab(tab, options = {}) {

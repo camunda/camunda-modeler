@@ -691,6 +691,48 @@ describe('<App>', function() {
 
   });
 
+
+  describe('workspace integration', function() {
+
+    describe('should notify #onWorkspaceChanged', function() {
+
+      it('on layout change', function() {
+
+        // given
+        const changedSpy = spy(() => {});
+
+        const { app } = createApp({
+          onWorkspaceChanged: changedSpy
+        });
+
+        // when
+        app.setLayout({});
+
+        // then
+        expect(changedSpy).to.have.been.calledOnce;
+      });
+
+
+      it('on activeTab / tabs change', function() {
+
+        // given
+        const changedSpy = spy(() => {});
+
+        const { app } = createApp({
+          onWorkspaceChanged: changedSpy
+        });
+
+        // when
+        app.createDiagram('bpmn');
+
+        // then
+        expect(changedSpy).to.have.been.calledTwice;
+      });
+
+    });
+
+  });
+
 });
 
 
@@ -728,6 +770,7 @@ function createApp(options = {}, mountFn=shallow) {
     app.handleTabShown(newTab);
   };
 
+  const onWorkspaceChanged = options.onWorkspaceChanged;
   const onTabShown = options.onTabShown;
   const onReady = options.onReady;
 
@@ -739,6 +782,7 @@ function createApp(options = {}, mountFn=shallow) {
       onReady={ onReady }
       onTabChanged={ onTabChanged }
       onTabShown={ onTabShown }
+      onWorkspaceChanged={ onWorkspaceChanged }
     />
   );
 
