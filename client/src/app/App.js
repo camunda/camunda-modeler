@@ -30,7 +30,6 @@ import History from './History';
 import css from './App.less';
 
 import {
-  assign,
   merge
 } from 'min-dash';
 
