@@ -43,9 +43,6 @@ describe('<App>', function() {
 
           // given
           const backend = new Backend();
-          const eventBus = new mitt();
-          const fileSystem = new FileSystem();
-          const workspace = new Workspace();
 
           const spy = sinon.spy(backend, 'sendUpdateMenu');
 
@@ -53,10 +50,7 @@ describe('<App>', function() {
             app
           } = createApp({
             globals: {
-              backend,
-              eventBus,
-              fileSystem,
-              workspace
+              backend
             }
           });
 
@@ -262,9 +256,7 @@ describe('<App>', function() {
 
         // given
         const dialog = new Dialog();
-        const eventBus = new mitt();
         const fileSystem = new FileSystem();
-        const workspace = new Workspace();
 
         dialog.setAskSaveResponse(Promise.resolve('save'));
 
@@ -274,9 +266,7 @@ describe('<App>', function() {
         const rendered = createApp({
           globals: {
             dialog,
-            eventBus,
-            fileSystem,
-            workspace
+            fileSystem
           }
         }, mount);
 
@@ -378,9 +368,7 @@ describe('<App>', function() {
 
         // given
         const dialog = new Dialog();
-        const eventBus = mitt();
         const fileSystem = new FileSystem();
-        const workspace = new Workspace();
 
         dialog.setAskExportAsResponse(Promise.resolve({
           fileType: 'svg',
@@ -394,9 +382,7 @@ describe('<App>', function() {
         const rendered = createApp({
           globals: {
             dialog,
-            eventBus,
-            fileSystem,
-            workspace
+            fileSystem
           }
         }, mount);
 
@@ -713,8 +699,6 @@ describe('<App>', function() {
         beforeEach(async function() {
           tab = new TabsProvider().createTabForFile(createFile('1.bpmn'));
 
-          eventBus = mitt();
-
           workspace = new Workspace({
             activeTab: 0,
             files: [ tab.file ],
@@ -732,9 +716,6 @@ describe('<App>', function() {
 
           const rendered = createApp({
             globals: {
-              dialog: new Dialog(),
-              eventBus,
-              fileSystem: new FileSystem(),
               workspace
             }
           }, mount);
@@ -773,9 +754,6 @@ describe('<App>', function() {
 
           const rendered = createApp({
             globals: {
-              dialog: new Dialog(),
-              eventBus: mitt(),
-              fileSystem: new FileSystem(),
               workspace
             }
           }, mount);
@@ -888,11 +866,16 @@ function createApp(options = {}, mountFn=shallow) {
 
   const cache = options.cache || new Cache();
 
-  const globals = options.globals || {
+  const defaultGlobals = {
     dialog: new Dialog(),
     eventBus: mitt(),
     fileSystem: new FileSystem(),
     workspace: new Workspace()
+  };
+
+  const globals = {
+    ...defaultGlobals,
+    ...(options.globals || {})
   };
 
   const tabsProvider = options.tabsProvider || new TabsProvider();
