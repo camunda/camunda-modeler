@@ -112,15 +112,21 @@ describe('<BpmnEditor>', function() {
     it('should open properties panel', function() {
 
       // given
+      let layout = {
+        propertiesPanel: {
+          open: false
+        }
+      };
+
+      function onLayoutChanged(newLayout) {
+        layout = newLayout;
+      }
+
       const {
-        bpmnEditor,
         wrapper
       } = renderBpmnEditor(diagramXML, {
-        layout: {
-          propertiesPanel: {
-            open: false
-          }
-        }
+        layout,
+        onLayoutChanged
       });
 
       const toggle = wrapper.find('.toggle');
@@ -129,17 +135,29 @@ describe('<BpmnEditor>', function() {
       toggle.simulate('click');
 
       // then
-      expect(bpmnEditor.state.layout.propertiesPanel.open).to.be.true;
+      expect(layout.propertiesPanel.open).to.be.true;
     });
 
 
     it('should close properties panel', function() {
 
       // given
+      let layout = {
+        propertiesPanel: {
+          open: true
+        }
+      };
+
+      function onLayoutChanged(newLayout) {
+        layout = newLayout;
+      }
+
       const {
-        bpmnEditor,
         wrapper
-      } = renderBpmnEditor(diagramXML);
+      } = renderBpmnEditor(diagramXML, {
+        layout,
+        onLayoutChanged
+      });
 
       const toggle = wrapper.find('.toggle');
 
@@ -147,59 +165,20 @@ describe('<BpmnEditor>', function() {
       toggle.simulate('click');
 
       // then
-      expect(bpmnEditor.state.layout.propertiesPanel.open).to.be.false;
+      expect(layout.propertiesPanel.open).to.be.false;
     });
 
 
     it('should handle missing layout', function() {
 
-      // when
-      const {
-        bpmnEditor
-      } = renderBpmnEditor(diagramXML, {
-        layout: {}
-      });
+      // given
+      let layout = { };
 
       // then
-      expect(bpmnEditor.state.layout).to.eql({
-        minimap: {
-          open: false
-        },
-        propertiesPanel: {
-          open: true,
-          width: 250
-        }
-      });
-    });
-
-
-    it('it should apply received layout', function() {
-
-      // when
-      const {
-        bpmnEditor
-      } = renderBpmnEditor(diagramXML, {
-        layout: {
-          minimap: {
-            open: true
-          },
-          propertiesPanel: {
-            open: false,
-            width: 50
-          }
-        }
+      renderBpmnEditor(diagramXML, {
+        layout
       });
 
-      // then
-      expect(bpmnEditor.state.layout).to.eql({
-        minimap: {
-          open: true
-        },
-        propertiesPanel: {
-          open: false,
-          width: 50
-        }
-      });
     });
 
   });

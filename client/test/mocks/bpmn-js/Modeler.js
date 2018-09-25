@@ -36,6 +36,12 @@ export default class Modeler {
       return new PropertiesPanel();
     }
 
+    if (module === 'minimap') {
+      return {
+        toggle() {}
+      };
+    }
+
     if (module === 'canvas') {
       return {
         resized() { }
