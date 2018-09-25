@@ -62,23 +62,16 @@ export default function dragger(fn) {
     }
 
     // (2) setup drag listeners
-    var target = event.target,
-        onEnd;
+    function onEnd() {
+      document.removeEventListener('drag', onDrag);
+      document.removeEventListener('dragend', onEnd);
 
-    if (target) {
-
-      // detach on end
-      onEnd = function() {
-        target.removeEventListener('drag', onDrag);
-        target.removeEventListener('dragend', onEnd);
-
-        self = extraArgs = startPosition = null;
-      };
-
-      // attach drag + cleanup event
-      target.addEventListener('drag', onDrag);
-      target.addEventListener('dragend', onEnd);
+      self = extraArgs = startPosition = null;
     }
+
+    // attach drag + cleanup event
+    document.addEventListener('drag', onDrag);
+    document.addEventListener('dragend', onEnd);
   };
 
   onDragStart.onDrag = onDrag;
@@ -93,8 +86,8 @@ function emptyCanvas() {
 
 function eventPosition(event) {
   return {
-    x: event.clientX,
-    y: event.clientY
+    x: event.screenX,
+    y: event.screenY
   };
 }
 
