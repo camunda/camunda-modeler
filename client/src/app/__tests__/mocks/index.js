@@ -1,5 +1,8 @@
 import { Component } from 'react';
 
+import { assign } from 'min-dash';
+
+
 class FakeTab extends Component {
 
   componentDidMount() {
@@ -36,8 +39,6 @@ class FakeTab extends Component {
   }
 
 }
-
-
 
 export class TabsProvider {
 
@@ -76,8 +77,19 @@ export class TabsProvider {
 
 }
 
-export class Dialog {
-  constructor() {
+
+class Mock {
+
+  constructor(overrides = {}) {
+    assign(this, overrides);
+  }
+
+}
+
+export class Dialog extends Mock {
+  constructor(overrides) {
+    super(overrides);
+
     this.askSaveResponse = null;
     this.openFileResponse = null;
   }
@@ -107,7 +119,7 @@ export class Dialog {
   }
 }
 
-export class FileSystem {
+export class FileSystem extends Mock {
   writeFile() {
 
     // TODO: what do files look like?
@@ -115,22 +127,23 @@ export class FileSystem {
   }
 }
 
-export class Backend {
+export class Backend extends Mock {
+
   sendUpdateMenu() {}
+
+  on() {}
+
+  once() {}
+
+  off() {}
+
 }
 
-export class Workspace {
-  constructor(config) {
-    this.config = config;
-  }
+export class Workspace extends Mock {
 
   save() {}
 
   restore(defaultConfig) {
     return this.config || defaultConfig;
-  }
-
-  setConfig(config) {
-    this.config = config;
   }
 }
