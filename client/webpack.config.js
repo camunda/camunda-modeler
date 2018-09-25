@@ -2,6 +2,8 @@
 
 const DEV = process.env.WEBPACK_SERVE;
 
+const { DefinePlugin } = require('webpack');
+
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
@@ -68,7 +70,12 @@ module.exports = {
         from: './public',
         transform: DEV && applyDevCSP
       }
-    ])
+    ]),
+    new DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(DEV ? 'development' : 'production')
+      }
+    })
   ],
   // ship source map during development only
   devtool: DEV && 'cheap-module-source-map',
