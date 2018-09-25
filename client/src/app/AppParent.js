@@ -4,8 +4,6 @@ import debug from 'debug';
 
 import App from './App';
 
-import { debounce } from 'min-dash';
-
 
 const log = debug('AppParent');
 
@@ -16,10 +14,6 @@ export default class AppParent extends Component {
     super();
 
     this.appRef = React.createRef();
-
-    if (process.env.NODE_ENV !== 'test') {
-      this.handleWorkspaceChanged = debounce(this.handleWorkspaceChanged, 300);
-    }
   }
 
   triggerAction = (event, action, options) => {
