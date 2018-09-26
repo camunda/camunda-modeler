@@ -7,18 +7,13 @@ class FakeTab extends Component {
 
   componentDidMount() {
     const {
-      tab,
       onShown
     } = this.props;
 
-    onShown(tab);
+    onShown();
   }
 
   triggerAction(action, options) {
-    const {
-      tab
-    } = this.props;
-
     console.log('FakeTab#triggerAction', action, options);
 
     if (action === 'save') {
@@ -30,7 +25,7 @@ class FakeTab extends Component {
     }
 
     if (action === 'error') {
-      this.props.onError(tab, options);
+      this.props.onError(options);
     }
   }
 
