@@ -114,6 +114,15 @@ export default class AppParent extends Component {
     this.restoringWorkspace = false;
   }
 
+  handleError = (error, tab) => {
+
+    if (tab) {
+      return log('tab error', error, tab);
+    }
+
+    return log('app error', error);
+  }
+
   handleReady = async () => {
 
     try {
@@ -189,6 +198,7 @@ export default class AppParent extends Component {
         onContextMenu={ this.handleContextMenu }
         onWorkspaceChanged={ this.handleWorkspaceChanged }
         onReady={ this.handleReady }
+        onError={ this.handleError }
       />
     );
   }
