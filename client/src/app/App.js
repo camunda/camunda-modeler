@@ -376,9 +376,7 @@ export class App extends Component {
    * @return {Function} tab error callback
    */
   handleTabError = (tab) => (error) => {
-    console.warn('App#handleTabError', tab, error);
-
-    // TODO: show error in log
+    this.handleError(error, tab);
   }
 
 
@@ -513,6 +511,10 @@ export class App extends Component {
     }
   }
 
+  componentDidCatch(error, info) {
+    this.handleError(error);
+  }
+
   workspaceChanged = () => {
 
     const {
@@ -534,6 +536,19 @@ export class App extends Component {
       activeTab,
       layout
     });
+  }
+
+  handleError(error, ...args) {
+
+    const {
+      onError
+    } = this.props;
+
+    if (typeof onError === 'function') {
+      onError(error, ...args);
+    }
+
+    // TODO: show error in log
   }
 
   setLayout(layout) {
