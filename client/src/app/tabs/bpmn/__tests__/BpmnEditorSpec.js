@@ -5,32 +5,22 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import {
-  default as BpmnEditorWithCachedState,
+  Cache,
+  WithCachedState
+} from '../../../cached';
+
+import {
   BpmnEditor
 } from '../BpmnEditor';
+
+import BpmnModeler from 'test/mocks/bpmn-js/Modeler';
 
 import { SlotFillRoot } from 'src/app/slot-fill';
 
 import diagramXML from './diagram.bpmn';
 
-import { insertCSS } from 'test/helper';
-
-insertCSS('test.css', '.test-content-container { position: relative; }');
-
 
 describe('<BpmnEditor>', function() {
-
-  let createCachedSpy;
-
-
-  beforeEach(function() {
-    createCachedSpy = sinon.spy(BpmnEditor, 'createCachedState');
-  });
-
-  afterEach(function() {
-    createCachedSpy.restore();
-  });
-
 
   it('should render', function() {
     const {
@@ -41,23 +31,59 @@ describe('<BpmnEditor>', function() {
   });
 
 
-  // TODO(philippfromme): spy is not called if test isn't executed exclusively
-  it.skip('should create modeler if no cached modeler', function() {
+  describe('caching behavior', function() {
 
-    const {
-      bpmnEditor
-    } = renderBpmnEditor(diagramXML);
+    let createSpy;
 
-    const {
-      modeler
-    } = bpmnEditor.getCached();
+    beforeEach(function() {
+      createSpy = sinon.spy(BpmnEditor, 'createCachedState');
+    });
 
-    expect(createCachedSpy).to.have.been.calledOnce;
-    expect(modeler).to.exist;
+    afterEach(function() {
+      createSpy.restore();
+    });
+
+
+    it('should create modeler if not cached', function() {
+
+      // when
+      const {
+        bpmnEditor
+      } = renderBpmnEditor(diagramXML);
+
+      // then
+      const {
+        modeler
+      } = bpmnEditor.getCached();
+
+      expect(modeler).to.exist;
+      expect(createSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should use cached modeler', function() {
+
+      // given
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler()
+        },
+        __destroy: () => {}
+      });
+
+      // when
+      renderBpmnEditor(diagramXML, {
+        id: 'editor',
+        cache
+      });
+
+      // then
+      expect(createSpy).not.to.have.been.called;
+    });
+
   });
-
-
-  it('should use existing modeler if cached modeler');
 
 
   it('#getXML', async function() {
@@ -207,6 +233,7 @@ describe('<BpmnEditor>', function() {
       expect(onErrorSpy).to.have.been.called;
     });
 
+
     it('should handle export error', function() {
       // TODO(philippfromme): how to make #getXML throw?
     });
@@ -222,6 +249,8 @@ describe('<BpmnEditor>', function() {
 
 function noop() {}
 
+const TestEditor = WithCachedState(BpmnEditor);
+
 function renderBpmnEditor(xml, options = {}) {
   const {
     layout,
@@ -231,11 +260,12 @@ function renderBpmnEditor(xml, options = {}) {
 
   const slotFillRoot = mount(
     <SlotFillRoot>
-      <BpmnEditorWithCachedState
-        id="foo"
+      <TestEditor
+        id={ options.id || 'editor' }
         xml={ xml }
         onLayoutChanged={ onLayoutChanged || noop }
         onError={ onError || noop }
+        cache={ options.cache || new Cache() }
         layout={ layout || {
           minimap: {
             open: false
@@ -243,7 +273,8 @@ function renderBpmnEditor(xml, options = {}) {
           propertiesPanel: {
             open: true
           }
-        } } />
+        } }
+      />
     </SlotFillRoot>
   );
 
