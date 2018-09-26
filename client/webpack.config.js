@@ -16,8 +16,7 @@ module.exports = {
   output: {
     path: __dirname + '/build',
     filename: '[name].js',
-    chunkFilename: '[name].[id].js',
-    crossOriginLoading: DEV ? 'anonymous' : false
+    chunkFilename: '[name].[id].js'
   },
   resolve: DEV && {
     mainFields: [ 'browser', 'dev:module', 'module', 'main' ]
