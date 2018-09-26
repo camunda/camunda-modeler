@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
 import { DropdownButton } from '..';
 
@@ -75,7 +75,7 @@ describe('<DropdownButton>', function() {
         text: 'bar'
       }];
 
-      const wrapper = shallow(<DropdownButton items={ items } { ...props } />);
+      const wrapper = mount(<DropdownButton items={ items } { ...props } />);
 
       // open dropdown
       wrapper.setState({
@@ -101,8 +101,7 @@ describe('<DropdownButton>', function() {
     });
 
 
-    // TODO(philippfromme): fix
-    it.skip('should close dropdown on global click', function() {
+    it('should close dropdown on global click', function() {
 
       // given
       const wrapper = openDropdown();
