@@ -97,6 +97,26 @@ describe('<App>', function() {
       expect(activeTab).to.equal(EMPTY_TAB);
     });
 
+
+    it('should allow user to create new diagram', function() {
+
+      // given
+      const {
+        app,
+        tree
+      } = createApp(mount);
+
+      const createButton = tree.find('button.create-bpmn');
+
+      expect(createButton).to.exist;
+
+      // when
+      createButton.simulate('click');
+
+      // then
+      expect(app.state.tabs).to.have.length(1);
+    });
+
   });
 
 
