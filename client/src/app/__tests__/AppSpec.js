@@ -20,6 +20,8 @@ import {
 
 import mitt from 'mitt';
 
+import pDefer from 'p-defer';
+
 
 /* global sinon */
 const { spy } = sinon;
@@ -34,6 +36,7 @@ describe('<App>', function() {
     it('onReady');
 
     it('onContextMenu');
+
 
     describe('globals', function() {
 
@@ -651,32 +654,70 @@ describe('<App>', function() {
 
   describe('tab errors', function() {
 
-    // eslint-disable-next-line
-    let app, openedTabs;
+    it('should propagate', async function() {
 
-    beforeEach(async function() {
-      app = createApp(mount).app;
+      // given
+      const errorSpy = spy();
 
-      openedTabs = await app.openFiles([
-        createFile('1.bpmn')
-      ]);
+      const {
+        app
+      } = createApp({ onError: errorSpy }, mount);
+
+      const tab = await app.createDiagram();
+
+      const tabInstance = app.tabRef.current;
+
+      const error = new Error('YZO!');
+
+      // when
+      tabInstance.triggerAction('error', error);
+
+      // then
+      expect(errorSpy).to.have.been.calledWith(error, tab);
     });
 
 
-    // TODO(philippfromme): spy is not called, why?
-    it.skip('should error', function() {
+    describe('should catch', function() {
 
-      // given
-      const handleTabErrorSpy = sinon.spy(app, 'handleTabError');
+      const errorHandler = window.onerror;
 
-      const tab = app.tabRef.current;
+      before(function() {
+        // disable mocha implicit error handling
+        window.onerror = () => {};
+      });
 
-      // when
-      tab.triggerAction('error', 'foo');
+      after(function() {
+        window.onError = errorHandler;
+      });
 
-      // then
-      expect(handleTabErrorSpy).to.have.been.called;
-      // expect(handleTabErrorSpy).to.have.been.calledWith(openedTabs[0], 'foo');
+
+      it('works', async function() {
+
+        // given
+        const deferred = pDefer();
+
+        function onError(error) {
+          deferred.resolve(error);
+        }
+
+        const {
+          app
+        } = createApp({ onError }, mount);
+
+        await app.createDiagram();
+
+        const tabInstance = app.tabRef.current;
+
+        const error = new Error('YZO!');
+
+        // when
+        tabInstance.triggerAction('errorThrow', error);
+
+        // then
+        const caughtError = await deferred.promise;
+
+        expect(caughtError).to.equal(error);
+      });
     });
 
   });
@@ -763,6 +804,7 @@ function createApp(options = {}, mountFn=shallow) {
   const onWorkspaceChanged = options.onWorkspaceChanged;
   const onTabShown = options.onTabShown;
   const onReady = options.onReady;
+  const onError = options.onError;
 
   const tree = mountFn(
     <App
@@ -770,6 +812,7 @@ function createApp(options = {}, mountFn=shallow) {
       globals={ globals }
       tabsProvider={ tabsProvider }
       onReady={ onReady }
+      onError={ onError }
       onTabChanged={ onTabChanged }
       onTabShown={ onTabShown }
       onWorkspaceChanged={ onWorkspaceChanged }

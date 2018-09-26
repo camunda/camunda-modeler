@@ -5,12 +5,29 @@ import { assign } from 'min-dash';
 
 class FakeTab extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+  }
+
   componentDidMount() {
     const {
       onShown
     } = this.props;
 
     onShown();
+  }
+
+  componentDidUpdate() {
+
+    const {
+      error
+    } = this.state;
+
+    if (error) {
+      throw error;
+    }
   }
 
   triggerAction(action, options) {
@@ -26,6 +43,12 @@ class FakeTab extends Component {
 
     if (action === 'error') {
       this.props.onError(options);
+    }
+
+    if (action === 'errorThrow') {
+      this.setState({
+        error: options
+      });
     }
   }
 
