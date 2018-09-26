@@ -27,7 +27,8 @@
     "p-defer": "^1.0.0",
     "p-series": "^1.1.0",
     "react": "^16.4.2",
-    "react-dom": "^16.4.2"
+    "react-dom": "^16.4.2",
+    "webpack-dev-server": "^3.1.9"
   },
   "homepage": ".",
   "devDependencies": {
@@ -73,11 +74,10 @@
     "style-loader": "0.19.0",
     "url-loader": "0.6.2",
     "webpack": "^4.16.5",
-    "webpack-cli": "^3.1.0",
-    "webpack-serve": "^2.0.2"
+    "webpack-cli": "^3.1.0"
   },
   "scripts": {
-    "start": "webpack-serve --config ./webpack.config.js --no-clipboard --port 3000",
+    "start": "webpack-dev-server --config ./webpack.config.js --port 3000",
     "build": "webpack",
     "postbuild": "del-cli --force ../app/public && mv build ../app/public",
     "dev": "run-s start",
