@@ -65,7 +65,6 @@ class MultiSheetTab extends CachedComponent {
 
     const {
       onChanged,
-      tab,
       xml
     } = this.props;
 
@@ -76,7 +75,6 @@ class MultiSheetTab extends CachedComponent {
     const { lastXML } = this.getCached();
 
     onChanged(
-      tab,
       {
         ...newState,
         dirty: dirty || (lastXML ? (xml !== lastXML) : false)
@@ -86,11 +84,10 @@ class MultiSheetTab extends CachedComponent {
 
   handleError = (error) => {
     const {
-      onError,
-      tab
+      onError
     } = this.props;
 
-    onError(tab, error);
+    onError(error);
   }
 
   handleContextMenu = (event, context) => {
