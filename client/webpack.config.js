@@ -1,8 +1,6 @@
 'use strict';
 
-const DEV = process.env.WEBPACK_SERVE;
-
-const { DefinePlugin } = require('webpack');
+const DEV = process.env.NODE_ENV === 'development';
 
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -69,15 +67,8 @@ module.exports = {
         from: './public',
         transform: DEV && applyDevCSP
       }
-    ]),
-    new DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(DEV ? 'development' : 'production')
-      }
-    })
+    ])
   ],
-  // ship source map during development only
-  devtool: DEV && 'cheap-module-source-map',
   // don't bundle shims for node globals
   node: {
     dgram: 'empty',
@@ -85,6 +76,11 @@ module.exports = {
     net: 'empty',
     tls: 'empty',
     child_process: 'empty'
+  },
+  devServer: {
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    }
   }
 };
 
