@@ -651,25 +651,15 @@ describe('<App>', function() {
 
   describe('tab errors', function() {
 
+    // eslint-disable-next-line
     let app, openedTabs;
 
     beforeEach(async function() {
-      const rendered = createApp(mount);
+      app = createApp(mount).app;
 
-      app = rendered.app;
-
-      const file1 = createFile('1.bpmn');
-
-      openedTabs = await app.openFiles([ file1 ]);
-
-      // assume
-      const {
-        tabs,
-        activeTab
-      } = app.state;
-
-      expect(tabs).to.eql(openedTabs);
-      expect(activeTab).to.eql(openedTabs[0]);
+      openedTabs = await app.openFiles([
+        createFile('1.bpmn')
+      ]);
     });
 
 
