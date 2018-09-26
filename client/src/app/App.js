@@ -45,6 +45,7 @@ export const EMPTY_TAB = {
 
 const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
+  Tab: EmptyTab,
   dirtyTabs: {},
   layout: {},
   tabs: [],
@@ -786,15 +787,15 @@ export class App extends Component {
   }
 
   render() {
-    const activeTab = this.state.activeTab || EMPTY_TAB;
 
     const {
       tabs,
+      activeTab,
       tabState,
       layout
     } = this.state;
 
-    const Tab = this.state.Tab || EmptyTab;
+    const Tab = this.state.Tab;
 
     return (
       <div className={ css.App }>
@@ -895,17 +896,28 @@ export class App extends Component {
             />
 
             <TabContainer className="main">
-              <Tab
-                key={ activeTab.id }
-                tab={ activeTab }
-                layout={ layout }
-                onChanged={ this.handleTabChanged(activeTab) }
-                onError={ this.handleTabError(activeTab) }
-                onShown={ this.handleTabShown(activeTab) }
-                onLayoutChanged={ this.handleLayoutChanged }
-                onContextMenu={ this.openTabMenu }
-                ref={ this.tabRef }
-              />
+              {
+                Tab === EmptyTab ? (
+                  <EmptyTab
+                    key={ activeTab.id }
+                    tab={ activeTab }
+                    onShown={ this.handleTabShown(activeTab) }
+                    onAction={ this.triggerAction }
+                    ref={ this.tabRef } />
+                ) : (
+                  <Tab
+                    key={ activeTab.id }
+                    tab={ activeTab }
+                    layout={ layout }
+                    onChanged={ this.handleTabChanged(activeTab) }
+                    onError={ this.handleTabError(activeTab) }
+                    onShown={ this.handleTabShown(activeTab) }
+                    onLayoutChanged={ this.handleLayoutChanged }
+                    onContextMenu={ this.openTabMenu }
+                    ref={ this.tabRef }
+                  />
+                )
+              }
             </TabContainer>
           </div>
         </SlotFillRoot>
