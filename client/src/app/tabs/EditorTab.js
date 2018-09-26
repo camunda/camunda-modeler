@@ -17,6 +17,10 @@ export function createTab(tabName, providers) {
       return this.tabRef.current.triggerAction(action, options);
     }
 
+    componentDidCatch(error, info) {
+      this.props.onError(error, info);
+    }
+
     componentDidMount() {
       this.props.onShown();
     }
