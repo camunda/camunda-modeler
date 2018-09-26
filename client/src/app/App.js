@@ -339,9 +339,13 @@ export class App extends Component {
 
 
   /**
-   * Mark the active tab as shown.
+   * Mark a tab as shown.
+   *
+   * @param {Object} tab descriptor
+   *
+   * @return {Function} tab shown callback
    */
-  handleTabShown = (tab) => {
+  handleTabShown = (tab) => () => {
 
     const {
       openedTabs,
@@ -364,13 +368,28 @@ export class App extends Component {
     });
   }
 
-  handleTabError = (tab, error) => {
+  /**
+   * Handle tab error.
+   *
+   * @param {Object} tab descriptor
+   *
+   * @return {Function} tab error callback
+   */
+  handleTabError = (tab) => (error) => {
     console.warn('App#handleTabError', tab, error);
 
     // TODO: show error in log
   }
 
-  handleTabChanged = (tab, properties = {}) => {
+
+  /**
+   * Handle tab changed.
+   *
+   * @param {Object} tab descriptor
+   *
+   * @return {Function} tab changed callback
+   */
+  handleTabChanged = (tab) => (properties = {}) => {
 
     let {
       dirtyTabs,
@@ -862,9 +881,9 @@ export class App extends Component {
                 key={ activeTab.id }
                 tab={ activeTab }
                 layout={ layout }
-                onChanged={ this.handleTabChanged }
-                onError={ this.handleTabError }
-                onShown={ this.handleTabShown }
+                onChanged={ this.handleTabChanged(activeTab) }
+                onError={ this.handleTabError(activeTab) }
+                onShown={ this.handleTabShown(activeTab) }
                 onLayoutChanged={ this.handleLayoutChanged }
                 onContextMenu={ this.openTabMenu }
                 ref={ this.tabRef }
@@ -882,7 +901,7 @@ function missingProvider(providerType) {
   class MissingProviderTab extends Component {
 
     componentDidMount() {
-      this.props.onShown(this.props.tab);
+      this.props.onShown();
     }
 
     render() {

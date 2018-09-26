@@ -18,11 +18,7 @@ export function createTab(tabName, providers) {
     }
 
     componentDidMount() {
-      const {
-        tab
-      } = this.props;
-
-      this.props.onShown(tab);
+      this.props.onShown();
     }
 
     render() {
