@@ -126,6 +126,7 @@ export default class DropdownButton extends Component {
       className,
       items,
       children,
+      closeOnClick, // eslint-disable-line
       ...rest
     } = this.props;
 
