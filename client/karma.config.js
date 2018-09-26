@@ -93,8 +93,7 @@ module.exports = function(karma) {
         alias: {
           'bpmn-js/lib/Modeler': 'test/mocks/bpmn-js/Modeler'
         }
-      },
-      devtool: 'cheap-module-source-map'
+      }
     }
   });
 };
