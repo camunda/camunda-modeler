@@ -7,6 +7,11 @@ import {
 } from './primitives';
 
 export default class EmptyTab extends Component {
+
+  componentDidMount() {
+    this.props.onShown();
+  }
+
   render() {
     return (
       <Tab className="tab">

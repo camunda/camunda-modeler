@@ -94,7 +94,7 @@ describe('<App>', function() {
       } = app.state;
 
       expect(tabs).to.be.empty;
-      expect(activeTab).to.equal(-1);
+      expect(activeTab).to.equal(EMPTY_TAB);
     });
 
   });
@@ -479,9 +479,9 @@ describe('<App>', function() {
       // when
       const tab = await app.createDiagram('bpmn');
 
-
       // then
       expect(events).to.eql([
+        [ 'tab-shown', EMPTY_TAB ],
         [ 'tab-changed', tab ],
         [ 'tab-shown', tab ]
       ]);
@@ -801,9 +801,11 @@ function createApp(options = {}, mountFn=shallow) {
 
   const tabsProvider = options.tabsProvider || new TabsProvider();
 
-  const onTabChanged = options.onTabChanged || function(newTab) {
+  const defaultOnTabChanged = mountFn === shallow && function(newTab) {
     app.handleTabShown(newTab)();
   };
+
+  const onTabChanged = options.onTabChanged || defaultOnTabChanged;
 
   const onWorkspaceChanged = options.onWorkspaceChanged;
   const onTabShown = options.onTabShown;
