@@ -55,7 +55,7 @@ describe('<App>', function() {
           });
 
           // when
-          app.handleTabChanged();
+          app.handleTabChanged()();
 
           // then
           expect(spy).to.have.been.called;
@@ -428,7 +428,7 @@ describe('<App>', function() {
       const onTabChanged = spy(function(tab, oldTab) {
         events.push([ 'tab-changed', tab ]);
 
-        app.handleTabShown(tab);
+        app.handleTabShown(tab)();
       });
 
       const onTabShown = spy(function(tab) {
@@ -757,7 +757,7 @@ function createApp(options = {}, mountFn=shallow) {
   const tabsProvider = options.tabsProvider || new TabsProvider();
 
   const onTabChanged = options.onTabChanged || function(newTab) {
-    app.handleTabShown(newTab);
+    app.handleTabShown(newTab)();
   };
 
   const onWorkspaceChanged = options.onWorkspaceChanged;
