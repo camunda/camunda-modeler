@@ -44,7 +44,7 @@ export const EMPTY_TAB = {
 };
 
 const INITIAL_STATE = {
-  activeTab: -1,
+  activeTab: EMPTY_TAB,
   dirtyTabs: {},
   layout: {},
   tabs: [],
@@ -57,7 +57,10 @@ export class App extends Component {
   constructor(props, context) {
     super();
 
-    this.state = INITIAL_STATE;
+    this.state = {
+      ...INITIAL_STATE,
+      tabShown: pDefer()
+    };
 
     // TODO(nikku): make state
     this.tabHistory = new History();
