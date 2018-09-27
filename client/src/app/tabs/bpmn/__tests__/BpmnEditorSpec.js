@@ -19,6 +19,8 @@ import { SlotFillRoot } from 'src/app/slot-fill';
 
 import diagramXML from './diagram.bpmn';
 
+const { spy } = sinon;
+
 
 describe('<BpmnEditor>', function() {
 
@@ -216,36 +218,76 @@ describe('<BpmnEditor>', function() {
     it('should handle template error');
 
 
-    // TODO(philippfromme): why does import not return error?
-    it.skip('should handle import error', function() {
+    it('should handle import error', function() {
 
       // given
-      const onErrorSpy = sinon.spy();
-
-      const errorXML = 'foo';
+      const errorSpy = spy();
 
       // when
-      renderBpmnEditor(errorXML, {
-        onError: onErrorSpy
+      renderBpmnEditor('import-error', {
+        onError: errorSpy
       });
 
       // then
-      expect(onErrorSpy).to.have.been.called;
+      expect(errorSpy).to.have.been.called;
     });
 
 
-    it('should handle export error', function() {
-      // TODO(philippfromme): how to make #getXML throw?
+    it('should handle XML export', async function() {
+      // given
+      const errorSpy = spy();
+
+      const {
+        bpmnEditor
+      } = renderBpmnEditor('export-error', {
+        onError: errorSpy
+      });
+
+      let err;
+
+      // when
+      try {
+        await bpmnEditor.getXML();
+      } catch (e) {
+        err = e;
+      }
+
+      // then
+      expect(err).to.exist;
+      expect(errorSpy).to.have.been.calledOnce;
     });
 
 
-    it('should handle export error', function() {
-      // TODO(philippfromme): how to make #exportAs throw?
+    it('should handle image export error', async function() {
+      // given
+      const errorSpy = spy();
+
+      const {
+        bpmnEditor
+      } = renderBpmnEditor('export-as-error', {
+        onError: errorSpy
+      });
+
+      let err;
+
+      // when
+      try {
+        await bpmnEditor.exportAs('svg');
+      } catch (e) {
+        err = e;
+      }
+
+      // then
+      expect(err).to.exist;
+      expect(errorSpy).to.have.been.calledOnce;
     });
 
   });
 
 });
+
+
+// helpers //////////////////////////////
 
 function noop() {}
 
