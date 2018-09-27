@@ -52,7 +52,6 @@ export class DmnEditor extends CachedComponent {
 
     const activeViewer = modeler.getActiveViewer();
 
-    // if cached modeler event must be fired manually
     if (activeViewer) {
       activeViewer.get('propertiesPanel').attachTo(this.propertiesPanelRef.current);
     }
@@ -82,8 +81,7 @@ export class DmnEditor extends CachedComponent {
     [
       'saveXML.done',
       'attach',
-      // TODO(philippfromme): fix, this will result in endless update loop
-      // 'view.selectionChanged',
+      'view.selectionChanged',
       'view.directEditingChanged'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
@@ -180,7 +178,6 @@ export class DmnEditor extends CachedComponent {
 
     const activeViewer = modeler.getActiveViewer();
 
-    // if cached modeler event must be fired manually
     if (activeViewer) {
       activeViewer.get('propertiesPanel').attachTo(this.propertiesPanelRef.current);
     }
@@ -333,6 +330,10 @@ export class DmnEditor extends CachedComponent {
 
     if (!activeView
       || activeView.element !== element) {
+
+      this.setCached({
+        activeView: view
+      });
 
       modeler.open(view);
     }
