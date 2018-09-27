@@ -1,0 +1,13 @@
+rules:
+  default:
+    merge_strategy:
+      method: rebase
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+      required_status_checks:
+        strict: true
+        contexts:
+        - continuous-integration/appveyor
+        - continuous-integration/travis-ci
+        - WIP
