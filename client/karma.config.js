@@ -91,7 +91,8 @@ module.exports = function(karma) {
           absoluteBasePath
         ],
         alias: {
-          'bpmn-js/lib/Modeler': 'test/mocks/bpmn-js/Modeler'
+          'bpmn-js/lib/Modeler': 'test/mocks/bpmn-js/Modeler',
+          'dmn-js/lib/Modeler': 'test/mocks/dmn-js/Modeler'
         }
       }
     }
