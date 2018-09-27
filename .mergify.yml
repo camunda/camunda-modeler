@@ -1,0 +1,11 @@
+rules:
+  default:
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+      required_status_checks:
+        contexts:
+        - continuous-integration/appveyor/branch
+        - continuous-integration/appveyor
+        - WIP
+        - continuous-integration/travis-ci
