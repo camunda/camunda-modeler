@@ -14,7 +14,7 @@ export default class Modeler {
 
     const error = xml === 'import-error' ? new Error('failed to import xml') : null;
 
-    done && done(error);
+    done && done(error, []);
   }
 
   saveXML(options, done) {
@@ -62,7 +62,7 @@ export default class Modeler {
       };
     }
 
-    return null;
+    throw new Error(`service not provided: <${module}>`);
   }
 }
 

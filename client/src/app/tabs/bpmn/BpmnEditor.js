@@ -264,7 +264,12 @@ export class BpmnEditor extends CachedComponent {
       });
 
       // TODO(nikku): apply default element templates to initial diagram
-      modeler.importXML(xml, (err) => {
+      modeler.importXML(xml, (err, warnings) => {
+
+        if (warnings.length) {
+          console.log('WARNINGS', warnings);
+        }
+
         if (err) {
           return this.handleError({
             error: err
