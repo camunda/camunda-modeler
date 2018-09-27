@@ -26,10 +26,10 @@ describe('<BpmnEditor>', function() {
 
   it('should render', function() {
     const {
-      bpmnEditor
-    } = renderBpmnEditor(diagramXML);
+      instance
+    } = renderEditor(diagramXML);
 
-    expect(bpmnEditor).to.exist;
+    expect(instance).to.exist;
   });
 
 
@@ -50,13 +50,13 @@ describe('<BpmnEditor>', function() {
 
       // when
       const {
-        bpmnEditor
-      } = renderBpmnEditor(diagramXML);
+        instance
+      } = renderEditor(diagramXML);
 
       // then
       const {
         modeler
-      } = bpmnEditor.getCached();
+      } = instance.getCached();
 
       expect(modeler).to.exist;
       expect(createSpy).to.have.been.calledOnce;
@@ -76,7 +76,7 @@ describe('<BpmnEditor>', function() {
       });
 
       // when
-      renderBpmnEditor(diagramXML, {
+      renderEditor(diagramXML, {
         id: 'editor',
         cache
       });
@@ -90,10 +90,10 @@ describe('<BpmnEditor>', function() {
 
   it('#getXML', async function() {
     const {
-      bpmnEditor
-    } = renderBpmnEditor(diagramXML);
+      instance
+    } = renderEditor(diagramXML);
 
-    const xml = await bpmnEditor.getXML();
+    const xml = await instance.getXML();
 
     expect(xml).to.exist;
     expect(xml).to.eql(diagramXML);
@@ -102,15 +102,15 @@ describe('<BpmnEditor>', function() {
 
   describe('#exportAs', function() {
 
-    let bpmnEditor;
+    let instance;
 
     beforeEach(function() {
-      bpmnEditor = renderBpmnEditor(diagramXML).bpmnEditor;
+      instance = renderEditor(diagramXML).instance;
     });
 
 
     it('svg', async function() {
-      const contents = await bpmnEditor.exportAs('svg');
+      const contents = await instance.exportAs('svg');
 
       expect(contents).to.exist;
       expect(contents).to.equal('<svg />');
@@ -118,7 +118,7 @@ describe('<BpmnEditor>', function() {
 
 
     it('png', async function() {
-      const contents = await bpmnEditor.exportAs('png');
+      const contents = await instance.exportAs('png');
 
       expect(contents).to.exist;
       expect(contents).to.contain('data:image/png');
@@ -126,7 +126,7 @@ describe('<BpmnEditor>', function() {
 
 
     it('jpeg', async function() {
-      const contents = await bpmnEditor.exportAs('jpeg');
+      const contents = await instance.exportAs('jpeg');
 
       expect(contents).to.exist;
       expect(contents).to.contain('data:image/jpeg');
@@ -152,7 +152,7 @@ describe('<BpmnEditor>', function() {
 
       const {
         wrapper
-      } = renderBpmnEditor(diagramXML, {
+      } = renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
@@ -182,7 +182,7 @@ describe('<BpmnEditor>', function() {
 
       const {
         wrapper
-      } = renderBpmnEditor(diagramXML, {
+      } = renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
@@ -203,7 +203,7 @@ describe('<BpmnEditor>', function() {
       let layout = { };
 
       // then
-      renderBpmnEditor(diagramXML, {
+      renderEditor(diagramXML, {
         layout
       });
 
@@ -224,7 +224,7 @@ describe('<BpmnEditor>', function() {
       const errorSpy = spy();
 
       // when
-      renderBpmnEditor('import-error', {
+      renderEditor('import-error', {
         onError: errorSpy
       });
 
@@ -238,8 +238,8 @@ describe('<BpmnEditor>', function() {
       const errorSpy = spy();
 
       const {
-        bpmnEditor
-      } = renderBpmnEditor('export-error', {
+        instance
+      } = renderEditor('export-error', {
         onError: errorSpy
       });
 
@@ -247,7 +247,7 @@ describe('<BpmnEditor>', function() {
 
       // when
       try {
-        await bpmnEditor.getXML();
+        await instance.getXML();
       } catch (e) {
         err = e;
       }
@@ -263,8 +263,8 @@ describe('<BpmnEditor>', function() {
       const errorSpy = spy();
 
       const {
-        bpmnEditor
-      } = renderBpmnEditor('export-as-error', {
+        instance
+      } = renderEditor('export-as-error', {
         onError: errorSpy
       });
 
@@ -272,7 +272,7 @@ describe('<BpmnEditor>', function() {
 
       // when
       try {
-        await bpmnEditor.exportAs('svg');
+        await instance.exportAs('svg');
       } catch (e) {
         err = e;
       }
@@ -293,7 +293,7 @@ function noop() {}
 
 const TestEditor = WithCachedState(BpmnEditor);
 
-function renderBpmnEditor(xml, options = {}) {
+function renderEditor(xml, options = {}) {
   const {
     layout,
     onError,
@@ -322,8 +322,10 @@ function renderBpmnEditor(xml, options = {}) {
 
   const wrapper = slotFillRoot.find(BpmnEditor);
 
+  const instance = wrapper.instance();
+
   return {
-    bpmnEditor: wrapper.instance(),
+    instance,
     wrapper
   };
 }
