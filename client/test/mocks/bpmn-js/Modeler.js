@@ -12,15 +12,29 @@ export default class Modeler {
   importXML(xml, done) {
     this.xml = xml;
 
-    done && done();
+    const error = xml === 'import-error' ? new Error('failed to import xml') : null;
+
+    done && done(error);
   }
 
   saveXML(options, done) {
-    done(null, this.xml);
+
+    const xml = this.xml;
+
+    if (xml === 'export-error') {
+      return done(new Error('failed to save xml'));
+    }
+
+    return done(null, xml);
   }
 
   saveSVG(done) {
-    done(null, '<svg />');
+
+    if (this.xml === 'export-as-error') {
+      return done(new Error('failed to save svg'));
+    }
+
+    return done(null, '<svg />');
   }
 
   attachTo() {}
