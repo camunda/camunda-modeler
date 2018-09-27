@@ -30,7 +30,7 @@ import css from './DmnEditor.less';
 import generateImage from '../../util/generateImage';
 
 
-class DmnEditor extends CachedComponent {
+export class DmnEditor extends CachedComponent {
 
   constructor(props) {
     super(props);
@@ -48,30 +48,14 @@ class DmnEditor extends CachedComponent {
 
     this.listen('on');
 
-    // update properties panel parent in all configs
-    [ 'drd', 'decisionTable', 'literalExpression' ].forEach(viewer => {
+    modeler.attachTo(this.ref.current);
 
-      modeler._options[ viewer ].propertiesPanel = {
-        parent: this.propertiesPanelRef.current
-      };
-
-      // viewers only exist if cached modeler
-      if (modeler._viewers[ viewer ]) {
-        const config = modeler._viewers[ viewer ].get('config');
-
-        config.propertiesPanel = {
-          parent: this.propertiesPanelRef.current
-        };
-      }
-
-    });
+    const activeViewer = modeler.getActiveViewer();
 
     // if cached modeler event must be fired manually
-    if (modeler.getActiveViewer()) {
-      modeler.getActiveViewer().get('eventBus').fire('attach');
+    if (activeViewer) {
+      activeViewer.get('propertiesPanel').attachTo(this.propertiesPanelRef.current);
     }
-
-    modeler.attachTo(this.ref.current);
 
     this.checkImport();
   }
@@ -94,8 +78,6 @@ class DmnEditor extends CachedComponent {
     const {
       modeler
     } = this.getCached();
-
-    modeler[fn]('import.done', this.handleImported);
 
     [
       'saveXML.done',
@@ -138,12 +120,7 @@ class DmnEditor extends CachedComponent {
     this.props.onChanged(this.checkDirty());
   }
 
-  handleImported = (event) => {
-
-    const {
-      error,
-      warnings
-    } = event;
+  handleImported = (error, warnings) => {
 
     const {
       modeler
@@ -157,25 +134,28 @@ class DmnEditor extends CachedComponent {
       return this.handleError({ error });
     }
 
-    if (warnings && warnings.length) {
+    if (warnings.length) {
       console.error('imported with warnings', warnings);
+    }
+
+    if (activeSheet && activeSheet.element) {
+      return this.open(activeSheet.element);
     }
 
     const initialView = modeler._getInitialView(modeler._views);
 
-    if (activeSheet && activeSheet.element) {
-      this.open(activeSheet.element);
-    } else {
-      this.open(initialView.element);
-    }
+    this.open(initialView.element);
   }
 
   viewsChanged = ({ activeView, views }) => {
 
     const {
-      setCachedState,
       onSheetsChanged
     } = this.props;
+
+    const {
+      modeler
+    } = this.getCached();
 
     let activeSheet;
 
@@ -198,8 +178,15 @@ class DmnEditor extends CachedComponent {
 
     onSheetsChanged(sheets, activeSheet);
 
+    const activeViewer = modeler.getActiveViewer();
+
+    // if cached modeler event must be fired manually
+    if (activeViewer) {
+      activeViewer.get('propertiesPanel').attachTo(this.propertiesPanelRef.current);
+    }
+
     // needs to be called last
-    setCachedState({
+    this.setCached({
       activeView,
       views
     });
@@ -311,7 +298,7 @@ class DmnEditor extends CachedComponent {
 
       window.modeler = modeler;
 
-      modeler.importXML(xml, { open: false });
+      modeler.importXML(xml, { open: false }, this.handleImported);
     } else {
       activeSheet
         && activeSheet.element
@@ -340,6 +327,7 @@ class DmnEditor extends CachedComponent {
 
     if (!activeView
       || activeView.element !== element) {
+
       modeler.open(view);
     }
   }
@@ -390,6 +378,10 @@ class DmnEditor extends CachedComponent {
         let contents;
 
         if (err) {
+          this.handleError({
+            error: err
+          });
+
           return reject(err);
         }
 
