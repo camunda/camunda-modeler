@@ -1,3 +1,11 @@
+var coverage = process.env.COVERAGE;
+
+if (coverage) {
+  // must set NODE_ENV to coverage to activate
+  // babel-plugin-istanbul (cf. babel config)
+  process.env.NODE_ENV = 'coverage';
+}
+
 var path = require('path');
 
 var { DefinePlugin } = require('webpack');
@@ -25,6 +33,8 @@ var browsers =
       return browser;
     });
 
+var suite = coverage ? 'test/all.js' : 'test/suite.js';
+
 
 module.exports = function(karma) {
   karma.set({
@@ -35,14 +45,14 @@ module.exports = function(karma) {
     ],
 
     files: [
-      'test/suite.js'
+      suite
     ],
 
     preprocessors: {
-      'test/suite.js': [ 'webpack', 'env' ]
+      [suite]: [ 'webpack', 'env' ]
     },
 
-    reporters: [ 'spec' ],
+    reporters: [ 'spec' ].concat(coverage ? 'coverage' : []),
 
     customLaunchers: {
       ChromeHeadless_Linux: {
@@ -55,13 +65,18 @@ module.exports = function(karma) {
       }
     },
 
+    coverageReporter: {
+      reporters: [
+        { type: 'lcov', subdir: '.' }
+      ]
+    },
+
     browsers: browsers,
 
     browserNoActivityTimeout: 30000,
 
     singleRun: true,
     autoWatch: false,
-
 
     webpack: {
       mode: 'development',
@@ -86,6 +101,12 @@ module.exports = function(karma) {
         })
       ],
       resolve: {
+        mainFields: [
+          'dev:module',
+          'browser',
+          'module',
+          'main'
+        ],
         modules: [
           'node_modules',
           absoluteBasePath

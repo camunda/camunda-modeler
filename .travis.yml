@@ -9,7 +9,9 @@ jobs:
     - stage: test
       node_js: node
       language: node_js
-      script: "npm run all -- --x64 --no-compress"
+      script:
+      - COVERAGE=1 npm run all -- --x64 --no-compress
+      - codecov -f client/coverage/lcov.info -F client
     - stage: "distro [windows+linux]"
       os: linux
       services: docker
