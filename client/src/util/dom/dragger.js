@@ -86,8 +86,8 @@ function emptyCanvas() {
 
 function eventPosition(event) {
   return {
-    x: event.screenX,
-    y: event.screenY
+    x: event.clientX,
+    y: event.clientY
   };
 }
 
