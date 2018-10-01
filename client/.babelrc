@@ -15,5 +15,17 @@
       }
     ],
     "react"
-  ]
+  ],
+  "env": {
+    "coverage": {
+      "plugins": [
+        [ "istanbul", {
+          "exclude": [
+            "**/__tests__/**",
+            "**/test/**"
+          ]
+        } ]
+      ]
+    }
+  }
 }
