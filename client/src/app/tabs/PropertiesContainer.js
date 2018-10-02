@@ -109,7 +109,7 @@ class PropertiesContainerWrapped extends Component {
             <div
               className="toggle"
               onClick={ this.handleToggle }
-              draggable="true"
+              draggable
               onDragStart={ this.handleResize(width) }
             >Properties Panel</div>
         }
@@ -117,7 +117,7 @@ class PropertiesContainerWrapped extends Component {
           (open) &&
             <div
               className="resize-handle"
-              draggable="true"
+              draggable
               onDragStart={ this.handleResize(width) }
             ></div>
         }
