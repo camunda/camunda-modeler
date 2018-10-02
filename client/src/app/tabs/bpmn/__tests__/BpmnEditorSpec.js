@@ -102,6 +102,10 @@ describe('<BpmnEditor>', function() {
 
   describe('#exportAs', function() {
 
+    // increase test time-outs, as exporting takes a
+    // long certain underpowered CI systems (AppVeyor, wink, wink)
+    this.timeout(5000);
+
     let instance;
 
     beforeEach(function() {
