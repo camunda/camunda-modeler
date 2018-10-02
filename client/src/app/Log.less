@@ -1,0 +1,103 @@
+:local(.Log) {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+
+  .header {
+    position: absolute;
+    top: -28px;
+    right: 0;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 5px;
+  }
+
+  .entries {
+    overflow: auto;
+
+    border: none;
+
+    font-size: 13px;
+    font-family: monospace;
+    color: #666;
+
+    white-space: pre-wrap;
+    padding: 5px;
+    background: #FCFCFC;
+    resize: none;
+
+    width: 100%;
+    display: block;
+  }
+
+  .resizer {
+    position: absolute;
+    width: 100%;
+    top: -3px;
+
+    height: 6px;
+
+    user-select: none;
+
+    cursor: ns-resize;
+  }
+
+  .body {
+    position: relative;
+    display: flex;
+    border-top: solid 1px #CCC;
+  }
+
+  button {
+    padding: 4px 10px;
+    background: #FEFEFE;
+
+    display: inline-block;
+    border: solid 1px #ccc;
+    border-radius: 2px;
+    padding: 3px 8px;
+    cursor: default;
+    user-select: none;
+
+    &:hover {
+      background: #F6F6F6;
+    }
+  }
+
+  button + button {
+    margin-left: 8px;
+  }
+
+  .controls {
+    position: absolute;
+    right: 5px;
+    top: 4px;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+
+    button {
+      opacity: .5;
+
+      &:hover,
+      &:focus {
+        opacity: 1;
+      }
+    }
+
+  }
+
+  &.scrolling .controls {
+    right: 20px;
+  }
+
+  &.focussed .controls {
+    opacity: 1;
+
+    pointer-events: all;
+  }
+
+}
