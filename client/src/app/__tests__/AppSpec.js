@@ -10,6 +10,8 @@ import {
   EMPTY_TAB
 } from '../App';
 
+import Log from '../Log';
+
 import {
   Backend,
   Dialog,
@@ -784,6 +786,58 @@ describe('<App>', function() {
         expect(changedSpy).to.have.been.calledTwice;
       });
 
+    });
+
+  });
+
+
+  describe('log', function() {
+
+    it('should toggle open', function() {
+
+      // given
+      const { app } = createApp();
+
+      app.setLayout({});
+
+      // when
+      app.toggleLog(true);
+      app.toggleLog(false);
+
+      // then
+      expect(app.state.layout).to.eql({
+        log: { open: false }
+      });
+    });
+
+
+    it('should clear', function() {
+
+      // given
+      const { app } = createApp();
+
+      app.setState({ logEntries: [ 'A', 'B' ] });
+
+      // when
+      app.clearLog();
+
+      // then
+      expect(app.state.logEntries).to.be.empty;
+    });
+
+
+    it('should render with expanded state', function() {
+
+      // given
+      const { tree, app } = createApp();
+
+      app.setLayout({ log: { open: true } });
+
+      // when
+      const [ log ] = tree.find(Log);
+
+      // then
+      expect(log.props.expanded).to.be.true;
     });
 
   });
