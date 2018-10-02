@@ -29,6 +29,8 @@ export default function dragger(fn) {
 
   var startPosition;
 
+  var dragging;
+
   function onDrag(event) {
 
     // suppress drag end event
@@ -40,6 +42,12 @@ export default function dragger(fn) {
         delta = pointDelta(currentPosition, startPosition);
 
     var args = extraArgs.concat([ event, delta ]);
+
+    if (!dragging) {
+      dragging = true;
+
+      return;
+    }
 
     // call provided fn with extraArgs..., event, delta
     return fn.apply(self, args);
@@ -66,7 +74,7 @@ export default function dragger(fn) {
       document.removeEventListener('drag', onDrag);
       document.removeEventListener('dragend', onEnd);
 
-      self = extraArgs = startPosition = null;
+      self = extraArgs = startPosition = dragging = null;
     }
 
     // attach drag + cleanup event
