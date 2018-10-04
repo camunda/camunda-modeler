@@ -8,7 +8,7 @@ import {
 import Log from '../Log';
 
 /* global sinon */
-const { spy } = sinon;
+const { spy, fake } = sinon;
 
 
 describe('<Log>', function() {
@@ -63,6 +63,89 @@ describe('<Log>', function() {
   });
 
 
+  describe('focus / hover', function() {
+
+    it('should update state', function() {
+
+      // given
+      const {
+        instance
+      } = createLog({
+        expanded: true
+      });
+
+      // when
+      instance.handleFocus();
+
+      // then
+      expect(instance.state.focus).to.be.true;
+
+      // when
+      instance.handleBlur();
+
+      // then
+      expect(instance.state.focus).to.be.false;
+
+      // when
+      instance.handleHover();
+
+      // then
+      expect(instance.state.hover).to.be.true;
+
+      // when
+      instance.handleOut();
+
+      // then
+      expect(instance.state.hover).to.be.false;
+    });
+
+  });
+
+
+  describe('scroll handling', function() {
+
+    it('should check without entries', function() {
+
+      // given
+      const {
+        instance
+      } = createLog({
+        expanded: true,
+        entries: []
+      }, mount);
+
+      // when
+      instance.checkFocus();
+
+      // then
+      // no error threw :o)
+    });
+
+
+    it('should focus last entry', function() {
+
+      // given
+      const {
+        instance
+      } = createLog({
+        expanded: true,
+        entries: [
+          { category: 'warning', message: 'HE' },
+          { category: 'error', message: 'HO' },
+          {}
+        ]
+      }, mount);
+
+      // when
+      instance.checkFocus();
+
+      // then
+      // no error threw :o)
+    });
+
+  });
+
+
   describe('controls', function() {
 
     it('log toggle', function() {
@@ -80,9 +163,7 @@ describe('<Log>', function() {
         onToggle
       }, mount);
 
-      instance.setState({
-        focussed: true
-      });
+      instance.handleFocus();
 
       // when
       const button = tree.find('.toggle-button');
@@ -135,9 +216,7 @@ describe('<Log>', function() {
         onClear
       }, mount);
 
-      instance.setState({
-        focussed: true
-      });
+      instance.handleFocus();
 
       // when
       const button = tree.find('.clear-button');
@@ -150,6 +229,60 @@ describe('<Log>', function() {
     });
 
   });
+
+
+  describe('keyboard shortcuts', function() {
+
+    it('should close on <ESC>', function() {
+
+      // given
+      const onToggle = spy((expanded) => {
+        expect(expanded).to.be.false;
+      });
+
+      const {
+        instance
+      } = createLog({
+        expanded: true,
+        onToggle
+      });
+
+      // when
+      instance.handleKeyDown({
+        keyCode: 27,
+        preventDefault: fake()
+      });
+
+      // then
+      expect(onToggle).to.have.been.calledOnce;
+    });
+
+
+    it('should select all on <CTRL + A>', function() {
+
+      // given
+      const {
+        instance
+      } = createLog({
+        expanded: true
+      }, mount);
+
+      const handleCopy = spy(instance, 'handleCopy');
+
+      // when
+      //
+      instance.handleKeyDown({
+        keyCode: 65,
+        ctrlKey: true,
+        preventDefault: fake()
+      });
+
+      // then
+      expect(handleCopy).to.have.been.calledOnce;
+    });
+
+  });
+
 
 });
 
