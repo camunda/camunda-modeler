@@ -1,0 +1,101 @@
+:local(.Log) {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  flex: none;
+
+  .header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 5px 0;
+  }
+
+  .entries {
+    border: none;
+
+    font-size: 13px;
+    font-family: monospace;
+    color: #666;
+
+    white-space: pre-wrap;
+    padding: 5px;
+    resize: none;
+    outline: none;
+
+    width: 100%;
+    display: block;
+  }
+
+  .resizer {
+    width: 100%;
+
+    height: 6px;
+
+    user-select: none;
+
+    cursor: ns-resize;
+  }
+
+  &:not(.expanded) {
+    .resizer {
+      visibility: hidden;
+    }
+  }
+
+  .body {
+    overflow: auto;
+    position: relative;
+    display: flex;
+    border-top: solid 1px #CCC;
+    background: #FCFCFC;
+  }
+
+  button {
+    padding: 4px 10px;
+    background: #FEFEFE;
+
+    display: inline-block;
+    border: solid 1px #ccc;
+    border-radius: 2px;
+    padding: 3px 8px;
+    cursor: default;
+    user-select: none;
+    outline: none;
+
+    &:hover {
+      background: #F6F6F6;
+    }
+  }
+
+  button + button {
+    margin-left: 8px;
+  }
+
+  .controls {
+    position: sticky;
+    top: 5px;
+    float: right;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+
+    button {
+      opacity: .5;
+
+      &:hover,
+      &:focus {
+        opacity: 1;
+      }
+    }
+
+  }
+
+  &.focussed .controls {
+    opacity: 1;
+
+    pointer-events: all;
+  }
+
+}

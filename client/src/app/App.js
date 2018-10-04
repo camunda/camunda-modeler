@@ -12,6 +12,8 @@ import { debounce } from 'min-dash';
 import Toolbar from './Toolbar';
 import EmptyTab from './EmptyTab';
 
+import Log from './Log';
+
 import debug from 'debug';
 
 import {
@@ -49,7 +51,8 @@ const INITIAL_STATE = {
   dirtyTabs: {},
   layout: {},
   tabs: [],
-  tabState: {}
+  tabState: {},
+  logEntries: []
 };
 
 
@@ -607,6 +610,18 @@ export class App extends Component {
     return pSeries(saveTasks);
   }
 
+  clearLog = () => {
+    this.setState({
+      logEntries: []
+    });
+  };
+
+  toggleLog = (open) => {
+    this.handleLayoutChanged({
+      log: { open }
+    });
+  };
+
   closeTabs = (matcher) => {
 
     const {
@@ -792,7 +807,8 @@ export class App extends Component {
       tabs,
       activeTab,
       tabState,
-      layout
+      layout,
+      logEntries
     } = this.state;
 
     const Tab = this.state.Tab;
@@ -920,6 +936,13 @@ export class App extends Component {
               }
             </TabContainer>
           </div>
+
+          <Log
+            entries={ logEntries }
+            expanded={ layout.log && layout.log.open }
+            onToggle={ this.toggleLog }
+            onClear={ this.clearLog }
+          />
         </SlotFillRoot>
       </div>
     );
