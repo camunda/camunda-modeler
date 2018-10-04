@@ -77,19 +77,6 @@ export class App extends Component {
     if (process.env.NODE_ENV !== 'test') {
       this.workspaceChanged = debounce(this.workspaceChanged, 300);
     }
-
-    setInterval(() => {
-      const {
-        logEntries
-      } = this.state;
-
-      this.setState({
-        logEntries: [
-          ...logEntries,
-          { category: 'error', message: 'WARNING' }
-        ]
-      });
-    }, 500);
   }
 
   createDiagram = async (type = 'bpmn', options) => {
