@@ -1,5 +1,6 @@
 app/node_modules/
 app/public/
 client/node_modules/
+coverage/
 dist/
 docs/
