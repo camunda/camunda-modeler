@@ -6,10 +6,6 @@ import classNames from 'classnames';
 
 import dragger from '../util/dom/dragger';
 
-import {
-  debounce
-} from 'min-dash';
-
 
 const DEFAULT_HEIGHT = 130;
 
@@ -31,10 +27,6 @@ export default class Log extends Component {
     this.state = {};
 
     this.panelRef = React.createRef();
-
-    if (process.env.NODE_ENV !== 'test') {
-      this.checkScrolling = debounce(this.checkScrolling, 300);
-    }
   }
 
   toggleLog = () => {
@@ -101,30 +93,6 @@ export default class Log extends Component {
     });
   }
 
-  checkScrolling = () => {
-    const {
-      expanded
-    } = this.props;
-
-    if (!expanded) {
-      return;
-    }
-
-    const panel = this.panelRef.current;
-
-    const {
-      scrolling
-    } = this.state;
-
-    const newScrolling = panel.scrollHeight > panel.offsetHeight;
-
-    if (newScrolling !== scrolling) {
-      this.setState({
-        scrolling: newScrolling
-      });
-    }
-  }
-
   checkFocus = () => {
 
     const panel = this.panelRef.current;
@@ -142,13 +110,7 @@ export default class Log extends Component {
     }
   }
 
-  componentDidMount = () => {
-    this.checkScrolling();
-  }
-
   componentDidUpdate = (prevProps) => {
-    this.checkScrolling();
-
     const {
       entries,
       expanded
@@ -206,7 +168,6 @@ export default class Log extends Component {
     const {
       hover,
       focus,
-      scrolling,
       height
     } = this.state;
 
@@ -219,7 +180,6 @@ export default class Log extends Component {
         className={ classNames(
           css.Log, {
             expanded,
-            scrolling,
             focussed
           }
         ) }>
@@ -232,6 +192,12 @@ export default class Log extends Component {
           >Log</button>
         </div>
 
+        <div
+          className="resizer"
+          onDragStart={ this.handleResize(logHeight) }
+          draggable
+        ></div>
+
         { expanded &&
           <div
             className="body"
@@ -242,17 +208,16 @@ export default class Log extends Component {
             style={ { height: logHeight } }>
 
             <div
-              className="resizer"
-              onDragStart={ this.handleResize(logHeight) }
-              draggable
-            ></div>
-
-            <div
               tabIndex="0"
               className="entries"
               ref={ this.panelRef }
               onKeyDown={ this.handleKeyDown }
             >
+              <div className="controls">
+                <button className="copy-button" onClick={ this.handleCopy }>Copy</button>
+                <button className="clear-button" onClick={ this.handleClear }>Clear</button>
+              </div>
+
               {
                 entries.map((entry, idx) => {
 
@@ -281,11 +246,6 @@ export default class Log extends Component {
                   );
                 })
               }
-            </div>
-
-            <div className="controls">
-              <button className="copy-button" onClick={ this.handleCopy }>Copy</button>
-              <button className="clear-button" onClick={ this.handleClear }>Clear</button>
             </div>
           </div>
         }

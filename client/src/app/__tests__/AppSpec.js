@@ -802,6 +802,24 @@ describe('<App>', function() {
 
       // when
       app.toggleLog(true);
+
+      // then
+      expect(app.state.layout).to.eql({
+        log: { open: true }
+      });
+    });
+
+
+    it('should toggle closed', function() {
+
+      // given
+      const { app } = createApp();
+
+      app.setLayout({
+        log: { open: true }
+      });
+
+      // when
       app.toggleLog(false);
 
       // then
@@ -834,10 +852,10 @@ describe('<App>', function() {
       app.setLayout({ log: { open: true } });
 
       // when
-      const [ log ] = tree.find(Log);
+      const log = tree.find(Log).first();
 
       // then
-      expect(log.props.expanded).to.be.true;
+      expect(log.props().expanded).to.be.true;
     });
 
   });
