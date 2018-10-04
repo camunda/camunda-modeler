@@ -3,20 +3,15 @@
 
   display: flex;
   flex-direction: column;
-  margin-top: 5px;
+  flex: none;
 
   .header {
-    position: absolute;
-    top: -28px;
-    right: 0;
     display: flex;
     justify-content: flex-end;
-    padding: 0 5px;
+    padding: 0 5px 0;
   }
 
   .entries {
-    overflow: auto;
-
     border: none;
 
     font-size: 13px;
@@ -25,17 +20,15 @@
 
     white-space: pre-wrap;
     padding: 5px;
-    background: #FCFCFC;
     resize: none;
+    outline: none;
 
     width: 100%;
     display: block;
   }
 
   .resizer {
-    position: absolute;
     width: 100%;
-    top: -3px;
 
     height: 6px;
 
@@ -44,10 +37,18 @@
     cursor: ns-resize;
   }
 
+  &:not(.expanded) {
+    .resizer {
+      visibility: hidden;
+    }
+  }
+
   .body {
+    overflow: auto;
     position: relative;
     display: flex;
     border-top: solid 1px #CCC;
+    background: #FCFCFC;
   }
 
   button {
@@ -60,6 +61,7 @@
     padding: 3px 8px;
     cursor: default;
     user-select: none;
+    outline: none;
 
     &:hover {
       background: #F6F6F6;
@@ -71,9 +73,9 @@
   }
 
   .controls {
-    position: absolute;
-    right: 5px;
-    top: 4px;
+    position: sticky;
+    top: 5px;
+    float: right;
 
     opacity: 0;
     pointer-events: none;
@@ -88,10 +90,6 @@
       }
     }
 
-  }
-
-  &.scrolling .controls {
-    right: 20px;
   }
 
   &.focussed .controls {

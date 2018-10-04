@@ -52,10 +52,12 @@ describe('<Log>', function() {
       }, mount);
 
       // when
-      const entries = tree.find('.entries');
+      const entry = tree.find('.entry');
 
       // then
-      expect(entries.text()).to.eql('HE  [warning]HO  [error] ');
+      expect(entry.at(0).text()).to.eql('HE  [warning]');
+      expect(entry.at(1).text()).to.eql('HO  [error]');
+      expect(entry.at(2).text()).to.eql(' ');
     });
 
   });
