@@ -2,6 +2,8 @@ import { Component } from 'react';
 
 import { assign } from 'min-dash';
 
+import EmptyTab from '../../EmptyTab';
+
 
 class FakeTab extends Component {
 
@@ -64,6 +66,11 @@ export class TabsProvider {
     this.uuid = 0;
 
     this.resolveTab = resolveTab || function(type) {
+
+      if (type === 'empty') {
+        return EmptyTab;
+      }
+
       return Promise.resolve({ default: FakeTab });
     };
   }
