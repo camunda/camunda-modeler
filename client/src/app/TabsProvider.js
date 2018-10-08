@@ -5,8 +5,19 @@ import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
 import dmnTable from './tabs/dmn/table.dmn';
 
+import EmptyTab from './EmptyTab';
+
 const ids = new Ids([ 32, 36, 1 ]);
 const createdByType = {};
+
+const noopProvider = {
+  getComponent() {
+    return null;
+  },
+  getInitialContents() {
+    return null;
+  }
+};
 
 
 /**
@@ -14,38 +25,55 @@ const createdByType = {};
  */
 export default class TabsProvider {
 
+  constructor() {
+
+    this.providers = {
+      empty: {
+        getComponent() {
+          return EmptyTab;
+        }
+      },
+      bpmn: {
+        name: 'BPMN',
+        getComponent(options) {
+          return import('./tabs/bpmn');
+        },
+        getInitialContents(options) {
+          return bpmnDiagram;
+        }
+      },
+      cmmn: {
+        name: 'CMMN',
+        getComponent(options) {
+          return import('./tabs/cmmn');
+        },
+        getInitialContents(options) {
+          return cmmnDiagram;
+        }
+      },
+      dmn: {
+        name: 'DMN',
+        getComponent(options) {
+          return import('./tabs/dmn');
+        },
+        getInitialContents(options) {
+          return options && options.table ? dmnTable : dmnDiagram;
+        }
+      }
+    };
+
+  }
+
+  getProvider(type) {
+    return (this.providers[type] || noopProvider);
+  }
+
   getTabComponent(type, options) {
-
-    if (type === 'bpmn') {
-      return import('./tabs/bpmn');
-    }
-
-    if (type === 'cmmn') {
-      return import('./tabs/cmmn');
-    }
-
-    if (type === 'dmn') {
-      return import('./tabs/dmn');
-    }
+    return this.getProvider(type).getComponent(options);
   }
 
   getInitialFileContents(type, options) {
-
-    let contents;
-
-    if (type === 'bpmn') {
-      contents = bpmnDiagram;
-    }
-
-    if (type === 'cmmn') {
-      contents = cmmnDiagram;
-    }
-
-    if (type === 'dmn') {
-      contents = options && options.table ? dmnTable : dmnDiagram;
-    }
-
-    return contents && contents.replace('{{ ID }}', ids.next());
+    return this.getProvider(type).getInitialContents(options);
   }
 
   createFile(type, options) {
@@ -58,7 +86,9 @@ export default class TabsProvider {
 
     const name = `diagram_${counter}.${type}`;
 
-    const contents = this.getInitialFileContents(type, options);
+    const rawContents = this.getInitialFileContents(type, options);
+
+    const contents = rawContents && rawContents.replace('{{ ID }}', ids.next());
 
     return {
       name,
