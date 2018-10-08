@@ -36,10 +36,6 @@ import css from './App.less';
 
 const log = debug('App');
 
-const tabLoaded = {
-  empty: EmptyTab
-};
-
 export const EMPTY_TAB = {
   id: '__empty',
   type: 'empty'
@@ -64,6 +60,10 @@ export class App extends Component {
     this.state = {
       ...INITIAL_STATE,
       tabShown: pDefer()
+    };
+
+    this.tabComponentCache = {
+      empty: EmptyTab
     };
 
     // TODO(nikku): make state
@@ -447,8 +447,8 @@ export class App extends Component {
 
     const type = tab.type;
 
-    if (tabLoaded[type]) {
-      return tabLoaded[type];
+    if (this.tabComponentCache[type]) {
+      return this.tabComponentCache[type];
     }
 
     const {
@@ -461,7 +461,7 @@ export class App extends Component {
 
       var Tab = c.default || c;
 
-      tabLoaded[type] = Tab;
+      this.tabComponentCache[type] = Tab;
 
       if (this.state.activeTab === tab) {
         this.setState({
@@ -470,7 +470,7 @@ export class App extends Component {
       }
     });
 
-    return LoadingTab;
+    return (this.tabComponentCache[type] = LoadingTab);
   }
 
   componentDidMount() {
