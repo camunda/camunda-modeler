@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import {
   shallow,
@@ -100,13 +100,15 @@ describe('<App>', function() {
     });
 
 
-    it('should allow user to create new diagram', function() {
+    it('should allow user to create new diagram', async function() {
 
       // given
       const {
         app,
         tree
       } = createApp(mount);
+
+      await app.setActiveTab(EMPTY_TAB);
 
       const createButton = tree.find('button.create-bpmn');
 
@@ -503,7 +505,6 @@ describe('<App>', function() {
 
       // then
       expect(events).to.eql([
-        [ 'tab-shown', EMPTY_TAB ],
         [ 'tab-changed', tab ],
         [ 'tab-shown', tab ]
       ]);
@@ -860,6 +861,44 @@ describe('<App>', function() {
 
   });
 
+
+  describe('customization', function() {
+
+    class CustomEmptyTab extends Component {
+
+      componentDidMount() {
+        this.props.onShown();
+      }
+
+      render() {
+        expect(this.props.tab).to.equal(EMPTY_TAB);
+        expect(this.props.onAction).to.exist;
+
+        return <div></div>;
+      }
+    }
+
+
+    it('should allow replacement of empty tab', function() {
+
+      // given
+      const resolveTabSpy = spy(function(type) {
+        expect(type).to.eql('empty');
+
+        return CustomEmptyTab;
+      });
+
+      const tabsProvider = new TabsProvider(resolveTabSpy);
+
+      // when
+      createApp({ tabsProvider }, mount);
+
+      // then
+      expect(resolveTabSpy).to.have.been.calledOnce;
+    });
+
+  });
+
 });
 
 
@@ -900,7 +939,10 @@ function createApp(options = {}, mountFn=shallow) {
   const onTabChanged = options.onTabChanged || defaultOnTabChanged;
 
   const onWorkspaceChanged = options.onWorkspaceChanged;
-  const onTabShown = options.onTabShown;
+  const onTabShown = options.onTabShown || function() {
+    tree.update();
+  };
+
   const onReady = options.onReady;
   const onError = options.onError;
 

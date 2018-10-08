@@ -10,7 +10,6 @@ import {
 import { debounce } from 'min-dash';
 
 import Toolbar from './Toolbar';
-import EmptyTab from './EmptyTab';
 
 import Log from './Log';
 
@@ -43,7 +42,6 @@ export const EMPTY_TAB = {
 
 const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
-  Tab: EmptyTab,
   dirtyTabs: {},
   layout: {},
   tabs: [],
@@ -62,9 +60,7 @@ export class App extends Component {
       tabShown: pDefer()
     };
 
-    this.tabComponentCache = {
-      empty: EmptyTab
-    };
+    this.tabComponentCache = {};
 
     // TODO(nikku): make state
     this.tabHistory = new History();
@@ -193,7 +189,7 @@ export class App extends Component {
 
     this.setState({
       activeTab: tab,
-      Tab: this.loadTab(tab),
+      Tab: this.getTabComponent(tab),
       tabShown: deferred,
       tabState: {},
       tabLoadingState: 'loading'
@@ -443,7 +439,7 @@ export class App extends Component {
     });
   }
 
-  loadTab(tab) {
+  getTabComponent(tab) {
 
     const type = tab.type;
 
@@ -811,7 +807,7 @@ export class App extends Component {
       logEntries
     } = this.state;
 
-    const Tab = this.state.Tab;
+    const Tab = this.getTabComponent(activeTab);
 
     return (
       <div className={ css.App }>
@@ -913,26 +909,18 @@ export class App extends Component {
 
             <TabContainer className="main">
               {
-                Tab === EmptyTab ? (
-                  <EmptyTab
-                    key={ activeTab.id }
-                    tab={ activeTab }
-                    onShown={ this.handleTabShown(activeTab) }
-                    onAction={ this.triggerAction }
-                    ref={ this.tabRef } />
-                ) : (
-                  <Tab
-                    key={ activeTab.id }
-                    tab={ activeTab }
-                    layout={ layout }
-                    onChanged={ this.handleTabChanged(activeTab) }
-                    onError={ this.handleTabError(activeTab) }
-                    onShown={ this.handleTabShown(activeTab) }
-                    onLayoutChanged={ this.handleLayoutChanged }
-                    onContextMenu={ this.openTabMenu }
-                    ref={ this.tabRef }
-                  />
-                )
+                <Tab
+                  key={ activeTab.id }
+                  tab={ activeTab }
+                  layout={ layout }
+                  onChanged={ this.handleTabChanged(activeTab) }
+                  onError={ this.handleTabError(activeTab) }
+                  onShown={ this.handleTabShown(activeTab) }
+                  onLayoutChanged={ this.handleLayoutChanged }
+                  onContextMenu={ this.openTabMenu }
+                  onAction={ this.triggerAction }
+                  ref={ this.tabRef }
+                />
               }
             </TabContainer>
           </div>
