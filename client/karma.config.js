@@ -7,6 +7,10 @@ if (coverage) {
 }
 
 var path = require('path');
+var os = require('os');
+
+var platform = os.platform();
+var windows = /^win/.test(platform);
 
 var { DefinePlugin } = require('webpack');
 
@@ -96,7 +100,8 @@ module.exports = function(karma) {
       plugins: [
         new DefinePlugin({
           'process.env': {
-            NODE_ENV: JSON.stringify('test')
+            NODE_ENV: JSON.stringify('test'),
+            WINDOWS: JSON.stringify(windows)
           }
         })
       ],
