@@ -8,6 +8,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: DEV ? 'development' : 'production',
+  target: 'electron-renderer',
   entry: {
     bundle: ['./src/index.js']
   },
