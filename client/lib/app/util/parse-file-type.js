@@ -4,6 +4,10 @@ import {
   forEach
 } from 'min-dash';
 
+import {
+  Parser
+} from 'saxen';
+
 var TYPES = {
   bpmn: 'http://www.omg.org/spec/BPMN',
   dmn: 'http://www.omg.org/spec/DMN',
@@ -12,14 +16,45 @@ var TYPES = {
 
 
 module.exports = function parseType(file) {
+  var contents = file.contents,
+      type = null,
+      namespace;
 
-  var type = null;
+  const parser = new Parser();
 
-  forEach(TYPES, function(ns, t) {
-    if (file.contents.indexOf(ns) !== -1) {
-      type = t;
+  parser.on('openTag', function(elementName, attrGetter) {
+
+    // bpmn:definitions
+    // dmn:Definitions
+    if (elementName.indexOf(':') !== -1) {
+      let [ prefix, name ] = elementName.split(':');
+
+      if (name.toLowerCase() === 'definitions') {
+        namespace = attrGetter()[ `xmlns:${prefix}` ];
+      }
     }
+
+    // definitions
+    // Defintitions
+    if (elementName.toLowerCase() === 'definitions') {
+      namespace = attrGetter().xmlns;
+    }
+
+    // only parse first tag
+    parser.stop();
   });
+
+  try {
+    parser.parse(contents);
+
+    forEach(TYPES, function(uri, t) {
+      if (namespace && namespace.indexOf(uri) !== -1) {
+        type = t;
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
 
   return type;
 };
