@@ -6,6 +6,10 @@ import {
   CachedComponent
 } from '../../cached';
 
+import {
+  Loader
+} from '../../primitives';
+
 import PropertiesContainer from '../PropertiesContainer';
 
 import CamundaCmmnModeler from './modeler';
@@ -122,6 +126,21 @@ export class CmmnEditor extends CachedComponent {
     onError(error);
   }
 
+  handleImport = (error, warnings) => {
+
+    const {
+      onImport
+    } = this.props;
+
+    onImport(error, warnings);
+
+    if (!error) {
+      this.setState({
+        loading: false
+      });
+    }
+  }
+
   updateState = (event) => {
     const {
       modeler
@@ -180,13 +199,11 @@ export class CmmnEditor extends CachedComponent {
 
       modeler.lastXML = xml;
 
-      modeler.importXML(xml, (err) => {
-        if (err) {
-          this.handleError({
-            error: err
-          });
-        }
+      this.setState({
+        loading: true
       });
+
+      modeler.importXML(xml, this.handleImport);
     }
   }
 
@@ -300,8 +317,14 @@ export class CmmnEditor extends CachedComponent {
       onLayoutChanged
     } = this.props;
 
+    const {
+      loading,
+    } = this.state;
+
     return (
       <div className={ css.CmmnEditor }>
+
+        <Loader hidden={ !loading } />
 
         <div
           className="diagram"
