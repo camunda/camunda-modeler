@@ -4,7 +4,8 @@ import { Fill } from '../../slot-fill';
 
 import {
   DropdownButton,
-  Icon
+  Icon,
+  Loader
 } from '../../primitives';
 
 import {
@@ -118,23 +119,24 @@ export class DmnEditor extends CachedComponent {
     this.props.onChanged(this.checkDirty());
   }
 
-  handleImported = (error, warnings) => {
+  handleImport = (error, warnings) => {
 
     const {
       modeler
     } = this.getCached();
 
     const {
-      activeSheet
+      activeSheet,
+      onImport
     } = this.props;
 
     if (error) {
-      return this.handleError({ error });
+      return onImport(error, warnings);
     }
 
-    if (warnings.length) {
-      console.error('imported with warnings', warnings);
-    }
+    this.setState({
+      loading: false
+    });
 
     if (activeSheet && activeSheet.element) {
       return this.open(activeSheet.element);
@@ -143,6 +145,8 @@ export class DmnEditor extends CachedComponent {
     const initialView = modeler._getInitialView(modeler._views);
 
     this.open(initialView.element);
+
+    onImport(null, warnings);
   }
 
   viewsChanged = ({ activeView, views }) => {
@@ -299,9 +303,11 @@ export class DmnEditor extends CachedComponent {
     if (xml !== modeler.lastXML) {
       modeler.lastXML = xml;
 
-      window.modeler = modeler;
+      this.setState({
+        loading: true
+      });
 
-      modeler.importXML(xml, { open: false }, this.handleImported);
+      modeler.importXML(xml, { open: false }, this.handleImport);
     } else {
       activeSheet
         && activeSheet.element
@@ -419,6 +425,10 @@ export class DmnEditor extends CachedComponent {
     } = this.props;
 
     const {
+      loading,
+    } = this.state;
+
+    const {
       modeler
     } = this.getCached();
 
@@ -428,6 +438,8 @@ export class DmnEditor extends CachedComponent {
 
     return (
       <div className={ css.DmnEditor }>
+
+        <Loader hidden={ !loading } />
 
         <Fill name="toolbar" group="deploy">
           <DropdownButton title="Deploy Current Diagram" items={ [{

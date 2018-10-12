@@ -14,7 +14,7 @@ import {
 import css from './MultiSheetTab.less';
 
 
-class MultiSheetTab extends CachedComponent {
+export class MultiSheetTab extends CachedComponent {
 
   constructor(props) {
     super(props);
@@ -88,6 +88,29 @@ class MultiSheetTab extends CachedComponent {
     } = this.props;
 
     onError(error);
+  }
+
+  handleWarning = (warning) => {
+    const {
+      onWarning
+    } = this.props;
+
+    onWarning(warning);
+  }
+
+  handleImport = (error, warnings) => {
+
+    if (error) {
+      // TODO: open fallback
+
+      return this.handleError(error);
+    }
+
+    if (warnings && warnings.length) {
+      warnings.forEach(warning => {
+        this.handleWarning(warning);
+      });
+    }
   }
 
   handleContextMenu = (event, context) => {
@@ -238,6 +261,7 @@ class MultiSheetTab extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
             onChanged={ this.handleChanged }
             onError={ this.handleError }
+            onImport={ this.handleImport }
             onLayoutChanged={ this.handleLayoutChanged } />
         </TabContainer>
 

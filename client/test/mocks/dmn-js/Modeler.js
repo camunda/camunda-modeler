@@ -52,9 +52,11 @@ export default class Modeler {
   importXML(xml, options, done) {
     this.xml = xml;
 
-    const error = xml === 'import-error' ? new Error('failed to import xml') : null;
+    const error = xml === 'import-error' ? new Error('error') : null;
 
-    done && done(error, []);
+    const warnings = xml === 'import-warnings' ? [ 'warning' ] : [];
+
+    done && done(error, warnings);
   }
 
   getActiveView() {
