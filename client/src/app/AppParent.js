@@ -123,6 +123,14 @@ export default class AppParent extends Component {
     return log('app error', error);
   }
 
+  handleWarning = (warning, tab) => {
+    if (tab) {
+      return log('tab warning', warning, tab);
+    }
+
+    return log('app warning', warning);
+  }
+
   handleReady = async () => {
 
     try {
@@ -199,6 +207,7 @@ export default class AppParent extends Component {
         onWorkspaceChanged={ this.handleWorkspaceChanged }
         onReady={ this.handleReady }
         onError={ this.handleError }
+        onWarning={ this.handleWarning }
       />
     );
   }

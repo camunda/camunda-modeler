@@ -1,0 +1,13 @@
+import React, { Component } from 'react';
+
+export class Editor extends Component {
+  render() {
+    return <div></div>;
+  }
+}
+
+export const providers = [{
+  type: 'editor',
+  editor: Editor,
+  defaultName: 'Editor'
+}];

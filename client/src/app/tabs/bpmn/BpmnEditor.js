@@ -180,7 +180,6 @@ export class BpmnEditor extends CachedComponent {
   }
 
   handleError = (event) => {
-
     const {
       error
     } = event;
@@ -191,6 +190,23 @@ export class BpmnEditor extends CachedComponent {
 
     onError(error);
   }
+
+
+  handleImport = (error, warnings) => {
+
+    const {
+      onImport
+    } = this.props;
+
+    onImport(error, warnings);
+
+    if (!error) {
+      this.setState({
+        loading: false
+      });
+    }
+  }
+
 
   updateState = (event) => {
     const {
@@ -264,22 +280,7 @@ export class BpmnEditor extends CachedComponent {
       });
 
       // TODO(nikku): apply default element templates to initial diagram
-      modeler.importXML(xml, (err, warnings) => {
-
-        if (warnings.length) {
-          console.log('WARNINGS', warnings);
-        }
-
-        if (err) {
-          return this.handleError({
-            error: err
-          });
-        }
-
-        this.setState({
-          loading: false
-        });
-      });
+      modeler.importXML(xml, this.handleImport);
     }
   }
 

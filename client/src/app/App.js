@@ -382,6 +382,16 @@ export class App extends Component {
     this.handleError(error, tab);
   }
 
+  /**
+   * Handle tab warning.
+   *
+   * @param {Object} tab descriptor
+   *
+   * @return {Function} tab warning callback
+   */
+  handleTabWarning = (tab) => (warning) => {
+    this.handleWarning(warning, tab);
+  }
 
   /**
    * Handle tab changed.
@@ -542,16 +552,58 @@ export class App extends Component {
   }
 
   handleError(error, ...args) {
-
     const {
       onError
     } = this.props;
+
+    const {
+      message
+    } = error;
 
     if (typeof onError === 'function') {
       onError(error, ...args);
     }
 
-    // TODO: show error in log
+    this.logEntry(message, 'error');
+  }
+
+  handleWarning(warning, ...args) {
+    const {
+      onWarning
+    } = this.props;
+
+    const {
+      message
+    } = warning;
+
+    if (typeof onWarning === 'function') {
+      onWarning(warning, ...args);
+    }
+
+    this.logEntry(message, 'warning');
+  }
+
+  /**
+   *
+   * @param {String} message - Message to be logged.
+   * @param {String} category - Category of message.
+   */
+  logEntry(message, category) {
+    const {
+      logEntries
+    } = this.state;
+
+    this.toggleLog(true);
+
+    this.setState({
+      logEntries: [
+        ...logEntries,
+        {
+          category,
+          message
+        }
+      ]
+    });
   }
 
   setLayout(layout) {
@@ -688,7 +740,22 @@ export class App extends Component {
   }
 
   askExportAs = (file, filters) => {
-    return this.props.globals.dialog.askExportAs(file, filters);
+    const {
+      globals
+    } = this.props;
+
+    return globals.dialog.askExportAs(file, filters);
+  }
+
+  /**
+   * Show a generic dialog.
+   */
+  showDialog(options = {}) {
+    const {
+      globals
+    } = this.props;
+
+    return globals.dialog.show(options);
   }
 
   triggerAction = (action, options) => {
@@ -915,6 +982,7 @@ export class App extends Component {
                   layout={ layout }
                   onChanged={ this.handleTabChanged(activeTab) }
                   onError={ this.handleTabError(activeTab) }
+                  onWarning={ this.handleTabWarning(activeTab) }
                   onShown={ this.handleTabShown(activeTab) }
                   onLayoutChanged={ this.handleLayoutChanged }
                   onContextMenu={ this.openTabMenu }
