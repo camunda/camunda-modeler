@@ -700,6 +700,28 @@ describe('<App>', function() {
     });
 
 
+    it('should show in log', async function() {
+
+      // given
+      const {
+        app
+      } = createApp(mount);
+
+      await app.createDiagram();
+
+      const tabInstance = app.tabRef.current;
+
+      const error = new Error('YZO!');
+
+      // when
+      tabInstance.triggerAction('error', error);
+
+      // then
+      expect(app.state.layout.log.open).to.be.true;
+      expect(app.state.logEntries).to.have.length(1);
+    });
+
+
     describe('should catch', function() {
 
       const errorHandler = window.onerror;
@@ -745,6 +767,59 @@ describe('<App>', function() {
         // expect(caughtError).to.equal(error);
       });
 
+    });
+
+  });
+
+
+  describe('tab warnings', function() {
+
+    it('should propagate', async function() {
+
+      // given
+      const warningSpy = spy();
+
+      const {
+        app
+      } = createApp({ onWarning: warningSpy }, mount);
+
+      const tab = await app.createDiagram();
+
+      const tabInstance = app.tabRef.current;
+
+      // when
+      const warning = {
+        message: 'warning'
+      };
+
+      tabInstance.triggerAction('warning', warning);
+
+      // then
+      expect(warningSpy).to.have.been.calledWith(warning, tab);
+    });
+
+
+    it('should show in log', async function() {
+
+      // given
+      const {
+        app
+      } = createApp(mount);
+
+      await app.createDiagram();
+
+      const tabInstance = app.tabRef.current;
+
+      // when
+      const warning = {
+        message: 'warning'
+      };
+
+      tabInstance.triggerAction('warning', warning);
+
+      // then
+      expect(app.state.layout.log.open).to.be.true;
+      expect(app.state.logEntries).to.have.length(1);
     });
 
   });
@@ -859,6 +934,28 @@ describe('<App>', function() {
       expect(log.props().expanded).to.be.true;
     });
 
+
+    it('#logEntry', function() {
+
+      // given
+      const { tree, app } = createApp();
+
+      app.setLayout({ log: { open: false } });
+
+      // when
+      app.logEntry('foo', 'bar');
+
+      // then
+      const log = tree.find(Log).first();
+
+      expect(app.state.logEntries).to.eql([{
+        message: 'foo',
+        category: 'bar'
+      }]);
+
+      expect(log.props().expanded).to.be.true;
+    });
+
   });
 
 
@@ -945,6 +1042,7 @@ function createApp(options = {}, mountFn=shallow) {
 
   const onReady = options.onReady;
   const onError = options.onError;
+  const onWarning = options.onWarning;
 
   const tree = mountFn(
     <App
@@ -953,6 +1051,7 @@ function createApp(options = {}, mountFn=shallow) {
       tabsProvider={ tabsProvider }
       onReady={ onReady }
       onError={ onError }
+      onWarning={ onWarning }
       onTabChanged={ onTabChanged }
       onTabShown={ onTabShown }
       onWorkspaceChanged={ onWorkspaceChanged }

@@ -222,22 +222,8 @@ describe('<BpmnEditor>', function() {
     it('should handle template error');
 
 
-    it('should handle import error', function() {
-
-      // given
-      const errorSpy = spy();
-
-      // when
-      renderEditor('import-error', {
-        onError: errorSpy
-      });
-
-      // then
-      expect(errorSpy).to.have.been.called;
-    });
-
-
     it('should handle XML export', async function() {
+
       // given
       const errorSpy = spy();
 
@@ -263,6 +249,7 @@ describe('<BpmnEditor>', function() {
 
 
     it('should handle image export error', async function() {
+
       // given
       const errorSpy = spy();
 
@@ -288,6 +275,65 @@ describe('<BpmnEditor>', function() {
 
   });
 
+
+  describe('import', function() {
+
+    it('should import without errors and warnings', function() {
+
+      // given
+      const importSpy = spy();
+
+      // when
+      renderEditor(diagramXML, {
+        onImport: importSpy
+      });
+
+      // then
+      expect(importSpy).to.have.been.calledWith(null, []);
+    });
+
+
+    it('should import with warnings', function() {
+
+      // given
+      const importSpy = (error, warnings) => {
+
+        // then
+        expect(error).not.to.exist;
+
+        expect(warnings).to.exist;
+        expect(warnings).to.have.length(1);
+        expect(warnings[0]).to.equal('warning');
+      };
+
+      // when
+      renderEditor('import-warnings', {
+        onImport: importSpy
+      });
+    });
+
+
+    it('should import with error', function() {
+
+      // given
+      const importSpy = (error, warnings) => {
+
+        // then
+        expect(error).to.exist;
+        expect(error.message).to.equal('error');
+
+        expect(warnings).to.exist;
+        expect(warnings).to.have.length(0);
+      };
+
+      // when
+      renderEditor('import-error', {
+        onImport: importSpy
+      });
+    });
+
+  });
+
 });
 
 
@@ -299,18 +345,21 @@ const TestEditor = WithCachedState(BpmnEditor);
 
 function renderEditor(xml, options = {}) {
   const {
+    id,
     layout,
     onError,
+    onImport,
     onLayoutChanged
   } = options;
 
   const slotFillRoot = mount(
     <SlotFillRoot>
       <TestEditor
-        id={ options.id || 'editor' }
+        id={ id || 'editor' }
         xml={ xml }
-        onLayoutChanged={ onLayoutChanged || noop }
         onError={ onError || noop }
+        onImport={ onImport || noop }
+        onLayoutChanged={ onLayoutChanged || noop }
         cache={ options.cache || new Cache() }
         layout={ layout || {
           minimap: {

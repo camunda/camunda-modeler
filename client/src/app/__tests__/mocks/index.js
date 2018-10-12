@@ -47,6 +47,10 @@ class FakeTab extends Component {
       this.props.onError(options);
     }
 
+    if (action === 'warning') {
+      this.props.onWarning(options);
+    }
+
     if (action === 'errorThrow') {
       this.setState({
         error: options
