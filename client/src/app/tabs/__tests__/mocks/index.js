@@ -10,4 +10,9 @@ export const providers = [{
   type: 'editor',
   editor: Editor,
   defaultName: 'Editor'
+}, {
+  type: 'fallback',
+  editor: Editor,
+  defaultName: 'Fallback',
+  isFallback: true
 }];

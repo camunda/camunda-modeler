@@ -131,8 +131,10 @@ export class BpmnEditor extends CachedComponent {
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
   }
 
-  componentDidUpdate(previousProps) {
-    this.checkImport();
+  componentDidUpdate() {
+    if (!this.state.importing) {
+      this.checkImport();
+    }
   }
 
   undo = () => {
@@ -193,16 +195,22 @@ export class BpmnEditor extends CachedComponent {
 
 
   handleImport = (error, warnings) => {
+    const {
+      onImport,
+      xml
+    } = this.props;
 
     const {
-      onImport
-    } = this.props;
+      modeler
+    } = this.getCached();
 
     onImport(error, warnings);
 
     if (!error) {
+      modeler.lastXML = xml;
+
       this.setState({
-        loading: false
+        importing: false
       });
     }
   }
@@ -273,11 +281,8 @@ export class BpmnEditor extends CachedComponent {
     } = this.props;
 
     if (xml !== modeler.lastXML) {
-
-      modeler.lastXML = xml;
-
       this.setState({
-        loading: true
+        importing: true
       });
 
       // TODO(nikku): apply default element templates to initial diagram
@@ -413,13 +418,13 @@ export class BpmnEditor extends CachedComponent {
     } = this.props;
 
     const {
-      loading,
+      importing,
     } = this.state;
 
     return (
       <div className={ css.BpmnEditor }>
 
-        <Loader hidden={ !loading } />
+        <Loader hidden={ !importing } />
 
         <Fill name="toolbar" group="color">
           <DropdownButton
