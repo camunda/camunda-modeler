@@ -71,21 +71,6 @@ MenuBuilder.prototype.appendNewFile = function() {
       click: function() {
         app.emit('menu:action', 'create-bpmn-diagram');
       }
-    }, {
-      label: 'DMN Table',
-      click: function() {
-        app.emit('menu:action', 'create-dmn-table');
-      }
-    }, {
-      label: 'DMN Diagram',
-      click: function() {
-        app.emit('menu:action', 'create-dmn-diagram');
-      }
-    }, {
-      label: 'CMMN Diagram',
-      click: function() {
-        app.emit('menu:action', 'create-cmmn-diagram');
-      }
     }])
   }));
 
@@ -1005,13 +990,13 @@ MenuBuilder.prototype.appendHelpMenu = function(submenu) {
       {
         label: 'Documentation',
         click: function() {
-          browserOpen('https://docs.camunda.org/manual/latest/modeler/camunda-modeler');
+          browserOpen('https://docs.zeebe.io/bpmn-modeler/README.html');
         }
       },
       {
         label: 'User Forum',
         click: function() {
-          browserOpen('https://forum.camunda.org/c/modeler');
+          browserOpen('https://forum.zeebe.io/');
         }
       },
       {
@@ -1026,37 +1011,13 @@ MenuBuilder.prototype.appendHelpMenu = function(submenu) {
       {
         label: 'BPMN 2.0 Tutorial',
         click: function() {
-          browserOpen('https://camunda.org/bpmn/tutorial/');
+          browserOpen('https://docs.zeebe.io/bpmn-modeler/introduction.html');
         }
       },
       {
         label: 'BPMN Modeling Reference',
         click: function() {
           browserOpen('https://camunda.org/bpmn/reference/');
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'DMN 1.1 Tutorial',
-        click: function() {
-          browserOpen('https://camunda.org/dmn/tutorial/');
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'CMMN 1.1 Tutorial',
-        click: function() {
-          browserOpen('https://docs.camunda.org/get-started/cmmn11/');
-        }
-      },
-      {
-        label: 'CMMN Modeling Reference',
-        click: function() {
-          browserOpen('https://docs.camunda.org/manual/latest/reference/cmmn11/');
         }
       },
       {

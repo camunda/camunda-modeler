@@ -45,10 +45,10 @@ const platforms = [
 const expectedFiles = {
   win: [
     {
-      name: 'camunda-modeler-${version}-win-${arch}.zip',
+      name: 'zeebe-modeler-${version}-win-${arch}.zip',
       archs,
       contents: [
-        'Camunda Modeler.exe',
+        'Zeebe Modeler.exe',
         'support/register_fileassoc.bat',
         'VERSION'
       ]
@@ -56,22 +56,22 @@ const expectedFiles = {
   ],
   linux: [
     {
-      name: 'camunda-modeler-${version}-linux-${arch}.tar.gz',
+      name: 'zeebe-modeler-${version}-linux-${arch}.tar.gz',
       archs,
       contents: [
-        'camunda-modeler-${version}-linux-${arch}/camunda-modeler',
-        'camunda-modeler-${version}-linux-${arch}/support/xdg_register.sh',
-        'camunda-modeler-${version}-linux-${arch}/VERSION'
+        'zeebe-modeler-${version}-linux-${arch}/zeebe-modeler',
+        'zeebe-modeler-${version}-linux-${arch}/support/xdg_register.sh',
+        'zeebe-modeler-${version}-linux-${arch}/VERSION'
       ]
     }
   ],
   mac: [
-    'camunda-modeler-${version}-mac.dmg',
+    'zeebe-modeler-${version}-mac.dmg',
     {
-      name: 'camunda-modeler-${version}-mac.zip',
+      name: 'zeebe-modeler-${version}-mac.zip',
       archs: [ 'x64' ],
       contents: [
-        'Camunda Modeler.app/Contents/Info.plist'
+        'Zeebe Modeler.app/Contents/Info.plist'
       ]
     }
   ]

@@ -44,7 +44,7 @@ Platform.create(process.platform, app, config);
 app.developmentMode = false;
 
 app.version = require('../package').version;
-app.name = 'Camunda Modeler';
+app.name = 'Zeebe Modeler';
 
 // this is shared variable between main and renderer processes
 global.metaData = {
@@ -146,7 +146,7 @@ renderer.on('dialog:import-error', function(filename, errorDetails, done) {
 
   dialog.showDialog('importError', { name: filename, errorDetails: errorDetails }, function(err, answer) {
     if (answer === 'ask-forum') {
-      browserOpen('https://forum.camunda.org/c/modeler');
+      browserOpen('https://forum.zeebe.io/');
     }
 
     // the answer is irrelevant for the client
@@ -362,7 +362,7 @@ app.createEditorWindow = function() {
   var windowOptions = {
     resizable: true,
     show: false,
-    title: 'Camunda Modeler'
+    title: 'Zeebe Modeler'
   };
 
   if (process.platform === 'linux') {

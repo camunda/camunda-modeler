@@ -31,10 +31,6 @@ function EmptyTab(options) {
         <p className="buttons-create">
           <span>Create a </span>
           <button onClick={ this.app.compose('triggerAction', 'create-bpmn-diagram') }>BPMN diagram</button>
-          <span> or </span>
-          <button onClick={ this.app.compose('triggerAction', 'create-dmn-diagram') }>DMN diagram</button>
-          <span> or </span>
-          <button onClick={ this.app.compose('triggerAction', 'create-cmmn-diagram') }>CMMN diagram</button>
         </p>
       </div>;
 

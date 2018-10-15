@@ -1,7 +1,7 @@
 {
-  "name": "camunda-modeler-client",
+  "name": "zeebe-modeler-client",
   "version": "2.0.3",
-  "description": "Camunda Modeler client application",
+  "description": "Zeebe Modeler client application",
   "private": true,
   "scripts": {
     "test": "cross-env NODE_ENV=test grunt test",

@@ -1,7 +1,7 @@
 {
-  "name": "camunda-modeler-builder",
+  "name": "zeebe-modeler-builder",
   "version": "0.0.0",
-  "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
+  "description": "Zeebe Modeler for BPMN based on bpmn.io",
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
     "app:dev": "electron app/dev",
@@ -14,7 +14,7 @@
     "auto-test": "run-p *:auto-test",
     "clean": "del-cli 'distro/*' app/public",
     "dev": "run-p *:dev",
-    "distro": "node tasks/distro.js",
+    "distro": "node tasks/distro.js --win --linux --mac",
     "distro:test-archives": "node tasks/test-distro.js",
     "build": "run-s client:build \"distro -- {@}\" \"distro:test-archives -- {@}\" --",
     "lint": "eslint .",

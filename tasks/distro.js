@@ -14,6 +14,9 @@ const {
   config
 } = argv;
 
+console.log("ARGV: ")
+console.log(argv)
+
 let nightlyVersion = nightly && getVersion(pkg, {
   nightly: 'nightly'
 });
@@ -62,6 +65,9 @@ const platforms = [
   argv.linux ? 'linux': null,
   argv.mac ? 'mac' : null
 ].filter(f => f);
+
+console.log("ARGV: ")
+console.log(argv)
 
 const platformOptions = platforms.map(p => `--${p}`);
 

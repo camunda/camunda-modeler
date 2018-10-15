@@ -1,0 +1,176 @@
+{
+  "name": "zeebe",
+  "prefix": "zeebe",
+  "uri": "http://camunda.org/schema/zeebe/1.0",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "associations": [],
+  "types": [
+    {
+      "name": "ZeebeServiceTask",
+      "extends": [ "bpmn:ServiceTask"],
+      "properties": [
+        {
+          "name": "retryCounter",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "IoMapping",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "ioMapping",
+          "type": "IoMapping"
+        },
+        {
+          "name": "outputBehavior",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "connectorId",
+          "type": "String"
+        },
+        {
+          "name": "inputParameters",
+          "isMany": true,
+          "type": "Input"
+        },
+        {
+          "name": "outputParameters",
+          "isMany": true,
+          "type": "Output"
+        }
+      ]
+    },
+    {
+      "name": "InputOutputParameter",
+      "properties": [
+        {
+          "name": "source",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "target",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "PayloadMappings",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "mapping",
+          "isMany": true,
+          "type": "Mapping"
+        }
+      ]
+    },
+    {
+      "name": "Mapping",
+      "properties": [
+        {
+          "name": "source",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "target",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "type",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Subscription",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "correlationKey",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Input",
+      "superClass": [ "InputOutputParameter" ]
+    },
+    {
+      "name": "Output",
+      "superClass": [ "InputOutputParameter" ]
+    },
+    {
+      "name": "TaskHeaders",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "values",
+          "type": "Header",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "Header",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "id",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "key",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "value",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "TaskDefinition",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "type",
+          "type": "string",
+          "isAttr": true
+        },
+        {
+          "name": "retries",
+          "type": "string",
+          "isAttr": true
+        }
+      ]
+    }
+  ]
+}

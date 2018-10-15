@@ -1,13 +1,13 @@
 {
-  "name": "camunda-modeler",
-  "version": "2.0.3",
-  "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
+  "name": "zeebe-modeler",
+  "version": "0.1.0",
+  "description": "Zeebe Modeler for BPMN based on bpmn.io",
   "private": true,
   "main": "lib/index.js",
   "author": {
     "name": "Camunda Services GmbH",
     "email": "info@camunda.com",
-    "url": "https://camunda.com"
+    "url": "https://zeebe.io"
   },
   "devDependencies": {
     "electron-reload": "^1.2.2"
@@ -20,9 +20,9 @@
     "node-fetch": "^2.1.2",
     "parents": "^1.0.1"
   },
-  "homepage": "https://github.com/camunda/camunda-modeler",
+  "homepage": "https://github.com/zeebe-io/zeebe-modeler",
   "repository": {
     "type": "git",
-    "url": "https://github.com/camunda/camunda-modeler"
+    "url": "https://github.com/zeebe-io/zeebe-modeler"
   }
 }

@@ -26,7 +26,7 @@ function createEditor() {
     },
     metaData: {
       version: '1.2.3',
-      name: 'Camunda Modeler FTW'
+      name: 'Zeebe Modeler FTW'
     }
   });
 }
