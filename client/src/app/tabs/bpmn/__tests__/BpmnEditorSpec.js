@@ -222,7 +222,7 @@ describe('<BpmnEditor>', function() {
     it('should handle template error');
 
 
-    it('should handle XML export', async function() {
+    it('should handle XML export error', async function() {
 
       // given
       const errorSpy = spy();
@@ -284,12 +284,18 @@ describe('<BpmnEditor>', function() {
       const importSpy = spy();
 
       // when
-      renderEditor(diagramXML, {
+      const { instance } = renderEditor(diagramXML, {
         onImport: importSpy
       });
 
       // then
+      const {
+        modeler
+      } = instance.getCached();
+
       expect(importSpy).to.have.been.calledWith(null, []);
+
+      expect(modeler.lastXML).to.equal(diagramXML);
     });
 
 
@@ -307,9 +313,16 @@ describe('<BpmnEditor>', function() {
       };
 
       // when
-      renderEditor('import-warnings', {
+      const { instance } = renderEditor('import-warnings', {
         onImport: importSpy
       });
+
+      // then
+      const {
+        modeler
+      } = instance.getCached();
+
+      expect(modeler.lastXML).to.equal('import-warnings');
     });
 
 
@@ -327,9 +340,16 @@ describe('<BpmnEditor>', function() {
       };
 
       // when
-      renderEditor('import-error', {
+      const { instance } = renderEditor('import-error', {
         onImport: importSpy
       });
+
+      // then
+      const {
+        modeler
+      } = instance.getCached();
+
+      expect(modeler.lastXML).not.to.exist;
     });
 
   });

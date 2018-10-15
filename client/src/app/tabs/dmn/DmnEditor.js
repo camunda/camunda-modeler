@@ -71,7 +71,9 @@ export class DmnEditor extends CachedComponent {
   }
 
   componentDidUpdate() {
-    this.checkImport();
+    if (!this.state.importing) {
+      this.checkImport();
+    }
   }
 
   listen(fn) {
@@ -122,31 +124,33 @@ export class DmnEditor extends CachedComponent {
   handleImport = (error, warnings) => {
 
     const {
+      activeSheet,
+      onImport,
+      xml
+    } = this.props;
+
+    const {
       modeler
     } = this.getCached();
 
-    const {
-      activeSheet,
-      onImport
-    } = this.props;
+    onImport(error, warnings);
 
-    if (error) {
-      return onImport(error, warnings);
+    if (!error) {
+      modeler.lastXML = xml;
+
+      this.setState({
+        importing: false
+      });
+
+      if (activeSheet && activeSheet.element) {
+        return this.open(activeSheet.element);
+      }
+
+      const initialView = modeler._getInitialView(modeler._views);
+
+      this.open(initialView.element);
     }
 
-    this.setState({
-      loading: false
-    });
-
-    if (activeSheet && activeSheet.element) {
-      return this.open(activeSheet.element);
-    }
-
-    const initialView = modeler._getInitialView(modeler._views);
-
-    this.open(initialView.element);
-
-    onImport(null, warnings);
   }
 
   viewsChanged = ({ activeView, views }) => {
@@ -295,10 +299,8 @@ export class DmnEditor extends CachedComponent {
     } = this.props;
 
     if (xml !== modeler.lastXML) {
-      modeler.lastXML = xml;
-
       this.setState({
-        loading: true
+        importing: true
       });
 
       modeler.importXML(xml, { open: false }, this.handleImport);
@@ -419,7 +421,7 @@ export class DmnEditor extends CachedComponent {
     } = this.props;
 
     const {
-      loading,
+      importing,
     } = this.state;
 
     const {
@@ -433,7 +435,7 @@ export class DmnEditor extends CachedComponent {
     return (
       <div className={ css.DmnEditor }>
 
-        <Loader hidden={ !loading } />
+        <Loader hidden={ !importing } />
 
         <Fill name="toolbar" group="deploy">
           <DropdownButton title="Deploy Current Diagram" items={ [{

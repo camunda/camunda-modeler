@@ -101,6 +101,44 @@ describe('<MultiSheetTab>', function() {
       expect(warningSpy).not.to.have.been.called;
     });
 
+
+    it('should open fallback on error', function() {
+
+      // given
+      const {
+        instance
+      } = renderTab();
+
+      // when
+      instance.handleImport(new Error('error'));
+
+      // then
+      const {
+        activeSheet
+      } = instance.getCached();
+
+      expect(activeSheet.id).to.equal('fallback');
+    });
+
+  });
+
+
+  it('#openFallback', function() {
+
+    // given
+    const {
+      instance
+    } = renderTab();
+
+    // when
+    instance.openFallback();
+
+    // then
+    const {
+      activeSheet
+    } = instance.getCached();
+
+    expect(activeSheet.id).to.equal('fallback');
   });
 
 });
