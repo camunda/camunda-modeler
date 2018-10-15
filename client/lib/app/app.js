@@ -248,7 +248,7 @@ function App(options) {
     editor: {
       visible: false,
       buttons: [
-        Separator(),
+       /* Separator(),
         MultiButton({
           id: 'deploy',
           choices: [
@@ -266,6 +266,7 @@ function App(options) {
             }
           ]
         })
+        */
       ]
     }
   };
