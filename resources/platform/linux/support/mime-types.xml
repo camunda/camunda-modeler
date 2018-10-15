@@ -10,23 +10,4 @@
     <generic-icon name="application-xml"/>
     <root-XML namespaceURI="http://www.omg.org/spec/BPMN/20100524/MODEL" localName="definitions"/>
   </mime-type>
-  <mime-type type="application/cmmn">
-    <comment>CMMN model</comment>
-    <acronym>CMMN</acronym>
-    <expanded-acronym>Case Management Model and Notation</expanded-acronym>
-    <glob pattern="*.cmmn"/>
-    <sub-class-of type="application/xml"/>
-    <generic-icon name="application-xml"/>
-    <root-XML namespaceURI="http://www.omg.org/spec/CMMN/20151109/MODEL" localName="definitions"/>
-  </mime-type>
-  <mime-type type="application/dmn">
-    <comment>DMN model</comment>
-    <acronym>DMN</acronym>
-    <expanded-acronym>Decision Model and Notation</expanded-acronym>
-    <glob pattern="*.dmn"/>
-    <sub-class-of type="application/xml"/>
-    <generic-icon name="application-xml"/>
-    <root-XML namespaceURI="http://www.omg.org/spec/DMN/20151101/dmn11.xsd" localName="definitions"/>
-    <root-XML namespaceURI="http://www.omg.org/spec/DMN/20151101/dmn.xsd" localName="definitions"/>
-  </mime-type>
 </mime-info>

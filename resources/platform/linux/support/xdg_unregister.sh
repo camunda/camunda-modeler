@@ -13,7 +13,7 @@ WORKING_DIR=`dirname "$PRG"`
 
 #!/bin/bash
 echo "Uninstalling icons and desktop entry..."
-xdg-desktop-menu uninstall camunda-modeler.desktop
+xdg-desktop-menu uninstall zeebe-modeler.desktop
 xdg-icon-resource uninstall --size  16 camunda-modeler
 xdg-icon-resource uninstall --size  48 camunda-modeler
 xdg-icon-resource uninstall --size 128 camunda-modeler

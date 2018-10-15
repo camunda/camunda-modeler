@@ -30,7 +30,7 @@ cat << EOF > $DESKTOP_FILE
 [Desktop Entry]
 Version=1.0
 Encoding=UTF-8
-Name=Camunda Modeler
+Name=Zeebe Modeler
 Keywords=bpmn;cmmn;dmn;modeler;camunda
 GenericName=Process Modeling Tool
 Type=Application
@@ -38,8 +38,8 @@ Categories=Development
 Terminal=false
 StartupNotify=true
 Path=$CAMUNDA_MODELER_BIN
-Exec="$CAMUNDA_MODELER_BIN/camunda-modeler" %F
-MimeType=application/bpmn;application/cmmn;application/dmn
+Exec="$CAMUNDA_MODELER_BIN/zeebe-modeler" %F
+MimeType=application/bpmn
 Icon=$ICON_NAME.png
 X-Ayatana-Desktop-Shortcuts=NewWindow;RepositoryBrowser
 EOF

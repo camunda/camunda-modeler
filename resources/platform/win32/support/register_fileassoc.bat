@@ -16,7 +16,7 @@ set DIR=%cd%
 
 echo %DIR%
 set EXECUTABLE_DIR=!DIR:\=\\!
-set EXECUTABLE_PATH=%EXECUTABLE_DIR%\\Camunda Modeler.exe
+set EXECUTABLE_PATH=%EXECUTABLE_DIR%\\Zeebe Modeler.exe
 
 echo "%EXECUTABLE_PATH%"
 
