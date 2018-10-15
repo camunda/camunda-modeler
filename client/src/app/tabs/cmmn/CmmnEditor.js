@@ -84,8 +84,10 @@ export class CmmnEditor extends CachedComponent {
     modeler[fn]('error', 1500, this.handleError);
   }
 
-  componentDidUpdate(previousProps) {
-    this.checkImport();
+  componentDidUpdate() {
+    if (!this.state.importing) {
+      this.checkImport();
+    }
   }
 
   undo = () => {
@@ -127,16 +129,22 @@ export class CmmnEditor extends CachedComponent {
   }
 
   handleImport = (error, warnings) => {
+    const {
+      onImport,
+      xml
+    } = this.props;
 
     const {
-      onImport
-    } = this.props;
+      modeler
+    } = this.getCached();
 
     onImport(error, warnings);
 
     if (!error) {
+      modeler.lastXML = xml;
+
       this.setState({
-        loading: false
+        importing: false
       });
     }
   }
@@ -197,13 +205,11 @@ export class CmmnEditor extends CachedComponent {
     } = this.props;
 
     if (xml !== modeler.lastXML) {
-
-      modeler.lastXML = xml;
-
       this.setState({
-        loading: true
+        importing: true
       });
 
+      // TODO(nikku): apply default element templates to initial diagram
       modeler.importXML(xml, this.handleImport);
     }
   }
@@ -319,13 +325,13 @@ export class CmmnEditor extends CachedComponent {
     } = this.props;
 
     const {
-      loading,
+      importing,
     } = this.state;
 
     return (
       <div className={ css.CmmnEditor }>
 
-        <Loader hidden={ !loading } />
+        <Loader hidden={ !importing } />
 
         <div
           className="diagram"

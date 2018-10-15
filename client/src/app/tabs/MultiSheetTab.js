@@ -101,7 +101,7 @@ export class MultiSheetTab extends CachedComponent {
   handleImport = (error, warnings) => {
 
     if (error) {
-      // TODO: open fallback
+      this.openFallback();
 
       return this.handleError(error);
     }
@@ -109,6 +109,34 @@ export class MultiSheetTab extends CachedComponent {
     if (warnings && warnings.length) {
       warnings.forEach(warning => {
         this.handleWarning(warning);
+      });
+    }
+  }
+
+  /**
+   * Open fallback sheet if provided.
+   */
+  openFallback() {
+
+    let {
+      sheets
+    } = this.getCached();
+
+    if (!sheets) {
+      sheets = this.getDefaultSheets();
+    }
+
+    const fallback = sheets.find(sheet => {
+      const {
+        provider
+      } = sheet;
+
+      return provider.isFallback;
+    });
+
+    if (fallback) {
+      this.setCached({
+        activeSheet: fallback
       });
     }
   }
@@ -174,7 +202,7 @@ export class MultiSheetTab extends CachedComponent {
       });
     }
 
-    var xml = await this.editorRef.current.getXML();
+    const xml = await this.editorRef.current.getXML();
 
     this.setCached({
       activeSheet: sheet,
