@@ -10,7 +10,9 @@ var AVAILABLE_REPLACE_ELEMENTS = [
   'replace-with-default-flow',
   'replace-with-sequence-flow',
   'replace-with-parallel-gateway',
-  'replace-with-exclusive-gateway'
+  'replace-with-exclusive-gateway',
+  'replace-with-collapsed-subprocess',
+  'replace-with-expanded-subprocess'
 ];
 
 var AVAILABLE_CONTEXTPAD_ENTRIES = [
