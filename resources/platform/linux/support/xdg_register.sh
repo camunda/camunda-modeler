@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Resolve the location of the Camunda Modeler installation.
+# Resolve the location of the Zeebe Modeler installation.
 # This includes resolving any symlinks.
 
 PRG=$0

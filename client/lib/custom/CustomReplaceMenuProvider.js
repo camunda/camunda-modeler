@@ -26,6 +26,10 @@ CustomReplaceMenuProvider.prototype._getLoopEntries = function (element) {
   return [];
 };
 
+CustomReplaceMenuProvider.prototype.getHeaderEntries  = function (element) {
+  return [];
+};
+
 CustomReplaceMenuProvider.$inject = [
   'popupMenu',
   'modeling',
