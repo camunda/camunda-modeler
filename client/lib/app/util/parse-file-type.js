@@ -1,7 +1,7 @@
 'use strict';
 
 import {
-  forEach
+  findIndex
 } from 'min-dash';
 
 import {
@@ -15,46 +15,57 @@ var TYPES = {
 };
 
 
-module.exports = function parseType(file) {
-  var contents = file.contents,
-      type = null,
-      namespace;
+function getRootNamespace(xml) {
+  let namespace;
 
   const parser = new Parser();
+
+  parser.on('error', function() {
+    parser.stop();
+  });
 
   parser.on('openTag', function(elementName, attrGetter) {
 
     // bpmn:definitions
     // dmn:Definitions
     if (elementName.indexOf(':') !== -1) {
-      let [ prefix, name ] = elementName.split(':');
+      const [ prefix, name ] = elementName.split(':');
 
       if (name.toLowerCase() === 'definitions') {
         namespace = attrGetter()[ `xmlns:${prefix}` ];
       }
-    }
+    } else {
 
-    // definitions
-    // Defintitions
-    if (elementName.toLowerCase() === 'definitions') {
-      namespace = attrGetter().xmlns;
+      // definitions
+      // Defintitions
+      if (elementName.toLowerCase() === 'definitions') {
+        namespace = attrGetter().xmlns;
+      }
     }
 
     // only parse first tag
     parser.stop();
   });
 
-  try {
-    parser.parse(contents);
+  parser.parse(xml);
 
-    forEach(TYPES, function(uri, t) {
-      if (namespace && namespace.indexOf(uri) !== -1) {
-        type = t;
-      }
+  return namespace;
+}
+
+function parseType(file) {
+  let type = null;
+
+  const nsUri = getRootNamespace(file.contents);
+
+  if (nsUri) {
+    type = findIndex(TYPES, function(uri) {
+      return nsUri.startsWith(uri);
     });
-  } catch (err) {
-    console.log(err);
+
+
   }
 
   return type;
-};
+}
+
+module.exports = parseType;
