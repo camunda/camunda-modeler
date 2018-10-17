@@ -9,7 +9,8 @@ var files = {
   cmmn: require('test/fixtures/basic.cmmn11.xml'),
   dmn: require('test/fixtures/basic.dmn11.xml'),
   nyan: require('test/fixtures/nyan_cat.png'),
-  random: require('test/fixtures/random.xml')
+  random: require('test/fixtures/random.xml'),
+  noNs: require('test/fixtures/no-ns.xml')
 };
 
 function getFile(type) {
@@ -73,6 +74,27 @@ describe('util - parse file type', function() {
 
     // when
     var notation = parseFileType({ contents: randomFile });
+
+    // then
+    expect(notation).to.equal(null);
+  });
+
+
+  it('should return null on empty ile', function() {
+    // when
+    var notation = parseFileType({ contents: '' });
+
+    // then
+    expect(notation).to.equal(null);
+  });
+
+
+  it('should return null on no-ns file', function() {
+    // given
+    var contents = getFile('noNs');
+
+    // when
+    var notation = parseFileType({ contents: contents });
 
     // then
     expect(notation).to.equal(null);
