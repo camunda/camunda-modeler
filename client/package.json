@@ -37,6 +37,7 @@
     "min-dom": "^3.1.1",
     "next-tick": "^1.0.0",
     "raf": "^3.1.0",
+    "saxen": "^8.1.0",
     "scroll-tabs": "^1.0.1",
     "virtual-dom": "^2.1.1",
     "virtual-hook": "^1.0.1",
