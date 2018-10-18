@@ -12,7 +12,8 @@ import {
 } from '../../cached';
 
 import {
-  providers as defaultProviders
+  providers as defaultProviders,
+  tab as defaultTab
 } from './mocks';
 
 const { spy } = sinon;
@@ -29,7 +30,7 @@ describe('<MultiSheetTab>', function() {
   });
 
 
-  describe('#onImport', function() {
+  describe('#handleImport', function() {
 
     it('should import without errors', function() {
 
@@ -91,6 +92,8 @@ describe('<MultiSheetTab>', function() {
         onWarning: warningSpy
       });
 
+      const showImportErrorDialogSpy = spy(instance, 'showImportErrorDialog');
+
       // when
       const error = new Error('error');
 
@@ -99,6 +102,53 @@ describe('<MultiSheetTab>', function() {
       // then
       expect(errorSpy).to.have.been.calledWith(error);
       expect(warningSpy).not.to.have.been.called;
+      expect(showImportErrorDialogSpy).to.have.been.called;
+    });
+
+  });
+
+
+  describe('#showImportErrorDialog', function() {
+
+    it('should open', function() {
+
+      // given
+      const actionSpy = spy();
+
+      const {
+        instance
+      } = renderTab({
+        onAction: actionSpy
+      });
+
+      // when
+      instance.showImportErrorDialog(new Error('error'));
+
+      // then
+      expect(actionSpy).to.have.been.called;
+    });
+
+
+    it('should open forum', async function() {
+
+      // given
+      const actionSpy = spy(action => {
+        if (action === 'show-dialog') {
+          return Promise.resolve('ask-in-forum');
+        }
+      });
+
+      const {
+        instance
+      } = renderTab({
+        onAction: actionSpy
+      });
+
+      // when
+      await instance.showImportErrorDialog(new Error('error'));
+
+      // then
+      expect(actionSpy).to.have.been.calledTwice;
     });
 
 
@@ -154,6 +204,7 @@ function renderTab(options = {}) {
   const {
     id,
     xml,
+    tab,
     layout,
     onChanged,
     onError,
@@ -168,6 +219,7 @@ function renderTab(options = {}) {
   const withCachedState = mount(
     <TestTab
       id={ id || 'editor' }
+      tab={ tab || defaultTab }
       xml={ xml }
       onChanged={ onChanged || noop }
       onError={ onError || noop }
