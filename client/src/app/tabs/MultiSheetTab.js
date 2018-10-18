@@ -98,10 +98,50 @@ export class MultiSheetTab extends CachedComponent {
     onWarning(warning);
   }
 
-  handleImport = (error, warnings) => {
+  async showImportErrorDialog(error) {
+    const {
+      onAction,
+      tab
+    } = this.props;
 
+    const {
+      name,
+      type
+    } = tab;
+
+    // TODO(philippfromme): where to put this?
+    const answer = await onAction('show-dialog', {
+      type: 'error',
+      title: 'Import Error',
+      message: 'Ooops!',
+      buttons: [{
+        id: 'close',
+        label: 'Close'
+      }, {
+        id: 'ask-in-forum',
+        label: 'Ask in Forum'
+      }],
+      detail: [
+        error.message,
+        '',
+        'Do you believe "' + name + '" is valid ' + type.toUpperCase() + ' diagram?',
+        '',
+        'Post this error with your diagram in our forum for help.'
+      ].join('\n')
+    });
+
+    if (answer === 'ask-in-forum') {
+      onAction('open-external-url', {
+        url: 'https://forum.camunda.org/c/modeler'
+      });
+    }
+  }
+
+  handleImport = (error, warnings) => {
     if (error) {
       this.openFallback();
+
+      this.showImportErrorDialog(error);
 
       return this.handleError(error);
     }
