@@ -16,3 +16,8 @@ export const providers = [{
   defaultName: 'Fallback',
   isFallback: true
 }];
+
+export const tab = {
+  name: 'foo.bar',
+  type: 'bar'
+};
