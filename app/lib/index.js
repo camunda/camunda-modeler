@@ -142,16 +142,27 @@ renderer.on('dialog:convert-namespace', function(type, done) {
   dialog.showDialog('namespace', { type: type }, done);
 });
 
-renderer.on('dialog:import-error', function(filename, errorDetails, done) {
+renderer.on('external:open-url', function(options) {
+  var url = options.url;
 
-  dialog.showDialog('importError', { name: filename, errorDetails: errorDetails }, function(err, answer) {
-    if (answer === 'ask-forum') {
-      browserOpen('https://forum.camunda.org/c/modeler');
-    }
+  browserOpen(url);
+});
 
-    // the answer is irrelevant for the client
-    done(null);
-  });
+/**
+ * Shows a dialog that can be configured.
+ */
+renderer.on('dialog:show', function(options, done) {
+  var type = options.type;
+
+  if (!type) {
+    var err = new Error('no type specified');
+
+    console.error('failed to show dialog', err);
+
+    return done(err.message);
+  }
+
+  dialog.showDialog(type, options, done);
 });
 
 renderer.on('dialog:close-tab', function(diagramFile, done) {

@@ -209,4 +209,106 @@ describe('Dialog', function() {
 
   });
 
+
+  describe('#showDialog', function() {
+
+    it('should show error dialog', function(done) {
+
+      // given
+      electronDialog.setResponse(0);
+
+      var options = {
+        title: 'error',
+        buttons: [{
+          id: 'foo'
+        }, {
+          id: 'bar'
+        }]
+      };
+
+      // when
+      dialog.showDialog('error', options, function(err, result) {
+        var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+
+        // then
+        expect(err).not.to.exist;
+
+        expect(electronDialog.showMessageBox).to.have.been.called;
+
+        expect(dialogArgs.title).to.equal('error');
+        expect(dialogArgs.buttons).to.have.length(2);
+
+        expect(result).to.equal('foo');
+
+        done();
+      });
+    });
+
+
+    it('should show warning dialog', function(done) {
+
+      // given
+      electronDialog.setResponse(0);
+
+      var options = {
+        title: 'warning',
+        buttons: [{
+          id: 'foo'
+        }, {
+          id: 'bar'
+        }]
+      };
+
+      // when
+      dialog.showDialog('warning', options, function(err, result) {
+        var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+
+        // then
+        expect(err).not.to.exist;
+
+        expect(electronDialog.showMessageBox).to.have.been.called;
+
+        expect(dialogArgs.title).to.equal('warning');
+        expect(dialogArgs.buttons).to.have.length(2);
+
+        expect(result).to.equal('foo');
+
+        done();
+      });
+    });
+
+
+    it('should show info dialog', function(done) {
+
+      // given
+      electronDialog.setResponse(0);
+
+      var options = {
+        title: 'info',
+        buttons: [{
+          id: 'foo'
+        }, {
+          id: 'bar'
+        }]
+      };
+
+      // when
+      dialog.showDialog('info', options, function(err, result) {
+        var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+
+        // then
+        expect(err).not.to.exist;
+
+        expect(electronDialog.showMessageBox).to.have.been.called;
+
+        expect(dialogArgs.title).to.equal('info');
+        expect(dialogArgs.buttons).to.have.length(2);
+
+        expect(result).to.equal('foo');
+
+        done();
+      });
+    });
+
+  });
 });

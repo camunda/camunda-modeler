@@ -22,4 +22,8 @@ export default class Dialog {
     return this.backend.send('file:export-as', file, filters);
   }
 
+  show(options) {
+    return this.backend.send('dialog:show', options);
+  }
+
 }

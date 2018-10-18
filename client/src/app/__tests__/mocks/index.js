@@ -158,6 +158,8 @@ export class FileSystem extends Mock {
 
 export class Backend extends Mock {
 
+  send() {}
+
   sendUpdateMenu() {}
 
   on() {}
