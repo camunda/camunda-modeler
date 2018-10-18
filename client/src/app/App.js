@@ -747,10 +747,7 @@ export class App extends Component {
     return globals.dialog.askExportAs(file, filters);
   }
 
-  /**
-   * Show a generic dialog.
-   */
-  showDialog(options = {}) {
+  showDialog(options) {
     const {
       globals
     } = this.props;
@@ -851,9 +848,21 @@ export class App extends Component {
       return this.exportAs(activeTab);
     }
 
+    if (action === 'show-dialog') {
+      return this.showDialog(options);
+    }
+
+    if (action === 'open-external-url') {
+      this.openExternalUrl(options);
+    }
+
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
+  }
+
+  openExternalUrl(options) {
+    this.props.globals.backend.send('external:open-url', options);
   }
 
   quit() {
