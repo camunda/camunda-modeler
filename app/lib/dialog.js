@@ -9,6 +9,18 @@ var {
 var filterExtensions = require('./util/filter-extensions'),
     ensureOptions = require('./util/ensure-opts');
 
+function getDialog(type) {
+  return function(options) {
+    return {
+      type: type,
+      title: options.title,
+      message: options.message,
+      buttons: options.buttons,
+      detail: options.detail
+    };
+  };
+}
+
 /**
  * Interface for handling dialogs.
  *
@@ -210,7 +222,10 @@ Dialog.prototype.getDialogOptions = function(type, options) {
           'Would you like to create a new ' + type + ' diagram?'
         ].join('\n')
       };
-    }
+    },
+    error: getDialog('error'),
+    warning: getDialog('warning'),
+    info: getDialog('info')
   };
 
   return dialogs[type](options);

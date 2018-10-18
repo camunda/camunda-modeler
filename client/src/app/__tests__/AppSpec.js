@@ -996,6 +996,60 @@ describe('<App>', function() {
 
   });
 
+
+  it('#showDialog', function() {
+
+    // given
+    const showSpy = spy();
+
+    const dialog = new Dialog({
+      show: showSpy
+    });
+
+    const { app } = createApp({
+      globals: {
+        dialog
+      }
+    });
+
+    const options = {
+      type: 'info'
+    };
+
+    // when
+    app.showDialog(options);
+
+    // then
+    expect(showSpy).to.have.been.calledWith(options);
+  });
+
+
+  it('#openExternalUrl', function() {
+
+    // given
+    const sendSpy = spy();
+
+    const backend = new Backend({
+      send: sendSpy
+    });
+
+    const { app } = createApp({
+      globals: {
+        backend
+      }
+    });
+
+    const options = {
+      url: 'foo'
+    };
+
+    // when
+    app.openExternalUrl(options);
+
+    // then
+    expect(sendSpy).to.have.been.calledWith('external:open-url', options);
+  });
+
 });
 
 
