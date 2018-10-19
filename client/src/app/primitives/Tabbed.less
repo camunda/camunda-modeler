@@ -18,6 +18,23 @@
 :local(.LinksContainer) {
   flex: initial;
 
+  .scroll-tabs-button {
+    padding: 0 5px;
+    margin: 0;
+    position: relative;
+    top: 3px;
+    cursor: pointer;
+    font-size: 16px;
+
+    &.scroll-tabs-left {
+      float: left;
+    }
+
+    &.scroll-tabs-right {
+      float: right;
+    }
+  }
+
   .tab {
     position: relative;
     display: inline-block;
