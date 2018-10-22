@@ -43,6 +43,8 @@ export class DmnEditor extends CachedComponent {
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
     const {
       modeler
     } = this.getCached();
@@ -61,6 +63,8 @@ export class DmnEditor extends CachedComponent {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
+
     const {
       modeler
     } = this.getCached();
@@ -74,6 +78,14 @@ export class DmnEditor extends CachedComponent {
     if (!this.state.importing) {
       this.checkImport();
     }
+  }
+
+  ifMounted = (fn) => {
+    return (...args) => {
+      if (this._isMounted) {
+        fn(...args);
+      }
+    };
   }
 
   listen(fn) {
@@ -303,7 +315,7 @@ export class DmnEditor extends CachedComponent {
         importing: true
       });
 
-      modeler.importXML(xml, { open: false }, this.handleImport);
+      modeler.importXML(xml, { open: false }, this.ifMounted(this.handleImport));
     } else {
       activeSheet
         && activeSheet.element
