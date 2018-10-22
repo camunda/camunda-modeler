@@ -265,6 +265,27 @@ export class App extends Component {
     return this.setActiveTab(tab);
   }
 
+  moveTab = (tab, newIndex) => {
+    const {
+      tabs
+    } = this.state;
+
+    if (!tabs[ newIndex ]) {
+      throw new Error('invalid index');
+    }
+
+    // remove tab at current index
+    const newTabs = tabs.filter(t => t !== tab);
+
+    // add tab at new index
+    newTabs.splice(newIndex, 0, tab);
+
+    this.setState({
+      tabs: newTabs,
+      activeTab: tab
+    });
+  }
+
   askSave = (file) => {
     return this.props.globals.dialog.askSave({ name: file.name });
   }
@@ -976,11 +997,14 @@ export class App extends Component {
               isDirty={ this.isDirty }
               activeTab={ activeTab }
               onSelect={ this.selectTab }
+              onMoveTab={ this.moveTab }
               onContextMenu={ this.openTabLinksMenu }
               onClose={ (tab) => {
                 this.triggerAction('close-tab', { tabId: tab.id }).catch(console.error);
               } }
               onCreate={ this.composeAction('create-bpmn-diagram') }
+              draggable
+              scrollable
             />
 
             <TabContainer className="main">
