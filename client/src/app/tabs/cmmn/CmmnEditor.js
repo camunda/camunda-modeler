@@ -35,6 +35,8 @@ export class CmmnEditor extends CachedComponent {
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
     const {
       modeler
     } = this.getCached();
@@ -52,6 +54,8 @@ export class CmmnEditor extends CachedComponent {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
+
     const {
       modeler
     } = this.getCached();
@@ -65,6 +69,13 @@ export class CmmnEditor extends CachedComponent {
     propertiesPanel.detach();
   }
 
+  ifMounted = (fn) => {
+    return (...args) => {
+      if (this._isMounted) {
+        fn(...args);
+      }
+    };
+  }
 
   listen(fn) {
     const {
@@ -210,7 +221,7 @@ export class CmmnEditor extends CachedComponent {
       });
 
       // TODO(nikku): apply default element templates to initial diagram
-      modeler.importXML(xml, this.handleImport);
+      modeler.importXML(xml, this.ifMounted(this.handleImport));
     }
   }
 
