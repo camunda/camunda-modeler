@@ -67,6 +67,7 @@ export class BpmnEditor extends CachedComponent {
   }
 
   componentDidMount() {
+    this._isMounted = true;
 
     const {
       layout
@@ -95,6 +96,8 @@ export class BpmnEditor extends CachedComponent {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
+
     const {
       modeler
     } = this.getCached();
@@ -106,6 +109,15 @@ export class BpmnEditor extends CachedComponent {
     const propertiesPanel = modeler.get('propertiesPanel');
 
     propertiesPanel.detach();
+  }
+
+
+  ifMounted = (fn) => {
+    return (...args) => {
+      if (this._isMounted) {
+        fn(...args);
+      }
+    };
   }
 
 
@@ -285,7 +297,7 @@ export class BpmnEditor extends CachedComponent {
       });
 
       // TODO(nikku): apply default element templates to initial diagram
-      modeler.importXML(xml, this.handleImport);
+      modeler.importXML(xml, this.ifMounted(this.handleImport));
     }
   }
 
