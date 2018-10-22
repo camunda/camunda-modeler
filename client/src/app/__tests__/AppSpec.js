@@ -588,6 +588,68 @@ describe('<App>', function() {
     });
 
 
+    describe('tab moving', function() {
+
+      let app, openedTabs;
+
+      beforeEach(async function() {
+        const rendered = createApp();
+
+        app = rendered.app;
+
+        const file1 = createFile('1.bpmn');
+        const file2 = createFile('2.bpmn');
+
+        openedTabs = [
+          await app.createDiagram(),
+          ...(await app.openFiles([ file1, file2 ])),
+          await app.createDiagram(),
+        ];
+
+        // assume
+        const {
+          tabs,
+          activeTab
+        } = app.state;
+
+        expect(tabs).to.eql(openedTabs);
+        expect(activeTab).to.eql(openedTabs[3]);
+      });
+
+
+      it('should move tab', async function() {
+
+        // given
+        const expectedTabs = [
+          openedTabs[0],
+          openedTabs[2],
+          openedTabs[1],
+          openedTabs[3]
+        ];
+
+        // when
+        app.moveTab(openedTabs[2], 1);
+
+        // then
+        expect(app.state.tabs).to.eql(expectedTabs);
+        expect(app.state.activeTab).to.equal(openedTabs[2]);
+      });
+
+
+      it('should not move tab to invalid index -1', function() {
+
+        // given
+        function moveTabToInvalidIndex() {
+          app.moveTab(openedTabs[0], -1);
+        }
+
+        // then
+        expect(moveTabToInvalidIndex).to.throw();
+      });
+
+    });
+
+
     describe('should reopen last', function() {
 
       it('saved', async function() {
