@@ -10,6 +10,10 @@ import {
 } from '../util/scroller';
 
 import {
+  addDragger
+} from '../util/dragger';
+
+import {
   find,
   matchPattern
 } from 'min-dash';
@@ -18,7 +22,7 @@ const noop = () => {};
 
 const TABS_OPTS = {
   selectors: {
-    tabsContainer: css.LinksContainer,
+    tabsContainer: '.tabs-container',
     tab: '.tab',
     active: '.active',
     ignore: '.ignore'
@@ -34,11 +38,24 @@ export default class TabLinks extends Component {
   }
 
   componentDidMount() {
-    this.scroller = addScroller(this.tabLinksRef.current, TABS_OPTS, this.handleScroll);
+    const {
+      draggable,
+      scrollable
+    } = this.props;
+
+    if (draggable) {
+      addDragger(this.tabLinksRef.current, TABS_OPTS, this.handleDrag);
+    }
+
+    if (scrollable) {
+      this.scroller = addScroller(this.tabLinksRef.current, TABS_OPTS, this.handleScroll);
+    }
   }
 
   componentWillUnmount() {
-    removeScroller(this.scroller);
+    if (this.scroller) {
+      removeScroller(this.scroller);
+    }
   }
 
   componentDidUpdate() {
@@ -58,6 +75,17 @@ export default class TabLinks extends Component {
     onSelect(tab);
   }
 
+  handleDrag = ({ dragTab, newIndex }) => {
+    const {
+      tabs,
+      onMoveTab
+    } = this.props;
+
+    const tab = find(tabs, matchPattern({ id: dragTab.dataset.tabId }));
+
+    onMoveTab(tab, newIndex);
+  }
+
   render() {
 
     const {
@@ -75,47 +103,50 @@ export default class TabLinks extends Component {
       <div
         className={ classNames(css.LinksContainer, className) }
         ref={ this.tabLinksRef }>
-        {
-          tabs.map(tab => {
-            return (
-              <span
-                key={ tab.id }
-                data-tab-id={ tab.id }
-                className={ classNames('tab', {
-                  active: tab === activeTab,
-                  dirty: isDirty && isDirty(tab)
-                }) }
-                onClick={ () => onSelect(tab, event) }
-                onContextMenu={ (event) => (onContextMenu || noop)(tab, event) }
-              >
-                {tab.name}
-                {
-                  onClose && <span
-                    className="close"
-                    onClick={ e => {
-                      e.preventDefault();
-                      e.stopPropagation();
+        <div className="tabs-container">
+          {
+            tabs.map(tab => {
+              return (
+                <span
+                  key={ tab.id }
+                  data-tab-id={ tab.id }
+                  className={ classNames('tab', {
+                    active: tab === activeTab,
+                    dirty: isDirty && isDirty(tab)
+                  }) }
+                  onClick={ () => onSelect(tab, event) }
+                  onContextMenu={ (event) => (onContextMenu || noop)(tab, event) }
+                  draggable
+                >
+                  {tab.name}
+                  {
+                    onClose && <span
+                      className="close"
+                      onClick={ e => {
+                        e.preventDefault();
+                        e.stopPropagation();
 
-                      onClose(tab);
-                    } }
-                  />
-                }
-              </span>
-            );
-          })
-        }
+                        onClose(tab);
+                      } }
+                    />
+                  }
+                </span>
+              );
+            })
+          }
 
-        {
-          onCreate && <span
-            key="empty-tab"
-            className={ classNames('tab ignore', {
-              active: tabs.length === 0
-            }) }
-            onClick={ () => onCreate() }
-          >
-            +
-          </span>
-        }
+          {
+            onCreate && <span
+              key="empty-tab"
+              className={ classNames('tab ignore', {
+                active: tabs.length === 0
+              }) }
+              onClick={ () => onCreate() }
+            >
+              +
+            </span>
+          }
+        </div>
       </div>
     );
   }
