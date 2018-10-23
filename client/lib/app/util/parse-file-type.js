@@ -1,8 +1,12 @@
 'use strict';
 
 import {
-  forEach
+  findIndex
 } from 'min-dash';
+
+import {
+  Parser
+} from 'saxen';
 
 var TYPES = {
   bpmn: 'http://www.omg.org/spec/BPMN',
@@ -11,15 +15,57 @@ var TYPES = {
 };
 
 
-module.exports = function parseType(file) {
+function getRootNamespace(xml) {
+  let namespace;
 
-  var type = null;
+  const parser = new Parser();
 
-  forEach(TYPES, function(ns, t) {
-    if (file.contents.indexOf(ns) !== -1) {
-      type = t;
-    }
+  parser.on('error', function() {
+    parser.stop();
   });
 
+  parser.on('openTag', function(elementName, attrGetter) {
+
+    // bpmn:definitions
+    // dmn:Definitions
+    if (elementName.indexOf(':') !== -1) {
+      const [ prefix, name ] = elementName.split(':');
+
+      if (name.toLowerCase() === 'definitions') {
+        namespace = attrGetter()[ `xmlns:${prefix}` ];
+      }
+    } else {
+
+      // definitions
+      // Defintitions
+      if (elementName.toLowerCase() === 'definitions') {
+        namespace = attrGetter().xmlns;
+      }
+    }
+
+    // only parse first tag
+    parser.stop();
+  });
+
+  parser.parse(xml);
+
+  return namespace;
+}
+
+function parseType(file) {
+  let type = null;
+
+  const nsUri = getRootNamespace(file.contents);
+
+  if (nsUri) {
+    type = findIndex(TYPES, function(uri) {
+      return nsUri.startsWith(uri);
+    });
+
+
+  }
+
   return type;
-};
+}
+
+module.exports = parseType;
