@@ -403,11 +403,9 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
   };
 
   var pluginModules = this.plugins.get('bpmn.modeler.additionalModules');
-  var moddleModules = this.plugins.get('bpmn.modeler.additionalModdles');
-  var moddles = { camunda: camundaModdlePackage };
-  for (const key of moddleModules) {
-    Object.assign(moddles, key);
-  }
+  var pluginModdleExtensions = this.plugins.get('bpmn.modeler.moddleExtensions');
+  var moddleExtensions = Object.assign({ camunda: camundaModdlePackage }, ...pluginModdleExtensions);
+
   var modeler = new BpmnJS({
     container: $el,
     position: 'absolute',
@@ -423,7 +421,7 @@ BpmnEditor.prototype.createModeler = function($el, $propertiesEl) {
       signavioCompat
     ].concat(pluginModules),
     elementTemplates: elementTemplatesLoader,
-    moddleExtensions: moddles,
+    moddleExtensions: moddleExtensions,
     minimap: {
       open: minimapLayout.open
     }
