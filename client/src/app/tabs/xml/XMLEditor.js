@@ -13,7 +13,7 @@ import css from './XMLEditor.less';
 import { getXMLEditMenu } from './getXMLEditMenu';
 
 
-class XMLEditor extends CachedComponent {
+export class XMLEditor extends CachedComponent {
 
   constructor(props) {
     super(props);
@@ -36,7 +36,7 @@ class XMLEditor extends CachedComponent {
 
     editor.attachTo(this.ref.current);
 
-    editor.on('change', this.handleChange);
+    editor.on('change', this.handleChanged);
 
     this.checkImport();
   }
@@ -48,7 +48,7 @@ class XMLEditor extends CachedComponent {
 
     editor.detach();
 
-    editor.off('change', this.handleChange);
+    editor.off('change', this.handleChanged);
   }
 
   componentDidUpdate(previousProps) {
@@ -99,7 +99,7 @@ class XMLEditor extends CachedComponent {
     editor.refresh();
   }
 
-  handleChange = () => {
+  handleChanged = () => {
     const {
       onChanged
     } = this.props;
