@@ -22,7 +22,7 @@ describe('FileSystem', function() {
     });
   });
 
-  after(function() {
+  afterEach(function() {
     try {
       fs.unlinkSync(TEST_FILE_PATH);
     } catch (e) { /** YEA */ }
@@ -116,6 +116,13 @@ describe('FileSystem', function() {
 
 
   describe('readFileStats', function() {
+
+    beforeEach(function(done) {
+      fs.writeFile(TEST_FILE_PATH, '', function(error) {
+        done(error);
+      });
+    });
+
 
     it('should set last modified property on existing file', function() {
       // given
