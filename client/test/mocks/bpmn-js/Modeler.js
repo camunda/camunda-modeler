@@ -1,3 +1,5 @@
+import { assign } from 'min-dash';
+
 class PropertiesPanel {
   attachTo() {}
 
@@ -5,8 +7,22 @@ class PropertiesPanel {
 }
 
 export default class Modeler {
-  constructor() {
+  constructor(modules = {}) {
+    this.modules = assign(this._getDefaultModules(), modules);
+
     this.xml = null;
+  }
+
+  _getDefaultModules() {
+    return {
+      canvas: {
+        resized() {}
+      },
+      minimap: {
+        toggle() {}
+      },
+      propertiesPanel: new PropertiesPanel()
+    };
   }
 
   importXML(xml, done) {
@@ -47,24 +63,14 @@ export default class Modeler {
 
   off() {}
 
-  get(module) {
-    if (module === 'propertiesPanel') {
-      return new PropertiesPanel();
+  get(moduleName) {
+    const module = this.modules[moduleName];
+
+    if (module) {
+      return module;
     }
 
-    if (module === 'minimap') {
-      return {
-        toggle() {}
-      };
-    }
-
-    if (module === 'canvas') {
-      return {
-        resized() { }
-      };
-    }
-
-    throw new Error(`service not provided: <${module}>`);
+    throw new Error(`service not provided: <${moduleName}>`);
   }
 }
 

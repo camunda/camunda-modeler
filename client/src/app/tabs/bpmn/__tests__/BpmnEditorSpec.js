@@ -139,6 +139,67 @@ describe('<BpmnEditor>', function() {
   });
 
 
+  describe('#handleChanged', function() {
+
+    it('should notify about changes', function() {
+
+      // given
+      const changedSpy = (state) => {
+
+        // then
+        expect(state).to.include({
+          align: false,
+          copy: false,
+          distribute: false,
+          editLabel: false,
+          find: true,
+          globalConnectTool: true,
+          handTool: true,
+          lassoTool: true,
+          moveCanvas: true,
+          moveToOrigin: true,
+          paste: false,
+          redo: true,
+          removeSelected: false,
+          setColor: false,
+          spaceTool: true,
+          undo: true
+        });
+      };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            clipboard: {
+              isEmpty: () => true
+            },
+            commandStack: {
+              canRedo: () => true,
+              canUndo: () => true
+            },
+            selection: {
+              get: () => []
+            }
+          })
+        },
+        __destroy: () => {}
+      });
+
+      const { instance } = renderEditor(diagramXML, {
+        id: 'editor',
+        cache,
+        onChanged: changedSpy
+      });
+
+      // when
+      instance.handleChanged();
+    });
+
+  });
+
+
   describe('layout', function() {
 
     it('should open properties panel', function() {
@@ -357,7 +418,7 @@ describe('<BpmnEditor>', function() {
 });
 
 
-// helpers //////////////////////////////
+// helpers //////////
 
 function noop() {}
 
@@ -367,6 +428,7 @@ function renderEditor(xml, options = {}) {
   const {
     id,
     layout,
+    onChanged,
     onError,
     onImport,
     onLayoutChanged
@@ -377,6 +439,7 @@ function renderEditor(xml, options = {}) {
       <TestEditor
         id={ id || 'editor' }
         xml={ xml }
+        onChanged={ onChanged || noop }
         onError={ onError || noop }
         onImport={ onImport || noop }
         onLayoutChanged={ onLayoutChanged || noop }
