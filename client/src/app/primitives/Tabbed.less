@@ -16,9 +16,25 @@
 }
 
 :local(.LinksContainer) {
+  display: flex;
   flex: initial;
 
+  position: relative;
+  z-index: 100;
+
+  overflow: hidden;
+
+  .tabs-container {
+    order: 0;
+
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
   .scroll-tabs-button {
+    flex: initial;
+    box-sizing: border-box;
+
     padding: 0 5px;
     margin: 0;
     position: relative;
@@ -27,11 +43,23 @@
     font-size: 16px;
 
     &.scroll-tabs-left {
-      float: left;
+      order: -1;
     }
 
     &.scroll-tabs-right {
-      float: right;
+      order: 1;
+    }
+  }
+
+  &.scroll-tabs-overflow {
+    .ignore {
+      display: none;
+    }
+  }
+
+  &:not(.scroll-tabs-overflow) {
+    .scroll-tabs-button {
+      display: none;
     }
   }
 
@@ -43,6 +71,7 @@
     padding: 6px 9px;
     text-align: center;
     border: solid 1px #ddd;
+    color: #444;
 
     background: #fff;
     cursor: default;
@@ -68,10 +97,12 @@
   }
 
   &.primary {
+    margin-bottom: -1px;
+    
     .tab {
       border-radius: 2px 2px 0 0;
       margin-bottom: -1px;
-      border-bottom: none;
+      border-bottom: solid 2px #ddd;
 
       &.active {
         border-top: solid 3px #52b415;
@@ -88,13 +119,14 @@
   &.secondary {
     position: absolute;
     bottom: 0;
-    margin-bottom: -22px;
+    margin-bottom: -23px;
     z-index: 100;
 
     .tab {
       border-radius: 0 0 2px 2px;
       padding: 4px 8px;
       margin-top: -1px;
+      border-top: solid 2px #ddd;
 
       &:first-child {
         margin-left: 10px;
