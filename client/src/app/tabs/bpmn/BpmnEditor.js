@@ -133,7 +133,7 @@ export class BpmnEditor extends CachedComponent {
       'selection.changed',
       'attach'
     ].forEach((event) => {
-      modeler[fn](event, this.updateState);
+      modeler[fn](event, this.handleChanged);
     });
 
     modeler[fn]('elementTemplates.errors', this.handleElementTemplateErrors);
@@ -228,7 +228,7 @@ export class BpmnEditor extends CachedComponent {
   }
 
 
-  updateState = (event) => {
+  handleChanged = (event) => {
     const {
       modeler
     } = this.getCached();
@@ -239,39 +239,35 @@ export class BpmnEditor extends CachedComponent {
 
     const commandStack = modeler.get('commandStack');
     const selection = modeler.get('selection');
-    const canPaste = !modeler.get('clipboard').isEmpty();
 
     const selectionLength = selection.get().length;
 
     const inputActive = isInputActive();
 
-    const editMenu = getBpmnEditMenu({
+    const newState = {
       align: selectionLength > 1,
-      canCopy: !!selectionLength,
-      canPaste,
-      canRedo: commandStack.canRedo(),
-      canUndo: commandStack.canUndo(),
+      close: true,
+      copy: !!selectionLength,
       distribute: selectionLength > 2,
       editLabel: !inputActive && !!selectionLength,
+      exportAs: [ 'svg', 'png' ],
       find: !inputActive,
       globalConnectTool: !inputActive,
       handTool: !inputActive,
       lassoTool: !inputActive,
+      moveCanvas: !inputActive,
       moveToOrigin: !inputActive,
       moveSelection: !inputActive && !!selectionLength,
-      spaceTool: !inputActive,
-      moveCanvas: !inputActive,
-      removeSelected: !!selectionLength
-    });
-
-    const newState = {
-      align: selectionLength > 1,
-      canExport: [ 'svg', 'png' ],
-      distribute: selectionLength > 2,
+      paste: !modeler.get('clipboard').isEmpty(),
       redo: commandStack.canRedo(),
-      setColor: selectionLength,
+      removeSelected: !!selectionLength,
+      save: true,
+      setColor: !!selectionLength,
+      spaceTool: !inputActive,
       undo: commandStack.canUndo()
     };
+
+    const editMenu = getBpmnEditMenu(newState);
 
     if (typeof onChanged === 'function') {
       onChanged({
@@ -537,7 +533,7 @@ export class BpmnEditor extends CachedComponent {
         <div
           className="diagram"
           ref={ this.ref }
-          onFocus={ this.updateState }
+          onFocus={ this.handleChanged }
           onContextMenu={ this.handleContextMenu }
         ></div>
 
