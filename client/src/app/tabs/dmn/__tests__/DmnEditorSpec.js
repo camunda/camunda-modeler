@@ -135,6 +135,52 @@ describe('<DmnEditor>', function() {
   });
 
 
+  describe('#handleChanged', function() {
+
+    it('should notify about changes', function() {
+
+      // given
+      const changedSpy = (state) => {
+
+        // then
+        expect(state).to.include({
+          editLabel: false,
+          redo: true,
+          removeSelected: false,
+          undo: true
+        });
+      };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new DmnModeler({
+            commandStack: {
+              canRedo: () => true,
+              canUndo: () => true
+            },
+            selection: {
+              get: () => []
+            }
+          })
+        },
+        __destroy: () => {}
+      });
+
+      const { instance } = renderEditor(diagramXML, {
+        id: 'editor',
+        cache,
+        onChanged: changedSpy
+      });
+
+      // when
+      instance.handleChanged();
+    });
+
+  });
+
+
   describe('layout', function() {
 
     it('should open properties panel', function() {
@@ -347,7 +393,7 @@ describe('<DmnEditor>', function() {
 });
 
 
-// helpers //////////////////////////////
+// helpers //////////
 
 function noop() {}
 
@@ -356,6 +402,7 @@ const TestEditor = WithCachedState(DmnEditor);
 function renderEditor(xml, options = {}) {
   const {
     layout,
+    onChanged,
     onError,
     onImport,
     onLayoutChanged
@@ -366,9 +413,10 @@ function renderEditor(xml, options = {}) {
       <TestEditor
         id={ options.id || 'editor' }
         xml={ xml }
-        onLayoutChanged={ onLayoutChanged || noop }
+        onChanged={ onChanged || noop }
         onError={ onError || noop }
         onImport={ onImport || noop }
+        onLayoutChanged={ onLayoutChanged || noop }
         cache={ options.cache || new Cache() }
         layout={ layout || {
           minimap: {

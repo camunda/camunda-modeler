@@ -1,3 +1,5 @@
+import { assign } from 'min-dash';
+
 class PropertiesPanel {
   attachTo() {}
 
@@ -7,8 +9,22 @@ class PropertiesPanel {
 
 class Viewer {
 
-  constructor(xml) {
+  constructor(xml, modules) {
+    this.modules = assign(this._getDefaultModules(), modules);
+
     this.xml = xml;
+  }
+
+  _getDefaultModules() {
+    return {
+      canvas: {
+        resized() {}
+      },
+      propertiesPanel: new PropertiesPanel(),
+      sheet: {
+        resized() {}
+      }
+    };
   }
 
   saveSVG(done) {
@@ -20,32 +36,23 @@ class Viewer {
     return done(null, '<svg />');
   }
 
-  get(module) {
-    if (module === 'propertiesPanel') {
-      return new PropertiesPanel();
+  get(moduleName) {
+    const module = this.modules[moduleName];
+
+    if (module) {
+      return module;
     }
 
-    if (module === 'canvas') {
-      return {
-        resized() { }
-      };
-    }
-
-    if (module === 'sheet') {
-      return {
-        resized() { }
-      };
-    }
-
-    throw new Error(`service not provided: <${module}>`);
+    throw new Error(`service not provided: <${moduleName}>`);
   }
-
 }
 
 
 export default class Modeler {
 
-  constructor() {
+  constructor(modules = {}) {
+    this.modules = modules;
+
     this.xml = null;
   }
 
@@ -60,11 +67,11 @@ export default class Modeler {
   }
 
   getActiveView() {
-    this.activeView;
+    return this.activeView;
   }
 
   getActiveViewer() {
-    return new Viewer(this.xml);
+    return new Viewer(this.xml, this.modules);
   }
 
   saveXML(options, done) {

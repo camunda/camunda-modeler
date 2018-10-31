@@ -30,6 +30,8 @@ import css from './DmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 
+import { assign } from 'min-dash';
+
 
 export class DmnEditor extends CachedComponent {
 
@@ -235,36 +237,33 @@ export class DmnEditor extends CachedComponent {
 
     const inputActive = isInputActive();
 
-    const editMenuState = {
+    const newState = {
+      close: true,
+      exportAs: 'saveSVG' in activeViewer ? [ 'svg', 'png' ] : false,
       redo: commandStack.canRedo(),
+      save: true,
       undo: commandStack.canUndo()
     };
 
     let editMenu;
 
     if (activeView.type === 'drd') {
-      editMenu = getDmnDrdEditMenu({
-        ...editMenuState,
+      assign(newState, {
         editLabel: !inputActive && !!activeViewer.get('selection').get().length,
         lassoTool: !inputActive,
         removeSelected: false
       });
+
+      editMenu = getDmnDrdEditMenu(newState);
     } else if (activeView.type === 'decisionTable') {
-      editMenu = getDmnDecisionTableEditMenu({
-        ...editMenuState,
+      assign(newState, {
         hasSelection: activeViewer.get('selection').hasSelection()
       });
-    } else if (activeView.type === 'literalExpression') {
-      editMenu = getDmnLiteralExpressionEditMenu({
-        ...editMenuState
-      });
-    }
 
-    const newState = {
-      canExport: 'saveSVG' in activeViewer ? [ 'svg', 'png' ] : false,
-      redo: commandStack.canRedo(),
-      undo: commandStack.canUndo()
-    };
+      editMenu = getDmnDecisionTableEditMenu(newState);
+    } else if (activeView.type === 'literalExpression') {
+      editMenu = getDmnLiteralExpressionEditMenu(newState);
+    }
 
     if (typeof onChanged === 'function') {
       onChanged({
