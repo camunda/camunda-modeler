@@ -89,7 +89,7 @@ export class CmmnEditor extends CachedComponent {
       'selection.changed',
       'attach'
     ].forEach((event) => {
-      modeler[fn](event, this.updateState);
+      modeler[fn](event, this.handleChanged);
     });
 
     modeler[fn]('error', 1500, this.handleError);
@@ -160,7 +160,7 @@ export class CmmnEditor extends CachedComponent {
     }
   }
 
-  updateState = (event) => {
+  handleChanged = (event) => {
     const {
       modeler
     } = this.getCached();
@@ -176,24 +176,23 @@ export class CmmnEditor extends CachedComponent {
 
     const inputActive = isInputActive();
 
-    const editMenu = getCmmnEditMenu({
-      canRedo: commandStack.canRedo(),
-      canUndo: commandStack.canUndo(),
+    const newState = {
+      close: true,
       editLabel: !inputActive && !!selectionLength,
+      exportAs: [ 'svg', 'png' ],
       find: !inputActive,
       globalConnectTool: !inputActive,
       handTool: !inputActive,
       lassoTool: !inputActive,
-      spaceTool: !inputActive,
       moveCanvas: !inputActive,
-      removeSelected: !!selectionLength
-    });
-
-    const newState = {
-      canExport: [ 'svg', 'png' ],
       redo: commandStack.canRedo(),
+      removeSelected: !!selectionLength,
+      save: true,
+      spaceTool: !inputActive,
       undo: commandStack.canUndo()
     };
+
+    const editMenu = getCmmnEditMenu(newState);
 
     if (typeof onChanged === 'function') {
       onChanged({
@@ -346,7 +345,7 @@ export class CmmnEditor extends CachedComponent {
         <div
           className="diagram"
           ref={ this.ref }
-          onFocus={ this.updateState }
+          onFocus={ this.handleChanged }
           onContextMenu={ this.handleContextMenu }
         ></div>
 
