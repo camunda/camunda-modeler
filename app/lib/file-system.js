@@ -15,6 +15,8 @@ var ensureOptions = require('./util/ensure-opts');
 var ENCODING_UTF8 = 'utf8';
 var FILE_PROPERTIES = ['path', 'name', 'contents', 'lastModified', 'fileType'];
 
+var NO_PATH_PROVIDED_ERROR = 'no path provided';
+
 
 /**
  * Interface for handling files.
@@ -97,36 +99,48 @@ FileSystem.prototype.exportAs = function(diagramFile, filters, callback) {
 };
 
 FileSystem.prototype.saveAs = function(diagramFile, callback) {
-  var dialog = this.dialog;
+  var dialog = this.dialog,
+      self = this;
 
   var fileType = diagramFile.fileType;
 
   var dialogPath = { filePath: this.getFilePath(diagramFile) };
 
-  function done(actualFilePath) {
-    var savedFile;
-
-    if (actualFilePath) {
-      // everything ok up to here -> we got a file
-      savedFile = createFileDescriptor(diagramFile, {
-        path: actualFilePath
-      });
+  function done(error, filePath) {
+    if (error) {
+      return callback(error);
     }
 
-    callback(null, savedFile);
+    var savedFile = createFileDescriptor(diagramFile, {
+      path: filePath
+    });
+
+    try {
+      var newDiagramFile = self.writeFile(filePath, savedFile);
+
+      callback(null, newDiagramFile);
+    } catch (error) {
+      callback(error);
+    }
   }
 
   dialog.showDialog('save', assign(createFileDescriptor({
     name: diagramFile.name,
     fileType: fileType
-  }), dialogPath), function(err, filePath) {
+  }), dialogPath), function(error, filePath) {
 
-    // -> user cancel on save as file chooser
-    if (!filePath) {
-      return done(null);
+    if (error) {
+      return done(error);
     }
 
-    done(ensureExtension(filePath, fileType));
+    // user cancelled on save as file dialog
+    if (!filePath) {
+      return done(new Error(NO_PATH_PROVIDED_ERROR));
+    }
+
+    filePath = ensureExtension(filePath, fileType);
+
+    done(null, filePath);
   });
 };
 
