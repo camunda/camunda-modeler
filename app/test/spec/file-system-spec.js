@@ -1,7 +1,8 @@
 'use strict';
 
 var fs = require('fs'),
-    os = require('os');
+    os = require('os'),
+    sinon = require('sinon');
 
 var FileSystem = require('../../lib/file-system');
 
@@ -149,6 +150,57 @@ describe('FileSystem', function() {
 
       // then
       expect(statsFile).to.have.property('lastModified').eql(0);
+    });
+
+  });
+
+
+  describe('saveAs', function() {
+
+    it('should save file', function() {
+      // given
+      fileSystem.dialog.showDialog = sinon.stub().callsFake(function(...args) {
+        var callback = args.pop();
+
+        callback(null, TEST_FILE_PATH);
+      });
+
+      var callbackSpy = sinon.spy();
+
+      var file = {
+        contents: 'foo'
+      };
+
+      // when
+      fileSystem.saveAs(file, callbackSpy);
+
+      // then
+      expect(callbackSpy).to.be.called;
+      expect(fs.existsSync(TEST_FILE_PATH)).to.be.true;
+    });
+
+
+    it('should call callback with error if save file dialog was cancelled', function() {
+      // given
+      fileSystem.dialog.showDialog = sinon.stub().callsFake(function(...args) {
+        var callback = args.pop();
+
+        callback();
+      });
+
+      var callbackSpy = sinon.spy();
+
+      var file = {
+        contents: 'foo'
+      };
+
+      // when
+      fileSystem.saveAs(file, callbackSpy);
+
+      // then
+      expect(callbackSpy).to.be.calledOnce;
+      expect(callbackSpy.lastCall.args[0]).to.be.instanceOf(Error);
+      expect(fs.existsSync(TEST_FILE_PATH)).to.be.false;
     });
 
   });
