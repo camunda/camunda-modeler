@@ -29,7 +29,7 @@ function MenuBuilder(opts) {
       searchable: false,
       zoom: false,
       save: false,
-      closable: false,
+      close: false,
       elementsSelected: false,
       dmnRuleEditing: false,
       dmnClauseEditing: false,
@@ -178,7 +178,7 @@ MenuBuilder.prototype.appendExportAs = function() {
 MenuBuilder.prototype.appendCloseTab = function() {
   this.menu.append(new MenuItem({
     label: 'Close Tab',
-    enabled: this.opts.state.closable,
+    enabled: this.opts.state.close,
     accelerator: 'CommandOrControl+W',
     click: function() {
       app.emit('menu:action', 'close-active-tab');
@@ -187,7 +187,7 @@ MenuBuilder.prototype.appendCloseTab = function() {
 
   this.menu.append(new MenuItem({
     label: 'Close All Tabs',
-    enabled: this.opts.state.closable,
+    enabled: this.opts.state.close,
     click: function() {
       app.emit('menu:action', 'close-all-tabs');
     }
@@ -195,7 +195,7 @@ MenuBuilder.prototype.appendCloseTab = function() {
 
   this.menu.append(new MenuItem({
     label: 'Close Other Tabs',
-    enabled: this.opts.state.closable,
+    enabled: this.opts.state.close,
     click: function() {
       app.emit('menu:action', 'close-other-tabs');
     }
@@ -210,7 +210,7 @@ MenuBuilder.prototype.appendSwitchTab = function(submenu) {
     label: 'Switch Tab..',
     submenu: submenu || Menu.buildFromTemplate([{
       label: 'Select Next Tab',
-      enabled: this.opts.state.closable,
+      enabled: this.opts.state.close,
       accelerator: 'Control+TAB',
       click: function() {
         app.emit('menu:action', 'select-tab', 'next');
@@ -218,7 +218,7 @@ MenuBuilder.prototype.appendSwitchTab = function(submenu) {
     },
     {
       label: 'Select Previous Tab',
-      enabled: this.opts.state.closable,
+      enabled: this.opts.state.close,
       accelerator: 'Control+SHIFT+TAB',
       click: function() {
         app.emit('menu:action', 'select-tab', 'previous');
@@ -587,7 +587,7 @@ MenuBuilder.prototype.setMenu = function() {
 MenuBuilder.prototype.appendContextCloseTab = function(attrs) {
   this.menu.append(new MenuItem({
     label: 'Close Tab',
-    enabled: this.opts.state.closable,
+    enabled: this.opts.state.close,
     accelerator: 'CommandOrControl+W',
     click: function() {
       app.emit('menu:action', 'close-tab', attrs);
@@ -596,7 +596,7 @@ MenuBuilder.prototype.appendContextCloseTab = function(attrs) {
 
   this.menu.append(new MenuItem({
     label: 'Close All Tabs',
-    enabled: this.opts.state.closable,
+    enabled: this.opts.state.close,
     click: function() {
       app.emit('menu:action', 'close-all-tabs');
     }
@@ -604,7 +604,7 @@ MenuBuilder.prototype.appendContextCloseTab = function(attrs) {
 
   this.menu.append(new MenuItem({
     label: 'Close Other Tabs',
-    enabled: this.opts.state.closable,
+    enabled: this.opts.state.close,
     click: function() {
       app.emit('menu:action', 'close-other-tabs', attrs);
     }
