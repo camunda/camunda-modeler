@@ -13,11 +13,6 @@ import {
   addDragger
 } from '../util/dragger';
 
-import {
-  find,
-  matchPattern
-} from 'min-dash';
-
 const noop = () => {};
 
 const TABS_OPTS = {
@@ -70,7 +65,7 @@ export default class TabLinks extends Component {
       tabs
     } = this.props;
 
-    const tab = find(tabs, matchPattern({ id: node.dataset.tabId }));
+    const tab = tabs.find(({ id }) => id === node.dataset.tabId);
 
     onSelect(tab);
   }
@@ -81,7 +76,7 @@ export default class TabLinks extends Component {
       onMoveTab
     } = this.props;
 
-    const tab = find(tabs, matchPattern({ id: dragTab.dataset.tabId }));
+    const tab = tabs.find(({ id }) => id === dragTab.dataset.tabId);
 
     onMoveTab(tab, newIndex);
   }
