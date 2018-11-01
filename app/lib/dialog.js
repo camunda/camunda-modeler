@@ -201,28 +201,6 @@ Dialog.prototype.getDialogOptions = function(type, options) {
         ].join('\n')
       };
     },
-    emptyFile: function(options) {
-      ensureOptions([ 'fileType', 'name' ], options);
-
-      var type = options.fileType.toUpperCase();
-
-      return {
-        type: 'question',
-        title: [
-          'Empty ',
-          type,
-          ' file'
-        ].join(''),
-        buttons: [
-          { id: 'cancel', label: 'Cancel' },
-          { id: 'create', label: 'Create' }
-        ],
-        message: [
-          'The file "' + options.name + '" is empty.',
-          'Would you like to create a new ' + type + ' diagram?'
-        ].join('\n')
-      };
-    },
     error: getDialog('error'),
     warning: getDialog('warning'),
     info: getDialog('info')
