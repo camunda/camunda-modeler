@@ -98,6 +98,7 @@ FileSystem.prototype.exportAs = function(diagramFile, filters, callback) {
   });
 };
 
+// TODO(philippfromme): refactor, this method is highly confusing
 FileSystem.prototype.saveAs = function(diagramFile, callback) {
   var dialog = this.dialog,
       self = this;
@@ -106,7 +107,10 @@ FileSystem.prototype.saveAs = function(diagramFile, callback) {
 
   var dialogPath = { filePath: this.getFilePath(diagramFile) };
 
+  // (3) handle dialog response
   function done(error, filePath) {
+
+    // (4) call callback
     if (error) {
       return callback(error);
     }
@@ -124,11 +128,13 @@ FileSystem.prototype.saveAs = function(diagramFile, callback) {
     }
   }
 
+  // (1) open save dialog
   dialog.showDialog('save', assign(createFileDescriptor({
     name: diagramFile.name,
     fileType: fileType
   }), dialogPath), function(error, filePath) {
 
+    // (2) handle dialog response
     if (error) {
       return done(error);
     }
