@@ -64,6 +64,16 @@ export default class TabsProvider {
 
   }
 
+  getProviderNames() {
+
+    var names = [];
+    for (var key in this.providers) {
+      this.providers[key].name ? names.push(this.providers[key].name) : '';
+    }
+
+    return names;
+  }
+
   getProvider(type) {
     return (this.providers[type] || noopProvider);
   }
