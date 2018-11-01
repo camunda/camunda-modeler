@@ -77,6 +77,18 @@ export class TabsProvider {
 
       return Promise.resolve({ default: FakeTab });
     };
+
+    this.providers = {
+      bpmn: {
+        name: 'BPMN',
+      },
+      cmnn: {
+        name: 'CMMN'
+      },
+      dmn: {
+        name: 'DMN'
+      }
+    };
   }
 
   createTab(type) {
@@ -100,8 +112,26 @@ export class TabsProvider {
     };
   }
 
+  getProvider(type) {
+    return this.providers[type];
+  }
+
+  getProviderNames() {
+    var names = [];
+    for (var key in this.providers) {
+      this.providers[key].name ? names.push(this.providers[key].name) : '';
+    }
+
+    return names;
+  }
+
   getTabComponent(type) {
     return this.resolveTab(type);
+  }
+
+
+  getInitialFileContents() {
+    return '<contents>';
   }
 
 }
@@ -121,6 +151,9 @@ export class Dialog extends Mock {
 
     this.askSaveResponse = null;
     this.openFileResponse = null;
+    this.showResponse = null;
+    this.showUnrecognizedFileErrorDialogResponse = null;
+    this.showEmptyFileDialogResponse = null;
   }
 
   setAskSaveResponse(response) {
@@ -135,6 +168,18 @@ export class Dialog extends Mock {
     this.openFileResponse = response;
   }
 
+  setShowResponse(response) {
+    this.showResponse = response;
+  }
+
+  setShowUnrecognizedFileErrorDialogResponse(response) {
+    this.showUnrecognizedFileErrorDialogResponse = response;
+  }
+
+  setShowEmptyFileDialogResponse(response) {
+    this.showEmptyFileDialogResponse = response;
+  }
+
   askSave() {
     return this.askSaveResponse;
   }
@@ -145,6 +190,18 @@ export class Dialog extends Mock {
 
   openFile() {
     return this.openFileResponse;
+  }
+
+  show() {
+    return this.showResponse;
+  }
+
+  showUnrecognizedFileErrorDialog() {
+    return this.showUnrecognizedFileErrorDialogResponse;
+  }
+
+  showEmptyFileDialog() {
+    return this.showEmptyFileDialogResponse;
   }
 }
 
