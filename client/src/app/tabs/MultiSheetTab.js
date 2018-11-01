@@ -109,26 +109,11 @@ export class MultiSheetTab extends CachedComponent {
       type
     } = tab;
 
-    // TODO(philippfromme): where to put this?
-    const answer = await onAction('show-dialog', {
-      type: 'error',
-      title: 'Import Error',
-      message: 'Ooops!',
-      buttons: [{
-        id: 'close',
-        label: 'Close'
-      }, {
-        id: 'ask-in-forum',
-        label: 'Ask in Forum'
-      }],
-      detail: [
-        error.message,
-        '',
-        'Do you believe "' + name + '" is valid ' + type.toUpperCase() + ' diagram?',
-        '',
-        'Post this error with your diagram in our forum for help.'
-      ].join('\n')
-    });
+    const answer = await onAction('show-dialog', getErrorDialog({
+      error,
+      name,
+      type
+    }));
 
     if (answer === 'ask-in-forum') {
       onAction('open-external-url', {
@@ -345,5 +330,33 @@ export class MultiSheetTab extends CachedComponent {
 
 }
 
-
 export default WithCache(WithCachedState(MultiSheetTab));
+
+
+// helper //////////
+
+function getErrorDialog({
+  error,
+  name,
+  type
+}) {
+  return {
+    type: 'error',
+    title: 'Import Error',
+    message: 'Ooops!',
+    buttons: [{
+      id: 'close',
+      label: 'Close'
+    }, {
+      id: 'ask-in-forum',
+      label: 'Ask in Forum'
+    }],
+    detail: [
+      error.message,
+      '',
+      'Do you believe "' + name + '" is valid ' + type.toUpperCase() + ' diagram?',
+      '',
+      'Post this error with your diagram in our forum for help.'
+    ].join('\n')
+  };
+}
