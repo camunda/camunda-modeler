@@ -127,12 +127,6 @@ if (config.get('single-instance', true)) {
 
 // client life-cycle //////////////////
 
-renderer.on('dialog:unrecognized-file', function(file, done) {
-  dialog.showDialog('unrecognizedFile', { name: file.name });
-
-  done(null);
-});
-
 renderer.on('dialog:reimport-warning', function(done) {
 
   dialog.showDialog('reimportWarning', done);
@@ -175,13 +169,6 @@ renderer.on('dialog:saving-denied', function(done) {
 
 renderer.on('dialog:content-changed', function(done) {
   dialog.showDialog('contentChanged', done);
-});
-
-renderer.on('dialog:empty-file', function(options, done) {
-  dialog.showDialog('emptyFile', {
-    fileType: options.fileType,
-    name: options.name
-  }, done);
 });
 
 renderer.on('deploy', function(data, done) {
