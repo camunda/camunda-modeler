@@ -157,7 +157,7 @@ describe('<App>', function() {
   });
 
 
-  describe('open files', function() {
+  describe('#openFiles', function() {
 
     it('should create tabs', async function() {
 
@@ -211,6 +211,102 @@ describe('<App>', function() {
 
       // existing tab is focussed
       expect(activeTab).to.eql(app.findOpenTab(file1));
+    });
+
+
+    it('should open files', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      dialog.setShowEmptyFileDialogResponse('create');
+
+      const { app } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const file1 = createFile('1.bpmn', null, '');
+      const file2 = createFile('2.bpmn');
+
+      // when
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      // then
+      const {
+        activeTab,
+        tabs
+      } = app.state;
+
+      expect(tabs).to.have.length(2);
+      expect(openedTabs).to.eql(tabs);
+      expect(activeTab).to.eql(app.findOpenTab(file2));
+    });
+
+  });
+
+
+  describe('#openEmptyFile', function() {
+
+    it('should open empty file', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      dialog.setShowEmptyFileDialogResponse('create');
+
+      const { app } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const file1 = createFile('1.bpmn', null, '');
+
+      // when
+      const tab = await app.openEmptyFile(file1);
+
+      // then
+      const {
+        activeTab,
+        tabs
+      } = app.state;
+
+      expect(tabs).to.have.length(1);
+      expect(tabs).to.eql([ tab ]);
+      expect(activeTab).to.eql(tab);
+    });
+
+
+    it('should NOT open empty TXT file', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      dialog.setShowUnrecognizedFileErrorDialogResponse('cancel');
+
+      const { app } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const lastTab = app.state.activeTab;
+
+      const file1 = createFile('1.txt', null, '');
+
+      // when
+      await app.openEmptyFile(file1);
+
+      // then
+      const {
+        activeTab,
+        tabs
+      } = app.state;
+
+      expect(tabs).to.have.length(0);
+      expect(activeTab).to.eql(lastTab);
     });
 
   });
@@ -1132,6 +1228,7 @@ function createApp(options = {}, mountFn=shallow) {
   const cache = options.cache || new Cache();
 
   const defaultGlobals = {
+    backend: new Backend(),
     dialog: new Dialog(),
     eventBus: mitt(),
     fileSystem: new FileSystem(),
@@ -1184,12 +1281,13 @@ function createApp(options = {}, mountFn=shallow) {
 }
 
 
-function createFile(name, path) {
+function createFile(name, path, contents = 'foo') {
 
   path = typeof path === 'undefined' ? name : path;
 
   return {
     name,
-    path
+    path,
+    contents
   };
 }
