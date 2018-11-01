@@ -7,7 +7,10 @@ import {
   SlotFillRoot
 } from './slot-fill';
 
-import { debounce } from 'min-dash';
+import {
+  assign,
+  debounce
+} from 'min-dash';
 
 import Toolbar from './Toolbar';
 
@@ -296,6 +299,51 @@ export class App extends Component {
     await this.openFiles(files);
   }
 
+  openEmptyFile = async (file) => {
+    const {
+      globals,
+      tabsProvider
+    } = this.props;
+
+    const { dialog } = globals;
+
+    const type = file.name.split('.').pop();
+
+    if (!tabsProvider.getProvider(type)) {
+
+      await dialog.showUnrecognizedFileErrorDialog({
+        file,
+        types: tabsProvider.getProviderNames()
+      });
+
+      return;
+    }
+
+    const answer = await dialog.showEmptyFileDialog({
+      file,
+      type
+    });
+
+    if (answer == 'create') {
+      assign(file, {
+        contents: tabsProvider.getInitialFileContents(type)
+      });
+
+      // TODO(philippfromme): fix dirty state
+      let tab = this.addTab(
+        tabsProvider.createTabForFile(file)
+      );
+
+      this.handleTabChanged(tab)({
+        dirty: true
+      });
+
+      await this.selectTab(tab);
+
+      return tab;
+    }
+  }
+
   openFiles = async (files) => {
 
     const {
@@ -308,21 +356,33 @@ export class App extends Component {
 
     // open tabs from last to first to
     // keep display order in tact
-    const openedTabs = files.slice().reverse().map(
-      file => {
-        let tab = this.findOpenTab(file);
+    const openedTabs = await Promise.all(files.slice().reverse().map(
+      async file => {
+        let tab;
 
-        if (!tab) {
-          tab = this.addTab(
-            tabsProvider.createTabForFile(file)
-          );
+        if (!file.contents.length) {
+          tab = await this.openEmptyFile(file);
+        } else {
+          tab = this.findOpenTab(file);
+
+          if (!tab) {
+            tab = this.addTab(
+              tabsProvider.createTabForFile(file)
+            );
+          }
         }
 
         return tab;
-      }
-    );
+      })
+    ).then(tabs => {
 
-    await this.selectTab(openedTabs[0]);
+      // filter out empty elements
+      return tabs.filter(tab => tab);
+    });
+
+    if (openedTabs.length) {
+      await this.selectTab(openedTabs[0]);
+    }
 
     // open tabs from last to first to
     // keep display order in tact
