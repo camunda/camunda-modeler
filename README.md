@@ -7,7 +7,7 @@
 
 An integrated modeling solution for BPMN, DMN and CMMN based on [bpmn.io](http://bpmn.io).
 
-![Camunda Modeler](https://raw.githubusercontent.com/camunda/camunda-modeler/master/docs/screenshot.png)
+![Camunda Modeler](docs/screenshot.png)
 
 
 ## Resources
