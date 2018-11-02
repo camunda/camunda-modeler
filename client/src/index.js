@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 
 import { AppParent, TabsProvider } from './app';
 
-import mitt from 'mitt';
-
 import {
   backend,
   dialog,
@@ -12,14 +10,11 @@ import {
   workspace
 } from './remote';
 
-const eventBus = mitt();
-
 const tabsProvider = new TabsProvider();
 
 const globals = {
   backend,
   dialog,
-  eventBus,
   fileSystem,
   workspace
 };

@@ -20,8 +20,6 @@ import {
   Workspace
 } from './mocks';
 
-import mitt from 'mitt';
-
 import pDefer from 'p-defer';
 
 
@@ -1230,7 +1228,6 @@ function createApp(options = {}, mountFn=shallow) {
   const defaultGlobals = {
     backend: new Backend(),
     dialog: new Dialog(),
-    eventBus: mitt(),
     fileSystem: new FileSystem(),
     workspace: new Workspace()
   };
