@@ -1,1 +1,1 @@
-export { default } from './XMLTab';
+export { default } from './XMLEditor';
