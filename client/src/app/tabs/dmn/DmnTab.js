@@ -1,5 +1,5 @@
 import DmnEditor from './DmnEditor';
-import XMLEditor from '../xml/XMLEditor';
+import XMLEditor from '../xml';
 
 import { createTab } from '../EditorTab';
 

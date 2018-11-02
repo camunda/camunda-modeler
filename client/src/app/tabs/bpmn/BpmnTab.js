@@ -1,5 +1,5 @@
 import BpmnEditor from './BpmnEditor';
-import XMLEditor from '../xml/XMLEditor';
+import XMLEditor from '../xml';
 
 import { createTab } from '../EditorTab';
 

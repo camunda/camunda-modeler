@@ -1,5 +1,5 @@
 import CmmnEditor from './CmmnEditor';
-import XMLEditor from '../xml/XMLEditor';
+import XMLEditor from '../xml';
 
 import { createTab } from '../EditorTab';
 
