@@ -15,8 +15,6 @@ import {
   Workspace
 } from './mocks';
 
-import mitt from 'mitt';
-
 
 /* global sinon */
 const { spy } = sinon;
@@ -72,7 +70,6 @@ function createAppParent(options = {}, mountFn=shallow) {
   const defaultGlobals = {
     backend: new Backend(),
     dialog: new Dialog(),
-    eventBus: mitt(),
     fileSystem: new FileSystem(),
     workspace: new Workspace()
   };
