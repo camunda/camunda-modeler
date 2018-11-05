@@ -4,6 +4,34 @@ import { Backend } from '../../app/__tests__/mocks';
 
 describe('dialog', function() {
 
+  it('#showOpenFilesDialog', function() {
+
+    // given
+    const sendSpy = (type, opts) => {
+
+      // then
+      expect(type).to.equal('dialog:open-files');
+
+      expect(opts).to.eql(options);
+    };
+
+    const backend = new Backend({ send: sendSpy });
+    const dialog = new Dialog(backend);
+
+    const options = {
+      defaultPath: 'foo',
+      filter: {
+        extensions: [ 'foo' ],
+        name: 'foo'
+      },
+      title: 'Foo'
+    };
+
+    // when
+    dialog.showOpenFilesDialog(options);
+  });
+
+
   it('#show', function() {
 
     // given
@@ -32,7 +60,7 @@ describe('dialog', function() {
   });
 
 
-  it('#showUnrecognizedFileErrorDialog', function() {
+  it('#showOpenFileErrorDialog', function() {
 
     // given
     const sendSpy = (type, opts) => {
@@ -61,7 +89,7 @@ describe('dialog', function() {
     };
 
     // when
-    dialog.showUnrecognizedFileErrorDialog(options);
+    dialog.showOpenFileErrorDialog(options);
   });
 
 
