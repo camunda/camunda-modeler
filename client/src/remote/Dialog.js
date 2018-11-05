@@ -4,14 +4,25 @@ export default class Dialog {
     this.backend = backend;
   }
 
-  openFile(cwd) {
-    return this.backend.send('file:open', cwd).then(function(files) {
+  /**
+   * Show open dialog.
+   *
+   * @param {Object} options Options.
+   * @param {String} options.defaultPath Default path.
+   * @param {Object} options.filter Extension filter.
+   * @param {String} [options.title] Dialog title.
+   */
+  showOpenFilesDialog(options) {
+    return this.backend.send('dialog:open-files', options);
+  }
 
-      // files may be null on user cancel
-      files = files || [];
-
-      return files;
-    });
+  /**
+   * Show save dialog (handles both XML and images).
+   *
+   * @param {Object} options Options.
+   */
+  showSaveFileDialog(options) {
+    // TODO(philippfromme): implement
   }
 
   askSave(file) {
@@ -26,28 +37,8 @@ export default class Dialog {
     return this.backend.send('dialog:show', options);
   }
 
-  showUnrecognizedFileErrorDialog = async (options) => {
-    const {
-      file,
-      types
-    } = options;
-
-    const typesString = types.reduce((string, type, index) => {
-      const isLast = index === types.length - 1;
-
-      const seperator = isLast ? ' or' : ',';
-
-      return string.concat(`${ seperator } ${ type.toUpperCase() }`);
-    });
-
-    await this.show({
-      type: 'error',
-      title: 'Unrecognized file format',
-      buttons: [
-        { id: 'cancel', label: 'Close' }
-      ],
-      message: 'The file "' + file.name + '" is not a' + typesString + ' file.'
-    });
+  showOpenFileErrorDialog = async (options) => {
+    return this.backend.send('dialog:open-file-error', options);
   }
 
   showEmptyFileDialog = async (options) => {
@@ -69,10 +60,8 @@ export default class Dialog {
         { id: 'cancel', label: 'Cancel' },
         { id: 'create', label: 'Create' }
       ],
-      message: [
-        'The file "' + file.name + '" is empty.',
-        'Would you like to create a new ' + typeUpperCase + ' diagram?'
-      ].join('\n')
+      message: `The file "${ file.name }" is empty.`,
+      detail: `Would you like to create a new ${ type } file?`
     });
   }
 
