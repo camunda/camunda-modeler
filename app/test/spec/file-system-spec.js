@@ -26,7 +26,9 @@ describe('FileSystem', function() {
   afterEach(function() {
     try {
       fs.unlinkSync(TEST_FILE_PATH);
-    } catch (e) { /** YEA */ }
+    } catch (e) {
+      console.log(e);
+    }
   });
 
 
@@ -205,4 +207,54 @@ describe('FileSystem', function() {
 
   });
 
+
+  describe('#open', function() {
+
+    const file1Path = getPath('foo'),
+          file2Path = getPath('bar');
+
+    beforeEach(function() {
+      fileSystem.writeFile(file1Path, {
+        contents: 'foo'
+      });
+
+      fileSystem.writeFile(file2Path, {
+        contents: 'bar'
+      });
+    });
+
+
+    it('should open a file', function() {
+
+      // when
+      const files = fileSystem.open(file1Path);
+
+      // expect
+      expect(files).to.have.length(1);
+      expect(files[0].contents).to.equal('foo');
+    });
+
+
+    it('should open multiple files', function() {
+
+      // when
+      const files = fileSystem.open([
+        file1Path,
+        file2Path
+      ]);
+
+      // expect
+      expect(files).to.have.length(2);
+      expect(files[0].contents).to.equal('foo');
+      expect(files[1].contents).to.equal('bar');
+    });
+
+  });
+
 });
+
+// helpers //////////
+
+function getPath(name) {
+  return `${ os.tmpdir }/camunda-modeler.fs${ name }.test`;
+}
