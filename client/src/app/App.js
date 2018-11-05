@@ -9,7 +9,8 @@ import {
 
 import {
   assign,
-  debounce
+  debounce,
+  forEach
 } from 'min-dash';
 
 import Toolbar from './Toolbar';
@@ -293,10 +294,41 @@ export class App extends Component {
     return this.props.globals.dialog.askSave({ name: file.name });
   }
 
-  showOpenDialog = async () => {
-    const files = await this.props.globals.dialog.openFile(null);
+  showOpenFilesDialog = async () => {
+    const {
+      globals,
+      tabsProvider
+    } = this.props;
 
-    await this.openFiles(files);
+    const {
+      activeTab
+    } = this.state;
+
+    const {
+      dialog
+    } = globals;
+
+    const providers = tabsProvider.getProviders();
+
+    const extensions = [];
+
+    forEach(providers, (provider, key) => {
+      if (key !== 'empty') {
+        extensions.push(key);
+      }
+    });
+
+    const files = await dialog.showOpenFilesDialog({
+      activeFile: activeTab.file,
+      filters: {
+        name: 'All supported',
+        extensions
+      }
+    });
+
+    if (files.length) {
+      await this.openFiles(files);
+    }
   }
 
   openEmptyFile = async (file) => {
@@ -307,16 +339,17 @@ export class App extends Component {
 
     const { dialog } = globals;
 
-    const type = file.name.split('.').pop();
+    const { name } = file;
 
-    if (!tabsProvider.getProvider(type)) {
+    const type = name.split('.').pop();
 
-      await dialog.showUnrecognizedFileErrorDialog({
-        file,
-        types: tabsProvider.getProviderNames()
-      });
+    if (!tabsProvider.hasProvider(type)) {
+      let providerNames = tabsProvider.getProviderNames();
 
-      return;
+      return await dialog.showOpenFileErrorDialog(getOpenFileErrorDialog({
+        name,
+        providerNames
+      }));
     }
 
     const answer = await dialog.showEmptyFileDialog({
@@ -874,7 +907,7 @@ export class App extends Component {
     }
 
     if (action === 'open-diagram') {
-      return this.showOpenDialog();
+      return this.showOpenFilesDialog();
     }
 
     if (action === 'save-all') {
@@ -1151,3 +1184,33 @@ function isNew(tab) {
 }
 
 export default WithCache(App);
+
+// helpers //////////
+
+function getOpenFileErrorDialog(options) {
+  const {
+    name,
+    providerNames
+  } = options;
+
+  // format provider names as string
+  const providerNamesString = providerNames.reduce((string, providerName, index) => {
+    const isFirst = index === 0,
+          isLast = index === providerNames.length - 1;
+
+    let seperator = '';
+
+    if (isLast) {
+      seperator = ' or ';
+    } else if (!isFirst) {
+      seperator = ', ';
+    }
+
+    return `${ string }${ seperator }${ providerName }`;
+  }, '');
+
+  return {
+    message: 'Unable to open file.',
+    detail: `"${ name }" is not a ${ providerNamesString } file.`
+  };
+}
