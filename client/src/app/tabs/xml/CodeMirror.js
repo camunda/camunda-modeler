@@ -54,11 +54,5 @@ export default function create(options) {
 
   instance.destroy = function() { };
 
-  Object.defineProperty(instance, 'lastXML', {
-    get() {
-      return this.getValue();
-    }
-  });
-
   return instance;
 }
