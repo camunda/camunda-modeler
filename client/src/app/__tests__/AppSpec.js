@@ -282,7 +282,7 @@ describe('<App>', function() {
       // given
       const dialog = new Dialog();
 
-      dialog.setShowUnrecognizedFileErrorDialogResponse('cancel');
+      dialog.setShowOpenFileErrorDialogResponse('cancel');
 
       const { app } = createApp({
         globals: {
@@ -1148,6 +1148,67 @@ describe('<App>', function() {
 
       // then
       expect(resolveTabSpy).to.have.been.calledOnce;
+    });
+
+  });
+
+
+  describe('#showOpenFilesDialog', function() {
+
+    it('should open dialog and open files', async function() {
+
+      // given
+      const files = [
+        { contents: '<contents>', name: 'foo' },
+        { contents: '<contents>', name: 'bar' }
+      ];
+
+      const dialog = new Dialog();
+
+      dialog.setShowOpenFilesDialogResponse(files);
+
+      const showOpenFilesDialogSpy = spy(dialog, 'showOpenFilesDialog');
+
+      const { app } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const openFilesSpy = spy(app, 'openFiles');
+
+      // when
+      await app.showOpenFilesDialog();
+
+      // then
+      expect(showOpenFilesDialogSpy).to.have.been.called;
+      expect(openFilesSpy).to.have.been.called;
+    });
+
+
+    it('should open dialog and NOT open files', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      dialog.setShowOpenFilesDialogResponse([]);
+
+      const showOpenFilesDialogSpy = spy(dialog, 'showOpenFilesDialog');
+
+      const { app } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const openFilesSpy = spy(app, 'openFiles');
+
+      // when
+      await app.showOpenFilesDialog();
+
+      // then
+      expect(showOpenFilesDialogSpy).to.have.been.called;
+      expect(openFilesSpy).not.to.have.been.called;
     });
 
   });

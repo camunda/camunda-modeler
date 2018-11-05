@@ -5,8 +5,7 @@ var fs = require('fs'),
 
 var {
   assign,
-  pick,
-  forEach
+  pick
 } = require('min-dash');
 
 var ensureOptions = require('./util/ensure-opts');
@@ -32,38 +31,22 @@ function FileSystem(options) {
 
 module.exports = FileSystem;
 
-
-FileSystem.prototype.open = function(filePath, callback) {
-  var self = this,
-      dialog = this.dialog,
-      files = [];
-
-  dialog.showDialog('open', { filePath: filePath }, function(err, filenames) {
-    if (!filenames) {
-      return callback(null);
-    }
-
-    forEach(filenames, function(filename, idx) {
-      var file = self._openFile(filename);
-
-      files.push(file);
-    });
-
-    callback(null, files);
-  });
-};
-
-
-FileSystem.prototype._openFile = function(filePath, callback) {
-  var diagramFile;
-
-  try {
-    diagramFile = this.readFile(filePath);
-  } catch (err) {
-    return err;
+FileSystem.prototype.open = function(filePaths) {
+  if (!Array.isArray(filePaths)) {
+    filePaths = [ filePaths ];
   }
 
-  return diagramFile;
+  return filePaths.map(filePath => {
+    let file;
+
+    try {
+      file = this.readFile(filePath);
+    } catch (err) {
+      return err;
+    }
+
+    return file;
+  });
 };
 
 FileSystem.prototype.getFilePath = function(diagramFile) {
