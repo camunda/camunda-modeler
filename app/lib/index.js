@@ -7,6 +7,7 @@ var electron = require('electron'),
 var path = require('path');
 
 var {
+  assign,
   forEach
 } = require('min-dash');
 
@@ -127,8 +128,13 @@ if (config.get('single-instance', true)) {
 
 // client life-cycle //////////////////
 
-renderer.on('dialog:reimport-warning', function(done) {
+renderer.on('dialog:open-file-error', async function(options, done) {
+  await dialog.showOpenFileErrorDialog(options);
 
+  done();
+});
+
+renderer.on('dialog:reimport-warning', function(done) {
   dialog.showDialog('reimportWarning', done);
 });
 
@@ -249,20 +255,22 @@ renderer.on('file:read-stats', function(diagramFile, done) {
   done(null, fileSystem.readFileStats(diagramFile));
 });
 
-renderer.on('file:open', function(filePath, done) {
-  fileSystem.open(filePath, function(err, diagramFiles) {
-    if (err) {
-      return done(err);
-    }
+renderer.on('dialog:open-files', async function(options, done) {
+  const {
+    activeFile
+  } = options;
 
-    if (diagramFiles && diagramFiles !== 'cancel') {
-      diagramFiles.forEach(file => {
-        app.emit('app:add-recent-file', file.path);
-      });
-    }
+  if (activeFile) {
+    assign(options, {
+      defaultPath: path.dirname(activeFile.path)
+    });
+  }
 
-    done(null, diagramFiles);
-  });
+  const filePaths = await dialog.showOpenDialog(options);
+
+  const files = fileSystem.open(filePaths);
+
+  done(null, files);
 });
 
 
@@ -288,6 +296,7 @@ app.on('app:open-file', function(filePath) {
   console.log('app:open-file', filePath);
 
   if (!app.clientReady) {
+
     // defer file open
     return app.openFiles.push(filePath);
   }
@@ -295,7 +304,9 @@ app.on('app:open-file', function(filePath) {
   try {
     file = fileSystem.readFile(filePath);
   } catch (e) {
-    return dialog.showDialog('unrecognizedFile', { name: path.basename(filePath) });
+    dialog.showOpenFileErrorDialog({
+      name: path.basename(filePath)
+    });
   }
 
   // open file immediately
@@ -311,7 +322,9 @@ app.on('app:client-ready', function() {
     try {
       files.push(fileSystem.readFile(filePath));
     } catch (e) {
-      dialog.showDialog('unrecognizedFile', { name: path.basename(filePath) });
+      dialog.showOpenFileErrorDialog({
+        name: path.basename(filePath)
+      });
     }
   });
 
