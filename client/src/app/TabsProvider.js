@@ -7,6 +7,8 @@ import dmnTable from './tabs/dmn/table.dmn';
 
 import EmptyTab from './EmptyTab';
 
+import { forEach } from 'min-dash';
+
 const ids = new Ids([ 32, 36, 1 ]);
 const createdByType = {};
 
@@ -65,13 +67,25 @@ export default class TabsProvider {
   }
 
   getProviderNames() {
+    const names = [];
 
-    var names = [];
-    for (var key in this.providers) {
-      this.providers[key].name ? names.push(this.providers[key].name) : '';
-    }
+    forEach(this.providers, (provider) => {
+      const { name } = provider;
+
+      if (name) {
+        names.push(name);
+      }
+    });
 
     return names;
+  }
+
+  getProviders() {
+    return this.providers;
+  }
+
+  hasProvider(type) {
+    return !!this.providers[type];
   }
 
   getProvider(type) {

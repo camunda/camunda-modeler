@@ -76,6 +76,7 @@ describe('TabsProvider', function() {
 
 
   it('should create tab for file', function() {
+
     // given
     const tabsProvider = new TabsProvider();
 
@@ -90,6 +91,65 @@ describe('TabsProvider', function() {
     // then
     expect(tab.name).to.eql(file.name);
     expect(tab.title).to.eql(file.path);
+  });
+
+
+  it('#getProviders', function() {
+
+    // given
+    const tabsProvider = new TabsProvider();
+
+    // when
+    const providers = tabsProvider.getProviders();
+
+    // then
+    expect(providers['bpmn']).to.exist;
+    expect(providers['cmmn']).to.exist;
+    expect(providers['dmn']).to.exist;
+    expect(providers['empty']).to.exist;
+  });
+
+
+  it('#getProviderNames', function() {
+
+    // given
+    const tabsProvider = new TabsProvider();
+
+    // when
+    const providerNames = tabsProvider.getProviderNames();
+
+    // then
+    expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN' ]);
+  });
+
+
+  describe('#hasProvider', function() {
+
+    let tabsProvider;
+
+    beforeEach(function() {
+      tabsProvider = new TabsProvider();
+    });
+
+
+    it('should have provider', function() {
+
+      // when
+      const hasProvider = tabsProvider.hasProvider('bpmn');
+
+      // then
+      expect(hasProvider).to.be.true;
+    });
+
+    it('should NOT have provider', function() {
+
+      // when
+      const hasProvider = tabsProvider.hasProvider('unknown');
+
+      // then
+      expect(hasProvider).to.be.false;
+    });
+
   });
 
 });
