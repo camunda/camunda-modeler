@@ -18,7 +18,17 @@ export class XMLEditor extends CachedComponent {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    const {
+      editor
+    } = this.getCached();
+
+    const history = editor.doc.historySize();
+
+    this.state = {
+      canExport: false,
+      redo: !!history.redo,
+      undo: !!history.undo
+    };
 
     this.ref = React.createRef();
   }
@@ -94,6 +104,7 @@ export class XMLEditor extends CachedComponent {
 
     if (xml !== editor.lastXML) {
       editor.setValue(xml);
+      editor.lastXML = xml;
     }
 
     editor.refresh();
@@ -105,12 +116,12 @@ export class XMLEditor extends CachedComponent {
     } = this.props;
 
     const {
-      lastXML
-    } = this.state;
-
-    const {
       editor
     } = this.getCached();
+
+    const {
+      lastXML
+    } = editor;
 
     // on initial import, reset history to prevent
     // undo by the user
@@ -139,8 +150,7 @@ export class XMLEditor extends CachedComponent {
     }
 
     this.setState({
-      ...newState,
-      lastXML: this.getXML()
+      ...newState
     });
   }
 
