@@ -1,6 +1,9 @@
 import { Component } from 'react';
 
-import { assign } from 'min-dash';
+import {
+  assign,
+  forEach
+} from 'min-dash';
 
 import EmptyTab from '../../EmptyTab';
 
@@ -112,17 +115,30 @@ export class TabsProvider {
     };
   }
 
-  getProvider(type) {
-    return this.providers[type];
-  }
-
   getProviderNames() {
-    var names = [];
-    for (var key in this.providers) {
-      this.providers[key].name ? names.push(this.providers[key].name) : '';
-    }
+    const names = [];
+
+    forEach(this.providers, (provider) => {
+      const { name } = provider;
+
+      if (name) {
+        names.push(name);
+      }
+    });
 
     return names;
+  }
+
+  getProviders() {
+    return this.providers;
+  }
+
+  hasProvider(type) {
+    return !!this.providers[type];
+  }
+
+  getProvider(type) {
+    return this.providers[type];
   }
 
   getTabComponent(type) {
@@ -150,10 +166,14 @@ export class Dialog extends Mock {
     super(overrides);
 
     this.askSaveResponse = null;
-    this.openFileResponse = null;
+    this.showOpenFilesDialogResponse = null;
     this.showResponse = null;
-    this.showUnrecognizedFileErrorDialogResponse = null;
+    this.showOpenFileErrorDialogResponse = null;
     this.showEmptyFileDialogResponse = null;
+  }
+
+  setShowOpenFilesDialogResponse(response) {
+    this.showOpenFilesDialogResponse = response;
   }
 
   setAskSaveResponse(response) {
@@ -164,20 +184,20 @@ export class Dialog extends Mock {
     this.askExportAsResponse = response;
   }
 
-  setOpenFileResponse(response) {
-    this.openFileResponse = response;
-  }
-
   setShowResponse(response) {
     this.showResponse = response;
   }
 
-  setShowUnrecognizedFileErrorDialogResponse(response) {
-    this.showUnrecognizedFileErrorDialogResponse = response;
+  setShowOpenFileErrorDialogResponse(response) {
+    this.showOpenFileErrorDialogResponse = response;
   }
 
   setShowEmptyFileDialogResponse(response) {
     this.showEmptyFileDialogResponse = response;
+  }
+
+  showOpenFilesDialog() {
+    return this.showOpenFilesDialogResponse;
   }
 
   askSave() {
@@ -188,16 +208,12 @@ export class Dialog extends Mock {
     return this.askExportAsResponse;
   }
 
-  openFile() {
-    return this.openFileResponse;
-  }
-
   show() {
     return this.showResponse;
   }
 
-  showUnrecognizedFileErrorDialog() {
-    return this.showUnrecognizedFileErrorDialogResponse;
+  showOpenFileErrorDialog() {
+    return this.showOpenFileErrorDialogResponse;
   }
 
   showEmptyFileDialog() {
@@ -207,8 +223,6 @@ export class Dialog extends Mock {
 
 export class FileSystem extends Mock {
   writeFile() {
-
-    // TODO: what do files look like?
     return {};
   }
 }
