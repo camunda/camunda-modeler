@@ -62,18 +62,6 @@ Dialog.prototype.getDialogOptions = function(type, options) {
         ]
       };
     },
-    open: function() {
-      return {
-        title: 'Open diagram',
-        defaultPath: defaultPath,
-        properties: [ 'openFile', 'multiSelections' ],
-        filters: filterExtensions([
-          'supported',
-          'bpmn', 'dmn', 'cmmn',
-          'all'
-        ])
-      };
-    },
     exportAs: function(options) {
       ensureOptions([ 'name', 'filters' ], options);
 
@@ -104,38 +92,6 @@ Dialog.prototype.getDialogOptions = function(type, options) {
           { id: 'save', label: 'Save' },
           { id: 'discard', label: 'Don\'t Save' }
         ]
-      };
-    },
-    importError: function(options) {
-      ensureOptions([ 'name', 'errorDetails' ], options);
-
-      return {
-        type: 'error',
-        title: 'Importing Error',
-        buttons: [
-          { id: 'cancel', label: 'Close' },
-          { id: 'ask-forum', label: 'Ask in Forum' }
-        ],
-        message: 'Ooops, we could not display this diagram!',
-        detail: [
-          options.errorDetails,
-          '',
-          'Do you believe "' + options.name + '" is valid BPMN or DMN diagram?',
-          '',
-          'Post this error with your diagram in our forum for help.'
-        ].join('\n')
-      };
-    },
-    unrecognizedFile: function(options) {
-      ensureOptions([ 'name' ], options);
-
-      return {
-        type: 'warning',
-        title: 'Unrecognized file format',
-        buttons: [
-          { id: 'cancel', label: 'Close' }
-        ],
-        message: 'The file "' + options.name + '" is not a BPMN, DMN or CMMN file.'
       };
     },
     existingFile: function(options) {
@@ -209,28 +165,6 @@ Dialog.prototype.getDialogOptions = function(type, options) {
   return dialogs[type](options);
 };
 
-Dialog.prototype.setDefaultPath = function(filenames) {
-  var config = this.config,
-      defaultPath,
-      dirname;
-
-  if (Array.isArray(filenames)) {
-    defaultPath = filenames[0];
-  } else {
-    defaultPath = filenames;
-  }
-
-  if (this.defaultPath && this.defaultPath === defaultPath) {
-    return this.defaultPath;
-  }
-
-  dirname = path.dirname(defaultPath);
-
-  config.set('defaultPath', dirname);
-
-  this.defaultPath = dirname;
-};
-
 Dialog.prototype.showDialog = function(type, opts, done) {
   var self = this;
 
@@ -298,4 +232,82 @@ Dialog.prototype.showGeneralErrorDialog = function() {
 
 Dialog.prototype.setActiveWindow = function(browserWindow) {
   this.browserWindow = browserWindow;
+};
+
+Dialog.prototype.showOpenFileErrorDialog = function(options) {
+  const {
+    detail,
+    message,
+    name
+  } = options;
+
+  return new Promise(resolve => {
+    this.showDialog('error', {
+      type: 'error',
+      title: 'File Open Error',
+      buttons: [
+        { id: 'cancel', label: 'Close' }
+      ],
+      message: message || `Unable to open"${ name }"`,
+      detail
+    }, () => {
+      resolve();
+    });
+  });
+};
+
+Dialog.prototype.showOpenDialog = function(options) {
+  const {
+    filters,
+    title
+  } = options;
+
+  let { defaultPath } = options;
+
+  if (!defaultPath) {
+    defaultPath = this.config.get('defaultPath', this.userDesktopPath);
+  }
+
+  return new Promise(resolve => {
+    this.dialog.showOpenDialog(this.browserWindow, {
+      defaultPath,
+      filters,
+      properties: [ 'openFile', 'multiSelections' ],
+      title: title || 'Open File'
+    }, (filePaths = []) => {
+      if (filePaths.length) {
+        this.setDefaultPath(filePaths);
+      }
+
+      resolve(filePaths);
+    });
+  });
+};
+
+Dialog.prototype.showSaveDialog = function() {
+  // TODO(philippfromme): implement
+};
+
+Dialog.prototype.showMessageBox = function() {
+  // TODO(philippfromme): implement
+};
+
+Dialog.prototype.setDefaultPath = function(filePaths) {
+  let defaultPath;
+
+  if (Array.isArray(filePaths)) {
+    defaultPath = filePaths[0];
+  } else {
+    defaultPath = filePaths;
+  }
+
+  if (this.defaultPath && this.defaultPath === defaultPath) {
+    return this.defaultPath;
+  }
+
+  const dirname = path.dirname(defaultPath);
+
+  this.config.set('defaultPath', dirname);
+
+  this.defaultPath = dirname;
 };
