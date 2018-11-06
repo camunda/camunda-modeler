@@ -89,12 +89,16 @@ describe('<BpmnEditor>', function() {
 
 
   it('#getXML', async function() {
+
+    // given
     const {
       instance
     } = renderEditor(diagramXML);
 
+    // when
     const xml = await instance.getXML();
 
+    // then
     expect(xml).to.exist;
     expect(xml).to.eql(diagramXML);
   });
