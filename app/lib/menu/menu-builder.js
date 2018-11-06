@@ -316,6 +316,8 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
 
 MenuBuilder.prototype.appendBpmnActions = function() {
 
+  var elementsSelected = this.opts.state.elementsSelected;
+
   this.menu.append(new MenuItem({
     label: 'Hand Tool',
     accelerator: 'H',
@@ -457,13 +459,22 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   }));
 
   this.menu.append(new MenuItem({
-    label: 'Move Canvas',
-    enabled: this.opts.state.inactiveInput,
+    label: 'Move Selection',
+    enabled: this.opts.state.inactiveInput && elementsSelected,
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
       accelerator: 'Up',
       click: function() {
-        app.emit('menu:action', 'moveCanvas', {
+        app.emit('menu:action', 'moveSelection', {
+          direction: 'up'
+        });
+      }
+    }, {
+      label: 'Move Up (Fast)',
+      accelerator: 'Shift+Up',
+      click: function() {
+        app.emit('menu:action', 'moveSelection', {
+          accelerated: true,
           direction: 'up'
         });
       }
@@ -471,7 +482,16 @@ MenuBuilder.prototype.appendBpmnActions = function() {
       label: 'Move Left',
       accelerator: 'Left',
       click: function() {
-        app.emit('menu:action', 'moveCanvas', {
+        app.emit('menu:action', 'moveSelection', {
+          direction: 'left'
+        });
+      }
+    }, {
+      label: 'Move Left (Fast)',
+      accelerator: 'Shift + Left',
+      click: function() {
+        app.emit('menu:action', 'moveSelection', {
+          accelerated: true,
           direction: 'left'
         });
       }
@@ -479,7 +499,16 @@ MenuBuilder.prototype.appendBpmnActions = function() {
       label: 'Move Down',
       accelerator: 'Down',
       click: function() {
-        app.emit('menu:action', 'moveCanvas', {
+        app.emit('menu:action', 'moveSelection', {
+          direction: 'down'
+        });
+      }
+    }, {
+      label: 'Move Down (Fast)',
+      accelerator: 'Shift + Down',
+      click: function() {
+        app.emit('menu:action', 'moveSelection', {
+          accelerated: true,
           direction: 'down'
         });
       }
@@ -487,8 +516,95 @@ MenuBuilder.prototype.appendBpmnActions = function() {
       label: 'Move Right',
       accelerator: 'Right',
       click: function() {
-        app.emit('menu:action', 'moveCanvas', {
+        app.emit('menu:action', 'moveSelection', {
           direction: 'right'
+        });
+      }
+    }, {
+      label: 'Move Right (Fast)',
+      accelerator: 'Shift + Right',
+      click: function() {
+        app.emit('menu:action', 'moveSelection', {
+          accelerated: true,
+          direction: 'right'
+        });
+      }
+    }])
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Move Canvas',
+    enabled: this.opts.state.inactiveInput,
+    submenu: Menu.buildFromTemplate([{
+      label: 'Move Up',
+      accelerator: elementsSelected ? 'CommandOrControl + Up' : 'Up',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'up',
+          speed: 50
+        });
+      }
+    }, {
+      label: 'Move Up (Fast)',
+      accelerator: elementsSelected ? 'CommandOrControl + Shift + Up' : 'Shift + Up',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'up',
+          speed: 200
+        });
+      }
+    }, {
+      label: 'Move Left',
+      accelerator: elementsSelected ? 'CommandOrControl + Left' : 'Left',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'left',
+          speed: 50
+        });
+      }
+    }, {
+      label: 'Move Left (Fast)',
+      accelerator: elementsSelected ? 'CommandOrControl + Shift + Left' : 'Shift + Left',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'left',
+          speed: 200
+        });
+      }
+    }, {
+      label: 'Move Down',
+      accelerator: elementsSelected ? 'CommandOrControl + Down' : 'Down',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'down',
+          speed: 50
+        });
+      }
+    }, {
+      label: 'Move Down (Fast)',
+      accelerator: elementsSelected ? 'CommandOrControl + Shift + Down' : 'Shift + Down',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'down',
+          speed: 200
+        });
+      }
+    }, {
+      label: 'Move Right',
+      accelerator: elementsSelected ? 'CommandOrControl + Right' : 'Right',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'right',
+          speed: 50
+        });
+      }
+    }, {
+      label: 'Move Right (Fast)',
+      accelerator: elementsSelected ? 'CommandOrControl + Shift + Right' : 'Shift + Right',
+      click: function() {
+        app.emit('menu:action', 'moveCanvas', {
+          direction: 'right',
+          speed: 200
         });
       }
     }])
