@@ -260,7 +260,7 @@ renderer.on('dialog:open-files', async function(options, done) {
     activeFile
   } = options;
 
-  if (activeFile) {
+  if (activeFile && activeFile.path) {
     assign(options, {
       defaultPath: path.dirname(activeFile.path)
     });
