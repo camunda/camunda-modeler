@@ -24,6 +24,11 @@ const TABS_OPTS = {
   }
 };
 
+const SCROLLER_OPTS = {
+  ...TABS_OPTS,
+  normalizeWheel
+};
+
 
 export default class TabLinks extends Component {
   constructor() {
@@ -43,7 +48,7 @@ export default class TabLinks extends Component {
     }
 
     if (scrollable) {
-      this.scroller = addScroller(this.tabLinksRef.current, TABS_OPTS, this.handleScroll);
+      this.scroller = addScroller(this.tabLinksRef.current, SCROLLER_OPTS, this.handleScroll);
     }
   }
 
@@ -145,4 +150,34 @@ export default class TabLinks extends Component {
       </div>
     );
   }
+}
+
+
+
+// helpers ///////
+function normalizeWheel(scroll) {
+  let spinCounter = 0;
+
+  /**
+   * @param {WheelEvent} event
+   */
+  function normalizedScroll(event) {
+    const wheelDeltaY = event.wheelDeltaY;
+
+    event.preventDefault();
+
+    spinCounter += wheelDeltaY * 2;
+
+    if (Math.abs(spinCounter) < 120) {
+      return;
+    }
+
+    const direction = Math.sign(spinCounter);
+
+    spinCounter = 0;
+
+    return scroll(direction);
+  }
+
+  return normalizedScroll;
 }
