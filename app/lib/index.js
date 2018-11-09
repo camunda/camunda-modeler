@@ -138,10 +138,6 @@ renderer.on('dialog:reimport-warning', function(done) {
   dialog.showDialog('reimportWarning', done);
 });
 
-renderer.on('dialog:convert-namespace', function(type, done) {
-  dialog.showDialog('namespace', { type: type }, done);
-});
-
 renderer.on('external:open-url', function(options) {
   var url = options.url;
 
