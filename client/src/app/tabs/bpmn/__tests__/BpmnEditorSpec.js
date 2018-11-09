@@ -18,6 +18,7 @@ import BpmnModeler from 'test/mocks/bpmn-js/Modeler';
 import { SlotFillRoot } from 'src/app/slot-fill';
 
 import diagramXML from './diagram.bpmn';
+import activitiXML from './activiti.bpmn';
 
 const { spy } = sinon;
 
@@ -91,16 +92,21 @@ describe('<BpmnEditor>', function() {
   it('#getXML', async function() {
 
     // given
-    const {
-      instance
-    } = renderEditor(diagramXML);
+    let instance;
 
-    // when
-    const xml = await instance.getXML();
+    async function onImport() {
 
-    // then
-    expect(xml).to.exist;
-    expect(xml).to.eql(diagramXML);
+      // when
+      const xml = await instance.getXML();
+
+      // then
+      expect(xml).to.exist;
+      expect(xml).to.eql(diagramXML);
+    }
+
+    instance = renderEditor(diagramXML, {
+      onImport
+    }).instance;
   });
 
 
@@ -204,6 +210,80 @@ describe('<BpmnEditor>', function() {
   });
 
 
+  describe('#handleNamespace', function() {
+
+    it('should replace namespace', async function() {
+
+      // given
+      const onAction = action => {
+
+        if (action === 'show-dialog') {
+          return Promise.resolve('yes');
+        }
+      };
+
+      const changedSpy = newState => {
+
+        // then
+        const { contents } = newState;
+
+        expect(contents).to.exist;
+
+        expect(contents.includes('xmlns:activiti="http://activiti.org/bpmn"')).to.be.false;
+        expect(contents.includes('xmlns:camunda="http://camunda.org/schema/1.0/bpmn"')).to.be.true;
+
+        expect(contents.includes('targetNamespace="http://activiti.org/bpmn"')).to.be.false;
+        expect(contents.includes('targetNamespace="http://camunda.org/schema/1.0/bpmn"')).to.be.true;
+
+        expect(contents.includes('activiti:assignee')).to.be.false;
+        expect(contents.includes('camunda:assignee')).to.be.true;
+      };
+
+      // when
+      renderEditor(activitiXML, {
+        onAction,
+        onChanged: changedSpy
+      });
+    });
+
+
+    it('should NOT replace namespace', async function() {
+
+      // given
+      const onAction = action => {
+
+        if (action === 'show-dialog') {
+          return Promise.resolve('cancel');
+        }
+      };
+
+      const changedSpy = newState => {
+
+        // then
+        const { contents } = newState;
+
+        expect(contents).to.exist;
+
+        expect(contents.includes('xmlns:activiti="http://activiti.org/bpmn"')).to.be.true;
+        expect(contents.includes('xmlns:camunda="http://camunda.org/schema/1.0/bpmn"')).to.be.false;
+
+        expect(contents.includes('targetNamespace="http://activiti.org/bpmn"')).to.be.true;
+        expect(contents.includes('targetNamespace="http://camunda.org/schema/1.0/bpmn"')).to.be.false;
+
+        expect(contents.includes('activiti:assignee')).to.be.true;
+        expect(contents.includes('camunda:assignee')).to.be.false;
+      };
+
+      // when
+      renderEditor(activitiXML, {
+        onAction,
+        onChanged: changedSpy
+      });
+    });
+
+  });
+
+
   describe('layout', function() {
 
     it('should open properties panel', function() {
@@ -290,52 +370,60 @@ describe('<BpmnEditor>', function() {
     it('should handle XML export error', async function() {
 
       // given
+      let instance;
+
       const errorSpy = spy();
 
-      const {
-        instance
-      } = renderEditor('export-error', {
-        onError: errorSpy
-      });
+      async function onImport() {
 
-      let err;
+        // when
+        let err;
 
-      // when
-      try {
-        await instance.getXML();
-      } catch (e) {
-        err = e;
+        try {
+          await instance.getXML();
+        } catch (e) {
+          err = e;
+        }
+
+        // then
+        expect(err).to.exist;
+        expect(errorSpy).to.have.been.calledOnce;
       }
 
-      // then
-      expect(err).to.exist;
-      expect(errorSpy).to.have.been.calledOnce;
+      instance = renderEditor('export-error', {
+        onError: errorSpy,
+        onImport
+      }).instance;
     });
 
 
     it('should handle image export error', async function() {
 
       // given
+      let instance;
+
       const errorSpy = spy();
 
-      const {
-        instance
-      } = renderEditor('export-as-error', {
-        onError: errorSpy
-      });
+      async function onImport() {
 
-      let err;
+        // when
+        let err;
 
-      // when
-      try {
-        await instance.exportAs('svg');
-      } catch (e) {
-        err = e;
+        try {
+          await instance.exportAs('svg');
+        } catch (e) {
+          err = e;
+        }
+
+        // then
+        expect(err).to.exist;
+        expect(errorSpy).to.have.been.calledOnce;
       }
 
-      // then
-      expect(err).to.exist;
-      expect(errorSpy).to.have.been.calledOnce;
+      instance = renderEditor('export-as-error', {
+        onError: errorSpy,
+        onImport
+      }).instance;
     });
 
   });
@@ -346,75 +434,80 @@ describe('<BpmnEditor>', function() {
     it('should import without errors and warnings', function() {
 
       // given
-      const importSpy = spy();
+      let instance;
+
+      function onImport(err, warnings) {
+
+        // then
+        const {
+          modeler
+        } = instance.getCached();
+
+        expect(modeler.lastXML).to.equal(diagramXML);
+
+        expect(err).to.not.exist;
+
+        expect(warnings).to.have.length(0);
+      }
 
       // when
-      const { instance } = renderEditor(diagramXML, {
-        onImport: importSpy
-      });
-
-      // then
-      const {
-        modeler
-      } = instance.getCached();
-
-      expect(importSpy).to.have.been.calledWith(null, []);
-
-      expect(modeler.lastXML).to.equal(diagramXML);
+      instance = renderEditor(diagramXML, {
+        onImport
+      }).instance;
     });
 
 
     it('should import with warnings', function() {
 
       // given
-      const importSpy = (error, warnings) => {
+      let instance;
+
+      function onImport(error, warnings) {
 
         // then
+        const {
+          modeler
+        } = instance.getCached();
+
+        expect(modeler.lastXML).to.equal('import-warnings');
+
         expect(error).not.to.exist;
 
-        expect(warnings).to.exist;
         expect(warnings).to.have.length(1);
         expect(warnings[0]).to.equal('warning');
-      };
+      }
 
       // when
-      const { instance } = renderEditor('import-warnings', {
-        onImport: importSpy
-      });
-
-      // then
-      const {
-        modeler
-      } = instance.getCached();
-
-      expect(modeler.lastXML).to.equal('import-warnings');
+      instance = renderEditor('import-warnings', {
+        onImport
+      }).instance;
     });
 
 
     it('should import with error', function() {
 
       // given
-      const importSpy = (error, warnings) => {
+      let instance;
+
+      function onImport(error, warnings) {
 
         // then
+        const {
+          modeler
+        } = instance.getCached();
+
+        expect(modeler.lastXML).not.to.exist;
+
         expect(error).to.exist;
         expect(error.message).to.equal('error');
 
-        expect(warnings).to.exist;
         expect(warnings).to.have.length(0);
-      };
+      }
 
       // when
-      const { instance } = renderEditor('import-error', {
-        onImport: importSpy
-      });
-
-      // then
-      const {
-        modeler
-      } = instance.getCached();
-
-      expect(modeler.lastXML).not.to.exist;
+      instance = renderEditor('import-error', {
+        onImport
+      }).instance;
     });
 
   });
@@ -432,6 +525,7 @@ function renderEditor(xml, options = {}) {
   const {
     id,
     layout,
+    onAction,
     onChanged,
     onError,
     onImport,
@@ -443,6 +537,7 @@ function renderEditor(xml, options = {}) {
       <TestEditor
         id={ id || 'editor' }
         xml={ xml }
+        onAction={ onAction || noop }
         onChanged={ onChanged || noop }
         onError={ onError || noop }
         onImport={ onImport || noop }

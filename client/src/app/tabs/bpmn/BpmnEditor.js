@@ -27,6 +27,19 @@ import css from './BpmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 
+import {
+  hasNamespaceUrl,
+  replaceNamespace
+} from './util/namespace';
+
+import {
+  assign
+} from 'min-dash';
+
+const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn',
+      NAMESPACE_URL_CAMUNDA = 'http://camunda.org/schema/1.0/bpmn',
+      NAMESPACE_PREFIX_ACTIVITI = 'activiti',
+      NAMESPACE_PREFIX_CAMUNDA = 'camunda';
 
 const COLORS = [{
   title: 'White',
@@ -92,6 +105,7 @@ export class BpmnEditor extends CachedComponent {
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
     this.checkImport();
+
     this.resize();
   }
 
@@ -111,6 +125,11 @@ export class BpmnEditor extends CachedComponent {
     propertiesPanel.detach();
   }
 
+  componentDidUpdate() {
+    if (!this.state.importing) {
+      this.checkImport();
+    }
+  }
 
   ifMounted = (fn) => {
     return (...args) => {
@@ -119,7 +138,6 @@ export class BpmnEditor extends CachedComponent {
       }
     };
   }
-
 
   listen(fn) {
     const {
@@ -141,12 +159,6 @@ export class BpmnEditor extends CachedComponent {
     modeler[fn]('error', 1500, this.handleError);
 
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
-  }
-
-  componentDidUpdate() {
-    if (!this.state.importing) {
-      this.checkImport();
-    }
   }
 
   undo = () => {
@@ -205,6 +217,28 @@ export class BpmnEditor extends CachedComponent {
     onError(error);
   }
 
+  handleNamespace = async (xml) => {
+    const {
+      onAction
+    } = this.props;
+
+    const answer = await onAction('show-dialog', getNamespaceDialog());
+
+    if (answer === 'yes') {
+      xml = await replaceNamespace(xml, {
+        newNamespacePrefix: NAMESPACE_PREFIX_CAMUNDA,
+        newNamespaceUrl: NAMESPACE_URL_CAMUNDA,
+        oldNamespacePrefix: NAMESPACE_PREFIX_ACTIVITI,
+        oldNamespaceUrl: NAMESPACE_URL_ACTIVITI
+      });
+
+      this.handleChanged({
+        xml
+      });
+    }
+
+    return xml;
+  }
 
   handleImport = (error, warnings) => {
     const {
@@ -228,7 +262,11 @@ export class BpmnEditor extends CachedComponent {
   }
 
 
-  handleChanged = (event) => {
+  handleChanged = (event = {}) => {
+    const {
+      xml
+    } = event;
+
     const {
       modeler
     } = this.getCached();
@@ -266,6 +304,10 @@ export class BpmnEditor extends CachedComponent {
       undo: commandStack.canUndo()
     };
 
+    if (xml) {
+      assign(newState, { contents : xml });
+    }
+
     const editMenu = getBpmnEditMenu(newState);
 
     if (typeof onChanged === 'function') {
@@ -278,12 +320,13 @@ export class BpmnEditor extends CachedComponent {
     this.setState(newState);
   }
 
-  checkImport() {
+  async checkImport() {
     const {
-      modeler
+      modeler,
+      namespaceDialogShown
     } = this.getCached();
 
-    const {
+    let {
       xml
     } = this.props;
 
@@ -291,6 +334,16 @@ export class BpmnEditor extends CachedComponent {
       this.setState({
         importing: true
       });
+
+      const namespaceFound = await hasNamespaceUrl(xml, NAMESPACE_URL_ACTIVITI);
+
+      if (!namespaceDialogShown && namespaceFound) {
+        this.setCached({
+          namespaceDialogShown: true
+        });
+
+        xml = await this.handleNamespace(xml);
+      }
 
       // TODO(nikku): apply default element templates to initial diagram
       modeler.importXML(xml, this.ifMounted(this.handleImport));
@@ -587,4 +640,23 @@ class Color extends Component {
         { ...rest }></div>
     );
   }
+}
+
+// helpers //////////
+
+function getNamespaceDialog() {
+  return {
+    type: 'warning',
+    title: 'Deprecated <activiti> namespace detected',
+    buttons: [
+      { id: 'cancel', label: 'Cancel' },
+      { id: 'yes', label: 'Yes' }
+    ],
+    message: 'Would you like to convert your diagram to the <camunda> namespace?',
+    detail: [
+      'This will allow you to maintain execution related properties.',
+      '',
+      '<camunda> namespace support works from Camunda BPM versions 7.4.0, 7.3.3, 7.2.6 onwards.'
+    ].join('\n')
+  };
 }

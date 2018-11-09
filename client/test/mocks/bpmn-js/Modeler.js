@@ -1,5 +1,11 @@
 import { assign } from 'min-dash';
 
+class CommandStack {
+  canRedo() {}
+
+  canUndo() {}
+}
+
 class PropertiesPanel {
   attachTo() {}
 
@@ -18,10 +24,19 @@ export default class Modeler {
       canvas: {
         resized() {}
       },
+      clipboard: {
+        isEmpty() {}
+      },
+      commandStack: new CommandStack(),
       minimap: {
         toggle() {}
       },
-      propertiesPanel: new PropertiesPanel()
+      propertiesPanel: new PropertiesPanel(),
+      selection: {
+        get() {
+          return [];
+        }
+      }
     };
   }
 
