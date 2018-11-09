@@ -288,7 +288,8 @@ export class MultiSheetTab extends CachedComponent {
     let {
       id,
       xml,
-      layout
+      layout,
+      onAction
     } = this.props;
 
     if (!sheets) {
@@ -312,6 +313,7 @@ export class MultiSheetTab extends CachedComponent {
             activeSheet={ activeSheet }
             onSheetsChanged={ this.sheetsChanged }
             onContextMenu={ this.handleContextMenu }
+            onAction={ onAction }
             onChanged={ this.handleChanged }
             onError={ this.handleError }
             onImport={ this.handleImport }

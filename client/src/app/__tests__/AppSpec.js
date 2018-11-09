@@ -539,6 +539,35 @@ describe('<App>', function() {
   });
 
 
+  describe('tab changing', function() {
+
+    it('should update contents on tab changed', async function() {
+
+      // given
+      const {
+        app
+      } = createApp();
+
+      await app.createDiagram('bpmn');
+
+      const {
+        activeTab
+      } = app.state;
+
+      const newContents = 'foo';
+
+      // when
+      app.handleTabChanged(activeTab)({
+        contents: newContents
+      });
+
+      // then
+      expect(activeTab.file.contents).to.equal(newContents);
+    });
+
+  });
+
+
   describe('tab loading', function() {
 
     it('should support life-cycle', async function() {
