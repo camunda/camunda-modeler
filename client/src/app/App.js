@@ -533,6 +533,10 @@ export class App extends Component {
       });
     }
 
+    if ('contents' in properties) {
+      tab.file.contents = properties.contents;
+    }
+
     tabState = {
       ...tabState,
       ...properties
