@@ -62,26 +62,9 @@ class MacMenuBuilder extends MenuBuilder {
   }
 
   build() {
-    this.appendAppMenu()
-      .appendFileMenu(new this.constructor(this.options)
-        .appendNewFile()
-        .appendOpen()
-        .appendSeparator()
-        .appendSwitchTab()
-        .appendSaveFile()
-        .appendSaveAsFile()
-        .appendSaveAllFiles()
-        .appendSeparator()
-        .appendExportAs()
-        .appendCloseTab()
-        .appendSeparator()
-        .get())
-      .appendEditMenu()
-      .appendWindowMenu()
-      .appendPluginsMenu()
-      .appendHelpMenu();
+    this.appendAppMenu();
 
-    this.setMenu();
+    super.build();
 
     return this;
   }

@@ -928,7 +928,10 @@ export class App extends Component {
   }
 
   updateMenu = (state) => {
-    this.props.globals.backend.sendUpdateMenu(state);
+    this.props.globals.backend.sendUpdateMenu({
+      ...state,
+      tabsCount: this.state.tabs.length
+    });
   }
 
   async exportAs(tab) {

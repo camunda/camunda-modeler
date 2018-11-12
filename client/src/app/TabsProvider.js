@@ -47,6 +47,23 @@ export default class TabsProvider {
         getInitialContents(options) {
           return bpmnDiagram;
         },
+        getHelpMenu() {
+          return [{
+            label: 'BPMN 2.0 Tutorial',
+            action: 'https://camunda.org/bpmn/tutorial/'
+          },
+          {
+            label: 'BPMN Modeling Reference',
+            action: 'https://camunda.org/bpmn/reference/'
+          }];
+        },
+        getNewFileMenu() {
+          return [{
+            label: 'BPMN Diagram',
+            accelerator: 'CommandOrControl+T',
+            action: 'create-bpmn-diagram'
+          }];
+        },
         exports: {
           jpg: { encoding: ENCODING_BASE64 },
           png: { encoding: ENCODING_BASE64 },
@@ -62,6 +79,22 @@ export default class TabsProvider {
         getInitialContents(options) {
           return cmmnDiagram;
         },
+        getHelpMenu() {
+          return [{
+            label: 'CMMN 1.1 Tutorial',
+            action: 'https://docs.camunda.org/get-started/cmmn11/'
+          },
+          {
+            label: 'CMMN Modeling Reference',
+            action: 'https://docs.camunda.org/manual/latest/reference/cmmn11/'
+          }];
+        },
+        getNewFileMenu() {
+          return [{
+            label: 'CMMN Diagram',
+            action: 'create-cmmn-diagram'
+          }];
+        },
         exports: {
           jpg: { encoding: ENCODING_BASE64 },
           png: { encoding: ENCODING_BASE64 },
@@ -76,6 +109,21 @@ export default class TabsProvider {
         },
         getInitialContents(options) {
           return options && options.table ? dmnTable : dmnDiagram;
+        },
+        getHelpMenu() {
+          return [{
+            label: 'DMN 1.1 Tutorial',
+            action: 'https://camunda.org/dmn/tutorial/'
+          }];
+        },
+        getNewFileMenu() {
+          return [{
+            label: 'DMN Table',
+            action: 'create-dmn-table'
+          }, {
+            label: 'DMN Diagram',
+            action: 'create-dmn-diagram'
+          }];
         },
         exports: {
           jpg: { encoding: ENCODING_BASE64 },

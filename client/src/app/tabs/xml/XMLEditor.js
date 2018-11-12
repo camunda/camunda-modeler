@@ -12,6 +12,8 @@ import css from './XMLEditor.less';
 
 import { getXMLEditMenu } from './getXMLEditMenu';
 
+import getXMLWindowMenu from './getXMLWindowMenu';
+
 
 export class XMLEditor extends CachedComponent {
 
@@ -47,6 +49,8 @@ export class XMLEditor extends CachedComponent {
     editor.attachTo(this.ref.current);
 
     editor.on('change', this.handleChanged);
+
+    this.handleChanged();
 
     this.checkImport();
   }
@@ -142,10 +146,13 @@ export class XMLEditor extends CachedComponent {
       undo: !!history.undo
     };
 
+    const windowMenu = getXMLWindowMenu();
+
     if (typeof onChanged === 'function') {
       onChanged({
         ...newState,
-        editMenu
+        editMenu,
+        windowMenu
       });
     }
 
