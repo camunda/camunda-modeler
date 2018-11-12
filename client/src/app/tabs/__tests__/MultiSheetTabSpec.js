@@ -134,7 +134,7 @@ describe('<MultiSheetTab>', function() {
       // given
       const actionSpy = spy(action => {
         if (action === 'show-dialog') {
-          return Promise.resolve('ask-in-forum');
+          return 'ask-in-forum';
         }
       });
 
