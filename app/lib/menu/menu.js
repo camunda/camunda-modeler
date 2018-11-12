@@ -2,90 +2,136 @@
 
 const { app } = require('electron');
 
-const { assign } = require('min-dash');
-
 const DefaultMenuBuilder = require('./menu-builder');
 
 const renderer = require('../util/renderer');
-
 const requirePlatform = require('../util/require-platform');
 
 
 class Menu {
-  constructor(platform, plugins) {
-    const MenuBuilder = this.MenuBuilder = requirePlatform(platform, __dirname, DefaultMenuBuilder);
+  /**
+   * @param {string} platform
+   */
+  constructor(platform) {
+    this.state = {};
+    this.providers = {};
 
-    // replace Electron default menu until application loads
-    new MenuBuilder().build();
+    this.MenuBuilder = requirePlatform(platform, __dirname, DefaultMenuBuilder);
 
-    // keep the last state cached to be used by the context menu
-    this.__cachedState = null;
+    this.rebuildMenu = this.rebuildMenu.bind(this);
 
-    // handle menu actions
-    // make sure there is active client before sending action
-    app.on('menu:action', function(action, options) {
-      if (app.mainWindow) {
-        return renderer.send('menu:action', action, options);
-      }
-
-      app.once('app:client-ready', function() {
-        renderer.send('menu:action', action);
-      });
-
-      app.createEditorWindow();
-    });
-
-    // rebuild default menu on window closing while app is still running
-    app.on('window-all-closed', function() {
-      new MenuBuilder({
-        plugins: plugins
-      }).build();
-    });
-
-    function rebuildMenu(state) {
-      const mainWindow = app.mainWindow;
-
-      if (!state.hasOwnProperty('devtools') && mainWindow) {
-        const isDevToolsOpened = mainWindow.isDevToolsOpened();
-        state = assign(state, { devtools: isDevToolsOpened });
-      }
-
-      // rebuild main application menu
-      new MenuBuilder({
-        state: state,
-        plugins: plugins
-      }).build();
-
-      this.__cachedState = state;
-    }
-
-    // handle state updates from client
-    renderer.on('menu:update', rebuildMenu, this);
-
-    // handle DevTools opening/closing specific state
-    app.on('menu:update', rebuildMenu, this);
-
-    // handle context menu trigger from client
-    renderer.on('context-menu:open', function(type, attrs) {
-      const state = this.__cachedState;
-      const contextMenu = new MenuBuilder({
-        state: state,
-        plugins: plugins
-      }).buildContextMenu(type, attrs);
-
-      // don't open a context menu if no type has been provided
-      if (!contextMenu) {
-        return;
-      }
-
-      contextMenu.openPopup();
-    }, this);
+    this.updateState = this.updateState.bind(this);
   }
 
-  rebuild() {
-    const MenuBuilder = this.MenuBuilder;
+  init() {
+    renderer.on('menu:register', this.registerMenuProvider.bind(this));
 
-    new MenuBuilder().build();
+    app.on('menu:action', this.handleMenuAction.bind(this));
+
+    app.on('menu:update', this.updateState);
+
+    renderer.on('menu:update', this.updateState);
+
+    app.on('window-all-closed', this.rebuildMenu);
+
+    renderer.on('context-menu:open', this.openContextMenu.bind(this));
+
+    this.rebuildMenu();
+  }
+
+  /**
+   *
+   * @param {string} type
+   * @param {Object} options
+   * @param {Object[]} options.newFileMenu
+   * @param {Object[]} options.helpMenu
+   */
+  registerMenuProvider(type, options) {
+    if (!type) {
+      return;
+    }
+
+    if (this.providers[type]) {
+      return;
+    }
+
+    const {
+      helpMenu,
+      newFileMenu
+    } = options;
+
+    const providerOptions = {};
+
+    providerOptions.helpMenu = helpMenu || [];
+    providerOptions.newFileMenu = newFileMenu || [];
+
+    this.providers[type] = providerOptions;
+
+    this.rebuildMenu();
+  }
+
+  handleMenuAction(action, options) {
+    if (!app.mainWindow) {
+      return this.scheduleMenuAction(action, options);
+    }
+
+    renderer.send('menu:action', action, options);
+  }
+
+  scheduleMenuAction(action, options) {
+    app.once('app:client-ready', function() {
+      renderer.send('menu:action', action, options);
+    });
+
+    app.createEditorWindow();
+  }
+
+  updateState(newState = this.state) {
+    if (!this.state.hasOwnProperty('devtools') && app.mainWindow) {
+      const isDevToolsOpened = app.mainWindow.isDevToolsOpened();
+
+      newState = Object.assign({}, newState, { devtools: isDevToolsOpened });
+    }
+
+    this.state = newState;
+
+    this.rebuildMenu();
+  }
+
+  rebuildMenu() {
+    const state = this.state,
+          providers = this.providers;
+
+    const menu = new this.MenuBuilder({
+      state,
+      providers
+    }).build();
+
+    menu.setMenu();
+  }
+
+  openContextMenu(type, attrs) {
+    const contextMenu = this.buildContextMenu(type, attrs);
+
+    if (!contextMenu) {
+      return;
+    }
+
+    contextMenu.openPopup();
+  }
+
+  buildContextMenu(type, attrs) {
+    const state = this.state,
+          providers = this.providers;
+
+    const menu = new this.MenuBuilder({
+      state,
+      providers,
+      type,
+      attrs
+    }).buildContextMenu();
+
+    return menu;
   }
 }
 

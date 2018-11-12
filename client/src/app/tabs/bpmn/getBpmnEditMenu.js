@@ -7,18 +7,18 @@ import {
 } from '../getEditMenu';
 
 function getCopyPasteEntries({
-  canCopy,
-  canPaste
+  copy,
+  paste
 }) {
   return [{
     label: 'Copy',
     accelerator: 'CommandOrControl+C',
-    enabled: canCopy,
+    enabled: copy,
     action: 'copy'
   }, {
     label: 'Paste',
     accelerator: 'CommandOrControl+V',
-    enabled: canPaste,
+    enabled: paste,
     action: 'paste'
   }];
 }
