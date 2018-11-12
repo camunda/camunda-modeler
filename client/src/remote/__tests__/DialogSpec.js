@@ -32,6 +32,34 @@ describe('dialog', function() {
   });
 
 
+  it('#showSaveFileDialog', function() {
+
+    // given
+    const sendSpy = (type, opts) => {
+
+      // then
+      expect(type).to.equal('dialog:save-file');
+
+      expect(opts).to.eql(options);
+    };
+
+    const backend = new Backend({ send: sendSpy });
+    const dialog = new Dialog(backend);
+
+    const options = {
+      defaultPath: 'foo',
+      filter: {
+        extensions: [ 'foo' ],
+        name: 'foo'
+      },
+      title: 'Foo'
+    };
+
+    // when
+    dialog.showSaveFileDialog(options);
+  });
+
+
   it('#show', function() {
 
     // given
@@ -57,6 +85,38 @@ describe('dialog', function() {
 
     // when
     dialog.show(options);
+  });
+
+
+  it('#showCloseFileDialog', function() {
+
+    // given
+    const sendSpy = (type, opts) => {
+
+      // then
+      expect(type).to.equal('dialog:show');
+
+      expect(opts).to.eql({
+        type: 'question',
+        title: 'Close File',
+        message: 'Save changes to "foo" before closing?',
+        buttons: [
+          { id: 'cancel', label: 'Cancel' },
+          { id: 'save', label: 'Save' },
+          { id: 'discard', label: 'Don\'t Save' }
+        ]
+      });
+    };
+
+    const backend = new Backend({ send: sendSpy });
+    const dialog = new Dialog(backend);
+
+    const options = {
+      name: 'foo'
+    };
+
+    // when
+    dialog.showCloseFileDialog(options);
   });
 
 

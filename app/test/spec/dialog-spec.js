@@ -30,63 +30,6 @@ describe('Dialog', function() {
   });
 
 
-  it('should show save dialog', function(done) {
-
-    // given
-    var newBasePath = path.join(USER_PATH, 'dmn'),
-        newPath = path.join(newBasePath, 'diagram_1.dmn'),
-        saveDialogArg;
-
-    electronDialog.setResponse(newPath);
-
-    // when
-    dialog.showDialog('save', {
-      name: 'diagram_1.dmn',
-      fileType: 'dmn'
-    }, function(err, saveResult) {
-      saveDialogArg = getDialogArgs(electronDialog.showSaveDialog);
-
-      // then
-      expect(saveResult).to.equal(newPath);
-
-      expect(electronDialog.showSaveDialog).to.have.been.called;
-
-      expect(saveDialogArg.title).to.equal('Save diagram_1.dmn as...');
-      expect(path.join(saveDialogArg.defaultPath)).to.equal(path.join(USER_DESKTOP_PATH, 'diagram_1.dmn'));
-
-      done();
-    });
-
-  });
-
-
-  it('should show message dialog -> close', function(done) {
-
-    // given
-    var messageBoxArg;
-
-    electronDialog.setResponse(1);
-
-    // when
-    dialog.showDialog('close', {
-      name: 'diagram_1.bpmn'
-    }, function(err, closeResult) {
-      messageBoxArg = getDialogArgs(electronDialog.showMessageBox);
-
-      // then
-      expect(closeResult).to.equal('save');
-
-      expect(electronDialog.showMessageBox).to.have.been.called;
-
-      expect(messageBoxArg.title).to.equal('Close diagram');
-      expect(messageBoxArg.buttons).to.eql([ 'Cancel', 'Save', 'Don\'t Save' ]);
-
-      done();
-    });
-
-  });
-
-
   it('should show general error dialog', function() {
 
     // given
@@ -98,29 +41,6 @@ describe('Dialog', function() {
 
     // then
     expect(electronDialog.showErrorBox).to.have.been.calledWith(title, message);
-  });
-
-
-  it('should set last used path to config via save', function(done) {
-
-    // given
-    var newPath = path.join(USER_PATH, 'dmn', 'diagram_1.dmn'),
-        defaultPath = path.dirname(newPath);
-
-    electronDialog.setResponse(newPath);
-
-    // when
-    dialog.showDialog('save', {
-      name: 'diagram_1.dmn',
-      fileType: 'dmn'
-    }, function() {
-
-      // then
-      expect(config.get('defaultPath')).to.equal(defaultPath);
-
-      done();
-    });
-
   });
 
 
@@ -224,6 +144,39 @@ describe('Dialog', function() {
       });
     });
 
+
+    it('should show question dialog', function(done) {
+
+      // given
+      electronDialog.setResponse(0);
+
+      var options = {
+        title: 'question',
+        buttons: [{
+          id: 'foo'
+        }, {
+          id: 'bar'
+        }]
+      };
+
+      // when
+      dialog.showDialog('question', options, function(err, result) {
+        var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+
+        // then
+        expect(err).not.to.exist;
+
+        expect(electronDialog.showMessageBox).to.have.been.called;
+
+        expect(dialogArgs.title).to.equal('question');
+        expect(dialogArgs.buttons).to.have.length(2);
+
+        expect(result).to.equal('foo');
+
+        done();
+      });
+    });
+
   });
 
 
@@ -238,7 +191,7 @@ describe('Dialog', function() {
     };
 
 
-    it('should return files', async function() {
+    it('should return filepaths', async function() {
 
       // given
       const filePaths = [ 'foo' ];
@@ -257,7 +210,7 @@ describe('Dialog', function() {
     });
 
 
-    it('should NOT return files', async function() {
+    it('should NOT return filepaths', async function() {
 
       // given
       electronDialog.setResponse(undefined);
@@ -299,7 +252,7 @@ describe('Dialog', function() {
         electronDialog.setResponse([]);
 
         // when
-        await dialog.showOpenDialog(assign(options, {
+        await dialog.showOpenDialog(assign({}, options, {
           defaultPath
         }));
 
@@ -322,6 +275,106 @@ describe('Dialog', function() {
 
         // when
         await dialog.showOpenDialog(options);
+
+        // then
+        expect(config.get('defaultPath')).to.equal(defaultPath);
+      });
+
+    });
+
+  });
+
+
+  describe('#showSaveDialog', function() {
+
+    const file = {
+      name: 'foo'
+    };
+
+    const options = {
+      filters: {
+        name: 'foo',
+        extensions: [ 'foo' ]
+      },
+      title: 'foo'
+    };
+
+
+    it('should return filepath', async function() {
+
+      // given
+      const filePath = 'foo';
+
+      electronDialog.setResponse(filePath);
+
+      // when
+      const response = await dialog.showSaveDialog(assign({}, options, { file }));
+
+      // then
+      expect(response).to.eql(filePath);
+
+      const args = getDialogArgs(electronDialog.showSaveDialog);
+
+      expect(args).to.include(options);
+    });
+
+
+    it('should NOT return filepath', async function() {
+
+      // when
+      const response = await dialog.showSaveDialog(assign({}, options, { file }));
+
+      // then
+      expect(response).not.to.exist;
+
+      const args = getDialogArgs(electronDialog.showSaveDialog);
+
+      expect(args).to.include(options);
+    });
+
+
+    describe('defaultPath', function() {
+
+      it('should use userDesktopPath by default', async function() {
+
+        // when
+        await dialog.showSaveDialog(assign({}, options, { file }));
+
+        // then
+        const args = getDialogArgs(electronDialog.showSaveDialog);
+
+        expect(args.defaultPath).to.equal(`${ USER_DESKTOP_PATH }/${ file.name }`);
+      });
+
+
+      it('should use specified defaultPath', async function() {
+
+        // given
+        const defaultPath = path.join(USER_PATH);
+
+        // when
+        await dialog.showSaveDialog(assign({}, options, {
+          defaultPath,
+          file
+        }));
+
+        // then
+        const args = getDialogArgs(electronDialog.showSaveDialog);
+
+        expect(args.defaultPath).to.equal(`${ defaultPath }/${ file.name }`);
+      });
+
+
+      it('should set defaultPath when saving file', async function() {
+
+        // given
+        const fooPath = path.join(USER_PATH, 'foo', 'foo.file'),
+              defaultPath = path.dirname(fooPath);
+
+        electronDialog.setResponse(fooPath);
+
+        // when
+        await dialog.showSaveDialog(assign({}, options, { file }));
 
         // then
         expect(config.get('defaultPath')).to.equal(defaultPath);
