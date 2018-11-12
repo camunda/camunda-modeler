@@ -304,6 +304,8 @@ export class Backend extends Mock {
 
   off() {}
 
+  registerMenu = () => Promise.resolve()
+
 }
 
 export class Workspace extends Mock {

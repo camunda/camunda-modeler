@@ -78,4 +78,8 @@ export default class Backend {
     this.send('menu:update', state);
   }
 
+  registerMenu = (name, options) => {
+    return this.send('menu:register', name, options);
+  }
+
 }

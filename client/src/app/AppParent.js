@@ -4,6 +4,8 @@ import debug from 'debug';
 
 import App from './App';
 
+import { forEach } from 'min-dash';
+
 
 const log = debug('AppParent');
 
@@ -164,6 +166,19 @@ export default class AppParent extends Component {
     return this.props.globals.workspace;
   }
 
+  registerMenus() {
+    const backend = this.getBackend();
+
+    forEach(this.props.tabsProvider.getProviders(), (provider, type) => {
+      const options = {
+        helpMenu: provider.getHelpMenu && provider.getHelpMenu(),
+        newFileMenu: provider.getNewFileMenu && provider.getNewFileMenu()
+      };
+
+      backend.registerMenu(type, options).catch(console.error);
+    });
+  }
+
   componentDidMount() {
 
     const backend = this.getBackend();
@@ -175,6 +190,8 @@ export default class AppParent extends Component {
     backend.once('client:started', () => {
       document.body.classList.remove('loading');
     });
+
+    this.registerMenus();
   }
 
   componentWillUnmount() {
