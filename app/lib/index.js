@@ -126,7 +126,7 @@ if (config.get('single-instance', true)) {
   }
 }
 
-// client life-cycle //////////////////
+// dialogs //////////
 
 renderer.on('dialog:open-file-error', async function(options, done) {
   await dialog.showOpenFileErrorDialog(options);
@@ -151,18 +151,12 @@ renderer.on('dialog:show', function(options, done) {
   var type = options.type;
 
   if (!type) {
-    var err = new Error('no type specified');
-
-    console.error('failed to show dialog', err);
+    const err = new Error('no type specified');
 
     return done(err.message);
   }
 
   dialog.showDialog(type, options, done);
-});
-
-renderer.on('dialog:close-tab', function(diagramFile, done) {
-  dialog.showDialog('close', { name: diagramFile.name }, done);
 });
 
 renderer.on('dialog:saving-denied', function(done) {
@@ -172,6 +166,41 @@ renderer.on('dialog:saving-denied', function(done) {
 renderer.on('dialog:content-changed', function(done) {
   dialog.showDialog('contentChanged', done);
 });
+
+renderer.on('dialog:open-files', async function(options, done) {
+  const {
+    activeFile
+  } = options;
+
+  if (activeFile && activeFile.path) {
+    assign(options, {
+      defaultPath: path.dirname(activeFile.path)
+    });
+  }
+
+  const filePaths = await dialog.showOpenDialog(options);
+
+  done(null, filePaths);
+});
+
+renderer.on('dialog:save-file', async function(options, done) {
+  const { file } = options;
+
+  const { path: originalFilePath } = file;
+
+  if (originalFilePath) {
+    assign(options, {
+      defaultPath: path.dirname(originalFilePath)
+    });
+  }
+
+  const filePath = await dialog.showSaveDialog(options);
+
+  done(null, filePath);
+});
+
+// deploying //////////
+// TODO: remove and add as plugin instead
 
 renderer.on('deploy', function(data, done) {
   var workspaceConfig = config.get('workspace', { endpoints: [] });
@@ -199,24 +228,43 @@ renderer.on('deploy', function(data, done) {
 
 });
 
+// filesystem //////////
 
-function saveCallback(saveAction, ...args) {
+renderer.on('files:open', function(filePaths, options = {}, done) {
+  const files = fileSystem.openFiles(filePaths, options);
 
-  var done = args[args.length - 1];
-  var actualArgs = args.slice(0, args.length - 1);
+  done(null, files);
+});
 
-  saveAction.apply(fileSystem, [ ...actualArgs, (err, updatedDiagram) => {
-    if (err) {
-      return done(err);
-    }
+renderer.on('file:save', function(filePath, file, options = {}, done) {
+  try {
+    const newFile = fileSystem.saveFile(filePath, file, options);
 
-    if (updatedDiagram && updatedDiagram !== 'cancel') {
-      app.emit('app:add-recent-file', updatedDiagram.path);
-    }
+    done(null, newFile);
+  } catch (err) {
+    done(err);
+  }
+});
 
-    done(null, updatedDiagram);
-  }]);
-}
+renderer.on('file:read', function(filePath, options = {}, done) {
+  done(null, fileSystem.readFile(filePath, options));
+});
+
+renderer.on('file:read-stats', function(file, done) {
+  done(null, fileSystem.readFileStats(file));
+});
+
+renderer.on('file:write', async function(file, options = {}, done) {
+  try {
+    const newFile = fileSystem.write(file, options);
+
+    done(null, newFile);
+  } catch (err) {
+    done(err);
+  }
+});
+
+// client config //////////
 
 renderer.on('client-config:get', function(...args) {
 
@@ -231,46 +279,7 @@ renderer.on('client-config:get', function(...args) {
   }
 });
 
-renderer.on('file:save-as', function(diagramFile, done) {
-  saveCallback(fileSystem.saveAs, diagramFile, done);
-});
-
-renderer.on('file:export-as', function(diagramFile, filters, done) {
-  saveCallback(fileSystem.exportAs, diagramFile, filters, done);
-});
-
-renderer.on('file:save', function(diagramFile, done) {
-  saveCallback(fileSystem.save, diagramFile, done);
-});
-
-renderer.on('file:read', function(diagramFile, done) {
-  done(null, fileSystem.readFile(diagramFile.path));
-});
-
-renderer.on('file:read-stats', function(diagramFile, done) {
-  done(null, fileSystem.readFileStats(diagramFile));
-});
-
-renderer.on('dialog:open-files', async function(options, done) {
-  const {
-    activeFile
-  } = options;
-
-  if (activeFile && activeFile.path) {
-    assign(options, {
-      defaultPath: path.dirname(activeFile.path)
-    });
-  }
-
-  const filePaths = await dialog.showOpenDialog(options);
-
-  const files = fileSystem.open(filePaths);
-
-  done(null, files);
-});
-
-
-// open file handling //////////////////
+// open file handling //////////
 
 // list of files that should be opened by the editor
 app.openFiles = [];

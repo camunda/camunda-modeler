@@ -1,21 +1,23 @@
 'use strict';
 
-var fs = require('fs'),
-    os = require('os'),
-    sinon = require('sinon');
+const fs = require('fs'),
+      os = require('os');
 
-var FileSystem = require('../../lib/file-system');
+const FileSystem = require('../../lib/file-system');
 
-var BASE64_ENCODED =
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNby' +
-      'blAAAADElEQVQImWNgoBMAAABpAAFEI8ARAAAAAElFTkSuQmCC';
+const ENCODING_BASE64 = 'base64',
+      ENCODING_UTF8 = 'utf8';
 
-var TEST_FILE_PATH = os.tmpdir() + '/camunda-modeler.fs.test';
+const BASE64_ENCODED =
+  'data:image/png;base64,' +
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
+
+let testFilePaths = [];
 
 
 describe('FileSystem', function() {
 
-  var fileSystem;
+  let fileSystem;
 
   beforeEach(function() {
     fileSystem = new FileSystem({
@@ -25,209 +27,28 @@ describe('FileSystem', function() {
 
   afterEach(function() {
     try {
-      fs.unlinkSync(TEST_FILE_PATH);
+      testFilePaths.forEach(testFilePath => {
+        fs.unlinkSync(testFilePath);
+      });
+
+      testFilePaths = [];
     } catch (e) {
       console.log(e);
     }
   });
 
 
-  it('should write BASE64 encoded file', function() {
+  describe('#openFiles', function() {
 
-    var file = {
-      contents: BASE64_ENCODED
-    };
+    it('should open single file', function() {
 
-    // when
-    fileSystem.writeFile(TEST_FILE_PATH, file);
-
-    var readFile = fileSystem.readFile(TEST_FILE_PATH, 'base64');
-
-    // then
-    expect(readFile.contents).to.match(/iVBOR/);
-  });
-
-
-  it('should write UTF8 encoded file', function() {
-
-    var file = {
-      contents: 'FOO BAR'
-    };
-
-    // when
-    fileSystem.writeFile(TEST_FILE_PATH, file);
-
-    var readFile = fileSystem.readFile(TEST_FILE_PATH);
-
-    // then
-    expect(readFile.contents).to.eql('FOO BAR');
-  });
-
-
-  it('should strip whitespace in read file', function() {
-
-    var file = {
-      contents: '  FOO BAR  \r\n\n'
-    };
-
-    // when
-    fileSystem.writeFile(TEST_FILE_PATH, file);
-
-    var readFile = fileSystem.readFile(TEST_FILE_PATH);
-
-    // then
-    expect(readFile.contents).to.eql('FOO BAR');
-  });
-
-
-  describe('should set last modified property', function() {
-
-    it('on read', function() {
       // given
-      var file = {
-        contents: 'FOO BAR'
-      };
+      const fooPath = getTestFilePath('foo.file');
 
-      file = fileSystem.writeFile(TEST_FILE_PATH, file);
-      // HFS+ tracks seconds only
-      file.lastModified -= 1000;
+      fileSystem.writeFile(fooPath, { contents: 'foo' });
 
       // when
-      var updatedFile = fileSystem.readFile(TEST_FILE_PATH);
-
-      // then
-      expect(updatedFile.lastModified).to.be.above(file.lastModified);
-    });
-
-
-    it('on write', function() {
-      // given
-      var file = {
-        contents: 'FOO BAR',
-        // HFS+ tracks seconds only
-        lastModified: new Date().getTime() - 1000
-      };
-
-      // when
-      var newFile = fileSystem.writeFile(TEST_FILE_PATH, file);
-
-      // then
-      expect(newFile.lastModified).to.be.above(file.lastModified);
-    });
-
-  });
-
-
-  describe('readFileStats', function() {
-
-    beforeEach(function(done) {
-      fs.writeFile(TEST_FILE_PATH, '', function(error) {
-        done(error);
-      });
-    });
-
-
-    it('should set last modified property on existing file', function() {
-      // given
-      var file = {
-        path: TEST_FILE_PATH
-      };
-
-      // when
-      var statsFile = fileSystem.readFileStats(file);
-
-      // then
-      expect(statsFile).to.have.property('lastModified').above(0);
-    });
-
-
-    it('should set last modified property to "0" if file is not accesible', function() {
-      // given
-      var file = {
-        path: TEST_FILE_PATH + '.does-not-exist.xml'
-      };
-
-      // when
-      var statsFile = fileSystem.readFileStats(file);
-
-      // then
-      expect(statsFile).to.have.property('lastModified').eql(0);
-    });
-
-  });
-
-
-  describe('saveAs', function() {
-
-    it('should save file', function() {
-      // given
-      fileSystem.dialog.showDialog = sinon.stub().callsFake(function(...args) {
-        var callback = args.pop();
-
-        callback(null, TEST_FILE_PATH);
-      });
-
-      var callbackSpy = sinon.spy();
-
-      var file = {
-        contents: 'foo'
-      };
-
-      // when
-      fileSystem.saveAs(file, callbackSpy);
-
-      // then
-      expect(callbackSpy).to.be.called;
-      expect(fs.existsSync(TEST_FILE_PATH)).to.be.true;
-    });
-
-
-    it('should call callback with error if save file dialog was cancelled', function() {
-      // given
-      fileSystem.dialog.showDialog = sinon.stub().callsFake(function(...args) {
-        var callback = args.pop();
-
-        callback();
-      });
-
-      var callbackSpy = sinon.spy();
-
-      var file = {
-        contents: 'foo'
-      };
-
-      // when
-      fileSystem.saveAs(file, callbackSpy);
-
-      // then
-      expect(callbackSpy).to.be.calledOnce;
-      expect(callbackSpy.lastCall.args[0]).to.be.instanceOf(Error);
-      expect(fs.existsSync(TEST_FILE_PATH)).to.be.false;
-    });
-
-  });
-
-
-  describe('#open', function() {
-
-    const file1Path = getPath('foo'),
-          file2Path = getPath('bar');
-
-    beforeEach(function() {
-      fileSystem.writeFile(file1Path, {
-        contents: 'foo'
-      });
-
-      fileSystem.writeFile(file2Path, {
-        contents: 'bar'
-      });
-    });
-
-
-    it('should open a file', function() {
-
-      // when
-      const files = fileSystem.open(file1Path);
+      const files = fileSystem.openFiles(fooPath);
 
       // expect
       expect(files).to.have.length(1);
@@ -237,10 +58,17 @@ describe('FileSystem', function() {
 
     it('should open multiple files', function() {
 
+      // given
+      const fooPath = getTestFilePath('foo.file'),
+            barPath = getTestFilePath('bar.file');
+
+      fileSystem.writeFile(fooPath, { contents: 'foo' });
+      fileSystem.writeFile(barPath, { contents: 'bar' });
+
       // when
-      const files = fileSystem.open([
-        file1Path,
-        file2Path
+      const files = fileSystem.openFiles([
+        fooPath,
+        barPath
       ]);
 
       // expect
@@ -249,12 +77,248 @@ describe('FileSystem', function() {
       expect(files[1].contents).to.equal('bar');
     });
 
+
+    it('should NOT open file', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file'),
+            barPath = 'bar';
+
+      fileSystem.writeFile(fooPath, { contents: 'foo' });
+
+      // when
+      const files = fileSystem.openFiles([
+        fooPath,
+        barPath
+      ]);
+
+      // expect
+      expect(files).to.have.length(1);
+      expect(files[0].contents).to.equal('foo');
+    });
+
+  });
+
+
+  describe('#saveFile', function() {
+
+    it('should save file', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      fileSystem.saveFile(fooPath, { contents: 'foo' });
+
+      // when
+      const file = fileSystem.readFile(fooPath);
+
+      // then
+      expect(file.contents).to.eql('foo');
+    });
+
+  });
+
+
+  describe('#readFile', function() {
+
+    it('should read file (default encoding=utf8)', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      fileSystem.writeFile(fooPath, { contents: 'foo' });
+
+      // when
+      const file = fileSystem.readFile(fooPath);
+
+      // then
+      expect(file.contents).to.eql('foo');
+    });
+
+
+    it('should read file (encoding=utf8)', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      fileSystem.writeFile(fooPath, { contents: 'foo' }, {
+        encoding: ENCODING_UTF8
+      });
+
+      // when
+      const file = fileSystem.readFile(fooPath, {
+        encoding: ENCODING_UTF8
+      });
+
+      // then
+      expect(file.contents).to.eql('foo');
+    });
+
+
+    it('should read file (encoding=base64)', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      fileSystem.writeFile(fooPath, { contents: BASE64_ENCODED }, {
+        encoding: ENCODING_BASE64
+      });
+
+      // when
+      const file = fileSystem.readFile(fooPath, {
+        encoding: ENCODING_BASE64
+      });
+
+      // then
+      expect(file.contents).to.match(/iVBOR/);
+    });
+
+  });
+
+
+  describe('#readFileStats', function() {
+
+    it('lastModified', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      const file = fileSystem.writeFile(fooPath, { contents: 'foo' });
+
+      // when
+      const fileStats = fileSystem.readFileStats(file);
+
+      // then
+      expect(fileStats).to.have.property('lastModified').above(0);
+    });
+
+
+    it('lastModified = 0 (file not found)', function() {
+
+      // given
+      const file = { contents: 'foo' };
+
+      // when
+      const fileStats = fileSystem.readFileStats(file);
+
+      // then
+      expect(fileStats).to.have.property('lastModified').eql(0);
+    });
+
+  });
+
+
+  describe('#writeFile', function() {
+
+    it('should write file (default encoding=utf8)', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      // when
+      fileSystem.writeFile(fooPath, { contents: 'foo' });
+
+      // then
+      const file = fileSystem.readFile(fooPath);
+
+      expect(file.contents).to.eql('foo');
+    });
+
+
+    it('should write file (encoding=UTF8)', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      // when
+      fileSystem.writeFile(fooPath, { contents: 'foo' }, {
+        encoding: ENCODING_UTF8
+      });
+
+      // then
+      const file = fileSystem.readFile(fooPath, {
+        encoding: ENCODING_UTF8
+      });
+
+      expect(file.contents).to.eql('foo');
+    });
+
+
+    it('should write file (encoding=BASE64)', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      // when
+      fileSystem.writeFile(fooPath, { contents: BASE64_ENCODED }, {
+        encoding: ENCODING_BASE64
+      });
+
+      // then
+      const file = fileSystem.readFile(fooPath, {
+        encoding: ENCODING_BASE64
+      });
+
+      expect(file.contents).to.match(/iVBOR/);
+    });
+
+
+    it('should ensure extension', function() {
+
+      // given
+      let fooPath = getTestFilePath('foo.file');
+
+      // remove extension afterwards so fs.unlinkSync works
+      fooPath = removeExtension(fooPath);
+
+      // when
+      const file = fileSystem.writeFile(fooPath, { contents: 'foo' }, {
+        fileType: 'file'
+      });
+
+      // then
+      expect(file.path).to.eql(`${fooPath}.file`);
+    });
+
+
+    it('set lastModified', function(done) {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      const file = fileSystem.writeFile(fooPath, { contents: 'foo' });
+
+      setTimeout(() => {
+
+        // when
+        const newFile = fileSystem.writeFile(fooPath, file);
+
+        // then
+        expect(newFile.lastModified).to.be.above(file.lastModified);
+
+        done();
+      }, 100);
+
+    });
+
   });
 
 });
 
 // helpers //////////
 
-function getPath(name) {
-  return `${ os.tmpdir }/camunda-modeler.fs${ name }.test`;
+function getTestFilePath(fileName) {
+  const testPath = `${ os.tmpdir() }/modeler_${ fileName }`;
+
+  testFilePaths.push(testPath);
+
+  return testPath;
+}
+
+function removeExtension(filePath) {
+  const split = filePath.split('.');
+
+  split.pop();
+
+  return split.join('');
 }

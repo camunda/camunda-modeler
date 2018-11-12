@@ -369,26 +369,64 @@ describe('<App>', function() {
       expect(activeTab).to.equal(EMPTY_TAB);
     });
 
+
+    it('should ask user to save or discard changes before closing', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      const {
+        app
+      } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const showCloseFileDialogSpy = spy(dialog, 'showCloseFileDialog'),
+            saveTabSpy = spy(app, 'saveTab');
+
+      const tab = await app.createDiagram();
+
+      dialog.setShowCloseFileDialogResponse('discard');
+
+      // when
+      await app.closeTab(tab);
+
+      // then
+      const {
+        tabs
+      } = app.state;
+
+      expect(tabs).not.to.contain(tab);
+
+      expect(showCloseFileDialogSpy).to.have.been.calledWith({
+        name: tab.file.name
+      });
+
+      expect(saveTabSpy).not.to.have.been.called;
+    });
+
   });
 
 
   describe('tab saving', function() {
 
-    let askSaveSpy;
-    let writeFileSpy;
-
-    let app;
+    let showSaveFileDialogSpy,
+        saveFileSpy,
+        dialog,
+        app;
 
     beforeEach(function() {
 
       // given
-      const dialog = new Dialog();
+      dialog = new Dialog();
+
+      showSaveFileDialogSpy = spy(dialog, 'showSaveFileDialog');
+
       const fileSystem = new FileSystem();
 
-      dialog.setAskSaveResponse(Promise.resolve('save'));
-
-      askSaveSpy = spy(dialog, 'askSave');
-      writeFileSpy = spy(fileSystem, 'writeFile');
+      saveFileSpy = spy(fileSystem, 'saveFile');
 
       const rendered = createApp({
         globals: {
@@ -406,17 +444,21 @@ describe('<App>', function() {
       // given
       const tab = await app.createDiagram();
 
-      const fileName = tab.file.name;
+      const { file } = tab;
+
+      dialog.setShowSaveFileDialogResponse('diagram_2.bpmn');
 
       // when
       await app.triggerAction('save');
 
       // then
-      expect(askSaveSpy).not.to.have.been.called;
-
-      expect(writeFileSpy).to.have.been.calledWith(
-        { name: fileName, contents: 'CONTENTS', path: null },
-        { saveAs: true }
+      expect(saveFileSpy).to.have.been.calledWith(
+        'diagram_2.bpmn',
+        file,
+        {
+          encoding: 'utf8',
+          fileType: 'bpmn'
+        }
       );
     });
 
@@ -424,7 +466,7 @@ describe('<App>', function() {
     it('should save existing tab', async function() {
 
       // given
-      const file = createFile('1.bpmn');
+      const file = createFile('diagram_1.bpmn');
 
       await app.openFiles([ file ]);
 
@@ -432,11 +474,18 @@ describe('<App>', function() {
       await app.triggerAction('save');
 
       // then
-      expect(askSaveSpy).not.to.have.been.called;
+      expect(showSaveFileDialogSpy).not.to.have.been.called;
 
-      expect(writeFileSpy).to.have.been.calledWith(
-        { ...file, contents: 'CONTENTS' },
-        { saveAs: false }
+      expect(saveFileSpy).to.have.been.calledWith(
+        file.path,
+        {
+          ...file,
+          contents: 'CONTENTS'
+        },
+        {
+          encoding: 'utf8',
+          fileType: 'bpmn'
+        }
       );
     });
 
@@ -444,37 +493,28 @@ describe('<App>', function() {
     it('should save as existing tab', async function() {
 
       // given
-      const file = createFile('1.bpmn');
+      const file = createFile('diagram_1.bpmn');
 
       await app.openFiles([ file ]);
+
+      dialog.setShowSaveFileDialogResponse('diagram_2.bpmn');
 
       // when
       await app.triggerAction('save-as');
 
       // then
-      expect(askSaveSpy).not.to.have.been.called;
+      expect(showSaveFileDialogSpy).to.have.been.called;
 
-      expect(writeFileSpy).to.have.been.calledWith(
-        { ...file, contents: 'CONTENTS' },
-        { saveAs: true }
-      );
-    });
-
-
-    it('should ask to save on close', async function() {
-
-      // given
-      const tab = await app.createDiagram();
-
-      // when
-      await app.triggerAction('close-tab', { tabId: tab.id });
-
-      // then
-      expect(askSaveSpy).to.have.been.calledOnce;
-
-      expect(writeFileSpy).to.have.been.calledWith(
-        { name: 'diagram_1.bpmn', path: null, contents: 'CONTENTS' },
-        { saveAs: true }
+      expect(saveFileSpy).to.have.been.calledWith(
+        'diagram_2.bpmn',
+        {
+          ...file,
+          contents: 'CONTENTS'
+        },
+        {
+          encoding: 'utf8',
+          fileType: 'bpmn'
+        }
       );
     });
 
@@ -486,25 +526,20 @@ describe('<App>', function() {
 
   describe('tab exporting', function() {
 
-    let askExportAsSpy;
-    let writeFileSpy;
+    let showSaveFileDialogSpy,
+        saveFileSpy;
 
-    let app;
+    let dialog, app;
 
     beforeEach(function() {
 
       // given
-      const dialog = new Dialog();
+      dialog = new Dialog();
+
       const fileSystem = new FileSystem();
 
-      dialog.setAskExportAsResponse(Promise.resolve({
-        fileType: 'svg',
-        name: 'foo.svg',
-        path: 'foo'
-      }));
-
-      askExportAsSpy = spy(dialog, 'askExportAs');
-      writeFileSpy = spy(fileSystem, 'writeFile');
+      showSaveFileDialogSpy = spy(dialog, 'showSaveFileDialog');
+      saveFileSpy = spy(fileSystem, 'saveFile');
 
       const rendered = createApp({
         globals: {
@@ -522,18 +557,50 @@ describe('<App>', function() {
       // given
       await app.createDiagram();
 
+      dialog.setShowSaveFileDialogResponse('foo.svg');
+
       // when
       await app.triggerAction('export-as');
 
       // then
-      expect(askExportAsSpy).to.have.been.called;
+      expect(showSaveFileDialogSpy).to.have.been.called;
 
-      expect(writeFileSpy).to.have.been.calledWith({
-        contents: 'CONTENTS',
-        fileType: 'svg',
-        name: 'foo.svg',
-        path: 'foo'
-      });
+      expect(saveFileSpy).to.have.been.calledWith(
+        'foo.svg',
+        {
+          contents: 'EXPORT CONTENTS',
+          name: 'diagram_1.bpmn',
+          path: null
+        }, {
+          encoding: 'utf8',
+          fileType: 'svg'
+        });
+    });
+
+
+    it('should export PNG', async function() {
+
+      // given
+      await app.createDiagram();
+
+      dialog.setShowSaveFileDialogResponse('foo.png');
+
+      // when
+      await app.triggerAction('export-as');
+
+      // then
+      expect(showSaveFileDialogSpy).to.have.been.called;
+
+      expect(saveFileSpy).to.have.been.calledWith(
+        'foo.png',
+        {
+          contents: 'EXPORT CONTENTS',
+          name: 'diagram_1.bpmn',
+          path: null
+        }, {
+          encoding: 'base64',
+          fileType: 'png'
+        });
     });
 
   });
@@ -1187,20 +1254,30 @@ describe('<App>', function() {
     it('should open dialog and open files', async function() {
 
       // given
-      const files = [
-        { contents: '<contents>', name: 'foo' },
-        { contents: '<contents>', name: 'bar' }
+      const filePaths = [
+        'diagram_1.bpmn',
+        'diagram_2.bpmn'
       ];
 
       const dialog = new Dialog();
 
-      dialog.setShowOpenFilesDialogResponse(files);
+      const fileSystem = new FileSystem({
+        openFiles: () => {
+          return [
+            createFile('diagram_1.bpmn'),
+            createFile('diagram_2.bpmn')
+          ];
+        }
+      });
+
+      dialog.setShowOpenFilesDialogResponse(filePaths);
 
       const showOpenFilesDialogSpy = spy(dialog, 'showOpenFilesDialog');
 
       const { app } = createApp({
         globals: {
-          dialog
+          dialog,
+          fileSystem
         }
       });
 
