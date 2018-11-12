@@ -218,7 +218,7 @@ describe('<BpmnEditor>', function() {
       const onAction = action => {
 
         if (action === 'show-dialog') {
-          return Promise.resolve('yes');
+          return 'yes';
         }
       };
 
@@ -253,7 +253,7 @@ describe('<BpmnEditor>', function() {
       const onAction = action => {
 
         if (action === 'show-dialog') {
-          return Promise.resolve('cancel');
+          return 'cancel';
         }
       };
 
