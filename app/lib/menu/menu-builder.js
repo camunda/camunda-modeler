@@ -15,35 +15,27 @@ const {
 
 
 class MenuBuilder {
-  constructor(opts) {
-    this.opts = merge({
+  constructor(options) {
+    this.options = merge({
       appName: app.name,
       state: {
-        dmn: false,
         activeEditor: null,
-        cmmn: false,
-        bpmn: false,
         undo: false,
         redo: false,
-        editable: false,
         copy: false,
         paste: false,
-        searchable: false,
         zoom: false,
         save: false,
         close: false,
-        elementsSelected: false,
-        dmnRuleEditing: false,
-        dmnClauseEditing: false,
         exportAs: false,
         development: app.developmentMode,
         devtools: false
       },
       plugins: []
-    }, opts);
+    }, options);
 
-    if (this.opts.template) {
-      this.menu = Menu.buildFromTemplate(this.opts.template);
+    if (this.options.template) {
+      this.menu = Menu.buildFromTemplate(this.options.template);
     } else {
       this.menu = new Menu();
     }
@@ -121,7 +113,7 @@ class MenuBuilder {
   appendSaveFile() {
     this.menu.append(new MenuItem({
       label: 'Save File',
-      enabled: this.opts.state.save,
+      enabled: this.options.state.save,
       accelerator: 'CommandOrControl+S',
       click: function() {
         app.emit('menu:action', 'save');
@@ -135,7 +127,7 @@ class MenuBuilder {
     this.menu.append(new MenuItem({
       label: 'Save File As..',
       accelerator: 'CommandOrControl+Shift+S',
-      enabled: this.opts.state.save,
+      enabled: this.options.state.save,
       click: function() {
         app.emit('menu:action', 'save-as');
       }
@@ -148,7 +140,7 @@ class MenuBuilder {
     this.menu.append(new MenuItem({
       label: 'Save All Files',
       accelerator: 'CommandOrControl+Alt+S',
-      enabled: this.opts.state.save,
+      enabled: this.options.state.save,
       click: function() {
         app.emit('menu:action', 'save-all');
       }
@@ -158,7 +150,7 @@ class MenuBuilder {
   }
 
   appendExportAs() {
-    const exportState = this.opts.state.exportAs;
+    const exportState = this.options.state.exportAs;
     const enabled = exportState && exportState.length > 0;
 
     this.menu.append(new MenuItem({
@@ -177,7 +169,7 @@ class MenuBuilder {
   appendCloseTab() {
     this.menu.append(new MenuItem({
       label: 'Close Tab',
-      enabled: this.opts.state.close,
+      enabled: this.options.state.close,
       accelerator: 'CommandOrControl+W',
       click: function() {
         app.emit('menu:action', 'close-active-tab');
@@ -186,7 +178,7 @@ class MenuBuilder {
 
     this.menu.append(new MenuItem({
       label: 'Close All Tabs',
-      enabled: this.opts.state.close,
+      enabled: this.options.state.close,
       click: function() {
         app.emit('menu:action', 'close-all-tabs');
       }
@@ -194,7 +186,7 @@ class MenuBuilder {
 
     this.menu.append(new MenuItem({
       label: 'Close Other Tabs',
-      enabled: this.opts.state.close,
+      enabled: this.options.state.close,
       click: function() {
         app.emit('menu:action', 'close-other-tabs');
       }
@@ -209,7 +201,7 @@ class MenuBuilder {
       label: 'Switch Tab..',
       submenu: submenu || Menu.buildFromTemplate([{
         label: 'Select Next Tab',
-        enabled: this.opts.state.close,
+        enabled: this.options.state.close,
         accelerator: 'Control+TAB',
         click: function() {
           app.emit('menu:action', 'select-tab', 'next');
@@ -217,7 +209,7 @@ class MenuBuilder {
       },
       {
         label: 'Select Previous Tab',
-        enabled: this.opts.state.close,
+        enabled: this.options.state.close,
         accelerator: 'Control+SHIFT+TAB',
         click: function() {
           app.emit('menu:action', 'select-tab', 'previous');
@@ -267,7 +259,7 @@ class MenuBuilder {
   }
 
   getEditMenu(menuItems) {
-    const builder = new this.constructor(this.opts);
+    const builder = new this.constructor(this.options);
 
     menuItems.forEach((menuItem, index) => {
       if (Array.isArray(menuItem)) {
@@ -289,8 +281,8 @@ class MenuBuilder {
   appendEditMenu() {
     let subMenu;
 
-    if (this.opts.state.editMenu) {
-      subMenu = this.getEditMenu(this.opts.state.editMenu, this.opts);
+    if (this.options.state.editMenu) {
+      subMenu = this.getEditMenu(this.options.state.editMenu, this.options);
     }
 
     this.menu.append(new MenuItem({
@@ -304,7 +296,7 @@ class MenuBuilder {
   appendWindowMenu() {
     const submenu = [];
 
-    if (this.opts.state.zoom) {
+    if (this.options.state.zoom) {
       submenu.push({
         label: 'Zoom In',
         accelerator: 'CommandOrControl+=',
@@ -350,7 +342,7 @@ class MenuBuilder {
       type: 'separator'
     });
 
-    if (this.opts.state.development || this.opts.state.devtools) {
+    if (this.options.state.development || this.options.state.devtools) {
       submenu.push({
         label: 'Reload',
         accelerator: 'CommandOrControl+R',
@@ -367,7 +359,7 @@ class MenuBuilder {
         const isDevToolsOpened = browserWindow.isDevToolsOpened();
         if (isDevToolsOpened) {
           app.mainWindow.once('devtools-closed', () => {
-            app.emit('menu:update', assign({}, this.opts.state, {
+            app.emit('menu:update', assign({}, this.options.state, {
               devtools: false
             }));
           });
@@ -375,7 +367,7 @@ class MenuBuilder {
         }
         else {
           app.mainWindow.once('devtools-opened', () => {
-            app.emit('menu:update', assign({}, this.opts.state, {
+            app.emit('menu:update', assign({}, this.options.state, {
               devtools: true
             }));
           });
@@ -404,11 +396,11 @@ class MenuBuilder {
   }
 
   appendPluginsMenu() {
-    if (this.opts.plugins.length === 0) {
+    if (this.options.plugins.length === 0) {
       return this;
     }
 
-    const submenu = this.opts.plugins
+    const submenu = this.options.plugins
       .map(p => {
         let label = p.name;
 
@@ -423,7 +415,7 @@ class MenuBuilder {
 
         if (p.menu) {
           try {
-            const menuEntries = p.menu(app, this.opts.state);
+            const menuEntries = p.menu(app, this.options.state);
             menuItemDescriptor.enabled = true;
             menuItemDescriptor.submenu = Menu.buildFromTemplate(menuEntries.map(menuDescriptor => {
               return new MenuItem({
@@ -540,7 +532,7 @@ class MenuBuilder {
   }
 
   build() {
-    return this.appendFileMenu(new this.constructor(this.opts)
+    return this.appendFileMenu(new this.constructor(this.options)
       .appendNewFile()
       .appendOpen()
       .appendSeparator()
@@ -569,7 +561,7 @@ class MenuBuilder {
   appendContextCloseTab(attrs) {
     this.menu.append(new MenuItem({
       label: 'Close Tab',
-      enabled: this.opts.state.close,
+      enabled: this.options.state.close,
       accelerator: 'CommandOrControl+W',
       click: function() {
         app.emit('menu:action', 'close-tab', attrs);
@@ -578,7 +570,7 @@ class MenuBuilder {
 
     this.menu.append(new MenuItem({
       label: 'Close All Tabs',
-      enabled: this.opts.state.close,
+      enabled: this.options.state.close,
       click: function() {
         app.emit('menu:action', 'close-all-tabs');
       }
@@ -586,7 +578,7 @@ class MenuBuilder {
 
     this.menu.append(new MenuItem({
       label: 'Close Other Tabs',
-      enabled: this.opts.state.close,
+      enabled: this.options.state.close,
       click: function() {
         app.emit('menu:action', 'close-other-tabs', attrs);
       }
