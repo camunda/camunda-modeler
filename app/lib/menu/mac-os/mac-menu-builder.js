@@ -16,7 +16,7 @@ class MacMenuBuilder extends MenuBuilder {
   appendAppMenu() {
     const subMenu = new MacMenuBuilder({
       template: [{
-        label: 'About ' + this.opts.appName,
+        label: 'About ' + this.options.appName,
         role: 'about'
       }, {
         type: 'separator'
@@ -27,7 +27,7 @@ class MacMenuBuilder extends MenuBuilder {
       }, {
         type: 'separator'
       }, {
-        label: 'Hide ' + this.opts.appName,
+        label: 'Hide ' + this.options.appName,
         accelerator: 'Command+H',
         role: 'hide'
       }, {
@@ -43,7 +43,7 @@ class MacMenuBuilder extends MenuBuilder {
     }).appendQuit().get();
 
     this.menu.append(new MenuItem({
-      label: this.opts.appName,
+      label: this.options.appName,
       submenu: subMenu
     }));
 
@@ -53,7 +53,7 @@ class MacMenuBuilder extends MenuBuilder {
   appendRedo() {
     this.menu.append(new MenuItem({
       label: 'Redo',
-      enabled: this.opts.state.redo,
+      enabled: this.options.state.redo,
       accelerator: 'Command+Shift+Z',
       click: function(menuItem, browserWindow) {
         app.emit('menu:action', 'redo');
@@ -63,7 +63,7 @@ class MacMenuBuilder extends MenuBuilder {
 
   build() {
     this.appendAppMenu()
-      .appendFileMenu(new this.constructor(this.opts)
+      .appendFileMenu(new this.constructor(this.options)
         .appendNewFile()
         .appendOpen()
         .appendSeparator()
