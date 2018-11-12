@@ -7,6 +7,9 @@ import {
 
 import EmptyTab from '../../EmptyTab';
 
+const ENCODING_BASE64 = 'base64',
+      ENCODING_UTF8 = 'utf8';
+
 
 class FakeTab extends Component {
 
@@ -43,7 +46,7 @@ class FakeTab extends Component {
     }
 
     if (action === 'export-as') {
-      return 'CONTENTS';
+      return 'EXPORT CONTENTS';
     }
 
     if (action === 'error') {
@@ -84,12 +87,27 @@ export class TabsProvider {
     this.providers = {
       bpmn: {
         name: 'BPMN',
+        exports: {
+          jpg: { encoding: ENCODING_BASE64 },
+          png: { encoding: ENCODING_BASE64 },
+          svg: { encoding: ENCODING_UTF8 }
+        }
       },
       cmnn: {
-        name: 'CMMN'
+        name: 'CMMN',
+        exports: {
+          jpg: { encoding: ENCODING_BASE64 },
+          png: { encoding: ENCODING_BASE64 },
+          svg: { encoding: ENCODING_UTF8 }
+        }
       },
       dmn: {
-        name: 'DMN'
+        name: 'DMN',
+        exports: {
+          jpg: { encoding: ENCODING_BASE64 },
+          png: { encoding: ENCODING_BASE64 },
+          svg: { encoding: ENCODING_UTF8 }
+        }
       }
     };
   }
@@ -165,9 +183,10 @@ export class Dialog extends Mock {
   constructor(overrides) {
     super(overrides);
 
-    this.askSaveResponse = null;
     this.showOpenFilesDialogResponse = null;
+    this.showSaveFileDialogResponse = null;
     this.showResponse = null;
+    this.showCloseFileDialogResponse = null;
     this.showOpenFileErrorDialogResponse = null;
     this.showEmptyFileDialogResponse = null;
   }
@@ -176,16 +195,16 @@ export class Dialog extends Mock {
     this.showOpenFilesDialogResponse = response;
   }
 
-  setAskSaveResponse(response) {
-    this.askSaveResponse = response;
-  }
-
-  setAskExportAsResponse(response) {
-    this.askExportAsResponse = response;
+  setShowSaveFileDialogResponse(response) {
+    this.showSaveFileDialogResponse = response;
   }
 
   setShowResponse(response) {
     this.showResponse = response;
+  }
+
+  setShowCloseFileDialogResponse(response) {
+    this.showCloseFileDialogResponse = response;
   }
 
   setShowOpenFileErrorDialogResponse(response) {
@@ -200,16 +219,16 @@ export class Dialog extends Mock {
     return this.showOpenFilesDialogResponse;
   }
 
-  askSave() {
-    return this.askSaveResponse;
-  }
-
-  askExportAs() {
-    return this.askExportAsResponse;
+  showSaveFileDialog() {
+    return this.showSaveFileDialogResponse;
   }
 
   show() {
     return this.showResponse;
+  }
+
+  showCloseFileDialog() {
+    return this.showCloseFileDialogResponse;
   }
 
   showOpenFileErrorDialog() {
@@ -222,8 +241,54 @@ export class Dialog extends Mock {
 }
 
 export class FileSystem extends Mock {
+  constructor(overrides) {
+    super(overrides);
+
+    this.openFilesResponse = [];
+    this.saveFileResponse = {};
+    this.readFileResponse = {};
+    this.readFileStatsResponse = {};
+    this.writeFileResponse = {};
+  }
+
+  setOpenFilesResponse(response) {
+    this.openFilesResponse = response;
+  }
+
+  setSaveFileResponse(response) {
+    this.saveFileResponse = response;
+  }
+
+  setReadFileResponse(response) {
+    this.readFileResponse = response;
+  }
+
+  setReadFileStatsResponse(response) {
+    this.readFileStatsResponse = response;
+  }
+
+  setWriteFileResponse(response) {
+    this.writeFileResponse = response;
+  }
+
+  openFiles() {
+    return this.openFilesResponse;
+  }
+
+  saveFile() {
+    return this.saveFileResponse;
+  }
+
+  readFile() {
+    return this.readFileResponse;
+  }
+
+  readFileStats() {
+    return this.readFileStatsResponse;
+  }
+
   writeFile() {
-    return {};
+    return this.writeFileResponse;
   }
 }
 

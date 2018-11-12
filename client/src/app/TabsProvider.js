@@ -21,6 +21,9 @@ const noopProvider = {
   }
 };
 
+const ENCODING_BASE64 = 'base64',
+      ENCODING_UTF8 = 'utf8';
+
 
 /**
  * A provider that allows us to customize available tabs.
@@ -37,29 +40,47 @@ export default class TabsProvider {
       },
       bpmn: {
         name: 'BPMN',
+        encoding: ENCODING_UTF8,
         getComponent(options) {
           return import('./tabs/bpmn');
         },
         getInitialContents(options) {
           return bpmnDiagram;
+        },
+        exports: {
+          jpg: { encoding: ENCODING_BASE64 },
+          png: { encoding: ENCODING_BASE64 },
+          svg: { encoding: ENCODING_UTF8 }
         }
       },
       cmmn: {
         name: 'CMMN',
+        encoding: ENCODING_UTF8,
         getComponent(options) {
           return import('./tabs/cmmn');
         },
         getInitialContents(options) {
           return cmmnDiagram;
+        },
+        exports: {
+          jpg: { encoding: ENCODING_BASE64 },
+          png: { encoding: ENCODING_BASE64 },
+          svg: { encoding: ENCODING_UTF8 }
         }
       },
       dmn: {
         name: 'DMN',
+        encoding: ENCODING_UTF8,
         getComponent(options) {
           return import('./tabs/dmn');
         },
         getInitialContents(options) {
           return options && options.table ? dmnTable : dmnDiagram;
+        },
+        exports: {
+          jpg: { encoding: ENCODING_BASE64 },
+          png: { encoding: ENCODING_BASE64 },
+          svg: { encoding: ENCODING_UTF8 }
         }
       }
     };

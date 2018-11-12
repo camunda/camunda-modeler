@@ -44,6 +44,13 @@ export const EMPTY_TAB = {
   type: 'empty'
 };
 
+const ENCODING_UTF8 = 'utf8';
+
+const FILTER_ALL_EXTENSIONS = {
+  name: 'All Files',
+  extensions: [ '*' ]
+};
+
 const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
   dirtyTabs: {},
@@ -203,9 +210,18 @@ export class App extends Component {
   }
 
   closeTab = async (tab) => {
+    const { file } = tab;
+
+    const { name } = file;
 
     if (this.isDirty(tab)) {
-      await this.saveTab(tab, { ask: true });
+      const response = await this.showCloseFileDialog({ name });
+
+      if (response === 'save') {
+        await this.saveTab(tab);
+      } else if (response === 'cancel') {
+        return;
+      }
     }
 
     await this._removeTab(tab);
@@ -290,10 +306,6 @@ export class App extends Component {
     });
   }
 
-  askSave = (file) => {
-    return this.props.globals.dialog.askSave({ name: file.name });
-  }
-
   showOpenFilesDialog = async () => {
     const {
       globals,
@@ -305,30 +317,87 @@ export class App extends Component {
     } = this.state;
 
     const {
-      dialog
+      dialog,
+      fileSystem
     } = globals;
 
     const providers = tabsProvider.getProviders();
 
-    const extensions = [];
+    // create filters
+    const allSupportedFilter = {
+      name: 'All Supported',
+      extensions: []
+    };
+
+    const filters = [
+      allSupportedFilter
+    ];
 
     forEach(providers, (provider, key) => {
-      if (key !== 'empty') {
-        extensions.push(key);
+      if (key === 'empty') {
+        return;
       }
+
+      allSupportedFilter.extensions.push(key);
+
+      filters.push({
+        name: `.${ key }`,
+        extensions: [ key ]
+      });
     });
 
-    const files = await dialog.showOpenFilesDialog({
+    filters.push(FILTER_ALL_EXTENSIONS);
+
+    const filePaths = await dialog.showOpenFilesDialog({
       activeFile: activeTab.file,
-      filters: {
-        name: 'All supported',
-        extensions
-      }
+      filters
+    });
+
+    if (!filePaths.length) {
+      return;
+    }
+
+    const fileType = getFileTypeFromExtension(filePaths[0]);
+
+    const provider = tabsProvider.getProvider(fileType);
+
+    const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
+
+    // TODO(philippfromme): allow per file encoding
+    const files = await fileSystem.openFiles(filePaths, {
+      encoding
     });
 
     if (files.length) {
       await this.openFiles(files);
     }
+  }
+
+  showCloseFileDialog = (file) => {
+    const { globals } = this.props;
+
+    const { dialog } = globals;
+
+    const { name } = file;
+
+    return dialog.showCloseFileDialog({ name });
+  }
+
+  showSaveFileDialog = (file, options = {}) => {
+    const { globals } = this.props;
+
+    const { dialog } = globals;
+
+    const {
+      filters,
+      title
+    } = options;
+
+    return dialog.showSaveFileDialog({
+      file,
+      filters,
+      title
+    });
   }
 
   openEmptyFile = async (file) => {
@@ -341,9 +410,9 @@ export class App extends Component {
 
     const { name } = file;
 
-    const type = name.split('.').pop();
+    const fileType = getFileTypeFromExtension(name);
 
-    if (!tabsProvider.hasProvider(type)) {
+    if (!tabsProvider.hasProvider(fileType)) {
       let providerNames = tabsProvider.getProviderNames();
 
       return await dialog.showOpenFileErrorDialog(getOpenFileErrorDialog({
@@ -354,12 +423,12 @@ export class App extends Component {
 
     const answer = await dialog.showEmptyFileDialog({
       file,
-      type
+      fileType
     });
 
     if (answer == 'create') {
       assign(file, {
-        contents: tabsProvider.getInitialFileContents(type)
+        contents: tabsProvider.getInitialFileContents(fileType)
       });
 
       // TODO(philippfromme): fix dirty state
@@ -386,6 +455,15 @@ export class App extends Component {
     if (!files.length) {
       return [];
     }
+
+    // trim whitespace
+    files = files.map(file => {
+      const { contents } = file;
+
+      return assign(file, {
+        contents: contents.replace(/(^\s*|\s*$)/g, '')
+      });
+    });
 
     // open tabs from last to first to
     // keep display order in tact
@@ -733,34 +811,62 @@ export class App extends Component {
   async saveTab(tab, options = {}) {
     await this.showTab(tab);
 
-    let {
-      saveAs,
-      ask
-    } = options;
+    const {
+      globals,
+      tabsProvider
+    } = this.props;
 
-    const action = ask ? await this.askSave(tab) : 'save';
+    const { fileSystem } = globals;
 
-    if (action === 'cancel') {
-      throw new Error('user canceled');
+    const fileType = tab.type;
+
+    const {
+      file,
+      name
+    } = tab;
+
+    const contents = await this.tabRef.current.triggerAction('save');
+
+    let filePath, filters;
+
+    let { saveAs } = options;
+
+    saveAs = saveAs || isNew(tab);
+
+    if (saveAs) {
+      filters = [{
+        name: `.${ fileType }`,
+        extensions: [ fileType ]
+      }, FILTER_ALL_EXTENSIONS];
+
+      filePath = await this.showSaveFileDialog(file, {
+        filters,
+        title: `Save ${ name } as...`
+      });
+    } else {
+      filePath = tab.file.path;
     }
 
-    if (action === 'save') {
-      const contents = await this.tabRef.current.triggerAction('save');
-
-      // unsaved ?
-      saveAs = saveAs || isNew(tab);
-
-      const newFile = await this.props.globals.fileSystem.writeFile({
-        ...tab.file,
-        contents
-      }, { saveAs });
-
-      if (!newFile) {
-        throw new Error('user canceled');
-      }
-
-      this.tabSaved(tab, newFile);
+    if (!filePath) {
+      return;
     }
+
+    const provider = tabsProvider.getProvider(fileType);
+
+    const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
+
+    const newFile = await fileSystem.saveFile(filePath, assign(file, {
+      contents
+    }), {
+      encoding,
+      fileType
+    });
+
+    if (!newFile) {
+      return;
+    }
+
+    this.tabSaved(tab, newFile);
   }
 
   saveAllTabs = () => {
@@ -826,34 +932,56 @@ export class App extends Component {
   }
 
   async exportAs(tab) {
-    const filters = [{
-      name: 'PNG Image',
-      extensions: [ 'png' ]
-    }, {
-      name: 'JPEG Image',
-      extensions: [ 'jpeg' ]
-    }, {
-      name: 'SVG Image',
-      extensions: [ 'svg' ]
-    }];
+    const {
+      globals,
+      tabsProvider
+    } = this.props;
 
-    const suggestedFile = await this.askExportAs(tab, filters);
-
-    if (!suggestedFile) {
-      throw new Error('user canceled');
-    }
+    const { fileSystem } = globals;
 
     const {
-      fileType
-    } = suggestedFile;
+      name,
+      type
+    } = tab;
+
+    const provider = tabsProvider.getProvider(type);
+
+    const filters = [];
+
+    for (let key in provider.exports) {
+      filters.push({
+        name: `.${ key }`,
+        extensions: [ key ]
+      });
+    }
+
+    const filePath = await this.showSaveFileDialog(tab, {
+      filters,
+      title: `Export ${ name } as...`
+    });
+
+    if (!filePath) {
+      return;
+    }
+
+    const fileType = getFileTypeFromExtension(filePath);
+
+    if (!fileType) {
+      return;
+    }
 
     const contents = await this.tabRef.current.triggerAction('export-as', {
       fileType
     });
 
-    this.props.globals.fileSystem.writeFile({
-      ...suggestedFile,
+    const { encoding } = provider.exports ? provider.exports[ fileType ] : ENCODING_UTF8;
+
+    fileSystem.saveFile(filePath, {
+      ...tab.file,
       contents
+    }, {
+      encoding,
+      fileType
     });
   }
 
@@ -1077,7 +1205,7 @@ export class App extends Component {
           </Fill>
 
           {
-            tabState.canExport && <Fill name="toolbar" group="export">
+            tabState.exportAs && <Fill name="toolbar" group="export">
               <Button
                 title="Export as image"
                 onClick={ this.composeAction('export-as') }
@@ -1217,4 +1345,8 @@ function getOpenFileErrorDialog(options) {
     message: 'Unable to open file.',
     detail: `"${ name }" is not a ${ providerNamesString } file.`
   };
+}
+
+function getFileTypeFromExtension(filePath) {
+  return filePath.split('.').pop();
 }
