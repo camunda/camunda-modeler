@@ -1,25 +1,11 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var {
-  map
-} = require('min-dash');
+const { map } = require('min-dash');
 
-var filterExtensions = require('./util/filter-extensions'),
-    ensureOptions = require('./util/ensure-opts');
+const ensureOptions = require('./util/ensure-opts');
 
-function getDialog(type) {
-  return function(options) {
-    return {
-      type: type,
-      title: options.title,
-      message: options.message,
-      buttons: options.buttons,
-      detail: options.detail
-    };
-  };
-}
 
 /**
  * Interface for handling dialogs.
@@ -71,29 +57,6 @@ Dialog.prototype.getDialogOptions = function(type, options) {
         filters: options.filters
       };
     },
-    save: function(options) {
-      ensureOptions([ 'name', 'fileType' ], options);
-
-      return {
-        title: 'Save ' + options.name + ' as...',
-        defaultPath: defaultPath + '/' + options.name,
-        filters: filterExtensions([ options.fileType, 'all' ])
-      };
-    },
-    close: function(options) {
-      ensureOptions([ 'name' ], options);
-
-      return {
-        title: 'Close diagram',
-        message: 'Save changes to ' + options.name + ' before closing?',
-        type: 'question',
-        buttons: [
-          { id: 'cancel', label: 'Cancel' },
-          { id: 'save', label: 'Save' },
-          { id: 'discard', label: 'Don\'t Save' }
-        ]
-      };
-    },
     existingFile: function(options) {
       ensureOptions([ 'name' ], options);
 
@@ -124,7 +87,8 @@ Dialog.prototype.getDialogOptions = function(type, options) {
     },
     error: getDialog('error'),
     warning: getDialog('warning'),
-    info: getDialog('info')
+    info: getDialog('info'),
+    question: getDialog('question')
   };
 
   return dialogs[type](options);
@@ -241,7 +205,7 @@ Dialog.prototype.showOpenDialog = function(options) {
       title: title || 'Open File'
     }, (filePaths = []) => {
       if (filePaths.length) {
-        this.setDefaultPath(filePaths);
+        this.setDefaultPath(filePaths[0]);
       }
 
       resolve(filePaths);
@@ -249,8 +213,37 @@ Dialog.prototype.showOpenDialog = function(options) {
   });
 };
 
-Dialog.prototype.showSaveDialog = function() {
-  // TODO(philippfromme): implement
+Dialog.prototype.showSaveDialog = function(options) {
+  const {
+    file,
+    filters,
+    title
+  } = options;
+
+  let { name } = file;
+
+  // remove extension
+  name = path.parse(name).name;
+
+  let { defaultPath } = options;
+
+  if (!defaultPath) {
+    defaultPath = this.config.get('defaultPath', this.userDesktopPath);
+  }
+
+  return new Promise(resolve => {
+    this.dialog.showSaveDialog(this.browserWindow, {
+      defaultPath: `${ defaultPath }/${ name }`,
+      filters,
+      title: title || `Save "${ name }" as...`
+    }, (filePath) => {
+      if (filePath) {
+        this.setDefaultPath(filePath);
+      }
+
+      resolve(filePath);
+    });
+  });
 };
 
 Dialog.prototype.showMessageBox = function() {
@@ -276,3 +269,17 @@ Dialog.prototype.setDefaultPath = function(filePaths) {
 
   this.defaultPath = dirname;
 };
+
+// helpers //////////
+
+function getDialog(type) {
+  return function(options) {
+    return {
+      type: type,
+      title: options.title,
+      message: options.message,
+      buttons: options.buttons,
+      detail: options.detail
+    };
+  };
+}

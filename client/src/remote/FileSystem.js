@@ -8,35 +8,69 @@ export default class FileSystem {
   }
 
   /**
-   * Read file and return it.
+   * Open file/s.
    *
-   * @param {String} filePath
+   * @param {Array|String} filePaths - Filepath/s.
+   * @param {Object} [options] - Options.
+   * @param {Object} [options.encoding] - Encoding.
+   *
+   * @returns {Promise}
    */
-  readFile(filePath) {
-    return this.backend.send('file:read', filePath);
+  openFiles(filePaths, options = {}) {
+    return this.backend.send('files:open', filePaths, options);
   }
 
   /**
-   * Read file attributes, but skip content.
+   * Save file.
    *
-   * @param {String} filePath
+   * @param {String} filePath - Filepath.
+   * @param {Object} file - File.
+   * @param {Object} [options] - Options.
+   * @param {Object} [options.encoding] - Encoding.
+   *
+   * @returns {Promise}
    */
-  readFileStats(filePath) {
-    return this.backend.send('file:read-stats', filePath);
+  saveFile(filePath, file, options = {}) {
+    return this.backend.send('file:save', filePath, file, options);
+  }
+
+  /**
+   * Read file.
+   *
+   * @param {String} filePath - Filepath.
+   * @param {Object} [options] - Options.
+   * @param {String} [options.encoding] - Encoding.
+   *
+   * @returns {Promise}
+   */
+  readFile(filePath, options = {}) {
+    return this.backend.send('file:read', filePath, options);
+  }
+
+  /**
+   * Read file lastModified.
+   *
+   * @param {String} file - File.
+   *
+   * @returns {Promise}
+   */
+  readFileStats(file) {
+    return this.backend.send('file:read-stats', file);
   }
 
 
   /**
-   * Write file and return a promise for the written file.
+   * Write file.
    *
-   * @param {File} file
-   * @param {Object} options
+   * @param {String} filePath - Filepath.
+   * @param {Object} file - File.
+   * @param {Object} [options] - Options.
+   * @param {Object} [options.encoding] - Encoding.
+   *
+   * @returns {Promise}
    */
-  writeFile(file, options) {
-
-    const action = options && options.saveAs ? 'file:save-as' : 'file:save';
-
-    return this.backend.send(action, file);
+  writeFile(filePath, file, options = {}) {
+    return this.backend.send('file:write', filePath, file, options);
   }
 
 }

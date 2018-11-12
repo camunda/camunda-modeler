@@ -1,239 +1,194 @@
 'use strict';
 
-var fs = require('fs'),
-    path = require('path');
+const fs = require('fs'),
+      path = require('path');
 
-var {
+const {
   assign,
   pick
 } = require('min-dash');
 
-var ensureOptions = require('./util/ensure-opts');
+const ensureOptions = require('./util/ensure-opts');
 
+const FILE_PROPERTIES = [
+  'contents',
+  'encoding',
+  'fileType',
+  'lastModified',
+  'name',
+  'path'
+];
 
-var ENCODING_UTF8 = 'utf8';
-var FILE_PROPERTIES = ['path', 'name', 'contents', 'lastModified', 'fileType'];
-
-var NO_PATH_PROVIDED_ERROR = 'no path provided';
+const ENCODING_BASE64 = 'base64',
+      ENCODING_UTF8 = 'utf8';
 
 
 /**
- * Interface for handling files.
- *
- * @param {Object} options
- * @param {Dialog} options.dialog
+ * Filesytem.
  */
-function FileSystem(options) {
-  ensureOptions([ 'dialog' ], options);
+class FileSystem {
 
-  this.dialog = options.dialog;
-}
+  /**
+   * @param {Object} options - Options.
+   * @param {Dialog} options.dialog - Dialog.
+   */
+  constructor(options) {
+    ensureOptions([ 'dialog' ], options);
 
-module.exports = FileSystem;
-
-FileSystem.prototype.open = function(filePaths) {
-  if (!Array.isArray(filePaths)) {
-    filePaths = [ filePaths ];
+    this.dialog = options.dialog;
   }
 
-  return filePaths.map(filePath => {
-    let file;
+  /**
+   * Open files.
+   *
+   * @param {Array|String} filePaths - Filepaths.
+   * @param {Object} options - Options.
+   * @param {String} [options.encoding] - Encoding.
+   */
+  openFiles(filePaths, options = {}) {
+    if (!Array.isArray(filePaths)) {
+      filePaths = [ filePaths ];
+    }
 
+    return filePaths.reduce((files, filePath) => {
+      let file;
+
+      try {
+        file = this.readFile(filePath, options);
+      } catch (err) {
+        return files;
+      }
+
+      return [
+        ...files,
+        file
+      ];
+    }, []);
+  }
+
+  /**
+   * Save file.
+   *
+   * @param {String} filePath - Filepath.
+   * @param {Object} file - File.
+   * @param {Object} options - Options.
+   * @param {String} [options.encoding] - Encoding.
+   *
+   * @return {Object}
+   */
+  saveFile(filePath, file, options = {}) {
     try {
-      file = this.readFile(filePath);
+      const newFile = this.writeFile(filePath, file, options);
+
+      return newFile;
     } catch (err) {
       return err;
     }
+  }
 
-    return file;
-  });
-};
+  /**
+   * Read file.
+   *
+   * @param {String} filePath - Filepath.
+   * @param {Object} [options] - Options.
+   * @param {String} [options.encoding] - Encoding.
+   *
+   * @return {Object}
+   */
+  readFile(filePath, options = {}) {
 
-FileSystem.prototype.getFilePath = function(diagramFile) {
-  return diagramFile.path !== '' ? diagramFile.path : null;
-};
+    let { encoding } = options;
 
-FileSystem.prototype.exportAs = function(diagramFile, filters, callback) {
-  var dialog = this.dialog;
-
-  var dialogOptions = {
-    filePath: this.getFilePath(diagramFile),
-    name: diagramFile.name.replace(/\.[^.]+$/, ''),
-    filters
-  };
-
-  dialog.showDialog('exportAs', dialogOptions, function(err, filePath) {
-
-    var savedFile;
-
-    if (filePath) {
-
-      let fileType = path.extname(filePath).replace(/^\./, '');
-
-      // everything ok up to here -> we got a file
-      savedFile = createFileDescriptor(diagramFile, {
-        path: filePath,
-        fileType
-      });
+    if (!encoding) {
+      encoding = ENCODING_UTF8;
     }
 
-    callback(null, savedFile);
-  });
-};
+    const fileContents = fs.readFileSync(filePath, encoding);
 
-// TODO(philippfromme): refactor, this method is highly confusing
-FileSystem.prototype.saveAs = function(diagramFile, callback) {
-  var dialog = this.dialog,
-      self = this;
+    return createFile({
+      path: filePath,
+      contents: fileContents,
+      lastModified: getLastModifiedTicks(filePath)
+    });
+  }
 
-  var fileType = diagramFile.fileType;
+  /**
+   * Read file stats for file.
+   *
+   * @param {Object} file - File.
+   *
+   * @return {FileDescriptor}
+   */
+  readFileStats(file) {
+    const { path } = file;
 
-  var dialogPath = { filePath: this.getFilePath(diagramFile) };
+    return createFile(file, {
+      lastModified: getLastModifiedTicks(path)
+    });
+  }
 
-  // (3) handle dialog response
-  function done(error, filePath) {
+  /**
+   * Write file.
+   *
+   * @param {String} filePath - Filepath.
+   * @param {Object} file - File.
+   * @param {Object} [options] - Options.
+   * @param {Object} [options.encoding] - Encoding.
+   *
+   * @return {Object}
+   */
+  writeFile(filePath, file, options = {}) {
+    let { contents } = file;
 
-    // (4) call callback
-    if (error) {
-      return callback(error);
+    let {
+      encoding,
+      fileType
+    } = options;
+
+    if (!encoding) {
+      encoding = ENCODING_UTF8;
     }
 
-    var savedFile = createFileDescriptor(diagramFile, {
+    if (encoding === ENCODING_BASE64) {
+      contents = getBase64Contents(contents);
+    }
+
+    if (fileType) {
+      filePath = ensureExtension(filePath, fileType);
+    }
+
+    file = createFile(file, {
       path: filePath
     });
 
-    try {
-      var newDiagramFile = self.writeFile(filePath, savedFile);
+    fs.writeFileSync(filePath, contents, encoding);
 
-      callback(null, newDiagramFile);
-    } catch (error) {
-      callback(error);
-    }
+    return createFile(file, {
+      lastModified: getLastModifiedTicks(filePath)
+    });
   }
-
-  // (1) open save dialog
-  dialog.showDialog('save', assign(createFileDescriptor({
-    name: diagramFile.name,
-    fileType: fileType
-  }), dialogPath), function(error, filePath) {
-
-    // (2) handle dialog response
-    if (error) {
-      return done(error);
-    }
-
-    // user cancelled on save as file dialog
-    if (!filePath) {
-      return done(new Error(NO_PATH_PROVIDED_ERROR));
-    }
-
-    filePath = ensureExtension(filePath, fileType);
-
-    done(null, filePath);
-  });
-};
+}
 
 
-FileSystem.prototype.save = function(diagramFile, callback) {
-  var filePath = diagramFile.path;
+module.exports = FileSystem;
 
-  try {
-    var newDiagramFile = this.writeFile(filePath, diagramFile);
-
-    callback(null, newDiagramFile);
-  } catch (err) {
-    callback(err);
-  }
-};
-
-
-/**
- * Read a file.
- *
- * @param {String} filePath
- * @param {String} [encoding=utf8]
- *
- * @return {FileDescriptor}
- */
-FileSystem.prototype.readFile = function(filePath, encoding) {
-
-  encoding = encoding || ENCODING_UTF8;
-
-  var fileContents = fs.readFileSync(filePath, encoding);
-
-  // TODO(nikku): remove this behavior and move to client
-  if (encoding === ENCODING_UTF8) {
-
-    // trim leading and trailing whitespace
-    // this fixes obscure import errors for non-strict
-    // xml exports
-    fileContents = fileContents.replace(/(^\s*|\s*$)/g, '');
-  }
-
-  return createFileDescriptor({
-    path: filePath,
-    contents: fileContents,
-    lastModified: getLastModifiedTicks(filePath)
-  });
-};
+// helpers //////////
 
 /**
  * Return last modified for the given file path.
  *
- * @param {String} path
+ * @param {String} filePath - Filepath.
  *
  * @return {Integer}
  */
-FileSystem.prototype.readFileStats = function(file) {
-  return createFileDescriptor(file, {
-    lastModified: getLastModifiedTicks(file.path)
-  });
-};
-
-
-
-/**
- * Write a file.
- *
- * @param {String} filePath
- * @param {FileDescriptor} file
- *
- * @return {FileDescriptor} written file
- */
-FileSystem.prototype.writeFile = function(filePath, file) {
-  var contents = file.contents,
-      encoding;
-
-  var match = /^data:(image\/[^;]+);base64,(.*)$/.exec(contents);
-
-  if (match) {
-    encoding = 'base64';
-    contents = match[2];
-  } else {
-    encoding = ENCODING_UTF8;
-  }
-
-  fs.writeFileSync(filePath, contents, encoding);
-
-  return createFileDescriptor(file, {
-    lastModified: getLastModifiedTicks(filePath)
-  });
-};
-
-
-/**
- * Return last modified for the given file path.
- *
- * @param {String} path
- *
- * @return {Integer}
- */
-function getLastModifiedTicks(path) {
+function getLastModifiedTicks(filePath) {
   try {
-    var stats = fs.statSync(path);
+    const stats = fs.statSync(filePath);
+
     return stats.mtime.getTime() || 0;
   } catch (err) {
-    console.error('Could not get file stats for the path: ' + path);
+    console.error(`Unable to read lastModified of file "${ filePath }"`);
+
     return 0;
   }
 }
@@ -248,9 +203,8 @@ function getLastModifiedTicks(path) {
  *
  * @return {FileDescriptor}
  */
-function createFileDescriptor(oldFile, newFile) {
-  // no old file supplied
-  if (arguments.length == 1) {
+function createFile(oldFile, newFile) {
+  if (!newFile) {
     newFile = oldFile;
     oldFile = {};
   } else {
@@ -277,7 +231,11 @@ function createFileDescriptor(oldFile, newFile) {
  * @return {String} filePath that definitely has an extension
  */
 function ensureExtension(filePath, defaultExtension) {
-  var extension = path.extname(filePath);
+  const extension = path.extname(filePath);
 
-  return extension ? filePath : filePath + '.' + defaultExtension;
+  return extension ? filePath : `${filePath}.${defaultExtension}`;
+}
+
+function getBase64Contents(contents) {
+  return contents.replace(/^data:image\/(jpg|png)+;base64,/, '');
 }
