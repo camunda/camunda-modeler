@@ -19,6 +19,7 @@ import css from './CmmnEditor.less';
 import { active as isInputActive } from '../../../util/dom/is-input';
 
 import { getCmmnEditMenu } from './getCmmnEditMenu';
+import getCmmnWindowMenu from './getCmmnWindowMenu';
 
 import generateImage from '../../util/generateImage';
 
@@ -186,19 +187,23 @@ export class CmmnEditor extends CachedComponent {
       lassoTool: !inputActive,
       moveCanvas: !inputActive,
       moveSelection: !inputActive && !!selectionLength,
+      propertiesPanel: true,
       redo: commandStack.canRedo(),
       removeSelected: !!selectionLength,
       save: true,
       spaceTool: !inputActive,
-      undo: commandStack.canUndo()
+      undo: commandStack.canUndo(),
+      zoom: true
     };
 
     const editMenu = getCmmnEditMenu(newState);
+    const windowMenu = getCmmnWindowMenu(newState);
 
     if (typeof onChanged === 'function') {
       onChanged({
         ...newState,
-        editMenu
+        editMenu,
+        windowMenu
       });
     }
 

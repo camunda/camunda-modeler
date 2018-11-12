@@ -34,4 +34,13 @@ describe('MenuBuilder', () => {
     expect(menu).to.exist;
   });
 
+
+  it('should build context menu', () => {
+    const menuBuilder = new MenuBuilder({ type: 'tab' });
+
+    const contextMenu = menuBuilder.buildContextMenu();
+
+    expect(contextMenu).to.exist;
+  });
+
 });

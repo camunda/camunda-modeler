@@ -23,6 +23,8 @@ import { active as isInputActive } from '../../../util/dom/is-input';
 
 import { getBpmnEditMenu } from './getBpmnEditMenu';
 
+import getBpmnWindowMenu from './getBpmnWindowMenu';
+
 import css from './BpmnEditor.less';
 
 import generateImage from '../../util/generateImage';
@@ -297,12 +299,14 @@ export class BpmnEditor extends CachedComponent {
       moveToOrigin: !inputActive,
       moveSelection: !inputActive && !!selectionLength,
       paste: !modeler.get('clipboard').isEmpty(),
+      propertiesPanel: true,
       redo: commandStack.canRedo(),
       removeSelected: !!selectionLength,
       save: true,
       setColor: !!selectionLength,
       spaceTool: !inputActive,
-      undo: commandStack.canUndo()
+      undo: commandStack.canUndo(),
+      zoom: true
     };
 
     if (xml) {
@@ -311,10 +315,13 @@ export class BpmnEditor extends CachedComponent {
 
     const editMenu = getBpmnEditMenu(newState);
 
+    const windowMenu = getBpmnWindowMenu(newState);
+
     if (typeof onChanged === 'function') {
       onChanged({
         ...newState,
-        editMenu
+        editMenu,
+        windowMenu
       });
     }
 

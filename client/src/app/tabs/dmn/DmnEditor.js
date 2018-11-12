@@ -26,6 +26,8 @@ import {
   getDmnLiteralExpressionEditMenu
 } from './getDmnEditMenu';
 
+import getDmnWindowMenu from './getDmnWindowMenu';
+
 import css from './DmnEditor.less';
 
 import generateImage from '../../util/generateImage';
@@ -252,6 +254,7 @@ export class DmnEditor extends CachedComponent {
     const newState = {
       close: true,
       exportAs: 'saveSVG' in activeViewer ? [ 'svg', 'png' ] : false,
+      propertiesPanel: true,
       redo: commandStack.canRedo(),
       save: true,
       undo: commandStack.canUndo()
@@ -269,7 +272,8 @@ export class DmnEditor extends CachedComponent {
         lassoTool: !inputActive,
         moveCanvas: !inputActive,
         moveSelection: !inputActive && !!selectionLength,
-        removeSelected: !inputActive && !!selectionLength
+        removeSelected: false,
+        zoom: true
       });
 
       editMenu = getDmnDrdEditMenu(newState);
@@ -283,10 +287,13 @@ export class DmnEditor extends CachedComponent {
       editMenu = getDmnLiteralExpressionEditMenu(newState);
     }
 
+    const windowMenu = getDmnWindowMenu(newState);
+
     if (typeof onChanged === 'function') {
       onChanged({
         ...newState,
-        editMenu
+        editMenu,
+        windowMenu
       });
     }
 

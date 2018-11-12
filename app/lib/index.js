@@ -56,7 +56,7 @@ global.metaData = {
 // get directory of executable
 var appPath = path.dirname(app.getPath('exe'));
 
-var plugins = app.plugins = new Plugins({
+app.plugins = new Plugins({
   paths: [
     app.getPath('userData'),
     appPath
@@ -66,21 +66,7 @@ var plugins = app.plugins = new Plugins({
 // set global modeler directory
 global.modelerDirectory = appPath;
 
-// bootstrap the application's menus
-//
-// TODO(nikku): remove app.menu binding when development
-// mode bootstrap issue is fixed in electron-connect
-app.menu = new Menu(
-  process.platform,
-  plugins.getPlugins()
-    .map(p => {
-      return {
-        menu: p.menu,
-        name: p.name,
-        error: p.error
-      };
-    })
-);
+var menu = new Menu(process.platform);
 
 // bootstrap workspace behavior
 new Workspace(config);
@@ -390,6 +376,8 @@ app.createEditorWindow = function() {
   var mainWindow = app.mainWindow = new BrowserWindow(windowOptions);
 
   dialog.setActiveWindow(mainWindow);
+
+  menu.init();
 
   var url = 'file://' + path.resolve(__dirname + '/../public/index.html');
 
