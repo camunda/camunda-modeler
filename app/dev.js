@@ -25,8 +25,6 @@ app.on('before-quit', function() {
 });
 
 app.on('app:window-created', function() {
-  app.menu.rebuild();
-
   installExtension(REACT_DEVELOPER_TOOLS)
     .then((name) => console.log(`Added Extension:  ${name}`))
     .catch((err) => console.error('An error occurred: ', err));
