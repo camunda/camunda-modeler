@@ -32,6 +32,39 @@ describe('dialog', function() {
   });
 
 
+  it('#showOpenFileErrorDialog', function() {
+
+    // given
+    const sendSpy = (type, opts) => {
+
+      // then
+      expect(type).to.equal('dialog:show');
+
+      expect(opts).to.eql({
+        type: 'error',
+        title: 'Unrecognized file format',
+        buttons: [
+          { id: 'cancel', label: 'Close' }
+        ],
+        message: 'The file "foo" is not a foo, bar or baz file.'
+      });
+    };
+
+    const backend = new Backend({ send: sendSpy });
+    const dialog = new Dialog(backend);
+
+    const options = {
+      file: {
+        name: 'foo'
+      },
+      types: [ 'foo', 'bar', 'baz' ]
+    };
+
+    // when
+    dialog.showOpenFileErrorDialog(options);
+  });
+
+
   it('#showSaveFileDialog', function() {
 
     // given
@@ -57,6 +90,34 @@ describe('dialog', function() {
 
     // when
     dialog.showSaveFileDialog(options);
+  });
+
+
+  it('#showSaveFileErrorDialog', function() {
+
+    // given
+    const sendSpy = (type, opts) => {
+
+      // then
+      expect(type).to.equal('dialog:show');
+
+      expect(opts).to.eql(options);
+    };
+
+    const backend = new Backend({ send: sendSpy });
+    const dialog = new Dialog(backend);
+
+    const options = {
+      buttons: [
+        { id: 'foo', label: 'Foo' }
+      ],
+      message: 'Foo',
+      title: 'Foo',
+      type: 'error'
+    };
+
+    // when
+    dialog.showSaveFileErrorDialog(options);
   });
 
 
@@ -117,39 +178,6 @@ describe('dialog', function() {
 
     // when
     dialog.showCloseFileDialog(options);
-  });
-
-
-  it('#showOpenFileErrorDialog', function() {
-
-    // given
-    const sendSpy = (type, opts) => {
-
-      // then
-      expect(type).to.equal('dialog:show');
-
-      expect(opts).to.eql({
-        type: 'error',
-        title: 'Unrecognized file format',
-        buttons: [
-          { id: 'cancel', label: 'Close' }
-        ],
-        message: 'The file "foo" is not a foo, bar or baz file.'
-      });
-    };
-
-    const backend = new Backend({ send: sendSpy });
-    const dialog = new Dialog(backend);
-
-    const options = {
-      file: {
-        name: 'foo'
-      },
-      types: [ 'foo', 'bar', 'baz' ]
-    };
-
-    // when
-    dialog.showOpenFileErrorDialog(options);
   });
 
 
