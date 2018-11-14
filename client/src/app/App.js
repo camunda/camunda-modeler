@@ -357,16 +357,17 @@ export class App extends Component {
       return;
     }
 
-    const fileType = getFileTypeFromExtension(filePaths[0]);
+    const files = await Promise.all(filePaths.map(async (filePath) => {
+      const fileType = getFileTypeFromExtension(filePath);
 
-    const provider = tabsProvider.getProvider(fileType);
+      const provider = tabsProvider.getProvider(fileType);
 
-    const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
+      const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
 
-    // TODO(philippfromme): allow per file encoding
-    const files = await fileSystem.openFiles(filePaths, {
-      encoding
-    });
+      return await fileSystem.readFile(filePath, {
+        encoding
+      });
+    }));
 
     if (files.length) {
       await this.openFiles(files);
@@ -855,7 +856,7 @@ export class App extends Component {
 
     const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
 
-    const newFile = await fileSystem.saveFile(filePath, assign(file, {
+    const newFile = await fileSystem.writeFile(filePath, assign(file, {
       contents
     }), {
       encoding,
@@ -979,7 +980,7 @@ export class App extends Component {
 
     const { encoding } = provider.exports ? provider.exports[ fileType ] : ENCODING_UTF8;
 
-    fileSystem.saveFile(filePath, {
+    fileSystem.writeFile(filePath, {
       ...tab.file,
       contents
     }, {
