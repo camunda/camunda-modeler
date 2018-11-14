@@ -147,11 +147,9 @@ renderer.on('dialog:open-file-error', async function(options, done) {
 renderer.on('dialog:save-file', async function(options, done) {
   const { file } = options;
 
-  const { path: originalFilePath } = file;
-
-  if (originalFilePath) {
+  if (file.path) {
     assign(options, {
-      defaultPath: path.dirname(originalFilePath)
+      defaultPath: path.dirname(file.path)
     });
   }
 
