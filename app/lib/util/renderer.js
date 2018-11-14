@@ -4,6 +4,10 @@ var electron = require('electron'),
     ipcMain = electron.ipcMain,
     app = electron.app;
 
+const {
+  assign
+} = require('min-dash');
+
 
 function on(event, callback, that) {
 
@@ -12,7 +16,7 @@ function on(event, callback, that) {
     function done(...doneArgs) {
       var actualArgs = doneArgs.map(function(e) {
         if (e instanceof Error) {
-          return { message: e.message };
+          return assign({}, e);
         }
 
         return e;
