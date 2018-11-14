@@ -207,60 +207,69 @@ export class Dialog extends Mock {
   constructor(overrides) {
     super(overrides);
 
-    this.showOpenFilesDialogResponse = null;
-    this.showSaveFileDialogResponse = null;
-    this.showResponse = null;
-    this.showCloseFileDialogResponse = null;
-    this.showOpenFileErrorDialogResponse = null;
-    this.showEmptyFileDialogResponse = null;
+    this.showOpenFilesDialogResponse = new Response();
+    this.showOpenFileErrorDialogResponse = new Response();
+    this.showSaveFileDialogResponse = new Response();
+    this.showSaveFileErrorDialogResponse = new Response();
+    this.showResponse = new Response();
+    this.showCloseFileDialogResponse = new Response();
+    this.showEmptyFileDialogResponse = new Response();
   }
 
-  setShowOpenFilesDialogResponse(response) {
-    this.showOpenFilesDialogResponse = response;
+  setShowOpenFilesDialogResponse(index, response) {
+    this.showOpenFilesDialogResponse.setResponse(index, response);
   }
 
-  setShowSaveFileDialogResponse(response) {
-    this.showSaveFileDialogResponse = response;
+  setShowOpenFileErrorDialogResponse(index, response) {
+    this.showOpenFileErrorDialogResponse.setResponse(index, response);
   }
 
-  setShowResponse(response) {
-    this.showResponse = response;
+  setShowSaveFileDialogResponse(index, response) {
+    this.showSaveFileDialogResponse.setResponse(index, response);
   }
 
-  setShowCloseFileDialogResponse(response) {
-    this.showCloseFileDialogResponse = response;
+  setShowSaveFileErrorDialogResponse(index, response) {
+    this.showSaveFileErrorDialogResponse.setResponse(index, response);
   }
 
-  setShowOpenFileErrorDialogResponse(response) {
-    this.showOpenFileErrorDialogResponse = response;
+  setShowResponse(index, response) {
+    this.showResponse.setResponse(index, response);
   }
 
-  setShowEmptyFileDialogResponse(response) {
-    this.showEmptyFileDialogResponse = response;
+  setShowCloseFileDialogResponse(index, response) {
+    this.showCloseFileDialogResponse.setResponse(index, response);
+  }
+
+  setShowEmptyFileDialogResponse(index, response) {
+    this.showEmptyFileDialogResponse.setResponse(index, response);
   }
 
   showOpenFilesDialog() {
-    return this.showOpenFilesDialogResponse;
-  }
-
-  showSaveFileDialog() {
-    return this.showSaveFileDialogResponse;
-  }
-
-  show() {
-    return this.showResponse;
-  }
-
-  showCloseFileDialog() {
-    return this.showCloseFileDialogResponse;
+    return this.showOpenFilesDialogResponse.next();
   }
 
   showOpenFileErrorDialog() {
-    return this.showOpenFileErrorDialogResponse;
+    return this.showOpenFileErrorDialogResponse.next();
+  }
+
+  showSaveFileDialog() {
+    return this.showSaveFileDialogResponse.next();
+  }
+
+  showSaveFileErrorDialog() {
+    return this.showSaveFileErrorDialogResponse.next();
+  }
+
+  show() {
+    return this.showResponse.next();
+  }
+
+  showCloseFileDialog() {
+    return this.showCloseFileDialogResponse.next();
   }
 
   showEmptyFileDialog() {
-    return this.showEmptyFileDialogResponse;
+    return this.showEmptyFileDialogResponse.next();
   }
 }
 
@@ -268,51 +277,33 @@ export class FileSystem extends Mock {
   constructor(overrides) {
     super(overrides);
 
-    this.openFilesResponse = [];
-    this.saveFileResponse = {};
-    this.readFileResponse = {};
-    this.readFileStatsResponse = {};
-    this.writeFileResponse = {};
+    this.readFileResponse = new Response(Promise.resolve({}));
+    this.readFileStatsResponse = new Response(Promise.resolve({}));
+    this.writeFileResponse = new Response(Promise.resolve({}));
   }
 
-  setOpenFilesResponse(response) {
-    this.openFilesResponse = response;
+  setReadFileResponse(index, response) {
+    this.readFileResponse.setResponse(index, response);
   }
 
-  setSaveFileResponse(response) {
-    this.saveFileResponse = response;
+  setReadFileStatsResponse(index, response) {
+    this.readFileStatsResponse.setResponse(index, response);
   }
 
-  setReadFileResponse(response) {
-    this.readFileResponse = response;
-  }
-
-  setReadFileStatsResponse(response) {
-    this.readFileStatsResponse = response;
-  }
-
-  setWriteFileResponse(response) {
-    this.writeFileResponse = response;
-  }
-
-  openFiles() {
-    return this.openFilesResponse;
-  }
-
-  saveFile() {
-    return this.saveFileResponse;
+  setWriteFileResponse(index, response) {
+    this.writeFileResponse.setResponse(index, response);
   }
 
   readFile() {
-    return this.readFileResponse;
+    return this.readFileResponse.next();
   }
 
   readFileStats() {
-    return this.readFileStatsResponse;
+    return this.readFileStatsResponse.next();
   }
 
   writeFile() {
-    return this.writeFileResponse;
+    return this.writeFileResponse.next();
   }
 }
 
@@ -338,5 +329,50 @@ export class Workspace extends Mock {
 
   restore(defaultConfig) {
     return this.config || defaultConfig;
+  }
+}
+
+/**
+ * Response mock. Returns responses in desired order.
+ *
+ * Example:
+ *
+ * const response = new Reponse('foo');
+ *
+ * response.next(); // returns 'foo'
+ *
+ * response.setResponse(0, 'bar');
+ * response.setResponse(1, 'baz');
+ *
+ * response.next(); // returns 'bar'
+ * response.next(); // returns 'baz'
+ * response.next(); // returns 'baz'
+ */
+class Response {
+  constructor(defaultResponse = null) {
+    this.response = [ defaultResponse ];
+  }
+
+  /**
+   * Return specified responses in order.
+   * Return last response if only one left.
+   * Return null if no response set.
+   */
+  next() {
+    return this.response.length > 1
+      ? this.response.shift()
+      : this.response[0];
+  }
+
+  /**
+   * Set responses in desired order.
+   */
+  setResponse(index, response) {
+    if (!response) {
+      response = index;
+      index = 0;
+    }
+
+    this.response[index] = response;
   }
 }
