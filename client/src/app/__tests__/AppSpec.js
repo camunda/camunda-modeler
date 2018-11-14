@@ -413,7 +413,7 @@ describe('<App>', function() {
   describe('tab saving', function() {
 
     let showSaveFileDialogSpy,
-        saveFileSpy,
+        writeFileSpy,
         dialog,
         app,
         rendered;
@@ -427,7 +427,7 @@ describe('<App>', function() {
 
       const fileSystem = new FileSystem();
 
-      saveFileSpy = spy(fileSystem, 'saveFile');
+      writeFileSpy = spy(fileSystem, 'writeFile');
 
       rendered = createApp({
         globals: {
@@ -471,7 +471,7 @@ describe('<App>', function() {
       await app.triggerAction('save');
 
       // then
-      expect(saveFileSpy).to.have.been.calledWith(
+      expect(writeFileSpy).to.have.been.calledWith(
         'diagram_2.bpmn',
         file,
         {
@@ -495,7 +495,7 @@ describe('<App>', function() {
       // then
       expect(showSaveFileDialogSpy).not.to.have.been.called;
 
-      expect(saveFileSpy).to.have.been.calledWith(
+      expect(writeFileSpy).to.have.been.calledWith(
         file.path,
         {
           ...file,
@@ -524,7 +524,7 @@ describe('<App>', function() {
       // then
       expect(showSaveFileDialogSpy).to.have.been.called;
 
-      expect(saveFileSpy).to.have.been.calledWith(
+      expect(writeFileSpy).to.have.been.calledWith(
         'diagram_2.bpmn',
         {
           ...file,
@@ -546,7 +546,7 @@ describe('<App>', function() {
   describe('tab exporting', function() {
 
     let showSaveFileDialogSpy,
-        saveFileSpy;
+        writeFileSpy;
 
     let dialog, app;
 
@@ -558,7 +558,7 @@ describe('<App>', function() {
       const fileSystem = new FileSystem();
 
       showSaveFileDialogSpy = spy(dialog, 'showSaveFileDialog');
-      saveFileSpy = spy(fileSystem, 'saveFile');
+      writeFileSpy = spy(fileSystem, 'writeFile');
 
       const rendered = createApp({
         globals: {
@@ -584,7 +584,7 @@ describe('<App>', function() {
       // then
       expect(showSaveFileDialogSpy).to.have.been.called;
 
-      expect(saveFileSpy).to.have.been.calledWith(
+      expect(writeFileSpy).to.have.been.calledWith(
         'foo.svg',
         {
           contents: 'EXPORT CONTENTS',
@@ -610,7 +610,7 @@ describe('<App>', function() {
       // then
       expect(showSaveFileDialogSpy).to.have.been.called;
 
-      expect(saveFileSpy).to.have.been.calledWith(
+      expect(writeFileSpy).to.have.been.calledWith(
         'foo.png',
         {
           contents: 'EXPORT CONTENTS',
@@ -1281,12 +1281,7 @@ describe('<App>', function() {
       const dialog = new Dialog();
 
       const fileSystem = new FileSystem({
-        openFiles: () => {
-          return [
-            createFile('diagram_1.bpmn'),
-            createFile('diagram_2.bpmn')
-          ];
-        }
+        readFile: (filePath) => createFile(filePath)
       });
 
       dialog.setShowOpenFilesDialogResponse(filePaths);
