@@ -30,151 +30,137 @@ describe('Dialog', function() {
   });
 
 
-  it('should show general error dialog', function() {
-
-    // given
-    var title = 'Error',
-        message = 'There was an internal error.' + '\n' + 'Please try again.';
-
-    // when
-    dialog.showGeneralErrorDialog();
-
-    // then
-    expect(electronDialog.showErrorBox).to.have.been.calledWith(title, message);
-  });
-
-
   describe('#showDialog', function() {
 
-    it('should show error dialog', function(done) {
+    it('should show error dialog', async function() {
 
       // given
       electronDialog.setResponse(0);
 
       var options = {
+        buttons: [{
+          id: 'foo',
+          label: 'Foo'
+        }, {
+          id: 'bar',
+          label: 'Bar'
+        }],
         title: 'error',
-        buttons: [{
-          id: 'foo'
-        }, {
-          id: 'bar'
-        }]
+        type: 'error'
       };
 
       // when
-      dialog.showDialog('error', options, function(err, result) {
-        var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+      const result = await dialog.showDialog(options);
 
-        // then
-        expect(err).not.to.exist;
+      // then
+      var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
 
-        expect(electronDialog.showMessageBox).to.have.been.called;
+      // then
+      expect(electronDialog.showMessageBox).to.have.been.called;
 
-        expect(dialogArgs.title).to.equal('error');
-        expect(dialogArgs.buttons).to.have.length(2);
+      expect(dialogArgs.title).to.equal('error');
+      expect(dialogArgs.buttons).to.have.length(2);
 
-        expect(result).to.equal('foo');
-
-        done();
-      });
+      expect(result).to.equal('foo');
     });
 
 
-    it('should show warning dialog', function(done) {
+    it('should show warning dialog', async function() {
 
       // given
       electronDialog.setResponse(0);
 
       var options = {
+        buttons: [{
+          id: 'foo',
+          label: 'Foo'
+        }, {
+          id: 'bar',
+          label: 'Bar'
+        }],
         title: 'warning',
-        buttons: [{
-          id: 'foo'
-        }, {
-          id: 'bar'
-        }]
+        type: 'warning'
       };
 
       // when
-      dialog.showDialog('warning', options, function(err, result) {
-        var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+      const result = await dialog.showDialog(options);
 
-        // then
-        expect(err).not.to.exist;
+      // then
+      var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
 
-        expect(electronDialog.showMessageBox).to.have.been.called;
+      // then
+      expect(electronDialog.showMessageBox).to.have.been.called;
 
-        expect(dialogArgs.title).to.equal('warning');
-        expect(dialogArgs.buttons).to.have.length(2);
+      expect(dialogArgs.title).to.equal('warning');
+      expect(dialogArgs.buttons).to.have.length(2);
 
-        expect(result).to.equal('foo');
-
-        done();
-      });
+      expect(result).to.equal('foo');
     });
 
 
-    it('should show info dialog', function(done) {
+    it('should show info dialog', async function() {
 
       // given
       electronDialog.setResponse(0);
 
       var options = {
+        buttons: [{
+          id: 'foo',
+          label: 'Foo'
+        }, {
+          id: 'bar',
+          label: 'Bar'
+        }],
         title: 'info',
-        buttons: [{
-          id: 'foo'
-        }, {
-          id: 'bar'
-        }]
+        type: 'info'
       };
 
       // when
-      dialog.showDialog('info', options, function(err, result) {
-        var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+      const result = await dialog.showDialog(options);
 
-        // then
-        expect(err).not.to.exist;
+      // then
+      var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
 
-        expect(electronDialog.showMessageBox).to.have.been.called;
+      // then
+      expect(electronDialog.showMessageBox).to.have.been.called;
 
-        expect(dialogArgs.title).to.equal('info');
-        expect(dialogArgs.buttons).to.have.length(2);
+      expect(dialogArgs.title).to.equal('info');
+      expect(dialogArgs.buttons).to.have.length(2);
 
-        expect(result).to.equal('foo');
-
-        done();
-      });
+      expect(result).to.equal('foo');
     });
 
 
-    it('should show question dialog', function(done) {
+    it('should show question dialog', async function() {
 
       // given
       electronDialog.setResponse(0);
 
       var options = {
-        title: 'question',
         buttons: [{
-          id: 'foo'
+          id: 'foo',
+          label: 'Foo'
         }, {
-          id: 'bar'
-        }]
+          id: 'bar',
+          label: 'Bar'
+        }],
+        title: 'question',
+        type: 'question'
       };
 
       // when
-      dialog.showDialog('question', options, function(err, result) {
-        var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+      const result = await dialog.showDialog(options);
 
-        // then
-        expect(err).not.to.exist;
+      // then
+      var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
 
-        expect(electronDialog.showMessageBox).to.have.been.called;
+      // then
+      expect(electronDialog.showMessageBox).to.have.been.called;
 
-        expect(dialogArgs.title).to.equal('question');
-        expect(dialogArgs.buttons).to.have.length(2);
+      expect(dialogArgs.title).to.equal('question');
+      expect(dialogArgs.buttons).to.have.length(2);
 
-        expect(result).to.equal('foo');
-
-        done();
-      });
+      expect(result).to.equal('foo');
     });
 
   });
