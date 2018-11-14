@@ -8,33 +8,6 @@ export default class FileSystem {
   }
 
   /**
-   * Open file/s.
-   *
-   * @param {Array|String} filePaths - Filepath/s.
-   * @param {Object} [options] - Options.
-   * @param {Object} [options.encoding] - Encoding.
-   *
-   * @returns {Promise}
-   */
-  openFiles(filePaths, options = {}) {
-    return this.backend.send('files:open', filePaths, options);
-  }
-
-  /**
-   * Save file.
-   *
-   * @param {String} filePath - Filepath.
-   * @param {Object} file - File.
-   * @param {Object} [options] - Options.
-   * @param {Object} [options.encoding] - Encoding.
-   *
-   * @returns {Promise}
-   */
-  saveFile(filePath, file, options = {}) {
-    return this.backend.send('file:save', filePath, file, options);
-  }
-
-  /**
    * Read file.
    *
    * @param {String} filePath - Filepath.

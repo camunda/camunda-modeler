@@ -38,87 +38,6 @@ describe('FileSystem', function() {
   });
 
 
-  describe('#openFiles', function() {
-
-    it('should open single file', function() {
-
-      // given
-      const fooPath = getTestFilePath('foo.file');
-
-      fileSystem.writeFile(fooPath, { contents: 'foo' });
-
-      // when
-      const files = fileSystem.openFiles(fooPath);
-
-      // expect
-      expect(files).to.have.length(1);
-      expect(files[0].contents).to.equal('foo');
-    });
-
-
-    it('should open multiple files', function() {
-
-      // given
-      const fooPath = getTestFilePath('foo.file'),
-            barPath = getTestFilePath('bar.file');
-
-      fileSystem.writeFile(fooPath, { contents: 'foo' });
-      fileSystem.writeFile(barPath, { contents: 'bar' });
-
-      // when
-      const files = fileSystem.openFiles([
-        fooPath,
-        barPath
-      ]);
-
-      // expect
-      expect(files).to.have.length(2);
-      expect(files[0].contents).to.equal('foo');
-      expect(files[1].contents).to.equal('bar');
-    });
-
-
-    it('should NOT open file', function() {
-
-      // given
-      const fooPath = getTestFilePath('foo.file'),
-            barPath = 'bar';
-
-      fileSystem.writeFile(fooPath, { contents: 'foo' });
-
-      // when
-      const files = fileSystem.openFiles([
-        fooPath,
-        barPath
-      ]);
-
-      // expect
-      expect(files).to.have.length(1);
-      expect(files[0].contents).to.equal('foo');
-    });
-
-  });
-
-
-  describe('#saveFile', function() {
-
-    it('should save file', function() {
-
-      // given
-      const fooPath = getTestFilePath('foo.file');
-
-      fileSystem.saveFile(fooPath, { contents: 'foo' });
-
-      // when
-      const file = fileSystem.readFile(fooPath);
-
-      // then
-      expect(file.contents).to.eql('foo');
-    });
-
-  });
-
-
   describe('#readFile', function() {
 
     it('should read file (default encoding=utf8)', function() {
@@ -171,6 +90,22 @@ describe('FileSystem', function() {
 
       // then
       expect(file.contents).to.match(/iVBOR/);
+    });
+
+
+    it('should throw an error', function() {
+
+      // given
+      const fooPath = 'foo';
+
+      function read() {
+
+        // when
+        fileSystem.readFile(fooPath);
+      }
+
+      // then
+      expect(read).to.throw();
     });
 
   });
@@ -299,6 +234,22 @@ describe('FileSystem', function() {
         done();
       }, 100);
 
+    });
+
+
+    it('should throw error', function() {
+
+      // given
+      const fooPath = 'foo/bar/baz.file';
+
+      function writeFile() {
+
+        // when
+        fileSystem.writeFile(fooPath, { contents: 'foo' });
+      }
+
+      // then
+      expect(writeFile).to.throw();
     });
 
   });
