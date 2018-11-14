@@ -10,6 +10,24 @@ import EmptyTab from '../../EmptyTab';
 const ENCODING_BASE64 = 'base64',
       ENCODING_UTF8 = 'utf8';
 
+const EXPORT_JPG = {
+  name: 'JPG',
+  encoding: ENCODING_BASE64,
+  extensions: [ '.jpg' ]
+};
+
+const EXPORT_PNG = {
+  name: 'PNG',
+  encoding: ENCODING_BASE64,
+  extensions: [ '.png' ]
+};
+
+const EXPORT_SVG = {
+  name: 'SVG',
+  encoding: ENCODING_UTF8,
+  extensions: [ '.svg' ]
+};
+
 
 class FakeTab extends Component {
 
@@ -87,27 +105,33 @@ export class TabsProvider {
     this.providers = {
       bpmn: {
         name: 'BPMN',
+        encoding: ENCODING_UTF8,
         exports: {
-          jpg: { encoding: ENCODING_BASE64 },
-          png: { encoding: ENCODING_BASE64 },
-          svg: { encoding: ENCODING_UTF8 }
-        }
+          jpg: EXPORT_JPG,
+          png: EXPORT_PNG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'bpmn', 'xml' ]
       },
       cmnn: {
         name: 'CMMN',
+        encoding: ENCODING_UTF8,
         exports: {
-          jpg: { encoding: ENCODING_BASE64 },
-          png: { encoding: ENCODING_BASE64 },
-          svg: { encoding: ENCODING_UTF8 }
-        }
+          jpg: EXPORT_JPG,
+          png: EXPORT_PNG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'cmmn', 'xml' ]
       },
       dmn: {
         name: 'DMN',
+        encoding: ENCODING_UTF8,
         exports: {
-          jpg: { encoding: ENCODING_BASE64 },
-          png: { encoding: ENCODING_BASE64 },
-          svg: { encoding: ENCODING_UTF8 }
-        }
+          jpg: EXPORT_JPG,
+          png: EXPORT_PNG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'dmn', 'xml' ]
       }
     };
   }
