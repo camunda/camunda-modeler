@@ -25,17 +25,6 @@ module.exports = Dialog;
 
 
 Dialog.prototype.getDialogOptions = function(type, options) {
-  var config = this.config,
-      userDesktopPath = this.userDesktopPath,
-      defaultPath;
-
-  // filepath is passed if a saved file is focused
-  if (options && options.filePath) {
-    defaultPath = path.dirname(options.filePath);
-  } else {
-    defaultPath = config.get('defaultPath', userDesktopPath);
-  }
-
   const dialogs = {
     contentChanged: function() {
       return {
@@ -46,15 +35,6 @@ Dialog.prototype.getDialogOptions = function(type, options) {
           { id: 'ok', label: 'Reload' },
           { id: 'cancel', label: 'Cancel' }
         ]
-      };
-    },
-    exportAs: function(options) {
-      ensureOptions([ 'name', 'filters' ], options);
-
-      return {
-        title: 'Export ' + options.name + ' as...',
-        defaultPath: defaultPath + '/' + options.name,
-        filters: options.filters
       };
     },
     existingFile: function(options) {
@@ -69,20 +49,6 @@ Dialog.prototype.getDialogOptions = function(type, options) {
           { id: 'overwrite', label: 'Overwrite' }
         ],
         message: 'The file "' + options.name + '" already exists. Do you want to overwrite it?'
-      };
-    },
-    savingDenied: function(options) {
-      return {
-        type: 'warning',
-        title: 'Cannot save file',
-        buttons: [
-          { id: 'cancel', label: 'Cancel' },
-          { id: 'save-as', label: 'Save File as..' }
-        ],
-        message: [
-          'We cannot save or overwrite the current file.',
-          'Do you want to save the file as.. ?'
-        ].join('\n')
       };
     },
     error: getDialog('error'),

@@ -1,3 +1,5 @@
+import { assign } from 'min-dash';
+
 export default class Dialog {
 
   constructor(backend) {
@@ -19,6 +21,20 @@ export default class Dialog {
   }
 
   /**
+   * Shows dialog with error.
+   *
+   * @param {Object} options - Options.
+   * @param {Object} [options.detail] - Detail.
+   * @param {Object} [options.message] - Message.
+   * @param {Object} [options.name] - Name.
+   *
+   * @return {Promise}
+   */
+  showOpenFileErrorDialog = async (options) => {
+    return this.backend.send('dialog:open-file-error', options);
+  }
+
+  /**
    * Show save dialog.
    *
    * @param {Object} options Options.
@@ -30,6 +46,20 @@ export default class Dialog {
    */
   showSaveFileDialog(options) {
     return this.backend.send('dialog:save-file', options);
+  }
+
+  /**
+   * Show save error dialog.
+   *
+   * @param {Object} options - Options.
+   * @param {Object} [options.buttons] - Buttons.
+   * @param {String} [options.message] - Error message.
+   * @param {String} [options.title] - Title.
+   */
+  showSaveFileErrorDialog(options) {
+    return this.show(assign(options, {
+      type: 'error'
+    }));
   }
 
   /**
@@ -62,29 +92,15 @@ export default class Dialog {
     } = options;
 
     return this.show({
-      type: 'question',
-      title: 'Close File',
-      message: `Save changes to "${ name }" before closing?`,
       buttons: [
         { id: 'cancel', label: 'Cancel' },
         { id: 'save', label: 'Save' },
         { id: 'discard', label: 'Don\'t Save' }
-      ]
+      ],
+      message: `Save changes to "${ name }" before closing?`,
+      type: 'question',
+      title: 'Close File'
     });
-  }
-
-  /**
-   * Shows dialog with error.
-   *
-   * @param {Object} options - Options.
-   * @param {Object} [options.detail] - Detail.
-   * @param {Object} [options.message] - Message.
-   * @param {Object} [options.name] - Name.
-   *
-   * @return {Promise}
-   */
-  showOpenFileErrorDialog = async (options) => {
-    return this.backend.send('dialog:open-file-error', options);
   }
 
   /**
@@ -103,18 +119,18 @@ export default class Dialog {
     const typeUpperCase = type.toUpperCase();
 
     return this.show({
-      type: 'info',
+      buttons: [
+        { id: 'cancel', label: 'Cancel' },
+        { id: 'create', label: 'Create' }
+      ],
+      detail: `Would you like to create a new ${ typeUpperCase } file?`,
+      message: `The file "${ file.name }" is empty.`,
       title: [
         'Empty ',
         typeUpperCase,
         ' file'
       ].join(''),
-      buttons: [
-        { id: 'cancel', label: 'Cancel' },
-        { id: 'create', label: 'Create' }
-      ],
-      message: `The file "${ file.name }" is empty.`,
-      detail: `Would you like to create a new ${ typeUpperCase } file?`
+      type: 'info'
     });
   }
 

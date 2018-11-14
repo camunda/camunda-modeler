@@ -346,9 +346,7 @@ export class App extends Component {
       });
     }));
 
-    if (files.length) {
-      await this.openFiles(files);
-    }
+    await this.openFiles(files);
   }
 
   showCloseFileDialog = (file) => {
@@ -378,6 +376,14 @@ export class App extends Component {
     });
   }
 
+  showSaveFileErrorDialog(options) {
+    const { globals } = this.props;
+
+    const { dialog } = globals;
+
+    return dialog.showSaveFileErrorDialog(options);
+  }
+
   openEmptyFile = async (file) => {
     const {
       globals,
@@ -393,18 +399,20 @@ export class App extends Component {
     if (!tabsProvider.hasProvider(fileType)) {
       let providerNames = tabsProvider.getProviderNames();
 
-      return await dialog.showOpenFileErrorDialog(getOpenFileErrorDialog({
+      await dialog.showOpenFileErrorDialog(getOpenFileErrorDialog({
         name,
         providerNames
       }));
+
+      return;
     }
 
-    const answer = await dialog.showEmptyFileDialog({
+    const response = await dialog.showEmptyFileDialog({
       file,
       fileType
     });
 
-    if (answer == 'create') {
+    if (response == 'create') {
       assign(file, {
         contents: tabsProvider.getInitialFileContents(fileType)
       });
@@ -835,6 +843,19 @@ export class App extends Component {
     }), {
       encoding,
       fileType
+    }).catch(async err => {
+      let { message } = err;
+
+      let response = await this.showSaveFileErrorDialog(getSaveFileErrorDialog({
+        message,
+        name
+      }));
+
+      if (response === 'save-as') {
+
+        // try again
+        await this.saveTab(tab, { saveAs: true });
+      }
     });
 
     if (!newFile) {
@@ -947,21 +968,26 @@ export class App extends Component {
 
     const { encoding } = provider.exports ? provider.exports[ fileType ] : ENCODING_UTF8;
 
-    fileSystem.writeFile(filePath, {
+    await fileSystem.writeFile(filePath, {
       ...tab.file,
       contents
     }, {
       encoding,
       fileType
+    }).catch(async err => {
+      const { message } = err;
+
+      let response = await this.showSaveFileErrorDialog(getExportFileErrorDialog({
+        message,
+        name
+      }));
+
+      if (response === 'export-as') {
+
+        // try again
+        await this.exportAs(tab);
+      }
     });
-  }
-
-  askExportAs = (file, filters) => {
-    const {
-      globals
-    } = this.props;
-
-    return globals.dialog.askExportAs(file, filters);
   }
 
   showDialog(options) {
@@ -1319,6 +1345,49 @@ function getOpenFileErrorDialog(options) {
     detail: `"${ name }" is not a ${ providerNamesString } file.`
   };
 }
+
+function getSaveFileErrorDialog(options) {
+  const {
+    message,
+    name
+  } = options;
+
+  return {
+    buttons: [
+      { id: 'cancel', label: 'Cancel' },
+      { id: 'save-as', label: `Save ${ name } as...` }
+    ],
+    message: [
+      `${ name } could not be saved.`,
+      '',
+      'Error:',
+      message
+    ].join('\n'),
+    title: 'Save Error'
+  };
+}
+
+function getExportFileErrorDialog(options) {
+  const {
+    message,
+    name
+  } = options;
+
+  return {
+    buttons: [
+      { id: 'cancel', label: 'Cancel' },
+      { id: 'export-as', label: `Export ${ name } as...` }
+    ],
+    message: [
+      `${ name } could not be exported.`,
+      '',
+      'Error:',
+      message
+    ].join('\n'),
+    title: 'Export Error'
+  };
+}
+
 
 function getFileTypeFromExtension(filePath) {
   return filePath.split('.').pop();
