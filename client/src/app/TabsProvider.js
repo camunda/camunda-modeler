@@ -24,6 +24,23 @@ const noopProvider = {
 const ENCODING_BASE64 = 'base64',
       ENCODING_UTF8 = 'utf8';
 
+const EXPORT_JPG = {
+  name: 'JPG',
+  encoding: ENCODING_BASE64,
+  extensions: [ '.jpg' ]
+};
+
+const EXPORT_PNG = {
+  name: 'PNG',
+  encoding: ENCODING_BASE64,
+  extensions: [ '.png' ]
+};
+
+const EXPORT_SVG = {
+  name: 'SVG',
+  encoding: ENCODING_UTF8,
+  extensions: [ '.svg' ]
+};
 
 /**
  * A provider that allows us to customize available tabs.
@@ -41,6 +58,12 @@ export default class TabsProvider {
       bpmn: {
         name: 'BPMN',
         encoding: ENCODING_UTF8,
+        exports: {
+          jpg: EXPORT_JPG,
+          png: EXPORT_PNG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'bpmn', 'xml' ],
         getComponent(options) {
           return import('./tabs/bpmn');
         },
@@ -63,16 +86,17 @@ export default class TabsProvider {
             accelerator: 'CommandOrControl+T',
             action: 'create-bpmn-diagram'
           }];
-        },
-        exports: {
-          jpg: { encoding: ENCODING_BASE64 },
-          png: { encoding: ENCODING_BASE64 },
-          svg: { encoding: ENCODING_UTF8 }
         }
       },
       cmmn: {
         name: 'CMMN',
         encoding: ENCODING_UTF8,
+        exports: {
+          jpg: EXPORT_JPG,
+          png: EXPORT_PNG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'cmmn', 'xml' ],
         getComponent(options) {
           return import('./tabs/cmmn');
         },
@@ -94,16 +118,17 @@ export default class TabsProvider {
             label: 'CMMN Diagram',
             action: 'create-cmmn-diagram'
           }];
-        },
-        exports: {
-          jpg: { encoding: ENCODING_BASE64 },
-          png: { encoding: ENCODING_BASE64 },
-          svg: { encoding: ENCODING_UTF8 }
         }
       },
       dmn: {
         name: 'DMN',
         encoding: ENCODING_UTF8,
+        exports: {
+          jpg: EXPORT_JPG,
+          png: EXPORT_PNG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'dmn', 'xml' ],
         getComponent(options) {
           return import('./tabs/dmn');
         },
@@ -124,11 +149,6 @@ export default class TabsProvider {
             label: 'DMN Diagram',
             action: 'create-dmn-diagram'
           }];
-        },
-        exports: {
-          jpg: { encoding: ENCODING_BASE64 },
-          png: { encoding: ENCODING_BASE64 },
-          svg: { encoding: ENCODING_UTF8 }
         }
       }
     };

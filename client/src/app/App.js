@@ -323,30 +323,7 @@ export class App extends Component {
 
     const providers = tabsProvider.getProviders();
 
-    // create filters
-    const allSupportedFilter = {
-      name: 'All Supported',
-      extensions: []
-    };
-
-    const filters = [
-      allSupportedFilter
-    ];
-
-    forEach(providers, (provider, key) => {
-      if (key === 'empty') {
-        return;
-      }
-
-      allSupportedFilter.extensions.push(key);
-
-      filters.push({
-        name: `.${ key }`,
-        extensions: [ key ]
-      });
-    });
-
-    filters.push(FILTER_ALL_EXTENSIONS);
+    const filters = getOpenFilesDialogFilters(providers);
 
     const filePaths = await dialog.showOpenFilesDialog({
       activeFile: activeTab.file,
@@ -821,6 +798,8 @@ export class App extends Component {
 
     const fileType = tab.type;
 
+    const provider = tabsProvider.getProvider(fileType);
+
     const {
       file,
       name
@@ -835,10 +814,7 @@ export class App extends Component {
     saveAs = saveAs || isNew(tab);
 
     if (saveAs) {
-      filters = [{
-        name: `.${ fileType }`,
-        extensions: [ fileType ]
-      }, FILTER_ALL_EXTENSIONS];
+      filters = getSaveFileDialogFilters(provider);
 
       filePath = await this.showSaveFileDialog(file, {
         filters,
@@ -851,8 +827,6 @@ export class App extends Component {
     if (!filePath) {
       return;
     }
-
-    const provider = tabsProvider.getProvider(fileType);
 
     const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
 
@@ -950,14 +924,7 @@ export class App extends Component {
 
     const provider = tabsProvider.getProvider(type);
 
-    const filters = [];
-
-    for (let key in provider.exports) {
-      filters.push({
-        name: `.${ key }`,
-        extensions: [ key ]
-      });
-    }
+    const filters = getExportFileDialogFilters(provider);
 
     const filePath = await this.showSaveFileDialog(tab, {
       filters,
@@ -1355,4 +1322,97 @@ function getOpenFileErrorDialog(options) {
 
 function getFileTypeFromExtension(filePath) {
   return filePath.split('.').pop();
+}
+
+function getOpenFilesDialogFilters(providers) {
+  const allSupportedFilter = {
+    name: 'All Supported',
+    extensions: []
+  };
+
+  let filters = [];
+
+  forEach(providers, provider => {
+    const {
+      extensions,
+      name
+    } = provider;
+
+    if (!extensions) {
+      return;
+    }
+
+    allSupportedFilter.extensions = [
+      ...allSupportedFilter.extensions,
+      ...extensions
+    ];
+
+    filters.push({
+      name,
+      extensions: [ ...extensions ]
+    });
+  });
+
+  // remove duplicates, sort alphabetically
+  allSupportedFilter.extensions = allSupportedFilter.extensions
+    .reduce((extensions, extension) => {
+      if (extensions.includes(extension)) {
+        return extensions;
+      } else {
+        return [
+          ...extensions,
+          extension
+        ];
+      }
+    }, [])
+    .sort();
+
+  // sort alphabetically
+  filters = filters.sort((a, b) => {
+    if (a.name < b.name) {
+      return -1;
+    }
+
+    if (a.name > b.name) {
+      return 1;
+    }
+
+    return 0;
+  });
+
+  return [
+    allSupportedFilter,
+    ...filters,
+    FILTER_ALL_EXTENSIONS
+  ];
+}
+
+function getSaveFileDialogFilters(provider) {
+  const {
+    extensions,
+    name
+  } = provider;
+
+  return [{
+    name,
+    extensions
+  }, FILTER_ALL_EXTENSIONS];
+}
+
+function getExportFileDialogFilters(provider) {
+  const filters = [];
+
+  forEach(provider.exports, (exports) => {
+    const {
+      extensions,
+      name
+    } = exports;
+
+    filters.push({
+      name,
+      extensions
+    });
+  });
+
+  return filters;
 }
