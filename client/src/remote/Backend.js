@@ -1,9 +1,5 @@
 import Ids from 'ids';
 
-import {
-  isString
-} from 'min-dash';
-
 const ids = new Ids();
 
 
@@ -32,13 +28,12 @@ export default class Backend {
     return new Promise((resolve, reject) => {
 
       this.once(event + ':response:' + id, function(evt, args) {
-        if (isString(args[0])) {
-          return reject(new Error(args[0]));
+        if (args[0] !== null) {
+          reject(args[0]);
         }
 
-        var actualArgs = args.slice(1);
-
-        return resolve(...actualArgs);
+        // promises can only resolve with one argument
+        return resolve(args[1]);
       });
 
       this.ipcRenderer.send(event, id, args);
