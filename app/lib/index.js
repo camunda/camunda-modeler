@@ -112,17 +112,7 @@ if (config.get('single-instance', true)) {
   }
 }
 
-// dialogs //////////
-
-renderer.on('dialog:open-file-error', async function(options, done) {
-  await dialog.showOpenFileErrorDialog(options);
-
-  done();
-});
-
-renderer.on('dialog:reimport-warning', function(done) {
-  dialog.showDialog('reimportWarning', done);
-});
+// external //////////
 
 renderer.on('external:open-url', function(options) {
   var url = options.url;
@@ -130,28 +120,7 @@ renderer.on('external:open-url', function(options) {
   browserOpen(url);
 });
 
-/**
- * Shows a dialog that can be configured.
- */
-renderer.on('dialog:show', function(options, done) {
-  var type = options.type;
-
-  if (!type) {
-    const err = new Error('no type specified');
-
-    return done(err.message);
-  }
-
-  dialog.showDialog(type, options, done);
-});
-
-renderer.on('dialog:saving-denied', function(done) {
-  dialog.showDialog('savingDenied', done);
-});
-
-renderer.on('dialog:content-changed', function(done) {
-  dialog.showDialog('contentChanged', done);
-});
+// dialogs //////////
 
 renderer.on('dialog:open-files', async function(options, done) {
   const {
@@ -169,6 +138,12 @@ renderer.on('dialog:open-files', async function(options, done) {
   done(null, filePaths);
 });
 
+renderer.on('dialog:open-file-error', async function(options, done) {
+  const response = await dialog.showOpenFileErrorDialog(options);
+
+  done(null, response);
+});
+
 renderer.on('dialog:save-file', async function(options, done) {
   const { file } = options;
 
@@ -183,6 +158,12 @@ renderer.on('dialog:save-file', async function(options, done) {
   const filePath = await dialog.showSaveDialog(options);
 
   done(null, filePath);
+});
+
+renderer.on('dialog:show', async function(options, done) {
+  const response = await dialog.showDialog(options, done);
+
+  done(null, response);
 });
 
 // deploying //////////
@@ -216,15 +197,9 @@ renderer.on('deploy', function(data, done) {
 
 // filesystem //////////
 
-renderer.on('files:open', function(filePaths, options = {}, done) {
-  const files = fileSystem.openFiles(filePaths, options);
-
-  done(null, files);
-});
-
-renderer.on('file:save', function(filePath, file, options = {}, done) {
+renderer.on('file:read', function(filePath, options = {}, done) {
   try {
-    const newFile = fileSystem.saveFile(filePath, file, options);
+    const newFile = fileSystem.readFile(filePath, options);
 
     done(null, newFile);
   } catch (err) {
@@ -232,17 +207,15 @@ renderer.on('file:save', function(filePath, file, options = {}, done) {
   }
 });
 
-renderer.on('file:read', function(filePath, options = {}, done) {
-  done(null, fileSystem.readFile(filePath, options));
-});
-
 renderer.on('file:read-stats', function(file, done) {
-  done(null, fileSystem.readFileStats(file));
+  const newFile = fileSystem.readFileStats(file);
+
+  done(null, newFile);
 });
 
-renderer.on('file:write', async function(file, options = {}, done) {
+renderer.on('file:write', async function(filePath, file, options = {}, done) {
   try {
-    const newFile = fileSystem.write(file, options);
+    const newFile = fileSystem.writeFile(filePath, file, options);
 
     done(null, newFile);
   } catch (err) {

@@ -5,56 +5,6 @@ import { Backend } from '../../app/__tests__/mocks';
 
 describe('file-system', function() {
 
-  it('#openFiles', function() {
-
-    // given
-    const filePaths = [ 'foo', 'bar' ],
-          options = { encoding: 'uft8' };
-
-    const sendSpy = (type, fp, opts) => {
-
-      // then
-      expect(type).to.equal('files:open');
-
-      expect(fp).to.eql(filePaths);
-
-      expect(opts).to.eql(options);
-    };
-
-    const backend = new Backend({ send: sendSpy });
-    const fileSystem = new FileSystem(backend);
-
-    // when
-    fileSystem.openFiles(filePaths, options);
-  });
-
-
-  it('#saveFile', function() {
-
-    // given
-    const filePath = 'foo',
-          file = { contents: 'foo' },
-          options = { encoding: 'uft8' };
-
-    const sendSpy = (type, fp, f, opts) => {
-
-      // then
-      expect(type).to.equal('file:save');
-
-      expect(fp).to.eql(filePath);
-      expect(f).to.eql(file);
-
-      expect(opts).to.eql(options);
-    };
-
-    const backend = new Backend({ send: sendSpy });
-    const fileSystem = new FileSystem(backend);
-
-    // when
-    fileSystem.saveFile(filePath, file, options);
-  });
-
-
   it('#readFile', function() {
 
     // given

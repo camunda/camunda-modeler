@@ -8,8 +8,6 @@ const {
   pick
 } = require('min-dash');
 
-const ensureOptions = require('./util/ensure-opts');
-
 const FILE_PROPERTIES = [
   'contents',
   'encoding',
@@ -29,64 +27,6 @@ const ENCODING_BASE64 = 'base64',
 class FileSystem {
 
   /**
-   * @param {Object} options - Options.
-   * @param {Dialog} options.dialog - Dialog.
-   */
-  constructor(options) {
-    ensureOptions([ 'dialog' ], options);
-
-    this.dialog = options.dialog;
-  }
-
-  /**
-   * Open files.
-   *
-   * @param {Array|String} filePaths - Filepaths.
-   * @param {Object} options - Options.
-   * @param {String} [options.encoding] - Encoding.
-   */
-  openFiles(filePaths, options = {}) {
-    if (!Array.isArray(filePaths)) {
-      filePaths = [ filePaths ];
-    }
-
-    return filePaths.reduce((files, filePath) => {
-      let file;
-
-      try {
-        file = this.readFile(filePath, options);
-      } catch (err) {
-        return files;
-      }
-
-      return [
-        ...files,
-        file
-      ];
-    }, []);
-  }
-
-  /**
-   * Save file.
-   *
-   * @param {String} filePath - Filepath.
-   * @param {Object} file - File.
-   * @param {Object} options - Options.
-   * @param {String} [options.encoding] - Encoding.
-   *
-   * @return {Object}
-   */
-  saveFile(filePath, file, options = {}) {
-    try {
-      const newFile = this.writeFile(filePath, file, options);
-
-      return newFile;
-    } catch (err) {
-      return err;
-    }
-  }
-
-  /**
    * Read file.
    *
    * @param {String} filePath - Filepath.
@@ -96,7 +36,6 @@ class FileSystem {
    * @return {Object}
    */
   readFile(filePath, options = {}) {
-
     let { encoding } = options;
 
     if (!encoding) {
