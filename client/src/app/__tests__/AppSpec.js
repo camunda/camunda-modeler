@@ -415,7 +415,8 @@ describe('<App>', function() {
     let showSaveFileDialogSpy,
         saveFileSpy,
         dialog,
-        app;
+        app,
+        rendered;
 
     beforeEach(function() {
 
@@ -428,7 +429,7 @@ describe('<App>', function() {
 
       saveFileSpy = spy(fileSystem, 'saveFile');
 
-      const rendered = createApp({
+      rendered = createApp({
         globals: {
           dialog,
           fileSystem
@@ -436,6 +437,24 @@ describe('<App>', function() {
       }, mount);
 
       app = rendered.app;
+    });
+
+    afterEach(sinon.restore);
+
+
+    it('should not try to save when save button is disabled', async function() {
+
+      // given
+      const actionSpy = sinon.spy(app, 'triggerAction');
+      const saveButton = rendered.tree.find('Button[title="Save diagram"]').first();
+
+
+      // when
+      saveButton.simulate('click');
+
+      // then
+      expect(saveButton.prop('disabled')).to.be.true;
+      expect(actionSpy).to.have.not.been.calledWith('save');
     });
 
 

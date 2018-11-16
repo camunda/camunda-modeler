@@ -228,7 +228,7 @@ export class App extends Component {
   }
 
   isDirty = (tab) => {
-    return isNew(tab) || this.state.dirtyTabs[tab.id];
+    return Boolean(isNew(tab) || this.state.dirtyTabs[tab.id]);
   }
 
   async _removeTab(tab) {
@@ -1131,6 +1131,8 @@ export class App extends Component {
 
     const Tab = this.getTabComponent(activeTab);
 
+    const isDirty = this.isDirty(activeTab);
+
     return (
       <div className={ css.App }>
 
@@ -1173,8 +1175,8 @@ export class App extends Component {
 
           <Fill name="toolbar" group="save">
             <Button
-              disabled={ !this.isDirty(activeTab) }
-              onClick={ this.composeAction('save') }
+              disabled={ !isDirty }
+              onClick={ isDirty ? this.composeAction('save') : null }
               title="Save diagram"
             >
               <Icon name="save" />
