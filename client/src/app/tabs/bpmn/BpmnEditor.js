@@ -21,6 +21,8 @@ import CamundaBpmnModeler from './modeler';
 
 import { active as isInputActive } from '../../../util/dom/is-input';
 
+import getBpmnContextMenu from './getBpmnContextMenu';
+
 import { getBpmnEditMenu } from './getBpmnEditMenu';
 
 import getBpmnWindowMenu from './getBpmnWindowMenu';
@@ -313,6 +315,8 @@ export class BpmnEditor extends CachedComponent {
       assign(newState, { contents : xml });
     }
 
+    const contextMenu = getBpmnContextMenu(newState);
+
     const editMenu = getBpmnEditMenu(newState);
 
     const windowMenu = getBpmnWindowMenu(newState);
@@ -320,6 +324,7 @@ export class BpmnEditor extends CachedComponent {
     if (typeof onChanged === 'function') {
       onChanged({
         ...newState,
+        contextMenu,
         editMenu,
         windowMenu
       });
