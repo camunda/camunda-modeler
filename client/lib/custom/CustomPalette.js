@@ -126,9 +126,11 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
       translate('Create expanded SubProcess'),
       { isExpanded: true }
     ),
-    
-    'create.intermediate-event': createAction(
+    'create.intermediate-catch-message-event': createAction(
       'bpmn:IntermediateCatchEvent', 'event', 'bpmn-icon-intermediate-event-catch-message', 'Message Event', { eventDefinitionType: 'bpmn:MessageEventDefinition' }
+    ),
+    'create.intermediate-catch-timer-event': createAction(
+      'bpmn:IntermediateCatchEvent', 'event', 'bpmn-icon-intermediate-event-catch-timer', 'Timer Event', { eventDefinitionType: 'bpmn:TimerEventDefinition' }
     ),
     'create.exclusive-gateway': createAction(
       'bpmn:ExclusiveGateway', 'gateway', 'bpmn-icon-gateway-xor'

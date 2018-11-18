@@ -16,6 +16,7 @@ var idProps = require('bpmn-js-properties-panel/lib/provider/bpmn/parts/IdProps'
   taskDefinition = require('./parts/TaskDefinitionProps'),
   sequenceFlowProps = require('./parts/SequenceFlowProps'),
   messageProps = require('./parts/MessageProps'),
+  timerProps = require('./parts/TimerEventProps'),
   payloadMappingsProps = require('./parts/PayloadMappingsProps');
 
 
@@ -54,6 +55,7 @@ function createGeneralTabGroups(element, bpmnFactory, elementRegistry, translate
   taskDefinition(generalGroup, element, bpmnFactory);
   sequenceFlowProps(generalGroup, element, bpmnFactory, translate);
   messageProps(generalGroup, element, bpmnFactory, translate);
+  timerProps(generalGroup, element, bpmnFactory, translate);
 
   return [
     generalGroup

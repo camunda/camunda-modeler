@@ -73,7 +73,8 @@ function CustomContextPadProvider(config, injector, eventBus, contextPad, modeli
     if (!is(businessObject, 'bpmn:EndEvent')) {
       assign(filteredActions, { 'append.append-service-task': appendAction('bpmn:ServiceTask', 'bpmn-icon-service-task') });
       assign(filteredActions, { 'append.append-send-task': appendAction('bpmn:ReceiveTask', 'bpmn-icon-receive-task') });
-      assign(filteredActions, { 'append.append-event': appendAction('bpmn:IntermediateCatchEvent', 'bpmn-icon-intermediate-event-catch-message', 'Message Event', { eventDefinitionType: 'bpmn:MessageEventDefinition' }) });
+      assign(filteredActions, { 'append.append-message-event': appendAction('bpmn:IntermediateCatchEvent', 'bpmn-icon-intermediate-event-catch-message', 'Message Event', { eventDefinitionType: 'bpmn:MessageEventDefinition' }) });
+      assign(filteredActions, { 'append.append-timer-event': appendAction('bpmn:IntermediateCatchEvent', 'bpmn-icon-intermediate-event-catch-timer', 'Timer Event', { eventDefinitionType: 'bpmn:TimerEventDefinition' }) });
     }
 
     for (var i = 0; i < availableActions.length; i++) {
