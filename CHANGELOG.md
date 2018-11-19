@@ -6,6 +6,14 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 2.1.2
+
+* `CHORE`: update dependencies
+
+## 2.1.1
+
+* `FIX`: fix move canvas key binding
+
 ## 2.1.0
 
 #### General
