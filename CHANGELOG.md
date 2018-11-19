@@ -10,21 +10,24 @@ ___Note:__ Yet to be released changes appear here._
 
 #### General
 
+* `FEAT`: moving the canvas using keyboard arrows now requires the `Ctrl/Cmd` modifier
 * `FIX`: correctly detect file type when opening file ([#944](https://github.com/camunda/camunda-modeler/issues/944))
 
 #### BPMN
 
 * `FEAT`: add moddle extensions as plugins to bpmn-js ([#949](https://github.com/camunda/camunda-modeler/pull/949))
-* `FIX`: disallow to attach a `BoundaryEvent` to a `ReceiveTask` following an `EventBasedGateway`. As an effect, the `BoundaryEvent` is removed after connecting elements  ([#784](https://github.com/camunda/camunda-modeler/issues/784), [#874](https://github.com/bpmn-io/bpmn-js/issues/874))
 * `FEAT`: display group names ([#844](https://github.com/bpmn-io/bpmn-js/issues/844))
 * `FEAT`: add ability to move selection with keyboard arrows ([#376](https://github.com/bpmn-io/bpmn-js/issues/376))
-* `CHORE`: update to `bpmn-js@3.0.1`
+* `FEAT`: improve `EventBasedGateway` context pad tooltips ([#917](https://github.com/camunda/camunda-modeler/issues/917))
+* `FEAT`: improve modeling behavior after `EventBasedGateway` ([#784](https://github.com/camunda/camunda-modeler/issues/784))
+* `CHORE`: update to `bpmn-js@3`
 
 #### DMN
 
 * `CHORE`: update to `dmn-js@5.2.0`
 
 #### CMMN
+
 * `CHORE`: update to `cmmn-js@0.15.2`
 
 ## 2.0.3
