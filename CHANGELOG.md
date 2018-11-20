@@ -6,13 +6,16 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: add move canvas keybinding missing from DRD editor ([#1016](https://github.com/camunda/camunda-modeler/issues/1016))
+* `FIX`: fix move canvas keybinding in CMMN editor ([#1016](https://github.com/camunda/camunda-modeler/issues/1016))
+
 ## 2.1.2
 
 * `CHORE`: update dependencies
 
 ## 2.1.1
 
-* `FIX`: fix move canvas key binding
+* `FIX`: fix move canvas key binding in BPMN editor
 
 ## 2.1.0
 
