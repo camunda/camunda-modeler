@@ -693,34 +693,38 @@ MenuBuilder.prototype.appendCmmnActions = function() {
     enabled: this.opts.state.inactiveInput,
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
-      accelerator: 'Up',
+      accelerator: 'CommandOrControl + Up',
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
-          direction: 'up'
+          direction: 'up',
+          speed: 50
         });
       }
     }, {
       label: 'Move Left',
-      accelerator: 'Left',
+      accelerator: 'CommandOrControl + Left',
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
-          direction: 'left'
+          direction: 'left',
+          speed: 50
         });
       }
     }, {
       label: 'Move Down',
-      accelerator: 'Down',
+      accelerator: 'CommandOrControl + Down',
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
-          direction: 'down'
+          direction: 'down',
+          speed: 50
         });
       }
     }, {
       label: 'Move Right',
-      accelerator: 'Right',
+      accelerator: 'CommandOrControl + Right',
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
-          direction: 'right'
+          direction: 'right',
+          speed: 50
         });
       }
     }])
