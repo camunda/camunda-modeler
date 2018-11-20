@@ -794,6 +794,50 @@ MenuBuilder.prototype.appendDmnActions = function() {
 
     this.appendSeparator();
 
+    this.menu.append(new MenuItem({
+      label: 'Move Canvas',
+      enabled: this.opts.state.inactiveInput,
+      submenu: Menu.buildFromTemplate([{
+        label: 'Move Up',
+        accelerator: 'CommandOrControl + Up',
+        click: function() {
+          app.emit('menu:action', 'moveCanvas', {
+            direction: 'up',
+            speed: 50
+          });
+        }
+      }, {
+        label: 'Move Left',
+        accelerator: 'CommandOrControl + Left',
+        click: function() {
+          app.emit('menu:action', 'moveCanvas', {
+            direction: 'left',
+            speed: 50
+          });
+        }
+      }, {
+        label: 'Move Down',
+        accelerator: 'CommandOrControl + Down',
+        click: function() {
+          app.emit('menu:action', 'moveCanvas', {
+            direction: 'down',
+            speed: 50
+          });
+        }
+      }, {
+        label: 'Move Right',
+        accelerator: 'CommandOrControl + Right',
+        click: function() {
+          app.emit('menu:action', 'moveCanvas', {
+            direction: 'right',
+            speed: 50
+          });
+        }
+      }])
+    }));
+
+    this.appendSeparator();
+
     this.appendSelectAll();
 
     this.appendRemoveSelection();
