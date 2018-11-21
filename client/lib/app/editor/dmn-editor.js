@@ -22,7 +22,7 @@ var getWarnings = require('app/util/get-warnings');
 
 import DmnJS from './dmn/CamundaDmnEditor';
 
-var diagramOriginModule = require('diagram-js-origin');
+var diagramOriginModule = require('diagram-js-origin').default;
 
 var generateImage = require('app/util/generate-image'),
     isInput = require('util/dom/is-input'),
