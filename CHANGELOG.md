@@ -6,8 +6,24 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `FEAT`: add move canvas keybinding missing from DRD editor ([#1016](https://github.com/camunda/camunda-modeler/issues/1016))
-* `FIX`: fix move canvas keybinding in CMMN editor ([#1016](https://github.com/camunda/camunda-modeler/issues/1016))
+## 2.2.0
+
+#### General
+
+* `FEAT`: support moving elements via keyboard arrows on all diagram editors ([`a2b5bf07`](https://github.com/camunda/camunda-modeler/commit/a2b5bf079574a90bd1377150c7c39aab181261a6))
+* `FEAT`: add accessible context-pad and popup-menu to all remaining diagram editors (DRD, CMMN)
+* `CHORE`: update to `cmmn-js@0.16.0`
+* `CHORE`: update to `dmn-js@6.0.0`
+* `FIX`: correct properties panel scrolling with many items
+
+#### BPMN
+
+* `FEAT`: add editing support for `camunda:isStartableInTasklist` ([#843](https://github.com/camunda/camunda-modeler/issues/843))
+
+#### DMN
+
+* `FEAT`: support moving canvas via keyboard arrows in DRD editor ([#1016](https://github.com/camunda/camunda-modeler/issues/1016))
+* `FEAT`: add diagram origin cross in DRD editor ([`7dceaf5f9`](https://github.com/camunda/camunda-modeler/commit/7dceaf5f9b764426fa1c647bc7e6b4ffe9148fbb))
 
 ## 2.1.2
 
