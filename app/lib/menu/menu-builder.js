@@ -316,14 +316,14 @@ MenuBuilder.prototype.appendBaseEditActions = function() {
 
 MenuBuilder.prototype.appendBpmnActions = function() {
 
-  var elementsSelected = this.opts.state.elementsSelected,
-      isMoveSelectionEnabled = this.opts.state.inactiveInput && elementsSelected;
+  var elementsSelected = this.opts.state.elementsSelected;
 
+  var isInputActive = !this.opts.state.inactiveInput;
 
   this.menu.append(new MenuItem({
     label: 'Hand Tool',
     accelerator: 'H',
-    enabled: this.opts.state.inactiveInput,
+    enabled: !isInputActive,
     click: function() {
       app.emit('menu:action', 'handTool');
     }
@@ -332,7 +332,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Lasso Tool',
     accelerator: 'L',
-    enabled: this.opts.state.inactiveInput,
+    enabled: !isInputActive,
     click: function() {
       app.emit('menu:action', 'lassoTool');
     }
@@ -341,7 +341,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Space Tool',
     accelerator: 'S',
-    enabled: this.opts.state.inactiveInput,
+    enabled: !isInputActive,
     click: function() {
       app.emit('menu:action', 'spaceTool');
     }
@@ -350,7 +350,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Global Connect Tool',
     accelerator: 'C',
-    enabled: this.opts.state.inactiveInput,
+    enabled: !isInputActive,
     click: function() {
       app.emit('menu:action', 'globalConnectTool');
     }
@@ -359,7 +359,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Edit Label',
     accelerator: 'E',
-    enabled: this.opts.state.elementsSelected && this.opts.state.inactiveInput,
+    enabled: !isInputActive && elementsSelected,
     click: function() {
       app.emit('menu:action', 'directEditing');
     }
@@ -369,7 +369,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
 
   this.menu.append(new MenuItem({
     label: 'Align Elements',
-    enabled: this.opts.state.elementsSelected && this.opts.inactiveInput,
+    enabled: !isInputActive && elementsSelected,
     submenu: Menu.buildFromTemplate([
       {
         label: 'Align Left',
@@ -419,18 +419,18 @@ MenuBuilder.prototype.appendBpmnActions = function() {
 
   this.menu.append(new MenuItem({
     label: 'Distribute Elements',
-    enabled: this.opts.state.elementsSelected && this.opts.inactiveInput,
+    enabled: !isInputActive && elementsSelected,
     submenu: Menu.buildFromTemplate([
       {
         label: 'Distribute Horizontally',
-        enabled: this.opts.state.elementsSelected,
+        enabled: elementsSelected,
         click: function() {
           app.emit('menu:action', 'distributeHorizontally');
         }
       },
       {
         label: 'Distribute Vertically',
-        enabled: this.opts.state.elementsSelected,
+        enabled: elementsSelected,
         click: function() {
           app.emit('menu:action', 'distributeVertically');
         }
@@ -443,7 +443,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Find',
     accelerator: 'CommandOrControl + F',
-    enabled: this.opts.state.inactiveInput,
+    enabled: !isInputActive,
     click: function() {
       app.emit('menu:action', 'find');
     }
@@ -454,20 +454,106 @@ MenuBuilder.prototype.appendBpmnActions = function() {
   this.menu.append(new MenuItem({
     label: 'Move Elements to Origin',
     accelerator: 'CommandOrControl+Shift+0',
-    enabled: this.opts.state.inactiveInput,
+    enabled: !isInputActive,
     click: function() {
       app.emit('menu:action', 'moveToOrigin');
     }
   }));
 
+  this.appendMoveActions();
+
+  this.appendSelectAll();
+
+  this.appendRemoveSelection();
+
+  return this;
+};
+
+
+MenuBuilder.prototype.appendCmmnActions = function() {
+
+  var elementsSelected = this.opts.state.elementsSelected;
+  var isInputActive = !this.opts.state.inactiveInput;
+
+  this.menu.append(new MenuItem({
+    label: 'Hand Tool',
+    accelerator: 'H',
+    enabled: !isInputActive,
+    click: function() {
+      app.emit('menu:action', 'handTool');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Lasso Tool',
+    accelerator: 'L',
+    enabled: !isInputActive,
+    click: function() {
+      app.emit('menu:action', 'lassoTool');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Space Tool',
+    accelerator: 'S',
+    enabled: !isInputActive,
+    click: function() {
+      app.emit('menu:action', 'spaceTool');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Global Connect Tool',
+    accelerator: 'C',
+    enabled: !isInputActive,
+    click: function() {
+      app.emit('menu:action', 'globalConnectTool');
+    }
+  }));
+
+  this.menu.append(new MenuItem({
+    label: 'Edit Label',
+    accelerator: 'E',
+    enabled: !isInputActive && elementsSelected,
+    click: function() {
+      app.emit('menu:action', 'directEditing');
+    }
+  }));
+
+  this.appendSeparator();
+
+  this.menu.append(new MenuItem({
+    label: 'Find',
+    accelerator: 'CommandOrControl + F',
+    enabled: !isInputActive,
+    click: function() {
+      app.emit('menu:action', 'find');
+    }
+  }));
+
+  this.appendSeparator();
+
+  this.appendMoveActions();
+
+  this.appendSelectAll();
+
+  this.appendRemoveSelection();
+
+  return this;
+};
+
+
+MenuBuilder.prototype.appendMoveActions = function() {
+
+  var elementsSelected = this.opts.state.elementsSelected;
+  var isInputActive = !this.opts.state.inactiveInput;
 
   this.menu.append(new MenuItem({
     label: 'Move Selection',
-    enabled: isMoveSelectionEnabled,
+    enabled: !isInputActive && elementsSelected,
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
       accelerator: 'Up',
-      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           direction: 'up'
@@ -476,7 +562,6 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     }, {
       label: 'Move Up (Fast)',
       accelerator: 'Shift+Up',
-      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           accelerated: true,
@@ -486,7 +571,6 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     }, {
       label: 'Move Left',
       accelerator: 'Left',
-      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           direction: 'left'
@@ -495,7 +579,6 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     }, {
       label: 'Move Left (Fast)',
       accelerator: 'Shift + Left',
-      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           accelerated: true,
@@ -505,7 +588,6 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     }, {
       label: 'Move Down',
       accelerator: 'Down',
-      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           direction: 'down'
@@ -514,7 +596,6 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     }, {
       label: 'Move Down (Fast)',
       accelerator: 'Shift + Down',
-      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           accelerated: true,
@@ -524,7 +605,6 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     }, {
       label: 'Move Right',
       accelerator: 'Right',
-      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           direction: 'right'
@@ -533,7 +613,6 @@ MenuBuilder.prototype.appendBpmnActions = function() {
     }, {
       label: 'Move Right (Fast)',
       accelerator: 'Shift + Right',
-      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           accelerated: true,
@@ -545,7 +624,7 @@ MenuBuilder.prototype.appendBpmnActions = function() {
 
   this.menu.append(new MenuItem({
     label: 'Move Canvas',
-    enabled: this.opts.state.inactiveInput,
+    enabled: !isInputActive,
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
       accelerator: 'CommandOrControl + Up',
@@ -620,121 +699,6 @@ MenuBuilder.prototype.appendBpmnActions = function() {
       }
     }])
   }));
-
-  this.appendSelectAll();
-
-  this.appendRemoveSelection();
-
-  return this;
-};
-
-
-MenuBuilder.prototype.appendCmmnActions = function() {
-  this.menu.append(new MenuItem({
-    label: 'Hand Tool',
-    accelerator: 'H',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'handTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Lasso Tool',
-    accelerator: 'L',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'lassoTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Space Tool',
-    accelerator: 'S',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'spaceTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Global Connect Tool',
-    accelerator: 'C',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'globalConnectTool');
-    }
-  }));
-
-  this.menu.append(new MenuItem({
-    label: 'Edit Label',
-    accelerator: 'E',
-    enabled: this.opts.state.elementsSelected && this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'directEditing');
-    }
-  }));
-
-  this.appendSeparator();
-
-  this.menu.append(new MenuItem({
-    label: 'Find',
-    accelerator: 'CommandOrControl + F',
-    enabled: this.opts.state.inactiveInput,
-    click: function() {
-      app.emit('menu:action', 'find');
-    }
-  }));
-
-  this.appendSeparator();
-
-  this.menu.append(new MenuItem({
-    label: 'Move Canvas',
-    enabled: this.opts.state.inactiveInput,
-    submenu: Menu.buildFromTemplate([{
-      label: 'Move Up',
-      accelerator: 'CommandOrControl + Up',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'up',
-          speed: 50
-        });
-      }
-    }, {
-      label: 'Move Left',
-      accelerator: 'CommandOrControl + Left',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'left',
-          speed: 50
-        });
-      }
-    }, {
-      label: 'Move Down',
-      accelerator: 'CommandOrControl + Down',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'down',
-          speed: 50
-        });
-      }
-    }, {
-      label: 'Move Right',
-      accelerator: 'CommandOrControl + Right',
-      click: function() {
-        app.emit('menu:action', 'moveCanvas', {
-          direction: 'right',
-          speed: 50
-        });
-      }
-    }])
-  }));
-
-  this.appendSelectAll();
-
-  this.appendRemoveSelection();
-
-  return this;
 };
 
 MenuBuilder.prototype.appendRemoveSelection = function() {
@@ -794,47 +758,7 @@ MenuBuilder.prototype.appendDmnActions = function() {
 
     this.appendSeparator();
 
-    this.menu.append(new MenuItem({
-      label: 'Move Canvas',
-      enabled: this.opts.state.inactiveInput,
-      submenu: Menu.buildFromTemplate([{
-        label: 'Move Up',
-        accelerator: 'CommandOrControl + Up',
-        click: function() {
-          app.emit('menu:action', 'moveCanvas', {
-            direction: 'up',
-            speed: 50
-          });
-        }
-      }, {
-        label: 'Move Left',
-        accelerator: 'CommandOrControl + Left',
-        click: function() {
-          app.emit('menu:action', 'moveCanvas', {
-            direction: 'left',
-            speed: 50
-          });
-        }
-      }, {
-        label: 'Move Down',
-        accelerator: 'CommandOrControl + Down',
-        click: function() {
-          app.emit('menu:action', 'moveCanvas', {
-            direction: 'down',
-            speed: 50
-          });
-        }
-      }, {
-        label: 'Move Right',
-        accelerator: 'CommandOrControl + Right',
-        click: function() {
-          app.emit('menu:action', 'moveCanvas', {
-            direction: 'right',
-            speed: 50
-          });
-        }
-      }])
-    }));
+    this.appendMoveActions();
 
     this.appendSeparator();
 
