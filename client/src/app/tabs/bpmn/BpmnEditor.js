@@ -146,7 +146,6 @@ export class BpmnEditor extends CachedComponent {
 
     [
       'import.done',
-      'saveXML.done',
       'commandStack.changed',
       'selection.changed',
       'attach'

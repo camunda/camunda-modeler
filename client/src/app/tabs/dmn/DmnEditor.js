@@ -96,7 +96,6 @@ export class DmnEditor extends CachedComponent {
     } = this.getCached();
 
     [
-      'saveXML.done',
       'attach',
       'view.selectionChanged',
       'view.directEditingChanged'

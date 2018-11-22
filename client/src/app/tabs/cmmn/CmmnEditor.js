@@ -84,7 +84,6 @@ export class CmmnEditor extends CachedComponent {
 
     [
       'import.done',
-      'saveXML.done',
       'commandStack.changed',
       'selection.changed',
       'attach'
