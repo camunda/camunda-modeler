@@ -548,12 +548,15 @@ MenuBuilder.prototype.appendMoveActions = function() {
   var elementsSelected = this.opts.state.elementsSelected;
   var isInputActive = !this.opts.state.inactiveInput;
 
+  var isMoveCanvasEnabled = !isInputActive,
+      isMoveSelectionEnabled = !isInputActive && elementsSelected;
+
   this.menu.append(new MenuItem({
     label: 'Move Selection',
-    enabled: !isInputActive && elementsSelected,
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
       accelerator: 'Up',
+      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           direction: 'up'
@@ -562,6 +565,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Up (Fast)',
       accelerator: 'Shift+Up',
+      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           accelerated: true,
@@ -571,6 +575,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Left',
       accelerator: 'Left',
+      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           direction: 'left'
@@ -579,6 +584,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Left (Fast)',
       accelerator: 'Shift + Left',
+      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           accelerated: true,
@@ -588,6 +594,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Down',
       accelerator: 'Down',
+      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           direction: 'down'
@@ -596,6 +603,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Down (Fast)',
       accelerator: 'Shift + Down',
+      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           accelerated: true,
@@ -605,6 +613,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Right',
       accelerator: 'Right',
+      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           direction: 'right'
@@ -613,6 +622,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Right (Fast)',
       accelerator: 'Shift + Right',
+      enabled: isMoveSelectionEnabled,
       click: function() {
         app.emit('menu:action', 'moveSelection', {
           accelerated: true,
@@ -624,10 +634,10 @@ MenuBuilder.prototype.appendMoveActions = function() {
 
   this.menu.append(new MenuItem({
     label: 'Move Canvas',
-    enabled: !isInputActive,
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
       accelerator: 'CommandOrControl + Up',
+      enabled: isMoveCanvasEnabled,
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
           direction: 'up',
@@ -637,6 +647,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Up (Fast)',
       accelerator: 'CommandOrControl + Shift + Up',
+      enabled: isMoveCanvasEnabled,
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
           direction: 'up',
@@ -646,6 +657,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Left',
       accelerator: 'CommandOrControl + Left',
+      enabled: isMoveCanvasEnabled,
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
           direction: 'left',
@@ -655,6 +667,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Left (Fast)',
       accelerator: 'CommandOrControl + Shift + Left',
+      enabled: isMoveCanvasEnabled,
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
           direction: 'left',
@@ -664,6 +677,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Down',
       accelerator: 'CommandOrControl + Down',
+      enabled: isMoveCanvasEnabled,
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
           direction: 'down',
@@ -673,6 +687,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Down (Fast)',
       accelerator: 'CommandOrControl + Shift + Down',
+      enabled: isMoveCanvasEnabled,
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
           direction: 'down',
@@ -682,6 +697,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Right',
       accelerator: 'CommandOrControl + Right',
+      enabled: isMoveCanvasEnabled,
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
           direction: 'right',
@@ -691,6 +707,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
     }, {
       label: 'Move Right (Fast)',
       accelerator: 'CommandOrControl + Shift + Right',
+      enabled: isMoveCanvasEnabled,
       click: function() {
         app.emit('menu:action', 'moveCanvas', {
           direction: 'right',
