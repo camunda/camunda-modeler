@@ -89,24 +89,55 @@ describe('<BpmnEditor>', function() {
   });
 
 
-  it('#getXML', async function() {
+  describe('#getXML', function() {
 
-    // given
-    let instance;
+    it('should execute', async function() {
 
-    async function onImport() {
+      // given
+      let instance;
+
+      async function onImport() {
+
+        // when
+        const xml = await instance.getXML();
+
+        // then
+        expect(xml).to.exist;
+        expect(xml).to.eql(diagramXML);
+      }
+
+      instance = renderEditor(diagramXML, {
+        onImport
+      }).instance;
+    });
+
+
+    it('should not trigger import again', async function() {
+
+      // given
+      let instance;
+
+      const changeSpy = spy();
+
+      instance = renderEditor(diagramXML, {
+        onChange: changeSpy
+      }).instance;
+
+      const {
+        modeler
+      } = instance.getCached();
+
+      const importSpy = spy(modeler, 'importXML');
 
       // when
-      const xml = await instance.getXML();
+      await instance.getXML();
 
       // then
-      expect(xml).to.exist;
-      expect(xml).to.eql(diagramXML);
-    }
+      expect(changeSpy).to.not.have.been.called;
+      expect(importSpy).to.not.have.been.called;
 
-    instance = renderEditor(diagramXML, {
-      onImport
-    }).instance;
+    });
+
   });
 
 
