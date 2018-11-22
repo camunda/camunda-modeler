@@ -553,6 +553,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
 
   this.menu.append(new MenuItem({
     label: 'Move Selection',
+    enabled: isMoveSelectionEnabled,
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
       accelerator: 'Up',
@@ -634,6 +635,7 @@ MenuBuilder.prototype.appendMoveActions = function() {
 
   this.menu.append(new MenuItem({
     label: 'Move Canvas',
+    enabled: isMoveCanvasEnabled,
     submenu: Menu.buildFromTemplate([{
       label: 'Move Up',
       accelerator: 'CommandOrControl + Up',
