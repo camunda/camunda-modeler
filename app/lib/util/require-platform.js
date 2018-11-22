@@ -10,14 +10,18 @@
 module.exports = function get(platform, path, defaultExport) {
 
   function resolvePlatform(modulePath) {
-    if (require.resolve(modulePath)) {
+
+    try {
       return require(modulePath);
-    } else {
-      return defaultExport;
+    } catch (e) {
+      if (e.message.startsWith('Cannot find module')) {
+        return defaultExport;
+      }
+
+      throw e;
     }
   }
 
-  // TODO: verify skip platform if path does not exist
   if (platform === 'win32') {
     return resolvePlatform(path + '/windows');
   }
