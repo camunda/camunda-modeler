@@ -197,7 +197,7 @@ class MenuBuilder {
       label: 'Export As Image',
       enabled: enabled,
       click: function() {
-        app.emit('menu:action', 'export-tab', exportState || []);
+        app.emit('menu:action', 'export-as', exportState || []);
       }
     }));
 
