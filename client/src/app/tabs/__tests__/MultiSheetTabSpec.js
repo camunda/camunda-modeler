@@ -108,6 +108,80 @@ describe('<MultiSheetTab>', function() {
   });
 
 
+  describe('#switchSheet', function() {
+
+    it('should switch active sheet', async function() {
+
+      // given
+      const {
+        instance
+      } = renderTab();
+
+      const {
+        sheets
+      } = instance.getCached();
+
+      const sheet1 = sheets[0],
+            sheet2 = sheets[1];
+
+      // when
+      await instance.switchSheet(sheet2);
+
+      const {
+        activeSheet
+      } = instance.getCached();
+
+      // then
+      expect(activeSheet).to.not.eql(sheet1);
+      expect(activeSheet).to.eql(sheet2);
+
+    });
+
+
+    it('should sync xml between sheets', async function() {
+
+      // given
+      const OLD_XML = '<foo />',
+            NEW_XML = '<bar />';
+
+      const {
+        instance
+      } = renderTab({
+        xml: OLD_XML
+      });
+
+      const {
+        sheets
+      } = instance.getCached();
+
+      const editor = instance.editorRef.current,
+            oldEditorId = editor.props.id,
+            oldEditorXML = await editor.getXML();
+
+      const sheet = sheets[1];
+
+      // when
+      await editor.setXML(NEW_XML);
+
+      await instance.switchSheet(sheet);
+
+      const newEditorId = editor.props.id,
+            newEditorXML = await editor.getXML();
+
+      // then
+      expect(oldEditorId).to.equal('editor-editor');
+      expect(oldEditorXML).to.equal(OLD_XML);
+      expect(newEditorId).to.not.equal(oldEditorId);
+      expect(newEditorId).to.equal('editor-fallback');
+      expect(newEditorXML).to.not.equal(OLD_XML);
+      expect(newEditorXML).to.not.equal(oldEditorXML);
+      expect(newEditorXML).to.equal(NEW_XML);
+
+    });
+
+  });
+
+
   describe('#showImportErrorDialog', function() {
 
     it('should open', function() {
