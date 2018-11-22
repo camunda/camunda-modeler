@@ -92,7 +92,7 @@ export function getCanvasEntries({
   if (moveToOrigin !== undefined) {
     menuEntries.push({
       label: 'Move Elements To Origin',
-      accelerator: 'CommandOrControl+Shit+O',
+      accelerator: 'CommandOrControl+Shift+O',
       enabled: moveToOrigin,
       action: 'moveToOrigin'
     });
