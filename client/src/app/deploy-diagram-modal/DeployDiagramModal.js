@@ -2,6 +2,8 @@ import React from 'react';
 
 import View from './View';
 
+import errorMessageFunctions from './error-messages';
+
 
 const defaultState = {
   isLoading: false,
@@ -28,7 +30,7 @@ class DeployDiagramModal extends React.Component {
       isLoading: true
     });
 
-    const payload = this.getPayloadFromState();
+    const payload = this.getDeploymentPayload();
 
     try {
       await this.props.onDeploy(payload);
@@ -39,10 +41,12 @@ class DeployDiagramModal extends React.Component {
         error: ''
       });
     } catch (error) {
+      const errorMessage = this.getErrorMessage(error);
+
       this.setState({
         isLoading: false,
         success: '',
-        error: error.message
+        error: errorMessage
       });
     }
   }
@@ -70,7 +74,7 @@ class DeployDiagramModal extends React.Component {
     />;
   }
 
-  getPayloadFromState() {
+  getDeploymentPayload() {
     const payload = {
       endpointUrl: this.state.endpointUrl,
       deploymentName: this.state.deploymentName,
@@ -78,6 +82,20 @@ class DeployDiagramModal extends React.Component {
     };
 
     return payload;
+  }
+
+  getErrorMessage(error) {
+    let errorMessage;
+
+    for (const getMessage of errorMessageFunctions) {
+      errorMessage = getMessage(error);
+
+      if (errorMessage) {
+        return errorMessage;
+      }
+    }
+
+    return 'Unknown error occurred.';
   }
 }
 
