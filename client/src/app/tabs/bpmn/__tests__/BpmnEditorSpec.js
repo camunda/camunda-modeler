@@ -517,7 +517,8 @@ function renderEditor(xml, options = {}) {
     onContentUpdated,
     onError,
     onImport,
-    onLayoutChanged
+    onLayoutChanged,
+    onModal
   } = options;
 
   const slotFillRoot = mount(
@@ -531,6 +532,7 @@ function renderEditor(xml, options = {}) {
         onImport={ onImport || noop }
         onLayoutChanged={ onLayoutChanged || noop }
         onContentUpdated={ onContentUpdated || noop }
+        onModal={ onModal || noop }
         cache={ options.cache || new Cache() }
         layout={ layout || {
           minimap: {

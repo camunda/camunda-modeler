@@ -1,0 +1,34 @@
+:local(.ModalOverlay) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+
+  &:before {
+    content: '';
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: #666;
+    opacity: .2;
+    z-index: 1001;
+  }
+}
+
+:local(.ModalContainer) {
+  position: fixed;
+  margin: 10% auto;
+  left: 0;
+  right: 0;
+  max-width: 600px;
+  height: auto;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  border-radius: 2px;
+  padding: 20px;
+  z-index: 1001;
+}
