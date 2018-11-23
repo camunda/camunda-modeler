@@ -3,9 +3,14 @@ import React from 'react';
 import css from './Success.less';
 
 
-const Success = ({ message }) => (
+const Success = ({ heading, message }) => (
   <div className={ css.Success }>
-    <strong>Success: </strong><span className={ css.SuccessContent }>{ message }</span>
+    <p>
+      <strong>{ heading }</strong>
+    </p>
+    <p>
+      <span className={ css.SuccessContent }>{ message }</span>
+    </p>
   </div>
 );
 

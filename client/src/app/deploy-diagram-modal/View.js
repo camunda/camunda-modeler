@@ -9,6 +9,10 @@ import Success from './Success';
 import { View as style } from './View.less';
 
 
+const SUCCESS_HEADING = '✅ Successfully deployed the diagram.';
+const ERROR_HEADING = '❌ The diagram could not be deployed.';
+
+
 const View = (props) => {
   const {
     error,
@@ -26,9 +30,9 @@ const View = (props) => {
 
       { isLoading && <Loading /> }
 
-      { success && <Success message={ success } /> }
+      { success && <Success heading={ SUCCESS_HEADING } message={ success } /> }
 
-      { error && <ErrorMessage message={ error } /> }
+      { error && <ErrorMessage heading={ ERROR_HEADING } message={ error } /> }
 
 
 
