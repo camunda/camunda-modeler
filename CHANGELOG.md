@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 2.2.1
+
+* `FIX`: correct `camunda:isStartableInTasklist` default value
+
 ## 2.2.0
 
 #### General
