@@ -16,7 +16,7 @@ __Hint:__ Create a release issue and copy the template below into it.
     * [ ] Works on Linux
     * [ ] Works on Mac
     * [ ] Works on Windows
-* [ ] write blog post on [blog.camunda.org](https://blog.camunda.org/)
+* [ ] write blog post on [blog.camunda.org](https://github.com/camunda/blog.camunda.org)
 * [ ] create pull request updating download version of Camunda Modeler at [camunda.com](https://github.com/camunda/camunda.com-new/blob/master/data/releases.json)
 * [ ] spread the word
     * [ ] `@alle` to trigger customer mail
