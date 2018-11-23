@@ -5,7 +5,8 @@ var electron = require('electron'),
     app = electron.app;
 
 const {
-  assign
+  assign,
+  pick
 } = require('min-dash');
 
 
@@ -15,8 +16,9 @@ function on(event, callback, that) {
 
     function done(...doneArgs) {
       var actualArgs = doneArgs.map(function(e) {
+        // error.message and error.code are not enumerable
         if (e instanceof Error) {
-          return assign({}, e);
+          return assign({}, pick(e, [ 'message', 'code' ]), e);
         }
 
         return e;

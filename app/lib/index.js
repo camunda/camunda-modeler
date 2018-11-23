@@ -167,31 +167,7 @@ renderer.on('dialog:show', async function(options, done) {
 // deploying //////////
 // TODO: remove and add as plugin instead
 
-renderer.on('deploy', function(data, done) {
-  var workspaceConfig = config.get('workspace', { endpoints: [] });
-
-  var endpointUrl = (workspaceConfig.endpoints || [])[0];
-
-  if (!endpointUrl) {
-
-    let err = new Error('no deploy endpoint configured');
-
-    console.error('failed to deploy', err);
-    return done(err.message);
-  }
-
-  deploy(endpointUrl, data, function(err, result) {
-
-    if (err) {
-      console.error('failed to deploy', err);
-
-      return done(err.message);
-    }
-
-    done(null, result);
-  });
-
-});
+renderer.on('deploy', handleDeployment);
 
 // filesystem //////////
 
@@ -429,6 +405,21 @@ app.on('ready', function() {
   app.emit('app:parse-cmd', process.argv, process.cwd());
 });
 
+
+function handleDeployment(data, done) {
+  const { endpointUrl } = data;
+
+  deploy(endpointUrl, data, function(error, result) {
+
+    if (error) {
+      console.error('failed to deploy', error);
+
+      return done(error);
+    }
+
+    done(null, result);
+  });
+}
 
 // expose app
 module.exports = app;
