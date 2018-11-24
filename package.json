@@ -1,6 +1,6 @@
 {
   "name": "zeebe-modeler-builder",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Zeebe Modeler for BPMN based on bpmn.io",
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
