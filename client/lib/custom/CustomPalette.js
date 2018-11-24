@@ -126,6 +126,10 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
       translate('Create expanded SubProcess'),
       { isExpanded: true }
     ),
+    'create.intermediate-event': createAction(
+      'bpmn:IntermediateThrowEvent', 'event', 'bpmn-icon-intermediate-event-none',
+      translate('Create Intermediate/Boundary Event')
+    ),
     'create.intermediate-catch-message-event': createAction(
       'bpmn:IntermediateCatchEvent', 'event', 'bpmn-icon-intermediate-event-catch-message', 'Message Event', { eventDefinitionType: 'bpmn:MessageEventDefinition' }
     ),

@@ -12,7 +12,9 @@ var AVAILABLE_REPLACE_ELEMENTS = [
   'replace-with-parallel-gateway',
   'replace-with-exclusive-gateway',
   'replace-with-collapsed-subprocess',
-  'replace-with-expanded-subprocess'
+  'replace-with-expanded-subprocess',
+  'replace-with-timer-boundary',
+  'replace-with-message-boundary'
 ];
 
 var AVAILABLE_CONTEXTPAD_ENTRIES = [
