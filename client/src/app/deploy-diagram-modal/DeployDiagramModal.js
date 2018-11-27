@@ -41,6 +41,7 @@ class DeployDiagramModal extends React.Component {
         error: ''
       });
     } catch (error) {
+      this.props.onDeployError(error);
       const errorMessage = this.getErrorMessage(error);
 
       this.setState({
