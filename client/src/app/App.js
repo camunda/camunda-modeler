@@ -1240,6 +1240,10 @@ export class App extends Component {
     return this.props.globals.backend.send('deploy', { ...options, file: this.state.activeTab.file });
   };
 
+  handleDeployError = (error) => {
+    this.logEntry(JSON.stringify(error), 'deploy-error');
+  }
+
   quit() {
     return true;
   }
@@ -1396,6 +1400,7 @@ export class App extends Component {
           currentModal={ this.state.currentModal }
           onClose={ this.composeAction('close-modal') }
           onDeploy={ this.handleDeploy }
+          onDeployError={ this.handleDeployError }
         />
       </div>
     );
