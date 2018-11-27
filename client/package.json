@@ -1,6 +1,6 @@
 {
   "name": "camunda-modeler-client",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Camunda Modeler client application",
   "private": true,
   "scripts": {
