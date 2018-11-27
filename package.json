@@ -45,7 +45,7 @@
     "execa": "^0.10.0",
     "lerna": "^2.11.0",
     "mocha": "^5.2.0",
-    "npm-run-all": "^4.1.1",
+    "npm-run-all": "^4.1.5",
     "sinon": "^4.5.0",
     "sinon-chai": "^2.8.0",
     "which": "^1.2.0",
