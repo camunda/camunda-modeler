@@ -16,7 +16,7 @@ import CamundaCmmnModeler from './modeler';
 
 import css from './CmmnEditor.less';
 
-import { active as isInputActive } from '../../../util/dom/is-input';
+import { active as isInputActive } from '../../../util/dom/isInput';
 
 import { getCmmnEditMenu } from './getCmmnEditMenu';
 import getCmmnWindowMenu from './getCmmnWindowMenu';
