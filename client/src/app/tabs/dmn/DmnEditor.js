@@ -18,7 +18,7 @@ import PropertiesContainer from '../PropertiesContainer';
 
 import CamundaDmnModeler from './DmnModeler';
 
-import { active as isInputActive } from '../../../util/dom/is-input';
+import { active as isInputActive } from '../../../util/dom/isInput';
 
 import {
   getDmnDrdEditMenu,

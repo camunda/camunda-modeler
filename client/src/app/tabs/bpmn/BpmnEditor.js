@@ -19,7 +19,7 @@ import PropertiesContainer from '../PropertiesContainer';
 
 import CamundaBpmnModeler from './modeler';
 
-import { active as isInputActive } from '../../../util/dom/is-input';
+import { active as isInputActive } from '../../../util/dom/isInput';
 
 import getBpmnContextMenu from './getBpmnContextMenu';
 
