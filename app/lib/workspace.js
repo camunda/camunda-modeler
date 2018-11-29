@@ -36,6 +36,8 @@ function Workspace(config) {
 
     workspace.files = files;
 
+    workspace.endpoints = workspace.endpoints || [];
+
     done(null, workspace);
   });
 
