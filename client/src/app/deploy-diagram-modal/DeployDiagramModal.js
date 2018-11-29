@@ -15,10 +15,15 @@ const defaultState = {
 };
 
 class DeployDiagramModal extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
 
-    this.state = defaultState;
+    const { endpoints } = props;
+
+    this.state = {
+      ...defaultState,
+      endpointUrl: endpoints[endpoints.length - 1] || ''
+    };
   }
 
   handleDeploy = async (event) => {
@@ -31,6 +36,8 @@ class DeployDiagramModal extends React.Component {
     });
 
     const payload = this.getDeploymentPayload();
+
+    this.saveEndpoint(payload.endpointUrl);
 
     try {
       await this.props.onDeploy(payload);
@@ -75,6 +82,10 @@ class DeployDiagramModal extends React.Component {
     />;
   }
 
+  saveEndpoint(endpointUrl) {
+    this.props.onEndpointsUpdate([ endpointUrl ]);
+  }
+
   getDeploymentPayload() {
     const payload = {
       endpointUrl: this.state.endpointUrl,
@@ -99,5 +110,11 @@ class DeployDiagramModal extends React.Component {
     return 'Unknown error occurred.';
   }
 }
+
+DeployDiagramModal.defaultProps = {
+  endpoints: [],
+  onEndpointsUpdate: () => {},
+  onDeployError: console.error
+};
 
 export default DeployDiagramModal;

@@ -78,10 +78,13 @@ export default class AppParent extends Component {
 
     const layout = config.layout;
 
+    const endpoints = config.endpoints;
+
     const workspaceConfig = {
       files,
       activeFile,
-      layout
+      layout,
+      endpoints
     };
 
     await workspace.save(workspaceConfig);
@@ -96,7 +99,8 @@ export default class AppParent extends Component {
     const defaultConfig = {
       activeFile: null,
       files: [],
-      layout: {}
+      layout: {},
+      endpoints: []
     };
 
     this.restoringWorkspace = true;
@@ -104,7 +108,8 @@ export default class AppParent extends Component {
     const {
       files,
       activeFile,
-      layout
+      layout,
+      endpoints
     } = await workspace.restore(defaultConfig);
 
     const app = this.getApp();
@@ -120,6 +125,8 @@ export default class AppParent extends Component {
         await app.setActiveTab(activeTab);
       }
     }
+
+    app.setEndpoints(endpoints);
 
     log('workspace restored');
 
