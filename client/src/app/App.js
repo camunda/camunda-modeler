@@ -409,7 +409,7 @@ export class App extends Component {
 
     const response = await dialog.showEmptyFileDialog({
       file,
-      fileType
+      type: fileType
     });
 
     if (response == 'create') {

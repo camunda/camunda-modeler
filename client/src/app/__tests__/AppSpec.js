@@ -277,6 +277,34 @@ describe('<App>', function() {
     });
 
 
+    it('should open empty file with correct options', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      dialog.setShowEmptyFileDialogResponse('create');
+
+      const showSpy = spy(dialog, 'showEmptyFileDialog');
+
+      const { app } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const file1 = createFile('1.bpmn', null, '');
+
+      // when
+      await app.openEmptyFile(file1);
+
+      // then
+      expect(showSpy).to.have.been.calledWith({
+        file: file1,
+        type: 'bpmn'
+      });
+    });
+
+
     it('should NOT open empty TXT file', async function() {
 
       // given
