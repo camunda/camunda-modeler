@@ -6,6 +6,16 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 2.2.3
+
+#### BPMN
+
+* `FIX`: do not join incoming/outgoing flows other than sequence flows on element deletion ([#1033](https://github.com/camunda/camunda-modeler/issues/1033))
+
+## 2.2.2
+
+* `CHORE`: drop unused dependency
+
 ## 2.2.1
 
 * `FIX`: correct `camunda:isStartableInTasklist` default value
