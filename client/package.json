@@ -29,8 +29,7 @@
     "p-series": "^1.1.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "scroll-tabs": "^1.0.1",
-    "webpack-dev-server": "^3.1.9"
+    "scroll-tabs": "^1.0.1"
   },
   "homepage": ".",
   "devDependencies": {
@@ -71,7 +70,8 @@
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.1",
     "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --config ./webpack.config.js --port 3000",
