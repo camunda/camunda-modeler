@@ -7,6 +7,10 @@ import {
 } from 'enzyme';
 
 import { DeployDiagramModal } from '../deploy-diagram-modal';
+import View from '../deploy-diagram-modal/View';
+import Loading from '../deploy-diagram-modal/Loading';
+import ErrorMessage from '../deploy-diagram-modal/ErrorMessage';
+import Success from '../deploy-diagram-modal/Success';
 
 
 describe('<DeployDiagramModal>', function() {
@@ -77,7 +81,7 @@ describe('<DeployDiagramModal>', function() {
   });
 
 
-  it('should set endpointUrl to last one provided in props', async function() {
+  it('should set endpointUrl to last one provided in props', function() {
     // given
     const endpointUrl = 'http://example.com';
 
@@ -89,12 +93,99 @@ describe('<DeployDiagramModal>', function() {
   });
 
 
-  it('should set endpointUrl to void string when there is none provided', async function() {
+  it('should set endpointUrl to void string when there is none provided', function() {
     // given
     const wrapper = shallow(<DeployDiagramModal />);
 
     // expect
     expect(wrapper.state('endpointUrl')).to.eql('');
+  });
+
+
+  describe('input events', function() {
+    let wrapper,
+        instance;
+
+    beforeEach(function() {
+      wrapper = shallow(<DeployDiagramModal />);
+      instance = wrapper.instance();
+    });
+
+
+    it('should handle endpoint url change', function() {
+      // given
+      const input = 'test',
+            inputEvent = { target: { value: input } };
+
+      // when
+      instance.handleEndpointUrlChange(inputEvent);
+
+      // then
+      expect(wrapper.state('endpointUrl')).to.eql(input);
+    });
+
+
+    it('should handle tenant id change', function() {
+      // given
+      const input = 'test',
+            inputEvent = { target: { value: input } };
+
+      // when
+      instance.handleTenantIdChange(inputEvent);
+
+      // then
+      expect(wrapper.state('tenantId')).to.eql(input);
+    });
+
+
+    it('should deployment name change', function() {
+      // given
+      const input = 'test',
+            inputEvent = { target: { value: input } };
+
+      // when
+      instance.handleDeploymentNameChange(inputEvent);
+
+      // then
+      expect(wrapper.state('deploymentName')).to.eql(input);
+    });
+
+  });
+
+
+  describe('<View>', function() {
+
+    it('should render', function() {
+      shallow(<View />);
+    });
+
+
+    it('should render loading indicator', function() {
+      // given
+      const wrapper = shallow(<View isLoading={ true } />);
+
+      // then
+      expect(wrapper.find(Loading)).to.have.lengthOf(1);
+    });
+
+
+    it('should render error message', function() {
+      // given
+      const wrapper = shallow(<View error={ 'Error' } />);
+
+      // then
+      expect(wrapper.find(ErrorMessage)).to.have.lengthOf(1);
+    });
+
+
+    it('should render success message', function() {
+      // given
+      const wrapper = shallow(<View success={ 'Success message' } />);
+
+      // then
+      expect(wrapper.find(Success)).to.have.lengthOf(1);
+    });
+
   });
 
 });
