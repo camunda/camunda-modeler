@@ -1828,6 +1828,73 @@ describe('<App>', function() {
     expect(sendSpy).to.have.been.calledWith('external:open-url', options);
   });
 
+
+  describe('modal handling', function() {
+
+    let app;
+
+    beforeEach(function() {
+      const rendered = createApp();
+
+      app = rendered.app;
+    });
+
+
+    it('should open modal', function() {
+      // given
+      const fakeModalName = 'modal';
+
+      // when
+      app.openModal(fakeModalName);
+
+      // then
+      expect(app.state.currentModal).to.eql(fakeModalName);
+    });
+
+
+    it('should close modal', function() {
+      // given
+      const fakeModalName = 'modal';
+      app.setState({ currentModal: fakeModalName });
+
+      // when
+      app.closeModal();
+
+      // then
+      expect(app.state.currentModal).to.eql(null);
+    });
+
+  });
+
+
+  describe('deployment handling', function() {
+
+    it('should handle deployment', async function() {
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      const file = createFile('1.bpmn');
+      await app.openFiles([ file ]);
+
+      // when
+      app.handleDeploy({});
+
+      // then
+      expect(sendSpy).to.be.calledOnceWith('deploy', { file });
+    });
+
+  });
+
 });
 
 
