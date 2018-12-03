@@ -579,12 +579,12 @@ export class BpmnEditor extends CachedComponent {
         </Fill>
 
         <Fill name="toolbar" group="deploy">
-          <DropdownButton title="Deploy Current Diagram" items={ [{
-            text: 'Deploy Current Diagram',
-            onClick: this.props.onModal.bind(null, 'DEPLOY_DIAGRAM')
-          }] }>
+          <Button
+            onClick={ this.props.onModal.bind(null, 'DEPLOY_DIAGRAM') }
+            title="Deploy Current Diagram"
+          >
             <Icon name="deploy" />
-          </DropdownButton>
+          </Button>
         </Fill>
 
         <div
