@@ -147,9 +147,7 @@ export class App extends Component {
       return tabShown.promise;
     }
 
-    const navigationHistory = this.navigationHistory;
-
-    navigationHistory.push(tab);
+    this.navigationHistory.push(tab);
 
     return this.setActiveTab(tab);
   }
@@ -170,9 +168,7 @@ export class App extends Component {
       return getNextTab(tabs, activeTab, direction);
     };
 
-    const navigationHistory = this.navigationHistory;
-
-    const nextActiveTab = navigationHistory.navigate(direction, nextFn);
+    const nextActiveTab = this.navigationHistory.navigate(direction, nextFn);
 
     return this.setActiveTab(nextActiveTab);
   }
@@ -265,8 +261,7 @@ export class App extends Component {
     });
 
     // replace in navigation history
-    const navigationHistory = this.navigationHistory;
-    navigationHistory.replace(tab, updatedTab);
+    this.navigationHistory.replace(tab, updatedTab);
 
     return updatedTab;
   }
