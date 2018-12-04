@@ -552,9 +552,11 @@ export class App extends Component {
           tab = this.findOpenTab(file);
 
           if (!tab) {
-            tab = this.addTab(
-              tabsProvider.createTabForFile(file)
-            );
+            const newTab = tabsProvider.createTabForFile(file);
+
+            if (newTab) {
+              tab = this.addTab(newTab);
+            }
           }
         }
 

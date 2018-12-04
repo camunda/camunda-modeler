@@ -184,6 +184,23 @@ describe('<App>', function() {
     });
 
 
+    it('should ignore unrecognized files', async function() {
+
+      // given
+      const {
+        app
+      } = createApp();
+
+      const file = createFile('1.unknown');
+
+      // when
+      const openedTabs = await app.openFiles([ file ]);
+
+      // then
+      expect(openedTabs).to.be.empty;
+    });
+
+
     it('should keep existing tabs (by path)', async function() {
 
       // given
