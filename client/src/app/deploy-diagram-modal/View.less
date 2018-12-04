@@ -9,76 +9,77 @@
     font-weight: normal;
   }
 
-  .ca-form {
+}
 
-    font-size: 13.3333px;
-    margin: 15px 0;
+:local(.Form) {
+  font-size: 13.3333px;
+  margin: 15px 0;
 
-    display: grid;
-    grid-template-columns: max-content auto;
+  display: grid;
+  grid-template-columns: max-content auto;
 
-    grid-column-gap: 10px;
-    grid-row-gap: 15px;
+  grid-column-gap: 10px;
+  grid-row-gap: 15px;
 
-    align-items: baseline;
-
-
-    .form-row {
-      margin: 15px;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 6px;
-
-      font-size: inherit;
-    }
-
-    label {
-      font-weight: bolder;
-      line-height: 30px;
-      text-align: right;
-      width: 100%;
-      display: inline-block;
-    }
-
-    input[type="text"] {
-      border: 1px solid rgb(204, 204, 204);
-
-      &:focus,
-      &:hover:not(:disabled) {
-        outline: none;
-        border-color: rgb(82, 178, 21);
-      }
-
-      &:focus {
-        box-shadow: 0 0 1px 2px rgba(82, 178, 21, 0.2);
-      }
-    }
-
-    button + button {
-      margin-left: 10px;
-    }
-
-    button {
-      padding: 6px 10px;
-    }
-
-    button:disabled,
-    input:disabled {
-      color: #808080;
-    }
-
-    input[type="text"]:invalid:not(:focus) {
-      border-color: rgb(255, 0, 0);
-    }
+  align-items: baseline;
 
 
-    .hint {
-      margin-top: 10px;
-      color: rgb(102, 102, 102);
-    }
+  .form-row {
+    margin: 15px;
+  }
 
+  label {
+    font-weight: bolder;
+    line-height: 30px;
+    text-align: right;
+    width: 100%;
+    display: inline-block;
+  }
+
+  input {
+    width: 100%;
+    padding: 6px;
+
+    font-size: inherit;
+
+    border: 1px solid rgb(204, 204, 204);
+  }
+
+  button + button {
+    margin-left: 10px;
+  }
+
+  button {
+    padding: 6px 10px;
+  }
+
+  button:disabled,
+  input:disabled {
+    color: #808080;
+  }
+
+  .hint {
+    margin-top: 10px;
+    color: rgb(102, 102, 102);
   }
 }
 
+:local(.InputError) {
+  color: #ff0000;
+}
+
+:local(.InputValid) {
+  &:not(:focus) {
+    border: 1px solid rgb(82, 178, 21);
+  }
+
+  outline-color: rgb(82, 178, 21);
+}
+
+:local(.InputInvalid) {
+  &:not(:focus) {
+    border: 1px solid rgb(255, 0, 0);
+  }
+
+  outline-color: rgb(255, 0, 0);
+}

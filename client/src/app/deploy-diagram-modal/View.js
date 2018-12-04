@@ -1,12 +1,14 @@
 import React from 'react';
 
+import classnames from 'classnames';
+
 import { ModalWrapper } from '../primitives';
 
 import ErrorMessage from './ErrorMessage';
 import Loading from './Loading';
 import Success from './Success';
 
-import { View as style } from './View.less';
+import css from './View.less';
 
 
 const SUCCESS_HEADING = '✅ Successfully deployed the diagram.';
@@ -20,8 +22,11 @@ const View = (props) => {
     success
   } = props;
 
+  const shouldDisplayEndpointUrlError = props.endpointUrlTouched && props.endpointUrlError,
+        shouldDisplayDeploymentNameError = props.deploymentNameTouched && props.deploymentNameError;
+
   return (
-    <ModalWrapper className={ style } onClose={ props.onClose }>
+    <ModalWrapper className={ css.View } onClose={ props.onClose }>
       <h2>Deploy Diagram</h2>
 
       <p className="intro">
@@ -37,8 +42,9 @@ const View = (props) => {
 
 
       <form
-        className="ca-form"
-        onSubmit={ props.onDeploy }>
+        className={ css.Form }
+        onSubmit={ props.onDeploy }
+      >
 
         <div>
           <label htmlFor="endpoint-url">
@@ -52,8 +58,14 @@ const View = (props) => {
             type="text"
             value={ props.endpointUrl }
             onChange={ props.onEndpointUrlChange }
+            onBlur={ props.onEndpointUrlTouch }
             disabled={ isLoading }
-            required />
+            className={ classnames({
+              [css.InputValid]: !props.endpointUrlError,
+              [css.InputInvalid]: shouldDisplayEndpointUrlError
+            }) }
+          />
+          { shouldDisplayEndpointUrlError && <span className={ css.InputError }>{ props.endpointUrlError }</span> }
 
           <div className="hint">
             This should point to the <code>/deployment/create</code> endpoint
@@ -72,9 +84,14 @@ const View = (props) => {
             type="text"
             value={ props.deploymentName }
             onChange={ props.onDeploymentNameChange }
+            onBlur={ props.onDeploymentNameTouch }
             disabled={ isLoading }
-            required
+            className={ classnames({
+              [css.InputValid]: !props.deploymentNameError,
+              [css.InputInvalid]: shouldDisplayDeploymentNameError
+            }) }
           />
+          { shouldDisplayDeploymentNameError && <span className={ css.InputError }>{ props.deploymentNameError }</span> }
         </div>
 
         <div>
@@ -97,7 +114,7 @@ const View = (props) => {
         <div>
           <button
             type="submit"
-            disabled={ isLoading }>
+            disabled={ isLoading || !props.isFormValid }>
             Deploy
           </button>
 
