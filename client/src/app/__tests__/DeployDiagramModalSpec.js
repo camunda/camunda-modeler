@@ -20,105 +20,144 @@ describe('<DeployDiagramModal>', function() {
   });
 
 
-  it('should set state.error when onDeploy throws error', async function() {
-    // given
-    const onDeployStub = sinon.stub().rejects(new Error('errorMessage'));
+  describe('deployment', function() {
 
-    const wrapper = shallow(<DeployDiagramModal onDeploy={ onDeployStub } />);
-    const instance = wrapper.instance();
+    it('should set state.error when onDeploy throws error', async function() {
+      // given
+      const endpointUrl = 'http://example.com',
+            deploymentName = 'deploymentName';
 
-    // when
-    await instance.handleDeploy(new Event('click'));
+      const onDeployStub = sinon.stub().rejects(new Error('errorMessage'));
 
-    // expect
-    expect(instance.state.error).to.be.a('string').not.eql('');
-    expect(instance.state.success).to.eql('');
-    expect(instance.state.isLoading).to.be.false;
+      const wrapper = shallow(<DeployDiagramModal onDeploy={ onDeployStub } />);
+      const instance = wrapper.instance();
+
+      instance.setState({
+        endpointUrl,
+        deploymentName
+      });
+
+      instance.validateForm();
+
+      // when
+      await instance.handleDeploy(new Event('click'));
+
+      // expect
+      expect(instance.state.error).to.be.a('string').not.eql('');
+      expect(instance.state.success).to.eql('');
+      expect(instance.state.isLoading).to.be.false;
+    });
+
+
+    it('should set state.success when onDeploy succeeds', async function() {
+      // given
+      const endpointUrl = 'http://example.com',
+            deploymentName = 'deploymentName';
+
+      const onDeployStub = sinon.stub().resolves(true);
+
+      const wrapper = shallow(<DeployDiagramModal onDeploy={ onDeployStub } />);
+      const instance = wrapper.instance();
+
+      instance.setState({
+        endpointUrl,
+        deploymentName
+      });
+
+      instance.validateForm();
+
+      // when
+      await instance.handleDeploy(new Event('click'));
+
+      // expect
+      expect(instance.state.success).to.be.a('string').not.eql('');
+      expect(instance.state.error).to.eql('');
+      expect(instance.state.isLoading).to.be.false;
+    });
+
+
+    it('should unset isLoading when deployment is canceled', async function() {
+      // given
+      const endpointUrl = 'http://example.com',
+            deploymentName = 'deploymentName';
+
+      const onDeployStub = sinon.stub().resolves(false);
+
+      const wrapper = shallow(<DeployDiagramModal onDeploy={ onDeployStub } />);
+      const instance = wrapper.instance();
+
+      instance.setState({
+        endpointUrl,
+        deploymentName
+      });
+
+      instance.validateForm();
+
+      // when
+      await instance.handleDeploy(new Event('click'));
+
+      // expect
+      expect(instance.state.success).to.eql('');
+      expect(instance.state.error).to.eql('');
+      expect(instance.state.isLoading).to.be.false;
+    });
+
+
+    it('should save endpoint used to deploy', async function() {
+      // given
+      const endpointUrl = 'http://example.com',
+            deploymentName = 'deploymentName';
+
+      const onDeployStub = sinon.stub().resolves();
+      const onEndpointsUpdateSpy = sinon.spy();
+
+      const wrapper = shallow(
+        <DeployDiagramModal
+          onDeploy={ onDeployStub }
+          onEndpointsUpdate={ onEndpointsUpdateSpy }
+        />
+      );
+      const instance = wrapper.instance();
+
+      instance.setState({
+        endpointUrl,
+        deploymentName
+      });
+
+      instance.validateForm();
+
+      // when
+      await instance.handleDeploy(new Event('click'));
+
+      // expect
+      expect(onEndpointsUpdateSpy).to.be.calledWith([ endpointUrl ]);
+    });
+
   });
 
 
-  it('should set state.success when onDeploy succeeds', async function() {
-    // given
-    const endpointUrl = 'http://example.com';
+  describe('reusing endpoint url', function() {
 
-    const onDeployStub = sinon.stub().resolves(true);
+    it('should set endpointUrl to last one provided in props', function() {
+      // given
+      const endpointUrl = 'http://example.com';
 
-    const wrapper = shallow(<DeployDiagramModal onDeploy={ onDeployStub } />);
-    const instance = wrapper.instance();
-    instance.state.endpointUrl = endpointUrl;
+      // when
+      const wrapper = shallow(<DeployDiagramModal endpoints={ [ endpointUrl ] } />);
 
-    // when
-    await instance.handleDeploy(new Event('click'));
-
-    // expect
-    expect(instance.state.success).to.be.a('string').not.eql('');
-    expect(instance.state.error).to.eql('');
-    expect(instance.state.isLoading).to.be.false;
-  });
+      // expect
+      expect(wrapper.state('endpointUrl')).to.eql(endpointUrl);
+    });
 
 
-  it('should unset isLoading when deployment is canceled', async function() {
-    // given
-    const endpointUrl = 'http://example.com';
+    it('should set endpointUrl to void string when there is none provided', function() {
+      // given
+      const wrapper = shallow(<DeployDiagramModal />);
 
-    const onDeployStub = sinon.stub().resolves(false);
+      // expect
+      expect(wrapper.state('endpointUrl')).to.eql('');
+    });
 
-    const wrapper = shallow(<DeployDiagramModal onDeploy={ onDeployStub } />);
-    const instance = wrapper.instance();
-    instance.state.endpointUrl = endpointUrl;
-
-    // when
-    await instance.handleDeploy(new Event('click'));
-
-    // expect
-    expect(instance.state.success).to.eql('');
-    expect(instance.state.error).to.eql('');
-    expect(instance.state.isLoading).to.be.false;
-  });
-
-
-  it('should save endpoint used to deploy', async function() {
-    // given
-    const endpointUrl = 'http://example.com';
-
-    const onDeployStub = sinon.stub().resolves();
-    const onEndpointsUpdateSpy = sinon.spy();
-
-    const wrapper = shallow(
-      <DeployDiagramModal
-        onDeploy={ onDeployStub }
-        onEndpointsUpdate={ onEndpointsUpdateSpy }
-      />
-    );
-    const instance = wrapper.instance();
-    instance.state.endpointUrl = endpointUrl;
-
-    // when
-    await instance.handleDeploy(new Event('click'));
-
-    // expect
-    expect(onEndpointsUpdateSpy).to.be.calledWith([ endpointUrl ]);
-  });
-
-
-  it('should set endpointUrl to last one provided in props', function() {
-    // given
-    const endpointUrl = 'http://example.com';
-
-    // when
-    const wrapper = shallow(<DeployDiagramModal endpoints={ [ endpointUrl ] } />);
-
-    // expect
-    expect(wrapper.state('endpointUrl')).to.eql(endpointUrl);
-  });
-
-
-  it('should set endpointUrl to void string when there is none provided', function() {
-    // given
-    const wrapper = shallow(<DeployDiagramModal />);
-
-    // expect
-    expect(wrapper.state('endpointUrl')).to.eql('');
   });
 
 
@@ -168,6 +207,153 @@ describe('<DeployDiagramModal>', function() {
 
       // then
       expect(wrapper.state('deploymentName')).to.eql(input);
+    });
+
+  });
+
+
+  describe('form validation', function() {
+
+    let wrapper,
+        instance;
+
+    beforeEach(function() {
+      wrapper = shallow(<DeployDiagramModal />);
+      instance = wrapper.instance();
+    });
+
+
+    describe('endpointUrl', function() {
+
+      it('should not accept void endpoint url', function() {
+        // given
+        const deploymentName = 'deploymentName',
+              endpointUrl = '';
+
+        instance.setState({
+          deploymentName,
+          endpointUrl
+        });
+
+        // when
+        instance.validateForm();
+
+        // then
+        expect(wrapper.state('isFormValid')).to.eql(false);
+      });
+
+
+      it('should not accept endpoint url without protocol', function() {
+        // given
+        const deploymentName = 'deploymentName',
+              endpointUrl = 'localhost';
+
+        instance.setState({
+          deploymentName,
+          endpointUrl
+        });
+
+        // when
+        instance.validateForm();
+
+        // then
+        expect(wrapper.state('isFormValid')).to.eql(false);
+      });
+
+
+      it('should not accept ftp protocol for endpoint url', function() {
+        // given
+        const deploymentName = 'deploymentName',
+              endpointUrl = 'ftp://localhost';
+
+        instance.setState({
+          deploymentName,
+          endpointUrl
+        });
+
+        // when
+        instance.validateForm();
+
+        // then
+        expect(wrapper.state('isFormValid')).to.eql(false);
+      });
+
+
+      it('should accept endpoint url starting with "https://"', function() {
+        // given
+        const deploymentName = 'deploymentName',
+              endpointUrl = 'https://localhost';
+
+        instance.setState({
+          deploymentName,
+          endpointUrl
+        });
+
+        // when
+        instance.validateForm();
+
+        // then
+        expect(wrapper.state('isFormValid')).to.eql(true);
+      });
+
+
+      it('should accept endpoint url starting with "http://"', function() {
+        // given
+        const deploymentName = 'deploymentName',
+              endpointUrl = 'http://localhost';
+
+        instance.setState({
+          deploymentName,
+          endpointUrl
+        });
+
+        // when
+        instance.validateForm();
+
+        // then
+        expect(wrapper.state('isFormValid')).to.eql(true);
+      });
+
+    });
+
+
+    describe('deployment name', function() {
+
+      it('should not accept void deployment name', function() {
+        // given
+        const deploymentName = '',
+              endpointUrl = 'http://localhost';
+
+        instance.setState({
+          deploymentName,
+          endpointUrl
+        });
+
+        // when
+        instance.validateForm();
+
+        // then
+        expect(wrapper.state('isFormValid')).to.eql(false);
+      });
+
+
+      it('should accept not void deployment name', function() {
+        // given
+        const deploymentName = 'deploymentName',
+              endpointUrl = 'http://localhost';
+
+        instance.setState({
+          deploymentName,
+          endpointUrl
+        });
+
+        // when
+        instance.validateForm();
+
+        // then
+        expect(wrapper.state('isFormValid')).to.eql(true);
+      });
+
     });
 
   });
