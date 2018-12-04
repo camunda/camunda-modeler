@@ -113,7 +113,7 @@ export class TabsProvider {
         },
         extensions: [ 'bpmn', 'xml' ]
       },
-      cmnn: {
+      cmmn: {
         name: 'CMMN',
         encoding: ENCODING_UTF8,
         exports: {
@@ -146,6 +146,10 @@ export class TabsProvider {
 
   createTabForFile(file) {
     const type = file.name.substring(file.name.lastIndexOf('.') + 1);
+
+    if (!this.hasProvider(type)) {
+      return null;
+    }
 
     return {
       id: this.uuid++,
