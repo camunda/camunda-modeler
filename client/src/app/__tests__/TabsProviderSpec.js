@@ -75,22 +75,86 @@ describe('TabsProvider', function() {
   );
 
 
-  it('should create tab for file', function() {
+  describe('create tab for file', function() {
 
-    // given
-    const tabsProvider = new TabsProvider();
+    it('should create for known file (by extension)', function() {
 
-    const file = {
-      name: 'foo.bpmn',
-      path: '/a/foo.bpmn'
-    };
+      // given
+      const tabsProvider = new TabsProvider();
 
-    // when
-    const tab = tabsProvider.createTabForFile(file);
+      const file = {
+        name: 'foo.bpmn',
+        path: '/a/foo.bpmn'
+      };
 
-    // then
-    expect(tab.name).to.eql(file.name);
-    expect(tab.title).to.eql(file.path);
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab.name).to.eql(file.name);
+      expect(tab.title).to.eql(file.path);
+      expect(tab.type).to.eql('bpmn');
+    });
+
+
+    it('should create for known file (by lower case extension)', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const file = {
+        name: 'foo.BPMN',
+        path: '/a/foo.BPMN'
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab.name).to.eql(file.name);
+      expect(tab.title).to.eql(file.path);
+      expect(tab.type).to.eql('bpmn');
+    });
+
+
+    it('should create for known file (by contents)', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const file = {
+        name: 'foo.xml',
+        path: '/a/foo.xml',
+        contents: require('./TabsProviderSpec.dmn.xml')
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab.name).to.eql(file.name);
+      expect(tab.title).to.eql(file.path);
+      expect(tab.type).to.eql('dmn');
+    });
+
+
+    it('should not create for unknown file', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const file = {
+        name: 'foo.unknown',
+        contents: ''
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab).not.to.exist;
+    });
+
   });
 
 
