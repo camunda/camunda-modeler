@@ -36,10 +36,6 @@ import {
   replaceNamespace
 } from './util/namespace';
 
-import {
-  assign
-} from 'min-dash';
-
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn',
       NAMESPACE_URL_CAMUNDA = 'http://camunda.org/schema/1.0/bpmn',
       NAMESPACE_PREFIX_ACTIVITI = 'activiti',
@@ -223,7 +219,8 @@ export class BpmnEditor extends CachedComponent {
 
   handleNamespace = async (xml) => {
     const {
-      onAction
+      onAction,
+      onContentUpdated
     } = this.props;
 
     const answer = await onAction('show-dialog', getNamespaceDialog());
@@ -236,9 +233,10 @@ export class BpmnEditor extends CachedComponent {
         oldNamespaceUrl: NAMESPACE_URL_ACTIVITI
       });
 
-      this.handleChanged({
-        xml
-      });
+      if (typeof onContentUpdated === 'function') {
+        onContentUpdated(xml);
+      }
+
     }
 
     return xml;
@@ -267,10 +265,6 @@ export class BpmnEditor extends CachedComponent {
 
 
   handleChanged = (event = {}) => {
-    const {
-      xml
-    } = event;
-
     const {
       modeler
     } = this.getCached();
@@ -310,10 +304,6 @@ export class BpmnEditor extends CachedComponent {
       undo: commandStack.canUndo(),
       zoom: true
     };
-
-    if (xml) {
-      assign(newState, { contents : xml });
-    }
 
     const contextMenu = getBpmnContextMenu(newState);
 

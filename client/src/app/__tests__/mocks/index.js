@@ -152,6 +152,9 @@ export class TabsProvider {
       get name() {
         return this.file.name;
       },
+      set name(newName) {
+        this.file.name = newName;
+      },
       file,
       type
     };

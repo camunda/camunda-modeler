@@ -212,7 +212,7 @@ describe('<BpmnEditor>', function() {
 
   describe('#handleNamespace', function() {
 
-    it('should replace namespace', async function() {
+    it('should replace namespace', function(done) {
 
       // given
       const onAction = action => {
@@ -222,11 +222,9 @@ describe('<BpmnEditor>', function() {
         }
       };
 
-      const changedSpy = newState => {
+      const updatedSpy = contents => {
 
         // then
-        const { contents } = newState;
-
         expect(contents).to.exist;
 
         expect(contents.includes('xmlns:activiti="http://activiti.org/bpmn"')).to.be.false;
@@ -237,17 +235,19 @@ describe('<BpmnEditor>', function() {
 
         expect(contents.includes('activiti:assignee')).to.be.false;
         expect(contents.includes('camunda:assignee')).to.be.true;
+
+        done();
       };
 
       // when
       renderEditor(activitiXML, {
         onAction,
-        onChanged: changedSpy
+        onContentUpdated: updatedSpy
       });
     });
 
 
-    it('should NOT replace namespace', async function() {
+    it('should NOT replace namespace', function() {
 
       // given
       const onAction = action => {
@@ -257,28 +257,15 @@ describe('<BpmnEditor>', function() {
         }
       };
 
-      const changedSpy = newState => {
-
-        // then
-        const { contents } = newState;
-
-        expect(contents).to.exist;
-
-        expect(contents.includes('xmlns:activiti="http://activiti.org/bpmn"')).to.be.true;
-        expect(contents.includes('xmlns:camunda="http://camunda.org/schema/1.0/bpmn"')).to.be.false;
-
-        expect(contents.includes('targetNamespace="http://activiti.org/bpmn"')).to.be.true;
-        expect(contents.includes('targetNamespace="http://camunda.org/schema/1.0/bpmn"')).to.be.false;
-
-        expect(contents.includes('activiti:assignee')).to.be.true;
-        expect(contents.includes('camunda:assignee')).to.be.false;
-      };
+      const updatedSpy = spy();
 
       // when
       renderEditor(activitiXML, {
         onAction,
-        onChanged: changedSpy
+        onContentUpdated: updatedSpy
       });
+
+      expect(updatedSpy).to.not.have.been.called;
     });
 
   });
@@ -527,6 +514,7 @@ function renderEditor(xml, options = {}) {
     layout,
     onAction,
     onChanged,
+    onContentUpdated,
     onError,
     onImport,
     onLayoutChanged
@@ -542,6 +530,7 @@ function renderEditor(xml, options = {}) {
         onError={ onError || noop }
         onImport={ onImport || noop }
         onLayoutChanged={ onLayoutChanged || noop }
+        onContentUpdated={ onContentUpdated || noop }
         cache={ options.cache || new Cache() }
         layout={ layout || {
           minimap: {

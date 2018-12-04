@@ -508,17 +508,16 @@ export class App extends Component {
     });
 
     if (response == 'create') {
-      assign(file, {
-        contents: tabsProvider.getInitialFileContents(fileType)
-      });
 
       // TODO(philippfromme): fix dirty state
       let tab = this.addTab(
         tabsProvider.createTabForFile(file)
       );
 
-      this.handleTabChanged(tab)({
-        dirty: true
+      tab = await this.updateTab(tab, {
+        file: {
+          contents: tabsProvider.getInitialFileContents(fileType)
+        }
       });
 
       await this.selectTab(tab);
@@ -692,10 +691,6 @@ export class App extends Component {
       });
     }
 
-    if ('contents' in properties) {
-      tab.file.contents = properties.contents;
-    }
-
     tabState = {
       ...tabState,
       ...properties
@@ -706,6 +701,24 @@ export class App extends Component {
     });
 
     this.updateMenu(tabState);
+  }
+
+  /**
+   * Handle if tab content is updated.
+   *
+   * @param {String} new tab content
+   */
+  handleTabContentUpdated = (tab) => (newContent) => {
+
+    if (!newContent) {
+      return;
+    }
+
+    this.updateTab(tab, {
+      file: {
+        contents: newContent
+      }
+    });
   }
 
   tabSaved(tab, newFile) {
@@ -1337,6 +1350,7 @@ export class App extends Component {
                   tab={ activeTab }
                   layout={ layout }
                   onChanged={ this.handleTabChanged(activeTab) }
+                  onContentUpdated={ this.handleTabContentUpdated(activeTab) }
                   onError={ this.handleTabError(activeTab) }
                   onWarning={ this.handleTabWarning(activeTab) }
                   onShown={ this.handleTabShown(activeTab) }
