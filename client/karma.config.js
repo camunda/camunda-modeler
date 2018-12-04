@@ -92,7 +92,7 @@ module.exports = function(karma) {
             use: 'babel-loader'
           },
           {
-            test: /\.css|\.bpmn$|\.cmmn$|\.dmn$|\.less$/,
+            test: /\.(css|bpmn|cmmn|dmn|less|xml|png)$/,
             use: 'raw-loader'
           }
         ]
