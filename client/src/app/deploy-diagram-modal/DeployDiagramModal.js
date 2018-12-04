@@ -5,13 +5,21 @@ import View from './View';
 import errorMessageFunctions from './error-messages';
 
 
+const ENDPOINT_URL_PATTERN = /^https?:\/\/.+/;
+
+
 const defaultState = {
+  isFormValid: false,
   isLoading: false,
   success: '',
   error: '',
   endpointUrl: '',
+  endpointUrlError: '',
+  endpointUrlTouched: false,
   tenantId: '',
-  deploymentName: ''
+  deploymentName: '',
+  deploymentNameError: '',
+  deploymentNameTouched: false
 };
 
 class DeployDiagramModal extends React.Component {
@@ -26,8 +34,16 @@ class DeployDiagramModal extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.validateForm();
+  }
+
   handleDeploy = async (event) => {
     event.preventDefault();
+
+    if (!this.state.isFormValid) {
+      return;
+    }
 
     this.setState({
       success: '',
@@ -71,20 +87,37 @@ class DeployDiagramModal extends React.Component {
 
   handleDeploymentNameChange = event => this.setState({ deploymentName: event.target.value });
 
+  handleEndpointUrlTouch = () => {
+    this.setState({ endpointUrlTouched: true });
+    this.validateForm();
+  };
+
+  handleDeploymentNameTouch = () => {
+    this.setState({ deploymentNameTouched: true });
+    this.validateForm();
+  };
+
   render() {
     return <View
       onClose={ this.props.onClose }
       onDeploy={ this.handleDeploy }
       onEndpointUrlChange={ this.handleEndpointUrlChange }
+      onEndpointUrlTouch={ this.handleEndpointUrlTouch }
       onTenantIdChange={ this.handleTenantIdChange }
       onDeploymentNameChange={ this.handleDeploymentNameChange }
+      onDeploymentNameTouch={ this.handleDeploymentNameTouch }
 
+      isFormValid={ this.state.isFormValid }
       isLoading={ this.state.isLoading }
       success={ this.state.success }
       error={ this.state.error }
       endpointUrl={ this.state.endpointUrl }
+      endpointUrlError={ this.state.endpointUrlError }
+      endpointUrlTouched={ this.state.endpointUrlTouched }
       tenantId={ this.state.tenantId }
       deploymentName={ this.state.deploymentName }
+      deploymentNameError={ this.state.deploymentNameError }
+      deploymentNameTouched={ this.state.deploymentNameTouched }
     />;
   }
 
@@ -114,6 +147,46 @@ class DeployDiagramModal extends React.Component {
     }
 
     return 'Unknown error occurred.';
+  }
+
+  validateForm = () => {
+    const validationResults = {
+      endpointUrlError: this.validateEndpointUrl(),
+      deploymentNameError: this.validateDeploymentName()
+    };
+    let isFormValid = true;
+
+    for (const errorField in validationResults) {
+      if (validationResults[errorField]) {
+        isFormValid = false;
+        break;
+      }
+    }
+
+    this.setState({
+      ...validationResults,
+      isFormValid
+    });
+  }
+
+  validateEndpointUrl = () => {
+    const url = this.state.endpointUrl;
+
+    if (!url.length) {
+      return 'Endpoint URL must not be void';
+    }
+
+    if (!ENDPOINT_URL_PATTERN.test(url)) {
+      return 'Endpoint URL must start with "http://" or "https://';
+    }
+  }
+
+  validateDeploymentName = () => {
+    const name = this.state.deploymentName;
+
+    if (!name.length) {
+      return 'Deployment name must not be void';
+    }
   }
 }
 
