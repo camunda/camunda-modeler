@@ -9,6 +9,8 @@ import EmptyTab from './EmptyTab';
 
 import { forEach } from 'min-dash';
 
+import parseDiagramType from './util/parseDiagramType';
+
 const ids = new Ids([ 32, 36, 1 ]);
 const createdByType = {};
 
@@ -217,11 +219,37 @@ export default class TabsProvider {
     return this.createTabForFile(file);
   }
 
+  getTabType(file) {
+
+    const {
+      name,
+      contents
+    } = file;
+
+    const typeFromExtension = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
+
+    if (this.hasProvider(typeFromExtension)) {
+      return typeFromExtension;
+    }
+
+    const typeFromContents = parseDiagramType(contents);
+
+    if (typeFromContents && this.hasProvider(typeFromContents)) {
+      return typeFromContents;
+    }
+
+    return null;
+  }
+
   createTabForFile(file) {
 
     const id = ids.next();
 
-    const type = file.name.substring(file.name.lastIndexOf('.') + 1);
+    const type = this.getTabType(file);
+
+    if (!type) {
+      return null;
+    }
 
     return {
       file,
