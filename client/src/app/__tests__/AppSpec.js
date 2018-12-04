@@ -1068,11 +1068,11 @@ describe('<App>', function() {
         await app.triggerAction('close-all-tabs');
 
         // then
-        const tabHistory = app.tabHistory;
+        const navigationHistory = app.navigationHistory;
 
-        expect(tabHistory.elements).to.be.empty;
-        expect(tabHistory.idx).to.eql(-1);
-        expect(tabHistory.get()).not.to.exist;
+        expect(navigationHistory.elements).to.be.empty;
+        expect(navigationHistory.idx).to.eql(-1);
+        expect(navigationHistory.get()).not.to.exist;
       });
 
     });
