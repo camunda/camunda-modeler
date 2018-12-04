@@ -23,7 +23,7 @@ export default class FileSystem {
   /**
    * Read file lastModified.
    *
-   * @param {String} file - File.
+   * @param {Object} file - File.
    *
    * @returns {Promise}
    */

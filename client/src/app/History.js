@@ -42,13 +42,18 @@ export default class History {
     return this.elements[this.idx];
   }
 
+  /**
+   * Replace all instances of element with new element.
+   */
   replace(element, newElement) {
 
-    const elementIdx = this.elements.indexOf(element);
+    this.elements = this.elements.map(e => {
+      if (e === element) {
+        return newElement;
+      }
 
-    if (elementIdx !== -1) {
-      this.elements[elementIdx] = newElement;
-    }
+      return e;
+    });
   }
 
   navigate(direction, nextFn) {

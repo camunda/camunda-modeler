@@ -309,11 +309,25 @@ export class FileSystem extends Mock {
 
 export class Backend extends Mock {
 
-  send() {}
+  constructor(overrides) {
+    super(overrides);
+
+    this.listeners = {};
+  }
+
+  send(event, ...args) {
+    const callback = this.listeners[event];
+
+    if (typeof callback === 'function') {
+      callback(args);
+    }
+  }
 
   sendUpdateMenu() {}
 
-  on() {}
+  on(event, callback) {
+    this.listeners[event] = callback.bind(this);
+  }
 
   once() {}
 
