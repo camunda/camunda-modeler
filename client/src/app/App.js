@@ -1243,8 +1243,16 @@ export class App extends Component {
 
   setEndpoints = endpoints => this.setState({ endpoints });
 
-  handleDeploy = options => {
-    return this.props.globals.backend.send('deploy', { ...options, file: this.state.activeTab.file });
+  handleDeploy = async (options) => {
+    await this.triggerAction('save');
+
+    const { file } = this.state.activeTab;
+
+    if (!file || !file.path) {
+      return false;
+    }
+
+    return this.props.globals.backend.send('deploy', { ...options, file });
   };
 
   handleDeployError = (error) => {

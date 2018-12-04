@@ -41,7 +41,7 @@ describe('<DeployDiagramModal>', function() {
     // given
     const endpointUrl = 'http://example.com';
 
-    const onDeployStub = sinon.stub().resolves();
+    const onDeployStub = sinon.stub().resolves(true);
 
     const wrapper = shallow(<DeployDiagramModal onDeploy={ onDeployStub } />);
     const instance = wrapper.instance();
@@ -52,6 +52,26 @@ describe('<DeployDiagramModal>', function() {
 
     // expect
     expect(instance.state.success).to.be.a('string').not.eql('');
+    expect(instance.state.error).to.eql('');
+    expect(instance.state.isLoading).to.be.false;
+  });
+
+
+  it('should unset isLoading when deployment is canceled', async function() {
+    // given
+    const endpointUrl = 'http://example.com';
+
+    const onDeployStub = sinon.stub().resolves(false);
+
+    const wrapper = shallow(<DeployDiagramModal onDeploy={ onDeployStub } />);
+    const instance = wrapper.instance();
+    instance.state.endpointUrl = endpointUrl;
+
+    // when
+    await instance.handleDeploy(new Event('click'));
+
+    // expect
+    expect(instance.state.success).to.eql('');
     expect(instance.state.error).to.eql('');
     expect(instance.state.isLoading).to.be.false;
   });
