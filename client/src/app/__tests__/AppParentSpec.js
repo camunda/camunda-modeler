@@ -55,6 +55,31 @@ describe('<AppParent>', function() {
 
   });
 
+
+  describe('on focus', function() {
+
+    it('should fire check-file-changed action', function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.appRef.current;
+      const actionSpy = spy(app, 'triggerAction');
+
+      // when
+      backend.send('client:window-focused');
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('check-file-changed');
+
+    });
+
+  });
+
 });
 
 

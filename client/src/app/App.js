@@ -177,6 +177,100 @@ export class App extends Component {
     return this.setActiveTab(nextActiveTab);
   }
 
+  checkFileChanged = async (tab) => {
+
+    const {
+      globals
+    } = this.props;
+
+    const {
+      fileSystem
+    } = globals;
+
+    const {
+      file
+    } = tab;
+
+    const tabLastModified = (file || {}).lastModified;
+
+    // skip new file
+    if (isNew(tab) || typeof tabLastModified === 'undefined') {
+      return;
+    }
+
+    const {
+      lastModified
+    } = await fileSystem.readFileStats(file);
+
+    // skip unchanged
+    if (!(lastModified > tabLastModified)) {
+      return;
+    }
+
+    const answer = await this.showDialog(getContentChangedDialog());
+
+    if (answer === 'ok') {
+      const updatedFile = await fileSystem.readFile(file.path);
+
+      return this.updateTab(tab, {
+        file: updatedFile
+      });
+    }
+  }
+
+  /**
+   * Update the tab with new attributes.
+   *
+   * @param {Tab} tab
+   * @param {Object} newAttrs
+   */
+  updateTab(tab, newAttrs) {
+
+    if (newAttrs.id && newAttrs.id !== tab.id) {
+      throw new Error('must not change tab.id');
+    }
+
+    const updatedTab = {
+      ...tab,
+      ...newAttrs
+    };
+
+    this.setState((state) => {
+
+      const {
+        activeTab,
+        tabs
+      } = state;
+
+      // replace in tabs
+      const updatedTabs = tabs.map(t => {
+        if (t === tab) {
+          return updatedTab;
+        }
+
+        return t;
+      });
+
+
+      // replace activeTab
+      let updatedActiveTab = activeTab;
+      if (activeTab.id === updatedTab.id) {
+        updatedActiveTab = updatedTab;
+      }
+
+      return {
+        activeTab: updatedActiveTab,
+        tabs: updatedTabs
+      };
+    });
+
+    // replace in navigation history
+    const navigationHistory = this.tabHistory;
+    navigationHistory.replace(tab, updatedTab);
+
+    return updatedTab;
+  }
+
   setActiveTab(tab) {
 
     const {
@@ -281,8 +375,9 @@ export class App extends Component {
     });
   }
 
-  selectTab = tab => {
-    return this.setActiveTab(tab);
+  selectTab = async tab => {
+    const updatedTab = await this.checkFileChanged(tab);
+    return this.setActiveTab(updatedTab || tab);
   }
 
   moveTab = (tab, newIndex) => {
@@ -1099,6 +1194,10 @@ export class App extends Component {
       this.openExternalUrl(options);
     }
 
+    if (action === 'check-file-changed') {
+      return this.checkFileChanged(activeTab);
+    }
+
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
@@ -1393,6 +1492,17 @@ function getFileTypeFromExtension(filePath) {
   return filePath.split('.').pop();
 }
 
+function getContentChangedDialog() {
+  return {
+    title: 'File changed',
+    message: 'The file has been changed externally.\nWould you like to reload it?',
+    type: 'question',
+    buttons: [
+      { id: 'ok', label: 'Reload' },
+      { id: 'cancel', label: 'Cancel' }
+    ]
+  };
+}
 function getOpenFilesDialogFilters(providers) {
   const allSupportedFilter = {
     name: 'All Supported',

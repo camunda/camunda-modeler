@@ -22,6 +22,9 @@ import {
 
 import pDefer from 'p-defer';
 
+import {
+  assign
+} from 'min-dash';
 
 /* global sinon */
 const { spy } = sinon;
@@ -1399,6 +1402,289 @@ describe('<App>', function() {
   });
 
 
+  describe('#checkFileChanged', function() {
+
+    const NEW_FILE_CONTENTS = 'bar';
+
+    let file1, file2, fileSystem, readFileSpy;
+
+    beforeEach(function() {
+
+      file1 = createFile('1.bpmn', 'foo', 'foo', 0);
+      file2 = createFile('2.bpmn', 'foobar');
+
+      readFileSpy = spy(_ => {
+        return assign(file1, {
+          contents: NEW_FILE_CONTENTS
+        });
+      });
+
+      fileSystem = new FileSystem({
+        readFile: readFileSpy
+      });
+    });
+
+
+    it('should notify if content changed', async function() {
+
+      // given
+      const showSpy = spy(_ => {
+        return 'ok';
+      });
+
+      const dialog = new Dialog({
+        show: showSpy
+      });
+
+      fileSystem.setReadFileStatsResponse({
+        lastModified: new Date().getMilliseconds()
+      });
+
+      const { app } = createApp({
+        globals: {
+          dialog,
+          fileSystem
+        }
+      }, mount);
+
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const tab = openedTabs[0];
+
+      const oldTabContents = tab.file.contents;
+
+      // when
+      await app.checkFileChanged(tab);
+
+      // then
+      expect(showSpy).to.have.been.called;
+      expect(readFileSpy).to.have.been.called;
+      expect(tab.file.contents).to.not.equal(oldTabContents);
+      expect(tab.file.contents).to.equal(NEW_FILE_CONTENTS);
+    });
+
+
+    it('should NOT notify if content not changed', async function() {
+
+      // given
+      const showSpy = spy();
+
+      const dialog = new Dialog({
+        show: showSpy
+      });
+
+      fileSystem.setReadFileStatsResponse({
+        lastModified: 0
+      });
+
+      const { app } = createApp({
+        globals: {
+          dialog,
+          fileSystem
+        }
+      });
+
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const tab = openedTabs[0];
+
+      // when
+      await app.checkFileChanged(tab);
+
+      // then
+      expect(showSpy).to.not.have.been.called;
+      expect(readFileSpy).to.not.have.been.called;
+    });
+
+
+    it('should NOT notify on new file', async function() {
+
+      // given
+      const showSpy = spy();
+
+      const dialog = new Dialog({
+        show: showSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          dialog,
+          fileSystem
+        }
+      });
+
+      // when
+      await app.openFiles([ file1, file2 ]);
+
+      // then
+      expect(showSpy).to.not.have.been.called;
+      expect(readFileSpy).to.not.have.been.called;
+    });
+
+
+    it('should NOT update file contents on cancelling', async function() {
+
+      // given
+      const showSpy = spy(_ => {
+        return 'cancel';
+      });
+
+      const dialog = new Dialog({
+        show: showSpy
+      });
+
+      fileSystem.setReadFileStatsResponse({
+        lastModified: new Date().getMilliseconds()
+      });
+
+      const { app } = createApp({
+        globals: {
+          dialog,
+          fileSystem
+        }
+      });
+
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const tab = openedTabs[0];
+
+      const oldTabContents = tab.file.contents;
+
+      // when
+      await app.checkFileChanged(tab);
+
+      // then
+      expect(showSpy).to.have.been.called;
+      expect(readFileSpy).to.not.have.been.called;
+      expect(tab.file.contents).to.equal(oldTabContents);
+    });
+
+  });
+
+
+  describe('#updateTab', function() {
+    let app,
+        errorSpy,
+        tab,
+        tabs;
+
+    beforeEach(async function() {
+
+      const rendered = createApp({
+        onError: errorSpy
+      });
+
+      app = rendered.app;
+
+      await app.createDiagram('bpmn');
+
+      tabs = app.state.tabs;
+
+      tab = tabs[0];
+    });
+
+    it('should update tab', async function() {
+
+      // given
+      const newAttrs = {
+        name: 'foo.bpmn'
+      };
+
+      // when
+      const updatedTab = await app.updateTab(tab, newAttrs);
+
+      // then
+      expect(updatedTab.name).to.eql('foo.bpmn');
+    });
+
+
+    it('should update tab with nested attributes', async function() {
+
+      // given
+      const name = 'foo.bpmn';
+
+      // when
+      const updatedTab = await app.updateTab(tab, {
+        file: {
+          ...tab.file,
+          name
+        }
+      });
+
+      const file = updatedTab.file;
+
+      // then
+      expect(file.name).to.eql('foo.bpmn');
+      expect(file.contents).to.exist;
+    });
+
+
+    it('should update navigation history', async function() {
+      // given
+      const newAttrs = {
+        name: 'foo.bpmn'
+      };
+
+      // when
+      const updatedTab = await app.updateTab(tab, newAttrs);
+
+      const {
+        navigationHistory
+      } = app;
+
+      const tabs = navigationHistory.elements;
+
+      // then
+      expect(tabs).to.not.include(tab);
+      expect(tabs).to.include(updatedTab);
+    });
+
+
+    it('should update app state with updated tab', async function() {
+
+      // given
+      const newAttrs = {
+        name: 'foo.bpmn'
+      };
+
+      // when
+      const updatedTab = await app.updateTab(tab, newAttrs);
+
+      const {
+        activeTab,
+        tabs
+      } = app.state;
+
+      // then
+      expect(updatedTab).to.not.eql(tab);
+      expect(updatedTab).to.eql(activeTab);
+      expect(tabs).to.not.include(tab);
+      expect(tabs).to.include(updatedTab);
+    });
+
+
+    it('should raise error when call with id', async function() {
+
+      // given
+      const newAttrs = {
+        id: 'foo'
+      };
+
+      // when
+      try {
+
+        await app.updateTab(tab, newAttrs);
+
+        expect.fail('expected exception');
+      } catch (e) {
+
+        // then
+        expect(e.message).to.eql('must not change tab.id');
+      }
+    });
+  });
+
+
   describe('#showOpenFilesDialog', function() {
 
     it('should open dialog and open files', async function() {
@@ -1590,13 +1876,14 @@ function createApp(options = {}, mountFn=shallow) {
 }
 
 
-function createFile(name, path, contents = 'foo') {
+function createFile(name, path, contents = 'foo', lastModified) {
 
   path = typeof path === 'undefined' ? name : path;
 
   return {
+    contents,
     name,
     path,
-    contents
+    lastModified
   };
 }

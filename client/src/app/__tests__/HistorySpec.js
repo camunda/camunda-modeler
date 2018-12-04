@@ -145,16 +145,16 @@ describe('History', function() {
   });
 
 
-  it('should replace', function() {
+  it('should replace all', function() {
 
     // given
-    const history = new History([ 1, 2, 3 ], 2);
+    const history = new History([ 1, 2, 2 ], 2);
 
     // when
-    history.replace(1, 'A');
+    history.replace(2, 'A');
 
     // then
-    expectState(history, [ 'A', 2, 3 ], 2);
+    expectState(history, [ 1, 'A', 'A' ], 2);
   });
 
 });
