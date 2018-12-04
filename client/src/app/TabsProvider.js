@@ -229,6 +229,9 @@ export default class TabsProvider {
       get name() {
         return this.file.name;
       },
+      set name(newName) {
+        this.file.name = newName;
+      },
       get title() {
         return this.file.path || 'unsaved';
       },
