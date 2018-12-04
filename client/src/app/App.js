@@ -74,7 +74,7 @@ export class App extends Component {
     this.tabComponentCache = {};
 
     // TODO(nikku): make state
-    this.tabHistory = new History();
+    this.navigationHistory = new History();
 
     // TODO(nikku): make state
     this.closedTabs = new History();
@@ -147,9 +147,9 @@ export class App extends Component {
       return tabShown.promise;
     }
 
-    const tabHistory = this.tabHistory;
+    const navigationHistory = this.navigationHistory;
 
-    tabHistory.push(tab);
+    navigationHistory.push(tab);
 
     return this.setActiveTab(tab);
   }
@@ -170,9 +170,9 @@ export class App extends Component {
       return getNextTab(tabs, activeTab, direction);
     };
 
-    const tabHistory = this.tabHistory;
+    const navigationHistory = this.navigationHistory;
 
-    const nextActiveTab = tabHistory.navigate(direction, nextFn);
+    const nextActiveTab = navigationHistory.navigate(direction, nextFn);
 
     return this.setActiveTab(nextActiveTab);
   }
@@ -265,7 +265,7 @@ export class App extends Component {
     });
 
     // replace in navigation history
-    const navigationHistory = this.tabHistory;
+    const navigationHistory = this.navigationHistory;
     navigationHistory.replace(tab, updatedTab);
 
     return updatedTab;
@@ -283,7 +283,7 @@ export class App extends Component {
     }
 
     if (tab !== EMPTY_TAB) {
-      const navigationHistory = this.tabHistory;
+      const navigationHistory = this.navigationHistory;
 
       if (navigationHistory.get() !== tab) {
         navigationHistory.push(tab);
@@ -334,7 +334,7 @@ export class App extends Component {
     } = this.state;
 
     const {
-      tabHistory,
+      navigationHistory,
       closedTabs
     } = this;
 
@@ -346,7 +346,7 @@ export class App extends Component {
 
     const newTabs = tabs.filter(t => t !== tab);
 
-    tabHistory.purge(tab);
+    navigationHistory.purge(tab);
 
     if (!isNew(tab)) {
       closedTabs.push(tab);
@@ -358,7 +358,7 @@ export class App extends Component {
 
       // open previous tab, if it exists
       const nextActive = (
-        tabHistory.get() ||
+        navigationHistory.get() ||
         newTabs[tabIdx] ||
         newTabs[tabIdx - 1] ||
         EMPTY_TAB
