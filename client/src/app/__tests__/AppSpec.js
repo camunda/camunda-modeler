@@ -1869,6 +1869,9 @@ describe('<App>', function() {
 
   describe('deployment handling', function() {
 
+    afterEach(sinon.restore);
+
+
     it('should handle deployment', async function() {
       // given
       const sendSpy = spy();
@@ -1886,11 +1889,72 @@ describe('<App>', function() {
       const file = createFile('1.bpmn');
       await app.openFiles([ file ]);
 
+      const saveStub = sinon.stub(app, 'saveTab').resolves();
+
       // when
-      app.handleDeploy({});
+      await app.handleDeploy({});
 
       // then
+      expect(saveStub).to.be.calledOnce;
       expect(sendSpy).to.be.calledOnceWith('deploy', { file });
+    });
+
+
+    it('should save tab before deployment', async function() {
+      // given
+      const fakeFile = createFile('saved.bpmn');
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      const saveStub = sinon.stub(app, 'saveTab').callsFake(() => {
+        app.tabSaved(app.state.activeTab, fakeFile);
+
+        return Promise.resolve();
+      });
+
+      // when
+      await app.createDiagram();
+      await app.handleDeploy({});
+
+      // then
+      expect(saveStub).to.be.calledOnce;
+      expect(sendSpy).to.be.calledOnce;
+    });
+
+
+    it('should throw error when tab is not saved before deployment', async function() {
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      const saveStub = sinon.stub(app, 'saveTab').resolves();
+
+
+      // when
+      await app.createDiagram();
+      await app.handleDeploy({});
+
+      // then
+      expect(saveStub).to.be.calledOnce;
+      expect(sendSpy).to.not.be.called;
     });
 
   });

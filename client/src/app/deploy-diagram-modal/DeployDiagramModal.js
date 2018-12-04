@@ -40,7 +40,13 @@ class DeployDiagramModal extends React.Component {
     this.saveEndpoint(payload.endpointUrl);
 
     try {
-      await this.props.onDeploy(payload);
+      const deployResult = await this.props.onDeploy(payload);
+
+      if (!deployResult) {
+        this.setState({ isLoading: false });
+
+        return;
+      }
 
       this.setState({
         isLoading: false,
