@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+#### BPMN
+
+* `FIX`: render labels always on top ([#1050](https://github.com/camunda/camunda-modeler/issues/1050))
+
 ## 2.2.3
 
 #### BPMN
