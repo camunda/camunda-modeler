@@ -7,7 +7,9 @@ import Workspace from './Workspace';
 
 export const ipcRenderer = electronRequire('ipcRenderer');
 
-export const backend = new Backend(ipcRenderer);
+export const { process } = electronRequire('remote');
+
+export const backend = new Backend(ipcRenderer, process);
 
 export const fileSystem = new FileSystem(backend);
 
