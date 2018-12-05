@@ -332,6 +332,8 @@ export class Backend extends Mock {
 
   sendMenuUpdate() {}
 
+  sendQuitAllowed() {}
+
   on(event, callback) {
     this.listeners[event] = callback.bind(this);
   }
