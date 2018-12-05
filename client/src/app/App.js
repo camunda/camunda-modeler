@@ -1029,9 +1029,9 @@ export class App extends Component {
   }
 
   updateMenu = (options) => {
-    const { onUpdateMenu } = this.props;
+    const { onMenuUpdate } = this.props;
 
-    onUpdateMenu({
+    onMenuUpdate({
       ...options,
       tabsCount: this.state.tabs.length
     });

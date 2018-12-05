@@ -330,7 +330,7 @@ export class Backend extends Mock {
     }
   }
 
-  sendUpdateMenu() {}
+  sendMenuUpdate() {}
 
   on(event, callback) {
     this.listeners[event] = callback.bind(this);

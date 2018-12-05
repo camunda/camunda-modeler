@@ -59,7 +59,7 @@ describe('<AppParent>', function() {
     it('should update', function() {
 
       // when
-      appParent.handleUpdateMenu();
+      appParent.handleMenuUpdate();
 
       // then
       expect(updateSpy).to.have.been.called;
