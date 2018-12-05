@@ -8,7 +8,7 @@ const ERROR_MESSAGE = {
 
 
 export default function getStatusCodeErrorMessage(error) {
-  switch (error.code) {
+  switch (error.status) {
   case 401:
     return ERROR_MESSAGE.UNAUTHORIZED;
   case 403:
