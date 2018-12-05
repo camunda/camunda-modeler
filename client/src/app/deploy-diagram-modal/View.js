@@ -65,11 +65,10 @@ const View = (props) => {
               [css.InputInvalid]: shouldDisplayEndpointUrlError
             }) }
           />
-          { shouldDisplayEndpointUrlError && <span className={ css.InputError }>{ props.endpointUrlError }</span> }
+          { shouldDisplayEndpointUrlError && <div className="hint error">{ props.endpointUrlError }</div> }
 
           <div className="hint">
-            This should point to the <code>/deployment/create</code> endpoint
-            inside your Camunda REST API.
+            Should point to a valid Camunda Engine REST API endpoint.
           </div>
         </div>
 
