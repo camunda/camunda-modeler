@@ -53,6 +53,8 @@ function createDeployer({ fetch, fs, FormData }) {
 
       return cb(null, response);
     } catch (error) {
+      error.deploymentName = deploymentName;
+
       return cb(error);
     }
 

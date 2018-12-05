@@ -184,6 +184,33 @@ describe('deploy', function() {
     });
   });
 
+
+  it('should attach deployment name to error', function(done) {
+
+    // given
+    const deploymentName = 'deploymentName';
+
+    function failingFetch() {
+      return Promise.reject(new Error());
+    }
+
+    const deploy = createDeploy(failingFetch);
+
+    const data = getDeploymentData({ deploymentName });
+
+    // when
+    deploy('some/url', data, (err, data) => {
+
+      // then
+      expect(err).to.exist;
+      expect(err.deploymentName).to.eql(deploymentName);
+
+      expect(data).not.to.exist;
+
+      done();
+    });
+  });
+
 });
 
 
