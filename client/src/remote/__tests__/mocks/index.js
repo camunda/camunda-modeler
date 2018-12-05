@@ -25,3 +25,13 @@ export class IpcRenderer {
     this.listener = callback;
   }
 }
+
+export class Process {
+  constructor() {
+    this.platform = null;
+  }
+
+  setPlatform(platform) {
+    this.platform = platform;
+  }
+}

@@ -8,8 +8,9 @@ const ids = new Ids();
  */
 export default class Backend {
 
-  constructor(ipcRenderer) {
+  constructor(ipcRenderer, process) {
     this.ipcRenderer = ipcRenderer;
+    this.process = process;
   }
 
   /**
@@ -75,6 +76,10 @@ export default class Backend {
 
   registerMenu = (name, options) => {
     return this.send('menu:register', name, options);
+  }
+
+  getPlatform() {
+    return this.process.platform;
   }
 
 }
