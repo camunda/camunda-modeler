@@ -190,6 +190,7 @@ export default class AppParent extends Component {
   }
 
   componentDidMount() {
+    const { keyboardBindings } = this.props;
 
     const backend = this.getBackend();
 
@@ -206,9 +207,14 @@ export default class AppParent extends Component {
     });
 
     this.registerMenus();
+
+    keyboardBindings.setOnAction(this.triggerAction);
+
+    keyboardBindings.bind();
   }
 
   componentWillUnmount() {
+    const { keyboardBindings } = this.props;
 
     const {
       globals
@@ -221,6 +227,8 @@ export default class AppParent extends Component {
     backend.off('menu:action', this.triggerAction);
 
     backend.off('client:open-files', this.openFiles);
+
+    keyboardBindings.unbind();
   }
 
   render() {
