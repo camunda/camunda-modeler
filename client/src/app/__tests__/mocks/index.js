@@ -342,6 +342,8 @@ export class Backend extends Mock {
 
   registerMenu = () => Promise.resolve()
 
+  getPlatform() {}
+
 }
 
 export class Workspace extends Mock {
