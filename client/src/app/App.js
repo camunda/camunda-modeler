@@ -1028,9 +1028,11 @@ export class App extends Component {
     console.error('NOT IMPLEMENTED');
   }
 
-  updateMenu = (state) => {
-    this.props.globals.backend.sendUpdateMenu({
-      ...state,
+  updateMenu = (options) => {
+    const { onUpdateMenu } = this.props;
+
+    onUpdateMenu({
+      ...options,
       tabsCount: this.state.tabs.length
     });
   }
