@@ -41,32 +41,24 @@ describe('<App>', function() {
     it('onContextMenu');
 
 
-    describe('globals', function() {
+    describe('onUpdateMenu', function() {
 
-      describe('backend', function() {
+      it('should call onUpdateMenu on tab change', function() {
 
-        it('should call Backend#sendUpdateMenu on tab change', function() {
+        // given
+        const updateMenuSpy = spy();
 
-          // given
-          const backend = new Backend();
-
-          const spy = sinon.spy(backend, 'sendUpdateMenu');
-
-          const {
-            app
-          } = createApp({
-            globals: {
-              backend
-            }
-          });
-
-          // when
-          app.handleTabChanged()();
-
-          // then
-          expect(spy).to.have.been.called;
+        const {
+          app
+        } = createApp({
+          onUpdateMenu: updateMenuSpy
         });
 
+        // when
+        app.handleTabChanged()();
+
+        // then
+        expect(updateMenuSpy).to.have.been.called;
       });
 
     });
@@ -1880,6 +1872,7 @@ function createApp(options = {}, mountFn=shallow) {
     tree.update();
   };
 
+  const onUpdateMenu = options.onUpdateMenu;
   const onReady = options.onReady;
   const onError = options.onError;
   const onWarning = options.onWarning;
@@ -1889,6 +1882,7 @@ function createApp(options = {}, mountFn=shallow) {
       cache={ cache }
       globals={ globals }
       tabsProvider={ tabsProvider }
+      onUpdateMenu={ onUpdateMenu }
       onReady={ onReady }
       onError={ onError }
       onWarning={ onWarning }
