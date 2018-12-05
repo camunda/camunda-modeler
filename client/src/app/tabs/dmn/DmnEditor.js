@@ -253,37 +253,54 @@ export class DmnEditor extends CachedComponent {
 
     const newState = {
       close: true,
+      copy: false,
+      cut: false,
       exportAs: 'saveSVG' in activeViewer ? [ 'svg', 'png' ] : false,
+      inputActive,
+      paste: false,
       propertiesPanel: true,
       redo: commandStack.canRedo(),
       save: true,
       undo: commandStack.canUndo()
     };
 
-    const selection = activeViewer.get('selection');
+    const selection = activeViewer.get('selection', false);
 
-    const selectionLength = selection.get().length;
+    const hasSelection = selection && !!selection.get();
+
+    const selectionLength = hasSelection ? selection.get().length : 0;
 
     let editMenu;
 
     if (activeView.type === 'drd') {
       assign(newState, {
+        defaultCopyCutPaste: inputActive,
         editLabel: !inputActive && !!selectionLength,
         lassoTool: !inputActive,
         moveCanvas: !inputActive,
         moveSelection: !inputActive && !!selectionLength,
-        removeSelected: false,
+        removeSelected: inputActive || !!selectionLength,
+        selectAll: true,
         zoom: true
       });
 
       editMenu = getDmnDrdEditMenu(newState);
     } else if (activeView.type === 'decisionTable') {
       assign(newState, {
-        hasSelection: activeViewer.get('selection').hasSelection()
+        defaultCopyCutPaste: true,
+        hasSelection: activeViewer.get('selection').hasSelection(),
+        removeSelected: inputActive,
+        selectAll: inputActive
       });
 
       editMenu = getDmnDecisionTableEditMenu(newState);
     } else if (activeView.type === 'literalExpression') {
+      assign(newState, {
+        defaultCopyCutPaste: true,
+        removeSelected: true,
+        selectAll: true
+      });
+
       editMenu = getDmnLiteralExpressionEditMenu(newState);
     }
 
