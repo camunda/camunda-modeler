@@ -82,7 +82,8 @@ module.exports = {
     headers: {
       'Access-Control-Allow-Origin': '*'
     }
-  }
+  },
+  devtool: DEV ? 'cheap-module-eval-source-map' : 'source-map'
 };
 
 
