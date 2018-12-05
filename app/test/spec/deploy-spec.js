@@ -145,14 +145,16 @@ describe('deploy', function() {
   });
 
 
-  it('should return error with proper code for backend error', function(done) {
+  it('should return error with status, statusText and url for backend error', function(done) {
 
     // given
-    const errorStatus = 500,
+    const url = 'some/url',
+          errorStatus = 500,
           errorStatusText = 'INTERNAL SERVER ERROR';
 
     function failingFetch() {
       return Promise.resolve({
+        url,
         ok: false,
         status: errorStatus,
         statusText: errorStatusText,
@@ -168,11 +170,13 @@ describe('deploy', function() {
     const data = getDeploymentData();
 
     // when
-    deploy('some/url', data, (err, data) => {
+    deploy(url, data, (err, data) => {
 
       // then
       expect(err).to.exist;
-      expect(err.code).to.eql(errorStatus);
+      expect(err.status).to.eql(errorStatus);
+      expect(err.statusText).to.eql(errorStatusText);
+      expect(err.url).to.eql(url);
 
       expect(data).not.to.exist;
 
