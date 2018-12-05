@@ -277,12 +277,13 @@ class MenuBuilder {
     }
 
     builder.menu.append(new MenuItem({
-      label: menuItem.label,
       accelerator: menuItem.accelerator,
-      enabled: menuItem.enabled !== undefined ? menuItem.enabled : true,
       click: function() {
         app.emit('menu:action', menuItem.action, menuItem.options);
       },
+      enabled: menuItem.enabled !== undefined ? menuItem.enabled : true,
+      label: menuItem.label,
+      role: menuItem.role,
       submenu
     }));
   }

@@ -1,5 +1,7 @@
 import {
   getCanvasEntries,
+  getCopyCutPasteEntries,
+  getDefaultCopyCutPasteEntries,
   getDiagramFindEntries,
   getSelectionEntries,
   getToolEntries,
@@ -7,8 +9,15 @@ import {
 } from '../getEditMenu';
 
 export function getCmmnEditMenu(state) {
+  const { defaultCopyCutPaste } = state;
+
+  const copyCutPasteEntries = defaultCopyCutPaste
+    ? getDefaultCopyCutPasteEntries()
+    : getCopyCutPasteEntries(state);
+
   return [
     getUndoRedoEntries(state),
+    copyCutPasteEntries,
     getToolEntries(state),
     getDiagramFindEntries(state),
     [
