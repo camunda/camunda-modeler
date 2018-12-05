@@ -126,17 +126,7 @@ function isSelectAll(event) {
  * @returns {boolean}
  */
 function isAccelerator(a = '', b = '') {
-  a = a
-    .split('+')
-    .map(s => s.trim().toLowerCase())
-    .join('+');
-
-  b = b
-    .split('+')
-    .map(s => s.trim().toLowerCase())
-    .join('+');
-
-  return a === b;
+  return a.replace(/\s+/g, '') === b.replace(/\s+/g, '');
 }
 
 /**
