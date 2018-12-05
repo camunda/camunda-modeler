@@ -32,7 +32,7 @@ var Platform = require('./platform'),
     Menu = require('./menu'),
     Cli = require('./cli'),
     Plugins = require('./plugins'),
-    deploy = require('./createDeployer')({ fetch, fs, FormData });
+    Deployer = require('./deployer');
 
 var browserOpen = require('./util/browser-open'),
     renderer = require('./util/renderer');
@@ -85,6 +85,9 @@ var dialog = new Dialog({
 var fileSystem = new FileSystem({
   dialog: dialog
 });
+
+// bootstrap deployer
+var deployer = new Deployer({ fetch, fs, FormData });
 
 
 // make app a singleton
@@ -409,7 +412,7 @@ app.on('ready', function() {
 function handleDeployment(data, done) {
   const { endpointUrl } = data;
 
-  deploy(endpointUrl, data, function(error, result) {
+  deployer.deploy(endpointUrl, data, function(error, result) {
 
     if (error) {
       console.error('failed to deploy', error);
