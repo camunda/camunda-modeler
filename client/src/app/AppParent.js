@@ -25,18 +25,18 @@ export default class AppParent extends Component {
       backend
     } = this.props.globals;
 
-    const result = this.getApp().triggerAction(action, options);
+    let result = Promise.resolve(
+      this.getApp().triggerAction(action, options)
+    );
 
     if (action === 'quit') {
-      Promise.resolve(result).then(
+      result = result.then(
         backend.sendQuitAllowed,
         backend.sendQuitAborted
       );
     }
 
-    if (result && 'catch' in result) {
-      result.catch(() => console.error);
-    }
+    result.catch(this.handleError);
   }
 
   openFiles = (event, files) => {
@@ -129,10 +129,10 @@ export default class AppParent extends Component {
   handleError = (error, tab) => {
 
     if (tab) {
-      return log('tab error', error, tab);
+      return log('tab ERROR', error, tab);
     }
 
-    return log('app error', error);
+    return log('app ERROR', error);
   }
 
   handleWarning = (warning, tab) => {

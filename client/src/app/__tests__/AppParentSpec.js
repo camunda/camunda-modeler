@@ -136,6 +136,31 @@ describe('<AppParent>', function() {
 
   });
 
+
+  describe('trigger action', function() {
+
+    it('should trigger quit', async function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const quitAllowedSpy = spy(backend, 'sendQuitAllowed');
+
+      await appParent.triggerAction({}, 'quit');
+
+      // then
+      expect(quitAllowedSpy).to.have.been.called;
+    });
+
+
+    it('should handle action errors');
+
+  });
+
 });
 
 
