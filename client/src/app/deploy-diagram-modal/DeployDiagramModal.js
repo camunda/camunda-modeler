@@ -173,11 +173,11 @@ class DeployDiagramModal extends React.Component {
     const url = this.state.endpointUrl;
 
     if (!url.length) {
-      return 'Endpoint URL must not be void';
+      return 'Endpoint URL must not be void.';
     }
 
     if (!ENDPOINT_URL_PATTERN.test(url)) {
-      return 'Endpoint URL must start with "http://" or "https://';
+      return 'Endpoint URL must start with "http://" or "https://".';
     }
   }
 
@@ -185,7 +185,7 @@ class DeployDiagramModal extends React.Component {
     const name = this.state.deploymentName;
 
     if (!name.length) {
-      return 'Deployment name must not be void';
+      return 'Deployment name must not be void.';
     }
   }
 }
