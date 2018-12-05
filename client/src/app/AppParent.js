@@ -45,14 +45,14 @@ export default class AppParent extends Component {
     this.getApp().openFiles(files);
   }
 
-  handleUpdateMenu = (options = {}) => {
+  handleMenuUpdate = (options = {}) => {
     const { keyboardBindings } = this.props;
 
     const { editMenu } = options;
 
     keyboardBindings.update(editMenu);
 
-    this.getBackend().sendUpdateMenu(options);
+    this.getBackend().sendMenuUpdate(options);
   }
 
   handleContextMenu = (type, options) => {
@@ -242,7 +242,7 @@ export default class AppParent extends Component {
         ref={ this.appRef }
         tabsProvider={ tabsProvider }
         globals={ globals }
-        onUpdateMenu={ this.handleUpdateMenu }
+        onMenuUpdate={ this.handleMenuUpdate }
         onContextMenu={ this.handleContextMenu }
         onWorkspaceChanged={ this.handleWorkspaceChanged }
         onReady={ this.handleReady }

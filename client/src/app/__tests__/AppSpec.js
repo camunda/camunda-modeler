@@ -41,9 +41,9 @@ describe('<App>', function() {
     it('onContextMenu');
 
 
-    describe('onUpdateMenu', function() {
+    describe('onMenuUpdate', function() {
 
-      it('should call onUpdateMenu on tab change', function() {
+      it('should call onMenuUpdate on tab change', function() {
 
         // given
         const updateMenuSpy = spy();
@@ -51,7 +51,7 @@ describe('<App>', function() {
         const {
           app
         } = createApp({
-          onUpdateMenu: updateMenuSpy
+          onMenuUpdate: updateMenuSpy
         });
 
         // when
@@ -1872,7 +1872,7 @@ function createApp(options = {}, mountFn=shallow) {
     tree.update();
   };
 
-  const onUpdateMenu = options.onUpdateMenu;
+  const onMenuUpdate = options.onMenuUpdate;
   const onReady = options.onReady;
   const onError = options.onError;
   const onWarning = options.onWarning;
@@ -1882,7 +1882,7 @@ function createApp(options = {}, mountFn=shallow) {
       cache={ cache }
       globals={ globals }
       tabsProvider={ tabsProvider }
-      onUpdateMenu={ onUpdateMenu }
+      onMenuUpdate={ onMenuUpdate }
       onReady={ onReady }
       onError={ onError }
       onWarning={ onWarning }
