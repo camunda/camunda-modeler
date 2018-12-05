@@ -1256,7 +1256,7 @@ export class App extends Component {
   };
 
   handleDeployError = (error) => {
-    this.logEntry(JSON.stringify(error), 'deploy-error');
+    this.logEntry(`Deploy error: ${JSON.stringify(error)}`, 'deploy-error');
   }
 
   quit() {

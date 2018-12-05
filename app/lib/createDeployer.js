@@ -73,9 +73,12 @@ async function getErrorFromResponse(response) {
     const body = await response.json();
     error.message = body.message;
   } catch (_) {
-    error.code = response.status;
     error.message = response.statusText;
   }
+
+  error.status = response.status;
+  error.statusText = response.statusText;
+  error.url = response.url;
 
   return error;
 }
