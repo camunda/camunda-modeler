@@ -11,6 +11,7 @@ import {
   Backend,
   Dialog,
   FileSystem,
+  KeyboardBindings,
   TabsProvider,
   Workspace
 } from './mocks';
@@ -21,6 +22,61 @@ const { spy } = sinon;
 
 
 describe('<AppParent>', function() {
+
+  describe('keyboard bindings', function() {
+
+    let appParent,
+        bindSpy,
+        setOnActionSpy,
+        tree,
+        unbindSpy,
+        updateSpy;
+
+    beforeEach(function() {
+      bindSpy = spy();
+      setOnActionSpy = spy();
+      unbindSpy = spy();
+      updateSpy = spy();
+
+      const keyboardBindings = {
+        bind: bindSpy,
+        setOnAction: setOnActionSpy,
+        unbind: unbindSpy,
+        update: updateSpy
+      };
+
+      ({ appParent, tree } = createAppParent({ keyboardBindings }, mount));
+    });
+
+    it('should bind', function() {
+
+      // then
+      expect(bindSpy).to.have.been.called;
+      expect(setOnActionSpy).to.have.been.called;
+    });
+
+
+    it('should update', function() {
+
+      // when
+      appParent.handleUpdateMenu();
+
+      // then
+      expect(updateSpy).to.have.been.called;
+    });
+
+
+    it('should unbind', function() {
+
+      // when
+      tree.unmount();
+
+      // then
+      expect(unbindSpy).to.have.been.called;
+    });
+
+  });
+
 
   describe('workspace', function() {
 
@@ -104,11 +160,14 @@ function createAppParent(options = {}, mountFn=shallow) {
     ...(options.globals || {})
   };
 
+  const keyboardBindings = options.keyboardBindings || new KeyboardBindings();
+
   const tabsProvider = options.tabsProvider || new TabsProvider();
 
   const tree = mountFn(
     <AppParent
       globals={ globals }
+      keyboardBindings={ keyboardBindings }
       tabsProvider={ tabsProvider }
     />
   );

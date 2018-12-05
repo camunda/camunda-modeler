@@ -355,6 +355,16 @@ export class Workspace extends Mock {
   }
 }
 
+export class KeyboardBindings extends Mock {
+  bind() {}
+
+  unbind() {}
+
+  update() {}
+
+  setOnAction() {}
+}
+
 /**
  * Response mock. Returns responses in desired order.
  *
