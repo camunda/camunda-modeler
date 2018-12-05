@@ -1,5 +1,7 @@
 
 import {
+  getCopyCutPasteEntries,
+  getDefaultCopyCutPasteEntries,
   getSelectionEntries,
   getToolEntries,
   getUndoRedoEntries
@@ -33,28 +35,26 @@ function getDecisionTableEntries({
     ], [
       {
         label: 'Add Clause',
-        submenu: [
-          [
-            {
-              label: 'Input',
-              action: 'addInput'
-            }, {
-              label: 'Output',
-              action: 'addOutput'
-            }
-          ], [
-            {
-              label: 'Left Of Selected',
-              enabled: hasSelection,
-              action: 'addClauseLeft'
-            },
-            {
-              label: 'Right Of Selected',
-              enabled: hasSelection,
-              action: 'addClauseRight'
-            }
-          ]
-        ]
+        submenu: [{
+          label: 'Input',
+          action: 'addInput'
+        }, {
+          label: 'Output',
+          action: 'addOutput'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Left Of Selected',
+          enabled: hasSelection,
+          action: 'addClauseLeft'
+        },
+        {
+          label: 'Right Of Selected',
+          enabled: hasSelection,
+          action: 'addClauseRight'
+        }]
       }, {
         label: 'Remove Clause',
         enabled: hasSelection,
@@ -65,22 +65,45 @@ function getDecisionTableEntries({
 }
 
 export function getDmnDrdEditMenu(state) {
+  const { defaultCopyCutPaste } = state;
+
+  const copyCutPasteEntries = defaultCopyCutPaste
+    ? getDefaultCopyCutPasteEntries()
+    : getCopyCutPasteEntries(state);
+
   return [
     getUndoRedoEntries(state),
+    copyCutPasteEntries,
     getToolEntries(state),
     getSelectionEntries(state)
   ];
 }
 
 export function getDmnDecisionTableEditMenu(state) {
+  const { defaultCopyCutPaste } = state;
+
+  const copyCutPasteEntries = defaultCopyCutPaste
+    ? getDefaultCopyCutPasteEntries()
+    : getCopyCutPasteEntries(state);
+
   return [
     getUndoRedoEntries(state),
+    copyCutPasteEntries,
+    getSelectionEntries(state),
     ...getDecisionTableEntries(state)
   ];
 }
 
 export function getDmnLiteralExpressionEditMenu(state) {
+  const { defaultCopyCutPaste } = state;
+
+  const copyCutPasteEntries = defaultCopyCutPaste
+    ? getDefaultCopyCutPasteEntries()
+    : getCopyCutPasteEntries(state);
+
   return [
-    getUndoRedoEntries(state)
+    getUndoRedoEntries(state),
+    copyCutPasteEntries,
+    getSelectionEntries(state)
   ];
 }

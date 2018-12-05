@@ -1,27 +1,12 @@
 import {
   getCanvasEntries,
+  getCopyCutPasteEntries,
+  getDefaultCopyCutPasteEntries,
   getDiagramFindEntries,
   getSelectionEntries,
   getToolEntries,
   getUndoRedoEntries
 } from '../getEditMenu';
-
-function getCopyPasteEntries({
-  copy,
-  paste
-}) {
-  return [{
-    label: 'Copy',
-    accelerator: 'CommandOrControl+C',
-    enabled: copy,
-    action: 'copy'
-  }, {
-    label: 'Paste',
-    accelerator: 'CommandOrControl+V',
-    enabled: paste,
-    action: 'paste'
-  }];
-}
 
 function getAlignDistributeEntries({
   align,
@@ -56,9 +41,15 @@ function getAlignDistributeEntries({
 }
 
 export function getBpmnEditMenu(state) {
+  const { defaultCopyCutPaste } = state;
+
+  const copyCutPasteEntries = defaultCopyCutPaste
+    ? getDefaultCopyCutPasteEntries()
+    : getCopyCutPasteEntries(state);
+
   return [
     getUndoRedoEntries(state),
-    getCopyPasteEntries(state),
+    copyCutPasteEntries,
     getToolEntries(state),
     getAlignDistributeEntries(state),
     getDiagramFindEntries(state),

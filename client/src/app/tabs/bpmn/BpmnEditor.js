@@ -149,7 +149,8 @@ export class BpmnEditor extends CachedComponent {
       'saveXML.done',
       'commandStack.changed',
       'selection.changed',
-      'attach'
+      'attach',
+      'elements.copied'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
@@ -284,12 +285,15 @@ export class BpmnEditor extends CachedComponent {
       align: selectionLength > 1,
       close: true,
       copy: !!selectionLength,
+      cut: false,
+      defaultCopyCutPaste: inputActive,
       distribute: selectionLength > 2,
       editLabel: !inputActive && !!selectionLength,
       exportAs: [ 'svg', 'png' ],
       find: !inputActive,
       globalConnectTool: !inputActive,
       handTool: !inputActive,
+      inputActive,
       lassoTool: !inputActive,
       moveCanvas: !inputActive,
       moveToOrigin: !inputActive,
@@ -297,8 +301,9 @@ export class BpmnEditor extends CachedComponent {
       paste: !modeler.get('clipboard').isEmpty(),
       propertiesPanel: true,
       redo: commandStack.canRedo(),
-      removeSelected: !!selectionLength,
+      removeSelected: !!selectionLength || inputActive,
       save: true,
+      selectAll: true,
       setColor: !!selectionLength,
       spaceTool: !inputActive,
       undo: commandStack.canUndo(),
