@@ -1,85 +1,124 @@
 :local(.View) {
   user-select: none;
 
-  .intro {
-    margin-bottom: 30px;
-  }
-
   h2 {
     font-weight: normal;
   }
 
-}
-
-:local(.Form) {
-  font-size: 13.3333px;
-  margin: 15px 0;
-
-  display: grid;
-  grid-template-columns: max-content auto;
-
-  grid-column-gap: 10px;
-  grid-row-gap: 15px;
-
-  align-items: baseline;
-
-
-  .form-row {
-    margin: 15px;
+  .intro {
+    margin-bottom: 30px;
   }
 
-  label {
-    font-weight: bolder;
-    line-height: 30px;
-    text-align: right;
-    width: 100%;
+  .loading {
+    animation: spin 2s infinite linear;
     display: inline-block;
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(359deg);
+      }
+    }
   }
 
-  input {
-    width: 100%;
-    padding: 6px;
+  .deploy-message {
+    border: solid 1px;
+    border-radius: 4px;
+    padding: 8px 10px;
 
-    font-size: inherit;
+    p {
+      margin: .5em;
+    }
 
-    border: 1px solid rgb(204, 204, 204);
+    .content {
+      user-select: text;
+    }
+
+    &.success {
+      color: #155724;
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+    }
+
+    &.error {
+      color: #721c24;
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+    }
   }
 
-  button + button {
-    margin-left: 10px;
+  form {
+    font-size: 13.3333px;
+    margin: 15px 0;
+
+    display: grid;
+    grid-template-columns: max-content auto;
+
+    grid-column-gap: 10px;
+    grid-row-gap: 15px;
+
+    align-items: baseline;
+
+    .form-submit {
+      grid-column-start: 2;
+    }
+
+    label {
+      font-weight: bolder;
+      line-height: 30px;
+      text-align: right;
+      width: 100%;
+      display: inline-block;
+    }
+
+    input {
+      width: 100%;
+      padding: 6px;
+
+      font-size: inherit;
+
+      border: 1px solid rgb(204, 204, 204);
+    }
+
+    input.valid {
+      &:not(:focus) {
+        border: 1px solid rgb(82, 178, 21);
+      }
+
+      outline-color: rgb(82, 178, 21);
+    }
+
+    input.invalid {
+      &:not(:focus) {
+        border: 1px solid rgb(255, 0, 0);
+      }
+
+      outline-color: rgb(255, 0, 0);
+    }
+
+    button + button {
+      margin-left: 10px;
+    }
+
+    button {
+      padding: 6px 10px;
+    }
+
+    button:disabled,
+    input:disabled {
+      color: #808080;
+    }
+
+    .hint {
+      margin-top: 5px;
+      color: rgb(102, 102, 102);
+    }
+
+    .hint.error {
+      color: #ff0000;
+    }
   }
-
-  button {
-    padding: 6px 10px;
-  }
-
-  button:disabled,
-  input:disabled {
-    color: #808080;
-  }
-
-  .hint {
-    margin-top: 5px;
-    color: rgb(102, 102, 102);
-  }
-
-  .hint.error {
-    color: #ff0000;
-  }
-}
-
-:local(.InputValid) {
-  &:not(:focus) {
-    border: 1px solid rgb(82, 178, 21);
-  }
-
-  outline-color: rgb(82, 178, 21);
-}
-
-:local(.InputInvalid) {
-  &:not(:focus) {
-    border: 1px solid rgb(255, 0, 0);
-  }
-
-  outline-color: rgb(255, 0, 0);
 }
