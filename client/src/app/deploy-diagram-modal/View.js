@@ -2,11 +2,16 @@ import React from 'react';
 
 import classnames from 'classnames';
 
-import { ModalWrapper } from '../primitives';
+import {
+  Formik,
+  Form,
+  Field
+} from 'formik';
 
-import ErrorMessage from './ErrorMessage';
-import Loading from './Loading';
-import Success from './Success';
+import {
+  Icon,
+  ModalWrapper
+} from '../primitives';
 
 import css from './View.less';
 
@@ -18,116 +23,134 @@ const ERROR_HEADING = '❌ The diagram could not be deployed.';
 const View = (props) => {
   const {
     error,
-    isLoading,
-    success
+    success,
+    initialValues,
+    onClose,
+    onDeploy,
+    validateEndpointUrl,
+    validateDeploymentName
   } = props;
 
-  const shouldDisplayEndpointUrlError = props.endpointUrlTouched && props.endpointUrlError,
-        shouldDisplayDeploymentNameError = props.deploymentNameTouched && props.deploymentNameError;
-
   return (
-    <ModalWrapper className={ css.View } onClose={ props.onClose }>
+    <ModalWrapper className={ css.View } onClose={ onClose }>
       <h2>Deploy Diagram</h2>
 
       <p className="intro">
         Specify deployment details and deploy this diagram to Camunda.
       </p>
 
-      { isLoading && <Loading /> }
 
-      { success && <Success heading={ SUCCESS_HEADING } message={ success } /> }
-
-      { error && <ErrorMessage heading={ ERROR_HEADING } message={ error } /> }
-
-
-
-      <form
-        className={ css.Form }
-        onSubmit={ props.onDeploy }
+      <Formik
+        initialValues={ initialValues }
+        onSubmit={ onDeploy }
       >
+        {({ errors, isSubmitting, submitCount, touched }) => (
+          <React.Fragment>
 
-        <div>
-          <label htmlFor="endpoint-url">
-            Endpoint URL
-          </label>
-        </div>
+            { isSubmitting && <Icon name={ 'loading' } className="loading" /> }
 
-        <div>
-          <input
-            id="endpoint-url"
-            type="text"
-            value={ props.endpointUrl }
-            onChange={ props.onEndpointUrlChange }
-            onBlur={ props.onEndpointUrlTouch }
-            disabled={ isLoading }
-            className={ classnames({
-              [css.InputValid]: !props.endpointUrlError,
-              [css.InputInvalid]: shouldDisplayEndpointUrlError
-            }) }
-          />
-          { shouldDisplayEndpointUrlError && <div className="hint error">{ props.endpointUrlError }</div> }
+            { success && <DeploySuccess message={ success } /> }
 
-          <div className="hint">
-            Should point to a valid Camunda Engine REST API endpoint.
-          </div>
-        </div>
+            { error && <DeployError message={ error } /> }
 
-        <div>
-          <label htmlFor="deployment-name">Deployment Name</label>
-        </div>
+            <Form className={ css.Form }>
+              <div>
+                <label htmlFor="endpointUrl">Endpoint URL</label>
+              </div>
 
-        <div>
-          <input
-            id="deployment-name"
-            name="deployment-name"
-            type="text"
-            value={ props.deploymentName }
-            onChange={ props.onDeploymentNameChange }
-            onBlur={ props.onDeploymentNameTouch }
-            disabled={ isLoading }
-            className={ classnames({
-              [css.InputValid]: !props.deploymentNameError,
-              [css.InputInvalid]: shouldDisplayDeploymentNameError
-            }) }
-          />
-          { shouldDisplayDeploymentNameError && <span className={ css.InputError }>{ props.deploymentNameError }</span> }
-        </div>
+              <div>
+                <Field
+                  name="endpointUrl"
+                  validate={ validateEndpointUrl }
+                  className={ classnames({
+                    valid: !errors.endpointUrl && touched.endpointUrl,
+                    invalid: errors.endpointUrl && touched.endpointUrl && submitCount
+                  }) }
+                />
 
-        <div>
-          <label htmlFor="tenant-id">Tenant Id</label>
-        </div>
+                { errors.endpointUrl && touched.endpointUrl && submitCount ? (
+                  <div className="hint error">{errors.endpointUrl}</div>
+                ) : null}
 
-        <div>
-          <input
-            id="tenant-id"
-            name="tenant-id"
-            type="text"
-            value={ props.tenantId }
-            onChange={ props.onTenantIdChange }
-            disabled={ isLoading }
-          />
-        </div>
+                <div className="hint">
+                  Should point to a valid Camunda Engine REST API endpoint.
+                </div>
+              </div>
 
-        <div></div>
+              <div>
+                <label htmlFor="deploymentName">Deployment name</label>
+              </div>
 
-        <div>
-          <button
-            type="submit"
-            disabled={ isLoading || !props.isFormValid }>
-            Deploy
-          </button>
+              <div>
+                <Field
+                  name="deploymentName"
+                  validate={ validateDeploymentName }
+                  className={ classnames({
+                    valid: !errors.deploymentName && touched.deploymentName,
+                    invalid: errors.deploymentName && touched.deploymentName && submitCount
+                  }) }
+                />
 
-          <button
-            type="button"
-            onClick={ props.onClose }>
-            Cancel
-          </button>
-        </div>
+                { errors.deploymentName && touched.deploymentName && submitCount ? (
+                  <div className="hint error">{errors.deploymentName}</div>
+                ) : null}
+              </div>
 
-      </form>
+              <div>
+                <label htmlFor="tenantId">Tenant id (optional)</label>
+              </div>
+
+              <div>
+                <Field name="tenantId" />
+              </div>
+
+              <div className="form-submit">
+                <button
+                  type="submit"
+                  disabled={ isSubmitting }>
+                  Deploy
+                </button>
+
+                <button
+                  type="button"
+                  onClick={ onClose }>
+                  Cancel
+                </button>
+              </div>
+            </Form>
+
+          </React.Fragment>
+        )}
+      </Formik>
 
     </ModalWrapper>
   );
 };
+
+function DeployError({ message }) {
+  return (
+    <div className="deploy-message error">
+      <p>
+        <strong>{ ERROR_HEADING }</strong>
+      </p>
+      <p>
+        <span className="content">{ message }</span>
+      </p>
+    </div>
+  );
+}
+
+function DeploySuccess({ message }) {
+  return (
+    <div className="deploy-message success">
+      <p>
+        <strong>{ SUCCESS_HEADING }</strong>
+      </p>
+      <p>
+        <span className="content">{ message }</span>
+      </p>
+    </div>
+  );
+}
 
 export default View;
