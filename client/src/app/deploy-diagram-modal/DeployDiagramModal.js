@@ -9,49 +9,19 @@ const ENDPOINT_URL_PATTERN = /^https?:\/\/.+/;
 
 
 const defaultState = {
-  isFormValid: false,
-  isLoading: false,
   success: '',
-  error: '',
-  endpointUrl: '',
-  endpointUrlError: '',
-  endpointUrlTouched: false,
-  tenantId: '',
-  deploymentName: '',
-  deploymentNameError: '',
-  deploymentNameTouched: false
+  error: ''
 };
 
 class DeployDiagramModal extends React.Component {
   constructor(props) {
-    super();
+    super(props);
 
-    const { endpoints } = props;
-
-    this.state = {
-      ...defaultState,
-      endpointUrl: endpoints[endpoints.length - 1] || ''
-    };
+    this.state = defaultState;
   }
 
-  componentDidMount() {
-    this.validateForm();
-  }
-
-  handleDeploy = async (event) => {
-    event.preventDefault();
-
-    if (!this.state.isFormValid) {
-      return;
-    }
-
-    this.setState({
-      success: '',
-      error: '',
-      isLoading: true
-    });
-
-    const payload = this.getDeploymentPayload();
+  handleDeploy = async (values, { setSubmitting }) => {
+    const payload = this.getDeploymentPayload(values);
 
     this.saveEndpoint(payload.endpointUrl);
 
@@ -59,13 +29,12 @@ class DeployDiagramModal extends React.Component {
       const deployResult = await this.props.onDeploy(payload);
 
       if (!deployResult) {
-        this.setState({ isLoading: false });
+        setSubmitting(false);
 
         return;
       }
 
       this.setState({
-        isLoading: false,
         success: `Successfully deployed diagram to ${payload.endpointUrl}`,
         error: ''
       });
@@ -74,50 +43,30 @@ class DeployDiagramModal extends React.Component {
       const errorMessage = this.getErrorMessage(error);
 
       this.setState({
-        isLoading: false,
         success: '',
         error: errorMessage
       });
     }
+
+    setSubmitting(false);
   }
 
-  handleEndpointUrlChange = event => this.setState({ endpointUrl: event.target.value });
-
-  handleTenantIdChange = event => this.setState({ tenantId: event.target.value });
-
-  handleDeploymentNameChange = event => this.setState({ deploymentName: event.target.value });
-
-  handleEndpointUrlTouch = () => {
-    this.setState({ endpointUrlTouched: true });
-    this.validateForm();
-  };
-
-  handleDeploymentNameTouch = () => {
-    this.setState({ deploymentNameTouched: true });
-    this.validateForm();
-  };
-
   render() {
+    const { endpoints } = this.props;
     return <View
       onClose={ this.props.onClose }
       onDeploy={ this.handleDeploy }
-      onEndpointUrlChange={ this.handleEndpointUrlChange }
-      onEndpointUrlTouch={ this.handleEndpointUrlTouch }
-      onTenantIdChange={ this.handleTenantIdChange }
-      onDeploymentNameChange={ this.handleDeploymentNameChange }
-      onDeploymentNameTouch={ this.handleDeploymentNameTouch }
 
-      isFormValid={ this.state.isFormValid }
-      isLoading={ this.state.isLoading }
       success={ this.state.success }
       error={ this.state.error }
-      endpointUrl={ this.state.endpointUrl }
-      endpointUrlError={ this.state.endpointUrlError }
-      endpointUrlTouched={ this.state.endpointUrlTouched }
-      tenantId={ this.state.tenantId }
-      deploymentName={ this.state.deploymentName }
-      deploymentNameError={ this.state.deploymentNameError }
-      deploymentNameTouched={ this.state.deploymentNameTouched }
+
+      initialValues={ {
+        endpointUrl: endpoints[endpoints.length - 1] || '',
+        tenantId: '',
+        deploymentName: ''
+      } }
+      validateEndpointUrl={ this.validateEndpointUrl }
+      validateDeploymentName={ this.validateDeploymentName }
     />;
   }
 
@@ -125,53 +74,29 @@ class DeployDiagramModal extends React.Component {
     this.props.onEndpointsUpdate([ endpointUrl ]);
   }
 
-  getDeploymentPayload() {
+  getDeploymentPayload(values) {
     const payload = {
-      endpointUrl: this.state.endpointUrl,
-      deploymentName: this.state.deploymentName,
-      tenantId: this.state.tenantId
+      endpointUrl: values.endpointUrl,
+      deploymentName: values.deploymentName,
+      tenantId: values.tenantId
     };
 
     return payload;
   }
 
   getErrorMessage(error) {
-    let errorMessage;
-
     for (const getMessage of errorMessageFunctions) {
-      errorMessage = getMessage(error);
+      const errorMessage = getMessage(error);
 
       if (errorMessage) {
         return errorMessage;
       }
     }
 
-    return 'Unknown error occurred.';
+    return 'Unknown error occurred. Check log for details.';
   }
 
-  validateForm = () => {
-    const validationResults = {
-      endpointUrlError: this.validateEndpointUrl(),
-      deploymentNameError: this.validateDeploymentName()
-    };
-    let isFormValid = true;
-
-    for (const errorField in validationResults) {
-      if (validationResults[errorField]) {
-        isFormValid = false;
-        break;
-      }
-    }
-
-    this.setState({
-      ...validationResults,
-      isFormValid
-    });
-  }
-
-  validateEndpointUrl = () => {
-    const url = this.state.endpointUrl;
-
+  validateEndpointUrl = url => {
     if (!url.length) {
       return 'Endpoint URL must not be void.';
     }
@@ -181,9 +106,7 @@ class DeployDiagramModal extends React.Component {
     }
   }
 
-  validateDeploymentName = () => {
-    const name = this.state.deploymentName;
-
+  validateDeploymentName = name => {
     if (!name.length) {
       return 'Deployment name must not be void.';
     }
