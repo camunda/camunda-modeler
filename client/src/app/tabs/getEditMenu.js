@@ -211,18 +211,18 @@ export function getToolEntries({
 }
 
 export function getUndoRedoEntries({
-  canRedo,
-  canUndo
+  redo,
+  undo
 }) {
   return [{
     label: 'Undo',
     accelerator: 'CommandOrControl+Z',
-    enabled: canUndo,
+    enabled: undo,
     action: 'undo'
   }, {
     label: 'Redo',
     accelerator: 'CommandOrControl+Y',
-    enabled: canRedo,
+    enabled: redo,
     action: 'redo'
   }];
 }
