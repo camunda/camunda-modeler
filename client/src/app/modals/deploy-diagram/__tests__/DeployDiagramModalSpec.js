@@ -9,6 +9,7 @@ import {
 
 import { DeployDiagramModal } from '..';
 import View from '../View';
+import AuthTypes from '../AuthTypes';
 
 const MOCK_ENDPOINT_URL = 'http://example.com/deployment/create';
 
@@ -337,6 +338,116 @@ describe('<DeployDiagramModal>', function() {
   });
 
 
+  describe('authentication', function() {
+
+    it('should not pass auth option when no auth method was chosen', async function() {
+      // given
+      const endpointUrl = 'http://example.com/',
+            deploymentName = 'deploymentName';
+
+      const onDeployStub = sinon.stub().resolves();
+
+      const wrapper = shallow(
+        <DeployDiagramModal
+          onDeploy={ onDeployStub }
+        />
+      );
+      const instance = wrapper.instance();
+
+      // when
+      await instance.handleDeploy({
+        endpointUrl,
+        deploymentName
+      }, {
+        setSubmitting: sinon.spy()
+      });
+
+      // expect
+      expect(onDeployStub).to.be.calledOnce;
+
+      const payload = onDeployStub.getCall(0).args[0];
+
+      expect(payload).to.not.have.property('auth');
+    });
+
+
+    it('should pass username and password when authenticating with Basic', async function() {
+      // given
+      const endpointUrl = 'http://example.com/',
+            deploymentName = 'deploymentName',
+            username = 'username',
+            password = 'password',
+            authType = AuthTypes.basic;
+
+      const onDeployStub = sinon.stub().resolves();
+
+      const wrapper = shallow(
+        <DeployDiagramModal
+          onDeploy={ onDeployStub }
+        />
+      );
+      const instance = wrapper.instance();
+
+      // when
+      await instance.handleDeploy({
+        endpointUrl,
+        deploymentName,
+        username,
+        password,
+        authType
+      }, {
+        setSubmitting: sinon.spy()
+      });
+
+      // expect
+      expect(onDeployStub).to.be.calledOnce;
+
+      const payload = onDeployStub.getCall(0).args[0];
+
+      expect(payload).to.have.property('auth');
+      expect(payload.auth).to.have.property('username').eql(username);
+      expect(payload.auth).to.have.property('password').eql(password);
+    });
+
+
+    it('should pass token when authenticating with Bearer', async function() {
+      // given
+      const endpointUrl = 'http://example.com/',
+            deploymentName = 'deploymentName',
+            bearer = 'bearer',
+            authType = AuthTypes.bearer;
+
+      const onDeployStub = sinon.stub().resolves();
+
+      const wrapper = shallow(
+        <DeployDiagramModal
+          onDeploy={ onDeployStub }
+        />
+      );
+      const instance = wrapper.instance();
+
+      // when
+      await instance.handleDeploy({
+        endpointUrl,
+        deploymentName,
+        bearer,
+        authType
+      }, {
+        setSubmitting: sinon.spy()
+      });
+
+      // expect
+      expect(onDeployStub).to.be.calledOnce;
+
+      const payload = onDeployStub.getCall(0).args[0];
+
+      expect(payload).to.have.property('auth');
+      expect(payload.auth).to.have.property('bearer').eql(bearer);
+    });
+
+  });
+
+
   describe('<View>', function() {
 
     it('should render', function() {
@@ -346,7 +457,7 @@ describe('<DeployDiagramModal>', function() {
 
     it('should render error message', function() {
       // given
-      const wrapper = mount(<View error={ 'Error message' } />);
+      const wrapper = mount(<View validators={ { auth: {} } } error={ 'Error message' } />);
 
       // then
       expect(wrapper.find('.deploy-message.error')).to.have.lengthOf(1);
@@ -357,7 +468,7 @@ describe('<DeployDiagramModal>', function() {
 
     it('should render success message', function() {
       // given
-      const wrapper = mount(<View success={ 'Success message' } />);
+      const wrapper = mount(<View validators={ { auth: {} } } success={ 'Success message' } />);
 
       // then
       expect(wrapper.find('.deploy-message.success')).to.have.lengthOf(1);

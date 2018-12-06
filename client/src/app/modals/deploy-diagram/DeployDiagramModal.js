@@ -1,6 +1,7 @@
 import React from 'react';
 
 import View from './View';
+import AuthTypes from './AuthTypes';
 
 import errorMessageFunctions from './error-messages';
 
@@ -14,6 +15,17 @@ const defaultState = {
   success: '',
   error: ''
 };
+
+const initialFormValues = {
+  endpointUrl: '',
+  tenantId: '',
+  deploymentName: '',
+  authType: 'none',
+  username: '',
+  password: '',
+  bearer: ''
+};
+
 
 class DeployDiagramModal extends React.Component {
   constructor(props) {
@@ -69,8 +81,34 @@ class DeployDiagramModal extends React.Component {
     }
   }
 
+  validateUsername = username => {
+    if (!username.length) {
+      return 'Username must not be void.';
+    }
+  }
+
+  validatePassword = password => {
+    if (!password.length) {
+      return 'Password must not be void.';
+    }
+  }
+
+  validateBearer = bearer => {
+    if (!bearer.length) {
+      return 'Token must not be void.';
+    }
+  }
+
   render() {
     const { endpoints } = this.props;
+    const validators = {
+      endpointUrl: this.validateEndpointUrl,
+      deploymentName: this.validateDeploymentName,
+      username: this.validateUsername,
+      password: this.validatePassword,
+      bearer: this.validateBearer
+    };
+
     return <View
       onClose={ this.props.onClose }
       onDeploy={ this.handleDeploy }
@@ -79,12 +117,10 @@ class DeployDiagramModal extends React.Component {
       error={ this.state.error }
 
       initialValues={ {
-        endpointUrl: endpoints[endpoints.length - 1] || '',
-        tenantId: '',
-        deploymentName: ''
+        ...initialFormValues,
+        endpointUrl: endpoints[endpoints.length - 1] || ''
       } }
-      validateEndpointUrl={ this.validateEndpointUrl }
-      validateDeploymentName={ this.validateDeploymentName }
+      validators={ validators }
     />;
   }
 
@@ -100,6 +136,12 @@ class DeployDiagramModal extends React.Component {
       deploymentName: values.deploymentName,
       tenantId: values.tenantId
     };
+
+    const auth = this.getAuth(values);
+
+    if (auth) {
+      payload.auth = auth;
+    }
 
     return payload;
   }
@@ -118,6 +160,21 @@ class DeployDiagramModal extends React.Component {
     }
 
     return url;
+  }
+
+  getAuth({ authType, username, password, bearer }) {
+    switch (authType) {
+    case AuthTypes.basic:
+      return {
+        username,
+        password
+      };
+    case AuthTypes.bearer: {
+      return {
+        bearer
+      };
+    }
+    }
   }
 
   getErrorMessage(error) {
