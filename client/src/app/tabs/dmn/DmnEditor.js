@@ -133,8 +133,6 @@ export class DmnEditor extends CachedComponent {
 
   viewContentChanged = () => {
     this.handleChanged();
-
-    this.props.onChanged(this.checkDirty());
   }
 
   handleImport = (error, warnings) => {
@@ -247,6 +245,8 @@ export class DmnEditor extends CachedComponent {
       return;
     }
 
+    const dirty = this.checkDirty();
+
     const commandStack = activeViewer.get('commandStack');
 
     const inputActive = isInputActive();
@@ -255,6 +255,7 @@ export class DmnEditor extends CachedComponent {
       close: true,
       copy: false,
       cut: false,
+      dirty,
       exportAs: 'saveSVG' in activeViewer ? [ 'svg', 'png' ] : false,
       inputActive,
       paste: false,
