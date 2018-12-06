@@ -114,7 +114,7 @@ const View = (props) => {
                 <button
                   type="button"
                   onClick={ onClose }>
-                  Cancel
+                  { success ? 'Close' : 'Cancel' }
                 </button>
               </div>
             </Form>
