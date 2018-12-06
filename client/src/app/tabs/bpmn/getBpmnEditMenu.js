@@ -31,11 +31,17 @@ function getAlignDistributeEntries({
     submenu: [{
       label: 'Distribute Horizontally',
       enabled: distribute,
-      action: 'distributeHorizontally'
+      action: 'distributeElements',
+      options: {
+        type: 'horizontal'
+      }
     }, {
       label: 'Distribute Vertically',
       enabled: distribute,
-      action: 'distributeVertically'
+      action: 'distributeElements',
+      options: {
+        type: 'vertical'
+      }
     }]
   }];
 }
