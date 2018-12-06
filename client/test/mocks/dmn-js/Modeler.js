@@ -20,6 +20,11 @@ class Viewer {
       canvas: {
         resized() {}
       },
+      commandstack: {
+        canRedo() {},
+        canUndo() {},
+        stackIdx: -1
+      },
       propertiesPanel: new PropertiesPanel(),
       sheet: {
         resized() {}
@@ -74,6 +79,10 @@ export default class Modeler {
     return new Viewer(this.xml, this.modules);
   }
 
+  _getViewer(element) {
+    return new Viewer(this.xml, this.modules);
+  }
+
   saveXML(options, done) {
 
     const xml = this.xml;
@@ -91,6 +100,12 @@ export default class Modeler {
 
   getView(element) {
     return { type: 'drd', element };
+  }
+
+  getViews() {
+    return [
+      { type: 'drd' }
+    ];
   }
 
   open(view) {
