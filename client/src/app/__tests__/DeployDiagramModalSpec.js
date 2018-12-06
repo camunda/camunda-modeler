@@ -10,6 +10,8 @@ import {
 import { DeployDiagramModal } from '../deploy-diagram-modal';
 import View from '../deploy-diagram-modal/View';
 
+const MOCK_ENDPOINT_URL = 'http://example.com/deployment/create';
+
 
 describe('<DeployDiagramModal>', function() {
 
@@ -22,7 +24,7 @@ describe('<DeployDiagramModal>', function() {
 
     it('should set state.error when onDeploy throws error', async function() {
       // given
-      const endpointUrl = 'http://example.com',
+      const endpointUrl = MOCK_ENDPOINT_URL,
             deploymentName = 'deploymentName';
 
       const onDeployStub = sinon.stub().rejects(new Error('errorMessage'));
@@ -48,7 +50,7 @@ describe('<DeployDiagramModal>', function() {
 
     it('should set state.success when onDeploy succeeds', async function() {
       // given
-      const endpointUrl = 'http://example.com',
+      const endpointUrl = MOCK_ENDPOINT_URL,
             deploymentName = 'deploymentName';
 
       const onDeployStub = sinon.stub().resolves(true);
@@ -74,7 +76,7 @@ describe('<DeployDiagramModal>', function() {
 
     it('should unset isLoading when deployment is canceled', async function() {
       // given
-      const endpointUrl = 'http://example.com',
+      const endpointUrl = MOCK_ENDPOINT_URL,
             deploymentName = 'deploymentName';
 
       const onDeployStub = sinon.stub().resolves(false);
@@ -99,6 +101,35 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should save endpoint used to deploy', async function() {
+      // given
+      const endpointUrl = MOCK_ENDPOINT_URL,
+            deploymentName = 'deploymentName';
+
+      const onDeployStub = sinon.stub().resolves();
+      const onEndpointsUpdateSpy = sinon.spy();
+
+      const wrapper = shallow(
+        <DeployDiagramModal
+          onDeploy={ onDeployStub }
+          onEndpointsUpdate={ onEndpointsUpdateSpy }
+        />
+      );
+      const instance = wrapper.instance();
+
+      // when
+      await instance.handleDeploy({
+        endpointUrl,
+        deploymentName
+      }, {
+        setSubmitting: sinon.spy()
+      });
+
+      // expect
+      expect(onEndpointsUpdateSpy).to.be.calledWith([ endpointUrl ]);
+    });
+
+
+    it('should save exactly the endpoint provided by the user', async function() {
       // given
       const endpointUrl = 'http://example.com',
             deploymentName = 'deploymentName';
@@ -133,7 +164,7 @@ describe('<DeployDiagramModal>', function() {
 
     it('should set endpointUrl to last one provided in props', function() {
       // given
-      const endpointUrl = 'http://example.com';
+      const endpointUrl = MOCK_ENDPOINT_URL;
 
       // when
       const wrapper = shallow(<DeployDiagramModal endpoints={ [ endpointUrl ] } />);
@@ -149,6 +180,74 @@ describe('<DeployDiagramModal>', function() {
 
       // expect
       expect(wrapper.find(View).prop('initialValues')).to.have.property('endpointUrl').eql('');
+    });
+
+  });
+
+
+  describe('endpoint URL suffix', function() {
+
+    it('should add "/deployment/create" suffix if user does not provide it', async function() {
+      // given
+      const endpointUrl = 'http://example.com',
+            deploymentName = 'deploymentName',
+            expectedEndpointUrl = `${endpointUrl}/deployment/create`;
+
+      const onDeployStub = sinon.stub().resolves();
+
+      const wrapper = shallow(
+        <DeployDiagramModal
+          onDeploy={ onDeployStub }
+        />
+      );
+      const instance = wrapper.instance();
+
+      // when
+      await instance.handleDeploy({
+        endpointUrl,
+        deploymentName
+      }, {
+        setSubmitting: sinon.spy()
+      });
+
+      // expect
+      expect(onDeployStub).to.be.calledOnce;
+
+      const payload = onDeployStub.getCall(0).args[0];
+
+      expect(payload).to.have.property('endpointUrl').eql(expectedEndpointUrl);
+    });
+
+
+    it('should not add excessive "/" before "/deployment/create" suffix', async function() {
+      // given
+      const endpointUrl = 'http://example.com/',
+            deploymentName = 'deploymentName',
+            expectedEndpointUrl = `${endpointUrl}deployment/create`;
+
+      const onDeployStub = sinon.stub().resolves();
+
+      const wrapper = shallow(
+        <DeployDiagramModal
+          onDeploy={ onDeployStub }
+        />
+      );
+      const instance = wrapper.instance();
+
+      // when
+      await instance.handleDeploy({
+        endpointUrl,
+        deploymentName
+      }, {
+        setSubmitting: sinon.spy()
+      });
+
+      // expect
+      expect(onDeployStub).to.be.calledOnce;
+
+      const payload = onDeployStub.getCall(0).args[0];
+
+      expect(payload).to.have.property('endpointUrl').eql(expectedEndpointUrl);
     });
 
   });

@@ -7,6 +7,8 @@ import errorMessageFunctions from './error-messages';
 
 const ENDPOINT_URL_PATTERN = /^https?:\/\/.+/;
 
+const ENDPOINT_URL_SUFFIX = '/deployment/create';
+
 
 const defaultState = {
   success: '',
@@ -23,7 +25,7 @@ class DeployDiagramModal extends React.Component {
   handleDeploy = async (values, { setSubmitting }) => {
     const payload = this.getDeploymentPayload(values);
 
-    this.saveEndpoint(payload.endpointUrl);
+    this.saveEndpoint(values.endpointUrl);
 
     try {
       const deployResult = await this.props.onDeploy(payload);
@@ -51,6 +53,22 @@ class DeployDiagramModal extends React.Component {
     setSubmitting(false);
   }
 
+  validateEndpointUrl = url => {
+    if (!url.length) {
+      return 'Endpoint URL must not be void.';
+    }
+
+    if (!ENDPOINT_URL_PATTERN.test(url)) {
+      return 'Endpoint URL must start with "http://" or "https://".';
+    }
+  }
+
+  validateDeploymentName = name => {
+    if (!name.length) {
+      return 'Deployment name must not be void.';
+    }
+  }
+
   render() {
     const { endpoints } = this.props;
     return <View
@@ -75,13 +93,31 @@ class DeployDiagramModal extends React.Component {
   }
 
   getDeploymentPayload(values) {
+    const endpointUrl = this.getSanitizedEndpointUrl(values.endpointUrl);
+
     const payload = {
-      endpointUrl: values.endpointUrl,
+      endpointUrl,
       deploymentName: values.deploymentName,
       tenantId: values.tenantId
     };
 
     return payload;
+  }
+
+  /**
+   * Appends `/deployment/create` at the end of the url if necessary
+   * @param {string} url
+   */
+  getSanitizedEndpointUrl(url) {
+    if (url[url.length - 1] === '/') {
+      url = url.slice(0, -1);
+    }
+
+    if (url.search(`${ENDPOINT_URL_SUFFIX}$`) === -1) {
+      return `${url}${ENDPOINT_URL_SUFFIX}`;
+    }
+
+    return url;
   }
 
   getErrorMessage(error) {
@@ -94,22 +130,6 @@ class DeployDiagramModal extends React.Component {
     }
 
     return 'Unknown error occurred. Check log for details.';
-  }
-
-  validateEndpointUrl = url => {
-    if (!url.length) {
-      return 'Endpoint URL must not be void.';
-    }
-
-    if (!ENDPOINT_URL_PATTERN.test(url)) {
-      return 'Endpoint URL must start with "http://" or "https://".';
-    }
-  }
-
-  validateDeploymentName = name => {
-    if (!name.length) {
-      return 'Deployment name must not be void.';
-    }
   }
 }
 
