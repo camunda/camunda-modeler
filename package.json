@@ -38,7 +38,7 @@
     "del": "^3.0.0",
     "del-cli": "^1.1.0",
     "electron": "^3.0.10",
-    "electron-builder": "^20.17.0",
+    "electron-builder": "~20.28.4",
     "electron-publisher-s3": "^20.17.2",
     "electron-reloader": "^0.2.0",
     "eslint": "^5.3.0",
