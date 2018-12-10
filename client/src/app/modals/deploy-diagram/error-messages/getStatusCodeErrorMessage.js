@@ -1,9 +1,9 @@
 const ERROR_MESSAGE = {
   UNAUTHORIZED: 'The deployment was unauthorized. Please use valid credentials.',
-  FORBIDDEN: 'The deployment was not permitted for your credentials. Please use different credentials.',
-  NOT_FOUND: 'Could not find the provided URL. Please check the endpoint URL.',
-  INTERNAL_SERVER_ERROR: 'There was an unknown server related issue. Please check the server status.',
-  SERVER_UNAVAILABLE: 'Server is currently unavailable. Please try again later.'
+  FORBIDDEN: 'The deployment was not permitted for your credentials. Please check your credentials.',
+  NOT_FOUND: 'Could not connect to Camunda. Please check the endpoint URL.',
+  INTERNAL_SERVER_ERROR: 'Camunda reported an unknown error. Please check the server status.',
+  SERVER_UNAVAILABLE: 'Camunda is currently unavailable. Please try again later.'
 };
 
 
