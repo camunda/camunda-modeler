@@ -11,7 +11,7 @@ import {
 import {
   Icon,
   ModalWrapper
-} from '../primitives';
+} from '../../primitives';
 
 import css from './View.less';
 
@@ -73,7 +73,7 @@ const View = (props) => {
                 ) : null}
 
                 <div className="hint">
-                  Should point to a valid Camunda Engine REST API endpoint.
+                  Should point to a running Camunda Engine REST API endpoint.
                 </div>
               </div>
 
