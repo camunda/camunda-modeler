@@ -1,5 +1,5 @@
 const ERROR_MESSAGE = {
-  BPMN_PARSING_ERROR: 'Server could not parse the diagram. Please check log for errors and then redeploy.'
+  BPMN_PARSING_ERROR: 'Server could not parse the diagram. Please check log for errors.'
 };
 
 
