@@ -16,8 +16,8 @@ import {
 import css from './View.less';
 
 
-const SUCCESS_HEADING = '✅ Successfully deployed the diagram.';
-const ERROR_HEADING = '❌ The diagram could not be deployed.';
+const SUCCESS_HEADING = 'Deployment successful';
+const ERROR_HEADING = 'Deployment failed';
 
 
 const View = (props) => {
