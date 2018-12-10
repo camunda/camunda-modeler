@@ -7,8 +7,8 @@ import {
   shallow
 } from 'enzyme';
 
-import { DeployDiagramModal } from '../deploy-diagram-modal';
-import View from '../deploy-diagram-modal/View';
+import { DeployDiagramModal } from '..';
+import View from '../View';
 
 const MOCK_ENDPOINT_URL = 'http://example.com/deployment/create';
 
