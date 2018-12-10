@@ -64,11 +64,11 @@ const View = (props) => {
                   validate={ validateEndpointUrl }
                   className={ classnames({
                     valid: !errors.endpointUrl && touched.endpointUrl,
-                    invalid: errors.endpointUrl && touched.endpointUrl && submitCount
+                    invalid: errors.endpointUrl && touched.endpointUrl
                   }) }
                 />
 
-                { errors.endpointUrl && touched.endpointUrl && submitCount ? (
+                { errors.endpointUrl && touched.endpointUrl ? (
                   <div className="hint error">{errors.endpointUrl}</div>
                 ) : null}
 
@@ -87,11 +87,11 @@ const View = (props) => {
                   validate={ validateDeploymentName }
                   className={ classnames({
                     valid: !errors.deploymentName && touched.deploymentName,
-                    invalid: errors.deploymentName && touched.deploymentName && submitCount
+                    invalid: errors.deploymentName && touched.deploymentName
                   }) }
                 />
 
-                { errors.deploymentName && touched.deploymentName && submitCount ? (
+                { errors.deploymentName && touched.deploymentName ? (
                   <div className="hint error">{errors.deploymentName}</div>
                 ) : null}
               </div>
