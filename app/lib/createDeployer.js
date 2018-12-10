@@ -34,6 +34,8 @@ function createDeployer({ fetch, fs, FormData }) {
         form.append('tenant-id', tenantId);
       }
 
+      form.append('deploy-changed-only', 'true');
+
       form.append(file.name, fs.createReadStream(file.path));
 
       const serverResponse = await fetch(url, { method: 'POST', body: form });

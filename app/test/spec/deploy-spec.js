@@ -34,6 +34,7 @@ describe('deploy', function() {
     expectedForm.append('deployment-name', data.deploymentName);
     expectedForm.append(data.file.name, fs.createReadStream(data.file.path));
     expectedForm.append('tenant-id', data.tenantId);
+    expectedForm.append('deploy-changed-only', 'true');
 
     // when
     deploy(url, data, (err, data) => {
@@ -66,6 +67,7 @@ describe('deploy', function() {
 
     expectedForm.append('deployment-name', data.deploymentName);
     expectedForm.append(data.file.name, fs.createReadStream(data.file.path));
+    expectedForm.append('deploy-changed-only', 'true');
 
     // when
     deploy(url, data, (err, data) => {
