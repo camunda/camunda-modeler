@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DeployDiagramModal } from '../deploy-diagram-modal';
+import { DeployDiagramModal } from './deploy-diagram';
 
 
 const DEPLOY_DIAGRAM = 'DEPLOY_DIAGRAM';
