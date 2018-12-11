@@ -68,8 +68,13 @@ global.modelerDirectory = appPath;
 
 var menu = new Menu(process.platform);
 
+// bootstrap filesystem
+var fileSystem = new FileSystem({
+  dialog: dialog
+});
+
 // bootstrap workspace behavior
-new Workspace(config);
+new Workspace(config, fileSystem);
 
 // bootstrap client config behavior
 var clientConfig = new ClientConfig(app);
@@ -81,10 +86,6 @@ var dialog = new Dialog({
   userDesktopPath: app.getPath('userDesktop')
 });
 
-// bootstrap filesystem
-var fileSystem = new FileSystem({
-  dialog: dialog
-});
 
 // bootstrap deployer
 var deployer = new Deployer({ fetch, fs, FormData });
