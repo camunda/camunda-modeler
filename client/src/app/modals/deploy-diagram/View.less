@@ -51,24 +51,46 @@
   }
 
   form {
-    font-size: 13.3333px;
-    margin: 15px 0;
+    font-size: 1.1em;
 
-    display: grid;
-    grid-template-columns: max-content auto;
+    fieldset {
+      border: solid 1px #E3E3E3;
+      border-radius: 5px;
+      margin: 20px auto;
+      padding: 15px;
 
-    grid-column-gap: 10px;
-    grid-row-gap: 15px;
+      legend {
+        font-weight: bolder;
+        background: #EEEEEE;
+        border-radius: 5px;
+        padding: 5px 10px;
+      }
+    }
 
-    align-items: baseline;
+    .fields {
+
+      display: grid;
+      grid-template-columns: 85px auto;
+
+      grid-column-gap: 10px;
+      grid-row-gap: 15px;
+
+      align-items: baseline;
+    }
 
     .form-submit {
-      grid-column-start: 2;
+      text-align: right;
+    }
+
+    .toggle-details {
+      padding: 0;
+      background: none;
+      border: none;
+      margin: auto 0 0 5px;
+      width: 10px;
     }
 
     label {
-      font-weight: bolder;
-      line-height: 30px;
       text-align: right;
       width: 100%;
       display: inline-block;
