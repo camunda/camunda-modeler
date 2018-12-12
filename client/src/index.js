@@ -9,6 +9,7 @@ import {
 
 import {
   backend,
+  config,
   dialog,
   fileSystem,
   workspace
@@ -24,6 +25,7 @@ const tabsProvider = new TabsProvider();
 
 const globals = {
   backend,
+  config,
   dialog,
   fileSystem,
   workspace

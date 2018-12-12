@@ -14,6 +14,7 @@ import Log from '../Log';
 
 import {
   Backend,
+  Config,
   Dialog,
   FileSystem,
   TabsProvider,
@@ -2043,6 +2044,36 @@ describe('<App>', function() {
       // then
       expect(saveStub).to.be.calledOnce;
       expect(sendSpy).to.not.be.called;
+    });
+
+  });
+
+
+  describe('config handling', function() {
+
+    afterEach(sinon.restore);
+
+
+    it('should load requested config', async function() {
+      // given
+      const CONFIG_KEY = 'CONFIG_KEY';
+      const getConfigSpy = spy();
+
+      const config = new Config({
+        get: getConfigSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      // when
+      app.loadConfig(CONFIG_KEY);
+
+      // then
+      expect(getConfigSpy).to.be.calledOnceWith(CONFIG_KEY);
     });
 
   });

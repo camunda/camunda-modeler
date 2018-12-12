@@ -367,6 +367,10 @@ export class KeyboardBindings extends Mock {
   setOnAction() {}
 }
 
+export class Config extends Mock {
+  get() {}
+}
+
 /**
  * Response mock. Returns responses in desired order.
  *
