@@ -1,9 +1,14 @@
 import { assign } from 'min-dash';
 
+
 class CommandStack {
   canRedo() {}
 
   canUndo() {}
+
+  clear() {}
+
+  execute() {}
 }
 
 class PropertiesPanel {

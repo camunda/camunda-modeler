@@ -5,6 +5,7 @@ import minimapModule from 'diagram-js-minimap';
 
 import executableFixModule from './features/executable-fix';
 import globalClipboardModule from './features/global-clipboard';
+import applyDefaultTemplates from './features/apply-default-templates';
 
 import signavioCompatModule from 'bpmn-js-signavio-compat';
 
@@ -52,7 +53,8 @@ const extensionModules = [
   signavioCompatModule,
   camundaModdleExtension,
   propertiesPanelModule,
-  propertiesProviderModule
+  propertiesProviderModule,
+  applyDefaultTemplates
 ];
 
 CamundaBpmnModeler.prototype._modules = [

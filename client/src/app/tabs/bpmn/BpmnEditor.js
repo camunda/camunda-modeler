@@ -36,6 +36,7 @@ import {
   replaceNamespace
 } from './util/namespace';
 
+
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn',
       NAMESPACE_URL_CAMUNDA = 'http://camunda.org/schema/1.0/bpmn',
       NAMESPACE_PREFIX_ACTIVITI = 'activiti',
