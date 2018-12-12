@@ -321,6 +321,7 @@ export class MultiSheetTab extends CachedComponent {
             onImport={ this.handleImport }
             onLayoutChanged={ this.handleLayoutChanged }
             onModal={ this.props.onModal }
+            onLoadConfig={ this.props.onLoadConfig }
           />
         </TabContainer>
 

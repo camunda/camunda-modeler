@@ -499,6 +499,38 @@ describe('<BpmnEditor>', function() {
 
   });
 
+
+  describe('element templates', function() {
+
+    it('should load templates when mounted', function() {
+
+      // given
+      const onLoadConfigSpy = sinon.spy(),
+            elementTemplatesLoaderMock = { setTemplates() {} };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            elementTemplatesLoader: elementTemplatesLoaderMock
+          })
+        }
+      });
+
+      // when
+      renderEditor(diagramXML, {
+        cache,
+        onLoadConfig: onLoadConfigSpy
+      });
+
+      // expect
+      expect(onLoadConfigSpy).to.be.called;
+      expect(onLoadConfigSpy).to.be.calledWith('bpmn.elementTemplates');
+    });
+
+  });
+
 });
 
 
@@ -518,7 +550,8 @@ function renderEditor(xml, options = {}) {
     onError,
     onImport,
     onLayoutChanged,
-    onModal
+    onModal,
+    onLoadConfig
   } = options;
 
   const slotFillRoot = mount(
@@ -533,6 +566,7 @@ function renderEditor(xml, options = {}) {
         onLayoutChanged={ onLayoutChanged || noop }
         onContentUpdated={ onContentUpdated || noop }
         onModal={ onModal || noop }
+        onLoadConfig={ onLoadConfig || noop }
         cache={ options.cache || new Cache() }
         layout={ layout || {
           minimap: {

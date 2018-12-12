@@ -79,16 +79,14 @@ export class BpmnEditor extends CachedComponent {
     this.propertiesPanelRef = React.createRef();
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
 
     const {
       layout
     } = this.props;
 
-    const {
-      modeler
-    } = this.getCached();
+    const modeler = this.getModeler();
 
     this.listen('on');
 
@@ -104,6 +102,12 @@ export class BpmnEditor extends CachedComponent {
 
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
+    try {
+      await this.loadTemplates();
+    } catch (error) {
+      this.handleError({ error });
+    }
+
     this.checkImport();
 
     this.resize();
@@ -112,9 +116,7 @@ export class BpmnEditor extends CachedComponent {
   componentWillUnmount() {
     this._isMounted = false;
 
-    const {
-      modeler
-    } = this.getCached();
+    const modeler = this.getModeler();
 
     this.listen('off');
 
@@ -140,9 +142,7 @@ export class BpmnEditor extends CachedComponent {
   }
 
   listen(fn) {
-    const {
-      modeler
-    } = this.getCached();
+    const modeler = this.getModeler();
 
     [
       'import.done',
@@ -162,26 +162,29 @@ export class BpmnEditor extends CachedComponent {
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
   }
 
+  async loadTemplates() {
+    const modeler = this.getModeler();
+    const templatesLoader = modeler.get('elementTemplatesLoader');
+
+    const templates = await this.props.onLoadConfig('bpmn.elementTemplates');
+
+    templatesLoader.setTemplates(templates);
+  }
+
   undo = () => {
-    const {
-      modeler
-    } = this.getCached();
+    const modeler = this.getModeler();
 
     modeler.get('commandStack').undo();
   }
 
   redo = () => {
-    const {
-      modeler
-    } = this.getCached();
+    const modeler = this.getModeler();
 
     modeler.get('commandStack').redo();
   }
 
   align = (type) => {
-    const {
-      modeler
-    } = this.getCached();
+    const modeler = this.getModeler();
 
     const selection = modeler.get('selection').get();
 
@@ -249,9 +252,7 @@ export class BpmnEditor extends CachedComponent {
       xml
     } = this.props;
 
-    const {
-      modeler
-    } = this.getCached();
+    const modeler = this.getModeler();
 
     onImport(error, warnings);
 
@@ -266,9 +267,7 @@ export class BpmnEditor extends CachedComponent {
 
 
   handleChanged = (event = {}) => {
-    const {
-      modeler
-    } = this.getCached();
+    const modeler = this.getModeler();
 
     const {
       onChanged
@@ -330,9 +329,10 @@ export class BpmnEditor extends CachedComponent {
 
   async checkImport() {
     const {
-      modeler,
       namespaceDialogShown
     } = this.getCached();
+
+    const modeler = this.getModeler();
 
     let {
       xml
@@ -358,10 +358,19 @@ export class BpmnEditor extends CachedComponent {
     }
   }
 
-  getXML() {
+  /**
+   * @returns {CamundaBpmnModeler}
+   */
+  getModeler() {
     const {
       modeler
     } = this.getCached();
+
+    return modeler;
+  }
+
+  getXML() {
+    const modeler = this.getModeler();
 
     return new Promise((resolve, reject) => {
 
@@ -384,9 +393,7 @@ export class BpmnEditor extends CachedComponent {
   }
 
   exportAs(type) {
-    const {
-      modeler
-    } = this.getCached();
+    const modeler = this.getModeler();
 
     return new Promise((resolve, reject) => {
 
@@ -422,9 +429,7 @@ export class BpmnEditor extends CachedComponent {
   }
 
   triggerAction = (action, context) => {
-    const {
-      modeler
-    } = this.getCached();
+    const modeler = this.getModeler();
 
     if (action === 'resize') {
       return this.resize();
@@ -469,9 +474,7 @@ export class BpmnEditor extends CachedComponent {
   }
 
   resize = () => {
-    const {
-      modeler
-    } = this.getCached();
+    const modeler = this.getModeler();
 
     const canvas = modeler.get('canvas');
 
