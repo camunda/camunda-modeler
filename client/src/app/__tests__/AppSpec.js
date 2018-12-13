@@ -40,10 +40,47 @@ describe('<App>', function() {
 
     it('onContextMenu');
 
+  });
 
-    describe('onMenuUpdate', function() {
 
-      it('should call onMenuUpdate on tab change', function() {
+  describe('shared buttons', function() {
+
+    it('should offer save, save-as, export, undo, redo if supported by tab');
+
+  });
+
+
+  describe('menu', function() {
+
+    describe('should update (calling onMenuUpdate)', function() {
+
+      it('on tab switch', async function() {
+
+        // given
+        const updateMenuSpy = spy();
+
+        const {
+          app
+        } = createApp({
+          onMenuUpdate: updateMenuSpy
+        });
+
+        const openedTabs = await app.openFiles([
+          createFile('1.bpmn'),
+          createFile('2.bpmn')
+        ]);
+
+        // when
+        await app.showTab(openedTabs[0]);
+
+        // then
+        // 1 - initial tab rendered
+        // 2 - second tab rendered
+        expect(updateMenuSpy).to.have.been.calledTwice;
+      });
+
+
+      it('on tab change', function() {
 
         // given
         const updateMenuSpy = spy();
@@ -58,17 +95,65 @@ describe('<App>', function() {
         app.handleTabChanged()();
 
         // then
-        expect(updateMenuSpy).to.have.been.called;
+        // 1 - tab render
+        expect(updateMenuSpy).to.have.been.calledOnce;
+      });
+
+
+      it('on tab closing', async function() {
+
+        // given
+        const updateMenuSpy = spy();
+
+        const {
+          app
+        } = createApp({
+          onMenuUpdate: updateMenuSpy
+        });
+
+        await app.openFiles([
+          createFile('1.bpmn'),
+          createFile('2.bpmn')
+        ]);
+
+        // when
+        await app.triggerAction('close-all-tabs');
+
+        // then
+        // 1 - initial tab rendered
+        // 2 - empty tab rendered
+        expect(updateMenuSpy).to.have.been.calledTwice;
+
+        expect(app.state.tabState).to.eql({});
       });
 
     });
 
-  });
 
+    describe('should maintain initial state', function() {
 
-  describe('shared buttons', function() {
+      it('on empty tab rendering', async function() {
 
-    it('should offer save, save-as, export, undo, redo if supported by tab');
+        // given
+        const updateMenuSpy = spy();
+
+        // when
+        const {
+          app
+        } = createApp({
+          onMenuUpdate: updateMenuSpy
+        }, mount);
+
+        // when
+        await app.setActiveTab(EMPTY_TAB);
+
+        // then
+        expect(updateMenuSpy).not.to.have.been.called;
+
+        expect(app.state.tabState).to.eql({});
+      });
+
+    });
 
   });
 
@@ -2006,7 +2091,7 @@ function createApp(options = {}, mountFn=shallow) {
     tree.update();
   };
 
-  const onMenuUpdate = options.onMenuUpdate;
+  const onMenuUpdate = options.onMenuUpdate || function() {};
   const onReady = options.onReady;
   const onError = options.onError;
   const onWarning = options.onWarning;

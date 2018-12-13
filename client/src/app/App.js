@@ -88,6 +88,10 @@ export class App extends Component {
     if (process.env.NODE_ENV !== 'test') {
       this.workspaceChanged = debounce(this.workspaceChanged, 300);
     }
+
+    if (process.env.NODE_ENV !== 'test') {
+      this.updateMenu = debounce(this.updateMenu, 50);
+    }
   }
 
   createDiagram = async (type = 'bpmn', options) => {
@@ -108,7 +112,7 @@ export class App extends Component {
   /**
    * Add a tab to the tab list.
    */
-  addTab(tab) {
+  addTab(tab, properties = {}) {
 
     this.setState((state) => {
       const {
@@ -122,7 +126,14 @@ export class App extends Component {
 
       const insertIdx = tabs.indexOf(activeTab) + 1;
 
+      let dirtyState = {};
+
+      if ('dirty' in properties) {
+        dirtyState = this.markAsDirty(tab);
+      }
+
       return {
+        ...dirtyState,
         tabs: [
           ...tabs.slice(0, insertIdx),
           tab,
@@ -512,10 +523,9 @@ export class App extends Component {
         tabsProvider.createTabForFile({
           ...file,
           contents: tabsProvider.getInitialFileContents(fileType)
-        })
+        }),
+        { dirty: true }
       );
-
-      this.markAsDirty(tab);
 
       await this.selectTab(tab);
 
@@ -677,20 +687,19 @@ export class App extends Component {
       tabState
     } = this.state;
 
+    let dirtyState = {};
+
     if ('dirty' in properties) {
-      this.markAsDirty(tab, properties.dirty);
+      dirtyState = this.markAsDirty(tab, properties.dirty);
     }
 
-    tabState = {
-      ...tabState,
-      ...properties
-    };
-
     this.setState({
-      tabState
+      ...dirtyState,
+      tabState: {
+        ...tabState,
+        ...properties
+      }
     });
-
-    this.updateMenu(tabState);
   }
 
   markAsDirty(tab, dirty = true) {
@@ -704,9 +713,9 @@ export class App extends Component {
       [tab.id]: dirty
     };
 
-    this.setState({
+    return {
       dirtyTabs: newDirtyTabs
-    });
+    };
   }
 
   /**
@@ -791,6 +800,7 @@ export class App extends Component {
       activeTab,
       tabs,
       tabLoadingState,
+      tabState,
       layout,
       endpoints
     } = this.state;
@@ -820,6 +830,12 @@ export class App extends Component {
     ) {
       this.workspaceChanged();
     }
+
+
+    if (tabState !== prevState.tabState) {
+      this.updateMenu(tabState);
+    }
+
   }
 
   componentDidCatch(error, info) {
@@ -1571,6 +1587,7 @@ function getContentChangedDialog() {
     ]
   };
 }
+
 function getOpenFilesDialogFilters(providers) {
   const allSupportedFilter = {
     name: 'All Supported',
