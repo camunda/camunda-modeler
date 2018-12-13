@@ -508,16 +508,14 @@ export class App extends Component {
 
     if (response == 'create') {
 
-      // TODO(philippfromme): fix dirty state
       let tab = this.addTab(
-        tabsProvider.createTabForFile(file)
+        tabsProvider.createTabForFile({
+          ...file,
+          contents: tabsProvider.getInitialFileContents(fileType)
+        })
       );
 
-      tab = await this.updateTab(tab, {
-        file: {
-          contents: tabsProvider.getInitialFileContents(fileType)
-        }
-      });
+      this.markAsDirty(tab);
 
       await this.selectTab(tab);
 
@@ -676,20 +674,11 @@ export class App extends Component {
   handleTabChanged = (tab) => (properties = {}) => {
 
     let {
-      dirtyTabs,
       tabState
     } = this.state;
 
     if ('dirty' in properties) {
-
-      const newDirtyTabs = {
-        ...dirtyTabs,
-        [tab.id]: properties.dirty
-      };
-
-      this.setState({
-        dirtyTabs: newDirtyTabs
-      });
+      this.markAsDirty(tab, properties.dirty);
     }
 
     tabState = {
@@ -702,6 +691,22 @@ export class App extends Component {
     });
 
     this.updateMenu(tabState);
+  }
+
+  markAsDirty(tab, dirty = true) {
+
+    let {
+      dirtyTabs
+    } = this.state;
+
+    const newDirtyTabs = {
+      ...dirtyTabs,
+      [tab.id]: dirty
+    };
+
+    this.setState({
+      dirtyTabs: newDirtyTabs
+    });
   }
 
   /**
