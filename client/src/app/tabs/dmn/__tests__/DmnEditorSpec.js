@@ -24,10 +24,10 @@ const { spy } = sinon;
 
 describe('<DmnEditor>', function() {
 
-  it('should render', function() {
+  it('should render', async function() {
     const {
       instance
-    } = renderEditor(diagramXML);
+    } = await renderEditor(diagramXML);
 
     expect(instance).to.exist;
   });
@@ -46,12 +46,12 @@ describe('<DmnEditor>', function() {
     });
 
 
-    it('should create modeler if not cached', function() {
+    it('should create modeler if not cached', async function() {
 
       // when
       const {
         instance
-      } = renderEditor(diagramXML);
+      } = await renderEditor(diagramXML);
 
       // then
       const {
@@ -63,7 +63,7 @@ describe('<DmnEditor>', function() {
     });
 
 
-    it('should use cached modeler', function() {
+    it('should use cached modeler', async function() {
 
       // given
       const cache = new Cache();
@@ -76,7 +76,7 @@ describe('<DmnEditor>', function() {
       });
 
       // when
-      renderEditor(diagramXML, {
+      await renderEditor(diagramXML, {
         id: 'editor',
         cache
       });
@@ -88,10 +88,25 @@ describe('<DmnEditor>', function() {
   });
 
 
+  it('#getModeler', async function() {
+
+    // given
+    const { instance } = await renderEditor(diagramXML);
+
+    // when
+    const modeler = instance.getModeler();
+
+    // then
+    expect(modeler).to.exist;
+  });
+
+
   it('#getXML', async function() {
+
+    // given
     const {
       instance
-    } = renderEditor(diagramXML);
+    } = await renderEditor(diagramXML);
 
     const xml = await instance.getXML();
 
@@ -104,8 +119,8 @@ describe('<DmnEditor>', function() {
 
     let instance;
 
-    beforeEach(function() {
-      instance = renderEditor(diagramXML).instance;
+    beforeEach(async function() {
+      instance = (await renderEditor(diagramXML)).instance;
     });
 
 
@@ -137,13 +152,14 @@ describe('<DmnEditor>', function() {
 
   describe('#handleChanged', function() {
 
-    it('should notify about changes', function() {
+    it('should notify about changes', async function() {
 
       // given
       const changedSpy = (state) => {
 
         // then
         expect(state).to.include({
+          dirty: true,
           editLabel: false,
           redo: true,
           removeSelected: false,
@@ -155,20 +171,25 @@ describe('<DmnEditor>', function() {
 
       cache.add('editor', {
         cached: {
+          lastXML: diagramXML,
           modeler: new DmnModeler({
             commandStack: {
               canRedo: () => true,
-              canUndo: () => true
+              canUndo: () => true,
+              _stackIdx: 1
             },
             selection: {
               get: () => []
             }
-          })
+          }),
+          stackIdx: {
+            drd: 2
+          }
         },
         __destroy: () => {}
       });
 
-      const { instance } = renderEditor(diagramXML, {
+      const { instance } = await renderEditor(diagramXML, {
         id: 'editor',
         cache,
         onChanged: changedSpy
@@ -183,7 +204,7 @@ describe('<DmnEditor>', function() {
 
   describe('layout', function() {
 
-    it('should open properties panel', function() {
+    it('should open properties panel', async function() {
 
       // given
       let layout = {
@@ -198,7 +219,7 @@ describe('<DmnEditor>', function() {
 
       const {
         wrapper
-      } = renderEditor(diagramXML, {
+      } = await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
@@ -213,7 +234,7 @@ describe('<DmnEditor>', function() {
     });
 
 
-    it('should close properties panel', function() {
+    it('should close properties panel', async function() {
 
       // given
       let layout = {
@@ -228,7 +249,7 @@ describe('<DmnEditor>', function() {
 
       const {
         wrapper
-      } = renderEditor(diagramXML, {
+      } = await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
@@ -243,13 +264,13 @@ describe('<DmnEditor>', function() {
     });
 
 
-    it('should handle missing layout', function() {
+    it('should handle missing layout', async function() {
 
       // given
       let layout = { };
 
       // then
-      renderEditor(diagramXML, {
+      await renderEditor(diagramXML, {
         layout
       });
 
@@ -266,9 +287,14 @@ describe('<DmnEditor>', function() {
 
       const {
         instance
-      } = renderEditor('export-error', {
+      } = await renderEditor('export-error', {
         onError: errorSpy
       });
+
+      // make sure editor is dirty
+      const commandStack = instance.getModeler().getActiveViewer().get('commandStack');
+
+      commandStack.execute(1);
 
       let err;
 
@@ -291,7 +317,7 @@ describe('<DmnEditor>', function() {
 
       const {
         instance
-      } = renderEditor('export-as-error', {
+      } = await renderEditor('export-as-error', {
         onError: errorSpy
       });
 
@@ -314,78 +340,127 @@ describe('<DmnEditor>', function() {
 
   describe('import', function() {
 
-    it('should import without errors and warnings', function() {
+    it('should import without errors and warnings', async function() {
 
       // given
-      const importSpy = spy();
-
-      // when
-      const { instance } = renderEditor(diagramXML, {
-        onImport: importSpy
+      await renderEditor(diagramXML, {
+        onImport
       });
 
-      // then
-      const {
-        modeler
-      } = instance.getCached();
+      function onImport(err, warnings) {
 
-      expect(importSpy).to.have.been.calledWith(null, []);
+        // then
+        expect(err).to.not.exist;
 
-      expect(modeler.lastXML).to.equal(diagramXML);
+        expect(warnings).to.have.length(0);
+      }
     });
 
 
-    it('should import with warnings', function() {
+    it('should import with warnings', async function() {
 
       // given
-      const importSpy = (error, warnings) => {
+      await renderEditor('import-warnings', {
+        onImport
+      });
+
+      function onImport(error, warnings) {
 
         // then
         expect(error).not.to.exist;
 
-        expect(warnings).to.exist;
         expect(warnings).to.have.length(1);
         expect(warnings[0]).to.equal('warning');
-      };
-
-      // when
-      const { instance } = renderEditor('import-warnings', {
-        onImport: importSpy
-      });
-
-      // then
-      const {
-        modeler
-      } = instance.getCached();
-
-      expect(modeler.lastXML).to.equal('import-warnings');
+      }
     });
 
 
-    it('should import with error', function() {
+    it('should import with error', async function() {
 
       // given
-      const importSpy = (error, warnings) => {
+      await renderEditor('import-error', {
+        onImport
+      });
+
+      function onImport(error, warnings) {
 
         // then
         expect(error).to.exist;
         expect(error.message).to.equal('error');
 
-        expect(warnings).to.exist;
         expect(warnings).to.have.length(0);
-      };
+      }
+    });
 
-      // when
-      const { instance } = renderEditor('import-error', {
-        onImport: importSpy
-      });
+  });
+
+
+  describe('dirty state', function() {
+
+    let instance;
+
+    beforeEach(async function() {
+      instance = (await renderEditor(diagramXML)).instance;
+    });
+
+
+    it('should NOT be dirty initially', function() {
 
       // then
-      const {
-        modeler
-      } = instance.getCached();
+      const dirty = instance.isDirty();
 
-      expect(modeler.lastXML).not.to.exist;
+      expect(dirty).to.be.false;
+    });
+
+
+    it('should be dirty after modeling', function() {
+
+      // given
+      const { modeler } = instance.getCached();
+
+      // when
+      // execute 1 command
+      modeler.getActiveViewer().get('commandStack').execute(1);
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(dirty).to.be.true;
+    });
+
+
+    it('should NOT be dirty after modeling -> undo', function() {
+
+      // given
+      const { modeler } = instance.getCached();
+
+      modeler.getActiveViewer().get('commandStack').execute(1);
+
+      // when
+      modeler.getActiveViewer().get('commandStack').undo();
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(dirty).to.be.false;
+    });
+
+
+    it('should NOT be dirty after save', async function() {
+
+      // given
+      const { modeler } = instance.getCached();
+
+      // execute 1 command
+      modeler.getActiveViewer().get('commandStack').execute(1);
+
+      // when
+      await instance.getXML();
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(dirty).to.be.false;
     });
 
   });
@@ -452,7 +527,7 @@ function noop() {}
 
 const TestEditor = WithCachedState(DmnEditor);
 
-function renderEditor(xml, options = {}) {
+async function renderEditor(xml, options = {}) {
   const {
     layout,
     onChanged,
@@ -462,11 +537,12 @@ function renderEditor(xml, options = {}) {
     onModal
   } = options;
 
-  const slotFillRoot = mount(
+  const slotFillRoot = await mount(
     <SlotFillRoot>
       <TestEditor
         id={ options.id || 'editor' }
         xml={ xml }
+        activeSheet={ options.activeSheet || { id: 'dmn' } }
         onChanged={ onChanged || noop }
         onError={ onError || noop }
         onImport={ onImport || noop }
