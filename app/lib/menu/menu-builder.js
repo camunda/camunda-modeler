@@ -36,23 +36,31 @@ class MenuBuilder {
   }
 
   build() {
-    return this.appendFileMenu(new this.constructor(this.options)
-      .appendNewFile()
-      .appendOpen()
-      .appendSeparator()
-      .appendSwitchTab()
-      .appendSaveFile()
-      .appendSaveAsFile()
-      .appendSaveAllFiles()
-      .appendSeparator()
-      .appendExportAs()
-      .appendCloseTab()
-      .appendSeparator()
-      .appendQuit()
-      .get())
-      .appendEditMenu()
-      .appendWindowMenu()
-      .appendHelpMenu();
+    this.appendFileMenu(
+      new MenuBuilder(this.options)
+        .appendNewFile()
+        .appendOpen()
+        .appendSeparator()
+        .appendSwitchTab()
+        .appendSaveFile()
+        .appendSaveAsFile()
+        .appendSaveAllFiles()
+        .appendSeparator()
+        .appendExportAs()
+        .appendCloseTab()
+        .appendSeparator()
+        .appendQuit()
+        .get()
+    );
+
+    if ('editMenu' in this.options.state) {
+      this.appendEditMenu();
+    }
+
+    this.appendWindowMenu();
+    this.appendHelpMenu();
+
+    return this;
   }
 
   buildContextMenu() {
@@ -289,7 +297,7 @@ class MenuBuilder {
   }
 
   getEditMenu(menuItems) {
-    const builder = new this.constructor(this.options);
+    const builder = new MenuBuilder(this.options);
 
     menuItems.forEach((menuItem, index) => {
       if (Array.isArray(menuItem)) {
