@@ -52,7 +52,19 @@ export default function create(options) {
     }
   };
 
+  instance.importXML = function(xml) {
+    this.setValue(xml);
+
+    this.doc.clearHistory();
+  };
+
   instance.destroy = function() { };
+
+  Object.defineProperty(instance, '_stackIdx', {
+    get() {
+      return this.doc.historySize().undo;
+    }
+  });
 
   return instance;
 }

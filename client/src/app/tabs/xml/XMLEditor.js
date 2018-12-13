@@ -14,31 +14,19 @@ import { getXMLEditMenu } from './getXMLEditMenu';
 
 import getXMLWindowMenu from './getXMLWindowMenu';
 
+import {
+  isString
+} from 'min-dash';
+
 
 export class XMLEditor extends CachedComponent {
 
   constructor(props) {
     super(props);
 
-    const {
-      editor
-    } = this.getCached();
-
-    const history = editor.doc.historySize();
-
-    this.state = {
-      canExport: false,
-      redo: !!history.redo,
-      undo: !!history.undo
-    };
+    this.state = {};
 
     this.ref = React.createRef();
-  }
-
-  shouldComponentUpdate(nextProps) {
-
-    // TODO: why do we need to prevent updating in the first place?
-    return nextProps.xml !== this.props.xml;
   }
 
   componentDidMount() {
@@ -65,8 +53,14 @@ export class XMLEditor extends CachedComponent {
     editor.off('change', this.handleChanged);
   }
 
-  componentDidUpdate(previousProps) {
-    this.checkImport();
+  componentDidUpdate(prevProps) {
+    if (isXMLChange(prevProps.xml, this.props.xml)) {
+      this.checkImport();
+    }
+
+    if (isChachedStateChange(prevProps, this.props)) {
+      this.handleChanged();
+    }
   }
 
   triggerAction(action) {
@@ -100,18 +94,34 @@ export class XMLEditor extends CachedComponent {
   }
 
   checkImport() {
+    const { xml } = this.props;
+
     const {
-      editor
+      editor,
+      lastXML
     } = this.getCached();
 
-    const xml = this.props.xml;
+    if (isXMLChange(lastXML, xml)) {
+      editor.importXML(xml);
 
-    if (xml !== editor.lastXML) {
-      editor.setValue(xml);
-      editor.lastXML = xml;
+      const stackIdx = editor._stackIdx;
+
+      this.setCached({
+        lastXML: xml,
+        stackIdx
+      });
     }
 
     editor.refresh();
+  }
+
+  isDirty() {
+    const {
+      editor,
+      stackIdx
+    } = this.getCached();
+
+    return editor._stackIdx !== stackIdx;
   }
 
   handleChanged = () => {
@@ -123,16 +133,6 @@ export class XMLEditor extends CachedComponent {
       editor
     } = this.getCached();
 
-    const {
-      lastXML
-    } = editor;
-
-    // on initial import, reset history to prevent
-    // undo by the user
-    if (!lastXML) {
-      editor.doc.clearHistory();
-    }
-
     const history = editor.doc.historySize();
 
     const editMenu = getXMLEditMenu({
@@ -140,8 +140,11 @@ export class XMLEditor extends CachedComponent {
       canUndo: !!history.undo
     });
 
+    const dirty = this.isDirty();
+
     const newState = {
       canExport: false,
+      dirty,
       redo: !!history.redo,
       undo: !!history.undo
     };
@@ -166,7 +169,16 @@ export class XMLEditor extends CachedComponent {
       editor
     } = this.getCached();
 
-    return editor.getValue();
+    const stackIdx = editor._stackIdx;
+
+    const xml = editor.getValue();
+
+    this.setCached({
+      lastXML: xml,
+      stackIdx
+    });
+
+    return xml;
   }
 
   render() {
@@ -181,14 +193,36 @@ export class XMLEditor extends CachedComponent {
 
     const editor = CodeMirror();
 
+    const stackIdx = editor._stackIdx;
+
     return {
-      editor,
       __destroy: () => {
         editor.destroy();
-      }
+      },
+      editor,
+      lastXML: null,
+      stackIdx
     };
   }
 
 }
 
 export default WithCache(WithCachedState(XMLEditor));
+
+// helpers //////////
+
+function isXMLChange(prevXML, xml) {
+  return trim(prevXML) !== trim(xml);
+}
+
+function trim(string) {
+  if (isString(string)) {
+    return string.trim();
+  }
+
+  return string;
+}
+
+function isChachedStateChange(prevProps, props) {
+  return prevProps.cachedState !== props.cachedState;
+}
