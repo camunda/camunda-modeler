@@ -1,5 +1,37 @@
 import { assign } from 'min-dash';
 
+class CommandStack {
+  constructor() {
+    this._stackIdx = -1;
+    this._maxStackIdx = this._stackIdx;
+  }
+
+  execute(commands) {
+    this._stackIdx += commands;
+    this._maxStackIdx = this._stackIdx;
+  }
+
+  undo() {
+    if (this.canUndo()) {
+      this._stackIdx--;
+    }
+  }
+
+  redo() {
+    if (this.canRedo()) {
+      this._stackIdx++;
+    }
+  }
+
+  canRedo() {
+    return this._stackIdx < this._maxStackIdx;
+  }
+
+  canUndo() {
+    return this._stackIdx > -1;
+  }
+}
+
 class PropertiesPanel {
   attachTo() {}
 
@@ -21,10 +53,16 @@ export default class Modeler {
       canvas: {
         resized() {}
       },
+      commandStack: new CommandStack(),
       minimap: {
         toggle() {}
       },
-      propertiesPanel: new PropertiesPanel()
+      propertiesPanel: new PropertiesPanel(),
+      selection: {
+        get() {
+          return [];
+        }
+      }
     };
   }
 
