@@ -280,12 +280,15 @@ describe('<App>', function() {
       // then
       const {
         activeTab,
-        tabs
+        tabs,
+        dirtyTabs
       } = app.state;
 
       expect(tabs).to.have.length(1);
       expect(tabs).to.eql([ tab ]);
       expect(activeTab).to.eql(tab);
+
+      expect(dirtyTabs).to.have.property(tab.id, true);
     });
 
 
