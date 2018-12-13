@@ -2,13 +2,35 @@ import { assign } from 'min-dash';
 
 
 class CommandStack {
-  canRedo() {}
+  constructor() {
+    this._stackIdx = -1;
+    this._maxStackIdx = this._stackIdx;
+  }
 
-  canUndo() {}
+  execute(commands) {
+    this._stackIdx += commands;
+    this._maxStackIdx = this._stackIdx;
+  }
 
-  clear() {}
+  undo() {
+    if (this.canUndo()) {
+      this._stackIdx--;
+    }
+  }
 
-  execute() {}
+  redo() {
+    if (this.canRedo()) {
+      this._stackIdx++;
+    }
+  }
+
+  canRedo() {
+    return this._stackIdx < this._maxStackIdx;
+  }
+
+  canUndo() {
+    return this._stackIdx > -1;
+  }
 }
 
 class PropertiesPanel {
@@ -36,6 +58,9 @@ export default class Modeler {
         isEmpty() {}
       },
       commandStack: new CommandStack(),
+      elementTemplatesLoader: {
+        setTemplates() {}
+      },
       minimap: {
         toggle() {}
       },
