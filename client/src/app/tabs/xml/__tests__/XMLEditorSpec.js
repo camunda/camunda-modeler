@@ -9,6 +9,8 @@ import {
 
 import { XMLEditor } from '../XMLEditor';
 
+import CodeMirror from 'test/mocks/code-mirror/CodeMirror';
+
 import { SlotFillRoot } from 'src/app/slot-fill';
 
 const XML = '<xml></xml>';
@@ -40,31 +42,6 @@ describe('<XMLEditor>', function() {
   });
 
 
-  describe('state', function() {
-
-    it('should set initial state', function() {
-
-      // given
-      const initialState = {
-        canExport: false,
-        redo: false,
-        undo: false
-      };
-
-      // when
-      const {
-        instance
-      } = renderEditor(XML);
-
-      expect(instance).to.exist;
-
-      // then
-      expect(instance.state).to.eql(initialState);
-    });
-
-  });
-
-
   it('#getXML', function() {
 
     // given
@@ -87,17 +64,118 @@ describe('<XMLEditor>', function() {
 
         // then
         expect(state).to.include({
-          redo: false,
-          undo: false
+          dirty: true,
+          redo: true,
+          undo: true
         });
       };
 
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          lastXML: XML,
+          editor: CodeMirror({
+            undo: 1,
+            redo: 1
+          }),
+          stackIdx: 2
+        },
+        __destroy: () => {}
+      });
+
       const { instance } = renderEditor(XML, {
+        id: 'editor',
+        cache,
         onChanged: changedSpy
       });
 
       // when
       instance.handleChanged();
+    });
+
+  });
+
+
+  describe('import', function() {
+
+    it('should import if no lastXML');
+
+
+    it('should import if XML !== lastXML');
+
+
+    it('should import if XML === lastXML');
+
+  });
+
+
+  describe('dirty state', function() {
+
+    let instance;
+
+    beforeEach(function() {
+      instance = renderEditor(XML).instance;
+    });
+
+
+    it('should NOT be dirty initially', function() {
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(dirty).to.be.false;
+    });
+
+
+    it('should be dirty after modeling', function() {
+
+      // given
+      const { editor } = instance.getCached();
+
+      // when
+      // execute 1 command
+      editor.doc.execute(1);
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(dirty).to.be.true;
+    });
+
+
+    it('should NOT be dirty after modeling -> undo', function() {
+
+      // given
+      const { editor } = instance.getCached();
+
+      editor.doc.execute(1);
+
+      // when
+      editor.doc.undo();
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(dirty).to.be.false;
+    });
+
+
+    it('should NOT be dirty after save', async function() {
+
+      // given
+      const { editor } = instance.getCached();
+
+      // execute 1 command
+      editor.doc.execute(1);
+
+      // when
+      await instance.getXML();
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(dirty).to.be.false;
     });
 
   });
@@ -121,6 +199,7 @@ function renderEditor(xml, options = {}) {
       <TestEditor
         id={ id || 'editor' }
         xml={ xml }
+        activeSheet={ options.activeSheet || { id: 'xml' } }
         onChanged={ onChanged || noop }
         cache={ options.cache || new Cache() }
       />
