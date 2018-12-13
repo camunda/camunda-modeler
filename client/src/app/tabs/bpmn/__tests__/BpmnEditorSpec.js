@@ -89,6 +89,19 @@ describe('<BpmnEditor>', function() {
   });
 
 
+  it('#getModeler', async function() {
+
+    // given
+    const { instance } = await renderEditor(diagramXML);
+
+    // when
+    const modeler = instance.getModeler();
+
+    // then
+    expect(modeler).to.exist;
+  });
+
+
   it('#getXML', async function() {
 
     // given
@@ -158,6 +171,7 @@ describe('<BpmnEditor>', function() {
         expect(state).to.include({
           align: false,
           copy: false,
+          dirty: true,
           distribute: false,
           editLabel: false,
           find: true,
@@ -179,18 +193,21 @@ describe('<BpmnEditor>', function() {
 
       cache.add('editor', {
         cached: {
+          lastXML: diagramXML,
           modeler: new BpmnModeler({
             clipboard: {
               isEmpty: () => true
             },
             commandStack: {
               canRedo: () => true,
-              canUndo: () => true
+              canUndo: () => true,
+              _stackIdx: 1
             },
             selection: {
               get: () => []
             }
-          })
+          }),
+          stackIdx: 2
         },
         __destroy: () => {}
       });
@@ -362,6 +379,11 @@ describe('<BpmnEditor>', function() {
         onImport
       });
 
+      // make sure editor is dirty
+      const commandStack = instance.getModeler().get('commandStack');
+
+      commandStack.execute(1);
+
       async function onImport() {
 
         // when
@@ -423,10 +445,10 @@ describe('<BpmnEditor>', function() {
 
         // then
         const {
-          modeler
+          lastXML
         } = instance.getCached();
 
-        expect(modeler.lastXML).to.equal(diagramXML);
+        expect(lastXML).to.equal(diagramXML);
 
         expect(err).to.not.exist;
 
@@ -446,10 +468,10 @@ describe('<BpmnEditor>', function() {
 
         // then
         const {
-          modeler
+          lastXML
         } = instance.getCached();
 
-        expect(modeler.lastXML).to.equal('import-warnings');
+        expect(lastXML).to.equal('import-warnings');
 
         expect(error).not.to.exist;
 
@@ -470,10 +492,10 @@ describe('<BpmnEditor>', function() {
 
         // then
         const {
-          modeler
+          lastXML
         } = instance.getCached();
 
-        expect(modeler.lastXML).not.to.exist;
+        expect(lastXML).not.to.exist;
 
         expect(error).to.exist;
         expect(error.message).to.equal('error');
@@ -674,6 +696,77 @@ describe('<BpmnEditor>', function() {
 
   });
 
+
+  describe('dirty state', function() {
+
+    let instance;
+
+    beforeEach(async function() {
+      instance = (await renderEditor(diagramXML)).instance;
+    });
+
+
+    it('should NOT be dirty initially', function() {
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(dirty).to.be.false;
+    });
+
+
+    it('should be dirty after modeling', function() {
+
+      // given
+      const { modeler } = instance.getCached();
+
+      // when
+      // execute 1 command
+      modeler.get('commandStack').execute(1);
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(dirty).to.be.true;
+    });
+
+
+    it('should NOT be dirty after modeling -> undo', function() {
+
+      // given
+      const { modeler } = instance.getCached();
+
+      modeler.get('commandStack').execute(1);
+
+      // when
+      modeler.get('commandStack').undo();
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(dirty).to.be.false;
+    });
+
+
+    it('should NOT be dirty after save', async function() {
+
+      // given
+      const { modeler } = instance.getCached();
+
+      // execute 1 command
+      modeler.get('commandStack').execute(1);
+
+      // when
+      await instance.getXML();
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(dirty).to.be.false;
+    });
+
+  });
+
 });
 
 
@@ -702,6 +795,7 @@ async function renderEditor(xml, options = {}) {
       <TestEditor
         id={ id || 'editor' }
         xml={ xml }
+        activeSheet={ options.activeSheet || { id: 'bpmn' } }
         onAction={ onAction || noop }
         onChanged={ onChanged || noop }
         onError={ onError || noop }
