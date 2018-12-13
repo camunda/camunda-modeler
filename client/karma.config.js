@@ -119,6 +119,7 @@ module.exports = function(karma) {
         alias: {
           'bpmn-js/lib/Modeler': 'test/mocks/bpmn-js/Modeler',
           'cmmn-js/lib/Modeler': 'test/mocks/cmmn-js/Modeler',
+          'dmn-js/lib/Modeler': 'test/mocks/dmn-js/Modeler',
           './DmnModeler': 'test/mocks/dmn-js/Modeler',
           './CodeMirror': 'test/mocks/code-mirror/CodeMirror'
         }
