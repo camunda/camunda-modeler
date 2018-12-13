@@ -69,9 +69,7 @@ global.modelerDirectory = appPath;
 var menu = new Menu(process.platform);
 
 // bootstrap filesystem
-var fileSystem = new FileSystem({
-  dialog: dialog
-});
+var fileSystem = new FileSystem();
 
 // bootstrap workspace behavior
 new Workspace(config, fileSystem);
