@@ -14,7 +14,8 @@ var AVAILABLE_REPLACE_ELEMENTS = [
   'replace-with-collapsed-subprocess',
   'replace-with-expanded-subprocess',
   'replace-with-timer-boundary',
-  'replace-with-message-boundary'
+  'replace-with-message-boundary',
+  'replace-with-event-based-gateway'
 ];
 
 var AVAILABLE_CONTEXTPAD_ENTRIES = [
