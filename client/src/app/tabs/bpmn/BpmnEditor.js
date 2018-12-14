@@ -103,10 +103,13 @@ export class BpmnEditor extends CachedComponent {
 
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
-    try {
-      await this.loadTemplates();
-    } catch (error) {
-      this.handleError({ error });
+
+    if (this.shouldLoadTemplates()) {
+      try {
+        await this.loadTemplates();
+      } catch (error) {
+        this.handleError({ error });
+      }
     }
 
     this.checkImport();
@@ -163,6 +166,14 @@ export class BpmnEditor extends CachedComponent {
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
   }
 
+  shouldLoadTemplates() {
+    const {
+      templatesLoaded
+    } = this.getCached();
+
+    return !templatesLoaded;
+  }
+
   async loadTemplates() {
     const modeler = this.getModeler();
     const templatesLoader = modeler.get('elementTemplatesLoader');
@@ -170,6 +181,10 @@ export class BpmnEditor extends CachedComponent {
     const templates = await this.props.onLoadConfig('bpmn.elementTemplates');
 
     templatesLoader.setTemplates(templates);
+
+    this.setCached({
+      templatesLoaded: true
+    });
   }
 
   undo = () => {
@@ -608,13 +623,13 @@ export class BpmnEditor extends CachedComponent {
   }
 
   static createCachedState() {
-
-    // TODO(nikku): wire element template loading
     const modeler = new CamundaBpmnModeler({
       position: 'absolute'
     });
 
     return {
+      namespaceDialogShown: false,
+      templatesLoaded: false,
       modeler,
       __destroy: () => {
         modeler.destroy();

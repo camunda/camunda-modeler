@@ -25,10 +25,10 @@ const { spy } = sinon;
 
 describe('<BpmnEditor>', function() {
 
-  it('should render', function() {
+  it('should render', async function() {
     const {
       instance
-    } = renderEditor(diagramXML);
+    } = await renderEditor(diagramXML);
 
     expect(instance).to.exist;
   });
@@ -47,12 +47,12 @@ describe('<BpmnEditor>', function() {
     });
 
 
-    it('should create modeler if not cached', function() {
+    it('should create modeler if not cached', async function() {
 
       // when
       const {
         instance
-      } = renderEditor(diagramXML);
+      } = await renderEditor(diagramXML);
 
       // then
       const {
@@ -64,7 +64,7 @@ describe('<BpmnEditor>', function() {
     });
 
 
-    it('should use cached modeler', function() {
+    it('should use cached modeler', async function() {
 
       // given
       const cache = new Cache();
@@ -77,7 +77,7 @@ describe('<BpmnEditor>', function() {
       });
 
       // when
-      renderEditor(diagramXML, {
+      await renderEditor(diagramXML, {
         id: 'editor',
         cache
       });
@@ -92,7 +92,9 @@ describe('<BpmnEditor>', function() {
   it('#getXML', async function() {
 
     // given
-    let instance;
+    const { instance } = await renderEditor(diagramXML, {
+      onImport
+    });
 
     async function onImport() {
 
@@ -103,10 +105,6 @@ describe('<BpmnEditor>', function() {
       expect(xml).to.exist;
       expect(xml).to.eql(diagramXML);
     }
-
-    instance = renderEditor(diagramXML, {
-      onImport
-    }).instance;
   });
 
 
@@ -118,8 +116,8 @@ describe('<BpmnEditor>', function() {
 
     let instance;
 
-    beforeEach(function() {
-      instance = renderEditor(diagramXML).instance;
+    beforeEach(async function() {
+      instance = (await renderEditor(diagramXML)).instance;
     });
 
 
@@ -151,7 +149,7 @@ describe('<BpmnEditor>', function() {
 
   describe('#handleChanged', function() {
 
-    it('should notify about changes', function() {
+    it('should notify about changes', async function() {
 
       // given
       const changedSpy = (state) => {
@@ -197,7 +195,7 @@ describe('<BpmnEditor>', function() {
         __destroy: () => {}
       });
 
-      const { instance } = renderEditor(diagramXML, {
+      const { instance } = await renderEditor(diagramXML, {
         id: 'editor',
         cache,
         onChanged: changedSpy
@@ -247,7 +245,7 @@ describe('<BpmnEditor>', function() {
     });
 
 
-    it('should NOT replace namespace', function() {
+    it('should NOT replace namespace', async function() {
 
       // given
       const onAction = action => {
@@ -260,7 +258,7 @@ describe('<BpmnEditor>', function() {
       const updatedSpy = spy();
 
       // when
-      renderEditor(activitiXML, {
+      await renderEditor(activitiXML, {
         onAction,
         onContentUpdated: updatedSpy
       });
@@ -273,7 +271,7 @@ describe('<BpmnEditor>', function() {
 
   describe('layout', function() {
 
-    it('should open properties panel', function() {
+    it('should open properties panel', async function() {
 
       // given
       let layout = {
@@ -288,7 +286,7 @@ describe('<BpmnEditor>', function() {
 
       const {
         wrapper
-      } = renderEditor(diagramXML, {
+      } = await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
@@ -303,7 +301,7 @@ describe('<BpmnEditor>', function() {
     });
 
 
-    it('should close properties panel', function() {
+    it('should close properties panel', async function() {
 
       // given
       let layout = {
@@ -318,7 +316,7 @@ describe('<BpmnEditor>', function() {
 
       const {
         wrapper
-      } = renderEditor(diagramXML, {
+      } = await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
@@ -333,13 +331,13 @@ describe('<BpmnEditor>', function() {
     });
 
 
-    it('should handle missing layout', function() {
+    it('should handle missing layout', async function() {
 
       // given
-      let layout = { };
+      const layout = { };
 
       // then
-      renderEditor(diagramXML, {
+      await renderEditor(diagramXML, {
         layout
       });
 
@@ -357,9 +355,12 @@ describe('<BpmnEditor>', function() {
     it('should handle XML export error', async function() {
 
       // given
-      let instance;
-
       const errorSpy = spy();
+
+      const { instance } = await renderEditor('export-error', {
+        onError: errorSpy,
+        onImport
+      });
 
       async function onImport() {
 
@@ -376,20 +377,18 @@ describe('<BpmnEditor>', function() {
         expect(err).to.exist;
         expect(errorSpy).to.have.been.calledOnce;
       }
-
-      instance = renderEditor('export-error', {
-        onError: errorSpy,
-        onImport
-      }).instance;
     });
 
 
     it('should handle image export error', async function() {
 
       // given
-      let instance;
-
       const errorSpy = spy();
+
+      const { instance } = await renderEditor('export-as-error', {
+        onError: errorSpy,
+        onImport
+      });
 
       async function onImport() {
 
@@ -406,11 +405,6 @@ describe('<BpmnEditor>', function() {
         expect(err).to.exist;
         expect(errorSpy).to.have.been.calledOnce;
       }
-
-      instance = renderEditor('export-as-error', {
-        onError: errorSpy,
-        onImport
-      }).instance;
     });
 
   });
@@ -418,10 +412,12 @@ describe('<BpmnEditor>', function() {
 
   describe('import', function() {
 
-    it('should import without errors and warnings', function() {
+    it('should import without errors and warnings', async function() {
 
       // given
-      let instance;
+      const { instance } = await renderEditor(diagramXML, {
+        onImport
+      });
 
       function onImport(err, warnings) {
 
@@ -436,18 +432,15 @@ describe('<BpmnEditor>', function() {
 
         expect(warnings).to.have.length(0);
       }
-
-      // when
-      instance = renderEditor(diagramXML, {
-        onImport
-      }).instance;
     });
 
 
-    it('should import with warnings', function() {
+    it('should import with warnings', async function() {
 
       // given
-      let instance;
+      const { instance } = await renderEditor('import-warnings', {
+        onImport
+      });
 
       function onImport(error, warnings) {
 
@@ -463,18 +456,15 @@ describe('<BpmnEditor>', function() {
         expect(warnings).to.have.length(1);
         expect(warnings[0]).to.equal('warning');
       }
-
-      // when
-      instance = renderEditor('import-warnings', {
-        onImport
-      }).instance;
     });
 
 
-    it('should import with error', function() {
+    it('should import with error', async function() {
 
       // given
-      let instance;
+      const { instance } = await renderEditor('import-error', {
+        onImport
+      });
 
       function onImport(error, warnings) {
 
@@ -490,11 +480,6 @@ describe('<BpmnEditor>', function() {
 
         expect(warnings).to.have.length(0);
       }
-
-      // when
-      instance = renderEditor('import-error', {
-        onImport
-      }).instance;
     });
 
   });
@@ -502,7 +487,7 @@ describe('<BpmnEditor>', function() {
 
   describe('element templates', function() {
 
-    it('should load templates when mounted', function() {
+    it('should load templates when mounted', async function() {
 
       // given
       const onLoadConfigSpy = sinon.spy(),
@@ -519,7 +504,7 @@ describe('<BpmnEditor>', function() {
       });
 
       // when
-      renderEditor(diagramXML, {
+      await renderEditor(diagramXML, {
         cache,
         onLoadConfig: onLoadConfigSpy
       });
@@ -527,6 +512,112 @@ describe('<BpmnEditor>', function() {
       // expect
       expect(onLoadConfigSpy).to.be.called;
       expect(onLoadConfigSpy).to.be.calledWith('bpmn.elementTemplates');
+    });
+
+
+    it('should not reload templates if it once succeeded', async function() {
+
+      // given
+      const onLoadConfigSpy = sinon.spy(),
+            elementTemplatesLoaderStub = sinon.stub({ setTemplates() {} });
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            elementTemplatesLoader: elementTemplatesLoaderStub
+          })
+        }
+      });
+
+      // when
+      const { instance } = await renderEditor(diagramXML, {
+        cache,
+        onLoadConfig: onLoadConfigSpy
+      });
+
+      instance.componentWillUnmount();
+      await instance.componentDidMount();
+
+      // expect
+      expect(onLoadConfigSpy).to.be.calledOnce;
+      expect(onLoadConfigSpy).to.be.calledWith('bpmn.elementTemplates');
+      expect(elementTemplatesLoaderStub.setTemplates).to.be.calledOnce;
+    });
+
+
+    it('should retry loading templates on mount if they could not be loaded', async function() {
+
+      // given
+      const onLoadConfigStub = sinon.stub(),
+            elementTemplatesLoaderStub = sinon.stub({ setTemplates() {} });
+
+      onLoadConfigStub.onFirstCall()
+        .rejects()
+        .onSecondCall()
+        .resolves();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            elementTemplatesLoader: elementTemplatesLoaderStub
+          })
+        }
+      });
+
+      // when
+      const { instance } = await renderEditor(diagramXML, {
+        cache,
+        onLoadConfig: onLoadConfigStub
+      });
+
+      instance.componentWillUnmount();
+      await instance.componentDidMount();
+
+      // expect
+      expect(onLoadConfigStub).to.be.calledTwice;
+      expect(onLoadConfigStub).to.be.calledWith('bpmn.elementTemplates');
+      expect(elementTemplatesLoaderStub.setTemplates).to.be.calledOnce;
+    });
+
+
+    it('should retry loading templates on mount if they could not be set', async function() {
+
+      // given
+      const onLoadConfigSpy = sinon.spy(),
+            elementTemplatesLoaderStub = sinon.stub({ setTemplates() {} });
+
+      elementTemplatesLoaderStub.setTemplates.onFirstCall()
+        .throwsException()
+        .onSecondCall()
+        .returns();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            elementTemplatesLoader: elementTemplatesLoaderStub
+          })
+        }
+      });
+
+      // when
+      const { instance } = await renderEditor(diagramXML, {
+        cache,
+        onLoadConfig: onLoadConfigSpy
+      });
+
+      instance.componentWillUnmount();
+      await instance.componentDidMount();
+
+      // expect
+      expect(onLoadConfigSpy).to.be.calledTwice;
+      expect(onLoadConfigSpy).to.be.calledWith('bpmn.elementTemplates');
+      expect(elementTemplatesLoaderStub.setTemplates).to.be.calledTwice;
     });
 
   });
@@ -540,7 +631,7 @@ function noop() {}
 
 const TestEditor = WithCachedState(BpmnEditor);
 
-function renderEditor(xml, options = {}) {
+async function renderEditor(xml, options = {}) {
   const {
     id,
     layout,
@@ -554,7 +645,7 @@ function renderEditor(xml, options = {}) {
     onLoadConfig
   } = options;
 
-  const slotFillRoot = mount(
+  const slotFillRoot = await mount(
     <SlotFillRoot>
       <TestEditor
         id={ id || 'editor' }
