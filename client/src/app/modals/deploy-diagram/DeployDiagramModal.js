@@ -4,6 +4,7 @@ import View from './View';
 import AuthTypes from './AuthTypes';
 
 import errorMessageFunctions from './error-messages';
+import getEditMenu from './getEditMenu';
 
 
 const ENDPOINT_URL_PATTERN = /^https?:\/\/.+/;
@@ -32,6 +33,10 @@ class DeployDiagramModal extends React.Component {
     super(props);
 
     this.state = defaultState;
+  }
+
+  componentDidMount() {
+    this.updateMenu();
   }
 
   handleDeploy = async (values, { setSubmitting }) => {
@@ -63,6 +68,12 @@ class DeployDiagramModal extends React.Component {
     }
 
     setSubmitting(false);
+  }
+
+  handleFocusChange = event => {
+    const isFocusedOnInput = this.isFocusedOnInput(event);
+
+    this.updateMenu(isFocusedOnInput);
   }
 
   validateEndpointUrl = url => {
@@ -112,6 +123,7 @@ class DeployDiagramModal extends React.Component {
     return <View
       onClose={ this.props.onClose }
       onDeploy={ this.handleDeploy }
+      onFocusChange={ this.handleFocusChange }
 
       success={ this.state.success }
       error={ this.state.error }
@@ -122,6 +134,12 @@ class DeployDiagramModal extends React.Component {
       } }
       validators={ validators }
     />;
+  }
+
+  updateMenu(enabled = false) {
+    const editMenu = getEditMenu(enabled);
+
+    this.props.onMenuUpdate({ editMenu });
   }
 
   saveEndpoint(endpointUrl) {
@@ -188,12 +206,21 @@ class DeployDiagramModal extends React.Component {
 
     return 'Unknown error occurred. Check log for details.';
   }
+
+  /**
+   * @param {FocusEvent} event
+   * @returns {Boolean}
+   */
+  isFocusedOnInput(event) {
+    return event.type === 'focus' && ['INPUT', 'TEXTAREA'].includes(event.target.tagName);
+  }
 }
 
 DeployDiagramModal.defaultProps = {
   endpoints: [],
   onEndpointsUpdate: () => {},
-  onDeployError: console.error
+  onDeployError: console.error,
+  onMenuUpdate: () => {}
 };
 
 export default DeployDiagramModal;
