@@ -43,6 +43,7 @@ class View extends Component {
       initialValues,
       onClose,
       onDeploy,
+      onFocusChange,
       validators
     } = this.props;
 
@@ -92,15 +93,16 @@ class View extends Component {
                       name="deploymentName"
                       validate={ validators.deploymentName }
                       component={ FormControl }
-                      autoFocus
                       label="Name"
                       validated
+                      onFocusChange={ onFocusChange }
                     />
 
                     { (deployOpen || values['tenantId']) && <Field
                       name="tenantId"
                       component={ FormControl }
                       label="Tenant ID"
+                      onFocusChange={ onFocusChange }
                     /> }
                   </div>
 
@@ -118,6 +120,7 @@ class View extends Component {
                       label="URL"
                       hint="Should point to a running Camunda Engine REST API endpoint."
                       validated
+                      onFocusChange={ onFocusChange }
                     />
 
                     <div>
@@ -132,9 +135,17 @@ class View extends Component {
                       </Field>
                     </div>
 
-                    { values.authType === AuthTypes.basic && <AuthBasic validators={ validators } /> }
+                    { values.authType === AuthTypes.basic && (
+                      <AuthBasic
+                        validators={ validators }
+                        onFocusChange={ onFocusChange }
+                      />) }
 
-                    { values.authType === AuthTypes.bearer && <AuthBearer validators={ validators } /> }
+                    { values.authType === AuthTypes.bearer && (
+                      <AuthBearer
+                        validators={ validators }
+                        onFocusChange={ onFocusChange }
+                      />) }
                   </div>
                 </fieldset>
 
@@ -167,9 +178,9 @@ function FormControl({
   field,
   hint,
   label,
+  onFocusChange,
   validated,
-  autoFocus,
-  form: { touched, errors, submitCount, isSubmitting },
+  form: { touched, errors, isSubmitting },
   ...props
 }) {
   const { name } = field;
@@ -183,8 +194,9 @@ function FormControl({
       <div>
         <input
           { ...field } { ...props }
+          onFocus={ onFocusChange }
+          onBlur={ compose(onFocusChange, field.onBlur) }
           disabled={ isSubmitting }
-          autoFocus={ autoFocus }
           className={ validated && classnames({
             valid: !errors[name] && touched[name],
             invalid: errors[name] && touched[name]
@@ -229,7 +241,7 @@ function DeploySuccess({ message }) {
   );
 }
 
-function AuthBasic({ validators, ...props }) {
+function AuthBasic({ onFocusChange, validators, ...props }) {
   return (
     <React.Fragment>
       <Field
@@ -238,6 +250,7 @@ function AuthBasic({ validators, ...props }) {
         component={ FormControl }
         label="Username"
         validated
+        onFocusChange={ onFocusChange }
         { ...props }
       />
 
@@ -248,13 +261,14 @@ function AuthBasic({ validators, ...props }) {
         label="Password"
         type="password"
         validated
+        onFocusChange={ onFocusChange }
         { ...props }
       />
     </React.Fragment>
   );
 }
 
-function AuthBearer({ validators, ...props }) {
+function AuthBearer({ onFocusChange, validators, ...props }) {
   return (
     <Field
       name="bearer"
@@ -262,9 +276,19 @@ function AuthBearer({ validators, ...props }) {
       component={ FormControl }
       label="Token"
       validated
+      onFocusChange={ onFocusChange }
       { ...props }
     />
   );
 }
 
 export default View;
+
+
+
+// helpers //////
+function compose(...handlers) {
+  return function(...args) {
+    handlers.forEach(handler => handler(...args));
+  };
+}

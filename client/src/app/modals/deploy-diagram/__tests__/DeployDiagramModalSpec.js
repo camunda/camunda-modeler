@@ -448,6 +448,66 @@ describe('<DeployDiagramModal>', function() {
   });
 
 
+  describe('menu updates', function() {
+
+    it('should update menu on mount', function() {
+      // given
+      const onMenuUpdateSpy = sinon.spy();
+
+      // when
+      shallow(
+        <DeployDiagramModal
+          onMenuUpdate={ onMenuUpdateSpy }
+        />
+      );
+
+      // then
+      expect(onMenuUpdateSpy).to.be.calledOnce;
+    });
+
+
+    it('should enable editing actions on input focus', function() {
+      // given
+      const wrapper = mount(
+        <DeployDiagramModal />
+      );
+      const modal = wrapper.instance();
+      const updateMenuSpy = sinon.spy(modal, 'updateMenu');
+
+      // when
+      const input = wrapper.find('input').first();
+
+      input.simulate('focus');
+
+      // then
+      expect(updateMenuSpy).to.be.calledOnceWithExactly(true);
+
+      wrapper.unmount();
+    });
+
+
+    it('should disable editing actions on input blur', function() {
+      // given
+      const wrapper = mount(
+        <DeployDiagramModal />
+      );
+      const modal = wrapper.instance();
+      const updateMenuSpy = sinon.spy(modal, 'updateMenu');
+
+      // when
+      const input = wrapper.find('input').first();
+
+      input.simulate('blur');
+
+      // then
+      expect(updateMenuSpy).to.be.calledOnceWithExactly(false);
+
+      wrapper.unmount();
+    });
+
+  });
+
+
   describe('<View>', function() {
 
     it('should render', function() {

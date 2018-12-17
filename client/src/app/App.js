@@ -1258,7 +1258,10 @@ export class App extends Component {
 
   openModal = modal => this.triggerAction('open-modal', modal);
 
-  closeModal = () => this.triggerAction('close-modal');
+  closeModal = () => {
+    this.updateMenu(this.state.tabState);
+    this.triggerAction('close-modal');
+  };
 
   setModal = currentModal => this.setState({ currentModal });
 
@@ -1440,10 +1443,11 @@ export class App extends Component {
         <ModalConductor
           currentModal={ this.state.currentModal }
           endpoints={ this.state.endpoints }
-          onClose={ this.composeAction('close-modal') }
+          onClose={ this.closeModal }
           onDeploy={ this.handleDeploy }
           onDeployError={ this.handleDeployError }
           onEndpointsUpdate={ this.setEndpoints }
+          onMenuUpdate={ this.updateMenu }
         />
       </div>
     );

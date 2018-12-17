@@ -1953,6 +1953,20 @@ describe('<App>', function() {
       expect(app.state.currentModal).to.eql(null);
     });
 
+
+    it('should update menu when modal is closed', function() {
+      // given
+      const updateMenuSpy = sinon.spy(app, 'updateMenu');
+      const fakeModalName = 'modal';
+      app.setState({ currentModal: fakeModalName });
+
+      // when
+      app.closeModal();
+
+      // then
+      expect(updateMenuSpy).to.be.calledOnce;
+    });
+
   });
 
 
