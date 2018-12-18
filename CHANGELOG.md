@@ -6,6 +6,12 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 2.2.4
+
+#### BPMN
+
+* `FIX`: include `camunda:calledElementVersionTag` ([#1074](https://github.com/camunda/camunda-modeler/issues/1074))
+
 ## 2.2.3
 
 #### BPMN
