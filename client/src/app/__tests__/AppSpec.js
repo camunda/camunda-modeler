@@ -2092,6 +2092,33 @@ describe('<App>', function() {
 
   });
 
+
+  describe('window resize', function() {
+
+    afterEach(sinon.restore);
+
+
+    it('should notify tab about window resize', async function() {
+      // given
+      const {
+        app,
+        tree
+      } = createApp({}, mount);
+
+      const resizeTabStub = sinon.stub(app, 'resizeTab').resolves();
+
+      // when
+      await app.triggerAction('resize');
+
+      // then
+      expect(resizeTabStub).to.be.calledOnce;
+
+      // clean
+      tree.unmount();
+    });
+
+  });
+
 });
 
 

@@ -87,10 +87,8 @@ export class App extends Component {
 
     if (process.env.NODE_ENV !== 'test') {
       this.workspaceChanged = debounce(this.workspaceChanged, 300);
-    }
-
-    if (process.env.NODE_ENV !== 'test') {
       this.updateMenu = debounce(this.updateMenu, 50);
+      this.resizeTab = debounce(this.resizeTab, 50);
     }
   }
 
@@ -702,6 +700,12 @@ export class App extends Component {
     });
   }
 
+  resizeTab = () => {
+    const tab = this.tabRef.current;
+
+    return tab.triggerAction('resize');
+  }
+
   markAsDirty(tab, dirty = true) {
 
     let {
@@ -1245,6 +1249,10 @@ export class App extends Component {
 
     if (action === 'check-file-changed') {
       return this.checkFileChanged(activeTab);
+    }
+
+    if (action === 'resize') {
+      return this.resizeTab();
     }
 
     const tab = this.tabRef.current;
