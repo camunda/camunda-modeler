@@ -15,6 +15,8 @@ export default class EmptyTab extends Component {
     this.props.onShown();
   }
 
+  triggerAction() {}
+
   render() {
 
     const {
