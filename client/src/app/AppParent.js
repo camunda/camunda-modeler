@@ -171,6 +171,8 @@ export default class AppParent extends Component {
     // }, 0);
   }
 
+  handleResize = () => this.triggerAction(null, 'resize');
+
   getApp() {
     return this.appRef.current;
   }
@@ -218,6 +220,8 @@ export default class AppParent extends Component {
     keyboardBindings.setOnAction(this.triggerAction);
 
     keyboardBindings.bind();
+
+    window.addEventListener('resize', this.handleResize);
   }
 
   componentWillUnmount() {
@@ -236,6 +240,8 @@ export default class AppParent extends Component {
     backend.off('client:open-files', this.openFiles);
 
     keyboardBindings.unbind();
+
+    window.removeEventListener('resize', this.handleResize);
   }
 
   render() {

@@ -161,6 +161,56 @@ describe('<AppParent>', function() {
 
   });
 
+
+  describe('window resize', function() {
+
+    it('should handle window resize', function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } });
+
+      const getAppStub = sinon.stub(appParent, 'getApp');
+
+      getAppStub.returns({ triggerAction() {} });
+
+      // when
+      window.dispatchEvent(new CustomEvent('resize'));
+
+      // then
+      expect(getAppStub).to.have.been.calledOnce;
+
+    });
+
+
+    it('should properly remove resize listener', function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } });
+
+      const getAppStub = sinon.stub(appParent, 'getApp');
+
+      getAppStub.returns({ triggerAction() {} });
+
+      appParent.componentWillUnmount();
+
+      // when
+      window.dispatchEvent(new CustomEvent('resize'));
+
+      // then
+      expect(getAppStub).to.have.not.been.called;
+
+    });
+
+  });
+
 });
 
 
