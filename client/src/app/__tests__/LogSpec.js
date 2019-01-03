@@ -185,6 +185,10 @@ describe('<Log>', function() {
         expanded: true
       }, mount);
 
+      const handleCopy = spy(instance, 'handleCopy');
+
+      const handleWindowSelection = spy(window, 'getSelection');
+
       instance.setState({
         focussed: true
       });
@@ -192,8 +196,11 @@ describe('<Log>', function() {
       // when
       const button = tree.find('.copy-button');
 
-      // then
       button.simulate('click');
+
+      // then
+      expect(handleCopy).to.have.been.calledOnce;
+      expect(handleWindowSelection).to.have.been.called;
     });
 
 
