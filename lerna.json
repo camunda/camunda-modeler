@@ -1,6 +1,5 @@
 {
-  "lerna": "2.5.1",
-  "version": "2.2.4",
+  "version": "2.2.3",
   "packages": [
     "app",
     "client"
