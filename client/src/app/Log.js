@@ -6,8 +6,14 @@ import classNames from 'classnames';
 
 import dragger from '../util/dom/dragger';
 
+import {
+  throttle
+} from 'min-dash';
+
 
 const DEFAULT_HEIGHT = 130;
+
+const RESIZE_THROTTLE = 10;
 
 /**
  * A log component
@@ -27,6 +33,10 @@ export default class Log extends Component {
     this.state = {};
 
     this.panelRef = React.createRef();
+
+    if (process.env.NODE_ENV !== 'test') {
+      this.handleResize = throttle(this.handleResize, RESIZE_THROTTLE);
+    }
   }
 
   toggleLog = () => {
@@ -62,35 +72,41 @@ export default class Log extends Component {
     });
   }
 
-  /**
-   * Returns dragger with cached properties panel width.
-   */
-  handleResize = (originalHeight) => {
+  handleResizeStart = event => {
+    const onDragStart = dragger(this.handleResize);
 
-    return dragger((event, delta) => {
-      const {
-        y
-      } = delta;
+    this.originalHeight = this.currentHeight;
 
-      const newHeight = originalHeight - y;
+    onDragStart(event);
+  }
 
-      const newExpanded = newHeight > 25;
+  handleResize = (_, delta) => {
+    const {
+      y
+    } = delta;
 
-      const height = (newExpanded ? newHeight : DEFAULT_HEIGHT);
+    if (y === 0) {
+      return;
+    }
 
-      const {
-        expanded,
-        onToggle
-      } = this.props;
+    const newHeight = this.originalHeight - y;
 
-      this.setState({
-        height
-      });
+    const newExpanded = newHeight > 25;
 
-      if (expanded !== newExpanded) {
-        onToggle(newExpanded);
-      }
+    const height = (newExpanded ? newHeight : DEFAULT_HEIGHT);
+
+    const {
+      expanded,
+      onToggle
+    } = this.props;
+
+    this.setState({
+      height
     });
+
+    if (expanded !== newExpanded) {
+      onToggle(newExpanded);
+    }
   }
 
   checkFocus = () => {
@@ -175,6 +191,8 @@ export default class Log extends Component {
 
     const logHeight = height || DEFAULT_HEIGHT;
 
+    this.currentHeight = logHeight;
+
     return (
       <div
         className={ classNames(
@@ -194,7 +212,7 @@ export default class Log extends Component {
 
         <div
           className="resizer"
-          onDragStart={ this.handleResize(logHeight) }
+          onDragStart={ this.handleResizeStart }
           draggable
         ></div>
 
