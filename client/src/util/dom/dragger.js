@@ -1,5 +1,3 @@
-import slice from '../slice';
-
 import {
   domify
 } from 'min-dom';
@@ -7,7 +5,7 @@ import {
 
 /**
  * Add a dragger that calls back the passed function with
- * { args..., event, delta } on drag.
+ * { event, delta } on drag.
  *
  * @example
  *
@@ -17,51 +15,19 @@ import {
  *
  * domElement.addEventListener('dragstart', dragger(dragMove));
  *
- *
  * @param {Function} fn
  *
  * @return {Function} drag start callback function
  */
-export default function dragger(fn) {
+export default function createDragger(fn) {
 
-  var self;
-  var extraArgs;
-
-  var startPosition;
-
-  var dragging;
-
-  function onDrag(event) {
-
-    // suppress drag end event
-    if (event.x === 0) {
-      return;
-    }
-
-    var currentPosition = eventPosition(event),
-        delta = pointDelta(currentPosition, startPosition);
-
-    var args = extraArgs.concat([ event, delta ]);
-
-    if (!dragging) {
-      dragging = true;
-
-      return;
-    }
-
-    // call provided fn with extraArgs..., event, delta
-    return fn.apply(self, args);
-  }
+  var self,
+      startPosition;
 
   /** drag start */
-  var onDragStart = function onDragStart() {
-
-    // (0) extract extra arguments (extraArgs..., event)
-    var args = slice(arguments),
-        event = args.pop();
+  function onDragStart(event) {
 
     self = this;
-    extraArgs = args;
     startPosition = eventPosition(event);
 
     // (1) prevent preview image
@@ -70,19 +36,29 @@ export default function dragger(fn) {
     }
 
     // (2) setup drag listeners
-    function onEnd() {
-      document.removeEventListener('drag', onDrag);
-      document.removeEventListener('dragend', onEnd);
-
-      self = extraArgs = startPosition = dragging = null;
-    }
 
     // attach drag + cleanup event
     document.addEventListener('drag', onDrag);
-    document.addEventListener('dragend', onEnd);
-  };
+    document.addEventListener('dragend', onEnd, { once: true });
+  }
 
-  onDragStart.onDrag = onDrag;
+  function onDrag(event) {
+
+    // suppress drag end event
+    if (event.x === 0 && event.y === 0) {
+      return;
+    }
+
+    var currentPosition = eventPosition(event),
+        delta = pointDelta(currentPosition, startPosition);
+
+    // call provided fn with event, delta
+    return fn.call(self, event, delta);
+  }
+
+  function onEnd() {
+    document.removeEventListener('drag', onDrag);
+  }
 
   return onDragStart;
 }
