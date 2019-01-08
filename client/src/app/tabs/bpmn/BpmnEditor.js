@@ -131,9 +131,13 @@ export class BpmnEditor extends CachedComponent {
     propertiesPanel.detach();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (!this.state.importing) {
       this.checkImport();
+    }
+
+    if (prevProps.layout.propertiesPanel !== this.props.layout.propertiesPanel) {
+      this.triggerAction('resize');
     }
   }
 
@@ -493,8 +497,10 @@ export class BpmnEditor extends CachedComponent {
     const modeler = this.getModeler();
 
     const canvas = modeler.get('canvas');
+    const eventBus = modeler.get('eventBus');
 
     canvas.resized();
+    eventBus.fire('propertiesPanel.resized');
   }
 
   render() {
