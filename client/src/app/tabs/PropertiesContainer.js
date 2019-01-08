@@ -4,6 +4,10 @@ import classNames from 'classnames';
 
 import dragger from '../../util/dom/dragger';
 
+import {
+  throttle
+} from 'min-dash';
+
 import css from './PropertiesContainer.less';
 
 
@@ -12,6 +16,8 @@ const DEFAULT_LAYOUT = {
   width: 250
 };
 
+const RESIZE_THROTTLE = 10;
+
 
 /**
  * A generic container to hold our editors properties panels.
@@ -19,6 +25,14 @@ const DEFAULT_LAYOUT = {
  * Adds resize and toggle support.
  */
 class PropertiesContainerWrapped extends Component {
+
+  constructor(props) {
+    super(props);
+
+    if (process.env.NODE_ENV !== 'test') {
+      this.handleResize = throttle(this.handleResize, RESIZE_THROTTLE);
+    }
+  }
 
   changeLayout = (newLayout) => {
 
@@ -53,28 +67,34 @@ class PropertiesContainerWrapped extends Component {
     });
   }
 
-  /**
-   * Returns dragger with cached properties panel width.
-   */
-  handleResize = (originalWidth) => {
+  handleResizeStart = event => {
+    const onDragStart = dragger(this.handleResize);
 
-    return dragger((event, delta) => {
-      const {
-        x
-      } = delta;
+    this.originalWidth = this.currentWidth;
 
-      const newWidth = originalWidth - x;
+    onDragStart(event);
+  }
 
-      const open = newWidth > 25;
+  handleResize = (_, delta) => {
+    const {
+      x
+    } = delta;
 
-      const width = (open ? newWidth : DEFAULT_LAYOUT.width);
+    if (x === 0) {
+      return;
+    }
 
-      this.changeLayout({
-        propertiesPanel: {
-          open,
-          width
-        }
-      });
+    const newWidth = this.originalWidth - x;
+
+    const open = newWidth > 25;
+
+    const width = (open ? newWidth : DEFAULT_LAYOUT.width);
+
+    this.changeLayout({
+      propertiesPanel: {
+        open,
+        width
+      }
     });
   }
 
@@ -96,6 +116,8 @@ class PropertiesContainerWrapped extends Component {
       width
     };
 
+    this.currentWidth = width;
+
     return (
       <div
         className={ classNames(
@@ -110,7 +132,7 @@ class PropertiesContainerWrapped extends Component {
               className="toggle"
               onClick={ this.handleToggle }
               draggable
-              onDragStart={ this.handleResize(width) }
+              onDragStart={ this.handleResizeStart }
             >Properties Panel</div>
         }
         {
@@ -118,7 +140,7 @@ class PropertiesContainerWrapped extends Component {
             <div
               className="resize-handle"
               draggable
-              onDragStart={ this.handleResize(width) }
+              onDragStart={ this.handleResizeStart }
             ></div>
         }
         <div className="properties-container" ref={ forwardedRef }></div>

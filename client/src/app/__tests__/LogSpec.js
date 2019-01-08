@@ -291,6 +291,42 @@ describe('<Log>', function() {
   });
 
 
+  describe('resize', function() {
+
+    it('should handle resize', function() {
+      // given
+      const {
+        instance
+      } = createLog();
+
+      instance.originalHeight = 100;
+
+      // when
+      instance.handleResize(null, { y: -10 });
+
+      // then
+      expect(instance.state.height).to.eql(110);
+    });
+
+
+    it('should ignore delta y = 0', function() {
+      // given
+      const {
+        instance
+      } = createLog();
+
+      const originalState = instance.state;
+
+      // when
+      instance.handleResize(null, { y: 0 });
+
+      // then
+      expect(instance.state).to.eql(originalState);
+    });
+
+  });
+
+
 });
 
 
