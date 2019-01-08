@@ -390,6 +390,59 @@ describe('<DmnEditor>', function() {
 
   });
 
+
+  describe('editor resize', function() {
+
+    afterEach(sinon.restore);
+
+
+    it('should resize editor and properties panel on layout change', async function() {
+
+      // given
+      const eventBusStub = sinon.stub({ fire() {} }),
+            canvasStub = sinon.stub({ resized() {} });
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new DmnModeler({
+            eventBus: eventBusStub,
+            canvas: canvasStub
+          })
+        }
+      });
+
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        cache
+      });
+
+      const mockLayout = {
+        propertiesPanel: {
+          open: true,
+          width: 500
+        }
+      };
+
+      eventBusStub.fire.resetHistory();
+      canvasStub.resized.resetHistory();
+
+      // when
+      const prevProps = instance.props;
+
+      instance.props = { ...prevProps, layout: mockLayout };
+      instance.componentDidUpdate(prevProps);
+
+      // expect
+      expect(canvasStub.resized).to.be.called;
+      expect(eventBusStub.fire).to.be.calledOnceWith('propertiesPanel.resized');
+    });
+
+  });
+
+
 });
 
 

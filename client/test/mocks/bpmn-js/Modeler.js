@@ -26,6 +26,9 @@ export default class Modeler {
 
   _getDefaultModules() {
     return {
+      eventBus: {
+        fire() {}
+      },
       canvas: {
         resized() {}
       },

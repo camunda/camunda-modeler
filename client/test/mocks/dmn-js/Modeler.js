@@ -17,6 +17,9 @@ class Viewer {
 
   _getDefaultModules() {
     return {
+      eventBus: {
+        fire() {}
+      },
       canvas: {
         resized() {}
       },
