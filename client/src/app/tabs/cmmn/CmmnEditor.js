@@ -96,9 +96,13 @@ export class CmmnEditor extends CachedComponent {
     modeler[fn]('error', 1500, this.handleError);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (!this.state.importing) {
       this.checkImport();
+    }
+
+    if (prevProps.layout.propertiesPanel !== this.props.layout.propertiesPanel) {
+      this.triggerAction('resize');
     }
   }
 
@@ -299,13 +303,13 @@ export class CmmnEditor extends CachedComponent {
   }
 
   triggerAction = (action, context) => {
-    const {
-      modeler
-    } = this.getCached();
-
     if (action === 'resize') {
       return this.resize();
     }
+
+    const {
+      modeler
+    } = this.getCached();
 
     // TODO(nikku): handle all editor actions
     modeler.get('editorActions').trigger(action, context);
@@ -335,8 +339,10 @@ export class CmmnEditor extends CachedComponent {
     } = this.getCached();
 
     const canvas = modeler.get('canvas');
+    const eventBus = modeler.get('eventBus');
 
     canvas.resized();
+    eventBus.fire('propertiesPanel.resized');
   }
 
   render() {

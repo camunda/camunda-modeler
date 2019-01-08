@@ -78,9 +78,13 @@ export class DmnEditor extends CachedComponent {
     modeler.detach();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (!this.state.importing) {
       this.checkImport();
+    }
+
+    if (prevProps.layout.propertiesPanel !== this.props.layout.propertiesPanel) {
+      this.triggerAction('resize');
     }
   }
 
@@ -384,6 +388,10 @@ export class DmnEditor extends CachedComponent {
   }
 
   triggerAction = (action, options) => {
+    if (action === 'resize') {
+      return this.resize();
+    }
+
     const {
       modeler
     } = this.getCached();
@@ -391,6 +399,26 @@ export class DmnEditor extends CachedComponent {
     modeler.getActiveViewer()
       .get('editorActions')
       .trigger(action);
+  }
+
+  resize = () => {
+    const {
+      modeler
+    } = this.getCached();
+
+    const view = modeler.getActiveView();
+
+    if (view.type !== 'drd') {
+      return;
+    }
+
+    const viewer = modeler.getActiveViewer();
+
+    const canvas = viewer.get('canvas');
+    const eventBus = viewer.get('eventBus');
+
+    canvas.resized();
+    eventBus.fire('propertiesPanel.resized');
   }
 
   getXML() {
