@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 
 import classNames from 'classnames';
 
+import {
+  debounce
+} from 'min-dash';
+
 import css from './Tabbed.less';
 
 import {
@@ -26,8 +30,12 @@ const TABS_OPTS = {
 
 
 export default class TabLinks extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    if (process.env.NODE_ENV !== 'test') {
+      this.updateScroller = debounce(this.updateScroller, 300);
+    }
 
     this.tabLinksRef = React.createRef();
   }
@@ -50,13 +58,19 @@ export default class TabLinks extends Component {
   componentWillUnmount() {
     if (this.scroller) {
       removeScroller(this.scroller);
+
+      this.scroller = null;
+    }
+  }
+
+  updateScroller() {
+    if (this.scroller) {
+      this.scroller.update();
     }
   }
 
   componentDidUpdate() {
-    if (this.scroller) {
-      this.scroller.update();
-    }
+    this.updateScroller();
   }
 
   handleScroll = (node) => {
