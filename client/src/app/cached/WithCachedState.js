@@ -59,24 +59,25 @@ export default function(Comp) {
       this.state = cachedState;
     }
 
-    setCachedState = (state) => {
+    setCachedState = (newState) => {
+      this.setState(function(state, props) {
+        const {
+          cache,
+          id
+        } = props;
 
-      const {
-        cache,
-        id
-      } = this.props;
+        newState = {
+          cached: {
+            ...state.cached,
+            ...newState
+          },
+          __destroy: state.__destroy
+        };
 
-      const newState = {
-        cached: {
-          ...this.state.cached,
-          ...state
-        },
-        __destroy: this.state.__destroy
-      };
+        cache.add(id, newState);
 
-      cache.add(id, newState);
-
-      this.setState(newState);
+        return newState;
+      });
     }
 
 
