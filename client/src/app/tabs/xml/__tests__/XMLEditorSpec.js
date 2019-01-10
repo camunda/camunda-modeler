@@ -97,19 +97,6 @@ describe('<XMLEditor>', function() {
   });
 
 
-  describe('import', function() {
-
-    it('should import if no lastXML');
-
-
-    it('should import if XML !== lastXML');
-
-
-    it('should import if XML === lastXML');
-
-  });
-
-
   describe('dirty state', function() {
 
     let instance;

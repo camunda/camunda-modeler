@@ -12,6 +12,7 @@ import {
 } from '../../cached';
 
 import {
+  Editor as DefaultEditor,
   providers as defaultProviders,
   tab as defaultTab
 } from './mocks';
@@ -189,6 +190,80 @@ describe('<MultiSheetTab>', function() {
     } = instance.getCached();
 
     expect(activeSheet.id).to.equal('fallback');
+  });
+
+
+  describe('dirty state', function() {
+
+    let instance,
+        wrapper;
+
+    beforeEach(function() {
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          lastXML: 'foo'
+        }
+      });
+
+      ({ instance, wrapper } = renderTab({
+        xml: 'foo',
+        cache,
+        providers: [{
+          type: 'foo',
+          editor: DefaultEditor,
+          defaultName: 'Foo'
+        }, {
+          type: 'bar',
+          editor: DefaultEditor,
+          defaultName: 'Bar'
+        }]
+      }));
+    });
+
+
+    it('should NOT be dirty initially', function() {
+
+      // when
+      const dirty = instance.isDirty();
+
+      // then
+      expect(dirty).to.be.false;
+    });
+
+
+    it('should NOT be dirty on switch sheet', async function() {
+
+      // given
+      const { sheets } = instance.getCached();
+
+      // make sure editor returns same XML
+      wrapper.find(DefaultEditor).first().instance().setXML('foo');
+
+      // when
+      await instance.switchSheet(sheets[1]);
+
+      // then
+      expect(instance.isDirty()).to.be.false;
+    });
+
+
+    it('should be dirty on switch sheet', async function() {
+
+      // given
+      const { sheets } = instance.getCached();
+
+      // make sure editor returns NOT same XML
+      wrapper.find(DefaultEditor).first().instance().setXML('bar');
+
+      // when
+      await instance.switchSheet(sheets[1]);
+
+      // then
+      expect(instance.isDirty()).to.be.true;
+    });
+
   });
 
 });
