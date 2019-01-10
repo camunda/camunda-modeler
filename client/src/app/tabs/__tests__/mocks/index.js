@@ -1,6 +1,20 @@
 import React, { Component } from 'react';
 
 export class Editor extends Component {
+  constructor() {
+    super();
+
+    this.xml = null;
+  }
+
+  setXML(xml) {
+    this.xml = xml;
+  }
+
+  getXML() {
+    return this.xml;
+  }
+
   render() {
     return <div></div>;
   }

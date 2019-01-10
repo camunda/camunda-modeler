@@ -61,25 +61,17 @@ export class MultiSheetTab extends CachedComponent {
     });
   }
 
-  handleChanged = (newState) => {
-
+  handleChanged = (newState = {}) => {
     const {
-      onChanged,
-      xml
+      onChanged
     } = this.props;
 
-    const {
+    const dirty = this.isDirty(newState);
+
+    onChanged({
+      ...newState,
       dirty
-    } = newState;
-
-    const { lastXML } = this.getCached();
-
-    onChanged(
-      {
-        ...newState,
-        dirty: dirty || (lastXML ? (xml !== lastXML) : false)
-      }
-    );
+    });
   }
 
   handleError = (error) => {
@@ -96,6 +88,31 @@ export class MultiSheetTab extends CachedComponent {
     } = this.props;
 
     onWarning(warning);
+  }
+
+  /**
+   * Check wether or not tab is dirty.
+   *
+   * @param {Object} state - Editor state.
+   *
+   * @returns {boolean}
+   */
+  isDirty(state = {}) {
+    const { dirty } = state;
+
+    if (dirty) {
+      return true;
+    }
+
+    const { xml } = this.props;
+
+    const { lastXML } = this.getCached();
+
+    if (!lastXML) {
+      return false;
+    }
+
+    return isXMLChange(lastXML, xml);
   }
 
   async showImportErrorDialog(error) {
@@ -197,7 +214,7 @@ export class MultiSheetTab extends CachedComponent {
     if (action === 'save') {
       const xml = await editor.getXML();
 
-      this.setState({
+      this.setCached({
         lastXML: xml
       });
 
@@ -212,7 +229,6 @@ export class MultiSheetTab extends CachedComponent {
   }
 
   switchSheet = async (sheet) => {
-
     const {
       activeSheet
     } = this.getCached();
@@ -308,7 +324,7 @@ export class MultiSheetTab extends CachedComponent {
         <TabContainer className="content tab">
           <Editor
             ref={ this.editorRef }
-            id={ `${id}-${activeSheet.id}` }
+            id={ `${id}-${activeSheet.provider.type}` }
             xml={ lastXML || xml }
             layout={ layout }
             activeSheet={ activeSheet }
@@ -366,4 +382,8 @@ function getErrorDialog({
       'Post this error with your diagram in our forum for help.'
     ].join('\n')
   };
+}
+
+function isXMLChange(prevXML, xml) {
+  return prevXML !== xml;
 }
