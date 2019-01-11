@@ -2119,6 +2119,65 @@ describe('<App>', function() {
 
   });
 
+
+  describe('dirty state', function() {
+
+    let app, dialog;
+
+    beforeEach(async function() {
+      dialog = new Dialog();
+
+      ({ app } = createApp({
+        globals: {
+          dialog
+        }
+      }, mount));
+    });
+
+
+    it('should be dirty after creating a diagram', async function() {
+
+      // when
+      const tab = await app.createDiagram();
+
+      // then
+      expect(app.isDirty(tab)).to.be.true;
+    });
+
+
+    it('should NOT be dirty after opening an existing diagram', async function() {
+
+      // given
+      const file = createFile('diagram_1.bpmn');
+
+      // when
+      const tabs = await app.openFiles([ file ]);
+
+      // then
+      expect(app.isDirty(tabs[0])).to.be.false;
+    });
+
+
+    it('should NOT be dirty after saving a diagram', async function() {
+
+      // given
+      const tab = await app.createDiagram();
+
+      console.log(tab);
+
+      dialog.setShowSaveFileDialogResponse('diagram_1.bpmn');
+
+      // when
+      await app.triggerAction('save');
+
+      // then
+      setTimeout(() => {
+        expect(app.isDirty(tab)).to.be.false;
+      }, 100);
+    });
+
+  });
+
 });
 
 
