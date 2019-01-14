@@ -21,8 +21,10 @@ import {
  */
 export default function createDragger(fn) {
 
-  var self,
-      startPosition;
+  var self;
+  var startPosition;
+
+  var active;
 
   /** drag start */
   function onDragStart(event) {
@@ -44,13 +46,20 @@ export default function createDragger(fn) {
 
   function onDrag(event) {
 
+    // first drag event ships with broken coordinates, skip it
+    if (!active) {
+      active = true;
+
+      return;
+    }
+
     // suppress drag end event
     if (event.x === 0 && event.y === 0) {
       return;
     }
 
-    var currentPosition = eventPosition(event),
-        delta = pointDelta(currentPosition, startPosition);
+    var currentPosition = eventPosition(event);
+    var delta = pointDelta(currentPosition, startPosition);
 
     // call provided fn with event, delta
     return fn.call(self, event, delta);
@@ -58,6 +67,8 @@ export default function createDragger(fn) {
 
   function onEnd() {
     document.removeEventListener('drag', onDrag);
+
+    active = false;
   }
 
   return onDragStart;
