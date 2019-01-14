@@ -4,19 +4,16 @@ import classNames from 'classnames';
 
 import dragger from '../../util/dom/dragger';
 
-import {
-  throttle
-} from 'min-dash';
-
 import css from './PropertiesContainer.less';
 
+import {
+  throttle
+} from '../../util';
 
 const DEFAULT_LAYOUT = {
   open: false,
   width: 250
 };
-
-const RESIZE_THROTTLE = 10;
 
 
 /**
@@ -29,9 +26,7 @@ class PropertiesContainerWrapped extends Component {
   constructor(props) {
     super(props);
 
-    if (process.env.NODE_ENV !== 'test') {
-      this.handleResize = throttle(this.handleResize, RESIZE_THROTTLE);
-    }
+    this.handleResize = throttle(this.handleResize);
   }
 
   changeLayout = (newLayout) => {

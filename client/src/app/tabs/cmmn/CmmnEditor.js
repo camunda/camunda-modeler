@@ -10,6 +10,10 @@ import {
   Loader
 } from '../../primitives';
 
+import {
+  debounce
+} from '../../../util';
+
 import PropertiesContainer from '../PropertiesContainer';
 
 import CamundaCmmnModeler from './modeler';
@@ -35,6 +39,8 @@ export class CmmnEditor extends CachedComponent {
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
+
+    this.handleResize = debounce(this.handleResize);
   }
 
   componentDidMount() {
@@ -51,7 +57,7 @@ export class CmmnEditor extends CachedComponent {
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
     this.checkImport();
-    this.resize();
+    this.handleResize();
   }
 
   componentWillUnmount() {
@@ -338,7 +344,7 @@ export class CmmnEditor extends CachedComponent {
     const modeler = this.getModeler();
 
     if (action === 'resize') {
-      return this.resize();
+      return this.handleResize();
     }
 
     // TODO(nikku): handle all editor actions
@@ -363,7 +369,7 @@ export class CmmnEditor extends CachedComponent {
     }
   }
 
-  resize = () => {
+  handleResize = () => {
     const modeler = this.getModeler();
 
     const canvas = modeler.get('canvas');

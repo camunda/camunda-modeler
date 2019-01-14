@@ -8,12 +8,10 @@ import dragger from '../util/dom/dragger';
 
 import {
   throttle
-} from 'min-dash';
+} from '../util';
 
 
 const DEFAULT_HEIGHT = 130;
-
-const RESIZE_THROTTLE = 10;
 
 /**
  * A log component
@@ -34,9 +32,7 @@ export default class Log extends Component {
 
     this.panelRef = React.createRef();
 
-    if (process.env.NODE_ENV !== 'test') {
-      this.handleResize = throttle(this.handleResize, RESIZE_THROTTLE);
-    }
+    this.handleResize = throttle(this.handleResize);
   }
 
   toggleLog = () => {
