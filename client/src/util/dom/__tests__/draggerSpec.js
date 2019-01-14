@@ -18,6 +18,10 @@ describe('dragger', function() {
     // when
     dragger(new DragEvent('dragstart'));
 
+    // TODO(nikku): this simulates broken drag behavior / drag jumping as
+    // seen on Windows and Linux
+    document.dispatchEvent(new DragEvent('drag', { clientX: 500, clientY: 10000 }));
+
     document.dispatchEvent(new DragEvent('drag', { clientX: 1, clientY: 1 }));
 
     // then
