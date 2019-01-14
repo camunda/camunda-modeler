@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 
 import classNames from 'classnames';
 
-import {
-  debounce
-} from 'min-dash';
-
 import css from './Tabbed.less';
 
 import {
@@ -16,6 +12,10 @@ import {
 import {
   addDragger
 } from '../util/dragger';
+
+import {
+  debounce
+} from '../../util';
 
 const noop = () => {};
 
@@ -33,9 +33,7 @@ export default class TabLinks extends Component {
   constructor(props) {
     super(props);
 
-    if (process.env.NODE_ENV !== 'test') {
-      this.updateScroller = debounce(this.updateScroller, 300);
-    }
+    this.updateScroller = debounce(this.updateScroller);
 
     this.tabLinksRef = React.createRef();
   }
@@ -63,7 +61,7 @@ export default class TabLinks extends Component {
     }
   }
 
-  updateScroller() {
+  updateScroller = () => {
     if (this.scroller) {
       this.scroller.update();
     }

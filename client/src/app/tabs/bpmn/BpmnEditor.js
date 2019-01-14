@@ -10,6 +10,10 @@ import {
 } from '../../primitives';
 
 import {
+  debounce
+} from '../../../util';
+
+import {
   WithCache,
   WithCachedState,
   CachedComponent
@@ -79,6 +83,8 @@ export class BpmnEditor extends CachedComponent {
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
+
+    this.handleResize = debounce(this.handleResize);
   }
 
   async componentDidMount() {
@@ -115,7 +121,7 @@ export class BpmnEditor extends CachedComponent {
 
     this.checkImport();
 
-    this.resize();
+    this.handleResize();
   }
 
   componentWillUnmount() {
@@ -489,7 +495,7 @@ export class BpmnEditor extends CachedComponent {
     const modeler = this.getModeler();
 
     if (action === 'resize') {
-      return this.resize();
+      return this.handleResize();
     }
 
     // TODO(nikku): handle all editor actions
@@ -530,7 +536,7 @@ export class BpmnEditor extends CachedComponent {
     }
   }
 
-  resize = () => {
+  handleResize = () => {
     const modeler = this.getModeler();
 
     const canvas = modeler.get('canvas');

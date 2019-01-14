@@ -9,6 +9,10 @@ import {
 } from '../../primitives';
 
 import {
+  debounce
+} from '../../../util';
+
+import {
   WithCache,
   WithCachedState,
   CachedComponent
@@ -48,6 +52,8 @@ export class DmnEditor extends CachedComponent {
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
+
+    this.handleResize = debounce(this.handleResize);
   }
 
   componentDidMount() {
@@ -66,6 +72,7 @@ export class DmnEditor extends CachedComponent {
     }
 
     this.checkImport();
+    this.handleResize();
   }
 
   componentWillUnmount() {
@@ -385,7 +392,7 @@ export class DmnEditor extends CachedComponent {
     const modeler = this.getModeler();
 
     if (action === 'resize') {
-      return this.resize();
+      return this.handleResize();
     }
 
     modeler.getActiveViewer()
@@ -404,14 +411,16 @@ export class DmnEditor extends CachedComponent {
     return modeler;
   }
 
-  resize = () => {
+  handleResize = () => {
     const {
       modeler
     } = this.getCached();
 
     const view = modeler.getActiveView();
 
-    if (view.type !== 'drd') {
+    const viewType = view && view.type;
+
+    if (viewType !== 'drd') {
       return;
     }
 
