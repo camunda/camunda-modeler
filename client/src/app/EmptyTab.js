@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import Slot from './slot-fill/Slot';
 
@@ -9,7 +9,7 @@ import {
 } from './primitives';
 
 
-export default class EmptyTab extends Component {
+export default class EmptyTab extends PureComponent {
 
   componentDidMount() {
     this.props.onShown();
