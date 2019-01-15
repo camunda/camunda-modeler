@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import debug from 'debug';
 
@@ -10,7 +10,7 @@ import { forEach } from 'min-dash';
 const log = debug('AppParent');
 
 
-export default class AppParent extends Component {
+export default class AppParent extends PureComponent {
 
   constructor() {
     super();

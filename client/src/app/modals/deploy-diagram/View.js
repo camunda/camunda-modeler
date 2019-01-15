@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import classnames from 'classnames';
 
@@ -22,7 +22,7 @@ const SUCCESS_HEADING = 'Deployment successful';
 const ERROR_HEADING = 'Deployment failed';
 
 
-class View extends Component {
+class View extends PureComponent {
 
   constructor(props) {
     super(props);

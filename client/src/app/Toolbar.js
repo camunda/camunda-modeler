@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import Slot from './slot-fill/Slot';
 
 import css from './Toolbar.less';
 
-export default class Toolbar extends Component {
+export default class Toolbar extends PureComponent {
   render() {
     return (
       <div className={ css.Toolbar }>

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import css from './Log.less';
 
@@ -23,7 +23,7 @@ const DEFAULT_HEIGHT = 130;
  *   onClear={ () => { } } />
  *
  */
-export default class Log extends Component {
+export default class Log extends PureComponent {
 
   constructor(props) {
     super(props);
