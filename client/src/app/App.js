@@ -1291,6 +1291,10 @@ export class App extends Component {
     this.logEntry(`Deploy error: ${JSON.stringify(error)}`, 'deploy-error');
   }
 
+  handleCloseTab = (tab) => {
+    this.triggerAction('close-tab', { tabId: tab.id }).catch(console.error);
+  }
+
   loadConfig = (key, ...args) => {
     return this.props.globals.config.get(key, this.state.activeTab, ...args);
   }
@@ -1299,8 +1303,37 @@ export class App extends Component {
     return true;
   }
 
-  composeAction = (...args) => async (event) => {
-    await this.triggerAction(...args);
+  composeAction = (...args) => {
+
+    const actionName = args[0];
+
+    this.__actionCache = this.__actionCache || {};
+
+    const cachedAction = this.__actionCache[actionName];
+
+    if (cachedAction) {
+      const lastArgs = cachedAction.args;
+
+      const changed = lastArgs.length !== args.length || lastArgs.find((arg, idx) => {
+        return arg !== args[idx];
+      });
+
+      if (!changed) {
+        return cachedAction.fn;
+      }
+
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('re-defining App#composeAction args', args);
+      }
+    }
+
+    const fn = async (event) => {
+      await this.triggerAction(...args);
+    };
+
+    this.__actionCache[actionName] = { fn, args };
+
+    return fn;
   }
 
   render() {
@@ -1410,9 +1443,7 @@ export class App extends Component {
               onSelect={ this.selectTab }
               onMoveTab={ this.moveTab }
               onContextMenu={ this.openTabLinksMenu }
-              onClose={ (tab) => {
-                this.triggerAction('close-tab', { tabId: tab.id }).catch(console.error);
-              } }
+              onClose={ this.handleCloseTab }
               onCreate={ this.composeAction('create-bpmn-diagram') }
               draggable
               scrollable
