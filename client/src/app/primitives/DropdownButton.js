@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
@@ -6,7 +6,7 @@ import buttonCss from './Button.less';
 import dropdownButtonCss from './DropdownButton.less';
 
 
-export default class DropdownButton extends Component {
+export default class DropdownButton extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
