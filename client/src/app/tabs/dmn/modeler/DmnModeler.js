@@ -9,6 +9,8 @@ import drdAdapterModule from 'dmn-js-properties-panel/lib/adapter/drd';
 import decisionTableAdapterModule from 'dmn-js-properties-panel/lib/adapter/decision-table';
 import literalExpressionAdapterModule from 'dmn-js-properties-panel/lib/adapter/literal-expression';
 
+import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
+
 import camundaModdleDescriptor from 'camunda-dmn-moddle/resources/camunda';
 
 import 'dmn-js/dist/assets/diagram-js.css';
@@ -40,17 +42,20 @@ export default class CamundaDmnModeler extends DmnModeler {
         diagramOriginModule,
         propertiesPanelModule,
         propertiesProviderModule,
-        drdAdapterModule
+        drdAdapterModule,
+        propertiesPanelKeyboardBindingsModule
       ]),
       decisionTable: mergeModules(decisionTable, [
         propertiesPanelModule,
         propertiesProviderModule,
-        decisionTableAdapterModule
+        decisionTableAdapterModule,
+        propertiesPanelKeyboardBindingsModule
       ]),
       literalExpression: mergeModules(literalExpression, [
         propertiesPanelModule,
         propertiesProviderModule,
-        literalExpressionAdapterModule
+        literalExpressionAdapterModule,
+        propertiesPanelKeyboardBindingsModule
       ]),
       moddleExtensions: {
         camunda: camundaModdleDescriptor,

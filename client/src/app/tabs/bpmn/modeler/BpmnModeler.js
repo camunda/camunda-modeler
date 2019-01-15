@@ -6,6 +6,7 @@ import minimapModule from 'diagram-js-minimap';
 import executableFixModule from './features/executable-fix';
 import globalClipboardModule from './features/global-clipboard';
 import applyDefaultTemplates from './features/apply-default-templates';
+import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
 
 import signavioCompatModule from 'bpmn-js-signavio-compat';
 
@@ -54,7 +55,8 @@ const extensionModules = [
   camundaModdleExtension,
   propertiesPanelModule,
   propertiesProviderModule,
-  applyDefaultTemplates
+  applyDefaultTemplates,
+  propertiesPanelKeyboardBindingsModule
 ];
 
 CamundaBpmnModeler.prototype._modules = [

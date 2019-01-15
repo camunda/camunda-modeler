@@ -1,4 +1,4 @@
-import DmnModeler from '../DmnModeler';
+import DmnModeler from '../modeler';
 
 
 describe('DmnModeler', function() {
