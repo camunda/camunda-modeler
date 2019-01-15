@@ -13,7 +13,7 @@
     "camunda-dmn-moddle": "^1.0.0",
     "canvg-browser": "^1.0.0",
     "classnames": "^2.2.6",
-    "cmmn-js": "^0.16.0",
+    "cmmn-js": "^0.17.0",
     "cmmn-js-properties-panel": "^0.7.2",
     "codemirror": "^5.39.0",
     "debug": "^4.1.0",
