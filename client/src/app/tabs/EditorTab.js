@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import MultiSheetTab from './MultiSheetTab';
 
 
 export function createTab(tabName, providers) {
 
-  class EditorTab extends Component {
+  class EditorTab extends PureComponent {
 
     constructor() {
       super();

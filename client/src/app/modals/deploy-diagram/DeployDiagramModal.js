@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 
 import View from './View';
 import AuthTypes from './AuthTypes';
@@ -28,7 +28,7 @@ const initialFormValues = {
 };
 
 
-class DeployDiagramModal extends React.Component {
+class DeployDiagramModal extends PureComponent {
   constructor(props) {
     super(props);
 

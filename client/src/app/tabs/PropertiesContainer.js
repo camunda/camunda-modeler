@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
@@ -21,7 +21,7 @@ const DEFAULT_LAYOUT = {
  *
  * Adds resize and toggle support.
  */
-class PropertiesContainerWrapped extends Component {
+class PropertiesContainerWrapped extends PureComponent {
 
   constructor(props) {
     super(props);

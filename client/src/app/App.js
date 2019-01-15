@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import { WithCache } from './cached';
 
@@ -65,7 +65,7 @@ const INITIAL_STATE = {
 };
 
 
-export class App extends Component {
+export class App extends PureComponent {
 
   constructor(props, context) {
     super();
@@ -1495,7 +1495,7 @@ export class App extends Component {
 
 
 function missingProvider(providerType) {
-  class MissingProviderTab extends Component {
+  class MissingProviderTab extends PureComponent {
 
     componentDidMount() {
       this.props.onShown();
@@ -1515,7 +1515,7 @@ function missingProvider(providerType) {
   return MissingProviderTab;
 }
 
-class LoadingTab extends Component {
+class LoadingTab extends PureComponent {
 
   render() {
     return (
