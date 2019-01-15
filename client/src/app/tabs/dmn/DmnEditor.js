@@ -20,7 +20,7 @@ import {
 
 import PropertiesContainer from '../PropertiesContainer';
 
-import CamundaDmnModeler from './DmnModeler';
+import CamundaDmnModeler from './modeler';
 
 import { active as isInputActive } from '../../../util/dom/isInput';
 
