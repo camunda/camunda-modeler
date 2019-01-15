@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
@@ -29,7 +29,7 @@ const TABS_OPTS = {
 };
 
 
-export default class TabLinks extends Component {
+export default class TabLinks extends PureComponent {
   constructor(props) {
     super(props);
 

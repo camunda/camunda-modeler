@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
 import css from './Button.less';
 
 
-export default class Button extends Component {
+export default class Button extends PureComponent {
 
   render() {
 
