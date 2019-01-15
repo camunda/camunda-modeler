@@ -169,7 +169,9 @@ export class BpmnEditor extends CachedComponent {
       'commandStack.changed',
       'selection.changed',
       'attach',
-      'elements.copied'
+      'elements.copied',
+      'propertiesPanel.focusin',
+      'propertiesPanel.focusout'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
