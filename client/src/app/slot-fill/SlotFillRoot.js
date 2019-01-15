@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import FillContext from './FillContext';
 import SlotContext from './SlotContext';
@@ -11,7 +11,7 @@ import SlotContext from './SlotContext';
  *
  * <Slot> and <Fill> must be nested inside this context.
  */
-export default class SlotFillRoot extends Component {
+export default class SlotFillRoot extends PureComponent {
 
   constructor(props) {
     super(props);

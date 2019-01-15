@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import FillContext from './FillContext';
 
 
-export default class Fill extends Component {
+export default class Fill extends PureComponent {
 
   render() {
 
@@ -22,7 +22,7 @@ export default class Fill extends Component {
 }
 
 
-class ActualFill extends Component {
+class ActualFill extends PureComponent {
 
   componentWillUnmount() {
     this._deregister();

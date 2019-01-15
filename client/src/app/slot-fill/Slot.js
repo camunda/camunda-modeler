@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 
 import SlotContext from './SlotContext';
 
@@ -28,7 +28,7 @@ import SlotContext from './SlotContext';
  * />
  *
  */
-export default class Slot extends Component {
+export default class Slot extends PureComponent {
 
   render() {
     const {
