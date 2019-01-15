@@ -1,6 +1,6 @@
-import { Component } from 'react';
+import { PureComponent } from 'react';
 
-export default class CachedComponent extends Component {
+export default class CachedComponent extends PureComponent {
 
   getCached() {
     return this.props.cachedState;
