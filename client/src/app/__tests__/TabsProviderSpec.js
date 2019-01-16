@@ -23,11 +23,41 @@ describe('TabsProvider', function() {
     const tabsProvider = new TabsProvider();
 
     // then
-    expect(tabsProvider.getProvider('cmmn')).to.exist;
     expect(tabsProvider.getProvider('bpmn')).to.exist;
+    expect(tabsProvider.getProvider('cmmn')).to.exist;
     expect(tabsProvider.getProvider('dmn')).to.exist;
 
     expect(tabsProvider.getProvider('empty')).to.exist;
+  });
+
+
+  it('should export BPMN, CMMN and DMN as JPEG, PNG and SVG', function() {
+
+    // given
+    const tabsProvider = new TabsProvider();
+
+    const expected = {
+      png: {
+        name: 'PNG image',
+        encoding: 'base64',
+        extensions: [ 'png' ]
+      },
+      jpeg: {
+        name: 'JPEG image',
+        encoding: 'base64',
+        extensions: [ 'jpeg' ]
+      },
+      svg: {
+        name: 'SVG image',
+        encoding: 'utf8',
+        extensions: [ 'svg' ]
+      }
+    };
+
+    // then
+    expect(tabsProvider.getProvider('bpmn').exports).to.eql(expected);
+    expect(tabsProvider.getProvider('cmmn').exports).to.eql(expected);
+    expect(tabsProvider.getProvider('dmn').exports).to.eql(expected);
   });
 
 

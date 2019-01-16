@@ -43,7 +43,7 @@ import generateImage from '../../util/generateImage';
 import Metadata from '../../../util/Metadata';
 
 
-const EXPORT_AS = [ 'svg', 'png' ];
+const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 
 export class DmnEditor extends CachedComponent {
