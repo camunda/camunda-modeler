@@ -40,6 +40,9 @@ import {
   replaceNamespace
 } from './util/namespace';
 
+import Metadata from '../../../util/Metadata';
+
+
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn',
       NAMESPACE_URL_CAMUNDA = 'http://camunda.org/schema/1.0/bpmn',
       NAMESPACE_PREFIX_ACTIVITI = 'activiti',
@@ -437,7 +440,6 @@ export class BpmnEditor extends CachedComponent {
         return resolve(lastXML || this.props.xml);
       }
 
-      // TODO(nikku): set current modeler version and name to the diagram
       modeler.saveXML({ format: true }, (err, xml) => {
         this.setCached({
           lastXML: xml,
@@ -674,8 +676,17 @@ export class BpmnEditor extends CachedComponent {
   }
 
   static createCachedState() {
+    const {
+      name,
+      version
+    } = Metadata;
+
     const modeler = new CamundaBpmnModeler({
-      position: 'absolute'
+      position: 'absolute',
+      exporter: {
+        name,
+        version
+      }
     });
 
     const commandStack = modeler.get('commandStack');
