@@ -119,7 +119,9 @@ export class DmnEditor extends CachedComponent {
       'saveXML.done',
       'attach',
       'view.selectionChanged',
-      'view.directEditingChanged'
+      'view.directEditingChanged',
+      'propertiesPanel.focusin',
+      'propertiesPanel.focusout'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });

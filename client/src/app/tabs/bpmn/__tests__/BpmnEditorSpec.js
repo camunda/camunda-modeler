@@ -160,6 +160,62 @@ describe('<BpmnEditor>', function() {
   });
 
 
+  describe('#listen', function() {
+
+    function expectHandleChanged(event) {
+      return async function() {
+        const modeler = new BpmnModeler();
+
+        const cache = new Cache();
+
+        cache.add('editor', {
+          cached: {
+            modeler
+          },
+          __destroy: () => {}
+        });
+
+        const changedSpy = spy();
+
+        await renderEditor(diagramXML, {
+          id: 'editor',
+          cache,
+          onChanged: changedSpy
+        });
+
+        modeler._emit(event);
+
+        expect(changedSpy).to.have.been.called;
+      };
+    }
+
+
+    it('import.done', expectHandleChanged('import.done'));
+
+
+    it('saveXML.done', expectHandleChanged('saveXML.done'));
+
+
+    it('commandStack.changed', expectHandleChanged('commandStack.changed'));
+
+
+    it('selection.changed', expectHandleChanged('selection.changed'));
+
+
+    it('attach', expectHandleChanged('attach'));
+
+
+    it('elements.copied', expectHandleChanged('elements.copied'));
+
+
+    it('propertiesPanel.focusin', expectHandleChanged('propertiesPanel.focusin'));
+
+
+    it('propertiesPanel.focusout', expectHandleChanged('propertiesPanel.focusout'));
+
+  });
+
+
   describe('#handleChanged', function() {
 
     it('should notify about changes', async function() {

@@ -43,6 +43,8 @@ export default class Modeler {
     this.modules = assign(this._getDefaultModules(), modules);
 
     this.xml = null;
+
+    this.listeners = {};
   }
 
   _getDefaultModules() {
@@ -100,9 +102,25 @@ export default class Modeler {
 
   detach() {}
 
-  on() {}
+  on(event, priority, callback) {
+    if (!callback) {
+      callback = priority;
+    }
+
+    if (!this.listeners[ event ]) {
+      this.listeners[ event ] = [];
+    }
+
+    this.listeners[ event ].push(callback);
+  }
 
   off() {}
+
+  _emit(event) {
+    if (this.listeners[ event ]) {
+      this.listeners[ event ].forEach(callback => callback());
+    }
+  }
 
   get(moduleName) {
     const module = this.modules[moduleName];

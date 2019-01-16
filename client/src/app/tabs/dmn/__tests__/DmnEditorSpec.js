@@ -150,6 +150,56 @@ describe('<DmnEditor>', function() {
   });
 
 
+  describe('#listen', function() {
+
+    function expectHandleChanged(event) {
+      return async function() {
+        const modeler = new DmnModeler();
+
+        const cache = new Cache();
+
+        cache.add('editor', {
+          cached: {
+            modeler
+          },
+          __destroy: () => {}
+        });
+
+        const changedSpy = spy();
+
+        await renderEditor(diagramXML, {
+          id: 'editor',
+          cache,
+          onChanged: changedSpy
+        });
+
+        modeler._emit(event);
+
+        expect(changedSpy).to.have.been.called;
+      };
+    }
+
+
+    it('saveXML.done', expectHandleChanged('saveXML.done'));
+
+
+    it('attach', expectHandleChanged('attach'));
+
+
+    it('view.selectionChanged', expectHandleChanged('view.selectionChanged'));
+
+
+    it('view.directEditingChanged', expectHandleChanged('view.directEditingChanged'));
+
+
+    it('propertiesPanel.focusin', expectHandleChanged('propertiesPanel.focusin'));
+
+
+    it('propertiesPanel.focusout', expectHandleChanged('propertiesPanel.focusout'));
+
+  });
+
+
   describe('#handleChanged', function() {
 
     it('should notify about changes', async function() {
