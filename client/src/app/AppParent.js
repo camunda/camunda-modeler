@@ -12,8 +12,8 @@ const log = debug('AppParent');
 
 export default class AppParent extends PureComponent {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.appRef = React.createRef();
   }
