@@ -107,7 +107,9 @@ export class CmmnEditor extends CachedComponent {
       'saveXML.done',
       'commandStack.changed',
       'selection.changed',
-      'attach'
+      'attach',
+      'propertiesPanel.focusin',
+      'propertiesPanel.focusout'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });

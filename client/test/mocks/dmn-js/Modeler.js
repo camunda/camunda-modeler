@@ -97,6 +97,8 @@ export default class Modeler {
     this.xml = null;
 
     this.viewer = null;
+
+    this.listeners = {};
   }
 
   importXML(xml, options, done) {
@@ -156,9 +158,25 @@ export default class Modeler {
 
   detach() {}
 
-  on() {}
+  on(event, priority, callback) {
+    if (!callback) {
+      callback = priority;
+    }
+
+    if (!this.listeners[ event ]) {
+      this.listeners[ event ] = [];
+    }
+
+    this.listeners[ event ].push(callback);
+  }
 
   off() {}
+
+  _emit(event) {
+    if (this.listeners[ event ]) {
+      this.listeners[ event ].forEach(callback => callback());
+    }
+  }
 
   getStackIdx() {
     const viewer = this.viewer || new Viewer(this.xml, this.modules);
