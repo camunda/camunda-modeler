@@ -48,7 +48,7 @@ const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn',
       NAMESPACE_PREFIX_ACTIVITI = 'activiti',
       NAMESPACE_PREFIX_CAMUNDA = 'camunda';
 
-const EXPORT_AS = [ 'svg', 'png' ];
+const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 const COLORS = [{
   title: 'White',

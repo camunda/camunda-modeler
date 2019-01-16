@@ -8,9 +8,9 @@ const FileSystem = require('../../lib/file-system');
 const ENCODING_BASE64 = 'base64',
       ENCODING_UTF8 = 'utf8';
 
-const BASE64_ENCODED =
-  'data:image/png;base64,' +
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
+const PNG_BASE64_ENCODED = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAA';
+
+const JPEG_BASE64_ENCODED = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD';
 
 let testFilePaths = [];
 
@@ -79,7 +79,7 @@ describe('FileSystem', function() {
       // given
       const fooPath = getTestFilePath('foo.file');
 
-      fileSystem.writeFile(fooPath, { contents: BASE64_ENCODED }, {
+      fileSystem.writeFile(fooPath, { contents: PNG_BASE64_ENCODED }, {
         encoding: ENCODING_BASE64
       });
 
@@ -179,13 +179,13 @@ describe('FileSystem', function() {
     });
 
 
-    it('should write file (encoding=BASE64)', function() {
+    it('should write PNG file (encoding=BASE64)', function() {
 
       // given
       const fooPath = getTestFilePath('foo.file');
 
       // when
-      fileSystem.writeFile(fooPath, { contents: BASE64_ENCODED }, {
+      fileSystem.writeFile(fooPath, { contents: PNG_BASE64_ENCODED }, {
         encoding: ENCODING_BASE64
       });
 
@@ -194,7 +194,26 @@ describe('FileSystem', function() {
         encoding: ENCODING_BASE64
       });
 
-      expect(file.contents).to.match(/iVBOR/);
+      expect(file.contents).to.match(/iVBORw0KGgoAAAANSUhEUgAAADAA/);
+    });
+
+
+    it('should write JPEG file (encoding=BASE64)', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      // when
+      fileSystem.writeFile(fooPath, { contents: JPEG_BASE64_ENCODED }, {
+        encoding: ENCODING_BASE64
+      });
+
+      // then
+      const file = fileSystem.readFile(fooPath, {
+        encoding: ENCODING_BASE64
+      });
+
+      expect(file.contents).to.match(/\/9j\/4AAQSkZJRgABAQAAAQABAAA/);
     });
 
 
