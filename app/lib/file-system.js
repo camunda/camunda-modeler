@@ -176,5 +176,5 @@ function ensureExtension(filePath, defaultExtension) {
 }
 
 function getBase64Contents(contents) {
-  return contents.replace(/^data:image\/(jpg|png)+;base64,/, '');
+  return contents.replace(/^data:image\/(jpeg|png)+;base64,/, '');
 }

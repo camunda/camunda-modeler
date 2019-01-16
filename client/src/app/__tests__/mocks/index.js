@@ -10,22 +10,22 @@ import EmptyTab from '../../EmptyTab';
 const ENCODING_BASE64 = 'base64',
       ENCODING_UTF8 = 'utf8';
 
-const EXPORT_JPG = {
-  name: 'JPG',
+const EXPORT_JPEG = {
+  name: 'JPEG image',
   encoding: ENCODING_BASE64,
-  extensions: [ '.jpg' ]
+  extensions: [ 'jpeg' ]
 };
 
 const EXPORT_PNG = {
-  name: 'PNG',
+  name: 'PNG image',
   encoding: ENCODING_BASE64,
-  extensions: [ '.png' ]
+  extensions: [ 'png' ]
 };
 
 const EXPORT_SVG = {
-  name: 'SVG',
+  name: 'SVG image',
   encoding: ENCODING_UTF8,
-  extensions: [ '.svg' ]
+  extensions: [ 'svg' ]
 };
 
 
@@ -107,8 +107,8 @@ export class TabsProvider {
         name: 'BPMN',
         encoding: ENCODING_UTF8,
         exports: {
-          jpg: EXPORT_JPG,
           png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
           svg: EXPORT_SVG
         },
         extensions: [ 'bpmn', 'xml' ]
@@ -117,8 +117,8 @@ export class TabsProvider {
         name: 'CMMN',
         encoding: ENCODING_UTF8,
         exports: {
-          jpg: EXPORT_JPG,
           png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
           svg: EXPORT_SVG
         },
         extensions: [ 'cmmn', 'xml' ]
@@ -127,8 +127,8 @@ export class TabsProvider {
         name: 'DMN',
         encoding: ENCODING_UTF8,
         exports: {
-          jpg: EXPORT_JPG,
           png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
           svg: EXPORT_SVG
         },
         extensions: [ 'dmn', 'xml' ]
