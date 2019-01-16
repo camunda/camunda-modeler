@@ -3,6 +3,8 @@ import BpmnModeler from 'bpmn-js/lib/Modeler';
 import diagramOriginModule from 'diagram-js-origin';
 import minimapModule from 'diagram-js-minimap';
 
+import addExporterModule from '@bpmn-io/add-exporter';
+
 import executableFixModule from './features/executable-fix';
 import globalClipboardModule from './features/global-clipboard';
 import applyDefaultTemplates from './features/apply-default-templates';
@@ -49,6 +51,7 @@ const defaultModules = BpmnModeler.prototype._modules;
 const extensionModules = [
   diagramOriginModule,
   minimapModule,
+  addExporterModule,
   executableFixModule,
   globalClipboardModule,
   signavioCompatModule,

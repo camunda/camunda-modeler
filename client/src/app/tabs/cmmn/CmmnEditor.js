@@ -27,6 +27,9 @@ import getCmmnWindowMenu from './getCmmnWindowMenu';
 
 import generateImage from '../../util/generateImage';
 
+import Metadata from '../../../util/Metadata';
+
+
 const EXPORT_AS = [ 'svg', 'png' ];
 
 
@@ -284,7 +287,6 @@ export class CmmnEditor extends CachedComponent {
         return resolve(lastXML || this.props.xml);
       }
 
-      // TODO(nikku): set current modeler version and name to the diagram
       modeler.saveXML({ format: true }, (err, xml) => {
         this.setCached({
           lastXML: xml,
@@ -412,9 +414,17 @@ export class CmmnEditor extends CachedComponent {
   }
 
   static createCachedState() {
+    const {
+      name,
+      version
+    } = Metadata;
 
     const modeler = new CamundaCmmnModeler({
-      position: 'absolute'
+      position: 'absolute',
+      exporter: {
+        name,
+        version
+      }
     });
 
     const commandStack = modeler.get('commandStack');
