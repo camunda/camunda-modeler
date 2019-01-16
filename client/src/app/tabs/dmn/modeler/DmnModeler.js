@@ -2,6 +2,8 @@ import DmnModeler from 'dmn-js/lib/Modeler';
 
 import diagramOriginModule from 'diagram-js-origin';
 
+import addExporter from '@bpmn-io/add-exporter/add-exporter';
+
 import propertiesPanelModule from 'dmn-js-properties-panel';
 import propertiesProviderModule from 'dmn-js-properties-panel/lib/provider/camunda';
 
@@ -33,6 +35,7 @@ export default class CamundaDmnModeler extends DmnModeler {
       drd,
       decisionTable,
       literalExpression,
+      exporter,
       ...otherOptions
     } = options;
 
@@ -85,6 +88,8 @@ export default class CamundaDmnModeler extends DmnModeler {
       });
 
     });
+
+    addExporter(exporter, this);
 
   }
 

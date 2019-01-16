@@ -1,5 +1,9 @@
 import React from 'react';
 
+import {
+  assign
+} from 'min-dash';
+
 import { Fill } from '../../slot-fill';
 
 import {
@@ -36,9 +40,8 @@ import css from './DmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 
-import {
-  assign
-} from 'min-dash';
+import Metadata from '../../../util/Metadata';
+
 
 const EXPORT_AS = [ 'svg', 'png' ];
 
@@ -548,7 +551,17 @@ export class DmnEditor extends CachedComponent {
   }
 
   static createCachedState() {
-    const modeler = new CamundaDmnModeler();
+    const {
+      name,
+      version
+    } = Metadata;
+
+    const modeler = new CamundaDmnModeler({
+      exporter: {
+        name,
+        version
+      }
+    });
 
     const stackIdx = modeler.getStackIdx();
 
