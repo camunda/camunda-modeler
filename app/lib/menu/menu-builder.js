@@ -425,6 +425,15 @@ class MenuBuilder {
         label: 'Keyboard Shortcuts',
         click: () => app.emit('menu:action', 'show-shortcuts')
       },
+      getSeparatorTemplate(),
+      {
+        label: 'Search Feature Requests',
+        click: () => browserOpen('https://github.com/camunda/camunda-modeler/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement')
+      },
+      {
+        label: 'Report Issue',
+        click: () => browserOpen('https://github.com/camunda/camunda-modeler/issues/new/choose')
+      },
       getSeparatorTemplate()
     ];
 
