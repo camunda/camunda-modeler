@@ -252,6 +252,71 @@ describe('<DmnEditor>', function() {
   });
 
 
+  describe('#viewsChanged', function() {
+
+    let instance;
+
+    const view1 = {
+      element: { id: 'foo' },
+      type: 'drd'
+    };
+
+    const view2 = {
+      element: { id: 'bar' },
+      type: 'decisionTable'
+    };
+
+    const views = [view1, view2];
+
+    beforeEach(async function() {
+      instance = (await renderEditor(diagramXML)).instance;
+    });
+
+    it('should reattach properties panel on view switch', async function() {
+
+      // given
+      const modeler = await instance.getModeler();
+
+      const propertiesPanel = modeler.getActiveViewer().get('propertiesPanel');
+
+      const propertiesAttachSpy = sinon.spy(propertiesPanel, 'attachTo');
+
+      // when
+      instance.viewsChanged({
+        activeView: view1,
+        views
+      });
+
+      // then
+      expect(propertiesAttachSpy).to.be.called;
+    });
+
+    it('should NOT reattach properties panel when stay on view', async function() {
+
+      // given
+      const modeler = await instance.getModeler();
+
+      instance.viewsChanged({
+        activeView: view1,
+        views
+      });
+
+      const propertiesPanel = modeler.getActiveViewer().get('propertiesPanel');
+
+      const propertiesAttachSpy = sinon.spy(propertiesPanel, 'attachTo');
+
+      // when
+      instance.viewsChanged({
+        activeView: view1,
+        views
+      });
+
+      // then
+      expect(propertiesAttachSpy).not.to.be.called;
+    });
+  });
+
+
   describe('layout', function() {
 
     it('should open properties panel', async function() {
@@ -584,7 +649,8 @@ async function renderEditor(xml, options = {}) {
     onError,
     onImport,
     onLayoutChanged,
-    onModal
+    onModal,
+    onSheetsChanged
   } = options;
 
   const slotFillRoot = await mount(
@@ -598,6 +664,7 @@ async function renderEditor(xml, options = {}) {
         onImport={ onImport || noop }
         onLayoutChanged={ onLayoutChanged || noop }
         onModal={ onModal || noop }
+        onSheetsChanged={ onSheetsChanged || noop }
         cache={ options.cache || new Cache() }
         layout={ layout || {
           minimap: {
