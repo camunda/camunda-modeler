@@ -185,6 +185,8 @@ export class DmnEditor extends CachedComponent {
       onSheetsChanged
     } = this.props;
 
+    const previousView = this.getCached().activeView;
+
     const modeler = this.getModeler();
 
     let activeSheet;
@@ -210,7 +212,9 @@ export class DmnEditor extends CachedComponent {
 
     const activeViewer = modeler.getActiveViewer();
 
-    if (activeViewer) {
+    // only attach properties panel if view is switched
+    if (activeViewer &&
+      (!previousView || previousView.element !== activeView.element)) {
       activeViewer.get('propertiesPanel').attachTo(this.propertiesPanelRef.current);
     }
 
@@ -379,7 +383,6 @@ export class DmnEditor extends CachedComponent {
 
     if (!activeView || activeView.element !== element) {
       this.setCached({
-        activeView: view,
         dirty: dirty || this.getModeler().getStackIdx() !== stackIdx
       });
 
