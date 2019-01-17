@@ -6,9 +6,24 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.0.0-0
+
+_This is a pre-release_.
+
+* `FEAT`: add authentication to deploy ([#1063](https://github.com/camunda/camunda-modeler/pull/1063))
+* `FEAT`: remember last deployed endpoint URL ([#1041](https://github.com/camunda/camunda-modeler/pull/1041))
+* `FEAT`: improve deploy modal error handling ([#1041](https://github.com/camunda/camunda-modeler/pull/1041))
+* `FIX`: do not restrict height of properties panel content ([#283](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/283), [#62](https://github.com/bpmn-io/cmmn-js-properties-panel/pull/62), [#6](https://github.com/bpmn-io/dmn-js-properties-panel/pull/6))
+
 #### BPMN
 
 * `FIX`: render labels always on top ([#1050](https://github.com/camunda/camunda-modeler/issues/1050))
+* `FEAT`: add hints to returned Java types in properties panel ([#286](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/286))
+* `FEAT`: show target variable name instead of index in properties panel ([#287](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/287))
+
+#### DMN
+
+* `FEAT`: support for navigating all decision elements using tabs
 
 ## 2.2.4
 
