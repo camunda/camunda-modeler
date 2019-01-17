@@ -8,22 +8,41 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 3.0.0-0
 
-_This is a pre-release_.
+_This is a pre-release of the app ported to an entirely new architecture._
 
-* `FEAT`: add authentication to deploy ([#1063](https://github.com/camunda/camunda-modeler/pull/1063))
-* `FEAT`: remember last deployed endpoint URL ([#1041](https://github.com/camunda/camunda-modeler/pull/1041))
-* `FEAT`: improve deploy modal error handling ([#1041](https://github.com/camunda/camunda-modeler/pull/1041))
+#### General
+
+* `FEAT`: add ability for users to give feedback via the Help menu ([#1094](https://github.com/camunda/camunda-modeler/issues/1094))
+* `FEAT`: improve resolution of exported images ([#486](https://github.com/camunda/camunda-modeler/issues/486))
+* `CHORE`: rewrite client app in ReactJS ([#866](https://github.com/camunda/camunda-modeler/issues/866))
+* `CHORE`: rewrite back-end for better separation of concerns and extensibility ([#866](https://github.com/camunda/camunda-modeler/issues/866))
+* `CHORE`: rework back-end to client communication ([#866](https://github.com/camunda/camunda-modeler/issues/866))
 * `FIX`: do not restrict height of properties panel content ([#283](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/283), [#62](https://github.com/bpmn-io/cmmn-js-properties-panel/pull/62), [#6](https://github.com/bpmn-io/dmn-js-properties-panel/pull/6))
+
+#### Deploy Dialog
+
+* `FEAT`: add ability to use authentication ([#1063](https://github.com/camunda/camunda-modeler/pull/1063), [#742](https://github.com/camunda/camunda-modeler/pull/742))
+* `FEAT`: remember last deployed endpoint URL ([#1041](https://github.com/camunda/camunda-modeler/pull/1041))
+* `FEAT`: improve error handling ([#838](https://github.com/camunda/camunda-modeler/issues/838), [#846](https://github.com/camunda/camunda-modeler/issues/846))
+* `FEAT`: deploy only changed resources per default ([#744](https://github.com/camunda/camunda-modeler/issues/744))
+* `FIX`: disable editor shortcuts while modal is active ([#929](https://github.com/camunda/camunda-modeler/issues/929))
 
 #### BPMN
 
-* `FIX`: render labels always on top ([#1050](https://github.com/camunda/camunda-modeler/issues/1050))
 * `FEAT`: add hints to returned Java types in properties panel ([#286](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/286))
 * `FEAT`: show target variable name instead of index in properties panel ([#287](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/287))
+* `CHORE`: update to `bpmn-js@3.1.0`
+* `FIX`: render labels always on top ([#1050](https://github.com/camunda/camunda-modeler/issues/1050))
 
 #### DMN
 
-* `FEAT`: support for navigating all decision elements using tabs
+* `FEAT`: add ability to navigate all decision elements using tabs
+* `CHORE`: update to `dmn-js@6.2.0`
+* `FIX`: correct dirty state indicator
+
+#### CMMN
+
+* `CHORE`: update to `cmmn-js@0.17.0`
 
 ## 2.2.4
 
