@@ -40,6 +40,7 @@ jobs:
       language: generic
       script:
       - |
+        git checkout -b build-nightly
         ENVS=`env | grep -iE '^(DEBUG|NODE_|ELECTRON_|NPM_|CI|TRAVIS|WIN_CSC_|CSC_|GH_|AWS_|BUILD_)([A-Z]|_)*=' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
         docker run $ENVS --rm \
           -v ${PWD}:/project \
@@ -55,7 +56,10 @@ jobs:
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-      script: npm run build -- --mac --nightly --publish
+      script:
+      - |
+        git checkout -b build-nightly
+        npm run build -- --mac --nightly --publish
 
 before_cache:
   - rm -rf "$HOME/.cache/electron-builder/wine"
