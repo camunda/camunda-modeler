@@ -1,6 +1,7 @@
 import {
   isCmd as isCommandOrControl,
-  isKey
+  isKey,
+  isShift
 } from 'diagram-js/lib/features/keyboard/KeyboardUtil';
 
 import { isArray } from 'min-dash';
@@ -19,18 +20,15 @@ export default class KeyboardBindings {
    * Constructor.
    *
    * @param {Object} options - Options.
-   * @param {boolean} [options.isMac] - Wether platform is Mac or not.
    * @param {Object} [options.menu] - Menu.
    * @param {Function} [options.onAction] - Function to be called on action.
    */
   constructor(options = {}) {
     const {
-      isMac,
       menu,
       onAction
     } = options;
 
-    this.isMac = isMac;
     this.onAction = onAction;
 
     this.copy = null;
@@ -52,7 +50,7 @@ export default class KeyboardBindings {
   }
 
   _keyHandler = (event) => {
-    if (this.isMac || !isCommandOrControl(event)) {
+    if (!isCommandOrControl(event)) {
       return;
     }
 
@@ -75,6 +73,10 @@ export default class KeyboardBindings {
       action = getAction(this.paste);
     }
 
+    if (isRedo(event) && isEnabled(this.redo) && !hasRole(this.redo, 'redo')) {
+      action = getAction(this.redo);
+    }
+
     // select all
     if (isSelectAll(event) && isEnabled(this.selectAll) && !hasRole(this.selectAll, 'selectAll')) {
       action = getAction(this.selectAll);
@@ -91,6 +93,7 @@ export default class KeyboardBindings {
     this.copy = findCopy(menu);
     this.cut = findCut(menu);
     this.paste = findPaste(menu);
+    this.redo = findRedo(menu);
     this.selectAll = findSelectAll(menu);
   }
 
@@ -111,6 +114,10 @@ function isCut(event) {
 
 function isPaste(event) {
   return isKey(['v', 'V'], event) && isCommandOrControl(event);
+}
+
+function isRedo(event) {
+  return isKey(['z', 'Z'], event) && isCommandOrControl(event) && isShift(event);
 }
 
 function isSelectAll(event) {
@@ -167,6 +174,10 @@ function findCut(menu) {
 
 function findPaste(menu) {
   return find(menu, ({ accelerator }) => isAccelerator(accelerator, 'CommandOrControl+V'));
+}
+
+function findRedo(menu) {
+  return find(menu, ({ accelerator }) => isAccelerator(accelerator, 'CommandOrControl+Y'));
 }
 
 function findSelectAll(menu) {

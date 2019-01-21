@@ -20,7 +20,6 @@ describe('KeyboardBindings', function() {
     actionSpy = new spy();
 
     keyboardBindings = new KeyboardBindings({
-      isMac: false,
       onAction: actionSpy
     });
   });
@@ -95,6 +94,24 @@ describe('KeyboardBindings', function() {
 
     // then
     expect(actionSpy).to.have.been.calledWith(null, 'selectAll');
+  });
+
+
+  it('redo', function() {
+
+    // given
+    event = createKeyEvent('Z', { ctrlKey: true, shiftKey: true });
+
+    keyboardBindings.update([{
+      accelerator: 'CommandOrControl + Y',
+      action: 'redo'
+    }]);
+
+    // when
+    keyboardBindings._keyHandler(event);
+
+    // then
+    expect(actionSpy).to.have.been.calledWith(null, 'redo');
   });
 
 
