@@ -10,7 +10,8 @@ import {
 import {
   assign,
   debounce,
-  forEach
+  forEach,
+  reduce
 } from 'min-dash';
 
 import Toolbar from './Toolbar';
@@ -56,6 +57,7 @@ const FILTER_ALL_EXTENSIONS = {
 const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
   dirtyTabs: {},
+  unsavedTabs: {},
   layout: {},
   tabs: [],
   tabState: {},
@@ -124,14 +126,14 @@ export class App extends PureComponent {
 
       const insertIdx = tabs.indexOf(activeTab) + 1;
 
-      let dirtyState = {};
+      let unsavedState = {};
 
-      if ('dirty' in properties) {
-        dirtyState = this.markAsDirty(tab);
+      if ('unsaved' in properties) {
+        unsavedState = this.setUnsaved(tab, properties.unsaved);
       }
 
       return {
-        ...dirtyState,
+        ...unsavedState,
         tabs: [
           ...tabs.slice(0, insertIdx),
           tab,
@@ -203,7 +205,7 @@ export class App extends PureComponent {
     const tabLastModified = (file || {}).lastModified;
 
     // skip new file
-    if (isNew(tab) || typeof tabLastModified === 'undefined') {
+    if (this.isUnsaved(tab) || typeof tabLastModified === 'undefined') {
       return;
     }
 
@@ -330,7 +332,11 @@ export class App extends PureComponent {
   }
 
   isDirty = (tab) => {
-    return Boolean(isNew(tab) || this.state.dirtyTabs[tab.id]);
+    return !!this.state.dirtyTabs[tab.id];
+  }
+
+  isUnsaved = (tab) => {
+    return tab.file && !tab.file.path;
   }
 
   async _removeTab(tab) {
@@ -356,7 +362,7 @@ export class App extends PureComponent {
 
     navigationHistory.purge(tab);
 
-    if (!isNew(tab)) {
+    if (!this.isUnsaved(tab)) {
       closedTabs.push(tab);
     }
 
@@ -522,7 +528,7 @@ export class App extends PureComponent {
           ...file,
           contents: tabsProvider.getInitialFileContents(fileType)
         }),
-        { dirty: true }
+        { unsaved: true }
       );
 
       await this.selectTab(tab);
@@ -688,7 +694,7 @@ export class App extends PureComponent {
     let dirtyState = {};
 
     if ('dirty' in properties) {
-      dirtyState = this.markAsDirty(tab, properties.dirty);
+      dirtyState = this.setDirty(tab, properties.dirty);
     }
 
     this.setState({
@@ -706,19 +712,45 @@ export class App extends PureComponent {
     return tab.triggerAction('resize');
   }
 
-  markAsDirty(tab, dirty = true) {
+  setDirty(tab, dirty = true) {
+    const { tabs } = this.state;
 
-    let {
-      dirtyTabs
-    } = this.state;
+    const newDirtyTabs = reduce(tabs, (dirtyTabs, t) => {
+      if (t === tab) {
+        return dirtyTabs;
+      }
 
-    const newDirtyTabs = {
-      ...dirtyTabs,
-      [tab.id]: dirty
-    };
+      return {
+        ...dirtyTabs,
+        [ t.id ]: this.isDirty(t)
+      };
+    }, {
+      [ tab.id ]: dirty
+    });
 
     return {
       dirtyTabs: newDirtyTabs
+    };
+  }
+
+  setUnsaved(tab, unsaved = true) {
+    const { tabs } = this.state;
+
+    const newUnsavedTabs = reduce(tabs, (unsavedTabs, t) => {
+      if (t === tab) {
+        return unsavedTabs;
+      }
+
+      return {
+        ...unsavedTabs,
+        [ t.id ]: this.isUnsaved(t)
+      };
+    }, {
+      [ tab.id ]: unsaved
+    });
+
+    return {
+      unsavedTabs: newUnsavedTabs
     };
   }
 
@@ -743,18 +775,18 @@ export class App extends PureComponent {
   tabSaved(tab, newFile) {
 
     const {
-      dirtyTabs,
       tabs
     } = this.state;
 
     tab.file = newFile;
 
+    const dirtyState = this.setDirty(tab, false);
+    const unsavedState = this.setUnsaved(tab, false);
+
     this.setState({
       tabs: [ ...tabs ],
-      dirtyTabs: {
-        ...dirtyTabs,
-        [tab.id]: false
-      }
+      ...dirtyState,
+      ...unsavedState
     });
   }
 
@@ -957,7 +989,7 @@ export class App extends PureComponent {
 
     let { saveAs } = options;
 
-    saveAs = saveAs || isNew(tab);
+    saveAs = saveAs || this.isUnsaved(tab);
 
     if (saveAs) {
       filters = getSaveFileDialogFilters(provider);
@@ -1009,9 +1041,12 @@ export class App extends PureComponent {
       tabs
     } = this.state;
 
-    const saveTasks = tabs.filter(this.isDirty).map((tab) => {
-      return () => this.saveTab(tab);
-    });
+    const saveTasks = tabs
+      .filter((tab) => {
+        return this.isDirty(tab) || this.isUnsaved(tab);
+      }).map((tab) => {
+        return () => this.saveTab(tab);
+      });
 
     return pSeries(saveTasks);
   }
@@ -1343,12 +1378,14 @@ export class App extends PureComponent {
       activeTab,
       tabState,
       layout,
-      logEntries
+      logEntries,
+      dirtyTabs,
+      unsavedTabs
     } = this.state;
 
     const Tab = this.getTabComponent(activeTab);
 
-    const isDirty = this.isDirty(activeTab);
+    const canSave = this.isUnsaved(activeTab) || this.isDirty(activeTab);
 
     return (
       <div className={ css.App }>
@@ -1392,8 +1429,8 @@ export class App extends PureComponent {
 
           <Fill name="toolbar" group="save">
             <Button
-              disabled={ !isDirty }
-              onClick={ isDirty ? this.composeAction('save') : null }
+              disabled={ !canSave }
+              onClick={ canSave ? this.composeAction('save') : null }
               title="Save diagram"
             >
               <Icon name="save" />
@@ -1438,7 +1475,8 @@ export class App extends PureComponent {
             <TabLinks
               className="primary"
               tabs={ tabs }
-              isDirty={ this.isDirty }
+              dirtyTabs={ dirtyTabs }
+              unsavedTabs={ unsavedTabs }
               activeTab={ activeTab }
               onSelect={ this.selectTab }
               onMoveTab={ this.moveTab }
@@ -1539,10 +1577,6 @@ function getNextTab(tabs, activeTab, direction) {
   }
 
   return tabs[nextIdx];
-}
-
-function isNew(tab) {
-  return tab.file && !tab.file.path;
 }
 
 export default WithCache(App);
