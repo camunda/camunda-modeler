@@ -29,7 +29,7 @@ if (nightlyVersion) {
   ];
 
   console.log(`
-Setting ${pkg.name} version to nightly
+Bumping ${pkg.name} version to ${nightlyVersion}
 
 ---
 
