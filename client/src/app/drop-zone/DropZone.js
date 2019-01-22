@@ -58,7 +58,7 @@ export class DropZone extends React.PureComponent {
 
     this.setState({ draggingOver: false });
 
-    this.props.onDrop(event);
+    this.props.onDrop(event.dataTransfer.files);
   }
 
   render() {

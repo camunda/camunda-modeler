@@ -159,7 +159,27 @@ describe('<DropZone>', function() {
     });
 
 
-    it('should call passed onDrop prop with event', function() {
+    it('should not call passed onDrop prop with event if no file is dragged', function() {
+
+      // given
+      const dropSpy = sinon.spy();
+
+      const wrapper = shallow(<DropZone onDrop={ dropSpy } />);
+
+      const dragOverEvent = new MockDragEvent();
+      const dropEvent = new MockDragEvent();
+
+      // when
+      wrapper.simulate('dragover', dragOverEvent);
+      wrapper.simulate('drop', dropEvent);
+
+      // then
+      expect(dropSpy).to.have.not.been.called;
+
+    });
+
+
+    it('should call passed onDrop prop with files', function() {
 
       // given
       const dropSpy = sinon.spy();
@@ -182,7 +202,7 @@ describe('<DropZone>', function() {
       // then
       expect(dropSpy).to.be.calledOnce;
       expect(dropSpy.getCall(0).args).to.have.lengthOf(1);
-      expect(dropSpy.getCall(0).args[0]).to.have.property('dataTransfer');
+      expect(dropSpy.getCall(0).args[0]).to.be.an('Array').with.lengthOf(1);
 
     });
 
@@ -195,7 +215,10 @@ describe('<DropZone>', function() {
 // helper /////
 class MockDragEvent {
   constructor(...items) {
-    this.dataTransfer = { items };
+    this.dataTransfer = {
+      items,
+      files: items
+    };
   }
 
   preventDefault() {}

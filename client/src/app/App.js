@@ -1340,8 +1340,8 @@ export class App extends PureComponent {
     this.triggerAction('close-tab', { tabId: tab.id }).catch(console.error);
   }
 
-  handleDrop = async (event) => {
-    const filePaths = Array.from(event.dataTransfer.files).map(({ path }) => path);
+  handleDrop = async (files) => {
+    const filePaths = Array.from(files).map(({ path }) => path);
 
     try {
       const files = await this.readFileList(filePaths);

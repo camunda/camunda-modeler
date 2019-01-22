@@ -2134,6 +2134,52 @@ describe('<App>', function() {
 
   });
 
+
+  describe('#handleDrop', function() {
+
+    it('should try to open each dropped file', async function() {
+
+      // given
+      const directoryReadError = new Error();
+      directoryReadError.code = 'EISDIR';
+
+      const files = [
+        {
+          path: '/dev/null/'
+        },
+        {
+          path: './CamundaModeler'
+        },
+        {
+          path: './diagram.bpmn'
+        }
+      ];
+
+      const fileSystem = new FileSystem();
+
+      const readFileStub = sinon.stub(fileSystem, 'readFile')
+        .onFirstCall().rejects(directoryReadError)
+        .onSecondCall().rejects(directoryReadError)
+        .onThirdCall().resolves({ contents: '' });
+
+      const {
+        app
+      } = createApp({
+        globals: {
+          fileSystem
+        }
+      });
+
+      // when
+      await app.handleDrop(files);
+
+      // then
+      expect(readFileStub).to.be.calledThrice;
+
+    });
+
+  });
+
 });
 
 
