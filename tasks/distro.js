@@ -14,6 +14,10 @@ const {
   config
 } = argv;
 
+// in case of --nightly, update all package versions to the
+// next minor version with the nightly preid. This will
+// result in app and client being versioned like `v1.2.3-nightly.0`.
+
 const nightlyVersion = nightly && getVersion(pkg, {
   nightly: 'nightly'
 });
@@ -42,6 +46,10 @@ lerna ${ publishNightlyArgs.join(' ') }
     stdio: 'inherit'
   });
 }
+
+// ensure nightly releases are named ${appName}-nightly-${...}
+// this allows expert users to always fetch the nightly artifacts
+// from the same url
 
 const replaceVersion = nightly
   ? s => s.replace('${version}', 'nightly')
