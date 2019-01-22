@@ -8,13 +8,6 @@ import css from './View.less';
 
 
 class View extends PureComponent {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-  }
-
   render() {
     const {
       shortcuts,
