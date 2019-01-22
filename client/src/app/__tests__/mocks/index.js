@@ -88,6 +88,16 @@ class FakeTab extends Component {
 
 }
 
+
+const noopProvider = {
+  getComponent() {
+    return null;
+  },
+  getInitialContents() {
+    return null;
+  }
+};
+
 export class TabsProvider {
 
   constructor(resolveTab) {
@@ -187,7 +197,7 @@ export class TabsProvider {
   }
 
   getProvider(type) {
-    return this.providers[type];
+    return this.providers[type] || noopProvider;
   }
 
   getTabComponent(type) {
