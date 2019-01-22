@@ -31,6 +31,8 @@ export default function create(options) {
     el = _el;
   }, {
     autoCloseTags: true,
+    dragDrop: true,
+    allowDropFileTypes: ['text/plain'],
     lineWrapping: true,
     lineNumbers: true,
     mode: {
