@@ -1056,10 +1056,7 @@ export class App extends PureComponent {
     return Promise.reject(new Error('no last tab'));
   }
 
-  showShortcuts = () => {
-    // TODO(nikku): implement
-    console.error('NOT IMPLEMENTED');
-  }
+  showShortcuts = () => this.openModal('KEYBOARD_SHORTCUTS');
 
   updateMenu = (options) => {
     const { onMenuUpdate } = this.props;
@@ -1482,6 +1479,7 @@ export class App extends PureComponent {
         <ModalConductor
           currentModal={ this.state.currentModal }
           endpoints={ this.state.endpoints }
+          isMac={ this.props.globals.isMac }
           onClose={ this.closeModal }
           onDeploy={ this.handleDeploy }
           onDeployError={ this.handleDeployError }
