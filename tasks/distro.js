@@ -14,7 +14,7 @@ const {
   config
 } = argv;
 
-let nightlyVersion = nightly && getVersion(pkg, {
+const nightlyVersion = nightly && getVersion(pkg, {
   nightly: 'nightly'
 });
 
@@ -43,7 +43,7 @@ lerna ${ publishNightlyArgs.join(' ') }
   });
 }
 
-const replaceVersion = nightlyVersion
+const replaceVersion = nightly
   ? s => s.replace('${version}', 'nightly')
   : s => s;
 
