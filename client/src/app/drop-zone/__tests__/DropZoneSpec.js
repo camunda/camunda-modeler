@@ -37,6 +37,25 @@ describe('<DropZone>', function() {
     });
 
 
+    it('should not render overlay during drag with a GIF', function() {
+
+      // given
+      const wrapper = shallow(<DropZone />);
+
+      // when
+      const event = new MockDragEvent({
+        type: 'image/gif',
+        kind: 'file'
+      });
+
+      wrapper.simulate('dragover', event);
+
+      // then
+      expect(wrapper.find('DropOverlay').exists()).to.be.false;
+
+    });
+
+
     it('should render overlay during drag with a file', function() {
 
       // given
@@ -44,7 +63,8 @@ describe('<DropZone>', function() {
 
       // when
       const event = new MockDragEvent({
-        type: 'file'
+        type: '',
+        kind: 'file'
       });
 
       wrapper.simulate('dragover', event);
@@ -65,10 +85,12 @@ describe('<DropZone>', function() {
       const wrapper = shallow(<DropZone />);
 
       const dragOverEvent = new MockDragEvent({
-        type: 'file'
+        type: '',
+        kind: 'file'
       });
       const dragLeaveEvent = new MockDragEvent({
-        type: 'file'
+        type: '',
+        kind: 'file'
       });
 
       dragLeaveEvent.relatedTarget = null;
@@ -89,10 +111,12 @@ describe('<DropZone>', function() {
       const wrapper = shallow(<DropZone />);
 
       const dragOverEvent = new MockDragEvent({
-        type: 'file'
+        type: '',
+        kind: 'file'
       });
       const dragLeaveEvent = new MockDragEvent({
-        type: 'file'
+        type: '',
+        kind: 'file'
       });
 
       dragLeaveEvent.relatedTarget = document.createElement('div');
@@ -117,10 +141,12 @@ describe('<DropZone>', function() {
       const wrapper = shallow(<DropZone />);
 
       const dragOverEvent = new MockDragEvent({
-        type: 'file'
+        type: '',
+        kind: 'file'
       });
       const dropEvent = new MockDragEvent({
-        type: 'file'
+        type: '',
+        kind: 'file'
       });
 
       // when
@@ -141,10 +167,12 @@ describe('<DropZone>', function() {
       const wrapper = shallow(<DropZone onDrop={ dropSpy } />);
 
       const dragOverEvent = new MockDragEvent({
-        type: 'file'
+        type: '',
+        kind: 'file'
       });
       const dropEvent = new MockDragEvent({
-        type: 'file'
+        type: '',
+        kind: 'file'
       });
 
       // when

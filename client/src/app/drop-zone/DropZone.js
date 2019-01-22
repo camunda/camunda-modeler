@@ -36,7 +36,7 @@ export class DropZone extends React.PureComponent {
     const { dataTransfer } = event;
 
     return Array.from(dataTransfer.items)
-      .some(({ kind, type }) => type === 'file' || kind === 'file');
+      .some(({ kind, type }) => type === '' && kind === 'file');
   }
 
   handleDragLeave = event => {
