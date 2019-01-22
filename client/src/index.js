@@ -32,6 +32,7 @@ const globals = {
   config,
   dialog,
   fileSystem,
+  isMac,
   workspace
 };
 
