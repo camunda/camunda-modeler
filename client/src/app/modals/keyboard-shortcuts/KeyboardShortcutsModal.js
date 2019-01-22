@@ -5,28 +5,16 @@ import View from './View';
 import getShortcuts from './getShortcuts';
 
 class KeyboardShortcutsModal extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
+  getModifierKey() {
+    return this.props.isMac ? 'Command' : 'Control';
   }
 
   render() {
-
-    const {
-      isMac,
-      onClose,
-    } = this.props;
-
-    let modifierKey = 'Control';
-
-    if (isMac) {
-      modifierKey = 'Command';
-    }
+    const modifierKey = this.getModifierKey();
 
     return <View
       shortcuts={ getShortcuts(modifierKey) }
-      onClose={ onClose }
+      onClose={ this.props.onClose }
     />;
   }
 }
