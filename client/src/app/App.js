@@ -445,7 +445,7 @@ export class App extends PureComponent {
       return;
     }
 
-    const files = await Promise.all(filePaths.map(this.readFileFromPath));
+    const files = await this.readFileList(filePaths);
 
     await this.openFiles(files);
   }
@@ -585,7 +585,17 @@ export class App extends PureComponent {
     return openedTabs.reverse();
   }
 
-  readFileFromPath = filePath => {
+  readFileList = async filePaths => {
+    const readOperations = filePaths.map(this.readFileFromPath);
+
+    const rawFiles = await Promise.all(readOperations);
+
+    const files = rawFiles.filter(Boolean);
+
+    return files;
+  }
+
+  readFileFromPath = async (filePath) => {
     const {
       globals,
       tabsProvider
@@ -597,9 +607,21 @@ export class App extends PureComponent {
 
     const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
 
-    return globals.fileSystem.readFile(filePath, {
-      encoding
-    });
+    let file = null;
+
+    try {
+      file = await globals.fileSystem.readFile(filePath, {
+        encoding
+      });
+    } catch (error) {
+      if (error.code === 'EISDIR') {
+        return this.handleError(new Error(`Cannot open directory: ${filePath}`));
+      }
+
+      this.handleError(error);
+    }
+
+    return file;
   }
 
   findOpenTab(file) {
@@ -1321,9 +1343,13 @@ export class App extends PureComponent {
   handleDrop = async (event) => {
     const filePaths = Array.from(event.dataTransfer.files).map(({ path }) => path);
 
-    const files = await Promise.all(filePaths.map(this.readFileFromPath));
+    try {
+      const files = await this.readFileList(filePaths);
 
-    this.openFiles(files);
+      await this.openFiles(files);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   loadConfig = (key, ...args) => {
