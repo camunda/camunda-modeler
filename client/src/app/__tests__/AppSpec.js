@@ -861,50 +861,6 @@ describe('<App>', function() {
   });
 
 
-  describe('#handleTabContentUpdated', function() {
-
-    let app, tab;
-
-    beforeEach(async function() {
-
-      app = createApp().app;
-
-      await app.createDiagram('bpmn');
-
-      tab = app.state.activeTab;
-
-    });
-
-    it('should call #updateTab when new content is given', async function() {
-
-      // given
-      const updateSpy = spy(app, 'updateTab');
-
-      // when
-      app.handleTabContentUpdated(tab)({
-        newContent: '< bar/>'
-      });
-
-      // then
-      expect(updateSpy).to.have.been.called;
-    });
-
-
-    it('should NOT call #updateTab when NO new content given', async function() {
-
-      // given
-      const updateSpy = spy(app, 'updateTab');
-
-      // when
-      app.handleTabContentUpdated(tab)();
-
-      // then
-      expect(updateSpy).to.not.have.been.called;
-    });
-
-  });
-
-
   describe('tab loading', function() {
 
     it('should support life-cycle', async function() {

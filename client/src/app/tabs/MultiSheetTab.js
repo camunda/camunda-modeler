@@ -183,6 +183,12 @@ export class MultiSheetTab extends CachedComponent {
     }
   }
 
+  handleContentUpdated = xml => {
+    this.setCached({
+      lastXML: xml
+    });
+  }
+
   handleContextMenu = (event, context) => {
 
     const {
@@ -305,8 +311,7 @@ export class MultiSheetTab extends CachedComponent {
       id,
       xml,
       layout,
-      onAction,
-      onContentUpdated
+      onAction
     } = this.props;
 
     if (!sheets) {
@@ -332,7 +337,7 @@ export class MultiSheetTab extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
             onAction={ onAction }
             onChanged={ this.handleChanged }
-            onContentUpdated={ onContentUpdated }
+            onContentUpdated={ this.handleContentUpdated }
             onError={ this.handleError }
             onImport={ this.handleImport }
             onLayoutChanged={ this.handleLayoutChanged }
