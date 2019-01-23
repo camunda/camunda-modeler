@@ -101,6 +101,12 @@ function Plugins(options = {}) {
   console.log('plugins: registered', Object.keys(this.plugins));
 }
 
+Plugins.prototype.getPluginBase = function(pluginName) {
+  const plugin = this.plugins[pluginName];
+
+  return plugin && plugin.base;
+};
+
 Plugins.prototype.getPlugins = function() {
   return this.plugins;
 };

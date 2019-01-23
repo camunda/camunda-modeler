@@ -3,6 +3,7 @@
 const {
   app,
   dialog: electronDialog,
+  session,
   BrowserWindow
 } = require('electron');
 
@@ -383,6 +384,29 @@ app.on('ready', function() {
       app.getPath('userData'),
       appPath
     ].concat(app.developmentMode ? [ path.resolve(__dirname + '/../../resources') ] : [])
+  });
+
+  session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
+
+    const { url } = details;
+
+    const match = /^app-plugins:\/\/([^/]+)(.*)$/.exec(url);
+
+    if (match) {
+
+      const pluginName = match[1];
+      const assetPath = match[2];
+
+      const base = app.plugins.getPluginBase(pluginName);
+
+      if (base) {
+        return callback({
+          redirectURL: `file://${path.resolve(base + assetPath)}`
+        });
+      }
+    }
+
+    return callback({ });
   });
 
   // quit command from menu/shortcut
