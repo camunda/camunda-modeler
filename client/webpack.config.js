@@ -71,13 +71,7 @@ module.exports = {
     ])
   ],
   // don't bundle shims for node globals
-  node: {
-    dgram: 'empty',
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-    child_process: 'empty'
-  },
+  node: false,
   devServer: {
     writeToDisk: true
   },
