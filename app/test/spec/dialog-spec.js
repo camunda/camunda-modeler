@@ -23,8 +23,8 @@ describe('Dialog', function() {
     electronDialog = new ElectronDialog();
 
     dialog = new Dialog({
-      dialog: electronDialog,
-      config: config,
+      electronDialog,
+      config,
       userDesktopPath: USER_DESKTOP_PATH
     });
   });
