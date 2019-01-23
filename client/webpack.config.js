@@ -79,9 +79,7 @@ module.exports = {
     child_process: 'empty'
   },
   devServer: {
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    }
+    writeToDisk: true
   },
   devtool: DEV ? 'cheap-module-eval-source-map' : 'source-map'
 };

@@ -331,7 +331,7 @@ app.createEditorWindow = function() {
   var url = 'file://' + path.resolve(__dirname + '/../public/index.html');
 
   if (app.developmentMode) {
-    url = 'http://localhost:3000';
+    url = 'file://' + path.resolve(__dirname + '/../../client/build/index.html');
   }
 
   mainWindow.loadURL(url);
