@@ -1,30 +1,55 @@
 'use strict';
 
-var path = require('path'),
-    glob = require('glob');
+const path = require('path');
+const glob = require('glob');
+
 
 /**
  * Searches, validates and stores information about plugin bundles.
  *
- * @param {Object} options
+ * @param {Object} [options]
  * @param {Array}  options.path locations where to search for 'plugins'
  *                              folder and 'camunda-modeler.js' descriptors
  */
-function Plugins(options) {
-  this.options = options || {};
+function Plugins(options = {}) {
 
-  this.plugins = findPlugins(options.paths)
-    .map(p => {
-      let descriptor = require(p);
-      let pluginPath = path.dirname(p);
+  const paths = options.paths || [];
 
-      let plugin = {};
+  console.log('plugins: search paths', paths);
 
-      plugin.name = descriptor.name || '<unknown plugin>';
+  this.plugins = findPluginEntries(paths).reduce((plugins, entry) => {
 
-      if (descriptor.style) {
-        var stylePath = path.join(pluginPath, descriptor.style);
-        var styleFiles = glob.sync(stylePath);
+    // don't let broken plug-ins bring down the modeler
+    // instantiation; skip them and log a respective error
+    try {
+      console.log(`plugins: loading ${entry}`);
+
+      const base = path.dirname(entry);
+
+      const {
+        name,
+        style,
+        script,
+        menu
+      } = require(entry);
+
+      if (!name) {
+        throw new Error('plug-in descriptor is missing <name>');
+      }
+
+      if (name in plugins) {
+        throw new Error(`plug-in with name ${name} already registered via ${plugins[name].entry}`);
+      }
+
+      const plugin = {
+        name,
+        base,
+        entry
+      };
+
+      if (style) {
+        const stylePath = path.join(base, style);
+        const styleFiles = glob.sync(stylePath);
 
         if (!styleFiles.length) {
           plugin.error = true;
@@ -33,9 +58,9 @@ function Plugins(options) {
         }
       }
 
-      if (descriptor.script) {
-        var scriptPath = path.join(pluginPath, descriptor.script);
-        var scriptFiles = glob.sync(scriptPath);
+      if (script) {
+        const scriptPath = path.join(base, script);
+        const scriptFiles = glob.sync(scriptPath);
 
         if (!scriptFiles.length) {
           plugin.error = true;
@@ -44,43 +69,65 @@ function Plugins(options) {
         }
       }
 
-      if (descriptor.menu) {
-        var menuPath = path.join(pluginPath, descriptor.menu);
+      if (menu) {
+        var menuPath = path.join(base, menu);
 
         try {
           plugin.menu = require(menuPath);
-        } catch (e) {
-          console.error(e);
+        } catch (error) {
+          console.error(
+            `plugins: failed to load menu extension ${menuPath}`,
+            error
+          );
+
           plugin.error = true;
         }
       }
 
-      return plugin;
-    });
+      return {
+        ...plugins,
+        [name]: plugin
+      };
+    } catch (error) {
+      console.error(
+        `plugins: failed to load ${entry}`,
+        error
+      );
+    }
+
+    return plugins;
+  }, {});
+
+  console.log('plugins: registered', Object.keys(this.plugins));
 }
 
 Plugins.prototype.getPlugins = function() {
   return this.plugins;
 };
 
-function findPlugins(paths) {
 
-  var plugins = [];
+/**
+ * Find plug-ins under the given search paths.
+ *
+ * @param  {Array<String>} paths
+ *
+ * @return {Array<String>} plug-in paths
+ */
+function findPluginEntries(paths) {
 
-  paths.forEach(path => {
-    var globOptions = {
-      cwd: path,
+  return paths.reduce((pluginPaths, searchPath) => {
+
+    var foundPaths = glob.sync('plugins/*/index.js', {
+      cwd: searchPath,
       nodir: true,
-      realpath: true,
-      ignore: 'plugins/**/node_modules/**/index.js'
-    };
+      realpath: true
+    });
 
-    var locationPlugins = glob.sync('plugins/**/index.js', globOptions);
-
-    plugins = plugins.concat(locationPlugins);
-  });
-
-  return plugins;
+    return [
+      ...pluginPaths,
+      ...foundPaths
+    ];
+  }, []);
 }
 
 module.exports = Plugins;
