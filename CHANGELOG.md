@@ -17,6 +17,7 @@ _This is a pre-release of the app ported to an entirely new architecture._
 * `CHORE`: rewrite client app in ReactJS ([#866](https://github.com/camunda/camunda-modeler/issues/866))
 * `CHORE`: rewrite back-end for better separation of concerns and extensibility ([#866](https://github.com/camunda/camunda-modeler/issues/866))
 * `CHORE`: rework back-end to client communication ([#866](https://github.com/camunda/camunda-modeler/issues/866))
+* `CHORE`: update to `electron@electron@3.0.14`
 * `FIX`: do not restrict height of properties panel content ([#283](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/283), [#62](https://github.com/bpmn-io/cmmn-js-properties-panel/pull/62), [#6](https://github.com/bpmn-io/dmn-js-properties-panel/pull/6))
 
 #### Deploy Dialog
@@ -97,6 +98,7 @@ _This is a pre-release of the app ported to an entirely new architecture._
 
 * `FEAT`: moving the canvas using keyboard arrows now requires the `Ctrl/Cmd` modifier
 * `FIX`: correctly detect file type when opening file ([#944](https://github.com/camunda/camunda-modeler/issues/944))
+* `CHORE`: bump to `electron@3`
 
 #### BPMN
 
