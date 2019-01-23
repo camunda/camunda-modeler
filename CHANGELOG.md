@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+#### General
+
+* `CHORE`: update to `electron@3.1.1`
+
 ## 3.0.0-0
 
 _This is a pre-release of the app ported to an entirely new architecture._
