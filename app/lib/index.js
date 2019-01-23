@@ -1,19 +1,21 @@
 'use strict';
 
-var electron = require('electron'),
-    app = electron.app,
-    BrowserWindow = electron.BrowserWindow;
+const {
+  app,
+  dialog: electronDialog,
+  BrowserWindow
+} = require('electron');
 
 var path = require('path');
 
-var {
+const {
   assign,
   forEach
 } = require('min-dash');
 
-var fetch = require('node-fetch'),
-    fs = require('fs'),
-    FormData = require('form-data');
+const fetch = require('node-fetch');
+const fs = require('fs');
+const FormData = require('form-data');
 
 /**
  * automatically report crash reports
@@ -23,19 +25,19 @@ var fetch = require('node-fetch'),
 // TODO(nikku): do we want to do this?
 // require('crash-reporter').start();
 
-var Platform = require('./platform'),
-    Config = require('./config'),
-    ClientConfig = require('./client-config'),
-    FileSystem = require('./file-system'),
-    Workspace = require('./workspace'),
-    Dialog = require('./dialog'),
-    Menu = require('./menu'),
-    Cli = require('./cli'),
-    Plugins = require('./plugins'),
-    Deployer = require('./deployer');
+const Platform = require('./platform');
+const Config = require('./config');
+const ClientConfig = require('./client-config');
+const FileSystem = require('./file-system');
+const Workspace = require('./workspace');
+const Dialog = require('./dialog');
+const Menu = require('./menu');
+const Cli = require('./cli');
+const Plugins = require('./plugins');
+const Deployer = require('./deployer');
 
-var browserOpen = require('./util/browser-open'),
-    renderer = require('./util/renderer');
+const browserOpen = require('./util/browser-open');
+const renderer = require('./util/renderer');
 
 var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
 
@@ -79,7 +81,7 @@ var clientConfig = new ClientConfig(app);
 
 // bootstrap dialog
 var dialog = new Dialog({
-  dialog: electron.dialog,
+  electronDialog,
   config: config,
   userDesktopPath: app.getPath('userDesktop')
 });
