@@ -58,16 +58,6 @@ global.metaData = {
 // get directory of executable
 var appPath = path.dirname(app.getPath('exe'));
 
-app.plugins = new Plugins({
-  paths: [
-    app.getPath('userData'),
-    appPath
-  ]
-});
-
-// set global modeler directory
-global.modelerDirectory = appPath;
-
 var menu = new Menu(process.platform);
 
 // bootstrap filesystem
@@ -387,6 +377,13 @@ app.createEditorWindow = function() {
  * Emitted when Electron has finished initialization.
  */
 app.on('ready', function() {
+
+  app.plugins = new Plugins({
+    paths: [
+      app.getPath('userData'),
+      appPath
+    ].concat(app.developmentMode ? [ path.resolve(__dirname + '/../../resources') ] : [])
+  });
 
   // quit command from menu/shortcut
   app.on('app:quit', function() {
