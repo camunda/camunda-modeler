@@ -1,6 +1,7 @@
 app/node_modules/
 app/public/
 client/node_modules/
+client/build/
 coverage/
 dist/
 docs/
