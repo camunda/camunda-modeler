@@ -5,7 +5,7 @@
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
     "app:dev": "electron ./app/dev.js",
-    "app:test": "mocha -r ./app/test/expect --recursive app/test",
+    "app:test": "mocha -r ./app/test/expect --recursive app/test/spec",
     "client:build": "(cd client && npm run build)",
     "client:auto-test": "(cd client && npm run auto-test)",
     "client:dev": "(cd client && npm run dev)",
