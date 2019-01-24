@@ -5,7 +5,7 @@
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
     "app:dev": "electron ./app/dev.js",
-    "app:test": "mocha -r ./app/test/expect --recursive app/test",
+    "app:test": "nyc --reporter lcov mocha --require ./app/test/expect --recursive app/test",
     "client:build": "(cd client && npm run build)",
     "client:auto-test": "(cd client && npm run auto-test)",
     "client:dev": "(cd client && npm run dev)",
@@ -47,6 +47,7 @@
     "lerna": "^3.8.5",
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.5",
+    "nyc": "^13.1.0",
     "sinon": "^7.2.2",
     "sinon-chai": "^3.3.0",
     "which": "^1.2.0",
