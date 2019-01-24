@@ -1,0 +1,6 @@
+.logo {
+  background-image: url('app-plugins://test/assets/cat.png');
+  background-repeat: no-repeat;
+  background-size: 50px 50px;
+  padding: 50px;
+}
