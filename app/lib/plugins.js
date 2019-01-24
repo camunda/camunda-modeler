@@ -111,6 +111,24 @@ Plugins.prototype.getPlugins = function() {
   return this.plugins;
 };
 
+Plugins.prototype.getAssetPath = function(url) {
+  const match = /^app-plugins:\/\/([^/]+)(.*)$/.exec(url);
+
+  if (match) {
+
+    const pluginName = match[1];
+    const assetPath = match[2];
+
+    const base = this.getPluginBase(pluginName);
+
+    if (base) {
+      return `file://${path.resolve(base + assetPath)}`;
+    }
+  }
+
+  return null;
+};
+
 
 /**
  * Find plug-ins under the given search paths.

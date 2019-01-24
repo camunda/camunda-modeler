@@ -390,23 +390,15 @@ app.on('ready', function() {
 
     const { url } = details;
 
-    const match = /^app-plugins:\/\/([^/]+)(.*)$/.exec(url);
+    const redirectURL = app.plugins.getAssetPath(url);
 
-    if (match) {
-
-      const pluginName = match[1];
-      const assetPath = match[2];
-
-      const base = app.plugins.getPluginBase(pluginName);
-
-      if (base) {
-        return callback({
-          redirectURL: `file://${path.resolve(base + assetPath)}`
-        });
-      }
+    if (redirectURL) {
+      return callback({
+        redirectURL
+      });
     }
 
-    return callback({ });
+    return callback({});
   });
 
   // quit command from menu/shortcut
