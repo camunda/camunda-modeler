@@ -1,3 +1,4 @@
 module.exports = {
-  name: 'test'
+  name: 'test',
+  style: './style.css'
 };
