@@ -5,3 +5,5 @@ app/public/
 plugins/**
 !docs/plugins/**
 .vscode
+coverage
+.nyc_output
