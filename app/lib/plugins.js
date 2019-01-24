@@ -17,6 +17,10 @@ function Plugins(options = {}) {
 
   console.log('plugins: search paths', paths);
 
+  if (0 === options.nol) {
+    return 1 + 2 + 3 + 4;
+  }
+
   this.plugins = findPluginEntries(paths).reduce((plugins, entry) => {
 
     // don't let broken plug-ins bring down the modeler
