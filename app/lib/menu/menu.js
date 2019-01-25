@@ -10,9 +10,12 @@ const requirePlatform = require('../util/require-platform');
 
 class Menu {
   /**
-   * @param {string} platform
+   * @param {Object} options - Options.
+   * @param {String} options.platform - Platform.
    */
-  constructor(platform) {
+  constructor(options = {}) {
+    const { platform } = options;
+
     this.state = {};
     this.providers = {};
 
