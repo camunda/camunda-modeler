@@ -28,7 +28,9 @@ describe('Plugins', function() {
 
       expect(Object.keys(registeredPlugins)).to.eql([
         'broken-menu',
-        'OK'
+        'OK',
+        'with-script',
+        'with-style'
       ]);
     });
 
