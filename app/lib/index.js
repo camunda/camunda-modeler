@@ -7,7 +7,7 @@ const {
   BrowserWindow
 } = require('electron');
 
-var path = require('path');
+const path = require('path');
 
 const {
   assign,
@@ -40,7 +40,7 @@ const Deployer = require('./deployer');
 const browserOpen = require('./util/browser-open');
 const renderer = require('./util/renderer');
 
-var config = Config.load(path.join(app.getPath('userData'), 'config.json'));
+const config = Config.load(path.join(app.getPath('userData'), 'config.json'));
 
 Platform.create(process.platform, app, config);
 
@@ -57,21 +57,25 @@ global.metaData = {
 };
 
 // get directory of executable
-var appPath = path.dirname(app.getPath('exe'));
+const appPath = path.dirname(app.getPath('exe'));
 
-var menu = new Menu(process.platform);
+const { platform } = process;
+
+const menu = new Menu({
+  platform
+});
 
 // bootstrap filesystem
-var fileSystem = new FileSystem();
+const fileSystem = new FileSystem();
 
 // bootstrap workspace behavior
 new Workspace(config, fileSystem);
 
 // bootstrap client config behavior
-var clientConfig = new ClientConfig(app);
+const clientConfig = new ClientConfig(app);
 
 // bootstrap dialog
-var dialog = new Dialog({
+const dialog = new Dialog({
   electronDialog,
   config: config,
   userDesktopPath: app.getPath('userDesktop')
@@ -79,7 +83,7 @@ var dialog = new Dialog({
 
 
 // bootstrap deployer
-var deployer = new Deployer({ fetch, fs, FormData });
+const deployer = new Deployer({ fetch, fs, FormData });
 
 
 // make app a singleton
@@ -110,7 +114,7 @@ if (config.get('single-instance', true)) {
 // external //////////
 
 renderer.on('external:open-url', function(options) {
-  var url = options.url;
+  const url = options.url;
 
   browserOpen(url);
 });
@@ -196,7 +200,7 @@ renderer.on('file:write', async function(filePath, file, options = {}, done) {
 
 renderer.on('client-config:get', function(...args) {
 
-  var done = args[args.length - 1];
+  const done = args[args.length - 1];
 
   try {
     clientConfig.get(...args);
@@ -216,7 +220,7 @@ app.on('app:parse-cmd', function(argv, cwd) {
   console.log('app:parse-cmd', argv.join(' '), cwd);
 
   // will result in opening dev.js as file
-  var files = Cli.extractFiles(argv, cwd);
+  const files = Cli.extractFiles(argv, cwd);
 
   files.forEach(function(file) {
     app.emit('app:open-file', file);
@@ -224,7 +228,7 @@ app.on('app:parse-cmd', function(argv, cwd) {
 });
 
 app.on('app:open-file', function(filePath) {
-  var file;
+  let file;
 
   console.log('app:open-file', filePath);
 
@@ -247,7 +251,7 @@ app.on('app:open-file', function(filePath) {
 });
 
 app.on('app:client-ready', function() {
-  var files = [];
+  const files = [];
 
   console.log('app:client-ready');
 
@@ -305,7 +309,7 @@ app.on('web-contents-created', (event, webContents) => {
  */
 app.createEditorWindow = function() {
 
-  var windowOptions = {
+  const windowOptions = {
     resizable: true,
     show: false,
     title: 'Camunda Modeler'
@@ -315,13 +319,13 @@ app.createEditorWindow = function() {
     windowOptions.icon = path.join(__dirname + '/../resources/favicon.png');
   }
 
-  var mainWindow = app.mainWindow = new BrowserWindow(windowOptions);
+  const mainWindow = app.mainWindow = new BrowserWindow(windowOptions);
 
   dialog.setActiveWindow(mainWindow);
 
   menu.init();
 
-  var url = 'file://' + path.resolve(__dirname + '/../public/index.html');
+  let url = 'file://' + path.resolve(__dirname + '/../public/index.html');
 
   if (app.developmentMode) {
     url = 'file://' + path.resolve(__dirname + '/../../client/build/index.html');
