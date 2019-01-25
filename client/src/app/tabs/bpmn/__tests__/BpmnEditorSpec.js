@@ -98,6 +98,49 @@ describe('<BpmnEditor>', function() {
   });
 
 
+  it('should accept plugins', async function() {
+
+    // given
+    const additionalModule = {
+      __init__: [ 'foo' ],
+      foo: [ 'type', noop ]
+    };
+
+    const moddleExtension = {
+      name: 'bar',
+      uri: 'http://bar',
+      prefix: 'bar',
+      xml: {
+        tagAlias: 'lowerCase'
+      },
+      types: []
+    };
+
+    // when
+    const {
+      instance
+    } = await renderEditor(diagramXML, {
+      getPlugins(type) {
+        switch (type) {
+        case 'bpmn.modeler.additionalModules':
+          return [ additionalModule ];
+        case 'bpmn.modeler.moddleExtension':
+          return [ moddleExtension ];
+        }
+      }
+    });
+
+    // then
+    const { modeler } = instance.getCached();
+
+    expect(modeler.options.additionalModules).to.include(additionalModule);
+
+    expect(modeler.options.moddleExtensions).to.include({
+      bar: moddleExtension
+    });
+  });
+
+
   it('#getModeler', async function() {
 
     // given
@@ -250,7 +293,13 @@ describe('<BpmnEditor>', function() {
           removeSelected: false,
           setColor: false,
           spaceTool: true,
-          undo: true
+          undo: true,
+
+          // ensure backwards compatibility
+          // https://github.com/camunda/camunda-modeler/commit/78357e3ed9e6e0255ac8225fbdf451a90457e8bf
+          bpmn: true,
+          editable: true,
+          elementsSelected: false
         });
       };
 
@@ -260,16 +309,18 @@ describe('<BpmnEditor>', function() {
         cached: {
           lastXML: diagramXML,
           modeler: new BpmnModeler({
-            clipboard: {
-              isEmpty: () => true
-            },
-            commandStack: {
-              canRedo: () => true,
-              canUndo: () => true,
-              _stackIdx: 1
-            },
-            selection: {
-              get: () => []
+            modules: {
+              clipboard: {
+                isEmpty: () => true
+              },
+              commandStack: {
+                canRedo: () => true,
+                canUndo: () => true,
+                _stackIdx: 1
+              },
+              selection: {
+                get: () => []
+              }
             }
           }),
           stackIdx: 2
@@ -722,7 +773,9 @@ describe('<BpmnEditor>', function() {
       cache.add('editor', {
         cached: {
           modeler: new BpmnModeler({
-            elementTemplatesLoader: elementTemplatesLoaderMock
+            modules: {
+              elementTemplatesLoader: elementTemplatesLoaderMock
+            }
           })
         }
       });
@@ -750,7 +803,9 @@ describe('<BpmnEditor>', function() {
       cache.add('editor', {
         cached: {
           modeler: new BpmnModeler({
-            elementTemplatesLoader: elementTemplatesLoaderStub
+            modules: {
+              elementTemplatesLoader: elementTemplatesLoaderStub
+            }
           })
         }
       });
@@ -787,7 +842,9 @@ describe('<BpmnEditor>', function() {
       cache.add('editor', {
         cached: {
           modeler: new BpmnModeler({
-            elementTemplatesLoader: elementTemplatesLoaderStub
+            modules: {
+              elementTemplatesLoader: elementTemplatesLoaderStub
+            }
           })
         }
       });
@@ -824,7 +881,9 @@ describe('<BpmnEditor>', function() {
       cache.add('editor', {
         cached: {
           modeler: new BpmnModeler({
-            elementTemplatesLoader: elementTemplatesLoaderStub
+            modules: {
+              elementTemplatesLoader: elementTemplatesLoaderStub
+            }
           })
         }
       });
@@ -863,8 +922,10 @@ describe('<BpmnEditor>', function() {
       cache.add('editor', {
         cached: {
           modeler: new BpmnModeler({
-            eventBus: eventBusStub,
-            canvas: canvasStub
+            modules: {
+              eventBus: eventBusStub,
+              canvas: canvasStub
+            }
           })
         }
       });
@@ -989,7 +1050,8 @@ async function renderEditor(xml, options = {}) {
     onImport,
     onLayoutChanged,
     onModal,
-    onLoadConfig
+    onLoadConfig,
+    getPlugins
   } = options;
 
   const slotFillRoot = await mount(
@@ -1006,6 +1068,7 @@ async function renderEditor(xml, options = {}) {
         onContentUpdated={ onContentUpdated || noop }
         onModal={ onModal || noop }
         onLoadConfig={ onLoadConfig || noop }
+        getPlugins={ getPlugins || noop }
         cache={ options.cache || new Cache() }
         layout={ layout || {
           minimap: {

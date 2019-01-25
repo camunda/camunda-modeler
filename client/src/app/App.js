@@ -1355,6 +1355,14 @@ export class App extends PureComponent {
     return this.props.globals.config.get(key, this.state.activeTab, ...args);
   }
 
+  getPlugins = type => {
+    const { globals } = this.props;
+
+    const { plugins } = globals;
+
+    return plugins.get(type);
+  }
+
   quit() {
     return true;
   }
@@ -1527,6 +1535,7 @@ export class App extends PureComponent {
                     onAction={ this.triggerAction }
                     onModal={ this.openModal }
                     onLoadConfig={ this.loadConfig }
+                    getPlugins={ this.getPlugins }
                     ref={ this.tabRef }
                   />
                 }

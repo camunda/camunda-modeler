@@ -149,6 +149,11 @@ export class XMLEditor extends CachedComponent {
       undo: !!history.undo
     };
 
+    // ensure backwards compatibility
+    // https://github.com/camunda/camunda-modeler/commit/78357e3ed9e6e0255ac8225fbdf451a90457e8bf#diff-bd5be70c4e5eadf1a316c16085a72f0fL17
+    newState.editable = true;
+    newState.searchable = true;
+
     const windowMenu = getXMLWindowMenu();
 
     if (typeof onChanged === 'function') {

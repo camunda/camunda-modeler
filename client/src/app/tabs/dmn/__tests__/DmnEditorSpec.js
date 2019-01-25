@@ -231,13 +231,15 @@ describe('<DmnEditor>', function() {
         cached: {
           lastXML: diagramXML,
           modeler: new DmnModeler({
-            commandStack: {
-              canRedo: () => true,
-              canUndo: () => true,
-              _stackIdx: 1
-            },
-            selection: {
-              get: () => []
+            modules: {
+              commandStack: {
+                canRedo: () => true,
+                canUndo: () => true,
+                _stackIdx: 1
+              },
+              selection: {
+                get: () => []
+              }
             }
           }),
           stackIdx: {
@@ -796,8 +798,10 @@ describe('<DmnEditor>', function() {
       cache.add('editor', {
         cached: {
           modeler: new DmnModeler({
-            eventBus: eventBusStub,
-            canvas: canvasStub
+            modules: {
+              eventBus: eventBusStub,
+              canvas: canvasStub
+            }
           })
         }
       });

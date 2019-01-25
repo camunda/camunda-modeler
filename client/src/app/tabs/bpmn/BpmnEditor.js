@@ -42,6 +42,8 @@ import {
 
 import Metadata from '../../../util/Metadata';
 
+import { assign } from 'min-dash';
+
 
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn',
       NAMESPACE_URL_CAMUNDA = 'http://camunda.org/schema/1.0/bpmn',
@@ -353,6 +355,12 @@ export class BpmnEditor extends CachedComponent {
       undo: commandStack.canUndo(),
       zoom: true
     };
+
+    // ensure backwards compatibility
+    // https://github.com/camunda/camunda-modeler/commit/78357e3ed9e6e0255ac8225fbdf451a90457e8bf#diff-bd5be70c4e5eadf1a316c16085a72f0fL17
+    newState.bpmn = true;
+    newState.editable = true;
+    newState.elementsSelected = !!selectionLength;
 
     const contextMenu = getBpmnContextMenu(newState);
 
@@ -675,18 +683,38 @@ export class BpmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState() {
+  static createCachedState(props) {
     const {
       name,
       version
     } = Metadata;
 
+    const { getPlugins } = props;
+
+    const moddleExtensionPlugins = getPlugins('bpmn.modeler.moddleExtension');
+
+    const moddleExtensions = {};
+
+    if (moddleExtensionPlugins && moddleExtensionPlugins.length) {
+      moddleExtensionPlugins.forEach(moddleExtension => {
+        const name = moddleExtension.name.toLowerCase();
+
+        assign(moddleExtensions, {
+          [ name ]: moddleExtension
+        });
+      });
+    }
+
+    const additionalModules = getPlugins('bpmn.modeler.additionalModules') || [];
+
     const modeler = new CamundaBpmnModeler({
-      position: 'absolute',
+      additionalModules,
       exporter: {
         name,
         version
-      }
+      },
+      moddleExtensions,
+      position: 'absolute'
     });
 
     const commandStack = modeler.get('commandStack');

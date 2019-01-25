@@ -12,6 +12,7 @@ import {
   config,
   dialog,
   fileSystem,
+  plugins,
   metadata,
   workspace
 } from './remote';
@@ -33,16 +34,27 @@ const globals = {
   dialog,
   fileSystem,
   isMac,
+  plugins,
   workspace
 };
 
 Metadata.init(metadata);
 
-const rootElement = document.getElementById('root');
-ReactDOM.render(
-  <AppParent
-    keyboardBindings={ keyboardBindings }
-    globals={ globals }
-    tabsProvider={ tabsProvider }
-  />, rootElement
-);
+async function render() {
+
+  // load plugins
+  await plugins.loadAll();
+
+  const rootElement = document.getElementById('root');
+
+  ReactDOM.render(
+    <AppParent
+      keyboardBindings={ keyboardBindings }
+      globals={ globals }
+      tabsProvider={ tabsProvider }
+    />, rootElement
+  );
+}
+
+render();
+

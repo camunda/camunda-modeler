@@ -304,6 +304,11 @@ export class DmnEditor extends CachedComponent {
         selectAll: inputActive
       });
 
+      // ensure backwards compatibility
+      // https://github.com/camunda/camunda-modeler/commit/78357e3ed9e6e0255ac8225fbdf451a90457e8bf#diff-bd5be70c4e5eadf1a316c16085a72f0fL17
+      newState.dmnRuleEditing = !!selectionLength;
+      newState.dmnClauseEditing = !!selectionLength;
+
       editMenu = getDmnDecisionTableEditMenu(newState);
     } else if (activeView.type === 'literalExpression') {
       assign(newState, {
@@ -314,6 +319,13 @@ export class DmnEditor extends CachedComponent {
 
       editMenu = getDmnLiteralExpressionEditMenu(newState);
     }
+
+    // ensure backwards compatibility
+    // https://github.com/camunda/camunda-modeler/commit/78357e3ed9e6e0255ac8225fbdf451a90457e8bf#diff-bd5be70c4e5eadf1a316c16085a72f0fL17
+    newState.dmn = true;
+    newState.editable = true;
+    newState.elementsSelected = !!selectionLength;
+    newState.activeEditor = activeView.type;
 
     const windowMenu = getDmnWindowMenu(newState);
 
