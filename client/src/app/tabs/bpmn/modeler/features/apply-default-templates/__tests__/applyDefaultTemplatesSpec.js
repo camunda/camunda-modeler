@@ -152,10 +152,12 @@ describe('applyDefaultTemplates', function() {
 // helpers //////
 function getDependencies(mockModules = {}) {
   const modeler = new Modeler({
-    eventBus: {
-      on(_, callback) { callback(); }
-    },
-    ...mockModules
+    modules: {
+      eventBus: {
+        on(_, callback) { callback(); }
+      },
+      ...mockModules
+    }
   });
   const dependencies = applyDefaultTemplates.$inject.map(name => modeler.get(name));
 

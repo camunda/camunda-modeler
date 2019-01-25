@@ -30,6 +30,8 @@ import {
 /* global sinon */
 const { spy } = sinon;
 
+const noop = () => {};
+
 
 describe('<App>', function() {
 
@@ -2053,6 +2055,36 @@ describe('<App>', function() {
       expect(getConfigSpy).to.be.calledOnceWith(CONFIG_KEY);
     });
 
+  });
+
+
+  describe('#loadPlugins', function() {
+
+    it('should load plugins', function() {
+
+      // given
+      const { app } = createApp({
+        globals: {
+          plugins: {
+            get(type) {
+              return [{
+                __init__: [ type ],
+                [ type ]: [ 'type', noop ]
+              }];
+            }
+          }
+        }
+      });
+
+      // when
+      const plugins = app.getPlugins('foo');
+
+      // then
+      expect(plugins).to.eql([{
+        __init__: [ 'foo' ],
+        foo: [ 'type', noop ]
+      }]);
+    });
   });
 
 

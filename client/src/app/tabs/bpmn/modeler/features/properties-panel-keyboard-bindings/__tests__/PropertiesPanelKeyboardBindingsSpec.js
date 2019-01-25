@@ -145,10 +145,12 @@ describe('PropertiesPanelKeyboardBindings', function() {
  */
 function createModeler(dependencies) {
   return new Modeler({
-    ...dependencies,
-    propertiesPanelKeyboardBindings: new PropertiesPanelKeyboardBindings(
-      ...PropertiesPanelKeyboardBindings.$inject.map(name => dependencies[ name ] || {})
-    )
+    modules: {
+      ...dependencies,
+      propertiesPanelKeyboardBindings: new PropertiesPanelKeyboardBindings(
+        ...PropertiesPanelKeyboardBindings.$inject.map(name => dependencies[ name ] || {})
+      )
+    }
   });
 }
 

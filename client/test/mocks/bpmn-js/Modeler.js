@@ -40,8 +40,10 @@ class PropertiesPanel {
 }
 
 export default class Modeler {
-  constructor(modules = {}) {
-    this.modules = assign(this._getDefaultModules(), modules);
+  constructor(options = {}) {
+    this.options = options;
+
+    this.modules = assign(this._getDefaultModules(), options.modules || {});
 
     this.xml = null;
 

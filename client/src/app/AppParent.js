@@ -45,14 +45,14 @@ export default class AppParent extends PureComponent {
     this.getApp().openFiles(files);
   }
 
-  handleMenuUpdate = (options = {}) => {
+  handleMenuUpdate = (state = {}) => {
     const { keyboardBindings } = this.props;
 
-    const { editMenu } = options;
+    const { editMenu } = state;
 
     keyboardBindings.update(editMenu);
 
-    this.getBackend().sendMenuUpdate(options);
+    this.getBackend().sendMenuUpdate(state);
   }
 
   handleContextMenu = (type, options) => {
