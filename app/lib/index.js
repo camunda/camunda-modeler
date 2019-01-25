@@ -383,13 +383,17 @@ app.createEditorWindow = function() {
  */
 app.on('ready', function() {
 
-  app.plugins = new Plugins({
+  const plugins = app.plugins = new Plugins({
     paths: [
       path.join(app.getPath('userData'), 'resources'),
       app.getPath('userData'),
       path.join(appPath, 'resources'),
       appPath
     ].concat(app.developmentMode ? [ path.resolve(__dirname + '/../../resources') ] : [])
+  });
+
+  menu.registerMenuProvider('plugins', {
+    plugins: plugins.getAll()
   });
 
   session.defaultSession.webRequest.onBeforeRequest((details, callback) => {

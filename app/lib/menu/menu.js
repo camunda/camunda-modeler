@@ -60,13 +60,15 @@ class Menu {
 
     const {
       helpMenu,
-      newFileMenu
+      newFileMenu,
+      plugins
     } = options;
 
-    const providerOptions = {};
-
-    providerOptions.helpMenu = helpMenu || [];
-    providerOptions.newFileMenu = newFileMenu || [];
+    const providerOptions = {
+      helpMenu: helpMenu || [],
+      newFileMenu: newFileMenu || [],
+      plugins: plugins || null
+    };
 
     this.providers[type] = providerOptions;
 

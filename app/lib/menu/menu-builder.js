@@ -10,8 +10,10 @@ const browserOpen = require('../util/browser-open');
 
 const {
   assign,
+  find,
   map,
-  merge
+  merge,
+  reduce
 } = require('min-dash');
 
 
@@ -58,6 +60,7 @@ class MenuBuilder {
     }
 
     this.appendWindowMenu();
+    this.appendPluginsMenu();
     this.appendHelpMenu();
 
     return this;
@@ -400,6 +403,71 @@ class MenuBuilder {
     return submenuTemplate;
   }
 
+  appendPluginsMenu() {
+    const provider = find(this.options.providers, provider => provider.plugins);
+
+    const plugins = provider && provider.plugins;
+
+    let submenuTemplate;
+
+    if (plugins) {
+      submenuTemplate = reduce(plugins, (menuItems, plugin) => {
+        let label = plugin.name;
+
+        if (plugin.error) {
+          label = label.concat(' <error>');
+        }
+
+        const menuItemDescriptor = {
+          label: label,
+          enabled: false
+        };
+
+        if (plugin.menu) {
+
+          try {
+            const menuEntries = plugin.menu(app, this.options.state);
+
+            menuItemDescriptor.enabled = true;
+            menuItemDescriptor.submenu = Menu.buildFromTemplate(
+              menuEntries.map(menuDescriptor => {
+                return new MenuItem({
+                  label: menuDescriptor.label,
+                  accelerator: menuDescriptor.accelerator,
+                  enabled: menuDescriptor.enabled(),
+                  click: menuDescriptor.action,
+                  submenu: menuDescriptor.submenu
+                });
+              })
+            );
+          } catch (e) {
+            menuItemDescriptor.label = menuItemDescriptor.label.concat(' <error>');
+            menuItemDescriptor.enabled = false;
+
+            console.error(e);
+          }
+        }
+
+        return [
+          ...menuItems,
+          new MenuItem(menuItemDescriptor)
+        ];
+      }, []);
+    } else {
+      submenuTemplate = [{
+        label: '<no plug-ins found>',
+        enabled: false
+      }];
+    }
+
+    this.menu.append(new MenuItem({
+      label: 'Plugins',
+      submenu: Menu.buildFromTemplate(submenuTemplate)
+    }));
+
+    return this;
+  }
+
   appendHelpMenu() {
     const submenuTemplate = this.getHelpSubmenuTemplate();
 
@@ -436,7 +504,6 @@ class MenuBuilder {
       },
       getSeparatorTemplate()
     ];
-
 
     const providedMenus = map(this.options.providers, provider => provider.helpMenu)
       .filter(menu => Boolean(menu.length));
