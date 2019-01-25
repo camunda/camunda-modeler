@@ -11,8 +11,7 @@ jobs:
       language: node_js
       script:
       - COVERAGE=1 npm run all -- --x64 --no-compress
-      - npx codecov -f client/coverage/lcov.info -F client
-      - npx codecov -f coverage/lcov.info -F app
+      - npx codecov
     - stage: "distro [windows+linux]"
       os: linux
       services: docker
