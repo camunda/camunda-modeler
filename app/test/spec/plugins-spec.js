@@ -24,7 +24,7 @@ describe('Plugins', function() {
       });
 
       // then
-      const registeredPlugins = plugins.getPlugins();
+      const registeredPlugins = plugins.getAll();
 
       expect(Object.keys(registeredPlugins)).to.eql([
         'broken-menu',
