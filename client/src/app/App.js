@@ -91,7 +91,7 @@ export class App extends PureComponent {
     this.tabRef = React.createRef();
 
     if (process.env.NODE_ENV !== 'test') {
-      this.workspaceChanged = debounce(this.workspaceChanged, 300);
+      this.workspaceChanged = debounce(this.workspaceChanged, 1500);
       this.updateMenu = debounce(this.updateMenu, 50);
       this.resizeTab = debounce(this.resizeTab, 50);
     }
