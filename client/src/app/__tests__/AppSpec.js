@@ -1048,7 +1048,10 @@ describe('<App>', function() {
 
         // then
         expect(app.state.tabs).to.eql(expectedTabs);
-        expect(app.state.activeTab).to.equal(openedTabs[2]);
+
+        // we don't implicitly activate tab on move
+        // this happens on drag start instead
+        expect(app.state.activeTab).to.equal(openedTabs[3]);
       });
 
 

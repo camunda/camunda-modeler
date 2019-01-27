@@ -45,7 +45,7 @@ export default class TabLinks extends PureComponent {
     } = this.props;
 
     if (draggable) {
-      addDragger(this.tabLinksRef.current, TABS_OPTS, this.handleDrag);
+      addDragger(this.tabLinksRef.current, TABS_OPTS, this.handleDrag, this.handleDragStart);
     }
 
     if (scrollable) {
@@ -78,6 +78,17 @@ export default class TabLinks extends PureComponent {
     } = this.props;
 
     const tab = tabs.find(({ id }) => id === node.dataset.tabId);
+
+    onSelect(tab);
+  }
+
+  handleDragStart = ({ dragTab }) => {
+    const {
+      tabs,
+      onSelect
+    } = this.props;
+
+    const tab = tabs.find(({ id }) => id === dragTab.dataset.tabId);
 
     onSelect(tab);
   }

@@ -413,8 +413,7 @@ export class App extends PureComponent {
     newTabs.splice(newIndex, 0, tab);
 
     this.setState({
-      tabs: newTabs,
-      activeTab: tab
+      tabs: newTabs
     });
   }
 
