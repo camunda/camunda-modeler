@@ -22,6 +22,27 @@ export default class Plugins {
   }
 
   /**
+   * Binds #getModelerDirectory and #getPluginsDirectory to window to ensure backward compatibility.
+   */
+  bindGlobalHelpers() {
+    window.getModelerDirectory = this._getPluginsProtocol;
+    window.getPluginsDirectory = this._getPluginsProtocol;
+  }
+
+  /**
+   * Get plugins of type.
+   *
+   * @param {String} type - Plugin type.
+   *
+   * @returns {Array}
+   */
+  get(type) {
+    return this._getAll()
+      .filter(plugin => plugin.type === type)
+      .map(({ plugin }) => plugin);
+  }
+
+  /**
    * Load style plugin by creating HTML <link> tag.
    *
    * @param {Object} stylePlugin - Style plugin.
@@ -71,17 +92,8 @@ export default class Plugins {
     return copy(plugins);
   }
 
-  /**
-   * Get plugins of type.
-   *
-   * @param {String} type - Plugin type.
-   *
-   * @returns {Array}
-   */
-  get(type) {
-    return this._getAll()
-      .filter(plugin => plugin.type === type)
-      .map(({ plugin }) => plugin);
+  _getPluginsProtocol() {
+    return 'app-plugins://';
   }
 }
 

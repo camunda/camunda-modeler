@@ -76,6 +76,26 @@ describe('Plugins', function() {
       // then
       expect(transformedUrl).to.be.null;
     });
+
+
+    it('should accept and correct superfluous slash after the protocol', function() {
+
+      // given
+      const plugins = new Plugins({
+        paths: [
+          __dirname + '/../fixtures/plugins/with-asset'
+        ]
+      });
+
+      const assetUrl = 'app-plugins:///plugin/assets/cat.png';
+      const assetPath = 'file://' + path.join(__dirname, '/../fixtures/plugins/with-asset/plugins/plugin/assets/cat.png');
+
+      // when
+      const transformedUrl = plugins.getAssetPath(assetUrl);
+
+      // then
+      expect(transformedUrl).to.eql(assetPath);
+    });
   });
 
 });

@@ -91,4 +91,42 @@ describe('plugins', function() {
 
   });
 
+
+  describe('global bindings', function() {
+
+    afterEach(function() {
+      delete window.getPluginsDirectory;
+      delete window.getModelerDirectory;
+    });
+
+
+    it('should expose plugins protocol for window#getPluginsDirectory', function() {
+      // given
+      const plugins = new Plugins();
+
+      plugins.bindGlobalHelpers();
+
+      // when
+      const directory = window.getPluginsDirectory();
+
+      // then
+      expect(directory).to.be.eql('app-plugins://');
+    });
+
+
+    it('should expose plugins protocol for window#getModelerDirectory', function() {
+      // given
+      const plugins = new Plugins();
+
+      plugins.bindGlobalHelpers();
+
+      // when
+      const directory = window.getModelerDirectory();
+
+      // then
+      expect(directory).to.be.eql('app-plugins://');
+    });
+
+  });
+
 });

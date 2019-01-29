@@ -43,6 +43,8 @@ Metadata.init(metadata);
 async function render() {
 
   // load plugins
+  plugins.bindGlobalHelpers();
+
   await plugins.loadAll();
 
   const rootElement = document.getElementById('root');
