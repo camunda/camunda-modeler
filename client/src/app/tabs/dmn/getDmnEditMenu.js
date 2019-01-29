@@ -8,7 +8,8 @@ import {
 } from '../getEditMenu';
 
 function getDecisionTableEntries({
-  hasSelection
+  hasSelection,
+  inputActive
 }) {
   return [
     [
@@ -59,6 +60,21 @@ function getDecisionTableEntries({
         label: 'Remove Clause',
         enabled: hasSelection,
         action: 'removeClause'
+      }
+    ], [
+      {
+        label: 'Select Cell Above',
+        accelerator: 'Shift + Enter',
+        enabled: hasSelection,
+        action: 'selectCellAbove',
+        role: inputActive && 'selectCellAbove'
+      },
+      {
+        label: 'Select Cell Below',
+        accelerator: 'Enter',
+        enabled: hasSelection,
+        action: 'selectCellBelow',
+        role: inputActive && 'selectCellBelow'
       }
     ]
   ];
