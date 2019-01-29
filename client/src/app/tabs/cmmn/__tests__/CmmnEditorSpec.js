@@ -269,6 +269,32 @@ describe('<CmmnEditor>', function() {
       instance.handleChanged();
     });
 
+
+    it('should notify about plugin related changes', async function() {
+      // given
+      const changedSpy = sinon.spy();
+
+      const { instance } = await renderEditor(diagramXML, {
+        id: 'editor',
+        onChanged: changedSpy
+      });
+
+      changedSpy.resetHistory();
+
+      // when
+      instance.handleChanged();
+
+      // then
+      expect(changedSpy).to.be.calledOnce;
+
+      const state = changedSpy.firstCall.args[0];
+
+      expect(state).to.have.property('cmmn');
+      expect(state).to.have.property('editable');
+      expect(state).to.have.property('elementsSelected');
+    });
+
+
     describe('edit menu', function() {
 
       it('should provide und/redo entries', async function() {
@@ -377,7 +403,6 @@ describe('<CmmnEditor>', function() {
         // when
         instance.handleChanged();
       });
-
     });
 
   });

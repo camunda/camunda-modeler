@@ -260,6 +260,64 @@ describe('<DmnEditor>', function() {
     });
 
 
+    it('should notify about plugin related changes', async function() {
+      // given
+      const changedSpy = sinon.spy();
+
+      const { instance } = await renderEditor(diagramXML, {
+        id: 'editor',
+        onChanged: changedSpy
+      });
+
+      changedSpy.resetHistory();
+
+      // when
+      instance.handleChanged();
+
+      // then
+      expect(changedSpy).to.be.calledOnce;
+
+      const state = changedSpy.firstCall.args[0];
+
+      expect(state).to.have.property('dmn');
+      expect(state).to.have.property('editable');
+      expect(state).to.have.property('elementsSelected');
+      expect(state).to.have.property('activeEditor');
+    });
+
+
+    it('should notify about plugin related changes in decisionTable view', async function() {
+      // given
+      const changedSpy = sinon.spy();
+
+      const { instance } = await renderEditor(diagramXML, {
+        id: 'editor',
+        onChanged: changedSpy
+      });
+
+      const decisionTable = {
+        element: { id: 'foo' },
+        type: 'decisionTable'
+      };
+
+      instance.getModeler().open(decisionTable);
+
+      changedSpy.resetHistory();
+
+      // when
+      instance.handleChanged();
+
+      // then
+      expect(changedSpy).to.be.calledOnce;
+
+      const state = changedSpy.firstCall.args[0];
+
+      expect(state).to.have.property('dmnRuleEditing');
+      expect(state).to.have.property('dmnClauseEditing');
+
+    });
+
+
     describe('edit menu', function() {
 
       it('should provide und/redo entries', async function() {
