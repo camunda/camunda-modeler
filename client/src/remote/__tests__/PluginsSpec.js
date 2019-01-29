@@ -2,94 +2,93 @@
 
 import Plugins from '../Plugins';
 
-const stub = sinon.stub;
 
-const noop = () => {};
+describe('plugins', function() {
 
+  describe('#loadAll', function() {
 
-describe('Plugins', function() {
+    let headStub;
 
-  let plugins;
-
-  beforeEach(function() {
-    delete window.plugins;
-
-    plugins = new Plugins({
-      plugins: {
-        getAll() {
-          return {
-            foo: {
-              name: 'foo',
-              script: 'foo.js'
-            },
-            bar: {
-              name: 'bar',
-              script: 'bar.js'
-            },
-            baz: {
-              name: 'baz',
-              style: 'baz.css'
-            }
-          };
-        }
-      }
+    beforeEach(function() {
+      headStub = sinon.stub(document.head, 'appendChild')
+        .callsFake(({ onload }) => onload && onload());
     });
 
-    stub(plugins, '_loadStylePlugin').callsFake(noop);
-    stub(plugins, '_loadScriptPlugin').callsFake(({ name }) => {
-      if (!window.plugins) {
-        window.plugins = [];
-      }
 
-      window.plugins.push({
-        type: name,
-        plugin: {
-          __init__: [ name ],
-          [ name ]: [ 'type', noop ]
+    afterEach(function() {
+      headStub && headStub.restore();
+    });
+
+
+    it('should load all plugins', async function() {
+      // given
+      const mockPlugins = {
+        foo: {
+          name: 'foo',
+          script: 'bar',
+          style: 'baz'
+        },
+        bar: {
+          name: 'bar',
+          script: 'foo',
+          style: 'baz'
+        }
+      };
+
+      const plugins = new Plugins({
+        plugins: {
+          getAll() {
+            return mockPlugins;
+          }
         }
       });
 
-      Promise.resolve();
+      // when
+      await plugins.loadAll();
+
+      // then
+      const calls = headStub.getCalls();
+
+      expect(calls).to.have.lengthOf(4);
+
+      const args = calls.reduce((args, call) => [ ...args, ...call.args ], []);
+
+      expect(args.filter(({ tagName }) => tagName === 'LINK')).to.have.lengthOf(2);
+      expect(args.filter(({ tagName }) => tagName === 'SCRIPT')).to.have.lengthOf(2);
     });
-  });
 
-  afterEach(function() {
-    delete window.plugins;
   });
 
 
-  it('should load plugins', async function() {
+  describe('#get', function() {
 
-    // when
-    await plugins.loadAll();
-
-    // then
-    expect(plugins._getAll()).to.eql([{
-      type: 'foo',
-      plugin: {
-        __init__: [ 'foo' ],
-        foo: [ 'type', noop ]
-      }
-    }, {
-      type: 'bar',
-      plugin: {
-        __init__: [ 'bar' ],
-        bar: [ 'type', noop ]
-      }
-    }]);
-  });
+    afterEach(function() {
+      delete window.plugins;
+    });
 
 
-  it('should get loaded plugins (type=foo)', async function() {
+    it('should get registered plugin', function() {
+      // given
+      const mockPlugin = {};
+      const mockType = 'foo';
 
-    // given
-    await plugins.loadAll();
+      window.plugins = [
+        {
+          type: mockType,
+          plugin: mockPlugin
+        }
+      ];
 
-    // then
-    expect(plugins.get('foo')).to.eql([{
-      __init__: [ 'foo' ],
-      foo: [ 'type', noop ]
-    }]);
+      const plugins = new Plugins();
+
+      // when
+      const registeredPlugins = plugins.get(mockType);
+
+      // then
+      expect(registeredPlugins).to.be.an('Array').and.have.lengthOf(1);
+      expect(registeredPlugins[0]).to.be.eql(mockPlugin);
+    });
+
   });
 
 });
