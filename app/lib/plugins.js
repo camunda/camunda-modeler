@@ -119,7 +119,8 @@ class Plugins {
   }
 
   getAssetPath(url) {
-    const match = /^app-plugins:\/\/([^/]+)(.*)$/.exec(url);
+    // accept app-plugins:/// for sake of backwards compatibility
+    const match = /^app-plugins:\/\/\/?([^/]+)(.*)$/.exec(url);
 
     if (match) {
 
