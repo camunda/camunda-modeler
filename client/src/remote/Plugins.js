@@ -38,8 +38,8 @@ export default class Plugins {
    */
   get(type) {
     return this._getAll()
-      .filter(plugin => plugin.type === type)
-      .map(({ plugin }) => plugin);
+      .filter(registration => registration.type === type)
+      .map(registration => registration.plugin);
   }
 
   /**
@@ -87,25 +87,11 @@ export default class Plugins {
    * @returns {Array}
    */
   _getAll() {
-    const plugins = window.plugins || [];
-
-    return copy(plugins);
+    return window.plugins || [];
   }
 
   _getPluginsProtocol() {
     return 'app-plugins://';
   }
-}
 
-// helpers //////////
-
-/**
- * Copy an array.
- *
- * @param {Array} array - Array.
- *
- * @returns {Array}
- */
-function copy(array) {
-  return array.slice(0);
 }
