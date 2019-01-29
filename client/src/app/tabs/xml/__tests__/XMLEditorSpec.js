@@ -13,6 +13,8 @@ import CodeMirror from 'test/mocks/code-mirror/CodeMirror';
 
 import { SlotFillRoot } from 'src/app/slot-fill';
 
+/* global sinon */
+
 const XML = '<xml></xml>';
 
 
@@ -92,6 +94,30 @@ describe('<XMLEditor>', function() {
 
       // when
       instance.handleChanged();
+    });
+
+
+    it('should notify about plugin related changes', function() {
+      // given
+      const changedSpy = sinon.spy();
+
+      const { instance } = renderEditor(XML, {
+        id: 'editor',
+        onChanged: changedSpy
+      });
+
+      changedSpy.resetHistory();
+
+      // when
+      instance.handleChanged();
+
+      // then
+      expect(changedSpy).to.be.calledOnce;
+
+      const state = changedSpy.firstCall.args[0];
+
+      expect(state).to.have.property('editable');
+      expect(state).to.have.property('searchable');
     });
 
   });

@@ -293,13 +293,7 @@ describe('<BpmnEditor>', function() {
           removeSelected: false,
           setColor: false,
           spaceTool: true,
-          undo: true,
-
-          // ensure backwards compatibility
-          // https://github.com/camunda/camunda-modeler/commit/78357e3ed9e6e0255ac8225fbdf451a90457e8bf
-          bpmn: true,
-          editable: true,
-          elementsSelected: false
+          undo: true
         });
       };
 
@@ -336,6 +330,31 @@ describe('<BpmnEditor>', function() {
 
       // when
       instance.handleChanged();
+    });
+
+
+    it('should notify about plugin related changes', async function() {
+      // given
+      const changedSpy = sinon.spy();
+
+      const { instance } = await renderEditor(diagramXML, {
+        id: 'editor',
+        onChanged: changedSpy
+      });
+
+      changedSpy.resetHistory();
+
+      // when
+      instance.handleChanged();
+
+      // then
+      expect(changedSpy).to.be.calledOnce;
+
+      const state = changedSpy.firstCall.args[0];
+
+      expect(state).to.have.property('bpmn');
+      expect(state).to.have.property('editable');
+      expect(state).to.have.property('elementsSelected');
     });
 
 
