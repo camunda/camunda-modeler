@@ -98,45 +98,67 @@ describe('<BpmnEditor>', function() {
   });
 
 
-  it('should accept plugins', async function() {
+  describe('plugins', function() {
 
-    // given
-    const additionalModule = {
-      __init__: [ 'foo' ],
-      foo: [ 'type', noop ]
-    };
+    it('should accept plugins', async function() {
 
-    const moddleExtension = {
-      name: 'bar',
-      uri: 'http://bar',
-      prefix: 'bar',
-      xml: {
-        tagAlias: 'lowerCase'
-      },
-      types: []
-    };
+      // given
+      const additionalModule = {
+        __init__: [ 'foo' ],
+        foo: [ 'type', noop ]
+      };
 
-    // when
-    const {
-      instance
-    } = await renderEditor(diagramXML, {
-      getPlugins(type) {
-        switch (type) {
-        case 'bpmn.modeler.additionalModules':
-          return [ additionalModule ];
-        case 'bpmn.modeler.moddleExtension':
-          return [ moddleExtension ];
+      const moddleExtension = {
+        name: 'bar',
+        uri: 'http://bar',
+        prefix: 'bar',
+        xml: {
+          tagAlias: 'lowerCase'
+        },
+        types: []
+      };
+
+      // when
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        getPlugins(type) {
+          switch (type) {
+          case 'bpmn.modeler.additionalModules':
+            return [ additionalModule ];
+          case 'bpmn.modeler.moddleExtension':
+            return [ moddleExtension ];
+          }
         }
-      }
+      });
+
+      // then
+      const { modeler } = instance.getCached();
+
+      expect(modeler.options.additionalModules).to.include(additionalModule);
+
+      expect(modeler.options.moddleExtensions).to.include({
+        bar: moddleExtension
+      });
     });
 
-    // then
-    const { modeler } = instance.getCached();
 
-    expect(modeler.options.additionalModules).to.include(additionalModule);
+    it('should not fail on invalid moddle extension', async function() {
 
-    expect(modeler.options.moddleExtensions).to.include({
-      bar: moddleExtension
+      // given
+      const invalidModdleExtension = {};
+
+      const props = {
+        getPlugins(type) {
+          switch (type) {
+          case 'bpmn.modeler.moddleExtension':
+            return [ invalidModdleExtension ];
+          }
+        }
+      };
+
+      // then
+      expect(() => BpmnEditor.createCachedState(props)).to.not.throw();
     });
   });
 
@@ -1087,7 +1109,7 @@ async function renderEditor(xml, options = {}) {
         onContentUpdated={ onContentUpdated || noop }
         onModal={ onModal || noop }
         onLoadConfig={ onLoadConfig || noop }
-        getPlugins={ getPlugins || noop }
+        getPlugins={ getPlugins || (() => []) }
         cache={ options.cache || new Cache() }
         layout={ layout || {
           minimap: {
