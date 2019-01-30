@@ -5,7 +5,9 @@
  * Simple mock of electron's <MenuItem> module
  */
 class ElectronMenuItem {
-  constructor() {}
+  constructor(template) {
+    return template;
+  }
 }
 
 module.exports = ElectronMenuItem;
