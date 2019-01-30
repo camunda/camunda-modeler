@@ -4,14 +4,18 @@
 /**
  * Simple mock of electron's <Menu> module
  */
-class ElectronMenu {
-  static buildFromTemplate() {}
+class ElectronMenu extends Array {
+  static buildFromTemplate(menuTemplate) {
+    return menuTemplate;
+  }
 
-  static setApplicationMenu() {}
+  static setApplicationMenu(menu) {
+    this.menu = menu;
+  }
 
-  constructor() {}
-
-  append() {}
+  append(item) {
+    this.push(item);
+  }
 }
 
 module.exports = ElectronMenu;
