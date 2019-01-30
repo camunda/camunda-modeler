@@ -4,7 +4,8 @@
  * Simple mock of electron's <app> module
  */
 const ElectronApp = {
-  name: 'app'
+  name: 'app',
+  emit() {}
 };
 
 module.exports = ElectronApp;
