@@ -20,6 +20,15 @@ import { SlotFillRoot } from 'src/app/slot-fill';
 import diagramXML from './diagram.bpmn';
 import activitiXML from './activiti.bpmn';
 
+import {
+  getCanvasEntries,
+  getCopyCutPasteEntries,
+  getDiagramFindEntries,
+  getSelectionEntries,
+  getToolEntries,
+  getUndoRedoEntries
+} from '../../getEditMenu';
+
 const { spy } = sinon;
 
 
@@ -276,6 +285,143 @@ describe('<BpmnEditor>', function() {
 
       // when
       instance.handleChanged();
+    });
+
+
+    describe('edit menu', function() {
+
+      const includesEntryDeeply = (editMenu, label) => {
+        return editMenu.filter(entries => {
+          return entries.some(e => e.label === label);
+        }).length > 0;
+      };
+
+      it('should provide und/redo entries', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          const editMenuEntries = getUndoRedoEntries(state);
+
+          // then
+          expect(state.editMenu).to.deep.include(editMenuEntries);
+
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
+
+      it('should provide copy/paste entries', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          const editMenuEntries = getCopyCutPasteEntries(state);
+
+          // then
+          expect(state.editMenu).to.deep.include(editMenuEntries);
+
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
+
+      it('should provide tool entries', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          const editMenuEntries = getToolEntries(state);
+
+          // then
+          expect(state.editMenu).to.deep.include(editMenuEntries);
+
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
+
+      it('should provide find entries', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          const editMenuEntries = getDiagramFindEntries(state);
+
+          // then
+          expect(state.editMenu).to.deep.include(editMenuEntries);
+
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
+
+      it('should provide selection + canvas entries', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          const editMenuEntries = [
+            ...getCanvasEntries(state),
+            ...getSelectionEntries(state)
+          ];
+
+          // then
+          expect(state.editMenu).to.deep.include(editMenuEntries);
+
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
+
+      it('should provide align/distribute entries', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          // then
+          expect(includesEntryDeeply(state.editMenu, 'Align Elements')).to.be.true;
+          expect(includesEntryDeeply(state.editMenu, 'Distribute Elements')).to.be.true;
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
     });
 
   });
