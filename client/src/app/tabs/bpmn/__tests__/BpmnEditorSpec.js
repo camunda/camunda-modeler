@@ -143,23 +143,34 @@ describe('<BpmnEditor>', function() {
     });
 
 
-    it('should not fail on invalid moddle extension', async function() {
+    it('should properly handle invalid moddle extensions', async function() {
 
       // given
-      const invalidModdleExtension = {};
+      const onErrorSpy = sinon.spy();
+
+      const unnamedModdleExtension = {};
+
+      const circularModdleExtension = {};
+      circularModdleExtension.name = circularModdleExtension;
 
       const props = {
         getPlugins(type) {
           switch (type) {
           case 'bpmn.modeler.moddleExtension':
-            return [ invalidModdleExtension ];
+            return [
+              unnamedModdleExtension,
+              circularModdleExtension
+            ];
           }
-        }
+        },
+        onError: onErrorSpy
       };
 
       // then
       expect(() => BpmnEditor.createCachedState(props)).to.not.throw();
+      expect(onErrorSpy).to.be.calledTwice;
     });
+
   });
 
 

@@ -126,6 +126,33 @@ describe('MenuBuilder', () => {
       expect(pluginMenu.submenu[0]).to.have.property('enabled').which.is.false;
     });
 
+
+    it('should properly handle plugin menu error', function() {
+      // given
+      const pluginName = 'test';
+      const menuStub = sinon.stub().throwsException();
+
+      const options = {
+        providers: {
+          plugins: {
+            helpMenu: [],
+            newFileMenu: [],
+            plugins: {
+              test: {
+                name: pluginName,
+                menu: menuStub
+              }
+            }
+          }
+        }
+      };
+
+      const menuBuilder = new MenuBuilder(options);
+
+      // then
+      expect(() => menuBuilder.build()).to.not.throw();
+    });
+
   });
 
 });

@@ -703,11 +703,7 @@ export class BpmnEditor extends CachedComponent {
         name = name.toLowerCase();
       } catch (error) {
         if (isFunction(onError)) {
-          try {
-            extension = JSON.stringify(extension);
-          } finally {
-            onError(new Error(`Could not register moddle extension: ${extension}`));
-          }
+          onError(new Error('Could not register moddle extension.'));
         }
 
         return extensions;
