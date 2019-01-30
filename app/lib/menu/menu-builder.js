@@ -11,6 +11,7 @@ const browserOpen = require('../util/browser-open');
 const {
   assign,
   find,
+  isFunction,
   map,
   merge,
   reduce
@@ -431,10 +432,13 @@ class MenuBuilder {
             menuItemDescriptor.enabled = true;
             menuItemDescriptor.submenu = Menu.buildFromTemplate(
               menuEntries.map(menuDescriptor => {
+                const enabled = isFunction(menuDescriptor.enabled) ?
+                  menuDescriptor.enabled() : menuDescriptor.enabled;
+
                 return new MenuItem({
                   label: menuDescriptor.label,
                   accelerator: menuDescriptor.accelerator,
-                  enabled: menuDescriptor.enabled(),
+                  enabled,
                   click: menuDescriptor.action,
                   submenu: menuDescriptor.submenu
                 });
