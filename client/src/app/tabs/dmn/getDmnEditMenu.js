@@ -1,5 +1,6 @@
 
 import {
+  getCanvasEntries,
   getCopyCutPasteEntries,
   getDefaultCopyCutPasteEntries,
   getSelectionEntries,
@@ -91,6 +92,7 @@ export function getDmnDrdEditMenu(state) {
     getUndoRedoEntries(state),
     copyCutPasteEntries,
     getToolEntries(state),
+    getCanvasEntries(state),
     getSelectionEntries(state)
   ];
 }
