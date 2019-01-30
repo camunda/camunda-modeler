@@ -431,16 +431,22 @@ class MenuBuilder {
 
             menuItemDescriptor.enabled = true;
             menuItemDescriptor.submenu = Menu.buildFromTemplate(
-              menuEntries.map(menuDescriptor => {
-                const enabled = isFunction(menuDescriptor.enabled) ?
-                  menuDescriptor.enabled() : menuDescriptor.enabled;
+              menuEntries.map(({
+                accelerator,
+                action,
+                enabled,
+                label,
+                submenu
+              }) => {
+                enabled = isFunction(enabled) ? enabled() : enabled;
+                const click = action && wrapPluginAction(action);
 
                 return new MenuItem({
-                  label: menuDescriptor.label,
-                  accelerator: menuDescriptor.accelerator,
+                  label,
+                  accelerator,
                   enabled,
-                  click: menuDescriptor.action,
-                  submenu: menuDescriptor.submenu
+                  click,
+                  submenu
                 });
               })
             );
@@ -614,4 +620,14 @@ function canSwitchTab(state) {
 
 function canCloseTab(state) {
   return Boolean(state.tabsCount);
+}
+
+function wrapPluginAction(fn) {
+  return function() {
+    try {
+      fn();
+    } catch (error) {
+      console.error('Menu action error', error);
+    }
+  };
 }
