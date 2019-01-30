@@ -15,6 +15,15 @@ import {
 
 import CmmnModeler from 'test/mocks/cmmn-js/Modeler';
 
+import {
+  getCanvasEntries,
+  getCopyCutPasteEntries,
+  getDiagramFindEntries,
+  getSelectionEntries,
+  getToolEntries,
+  getUndoRedoEntries
+} from '../../getEditMenu';
+
 import { SlotFillRoot } from 'src/app/slot-fill';
 
 import diagramXML from './diagram.cmmn';
@@ -256,6 +265,117 @@ describe('<CmmnEditor>', function() {
 
       // when
       instance.handleChanged();
+    });
+
+    describe('edit menu', function() {
+
+      it('should provide und/redo entries', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          const editMenuEntries = getUndoRedoEntries(state);
+
+          // then
+          expect(state.editMenu).to.deep.include(editMenuEntries);
+
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
+
+      it('should provide copy/paste entries', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          const editMenuEntries = getCopyCutPasteEntries(state);
+
+          // then
+          expect(state.editMenu).to.deep.include(editMenuEntries);
+
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
+
+      it('should provide tool entries', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          const editMenuEntries = getToolEntries(state);
+
+          // then
+          expect(state.editMenu).to.deep.include(editMenuEntries);
+
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
+
+      it('should provide find entries', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          const editMenuEntries = getDiagramFindEntries(state);
+
+          // then
+          expect(state.editMenu).to.deep.include(editMenuEntries);
+
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
+
+      it('should provide selection + canvas entries', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          const editMenuEntries = [
+            ...getCanvasEntries(state),
+            ...getSelectionEntries(state)
+          ];
+
+          // then
+          expect(state.editMenu).to.deep.include(editMenuEntries);
+
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
     });
 
   });
