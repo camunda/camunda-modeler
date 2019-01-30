@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import { isFunction } from 'min-dash';
+
 import { Fill } from '../../slot-fill';
 
 import {
@@ -41,8 +43,6 @@ import {
 } from './util/namespace';
 
 import Metadata from '../../../util/Metadata';
-
-import { assign } from 'min-dash';
 
 
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn',
@@ -689,21 +689,35 @@ export class BpmnEditor extends CachedComponent {
       version
     } = Metadata;
 
-    const { getPlugins } = props;
+    const {
+      getPlugins,
+      onError
+    } = props;
 
     const moddleExtensionPlugins = getPlugins('bpmn.modeler.moddleExtension');
 
-    const moddleExtensions = {};
+    const moddleExtensions = moddleExtensionPlugins.reduce((extensions, extension) => {
+      let { name } = extension;
 
-    if (moddleExtensionPlugins && moddleExtensionPlugins.length) {
-      moddleExtensionPlugins.forEach(moddleExtension => {
-        const name = moddleExtension.name.toLowerCase();
+      try {
+        name = name.toLowerCase();
+      } catch (error) {
+        if (isFunction(onError)) {
+          try {
+            extension = JSON.stringify(extension);
+          } finally {
+            onError(new Error(`Could not register moddle extension: ${extension}`));
+          }
+        }
 
-        assign(moddleExtensions, {
-          [ name ]: moddleExtension
-        });
-      });
-    }
+        return extensions;
+      }
+
+      return {
+        ...extensions,
+        [ name ]: extension
+      };
+    }, {});
 
     const additionalModules = getPlugins('bpmn.modeler.additionalModules') || [];
 

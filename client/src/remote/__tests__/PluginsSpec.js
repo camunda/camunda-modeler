@@ -67,6 +67,18 @@ describe('plugins', function() {
     });
 
 
+    it('should always return an array', function() {
+      // given
+      const plugins = new Plugins();
+
+      // when
+      const registeredPlugins = plugins.get('type');
+
+      // then
+      expect(registeredPlugins).to.be.an('Array').and.have.lengthOf(0);
+    });
+
+
     it('should get registered plugin', function() {
       // given
       const mockPlugin = {};
