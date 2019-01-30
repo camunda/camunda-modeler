@@ -60,6 +60,9 @@ class Viewer {
       selection: {
         get() {
           return [];
+        },
+        hasSelection() {
+          return false;
         }
       },
       sheet: {
