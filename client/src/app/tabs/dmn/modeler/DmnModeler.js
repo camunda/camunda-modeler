@@ -1,6 +1,6 @@
 import DmnModeler from 'dmn-js/lib/Modeler';
 
-import diagramOriginModule from 'diagram-js-origin';
+import fixOriginModule from '../../shared/fix-origin';
 
 import addExporter from '@bpmn-io/add-exporter/add-exporter';
 
@@ -43,7 +43,7 @@ export default class CamundaDmnModeler extends DmnModeler {
     super({
       ...otherOptions,
       drd: mergeModules(drd, [
-        diagramOriginModule,
+        fixOriginModule,
         propertiesPanelModule,
         propertiesProviderModule,
         drdAdapterModule,

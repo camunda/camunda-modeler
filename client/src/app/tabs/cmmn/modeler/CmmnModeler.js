@@ -1,6 +1,6 @@
 import CmmnModeler from 'cmmn-js/lib/Modeler';
 
-import diagramOriginModule from 'diagram-js-origin';
+import fixOriginModule from '../../shared/fix-origin';
 
 import addExporterModule from '@bpmn-io/add-exporter';
 
@@ -39,8 +39,8 @@ export default class CamundaCmmnModeler extends CmmnModeler {
 const defaultModules = CmmnModeler.prototype._modules;
 
 const extensionModules = [
-  diagramOriginModule,
   addExporterModule,
+  fixOriginModule,
   propertiesPanelModule,
   propertiesProviderModule,
   propertiesPanelKeyboardBindingsModule
