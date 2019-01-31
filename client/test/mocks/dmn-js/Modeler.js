@@ -94,10 +94,8 @@ class Viewer {
 
 export default class Modeler {
 
-  constructor(options = {}) {
-    this.options = options;
-
-    this.modules = options.modules || {};
+  constructor(modules = {}) {
+    this.modules = modules;
 
     this.xml = null;
 
