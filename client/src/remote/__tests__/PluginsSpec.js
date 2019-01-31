@@ -106,20 +106,17 @@ describe('plugins', function() {
 
   describe('global bindings', function() {
 
-    afterEach(function() {
-      delete window.getPluginsDirectory;
-      delete window.getModelerDirectory;
-    });
-
-
     it('should expose plugins protocol for window#getPluginsDirectory', function() {
+
       // given
+      const global = {};
+
       const plugins = new Plugins();
 
-      plugins.bindGlobalHelpers();
+      plugins.bindHelpers(global);
 
       // when
-      const directory = window.getPluginsDirectory();
+      const directory = global.getPluginsDirectory();
 
       // then
       expect(directory).to.be.eql('app-plugins://');
@@ -127,16 +124,19 @@ describe('plugins', function() {
 
 
     it('should expose plugins protocol for window#getModelerDirectory', function() {
+
       // given
+      const global = {};
+
       const plugins = new Plugins();
 
-      plugins.bindGlobalHelpers();
+      plugins.bindHelpers(global);
 
       // when
-      const directory = window.getModelerDirectory();
+      expect(() => {
+        global.getModelerDirectory();
+      }).to.throw('not implemented in Camunda Modeler >= 3');
 
-      // then
-      expect(directory).to.be.eql('app-plugins://');
     });
 
   });
