@@ -413,14 +413,10 @@ class MenuBuilder {
 
     if (plugins) {
       submenuTemplate = reduce(plugins, (menuItems, plugin) => {
-        let label = plugin.name;
-
-        if (plugin.error) {
-          label = label.concat(' <error>');
-        }
+        const label = plugin.name;
 
         const menuItemDescriptor = {
-          label: label,
+          label,
           enabled: false
         };
 
@@ -451,11 +447,15 @@ class MenuBuilder {
               })
             );
           } catch (e) {
-            menuItemDescriptor.label = menuItemDescriptor.label.concat(' <error>');
+            plugin.error = true;
             menuItemDescriptor.enabled = false;
 
             console.error(e);
           }
+        }
+
+        if (plugin.error) {
+          menuItemDescriptor.label = menuItemDescriptor.label.concat(' <error>');
         }
 
         return [
