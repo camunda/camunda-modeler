@@ -43,7 +43,7 @@ Metadata.init(metadata);
 async function render() {
 
   // load plugins
-  plugins.bindGlobalHelpers();
+  plugins.bindHelpers(window);
 
   await plugins.loadAll();
 

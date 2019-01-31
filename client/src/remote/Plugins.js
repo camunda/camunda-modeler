@@ -1,6 +1,10 @@
 import { filter } from 'min-dash';
 
+
+const PLUGINS_PROTOCOL = 'app-plugins://';
+
 export default class Plugins {
+
   constructor(app) {
     this.app = app;
   }
@@ -22,11 +26,25 @@ export default class Plugins {
   }
 
   /**
-   * Binds #getModelerDirectory and #getPluginsDirectory to window to ensure backward compatibility.
+   * Binds helpers to the given global.
    */
-  bindGlobalHelpers() {
-    window.getModelerDirectory = this._getPluginsProtocol;
-    window.getPluginsDirectory = this._getPluginsProtocol;
+  bindHelpers(global) {
+
+    global.getModelerDirectory = () => {
+      throw new Error('not implemented in Camunda Modeler >= 3.0.0');
+    };
+
+    global.getPluginsDirectory = () => {
+      console.error(
+        new Error(
+          'The helper getPluginsDirectory() is deprecated and future versions of the app will remove it. ' +
+          'Switch to links of the form with <app-plugins://{name}/{path-to-resource}> to refer to bundled plug-in resources.'
+        )
+      );
+
+      return PLUGINS_PROTOCOL;
+    };
+
   }
 
   /**
@@ -88,10 +106,6 @@ export default class Plugins {
    */
   _getAll() {
     return window.plugins || [];
-  }
-
-  _getPluginsProtocol() {
-    return 'app-plugins://';
   }
 
 }
