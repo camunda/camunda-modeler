@@ -1,7 +1,8 @@
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 
-import diagramOriginModule from 'diagram-js-origin';
 import minimapModule from 'diagram-js-minimap';
+
+import fixOriginModule from '../../shared/fix-origin';
 
 import addExporterModule from '@bpmn-io/add-exporter';
 
@@ -49,17 +50,17 @@ export default class CamundaBpmnModeler extends BpmnModeler {
 const defaultModules = BpmnModeler.prototype._modules;
 
 const extensionModules = [
-  diagramOriginModule,
   minimapModule,
   addExporterModule,
   executableFixModule,
+  fixOriginModule,
   globalClipboardModule,
   signavioCompatModule,
   camundaModdleExtension,
   propertiesPanelModule,
   propertiesProviderModule,
   applyDefaultTemplates,
-  propertiesPanelKeyboardBindingsModule
+  propertiesPanelKeyboardBindingsModule,
 ];
 
 CamundaBpmnModeler.prototype._modules = [
