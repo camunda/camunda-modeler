@@ -79,6 +79,33 @@ describe('MenuBuilder', () => {
     });
 
 
+    it('should properly label plugin with error', function() {
+      // given
+      const pluginName = 'test';
+      const expectedLabel = `${pluginName} <error>`;
+      const menuStub = sinon.stub().throwsException();
+
+      const options = getOptionsWithPlugins({
+        test: {
+          name: pluginName,
+          error: true,
+          menu: menuStub
+        }
+      });
+
+      const menuBuilder = new MenuBuilder(options);
+
+      // when
+      const { menu } = menuBuilder.build();
+
+      // then
+      const plugins = menu.find(item => item.label === 'Plugins');
+      const pluginMenu = plugins.submenu.find(plugin => plugin.label === expectedLabel);
+
+      expect(pluginMenu).to.exist;
+    });
+
+
     it('should accept non-callable values for enabled', () => {
       // given
       const pluginName = 'test';
