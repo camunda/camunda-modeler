@@ -31,9 +31,11 @@ describe('Deployer', function() {
 
     const expectedForm = new FormData();
 
-    expectedForm.append('deployment-name', data.deploymentName);
     expectedForm.append(data.file.name, fs.createReadStream(data.file.path));
+
+    expectedForm.append('deployment-name', data.deploymentName);
     expectedForm.append('deploy-changed-only', 'true');
+    expectedForm.append('deployment-source', 'Camunda Modeler');
     expectedForm.append('tenant-id', data.tenantId);
 
     // when
@@ -68,9 +70,11 @@ describe('Deployer', function() {
 
     const expectedForm = new FormData();
 
+    expectedForm.append(data.file.name, fs.createReadStream(data.file.path));
+
     expectedForm.append('deployment-name', data.deploymentName);
     expectedForm.append('deploy-changed-only', 'true');
-    expectedForm.append(data.file.name, fs.createReadStream(data.file.path));
+    expectedForm.append('deployment-source', 'Camunda Modeler');
 
     // when
     await deployer.deploy(url, data, (err, data) => {

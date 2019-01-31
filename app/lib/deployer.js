@@ -73,6 +73,8 @@ class Deployer {
       form.append('tenant-id', tenantId);
     }
 
+    form.append('deployment-source', 'Camunda Modeler');
+
     form.append('deploy-changed-only', 'true');
 
     form.append(file.name, this.fs.createReadStream(file.path));
