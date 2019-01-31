@@ -28,6 +28,7 @@ describe('Plugins', function() {
 
       expect(Object.keys(registeredPlugins)).to.eql([
         'broken-menu',
+        'ghost-paths',
         'OK',
         'with-script',
         'with-style'
