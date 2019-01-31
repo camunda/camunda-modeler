@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const proxyquire = require('proxyquire');
 
 const Plugins = require('../../lib/plugins');
 
@@ -76,6 +77,57 @@ describe('Plugins', function() {
 
       // then
       expect(transformedUrl).to.be.null;
+    });
+
+
+    it('should prevent directory traversal', function() {
+
+      // given
+      const plugins = new Plugins({
+        paths: [
+          __dirname + '/../fixtures/plugins/with-asset'
+        ]
+      });
+
+      // then
+      expect(
+        plugins.getAssetPath('app-plugins://plugin/../assets/../cat.png')
+      ).to.eql(
+        'file://' + path.join(__dirname, '/../fixtures/plugins/with-asset/plugins/plugin/cat.png')
+      );
+
+      expect(
+        plugins.getAssetPath('app-plugins://plugin//../../../cat.png')
+      ).to.eql(
+        'file://' + path.join(__dirname, '/../fixtures/plugins/with-asset/plugins/plugin/cat.png')
+      );
+    });
+
+
+    it('should prevent directory traversal on Windows', function() {
+
+      // given
+      const windowsPath = path.win32;
+      const Plugins = proxyquire('../../lib/plugins', { path: windowsPath });
+
+      const plugins = new Plugins({
+        paths: [
+          __dirname + '/../fixtures/plugins/with-asset'
+        ]
+      });
+
+      // then
+      expect(
+        plugins.getAssetPath('app-plugins://plugin/../assets/../cat.png')
+      ).to.eql(
+        'file://' + windowsPath.join(__dirname, '/../fixtures/plugins/with-asset/plugins/plugin/cat.png')
+      );
+
+      expect(
+        plugins.getAssetPath('app-plugins://plugin//../../../cat.png')
+      ).to.eql(
+        'file://' + windowsPath.join(__dirname, '/../fixtures/plugins/with-asset/plugins/plugin/cat.png')
+      );
     });
 
 
