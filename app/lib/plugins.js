@@ -3,6 +3,8 @@
 const path = require('path');
 const glob = require('glob');
 
+// accept app-plugins:/// for sake of backwards compatibility
+const PLUGINS_PROTOCOL_REGEX = /^app-plugins:\/\/\/?([^/]+)(.*)$/;
 
 /**
  * Searches, validates and stores information about plugins.
@@ -31,7 +33,7 @@ class Plugins {
       // don't let broken plug-ins bring down the modeler
       // instantiation; skip them and log a respective error
       try {
-        console.log(`plugins: loading ${pluginPath}`);
+        console.log(`plug-ins: loading ${pluginPath}`);
 
         const base = path.dirname(pluginPath);
 
@@ -119,18 +121,18 @@ class Plugins {
   }
 
   getAssetPath(url) {
-    // accept app-plugins:/// for sake of backwards compatibility
-    const match = /^app-plugins:\/\/\/?([^/]+)(.*)$/.exec(url);
+    const match = PLUGINS_PROTOCOL_REGEX.exec(url);
 
     if (match) {
 
       const pluginName = match[1];
-      const assetPath = match[2];
+      // we accept only slash as a separator
+      const assetPath = path.posix.normalize(match[2]);
 
       const base = this.getPluginBase(pluginName);
 
       if (base) {
-        return `file://${path.resolve(base + assetPath)}`;
+        return `file://${path.join(base, assetPath)}`;
       }
     }
 
