@@ -1,8 +1,8 @@
 'use strict';
 
-var Cli = require('../../lib/cli');
+const Cli = require('../../lib/cli');
 
-var path = require('path');
+const path = require('path');
 
 
 describe('cli', function() {
@@ -12,10 +12,10 @@ describe('cli', function() {
     it('parse Linux args', function() {
 
       // given
-      var args = [ 'app', '--enable-logging', '--other-flag=1', '../fixtures/random.xml' ];
+      const args = [ 'app', '--enable-logging', '--other-flag=1', '../fixtures/random.xml' ];
 
       // when
-      var {
+      const {
         files,
         flags
       } = Cli.parse(args, __dirname);
@@ -35,10 +35,10 @@ describe('cli', function() {
     it('parse Linux args, just diagram file', function() {
 
       // given
-      var args = [ 'app', '../fixtures/random.xml' ];
+      const args = [ 'app', '../fixtures/random.xml' ];
 
       // when
-      var {
+      const {
         files,
         flags
       } = Cli.parse(args, __dirname);
@@ -57,10 +57,10 @@ describe('cli', function() {
       it('parse Windows args', function() {
 
         // given
-        var args = [ 'app', '--', '..\\fixtures\\random.xml' ];
+        const args = [ 'app', '--', '..\\fixtures\\random.xml' ];
 
         // when
-        var {
+        const {
           files,
           flags
         } = Cli.parse(args, __dirname);
@@ -77,10 +77,10 @@ describe('cli', function() {
       it('parse Windows args, just diagram file', function() {
 
         // given
-        var args = [ 'app', '..\\\\fixtures\\\\random.xml' ];
+        const args = [ 'app', '..\\\\fixtures\\\\random.xml' ];
 
         // when
-        var {
+        const {
           files,
           flags
         } = Cli.parse(args, __dirname);
@@ -97,10 +97,10 @@ describe('cli', function() {
       it('parse Windows args, double backslash', function() {
 
         // given
-        var args = [ 'app', '--', '..\\\\fixtures\\\\random.xml' ];
+        const args = [ 'app', '--', '..\\\\fixtures\\\\random.xml' ];
 
         // when
-        var {
+        const {
           files,
           flags
         } = Cli.parse(args, __dirname);
