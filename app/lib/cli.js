@@ -1,8 +1,9 @@
 'use strict';
 
-var fs = require('fs'),
-    path = require('path');
+const fs = require('fs');
+const path = require('path');
 
+const mri = require('mri');
 
 /**
  * Parse file arguments from the command line
@@ -11,65 +12,47 @@ var fs = require('fs'),
  * @param {Array<String>} args
  * @param {String} cwd
  *
- * @return {Array<String>}
+ * @return {Object} parsed arguments as { files, flags }
  */
-function extractFiles(args, cwd) {
+function parse(args, cwd) {
 
-  var files = [],
-      maybePath,
-      idx;
+  const {
+    _,
+    ...flags
+  } = mri(args.slice(1));
 
-  // parse command line from the end up to the first
-  // command line switch, i.e. "--enable-logging" (or simply) "--"
-  // camunda-modeler [arguments] -- fileA fileB ...
-  for (idx = args.length - 1; idx > 0; idx--) {
+  const files = _.map(f => path.resolve(cwd, f)).filter(isFile);
 
-    maybePath = args[idx];
-
-    if (maybePath.startsWith('--')) {
-      break;
-    }
-
-    maybePath = checkFile(maybePath, cwd);
-
-    if (maybePath) {
-      files.unshift(maybePath);
-    }
-  }
-
-  return files;
+  return {
+    files,
+    flags
+  };
 }
 
-module.exports.extractFiles = extractFiles;
+module.exports.parse = parse;
 
 
 /**
- * Check a possible file argument and return the absolute
- * path to it, if it is a file.
+ * Check a possible filePath represents an existing file.
  *
- * @param {String} maybePath
- * @param {String} cwd
+ * @param {String} filePath
+ *
+ * @return {Boolean}
  */
-function checkFile(maybePath, cwd) {
-
-  var absolutePath = path.resolve(cwd, maybePath);
-
-  var stats;
+function isFile(filePath) {
 
   try {
-    stats = fs.lstatSync(absolutePath);
+    const stats = fs.lstatSync(filePath);
 
     if (stats.isFile()) {
-      return absolutePath;
-    } else {
-      console.log('[cli] [WARN]', 'cannot open directory', absolutePath);
+      return true;
     }
+
+    console.log('[cli] [WARN]', 'cannot open directory', filePath);
   } catch (e) {
-    console.log('[cli] [WARN]', e.message, absolutePath);
     // file not found or the like...
+    console.log('[cli] [WARN]', e.message, filePath);
   }
 
-  return null;
+  return false;
 }
-
-module.exports.checkFile = checkFile;
