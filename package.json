@@ -4,7 +4,7 @@
   "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
-    "app:dev": "electron ./app/dev.js",
+    "app:dev": "electron ./app/dev.js -- resources/diagram/simple.bpmn",
     "app:test": "nyc --reporter lcov --exclude 'app/test/**' mocha --require ./app/test/expect --recursive app/test/spec",
     "client:build": "(cd client && npm run build)",
     "client:auto-test": "(cd client && npm run auto-test)",
