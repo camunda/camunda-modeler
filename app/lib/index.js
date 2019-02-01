@@ -220,7 +220,7 @@ app.on('app:parse-cmd', function(argv, cwd) {
   console.log('app:parse-cmd', argv.join(' '), cwd);
 
   // will result in opening dev.js as file
-  const files = Cli.extractFiles(argv, cwd);
+  const { files } = Cli.parse(argv, cwd);
 
   files.forEach(function(file) {
     app.emit('app:open-file', file);
