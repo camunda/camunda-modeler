@@ -9,11 +9,6 @@ const {
 
 const path = require('path');
 
-const {
-  assign,
-  forEach
-} = require('min-dash');
-
 const fetch = require('node-fetch');
 const fs = require('fs');
 const FormData = require('form-data');
@@ -127,9 +122,10 @@ renderer.on('dialog:open-files', async function(options, done) {
   } = options;
 
   if (activeFile && activeFile.path) {
-    assign(options, {
+    options = {
+      ...options,
       defaultPath: path.dirname(activeFile.path)
-    });
+    };
   }
 
   const filePaths = await dialog.showOpenDialog(options);
@@ -147,9 +143,10 @@ renderer.on('dialog:save-file', async function(options, done) {
   const { file } = options;
 
   if (file.path) {
-    assign(options, {
+    options = {
+      ...options,
       defaultPath: path.dirname(file.path)
-    });
+    };
   }
 
   const filePath = await dialog.showSaveDialog(options);
@@ -214,7 +211,7 @@ renderer.on('client-config:get', function(...args) {
 // open file handling //////////
 
 // list of files that should be opened by the editor
-app.openFiles = [];
+app.pendingFiles = [];
 
 app.on('app:parse-cmd', function(argv, cwd) {
   console.log('app:parse-cmd', argv.join(' '), cwd);
@@ -222,50 +219,20 @@ app.on('app:parse-cmd', function(argv, cwd) {
   // will result in opening dev.js as file
   const { files } = Cli.parse(argv, cwd);
 
-  files.forEach(function(file) {
-    app.emit('app:open-file', file);
-  });
-});
-
-app.on('app:open-file', function(filePath) {
-  let file;
-
-  console.log('app:open-file', filePath);
-
-  if (!app.clientReady) {
-
-    // defer file open
-    return app.openFiles.push(filePath);
-  }
-
-  try {
-    file = fileSystem.readFile(filePath);
-  } catch (e) {
-    dialog.showOpenFileErrorDialog({
-      name: path.basename(filePath)
-    });
-  }
-
-  // open file immediately
-  renderer.send('client:open-files', [ file ]);
+  app.openFiles(files);
 });
 
 app.on('app:client-ready', function() {
-  const files = [];
-
   console.log('app:client-ready');
 
-  forEach(app.openFiles, function(filePath) {
-    try {
-      files.push(fileSystem.readFile(filePath));
-    } catch (e) {
-      dialog.showOpenFileErrorDialog({
-        name: path.basename(filePath)
-      });
-    }
-  });
+  const pendingFiles = app.pendingFiles.slice();
 
-  // renderer.send('client:open-files', files);
+  // clear app pending files
+  app.pendingFiles.length = 0;
+
+  if (pendingFiles.length) {
+    app.openFiles(pendingFiles);
+  }
 
   renderer.send('client:started');
 });
@@ -301,6 +268,34 @@ app.on('web-contents-created', (event, webContents) => {
     }
   });
 });
+
+/**
+ * Open the given filePaths in the editor.
+ *
+ * @param {Array<String>} filePaths
+ */
+app.openFiles = function(filePaths) {
+
+  if (!app.clientReady) {
+
+    // defer file open
+    return app.pendingFiles.push(...filePaths);
+  }
+
+  const existingFiles = filePaths.map(path => {
+
+    try {
+      return fileSystem.readFile(path);
+    } catch (e) {
+      dialog.showOpenFileErrorDialog({
+        name: path.basename(path)
+      });
+    }
+  }).filter(f => f);
+
+  // open files
+  renderer.send('client:open-files', existingFiles);
+};
 
 /**
  * Create the main window that represents the editor.
