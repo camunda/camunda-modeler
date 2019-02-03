@@ -332,23 +332,33 @@ export class Backend extends Mock {
     this.listeners = {};
   }
 
-  send(event, ...args) {
-    const callback = this.listeners[event];
+  /**
+   * Simulate receiving an event from remote.
+   *
+   * @param {Event}    event
+   * @param {...Object} args
+   */
+  receive(event, ...args) {
+    const listeners = this.listeners[event] || [];
 
-    if (typeof callback === 'function') {
-      callback(args);
-    }
+    listeners.forEach(function(l) {
+      l(...args);
+    });
   }
 
   sendMenuUpdate() {}
 
   sendQuitAllowed() {}
 
-  on(event, callback) {
-    this.listeners[event] = callback.bind(this);
+  sendReady() { }
+
+  on(event, listener) {
+    this.listeners[event] = (this.listeners[event] || []).concat([ listener.bind(this) ]);
   }
 
-  once() {}
+  once(event, listener) {
+    this.listeners[event] = (this.listeners[event] || []).concat([ listener.bind(this) ]);
+  }
 
   off() {}
 
@@ -363,7 +373,10 @@ export class Workspace extends Mock {
   save() {}
 
   restore(defaultConfig) {
-    return this.config || defaultConfig;
+    return {
+      ...defaultConfig,
+      ...(this.config || {})
+    };
   }
 }
 

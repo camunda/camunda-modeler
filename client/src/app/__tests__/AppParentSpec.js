@@ -127,7 +127,7 @@ describe('<AppParent>', function() {
       const actionSpy = spy(app, 'triggerAction');
 
       // when
-      backend.send('client:window-focused');
+      backend.receive('client:window-focused');
 
       // then
       expect(actionSpy).to.have.been.calledWith('check-file-changed');
