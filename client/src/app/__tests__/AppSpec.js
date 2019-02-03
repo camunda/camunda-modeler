@@ -1683,6 +1683,9 @@ describe('<App>', function() {
   });
 
 
+  it('tabbing history');
+
+
   describe('#updateTab', function() {
     let app,
         errorSpy,
