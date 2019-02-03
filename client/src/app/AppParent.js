@@ -4,7 +4,9 @@ import debug from 'debug';
 
 import App from './App';
 
-import { forEach } from 'min-dash';
+import {
+  forEach
+} from 'min-dash';
 
 
 const log = debug('AppParent');
@@ -14,6 +16,11 @@ export default class AppParent extends PureComponent {
 
   constructor(props) {
     super(props);
+
+    this.prereadyState = {
+      files: [],
+      workspace: {}
+    };
 
     this.appRef = React.createRef();
   }
@@ -39,10 +46,25 @@ export default class AppParent extends PureComponent {
     result.catch(this.handleError);
   }
 
-  handleOpenFiles = (event, files) => {
-    log('open files', files);
+  handleOpenFiles = (event, newFiles) => {
+    log('open files', newFiles);
 
-    this.getApp().openFiles(files);
+    const { prereadyState } = this;
+
+    // schedule file opening on ready
+    if (prereadyState) {
+      this.prereadyState = {
+        activeFile: newFiles[newFiles.length - 1],
+        files: [
+          ...prereadyState.files,
+          ...newFiles
+        ]
+      };
+
+      return;
+    }
+
+    this.getApp().openFiles(newFiles);
   }
 
   handleMenuUpdate = (state = {}) => {
@@ -60,10 +82,6 @@ export default class AppParent extends PureComponent {
   }
 
   handleWorkspaceChanged = async (config) => {
-
-    if (this.restoringWorkspace) {
-      return;
-    }
 
     const workspace = this.getWorkspace();
 
@@ -96,14 +114,14 @@ export default class AppParent extends PureComponent {
 
     const workspace = this.getWorkspace();
 
+    const { prereadyState } = this;
+
     const defaultConfig = {
-      activeFile: null,
+      activeFile: -1,
       files: [],
       layout: {},
       endpoints: []
     };
-
-    this.restoringWorkspace = true;
 
     const {
       files,
@@ -116,21 +134,20 @@ export default class AppParent extends PureComponent {
 
     app.setLayout(layout);
 
-    await app.openFiles(files);
-
-    if (activeFile) {
-      const activeTab = app.findOpenTab(activeFile);
-
-      if (activeTab) {
-        await app.setActiveTab(activeTab);
-      }
-    }
-
     app.setEndpoints(endpoints);
 
-    log('workspace restored');
+    // remember to-be restored files but postpone opening + activation
+    // until <client:started> batch restore workspace files + files opened
+    // via command line
+    this.prereadyState = {
+      activeFile: prereadyState.activeFile || files[activeFile],
+      files: [
+        ...prereadyState.files,
+        ...files
+      ]
+    };
 
-    this.restoringWorkspace = false;
+    log('workspace restored');
   }
 
   handleError = (error, tab) => {
@@ -159,24 +176,28 @@ export default class AppParent extends PureComponent {
     }
 
     this.getBackend().sendReady();
-
-    // setTimeout(() => {
-    //   const app = this.getApp();
-
-    //   app.createDiagram('bpmn');
-    //   app.createDiagram('bpmn');
-    //   app.createDiagram('dmn');
-    //   app.createDiagram('dmn', { table: true });
-    //   app.createDiagram('cmmn');
-    // }, 0);
   }
 
   handleResize = () => this.triggerAction(null, 'resize');
 
-  handleStarted = () => {
+  handleStarted = async () => {
+
     const {
       onStarted
     } = this.props;
+
+    // batch open / restore files
+    const { prereadyState } = this;
+
+    const {
+      files,
+      activeFile
+    } = prereadyState;
+
+    // mark as ready
+    this.prereadyState = null;
+
+    await this.getApp().openFiles(files, activeFile);
 
     if (typeof onStarted === 'function') {
       onStarted();

@@ -96,7 +96,10 @@ describe('<AppParent>', function() {
           try {
             // then
             expect(restoreSpy).to.have.been.calledOnce;
-            expect(saveSpy).not.to.have.been.called;
+
+            // restoring workspace triggers
+            // an (async in prod) workspace update, too
+            expect(saveSpy).to.have.been.called;
           } catch (e) {
             err = e;
           }
@@ -106,13 +109,18 @@ describe('<AppParent>', function() {
       });
 
       // when
-      createAppParent({ globals: { workspace, backend } }, mount);
+      createAppParent({
+        globals: {
+          workspace,
+          backend
+        }
+      }, mount);
     });
 
   });
 
 
-  describe('on focus', function() {
+  describe('focus handling', function() {
 
     it('should fire check-file-changed action', function() {
 
@@ -123,7 +131,7 @@ describe('<AppParent>', function() {
         appParent
       } = createAppParent({ globals: { backend } }, mount);
 
-      const app = appParent.appRef.current;
+      const app = appParent.getApp();
       const actionSpy = spy(app, 'triggerAction');
 
       // when
@@ -211,6 +219,116 @@ describe('<AppParent>', function() {
 
   });
 
+
+  describe('bootstrapping', function() {
+
+    function createFile(name) {
+      const path = `${name}.bpmn`;
+
+      return {
+        path,
+        name: path,
+        contents: name
+      };
+    }
+
+    /**
+     * Simulate <AppParent> intialization sequence
+     * and return opened files + active one.
+     *
+     * @param {Object} options.restoreWorkspace
+     * @param {Array<File>} options.openFiles
+     *
+     * @return {Promise<Object>}
+     */
+    function boostrap(options) {
+
+      const {
+        restoreWorkspace,
+        openFiles = []
+      } = options;
+
+      return new Promise((resolve, reject) => {
+        const backend = new Backend({
+          sendReady: async () => {
+            backend.receive('client:open-files', {}, openFiles);
+            backend.receive('client:started');
+          }
+        });
+
+        const workspace = new Workspace({
+          config: restoreWorkspace
+        });
+
+        const {
+          appParent,
+        } = createAppParent({
+          globals: {
+            backend,
+            workspace
+          },
+          onStarted: () => {
+
+            const app = appParent.getApp();
+
+            const {
+              tabs,
+              activeTab
+            } = app.state;
+
+            resolve({
+              activeFile: activeTab.file,
+              files: tabs.map(t => t.file)
+            });
+          }
+        }, mount);
+      });
+    }
+
+
+    it('should batch open files', async () => {
+
+      // given
+      const fooFile = createFile('foo');
+      const barFile = createFile('bar');
+      const blubFile = createFile('blub');
+
+      // when
+      //
+      // (0) workspace restores with [ blub, bar ], blub active
+      // (1) [foo, bar] open via cli
+      // (2) ready batch opens all files,
+      //     making bar (last opened) the active one
+      //
+      const {
+        files,
+        activeFile
+      } = await boostrap({
+        restoreWorkspace: {
+          files: [
+            blubFile,
+            barFile
+          ],
+          activeFile: 0
+        },
+        openFiles: [
+          fooFile,
+          barFile
+        ]
+      });
+
+      // then
+      expect(files).to.eql([
+        blubFile,
+        fooFile,
+        barFile
+      ]);
+
+      expect(activeFile).to.eql(barFile);
+    });
+
+  });
+
 });
 
 
@@ -239,11 +357,14 @@ function createAppParent(options = {}, mountFn=shallow) {
 
   const tabsProvider = options.tabsProvider || new TabsProvider();
 
+  const onStarted = options.onStarted;
+
   const tree = mountFn(
     <AppParent
       globals={ globals }
       keyboardBindings={ keyboardBindings }
       tabsProvider={ tabsProvider }
+      onStarted={ onStarted }
     />
   );
 
