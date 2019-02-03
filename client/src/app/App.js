@@ -149,27 +149,6 @@ export class App extends PureComponent {
 
 
   /**
-   * Show the tab.
-   *
-   * @param {Tab} tab
-   */
-  showTab = (tab) => {
-
-    const {
-      activeTab,
-      tabShown
-    } = this.state;
-
-    if (tab === activeTab) {
-      return tabShown.promise;
-    }
-
-    this.navigationHistory.push(tab);
-
-    return this.setActiveTab(tab);
-  }
-
-  /**
    * Navigate shown tabs in given direction.
    */
   navigate(direction) {
@@ -187,7 +166,7 @@ export class App extends PureComponent {
 
     const nextActiveTab = this.navigationHistory.navigate(direction, nextFn);
 
-    return this.setActiveTab(nextActiveTab);
+    return this.showTab(nextActiveTab);
   }
 
   checkFileChanged = async (tab) => {
@@ -283,7 +262,15 @@ export class App extends PureComponent {
     return updatedTab;
   }
 
-  setActiveTab(tab) {
+
+  /**
+   * Show the tab.
+   *
+   * @param {Tab} tab
+   *
+   * @return {Promise<Void>} tab shown promise
+   */
+  showTab(tab) {
 
     const {
       activeTab,
@@ -315,6 +302,13 @@ export class App extends PureComponent {
     return deferred.promise;
   }
 
+  /**
+   * Close tab.
+   *
+   * @param {Tab} tab
+   *
+   * @return {Promise<Void>} resolved when the tab is closed
+   */
   closeTab = async (tab) => {
     const { file } = tab;
 
@@ -380,7 +374,7 @@ export class App extends PureComponent {
         EMPTY_TAB
       );
 
-      await this.setActiveTab(nextActive);
+      await this.showTab(nextActive);
     }
 
     this.setState({
@@ -393,7 +387,7 @@ export class App extends PureComponent {
 
   selectTab = async tab => {
     const updatedTab = await this.checkFileChanged(tab);
-    return this.setActiveTab(updatedTab || tab);
+    return this.showTab(updatedTab || tab);
   }
 
   moveTab = (tab, newIndex) => {

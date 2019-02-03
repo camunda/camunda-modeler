@@ -148,7 +148,7 @@ describe('<App>', function() {
         }, mount);
 
         // when
-        await app.setActiveTab(EMPTY_TAB);
+        await app.showTab(EMPTY_TAB);
 
         // then
         expect(updateMenuSpy).not.to.have.been.called;
@@ -189,7 +189,7 @@ describe('<App>', function() {
         tree
       } = createApp(mount);
 
-      await app.setActiveTab(EMPTY_TAB);
+      await app.showTab(EMPTY_TAB);
 
       const createButton = tree.find('button.create-bpmn');
 
