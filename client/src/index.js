@@ -49,11 +49,17 @@ async function render() {
 
   const rootElement = document.getElementById('root');
 
+  const onStarted = () => {
+    // mark as finished loading
+    document.body.classList.remove('loading');
+  };
+
   ReactDOM.render(
     <AppParent
       keyboardBindings={ keyboardBindings }
       globals={ globals }
       tabsProvider={ tabsProvider }
+      onStarted={ onStarted }
     />, rootElement
   );
 }

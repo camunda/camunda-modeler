@@ -39,7 +39,7 @@ export default class AppParent extends PureComponent {
     result.catch(this.handleError);
   }
 
-  openFiles = (event, files) => {
+  handleOpenFiles = (event, files) => {
     log('open files', files);
 
     this.getApp().openFiles(files);
@@ -173,6 +173,16 @@ export default class AppParent extends PureComponent {
 
   handleResize = () => this.triggerAction(null, 'resize');
 
+  handleStarted = () => {
+    const {
+      onStarted
+    } = this.props;
+
+    if (typeof onStarted === 'function') {
+      onStarted();
+    }
+  }
+
   getApp() {
     return this.appRef.current;
   }
@@ -205,11 +215,9 @@ export default class AppParent extends PureComponent {
 
     backend.on('menu:action', this.triggerAction);
 
-    backend.on('client:open-files', this.openFiles);
+    backend.on('client:open-files', this.handleOpenFiles);
 
-    backend.once('client:started', () => {
-      document.body.classList.remove('loading');
-    });
+    backend.once('client:started', this.handleStarted);
 
     backend.on('client:window-focused', (event) => {
       this.triggerAction(event, 'check-file-changed');
@@ -237,7 +245,7 @@ export default class AppParent extends PureComponent {
 
     backend.off('menu:action', this.triggerAction);
 
-    backend.off('client:open-files', this.openFiles);
+    backend.off('client:open-files', this.handleOpenFiles);
 
     keyboardBindings.unbind();
 
