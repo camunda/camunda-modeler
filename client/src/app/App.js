@@ -3,7 +3,6 @@ import React, { PureComponent } from 'react';
 import debug from 'debug';
 
 import {
-  assign,
   debounce,
   forEach,
   reduce
@@ -542,9 +541,10 @@ export class App extends PureComponent {
     files = files.map(file => {
       const { contents } = file;
 
-      return assign(file, {
+      return {
+        ...file,
         contents: contents.replace(/(^\s*|\s*$)/g, '')
-      });
+      };
     });
 
     // open tabs from last to first to
@@ -1020,9 +1020,10 @@ export class App extends PureComponent {
 
     const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
 
-    const newFile = await fileSystem.writeFile(filePath, assign(file, {
+    const newFile = await fileSystem.writeFile(filePath, {
+      ...file,
       contents
-    }), {
+    }, {
       encoding,
       fileType
     }).catch(async err => {
