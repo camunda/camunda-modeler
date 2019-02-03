@@ -610,7 +610,10 @@ describe('<App>', function() {
       // then
       expect(writeFileSpy).to.have.been.calledWith(
         'diagram_2.bpmn',
-        file,
+        {
+          ...file,
+          contents: 'CONTENTS'
+        },
         {
           encoding: 'utf8',
           fileType: 'bpmn'
@@ -1529,16 +1532,14 @@ describe('<App>', function() {
 
       const tab = openedTabs[0];
 
-      const oldTabContents = tab.file.contents;
-
       // when
       await app.checkFileChanged(tab);
 
       // then
       expect(showSpy).to.have.been.called;
       expect(readFileSpy).to.have.been.called;
-      expect(tab.file.contents).to.not.equal(oldTabContents);
-      expect(tab.file.contents).to.equal(NEW_FILE_CONTENTS);
+
+      expect(app.findOpenTab(file1).file.contents).to.eql(NEW_FILE_CONTENTS);
     });
 
 
