@@ -527,7 +527,20 @@ export class App extends PureComponent {
     }
   }
 
-  openFiles = async (files) => {
+  /**
+   * Open the given files, optionally passing a file
+   * that should be active after the operation.
+   *
+   * File activation may be disabled by explicitly passing
+   * `null` as the activeFile. Otherwise it will either activate
+   * the tab corresponding to the activeFile or the last opened tab.
+   *
+   * @param {Array<File>} files
+   * @param {File|Boolean} activateFile
+   *
+   * @return {Array<Tab>} all tabs that could be opened from the given files.
+   */
+  openFiles = async (files, activateFile) => {
 
     const {
       tabsProvider
@@ -575,8 +588,15 @@ export class App extends PureComponent {
       return tabs.filter(tab => tab);
     });
 
-    if (openedTabs.length) {
-      await this.selectTab(openedTabs[0]);
+    // unless activation is disabled via activateFile=false,
+    // open the tab for the desired file or, if not found,
+    // the last opened tab
+    if (activateFile !== false) {
+      const activeTab = activateFile && this.findOpenTab(activateFile) || openedTabs[0];
+
+      if (activeTab) {
+        await this.selectTab(activeTab);
+      }
     }
 
     // open tabs from last to first to

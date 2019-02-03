@@ -342,6 +342,48 @@ describe('<App>', function() {
       expect(activeTab).to.eql(app.findOpenTab(file2));
     });
 
+
+    describe('active file handling', function() {
+
+      const file1 = createFile('1.bpmn');
+      const file2 = createFile('2.bpmn');
+
+
+      it('should open active file tab', async function() {
+
+        // given
+        const { app } = createApp();
+
+        // when
+        await app.openFiles([ file1, file2 ], file1);
+
+        // then
+        const {
+          activeTab
+        } = app.state;
+
+        expect(activeTab).to.eql(app.findOpenTab(file1));
+      });
+
+
+      it('should not open tab', async function() {
+
+        // given
+        const { app } = createApp();
+
+        // when
+        await app.openFiles([ file1, file2 ], false);
+
+        // then
+        const {
+          activeTab
+        } = app.state;
+
+        expect(activeTab).to.eql(EMPTY_TAB);
+      });
+
+    });
+
   });
 
 
