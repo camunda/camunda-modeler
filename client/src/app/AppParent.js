@@ -26,24 +26,30 @@ export default class AppParent extends PureComponent {
   }
 
   triggerAction = (event, action, options) => {
-    log('trigger action', action, options);
 
-    const {
-      backend
-    } = this.props.globals;
+    // fail-safe trigger given action
+    const exec = async () => {
 
-    let result = Promise.resolve(
-      this.getApp().triggerAction(action, options)
-    );
+      log('trigger action %s, %o', action, options);
 
-    if (action === 'quit') {
-      result = result.then(
-        backend.sendQuitAllowed,
-        backend.sendQuitAborted
-      );
-    }
+      const {
+        backend
+      } = this.props.globals;
 
-    result.catch(this.handleError);
+      const result = await this.getApp().triggerAction(action, options);
+
+      if (action === 'quit') {
+
+        if (result) {
+          backend.sendQuitAllowed();
+        } else {
+          backend.sendQuitAborted();
+        }
+      }
+
+    };
+
+    exec().catch(this.handleError);
   }
 
   handleOpenFiles = (event, newFiles) => {
