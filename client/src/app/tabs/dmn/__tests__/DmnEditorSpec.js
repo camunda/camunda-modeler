@@ -890,6 +890,129 @@ describe('<DmnEditor>', function() {
   });
 
 
+  describe('properties panel actions', function() {
+
+    it('should toggle properties panel', async function() {
+      // given
+      const onLayoutChangedSpy = sinon.spy();
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        layout: {
+          propertiesPanel: {
+            open: false,
+          }
+        },
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      instance.triggerAction('toggleProperties');
+
+      // then
+      expect(onLayoutChangedSpy).to.be.calledOnceWith({
+        propertiesPanel: {
+          open: true,
+        }
+      });
+    });
+
+
+    it('should reset properties panel', async function() {
+      // given
+      const onLayoutChangedSpy = sinon.spy();
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      instance.triggerAction('resetProperties');
+
+      // then
+      expect(onLayoutChangedSpy).to.be.calledOnceWith({
+        propertiesPanel: {
+          open: true,
+          width: 250
+        }
+      });
+    });
+
+  });
+
+
+  describe('zoom actions', function() {
+
+    let editorActionsStub,
+        instance;
+
+    beforeEach(async function() {
+      // given
+      editorActionsStub = sinon.stub({ trigger() {} });
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new DmnModeler({
+            editorActions: editorActionsStub
+          })
+        }
+      });
+
+      instance = (await renderEditor(diagramXML, { cache })).instance;
+    });
+
+
+    afterEach(sinon.restore);
+
+
+    it('should zoom in', function() {
+      // when
+      instance.triggerAction('zoomIn');
+
+      // then
+      expect(editorActionsStub.trigger).to.be.calledOnceWith('stepZoom', {
+        value: 1
+      });
+    });
+
+
+    it('should zoom out', function() {
+      // when
+      instance.triggerAction('zoomOut');
+
+      // then
+      expect(editorActionsStub.trigger).to.be.calledOnceWith('stepZoom', {
+        value: -1
+      });
+    });
+
+
+    it('should zoom to fit diagram', function() {
+      // when
+      instance.triggerAction('zoomFit');
+
+      // then
+      expect(editorActionsStub.trigger).to.be.calledOnceWith('zoom', {
+        value: 'fit-viewport'
+      });
+    });
+
+
+    it('should reset zoom', async function() {
+      // when
+      instance.triggerAction('resetZoom');
+
+      // then
+      expect(editorActionsStub.trigger).to.be.calledOnceWith('zoom', {
+        value: 1
+      });
+    });
+
+  });
+
 });
 
 

@@ -17,7 +17,7 @@ function getZoomEntries({ zoom }) {
   }, {
     label: 'Zoom to Actual Size',
     accelerator: 'CommandOrControl+0',
-    action: 'zoom'
+    action: 'resetZoom'
   }, {
     label: 'Zoom to Fit Diagram',
     accelerator: 'CommandOrControl+1',
