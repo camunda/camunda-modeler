@@ -53,12 +53,14 @@ export default class AppParent extends PureComponent {
   }
 
   handleOpenFiles = (event, newFiles) => {
-    log('open files', newFiles);
 
     const { prereadyState } = this;
 
     // schedule file opening on ready
     if (prereadyState) {
+
+      log('scheduling open files', newFiles);
+
       this.prereadyState = {
         activeFile: newFiles[newFiles.length - 1],
         files: [
@@ -69,6 +71,8 @@ export default class AppParent extends PureComponent {
 
       return;
     }
+
+    log('open files', newFiles);
 
     this.getApp().openFiles(newFiles);
   }
@@ -186,7 +190,13 @@ export default class AppParent extends PureComponent {
 
   handleResize = () => this.triggerAction(null, 'resize');
 
+  handleFocus = (event) => {
+    this.triggerAction(event, 'check-file-changed');
+  }
+
   handleStarted = async () => {
+
+    log('received <started>');
 
     const {
       onStarted
@@ -202,6 +212,8 @@ export default class AppParent extends PureComponent {
 
     // mark as ready
     this.prereadyState = null;
+
+    log('restoring / opening files', files, activeFile);
 
     await this.getApp().openFiles(files, activeFile);
 
@@ -246,9 +258,7 @@ export default class AppParent extends PureComponent {
 
     backend.once('client:started', this.handleStarted);
 
-    backend.on('client:window-focused', (event) => {
-      this.triggerAction(event, 'check-file-changed');
-    });
+    backend.on('client:window-focused', this.handleFocus);
 
     this.registerMenus();
 
@@ -273,6 +283,8 @@ export default class AppParent extends PureComponent {
     backend.off('menu:action', this.triggerAction);
 
     backend.off('client:open-files', this.handleOpenFiles);
+
+    backend.off('client:window-focused', this.handleFocus);
 
     keyboardBindings.unbind();
 
