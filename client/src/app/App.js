@@ -526,7 +526,7 @@ export class App extends PureComponent {
    * that should be active after the operation.
    *
    * File activation may be disabled by explicitly passing
-   * `null` as the activeFile. Otherwise it will either activate
+   * `false` as the activeFile. Otherwise it will either activate
    * the tab corresponding to the activeFile or the last opened tab.
    *
    * @param {Array<File>} files
