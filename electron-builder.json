@@ -5,6 +5,7 @@
     {
       "filter": [
         "**",
+        "!**/__tests__",
         "!test",
         "!dev.js"
       ]
