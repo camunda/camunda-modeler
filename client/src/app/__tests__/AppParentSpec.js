@@ -320,8 +320,8 @@ describe('<AppParent>', function() {
       // then
       expect(files).to.eql([
         blubFile,
-        fooFile,
-        barFile
+        barFile,
+        fooFile
       ]);
 
       expect(activeFile).to.eql(barFile);

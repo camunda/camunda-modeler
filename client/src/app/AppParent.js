@@ -63,10 +63,7 @@ export default class AppParent extends PureComponent {
 
       this.prereadyState = {
         activeFile: newFiles[newFiles.length - 1],
-        files: [
-          ...prereadyState.files,
-          ...newFiles
-        ]
+        files: mergeFiles(prereadyState.files, newFiles)
       };
 
       return;
@@ -151,10 +148,7 @@ export default class AppParent extends PureComponent {
     // via command line
     this.prereadyState = {
       activeFile: prereadyState.activeFile || files[activeFile],
-      files: [
-        ...prereadyState.files,
-        ...files
-      ]
+      files: mergeFiles(prereadyState.files, files)
     };
 
     log('workspace restored');
@@ -312,4 +306,17 @@ export default class AppParent extends PureComponent {
     );
   }
 
+}
+
+
+// helpers /////////////////////////
+
+function mergeFiles(oldFiles, newFiles) {
+
+  const actualNewFiles = newFiles.filter(newFile => !oldFiles.some(oldFile => oldFile.path === newFile.path));
+
+  return [
+    ...oldFiles,
+    ...actualNewFiles
+  ];
 }
