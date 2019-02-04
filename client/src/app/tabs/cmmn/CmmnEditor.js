@@ -351,10 +351,71 @@ export class CmmnEditor extends CachedComponent {
   }
 
   triggerAction = (action, context) => {
+    const {
+      layout: {
+        propertiesPanel: propertiesPanelLayout
+      },
+      onLayoutChanged: handleLayoutChange
+    } = this.props;
+
     const modeler = this.getModeler();
 
     if (action === 'resize') {
       return this.handleResize();
+    }
+
+    if (action === 'toggleProperties') {
+      const newLayout = {
+        propertiesPanel: {
+          ...propertiesPanelLayout,
+          open: !propertiesPanelLayout.open
+        }
+      };
+
+      return handleLayoutChange(newLayout);
+    }
+
+    if (action === 'resetProperties') {
+      const newLayout = {
+        propertiesPanel: {
+          width: 250,
+          open: true
+        }
+      };
+
+      return handleLayoutChange(newLayout);
+    }
+
+    if (action === 'zoomIn') {
+      action = 'stepZoom';
+
+      context = {
+        value: 1
+      };
+    }
+
+    if (action === 'zoomOut') {
+      action = 'stepZoom';
+
+      context = {
+        value: -1
+      };
+    }
+
+    if (action === 'resetZoom') {
+      action = 'zoom';
+
+      context = {
+        value: 1
+      };
+    }
+
+    if (action === 'zoomFit') {
+      action = 'zoom';
+
+      context = {
+        value: 'fit-viewport'
+      };
     }
 
     // TODO(nikku): handle all editor actions
