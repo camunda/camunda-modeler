@@ -1379,6 +1379,8 @@ export class App extends PureComponent {
   }
 
   quit() {
+    // TODO(nikku): ask to save unsaved tabs
+    // Cf. https://github.com/camunda/camunda-modeler/issues/1162
     return true;
   }
 
