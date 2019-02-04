@@ -19,6 +19,11 @@ import {
 
 import Metadata from './util/Metadata';
 
+import debug from 'debug';
+
+if (process.env.NODE_ENV !== 'production') {
+  debug.enable('*,-sockjs-client:*');
+}
 
 const isMac = backend.getPlatform() === 'darwin';
 
