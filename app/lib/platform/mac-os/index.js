@@ -29,7 +29,8 @@ function MacOSPlatform(app) {
     if (e) {
       e.preventDefault();
     }
-    app.emit('app:open-file', filePath);
+
+    app.openFiles([ filePath ]);
   });
 
   /**
