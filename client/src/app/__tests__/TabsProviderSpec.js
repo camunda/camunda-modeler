@@ -1,5 +1,7 @@
 import TabsProvider from '../TabsProvider';
 
+import Flags, { DISABLE_DMN, DISABLE_CMMN } from '../../util/Flags';
+
 
 describe('TabsProvider', function() {
 
@@ -242,6 +244,43 @@ describe('TabsProvider', function() {
 
       // then
       expect(hasProvider).to.be.false;
+    });
+
+  });
+
+
+  describe('flags', function() {
+
+    afterEach(Flags.reset);
+
+
+    it('should disable DMN', function() {
+
+      // given
+      Flags.init({
+        [DISABLE_DMN]: true
+      });
+
+      // when
+      const tabsProvider = new TabsProvider();
+
+      // then
+      expect(tabsProvider.hasProvider('dmn')).to.be.false;
+    });
+
+
+    it('should disable CMMN', function() {
+
+      // given
+      Flags.init({
+        [DISABLE_CMMN]: true
+      });
+
+      // when
+      const tabsProvider = new TabsProvider();
+
+      // then
+      expect(tabsProvider.hasProvider('cmmn')).to.be.false;
     });
 
   });

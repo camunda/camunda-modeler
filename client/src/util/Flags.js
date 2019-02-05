@@ -12,6 +12,10 @@ class Flags {
     return this.data[key];
   }
 
+  reset = () => {
+    this.data = {};
+  }
+
 }
 
 export default new Flags();
