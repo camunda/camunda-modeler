@@ -29,7 +29,7 @@ function ElementTemplatesProvider(app) {
 
     var defaultPaths = [
       app.getPath('userData'),
-      app.developmentMode ? process.cwd() : path.dirname(app.getPath('exe'))
+      process.env.NODE_ENV === 'development' ? process.cwd() : path.dirname(app.getPath('exe'))
     ];
 
     var searchPaths = [].concat(
