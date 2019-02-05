@@ -11,6 +11,8 @@ import { forEach } from 'min-dash';
 
 import parseDiagramType from './util/parseDiagramType';
 
+import Flags from '../util/Flags';
+
 const ids = new Ids([ 32, 36, 1 ]);
 const createdByType = {};
 
@@ -154,6 +156,15 @@ export default class TabsProvider {
         }
       }
     };
+
+
+    if (Flags.get('disable-cmmn')) {
+      delete this.providers.cmmn;
+    }
+
+    if (Flags.get('disable-dmn')) {
+      delete this.providers.dmn;
+    }
 
   }
 
