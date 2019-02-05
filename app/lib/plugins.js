@@ -1,7 +1,14 @@
-'use strict';
-
 const path = require('path');
 const glob = require('glob');
+
+const log = require('debug')('app:plugins');
+const logError = require('debug')('app:plugins:error');
+
+const {
+  globFiles
+} = require('./util/files');
+
+const PLUGINS_PATTERN = 'plugins/*/index.js';
 
 // accept app-plugins:/// for sake of backwards compatibility
 const PLUGINS_PROTOCOL_REGEX = /^app-plugins:\/\/\/?([^/]+)(.*)$/;
@@ -13,18 +20,22 @@ const PLUGINS_PROTOCOL_REGEX = /^app-plugins:\/\/\/?([^/]+)(.*)$/;
  * @param {Array}  [options.paths] - Paths to search.
  */
 class Plugins {
+
   constructor(options = {}) {
-    const paths = options.paths || [];
+    const searchPaths = options.paths || [];
 
-    console.log('plug-ins: search paths', paths);
+    log('searching for %s in paths %o', PLUGINS_PATTERN, searchPaths);
 
-    const pluginPaths = findPluginPaths(paths);
+    const pluginPaths = globFiles({
+      searchPaths,
+      pattern: PLUGINS_PATTERN
+    });
 
-    console.log('plug-ins: found plug-in paths', pluginPaths);
+    log('found plug-in entries %o', pluginPaths);
 
     this.plugins = this._createPlugins(pluginPaths);
 
-    console.log('plug-ins: registered', Object.keys(this.plugins));
+    log('registered %o', Object.keys(this.plugins));
   }
 
   _createPlugins(pluginPaths) {
@@ -33,7 +44,7 @@ class Plugins {
       // don't let broken plug-ins bring down the modeler
       // instantiation; skip them and log a respective error
       try {
-        console.log(`plug-ins: loading ${pluginPath}`);
+        log('loading %s', pluginPath);
 
         const base = path.dirname(pluginPath);
 
@@ -86,10 +97,7 @@ class Plugins {
           try {
             plugin.menu = require(menuPath);
           } catch (error) {
-            console.error(
-              `plugins: failed to load menu extension ${menuPath}`,
-              error
-            );
+            logError('failed to load menu extension %s', menuPath, error);
 
             plugin.error = true;
           }
@@ -100,10 +108,7 @@ class Plugins {
           [name]: plugin
         };
       } catch (error) {
-        console.error(
-          `plugins: failed to load ${pluginPath}`,
-          error
-        );
+        logError('failed to load %s', pluginPath, error);
       }
 
       return plugins;
@@ -138,32 +143,7 @@ class Plugins {
 
     return null;
   }
-}
 
-// helpers //////////
-
-/**
- * Find plug-ins under the given search paths.
- *
- * @param  {Array<String>} paths
- *
- * @return {Array<String>} plug-in paths
- */
-function findPluginPaths(paths) {
-
-  return paths.reduce((pluginPaths, searchPath) => {
-
-    const foundPaths = glob.sync('plugins/*/index.js', {
-      cwd: searchPath,
-      nodir: true,
-      realpath: true
-    });
-
-    return [
-      ...pluginPaths,
-      ...foundPaths
-    ];
-  }, []);
 }
 
 module.exports = Plugins;
