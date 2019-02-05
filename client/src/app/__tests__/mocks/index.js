@@ -350,6 +350,8 @@ export class Backend extends Mock {
 
   sendQuitAllowed() {}
 
+  sendQuitAborted() {}
+
   sendReady() { }
 
   on(event, listener) {
