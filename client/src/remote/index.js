@@ -29,4 +29,6 @@ export const plugins = new Plugins(app);
 
 export const metadata = getGlobal('metaData');
 
+export const flags = app.flags.getAll();
+
 export const workspace = new Workspace(backend);
