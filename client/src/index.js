@@ -13,17 +13,23 @@ import {
   dialog,
   fileSystem,
   plugins,
+  flags,
   metadata,
   workspace
 } from './remote';
 
 import Metadata from './util/Metadata';
+import Flags from './util/Flags';
 
 import debug from 'debug';
 
 if (process.env.NODE_ENV !== 'production') {
   debug.enable('*,-sockjs-client:*');
 }
+
+Metadata.init(metadata);
+Flags.init(flags);
+
 
 const isMac = backend.getPlatform() === 'darwin';
 
@@ -43,7 +49,6 @@ const globals = {
   workspace
 };
 
-Metadata.init(metadata);
 
 async function render() {
 
