@@ -1,5 +1,3 @@
-'use strict';
-
 const {
   app,
   dialog: electronDialog,
@@ -34,6 +32,10 @@ const Deployer = require('./deployer');
 
 const browserOpen = require('./util/browser-open');
 const renderer = require('./util/renderer');
+
+const log = require('debug')('app:main');
+const bootstrapLog = require('debug')('app:main:bootstrap');
+const logError = require('debug')('app:main');
 
 const {
   config,
@@ -213,7 +215,7 @@ renderer.on('client-config:get', function(...args) {
 // open file handling //////////
 
 app.on('app:client-ready', function() {
-  console.log('app:client-ready');
+  bootstrapLog('received client-ready');
 
   // open pending files
   if (files.length) {
@@ -261,6 +263,8 @@ app.on('web-contents-created', (event, webContents) => {
  * @param {Array<String>} filePaths
  */
 app.openFiles = function(filePaths) {
+
+  log('open files %o', filePaths);
 
   if (!app.clientReady) {
 
@@ -316,7 +320,7 @@ app.createEditorWindow = function() {
 
   // handling case when user clicks on window close button
   mainWindow.on('close', function(e) {
-    console.log('Initiating close of main window');
+    log('initating close of main window');
 
     if (app.quitAllowed) {
       // dereferencing main window and resetting client state
@@ -325,13 +329,13 @@ app.createEditorWindow = function() {
 
       app.clientReady = false;
 
-      return console.log('Main window closed');
+      return log('main window closed');
     }
 
     // preventing window from closing until client allows to do so
     e.preventDefault();
 
-    console.log('Asking client to allow application quit');
+    log('asking client to allow quit');
 
     app.emit('app:quit-denied');
 
@@ -339,7 +343,8 @@ app.createEditorWindow = function() {
   });
 
   mainWindow.on('focus', function() {
-    console.log('Window focused');
+    log('window focused');
+
     renderer.send('client:window-focused');
   });
 
@@ -364,6 +369,8 @@ app.createEditorWindow = function() {
  */
 app.on('ready', function() {
 
+  bootstrapLog('received ready');
+
   menu.registerMenuProvider('plugins', {
     plugins: plugins.getAll()
   });
@@ -385,14 +392,14 @@ app.on('ready', function() {
 
   // quit command from menu/shortcut
   app.on('app:quit', function() {
-    console.log('Initiating termination of the application');
+    log('initiating quit');
 
     renderer.send('menu:action', 'quit');
   });
 
   // client quit verification event
   renderer.on('app:quit-allowed', function() {
-    console.log('Quit allowed');
+    log('quit allowed');
 
     app.quitAllowed = true;
 
@@ -409,7 +416,7 @@ function handleDeployment(data, done) {
   deployer.deploy(endpointUrl, data, function(error, result) {
 
     if (error) {
-      console.error('failed to deploy', error);
+      logError('failed to deploy', error);
 
       return done(error);
     }
