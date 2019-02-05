@@ -35,9 +35,14 @@ const Deployer = require('./deployer');
 const browserOpen = require('./util/browser-open');
 const renderer = require('./util/renderer');
 
-const config = new Config({
-  path: app.getPath('userData')
-});
+const {
+  config,
+  clientConfig,
+  plugins,
+  files
+} = bootstrap();
+
+app.plugins = plugins;
 
 Platform.create(process.platform, app, config);
 
@@ -50,9 +55,6 @@ global.metaData = {
   name: app.name
 };
 
-// get directory of executable
-const appPath = path.dirname(app.getPath('exe'));
-
 const { platform } = process;
 
 const menu = new Menu({
@@ -64,14 +66,6 @@ const fileSystem = new FileSystem();
 
 // bootstrap workspace behavior
 new Workspace(config, fileSystem);
-
-// bootstrap client config behavior
-const clientConfig = new ClientConfig({
-  paths: [
-    path.join(app.getPath('userData'), 'resources'),
-    appPath
-  ].concat(process.env.NODE_ENV === 'development' ? [ path.join(process.cwd(), 'resources') ] : [])
-});
 
 // bootstrap dialog
 const dialog = new Dialog({
@@ -92,9 +86,13 @@ if (config.get('single-instance', true)) {
 
   if (gotLock) {
 
-    app.on('second-instance', (event, commandLine, workingDirectory) => {
+    app.on('second-instance', (event, argv, cwd) => {
 
-      app.emit('app:parse-cmd', commandLine, workingDirectory);
+      const {
+        files
+      } = Cli.parse(argv, cwd);
+
+      app.openFiles(files);
 
       // focus existing running instance window
       if (app.mainWindow) {
@@ -214,28 +212,12 @@ renderer.on('client-config:get', function(...args) {
 
 // open file handling //////////
 
-// list of files that should be opened by the editor
-app.pendingFiles = [];
-
-app.on('app:parse-cmd', function(argv, cwd) {
-  console.log('app:parse-cmd', argv.join(' '), cwd);
-
-  // will result in opening dev.js as file
-  const { files } = Cli.parse(argv, cwd);
-
-  app.openFiles(files);
-});
-
 app.on('app:client-ready', function() {
   console.log('app:client-ready');
 
-  const pendingFiles = app.pendingFiles.slice();
-
-  // clear app pending files
-  app.pendingFiles.length = 0;
-
-  if (pendingFiles.length) {
-    app.openFiles(pendingFiles);
+  // open pending files
+  if (files.length) {
+    app.openFiles(files);
   }
 
   renderer.send('client:started');
@@ -283,7 +265,7 @@ app.openFiles = function(filePaths) {
   if (!app.clientReady) {
 
     // defer file open
-    return app.pendingFiles.push(...filePaths);
+    return files.push(...filePaths);
   }
 
   const existingFiles = filePaths.map(path => {
@@ -382,15 +364,6 @@ app.createEditorWindow = function() {
  */
 app.on('ready', function() {
 
-  const plugins = app.plugins = new Plugins({
-    paths: [
-      path.join(app.getPath('userData'), 'resources'),
-      app.getPath('userData'),
-      path.join(appPath, 'resources'),
-      appPath
-    ].concat(process.env.NODE_ENV === 'development' ? [ path.resolve(__dirname + '/../../resources') ] : [])
-  });
-
   menu.registerMenuProvider('plugins', {
     plugins: plugins.getAll()
   });
@@ -399,7 +372,7 @@ app.on('ready', function() {
 
     const { url } = details;
 
-    const redirectURL = app.plugins.getAssetPath(url);
+    const redirectURL = plugins.getAssetPath(url);
 
     if (redirectURL) {
       return callback({
@@ -427,8 +400,6 @@ app.on('ready', function() {
   });
 
   app.createEditorWindow();
-
-  app.emit('app:parse-cmd', process.argv, process.cwd());
 });
 
 
@@ -446,6 +417,68 @@ function handleDeployment(data, done) {
     done(null, result);
   });
 }
+
+
+/**
+ * Bootstrap the application and return
+ *
+ * {
+ *   config,
+ *   clientConfig,
+ *   plugins,
+ *   files
+ * }
+ *
+ * @return {Object} bootstrapped components
+ */
+function bootstrap() {
+
+  const userPath = app.getPath('userData');
+  const appPath = path.dirname(app.getPath('exe'));
+
+  const cwd = process.cwd();
+
+  const {
+    files
+  } = Cli.parse(process.argv, cwd);
+
+  const additionalPaths = process.env.NODE_ENV === 'development'
+    ? [ path.join(cwd, 'resources') ]
+    : [ ];
+
+  const resourcePaths = [
+    path.join(userPath, 'resources'),
+    path.join(appPath, 'resources'),
+    ...additionalPaths
+  ];
+
+  const config = new Config({
+    path: userPath
+  });
+
+  const clientConfig = new ClientConfig({
+    paths: resourcePaths
+  });
+
+  // TODO(nikku): remove loading directly from {ROOT}/resources/plugins
+  // we changed it to load plug-ins from {ROOT}/resources/plugins via
+  // https://github.com/camunda/camunda-modeler/issues/597
+  const plugins = new Plugins({
+    paths: [
+      ...resourcePaths,
+      userPath,
+      appPath
+    ]
+  });
+
+  return {
+    config,
+    clientConfig,
+    plugins,
+    files
+  };
+}
+
 
 // expose app
 module.exports = app;
