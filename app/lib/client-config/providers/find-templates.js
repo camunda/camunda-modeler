@@ -1,12 +1,12 @@
-'use strict';
+const fs = require('fs');
 
-var fs = require('fs');
+const glob = require('glob');
 
-var glob = require('glob');
-
-var {
+const {
   isArray
 } = require('min-dash');
+
+const logError = require('debug')('app:client-config:element-templates:error');
 
 
 /**
@@ -27,7 +27,7 @@ module.exports = function findTemplates(searchPaths) {
     try {
       files = globTemplates(path);
     } catch (err) {
-      console.log('[WARN] templates glob error', err);
+      logError('glob failed', err);
 
       return templates;
     }
@@ -42,7 +42,7 @@ module.exports = function findTemplates(searchPaths) {
 
         return [].concat(templates, parsedTemplates);
       } catch (err) {
-        console.log('[ERROR] template <' + filePath + '> parse error', err);
+        logError('failed to parse template %s', filePath, err);
 
         throw new Error('template ' + filePath + ' parse error: ' + err.message);
       }
