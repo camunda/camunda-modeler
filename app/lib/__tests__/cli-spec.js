@@ -1,6 +1,4 @@
-'use strict';
-
-const Cli = require('../../lib/cli');
+const Cli = require('../cli');
 
 const path = require('path');
 
@@ -12,7 +10,14 @@ describe('cli', function() {
     it('parse Linux args', function() {
 
       // given
-      const args = [ 'app', '--enable-logging', '--other-flag=1', '../fixtures/random.xml' ];
+      const args = [
+        'app',
+        '--enable-logging',
+        '--other-flag=1',
+        'cli/random.xml',
+        'cli/non-existing.xml',
+        'cli'
+      ];
 
       // when
       const {
@@ -22,7 +27,7 @@ describe('cli', function() {
 
       // then
       expect(files).to.eql([
-        path.resolve('app/test/fixtures/random.xml')
+        absPath('cli/random.xml')
       ]);
 
       expect(flags).to.eql({
@@ -35,7 +40,7 @@ describe('cli', function() {
     it('parse Linux args, just diagram file', function() {
 
       // given
-      const args = [ 'app', '../fixtures/random.xml' ];
+      const args = [ 'app', 'cli/random.xml' ];
 
       // when
       const {
@@ -45,7 +50,7 @@ describe('cli', function() {
 
       // then
       expect(files).to.eql([
-        path.resolve('app/test/fixtures/random.xml')
+        absPath('cli/random.xml')
       ]);
 
       expect(flags).to.eql({ });
@@ -57,7 +62,7 @@ describe('cli', function() {
       it('parse Windows args', function() {
 
         // given
-        const args = [ 'app', '--', '..\\fixtures\\random.xml' ];
+        const args = [ 'app', '--', 'cli\\random.xml' ];
 
         // when
         const {
@@ -67,7 +72,7 @@ describe('cli', function() {
 
         // then
         expect(files).to.eql([
-          path.resolve('app/test/fixtures/random.xml')
+          absPath('cli/random.xml')
         ]);
 
         expect(flags).to.eql({ });
@@ -77,7 +82,7 @@ describe('cli', function() {
       it('parse Windows args, just diagram file', function() {
 
         // given
-        const args = [ 'app', '..\\\\fixtures\\\\random.xml' ];
+        const args = [ 'app', 'cli\\\\random.xml' ];
 
         // when
         const {
@@ -87,7 +92,7 @@ describe('cli', function() {
 
         // then
         expect(files).to.eql([
-          path.resolve('app/test/fixtures/random.xml')
+          absPath('cli/random.xml')
         ]);
 
         expect(flags).to.eql({ });
@@ -97,7 +102,7 @@ describe('cli', function() {
       it('parse Windows args, double backslash', function() {
 
         // given
-        const args = [ 'app', '--', '..\\\\fixtures\\\\random.xml' ];
+        const args = [ 'app', '--', 'cli\\\\random.xml' ];
 
         // when
         const {
@@ -107,7 +112,7 @@ describe('cli', function() {
 
         // then
         expect(files).to.eql([
-          path.resolve('app/test/fixtures/random.xml')
+          absPath('cli/random.xml')
         ]);
 
         expect(flags).to.eql({ });
@@ -123,3 +128,10 @@ describe('cli', function() {
   });
 
 });
+
+
+// helpers //////////////////
+
+function absPath(file) {
+  return path.resolve(__dirname, file);
+}
