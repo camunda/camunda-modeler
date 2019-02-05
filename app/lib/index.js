@@ -39,9 +39,6 @@ const config = Config.load(path.join(app.getPath('userData'), 'config.json'));
 
 Platform.create(process.platform, app, config);
 
-// variable for developing (reloading and devtools toggling)
-app.developmentMode = false;
-
 app.version = require('../package').version;
 app.name = 'Camunda Modeler';
 
@@ -322,7 +319,7 @@ app.createEditorWindow = function() {
 
   let url = 'file://' + path.resolve(__dirname + '/../public/index.html');
 
-  if (app.developmentMode) {
+  if (process.env.NODE_ENV === 'development') {
     url = 'file://' + path.resolve(__dirname + '/../../client/build/index.html');
   }
 
@@ -384,7 +381,7 @@ app.on('ready', function() {
       app.getPath('userData'),
       path.join(appPath, 'resources'),
       appPath
-    ].concat(app.developmentMode ? [ path.resolve(__dirname + '/../../resources') ] : [])
+    ].concat(process.env.NODE_ENV === 'development' ? [ path.resolve(__dirname + '/../../resources') ] : [])
   });
 
   menu.registerMenuProvider('plugins', {

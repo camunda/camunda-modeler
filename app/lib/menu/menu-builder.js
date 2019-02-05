@@ -25,7 +25,7 @@ class MenuBuilder {
       state: {
         save: false,
         exportAs: false,
-        development: app.developmentMode,
+        development: process.env.NODE_ENV === 'development',
         devtools: false
       },
       providers: {}
