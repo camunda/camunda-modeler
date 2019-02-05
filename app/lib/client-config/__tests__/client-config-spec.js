@@ -1,41 +1,24 @@
-'use strict';
+const ClientConfig = require('..');
 
-var ClientConfig = require('../../lib/client-config');
-
-var path = require('path');
+const path = require('path');
 
 
 describe('ClientConfig', function() {
 
   describe('<bpmn.elementTemplates>', function() {
 
-    var clientConfig;
-
-    var GLOBAL_SEARCH_PATH = '';
-
-    beforeEach(function() {
-      var app = {
-        getPath: function(type) {
-          if (type === 'userData') {
-            return GLOBAL_SEARCH_PATH;
-          } else {
-            return path.resolve('/non/existing');
-          }
-        }
-      };
-
-      clientConfig = new ClientConfig(app);
-    });
-
-
     it('should provide', function(done) {
 
       // given
       var fakeDiagram = {
-        path: path.join(__dirname, '/../fixtures/element-templates/foo/bar.bpmn')
+        path: absPath('fixtures/project/bar.bpmn')
       };
 
-      GLOBAL_SEARCH_PATH = path.join(__dirname, '/../fixtures/element-templates');
+      const clientConfig = new ClientConfig({
+        paths: [
+          absPath('fixtures/ok')
+        ]
+      });
 
       // when
       clientConfig.get('bpmn.elementTemplates', fakeDiagram, function(err, templates) {
@@ -63,9 +46,13 @@ describe('ClientConfig', function() {
     it('should propagate JSON parse error', function(done) {
 
       // given
-      var fakeDiagram = null;
+      const fakeDiagram = null;
 
-      GLOBAL_SEARCH_PATH = path.join(__dirname, '/../fixtures/element-templates/broken');
+      const clientConfig = new ClientConfig({
+        paths: [
+          absPath('fixtures/broken')
+        ]
+      });
 
       // when
       clientConfig.get('bpmn.elementTemplates', fakeDiagram, function(err, templates) {
@@ -83,3 +70,10 @@ describe('ClientConfig', function() {
   });
 
 });
+
+
+// helpers ///////////////////
+
+function absPath(file) {
+  return path.resolve(__dirname, file);
+}
