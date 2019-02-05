@@ -90,7 +90,6 @@ function MacOSPlatform(app) {
    */
   app.on('ready', function() {
     app.on('activate', checkAppWindow);
-    app.on('app:parse-cmd', checkAppWindow);
     app.on('open-file', checkAppWindow);
   });
 
