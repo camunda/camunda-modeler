@@ -29,6 +29,7 @@ const Menu = require('./menu');
 const Cli = require('./cli');
 const Plugins = require('./plugins');
 const Deployer = require('./deployer');
+const Flags = require('./flags');
 
 const browserOpen = require('./util/browser-open');
 const renderer = require('./util/renderer');
@@ -41,10 +42,12 @@ const {
   config,
   clientConfig,
   plugins,
+  flags,
   files
 } = bootstrap();
 
 app.plugins = plugins;
+app.flags = flags;
 
 Platform.create(process.platform, app, config);
 
@@ -446,7 +449,8 @@ function bootstrap() {
   const cwd = process.cwd();
 
   const {
-    files
+    files,
+    flags: flagOverrides
   } = Cli.parse(process.argv, cwd);
 
   const additionalPaths = process.env.NODE_ENV === 'development'
@@ -467,6 +471,11 @@ function bootstrap() {
     paths: resourcePaths
   });
 
+  const flags = new Flags({
+    paths: resourcePaths,
+    overrides: flagOverrides
+  });
+
   // TODO(nikku): remove loading directly from {ROOT}/resources/plugins
   // we changed it to load plug-ins from {ROOT}/resources/plugins via
   // https://github.com/camunda/camunda-modeler/issues/597
@@ -482,6 +491,7 @@ function bootstrap() {
     config,
     clientConfig,
     plugins,
+    flags,
     files
   };
 }
