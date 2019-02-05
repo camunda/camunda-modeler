@@ -1,5 +1,6 @@
 import CmmnModeler from 'cmmn-js/lib/Modeler';
 
+import diagramOriginModule from 'diagram-js-origin';
 import fixOriginModule from '../../shared/fix-origin';
 
 import addExporterModule from '@bpmn-io/add-exporter';
@@ -10,6 +11,7 @@ import propertiesPanelModule from 'cmmn-js-properties-panel';
 import propertiesProviderModule from 'cmmn-js-properties-panel/lib/provider/camunda';
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
 
+import Flags, { DISABLE_FIX_ORIGIN } from '../../../../util/Flags';
 
 import 'cmmn-js-properties-panel/styles/properties.less';
 
@@ -40,7 +42,7 @@ const defaultModules = CmmnModeler.prototype._modules;
 
 const extensionModules = [
   addExporterModule,
-  fixOriginModule,
+  Flags.get(DISABLE_FIX_ORIGIN) ? diagramOriginModule : fixOriginModule,
   propertiesPanelModule,
   propertiesProviderModule,
   propertiesPanelKeyboardBindingsModule

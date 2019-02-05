@@ -2,6 +2,7 @@ import BpmnModeler from 'bpmn-js/lib/Modeler';
 
 import minimapModule from 'diagram-js-minimap';
 
+import diagramOriginModule from 'diagram-js-origin';
 import fixOriginModule from '../../shared/fix-origin';
 
 import addExporterModule from '@bpmn-io/add-exporter';
@@ -10,6 +11,8 @@ import executableFixModule from './features/executable-fix';
 import globalClipboardModule from './features/global-clipboard';
 import applyDefaultTemplates from './features/apply-default-templates';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
+
+import Flags, { DISABLE_FIX_ORIGIN } from '../../../../util/Flags';
 
 import signavioCompatModule from 'bpmn-js-signavio-compat';
 
@@ -53,7 +56,7 @@ const extensionModules = [
   minimapModule,
   addExporterModule,
   executableFixModule,
-  fixOriginModule,
+  Flags.get(DISABLE_FIX_ORIGIN) ? diagramOriginModule : fixOriginModule,
   globalClipboardModule,
   signavioCompatModule,
   camundaModdleExtension,
