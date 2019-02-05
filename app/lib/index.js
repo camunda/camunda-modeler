@@ -64,7 +64,12 @@ const fileSystem = new FileSystem();
 new Workspace(config, fileSystem);
 
 // bootstrap client config behavior
-const clientConfig = new ClientConfig(app);
+const clientConfig = new ClientConfig({
+  paths: [
+    path.join(app.getPath('userData'), 'resources'),
+    appPath
+  ].concat(process.env.NODE_ENV === 'development' ? [ path.join(process.cwd(), 'resources') ] : [])
+});
 
 // bootstrap dialog
 const dialog = new Dialog({
