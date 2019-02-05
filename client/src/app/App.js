@@ -1435,6 +1435,10 @@ export class App extends PureComponent {
 
     const canSave = this.isUnsaved(activeTab) || this.isDirty(activeTab);
 
+    const {
+      tabsProvider
+    } = this.props;
+
     return (
       <DropZone
         onDrop={ this.handleDrop }
@@ -1452,21 +1456,25 @@ export class App extends PureComponent {
                 items={ [
                   {
                     text: 'Create new BPMN diagram',
-                    onClick: this.composeAction('create-bpmn-diagram')
+                    onClick: this.composeAction('create-bpmn-diagram'),
+                    type: 'bpmn'
                   },
                   {
                     text: 'Create new DMN table',
-                    onClick: this.composeAction('create-dmn-table')
+                    onClick: this.composeAction('create-dmn-table'),
+                    type: 'dmn'
                   },
                   {
                     text: 'Create new DMN diagram (DRD)',
-                    onClick: this.composeAction('create-dmn-diagram')
+                    onClick: this.composeAction('create-dmn-diagram'),
+                    type: 'dmn'
                   },
                   {
                     text: 'Create new CMMN diagram',
-                    onClick: this.composeAction('create-cmmn-diagram')
+                    onClick: this.composeAction('create-cmmn-diagram'),
+                    type: 'cmmn'
                   }
-                ] }
+                ].filter(entry => tabsProvider.hasProvider(entry.type)) }
               >
                 <Icon name="new" />
               </DropdownButton>
