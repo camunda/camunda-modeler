@@ -147,7 +147,7 @@ describe('<AppParent>', function() {
 
   describe('trigger action', function() {
 
-    it('should trigger quit', async function() {
+    it('should handle quit', async function() {
 
       // given
       const backend = new Backend();
@@ -156,12 +156,42 @@ describe('<AppParent>', function() {
         appParent
       } = createAppParent({ globals: { backend } }, mount);
 
+      const app = appParent.getApp();
+
+      const closeAllTabsSpy = spy(app, 'triggerAction');
+
       const quitAllowedSpy = spy(backend, 'sendQuitAllowed');
 
+      // when
       await appParent.triggerAction({}, 'quit');
 
       // then
+      expect(closeAllTabsSpy).to.be.calledWith('close-all-tabs');
       expect(quitAllowedSpy).to.have.been.called;
+    });
+
+
+    it('should handle quit aborted', async function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+
+      const closeTabsStub = sinon.stub(app, 'closeTabs').resolves([ false ]);
+
+      const quitAbortedSpy = spy(backend, 'sendQuitAborted');
+
+      // when
+      await appParent.triggerAction({}, 'quit');
+
+      // then
+      expect(closeTabsStub).to.be.calledOnce;
+      expect(quitAbortedSpy).to.have.been.called;
     });
 
 

@@ -49,7 +49,7 @@ export default class AppParent extends PureComponent {
 
     };
 
-    exec().catch(this.handleError);
+    return exec().catch(this.handleError);
   }
 
   handleOpenFiles = (event, newFiles) => {

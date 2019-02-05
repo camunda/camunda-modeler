@@ -307,7 +307,7 @@ export class App extends PureComponent {
    *
    * @param {Tab} tab
    *
-   * @return {Promise<Void>} resolved when the tab is closed
+   * @return {Promise<Boolean>} resolved to true if tab is closed
    */
   closeTab = async (tab) => {
     const { file } = tab;
@@ -320,11 +320,13 @@ export class App extends PureComponent {
       if (response === 'save') {
         await this.saveTab(tab);
       } else if (response === 'cancel') {
-        return;
+        return false;
       }
     }
 
     await this._removeTab(tab);
+
+    return true;
   }
 
   isDirty = (tab) => {
@@ -1378,10 +1380,10 @@ export class App extends PureComponent {
     return plugins.get(type);
   }
 
-  quit() {
-    // TODO(nikku): ask to save unsaved tabs
-    // Cf. https://github.com/camunda/camunda-modeler/issues/1162
-    return true;
+  async quit() {
+    const closeResults = await this.triggerAction('close-all-tabs');
+
+    return closeResults.every(result => result);
   }
 
   composeAction = (...args) => {
