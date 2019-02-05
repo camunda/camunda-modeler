@@ -5,6 +5,8 @@ const path = require('path');
 
 const mri = require('mri');
 
+const log = require('debug')('app:cli');
+
 /**
  * Parse file arguments from the command line
  * and return them as a list of paths.
@@ -15,6 +17,8 @@ const mri = require('mri');
  * @return {Object} parsed arguments as { files, flags }
  */
 function parse(args, cwd) {
+
+  log('parsing %o in %o', args, cwd);
 
   const {
     _,
@@ -48,10 +52,10 @@ function isFile(filePath) {
       return true;
     }
 
-    console.log('[cli] [WARN]', 'cannot open directory', filePath);
+    log('skipping directory %s', filePath);
   } catch (e) {
     // file not found or the like...
-    console.log('[cli] [WARN]', e.message, filePath);
+    log(e.message, filePath);
   }
 
   return false;
