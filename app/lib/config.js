@@ -1,11 +1,13 @@
-'use strict';
+const fs = require('fs');
+const path = require('path');
 
-var fs = require('fs');
+const log = require('debug')('app:config');
+const logError = require('debug')('app:config:error');
 
+function Config(options) {
+  this._configPath = path.join(options.path, 'config.json');
 
-function Config(configPath) {
-  this._configPath = configPath;
-  this._data = {};
+  this.loadSync();
 }
 
 module.exports = Config;
@@ -19,10 +21,14 @@ module.exports = Config;
  */
 Config.prototype.loadSync = function() {
 
+  const path = this._configPath;
+
+  log('loading from %s', path);
+
   var stringifiedData;
 
   try {
-    stringifiedData = fs.readFileSync(this._configPath, { encoding: 'utf8' });
+    stringifiedData = fs.readFileSync(path, { encoding: 'utf8' });
 
     this._data = JSON.parse(stringifiedData);
   } catch (err) {
@@ -33,7 +39,7 @@ Config.prototype.loadSync = function() {
       return;
     }
 
-    console.error('config: failed to load', err);
+    logError('failed to load', err);
   }
 };
 
@@ -44,10 +50,8 @@ Config.prototype.loadSync = function() {
  */
 Config.prototype.saveSync = function() {
   fs.writeFileSync(this._configPath, JSON.stringify(this._data), { encoding: 'utf8' });
-};
 
-Config.prototype.save = function(callback) {
-  fs.writeFile(this._configPath, JSON.stringify(this._data), { encoding: 'utf8' }, callback);
+  log('saved');
 };
 
 
@@ -62,36 +66,15 @@ Config.prototype.get = function(key, defaultValue) {
 };
 
 
-Config.prototype.set = function(key, value, callback) {
+Config.prototype.set = function(key, value) {
   this._data[key] = value;
 
-  if (callback && typeof callback === 'function') {
-    return this.save(callback);
-  }
+  log('set %s', key);
 
   try {
     this.saveSync();
   } catch (err) {
-    console.error('config: failed to write', err);
-    // oops, could not write :-/
+    logError('failed to write', err);
   }
 };
 
-
-/**
- * Load an existing configuration from the given path.
- *
- * @param {String} configPath
- *
- * @return {Config}
- */
-function load(configPath) {
-
-  var config = new Config(configPath);
-
-  config.loadSync();
-
-  return config;
-}
-
-module.exports.load = load;

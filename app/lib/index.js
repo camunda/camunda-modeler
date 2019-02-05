@@ -35,7 +35,9 @@ const Deployer = require('./deployer');
 const browserOpen = require('./util/browser-open');
 const renderer = require('./util/renderer');
 
-const config = Config.load(path.join(app.getPath('userData'), 'config.json'));
+const config = new Config({
+  path: app.getPath('userData')
+});
 
 Platform.create(process.platform, app, config);
 
