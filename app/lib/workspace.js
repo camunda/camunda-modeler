@@ -47,7 +47,7 @@ function Workspace(config, fileSystem) {
 
     config.set('workspace', workspace);
 
-    done();
+    done(null);
   });
 }
 
