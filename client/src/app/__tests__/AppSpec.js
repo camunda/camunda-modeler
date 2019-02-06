@@ -1593,10 +1593,6 @@ describe('<App>', function() {
         show: showSpy
       });
 
-      fileSystem.setReadFileStatsResponse({
-        lastModified: new Date().getMilliseconds()
-      });
-
       const { app } = createApp({
         globals: {
           dialog,
@@ -1607,6 +1603,10 @@ describe('<App>', function() {
       const openedTabs = await app.openFiles([ file1, file2 ]);
 
       const tab = openedTabs[0];
+
+      updateFileStats(tab.file, {
+        lastModified: new Date().getMilliseconds()
+      }, fileSystem);
 
       // when
       await app.checkFileChanged(tab);
@@ -1628,10 +1628,6 @@ describe('<App>', function() {
         show: showSpy
       });
 
-      fileSystem.setReadFileStatsResponse({
-        lastModified: 0
-      });
-
       const { app } = createApp({
         globals: {
           dialog,
@@ -1642,6 +1638,10 @@ describe('<App>', function() {
       const openedTabs = await app.openFiles([ file1, file2 ]);
 
       const tab = openedTabs[0];
+
+      updateFileStats(tab.file, {
+        lastModified: 0
+      }, fileSystem);
 
       // when
       await app.checkFileChanged(tab);
@@ -1688,10 +1688,6 @@ describe('<App>', function() {
         show: showSpy
       });
 
-      fileSystem.setReadFileStatsResponse({
-        lastModified: new Date().getMilliseconds()
-      });
-
       const { app } = createApp({
         globals: {
           dialog,
@@ -1703,6 +1699,10 @@ describe('<App>', function() {
 
       const tab = openedTabs[0];
 
+      updateFileStats(tab.file, {
+        lastModified: new Date().getMilliseconds()
+      }, fileSystem);
+
       const oldTabContents = tab.file.contents;
 
       // when
@@ -1712,6 +1712,25 @@ describe('<App>', function() {
       expect(showSpy).to.have.been.called;
       expect(readFileSpy).to.not.have.been.called;
       expect(tab.file.contents).to.equal(oldTabContents);
+    });
+
+
+    it('should execute only once', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const openedTabs = await app.openFiles([ file1 ]);
+
+      const tab = openedTabs[0];
+
+      const checkFileChangedSpy = spy(app, '__checkFileChanged');
+
+      // when
+      await Promise.all([ app.checkFileChanged(tab), app.checkFileChanged(tab) ]);
+
+      // then
+      expect(checkFileChangedSpy).to.have.been.calledOnce;
     });
 
   });
@@ -2379,4 +2398,15 @@ function createFile(name, path, contents = 'foo', lastModified) {
     path,
     lastModified
   };
+}
+
+function updateFileStats(file, newAttrs, fileSystem) {
+
+  const newFileStats = {
+    ...file,
+    ...newAttrs
+  };
+
+  fileSystem.setReadFileStatsResponse(newFileStats);
+
 }
