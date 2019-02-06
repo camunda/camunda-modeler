@@ -28,7 +28,7 @@ git checkout v1.1.0
 # install
 npm install
 
-# run all tests
+# lint, test and build the app
 npm run all
 ```
 
