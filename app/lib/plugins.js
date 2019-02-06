@@ -22,7 +22,12 @@ const PLUGINS_PROTOCOL_REGEX = /^app-plugins:\/\/\/?([^/]+)(.*)$/;
 class Plugins {
 
   constructor(options = {}) {
+
     const searchPaths = options.paths || [];
+
+    if (!searchPaths.length) {
+      return;
+    }
 
     log('searching for %s in paths %o', PLUGINS_PATTERN, searchPaths);
 

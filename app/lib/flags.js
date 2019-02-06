@@ -41,6 +41,11 @@ class Flags {
   getAll() {
     return this.flags;
   }
+
+  get(key) {
+    return this.flags[key];
+  }
+
 }
 
 module.exports = Flags;

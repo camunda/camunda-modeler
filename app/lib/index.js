@@ -476,11 +476,17 @@ function bootstrap() {
     overrides: flagOverrides
   });
 
+  const pluginsDisabled = flags.get('disable-plugins');
+
+  if (pluginsDisabled) {
+    log('plug-ins disabled via feature toggle');
+  }
+
   // TODO(nikku): remove loading directly from {ROOT}/resources/plugins
   // we changed it to load plug-ins from {ROOT}/resources/plugins via
   // https://github.com/camunda/camunda-modeler/issues/597
   const plugins = new Plugins({
-    paths: [
+    paths: pluginsDisabled ? [] : [
       ...resourcePaths,
       userPath,
       appPath
