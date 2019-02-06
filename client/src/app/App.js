@@ -8,6 +8,8 @@ import {
   reduce
 } from 'min-dash';
 
+import executeOnce from './util/executeOnce';
+
 import { WithCache } from './cached';
 
 import { DropZone } from './drop-zone';
@@ -89,6 +91,17 @@ export class App extends PureComponent {
 
     this.tabRef = React.createRef();
 
+    // remember the original App#checkFileChanged version
+    // for testing purposes
+    this.__checkFileChanged = this.checkFileChanged;
+
+    // ensure we do not accidently execute the method recursively
+    // cf. https://github.com/camunda/camunda-modeler/issues/1118
+    this.checkFileChanged = executeOnce(
+      (tab) => this.__checkFileChanged(tab),
+      (tab) => tab.id
+    );
+
     if (process.env.NODE_ENV !== 'test') {
       this.workspaceChanged = debounce(this.workspaceChanged, 1500);
       this.updateMenu = debounce(this.updateMenu, 50);
@@ -169,6 +182,11 @@ export class App extends PureComponent {
     return this.showTab(nextActiveTab);
   }
 
+  /**
+   * Check whether file has changed externally and update accordingly.
+   *
+   * @param {Tab} tab
+   */
   checkFileChanged = async (tab) => {
 
     const {
