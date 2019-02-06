@@ -75,6 +75,12 @@ function MacOSPlatform(app) {
   function checkAppWindow() {
     if (!app.mainWindow) {
       app.createEditorWindow();
+    } else {
+      if (app.mainWindow.isMinimized()) {
+        app.mainWindow.restore();
+      }
+
+      app.mainWindow.focus();
     }
   }
 
