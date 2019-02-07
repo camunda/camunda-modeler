@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const argv = require('yargs').argv;
+const argv = require('mri')(process.argv);
 
 const exec = require('execa').sync;
 
