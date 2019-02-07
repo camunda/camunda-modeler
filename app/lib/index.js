@@ -85,8 +85,12 @@ const deployer = new Deployer({ fetch, fs, FormData });
 
 
 // make app a singleton
-if (config.get('single-instance', true)) {
-
+//
+// may be disabled via --no-single-instance flag
+//
+if (flags.get('single-instance') === false) {
+  log('single instance disabled via flag');
+} else {
   const gotLock = app.requestSingleInstanceLock();
 
   if (gotLock) {
