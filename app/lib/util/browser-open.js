@@ -1,6 +1,4 @@
-'use strict';
-
-var shell = require('electron').shell;
+const { shell } = require('electron');
 
 module.exports = function(url) {
   return shell.openExternal(url);
