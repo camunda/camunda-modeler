@@ -1,20 +1,18 @@
 {
   "plugins": [
-    "syntax-dynamic-import",
-    "transform-object-assign",
-    "transform-object-rest-spread",
-    "transform-class-properties"
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-proposal-class-properties"
   ],
   "presets": [
     [
-      "env", {
+      "@babel/preset-env", {
         "modules": false,
         "targets": {
-          "chrome": "62"
+          "chrome": "66"
         }
       }
     ],
-    "react"
+    "@babel/preset-react"
   ],
   "env": {
     "coverage": {
