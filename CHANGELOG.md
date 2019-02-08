@@ -28,6 +28,7 @@ ___Note:__ Yet to be released changes appear here._
 #### BPMN
 
 * `FEAT`: set `isHorizontal` to `bpmndi:Shape` elements ([#1096](https://github.com/camunda/camunda-modeler/issues/1096))
+* `FIX`: mark diagram as dirty after `activiti` to `camunda` namespace conversion ([#403](https://github.com/camunda/camunda-modeler/issues/403))
 
 #### Deploy Dialog
 
