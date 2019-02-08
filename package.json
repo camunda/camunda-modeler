@@ -20,7 +20,8 @@
     "lint": "eslint .",
     "postinstall": "lerna bootstrap --hoist",
     "release": "lerna publish --force-publish",
-    "test": "run-s *:test"
+    "test": "run-s *:test",
+    "start": "run-s \"dev -- {@}\" --"
   },
   "author": "Camunda <http://camunda.com>",
   "license": "SEE LICENSE IN LICENSE",
