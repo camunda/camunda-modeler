@@ -21,15 +21,18 @@ An integrated modeling solution for BPMN, DMN and CMMN based on [bpmn.io](http:/
 
 ## Building the Application
 
-```
+```sh
 # checkout a tag
 git checkout v1.1.0
 
-# install
+# install dependencies
 npm install
 
-# lint, test and build the app
+# execute all checks (lint, test and build)
 npm run all
+
+# build the application to ./dist
+npm run build
 ```
 
 
