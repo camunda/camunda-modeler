@@ -1,8 +1,8 @@
 import DmnModeler from 'dmn-js/lib/Modeler';
 
 import diagramOriginModule from 'diagram-js-origin';
-import fixOriginModule from '../../shared/fix-origin';
 
+import alignToOriginModule from '@bpmn-io/align-to-origin';
 import addExporter from '@bpmn-io/add-exporter/add-exporter';
 
 import propertiesPanelModule from 'dmn-js-properties-panel';
@@ -46,7 +46,7 @@ export default class CamundaDmnModeler extends DmnModeler {
     super({
       ...otherOptions,
       drd: mergeModules(drd, [
-        Flags.get(DISABLE_FIX_ORIGIN) ? diagramOriginModule : fixOriginModule,
+        Flags.get(DISABLE_FIX_ORIGIN) ? diagramOriginModule : alignToOriginModule,
         propertiesPanelModule,
         propertiesProviderModule,
         drdAdapterModule,

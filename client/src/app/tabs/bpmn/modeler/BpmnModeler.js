@@ -3,8 +3,8 @@ import BpmnModeler from 'bpmn-js/lib/Modeler';
 import minimapModule from 'diagram-js-minimap';
 
 import diagramOriginModule from 'diagram-js-origin';
-import fixOriginModule from '../../shared/fix-origin';
 
+import alignToOriginModule from '@bpmn-io/align-to-origin';
 import addExporterModule from '@bpmn-io/add-exporter';
 
 import executableFixModule from './features/executable-fix';
@@ -56,7 +56,7 @@ const extensionModules = [
   minimapModule,
   addExporterModule,
   executableFixModule,
-  Flags.get(DISABLE_FIX_ORIGIN) ? diagramOriginModule : fixOriginModule,
+  Flags.get(DISABLE_FIX_ORIGIN) ? diagramOriginModule : alignToOriginModule,
   globalClipboardModule,
   signavioCompatModule,
   camundaModdleExtension,

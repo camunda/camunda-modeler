@@ -1,8 +1,8 @@
 import CmmnModeler from 'cmmn-js/lib/Modeler';
 
 import diagramOriginModule from 'diagram-js-origin';
-import fixOriginModule from '../../shared/fix-origin';
 
+import alignToOriginModule from '@bpmn-io/align-to-origin';
 import addExporterModule from '@bpmn-io/add-exporter';
 
 import camundaModdlePackage from 'camunda-cmmn-moddle/resources/camunda';
@@ -42,7 +42,7 @@ const defaultModules = CmmnModeler.prototype._modules;
 
 const extensionModules = [
   addExporterModule,
-  Flags.get(DISABLE_FIX_ORIGIN) ? diagramOriginModule : fixOriginModule,
+  Flags.get(DISABLE_FIX_ORIGIN) ? diagramOriginModule : alignToOriginModule,
   propertiesPanelModule,
   propertiesProviderModule,
   propertiesPanelKeyboardBindingsModule
