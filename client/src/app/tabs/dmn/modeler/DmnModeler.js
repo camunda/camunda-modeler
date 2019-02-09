@@ -15,7 +15,7 @@ import literalExpressionAdapterModule from 'dmn-js-properties-panel/lib/adapter/
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
 import decisionTableKeyboardModule from './features/decision-table-keyboard';
 
-import Flags, { DISABLE_FIX_ORIGIN } from '../../../../util/Flags';
+import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 
 import camundaModdleDescriptor from 'camunda-dmn-moddle/resources/camunda';
 
@@ -46,7 +46,7 @@ export default class CamundaDmnModeler extends DmnModeler {
     super({
       ...otherOptions,
       drd: mergeModules(drd, [
-        Flags.get(DISABLE_FIX_ORIGIN) ? diagramOriginModule : alignToOriginModule,
+        Flags.get(DISABLE_ADJUST_ORIGIN) ? diagramOriginModule : alignToOriginModule,
         propertiesPanelModule,
         propertiesProviderModule,
         drdAdapterModule,
