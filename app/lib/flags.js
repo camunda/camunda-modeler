@@ -36,6 +36,8 @@ class Flags {
       ...config,
       ...overrides
     };
+
+    log('active %o', this.flags);
   }
 
   getAll() {
