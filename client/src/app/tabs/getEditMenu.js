@@ -1,4 +1,4 @@
-import Flags, { DISABLE_FIX_ORIGIN } from '../../util/Flags';
+import Flags, { DISABLE_ADJUST_ORIGIN } from '../../util/Flags';
 
 export function getCanvasEntries({
   moveCanvas,
@@ -7,7 +7,7 @@ export function getCanvasEntries({
 }) {
   const menuEntries = [];
 
-  if (isDefined(moveToOrigin) && Flags.get(DISABLE_FIX_ORIGIN)) {
+  if (isDefined(moveToOrigin) && Flags.get(DISABLE_ADJUST_ORIGIN)) {
     menuEntries.push({
       label: 'Move Elements To Origin',
       accelerator: 'CommandOrControl+Shift+O',

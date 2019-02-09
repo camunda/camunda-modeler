@@ -12,7 +12,7 @@ import globalClipboardModule from './features/global-clipboard';
 import applyDefaultTemplates from './features/apply-default-templates';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
 
-import Flags, { DISABLE_FIX_ORIGIN } from '../../../../util/Flags';
+import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 
 import signavioCompatModule from 'bpmn-js-signavio-compat';
 
@@ -56,7 +56,7 @@ const extensionModules = [
   minimapModule,
   addExporterModule,
   executableFixModule,
-  Flags.get(DISABLE_FIX_ORIGIN) ? diagramOriginModule : alignToOriginModule,
+  Flags.get(DISABLE_ADJUST_ORIGIN) ? diagramOriginModule : alignToOriginModule,
   globalClipboardModule,
   signavioCompatModule,
   camundaModdleExtension,
