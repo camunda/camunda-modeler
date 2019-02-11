@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/1.0" id="Definitions_{{ ID }}" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/1.0" id="Definitions_17g60h0" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
   <decision id="Decision_13nychf" name="Decision 1">
     <extensionElements>
-      <biodi:bounds x="200" y="200" width="180" height="80"/>
+      <biodi:bounds x="156" y="156" width="180" height="80" />
     </extensionElements>
     <decisionTable id="decisionTable_1">
       <input id="input_1">
@@ -10,7 +10,7 @@
           <text></text>
         </inputExpression>
       </input>
-      <output typeRef="string" id="output_1" />
+      <output id="output_1" typeRef="string" />
     </decisionTable>
   </decision>
 </definitions>
