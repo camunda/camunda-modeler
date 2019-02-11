@@ -8,9 +8,9 @@ const ids = new Ids();
  */
 export default class Backend {
 
-  constructor(ipcRenderer, process) {
+  constructor(ipcRenderer, platform) {
     this.ipcRenderer = ipcRenderer;
-    this.process = process;
+    this.platform = platform;
   }
 
   /**
@@ -79,7 +79,6 @@ export default class Backend {
   }
 
   getPlatform() {
-    return this.process.platform;
+    return this.platform;
   }
-
 }

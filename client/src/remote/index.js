@@ -13,11 +13,11 @@ const {
   process
 } = electronRequire('remote');
 
+const platform = process.platform;
+
 export const ipcRenderer = electronRequire('ipcRenderer');
 
-export { process };
-
-export const backend = new Backend(ipcRenderer, process);
+export const backend = new Backend(ipcRenderer, platform);
 
 export const fileSystem = new FileSystem(backend);
 
