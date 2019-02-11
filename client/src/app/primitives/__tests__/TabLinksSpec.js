@@ -61,6 +61,24 @@ describe('<TabLinks>', function() {
   });
 
 
+  describe('title', function() {
+
+    it('should display tab title', function() {
+
+      const {
+        tree
+      } = renderTabLinks();
+
+      // when
+      const node = tree.find('.tab[data-tab-id="tab1"]').getDOMNode();
+
+      // then
+      expect(node.title).to.eql(tab1.title);
+    });
+
+  });
+
+
   describe('scrolling', function() {
 
     it('should handle scroll', function() {

@@ -1,6 +1,7 @@
 export const defaultActiveTab = {
   id: 'tab1',
-  name: 'tab1.tab'
+  name: 'tab1.tab',
+  title: 'tab1'
 };
 
 export const defaultTabs = [
