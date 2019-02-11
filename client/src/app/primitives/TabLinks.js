@@ -122,7 +122,7 @@ export default class TabLinks extends PureComponent {
       onSelect,
       onContextMenu,
       onClose,
-      onCreate,
+      placeholder,
       className
     } = this.props;
 
@@ -167,14 +167,15 @@ export default class TabLinks extends PureComponent {
           }
 
           {
-            onCreate && <span
-              key="empty-tab"
-              className={ classNames('tab ignore', {
+            placeholder && <span
+              key="__placeholder"
+              className={ classNames('tab placeholder ignore', {
                 active: tabs.length === 0
               }) }
-              onClick={ () => onCreate() }
+              onClick={ placeholder.onClick }
+              title={ placeholder.title }
             >
-              +
+              { placeholder.label }
             </span>
           }
         </div>
