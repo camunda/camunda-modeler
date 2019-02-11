@@ -139,6 +139,7 @@ export default class TabLinks extends PureComponent {
                 <span
                   key={ tab.id }
                   data-tab-id={ tab.id }
+                  title={ tab.title }
                   className={ classNames('tab', {
                     active: tab === activeTab,
                     dirty
@@ -151,6 +152,7 @@ export default class TabLinks extends PureComponent {
                   {
                     onClose && <span
                       className="close"
+                      title="Close Tab"
                       onClick={ e => {
                         e.preventDefault();
                         e.stopPropagation();
