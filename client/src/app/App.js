@@ -1560,7 +1560,11 @@ export class App extends PureComponent {
                 onMoveTab={ this.moveTab }
                 onContextMenu={ this.openTabLinksMenu }
                 onClose={ this.handleCloseTab }
-                onCreate={ this.composeAction('create-bpmn-diagram') }
+                placeholder={ {
+                  label: '+',
+                  title: 'New BPMN diagram',
+                  onClick: this.composeAction('create-bpmn-diagram')
+                } }
                 draggable
                 scrollable
               />
