@@ -1,21 +1,18 @@
 import Backend from '../Backend';
 
 import {
-  IpcRenderer,
-  Process
+  IpcRenderer
 } from './mocks';
 
 describe('backend', function() {
 
   let backend,
-      ipcRenderer,
-      process;
+      ipcRenderer;
 
   beforeEach(function() {
     ipcRenderer = new IpcRenderer();
-    process = new Process();
 
-    backend = new Backend(ipcRenderer, process);
+    backend = new Backend(ipcRenderer, 'foo');
   });
 
 
@@ -48,16 +45,13 @@ describe('backend', function() {
   });
 
 
-  it('should return platform darwin', function() {
-
-    // given
-    process.setPlatform('darwin');
+  it('should return platform <foo>', function() {
 
     // when
     const platform = backend.getPlatform();
 
     // then
-    expect(platform).to.equal('darwin');
+    expect(platform).to.equal('foo');
   });
 
 });
