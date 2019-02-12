@@ -449,9 +449,11 @@ function handleDeployment(data, done) {
 function bootstrap() {
   const userPath = app.getPath('userData');
   const appPath = path.dirname(app.getPath('exe'));
+  const logPath = getLogPath(app);
 
   Log.addTransports(
-    new logTransports.Console()
+    new logTransports.Console(),
+    new logTransports.File(logPath)
   );
 
   const cwd = process.cwd();
@@ -508,6 +510,18 @@ function bootstrap() {
     flags,
     files
   };
+}
+
+function getLogPath(app) {
+  let logPath;
+
+  try {
+    logPath = app.getPath('logs');
+  } catch (e) {
+    logPath = app.getPath('userData');
+  }
+
+  return path.join(logPath, 'log.log');
 }
 
 
