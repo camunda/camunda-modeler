@@ -1,8 +1,7 @@
 const path = require('path');
 const glob = require('glob');
 
-const log = require('debug')('app:plugins');
-const logError = require('debug')('app:plugins:error');
+const log = require('./log')('app:plugins');
 
 const {
   globFiles
@@ -29,18 +28,18 @@ class Plugins {
       return;
     }
 
-    log('searching for %s in paths %o', PLUGINS_PATTERN, searchPaths);
+    log.info('searching for %s in paths %O', PLUGINS_PATTERN, searchPaths);
 
     const pluginPaths = globFiles({
       searchPaths,
       pattern: PLUGINS_PATTERN
     });
 
-    log('found plug-in entries %o', pluginPaths);
+    log.info('found plug-in entries %O', pluginPaths);
 
     this.plugins = this._createPlugins(pluginPaths);
 
-    log('registered %o', Object.keys(this.plugins));
+    log.info('registered %O', Object.keys(this.plugins));
   }
 
   _createPlugins(pluginPaths) {
@@ -49,7 +48,7 @@ class Plugins {
       // don't let broken plug-ins bring down the modeler
       // instantiation; skip them and log a respective error
       try {
-        log('loading %s', pluginPath);
+        log.info('loading %s', pluginPath);
 
         const base = path.dirname(pluginPath);
 
@@ -102,7 +101,7 @@ class Plugins {
           try {
             plugin.menu = require(menuPath);
           } catch (error) {
-            logError('failed to load menu extension %s', menuPath, error);
+            log.error('failed to load menu extension %s', menuPath, error);
 
             plugin.error = true;
           }
@@ -113,7 +112,7 @@ class Plugins {
           [name]: plugin
         };
       } catch (error) {
-        logError('failed to load %s', pluginPath, error);
+        log.error('failed to load %s', pluginPath, error);
       }
 
       return plugins;

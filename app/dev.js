@@ -1,5 +1,4 @@
-const log = require('debug')('app:dev');
-const logError = require('debug')('app:dev:error');
+const log = require('./lib/log')('app:dev');
 
 const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 
@@ -7,9 +6,6 @@ const getAppVersion = require('./util/get-version');
 
 // enable development perks
 process.env.NODE_ENV = 'development';
-
-// enable logging
-require('debug').enable('app:*');
 
 // monkey-patch package version to indicate DEV mode in application
 const pkg = require('./package');
@@ -30,9 +26,9 @@ app.on('before-quit', function() {
 app.on('app:window-created', async () => {
   try {
     const name = await installExtension(REACT_DEVELOPER_TOOLS);
-    log('added extension <%s>', name);
+    log.info('added extension <%s>', name);
   } catch (err) {
-    logError('failed to add extension', err);
+    log.error('failed to add extension', err);
   }
 });
 

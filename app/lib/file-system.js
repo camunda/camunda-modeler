@@ -8,6 +8,8 @@ const {
   pick
 } = require('min-dash');
 
+const log = require('./log')('app:file-system');
+
 const FILE_PROPERTIES = [
   'contents',
   'encoding',
@@ -126,7 +128,7 @@ function getLastModifiedTicks(filePath) {
 
     return stats.mtime.getTime() || 0;
   } catch (err) {
-    console.error(`Unable to read lastModified of file "${ filePath }"`);
+    log.error(`Unable to read lastModified of file "${ filePath }"`);
 
     return 0;
   }

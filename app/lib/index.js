@@ -30,13 +30,14 @@ const Cli = require('./cli');
 const Plugins = require('./plugins');
 const Deployer = require('./deployer');
 const Flags = require('./flags');
+const Log = require('./log');
+const logTransports = require('./log/transports');
 
 const browserOpen = require('./util/browser-open');
 const renderer = require('./util/renderer');
 
-const log = require('debug')('app:main');
-const bootstrapLog = require('debug')('app:main:bootstrap');
-const logError = require('debug')('app:main');
+const log = Log('app:main');
+const bootstrapLog = Log('app:main:bootstrap');
 
 const {
   config,
@@ -222,7 +223,7 @@ renderer.on('client-config:get', function(...args) {
 // open file handling //////////
 
 app.on('app:client-ready', function() {
-  bootstrapLog('received client-ready');
+  bootstrapLog.info('received client-ready');
 
   // open pending files
   if (files.length) {
@@ -271,7 +272,7 @@ app.on('web-contents-created', (event, webContents) => {
  */
 app.openFiles = function(filePaths) {
 
-  log('open files %o', filePaths);
+  log.info('open files %O', filePaths);
 
   if (!app.clientReady) {
 
@@ -327,7 +328,7 @@ app.createEditorWindow = function() {
 
   // handling case when user clicks on window close button
   mainWindow.on('close', function(e) {
-    log('initating close of main window');
+    log.info('initating close of main window');
 
     if (app.quitAllowed) {
       // dereferencing main window and resetting client state
@@ -336,13 +337,13 @@ app.createEditorWindow = function() {
 
       app.clientReady = false;
 
-      return log('main window closed');
+      return log.info('main window closed');
     }
 
     // preventing window from closing until client allows to do so
     e.preventDefault();
 
-    log('asking client to allow quit');
+    log.info('asking client to allow quit');
 
     app.emit('app:quit-denied');
 
@@ -350,7 +351,7 @@ app.createEditorWindow = function() {
   });
 
   mainWindow.on('focus', function() {
-    log('window focused');
+    log.info('window focused');
 
     renderer.send('client:window-focused');
   });
@@ -376,7 +377,7 @@ app.createEditorWindow = function() {
  */
 app.on('ready', function() {
 
-  bootstrapLog('received ready');
+  bootstrapLog.info('received ready');
 
   menu.registerMenuProvider('plugins', {
     plugins: plugins.getAll()
@@ -399,14 +400,14 @@ app.on('ready', function() {
 
   // quit command from menu/shortcut
   app.on('app:quit', function() {
-    log('initiating quit');
+    log.info('initiating quit');
 
     renderer.send('menu:action', 'quit');
   });
 
   // client quit verification event
   renderer.on('app:quit-allowed', function() {
-    log('quit allowed');
+    log.info('quit allowed');
 
     app.quitAllowed = true;
 
@@ -423,7 +424,7 @@ function handleDeployment(data, done) {
   deployer.deploy(endpointUrl, data, function(error, result) {
 
     if (error) {
-      logError('failed to deploy', error);
+      log.error('failed to deploy', error);
 
       return done(error);
     }
@@ -446,9 +447,12 @@ function handleDeployment(data, done) {
  * @return {Object} bootstrapped components
  */
 function bootstrap() {
-
   const userPath = app.getPath('userData');
   const appPath = path.dirname(app.getPath('exe'));
+
+  Log.addTransports(
+    new logTransports.Console()
+  );
 
   const cwd = process.cwd();
 
@@ -483,7 +487,7 @@ function bootstrap() {
   const pluginsDisabled = flags.get('disable-plugins');
 
   if (pluginsDisabled) {
-    log('plug-ins disabled via feature toggle');
+    log.info('plug-ins disabled via feature toggle');
   }
 
   // TODO(nikku): remove loading directly from {ROOT}/resources/plugins

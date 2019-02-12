@@ -2,8 +2,7 @@ const {
   globJSON
 } = require('./util/files');
 
-const log = require('debug')('app:flags');
-const logError = require('debug')('app:flags:error');
+const log = require('./log')('app:flags');
 
 const FLAGS_PATTERN = 'flags.json';
 
@@ -15,7 +14,7 @@ class Flags {
     const searchPaths = options.paths || [];
     const overrides = options.overrides || {};
 
-    log('searching for %s in paths %o', FLAGS_PATTERN, searchPaths);
+    log.info('searching for %s in paths %O', FLAGS_PATTERN, searchPaths);
 
     const {
       config,
@@ -26,10 +25,10 @@ class Flags {
       pattern: FLAGS_PATTERN
     });
 
-    log('found %o', files);
+    log.info('found %O', files);
 
     if (errors.length) {
-      logError('skipped files due to errors', errors);
+      log.error('skipped files due to errors', errors);
     }
 
     this.flags = {
@@ -37,7 +36,7 @@ class Flags {
       ...overrides
     };
 
-    log('active %o', this.flags);
+    log.info('active %o', this.flags);
   }
 
   getAll() {
