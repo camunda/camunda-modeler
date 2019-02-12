@@ -1,5 +1,7 @@
 'use strict';
 
+const log = require('../../log')('app:mac-os');
+
 function MacOSPlatform(app) {
 
   /**
@@ -17,7 +19,7 @@ function MacOSPlatform(app) {
   app.on('open-url', function(e) {
     e.preventDefault();
 
-    console.log('application does not support opening URLs');
+    log.info('application does not support opening URLs');
   });
 
   /**
@@ -64,7 +66,7 @@ function MacOSPlatform(app) {
 
     e.preventDefault();
 
-    console.log('Keeping app in the dock');
+    log.info('Keeping app in the dock');
 
     app.terminating = false;
   });

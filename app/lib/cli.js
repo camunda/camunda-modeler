@@ -5,7 +5,7 @@ const path = require('path');
 
 const mri = require('mri');
 
-const log = require('debug')('app:cli');
+const log = require('./log')('app:cli');
 
 /**
  * Parse file arguments from the command line
@@ -18,7 +18,7 @@ const log = require('debug')('app:cli');
  */
 function parse(args, cwd) {
 
-  log('parsing %o in %o', args, cwd);
+  log.info('parsing %O in %O', args, cwd);
 
   const {
     _,
@@ -52,10 +52,10 @@ function isFile(filePath) {
       return true;
     }
 
-    log('skipping directory %s', filePath);
+    log.info('skipping directory %s', filePath);
   } catch (e) {
     // file not found or the like...
-    log(e.message, filePath);
+    log.info(e.message, filePath);
   }
 
   return false;

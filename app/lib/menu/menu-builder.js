@@ -6,8 +6,6 @@ const {
   MenuItem
 } = require('electron');
 
-const browserOpen = require('../util/browser-open');
-
 const {
   assign,
   find,
@@ -16,6 +14,10 @@ const {
   merge,
   reduce
 } = require('min-dash');
+
+const browserOpen = require('../util/browser-open');
+
+const log = require('../log')('app:menu');
 
 
 class MenuBuilder {
@@ -446,11 +448,11 @@ class MenuBuilder {
                 });
               })
             );
-          } catch (e) {
+          } catch (error) {
             plugin.error = true;
             menuItemDescriptor.enabled = false;
 
-            console.error(e);
+            log.error('Failed to build menu: %O', error);
           }
         }
 
@@ -627,7 +629,7 @@ function wrapPluginAction(fn) {
     try {
       fn();
     } catch (error) {
-      console.error('Menu action error', error);
+      log.error('Menu action error: %O', error);
     }
   };
 }

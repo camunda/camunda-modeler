@@ -4,8 +4,7 @@ const {
 
 const renderer = require('./util/renderer');
 
-const log = require('debug')('app:workspace');
-const logError = require('debug')('app:workspace:error');
+const log = require('./log')('app:workspace');
 
 
 function Workspace(config, fileSystem) {
@@ -25,12 +24,12 @@ function Workspace(config, fileSystem) {
       } = diagram;
 
       try {
-        log('restoring %s', path);
+        log.info('restoring %s', path);
 
         files.push(fileSystem.readFile(path));
 
       } catch (err) {
-        logError('failed to restore %s', path, err);
+        log.error('failed to restore %s', path, err);
       }
     });
 
@@ -43,7 +42,7 @@ function Workspace(config, fileSystem) {
 
   renderer.on('workspace:save', function(workspace, done) {
 
-    log('saving');
+    log.info('saving');
 
     config.set('workspace', workspace);
 
