@@ -160,11 +160,15 @@ export default class AppParent extends PureComponent {
 
   handleError = (error, tab) => {
 
-    if (tab) {
-      return log('tab ERROR', error, tab);
-    }
+    const errorMessage = `${tab ? 'tab' : 'app'} ERROR`;
 
-    return log('app ERROR', error);
+    this.props.globals.log.error(errorMessage, error, tab);
+
+    return log(errorMessage, error, tab);
+  }
+
+  handleBackendError = (_, message) => {
+    this.triggerAction(null, 'backend-error', message);
   }
 
   handleWarning = (warning, tab) => {
@@ -258,6 +262,8 @@ export default class AppParent extends PureComponent {
 
     backend.on('client:window-focused', this.handleFocus);
 
+    backend.on('backend:error', this.handleBackendError);
+
     this.registerMenus();
 
     keyboardBindings.setOnAction(this.triggerAction);
@@ -283,6 +289,8 @@ export default class AppParent extends PureComponent {
     backend.off('client:open-files', this.handleOpenFiles);
 
     backend.off('client:window-focused', this.handleFocus);
+
+    backend.off('backend:error', this.handleBackendError);
 
     keyboardBindings.unbind();
 

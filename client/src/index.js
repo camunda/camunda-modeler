@@ -14,6 +14,7 @@ import {
   fileSystem,
   plugins,
   flags,
+  log,
   metadata,
   workspace
 } from './remote';
@@ -45,6 +46,7 @@ const globals = {
   dialog,
   fileSystem,
   isMac,
+  log,
   plugins,
   workspace
 };
