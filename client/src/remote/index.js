@@ -4,6 +4,7 @@ import Backend from './Backend';
 import Config from './Config';
 import Dialog from './Dialog';
 import FileSystem from './FileSystem';
+import Log from './Log';
 import Plugins from './Plugins';
 import Workspace from './Workspace';
 
@@ -32,3 +33,5 @@ export const metadata = getGlobal('metaData');
 export const flags = app.flags.getAll();
 
 export const workspace = new Workspace(backend);
+
+export const log = new Log(backend);

@@ -38,6 +38,7 @@ const renderer = require('./util/renderer');
 
 const log = Log('app:main');
 const bootstrapLog = Log('app:main:bootstrap');
+const clientLog = Log('client');
 
 const {
   config,
@@ -237,6 +238,13 @@ renderer.on('client:ready', function() {
   app.clientReady = true;
 
   app.emit('app:client-ready');
+});
+
+renderer.on('client:error', function(...args) {
+  const done = args.pop();
+
+  clientLog.error(...args);
+  done(null);
 });
 
 app.on('web-contents-created', (event, webContents) => {
@@ -454,6 +462,10 @@ function bootstrap() {
   Log.addTransports(
     new logTransports.Console(),
     new logTransports.File(logPath)
+    // TODO(nikku): we're not doing this for now
+    // first we must decide how to separate diagram open warnings from
+    // actual app errors in the client user interface
+    // new logTransports.Client(renderer, () => app.clientReady)
   );
 
   const cwd = process.cwd();

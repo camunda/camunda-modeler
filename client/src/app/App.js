@@ -1326,6 +1326,10 @@ export class App extends PureComponent {
       this.openExternalUrl(options);
     }
 
+    if (action === 'backend-error') {
+      return this.logEntry(options, 'error');
+    }
+
     if (action === 'check-file-changed') {
       return this.checkFileChanged(activeTab);
     }
