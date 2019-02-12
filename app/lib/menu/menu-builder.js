@@ -415,10 +415,10 @@ class MenuBuilder {
 
     if (plugins) {
       submenuTemplate = reduce(plugins, (menuItems, plugin) => {
-        const label = plugin.name;
+        const { name } = plugin;
 
         const menuItemDescriptor = {
-          label,
+          label: name,
           enabled: false
         };
 
@@ -437,7 +437,7 @@ class MenuBuilder {
                 submenu
               }) => {
                 enabled = isFunction(enabled) ? enabled() : enabled;
-                const click = action && wrapPluginAction(action);
+                const click = action && wrapPluginAction(action, name);
 
                 return new MenuItem({
                   label,
@@ -452,7 +452,7 @@ class MenuBuilder {
             plugin.error = true;
             menuItemDescriptor.enabled = false;
 
-            log.error('Failed to build menu: %O', error);
+            log.error('[%s] Failed to build menu: %O', name, error);
           }
         }
 
@@ -624,12 +624,12 @@ function canCloseTab(state) {
   return Boolean(state.tabsCount);
 }
 
-function wrapPluginAction(fn) {
+function wrapPluginAction(fn, pluginName) {
   return function() {
     try {
       fn();
     } catch (error) {
-      log.error('Menu action error: %O', error);
+      log.error('[%s] Menu action error: %O', pluginName, error);
     }
   };
 }
