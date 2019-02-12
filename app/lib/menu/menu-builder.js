@@ -625,9 +625,9 @@ function canCloseTab(state) {
 }
 
 function wrapPluginAction(fn, pluginName) {
-  return function() {
+  return async function() {
     try {
-      fn();
+      await fn();
     } catch (error) {
       log.error('[%s] Menu action error: %O', pluginName, error);
     }
