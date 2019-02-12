@@ -16,6 +16,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: align diagrams to `(0,0)` on save to prevent negative coordinates ([#1096](https://github.com/camunda/camunda-modeler/issues/1096))
 * `FEAT`: drop diagram origin cross ([#1096](https://github.com/camunda/camunda-modeler/issues/1096))
 * `FEAT`: unify search paths for plug-ins and element templates ([#597](https://github.com/camunda/camunda-modeler/issues/597))
+* `FEAT`: show full path to diagram as tab title ([#1187](https://github.com/camunda/camunda-modeler/issues/1187))
 * `CHORE`: update to `electron@3.1.3`
 * `CHORE`: update to `bpmn-js@3.2.0`
 * `FIX`: correct shortcuts shown in overlay ([#1039](https://github.com/camunda/camunda-modeler/issues/1039))
