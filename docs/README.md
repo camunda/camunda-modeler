@@ -7,6 +7,10 @@ Developer documentation for the Camunda Modeler.
 
 This shows how to setup and contribute pre-defined custom elements to the modeler
 
+### [Flags](./flags)
+
+This show how to use flags to toggle several features
+
 ### [Plugins](./plugins)
 
 This shows how to use plug into the modeler
