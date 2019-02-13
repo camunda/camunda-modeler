@@ -1,3 +1,6 @@
+> :warning: This feature got introduced in Camunda Modeler `v3.0.0` and may be subject to change at any time.
+
+
 # Flags
 
 Flags allow you to control the availability certain features within the application.
