@@ -40,6 +40,8 @@ const log = Log('app:main');
 const bootstrapLog = Log('app:main:bootstrap');
 const clientLog = Log('client');
 
+bootstrapLogging();
+
 const {
   config,
   clientConfig,
@@ -441,6 +443,25 @@ function handleDeployment(data, done) {
   });
 }
 
+function bootstrapLogging() {
+
+  let logPath;
+
+  try {
+    logPath = app.getPath('logs');
+  } catch (e) {
+    logPath = app.getPath('userData');
+  }
+
+  Log.addTransports(
+    new logTransports.Console(),
+    new logTransports.File(path.join(logPath, 'log.log'))
+    // TODO(nikku): we're not doing this for now
+    // first we must decide how to separate diagram open warnings from
+    // actual app errors in the client user interface
+    // new logTransports.Client(renderer, () => app.clientReady)
+  );
+}
 
 /**
  * Bootstrap the application and return
@@ -457,16 +478,6 @@ function handleDeployment(data, done) {
 function bootstrap() {
   const userPath = app.getPath('userData');
   const appPath = path.dirname(app.getPath('exe'));
-  const logPath = getLogPath(app);
-
-  Log.addTransports(
-    new logTransports.Console(),
-    new logTransports.File(logPath)
-    // TODO(nikku): we're not doing this for now
-    // first we must decide how to separate diagram open warnings from
-    // actual app errors in the client user interface
-    // new logTransports.Client(renderer, () => app.clientReady)
-  );
 
   const cwd = process.cwd();
 
@@ -522,18 +533,6 @@ function bootstrap() {
     flags,
     files
   };
-}
-
-function getLogPath(app) {
-  let logPath;
-
-  try {
-    logPath = app.getPath('logs');
-  } catch (e) {
-    logPath = app.getPath('userData');
-  }
-
-  return path.join(logPath, 'log.log');
 }
 
 
