@@ -37,7 +37,7 @@ Manual integration tests:
 
 * [ ] configure service task in properties panel
 * [ ] add `async:before`
-* [ ] add executionn listener
+* [ ] add execution listener
 * [ ] add input mapping
 * [ ] verify results in XML tab
 
