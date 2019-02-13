@@ -16,7 +16,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: rework file dropping
 * `FEAT`: improve logging across the application
 * `FEAT`: allow disabling plug-ins via flag ([`4b365482`](https://github.com/camunda/camunda-modeler/commit/4b3654825d033035e588e33927ceee4ce089af44))
-* `FEAT`: align diagrams to `(0,0)` on save to prevent negative coordinates ([#1096](https://github.com/camunda/camunda-modeler/issues/1096))
+* `FEAT`: align diagrams to `(0,0)` on save to prevent negative coordinates ([#982](https://github.com/camunda/camunda-modeler/issues/982), [#1183](https://github.com/camunda/camunda-modeler/issues/1183))
 * `FEAT`: drop diagram origin cross ([#1096](https://github.com/camunda/camunda-modeler/issues/1096))
 * `FEAT`: unify search paths for plug-ins and element templates ([#597](https://github.com/camunda/camunda-modeler/issues/597))
 * `FEAT`: show full path to diagram as tab title ([#1187](https://github.com/camunda/camunda-modeler/issues/1187))
