@@ -42,6 +42,11 @@ const clientLog = Log('client');
 
 bootstrapLogging();
 
+app.version = require('../package').version;
+app.name = 'Camunda Modeler';
+
+bootstrapLog.info('starting %s v%s', app.name, app.version);
+
 const {
   config,
   clientConfig,
@@ -54,9 +59,6 @@ app.plugins = plugins;
 app.flags = flags;
 
 Platform.create(process.platform, app, config);
-
-app.version = require('../package').version;
-app.name = 'Camunda Modeler';
 
 // this is shared variable between main and renderer processes
 global.metaData = {
