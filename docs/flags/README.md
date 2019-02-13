@@ -3,7 +3,7 @@
 
 # Flags
 
-Flags allow you to control the availability certain features within the application.
+Flags allow you to control the availability of certain features within the application.
 
 
 ## Configuring Flags
@@ -22,7 +22,7 @@ Pass flags via the command line when starting the application.
 camunda-modeler --disable-plugins
 ```
 
-Flags passed as command line arguments take precedence over those configured via configuration file.
+Flags passed as command line arguments take precedence over those configured via a configuration file.
 
 
 ## Available Flags
@@ -50,6 +50,6 @@ To disable the CMMN and DMN editing capabilities of the App, configure your `fla
 }
 ```
 
-As a result the app will only allow users to model BPMN diagrams.
+As a result, the app will only allow users to model BPMN diagrams.
 
 ![BPMN only mode](./bpmn-only.png)
