@@ -1,25 +1,44 @@
-# Flags :flags:
+# Flags
 
-Flags allow to disable several features inside the application.
+Flags allow you to control the availability certain features within the application.
 
-## Available flags
 
-Following flags are available:
+## Configuring Flags
 
-- `disable-plugins`: Disabling use of plugins
-- `disable-adjust-origin`: Disabling automatic adjustments to origin coordinates
-- `disable-cmmn`: Disabling `CMMN-Editor`
-- `disable-dmn`: Disabling `DMN-Editor`
+You may configure flags in a `flags.json` file or pass them via CLI.
 
-All flags are _not_ set per default.
+### Configure in `flags.json`
 
-## Use a configuration file
+Place a `flags.json` file inside the `{APP_HOME}/resources` or `{USER_DATA}/resources` directory to persist them.
 
-One way to use flags persistently is to create a `flags.json` configuration file inside your user directory. Just modify the configuration file inside your local `{APP_DIRECTORY}/resources` or `{USER_DATA_DIRECTORY}/resources`  location. 
+### Configure via CLI
 
-### BPMN-only mode example
+Pass flags via the command line when starting the application. 
 
-One example of using the flags is the BPMN-only mode. To disable the `CMMN-` and `DMN-Editor`, simply modify the `flags.json` configuration file with
+```
+camunda-modeler --disable-plugins
+```
+
+Flags passed as command line arguments take precedence over those configured via configuration file.
+
+
+## Available Flags
+
+```json
+{
+  "disable-plugins": false,
+  "disable-adjust-origin": false,
+  "disable-cmmn": false,
+  "disable-dmn": false
+}
+```
+
+
+## Examples
+
+### BPMN-only Mode
+
+To disable the CMMN and DMN editing capabilities of the App, configure your `flags.json` like this:
 
 ```js
 {
@@ -28,12 +47,6 @@ One example of using the flags is the BPMN-only mode. To disable the `CMMN-` and
 }
 ```
 
+As a result the app will only allow users to model BPMN diagrams.
+
 ![BPMN only mode](./bpmn-only.png)
-
-## Use the CLI
-
-Another way to enable feature toggles is simply using them while starting the application via command line on Windows and Linux. E.g. in the case of disabling the `DMN-Editor`, add the following argument to the start command:
-
-```sh
-$ camunda-modeler --disable-dmn
-```
