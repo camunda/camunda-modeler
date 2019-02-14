@@ -99,6 +99,13 @@ Based on the [test diagram](./test.bpmn.png):
 * [ ] Open [`broken.bpmn`](./broken.bpmn) and verify a proper error message is shown (_No diagram to display_)
 
 
+#### Installers (platform specific)
+
+* [ ] MacOS
+    * [ ] Unzipping and starting application works
+    * [ ] Installing application via `dmg` file and starting it works
+
+
 #### Other (platform specific)
 
 * [ ] key bindings work (Mac = CMD, CMD+SHIFT+Z, Other = CTRL)
