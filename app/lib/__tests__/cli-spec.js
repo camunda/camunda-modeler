@@ -57,6 +57,24 @@ describe('cli', function() {
     });
 
 
+    it('parse MacOS signature confirm notice', function() {
+
+      // given
+      const args = [
+        '/path/to/app',
+        '-psn_0_18749364'
+      ];
+
+      // when
+      const {
+        files
+      } = Cli.parse(args, __dirname);
+
+      // then
+      expect(files).to.be.empty;
+    });
+
+
     if (process.platform === 'win32') {
 
       it('parse Windows args', function() {

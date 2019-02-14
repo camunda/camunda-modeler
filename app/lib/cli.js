@@ -25,7 +25,7 @@ function parse(args, cwd) {
     ...flags
   } = mri(args.slice(1));
 
-  const files = _.map(f => path.resolve(cwd, f)).filter(isFile);
+  const files = _.filter(isPath).map(f => path.resolve(cwd, f)).filter(isFile);
 
   return {
     files,
@@ -59,4 +59,16 @@ function isFile(filePath) {
   }
 
   return false;
+}
+
+
+function isPath(path) {
+
+  if (typeof path !== 'string') {
+    log.info('skipping non-file arg %s', path);
+
+    return false;
+  }
+
+  return true;
 }
