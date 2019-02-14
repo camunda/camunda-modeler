@@ -6,6 +6,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.0.0-beta.1
+
+#### General
+
+* `FIX`: handle unrecognized, non-file arguments passed to application ([#1237](https://github.com/camunda/camunda-modeler/issues/1237))
 
 ## 3.0.0-beta.0
 
