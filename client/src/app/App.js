@@ -574,48 +574,21 @@ export class App extends PureComponent {
       };
     });
 
-    // open tabs from last to first to
-    // keep display order in tact
-    const openedTabs = await Promise.all(files.slice().reverse().map(
-      async file => {
-        let tab;
-
-        if (!file.contents.length) {
-          tab = await this.openEmptyFile(file);
-        } else {
-          tab = this.findOpenTab(file);
-
-          if (!tab) {
-            const newTab = tabsProvider.createTabForFile(file);
-
-            if (newTab) {
-              tab = this.addTab(newTab);
-            }
-          }
-        }
-
-        return tab;
-      })
-    ).then(tabs => {
-
-      // filter out empty elements
-      return tabs.filter(tab => tab);
-    });
+    // either find existing or create new tab for every given file
+    const openedTabs = await this.findOrCreateTabs(files, tabsProvider);
 
     // unless activation is disabled via activateFile=false,
     // open the tab for the desired file or, if not found,
     // the last opened tab
     if (activateFile !== false) {
-      const activeTab = activateFile && this.findOpenTab(activateFile) || openedTabs[0];
+      const activeTab = activateFile && this.findOpenTab(activateFile) || openedTabs[openedTabs.length - 1];
 
       if (activeTab) {
         await this.selectTab(activeTab);
       }
     }
 
-    // open tabs from last to first to
-    // keep display order in tact
-    return openedTabs.reverse();
+    return openedTabs;
   }
 
   readFileList = async filePaths => {
@@ -655,6 +628,39 @@ export class App extends PureComponent {
     }
 
     return file;
+  }
+
+  /**
+   * Find existing tabs for given files. If no tab was found for one tab,
+   * create a new one.
+   * @param {Array<File>} files
+   * @param {TabsProvider} tabsProvider
+   *
+   * @returns {Array<Tab>}
+   */
+  async findOrCreateTabs(files, tabsProvider) {
+    const openedTabs = await Promise.all(files.slice().reverse().map(async (file) => {
+      let tab;
+
+      if (!file.contents.length) {
+        tab = await this.openEmptyFile(file);
+      } else {
+        tab = this.findOpenTab(file);
+        if (!tab) {
+          const newTab = tabsProvider.createTabForFile(file);
+          if (newTab) {
+            tab = this.addTab(newTab);
+          }
+        }
+      }
+
+      return tab;
+    })).then(tabs => {
+      // filter out empty elements
+      return tabs.filter(tab => tab);
+    });
+
+    return openedTabs.slice().reverse();
   }
 
   findOpenTab(file) {
