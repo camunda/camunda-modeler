@@ -201,7 +201,7 @@ export default class TabsProvider {
   getInitialFileContents(type, options) {
     const rawContents = this.getProvider(type).getInitialContents(options);
 
-    return rawContents && rawContents.replace(/\{\{ ID \}\}/g, () => ids.next());
+    return rawContents && rawContents.replace(/\{\{ ID(?::([^ ]+))? \}\}/g, createReplacer(ids));
   }
 
   createFile(type, options) {
@@ -279,4 +279,20 @@ export default class TabsProvider {
 
   }
 
+}
+
+
+// helpers ///////////////////////
+
+function createReplacer(ids) {
+  var cache = {};
+
+  return function replacer(_, name) {
+
+    if (name) {
+      cache[name] = cache[name] || ids.next();
+    }
+
+    return cache[name] || ids.next();
+  };
 }

@@ -9,7 +9,7 @@ describe('tabs/bpmn', function() {
 
       // then
       expect(contents).to.contain('id="Definitions_{{ ID }}"');
-      expect(contents).to.contain('id="Process_{{ ID }}"');
+      expect(contents).to.contain('id="Process_{{ ID:process }}"');
     });
 
   });

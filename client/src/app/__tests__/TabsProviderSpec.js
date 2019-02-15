@@ -79,7 +79,7 @@ describe('TabsProvider', function() {
         expect(contents).to.exist;
 
         // without the {{ ID }} placeholder
-        expect(contents).not.to.contain('{{ ID }}');
+        expect(contents).not.to.contain('{{ ID');
       });
     }
 

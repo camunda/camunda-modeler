@@ -9,7 +9,7 @@ describe('tabs/cmmn', function() {
 
       // then
       expect(contents).to.contain('id="Definitions_{{ ID }}"');
-      expect(contents).to.contain('id="Case_{{ ID }}"');
+      expect(contents).to.contain('id="Case_{{ ID:case }}"');
     });
 
   });
