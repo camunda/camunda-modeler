@@ -9,7 +9,7 @@ This shows how to setup and contribute pre-defined custom elements to the modele
 
 ### [Flags](./flags)
 
-This show how to use flags to toggle several features
+This shows how to use flags to toggle several features
 
 ### [Plugins](./plugins)
 
