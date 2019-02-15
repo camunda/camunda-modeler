@@ -3,7 +3,7 @@
              id="Definitions_{{ ID }}"
              name="DRD"
              namespace="http://camunda.org/schema/1.0/dmn">
-  <decision id="Decision_13nyxhf" name="Decision 1">
+  <decision id="Decision_{{ ID }}" name="Decision 1">
     <decisionTable id="decisionTable_1">
       <input id="input_1">
         <inputExpression id="inputExpression_1" typeRef="string">

@@ -63,16 +63,34 @@ describe('TabsProvider', function() {
   });
 
 
-  it('should provide initial tab contents', function() {
+  describe('should provide initial tab contents', function() {
 
-    // given
-    const tabsProvider = new TabsProvider();
+    function verifyExists(name, opts) {
 
-    // then
-    expect(tabsProvider.getInitialFileContents('bpmn')).to.exist;
-    expect(tabsProvider.getInitialFileContents('cmmn')).to.exist;
-    expect(tabsProvider.getInitialFileContents('dmn', { table: true })).to.exist;
-    expect(tabsProvider.getInitialFileContents('dmn')).to.exist;
+      return it(name + (opts ? ` ${JSON.stringify(opts)}` : ''), function() {
+
+        // given
+        const tabsProvider = new TabsProvider();
+
+        // when
+        const contents = tabsProvider.getInitialFileContents(name, opts);
+
+        // then
+        expect(contents).to.exist;
+
+        // without the {{ ID }} placeholder
+        expect(contents).not.to.contain('{{ ID }}');
+      });
+    }
+
+    verifyExists('bpmn');
+
+    verifyExists('cmmn');
+
+    verifyExists('dmn', { table: true });
+
+    verifyExists('dmn');
+
   });
 
 

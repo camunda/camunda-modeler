@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cmmn:definitions xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC" xmlns:di="http://www.omg.org/spec/CMMN/20151109/DI" xmlns:cmmndi="http://www.omg.org/spec/CMMN/20151109/CMMNDI" xmlns:cmmn="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_{{ ID }}" targetNamespace="http://bpmn.io/schema/cmmn">
-  <cmmn:case id="Case_1">
+  <cmmn:case id="Case_{{ ID }}">
     <cmmn:casePlanModel id="CasePlanModel_1" name="A CasePlanModel">
       <cmmn:planItem id="PlanItem_1" definitionRef="Task_1" />
       <cmmn:task id="Task_1" />

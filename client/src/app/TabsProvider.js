@@ -199,7 +199,9 @@ export default class TabsProvider {
   }
 
   getInitialFileContents(type, options) {
-    return this.getProvider(type).getInitialContents(options);
+    const rawContents = this.getProvider(type).getInitialContents(options);
+
+    return rawContents && rawContents.replace(/\{\{ ID \}\}/g, () => ids.next());
   }
 
   createFile(type, options) {
@@ -212,9 +214,7 @@ export default class TabsProvider {
 
     const name = `diagram_${counter}.${type}`;
 
-    const rawContents = this.getInitialFileContents(type, options);
-
-    const contents = rawContents && rawContents.replace('{{ ID }}', ids.next());
+    const contents = this.getInitialFileContents(type, options);
 
     return {
       name,

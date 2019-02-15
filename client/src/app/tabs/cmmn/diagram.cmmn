@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cmmn:definitions xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC" xmlns:cmmndi="http://www.omg.org/spec/CMMN/20151109/CMMNDI" xmlns:cmmn="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_{{ ID }}" targetNamespace="http://bpmn.io/schema/cmmn">
-  <cmmn:case id="Case_1">
+  <cmmn:case id="Case_{{ ID }}">
     <cmmn:casePlanModel id="CasePlanModel_1" name="A CasePlanModel">
       <cmmn:planItem id="PlanItem_1" definitionRef="Task_1" />
       <cmmn:task id="Task_1" />
@@ -10,11 +10,11 @@
     <cmmndi:CMMNDiagram id="_5a66685b-5f57-4e2f-b1d1-acca4fae04b2">
       <cmmndi:Size width="500" height="500" />
       <cmmndi:CMMNShape id="DI_CasePlanModel_1" cmmnElementRef="CasePlanModel_1">
-        <dc:Bounds x="156" y="174" width="534" height="389" />
+        <dc:Bounds x="154" y="99" width="534" height="389" />
         <cmmndi:CMMNLabel />
       </cmmndi:CMMNShape>
       <cmmndi:CMMNShape id="PlanItem_1_di" cmmnElementRef="PlanItem_1">
-        <dc:Bounds x="192" y="207" width="100" height="80" />
+        <dc:Bounds x="190" y="132" width="100" height="80" />
         <cmmndi:CMMNLabel />
       </cmmndi:CMMNShape>
     </cmmndi:CMMNDiagram>
