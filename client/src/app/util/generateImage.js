@@ -6,6 +6,7 @@ const ENCODINGS = [
   'image/jpeg'
 ];
 
+const SCALE = 3;
 
 export default function generateImage(type, svg) {
   const encoding = 'image/' + type;
@@ -18,6 +19,11 @@ export default function generateImage(type, svg) {
   }
 
   canvas = document.createElement('canvas');
+
+
+  svg = svg.replace(/width="([^"]+)" height="([^"]+)"/, function(_, widthStr, heightStr) {
+    return `width="${parseInt(widthStr, 10) * SCALE}" height="${parseInt(heightStr, 10) * SCALE}"`;
+  });
 
   canvg(canvas, svg);
 
