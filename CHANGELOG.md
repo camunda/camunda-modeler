@@ -10,7 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 #### General
 
-* `CHORE`: restore improved image resolution, supposedly shipped with `v3.0.0-0` already ([#486](https://github.com/camunda/camunda-modeler/issues/486)))
+* `CHORE`: restore improved image resolution, supposedly shipped with `v3.0.0-0` already ([#486](https://github.com/camunda/camunda-modeler/issues/486))
 * `FIX`: set align to origin offset to saner default
 * `FIX`: ensure new diagrams contain unique ids for process, case and decision elements
 
