@@ -5,6 +5,8 @@ import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
 import dmnTable from './tabs/dmn/table.dmn';
 
+import replaceIds from '@bpmn-io/replace-ids';
+
 import EmptyTab from './EmptyTab';
 
 import { forEach } from 'min-dash';
@@ -14,6 +16,7 @@ import parseDiagramType from './util/parseDiagramType';
 import Flags from '../util/Flags';
 
 const ids = new Ids([ 32, 36, 1 ]);
+
 const createdByType = {};
 
 const noopProvider = {
@@ -201,7 +204,7 @@ export default class TabsProvider {
   getInitialFileContents(type, options) {
     const rawContents = this.getProvider(type).getInitialContents(options);
 
-    return rawContents && rawContents.replace(/\{\{ ID(?::([^ ]+))? \}\}/g, createReplacer(ids));
+    return rawContents && replaceIds(rawContents, ids);
   }
 
   createFile(type, options) {
@@ -279,20 +282,4 @@ export default class TabsProvider {
 
   }
 
-}
-
-
-// helpers ///////////////////////
-
-function createReplacer(ids) {
-  var cache = {};
-
-  return function replacer(_, name) {
-
-    if (name) {
-      cache[name] = cache[name] || ids.next();
-    }
-
-    return cache[name] || ids.next();
-  };
 }
