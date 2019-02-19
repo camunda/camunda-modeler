@@ -127,6 +127,11 @@ class Plugins {
     return plugin && plugin.base;
   }
 
+  /**
+   * Creates an array containing all plugins.
+   *
+   * @returns {Array<Plugin>}
+   */
   getAll() {
     return Object.values(this.plugins);
   }
