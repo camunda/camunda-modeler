@@ -10,7 +10,7 @@ __Hint:__ Create a release issue and copy the template below into it.
     * `bpmn-js`, `dmn-js`, `cmmn-js`, `*-properties-panel`, `*-moddle`, ...
 * [ ] smoke test to verify all diagrams can be created
 * [ ] update CHANGELOG before releasing
-* [ ] semantic release (`npm run release`)
+* [ ] semantic release (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/tree/master/release-schema) 
 * [ ] wait for [Travis](https://travis-ci.org/camunda/camunda-modeler) to build the release
 * [ ] execute [integration test](https://github.com/camunda/camunda-modeler/blob/master/docs/.project/INTEGRATION_TEST.md) on [released artifacts](https://github.com/camunda/camunda-modeler/releases)
     * [ ] Works on Linux
