@@ -413,7 +413,7 @@ class MenuBuilder {
 
     let submenuTemplate;
 
-    if (plugins) {
+    if (plugins && plugins.length) {
       submenuTemplate = reduce(plugins, (menuItems, plugin) => {
         const { name } = plugin;
 
@@ -465,17 +465,13 @@ class MenuBuilder {
           new MenuItem(menuItemDescriptor)
         ];
       }, []);
-    } else {
-      submenuTemplate = [{
-        label: '<no plug-ins found>',
-        enabled: false
-      }];
-    }
 
-    this.menu.append(new MenuItem({
-      label: 'Plugins',
-      submenu: Menu.buildFromTemplate(submenuTemplate)
-    }));
+      this.menu.append(new MenuItem({
+        label: 'Plugins',
+        submenu: Menu.buildFromTemplate(submenuTemplate)
+      }));
+
+    }
 
     return this;
   }
