@@ -13,7 +13,20 @@ describe('Plugins', function() {
     new Plugins({});
   });
 
+
   describe('register plugins', function() {
+
+    it('should init with empty paths', function() {
+
+      // when
+      const plugins = new Plugins();
+
+      // then
+      const registeredPlugins = plugins.getAll();
+
+      expect(registeredPlugins).to.be.empty;
+    });
+
 
     it('should scan plug-in files', function() {
 
@@ -27,7 +40,7 @@ describe('Plugins', function() {
       // then
       const registeredPlugins = plugins.getAll();
 
-      expect(Object.keys(registeredPlugins)).to.eql([
+      expect(registeredPlugins.map(p => p.name)).to.eql([
         'broken-menu',
         'ghost-paths',
         'OK',

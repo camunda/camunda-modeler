@@ -22,18 +22,18 @@ describe('plugins', function() {
 
     it('should load all plugins', async function() {
       // given
-      const mockPlugins = {
-        foo: {
+      const mockPlugins = [
+        {
           name: 'foo',
           script: 'bar',
           style: 'baz'
         },
-        bar: {
+        {
           name: 'bar',
           script: 'foo',
           style: 'baz'
         }
-      };
+      ];
 
       const plugins = new Plugins({
         plugins: {
