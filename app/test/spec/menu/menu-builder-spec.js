@@ -57,12 +57,12 @@ describe('MenuBuilder', () => {
         }
       ]);
 
-      const options = getOptionsWithPlugins({
-        test: {
+      const options = getOptionsWithPlugins([
+        {
           name: pluginName,
           menu: menuStub
         }
-      });
+      ]);
 
       const menuBuilder = new MenuBuilder(options);
 
@@ -85,13 +85,13 @@ describe('MenuBuilder', () => {
       const expectedLabel = `${pluginName} <error>`;
       const menuStub = sinon.stub().throwsException();
 
-      const options = getOptionsWithPlugins({
-        test: {
+      const options = getOptionsWithPlugins([
+        {
           name: pluginName,
           error: true,
           menu: menuStub
         }
-      });
+      ]);
 
       const menuBuilder = new MenuBuilder(options);
 
@@ -116,12 +116,12 @@ describe('MenuBuilder', () => {
         }
       ]);
 
-      const options = getOptionsWithPlugins({
-        test: {
+      const options = getOptionsWithPlugins([
+        {
           name: pluginName,
           menu: menuStub
         }
-      });
+      ]);
 
       const menuBuilder = new MenuBuilder(options);
 
@@ -143,12 +143,12 @@ describe('MenuBuilder', () => {
       const pluginName = 'test';
       const menuStub = sinon.stub().throwsException();
 
-      const options = getOptionsWithPlugins({
-        test: {
+      const options = getOptionsWithPlugins([
+        {
           name: pluginName,
           menu: menuStub
         }
-      });
+      ]);
 
       const menuBuilder = new MenuBuilder(options);
 
@@ -169,12 +169,12 @@ describe('MenuBuilder', () => {
         }
       ]);
 
-      const options = getOptionsWithPlugins({
-        test: {
+      const options = getOptionsWithPlugins([
+        {
           name: pluginName,
           menu: menuStub
         }
-      });
+      ]);
 
       const menuBuilder = new MenuBuilder(options);
 

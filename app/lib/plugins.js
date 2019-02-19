@@ -25,6 +25,8 @@ class Plugins {
     const searchPaths = options.paths || [];
 
     if (!searchPaths.length) {
+      this.plugins = [];
+
       return;
     }
 
@@ -126,7 +128,7 @@ class Plugins {
   }
 
   getAll() {
-    return this.plugins;
+    return Object.values(this.plugins);
   }
 
   getAssetPath(url) {
