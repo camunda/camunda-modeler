@@ -11,8 +11,7 @@ const {
   find,
   isFunction,
   map,
-  merge,
-  reduce
+  merge
 } = require('min-dash');
 
 const browserOpen = require('../util/browser-open');
@@ -409,69 +408,69 @@ class MenuBuilder {
   appendPluginsMenu() {
     const provider = find(this.options.providers, provider => provider.plugins);
 
-    const plugins = provider && provider.plugins;
+    const plugins = provider && provider.plugins || [];
 
-    let submenuTemplate;
+    // do not append menu, if no plug-ins are installed
+    if (!plugins.length) {
+      return this;
+    }
 
-    if (plugins && plugins.length) {
-      submenuTemplate = reduce(plugins, (menuItems, plugin) => {
-        const { name } = plugin;
+    // construct sub-menus for each plug-in
+    const submenuTemplate = plugins.map(plugin => {
+      const { name } = plugin;
 
-        const menuItemDescriptor = {
-          label: name,
-          enabled: false
-        };
+      const menuItemDescriptor = {
+        label: name,
+        enabled: false
+      };
 
-        if (plugin.menu) {
+      if (plugin.menu) {
 
-          try {
-            const menuEntries = plugin.menu(app, this.options.state);
+        try {
+          const menuEntries = plugin.menu(app, this.options.state);
 
-            menuItemDescriptor.enabled = true;
-            menuItemDescriptor.submenu = Menu.buildFromTemplate(
-              menuEntries.map(({
+          menuItemDescriptor.enabled = true;
+          menuItemDescriptor.submenu = Menu.buildFromTemplate(
+            menuEntries.map((entry) => {
+
+              const {
                 accelerator,
                 action,
                 enabled,
                 label,
                 submenu
-              }) => {
-                enabled = isFunction(enabled) ? enabled() : enabled;
-                const click = action && wrapPluginAction(action, name);
+              } = entry;
 
-                return new MenuItem({
-                  label,
-                  accelerator,
-                  enabled,
-                  click,
-                  submenu
-                });
-              })
-            );
-          } catch (error) {
-            plugin.error = true;
-            menuItemDescriptor.enabled = false;
+              return new MenuItem({
+                label,
+                accelerator,
+                enabled: isFunction(enabled) ? enabled() : enabled,
+                click: action && wrapPluginAction(action, name),
+                submenu
+              });
+            })
+          );
+        } catch (error) {
+          plugin.error = true;
+          menuItemDescriptor.enabled = false;
 
-            log.error('[%s] Failed to build menu: %O', name, error);
-          }
+          log.error('[%s] Failed to build menu: %O', name, error);
         }
+      }
 
-        if (plugin.error) {
-          menuItemDescriptor.label = menuItemDescriptor.label.concat(' <error>');
-        }
+      if (plugin.error) {
+        menuItemDescriptor.label = menuItemDescriptor.label.concat(' <error>');
+      }
 
-        return [
-          ...menuItems,
-          new MenuItem(menuItemDescriptor)
-        ];
-      }, []);
+      return new MenuItem(menuItemDescriptor);
+    });
 
-      this.menu.append(new MenuItem({
-        label: 'Plugins',
-        submenu: Menu.buildFromTemplate(submenuTemplate)
-      }));
-
-    }
+    // create actual menu entry, based on previously
+    // constructed sub-menus
+    this.menu.append(new MenuItem({
+      label: 'Plugins',
+      submenu: Menu.buildFromTemplate(submenuTemplate)
+    }));
 
     return this;
   }
