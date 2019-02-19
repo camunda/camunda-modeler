@@ -1,3 +1,6 @@
+> __Note:__ If possible, execute the integration test on our [released artifacts](https://github.com/camunda/camunda-modeler/releases).
+
+
 # Integration Test
 
 We use a number of pre-defined steps to ensure the stability of our releases through integration tests.
