@@ -1329,7 +1329,7 @@ export class App extends PureComponent {
     }
 
     if (action === 'open-external-url') {
-      this.openExternalUrl(options);
+      return this.openExternalUrl(options);
     }
 
     if (action === 'backend-error') {
