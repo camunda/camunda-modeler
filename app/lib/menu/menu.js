@@ -44,17 +44,21 @@ class Menu {
 
   /**
    *
-   * @param {string} type
+   * @param {string} providerId
    * @param {Object} options
    * @param {Object[]} options.newFileMenu
    * @param {Object[]} options.helpMenu
    */
-  registerMenuProvider(type, options) {
-    if (!type) {
+  registerMenuProvider(providerId, options) {
+
+    // todo(pinussilvestrus): correct error handling via throwing exceptions
+    if (!providerId) {
       return;
     }
 
-    if (this.providers[type]) {
+    // todo(pinussilvestrus): correct error handling via throwing exceptions to ensure
+    // providers won't registered multiple times
+    if (this.providers[providerId]) {
       return;
     }
 
@@ -70,7 +74,7 @@ class Menu {
       plugins: plugins || null
     };
 
-    this.providers[type] = providerOptions;
+    this.providers[providerId] = providerOptions;
 
     this.rebuildMenu();
   }
