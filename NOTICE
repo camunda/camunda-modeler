@@ -1,0 +1,7 @@
+Copyright (c) Camunda Services GmbH.
+
+The source code of this project is licensed under the MIT license,
+found in the LICENSE file in the root directory of the source tree.
+
+Certain dependencies (bpmn-js, cmmn-js, dmn-js) are licensed
+under the bpmn.io license (https://bpmn.io/license).
