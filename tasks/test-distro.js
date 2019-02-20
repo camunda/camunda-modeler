@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 
+/**
+ * Copyright (c) Camunda Services GmbH.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 const argv = require('yargs').argv;
 
 const pkg = require('../app/package');
