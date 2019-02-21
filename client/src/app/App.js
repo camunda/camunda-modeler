@@ -1119,7 +1119,10 @@ export class App extends PureComponent {
 
   toggleLog = (open) => {
     this.handleLayoutChanged({
-      log: { open }
+      log: {
+        ...this.state.layout.log,
+        open
+      }
     });
   };
 
@@ -1610,9 +1613,9 @@ export class App extends PureComponent {
 
             <Log
               entries={ logEntries }
-              expanded={ layout.log && layout.log.open }
-              onToggle={ this.toggleLog }
+              layout={ layout.log }
               onClear={ this.clearLog }
+              onLayoutChanged={ this.handleLayoutChanged }
             />
           </SlotFillRoot>
 

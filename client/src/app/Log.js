@@ -17,38 +17,51 @@ import {
   throttle
 } from '../util';
 
+const DEFAULT_LAYOUT = {
+  height: 130,
+  open: false
+};
 
-const DEFAULT_HEIGHT = 130;
 
 /**
  * A log component
  *
  * <Log
  *   entries={ [ { message, category }, ... ] }
- *   expanded={ true | false}
- *   onToggle={ (expanded) => ... }
- *   onClear={ () => { } } />
+ *   layout={ height, open }
+ *   onClear={ () => { } }
+ *   onLayoutChanged= () => { } } />
  *
  */
 export default class Log extends PureComponent {
+  static defaultProps = {
+    entries: [],
+    layout: DEFAULT_LAYOUT
+  };
 
   constructor(props) {
     super(props);
-
-    this.state = {};
 
     this.panelRef = React.createRef();
 
     this.handleResize = throttle(this.handleResize);
   }
 
-  toggleLog = () => {
+  changeLayout = (newLayout) => {
+    this.props.onLayoutChanged({
+      log: newLayout
+    });
+  }
+
+  toggle = () => {
     const {
-      expanded,
-      onToggle
+      layout
     } = this.props;
 
-    onToggle(!expanded);
+    this.changeLayout({
+      ...layout,
+      open: !layout.open
+    });
   }
 
   handleResizeStart = event => {
@@ -70,22 +83,14 @@ export default class Log extends PureComponent {
 
     const newHeight = this.originalHeight - y;
 
-    const newExpanded = newHeight > 25;
+    const open = newHeight > 25;
 
-    const height = (newExpanded ? newHeight : DEFAULT_HEIGHT);
+    const height = open ? newHeight : DEFAULT_LAYOUT.height;
 
-    const {
-      expanded,
-      onToggle
-    } = this.props;
-
-    this.setState({
+    this.changeLayout({
+      open,
       height
     });
-
-    if (expanded !== newExpanded) {
-      onToggle(newExpanded);
-    }
   }
 
   checkFocus = () => {
@@ -108,10 +113,10 @@ export default class Log extends PureComponent {
   componentDidUpdate = (prevProps) => {
     const {
       entries,
-      expanded
+      layout
     } = this.props;
 
-    if (expanded && prevProps.entries !== entries) {
+    if (layout.open && prevProps.entries !== entries) {
       this.checkFocus();
     }
   }
@@ -127,7 +132,7 @@ export default class Log extends PureComponent {
     if (keyCode === 27) { // ESC
       event.preventDefault();
 
-      return this.toggleLog();
+      return this.toggle();
     }
 
     if (keyCode === 65 && (ctrlKey || metaKey)) { // <A>
@@ -143,36 +148,26 @@ export default class Log extends PureComponent {
     document.execCommand('copy');
   }
 
-  handleClear = () => {
-    const {
-      onClear
-    } = this.props;
-
-    onClear();
-
-    this.toggleLog();
-  }
-
   render() {
 
     const {
-      expanded,
-      entries
+      entries,
+      layout,
+      onClear
     } = this.props;
 
     const {
-      height
-    } = this.state;
+      height,
+      open
+    } = layout;
 
-    const logHeight = height || DEFAULT_HEIGHT;
-
-    this.currentHeight = logHeight;
+    this.currentHeight = height;
 
     return (
       <div
         className={ classNames(
           css.Log, {
-            expanded
+            open
           }
         ) }>
 
@@ -180,7 +175,7 @@ export default class Log extends PureComponent {
           <button
             className="toggle-button"
             title="Toggle log open state"
-            onClick={ this.toggleLog }
+            onClick={ this.toggle }
           >Log</button>
         </div>
 
@@ -190,10 +185,10 @@ export default class Log extends PureComponent {
           draggable
         ></div>
 
-        { expanded &&
+        { open &&
           <div
             className="body"
-            style={ { height: logHeight } }>
+            style={ { height } }>
 
             <div
               tabIndex="0"
@@ -203,7 +198,7 @@ export default class Log extends PureComponent {
             >
               <div className="controls">
                 <button className="copy-button" onClick={ this.handleCopy }>Copy</button>
-                <button className="clear-button" onClick={ this.handleClear }>Clear</button>
+                <button className="clear-button" onClick={ onClear }>Clear</button>
               </div>
 
               {
