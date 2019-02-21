@@ -44,7 +44,7 @@
     cursor: ns-resize;
   }
 
-  &:not(.expanded) {
+  &:not(.open) {
     .resizer {
       visibility: hidden;
     }
@@ -99,8 +99,8 @@
 
   }
 
-  &.expanded:hover .controls,
-  &.expanded:focus .controls {
+  &.open:hover .controls,
+  &.open:focus .controls {
     opacity: 1;
     pointer-events: all;
   }

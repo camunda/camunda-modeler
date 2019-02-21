@@ -1500,7 +1500,7 @@ describe('<App>', function() {
       const log = tree.find(Log).first();
 
       // then
-      expect(log.props().expanded).to.be.true;
+      expect(log.props().layout.open).to.be.true;
     });
 
 
@@ -1522,7 +1522,7 @@ describe('<App>', function() {
         category: 'bar'
       }]);
 
-      expect(log.props().expanded).to.be.true;
+      expect(log.props().layout.open).to.be.true;
     });
 
   });

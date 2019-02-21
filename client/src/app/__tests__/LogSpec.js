@@ -14,8 +14,13 @@ import {
 
 import Log from '../Log';
 
+const DEFAULT_LAYOUT = {
+  height: 130,
+  open: false
+};
+
 /* global sinon */
-const { spy, fake } = sinon;
+const { spy } = sinon;
 
 
 describe('<Log>', function() {
@@ -28,7 +33,7 @@ describe('<Log>', function() {
       const {
         tree
       } = createLog({
-        expanded: false,
+        open: false,
         entries: [
           { category: 'warning', message: 'HE' },
           { category: 'error', message: 'HO' },
@@ -50,7 +55,7 @@ describe('<Log>', function() {
       const {
         tree
       } = createLog({
-        expanded: true,
+        open: true,
         entries: [
           { category: 'warning', message: 'HE' },
           { category: 'error', message: 'HO' },
@@ -78,7 +83,7 @@ describe('<Log>', function() {
       const {
         instance
       } = createLog({
-        expanded: true,
+        open: true,
         entries: []
       }, mount);
 
@@ -96,7 +101,7 @@ describe('<Log>', function() {
       const {
         instance
       } = createLog({
-        expanded: true,
+        open: true,
         entries: [
           { category: 'warning', message: 'HE' },
           { category: 'error', message: 'HO' },
@@ -116,18 +121,18 @@ describe('<Log>', function() {
 
   describe('controls', function() {
 
-    it('log toggle', function() {
+    it('should toggle log', function() {
 
-      const onToggle = spy((expanded) => {
-        expect(expanded).to.be.false;
+      const onLayoutChanged = spy(({ log }) => {
+        expect(log.open).to.be.false;
       });
 
       // given
       const {
         tree
       } = createLog({
-        expanded: true,
-        onToggle
+        open: true,
+        onLayoutChanged
       }, mount);
 
       // when
@@ -136,7 +141,7 @@ describe('<Log>', function() {
       button.simulate('click');
 
       // then
-      expect(onToggle).to.have.been.calledOnce;
+      expect(onLayoutChanged).to.have.been.calledOnce;
     });
 
 
@@ -147,7 +152,7 @@ describe('<Log>', function() {
         instance,
         tree
       } = createLog({
-        expanded: true
+        open: true
       }, mount);
 
       const handleCopy = spy(instance, 'handleCopy');
@@ -169,21 +174,14 @@ describe('<Log>', function() {
     });
 
 
-    it('log clear', function() {
-
-      const onToggle = spy((expanded) => {
-        expect(expanded).to.be.false;
-      });
-
+    it('should clear log', function() {
+      // given
       const onClear = spy();
 
-
-      // given
       const {
         tree
       } = createLog({
-        expanded: true,
-        onToggle,
+        open: true,
         onClear
       }, mount);
 
@@ -193,7 +191,6 @@ describe('<Log>', function() {
       button.simulate('click');
 
       // then
-      expect(onToggle).to.have.been.calledOnce;
       expect(onClear).to.have.been.calledOnce;
     });
 
@@ -205,25 +202,25 @@ describe('<Log>', function() {
     it('should close on <ESC>', function() {
 
       // given
-      const onToggle = spy((expanded) => {
-        expect(expanded).to.be.false;
+      const onLayoutChanged = spy(({ log }) => {
+        expect(log.open).to.be.false;
       });
 
       const {
         instance
       } = createLog({
-        expanded: true,
-        onToggle
+        open: true,
+        onLayoutChanged
       });
 
       // when
       instance.handleKeyDown({
         keyCode: 27,
-        preventDefault: fake()
+        preventDefault: noop
       });
 
       // then
-      expect(onToggle).to.have.been.calledOnce;
+      expect(onLayoutChanged).to.have.been.calledOnce;
     });
 
 
@@ -233,7 +230,7 @@ describe('<Log>', function() {
       const {
         instance
       } = createLog({
-        expanded: true
+        open: true
       }, mount);
 
       const handleCopy = spy(instance, 'handleCopy');
@@ -243,7 +240,7 @@ describe('<Log>', function() {
       instance.handleKeyDown({
         keyCode: 65,
         ctrlKey: true,
-        preventDefault: fake()
+        preventDefault: noop
       });
 
       // then
@@ -257,9 +254,11 @@ describe('<Log>', function() {
 
     it('should handle resize', function() {
       // given
+      const onLayoutChanged = spy();
+
       const {
         instance
-      } = createLog();
+      } = createLog({ onLayoutChanged });
 
       instance.originalHeight = 100;
 
@@ -267,7 +266,12 @@ describe('<Log>', function() {
       instance.handleResize(null, { y: -10 });
 
       // then
-      expect(instance.state.height).to.eql(110);
+      expect(onLayoutChanged).to.be.calledOnceWithExactly({
+        log: {
+          open: true,
+          height: 110
+        }
+      });
     });
 
 
@@ -296,19 +300,23 @@ describe('<Log>', function() {
 
 function noop() {}
 
-function createLog(options = {}, mountFn=shallow) {
+function createLog(options = {}, mountFn = shallow) {
 
   if (typeof options === 'function') {
     mountFn = options;
     options = {};
   }
 
+  const layout = options.layout || DEFAULT_LAYOUT;
+
+  layout.open = !!options.open;
+
   const tree = mountFn(
     <Log
       entries={ options.entries || [] }
-      expanded={ options.expanded || false }
-      onToggle={ options.onToggle || noop }
+      layout={ layout }
       onClear={ options.onClear || noop }
+      onLayoutChanged={ options.onLayoutChanged || noop }
     />
   );
 
