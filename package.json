@@ -19,6 +19,8 @@
     "build": "run-s client:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
     "lint": "eslint .",
     "postinstall": "lerna bootstrap",
+    "prerelease": "run-s update-license-book",
+    "update-license-book": "node tasks/license-book.js -o THIRD_PARTY_NOTICES -c",
     "release": "lerna publish --force-publish",
     "test": "run-s *:test",
     "start": "run-s \"dev -- {@}\" --"
