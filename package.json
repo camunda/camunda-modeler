@@ -18,7 +18,7 @@
     "build:test-distro": "node tasks/test-distro.js",
     "build": "run-s client:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
     "lint": "eslint .",
-    "postinstall": "lerna bootstrap --hoist",
+    "postinstall": "lerna bootstrap",
     "release": "lerna publish --force-publish",
     "test": "run-s *:test",
     "start": "run-s \"dev -- {@}\" --"
