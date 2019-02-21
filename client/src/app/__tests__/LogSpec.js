@@ -70,45 +70,6 @@ describe('<Log>', function() {
   });
 
 
-  describe('focus / hover', function() {
-
-    it('should update state', function() {
-
-      // given
-      const {
-        instance
-      } = createLog({
-        expanded: true
-      });
-
-      // when
-      instance.handleFocus();
-
-      // then
-      expect(instance.state.focus).to.be.true;
-
-      // when
-      instance.handleBlur();
-
-      // then
-      expect(instance.state.focus).to.be.false;
-
-      // when
-      instance.handleHover();
-
-      // then
-      expect(instance.state.hover).to.be.true;
-
-      // when
-      instance.handleOut();
-
-      // then
-      expect(instance.state.hover).to.be.false;
-    });
-
-  });
-
-
   describe('scroll handling', function() {
 
     it('should check without entries', function() {
@@ -163,14 +124,11 @@ describe('<Log>', function() {
 
       // given
       const {
-        instance,
         tree
       } = createLog({
         expanded: true,
         onToggle
       }, mount);
-
-      instance.handleFocus();
 
       // when
       const button = tree.find('.toggle-button');
@@ -222,15 +180,12 @@ describe('<Log>', function() {
 
       // given
       const {
-        instance,
         tree
       } = createLog({
         expanded: true,
         onToggle,
         onClear
       }, mount);
-
-      instance.handleFocus();
 
       // when
       const button = tree.find('.clear-button');

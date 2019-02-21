@@ -51,30 +51,6 @@ export default class Log extends PureComponent {
     onToggle(!expanded);
   }
 
-  handleHover = () => {
-    this.setState({
-      hover: true
-    });
-  }
-
-  handleOut = () => {
-    this.setState({
-      hover: false
-    });
-  }
-
-  handleFocus = () => {
-    this.setState({
-      focus: true
-    });
-  }
-
-  handleBlur = () => {
-    this.setState({
-      focus: false
-    });
-  }
-
   handleResizeStart = event => {
     const onDragStart = dragger(this.handleResize);
 
@@ -185,12 +161,8 @@ export default class Log extends PureComponent {
     } = this.props;
 
     const {
-      hover,
-      focus,
       height
     } = this.state;
-
-    const focussed = expanded && (hover || focus);
 
     const logHeight = height || DEFAULT_HEIGHT;
 
@@ -200,8 +172,7 @@ export default class Log extends PureComponent {
       <div
         className={ classNames(
           css.Log, {
-            expanded,
-            focussed
+            expanded
           }
         ) }>
 
@@ -222,10 +193,6 @@ export default class Log extends PureComponent {
         { expanded &&
           <div
             className="body"
-            onMouseEnter={ this.handleHover }
-            onMouseLeave={ this.handleOut }
-            onFocus={ this.handleFocus }
-            onBlur={ this.handleBlur }
             style={ { height: logHeight } }>
 
             <div
