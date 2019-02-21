@@ -5,7 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const { copySync } = require('cpx');
+const fs = require('fs');
+
+const {
+  copySync: copyGlob
+} = require('cpx');
+
+const { name } = require('../../app/package');
+
+function copy(src, dest) {
+  fs.copyFileSync(src, dest);
+}
 
 module.exports = function(context) {
 
@@ -14,6 +24,8 @@ module.exports = function(context) {
     electronPlatformName
   } = context;
 
-  copySync('resources/platform/base/**', appOutDir);
-  copySync(`resources/platform/${electronPlatformName}/**`, appOutDir);
+  copyGlob('resources/platform/base/**', appOutDir);
+  copyGlob(`resources/platform/${electronPlatformName}/**`, appOutDir);
+
+  copy('LICENSE', `${appOutDir}/LICENSE.${name}.txt`);
 };
