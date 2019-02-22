@@ -82,7 +82,6 @@ export class DmnEditor extends CachedComponent {
     }
 
     this.checkImport();
-    this.handleResize();
   }
 
   componentWillUnmount() {
@@ -104,10 +103,6 @@ export class DmnEditor extends CachedComponent {
 
     if (isChachedStateChange(prevProps, this.props)) {
       this.handleChanged();
-    }
-
-    if (prevProps.layout.propertiesPanel !== this.props.layout.propertiesPanel) {
-      this.triggerAction('resize');
     }
   }
 
