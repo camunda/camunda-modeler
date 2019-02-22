@@ -2328,6 +2328,9 @@ class Cache {
   destroy() { }
 }
 
+class MockTab {
+  triggerAction() {}
+}
 
 function createApp(options = {}, mountFn=shallow) {
 
@@ -2386,6 +2389,13 @@ function createApp(options = {}, mountFn=shallow) {
   );
 
   app = tree.instance();
+
+  // shallow renderer always returns null on current ref
+  if (mountFn === shallow) {
+    app.tabRef = {
+      current: new MockTab()
+    };
+  }
 
   return {
     tree,
