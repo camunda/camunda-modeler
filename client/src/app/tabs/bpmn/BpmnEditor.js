@@ -132,8 +132,6 @@ export class BpmnEditor extends CachedComponent {
     }
 
     this.checkImport();
-
-    this.handleResize();
   }
 
   componentWillUnmount() {
@@ -157,10 +155,6 @@ export class BpmnEditor extends CachedComponent {
 
     if (isChachedStateChange(prevProps, this.props)) {
       this.handleChanged();
-    }
-
-    if (prevProps.layout.propertiesPanel !== this.props.layout.propertiesPanel) {
-      this.triggerAction('resize');
     }
   }
 

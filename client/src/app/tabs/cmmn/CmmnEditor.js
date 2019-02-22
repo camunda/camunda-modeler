@@ -67,7 +67,6 @@ export class CmmnEditor extends CachedComponent {
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
     this.checkImport();
-    this.handleResize();
   }
 
   componentWillUnmount() {
@@ -91,10 +90,6 @@ export class CmmnEditor extends CachedComponent {
 
     if (isChachedStateChange(prevProps, this.props)) {
       this.handleChanged();
-    }
-
-    if (prevProps.layout.propertiesPanel !== this.props.layout.propertiesPanel) {
-      this.triggerAction('resize');
     }
   }
 
