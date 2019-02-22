@@ -153,7 +153,7 @@ export class BpmnEditor extends CachedComponent {
       this.checkImport();
     }
 
-    if (isChachedStateChange(prevProps, this.props)) {
+    if (isCacheStateChanged(prevProps, this.props)) {
       this.handleChanged();
     }
   }
@@ -856,6 +856,6 @@ function isXMLChange(prevXML, xml) {
   return prevXML !== xml;
 }
 
-function isChachedStateChange(prevProps, props) {
+function isCacheStateChanged(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
 }
