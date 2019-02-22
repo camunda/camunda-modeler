@@ -2199,26 +2199,6 @@ describe('<App>', function() {
     afterEach(sinon.restore);
 
 
-    it('should trigger tab resize when window is resized', async function() {
-      // given
-      const {
-        app,
-        tree
-      } = createApp({}, mount);
-
-      const resizeTabStub = sinon.stub(app, 'resizeTab').resolves();
-
-      // when
-      await app.triggerAction('resize');
-
-      // then
-      expect(resizeTabStub).to.be.calledOnce;
-
-      // clean
-      tree.unmount();
-    });
-
-
     it('should trigger tab resize when layout changes', async function() {
       // given
       const {
