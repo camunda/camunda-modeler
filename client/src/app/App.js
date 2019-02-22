@@ -931,6 +931,9 @@ export class App extends PureComponent {
       this.updateMenu(tabState);
     }
 
+    if (layout !== prevState.layout) {
+      this.triggerAction('resize');
+    }
   }
 
   componentDidCatch(error, info) {
