@@ -36,7 +36,7 @@ const {
 if (help) {
   console.log(`usage: node tasks/license-book.js [-o FILE_NAME] [-c]
 
-Generate license book.
+Analyze and/or generate license book/third party notices.
 
 Options:
 
