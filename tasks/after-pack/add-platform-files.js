@@ -8,24 +8,71 @@
 const fs = require('fs');
 
 const {
-  copySync: copyGlob
+  copy: _copyGlob
 } = require('cpx');
 
-const { name } = require('../../app/package');
+const { promisify } = require('util');
 
-function copy(src, dest) {
-  fs.copyFileSync(src, dest);
-}
+const {
+  Transform: TransformStream
+} = require('stream');
 
-module.exports = function(context) {
+const copyGlob = promisify(_copyGlob);
+
+const {
+  name,
+  version
+} = require('../../app/package');
+
+
+module.exports = async function(context) {
 
   const {
     appOutDir,
     electronPlatformName
   } = context;
 
-  copyGlob('resources/platform/base/**', appOutDir);
-  copyGlob(`resources/platform/${electronPlatformName}/**`, appOutDir);
+  const tag = version.endsWith('-nightly') ? 'master' : `v${version}`;
+
+  const options = {
+    transform: replaceTag(tag)
+  };
+
+  await copyGlob('resources/platform/base/**', appOutDir, options);
+  await copyGlob(`resources/platform/${electronPlatformName}/**`, appOutDir, options);
 
   copy('LICENSE', `${appOutDir}/LICENSE.${name}.txt`);
 };
+
+
+// helpers ///////////////////////
+
+function copy(src, dest) {
+  fs.copyFileSync(src, dest);
+}
+
+function replaceTag(tag) {
+
+  return (filename) => {
+    return new TransformStream({
+      objectMode: true,
+      transform(chunk, encoding, callback) {
+
+        // only handle text files
+        if (encoding === 'utf8') {
+          try {
+            chunk = Buffer.from(
+              chunk.toString(encoding).replace(/\$\{TAG\}/g, tag),
+              'utf8'
+            );
+          } catch (e) {
+            return callback(e);
+          }
+        }
+
+        this.push(chunk);
+        callback();
+      }
+    });
+  };
+}
