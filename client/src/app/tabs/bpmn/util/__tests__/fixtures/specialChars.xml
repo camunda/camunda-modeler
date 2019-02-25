@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  xmlns:a.b="http://activiti.org/bpmn"
+  targetNamespace="http://activiti.org/bpmn">
+  <process id="simpleProcess">
+    <serviceTask id="javaService1"
+                 activiti:class="org.nexusbpm.activiti.delegate.ExcelNexusJavaDelegate" >
+      <extensionElements>
+        <a.b:field name="skipHeader"><a.b:string>true</a.b:string></a.b:field>
+        <a.b:field name="rowLimit"><a.b:string>25</a.b:string></a.b:field>
+        <a.b:field name="columnLimit"><a.b:string>25</a.b:string></a.b:field>
+        <a.b:field name="excelAnchor"><a.b:string>A1</a.b:string></a.b:field>
+        <activiti:field name="sheetName"><activiti:string>${testme}</activiti:string></activiti:field>
+        <activiti:field name="dataFile"><activiti:string>res:input.csv</activiti:string></activiti:field>
+        <activiti:field name="templateFile"><activiti:string>res:test.xls</activiti:string></activiti:field>
+        <activiti:field name="outputFile"><activiti:string>tmp:test.out.xls</activiti:string></activiti:field>
+      </extensionElements>
+    </serviceTask>
+  </process>
+</definitions>

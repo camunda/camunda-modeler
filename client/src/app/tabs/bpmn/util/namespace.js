@@ -8,205 +8,123 @@
  * except in compliance with the MIT License.
  */
 
-import BpmnModdle from 'bpmn-moddle';
-
 import {
-  find,
-  forEach
-} from 'min-dash';
+  Parser
+} from 'saxen';
 
-
-function isNamespaceAttr(attr) {
-  return attr.includes('xmlns:');
-}
-
-function getPrefix(attr) {
-  const [ prefix, name ] = attr.split(':');
-
-  // if name doesn't exist attr has no prefix
-  return name && prefix;
-}
-
-function getName(attr) {
-  const [ prefix, name ] = attr.split(':');
-
-  // if name doesn't exist attr has no prefix
-  return name || prefix;
-}
 
 /**
- * Create { definitions, elements, moddle } from XML string.
+ * Find usage of uri as a namespace in the given XML document.
  *
- * @param {String} XML - XML string or object with definitions and elements.
+ * @param {String} xml
+ * @param {String} uri
  *
- * @return {Promise}
+ * @return {false|{ uri, prefixes, targetNamespace }} uri}
  */
-export async function fromXML(xml) {
-  return new Promise((resolve, reject) => {
+export function findUsages(xml, uri) {
 
-    let moddle = new BpmnModdle();
+  let prefixes = [];
+  let targetNamespace = false;
 
-    moddle.fromXML(xml, 'bpmn:Definitions', (err, definitions, context) => {
-      if (err) {
-        reject(err);
+  const parser = new Parser();
+
+  parser.on('error', function() {
+    parser.stop();
+  });
+
+  parser.on('openTag', (_, getAttributes) => {
+
+    parser.stop();
+
+    Object.entries(getAttributes()).map(entry => {
+      const [ key, value ] = entry;
+
+      if (value !== uri) {
+        return;
       }
 
-      const { elementsById } = context;
+      if (key === 'targetNamespace') {
+        targetNamespace = true;
 
-      resolve({
-        elements: elementsById,
-        definitions,
-        moddle
-      });
-    });
-
-  });
-}
-
-/**
- * Create XML from definitions.
- *
- * @param {Object} definitions - Definitions.
- * @param {Object} moddle - BpmnModdle instance.
- *
- * @returns {Promise}
- */
-export async function toXML(definitions, moddle) {
-  return new Promise((resolve, reject) => {
-    moddle.toXML(definitions, { format: true }, (err, xml) => {
-      if (err) {
-        reject(err);
+        return;
       }
 
-      resolve(xml);
-    });
-  });
-}
+      // xmlns="..."
+      // xmlns:${prefix}=""
+      const match = /^xmlns(?::(.*))?$/.exec(key);
 
-/**
- * Returns true if either
- * targetNamespace="namespace" or
- * xmlns:prefix="namespace".
- *
- * @param {String} xml - XML string.
- * @param {String} namespaceUrl - Namespace URL.
- *
- * @param {Promise}
- */
-export async function hasNamespaceUrl(xml, namespaceUrl) {
-  const { definitions } = await fromXML(xml);
-
-  return new Promise(resolve => {
-
-    if (definitions.get('targetNamespace') === namespaceUrl) {
-      resolve(true);
-    }
-
-    const found = find(definitions.$attrs, (value, attr) => {
-      return isNamespaceAttr(attr) && value === namespaceUrl;
-    });
-
-    resolve(!!found);
-
-  });
-}
-
-/**
- * Replaces all namespace prefixes.
- *
- * @param {String} definitions - Definitions.
- * @param {Array|Object} elements - Collection of all elements.
- * @param {String} oldNamespacePrefix - Old namespace prefix.
- * @param {String} newNamespacePrefix - New namespace prefix.
- */
-export function replaceNamespacePrefix(definitions, elements, oldNamespacePrefix, newNamespacePrefix) {
-  forEach(definitions.$attrs, (value, attr) => {
-
-    const prefix = getPrefix(attr),
-          name = getName(attr);
-
-    if (name && name === oldNamespacePrefix) {
-
-      // delete attr with old prefix
-      delete definitions.$attrs[ attr ];
-
-      // add attr with new prefix
-      definitions.$attrs[ `${ prefix }:${ newNamespacePrefix }` ] = value;
-    }
-
-  });
-
-  forEach(elements, element => {
-
-    forEach(element.$attrs, (value, attr) => {
-      const prefix = getPrefix(attr),
-            name = getName(attr);
-
-      if (prefix && prefix === oldNamespacePrefix) {
-
-        // delete attr with old prefix
-        delete element.$attrs[ attr ];
-
-        // add attr with new prefix
-        element.$attrs[ `${ newNamespacePrefix }:${ name }` ] = value;
+      if (match) {
+        prefixes.push(match[1] || '');
       }
     });
 
   });
-}
 
-/**
- * Replaces all namespace URLs.
- *
- * @param {Object} definitions - Definitions.
- * @param {String} oldNamespaceUrl - Old namespace URL.
- * @param {String} newNamespaceUrl - New namespace URL.
- */
-export function replaceNamespaceUrl(definitions, oldNamespaceUrl, newNamespaceUrl) {
-  if (definitions.get('targetNamespace') === oldNamespaceUrl) {
-    definitions.set('targetNamespace', newNamespaceUrl);
+  parser.parse(xml);
+
+  if (prefixes.length === 0 && !targetNamespace) {
+    return false;
   }
 
-  forEach(definitions.$attrs, (value, attr) => {
-    if (value === oldNamespaceUrl) {
-      definitions.$attrs[ attr ] = newNamespaceUrl;
-    }
-  });
+  return {
+    prefixes,
+    uri
+  };
+
 }
 
+
 /**
- * Replaces all namespace prefixes and URLs.
- *
- * @param {String} xml - XML string.
- * @param {Object} options - Options.
- * @param {String} [options.oldNamespaceUrl] - Old namespace URL.
- * @param {String} [options.newNamespaceUrl] - New namespace URL.
- * @param {String} [options.oldNamespacePrefix] - Old namespace prefix.
- * @param {String} [options.newNamespacePrefix] - New namespace prefix.
- *
- * @returns {Promise}
+ * Replace namespace usages in the given XML file with
+ * a new namespace ({ prefix, uri }).@async
+ * @param  {[type]} xml    [description]
+ * @param  {[type]} usages [description]
+ * @param  {[type]} ns     [description]
+ * @return {[type]}        [description]
  */
-export async function replaceNamespace(xml, options) {
-  const {
-    newNamespacePrefix,
-    newNamespaceUrl,
-    oldNamespacePrefix,
-    oldNamespaceUrl
-  } = options;
+export function replaceUsages(xml, usages, ns) {
+
+  // ensures that any result of #findUsages may be fet
+  // into this utility
+  if (usages === false) {
+    return xml;
+  }
 
   const {
-    definitions,
-    elements,
-    moddle
-  } = await fromXML(xml);
+    uri: oldNamespaceUrl,
+    prefixes: oldPrefixes
+  } = usages;
 
-  if (oldNamespacePrefix && newNamespacePrefix) {
-    replaceNamespacePrefix(definitions, elements, oldNamespacePrefix, newNamespacePrefix);
-  }
+  const {
+    prefix: newPrefix,
+    uri: newNamespaceUrl
+  } = ns;
 
-  if (oldNamespaceUrl && newNamespaceUrl) {
-    replaceNamespaceUrl(definitions, oldNamespaceUrl, newNamespaceUrl);
-  }
+  const conversions = [
+    [ new RegExp(`(\\sxmlns:)[A-z0-9.-]+="${ escape(oldNamespaceUrl) }"`, 'g'), `$1${newPrefix}="${newNamespaceUrl}"` ],
+    [ new RegExp(`(\\s)targetNamespace="${ escape(oldNamespaceUrl) }"`, 'g'), `$1targetNamespace="${newNamespaceUrl}"` ]
+  ];
 
-  return toXML(definitions, moddle);
+  oldPrefixes.forEach(prefix => {
+    const safePrefix = escape(prefix);
+
+    conversions.push(
+      [ new RegExp('(\\s)' + safePrefix + '(:[A-z0-9-.]+)', 'g'), `$1${newPrefix}$2` ],
+      [ new RegExp('(<|</)' + safePrefix + '(:[A-z0-9-.]+(>|\\s))', 'g'), `$1${newPrefix}$2` ]
+    );
+  });
+
+  return conversions.reduce((xml, conversion) => {
+
+    const [ pattern, replacement ] = conversion;
+
+    return xml.replace(pattern, replacement);
+  }, xml);
+}
+
+
+// helpers /////////////////
+
+function escape(pattern) {
+  return pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
