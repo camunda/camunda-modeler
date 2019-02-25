@@ -5,3 +5,6 @@ found in the LICENSE file in the root directory of the source tree.
 
 Certain dependencies (bpmn-js, cmmn-js, dmn-js) are licensed
 under the bpmn.io license (https://bpmn.io/license).
+
+Find third party notices and license information in the THIRD_PARTY_NOTICES
+file in the root directory of the source tree.
