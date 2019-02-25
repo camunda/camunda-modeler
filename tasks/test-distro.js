@@ -57,6 +57,8 @@ const expectedFiles = {
       contents: [
         'Camunda Modeler.exe',
         'support/register_fileassoc.bat',
+        'LICENSE.camunda-modeler.txt',
+        'THIRD_PARTY_NOTICES.camunda-modeler.txt',
         'VERSION'
       ]
     }
