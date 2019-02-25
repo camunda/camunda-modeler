@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="http://activiti.org/bpmn">
+
+  <process id="simpleProcess">
+
+    <!-- http://activiti.org/bpmn -->
+    <serviceTask id="javaService1" activiti:class="org.nexusbpm.activiti.delegate.ExcelNexusJavaDelegate" >
+      <extensionElements>
+        <activiti:field name="skipHeader"><activiti:string>true</activiti:string></activiti:field>
+      </extensionElements>
+    </serviceTask>
+
+  </process>
+
+</definitions>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+  targetNamespace="http://camunda.org/schema/1.0/bpmn">
+  <process id="simpleProcess">
+    <serviceTask id="javaService1"
+                 camunda:class="org.nexusbpm.activiti.delegate.ExcelNexusJavaDelegate" >
+      <extensionElements>
+        <camunda:field name="skipHeader"><camunda:string>true</camunda:string></camunda:field>
+        <camunda:field name="rowLimit"><camunda:string>25</camunda:string></camunda:field>
+        <camunda:field name="columnLimit"><camunda:string>25</camunda:string></camunda:field>
+        <camunda:field name="excelAnchor"><camunda:string>A1</camunda:string></camunda:field>
+        <camunda:field name="sheetName"><camunda:string>${testme}</camunda:string></camunda:field>
+        <camunda:field name="dataFile"><camunda:string>res:input.csv</camunda:string></camunda:field>
+        <camunda:field name="templateFile"><camunda:string>res:test.xls</camunda:string></camunda:field>
+        <camunda:field name="outputFile"><camunda:string>tmp:test.out.xls</camunda:string></camunda:field>
+      </extensionElements>
+    </serviceTask>
+  </process>
+</definitions>

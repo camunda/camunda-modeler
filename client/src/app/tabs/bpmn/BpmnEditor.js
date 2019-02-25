@@ -48,17 +48,19 @@ import css from './BpmnEditor.less';
 import generateImage from '../../util/generateImage';
 
 import {
-  hasNamespaceUrl,
-  replaceNamespace
+  findUsages as findNamespaceUsages,
+  replaceUsages as replaceNamespaceUsages
 } from './util/namespace';
 
 import Metadata from '../../../util/Metadata';
 
 
-const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn',
-      NAMESPACE_URL_CAMUNDA = 'http://camunda.org/schema/1.0/bpmn',
-      NAMESPACE_PREFIX_ACTIVITI = 'activiti',
-      NAMESPACE_PREFIX_CAMUNDA = 'camunda';
+const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
+
+const NAMESPACE_CAMUNDA = {
+  uri: 'http://camunda.org/schema/1.0/bpmn',
+  prefix: 'camunda'
+};
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
@@ -261,8 +263,15 @@ export class BpmnEditor extends CachedComponent {
     onError(error);
   }
 
+
   handleNamespace = async (xml) => {
-    const shouldConvert = await this.isNamespaceConversionNeeded(xml);
+    const used = findNamespaceUsages(xml, NAMESPACE_URL_ACTIVITI);
+
+    if (!used) {
+      return xml;
+    }
+
+    const shouldConvert = await this.shouldConvert();
 
     if (!shouldConvert) {
       return xml;
@@ -272,33 +281,20 @@ export class BpmnEditor extends CachedComponent {
       onContentUpdated
     } = this.props;
 
-
-    const convertedXML = await replaceNamespace(xml, {
-      newNamespacePrefix: NAMESPACE_PREFIX_CAMUNDA,
-      newNamespaceUrl: NAMESPACE_URL_CAMUNDA,
-      oldNamespacePrefix: NAMESPACE_PREFIX_ACTIVITI,
-      oldNamespaceUrl: NAMESPACE_URL_ACTIVITI
-    });
+    const convertedXML = await replaceNamespaceUsages(xml, used, NAMESPACE_CAMUNDA);
 
     onContentUpdated(convertedXML);
 
     return convertedXML;
   }
 
-  async isNamespaceConversionNeeded(xml) {
-    try {
-      const namespaceFound = await hasNamespaceUrl(xml, NAMESPACE_URL_ACTIVITI);
 
-      if (namespaceFound) {
-        const answer = await this.props.onAction('show-dialog', getNamespaceDialog());
 
-        return answer === 'yes';
-      }
-    } catch (error) {
-      // swallow
-    }
+  async shouldConvert() {
 
-    return false;
+    const answer = await this.props.onAction('show-dialog', getNamespaceDialog());
+
+    return answer === 'yes';
   }
 
   handleImport = (error, warnings) => {

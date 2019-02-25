@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+  targetNamespace="http://camunda.org/schema/1.0/bpmn">
+
+  <process id="simpleProcess">
+
+    <!-- http://activiti.org/bpmn -->
+    <serviceTask id="javaService1" camunda:class="org.nexusbpm.activiti.delegate.ExcelNexusJavaDelegate" >
+      <extensionElements>
+        <camunda:field name="skipHeader"><camunda:string>true</camunda:string></camunda:field>
+      </extensionElements>
+    </serviceTask>
+
+  </process>
+
+</definitions>
