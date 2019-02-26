@@ -226,6 +226,7 @@ describe('<DmnEditor>', function() {
         expect(state).to.include({
           dirty: true,
           editLabel: false,
+          inputActive: false,
           redo: true,
           removeSelected: false,
           undo: true
@@ -288,6 +289,7 @@ describe('<DmnEditor>', function() {
       expect(state).to.have.property('editable');
       expect(state).to.have.property('elementsSelected');
       expect(state).to.have.property('activeEditor');
+      expect(state).to.have.property('inactiveInput');
     });
 
 
