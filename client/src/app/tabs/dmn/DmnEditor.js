@@ -330,10 +330,11 @@ export class DmnEditor extends CachedComponent {
 
     // ensure backwards compatibility
     // https://github.com/camunda/camunda-modeler/commit/78357e3ed9e6e0255ac8225fbdf451a90457e8bf#diff-bd5be70c4e5eadf1a316c16085a72f0fL17
+    newState.activeEditor = activeView.type;
     newState.dmn = true;
     newState.editable = true;
     newState.elementsSelected = !!selectionLength;
-    newState.activeEditor = activeView.type;
+    newState.inactiveInput = !inputActive;
 
     const windowMenu = getDmnWindowMenu(newState);
 
