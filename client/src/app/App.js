@@ -212,7 +212,7 @@ export class App extends PureComponent {
 
     // skip new file
     if (this.isUnsaved(tab) || typeof tabLastModified === 'undefined') {
-      return;
+      return tab;
     }
 
     const {
@@ -221,7 +221,7 @@ export class App extends PureComponent {
 
     // skip unchanged
     if (!(lastModified > tabLastModified)) {
-      return;
+      return tab;
     }
 
     const answer = await this.showDialog(getContentChangedDialog());
@@ -232,6 +232,13 @@ export class App extends PureComponent {
       return this.updateTab(tab, {
         file: updatedFile
       });
+    } else {
+      return this.updateTab(tab, {
+        file: {
+          ...file,
+          lastModified
+        }
+      }, this.setUnsaved(tab, true));
     }
   }
 
@@ -240,8 +247,9 @@ export class App extends PureComponent {
    *
    * @param {Tab} tab
    * @param {Object} newAttrs
+   * @param {Object} [newState={}]
    */
-  updateTab(tab, newAttrs) {
+  updateTab(tab, newAttrs, newState={}) {
 
     if (newAttrs.id && newAttrs.id !== tab.id) {
       throw new Error('must not change tab.id');
@@ -276,6 +284,7 @@ export class App extends PureComponent {
       }
 
       return {
+        ...newState,
         activeTab: updatedActiveTab,
         tabs: updatedTabs
       };
