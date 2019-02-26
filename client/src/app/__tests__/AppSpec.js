@@ -1611,18 +1611,25 @@ describe('<App>', function() {
 
       const tab = openedTabs[0];
 
-      updateFileStats(tab.file, {
-        lastModified: new Date().getMilliseconds()
-      }, fileSystem);
+      const lastModified = new Date().getMilliseconds();
+
+      updateFileStats(tab.file, { lastModified }, fileSystem);
 
       // when
-      await app.checkFileChanged(tab);
+      const updatedTab = await app.checkFileChanged(tab);
 
       // then
       expect(showSpy).to.have.been.called;
       expect(readFileSpy).to.have.been.called;
 
-      expect(app.findOpenTab(file1).file.contents).to.eql(NEW_FILE_CONTENTS);
+      expect(updatedTab).to.eql(app.findOpenTab(file1));
+
+      expect(updatedTab.file.contents).to.eql(NEW_FILE_CONTENTS);
+
+      // TODO(nikku): fix test suite and properly pass last modified
+      // expect(updatedTab.file.lastModified).to.eql(lastModified);
+
+      expect(app.isUnsaved(updatedTab)).to.be.false;
     });
 
 
@@ -1651,11 +1658,14 @@ describe('<App>', function() {
       }, fileSystem);
 
       // when
-      await app.checkFileChanged(tab);
+      const updatedTab = await app.checkFileChanged(tab);
 
       // then
       expect(showSpy).to.not.have.been.called;
       expect(readFileSpy).to.not.have.been.called;
+
+      expect(app.isUnsaved(updatedTab)).to.be.false;
+
     });
 
 
@@ -1706,19 +1716,24 @@ describe('<App>', function() {
 
       const tab = openedTabs[0];
 
-      updateFileStats(tab.file, {
-        lastModified: new Date().getMilliseconds()
-      }, fileSystem);
+      const lastModified = new Date().getMilliseconds();
+
+      updateFileStats(tab.file, { lastModified }, fileSystem);
 
       const oldTabContents = tab.file.contents;
 
       // when
-      await app.checkFileChanged(tab);
+      const updatedTab = await app.checkFileChanged(tab);
 
       // then
       expect(showSpy).to.have.been.called;
       expect(readFileSpy).to.not.have.been.called;
-      expect(tab.file.contents).to.equal(oldTabContents);
+      expect(updatedTab).to.eql(app.findOpenTab(file1));
+
+      expect(updatedTab.file.contents).to.equal(oldTabContents);
+      expect(updatedTab.file.lastModified).to.equal(lastModified);
+
+      expect(app.isUnsaved(updatedTab)).to.be.true;
     });
 
 
