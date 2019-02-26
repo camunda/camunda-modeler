@@ -224,6 +224,7 @@ export class CmmnEditor extends CachedComponent {
     newState.cmmn = true;
     newState.editable = true;
     newState.elementsSelected = !!selectionLength;
+    newState.inactiveInput = !inputActive;
 
     const editMenu = getCmmnEditMenu(newState);
     const windowMenu = getCmmnWindowMenu(newState);

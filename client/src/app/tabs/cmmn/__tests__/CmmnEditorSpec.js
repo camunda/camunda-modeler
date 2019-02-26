@@ -235,6 +235,7 @@ describe('<CmmnEditor>', function() {
           find: true,
           globalConnectTool: true,
           handTool: true,
+          inputActive: false,
           lassoTool: true,
           moveCanvas: true,
           redo: true,
@@ -299,6 +300,7 @@ describe('<CmmnEditor>', function() {
       expect(state).to.have.property('cmmn');
       expect(state).to.have.property('editable');
       expect(state).to.have.property('elementsSelected');
+      expect(state).to.have.property('inactiveInput');
     });
 
 
