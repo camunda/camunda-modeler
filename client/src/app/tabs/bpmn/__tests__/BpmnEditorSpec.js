@@ -325,6 +325,7 @@ describe('<BpmnEditor>', function() {
           find: true,
           globalConnectTool: true,
           handTool: true,
+          inputActive: false,
           lassoTool: true,
           moveCanvas: true,
           moveToOrigin: true,
@@ -395,6 +396,7 @@ describe('<BpmnEditor>', function() {
       expect(state).to.have.property('bpmn');
       expect(state).to.have.property('editable');
       expect(state).to.have.property('elementsSelected');
+      expect(state).to.have.property('inactiveInput');
     });
 
 

@@ -362,6 +362,7 @@ export class BpmnEditor extends CachedComponent {
     newState.bpmn = true;
     newState.editable = true;
     newState.elementsSelected = !!selectionLength;
+    newState.inactiveInput = !inputActive;
 
     const contextMenu = getBpmnContextMenu(newState);
 
