@@ -53,12 +53,12 @@ This project incorporates components from the projects listed below. The origina
 46.   diagram-js-origin@1.2.0 (https://github.com/bpmn-io/diagram-js-origin)
 47.   diagram-js@3.1.3 (https://github.com/bpmn-io/diagram-js)
 48.   didi@4.0.0 (https://github.com/nikku/didi)
-49.   dmn-js-decision-table@6.2.1 (https://github.com/bpmn-io/dmn-js)
-50.   dmn-js-drd@6.2.1 (https://github.com/bpmn-io/dmn-js)
-51.   dmn-js-literal-expression@6.2.1 (https://github.com/bpmn-io/dmn-js)
+49.   dmn-js-decision-table@6.2.3 (https://github.com/bpmn-io/dmn-js)
+50.   dmn-js-drd@6.2.3 (https://github.com/bpmn-io/dmn-js)
+51.   dmn-js-literal-expression@6.2.3 (https://github.com/bpmn-io/dmn-js)
 52.   dmn-js-properties-panel@0.2.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
-53.   dmn-js-shared@6.2.1
-54.   dmn-js@6.2.1 (https://github.com/bpmn-io/dmn-js)
+53.   dmn-js-shared@6.2.3 (https://github.com/bpmn-io/dmn-js)
+54.   dmn-js@6.2.3 (https://github.com/bpmn-io/dmn-js)
 55.   dmn-moddle@5.0.0 (https://github.com/bpmn-io/dmn-moddle)
 56.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
 57.   escape-html@1.0.3 (https://github.com/component/escape-html)
@@ -1386,9 +1386,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF didi@4.0.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-decision-table@6.2.1 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-decision-table@6.2.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-Copyright (c) 2015-2017 camunda Services GmbH
+Copyright (c) 2015-present Camunda Services GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in the
@@ -1413,12 +1413,12 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF dmn-js-decision-table@6.2.1 NOTICES AND INFORMATION
+END OF dmn-js-decision-table@6.2.3 NOTICES AND INFORMATION
 
 
-%% dmn-js-drd@6.2.1 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-drd@6.2.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-Copyright (c) 2015-2017 camunda Services GmbH
+Copyright (c) 2015-present Camunda Services GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in the
@@ -1443,12 +1443,12 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF dmn-js-drd@6.2.1 NOTICES AND INFORMATION
+END OF dmn-js-drd@6.2.3 NOTICES AND INFORMATION
 
 
-%% dmn-js-literal-expression@6.2.1 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-literal-expression@6.2.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-Copyright (c) 2015-2017 camunda Services GmbH
+Copyright (c) 2015-present Camunda Services GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in the
@@ -1473,7 +1473,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF dmn-js-literal-expression@6.2.1 NOTICES AND INFORMATION
+END OF dmn-js-literal-expression@6.2.3 NOTICES AND INFORMATION
 
 
 %% dmn-js-properties-panel@0.2.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1503,9 +1503,9 @@ THE SOFTWARE.
 END OF dmn-js-properties-panel@0.2.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-shared@6.2.1 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-shared@6.2.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-Copyright (c) 2015-2017 camunda Services GmbH
+Copyright (c) 2015-present Camunda Services GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in the
@@ -1530,12 +1530,12 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF dmn-js-shared@6.2.1 NOTICES AND INFORMATION
+END OF dmn-js-shared@6.2.3 NOTICES AND INFORMATION
 
 
-%% dmn-js@6.2.1 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js@6.2.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-Copyright (c) 2015-2017 camunda Services GmbH
+Copyright (c) 2015-present Camunda Services GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in the
@@ -1560,7 +1560,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF dmn-js@6.2.1 NOTICES AND INFORMATION
+END OF dmn-js@6.2.3 NOTICES AND INFORMATION
 
 
 %% dmn-moddle@5.0.0 NOTICES AND INFORMATION BEGIN HERE
