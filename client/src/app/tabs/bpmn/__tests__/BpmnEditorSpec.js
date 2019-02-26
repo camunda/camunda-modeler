@@ -22,8 +22,6 @@ import {
 
 import BpmnModeler from 'test/mocks/bpmn-js/Modeler';
 
-import { SlotFillRoot } from 'src/app/slot-fill';
-
 import diagramXML from './diagram.bpmn';
 import activitiXML from './activiti.bpmn';
 
@@ -1185,37 +1183,33 @@ async function renderEditor(xml, options = {}) {
     getPlugins
   } = options;
 
-  const slotFillRoot = await mount(
-    <SlotFillRoot>
-      <TestEditor
-        id={ id || 'editor' }
-        xml={ xml }
-        activeSheet={ options.activeSheet || { id: 'bpmn' } }
-        onAction={ onAction || noop }
-        onChanged={ onChanged || noop }
-        onError={ onError || noop }
-        onImport={ onImport || noop }
-        onLayoutChanged={ onLayoutChanged || noop }
-        onContentUpdated={ onContentUpdated || noop }
-        onModal={ onModal || noop }
-        onLoadConfig={ onLoadConfig || noop }
-        getPlugins={ getPlugins || (() => []) }
-        cache={ options.cache || new Cache() }
-        layout={ layout || {
-          minimap: {
-            open: false
-          },
-          propertiesPanel: {
-            open: true
-          }
-        } }
-      />
-    </SlotFillRoot>
+  const wrapper = await mount(
+    <TestEditor
+      id={ id || 'editor' }
+      xml={ xml }
+      activeSheet={ options.activeSheet || { id: 'bpmn' } }
+      onAction={ onAction || noop }
+      onChanged={ onChanged || noop }
+      onError={ onError || noop }
+      onImport={ onImport || noop }
+      onLayoutChanged={ onLayoutChanged || noop }
+      onContentUpdated={ onContentUpdated || noop }
+      onModal={ onModal || noop }
+      onLoadConfig={ onLoadConfig || noop }
+      getPlugins={ getPlugins || (() => []) }
+      cache={ options.cache || new Cache() }
+      layout={ layout || {
+        minimap: {
+          open: false
+        },
+        propertiesPanel: {
+          open: true
+        }
+      } }
+    />
   );
 
-  const wrapper = slotFillRoot.find(BpmnEditor);
-
-  const instance = wrapper.instance();
+  const instance = wrapper.find(BpmnEditor).instance();
 
   return {
     instance,

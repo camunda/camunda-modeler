@@ -30,8 +30,6 @@ import {
   getUndoRedoEntries
 } from '../../getEditMenu';
 
-import { SlotFillRoot } from 'src/app/slot-fill';
-
 import diagramXML from './diagram.dmn';
 
 const { spy } = sinon;
@@ -988,34 +986,30 @@ async function renderEditor(xml, options = {}) {
     onSheetsChanged
   } = options;
 
-  const slotFillRoot = await mount(
-    <SlotFillRoot>
-      <TestEditor
-        id={ options.id || 'editor' }
-        xml={ xml }
-        activeSheet={ options.activeSheet || { id: 'dmn' } }
-        onChanged={ onChanged || noop }
-        onError={ onError || noop }
-        onImport={ onImport || noop }
-        onLayoutChanged={ onLayoutChanged || noop }
-        onModal={ onModal || noop }
-        onSheetsChanged={ onSheetsChanged || noop }
-        cache={ options.cache || new Cache() }
-        layout={ layout || {
-          minimap: {
-            open: false
-          },
-          propertiesPanel: {
-            open: true
-          }
-        } }
-      />
-    </SlotFillRoot>
+  const wrapper = await mount(
+    <TestEditor
+      id={ options.id || 'editor' }
+      xml={ xml }
+      activeSheet={ options.activeSheet || { id: 'dmn' } }
+      onChanged={ onChanged || noop }
+      onError={ onError || noop }
+      onImport={ onImport || noop }
+      onLayoutChanged={ onLayoutChanged || noop }
+      onModal={ onModal || noop }
+      onSheetsChanged={ onSheetsChanged || noop }
+      cache={ options.cache || new Cache() }
+      layout={ layout || {
+        minimap: {
+          open: false
+        },
+        propertiesPanel: {
+          open: true
+        }
+      } }
+    />
   );
 
-  const wrapper = slotFillRoot.find(DmnEditor);
-
-  const instance = wrapper.instance();
+  const instance = wrapper.find(DmnEditor).instance();
 
   return {
     instance,

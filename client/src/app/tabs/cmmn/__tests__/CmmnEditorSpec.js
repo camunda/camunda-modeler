@@ -31,8 +31,6 @@ import {
   getUndoRedoEntries
 } from '../../getEditMenu';
 
-import { SlotFillRoot } from 'src/app/slot-fill';
-
 import diagramXML from './diagram.cmmn';
 
 const { spy } = sinon;
@@ -846,32 +844,28 @@ function renderEditor(xml, options = {}) {
     onLayoutChanged
   } = options;
 
-  const slotFillRoot = mount(
-    <SlotFillRoot>
-      <TestEditor
-        id={ options.id || 'editor' }
-        xml={ xml }
-        activeSheet={ options.activeSheet || { id: 'cmmn' } }
-        onChanged={ onChanged || noop }
-        onError={ onError || noop }
-        onImport={ onImport || noop }
-        onLayoutChanged={ onLayoutChanged || noop }
-        cache={ options.cache || new Cache() }
-        layout={ layout || {
-          minimap: {
-            open: false
-          },
-          propertiesPanel: {
-            open: true
-          }
-        } }
-      />
-    </SlotFillRoot>
+  const wrapper = mount(
+    <TestEditor
+      id={ options.id || 'editor' }
+      xml={ xml }
+      activeSheet={ options.activeSheet || { id: 'cmmn' } }
+      onChanged={ onChanged || noop }
+      onError={ onError || noop }
+      onImport={ onImport || noop }
+      onLayoutChanged={ onLayoutChanged || noop }
+      cache={ options.cache || new Cache() }
+      layout={ layout || {
+        minimap: {
+          open: false
+        },
+        propertiesPanel: {
+          open: true
+        }
+      } }
+    />
   );
 
-  const wrapper = slotFillRoot.find(CmmnEditor);
-
-  const instance = wrapper.instance();
+  const instance = wrapper.find(CmmnEditor).instance();
 
   return {
     instance,

@@ -7,6 +7,11 @@
 
 import React from 'react';
 
-const FillContext = React.createContext();
+const defaultValue = {
+  addFill() {},
+  removeFill() {}
+};
+
+const FillContext = React.createContext(defaultValue);
 
 export default FillContext;

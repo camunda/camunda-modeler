@@ -18,8 +18,6 @@ import { XMLEditor } from '../XMLEditor';
 
 import CodeMirror from 'test/mocks/code-mirror/CodeMirror';
 
-import { SlotFillRoot } from 'src/app/slot-fill';
-
 /* global sinon */
 
 const XML = '<xml></xml>';
@@ -215,15 +213,13 @@ function renderEditor(xml, options = {}) {
   } = options;
 
   const slotFillRoot = mount(
-    <SlotFillRoot>
-      <TestEditor
-        id={ id || 'editor' }
-        xml={ xml }
-        activeSheet={ options.activeSheet || { id: 'xml' } }
-        onChanged={ onChanged || noop }
-        cache={ options.cache || new Cache() }
-      />
-    </SlotFillRoot>
+    <TestEditor
+      id={ id || 'editor' }
+      xml={ xml }
+      activeSheet={ options.activeSheet || { id: 'xml' } }
+      onChanged={ onChanged || noop }
+      cache={ options.cache || new Cache() }
+    />
   );
 
   const wrapper = slotFillRoot.find(XMLEditor);
