@@ -189,6 +189,11 @@ export class DmnEditor extends CachedComponent {
       onSheetsChanged
     } = this.props;
 
+    const {
+      dirty,
+      stackIdx
+    } = this.getCached();
+
     const previousView = this.getCached().activeView;
 
     const modeler = this.getModeler();
@@ -225,6 +230,7 @@ export class DmnEditor extends CachedComponent {
     // must be called last
     this.setCached({
       activeView,
+      dirty: dirty || modeler.getStackIdx() !== stackIdx,
       views
     });
 

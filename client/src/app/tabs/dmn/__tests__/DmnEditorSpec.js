@@ -536,6 +536,36 @@ describe('<DmnEditor>', function() {
       instance = (await renderEditor(diagramXML)).instance;
     });
 
+    it('should save dirty state', async function() {
+
+      // given
+      const dirtySpy = spy(instance, 'isDirty');
+
+      const modeler = await instance.getModeler();
+
+      const commandStack = modeler.getActiveViewer().get('commandStack');
+
+      const oldDirty = instance.getCached().dirty;
+
+      commandStack.execute(2);
+
+      // when
+      instance.viewsChanged({
+        activeView: view1,
+        views
+      });
+
+      const {
+        dirty
+      } = instance.getCached();
+
+      // then
+      expect(dirtySpy).to.have.been.called;
+      expect(dirty).to.be.true;
+      expect(dirty).to.not.equal(oldDirty);
+    });
+
+
     it('should reattach properties panel on view switch', async function() {
 
       // given
