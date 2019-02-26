@@ -368,7 +368,10 @@ export class App extends PureComponent {
   }
 
   isUnsaved = (tab) => {
-    return tab.file && !tab.file.path;
+    const { unsavedTabs } = this.state;
+    const { id, file } = tab;
+
+    return unsavedTabs[id] || (file && !file.path);
   }
 
   async _removeTab(tab) {
