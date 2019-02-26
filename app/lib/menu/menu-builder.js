@@ -161,6 +161,7 @@ class MenuBuilder {
   appendReopenLastTab() {
     this.menu.append(new MenuItem({
       label: 'Reopen Last File',
+      enabled: this.options.state.lastTab,
       accelerator: 'CommandOrControl+Shift+T',
       click: function() {
         app.emit('menu:action', 'reopen-last-tab');
