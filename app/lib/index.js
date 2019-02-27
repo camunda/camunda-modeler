@@ -392,6 +392,18 @@ app.createEditorWindow = function() {
   app.quitAllowed = false;
 };
 
+app.on('restart', function(args) {
+
+  const effectiveArgs = Cli.appendArgs(process.argv.slice(1), [ ...args, '--relaunch' ]);
+
+  log.info('restarting with args %O', effectiveArgs);
+
+  app.relaunch({
+    args: effectiveArgs
+  });
+
+  app.exit(0);
+});
 
 /**
  * Application entry point
