@@ -595,6 +595,32 @@ describe('<BpmnEditor>', function() {
       expect(updatedSpy).to.not.have.been.called;
     });
 
+
+    it('should not fail import for broken diagrams', function(done) {
+
+      // given
+      const onContentUpdated = sinon.spy();
+      const onAction = sinon.stub().resolves('yes');
+
+      // when
+      renderEditor('broken-diagram', {
+        onAction,
+        onContentUpdated,
+        onImport
+      });
+
+      // then
+      function onImport() {
+        try {
+          expect(onContentUpdated).to.have.not.been.called;
+
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
+    });
+
   });
 
 
