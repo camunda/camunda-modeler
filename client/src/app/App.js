@@ -199,13 +199,7 @@ export class App extends PureComponent {
    */
   checkFileChanged = async (tab) => {
 
-    const {
-      globals
-    } = this.props;
-
-    const {
-      fileSystem
-    } = globals;
+    const fileSystem = this.getGlobal('fileSystem');
 
     const {
       file
@@ -457,18 +451,15 @@ export class App extends PureComponent {
   }
 
   showOpenFilesDialog = async () => {
+    const dialog = this.getGlobal('dialog');
+
     const {
-      globals,
       tabsProvider
     } = this.props;
 
     const {
       activeTab
     } = this.state;
-
-    const {
-      dialog
-    } = globals;
 
     const providers = tabsProvider.getProviders();
 
@@ -489,26 +480,18 @@ export class App extends PureComponent {
   }
 
   showCloseFileDialog = (file) => {
-    const { globals } = this.props;
-
-    const { dialog } = globals;
-
     const { name } = file;
 
-    return dialog.showCloseFileDialog({ name });
+    return this.getGlobal('dialog').showCloseFileDialog({ name });
   }
 
   showSaveFileDialog = (file, options = {}) => {
-    const { globals } = this.props;
-
-    const { dialog } = globals;
-
     const {
       filters,
       title
     } = options;
 
-    return dialog.showSaveFileDialog({
+    return this.getGlobal('dialog').showSaveFileDialog({
       file,
       filters,
       title
@@ -516,20 +499,15 @@ export class App extends PureComponent {
   }
 
   showSaveFileErrorDialog(options) {
-    const { globals } = this.props;
-
-    const { dialog } = globals;
-
-    return dialog.showSaveFileErrorDialog(options);
+    return this.getGlobal('dialog').showSaveFileErrorDialog(options);
   }
 
   openEmptyFile = async (file) => {
     const {
-      globals,
       tabsProvider
     } = this.props;
 
-    const { dialog } = globals;
+    const dialog = this.getGlobal('dialog');
 
     const { name } = file;
 
@@ -628,8 +606,10 @@ export class App extends PureComponent {
   }
 
   readFileFromPath = async (filePath) => {
+
+    const fileSystem = this.getGlobal('fileSystem');
+
     const {
-      globals,
       tabsProvider
     } = this.props;
 
@@ -642,7 +622,7 @@ export class App extends PureComponent {
     let file = null;
 
     try {
-      file = await globals.fileSystem.readFile(filePath, {
+      file = await fileSystem.readFile(filePath, {
         encoding
       });
     } catch (error) {
@@ -997,12 +977,24 @@ export class App extends PureComponent {
     return onError(error, tab);
   }
 
+  getGlobal(name) {
+    const {
+      globals
+    } = this.props;
+
+    if (name in globals) {
+      return globals[name];
+    }
+
+    throw new Error(`global <${name}> not exposed`);
+  }
+
   /**
    * Propagates warnings to parent.
    * @param {Error} error
    * @param {Tab} [tab]
    */
-  handleWarning(warning, tab) {
+  handleWarning(warning, tab) {or
     const {
       onWarning
     } = this.props;
@@ -1040,14 +1032,14 @@ export class App extends PureComponent {
   }
 
   async saveTab(tab, options = {}) {
+
     await this.showTab(tab);
 
     const {
-      globals,
       tabsProvider
     } = this.props;
 
-    const { fileSystem } = globals;
+    const fileSystem = this.getGlobal('fileSystem');
 
     const fileType = tab.type;
 
@@ -1198,11 +1190,7 @@ export class App extends PureComponent {
       originalFile,
     } = options;
 
-    const {
-      globals,
-    } = this.props;
-
-    const { fileSystem } = globals;
+    const fileSystem = this.getGlobal('fileSystem');
 
     const contents = await this.tabRef.current.triggerAction('export-as', {
       fileType: exportType
@@ -1305,11 +1293,7 @@ export class App extends PureComponent {
   }
 
   showDialog(options) {
-    const {
-      globals
-    } = this.props;
-
-    return globals.dialog.show(options);
+    return this.getGlobal('dialog').show(options);
   }
 
   triggerAction = (action, options) => {
@@ -1444,7 +1428,7 @@ export class App extends PureComponent {
   }
 
   openExternalUrl(options) {
-    this.props.globals.backend.send('external:open-url', options);
+    this.getGlobal('backend').send('external:open-url', options);
   }
 
   openModal = modal => this.triggerAction('open-modal', modal);
@@ -1467,7 +1451,7 @@ export class App extends PureComponent {
       return false;
     }
 
-    return this.props.globals.backend.send('deploy', { ...options, file });
+    return this.getGlobal('backend').send('deploy', { ...options, file });
   };
 
   handleDeployError = (error) => {
@@ -1491,15 +1475,11 @@ export class App extends PureComponent {
   }
 
   loadConfig = (key, ...args) => {
-    return this.props.globals.config.get(key, this.state.activeTab, ...args);
+    return this.getGlobal('config').get(key, this.state.activeTab, ...args);
   }
 
   getPlugins = type => {
-    const { globals } = this.props;
-
-    const { plugins } = globals;
-
-    return plugins.get(type);
+    return this.getGlobal('plugins').get(type);
   }
 
   async quit() {
@@ -1708,7 +1688,7 @@ export class App extends PureComponent {
           <ModalConductor
             currentModal={ this.state.currentModal }
             endpoints={ this.state.endpoints }
-            isMac={ this.props.globals.isMac }
+            isMac={ this.getGlobal('isMac') }
             onClose={ this.closeModal }
             onDeploy={ this.handleDeploy }
             onDeployError={ this.handleDeployError }
