@@ -155,6 +155,23 @@ describe('cli', function() {
     }
   });
 
+
+  describe('#appendArgs', function() {
+
+    it('should filter negated args', function() {
+
+      // given
+      var args = [ '--no-foo', '--bar', '-xyz', '--hello=1231', '123' ];
+
+      // when
+      var actualArgs = Cli.appendArgs(args, [ '--foo', '--no-bar' ]);
+
+      // then
+      expect(actualArgs).to.eql([ '123', '-xyz', '--hello=1231', '--foo', '--no-bar' ]);
+    });
+
+  });
+
 });
 
 
