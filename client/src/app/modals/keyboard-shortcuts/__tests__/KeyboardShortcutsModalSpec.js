@@ -19,80 +19,58 @@ import { KeyboardShortcutsModal } from '..';
 import View from '../View';
 import getShortcuts from '../getShortcuts';
 
+
+const COMMAND_MODIFIER = 'Command';
+const CTRL_MODIFIER = 'Control';
+
+
 describe('<KeyboardShortcutsModal>', function() {
 
   it('should render', function() {
-    shallow(<KeyboardShortcutsModal />);
+    shallow(<KeyboardShortcutsModal getGlobal={ mockGlobal('foo') } />);
   });
+
 
   describe('keyboard shortcuts', function() {
 
-    const macModifierKey = 'Command',
-          otherModifierKey = 'Control';
-
     it('should render shortcuts', function() {
 
-      // given
-      const isMac = true;
-
       // when
-      const wrapper = mount(<KeyboardShortcutsModal
-        isMac={ isMac }
-      />);
+      const { keyboardShortcuts } = renderOverlay();
 
-      const shortcuts = getShortcuts(macModifierKey);
-
-      const keyboardShortcuts = wrapper.find('.keyboard-shortcuts').first();
+      const shortcuts = getShortcuts(COMMAND_MODIFIER);
 
       // then
       expect(keyboardShortcuts).to.exist;
       expect(keyboardShortcuts.children()).to.have.lengthOf(shortcuts.length);
-
-      wrapper.unmount();
-
     });
 
 
-    it('should render with mac modifier key', function() {
-
-      // given
-      const isMac = true;
+    it('should render Mac OS shortcuts', function() {
 
       // when
-      const wrapper = mount(<KeyboardShortcutsModal
-        isMac={ isMac }
-      />);
-
-      const keyboardShortcuts = wrapper.find('.keyboard-shortcuts').first();
+      const { keyboardShortcuts } = renderOverlay({
+        platform: 'darwin'
+      });
 
       // then
-      expect(keyboardShortcuts.text()).to.contain(macModifierKey);
-      expect(keyboardShortcuts.text()).not.to.contain(otherModifierKey);
-
-      wrapper.unmount();
+      expect(keyboardShortcuts.text()).to.contain(COMMAND_MODIFIER);
+      expect(keyboardShortcuts.text()).not.to.contain(CTRL_MODIFIER);
     });
 
 
-
-    it('should NOT render with mac modifier key', function() {
-
-      // given
-      const isMac = false;
+    it('should render Windows / Linux shortcuts', function() {
 
       // when
-      const wrapper = mount(<KeyboardShortcutsModal
-        isMac={ isMac }
-      />);
-
-      const keyboardShortcuts = wrapper.find('.keyboard-shortcuts').first();
+      const { keyboardShortcuts } = renderOverlay({
+        platform: 'linux'
+      });
 
       // then
-      expect(keyboardShortcuts.text()).not.to.contain(macModifierKey);
-      expect(keyboardShortcuts.text()).to.contain(otherModifierKey);
-
-      wrapper.unmount();
-
+      expect(keyboardShortcuts.text()).not.to.contain(COMMAND_MODIFIER);
+      expect(keyboardShortcuts.text()).to.contain(CTRL_MODIFIER);
     });
+
   });
 
 
@@ -105,3 +83,35 @@ describe('<KeyboardShortcutsModal>', function() {
   });
 
 });
+
+
+function renderOverlay(options={}) {
+
+  const platform = options.platform || 'win32';
+
+  const wrapper = mount(<KeyboardShortcutsModal
+    getGlobal={ mockGlobal(platform) }
+  />);
+
+  const keyboardShortcuts = wrapper.find('.keyboard-shortcuts').first();
+
+  return {
+    keyboardShortcuts
+  };
+}
+
+
+function mockGlobal(platform) {
+
+  return function(name) {
+    if (name === 'backend') {
+      return {
+        getPlatform() {
+          return platform;
+        }
+      };
+    }
+
+    throw new Error('global not found: ' + name);
+  };
+}
