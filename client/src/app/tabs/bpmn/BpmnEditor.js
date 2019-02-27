@@ -259,28 +259,43 @@ export class BpmnEditor extends CachedComponent {
   }
 
   handleNamespace = async (xml) => {
+    const shouldConvert = await this.isNamespaceConversionNeeded(xml);
+
+    if (!shouldConvert) {
+      return xml;
+    }
+
     const {
-      onAction,
       onContentUpdated
     } = this.props;
 
-    const answer = await onAction('show-dialog', getNamespaceDialog());
 
-    if (answer === 'yes') {
-      xml = await replaceNamespace(xml, {
-        newNamespacePrefix: NAMESPACE_PREFIX_CAMUNDA,
-        newNamespaceUrl: NAMESPACE_URL_CAMUNDA,
-        oldNamespacePrefix: NAMESPACE_PREFIX_ACTIVITI,
-        oldNamespaceUrl: NAMESPACE_URL_ACTIVITI
-      });
+    const convertedXML = await replaceNamespace(xml, {
+      newNamespacePrefix: NAMESPACE_PREFIX_CAMUNDA,
+      newNamespaceUrl: NAMESPACE_URL_CAMUNDA,
+      oldNamespacePrefix: NAMESPACE_PREFIX_ACTIVITI,
+      oldNamespaceUrl: NAMESPACE_URL_ACTIVITI
+    });
 
-      if (typeof onContentUpdated === 'function') {
-        onContentUpdated(xml);
+    onContentUpdated(convertedXML);
+
+    return convertedXML;
+  }
+
+  async isNamespaceConversionNeeded(xml) {
+    try {
+      const namespaceFound = await hasNamespaceUrl(xml, NAMESPACE_URL_ACTIVITI);
+
+      if (namespaceFound) {
+        const answer = await this.props.onAction('show-dialog', getNamespaceDialog());
+
+        return answer === 'yes';
       }
-
+    } catch (error) {
+      // swallow
     }
 
-    return xml;
+    return false;
   }
 
   handleImport = (error, warnings) => {
