@@ -165,6 +165,62 @@ describe('<App>', function() {
 
     });
 
+
+    describe('should indicate lastTab state', function() {
+
+      it('no last tab', async function() {
+
+        // given
+        const updateMenuSpy = spy();
+
+        const {
+          app
+        } = createApp({
+          onMenuUpdate: updateMenuSpy
+        }, mount);
+
+        // when
+        await app.openFiles([
+          createFile('1.bpmn'),
+          createFile('2.bpmn')
+        ]);
+
+        // then
+        expect(updateMenuSpy).to.have.been.calledWith(sinon.match({
+          lastTab: false
+        }));
+
+      });
+
+
+      it('closed tab', async function() {
+
+        // given
+        const updateMenuSpy = spy();
+
+        const {
+          app
+        } = createApp({
+          onMenuUpdate: updateMenuSpy
+        }, mount);
+
+        // when
+        await app.openFiles([
+          createFile('1.bpmn'),
+          createFile('2.bpmn')
+        ]);
+
+        await app.triggerAction('close-all-tabs');
+
+        // then
+        expect(updateMenuSpy).to.have.been.calledWith(sinon.match({
+          lastTab: true
+        }));
+
+      });
+
+    });
+
   });
 
 
