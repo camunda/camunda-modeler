@@ -149,9 +149,7 @@ export class BpmnEditor extends CachedComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isImporting(this.state) && isXMLChange(prevProps.xml, this.props.xml)) {
-      this.checkImport();
-    }
+    this.checkImport(prevProps);
 
     if (isCacheStateChanged(prevProps, this.props)) {
       this.handleChanged();
@@ -393,34 +391,50 @@ export class BpmnEditor extends CachedComponent {
     return commandStack._stackIdx !== stackIdx;
   }
 
-  async checkImport() {
+  async checkImport(prevProps = {}) {
+
+    if (!this.isImportNeeded(prevProps)) {
+      return;
+    }
+
+    await this.importXML();
+  }
+
+  isImportNeeded(prevProps) {
     const {
-      lastXML,
-      namespaceDialogShown
+      importing
+    } = this.state;
+
+    if (importing) {
+      return false;
+    }
+
+    const {
+      xml
+    } = this.props;
+
+    const {
+      lastXML
     } = this.getCached();
 
-    let { xml } = this.props;
+    return (xml !== prevProps.xml) || (xml !== lastXML);
+  }
+
+  async importXML() {
+    const {
+      xml
+    } = this.props;
+
+    this.setState({
+      importing: true
+    });
 
     const modeler = this.getModeler();
 
-    if (isXMLChange(lastXML, xml)) {
-      this.setState({
-        importing: true
-      });
+    const importedXML = await this.handleNamespace(xml);
 
-      const namespaceFound = await hasNamespaceUrl(xml, NAMESPACE_URL_ACTIVITI);
-
-      if (!namespaceDialogShown && namespaceFound) {
-        this.setCached({
-          namespaceDialogShown: true
-        });
-
-        xml = await this.handleNamespace(xml);
-      }
-
-      // TODO(nikku): apply default element templates to initial diagram
-      modeler.importXML(xml, this.ifMounted(this.handleImport));
-    }
+    // TODO(nikku): apply default element templates to initial diagram
+    modeler.importXML(importedXML, this.ifMounted(this.handleImport));
   }
 
   /**
@@ -846,14 +860,6 @@ function getNamespaceDialog() {
       '<camunda> namespace support works from Camunda BPM versions 7.4.0, 7.3.3, 7.2.6 onwards.'
     ].join('\n')
   };
-}
-
-function isImporting(state) {
-  return state.importing;
-}
-
-function isXMLChange(prevXML, xml) {
-  return prevXML !== xml;
 }
 
 function isCacheStateChanged(prevProps, props) {
