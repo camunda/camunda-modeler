@@ -46,6 +46,31 @@ function parse(args, cwd) {
 module.exports.parse = parse;
 
 
+function appendArgs(args, additionalArgs) {
+
+  const allArgs = [
+    ...args,
+    ...additionalArgs
+  ];
+
+  const effectiveArgs = allArgs.reduce((effectiveArgs, arg) => {
+
+    if (arg.startsWith('--no-')) {
+      delete effectiveArgs[`--${arg.substring(5)}`];
+    } else if (!arg.includes('=')) {
+      delete effectiveArgs[`--no-${arg.substring(2)}`];
+    }
+
+    effectiveArgs[arg] = true;
+
+    return effectiveArgs;
+  }, {});
+
+  return Object.keys(effectiveArgs);
+}
+
+module.exports.appendArgs = appendArgs;
+
 /**
  * Check a possible filePath represents an existing file.
  *
