@@ -16,7 +16,9 @@ import getShortcuts from './getShortcuts';
 
 class KeyboardShortcutsModal extends PureComponent {
   getModifierKey() {
-    return this.props.isMac ? 'Command' : 'Control';
+    const platform = this.props.getGlobal('backend').getPlatform();
+
+    return platform === 'darwin' ? 'Command' : 'Control';
   }
 
   render() {
