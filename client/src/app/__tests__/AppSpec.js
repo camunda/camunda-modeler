@@ -165,6 +165,62 @@ describe('<App>', function() {
 
     });
 
+
+    describe('should set lastTab menu state', function() {
+
+      it('to false if there is no last tab', async function() {
+
+        // given
+        const updateMenuSpy = spy();
+
+        const {
+          app
+        } = createApp({
+          onMenuUpdate: updateMenuSpy
+        }, mount);
+
+        // when
+        await app.openFiles([
+          createFile('1.bpmn'),
+          createFile('2.bpmn')
+        ]);
+
+        // then
+        expect(updateMenuSpy).to.have.been.calledWith(sinon.match({
+          lastTab: false
+        }));
+
+      });
+
+
+      it('to true if tabs were closed', async function() {
+
+        // given
+        const updateMenuSpy = spy();
+
+        const {
+          app
+        } = createApp({
+          onMenuUpdate: updateMenuSpy
+        }, mount);
+
+        // when
+        await app.openFiles([
+          createFile('1.bpmn'),
+          createFile('2.bpmn')
+        ]);
+
+        await app.triggerAction('close-all-tabs');
+
+        // then
+        expect(updateMenuSpy).to.have.been.calledWith(sinon.match({
+          lastTab: true
+        }));
+
+      });
+
+    });
+
   });
 
 

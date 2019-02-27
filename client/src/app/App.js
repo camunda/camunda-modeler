@@ -1176,7 +1176,8 @@ export class App extends PureComponent {
 
     onMenuUpdate({
       ...options,
-      tabsCount: this.state.tabs.length
+      tabsCount: this.state.tabs.length,
+      lastTab: !!this.closedTabs.get()
     });
   }
 
