@@ -27,6 +27,7 @@ import BpmnModeler from 'test/mocks/bpmn-js/Modeler';
 
 import diagramXML from './diagram.bpmn';
 import activitiXML from './activiti.bpmn';
+import activitiConvertedXML from './activitiConverted.bpmn';
 
 import {
   getCanvasEntries,
@@ -540,62 +541,59 @@ describe('<BpmnEditor>', function() {
   });
 
 
+
   describe('#handleNamespace', function() {
 
     it('should replace namespace', function(done) {
 
       // given
-      const onAction = action => {
-
-        if (action === 'show-dialog') {
-          return 'yes';
-        }
-      };
-
-      const updatedSpy = contents => {
-
-        // then
-        expect(contents).to.exist;
-
-        expect(contents.includes('xmlns:activiti="http://activiti.org/bpmn"')).to.be.false;
-        expect(contents.includes('xmlns:camunda="http://camunda.org/schema/1.0/bpmn"')).to.be.true;
-
-        expect(contents.includes('targetNamespace="http://activiti.org/bpmn"')).to.be.false;
-        expect(contents.includes('targetNamespace="http://camunda.org/schema/1.0/bpmn"')).to.be.true;
-
-        expect(contents.includes('activiti:assignee')).to.be.false;
-        expect(contents.includes('camunda:assignee')).to.be.true;
-
-        done();
-      };
+      const onContentUpdated = sinon.spy();
+      const onAction = sinon.stub().resolves('yes');
 
       // when
       renderEditor(activitiXML, {
         onAction,
-        onContentUpdated: updatedSpy
+        onContentUpdated,
+        onImport
       });
+
+      // then
+      function onImport() {
+        try {
+          expect(onContentUpdated).to.be.calledOnce;
+          expect(onContentUpdated).to.be.calledWith(activitiConvertedXML);
+
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
     });
 
 
-    it('should NOT replace namespace', async function() {
+    it('should not convert the diagram if declined', function(done) {
 
       // given
-      const onAction = action => {
-
-        if (action === 'show-dialog') {
-          return 'cancel';
-        }
-      };
-
-      const updatedSpy = spy();
+      const onContentUpdated = sinon.spy();
+      const onAction = sinon.stub().resolves('cancel');
 
       // when
-      await renderEditor(activitiXML, {
+      renderEditor(activitiXML, {
         onAction,
-        onContentUpdated: updatedSpy
+        onContentUpdated,
+        onImport
       });
 
-      expect(updatedSpy).to.not.have.been.called;
+      // then
+      function onImport() {
+        try {
+          expect(onContentUpdated).to.have.not.been.called;
+
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
     });
 
 
