@@ -216,7 +216,7 @@ export default class Log extends PureComponent {
                   var msg;
 
                   if (message) {
-                    msg = message + '  [' + category + ']';
+                    msg = message;
                   } else {
                     msg = ' ';
                   }
@@ -224,9 +224,15 @@ export default class Log extends PureComponent {
                   return (
                     <div className="entry" key={ idx } data-idx={ idx }>
                       {
-                        action
-                          ? <a href="#" onClick={ action }>{ msg }</a>
-                          : <span>{ msg }</span>
+                        <span>
+                          {
+                            action
+                              ? <a href="#" onClick={ action }>{ msg }</a>
+                              : msg
+                          }
+
+                          { category && <span className="category"> [ { category } ] </span> }
+                        </span>
                       }
                     </div>
                   );
