@@ -84,9 +84,7 @@ export class CmmnEditor extends CachedComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isImporting(this.state) && isXMLChange(prevProps.xml, this.props.xml)) {
-      this.checkImport();
-    }
+    this.checkImport(prevProps);
 
     if (isCachedStateChange(prevProps, this.props)) {
       this.handleChanged();
@@ -251,24 +249,45 @@ export class CmmnEditor extends CachedComponent {
     return commandStack._stackIdx !== stackIdx;
   }
 
-  checkImport() {
+  checkImport(prevProps = {}) {
+    if (!this.isImportNeeded(prevProps)) {
+      return;
+    }
+
+    this.importXML();
+  }
+
+  isImportNeeded(prevProps) {
     const {
-      lastXML,
-      modeler
-    } = this.getCached();
+      importing
+    } = this.state;
+
+    if (importing) {
+      return false;
+    }
 
     const {
       xml
     } = this.props;
 
-    if (isXMLChange(lastXML, xml)) {
-      this.setState({
-        importing: true
-      });
+    const {
+      lastXML
+    } = this.getCached();
 
-      // TODO(nikku): apply default element templates to initial diagram
-      modeler.importXML(xml, this.ifMounted(this.handleImport));
-    }
+    return (xml !== prevProps.xml) || (xml !== lastXML);
+  }
+
+  importXML() {
+    const {
+      modeler
+    } = this.getCached();
+
+    this.setState({
+      importing: true
+    });
+
+    // TODO(nikku): apply default element templates to initial diagram
+    modeler.importXML(this.props.xml, this.ifMounted(this.handleImport));
   }
 
   /**
@@ -518,15 +537,6 @@ export class CmmnEditor extends CachedComponent {
 export default WithCache(WithCachedState(CmmnEditor));
 
 // helpers //////////
-
-function isImporting(state) {
-  return state.importing;
-}
-
-function isXMLChange(prevXML, xml) {
-  return prevXML !== xml;
-}
-
 function isCachedStateChange(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
 }
