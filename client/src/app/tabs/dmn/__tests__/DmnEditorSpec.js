@@ -444,69 +444,82 @@ describe('<DmnEditor>', function() {
         it('should provide rule entries', async function() {
 
           // given
-          const changedSpy = (state) => {
-
-            // then
-            expect(includesEntryDeeply(state.editMenu, 'Add Rule')).to.be.true;
-            expect(includesEntryDeeply(state.editMenu, 'Remove Clause')).to.be.true;
-
-          };
+          const changedSpy = sinon.spy();
 
           const { instance } = await renderEditor(diagramXML, {
             onChanged: changedSpy
           });
 
+          changedSpy.resetHistory();
+
+          // when
           const modeler = instance.getModeler();
           modeler.open({ type: 'decisionTable' });
 
-          // when
           instance.handleChanged();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+          expect(includesEntryDeeply(state.editMenu, 'Add Rule')).to.be.true;
+          expect(includesEntryDeeply(state.editMenu, 'Remove Clause')).to.be.true;
+
         });
 
 
         it('should provide clause entries', async function() {
 
           // given
-          const changedSpy = (state) => {
-
-            // then
-            expect(includesEntryDeeply(state.editMenu, 'Add Clause')).to.be.true;
-            expect(includesEntryDeeply(state.editMenu, 'Remove Clause')).to.be.true;
-
-          };
+          const changedSpy = sinon.spy();
 
           const { instance } = await renderEditor(diagramXML, {
             onChanged: changedSpy
           });
 
+          changedSpy.resetHistory();
+
+          // when
           const modeler = instance.getModeler();
           modeler.open({ type: 'decisionTable' });
 
-          // when
           instance.handleChanged();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+
+          expect(includesEntryDeeply(state.editMenu, 'Add Clause')).to.be.true;
+          expect(includesEntryDeeply(state.editMenu, 'Remove Clause')).to.be.true;
+
         });
 
 
         it('should provide select cell entries', async function() {
 
           // given
-          const changedSpy = (state) => {
-
-            // then
-            expect(includesEntryDeeply(state.editMenu, 'Select Cell Above')).to.be.true;
-            expect(includesEntryDeeply(state.editMenu, 'Select Cell Below')).to.be.true;
-
-          };
+          const changedSpy = sinon.spy();
 
           const { instance } = await renderEditor(diagramXML, {
             onChanged: changedSpy
           });
 
-          const modeler = instance.getModeler();
-          modeler.open({ type: 'decisionTable' });
+          changedSpy.resetHistory();
 
           // when
+          const modeler = instance.getModeler();
+
+          modeler.open({ type: 'decisionTable' });
           instance.handleChanged();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+
+          expect(includesEntryDeeply(state.editMenu, 'Select Cell Above')).to.be.true;
+          expect(includesEntryDeeply(state.editMenu, 'Select Cell Below')).to.be.true;
         });
 
       });
