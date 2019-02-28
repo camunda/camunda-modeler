@@ -224,43 +224,28 @@ describe('<CmmnEditor>', function() {
     it('should notify about changes', function() {
 
       // given
-      const changedSpy = (state) => {
+      const changedSpy = sinon.spy();
 
-        // then
-        expect(state).to.include({
-          dirty: true,
-          editLabel: false,
-          find: true,
-          globalConnectTool: true,
-          handTool: true,
-          inputActive: false,
-          lassoTool: true,
-          moveCanvas: true,
-          redo: true,
-          removeSelected: false,
-          spaceTool: true,
-          undo: true
-        });
-      };
+      const modeler = new CmmnModeler({
+        modules: {
+          commandStack: {
+            canRedo: () => true,
+            canUndo: () => true,
+            _stackIdx: 1
+          },
+          selection: {
+            get: () => []
+          }
+        }
+      });
 
       const cache = new Cache();
 
       cache.add('editor', {
         cached: {
           lastXML: diagramXML,
-          modeler: new CmmnModeler({
-            modules: {
-              commandStack: {
-                canRedo: () => true,
-                canUndo: () => true,
-                _stackIdx: 1
-              },
-              selection: {
-                get: () => []
-              }
-            }
-          }),
-          stackIdx: 2
+          modeler,
+          stackIdx: 1
         },
         __destroy: () => {}
       });
@@ -271,8 +256,28 @@ describe('<CmmnEditor>', function() {
         onChanged: changedSpy
       });
 
+      changedSpy.resetHistory();
+
       // when
+      modeler.get('commandStack')._stackIdx = 5;
+
       instance.handleChanged();
+
+      expect(changedSpy).to.be.calledOnce;
+      expect(changedSpy.firstCall.args[0]).to.include({
+        dirty: true,
+        editLabel: false,
+        find: true,
+        globalConnectTool: true,
+        handTool: true,
+        inputActive: false,
+        lassoTool: true,
+        moveCanvas: true,
+        redo: true,
+        removeSelected: false,
+        spaceTool: true,
+        undo: true
+      });
     });
 
 
