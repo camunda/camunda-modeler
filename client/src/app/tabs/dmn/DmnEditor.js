@@ -95,11 +95,7 @@ export class DmnEditor extends CachedComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isImporting(this.state) &&
-        (isSheetChange(prevProps, this.props) ||
-        isXMLChange(prevProps.xml, this.props.xml))) {
-      this.checkImport();
-    }
+    this.checkImport(prevProps);
 
     if (isCachedStateChange(prevProps, this.props)) {
       this.handleChanged();
@@ -361,26 +357,44 @@ export class DmnEditor extends CachedComponent {
     onError(error);
   }
 
-  checkImport = () => {
+  checkImport(prevProps = {}) {
+    if (!this.isImportNeeded(prevProps)) {
+      return;
+    }
+
+    this.importXML();
+  }
+
+  isImportNeeded(prevProps) {
     const {
-      lastXML,
-      modeler
-    } = this.getCached();
+      importing
+    } = this.state;
+
+    if (importing) {
+      return false;
+    }
 
     const {
-      activeSheet,
       xml
     } = this.props;
 
-    if (isXMLChange(lastXML, xml)) {
-      this.setState({
-        importing: true
-      });
+    const {
+      lastXML
+    } = this.getCached();
 
-      modeler.importXML(xml, this.ifMounted(this.handleImport));
-    } else if (activeSheet && activeSheet.element) {
-      this.open(activeSheet.element);
-    }
+    return (xml !== prevProps.xml) || (xml !== lastXML);
+  }
+
+  importXML() {
+    const {
+      modeler
+    } = this.getCached();
+
+    this.setState({
+      importing: true
+    });
+
+    modeler.importXML(this.props.xml, this.ifMounted(this.handleImport));
   }
 
   open = (element) => {
@@ -680,18 +694,6 @@ function getSheetName(view) {
   }
 
   return view.element.name || viewNames[view.type];
-}
-
-function isImporting(state) {
-  return state.importing;
-}
-
-function isSheetChange(prevProps, props) {
-  return prevProps.activeSheet.id !== props.activeSheet.id;
-}
-
-function isXMLChange(prevXML, xml) {
-  return prevXML !== xml;
 }
 
 function isCachedStateChange(prevProps, props) {
