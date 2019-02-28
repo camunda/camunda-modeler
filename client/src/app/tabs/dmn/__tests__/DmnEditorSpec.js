@@ -762,55 +762,69 @@ describe('<DmnEditor>', function() {
 
   describe('import', function() {
 
-    it('should import without errors and warnings', async function() {
+    it('should import without errors and warnings', function(done) {
 
-      // given
-      await renderEditor(diagramXML, {
+      // when
+      renderEditor(diagramXML, {
         onImport
       });
 
-      function onImport(err, warnings) {
+      // then
+      function onImport(error, warnings) {
+        try {
+          expect(error).to.not.exist;
+          expect(warnings).to.have.length(0);
 
-        // then
-        expect(err).to.not.exist;
-
-        expect(warnings).to.have.length(0);
+          done();
+        } catch (error) {
+          done(error);
+        }
       }
     });
 
 
-    it('should import with warnings', async function() {
-
+    it('should import with warnings', function(done) {
       // given
-      await renderEditor('import-warnings', {
+      const warningInducingFakeXML = 'import-warnings';
+
+      // when
+      renderEditor(warningInducingFakeXML, {
         onImport
       });
 
+      // then
       function onImport(error, warnings) {
+        try {
+          expect(error).to.not.exist;
+          expect(warnings).to.have.length(1);
 
-        // then
-        expect(error).not.to.exist;
-
-        expect(warnings).to.have.length(1);
-        expect(warnings[0]).to.equal('warning');
+          done();
+        } catch (error) {
+          done(error);
+        }
       }
     });
 
 
-    it('should import with error', async function() {
-
+    it('should import with error', function(done) {
       // given
-      await renderEditor('import-error', {
+      const errorInducingFakeXML = 'import-error';
+
+      // when
+      renderEditor(errorInducingFakeXML, {
         onImport
       });
 
+      // then
       function onImport(error, warnings) {
+        try {
+          expect(error).to.exist;
+          expect(warnings).to.have.length(0);
 
-        // then
-        expect(error).to.exist;
-        expect(error.message).to.equal('error');
-
-        expect(warnings).to.have.length(0);
+          done();
+        } catch (error) {
+          done(error);
+        }
       }
     });
 
