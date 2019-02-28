@@ -560,78 +560,70 @@ describe('<CmmnEditor>', function() {
 
   describe('import', function() {
 
-    it('should import without errors and warnings', function() {
-
-      // given
-      const importSpy = spy();
+    it('should import without errors and warnings', function(done) {
 
       // when
-      const { instance } = renderEditor(diagramXML, {
-        onImport: importSpy
+      renderEditor(diagramXML, {
+        onImport
       });
 
       // then
-      const {
-        lastXML
-      } = instance.getCached();
+      function onImport(error, warnings) {
+        try {
+          expect(error).to.not.exist;
+          expect(warnings).to.have.length(0);
 
-      expect(importSpy).to.have.been.calledWith(null, []);
-
-      expect(lastXML).to.equal(diagramXML);
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
     });
 
 
-    it('should import with warnings', function() {
-
+    it('should import with warnings', function(done) {
       // given
-      const importSpy = (error, warnings) => {
-
-        // then
-        expect(error).not.to.exist;
-
-        expect(warnings).to.exist;
-        expect(warnings).to.have.length(1);
-        expect(warnings[0]).to.equal('warning');
-      };
+      const warningInducingFakeXML = 'import-warnings';
 
       // when
-      const { instance } = renderEditor('import-warnings', {
-        onImport: importSpy
+      renderEditor(warningInducingFakeXML, {
+        onImport
       });
 
       // then
-      const {
-        lastXML
-      } = instance.getCached();
+      function onImport(error, warnings) {
+        try {
+          expect(error).to.not.exist;
+          expect(warnings).to.have.length(1);
 
-      expect(lastXML).to.equal('import-warnings');
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
     });
 
 
-    it('should import with error', function() {
-
+    it('should import with error', function(done) {
       // given
-      const importSpy = (error, warnings) => {
-
-        // then
-        expect(error).to.exist;
-        expect(error.message).to.equal('error');
-
-        expect(warnings).to.exist;
-        expect(warnings).to.have.length(0);
-      };
+      const errorInducingFakeXML = 'import-error';
 
       // when
-      const { instance } = renderEditor('import-error', {
-        onImport: importSpy
+      renderEditor(errorInducingFakeXML, {
+        onImport
       });
 
       // then
-      const {
-        lastXML
-      } = instance.getCached();
+      function onImport(error, warnings) {
+        try {
+          expect(error).to.exist;
+          expect(warnings).to.have.length(0);
 
-      expect(lastXML).not.to.exist;
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
     });
 
   });
