@@ -112,6 +112,11 @@ export default class Modeler {
   }
 
   importXML(xml, options, done) {
+
+    if (typeof options !== 'object') {
+      done = options;
+    }
+
     this.xml = xml;
 
     this.viewer = new Viewer(this.xml, this.modules);
