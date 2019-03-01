@@ -14,8 +14,8 @@ export function createTab(tabName, providers) {
 
   class EditorTab extends PureComponent {
 
-    constructor() {
-      super();
+    constructor(props) {
+      super(props);
 
       this.tabRef = React.createRef();
     }
