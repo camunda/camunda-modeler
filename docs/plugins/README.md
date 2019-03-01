@@ -9,12 +9,11 @@ Plugins allow you to change the appearance and behavior of the Camunda Modeler a
 
 ## Plugging into the Camunda Modeler
 
-You can plug into the modeler in order to change its appearance, add new menu entries or extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js). Adding a plugin is as easy as putting the files into the directory `{MODELER_LOCATION}/resources/plugins`.
-On macOS, the application searches for plugins in the directory `/Users/{USER_NAME}/Library/Application Support/camunda-modeler/resources/plugins`.
+You can plug into the modeler in order to change its appearance, add new menu entries or extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js). Adding a plugin is as easy as putting the files into the `resources/plugins` sub-folder of your local [`{APP_HOME}`](../search-paths#application-home-directory) or [`{USER_DATA}`](../search-paths#user-data-directory)  directory.
 
 So let's dive into how to add your own plugins.
 
-Regardless of the type of your plugin you have to export it as a [Node.js module](https://nodejs.org/api/modules.html). In order for the modeler to recognize your plugin the filename must be `index.js`.
+Regardless of the type of your plugin, you have to export it as a [Node.js module](https://nodejs.org/api/modules.html). For the modeler to recognize your plugin, the filename must be `index.js`.
 
 Example:
 
@@ -82,9 +81,9 @@ module.exports = {
 
 You can use a Node.js module here since the modeler is built with [Electron](https://electron.atom.io/) which uses [Node.js](https://nodejs.org/en/).
 
-For more information on how the modelers menu works have a look at its implementation [here](https://github.com/camunda/camunda-modeler/blob/master/app/lib/menu/menu-builder.js).
+For more information on how the modeler's menu works, have a look at its implementation [here](https://github.com/camunda/camunda-modeler/blob/master/app/lib/menu/menu-builder.js).
 
-### Extend the modeling tools for BPMN, CMMN and DMN
+### Extend the modeling tools for BPMN, CMMN, and DMN
 
 > Currently you can only extend bpmn-js
 
@@ -149,7 +148,7 @@ Finally, put the folder into the `resources/plugins` directory relative to your 
 
 ### Development Workflow
 
-When creating a plugin you can place the directory containing your plugin in the aforementioned `resources/plugins` directory.
+When creating a plugin, you can place the directory containing your plugin in the aforementioned `resources/plugins` directory.
 
 Plugins will be loaded on application startup (menu plugins) or reload (style and modeling tool plugins). To reload the application, open the developer tools F12 and press `CtrlOrCmd + R`. This will clear all unsaved diagrams!
 
