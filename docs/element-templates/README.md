@@ -2,28 +2,24 @@
 
 # Element Templates
 
-Element templates allow you create pre-defined configurations for BPMN elements such as service and user tasks. Once applied via the properties panel they provide configured custom inputs to the user.
+Element templates allow you to create pre-defined configurations for BPMN elements such as service and user tasks. Once applied via the properties panel they provide configured custom inputs to the user.
 
 ![Element template applied](./overview.png)
 
 
 ## Configuring Templates
 
-Element templates are defined as [JSON files](#defining-templates) and are searched for in the `resources/element-templates` folder, relative to the modelers executable _or_ relative to the modelers data directory (see below).
+Element templates are defined as [JSON files](#defining-templates) and are searched for in the `resources/element-templates` folder, relative to the modelers executable _or_ relative to the modelers data directory ([see below](#example-setup)).
 
-Alternatively, they can be stored in a `.camunda/element-templates` directory that resides, relative to the currently opened diagram, anywhere in the diagrams path hierachy.
+Alternatively, they can be stored in a `.camunda/element-templates` directory that resides, relative to the currently opened diagram, anywhere in the diagrams path hierarchy.
 
 New templates will be recognized on diagram reopen or modeler reload/restart.
 
 
 #### Example Setup
 
-The location of the modelers data directory differs across operating systems:
 
-* **Windows**: `%APPDATA%/camunda-modeler`
-* **Mac OS X**: `~/Library/Application Support/camunda-modeler`
-
-On Mac, add a JSON file to the folder `~/Library/Application Support/camunda-modeler/resources/element-templates`, on Windows use the `%APPDATA%/camunda-modeler/resources/element-templates` folder. You may have to create the `resources` and `element-templates` folders.
+Add a JSON file to the `resources/element-templates` sub-folder of your local [`{APP_HOME}`](../search-paths#application-home-directory) or [`{USER_DATA}`](../search-paths#user-data-directory) directory. You may have to create the `resources` and `element-templates` folders  yourself.
 
 For local template discovery, create a `.camunda/element-templates` folder relative in the directory
 or any parent directory of the diagrams you are editing.
@@ -78,7 +74,7 @@ As seen in the code snippet a template consist of a number of important componen
 
 ### Defining Template Properties
 
-With each template you define a number of user-editable fields as well as their mapping to BPMN 2.0 XML as well as Camunda extension elements.
+With each template, you define some user-editable fields as well as their mapping to BPMN 2.0 XML as well as Camunda extension elements.
 
 Let us consider the following example that defines a template for a mail sending task:
 
@@ -164,7 +160,7 @@ All but the _Implementation Type_ are editable by the user through the propertie
 As seen in the example the important attributes in a property definition are:
 
 * `label`: A descriptive text shown with the property
-* `type`: Defining the visual apperance in the properties panel (may be any of `String`, `Text`, `Boolean`, `Dropdown` or `Hidden`)
+* `type`: Defining the visual appearance in the properties panel (may be any of `String`, `Text`, `Boolean`, `Dropdown` or `Hidden`)
 * `value`: An optional default value to be used if the property to be bound is not yet set
 * `binding`: Specifying how the property is mapped to BPMN or Camunda extension elements and attributes (may be any of `property`, `camunda:property`, `camunda:inputParameter`, `camunda:outputParameter`, `camunda:in`, `camunda:out`, `camunda:executionListener`, `camunda:field`)
 * `constraints`: A list of editing constraints to apply to the template
@@ -256,7 +252,7 @@ As of Camunda Modeler `v1.11.0` we support special scoped bindings that allow yo
 
 The example shows how a connector is configured as part of the task.
 On task creation, the connector is created with it and the connector bindings are
-exposed to user in a separate custom fields section.
+exposed to the user in a separate custom fields section.
 
 ![Scoped Custom Fields](./scope-custom-fields.png)
 
@@ -281,7 +277,7 @@ Custom Fields may have a number of constraints associated with them:
 
 ##### Regular Expression
 
-Together with the `pattern` constraint you may define your custom error messages:
+Together with the `pattern` constraint, you may define your custom error messages:
 
 ```json
 ...
@@ -302,7 +298,7 @@ Together with the `pattern` constraint you may define your custom error messages
 ```
 
 
-### Controling Default Entry Visibility
+### Controlling Default Entry Visibility
 
 _TODO_
 
@@ -335,16 +331,16 @@ Other templates may not be applied, once an element is subject to a default temp
 
 ## Development Workflow
 
-When creating custom element templates the modeler will give you detailed validation error messages.
+When creating custom element templates, the modeler will give you detailed validation error messages.
 
 Templates will be loaded on application load and reload. To reload the application with updated templates, open the developer tools `F12` and press `CtrlOrCmd+R`. This will clear all unsaved diagrams **!**
 
 
 ## Supported BPMN Types
 
-Currently element templates may be used on the following BPMN elements:
+Currently, element templates may be used on the following BPMN elements:
 
-* `bpmn:Activity` (including tasks, service tasks and others)
+* `bpmn:Activity` (including tasks, service tasks, and others)
 * `bpmn:SequenceFlow` (for maintaining `condition`)
 * `bpmn:Process`
 
