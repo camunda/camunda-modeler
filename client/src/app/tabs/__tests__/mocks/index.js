@@ -14,6 +14,8 @@ export class Editor extends Component {
     this.xml = null;
   }
 
+  triggerAction() {}
+
   setXML(xml) {
     this.xml = xml;
   }
@@ -39,6 +41,13 @@ export const providers = [{
 }];
 
 export const tab = {
+  id: 42,
   name: 'foo.bar',
-  type: 'bar'
+  type: 'bar',
+  title: 'unsaved',
+  file: {
+    name: 'foo.bar',
+    contents: '',
+    path: null
+  }
 };
