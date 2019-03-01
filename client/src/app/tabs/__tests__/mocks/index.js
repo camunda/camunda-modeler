@@ -8,8 +8,8 @@
 import React, { Component } from 'react';
 
 export class Editor extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.xml = null;
   }

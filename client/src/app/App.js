@@ -80,8 +80,8 @@ const INITIAL_STATE = {
 
 export class App extends PureComponent {
 
-  constructor(props, context) {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       ...INITIAL_STATE,
