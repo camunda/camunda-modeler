@@ -406,6 +406,10 @@ export class Config extends Mock {
   get() {}
 }
 
+export class Log extends Mock {
+  error() {}
+}
+
 /**
  * Response mock. Returns responses in desired order.
  *
