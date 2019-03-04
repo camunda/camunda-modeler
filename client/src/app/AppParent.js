@@ -170,26 +170,34 @@ export default class AppParent extends PureComponent {
 
   handleError = (error, tab) => {
 
-    const errorMessage = `${tab ? 'tab' : 'app'} ERROR`;
+    const errorMessage = this.getErrorMessage(tab);
 
-    this.props.globals.log.error(errorMessage, error, tab);
+    this.logToBackend(error, tab);
 
-    return log(errorMessage, error, tab);
+    this.logToClient('error', error, tab);
+
+    log(errorMessage, error, tab);
   }
 
   handleBackendError = (_, message) => {
-    this.triggerAction(null, 'log', {
-      message,
-      category: 'error'
-    });
+    this.logToClient('error', { message });
+  }
+
+  getErrorMessage(tab) {
+    return `${tab ? 'tab' : 'app'} ERROR`;
   }
 
   handleWarning = (warning, tab) => {
-    if (tab) {
-      return log('tab warning', warning, tab);
-    }
 
-    return log('app warning', warning);
+    const warningMessage = this.getWarningMessage(tab);
+
+    this.logToClient('warning', warning, tab);
+
+    log(warningMessage, warning, tab);
+  }
+
+  getWarningMessage(tab) {
+    return `${tab ? 'tab' : 'app'} warning`;
   }
 
   handleReady = async () => {
@@ -260,6 +268,84 @@ export default class AppParent extends PureComponent {
 
       backend.registerMenu(type, options).catch(console.error);
     });
+  }
+
+  /**
+   *
+   * @param {string} category
+   * @param {Error|{ message: string }} errorLike
+   * @param {Tab} tab
+   */
+  logToClient(category, errorLike, tab) {
+    const entry = this.getLogEntry(category, errorLike, tab);
+
+    this.triggerAction(null, 'log', entry);
+  }
+
+  getLogEntry(category, errorLike, tab) {
+    const message = this.getEntryMessage(errorLike, tab);
+
+    return {
+      category,
+      message
+    };
+  }
+
+  /**
+   *
+   * @param {Error} error
+   * @param {Tab} [tab]
+   */
+  logToBackend(error, tab) {
+    const entry = this.getBackendLogEntry(error, tab);
+
+    this.props.globals.log.error(entry);
+  }
+
+  /**
+   * Creates entry transferrable to backend.
+   * @param {Error} error
+   * @param {Tab} [tab]
+   *
+   * @returns {{ message: string, stack: string }}
+   */
+  getBackendLogEntry(error, tab) {
+    const entry = {
+      message: this.getEntryMessage(error, tab),
+      stack: error.stack
+    };
+
+    return entry;
+  }
+
+  getEntryMessage(errorLike, tab) {
+    const {
+      message: originalMessage,
+      stack
+    } = errorLike;
+
+    let message = originalMessage;
+
+    if (tab) {
+      const prefix = this.getTabPrefix(tab);
+      message = `[${prefix}] ${message}`;
+    }
+
+    if (stack) {
+      message = `${message}\n${stack}`;
+    }
+
+    return message;
+  }
+
+  getTabPrefix(tab) {
+    if (tab.file && tab.file.path) {
+      return tab.file.path;
+    } else if (tab.file && tab.file.name) {
+      return tab.file.name;
+    } else {
+      return tab.id;
+    }
   }
 
   componentDidMount() {

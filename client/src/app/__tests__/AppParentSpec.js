@@ -22,6 +22,7 @@ import {
   Dialog,
   FileSystem,
   KeyboardBindings,
+  Log,
   TabsProvider,
   Workspace
 } from './mocks';
@@ -398,6 +399,356 @@ describe('<AppParent>', function() {
 
   });
 
+
+  describe('client errors', function() {
+
+    it('should log client errors', function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+      const error = new Error('error');
+
+      // when
+      app.handleError(error);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('log', {
+        message: `${error.message}\n${error.stack}`,
+        category: 'error'
+      });
+
+    });
+
+
+    it('should log tab errors with file path attached', function() {
+
+      // given
+      const tab = createTab({
+        file: {
+          path: '/path'
+        }
+      });
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+      const error = new Error('error');
+
+      // when
+      app.handleError(error, tab);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('log', {
+        message: `[${tab.file.path}] ${error.message}\n${error.stack}`,
+        category: 'error'
+      });
+
+    });
+
+
+    it('should log tab errors with filename attached if path is not present', function() {
+
+      // given
+      const tab = createTab();
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+      const error = new Error('error');
+
+      // when
+      app.handleError(error, tab);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('log', {
+        message: `[${tab.file.name}] ${error.message}\n${error.stack}`,
+        category: 'error'
+      });
+
+    });
+
+
+    it('should log tab errors with tab id attached if file is not present', function() {
+
+      // given
+      const tab = createTab({
+        file: undefined
+      });
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+      const error = new Error('error');
+
+      // when
+      app.handleError(error, tab);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('log', {
+        message: `[${tab.id}] ${error.message}\n${error.stack}`,
+        category: 'error'
+      });
+
+    });
+
+
+    it('should log client errors to backend', function() {
+
+      // given
+      const backend = new Backend();
+      const logSpy = sinon.spy();
+      const log = new Log({ error: logSpy });
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend, log } }, mount);
+
+      const app = appParent.getApp();
+      const error = new Error('error');
+
+      // when
+      app.handleError(error);
+
+      // then
+      expect(logSpy).to.have.been.calledWith({
+        message: `${error.message}\n${error.stack}`,
+        stack: error.stack
+      });
+
+    });
+
+
+    it('should log tab errors to backend with file path attached', function() {
+
+      // given
+      const tab = createTab({
+        file: {
+          path: '/path'
+        }
+      });
+
+      const backend = new Backend();
+      const logSpy = sinon.spy();
+      const log = new Log({ error: logSpy });
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend, log } }, mount);
+
+      const app = appParent.getApp();
+      const error = new Error('error');
+
+      // when
+      app.handleError(error, tab);
+
+      // then
+      expect(logSpy).to.have.been.calledWith({
+        message: `[${tab.file.path}] ${error.message}\n${error.stack}`,
+        stack: error.stack
+      });
+
+    });
+
+
+    it('should log tab errors to backend with filename attached if path is not present', function() {
+
+      // given
+      const tab = createTab();
+
+      const backend = new Backend();
+      const logSpy = sinon.spy();
+      const log = new Log({ error: logSpy });
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend, log } }, mount);
+
+      const app = appParent.getApp();
+      const error = new Error('error');
+
+      // when
+      app.handleError(error, tab);
+
+      // then
+      expect(logSpy).to.have.been.calledWith({
+        message: `[${tab.file.name}] ${error.message}\n${error.stack}`,
+        stack: error.stack
+      });
+
+    });
+
+
+    it('should log tab errors to backend with tab id attached if file is not present', function() {
+
+      // given
+      const tab = createTab({
+        file: undefined
+      });
+
+      const backend = new Backend();
+      const logSpy = sinon.spy();
+      const log = new Log({ error: logSpy });
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend, log } }, mount);
+
+      const app = appParent.getApp();
+      const error = new Error('error');
+
+      // when
+      app.handleError(error, tab);
+
+      // then
+      expect(logSpy).to.have.been.calledWith({
+        message: `[${tab.id}] ${error.message}\n${error.stack}`,
+        stack: error.stack
+      });
+
+    });
+
+  });
+
+
+  describe('client warnings', function() {
+
+    it('should log client warnings', function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+      const warning = {
+        message: 'warning'
+      };
+
+      // when
+      app.handleWarning(warning);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('log', {
+        message: warning.message,
+        category: 'warning'
+      });
+
+    });
+
+
+    it('should log tab warnings with file path attached', function() {
+
+      // given
+      const tab = createTab({
+        file: {
+          path: '/path'
+        }
+      });
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+      const warning = {
+        message: 'warning'
+      };
+
+      // when
+      app.handleWarning(warning, tab);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('log', {
+        message: `[${tab.file.path}] ${warning.message}`,
+        category: 'warning'
+      });
+
+    });
+
+
+    it('should log tab warnings with filename attached if path is not present', function() {
+
+      // given
+      const tab = createTab();
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+      const warning = {
+        message: 'warning'
+      };
+
+      // when
+      app.handleWarning(warning, tab);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('log', {
+        message: `[${tab.file.name}] ${warning.message}`,
+        category: 'warning'
+      });
+
+    });
+
+
+    it('should log tab warnings with tab id attached if file is not present', function() {
+
+      // given
+      const tab = createTab({
+        file: undefined
+      });
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+      const warning = {
+        message: 'warning'
+      };
+
+      // when
+      app.handleWarning(warning, tab);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('log', {
+        message: `[${tab.id}] ${warning.message}`,
+        category: 'warning'
+      });
+
+    });
+
+  });
+
 });
 
 
@@ -414,6 +765,7 @@ function createAppParent(options = {}, mountFn=shallow) {
     backend: new Backend(),
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
+    log: new Log(),
     workspace: new Workspace()
   };
 
@@ -444,4 +796,19 @@ function createAppParent(options = {}, mountFn=shallow) {
     tree
   };
 
+}
+
+function createTab(overrides = {}) {
+  return {
+    id: 42,
+    name: 'foo.bar',
+    type: 'bar',
+    title: 'unsaved',
+    file: {
+      name: 'foo.bar',
+      contents: '',
+      path: null
+    },
+    ...overrides
+  };
 }
