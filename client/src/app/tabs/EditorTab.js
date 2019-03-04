@@ -7,6 +7,7 @@
 
 import React, { PureComponent } from 'react';
 
+import ErrorTab from './ErrorTab';
 import MultiSheetTab from './MultiSheetTab';
 
 
@@ -14,8 +15,18 @@ export function createTab(tabName, providers) {
 
   class EditorTab extends PureComponent {
 
+    static getDerivedStateFromError(error) {
+      return {
+        hasError: true
+      };
+    }
+
     constructor(props) {
       super(props);
+
+      this.state = {
+        hasError: false
+      };
 
       this.tabRef = React.createRef();
     }
@@ -39,13 +50,15 @@ export function createTab(tabName, providers) {
       } = this.props;
 
       return (
-        <MultiSheetTab
-          id={ tab.id }
-          tab={ tab }
-          { ...otherProps }
-          xml={ tab.file.contents }
-          ref={ this.tabRef }
-          providers={ providers } />
+        this.state.hasError ?
+          <ErrorTab ref={ this.tabRef } /> :
+          <MultiSheetTab
+            id={ tab.id }
+            tab={ tab }
+            { ...otherProps }
+            xml={ tab.file.contents }
+            ref={ this.tabRef }
+            providers={ providers } />
       );
     }
 

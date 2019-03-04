@@ -7,14 +7,18 @@
 
 import React from 'react';
 
-import { createTab } from './../EditorTab';
+import TestRenderer from 'react-test-renderer';
 
-import { mount } from 'enzyme';
+import { createTab } from './../EditorTab';
+import ErrorTab from './../ErrorTab';
 
 import {
+  Editor as MockEditor,
   providers as defaultProviders,
   tab as defaultTab
 } from './mocks';
+
+/* global sinon */
 
 
 describe('<EditorTab>', function() {
@@ -22,11 +26,36 @@ describe('<EditorTab>', function() {
   describe('render', function() {
 
     it('should render', function() {
+
+      // when
       const {
         instance
       } = renderEditorTab();
 
-      expect(instance).to.exist;
+      // then
+      expect(instance, 'did not render').to.exist;
+    });
+
+  });
+
+
+  describe('error handling', function() {
+
+    afterEach(sinon.restore);
+
+
+    it('should display ErrorTab when editor fails', function() {
+
+      // given
+      sinon.stub(MockEditor.prototype, 'render').throwsException();
+
+      // when
+      const {
+        wrapper
+      } = renderEditorTab();
+
+      // then
+      verifyChildIsPresent(wrapper, ErrorTab);
     });
 
   });
@@ -39,14 +68,15 @@ describe('<EditorTab>', function() {
 function noop() {}
 
 function renderEditorTab({
-  tab = defaultTab,
   onError = noop,
-  onShown = noop
+  onShown = noop,
+  providers = defaultProviders,
+  tab = defaultTab
 } = {}) {
 
-  const EditorTab = createTab(defaultTab.name, defaultProviders);
+  const EditorTab = createTab(tab.name, providers);
 
-  const wrapper = mount(
+  const testRenderer = TestRenderer.create(
     <EditorTab
       tab={ tab }
       onError={ onError }
@@ -54,10 +84,18 @@ function renderEditorTab({
     />
   );
 
-  const instance = wrapper.instance();
+  const instance = testRenderer.getInstance();
 
   return {
     instance,
-    wrapper
+    wrapper: testRenderer.root
   };
+}
+
+function verifyChildIsPresent(wrapper, childType) {
+  function isChildPresent() {
+    return wrapper.findByType(childType);
+  }
+
+  expect(isChildPresent, `did not display ${childType.name}`).to.not.throw();
 }
