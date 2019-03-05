@@ -178,7 +178,10 @@ export default class AppParent extends PureComponent {
   }
 
   handleBackendError = (_, message) => {
-    this.triggerAction(null, 'backend-error', message);
+    this.triggerAction(null, 'log', {
+      message,
+      category: 'error'
+    });
   }
 
   handleWarning = (warning, tab) => {

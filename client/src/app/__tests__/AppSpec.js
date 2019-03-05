@@ -1354,28 +1354,6 @@ describe('<App>', function() {
     });
 
 
-    it('should show in log', async function() {
-
-      // given
-      const {
-        app
-      } = createApp(mount);
-
-      await app.createDiagram();
-
-      const tabInstance = app.tabRef.current;
-
-      const error = new Error('YZO!');
-
-      // when
-      tabInstance.triggerAction('error', error);
-
-      // then
-      expect(app.state.layout.log.open).to.be.true;
-      expect(app.state.logEntries).to.have.length(1);
-    });
-
-
     describe('should catch', function() {
 
       const errorHandler = window.onerror;
@@ -1450,30 +1428,6 @@ describe('<App>', function() {
 
       // then
       expect(warningSpy).to.have.been.calledWith(warning, tab);
-    });
-
-
-    it('should show in log', async function() {
-
-      // given
-      const {
-        app
-      } = createApp(mount);
-
-      await app.createDiagram();
-
-      const tabInstance = app.tabRef.current;
-
-      // when
-      const warning = {
-        message: 'warning'
-      };
-
-      tabInstance.triggerAction('warning', warning);
-
-      // then
-      expect(app.state.layout.log.open).to.be.true;
-      expect(app.state.logEntries).to.have.length(1);
     });
 
   });
@@ -1589,7 +1543,7 @@ describe('<App>', function() {
     });
 
 
-    it('#logEntry', function() {
+    it('should log entry', async function() {
 
       // given
       const { tree, app } = createApp();
@@ -1597,7 +1551,10 @@ describe('<App>', function() {
       app.setLayout({ log: { open: false } });
 
       // when
-      app.logEntry('foo', 'bar');
+      await app.triggerAction('log', {
+        message: 'foo',
+        category: 'bar'
+      });
 
       // then
       const log = tree.find(Log).first();
@@ -2429,6 +2386,7 @@ describe('<App>', function() {
 });
 
 
+// helper ///////
 class Cache {
   destroy() { }
 }
@@ -2473,10 +2431,10 @@ function createApp(options = {}, mountFn=shallow) {
     tree.update();
   };
 
-  const onMenuUpdate = options.onMenuUpdate || function() {};
-  const onReady = options.onReady;
-  const onError = options.onError;
-  const onWarning = options.onWarning;
+  const onMenuUpdate = options.onMenuUpdate || noop;
+  const onReady = options.onReady || noop;
+  const onError = options.onError || noop;
+  const onWarning = options.onWarning || noop;
 
   const tree = mountFn(
     <App

@@ -984,36 +984,30 @@ export class App extends PureComponent {
     });
   }
 
-  handleError(error, ...args) {
+  /**
+   * Propagates errors to parent.
+   * @param {Error} error
+   * @param {Tab} [tab]
+   */
+  handleError(error, tab) {
     const {
       onError
     } = this.props;
 
-    const {
-      message
-    } = error;
-
-    if (typeof onError === 'function') {
-      onError(error, ...args);
-    }
-
-    this.logEntry(message, 'error');
+    return onError(error, tab);
   }
 
-  handleWarning(warning, ...args) {
+  /**
+   * Propagates warnings to parent.
+   * @param {Error} error
+   * @param {Tab} [tab]
+   */
+  handleWarning(warning, tab) {
     const {
       onWarning
     } = this.props;
 
-    const {
-      message
-    } = warning;
-
-    if (typeof onWarning === 'function') {
-      onWarning(warning, ...args);
-    }
-
-    this.logEntry(message, 'warning');
+    return onWarning(warning, tab);
   }
 
   /**
@@ -1365,16 +1359,21 @@ export class App extends PureComponent {
       return this.openExternalUrl(options);
     }
 
-    if (action === 'backend-error') {
-      return this.logEntry(options, 'error');
-    }
-
     if (action === 'check-file-changed') {
       return this.checkFileChanged(activeTab);
     }
 
     if (action === 'resize') {
       return this.resizeTab();
+    }
+
+    if (action === 'log') {
+      const {
+        category,
+        message
+      } = options;
+
+      return this.logEntry(message, category);
     }
 
     const tab = this.tabRef.current;
