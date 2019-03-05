@@ -265,6 +265,32 @@ describe('<App>', function() {
       expect(app.state.tabs).to.have.length(1);
     });
 
+
+    it('should not allow user to execute save-as', async function() {
+
+      // given
+      const {
+        app,
+        tree
+      } = createApp(mount);
+
+      const actionSpy = sinon.spy(app, 'triggerAction');
+
+      await app.showTab(EMPTY_TAB);
+
+      const saveAsButton = tree.find('Button[title="Save diagram as..."]').first();
+
+      // assure
+      expect(saveAsButton).to.exist;
+
+      // when
+      saveAsButton.simulate('click');
+
+      // then
+      expect(saveAsButton.prop('disabled')).to.be.true;
+      expect(actionSpy).to.have.not.been.calledWith('save-as');
+    });
+
   });
 
 

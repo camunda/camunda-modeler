@@ -315,7 +315,7 @@ export class App extends PureComponent {
       return tabShown.promise;
     }
 
-    if (tab !== EMPTY_TAB) {
+    if (!this.isEmptyTab(tab)) {
       const navigationHistory = this.navigationHistory;
 
       if (navigationHistory.get() !== tab) {
@@ -361,6 +361,10 @@ export class App extends PureComponent {
     await this._removeTab(tab);
 
     return true;
+  }
+
+  isEmptyTab = (tab) => {
+    return tab === EMPTY_TAB;
   }
 
   isDirty = (tab) => {
@@ -1488,6 +1492,7 @@ export class App extends PureComponent {
     const Tab = this.getTabComponent(activeTab);
 
     const canSave = this.isUnsaved(activeTab) || this.isDirty(activeTab);
+    const canSaveAs = !this.isEmptyTab(activeTab);
 
     const {
       tabsProvider
@@ -1550,7 +1555,8 @@ export class App extends PureComponent {
                 <Icon name="save" />
               </Button>
               <Button
-                onClick={ this.composeAction('save-as') }
+                disabled={ !canSaveAs }
+                onClick={ canSaveAs ? this.composeAction('save-as') : null }
                 title="Save diagram as..."
               >
                 <Icon name="save-as" />
