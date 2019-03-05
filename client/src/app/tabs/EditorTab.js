@@ -49,16 +49,19 @@ export function createTab(tabName, providers) {
         ...otherProps
       } = this.props;
 
+      const props = {
+        id: tab.id,
+        tab,
+        ...otherProps,
+        xml: tab.file.contents,
+        ref: this.tabRef,
+        providers
+      };
+
       return (
         this.state.hasError ?
-          <ErrorTab ref={ this.tabRef } /> :
-          <MultiSheetTab
-            id={ tab.id }
-            tab={ tab }
-            { ...otherProps }
-            xml={ tab.file.contents }
-            ref={ this.tabRef }
-            providers={ providers } />
+          <ErrorTab { ...props } /> :
+          <MultiSheetTab { ...props } />
       );
     }
 

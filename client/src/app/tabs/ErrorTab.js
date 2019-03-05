@@ -16,7 +16,11 @@ import {
 
 export default class ErrorTab extends PureComponent {
 
-  triggerAction() {}
+  triggerAction(action) {
+    if (action === 'save') {
+      return this.props.xml;
+    }
+  }
 
   render() {
     return (
