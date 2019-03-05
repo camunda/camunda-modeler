@@ -58,6 +58,23 @@ describe('<EditorTab>', function() {
       verifyChildIsPresent(wrapper, ErrorTab);
     });
 
+
+    it('should allow to save latest known xml when editor fails', function() {
+
+      // given
+      sinon.stub(MockEditor.prototype, 'render').throwsException();
+
+      const {
+        instance
+      } = renderEditorTab();
+
+      // when
+      const result = instance.triggerAction('save');
+
+      // then
+      expect(result).to.be.eql(defaultTab.file.contents);
+    });
+
   });
 
 });
