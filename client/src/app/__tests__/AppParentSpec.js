@@ -369,6 +369,35 @@ describe('<AppParent>', function() {
 
   });
 
+
+  describe('backend errors', function() {
+
+    it('should log backend error', function() {
+
+      // given
+      const message = 'message from backend';
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+
+      // when
+      backend.receive('backend:error', {}, message);
+
+      // then
+      expect(actionSpy).to.be.calledWith('log', {
+        message,
+        category: 'error'
+      });
+
+    });
+
+  });
+
 });
 
 
