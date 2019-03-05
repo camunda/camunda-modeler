@@ -24,9 +24,7 @@ export function createTab(tabName, providers) {
     constructor(props) {
       super(props);
 
-      this.state = {
-        hasError: false
-      };
+      this.state = {};
 
       this.tabRef = React.createRef();
     }
@@ -49,19 +47,21 @@ export function createTab(tabName, providers) {
         ...otherProps
       } = this.props;
 
-      const props = {
-        id: tab.id,
-        tab,
-        ...otherProps,
-        xml: tab.file.contents,
-        ref: this.tabRef,
-        providers
-      };
+      const {
+        hasError
+      } = this.state;
+
+      const Tab = hasError ? ErrorTab : MultiSheetTab;
 
       return (
-        this.state.hasError ?
-          <ErrorTab { ...props } /> :
-          <MultiSheetTab { ...props } />
+        <Tab
+          id={ tab.id }
+          tab={ tab }
+          { ...otherProps }
+          xml={ tab.file.contents }
+          ref={ this.tabRef }
+          providers={ providers }
+        />
       );
     }
 
