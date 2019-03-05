@@ -27,15 +27,14 @@ export default class ErrorTab extends PureComponent {
       <TabContainer className="content tab">
         <div className={ css.ErrorTab }>
           <h1>
-            Unexpected Error
+            Ooops, this should not have happened.
           </h1>
           <p>
-            An unexpected error occurred in this tab. Please click the link below to report
-            an issue on GitHub. You can also save the latest known state of the tab.
+            This tab crashed due to an unexpected error.
           </p>
           <p>
-            <a href="https://github.com/camunda/camunda-modeler/issues/new/choose">
-              Report an issue.
+            <a href="https://github.com/camunda/camunda-modeler/issues/new?template=BUG_REPORT.md">
+              Report bug
             </a>
           </p>
         </div>
