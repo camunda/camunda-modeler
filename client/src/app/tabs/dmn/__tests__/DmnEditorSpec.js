@@ -765,6 +765,9 @@ describe('<DmnEditor>', function() {
 
   describe('import', function() {
 
+    afterEach(sinon.restore);
+
+
     it('should import without errors and warnings', function(done) {
 
       // when
@@ -829,6 +832,28 @@ describe('<DmnEditor>', function() {
           done(error);
         }
       }
+    });
+
+
+    it('should not import when provided xml is the same as the cached one', async function() {
+      // given
+      const isImportNeededSpy = sinon.spy(DmnEditor.prototype, 'isImportNeeded');
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          lastXML: diagramXML,
+          modeler: new DmnModeler()
+        }
+      });
+
+      await renderEditor(diagramXML, {
+        cache
+      });
+
+      // then
+      expect(isImportNeededSpy).to.be.called;
+      expect(isImportNeededSpy).to.have.always.returned(false);
     });
 
   });
