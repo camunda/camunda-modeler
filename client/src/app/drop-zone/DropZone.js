@@ -45,8 +45,7 @@ export class DropZone extends React.PureComponent {
   isDragAllowed(event) {
     const { dataTransfer } = event;
 
-    return Array.from(dataTransfer.items)
-      .some(({ kind, type }) => type === '' && kind === 'file');
+    return Array.from(dataTransfer.items).some(isDropableItem);
   }
 
   handleDragLeave = event => {
@@ -98,4 +97,15 @@ function DropOverlay() {
       </div>
     </div>
   );
+}
+
+
+export function isDropableItem(item) {
+  const { kind, type } = item;
+
+  if (kind !== 'file') {
+    return false;
+  }
+
+  return /^(text\/.*|application\/([^+]*\+)?xml|application\/(cmmn|bpmn|dmn))?$/.test(type);
 }
