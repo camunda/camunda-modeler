@@ -373,7 +373,7 @@ describe('<AppParent>', function() {
 
   describe('backend errors', function() {
 
-    it('should log backend error', function() {
+    it('should log backend error', function(done) {
 
       // given
       const message = 'message from backend';
@@ -390,9 +390,13 @@ describe('<AppParent>', function() {
       backend.receive('backend:error', {}, message);
 
       // then
-      expect(actionSpy).to.be.calledWith('log', {
-        message,
-        category: 'error'
+      process.nextTick(() => {
+        expect(actionSpy).to.be.calledWith('log', {
+          message,
+          category: 'error'
+        });
+
+        done();
       });
 
     });
@@ -402,7 +406,7 @@ describe('<AppParent>', function() {
 
   describe('client errors', function() {
 
-    it('should log client errors', function() {
+    it('should log client errors', async function() {
 
       // given
       const backend = new Backend();
@@ -413,10 +417,10 @@ describe('<AppParent>', function() {
 
       const app = appParent.getApp();
       const actionSpy = spy(app, 'triggerAction');
-      const error = new Error('error');
+      const error = createError();
 
       // when
-      app.handleError(error);
+      await appParent.handleError(error);
 
       // then
       expect(actionSpy).to.have.been.calledWith('log', {
@@ -427,7 +431,7 @@ describe('<AppParent>', function() {
     });
 
 
-    it('should log tab errors with file path attached', function() {
+    it('should log tab errors with file path attached', async function() {
 
       // given
       const tab = createTab({
@@ -443,10 +447,10 @@ describe('<AppParent>', function() {
 
       const app = appParent.getApp();
       const actionSpy = spy(app, 'triggerAction');
-      const error = new Error('error');
+      const error = createError();
 
       // when
-      app.handleError(error, tab);
+      await app.handleError(error, tab);
 
       // then
       expect(actionSpy).to.have.been.calledWith('log', {
@@ -457,7 +461,7 @@ describe('<AppParent>', function() {
     });
 
 
-    it('should log tab errors with filename attached if path is not present', function() {
+    it('should log tab errors with filename attached if path is not present', async function() {
 
       // given
       const tab = createTab();
@@ -469,10 +473,10 @@ describe('<AppParent>', function() {
 
       const app = appParent.getApp();
       const actionSpy = spy(app, 'triggerAction');
-      const error = new Error('error');
+      const error = createError();
 
       // when
-      app.handleError(error, tab);
+      await app.handleError(error, tab);
 
       // then
       expect(actionSpy).to.have.been.calledWith('log', {
@@ -483,7 +487,7 @@ describe('<AppParent>', function() {
     });
 
 
-    it('should log tab errors with tab id attached if file is not present', function() {
+    it('should log tab errors with tab id attached if file is not present', async function() {
 
       // given
       const tab = createTab({
@@ -497,10 +501,10 @@ describe('<AppParent>', function() {
 
       const app = appParent.getApp();
       const actionSpy = spy(app, 'triggerAction');
-      const error = new Error('error');
+      const error = createError();
 
       // when
-      app.handleError(error, tab);
+      await app.handleError(error, tab);
 
       // then
       expect(actionSpy).to.have.been.calledWith('log', {
@@ -511,7 +515,7 @@ describe('<AppParent>', function() {
     });
 
 
-    it('should log client errors to backend', function() {
+    it('should log client errors to backend', async function() {
 
       // given
       const backend = new Backend();
@@ -523,21 +527,18 @@ describe('<AppParent>', function() {
       } = createAppParent({ globals: { backend, log } }, mount);
 
       const app = appParent.getApp();
-      const error = new Error('error');
+      const error = createError();
 
       // when
-      app.handleError(error);
+      await app.handleError(error);
 
       // then
-      expect(logSpy).to.have.been.calledWith({
-        message: `${error.message}\n${error.stack}`,
-        stack: error.stack
-      });
+      expect(logSpy).to.have.been.calledWith(`${error.message}\n${error.stack}`);
 
     });
 
 
-    it('should log tab errors to backend with file path attached', function() {
+    it('should log tab errors to backend with file path attached', async function() {
 
       // given
       const tab = createTab({
@@ -555,21 +556,18 @@ describe('<AppParent>', function() {
       } = createAppParent({ globals: { backend, log } }, mount);
 
       const app = appParent.getApp();
-      const error = new Error('error');
+      const error = createError();
 
       // when
-      app.handleError(error, tab);
+      await app.handleError(error, tab);
 
       // then
-      expect(logSpy).to.have.been.calledWith({
-        message: `[${tab.file.path}] ${error.message}\n${error.stack}`,
-        stack: error.stack
-      });
+      expect(logSpy).to.have.been.calledWith(`[${tab.file.path}] ${error.message}\n${error.stack}`);
 
     });
 
 
-    it('should log tab errors to backend with filename attached if path is not present', function() {
+    it('should log tab errors to backend with filename attached if path is not present', async function() {
 
       // given
       const tab = createTab();
@@ -583,21 +581,18 @@ describe('<AppParent>', function() {
       } = createAppParent({ globals: { backend, log } }, mount);
 
       const app = appParent.getApp();
-      const error = new Error('error');
+      const error = createError();
 
       // when
-      app.handleError(error, tab);
+      await app.handleError(error, tab);
 
       // then
-      expect(logSpy).to.have.been.calledWith({
-        message: `[${tab.file.name}] ${error.message}\n${error.stack}`,
-        stack: error.stack
-      });
+      expect(logSpy).to.have.been.calledWith(`[${tab.file.name}] ${error.message}\n${error.stack}`);
 
     });
 
 
-    it('should log tab errors to backend with tab id attached if file is not present', function() {
+    it('should log tab errors to backend with tab id attached if file is not present', async function() {
 
       // given
       const tab = createTab({
@@ -613,16 +608,13 @@ describe('<AppParent>', function() {
       } = createAppParent({ globals: { backend, log } }, mount);
 
       const app = appParent.getApp();
-      const error = new Error('error');
+      const error = createError();
 
       // when
-      app.handleError(error, tab);
+      await app.handleError(error, tab);
 
       // then
-      expect(logSpy).to.have.been.calledWith({
-        message: `[${tab.id}] ${error.message}\n${error.stack}`,
-        stack: error.stack
-      });
+      expect(logSpy).to.have.been.calledWith(`[${tab.id}] ${error.message}\n${error.stack}`);
 
     });
 
@@ -631,7 +623,7 @@ describe('<AppParent>', function() {
 
   describe('client warnings', function() {
 
-    it('should log client warnings', function() {
+    it('should log client warnings', async function() {
 
       // given
       const backend = new Backend();
@@ -647,7 +639,7 @@ describe('<AppParent>', function() {
       };
 
       // when
-      app.handleWarning(warning);
+      await app.handleWarning(warning);
 
       // then
       expect(actionSpy).to.have.been.calledWith('log', {
@@ -658,7 +650,7 @@ describe('<AppParent>', function() {
     });
 
 
-    it('should log tab warnings with file path attached', function() {
+    it('should log tab warnings with file path attached', async function() {
 
       // given
       const tab = createTab({
@@ -679,7 +671,7 @@ describe('<AppParent>', function() {
       };
 
       // when
-      app.handleWarning(warning, tab);
+      await app.handleWarning(warning, tab);
 
       // then
       expect(actionSpy).to.have.been.calledWith('log', {
@@ -690,7 +682,7 @@ describe('<AppParent>', function() {
     });
 
 
-    it('should log tab warnings with filename attached if path is not present', function() {
+    it('should log tab warnings with filename attached if path is not present', async function() {
 
       // given
       const tab = createTab();
@@ -707,7 +699,7 @@ describe('<AppParent>', function() {
       };
 
       // when
-      app.handleWarning(warning, tab);
+      await app.handleWarning(warning, tab);
 
       // then
       expect(actionSpy).to.have.been.calledWith('log', {
@@ -718,7 +710,7 @@ describe('<AppParent>', function() {
     });
 
 
-    it('should log tab warnings with tab id attached if file is not present', function() {
+    it('should log tab warnings with tab id attached if file is not present', async function() {
 
       // given
       const tab = createTab({
@@ -737,7 +729,7 @@ describe('<AppParent>', function() {
       };
 
       // when
-      app.handleWarning(warning, tab);
+      await app.handleWarning(warning, tab);
 
       // then
       expect(actionSpy).to.have.been.calledWith('log', {
@@ -810,5 +802,17 @@ function createTab(overrides = {}) {
       path: null
     },
     ...overrides
+  };
+}
+
+function createError() {
+  const stackFrames = [
+    'at foo (webpack:///foo.js)',
+    'at bar (webpack:///bar.js)'
+  ];
+
+  return {
+    message: 'error',
+    stack: stackFrames.join('\n')
   };
 }

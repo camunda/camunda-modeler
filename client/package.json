@@ -34,7 +34,8 @@
     "p-series": "^1.1.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "scroll-tabs": "^1.0.1"
+    "scroll-tabs": "^1.0.1",
+    "sourcemapped-stacktrace": "^1.1.9"
   },
   "homepage": ".",
   "devDependencies": {
