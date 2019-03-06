@@ -1,8 +1,11 @@
 /**
- * Copyright (c) Camunda Services GmbH.
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
  */
 
 import DmnEditor from './DmnEditor';
