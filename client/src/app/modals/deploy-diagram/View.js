@@ -105,6 +105,7 @@ class View extends PureComponent {
                       component={ FormControl }
                       label="Name"
                       validated
+                      autoFocus
                       onFocusChange={ onFocusChange }
                     />
 
