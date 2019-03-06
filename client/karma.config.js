@@ -131,7 +131,8 @@ module.exports = function(karma) {
           'cmmn-js/lib/Modeler': 'test/mocks/cmmn-js/Modeler',
           'dmn-js/lib/Modeler': 'test/mocks/dmn-js/Modeler',
           './DmnModeler': 'test/mocks/dmn-js/Modeler',
-          './CodeMirror': 'test/mocks/code-mirror/CodeMirror'
+          './CodeMirror': 'test/mocks/code-mirror/CodeMirror',
+          'sourcemapped-stacktrace': 'test/mocks/sourcemapped-stacktrace'
         }
       }
     }
