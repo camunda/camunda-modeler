@@ -501,39 +501,27 @@ export class BpmnEditor extends CachedComponent {
     });
   }
 
-  exportAs(type) {
+  async exportAs(type) {
+    const svg = await this.exportSVG();
+
+    if (type === 'svg') {
+      return svg;
+    }
+
+    return generateImage(type, svg);
+  }
+
+  exportSVG() {
     const modeler = this.getModeler();
 
     return new Promise((resolve, reject) => {
-
       modeler.saveSVG((err, svg) => {
-        let contents;
-
         if (err) {
-          this.handleError({
-            error: err
-          });
-
           return reject(err);
         }
 
-        if (type !== 'svg') {
-          try {
-            contents = generateImage(type, svg);
-          } catch (err) {
-            this.handleError({
-              error: err
-            });
-
-            return reject(err);
-          }
-        } else {
-          contents = svg;
-        }
-
-        resolve(contents);
+        return resolve(svg);
       });
-
     });
   }
 

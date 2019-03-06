@@ -573,41 +573,29 @@ export class DmnEditor extends CachedComponent {
     });
   }
 
-  exportAs(type) {
+  async exportAs(type) {
+    const svg = await this.exportSVG();
+
+    if (type === 'svg') {
+      return svg;
+    }
+
+    return generateImage(type, svg);
+  }
+
+  exportSVG() {
     const modeler = this.getModeler();
 
     const viewer = modeler.getActiveViewer();
 
     return new Promise((resolve, reject) => {
-
       viewer.saveSVG((err, svg) => {
-        let contents;
-
         if (err) {
-          this.handleError({
-            error: err
-          });
-
           return reject(err);
         }
 
-        if (type !== 'svg') {
-          try {
-            contents = generateImage(type, svg);
-          } catch (err) {
-            this.handleError({
-              error: err
-            });
-
-            return reject(err);
-          }
-        } else {
-          contents = svg;
-        }
-
-        resolve(contents);
+        return resolve(svg);
       });
-
     });
   }
 

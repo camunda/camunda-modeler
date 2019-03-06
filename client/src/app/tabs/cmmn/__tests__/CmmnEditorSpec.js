@@ -532,32 +532,6 @@ describe('<CmmnEditor>', function() {
       expect(errorSpy).to.have.been.calledOnce;
     });
 
-
-    it('should handle image export error', async function() {
-
-      // given
-      const errorSpy = spy();
-
-      const {
-        instance
-      } = renderEditor('export-as-error', {
-        onError: errorSpy
-      });
-
-      let err;
-
-      // when
-      try {
-        await instance.exportAs('svg');
-      } catch (e) {
-        err = e;
-      }
-
-      // then
-      expect(err).to.exist;
-      expect(errorSpy).to.have.been.calledOnce;
-    });
-
   });
 
 
