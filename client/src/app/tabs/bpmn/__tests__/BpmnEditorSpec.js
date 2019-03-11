@@ -587,7 +587,34 @@ describe('<BpmnEditor>', function() {
       // then
       function onImport() {
         try {
-          expect(onContentUpdated).to.have.not.been.called;
+          expect(onContentUpdated).to.not.have.been.called;
+
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
+    });
+
+
+    it('should not ask for permission if diagram does not have seeked namespace', function(done) {
+
+      // given
+      const onContentUpdated = sinon.spy();
+      const onAction = sinon.spy();
+
+      // when
+      renderEditor(diagramXML, {
+        onAction,
+        onContentUpdated,
+        onImport
+      });
+
+      // then
+      function onImport() {
+        try {
+          expect(onContentUpdated).to.not.have.been.called;
+          expect(onAction).to.not.have.been.calledWith('show-dialog');
 
           done();
         } catch (error) {
