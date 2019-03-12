@@ -15,6 +15,8 @@ import {
   TabContainer
 } from '../primitives';
 
+import { ToastConductor } from '../toasts';
+
 import {
   WithCache,
   WithCachedState,
@@ -159,11 +161,34 @@ export class MultiSheetTab extends CachedComponent {
     }
 
     if (warnings && warnings.length) {
+
+      this.openWarningsToast({
+        warnings
+      });
+
       warnings.forEach(warning => {
         this.handleWarning(warning);
       });
     }
   }
+
+  openWarningsToast = options => {
+    const {
+      warnings
+    } = options;
+
+    this.setCached({
+      warnings
+    });
+
+    this.setToast('WARNINGS');
+  }
+
+  setToast = currentToast => this.setCached({ currentToast })
+
+  closeToast = () => {
+    this.setToast(null);
+  };
 
   /**
    * Open fallback sheet if provided.
@@ -314,7 +339,9 @@ export class MultiSheetTab extends CachedComponent {
     let {
       activeSheet,
       sheets,
-      lastXML
+      lastXML,
+      warnings,
+      currentToast
     } = this.getCached();
 
     let {
@@ -362,6 +389,12 @@ export class MultiSheetTab extends CachedComponent {
           tabs={ sheets }
           activeTab={ activeSheet }
           onSelect={ this.switchSheet } />
+
+        <ToastConductor
+          currentToast={ currentToast }
+          warnings={ warnings }
+          onClose={ this.closeToast }
+        />
 
       </div>
     );

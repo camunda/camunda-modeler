@@ -43,6 +43,9 @@ describe('<MultiSheetTab>', function() {
 
   describe('#handleImport', function() {
 
+    const error = new Error('error');
+    const warnings = [ 'warning', 'warning' ];
+
     it('should import without errors', function() {
 
       // given
@@ -79,14 +82,34 @@ describe('<MultiSheetTab>', function() {
       });
 
       // when
-      const warnings = [ 'warning', 'warning' ];
-
       instance.handleImport(null, warnings);
 
       // then
       expect(errorSpy).not.to.have.been.called;
       expect(warningSpy).to.have.been.calledTwice;
       expect(warningSpy.alwaysCalledWith('warning')).to.be.true;
+    });
+
+
+    it('should open warnings toast', function() {
+
+      // given
+      const {
+        instance
+      } = renderTab();
+
+      // when
+      instance.handleImport(null, warnings);
+
+      const {
+        warnings: stateWarnings,
+        currentToast
+      } = instance.getCached();
+
+      // then
+      expect(stateWarnings).to.eql(warnings);
+      expect(currentToast).to.eql('WARNINGS');
+
     });
 
 
@@ -106,8 +129,6 @@ describe('<MultiSheetTab>', function() {
       const showImportErrorDialogSpy = spy(instance, 'showImportErrorDialog');
 
       // when
-      const error = new Error('error');
-
       instance.handleImport(error);
 
       // then
@@ -295,6 +316,54 @@ describe('<MultiSheetTab>', function() {
       // then
       expect(instance.isDirty()).to.be.false;
     });
+
+  });
+
+
+  describe('toast handling', function() {
+
+    let instance;
+
+    beforeEach(function() {
+      const rendered = renderTab();
+
+      instance = rendered.instance;
+    });
+
+
+    it('should set toast', function() {
+      // given
+      const fakeToastName = 'toast';
+
+      // when
+      instance.setToast(fakeToastName);
+
+      const {
+        currentToast
+      } = instance.getCached();
+
+      // then
+      expect(currentToast).to.eql(fakeToastName);
+    });
+
+
+    it('should close toast', function() {
+      // given
+      const fakeToastName = 'toast';
+
+      instance.setToast(fakeToastName);
+
+      // when
+      instance.closeToast();
+
+      const {
+        currentToast
+      } = instance.getCached();
+
+      // then
+      expect(currentToast).to.eql(null);
+    });
+
 
   });
 
