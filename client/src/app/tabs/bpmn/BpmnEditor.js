@@ -154,7 +154,7 @@ export class BpmnEditor extends CachedComponent {
   }
 
   componentDidUpdate(prevProps) {
-    this.checkImport();
+    this.checkImport(prevProps);
 
     if (isCacheStateChanged(prevProps, this.props)) {
       this.handleChanged();
@@ -405,16 +405,16 @@ export class BpmnEditor extends CachedComponent {
     return commandStack._stackIdx !== stackIdx;
   }
 
-  checkImport() {
+  checkImport(prevProps) {
 
-    if (!this.isImportNeeded()) {
+    if (!this.isImportNeeded(prevProps)) {
       return;
     }
 
     this.importXML();
   }
 
-  isImportNeeded() {
+  isImportNeeded(prevProps) {
     const {
       importing
     } = this.state;
@@ -426,6 +426,10 @@ export class BpmnEditor extends CachedComponent {
     const {
       xml
     } = this.props;
+
+    if (prevProps && prevProps.xml === xml) {
+      return false;
+    }
 
     const {
       lastXML

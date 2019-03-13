@@ -87,7 +87,7 @@ export class CmmnEditor extends CachedComponent {
   }
 
   componentDidUpdate(prevProps) {
-    this.checkImport();
+    this.checkImport(prevProps);
 
     if (isCachedStateChange(prevProps, this.props)) {
       this.handleChanged();
@@ -252,15 +252,15 @@ export class CmmnEditor extends CachedComponent {
     return commandStack._stackIdx !== stackIdx;
   }
 
-  checkImport() {
-    if (!this.isImportNeeded()) {
+  checkImport(prevProps) {
+    if (!this.isImportNeeded(prevProps)) {
       return;
     }
 
     this.importXML();
   }
 
-  isImportNeeded() {
+  isImportNeeded(prevProps) {
     const {
       importing
     } = this.state;
@@ -272,6 +272,10 @@ export class CmmnEditor extends CachedComponent {
     const {
       xml
     } = this.props;
+
+    if (prevProps && prevProps.xml === xml) {
+      return false;
+    }
 
     const {
       lastXML
