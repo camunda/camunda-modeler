@@ -48,18 +48,14 @@ class Dialog {
       name
     } = options;
 
-    return new Promise(resolve => {
-      this.showDialog('error', {
-        type: 'error',
-        title: 'File Open Error',
-        buttons: [
-          { id: 'cancel', label: 'Close' }
-        ],
-        message: message || `Unable to open"${ name }"`,
-        detail
-      }, () => {
-        resolve();
-      });
+    this.showDialog({
+      type: 'error',
+      title: 'File Open Error',
+      buttons: [
+        { id: 'cancel', label: 'Close' }
+      ],
+      message: message || `Unable to open "${ name }"`,
+      detail
     });
   }
 
