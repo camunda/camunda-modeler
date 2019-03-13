@@ -1004,13 +1004,13 @@ describe('<App>', function() {
     });
 
 
-    it('should handle export error <export-as>', async function() {
+    it('should handle export error <retry>', async function() {
 
       // given
       await app.createDiagram();
 
       dialog.setShowSaveFileDialogResponse('foo.svg');
-      dialog.setShowSaveFileErrorDialogResponse('export-as');
+      dialog.setShowSaveFileErrorDialogResponse('retry');
 
       const err = new Error('foo');
 
@@ -1019,7 +1019,7 @@ describe('<App>', function() {
         contents: '<contents>'
       }));
 
-      const exportAsSpy = spy(app, 'exportAs');
+      const exportAsSpy = spy(app, 'exportAsFile');
 
       // when
       await app.triggerAction('export-as');
