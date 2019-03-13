@@ -219,6 +219,12 @@ describe('<CmmnEditor>', function() {
 
     it('propertiesPanel.focusout', expectHandleChanged('propertiesPanel.focusout'));
 
+
+    it('propertiesPanel.focusout', expectHandleChanged('directEditing.activate'));
+
+
+    it('propertiesPanel.focusout', expectHandleChanged('directEditing.deactivate'));
+
   });
 
 
@@ -268,6 +274,8 @@ describe('<CmmnEditor>', function() {
 
       expect(changedSpy).to.be.calledOnce;
       expect(changedSpy.firstCall.args[0]).to.include({
+        defaultCopyCutPaste: false,
+        defaultUndoRedo: false,
         dirty: true,
         editLabel: false,
         find: true,

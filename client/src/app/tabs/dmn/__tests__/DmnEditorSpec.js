@@ -225,6 +225,8 @@ describe('<DmnEditor>', function() {
 
         // then
         expect(state).to.include({
+          defaultCopyCutPaste: false,
+          defaultUndoRedo: false,
           dirty: true,
           editLabel: false,
           inputActive: false,

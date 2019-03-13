@@ -307,6 +307,11 @@ describe('<BpmnEditor>', function() {
 
     it('propertiesPanel.focusout', expectHandleChanged('propertiesPanel.focusout'));
 
+
+    it('propertiesPanel.focusout', expectHandleChanged('directEditing.activate'));
+
+
+    it('propertiesPanel.focusout', expectHandleChanged('directEditing.deactivate'));
   });
 
 
@@ -321,6 +326,8 @@ describe('<BpmnEditor>', function() {
         expect(state).to.include({
           align: false,
           copy: false,
+          defaultCopyCutPaste: false,
+          defaultUndoRedo: false,
           dirty: true,
           distribute: false,
           editLabel: false,

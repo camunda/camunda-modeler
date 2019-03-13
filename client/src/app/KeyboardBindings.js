@@ -45,6 +45,8 @@ export default class KeyboardBindings {
     this.cut = null;
     this.paste = null;
     this.selectAll = null;
+    this.undo = null;
+    this.redo = null;
 
     if (menu) {
       this.update(menu);
@@ -83,13 +85,19 @@ export default class KeyboardBindings {
       action = getAction(this.paste);
     }
 
-    if (isRedo(event) && isEnabled(this.redo) && !hasRole(this.redo, 'redo')) {
-      action = getAction(this.redo);
-    }
-
     // select all
     if (isSelectAll(event) && isEnabled(this.selectAll) && !hasRole(this.selectAll, 'selectAll')) {
       action = getAction(this.selectAll);
+    }
+
+    // undo
+    if (isUndo(event) && isEnabled(this.undo) && !hasRole(this.undo, 'undo')) {
+      action = getAction(this.undo);
+    }
+
+    // redo
+    if (isRedo(event) && isEnabled(this.redo) && !hasRole(this.redo, 'redo')) {
+      action = getAction(this.redo);
     }
 
     if (action && onAction) {
@@ -103,8 +111,9 @@ export default class KeyboardBindings {
     this.copy = findCopy(menu);
     this.cut = findCut(menu);
     this.paste = findPaste(menu);
-    this.redo = findRedo(menu);
     this.selectAll = findSelectAll(menu);
+    this.undo = findUndo(menu);
+    this.redo = findRedo(menu);
   }
 
   setOnAction(onAction) {
@@ -114,24 +123,35 @@ export default class KeyboardBindings {
 
 // helpers //////////
 
+// Ctrl + C
 function isCopy(event) {
   return isKey(['c', 'C'], event) && isCommandOrControl(event);
 }
 
+// Ctrl + X
 function isCut(event) {
   return isKey(['x', 'X'], event) && isCommandOrControl(event);
 }
 
+// Ctrl + V
 function isPaste(event) {
   return isKey(['v', 'V'], event) && isCommandOrControl(event);
 }
 
-function isRedo(event) {
-  return isKey(['z', 'Z'], event) && isCommandOrControl(event) && isShift(event);
-}
-
+// Ctrl + A
 function isSelectAll(event) {
   return isKey(['a', 'A'], event) && isCommandOrControl(event);
+}
+
+// Ctrl + Z
+function isUndo(event) {
+  return isKey(['z', 'Z'], event) && isCommandOrControl(event) && !isShift(event);
+}
+
+// Ctrl + Y or Ctrl + Shift + Z
+function isRedo(event) {
+  return isCommandOrControl(event) &&
+    (isKey([ 'y', 'Y' ], event) || (isKey(['z', 'Z'], event) && isShift(event)));
 }
 
 /**
@@ -184,6 +204,10 @@ function findCut(menu) {
 
 function findPaste(menu) {
   return find(menu, ({ accelerator }) => isAccelerator(accelerator, 'CommandOrControl+V'));
+}
+
+function findUndo(menu) {
+  return find(menu, ({ accelerator }) => isAccelerator(accelerator, 'CommandOrControl+Z'));
 }
 
 function findRedo(menu) {

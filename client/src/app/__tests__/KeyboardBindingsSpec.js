@@ -89,6 +89,65 @@ describe('KeyboardBindings', function() {
   });
 
 
+  it('undo', function() {
+
+    // given
+    event = createKeyEvent('Z', { ctrlKey: true });
+
+    keyboardBindings.update([{
+      accelerator: 'CommandOrControl + Z',
+      action: 'undo'
+    }]);
+
+    // when
+    keyboardBindings._keyHandler(event);
+
+    // then
+    expect(actionSpy).to.have.been.calledWith(null, 'undo');
+  });
+
+
+  describe('redo', function() {
+
+    it('redo (Ctrl + Y)', function() {
+
+      // given
+      event = createKeyEvent('Y', { ctrlKey: true });
+
+      keyboardBindings.update([{
+        accelerator: 'CommandOrControl + Y',
+        action: 'redo'
+      }]);
+
+      // when
+      keyboardBindings._keyHandler(event);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith(null, 'redo');
+    });
+
+
+    it('redo (Ctrl + Shift + Z)', function() {
+
+      // given
+      event = createKeyEvent('Z', { ctrlKey: true, shiftKey: true });
+
+      keyboardBindings.update([{
+        accelerator: 'CommandOrControl + Y',
+        action: 'redo'
+      }]);
+
+      // when
+      keyboardBindings._keyHandler(event);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith(null, 'redo');
+    });
+
+  });
+
+
+
   it('selectAll', function() {
 
     // given
@@ -104,24 +163,6 @@ describe('KeyboardBindings', function() {
 
     // then
     expect(actionSpy).to.have.been.calledWith(null, 'selectAll');
-  });
-
-
-  it('redo', function() {
-
-    // given
-    event = createKeyEvent('Z', { ctrlKey: true, shiftKey: true });
-
-    keyboardBindings.update([{
-      accelerator: 'CommandOrControl + Y',
-      action: 'redo'
-    }]);
-
-    // when
-    keyboardBindings._keyHandler(event);
-
-    // then
-    expect(actionSpy).to.have.been.calledWith(null, 'redo');
   });
 
 

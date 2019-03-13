@@ -293,6 +293,7 @@ export class DmnEditor extends CachedComponent {
     if (activeView.type === 'drd') {
       assign(newState, {
         defaultCopyCutPaste: inputActive,
+        defaultUndoRedo: inputActive,
         editLabel: !inputActive && !!selectionLength,
         lassoTool: !inputActive,
         moveCanvas: !inputActive,
@@ -306,6 +307,7 @@ export class DmnEditor extends CachedComponent {
     } else if (activeView.type === 'decisionTable') {
       assign(newState, {
         defaultCopyCutPaste: true,
+        defaultUndoRedo: true,
         hasSelection: activeViewer.get('selection').hasSelection(),
         removeSelected: inputActive,
         selectAll: inputActive
@@ -320,6 +322,7 @@ export class DmnEditor extends CachedComponent {
     } else if (activeView.type === 'literalExpression') {
       assign(newState, {
         defaultCopyCutPaste: true,
+        defaultUndoRedo: true,
         removeSelected: true,
         selectAll: true
       });

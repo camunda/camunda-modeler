@@ -12,6 +12,7 @@ import {
   getCanvasEntries,
   getCopyCutPasteEntries,
   getDefaultCopyCutPasteEntries,
+  getDefaultUndoRedoEntries,
   getDiagramFindEntries,
   getSelectionEntries,
   getToolEntries,
@@ -19,14 +20,21 @@ import {
 } from '../getEditMenu';
 
 export function getCmmnEditMenu(state) {
-  const { defaultCopyCutPaste } = state;
+  const {
+    defaultCopyCutPaste,
+    defaultUndoRedo
+  } = state;
+
+  const undoRedoEntries = defaultUndoRedo
+    ? getDefaultUndoRedoEntries()
+    : getUndoRedoEntries(state);
 
   const copyCutPasteEntries = defaultCopyCutPaste
     ? getDefaultCopyCutPasteEntries()
     : getCopyCutPasteEntries(state);
 
   return [
-    getUndoRedoEntries(state),
+    undoRedoEntries,
     copyCutPasteEntries,
     getToolEntries(state),
     getDiagramFindEntries(state),

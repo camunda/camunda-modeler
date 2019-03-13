@@ -180,7 +180,9 @@ export class BpmnEditor extends CachedComponent {
       'attach',
       'elements.copied',
       'propertiesPanel.focusin',
-      'propertiesPanel.focusout'
+      'propertiesPanel.focusout',
+      'directEditing.activate',
+      'directEditing.deactivate'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
@@ -345,6 +347,7 @@ export class BpmnEditor extends CachedComponent {
       copy: !!selectionLength,
       cut: false,
       defaultCopyCutPaste: inputActive,
+      defaultUndoRedo: inputActive,
       dirty,
       distribute: selectionLength > 2,
       editLabel: !inputActive && !!selectionLength,

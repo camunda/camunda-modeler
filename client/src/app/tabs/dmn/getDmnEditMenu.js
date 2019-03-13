@@ -12,6 +12,7 @@ import {
   getCanvasEntries,
   getCopyCutPasteEntries,
   getDefaultCopyCutPasteEntries,
+  getDefaultUndoRedoEntries,
   getSelectionEntries,
   getToolEntries,
   getUndoRedoEntries
@@ -107,14 +108,21 @@ export function getDmnDrdEditMenu(state) {
 }
 
 export function getDmnDecisionTableEditMenu(state) {
-  const { defaultCopyCutPaste } = state;
+  const {
+    defaultCopyCutPaste,
+    defaultUndoRedo
+  } = state;
+
+  const undoRedoEntries = defaultUndoRedo
+    ? getDefaultUndoRedoEntries()
+    : getUndoRedoEntries(state);
 
   const copyCutPasteEntries = defaultCopyCutPaste
     ? getDefaultCopyCutPasteEntries()
     : getCopyCutPasteEntries(state);
 
   return [
-    getUndoRedoEntries(state),
+    undoRedoEntries,
     copyCutPasteEntries,
     getSelectionEntries(state),
     ...getDecisionTableEntries(state)
