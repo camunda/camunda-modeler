@@ -831,6 +831,26 @@ describe('<DmnEditor>', function() {
       expect(isImportNeededSpy).to.have.always.returned(false);
     });
 
+
+    it('should not import when props did not changed', async function() {
+      // given
+      const {
+        instance
+      } = await renderEditor(diagramXML);
+
+      const isImportNeededSpy = sinon.spy(instance, 'isImportNeeded');
+
+      // when
+      await instance.componentDidUpdate({
+        xml: diagramXML
+      });
+
+      // then
+      expect(isImportNeededSpy).to.be.called;
+      expect(isImportNeededSpy).to.have.always.returned(false);
+
+    });
+
   });
 
 
