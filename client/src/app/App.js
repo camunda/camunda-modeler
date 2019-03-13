@@ -1182,15 +1182,71 @@ export class App extends PureComponent {
     });
   }
 
-  async exportAs(tab) {
+  /**
+   * Exports file to given export type.
+   *
+   * @param {String} options.encoding
+   * @param {String} options.exportPath
+   * @param {String} options.exportType
+   * @param {File} options.originalFile
+   */
+  async exportAsFile(options) {
+    const {
+      encoding,
+      exportType,
+      exportPath,
+      originalFile,
+    } = options;
+
     const {
       globals,
-      tabsProvider
     } = this.props;
 
     const { fileSystem } = globals;
 
+    const contents = await this.tabRef.current.triggerAction('export-as', {
+      fileType: exportType
+    });
+
+    return fileSystem.writeFile(exportPath, {
+      ...originalFile,
+      contents
+    }, {
+      encoding,
+      fileType: exportType
+    });
+
+  }
+
+  /**
+   * Asks the user whether to retry the file export.
+   * @param {Tab} tab
+   * @param {Error} err
+   */
+  async askForExportRetry(tab, err) {
+    const { message } = err;
+
     const {
+      name
+    } = tab;
+
+    return await this.showSaveFileErrorDialog(getExportFileErrorDialog({
+      message,
+      name
+    }));
+  }
+
+  /**
+   * Asks the user for file type to export.
+   * @param {Tab} tab
+   */
+  async askForExportType(tab) {
+    const {
+      tabsProvider
+    } = this.props;
+
+    const {
+      file: originalFile,
       name,
       type
     } = tab;
@@ -1199,47 +1255,53 @@ export class App extends PureComponent {
 
     const filters = getExportFileDialogFilters(provider);
 
-    const filePath = await this.showSaveFileDialog(tab, {
+    const exportPath = await this.showSaveFileDialog(tab, {
       filters,
       title: `Export ${ name } as...`
     });
 
-    if (!filePath) {
-      return;
+    if (!exportPath) {
+      return false;
     }
 
-    const fileType = getFileTypeFromExtension(filePath);
+    const exportType = getFileTypeFromExtension(exportPath);
 
-    if (!fileType) {
-      return;
-    }
+    const { encoding } = provider.exports ? provider.exports[ exportType ] : ENCODING_UTF8;
 
-    const contents = await this.tabRef.current.triggerAction('export-as', {
-      fileType
-    });
-
-    const { encoding } = provider.exports ? provider.exports[ fileType ] : ENCODING_UTF8;
-
-    await fileSystem.writeFile(filePath, {
-      ...tab.file,
-      contents
-    }, {
+    return {
       encoding,
-      fileType
-    }).catch(async err => {
-      const { message } = err;
+      exportPath,
+      exportType,
+      originalFile
+    };
+  }
 
-      let response = await this.showSaveFileErrorDialog(getExportFileErrorDialog({
-        message,
-        name
-      }));
+  async exportAs(tab) {
 
-      if (response === 'export-as') {
+    // do as long as it was successful or cancelled
+    const infinite = true;
 
-        // try again
-        await this.exportAs(tab);
+    while (infinite) {
+
+      try {
+
+        const exportOptions = await this.askForExportType(tab);
+
+        return exportOptions ? await this.exportAsFile(exportOptions) : false;
+      } catch (err) {
+
+        const response = await this.askForExportRetry(tab, err);
+
+        if (response !== 'retry') {
+
+          // cancel
+          return;
+        }
+
       }
-    });
+
+    }
+
   }
 
   showDialog(options) {
@@ -1773,7 +1835,7 @@ function getExportFileErrorDialog(options) {
   return {
     buttons: [
       { id: 'cancel', label: 'Cancel' },
-      { id: 'export-as', label: `Export ${ name } as...` }
+      { id: 'retry', label: `Export ${ name } as...` }
     ],
     message: [
       `${ name } could not be exported.`,
