@@ -112,7 +112,9 @@ export class CmmnEditor extends CachedComponent {
       'selection.changed',
       'attach',
       'propertiesPanel.focusin',
-      'propertiesPanel.focusout'
+      'propertiesPanel.focusout',
+      'directEditing.activate',
+      'directEditing.deactivate'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
@@ -199,6 +201,7 @@ export class CmmnEditor extends CachedComponent {
       copy: false,
       cut: false,
       defaultCopyCutPaste: inputActive,
+      defaultUndoRedo: inputActive,
       dirty,
       editLabel: !inputActive && !!selectionLength,
       exportAs: EXPORT_AS,

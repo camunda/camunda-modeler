@@ -222,6 +222,8 @@ export function getToolEntries({
   return menuEntries;
 }
 
+// undo and redo must be handled manually due to a bug in Chromium
+// see https://github.com/electron/electron/issues/3682
 export function getUndoRedoEntries({
   redo,
   undo
@@ -236,6 +238,16 @@ export function getUndoRedoEntries({
     accelerator: 'CommandOrControl+Y',
     enabled: redo,
     action: 'redo'
+  }];
+}
+
+export function getDefaultUndoRedoEntries() {
+  return [{
+    label: 'Undo',
+    role: 'undo'
+  }, {
+    label: 'Redo',
+    role: 'redo'
   }];
 }
 
