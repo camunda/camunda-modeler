@@ -65,7 +65,6 @@ describe('Dialog', function() {
       // then
       var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
 
-      // then
       expect(electronDialog.showMessageBox).to.have.been.called;
 
       expect(dialogArgs.title).to.equal('error');
@@ -98,7 +97,6 @@ describe('Dialog', function() {
       // then
       var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
 
-      // then
       expect(electronDialog.showMessageBox).to.have.been.called;
 
       expect(dialogArgs.title).to.equal('warning');
@@ -131,7 +129,6 @@ describe('Dialog', function() {
       // then
       var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
 
-      // then
       expect(electronDialog.showMessageBox).to.have.been.called;
 
       expect(dialogArgs.title).to.equal('info');
@@ -164,7 +161,6 @@ describe('Dialog', function() {
       // then
       var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
 
-      // then
       expect(electronDialog.showMessageBox).to.have.been.called;
 
       expect(dialogArgs.title).to.equal('question');
@@ -376,6 +372,58 @@ describe('Dialog', function() {
         expect(config.get('defaultPath')).to.equal(defaultPath);
       });
 
+    });
+
+  });
+
+
+  describe('#showOpenFileErrorDialog', function() {
+
+    it('should open dialog', async function() {
+
+      // given
+      const options = {
+        name: 'foo.txt',
+        message: 'foo',
+        detail: 'bar'
+      };
+
+      electronDialog.setResponse(0);
+
+      // when
+      await dialog.showOpenFileErrorDialog(options);
+
+      // then
+      var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+
+      expect(electronDialog.showMessageBox).to.have.been.called;
+
+      expect(dialogArgs.title).to.equal('File Open Error');
+      expect(dialogArgs.message).to.equal('foo');
+      expect(dialogArgs.detail).to.equal('bar');
+    });
+
+
+    it('should open dialog with default message', async function() {
+
+      // given
+      const options = {
+        name: 'foo.txt'
+      };
+
+      electronDialog.setResponse(0);
+
+      // when
+      await dialog.showOpenFileErrorDialog(options);
+
+      // then
+      var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+
+      expect(electronDialog.showMessageBox).to.have.been.called;
+
+      expect(dialogArgs.title).to.equal('File Open Error');
+      expect(dialogArgs.message).to.equal('Unable to open "foo.txt"');
+      expect(dialogArgs.detail).not.to.exist;
     });
 
   });
