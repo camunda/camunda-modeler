@@ -1045,76 +1045,143 @@ export class App extends PureComponent {
     });
   }
 
-  async saveTab(tab, options = {}) {
+  /**
+   * Asks the user whether to retry the save action.
+   * @param {Tab} tab
+   * @param {Error} err
+   * @param {Function} dialogHandler
+   */
+  async askForSaveRetry(tab, err, dialogHandler) {
+    const { message } = err;
 
-    await this.showTab(tab);
+    const {
+      name
+    } = tab;
 
+    return await this.showSaveFileErrorDialog(dialogHandler({
+      message,
+      name
+    }));
+  }
+
+  /**
+   * Saves current tab to given location
+   * @param {String} options.encoding
+   * @param {File} options.originalFile
+   * @param {String} options.savePath
+   * @param {String} options.saveType
+   *
+   * @returns {File} saved file.
+   */
+  async saveTabAsFile(options) {
+
+    const {
+      encoding,
+      originalFile,
+      savePath,
+      saveType
+    } = options;
+
+    const fileSystem = this.getGlobal('fileSystem');
+
+
+    const contents = await this.tabRef.current.triggerAction('save');
+
+    return fileSystem.writeFile(savePath, {
+      ...originalFile,
+      contents
+    }, {
+      encoding,
+      fileType: saveType
+    });
+
+  }
+
+  /**
+   * Asks the user for file path to save.
+   * @param {Tab} tab
+   */
+  async askForSave(tab, options) {
     const {
       tabsProvider
     } = this.props;
 
-    const fileSystem = this.getGlobal('fileSystem');
+    const {
+      file,
+      name,
+      type: fileType
+    } = tab;
 
-    const fileType = tab.type;
+    let {
+      saveAs
+    } = options;
 
     const provider = tabsProvider.getProvider(fileType);
 
-    const {
-      file,
-      name
-    } = tab;
-
-    const contents = await this.tabRef.current.triggerAction('save');
-
-    let filePath, filters;
-
-    let { saveAs } = options;
+    let savePath;
 
     saveAs = saveAs || this.isUnsaved(tab);
 
     if (saveAs) {
-      filters = getSaveFileDialogFilters(provider);
+      const filters = getSaveFileDialogFilters(provider);
 
-      filePath = await this.showSaveFileDialog(file, {
+      savePath = await this.showSaveFileDialog(file, {
         filters,
         title: `Save ${ name } as...`
       });
     } else {
-      filePath = tab.file.path;
+      savePath = tab.file.path;
     }
 
-    if (!filePath) {
-      return;
+    if (!savePath) {
+      return false;
     }
 
     const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
 
-    const newFile = await fileSystem.writeFile(filePath, {
-      ...file,
-      contents
-    }, {
+    return {
       encoding,
-      fileType
-    }).catch(async err => {
-      let { message } = err;
+      originalFile: file,
+      savePath,
+      saveType: fileType
+    };
 
-      let response = await this.showSaveFileErrorDialog(getSaveFileErrorDialog({
-        message,
-        name
-      }));
+  }
 
-      if (response === 'save-as') {
+  async saveTab(tab, options = {}) {
 
-        // try again
-        await this.saveTab(tab, { saveAs: true });
+    // do as long as it was successful or cancelled
+    const infinite = true;
+
+    while (infinite) {
+
+      try {
+
+        await this.showTab(tab);
+
+        const saveOptions = await this.askForSave(tab, options);
+
+        if (!saveOptions) {
+          return false;
+        }
+
+        const savedFile = await this.saveTabAsFile(saveOptions);
+
+        return this.tabSaved(tab, savedFile);
+      } catch (err) {
+
+        const response = await this.askForSaveRetry(tab, err, getSaveFileErrorDialog);
+
+        if (response !== 'retry') {
+
+          // cancel
+          return;
+        }
+
       }
-    });
 
-    if (!newFile) {
-      return;
     }
 
-    this.tabSaved(tab, newFile);
   }
 
   saveAllTabs = () => {
@@ -1221,24 +1288,6 @@ export class App extends PureComponent {
   }
 
   /**
-   * Asks the user whether to retry the file export.
-   * @param {Tab} tab
-   * @param {Error} err
-   */
-  async askForExportRetry(tab, err) {
-    const { message } = err;
-
-    const {
-      name
-    } = tab;
-
-    return await this.showSaveFileErrorDialog(getExportFileErrorDialog({
-      message,
-      name
-    }));
-  }
-
-  /**
    * Asks the user for file type to export.
    * @param {Tab} tab
    */
@@ -1292,7 +1341,7 @@ export class App extends PureComponent {
         return exportOptions ? await this.exportAsFile(exportOptions) : false;
       } catch (err) {
 
-        const response = await this.askForExportRetry(tab, err);
+        const response = await this.askForSaveRetry(tab, err, getExportFileErrorDialog);
 
         if (response !== 'retry') {
 
@@ -1809,7 +1858,7 @@ function getSaveFileErrorDialog(options) {
   return {
     buttons: [
       { id: 'cancel', label: 'Cancel' },
-      { id: 'save-as', label: `Save ${ name } as...` }
+      { id: 'retry', label: `Save ${ name } as...` }
     ],
     message: [
       `${ name } could not be saved.`,
