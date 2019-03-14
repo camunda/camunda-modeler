@@ -99,6 +99,7 @@ async function sendSummary(args) {
   console.log('Generating changes summary...');
 
   const changesSummary = getChangesSummary({
+    currentVersion,
     previousVersion,
     file
   });
@@ -160,11 +161,11 @@ async function getSummary() {
   return generateSummary(processedLicenses);
 }
 
-function getChangesSummary({ previousVersion, file }) {
+function getChangesSummary({ currentVersion, previousVersion, file }) {
   try {
     const diff = getDiff({ previousVersion, file });
 
-    const html = getHtmlFromDiff(diff);
+    const html = getHtmlFromDiff(diff, currentVersion);
 
     console.log('Changes summary generated');
 
@@ -176,7 +177,7 @@ function getChangesSummary({ previousVersion, file }) {
   }
 }
 
-function getDiff({ previousVersion, file }) {
+function getDiff({ currentVersion, previousVersion, file }) {
   const previousFile = exec('git', ['show', `${previousVersion}:${file}`]).stdout;
 
   // diff exits with <1> if a diff exists; we must account for that special behavior
@@ -193,7 +194,7 @@ function getDiff({ previousVersion, file }) {
   }
 }
 
-function getHtmlFromDiff(diff) {
+function getHtmlFromDiff(diff, currentVersion) {
   const style = fs.readFileSync(require.resolve('diff2html/dist/diff2html.min.css'));
 
   const diffHtml = diff2html.getPrettyHtml(diff, { inputFormat: 'diff', showFiles: true, matching: 'lines', outputFormat: 'side-by-side' });
@@ -204,7 +205,7 @@ function getHtmlFromDiff(diff) {
 <html>
 <head>
 <meta charset="utf-8">
-<title>Camunda Modeler Third Party Notices Changes</title>
+<title>Camunda Modeler ${currentVersion} Third Party Notices Changes Summary</title>
 <style>${style}</style>
 </head>
 <body>
