@@ -869,13 +869,13 @@ describe('<App>', function() {
     });
 
 
-    it('should handle save error <save-as>', async function() {
+    it('should handle save error <retry>', async function() {
 
       // given
       await app.createDiagram();
 
       dialog.setShowSaveFileDialogResponse('foo.svg');
-      dialog.setShowSaveFileErrorDialogResponse('save-as');
+      dialog.setShowSaveFileErrorDialogResponse('retry');
 
       const err = new Error('foo');
 
@@ -884,7 +884,7 @@ describe('<App>', function() {
         contents: '<contents>'
       }));
 
-      const saveTabSpy = spy(app, 'saveTab');
+      const saveTabSpy = spy(app, 'saveTabAsFile');
 
       // when
       await app.triggerAction('save-as');
