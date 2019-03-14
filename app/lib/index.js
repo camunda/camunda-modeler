@@ -235,6 +235,15 @@ renderer.on('client-config:get', function(...args) {
   }
 });
 
+// plugin toggling //////////
+
+renderer.on('toggle-plugins', function() {
+
+  const pluginsDisabled = flags.get('disable-plugins');
+
+  app.emit('restart', [ pluginsDisabled ? '--no-disable-plugins' : '--disable-plugins' ]);
+});
+
 // open file handling //////////
 
 app.on('app:client-ready', function() {

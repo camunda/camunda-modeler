@@ -17,12 +17,15 @@ import {
 
 import AppParent from '../AppParent';
 
+import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../../util/Flags';
+
 import {
   Backend,
   Dialog,
   FileSystem,
   KeyboardBindings,
   Log,
+  Plugins,
   TabsProvider,
   Workspace
 } from './mocks';
@@ -741,6 +744,77 @@ describe('<AppParent>', function() {
 
   });
 
+
+  describe('plugins hint', function() {
+
+    beforeEach(function() {
+      Flags.reset();
+    });
+
+
+    it('should log plugins hint on error', async function() {
+
+      // given
+      Flags.init({
+        [ DISABLE_PLUGINS ]: true
+      });
+
+      const plugins = new Plugins({
+        getAll: () => [{}]
+      });
+
+      const { appParent } = createAppParent({
+        globals: {
+          plugins
+        }
+      }, mount);
+
+      // when
+      await appParent.handleError(new Error('error'));
+
+      // then
+      const app = appParent.getApp();
+
+      expect(app.state.logEntries).to.have.length(3);
+      expect(app.state.logEntries[1]).to.eql({ category: 'info', message: 'This error may be the result of a plug-in compatibility issue.' });
+      expect(app.state.logEntries[2]).to.eql({ category: 'info', message: 'Disable plug-ins (restarts the app)', action: appParent.togglePlugins });
+    });
+
+
+    it('should log plugins hint on relaunch', function() {
+
+      // given
+      Flags.init({
+        [ DISABLE_PLUGINS ]: true,
+        [ RELAUNCH ]: true
+      });
+
+      // when
+      const { appParent } = createAppParent(mount);
+
+      // then
+      const app = appParent.getApp();
+
+      expect(app.state.logEntries).to.eql([
+        { category: 'info', message: 'Plugins are temporarily disabled.' },
+        { category: 'info', message: 'Enable plug-ins (restarts the app)', action: appParent.togglePlugins }
+      ]);
+    });
+
+
+    it('should NOT log plugins hint on relaunch', function() {
+
+      // when
+      const { appParent } = createAppParent(mount);
+
+      // then
+      const app = appParent.getApp();
+
+      expect(app.state.logEntries).to.have.length(0);
+    });
+
+  });
+
 });
 
 
@@ -758,6 +832,7 @@ function createAppParent(options = {}, mountFn=shallow) {
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
     log: new Log(),
+    plugins: new Plugins(),
     workspace: new Workspace()
   };
 
