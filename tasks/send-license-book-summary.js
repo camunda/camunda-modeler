@@ -38,34 +38,24 @@ sendSummary().then(
 async function sendSummary() {
   const { previousVersion, currentVersion } = getVersions();
 
-  console.log(`Sending summary for version ${currentVersion}`);
+  console.log(`Generating summary for version ${currentVersion}`);
 
-  console.log('Generating summary...');
+  console.log('Generating license book summary...');
 
   const summary = await getSummary();
 
-  let message = getMessageBody(summary, currentVersion);
+  console.log('Generating changes summary...');
 
-  console.log('Generating difference summary...');
+  const changesSummary = getChangesSummary({
+    previousVersion,
+    file: 'THIRD_PARTY_NOTICES'
+  });
 
-  let differenceSummary;
-
-  try {
-    differenceSummary = getDifferenceSummary({
-      previousVersion,
-      file: 'THIRD_PARTY_NOTICES'
-    });
-
-    console.log('Difference summary generated');
-
-    message += '\n\nChanges since last version can be found in the attachment.';
-  } catch (error) {
-    console.log('Difference summary could not be generated, error: %o', error);
-  }
+  const draftEmail = getDraftEmail(summary, currentVersion, changesSummary);
 
   console.log('Sending email...');
 
-  await sendEmail(`Camunda Modeler ${currentVersion} Third Party Summary`, message, differenceSummary);
+  await sendEmail(draftEmail);
 }
 
 function getVersions() {
@@ -101,19 +91,20 @@ async function getSummary() {
   return generateSummary(processedLicenses);
 }
 
-function getMessageBody(summary, version) {
-  return `${summary}
+function getChangesSummary({ previousVersion, file }) {
+  try {
+    const diff = getDiff({ previousVersion, file });
 
-Third party notices: https://github.com/camunda/camunda-modeler/blob/${version}/THIRD_PARTY_NOTICES
-  `;
-}
+    const html = getHtmlFromDiff(diff);
 
-function getDifferenceSummary({ previousVersion, file }) {
-  const diff = getDiff({ previousVersion, file });
+    console.log('Changes summary generated');
 
-  const html = getHtmlFromDiff(diff);
+    return html;
+  } catch (error) {
+    console.log('Changes summary could not be generated, error: %O', error);
 
-  return html;
+    return null;
+  }
 }
 
 function getDiff({ previousVersion, file }) {
@@ -159,13 +150,38 @@ ${diffHtml}
   return html;
 }
 
-function sendEmail(subject, body, attachment) {
+function getDraftEmail(summary, currentVersion, changesSummary) {
+  const subject = `Camunda Modeler ${currentVersion} Third Party Summary`;
+  const text = getMessageText(summary, currentVersion, changesSummary);
+  const attachment = changesSummary;
+
+  return {
+    subject,
+    text,
+    attachment
+  };
+}
+
+function getMessageText(summary, version, changesSummary) {
+  let message = `${summary}
+
+Third party notices: https://github.com/camunda/camunda-modeler/blob/${version}/THIRD_PARTY_NOTICES
+  `;
+
+  if (changesSummary) {
+    message += '\nChanges since last version can be found in the attachment.';
+  }
+
+  return message;
+}
+
+function sendEmail({ subject, text, attachment }) {
 
   const {
+    EMAIL_TO: to,
     EMAIL_HOST: host,
     EMAIL_USERNAME: username,
-    EMAIL_PASSWORD: password,
-    EMAIL_RECIPIENT: recipient
+    EMAIL_PASSWORD: password
   } = process.env;
 
   const transport = nodemailer.createTransport({
@@ -178,9 +194,9 @@ function sendEmail(subject, body, attachment) {
   });
 
   const message = {
-    to: recipient,
+    to,
     subject,
-    text: body,
+    text
   };
 
   if (attachment) {
