@@ -14,9 +14,7 @@ const { asSummary: createLicensesSummary } = require('license-checker');
 
 
 module.exports = function generateSummary(processedLicenses, warnings = []) {
-  return `
-${warnings.join('\n')}
-
+  return `${warnings.join('\n')}
 Summary of used third party licenses:
 ${createLicensesSummary(processedLicenses)}
 * = license name is deduced from README and/or license text
