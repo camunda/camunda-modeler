@@ -70,9 +70,33 @@ describe('<Log>', function() {
       const entry = tree.find('.entry');
 
       // then
-      expect(entry.at(0).text()).to.eql('HE  [warning]');
-      expect(entry.at(1).text()).to.eql('HO  [error]');
+      expect(entry.at(0).text()).to.eql('HE [ warning ]');
+      expect(entry.at(1).text()).to.eql('HO [ error ]');
       expect(entry.at(2).text()).to.eql(' ');
+    });
+
+
+    it('should show clickable action', function() {
+
+      // given
+      const actionSpy = spy();
+
+      const {
+        tree
+      } = createLog({
+        open: true,
+        entries: [
+          { category: 'warning', message: 'HE', action: actionSpy }
+        ]
+      }, mount);
+
+      const entry = tree.find('.action').at(0);
+
+      // when
+      entry.simulate('click');
+
+      // then
+      expect(actionSpy).to.have.been.called;
     });
 
   });

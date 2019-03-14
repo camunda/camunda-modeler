@@ -13,6 +13,7 @@ import React, { PureComponent } from 'react';
 import debug from 'debug';
 
 import {
+  assign,
   forEach
 } from 'min-dash';
 
@@ -21,6 +22,8 @@ import {
 } from 'sourcemapped-stacktrace';
 
 import App from './App';
+
+import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../util/Flags';
 
 const log = debug('AppParent');
 
@@ -171,8 +174,15 @@ export default class AppParent extends PureComponent {
     log('workspace restored');
   }
 
-  handleError = async (error, tab) => {
+  hasPlugins() {
+    return this.getPlugins().getAll().length;
+  }
 
+  togglePlugins = () => {
+    this.getBackend().sendTogglePlugins();
+  }
+
+  handleError = async (error, tab) => {
     const errorMessage = this.getErrorMessage(tab);
 
     const entry = await getErrorEntry(error, tab);
@@ -180,6 +190,12 @@ export default class AppParent extends PureComponent {
     this.logToBackend(entry.backend);
 
     this.logToClient(entry.client);
+
+    if (this.hasPlugins()) {
+      this.logToClient(getClientEntry('info', 'This error may be the result of a plug-in compatibility issue.'));
+
+      this.logToClient(getClientEntry('info', 'Disable plug-ins (restarts the app)', this.togglePlugins));
+    }
 
     log(errorMessage, error, tab);
   }
@@ -262,6 +278,10 @@ export default class AppParent extends PureComponent {
     return this.props.globals.backend;
   }
 
+  getPlugins() {
+    return this.props.globals.plugins;
+  }
+
   getWorkspace() {
     return this.props.globals.workspace;
   }
@@ -280,16 +300,19 @@ export default class AppParent extends PureComponent {
   }
 
   /**
+   * Log a message to the client.
    *
    * @param {Object} entry
    * @param {string} entry.category
    * @param {string} entry.message
+   * @param {string} entry.action
    */
   logToClient(entry) {
     this.triggerAction(null, 'log', entry);
   }
 
   /**
+   * Log a message to the backend.
    *
    * @param {Object} entry
    * @param {string} entry.message
@@ -321,6 +344,12 @@ export default class AppParent extends PureComponent {
     keyboardBindings.bind();
 
     window.addEventListener('resize', this.handleResize);
+
+    if (Flags.get(DISABLE_PLUGINS) && Flags.get(RELAUNCH)) {
+      this.logToClient(getClientEntry('info', 'Plugins are temporarily disabled.'));
+
+      this.logToClient(getClientEntry('info', 'Enable plug-ins (restarts the app)', this.togglePlugins));
+    }
   }
 
   componentWillUnmount() {
@@ -423,12 +452,21 @@ async function getLogEntry(body, category, tab) {
  *
  * @param {string} category
  * @param {string} message
+ * @param {Function} [action]
  */
-function getClientEntry(category, message) {
-  return {
+function getClientEntry(category, message, action) {
+  const clientEntry = {
     category,
     message
   };
+
+  if (action) {
+    assign(clientEntry, {
+      action
+    });
+  }
+
+  return clientEntry;
 }
 
 /**

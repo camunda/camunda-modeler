@@ -227,11 +227,11 @@ export default class Log extends PureComponent {
                         <span>
                           {
                             action
-                              ? <a href="#" onClick={ action }>{ msg }</a>
+                              ? <a className="action" href="#" onClick={ action }>{ msg }</a>
                               : msg
                           }
 
-                          { category && <span className="category"> [ { category } ] </span> }
+                          { category && <span className="category"> [ { category } ]</span> }
                         </span>
                       }
                     </div>

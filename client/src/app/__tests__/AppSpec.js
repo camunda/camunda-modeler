@@ -1272,13 +1272,14 @@ describe('<App>', function() {
         await app.closeTab(newTab);
 
         // when
-        try {
-          await app.triggerAction('reopen-last-tab');
+        await app.triggerAction('reopen-last-tab');
 
-          expect.fail('expected exception');
-        } catch (e) {
-          expect(e.message).to.eql('no last tab');
-        }
+        // then
+        const {
+          activeTab
+        } = app.state;
+
+        expect(activeTab.file).not.to.equal(newTab);
       });
 
 

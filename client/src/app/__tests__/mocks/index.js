@@ -454,3 +454,9 @@ class Response {
     this.response[index] = response;
   }
 }
+
+export class Plugins extends Mock {
+  getAll() {
+    return [];
+  }
+}

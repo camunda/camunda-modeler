@@ -13,6 +13,7 @@ import React, { PureComponent } from 'react';
 import debug from 'debug';
 
 import {
+  assign,
   debounce,
   forEach,
   reduce
@@ -969,7 +970,7 @@ export class App extends PureComponent {
    * @param {Error} error
    * @param {Tab} [tab]
    */
-  handleError(error, tab) {
+  handleError = (error, tab) => {
     const {
       onError
     } = this.props;
@@ -994,7 +995,7 @@ export class App extends PureComponent {
    * @param {Error} error
    * @param {Tab} [tab]
    */
-  handleWarning(warning, tab) {or
+  handleWarning(warning, tab) {
     const {
       onWarning
     } = this.props;
@@ -1003,25 +1004,38 @@ export class App extends PureComponent {
   }
 
   /**
+   * Open log and add entry.
    *
    * @param {String} message - Message to be logged.
    * @param {String} category - Category of message.
+   * @param {String} action - Action to be triggered.
    */
-  logEntry(message, category) {
-    const {
-      logEntries
-    } = this.state;
-
+  logEntry(message, category, action) {
     this.toggleLog(true);
 
-    this.setState({
-      logEntries: [
-        ...logEntries,
-        {
-          category,
-          message
-        }
-      ]
+    const logEntry = {
+      category,
+      message
+    };
+
+    if (action) {
+      assign(logEntry, {
+        action
+      });
+    }
+
+    this.setState((state) => {
+
+      const {
+        logEntries
+      } = state;
+
+      return {
+        logEntries: [
+          ...logEntries,
+          logEntry
+        ]
+      };
     });
   }
 
@@ -1296,7 +1310,7 @@ export class App extends PureComponent {
     return this.getGlobal('dialog').show(options);
   }
 
-  triggerAction = (action, options) => {
+  triggerAction = failSafe((action, options) => {
 
     const {
       activeTab
@@ -1415,17 +1429,18 @@ export class App extends PureComponent {
 
     if (action === 'log') {
       const {
+        action,
         category,
         message
       } = options;
 
-      return this.logEntry(message, category);
+      return this.logEntry(message, category, action);
     }
 
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
-  }
+  }, this.handleError)
 
   openExternalUrl(options) {
     this.getGlobal('backend').send('external:open-url', options);
@@ -1688,7 +1703,7 @@ export class App extends PureComponent {
           <ModalConductor
             currentModal={ this.state.currentModal }
             endpoints={ this.state.endpoints }
-            isMac={ this.getGlobal('isMac') }
+            getGlobal={ this.getGlobal }
             onClose={ this.closeModal }
             onDeploy={ this.handleDeploy }
             onDeployError={ this.handleDeployError }
@@ -1935,4 +1950,17 @@ function getExportFileDialogFilters(provider) {
   });
 
   return filters;
+}
+
+
+function failSafe(fn, errorHandler) {
+
+  return async (...args) => {
+
+    try {
+      return await fn(...args);
+    } catch (error) {
+      errorHandler(error);
+    }
+  };
 }
