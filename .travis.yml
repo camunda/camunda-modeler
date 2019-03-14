@@ -34,6 +34,11 @@ jobs:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
       script: npm run build -- --mac --publish
+    - stage: "post distro"
+      node_js: node
+      language: node_js
+      script:
+      - npm run send-license-book-summary
     - stage: "nightly build [windows+linux]"
       os: linux
       services: docker
@@ -69,6 +74,8 @@ stages:
   - name: "distro [windows+linux]"
     if: tag =~ ^v\d
   - name: "distro [macos]"
+    if: tag =~ ^v\d
+  - name: "post distro"
     if: tag =~ ^v\d
   - name: "nightly build [windows+linux]"
     if: type IN (cron)
