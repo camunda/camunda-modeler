@@ -18,6 +18,7 @@ const nodemailer = require('nodemailer');
 
 const { Diff2Html: diff2html } = require('diff2html');
 
+const mri = require('mri');
 
 const {
   collectClientDependencies,
@@ -26,7 +27,50 @@ const {
   processLicenses
 } = require('./license-book-handlers');
 
-sendSummary().then(
+const {
+  help,
+  ...args
+} = mri(process.argv, {
+  alias: {
+    send: [ 's' ],
+    file: [ 'f' ],
+    print: [ 'p' ],
+    output: [ 'o' ],
+    help: [ 'h' ]
+  },
+  default: {
+    send: false,
+    file: 'THIRD_PARTY_NOTICES',
+    print: false,
+    output: false,
+    help: false
+  }
+});
+
+
+if (help) {
+  console.log(`usage: node tasks/send-license-book-summary.js [-s] [-f=FILE_NAME] [-p] [-o=FILE_NAME]
+
+Generate and/or send license book summary.
+To send email, configure following env variables:
+- EMAIL_TO,
+- EMAIL_HOST,
+- EMAIL_USERNAME,
+- EMAIL_PASSWORD
+
+Options:
+  -s, --send                    send email
+  -f, --file=FILE_NAME          file to diff; defaults to THIRD_PARTY_NOTICES
+  -p, --print                   print email draft to stdout
+  -o, --output=FILE_NAME        save changes summary to FILE_NAME
+
+  -h, --help                    print this help
+`);
+
+  process.exit(0);
+}
+
+sendSummary(args).then(
   () => console.log('Done.'),
   (err) => {
     console.error(err);
@@ -35,7 +79,15 @@ sendSummary().then(
   }
 );
 
-async function sendSummary() {
+async function sendSummary(args) {
+
+  const {
+    send,
+    file,
+    print,
+    output
+  } = args;
+
   const { previousVersion, currentVersion } = getVersions();
 
   console.log(`Generating summary for version ${currentVersion}`);
@@ -48,14 +100,31 @@ async function sendSummary() {
 
   const changesSummary = getChangesSummary({
     previousVersion,
-    file: 'THIRD_PARTY_NOTICES'
+    file
   });
 
   const draftEmail = getDraftEmail(summary, currentVersion, changesSummary);
 
-  console.log('Sending email...');
+  if (print) {
+    console.log(`Draft email:
+${draftEmail.subject}
+${draftEmail.text}
+    `);
+  }
 
-  await sendEmail(draftEmail);
+  if (output && changesSummary) {
+    console.log(`Saving changes summary to ${output}`);
+
+    fs.writeFileSync(output, changesSummary);
+
+    console.log('Saved.');
+  }
+
+  if (send) {
+    console.log('Sending email...');
+
+    await sendEmail(draftEmail);
+  }
 }
 
 function getVersions() {
