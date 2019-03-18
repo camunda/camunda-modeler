@@ -739,6 +739,23 @@ describe('<DmnEditor>', function() {
 
   });
 
+  describe('sheet change', function() {
+
+    it('should switch active view on sheet change', async function() {
+
+      // given
+      const element = 'mock_element';
+      const { wrapper, instance } = await renderEditor(diagramXML);
+      const openSpy = sinon.spy(instance, 'open');
+
+      // when
+      wrapper.setProps({ activeSheet: { id: 'DecisionTable', element } });
+
+      // expect
+      expect(openSpy).to.be.calledOnceWith(element);
+    });
+
+  });
 
   describe('import', function() {
 

@@ -365,7 +365,7 @@ export class DmnEditor extends CachedComponent {
 
   checkImport(prevProps) {
     if (!this.isImportNeeded(prevProps)) {
-      return;
+      return this.checkSheetChange(prevProps);
     }
 
     this.importXML();
@@ -405,6 +405,18 @@ export class DmnEditor extends CachedComponent {
     });
 
     modeler.importXML(this.props.xml, this.ifMounted(this.handleImport));
+  }
+
+  checkSheetChange(prevProps) {
+    if (!this.shouldOpenActiveSheet(prevProps)) {
+      return;
+    }
+
+    this.open(this.props.activeSheet.element);
+  }
+
+  shouldOpenActiveSheet(prevProps) {
+    return !prevProps || prevProps.activeSheet.id !== this.props.activeSheet.id;
   }
 
   open = (element) => {
