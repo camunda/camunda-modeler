@@ -81,6 +81,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: prevent jumping when resizing properties/log panels ([`f68e6764`](https://github.com/camunda/camunda-modeler/commit/f68e67643f6fa0cba2ac69f7a832868485b0fc68))
 * `FIX`: re-open + focus docked app on file open (MacOS) ([`eff83531`](https://github.com/camunda/camunda-modeler/commit/eff83531b0d5a7d2735f3f4987048d47743e1f9d))
 * `FIX`: prevent external file changed dialog from opening twice on Windows / Linux ([#1118](https://github.com/camunda/camunda-modeler/issues/1118))
+* `FIX`: pass plugin menu item enabled fn to Boolean filter ([#1311](https://github.com/camunda/camunda-modeler/pull/1311))
+* `FIX`: change active view when sheets change ([#1310](https://github.com/camunda/camunda-modeler/pull/1310))
 
 #### BPMN
 
