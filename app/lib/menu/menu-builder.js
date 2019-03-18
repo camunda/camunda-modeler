@@ -455,7 +455,7 @@ class MenuBuilder {
               return new MenuItem({
                 label,
                 accelerator,
-                enabled: isFunction(enabled) ? enabled() : enabled,
+                enabled: isFunction(enabled) ? Boolean(enabled()) : enabled,
                 click: action && wrapPluginAction(action, name),
                 submenu
               });
