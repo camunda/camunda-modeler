@@ -37,6 +37,8 @@ jobs:
     - stage: "post distro"
       node_js: node
       language: node_js
+      git:
+        depth: false
       script:
       - npm run send-license-book-summary
     - stage: "nightly build [windows+linux]"
