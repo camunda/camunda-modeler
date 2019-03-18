@@ -843,9 +843,7 @@ describe('<DmnEditor>', function() {
       const isImportNeededSpy = sinon.spy(instance, 'isImportNeeded');
 
       // when
-      await instance.componentDidUpdate({
-        xml: diagramXML
-      });
+      await instance.componentDidUpdate(instance.props);
 
       // then
       expect(isImportNeededSpy).to.be.called;
