@@ -33,7 +33,7 @@ This project incorporates components from the projects listed below. The origina
 26.   @sindresorhus/is@0.7.0 (https://github.com/sindresorhus/is)
 27.   bpmn-js-properties-panel@0.29.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 28.   bpmn-js-signavio-compat@1.1.0 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
-29.   bpmn-js@3.2.1 (https://github.com/bpmn-io/bpmn-js)
+29.   bpmn-js@3.2.2 (https://github.com/bpmn-io/bpmn-js)
 30.   bpmn-moddle@5.1.6 (https://github.com/bpmn-io/bpmn-moddle)
 31.   camunda-bpmn-moddle@3.2.0 (https://github.com/camunda/camunda-bpmn-moddle)
 32.   camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
@@ -53,12 +53,12 @@ This project incorporates components from the projects listed below. The origina
 46.   diagram-js-origin@1.2.0 (https://github.com/bpmn-io/diagram-js-origin)
 47.   diagram-js@3.1.3 (https://github.com/bpmn-io/diagram-js)
 48.   didi@4.0.0 (https://github.com/nikku/didi)
-49.   dmn-js-decision-table@6.2.3 (https://github.com/bpmn-io/dmn-js)
-50.   dmn-js-drd@6.2.3 (https://github.com/bpmn-io/dmn-js)
-51.   dmn-js-literal-expression@6.2.3 (https://github.com/bpmn-io/dmn-js)
+49.   dmn-js-decision-table@6.3.2 (https://github.com/bpmn-io/dmn-js)
+50.   dmn-js-drd@6.3.2 (https://github.com/bpmn-io/dmn-js)
+51.   dmn-js-literal-expression@6.3.2 (https://github.com/bpmn-io/dmn-js)
 52.   dmn-js-properties-panel@0.2.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
-53.   dmn-js-shared@6.2.3 (https://github.com/bpmn-io/dmn-js)
-54.   dmn-js@6.2.3 (https://github.com/bpmn-io/dmn-js)
+53.   dmn-js-shared@6.3.2 (https://github.com/bpmn-io/dmn-js)
+54.   dmn-js@6.3.2 (https://github.com/bpmn-io/dmn-js)
 55.   dmn-moddle@5.0.0 (https://github.com/bpmn-io/dmn-moddle)
 56.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
 57.   escape-html@1.0.3 (https://github.com/component/escape-html)
@@ -93,13 +93,14 @@ This project incorporates components from the projects listed below. The origina
 86.   scroll-tabs@1.0.1 (https://github.com/bpmn-io/scroll-tabs)
 87.   selection-ranges@3.0.3 (https://github.com/nikku/selection-ranges)
 88.   selection-update@0.1.2 (https://github.com/nikku/selection-update)
-89.   stackblur@1.0.0
-90.   table-js@5.1.0 (https://github.com/bpmn-io/table-js)
-91.   tiny-stack@1.1.0 (https://github.com/avoidwork/tiny-stack)
-92.   tiny-svg@2.2.1 (https://github.com/bpmn-io/tiny-svg)
-93.   tiny-warning@1.0.2 (https://github.com/alexreardon/tiny-warning)
-94.   tslib@1.9.3 (https://github.com/Microsoft/tslib)
-95.   xmldom@0.1.27 (https://github.com/jindw/xmldom)
+89.   sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
+90.   stackblur@1.0.0
+91.   table-js@5.1.0 (https://github.com/bpmn-io/table-js)
+92.   tiny-stack@1.1.0 (https://github.com/avoidwork/tiny-stack)
+93.   tiny-svg@2.2.1 (https://github.com/bpmn-io/tiny-svg)
+94.   tiny-warning@1.0.2 (https://github.com/alexreardon/tiny-warning)
+95.   tslib@1.9.3 (https://github.com/Microsoft/tslib)
+96.   xmldom@0.1.27 (https://github.com/jindw/xmldom)
 
 
 %% asynckit@0.4.0 NOTICES AND INFORMATION BEGIN HERE
@@ -830,9 +831,9 @@ THE SOFTWARE.
 END OF bpmn-js-signavio-compat@1.1.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js@3.2.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@3.2.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-Copyright (c) 2014-2017 camunda services GmbH
+Copyright (c) 2014-present Camunda Services GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in the
@@ -856,7 +857,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF bpmn-js@3.2.1 NOTICES AND INFORMATION
+END OF bpmn-js@3.2.2 NOTICES AND INFORMATION
 
 
 %% bpmn-moddle@5.1.6 NOTICES AND INFORMATION BEGIN HERE
@@ -1386,7 +1387,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF didi@4.0.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-decision-table@6.2.3 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-decision-table@6.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2015-present Camunda Services GmbH
 
@@ -1413,10 +1414,10 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF dmn-js-decision-table@6.2.3 NOTICES AND INFORMATION
+END OF dmn-js-decision-table@6.3.2 NOTICES AND INFORMATION
 
 
-%% dmn-js-drd@6.2.3 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-drd@6.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2015-present Camunda Services GmbH
 
@@ -1443,10 +1444,10 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF dmn-js-drd@6.2.3 NOTICES AND INFORMATION
+END OF dmn-js-drd@6.3.2 NOTICES AND INFORMATION
 
 
-%% dmn-js-literal-expression@6.2.3 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-literal-expression@6.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2015-present Camunda Services GmbH
 
@@ -1473,7 +1474,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF dmn-js-literal-expression@6.2.3 NOTICES AND INFORMATION
+END OF dmn-js-literal-expression@6.3.2 NOTICES AND INFORMATION
 
 
 %% dmn-js-properties-panel@0.2.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1503,7 +1504,7 @@ THE SOFTWARE.
 END OF dmn-js-properties-panel@0.2.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-shared@6.2.3 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-shared@6.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2015-present Camunda Services GmbH
 
@@ -1530,10 +1531,10 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF dmn-js-shared@6.2.3 NOTICES AND INFORMATION
+END OF dmn-js-shared@6.3.2 NOTICES AND INFORMATION
 
 
-%% dmn-js@6.2.3 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js@6.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2015-present Camunda Services GmbH
 
@@ -1560,7 +1561,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF dmn-js@6.2.3 NOTICES AND INFORMATION
+END OF dmn-js@6.3.2 NOTICES AND INFORMATION
 
 
 %% dmn-moddle@5.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -2470,6 +2471,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
 END OF selection-update@0.1.2 NOTICES AND INFORMATION
+
+
+%% sourcemapped-stacktrace@1.1.9 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+Copyright (c) 2016, James Salter
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of sourcemapped-stacktrace nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==========================================
+END OF sourcemapped-stacktrace@1.1.9 NOTICES AND INFORMATION
 
 
 %% stackblur@1.0.0 NOTICES AND INFORMATION BEGIN HERE
