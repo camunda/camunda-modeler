@@ -58,6 +58,7 @@ describe('MenuBuilder', () => {
   describe('plugins menu', function() {
 
     it('should accept callable values for enabled', () => {
+
       // given
       const pluginName = 'test';
       const menuStub = sinon.stub().returns([
@@ -89,7 +90,50 @@ describe('MenuBuilder', () => {
     });
 
 
+    it('should disable menu item if enable function returns falsy value', () => {
+
+      // given
+      const falsyValues = [
+        false,
+        0,
+        '',
+        null,
+        undefined,
+        NaN
+      ];
+      const pluginName = 'test';
+      const menuStub = sinon.stub().returns(falsyValues.map(value => ({
+        label: 'label',
+        enabled: () => value
+      })));
+
+      const options = getOptionsWithPlugins([
+        {
+          name: pluginName,
+          menu: menuStub
+        }
+      ]);
+
+      const menuBuilder = new MenuBuilder(options);
+
+      // when
+      const { menu } = menuBuilder.build();
+
+      // then
+      const plugins = menu.find(item => item.label === 'Plugins');
+      const pluginMenu = plugins.submenu.find(plugin => plugin.label === pluginName);
+
+      expect(pluginMenu).to.exist;
+      expect(pluginMenu.submenu).to.be.an('Array').and.have.lengthOf(falsyValues.length);
+
+      for (const entry of pluginMenu.submenu) {
+        expect(entry).to.have.property('enabled', false);
+      }
+    });
+
+
     it('should properly label plugin with error', function() {
+
       // given
       const pluginName = 'test';
       const expectedLabel = `${pluginName} <error>`;
@@ -117,6 +161,7 @@ describe('MenuBuilder', () => {
 
 
     it('should accept non-callable values for enabled', () => {
+
       // given
       const pluginName = 'test';
       const menuStub = sinon.stub().returns([
@@ -149,6 +194,7 @@ describe('MenuBuilder', () => {
 
 
     it('should properly handle plugin menu error', function() {
+
       // given
       const pluginName = 'test';
       const menuStub = sinon.stub().throwsException();
@@ -168,6 +214,7 @@ describe('MenuBuilder', () => {
 
 
     it('should properly handle plugin menu item action error', function() {
+
       // given
       const pluginName = 'test';
       const actionStub = sinon.stub().throwsException();
