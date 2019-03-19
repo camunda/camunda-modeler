@@ -27,13 +27,14 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: allow well-known files to be dropped ([`46ae9b1`](https://github.com/camunda/camunda-modeler/commit/46ae9b1bf44b52c92f3a7cd8f2cf875593aca51c))
 * `FIX`: restore empty file dialog ([#1301](https://github.com/camunda/camunda-modeler/issues/1301))
 * `FIX`: correct undo/redo behavior ([#1218](https://github.com/camunda/camunda-modeler/issues/1218))
+* `FIX`: disable plugin menu item when function returns falsy value ([#1311](https://github.com/camunda/camunda-modeler/pull/1311))
 
 #### BPMN
 
 * `CHORE`: update to `bpmn-js@3.2.2`
-* `FIX`: gracefully handle missing waypoints ([45486f2](https://github.com/bpmn-io/bpmn-js/commit/45486f2afe7f42fcac31be9ca477a7c94babe7d8))
+* `FIX`: gracefully handle missing waypoints ([`45486f2`](https://github.com/bpmn-io/bpmn-js/commit/45486f2afe7f42fcac31be9ca477a7c94babe7d8))
 * `FIX`: restore error dialog for broken diagram ([#1192](https://github.com/camunda/camunda-modeler/issues/1192))
-* `FIX`: replace namespace util to not parse diagram twice ([bdee98e](https://github.com/camunda/camunda-modeler/commit/bdee98e1b34fa6088ce71d6d9ebf4b339cb812cc))
+* `FIX`: replace namespace util to not parse diagram twice ([`bdee98e`](https://github.com/camunda/camunda-modeler/commit/bdee98e1b34fa6088ce71d6d9ebf4b339cb812cc))
 
 #### DMN
 
@@ -41,6 +42,7 @@ ___Note:__ Yet to be released changes appear here._
 * `CHORE`: update to `dmn-js@6.3.2`
 * `FIX`: set dirty state correctly when view is changed
 * `FIX`: properly destroy individual viewers on dmn-js destruction ([#392](https://github.com/bpmn-io/dmn-js/pull/392))
+* `FIX`: change active view when sheets change ([#1310](https://github.com/camunda/camunda-modeler/pull/1310))
 
 ## 3.0.0-beta.2
 
@@ -78,8 +80,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: prevent jumping when resizing properties/log panels ([`f68e6764`](https://github.com/camunda/camunda-modeler/commit/f68e67643f6fa0cba2ac69f7a832868485b0fc68))
 * `FIX`: re-open + focus docked app on file open (MacOS) ([`eff83531`](https://github.com/camunda/camunda-modeler/commit/eff83531b0d5a7d2735f3f4987048d47743e1f9d))
 * `FIX`: prevent external file changed dialog from opening twice on Windows / Linux ([#1118](https://github.com/camunda/camunda-modeler/issues/1118))
-* `FIX`: pass plugin menu item enabled fn to Boolean filter ([#1311](https://github.com/camunda/camunda-modeler/pull/1311))
-* `FIX`: change active view when sheets change ([#1310](https://github.com/camunda/camunda-modeler/pull/1310))
 
 #### BPMN
 
