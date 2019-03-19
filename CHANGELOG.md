@@ -10,26 +10,23 @@ ___Note:__ Yet to be released changes appear here._
 
 #### General
 
-* `FEAT`: resize tab whenever app layout changes ([8592eb4](https://github.com/camunda/camunda-modeler/commit/8592eb479ba41fb3406416d91b84bd42d8439a4e))
+* `FEAT`: resize tab whenever app layout changes ([`8592eb4`](https://github.com/camunda/camunda-modeler/commit/8592eb479ba41fb3406416d91b84bd42d8439a4e))
 * `FEAT`: mark file as unsaved if user cancels update ([#1188](https://github.com/camunda/camunda-modeler/issues/1188))
 * `FEAT`: display error tab when editor fails ([#1214](https://github.com/camunda/camunda-modeler/issues/1214))
 * `FEAT`: provide relevant context for tab errors ([#1176](https://github.com/camunda/camunda-modeler/issues/1176))
-* `FEAT`: log mapped stack trace for errors ([60393fe](https://github.com/camunda/camunda-modeler/commit/60393fe0675359d304267601107e4c9e33cb53a6))
+* `FEAT`: log mapped stack trace for errors ([`60393fe`](https://github.com/camunda/camunda-modeler/commit/60393fe0675359d304267601107e4c9e33cb53a6))
 * `FEAT`: restore _Diagram opened with warnings_ hint ([#1177](https://github.com/camunda/camunda-modeler/issues/1177))
-* `FEAT`: split apart message and category in log entries ([c2950a0](https://github.com/camunda/camunda-modeler/commit/c2950a0f3a04a2501a6e818fc89d41908807add3))
 * `FEAT`: add simple way to restart editor without plug-ins ([#1253](https://github.com/camunda/camunda-modeler/issues/1253))
 * `CHORE`: add license headers to all source files ([#1231](https://github.com/camunda/camunda-modeler/issues/1231))
 * `CHORE`: add THIRD_PARTY_NOTICES ([#1233](https://github.com/camunda/camunda-modeler/issues/1233))
-* `FIX`: show plugins menu only if there are any enabled ([#1239](https://github.com/camunda/camunda-modeler/issues/1239))
-* `FIX`: fix menu state ([#1193](https://github.com/camunda/camunda-modeler/issues/1193))
-* `FIX`: read unsaved from state ([bf805d0](https://github.com/camunda/camunda-modeler/commit/bf805d0c4cdb01eba04bdb1c8bd4d0eb13476f95))
+* `FIX`: only show plug-ins menu if plug-ins are registered ([#1239](https://github.com/camunda/camunda-modeler/issues/1239))
+* `FIX`: restore menu state backwards compatibility ([#1193](https://github.com/camunda/camunda-modeler/issues/1193))
 * `FIX`: disable _reopen last tab_ menu button when there is no last tab ([#1173](https://github.com/camunda/camunda-modeler/issues/1173))
 * `FIX`: disable _save as_ menu button for empty tab ([#1282](https://github.com/camunda/camunda-modeler/issues/1282))
-* `FIX`: import xml to editor only when it is changed ([3f9cdaf](https://github.com/camunda/camunda-modeler/commit/3f9cdafaad85eb4907c8cbe03a5230ffc4960456), [#1298](https://github.com/camunda/camunda-modeler/issues/1298))
-* `FIX`: allow well-known files to be dropped ([46ae9b1](https://github.com/camunda/camunda-modeler/commit/46ae9b1bf44b52c92f3a7cd8f2cf875593aca51c))
-* `FIX`: fix file open error dialog ([#1301](https://github.com/camunda/camunda-modeler/issues/1301))
-* `FIX`: fix undo/redo behavior ([#1218](https://github.com/camunda/camunda-modeler/issues/1218))
-* `DOCS`: update documentation links
+* `FIX`: import xml to editor only when it is changed ([`3f9cdaf`](https://github.com/camunda/camunda-modeler/commit/3f9cdafaad85eb4907c8cbe03a5230ffc4960456), [#1298](https://github.com/camunda/camunda-modeler/issues/1298))
+* `FIX`: allow well-known files to be dropped ([`46ae9b1`](https://github.com/camunda/camunda-modeler/commit/46ae9b1bf44b52c92f3a7cd8f2cf875593aca51c))
+* `FIX`: restore empty file dialog ([#1301](https://github.com/camunda/camunda-modeler/issues/1301))
+* `FIX`: correct undo/redo behavior ([#1218](https://github.com/camunda/camunda-modeler/issues/1218))
 
 #### BPMN
 
