@@ -200,13 +200,13 @@ export class DmnEditor extends CachedComponent {
     let activeSheet;
 
     const sheets = views.map(view => {
-      const { element } = view;
+      const { element, type } = view;
 
       const newSheet = {
         element,
         id: element.id,
         name: getSheetName(view),
-        order: -1
+        order: type === 'drd' ? -2 : -1
       };
 
       if (view === activeView) {
