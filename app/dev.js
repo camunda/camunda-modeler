@@ -24,6 +24,8 @@ pkg.version = getAppVersion(pkg, {
   nightly: 'dev'
 });
 
+// monkey-patch cli args to not open this file in application
+process.argv = process.argv.filter(arg => !arg.includes('dev.js'));
 
 const app = require('./lib');
 
