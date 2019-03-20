@@ -61,7 +61,7 @@ export class MultiSheetTab extends CachedComponent {
       .filter(sheet => sheet.provider !== provider)
       .concat(wiredNewSheets)
       .map(t => ({ ...t, order: t.order || 0 }))
-      .sort((a, b) => a.order > b.order);
+      .sort((a, b) => a.order - b.order);
 
     if (newActiveSheet) {
       activeSheet = sheets.find(s => s.id === newActiveSheet.id);

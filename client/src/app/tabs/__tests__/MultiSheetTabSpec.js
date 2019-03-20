@@ -224,6 +224,37 @@ describe('<MultiSheetTab>', function() {
   });
 
 
+  describe('#sheetsChanged', function() {
+
+    it('should order sheets', function() {
+
+      // given
+      const {
+        instance
+      } = renderTab();
+
+      const sheets = [
+        { id: '2', order: -1 },
+        { id: '3', order: 0 },
+        { id: '1', order: -2 },
+        { id: '4', order: 1 },
+      ];
+
+      // when
+      instance.sheetsChanged(sheets);
+
+      // then
+      expectSheetOrder(instance.getCached().sheets, [
+        '1',
+        '2',
+        '3',
+        '4'
+      ]);
+    });
+
+  });
+
+
   describe('dirty state', function() {
 
     let instance,
@@ -425,4 +456,10 @@ function renderTab(options = {}) {
     instance,
     wrapper
   };
+}
+
+function expectSheetOrder(sheets, expectedOrder) {
+  sheets.forEach((sheet, index) => {
+    expect(sheet.id === expectedOrder[ index ]);
+  });
 }
