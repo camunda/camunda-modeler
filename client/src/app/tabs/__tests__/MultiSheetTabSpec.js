@@ -41,6 +41,59 @@ describe('<MultiSheetTab>', function() {
   });
 
 
+  describe('xml prop', function() {
+
+    it('update lastXML if xml prop changed (mount)', function() {
+
+      // given
+      const xml = 'foo';
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          lastXML: 'bar'
+        }
+      });
+
+      // when
+      const { instance } = renderTab({
+        xml,
+        cache
+      });
+
+      // then
+      const { lastXML } = instance.getCached();
+
+      expect(lastXML).to.eql(xml);
+    });
+
+
+    it('update lastXML if xml prop changed (update)', function() {
+
+      // given
+      const {
+        instance,
+        wrapper
+      } = renderTab({
+        xml: 'foo'
+      });
+
+      const xml = 'bar';
+
+      // when
+      wrapper.setProps({
+        xml
+      });
+
+      // then
+      const { lastXML } = instance.getCached();
+
+      expect(lastXML).to.equal(xml);
+    });
+  });
+
+
   describe('#handleImport', function() {
 
     const error = new Error('error');
@@ -410,6 +463,7 @@ const TestTab = WithCachedState(MultiSheetTab);
 function renderTab(options = {}) {
   const {
     id,
+    cache,
     xml,
     tab,
     layout,
@@ -423,7 +477,7 @@ function renderTab(options = {}) {
     providers
   } = options;
 
-  const withCachedState = mount(
+  const wrapper = mount(
     <TestTab
       id={ id || 'editor' }
       tab={ tab || defaultTab }
@@ -436,7 +490,7 @@ function renderTab(options = {}) {
       onContextMenu={ onContextMenu || noop }
       onAction={ onAction || noop }
       providers={ providers || defaultProviders }
-      cache={ options.cache || new Cache() }
+      cache={ cache || new Cache() }
       layout={ layout || {
         minimap: {
           open: false
@@ -448,9 +502,9 @@ function renderTab(options = {}) {
     />
   );
 
-  const wrapper = withCachedState.find(MultiSheetTab);
+  const multiSheetTab = wrapper.find(MultiSheetTab);
 
-  const instance = wrapper.instance();
+  const instance = multiSheetTab.instance();
 
   return {
     instance,
