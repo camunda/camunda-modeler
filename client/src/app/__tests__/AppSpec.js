@@ -356,20 +356,29 @@ describe('<App>', function() {
     });
 
 
-    it('should ignore unrecognized files', async function() {
+    it('should not open unrecognized files', async function() {
 
       // given
-      const {
-        app
-      } = createApp();
+      const dialog = new Dialog();
 
-      const file = createFile('1.unknown');
+      const showSpy = spy(dialog, 'showOpenFileErrorDialog');
+
+      dialog.setShowOpenFileErrorDialogResponse('cancel');
+
+      const { app } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const file = createFile('1.txt');
 
       // when
       const openedTabs = await app.openFiles([ file ]);
 
       // then
       expect(openedTabs).to.be.empty;
+      expect(showSpy).to.have.been.called;
     });
 
 
