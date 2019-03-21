@@ -515,7 +515,7 @@ export class App extends PureComponent {
     const fileType = getFileTypeFromExtension(name);
 
     if (!tabsProvider.hasProvider(fileType)) {
-      let providerNames = tabsProvider.getProviderNames();
+      const providerNames = tabsProvider.getProviderNames();
 
       await dialog.showOpenFileErrorDialog(getOpenFileErrorDialog({
         name,
@@ -646,26 +646,41 @@ export class App extends PureComponent {
    * @returns {Array<Tab>}
    */
   async findOrCreateTabs(files, tabsProvider) {
-    const openedTabs = await Promise.all(files.slice().reverse().map(async (file) => {
-      let tab;
+    const dialog = this.getGlobal('dialog');
 
-      if (!file.contents.length) {
-        tab = await this.openEmptyFile(file);
-      } else {
-        tab = this.findOpenTab(file);
-        if (!tab) {
-          const newTab = tabsProvider.createTabForFile(file);
-          if (newTab) {
-            tab = this.addTab(newTab);
+    const openTasks = files.slice().reverse().map((file) => {
+      const { name } = file;
+
+      return async () => {
+        let tab;
+
+        if (!file.contents.length) {
+          tab = await this.openEmptyFile(file);
+        } else {
+          tab = this.findOpenTab(file);
+          if (!tab) {
+            const newTab = tabsProvider.createTabForFile(file);
+            if (newTab) {
+              tab = this.addTab(newTab);
+            } else {
+              const providerNames = tabsProvider.getProviderNames();
+
+              await dialog.showOpenFileErrorDialog(getOpenFileErrorDialog({
+                name,
+                providerNames
+              }));
+            }
           }
         }
-      }
 
-      return tab;
-    })).then(tabs => {
-      // filter out empty elements
-      return tabs.filter(tab => tab);
+        return tab;
+      };
     });
+
+    const openResults = await pSeries(openTasks);
+
+    // filter out empty elements
+    const openedTabs = openResults.filter(openedTab => openedTab);
 
     return openedTabs.slice().reverse();
   }

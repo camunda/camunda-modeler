@@ -100,6 +100,14 @@ function DropOverlay() {
 }
 
 
+/**
+ * Checks for droppable items e.g. text/foo, text/plain, application/foo+xml,
+ * application/bpmn, application/cmmn, application/dmn.
+ *
+ * @param {Object} item - Item to be dropped.
+ *
+ * @returns {boolean}
+ */
 export function isDropableItem(item) {
   const { kind, type } = item;
 

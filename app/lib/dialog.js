@@ -48,7 +48,7 @@ class Dialog {
       name
     } = options;
 
-    this.showDialog({
+    return this.showDialog({
       type: 'error',
       title: 'File Open Error',
       buttons: [
