@@ -6,6 +6,19 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.0.0
+
+#### General
+
+* `CHORE`: update to `electron@3.1.7`
+* `FIX`: show open file error dialog if tab couldn't be created ([#1320](https://github.com/camunda/camunda-modeler/pull/1320))
+* `FIX`: fix DMN navigation ([#1321](https://github.com/camunda/camunda-modeler/pull/1321))
+* `FIX`: update lastXML on xml prop change ([#1323](https://github.com/camunda/camunda-modeler/pull/1323))
+
+#### BPMN
+
+* `CHORE`: update to `bpmn-js@3.2.2`
+
 ## 3.0.0-beta.3
 
 #### General
