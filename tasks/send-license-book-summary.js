@@ -54,6 +54,7 @@ if (help) {
 Generate and/or send license book summary.
 To send email, configure following env variables:
 - EMAIL_TO,
+- EMAIL_REPLY_TO,
 - EMAIL_HOST,
 - EMAIL_USERNAME,
 - EMAIL_PASSWORD
@@ -251,7 +252,8 @@ function sendEmail({ subject, text, attachment }) {
     EMAIL_TO: to,
     EMAIL_HOST: host,
     EMAIL_USERNAME: username,
-    EMAIL_PASSWORD: password
+    EMAIL_PASSWORD: password,
+    EMAIL_REPLY_TO: replyTo
   } = process.env;
 
   const transport = nodemailer.createTransport({
@@ -265,6 +267,7 @@ function sendEmail({ subject, text, attachment }) {
 
   const message = {
     to,
+    replyTo,
     subject,
     text
   };
