@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.0.1
+
+* `FIX`: fix desktop icons on Linux
+
 ## 3.0.0
 
 #### General
