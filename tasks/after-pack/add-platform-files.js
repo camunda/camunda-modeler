@@ -63,11 +63,11 @@ function replaceTag(tag) {
       transform(chunk, encoding, callback) {
 
         // only handle text files
-        if (encoding === 'utf8') {
+        if (/(\.txt|\.md)$/.test(filename)) {
           try {
             chunk = Buffer.from(
               chunk.toString(encoding).replace(/\$\{TAG\}/g, tag),
-              'utf8'
+              encoding
             );
           } catch (e) {
             return callback(e);
