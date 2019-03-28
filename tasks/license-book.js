@@ -116,11 +116,17 @@ async function run(args) {
     return;
   }
 
-  console.log('Committing license book...');
+  const changes = exec('git', ['status', '--short']).stdout.trim();
 
-  exec('git', [ 'add', output ]);
+  if (!changes) {
+    console.log('No license book changes, skipping commit');
+  } else {
+    console.log('Committing license book...');
 
-  exec('git', [ 'commit', '-m', 'chore(project): update THIRD_PARTY_NOTICES' ]);
+    exec('git', [ 'add', output ]);
+
+    exec('git', [ 'commit', '-m', 'chore(project): update THIRD_PARTY_NOTICES' ]);
+  }
 
   console.log();
 }
