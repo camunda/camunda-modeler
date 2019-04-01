@@ -12,7 +12,7 @@
     "client:test": "(cd client && npm run test)",
     "all": "run-s clean lint test \"build -- {@}\" --",
     "auto-test": "run-p *:auto-test",
-    "clean": "del-cli 'distro/*' app/public",
+    "clean": "del-cli 'dist/*' app/public",
     "dev": "run-p \"app:dev -- {@}\" client:dev --",
     "build:distro": "node tasks/distro.js",
     "build:test-distro": "node tasks/test-distro.js",
