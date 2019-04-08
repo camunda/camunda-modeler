@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: bump to `bpmn-js@3.3.1` to fix unnecessary dirty state ([#858](https://github.com/camunda/camunda-modeler/issues/858))
+
 ## 3.0.1
 
 * `FIX`: fix desktop icons on Linux
