@@ -6,7 +6,12 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `FIX`: bump to `bpmn-js@3.3.1` to fix unnecessary dirty state ([#858](https://github.com/camunda/camunda-modeler/issues/858))
+#### BPMN
+
+* `FEAT`: show `DataInput` / `DataOutput` labels ([#1324](https://github.com/camunda/camunda-modeler/issues/1324))
+* `FEAT`: allow basic `DataInput` / `DataOutput` move
+* `FIX`: prevent unnecessary dirty state without actual label update ([#858](https://github.com/camunda/camunda-modeler/issues/858))
+* `CHORE`: update to `bpmn-js@3.3.1`
 
 ## 3.0.1
 
