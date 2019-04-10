@@ -17,6 +17,7 @@ __Hint:__ Create a release issue and copy the template below into it.
     * [ ] Works on Linux
     * [ ] Works on Mac
     * [ ] Works on Windows
+* [ ] trigger QA for fuzzy testing
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
 * [ ] write blog post on [blog.camunda.org](https://github.com/camunda/blog.camunda.org)
 * [ ] trigger mirroring of release to https://camunda.org/release/camunda-modeler/ via [Jenkins](https://ci.cambpm.camunda.cloud/job/sideprojects/job/camunda-modeler-desktop-RELEASE/build?delay=0sec)
