@@ -24,6 +24,7 @@ import Log from '../Log';
 
 import {
   Backend,
+  Cache,
   Config,
   Dialog,
   FileSystem,
@@ -2396,11 +2397,7 @@ describe('<App>', function() {
 });
 
 
-// helper ///////
-class Cache {
-  destroy() { }
-}
-
+// helpers //////////
 class MockTab {
   triggerAction() {}
 }
