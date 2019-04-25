@@ -230,6 +230,10 @@ class Mock {
 
 }
 
+export class Cache extends Mock {
+  destroy() {}
+}
+
 export class Dialog extends Mock {
   constructor(overrides) {
     super(overrides);
@@ -456,6 +460,10 @@ class Response {
 }
 
 export class Plugins extends Mock {
+  get() {
+    return [];
+  }
+
   getAll() {
     return [];
   }
