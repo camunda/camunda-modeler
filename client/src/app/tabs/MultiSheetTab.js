@@ -315,31 +315,16 @@ export class MultiSheetTab extends CachedComponent {
   }
 
   componentDidMount() {
-    const {
-      setCachedState,
-      xml
-    } = this.props;
-
-    let {
-      lastXML,
-      sheets
-    } = this.getCached();
+    let { sheets } = this.getCached();
 
     if (!sheets) {
       sheets = this.getDefaultSheets();
 
-      setCachedState({
+      this.setCached({
         sheets,
         activeSheet: sheets[0]
       });
     }
-
-    if (isXMLChange(lastXML, xml)) {
-      this.setCached({
-        lastXML: xml
-      });
-    }
-
   }
 
   componentDidUpdate(prevProps) {

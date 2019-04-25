@@ -43,32 +43,6 @@ describe('<MultiSheetTab>', function() {
 
   describe('xml prop', function() {
 
-    it('update lastXML if xml prop changed (mount)', function() {
-
-      // given
-      const xml = 'foo';
-
-      const cache = new Cache();
-
-      cache.add('editor', {
-        cached: {
-          lastXML: 'bar'
-        }
-      });
-
-      // when
-      const { instance } = renderTab({
-        xml,
-        cache
-      });
-
-      // then
-      const { lastXML } = instance.getCached();
-
-      expect(lastXML).to.eql(xml);
-    });
-
-
     it('update lastXML if xml prop changed (update)', function() {
 
       // given
@@ -91,6 +65,7 @@ describe('<MultiSheetTab>', function() {
 
       expect(lastXML).to.equal(xml);
     });
+
   });
 
 
