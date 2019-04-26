@@ -6,6 +6,14 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.1.0
+
+#### General
+
+* `FIX`: restore keyboard shortcuts modal ([#1358](https://github.com/camunda/camunda-modeler/issues/1358))
+* `FIX`: ignore `NODE_ENV` environment variable in production build ([#1352](https://github.com/camunda/camunda-modeler/issues/1352))
+* `FIX`: keep changes when moving back and forth between unsafed tabs ([#1347](https://github.com/camunda/camunda-modeler/issues/1347))
+
 #### BPMN
 
 * `FEAT`: show `DataInput` / `DataOutput` labels ([#1324](https://github.com/camunda/camunda-modeler/issues/1324))
