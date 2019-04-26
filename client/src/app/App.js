@@ -993,7 +993,7 @@ export class App extends PureComponent {
     return onError(error, tab);
   }
 
-  getGlobal(name) {
+  getGlobal = (name) => {
     const {
       globals
     } = this.props;

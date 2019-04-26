@@ -32,77 +32,104 @@ import { BpmnEditor } from '../tabs/bpmn/BpmnEditor';
 
 import { MultiSheetTab } from '../tabs/MultiSheetTab';
 
+/* global sinon */
+
 
 describe('Integration', function() {
 
-  let app, file2, tab1, tab2;
+  describe('reimport', function() {
 
-  beforeEach(async function() {
-    app = createApp();
+    let app, file2, tab1, tab2;
 
-    const file1 = createFile('1.bpmn');
+    beforeEach(async function() {
+      app = createApp();
 
-    file2 = createFile('2.bpmn');
+      const file1 = createFile('1.bpmn');
 
-    const openedTabs = await app.openFiles([
-      file1,
-      file2
-    ]);
+      file2 = createFile('2.bpmn');
 
-    tab1 = openedTabs[0];
-    tab2 = openedTabs[1];
-  });
+      const openedTabs = await app.openFiles([
+        file1,
+        file2
+      ]);
 
-
-  it('should reimport a diagram whose file has been changed externally', async function() {
-
-    // given
-    const multiSheetTab = findRenderedComponentWithType(app, MultiSheetTab);
-
-    await ensureLastXML(multiSheetTab);
-
-    // when
-    await app.updateTab(tab2, {
-      file: {
-        ...file2,
-        contents: 'bar'
-      }
+      tab1 = openedTabs[0];
+      tab2 = openedTabs[1];
     });
 
-    // then
-    const modeler = findRenderedComponentWithType(app, BpmnEditor).getModeler();
 
-    expect(modeler.xml).to.eql('bar');
+    it('should reimport on externally changed file', async function() {
+
+      // given
+      const multiSheetTab = findRenderedComponentWithType(app, MultiSheetTab);
+
+      await ensureLastXML(multiSheetTab);
+
+      // when
+      await app.updateTab(tab2, {
+        file: {
+          ...file2,
+          contents: 'bar'
+        }
+      });
+
+      // then
+      const modeler = findRenderedComponentWithType(app, BpmnEditor).getModeler();
+
+      expect(modeler.xml).to.eql('bar');
+    });
+
+
+    it('should NOT reimport on tab selection with unsaved changes', async function() {
+
+      // given
+      const multiSheetTab = findRenderedComponentWithType(app, MultiSheetTab);
+
+      const modeler = findRenderedComponentWithType(app, BpmnEditor).getModeler();
+
+      const unsavedXML = ensureUnsavedChanges(modeler);
+
+      await ensureLastXML(multiSheetTab);
+
+      await app.selectTab(tab1);
+
+      expect(app.state.activeTab).to.equal(tab1);
+
+      // when
+      await app.selectTab(tab2);
+
+      // then
+      expect(app.state.activeTab).to.equal(tab2);
+
+      expect(modeler.xml).to.eql(unsavedXML);
+    });
+
   });
 
 
-  it('should NOT reimport a diagram with unsaved changes when selecting its tab', async function() {
+  describe('modals', function() {
 
-    // given
-    const multiSheetTab = findRenderedComponentWithType(app, MultiSheetTab);
+    it('should show shortcuts modals', async function() {
 
-    const modeler = findRenderedComponentWithType(app, BpmnEditor).getModeler();
+      // given
+      const onError = sinon.spy();
 
-    const unsavedXML = ensureUnsavedChanges(modeler);
+      const app = createApp({ onError });
 
-    await ensureLastXML(multiSheetTab);
+      // when
+      await app.showShortcuts();
 
-    await app.selectTab(tab1);
+      // then
+      expect(onError).not.to.have.been.called;
+    });
 
-    expect(app.state.activeTab).to.equal(tab1);
-
-    // when
-    await app.selectTab(tab2);
-
-    // then
-    expect(app.state.activeTab).to.equal(tab2);
-
-    expect(modeler.xml).to.eql(unsavedXML);
   });
 
 });
 
-// helpers //////////
+
+// helpers /////////////
+
 function noop() {}
 
 function createApp(options = {}) {
