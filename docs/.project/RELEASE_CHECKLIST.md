@@ -23,7 +23,7 @@ __Hint:__ Create a release issue and copy the template below into it.
 * [ ] trigger mirroring of release to https://camunda.org/release/camunda-modeler/ via [Jenkins](https://ci.cambpm.camunda.cloud/job/sideprojects/job/camunda-modeler-desktop-RELEASE/build?delay=0sec)
 * [ ] update download version of Camunda Modeler at [camunda.com](https://github.com/camunda/camunda.com-new/blob/live/data/releases.json)
 * [ ] spread the word
-    * [ ] `@alle` to trigger customer mail
+    * [ ] send [release notice email](https://github.com/bpmn-io/internal-docs/blob/master/camunda-modeler/README.md#release-notice-email)
     * [ ] tweet
 * [ ] close [current milestone](https://github.com/camunda/camunda-modeler/milestones)
 ```
