@@ -105,7 +105,7 @@ const deployer = new Deployer({ fetch, fs, FormData });
 // may be disabled via --no-single-instance flag
 //
 if (flags.get('single-instance') === false) {
-  log('single instance disabled via flag');
+  log.info('single instance disabled via flag');
 } else {
   const gotLock = app.requestSingleInstanceLock();
 
