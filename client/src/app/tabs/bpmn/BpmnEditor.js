@@ -797,8 +797,11 @@ export class BpmnEditor extends CachedComponent {
 
     const additionalModules = getPlugins('bpmn.modeler.additionalModules') || [];
 
+    const linting = (getPlugins('bpmn.modeler.linting') || [])[0];
+
     const modeler = new CamundaBpmnModeler({
       additionalModules,
+      linting,
       exporter: {
         name,
         version
