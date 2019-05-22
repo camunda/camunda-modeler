@@ -21,7 +21,9 @@ describe('ClientConfig', function() {
 
       // given
       var fakeDiagram = {
-        path: absPath('fixtures/project/bar.bpmn')
+        file: {
+          path: absPath('fixtures/project/bar.bpmn')
+        }
       };
 
       const clientConfig = new ClientConfig({
