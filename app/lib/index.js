@@ -311,13 +311,13 @@ app.openFiles = function(filePaths) {
     return files.push(...filePaths);
   }
 
-  const existingFiles = filePaths.map(path => {
+  const existingFiles = filePaths.map(filePath => {
 
     try {
-      return fileSystem.readFile(path);
+      return fileSystem.readFile(filePath);
     } catch (e) {
       dialog.showOpenFileErrorDialog({
-        name: path.basename(path)
+        name: path.basename(filePath)
       });
     }
   }).filter(f => f);
