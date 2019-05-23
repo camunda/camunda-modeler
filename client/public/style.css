@@ -80,3 +80,43 @@ body:not(.loading) > .loader {
 }
 
 /* </animation> */
+
+
+
+/*Issue 1383 fix css property*/
+/*https://github.com/camunda/camunda-modeler/issues/1383*/
+
+.djs-cursor-grabbing {
+	cursor: context-menu !important;
+}
+.djs-element.djs-shape:hover {
+   cursor: context-menu !important;
+}
+
+.djs-drag-active.connect-not-ok:hover {
+	cursor: not-allowed !important;
+}
+
+.djs-element:hover{
+	cursor: context-menu !important;
+}
+
+.djs-element:active{
+	cursor: context-menu !important;
+}
+
+.djs-element:focus{
+	cursor: context-menu !important;
+}
+
+svg:hover{
+	cursor: context-menu !important;
+}
+
+svg:active{
+	cursor: context-menu !important;
+}
+
+svg:focus{
+	cursor: context-menu !important;
+}
