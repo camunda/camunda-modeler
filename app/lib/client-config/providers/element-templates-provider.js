@@ -37,7 +37,7 @@ function ElementTemplatesProvider(options) {
       throw new Error('expected <done> callback');
     }
 
-    var localPaths = diagram && diagram.file ? parents(diagram.file.path) : [];
+    var localPaths = diagram && diagram.file && diagram.file.path ? parents(diagram.file.path) : [];
 
     var searchPaths = [
       ...suffixAll(localPaths, '.camunda'),
