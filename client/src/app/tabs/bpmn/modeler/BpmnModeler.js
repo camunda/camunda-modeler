@@ -19,7 +19,6 @@ import addExporterModule from '@bpmn-io/add-exporter';
 
 import executableFixModule from './features/executable-fix';
 import globalClipboardModule from './features/global-clipboard';
-import applyDefaultTemplates from './features/apply-default-templates';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
 
 import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
@@ -72,7 +71,6 @@ const extensionModules = [
   camundaModdleExtension,
   propertiesPanelModule,
   propertiesProviderModule,
-  applyDefaultTemplates,
   propertiesPanelKeyboardBindingsModule,
 ];
 
