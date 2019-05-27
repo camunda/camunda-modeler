@@ -47,6 +47,8 @@ import css from './BpmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 
+import applyDefaultTemplates from './modeler/features/apply-default-templates/applyDefaultTemplates';
+
 import {
   findUsages as findNamespaceUsages,
   replaceUsages as replaceNamespaceUsages
@@ -301,9 +303,14 @@ export class BpmnEditor extends CachedComponent {
 
   handleImport = (error, warnings) => {
     const {
+      isNew,
       onImport,
       xml
     } = this.props;
+
+    let {
+      defaultTemplatesApplied
+    } = this.getCached();
 
     const modeler = this.getModeler();
 
@@ -311,10 +318,16 @@ export class BpmnEditor extends CachedComponent {
 
     const stackIdx = commandStack._stackIdx;
 
-    onImport(error, warnings);
-
     if (!error) {
+
+      if (isNew && !defaultTemplatesApplied) {
+        modeler.invoke(applyDefaultTemplates);
+
+        defaultTemplatesApplied = true;
+      }
+
       this.setCached({
+        defaultTemplatesApplied,
         lastXML: xml,
         stackIdx
       });
@@ -323,6 +336,8 @@ export class BpmnEditor extends CachedComponent {
         importing: false
       });
     }
+
+    onImport(error, warnings);
   }
 
   handleChanged = () => {
@@ -454,7 +469,6 @@ export class BpmnEditor extends CachedComponent {
 
     const importedXML = await this.handleNamespace(xml);
 
-    // TODO(nikku): apply default element templates to initial diagram
     modeler.importXML(importedXML, this.ifMounted(this.handleImport));
   }
 
