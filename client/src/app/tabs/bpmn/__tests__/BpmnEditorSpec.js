@@ -29,6 +29,9 @@ import diagramXML from './diagram.bpmn';
 import activitiXML from './activiti.bpmn';
 import activitiConvertedXML from './activitiConverted.bpmn';
 
+import applyDefaultTemplates from
+  '../modeler/features/apply-default-templates/applyDefaultTemplates';
+
 import {
   getCanvasEntries,
   getCopyCutPasteEntries,
@@ -1064,6 +1067,103 @@ describe('<BpmnEditor>', function() {
       expect(elementTemplatesLoaderStub.setTemplates).to.be.calledTwice;
     });
 
+
+    it('should apply default templates to unsaved diagram', function(done) {
+
+      // given
+      const modeler = new BpmnModeler();
+
+      const invokeSpy = sinon.spy(modeler, 'invoke');
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler
+        }
+      });
+
+      function onImport() {
+
+        // then
+        expect(invokeSpy).to.have.been.calledWith(applyDefaultTemplates);
+
+        done();
+      }
+
+      // when
+      renderEditor(diagramXML, {
+        isNew: true,
+        cache,
+        onImport
+      });
+    });
+
+
+    it('should NOT apply default templates to unsaved diagram twice', function(done) {
+
+      // given
+      const modeler = new BpmnModeler();
+
+      const invokeSpy = sinon.spy(modeler, 'invoke');
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler,
+          defaultTemplatesApplied: true
+        }
+      });
+
+      function onImport() {
+
+        // then
+        expect(invokeSpy).not.to.have.been.called;
+
+        done();
+      }
+
+      // when
+      renderEditor(diagramXML, {
+        isNew: true,
+        cache,
+        onImport
+      });
+    });
+
+
+    it('should NOT apply default templates to saved diagram', function(done) {
+
+      // given
+      const modeler = new BpmnModeler();
+
+      const invokeSpy = sinon.spy(modeler, 'invoke');
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler
+        }
+      });
+
+      function onImport() {
+
+        // then
+        expect(invokeSpy).not.to.have.been.called;
+
+        done();
+      }
+
+      // when
+      renderEditor(diagramXML, {
+        isNew: false,
+        cache,
+        onImport
+      });
+    });
+
   });
 
 
@@ -1284,13 +1384,15 @@ async function renderEditor(xml, options = {}) {
     onLayoutChanged,
     onModal,
     onLoadConfig,
-    getPlugins
+    getPlugins,
+    isNew
   } = options;
 
   const wrapper = await mount(
     <TestEditor
       id={ id || 'editor' }
       xml={ xml }
+      isNew={ isNew === false ? false : true }
       activeSheet={ options.activeSheet || { id: 'bpmn' } }
       onAction={ onAction || noop }
       onChanged={ onChanged || noop }

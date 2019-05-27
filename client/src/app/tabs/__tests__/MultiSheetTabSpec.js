@@ -283,6 +283,25 @@ describe('<MultiSheetTab>', function() {
   });
 
 
+  describe('#isUnsaved', function() {
+
+    it('should be unsaved', function() {
+
+      // given
+      const {
+        instance
+      } = renderTab();
+
+      // when
+      const isUnSaved = instance.isUnsaved(defaultTab);
+
+      // then
+      expect(isUnSaved).to.be.true;
+    });
+
+  });
+
+
   describe('dirty state', function() {
 
     let instance,

@@ -13,34 +13,31 @@ import {
 } from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates/Helper';
 
 
-export default function applyDefaultTemplates(eventBus, elementRegistry, elementTemplates, commandStack) {
-  eventBus.on('import.done', () => {
-    const elements = elementRegistry.getAll();
+export default function applyDefaultTemplates(elementRegistry, elementTemplates, commandStack) {
+  const elements = elementRegistry.getAll();
 
-    const commands = elements.reduce((currentCommands, element) => {
-      const template = getDefaultTemplate(element, elementTemplates);
+  const commands = elements.reduce((currentCommands, element) => {
+    const template = getDefaultTemplate(element, elementTemplates);
 
-      if (!template) {
-        return currentCommands;
-      }
-
-      const command = getChangeTemplateCommand(element, template);
-
-      return [ ...currentCommands, command ];
-    }, []);
-
-    if (commands.length === 0) {
-      return;
+    if (!template) {
+      return currentCommands;
     }
 
-    commandStack.execute('properties-panel.multi-command-executor', commands);
+    const command = getChangeTemplateCommand(element, template);
 
-    commandStack.clear();
-  });
+    return [ ...currentCommands, command ];
+  }, []);
+
+  if (commands.length === 0) {
+    return;
+  }
+
+  commandStack.execute('properties-panel.multi-command-executor', commands);
+
+  commandStack.clear();
 }
 
 applyDefaultTemplates.$inject = [
-  'eventBus',
   'elementRegistry',
   'elementTemplates',
   'commandStack'
