@@ -1085,8 +1085,11 @@ describe('<BpmnEditor>', function() {
 
       function onImport() {
 
-        // then
-        expect(invokeSpy).to.have.been.calledWith(applyDefaultTemplates);
+        try {
+          expect(invokeSpy).to.have.been.calledWith(applyDefaultTemplates);
+        } catch (error) {
+          return done(error);
+        }
 
         done();
       }
@@ -1118,8 +1121,11 @@ describe('<BpmnEditor>', function() {
 
       function onImport() {
 
-        // then
-        expect(invokeSpy).not.to.have.been.called;
+        try {
+          expect(invokeSpy).not.to.have.been.called;
+        } catch (error) {
+          return done(error);
+        }
 
         done();
       }
@@ -1150,8 +1156,11 @@ describe('<BpmnEditor>', function() {
 
       function onImport() {
 
-        // then
-        expect(invokeSpy).not.to.have.been.called;
+        try {
+          expect(invokeSpy).not.to.have.been.called;
+        } catch (error) {
+          return done(error);
+        }
 
         done();
       }
@@ -1392,7 +1401,7 @@ async function renderEditor(xml, options = {}) {
     <TestEditor
       id={ id || 'editor' }
       xml={ xml }
-      isNew={ isNew === false ? false : true }
+      isNew={ isNew !== false }
       activeSheet={ options.activeSheet || { id: 'bpmn' } }
       onAction={ onAction || noop }
       onChanged={ onChanged || noop }
