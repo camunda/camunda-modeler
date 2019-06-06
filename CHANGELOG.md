@@ -6,6 +6,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.1.2
+
+* `FIX`: load local element templates ([#1379](https://github.com/camunda/camunda-modeler/pull/1379))
+* `FIX`: apply default element templates only to new diagrams ([#1388](https://github.com/camunda/camunda-modeler/pull/1388))
+
 ## 3.1.1
 
 * `FIX`: fix misleading log usage when `single-instance` flag is set to false ([#1363](https://github.com/camunda/camunda-modeler/issues/1363))
