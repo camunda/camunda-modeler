@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1ylrcb4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.2.0-dev">
+  <bpmn:process id="Process_1f6kxcw" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" camunda:modelerTemplate="com.camunda.example.xss.img">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="&#34;&#62;&#60;img height=100 width=100 src=&#39;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NjAg%0D%0AOTYwIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNOTYwIDYwdjgzOWMwIDMzLTI3IDYxLTYwIDYxSDYw%0D%0AYy0zMyAwLTYwLTI3LTYwLTYwVjYwQzAgMjcgMjcgMCA2MCAwaDgzOWMzNCAwIDYxIDI3IDYxIDYw%0D%0AeiIvPjxwYXRoIGZpbGw9IiM1MmI0MTUiIGQ9Ik0yMTcgNTQ4YTIwNSAyMDUgMCAwIDAtMTQ0IDU4%0D%0AIDIwMiAyMDIgMCAwIDAtNCAyODYgMjAyIDIwMiAwIDAgMCAyODUgMyAyMDAgMjAwIDAgMCAwIDQ4%0D%0ALTIxOSAyMDMgMjAzIDAgMCAwLTE4NS0xMjh6TTc1MiA2YTIwNiAyMDYgMCAwIDAtMTkyIDI4NSAy%0D%0AMDYgMjA2IDAgMCAwIDI2OSAxMTEgMjA3IDIwNyAwIDAgMCAxMTEtMjYwQTIwNCAyMDQgMCAwIDAg%0D%0ANzUyIDZ6TTYyIDBBNjIgNjIgMCAwIDAgMCA2MnYzOThsNjAgNDZhMjU5IDI1OSAwIDAgMSA4OS0z%0D%0ANmM1LTI4IDEwLTU3IDE0LTg1bDk5IDIgMTIgODVhMjQ2IDI0NiAwIDAgMSA4OCAzOGw3MC01MiA2%0D%0AOSA3MS01MiA2OGMxNyAzMCAyOSA1OCAzNSA5MGw4NiAxNC0yIDEwMC04NiAxMmEyNDAgMjQwIDAg%0D%0AMCAxLTM4IDg5bDQzIDU4aDQxM2MzNyAwIDYwLTI3IDYwLTYxVjQwN2EyMjAgMjIwIDAgMCAxLTQ0%0D%0AIDQwbDIxIDg1LTkzIDM5LTQ1LTc2YTI1OCAyNTggMCAwIDEtOTggMWwtNDUgNzYtOTQtMzkgMjIt%0D%0AODVhMjk4IDI5OCAwIDAgMS03MC02OWwtODYgMjItMzgtOTQgNzYtNDVhMjU4IDI1OCAwIDAgMS0x%0D%0ALTk4bC03Ni00NSA0MC05NCA4NSAyMmEyNzEgMjcxIDAgMCAxIDQxLTQ3eiIvPjwvc3ZnPg==&#39;&#62;">${ source }</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_17p5kda" camunda:modelerTemplate="com.camunda.example.xss">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="&#34;&#62;&#60;img height=100 width=100 src=&#39;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NjAg%0D%0AOTYwIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNOTYwIDYwdjgzOWMwIDMzLTI3IDYxLTYwIDYxSDYw%0D%0AYy0zMyAwLTYwLTI3LTYwLTYwVjYwQzAgMjcgMjcgMCA2MCAwaDgzOWMzNCAwIDYxIDI3IDYxIDYw%0D%0AeiIvPjxwYXRoIGZpbGw9IiM1MmI0MTUiIGQ9Ik0yMTcgNTQ4YTIwNSAyMDUgMCAwIDAtMTQ0IDU4%0D%0AIDIwMiAyMDIgMCAwIDAtNCAyODYgMjAyIDIwMiAwIDAgMCAyODUgMyAyMDAgMjAwIDAgMCAwIDQ4%0D%0ALTIxOSAyMDMgMjAzIDAgMCAwLTE4NS0xMjh6TTc1MiA2YTIwNiAyMDYgMCAwIDAtMTkyIDI4NSAy%0D%0AMDYgMjA2IDAgMCAwIDI2OSAxMTEgMjA3IDIwNyAwIDAgMCAxMTEtMjYwQTIwNCAyMDQgMCAwIDAg%0D%0ANzUyIDZ6TTYyIDBBNjIgNjIgMCAwIDAgMCA2MnYzOThsNjAgNDZhMjU5IDI1OSAwIDAgMSA4OS0z%0D%0ANmM1LTI4IDEwLTU3IDE0LTg1bDk5IDIgMTIgODVhMjQ2IDI0NiAwIDAgMSA4OCAzOGw3MC01MiA2%0D%0AOSA3MS01MiA2OGMxNyAzMCAyOSA1OCAzNSA5MGw4NiAxNC0yIDEwMC04NiAxMmEyNDAgMjQwIDAg%0D%0AMCAxLTM4IDg5bDQzIDU4aDQxM2MzNyAwIDYwLTI3IDYwLTYxVjQwN2EyMjAgMjIwIDAgMCAxLTQ0%0D%0AIDQwbDIxIDg1LTkzIDM5LTQ1LTc2YTI1OCAyNTggMCAwIDEtOTggMWwtNDUgNzYtOTQtMzkgMjIt%0D%0AODVhMjk4IDI5OCAwIDAgMS03MC02OWwtODYgMjItMzgtOTQgNzYtNDVhMjU4IDI1OCAwIDAgMS0x%0D%0ALTk4bC03Ni00NSA0MC05NCA4NSAyMmEyNzEgMjcxIDAgMCAxIDQxLTQ3eiIvPjwvc3ZnPg==&#39;&#62;">${ source }</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:task>
+    <bpmn:task id="&#34;&#62;&#60;">
+    </bpmn:task>
+  </bpmn:process>
+  <bpmn:signal id="\&#34;&#60;img src=1 onerror=alert(1)&#62;1" name="\&#34;&#60;img src=1 onerror=alert(1)&#62;" />
+  <bpmn:signal id="Signal_0rf3co1" name="\" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1f6kxcw">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="103" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_17p5kda_di" bpmnElement="Task_17p5kda">
+        <dc:Bounds x="300" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="&#34;&#62;&#60;_di" bpmnElement="&#34;&#62;&#60;">
+        <dc:Bounds x="280" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
