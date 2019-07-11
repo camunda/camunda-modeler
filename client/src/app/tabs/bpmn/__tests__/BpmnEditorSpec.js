@@ -141,6 +141,8 @@ describe('<BpmnEditor>', function() {
           case 'bpmn.modeler.moddleExtension':
             return [ moddleExtension ];
           }
+
+          return [];
         }
       });
 
@@ -155,7 +157,7 @@ describe('<BpmnEditor>', function() {
     });
 
 
-    it('should properly handle invalid moddle extensions', async function() {
+    it('should handle invalid moddle extensions', async function() {
 
       // given
       const onErrorSpy = sinon.spy();
@@ -174,13 +176,15 @@ describe('<BpmnEditor>', function() {
               circularModdleExtension
             ];
           }
+
+          return [];
         },
         onError: onErrorSpy
       };
 
       // then
       expect(() => BpmnEditor.createCachedState(props)).to.not.throw();
-      expect(onErrorSpy).to.be.calledTwice;
+      expect(onErrorSpy).to.be.calledOnce;
     });
 
   });

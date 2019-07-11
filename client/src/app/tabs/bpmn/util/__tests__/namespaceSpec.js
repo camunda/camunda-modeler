@@ -32,7 +32,7 @@ const NAMESPACE_CAMUNDA = {
 };
 
 
-describe('util - namespace', function() {
+describe('tabs/bpmn/util - namespace', function() {
 
   describe('findUsages', function() {
 
