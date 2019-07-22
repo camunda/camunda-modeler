@@ -56,7 +56,7 @@ Based on the [test diagram](./test.bpmn.png):
 * [ ] Add Properties, Input/Output Mapping, `asyncBefore`, Retry Time Cycle and implementation to "Check" ServiceTask
     * [ ] Copy / Paste task; properties are kept
     * [ ] Change task to Send Task; properties are kept
-    * [ ] Change task to UserTask; implementation property is gone from XML (except Retry Time Cycle and `asyncBefore`)
+    * [ ] Change task to UserTask; implementation property is gone from XML (except Retry Time Cycle, Input/output Mapping and `asyncBefore`)
 
 
 ####  CMMN modeling
