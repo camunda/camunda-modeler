@@ -12,7 +12,7 @@ __Hint:__ Create a release issue and copy the template below into it.
 * [ ] close all issues which are solved by dependency updates
 * [ ] verify `develop` is up to date with `master`: `git checkout master && git pull && git checkout develop && git merge master`
 * [ ] smoke test to verify all diagrams can be created
-* [ ] update CHANGELOG before releasing
+* [ ] update CHANGELOG
 * [ ] semantic release (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/tree/master/release-schema) 
 * [ ] merge to master: `git checkout master && git merge develop`
 * [ ] wait for [Travis](https://travis-ci.org/camunda/camunda-modeler) to build the release
