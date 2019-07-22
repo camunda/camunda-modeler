@@ -31,7 +31,6 @@ ___Note:__ Yet to be released changes appear here._
 
 #### CMMN
 
-* `FEAT`: add grid snapping
 * `FEAT`: add connection previews
 * `CHORE`: update to `cmmn-js@0.19.2`
 
