@@ -6,6 +6,31 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.2.0
+
+#### BPMN
+
+* `FEAT`: add snap on resize ([#1290](https://github.com/camunda/camunda-modeler/issues/1290), [#609](https://github.com/camunda/camunda-modeler/issues/609), [#608](https://github.com/camunda/camunda-modeler/issues/608))
+* `FEAT`: add ability to model `bpmn:Group` elements ([#464](https://github.com/camunda/camunda-modeler/issues/464))
+* `FEAT`: add `bpmn:Subprocess` with start event included ([#1242](https://github.com/camunda/camunda-modeler/issues/1242))
+* `FEAT`: make it easer to segment move ([#1197](https://github.com/camunda/camunda-modeler/issues/1197))
+* `FEAT`: improve automatic label adjustment for boundary events ([#1206](https://github.com/camunda/camunda-modeler/issues/1206))
+* `FEAT`: disallow multiple incoming connections on event-based gateway targets ([#637](https://github.com/camunda/camunda-modeler/issues/637))
+* `FEAT`: improve layouting of boundary to activity loops ([#903](https://github.com/camunda/camunda-modeler/issues/903))
+* `FEAT`: add grid snapping ([#1019](https://github.com/camunda/camunda-modeler/issues/1019))
+* `FEAT`: add connection previews
+* `FIX`: make message flow attachable to participants with lanes ([#1213](https://github.com/camunda/camunda-modeler/issues/1213))
+* `FIX`: fix errors disappearing when adding colors ([#1342](https://github.com/camunda/camunda-modeler/issues/1342))
+* `FIX`: correct name / id alignment in properties panel ([#1151](https://github.com/camunda/camunda-modeler/issues/1151))
+* `FIX`: prevent unnecessary bendpoints ([#1204](https://github.com/camunda/camunda-modeler/issues/1204))
+* `CHORE`: update to `bpmn-js@4.0.2`
+
+#### CMMN
+
+* `FEAT`: add grid snapping
+* `FEAT`: add connection previews
+* `CHORE`: update to `cmmn-js@0.19.2`
+
 ## 3.1.2
 
 * `FIX`: load local element templates ([#1379](https://github.com/camunda/camunda-modeler/pull/1379))
