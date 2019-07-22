@@ -8,6 +8,10 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 3.2.0
 
+#### General
+
+* `FIX`: update properties panels to mitigate HTML injection vulnerabilities ([`1ed7caa2c`](https://github.com/camunda/camunda-modeler/commit/1ed7caa2ce3fe1a66b4b5786afbd63c1e54b9700), [blog post](https://bpmn.io/blog/posts/2019-html-injection-vulnerabilities-properties-panels-fixed.html))
+
 #### BPMN
 
 * `FEAT`: add snap on resize ([#1290](https://github.com/camunda/camunda-modeler/issues/1290), [#609](https://github.com/camunda/camunda-modeler/issues/609), [#608](https://github.com/camunda/camunda-modeler/issues/608))
