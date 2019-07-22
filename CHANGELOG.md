@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.2.1
+
+* `FIX`: prevent dropping on labels and groups in BPMN editor ([#1431](https://github.com/camunda/camunda-modeler/issues/1431))
+
 ## 3.2.0
 
 #### General
