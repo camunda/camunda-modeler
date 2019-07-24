@@ -53,8 +53,8 @@ class View extends PureComponent {
       initialValues,
       onClose,
       onDeploy,
-      onFocusChange,
-      validators
+      validators,
+      onFocusChange = noop
     } = this.props;
 
     const deployOpen = this.state.deployOpen;
@@ -191,7 +191,7 @@ function FormControl({
   label,
   onFocusChange,
   validated,
-  form: { touched, errors, isSubmitting },
+  form: { touched, errors, isSubmitting, submitCount },
   ...props
 }) {
   const { name } = field;
@@ -209,12 +209,12 @@ function FormControl({
           onBlur={ compose(onFocusChange, field.onBlur) }
           disabled={ isSubmitting }
           className={ validated && classnames({
-            valid: !errors[name] && touched[name],
-            invalid: errors[name] && touched[name]
+            valid: submitCount && !errors[name] && touched[name],
+            invalid: submitCount && errors[name] && touched[name]
           }) }
         />
 
-        { errors[name] && touched[name] ? (
+        { errors[name] && touched[name] && submitCount ? (
           <div className="hint error">{errors[name]}</div>
         ) : null}
 
@@ -303,3 +303,5 @@ function compose(...handlers) {
     handlers.forEach(handler => handler(...args));
   };
 }
+
+function noop() {}

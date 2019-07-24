@@ -520,6 +520,12 @@ describe('<DeployDiagramModal>', function() {
 
   describe('<View>', function() {
 
+    let wrapper;
+
+    afterEach(function() {
+      wrapper && wrapper.unmount();
+    });
+
     it('should render', function() {
       shallow(<View />);
     });
@@ -527,25 +533,82 @@ describe('<DeployDiagramModal>', function() {
 
     it('should render error message', function() {
       // given
-      const wrapper = mount(<View validators={ { auth: {} } } error={ 'Error message' } />);
+      wrapper = mount(<View validators={ { auth: {} } } error={ 'Error message' } />);
 
       // then
       expect(wrapper.find('.deploy-message.error')).to.have.lengthOf(1);
-
-      wrapper.unmount();
     });
 
 
     it('should render success message', function() {
       // given
-      const wrapper = mount(<View validators={ { auth: {} } } success={ 'Success message' } />);
+      wrapper = mount(<View validators={ { auth: {} } } success={ 'Success message' } />);
 
       // then
       expect(wrapper.find('.deploy-message.success')).to.have.lengthOf(1);
+    });
 
-      wrapper.unmount();
+
+    it('should not display validation error before first submit', function(done) {
+      // given
+      wrapper = mount(<View
+        initialValues={ { deploymentName: '' } }
+        validators={ { deploymentName: () => 'Error', auth: {} } }
+      />);
+
+      // when
+      const input = wrapper.find('input[name="deploymentName"]');
+      input.simulate('change', {
+        target: {
+          name: 'deploymentName',
+          value: ''
+        }
+      });
+
+      // then
+      nextTickExpect(done, () => expect(wrapper.find('.invalid')).to.have.lengthOf(0));
+    });
+
+
+    it('should display validation error after first submit', function(done) {
+      // given
+      wrapper = mount(<View
+        initialValues={ { deploymentName: '' } }
+        validators={ { deploymentName: () => 'Error', auth: {} } }
+      />);
+
+      const input = wrapper.find('input[name="deploymentName"]');
+      input.simulate('change', {
+        target: {
+          name: 'deploymentName',
+          value: ''
+        }
+      });
+
+      // when
+      wrapper.find('form').simulate('submit');
+
+      // then
+      nextTickExpect(done, () =>{
+        expect(wrapper.find('.valid')).to.have.lengthOf(1);
+      });
     });
 
   });
 
 });
+
+
+
+// helper
+function nextTickExpect(done, fn) {
+  process.nextTick(() => {
+    try {
+      fn();
+    } catch (error) {
+      return done(error);
+    }
+
+    done();
+  });
+}
