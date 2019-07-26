@@ -172,6 +172,37 @@ describe('<DeployDiagramModal>', function() {
   });
 
 
+  describe('defaults', function() {
+
+    it('should set deployment name based on filename', function() {
+      // given
+      const wrapper = shallow(<DeployDiagramModal tab={ { name: 'simple.diagram.bpmn' } } />);
+
+      // expect
+      expect(wrapper.find(View).prop('initialValues')).to.have.property('deploymentName').eql('simple.diagram');
+    });
+
+
+    it('should set deployment name based on filename for hidden files', function() {
+      // given
+      const wrapper = shallow(<DeployDiagramModal tab={ { name: '.bpmn' } } />);
+
+      // expect
+      expect(wrapper.find(View).prop('initialValues')).to.have.property('deploymentName').eql('.bpmn');
+    });
+
+
+    it(`should set endpointUrl to ${DEFAULT_ENDPOINT} when none is provided`, function() {
+      // given
+      const wrapper = shallow(<DeployDiagramModal />);
+
+      // expect
+      expect(wrapper.find(View).prop('initialValues')).to.have.property('endpointUrl').eql(DEFAULT_ENDPOINT);
+    });
+
+  });
+
+
   describe('reusing endpoint url', function() {
 
     it('should set endpointUrl to last one provided in props', function() {
@@ -184,16 +215,6 @@ describe('<DeployDiagramModal>', function() {
       // expect
       expect(wrapper.find(View).prop('initialValues')).to.have.property('endpointUrl').eql(endpointUrl);
     });
-
-
-    it(`should set endpointUrl to ${DEFAULT_ENDPOINT} when there is none provided`, function() {
-      // given
-      const wrapper = shallow(<DeployDiagramModal />);
-
-      // expect
-      expect(wrapper.find(View).prop('initialValues')).to.have.property('endpointUrl').eql(DEFAULT_ENDPOINT);
-    });
-
   });
 
 
