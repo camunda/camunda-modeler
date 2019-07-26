@@ -28,7 +28,7 @@ const defaultState = {
 };
 
 const initialFormValues = {
-  endpointUrl: '',
+  endpointUrl: 'http://localhost:8080/engine-rest',
   tenantId: '',
   deploymentName: '',
   authType: 'none',
@@ -140,7 +140,7 @@ class DeployDiagramModal extends PureComponent {
 
       initialValues={ {
         ...initialFormValues,
-        endpointUrl: endpoints[endpoints.length - 1] || ''
+        endpointUrl: endpoints[endpoints.length - 1] || initialFormValues.endpointUrl
       } }
       validators={ validators }
     />;

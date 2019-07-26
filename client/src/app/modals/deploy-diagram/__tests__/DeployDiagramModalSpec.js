@@ -22,6 +22,7 @@ import View from '../View';
 import AuthTypes from '../AuthTypes';
 
 const MOCK_ENDPOINT_URL = 'http://example.com/deployment/create';
+const DEFAULT_ENDPOINT = 'http://localhost:8080/engine-rest';
 
 
 describe('<DeployDiagramModal>', function() {
@@ -185,12 +186,12 @@ describe('<DeployDiagramModal>', function() {
     });
 
 
-    it('should set endpointUrl to void string when there is none provided', function() {
+    it(`should set endpointUrl to ${DEFAULT_ENDPOINT} when there is none provided`, function() {
       // given
       const wrapper = shallow(<DeployDiagramModal />);
 
       // expect
-      expect(wrapper.find(View).prop('initialValues')).to.have.property('endpointUrl').eql('');
+      expect(wrapper.find(View).prop('initialValues')).to.have.property('endpointUrl').eql(DEFAULT_ENDPOINT);
     });
 
   });
