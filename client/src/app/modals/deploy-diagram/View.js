@@ -191,7 +191,7 @@ function FormControl({
   label,
   onFocusChange,
   validated,
-  form: { touched, errors, isSubmitting, submitCount },
+  form: { touched, errors, isSubmitting },
   ...props
 }) {
   const { name } = field;
@@ -209,12 +209,12 @@ function FormControl({
           onBlur={ compose(onFocusChange, field.onBlur) }
           disabled={ isSubmitting }
           className={ validated && classnames({
-            valid: submitCount && !errors[name] && touched[name],
-            invalid: submitCount && errors[name] && touched[name]
+            valid: !errors[name] && touched[name],
+            invalid: errors[name] && touched[name]
           }) }
         />
 
-        { errors[name] && touched[name] && submitCount ? (
+        { errors[name] && touched[name] ? (
           <div className="hint error">{errors[name]}</div>
         ) : null}
 
