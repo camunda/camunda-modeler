@@ -292,57 +292,71 @@ describe('<DeployDiagramModal>', function() {
         instance;
 
     beforeEach(function() {
-      wrapper = shallow(<DeployDiagramModal />);
+      wrapper = shallow(<DeployDiagramModal onAction={ () => true } />);
       instance = wrapper.instance();
     });
 
 
     describe('endpointUrl', function() {
 
-      it('should not accept void endpoint url', function() {
+      it('should not accept void endpoint url', async function() {
         // given
         const endpointUrl = '';
 
+        // when
+        const result = await instance.validateEndpointUrl(endpointUrl);
+
         // then
-        expect(instance.validateEndpointUrl(endpointUrl)).to.not.be.undefined;
+        expect(result).to.not.be.undefined;
       });
 
 
-      it('should not accept endpoint url without protocol', function() {
+      it('should not accept endpoint url without protocol', async function() {
         // given
         const endpointUrl = 'localhost';
 
+        // when
+        const result = await instance.validateEndpointUrl(endpointUrl);
+
         // then
-        expect(instance.validateEndpointUrl(endpointUrl)).to.not.be.undefined;
+        expect(result).to.not.be.undefined;
       });
 
 
-      it('should not accept ftp protocol for endpoint url', function() {
+      it('should not accept ftp protocol for endpoint url', async function() {
         // given
         const endpointUrl = 'ftp://localhost';
 
+        // when
+        const result = await instance.validateEndpointUrl(endpointUrl);
+
         // then
-        expect(instance.validateEndpointUrl(endpointUrl)).to.not.be.undefined;
+        expect(result).to.not.be.undefined;
       });
 
 
-      it('should accept endpoint url starting with "https://"', function() {
+      it('should accept endpoint url starting with "https://"', async function() {
         // given
         const endpointUrl = 'https://localhost';
 
+        // when
+        const result = await instance.validateEndpointUrl(endpointUrl);
+
         // then
-        expect(instance.validateEndpointUrl(endpointUrl)).to.be.undefined;
+        expect(result).to.be.undefined;
       });
 
 
-      it('should accept endpoint url starting with "http://"', function() {
+      it('should accept endpoint url starting with "http://"', async function() {
         // given
         const endpointUrl = 'http://localhost';
 
-        // then
-        expect(instance.validateEndpointUrl(endpointUrl)).to.be.undefined;
-      });
+        // when
+        const result = await instance.validateEndpointUrl(endpointUrl);
 
+        // then
+        expect(result).to.be.undefined;
+      });
     });
 
 

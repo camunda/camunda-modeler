@@ -14,24 +14,28 @@ import View from './View';
 import AuthTypes from './AuthTypes';
 
 import errorMessageFunctions from './error-messages';
+import validationErrorFunctions from './validation-errors';
 import getEditMenu from './getEditMenu';
+import { debounce } from '../../../util';
 
 
 const ENDPOINT_URL_PATTERN = /^https?:\/\/.+/;
 
 const ENDPOINT_URL_SUFFIX = '/deployment/create';
+const DEPLOY_CHECK_SUFFIX = '/deployment?maxResults=0';
 
 
 const defaultState = {
   success: '',
-  error: ''
+  error: '',
+  connectionError: null
 };
 
 const initialFormValues = {
   endpointUrl: 'http://localhost:8080/engine-rest',
   tenantId: '',
   deploymentName: 'diagram',
-  authType: 'none',
+  authType: AuthTypes.none,
   username: '',
   password: '',
   bearer: ''
@@ -50,6 +54,12 @@ class DeployDiagramModal extends PureComponent {
   }
 
   handleDeploy = async (values, { setSubmitting }) => {
+    if (this.state.connectionError) {
+      setSubmitting(false);
+
+      return;
+    }
+
     const payload = this.getDeploymentPayload(values);
 
     this.saveEndpoint(values.endpointUrl);
@@ -95,7 +105,36 @@ class DeployDiagramModal extends PureComponent {
     this.updateMenu(isFocusedOnInput);
   }
 
-  validateEndpointUrl = url => {
+  asyncValidateEndpointUrl = async ({ endpointUrl, ...values }) => {
+    const baseUrl = this.getBaseUrl(endpointUrl);
+
+    const payload = {
+      url: `${baseUrl}${DEPLOY_CHECK_SUFFIX}`,
+      auth: this.getAuth(values)
+    };
+
+    let connectionError = await this.props.onAction('deploy-check', payload);
+
+    if (connectionError) {
+      connectionError = this.getValidationError(connectionError);
+    }
+
+    this.setState(state => ({ ...state, connectionError }));
+  }
+
+  getValidationError(error) {
+    for (const getMessage of validationErrorFunctions) {
+      const errorMessage = getMessage(error);
+
+      if (errorMessage) {
+        return errorMessage;
+      }
+    }
+
+    return 'Cannot connect to engine for unknown reason.';
+  }
+
+  validateEndpointUrl = async (url) => {
     if (!url.length) {
       return 'Endpoint URL must not be empty.';
     }
@@ -148,10 +187,12 @@ class DeployDiagramModal extends PureComponent {
     return <View
       onClose={ this.props.onClose }
       onDeploy={ this.handleDeploy }
+      onDeployCheck={ debounce(this.asyncValidateEndpointUrl) }
       onFocusChange={ this.handleFocusChange }
 
       success={ this.state.success }
       error={ this.state.error }
+      connectionError={ this.state.connectionError }
 
       initialValues={ {
         ...initialFormValues,
@@ -195,15 +236,18 @@ class DeployDiagramModal extends PureComponent {
    * @param {string} url
    */
   getSanitizedEndpointUrl(url) {
+    const baseUrl = this.getBaseUrl(url);
+
+    return `${baseUrl}${ENDPOINT_URL_SUFFIX}`;
+  }
+
+  getBaseUrl(url) {
+    // remove trailing slash
     if (url[url.length - 1] === '/') {
       url = url.slice(0, -1);
     }
 
-    if (url.search(`${ENDPOINT_URL_SUFFIX}$`) === -1) {
-      return `${url}${ENDPOINT_URL_SUFFIX}`;
-    }
-
-    return url;
+    return url.replace(new RegExp(`${ENDPOINT_URL_SUFFIX}$`), '');
   }
 
   getAuth({ authType, username, password, bearer }) {

@@ -8,12 +8,12 @@
  * except in compliance with the MIT License.
  */
 
-import React, { PureComponent } from 'react';
+import React, { useEffect, useState } from 'react';
 
 
 import {
   Formik,
-  Form,
+  Form as FormikForm,
   Field
 } from 'formik';
 
@@ -30,161 +30,151 @@ import FormControl from './FormControl';
 
 const SUCCESS_HEADING = 'Deployment successful';
 const ERROR_HEADING = 'Deployment failed';
+const DEPLOY_CHECK_PROPS = [ 'endpointUrl', 'username', 'password', 'bearer' ];
 
 
-class View extends PureComponent {
+function View({
+  initialValues,
+  onClose,
+  onDeploy,
+  ...props
+}) {
 
-  constructor(props) {
-    super(props);
+  return (
+    <ModalWrapper className={ css.View } onClose={ onClose }>
+      <h2>Deploy Diagram</h2>
 
-    this.state = {};
-  }
-
-  toggleDetails = () => {
-    this.setState({
-      deployOpen: !this.state.deployOpen
-    });
-  }
-
-  render() {
-    const {
-      error,
-      success,
-      initialValues,
-      onClose,
-      onDeploy,
-      validators,
-      onFocusChange = noop
-    } = this.props;
-
-    const deployOpen = this.state.deployOpen;
-
-    return (
-      <ModalWrapper className={ css.View } onClose={ onClose }>
-        <h2>Deploy Diagram</h2>
-
-        <p className="intro">
-          Specify deployment details and deploy this diagram to Camunda.
-        </p>
+      <p className="intro">
+        Specify deployment details and deploy this diagram to Camunda.
+      </p>
 
 
-        <Formik
-          initialValues={ initialValues }
-          onSubmit={ onDeploy }
-        >
-          {({ isSubmitting, isValid, values }) => (
-            <React.Fragment>
+      <Formik
+        initialValues={ initialValues }
+        onSubmit={ onDeploy }
+        render={ formikProps => <Form onClose={ onClose } { ...props } { ...formikProps } /> }
+      />
+    </ModalWrapper>
+  );
+}
 
-              { isSubmitting && isValid && <Icon name={ 'loading' } className="loading" /> }
+function Form({ connectionError, success, error, onClose, onFocusChange = noop, validators, onDeployCheck = noop, isSubmitting, isValid, values, errors }) {
+  const [ deployOpen, toggleDetails ] = useState(false);
 
-              { success && <DeploySuccess message={ success } /> }
+  useEffect(() => {
+    if (DEPLOY_CHECK_PROPS.every(name => !errors[name])) {
+      onDeployCheck(values);
+    }
+  }, [ onDeployCheck, ...DEPLOY_CHECK_PROPS.map(name => errors[name]), ...DEPLOY_CHECK_PROPS.map(name => values[name]) ]);
 
-              { error && <DeployError message={ error } /> }
+  return (
+    <React.Fragment>
 
-              <Form className={ css.Form }>
+      { isSubmitting && isValid && <Icon name={ 'loading' } className="loading" /> }
 
-                <fieldset>
+      { success && <DeploySuccess message={ success } /> }
 
-                  <legend>
-                    Deployment Details
-                    <button
-                      type="button"
-                      className="toggle-details"
-                      onClick={ this.toggleDetails }
-                      title="Toogle Advanced Details"
-                      disabled={ values['tenantId'] }
-                    >
-                      { (deployOpen || values['tenantId']) ? '-' : '+' }
-                    </button>
-                  </legend>
+      { error && <DeployError message={ error } /> }
 
-                  <div className="fields">
-                    <Field
-                      name="deploymentName"
-                      validate={ validators.deploymentName }
-                      component={ FormControl }
-                      label="Name"
-                      validated
-                      autoFocus
-                      onFocusChange={ onFocusChange }
-                    />
+      <FormikForm className={ css.Form }>
 
-                    { (deployOpen || values['tenantId']) && <Field
-                      name="tenantId"
-                      component={ FormControl }
-                      label="Tenant ID"
-                      onFocusChange={ onFocusChange }
-                    /> }
-                  </div>
+        <fieldset>
 
-                </fieldset>
+          <legend>
+            Deployment Details
+            <button
+              type="button"
+              className="toggle-details"
+              onClick={ toggleDetails }
+              title="Toggle Advanced Details"
+              disabled={ values['tenantId'] }
+            >
+              { (deployOpen || values['tenantId']) ? '-' : '+' }
+            </button>
+          </legend>
 
-                <fieldset label="Foo">
+          <div className="fields">
+            <Field
+              name="deploymentName"
+              validate={ validators.deploymentName }
+              component={ FormControl }
+              label="Name"
+              validated
+              autoFocus
+              onFocusChange={ onFocusChange }
+            />
 
-                  <legend>Endpoint Configuration</legend>
+            { (deployOpen || values['tenantId']) && <Field
+              name="tenantId"
+              component={ FormControl }
+              label="Tenant ID"
+              onFocusChange={ onFocusChange }
+            /> }
+          </div>
 
-                  <div className="fields">
-                    <Field
-                      name="endpointUrl"
-                      validate={ validators.endpointUrl }
-                      component={ FormControl }
-                      label="URL"
-                      hint="Should point to a running Camunda Engine REST API endpoint."
-                      successMessage="Engine is available!"
-                      validateOnInit
-                      validated
-                      onFocusChange={ onFocusChange }
-                    />
+        </fieldset>
 
-                    <div>
-                      <label htmlFor="authType">Authentication</label>
-                    </div>
+        <fieldset>
 
-                    <div>
-                      <Field name="authType" component="select">
-                        <option value={ AuthTypes.none } defaultValue>None</option>
-                        <option value={ AuthTypes.basic }>HTTP Basic</option>
-                        <option value={ AuthTypes.bearer }>Bearer token</option>
-                      </Field>
-                    </div>
+          <legend>Endpoint Configuration</legend>
 
-                    { values.authType === AuthTypes.basic && (
-                      <AuthBasic
-                        validators={ validators }
-                        onFocusChange={ onFocusChange }
-                      />) }
+          <div className="fields">
+            <Field
+              name="endpointUrl"
+              validate={ validators.endpointUrl }
+              component={ FormControl }
+              label="URL"
+              hint="Should point to a running Camunda Engine REST API endpoint."
+              error={ connectionError }
+              successMessage={ 'Engine is available!' }
+              validated
+              validateOnInit
+              onFocusChange={ onFocusChange }
+            />
 
-                    { values.authType === AuthTypes.bearer && (
-                      <AuthBearer
-                        validators={ validators }
-                        onFocusChange={ onFocusChange }
-                      />) }
-                  </div>
-                </fieldset>
+            <div>
+              <label htmlFor="authType">Authentication</label>
+            </div>
 
-                <div className="form-submit">
-                  <button
-                    type="submit"
-                    disabled={ isSubmitting }>
-                    Deploy
-                  </button>
+            <div>
+              <Field name="authType" component="select">
+                <option value={ AuthTypes.none } defaultValue>None</option>
+                <option value={ AuthTypes.basic }>HTTP Basic</option>
+                <option value={ AuthTypes.bearer }>Bearer token</option>
+              </Field>
+            </div>
 
-                  <button
-                    type="button"
-                    onClick={ onClose }>
-                    { success ? 'Close' : 'Cancel' }
-                  </button>
-                </div>
-              </Form>
+            { values.authType === AuthTypes.basic && (
+              <AuthBasic
+                validators={ validators }
+                onFocusChange={ onFocusChange }
+              />) }
 
-            </React.Fragment>
-          )}
-        </Formik>
+            { values.authType === AuthTypes.bearer && (
+              <AuthBearer
+                validators={ validators }
+                onFocusChange={ onFocusChange }
+              />) }
+          </div>
+        </fieldset>
 
-      </ModalWrapper>
-    );
-  }
+        <div className="form-submit">
+          <button
+            type="submit"
+            disabled={ isSubmitting }>
+            Deploy
+          </button>
 
+          <button
+            type="button"
+            onClick={ onClose }>
+            { success ? 'Close' : 'Cancel' }
+          </button>
+        </div>
+      </FormikForm>
+
+    </React.Fragment>
+  );
 }
 
 function DeployError({ message }) {

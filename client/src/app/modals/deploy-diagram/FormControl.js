@@ -20,6 +20,7 @@ export default function FormControl({
   validated,
   validateOnInit,
   successMessage,
+  error,
   form:
   {
     touched,
@@ -30,14 +31,17 @@ export default function FormControl({
   ...props
 }) {
   const { name } = field;
+
   if (validateOnInit) {
     useEffect(() => {
       setFieldTouched(name, true, true);
     }, []);
   }
 
-  const valid = !errors[name] && touched[name],
-        invalid = errors[name] && touched[name];
+  error = errors[name] || error;
+
+  const valid = error === undefined && touched[name],
+        invalid = error && touched[name];
 
   return (<React.Fragment>
     <div>
@@ -59,7 +63,7 @@ export default function FormControl({
         }) }
       />
 
-      { invalid ? (<div className="hint error">{ errors[name] }</div>) : null }
+      { invalid ? (<div className="hint error">{ error }</div>) : null }
 
       { valid && successMessage ? (
         <div className="hint success">{ successMessage }</div>

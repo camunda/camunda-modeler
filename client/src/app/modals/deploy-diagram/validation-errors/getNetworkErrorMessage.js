@@ -9,7 +9,7 @@
  */
 
 const ERROR_MESSAGE = {
-  NO_INTERNET_CONNECTION: 'Could not connect to the server. Please verify the endpoint URL.'
+  NO_INTERNET_CONNECTION: 'Could not connect to the server. Did you run the engine?'
 };
 
 

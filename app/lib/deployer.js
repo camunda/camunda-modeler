@@ -22,24 +22,11 @@ class Deployer {
    */
   async deploy(url, options, cb = noop) {
     try {
-      this.validateDeployParams(url, options);
+      this.validateDeploymentParams(url, options);
 
-      const requestParams = this.getRequestParams(options);
+      const requestParams = this.getDeploymentRequestParams(options);
 
-      const serverResponse = await this.fetch(url, requestParams);
-
-      if (!serverResponse.ok) {
-        const error = await getErrorFromResponse(serverResponse);
-        throw error;
-      }
-
-      let response;
-
-      try {
-        response = await serverResponse.json();
-      } catch (error) {
-        response = serverResponse.statusText;
-      }
+      const response = await this.tryFetch(url, requestParams);
 
       return cb(null, response);
     } catch (error) {
@@ -49,7 +36,22 @@ class Deployer {
     }
   }
 
-  validateDeployParams(url, { deploymentName, file }) {
+  /**
+   * Ping server
+   */
+  async ping(url, options, cb = noop) {
+    try {
+      const headers = this.getHeaders(options);
+
+      const response = await this.tryFetch(url, { headers });
+
+      return cb(null, response);
+    } catch (error) {
+      return cb(error);
+    }
+  }
+
+  validateDeploymentParams(url, { deploymentName, file }) {
     if (!deploymentName) {
       throw new Error('Failed to deploy process, deployment name must be provided.');
     }
@@ -63,8 +65,8 @@ class Deployer {
     }
   }
 
-  getRequestParams(options) {
-    const body = this.getBody(options);
+  getDeploymentRequestParams(options) {
+    const body = this.getDeploymentBody(options);
     const headers = this.getHeaders(options);
 
     return {
@@ -74,7 +76,31 @@ class Deployer {
     };
   }
 
-  getBody({ deploymentName, tenantId, file = {} }) {
+  async tryFetch(url, requestParams) {
+    const serverResponse = await this.fetch(url, requestParams);
+    const response = await this.tryExtractResponse(serverResponse);
+
+    return response;
+  }
+
+  async tryExtractResponse(serverResponse) {
+    if (!serverResponse.ok) {
+      const error = await getErrorFromResponse(serverResponse);
+      throw error;
+    }
+
+    let response;
+
+    try {
+      response = await serverResponse.json();
+    } catch (error) {
+      response = serverResponse.statusText;
+    }
+
+    return response;
+  }
+
+  getDeploymentBody({ deploymentName, tenantId, file = {} }) {
     const form = this.getFormData();
 
     form.append('deployment-name', deploymentName);

@@ -29,210 +29,10 @@ describe('Deployer', function() {
 
   afterEach(sinon.restore);
 
+  describe('#deploy', function() {
 
-  it('should deploy with provided parameters', async function() {
+    it('should deploy with provided parameters', async function() {
 
-    // given
-    const deployer = createDeployer(fetchSpy);
-
-    const data = getDeploymentData({ tenantId: 'someTenantId' });
-
-    const url = 'some/url';
-
-    const expectedForm = new FormData();
-
-    expectedForm.append(data.file.name, fs.createReadStream(data.file.path));
-
-    expectedForm.append('deployment-name', data.deploymentName);
-    expectedForm.append('deploy-changed-only', 'true');
-    expectedForm.append('deployment-source', 'Camunda Modeler');
-    expectedForm.append('tenant-id', data.tenantId);
-
-    // when
-    await deployer.deploy(url, data, (err, data) => {
-      // then
-      expect(err).not.to.exist;
-      expect(data).to.eql(fetch.RESPONSE_OK);
-    });
-
-    // then
-    expect(fetchSpy).to.have.been.calledOnce;
-
-    const [ usedUrl, requestParams ] = fetchSpy.getCall(0).args;
-
-    expect(usedUrl).to.eql(url);
-    expect(requestParams).to.deep.contain({
-      body: expectedForm,
-      method: 'POST'
-    });
-
-  });
-
-
-  it('should deploy even without tenant id provided', async function() {
-
-    // given
-    const deployer = createDeployer(fetchSpy);
-
-    const data = getDeploymentData();
-
-    const url = 'some/url';
-
-    const expectedForm = new FormData();
-
-    expectedForm.append(data.file.name, fs.createReadStream(data.file.path));
-
-    expectedForm.append('deployment-name', data.deploymentName);
-    expectedForm.append('deploy-changed-only', 'true');
-    expectedForm.append('deployment-source', 'Camunda Modeler');
-
-    // when
-    await deployer.deploy(url, data, (err, data) => {
-      // then
-      expect(err).not.to.exist;
-      expect(data).to.eql(fetch.RESPONSE_OK);
-    });
-
-    // then
-    expect(fetchSpy).to.have.been.calledOnce;
-
-    const [ usedUrl, requestParams ] = fetchSpy.getCall(0).args;
-
-    expect(usedUrl).to.eql(url);
-    expect(requestParams).to.deep.contain({
-      body: expectedForm,
-      method: 'POST'
-    });
-
-  });
-
-
-  it('should NOT throw error when response is OK but not a JSON', function(done) {
-
-    // given
-    const okResponse = 'OK';
-
-    function fetchResolvingToText() {
-      return Promise.resolve({
-        ok: true,
-        statusText: okResponse,
-        json() {
-          return Promise.reject(new Error('fail on json parse'));
-        }
-      });
-    }
-
-    // given
-    const deployer = createDeployer(fetchResolvingToText);
-
-    const data = getDeploymentData();
-
-    // when
-    deployer.deploy('some/url', data, (err, data) => {
-
-      // then
-      expect(err).to.not.exist;
-      expect(data).to.eql(okResponse);
-
-      done();
-    });
-  });
-
-
-  it('should handle fetch error', function(done) {
-
-    // given
-    const fetchError = 'FETCH_ERROR';
-
-    function failingFetch() {
-      return Promise.reject(new Error(fetchError));
-    }
-
-    // given
-    const deployer = createDeployer(failingFetch);
-
-    const data = getDeploymentData();
-
-    // when
-    deployer.deploy('some/url', data, (err, data) => {
-
-      // then
-      expect(err).to.exist;
-      expect(err.message).to.eql(fetchError);
-
-      expect(data).not.to.exist;
-
-      done();
-    });
-  });
-
-
-  it('should return error with proper code for backend error', function(done) {
-
-    // given
-    const errorStatus = 500,
-          errorStatusText = 'INTERNAL SERVER ERROR';
-
-    function failingFetch() {
-      return Promise.resolve({
-        ok: false,
-        status: errorStatus,
-        statusText: errorStatusText,
-        json() {
-          return Promise.reject(new Error('fail on json parse'));
-        }
-      });
-    }
-
-    // given
-    const deployer = createDeployer(failingFetch);
-
-    const data = getDeploymentData();
-
-    // when
-    deployer.deploy('some/url', data, (err, data) => {
-
-      // then
-      expect(err).to.exist;
-      expect(err.status).to.eql(errorStatus);
-
-      expect(data).not.to.exist;
-
-      done();
-    });
-
-
-    it('should attach deployment name to error', function(done) {
-
-      // given
-      const deploymentName = 'deploymentName';
-
-      function failingFetch() {
-        return Promise.reject(new Error());
-      }
-
-      const deploy = createDeployer(failingFetch);
-
-      const data = getDeploymentData({ deploymentName });
-
-      // when
-      deploy('some/url', data, (err, data) => {
-
-        // then
-        expect(err).to.exist;
-        expect(err.deploymentName).to.eql(deploymentName);
-
-        expect(data).not.to.exist;
-
-        done();
-      });
-    });
-  });
-
-
-  describe('authentication', function() {
-
-    it('should deploy without auth', async function() {
       // given
       const deployer = createDeployer(fetchSpy);
 
@@ -240,107 +40,337 @@ describe('Deployer', function() {
 
       const url = 'some/url';
 
-      // when
-      await deployer.deploy(url, data);
+      const expectedForm = new FormData();
 
-      // then
-      expect(fetchSpy).to.be.calledOnce;
+      expectedForm.append(data.file.name, fs.createReadStream(data.file.path));
 
-      const requestParams = fetchSpy.getCall(0).args[1];
-
-      expect(requestParams).to.satisfy(function(params) {
-        return !params.headers || !params.headers.Authorization;
-      });
-
-    });
-
-
-    it('should throw error for unknown auth', async function() {
-      // given
-      const deployer = createDeployer(fetchSpy);
-
-      const data = getDeploymentData({
-        tenantId: 'someTenantId',
-        auth: {}
-      });
-
-      const url = 'some/url';
+      expectedForm.append('deployment-name', data.deploymentName);
+      expectedForm.append('deploy-changed-only', 'true');
+      expectedForm.append('deployment-source', 'Camunda Modeler');
+      expectedForm.append('tenant-id', data.tenantId);
 
       // when
       await deployer.deploy(url, data, (err, data) => {
         // then
+        expect(err).not.to.exist;
+        expect(data).to.eql(fetch.RESPONSE_OK);
+      });
+
+      // then
+      expect(fetchSpy).to.have.been.calledOnce;
+
+      const [ usedUrl, requestParams ] = fetchSpy.getCall(0).args;
+
+      expect(usedUrl).to.eql(url);
+      expect(requestParams).to.deep.contain({
+        body: expectedForm,
+        method: 'POST'
+      });
+
+    });
+
+
+    it('should deploy even without tenant id provided', async function() {
+
+      // given
+      const deployer = createDeployer(fetchSpy);
+
+      const data = getDeploymentData();
+
+      const url = 'some/url';
+
+      const expectedForm = new FormData();
+
+      expectedForm.append(data.file.name, fs.createReadStream(data.file.path));
+
+      expectedForm.append('deployment-name', data.deploymentName);
+      expectedForm.append('deploy-changed-only', 'true');
+      expectedForm.append('deployment-source', 'Camunda Modeler');
+
+      // when
+      await deployer.deploy(url, data, (err, data) => {
+        // then
+        expect(err).not.to.exist;
+        expect(data).to.eql(fetch.RESPONSE_OK);
+      });
+
+      // then
+      expect(fetchSpy).to.have.been.calledOnce;
+
+      const [ usedUrl, requestParams ] = fetchSpy.getCall(0).args;
+
+      expect(usedUrl).to.eql(url);
+      expect(requestParams).to.deep.contain({
+        body: expectedForm,
+        method: 'POST'
+      });
+
+    });
+
+
+    it('should NOT throw error when response is OK but not a JSON', function(done) {
+
+      // given
+      const okResponse = 'OK';
+
+      function fetchResolvingToText() {
+        return Promise.resolve({
+          ok: true,
+          statusText: okResponse,
+          json() {
+            return Promise.reject(new Error('fail on json parse'));
+          }
+        });
+      }
+
+      // given
+      const deployer = createDeployer(fetchResolvingToText);
+
+      const data = getDeploymentData();
+
+      // when
+      deployer.deploy('some/url', data, (err, data) => {
+
+        // then
+        expect(err).to.not.exist;
+        expect(data).to.eql(okResponse);
+
+        done();
+      });
+    });
+
+
+    it('should handle fetch error', function(done) {
+
+      // given
+      const fetchError = 'FETCH_ERROR';
+
+      function failingFetch() {
+        return Promise.reject(new Error(fetchError));
+      }
+
+      // given
+      const deployer = createDeployer(failingFetch);
+
+      const data = getDeploymentData();
+
+      // when
+      deployer.deploy('some/url', data, (err, data) => {
+
+        // then
         expect(err).to.exist;
+        expect(err.message).to.eql(fetchError);
+
         expect(data).not.to.exist;
+
+        done();
       });
-
-      expect(fetchSpy).to.not.be.called;
-
     });
 
 
-    it('should deploy with basic auth', async function() {
+    it('should return error with proper code for backend error', function(done) {
+
       // given
-      const username = 'username',
-            password = 'password',
-            credentials = btoa(`${username}:${password}`),
-            basicHeader = `Basic ${credentials}`;
+      const errorStatus = 500,
+            errorStatusText = 'INTERNAL SERVER ERROR';
 
-      const deployer = createDeployer(fetchSpy);
+      function failingFetch() {
+        return Promise.resolve({
+          ok: false,
+          status: errorStatus,
+          statusText: errorStatusText,
+          json() {
+            return Promise.reject(new Error('fail on json parse'));
+          }
+        });
+      }
 
-      const data = getDeploymentData({
-        tenantId: 'someTenantId',
-        auth: {
-          username,
-          password
-        }
-      });
+      // given
+      const deployer = createDeployer(failingFetch);
 
-      const url = 'some/url';
+      const data = getDeploymentData();
 
       // when
-      await deployer.deploy(url, data);
+      deployer.deploy('some/url', data, (err, data) => {
 
-      // then
-      expect(fetchSpy).to.be.calledOnce;
+        // then
+        expect(err).to.exist;
+        expect(err.status).to.eql(errorStatus);
 
-      const requestParams = fetchSpy.getCall(0).args[1];
+        expect(data).not.to.exist;
 
-      expect(requestParams).to.have.property('headers')
-        .which.has.property('Authorization').eql(basicHeader);
-
-    });
-
-
-    it('should deploy with bearer token', async function() {
-      // given
-      const bearerToken = 'bearerToken',
-            bearerHeader = `Bearer ${bearerToken}`;
-
-      const deployer = createDeployer(fetchSpy);
-
-      const data = getDeploymentData({
-        tenantId: 'someTenantId',
-        auth: {
-          bearer: bearerToken
-        }
+        done();
       });
 
-      const url = 'some/url';
 
-      // when
-      await deployer.deploy(url, data);
+      it('should attach deployment name to error', function(done) {
 
-      // then
-      expect(fetchSpy).to.be.calledOnce;
+        // given
+        const deploymentName = 'deploymentName';
 
-      const requestParams = fetchSpy.getCall(0).args[1];
+        function failingFetch() {
+          return Promise.reject(new Error());
+        }
 
-      expect(requestParams).to.have.property('headers')
-        .which.has.property('Authorization').eql(bearerHeader);
+        const deploy = createDeployer(failingFetch);
 
+        const data = getDeploymentData({ deploymentName });
+
+        // when
+        deploy('some/url', data, (err, data) => {
+
+          // then
+          expect(err).to.exist;
+          expect(err.deploymentName).to.eql(deploymentName);
+
+          expect(data).not.to.exist;
+
+          done();
+        });
+      });
     });
 
+
+    describe('authentication', function() {
+
+      it('should deploy without auth', async function() {
+        // given
+        const deployer = createDeployer(fetchSpy);
+
+        const data = getDeploymentData({ tenantId: 'someTenantId' });
+
+        const url = 'some/url';
+
+        // when
+        await deployer.deploy(url, data);
+
+        // then
+        expect(fetchSpy).to.be.calledOnce;
+
+        const requestParams = fetchSpy.getCall(0).args[1];
+
+        expect(requestParams).to.satisfy(function(params) {
+          return !params.headers || !params.headers.Authorization;
+        });
+
+      });
+
+
+      it('should throw error for unknown auth', async function() {
+        // given
+        const deployer = createDeployer(fetchSpy);
+
+        const data = getDeploymentData({
+          tenantId: 'someTenantId',
+          auth: {}
+        });
+
+        const url = 'some/url';
+
+        // when
+        await deployer.deploy(url, data, (err, data) => {
+          // then
+          expect(err).to.exist;
+          expect(data).not.to.exist;
+        });
+
+        expect(fetchSpy).to.not.be.called;
+
+      });
+
+
+      it('should deploy with basic auth', async function() {
+        // given
+        const username = 'username',
+              password = 'password',
+              credentials = btoa(`${username}:${password}`),
+              basicHeader = `Basic ${credentials}`;
+
+        const deployer = createDeployer(fetchSpy);
+
+        const data = getDeploymentData({
+          tenantId: 'someTenantId',
+          auth: {
+            username,
+            password
+          }
+        });
+
+        const url = 'some/url';
+
+        // when
+        await deployer.deploy(url, data);
+
+        // then
+        expect(fetchSpy).to.be.calledOnce;
+
+        const requestParams = fetchSpy.getCall(0).args[1];
+
+        expect(requestParams).to.have.property('headers')
+          .which.has.property('Authorization').eql(basicHeader);
+
+      });
+
+
+      it('should deploy with bearer token', async function() {
+        // given
+        const bearerToken = 'bearerToken',
+              bearerHeader = `Bearer ${bearerToken}`;
+
+        const deployer = createDeployer(fetchSpy);
+
+        const data = getDeploymentData({
+          tenantId: 'someTenantId',
+          auth: {
+            bearer: bearerToken
+          }
+        });
+
+        const url = 'some/url';
+
+        // when
+        await deployer.deploy(url, data);
+
+        // then
+        expect(fetchSpy).to.be.calledOnce;
+
+        const requestParams = fetchSpy.getCall(0).args[1];
+
+        expect(requestParams).to.have.property('headers')
+          .which.has.property('Authorization').eql(bearerHeader);
+      });
+    });
   });
+
+
+  describe('#ping', function() {
+
+    it('should fetch the response', async function() {
+      // given
+      const deployer = createDeployer(fetchSpy);
+      const url = 'some/url';
+
+      // when
+      await deployer.ping(url, {});
+
+      // then
+      expect(fetchSpy).to.be.calledOnce;
+    });
+
+
+    it('should handle auth', async function() {
+      // given
+      const deployer = createDeployer(fetchSpy);
+      const url = 'some/url';
+
+      // when
+      await deployer.ping(url, { auth: { bearer: 'token' } });
+
+      // then
+      expect(fetchSpy).to.be.calledOnce;
+    });
+  });
+
 
 });
 

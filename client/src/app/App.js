@@ -1505,6 +1505,10 @@ export class App extends PureComponent {
       return this.deployDiagram(options);
     }
 
+    if (action === 'deploy-check') {
+      return this.checkDeploymentConnection(options);
+    }
+
     if (action === 'set-endpoints') {
       return this.setEndpoints(options);
     }
@@ -1544,6 +1548,16 @@ export class App extends PureComponent {
       return { result };
     } catch (error) {
       return { error };
+    }
+  }
+
+  checkDeploymentConnection = async ({ url, auth }) => {
+    try {
+      await this.getGlobal('backend').send('deploy:ping', { url, auth });
+
+      return;
+    } catch (error) {
+      return error;
     }
   }
 

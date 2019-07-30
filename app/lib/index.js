@@ -194,6 +194,8 @@ renderer.on('dialog:show', async function(options, done) {
 
 renderer.on('deploy', handleDeployment);
 
+renderer.on('deploy:ping', handlePing);
+
 // filesystem //////////
 
 renderer.on('file:read', function(filePath, options = {}, done) {
@@ -463,10 +465,10 @@ app.on('ready', function() {
 });
 
 
-function handleDeployment(data, done) {
-  const { endpointUrl } = data;
+function handleDeployment(options, done) {
+  const { endpointUrl } = options;
 
-  deployer.deploy(endpointUrl, data, function(error, result) {
+  deployer.deploy(endpointUrl, options, function(error, result) {
 
     if (error) {
       log.error('failed to deploy', error);
@@ -476,6 +478,12 @@ function handleDeployment(data, done) {
 
     done(null, result);
   });
+}
+
+function handlePing(options, done) {
+  const { url } = options;
+
+  deployer.ping(url, options, done);
 }
 
 function bootstrapLogging() {
