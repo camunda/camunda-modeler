@@ -6,7 +6,7 @@ __Hint:__ Create a release issue and copy the template below into it.
 
 
 ```markdown
-* [ ] put up code freeze appointment in calendar (include `modeling`, `michael.schoettes`, `sre`, and `ilias.kourtoudis`) 
+* [ ] put up code freeze appointment in calendar (include `modeling`, `qa`, `sre`, and `ilias.kourtoudis`) 
 * [ ] make sure dependencies are released (`rm -rf node_modules && npm i && npm run all` works)
     * `bpmn-js`, `dmn-js`, `cmmn-js`, `*-properties-panel`, `*-moddle`, ...
 * [ ] close all issues which are solved by dependency updates
