@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { PureComponent } from 'react';
+import React, { useEffect, PureComponent } from 'react';
 
 import classnames from 'classnames';
 
@@ -130,6 +130,7 @@ class View extends PureComponent {
                       component={ FormControl }
                       label="URL"
                       hint="Should point to a running Camunda Engine REST API endpoint."
+                      validateOnInit
                       validated
                       onFocusChange={ onFocusChange }
                     />
@@ -191,10 +192,17 @@ function FormControl({
   label,
   onFocusChange,
   validated,
-  form: { touched, errors, isSubmitting },
+  validateOnInit,
+  form: { touched, errors, isSubmitting, setFieldTouched },
   ...props
 }) {
   const { name } = field;
+
+  if (validateOnInit) {
+    useEffect(() => {
+      setFieldTouched(name, true, true);
+    }, []);
+  }
 
   return (
     <React.Fragment>

@@ -588,7 +588,10 @@ describe('<DeployDiagramModal>', function() {
       });
 
       // then
-      nextTickExpect(done, () => expect(wrapper.find('.invalid')).to.have.lengthOf(0));
+      nextTickExpect(done, () => {
+        wrapper.update();
+        expect(wrapper.find('.invalid')).to.have.lengthOf(0);
+      });
     });
 
 
@@ -611,8 +614,24 @@ describe('<DeployDiagramModal>', function() {
       wrapper.find('form').simulate('submit');
 
       // then
-      nextTickExpect(done, () =>{
-        expect(wrapper.find('.valid')).to.have.lengthOf(1);
+      nextTickExpect(done, () => {
+        wrapper.update();
+        expect(wrapper.find('.invalid')).to.have.lengthOf(1);
+      });
+    });
+
+
+    it('should display validation error for pre-validated field', function(done) {
+      // given
+      wrapper = mount(<View
+        initialValues={ { endpointUrl: '' } }
+        validators={ { endpointUrl: () => 'Error', auth: {} } }
+      />);
+
+      // then
+      nextTickExpect(done, () => {
+        wrapper.update();
+        expect(wrapper.find('.invalid')).to.have.lengthOf(1);
       });
     });
 
