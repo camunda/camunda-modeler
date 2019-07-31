@@ -8,9 +8,8 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 
-import classnames from 'classnames';
 
 import {
   Formik,
@@ -26,6 +25,7 @@ import {
 import AuthTypes from './AuthTypes';
 
 import css from './View.less';
+import FormControl from './FormControl';
 
 
 const SUCCESS_HEADING = 'Deployment successful';
@@ -186,54 +186,6 @@ class View extends PureComponent {
 
 }
 
-function FormControl({
-  field,
-  hint,
-  label,
-  onFocusChange,
-  validated,
-  validateOnInit,
-  form: { touched, errors, isSubmitting, setFieldTouched },
-  ...props
-}) {
-  const { name } = field;
-
-  if (validateOnInit) {
-    useEffect(() => {
-      setFieldTouched(name, true, true);
-    }, []);
-  }
-
-  return (
-    <React.Fragment>
-      <div>
-        <label htmlFor={ name }>{ label }</label>
-      </div>
-
-      <div>
-        <input
-          { ...field } { ...props }
-          onFocus={ onFocusChange }
-          onBlur={ compose(onFocusChange, field.onBlur) }
-          disabled={ isSubmitting }
-          className={ validated && classnames({
-            valid: !errors[name] && touched[name],
-            invalid: errors[name] && touched[name]
-          }) }
-        />
-
-        { errors[name] && touched[name] ? (
-          <div className="hint error">{errors[name]}</div>
-        ) : null}
-
-        { hint ? (
-          <div className="hint">{ hint }</div>
-        ) : null }
-      </div>
-    </React.Fragment>
-  );
-}
-
 function DeployError({ message }) {
   return (
     <div className="deploy-message error">
@@ -306,10 +258,4 @@ export default View;
 
 
 // helpers //////
-function compose(...handlers) {
-  return function(...args) {
-    handlers.forEach(handler => handler(...args));
-  };
-}
-
 function noop() {}
