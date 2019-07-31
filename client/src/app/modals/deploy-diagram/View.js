@@ -72,10 +72,10 @@ class View extends PureComponent {
           initialValues={ initialValues }
           onSubmit={ onDeploy }
         >
-          {({ isSubmitting, values }) => (
+          {({ isSubmitting, isValid, values }) => (
             <React.Fragment>
 
-              { isSubmitting && <Icon name={ 'loading' } className="loading" /> }
+              { isSubmitting && isValid && <Icon name={ 'loading' } className="loading" /> }
 
               { success && <DeploySuccess message={ success } /> }
 
