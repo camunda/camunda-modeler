@@ -115,7 +115,21 @@
         border: 1px solid rgb(255, 0, 0);
       }
 
+      margin-bottom: 0;
+
       outline-color: rgb(255, 0, 0);
+    }
+
+    input {
+      margin-bottom: 0;
+    }
+
+    input:last-child {
+      margin-bottom: 20px;
+    }
+
+    input + .hint:not(.error) {
+      margin-bottom: 20px;
     }
 
     button + button {
