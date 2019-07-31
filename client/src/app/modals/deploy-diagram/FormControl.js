@@ -61,9 +61,12 @@ export default function FormControl({
 
       { invalid ? (<div className="hint error">{ errors[name] }</div>) : null }
 
-      { valid && successMessage ? <div className="hint success">{ successMessage }</div> : null }
-
-      { hint ? (<div className="hint">{hint}</div>) : null }
+      { valid && successMessage ? (
+        <div className="hint success">{ successMessage }</div>
+      ) : hint ? (
+        <div className="hint">{hint}</div>
+      ) : null
+      }
     </div>
   </React.Fragment>);
 }
