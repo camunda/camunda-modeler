@@ -88,7 +88,7 @@ class DeployDiagramModal extends PureComponent {
 
   validateEndpointUrl = url => {
     if (!url.length) {
-      return 'Endpoint URL must not be void.';
+      return 'Endpoint URL must not be empty.';
     }
 
     if (!ENDPOINT_URL_PATTERN.test(url)) {
@@ -98,25 +98,25 @@ class DeployDiagramModal extends PureComponent {
 
   validateDeploymentName = name => {
     if (!name.length) {
-      return 'Deployment name must not be void.';
+      return 'Deployment name must not be empty.';
     }
   }
 
   validateUsername = username => {
     if (!username.length) {
-      return 'Username must not be void.';
+      return 'Username must not be empty.';
     }
   }
 
   validatePassword = password => {
     if (!password.length) {
-      return 'Password must not be void.';
+      return 'Password must not be empty.';
     }
   }
 
   validateBearer = bearer => {
     if (!bearer.length) {
-      return 'Token must not be void.';
+      return 'Token must not be empty.';
     }
   }
 
