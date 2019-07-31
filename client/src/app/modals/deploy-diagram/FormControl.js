@@ -19,6 +19,7 @@ export default function FormControl({
   onFocusChange,
   validated,
   validateOnInit,
+  successMessage,
   form:
   {
     touched,
@@ -58,9 +59,9 @@ export default function FormControl({
         }) }
       />
 
-      { invalid ? (<div className="hint error">{errors[name]}</div>) : null }
+      { invalid ? (<div className="hint error">{ errors[name] }</div>) : null }
 
-      { valid && onValid ? <div className="hint success"></div> : null }
+      { valid && successMessage ? <div className="hint success">{ successMessage }</div> : null }
 
       { hint ? (<div className="hint">{hint}</div>) : null }
     </div>

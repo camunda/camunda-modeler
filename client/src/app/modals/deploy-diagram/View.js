@@ -130,6 +130,7 @@ class View extends PureComponent {
                       component={ FormControl }
                       label="URL"
                       hint="Should point to a running Camunda Engine REST API endpoint."
+                      successMessage="Engine is available!"
                       validateOnInit
                       validated
                       onFocusChange={ onFocusChange }

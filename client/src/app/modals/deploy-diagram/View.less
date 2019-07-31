@@ -47,6 +47,9 @@
   }
 
   form {
+    @error-color: #ff0000;
+    @success-color: #52b215;
+
     font-size: 1.1em;
 
     fieldset {
@@ -102,33 +105,31 @@
       border: 1px solid rgb(204, 204, 204);
     }
 
+    input {
+      margin-bottom: 20px;
+    }
+
     input.valid {
       &:not(:focus) {
-        border: 1px solid rgb(82, 178, 21);
+        border: 1px solid @success-color;
       }
 
-      outline-color: rgb(82, 178, 21);
+      margin-bottom: 0;
+
+      outline-color: @success-color;
     }
 
     input.invalid {
       &:not(:focus) {
-        border: 1px solid rgb(255, 0, 0);
+        border: 1px solid @error-color;
       }
 
       margin-bottom: 0;
 
-      outline-color: rgb(255, 0, 0);
-    }
-
-    input {
-      margin-bottom: 0;
+      outline-color: @error-color;
     }
 
     input:last-child {
-      margin-bottom: 20px;
-    }
-
-    input + .hint:not(.error) {
       margin-bottom: 20px;
     }
 
@@ -152,7 +153,11 @@
     }
 
     .hint.error {
-      color: #ff0000;
+      color: @error-color;
+    }
+
+    .hint.success {
+      color: @success-color;
     }
   }
 }
