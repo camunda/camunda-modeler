@@ -384,6 +384,11 @@ class MenuBuilder {
       label: 'Toggle DevTools',
       accelerator: 'F12',
       click: (_, browserWindow) => {
+        // TODO: remove when proper handler is added
+        if (!browserWindow) {
+          return;
+        }
+        
         const isDevToolsOpened = browserWindow.isDevToolsOpened();
 
         if (isDevToolsOpened) {
