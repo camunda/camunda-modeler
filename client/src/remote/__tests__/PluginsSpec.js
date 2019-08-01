@@ -32,7 +32,7 @@ describe('plugins', function() {
 
     it('should load all plugins', async function() {
       // given
-      const mockPlugins = [
+      const plugins = new Plugins([
         {
           name: 'foo',
           script: 'bar',
@@ -43,15 +43,7 @@ describe('plugins', function() {
           script: 'foo',
           style: 'baz'
         }
-      ];
-
-      const plugins = new Plugins({
-        plugins: {
-          getAll() {
-            return mockPlugins;
-          }
-        }
-      });
+      ]);
 
       // when
       await plugins.loadAll();

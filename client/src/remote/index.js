@@ -36,7 +36,7 @@ export const config = new Config(backend);
 
 export const dialog = new Dialog(backend);
 
-export const plugins = new Plugins(app);
+export const plugins = new Plugins(app.plugins.getAll());
 
 export const metadata = getGlobal('metaData');
 
