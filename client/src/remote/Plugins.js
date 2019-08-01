@@ -15,18 +15,19 @@ const PLUGINS_PROTOCOL = 'app-plugins://';
 
 export default class Plugins {
 
-  constructor(app) {
-    this.app = app;
+  constructor(appPlugins) {
+    this.appPlugins = appPlugins;
   }
 
   /**
    * Load all plugins by creating either HTML <link> or <script> tag.
    */
   loadAll() {
-    const plugins = this.app.plugins.getAll();
 
-    const stylePlugins = filter(plugins, plugins => plugins.style),
-          scriptPlugins = filter(plugins, plugins => plugins.script);
+    const appPlugins = this.getAppPlugins();
+
+    const stylePlugins = filter(appPlugins, appPlugin => appPlugin.style),
+          scriptPlugins = filter(appPlugins, appPlugin => appPlugin.script);
 
     // load style plugins
     stylePlugins.forEach(this._loadStylePlugin);
@@ -65,7 +66,7 @@ export default class Plugins {
    * @returns {Array}
    */
   get(type) {
-    return this.getAllRegistered()
+    return this.getClientPlugins()
       .filter(registration => registration.type === type)
       .map(registration => registration.plugin);
   }
@@ -114,12 +115,12 @@ export default class Plugins {
    *
    * @returns {Array}
    */
-  getAllRegistered() {
+  getClientPlugins() {
     return window.plugins || [];
   }
 
-  getAll() {
-    return this.app.plugins.getAll();
+  getAppPlugins() {
+    return this.appPlugins;
   }
 
 }
