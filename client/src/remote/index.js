@@ -20,7 +20,6 @@ import Workspace from './Workspace';
 
 const {
   app,
-  getGlobal,
   process
 } = electronRequire('remote');
 
@@ -38,7 +37,7 @@ export const dialog = new Dialog(backend);
 
 export const plugins = new Plugins(app.plugins.getAll());
 
-export const metadata = getGlobal('metaData');
+export const metadata = app.metadata;
 
 export const flags = app.flags.getAll();
 

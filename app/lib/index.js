@@ -65,18 +65,20 @@ const {
   files
 } = bootstrap();
 
+const {
+  platform
+} = process;
+
 app.plugins = plugins;
 app.flags = flags;
 
-Platform.create(process.platform, app, config);
-
-// this is shared variable between main and renderer processes
-global.metaData = {
+app.metadata = {
   version: app.version,
   name: app.name
 };
 
-const { platform } = process;
+Platform.create(platform, app, config);
+
 
 const menu = new Menu({
   platform
