@@ -21,7 +21,7 @@ const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 
 module.exports = {
   mode: DEV ? 'development' : (LICENSE_CHECK ? 'none' : 'production'),
-  target: 'electron-renderer',
+  target: 'web',
   entry: {
     bundle: ['./src/index.js']
   },
