@@ -28,7 +28,7 @@ This project incorporates components from the projects listed below. The origina
 21.   path-platform@0.11.15 (https://github.com/tjfontaine/node-path-platform)
 22.   wrappy@1.0.2 (https://github.com/npm/wrappy)
 23.   @bpmn-io/add-exporter@0.2.0 (https://github.com/bpmn-io/add-exporter)
-24.   @bpmn-io/align-to-origin@0.5.0 (https://github.com/bpmn-io/align-to-origin)
+24.   @bpmn-io/align-to-origin@0.6.0 (https://github.com/bpmn-io/align-to-origin)
 25.   @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
 26.   @sindresorhus/is@0.7.0 (https://github.com/sindresorhus/is)
 27.   bpmn-js-properties-panel@0.31.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
@@ -705,11 +705,11 @@ THE SOFTWARE.
 END OF @bpmn-io/add-exporter@0.2.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/align-to-origin@0.5.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/align-to-origin@0.6.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
-Copyright (c) 2019-present camunda Services GmbH
+Copyright (c) 2019-present Camunda Services GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -729,7 +729,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/align-to-origin@0.5.0 NOTICES AND INFORMATION
+END OF @bpmn-io/align-to-origin@0.6.0 NOTICES AND INFORMATION
 
 
 %% @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION BEGIN HERE
