@@ -7,7 +7,7 @@
   "main": "src/index.js",
   "dependencies": {
     "@bpmn-io/add-exporter": "^0.2.0",
-    "@bpmn-io/align-to-origin": "^0.5.0",
+    "@bpmn-io/align-to-origin": "^0.6.0",
     "@bpmn-io/replace-ids": "^0.2.0",
     "bpmn-js": "^4.0.3",
     "bpmn-js-properties-panel": "^0.31.0",
