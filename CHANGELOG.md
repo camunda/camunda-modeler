@@ -6,6 +6,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.2.3
+
+* `FIX`: correct cursor being stuck in hover state ([#1383](https://github.com/camunda/camunda-modeler/issues/1383))
+* `CHORE`: bump to `bpmn-js@4.0.4`
+
 ## 3.2.2
 
 * `FIX`: make align-to-origin grid-aware
