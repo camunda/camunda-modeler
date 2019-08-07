@@ -113,13 +113,15 @@ class DeployDiagramModal extends PureComponent {
       auth: this.getAuth(values)
     };
 
-    let connectionError = await this.props.onAction('deploy-check', payload);
+    const response = await this.props.onAction('deploy-check', payload);
 
-    if (connectionError) {
-      connectionError = this.getValidationError(connectionError);
+    if (!response.ok) {
+      const connectionError = this.getValidationError(response.error);
+
+      return this.setState(state => ({ ...state, connectionError: connectionError }));
     }
 
-    this.setState(state => ({ ...state, connectionError }));
+    this.setState(state => ({ ...state, connectionError: undefined }));
   }
 
   getValidationError(error) {

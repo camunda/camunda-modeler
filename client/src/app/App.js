@@ -1555,9 +1555,9 @@ export class App extends PureComponent {
     try {
       await this.getGlobal('backend').send('deploy:ping', { url, auth });
 
-      return;
+      return { ok: true };
     } catch (error) {
-      return error;
+      return { ok: false, error };
     }
   }
 

@@ -2221,7 +2221,7 @@ describe('<App>', function() {
 
       // then
       expect(sendSpy).to.be.calledOnceWith('deploy:ping', checkOptions);
-      expect(result).to.be.undefined;
+      expect(result).to.eql({ ok: true });
     });
 
 
@@ -2244,7 +2244,7 @@ describe('<App>', function() {
       const result = await app.triggerAction('deploy-check', {});
 
       // then
-      expect(result).to.eql(error);
+      expect(result).to.eql({ ok: false, error });
     });
 
 
