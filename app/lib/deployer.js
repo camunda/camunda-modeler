@@ -74,12 +74,12 @@ class Deployer {
 
   async tryFetch(url, requestParams) {
     const serverResponse = await this.fetch(url, requestParams);
-    const response = await this.tryExtractResponse(serverResponse);
+    const response = await this.extractResponse(serverResponse);
 
     return response;
   }
 
-  async tryExtractResponse(serverResponse) {
+  async extractResponse(serverResponse) {
     if (!serverResponse.ok) {
       const error = await getErrorFromResponse(serverResponse);
       throw error;
