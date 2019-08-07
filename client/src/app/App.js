@@ -1501,6 +1501,14 @@ export class App extends PureComponent {
       return this.logEntry(message, category, action);
     }
 
+    if (action === 'deploy-diagram') {
+      return this.deployDiagram(options);
+    }
+
+    if (action === 'set-endpoints') {
+      return this.setEndpoints(options);
+    }
+
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
@@ -1521,20 +1529,22 @@ export class App extends PureComponent {
 
   setEndpoints = endpoints => this.setState({ endpoints });
 
-  handleDeploy = async (options) => {
-    await this.triggerAction('save');
+  async deployDiagram(options) {
+    try {
+      await this.triggerAction('save');
 
-    const { file } = this.state.activeTab;
+      const { file } = this.state.activeTab;
 
-    if (!file || !file.path) {
-      return false;
+      if (!file || !file.path) {
+        return {};
+      }
+
+      const result = await this.getGlobal('backend').send('deploy', { ...options, file });
+
+      return { result };
+    } catch (error) {
+      return { error };
     }
-
-    return this.getGlobal('backend').send('deploy', { ...options, file });
-  };
-
-  handleDeployError = (error) => {
-    this.logEntry(`Deploy error: ${JSON.stringify(error)}`, 'deploy-error');
   }
 
   handleCloseTab = (tab) => {
@@ -1770,9 +1780,7 @@ export class App extends PureComponent {
             tab={ activeTab }
             getGlobal={ this.getGlobal }
             onClose={ this.closeModal }
-            onDeploy={ this.handleDeploy }
-            onDeployError={ this.handleDeployError }
-            onEndpointsUpdate={ this.setEndpoints }
+            onAction={ this.triggerAction }
             onMenuUpdate={ this.updateMenu }
           />
 

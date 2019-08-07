@@ -54,30 +54,39 @@ class DeployDiagramModal extends PureComponent {
 
     this.saveEndpoint(values.endpointUrl);
 
-    try {
-      const deployResult = await this.props.onDeploy(payload);
+    const { error, result } = await this.props.onAction('deploy-diagram', payload);
 
-      if (!deployResult) {
-        setSubmitting(false);
+    setSubmitting(false);
 
-        return;
-      }
+    if (error) {
+      await this.logError(error);
 
-      this.setState({
-        success: `Successfully deployed diagram to ${payload.endpointUrl}`,
-        error: ''
-      });
-    } catch (error) {
-      this.props.onDeployError(error);
       const errorMessage = this.getErrorMessage(error);
 
-      this.setState({
+      return this.setState({
         success: '',
         error: errorMessage
       });
     }
 
-    setSubmitting(false);
+    // no result if deployment was canceled
+    if (!result) {
+      return;
+    }
+
+    this.setState({
+      success: `Successfully deployed diagram to ${payload.endpointUrl}`,
+      error: ''
+    });
+  }
+
+  logError(error) {
+    const payload = {
+      category: 'deploy-error',
+      message: `Deploy error: ${JSON.stringify(error)}`
+    };
+
+    return this.props.onAction('log', payload);
   }
 
   handleFocusChange = event => {
@@ -160,7 +169,7 @@ class DeployDiagramModal extends PureComponent {
   }
 
   saveEndpoint(endpointUrl) {
-    this.props.onEndpointsUpdate([ endpointUrl ]);
+    return this.props.onAction('set-endpoints', [ endpointUrl ]);
   }
 
   getDeploymentPayload(values) {
@@ -236,8 +245,7 @@ class DeployDiagramModal extends PureComponent {
 DeployDiagramModal.defaultProps = {
   endpoints: [],
   tab: {},
-  onEndpointsUpdate: () => {},
-  onDeployError: console.error,
+  onAction: () => ({}),
   onMenuUpdate: () => {}
 };
 

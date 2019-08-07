@@ -2134,7 +2134,7 @@ describe('<App>', function() {
       const saveStub = sinon.stub(app, 'saveTab').resolves();
 
       // when
-      await app.handleDeploy({});
+      await app.triggerAction('deploy-diagram', {});
 
       // then
       expect(saveStub).to.be.calledOnce;
@@ -2165,7 +2165,7 @@ describe('<App>', function() {
 
       // when
       await app.createDiagram();
-      await app.handleDeploy({});
+      await app.triggerAction('deploy-diagram', {});
 
       // then
       expect(saveStub).to.be.calledOnce;
@@ -2173,7 +2173,7 @@ describe('<App>', function() {
     });
 
 
-    it('should throw error when tab is not saved before deployment', async function() {
+    it('should not deploy diagram when tab is not saved', async function() {
       // given
       const sendSpy = spy();
 
@@ -2192,11 +2192,72 @@ describe('<App>', function() {
 
       // when
       await app.createDiagram();
-      await app.handleDeploy({});
+      await app.triggerAction('deploy-diagram', {});
 
       // then
       expect(saveStub).to.be.calledOnce;
       expect(sendSpy).to.not.be.called;
+    });
+
+
+    it('should handle connection check', async function() {
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      const checkOptions = { url: '', auth: '' };
+
+      // when
+      const result = await app.triggerAction('deploy-check', checkOptions);
+
+      // then
+      expect(sendSpy).to.be.calledOnceWith('deploy:ping', checkOptions);
+      expect(result).to.be.undefined;
+    });
+
+
+    it('should return error if connection check fails', async function() {
+      // given
+      const error = new Error('error');
+      const sendSpy = sinon.stub().rejects(error);
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      // when
+      const result = await app.triggerAction('deploy-check', {});
+
+      // then
+      expect(result).to.eql(error);
+    });
+
+
+    it('should set endpoints', async function() {
+      // given
+      const endpoints = [ 'http://example.com' ];
+      const { app } = createApp();
+
+      // when
+      await app.triggerAction('set-endpoints', endpoints);
+
+      // then
+      expect(app.state.endpoints).to.eql(endpoints);
     });
 
   });

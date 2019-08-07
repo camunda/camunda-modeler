@@ -34,15 +34,15 @@ describe('<DeployDiagramModal>', function() {
 
   describe('deployment', function() {
 
-    it('should set state.error when onDeploy throws error', async function() {
+    it('should set state.error when deployment fails', async function() {
       // given
       const endpointUrl = MOCK_ENDPOINT_URL,
             deploymentName = 'deploymentName';
 
-      const onDeployStub = sinon.stub().rejects(new Error('errorMessage'));
+      const onActionStub = sinon.stub().resolves({ error: new Error('errorMessage') });
       const setSubmittingSpy = sinon.spy();
 
-      const wrapper = shallow(<DeployDiagramModal onDeploy={ onDeployStub } />);
+      const wrapper = shallow(<DeployDiagramModal onAction={ onActionStub } />);
       const instance = wrapper.instance();
 
       // when
@@ -60,15 +60,15 @@ describe('<DeployDiagramModal>', function() {
     });
 
 
-    it('should set state.success when onDeploy succeeds', async function() {
+    it('should set state.success when deployment succeeds', async function() {
       // given
       const endpointUrl = MOCK_ENDPOINT_URL,
             deploymentName = 'deploymentName';
 
-      const onDeployStub = sinon.stub().resolves(true);
+      const onActionStub = sinon.stub().resolves({ result: 'success' });
       const setSubmittingSpy = sinon.spy();
 
-      const wrapper = shallow(<DeployDiagramModal onDeploy={ onDeployStub } />);
+      const wrapper = shallow(<DeployDiagramModal onAction={ onActionStub } />);
       const instance = wrapper.instance();
 
       // when
@@ -91,10 +91,10 @@ describe('<DeployDiagramModal>', function() {
       const endpointUrl = MOCK_ENDPOINT_URL,
             deploymentName = 'deploymentName';
 
-      const onDeployStub = sinon.stub().resolves(false);
+      const onActionStub = sinon.stub().resolves({});
       const setSubmittingSpy = sinon.spy();
 
-      const wrapper = shallow(<DeployDiagramModal onDeploy={ onDeployStub } />);
+      const wrapper = shallow(<DeployDiagramModal onAction={ onActionStub } />);
       const instance = wrapper.instance();
 
       // when
@@ -117,13 +117,11 @@ describe('<DeployDiagramModal>', function() {
       const endpointUrl = MOCK_ENDPOINT_URL,
             deploymentName = 'deploymentName';
 
-      const onDeployStub = sinon.stub().resolves();
-      const onEndpointsUpdateSpy = sinon.spy();
+      const onActionStub = sinon.stub().resolves({});
 
       const wrapper = shallow(
         <DeployDiagramModal
-          onDeploy={ onDeployStub }
-          onEndpointsUpdate={ onEndpointsUpdateSpy }
+          onAction={ onActionStub }
         />
       );
       const instance = wrapper.instance();
@@ -137,7 +135,7 @@ describe('<DeployDiagramModal>', function() {
       });
 
       // expect
-      expect(onEndpointsUpdateSpy).to.be.calledWith([ endpointUrl ]);
+      expect(onActionStub).to.be.calledWith('set-endpoints', [ endpointUrl ]);
     });
 
 
@@ -146,13 +144,11 @@ describe('<DeployDiagramModal>', function() {
       const endpointUrl = 'http://example.com',
             deploymentName = 'deploymentName';
 
-      const onDeployStub = sinon.stub().resolves();
-      const onEndpointsUpdateSpy = sinon.spy();
+      const onActionStub = sinon.stub().resolves({});
 
       const wrapper = shallow(
         <DeployDiagramModal
-          onDeploy={ onDeployStub }
-          onEndpointsUpdate={ onEndpointsUpdateSpy }
+          onAction={ onActionStub }
         />
       );
       const instance = wrapper.instance();
@@ -166,7 +162,7 @@ describe('<DeployDiagramModal>', function() {
       });
 
       // expect
-      expect(onEndpointsUpdateSpy).to.be.calledWith([ endpointUrl ]);
+      expect(onActionStub).to.be.calledWith('set-endpoints', [ endpointUrl ]);
     });
 
   });
@@ -226,11 +222,11 @@ describe('<DeployDiagramModal>', function() {
             deploymentName = 'deploymentName',
             expectedEndpointUrl = `${endpointUrl}/deployment/create`;
 
-      const onDeployStub = sinon.stub().resolves();
+      const onActionStub = sinon.stub().resolves({});
 
       const wrapper = shallow(
         <DeployDiagramModal
-          onDeploy={ onDeployStub }
+          onAction={ onActionStub }
         />
       );
       const instance = wrapper.instance();
@@ -240,15 +236,17 @@ describe('<DeployDiagramModal>', function() {
         endpointUrl,
         deploymentName
       }, {
-        setSubmitting: sinon.spy()
+        setSubmitting: () => {}
       });
 
       // expect
-      expect(onDeployStub).to.be.calledOnce;
+      const expectedPayload = {
+        deploymentName,
+        endpointUrl: expectedEndpointUrl,
+        tenantId: undefined
+      };
 
-      const payload = onDeployStub.getCall(0).args[0];
-
-      expect(payload).to.have.property('endpointUrl').eql(expectedEndpointUrl);
+      expect(onActionStub).to.have.been.calledWith('deploy-diagram', expectedPayload);
     });
 
 
@@ -258,11 +256,11 @@ describe('<DeployDiagramModal>', function() {
             deploymentName = 'deploymentName',
             expectedEndpointUrl = `${endpointUrl}deployment/create`;
 
-      const onDeployStub = sinon.stub().resolves();
+      const onActionStub = sinon.stub().resolves({});
 
       const wrapper = shallow(
         <DeployDiagramModal
-          onDeploy={ onDeployStub }
+          onAction={ onActionStub }
         />
       );
       const instance = wrapper.instance();
@@ -272,15 +270,17 @@ describe('<DeployDiagramModal>', function() {
         endpointUrl,
         deploymentName
       }, {
-        setSubmitting: sinon.spy()
+        setSubmitting: () => {}
       });
 
       // expect
-      expect(onDeployStub).to.be.calledOnce;
+      const expectedPayload = {
+        deploymentName,
+        endpointUrl: expectedEndpointUrl,
+        tenantId: undefined
+      };
 
-      const payload = onDeployStub.getCall(0).args[0];
-
-      expect(payload).to.have.property('endpointUrl').eql(expectedEndpointUrl);
+      expect(onActionStub).to.have.been.calledWith('deploy-diagram', expectedPayload);
     });
 
   });
@@ -377,11 +377,11 @@ describe('<DeployDiagramModal>', function() {
       const endpointUrl = 'http://example.com/',
             deploymentName = 'deploymentName';
 
-      const onDeployStub = sinon.stub().resolves();
+      const onActionStub = sinon.stub().resolves({});
 
       const wrapper = shallow(
         <DeployDiagramModal
-          onDeploy={ onDeployStub }
+          onAction={ onActionStub }
         />
       );
       const instance = wrapper.instance();
@@ -395,9 +395,9 @@ describe('<DeployDiagramModal>', function() {
       });
 
       // expect
-      expect(onDeployStub).to.be.calledOnce;
+      expect(onActionStub).to.be.calledTwice;
 
-      const payload = onDeployStub.getCall(0).args[0];
+      const payload = onActionStub.getCall(1).args[1];
 
       expect(payload).to.not.have.property('auth');
     });
@@ -411,11 +411,11 @@ describe('<DeployDiagramModal>', function() {
             password = 'password',
             authType = AuthTypes.basic;
 
-      const onDeployStub = sinon.stub().resolves();
+      const onActionStub = sinon.stub().resolves({});
 
       const wrapper = shallow(
         <DeployDiagramModal
-          onDeploy={ onDeployStub }
+          onAction={ onActionStub }
         />
       );
       const instance = wrapper.instance();
@@ -432,9 +432,9 @@ describe('<DeployDiagramModal>', function() {
       });
 
       // expect
-      expect(onDeployStub).to.be.calledOnce;
+      expect(onActionStub).to.be.calledTwice;
 
-      const payload = onDeployStub.getCall(0).args[0];
+      const payload = onActionStub.getCall(1).args[1];
 
       expect(payload).to.have.property('auth');
       expect(payload.auth).to.have.property('username').eql(username);
@@ -449,11 +449,11 @@ describe('<DeployDiagramModal>', function() {
             bearer = 'bearer',
             authType = AuthTypes.bearer;
 
-      const onDeployStub = sinon.stub().resolves();
+      const onActionStub = sinon.stub().resolves({});
 
       const wrapper = shallow(
         <DeployDiagramModal
-          onDeploy={ onDeployStub }
+          onAction={ onActionStub }
         />
       );
       const instance = wrapper.instance();
@@ -469,9 +469,9 @@ describe('<DeployDiagramModal>', function() {
       });
 
       // expect
-      expect(onDeployStub).to.be.calledOnce;
+      expect(onActionStub).to.be.calledTwice;
 
-      const payload = onDeployStub.getCall(0).args[0];
+      const payload = onActionStub.getCall(1).args[1];
 
       expect(payload).to.have.property('auth');
       expect(payload.auth).to.have.property('bearer').eql(bearer);
