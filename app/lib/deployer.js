@@ -85,15 +85,7 @@ class Deployer {
       throw error;
     }
 
-    let response;
-
-    try {
-      response = await serverResponse.json();
-    } catch (error) {
-      response = serverResponse.statusText;
-    }
-
-    return response;
+    return serverResponse.json();
   }
 
   getDeploymentBody({ deploymentName, tenantId, file = {} }) {

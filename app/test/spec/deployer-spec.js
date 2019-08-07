@@ -108,7 +108,7 @@ describe('Deployer', function() {
     });
 
 
-    it('should NOT throw error when response is OK but not a JSON', async function() {
+    it('should throw error when response is OK but not a JSON', async function() {
 
       // given
       const okResponse = 'OK';
@@ -128,10 +128,16 @@ describe('Deployer', function() {
       const data = getDeploymentData();
 
       // when
-      const response = await deployer.deploy('some/url', data);
+      try {
+        await deployer.deploy('some/url', data);
+      } catch (error) {
+        // then
+        expect(error).to.exist;
 
-      // then
-      expect(response).to.eql(okResponse);
+        return;
+      }
+
+      throw new Error('should never get here');
     });
 
 
