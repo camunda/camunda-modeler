@@ -1506,7 +1506,7 @@ export class App extends PureComponent {
     }
 
     if (action === 'deploy-check') {
-      return this.checkDeploymentConnection(options);
+      return this.checkEndpointConnection(options);
     }
 
     if (action === 'set-endpoints') {
@@ -1551,7 +1551,7 @@ export class App extends PureComponent {
     }
   }
 
-  checkDeploymentConnection = async ({ url, auth }) => {
+  checkEndpointConnection = async ({ url, auth }) => {
     try {
       await this.getGlobal('backend').send('deploy:ping', { url, auth });
 
