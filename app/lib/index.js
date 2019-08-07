@@ -465,25 +465,30 @@ app.on('ready', function() {
 });
 
 
-function handleDeployment(options, done) {
+async function handleDeployment(options, done) {
   const { endpointUrl } = options;
 
-  deployer.deploy(endpointUrl, options, function(error, result) {
+  try {
+    const result = await deployer.deploy(endpointUrl, options);
 
-    if (error) {
-      log.error('failed to deploy', error);
+    return done(null, result);
+  } catch (error) {
+    log.error('failed to deploy', error);
 
-      return done(error);
-    }
-
-    done(null, result);
-  });
+    return done(error);
+  }
 }
 
-function handlePing(options, done) {
+async function handlePing(options, done) {
   const { url } = options;
 
-  deployer.ping(url, options, done);
+  try {
+    const result = await deployer.ping(url, options);
+
+    return done(null, result);
+  } catch (error) {
+    done(error);
+  }
 }
 
 function bootstrapLogging() {

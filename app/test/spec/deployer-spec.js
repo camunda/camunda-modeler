@@ -108,7 +108,7 @@ describe('Deployer', function() {
     });
 
 
-    it('should NOT throw error when response is OK but not a JSON', function(done) {
+    it('should NOT throw error when response is OK but not a JSON', async function() {
 
       // given
       const okResponse = 'OK';
@@ -123,24 +123,19 @@ describe('Deployer', function() {
         });
       }
 
-      // given
       const deployer = createDeployer(fetchResolvingToText);
 
       const data = getDeploymentData();
 
       // when
-      deployer.deploy('some/url', data, (err, data) => {
+      const response = await deployer.deploy('some/url', data);
 
-        // then
-        expect(err).to.not.exist;
-        expect(data).to.eql(okResponse);
-
-        done();
-      });
+      // then
+      expect(response).to.eql(okResponse);
     });
 
 
-    it('should handle fetch error', function(done) {
+    it('should handle fetch error', async function() {
 
       // given
       const fetchError = 'FETCH_ERROR';
@@ -149,26 +144,26 @@ describe('Deployer', function() {
         return Promise.reject(new Error(fetchError));
       }
 
-      // given
       const deployer = createDeployer(failingFetch);
 
       const data = getDeploymentData();
 
       // when
-      deployer.deploy('some/url', data, (err, data) => {
+      try {
+        await deployer.deploy('some/url', data);
 
+      } catch (error) {
         // then
-        expect(err).to.exist;
-        expect(err.message).to.eql(fetchError);
+        expect(error.message).to.eql(fetchError);
 
-        expect(data).not.to.exist;
+        return;
+      }
 
-        done();
-      });
+      throw new Error('should never get here');
     });
 
 
-    it('should return error with proper code for backend error', function(done) {
+    it('should return error with proper code for backend error', async function() {
 
       // given
       const errorStatus = 500,
@@ -191,43 +186,43 @@ describe('Deployer', function() {
       const data = getDeploymentData();
 
       // when
-      deployer.deploy('some/url', data, (err, data) => {
-
+      try {
+        await deployer.deploy('some/url', data);
+      } catch (error) {
         // then
-        expect(err).to.exist;
-        expect(err.status).to.eql(errorStatus);
+        expect(error.status).to.eql(errorStatus);
 
-        expect(data).not.to.exist;
+        return;
+      }
 
-        done();
-      });
+      throw new Error('should never get here');
+    });
 
 
-      it('should attach deployment name to error', function(done) {
+    it('should attach deployment name to error', async function() {
 
-        // given
-        const deploymentName = 'deploymentName';
+      // given
+      const deploymentName = 'deploymentName';
 
-        function failingFetch() {
-          return Promise.reject(new Error());
-        }
+      function failingFetch() {
+        return Promise.reject(new Error());
+      }
 
-        const deploy = createDeployer(failingFetch);
+      const deployer = createDeployer(failingFetch);
 
-        const data = getDeploymentData({ deploymentName });
+      const data = getDeploymentData({ deploymentName });
 
-        // when
-        deploy('some/url', data, (err, data) => {
+      // when
+      try {
+        await deployer.deploy('some/url', data);
+      } catch (error) {
+        // then
+        expect(error.deploymentName).to.eql(deploymentName);
 
-          // then
-          expect(err).to.exist;
-          expect(err.deploymentName).to.eql(deploymentName);
+        return;
+      }
 
-          expect(data).not.to.exist;
-
-          done();
-        });
-      });
+      throw new Error('should never get here');
     });
 
 
@@ -268,14 +263,15 @@ describe('Deployer', function() {
         const url = 'some/url';
 
         // when
-        await deployer.deploy(url, data, (err, data) => {
-          // then
-          expect(err).to.exist;
-          expect(data).not.to.exist;
-        });
+        try {
+          await deployer.deploy(url, data);
+        } catch (error) {
+          expect(fetchSpy).to.have.not.be.called;
 
-        expect(fetchSpy).to.not.be.called;
+          return;
+        }
 
+        throw new Error('should never get here');
       });
 
 

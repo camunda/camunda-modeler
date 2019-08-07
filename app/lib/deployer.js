@@ -20,7 +20,7 @@ class Deployer {
   /**
    * Deploy diagram to the given endpoint URL.
    */
-  async deploy(url, options, cb = noop) {
+  async deploy(url, options) {
     try {
       this.validateDeploymentParams(url, options);
 
@@ -28,27 +28,23 @@ class Deployer {
 
       const response = await this.tryFetch(url, requestParams);
 
-      return cb(null, response);
+      return response;
     } catch (error) {
       error.deploymentName = options.deploymentName;
 
-      return cb(error);
+      throw error;
     }
   }
 
   /**
    * Ping server
    */
-  async ping(url, options, cb = noop) {
-    try {
-      const headers = this.getHeaders(options);
+  async ping(url, options) {
+    const headers = this.getHeaders(options);
 
-      const response = await this.tryFetch(url, { headers });
+    const response = await this.tryFetch(url, { headers });
 
-      return cb(null, response);
-    } catch (error) {
-      return cb(error);
-    }
+    return response;
   }
 
   validateDeploymentParams(url, { deploymentName, file }) {
@@ -182,8 +178,6 @@ class AuthHeaderBuilder {
 function btoa(input) {
   return Buffer.from(input, 'utf8').toString('base64');
 }
-
-function noop() { }
 
 
 async function getErrorFromResponse(response) {
