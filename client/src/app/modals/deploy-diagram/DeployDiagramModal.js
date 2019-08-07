@@ -14,7 +14,6 @@ import View from './View';
 import AuthTypes from './AuthTypes';
 
 import errorMessageFunctions from './error-messages';
-import validationErrorFunctions from './validation-errors';
 import getEditMenu from './getEditMenu';
 import { debounce } from '../../../util';
 
@@ -116,7 +115,7 @@ class DeployDiagramModal extends PureComponent {
     const response = await this.props.onAction('deploy-check', payload);
 
     if (!response.ok) {
-      const connectionError = this.getValidationError(response.error);
+      const connectionError = this.getConnectionErrorMessage(response.error);
 
       return this.setState(state => ({ ...state, connectionError: connectionError }));
     }
@@ -124,16 +123,35 @@ class DeployDiagramModal extends PureComponent {
     this.setState(state => ({ ...state, connectionError: undefined }));
   }
 
-  getValidationError(error) {
-    for (const getMessage of validationErrorFunctions) {
-      const errorMessage = getMessage(error);
+  getConnectionErrorMessage(error) {
+    return this.getNetworkErrorMessage(error) ||
+      this.getStatusCodeErrorMessage(error) ||
+      'Cannot connect to engine for unknown reason.';
+  }
 
-      if (errorMessage) {
-        return errorMessage;
-      }
+  getNetworkErrorMessage(error) {
+    switch (error.code) {
+    case 'ETIMEDOUT':
+    case 'ECONNRESET':
+    case 'ECONNREFUSED':
+    case 'ENOTFOUND':
+      return 'Could not connect to the server. Did you run the engine?';
     }
+  }
 
-    return 'Cannot connect to engine for unknown reason.';
+  getStatusCodeErrorMessage(error) {
+    switch (error.status) {
+    case 401:
+      return 'Connection is unauthorized. Please use valid credentials.';
+    case 403:
+      return 'Connection is not permitted for your credentials. Please check your credentials.';
+    case 404:
+      return 'Cannot connect to Camunda. Please check the endpoint URL.';
+    case 500:
+      return 'Camunda is reporting an unknown error. Please check the server status.';
+    case 503:
+      return 'Camunda is currently unavailable. Please try again later.';
+    }
   }
 
   validateEndpointUrl = async (url) => {
