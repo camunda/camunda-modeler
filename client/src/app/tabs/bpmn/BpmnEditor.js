@@ -184,7 +184,9 @@ export class BpmnEditor extends CachedComponent {
       'propertiesPanel.focusin',
       'propertiesPanel.focusout',
       'directEditing.activate',
-      'directEditing.deactivate'
+      'directEditing.deactivate',
+      'searchPad.closed',
+      'searchPad.opened'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });

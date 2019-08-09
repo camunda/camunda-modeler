@@ -220,10 +220,16 @@ describe('<CmmnEditor>', function() {
     it('propertiesPanel.focusout', expectHandleChanged('propertiesPanel.focusout'));
 
 
-    it('propertiesPanel.focusout', expectHandleChanged('directEditing.activate'));
+    it('directEditing.activate', expectHandleChanged('directEditing.activate'));
 
 
-    it('propertiesPanel.focusout', expectHandleChanged('directEditing.deactivate'));
+    it('directEditing.deactivate', expectHandleChanged('directEditing.deactivate'));
+
+
+    it('searchPad.opened', expectHandleChanged('searchPad.opened'));
+
+
+    it('searchPad.closed', expectHandleChanged('searchPad.closed'));
 
   });
 
