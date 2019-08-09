@@ -18,7 +18,7 @@ import {
   Tab
 } from './primitives';
 
-import Flags, { DISABLE_CMMN, DISABLE_DMN } from '../util/Flags';
+import Flags, { DISABLE_DMN } from '../util/Flags';
 
 
 export default class EmptyTab extends PureComponent {
@@ -45,14 +45,6 @@ export default class EmptyTab extends PureComponent {
               <Fragment>
                 <span> or </span>
                 <button onClick={ () => onAction('create-dmn-diagram') }>DMN diagram</button>
-              </Fragment>
-            )
-          }
-          {
-            !Flags.get(DISABLE_CMMN) && (
-              <Fragment>
-                <span> or </span>
-                <button onClick={ () => onAction('create-cmmn-diagram') }>CMMN diagram</button>
               </Fragment>
             )
           }

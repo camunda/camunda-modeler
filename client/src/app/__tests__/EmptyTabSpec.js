@@ -16,7 +16,7 @@ import {
 
 import EmptyTab from '../EmptyTab';
 
-import Flags, { DISABLE_CMMN, DISABLE_DMN } from '../../util/Flags';
+import Flags, { DISABLE_DMN } from '../../util/Flags';
 
 /* global sinon */
 
@@ -51,38 +51,6 @@ describe('<EmptyTab>', function() {
       // then
       expect(tree.findWhere(
         wrapper => wrapper.text() === 'DMN diagram').first().exists()).to.be.true;
-    });
-  });
-
-
-  describe('disabling cmmn', function() {
-
-    afterEach(sinon.restore);
-
-    it('should NOT display cmmn diagram on flag', function() {
-      // given
-      sinon.stub(Flags, 'get').withArgs(DISABLE_CMMN).returns(true);
-
-      // when
-      const {
-        tree
-      } = createEmptyTab();
-
-      // then
-      expect(tree.findWhere(
-        wrapper => wrapper.text() === 'CMMN diagram').first().exists()).to.be.false;
-    });
-
-
-    it('should display cmmn diagram without flag', function() {
-      // given
-      const {
-        tree
-      } = createEmptyTab();
-
-      // then
-      expect(tree.findWhere(
-        wrapper => wrapper.text() === 'CMMN diagram').first().exists()).to.be.true;
     });
   });
 
