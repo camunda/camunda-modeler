@@ -30,12 +30,12 @@ This project incorporates components from the projects listed below. The origina
 23.   @bpmn-io/add-exporter@0.2.0 (https://github.com/bpmn-io/add-exporter)
 24.   @bpmn-io/align-to-origin@0.6.0 (https://github.com/bpmn-io/align-to-origin)
 25.   @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
-26.   @sindresorhus/is@0.7.0 (https://github.com/sindresorhus/is)
-27.   bpmn-js-properties-panel@0.31.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+26.   @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
+27.   bpmn-js-properties-panel@0.32.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 28.   bpmn-js-signavio-compat@1.1.0 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
-29.   bpmn-js@4.0.4 (https://github.com/bpmn-io/bpmn-js)
-30.   bpmn-moddle@5.2.0 (https://github.com/bpmn-io/bpmn-moddle)
-31.   camunda-bpmn-moddle@3.2.0 (https://github.com/camunda/camunda-bpmn-moddle)
+29.   bpmn-js@5.0.0-beta.2 (https://github.com/bpmn-io/bpmn-js)
+30.   bpmn-moddle@6.0.0 (https://github.com/bpmn-io/bpmn-moddle)
+31.   camunda-bpmn-moddle@4.1.0 (https://github.com/camunda/camunda-bpmn-moddle)
 32.   camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
 33.   camunda-dmn-moddle@1.0.0 (https://github.com/camunda/camunda-dmn-moddle)
 34.   canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
@@ -48,10 +48,10 @@ This project incorporates components from the projects listed below. The origina
 41.   css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape)
 42.   debug@4.1.1 (https://github.com/visionmedia/debug)
 43.   deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
-44.   diagram-js-direct-editing@1.5.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
-45.   diagram-js-minimap@1.3.0 (https://github.com/bpmn-io/diagram-js-minimap)
+44.   diagram-js-direct-editing@1.6.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
+45.   diagram-js-minimap@2.0.1 (https://github.com/bpmn-io/diagram-js-minimap)
 46.   diagram-js-origin@1.2.0 (https://github.com/bpmn-io/diagram-js-origin)
-47.   diagram-js@4.0.3 (https://github.com/bpmn-io/diagram-js)
+47.   diagram-js@5.0.0-beta.2 (https://github.com/bpmn-io/diagram-js)
 48.   didi@4.0.0 (https://github.com/nikku/didi)
 49.   dmn-js-decision-table@6.3.3 (https://github.com/bpmn-io/dmn-js)
 50.   dmn-js-drd@6.3.3 (https://github.com/bpmn-io/dmn-js)
@@ -74,14 +74,14 @@ This project incorporates components from the projects listed below. The origina
 67.   lodash@4.17.14 (https://github.com/lodash/lodash)
 68.   min-dom@3.1.1 (https://github.com/bpmn-io/min-dom)
 69.   mitt@1.1.3 (https://github.com/developit/mitt)
-70.   moddle-xml@7.5.0 (https://github.com/bpmn-io/moddle-xml)
-71.   moddle@4.1.0 (https://github.com/bpmn-io/moddle)
+70.   moddle-xml@8.0.1 (https://github.com/bpmn-io/moddle-xml)
+71.   moddle@5.0.1 (https://github.com/bpmn-io/moddle)
 72.   ms@2.1.1 (https://github.com/zeit/ms)
 73.   object-assign@4.1.1 (https://github.com/sindresorhus/object-assign)
 74.   object-refs@0.3.0 (https://github.com/bpmn-io/object-refs)
-75.   p-defer@1.0.0 (https://github.com/sindresorhus/p-defer)
-76.   p-reduce@1.0.0 (https://github.com/sindresorhus/p-reduce)
-77.   p-series@1.1.0 (https://github.com/sindresorhus/p-series)
+75.   p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
+76.   p-reduce@2.1.0 (https://github.com/sindresorhus/p-reduce)
+77.   p-series@2.1.0 (https://github.com/sindresorhus/p-series)
 78.   path-intersection@1.1.1 (https://github.com/bpmn-io/path-intersection)
 79.   prop-types@15.6.2 (https://github.com/facebook/prop-types)
 80.   react-dom@16.8.6 (https://github.com/facebook/react)
@@ -759,7 +759,7 @@ THE SOFTWARE.
 END OF @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION
 
 
-%% @sindresorhus/is@0.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sindresorhus/is@0.15.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -772,10 +772,10 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF @sindresorhus/is@0.7.0 NOTICES AND INFORMATION
+END OF @sindresorhus/is@0.15.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@0.31.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@0.32.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -799,7 +799,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@0.31.0 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@0.32.0 NOTICES AND INFORMATION
 
 
 %% bpmn-js-signavio-compat@1.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -830,7 +830,7 @@ THE SOFTWARE.
 END OF bpmn-js-signavio-compat@1.1.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js@4.0.4 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@5.0.0-beta.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -856,10 +856,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF bpmn-js@4.0.4 NOTICES AND INFORMATION
+END OF bpmn-js@5.0.0-beta.2 NOTICES AND INFORMATION
 
 
-%% bpmn-moddle@5.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-moddle@6.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -883,10 +883,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-moddle@5.2.0 NOTICES AND INFORMATION
+END OF bpmn-moddle@6.0.0 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-moddle@3.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-moddle@4.1.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -910,7 +910,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-moddle@3.2.0 NOTICES AND INFORMATION
+END OF camunda-bpmn-moddle@4.1.0 NOTICES AND INFORMATION
 
 
 %% camunda-cmmn-moddle@1.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1249,7 +1249,7 @@ THE SOFTWARE.
 END OF deepmerge@2.2.1 NOTICES AND INFORMATION
 
 
-%% diagram-js-direct-editing@1.5.0 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js-direct-editing@1.6.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1273,10 +1273,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js-direct-editing@1.5.0 NOTICES AND INFORMATION
+END OF diagram-js-direct-editing@1.6.0 NOTICES AND INFORMATION
 
 
-%% diagram-js-minimap@1.3.0 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js-minimap@2.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1300,7 +1300,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js-minimap@1.3.0 NOTICES AND INFORMATION
+END OF diagram-js-minimap@2.0.1 NOTICES AND INFORMATION
 
 
 %% diagram-js-origin@1.2.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1331,7 +1331,7 @@ THE SOFTWARE.
 END OF diagram-js-origin@1.2.0 NOTICES AND INFORMATION
 
 
-%% diagram-js@4.0.3 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@5.0.0-beta.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1355,7 +1355,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@4.0.3 NOTICES AND INFORMATION
+END OF diagram-js@5.0.0-beta.2 NOTICES AND INFORMATION
 
 
 %% didi@4.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1980,7 +1980,7 @@ SOFTWARE.
 END OF mitt@1.1.3 NOTICES AND INFORMATION
 
 
-%% moddle-xml@7.5.0 NOTICES AND INFORMATION BEGIN HERE
+%% moddle-xml@8.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -2004,14 +2004,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF moddle-xml@7.5.0 NOTICES AND INFORMATION
+END OF moddle-xml@8.0.1 NOTICES AND INFORMATION
 
 
-%% moddle@4.1.0 NOTICES AND INFORMATION BEGIN HERE
+%% moddle@5.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
-Copyright (c) 2014 camunda Services GmbH
+Copyright (c) 2014-present Camunda Services GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -2031,7 +2031,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF moddle@4.1.0 NOTICES AND INFORMATION
+END OF moddle@5.0.1 NOTICES AND INFORMATION
 
 
 %% ms@2.1.1 NOTICES AND INFORMATION BEGIN HERE
@@ -2117,63 +2117,7 @@ THE SOFTWARE.
 END OF object-refs@0.3.0 NOTICES AND INFORMATION
 
 
-%% p-defer@1.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF p-defer@1.0.0 NOTICES AND INFORMATION
-
-
-%% p-reduce@1.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF p-reduce@1.0.0 NOTICES AND INFORMATION
-
-
-%% p-series@1.1.0 NOTICES AND INFORMATION BEGIN HERE
+%% p-defer@3.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -2186,7 +2130,39 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF p-series@1.1.0 NOTICES AND INFORMATION
+END OF p-defer@3.0.0 NOTICES AND INFORMATION
+
+
+%% p-reduce@2.1.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF p-reduce@2.1.0 NOTICES AND INFORMATION
+
+
+%% p-series@2.1.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF p-series@2.1.0 NOTICES AND INFORMATION
 
 
 %% path-intersection@1.1.1 NOTICES AND INFORMATION BEGIN HERE
