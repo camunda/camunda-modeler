@@ -31,11 +31,11 @@ This project incorporates components from the projects listed below. The origina
 24.   @bpmn-io/align-to-origin@0.6.0 (https://github.com/bpmn-io/align-to-origin)
 25.   @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
 26.   @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
-27.   bpmn-js-properties-panel@0.32.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+27.   bpmn-js-properties-panel@0.32.1 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 28.   bpmn-js-signavio-compat@1.1.0 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
-29.   bpmn-js@5.0.0-beta.3 (https://github.com/bpmn-io/bpmn-js)
+29.   bpmn-js@5.0.0-beta.4 (https://github.com/bpmn-io/bpmn-js)
 30.   bpmn-moddle@6.0.0 (https://github.com/bpmn-io/bpmn-moddle)
-31.   camunda-bpmn-moddle@4.1.1 (https://github.com/camunda/camunda-bpmn-moddle)
+31.   camunda-bpmn-moddle@4.1.2 (https://github.com/camunda/camunda-bpmn-moddle)
 32.   camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
 33.   camunda-dmn-moddle@1.0.0 (https://github.com/camunda/camunda-dmn-moddle)
 34.   canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
@@ -51,7 +51,7 @@ This project incorporates components from the projects listed below. The origina
 44.   diagram-js-direct-editing@1.6.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
 45.   diagram-js-minimap@2.0.1 (https://github.com/bpmn-io/diagram-js-minimap)
 46.   diagram-js-origin@1.2.0 (https://github.com/bpmn-io/diagram-js-origin)
-47.   diagram-js@5.0.0-beta.2 (https://github.com/bpmn-io/diagram-js)
+47.   diagram-js@5.0.0-beta.3 (https://github.com/bpmn-io/diagram-js)
 48.   didi@4.0.0 (https://github.com/nikku/didi)
 49.   dmn-js-decision-table@6.3.3 (https://github.com/bpmn-io/dmn-js)
 50.   dmn-js-drd@6.3.3 (https://github.com/bpmn-io/dmn-js)
@@ -71,7 +71,7 @@ This project incorporates components from the projects listed below. The origina
 64.   ids@0.2.2 (https://github.com/bpmn-io/ids)
 65.   inferno@5.0.6 (https://github.com/infernojs/inferno)
 66.   lodash-es@4.17.11 (https://github.com/lodash/lodash)
-67.   lodash@4.17.14 (https://github.com/lodash/lodash)
+67.   lodash@4.17.15 (https://github.com/lodash/lodash)
 68.   min-dom@3.1.1 (https://github.com/bpmn-io/min-dom)
 69.   mitt@1.1.3 (https://github.com/developit/mitt)
 70.   moddle-xml@8.0.1 (https://github.com/bpmn-io/moddle-xml)
@@ -775,7 +775,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF @sindresorhus/is@0.15.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@0.32.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@0.32.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -799,7 +799,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@0.32.0 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@0.32.1 NOTICES AND INFORMATION
 
 
 %% bpmn-js-signavio-compat@1.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -830,7 +830,7 @@ THE SOFTWARE.
 END OF bpmn-js-signavio-compat@1.1.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js@5.0.0-beta.3 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@5.0.0-beta.4 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -856,7 +856,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF bpmn-js@5.0.0-beta.3 NOTICES AND INFORMATION
+END OF bpmn-js@5.0.0-beta.4 NOTICES AND INFORMATION
 
 
 %% bpmn-moddle@6.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -886,7 +886,7 @@ THE SOFTWARE.
 END OF bpmn-moddle@6.0.0 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-moddle@4.1.1 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-moddle@4.1.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -910,7 +910,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-moddle@4.1.1 NOTICES AND INFORMATION
+END OF camunda-bpmn-moddle@4.1.2 NOTICES AND INFORMATION
 
 
 %% camunda-cmmn-moddle@1.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1331,7 +1331,7 @@ THE SOFTWARE.
 END OF diagram-js-origin@1.2.0 NOTICES AND INFORMATION
 
 
-%% diagram-js@5.0.0-beta.2 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@5.0.0-beta.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1355,7 +1355,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@5.0.0-beta.2 NOTICES AND INFORMATION
+END OF diagram-js@5.0.0-beta.3 NOTICES AND INFORMATION
 
 
 %% didi@4.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1870,7 +1870,7 @@ terms above.
 END OF lodash-es@4.17.11 NOTICES AND INFORMATION
 
 
-%% lodash@4.17.14 NOTICES AND INFORMATION BEGIN HERE
+%% lodash@4.17.15 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
 
@@ -1921,7 +1921,7 @@ licenses; we recommend you read them, as their terms may differ from the
 terms above.
 
 ==========================================
-END OF lodash@4.17.14 NOTICES AND INFORMATION
+END OF lodash@4.17.15 NOTICES AND INFORMATION
 
 
 %% min-dom@3.1.1 NOTICES AND INFORMATION BEGIN HERE
