@@ -9,7 +9,7 @@
     "@bpmn-io/add-exporter": "^0.2.0",
     "@bpmn-io/align-to-origin": "^0.6.0",
     "@bpmn-io/replace-ids": "^0.2.0",
-    "bpmn-js": "^5.0.0-beta.2",
+    "bpmn-js": "^5.0.0-beta.3",
     "bpmn-js-properties-panel": "^0.32.0",
     "bpmn-js-signavio-compat": "^1.1.0",
     "camunda-bpmn-moddle": "^4.1.1",
