@@ -11,6 +11,7 @@
 var coverage = process.env.COVERAGE;
 
 if (coverage) {
+
   // must set NODE_ENV to coverage to activate
   // babel-plugin-istanbul (cf. babel config)
   process.env.NODE_ENV = 'coverage';

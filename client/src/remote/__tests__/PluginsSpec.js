@@ -31,6 +31,7 @@ describe('plugins', function() {
 
 
     it('should load all plugins', async function() {
+
       // given
       const plugins = new Plugins([
         {
@@ -70,6 +71,7 @@ describe('plugins', function() {
 
 
     it('should always return an array', function() {
+
       // given
       const plugins = new Plugins();
 
@@ -82,6 +84,7 @@ describe('plugins', function() {
 
 
     it('should get registered plugin', function() {
+
       // given
       const mockPlugin = {};
       const mockType = 'foo';

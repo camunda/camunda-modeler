@@ -23,6 +23,7 @@ const { spy } = sinon;
 describe('<PropertiesContainer>', function() {
 
   it('should render', function() {
+
     // given
     const { wrapper } = createPropertiesContainer();
 
@@ -35,6 +36,7 @@ describe('<PropertiesContainer>', function() {
 
 
   it('should handle resize', function() {
+
     // given
     const layout = {
       propertiesPanel: {
@@ -66,6 +68,7 @@ describe('<PropertiesContainer>', function() {
 
 
   it('should ignore delta x = 0', function() {
+
     // given
     const layout = {
       propertiesPanel: {

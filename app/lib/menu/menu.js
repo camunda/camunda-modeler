@@ -19,6 +19,7 @@ const requirePlatform = require('../util/require-platform');
 
 
 class Menu {
+
   /**
    * @param {Object} options - Options.
    * @param {String} options.platform - Platform.

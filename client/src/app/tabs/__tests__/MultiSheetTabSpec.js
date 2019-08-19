@@ -410,6 +410,7 @@ describe('<MultiSheetTab>', function() {
 
 
     it('should set toast', function() {
+
       // given
       const fakeToastName = 'toast';
 
@@ -426,6 +427,7 @@ describe('<MultiSheetTab>', function() {
 
 
     it('should close toast', function() {
+
       // given
       const fakeToastName = 'toast';
 

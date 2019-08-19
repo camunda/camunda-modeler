@@ -28,6 +28,7 @@ function getFile(type) {
 describe('util - parseDiagramType', function() {
 
   it('should identify bpmn file', function() {
+
     // given
     var bpmnFile = getFile('bpmn');
 
@@ -40,6 +41,7 @@ describe('util - parseDiagramType', function() {
 
 
   it('should identify bpmn file regardless of dmn uri', function() {
+
     // given
     var bpmnFile = getFile('bpmnWithDmnUri');
 
@@ -52,6 +54,7 @@ describe('util - parseDiagramType', function() {
 
 
   it('should identify cmmn file', function() {
+
     // given
     var dmnFile = getFile('cmmn');
 
@@ -64,6 +67,7 @@ describe('util - parseDiagramType', function() {
 
 
   it('should identify dmn file', function() {
+
     // given
     var dmnFile = getFile('dmn');
 
@@ -76,6 +80,7 @@ describe('util - parseDiagramType', function() {
 
 
   it('should return null on random xml file', function() {
+
     // given
     var randomFile = getFile('random');
 
@@ -88,6 +93,7 @@ describe('util - parseDiagramType', function() {
 
 
   it('should return null on empty file', function() {
+
     // when
     var notation = parseDiagramType('');
 
@@ -97,6 +103,7 @@ describe('util - parseDiagramType', function() {
 
 
   it('should return null on no-ns file', function() {
+
     // given
     var contents = getFile('noNs');
 
@@ -109,6 +116,7 @@ describe('util - parseDiagramType', function() {
 
 
   it('should return null on nyan cat image', function() {
+
     // given
     var nyanCatImage = getFile('nyan');
 

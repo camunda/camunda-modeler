@@ -299,6 +299,7 @@ describe('<CmmnEditor>', function() {
 
 
     it('should notify about plugin related changes', async function() {
+
       // given
       const changedSpy = sinon.spy();
 
@@ -576,6 +577,7 @@ describe('<CmmnEditor>', function() {
 
 
     it('should import with warnings', function(done) {
+
       // given
       const warningInducingFakeXML = 'import-warnings';
 
@@ -599,6 +601,7 @@ describe('<CmmnEditor>', function() {
 
 
     it('should import with error', function(done) {
+
       // given
       const errorInducingFakeXML = 'import-error';
 
@@ -622,6 +625,7 @@ describe('<CmmnEditor>', function() {
 
 
     it('should not import when provided xml is the same as the cached one', async function() {
+
       // given
       const isImportNeededSpy = sinon.spy(CmmnEditor.prototype, 'isImportNeeded');
       const cache = new Cache();
@@ -644,6 +648,7 @@ describe('<CmmnEditor>', function() {
 
 
     it('should not import when props did not changed', async function() {
+
       // given
       const {
         instance
@@ -739,6 +744,7 @@ describe('<CmmnEditor>', function() {
   describe('properties panel actions', function() {
 
     it('should toggle properties panel', async function() {
+
       // given
       const onLayoutChangedSpy = sinon.spy();
       const {
@@ -765,6 +771,7 @@ describe('<CmmnEditor>', function() {
 
 
     it('should reset properties panel', async function() {
+
       // given
       const onLayoutChangedSpy = sinon.spy();
       const {
@@ -794,6 +801,7 @@ describe('<CmmnEditor>', function() {
         instance;
 
     beforeEach(async function() {
+
       // given
       editorActionsStub = sinon.stub({ trigger() {} });
 
@@ -817,6 +825,7 @@ describe('<CmmnEditor>', function() {
 
 
     it('should zoom in', function() {
+
       // when
       instance.triggerAction('zoomIn');
 
@@ -828,6 +837,7 @@ describe('<CmmnEditor>', function() {
 
 
     it('should zoom out', function() {
+
       // when
       instance.triggerAction('zoomOut');
 
@@ -839,6 +849,7 @@ describe('<CmmnEditor>', function() {
 
 
     it('should zoom to fit diagram', function() {
+
       // when
       instance.triggerAction('zoomFit');
 
@@ -850,6 +861,7 @@ describe('<CmmnEditor>', function() {
 
 
     it('should reset zoom', async function() {
+
       // when
       instance.triggerAction('resetZoom');
 

@@ -72,6 +72,7 @@ async function render() {
   const rootElement = document.getElementById('root');
 
   const onStarted = () => {
+
     // mark as finished loading
     document.body.classList.remove('loading');
   };

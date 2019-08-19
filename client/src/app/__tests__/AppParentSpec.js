@@ -108,6 +108,7 @@ describe('<AppParent>', function() {
           let err;
 
           try {
+
             // then
             expect(restoreSpy).to.have.been.calledOnce;
 

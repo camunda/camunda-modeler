@@ -148,6 +148,7 @@ describe('tabs/bpmn/util - namespace', function() {
 
 
     it('should handle special chars', function() {
+
       // given
       const used = {
         prefixes: [ 'activiti', 'a.b' ],
