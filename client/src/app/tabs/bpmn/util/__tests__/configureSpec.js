@@ -128,6 +128,7 @@ describe('tabs/bpmn/util - configure', function() {
     describe('should collect warnings', function() {
 
       it('bpmn.modeler.moddleExtension', function() {
+
         // given
         var noNameExtension = { };
         var existingExtension = { name: 'existing' };
@@ -168,6 +169,7 @@ describe('tabs/bpmn/util - configure', function() {
 
 
       it('bpmn.modeler.configure', function() {
+
         // given
         function configureNoResult() {}
 

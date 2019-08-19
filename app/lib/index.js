@@ -368,6 +368,7 @@ app.createEditorWindow = function() {
     log.info('initating close of main window');
 
     if (app.quitAllowed) {
+
       // dereferencing main window and resetting client state
       app.mainWindow = null;
       dialog.setActiveWindow(null);
@@ -495,6 +496,7 @@ function bootstrapLogging() {
   Log.addTransports(
     new logTransports.Console(),
     new logTransports.File(path.join(logPath, 'log.log'))
+
     // TODO(nikku): we're not doing this for now
     // first we must decide how to separate diagram open warnings from
     // actual app errors in the client user interface

@@ -45,6 +45,7 @@ module.exports = function get(platform, path, defaultExport) {
   }
 
   else {
+
     // not platform init, bad luck :-(
     throw new Error('your platform < ' + platform + ' > is not supported.');
   }

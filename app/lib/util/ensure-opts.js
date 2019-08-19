@@ -34,6 +34,7 @@ module.exports = function ensureOpts(expectedOptions, options) {
     if (isNumber(key)) {
       name = value;
     }
+
     // expectedOptions is an Object{String -> String}
     else {
       name = key;

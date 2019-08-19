@@ -70,6 +70,7 @@ describe('History', function() {
   describe('purge', function() {
 
     it('should remove element', function() {
+
       // given
       const history = new History([ 1, 2, 1, 1, 3, 1 ], 5);
 

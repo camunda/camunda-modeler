@@ -50,6 +50,7 @@ describe('Deployer', function() {
 
     // when
     await deployer.deploy(url, data, (err, data) => {
+
       // then
       expect(err).not.to.exist;
       expect(data).to.eql(fetch.RESPONSE_OK);
@@ -88,6 +89,7 @@ describe('Deployer', function() {
 
     // when
     await deployer.deploy(url, data, (err, data) => {
+
       // then
       expect(err).not.to.exist;
       expect(data).to.eql(fetch.RESPONSE_OK);
@@ -233,6 +235,7 @@ describe('Deployer', function() {
   describe('authentication', function() {
 
     it('should deploy without auth', async function() {
+
       // given
       const deployer = createDeployer(fetchSpy);
 
@@ -256,6 +259,7 @@ describe('Deployer', function() {
 
 
     it('should throw error for unknown auth', async function() {
+
       // given
       const deployer = createDeployer(fetchSpy);
 
@@ -268,6 +272,7 @@ describe('Deployer', function() {
 
       // when
       await deployer.deploy(url, data, (err, data) => {
+
         // then
         expect(err).to.exist;
         expect(data).not.to.exist;
@@ -279,6 +284,7 @@ describe('Deployer', function() {
 
 
     it('should deploy with basic auth', async function() {
+
       // given
       const username = 'username',
             password = 'password',
@@ -312,6 +318,7 @@ describe('Deployer', function() {
 
 
     it('should deploy with bearer token', async function() {
+
       // given
       const bearerToken = 'bearerToken',
             bearerHeader = `Bearer ${bearerToken}`;

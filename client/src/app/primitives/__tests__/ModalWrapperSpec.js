@@ -41,6 +41,7 @@ describe('<ModalWrapper>', function() {
 
 
   it('should invoke passed onClose prop for background click', function() {
+
     // given
     const onCloseSpy = sinon.spy();
     const wrapper = mount(<ModalWrapper onClose={ onCloseSpy } />);
@@ -56,6 +57,7 @@ describe('<ModalWrapper>', function() {
 
 
   it('should NOT invoke passed onClose prop for click on modal container', function() {
+
     // given
     const onCloseSpy = sinon.spy();
     const wrapper = mount(<ModalWrapper onClose={ onCloseSpy } />);

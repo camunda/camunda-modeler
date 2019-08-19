@@ -17,6 +17,7 @@ describe('log', function() {
   describe('instantiating', function() {
 
     it('should create a log instance', function() {
+
       // when
       const log = createLog('namespace');
 
@@ -34,6 +35,7 @@ describe('log', function() {
 
 
     it('should add transports', function() {
+
       // given
       const transport = sinon.stub({
         info() {},

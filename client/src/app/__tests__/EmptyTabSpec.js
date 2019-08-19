@@ -28,6 +28,7 @@ describe('<EmptyTab>', function() {
     afterEach(sinon.restore);
 
     it('should NOT display dmn diagram on flag', function() {
+
       // given
       sinon.stub(Flags, 'get').withArgs(DISABLE_DMN).returns(true);
 
@@ -43,6 +44,7 @@ describe('<EmptyTab>', function() {
 
 
     it('should display dmn diagram without flag', function() {
+
       // given
       const {
         tree
