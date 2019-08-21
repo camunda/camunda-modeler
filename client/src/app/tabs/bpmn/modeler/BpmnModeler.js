@@ -19,6 +19,7 @@ import addExporterModule from '@bpmn-io/add-exporter';
 
 import executableFixModule from './features/executable-fix';
 import globalClipboardModule from './features/global-clipboard';
+import handToolOnSpaceModule from './features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
 
 import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
@@ -62,16 +63,17 @@ export default class CamundaBpmnModeler extends BpmnModeler {
 const defaultModules = BpmnModeler.prototype._modules;
 
 const extensionModules = [
-  minimapModule,
   addExporterModule,
+  camundaModdleExtension,
   executableFixModule,
   Flags.get(DISABLE_ADJUST_ORIGIN) ? diagramOriginModule : alignToOriginModule,
   globalClipboardModule,
-  signavioCompatModule,
-  camundaModdleExtension,
+  handToolOnSpaceModule,
+  minimapModule,
+  propertiesPanelKeyboardBindingsModule,
   propertiesPanelModule,
   propertiesProviderModule,
-  propertiesPanelKeyboardBindingsModule,
+  signavioCompatModule
 ];
 
 CamundaBpmnModeler.prototype._modules = [
