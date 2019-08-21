@@ -10,7 +10,10 @@
 
 /* global sinon */
 
-import KeyboardBindings, { find } from '../KeyboardBindings';
+import KeyboardBindings, {
+  find,
+  findAll
+} from '../KeyboardBindings';
 
 import {
   assign,
@@ -35,6 +38,86 @@ describe('KeyboardBindings', function() {
   });
 
 
+  describe('custom', function() {
+
+    it('should handle keydown event', function() {
+
+      // given
+      event = createKeyEvent('F');
+
+      keyboardBindings.update([{
+        custom: {
+          key: 'F',
+          keydown: 'foo'
+        }
+      }]);
+
+      // when
+      keyboardBindings._keyDownHandler(event);
+
+      keyboardBindings._keyDownHandler(event);
+
+      // then
+      expect(actionSpy).to.have.been.calledTwice;
+
+      expect(actionSpy.alwaysCalledWith(null, 'foo')).to.be.true;
+    });
+
+
+    it('should handle keypress event', function() {
+
+      // given
+      event = createKeyEvent('F');
+
+      keyboardBindings.update([{
+        custom: {
+          key: 'F',
+          keypress: 'foo'
+        }
+      }]);
+
+      // when
+      keyboardBindings._keyPressHandler(event);
+
+      keyboardBindings._keyPressHandler(event);
+
+      keyboardBindings._keyUpHandler(event);
+
+      keyboardBindings._keyPressHandler(event);
+
+      // then
+      expect(actionSpy).to.have.been.calledTwice;
+
+      expect(actionSpy.alwaysCalledWith(null, 'foo')).to.be.true;
+    });
+
+
+    it('should handle keyup event', function() {
+
+      // given
+      event = createKeyEvent('F');
+
+      keyboardBindings.update([{
+        custom: {
+          key: 'F',
+          keyup: 'foo'
+        }
+      }]);
+
+      // when
+      keyboardBindings._keyUpHandler(event);
+
+      keyboardBindings._keyUpHandler(event);
+
+      // then
+      expect(actionSpy).to.have.been.calledTwice;
+
+      expect(actionSpy.alwaysCalledWith(null, 'foo')).to.be.true;
+    });
+
+  });
+
+
   it('copy', function() {
 
     // given
@@ -46,7 +129,7 @@ describe('KeyboardBindings', function() {
     }]);
 
     // when
-    keyboardBindings._keyHandler(event);
+    keyboardBindings._keyDownHandler(event);
 
     // then
     expect(actionSpy).to.have.been.calledWith(null, 'copy');
@@ -64,7 +147,7 @@ describe('KeyboardBindings', function() {
     }]);
 
     // when
-    keyboardBindings._keyHandler(event);
+    keyboardBindings._keyDownHandler(event);
 
     // then
     expect(actionSpy).to.have.been.calledWith(null, 'cut');
@@ -82,7 +165,7 @@ describe('KeyboardBindings', function() {
     }]);
 
     // when
-    keyboardBindings._keyHandler(event);
+    keyboardBindings._keyDownHandler(event);
 
     // then
     expect(actionSpy).to.have.been.calledWith(null, 'paste');
@@ -100,7 +183,7 @@ describe('KeyboardBindings', function() {
     }]);
 
     // when
-    keyboardBindings._keyHandler(event);
+    keyboardBindings._keyDownHandler(event);
 
     // then
     expect(actionSpy).to.have.been.calledWith(null, 'undo');
@@ -120,7 +203,7 @@ describe('KeyboardBindings', function() {
       }]);
 
       // when
-      keyboardBindings._keyHandler(event);
+      keyboardBindings._keyDownHandler(event);
 
       // then
       expect(actionSpy).to.have.been.calledWith(null, 'redo');
@@ -138,14 +221,13 @@ describe('KeyboardBindings', function() {
       }]);
 
       // when
-      keyboardBindings._keyHandler(event);
+      keyboardBindings._keyDownHandler(event);
 
       // then
       expect(actionSpy).to.have.been.calledWith(null, 'redo');
     });
 
   });
-
 
 
   it('selectAll', function() {
@@ -159,7 +241,7 @@ describe('KeyboardBindings', function() {
     }]);
 
     // when
-    keyboardBindings._keyHandler(event);
+    keyboardBindings._keyDownHandler(event);
 
     // then
     expect(actionSpy).to.have.been.calledWith(null, 'selectAll');
@@ -182,14 +264,14 @@ describe('KeyboardBindings', function() {
     keyboardBindings.setOnAction(newActionSpy);
 
     // then
-    keyboardBindings._keyHandler(event);
+    keyboardBindings._keyDownHandler(event);
 
     expect(actionSpy).not.to.have.been.called;
     expect(newActionSpy).to.have.been.calledWith(null, 'selectAll');
   });
 
 
-  describe('find', function() {
+  describe('#find', function() {
 
     it('should find entry', function() {
 
@@ -209,6 +291,36 @@ describe('KeyboardBindings', function() {
 
       // then
       expect(entry).to.equal(menu[0][1]);
+    });
+
+  });
+
+
+  describe('#findAll', function() {
+
+    it('should find all entries', function() {
+
+      // given
+      const menu = [
+        [
+          { accelerator: 'A', custom: true },
+          { accelerator: 'B' }
+        ],
+        [
+          { accelerator: 'C', custom: true }
+        ]
+      ];
+
+      // when
+      const entries = findAll(menu, entry => entry.custom);
+
+      // then
+      expect(entries).to.have.length(2);
+
+      expect(entries).to.eql([
+        menu[0][0],
+        menu[1][0]
+      ]);
     });
 
   });

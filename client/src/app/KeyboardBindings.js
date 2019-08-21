@@ -14,7 +14,10 @@ import {
   isShift
 } from 'diagram-js/lib/features/keyboard/KeyboardUtil';
 
-import { isArray } from 'min-dash';
+import {
+  isArray,
+  omit
+} from 'min-dash';
 
 
 /**
@@ -48,56 +51,71 @@ export default class KeyboardBindings {
     this.undo = null;
     this.redo = null;
 
+    this.customEntries = [];
+
+    this.pressedKeys = {};
+
     if (menu) {
       this.update(menu);
     }
   }
 
   bind() {
-    window.addEventListener('keydown', this._keyHandler);
+    window.addEventListener('keydown', this._keyDownHandler);
+    window.addEventListener('keypress', this._keyPressHandler);
+    window.addEventListener('keyup', this._keyUpHandler);
   }
 
   unbind() {
-    window.removeEventListener('keydown', this._keyHandler);
+    window.removeEventListener('keydown', this._keyDownHandler);
+    window.removeEventListener('keypress', this._keyPressHandler);
+    window.removeEventListener('keyup', this._keyUpHandler);
   }
 
-  _keyHandler = (event) => {
-    if (!isCommandOrControl(event)) {
-      return;
-    }
-
+  _keyDownHandler = (event) => {
     let action = null;
 
     const { onAction } = this;
 
+    const commandOrCtrl = isCommandOrControl(event);
+
     // copy
-    if (isCopy(event) && isEnabled(this.copy) && !hasRole(this.copy, 'copy')) {
+    if (commandOrCtrl && isCopy(event) && isEnabled(this.copy) && !hasRole(this.copy, 'copy')) {
       action = getAction(this.copy);
     }
 
     // cut
-    if (isCut(event) && isEnabled(this.cut) && !hasRole(this.cut, 'cut')) {
+    if (commandOrCtrl && isCut(event) && isEnabled(this.cut) && !hasRole(this.cut, 'cut')) {
       action = getAction(this.cut);
     }
 
     // paste
-    if (isPaste(event) && isEnabled(this.paste) && !hasRole(this.paste, 'paste')) {
+    if (commandOrCtrl && isPaste(event) && isEnabled(this.paste) && !hasRole(this.paste, 'paste')) {
       action = getAction(this.paste);
     }
 
     // select all
-    if (isSelectAll(event) && isEnabled(this.selectAll) && !hasRole(this.selectAll, 'selectAll')) {
+    if (commandOrCtrl &&
+      isSelectAll(event) &&
+      isEnabled(this.selectAll) &&
+      !hasRole(this.selectAll, 'selectAll')
+    ) {
       action = getAction(this.selectAll);
     }
 
     // undo
-    if (isUndo(event) && isEnabled(this.undo) && !hasRole(this.undo, 'undo')) {
+    if (commandOrCtrl && isUndo(event) && isEnabled(this.undo) && !hasRole(this.undo, 'undo')) {
       action = getAction(this.undo);
     }
 
     // redo
-    if (isRedo(event) && isEnabled(this.redo) && !hasRole(this.redo, 'redo')) {
+    if (commandOrCtrl && isRedo(event) && isEnabled(this.redo) && !hasRole(this.redo, 'redo')) {
       action = getAction(this.redo);
+    }
+
+    // custom
+    if (this.hasCustomEntry(event)) {
+      action = this.getCustomAction(event, 'keydown');
     }
 
     if (action && onAction) {
@@ -107,6 +125,48 @@ export default class KeyboardBindings {
     }
   }
 
+  _keyPressHandler = (event) => {
+    let action = null;
+
+    const { onAction } = this;
+
+    // custom
+    if (this.hasCustomEntry(event)) {
+      action = this.getCustomAction(event, 'keypress');
+    }
+
+    var { key } = event;
+
+    if (action && onAction && !this.pressedKeys[ key ]) {
+      onAction(null, action);
+
+      this.pressedKeys[ key ] = true;
+
+      event.preventDefault();
+    }
+  }
+
+  _keyUpHandler = (event) => {
+    let action = null;
+
+    const { onAction } = this;
+
+    // custom
+    if (this.hasCustomEntry(event)) {
+      action = this.getCustomAction(event, 'keyup');
+    }
+
+    if (action && onAction) {
+      onAction(null, action);
+
+      event.preventDefault();
+    }
+
+    var { key } = event;
+
+    delete this.pressedKeys[ key ];
+  }
+
   update(menu) {
     this.copy = findCopy(menu);
     this.cut = findCut(menu);
@@ -114,6 +174,39 @@ export default class KeyboardBindings {
     this.selectAll = findSelectAll(menu);
     this.undo = findUndo(menu);
     this.redo = findRedo(menu);
+
+    this.updateCustomEntries(menu);
+  }
+
+  updateCustomEntries(menu) {
+    this.customEntries = getCustomEntries(menu).reduce((customEntries, entry) => {
+      const { custom } = entry;
+
+      const { key } = custom;
+
+      return {
+        ...customEntries,
+        [ key ]: omit(custom, [ 'key' ])
+      };
+    }, {});
+  }
+
+  hasCustomEntry(event) {
+    const { key } = event;
+
+    return this.customEntries[ key ];
+  }
+
+  getCustomAction(event, type) {
+    const { key } = event;
+
+    const entry = this.customEntries[ key ];
+
+    if (!entry) {
+      return null;
+    }
+
+    return entry[ type ] || null;
   }
 
   setOnAction(onAction) {
@@ -175,23 +268,42 @@ function isAccelerator(a = '', b = '') {
  * @returns {Object}
  */
 export function find(menu = [], matcher) {
-  return menu.reduce((found, entry) => {
-    if (found) {
-      return found;
-    }
+  return findAll(menu, matcher).shift();
+}
 
+/**
+ * Find all matching entries.
+ *
+ * @param {Array} [menu] - Menu.
+ * @param {Function} matcher - Matcher function.
+ *
+ * @returns {Array<Object>}
+ */
+export function findAll(menu = [], matcher) {
+  return menu.reduce((found, entry) => {
     if (isArray(entry)) {
-      return find(entry, matcher);
+      return [
+        ...found,
+        ...findAll(entry, matcher)
+      ];
     }
 
     if (matcher(entry)) {
-      return entry;
+      found = [
+        ...found,
+        entry
+      ];
     }
 
     if (entry.submenu) {
-      return find(entry.submenu, matcher);
+      found = [
+        ...found,
+        ...findAll(entry.submenu, matcher)
+      ];
     }
-  }, null);
+
+    return found;
+  }, []);
 }
 
 function findCopy(menu) {
@@ -235,4 +347,10 @@ function hasRole(entry, role) {
 
 function getAction(entry) {
   return entry && entry.action;
+}
+
+function getCustomEntries(menu) {
+  return findAll(menu, entry => {
+    return entry.custom;
+  });
 }
