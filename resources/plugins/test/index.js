@@ -9,7 +9,7 @@
  */
 
 module.exports = {
+  menu: './menu',
   name: 'test',
-  style: './style.css',
-  menu: './menu'
+  style: './style.css'
 };
