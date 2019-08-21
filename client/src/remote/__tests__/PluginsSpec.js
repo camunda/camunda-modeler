@@ -60,6 +60,37 @@ describe('plugins', function() {
       expect(args.filter(({ tagName }) => tagName === 'SCRIPT')).to.have.lengthOf(2);
     });
 
+
+    it('should attach plugin name to script dataset', async function() {
+
+      // given
+      const descriptors = [
+        {
+          name: 'foo',
+          script: 'bar'
+        },
+        {
+          name: 'bar',
+          script: 'foo'
+        }
+      ];
+      const plugins = new Plugins(descriptors);
+
+      // when
+      await plugins.loadAll();
+
+      // then
+      const calls = headStub.getCalls();
+
+      expect(calls).to.have.lengthOf(2);
+
+      const scriptElements = calls.reduce((args, call) => [ ...args, ...call.args ], []);
+
+      scriptElements.forEach((scriptElement, index) => {
+        expect(scriptElement.dataset.name).to.eql(descriptors[index].name);
+      });
+    });
+
   });
 
 

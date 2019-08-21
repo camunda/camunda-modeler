@@ -95,7 +95,7 @@ export default class Plugins {
    * @param {String} scriptPlugin.script - Path to script.
    */
   _loadScriptPlugin(scriptPlugin) {
-    const { script } = scriptPlugin;
+    const { name, script } = scriptPlugin;
 
     return new Promise(resolve => {
       const scriptTag = document.createElement('script');
@@ -104,6 +104,7 @@ export default class Plugins {
       scriptTag.type = 'text/javascript';
       scriptTag.async = false;
       scriptTag.onload = resolve;
+      scriptTag.dataset.name = name;
 
       document.head.appendChild(scriptTag);
     });
