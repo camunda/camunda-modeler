@@ -28,6 +28,7 @@ import {
   Config,
   Dialog,
   FileSystem,
+  Plugins,
   TabsProvider,
   Workspace
 } from './mocks';
@@ -801,14 +802,18 @@ describe('<App>', function() {
     });
 
 
-    it('should save existing tab', async function() {
+    it('should save existing dirty tab', async function() {
 
       // given
       const file = createFile('diagram_1.bpmn');
 
-      await app.openFiles([ file ]);
+      const [ tab ] = await app.openFiles([ file ]);
 
       // when
+      app.setState({
+        ...app.setDirty(tab)
+      });
+
       await app.triggerAction('save');
 
       // then
@@ -2428,6 +2433,7 @@ function createApp(options = {}, mountFn=shallow) {
     backend: new Backend(),
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
+    plugins: new Plugins(),
     workspace: new Workspace()
   };
 

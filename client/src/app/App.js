@@ -19,6 +19,8 @@ import {
   reduce
 } from 'min-dash';
 
+import EventEmitter from 'events';
+
 import executeOnce from './util/executeOnce';
 
 import { WithCache } from './cached';
@@ -54,6 +56,8 @@ import pDefer from 'p-defer';
 import pSeries from 'p-series';
 
 import History from './History';
+
+import { Plugins } from './plugins';
 
 import css from './App.less';
 
@@ -99,6 +103,8 @@ export class App extends PureComponent {
 
     // TODO(nikku): make state
     this.navigationHistory = new History();
+
+    this.events = new EventEmitter();
 
     // TODO(nikku): make state
     this.closedTabs = new History();
@@ -697,6 +703,18 @@ export class App extends PureComponent {
     return tabs.find(t => t.file && t.file.path === file.path);
   }
 
+  emit(event, ...args) {
+    this.events.emit(event, ...args);
+  }
+
+  on(event, listener) {
+    this.events.on(event, listener);
+  }
+
+  off(event, listener) {
+    this.events.off(event, listener);
+  }
+
   openTabLinksMenu = (tab, event) => {
     event.preventDefault();
 
@@ -865,6 +883,8 @@ export class App extends PureComponent {
       ...dirtyState,
       ...unsavedState
     });
+
+    return tab;
   }
 
   getTabComponent(tab) {
@@ -927,6 +947,8 @@ export class App extends PureComponent {
       if (typeof onTabChanged === 'function') {
         onTabChanged(activeTab, prevState.activeTab);
       }
+
+      this.emit('app.activeTabChanged', activeTab, prevState.activeTab);
     }
 
     if (tabLoadingState === 'shown' && prevState.tabLoadingState !== 'shown') {
@@ -1166,12 +1188,18 @@ export class App extends PureComponent {
 
   }
 
-  async saveTab(tab, options = {}) {
+  async saveTab(tab, options) {
+
+    // return early if no options provided, file not dirty and already saved
+    if (!options && !this.isDirty(tab) && !this.isUnsaved(tab)) {
+      return tab;
+    }
+
+    options = options || {};
 
     // do as long as it was successful or cancelled
-    const infinite = true;
-
-    while (infinite) {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
 
       try {
 
@@ -1193,7 +1221,7 @@ export class App extends PureComponent {
         if (response !== 'retry') {
 
           // cancel
-          return;
+          return false;
         }
 
       }
@@ -1263,7 +1291,16 @@ export class App extends PureComponent {
 
   showShortcuts = () => this.openModal('KEYBOARD_SHORTCUTS');
 
-  updateMenu = (options) => {
+  /**
+   * Update menu with provided state which can include `windowMenu` as well as `editMenu`.
+   * Pass a falsy value to use current tab state for the updated menu.
+   * @param {object} [options]
+   */
+  updateMenu = options => {
+    if (!options) {
+      options = this.state.tabState;
+    }
+
     const { onMenuUpdate } = this.props;
 
     onMenuUpdate({
@@ -1463,7 +1500,7 @@ export class App extends PureComponent {
     }
 
     if (action === 'update-menu') {
-      return this.updateMenu();
+      return this.updateMenu(options);
     }
 
     if (action === 'export-as') {
@@ -1765,6 +1802,10 @@ export class App extends PureComponent {
               onClear={ this.clearLog }
               onLayoutChanged={ this.handleLayoutChanged }
             />
+
+
+            <Plugins app={ this } />
+
           </SlotFillRoot>
 
           { this.state.currentModal === 'DEPLOY_DIAGRAM' ?
