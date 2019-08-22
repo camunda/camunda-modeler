@@ -28,9 +28,9 @@ const defaultState = {
 };
 
 const initialFormValues = {
-  endpointUrl: '',
+  endpointUrl: 'http://localhost:8080/engine-rest',
   tenantId: '',
-  deploymentName: '',
+  deploymentName: 'diagram',
   authType: 'none',
   username: '',
   password: '',
@@ -121,7 +121,13 @@ class DeployDiagramModal extends PureComponent {
   }
 
   render() {
-    const { endpoints } = this.props;
+    const {
+      endpoints,
+      tab
+    } = this.props;
+
+    const deploymentName = tab.name ? withoutExtension(tab.name) : initialFormValues.deploymentName;
+
     const validators = {
       endpointUrl: this.validateEndpointUrl,
       deploymentName: this.validateDeploymentName,
@@ -140,7 +146,8 @@ class DeployDiagramModal extends PureComponent {
 
       initialValues={ {
         ...initialFormValues,
-        endpointUrl: endpoints[endpoints.length - 1] || ''
+        deploymentName,
+        endpointUrl: endpoints[endpoints.length - 1] || initialFormValues.endpointUrl
       } }
       validators={ validators }
     />;
@@ -228,9 +235,21 @@ class DeployDiagramModal extends PureComponent {
 
 DeployDiagramModal.defaultProps = {
   endpoints: [],
+  tab: {},
   onEndpointsUpdate: () => {},
   onDeployError: console.error,
   onMenuUpdate: () => {}
 };
 
 export default DeployDiagramModal;
+
+
+
+// helper ////
+/**
+ * Remove extension from filename
+ * @param {string} filename
+ */
+function withoutExtension(filename) {
+  return filename.replace(/^(.+)\.[^.]*$/, '$1');
+}

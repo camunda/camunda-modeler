@@ -22,6 +22,7 @@ import View from '../View';
 import AuthTypes from '../AuthTypes';
 
 const MOCK_ENDPOINT_URL = 'http://example.com/deployment/create';
+const DEFAULT_ENDPOINT = 'http://localhost:8080/engine-rest';
 
 
 describe('<DeployDiagramModal>', function() {
@@ -34,6 +35,7 @@ describe('<DeployDiagramModal>', function() {
   describe('deployment', function() {
 
     it('should set state.error when onDeploy throws error', async function() {
+
       // given
       const endpointUrl = MOCK_ENDPOINT_URL,
             deploymentName = 'deploymentName';
@@ -60,6 +62,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should set state.success when onDeploy succeeds', async function() {
+
       // given
       const endpointUrl = MOCK_ENDPOINT_URL,
             deploymentName = 'deploymentName';
@@ -86,6 +89,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should unset isLoading when deployment is canceled', async function() {
+
       // given
       const endpointUrl = MOCK_ENDPOINT_URL,
             deploymentName = 'deploymentName';
@@ -112,6 +116,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should save endpoint used to deploy', async function() {
+
       // given
       const endpointUrl = MOCK_ENDPOINT_URL,
             deploymentName = 'deploymentName';
@@ -141,6 +146,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should save exactly the endpoint provided by the user', async function() {
+
       // given
       const endpointUrl = 'http://example.com',
             deploymentName = 'deploymentName';
@@ -171,9 +177,44 @@ describe('<DeployDiagramModal>', function() {
   });
 
 
+  describe('defaults', function() {
+
+    it('should set deployment name based on filename', function() {
+
+      // given
+      const wrapper = shallow(<DeployDiagramModal tab={ { name: 'simple.diagram.bpmn' } } />);
+
+      // expect
+      expect(wrapper.find(View).prop('initialValues')).to.have.property('deploymentName').eql('simple.diagram');
+    });
+
+
+    it('should set deployment name based on filename for hidden files', function() {
+
+      // given
+      const wrapper = shallow(<DeployDiagramModal tab={ { name: '.bpmn' } } />);
+
+      // expect
+      expect(wrapper.find(View).prop('initialValues')).to.have.property('deploymentName').eql('.bpmn');
+    });
+
+
+    it(`should set endpointUrl to ${DEFAULT_ENDPOINT} when none is provided`, function() {
+
+      // given
+      const wrapper = shallow(<DeployDiagramModal />);
+
+      // expect
+      expect(wrapper.find(View).prop('initialValues')).to.have.property('endpointUrl').eql(DEFAULT_ENDPOINT);
+    });
+
+  });
+
+
   describe('reusing endpoint url', function() {
 
     it('should set endpointUrl to last one provided in props', function() {
+
       // given
       const endpointUrl = MOCK_ENDPOINT_URL;
 
@@ -183,22 +224,13 @@ describe('<DeployDiagramModal>', function() {
       // expect
       expect(wrapper.find(View).prop('initialValues')).to.have.property('endpointUrl').eql(endpointUrl);
     });
-
-
-    it('should set endpointUrl to void string when there is none provided', function() {
-      // given
-      const wrapper = shallow(<DeployDiagramModal />);
-
-      // expect
-      expect(wrapper.find(View).prop('initialValues')).to.have.property('endpointUrl').eql('');
-    });
-
   });
 
 
   describe('endpoint URL suffix', function() {
 
     it('should add "/deployment/create" suffix if user does not provide it', async function() {
+
       // given
       const endpointUrl = 'http://example.com',
             deploymentName = 'deploymentName',
@@ -231,6 +263,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should not add excessive "/" before "/deployment/create" suffix', async function() {
+
       // given
       const endpointUrl = 'http://example.com/',
             deploymentName = 'deploymentName',
@@ -278,6 +311,7 @@ describe('<DeployDiagramModal>', function() {
     describe('endpointUrl', function() {
 
       it('should not accept void endpoint url', function() {
+
         // given
         const endpointUrl = '';
 
@@ -287,6 +321,7 @@ describe('<DeployDiagramModal>', function() {
 
 
       it('should not accept endpoint url without protocol', function() {
+
         // given
         const endpointUrl = 'localhost';
 
@@ -296,6 +331,7 @@ describe('<DeployDiagramModal>', function() {
 
 
       it('should not accept ftp protocol for endpoint url', function() {
+
         // given
         const endpointUrl = 'ftp://localhost';
 
@@ -305,6 +341,7 @@ describe('<DeployDiagramModal>', function() {
 
 
       it('should accept endpoint url starting with "https://"', function() {
+
         // given
         const endpointUrl = 'https://localhost';
 
@@ -314,6 +351,7 @@ describe('<DeployDiagramModal>', function() {
 
 
       it('should accept endpoint url starting with "http://"', function() {
+
         // given
         const endpointUrl = 'http://localhost';
 
@@ -327,6 +365,7 @@ describe('<DeployDiagramModal>', function() {
     describe('deployment name', function() {
 
       it('should not accept void deployment name', function() {
+
         // given
         const deploymentName = '';
 
@@ -336,6 +375,7 @@ describe('<DeployDiagramModal>', function() {
 
 
       it('should accept not void deployment name', function() {
+
         // given
         const deploymentName = 'deploymentName';
 
@@ -351,6 +391,7 @@ describe('<DeployDiagramModal>', function() {
   describe('authentication', function() {
 
     it('should not pass auth option when no auth method was chosen', async function() {
+
       // given
       const endpointUrl = 'http://example.com/',
             deploymentName = 'deploymentName';
@@ -382,6 +423,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should pass username and password when authenticating with Basic', async function() {
+
       // given
       const endpointUrl = 'http://example.com/',
             deploymentName = 'deploymentName',
@@ -421,6 +463,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should pass token when authenticating with Bearer', async function() {
+
       // given
       const endpointUrl = 'http://example.com/',
             deploymentName = 'deploymentName',
@@ -461,6 +504,7 @@ describe('<DeployDiagramModal>', function() {
   describe('menu updates', function() {
 
     it('should update menu on mount', function() {
+
       // given
       const onMenuUpdateSpy = sinon.spy();
 
@@ -477,6 +521,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should enable editing actions on input focus', function() {
+
       // given
       const wrapper = mount(
         <DeployDiagramModal />
@@ -497,6 +542,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should disable editing actions on input blur', function() {
+
       // given
       const wrapper = mount(
         <DeployDiagramModal />
@@ -532,6 +578,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should render error message', function() {
+
       // given
       wrapper = mount(<View validators={ { auth: {} } } error={ 'Error message' } />);
 
@@ -541,6 +588,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should render success message', function() {
+
       // given
       wrapper = mount(<View validators={ { auth: {} } } success={ 'Success message' } />);
 
@@ -550,6 +598,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should not display validation error before first submit', function(done) {
+
       // given
       wrapper = mount(<View
         initialValues={ { deploymentName: '' } }
@@ -571,6 +620,7 @@ describe('<DeployDiagramModal>', function() {
 
 
     it('should display validation error after first submit', function(done) {
+
       // given
       wrapper = mount(<View
         initialValues={ { deploymentName: '' } }

@@ -44,9 +44,11 @@ describe('applyDefaultTemplates', function() {
     });
 
     try {
+
       // when
       applyDefaultTemplates(...dependencies);
     } catch (error) {
+
       // then
       expect(error).to.not.exist;
     }

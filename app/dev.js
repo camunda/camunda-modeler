@@ -47,5 +47,6 @@ app.on('app:window-created', async () => {
 try {
   require('electron-reloader')(module);
 } catch (err) {
+
   // ignore it
 }

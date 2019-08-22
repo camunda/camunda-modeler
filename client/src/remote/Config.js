@@ -14,6 +14,7 @@ const GET_CLIENT_CONFIG = 'client-config:get';
  * Config API used by client
  */
 export default class Config {
+
   /**
    *
    * @param {Object} backend

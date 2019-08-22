@@ -6,6 +6,6 @@ Please make sure you provide the relevant context.
 
 -->
 
-__Which issue does this PR address?_
+__Which issue does this PR address?__
 
 Closes #

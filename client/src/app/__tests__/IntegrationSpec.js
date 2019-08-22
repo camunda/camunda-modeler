@@ -154,7 +154,7 @@ function createApp(options = {}) {
         onMenuUpdate = options.onMenuUpdate || noop,
         onReady = options.onReady || noop,
         onTabChanged = options.onTabChanged || noop,
-        onTabShown = options.onTabShown | noop,
+        onTabShown = options.onTabShown || noop,
         onWarning = options.onWarning || noop,
         onWorkspaceChanged = options.onWorkspaceChanged || noop;
 

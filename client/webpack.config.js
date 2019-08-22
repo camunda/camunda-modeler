@@ -21,7 +21,7 @@ const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 
 module.exports = {
   mode: DEV ? 'development' : (LICENSE_CHECK ? 'none' : 'production'),
-  target: 'electron-renderer',
+  target: 'web',
   entry: {
     bundle: ['./src/index.js']
   },
@@ -40,6 +40,7 @@ module.exports = {
         exclude: /node_modules/,
         use: 'babel-loader'
       },
+
       // apply loaders, falling back to file-loader, if non matches
       {
         oneOf: [
@@ -63,6 +64,7 @@ module.exports = {
             ]
           },
           {
+
             // exclude files served otherwise
             exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
             loader: 'file-loader',
@@ -84,6 +86,7 @@ module.exports = {
     ]),
     ...extractDependencies()
   ],
+
   // don't bundle shims for node globals
   node: false,
   devServer: {

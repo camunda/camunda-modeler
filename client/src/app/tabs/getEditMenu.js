@@ -10,6 +10,8 @@
 
 import Flags, { DISABLE_ADJUST_ORIGIN } from '../../util/Flags';
 
+const SPACE_KEY = ' ';
+
 export function getCanvasEntries({
   moveCanvas,
   moveToOrigin,
@@ -166,6 +168,7 @@ export function getSelectionEntries({
 }
 
 export function getToolEntries({
+  bpmn,
   editLabel,
   globalConnectTool,
   handTool,
@@ -180,6 +183,15 @@ export function getToolEntries({
       accelerator: 'H',
       enabled: handTool,
       action: 'handTool'
+    });
+
+    bpmn && handTool && menuEntries.push({
+      visible: false,
+      custom: {
+        key: SPACE_KEY,
+        keypress: 'activateHandtool',
+        keyup: 'deactivateHandtool'
+      }
     });
   }
 

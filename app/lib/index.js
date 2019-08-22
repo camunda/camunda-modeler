@@ -65,18 +65,20 @@ const {
   files
 } = bootstrap();
 
+const {
+  platform
+} = process;
+
 app.plugins = plugins;
 app.flags = flags;
 
-Platform.create(process.platform, app, config);
-
-// this is shared variable between main and renderer processes
-global.metaData = {
+app.metadata = {
   version: app.version,
   name: app.name
 };
 
-const { platform } = process;
+Platform.create(platform, app, config);
+
 
 const menu = new Menu({
   platform
@@ -336,7 +338,11 @@ app.createEditorWindow = function() {
   const windowOptions = {
     resizable: true,
     show: false,
-    title: 'Camunda Modeler'
+    title: 'Camunda Modeler',
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false
+    }
   };
 
   if (process.platform === 'linux') {
@@ -362,6 +368,7 @@ app.createEditorWindow = function() {
     log.info('initating close of main window');
 
     if (app.quitAllowed) {
+
       // dereferencing main window and resetting client state
       app.mainWindow = null;
       dialog.setActiveWindow(null);
@@ -489,6 +496,7 @@ function bootstrapLogging() {
   Log.addTransports(
     new logTransports.Console(),
     new logTransports.File(path.join(logPath, 'log.log'))
+
     // TODO(nikku): we're not doing this for now
     // first we must decide how to separate diagram open warnings from
     // actual app errors in the client user interface

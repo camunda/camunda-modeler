@@ -106,6 +106,7 @@ describe('<XMLEditor>', function() {
 
 
     it('should notify about plugin related changes', function() {
+
       // given
       const changedSpy = sinon.spy();
 

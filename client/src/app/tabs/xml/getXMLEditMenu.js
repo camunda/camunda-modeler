@@ -32,9 +32,30 @@ function getXMLFindEntries() {
   }];
 }
 
+function getXMLCopyCutPasteEntries() {
+  return [
+    {
+      label: 'Cut',
+      accelerator: 'CmdOrCtrl+X',
+      role: 'cut'
+    },
+    {
+      label: 'Copy',
+      accelerator: 'CmdOrCtrl+C',
+      role: 'copy'
+    },
+    {
+      label: 'Paste',
+      accelerator: 'CmdOrCtrl+V',
+      role: 'paste'
+    }
+  ];
+}
+
 export function getXMLEditMenu(state) {
   return [
     getUndoRedoEntries(state),
+    getXMLCopyCutPasteEntries(),
     getXMLFindEntries()
   ];
 }

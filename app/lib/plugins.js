@@ -152,6 +152,7 @@ class Plugins {
     if (match) {
 
       const pluginName = match[1];
+
       // we accept only slash as a separator
       const assetPath = path.posix.normalize(match[2]);
 

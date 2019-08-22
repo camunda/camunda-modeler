@@ -8,6 +8,30 @@
  * except in compliance with the MIT License.
  */
 
-export function electronRequire(component) {
-  return window.require('electron')[component];
-}
+const {
+  remote,
+  ipcRenderer
+} = require('electron');
+
+const {
+  process,
+  app
+} = remote;
+
+const {
+  platform
+} = process;
+
+/* global window */
+
+window.getAppPreload = function() {
+
+  return {
+    metadata: app.metadata,
+    plugins: app.plugins.getAll(),
+    flags: app.flags.getAll(),
+    ipcRenderer,
+    platform
+  };
+
+};

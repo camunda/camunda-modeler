@@ -6,6 +6,32 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.3.0
+
+### General
+
+* `FIX`: correct find shortcut not working ([#1450](https://github.com/camunda/camunda-modeler/issues/1450))
+* `FIX`: restore paste shortcut not working in XML view ([#814](https://github.com/camunda/camunda-modeler/issues/814), [#868](https://github.com/camunda/camunda-modeler/issues/868))
+* `CHORE`: disable node integration in client application ([#1453](https://github.com/camunda/camunda-modeler/pull/1453))
+
+### BPMN
+
+* `FEAT`: add two-step copy and paste ([#1421](https://github.com/camunda/camunda-modeler/issues/1421))
+* `FEAT`: make participants and expanded sub-processes draggable on borders and headers/labels only ([#238](https://github.com/camunda/camunda-modeler/issues/238))
+* `FEAT`: improve navigation inside large participants / sub-processes ([#238](https://github.com/camunda/camunda-modeler/issues/238))
+* `FEAT`: allow editing of `camunda:errorMessage` on `bpmn:Error` elements ([#1333](https://github.com/camunda/camunda-modeler/issues/1333))
+* `FEAT`: add generic editor extension point ([#1434](https://github.com/camunda/camunda-modeler/pull/1434))
+* `FEAT`: activate hand tool on `SPACE` ([#1475](https://github.com/camunda/camunda-modeler/pull/1475))
+* `FIX`: allow participant to participant message flows to be copied ([#1413](https://github.com/camunda/camunda-modeler/issues/1413))
+* `FIX`: do not update label positions when pasting ([#1325](https://github.com/camunda/camunda-modeler/issues/1325))
+* `FIX`: keep allowed implementation details on copy and replace ([#681](https://github.com/camunda/camunda-modeler/issues/681), [#540](https://github.com/camunda/camunda-modeler/issues/540), [#647](https://github.com/camunda/camunda-modeler/issues/647), [#678](https://github.com/camunda/camunda-modeler/issues/678), [#538](https://github.com/camunda/camunda-modeler/issues/538), [#586](https://github.com/camunda/camunda-modeler/issues/586), [#537](https://github.com/camunda/camunda-modeler/issues/537), [#1464](https://github.com/camunda/camunda-modeler/issues/1464))
+* `FIX`: allow editing of `camunda:InputOutput` in places supported by Camunda only ([#491](https://github.com/camunda/camunda-modeler/issues/491))
+* `FIX`: make `camunda:failedJobsRetryTimeCycle` available consistently ([#1465](https://github.com/camunda/camunda-modeler/issues/1465))
+
+### Deploy
+
+* `FEAT`: pre-fill deploy dialog with sensible defaults ([#1441](https://github.com/camunda/camunda-modeler/issues/1441))
+
 ## 3.2.3
 
 * `FIX`: correct cursor being stuck in hover state ([#1383](https://github.com/camunda/camunda-modeler/issues/1383))

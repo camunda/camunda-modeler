@@ -89,6 +89,7 @@ function isFile(filePath) {
 
     log.info('skipping directory %s', filePath);
   } catch (e) {
+
     // file not found or the like...
     log.info(e.message, filePath);
   }

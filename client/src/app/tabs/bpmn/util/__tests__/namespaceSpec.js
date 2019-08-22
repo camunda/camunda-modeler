@@ -32,7 +32,7 @@ const NAMESPACE_CAMUNDA = {
 };
 
 
-describe('util - namespace', function() {
+describe('tabs/bpmn/util - namespace', function() {
 
   describe('findUsages', function() {
 
@@ -148,6 +148,7 @@ describe('util - namespace', function() {
 
 
     it('should handle special chars', function() {
+
       // given
       const used = {
         prefixes: [ 'activiti', 'a.b' ],

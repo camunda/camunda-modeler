@@ -1767,6 +1767,7 @@ export class App extends PureComponent {
           <ModalConductor
             currentModal={ this.state.currentModal }
             endpoints={ this.state.endpoints }
+            tab={ activeTab }
             getGlobal={ this.getGlobal }
             onClose={ this.closeModal }
             onDeploy={ this.handleDeploy }

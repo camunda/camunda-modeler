@@ -202,6 +202,7 @@ describe('<Log>', function() {
 
 
     it('should clear log', function() {
+
       // given
       const onClear = spy();
 
@@ -280,6 +281,7 @@ describe('<Log>', function() {
   describe('resize', function() {
 
     it('should handle resize', function() {
+
       // given
       const onLayoutChanged = spy();
 
@@ -303,6 +305,7 @@ describe('<Log>', function() {
 
 
     it('should ignore delta y = 0', function() {
+
       // given
       const {
         instance
