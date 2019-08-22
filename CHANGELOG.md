@@ -21,6 +21,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: improve navigation inside large participants / sub-processes ([#238](https://github.com/camunda/camunda-modeler/issues/238))
 * `FEAT`: allow editing of `camunda:errorMessage` on `bpmn:Error` elements ([#1333](https://github.com/camunda/camunda-modeler/issues/1333))
 * `FEAT`: add generic editor extension point ([#1434](https://github.com/camunda/camunda-modeler/pull/1434))
+* `FEAT`: activate hand tool on `SPACE` ([#1475](https://github.com/camunda/camunda-modeler/pull/1475))
 * `FIX`: allow participant to participant message flows to be copied ([#1413](https://github.com/camunda/camunda-modeler/issues/1413))
 * `FIX`: do not update label positions when pasting ([#1325](https://github.com/camunda/camunda-modeler/issues/1325))
 * `FIX`: keep allowed implementation details on copy and replace ([#681](https://github.com/camunda/camunda-modeler/issues/681), [#540](https://github.com/camunda/camunda-modeler/issues/540), [#647](https://github.com/camunda/camunda-modeler/issues/647), [#678](https://github.com/camunda/camunda-modeler/issues/678), [#538](https://github.com/camunda/camunda-modeler/issues/538), [#586](https://github.com/camunda/camunda-modeler/issues/586), [#537](https://github.com/camunda/camunda-modeler/issues/537), [#1464](https://github.com/camunda/camunda-modeler/issues/1464))
