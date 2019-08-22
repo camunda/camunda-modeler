@@ -32,8 +32,8 @@ This project incorporates components from the projects listed below. The origina
 25.   @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
 26.   @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
 27.   bpmn-js-properties-panel@0.32.1 (https://github.com/bpmn-io/bpmn-js-properties-panel)
-28.   bpmn-js-signavio-compat@1.1.0 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
-29.   bpmn-js@5.0.0-beta.4 (https://github.com/bpmn-io/bpmn-js)
+28.   bpmn-js-signavio-compat@1.2.0 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
+29.   bpmn-js@5.0.2 (https://github.com/bpmn-io/bpmn-js)
 30.   bpmn-moddle@6.0.0 (https://github.com/bpmn-io/bpmn-moddle)
 31.   camunda-bpmn-moddle@4.1.2 (https://github.com/camunda/camunda-bpmn-moddle)
 32.   camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
@@ -50,8 +50,8 @@ This project incorporates components from the projects listed below. The origina
 43.   deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
 44.   diagram-js-direct-editing@1.6.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
 45.   diagram-js-minimap@2.0.1 (https://github.com/bpmn-io/diagram-js-minimap)
-46.   diagram-js-origin@1.2.0 (https://github.com/bpmn-io/diagram-js-origin)
-47.   diagram-js@5.0.0-beta.3 (https://github.com/bpmn-io/diagram-js)
+46.   diagram-js-origin@1.3.0 (https://github.com/bpmn-io/diagram-js-origin)
+47.   diagram-js@5.0.1 (https://github.com/bpmn-io/diagram-js)
 48.   didi@4.0.0 (https://github.com/nikku/didi)
 49.   dmn-js-decision-table@6.3.3 (https://github.com/bpmn-io/dmn-js)
 50.   dmn-js-drd@6.3.3 (https://github.com/bpmn-io/dmn-js)
@@ -802,7 +802,7 @@ THE SOFTWARE.
 END OF bpmn-js-properties-panel@0.32.1 NOTICES AND INFORMATION
 
 
-%% bpmn-js-signavio-compat@1.1.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-signavio-compat@1.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -827,10 +827,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js-signavio-compat@1.1.0 NOTICES AND INFORMATION
+END OF bpmn-js-signavio-compat@1.2.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js@5.0.0-beta.4 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@5.0.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -856,7 +856,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF bpmn-js@5.0.0-beta.4 NOTICES AND INFORMATION
+END OF bpmn-js@5.0.2 NOTICES AND INFORMATION
 
 
 %% bpmn-moddle@6.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1303,7 +1303,7 @@ THE SOFTWARE.
 END OF diagram-js-minimap@2.0.1 NOTICES AND INFORMATION
 
 
-%% diagram-js-origin@1.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js-origin@1.3.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1328,10 +1328,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF diagram-js-origin@1.2.0 NOTICES AND INFORMATION
+END OF diagram-js-origin@1.3.0 NOTICES AND INFORMATION
 
 
-%% diagram-js@5.0.0-beta.3 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@5.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1355,7 +1355,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@5.0.0-beta.3 NOTICES AND INFORMATION
+END OF diagram-js@5.0.1 NOTICES AND INFORMATION
 
 
 %% didi@4.0.0 NOTICES AND INFORMATION BEGIN HERE
