@@ -8,28 +8,46 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+import React, { PureComponent } from 'react';
+import ReactDOM from 'react-dom';
 
 import classNames from 'classnames';
 
 import css from './Modal.less';
 
 
-const Modal = props => {
-  const handleBackgroundClick = event => {
+class Modal extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.modalRoot = document.getElementById('modal-root');
+    this.container = document.createElement('div');
+  }
+
+  componentDidMount() {
+    this.modalRoot.appendChild(this.container);
+  }
+
+  componentWillUnmount() {
+    this.modalRoot.removeChild(this.container);
+  }
+
+  render() {
+    return ReactDOM.createPortal(
+      <div className={ css.ModalOverlay } onClick={ this.handleBackgroundClick }>
+        <div className={ classNames(css.ModalContainer, this.props.className) }>
+          { this.props.children }
+        </div>
+      </div>,
+      this.container
+    );
+  }
+
+  handleBackgroundClick = event => {
     if (event.target === event.currentTarget) {
-      props.onClose();
+      this.props.onClose();
     }
   };
-
-  return (
-    <div className={ css.ModalOverlay } onClick={ handleBackgroundClick }>
-      <div className={ classNames(css.ModalContainer, props.className) }>
-        { props.children }
-      </div>
-    </div>
-  );
-};
+}
 
 Modal.defaultProps = {
   onClose: () => {}

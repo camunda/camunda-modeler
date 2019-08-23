@@ -25,6 +25,19 @@ const CTRL_MODIFIER = 'Control';
 
 
 describe('<KeyboardShortcutsModal>', function() {
+  const modalRoot = document.createElement('div');
+  modalRoot.id = 'modal-root';
+
+
+  beforeEach(() => {
+    document.body.appendChild(modalRoot);
+  });
+
+
+  afterEach(() => {
+    document.body.removeChild(modalRoot);
+  });
+
 
   it('should render', function() {
     shallow(<KeyboardShortcutsModal getGlobal={ mockGlobal('foo') } />);
