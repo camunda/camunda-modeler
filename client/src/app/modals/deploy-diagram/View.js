@@ -20,7 +20,7 @@ import {
 
 import {
   Icon,
-  ModalWrapper
+  Modal
 } from '../../primitives';
 
 import AuthTypes from './AuthTypes';
@@ -60,7 +60,7 @@ class View extends PureComponent {
     const deployOpen = this.state.deployOpen;
 
     return (
-      <ModalWrapper className={ css.View } onClose={ onClose }>
+      <Modal className={ css.View } onClose={ onClose }>
         <h2>Deploy Diagram</h2>
 
         <p className="intro">
@@ -179,7 +179,7 @@ class View extends PureComponent {
           )}
         </Formik>
 
-      </ModalWrapper>
+      </Modal>
     );
   }
 
