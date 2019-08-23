@@ -26,6 +26,19 @@ const DEFAULT_ENDPOINT = 'http://localhost:8080/engine-rest';
 
 
 describe('<DeployDiagramModal>', function() {
+  const modalRoot = document.createElement('div');
+  modalRoot.id = 'modal-root';
+
+
+  beforeEach(() => {
+    document.body.appendChild(modalRoot);
+  });
+
+
+  afterEach(() => {
+    document.body.removeChild(modalRoot);
+  });
+
 
   it('should render', function() {
     shallow(<DeployDiagramModal />);

@@ -21,6 +21,19 @@ import { Modal } from '..';
 
 
 describe('<Modal>', function() {
+  const modalRoot = document.createElement('div');
+  modalRoot.id = 'modal-root';
+
+
+  beforeEach(() => {
+    document.body.appendChild(modalRoot);
+  });
+
+
+  afterEach(() => {
+    document.body.removeChild(modalRoot);
+  });
+
 
   it('should render', function() {
     shallow(<Modal />);
