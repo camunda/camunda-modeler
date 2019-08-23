@@ -12,10 +12,10 @@ import React from 'react';
 
 import classNames from 'classnames';
 
-import css from './ModalWrapper.less';
+import css from './Modal.less';
 
 
-const ModalWrapper = props => {
+const Modal = props => {
   const handleBackgroundClick = event => {
     if (event.target === event.currentTarget) {
       props.onClose();
@@ -31,8 +31,8 @@ const ModalWrapper = props => {
   );
 };
 
-ModalWrapper.defaultProps = {
+Modal.defaultProps = {
   onClose: () => {}
 };
 
-export default ModalWrapper;
+export default Modal;

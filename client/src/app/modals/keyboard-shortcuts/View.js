@@ -11,7 +11,7 @@
 import React, { PureComponent } from 'react';
 
 import {
-  ModalWrapper
+  Modal
 } from '../../primitives';
 
 import css from './View.less';
@@ -25,7 +25,7 @@ class View extends PureComponent {
     } = this.props;
 
     return (
-      <ModalWrapper className={ css.View } onClose={ onClose }>
+      <Modal className={ css.View } onClose={ onClose }>
         <h2>Keyboard Shortcuts</h2>
         <p>
           The following special shortcuts can be used on opened diagrams.
@@ -45,7 +45,7 @@ class View extends PureComponent {
         <p>
           Find additional shortcuts on individual items in the application menu.
         </p>
-      </ModalWrapper>
+      </Modal>
     );
   }
 

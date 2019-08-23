@@ -17,23 +17,23 @@ import {
   shallow
 } from 'enzyme';
 
-import { ModalWrapper } from '..';
+import { Modal } from '..';
 
 
-describe('<ModalWrapper>', function() {
+describe('<Modal>', function() {
 
   it('should render', function() {
-    shallow(<ModalWrapper />);
+    shallow(<Modal />);
   });
 
 
   it('should render children', function() {
     const wrapper = shallow((
-      <ModalWrapper>
+      <Modal>
         <div>
           { 'Test' }
         </div>
-      </ModalWrapper>
+      </Modal>
     ));
 
     expect(wrapper.contains(<div>{ 'Test' }</div>)).to.be.true;
@@ -44,7 +44,7 @@ describe('<ModalWrapper>', function() {
 
     // given
     const onCloseSpy = sinon.spy();
-    const wrapper = mount(<ModalWrapper onClose={ onCloseSpy } />);
+    const wrapper = mount(<Modal onClose={ onCloseSpy } />);
 
     // when
     wrapper.first().simulate('click');
@@ -60,7 +60,7 @@ describe('<ModalWrapper>', function() {
 
     // given
     const onCloseSpy = sinon.spy();
-    const wrapper = mount(<ModalWrapper onClose={ onCloseSpy } />);
+    const wrapper = mount(<Modal onClose={ onCloseSpy } />);
 
     // when
     wrapper.find('div div').first().simulate('click');
