@@ -983,14 +983,14 @@ export class App extends PureComponent {
   /**
    * Propagates errors to parent.
    * @param {Error} error
-   * @param {Tab} [tab]
+   * @param {Tab|string} [categoryOrTab]
    */
-  handleError = (error, tab) => {
+  handleError = (error, categoryOrTab) => {
     const {
       onError
     } = this.props;
 
-    return onError(error, tab);
+    return onError(error, categoryOrTab);
   }
 
   getGlobal = (name) => {
@@ -1008,14 +1008,14 @@ export class App extends PureComponent {
   /**
    * Propagates warnings to parent.
    * @param {Error} error
-   * @param {Tab} [tab]
+   * @param {Tab|string} [categoryOrTab]
    */
-  handleWarning(warning, tab) {
+  handleWarning(warning, categoryOrTab) {
     const {
       onWarning
     } = this.props;
 
-    return onWarning(warning, tab);
+    return onWarning(warning, categoryOrTab);
   }
 
   /**
