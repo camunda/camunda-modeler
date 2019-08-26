@@ -435,6 +435,32 @@ describe('<AppParent>', function() {
     });
 
 
+    it('should log client errors with string source attached', async function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+      const error = createError();
+      const source = 'error-source';
+
+      // when
+      await appParent.handleError(error, source);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('log', {
+        message: `[${source}] ${error.message}\n${error.stack}`,
+        category: 'error'
+      });
+
+    });
+
+
     it('should log tab errors with file path attached', async function() {
 
       // given
@@ -648,6 +674,34 @@ describe('<AppParent>', function() {
       // then
       expect(actionSpy).to.have.been.calledWith('log', {
         message: warning.message,
+        category: 'warning'
+      });
+
+    });
+
+
+    it('should log client warnings with string source attached', async function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+      const warning = {
+        message: 'warning'
+      };
+      const source = 'warning-source';
+
+      // when
+      await app.handleWarning(warning, source);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('log', {
+        message: `[${source}] ${warning.message}`,
         category: 'warning'
       });
 

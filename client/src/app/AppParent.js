@@ -14,7 +14,8 @@ import debug from 'debug';
 
 import {
   assign,
-  forEach
+  forEach,
+  isString
 } from 'min-dash';
 
 import {
@@ -182,10 +183,10 @@ export default class AppParent extends PureComponent {
     this.getBackend().sendTogglePlugins();
   }
 
-  handleError = async (error, tab) => {
-    const errorMessage = this.getErrorMessage(tab);
+  handleError = async (error, source) => {
+    const errorMessage = this.getErrorMessage(source);
 
-    const entry = await getErrorEntry(error, tab);
+    const entry = await getErrorEntry(error, source);
 
     this.logToBackend(entry.backend);
 
@@ -197,7 +198,7 @@ export default class AppParent extends PureComponent {
       this.logToClient(getClientEntry('info', 'Disable plug-ins (restarts the app)', this.togglePlugins));
     }
 
-    log(errorMessage, error, tab);
+    log(errorMessage, error, source);
   }
 
   handleBackendError = async (_, message) => {
@@ -206,23 +207,27 @@ export default class AppParent extends PureComponent {
     this.logToClient(entry.client);
   }
 
-  getErrorMessage(tab) {
-    return `${tab ? 'tab' : 'app'} ERROR`;
+  getErrorMessage(categoryOrTab) {
+    const prefix = categoryOrTab ? (isString(categoryOrTab) ? categoryOrTab : 'tab') : 'app';
+
+    return `${prefix} ERROR`;
   }
 
-  handleWarning = async (warning, tab) => {
+  handleWarning = async (warning, source) => {
 
-    const warningMessage = this.getWarningMessage(tab);
+    const warningMessage = this.getWarningMessage(source);
 
-    const { client: entry } = await getWarningEntry(warning, tab);
+    const { client: entry } = await getWarningEntry(warning, source);
 
     this.logToClient(entry);
 
-    log(warningMessage, warning, tab);
+    log(warningMessage, warning, source);
   }
 
-  getWarningMessage(tab) {
-    return `${tab ? 'tab' : 'app'} warning`;
+  getWarningMessage(categoryOrTab) {
+    const prefix = categoryOrTab ? (isString(categoryOrTab) ? categoryOrTab : 'tab') : 'app';
+
+    return `${prefix} warning`;
   }
 
   handleReady = async () => {
@@ -416,19 +421,19 @@ function mergeFiles(oldFiles, newFiles) {
 /**
  *
  * @param {Error|{ message: string }} body
- * @param {Tab} [tab]
+ * @param {Tab|string} [source]
  */
-function getErrorEntry(body, tab) {
-  return getLogEntry(body, 'error', tab);
+function getErrorEntry(body, source) {
+  return getLogEntry(body, 'error', source);
 }
 
 /**
  *
  * @param {Error|{ message: string }} body
- * @param {Tab} [tab]
+ * @param {Tab|string} [source]
  */
-function getWarningEntry(body, tab) {
-  return getLogEntry(body, 'warning', tab);
+function getWarningEntry(body, source) {
+  return getLogEntry(body, 'warning', source);
 }
 
 /**
@@ -484,7 +489,7 @@ async function getEntryMessage(errorLike, tab) {
   let message = originalMessage;
 
   if (tab) {
-    const prefix = getTabPrefix(tab);
+    const prefix = getSourcePrefix(tab);
     message = `[${prefix}] ${message}`;
   }
 
@@ -497,13 +502,15 @@ async function getEntryMessage(errorLike, tab) {
   return message;
 }
 
-function getTabPrefix(tab) {
-  if (tab.file && tab.file.path) {
-    return tab.file.path;
-  } else if (tab.file && tab.file.name) {
-    return tab.file.name;
+function getSourcePrefix(categoryOrTab) {
+  if (isString(categoryOrTab)) {
+    return categoryOrTab;
+  } else if (categoryOrTab.file && categoryOrTab.file.path) {
+    return categoryOrTab.file.path;
+  } else if (categoryOrTab.file && categoryOrTab.file.name) {
+    return categoryOrTab.file.name;
   } else {
-    return tab.id;
+    return categoryOrTab.id;
   }
 }
 
