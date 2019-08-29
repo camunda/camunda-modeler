@@ -6,6 +6,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.3.2
+
+* `FIX`: correct connection layout when dropping on sequence flows
+* `CHORE`: bump to `bpmn-js@5.0.4`
+
 ## 3.3.1
 
 * `FIX`: remove phantom snap lines showing on paste
