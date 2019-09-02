@@ -53,35 +53,47 @@ describe('<Modal>', function() {
   });
 
 
-  it('should invoke passed onClose prop for background click', function() {
+  describe('onClose handling', function() {
 
-    // given
-    const onCloseSpy = sinon.spy();
-    const wrapper = mount(<Modal onClose={ onCloseSpy } />);
+    let wrapper, onCloseSpy;
 
-    // when
-    wrapper.first().simulate('click');
-
-    // then
-    expect(onCloseSpy).to.be.called;
-
-    wrapper.unmount();
-  });
+    beforeEach(function() {
+      onCloseSpy = sinon.spy();
+    });
 
 
-  it('should NOT invoke passed onClose prop for click on modal container', function() {
+    afterEach(function() {
+      if (wrapper) {
+        wrapper.unmount();
+      }
+    });
 
-    // given
-    const onCloseSpy = sinon.spy();
-    const wrapper = mount(<Modal onClose={ onCloseSpy } />);
 
-    // when
-    wrapper.find('div div').first().simulate('click');
+    it('should invoke passed onClose prop for background click', function() {
 
-    // then
-    expect(onCloseSpy).to.not.be.called;
+      // given
+      wrapper = mount(<Modal onClose={ onCloseSpy } />);
 
-    wrapper.unmount();
+      // when
+      wrapper.first().simulate('click');
+
+      // then
+      expect(onCloseSpy).to.be.called;
+    });
+
+
+    it('should NOT invoke passed onClose prop for click on modal container', function() {
+
+      // given
+      wrapper = mount(<Modal onClose={ onCloseSpy }><button id="button" /></Modal>);
+
+      // when
+      wrapper.find('#button').simulate('click');
+
+      // then
+      expect(onCloseSpy).to.not.be.called;
+    });
+
   });
 
 });
