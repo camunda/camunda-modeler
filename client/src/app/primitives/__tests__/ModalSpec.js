@@ -21,19 +21,6 @@ import { Modal } from '..';
 
 
 describe('<Modal>', function() {
-  const modalRoot = document.createElement('div');
-  modalRoot.id = 'modal-root';
-
-
-  beforeEach(() => {
-    document.body.appendChild(modalRoot);
-  });
-
-
-  afterEach(() => {
-    document.body.removeChild(modalRoot);
-  });
-
 
   it('should render', function() {
     shallow(<Modal />);
@@ -92,6 +79,32 @@ describe('<Modal>', function() {
 
       // then
       expect(onCloseSpy).to.not.be.called;
+    });
+
+  });
+
+
+  describe('focus handling', function() {
+
+    let wrapper;
+
+    afterEach(function() {
+      if (wrapper) {
+        wrapper.unmount();
+      }
+    });
+
+
+    it('should correctly handle autofocus', function() {
+
+      // given
+      wrapper = mount(<Modal><input id="input" autoFocus /></Modal>);
+
+      const input = wrapper.find('#input').getDOMNode();
+
+      // then
+      expect(document.activeElement).to.eql(input);
+
     });
 
   });

@@ -17,20 +17,6 @@ import css from './Modal.less';
 
 
 class Modal extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.modalRoot = document.getElementById('modal-root');
-    this.container = document.createElement('div');
-  }
-
-  componentDidMount() {
-    this.modalRoot.appendChild(this.container);
-  }
-
-  componentWillUnmount() {
-    this.modalRoot.removeChild(this.container);
-  }
-
   render() {
     return ReactDOM.createPortal(
       <div className={ css.ModalOverlay } onClick={ this.handleBackgroundClick }>
@@ -38,7 +24,7 @@ class Modal extends PureComponent {
           { this.props.children }
         </div>
       </div>,
-      this.container
+      document.body
     );
   }
 
