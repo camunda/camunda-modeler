@@ -43,13 +43,10 @@ export default class Slot extends PureComponent {
   render() {
     const {
       name,
-      group,
-      separator,
+      group = groupFills,
+      separator = nonSeparator,
       limit
     } = this.props;
-
-    const groupFn = group || singleGroup;
-    const separatorFn = separator || nonSeparator;
 
     return (
       <SlotContext.Consumer>{
@@ -61,9 +58,9 @@ export default class Slot extends PureComponent {
 
           const cropped = limit ? filtered.slice(0, limit) : filtered;
 
-          const grouped = groupFn(cropped);
+          const grouped = group(cropped);
 
-          return createFills(grouped, fillFragment, separatorFn);
+          return createFills(grouped, fillFragment, separator);
         }
       }</SlotContext.Consumer>
     );
@@ -77,19 +74,6 @@ function fillFragment(fill) {
 
 function nonSeparator(key) {
   return null;
-}
-
-/**
- * Return a single group of fills.
- *
- * @param  {Array<Component>} fills
- *
- * @return {Array<Array<Component>>} grouped fills
- */
-function singleGroup(fills) {
-  return [
-    fills
-  ];
 }
 
 function createFills(arrays, fillFn, separatorFn) {
@@ -112,4 +96,45 @@ function createFills(arrays, fillFn, separatorFn) {
   });
 
   return result;
+}
+
+/**
+ * Group fills based on group name and priority.
+ *
+ * @param {Array<Component>} fills
+ *
+ * @return {Array<Array<Component>>} grouped fills
+ */
+function groupFills(fills) {
+
+  const groups = [];
+
+  const groupsById = {};
+
+  fills.forEach(function(fill) {
+
+    const {
+      group: groupName = 'z_default'
+    } = fill.props;
+
+    let group = groupsById[groupName];
+
+    if (!group) {
+      groupsById[groupName] = group = [];
+      groups.push(group);
+    }
+
+    group.push(fill);
+  });
+
+  // sort within groups based on priority [default = 0]
+  groups.forEach(group => group.sort(comparePriority));
+
+  return Object.keys(groupsById)
+    .sort()
+    .map(id => groupsById[id]);
+}
+
+function comparePriority(a, b) {
+  return (b.props.priority || 0) - (a.props.priority || 0);
 }
