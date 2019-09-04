@@ -12,7 +12,7 @@ import * as ReactExports from 'react';
 
 import React from 'react';
 
-import PluginContainer from './PluginContainer';
+import PluginParent from './PluginParent';
 
 import {
   Modal
@@ -31,15 +31,20 @@ window.components = {
   Modal
 };
 
-export default function Plugins(props) {
+export default function PluginsRoot(props) {
 
   const {
-    app
+    app,
+    plugins
   } = props;
 
-  const plugins = app.getPlugins('app.ui');
+  return plugins.map((plugin, index) => {
 
-  return plugins.map(({ component: Plugin, props: customProps, name }, index) => {
+    const {
+      component: PluginComponent,
+      props: customProps,
+      name
+    } = plugin;
 
     const {
       cancelAll,
@@ -47,19 +52,19 @@ export default function Plugins(props) {
     } = createSubscriber(app);
 
     return (
-      <PluginContainer
+      <PluginParent
         key={ name || index }
         name={ name || index }
         cancelSubscriptions={ cancelAll }
         onError={ app.handleError }
       >
-        <Plugin
+        <PluginComponent
           { ...customProps }
           triggerAction={ app.triggerAction }
           subscribe={ subscribe }
           log={ app.composeAction('log') }
         />
-      </PluginContainer>
+      </PluginParent>
     );
   });
 }
@@ -67,6 +72,7 @@ export default function Plugins(props) {
 
 
 // helpers ////////////
+
 function createSubscriber(app) {
   let subscriptions = [];
 

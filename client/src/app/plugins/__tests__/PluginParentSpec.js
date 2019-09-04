@@ -14,13 +14,13 @@ import React from 'react';
 
 import TestRenderer from 'react-test-renderer';
 
-import PluginContainer from '../PluginContainer';
+import PluginParent from '../PluginParent';
 
 
-describe('<PluginContainer>', function() {
+describe('<PluginParent>', function() {
 
   it('should render', function() {
-    TestRenderer.create(<PluginContainer />);
+    TestRenderer.create(<PluginParent />);
   });
 
 
@@ -29,7 +29,7 @@ describe('<PluginContainer>', function() {
     // given
     const cancelSubscriptionsSpy = sinon.spy();
     const wrapper = TestRenderer.create(
-      <PluginContainer cancelSubscriptions={ cancelSubscriptionsSpy } />
+      <PluginParent cancelSubscriptions={ cancelSubscriptionsSpy } />
     );
 
     // when
@@ -51,9 +51,9 @@ describe('<PluginContainer>', function() {
 
       // when
       const { root } = TestRenderer.create(
-        <PluginContainer>
+        <PluginParent>
           <ErrorComponent />
-        </PluginContainer>
+        </PluginParent>
       );
 
       // then
@@ -68,9 +68,9 @@ describe('<PluginContainer>', function() {
 
       // when
       const { root } = TestRenderer.create(
-        <PluginContainer onError={ onErrorSpy }>
+        <PluginParent onError={ onErrorSpy }>
           <ErrorComponent />
-        </PluginContainer>
+        </PluginParent>
       );
 
       // then
@@ -86,9 +86,9 @@ describe('<PluginContainer>', function() {
 
       // when
       const { root } = TestRenderer.create(
-        <PluginContainer cancelSubscriptions={ cancelSubscriptionsSpy }>
+        <PluginParent cancelSubscriptions={ cancelSubscriptionsSpy }>
           <ErrorComponent />
-        </PluginContainer>
+        </PluginParent>
       );
 
       // then
