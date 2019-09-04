@@ -14,6 +14,12 @@ import css from './PluginContainer.less';
 
 
 export default class PluginContainer extends PureComponent {
+
+  static defaultProps = {
+    onError: () => {},
+    cancelSubscriptions: () => {}
+  }
+
   static getDerivedStateFromError() {
     return { error: true };
   }
@@ -23,8 +29,7 @@ export default class PluginContainer extends PureComponent {
   componentDidCatch(error) {
     this.props.cancelSubscriptions();
 
-    error.message = `Plugin "${this.props.name}" has thrown an error: ${error.message}`;
-    this.props.onError(error, `plugin-error: ${this.props.name}`);
+    this.props.onError(error, 'plugin:' + this.props.name);
   }
 
   componentWillUnmount() {
@@ -37,8 +42,3 @@ export default class PluginContainer extends PureComponent {
       <div className={ css.PluginContainer }>{ this.props.children }</div>;
   }
 }
-
-PluginContainer.defaultProps = {
-  onError: () => {},
-  cancelSubscriptions: () => {}
-};
