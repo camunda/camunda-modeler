@@ -10,10 +10,10 @@
 
 import React, { PureComponent } from 'react';
 
-import css from './PluginContainer.less';
+import css from './PluginParent.less';
 
 
-export default class PluginContainer extends PureComponent {
+export default class PluginParent extends PureComponent {
 
   static defaultProps = {
     onError: () => {},
@@ -39,6 +39,6 @@ export default class PluginContainer extends PureComponent {
   render() {
     return this.state.error ?
       null :
-      <div className={ css.PluginContainer }>{ this.props.children }</div>;
+      <div className={ css.PluginParent }>{ this.props.children }</div>;
   }
 }

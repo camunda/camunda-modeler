@@ -8,4 +8,11 @@
  * except in compliance with the MIT License.
  */
 
-export { default as PluginsRoot } from './PluginsRoot';
+import DeploymentTool from './DeploymentTool';
+
+const deploymentTool = {
+  name: 'deployment-tool',
+  component: DeploymentTool
+};
+
+export default deploymentTool;

@@ -21,6 +21,8 @@ import {
 
 import EventEmitter from 'events';
 
+import defaultPlugins from '../plugins';
+
 import executeOnce from './util/executeOnce';
 
 import { WithCache } from './cached';
@@ -57,7 +59,7 @@ import pSeries from 'p-series';
 
 import History from './History';
 
-import { Plugins } from './plugins';
+import { PluginsRoot } from './plugins';
 
 import css from './App.less';
 
@@ -110,6 +112,13 @@ export class App extends PureComponent {
     this.closedTabs = new History();
 
     this.tabRef = React.createRef();
+
+    const userPlugins = this.getPlugins('app.ui');
+
+    this.plugins = [
+      ...defaultPlugins,
+      ...userPlugins
+    ];
 
     // remember the original App#checkFileChanged version
     // for testing purposes
@@ -1803,8 +1812,10 @@ export class App extends PureComponent {
               onLayoutChanged={ this.handleLayoutChanged }
             />
 
-
-            <Plugins app={ this } />
+            <PluginsRoot
+              app={ this }
+              plugins={ this.plugins }
+            />
 
           </SlotFillRoot>
 

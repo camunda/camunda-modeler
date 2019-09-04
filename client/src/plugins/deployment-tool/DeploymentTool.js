@@ -8,4 +8,20 @@
  * except in compliance with the MIT License.
  */
 
-export { default as PluginsRoot } from './PluginsRoot';
+import React, { PureComponent } from 'react';
+
+import { Fill } from '../../app/slot-fill';
+
+export default class DeploymentTool extends PureComponent {
+
+  render() {
+
+    return (
+      <React.Fragment>
+        <Fill name="toolbar" group="extension">
+          🤩
+        </Fill>
+      </React.Fragment>
+    );
+  }
+}

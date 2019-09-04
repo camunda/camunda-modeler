@@ -8,4 +8,10 @@
  * except in compliance with the MIT License.
  */
 
-export { default as PluginsRoot } from './PluginsRoot';
+import DeploymentTool from './deployment-tool';
+
+const plugins = [
+  DeploymentTool
+];
+
+export default plugins;
