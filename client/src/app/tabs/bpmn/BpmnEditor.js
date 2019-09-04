@@ -672,7 +672,7 @@ export class BpmnEditor extends CachedComponent {
 
         <Loader hidden={ !importing } />
 
-        <Fill name="toolbar" group="color">
+        <Fill name="toolbar" group="5_color">
           <DropdownButton
             title="Set element color"
             disabled={ !this.state.setColor }
@@ -695,7 +695,7 @@ export class BpmnEditor extends CachedComponent {
           </DropdownButton>
         </Fill>
 
-        <Fill name="toolbar" group="align">
+        <Fill name="toolbar" group="6_align">
           <Button
             title="Align elements left"
             disabled={ !this.state.align }
@@ -739,7 +739,7 @@ export class BpmnEditor extends CachedComponent {
           </Button>
         </Fill>
 
-        <Fill name="toolbar" group="distribute">
+        <Fill name="toolbar" group="7_distribute">
           <Button
             title="Distribute elements horizontally"
             disabled={ !this.state.distribute }
@@ -756,7 +756,7 @@ export class BpmnEditor extends CachedComponent {
           </Button>
         </Fill>
 
-        <Fill name="toolbar" group="deploy">
+        <Fill name="toolbar" group="8_deploy">
           <Button
             onClick={ this.props.onModal.bind(null, 'DEPLOY_DIAGRAM') }
             title="Deploy Current Diagram"

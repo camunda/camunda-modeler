@@ -1681,7 +1681,7 @@ export class App extends PureComponent {
 
             <Toolbar />
 
-            <Fill name="toolbar" group="general">
+            <Fill name="toolbar" group="1_general">
               <DropdownButton
                 title="Create diagram"
                 items={ [
@@ -1718,7 +1718,7 @@ export class App extends PureComponent {
               </Button>
             </Fill>
 
-            <Fill name="toolbar" group="save">
+            <Fill name="toolbar" group="2_save">
               <Button
                 disabled={ !canSave }
                 onClick={ canSave ? this.composeAction('save') : null }
@@ -1735,7 +1735,7 @@ export class App extends PureComponent {
               </Button>
             </Fill>
 
-            <Fill name="toolbar" group="editor">
+            <Fill name="toolbar" group="3_editor">
               <Button
                 disabled={ !tabState.undo }
                 onClick={ this.composeAction('undo') }
@@ -1753,7 +1753,7 @@ export class App extends PureComponent {
             </Fill>
 
             {
-              tabState.exportAs && <Fill name="toolbar" group="export">
+              tabState.exportAs && <Fill name="toolbar" group="4_export">
                 <Button
                   title="Export as image"
                   onClick={ this.composeAction('export-as') }
