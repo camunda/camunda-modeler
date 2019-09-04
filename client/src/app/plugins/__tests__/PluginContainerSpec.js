@@ -50,7 +50,11 @@ describe('<PluginContainer>', function() {
     it('should work as an error boundary', function() {
 
       // when
-      const { root } = TestRenderer.create(<PluginContainer><ErrorComponent /></PluginContainer>);
+      const { root } = TestRenderer.create(
+        <PluginContainer>
+          <ErrorComponent />
+        </PluginContainer>
+      );
 
       // then
       expect(root).to.exist;
