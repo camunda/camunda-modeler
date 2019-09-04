@@ -24,7 +24,8 @@ import TestContainer from 'mocha-test-container-support';
 
 import {
   findRenderedComponentWithType,
-  findRenderedDOMComponentWithClass
+  findRenderedDOMComponentWithClass,
+  scryRenderedDOMComponentsWithClass as findComponentsWithClass
 } from 'react-dom/test-utils';
 
 import {
@@ -208,6 +209,81 @@ describe('slot-fill', function() {
           slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
 
       expect(slot.contains(fill)).to.be.true;
+    });
+
+
+    describe('ordering', function() {
+
+      it('should display fills ordered alphabetically by group', function() {
+
+        // given
+        var unorderedFills = [ '1_a', '2_b', '3_a', 'foo', '2_a' ].map(id => (
+          <Fill name="foo" group={ id } key={ id }>
+            <div className="fill" id={ id } />
+          </Fill>
+        ));
+
+        // when
+        var slotFillRoot = ReactDOM.render(
+          <SlotFillRoot>
+            { unorderedFills }
+            <div className="slot">
+              <Slot name="foo" />
+            </div>
+          </SlotFillRoot>,
+          container
+        );
+
+        // then
+        var fills = findComponentsWithClass(slotFillRoot, 'fill'),
+            slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+
+        expect(fills.every(fill => slot.contains(fill))).to.be.true;
+        expect(fills.map(fill => fill.id)).to.eql([
+          '1_a',
+          '2_a',
+          '2_b',
+          '3_a',
+          'foo'
+        ]);
+
+      });
+
+
+      it('should display fills ordered by priority inside same group', function() {
+
+        // when
+        var slotFillRoot = ReactDOM.render(
+          <SlotFillRoot>
+            <Fill name="foo" group="1_a" priority={ -1 }>
+              <div className="fill" id="low_priority" />
+            </Fill>
+            <Fill name="foo" group="1_a">
+              <div className="fill" id="no_priority" />
+            </Fill>
+            <Fill name="foo" group="1_a" priority={ 100 }>
+              <div className="fill" id="high_priority" />
+            </Fill>
+            <div className="slot">
+              <Slot name="foo" />
+            </div>
+          </SlotFillRoot>,
+          container
+        );
+
+        // then
+        var fills = findComponentsWithClass(slotFillRoot, 'fill'),
+            slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+
+        expect(fills.every(fill => slot.contains(fill))).to.be.true;
+        expect(fills.map(fill => fill.id)).to.eql([
+          'high_priority',
+          'no_priority',
+          'low_priority'
+        ]);
+
+      });
+
     });
 
   });
