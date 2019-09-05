@@ -33,7 +33,6 @@ const Cli = require('./cli');
 const Config = require('./config');
 const Deployer = require('./deployer');
 const Dialog = require('./dialog');
-const FileSystem = require('./file-system');
 const Flags = require('./flags');
 const Log = require('./log');
 const logTransports = require('./log/transports');
@@ -41,6 +40,12 @@ const Menu = require('./menu');
 const Platform = require('./platform');
 const Plugins = require('./plugins');
 const Workspace = require('./workspace');
+
+const {
+  readFile,
+  readFileStats,
+  writeFile
+} = require('./file-system');
 
 const browserOpen = require('./util/browser-open');
 const renderer = require('./util/renderer');
@@ -65,7 +70,6 @@ const {
   deployer,
   dialog,
   files,
-  fileSystem,
   flags,
   menu,
   plugins
@@ -173,7 +177,7 @@ renderer.on('deploy', handleDeployment);
 
 renderer.on('file:read', function(filePath, options = {}, done) {
   try {
-    const newFile = fileSystem.readFile(filePath, options);
+    const newFile = readFile(filePath, options);
 
     done(null, newFile);
   } catch (err) {
@@ -182,14 +186,14 @@ renderer.on('file:read', function(filePath, options = {}, done) {
 });
 
 renderer.on('file:read-stats', function(file, done) {
-  const newFile = fileSystem.readFileStats(file);
+  const newFile = readFileStats(file);
 
   done(null, newFile);
 });
 
 renderer.on('file:write', async function(filePath, file, options = {}, done) {
   try {
-    const newFile = fileSystem.writeFile(filePath, file, options);
+    const newFile = writeFile(filePath, file, options);
 
     done(null, newFile);
   } catch (err) {
@@ -304,7 +308,7 @@ app.openFiles = function(filePaths) {
   const existingFiles = filePaths.map(filePath => {
 
     try {
-      return fileSystem.readFile(filePath);
+      return readFile(filePath);
     } catch (e) {
       dialog.showOpenFileErrorDialog({
         name: path.basename(filePath)
@@ -534,31 +538,28 @@ function bootstrap() {
     fs
   });
 
-  // (3) file system
-  const fileSystem = new FileSystem();
-
-  // (4) flags
+  // (3) flags
   const flags = new Flags({
     paths: resourcesPaths,
     overrides: flagOverrides
   });
 
-  // (5) menu
+  // (4) menu
   const menu = new Menu({
     platform
   });
 
-  // (6) dialog
+  // (5) dialog
   const dialog = new Dialog({
     config,
     electronDialog,
     userDesktopPath
   });
 
-  // (7) workspace
-  new Workspace(config, fileSystem);
+  // (6) workspace
+  new Workspace(config);
 
-  // (8) plugins
+  // (7) plugins
   const pluginsDisabled = flags.get('disable-plugins');
 
   let paths;
@@ -584,7 +585,6 @@ function bootstrap() {
     deployer,
     dialog,
     files,
-    fileSystem,
     flags,
     menu,
     plugins

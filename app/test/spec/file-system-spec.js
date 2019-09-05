@@ -13,7 +13,11 @@
 const fs = require('fs'),
       os = require('os');
 
-const FileSystem = require('../../lib/file-system');
+const {
+  readFile,
+  readFileStats,
+  writeFile
+} = require('../../lib/file-system');
 
 const ENCODING_BASE64 = 'base64',
       ENCODING_UTF8 = 'utf8';
@@ -26,14 +30,6 @@ let testFilePaths = [];
 
 
 describe('FileSystem', function() {
-
-  let fileSystem;
-
-  beforeEach(function() {
-    fileSystem = new FileSystem({
-      dialog: {}
-    });
-  });
 
   afterEach(function() {
     try {
@@ -55,10 +51,10 @@ describe('FileSystem', function() {
       // given
       const fooPath = getTestFilePath('foo.file');
 
-      fileSystem.writeFile(fooPath, { contents: 'foo' });
+      writeFile(fooPath, { contents: 'foo' });
 
       // when
-      const file = fileSystem.readFile(fooPath);
+      const file = readFile(fooPath);
 
       // then
       expect(file.contents).to.eql('foo');
@@ -70,12 +66,12 @@ describe('FileSystem', function() {
       // given
       const fooPath = getTestFilePath('foo.file');
 
-      fileSystem.writeFile(fooPath, { contents: 'foo' }, {
+      writeFile(fooPath, { contents: 'foo' }, {
         encoding: ENCODING_UTF8
       });
 
       // when
-      const file = fileSystem.readFile(fooPath, {
+      const file = readFile(fooPath, {
         encoding: ENCODING_UTF8
       });
 
@@ -89,12 +85,12 @@ describe('FileSystem', function() {
       // given
       const fooPath = getTestFilePath('foo.file');
 
-      fileSystem.writeFile(fooPath, { contents: PNG_BASE64_ENCODED }, {
+      writeFile(fooPath, { contents: PNG_BASE64_ENCODED }, {
         encoding: ENCODING_BASE64
       });
 
       // when
-      const file = fileSystem.readFile(fooPath, {
+      const file = readFile(fooPath, {
         encoding: ENCODING_BASE64
       });
 
@@ -111,7 +107,7 @@ describe('FileSystem', function() {
       function read() {
 
         // when
-        fileSystem.readFile(fooPath);
+        readFile(fooPath);
       }
 
       // then
@@ -128,10 +124,10 @@ describe('FileSystem', function() {
       // given
       const fooPath = getTestFilePath('foo.file');
 
-      const file = fileSystem.writeFile(fooPath, { contents: 'foo' });
+      const file = writeFile(fooPath, { contents: 'foo' });
 
       // when
-      const fileStats = fileSystem.readFileStats(file);
+      const fileStats = readFileStats(file);
 
       // then
       expect(fileStats).to.have.property('lastModified').above(0);
@@ -144,7 +140,7 @@ describe('FileSystem', function() {
       const file = { contents: 'foo' };
 
       // when
-      const fileStats = fileSystem.readFileStats(file);
+      const fileStats = readFileStats(file);
 
       // then
       expect(fileStats).to.have.property('lastModified').eql(0);
@@ -161,10 +157,10 @@ describe('FileSystem', function() {
       const fooPath = getTestFilePath('foo.file');
 
       // when
-      fileSystem.writeFile(fooPath, { contents: 'foo' });
+      writeFile(fooPath, { contents: 'foo' });
 
       // then
-      const file = fileSystem.readFile(fooPath);
+      const file = readFile(fooPath);
 
       expect(file.contents).to.eql('foo');
     });
@@ -176,12 +172,12 @@ describe('FileSystem', function() {
       const fooPath = getTestFilePath('foo.file');
 
       // when
-      fileSystem.writeFile(fooPath, { contents: 'foo' }, {
+      writeFile(fooPath, { contents: 'foo' }, {
         encoding: ENCODING_UTF8
       });
 
       // then
-      const file = fileSystem.readFile(fooPath, {
+      const file = readFile(fooPath, {
         encoding: ENCODING_UTF8
       });
 
@@ -195,12 +191,12 @@ describe('FileSystem', function() {
       const fooPath = getTestFilePath('foo.file');
 
       // when
-      fileSystem.writeFile(fooPath, { contents: PNG_BASE64_ENCODED }, {
+      writeFile(fooPath, { contents: PNG_BASE64_ENCODED }, {
         encoding: ENCODING_BASE64
       });
 
       // then
-      const file = fileSystem.readFile(fooPath, {
+      const file = readFile(fooPath, {
         encoding: ENCODING_BASE64
       });
 
@@ -214,12 +210,12 @@ describe('FileSystem', function() {
       const fooPath = getTestFilePath('foo.file');
 
       // when
-      fileSystem.writeFile(fooPath, { contents: JPEG_BASE64_ENCODED }, {
+      writeFile(fooPath, { contents: JPEG_BASE64_ENCODED }, {
         encoding: ENCODING_BASE64
       });
 
       // then
-      const file = fileSystem.readFile(fooPath, {
+      const file = readFile(fooPath, {
         encoding: ENCODING_BASE64
       });
 
@@ -236,7 +232,7 @@ describe('FileSystem', function() {
       fooPath = removeExtension(fooPath);
 
       // when
-      const file = fileSystem.writeFile(fooPath, { contents: 'foo' }, {
+      const file = writeFile(fooPath, { contents: 'foo' }, {
         fileType: 'file'
       });
 
@@ -250,12 +246,12 @@ describe('FileSystem', function() {
       // given
       const fooPath = getTestFilePath('foo.file');
 
-      const file = fileSystem.writeFile(fooPath, { contents: 'foo' });
+      const file = writeFile(fooPath, { contents: 'foo' });
 
       setTimeout(() => {
 
         // when
-        const newFile = fileSystem.writeFile(fooPath, file);
+        const newFile = writeFile(fooPath, file);
 
         // then
         expect(newFile.lastModified).to.be.above(file.lastModified);
@@ -274,7 +270,7 @@ describe('FileSystem', function() {
       function writeFile() {
 
         // when
-        fileSystem.writeFile(fooPath, { contents: 'foo' });
+        writeFile(fooPath, { contents: 'foo' });
       }
 
       // then
