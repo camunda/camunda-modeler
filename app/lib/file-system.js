@@ -34,94 +34,85 @@ const ENCODING_BASE64 = 'base64',
 
 
 /**
- * Filesytem.
+ * Read file.
+ *
+ * @param {String} filePath - Filepath.
+ * @param {Object} [options] - Options.
+ * @param {String} [options.encoding] - Encoding.
+ *
+ * @return {Object}
  */
-class FileSystem {
+module.exports.readFile = function(filePath, options = {}) {
+  let { encoding } = options;
 
-  /**
-   * Read file.
-   *
-   * @param {String} filePath - Filepath.
-   * @param {Object} [options] - Options.
-   * @param {String} [options.encoding] - Encoding.
-   *
-   * @return {Object}
-   */
-  readFile(filePath, options = {}) {
-    let { encoding } = options;
-
-    if (!encoding) {
-      encoding = ENCODING_UTF8;
-    }
-
-    const fileContents = fs.readFileSync(filePath, encoding);
-
-    return createFile({
-      path: filePath,
-      contents: fileContents,
-      lastModified: getLastModifiedTicks(filePath)
-    });
+  if (!encoding) {
+    encoding = ENCODING_UTF8;
   }
 
-  /**
-   * Read file stats for file.
-   *
-   * @param {Object} file - File.
-   *
-   * @return {FileDescriptor}
-   */
-  readFileStats(file) {
-    const { path } = file;
+  const fileContents = fs.readFileSync(filePath, encoding);
 
-    return createFile(file, {
-      lastModified: getLastModifiedTicks(path)
-    });
+  return createFile({
+    path: filePath,
+    contents: fileContents,
+    lastModified: getLastModifiedTicks(filePath)
+  });
+};
+
+/**
+ * Read file stats for file.
+ *
+ * @param {Object} file - File.
+ *
+ * @return {FileDescriptor}
+ */
+module.exports.readFileStats = function(file) {
+  const { path } = file;
+
+  return createFile(file, {
+    lastModified: getLastModifiedTicks(path)
+  });
+};
+
+/**
+ * Write file.
+ *
+ * @param {String} filePath - Filepath.
+ * @param {Object} file - File.
+ * @param {Object} [options] - Options.
+ * @param {Object} [options.encoding] - Encoding.
+ *
+ * @return {Object}
+ */
+module.exports.writeFile = function(filePath, file, options = {}) {
+  let { contents } = file;
+
+  let {
+    encoding,
+    fileType
+  } = options;
+
+  if (!encoding) {
+    encoding = ENCODING_UTF8;
   }
 
-  /**
-   * Write file.
-   *
-   * @param {String} filePath - Filepath.
-   * @param {Object} file - File.
-   * @param {Object} [options] - Options.
-   * @param {Object} [options.encoding] - Encoding.
-   *
-   * @return {Object}
-   */
-  writeFile(filePath, file, options = {}) {
-    let { contents } = file;
-
-    let {
-      encoding,
-      fileType
-    } = options;
-
-    if (!encoding) {
-      encoding = ENCODING_UTF8;
-    }
-
-    if (encoding === ENCODING_BASE64) {
-      contents = getBase64Contents(contents);
-    }
-
-    if (fileType) {
-      filePath = ensureExtension(filePath, fileType);
-    }
-
-    file = createFile(file, {
-      path: filePath
-    });
-
-    fs.writeFileSync(filePath, contents, encoding);
-
-    return createFile(file, {
-      lastModified: getLastModifiedTicks(filePath)
-    });
+  if (encoding === ENCODING_BASE64) {
+    contents = getBase64Contents(contents);
   }
-}
 
+  if (fileType) {
+    filePath = ensureExtension(filePath, fileType);
+  }
 
-module.exports = FileSystem;
+  file = createFile(file, {
+    path: filePath
+  });
+
+  fs.writeFileSync(filePath, contents, encoding);
+
+  return createFile(file, {
+    lastModified: getLastModifiedTicks(filePath)
+  });
+};
 
 // helpers //////////
 

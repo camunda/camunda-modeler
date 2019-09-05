@@ -8,16 +8,16 @@
  * except in compliance with the MIT License.
  */
 
-const {
-  forEach
-} = require('min-dash');
+const { readFile } = require('./file-system');
 
 const renderer = require('./util/renderer');
 
 const log = require('./log')('app:workspace');
 
+const { forEach } = require('min-dash');
 
-function Workspace(config, fileSystem) {
+
+function Workspace(config) {
 
   renderer.on('workspace:restore', function(defaultConfig, done) {
     var files = [],
@@ -36,7 +36,7 @@ function Workspace(config, fileSystem) {
       try {
         log.info('restoring %s', path);
 
-        files.push(fileSystem.readFile(path));
+        files.push(readFile(path));
 
       } catch (err) {
         log.error('failed to restore %s', path, err);
