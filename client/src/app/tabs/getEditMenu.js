@@ -187,6 +187,7 @@ export function getToolEntries({
 
     bpmn && handTool && menuEntries.push({
       visible: false,
+      label: 'I\'m invisible!',
       custom: {
         key: SPACE_KEY,
         keypress: 'activateHandtool',
