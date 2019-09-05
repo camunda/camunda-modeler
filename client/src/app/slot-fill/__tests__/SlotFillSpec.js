@@ -158,7 +158,7 @@ describe('slot-fill', function() {
     it('should update fill', function() {
       var slotFillRoot = ReactDOM.render(
         <SlotFillRoot>
-          <Fill name="foo">
+          <Fill slot="foo">
             <RenderButtons />
           </Fill>
           <Slot name="foo" />
@@ -194,7 +194,7 @@ describe('slot-fill', function() {
       // when
       var slotFillRoot = ReactDOM.render(
         <SlotFillRoot>
-          <Fill name="foo">
+          <Fill slot="foo">
             <div className="fill" />
           </Fill>
           <div className="slot">
@@ -218,7 +218,7 @@ describe('slot-fill', function() {
 
         // given
         var unorderedFills = [ '1_a', '2_b', '3_a', 'foo', '2_a' ].map(id => (
-          <Fill name="foo" group={ id } key={ id }>
+          <Fill slot="foo" group={ id } key={ id }>
             <div className="fill" id={ id } />
           </Fill>
         ));
@@ -255,13 +255,13 @@ describe('slot-fill', function() {
         // when
         var slotFillRoot = ReactDOM.render(
           <SlotFillRoot>
-            <Fill name="foo" group="1_a" priority={ -1 }>
+            <Fill slot="foo" group="1_a" priority={ -1 }>
               <div className="fill" id="low_priority" />
             </Fill>
-            <Fill name="foo" group="1_a">
+            <Fill slot="foo" group="1_a">
               <div className="fill" id="no_priority" />
             </Fill>
-            <Fill name="foo" group="1_a" priority={ 100 }>
+            <Fill slot="foo" group="1_a" priority={ 100 }>
               <div className="fill" id="high_priority" />
             </Fill>
             <div className="slot">

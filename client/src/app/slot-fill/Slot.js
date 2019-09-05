@@ -53,7 +53,7 @@ export default class Slot extends PureComponent {
         ({ fills }) => {
 
           const filtered = fills.filter(fill => {
-            return fill.props.name === name;
+            return fill.props.slot === name;
           });
 
           const cropped = limit ? filtered.slice(0, limit) : filtered;
