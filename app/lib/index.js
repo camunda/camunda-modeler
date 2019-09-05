@@ -22,25 +22,25 @@ const fs = require('fs');
 const FormData = require('form-data');
 
 /**
- * automatically report crash reports
+ * Report crashes.
  *
  * @see http://electron.atom.io/docs/v0.34.0/api/crash-reporter/
  */
 // TODO(nikku): do we want to do this?
 // require('crash-reporter').start();
 
-const Platform = require('./platform');
-const Config = require('./config');
-const FileSystem = require('./file-system');
-const Workspace = require('./workspace');
-const Dialog = require('./dialog');
-const Menu = require('./menu');
 const Cli = require('./cli');
-const Plugins = require('./plugins');
+const Config = require('./config');
 const Deployer = require('./deployer');
+const Dialog = require('./dialog');
+const FileSystem = require('./file-system');
 const Flags = require('./flags');
 const Log = require('./log');
 const logTransports = require('./log/transports');
+const Menu = require('./menu');
+const Platform = require('./platform');
+const Plugins = require('./plugins');
+const Workspace = require('./workspace');
 
 const browserOpen = require('./util/browser-open');
 const renderer = require('./util/renderer');
@@ -51,59 +51,36 @@ const clientLog = Log('client');
 
 bootstrapLogging();
 
-app.version = require('../package').version;
-app.name = 'Camunda Modeler';
+const name = app.name = 'Camunda Modeler';
+const version = app.version = require('../package').version;
 
-bootstrapLog.info('starting %s v%s', app.name, app.version);
-
-const {
-  config,
-  plugins,
-  flags,
-  files
-} = bootstrap();
+bootstrapLog.info(`starting ${ name } v${ version }`);
 
 const {
   platform
 } = process;
 
-app.plugins = plugins;
-app.flags = flags;
+const {
+  config,
+  deployer,
+  dialog,
+  files,
+  fileSystem,
+  flags,
+  menu,
+  plugins
+} = bootstrap();
 
+app.flags = flags;
 app.metadata = {
-  version: app.version,
-  name: app.name
+  version,
+  name
 };
+app.plugins = plugins;
 
 Platform.create(platform, app, config);
 
-
-const menu = new Menu({
-  platform
-});
-
-// bootstrap filesystem
-const fileSystem = new FileSystem();
-
-// bootstrap workspace behavior
-new Workspace(config, fileSystem);
-
-// bootstrap dialog
-const dialog = new Dialog({
-  electronDialog,
-  config,
-  userDesktopPath: app.getPath('userDesktop')
-});
-
-
-// bootstrap deployer
-const deployer = new Deployer({ fetch, fs, FormData });
-
-
-// make app a singleton
-//
-// may be disabled via --no-single-instance flag
-//
+// only allow single instance if not disabled via `--no-single-instance` flag
 if (flags.get('single-instance') === false) {
   log.info('single instance disabled via flag');
 } else {
@@ -316,7 +293,7 @@ app.on('web-contents-created', (event, webContents) => {
  */
 app.openFiles = function(filePaths) {
 
-  log.info('open files %O', filePaths);
+  log.info('open files', filePaths);
 
   if (!app.clientReady) {
 
@@ -423,7 +400,7 @@ app.on('restart', function(args) {
 
   const effectiveArgs = Cli.appendArgs(process.argv.slice(1), [ ...args, '--relaunch' ]);
 
-  log.info('restarting with args %O', effectiveArgs);
+  log.info('restarting with args', effectiveArgs);
 
   app.relaunch({
     args: effectiveArgs
@@ -516,70 +493,101 @@ function bootstrapLogging() {
 }
 
 /**
- * Bootstrap the application and return
+ * Bootstrap and return application components.
  *
- * {
- *   config,
- *   plugins,
- *   files
- * }
- *
- * @return {Object} bootstrapped components
+ * @return {Object}
  */
 function bootstrap() {
-  const userPath = app.getPath('userData');
-  const appPath = path.dirname(app.getPath('exe'));
-
-  const cwd = process.cwd();
+  const appPath = path.dirname(app.getPath('exe')),
+        cwd = process.cwd(),
+        userDesktopPath = app.getPath('userDesktop'),
+        userPath = app.getPath('userData');
 
   const {
     files,
     flags: flagOverrides
   } = Cli.parse(process.argv, cwd);
 
-  const additionalPaths = process.env.NODE_ENV === 'development'
-    ? [ path.join(cwd, 'resources') ]
-    : [ ];
-
-  const resourcesPaths = [
-    path.join(userPath, 'resources'),
+  let resourcesPaths = [
     path.join(appPath, 'resources'),
-    ...additionalPaths
+    path.join(userPath, 'resources')
   ];
 
+  if (process.env.NODE_ENV === 'development') {
+    resourcesPaths = [
+      ...resourcesPaths,
+      path.join(cwd, 'resources')
+    ];
+  }
+
+  // (1) config
   const config = new Config({
     appPath,
     resourcesPaths,
     userPath
   });
 
+  // (2) deployer
+  const deployer = new Deployer({
+    fetch,
+    FormData,
+    fs
+  });
+
+  // (3) file system
+  const fileSystem = new FileSystem();
+
+  // (4) flags
   const flags = new Flags({
     paths: resourcesPaths,
     overrides: flagOverrides
   });
 
+  // (5) menu
+  const menu = new Menu({
+    platform
+  });
+
+  // (6) dialog
+  const dialog = new Dialog({
+    config,
+    electronDialog,
+    userDesktopPath
+  });
+
+  // (7) workspace
+  new Workspace(config, fileSystem);
+
+  // (8) plugins
   const pluginsDisabled = flags.get('disable-plugins');
 
+  let paths;
+
   if (pluginsDisabled) {
+    paths = [];
+
     log.info('plug-ins disabled via feature toggle');
+  } else {
+    paths = [
+      appPath,
+      ...resourcesPaths,
+      userPath
+    ];
   }
 
-  // TODO(nikku): remove loading directly from {ROOT}/resources/plugins
-  // we changed it to load plug-ins from {ROOT}/resources/plugins via
-  // https://github.com/camunda/camunda-modeler/issues/597
   const plugins = new Plugins({
-    paths: pluginsDisabled ? [] : [
-      ...resourcesPaths,
-      userPath,
-      appPath
-    ]
+    paths
   });
 
   return {
     config,
-    plugins,
+    deployer,
+    dialog,
+    files,
+    fileSystem,
     flags,
-    files
+    menu,
+    plugins
   };
 }
 
