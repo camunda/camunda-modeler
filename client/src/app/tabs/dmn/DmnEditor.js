@@ -639,7 +639,7 @@ export class DmnEditor extends CachedComponent {
 
         <Loader hidden={ !importing } />
 
-        <Fill name="toolbar" group="8_deploy">
+        <Fill slot="toolbar" group="8_deploy">
           <Button
             onClick={ this.props.onModal.bind(null, 'DEPLOY_DIAGRAM') }
             title="Deploy Current Diagram"

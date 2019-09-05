@@ -18,7 +18,7 @@ export default class DeploymentTool extends PureComponent {
 
     return (
       <React.Fragment>
-        <Fill name="toolbar" group="extension">
+        <Fill slot="toolbar" group="extension">
           🤩
         </Fill>
       </React.Fragment>
