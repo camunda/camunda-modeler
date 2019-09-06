@@ -959,7 +959,9 @@ export class App extends PureComponent {
         onTabChanged(activeTab, prevState.activeTab);
       }
 
-      this.emit('app.activeTabChanged', activeTab, prevState.activeTab);
+      this.emit('app.activeTabChanged', {
+        activeTab
+      });
     }
 
     if (tabLoadingState === 'shown' && prevState.tabLoadingState !== 'shown') {
