@@ -10,9 +10,7 @@
 
 import DeploymentTool from './DeploymentTool';
 
-const deploymentTool = {
+export default {
   name: 'deployment-tool',
   component: DeploymentTool
 };
-
-export default deploymentTool;

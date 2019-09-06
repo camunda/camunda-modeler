@@ -10,8 +10,6 @@
 
 import DeploymentTool from './deployment-tool';
 
-const plugins = [
+export default [
   DeploymentTool
 ];
-
-export default plugins;
