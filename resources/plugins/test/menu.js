@@ -8,16 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-const fs = require('fs');
-
-const path = require('path');
-
 module.exports = function(electronApp, menuState) {
-  var file = fs.readFileSync(path.resolve(__dirname, './assets/logo-template.svg'), 'utf8');
-
-  file = file.replace('{version}', electronApp.version);
-
-  fs.writeFileSync(path.resolve(__dirname, './assets/logo.svg'), file, 'utf8');
 
   return [
     {
