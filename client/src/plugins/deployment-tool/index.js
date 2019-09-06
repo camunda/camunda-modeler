@@ -8,9 +8,4 @@
  * except in compliance with the MIT License.
  */
 
-import DeploymentTool from './DeploymentTool';
-
-export default {
-  name: 'deployment-tool',
-  component: DeploymentTool
-};
+export { default } from './DeploymentTool';
