@@ -893,6 +893,8 @@ export class App extends PureComponent {
       ...unsavedState
     });
 
+    this.emit('tab.saved', { tab });
+
     return tab;
   }
 

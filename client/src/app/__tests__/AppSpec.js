@@ -865,6 +865,35 @@ describe('<App>', function() {
     it('should save all tabs');
 
 
+    it('should emit <tab.saved> after save', async function() {
+
+      // given
+      const file = createFile('diagram_1.bpmn');
+
+      const [ tab ] = await app.openFiles([ file ]);
+
+      // when
+      app.setState({
+        ...app.setDirty(tab)
+      });
+
+      const saveSpy = spy(function(event) {
+        const {
+          tab
+        } = event;
+
+        expect(tab).to.exist;
+      });
+
+      app.on('tab.saved', saveSpy);
+
+      await app.triggerAction('save');
+
+      // then
+      expect(saveSpy).to.have.been.calledOnce;
+    });
+
+
     it('should handle save error <cancel>', async function() {
 
       // given
