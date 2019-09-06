@@ -113,7 +113,7 @@ export class App extends PureComponent {
 
     this.tabRef = React.createRef();
 
-    const userPlugins = this.getPlugins('app.ui');
+    const userPlugins = this.getPlugins('client');
 
     this.plugins = [
       ...defaultPlugins,
