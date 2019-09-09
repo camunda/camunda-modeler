@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.3.4
+
+* `FIX`: correct menu point visibility ([#1487](https://github.com/camunda/camunda-modeler/issues/1487))
+
 ## 3.3.3
 
 * `FIX`: correct check whether plug-ins are enabled ([#1479](https://github.com/camunda/camunda-modeler/issues/1479))
