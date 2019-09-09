@@ -176,7 +176,7 @@ export default class AppParent extends PureComponent {
   }
 
   hasPlugins() {
-    return this.getPlugins().getAll().length;
+    return this.getPlugins().getAppPlugins().length;
   }
 
   togglePlugins = () => {

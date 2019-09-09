@@ -294,22 +294,40 @@ class MenuBuilder {
   }
 
   appendMenuItem(builder, menuItem) {
-    let submenu;
+    const {
+      accelerator,
+      action,
+      enabled,
+      label,
+      options,
+      role,
+      submenu,
+      visible
+    } = menuItem;
 
-    if (menuItem.submenu) {
-      submenu = Menu.buildFromTemplate(menuItem.submenu.map(mapMenuEntryTemplate));
+    let menuItemOptions = {
+      accelerator,
+      enabled,
+      label,
+      role,
+      visible
+    };
+
+    if (action) {
+      menuItemOptions = {
+        ...menuItemOptions,
+        click: () => app.emit('menu:action', action, options)
+      };
     }
 
-    builder.menu.append(new MenuItem({
-      accelerator: menuItem.accelerator,
-      click: function() {
-        app.emit('menu:action', menuItem.action, menuItem.options);
-      },
-      enabled: menuItem.enabled !== undefined ? menuItem.enabled : true,
-      label: menuItem.label,
-      role: menuItem.role,
-      submenu
-    }));
+    if (submenu) {
+      menuItemOptions = {
+        ...menuItemOptions,
+        submenu: Menu.buildFromTemplate(menuItem.submenu.map(mapMenuEntryTemplate))
+      };
+    }
+
+    builder.menu.append(new MenuItem(menuItemOptions));
   }
 
   getEditMenu(menuItems) {
@@ -449,7 +467,8 @@ class MenuBuilder {
                 action,
                 enabled,
                 label,
-                submenu
+                submenu,
+                visible
               } = entry;
 
               return new MenuItem({
@@ -457,7 +476,8 @@ class MenuBuilder {
                 accelerator,
                 enabled: isFunction(enabled) ? Boolean(enabled()) : enabled,
                 click: action && wrapPluginAction(action, name),
-                submenu
+                submenu,
+                visible
               });
             })
           );

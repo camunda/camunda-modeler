@@ -464,7 +464,7 @@ export class Plugins extends Mock {
     return [];
   }
 
-  getAll() {
+  getAppPlugins() {
     return [];
   }
 }

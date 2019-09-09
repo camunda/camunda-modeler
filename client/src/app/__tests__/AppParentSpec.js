@@ -815,7 +815,7 @@ describe('<AppParent>', function() {
       });
 
       const plugins = new Plugins({
-        getAll: () => [{}]
+        getAppPlugins: () => [{}]
       });
 
       const { appParent } = createAppParent({
