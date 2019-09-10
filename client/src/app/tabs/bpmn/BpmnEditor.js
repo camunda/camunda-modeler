@@ -209,10 +209,13 @@ export class BpmnEditor extends CachedComponent {
   }
 
   async loadTemplates() {
+    const { getConfig } = this.props;
+
     const modeler = this.getModeler();
+
     const templatesLoader = modeler.get('elementTemplatesLoader');
 
-    const templates = await this.props.onLoadConfig('bpmn.elementTemplates');
+    const templates = await getConfig('bpmn.elementTemplates');
 
     templatesLoader.setTemplates(templates);
 

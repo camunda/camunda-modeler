@@ -2245,15 +2245,14 @@ describe('<App>', function() {
   });
 
 
-  describe('config handling', function() {
+  describe('#getConfig', function() {
 
     afterEach(sinon.restore);
 
 
-    it('should load requested config', async function() {
+    it('should get config', async function() {
 
       // given
-      const CONFIG_KEY = 'CONFIG_KEY';
       const getConfigSpy = spy();
 
       const config = new Config({
@@ -2267,10 +2266,10 @@ describe('<App>', function() {
       });
 
       // when
-      app.loadConfig(CONFIG_KEY);
+      app.getConfig('foo');
 
       // then
-      expect(getConfigSpy).to.be.calledOnceWith(CONFIG_KEY);
+      expect(getConfigSpy).to.be.calledOnceWith('foo');
     });
 
   });

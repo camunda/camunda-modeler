@@ -8,6 +8,20 @@
  * except in compliance with the MIT License.
  */
 
+export class Backend {
+  constructor() {
+    this.response = null;
+  }
+
+  setSendResponse(response) {
+    this.response = response;
+  }
+
+  send() {
+    return this.response;
+  }
+}
+
 export class IpcRenderer {
   constructor() {
     this.response = null;

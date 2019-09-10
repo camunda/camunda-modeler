@@ -31,7 +31,6 @@ const FormData = require('form-data');
 
 const Platform = require('./platform');
 const Config = require('./config');
-const ClientConfig = require('./client-config');
 const FileSystem = require('./file-system');
 const Workspace = require('./workspace');
 const Dialog = require('./dialog');
@@ -59,7 +58,6 @@ bootstrapLog.info('starting %s v%s', app.name, app.version);
 
 const {
   config,
-  clientConfig,
   plugins,
   flags,
   files
@@ -93,7 +91,7 @@ new Workspace(config, fileSystem);
 // bootstrap dialog
 const dialog = new Dialog({
   electronDialog,
-  config: config,
+  config,
   userDesktopPath: app.getPath('userDesktop')
 });
 
@@ -222,18 +220,31 @@ renderer.on('file:write', async function(filePath, file, options = {}, done) {
   }
 });
 
-// client config //////////
+// config //////////
 
-renderer.on('client-config:get', function(...args) {
+renderer.on('config:get', function(key, ...args) {
+  const done = args.pop();
 
-  const done = args[args.length - 1];
+  let value;
 
   try {
-    clientConfig.get(...args);
-  } catch (e) {
-    if (typeof done === 'function') {
-      done(e);
-    }
+    value = config.get(key, ...args);
+
+    done(null, value);
+  } catch (error) {
+    done(error);
+  }
+});
+
+renderer.on('config:set', function(key, value, ...args) {
+  const done = args.pop();
+
+  try {
+    value = config.set(key, value, ...args);
+
+    done(null, value);
+  } catch (error) {
+    done(error);
   }
 });
 
@@ -509,7 +520,6 @@ function bootstrapLogging() {
  *
  * {
  *   config,
- *   clientConfig,
  *   plugins,
  *   files
  * }
@@ -531,22 +541,20 @@ function bootstrap() {
     ? [ path.join(cwd, 'resources') ]
     : [ ];
 
-  const resourcePaths = [
+  const resourcesPaths = [
     path.join(userPath, 'resources'),
     path.join(appPath, 'resources'),
     ...additionalPaths
   ];
 
   const config = new Config({
-    path: userPath
-  });
-
-  const clientConfig = new ClientConfig({
-    paths: resourcePaths
+    appPath,
+    resourcesPaths,
+    userPath
   });
 
   const flags = new Flags({
-    paths: resourcePaths,
+    paths: resourcesPaths,
     overrides: flagOverrides
   });
 
@@ -561,7 +569,7 @@ function bootstrap() {
   // https://github.com/camunda/camunda-modeler/issues/597
   const plugins = new Plugins({
     paths: pluginsDisabled ? [] : [
-      ...resourcePaths,
+      ...resourcesPaths,
       userPath,
       appPath
     ]
@@ -569,7 +577,6 @@ function bootstrap() {
 
   return {
     config,
-    clientConfig,
     plugins,
     flags,
     files

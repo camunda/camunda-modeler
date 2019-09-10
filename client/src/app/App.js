@@ -1604,8 +1604,14 @@ export class App extends PureComponent {
     }
   }
 
-  loadConfig = (key, ...args) => {
-    return this.getGlobal('config').get(key, this.state.activeTab, ...args);
+  getConfig = (key, ...args) => {
+    const config = this.getGlobal('config');
+
+    const { activeTab } = this.state;
+
+    const { file } = activeTab;
+
+    return config.get(key, file, ...args);
   }
 
   getPlugins = type => {
@@ -1799,7 +1805,7 @@ export class App extends PureComponent {
                     onContextMenu={ this.openTabMenu }
                     onAction={ this.triggerAction }
                     onModal={ this.openModal }
-                    onLoadConfig={ this.loadConfig }
+                    getConfig={ this.getConfig }
                     getPlugins={ this.getPlugins }
                     ref={ this.tabRef }
                   />
