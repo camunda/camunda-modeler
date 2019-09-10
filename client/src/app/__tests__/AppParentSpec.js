@@ -21,6 +21,7 @@ import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../../util/Flags';
 
 import {
   Backend,
+  Config,
   Dialog,
   FileSystem,
   KeyboardBindings,
@@ -884,6 +885,7 @@ function createAppParent(options = {}, mountFn=shallow) {
 
   const defaultGlobals = {
     backend: new Backend(),
+    config: new Config(),
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
     log: new Log(),

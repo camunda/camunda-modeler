@@ -2459,6 +2459,7 @@ function createApp(options = {}, mountFn=shallow) {
 
   const defaultGlobals = {
     backend: new Backend(),
+    config: new Config(),
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
     plugins: new Plugins(),

@@ -15,6 +15,7 @@ import { App } from '../App';
 import {
   Backend,
   Cache,
+  Config,
   Dialog,
   FileSystem,
   Plugins,
@@ -150,6 +151,7 @@ function createApp(options = {}) {
 
   let globals = {
     backend: new Backend(),
+    config: new Config(),
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
     plugins: new Plugins(),
