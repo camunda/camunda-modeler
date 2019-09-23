@@ -203,6 +203,51 @@ describe('<CamundaAPI>', () => {
       }
     });
 
+
+    describe('timeout handling', () => {
+
+      let clock;
+
+      before(() => {
+        clock = sinon.useFakeTimers();
+      });
+
+      after(() => clock.restore());
+
+
+      it('should abort request on timeout', async () => {
+
+        // given
+        fetchStub.callsFake((_, { signal }) => {
+          return new Promise(resolve => {
+            for (let i = 0; i < 10; i++) {
+              if (signal && signal.aborted) {
+                throw new Error('timeout');
+              }
+
+              clock.tick(2000);
+            }
+
+            resolve(new Response());
+          });
+        });
+
+        // when
+        let error;
+
+        try {
+          await api.checkConnection();
+        } catch (e) {
+          error = e;
+        } finally {
+
+          // then
+          expect(error).to.exist;
+        }
+      });
+
+    });
+
   });
 
 });

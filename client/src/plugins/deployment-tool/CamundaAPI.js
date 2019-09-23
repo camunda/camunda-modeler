@@ -10,6 +10,8 @@
 
 import { ConnectionErrorMessages } from './ErrorMessages';
 
+const FETCH_TIMEOUT = 5000;
+
 
 export default class CamundaAPI {
   constructor(baseUrl) {
@@ -106,11 +108,12 @@ export default class CamundaAPI {
     throw new Error('Unknown auth options.');
   }
 
-  async safelyFetch(url, ...args) {
+  async safelyFetch(url, options = {}) {
     let response;
 
     try {
-      response = await fetch(url, ...args);
+      options.signal = options.signal || this.setupTimeoutSignal();
+      response = await fetch(url, options);
     } catch (error) {
       response = {
         url,
@@ -121,6 +124,16 @@ export default class CamundaAPI {
     }
 
     return response;
+  }
+
+  setupTimeoutSignal(timeout = FETCH_TIMEOUT) {
+    const controller = new AbortController();
+
+    const { signal } = controller;
+
+    setTimeout(() => controller.abort(), timeout);
+
+    return signal;
   }
 
   async safelyParse(response) {
