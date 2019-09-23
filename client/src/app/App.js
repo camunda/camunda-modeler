@@ -41,7 +41,6 @@ import Log from './Log';
 
 
 import {
-  DeployDiagramModal,
   KeyboardShortcutsModal
 } from './modals';
 
@@ -1675,24 +1674,6 @@ export class App extends PureComponent {
 
   setModal = currentModal => this.setState({ currentModal });
 
-  setEndpoints = endpoints => this.setState({ endpoints });
-
-  handleDeploy = async (options) => {
-    await this.triggerAction('save');
-
-    const { file } = this.state.activeTab;
-
-    if (!file || !file.path) {
-      return false;
-    }
-
-    return this.getGlobal('backend').send('deploy', { ...options, file });
-  };
-
-  handleDeployError = (error) => {
-    this.logEntry(`Deploy error: ${JSON.stringify(error)}`, 'deploy-error');
-  }
-
   handleCloseTab = (tab) => {
     this.triggerAction('close-tab', { tabId: tab.id }).catch(console.error);
   }
@@ -1931,17 +1912,6 @@ export class App extends PureComponent {
             />
 
           </SlotFillRoot>
-
-          { this.state.currentModal === 'DEPLOY_DIAGRAM' ?
-            <DeployDiagramModal
-              endpoints={ this.state.endpoints }
-              tab={ activeTab }
-              onClose={ this.closeModal }
-              onDeploy={ this.handleDeploy }
-              onDeployError={ this.handleDeployError }
-              onEndpointsUpdate={ this.setEndpoints }
-              onMenuUpdate={ this.updateMenu }
-            /> : null }
 
           { this.state.currentModal === 'KEYBOARD_SHORTCUTS' ?
             <KeyboardShortcutsModal

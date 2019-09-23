@@ -248,7 +248,7 @@ export default class DeploymentTool extends PureComponent {
           onClick={ this.deploy }
           title="Deploy Current Diagram"
         >
-          🤩<Icon name="deploy" />
+          <Icon name="deploy" />
         </Button>
       </Fill>
 
