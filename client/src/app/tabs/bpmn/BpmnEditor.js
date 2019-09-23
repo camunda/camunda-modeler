@@ -759,15 +759,6 @@ export class BpmnEditor extends CachedComponent {
           </Button>
         </Fill>
 
-        <Fill slot="toolbar" group="8_deploy">
-          <Button
-            onClick={ this.props.onModal.bind(null, 'DEPLOY_DIAGRAM') }
-            title="Deploy Current Diagram"
-          >
-            <Icon name="deploy" />
-          </Button>
-        </Fill>
-
         <div
           className="diagram"
           ref={ this.ref }

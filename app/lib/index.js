@@ -17,10 +17,6 @@ const {
 
 const path = require('path');
 
-const fetch = require('node-fetch');
-const fs = require('fs');
-const FormData = require('form-data');
-
 /**
  * Report crashes.
  *
@@ -31,7 +27,6 @@ const FormData = require('form-data');
 
 const Cli = require('./cli');
 const Config = require('./config');
-const Deployer = require('./deployer');
 const Dialog = require('./dialog');
 const Flags = require('./flags');
 const Log = require('./log');
@@ -67,7 +62,6 @@ const {
 
 const {
   config,
-  deployer,
   dialog,
   files,
   flags,
@@ -167,11 +161,6 @@ renderer.on('dialog:show', async function(options, done) {
 
   done(null, response);
 });
-
-// deploying //////////
-// TODO: remove and add as plugin instead
-
-renderer.on('deploy', handleDeployment);
 
 // filesystem //////////
 
@@ -460,21 +449,6 @@ app.on('ready', function() {
 });
 
 
-function handleDeployment(data, done) {
-  const { endpointUrl } = data;
-
-  deployer.deploy(endpointUrl, data, function(error, result) {
-
-    if (error) {
-      log.error('failed to deploy', error);
-
-      return done(error);
-    }
-
-    done(null, result);
-  });
-}
-
 function bootstrapLogging() {
 
   let logPath;
@@ -531,35 +505,28 @@ function bootstrap() {
     userPath
   });
 
-  // (2) deployer
-  const deployer = new Deployer({
-    fetch,
-    FormData,
-    fs
-  });
-
-  // (3) flags
+  // (2) flags
   const flags = new Flags({
     paths: resourcesPaths,
     overrides: flagOverrides
   });
 
-  // (4) menu
+  // (3) menu
   const menu = new Menu({
     platform
   });
 
-  // (5) dialog
+  // (4) dialog
   const dialog = new Dialog({
     config,
     electronDialog,
     userDesktopPath
   });
 
-  // (6) workspace
+  // (5) workspace
   new Workspace(config);
 
-  // (7) plugins
+  // (6) plugins
   const pluginsDisabled = flags.get('disable-plugins');
 
   let paths;
@@ -582,7 +549,6 @@ function bootstrap() {
 
   return {
     config,
-    deployer,
     dialog,
     files,
     flags,

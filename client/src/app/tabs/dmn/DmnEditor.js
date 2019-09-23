@@ -14,11 +14,7 @@ import {
   assign
 } from 'min-dash';
 
-import { Fill } from '../../slot-fill';
-
 import {
-  Button,
-  Icon,
   Loader
 } from '../../primitives';
 
@@ -638,15 +634,6 @@ export class DmnEditor extends CachedComponent {
       <div className={ css.DmnEditor }>
 
         <Loader hidden={ !importing } />
-
-        <Fill slot="toolbar" group="8_deploy">
-          <Button
-            onClick={ this.props.onModal.bind(null, 'DEPLOY_DIAGRAM') }
-            title="Deploy Current Diagram"
-          >
-            <Icon name="deploy" />
-          </Button>
-        </Fill>
 
         <div className="diagram" ref={ this.ref }></div>
 

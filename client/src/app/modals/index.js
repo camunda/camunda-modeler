@@ -8,5 +8,4 @@
  * except in compliance with the MIT License.
  */
 
-export { DeployDiagramModal } from './deploy-diagram';
 export { KeyboardShortcutsModal } from './keyboard-shortcuts';

@@ -159,7 +159,6 @@ export default class AppParent extends PureComponent {
 
     const {
       activeFile,
-      endpoints,
       files,
       layout
     } = restored;
@@ -167,8 +166,6 @@ export default class AppParent extends PureComponent {
     const app = this.getApp();
 
     app.setLayout(layout);
-
-    app.setEndpoints(endpoints);
 
     // remember to-be restored files but postpone opening + activation
     // until <client:started> batch restore workspace files + files opened
