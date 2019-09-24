@@ -130,8 +130,10 @@ export default class DeploymentTool extends PureComponent {
   }
 
   getDetailsFromUserInput(tab, details) {
+    const initialDetails = this.getInitialDetails(tab, details);
+
     return new Promise(resolve => {
-      const handleClose = (result) => {
+      const handleClose = result => {
 
         this.setState({
           modalState: null
@@ -151,7 +153,7 @@ export default class DeploymentTool extends PureComponent {
       this.setState({
         modalState: {
           tab,
-          details,
+          details: initialDetails,
           handleClose
         }
       });
@@ -185,6 +187,16 @@ export default class DeploymentTool extends PureComponent {
     }
 
     return connectionError;
+  }
+
+  getInitialDetails(tab, providedDetails) {
+    const details = { ...providedDetails };
+
+    if (!details.deploymentName) {
+      details.deploymentName = withoutExtension(tab.name);
+    }
+
+    return details;
   }
 
   getValidatedFields(values) {
@@ -285,4 +297,8 @@ export default class DeploymentTool extends PureComponent {
 // helper ///////
 function isFocusedOnInput(event) {
   return event.type === 'focus' && ['INPUT', 'TEXTAREA'].includes(event.target.tagName);
+}
+
+function withoutExtension(name) {
+  return name.replace(/\.[^.]+$/, '');
 }
