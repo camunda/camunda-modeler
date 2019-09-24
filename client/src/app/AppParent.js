@@ -28,6 +28,13 @@ import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../util/Flags';
 
 const log = debug('AppParent');
 
+const DEFAULT_CONFIG = {
+  activeFile: -1,
+  files: [],
+  layout: {},
+  endpoints: []
+};
+
 
 export default class AppParent extends PureComponent {
 
@@ -142,21 +149,20 @@ export default class AppParent extends PureComponent {
 
     const workspace = this.getWorkspace();
 
-    const { prereadyState } = this;
+    let restored;
 
-    const defaultConfig = {
-      activeFile: -1,
-      files: [],
-      layout: {},
-      endpoints: []
-    };
+    try {
+      restored = await workspace.restore(DEFAULT_CONFIG);
+    } catch (e) {
+      return log('failed to restore workspace', e);
+    }
 
     const {
-      files,
       activeFile,
-      layout,
-      endpoints
-    } = await workspace.restore(defaultConfig);
+      endpoints,
+      files,
+      layout
+    } = restored;
 
     const app = this.getApp();
 
@@ -168,8 +174,8 @@ export default class AppParent extends PureComponent {
     // until <client:started> batch restore workspace files + files opened
     // via command line
     this.prereadyState = {
-      activeFile: prereadyState.activeFile || files[activeFile],
-      files: mergeFiles(prereadyState.files, files)
+      activeFile: this.prereadyState.activeFile || files[activeFile],
+      files: mergeFiles(this.prereadyState.files, files)
     };
 
     log('workspace restored');
@@ -232,11 +238,7 @@ export default class AppParent extends PureComponent {
 
   handleReady = async () => {
 
-    try {
-      await this.restoreWorkspace();
-    } catch (e) {
-      log('failed to restore workspace', e);
-    }
+    await this.restoreWorkspace();
 
     this.getBackend().sendReady();
   }
