@@ -6,6 +6,12 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.3.5
+
+* `FIX`: snap connections to shape center ([#1436](https://github.com/camunda/camunda-modeler/issues/1436))
+* `FIX`: apply labels when using context pad ([#1502](https://github.com/camunda/camunda-modeler/issues/1502))
+* `FIX`: do not copy extension elements with unknown type ([#1507](https://github.com/camunda/camunda-modeler/issues/1507))  
+
 ## 3.3.4
 
 * `FIX`: correct menu point visibility ([#1487](https://github.com/camunda/camunda-modeler/issues/1487))
