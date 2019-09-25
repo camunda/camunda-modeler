@@ -99,13 +99,25 @@ export default class DeploymentTool extends PureComponent {
 
     // (3) Trigger deployment
     // (3.1) Show deployment result (success or error)
+    const {
+      displayNotification
+    } = this.props;
 
     try {
       await this.deployWithDetails(tab, details);
 
-      this.props.displayNotification({ type: 'success', duration: 4000, title: 'Deployment succeeded' });
+      displayNotification({
+        type: 'success',
+        title: 'Deployment succeeded',
+        duration: 4000
+      });
     } catch (error) {
-      this.props.displayNotification({ type: 'error', duration: 0, title: 'Deployment failed' });
+      displayNotification({
+        type: 'error',
+        title: 'Deployment failed',
+        content: 'See the log for further details.',
+        duration: 10000
+      });
     }
   }
 
