@@ -119,25 +119,19 @@ describe('<MultiSheetTab>', function() {
     });
 
 
-    it('should open warnings toast', function() {
+    it('should show notification when imported with warnings', function() {
 
       // given
+      const actionSpy = spy();
       const {
         instance
-      } = renderTab();
+      } = renderTab({ onAction: actionSpy });
 
       // when
       instance.handleImport(null, warnings);
 
-      const {
-        warnings: stateWarnings,
-        currentToast
-      } = instance.getCached();
-
       // then
-      expect(stateWarnings).to.eql(warnings);
-      expect(currentToast).to.eql('WARNINGS');
-
+      expect(actionSpy).to.have.been.calledOnceWith('display-notification');
     });
 
 
@@ -426,56 +420,6 @@ describe('<MultiSheetTab>', function() {
       // then
       expect(instance.isDirty()).to.be.false;
     });
-
-  });
-
-
-  describe('toast handling', function() {
-
-    let instance;
-
-    beforeEach(function() {
-      const rendered = renderTab();
-
-      instance = rendered.instance;
-    });
-
-
-    it('should set toast', function() {
-
-      // given
-      const fakeToastName = 'toast';
-
-      // when
-      instance.setToast(fakeToastName);
-
-      const {
-        currentToast
-      } = instance.getCached();
-
-      // then
-      expect(currentToast).to.eql(fakeToastName);
-    });
-
-
-    it('should close toast', function() {
-
-      // given
-      const fakeToastName = 'toast';
-
-      instance.setToast(fakeToastName);
-
-      // when
-      instance.closeToast();
-
-      const {
-        currentToast
-      } = instance.getCached();
-
-      // then
-      expect(currentToast).to.eql(null);
-    });
-
 
   });
 
