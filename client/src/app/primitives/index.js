@@ -16,4 +16,3 @@ export { default as TabLinks } from './TabLinks';
 export { default as TabContainer } from './TabContainer';
 export { default as Tab } from './Tab';
 export { Modal } from './modal';
-export { ToastContainer } from './toast';
