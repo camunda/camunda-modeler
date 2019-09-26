@@ -48,6 +48,23 @@ describe('config', function() {
     });
 
 
+    it('should return null if no files config at all', async function() {
+
+      // given
+      const file = {
+        path: 'bar.bpmn'
+      };
+
+      backend.setSendResponse(null);
+
+      // when
+      const configForFile = await config.getForFile(file, 'foo');
+
+      // then
+      expect(configForFile).to.equal(null);
+    });
+
+
     it('should return null if no config for file', async function() {
 
       // given
@@ -154,6 +171,25 @@ describe('config', function() {
       });
     });
 
+
+    it('should set, files config not present', async function() {
+
+      // given
+      const file = {
+        path: 'foo.bpmn'
+      };
+
+      backend.setSendResponse(null);
+
+      // when
+      const configForFile = await config.setForFile(file, 'foo', 43);
+
+      // then
+      expect(configForFile).to.eql({
+        foo: 43
+      });
+    });
+
   });
 
 
@@ -173,6 +209,19 @@ describe('config', function() {
 
       // then
       expect(configForPlugin).to.equal(42);
+    });
+
+
+    it('should return null if no plugins config at all', async function() {
+
+      // given
+      backend.setSendResponse(null);
+
+      // when
+      const configForPlugin = await config.getForPlugin('fooPlugin', 'foo');
+
+      // then
+      expect(configForPlugin).to.equal(null);
     });
 
 
@@ -235,10 +284,25 @@ describe('config', function() {
 
       // given
       backend.setSendResponse({
-        'fooPlugin': {
+        fooPlugin: {
           foo: 42
         }
       });
+
+      // when
+      const configForPlugin = await config.setForPlugin('fooPlugin', 'foo', 43);
+
+      // then
+      expect(configForPlugin).to.eql({
+        foo: 43
+      });
+    });
+
+
+    it('should set, plugins config not present', async function() {
+
+      // given
+      backend.setSendResponse(null);
 
       // when
       const configForPlugin = await config.setForPlugin('fooPlugin', 'foo', 43);

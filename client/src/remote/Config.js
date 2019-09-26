@@ -103,7 +103,7 @@ export default class Config {
   async setForFile(file, key, value) {
     const { path } = file;
 
-    const files = await this.get('files');
+    const files = await this.get('files') || {};
 
     const configForFile = files[ path ] = files[ path ] || {};
 
@@ -124,7 +124,7 @@ export default class Config {
    * @returns {Promise<*>}
    */
   async getForPlugin(name, key, defaultValue = null) {
-    const plugins = await this.get('plugins');
+    const plugins = await this.get('plugins') || {};
 
     const configForPlugin = plugins[ name ];
 
@@ -155,7 +155,7 @@ export default class Config {
    * @returns {Promise<*>}
    */
   async setForPlugin(name, key, value) {
-    const plugins = await this.get('plugins');
+    const plugins = await this.get('plugins') || {};
 
     const configForPlugin = plugins[ name ] = plugins[ name ] || {};
 
