@@ -100,6 +100,7 @@ export default class DeploymentTool extends PureComponent {
     // (3) Trigger deployment
     // (3.1) Show deployment result (success or error)
     const {
+      log,
       displayNotification
     } = this.props;
 
@@ -118,6 +119,7 @@ export default class DeploymentTool extends PureComponent {
         content: 'See the log for further details.',
         duration: 10000
       });
+      log({ category: 'deploy-error', message: error.problems || error.message });
     }
   }
 

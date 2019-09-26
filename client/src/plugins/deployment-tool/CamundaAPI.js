@@ -8,7 +8,10 @@
  * except in compliance with the MIT License.
  */
 
-import { ConnectionErrorMessages } from './ErrorMessages';
+import {
+  ConnectionError,
+  DeploymentError
+} from './errors';
 
 const FETCH_TIMEOUT = 5000;
 
@@ -63,9 +66,9 @@ export default class CamundaAPI {
       };
     }
 
-    const json = await this.safelyParse(response);
+    const body = await this.safelyParse(response);
 
-    throw responseError('Deployment failed', response, json);
+    throw new DeploymentError(response, body);
   }
 
   async checkConnection(details = {}) {
@@ -79,7 +82,7 @@ export default class CamundaAPI {
       return;
     }
 
-    throw connectionError(response);
+    throw new ConnectionError(response);
   }
 
   getHeaders(auth) {
@@ -118,7 +121,7 @@ export default class CamundaAPI {
       response = {
         url,
         json: () => {
-          return { message: 'Fetch failed' };
+          return {};
         }
       };
     }
@@ -145,64 +148,4 @@ export default class CamundaAPI {
       return {};
     }
   }
-}
-
-
-
-// helpers //////////////
-
-const parseError = 'ENGINE-09005 Could not parse BPMN process. Errors: \n*';
-
-function responseError(message, response, details) {
-  const error = new Error(message);
-
-  error.details = details;
-  error.response = response;
-
-  // fix engine not exposing details
-  if (details && details.message && details.message.startsWith(parseError)) {
-    details.problems = details.message.substring(parseError.length).split(/\s?\n\*\s?/g);
-    details.message = 'ENGINE-09005 Could not parse BPMN process';
-  }
-
-  return error;
-}
-
-function connectionError(response) {
-  const error = new Error();
-
-  const errorMessageFromStatus = getStatusCodeErrorMessage(response);
-
-  if (errorMessageFromStatus) {
-    error.message = errorMessageFromStatus;
-
-    return error;
-  }
-
-  error.message = getNetworkErrorMessage(response);
-
-  return error;
-}
-
-function getStatusCodeErrorMessage(response) {
-  switch (response.status) {
-  case 401:
-    return ConnectionErrorMessages.unauthorized;
-  case 403:
-    return ConnectionErrorMessages.forbidden;
-  case 404:
-    return ConnectionErrorMessages.notFound;
-  case 500:
-    return ConnectionErrorMessages.internalServerError;
-  case 503:
-    return ConnectionErrorMessages.unavailable;
-  }
-}
-
-function getNetworkErrorMessage(response) {
-  if (!/^https?:\/\/localhost/.test(response.url) && !window.navigator.onLine) {
-    return ConnectionErrorMessages.noInternetConnection;
-  }
-
-  return ConnectionErrorMessages.unableToConnect;
 }
