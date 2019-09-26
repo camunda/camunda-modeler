@@ -17,3 +17,38 @@ export const ConnectionErrorMessages = {
   internalServerError: 'Camunda is reporting an error. Please check the server status.',
   unreachable: 'Camunda is reporting an error. Please check the server status.'
 };
+
+
+export default class ConnectionError extends Error {
+  constructor(response) {
+    super();
+
+    this.message = (
+      this.getStatusCodeErrorMessage(response) ||
+      this.getNetworkErrorMessage(response)
+    );
+  }
+
+  getStatusCodeErrorMessage(response) {
+    switch (response.status) {
+    case 401:
+      return ConnectionErrorMessages.unauthorized;
+    case 403:
+      return ConnectionErrorMessages.forbidden;
+    case 404:
+      return ConnectionErrorMessages.notFound;
+    case 500:
+      return ConnectionErrorMessages.internalServerError;
+    case 503:
+      return ConnectionErrorMessages.unavailable;
+    }
+  }
+
+  getNetworkErrorMessage(response) {
+    if (!/^https?:\/\/localhost/.test(response.url) && !window.navigator.onLine) {
+      return ConnectionErrorMessages.noInternetConnection;
+    }
+
+    return ConnectionErrorMessages.unableToConnect;
+  }
+}

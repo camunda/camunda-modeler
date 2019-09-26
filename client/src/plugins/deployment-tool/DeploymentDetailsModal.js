@@ -30,7 +30,7 @@ import {
   Field
 } from 'formik';
 
-import { ConnectionErrorMessages } from './ErrorMessages';
+import { ConnectionErrorMessages } from './errors';
 
 
 const initialFormValues = {
