@@ -110,6 +110,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+const PLUGIN_NAME = 'test-client';
 class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor(props) {
     super(props);
@@ -131,6 +132,23 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
     this.state = {
       saveCounter: 0
     };
+  }
+
+  async componentDidMount() {
+    const {
+      config
+    } = this.props;
+    const saveCounter = await config.getForPlugin(PLUGIN_NAME, 'saveCounter', 0);
+    console.log('[TestClient]', 'last session save counter:', saveCounter); // cleanup for next session
+
+    await config.setForPlugin(PLUGIN_NAME, 'saveCounter', 0);
+  }
+
+  async componentDidUpdate() {
+    const {
+      config
+    } = this.props;
+    await config.setForPlugin(PLUGIN_NAME, 'saveCounter', this.state.saveCounter);
   }
 
   render() {

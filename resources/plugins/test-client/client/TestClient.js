@@ -12,6 +12,7 @@ import React, { Fragment, Component } from 'camunda-modeler-plugin-helpers/react
 
 import { Fill } from 'camunda-modeler-plugin-helpers/components';
 
+const PLUGIN_NAME = 'test-client';
 
 export default class TestClient extends Component {
 
@@ -44,6 +45,32 @@ export default class TestClient extends Component {
     };
   }
 
+  async componentDidMount() {
+
+    const {
+      config
+    } = this.props;
+
+    const saveCounter = await config.getForPlugin(
+      PLUGIN_NAME,
+      'saveCounter',
+      0
+    );
+
+    console.log('[TestClient]', 'last session save counter:', saveCounter);
+
+    // cleanup for next session
+    await config.setForPlugin(PLUGIN_NAME, 'saveCounter', 0);
+  }
+
+  async componentDidUpdate() {
+
+    const {
+      config
+    } = this.props;
+
+    await config.setForPlugin(PLUGIN_NAME, 'saveCounter', this.state.saveCounter);
+  }
 
   render() {
 
