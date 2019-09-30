@@ -729,6 +729,14 @@ export class App extends PureComponent {
     this.events.off(event, listener);
   }
 
+  emitWithTab(type, tab, payload) {
+
+    this.emit(type, {
+      ...payload,
+      tab
+    });
+  }
+
   openTabLinksMenu = (tab, event) => {
     event.preventDefault();
 
@@ -1653,7 +1661,7 @@ export class App extends PureComponent {
         payload
       } = options;
 
-      return this.emit(type, payload);
+      return this.emitWithTab(type, activeTab, payload);
     }
 
     const tab = this.tabRef.current;

@@ -2493,6 +2493,47 @@ describe('<App>', function() {
 
   });
 
+
+  describe('#emitWithTab', function() {
+
+    let app;
+
+    beforeEach(async function() {
+
+      ({ app } = createApp(mount));
+    });
+
+    it('should emit event with tab', function() {
+
+      // given
+      const {
+        activeTab
+      } = app.state;
+
+      const payload = { foo: 'bar' };
+
+      const eventSpy = sinon.spy((event) => {
+
+        const {
+          foo,
+          tab
+        } = event;
+
+        expect(foo).to.equal('bar');
+        expect(tab).to.eql(activeTab);
+      });
+
+      app.on('foo', eventSpy);
+
+      // when
+      app.emitWithTab('foo', activeTab, payload);
+
+      // then
+      expect(eventSpy).to.have.been.called;
+    });
+
+  });
+
 });
 
 
