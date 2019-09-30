@@ -15,6 +15,10 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import {
+  find
+} from 'min-dash';
+
+import {
   Cache,
   WithCachedState
 } from '../../../cached';
@@ -179,7 +183,8 @@ describe('<BpmnEditor>', function() {
 
           return [];
         },
-        onError: onErrorSpy
+        onError: onErrorSpy,
+        onAction: noop
       };
 
       // then
@@ -560,7 +565,6 @@ describe('<BpmnEditor>', function() {
     });
 
   });
-
 
 
   describe('#handleNamespace', function() {
@@ -1394,6 +1398,39 @@ describe('<BpmnEditor>', function() {
 
   });
 
+
+  describe('extensions event emitting', function() {
+
+    let recordActions, emittedEvents;
+
+    beforeEach(function() {
+      emittedEvents = [];
+
+      recordActions = (action, options) => {
+        emittedEvents.push(options);
+      };
+    });
+
+    it('should notify when modeler configures', async function() {
+
+      // when
+      await renderEditor(diagramXML, {
+        onAction: recordActions
+      });
+
+      // then
+      const modelerConfigureEvent = getEvent(emittedEvents, 'bpmn.modeler.configure');
+
+      const {
+        payload
+      } = modelerConfigureEvent;
+
+      expect(modelerConfigureEvent).to.exist;
+      expect(payload.middlewares).to.exist;
+    });
+
+  });
+
 });
 
 
@@ -1452,4 +1489,9 @@ async function renderEditor(xml, options = {}) {
     instance,
     wrapper
   };
+}
+
+// helper /////////
+function getEvent(events, eventName) {
+  return find(events, e => e.type === eventName);
 }
