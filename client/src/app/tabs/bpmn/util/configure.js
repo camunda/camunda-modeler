@@ -8,7 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-export default function configureModeler(getPlugins, defaultOptions = {}) {
+export default function configureModeler(
+    getPlugins, defaultOptions = {}, handleMiddlewareExtensions
+) {
 
   const warnings = [];
 
@@ -98,6 +100,9 @@ export default function configureModeler(getPlugins, defaultOptions = {}) {
     ...dynamicMiddlewares
   ];
 
+  if (typeof handleMiddlewareExtensions === 'function') {
+    handleMiddlewareExtensions(middlewares);
+  }
 
   let options = {
     ...defaultOptions

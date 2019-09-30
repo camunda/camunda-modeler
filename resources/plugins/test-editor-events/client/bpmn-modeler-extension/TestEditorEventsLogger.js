@@ -17,3 +17,5 @@ function EditorEventsLogger(eventBus) {
 }
 
 EditorEventsLogger.$inject = [ 'eventBus' ];
+
+module.exports = EditorEventsLogger;

@@ -208,6 +208,7 @@ function EditorEventsLogger(eventBus) {
 }
 
 EditorEventsLogger.$inject = ['eventBus'];
+module.exports = EditorEventsLogger;
 
 /***/ }),
 
@@ -233,8 +234,8 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  __init__: ['testTestEditorEventsLogger'],
-  testTestEditorEventsLogger: ['type', _TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0___default.a]
+  __init__: ['testEditorEventsLogger'],
+  testEditorEventsLogger: ['type', _TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0___default.a]
 });
 
 /***/ }),
