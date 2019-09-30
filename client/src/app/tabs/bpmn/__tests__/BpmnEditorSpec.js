@@ -1429,6 +1429,29 @@ describe('<BpmnEditor>', function() {
       expect(payload.middlewares).to.exist;
     });
 
+
+    it('should notify when modeler was created', async function() {
+
+      // when
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        onAction: recordActions
+      });
+
+      // then
+      const modeler = instance.getModeler();
+
+      const modelerCreatedEvent = getEvent(emittedEvents, 'bpmn.modeler.created');
+
+      const {
+        payload
+      } = modelerCreatedEvent;
+
+      expect(modelerCreatedEvent).to.exist;
+      expect(payload.modeler).to.eql(modeler);
+    });
+
   });
 
 });
