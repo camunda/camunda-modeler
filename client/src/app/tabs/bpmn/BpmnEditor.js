@@ -825,6 +825,14 @@ export class BpmnEditor extends CachedComponent {
 
     const stackIdx = commandStack._stackIdx;
 
+    // notify interested parties that modeler was created
+    onAction('emit-event', {
+      type: 'bpmn.modeler.created',
+      payload: {
+        modeler
+      }
+    });
+
     return {
       __destroy: () => {
         modeler.destroy();
