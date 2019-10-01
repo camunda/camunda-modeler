@@ -280,21 +280,6 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
 
 function ConnectionCheckResult({ checkingConnection, connectionError }) {
-
-  if (checkingConnection === null) {
-    return (
-      <div className="configuration-status configuration-status__placeholder" />
-    );
-  }
-
-  if (checkingConnection === true) {
-    return (
-      <div className="configuration-status configuration-status__loading">
-        Loading
-      </div>
-    );
-  }
-
   if (connectionError) {
     return (
       <div className="configuration-status configuration-status__error">
@@ -303,9 +288,15 @@ function ConnectionCheckResult({ checkingConnection, connectionError }) {
     );
   }
 
+  if (checkingConnection === false) {
+    return (
+      <div className="configuration-status configuration-status__success">
+        Connected successfully.
+      </div>
+    );
+  }
+
   return (
-    <div className="configuration-status configuration-status__success">
-      Connected successfully.
-    </div>
+    <div className="configuration-status configuration-status__placeholder" />
   );
 }
