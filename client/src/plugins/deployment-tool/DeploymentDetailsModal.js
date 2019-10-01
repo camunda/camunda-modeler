@@ -50,7 +50,8 @@ export default class DeploymentDetailsModal extends React.PureComponent {
     checkingConnection: null,
     connectionError: null,
     lastPassword: null,
-    lastUsername: null
+    lastUsername: null,
+    lastAuthType: null
   }
 
   componentDidMount() {
@@ -70,7 +71,8 @@ export default class DeploymentDetailsModal extends React.PureComponent {
     this.setState({
       checkingConnection: true,
       lastUsername: values.username,
-      lastPassword: values.password
+      lastPassword: values.password,
+      lastAuthType: values.authType
     });
 
     const connectionError = await this.props.checkConnection(values);
@@ -97,14 +99,15 @@ export default class DeploymentDetailsModal extends React.PureComponent {
       return;
     }
 
-    if (values.authType !== AuthTypes.basic) {
-      return this.lazilyCheckConnection(values);
-    }
-
     const {
+      authType,
       username,
       password
     } = values;
+
+    if (authType !== AuthTypes.basic || authType !== this.state.lastAuthType) {
+      return this.lazilyCheckConnection(values);
+    }
 
     const usernameOrPasswordChanged = !(
       username === this.state.lastUsername && password === this.state.lastPassword
