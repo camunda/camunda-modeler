@@ -56,11 +56,20 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
   componentDidMount() {
     this.mounted = true;
-    this.checkConnection({ ...initialFormValues, ...this.props.details });
+
+    // check connection with pre-validated initial form values
+    const initialValues = this.getInitialValues();
+    const errors = this.props.validate(initialValues);
+
+    this.checkConnectionIfNeeded(initialValues, errors, true);
   }
 
   componentWillUnmount() {
     this.mounted = false;
+  }
+
+  getInitialValues() {
+    return { ...initialFormValues, ...this.props.details };
   }
 
   checkConnection = async values => {
@@ -92,11 +101,15 @@ export default class DeploymentDetailsModal extends React.PureComponent {
     return errors;
   }
 
-  checkConnectionIfNeeded(values, errors) {
+  checkConnectionIfNeeded(values, errors, immediately = false) {
 
     // skip connection check in case of invalid input
     if (this.getEndpointConfigFields(values.authType).some(field => errors[field])) {
       return;
+    }
+
+    if (immediately) {
+      return this.checkConnection(values);
     }
 
     const {
@@ -153,9 +166,10 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
   render() {
     const {
-      details: deploymentDetails,
       onFocusChange
     } = this.props;
+
+    const initialValues = this.getInitialValues();
 
     const { checkingConnection, connectionError, detailsOpen } = this.state;
 
@@ -170,7 +184,7 @@ export default class DeploymentDetailsModal extends React.PureComponent {
         </p>
 
         <Formik
-          initialValues={ { ...initialFormValues, ...deploymentDetails } }
+          initialValues={ initialValues }
           onSubmit={ this.onSubmit }
           validate={ this.validate }
         >
