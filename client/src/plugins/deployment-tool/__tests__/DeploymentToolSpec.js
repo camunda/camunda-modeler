@@ -13,9 +13,11 @@
 import React from 'react';
 
 import { mount, shallow } from 'enzyme';
+import { omit } from 'min-dash';
 
 import DeploymentTool from '../DeploymentTool';
 import DeploymentDetailsModal from '../DeploymentDetailsModal';
+import AuthTypes from '../AuthTypes';
 
 
 describe('<DeploymentTool>', () => {
@@ -25,32 +27,19 @@ describe('<DeploymentTool>', () => {
   });
 
 
-  it('should derive the default deployment name from filename', () => {
-
-    // given
-    const { instance } = createDeploymentTool();
-
-    // when
-    const details = instance.getInitialDetails({ name });
-
-    // then
-    expect(details).to.have.property('deploymentName', name);
-  });
-
-
   describe('#deploy', () => {
 
     let fetchStub,
         mounted;
 
     beforeEach(() => {
-      fetchStub = sinon.stub(window, 'fetch');
+      fetchStub = sinon.stub(window, 'fetch').resolves({ ok: true, json: () => ({}) });
     });
 
     afterEach(() => {
       fetchStub.restore();
 
-      if (mounted) {
+      if (mounted && mounted.exists()) {
         mounted.unmount();
       }
     });
@@ -84,6 +73,60 @@ describe('<DeploymentTool>', () => {
       onClose();
     });
 
+
+    it('should read and save config for deployed file', async () => {
+
+      // given
+      const config = sinon.stub({
+        getForFile() {
+          return {};
+        },
+        setForFile() {}
+      });
+      const details = {
+        endpointUrl: 'http://localhost:8088/engine-rest',
+        tenantId: '',
+        deploymentName: 'diagram',
+        authType: AuthTypes.basic,
+        username: 'demo',
+        password: 'demo'
+      };
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+      const {
+        wrapper,
+        instance
+      } = createDeploymentTool({ activeTab, config }, mount);
+
+      mounted = wrapper;
+
+      // when
+      instance.deploy();
+
+      await nextTick();
+      wrapper.update();
+
+      const { handleClose } = wrapper.state('modalState');
+
+      handleClose(details);
+
+      await nextTick();
+
+      // then
+      expect(config.getForFile).to.have.been.calledOnce;
+      expect(config.getForFile.getCall(0).args).to.eql([
+        activeTab.file,
+        'deployment-config'
+      ]);
+
+      expect(config.setForFile).to.have.been.calledOnce;
+      expect(config.setForFile.getCall(0).args).to.eql([
+        activeTab.file,
+        'deployment-config',
+        omit(details, [ 'username', 'password' ])
+      ]);
+    });
+
   });
 });
 
@@ -105,9 +148,19 @@ function createDeploymentTool({
     }
   };
 
+  const config = {
+    getForFile() {
+      return {};
+    },
+    setForFile() {}
+  };
+
   const wrapper = render(<DeploymentTool
+    config={ config }
     subscribe={ subscribe }
     triggerAction={ triggerAction }
+    displayNotification={ noop }
+    log={ noop }
     { ...props }
   />);
 
@@ -135,3 +188,5 @@ function createTab(overrides = {}) {
 function nextTick() {
   return new Promise(resolve => process.nextTick(() => resolve()));
 }
+
+function noop() {}
