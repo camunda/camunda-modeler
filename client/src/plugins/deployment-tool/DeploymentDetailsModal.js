@@ -49,6 +49,7 @@ export default class DeploymentDetailsModal extends React.PureComponent {
     detailsOpen: false,
     checkingConnection: null,
     connectionError: null,
+    connectionHint: null,
     lastPassword: null,
     lastUsername: null,
     lastAuthType: null
@@ -79,6 +80,7 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
     this.setState({
       checkingConnection: true,
+      connectionHint: null,
       lastUsername: values.username,
       lastPassword: values.password,
       lastAuthType: values.authType
@@ -103,8 +105,14 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
   checkConnectionIfNeeded(values, errors, immediately = false) {
 
+    const missingConfigHint = this.getEndpointConfigHint(values, errors);
+
     // skip connection check in case of invalid input
-    if (this.getEndpointConfigFields(values.authType).some(field => errors[field])) {
+    if (missingConfigHint) {
+      this.setState({
+        connectionHint: missingConfigHint
+      });
+
       return;
     }
 
@@ -141,14 +149,27 @@ export default class DeploymentDetailsModal extends React.PureComponent {
     return this.lazilyCheckConnection(values);
   }
 
-  getEndpointConfigFields(authType) {
+  getEndpointConfigHint(values, errors) {
+    const areCredentialsMissing = this.getCredentialsConfigFields(values.authType)
+      .some(field => errors[field]);
+
+    if (errors.endpointUrl && areCredentialsMissing) {
+      return 'Please finish the endpoint configuration to test the server connection.';
+    } else if (errors.endpointUrl) {
+      return 'Please provide a valid REST endpoint to test the server connection.';
+    } else if (areCredentialsMissing) {
+      return 'Please add the credentials to test the server connection.';
+    }
+  }
+
+  getCredentialsConfigFields(authType) {
     switch (authType) {
     case AuthTypes.none:
-      return [ 'endpointUrl' ];
+      return [];
     case AuthTypes.bearer:
-      return [ 'endpointUrl', 'bearer' ];
+      return [ 'bearer' ];
     case AuthTypes.basic:
-      return [ 'endpointUrl', 'username', 'password' ];
+      return [ 'username', 'password' ];
     }
   }
 
@@ -171,7 +192,12 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
     const initialValues = this.getInitialValues();
 
-    const { checkingConnection, connectionError, detailsOpen } = this.state;
+    const {
+      checkingConnection,
+      connectionError,
+      connectionHint,
+      detailsOpen
+    } = this.state;
 
     const onClose = this.onClose;
 
@@ -234,7 +260,8 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
                   <ConnectionCheckResult
                     checkingConnection={ checkingConnection }
-                    connectionError={ connectionError }
+                    error={ connectionError }
+                    hint={ connectionHint }
                   />
 
                   <div className="fields">
@@ -293,11 +320,19 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 }
 
 
-function ConnectionCheckResult({ checkingConnection, connectionError }) {
-  if (connectionError) {
+function ConnectionCheckResult({ checkingConnection, error, hint }) {
+  if (error) {
     return (
       <div className="configuration-status configuration-status__error">
-        { connectionError }
+        { error }
+      </div>
+    );
+  }
+
+  if (hint) {
+    return (
+      <div className="configuration-status configuration-status__hint">
+        { hint }
       </div>
     );
   }
@@ -311,6 +346,8 @@ function ConnectionCheckResult({ checkingConnection, connectionError }) {
   }
 
   return (
-    <div className="configuration-status configuration-status__placeholder" />
+    <div className="configuration-status configuration-status__loading">
+      Testing the connection.
+    </div>
   );
 }
