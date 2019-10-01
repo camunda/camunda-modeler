@@ -1617,6 +1617,109 @@ describe('<App>', function() {
   });
 
 
+  describe('notifications', function() {
+
+    it('should display notification', async function() {
+
+      // given
+      const {
+        app,
+        tree
+      } = createApp();
+
+      const notificationProps = { title: 'test' };
+
+      // when
+      await app.triggerAction('display-notification', notificationProps);
+
+      // then
+      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(1);
+    });
+
+
+    it('should close notification', async function() {
+
+      // given
+      const {
+        app,
+        tree
+      } = createApp();
+
+      const notificationProps = { title: 'test' };
+
+      const { close } = await app.triggerAction('display-notification', notificationProps);
+
+      // when
+      close();
+
+      // then
+      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(0);
+    });
+
+
+    it('should update notification', async function() {
+
+      // given
+      const {
+        app,
+        tree
+      } = createApp();
+
+      const newTitle = 'new Title';
+
+      const notificationProps = { title: 'test' };
+
+      const { update } = await app.triggerAction('display-notification', notificationProps);
+
+      // when
+      update({ title: newTitle });
+
+      // then
+      const notifications = tree.find('Notifications').first().prop('notifications');
+
+      expect(notifications).to.have.lengthOf(1);
+      expect(notifications[0]).to.have.property('title', newTitle);
+    });
+
+
+    it('should NOT display notification without title', async function() {
+
+      // given
+      const {
+        app,
+        tree
+      } = createApp();
+
+      const notificationProps = {};
+
+      // when
+      await app.triggerAction('display-notification', notificationProps);
+
+      // then
+      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(0);
+    });
+
+
+    it('should NOT display notification of unknown type', async function() {
+
+      // given
+      const {
+        app,
+        tree
+      } = createApp();
+
+      const notificationProps = { type: 'unknown' };
+
+      // when
+      await app.triggerAction('display-notification', notificationProps);
+
+      // then
+      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(0);
+    });
+
+  });
+
+
   describe('customization', function() {
 
     class CustomEmptyTab extends Component {

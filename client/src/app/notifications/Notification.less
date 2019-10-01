@@ -1,0 +1,40 @@
+:local(.Notification) {
+  width: 300px;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  border-radius: 2px;
+  padding: 20px;
+  margin-bottom: 20px;
+
+  &.warning {
+    background-color: #ffffd1;
+  }
+
+  h2 {
+    margin: 0;
+    font-weight: normal;
+  }
+
+  .content {
+    margin-top: 10px
+  }
+
+  .close {
+    vertical-align: middle;
+    padding: 0 2px;
+    margin-left: 3px;
+
+    font-size: 18px;
+    line-height: 9px;
+    width: 13px;
+    float: right;
+
+    &:before {
+      content: '×';
+    }
+
+    &:hover {
+      color: orange;
+    }
+  }
+}

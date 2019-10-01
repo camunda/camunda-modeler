@@ -45,6 +45,10 @@ export default class PluginsRoot extends PureComponent {
 
   }
 
+  log = options => this.props.app.triggerAction('log', options);
+
+  displayNotification = options => this.props.app.triggerAction('display-notification', options);
+
   render() {
 
     const {
@@ -82,7 +86,8 @@ export default class PluginsRoot extends PureComponent {
             triggerAction={ app.triggerAction }
             config={ config }
             subscribe={ subscribe }
-            log={ app.composeAction('log') }
+            log={ this.log }
+            displayNotification={ this.displayNotification }
           />
         </PluginParent>
       );

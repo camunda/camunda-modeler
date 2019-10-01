@@ -16,6 +16,7 @@ import {
   assign,
   debounce,
   forEach,
+  isString,
   reduce
 } from 'min-dash';
 
@@ -63,6 +64,8 @@ import { PluginsRoot } from './plugins';
 
 import css from './App.less';
 
+import Notifications, { NOTIFICATION_TYPES } from './notifications';
+
 
 const log = debug('App');
 
@@ -86,6 +89,7 @@ const INITIAL_STATE = {
   tabs: [],
   tabState: {},
   logEntries: [],
+  notifications: [],
   currentModal: null,
   endpoints: []
 };
@@ -136,6 +140,8 @@ export class App extends PureComponent {
       this.updateMenu = debounce(this.updateMenu, 50);
       this.resizeTab = debounce(this.resizeTab, 50);
     }
+
+    this.currentNotificationId = 0;
   }
 
   createDiagram = async (type = 'bpmn', options) => {
@@ -1092,6 +1098,82 @@ export class App extends PureComponent {
     });
   }
 
+  /**
+   * Display notification.
+   *
+   * @param {Object} options
+   * @param {string} options.title
+   * @param {import('react').ReactNode} [options.content]
+   * @param {'info'|'success'|'error'|'warning'} [options.type='info']
+   * @param {number} [options.duration=4000]
+   *
+   * @returns {{ update: (options: object) => void, close: () => void }}
+   */
+  displayNotification({ type = 'info', title, content, duration = 4000 }) {
+    const { notifications } = this.state;
+
+    if (!NOTIFICATION_TYPES.includes(type)) {
+      throw new Error('Unknown notification type');
+    }
+
+    if (!isString(title)) {
+      throw new Error('Title should be string');
+    }
+
+    const id = this.currentNotificationId++;
+
+    const close = () => {
+      this._closeNotification(id);
+    };
+
+    const update = newProps => {
+      this._updateNotification(id, newProps);
+    };
+
+    const notification = {
+      content,
+      duration,
+      id,
+      close,
+      title,
+      type
+    };
+
+    this.setState({
+      notifications: [
+        ...notifications,
+        notification
+      ]
+    });
+
+    return {
+      close,
+      update
+    };
+  }
+
+  closeNotifications() {
+    this.setState({
+      notifications: []
+    });
+  }
+
+  _updateNotification(id, options) {
+    const notifications = this.state.notifications.map(notification => {
+      const { id: currentId } = notification;
+
+      return currentId !== id ? notification : { ...notification, ...options };
+    });
+
+    this.setState({ notifications });
+  }
+
+  _closeNotification(id) {
+    const notifications = this.state.notifications.filter(({ id: currentId }) => currentId !== id);
+
+    this.setState({ notifications });
+  }
+
   setLayout(layout) {
     this.setState({
       layout
@@ -1554,6 +1636,10 @@ export class App extends PureComponent {
       return this.logEntry(message, category, action);
     }
 
+    if (action === 'display-notification') {
+      return this.displayNotification(options);
+    }
+
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
@@ -1847,6 +1933,8 @@ export class App extends PureComponent {
             /> : null }
 
         </div>
+
+        <Notifications notifications={ this.state.notifications } />
 
       </DropZone>
     );
