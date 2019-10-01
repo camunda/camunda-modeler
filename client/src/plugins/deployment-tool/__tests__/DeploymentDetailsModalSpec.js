@@ -24,7 +24,7 @@ import AuthTypes from '../AuthTypes';
 describe('<DeploymentDetailsModal>', () => {
 
   it('should render', () => {
-    shallow(<DeploymentDetailsModal />);
+    createModal();
   });
 
 
@@ -55,10 +55,10 @@ describe('<DeploymentDetailsModal>', () => {
       };
 
       // when
-      shallow(<DeploymentDetailsModal
-        checkConnection={ checkConnectionStub }
-        details={ initialFormValues }
-      />);
+      createModal({
+        checkConnection: checkConnectionStub,
+        details: initialFormValues
+      });
 
       // then
       expect(checkConnectionStub).to.have.been.calledOnce;
@@ -128,3 +128,23 @@ describe('<DeploymentDetailsModal>', () => {
   });
 
 });
+
+
+
+// helper
+function createModal(props, renderFn = shallow) {
+  props = {
+    checkConnection: noop,
+    validate: () => ({}),
+    ...props
+  };
+
+  const wrapper = renderFn(<DeploymentDetailsModal { ...props } />);
+
+  return {
+    wrapper,
+    instance: wrapper.instance()
+  };
+}
+
+function noop() {}

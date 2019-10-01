@@ -10,6 +10,8 @@
 
 import React, { PureComponent } from 'react';
 
+import { omit } from 'min-dash';
+
 import CamundaAPI from './CamundaAPI';
 import DeploymentDetailsModal from './DeploymentDetailsModal';
 
@@ -22,6 +24,9 @@ import {
   Button,
   Icon
 } from '../../app/primitives';
+
+const VALIDATED_FIELDS = [ 'deploymentName', 'endpointUrl' ];
+const CONFIG_KEY = 'deployment-config';
 
 
 export default class DeploymentTool extends PureComponent {
@@ -54,20 +59,21 @@ export default class DeploymentTool extends PureComponent {
   }
 
   async saveDetails(tab, details) {
-    const key = 'DEPLOYMENT_DETAILS_' + tab.file.path;
+    const {
+      config
+    } = this.props;
 
-    const detailsStr = JSON.stringify(details);
+    const savedDetails = this.getDetailsToSave(details);
 
-    window.localStorage.setItem(key, detailsStr);
+    return config.setForFile(tab.file, CONFIG_KEY, savedDetails);
   }
 
   async getSavedDetails(tab) {
+    const {
+      config
+    } = this.props;
 
-    const key = 'DEPLOYMENT_DETAILS_' + tab.file.path;
-
-    const detailsStr = window.localStorage.getItem(key) || 'null';
-
-    return JSON.parse(detailsStr);
+    return config.getForFile(tab.file, CONFIG_KEY);
   }
 
   async deployTab(tab) {
@@ -84,17 +90,20 @@ export default class DeploymentTool extends PureComponent {
     // (2.1) Try to get existing deployment details
     let details = await this.getSavedDetails(tab);
 
-    if (!details) {
+    // (2.2) Check if details are complete
+    const canDeploy = this.canDeployWithDetails(details);
 
-      // (2.2) Open modal to enter deployment details
-      details = await this.getDetailsFromUserInput(tab);
+    if (!canDeploy) {
 
-      // (2.2.1) Handle user cancelation
+      // (2.3) Open modal to enter deployment details
+      details = await this.getDetailsFromUserInput(tab, details);
+
+      // (2.3.1) Handle user cancelation
       if (!details) {
         return;
       }
 
-      // await this.saveDetails(tab, details);
+      await this.saveDetails(tab, details);
     }
 
     // (3) Trigger deployment
@@ -129,6 +138,12 @@ export default class DeploymentTool extends PureComponent {
     return api.deployDiagram(tab.file, details);
   }
 
+  canDeployWithDetails(details) {
+
+    // TODO(barmac): implement for instant deployment
+    return false;
+  }
+
   getDetailsFromUserInput(tab, details) {
     const initialDetails = this.getInitialDetails(tab, details);
 
@@ -144,7 +159,7 @@ export default class DeploymentTool extends PureComponent {
         // contract: if details provided, user closed with O.K.
         // otherwise they canceled it
         if (result) {
-          resolve(this.getDetailsFromForm(result));
+          return resolve(this.getDetailsFromForm(result));
         }
 
         resolve();
@@ -158,6 +173,10 @@ export default class DeploymentTool extends PureComponent {
         }
       });
     });
+  }
+
+  getDetailsToSave(rawDetails) {
+    return omit(rawDetails, 'auth');
   }
 
   validateDetails = values => {
@@ -200,15 +219,13 @@ export default class DeploymentTool extends PureComponent {
   }
 
   getValidatedFields(values) {
-    const fields = Object.keys(values);
-
     switch (values.authType) {
     case AuthTypes.none:
-      return fields.filter(field => ![ 'bearer', 'username', 'password' ].includes(field));
+      return VALIDATED_FIELDS;
     case AuthTypes.bearer:
-      return fields.filter(field => ![ 'username', 'password' ].includes(field));
+      return VALIDATED_FIELDS.concat('bearer');
     case AuthTypes.basic:
-      return fields.filter(field => field !== 'bearer');
+      return VALIDATED_FIELDS.concat('username', 'password');
     }
   }
 
@@ -218,7 +235,8 @@ export default class DeploymentTool extends PureComponent {
     const payload = {
       endpointUrl,
       deploymentName: values.deploymentName,
-      tenantId: values.tenantId
+      tenantId: values.tenantId,
+      authType: values.authType
     };
 
     const auth = this.getAuth(values);

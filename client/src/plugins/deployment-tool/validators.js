@@ -17,7 +17,7 @@ export default {
 };
 
 function validateEndpointUrl(url) {
-  if (!url.length) {
+  if (!url) {
     return 'Endpoint URL must not be empty.';
   }
 
@@ -27,25 +27,25 @@ function validateEndpointUrl(url) {
 }
 
 function validateDeploymentName(name) {
-  if (!name.length) {
+  if (!name) {
     return 'Deployment name must not be empty.';
   }
 }
 
 function validateUsername(username) {
-  if (!username.length) {
+  if (!username) {
     return 'Username must not be empty.';
   }
 }
 
 function validatePassword(password) {
-  if (!password.length) {
+  if (!password) {
     return 'Password must not be empty.';
   }
 }
 
 function validateBearer(bearer) {
-  if (!bearer.length) {
+  if (!bearer) {
     return 'Token must not be empty.';
   }
 }
