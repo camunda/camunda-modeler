@@ -290,6 +290,11 @@ export class MultiSheetTab extends CachedComponent {
       activeSheet: sheet,
       lastXML: xml
     });
+
+    this.props.onAction('emit-event', {
+      type: 'tab.activeSheetChanged',
+      payload: { activeSheet: sheet }
+    });
   }
 
   getDefaultSheets = () => {
