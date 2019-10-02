@@ -1717,6 +1717,54 @@ describe('<App>', function() {
       expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(0);
     });
 
+
+    it('should close all notifications when tab changes', async function() {
+
+      // given
+      const {
+        app,
+        tree
+      } = createApp();
+
+      const file = createFile('1.bpmn');
+
+      const notificationProps = { type: 'unknown' };
+
+      // open several notifications
+      await app.triggerAction('display-notification', notificationProps);
+      await app.triggerAction('display-notification', notificationProps);
+      await app.triggerAction('display-notification', notificationProps);
+
+      // when
+      app.openFiles([ file ]);
+
+      // then
+      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(0);
+    });
+
+
+    it('should close all notifications when sheet changes', async function() {
+
+      // given
+      const {
+        app,
+        tree
+      } = createApp();
+
+      const notificationProps = { type: 'unknown' };
+
+      // open several notifications
+      await app.triggerAction('display-notification', notificationProps);
+      await app.triggerAction('display-notification', notificationProps);
+      await app.triggerAction('display-notification', notificationProps);
+
+      // when
+      await app.triggerAction('emit-event', { type: 'tab.activeSheetChanged' });
+
+      // then
+      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(0);
+    });
+
   });
 
 

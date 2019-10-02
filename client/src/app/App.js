@@ -942,6 +942,14 @@ export class App extends PureComponent {
     if (typeof onReady === 'function') {
       onReady();
     }
+
+    this.on('app.activeTabChanged', () => {
+      this.closeNotifications();
+    });
+
+    this.on('tab.activeSheetChanged', () => {
+      this.closeNotifications();
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -1638,6 +1646,15 @@ export class App extends PureComponent {
 
     if (action === 'display-notification') {
       return this.displayNotification(options);
+    }
+
+    if (action === 'emit-event') {
+      const {
+        type,
+        payload
+      } = options;
+
+      return this.emit(type, payload);
     }
 
     const tab = this.tabRef.current;
