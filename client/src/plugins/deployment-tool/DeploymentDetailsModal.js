@@ -105,6 +105,12 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
   checkConnectionIfNeeded(values, errors, immediately = false) {
 
+    const {
+      authType,
+      username,
+      password
+    } = values;
+
     const missingConfigHint = this.getEndpointConfigHint(values, errors);
 
     // skip connection check in case of invalid input
@@ -120,12 +126,7 @@ export default class DeploymentDetailsModal extends React.PureComponent {
       return this.checkConnection(values);
     }
 
-    const {
-      authType,
-      username,
-      password
-    } = values;
-
+    // check connection if authentication type was changed or not using HTTP Basic
     if (authType !== AuthTypes.basic || authType !== this.state.lastAuthType) {
       return this.lazilyCheckConnection(values);
     }
