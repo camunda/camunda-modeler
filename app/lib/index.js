@@ -157,7 +157,7 @@ renderer.on('dialog:save-file', async function(options, done) {
 });
 
 renderer.on('dialog:show', async function(options, done) {
-  const response = await dialog.showDialog(options, done);
+  const response = await dialog.showDialog(options);
 
   done(null, response);
 });
@@ -180,7 +180,7 @@ renderer.on('file:read-stats', function(file, done) {
   done(null, newFile);
 });
 
-renderer.on('file:write', async function(filePath, file, options = {}, done) {
+renderer.on('file:write', function(filePath, file, options = {}, done) {
   try {
     const newFile = writeFile(filePath, file, options);
 
