@@ -941,6 +941,19 @@ describe('<App>', function() {
       expect(writeFileSpy).to.have.been.calledTwice;
     });
 
+
+    it('should trigger <saveTab.start> action before saving tab', async function() {
+
+      // given
+      var staveTabStartSpy = spy(app, 'triggerAction');
+
+      // when
+      await app.triggerAction('save');
+
+      // then
+      expect(staveTabStartSpy).to.have.been.calledWith('saveTab.start');
+    });
+
   });
 
 

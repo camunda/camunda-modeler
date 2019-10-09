@@ -1300,6 +1300,8 @@ export class App extends PureComponent {
 
   async saveTab(tab, options) {
 
+    this.triggerAction('saveTab.start');
+
     // return early if no options provided, file not dirty and already saved
     if (!options && !this.isDirty(tab) && !this.isUnsaved(tab)) {
       return tab;
