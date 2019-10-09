@@ -15,6 +15,7 @@ import diagramOriginModule from 'diagram-js-origin';
 import alignToOriginModule from '@bpmn-io/align-to-origin';
 import addExporter from '@bpmn-io/add-exporter/add-exporter';
 
+import completeDirectEditingModule from '../../bpmn/modeler/features/complete-direct-editing';
 import propertiesPanelModule from 'dmn-js-properties-panel';
 import propertiesProviderModule from 'dmn-js-properties-panel/lib/provider/camunda';
 
@@ -140,6 +141,7 @@ function mergeModules(editorConfig = {}, additionalModules) {
   return {
     ...editorConfig,
     additionalModules: [
+      completeDirectEditingModule,
       ...editorModules,
       ...additionalModules
     ]

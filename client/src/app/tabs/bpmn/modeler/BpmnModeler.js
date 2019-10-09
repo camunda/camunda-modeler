@@ -17,6 +17,7 @@ import diagramOriginModule from 'diagram-js-origin';
 import alignToOriginModule from '@bpmn-io/align-to-origin';
 import addExporterModule from '@bpmn-io/add-exporter';
 
+import completeDirectEditingModule from './features/complete-direct-editing';
 import executableFixModule from './features/executable-fix';
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from './features/hand-tool-on-space';
@@ -65,6 +66,7 @@ const defaultModules = BpmnModeler.prototype._modules;
 const extensionModules = [
   addExporterModule,
   camundaModdleExtension,
+  completeDirectEditingModule,
   executableFixModule,
   Flags.get(DISABLE_ADJUST_ORIGIN) ? diagramOriginModule : alignToOriginModule,
   globalClipboardModule,

@@ -17,6 +17,7 @@ import addExporterModule from '@bpmn-io/add-exporter';
 
 import camundaModdlePackage from 'camunda-cmmn-moddle/resources/camunda';
 
+import completeDirectEditingModule from '../../bpmn/modeler/features/complete-direct-editing';
 import propertiesPanelModule from 'cmmn-js-properties-panel';
 import propertiesProviderModule from 'cmmn-js-properties-panel/lib/provider/camunda';
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
@@ -52,6 +53,7 @@ const defaultModules = CmmnModeler.prototype._modules;
 
 const extensionModules = [
   addExporterModule,
+  completeDirectEditingModule,
   Flags.get(DISABLE_ADJUST_ORIGIN) ? diagramOriginModule : alignToOriginModule,
   propertiesPanelModule,
   propertiesProviderModule,
