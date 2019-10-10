@@ -9,12 +9,24 @@
  */
 
 export default {
-  endpointUrl: validateEndpointUrl,
+  bearer: validateBearer,
   deploymentName: validateDeploymentName,
-  username: validateUsername,
+  endpointUrl: validateEndpointUrl,
   password: validatePassword,
-  bearer: validateBearer
+  username: validateUsername
 };
+
+function validateBearer(bearer) {
+  if (!bearer) {
+    return 'Token must not be empty.';
+  }
+}
+
+function validateDeploymentName(name) {
+  if (!name) {
+    return 'Deployment name must not be empty.';
+  }
+}
 
 function validateEndpointUrl(url) {
   if (!url) {
@@ -26,26 +38,14 @@ function validateEndpointUrl(url) {
   }
 }
 
-function validateDeploymentName(name) {
-  if (!name) {
-    return 'Deployment name must not be empty.';
-  }
-}
-
-function validateUsername(username) {
-  if (!username) {
-    return 'Username must not be empty.';
-  }
-}
-
 function validatePassword(password) {
   if (!password) {
     return 'Password must not be empty.';
   }
 }
 
-function validateBearer(bearer) {
-  if (!bearer) {
-    return 'Token must not be empty.';
+function validateUsername(username) {
+  if (!username) {
+    return 'Username must not be empty.';
   }
 }

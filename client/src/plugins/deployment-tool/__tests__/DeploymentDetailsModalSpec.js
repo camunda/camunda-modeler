@@ -17,8 +17,8 @@ import {
   shallow
 } from 'enzyme';
 
-import DeploymentDetailsModal from '../DeploymentDetailsModal';
 import AuthTypes from '../AuthTypes';
+import DeploymentDetailsModal from '../DeploymentDetailsModal';
 
 
 describe('<DeploymentDetailsModal>', () => {
@@ -44,6 +44,7 @@ describe('<DeploymentDetailsModal>', () => {
 
       // given
       const checkConnectionStub = sinon.stub().resolves();
+
       const initialFormValues = {
         endpointUrl: 'http://localhost:8088/engine-rest',
         tenantId: '',
@@ -70,6 +71,7 @@ describe('<DeploymentDetailsModal>', () => {
 
       // given
       const checkConnectionStub = sinon.stub().resolves();
+
       const initialFormValues = {
         endpointUrl: 'http://localhost:8088/engine-rest',
         tenantId: '',
@@ -100,6 +102,7 @@ describe('<DeploymentDetailsModal>', () => {
 
       // given
       const checkConnectionStub = sinon.stub().resolves();
+
       const initialFormValues = {
         endpointUrl: 'http://localhost:8088/engine-rest',
         tenantId: '',
@@ -131,7 +134,7 @@ describe('<DeploymentDetailsModal>', () => {
 
 
 
-// helper
+// helpers //////////
 function createModal(props, renderFn = shallow) {
   props = {
     checkConnection: noop,

@@ -25,9 +25,9 @@ import {
 } from './components';
 
 import {
-  Formik,
+  Field,
   Form,
-  Field
+  Formik
 } from 'formik';
 
 import { ConnectionErrorMessages } from './errors';

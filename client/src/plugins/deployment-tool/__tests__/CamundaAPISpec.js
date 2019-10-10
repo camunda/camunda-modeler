@@ -44,6 +44,7 @@ describe('<CamundaAPI>', () => {
       name: 'diagram',
       contents: 'xml'
     };
+
     const details = {
       deploymentName: 'deployment'
     };
@@ -253,8 +254,7 @@ describe('<CamundaAPI>', () => {
 });
 
 
-
-// helper
+// helpers //////////
 function Response({
   ok = true,
   status = 200,

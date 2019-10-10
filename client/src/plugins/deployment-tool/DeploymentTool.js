@@ -12,20 +12,24 @@ import React, { PureComponent } from 'react';
 
 import { omit } from 'min-dash';
 
+import AuthTypes from './AuthTypes';
 import CamundaAPI from './CamundaAPI';
 import DeploymentDetailsModal from './DeploymentDetailsModal';
-
-import validators from './validators';
 import getEditMenu from './getEditMenu';
-import AuthTypes from './AuthTypes';
+import validators from './validators';
 
 import { Fill } from '../../app/slot-fill';
+
 import {
   Button,
   Icon
 } from '../../app/primitives';
 
-const VALIDATED_FIELDS = [ 'deploymentName', 'endpointUrl' ];
+const VALIDATED_FIELDS = [
+  'deploymentName',
+  'endpointUrl'
+];
+
 const CONFIG_KEY = 'deployment-config';
 
 
@@ -312,7 +316,7 @@ export default class DeploymentTool extends PureComponent {
 
 
 
-// helper ///////
+// helpers //////////
 function isFocusedOnInput(event) {
   return event.type === 'focus' && ['INPUT', 'TEXTAREA'].includes(event.target.tagName);
 }

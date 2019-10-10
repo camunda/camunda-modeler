@@ -12,12 +12,15 @@
 
 import React from 'react';
 
-import { mount, shallow } from 'enzyme';
+import {
+  mount,
+  shallow
+} from 'enzyme';
 import { omit } from 'min-dash';
 
-import DeploymentTool from '../DeploymentTool';
-import DeploymentDetailsModal from '../DeploymentDetailsModal';
 import AuthTypes from '../AuthTypes';
+import DeploymentDetailsModal from '../DeploymentDetailsModal';
+import DeploymentTool from '../DeploymentTool';
 
 
 describe('<DeploymentTool>', () => {
@@ -49,9 +52,10 @@ describe('<DeploymentTool>', () => {
 
       // given
       const activeTab = createTab({ name: 'foo.bpmn' });
+
       const {
-        wrapper,
-        instance
+        instance,
+        wrapper
       } = createDeploymentTool({ activeTab }, mount);
 
       mounted = wrapper;
@@ -60,12 +64,14 @@ describe('<DeploymentTool>', () => {
       instance.deploy();
 
       await nextTick();
+
       wrapper.update();
 
       // then
       const modal = wrapper.find(DeploymentDetailsModal).first();
 
       const onClose = modal.prop('onClose');
+
       const deploymentName = modal.find('input[name="deploymentName"]').first().getDOMNode().value;
 
       expect(deploymentName).to.eql('foo');
@@ -83,6 +89,7 @@ describe('<DeploymentTool>', () => {
         },
         setForFile() {}
       });
+
       const details = {
         endpointUrl: 'http://localhost:8088/engine-rest',
         tenantId: '',
@@ -93,9 +100,10 @@ describe('<DeploymentTool>', () => {
       };
 
       const activeTab = createTab({ name: 'foo.bpmn' });
+
       const {
-        wrapper,
-        instance
+        instance,
+        wrapper
       } = createDeploymentTool({ activeTab, config }, mount);
 
       mounted = wrapper;
@@ -104,6 +112,7 @@ describe('<DeploymentTool>', () => {
       instance.deploy();
 
       await nextTick();
+
       wrapper.update();
 
       const { handleClose } = wrapper.state('modalState');
@@ -132,7 +141,7 @@ describe('<DeploymentTool>', () => {
 
 
 
-// helper ////
+// helpers //////////
 function createDeploymentTool({
   activeTab = createTab(),
   ...props
