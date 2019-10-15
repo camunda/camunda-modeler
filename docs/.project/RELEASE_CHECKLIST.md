@@ -1,6 +1,6 @@
 # Release Checklist
 
-A list of things to perform with every minor or major Camunda Modeler release.
+A list of things to perform with every minor or major Camunda Modeler release. Please use [this list](./PATCH_RELEASE_CHECKLIST.md) for patch releases.
 
 __Hint:__ Create a release issue and copy the template below into it.
 
