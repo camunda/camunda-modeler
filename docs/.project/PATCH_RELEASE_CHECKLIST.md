@@ -14,6 +14,7 @@ __Hint:__ Create a release issue and copy the template below into it.
 * [ ] semantic release (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/tree/master/release-schema)
 * [ ] wait for [Travis](https://travis-ci.org/camunda/camunda-modeler) to build the release
 * [ ] prepare a list of what was changed or needs to be tested
+* [ ] execute integration test, verifying fixed things are actually fixed
 * [ ] [optional] trigger QA for fuzzy testing
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
 * [ ] trigger mirroring of release to https://camunda.org/release/camunda-modeler/ via [Jenkins](https://ci.cambpm.camunda.cloud/job/sideprojects/job/camunda-modeler-desktop-RELEASE/build?delay=0sec)
