@@ -6,6 +6,40 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.4.0    
+
+#### General    
+
+* `FEAT`: add notifications ([#1505](https://github.com/camunda/camunda-modeler/issues/1505))
+* `FEAT`: allow access to workspace configurations for plugins and files ([#1425](https://github.com/camunda/camunda-modeler/issues/1425))
+* `FIX`: complete direct editing on save operation ([#1473](https://github.com/camunda/camunda-modeler/issues/1473))
+* `FIX`: fix autofocusing for modals ([#1489](https://github.com/camunda/camunda-modeler/pull/1489)) 
+* `CHORE`: bump to `bpmn-js@5.1.0` / `diagram-js@5.1.0`
+
+#### BPMN    
+
+* `FIX`: fix duplicated references in lanes ([#1504](https://github.com/camunda/camunda-modeler/issues/1504))
+* `FIX`: fix removal of sequence flow conditions after morphing source or target ([#180](https://github.com/camunda/camunda-modeler/issues/180))
+* `FIX`: do not show preview if create operation is not allowed ([#1481](https://github.com/camunda/camunda-modeler/issues/1481))
+* `FIX`: be able to paste elements on previously removed areas ([#1466](https://github.com/camunda/camunda-modeler/issues/1466))
+
+#### Deployment    
+
+* `FEAT`: remember deployment details with diagram ([#1066](https://github.com/camunda/camunda-modeler/issues/1066))     
+* `FEAT`: display readable error message in log ([#1426](https://github.com/camunda/camunda-modeler/issues/1426))        
+* `FEAT`: derive default deployment name from the filename ([#1511](https://github.com/camunda/camunda-modeler/pull/1511))   
+* `FEAT`: deployment tool as a client extension ([#1488](https://github.com/camunda/camunda-modeler/issues/1488))  
+
+#### Plugins
+
+* `FEAT`: add extension point for ui plugins ([#1490](https://github.com/camunda/camunda-modeler/issues/1490))
+* Introduce several application events to hook into:
+    * <tab.saved> ([#1498](https://github.com/camunda/camunda-modeler/pull/1498))
+    * <tab.activeSheetChanged> ([`403afc`](https://github.com/camunda/camunda-modeler/commit/403afc920cf6c745816c3cd456baeb99830b25ed))
+    * <app.activeTabChanged> ([`403afc`](https://github.com/camunda/camunda-modeler/commit/403afc920cf6c745816c3cd456baeb99830b25ed))
+    * <bpmn.modeler.configure> ([#1499](https://github.com/camunda/camunda-modeler/issues/1499))
+    * <bpmn.modeler.created> ([#1500 ](https://github.com/camunda/camunda-modeler/issues/1500))
+
 ## 3.3.5
 
 * `FIX`: snap connections to shape center ([#1436](https://github.com/camunda/camunda-modeler/issues/1436))
