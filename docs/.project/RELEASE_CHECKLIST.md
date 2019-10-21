@@ -21,10 +21,11 @@ __Hint:__ Create a release issue and copy the template below into it.
     * [ ] Works on Mac
     * [ ] Works on Windows
 * [ ] trigger QA for fuzzy testing
+* [ ] write blog post for [blog.camunda.org](https://github.com/camunda/blog.camunda.org), __do not publish until released version is available for download on [camunda.org](https://camunda.org/release/camunda-modeler/)__
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
 * [ ] trigger mirroring of release to https://camunda.org/release/camunda-modeler/ via [Jenkins](https://ci.cambpm.camunda.cloud/job/sideprojects/job/camunda-modeler-desktop-RELEASE/build?delay=0sec)
 * [ ] update download version of Camunda Modeler at [camunda.com](https://github.com/camunda/camunda.com-new/blob/live/data/releases.json)
-* [ ] write blog post on [blog.camunda.org](https://github.com/camunda/blog.camunda.org)
+* [ ] publish blog post on [blog.camunda.org](https://github.com/camunda/blog.camunda.org)
 * [ ] spread the word
     * [ ] send [release notice email](https://github.com/bpmn-io/internal-docs/blob/master/camunda-modeler/README.md#release-notice-email)
     * [ ] tweet
