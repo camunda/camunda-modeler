@@ -326,6 +326,10 @@ app.createEditorWindow = function() {
     }
   };
 
+  if (process.env.NODE_ENV === 'development') {
+    windowOptions.title += ' (dev)';
+  }
+
   if (process.platform === 'linux') {
     windowOptions.icon = path.join(__dirname + '/../resources/favicon.png');
   }

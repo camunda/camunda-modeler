@@ -89,3 +89,6 @@ async function render() {
 
 render();
 
+if (process.env.NODE_ENV === 'development') {
+  document.title += ' (dev)';
+}
