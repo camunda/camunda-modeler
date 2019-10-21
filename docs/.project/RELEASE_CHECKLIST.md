@@ -6,7 +6,7 @@ __Hint:__ Create a release issue and copy the template below into it.
 
 
 ```markdown
-* [ ] put up code freeze appointment in calendar (include `modeling`, `qa`, `sre`, and `ilias.kourtoudis`)
+* [ ] put up code freeze appointment in calendar (include `modeling`, `qa`, `sre`, and `Team-Support`)
 * [ ] make sure dependencies are released (`rm -rf node_modules && npm i && npm run all` works)
     * `bpmn-js`, `dmn-js`, `cmmn-js`, `*-properties-panel`, `*-moddle`, ...
 * [ ] close all issues which are solved by dependency updates
@@ -22,9 +22,9 @@ __Hint:__ Create a release issue and copy the template below into it.
     * [ ] Works on Windows
 * [ ] trigger QA for fuzzy testing
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
-* [ ] write blog post on [blog.camunda.org](https://github.com/camunda/blog.camunda.org)
 * [ ] trigger mirroring of release to https://camunda.org/release/camunda-modeler/ via [Jenkins](https://ci.cambpm.camunda.cloud/job/sideprojects/job/camunda-modeler-desktop-RELEASE/build?delay=0sec)
 * [ ] update download version of Camunda Modeler at [camunda.com](https://github.com/camunda/camunda.com-new/blob/live/data/releases.json)
+* [ ] write blog post on [blog.camunda.org](https://github.com/camunda/blog.camunda.org)
 * [ ] spread the word
     * [ ] send [release notice email](https://github.com/bpmn-io/internal-docs/blob/master/camunda-modeler/README.md#release-notice-email)
     * [ ] tweet
