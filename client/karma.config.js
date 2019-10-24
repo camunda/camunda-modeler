@@ -103,8 +103,16 @@ module.exports = function(karma) {
             use: 'babel-loader'
           },
           {
-            test: /\.(css|bpmn|cmmn|dmn|less|xml|png|svg)$/,
-            use: 'raw-loader'
+            oneOf: [
+              {
+                test: /\/[A-Z][^/]+\.svg$/,
+                use: 'react-svg-loader'
+              },
+              {
+                test: /\.(css|bpmn|cmmn|dmn|less|xml|png|svg)$/,
+                use: 'raw-loader'
+              }
+            ]
           }
         ]
       },
