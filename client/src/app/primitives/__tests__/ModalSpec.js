@@ -13,8 +13,7 @@
 import React from 'react';
 
 import {
-  mount,
-  shallow
+  mount
 } from 'enzyme';
 
 import { Modal } from '..';
@@ -22,13 +21,23 @@ import { Modal } from '..';
 
 describe('<Modal>', function() {
 
+  let wrapper;
+
+
+  afterEach(function() {
+    if (wrapper && wrapper.exists()) {
+      wrapper.unmount();
+    }
+  });
+
+
   it('should render', function() {
-    shallow(<Modal />);
+    wrapper = mount(<Modal />);
   });
 
 
   it('should render children', function() {
-    const wrapper = shallow((
+    const wrapper = mount((
       <Modal>
         <div>
           { 'Test' }
@@ -42,17 +51,10 @@ describe('<Modal>', function() {
 
   describe('onClose handling', function() {
 
-    let wrapper, onCloseSpy;
+    let onCloseSpy;
 
     beforeEach(function() {
       onCloseSpy = sinon.spy();
-    });
-
-
-    afterEach(function() {
-      if (wrapper) {
-        wrapper.unmount();
-      }
     });
 
 
