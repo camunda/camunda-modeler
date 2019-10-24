@@ -10,6 +10,8 @@
 
 'use strict';
 
+const path = require('path');
+
 const DEV = process.env.NODE_ENV === 'development';
 const LICENSE_CHECK = process.env.LICENSE_CHECK;
 
@@ -18,6 +20,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 
+const resourcePath = path.resolve(__dirname + '/resources');
 
 module.exports = {
   mode: DEV ? 'development' : (LICENSE_CHECK ? 'none' : 'production'),
@@ -31,7 +34,11 @@ module.exports = {
     chunkFilename: '[name].[id].js'
   },
   resolve: DEV && {
-    mainFields: [ 'browser', 'dev:module', 'module', 'main' ]
+    mainFields: [ 'browser', 'dev:module', 'module', 'main' ],
+    modules: [
+      'node_modules',
+      resourcePath
+    ]
   } || { },
   module: {
     rules: [
