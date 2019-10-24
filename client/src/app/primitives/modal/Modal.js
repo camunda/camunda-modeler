@@ -18,7 +18,8 @@ import EscapeTrap from './EscapeTrap';
 
 import css from './Modal.less';
 
-class Modal extends PureComponent {
+
+export default class Modal extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -49,10 +50,16 @@ class Modal extends PureComponent {
   }
 
   render() {
+
+    const {
+      className,
+      children
+    } = this.props;
+
     return ReactDOM.createPortal(
       <div className={ css.ModalOverlay } onClick={ this.handleBackgroundClick }>
-        <div className={ classNames(css.ModalContainer, this.props.className) }>
-          { this.props.children }
+        <div className={ classNames(css.ModalContainer, className) } ref={ this.modalRef }>
+          { children }
         </div>
       </div>,
       document.body
@@ -70,4 +77,60 @@ Modal.defaultProps = {
   onClose: () => {}
 };
 
-export default Modal;
+Modal.Header = Header;
+
+Modal.Body = Body;
+
+Modal.Title = Title;
+
+Modal.Close = Close;
+
+Modal.Footer = Footer;
+
+
+function Title(props) {
+
+  return (
+    <h2 className="modal-title">
+      { props.children }
+    </h2>
+  );
+}
+
+function Close(props) {
+
+  const {
+    onClick
+  } = props;
+
+  return (
+    <span className="close" onClick={ onClick }>
+      ×
+    </span>
+  );
+}
+
+function Header(props) {
+
+  return (
+    <div className="modal-header">
+      { props.children }
+    </div>
+  );
+}
+
+function Body(props) {
+  return (
+    <div className="modal-body">
+      { props.children }
+    </div>
+  );
+}
+
+function Footer(props) {
+  return (
+    <div className="modal-footer">
+      { props.children }
+    </div>
+  );
+}

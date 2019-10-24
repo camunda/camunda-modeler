@@ -39,9 +39,11 @@ describe('<Modal>', function() {
   it('should render children', function() {
     const wrapper = mount((
       <Modal>
-        <div>
-          { 'Test' }
-        </div>
+        <Modal.Body>
+          <div>
+            { 'Test' }
+          </div>
+        </Modal.Body>
       </Modal>
     ));
 
@@ -74,7 +76,11 @@ describe('<Modal>', function() {
     it('should NOT invoke passed onClose prop for click on modal container', function() {
 
       // given
-      wrapper = mount(<Modal onClose={ onCloseSpy }><button id="button" /></Modal>);
+      wrapper = mount(<Modal onClose={ onCloseSpy }>
+        <Modal.Body>
+          <button id="button" />
+        </Modal.Body>
+      </Modal>);
 
       // when
       wrapper.find('#button').simulate('click');
@@ -100,7 +106,11 @@ describe('<Modal>', function() {
     it('should correctly handle autofocus', function() {
 
       // given
-      wrapper = mount(<Modal><input id="input" autoFocus /></Modal>);
+      wrapper = mount(<Modal>
+        <Modal.Body>
+          <input id="input" autoFocus />
+        </Modal.Body>
+      </Modal>);
 
       const input = wrapper.find('#input').getDOMNode();
 
