@@ -13,10 +13,41 @@ import ReactDOM from 'react-dom';
 
 import classNames from 'classnames';
 
+import FocusTrap from './FocusTrap';
+import EscapeTrap from './EscapeTrap';
+
 import css from './Modal.less';
 
-
 class Modal extends PureComponent {
+
+  constructor(props) {
+    super(props);
+
+    this.modalRef = React.createRef();
+
+    this.focusTrap = FocusTrap(() => {
+      return this.modalRef.current;
+    });
+
+    this.escapeTrap = EscapeTrap(() => {
+      this.close();
+    });
+  }
+
+  close = () => {
+    return this.props.onClose();
+  }
+
+  componentDidMount() {
+    this.focusTrap.mount();
+    this.escapeTrap.mount();
+  }
+
+  componentWillUnmount() {
+    this.focusTrap.unmount();
+    this.escapeTrap.unmount();
+  }
+
   render() {
     return ReactDOM.createPortal(
       <div className={ css.ModalOverlay } onClick={ this.handleBackgroundClick }>
@@ -30,7 +61,7 @@ class Modal extends PureComponent {
 
   handleBackgroundClick = event => {
     if (event.target === event.currentTarget) {
-      this.props.onClose();
+      this.close();
     }
   };
 }
