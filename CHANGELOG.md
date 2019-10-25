@@ -9,6 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 #### BPMN
 
 * `FIX`: correct editor error when pasting labels
+* `CHORE`: bump to `bpmn-js@5.1.2`
 
 ## 3.4.1
 
