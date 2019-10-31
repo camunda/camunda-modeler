@@ -204,11 +204,6 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
     return (
       <Modal className={ css.DeploymentDetailsModal } onClose={ onClose }>
-        <h2>Deploy Diagram</h2>
-
-        <p className="intro">
-          Specify deployment details and deploy this diagram to Camunda.
-        </p>
 
         <Formik
           initialValues={ initialValues }
@@ -216,9 +211,16 @@ export default class DeploymentDetailsModal extends React.PureComponent {
           validate={ this.validate }
         >
           {({ isSubmitting, values }) => (
-            <React.Fragment>
+            <Form>
+              <Modal.Header>
+                <Modal.Title>Deploy Diagram</Modal.Title>
+                <Modal.Close onClick={ onClose } />
+              </Modal.Header>
 
-              <Form>
+              <Modal.Body>
+                <p className="intro">
+                  Specify deployment details and deploy this diagram to Camunda.
+                </p>
 
                 <fieldset>
 
@@ -292,9 +294,12 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
                     { values.authType === AuthTypes.bearer && (
                       <AuthBearer onFocusChange={ onFocusChange } />) }
+
                   </div>
                 </fieldset>
+              </Modal.Body>
 
+              <Modal.Footer>
                 <div className="form-submit">
                   <button
                     type="submit"
@@ -308,9 +313,9 @@ export default class DeploymentDetailsModal extends React.PureComponent {
                     Cancel
                   </button>
                 </div>
-              </Form>
+              </Modal.Footer>
 
-            </React.Fragment>
+            </Form>
           )}
 
         </Formik>
