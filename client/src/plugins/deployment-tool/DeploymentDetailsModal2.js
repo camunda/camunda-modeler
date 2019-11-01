@@ -213,7 +213,9 @@ export default class DeploymentDetailsModal extends React.PureComponent {
         >
           {({ isSubmitting, values, setSubmitting }) => (
             <Form>
-              <Modal.Title>Deploy Diagram</Modal.Title>
+              <Modal.Header>
+                <Modal.Title>Deploy Diagram</Modal.Title>
+              </Modal.Header>
 
               <Modal.Body>
                 <p className="intro">
@@ -227,7 +229,7 @@ export default class DeploymentDetailsModal extends React.PureComponent {
                     <button
                       type="button"
                       className="toggle-details"
-                      onClick={ !values['tenantId'] ? this.toggleDetails : undefined }
+                      onClick={ !values['tenantId'] && this.toggleDetails }
                       title="Toggle Advanced Details"
                       disabled={ values['tenantId'] }
                     >
@@ -296,22 +298,6 @@ export default class DeploymentDetailsModal extends React.PureComponent {
                   </div>
                 </fieldset>
 
-                <fieldset>
-                  <legend>
-                    Run Configuration
-                  </legend>
-
-                  <div className="fields">
-                    <Field
-                      name="businessKey"
-                      component={ FormControl }
-                      label="Business Key"
-                      validated
-                      onFocusChange={ onFocusChange }
-                    />
-                  </div>
-
-                </fieldset>
               </Modal.Body>
 
               <Modal.Footer>
@@ -336,9 +322,10 @@ export default class DeploymentDetailsModal extends React.PureComponent {
                   </button>
 
                   <button
+                    className="btn btn-primary"
                     type="submit"
                     disabled={ isSubmitting }>
-                    Deploy + Run
+                  Deploy + Run
                   </button>
 
                   <button

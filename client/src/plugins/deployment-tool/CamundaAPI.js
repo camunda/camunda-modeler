@@ -32,7 +32,9 @@ export default class CamundaAPI {
 
     form.append('deployment-name', deploymentName);
     form.append('deployment-source', 'Camunda Modeler');
-    form.append('deploy-changed-only', 'true');
+
+    // TODO
+    // form.append('deploy-changed-only', 'true');
 
     if (tenantId) {
       form.append('tenant-id', tenantId);
@@ -54,10 +56,12 @@ export default class CamundaAPI {
 
     if (response.ok) {
 
+      const res = await response.json();
+
       const {
         id,
         deployedProcessDefinitions
-      } = await response.json();
+      } = res;
 
       return {
         id,
@@ -69,6 +73,42 @@ export default class CamundaAPI {
     const body = await this.safelyParse(response);
 
     throw new DeploymentError(response, body);
+  }
+
+  async runInstance(processDefinition, details) {
+
+    const {
+      auth
+    } = details;
+
+    const headers ={
+      'accept': 'application/json',
+      'content-type': 'application/json'
+    };
+
+    const response = await this.safelyFetch(`${this.baseUrl}/process-definition/${processDefinition.id}/start`, {
+      method: 'POST',
+      body: JSON.stringify({}),
+      headers
+    });
+
+    if (response.ok) {
+
+      const res = await response.json();
+
+      const {
+        id
+      } = res;
+
+      return {
+        processInstanceId: id
+      };
+    }
+
+    const body = await this.safelyParse(response);
+
+    throw new DeploymentError(response, body);
+
   }
 
   async checkConnection(details = {}) {

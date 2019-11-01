@@ -15,6 +15,8 @@ import { omit } from 'min-dash';
 import AuthTypes from './AuthTypes';
 import CamundaAPI from './CamundaAPI';
 import DeploymentDetailsModal from './DeploymentDetailsModal';
+import DeploymentDetailsModal2 from './DeploymentDetailsModal2';
+
 import getEditMenu from './getEditMenu';
 import validators from './validators';
 
@@ -62,6 +64,14 @@ export default class DeploymentTool extends PureComponent {
     this.deployTab(activeTab);
   }
 
+  deploy2 = () => {
+    const {
+      activeTab
+    } = this.state;
+
+    this.deployTab2(activeTab);
+  }
+
   async saveDetails(tab, details) {
     const {
       config
@@ -80,6 +90,7 @@ export default class DeploymentTool extends PureComponent {
     return config.getForFile(tab.file, CONFIG_KEY);
   }
 
+  // /////// PROTOTYPING !! ////////
   async deployTab(tab) {
 
     // (1.2) Open save file dialog if dirty
@@ -117,14 +128,20 @@ export default class DeploymentTool extends PureComponent {
       displayNotification
     } = this.props;
 
-    try {
-      await this.deployWithDetails(tab, details);
+    let businessKey, result;
 
-      displayNotification({
-        type: 'success',
-        title: 'Deployment succeeded',
-        duration: 4000
-      });
+    try {
+      result = await this.deployWithDetails(tab, details);
+
+      businessKey = details.businessKey;
+
+      if (!businessKey) {
+        displayNotification({
+          type: 'success',
+          title: 'Deployment succeeded',
+          duration: 4000
+        });
+      }
     } catch (error) {
       displayNotification({
         type: 'error',
@@ -134,7 +151,129 @@ export default class DeploymentTool extends PureComponent {
       });
       log({ category: 'deploy-error', message: error.problems || error.message });
     }
+
+    const {
+      deployedProcessDefinition
+    } = result;
+
+    // (3.2) Run Instance if applicable
+    if (businessKey && deployedProcessDefinition) {
+      const api = new CamundaAPI(details.endpointUrl);
+
+      try {
+        const {
+          processInstanceId
+        } = await api.runInstance(deployedProcessDefinition, details);
+
+        displayNotification({
+          type: 'success',
+          title: `Run Process Instance succeeded: ${processInstanceId}`,
+          duration: 4000
+        });
+      } catch (error) {
+        displayNotification({
+          type: 'error',
+          title: 'Run Instance failed',
+          content: 'See the log for further details.',
+          duration: 10000
+        });
+        log({ category: 'deploy-error', message: error.problems || error.message });
+      }
+    }
   }
+
+  async deployTab2(tab) {
+
+    // (1.2) Open save file dialog if dirty
+    tab = await this.saveTab();
+
+    // (1.3) Cancel deploy if file save cancelled
+    if (!tab) {
+      return;
+    }
+
+    // (2) Get deployment details
+    // (2.1) Try to get existing deployment details
+    let details = await this.getSavedDetails(tab);
+
+    // (2.2) Check if details are complete
+    const canDeploy = this.canDeployWithDetails(details);
+
+    if (!canDeploy) {
+
+      // (2.3) Open modal to enter deployment details
+      details = await this.getDetailsFromUserInput2(tab, details);
+
+      // (2.3.1) Handle user cancelation
+      if (!details) {
+        return;
+      }
+
+      await this.saveDetails(tab, details);
+    }
+
+    // (3) Trigger deployment
+    // (3.1) Show deployment result (success or error)
+    const {
+      log,
+      displayNotification
+    } = this.props;
+
+    let businessKey, result;
+
+    try {
+      result = await this.deployWithDetails(tab, details);
+
+      businessKey = details.businessKey;
+
+      if (!businessKey) {
+        displayNotification({
+          type: 'success',
+          title: 'Deployment succeeded',
+          duration: 4000
+        });
+      }
+    } catch (error) {
+      displayNotification({
+        type: 'error',
+        title: 'Deployment failed',
+        content: 'See the log for further details.',
+        duration: 10000
+      });
+      log({ category: 'deploy-error', message: error.problems || error.message });
+    }
+
+    const {
+      deployedProcessDefinition
+    } = result;
+
+    // (3.2) Run Instance if applicable
+    if (businessKey && deployedProcessDefinition) {
+      const api = new CamundaAPI(details.endpointUrl);
+
+      try {
+        const {
+          processInstanceId
+        } = await api.runInstance(deployedProcessDefinition, details);
+
+        displayNotification({
+          type: 'success',
+          title: `Run Process Instance succeeded: ${processInstanceId}`,
+          duration: 4000
+        });
+      } catch (error) {
+        displayNotification({
+          type: 'error',
+          title: 'Run Instance failed',
+          content: 'See the log for further details.',
+          duration: 10000
+        });
+        log({ category: 'deploy-error', message: error.problems || error.message });
+      }
+    }
+  }
+
+  // //////////////
 
   deployWithDetails(tab, details) {
     const api = new CamundaAPI(details.endpointUrl);
@@ -148,6 +287,7 @@ export default class DeploymentTool extends PureComponent {
     return false;
   }
 
+  // /////// PROTOTYPING !!! /////
   getDetailsFromUserInput(tab, details) {
     const initialDetails = this.getInitialDetails(tab, details);
 
@@ -178,6 +318,39 @@ export default class DeploymentTool extends PureComponent {
       });
     });
   }
+
+  getDetailsFromUserInput2(tab, details) {
+    const initialDetails = this.getInitialDetails(tab, details);
+
+    return new Promise(resolve => {
+      const handleClose = result => {
+
+        this.setState({
+          modalState2: null
+        });
+
+        this.updateMenu();
+
+        // contract: if details provided, user closed with O.K.
+        // otherwise they canceled it
+        if (result) {
+          return resolve(this.getDetailsFromForm(result));
+        }
+
+        resolve();
+      };
+
+      this.setState({
+        modalState2: {
+          tab,
+          details: initialDetails,
+          handleClose
+        }
+      });
+    });
+  }
+
+  // ///////////////////////////
 
   getDetailsToSave(rawDetails) {
     return omit(rawDetails, 'auth');
@@ -240,7 +413,8 @@ export default class DeploymentTool extends PureComponent {
       endpointUrl,
       deploymentName: values.deploymentName,
       tenantId: values.tenantId,
-      authType: values.authType
+      authType: values.authType,
+      businessKey: values.businessKey
     };
 
     const auth = this.getAuth(values);
@@ -287,7 +461,8 @@ export default class DeploymentTool extends PureComponent {
 
   render() {
     const {
-      modalState
+      modalState,
+      modalState2
     } = this.state;
 
     return <React.Fragment>
@@ -296,7 +471,16 @@ export default class DeploymentTool extends PureComponent {
           onClick={ this.deploy }
           title="Deploy Current Diagram"
         >
-          <Icon name="deploy" />
+          <Icon name="deploy" /> <small>1</small>
+        </Button>
+      </Fill>
+
+      <Fill slot="toolbar" group="8_deploy">
+        <Button
+          onClick={ this.deploy2 }
+          title="Deploy Current Diagram"
+        >
+          <Icon name="deploy" /> <small>2</small>
         </Button>
       </Fill>
 
@@ -309,6 +493,17 @@ export default class DeploymentTool extends PureComponent {
           validate={ this.validateDetails }
           checkConnection={ this.checkConnection }
         /> }
+
+
+      { modalState2 &&
+      <DeploymentDetailsModal2
+        details={ modalState2.details }
+        activeTab={ modalState2.tab }
+        onClose={ modalState2.handleClose }
+        onFocusChange={ this.handleFocusChange }
+        validate={ this.validateDetails }
+        checkConnection={ this.checkConnection }
+      /> }
     </React.Fragment>;
   }
 
