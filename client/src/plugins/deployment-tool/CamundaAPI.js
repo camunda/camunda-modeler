@@ -77,6 +77,7 @@ export default class CamundaAPI {
 
   async runInstance(processDefinition, details) {
 
+    // TODO(pinussilvestrus): handle authentication
     const {
       auth
     } = details;

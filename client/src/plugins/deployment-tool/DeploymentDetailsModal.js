@@ -208,7 +208,7 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
         <Formik
           initialValues={ initialValues }
-          onSubmit={ this.onSubmit }
+          onSubmit={ onSubmit }
           validate={ this.validate }
         >
           {({ isSubmitting, values, setSubmitting }) => (

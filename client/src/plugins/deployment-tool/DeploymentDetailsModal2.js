@@ -176,10 +176,15 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
   onClose = () => this.props.onClose();
 
-  onSubmit = (values, { setSubmitting }) => {
+  onSubmit = (values, { setSubmitting }, shouldRun = false) => {
     if (this.state.connectionError) {
       return setSubmitting(false);
     }
+
+    values = {
+      ...values,
+      shouldRun
+    };
 
     this.props.onClose(values);
   }
@@ -208,7 +213,7 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
         <Formik
           initialValues={ initialValues }
-          onSubmit={ this.onSubmit }
+          onSubmit={ onSubmit }
           validate={ this.validate }
         >
           {({ isSubmitting, values, setSubmitting }) => (
@@ -306,24 +311,17 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
                   <button
                     className="btn btn-primary"
-                    type="button"
-                    onClick={ () => {
-
-                      let submittedValues = {
-                        ...values
-                      };
-
-                      submittedValues.businessKey = undefined;
-
-                      onSubmit(submittedValues, { setSubmitting });
-                    } }
+                    type="submit"
                     disabled={ isSubmitting }>
                   Deploy
                   </button>
 
                   <button
                     className="btn btn-primary"
-                    type="submit"
+                    type="button"
+                    onClick={ () => {
+                      onSubmit(values, { setSubmitting }, true);
+                    } }
                     disabled={ isSubmitting }>
                   Deploy + Run
                   </button>

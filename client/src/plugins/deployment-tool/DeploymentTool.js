@@ -16,7 +16,7 @@ import AuthTypes from './AuthTypes';
 import CamundaAPI from './CamundaAPI';
 import DeploymentDetailsModal from './DeploymentDetailsModal';
 import DeploymentDetailsModal2 from './DeploymentDetailsModal2';
-
+import RunDetailsModal from './RunDetailsModal';
 import getEditMenu from './getEditMenu';
 import validators from './validators';
 
@@ -156,20 +156,10 @@ export default class DeploymentTool extends PureComponent {
       deployedProcessDefinition
     } = result;
 
-    // (3.2) Run Instance if applicable
+    // (4) Run Instance if applicable
     if (businessKey && deployedProcessDefinition) {
-      const api = new CamundaAPI(details.endpointUrl);
-
       try {
-        const {
-          processInstanceId
-        } = await api.runInstance(deployedProcessDefinition, details);
-
-        displayNotification({
-          type: 'success',
-          title: `Run Process Instance succeeded: ${processInstanceId}`,
-          duration: 4000
-        });
+        await this.runWithDetails(details, deployedProcessDefinition, displayNotification);
       } catch (error) {
         displayNotification({
           type: 'error',
@@ -219,14 +209,14 @@ export default class DeploymentTool extends PureComponent {
       displayNotification
     } = this.props;
 
-    let businessKey, result;
+    let shouldRun, result;
 
     try {
       result = await this.deployWithDetails(tab, details);
 
-      businessKey = details.businessKey;
+      shouldRun = details.shouldRun;
 
-      if (!businessKey) {
+      if (!shouldRun) {
         displayNotification({
           type: 'success',
           title: 'Deployment succeeded',
@@ -247,20 +237,21 @@ export default class DeploymentTool extends PureComponent {
       deployedProcessDefinition
     } = result;
 
-    // (3.2) Run Instance if applicable
-    if (businessKey && deployedProcessDefinition) {
-      const api = new CamundaAPI(details.endpointUrl);
+    // (4) Run Instance if applicable
+    if (shouldRun && deployedProcessDefinition) {
 
+      // (4.1) Open Modal to enter run details
+      let runDetails = await this.getRunDetailsFromUserInput(tab, details);
+
+      if (!runDetails) {
+        return;
+      }
+
+      // (4.2) Execute Run Instance
       try {
-        const {
-          processInstanceId
-        } = await api.runInstance(deployedProcessDefinition, details);
 
-        displayNotification({
-          type: 'success',
-          title: `Run Process Instance succeeded: ${processInstanceId}`,
-          duration: 4000
-        });
+        await this.runWithDetails(details, deployedProcessDefinition, displayNotification);
+
       } catch (error) {
         displayNotification({
           type: 'error',
@@ -273,12 +264,54 @@ export default class DeploymentTool extends PureComponent {
     }
   }
 
-  // //////////////
+  getRunDetailsFromUserInput(tab, details) {
+    const initialDetails = this.getInitialDetails(tab, details);
+
+    return new Promise(resolve => {
+      const handleClose = result => {
+
+        this.setState({
+          runModalState: null
+        });
+
+        this.updateMenu();
+
+        // contract: if details provided, user closed with O.K.
+        // otherwise they canceled it
+        return resolve(result);
+      };
+
+      this.setState({
+        runModalState: {
+          tab,
+          details: initialDetails,
+          handleClose
+        }
+      });
+    });
+  }
 
   deployWithDetails(tab, details) {
     const api = new CamundaAPI(details.endpointUrl);
 
     return api.deployDiagram(tab.file, details);
+  }
+
+  // TODO(pinussilvestrus): split UI and business logic
+  async runWithDetails(details, deployedProcessDefinition, displayNotification) {
+    const api = new CamundaAPI(details.endpointUrl);
+
+    const {
+      processInstanceId
+    } = await api.runInstance(deployedProcessDefinition, details);
+
+    displayNotification({
+      type: 'success',
+      title: `Run Process Instance succeeded: ${processInstanceId}`,
+      duration: 4000
+    });
+
+    return { processInstanceId };
   }
 
   canDeployWithDetails(details) {
@@ -287,7 +320,6 @@ export default class DeploymentTool extends PureComponent {
     return false;
   }
 
-  // /////// PROTOTYPING !!! /////
   getDetailsFromUserInput(tab, details) {
     const initialDetails = this.getInitialDetails(tab, details);
 
@@ -414,7 +446,10 @@ export default class DeploymentTool extends PureComponent {
       deploymentName: values.deploymentName,
       tenantId: values.tenantId,
       authType: values.authType,
-      businessKey: values.businessKey
+
+      // TODO
+      businessKey: values.businessKey,
+      shouldRun: values.shouldRun
     };
 
     const auth = this.getAuth(values);
@@ -462,7 +497,8 @@ export default class DeploymentTool extends PureComponent {
   render() {
     const {
       modalState,
-      modalState2
+      modalState2,
+      runModalState
     } = this.state;
 
     return <React.Fragment>
@@ -503,6 +539,15 @@ export default class DeploymentTool extends PureComponent {
         onFocusChange={ this.handleFocusChange }
         validate={ this.validateDetails }
         checkConnection={ this.checkConnection }
+      /> }
+
+      { runModalState &&
+      <RunDetailsModal
+        details={ runModalState.details }
+        activeTab={ runModalState.tab }
+        onClose={ runModalState.handleClose }
+        onFocusChange={ this.handleFocusChange }
+        validate={ this.validateDetails }
       /> }
     </React.Fragment>;
   }
