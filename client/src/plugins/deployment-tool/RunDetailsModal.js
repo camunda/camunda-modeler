@@ -29,16 +29,6 @@ import {
 
 export default class RunDetailsModal extends React.PureComponent {
 
-  state = {
-    detailsOpen: false,
-    checkingConnection: null,
-    connectionError: null,
-    connectionHint: null,
-    lastPassword: null,
-    lastUsername: null,
-    lastAuthType: null
-  }
-
   componentDidMount() {
     this.mounted = true;
   }
@@ -53,47 +43,11 @@ export default class RunDetailsModal extends React.PureComponent {
     return errors;
   }
 
-  getEndpointConfigHint(values, errors) {
-    const areCredentialsMissing = this.getCredentialsConfigFields(values.authType)
-      .some(field => errors[field]);
-
-    if (errors.endpointUrl && areCredentialsMissing) {
-      return 'Please finish the endpoint configuration to test the server connection.';
-    }
-
-    if (errors.endpointUrl) {
-      return 'Please provide a valid REST endpoint to test the server connection.';
-    }
-
-    if (areCredentialsMissing) {
-      return 'Please add the credentials to test the server connection.';
-    }
-
-    return null;
-  }
-
-  getCredentialsConfigFields(authType) {
-    switch (authType) {
-    case AuthTypes.none:
-      return [];
-    case AuthTypes.bearer:
-      return [ 'bearer' ];
-    case AuthTypes.basic:
-      return [ 'username', 'password' ];
-    }
-  }
-
   onClose = () => this.props.onClose();
 
-  onSubmit = (values, { setSubmitting }) => {
-    if (this.state.connectionError) {
-      return setSubmitting(false);
-    }
-
+  onSubmit = (values) => {
     this.props.onClose(values);
   }
-
-  toggleDetails = () => this.setState(state => ({ ...state, detailsOpen: !state.detailsOpen }));
 
   render() {
     const {

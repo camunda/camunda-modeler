@@ -17,6 +17,7 @@ import CamundaAPI from './CamundaAPI';
 import DeploymentDetailsModal from './DeploymentDetailsModal';
 import DeploymentDetailsModal2 from './DeploymentDetailsModal2';
 import RunDetailsModal from './RunDetailsModal';
+import RunSuccessModal from './RunSuccessModal';
 import getEditMenu from './getEditMenu';
 import validators from './validators';
 
@@ -301,17 +302,33 @@ export default class DeploymentTool extends PureComponent {
   async runWithDetails(details, deployedProcessDefinition, displayNotification) {
     const api = new CamundaAPI(details.endpointUrl);
 
-    const {
-      processInstanceId
-    } = await api.runInstance(deployedProcessDefinition, details);
+    const processInstance = await api.runInstance(deployedProcessDefinition, details);
 
-    displayNotification({
-      type: 'success',
-      title: `Run Process Instance succeeded: ${processInstanceId}`,
-      duration: 4000
+    this.openRunSuccessModal(processInstance);
+
+    return { processInstance };
+  }
+
+  openRunSuccessModal(processInstance) {
+    return new Promise(resolve => {
+      const handleClose = () => {
+
+        this.setState({
+          successModalState: null
+        });
+
+        this.updateMenu();
+
+        resolve();
+      };
+
+      this.setState({
+        successModalState: {
+          processInstance,
+          handleClose
+        }
+      });
     });
-
-    return { processInstanceId };
   }
 
   canDeployWithDetails(details) {
@@ -498,7 +515,8 @@ export default class DeploymentTool extends PureComponent {
     const {
       modalState,
       modalState2,
-      runModalState
+      runModalState,
+      successModalState
     } = this.state;
 
     return <React.Fragment>
@@ -549,10 +567,19 @@ export default class DeploymentTool extends PureComponent {
         onFocusChange={ this.handleFocusChange }
         validate={ this.validateDetails }
       /> }
+
+      { successModalState &&
+      <RunSuccessModal
+        processInstance={ successModalState.processInstance }
+        onClose={ successModalState.handleClose }
+        onFocusChange={ this.handleFocusChange }
+      /> }
     </React.Fragment>;
   }
 
 }
+
+
 
 
 

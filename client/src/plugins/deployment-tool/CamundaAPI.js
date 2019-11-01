@@ -33,7 +33,7 @@ export default class CamundaAPI {
     form.append('deployment-name', deploymentName);
     form.append('deployment-source', 'Camunda Modeler');
 
-    // TODO
+    // TODO(pinussilvestrus): do not redeploy everytime, instead save on state if unchanged
     // form.append('deploy-changed-only', 'true');
 
     if (tenantId) {
@@ -94,16 +94,7 @@ export default class CamundaAPI {
     });
 
     if (response.ok) {
-
-      const res = await response.json();
-
-      const {
-        id
-      } = res;
-
-      return {
-        processInstanceId: id
-      };
+      return await response.json();
     }
 
     const body = await this.safelyParse(response);
