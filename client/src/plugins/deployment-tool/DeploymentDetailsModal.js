@@ -228,7 +228,7 @@ export default class DeploymentDetailsModal extends React.PureComponent {
                     <button
                       type="button"
                       className="toggle-details"
-                      onClick={ !values['tenantId'] && this.toggleDetails }
+                      onClick={ !values['tenantId'] ? this.toggleDetails : undefined }
                       title="Toggle Advanced Details"
                       disabled={ values['tenantId'] }
                     >
