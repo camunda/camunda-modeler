@@ -12,9 +12,7 @@ import React from 'react';
 
 import { Modal } from '../../app/primitives';
 
-import css from './DeploymentDetailsModal.less';
-
-import AuthTypes from './AuthTypes';
+import css from './RunDetailsModal.less';
 
 import {
   FormControl
@@ -59,7 +57,7 @@ export default class RunDetailsModal extends React.PureComponent {
     const onSubmit = this.onSubmit;
 
     return (
-      <Modal className={ css.DeploymentDetailsModal } onClose={ onClose }>
+      <Modal className={ css.RunDetailsModal } onClose={ onClose }>
         <Formik
           initialValues={ initialValues }
           onSubmit={ onSubmit }
@@ -80,6 +78,10 @@ export default class RunDetailsModal extends React.PureComponent {
                 <p className="intro">
                   Start a Process Instance on the <a href="https://camunda.com/products/bpmn-engine/">Camunda Engine</a>.
                 </p>
+
+                <div className="deploy-success">
+                    Deployed successfully.
+                </div>
 
                 <fieldset>
 
