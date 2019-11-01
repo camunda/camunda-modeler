@@ -29,7 +29,6 @@ class View extends PureComponent {
 
         <Modal.Header>
           <Modal.Title>Keyboard Shortcuts</Modal.Title>
-          <Modal.Close onClick={ onClose } />
         </Modal.Header>
 
         <Modal.Body>

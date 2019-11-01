@@ -214,7 +214,6 @@ export default class DeploymentDetailsModal extends React.PureComponent {
             <Form>
               <Modal.Header>
                 <Modal.Title>Deploy Diagram</Modal.Title>
-                <Modal.Close onClick={ onClose } />
               </Modal.Header>
 
               <Modal.Body>
