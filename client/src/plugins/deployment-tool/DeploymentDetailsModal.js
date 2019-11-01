@@ -40,7 +40,8 @@ const initialFormValues = {
   authType: AuthTypes.none,
   username: '',
   password: '',
-  bearer: ''
+  bearer: '',
+  businessKey: ''
 };
 
 export default class DeploymentDetailsModal extends React.PureComponent {

@@ -24,6 +24,9 @@ import {
   Formik
 } from 'formik';
 
+const initialFormValues = {
+  businessKey: ''
+};
 
 export default class RunDetailsModal extends React.PureComponent {
 
@@ -47,11 +50,16 @@ export default class RunDetailsModal extends React.PureComponent {
     this.props.onClose(values);
   }
 
+  getInitialValues() {
+    return { ...initialFormValues, ...this.props.details };
+  }
+
   render() {
     const {
-      details: initialValues,
       onFocusChange
     } = this.props;
+
+    const initialValues = this.getInitialValues();
 
     const onClose = this.onClose;
     const onSubmit = this.onSubmit;
