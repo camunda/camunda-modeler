@@ -316,13 +316,19 @@ app.openFiles = function(filePaths) {
  */
 app.createEditorWindow = function() {
 
+  const nodeIntegration = !!flags.get('dangerously-enable-node-integration');
+
+  if (nodeIntegration) {
+    log.warn('nodeIntegration is enabled via --dangerously-enable-node-integration');
+  }
+
   const windowOptions = {
     resizable: true,
     show: false,
     title: 'Camunda Modeler',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: false
+      nodeIntegration
     }
   };
 
