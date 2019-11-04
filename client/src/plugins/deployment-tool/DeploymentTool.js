@@ -10,7 +10,7 @@
 
 import React, { PureComponent } from 'react';
 
-import { omit } from 'min-dash';
+import { omit, pick } from 'min-dash';
 
 import AuthTypes from './AuthTypes';
 import CamundaAPI from './CamundaAPI';
@@ -34,7 +34,9 @@ const VALIDATED_FIELDS = [
   'endpointUrl'
 ];
 
-const CONFIG_KEY = 'deployment-config';
+const DEPLOY_CONFIG_KEY = 'deployment-config';
+
+const RUN_CONFIG_KEY = 'run-config';
 
 const DEPLOY_RUN_ACTIONS_1 = [
   'Start Process Instance',
@@ -86,22 +88,40 @@ export default class DeploymentTool extends PureComponent {
     this.deployTab2(activeTab);
   }
 
-  async saveDetails(tab, details) {
+  async saveDeployDetails(tab, details) {
     const {
       config
     } = this.props;
 
-    const savedDetails = this.getDetailsToSave(details);
+    const savedDetails = this.getDeployDetailsToSave(details);
 
-    return config.setForFile(tab.file, CONFIG_KEY, savedDetails);
+    return config.setForFile(tab.file, DEPLOY_CONFIG_KEY, savedDetails);
   }
 
-  async getSavedDetails(tab) {
+  async saveRunDetails(tab, details) {
     const {
       config
     } = this.props;
 
-    return config.getForFile(tab.file, CONFIG_KEY);
+    const savedDetails = this.getRunDetailsToSave(details);
+
+    return config.setForFile(tab.file, RUN_CONFIG_KEY, savedDetails);
+  }
+
+  async getSavedDeploymentDetails(tab) {
+    const {
+      config
+    } = this.props;
+
+    return config.getForFile(tab.file, DEPLOY_CONFIG_KEY);
+  }
+
+  async getSavedRunDetails(tab) {
+    const {
+      config
+    } = this.props;
+
+    return config.getForFile(tab.file, RUN_CONFIG_KEY);
   }
 
   // /////// PROTOTYPING !! ////////
@@ -117,7 +137,13 @@ export default class DeploymentTool extends PureComponent {
 
     // (2) Get deployment details
     // (2.1) Try to get existing deployment details
-    let details = await this.getSavedDetails(tab);
+    let details = await this.getSavedDeploymentDetails(tab);
+
+    // TODO(pinussilvestrus): combine details in configuration?
+    details = {
+      ...details,
+      ...await this.getSavedRunDetails(tab)
+    };
 
     // (2.2) Check if details are complete
     const canDeploy = this.canDeployWithDetails(details);
@@ -132,7 +158,7 @@ export default class DeploymentTool extends PureComponent {
         return;
       }
 
-      await this.saveDetails(tab, details);
+      await this.saveDeployDetails(tab, details);
     }
 
     // (3) Trigger deployment
@@ -171,8 +197,12 @@ export default class DeploymentTool extends PureComponent {
       deployedProcessDefinition
     } = result;
 
+    // TODO(pinussilvestrus): split from deploy action?
     // (4) Run Instance if applicable
     if (shouldRun && deployedProcessDefinition) {
+
+      await this.saveRunDetails(tab, details);
+
       try {
         await this.runWithDetails(details, deployedProcessDefinition);
       } catch (error) {
@@ -199,7 +229,7 @@ export default class DeploymentTool extends PureComponent {
 
     // (2) Get deployment details
     // (2.1) Try to get existing deployment details
-    let details = await this.getSavedDetails(tab);
+    let details = await this.getSavedDeploymentDetails(tab);
 
     // (2.2) Check if details are complete
     const canDeploy = this.canDeployWithDetails(details);
@@ -214,7 +244,7 @@ export default class DeploymentTool extends PureComponent {
         return;
       }
 
-      await this.saveDetails(tab, details);
+      await this.saveDeployDetails(tab, details);
     }
 
     // (3) Trigger deployment
@@ -255,6 +285,11 @@ export default class DeploymentTool extends PureComponent {
     // (4) Run Instance if applicable
     if (shouldRun && deployedProcessDefinition) {
 
+      details = {
+        ...details,
+        ...await this.getSavedRunDetails(tab)
+      };
+
       // (4.1) Open Modal to enter run details
       let runDetails = await this.getRunDetailsFromUserInput(tab, details);
 
@@ -262,10 +297,12 @@ export default class DeploymentTool extends PureComponent {
         return;
       }
 
+      await this.saveRunDetails(tab, runDetails);
+
       // (4.2) Execute Run Instance
       try {
 
-        await this.runWithDetails(details, deployedProcessDefinition);
+        await this.runWithDetails(runDetails, deployedProcessDefinition);
 
       } catch (error) {
         displayNotification({
@@ -293,7 +330,9 @@ export default class DeploymentTool extends PureComponent {
 
         // contract: if details provided, user closed with O.K.
         // otherwise they canceled it
-        return resolve(result);
+        if (result) {
+          return resolve(this.getDetailsFromForm(result));
+        }
       };
 
       this.setState({
@@ -422,8 +461,12 @@ export default class DeploymentTool extends PureComponent {
 
   // ///////////////////////////
 
-  getDetailsToSave(rawDetails) {
-    return omit(rawDetails, 'auth');
+  getDeployDetailsToSave(rawDetails) {
+    return omit(rawDetails, [ 'auth', 'businessKey', 'variables', 'shouldRun' ]);
+  }
+
+  getRunDetailsToSave(rawDetails) {
+    return pick(rawDetails, [ 'businessKey', 'variables' ]);
   }
 
   validateDetails = values => {
