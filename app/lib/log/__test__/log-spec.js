@@ -12,6 +12,7 @@ const sinon = require('sinon');
 
 const createLog = require('../log');
 
+
 describe('log', function() {
 
   describe('instantiating', function() {
@@ -23,9 +24,14 @@ describe('log', function() {
 
       // then
       expect(log).to.exist;
+
+      expect(log.info).to.exist;
+      expect(log.warn).to.exist;
+      expect(log.error).to.exist;
     });
 
   });
+
 
   describe('transports', function() {
 
@@ -39,6 +45,7 @@ describe('log', function() {
       // given
       const transport = sinon.stub({
         info() {},
+        warn() {},
         error() {}
       });
 
