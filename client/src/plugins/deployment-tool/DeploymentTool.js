@@ -25,6 +25,7 @@ import { Fill } from '../../app/slot-fill';
 
 import {
   Button,
+  DropdownButton,
   Icon
 } from '../../app/primitives';
 
@@ -35,6 +36,18 @@ const VALIDATED_FIELDS = [
 
 const CONFIG_KEY = 'deployment-config';
 
+const DEPLOY_RUN_ACTIONS_1 = [
+  'Start Process Instance',
+  'Deploy again',
+  'Deploy with new Configuration'
+];
+
+const DEPLOY_RUN_ACTIONS_2 = [
+  'Start Process Instance again',
+  'Start Process Instance with new Configuration',
+  'Deploy again',
+  'Deploy with new Configuration'
+];
 
 export default class DeploymentTool extends PureComponent {
 
@@ -309,6 +322,8 @@ export default class DeploymentTool extends PureComponent {
     return { processInstance };
   }
 
+  // todo(pinussilvestrus): instead of using modal, extend notifications to handle react
+  // component as content
   openRunSuccessModal(processInstance) {
     return new Promise(resolve => {
       const handleClose = () => {
@@ -521,21 +536,41 @@ export default class DeploymentTool extends PureComponent {
 
     return <React.Fragment>
       <Fill slot="toolbar" group="8_deploy">
+        <small>#1</small>
         <Button
           onClick={ this.deploy }
           title="Deploy Current Diagram"
         >
-          <Icon name="deploy" /> <small>1</small>
+          <Icon name="deploy" />
         </Button>
+        <DropdownButton
+          items={
+            () => DEPLOY_RUN_ACTIONS_1.map((action, index) => {
+              return (
+                <div key={ index }>- { action }</div>
+              );
+            })
+          }
+        ></DropdownButton>
       </Fill>
 
-      <Fill slot="toolbar" group="8_deploy">
+      <Fill slot="toolbar" group="9_deploy">
+        <small>#2</small>
         <Button
           onClick={ this.deploy2 }
           title="Deploy Current Diagram"
         >
-          <Icon name="deploy" /> <small>2</small>
+          <Icon name="deploy" />
         </Button>
+        <DropdownButton
+          items={
+            () => DEPLOY_RUN_ACTIONS_2.map((action, index) => {
+              return (
+                <div key={ index }>- { action }</div>
+              );
+            })
+          }
+        ></DropdownButton>
       </Fill>
 
       { modalState &&
