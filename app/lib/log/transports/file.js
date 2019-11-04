@@ -26,6 +26,10 @@ class FileTransport {
     this.log('info', message);
   }
 
+  warn(message) {
+    this.log('warn', message);
+  }
+
   error(message) {
     this.log('error', message);
   }
