@@ -124,6 +124,30 @@ export default class DeploymentTool extends PureComponent {
     return config.getForFile(tab.file, RUN_CONFIG_KEY);
   }
 
+  // todo(pinussilvestrus): refactor me
+  async persistProcessDefinition(tab, deployResult) {
+
+    if (!deployResult) {
+      return;
+    }
+
+    const {
+      config
+    } = this.props;
+
+    const {
+      deployedProcessDefinition
+    } = deployResult;
+
+    const savedProcessDefinition = await config.getForFile(tab.file, 'process-definition');
+
+    const processDefinition = deployedProcessDefinition || savedProcessDefinition;
+
+    await config.setForFile(tab.file, 'process-definition', processDefinition);
+
+    return processDefinition;
+  }
+
   // /////// PROTOTYPING !! ////////
   async deployTab(tab) {
 
@@ -193,18 +217,16 @@ export default class DeploymentTool extends PureComponent {
       log({ category: 'deploy-error', message: error.problems || error.message });
     }
 
-    const {
-      deployedProcessDefinition
-    } = result;
+    const processDefinition = await this.persistProcessDefinition(tab, result);
 
     // TODO(pinussilvestrus): split from deploy action?
     // (4) Run Instance if applicable
-    if (shouldRun && deployedProcessDefinition) {
+    if (shouldRun && processDefinition) {
 
       await this.saveRunDetails(tab, details);
 
       try {
-        await this.runWithDetails(details, deployedProcessDefinition);
+        await this.runWithDetails(details, processDefinition);
       } catch (error) {
         displayNotification({
           type: 'error',
@@ -278,12 +300,10 @@ export default class DeploymentTool extends PureComponent {
       log({ category: 'deploy-error', message: error.problems || error.message });
     }
 
-    const {
-      deployedProcessDefinition
-    } = result;
+    const processDefinition = await this.persistProcessDefinition(tab, result);
 
     // (4) Run Instance if applicable
-    if (shouldRun && deployedProcessDefinition) {
+    if (shouldRun && processDefinition) {
 
       details = {
         ...details,
@@ -302,7 +322,7 @@ export default class DeploymentTool extends PureComponent {
       // (4.2) Execute Run Instance
       try {
 
-        await this.runWithDetails(runDetails, deployedProcessDefinition);
+        await this.runWithDetails(runDetails, processDefinition);
 
       } catch (error) {
         displayNotification({

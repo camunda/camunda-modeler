@@ -33,9 +33,7 @@ export default class CamundaAPI {
 
     form.append('deployment-name', deploymentName);
     form.append('deployment-source', 'Camunda Modeler');
-
-    // TODO(pinussilvestrus): do not redeploy everytime, instead save on state if unchanged
-    // form.append('deploy-changed-only', 'true');
+    form.append('deploy-changed-only', 'true');
 
     if (tenantId) {
       form.append('tenant-id', tenantId);
