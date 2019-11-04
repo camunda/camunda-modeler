@@ -36,7 +36,8 @@ export default class RunSuccessModal extends React.PureComponent {
 
   render() {
     const {
-      processInstance
+      processInstance,
+      endpointUrl
     } = this.props;
 
     const {
@@ -45,8 +46,9 @@ export default class RunSuccessModal extends React.PureComponent {
 
     const onClose = this.onClose;
 
-    // TODO(pinussilvestrus): create via configured base url
-    const cockpitUrl = `http://localhost:8080/camunda/app/cockpit/default/#/process-instance/${id}`;
+    const baseUrl = getBaseUrl(endpointUrl);
+
+    const cockpitUrl = `${baseUrl}/camunda/app/cockpit/default/#/process-instance/${id}`;
 
     return (
       <Modal className={ css.DeploymentDetailsModal } onClose={ onClose }>
@@ -67,4 +69,13 @@ export default class RunSuccessModal extends React.PureComponent {
       </Modal>
     );
   }
+}
+
+
+// helpers //////////////////
+
+function getBaseUrl(url) {
+  const [ protocol,, host ] = url.split('/');
+
+  return `${protocol}//${host}`;
 }

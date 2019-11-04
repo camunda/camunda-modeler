@@ -173,7 +173,7 @@ export default class DeploymentTool extends PureComponent {
     // (4) Run Instance if applicable
     if (businessKey && deployedProcessDefinition) {
       try {
-        await this.runWithDetails(details, deployedProcessDefinition, displayNotification);
+        await this.runWithDetails(details, deployedProcessDefinition);
       } catch (error) {
         displayNotification({
           type: 'error',
@@ -264,7 +264,7 @@ export default class DeploymentTool extends PureComponent {
       // (4.2) Execute Run Instance
       try {
 
-        await this.runWithDetails(details, deployedProcessDefinition, displayNotification);
+        await this.runWithDetails(details, deployedProcessDefinition);
 
       } catch (error) {
         displayNotification({
@@ -312,19 +312,23 @@ export default class DeploymentTool extends PureComponent {
   }
 
   // TODO(pinussilvestrus): split UI and business logic
-  async runWithDetails(details, deployedProcessDefinition, displayNotification) {
+  async runWithDetails(details, deployedProcessDefinition) {
     const api = new CamundaAPI(details.endpointUrl);
 
     const processInstance = await api.runInstance(deployedProcessDefinition, details);
 
-    this.openRunSuccessModal(processInstance);
+    this.openRunSuccessModal(processInstance, details);
 
     return { processInstance };
   }
 
   // todo(pinussilvestrus): instead of using modal, extend notifications to handle react
   // component as content
-  openRunSuccessModal(processInstance) {
+  openRunSuccessModal(processInstance, details) {
+    const {
+      endpointUrl
+    } = details;
+
     return new Promise(resolve => {
       const handleClose = () => {
 
@@ -339,6 +343,7 @@ export default class DeploymentTool extends PureComponent {
 
       this.setState({
         successModalState: {
+          endpointUrl,
           processInstance,
           handleClose
         }
@@ -606,6 +611,7 @@ export default class DeploymentTool extends PureComponent {
       { successModalState &&
       <RunSuccessModal
         processInstance={ successModalState.processInstance }
+        endpointUrl={ successModalState.endpointUrl }
         onClose={ successModalState.handleClose }
         onFocusChange={ this.handleFocusChange }
       /> }
