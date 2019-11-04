@@ -18,12 +18,16 @@ class FileTransport {
     });
   }
 
+  log(type, message) {
+    this.console.log(`${new Date().toISOString()}  ${type.toUpperCase()} ${message}`);
+  }
+
   info(message) {
-    this.console.log('[' + new Date().toISOString() + '] ' + message);
+    this.log('info', message);
   }
 
   error(message) {
-    this.info(message);
+    this.log('error', message);
   }
 }
 

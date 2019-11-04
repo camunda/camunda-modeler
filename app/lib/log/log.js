@@ -25,20 +25,21 @@ class Log {
     this.namespace = namespace;
   }
 
-  info(...args) {
+  log(type, args) {
+
     const message = format(...args);
 
     createLog.transports.forEach(transport => {
-      transport.info(`${this.namespace} ${message}`);
+      transport[type](`${this.namespace} ${message}`);
     });
   }
 
-  error(...args) {
-    const message = format(...args);
+  info(...args) {
+    this.log('info', args);
+  }
 
-    createLog.transports.forEach(transport => {
-      transport.error(`${this.namespace}:error ${message}`);
-    });
+  error(...args) {
+    this.log('error', args);
   }
 }
 
