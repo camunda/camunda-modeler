@@ -10,9 +10,9 @@
 
 import React from 'react';
 
-import { Modal } from '../../app/primitives';
+import { Modal, Icon } from '../../app/primitives';
 
-import css from './DeploymentDetailsModal.less';
+import css from './RunSuccessModal.less';
 
 export default class RunSuccessModal extends React.PureComponent {
 
@@ -51,20 +51,23 @@ export default class RunSuccessModal extends React.PureComponent {
     const cockpitUrl = `${baseUrl}/camunda/app/cockpit/default/#/process-instance/${id}`;
 
     return (
-      <Modal className={ css.DeploymentDetailsModal } onClose={ onClose }>
+      <Modal className={ css.RunSuccessModal } onClose={ onClose }>
 
         <Modal.Header>
           <Modal.Title>
-            Run Process Instance Success
+            Starting process instance was successful
           </Modal.Title>
 
           <Modal.Close onClick={ onClose }></Modal.Close>
         </Modal.Header>
 
         <Modal.Body>
-
-          <a href={ cockpitUrl }>Open in Camunda Cockpit</a>
-
+          <div className="cockpit-link">
+            <a href={ cockpitUrl }>
+              Open Instance in Camunda Cockpit
+              <Icon name="open" />
+            </a>
+          </div>
         </Modal.Body>
       </Modal>
     );
