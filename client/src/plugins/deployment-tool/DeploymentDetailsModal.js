@@ -178,10 +178,15 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
   onClose = () => this.props.onClose();
 
-  onSubmit = (values, { setSubmitting }) => {
+  onSubmit = (values, { setSubmitting }, shouldRun = false) => {
     if (this.state.connectionError) {
       return setSubmitting(false);
     }
+
+    values = {
+      ...values,
+      shouldRun
+    };
 
     this.props.onClose(values);
   }
@@ -195,8 +200,12 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
     const initialValues = this.getInitialValues();
 
-    // todo(pinusssilvestrus): use json editor (e.g.) instead of text area
-    initialValues['variables'] = JSON.stringify(initialValues['variables']);
+    const {
+      variables
+    } = initialValues;
+
+    // todo(pinussilvestrus): use json editor (e.g.) instead of text area
+    initialValues['variables'] = variables && JSON.stringify(variables);
 
     const {
       checkingConnection,
@@ -335,24 +344,17 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
                   <button
                     className="btn btn-primary"
-                    type="button"
-                    onClick={ () => {
-
-                      let submittedValues = {
-                        ...values
-                      };
-
-                      submittedValues.businessKey = '';
-                      submittedValues.variables = '';
-
-                      onSubmit(submittedValues, { setSubmitting });
-                    } }
+                    type="submit"
                     disabled={ isSubmitting }>
                   Deploy
                   </button>
 
                   <button
-                    type="submit"
+                    className="btn btn-primary"
+                    type="button"
+                    onClick={ () => {
+                      onSubmit(values, { setSubmitting }, true);
+                    } }
                     disabled={ isSubmitting }>
                     Deploy + Run
                   </button>
