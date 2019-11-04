@@ -142,20 +142,11 @@ export default class DeploymentTool extends PureComponent {
       displayNotification
     } = this.props;
 
-    let businessKey, result;
+    let result;
 
     try {
       result = await this.deployWithDetails(tab, details);
 
-      businessKey = details.businessKey;
-
-      if (!businessKey) {
-        displayNotification({
-          type: 'success',
-          title: 'Deployment succeeded',
-          duration: 4000
-        });
-      }
     } catch (error) {
       displayNotification({
         type: 'error',
@@ -169,6 +160,10 @@ export default class DeploymentTool extends PureComponent {
     const {
       deployedProcessDefinition
     } = result;
+
+    const {
+      businessKey
+    } = details;
 
     // (4) Run Instance if applicable
     if (businessKey && deployedProcessDefinition) {

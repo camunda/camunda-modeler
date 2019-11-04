@@ -10,7 +10,8 @@
 
 import {
   ConnectionError,
-  DeploymentError
+  DeploymentError,
+  RunError
 } from './errors';
 
 const FETCH_TIMEOUT = 5000;
@@ -78,7 +79,8 @@ export default class CamundaAPI {
   async runInstance(processDefinition, details) {
 
     const {
-      auth
+      auth,
+      businessKey
     } = details;
 
     let headers ={
@@ -92,7 +94,9 @@ export default class CamundaAPI {
 
     const response = await this.safelyFetch(`${this.baseUrl}/process-definition/${processDefinition.id}/start`, {
       method: 'POST',
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        businessKey
+      }),
       headers
     });
 
@@ -102,7 +106,7 @@ export default class CamundaAPI {
 
     const body = await this.safelyParse(response);
 
-    throw new DeploymentError(response, body);
+    throw new RunError(response, body);
 
   }
 
