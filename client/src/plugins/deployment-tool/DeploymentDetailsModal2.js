@@ -198,6 +198,9 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
     const initialValues = this.getInitialValues();
 
+    // todo(pinussilvestrus): use json editor (e.g.) instead of text area
+    initialValues['variables'] = JSON.stringify(initialValues['variables']);
+
     const {
       checkingConnection,
       connectionError,

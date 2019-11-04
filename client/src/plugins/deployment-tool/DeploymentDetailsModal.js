@@ -41,7 +41,8 @@ const initialFormValues = {
   username: '',
   password: '',
   bearer: '',
-  businessKey: ''
+  businessKey: '',
+  variables: ''
 };
 
 export default class DeploymentDetailsModal extends React.PureComponent {
@@ -194,6 +195,9 @@ export default class DeploymentDetailsModal extends React.PureComponent {
 
     const initialValues = this.getInitialValues();
 
+    // todo(pinusssilvestrus): use json editor (e.g.) instead of text area
+    initialValues['variables'] = JSON.stringify(initialValues['variables']);
+
     const {
       checkingConnection,
       connectionError,
@@ -310,6 +314,16 @@ export default class DeploymentDetailsModal extends React.PureComponent {
                       validated
                       onFocusChange={ onFocusChange }
                     />
+
+                    <div>
+                      <label htmlFor="variables">Variables</label>
+                    </div>
+
+                    <Field
+                      name="variables"
+                      label="Variables"
+                      component="textarea"
+                    />
                   </div>
 
                 </fieldset>
@@ -328,7 +342,8 @@ export default class DeploymentDetailsModal extends React.PureComponent {
                         ...values
                       };
 
-                      submittedValues.businessKey = undefined;
+                      submittedValues.businessKey = '';
+                      submittedValues.variables = '';
 
                       onSubmit(submittedValues, { setSubmitting });
                     } }

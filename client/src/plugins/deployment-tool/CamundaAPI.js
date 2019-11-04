@@ -80,7 +80,8 @@ export default class CamundaAPI {
 
     const {
       auth,
-      businessKey
+      businessKey,
+      variables
     } = details;
 
     let headers ={
@@ -95,7 +96,8 @@ export default class CamundaAPI {
     const response = await this.safelyFetch(`${this.baseUrl}/process-definition/${processDefinition.id}/start`, {
       method: 'POST',
       body: JSON.stringify({
-        businessKey
+        businessKey,
+        variables
       }),
       headers
     });

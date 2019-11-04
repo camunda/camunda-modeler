@@ -25,10 +25,15 @@ import {
 } from 'formik';
 
 const initialFormValues = {
-  businessKey: ''
+  businessKey: '',
+  variables: ''
 };
 
 export default class RunDetailsModal extends React.PureComponent {
+
+  state = {
+    variablesOpen: false
+  }
 
   componentDidMount() {
     this.mounted = true;
@@ -54,12 +59,23 @@ export default class RunDetailsModal extends React.PureComponent {
     return { ...initialFormValues, ...this.props.details };
   }
 
+  toggleVariables = () => {
+    this.setState(state => ({ ...state, variablesOpen: !state.variablesOpen }));
+  }
+
   render() {
     const {
       onFocusChange
     } = this.props;
 
+    const {
+      variablesOpen
+    } = this.state;
+
     const initialValues = this.getInitialValues();
+
+    // todo(pinussilvestrus): use json editor (e.g.) instead of text area
+    initialValues['variables'] = JSON.stringify(initialValues['variables']);
 
     const onClose = this.onClose;
     const onSubmit = this.onSubmit;
@@ -71,7 +87,7 @@ export default class RunDetailsModal extends React.PureComponent {
           onSubmit={ onSubmit }
           validate={ this.validate }
         >
-          {({ isSubmitting }) => (
+          {({ values, isSubmitting }) => (
             <Form>
               <Modal.Header>
                 <Modal.Title>
@@ -109,6 +125,27 @@ export default class RunDetailsModal extends React.PureComponent {
                   </div>
                 </fieldset>
 
+                <fieldset>
+
+                  <legend>
+                    Variables
+                    <button
+                      type="button"
+                      className="toggle-variables"
+                      onClick={ !values['variables'] ? this.toggleVariables : undefined }
+                      title="Toggle Variables"
+                      disabled={ values['variables'] }
+                    >
+                      { (variablesOpen || values['variables']) ? '-' : '+' }
+                    </button>
+                  </legend>
+
+                  { (variablesOpen || values['variables']) && <Field
+                    name="variables"
+                    component="textarea"
+                    className="variables-editor"
+                  /> }
+                </fieldset>
               </Modal.Body>
               <Modal.Footer>
 

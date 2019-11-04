@@ -479,8 +479,9 @@ export default class DeploymentTool extends PureComponent {
       tenantId: values.tenantId,
       authType: values.authType,
 
-      // TODO
+      // todo(pinussilvestrus): cleanup
       businessKey: values.businessKey,
+      variables: values.variables ? JSON.parse(values.variables) : undefined,
       shouldRun: values.shouldRun
     };
 
