@@ -77,14 +77,17 @@ export default class CamundaAPI {
 
   async runInstance(processDefinition, details) {
 
-    // TODO(pinussilvestrus): handle authentication
     const {
       auth
     } = details;
 
-    const headers ={
-      'accept': 'application/json',
+    let headers ={
       'content-type': 'application/json'
+    };
+
+    headers = {
+      ...headers,
+      ...this.getHeaders(auth)
     };
 
     const response = await this.safelyFetch(`${this.baseUrl}/process-definition/${processDefinition.id}/start`, {
