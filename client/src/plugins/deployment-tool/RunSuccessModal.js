@@ -53,13 +53,9 @@ export default class RunSuccessModal extends React.PureComponent {
     return (
       <Modal className={ css.RunSuccessModal } onClose={ onClose }>
 
-        <Modal.Header>
-          <Modal.Title>
+        <Modal.Title>
             Starting process instance was successful
-          </Modal.Title>
-
-          <Modal.Close onClick={ onClose }></Modal.Close>
-        </Modal.Header>
+        </Modal.Title>
 
         <Modal.Body>
           <div className="cockpit-link">

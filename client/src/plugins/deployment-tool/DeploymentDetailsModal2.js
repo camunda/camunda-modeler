@@ -218,9 +218,7 @@ export default class DeploymentDetailsModal extends React.PureComponent {
         >
           {({ isSubmitting, values, setSubmitting }) => (
             <Form>
-              <Modal.Header>
-                <Modal.Title>Deploy Diagram</Modal.Title>
-              </Modal.Header>
+              <Modal.Title>Deploy Diagram</Modal.Title>
 
               <Modal.Body>
                 <p className="intro">

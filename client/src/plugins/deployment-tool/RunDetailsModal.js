@@ -89,13 +89,9 @@ export default class RunDetailsModal extends React.PureComponent {
         >
           {({ values, isSubmitting }) => (
             <Form>
-              <Modal.Header>
-                <Modal.Title>
+              <Modal.Title>
                   Run Process Instance
-                </Modal.Title>
-
-                <Modal.Close onClick={ onClose }></Modal.Close>
-              </Modal.Header>
+              </Modal.Title>
 
               <Modal.Body>
 
