@@ -27,9 +27,7 @@ class View extends PureComponent {
     return (
       <Modal className={ css.View } onClose={ onClose }>
 
-        <Modal.Header>
-          <Modal.Title>Keyboard Shortcuts</Modal.Title>
-        </Modal.Header>
+        <Modal.Title>Keyboard Shortcuts</Modal.Title>
 
         <Modal.Body>
           <p>

@@ -39,6 +39,7 @@ describe('<Modal>', function() {
   it('should render children', function() {
     const wrapper = mount((
       <Modal>
+        <Modal.Title><div>{ 'Foo' }</div></Modal.Title>
         <Modal.Body>
           <div>
             { 'Test' }
@@ -47,6 +48,7 @@ describe('<Modal>', function() {
       </Modal>
     ));
 
+    expect(wrapper.contains(<div>{ 'Foo' }</div>)).to.be.true;
     expect(wrapper.contains(<div>{ 'Test' }</div>)).to.be.true;
   });
 
