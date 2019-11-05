@@ -78,8 +78,6 @@ Modal.defaultProps = {
   onClose: () => {}
 };
 
-Modal.Header = Header;
-
 Modal.Body = Body;
 
 Modal.Title = Title;
@@ -92,9 +90,11 @@ Modal.Footer = Footer;
 function Title(props) {
 
   return (
-    <h2 className="modal-title">
-      { props.children }
-    </h2>
+    <div className="modal-header">
+      <h2 className="modal-title">
+        { props.children }
+      </h2>
+    </div>
   );
 }
 
@@ -108,15 +108,6 @@ function Close(props) {
     <span className="close" onClick={ onClick }>
       ×
     </span>
-  );
-}
-
-function Header(props) {
-
-  return (
-    <div className="modal-header">
-      { props.children }
-    </div>
   );
 }
 
