@@ -55,7 +55,8 @@ export default class DeploymentTool extends PureComponent {
 
   state = {
     modalState: null,
-    activeTab: null
+    activeTab: null,
+    demoToggle: true
   }
 
   componentDidMount() {
@@ -596,17 +597,19 @@ export default class DeploymentTool extends PureComponent {
     this.props.triggerAction('update-menu', menu);
   }
 
+  toggleDemo = () => this.setState(state => ({ ...state, demoToggle: !state.demoToggle }));
+
   render() {
     const {
       modalState,
       modalState2,
       runModalState,
-      successModalState
+      successModalState,
+      demoToggle
     } = this.state;
 
     return <React.Fragment>
-      <Fill slot="toolbar" group="8_deploy">
-        <small>#1</small>
+      { demoToggle && <Fill slot="toolbar" group="8_deploy">
         <Button
           onClick={ this.deploy }
           title="Deploy Current Diagram"
@@ -622,10 +625,9 @@ export default class DeploymentTool extends PureComponent {
             })
           }
         ></DropdownButton>
-      </Fill>
+      </Fill> }
 
-      <Fill slot="toolbar" group="9_deploy">
-        <small>#2</small>
+      { !demoToggle && <Fill slot="toolbar" group="8_deploy">
         <Button
           onClick={ this.deploy2 }
           title="Deploy Current Diagram"
@@ -641,6 +643,10 @@ export default class DeploymentTool extends PureComponent {
             })
           }
         ></DropdownButton>
+      </Fill> }
+
+      <Fill slot="toolbar" group="9_toggle">
+        <button onClick={ this.toggleDemo }>Toggle Demo {demoToggle ? '1' : '2'}</button>
       </Fill>
 
       { modalState &&
