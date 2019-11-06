@@ -1,13 +1,14 @@
 
+.app-icon-align-bottom-tool:before { content: '\e800'; } /* '' */
 .app-icon-align-left-tool:before { content: '\e801'; } /* '' */
 .app-icon-align-center-tool:before { content: '\e802'; } /* '' */
 .app-icon-align-right-tool:before { content: '\e803'; } /* '' */
 .app-icon-align-top-tool:before { content: '\e804'; } /* '' */
-.app-icon-align-middle-tool:before { content: '\e808'; } /* '' */
-.app-icon-align-bottom-tool:before { content: '\e800'; } /* '' */
 .app-icon-deploy:before { content: '\e805'; } /* '' */
 .app-icon-distribute-horizontal-tool:before { content: '\e806'; } /* '' */
 .app-icon-distribute-vertical-tool:before { content: '\e807'; } /* '' */
+.app-icon-align-middle-tool:before { content: '\e808'; } /* '' */
+.app-icon-play:before { content: '\e809'; } /* '' */
 .app-icon-minimize:before { content: '\e80a'; } /* '' */
 .app-icon-set-color-tool:before { content: '\e80b'; } /* '' */
 .app-icon-map:before { content: '\f278'; } /* '' */

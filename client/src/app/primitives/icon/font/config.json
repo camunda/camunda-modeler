@@ -243,6 +243,12 @@
       "css": "minimize",
       "code": 59402,
       "src": "entypo"
+    },
+    {
+      "uid": "ce06b5805120d0c2f8d60cd3f1a4fdb5",
+      "css": "play",
+      "code": 59401,
+      "src": "fontawesome"
     }
   ]
 }

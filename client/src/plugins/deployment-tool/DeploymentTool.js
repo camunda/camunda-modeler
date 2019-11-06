@@ -614,7 +614,7 @@ export default class DeploymentTool extends PureComponent {
           onClick={ this.deploy }
           title="Deploy Current Diagram"
         >
-          <Icon name="deploy" />
+          <Icon name="play" />
         </Button>
         <DropdownButton
           items={
@@ -632,7 +632,7 @@ export default class DeploymentTool extends PureComponent {
           onClick={ this.deploy2 }
           title="Deploy Current Diagram"
         >
-          <Icon name="deploy" />
+          <Icon name="play" />
         </Button>
         <DropdownButton
           items={
