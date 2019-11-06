@@ -21,6 +21,8 @@ import RunSuccessModal from './RunSuccessModal';
 import getEditMenu from './getEditMenu';
 import validators from './validators';
 
+import css from './DeploymentTool.less';
+
 import { Fill } from '../../app/slot-fill';
 
 import {
@@ -38,6 +40,7 @@ const DEPLOY_CONFIG_KEY = 'deployment-config';
 
 const RUN_CONFIG_KEY = 'run-config';
 
+// TODO(pinussilvestrus): cleanup if decided for scenario
 const DEPLOY_RUN_ACTIONS_1 = [
   'Start Process Instance',
   'Deploy again',
@@ -616,14 +619,8 @@ export default class DeploymentTool extends PureComponent {
         >
           <Icon name="play" />
         </Button>
-        <DropdownButton
-          items={
-            () => DEPLOY_RUN_ACTIONS_1.map((action, index) => {
-              return (
-                <div key={ index }>- { action }</div>
-              );
-            })
-          }
+        <DropdownButton className={ css.DeploymentTool }
+          items={ () => DEPLOY_RUN_ACTIONS_1.map(DropdownItem) }
         ></DropdownButton>
       </Fill> }
 
@@ -634,14 +631,8 @@ export default class DeploymentTool extends PureComponent {
         >
           <Icon name="play" />
         </Button>
-        <DropdownButton
-          items={
-            () => DEPLOY_RUN_ACTIONS_2.map((action, index) => {
-              return (
-                <div key={ index }>- { action }</div>
-              );
-            })
-          }
+        <DropdownButton className={ css.DeploymentTool }
+          items={ () => DEPLOY_RUN_ACTIONS_2.map(DropdownItem) }
         ></DropdownButton>
       </Fill> }
 
@@ -692,6 +683,15 @@ export default class DeploymentTool extends PureComponent {
 }
 
 
+function DropdownItem(action, index) {
+  return (
+    <div
+      key={ index }
+      className='dropdown-item'>
+      <span>{ action }</span>
+    </div>
+  );
+}
 
 
 
