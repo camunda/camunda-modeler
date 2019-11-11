@@ -27,7 +27,7 @@ jobs:
           /bin/bash -c "npm i && npm run build -- --win --linux --publish"
     - stage: "distro [macos]"
       os: osx
-      osx_image: xcode9
+      osx_image: xcode11.2
       node_js: node
       language: node_js
       env:
@@ -57,7 +57,7 @@ jobs:
           /bin/bash -c "npm i && npm run build -- --win --linux --nightly --publish"
     - stage: "nightly build [macos]"
       os: osx
-      osx_image: xcode9
+      osx_image: xcode11.2
       node_js: node
       language: node_js
       env:
