@@ -8,7 +8,10 @@
  * except in compliance with the MIT License.
  */
 
-export { default as debounce } from './debounce';
-export { default as generateId } from './generate-id';
-export { default as throttle } from './throttle';
-export { default as Flags } from './Flags';
+import Ids from 'ids';
+
+const ids = new Ids([ 32, 36, 1 ]);
+
+export default function generateId() {
+  return ids.next();
+}
