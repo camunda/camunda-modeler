@@ -12,6 +12,7 @@
     }
   ],
   "afterPack": "./tasks/after-pack.js",
+  "afterSign": "./tasks/after-sign.js",
   "afterAllArtifactBuild": "./tasks/after-all-artifact-build.js",
   "win": {
     "target": [
@@ -31,6 +32,8 @@
     ]
   },
   "mac": {
+    "hardenedRuntime": true,
+    "entitlements": "./build/entitlements.mac.inherit.plist",
     "target": "dmg"
   },
   "fileAssociations": [
