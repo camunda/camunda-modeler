@@ -8,8 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-import Ids from 'ids';
-
 import bpmnDiagram from './tabs/bpmn/diagram.bpmn';
 import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
@@ -23,9 +21,10 @@ import { forEach } from 'min-dash';
 
 import parseDiagramType from './util/parseDiagramType';
 
-import Flags from '../util/Flags';
-
-const ids = new Ids([ 32, 36, 1 ]);
+import {
+  Flags,
+  generateId
+} from '../util';
 
 const createdByType = {};
 
@@ -214,7 +213,7 @@ export default class TabsProvider {
   getInitialFileContents(type, options) {
     const rawContents = this.getProvider(type).getInitialContents(options);
 
-    return rawContents && replaceIds(rawContents, ids);
+    return rawContents && replaceIds(rawContents, generateId);
   }
 
   createFile(type, options) {
@@ -267,7 +266,7 @@ export default class TabsProvider {
 
   createTabForFile(file) {
 
-    const id = ids.next();
+    const id = generateId();
 
     const type = this.getTabType(file);
 

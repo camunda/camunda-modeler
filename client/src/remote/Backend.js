@@ -8,9 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-import Ids from 'ids';
-
-const ids = new Ids();
+import {
+  generateId
+} from '../util';
 
 
 /**
@@ -34,7 +34,7 @@ export default class Backend {
    */
   send(event, ...args) {
 
-    var id = ids.next();
+    var id = generateId();
 
     return new Promise((resolve, reject) => {
 
