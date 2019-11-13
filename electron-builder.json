@@ -12,6 +12,7 @@
     }
   ],
   "afterPack": "./tasks/after-pack.js",
+  "afterAllArtifactBuild": "./tasks/after-all-artifact-build.js",
   "win": {
     "target": [
       {
@@ -30,10 +31,7 @@
     ]
   },
   "mac": {
-    "target": [
-      "dmg",
-      "zip"
-    ]
+    "target": "dmg"
   },
   "fileAssociations": [
     {
