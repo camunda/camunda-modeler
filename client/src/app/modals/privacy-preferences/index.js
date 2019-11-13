@@ -8,5 +8,4 @@
  * except in compliance with the MIT License.
  */
 
-export { KeyboardShortcutsModal } from './keyboard-shortcuts';
-export { PrivacyPreferencesModal } from './privacy-preferences';
+export { default as PrivacyPreferencesModal } from './PrivacyPreferencesModal';

@@ -24,7 +24,7 @@ import {
 
 import App from './App';
 
-import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../util/Flags';
+import Flags, { DISABLE_PLUGINS, RELAUNCH, SERVER_INTERACTION } from '../util/Flags';
 
 const log = debug('AppParent');
 
@@ -47,6 +47,10 @@ export default class AppParent extends PureComponent {
     };
 
     this.appRef = React.createRef();
+  }
+
+  hasServerInteraction = () => {
+    return !!Flags.get(SERVER_INTERACTION);
   }
 
   triggerAction = (event, action, options) => {
@@ -397,6 +401,7 @@ export default class AppParent extends PureComponent {
         onReady={ this.handleReady }
         onError={ this.handleError }
         onWarning={ this.handleWarning }
+        hasServerInteraction={ this.hasServerInteraction() }
       />
     );
   }

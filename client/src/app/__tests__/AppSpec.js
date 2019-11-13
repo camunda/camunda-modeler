@@ -2337,7 +2337,7 @@ describe('<App>', function() {
       app.getConfig('foo');
 
       // then
-      expect(getConfigSpy).to.be.calledOnceWith('foo');
+      expect(getConfigSpy).to.be.calledWith('foo');
     });
 
   });
@@ -2547,6 +2547,103 @@ describe('<App>', function() {
 
   });
 
+
+  describe('privacy preferences', function() {
+
+    it('should get on start if flag is set', function() {
+
+      // given
+      const getConfigSpy = spy();
+
+      const config = new Config({
+        get: getConfigSpy
+      });
+
+      // when
+      createApp({
+        globals: {
+          config
+        },
+        hasServerInteraction: true
+      });
+
+      // then
+      expect(getConfigSpy).to.be.calledWith('editor.privacyPreferences');
+    });
+
+
+    it('should not get on start if flag is not set', async function() {
+
+      // given
+      const showPrivacyPreferencesSpy = spy();
+
+      // when
+      const { app } = createApp({});
+
+      app.showPrivacyPreferences = showPrivacyPreferencesSpy;
+
+      await app.handlePrivacyPreferences(true);
+
+      expect(showPrivacyPreferencesSpy).to.not.have.been.called;
+    });
+
+
+    it('should call showPrivacyPreferences if non existent', async function() {
+
+      // given
+      const showPrivacyPreferencesSpy = spy();
+
+      const config = new Config({
+        get: function() {
+          return null;
+        }
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        },
+        hasServerInteraction: true
+      });
+
+      app.showPrivacyPreferences = showPrivacyPreferencesSpy;
+
+      // when
+      await app.handlePrivacyPreferences(true);
+
+      // then
+      expect(showPrivacyPreferencesSpy).to.have.been.called;
+
+    });
+
+
+    it('should not call showPrivacyPreferences if existent', async function() {
+
+      // given
+      const showPrivacyPreferencesSpy = spy();
+
+      const config = new Config({
+        get: function() {
+          return {};
+        }
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        },
+        hasServerInteraction: true
+      });
+
+      app.showPrivacyPreferences = showPrivacyPreferencesSpy;
+
+      // when
+      await app.handlePrivacyPreferences(true);
+
+      // then
+      expect(showPrivacyPreferencesSpy).to.have.not.been.called;
+    });
+  });
 });
 
 
@@ -2597,7 +2694,7 @@ function createApp(options = {}, mountFn=shallow) {
   const onReady = options.onReady || noop;
   const onError = options.onError || noop;
   const onWarning = options.onWarning || noop;
-
+  const hasServerInteraction = options.hasServerInteraction || false;
   const tree = mountFn(
     <App
       cache={ cache }
@@ -2610,6 +2707,7 @@ function createApp(options = {}, mountFn=shallow) {
       onTabChanged={ onTabChanged }
       onTabShown={ onTabShown }
       onWorkspaceChanged={ onWorkspaceChanged }
+      hasServerInteraction={ hasServerInteraction }
     />
   );
 

@@ -41,7 +41,8 @@ import Log from './Log';
 
 
 import {
-  KeyboardShortcutsModal
+  KeyboardShortcutsModal,
+  PrivacyPreferencesModal
 } from './modals';
 
 import {
@@ -74,6 +75,8 @@ export const EMPTY_TAB = {
 };
 
 const ENCODING_UTF8 = 'utf8';
+
+const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 
 const FILTER_ALL_EXTENSIONS = {
   name: 'All Files',
@@ -140,7 +143,27 @@ export class App extends PureComponent {
       this.resizeTab = debounce(this.resizeTab, 50);
     }
 
+    if (this.props.hasServerInteraction) {
+      this.handlePrivacyPreferences(true);
+    }
+
     this.currentNotificationId = 0;
+  }
+
+  setPrivacyPreferences = (preferences) => {
+    this.getGlobal('config').set(PRIVACY_PREFERENCES_CONFIG_KEY, preferences);
+    this.privacyPreferences = { ...preferences };
+  }
+
+  handlePrivacyPreferences = async (isInitial) => {
+    if (!this.props.hasServerInteraction) {
+      return;
+    }
+    let privacyPreferences = await this.getConfig(PRIVACY_PREFERENCES_CONFIG_KEY);
+    this.privacyPreferences = privacyPreferences;
+    if (!isInitial || (isInitial && !privacyPreferences)) {
+      this.showPrivacyPreferences();
+    }
   }
 
   createDiagram = async (type = 'bpmn', options) => {
@@ -1403,6 +1426,8 @@ export class App extends PureComponent {
 
   showShortcuts = () => this.openModal('KEYBOARD_SHORTCUTS');
 
+  showPrivacyPreferences = () => this.openModal('PRIVACY_PREFERENCES');
+
   /**
    * Update menu with provided state which can include `windowMenu` as well as `editMenu`.
    * Pass a falsy value to use current tab state for the updated menu.
@@ -1609,6 +1634,10 @@ export class App extends PureComponent {
 
     if (action === 'show-shortcuts') {
       return this.showShortcuts();
+    }
+
+    if (action === 'show-privacy-preferences') {
+      return this.handlePrivacyPreferences();
     }
 
     if (action === 'update-menu') {
@@ -1927,6 +1956,13 @@ export class App extends PureComponent {
             <KeyboardShortcutsModal
               getGlobal={ this.getGlobal }
               onClose={ this.closeModal }
+            /> : null }
+
+          { this.state.currentModal === 'PRIVACY_PREFERENCES' ?
+            <PrivacyPreferencesModal
+              onClose={ this.closeModal }
+              privacyPreferences={ this.privacyPreferences }
+              setPrivacyPreferences={ this.setPrivacyPreferences }
             /> : null }
 
         </div>
