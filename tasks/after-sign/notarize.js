@@ -10,6 +10,8 @@
 
 const { notarize } = require('electron-notarize');
 
+const { isPullRequest } = require('builder-util');
+
 module.exports = async function(context) {
   const {
     electronPlatformName,
@@ -20,17 +22,16 @@ module.exports = async function(context) {
     return;
   }
 
+  if (isPullRequest()) {
+    console.log('  • skipping notarization for pull request');
+
+    return;
+  }
+
   const {
     APPLE_DEVELOPER_ID: appleId,
     APPLE_DEVELOPER_ID_PASSWORD: appleIdPassword
   } = process.env;
-
-  // skip notarization if credentials weren't provided
-  if (!appleId || !appleIdPassword) {
-    console.log('  • skipping notarization due to missing credentials');
-
-    return;
-  }
 
   const {
     productFilename: appName,

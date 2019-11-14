@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "archiver": "^3.0.3",
+    "builder-util": "^22.1.0",
     "chai": "^4.2.0",
     "cpx": "^1.5.0",
     "decompress": "^4.2.0",
