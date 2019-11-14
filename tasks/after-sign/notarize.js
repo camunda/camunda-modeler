@@ -15,7 +15,8 @@ const { isPullRequest } = require('builder-util');
 module.exports = async function(context) {
   const {
     electronPlatformName,
-    appOutDir
+    appOutDir,
+    packager
   } = context;
 
   if (electronPlatformName !== 'darwin') {
@@ -23,24 +24,34 @@ module.exports = async function(context) {
   }
 
   if (isPullRequest()) {
-    console.log('  • skipping notarization for pull request');
+    console.log('  • skipped notarization for pull request');
 
     return;
   }
 
   const {
+    info: {
+      options: {
+        publish
+      }
+    }
+  } = packager;
+
+  if (publish !== 'always') {
+    console.log('  • skipped notarization for non-release');
+
+    return;
+  }
+
+  const {
+    appId,
+    productName: appName
+  } = packager.config;
+
+  const {
     APPLE_DEVELOPER_ID: appleId,
     APPLE_DEVELOPER_ID_PASSWORD: appleIdPassword
   } = process.env;
-
-  const {
-    productFilename: appName,
-    info: {
-      config: {
-        appId
-      }
-    }
-  } = context.packager.appInfo;
 
   const appPath = `${appOutDir}/${appName}.app`;
 
