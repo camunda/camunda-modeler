@@ -4,7 +4,7 @@ __[Draft a patch release.](https://github.com/camunda/camunda-modeler/issues/new
 
 ## Template
 
-A list of things to perform with Camunda Modeler patch release. 
+A list of things to perform to cut a Camunda Modeler patch release. 
 
 ```markdown
 Release Camunda Modeler `vVERSION`:
