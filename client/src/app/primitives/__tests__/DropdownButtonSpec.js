@@ -54,7 +54,7 @@ describe('<DropdownButton>', function() {
     );
 
     // when
-    wrapper.find('button').simulate('click');
+    wrapper.find('button').simulate('click', mockEvent());
 
     // then
     expect(wrapper.exists('.dropdown')).to.be.true;
@@ -67,12 +67,11 @@ describe('<DropdownButton>', function() {
     const wrapper = shallow(<DropdownButton disabled={ true } />);
 
     // when
-    wrapper.find('button').simulate('click');
+    wrapper.find('button').simulate('click', mockEvent());
 
     // then
     expect(wrapper.exists('.dropdown')).to.be.false;
   });
-
 
 
   describe('close', function() {
@@ -104,7 +103,7 @@ describe('<DropdownButton>', function() {
       // when
       const item = wrapper.find('.item').first();
 
-      item.simulate('click');
+      item.simulate('click', mockEvent());
 
       // then
       expect(wrapper.state().active).to.be.false;
@@ -134,7 +133,7 @@ describe('<DropdownButton>', function() {
       // when
       const item = wrapper.find('.item').first();
 
-      item.simulate('click');
+      item.simulate('click', mockEvent());
 
       // then
       expect(wrapper.state().active).to.be.true;
@@ -155,7 +154,7 @@ describe('<DropdownButton>', function() {
 
     const wrapper = shallow(<DropdownButton items={ items } />);
 
-    wrapper.find('button').simulate('click');
+    wrapper.find('button').simulate('click', mockEvent());
 
     // when
     wrapper.find('.item').simulate('click');
@@ -178,4 +177,62 @@ describe('<DropdownButton>', function() {
     expect(wrapper.exists('.foo')).to.be.true;
   });
 
+
+  describe('multi-button', function() {
+
+    it('should render multi-button', function() {
+
+      // when
+      const wrapper = shallow(<DropdownButton multiButton />);
+
+      // then
+      expect(wrapper.hasClass('multi-button')).to.be.true;
+    });
+
+
+    it('should handle primary click handler', function() {
+
+      // given
+      const spy = sinon.spy();
+
+      const wrapper = shallow(<DropdownButton multiButton onClick={ spy } />);
+
+      // when
+      wrapper.find('button').simulate('click', mockEvent());
+
+      // then
+      expect(spy).to.have.been.called;
+      expect(wrapper.state().active).to.be.false;
+    });
+
+
+    it('should open dropdown', function() {
+
+      // given
+      const spy = sinon.spy();
+
+      const wrapper = shallow(<DropdownButton multiButton onClick={ spy } />);
+
+      // when
+      wrapper.find('.dropdown-opener').simulate('click', mockEvent());
+
+      // then
+      expect(spy).to.not.have.been.called;
+      expect(wrapper.state().active).to.be.true;
+    });
+
+  });
+
 });
+
+
+// helpers //////////////
+
+function mockEvent() {
+
+  return {
+    stopPropagation() {},
+    preventDefault() {}
+  };
+
+}

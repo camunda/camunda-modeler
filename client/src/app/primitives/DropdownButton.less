@@ -2,6 +2,33 @@
 
   white-space: nowrap;
 
+  .dropdown-opener {
+    position: relative;
+    margin: -5px -5px -5px 2px;
+    padding: 5px 5px 5px 1px;
+  }
+
+  &.multi-button .dropdown-opener {
+
+    margin-left: 4px;
+    padding-left: 3px;
+  }
+
+  &.multi-button.active,
+  &.multi-button:hover {
+    .dropdown-opener:before {
+      content: '';
+      background: #CCC;
+      box-shadow: 0 0 1px #EEE;
+      width: 1px;
+      height: 80%;
+      position: absolute;
+      left: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
   .caret {
     margin-left: 5px;
     margin-top: -3px;

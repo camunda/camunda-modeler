@@ -70,8 +70,12 @@ export default class DropdownButton extends PureComponent {
     }
   }
 
-  toggle = () => {
+  toggle = (event) => {
+
     const { disabled } = this.props;
+
+    event.preventDefault();
+    event.stopPropagation();
 
     if (disabled) {
       return;
@@ -80,8 +84,31 @@ export default class DropdownButton extends PureComponent {
     const { active } = this.state;
 
     this.setState({
-      active: !active
+      active: disabled || !active
     });
+  }
+
+  handleClick = (event) => {
+
+    const {
+      onClick,
+      disabled
+    } = this.props;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (onClick) {
+      this.setState({
+        active: false
+      });
+
+      if (!disabled) {
+        return onClick(event);
+      }
+    } else {
+      this.toggle(event);
+    }
   }
 
   close = () => {
@@ -132,11 +159,14 @@ export default class DropdownButton extends PureComponent {
 
     const {
       disabled,
+      multiButton,
       text,
       className,
       items,
       children,
+      onClick,
       closeOnClick, // eslint-disable-line
+      title,
       ...rest
     } = this.props;
 
@@ -152,7 +182,8 @@ export default class DropdownButton extends PureComponent {
             dropdownButtonCss.DropdownButton,
             {
               disabled,
-              active
+              active,
+              'multi-button': multiButton
             },
             className
           )
@@ -166,10 +197,17 @@ export default class DropdownButton extends PureComponent {
               active
             })
           }
-          onClick={ this.toggle }
+          title={ title }
+          onClick={ this.handleClick }
         >
           { text || children }
-          <span className="caret"></span>
+          <span
+            className="dropdown-opener"
+            onClick={ this.toggle }
+            title={ title ? `${title} options` : 'Show options' }
+          >
+            <span className="caret"></span>
+          </span>
         </button>
         {
           active && this.renderDropdown(items)
