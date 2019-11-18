@@ -25,4 +25,4 @@ Release Camunda Modeler `vVERSION`:
 * [ ] close [current milestone](https://github.com/camunda/camunda-modeler/milestones)
 ```
 
-You may create a blank issue and copy the template below into it.
+You may create a blank issue and copy the template into it.
