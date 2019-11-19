@@ -152,7 +152,7 @@ function createDeploymentTool({
 
   const triggerAction = event => {
     switch (event) {
-    case 'save':
+    case 'save-tab':
       return activeTab;
     }
   };

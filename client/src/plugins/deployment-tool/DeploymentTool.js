@@ -41,17 +41,17 @@ export default class DeploymentTool extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.subscribe('app.activeTabChanged', activeTab => {
+    this.props.subscribe('app.activeTabChanged', ({ activeTab }) => {
       this.setState({ activeTab });
     });
   }
 
-  saveTab() {
+  saveTab = (tab) => {
     const {
       triggerAction
     } = this.props;
 
-    return triggerAction('save');
+    return triggerAction('save-tab', { tab });
   }
 
   deploy = () => {
@@ -82,10 +82,10 @@ export default class DeploymentTool extends PureComponent {
 
   async deployTab(tab) {
 
-    // (1.2) Open save file dialog if dirty
-    tab = await this.saveTab();
+    // (1) Open save file dialog if dirty
+    tab = await this.saveTab(tab);
 
-    // (1.3) Cancel deploy if file save cancelled
+    // (1.1) Cancel deploy if file save cancelled
     if (!tab) {
       return;
     }
