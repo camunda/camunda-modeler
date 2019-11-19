@@ -1571,6 +1571,10 @@ export class App extends PureComponent {
       return this.saveAllTabs();
     }
 
+    if (action === 'save-tab') {
+      return this.saveTab(options.tab);
+    }
+
     if (action === 'save') {
       return this.saveTab(activeTab);
     }

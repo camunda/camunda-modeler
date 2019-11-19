@@ -833,6 +833,36 @@ describe('<App>', function() {
     });
 
 
+    it('should save any tab', async function() {
+
+      // given
+      const file1 = createFile('diagram_1.bpmn');
+      const file2 = createFile('diagram_2.bpmn');
+
+      const [ tab1 ] = await app.openFiles([ file1, file2 ]);
+
+      // when
+      app.setState({
+        ...app.setDirty(tab1) // inactive tab
+      });
+
+      await app.triggerAction('save-tab', { tab: tab1 });
+
+      // then
+      expect(writeFileSpy).to.have.been.calledWith(
+        file1.path,
+        {
+          ...file1,
+          contents: 'CONTENTS'
+        },
+        {
+          encoding: 'utf8',
+          fileType: 'bpmn'
+        }
+      );
+    });
+
+
     it('should save as existing tab', async function() {
 
       // given
