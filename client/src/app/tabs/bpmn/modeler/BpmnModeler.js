@@ -33,6 +33,8 @@ import camundaModdleExtension from 'camunda-bpmn-moddle/lib';
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
 
+import disableCollapsedSubprocessModule from 'bpmn-js-disable-collapsed-subprocess';
+
 
 import 'bpmn-js-properties-panel/styles/properties.less';
 
@@ -75,7 +77,8 @@ const extensionModules = [
   propertiesPanelKeyboardBindingsModule,
   propertiesPanelModule,
   propertiesProviderModule,
-  signavioCompatModule
+  signavioCompatModule,
+  disableCollapsedSubprocessModule
 ];
 
 CamundaBpmnModeler.prototype._modules = [
