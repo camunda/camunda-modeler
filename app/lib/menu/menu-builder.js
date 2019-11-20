@@ -540,6 +540,13 @@ class MenuBuilder {
         label: 'Report Issue',
         click: () => browserOpen('https://github.com/camunda/camunda-modeler/issues/new/choose')
       },
+      ... (app.flags && app.flags.get('server-interaction')) ? [
+        getSeparatorTemplate(),
+        {
+          label: 'Privacy Preferences',
+          click: () => app.emit('menu:action', 'show-privacy-preferences')
+        },
+      ] : [],
       getSeparatorTemplate()
     ];
 
