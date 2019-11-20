@@ -53,6 +53,24 @@ describe('<Modal>', function() {
   });
 
 
+  describe('hideCloseIcon parameter', function() {
+
+    it('should render close icon if hideCloseIcon non existent', function() {
+
+      const wrapper = mount(<Modal />);
+
+      expect(wrapper.find('.close')).to.have.lengthOf(1);
+    });
+
+
+    it('should not render close icon if hideCloseIcon not set', function() {
+
+      const wrapper = mount(<Modal hideCloseIcon={ true } />);
+
+      expect(wrapper.find('.close')).to.have.lengthOf(0);
+    });
+  });
+
   describe('onClose handling', function() {
 
     let onCloseSpy;

@@ -53,13 +53,14 @@ export default class Modal extends PureComponent {
 
     const {
       className,
-      children
+      children,
+      hideCloseIcon
     } = this.props;
 
     return ReactDOM.createPortal(
       <div className={ css.ModalOverlay } onClick={ this.handleBackgroundClick }>
         <div className={ classNames(css.ModalContainer, className) } ref={ this.modalRef }>
-          <Close onClick={ this.close } />
+          {!hideCloseIcon && (<Close onClick={ this.close } />) }
           { children }
         </div>
       </div>,
