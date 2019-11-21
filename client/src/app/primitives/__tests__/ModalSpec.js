@@ -53,6 +53,25 @@ describe('<Modal>', function() {
   });
 
 
+  describe('onClose parameter', function() {
+
+    it('should render close icon if onClose existent', function() {
+
+      const wrapper = mount(<Modal onClose={ () => {} } />);
+
+      expect(wrapper.find('.close')).to.have.lengthOf(1);
+    });
+
+
+    it('should not render close icon if onClose not set', function() {
+
+      const wrapper = mount(<Modal />);
+
+      expect(wrapper.find('.close')).to.have.lengthOf(0);
+    });
+  });
+
+
   describe('onClose handling', function() {
 
     let onCloseSpy;
