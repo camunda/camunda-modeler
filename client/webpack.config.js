@@ -33,13 +33,13 @@ module.exports = {
     filename: '[name].js',
     chunkFilename: '[name].[id].js'
   },
-  resolve: DEV && {
-    mainFields: [ 'browser', 'dev:module', 'module', 'main' ],
+  resolve: {
+    mainFields: DEV ? [ 'browser', 'dev:module', 'module', 'main' ] : undefined,
     modules: [
       'node_modules',
       resourcePath
     ]
-  } || { },
+  },
   module: {
     rules: [
       {
