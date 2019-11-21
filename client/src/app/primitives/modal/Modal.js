@@ -36,7 +36,9 @@ export default class Modal extends PureComponent {
   }
 
   close = () => {
-    return this.props.onClose();
+    if (this.props.onClose) {
+      return this.props.onClose();
+    }
   }
 
   componentDidMount() {
@@ -53,13 +55,14 @@ export default class Modal extends PureComponent {
 
     const {
       className,
-      children
+      children,
+      onClose
     } = this.props;
 
     return ReactDOM.createPortal(
       <div className={ css.ModalOverlay } onClick={ this.handleBackgroundClick }>
         <div className={ classNames(css.ModalContainer, className) } ref={ this.modalRef }>
-          <Close onClick={ this.close } />
+          { onClose && (<Close onClick={ this.close } />) }
           { children }
         </div>
       </div>,
@@ -73,10 +76,6 @@ export default class Modal extends PureComponent {
     }
   };
 }
-
-Modal.defaultProps = {
-  onClose: () => {}
-};
 
 Modal.Body = Body;
 
