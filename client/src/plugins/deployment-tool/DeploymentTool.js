@@ -16,6 +16,8 @@ import CamundaAPI from './CamundaAPI';
 import DeploymentDetailsModal from './DeploymentDetailsModal';
 import DeploymentConfigValidator from './DeploymentConfigValidator';
 
+import KeyboardInteractionTrap from './KeyboardInteractionTrap';
+
 import {
   generateId
 } from '../../util';
@@ -352,12 +354,15 @@ export default class DeploymentTool extends PureComponent {
       </Fill>
 
       { modalState &&
-        <DeploymentDetailsModal
-          configuration={ modalState.configuration }
-          activeTab={ modalState.tab }
-          onClose={ modalState.handleClose }
-          validator={ this.validator }
-        /> }
+        <KeyboardInteractionTrap triggerAction={ this.props.triggerAction }>
+          <DeploymentDetailsModal
+            configuration={ modalState.configuration }
+            activeTab={ modalState.tab }
+            onClose={ modalState.handleClose }
+            validator={ this.validator }
+          />
+        </KeyboardInteractionTrap>
+      }
     </React.Fragment>;
   }
 
