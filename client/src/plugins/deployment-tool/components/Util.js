@@ -8,21 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
-import { Field } from 'formik';
-
-import FormControl from './FormControl';
-
-
-export default function AuthBearer({ onFocusChange, ...props }) {
-  return (
-    <Field
-      name="bearer"
-      component={ FormControl }
-      label="Token"
-      onFocusChange={ onFocusChange }
-      validated
-      { ...props }
-    />
-  );
+export function fieldError(meta) {
+  return meta.touched && meta.error;
 }

@@ -30,7 +30,7 @@
     "dmn-js-properties-panel": "^0.3.1",
     "drag-tabs": "^2.2.0",
     "events": "^3.0.0",
-    "formik": "^1.5.3",
+    "formik": "^2.0.4",
     "ids": "^0.2.2",
     "min-dash": "^3.4.0",
     "p-defer": "^3.0.0",

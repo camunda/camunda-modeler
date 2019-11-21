@@ -10,208 +10,191 @@
 
 import React from 'react';
 
-import { debounce } from 'min-dash';
-
 import { Modal } from '../../app/primitives';
+
+import {
+  omit
+} from 'min-dash';
 
 import css from './DeploymentDetailsModal.less';
 
 import AuthTypes from './AuthTypes';
 
 import {
-  AuthBasic,
-  AuthBearer,
-  FormControl
+  CheckBox,
+  Select,
+  TextInput
 } from './components';
 
 import {
-  Field,
-  Form,
-  Formik
+  Formik,
+  Field
 } from 'formik';
 
-import { ConnectionErrorMessages } from './errors';
-
-
-const initialFormValues = {
-  endpointUrl: 'http://localhost:8080/engine-rest',
-  tenantId: '',
-  deploymentName: 'diagram',
-  authType: AuthTypes.none,
-  username: '',
-  password: '',
-  bearer: ''
-};
 
 export default class DeploymentDetailsModal extends React.PureComponent {
 
-  state = {
-    detailsOpen: false,
-    checkingConnection: null,
-    connectionError: null,
-    connectionHint: null,
-    lastPassword: null,
-    lastUsername: null,
-    lastAuthType: null
+  constructor(props) {
+    super(props);
+
+    const {
+      validator,
+      configuration
+    } = props;
+
+    this.state = {
+      connectionState: {},
+      deploymentDetailsShown: configuration.deployment.tenantId
+    };
+
+    this.connectionChecker = validator.createConnectionChecker();
+  }
+
+  handleConnectionCheckStart = () => {
+    this.setConnectionState({
+      isValidating: true,
+      isValidated: false
+    });
+  }
+
+  handleConnectionChecked = (result) => {
+
+    const {
+      endpointErrors,
+      connectionError
+    } = result;
+
+    this.setConnectionState({
+      isValidating: false,
+      isValidated: true,
+      isValid: !hasKeys(endpointErrors) && !connectionError,
+      endpointErrors,
+      connectionError
+    });
   }
 
   componentDidMount() {
-    this.mounted = true;
-
-    // check connection with pre-validated initial form values
-    const initialValues = this.getInitialValues();
-    const errors = this.props.validate(initialValues);
-
-    this.checkConnectionIfNeeded(initialValues, errors, true);
+    this.connectionChecker.subscribe({
+      onStart: this.handleConnectionCheckStart,
+      onComplete: this.handleConnectionChecked
+    });
   }
 
   componentWillUnmount() {
-    this.mounted = false;
+    this.connectionChecker.unsubscribe();
   }
 
-  getInitialValues() {
-    return { ...initialFormValues, ...this.props.details };
-  }
-
-  checkConnection = async values => {
-    if (!this.mounted || this.state.checkingConnection) {
-      return;
-    }
-
+  setConnectionState(connectionState) {
     this.setState({
-      checkingConnection: true,
-      connectionHint: null,
-      lastUsername: values.username,
-      lastPassword: values.password,
-      lastAuthType: values.authType
+      connectionState: {
+        ...this.state.connectionState,
+        ...connectionState
+      }
     });
-
-    const connectionError = await this.props.checkConnection(values);
-
-    this.mounted && this.setState({ connectionError, checkingConnection: false });
   }
 
-  lazilyCheckConnection = debounce(this.checkConnection, 1000);
+  validate = (values, form) => {
 
-  moreLazilyCheckConnection = debounce(this.checkConnection, 2000);
+    this.connectionChecker.check(values.endpoint).then(() => {
+      return null;
+    });
+  };
 
-  validate = values => {
-    const errors = this.props.validate(values);
+  onClose = (action = 'cancel', data) => this.props.onClose(action, data);
 
-    this.checkConnectionIfNeeded(values, errors);
+  onCancel = () => this.onClose('cancel');
 
-    return errors;
+  onSubmit = (values) => {
+    this.onClose('deploy', values);
   }
 
-  checkConnectionIfNeeded(values, errors, immediately = false) {
+  fieldError = (meta) => {
+    return (this.state.connectionState.isValidated || meta.touched) && meta.error;
+  }
 
-    const {
-      authType,
-      username,
-      password
-    } = values;
+  setAuthType = (form) => {
 
-    const missingConfigHint = this.getEndpointConfigHint(values, errors);
+    return event => {
 
-    // skip connection check in case of invalid input
-    if (missingConfigHint) {
-      this.setState({
-        connectionHint: missingConfigHint
+      const authType = event.target.value;
+
+      const {
+        values,
+        setValues
+      } = form;
+
+      let {
+        endpoint
+      } = values;
+
+      if (authType !== AuthTypes.basic) {
+        endpoint = omit(endpoint, [ 'username', 'password' ]);
+      }
+
+      if (authType !== AuthTypes.bearer) {
+        endpoint = omit(endpoint, [ 'token' ]);
+      }
+
+      setValues({
+        ...values,
+        endpoint: {
+          ...endpoint,
+          authType
+        }
       });
+    };
 
-      return;
-    }
-
-    if (immediately) {
-      return this.checkConnection(values);
-    }
-
-    // check connection if authentication type was changed or not using HTTP Basic
-    if (authType !== AuthTypes.basic || authType !== this.state.lastAuthType) {
-      return this.lazilyCheckConnection(values);
-    }
-
-    const usernameOrPasswordChanged = !(
-      username === this.state.lastUsername && password === this.state.lastPassword
-    );
-
-    const previouslyUnauthorized = this.state.connectionError === ConnectionErrorMessages.unauthorized;
-
-    // skip connection check if already failed for provided credentials
-    if (!usernameOrPasswordChanged && previouslyUnauthorized) {
-      return;
-    }
-
-    // apply longer delay if unauthorized during last check
-    if (previouslyUnauthorized) {
-      return this.moreLazilyCheckConnection(values);
-    }
-
-    return this.lazilyCheckConnection(values);
   }
 
-  getEndpointConfigHint(values, errors) {
-    const areCredentialsMissing = this.getCredentialsConfigFields(values.authType)
-      .some(field => errors[field]);
+  toggleDetails = (form) => {
 
-    if (errors.endpointUrl && areCredentialsMissing) {
-      return 'Please finish the endpoint configuration to test the server connection.';
-    } else if (errors.endpointUrl) {
-      return 'Please provide a valid REST endpoint to test the server connection.';
-    } else if (areCredentialsMissing) {
-      return 'Please add the credentials to test the server connection.';
-    }
+    return (event) => {
+
+      const {
+        deployment
+      } = form.values;
+
+      if (deployment.tenantId) {
+        return;
+      }
+
+      this.setState({
+        deploymentDetailsShown: !this.state.deploymentDetailsShown
+      });
+    };
   }
-
-  getCredentialsConfigFields(authType) {
-    switch (authType) {
-    case AuthTypes.none:
-      return [];
-    case AuthTypes.bearer:
-      return [ 'bearer' ];
-    case AuthTypes.basic:
-      return [ 'username', 'password' ];
-    }
-  }
-
-  onClose = () => this.props.onClose();
-
-  onSubmit = (values, { setSubmitting }) => {
-    if (this.state.connectionError) {
-      return setSubmitting(false);
-    }
-
-    this.props.onClose(values);
-  }
-
-  toggleDetails = () => this.setState(state => ({ ...state, detailsOpen: !state.detailsOpen }));
 
   render() {
+
     const {
-      onFocusChange
+      fieldError,
+      onSubmit,
+      validate,
+      onClose
+    } = this;
+
+    const {
+      configuration: values,
+      validator
     } = this.props;
 
-    const initialValues = this.getInitialValues();
-
     const {
-      checkingConnection,
-      connectionError,
-      connectionHint,
-      detailsOpen
+      connectionState,
+      deploymentDetailsShown
     } = this.state;
-
-    const onClose = this.onClose;
 
     return (
       <Modal className={ css.DeploymentDetailsModal } onClose={ onClose }>
 
         <Formik
-          initialValues={ initialValues }
-          onSubmit={ this.onSubmit }
-          validate={ this.validate }
+          initialValues={ values }
+          validateOnMount={ true }
+          validate={ validate }
+          onSubmit={ onSubmit }
         >
-          {({ isSubmitting, values }) => (
-            <Form>
+          { form => (
+            <form onSubmit={ form.handleSubmit }>
+
               <Modal.Title>Deploy Diagram</Modal.Title>
 
               <Modal.Body>
@@ -220,127 +203,172 @@ export default class DeploymentDetailsModal extends React.PureComponent {
                 </p>
 
                 <fieldset>
-
                   <legend>
                     Deployment Details
                     <button
                       type="button"
                       className="toggle-details"
-                      onClick={ !values['tenantId'] ? this.toggleDetails : undefined }
+                      onClick={ this.toggleDetails(form) }
                       title="Toggle Advanced Details"
-                      disabled={ values['tenantId'] }
+                      disabled={ form.values.deployment.tenantId }
                     >
-                      { (detailsOpen || values['tenantId']) ? '-' : '+' }
+                      {
+                        (deploymentDetailsShown)
+                          ? '-'
+                          : '+'
+                      }
                     </button>
                   </legend>
 
                   <div className="fields">
+
                     <Field
-                      name="deploymentName"
-                      component={ FormControl }
+                      name="deployment.name"
+                      component={ TextInput }
                       label="Name"
-                      validated
+                      fieldError={ fieldError }
+                      validate={ validator.validateDeploymentName }
                       autoFocus
-                      onFocusChange={ onFocusChange }
                     />
 
-                    { (detailsOpen || values['tenantId']) && <Field
-                      name="tenantId"
-                      component={ FormControl }
+                    { deploymentDetailsShown && <Field
+                      name="deployment.tenantId"
+                      component={ TextInput }
+                      fieldError={ fieldError }
                       label="Tenant ID"
-                      onFocusChange={ onFocusChange }
                     /> }
                   </div>
-
                 </fieldset>
 
                 <fieldset>
+                  <legend>
+                    Endpoint Configuration
+                  </legend>
 
-                  <legend>Endpoint Configuration</legend>
-
-                  <ConnectionCheckResult
-                    checkingConnection={ checkingConnection }
-                    error={ connectionError }
-                    hint={ connectionHint }
-                  />
+                  <ConnectionFeedback connectionState={ connectionState } />
 
                   <div className="fields">
+
                     <Field
-                      name="endpointUrl"
-                      component={ FormControl }
+                      name="endpoint.url"
+                      component={ TextInput }
+                      fieldError={ fieldError }
+                      validate={ validator.validateEndpointURL }
                       label="REST Endpoint"
                       hint="Should point to a running Camunda Engine REST API endpoint."
-                      validated
-                      onFocusChange={ onFocusChange }
                     />
 
-                    <div>
-                      <label htmlFor="authType">Authentication</label>
-                    </div>
+                    <Field
+                      name="endpoint.authType"
+                      label="Authentication"
+                      component={ Select }
+                      onChange={ this.setAuthType(form) }
+                    >
+                      <option value={ AuthTypes.none } defaultValue>None</option>
+                      <option value={ AuthTypes.basic }>HTTP Basic</option>
+                      <option value={ AuthTypes.bearer }>Bearer token</option>
+                    </Field>
 
-                    <div>
-                      <Field name="authType" component="select">
-                        <option value={ AuthTypes.none } defaultValue>None</option>
-                        <option value={ AuthTypes.basic }>HTTP Basic</option>
-                        <option value={ AuthTypes.bearer }>Bearer token</option>
-                      </Field>
-                    </div>
+                    { form.values.endpoint.authType === AuthTypes.basic && (
+                      <React.Fragment>
+                        <Field
+                          name="endpoint.username"
+                          component={ TextInput }
+                          fieldError={ fieldError }
+                          validate={ validator.validateUsername }
+                          label="Username"
+                        />
 
-                    { values.authType === AuthTypes.basic && (
-                      <AuthBasic onFocusChange={ onFocusChange } />) }
+                        <Field
+                          name="endpoint.password"
+                          component={ TextInput }
+                          fieldError={ fieldError }
+                          validate={ validator.validatePassword }
+                          label="Password"
+                          type="password"
+                        />
+                      </React.Fragment>
+                    )}
 
-                    { values.authType === AuthTypes.bearer && (
-                      <AuthBearer onFocusChange={ onFocusChange } />) }
+                    { form.values.endpoint.authType === AuthTypes.bearer && (
+                      <Field
+                        name="endpoint.token"
+                        component={ TextInput }
+                        fieldError={ fieldError }
+                        validate={ validator.validateToken }
+                        label="Token"
+                      />
+                    )}
 
+                    { form.values.endpoint.authType !== AuthTypes.none && (
+                      <Field
+                        name="endpoint.rememberCredentials"
+                        component={ CheckBox }
+                        type="checkbox"
+                        label="Remember credentials"
+                      />
+                    )}
                   </div>
                 </fieldset>
               </Modal.Body>
 
               <Modal.Footer>
                 <div className="form-submit">
+
                   <button
                     type="submit"
-                    disabled={ isSubmitting }>
+                    className="btn btn-primary"
+                    disabled={ form.isSubmitting }
+                  >
                     Deploy
                   </button>
 
                   <button
                     type="button"
-                    onClick={ onClose }>
+                    className="btn"
+                    onClick={ () => onClose('cancel') }
+                  >
                     Cancel
                   </button>
+
                 </div>
               </Modal.Footer>
-
-            </Form>
+            </form>
           )}
-
         </Formik>
-
       </Modal>
     );
   }
 }
 
 
-function ConnectionCheckResult({ checkingConnection, error, hint }) {
-  if (error) {
+function ConnectionFeedback(props) {
+
+  const {
+    connectionState
+  } = props;
+
+  const {
+    isValid,
+    isValidating,
+    isValidated,
+    endpointErrors,
+    connectionError
+  } = connectionState;
+
+  if (!isValidating && !isValidated) {
+    return null;
+  }
+
+  if (isValidating) {
     return (
-      <div className="configuration-status configuration-status__error">
-        { error }
+      <div className="configuration-status configuration-status__loading">
+        Validating connection.
       </div>
     );
   }
 
-  if (hint) {
-    return (
-      <div className="configuration-status configuration-status__hint">
-        { hint }
-      </div>
-    );
-  }
-
-  if (checkingConnection === false) {
+  if (isValid) {
     return (
       <div className="configuration-status configuration-status__success">
         Connected successfully.
@@ -348,9 +376,33 @@ function ConnectionCheckResult({ checkingConnection, error, hint }) {
     );
   }
 
-  return (
-    <div className="configuration-status configuration-status__loading">
-      Testing the connection.
-    </div>
-  );
+  if (hasKeys(endpointErrors)) {
+
+    const message =
+      endpointErrors.url
+        ? 'Please provide a valid REST endpoint to test the server connection.'
+        : (endpointErrors.token || endpointErrors.username || endpointErrors.password)
+          ? 'Please add the credentials to test the server connection'
+          : 'Please correct validation errors';
+
+    return (
+      <div className="configuration-status configuration-status__hint">
+        { message }
+      </div>
+    );
+  }
+
+  if (connectionError) {
+    return (
+      <div className="configuration-status configuration-status__error">
+        { connectionError.details }
+      </div>
+    );
+  }
+
+  throw new Error('unexpected connection state');
+}
+
+function hasKeys(obj) {
+  return obj && Object.keys(obj).length > 0;
 }

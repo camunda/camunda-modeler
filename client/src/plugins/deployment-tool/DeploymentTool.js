@@ -10,13 +10,15 @@
 
 import React, { PureComponent } from 'react';
 
-import { omit } from 'min-dash';
-
 import AuthTypes from './AuthTypes';
 import CamundaAPI from './CamundaAPI';
+
 import DeploymentDetailsModal from './DeploymentDetailsModal';
-import getEditMenu from './getEditMenu';
-import validators from './validators';
+import DeploymentConfigValidator from './DeploymentConfigValidator';
+
+import {
+  generateId
+} from '../../util';
 
 import { Fill } from '../../app/slot-fill';
 
@@ -25,12 +27,14 @@ import {
   Icon
 } from '../../app/primitives';
 
-const VALIDATED_FIELDS = [
-  'deploymentName',
-  'endpointUrl'
-];
+const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
+const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
 
-const CONFIG_KEY = 'deployment-config';
+const DEFAULT_ENDPOINT = {
+  url: 'http://localhost:8080/engine-rest',
+  authType: AuthTypes.none,
+  rememberCredentials: false
+};
 
 
 export default class DeploymentTool extends PureComponent {
@@ -39,6 +43,8 @@ export default class DeploymentTool extends PureComponent {
     modalState: null,
     activeTab: null
   }
+
+  validator = new DeploymentConfigValidator();
 
   componentDidMount() {
     this.props.subscribe('app.activeTabChanged', ({ activeTab }) => {
@@ -54,33 +60,19 @@ export default class DeploymentTool extends PureComponent {
     return triggerAction('save-tab', { tab });
   }
 
-  deploy = () => {
+  deploy = (options = {}) => {
     const {
       activeTab
     } = this.state;
 
-    this.deployTab(activeTab);
+    return this.deployTab(activeTab, options);
   }
 
-  async saveDetails(tab, details) {
+  async deployTab(tab, options={}) {
+
     const {
-      config
-    } = this.props;
-
-    const savedDetails = this.getDetailsToSave(details);
-
-    return config.setForFile(tab.file, CONFIG_KEY, savedDetails);
-  }
-
-  async getSavedDetails(tab) {
-    const {
-      config
-    } = this.props;
-
-    return config.getForFile(tab.file, CONFIG_KEY);
-  }
-
-  async deployTab(tab) {
+      configure
+    } = options;
 
     // (1) Open save file dialog if dirty
     tab = await this.saveTab(tab);
@@ -90,199 +82,258 @@ export default class DeploymentTool extends PureComponent {
       return;
     }
 
-    // (2) Get deployment details
-    // (2.1) Try to get existing deployment details
-    let details = await this.getSavedDetails(tab);
+    // (2) Get deployment configuration
+    // (2.1) Try to get existing deployment configuration
+    let configuration = await this.getSavedConfiguration(tab);
 
-    // (2.2) Check if details are complete
-    const canDeploy = this.canDeployWithDetails(details);
+    // (2.2) Check if configuration are complete
+    const showConfiguration = configure || !this.canDeployWithConfiguration(configuration);
 
-    if (!canDeploy) {
+    if (showConfiguration) {
 
-      // (2.3) Open modal to enter deployment details
-      details = await this.getDetailsFromUserInput(tab, details);
+      // (2.3) Open modal to enter deployment configuration
+      const {
+        action,
+        configuration: userConfiguration
+      } = await this.getConfigurationFromUserInput(tab, configuration);
 
       // (2.3.1) Handle user cancelation
-      if (!details) {
+      if (action === 'cancel') {
         return;
       }
 
-      await this.saveDetails(tab, details);
+      configuration = await this.saveConfiguration(tab, userConfiguration);
+
+      if (action === 'save') {
+        return;
+      }
     }
 
     // (3) Trigger deployment
     // (3.1) Show deployment result (success or error)
+
+    try {
+      const deployment = await this.deployWithConfiguration(tab, configuration);
+
+      await this.handleDeploymentSuccess(tab, deployment);
+    } catch (error) {
+      await this.handleDeploymentError(tab, error);
+    }
+  }
+
+  handleDeploymentSuccess(tab, deployment) {
+    const {
+      displayNotification
+    } = this.props;
+
+    displayNotification({
+      type: 'success',
+      title: 'Deployment succeeded',
+      duration: 4000
+    });
+  }
+
+  handleDeploymentError(tab, error) {
     const {
       log,
       displayNotification
     } = this.props;
 
-    try {
-      await this.deployWithDetails(tab, details);
+    displayNotification({
+      type: 'error',
+      title: 'Deployment failed',
+      content: 'See the log for further details.',
+      duration: 10000
+    });
 
-      displayNotification({
-        type: 'success',
-        title: 'Deployment succeeded',
-        duration: 4000
-      });
-    } catch (error) {
-      displayNotification({
-        type: 'error',
-        title: 'Deployment failed',
-        content: 'See the log for further details.',
-        duration: 10000
-      });
-      log({ category: 'deploy-error', message: error.problems || error.message });
+    log({
+      category: 'deploy-error',
+      message: error.problems || error.details || error.message
+    });
+  }
+
+  async saveConfiguration(tab, configuration) {
+
+    const {
+      endpoint,
+      deployment
+    } = configuration;
+
+    await this.saveEndpoint(endpoint);
+
+    const tabConfiguration = {
+      deployment,
+      endpointId: endpoint.id
+    };
+
+    await this.setTabConfiguration(tab, tabConfiguration);
+
+    return configuration;
+  }
+
+  async saveEndpoint(endpoint) {
+
+    const {
+      id,
+      url,
+      authType,
+      rememberCredentials,
+      username,
+      password,
+      token
+    } = endpoint;
+
+    const authConfiguration =
+      authType === AuthTypes.none
+        ? {}
+        : authType === AuthTypes.basic
+          ? {
+            username,
+            password: rememberCredentials ? password : ''
+          }
+          : {
+            token: rememberCredentials ? token : ''
+          };
+
+    const endpointConfiguration = {
+      id,
+      url,
+      authType,
+      rememberCredentials,
+      ...authConfiguration
+    };
+
+    const existingEndpoints = await this.getEndpoints();
+
+    const updatedEndpoints = addOrUpdateById(existingEndpoints, endpointConfiguration);
+
+    await this.setEndpoints(updatedEndpoints);
+
+    return endpointConfiguration;
+  }
+
+  async getSavedConfiguration(tab) {
+
+    const tabConfig = await this.getTabConfiguration(tab);
+
+    if (!tabConfig) {
+      return undefined;
     }
+
+    const {
+      deployment,
+      endpointId
+    } = tabConfig;
+
+    const endpoints = await this.getEndpoints();
+
+    return {
+      deployment,
+      endpoint: endpoints.find(endpoint => endpoint.id === endpointId)
+    };
   }
 
-  deployWithDetails(tab, details) {
-    const api = new CamundaAPI(details.endpointUrl);
+  deployWithConfiguration(tab, configuration) {
 
-    return api.deployDiagram(tab.file, details);
+    const {
+      endpoint,
+      deployment
+    } = configuration;
+
+    const api = new CamundaAPI(endpoint);
+
+    return api.deployDiagram(tab.file, deployment);
   }
 
-  canDeployWithDetails(details) {
+  canDeployWithConfiguration(configuration) {
 
-    // TODO(barmac): implement for instant deployment
+    // TODO(nikku): we'll re-enable this, once we make re-deploy
+    // the primary button action: https://github.com/camunda/camunda-modeler/issues/1440
     return false;
+
+    // return this.validator.isConfigurationValid(configuration);
   }
 
-  getDetailsFromUserInput(tab, details) {
-    const initialDetails = this.getInitialDetails(tab, details);
+  async getConfigurationFromUserInput(tab, providedConfiguration) {
+    const configuration = await this.getDefaultConfiguration(tab, providedConfiguration);
 
     return new Promise(resolve => {
-      const handleClose = result => {
+      const handleClose = (action, configuration) => {
 
         this.setState({
           modalState: null
         });
 
-        this.updateMenu();
-
-        // contract: if details provided, user closed with O.K.
+        // contract: if configuration provided, user closed with O.K.
         // otherwise they canceled it
-        if (result) {
-          return resolve(this.getDetailsFromForm(result));
-        }
-
-        resolve();
+        return resolve({ action, configuration });
       };
 
       this.setState({
         modalState: {
           tab,
-          details: initialDetails,
+          configuration,
           handleClose
         }
       });
     });
   }
 
-  getDetailsToSave(rawDetails) {
-    return omit(rawDetails, 'auth');
+  getEndpoints() {
+    return this.props.config.get(ENGINE_ENDPOINTS_CONFIG_KEY, []);
   }
 
-  validateDetails = values => {
-    const validatedFields = this.getValidatedFields(values);
-
-    const errors = validatedFields.reduce((currentErrors, field) => {
-      const error = validators[field] && validators[field](values[field]);
-
-      return error ? { ...currentErrors, [field]: error } : currentErrors;
-    }, {});
-
-    return errors;
+  setEndpoints(endpoints) {
+    return this.props.config.set(ENGINE_ENDPOINTS_CONFIG_KEY, endpoints);
   }
 
-  checkConnection = async values => {
-    const baseUrl = this.getBaseUrl(values.endpointUrl);
-    const auth = this.getAuth(values);
-
-    const api = new CamundaAPI(baseUrl);
-
-    let connectionError = null;
-
-    try {
-      await api.checkConnection({ auth });
-    } catch (error) {
-      connectionError = error.message;
-    }
-
-    return connectionError;
+  getTabConfiguration(tab) {
+    return this.props.config.getForFile(tab.file, DEPLOYMENT_DETAILS_CONFIG_KEY);
   }
 
-  getInitialDetails(tab, providedDetails) {
-    const details = { ...providedDetails };
-
-    if (!details.deploymentName) {
-      details.deploymentName = withoutExtension(tab.name);
-    }
-
-    return details;
-  }
-
-  getValidatedFields(values) {
-    switch (values.authType) {
-    case AuthTypes.none:
-      return VALIDATED_FIELDS;
-    case AuthTypes.bearer:
-      return VALIDATED_FIELDS.concat('bearer');
-    case AuthTypes.basic:
-      return VALIDATED_FIELDS.concat('username', 'password');
-    }
-  }
-
-  getDetailsFromForm(values) {
-    const endpointUrl = this.getBaseUrl(values.endpointUrl);
-
-    const payload = {
-      endpointUrl,
-      deploymentName: values.deploymentName,
-      tenantId: values.tenantId,
-      authType: values.authType
-    };
-
-    const auth = this.getAuth(values);
-
-    if (auth) {
-      payload.auth = auth;
-    }
-
-    return payload;
+  setTabConfiguration(tab, configuration) {
+    return this.props.config.setForFile(tab.file, DEPLOYMENT_DETAILS_CONFIG_KEY, configuration);
   }
 
   /**
-   * Extract base url in case `/deployment/create` was added at the end.
-   * @param {string} url
+   * Get endpoint to be used by the current tab.
+   *
+   * @return {EndpointConfig}
    */
-  getBaseUrl(url) {
-    return url.replace(/\/deployment\/create\/?/, '');
-  }
+  async getDefaultEndpoint(tab, providedEndpoint) {
 
-  getAuth({ authType, username, password, bearer }) {
-    switch (authType) {
-    case AuthTypes.basic:
-      return {
-        username,
-        password
-      };
-    case AuthTypes.bearer: {
-      return {
-        bearer
-      };
+    let endpoint = {};
+
+    if (providedEndpoint) {
+      endpoint = providedEndpoint;
+    } else {
+
+      const existingEndpoints = await this.getEndpoints();
+
+      if (existingEndpoints.length) {
+        endpoint = existingEndpoints[0];
+      }
     }
-    }
+
+    return {
+      ...DEFAULT_ENDPOINT,
+      ...endpoint,
+      id: endpoint.id || generateId()
+    };
   }
 
-  handleFocusChange = event => {
-    const editMenu = getEditMenu(isFocusedOnInput(event));
+  async getDefaultConfiguration(tab, providedConfiguration = {}) {
+    const endpoint = await this.getDefaultEndpoint(tab, providedConfiguration.endpoint);
 
-    this.updateMenu({ editMenu });
-  }
+    const deployment = providedConfiguration.deployment || {};
 
-  updateMenu(menu) {
-    this.props.triggerAction('update-menu', menu);
+    return {
+      endpoint,
+      deployment: {
+        name: withoutExtension(tab.name),
+        ...deployment
+      }
+    };
   }
 
   render() {
@@ -294,7 +345,7 @@ export default class DeploymentTool extends PureComponent {
       <Fill slot="toolbar" group="8_deploy">
         <Button
           onClick={ this.deploy }
-          title="Deploy Current Diagram"
+          title="Deploy current diagram"
         >
           <Icon name="deploy" />
         </Button>
@@ -302,12 +353,10 @@ export default class DeploymentTool extends PureComponent {
 
       { modalState &&
         <DeploymentDetailsModal
-          details={ modalState.details }
+          configuration={ modalState.configuration }
           activeTab={ modalState.tab }
           onClose={ modalState.handleClose }
-          onFocusChange={ this.handleFocusChange }
-          validate={ this.validateDetails }
-          checkConnection={ this.checkConnection }
+          validator={ this.validator }
         /> }
     </React.Fragment>;
   }
@@ -317,10 +366,25 @@ export default class DeploymentTool extends PureComponent {
 
 
 // helpers //////////
-function isFocusedOnInput(event) {
-  return event.type === 'focus' && ['INPUT', 'TEXTAREA'].includes(event.target.tagName);
-}
 
 function withoutExtension(name) {
   return name.replace(/\.[^.]+$/, '');
+}
+
+function addOrUpdateById(collection, element) {
+
+  const index = collection.findIndex(el => el.id === element.id);
+
+  if (index !== -1) {
+    return [
+      ...collection.slice(0, index),
+      element,
+      ...collection.slice(index + 1)
+    ];
+  }
+
+  return [
+    ...collection,
+    element
+  ];
 }
