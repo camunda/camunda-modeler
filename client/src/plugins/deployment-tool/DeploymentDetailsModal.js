@@ -16,6 +16,9 @@ import {
   omit
 } from 'min-dash';
 
+import ExpandIcon from 'icons/ChevronDown.svg';
+import CollapseIcon from 'icons/ChevronUp.svg';
+
 import css from './DeploymentDetailsModal.less';
 
 import AuthTypes from './AuthTypes';
@@ -214,8 +217,8 @@ export default class DeploymentDetailsModal extends React.PureComponent {
                     >
                       {
                         (deploymentDetailsShown)
-                          ? '-'
-                          : '+'
+                          ? <CollapseIcon className="icon" />
+                          : <ExpandIcon className="icon" />
                       }
                     </button>
                   </legend>
