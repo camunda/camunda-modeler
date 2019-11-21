@@ -8,10 +8,4 @@
  * except in compliance with the MIT License.
  */
 
-import DeploymentTool from './deployment-tool';
-import PrivacyPreferences from './privacy-preferences';
-
-export default [
-  DeploymentTool,
-  PrivacyPreferences
-];
+export { default } from './PrivacyPreferences';
