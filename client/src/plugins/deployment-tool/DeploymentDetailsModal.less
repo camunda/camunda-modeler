@@ -3,6 +3,10 @@
     font-weight: normal;
   }
 
+  .icon {
+    vertical-align: text-top;
+  }
+
   .intro {
     margin-bottom: 30px;
   }
@@ -47,13 +51,13 @@
     width: 10px;
   }
 
-  label {
-    text-align: right;
+  label:only-child {
     width: 100%;
     display: inline-block;
+    text-align: right;
   }
 
-  input,
+  input:not([type="checkbox"]),
   select {
     width: 100%;
     padding: 6px;

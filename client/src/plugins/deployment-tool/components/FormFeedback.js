@@ -8,11 +8,21 @@
  * except in compliance with the MIT License.
  */
 
-import ConnectionError, { ConnectionErrorMessages } from './ConnectionError';
-import DeploymentError from './DeploymentError';
+import React from 'react';
 
-export {
-  ConnectionError,
-  ConnectionErrorMessages,
-  DeploymentError
-};
+export default function FormFeedback(props) {
+
+  const {
+    error,
+    hint
+  } = props;
+
+
+  return (
+    <React.Fragment>
+      { error && <div className="hint error">{ error }</div> }
+
+      { hint && <div className="hint">{ hint }</div> }
+    </React.Fragment>
+  );
+}

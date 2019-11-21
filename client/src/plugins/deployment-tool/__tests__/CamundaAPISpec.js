@@ -30,7 +30,7 @@ describe('<CamundaAPI>', () => {
   beforeEach(() => {
     fetchStub = sinon.stub(window, 'fetch');
 
-    api = new CamundaAPI(baseUrl);
+    api = new CamundaAPI({ url: baseUrl });
   });
 
   afterEach(() => {

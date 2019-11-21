@@ -8,6 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-export { default as FormControl } from './FormControl';
-export { default as AuthBasic } from './AuthBasic';
-export { default as AuthBearer } from './AuthBearer';
+export { default as TextInput } from './TextInput';
+export { default as CheckBox } from './CheckBox';
+export { default as Select } from './Select';

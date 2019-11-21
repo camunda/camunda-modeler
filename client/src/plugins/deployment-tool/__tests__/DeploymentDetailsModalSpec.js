@@ -12,6 +12,8 @@
 
 import React from 'react';
 
+import pDefer from 'p-defer';
+
 import {
   mount,
   shallow
@@ -19,7 +21,10 @@ import {
 
 import AuthTypes from '../AuthTypes';
 import DeploymentDetailsModal from '../DeploymentDetailsModal';
+import DeploymentConfigValidator from '../DeploymentConfigValidator';
 
+
+let mounted;
 
 describe('<DeploymentDetailsModal>', () => {
 
@@ -29,8 +34,6 @@ describe('<DeploymentDetailsModal>', () => {
 
 
   describe('connection check', () => {
-
-    let mounted = null;
 
     afterEach(() => {
       if (mounted && mounted.exists()) {
@@ -43,89 +46,96 @@ describe('<DeploymentDetailsModal>', () => {
     it('should run connection check on mount with provided defaults', () => {
 
       // given
-      const checkConnectionStub = sinon.stub().resolves();
-
-      const initialFormValues = {
-        endpointUrl: 'http://localhost:8088/engine-rest',
-        tenantId: '',
-        deploymentName: 'diagram',
-        authType: AuthTypes.basic,
-        username: 'demo',
-        password: 'demo',
-        bearer: ''
+      const configuration = {
+        deployment: {
+          name: 'diagram',
+          tenantId: ''
+        },
+        endpoint: {
+          url: 'http://localhost:8088/engine-rest',
+          authType: AuthTypes.basic,
+          username: 'demo',
+          password: 'demo'
+        }
       };
+
+      const connectionChecker = new MockConnectionChecker();
 
       // when
       createModal({
-        checkConnection: checkConnectionStub,
-        details: initialFormValues
-      });
+        connectionChecker,
+        configuration
+      }, mount);
 
       // then
-      expect(checkConnectionStub).to.have.been.calledOnce;
-      expect(checkConnectionStub.args[0][0]).to.eql(initialFormValues);
+      expect(connectionChecker.check).to.have.been.calledOnce;
+      expect(connectionChecker.check).to.have.been.calledWith(configuration.endpoint);
     });
 
 
-    it('should display hint if the username and password are missing', () => {
+    it('should display hint if the username and password are missing', async () => {
 
       // given
-      const checkConnectionStub = sinon.stub().resolves();
-
-      const initialFormValues = {
-        endpointUrl: 'http://localhost:8088/engine-rest',
-        tenantId: '',
-        deploymentName: 'diagram',
-        authType: AuthTypes.basic
+      const configuration = {
+        deployment: {
+          tenantId: '',
+          name: 'diagram'
+        },
+        endpoint: {
+          url: 'http://localhost:8088/engine-rest',
+          authType: AuthTypes.basic
+        }
       };
 
-      // when
-      const { wrapper } = createModal({
-        checkConnection: checkConnectionStub,
-        details: initialFormValues,
-        validate: () => ({ username: 'username is missing', password: 'password is missing' })
+      const connectionChecker = new MockConnectionChecker();
+
+      const {
+        wrapper
+      } = createModal({
+        connectionChecker,
+        configuration
       }, mount);
 
-      mounted = wrapper;
+      // when
+      await connectionChecker.triggerComplete({});
+
+      wrapper.update();
 
       // then
-      const connectionCheckResult = wrapper.find('ConnectionCheckResult').first();
-      const hint = connectionCheckResult.prop('hint');
-
-      expect(checkConnectionStub).to.not.have.been.called;
-      expect(hint).to.exist;
-      expect(connectionCheckResult.contains(hint), 'Does not display the hint').to.be.true;
+      expect(wrapper.find('.hint.error')).to.have.length(2);
     });
 
 
-    it('should display hint if token is missing', () => {
+    it('should display hint if token is missing', async () => {
 
       // given
-      const checkConnectionStub = sinon.stub().resolves();
-
-      const initialFormValues = {
-        endpointUrl: 'http://localhost:8088/engine-rest',
-        tenantId: '',
-        deploymentName: 'diagram',
-        authType: AuthTypes.bearer
+      const configuration = {
+        deployment: {
+          tenantId: '',
+          name: 'diagram'
+        },
+        endpoint: {
+          url: 'http://localhost:8088/engine-rest',
+          authType: AuthTypes.bearer
+        }
       };
 
-      // when
-      const { wrapper } = createModal({
-        checkConnection: checkConnectionStub,
-        details: initialFormValues,
-        validate: () => ({ bearer: 'token is missing' })
+      const connectionChecker = new MockConnectionChecker();
+
+      const {
+        wrapper
+      } = createModal({
+        connectionChecker,
+        configuration
       }, mount);
 
-      mounted = wrapper;
+      // when
+      await connectionChecker.triggerComplete({});
+
+      wrapper.update();
 
       // then
-      const connectionCheckResult = wrapper.find('ConnectionCheckResult').first();
-      const hint = connectionCheckResult.prop('hint');
-
-      expect(checkConnectionStub).to.not.have.been.called;
-      expect(hint).to.exist;
-      expect(connectionCheckResult.contains(hint), 'Does not display the hint').to.be.true;
+      expect(wrapper.find('.hint.error')).to.have.length(1);
     });
 
   });
@@ -135,14 +145,29 @@ describe('<DeploymentDetailsModal>', () => {
 
 
 // helpers //////////
-function createModal(props, renderFn = shallow) {
-  props = {
-    checkConnection: noop,
-    validate: () => ({}),
-    ...props
-  };
 
-  const wrapper = renderFn(<DeploymentDetailsModal { ...props } />);
+function createModal(props={}, renderFn = shallow) {
+
+  const {
+    configuration,
+    onClose,
+    connectionChecker,
+    ...apiOverrides
+  } = props;
+
+  const validator = new MockValidator(
+    connectionChecker || new MockConnectionChecker(), apiOverrides
+  );
+
+  const wrapper = renderFn(
+    <DeploymentDetailsModal
+      validator={ validator }
+      configuration={ configuration || getDefaultConfiguration() }
+      onClose={ onClose || noop }
+    />
+  );
+
+  mounted = wrapper;
 
   return {
     wrapper,
@@ -151,3 +176,78 @@ function createModal(props, renderFn = shallow) {
 }
 
 function noop() {}
+
+function getDefaultConfiguration() {
+  return {
+    deployment: {
+      name: 'diagram',
+      tenantId: ''
+    },
+    endpoint: {
+      url: 'http://localhost:8080/engine-rest',
+      authType: AuthTypes.none
+    }
+  };
+}
+
+class MockConnectionChecker {
+
+  constructor() {
+    sinon.spy(this, 'check');
+  }
+
+  subscribe(hooks) {
+    this.hooks = hooks;
+  }
+
+  unsubscribe() {
+    this.hooks = null;
+  }
+
+  check(endpoint) {
+
+    this.deferred = pDefer();
+
+    return this.deferred.promise.then(result => {
+
+      this.hooks && this.hooks.onComplete(result);
+
+      return result;
+    });
+  }
+
+  triggerStart() {
+    this.hooks && this.hooks.onStart();
+
+    return new Promise(resolve => {
+      setTimeout(resolve, 5);
+    });
+  }
+
+  triggerComplete(result) {
+
+    this.deferred && this.deferred.resolve(result);
+
+    return new Promise(resolve => {
+      setTimeout(resolve, 5);
+    });
+  }
+
+}
+
+class MockValidator extends DeploymentConfigValidator {
+
+  constructor(connectionChecker, apiStubs) {
+    super();
+
+    Object.assign(this, {
+      connectionChecker,
+      ...apiStubs
+    });
+  }
+
+  createConnectionChecker() {
+    return this.connectionChecker;
+  }
+
+}
