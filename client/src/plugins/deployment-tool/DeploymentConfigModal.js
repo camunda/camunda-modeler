@@ -19,7 +19,7 @@ import {
 import ExpandIcon from 'icons/ChevronDown.svg';
 import CollapseIcon from 'icons/ChevronUp.svg';
 
-import css from './DeploymentDetailsModal.less';
+import css from './DeploymentConfigModal.less';
 
 import AuthTypes from './AuthTypes';
 
@@ -35,7 +35,7 @@ import {
 } from 'formik';
 
 
-export default class DeploymentDetailsModal extends React.PureComponent {
+export default class DeploymentConfigModal extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -187,7 +187,7 @@ export default class DeploymentDetailsModal extends React.PureComponent {
     } = this.state;
 
     return (
-      <Modal className={ css.DeploymentDetailsModal } onClose={ onClose }>
+      <Modal className={ css.DeploymentConfigModal } onClose={ onClose }>
 
         <Formik
           initialValues={ values }

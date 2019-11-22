@@ -13,7 +13,7 @@ import React, { PureComponent } from 'react';
 import AuthTypes from './AuthTypes';
 import CamundaAPI from './CamundaAPI';
 
-import DeploymentDetailsModal from './DeploymentDetailsModal';
+import DeploymentConfigModal from './DeploymentConfigModal';
 import DeploymentConfigValidator from './DeploymentConfigValidator';
 
 import KeyboardInteractionTrap from './KeyboardInteractionTrap';
@@ -355,7 +355,7 @@ export default class DeploymentTool extends PureComponent {
 
       { modalState &&
         <KeyboardInteractionTrap triggerAction={ this.props.triggerAction }>
-          <DeploymentDetailsModal
+          <DeploymentConfigModal
             configuration={ modalState.configuration }
             activeTab={ modalState.tab }
             onClose={ modalState.handleClose }

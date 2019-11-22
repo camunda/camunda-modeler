@@ -20,13 +20,13 @@ import {
 } from 'enzyme';
 
 import AuthTypes from '../AuthTypes';
-import DeploymentDetailsModal from '../DeploymentDetailsModal';
+import DeploymentConfigModal from '../DeploymentConfigModal';
 import DeploymentConfigValidator from '../DeploymentConfigValidator';
 
 
 let mounted;
 
-describe('<DeploymentDetailsModal>', () => {
+describe('<DeploymentConfigModal>', () => {
 
   it('should render', () => {
     createModal();
@@ -160,7 +160,7 @@ function createModal(props={}, renderFn = shallow) {
   );
 
   const wrapper = renderFn(
-    <DeploymentDetailsModal
+    <DeploymentConfigModal
       validator={ validator }
       configuration={ configuration || getDefaultConfiguration() }
       onClose={ onClose || noop }
