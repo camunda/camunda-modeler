@@ -12,29 +12,20 @@
 
 import CamundaAPI from '../CamundaAPI';
 
-const baseUrl = 'https://localhost:8080/rest-engine';
-
 
 describe('<CamundaAPI>', () => {
 
   /**
    * @type {sinon.SinonStub<fetch>}
    */
-  let fetchStub;
-
-  /**
-   * @type {CamundaAPI}
-   */
-  let api;
+  let fetchSpy;
 
   beforeEach(() => {
-    fetchStub = sinon.stub(window, 'fetch');
-
-    api = new CamundaAPI({ url: baseUrl });
+    fetchSpy = sinon.stub(window, 'fetch');
   });
 
   afterEach(() => {
-    fetchStub.restore();
+    fetchSpy.restore();
   });
 
 
@@ -45,34 +36,116 @@ describe('<CamundaAPI>', () => {
       contents: 'xml'
     };
 
-    const details = {
-      deploymentName: 'deployment'
+    const deployment = {
+      name: 'TEST NAME'
     };
 
 
     it('should deploy diagram', async () => {
 
       // given
-      fetchStub.resolves(new Response());
+      const api = createCamundaAPI({
+        url: 'http://foo'
+      });
 
       // when
-      const result = await api.deployDiagram(diagram, details);
+      fetchSpy.resolves(new Response());
+
+      const result = await api.deployDiagram(diagram, deployment);
+
+      // then
+      expect(result).to.exist;
+
+      expectFetched(fetchSpy, {
+        url: 'http://foo/deployment/create'
+      });
+    });
+
+
+    it('should deploy diagram with tenant ID', async () => {
+
+      // given
+      const deployment = {
+        name: 'FOO',
+        tenantId: '111'
+      };
+
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response());
+
+      // when
+      const result = await api.deployDiagram(diagram, deployment);
 
       // then
       expect(result).to.exist;
     });
 
 
+    it('should deploy with basic auth', async () => {
+
+      // given
+      const api = createCamundaAPI({
+        username: 'FOO',
+        password: 'BAR',
+        authType: 'basic'
+      });
+
+      fetchSpy.resolves(new Response());
+
+      // when
+      const result = await api.deployDiagram(diagram, deployment);
+
+      // then
+      expect(result).to.exist;
+
+      expectFetched(fetchSpy, {
+        headers: {
+          accept: 'application/json',
+          authorization: 'Basic Rk9POkJBUg=='
+        }
+      });
+    });
+
+
+    it('should deploy with bearer token', async () => {
+
+      // given
+      const api = createCamundaAPI({
+        token: 'FOO',
+        authType: 'bearer'
+      });
+
+      fetchSpy.resolves(new Response());
+
+      // when
+      const result = await api.deployDiagram(diagram, deployment);
+
+      // then
+      expect(result).to.exist;
+
+      expectFetched(fetchSpy, {
+        headers: {
+          accept: 'application/json',
+          authorization: 'Bearer FOO'
+        }
+      });
+    });
+
+
     it('should throw when fetch fails', async () => {
 
       // given
-      fetchStub.rejects(new TypeError('Failed to fetch'));
+      const api = createCamundaAPI();
+
+      // when
+      fetchSpy.rejects(new TypeError('Failed to fetch'));
 
       // when
       let error;
 
       try {
-        await api.deployDiagram(diagram, details);
+        await api.deployDiagram(diagram, deployment);
       } catch (e) {
         error = e;
       } finally {
@@ -86,27 +159,30 @@ describe('<CamundaAPI>', () => {
     it('should throw when response is not ok', async () => {
 
       // given
-      fetchStub.resolves(new Response({ ok: false }));
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response({ ok: false }));
 
       // when
       let error;
 
       try {
-        await api.deployDiagram(diagram, details);
+        await api.deployDiagram(diagram, deployment);
       } catch (e) {
         error = e;
-      } finally {
-
-        // then
-        expect(error).to.exist;
       }
+
+      // then
+      expect(error).to.exist;
     });
 
 
     it('should handle failed response with non-JSON body', async () => {
 
       // given
-      fetchStub.resolves(new Response({
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response({
         ok: false,
         status: 401,
         json: () => JSON.parse('401 Unauthorized')
@@ -116,7 +192,7 @@ describe('<CamundaAPI>', () => {
       let error;
 
       try {
-        await api.deployDiagram(diagram, details);
+        await api.deployDiagram(diagram, deployment);
       } catch (e) {
         error = e;
       } finally {
@@ -134,7 +210,9 @@ describe('<CamundaAPI>', () => {
     it('should check server connection', async () => {
 
       // given
-      fetchStub.resolves(new Response());
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response());
 
       // when
       await api.checkConnection();
@@ -144,7 +222,9 @@ describe('<CamundaAPI>', () => {
     it('should throw when fetch fails', async () => {
 
       // given
-      fetchStub.rejects(new TypeError('Failed to fetch'));
+      const api = createCamundaAPI();
+
+      fetchSpy.rejects(new TypeError('Failed to fetch'));
 
       // when
       let error;
@@ -164,7 +244,9 @@ describe('<CamundaAPI>', () => {
     it('should throw when response is not ok', async () => {
 
       // given
-      fetchStub.resolves(new Response({ ok: false }));
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response({ ok: false }));
 
       // when
       let error;
@@ -184,7 +266,9 @@ describe('<CamundaAPI>', () => {
     it('should handle failed response with non-JSON body', async () => {
 
       // given
-      fetchStub.resolves(new Response({
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response({
         ok: false,
         status: 401,
         json: () => JSON.parse('401 Unauthorized')
@@ -219,7 +303,9 @@ describe('<CamundaAPI>', () => {
       it('should abort request on timeout', async () => {
 
         // given
-        fetchStub.callsFake((_, { signal }) => {
+        const api = createCamundaAPI();
+
+        fetchSpy.callsFake((_, { signal }) => {
           return new Promise(resolve => {
             for (let i = 0; i < 10; i++) {
               if (signal && signal.aborted) {
@@ -265,4 +351,32 @@ function Response({
   this.ok = ok;
   this.status = status;
   this.json = json;
+}
+
+
+function createCamundaAPI(props = {}) {
+
+  return new CamundaAPI({
+    url: 'http://localhost:3000/engine-rest',
+    ...props
+  });
+
+}
+
+function expectFetched(fetchSpy, expectedOptions) {
+
+  const {
+    url,
+    ...options
+  } = expectedOptions;
+
+  expect(fetchSpy).to.have.been.calledOnce;
+
+  const [ argUrl, argOptions ] = fetchSpy.args[0];
+
+  expect(fetchSpy).to.have.been.calledWith(url || argUrl, {
+    ...argOptions,
+    ...options
+  });
+
 }
