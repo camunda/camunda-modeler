@@ -200,6 +200,10 @@ describe('<DeploymentTool>', () => {
         [ { ...configuration.endpoint, password: '' } ]
       ]);
     });
+
+
+    it('should handle deployment error');
+
   });
 
 
