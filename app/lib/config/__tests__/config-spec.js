@@ -322,6 +322,26 @@ describe('Config', function() {
       expect(saveIDSpy).to.have.been.calledOnce;
     });
   });
+
+
+  describe('<os.info>', function() {
+
+    it('should return correct values', function() {
+
+      // given
+      const config = new Config({
+        userPath: 'test'
+      });
+      const os = require('os');
+
+      // when
+      const osInfo = config.get('os.info');
+
+      // then
+      expect(osInfo.platform).to.be.eql(os.platform());
+      expect(osInfo.release).to.be.eql(os.release());
+    });
+  });
 });
 
 
