@@ -6,18 +6,52 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.5.0
+
+#### General
+
+* `FEAT`: remember authentication details ([`eb35b078`](https://github.com/camunda/camunda-modeler/commit/eb35b07872b7a77936399532c99a7f485b99b012))
+* `FEAT`: notarize MacOS distribution ([#1585](https://github.com/camunda/camunda-modeler/pull/1585))
+* `FEAT`: trap focus and escape key in modal ([`4df45940`](https://github.com/camunda/camunda-modeler/commit/4df459409b893cc72e1287a04234511331e3adfe))
+* `FEAT`: allow nodeIntegration to be enabled via feature toggle ([`c7f93c05`](https://github.com/camunda/camunda-modeler/commit/c7f93c05ad99dc400b2a259f88e0ad96de641aed))
+* `FIX`: do not scroll clear/close controls ([`20b8dbfc`](https://github.com/camunda/camunda-modeler/commit/20b8dbfc2874238e7b5edc7256f63e3ad3282d9a))
+* `CHORE`: prefix log messages with level ([`c741c41e`](https://github.com/camunda/camunda-modeler/commit/c741c41e3bbcfcf1176a783a9372006d16dcb688))
+* `CHORE`: bump to `diagram-js@6.0.4`
+* `CHORE`: bump to `bpmn-js@6.0.2`
+* `CHORE`: bump to `dmn-js@7.2.1`
+
 #### BPMN
 
-* `FIX`: correct editor error when pasting labels
-* `CHORE`: bump to `bpmn-js@5.1.2`
+* `FEAT`: connecting and re-connecting shapes is now possible in both directions ([#1230](https://github.com/bpmn-io/bpmn-js/pull/1230))
+* `FIX`: render colored BPMN groups ([#1246](https://github.com/bpmn-io/bpmn-js/pull/1246))
+
+### Breaking Changes
+
+* `FEAT`: disable collapsing sub process ([`a2c008d0`](https://github.com/camunda/camunda-modeler/commit/a2c008d09effe200c857ec36a20889ae4dde598a))
+
+#### DMN
+
+* `FEAT(decision-table)`: preserve aggregation when COLLECT is selected again
+* `FEAT(decision-table)`: allow aggreation to be cleared from dropdown ([#370](https://github.com/bpmn-io/dmn-js/issues/370), [#389](https://github.com/bpmn-io/dmn-js/issues/389))
+* `FEAT(decision-table)`: use JUEL as the default input expression language ([#405](https://github.com/bpmn-io/dmn-js/issues/405))
+* `FIX(decision-table)`: correctly handle value erasing ([#826](https://github.com/camunda/camunda-modeler/issues/826))
+* `FIX(decision-table)`: correctly display simple mode edit control when cell selection changes ([#341](https://github.com/bpmn-io/dmn-js/issues/341))
+* `FIX(decision-table)`: do not close input on user selection ([#421](https://github.com/bpmn-io/dmn-js/issues/421))
+* `FIX(decision-table)`: do not navigate when clearing pre-defined hints ([#431](https://github.com/bpmn-io/dmn-js/issues/431))
+* `FIX(decision-table)`: prevent context menu jump in larger tables
+* `FIX(decision-table)`: do not close context on user selection
+
+### Breaking Changes
+
+* `FEAT(decision-table)`: only allow standardized hit policy values
 
 ## 3.4.1
 
 * `FIX`: allow again to scroll DMN tables horizontally ([#1537](https://github.com/camunda/camunda-modeler/issues/1537))
 
-## 3.4.0    
+## 3.4.0
 
-#### General    
+#### General
 
 * `FEAT`: add reusable notifications mechanism ([#1505](https://github.com/camunda/camunda-modeler/issues/1505))
 * `FEAT`: allow access to workspace configurations for plugins and files ([#1425](https://github.com/camunda/camunda-modeler/issues/1425))
@@ -25,14 +59,14 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correct autofocusing in modals ([#1489](https://github.com/camunda/camunda-modeler/pull/1489))
 * `CHORE`: bump to `bpmn-js@5.1.0` / `diagram-js@5.1.0`
 
-#### BPMN    
+#### BPMN
 
 * `FIX`: correct duplicated references in lanes ([#1504](https://github.com/camunda/camunda-modeler/issues/1504))
 * `FIX`: keep sequence flow conditions after morphing source or target ([#180](https://github.com/camunda/camunda-modeler/issues/180))
 * `FIX`: do not show preview if create operation is not allowed ([#1481](https://github.com/camunda/camunda-modeler/issues/1481))
 * `FIX`: be able to paste elements on previously removed areas ([#1466](https://github.com/camunda/camunda-modeler/issues/1466))
 
-#### Deployment    
+#### Deployment
 
 * `FEAT`: remember deployment details with diagram ([#1066](https://github.com/camunda/camunda-modeler/issues/1066))     
 * `FEAT`: display readable error message in log ([#1426](https://github.com/camunda/camunda-modeler/issues/1426))        
