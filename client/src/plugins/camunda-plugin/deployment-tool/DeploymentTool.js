@@ -30,6 +30,7 @@ import {
 
 const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
+const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
 
 const DEFAULT_ENDPOINT = {
   url: 'http://localhost:8080/engine-rest',
@@ -115,6 +116,9 @@ export default class DeploymentTool extends PureComponent {
     try {
       const deployment = await this.deployWithConfiguration(tab, configuration);
 
+      // (3.2) save deployed process definition
+      await this.saveProcessDefinition(tab, deployment);
+
       await this.handleDeploymentSuccess(tab, deployment);
     } catch (error) {
       await this.handleDeploymentError(tab, error);
@@ -131,6 +135,23 @@ export default class DeploymentTool extends PureComponent {
       title: 'Deployment succeeded',
       duration: 4000
     });
+  }
+
+  async saveProcessDefinition(tab, deployment) {
+
+    if (!deployment || !deployment.deployedProcessDefinition) {
+      return;
+    }
+
+    const {
+      deployedProcessDefinition: processDefinition
+    } = deployment;
+
+    const {
+      config
+    } = this.props;
+
+    return await config.setForFile(tab.file, PROCESS_DEFINITION_CONFIG_KEY, processDefinition);
   }
 
   handleDeploymentError(tab, error) {

@@ -212,6 +212,36 @@ describe('<DeploymentTool>', () => {
     });
 
 
+    it('should save process definition after deployment', async () => {
+
+      // given
+      const deployedProcessDefinition = { id: 'foo' };
+
+      const config = {
+        setForFile: sinon.spy()
+      };
+
+      const deployStub = sinon.stub().returns({ deployedProcessDefinition });
+
+      const configuration = createConfiguration();
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const {
+        instance
+      } = createDeploymentTool({ activeTab, config, deploySpy: deployStub, ...configuration });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(config.setForFile).to.have.been.calledTwice;
+
+      // 0: deployment-tool, 1: process-definition
+      expect(config.setForFile.args[1][2]).to.eql(deployedProcessDefinition);
+    });
+
+
     it('should handle deployment error');
 
   });
@@ -312,7 +342,7 @@ class TestDeploymentTool extends DeploymentTool {
 
   // removes CamundaAPI dependency
   deployWithConfiguration(...args) {
-    this.props.deploySpy && this.props.deploySpy(...args);
+    return this.props.deploySpy && this.props.deploySpy(...args);
   }
 
   checkConnection = (...args) => {
