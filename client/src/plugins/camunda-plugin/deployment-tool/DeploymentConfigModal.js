@@ -178,7 +178,10 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
     const {
       configuration: values,
-      validator
+      validator,
+      title,
+      intro,
+      primaryAction
     } = this.props;
 
     const {
@@ -198,13 +201,16 @@ export default class DeploymentConfigModal extends React.PureComponent {
           { form => (
             <form onSubmit={ form.handleSubmit }>
 
-              <Modal.Title>Deploy Diagram</Modal.Title>
+              <Modal.Title>
+                {
+                  title || 'Deploy Diagram'
+                }
+              </Modal.Title>
 
               <Modal.Body>
                 <p className="intro">
-                  Specify deployment details and deploy this diagram to Camunda.
+                  { intro || 'Specify deployment details and deploy this diagram to Camunda.' }
                 </p>
-
                 <fieldset>
                   <legend>
                     Deployment Details
@@ -323,7 +329,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
                     className="btn btn-primary"
                     disabled={ form.isSubmitting }
                   >
-                    Deploy
+                    { primaryAction || 'Deploy' }
                   </button>
 
                   <button

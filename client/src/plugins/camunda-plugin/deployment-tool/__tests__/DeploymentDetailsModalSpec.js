@@ -33,6 +33,29 @@ describe('<DeploymentConfigModal>', () => {
   });
 
 
+  it('should render with customizations', () => {
+
+    // given
+    const options = {
+      title: 'title',
+      intro: 'intro',
+      primaryAction: 'primaryAction'
+    };
+
+    // when
+    const { wrapper } = createModal(options, mount);
+
+    const titleWrapper = wrapper.find('.modal-title'),
+          introWrapper = wrapper.find('.intro'),
+          primaryActionWrapper = wrapper.find('.btn-primary');
+
+    // then
+    expect(titleWrapper.text()).to.eql(options.title);
+    expect(introWrapper.text()).to.eql(options.intro);
+    expect(primaryActionWrapper.text()).to.eql(options.primaryAction);
+  });
+
+
   describe('connection check', () => {
 
     afterEach(() => {
@@ -152,6 +175,9 @@ function createModal(props={}, renderFn = shallow) {
     configuration,
     onClose,
     connectionChecker,
+    title,
+    primaryAction,
+    intro,
     ...apiOverrides
   } = props;
 
@@ -164,6 +190,9 @@ function createModal(props={}, renderFn = shallow) {
       validator={ validator }
       configuration={ configuration || getDefaultConfiguration() }
       onClose={ onClose || noop }
+      title={ title }
+      primaryAction={ primaryAction }
+      intro={ intro }
     />
   );
 

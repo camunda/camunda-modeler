@@ -254,7 +254,7 @@ export default class DeploymentTool extends PureComponent {
     // return this.validator.isConfigurationValid(configuration);
   }
 
-  async getConfigurationFromUserInput(tab, providedConfiguration) {
+  async getConfigurationFromUserInput(tab, providedConfiguration, uiOptions) {
     const configuration = await this.getDefaultConfiguration(tab, providedConfiguration);
 
     return new Promise(resolve => {
@@ -273,7 +273,8 @@ export default class DeploymentTool extends PureComponent {
         modalState: {
           tab,
           configuration,
-          handleClose
+          handleClose,
+          ...uiOptions
         }
       });
     });
@@ -356,6 +357,9 @@ export default class DeploymentTool extends PureComponent {
           <DeploymentConfigModal
             configuration={ modalState.configuration }
             activeTab={ modalState.tab }
+            title={ modalState.title }
+            intro={ modalState.intro }
+            primaryAction={ modalState.primaryAction }
             onClose={ modalState.handleClose }
             validator={ this.validator }
           />
