@@ -34,6 +34,16 @@ describe('<DeploymentTool>', () => {
   });
 
 
+  it('should not display the button if there is no active tab', () => {
+
+    // given
+    const { wrapper } = createDeploymentTool({ activeTab: { type: 'empty', id: '__empty' } });
+
+    // then
+    expect(wrapper).to.be.empty;
+  });
+
+
   describe('deploy', () => {
 
     it('should derive deployment name from filename', async () => {
