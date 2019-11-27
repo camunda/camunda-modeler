@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { Modal } from '../../app/primitives';
+import { Modal } from '../../../app/primitives';
 
 import {
   omit
@@ -21,13 +21,13 @@ import CollapseIcon from 'icons/ChevronUp.svg';
 
 import css from './DeploymentConfigModal.less';
 
-import AuthTypes from './AuthTypes';
+import AuthTypes from '../shared/AuthTypes';
 
 import {
   CheckBox,
   Select,
   TextInput
-} from './components';
+} from '../shared/components';
 
 import {
   Formik,

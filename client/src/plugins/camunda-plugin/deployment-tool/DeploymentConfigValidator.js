@@ -10,9 +10,9 @@
 
 import pDefer from 'p-defer';
 
-import AuthTypes from './AuthTypes';
+import AuthTypes from '../shared/AuthTypes';
 
-import CamundaAPI from './CamundaAPI';
+import CamundaAPI from '../shared/CamundaAPI';
 
 
 export default class DeploymentConfigValidator {

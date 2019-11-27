@@ -10,24 +10,23 @@
 
 import React, { PureComponent } from 'react';
 
-import AuthTypes from './AuthTypes';
-import CamundaAPI from './CamundaAPI';
+import CamundaAPI from '../shared/CamundaAPI';
+import AuthTypes from '../shared/AuthTypes';
+import KeyboardInteractionTrap from '../shared/KeyboardInteractionTrap';
 
 import DeploymentConfigModal from './DeploymentConfigModal';
 import DeploymentConfigValidator from './DeploymentConfigValidator';
 
-import KeyboardInteractionTrap from './KeyboardInteractionTrap';
-
 import {
   generateId
-} from '../../util';
+} from '../../../util';
 
-import { Fill } from '../../app/slot-fill';
+import { Fill } from '../../../app/slot-fill';
 
 import {
   Button,
   Icon
-} from '../../app/primitives';
+} from '../../../app/primitives';
 
 const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
@@ -37,7 +36,6 @@ const DEFAULT_ENDPOINT = {
   authType: AuthTypes.none,
   rememberCredentials: false
 };
-
 
 export default class DeploymentTool extends PureComponent {
 

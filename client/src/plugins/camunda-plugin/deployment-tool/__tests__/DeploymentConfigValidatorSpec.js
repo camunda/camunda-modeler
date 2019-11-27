@@ -9,7 +9,7 @@
  */
 
 import DeploymentConfigValidator from '../DeploymentConfigValidator';
-import AuthTypes from '../AuthTypes';
+import AuthTypes from '../../shared/AuthTypes';
 
 const EMPTY_ENDPOINT_ERROR = 'Endpoint URL must not be empty.';
 const EMPTY_DEPLOYMENT_NAME_ERROR = 'Deployment name must not be empty.';
