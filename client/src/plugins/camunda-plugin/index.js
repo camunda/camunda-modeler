@@ -8,4 +8,4 @@
  * except in compliance with the MIT License.
  */
 
-export { default } from './DeploymentTool';
+export { default } from './CamundaPlugin';

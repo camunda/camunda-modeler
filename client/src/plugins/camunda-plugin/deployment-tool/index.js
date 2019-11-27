@@ -8,10 +8,4 @@
  * except in compliance with the MIT License.
  */
 
-import CamundaPlugin from './camunda-plugin';
-import PrivacyPreferences from './privacy-preferences';
-
-export default [
-  CamundaPlugin,
-  PrivacyPreferences
-];
+export { default } from './DeploymentTool.js';

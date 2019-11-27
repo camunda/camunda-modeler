@@ -17,10 +17,10 @@ import {
   omit
 } from 'min-dash';
 
-import { Config } from './../../../app/__tests__/mocks';
+import { Config } from './../../../../app/__tests__/mocks';
 
 import DeploymentTool from '../DeploymentTool';
-import AuthTypes from '../AuthTypes';
+import AuthTypes from '../../shared/AuthTypes';
 
 
 const CONFIG_KEY = 'deployment-tool';

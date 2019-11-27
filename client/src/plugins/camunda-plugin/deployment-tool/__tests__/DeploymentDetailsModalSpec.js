@@ -19,7 +19,7 @@ import {
   shallow
 } from 'enzyme';
 
-import AuthTypes from '../AuthTypes';
+import AuthTypes from '../../shared/AuthTypes';
 import DeploymentConfigModal from '../DeploymentConfigModal';
 import DeploymentConfigValidator from '../DeploymentConfigValidator';
 
