@@ -8,12 +8,12 @@
  * except in compliance with the MIT License.
  */
 
-import CamundaPlugin from './camunda-plugin';
-import PrivacyPreferences from './privacy-preferences';
-import UpdateChecks from './update-checks';
+export const MODAL_TITLE = 'A Camunda Modeler Update is Available';
 
-export default [
-  CamundaPlugin,
-  PrivacyPreferences,
-  UpdateChecks
-];
+export const BUTTON_NEGATIVE = 'Not right now';
+
+export const BUTTON_POSITIVE = 'Go to download page';
+
+export const RELEASE_NOTES_TITLE = 'Release notes:';
+
+export const INFO_TEXT = 'Camunda Modeler @@1 is now available--you have @@2. Would you like to download it now?';
