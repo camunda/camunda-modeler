@@ -72,6 +72,33 @@ export default class CamundaAPI {
     throw new DeploymentError(response, body);
   }
 
+  async startInstance(processDefinition, options) {
+
+    const {
+      businessKey,
+      variables
+    } = options;
+
+    const response = await this.fetch(`/process-definition/${processDefinition.id}/start`, {
+      method: 'POST',
+      body: JSON.stringify({
+        businessKey,
+        variables
+      }),
+      headers: {
+        'content-type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      return await response.json();
+    }
+
+    const body = await this.parse(response);
+
+    throw new StartInstanceError(response, body);
+  }
+
   async checkConnection() {
 
     const response = await this.fetch('/deployment?maxResults=0');
@@ -140,7 +167,10 @@ export default class CamundaAPI {
 
   async fetch(path, options = {}) {
     const url = `${this.baseUrl}${path}`;
-    const headers = this.getHeaders();
+    const headers = {
+      ...options.headers,
+      ...this.getHeaders()
+    };
 
     try {
       const signal = options.signal || this.setupTimeoutSignal();
@@ -231,6 +261,23 @@ export class DeploymentError extends Error {
 
   constructor(response, body) {
     super('Deployment failed');
+
+    this.code = (
+      getCamundaErrorCode(response, body) ||
+      getResponseErrorCode(response) ||
+      getNetworkErrorCode(response)
+    );
+
+    this.details = ApiErrorMessages[this.code];
+
+    this.problems = body && body.message;
+  }
+}
+
+export class StartInstanceError extends Error {
+
+  constructor(response, body) {
+    super('Starting instance failed');
 
     this.code = (
       getCamundaErrorCode(response, body) ||
