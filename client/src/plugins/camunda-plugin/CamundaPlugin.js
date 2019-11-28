@@ -11,22 +11,47 @@
 import React, { PureComponent } from 'react';
 
 import DeploymentTool from './deployment-tool';
+import StartInstanceTool from './start-instance-tool';
 
 /**
  * A plugin to handle both Camunda BPM related tools
  * a) DeploymentTool
- * b) todo(pinussilvestrus): StartInstanceTool (to be implemented),
- * cf. https://github.com/camunda/camunda-modeler/issues/1552
+ * b) StartInstanceTool
  */
 export default class CamundaPlugin extends PureComponent {
 
     deployRef = React.createRef();
 
     render() {
+
+      const deployService = new DeployService(this.deployRef);
+
       return <React.Fragment>
         <DeploymentTool
           ref={ this.deployRef }
           { ...this.props } />
+
+        <StartInstanceTool
+          ref={ this.startInstanceRef }
+          deployService={ deployService }
+          { ...this.props } />
       </React.Fragment>;
     }
+}
+
+class DeployService {
+
+  constructor(ref) {
+    this.deploymentRef = ref;
+  }
+
+  deployWithConfiguration = (...args) => this.current().deployWithConfiguration(...args);
+  getSavedDeployConfiguration = (...args) => this.current().getSavedConfiguration(...args);
+  getDeployConfigurationFromUserInput = (...args) => this.current().getConfigurationFromUserInput(...args);
+  saveDeployConfiguration = (...args) => this.current().saveConfiguration(...args);
+
+  current() {
+    return this.deploymentRef.current;
+  }
+
 }
