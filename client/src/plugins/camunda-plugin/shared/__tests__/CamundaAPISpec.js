@@ -337,6 +337,83 @@ describe('<CamundaAPI>', () => {
 
   });
 
+
+  describe('#startInstance', () => {
+
+    const processDefinition = {
+      id: 'processDefinition'
+    };
+
+    const options = {
+      businessKey: 'businessKey'
+    };
+
+    it('should start process', async () => {
+
+      // given
+      const api = createCamundaAPI({
+        url: 'http://foo'
+      });
+
+      // when
+      fetchSpy.resolves(new Response());
+
+      const result = await api.startInstance(processDefinition, options);
+
+      // then
+      expect(result).to.exist;
+
+      expectFetched(fetchSpy, {
+        url: 'http://foo/process-definition/processDefinition/start'
+      });
+    });
+
+
+    it('should throw when fetch fails', async () => {
+
+      // given
+      const api = createCamundaAPI();
+
+      // when
+      fetchSpy.rejects(new TypeError('Failed to fetch'));
+
+      // when
+      let error;
+
+      try {
+        await api.startInstance(processDefinition, options);
+      } catch (e) {
+        error = e;
+      } finally {
+
+        // then
+        expect(error).to.exist;
+      }
+    });
+
+
+    it('should throw when response is not ok', async () => {
+
+      // given
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response({ ok: false }));
+
+      // when
+      let error;
+
+      try {
+        await api.startInstance(processDefinition, options);
+      } catch (e) {
+        error = e;
+      }
+
+      // then
+      expect(error).to.exist;
+    });
+
+  });
+
 });
 
 
