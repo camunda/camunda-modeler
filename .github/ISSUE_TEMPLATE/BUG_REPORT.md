@@ -1,18 +1,8 @@
 ---
 name: Bug report
-about: Create a report to help us fix a tool error
+about: Report a problem and help us fix it.
+labels: "bug"
 ---
-
-<!--
-
-Thanks for filing this bug report!
-
-Please provide the relevant context:
-
-  * environment you're using
-  * detailed steps to reproduce
-
--->
 
 
 __Describe the Bug__
@@ -22,8 +12,11 @@ __Describe the Bug__
 
 __Steps to Reproduce__
 
+<!-- Clear steps that allow us to reproduce the error. -->
+
 1. do this
 2. do that
+3. now this happens
 
 
 __Expected Behavior__
@@ -33,5 +26,5 @@ __Expected Behavior__
 
 __Environment__
 
- - OS: [e.g. MacOS 10.2, Windows 10]
- - Camunda Modeler Version: [e.g. 2.0.0]
+- OS: [e.g. MacOS 10.2, Windows 10]
+- Camunda Modeler Version: [e.g. 2.0.0]

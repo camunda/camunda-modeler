@@ -1,16 +1,8 @@
 ---
 name: Feature request
-about: Suggest an idea or general improvement
+about: Suggest an idea or general improvement.
+labels: "enhancement"
 ---
-
-<!--
-
-Thanks for filing this feature request!
-
-Please take your time to provide the relevant context
-that allows us to understand your proposal.
-
--->
 
 
 __Is your feature request related to a problem? Please describe.__
@@ -21,6 +13,7 @@ A clear and concise description of what the problem is. Ex. I'm always frustrate
 __Describe the solution you'd like__
 
 A clear and concise description of what you want to happen.
+
 
 __Describe alternatives you've considered__
 
