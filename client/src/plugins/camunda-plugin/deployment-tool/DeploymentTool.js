@@ -339,18 +339,19 @@ export default class DeploymentTool extends PureComponent {
 
   render() {
     const {
+      activeTab,
       modalState
     } = this.state;
 
     return <React.Fragment>
-      <Fill slot="toolbar" group="8_deploy">
+      { activeTab && activeTab.type !== 'empty' && <Fill slot="toolbar" group="8_deploy">
         <Button
           onClick={ this.deploy }
           title="Deploy current diagram"
         >
           <Icon name="deploy" />
         </Button>
-      </Fill>
+      </Fill> }
 
       { modalState &&
         <KeyboardInteractionTrap triggerAction={ this.props.triggerAction }>
