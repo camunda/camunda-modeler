@@ -1,19 +1,48 @@
 # Search Paths
 
-Inside the modeler we look inside different search paths to retrieve persistent application data or additional user resources, e.g. loading [Plugins](../plugins) or [Element Templates](../element-templates). The directories orientate on the [standard electron paths](https://github.com/electron/electron/blob/master/docs/api/app.md#appgetpathname).
+Features like [Element Templates](../element-templates) and [Plugins](../plugins) allow you to add your own resources to the Camunda Modeler. For these resources to be found, they have to be in one of two directories depending on how local or global you want them to be.
 
-## Application Home Directory
+## App Data Directory
 
-This is the installation directory of the application executable. Inside this documentation, we use the `{APP_HOME}` symbol to indicate the Application Home Directory.
+The `resources` directory relative to the directory containing the Camunda Modeler executable file. In our documentation we refer to it as `{APP_DATA_DIRECTORY}`.
 
-## User Data Directory 
+Resources in the app data directory will be found by any local Camunda Modeler instance.
 
-This is the per-user application data directory which differs across operating systems:
+### Example (Windows):
 
-* **Windows**: `%APPDATA%/camunda-modeler`
-* **Linux**: `$XDG_CONFIG_HOME/camunda-modeler` or `~/.config/camunda-modeler`
-* **macOS**: `~/Library/Application Support/camunda-modeler`
+```bash
+└── camunda-modeler-3.5.0-win-x64
+    ├── Camunda Modeler.exe
+    └── resources
+        ├── element-templates
+        |   └── my-element-templates.json
+        └── plugins
+            └── my-plugin
+                └── index.js
+```
 
-If you don't know where to find these paths, learn more about Windows [`%APPDATA%`](https://www.howtogeek.com/318177/what-is-the-appdata-folder-in-windows/) and Linux [`$XDG_CONFIG_HOME`](https://wiki.archlinux.org/index.php/XDG_Base_Directory) directories.
+## User Data Directory
 
-Inside this documentation, we use the `{USER_DATA}` symbol to indicate the User Data Directory.
+The `camunda-modeler/resources` directory relative to the per-user application data directory, which by default points to:
+
+* `%APPDATA%` on [Windows](https://www.pcworld.com/article/2690709/whats-in-the-hidden-windows-appdata-folder-and-how-to-find-it-if-you-need-it.html)
+* `$XDG_CONFIG_HOME` or `~/.config` on [Linux](https://wiki.archlinux.org/index.php/XDG_user_directories)
+* `~/Library/Application Support` on macOS
+
+In our documentation we refer to it as `{USER_DATA_DIRECTORY}`.
+
+Resources in the user data directory will be found by all Camunda Modeler instances.
+
+### Example (Windows):
+
+```bash
+└── AppData
+    └── Roaming
+        └── camunda-modeler
+            ├── resources
+            ├── element-templates
+            |   └── my-element-templates.json
+            └── plugins
+                └── my-plugin
+                    └── index.js
+```
