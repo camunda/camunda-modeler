@@ -27,15 +27,14 @@ Flags passed as command line arguments take precedence over those configured via
 
 ## Available Flags
 
-```json
-{
-  "disable-plugins": false,
-  "disable-adjust-origin": false,
-  "disable-cmmn": false,
-  "disable-dmn": false,
-  "single-instance": false
-}
-```
+| flag | default value |
+| ------------- | ------------- |
+| "disable-plugins"  | false  |
+| "disable-adjust-origin"  | false  |
+| "disable-cmmn" | false |
+| "disable-dmn" | false |
+| "single-instance" | false |
+| "user-data-dir" | [Electron default](../search-paths) |
 
 
 ## Examples
