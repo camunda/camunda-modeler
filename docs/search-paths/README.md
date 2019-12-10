@@ -16,4 +16,6 @@ This is the per-user application data directory which differs across operating s
 
 If you don't know where to find these paths, learn more about Windows [`%APPDATA%`](https://www.howtogeek.com/318177/what-is-the-appdata-folder-in-windows/) and Linux [`$XDG_CONFIG_HOME`](https://wiki.archlinux.org/index.php/XDG_Base_Directory) directories.
 
+It is also possible to change the user data directory. Just use the `--user-data-dir` argument when starting the Camunda Modeler from the command line. Refer to the [flags documentation](../flags) on how to configure the application.
+
 Inside this documentation, we use the `{USER_DATA}` symbol to indicate the User Data Directory.
