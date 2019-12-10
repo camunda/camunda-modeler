@@ -10,7 +10,7 @@ Resources in the app data directory will be found by any local Camunda Modeler i
 
 ### Example (Windows):
 
-```bash
+```
 └── camunda-modeler-3.5.0-win-x64
     ├── Camunda Modeler.exe
     └── resources
@@ -35,14 +35,14 @@ Resources in the user data directory will be found by all Camunda Modeler instan
 
 ### Example (Windows):
 
-```bash
+```
 └── AppData
     └── Roaming
         └── camunda-modeler
-            ├── resources
-            ├── element-templates
-            |   └── my-element-templates.json
-            └── plugins
-                └── my-plugin
-                    └── index.js
+            └── resources
+                ├── element-templates
+                |   └── my-element-templates.json
+                └── plugins
+                    └── my-plugin
+                        └── index.js
 ```
