@@ -488,13 +488,19 @@ function bootstrapLogging() {
 function bootstrap() {
   const appPath = path.dirname(app.getPath('exe')),
         cwd = process.cwd(),
-        userDesktopPath = app.getPath('userDesktop'),
-        userPath = app.getPath('userData');
+        userDesktopPath = app.getPath('userDesktop');
 
   const {
     files,
     flags: flagOverrides
   } = Cli.parse(process.argv, cwd);
+
+  // (1) user path
+  if (flagOverrides['user-data-dir']) {
+    app.setPath('userData', flagOverrides['user-data-dir']);
+  }
+
+  const userPath = app.getPath('userData');
 
   let resourcesPaths = [
     path.join(appPath, 'resources'),
@@ -508,35 +514,35 @@ function bootstrap() {
     ];
   }
 
-  // (1) config
+  // (2) config
   const config = new Config({
     appPath,
     resourcesPaths,
     userPath
   });
 
-  // (2) flags
+  // (3) flags
   const flags = new Flags({
     paths: resourcesPaths,
     overrides: flagOverrides
   });
 
-  // (3) menu
+  // (4) menu
   const menu = new Menu({
     platform
   });
 
-  // (4) dialog
+  // (5) dialog
   const dialog = new Dialog({
     config,
     electronDialog,
     userDesktopPath
   });
 
-  // (5) workspace
+  // (6) workspace
   new Workspace(config);
 
-  // (6) plugins
+  // (7) plugins
   const pluginsDisabled = flags.get('disable-plugins');
 
   let paths;
