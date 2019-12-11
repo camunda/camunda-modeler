@@ -1,15 +1,10 @@
-> :warning: __The feature Plugins may be subject to change in the future.__ As an example, this may lead to breaking changes regarding the configuration and consuption of plugins.
-
 # Plugins :electric_plug:
 
 Plugins allow you to change the appearance and behavior of the Camunda Modeler and add new features.
 
-![Camunda Modeler Plugins](./screencast.gif)
-<p align="center">Using the Camunda Modeler with a Plugin</p>
-
 ## Plugging into the Camunda Modeler
 
-You can plug into the modeler in order to change its appearance, add new menu entries or extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js). Adding a plugin is as easy as putting the files into the `resources/plugins` sub-folder of your local [`{APP_HOME}`](../search-paths#application-home-directory) or [`{USER_DATA}`](../search-paths#user-data-directory)  directory.
+You can plug into the modeler to change its appearance, add new menu entries or extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js). Adding a plugin is as easy as putting it into the `resources/plugins` directory relative to your [`{APP_DATA_DIRECTORY}`](../search-paths#app-data-directory) or [`{USER_DATA_DIRECTORY}`](../search-paths#user-data-directory) directory. The Camunda Modeler is only able to find plugins put directly into the `plugins` directory. `plugins/*/my-plugin` cannot be found. If you download and extract plugins from GitHub the extracted directory contains the actual plugin, so make sure to copy the plugin, not its parent directory.
 
 So let's dive into how to add your own plugins.
 
@@ -27,7 +22,7 @@ module.exports = {
 ```
 The modeler will automatically load your plugins on startup.
 
-### Changing the appearance of the modeler
+### Changing the Appearance of the Modeler
 
 You can change the appearance of the modeler using CSS.
 
@@ -47,7 +42,7 @@ module.exports = {
 };
 ```
 
-### Adding menu entries to the modeler
+### Adding Menu Entries to the Modeler
 
 You can add new menu entries to the modelers menu.
 
@@ -83,7 +78,7 @@ You can use a Node.js module here since the modeler is built with [Electron](htt
 
 For more information on how the modeler's menu works, have a look at its implementation [here](https://github.com/camunda/camunda-modeler/blob/master/app/lib/menu/menu-builder.js).
 
-### Extend the modeling tools for BPMN, CMMN, and DMN
+### Extend the Modeling Tools for BPMN, CMMN, and DMN
 
 > Currently you can only extend bpmn-js
 
