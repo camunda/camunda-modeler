@@ -33,6 +33,8 @@ import camundaModdleExtension from 'camunda-bpmn-moddle/lib';
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
 
+import nativeCopyPasteModule from 'bpmn-js/lib/features/native-copy-paste';
+
 import disableCollapsedSubprocessModule from 'bpmn-js-disable-collapsed-subprocess';
 
 
@@ -58,6 +60,9 @@ export default class CamundaBpmnModeler extends BpmnModeler {
       moddleExtensions: {
         camunda: camundaModdlePackage,
         ...(moddleExtensions || {})
+      },
+      keyboardBindings: {
+        copyPaste: false
       }
     });
   }
@@ -78,7 +83,8 @@ const extensionModules = [
   propertiesPanelModule,
   propertiesProviderModule,
   signavioCompatModule,
-  disableCollapsedSubprocessModule
+  disableCollapsedSubprocessModule,
+  nativeCopyPasteModule
 ];
 
 CamundaBpmnModeler.prototype._modules = [
