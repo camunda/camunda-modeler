@@ -26,7 +26,7 @@ const {
 
 // in case of --nightly, update all package versions to the
 // next minor version with the nightly preid. This will
-// result in app and client being versioned like `v1.2.3-nightly.0`.
+// result in app and client being versioned like `v1.2.0-nightly.20191121`.
 
 const nightlyVersion = nightly && getVersion(pkg, {
   nightly: 'nightly'

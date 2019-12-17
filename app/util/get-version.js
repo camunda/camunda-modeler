@@ -28,8 +28,26 @@ module.exports = function getVersion(pkg, options) {
   var nightly = options.nightly;
 
   if (nightly) {
-    appVersion = semver.inc(appVersion, 'minor') + '-' + nightly;
+    appVersion = semver.inc(appVersion, 'minor') + '-' + nightly + '.' + today();
   }
 
   return appVersion;
 };
+
+function pad(n) {
+  if (n < 10) {
+    return '0' + n;
+  } else {
+    return n;
+  }
+}
+
+function today() {
+  const d = new Date();
+
+  return [
+    d.getFullYear(),
+    pad(d.getMonth() + 1),
+    pad(d.getDate())
+  ].join('');
+}
