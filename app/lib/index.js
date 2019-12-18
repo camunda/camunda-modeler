@@ -325,16 +325,12 @@ app.createEditorWindow = function() {
   const windowOptions = {
     resizable: true,
     show: false,
-    title: 'Camunda Modeler',
+    title: 'Camunda Modeler' + getTitleSuffix(app.metadata.version),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration
     }
   };
-
-  if (process.env.NODE_ENV === 'development') {
-    windowOptions.title += ' (dev)';
-  }
 
   if (process.platform === 'linux') {
     windowOptions.icon = path.join(__dirname + '/../resources/favicon.png');
@@ -571,6 +567,21 @@ function bootstrap() {
     menu,
     plugins
   };
+}
+
+/**
+ * Returns the app title suffix based on app version.
+ *
+ * @param {String} version
+ * @return {String}
+ */
+function getTitleSuffix(version) {
+  if (version.includes('dev')) {
+    return ' (dev)';
+  } else if (version.includes('nightly')) {
+    return ' (' + version.split('-')[1] + ')';
+  }
+  return '';
 }
 
 
