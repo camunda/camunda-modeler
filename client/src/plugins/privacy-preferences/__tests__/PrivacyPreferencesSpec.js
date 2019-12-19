@@ -17,26 +17,12 @@ import {
   shallow
 } from 'enzyme';
 
-import Flags, { SERVER_INTERACTION } from '../../../util/Flags';
-
 import PrivacyPreferences from '../PrivacyPreferences';
 
 // eslint-disable-next-line no-undef
 const { spy } = sinon;
 
 describe('<PrivacyPreferences>', () => {
-
-  beforeEach(() => {
-    Flags.init({
-      [ SERVER_INTERACTION ]: true
-    });
-  });
-
-
-  afterEach(() => {
-    Flags.reset();
-  });
-
 
   it('should render', async () => {
 
