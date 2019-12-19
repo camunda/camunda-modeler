@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import PrivacyPreferencesView from './PrivacyPreferencesView';
 
-import Flags, { SERVER_INTERACTION } from '../../util/Flags';
+import Flags, { DISABLE_SERVER_INTERACTION } from '../../util/Flags';
 
 const CONFIG_KEY = 'editor.privacyPreferences';
 
@@ -26,8 +26,7 @@ export default class PrivacyPreferences extends PureComponent {
 
   constructor(props) {
     super(props);
-
-    if (!Flags.get(SERVER_INTERACTION)) {
+    if (Flags.get(DISABLE_SERVER_INTERACTION)) {
       return new NoopComponent();
     }
   }

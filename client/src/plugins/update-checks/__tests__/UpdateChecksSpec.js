@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import Flags, { UPDATES_SERVER_URL, SERVER_INTERACTION } from '../../../util/Flags';
+import Flags, { DISABLE_SERVER_INTERACTION } from '../../../util/Flags';
 import Metadata from '../../../util/Metadata';
 
 import {
@@ -27,10 +27,6 @@ const OS_INFO_CONFIG_KEY = 'os.info';
 describe('<UpdateChecks>', () => {
 
   beforeEach(() => {
-    Flags.init({
-      [ SERVER_INTERACTION ]: true,
-      [ UPDATES_SERVER_URL]: 'http://test-url.com'
-    });
     Metadata.init({ name: 'test-name', version: '3.5.0' });
   });
 
@@ -46,10 +42,10 @@ describe('<UpdateChecks>', () => {
   });
 
 
-  it('should not be initialized if SERVER_INTERACTION flag missing', () => {
+  it('should not be initialized if DISABLE_SERVER_INTERACTION flag existent', () => {
 
     Flags.init({
-      [ UPDATES_SERVER_URL]: 'http://test-url.com'
+      [ DISABLE_SERVER_INTERACTION ]: true
     });
 
     const component = shallow(<UpdateChecks />);
@@ -58,19 +54,8 @@ describe('<UpdateChecks>', () => {
   });
 
 
-  it('should not be initialized if UPDATES_SERVER_URL flag missing', () => {
 
-    Flags.init({
-      [ SERVER_INTERACTION ]: true
-    });
-
-    const component = shallow(<UpdateChecks />);
-
-    expect(component.state()).to.be.null;
-  });
-
-
-  it('should be initialized if flags not missing', () => {
+  it('should be initialized if DISABLE_SERVER_INTERACTION flag missing', () => {
 
     const component = shallow(<UpdateChecks />);
 
@@ -158,22 +143,6 @@ describe('<UpdateChecks>', () => {
     await waitForNPromises(component, 2);
 
     expect(component.state().checkNotNeeded).to.be.true;
-  });
-
-
-  it('should check latest version with correct url', async () => {
-
-    const component = getUpdateCheckerComponent();
-
-    let requestedURL = '';
-
-    mockServerResponse(component, {}, (url) => {
-      requestedURL = url;
-    });
-
-    await waitForNPromises(component, 4);
-
-    expect(requestedURL).to.be.eql('http://test-url.com/update-check?editorID=test-id&newerThan=v3.5.0&modelerVersion=v3.5.0&os=window&osVersion=98&plugins%5Bid%5D=plugin1&plugins%5Bname%5D=plugin1&plugins%5Bid%5D=plugin2&plugins%5Bname%5D=plugin2');
   });
 
 
