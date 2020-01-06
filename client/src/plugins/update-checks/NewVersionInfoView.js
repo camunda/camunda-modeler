@@ -19,7 +19,8 @@ import {
   BUTTON_NEGATIVE,
   BUTTON_POSITIVE,
   RELEASE_NOTES_TITLE,
-  INFO_TEXT
+  INFO_TEXT,
+  INFO_TEXT2
 } from './constants';
 
 import css from './NewVersionInfoView.less';
@@ -67,6 +68,8 @@ class NewVersionInfoView extends PureComponent {
           <div className="newVersionInfoText">
             { infoTextProcessed }
           </div>
+          <br />
+          { INFO_TEXT2 }
           <div className="releaseNotesContainer">
             <b className="releaseNotesTitle"> { RELEASE_NOTES_TITLE } </b>
             <div className="htmlSnippet">

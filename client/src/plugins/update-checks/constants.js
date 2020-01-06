@@ -8,12 +8,14 @@
  * except in compliance with the MIT License.
  */
 
-export const MODAL_TITLE = 'A Camunda Modeler Update is Available';
+export const MODAL_TITLE = 'A New Version Is Available';
 
-export const BUTTON_NEGATIVE = 'Not right now';
+export const BUTTON_NEGATIVE = 'Skip this version';
 
 export const BUTTON_POSITIVE = 'Go to download page';
 
 export const RELEASE_NOTES_TITLE = 'Release notes:';
 
-export const INFO_TEXT = 'Camunda Modeler @@1 is now available--you have @@2. Would you like to download it now?';
+export const INFO_TEXT = 'Camunda Modeler @@1 is available. Your version is @@2.';
+
+export const INFO_TEXT2 = 'Would you like to download it now?';

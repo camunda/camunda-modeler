@@ -36,7 +36,7 @@ export const PREFERENCES_LIST = [
   },
   {
     title: 'Enable Usage Statistics',
-    explanation: 'Allow Camunda Modeler to send anonymous usage statistics.',
+    explanation: 'Allow Camunda Modeler to send pseudonymised usage statistics.',
     key: 'ENABLE_USAGE_STATISTICS'
   },
   {
