@@ -20,20 +20,20 @@ function ElectronDialog() {
 
   this.response = null;
 
-  this.setResponse = function(fileOrError) {
-    this.response = fileOrError;
+  this.setResponse = function(response) {
+    this.response = response;
   };
 
-  this.showOpenDialog = function(browserWindow, opts, callback) {
-    callback(this.response);
+  this.showOpenDialog = function(browserWindow, opts) {
+    return Promise.resolve(this.response);
   };
 
-  this.showSaveDialog = function(browserWindow, opts, callback) {
-    callback(this.response);
+  this.showSaveDialog = function(browserWindow, opts) {
+    return Promise.resolve(this.response);
   };
 
-  this.showMessageBox = function(browserWindow, opts, callback) {
-    callback(this.response);
+  this.showMessageBox = function(browserWindow, opts) {
+    return Promise.resolve(this.response);
   };
 
   this.showErrorBox = function(title, message) {

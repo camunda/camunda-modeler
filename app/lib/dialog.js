@@ -77,18 +77,21 @@ class Dialog {
       defaultPath = this.config.get('defaultPath', this.userDesktopPath);
     }
 
-    return new Promise(resolve => {
-      this.electronDialog.showSaveDialog(this.browserWindow, {
-        defaultPath: `${ defaultPath }/${ name }`,
-        filters,
-        title: title || `Save "${ name }" as...`
-      }, (filePath) => {
-        if (filePath) {
-          this.setDefaultPath(filePath);
-        }
+    return this.electronDialog.showSaveDialog(this.browserWindow, {
+      defaultPath: `${ defaultPath }/${ name }`,
+      filters,
+      title: title || `Save "${ name }" as...`
+    }).then(response => {
 
-        resolve(filePath);
-      });
+      const {
+        filePath
+      } = response;
+
+      if (filePath) {
+        this.setDefaultPath(filePath);
+      }
+
+      return filePath;
     });
   }
 
@@ -104,19 +107,22 @@ class Dialog {
       defaultPath = this.config.get('defaultPath', this.userDesktopPath);
     }
 
-    return new Promise(resolve => {
-      this.electronDialog.showOpenDialog(this.browserWindow, {
-        defaultPath,
-        filters,
-        properties: [ 'openFile', 'multiSelections' ],
-        title: title || 'Open File'
-      }, (filePaths = []) => {
-        if (filePaths.length) {
-          this.setDefaultPath(filePaths[0]);
-        }
+    return this.electronDialog.showOpenDialog(this.browserWindow, {
+      defaultPath,
+      filters,
+      properties: [ 'openFile', 'multiSelections' ],
+      title: title || 'Open File'
+    }).then(response => {
 
-        resolve(filePaths);
-      });
+      const {
+        filePaths
+      } = response;
+
+      if (filePaths && filePaths[0]) {
+        this.setDefaultPath(filePaths);
+      }
+
+      return filePaths || [];
     });
   }
 
@@ -143,10 +149,10 @@ class Dialog {
       noLink: true
     });
 
-    return new Promise((resolve) => {
-      this.electronDialog.showMessageBox(this.browserWindow, options, (index) => {
-        resolve(buttons[ index ].id);
-      });
+    return this.electronDialog.showMessageBox(
+      this.browserWindow, options
+    ).then(response => {
+      return buttons[response.response].id;
     });
   }
 
