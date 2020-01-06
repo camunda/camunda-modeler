@@ -103,7 +103,7 @@ describe('<PrivacyPreferences>', () => {
     } } subscribe={ () => {} } />);
 
     await wrapper.update();
-    wrapper.find('.privacyPreferencesSave').first().simulate('click');
+    wrapper.find('.btn-primary').first().simulate('click');
     expect(setSpy).to.have.been.called;
   });
 
@@ -152,7 +152,7 @@ describe('<PrivacyPreferences>', () => {
 
     await subscribeFunc();
     await wrapper.update();
-    wrapper.find('.privacyPreferencesCancel').first().simulate('click');
+    wrapper.find('.btn').at(1).simulate('click');
     expect(setSpy).to.not.have.been.called;
   });
 });

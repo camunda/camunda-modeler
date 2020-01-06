@@ -81,7 +81,7 @@ describe('<NewVersionInfoView>', () => {
 
   it('should render positive button', () => {
 
-    const positiveButton = wrapper.find('.newVersionInfoButtonPositive');
+    const positiveButton = wrapper.find('.btn-primary');
 
     expect(positiveButton.text().trim()).to.be.eql(BUTTON_POSITIVE);
   });
@@ -89,7 +89,7 @@ describe('<NewVersionInfoView>', () => {
 
   it('should render negative button', () => {
 
-    const negativeButton = wrapper.find('.newVersionInfoButtonNegative');
+    const negativeButton = wrapper.find('.btn').at(1);
 
     expect(negativeButton.text().trim()).to.be.eql(BUTTON_NEGATIVE);
   });
@@ -103,7 +103,7 @@ describe('<NewVersionInfoView>', () => {
       <NewVersionInfoView latestVersionInfo={ {} } onClose={ onCloseSpy } />
     );
 
-    const negativeButton = component.find('.newVersionInfoButtonNegative');
+    const negativeButton = component.find('.btn').at(1);
 
     negativeButton.simulate('click');
 
@@ -119,7 +119,7 @@ describe('<NewVersionInfoView>', () => {
       <NewVersionInfoView latestVersionInfo={ {} } onGoToDownloadPage={ onGoToDownloadPageSpy } />
     );
 
-    const positiveButton = component.find('.newVersionInfoButtonPositive');
+    const positiveButton = component.find('.btn-primary');
 
     positiveButton.simulate('click');
 
