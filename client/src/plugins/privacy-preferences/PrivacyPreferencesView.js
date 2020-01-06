@@ -100,13 +100,13 @@ class PrivacyPreferencesView extends PureComponent {
 
         <Modal.Footer>
           <div className="form-submit">
-            <button className="privacyPreferencesSave" type="submit" onClick={ () => {
+            <button className="btn btn-primary" type="submit" onClick={ () => {
               onSaveAndClose(this.state);
             } }>
               { OK_BUTTON_TEXT }
             </button>
             { hasCancel && (
-              <button className="privacyPreferencesCancel" type="submit" onClick={ onClose }>
+              <button className="btn" type="submit" onClick={ onClose }>
                 { CANCEL_BUTTON_TEXT }
               </button>
             ) }

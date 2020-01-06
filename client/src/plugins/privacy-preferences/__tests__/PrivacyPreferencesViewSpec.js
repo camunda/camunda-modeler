@@ -85,7 +85,7 @@ describe('<PrivacyPreferencesView>', function() {
 
     it('should not render cancel button if prop not set', function() {
 
-      const cancel = wrapper.find('.privacyPreferencesCancel');
+      const cancel = wrapper.find('.btn').at(1);
 
       expect(cancel).to.have.lengthOf(0);
     });
@@ -95,7 +95,7 @@ describe('<PrivacyPreferencesView>', function() {
 
       wrapper = mount(<PrivacyPreferencesView hasCancel={ true } />);
 
-      const cancel = wrapper.find('.privacyPreferencesCancel');
+      const cancel = wrapper.find('.btn').at(1);
 
       expect(cancel).to.have.lengthOf(1);
     });
@@ -181,7 +181,7 @@ describe('<PrivacyPreferencesView>', function() {
         <PrivacyPreferencesView preferences={ currentPreferences } onSaveAndClose={ onSaveAndClose } />
       );
 
-      const saveButton = wrapper.find('.privacyPreferencesSave').first();
+      const saveButton = wrapper.find('.btn-primary').first();
       saveButton.simulate('click');
       expect(onSaveAndClose).to.have.been.calledWith(currentPreferences);
     });
@@ -199,7 +199,7 @@ describe('<PrivacyPreferencesView>', function() {
           onSaveAndClose={ onSaveAndClose } />
       );
 
-      const cancelButton = wrapper.find('.privacyPreferencesCancel').first();
+      const cancelButton = wrapper.find('.btn').at(1);
       cancelButton.simulate('click');
       expect(onSaveAndClose).to.not.have.been.called;
     });
