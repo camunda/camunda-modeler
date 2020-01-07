@@ -17,8 +17,9 @@ import diagramOriginModule from 'diagram-js-origin';
 import alignToOriginModule from '@bpmn-io/align-to-origin';
 import addExporterModule from '@bpmn-io/add-exporter';
 
+import executableFixModule from 'bpmn-js-executable-fix';
+
 import completeDirectEditingModule from './features/complete-direct-editing';
-import executableFixModule from './features/executable-fix';
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from './features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
