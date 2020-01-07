@@ -11,6 +11,7 @@
     "@bpmn-io/replace-ids": "^0.2.0",
     "bpmn-js": "^6.1.1",
     "bpmn-js-disable-collapsed-subprocess": "^0.1.1",
+    "bpmn-js-executable-fix": "^0.1.1",
     "bpmn-js-properties-panel": "^0.33.1",
     "bpmn-js-signavio-compat": "^1.2.1",
     "camunda-bpmn-moddle": "^4.3.0",
