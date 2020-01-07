@@ -334,7 +334,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
                   <button
                     type="button"
-                    className="btn"
+                    className="btn btn-secondary"
                     onClick={ () => onClose('cancel') }
                   >
                     Cancel

@@ -106,7 +106,7 @@ class PrivacyPreferencesView extends PureComponent {
               { OK_BUTTON_TEXT }
             </button>
             { hasCancel && (
-              <button className="btn" type="submit" onClick={ onClose }>
+              <button className="btn btn-secondary" type="submit" onClick={ onClose }>
                 { CANCEL_BUTTON_TEXT }
               </button>
             ) }

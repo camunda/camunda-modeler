@@ -92,7 +92,7 @@ export default class StartInstanceConfigModal extends React.PureComponent {
                   </button>
 
                   <button
-                    className="btn"
+                    className="btn btn-secondary"
                     type="button"
                     onClick={ onCancel }
                   >
