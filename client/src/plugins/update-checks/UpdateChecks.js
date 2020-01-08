@@ -14,7 +14,7 @@ import NewVersionInfoView from './NewVersionInfoView';
 
 import UpdateChecksAPI from './UpdateChecksAPI';
 
-import Flags, { DISABLE_SERVER_INTERACTION } from '../../util/Flags';
+import Flags, { DISABLE_SERVER_INTERACTION, FORCE_UPDATE_CHECKS, UPDATES_SERVER_URL } from '../../util/Flags';
 
 import Metadata from '../../util/Metadata';
 
@@ -40,7 +40,7 @@ export default class UpdateChecks extends PureComponent {
       return new NoopComponent();
     }
 
-    this.updateChecksAPI = new UpdateChecksAPI();
+    this.updateChecksAPI = new UpdateChecksAPI(Flags.get(UPDATES_SERVER_URL));
 
     this.state = {
       showModal: false
@@ -60,7 +60,8 @@ export default class UpdateChecks extends PureComponent {
     }
 
     const latestUpdateCheckInfo = await config.get(LATEST_UPDATE_CHECK_INFO_CONFIG_KEY);
-    if (latestUpdateCheckInfo && !this.isTimeExceeded(latestUpdateCheckInfo.latestUpdateTime)) {
+
+    if (!Flags.get(FORCE_UPDATE_CHECKS) && latestUpdateCheckInfo && !this.isTimeExceeded(latestUpdateCheckInfo.latestUpdateTime)) {
       this.setState({ checkNotNeeded: true });
       return;
     }
