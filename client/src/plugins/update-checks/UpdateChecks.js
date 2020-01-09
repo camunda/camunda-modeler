@@ -91,13 +91,15 @@ export default class UpdateChecks extends PureComponent {
     }
 
     const responseBody = responseJSON.response;
-    const latestVersion = responseBody.latestVersion;
-    let newLatestUpdateCheckInfo = latestUpdateCheckInfo ? latestUpdateCheckInfo : {};
+    const update = responseBody.update;
 
-    if (latestVersion) {
+    let newLatestUpdateCheckInfo = latestUpdateCheckInfo || {};
+
+    if (update) {
       const modelerVersion = 'v' + Metadata.data.version;
-      const downloadURL = responseBody.downloadURL;
-      const releases = responseBody.releases;
+      const latestVersion = update.latestVersion;
+      const downloadURL = update.downloadURL;
+      const releases = update.releases;
       this.setState({
         isChecking: false,
         showModal: true,

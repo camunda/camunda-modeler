@@ -175,9 +175,11 @@ describe('<UpdateChecks>', () => {
     const component = getUpdateCheckerComponent({ onConfigSet: onConfigSet });
 
     mockServerResponse(component, {
-      latestVersion: 'v3.7.0',
-      downloadURL: 'test-download-url',
-      releases: []
+      update: {
+        latestVersion: 'v3.7.0',
+        downloadURL: 'test-download-url',
+        releases: []
+      }
     });
 
     await waitForNPromises(component, 5);
@@ -203,9 +205,11 @@ describe('<UpdateChecks>', () => {
     const component = getUpdateCheckerComponent();
 
     mockServerResponse(component, {
-      latestVersion: 'v3.7.0',
-      downloadURL: 'test-download-url',
-      releases: []
+      update: {
+        latestVersion: 'v3.7.0',
+        downloadURL: 'test-download-url',
+        releases: []
+      }
     });
 
     await waitForNPromises(component, 5);
