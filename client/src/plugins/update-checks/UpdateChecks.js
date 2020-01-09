@@ -24,12 +24,16 @@ class NoopComponent extends PureComponent {
   }
 }
 
+const DEFAULT_UPDATE_SERVER_URL = process.env.NODE_ENV === 'production'
+  ? 'https://camunda-modeler-updates.camunda.com/'
+  : 'https://camunda-modeler-update-server-staging.camunda.com';
+
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const LATEST_UPDATE_CHECK_INFO_CONFIG_KEY = 'editor.latestUpdateCheckInfo';
 
-
 const HOURS_DENOMINATOR = 3600000;
 const HOURS_LIMIT = 24;
+
 
 export default class UpdateChecks extends PureComponent {
 
@@ -40,7 +44,9 @@ export default class UpdateChecks extends PureComponent {
       return new NoopComponent();
     }
 
-    this.updateChecksAPI = new UpdateChecksAPI(Flags.get(UPDATES_SERVER_URL));
+    const updateServerUrl = Flags.get(UPDATES_SERVER_URL, DEFAULT_UPDATE_SERVER_URL);
+
+    this.updateChecksAPI = new UpdateChecksAPI(updateServerUrl);
 
     this.state = {
       showModal: false
