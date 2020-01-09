@@ -16,35 +16,48 @@ const ENCODINGS = [
   'image/jpeg'
 ];
 
-const SCALE = 3;
+const INITIAL_SCALE = 3;
+const FINAL_SCALE = 1;
+const SCALE_STEP = 1;
+
+const DATA_URL_REGEX = /^data:((?:\w+\/(?:(?!;).)+)?)((?:;[\w\W]*?[^;])*),(.+)$/;
+
 
 export default function generateImage(type, svg) {
   const encoding = 'image/' + type;
-
-  let context,
-      canvas;
 
   if (ENCODINGS.indexOf(encoding) === -1) {
     throw new Error('<' + type + '> is an unknown type for converting svg to image');
   }
 
-  canvas = document.createElement('canvas');
+  const initialSVG = svg;
 
+  let dataURL = '';
 
-  svg = svg.replace(/width="([^"]+)" height="([^"]+)"/, function(_, widthStr, heightStr) {
-    return `width="${parseInt(widthStr, 10) * SCALE}" height="${parseInt(heightStr, 10) * SCALE}"`;
-  });
+  for (let scale = INITIAL_SCALE; scale >= FINAL_SCALE; scale -= SCALE_STEP) {
 
-  canvg(canvas, svg);
+    let canvas = document.createElement('canvas');
 
-  // make the background white for every format
-  context = canvas.getContext('2d');
+    svg = initialSVG.replace(/width="([^"]+)" height="([^"]+)"/, function(_, widthStr, heightStr) {
+      return `width="${parseInt(widthStr, 10) * scale}" height="${parseInt(heightStr, 10) * scale}"`;
+    });
 
-  context.globalCompositeOperation = 'destination-over';
+    canvg(canvas, svg);
 
-  context.fillStyle = 'white';
+    // make the background white for every format
+    let context = canvas.getContext('2d');
 
-  context.fillRect(0, 0, canvas.width, canvas.height);
+    context.globalCompositeOperation = 'destination-over';
+    context.fillStyle = 'white';
 
-  return canvas.toDataURL(encoding);
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    dataURL = canvas.toDataURL(encoding);
+
+    if (DATA_URL_REGEX.test(dataURL)) {
+      return dataURL;
+    }
+  }
+
+  throw new Error('Error happened generating image. Diagram size is too big.');
 }
