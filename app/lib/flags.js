@@ -53,8 +53,8 @@ class Flags {
     return this.flags;
   }
 
-  get(key) {
-    return this.flags[key];
+  get(key, defaultValue) {
+    return key in this.flags ? this.flags[key] : defaultValue;
   }
 
 }

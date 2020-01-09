@@ -18,8 +18,8 @@ class Flags {
     this.data = data;
   }
 
-  get(key) {
-    return this.data[key];
+  get(key, defaultValue) {
+    return key in this.data ? this.data[key] : defaultValue;
   }
 
   reset = () => {

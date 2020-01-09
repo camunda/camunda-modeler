@@ -37,6 +37,27 @@ describe('flags', function() {
 
   });
 
+
+  it('should provide default value', function() {
+
+    // given
+    const flags = new Flags({
+      paths: [
+        absPath('flags/1'),
+        absPath('flags/2')
+      ],
+      overrides: {
+        TWO: 'overridden'
+      }
+    });
+
+    // then
+    expect(flags.get('ONE')).to.equal(true);
+    expect(flags.get('NON_EXISTING')).not.to.exist;
+
+    expect(flags.get('NON_EXISTING', 10000)).to.eql(10000);
+  });
+
 });
 
 
