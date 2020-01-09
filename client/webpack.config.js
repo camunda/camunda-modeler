@@ -12,8 +12,14 @@
 
 const path = require('path');
 
-const DEV = process.env.NODE_ENV === 'development';
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
+const DEV = NODE_ENV === 'development';
 const LICENSE_CHECK = process.env.LICENSE_CHECK;
+
+const {
+  DefinePlugin
+} = require('webpack');
 
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -89,6 +95,9 @@ module.exports = {
   },
   plugins: [
     new CaseSensitivePathsPlugin(),
+    new DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
+    }),
     new CopyWebpackPlugin([
       {
         from: './public',
