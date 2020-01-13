@@ -199,7 +199,7 @@ describe('<PrivacyPreferencesView>', function() {
           onSaveAndClose={ onSaveAndClose } />
       );
 
-      const cancelButton = wrapper.find('.btn').at(1);
+      const cancelButton = wrapper.find('.btn-secondary');
       cancelButton.simulate('click');
       expect(onSaveAndClose).to.not.have.been.called;
     });

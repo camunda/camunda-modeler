@@ -152,7 +152,7 @@ describe('<PrivacyPreferences>', () => {
 
     await subscribeFunc();
     await wrapper.update();
-    wrapper.find('.btn').at(1).simulate('click');
+    wrapper.find('.btn-secondary').simulate('click');
     expect(setSpy).to.not.have.been.called;
   });
 });

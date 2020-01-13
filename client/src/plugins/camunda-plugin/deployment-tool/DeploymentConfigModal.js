@@ -325,19 +325,19 @@ export default class DeploymentConfigModal extends React.PureComponent {
                 <div className="form-submit">
 
                   <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={ form.isSubmitting }
-                  >
-                    { primaryAction || 'Deploy' }
-                  </button>
-
-                  <button
                     type="button"
                     className="btn btn-secondary"
                     onClick={ () => onClose('cancel') }
                   >
                     Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={ form.isSubmitting }
+                  >
+                    { primaryAction || 'Deploy' }
                   </button>
 
                 </div>
