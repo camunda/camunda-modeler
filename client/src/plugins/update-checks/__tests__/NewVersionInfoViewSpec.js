@@ -89,7 +89,7 @@ describe('<NewVersionInfoView>', () => {
 
   it('should render negative button', () => {
 
-    const negativeButton = wrapper.find('.btn').at(1);
+    const negativeButton = wrapper.find('.btn-secondary');
 
     expect(negativeButton.text().trim()).to.be.eql(BUTTON_NEGATIVE);
   });
@@ -103,7 +103,7 @@ describe('<NewVersionInfoView>', () => {
       <NewVersionInfoView latestVersionInfo={ {} } onClose={ onCloseSpy } />
     );
 
-    const negativeButton = component.find('.btn').at(1);
+    const negativeButton = component.find('.btn-secondary');
 
     negativeButton.simulate('click');
 

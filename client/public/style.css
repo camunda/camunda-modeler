@@ -1,3 +1,18 @@
+/* global color definitions */
+:root {
+  --blue-base: #4d90ff;
+  --blue-darken-48: #005df7;
+  --blue-darken-55: #1a70ff;
+  --blue-darken-62: #3c85ff;
+  --blue-lighten-75: #80b0ff;
+  --blue-lighten-82: #a2c5ff;
+
+  --silver-base: #f8f8f8;
+  --silver-darken-80: #cdcdcd;
+  --silver-darken-87: #dedede;
+  --silver-darken-94: #efefef;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -81,3 +96,73 @@ body:not(.loading) > .loader {
 }
 
 /* </animation> */
+
+
+/* <buttons> */
+
+.btn {
+  min-width: 92px;
+  height: 30px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.btn-primary {
+  color: #fdfdfe;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+  border: solid 1px var(--blue-darken-62);
+  background-color: var(--blue-base);
+}
+
+.btn-primary:hover {
+  border: solid 1px var(--blue-darken-55);
+  background-color: var(--blue-darken-62);
+}
+
+.btn-primary:active {
+  border: solid 1px var(--blue-darken-48);
+  background-color: var(--blue-darken-55);
+}
+
+.btn-primary:disabled {
+  box-shadow: none;
+  border: solid 1px var(--blue-lighten-82);
+  background-color: var(--blue-lighten-75);
+  color: rgba(253, 253, 254, 0.8);
+}
+
+.btn-secondary {
+  color: #535353;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+  border: solid 1px var(--silver-darken-80);
+  background-color: var(--silver-base);
+}
+
+.btn-secondary:hover {
+  background-color: var(--silver-darken-94);
+}
+
+.btn-secondary:active {
+  background-color: var(--silver-darken-87);
+}
+
+.btn-secondary:disabled {
+  box-shadow: none;
+  border: solid 1px var(--silver-darken-87);
+  background-color: var(--silver-base);
+  color: rgba(83, 83, 83, 0.5);
+}
+
+.btn + .btn {
+  margin-left: 10px;
+}
+
+/* </buttons>
