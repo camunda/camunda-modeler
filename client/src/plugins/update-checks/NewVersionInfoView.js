@@ -80,8 +80,8 @@ class NewVersionInfoView extends PureComponent {
 
         <Modal.Footer>
           <div className="formSubmit">
-            <button className="btn btn-primary" onClick={ onGoToDownloadPage }> { BUTTON_POSITIVE } </button>
             <button className="btn btn-secondary" onClick={ onClose }> { BUTTON_NEGATIVE } </button>
+            <button className="btn btn-primary" onClick={ onGoToDownloadPage }> { BUTTON_POSITIVE } </button>
           </div>
         </Modal.Footer>
 

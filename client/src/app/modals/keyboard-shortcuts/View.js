@@ -51,7 +51,9 @@ class View extends PureComponent {
         </Modal.Body>
 
         <Modal.Footer>
-          <button onClick={ onClose }>Close</button>
+          <div className="buttonDiv">
+            <button className="btn btn-primary" onClick={ onClose }>Close</button>
+          </div>
         </Modal.Footer>
       </Modal>
     );
