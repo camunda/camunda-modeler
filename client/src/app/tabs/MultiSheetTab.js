@@ -150,20 +150,23 @@ export class MultiSheetTab extends CachedComponent {
   }
 
   handleImport = (error, warnings) => {
-    if (error) {
-      this.openFallback();
-
-      this.showImportErrorDialog(error);
-
-      return this.handleError(error);
-    }
 
     if (warnings && warnings.length) {
       warnings.forEach(warning => {
         this.handleWarning(warning);
       });
 
-      this.displayImportWarningsNotification(warnings);
+      if (!error) {
+        this.displayImportWarningsNotification(warnings);
+      }
+    }
+
+    if (error) {
+      this.openFallback();
+
+      this.showImportErrorDialog(error);
+
+      this.handleError(error);
     }
   }
 
