@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import debug from 'debug';
+
 import React, { PureComponent } from 'react';
 
 import NewVersionInfoView from './NewVersionInfoView';
@@ -17,6 +19,8 @@ import UpdateChecksAPI from './UpdateChecksAPI';
 import Flags, { DISABLE_SERVER_INTERACTION, FORCE_UPDATE_CHECKS, UPDATES_SERVER_URL } from '../../util/Flags';
 
 import Metadata from '../../util/Metadata';
+
+const log = debug('UpdateChecks');
 
 class NoopComponent extends PureComponent {
   render() {
@@ -77,6 +81,8 @@ export default class UpdateChecks extends PureComponent {
 
   async checkLatestVersion(latestUpdateCheckInfo) {
 
+    log('Checking for update');
+
     this.setState({ isChecking: true });
 
     const {
@@ -86,6 +92,7 @@ export default class UpdateChecks extends PureComponent {
 
     const responseJSON = await this.updateChecksAPI.checkLatestVersion(config, _getGlobal, latestUpdateCheckInfo);
     if (!responseJSON.isSuccessful) {
+      log('Update check failed', responseJSON.error);
       this.setState({ isChecking: false, requestError: true });
       return;
     }
@@ -96,6 +103,8 @@ export default class UpdateChecks extends PureComponent {
     let newLatestUpdateCheckInfo = latestUpdateCheckInfo || {};
 
     if (update) {
+      log('Found update', update.latestVersion);
+
       const modelerVersion = 'v' + Metadata.data.version;
       const latestVersion = update.latestVersion;
       const downloadURL = update.downloadURL;
@@ -107,6 +116,8 @@ export default class UpdateChecks extends PureComponent {
         currentVersion: modelerVersion
       });
       newLatestUpdateCheckInfo.latestCheckedVersion = latestVersion;
+    } else {
+      log('No update');
     }
 
     newLatestUpdateCheckInfo.latestUpdateTime = new Date().getTime();
