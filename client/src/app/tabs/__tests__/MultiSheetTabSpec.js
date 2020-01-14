@@ -159,6 +159,36 @@ describe('<MultiSheetTab>', function() {
       expect(showImportErrorDialogSpy).to.have.been.called;
     });
 
+
+    it('should import with error and warnings', function() {
+
+      // given
+      const errorSpy = spy(),
+            warningSpy = spy();
+
+      const {
+        instance
+      } = renderTab({
+        onError: errorSpy,
+        onWarning: warningSpy
+      });
+
+      const showImportErrorDialogSpy = spy(instance, 'showImportErrorDialog');
+      const displayWarningsNotificationSpy = spy(instance, 'displayImportWarningsNotification');
+
+      // when
+      instance.handleImport(error, warnings);
+
+      // then
+      expect(errorSpy).to.have.been.calledWith(error);
+
+      expect(warningSpy).to.have.been.calledTwice;
+      expect(warningSpy.alwaysCalledWith('warning')).to.be.true;
+
+      expect(showImportErrorDialogSpy).to.have.been.called;
+      expect(displayWarningsNotificationSpy).not.to.have.been.called;
+    });
+
   });
 
 
