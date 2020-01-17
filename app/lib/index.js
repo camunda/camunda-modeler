@@ -39,7 +39,8 @@ const Workspace = require('./workspace');
 const {
   readFile,
   readFileStats,
-  writeFile
+  writeFile,
+  readDir
 } = require('./file-system');
 
 const browserOpen = require('./util/browser-open');
@@ -185,6 +186,16 @@ renderer.on('file:write', function(filePath, file, options = {}, done) {
     const newFile = writeFile(filePath, file, options);
 
     done(null, newFile);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('file:read-dir', function(dirPath, options = {}, done) {
+  try {
+    const files = readDir(dirPath, options);
+
+    done(null, files);
   } catch (err) {
     done(err);
   }

@@ -503,6 +503,34 @@ export class App extends PureComponent {
     await this.openFiles(files);
   }
 
+  showOpenDirectoryDialog = async () => {
+    const dialog = this.getGlobal('dialog');
+
+    const {
+      activeTab
+    } = this.state;
+
+    const dirPath = await dialog.showOpenFilesDialog({
+      activeFile: activeTab.file,
+      openDirectory: true,
+      title: 'Open directory'
+    });
+
+    if (!dirPath.length) {
+      return;
+    }
+
+    let filePaths = await this.readDirList(dirPath[0]);
+    filePaths = filePaths.map(file => dirPath[0] + '/' + file);
+
+    const files = await this.readFileList(filePaths);
+
+    return {
+      directory: dirPath[0],
+      files: files
+    };
+  }
+
   showCloseFileDialog = (file) => {
     const { name } = file;
 
@@ -617,6 +645,17 @@ export class App extends PureComponent {
     }
 
     return openedTabs;
+  }
+
+  readDirList = async dirPath => {
+    const fileSystem = this.getGlobal('fileSystem');
+    let dirList = null;
+    try {
+      dirList = await fileSystem.readDir(dirPath);
+    } catch (error) {
+      this.handleError(error);
+    }
+    return dirList;
   }
 
   readFileList = async filePaths => {
@@ -1568,6 +1607,10 @@ export class App extends PureComponent {
 
     if (action === 'open-diagram') {
       return this.showOpenFilesDialog();
+    }
+
+    if (action === 'open-directory') {
+      return this.showOpenDirectoryDialog();
     }
 
     if (action === 'save-all') {

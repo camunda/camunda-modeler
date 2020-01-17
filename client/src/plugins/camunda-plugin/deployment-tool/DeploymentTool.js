@@ -69,6 +69,14 @@ export default class DeploymentTool extends PureComponent {
     return this.deployTab(activeTab, options);
   }
 
+  openDirectory = () => {
+    const {
+      triggerAction
+    } = this.props;
+
+    return triggerAction('open-directory');
+  }
+
   async deployTab(tab, options={}) {
 
     const {
@@ -258,12 +266,13 @@ export default class DeploymentTool extends PureComponent {
 
     const {
       endpoint,
-      deployment
+      deployment,
+      files
     } = configuration;
 
     const api = new CamundaAPI(endpoint);
 
-    return api.deployDiagram(tab.file, deployment);
+    return api.deployDiagram(tab.file, deployment, files);
   }
 
   canDeployWithConfiguration(configuration) {
@@ -384,6 +393,7 @@ export default class DeploymentTool extends PureComponent {
             primaryAction={ modalState.primaryAction }
             onClose={ modalState.handleClose }
             validator={ this.validator }
+            onOpenDirectory={ this.openDirectory }
           />
         </KeyboardInteractionTrap>
       }

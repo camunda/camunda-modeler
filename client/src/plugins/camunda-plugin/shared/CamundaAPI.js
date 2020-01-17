@@ -26,7 +26,7 @@ export default class CamundaAPI {
     this.authentication = this.getAuthentication(endpoint);
   }
 
-  async deployDiagram(diagram, deployment) {
+  async deployDiagram(diagram, deployment, otherFiles) {
     const {
       name,
       tenantId
@@ -47,6 +47,13 @@ export default class CamundaAPI {
     const blob = new Blob([ diagram.contents ], { type: 'text/xml' });
 
     form.append(diagramName, blob, diagramName);
+
+    if (otherFiles) {
+      for (let [, file] of Object.entries(otherFiles)) {
+        const fileBlob = new Blob([ file.contents ], { type: '' });
+        form.append(file.name, fileBlob, file.name);
+      }
+    }
 
     const response = await this.fetch('/deployment/create', {
       method: 'POST',

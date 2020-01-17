@@ -16,11 +16,13 @@ const fs = require('fs'),
 const {
   readFile,
   readFileStats,
-  writeFile
+  writeFile,
+  readDir
 } = require('../../lib/file-system');
 
 const ENCODING_BASE64 = 'base64',
-      ENCODING_UTF8 = 'utf8';
+      ENCODING_UTF8 = 'utf8',
+      ENCODING_LATIN1 = 'latin1';
 
 const PNG_BASE64_ENCODED = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAA';
 
@@ -114,6 +116,131 @@ describe('FileSystem', function() {
       expect(read).to.throw();
     });
 
+  });
+
+  describe('#readDir', function() {
+
+    const testPath = `${ os.tmpdir() }/modeler/`;
+
+    before(function() {
+      try {
+        fs.mkdirSync(testPath);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    after(function() {
+      try {
+        fs.rmdirSync(testPath, { recursive: true });
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    it('should read directory content (default encoding=utf8)', function() {
+
+      // given
+      const fooPath = testPath + 'modeler_foo.file';
+      testFilePaths.push(fooPath);
+
+      writeFile(fooPath, { contents: 'foo' });
+
+      // when
+      const dir = readDir(testPath);
+
+      // then
+      expect(dir.length).to.eql(1);
+      expect(dir[0]).to.eql('modeler_foo.file');
+    });
+
+
+    it('should read directory content (encoding=utf8)', function() {
+
+      // given
+      const fooPath = testPath + 'modeler_foà.file';
+      testFilePaths.push(fooPath);
+
+      writeFile(fooPath, { contents: 'foo' });
+
+      // when
+      const dir = readDir(testPath, {
+        encoding: ENCODING_UTF8
+      });
+
+      // then
+      expect(dir.length).to.eql(1);
+      expect(dir[0]).to.eql('modeler_foà.file');
+    });
+
+
+    it('should read directory content (encoding=latin1)', function() {
+
+      // given
+      const fooPath = testPath + 'modeler_foà.file';
+      testFilePaths.push(fooPath);
+
+      writeFile(fooPath, { contents: 'foo' });
+
+      // when
+      const dir = readDir(testPath, {
+        encoding: ENCODING_LATIN1
+      });
+
+      // then
+      expect(dir.length).to.eql(1);
+      expect(dir[0]).to.eql('modeler_foÃ .file');
+    });
+
+    it('should read directory content without directories (default withDirectories=false)', function() {
+
+      // given
+      const tmpPath = testPath + 'test';
+      fs.mkdirSync(tmpPath);
+
+      // when
+      const dir = readDir(testPath);
+
+      // then
+      expect(dir.length).to.eql(0);
+      fs.rmdirSync(tmpPath);
+    });
+
+    it('should read directory content without directories (withDirectories=false)', function() {
+
+      // given
+      const tmpPath = testPath + 'test';
+      fs.mkdirSync(tmpPath);
+
+      // when
+      const dir = readDir(testPath, {
+        withDirectories: false
+      });
+
+      // then
+      expect(dir.length).to.eql(0);
+      fs.rmdirSync(tmpPath);
+    });
+
+    it('should read directory content WITH directories (withDirectories=true)', function() {
+
+      // given
+      const tmpPath = testPath + 'test';
+      fs.mkdirSync(tmpPath);
+      const fooPath = testPath + 'modeler_foo.file';
+      testFilePaths.push(fooPath);
+
+      writeFile(fooPath, { contents: 'foo' });
+
+      // when
+      const dir = readDir(testPath, {
+        withDirectories: true
+      });
+
+      // then
+      expect(dir.length).to.eql(2);
+      fs.rmdirSync(tmpPath);
+    });
   });
 
 

@@ -2233,6 +2233,31 @@ describe('<App>', function() {
 
   });
 
+  it('#showOpenDirectoryDialog', async function() {
+
+    // given
+    const dialog = new Dialog();
+
+    dialog.setShowOpenFilesDialogResponse([]);
+
+    const showOpenFilesDialogSpy = spy(dialog, 'showOpenFilesDialog');
+
+    const { app } = createApp({
+      globals: {
+        dialog
+      }
+    });
+
+    const openFilesSpy = spy(app, 'openFiles');
+
+    // when
+    await app.showOpenDirectoryDialog();
+
+    // then
+    expect(showOpenFilesDialogSpy).to.have.been.called;
+    expect(openFilesSpy).not.to.have.been.called;
+  });
+
 
   it('#showDialog', function() {
 

@@ -41,6 +41,19 @@ export default class FileSystem {
     return this.backend.send('file:read-stats', file);
   }
 
+  /**
+   * Read directory list of files.
+   * @param {String} dirPath - directory path
+   * @param {Object} [options] - Options.
+   * @param {String} [options.encoding] - Encoding.
+   * @param {boolean} [options.withDirectories] - true to get directories listed
+   *
+   * @returns {Promise}
+   */
+  readDir(dirPath, options = {}) {
+    return this.backend.send('file:read-dir', dirPath, options);
+  }
+
 
   /**
    * Write file.

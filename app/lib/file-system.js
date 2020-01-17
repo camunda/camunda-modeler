@@ -114,6 +114,32 @@ module.exports.writeFile = function(filePath, file, options = {}) {
   });
 };
 
+/**
+ * Read directory list of files.
+ *
+ * @param {String} dirPath - Directory path.
+ * @param {Object} [options] - Options.
+ * @param {String} [options.encoding] - Encoding.
+ * @param {boolean} [options.withDirectories] - true to get directories listed
+ *
+ * @return {Object}
+ */
+module.exports.readDir = function(dirPath, options = {}) {
+  let { encoding, withDirectories } = options;
+
+  if (!encoding) {
+    encoding = ENCODING_UTF8;
+  }
+
+  let filenames = fs.readdirSync(dirPath, { encoding, withFileTypes: !withDirectories });
+  if (!withDirectories) {
+    filenames = filenames
+      .filter(dirent => !dirent.isDirectory())
+      .map(dirent => dirent.name);
+  }
+  return filenames;
+};
+
 // helpers //////////
 
 /**

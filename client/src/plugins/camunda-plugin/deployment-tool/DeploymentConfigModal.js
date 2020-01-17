@@ -47,7 +47,11 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
     this.state = {
       connectionState: {},
-      deploymentDetailsShown: configuration.deployment.tenantId
+      deploymentDetailsShown: configuration.deployment.tenantId,
+      deployDirectory: {
+        shown: false,
+        directory: null
+      }
     };
 
     this.connectionChecker = validator.createConnectionChecker();
@@ -167,13 +171,48 @@ export default class DeploymentConfigModal extends React.PureComponent {
     };
   }
 
+  toggleDeployDirectory = (form) => {
+    return (event) => {
+      this.setState({
+        deployDirectory:  {
+          shown: !this.state.deployDirectory.shown,
+          directory: undefined
+        }
+      });
+    };
+  }
+
+  openDirectory = async (form, onOpenDirectory) => {
+    const {
+      values,
+      setValues
+    } = form;
+
+    let listDirectory = await onOpenDirectory();
+
+    this.setState({
+      deployDirectory:  {
+        shown: this.state.deployDirectory.shown,
+        directory: listDirectory? listDirectory.directory : undefined
+      }
+    });
+
+    setValues({
+      ...values,
+      files: {
+        ...(listDirectory && listDirectory.files)
+      }
+    });
+  }
+
   render() {
 
     const {
       fieldError,
       onSubmit,
       validate,
-      onClose
+      onClose,
+      openDirectory
     } = this;
 
     const {
@@ -181,12 +220,14 @@ export default class DeploymentConfigModal extends React.PureComponent {
       validator,
       title,
       intro,
-      primaryAction
+      primaryAction,
+      onOpenDirectory
     } = this.props;
 
     const {
       connectionState,
-      deploymentDetailsShown
+      deploymentDetailsShown,
+      deployDirectory
     } = this.state;
 
     return (
@@ -245,7 +286,35 @@ export default class DeploymentConfigModal extends React.PureComponent {
                       component={ TextInput }
                       fieldError={ fieldError }
                       label="Tenant ID"
-                    /> }
+                    />
+                    }
+
+                    { deploymentDetailsShown && <Field
+                      name="deployment.directory"
+                      component={ CheckBox }
+                      type="checkbox"
+                      label="Deploy files from a directory"
+                      onChange={ this.toggleDeployDirectory(form) }
+                      checked={ this.state.deployDirectory.shown }
+                    />
+                    }
+                    <div></div>
+                    {
+                      deploymentDetailsShown && deployDirectory.shown &&
+                      <div><button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={
+                          () => openDirectory(form, onOpenDirectory)
+                        }
+                      >Select directory...</button></div>
+                    }
+                    <div></div>
+                    {
+                      deploymentDetailsShown && deployDirectory.shown &&
+                      <DeployedDirectory deployDirectory={ deployDirectory } />
+                    }
+
                   </div>
                 </fieldset>
 
@@ -410,6 +479,30 @@ function ConnectionFeedback(props) {
   }
 
   throw new Error('unexpected connection state');
+}
+
+function DeployedDirectory(props) {
+  const {
+    deployDirectory
+  } = props;
+
+  const {
+    directory
+  } = deployDirectory;
+
+  if (directory) {
+    return (
+      <div className="deploy-directory deploy-directory__success">
+        { directory }
+      </div>
+    );
+  } else {
+    return (
+      <div className="deploy-directory deploy-directory__idle">
+        &nbsp;
+      </div>
+    );
+  }
 }
 
 function hasKeys(obj) {

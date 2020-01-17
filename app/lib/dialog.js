@@ -101,16 +101,23 @@ class Dialog {
       title
     } = options;
 
-    let { defaultPath } = options;
+    let { defaultPath, openDirectory } = options;
+    let properties = [];
 
     if (!defaultPath) {
       defaultPath = this.config.get('defaultPath', this.userDesktopPath);
     }
 
+    if (openDirectory) {
+      properties.push('openDirectory');
+    } else {
+      properties.push('openFile', 'multiSelections');
+    }
+
     return this.electronDialog.showOpenDialog(this.browserWindow, {
       defaultPath,
       filters,
-      properties: [ 'openFile', 'multiSelections' ],
+      properties: properties,
       title: title || 'Open File'
     }).then(response => {
 

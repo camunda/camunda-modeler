@@ -38,6 +38,28 @@ describe('file-system', function() {
     fileSystem.readFile(filePath, options);
   });
 
+  it('#readDir', function() {
+
+    // given
+    const dirPath = 'foo',
+          options = { encoding: 'uft8', withDirectories: true };
+
+    const sendSpy = (type, dp, opts) => {
+
+      // then
+      expect(type).to.equal('file:read-dir');
+
+      expect(dp).to.eql(dirPath);
+
+      expect(opts).to.eql(options);
+    };
+
+    const backend = new Backend({ send: sendSpy });
+    const fileSystem = new FileSystem(backend);
+
+    // when
+    fileSystem.readDir(dirPath, options);
+  });
 
   it('#readFileStats', function() {
 

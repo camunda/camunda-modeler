@@ -43,6 +43,8 @@ var browsers =
         // workaround https://github.com/GoogleChrome/puppeteer/issues/290
         if (process.platform === 'linux') {
           return 'ChromeHeadless_Linux';
+        } else if (process.platform === 'win32') {
+          return 'ChromeHeadless_Windows';
         }
       }
 
@@ -76,6 +78,13 @@ module.exports = function(karma) {
         flags: [
           '--no-sandbox',
           '--disable-setuid-sandbox'
+        ],
+        debug: true
+      },
+      ChromeHeadless_Windows: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--no-sandbox'
         ],
         debug: true
       }
