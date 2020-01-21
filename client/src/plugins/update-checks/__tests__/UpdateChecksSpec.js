@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import Flags, { DISABLE_SERVER_INTERACTION } from '../../../util/Flags';
+import Flags, { DISABLE_REMOTE_INTERACTION } from '../../../util/Flags';
 import Metadata from '../../../util/Metadata';
 
 import {
@@ -42,10 +42,10 @@ describe('<UpdateChecks>', () => {
   });
 
 
-  it('should not be initialized if DISABLE_SERVER_INTERACTION flag existent', () => {
+  it('should not be initialized if DISABLE_REMOTE_INTERACTION flag existent', () => {
 
     Flags.init({
-      [ DISABLE_SERVER_INTERACTION ]: true
+      [ DISABLE_REMOTE_INTERACTION ]: true
     });
 
     const component = shallow(<UpdateChecks />);
@@ -55,7 +55,7 @@ describe('<UpdateChecks>', () => {
 
 
 
-  it('should be initialized if DISABLE_SERVER_INTERACTION flag missing', () => {
+  it('should be initialized if DISABLE_REMOTE_INTERACTION flag missing', () => {
 
     const component = shallow(<UpdateChecks />);
 

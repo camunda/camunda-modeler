@@ -16,7 +16,7 @@ import NewVersionInfoView from './NewVersionInfoView';
 
 import UpdateChecksAPI from './UpdateChecksAPI';
 
-import Flags, { DISABLE_SERVER_INTERACTION, FORCE_UPDATE_CHECKS, UPDATES_SERVER_URL } from '../../util/Flags';
+import Flags, { DISABLE_REMOTE_INTERACTION, FORCE_UPDATE_CHECKS, UPDATES_SERVER_URL } from '../../util/Flags';
 
 import Metadata from '../../util/Metadata';
 
@@ -44,7 +44,7 @@ export default class UpdateChecks extends PureComponent {
   constructor(props) {
     super(props);
 
-    if (Flags.get(DISABLE_SERVER_INTERACTION)) {
+    if (Flags.get(DISABLE_REMOTE_INTERACTION)) {
       return new NoopComponent();
     }
 
