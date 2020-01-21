@@ -36,6 +36,6 @@ export const DISABLE_DMN = 'disable-dmn';
 export const DISABLE_ADJUST_ORIGIN = 'disable-adjust-origin';
 export const DISABLE_PLUGINS = 'disable-plugins';
 export const RELAUNCH = 'relaunch';
-export const DISABLE_SERVER_INTERACTION = 'disable-server-interaction';
+export const DISABLE_REMOTE_INTERACTION = 'disable-remote-interaction';
 export const UPDATES_SERVER_URL = 'updates-server-url';
 export const FORCE_UPDATE_CHECKS = 'force-update-checks';
