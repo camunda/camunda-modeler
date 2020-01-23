@@ -35,12 +35,12 @@ export default class UpdateChecksAPI {
     });
   }
 
-  async checkLatestVersion(config, getGlobal, latestUpdateCheckInfo) {
+  async checkLatestVersion(config, getGlobal, latestVersion) {
 
     try {
       const editorID = await config.get(EDITOR_ID_CONFIG_KEY);
       const modelerVersion = 'v' + Metadata.data.version;
-      const newerThan = (latestUpdateCheckInfo && latestUpdateCheckInfo.latestCheckedVersion) ? (latestUpdateCheckInfo.latestCheckedVersion) : modelerVersion;
+      const newerThan = latestVersion || modelerVersion;
       const osInfo = await config.get(OS_INFO_CONFIG_KEY);
       const plugins = this.formatPlugins(getGlobal('plugins').appPlugins);
 
