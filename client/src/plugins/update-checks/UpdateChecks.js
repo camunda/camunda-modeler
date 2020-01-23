@@ -33,7 +33,7 @@ const DEFAULT_UPDATE_SERVER_URL = process.env.NODE_ENV === 'production'
   : 'https://camunda-modeler-update-server-staging.camunda.com';
 
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
-const LATEST_UPDATE_CHECK_INFO_CONFIG_KEY = 'editor.latestUpdateCheckInfo';
+const UPDATE_CHECKS_CONFIG_KEY = 'editor.updateChecks';
 
 const HOURS_DENOMINATOR = 3600000;
 const HOURS_LIMIT = 24;
@@ -69,17 +69,17 @@ export default class UpdateChecks extends PureComponent {
       return;
     }
 
-    const latestUpdateCheckInfo = await config.get(LATEST_UPDATE_CHECK_INFO_CONFIG_KEY);
+    const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY);
 
-    if (!Flags.get(FORCE_UPDATE_CHECKS) && latestUpdateCheckInfo && !this.isTimeExceeded(latestUpdateCheckInfo.latestUpdateTime)) {
+    if (!Flags.get(FORCE_UPDATE_CHECKS) && updateCheckInfo && !this.isTimeExceeded(updateCheckInfo.lastChecked)) {
       this.setState({ checkNotNeeded: true });
       return;
     }
 
-    this.checkLatestVersion(latestUpdateCheckInfo);
+    this.checkLatestVersion(updateCheckInfo);
   }
 
-  async checkLatestVersion(latestUpdateCheckInfo) {
+  async checkLatestVersion(updateCheckInfo) {
 
     log('Checking for update');
 
@@ -90,7 +90,10 @@ export default class UpdateChecks extends PureComponent {
       _getGlobal
     } = this.props;
 
-    const responseJSON = await this.updateChecksAPI.checkLatestVersion(config, _getGlobal, latestUpdateCheckInfo);
+    const responseJSON = await this.updateChecksAPI.checkLatestVersion(
+      config, _getGlobal, updateCheckInfo && updateCheckInfo.latestVersion
+    );
+
     if (!responseJSON.isSuccessful) {
       log('Update check failed', responseJSON.error);
       this.setState({ isChecking: false, requestError: true });
@@ -100,7 +103,7 @@ export default class UpdateChecks extends PureComponent {
     const responseBody = responseJSON.response;
     const update = responseBody.update;
 
-    let newLatestUpdateCheckInfo = latestUpdateCheckInfo || {};
+    let newUpdateCheckInfo = updateCheckInfo || {};
 
     if (update) {
       log('Found update', update.latestVersion);
@@ -115,13 +118,13 @@ export default class UpdateChecks extends PureComponent {
         latestVersionInfo: { latestVersion, downloadURL, releases },
         currentVersion: modelerVersion
       });
-      newLatestUpdateCheckInfo.latestCheckedVersion = latestVersion;
+      newUpdateCheckInfo.latestVersion = latestVersion;
     } else {
       log('No update');
     }
 
-    newLatestUpdateCheckInfo.latestUpdateTime = new Date().getTime();
-    config.set(LATEST_UPDATE_CHECK_INFO_CONFIG_KEY, newLatestUpdateCheckInfo);
+    newUpdateCheckInfo.lastChecked = new Date().getTime();
+    config.set(UPDATE_CHECKS_CONFIG_KEY, newUpdateCheckInfo);
   }
 
   isTimeExceeded(previousTime) {

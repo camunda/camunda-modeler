@@ -20,7 +20,7 @@ import {
 import UpdateChecks from '../UpdateChecks';
 
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
-const LATEST_UPDATE_CHECK_INFO_CONFIG_KEY = 'editor.latestUpdateCheckInfo';
+const UPDATE_CHECKS_CONFIG_KEY = 'editor.updateChecks';
 const EDITOR_ID_CONFIG_KEY = 'editor.id';
 const OS_INFO_CONFIG_KEY = 'os.info';
 
@@ -111,7 +111,7 @@ describe('<UpdateChecks>', () => {
             resolve({
               ENABLE_UPDATE_CHECKS: true
             });
-          } else if (key === LATEST_UPDATE_CHECK_INFO_CONFIG_KEY) {
+          } else if (key === UPDATE_CHECKS_CONFIG_KEY) {
             resolve(null);
           }
         });
@@ -129,8 +129,8 @@ describe('<UpdateChecks>', () => {
     const component = shallow(<UpdateChecks config={ {
       get(key) {
         return new Promise((resolve, reject) => {
-          if (key === LATEST_UPDATE_CHECK_INFO_CONFIG_KEY) {
-            resolve({ latestUpdateTime: new Date().getTime() });
+          if (key === UPDATE_CHECKS_CONFIG_KEY) {
+            resolve({ lastChecked: new Date().getTime() });
           } else {
             resolve({
               ENABLE_UPDATE_CHECKS: true
@@ -160,7 +160,7 @@ describe('<UpdateChecks>', () => {
 
     await waitForNPromises(component, 5);
 
-    expect(setValue.latestUpdateTime).to.exist;
+    expect(setValue.lastChecked).to.exist;
   });
 
 
@@ -184,7 +184,7 @@ describe('<UpdateChecks>', () => {
 
     await waitForNPromises(component, 5);
 
-    expect(setValue.latestCheckedVersion).to.be.eql('v3.7.0');
+    expect(setValue.latestVersion).to.be.eql('v3.7.0');
   });
 
 
@@ -236,8 +236,8 @@ const getUpdateCheckerComponent = (confs) => {
   return shallow(<UpdateChecks config={ {
     get(key) {
       return new Promise((resolve, reject) => {
-        if (key === LATEST_UPDATE_CHECK_INFO_CONFIG_KEY) {
-          resolve({ latestUpdateTime: 0, latestCheckedVersion: 'v3.5.0' });
+        if (key === UPDATE_CHECKS_CONFIG_KEY) {
+          resolve({ lastChecked: 0, latestVersion: 'v3.5.0' });
         } else if (key === PRIVACY_PREFERENCES_CONFIG_KEY) {
           resolve({
             ENABLE_UPDATE_CHECKS: true
