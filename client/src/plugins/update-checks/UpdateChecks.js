@@ -71,7 +71,7 @@ export default class UpdateChecks extends PureComponent {
 
     const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY);
 
-    if (!Flags.get(FORCE_UPDATE_CHECKS) && updateCheckInfo && !this.isTimeExceeded(updateCheckInfo.lastChecked)) {
+    if (!Flags.get(FORCE_UPDATE_CHECKS) && !this.isTimeExceeded(updateCheckInfo && updateCheckInfo.lastChecked || 0)) {
       this.setState({ checkNotNeeded: true });
       return;
     }
@@ -123,12 +123,12 @@ export default class UpdateChecks extends PureComponent {
       log('No update');
     }
 
-    newUpdateCheckInfo.lastChecked = new Date().getTime();
+    newUpdateCheckInfo.lastChecked = Date.now();
     config.set(UPDATE_CHECKS_CONFIG_KEY, newUpdateCheckInfo);
   }
 
   isTimeExceeded(previousTime) {
-    const now = new Date().getTime();
+    const now = Date.now();
     const hoursDiff = Math.abs(now - previousTime) / HOURS_DENOMINATOR;
     return hoursDiff >= HOURS_LIMIT;
   }
