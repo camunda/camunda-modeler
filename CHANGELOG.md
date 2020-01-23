@@ -6,6 +6,35 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.6.0
+
+#### General
+
+* `FEAT`: add automatic update checks ([#1541](https://github.com/camunda/camunda-modeler/issues/1541))
+* `FEAT`: allow to run BPMN processes directly from the app ([#1552](https://github.com/camunda/camunda-modeler/issues/1552))
+* `FEAT`: make user data directory configurable ([#1625](https://github.com/camunda/camunda-modeler/issues/1625))
+* `FIX`: make it possible to export huge diagrams as PNGs ([#1591](https://github.com/camunda/camunda-modeler/issues/1591))
+* `FIX`: do not swallow warnings on editor open errors ([#1522](https://github.com/camunda/camunda-modeler/issues/1522))
+* `FIX`: prevent illegal IDs from being entered in the properties panels ([#1623](https://github.com/camunda/camunda-modeler/issues/1623))
+* `CHORE`: add clear primary / secondary actions for all dialogs
+* `CHORE`: update to `Electron@7` as new app foundation ([#1448](https://github.com/camunda/camunda-modeler/issues/1448), [#1607](https://github.com/camunda/camunda-modeler/issues/1607))
+
+#### BPMN
+
+* `FEAT`: copy signals, escalations and errors ([#1049](https://github.com/camunda/camunda-modeler/issues/1049))
+* `FEAT`: add horizontal and vertical resize handles
+* `FEAT`: improve connection cropping
+* `FIX`: correct creation of nested lanes ([#1617](https://github.com/camunda/camunda-modeler/issues/1617))
+* `FIX`: disable re-layout behaviors on paste (paste as copied) ([#1611](https://github.com/camunda/camunda-modeler/issues/1611))
+* `FIX`: do not open replace menu after multi-element create ([#1613](https://github.com/camunda/camunda-modeler/issues/1613))
+* `FIX`: render colored `bpmn:Group` elements
+* `FIX`: correct origin snapping on multi-element create ([#1612](https://github.com/camunda/camunda-modeler/issues/1612))
+* `FIX`: properly reconnect message flows when collapsing participant
+* `FIX`: keep non-duplicate outgoing connections when dropping on flow
+* `FIX`: correct serialization of `DataAssociation#assignmet`
+* `FIX`: allow `bpmn:Association` where `bpmn:DataAssociation` is allowed, too ([#1635](https://github.com/camunda/camunda-modeler/issues/1635))
+* `CHORE`: update to `bpmn-js@6.2.1`
+
 ## 3.5.0
 
 #### General
