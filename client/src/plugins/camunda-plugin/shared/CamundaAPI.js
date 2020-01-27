@@ -36,7 +36,6 @@ export default class CamundaAPI {
 
     form.append('deployment-name', name);
     form.append('deployment-source', 'Camunda Modeler');
-    form.append('deploy-changed-only', 'true');
 
     if (tenantId) {
       form.append('tenant-id', tenantId);
@@ -53,6 +52,9 @@ export default class CamundaAPI {
         const fileBlob = new Blob([ file.contents ], { type: '' });
         form.append(file.name, fileBlob, file.name);
       }
+      form.append('deploy-changed-only', 'false');
+    } else {
+      form.append('deploy-changed-only', 'true');
     }
 
     const response = await this.fetch('/deployment/create', {
