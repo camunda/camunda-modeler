@@ -11,7 +11,8 @@
 import React from 'react';
 
 import {
-  assign
+  assign,
+  isFunction
 } from 'min-dash';
 
 import {
@@ -21,6 +22,8 @@ import {
 import {
   debounce
 } from '../../../util';
+
+import configureModeler from './util/configure';
 
 import {
   WithCache,
@@ -648,17 +651,37 @@ export class DmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState() {
+  static createCachedState(props) {
     const {
       name,
       version
     } = Metadata;
 
-    const modeler = new CamundaDmnModeler({
+    const {
+      getPlugins,
+      onError
+    } = props;
+
+    const {
+      options,
+      warnings
+    } = configureModeler(getPlugins, {
       exporter: {
         name,
         version
-      }
+      },
+    });
+
+    if (warnings.length && isFunction(onError)) {
+      onError(
+        'Problem(s) configuring BPMN editor: \n\t' +
+        warnings.map(error => error.message).join('\n\t') +
+        '\n'
+      );
+    }
+
+    const modeler = new CamundaDmnModeler({
+      ...options
     });
 
     const stackIdx = modeler.getStackIdx();

@@ -104,6 +104,165 @@ describe('<DmnEditor>', function() {
   });
 
 
+  describe('plugins', function() {
+
+    it('should accept <drd> plugins', async function() {
+
+      // given
+      const additionalModule = {
+        __init__: [ 'foo' ],
+        foo: [ 'type', noop ]
+      };
+
+      // when
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        getPlugins(type) {
+          switch (type) {
+          case 'dmn.modeler.drd.additionalModules':
+            return [ additionalModule ];
+          }
+
+          return [];
+        }
+      });
+
+      // then
+      const { modeler } = instance.getCached();
+
+      expect(modeler.modules.drd.additionalModules).to.include(additionalModule);
+    });
+
+
+    it('should accept <decisionTable> plugins', async function() {
+
+      // given
+      const additionalModule = {
+        __init__: [ 'foo' ],
+        foo: [ 'type', noop ]
+      };
+
+      // when
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        getPlugins(type) {
+          switch (type) {
+          case 'dmn.modeler.decisionTable.additionalModules':
+            return [ additionalModule ];
+          }
+
+          return [];
+        }
+      });
+
+      // then
+      const { modeler } = instance.getCached();
+
+      expect(modeler.modules.decisionTable.additionalModules).to.include(additionalModule);
+    });
+
+
+    it('should accept <literalExpression> plugins', async function() {
+
+      // given
+      const additionalModule = {
+        __init__: [ 'foo' ],
+        foo: [ 'type', noop ]
+      };
+
+      // when
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        getPlugins(type) {
+          switch (type) {
+          case 'dmn.modeler.literalExpression.additionalModules':
+            return [ additionalModule ];
+          }
+
+          return [];
+        }
+      });
+
+      // then
+      const { modeler } = instance.getCached();
+
+      expect(modeler.modules.literalExpression.additionalModules).to.include(additionalModule);
+    });
+
+
+    it('should accept <moddleExtension> plugins', async function() {
+
+      // given
+      const moddleExtension = {
+        name: 'bar',
+        uri: 'http://bar',
+        prefix: 'bar',
+        xml: {
+          tagAlias: 'lowerCase'
+        },
+        types: []
+      };
+
+      // when
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        getPlugins(type) {
+          switch (type) {
+          case 'dmn.modeler.moddleExtension':
+            return [ moddleExtension ];
+          }
+
+          return [];
+        }
+      });
+
+      // then
+      const { modeler } = instance.getCached();
+
+      expect(modeler.modules.moddleExtensions).to.include({
+        bar: moddleExtension
+      });
+    });
+
+
+    it('should handle invalid moddle extensions', async function() {
+
+      // given
+      const onErrorSpy = sinon.spy();
+
+      const unnamedModdleExtension = {};
+
+      const circularModdleExtension = {};
+      circularModdleExtension.name = circularModdleExtension;
+
+      const props = {
+        getPlugins(type) {
+          switch (type) {
+          case 'dmn.modeler.moddleExtension':
+            return [
+              unnamedModdleExtension,
+              circularModdleExtension
+            ];
+          }
+
+          return [];
+        },
+        onError: onErrorSpy,
+        onAction: noop
+      };
+
+      // then
+      expect(() => DmnEditor.createCachedState(props)).to.not.throw();
+      expect(onErrorSpy).to.be.calledOnce;
+    });
+
+  });
+
+
   it('#getModeler', async function() {
 
     // given
@@ -1096,7 +1255,8 @@ async function renderEditor(xml, options = {}) {
     onImport,
     onLayoutChanged,
     onModal,
-    onSheetsChanged
+    onSheetsChanged,
+    getPlugins
   } = options;
 
   const wrapper = await mount(
@@ -1110,6 +1270,7 @@ async function renderEditor(xml, options = {}) {
       onLayoutChanged={ onLayoutChanged || noop }
       onModal={ onModal || noop }
       onSheetsChanged={ onSheetsChanged || noop }
+      getPlugins={ getPlugins || (() => []) }
       cache={ options.cache || new Cache() }
       layout={ layout || {
         minimap: {
