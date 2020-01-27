@@ -15,6 +15,10 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import {
+  find
+} from 'min-dash';
+
+import {
   Cache,
   WithCachedState
 } from '../../../cached';
@@ -1238,6 +1242,62 @@ describe('<DmnEditor>', function() {
 
   });
 
+
+  describe('extensions event emitting', function() {
+
+    let recordActions, emittedEvents;
+
+    beforeEach(function() {
+      emittedEvents = [];
+
+      recordActions = (action, options) => {
+        emittedEvents.push(options);
+      };
+    });
+
+    it('should notify when modeler configures', async function() {
+
+      // when
+      await renderEditor(diagramXML, {
+        onAction: recordActions
+      });
+
+      // then
+      const modelerConfigureEvent = getEvent(emittedEvents, 'dmn.modeler.configure');
+
+      const {
+        payload
+      } = modelerConfigureEvent;
+
+      expect(modelerConfigureEvent).to.exist;
+      expect(payload.middlewares).to.exist;
+    });
+
+
+    it('should notify when modeler was created', async function() {
+
+      // when
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        onAction: recordActions
+      });
+
+      // then
+      const { modeler } = instance.getCached();
+
+      const modelerCreatedEvent = getEvent(emittedEvents, 'dmn.modeler.created');
+
+      const {
+        payload
+      } = modelerCreatedEvent;
+
+      expect(modelerCreatedEvent).to.exist;
+      expect(payload.modeler).to.eql(modeler);
+    });
+
+  });
+
 });
 
 
@@ -1250,6 +1310,7 @@ const TestEditor = WithCachedState(DmnEditor);
 async function renderEditor(xml, options = {}) {
   const {
     layout,
+    onAction,
     onChanged,
     onError,
     onImport,
@@ -1264,6 +1325,7 @@ async function renderEditor(xml, options = {}) {
       id={ options.id || 'editor' }
       xml={ xml }
       activeSheet={ options.activeSheet || { id: 'dmn' } }
+      onAction={ onAction || noop }
       onChanged={ onChanged || noop }
       onError={ onError || noop }
       onImport={ onImport || noop }
@@ -1289,4 +1351,8 @@ async function renderEditor(xml, options = {}) {
     instance,
     wrapper
   };
+}
+
+function getEvent(events, eventName) {
+  return find(events, e => e.type === eventName);
 }

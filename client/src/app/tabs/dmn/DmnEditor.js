@@ -659,8 +659,19 @@ export class DmnEditor extends CachedComponent {
 
     const {
       getPlugins,
+      onAction,
       onError
     } = props;
+
+    // notify interested parties that modeler will be configured
+    const handleMiddlewareExtensions = (middlewares) => {
+      onAction('emit-event', {
+        type: 'dmn.modeler.configure',
+        payload: {
+          middlewares
+        }
+      });
+    };
 
     const {
       options,
@@ -670,11 +681,11 @@ export class DmnEditor extends CachedComponent {
         name,
         version
       },
-    });
+    }, handleMiddlewareExtensions);
 
     if (warnings.length && isFunction(onError)) {
       onError(
-        'Problem(s) configuring BPMN editor: \n\t' +
+        'Problem(s) configuring DMN editor: \n\t' +
         warnings.map(error => error.message).join('\n\t') +
         '\n'
       );
@@ -685,6 +696,14 @@ export class DmnEditor extends CachedComponent {
     });
 
     const stackIdx = modeler.getStackIdx();
+
+    // notify interested parties that modeler was created
+    onAction('emit-event', {
+      type: 'dmn.modeler.created',
+      payload: {
+        modeler
+      }
+    });
 
     return {
       __destroy: () => {
