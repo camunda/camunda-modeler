@@ -26,6 +26,8 @@ import {
   Icon
 } from '../../../app/primitives';
 
+import isExecutable from './util/isExecutable';
+
 const START_DETAILS_CONFIG_KEY = 'start-instance-tool';
 
 const START_INSTANCE_FAILED = 'Starting process instance failed';
@@ -137,29 +139,44 @@ export default class StartInstanceTool extends PureComponent {
       return;
     }
 
-    // (2) Ensure deployment config is available
+    // (2) Check for executable process
+    const hasExecutable = await this.hasExecutableProcess(tab);
+
+    if (!hasExecutable) {
+
+      displayNotification({
+        type: 'error',
+        title: START_INSTANCE_FAILED,
+        content: 'No executable process available.',
+        duration: 10000
+      });
+
+      return;
+    }
+
+    // (3) Ensure deployment config is available
     let deploymentConfig = await deployService.getSavedDeployConfiguration(tab);
 
-    // (2.1) Check connection to engine
+    // (3.1) Check connection to engine
     const showDeployConfig =
       !deploymentConfig || await this.checkConnection(deploymentConfig.endpoint);
 
     if (showDeployConfig) {
 
-      // (2.2) Open Modal to enter deployment configuration
+      // (3.2) Open Modal to enter deployment configuration
       deploymentConfig = await this.ensureDeployConfig(tab);
 
-      // (2.2.1) Handle user cancelation
+      // (3.2.1) Handle user cancelation
       if (!deploymentConfig) {
         return;
       }
     }
 
-    // (3) Get start configuration
-    // (3.1) Try to get existing start configuration
+    // (4) Get start configuration
+    // (4.1) Try to get existing start configuration
     let startConfiguration = await this.getSavedConfiguration(tab);
 
-    // (3.2) Check if configuration is complete
+    // (4.2) Check if configuration is complete
     const showStartConfig =
       configure || !this.canStartWithConfiguration(startConfiguration);
 
@@ -179,7 +196,7 @@ export default class StartInstanceTool extends PureComponent {
         uiOptions
       );
 
-      // (3.3.1) Handle user cancelation
+      // (4.3.1) Handle user cancelation
       if (action === 'cancel') {
         return;
       }
@@ -187,11 +204,11 @@ export default class StartInstanceTool extends PureComponent {
       startConfiguration = await this.saveConfiguration(tab, userConfiguration);
     }
 
-    // (4) Trigger deployment
+    // (5) Trigger deployment
     try {
       const deployment = await this.deploy(tab, deploymentConfig);
 
-      // (4.1) Persist process definition
+      // (5.1) Persist process definition
       await this.saveProcessDefinition(tab, deployment);
     } catch (error) {
 
@@ -206,23 +223,12 @@ export default class StartInstanceTool extends PureComponent {
       return null;
     }
 
-    // (4.2) Get latest available process definition
+    // (5.2) Get latest available process definition
     // * current diagram version OR
     // * version before if diagram had no changes
     const processDefinition = await this.getSavedProcessDefinition(tab);
 
-    if (!processDefinition) {
-      displayNotification({
-        type: 'error',
-        title: START_INSTANCE_FAILED,
-        content: 'No executable process available.',
-        duration: 10000
-      });
-
-      return;
-    }
-
-    // (5) Trigger start instance
+    // (6) Trigger start instance
     try {
       const {
         endpoint
@@ -251,6 +257,10 @@ export default class StartInstanceTool extends PureComponent {
     await config.setForFile(tab.file, START_DETAILS_CONFIG_KEY, configuration);
 
     return configuration;
+  }
+
+  hasExecutableProcess(tab) {
+    return isExecutable(tab.file.contents);
   }
 
   canStartWithConfiguration(configuration) {

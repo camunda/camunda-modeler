@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_0m3i0zk" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.0-dev.20200128">
+  <bpmn:collaboration id="Collaboration_1hcwsxy">
+    <bpmn:participant id="Participant_06rtacw" processRef="Process_1tp2lk4" />
+    <bpmn:participant id="Participant_0445nam" processRef="Process_09h5p6u" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1tp2lk4" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1" />
+  </bpmn:process>
+  <bpmn:process id="Process_09h5p6u" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_10fksg9" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1hcwsxy">
+      <bpmndi:BPMNShape id="Participant_06rtacw_di" bpmnElement="Participant_06rtacw" isHorizontal="true">
+        <dc:Bounds x="170" y="59" width="600" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="239" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_0445nam_di" bpmnElement="Participant_0445nam" isHorizontal="true">
+        <dc:Bounds x="160" y="350" width="600" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_10fksg9_di" bpmnElement="StartEvent_10fksg9">
+        <dc:Bounds x="252" y="422" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

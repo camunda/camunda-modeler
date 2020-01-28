@@ -20,8 +20,6 @@ import { DeploymentService } from './mocks';
 
 import StartInstanceTool from '../StartInstanceTool';
 
-const START_DETAILS_CONFIG_KEY = 'start-instance-tool';
-
 describe('<StartInstanceTool>', () => {
 
   it('should render', () => {
@@ -288,29 +286,32 @@ describe('<StartInstanceTool>', () => {
     it('should NOT start instance with no executable process', async () =>{
 
       // given
-      const startSpy = sinon.spy();
+      const executableStub = sinon.stub().returns(false);
 
-      const activeTab = createTab({ name: 'foo.bpmn' });
+      const displayNotification = sinon.spy();
 
-      const config = {
-        getForFile: (_, key) => {
-          return key === START_DETAILS_CONFIG_KEY ? { businessKey: 'foo' } : null;
-        }
-      };
+      const activeTab = createTab({
+        name: 'foo.bpmn'
+      });
 
       const {
         instance
       } = createStartInstanceTool({
         activeTab,
-        config,
-        startSpy
+        executableStub,
+        displayNotification
       });
 
       // when
       await instance.startInstance();
 
       // then
-      expect(startSpy).not.to.have.been.calledOnce;
+      expect(displayNotification).to.have.been.calledWith({
+        content: 'No executable process available.',
+        duration: 10000,
+        title: 'Starting process instance failed',
+        type: 'error'
+      });
     });
 
 
@@ -346,7 +347,7 @@ describe('<StartInstanceTool>', () => {
       await instance.startInstance();
 
       // then
-      expect(startSpy).not.to.have.been.calledOnce;
+      expect(startSpy).not.to.have.been.called;
     });
 
 
@@ -377,7 +378,7 @@ describe('<StartInstanceTool>', () => {
       await instance.startInstance();
 
       // then
-      expect(startSpy).not.to.have.been.calledOnce;
+      expect(startSpy).not.to.have.been.called;
     });
 
 
@@ -400,7 +401,7 @@ describe('<StartInstanceTool>', () => {
       await instance.startInstance();
 
       // then
-      expect(startSpy).not.to.have.been.calledOnce;
+      expect(startSpy).not.to.have.been.called;
     });
 
 
@@ -460,6 +461,14 @@ class TestStartInstanceTool extends StartInstanceTool {
 
   checkConnection = (...args) => {
     return this.props.connectionStub && this.props.connectionStub(...args);
+  }
+
+  hasExecutableProcess = (...args) => {
+    if (this.props.executableStub) {
+      return this.props.executableStub(...args);
+    }
+
+    return true;
   }
 
   // closes automatically when modal is opened
