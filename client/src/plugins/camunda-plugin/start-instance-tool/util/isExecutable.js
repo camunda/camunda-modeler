@@ -22,7 +22,7 @@ export default function isExecutable(xml) {
     moddle.fromXML(xml, function(err, definitions) {
 
       if (err) {
-        resolve(false);
+        return resolve(false);
       }
 
       const {
