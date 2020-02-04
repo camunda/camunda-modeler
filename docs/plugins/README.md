@@ -80,7 +80,7 @@ For more information on how the modeler's menu works, have a look at its impleme
 
 ### Extend the Modeling Tools for BPMN, CMMN, and DMN
 
-> Currently you can only extend bpmn-js
+> Currently you can only extend bpmn-js and dmn-js
 
 You can extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js) with your own modules.
 
