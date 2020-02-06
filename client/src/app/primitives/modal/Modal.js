@@ -62,7 +62,7 @@ export default class Modal extends PureComponent {
     } = this.props;
 
     return ReactDOM.createPortal(
-      <div className={ css.ModalOverlay } onClick={ this.handleBackgroundClick }>
+      <div className={ css.ModalOverlay }>
         <div className={ classNames(css.ModalContainer, className) } ref={ this.modalRef }>
           { children }
           { onClose && (<Close onClick={ this.close } />) }
@@ -71,12 +71,6 @@ export default class Modal extends PureComponent {
       document.body
     );
   }
-
-  handleBackgroundClick = event => {
-    if (event.target === event.currentTarget) {
-      this.close();
-    }
-  };
 }
 
 Modal.Body = Body;

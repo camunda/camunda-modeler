@@ -81,7 +81,7 @@ describe('<Modal>', function() {
     });
 
 
-    it('should invoke passed onClose prop for background click', function() {
+    it('should NOT invoke passed onClose prop for background click', function() {
 
       // given
       wrapper = mount(<Modal onClose={ onCloseSpy } />);
@@ -90,7 +90,7 @@ describe('<Modal>', function() {
       wrapper.first().simulate('click');
 
       // then
-      expect(onCloseSpy).to.be.called;
+      expect(onCloseSpy).to.not.be.called;
     });
 
 
