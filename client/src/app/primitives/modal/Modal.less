@@ -33,15 +33,24 @@
   z-index: 1001;
 
   .close {
-    vertical-align: middle;
-    font-size: 2rem;
-    line-height: 2rem;
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 20px;
+    right: 20px;
+
+    width: 22px;
+    height: 22px;
+    padding: 0;
+
+    border: none;
+    border-radius: 3px;
+    background-color: transparent;
 
     &:hover {
-      color: orange;
+      background-color: var(--silver-darken-94)
+    }
+
+    &:focus {
+      background-color: var(--silver-darken-87);
     }
   }
 }
