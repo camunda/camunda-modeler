@@ -16,6 +16,8 @@ import classNames from 'classnames';
 import FocusTrap from './FocusTrap';
 import EscapeTrap from './EscapeTrap';
 
+import CloseIcon from '../../../../resources/icons/Close.svg';
+
 import css from './Modal.less';
 
 
@@ -62,8 +64,8 @@ export default class Modal extends PureComponent {
     return ReactDOM.createPortal(
       <div className={ css.ModalOverlay } onClick={ this.handleBackgroundClick }>
         <div className={ classNames(css.ModalContainer, className) } ref={ this.modalRef }>
-          { onClose && (<Close onClick={ this.close } />) }
           { children }
+          { onClose && (<Close onClick={ this.close } />) }
         </div>
       </div>,
       document.body
@@ -104,9 +106,9 @@ function Close(props) {
   } = props;
 
   return (
-    <span className="close" onClick={ onClick }>
-      ×
-    </span>
+    <button className="close" onClick={ onClick }>
+      <CloseIcon />
+    </button>
   );
 }
 
