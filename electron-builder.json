@@ -27,7 +27,7 @@
     "target": [
       {
         "target": "tar.gz",
-        "arch": [ "x64", "ia32" ]
+        "arch": [ "x64" ]
       }
     ]
   },
