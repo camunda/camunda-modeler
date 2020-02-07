@@ -69,7 +69,7 @@ const expectedFiles = {
   linux: [
     {
       name: 'camunda-modeler-${version}-linux-${arch}.tar.gz',
-      archs,
+      archs: [ 'x64' ],
       contents: [
         'camunda-modeler-${version}-linux-${arch}/camunda-modeler',
         'camunda-modeler-${version}-linux-${arch}/support/xdg_register.sh',
