@@ -8,9 +8,12 @@
   --blue-lighten-82: #a2c5ff;
 
   --silver-base: #f8f8f8;
+  --silver-lighten-99: #fcfcfc;
   --silver-darken-80: #cdcdcd;
   --silver-darken-87: #dedede;
   --silver-darken-94: #efefef;
+
+  --grey-darken-33: #535353;
 }
 
 * {
@@ -101,8 +104,8 @@ body:not(.loading) > .loader {
 /* <buttons> */
 
 .btn {
-  min-width: 92px;
-  height: 30px;
+  min-width: 120px;
+  height: 35px;
   border-radius: 3px;
   font-size: 13px;
   font-weight: bold;
@@ -140,7 +143,7 @@ body:not(.loading) > .loader {
 }
 
 .btn-secondary {
-  color: #535353;
+  color: var(--grey-darken-33);
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
   border: solid 1px var(--silver-darken-80);
   background-color: var(--silver-base);
@@ -162,7 +165,7 @@ body:not(.loading) > .loader {
 }
 
 .btn + .btn {
-  margin-left: 10px;
+  margin-left: 15px;
 }
 
 /* </buttons>
