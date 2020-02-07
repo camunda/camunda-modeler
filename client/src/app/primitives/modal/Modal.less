@@ -21,16 +21,66 @@
 
 :local(.ModalContainer) {
   position: fixed;
-  margin: 10% auto;
   left: 0;
   right: 0;
+
   width: 636px;
-  height: auto;
-  background: white;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-  border-radius: 2px;
-  padding: 20px;
+
+  margin: 10vh auto 6vh;
+  padding: 0;
   z-index: 1001;
+
+  border: solid 1px var(--silver-darken-87);
+  border-radius: 3px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+
+  background-color: var(--silver-lighten-99);
+  color: var(--grey-darken-33);
+
+  &,
+  & > form {
+    display: flex;
+    flex: auto;
+    flex-direction: column;
+
+    max-height: 84vh;
+  }
+
+  /* Content */
+
+  .modal-header {
+    padding: 20px 60px 20px 20px;
+
+    background-color: var(--silver-base);
+    font-size: 16px;
+
+    border-bottom: solid 1px var(--silver-darken-87);
+
+    .modal-title {
+      margin: 0;
+
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+
+  .modal-body {
+    padding: 10px 30px 20px 20px;
+
+    overflow-y: scroll;
+
+    font-size: 14px;
+  }
+
+  .modal-footer {
+    padding: 15px 20px;
+
+    border-top: solid 1px var(--silver-darken-87);
+
+    text-align: right;
+  }
+
+  /* Close button */
 
   .close {
     position: absolute;
