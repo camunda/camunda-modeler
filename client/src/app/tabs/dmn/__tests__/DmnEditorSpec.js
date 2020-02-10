@@ -31,6 +31,7 @@ import DmnModeler from 'test/mocks/dmn-js/Modeler';
 
 import {
   getCanvasEntries,
+  getAlignDistributeEntries,
   getCopyCutPasteEntries,
   getSelectionEntries,
   getToolEntries,
@@ -600,6 +601,27 @@ describe('<DmnEditor>', function() {
           // when
           instance.handleChanged();
         });
+
+
+        it('should provide align/distribute entries', async function() {
+
+          // given
+          const changedSpy = (state) => {
+
+            const alignDistributeEntries = getAlignDistributeEntries(state);
+
+            // then
+            expect(state.editMenu).to.deep.include(alignDistributeEntries);
+          };
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          // when
+          instance.handleChanged();
+        });
+
       });
 
 

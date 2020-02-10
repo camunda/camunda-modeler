@@ -15,7 +15,11 @@ import {
   isFunction
 } from 'min-dash';
 
+import { Fill } from '../../slot-fill';
+
 import {
+  Button,
+  Icon,
   Loader
 } from '../../primitives';
 
@@ -291,8 +295,10 @@ export class DmnEditor extends CachedComponent {
 
     if (activeView.type === 'drd') {
       assign(newState, {
+        align: selectionLength > 1,
         defaultCopyCutPaste: inputActive,
         defaultUndoRedo: inputActive,
+        distribute: selectionLength > 2,
         editLabel: !inputActive && !!selectionLength,
         lassoTool: !inputActive,
         moveCanvas: !inputActive,
@@ -360,6 +366,18 @@ export class DmnEditor extends CachedComponent {
     } = this.props;
 
     onError(error);
+  }
+
+  handleDistributeElements = (type) => {
+    this.triggerAction('distributeElements', {
+      type
+    });
+  }
+
+  handleAlignElements = (type) => {
+    this.triggerAction('alignElements', {
+      type
+    });
   }
 
   checkImport(prevProps) {
@@ -638,6 +656,66 @@ export class DmnEditor extends CachedComponent {
 
         <Loader hidden={ !importing } />
 
+        <Fill slot="toolbar" group="6_align">
+          <Button
+            title="Align elements left"
+            disabled={ !this.state.align }
+            onClick={ () => this.handleAlignElements('left') }
+          >
+            <Icon name="align-left-tool" />
+          </Button>
+          <Button
+            title="Align elements center"
+            disabled={ !this.state.align }
+            onClick={ () => this.handleAlignElements('center') }
+          >
+            <Icon name="align-center-tool" />
+          </Button>
+          <Button
+            title="Align elements right"
+            disabled={ !this.state.align }
+            onClick={ () => this.handleAlignElements('right') }
+          >
+            <Icon name="align-right-tool" />
+          </Button>
+          <Button
+            title="Align elements top"
+            disabled={ !this.state.align }
+            onClick={ () => this.handleAlignElements('top') }>
+            <Icon name="align-top-tool" />
+          </Button>
+          <Button
+            title="Align elements middle"
+            disabled={ !this.state.align }
+            onClick={ () => this.handleAlignElements('middle') }
+          >
+            <Icon name="align-middle-tool" />
+          </Button>
+          <Button
+            title="Align elements bottom"
+            disabled={ !this.state.align }
+            onClick={ () => this.handleAlignElements('bottom') }
+          >
+            <Icon name="align-bottom-tool" />
+          </Button>
+        </Fill>
+
+        <Fill slot="toolbar" group="7_distribute">
+          <Button
+            title="Distribute elements horizontally"
+            disabled={ !this.state.distribute }
+            onClick={ () => this.handleDistributeElements('horizontal') }
+          >
+            <Icon name="distribute-horizontal-tool" />
+          </Button>
+          <Button
+            title="Distribute elements vertically"
+            disabled={ !this.state.distribute }
+            onClick={ () => this.handleDistributeElements('vertical') }
+          >
+            <Icon name="distribute-vertical-tool" />
+          </Button>
+        </Fill>
         <div className="diagram" ref={ this.ref }></div>
 
         <PropertiesContainer
