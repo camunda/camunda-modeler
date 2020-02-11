@@ -42,7 +42,7 @@
     "del": "^3.0.0",
     "del-cli": "^1.1.0",
     "diff2html": "^2.11.2",
-    "electron": "^7.1.7",
+    "electron": "^7.1.12",
     "electron-builder": "^22.1.0",
     "electron-devtools-installer": "^2.2.4",
     "electron-notarize": "^0.2.0",
