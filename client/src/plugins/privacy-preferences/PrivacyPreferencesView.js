@@ -70,11 +70,11 @@ class PrivacyPreferencesView extends PureComponent {
     const {
       onClose,
       onSaveAndClose,
-      hasCancel
+      canCloseWithoutSave
     } = this.props;
 
     return (
-      <Modal className={ css.View }>
+      <Modal className={ css.View } onClose={ canCloseWithoutSave && onClose }>
 
         <Modal.Title>{ TITLE }</Modal.Title>
 
@@ -100,7 +100,7 @@ class PrivacyPreferencesView extends PureComponent {
 
         <Modal.Footer>
           <div className="form-submit">
-            { hasCancel && (
+            { canCloseWithoutSave && (
               <button className="btn btn-secondary" type="submit" onClick={ onClose }>
                 { CANCEL_BUTTON_TEXT }
               </button>

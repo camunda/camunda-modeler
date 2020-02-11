@@ -91,9 +91,9 @@ describe('<PrivacyPreferencesView>', function() {
     });
 
 
-    it('should render cancel button is prop set', function() {
+    it('should render cancel button if prop is set', function() {
 
-      wrapper = mount(<PrivacyPreferencesView hasCancel={ true } />);
+      wrapper = mount(<PrivacyPreferencesView canCloseWithoutSave />);
 
       const cancel = wrapper.find('.btn').at(1);
 
@@ -194,7 +194,7 @@ describe('<PrivacyPreferencesView>', function() {
       const wrapper = mount(
         <PrivacyPreferencesView
           preferences={ {} }
-          hasCancel={ true }
+          canCloseWithoutSave
           onClose={ () => {} }
           onSaveAndClose={ onSaveAndClose } />
       );
