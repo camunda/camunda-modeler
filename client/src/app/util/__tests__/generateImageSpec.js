@@ -44,7 +44,7 @@ describe('util - generateImage', function() {
       // 6 characters. If it is generated, image.length returns the actual size
       // of the generated image which is more than 6.
       expect(image.length).to.be.greaterThan(6);
-    }).timeout(5000); // downscaling may exceed the default timeout 2000ms.
+    }).timeout(10000); // downscaling may exceed the default timeout 2000ms.
 
 
     it('should generate expected images <' + type + '>', function() {
