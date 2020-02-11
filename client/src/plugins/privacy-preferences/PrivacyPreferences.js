@@ -84,7 +84,7 @@ export default class PrivacyPreferences extends PureComponent {
           onClose={ this.onClose }
           preferences={ preferences }
           onSaveAndClose={ this.onSaveAndClose }
-          hasCancel={ !isInitialPreferences } />
+          canCloseWithoutSave={ !isInitialPreferences } />
       }
     </React.Fragment>;
   }
