@@ -473,6 +473,75 @@ describe('<StartInstanceTool>', () => {
       expect(logSpy.args[0][0].category).to.eql('start-instance-error');
     });
 
+
+    describe('Cockpit link', function() {
+
+      function testCockpitLink(deploymentUrl, expectedCockpitLink) {
+
+        return done => {
+
+          // given
+          const activeTab = createTab({ name: 'foo.bpmn' });
+
+          const startSpy = sinon.stub().returns({ id: 'foo' });
+
+          const deployService = {
+            getSavedDeployConfiguration: () => {
+              return {
+                deployment: { name: 'foo' },
+                endpoint: { url: deploymentUrl }
+              };
+            }
+          };
+
+          const {
+            instance
+          } = createStartInstanceTool({
+            activeTab,
+            deployService,
+            displayNotification,
+            startSpy
+          });
+
+          // when
+          instance.startInstance();
+
+          function displayNotification(notification) {
+
+            // then
+            try {
+              const cockpitLink = shallow(notification.content).find('a').first();
+              const { href } = cockpitLink.props();
+
+              expect(href).to.eql(expectedCockpitLink);
+
+              done();
+            } catch (error) {
+              done(error);
+            }
+          }
+        };
+      }
+
+
+      it('should display Spring-specific Cockpit link', testCockpitLink(
+        'http://localhost:8080/rest',
+        'http://localhost:8080/app/cockpit/default/#/process-instance/foo'
+      ));
+
+
+      it('should display Tomcat-specific Cockpit link', testCockpitLink(
+        'http://localhost:8080/engine-rest',
+        'http://localhost:8080/camunda/app/cockpit/default/#/process-instance/foo'
+      ));
+
+
+      it('should display Spring-specific Cockpit link for custom rest url', testCockpitLink(
+        'http://customized-camunda.bpmn.io/custom-rest',
+        'http://customized-camunda.bpmn.io/app/cockpit/default/#/process-instance/foo'
+      ));
+    });
+
   });
 
 
@@ -492,7 +561,7 @@ class TestStartInstanceTool extends StartInstanceTool {
 
   // removes CamundaAPI dependency
   startWithConfiguration(...args) {
-    this.props.startSpy && this.props.startSpy(...args);
+    return this.props.startSpy && this.props.startSpy(...args);
   }
 
   checkConnection = (...args) => {
