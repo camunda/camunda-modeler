@@ -158,8 +158,8 @@ export default class StartInstanceTool extends PureComponent {
     let deploymentConfig = await deployService.getSavedDeployConfiguration(tab);
 
     // (3.1) Check connection to engine
-    const showDeployConfig =
-      !deploymentConfig || await this.checkConnection(deploymentConfig.endpoint);
+    const showDeployConfig = configure || !deploymentConfig ||
+      await this.checkConnection(deploymentConfig.endpoint);
 
     if (showDeployConfig) {
 
