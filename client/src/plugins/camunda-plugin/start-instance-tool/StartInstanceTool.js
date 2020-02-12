@@ -416,9 +416,9 @@ function CockpitLink(props) {
     id
   } = processInstance;
 
-  const baseUrl = getBaseUrl(endpointUrl);
+  const baseUrl = getWebAppsBaseUrl(endpointUrl);
 
-  const cockpitUrl = `${baseUrl}/camunda/app/cockpit/default/#/process-instance/${id}`;
+  const cockpitUrl = `${baseUrl}/cockpit/default/#/process-instance/${id}`;
 
   return (
     <div className={ css.CockpitLink }>
@@ -437,8 +437,12 @@ function isBpmnTab(tab) {
   return tab && tab.type === 'bpmn';
 }
 
-function getBaseUrl(url) {
-  const [ protocol,, host ] = url.split('/');
+function getWebAppsBaseUrl(url) {
+  const [ protocol,, host, restRoot ] = url.split('/');
 
-  return `${protocol}//${host}`;
+  return isTomcat(restRoot) ? `${protocol}//${host}/camunda/app` : `${protocol}//${host}/app`;
+}
+
+function isTomcat(restRoot) {
+  return restRoot === 'engine-rest';
 }
