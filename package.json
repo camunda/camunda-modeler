@@ -38,7 +38,6 @@
     "builder-util": "^22.3.3",
     "chai": "^4.2.0",
     "cpx": "^1.5.0",
-    "decompress": "^4.2.0",
     "del": "^3.0.0",
     "del-cli": "^1.1.0",
     "diff2html": "^2.11.2",
@@ -63,6 +62,8 @@
     "proxyquire": "^2.1.1",
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0",
-    "which": "^1.2.0"
+    "tar-stream": "^2.1.0",
+    "which": "^1.2.0",
+    "yauzl": "^2.10.0"
   }
 }
