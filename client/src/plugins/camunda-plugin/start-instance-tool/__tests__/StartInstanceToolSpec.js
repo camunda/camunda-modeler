@@ -119,6 +119,42 @@ describe('<StartInstanceTool>', () => {
     });
 
 
+    it('should ask for deployment config when starting with new configuration', async () => {
+
+      // given
+      const deploySpy = sinon.spy();
+
+      const connectionStub = sinon.stub().returns();
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const deployService = {
+        getSavedDeployConfiguration: () => {
+          return {
+            deployment: { name: 'should not use me' },
+            endpoint: {}
+          };
+        },
+        deployWithConfiguration: deploySpy
+      };
+
+      const {
+        instance
+      } = createStartInstanceTool({
+        activeTab,
+        deployService,
+        connectionStub
+      });
+
+      // when
+      await instance.startInstance({ configure: true });
+
+      // then
+      expect(deploySpy).to.have.been.calledOnce;
+      expect(deploySpy.args[0][1].deployment.name).to.equal('foo');
+    });
+
+
     it('should save deployment configuration', async () => {
 
       // given
