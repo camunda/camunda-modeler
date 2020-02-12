@@ -17,7 +17,9 @@ const pkg = require('../app/package');
 const fs = require('fs');
 const path = require('path');
 
-const decompress = require('decompress');
+const yauzl = require('yauzl');
+const tar = require('tar-stream');
+const zlib = require('zlib');
 
 function currentPlatform() {
   const platform = require('os').platform();
@@ -143,6 +145,57 @@ function expandExpected(platform, version) {
 
 // helpers ///////////
 
+function parseZipFile(sourceFile) {
+  return new Promise((resolve, reject) => {
+    let fileNames = [];
+    yauzl.open(sourceFile, { lazyEntries: true }, (err, zipFile) => {
+      if (err) {
+        return reject(err);
+      }
+      zipFile.readEntry();
+      zipFile.on('entry', function(entry) {
+        fileNames.push(entry.fileName);
+        zipFile.readEntry();
+      });
+
+      zipFile.once('end', function() {
+        resolve(fileNames);
+        zipFile.close();
+      });
+    });
+  });
+}
+
+function parseTarFile(sourceFile) {
+  return new Promise((resolve) => {
+    let fileNames = [];
+    const extract = tar.extract();
+
+    extract.on('entry', function(header, stream, next) {
+
+      fileNames.push(header.name);
+
+      stream.on('end', function() {
+        next();
+      });
+
+      stream.resume();
+    });
+
+    extract.on('finish', function() {
+      resolve(fileNames);
+    });
+
+    fs.createReadStream(sourceFile).pipe(zlib.createUnzip()).pipe(extract);
+  });
+}
+
+function parseCompressedFile(sourceFile) {
+  if (sourceFile.endsWith('.zip')) {
+    return parseZipFile(sourceFile);
+  }
+  return parseTarFile(sourceFile);
+}
 
 async function verifyArchives(platforms, version) {
 
@@ -179,15 +232,13 @@ async function verifyArchives(platforms, version) {
       // (1): verify correct contents for archive
       if (contents) {
 
-        console.log('     > extracting');
-
-        const files = await decompress(archivePath, `${archivePath}_extracted`);
-
         console.log('     > verifying contents');
+
+        const files = await parseCompressedFile(archivePath);
 
         for (const expectedFile of contents) {
 
-          const contained = files.some(file => file.path === expectedFile);
+          const contained = files.some(file => file === expectedFile);
 
           if (!contained) {
             throw new Error(`expected <${name}> to contain <${expectedFile}>`);
