@@ -58,7 +58,7 @@ module.exports = {
       {
         oneOf: [
           {
-            test: /\/[A-Z][^/]+\.svg$/,
+            test: /[/\\][A-Z][^/\\]+\.svg$/,
             use: 'react-svg-loader'
           },
           {

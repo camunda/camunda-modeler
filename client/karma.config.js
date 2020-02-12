@@ -106,7 +106,7 @@ module.exports = function(karma) {
           {
             oneOf: [
               {
-                test: /[/\\][A-Z][^/]+\.svg$/,
+                test: /[/\\][A-Z][^/\\]+\.svg$/,
                 use: 'react-svg-loader'
               },
               {
