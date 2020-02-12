@@ -26,6 +26,9 @@ import AuthTypes from '../../shared/AuthTypes';
 const CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
 
+const SPRING_DEFAULT_URL = 'http://localhost:8080/rest';
+const TOMCAT_DEFAULT_URL = 'http://localhost:8080/engine-rest';
+
 
 describe('<DeploymentTool>', () => {
 
@@ -244,6 +247,50 @@ describe('<DeploymentTool>', () => {
 
     it('should handle deployment error');
 
+
+    describe('default url', () => {
+
+      it('should use Spring-specific endpoint url per default', async () => {
+
+        // given
+        const deploySpy = sinon.spy();
+        const activeTab = createTab({ name: 'foo.bpmn' });
+        const {
+          instance
+        } = createDeploymentTool({ activeTab, deploySpy });
+
+        // when
+        await instance.deploy();
+
+        // then
+        expect(deploySpy).to.have.been.calledOnce;
+        expect(deploySpy.args[0][1].endpoint).to.have.property('url', SPRING_DEFAULT_URL);
+      });
+
+
+      it('should use Tomcat-specific endpoint url if can be connected to', async () => {
+
+        // given
+        const deploySpy = sinon.spy(),
+              activeTab = createTab({ name: 'foo.bpmn' }),
+              checkConnectionSpy = sinon.stub().resolves(true);
+        const {
+          instance
+        } = createDeploymentTool({
+          activeTab,
+          checkConnectionSpy,
+          deploySpy
+        });
+
+        // when
+        await instance.deploy();
+
+        // then
+        expect(deploySpy).to.have.been.calledOnce;
+        expect(deploySpy.args[0][1].endpoint).to.have.property('url', TOMCAT_DEFAULT_URL);
+      });
+    });
+
   });
 
 
@@ -346,7 +393,7 @@ class TestDeploymentTool extends DeploymentTool {
   }
 
   checkConnection = (...args) => {
-    this.props.checkConnectionSpy && this.props.checkConnectionSpy(...args);
+    return this.props.checkConnectionSpy && this.props.checkConnectionSpy(...args);
   }
 
   // closes automatically when modal is opened

@@ -33,10 +33,12 @@ const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
 const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
 
 const DEFAULT_ENDPOINT = {
-  url: 'http://localhost:8080/engine-rest',
+  url: 'http://localhost:8080/rest',
   authType: AuthTypes.none,
   rememberCredentials: false
 };
+
+const TOMCAT_DEFAULT_URL = 'http://localhost:8080/engine-rest';
 
 export default class DeploymentTool extends PureComponent {
 
@@ -324,7 +326,8 @@ export default class DeploymentTool extends PureComponent {
    */
   async getDefaultEndpoint(tab, providedEndpoint) {
 
-    let endpoint = {};
+    let endpoint = {},
+        defaultUrl = DEFAULT_ENDPOINT.url;
 
     if (providedEndpoint) {
       endpoint = providedEndpoint;
@@ -337,8 +340,13 @@ export default class DeploymentTool extends PureComponent {
       }
     }
 
+    if (!endpoint.url && (await this.isTomcatRunning())) {
+      defaultUrl = TOMCAT_DEFAULT_URL;
+    }
+
     return {
       ...DEFAULT_ENDPOINT,
+      url: defaultUrl,
       ...endpoint,
       id: endpoint.id || generateId()
     };
@@ -356,6 +364,22 @@ export default class DeploymentTool extends PureComponent {
         ...deployment
       }
     };
+  }
+
+  isTomcatRunning() {
+    return this.checkConnection(TOMCAT_DEFAULT_URL);
+  }
+
+  async checkConnection(url) {
+    const camundaApi = new CamundaAPI({ url });
+
+    try {
+      await camundaApi.checkConnection();
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   render() {
