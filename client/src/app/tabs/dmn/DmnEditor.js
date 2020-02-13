@@ -658,7 +658,8 @@ export class DmnEditor extends CachedComponent {
       exporter: {
         name,
         version
-      }
+      },
+      position: 'absolute'
     });
 
     const stackIdx = modeler.getStackIdx();
