@@ -27,7 +27,7 @@
     "diagram-js-direct-editing": "^1.6.1",
     "diagram-js-minimap": "^2.0.3",
     "diagram-js-origin": "^1.3.1",
-    "dmn-js": "^7.4.1",
+    "dmn-js": "^7.4.3",
     "dmn-js-properties-panel": "^0.3.4",
     "drag-tabs": "^2.2.0",
     "events": "^3.0.0",
