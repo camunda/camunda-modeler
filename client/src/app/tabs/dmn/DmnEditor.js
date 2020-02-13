@@ -770,7 +770,8 @@ export class DmnEditor extends CachedComponent {
     }
 
     const modeler = new CamundaDmnModeler({
-      ...options
+      ...options,
+      position: 'absolute'
     });
 
     const stackIdx = modeler.getStackIdx();
