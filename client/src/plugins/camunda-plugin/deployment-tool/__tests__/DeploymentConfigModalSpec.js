@@ -161,8 +161,72 @@ describe('<DeploymentConfigModal>', () => {
       expect(wrapper.find('.hint.error')).to.have.length(1);
     });
 
+
+    it('should disable deploy button when connection cannot be established', async () => {
+
+      // given
+      const configuration = {
+        deployment: {
+          tenantId: '',
+          name: 'diagram'
+        },
+        endpoint: {
+          url: 'http://localhost:8088/engine-rest',
+          authType: AuthTypes.none
+        }
+      };
+
+      const connectionChecker = new MockConnectionChecker();
+
+      const {
+        wrapper
+      } = createModal({
+        connectionChecker,
+        configuration
+      }, mount);
+
+      // when
+      await connectionChecker.triggerComplete({ connectionError: true });
+
+      wrapper.update();
+
+      // then
+      expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', true);
+    });
   });
 
+
+  it('should disable deploy button when form is invalid', async () => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.none
+      }
+    };
+
+    const connectionChecker = new MockConnectionChecker();
+
+    const {
+      wrapper
+    } = createModal({
+      connectionChecker,
+      configuration
+    }, mount);
+
+    // when
+    await connectionChecker.triggerComplete({});
+
+    wrapper.update();
+
+    // then
+    expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', true);
+  });
 });
 
 
