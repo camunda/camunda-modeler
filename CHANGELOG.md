@@ -6,6 +6,36 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.7.0
+
+#### General
+
+* `FEAT`: disable deploy button if config is not valid ([`050fcdf`](https://github.com/camunda/camunda-modeler/commit/050fcdf364b4a9dc4aaad894c48b79d1c06e2050))
+* `FEAT`: support Camunda Spring Boot starter per default ([#1610](https://github.com/camunda/camunda-modeler/issues/1610))
+* `FEAT`: redeploy when running process with new config ([`b4f18fe`](https://github.com/camunda/camunda-modeler/commit/b4f18fe47d4c27ed7e4b8aaec789749c4c11bbbd))
+* `FEAT`: improve look and responsiveness of modals ([#1681](https://github.com/camunda/camunda-modeler/issues/1681))
+* `FEAT`: remove support for Linux 32bit platforms ([#1683](https://github.com/camunda/camunda-modeler/pull/1683))
+* `FIX`: check for executable process before deploy and run ([#1671](https://github.com/camunda/camunda-modeler/issues/1671))
+* `CHORE`: move modal styles to global ([#1691](https://github.com/camunda/camunda-modeler/pull/1691))
+* `CHORE`: update to `electron@7.1.12`
+
+#### BPMN
+
+* `FEAT`: generate more generic IDs for new elements ([#1654](https://github.com/camunda/camunda-modeler/issues/1654))
+* `FIX`: improve space tool ([#1368](https://github.com/camunda/camunda-modeler/issues/1368))
+* `FIX`: correctly copy referenced root elements ([#1639](https://github.com/camunda/camunda-modeler/issues/1639))
+* `FIX`: copy signal event variables ([#1684](https://github.com/camunda/camunda-modeler/issues/1684))
+* `CHORE`: update to `bpmn-js@6.4.0`
+
+#### DMN
+
+* `FEAT`: add alignment buttons and snapping ([#1669](https://github.com/camunda/camunda-modeler/issues/1669))
+* `FEAT`: add support for DMN Editor plugins ([#1550](https://github.com/camunda/camunda-modeler/pull/1550))
+* `FIX`: do not display placeholder for input fields in table ([#1677](https://github.com/camunda/camunda-modeler/issues/1677))
+* `FIX`: update XML correctly when changing id ([#1679](https://github.com/camunda/camunda-modeler/issues/1679))
+* `FIX`: correct DMN Editor scrolling ([#1687](https://github.com/camunda/camunda-modeler/issues/1687))
+* `CHORE`: update to `dmn-js@7.4.3`
+
 ## 3.6.0
 
 #### General
@@ -97,10 +127,10 @@ ___Note:__ Yet to be released changes appear here._
 
 #### Deployment
 
-* `FEAT`: remember deployment details with diagram ([#1066](https://github.com/camunda/camunda-modeler/issues/1066))     
-* `FEAT`: display readable error message in log ([#1426](https://github.com/camunda/camunda-modeler/issues/1426))        
-* `FEAT`: derive default deployment name from the filename ([#1511](https://github.com/camunda/camunda-modeler/pull/1511))   
-* `FEAT`: deployment tool as a client extension ([#1488](https://github.com/camunda/camunda-modeler/issues/1488))  
+* `FEAT`: remember deployment details with diagram ([#1066](https://github.com/camunda/camunda-modeler/issues/1066))
+* `FEAT`: display readable error message in log ([#1426](https://github.com/camunda/camunda-modeler/issues/1426))
+* `FEAT`: derive default deployment name from the filename ([#1511](https://github.com/camunda/camunda-modeler/pull/1511))
+* `FEAT`: deployment tool as a client extension ([#1488](https://github.com/camunda/camunda-modeler/issues/1488))
 
 #### Plugins
 
@@ -116,7 +146,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FIX`: snap connections to shape center ([#1436](https://github.com/camunda/camunda-modeler/issues/1436))
 * `FIX`: apply labels when using context pad ([#1502](https://github.com/camunda/camunda-modeler/issues/1502))
-* `FIX`: do not copy extension elements with unknown type ([#1507](https://github.com/camunda/camunda-modeler/issues/1507))  
+* `FIX`: do not copy extension elements with unknown type ([#1507](https://github.com/camunda/camunda-modeler/issues/1507))
 
 ## 3.3.4
 
@@ -181,7 +211,7 @@ ___Note:__ Yet to be released changes appear here._
 #### General
 
 * `FIX`: update properties panels to mitigate HTML injection vulnerabilities ([`1ed7caa2c`](https://github.com/camunda/camunda-modeler/commit/1ed7caa2ce3fe1a66b4b5786afbd63c1e54b9700), [blog post](https://bpmn.io/blog/posts/2019-html-injection-vulnerabilities-properties-panels-fixed.html))
-* `CHORE`: validate that XML IDs for imported documents are valid [QNames](https://www.w3.org/2001/tag/doc/qnameids) 
+* `CHORE`: validate that XML IDs for imported documents are valid [QNames](https://www.w3.org/2001/tag/doc/qnameids)
 
 #### BPMN
 
