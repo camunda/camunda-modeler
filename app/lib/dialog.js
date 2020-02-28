@@ -71,6 +71,13 @@ class Dialog {
     // remove extension
     name = path.parse(name).name;
 
+    // add default extension as specified by filter
+    // this prevents users on Linux to run into export / save-as issues,
+    // cf. https://github.com/camunda/camunda-modeler/issues/1699
+    if (filters && filters[0] && filters[0].extensions && filters[0].extensions[0]) {
+      name = name + '.' + filters[0].extensions[0];
+    }
+
     let { defaultPath } = options;
 
     if (!defaultPath) {
