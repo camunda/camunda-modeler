@@ -1119,6 +1119,23 @@ describe('<App>', function() {
       expect(writeFileSpy).to.have.been.calledTwice;
     });
 
+
+    it('should handle missing export extension', async function() {
+
+      // given
+      await app.createDiagram();
+
+      dialog.setShowSaveFileDialogResponse('foo');
+
+      // when
+      await app.triggerAction('export-as');
+
+      // then
+      expect(showSaveFileDialogSpy).to.have.been.called;
+
+      expect(writeFileSpy).not.to.have.been.called;
+    });
+
   });
 
 

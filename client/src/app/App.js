@@ -1487,7 +1487,14 @@ export class App extends PureComponent {
 
     const exportType = getFileTypeFromExtension(exportPath);
 
-    const { encoding } = provider.exports ? provider.exports[ exportType ] : ENCODING_UTF8;
+    // handle missing extension / export type as abortion
+    // this ensures file export does not fail on Linux,
+    // cf. https://github.com/camunda/camunda-modeler/issues/1699
+    if (provider.exports && !provider.exports[exportType]) {
+      return false;
+    }
+
+    const { encoding } = provider.exports && provider.exports[ exportType ] || ENCODING_UTF8;
 
     return {
       encoding,
@@ -1510,6 +1517,7 @@ export class App extends PureComponent {
 
         return exportOptions ? await this.exportAsFile(exportOptions) : false;
       } catch (err) {
+        console.error('Tab export failed', err);
 
         const response = await this.askForSaveRetry(tab, err, getExportFileErrorDialog);
 
