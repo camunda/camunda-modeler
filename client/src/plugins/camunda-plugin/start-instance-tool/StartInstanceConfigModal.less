@@ -7,74 +7,30 @@
     font-size: 1.1em;
   }
 
-  fieldset {
-    border: solid 1px #E3E3E3;
-    border-radius: 5px;
-    margin: 20px auto;
-    padding: 15px;
-  }
-
   legend {
-    font-weight: bolder;
-    background: #EEEEEE;
-    border-radius: 5px;
-    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: var(--grey-darken-33);
+    margin-bottom: 23px;
   }
 
-  .hint {
-    margin-top: 5px;
-    color: rgb(102, 102, 102);
+  fieldset {
+    border-style: none;
+    margin: 20px auto;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .fields {
     display: grid;
-    grid-template-columns: 100px auto;
-
-    grid-column-gap: 10px;
     grid-row-gap: 15px;
-
-    align-items: baseline;
   }
 
   .form-submit {
     text-align: right;
   }
-
-  label {
-    text-align: right;
-    width: 100%;
-    display: inline-block;
-  }
-
-  input,
-  select {
-    width: 100%;
-    padding: 6px;
-
-    font-size: inherit;
-
-    border: 1px solid rgb(204, 204, 204);
-  }
-
-  input.valid {
-    &:not(:focus) {
-      border: 1px solid rgb(82, 178, 21);
-    }
-
-    outline-color: rgb(82, 178, 21);
-  }
-
-  input.invalid {
-    &:not(:focus) {
-      border: 1px solid rgb(255, 0, 0);
-    }
-
-    outline-color: rgb(255, 0, 0);
-  }
-
-  input:disabled,
-  select:disabled {
-    color: #808080;
-  }
-
 }
