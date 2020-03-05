@@ -3,6 +3,17 @@
     vertical-align: text-top;
   }
 
+  legend {
+    font-size: 14px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: var(--grey-darken-33);
+    margin-bottom: 23px;
+  }
+
   .intro {
     margin-bottom: 30px;
   }
@@ -12,114 +23,26 @@
   }
 
   fieldset {
-    border: solid 1px #E3E3E3;
-    border-radius: 5px;
+    border-style: none;
     margin: 20px auto;
-    padding: 15px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
-  legend {
-    font-weight: bolder;
-    background: #EEEEEE;
-    border-radius: 5px;
-    padding: 5px 10px;
+  fieldset:first-child {
+    margin-top: 0px;
+  }
+
+  fieldset:last-child {
+    margin-bottom: 0px;
   }
 
   .fields {
     display: grid;
-    grid-template-columns: 100px auto;
-
-    grid-column-gap: 10px;
     grid-row-gap: 15px;
-
-    align-items: baseline;
   }
 
   .form-submit {
     text-align: right;
-  }
-
-  .toggle-details {
-    padding: 0;
-    background: none;
-    border: none;
-    margin: auto 0 0 5px;
-    width: 10px;
-  }
-
-  label:only-child {
-    width: 100%;
-    display: inline-block;
-    text-align: right;
-  }
-
-  input:not([type="checkbox"]),
-  select {
-    width: 100%;
-    padding: 6px;
-
-    font-size: inherit;
-
-    border: 1px solid rgb(204, 204, 204);
-  }
-
-  input.valid {
-    &:not(:focus) {
-      border: 1px solid rgb(82, 178, 21);
-    }
-
-    outline-color: rgb(82, 178, 21);
-  }
-
-  input.invalid {
-    &:not(:focus) {
-      border: 1px solid rgb(255, 0, 0);
-    }
-
-    outline-color: rgb(255, 0, 0);
-  }
-
-  input:disabled,
-  select:disabled {
-    color: #808080;
-  }
-
-  .hint {
-    margin-top: 5px;
-    color: rgb(102, 102, 102);
-  }
-
-  .hint.error {
-    color: #ff0000;
-  }
-
-  .configuration-status {
-    border: solid 1px;
-    border-radius: 4px;
-    padding: 8px 10px;
-    margin-bottom: 20px;
-  }
-
-  .configuration-status__error {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-  }
-
-  .configuration-status__hint {
-    background-color: #ffffd1;
-    border-color: #f7f7c3;
-  }
-
-  .configuration-status__success {
-    color: #155724;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-  }
-
-  .configuration-status__loading {
-    color: #808080;
-    background-color: #EEEEEE;
-    border-color: #E3E3E3;
   }
 }

@@ -16,16 +16,13 @@ import {
   omit
 } from 'min-dash';
 
-import ExpandIcon from 'icons/ChevronDown.svg';
-import CollapseIcon from 'icons/ChevronUp.svg';
-
 import css from './DeploymentConfigModal.less';
 
 import AuthTypes from '../shared/AuthTypes';
 
 import {
   CheckBox,
-  Select,
+  Radio,
   TextInput
 } from '../shared/components';
 
@@ -41,13 +38,11 @@ export default class DeploymentConfigModal extends React.PureComponent {
     super(props);
 
     const {
-      validator,
-      configuration
+      validator
     } = props;
 
     this.state = {
-      connectionState: {},
-      deploymentDetailsShown: configuration.deployment.tenantId
+      connectionState: {}
     };
 
     this.connectionChecker = validator.createConnectionChecker();
@@ -149,24 +144,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
   }
 
-  toggleDetails = (form) => {
-
-    return (event) => {
-
-      const {
-        deployment
-      } = form.values;
-
-      if (deployment.tenantId) {
-        return;
-      }
-
-      this.setState({
-        deploymentDetailsShown: !this.state.deploymentDetailsShown
-      });
-    };
-  }
-
   render() {
 
     const {
@@ -185,8 +162,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
     } = this.props;
 
     const {
-      connectionState,
-      deploymentDetailsShown
+      connectionState
     } = this.state;
 
     return (
@@ -208,44 +184,32 @@ export default class DeploymentConfigModal extends React.PureComponent {
               </Modal.Title>
 
               <Modal.Body>
-                <p className="intro">
-                  { intro || 'Specify deployment details and deploy this diagram to Camunda.' }
-                </p>
+                {
+                  intro && (
+                    <p className="intro">
+                      { intro }
+                    </p>
+                  )
+                }
                 <fieldset>
-                  <legend>
-                    Deployment Details
-                    <button
-                      type="button"
-                      className="toggle-details"
-                      onClick={ this.toggleDetails(form) }
-                      title="Toggle Advanced Details"
-                      disabled={ form.values.deployment.tenantId }
-                    >
-                      {
-                        (deploymentDetailsShown)
-                          ? <CollapseIcon className="icon" />
-                          : <ExpandIcon className="icon" />
-                      }
-                    </button>
-                  </legend>
-
                   <div className="fields">
 
                     <Field
                       name="deployment.name"
                       component={ TextInput }
-                      label="Name"
+                      label="Deployment Name"
                       fieldError={ fieldError }
                       validate={ validator.validateDeploymentName }
                       autoFocus
                     />
 
-                    { deploymentDetailsShown && <Field
+                    <Field
                       name="deployment.tenantId"
                       component={ TextInput }
                       fieldError={ fieldError }
+                      hint="Optional"
                       label="Tenant ID"
-                    /> }
+                    />
                   </div>
                 </fieldset>
 
@@ -253,8 +217,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
                   <legend>
                     Endpoint Configuration
                   </legend>
-
-                  <ConnectionFeedback connectionState={ connectionState } />
 
                   <div className="fields">
 
@@ -270,13 +232,16 @@ export default class DeploymentConfigModal extends React.PureComponent {
                     <Field
                       name="endpoint.authType"
                       label="Authentication"
-                      component={ Select }
+                      component={ Radio }
                       onChange={ this.setAuthType(form) }
-                    >
-                      <option value={ AuthTypes.none } defaultValue>None</option>
-                      <option value={ AuthTypes.basic }>HTTP Basic</option>
-                      <option value={ AuthTypes.bearer }>Bearer token</option>
-                    </Field>
+                      values={
+                        [
+                          { value: AuthTypes.none, label: 'None' },
+                          { value: AuthTypes.basic, label: 'HTTP Basic' },
+                          { value: AuthTypes.bearer, label: 'Bearer token' }
+                        ]
+                      }
+                    />
 
                     { form.values.endpoint.authType === AuthTypes.basic && (
                       <React.Fragment>
@@ -348,68 +313,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
       </Modal>
     );
   }
-}
-
-
-function ConnectionFeedback(props) {
-
-  const {
-    connectionState
-  } = props;
-
-  const {
-    isValid,
-    isValidating,
-    isValidated,
-    endpointErrors,
-    connectionError
-  } = connectionState;
-
-  if (!isValidating && !isValidated) {
-    return null;
-  }
-
-  if (isValidating) {
-    return (
-      <div className="configuration-status configuration-status__loading">
-        Validating connection.
-      </div>
-    );
-  }
-
-  if (isValid) {
-    return (
-      <div className="configuration-status configuration-status__success">
-        Connected successfully.
-      </div>
-    );
-  }
-
-  if (hasKeys(endpointErrors)) {
-
-    const message =
-      endpointErrors.url
-        ? 'Please provide a valid REST endpoint to test the server connection.'
-        : (endpointErrors.token || endpointErrors.username || endpointErrors.password)
-          ? 'Please add the credentials to test the server connection'
-          : 'Please correct validation errors';
-
-    return (
-      <div className="configuration-status configuration-status__hint">
-        { message }
-      </div>
-    );
-  }
-
-  if (connectionError) {
-    return (
-      <div className="configuration-status configuration-status__error">
-        { connectionError.details }
-      </div>
-    );
-  }
-
-  throw new Error('unexpected connection state');
 }
 
 function hasKeys(obj) {

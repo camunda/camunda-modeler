@@ -125,7 +125,7 @@ describe('<DeploymentConfigModal>', () => {
       wrapper.update();
 
       // then
-      expect(wrapper.find('.hint.error')).to.have.length(2);
+      expect(wrapper.find('.invalid-feedback')).to.have.length(2);
     });
 
 
@@ -158,7 +158,42 @@ describe('<DeploymentConfigModal>', () => {
       wrapper.update();
 
       // then
-      expect(wrapper.find('.hint.error')).to.have.length(1);
+      expect(wrapper.find('.invalid-feedback')).to.have.length(1);
+    });
+
+
+    it('should not display hint if the username and password are complete', async () => {
+
+      // given
+      const configuration = {
+        deployment: {
+          tenantId: '',
+          name: 'diagram'
+        },
+        endpoint: {
+          url: 'http://localhost:8088/engine-rest',
+          authType: AuthTypes.basic,
+          username: 'demo',
+          password: 'demo'
+        }
+      };
+
+      const connectionChecker = new MockConnectionChecker();
+
+      const {
+        wrapper
+      } = createModal({
+        connectionChecker,
+        configuration
+      }, mount);
+
+      // when
+      await connectionChecker.triggerComplete({});
+
+      wrapper.update();
+
+      // then
+      expect(wrapper.find('.invalid-feedback')).to.have.length(0);
     });
 
 
