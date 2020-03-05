@@ -40,30 +40,23 @@ export default function TextInput(props) {
 
   const error = (fieldError || defaultFieldError)(meta);
 
-  const invalid = error;
-  const valid = !error && meta.touched;
-
   return (
     <React.Fragment>
-      <div>
+      <div className="form-group">
         <label htmlFor={ fieldName }>{ label }</label>
-      </div>
-
-      <div>
         <input
           { ...field }
+          type="text"
           value={ fieldValue || '' }
           disabled={ form.isSubmitting }
-          className={ classNames({
-            invalid,
-            valid
+          className={ classNames('form-control', {
+            'is-invalid': !!error
           }) }
           id={ fieldName }
+          placeholder={ hint }
           { ...restProps }
         />
-
         <FormFeedback
-          hint={ hint }
           error={ error }
         />
       </div>

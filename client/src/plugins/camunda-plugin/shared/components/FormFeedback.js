@@ -10,19 +10,22 @@
 
 import React from 'react';
 
+import WarningIcon from 'icons/Warning.svg';
+
 export default function FormFeedback(props) {
 
   const {
-    error,
-    hint
+    error
   } = props;
-
 
   return (
     <React.Fragment>
-      { error && <div className="hint error">{ error }</div> }
-
-      { hint && <div className="hint">{ hint }</div> }
+      { error && (
+        <div className="invalid-feedback">
+          <WarningIcon />
+          <span className="invalid-tooltip">{ error }</span>
+        </div>
+      ) }
     </React.Fragment>
   );
 }

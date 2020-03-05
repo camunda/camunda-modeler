@@ -12,12 +12,6 @@ import React from 'react';
 
 import classNames from 'classnames';
 
-import FormFeedback from './FormFeedback';
-
-import {
-  fieldError as defaultFieldError
-} from './Util';
-
 export default function CheckBox(props) {
 
   const {
@@ -25,7 +19,6 @@ export default function CheckBox(props) {
     label,
     field,
     form,
-    fieldError,
     ...restProps
   } = props;
 
@@ -33,31 +26,21 @@ export default function CheckBox(props) {
     name: fieldName
   } = field;
 
-  const meta = form.getFieldMeta(fieldName);
-
-  const error = (fieldError || defaultFieldError)(meta);
-
   return (
     <React.Fragment>
-      <div />
-      <div>
-        <input
-          { ...field }
-          disabled={ form.isSubmitting }
-          className={ classNames({
-            invalid: !error
-          }) }
-          id={ fieldName }
-          { ...restProps }
-        />
-
-        <label htmlFor={ fieldName }>{ label }</label>
-
-        <FormFeedback
-          hint={ hint }
-          error={ error }
-        />
-
+      <div className="form-group">
+        <div className={
+          classNames('custom-control', 'custom-checkbox')
+        }>
+          <input
+            { ...field }
+            disabled={ form.isSubmitting }
+            className="custom-control-input"
+            id={ fieldName }
+            { ...restProps }
+          />
+          <label className="custom-control-label" htmlFor={ fieldName }>{ label }</label>
+        </div>
       </div>
     </React.Fragment>
   );
