@@ -14,6 +14,8 @@ import {
   Modal
 } from '../../app/primitives';
 
+import classNames from 'classnames';
+
 import css from './PrivacyPreferencesView.less';
 
 import {
@@ -50,13 +52,23 @@ class PrivacyPreferencesView extends PureComponent {
   renderPreferences() {
     return PREFERENCES_LIST.map((item) => (
       <Fragment key={ item.key }>
-        <input
-          id={ item.key }
-          type="checkbox"
-          defaultChecked={ this.isEnabled(item.key) }
-          onChange={ (event) => {
-            this.setState({ [item.key]: event.target.checked });
-          } } />
+        <div className="privacyPreferencesCheckbox">
+          <div className="form-group">
+            <div className={
+              classNames('custom-control', 'custom-checkbox')
+            }>
+              <input
+                id={ item.key }
+                type="checkbox"
+                className="custom-control-input"
+                defaultChecked={ this.isEnabled(item.key) }
+                onChange={ (event) => {
+                  this.setState({ [item.key]: event.target.checked });
+                } } />
+              <label className="custom-control-label" htmlFor={ item.key }> </label>
+            </div>
+          </div>
+        </div>
         <label htmlFor={ item.key }>
           <div className="checkboxLabel">{ item.title }</div>
           <div className="checkboxExplanation">{ item.explanation }</div>
