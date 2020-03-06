@@ -86,16 +86,15 @@ export default class StartInstanceConfigModal extends React.PureComponent {
                   <button
                     className="btn btn-secondary"
                     type="button"
-                    onClick={ onCancel }
-                  >
-                  Cancel
+                    onClick={ onCancel }>
+                    Cancel
                   </button>
 
                   <button
                     className="btn btn-primary"
                     type="submit"
                     disabled={ form.isSubmitting }>
-                  Start
+                    Start
                   </button>
                 </div>
               </Modal.Footer>
