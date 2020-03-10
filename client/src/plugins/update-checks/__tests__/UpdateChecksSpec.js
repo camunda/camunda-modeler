@@ -292,6 +292,9 @@ describe('<UpdateChecks>', function() {
     });
   });
 
+
+  it('should check periodically (every N minutes)');
+
 });
 
 

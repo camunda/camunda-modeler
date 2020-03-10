@@ -35,6 +35,7 @@ const DEFAULT_UPDATE_SERVER_URL = process.env.NODE_ENV === 'production'
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const UPDATE_CHECKS_CONFIG_KEY = 'editor.updateChecks';
 
+const FIVE_MINUTES_MS = 1000 * 60 * 5;
 const TWENTY_FOUR_HOURS_MS = 1000 * 60 * 60 * 24;
 
 
@@ -57,6 +58,31 @@ export default class UpdateChecks extends PureComponent {
   }
 
   componentDidMount() {
+    this.scheduleCheck();
+  }
+
+  componentWillUnmount() {
+    this.unscheduleChecks();
+  }
+
+  rescheduleCheck() {
+    if (process.env.NODE_ENV !== 'test') {
+      this._checkTimeout = setTimeout(() => {
+        this.scheduleCheck();
+      }, FIVE_MINUTES_MS);
+    }
+  }
+
+  unscheduleChecks() {
+    clearTimeout(this._checkTimeout);
+  }
+
+  scheduleCheck() {
+
+    this.unscheduleChecks();
+
+    this.rescheduleCheck();
+
     return this.performCheck().catch(error => {
       this.checkFailed(error);
     });
@@ -69,7 +95,7 @@ export default class UpdateChecks extends PureComponent {
   }
 
   checkFailed(error) {
-    log('update check failed', error);
+    log('failed', error);
 
     this.checkPerformed({
       resolution: 'failed',
@@ -78,6 +104,8 @@ export default class UpdateChecks extends PureComponent {
   }
 
   checkSkipped(reason) {
+    log('skipped', reason);
+
     this.checkPerformed({
       resolution: 'skipped',
       reason
