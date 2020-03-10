@@ -35,8 +35,7 @@ const DEFAULT_UPDATE_SERVER_URL = process.env.NODE_ENV === 'production'
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const UPDATE_CHECKS_CONFIG_KEY = 'editor.updateChecks';
 
-const HOURS_DENOMINATOR = 3600000;
-const HOURS_LIMIT = 24;
+const TWENTY_FOUR_HOURS_MS = 1000 * 60 * 60 * 24;
 
 
 export default class UpdateChecks extends PureComponent {
@@ -57,33 +56,63 @@ export default class UpdateChecks extends PureComponent {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    return this.performCheck().catch(error => {
+      this.checkFailed(error);
+    });
+  }
 
+  checkPerformed(result) {
+    if (typeof this.props.onCheckPerformed === 'function') {
+      this.props.onCheckPerformed(result);
+    }
+  }
+
+  checkFailed(error) {
+    log('update check failed', error);
+
+    this.checkPerformed({
+      resolution: 'failed',
+      error
+    });
+  }
+
+  checkSkipped(reason) {
+    this.checkPerformed({
+      resolution: 'skipped',
+      reason
+    });
+  }
+
+  checkCompleted(update) {
+    this.checkPerformed({
+      resolution: 'completed',
+      update
+    });
+  }
+
+  async performCheck() {
     const {
       config
     } = this.props;
 
     const privacyPreferences = await config.get(PRIVACY_PREFERENCES_CONFIG_KEY);
     if (!privacyPreferences || !privacyPreferences.ENABLE_UPDATE_CHECKS) {
-      this.setState({ checkNotAllowed: true });
-      return;
+      return this.checkSkipped('privacy-settings');
     }
 
     const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY);
 
     if (!Flags.get(FORCE_UPDATE_CHECKS) && !this.isTimeExceeded(updateCheckInfo && updateCheckInfo.lastChecked || 0)) {
-      this.setState({ checkNotNeeded: true });
-      return;
+      return this.checkSkipped('not-due');
     }
 
-    this.checkLatestVersion(updateCheckInfo);
+    return this.checkLatestVersion(updateCheckInfo);
   }
 
   async checkLatestVersion(updateCheckInfo) {
 
     log('Checking for update');
-
-    this.setState({ isChecking: true });
 
     const {
       config,
@@ -95,9 +124,11 @@ export default class UpdateChecks extends PureComponent {
     );
 
     if (!responseJSON.isSuccessful) {
-      log('Update check failed', responseJSON.error);
-      this.setState({ isChecking: false, requestError: true });
-      return;
+      const {
+        error
+      } = responseJSON;
+
+      return this.checkFailed(error);
     }
 
     const responseBody = responseJSON.response;
@@ -108,29 +139,35 @@ export default class UpdateChecks extends PureComponent {
     if (update) {
       log('Found update', update.latestVersion);
 
-      const modelerVersion = 'v' + Metadata.data.version;
+      const currentVersion = 'v' + Metadata.data.version;
       const latestVersion = update.latestVersion;
       const downloadURL = update.downloadURL;
       const releases = update.releases;
+
       this.setState({
-        isChecking: false,
-        showModal: true,
-        latestVersionInfo: { latestVersion, downloadURL, releases },
-        currentVersion: modelerVersion
+        currentVersion,
+        latestVersionInfo: {
+          latestVersion,
+          downloadURL,
+          releases
+        },
+        showModal: true
       });
+
       newUpdateCheckInfo.latestVersion = latestVersion;
     } else {
       log('No update');
     }
 
     newUpdateCheckInfo.lastChecked = Date.now();
-    config.set(UPDATE_CHECKS_CONFIG_KEY, newUpdateCheckInfo);
+
+    await config.set(UPDATE_CHECKS_CONFIG_KEY, newUpdateCheckInfo);
+
+    return this.checkCompleted(update);
   }
 
   isTimeExceeded(previousTime) {
-    const now = Date.now();
-    const hoursDiff = Math.abs(now - previousTime) / HOURS_DENOMINATOR;
-    return hoursDiff >= HOURS_LIMIT;
+    return Math.abs(Date.now() - previousTime) >= TWENTY_FOUR_HOURS_MS;
   }
 
   onClose = () => {
