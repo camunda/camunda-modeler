@@ -15,7 +15,7 @@ import AuthTypes from '../shared/AuthTypes';
 import KeyboardInteractionTrap from '../shared/KeyboardInteractionTrap';
 
 import DeploymentConfigModal from './DeploymentConfigModal';
-import DeploymentConfigValidator from './DeploymentConfigValidator';
+import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
 
 import {
   generateId

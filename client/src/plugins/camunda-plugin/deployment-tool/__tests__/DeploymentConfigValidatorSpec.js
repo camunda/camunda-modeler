@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import DeploymentConfigValidator from '../DeploymentConfigValidator';
+import DeploymentConfigValidator from '../validation/DeploymentConfigValidator';
 import AuthTypes from '../../shared/AuthTypes';
 
 const EMPTY_ENDPOINT_ERROR = 'Endpoint URL must not be empty.';
