@@ -8,11 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-/* global sinon */
-
 import React from 'react';
-
-import pDefer from 'p-defer';
 
 import {
   mount,
@@ -66,37 +62,7 @@ describe('<DeploymentConfigModal>', () => {
     });
 
 
-    it('should run connection check on mount with provided defaults', () => {
-
-      // given
-      const configuration = {
-        deployment: {
-          name: 'diagram',
-          tenantId: ''
-        },
-        endpoint: {
-          url: 'http://localhost:8088/engine-rest',
-          authType: AuthTypes.basic,
-          username: 'demo',
-          password: 'demo'
-        }
-      };
-
-      const connectionChecker = new MockConnectionChecker();
-
-      // when
-      createModal({
-        connectionChecker,
-        configuration
-      }, mount);
-
-      // then
-      expect(connectionChecker.check).to.have.been.calledOnce;
-      expect(connectionChecker.check).to.have.been.calledWith(configuration.endpoint);
-    });
-
-
-    it('should display hint if the username and password are missing', async () => {
+    it('should display hint if the username and password are missing when submitting', (done) => {
 
       // given
       const configuration = {
@@ -110,26 +76,41 @@ describe('<DeploymentConfigModal>', () => {
         }
       };
 
-      const connectionChecker = new MockConnectionChecker();
+      const validator = new MockValidator({
+        validateConnection: () => new Promise((resolve, err) => {
+          resolve({
+            code: 'UNAUTHORIZED'
+          });
+        })
+      });
 
       const {
-        wrapper
+        wrapper,
+        instance
       } = createModal({
-        connectionChecker,
-        configuration
+        configuration,
+        validator
       }, mount);
 
       // when
-      await connectionChecker.triggerComplete({});
+      setTimeout(() => {
 
-      wrapper.update();
+        // delayed execution because it is async that the deployment
+        // tool knows if the authentication is necessary
+        instance.isOnBeforeSubmit = true;
+        wrapper.find('.btn-primary').simulate('submit');
+      });
 
       // then
-      expect(wrapper.find('.invalid-feedback')).to.have.length(2);
+      setTimeout(() => {
+        wrapper.update();
+        expect(wrapper.find('.invalid-feedback')).to.have.length(2);
+        done();
+      }, 200);
     });
 
 
-    it('should display hint if token is missing', async () => {
+    it('should display hint if token is missing', (done) => {
 
       // given
       const configuration = {
@@ -143,22 +124,21 @@ describe('<DeploymentConfigModal>', () => {
         }
       };
 
-      const connectionChecker = new MockConnectionChecker();
-
       const {
         wrapper
       } = createModal({
-        connectionChecker,
         configuration
       }, mount);
 
       // when
-      await connectionChecker.triggerComplete({});
-
-      wrapper.update();
+      wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      expect(wrapper.find('.invalid-feedback')).to.have.length(1);
+      setTimeout(() => {
+        wrapper.update();
+        expect(wrapper.find('.invalid-feedback')).to.have.length(1);
+        done();
+      });
     });
 
 
@@ -178,17 +158,13 @@ describe('<DeploymentConfigModal>', () => {
         }
       };
 
-      const connectionChecker = new MockConnectionChecker();
-
       const {
         wrapper
       } = createModal({
-        connectionChecker,
         configuration
       }, mount);
 
       // when
-      await connectionChecker.triggerComplete({});
 
       wrapper.update();
 
@@ -197,7 +173,7 @@ describe('<DeploymentConfigModal>', () => {
     });
 
 
-    it('should disable deploy button when connection cannot be established', async () => {
+    it('should not disable deploy button when connection cannot be established', (done) => {
 
       // given
       const configuration = {
@@ -211,27 +187,26 @@ describe('<DeploymentConfigModal>', () => {
         }
       };
 
-      const connectionChecker = new MockConnectionChecker();
-
       const {
         wrapper
       } = createModal({
-        connectionChecker,
         configuration
       }, mount);
 
       // when
-      await connectionChecker.triggerComplete({ connectionError: true });
-
-      wrapper.update();
+      wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', true);
+      setTimeout(() => {
+        wrapper.update();
+        expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', false);
+        done();
+      });
     });
   });
 
 
-  it('should disable deploy button when form is invalid', async () => {
+  it('should not disable deploy button when form is invalid', (done) => {
 
     // given
     const configuration = {
@@ -245,22 +220,21 @@ describe('<DeploymentConfigModal>', () => {
       }
     };
 
-    const connectionChecker = new MockConnectionChecker();
-
     const {
       wrapper
     } = createModal({
-      connectionChecker,
       configuration
     }, mount);
 
     // when
-    await connectionChecker.triggerComplete({});
-
-    wrapper.update();
+    wrapper.find('.btn-primary').simulate('click');
 
     // then
-    expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', true);
+    setTimeout(() => {
+      wrapper.update();
+      expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', false);
+      done();
+    });
   });
 });
 
@@ -273,16 +247,13 @@ function createModal(props={}, renderFn = shallow) {
   const {
     configuration,
     onClose,
-    connectionChecker,
     title,
     primaryAction,
     intro,
     ...apiOverrides
   } = props;
 
-  const validator = new MockValidator(
-    connectionChecker || new MockConnectionChecker(), apiOverrides
-  );
+  const validator = new MockValidator(apiOverrides);
 
   const wrapper = renderFn(
     <DeploymentConfigModal
@@ -318,64 +289,13 @@ function getDefaultConfiguration() {
   };
 }
 
-class MockConnectionChecker {
-
-  constructor() {
-    sinon.spy(this, 'check');
-  }
-
-  subscribe(hooks) {
-    this.hooks = hooks;
-  }
-
-  unsubscribe() {
-    this.hooks = null;
-  }
-
-  check(endpoint) {
-
-    this.deferred = pDefer();
-
-    return this.deferred.promise.then(result => {
-
-      this.hooks && this.hooks.onComplete(result);
-
-      return result;
-    });
-  }
-
-  triggerStart() {
-    this.hooks && this.hooks.onStart();
-
-    return new Promise(resolve => {
-      setTimeout(resolve, 5);
-    });
-  }
-
-  triggerComplete(result) {
-
-    this.deferred && this.deferred.resolve(result);
-
-    return new Promise(resolve => {
-      setTimeout(resolve, 5);
-    });
-  }
-
-}
-
 class MockValidator extends DeploymentConfigValidator {
 
-  constructor(connectionChecker, apiStubs) {
+  constructor(apiStubs) {
     super();
 
     Object.assign(this, {
-      connectionChecker,
       ...apiStubs
     });
   }
-
-  createConnectionChecker() {
-    return this.connectionChecker;
-  }
-
 }

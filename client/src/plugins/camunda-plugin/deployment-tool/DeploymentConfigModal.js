@@ -36,78 +36,54 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
   constructor(props) {
     super(props);
-
-    const {
-      validator
-    } = props;
-
-    this.state = {
-      connectionState: {}
-    };
-
-    this.connectionChecker = validator.createConnectionChecker();
   }
-
-  handleConnectionCheckStart = () => {
-    this.setConnectionState({
-      isValidating: true,
-      isValidated: false
-    });
-  }
-
-  handleConnectionChecked = (result) => {
-
-    const {
-      endpointErrors,
-      connectionError
-    } = result;
-
-    this.setConnectionState({
-      isValidating: false,
-      isValidated: true,
-      isValid: !hasKeys(endpointErrors) && !connectionError,
-      endpointErrors,
-      connectionError
-    });
-  }
-
-  componentDidMount() {
-    this.connectionChecker.subscribe({
-      onStart: this.handleConnectionCheckStart,
-      onComplete: this.handleConnectionChecked
-    });
-  }
-
-  componentWillUnmount() {
-    this.connectionChecker.unsubscribe();
-  }
-
-  setConnectionState(connectionState) {
-    this.setState({
-      connectionState: {
-        ...this.state.connectionState,
-        ...connectionState
-      }
-    });
-  }
-
-  validate = (values, form) => {
-
-    this.connectionChecker.check(values.endpoint).then(() => {
-      return null;
-    });
-  };
 
   onClose = (action = 'cancel', data) => this.props.onClose(action, data);
 
   onCancel = () => this.onClose('cancel');
 
-  onSubmit = (values) => {
-    this.onClose('deploy', values);
+  onSubmit = async (values, { setFieldError }) => {
+
+    const {
+      endpoint
+    } = values;
+
+    const connectionValidation = await this.props.validator.validateConnection(endpoint);
+
+    if (!hasKeys(connectionValidation)) {
+      this.onClose('deploy', values);
+    } else {
+
+      const {
+        details,
+        code
+      } = connectionValidation;
+
+      if (code === 'UNAUTHORIZED') {
+        this.setState({
+          isAuthNeeded: true
+        });
+      }
+
+      this.renderConnectionError(values.endpoint.authType, details, code, setFieldError);
+    }
+  }
+
+  renderConnectionError = (authType, details, code, setFieldError) => {
+    if (code === 'UNAUTHORIZED') {
+      if (authType === AuthTypes.basic) {
+        setFieldError('endpoint.username', details);
+        setFieldError('endpoint.password', details);
+      } else {
+        setFieldError('endpoint.token', details);
+      }
+    } else {
+      setFieldError('endpoint.url', details);
+    }
   }
 
   fieldError = (meta) => {
-    return (this.state.connectionState.isValidated || meta.touched) && meta.error;
+    return meta.error;
   }
 
   setAuthType = (form) => {
@@ -149,7 +125,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
     const {
       fieldError,
       onSubmit,
-      validate,
       onClose
     } = this;
 
@@ -161,17 +136,11 @@ export default class DeploymentConfigModal extends React.PureComponent {
       primaryAction
     } = this.props;
 
-    const {
-      connectionState
-    } = this.state;
-
     return (
       <Modal className={ css.DeploymentConfigModal } onClose={ onClose }>
 
         <Formik
           initialValues={ values }
-          validateOnMount={ true }
-          validate={ validate }
           onSubmit={ onSubmit }
         >
           { form => (
@@ -297,7 +266,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
                   <button
                     type="submit"
                     className="btn btn-primary"
-                    disabled={ form.isSubmitting || !form.isValid || !connectionState.isValid }
+                    disabled={ form.isSubmitting }
                   >
                     { primaryAction || 'Deploy' }
                   </button>
