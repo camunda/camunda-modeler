@@ -36,6 +36,12 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      isAuthNeeded: false
+    };
+
+    this.shouldCheckIfAuthNeeded = true;
   }
 
   onClose = (action = 'cancel', data) => this.props.onClose(action, data);
@@ -120,12 +126,32 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
   }
 
+  onAuthDetection = (isAuthNeeded) => {
+    this.setState({
+      isAuthNeeded
+    });
+  }
+
+  checkAuthStatusOnlyOnce = (values) => {
+    if (this.shouldCheckIfAuthNeeded) {
+      this.props.validator.validateConnectionWithoutCredentials(values.endpoint.url).then((result) => {
+        if (!result) {
+          this.onAuthDetection(false);
+        } else if (!result.isExpired) {
+          this.onAuthDetection(!!result && (result.code === 'UNAUTHORIZED'));
+        }
+      });
+      this.shouldCheckIfAuthNeeded = false;
+    }
+  }
+
   render() {
 
     const {
       fieldError,
       onSubmit,
-      onClose
+      onClose,
+      onAuthDetection
     } = this;
 
     const {
@@ -135,6 +161,15 @@ export default class DeploymentConfigModal extends React.PureComponent {
       intro,
       primaryAction
     } = this.props;
+
+    const {
+      isAuthNeeded
+    } = this.state;
+
+    // @oguz:
+    // FormIK validateOnMount get executed only once but not everytime
+    // DeploymentConfigModal is mounted. Thats why we need this logic here.
+    this.checkAuthStatusOnlyOnce(values);
 
     return (
       <Modal className={ css.DeploymentConfigModal } onClose={ onClose }>
@@ -193,25 +228,36 @@ export default class DeploymentConfigModal extends React.PureComponent {
                       name="endpoint.url"
                       component={ TextInput }
                       fieldError={ fieldError }
-                      validate={ validator.validateEndpointURL }
+                      validate={ (value) => {
+                        return validator.validateEndpointURL(
+                          value,
+                          form.setFieldError,
+                          this.isOnBeforeSubmit,
+                          onAuthDetection
+                        );
+                      } }
                       label="REST Endpoint"
                       hint="Should point to a running Camunda Engine REST API endpoint."
                     />
 
-                    <Field
-                      name="endpoint.authType"
-                      label="Authentication"
-                      component={ Radio }
-                      onChange={ this.setAuthType(form) }
-                      values={
-                        [
-                          { value: AuthTypes.basic, label: 'HTTP Basic' },
-                          { value: AuthTypes.bearer, label: 'Bearer token' }
-                        ]
-                      }
-                    />
+                    {
+                      isAuthNeeded && (
+                        <Field
+                          name="endpoint.authType"
+                          label="Authentication"
+                          component={ Radio }
+                          onChange={ this.setAuthType(form) }
+                          values={
+                            [
+                              { value: AuthTypes.basic, label: 'HTTP Basic' },
+                              { value: AuthTypes.bearer, label: 'Bearer token' }
+                            ]
+                          }
+                        />
+                      )
+                    }
 
-                    { form.values.endpoint.authType === AuthTypes.basic && (
+                    { isAuthNeeded && form.values.endpoint.authType === AuthTypes.basic && (
                       <React.Fragment>
                         <Field
                           name="endpoint.username"
@@ -232,7 +278,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
                       </React.Fragment>
                     )}
 
-                    { form.values.endpoint.authType === AuthTypes.bearer && (
+                    { isAuthNeeded && form.values.endpoint.authType === AuthTypes.bearer && (
                       <Field
                         name="endpoint.token"
                         component={ TextInput }
@@ -242,12 +288,16 @@ export default class DeploymentConfigModal extends React.PureComponent {
                       />
                     )}
 
-                    <Field
-                      name="endpoint.rememberCredentials"
-                      component={ CheckBox }
-                      type="checkbox"
-                      label="Remember credentials"
-                    />
+                    {
+                      isAuthNeeded && (
+                        <Field
+                          name="endpoint.rememberCredentials"
+                          component={ CheckBox }
+                          type="checkbox"
+                          label="Remember credentials"
+                        />
+                      )
+                    }
                   </div>
                 </fieldset>
               </Modal.Body>
@@ -266,6 +316,18 @@ export default class DeploymentConfigModal extends React.PureComponent {
                   <button
                     type="submit"
                     className="btn btn-primary"
+                    onClick={ () => {
+
+                      // @oguz:
+                      // this is a hack as FormIK does not seem to
+                      // set isSubmitting when this button is clicked.
+                      // if you come up with a better solution, please
+                      // do a PR.
+                      this.isOnBeforeSubmit = true;
+                      setTimeout(() => {
+                        this.isOnBeforeSubmit = false;
+                      });
+                    } }
                     disabled={ form.isSubmitting }
                   >
                     { primaryAction || 'Deploy' }

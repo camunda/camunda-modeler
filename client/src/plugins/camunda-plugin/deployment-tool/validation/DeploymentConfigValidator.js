@@ -8,19 +8,26 @@
  * except in compliance with the MIT License.
  */
 
-import AuthTypes from '../shared/AuthTypes';
+import AuthTypes from '../../shared/AuthTypes';
 
-import CamundaAPI from '../shared/CamundaAPI';
+import CamundaAPI from '../../shared/CamundaAPI';
 
+import EndpointURLValidator from './EndpointURLValidator';
 
 export default class DeploymentConfigValidator {
 
-  validateEndpointURL = (value) => {
-    return (
-      this.validateNonEmpty(value, 'Endpoint URL must not be empty.') ||
-      this.validatePattern(value, /^https?:\/\//, 'Endpoint URL must start with "http://" or "https://".') ||
-      null
+  constructor() {
+    this.endpointURLValidator = new EndpointURLValidator(
+      this.validateNonEmpty,
+      this.validatePattern,
+      this.validateConnectionWithoutCredentials
     );
+
+    this.lastConnectionCheckID = 0;
+  }
+
+  validateEndpointURL = (value, setFieldError, isOnBeforeSubmit, onAuthDetection) => {
+    return this.endpointURLValidator.validate(value, setFieldError, isOnBeforeSubmit, onAuthDetection);
   }
 
   validatePattern = (value, pattern, message) => {
@@ -96,6 +103,19 @@ export default class DeploymentConfigValidator {
     }
 
     return null;
+  }
+
+  validateConnectionWithoutCredentials = async (url) => {
+    this.lastConnectionCheckID ++;
+    const lastConnectionCheckID = this.lastConnectionCheckID;
+    const result = await this.validateConnection({ url });
+
+    if (this.lastConnectionCheckID != lastConnectionCheckID) {
+
+      // URL has changed while we were waiting for the response of an older request
+      return { isExpired: true };
+    }
+    return result;
   }
 
   validateBasic(configuration) {
