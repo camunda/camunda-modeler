@@ -308,6 +308,14 @@ export default class DeploymentConfigModal extends React.PureComponent {
                             return validator.validateUsername(value || '', this.isOnBeforeSubmit);
                           } }
                           label="Username"
+                          onChange={ (event) => {
+                            form.handleChange(event);
+                            if (form.values.endpoint.rememberCredentials) {
+                              saveCredential({
+                                username: event.target.value
+                              });
+                            }
+                          } }
                         />
 
                         <Field
@@ -319,6 +327,14 @@ export default class DeploymentConfigModal extends React.PureComponent {
                           } }
                           label="Password"
                           type="password"
+                          onChange={ (event) => {
+                            form.handleChange(event);
+                            if (form.values.endpoint.rememberCredentials) {
+                              saveCredential({
+                                password: event.target.value
+                              });
+                            }
+                          } }
                         />
                       </React.Fragment>
                     )}
@@ -332,6 +348,14 @@ export default class DeploymentConfigModal extends React.PureComponent {
                           return validator.validateToken(value || '', this.isOnBeforeSubmit);
                         } }
                         label="Token"
+                        onChange={ (event) => {
+                          form.handleChange(event);
+                          if (form.values.endpoint.rememberCredentials) {
+                            saveCredential({
+                              token: event.target.value
+                            });
+                          }
+                        } }
                       />
                     )}
 
@@ -342,6 +366,29 @@ export default class DeploymentConfigModal extends React.PureComponent {
                           component={ CheckBox }
                           type="checkbox"
                           label="Remember credentials"
+                          onChange={ async (event) => {
+                            form.handleChange(event);
+                            const {
+                              endpoint
+                            } = form.values;
+
+                            const {
+                              username,
+                              password,
+                              token,
+                              authType
+                            } = endpoint;
+                            const isChecked = !JSON.parse(event.target.value);
+                            if (isChecked) {
+                              if (authType == AuthTypes.basic) {
+                                saveCredential({ username, password });
+                              } else if (authType == AuthTypes.bearer) {
+                                saveCredential({ token });
+                              }
+                            } else {
+                              removeCredentials();
+                            }
+                          } }
                         />
                       )
                     }

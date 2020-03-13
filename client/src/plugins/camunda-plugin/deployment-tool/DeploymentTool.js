@@ -10,6 +10,8 @@
 
 import React, { PureComponent } from 'react';
 
+import { omit } from 'min-dash';
+
 import CamundaAPI from '../shared/CamundaAPI';
 import AuthTypes from '../shared/AuthTypes';
 import KeyboardInteractionTrap from '../shared/KeyboardInteractionTrap';
@@ -194,43 +196,39 @@ export default class DeploymentTool extends PureComponent {
     return configuration;
   }
 
+  removeCredentials = async () => {
+    const savedConfiguration = await this.getSavedConfiguration(this.state.activeTab);
+    const omited = omit(savedConfiguration.endpoint, ['username', 'password', 'token']);
+    this.saveEndpoint({
+      ...omited,
+      rememberCredentials: false
+    });
+  }
+
+  saveCredential = async (credential) => {
+    const savedConfiguration = await this.getSavedConfiguration(this.state.activeTab);
+    this.saveEndpoint({
+      ...savedConfiguration.endpoint,
+      rememberCredentials: true,
+      ...credential
+    });
+  }
+
   async saveEndpoint(endpoint) {
 
     const {
-      id,
-      url,
-      authType,
-      rememberCredentials,
-      username,
-      password,
-      token
+      rememberCredentials
     } = endpoint;
 
-    const authConfiguration =
-      authType === AuthTypes.basic
-        ? {
-          username,
-          password: rememberCredentials ? password : ''
-        }
-        : {
-          token: rememberCredentials ? token : ''
-        };
-
-    const endpointConfiguration = {
-      id,
-      url,
-      authType,
-      rememberCredentials,
-      ...authConfiguration
-    };
+    const endpointToSave = rememberCredentials ? endpoint : omit(endpoint, ['username', 'password', 'token']);
 
     const existingEndpoints = await this.getEndpoints();
 
-    const updatedEndpoints = addOrUpdateById(existingEndpoints, endpointConfiguration);
+    const updatedEndpoints = addOrUpdateById(existingEndpoints, endpointToSave);
 
     await this.setEndpoints(updatedEndpoints);
 
-    return endpointConfiguration;
+    return endpointToSave;
   }
 
   async getSavedConfiguration(tab) {
@@ -412,6 +410,8 @@ export default class DeploymentTool extends PureComponent {
             primaryAction={ modalState.primaryAction }
             onClose={ modalState.handleClose }
             validator={ this.validator }
+            saveCredential={ this.saveCredential }
+            removeCredentials={ this.removeCredentials }
           />
         </KeyboardInteractionTrap>
       }
