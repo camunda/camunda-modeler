@@ -38,10 +38,43 @@ export default class DeploymentConfigModal extends React.PureComponent {
     super(props);
 
     this.state = {
+      connectionState: {},
       isAuthNeeded: false
     };
 
     this.shouldCheckIfAuthNeeded = true;
+  }
+
+  handleConnectionCheckStart = () => {
+    this.setConnectionState({
+      isValidating: true,
+      isValidated: false
+    });
+  }
+
+  handleConnectionChecked = (result) => {
+
+    const {
+      endpointErrors,
+      connectionError
+    } = result;
+
+    this.setConnectionState({
+      isValidating: false,
+      isValidated: true,
+      isValid: !hasKeys(endpointErrors) && !connectionError,
+      endpointErrors,
+      connectionError
+    });
+  }
+
+  setConnectionState(connectionState) {
+    this.setState({
+      connectionState: {
+        ...this.state.connectionState,
+        ...connectionState
+      }
+    });
   }
 
   onClose = (action = 'cancel', data) => this.props.onClose(action, data);
@@ -159,7 +192,9 @@ export default class DeploymentConfigModal extends React.PureComponent {
       validator,
       title,
       intro,
-      primaryAction
+      primaryAction,
+      saveCredential,
+      removeCredentials
     } = this.props;
 
     const {
@@ -177,6 +212,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
         <Formik
           initialValues={ values }
           onSubmit={ onSubmit }
+          validateOnBlur={ false }
         >
           { form => (
             <form onSubmit={ form.handleSubmit }>
@@ -203,7 +239,9 @@ export default class DeploymentConfigModal extends React.PureComponent {
                       component={ TextInput }
                       label="Deployment Name"
                       fieldError={ fieldError }
-                      validate={ validator.validateDeploymentName }
+                      validate={ (value) => {
+                        return validator.validateDeploymentName(value, this.isOnBeforeSubmit);
+                      } }
                       autoFocus
                     />
 
@@ -246,7 +284,10 @@ export default class DeploymentConfigModal extends React.PureComponent {
                           name="endpoint.authType"
                           label="Authentication"
                           component={ Radio }
-                          onChange={ this.setAuthType(form) }
+                          onChange={ (event) => {
+                            form.handleChange(event);
+                            this.setAuthType(form);
+                          } }
                           values={
                             [
                               { value: AuthTypes.basic, label: 'HTTP Basic' },
@@ -263,7 +304,9 @@ export default class DeploymentConfigModal extends React.PureComponent {
                           name="endpoint.username"
                           component={ TextInput }
                           fieldError={ fieldError }
-                          validate={ validator.validateUsername }
+                          validate={ (value) => {
+                            return validator.validateUsername(value || '', this.isOnBeforeSubmit);
+                          } }
                           label="Username"
                         />
 
@@ -271,7 +314,9 @@ export default class DeploymentConfigModal extends React.PureComponent {
                           name="endpoint.password"
                           component={ TextInput }
                           fieldError={ fieldError }
-                          validate={ validator.validatePassword }
+                          validate={ (value) => {
+                            return validator.validatePassword(value || '', this.isOnBeforeSubmit);
+                          } }
                           label="Password"
                           type="password"
                         />
@@ -283,7 +328,9 @@ export default class DeploymentConfigModal extends React.PureComponent {
                         name="endpoint.token"
                         component={ TextInput }
                         fieldError={ fieldError }
-                        validate={ validator.validateToken }
+                        validate={ (value) => {
+                          return validator.validateToken(value || '', this.isOnBeforeSubmit);
+                        } }
                         label="Token"
                       />
                     )}
@@ -316,6 +363,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
                   <button
                     type="submit"
                     className="btn btn-primary"
+                    disabled={ form.isSubmitting }
                     onClick={ () => {
 
                       // @oguz:
@@ -328,7 +376,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
                         this.isOnBeforeSubmit = false;
                       });
                     } }
-                    disabled={ form.isSubmitting }
                   >
                     { primaryAction || 'Deploy' }
                   </button>
