@@ -14,6 +14,8 @@ import CamundaAPI from '../../shared/CamundaAPI';
 
 import EndpointURLValidator from './EndpointURLValidator';
 
+import DefaultInputValidator from './DefaultInputValidator';
+
 export default class DeploymentConfigValidator {
 
   constructor() {
@@ -21,6 +23,26 @@ export default class DeploymentConfigValidator {
       this.validateNonEmpty,
       this.validatePattern,
       this.validateConnectionWithoutCredentials
+    );
+
+    this.deploymentNameValidator = new DefaultInputValidator(
+      this.validateNonEmpty,
+      'Deployment name must not be empty.'
+    );
+
+    this.usernameValidator = new DefaultInputValidator(
+      this.validateNonEmpty,
+      'Credentials are required to connect to the server.'
+    );
+
+    this.passwordValidator = new DefaultInputValidator(
+      this.validateNonEmpty,
+      'Credentials are required to connect to the server.'
+    );
+
+    this.tokenValidator = new DefaultInputValidator(
+      this.validateNonEmpty,
+      'Token must not be empty.'
     );
 
     this.lastConnectionCheckID = 0;
@@ -40,20 +62,20 @@ export default class DeploymentConfigValidator {
     return value ? null : message;
   }
 
-  validateDeploymentName = (value) => {
-    return this.validateNonEmpty(value, 'Deployment name must not be empty.');
+  validateDeploymentName = (value, isOnBeforeSubmit) => {
+    return this.deploymentNameValidator.validate(value, isOnBeforeSubmit);
   }
 
-  validateToken = (value) => {
-    return this.validateNonEmpty(value, 'Token must not be empty.');
+  validateToken = (value, isOnBeforeSubmit) => {
+    return this.tokenValidator.validate(value, isOnBeforeSubmit);
   }
 
-  validatePassword = (value) => {
-    return this.validateNonEmpty(value, 'Password must not be empty.');
+  validatePassword = (value, isOnBeforeSubmit) => {
+    return this.passwordValidator.validate(value, isOnBeforeSubmit);
   }
 
-  validateUsername = (value) => {
-    return this.validateNonEmpty(value, 'Username must not be empty.');
+  validateUsername = (value, isOnBeforeSubmit) => {
+    return this.usernameValidator.validate(value, isOnBeforeSubmit);
   }
 
   validateDeployment(deployment = {}) {
@@ -140,7 +162,9 @@ export default class DeploymentConfigValidator {
 
     return !hasKeys(errors);
   }
+
 }
+
 
 // helpers /////////////////
 
