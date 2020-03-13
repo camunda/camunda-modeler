@@ -207,7 +207,7 @@ describe('<DeploymentConfigModal>', () => {
         },
         endpoint: {
           url: 'http://localhost:8088/engine-rest',
-          authType: AuthTypes.none
+          authType: AuthTypes.basic
         }
       };
 
@@ -241,7 +241,7 @@ describe('<DeploymentConfigModal>', () => {
       },
       endpoint: {
         url: 'http://localhost:8088/engine-rest',
-        authType: AuthTypes.none
+        authType: AuthTypes.basic
       }
     };
 
@@ -313,7 +313,7 @@ function getDefaultConfiguration() {
     },
     endpoint: {
       url: 'http://localhost:8080/engine-rest',
-      authType: AuthTypes.none
+      authType: AuthTypes.basic
     }
   };
 }
