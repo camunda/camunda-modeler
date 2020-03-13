@@ -38,43 +38,10 @@ export default class DeploymentConfigModal extends React.PureComponent {
     super(props);
 
     this.state = {
-      connectionState: {},
       isAuthNeeded: false
     };
 
     this.shouldCheckIfAuthNeeded = true;
-  }
-
-  handleConnectionCheckStart = () => {
-    this.setConnectionState({
-      isValidating: true,
-      isValidated: false
-    });
-  }
-
-  handleConnectionChecked = (result) => {
-
-    const {
-      endpointErrors,
-      connectionError
-    } = result;
-
-    this.setConnectionState({
-      isValidating: false,
-      isValidated: true,
-      isValid: !hasKeys(endpointErrors) && !connectionError,
-      endpointErrors,
-      connectionError
-    });
-  }
-
-  setConnectionState(connectionState) {
-    this.setState({
-      connectionState: {
-        ...this.state.connectionState,
-        ...connectionState
-      }
-    });
   }
 
   onClose = (action = 'cancel', data) => this.props.onClose(action, data);
