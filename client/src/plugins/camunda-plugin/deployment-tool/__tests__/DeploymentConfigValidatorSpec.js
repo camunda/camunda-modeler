@@ -8,16 +8,22 @@
  * except in compliance with the MIT License.
  */
 
+/* global sinon */
+
 import DeploymentConfigValidator from '../validation/DeploymentConfigValidator';
 import AuthTypes from '../../shared/AuthTypes';
 
 const EMPTY_ENDPOINT_ERROR = 'Endpoint URL must not be empty.';
 const EMPTY_DEPLOYMENT_NAME_ERROR = 'Deployment name must not be empty.';
-const EMPTY_USERNAME_ERROR = 'Username must not be empty.';
-const EMPTY_PASSWORD_ERROR = 'Password must not be empty.';
+const EMPTY_USERNAME_ERROR = 'Credentials are required to connect to the server.';
+const EMPTY_PASSWORD_ERROR = 'Credentials are required to connect to the server.';
 const EMPTY_TOKEN_ERROR = 'Token must not be empty.';
 const INVALID_URL_ERROR = 'Endpoint URL must start with "http://" or "https://".';
+const NON_COMPLETE_ERROR = 'Should point to a running Camunda Engine REST API.';
 
+const ENDPOINT_URL_FIELDNAME = 'endpoint.url';
+
+const noop = () => {};
 
 describe('<DeploymentConfigValidator>', () => {
 
@@ -34,14 +40,12 @@ describe('<DeploymentConfigValidator>', () => {
   it('should validate deployment name', () => {
 
     // given
-    const validate = name => validator.validateDeployment({
-      name
-    });
+    const validate = name => validator.validateDeploymentName(name, true);
 
     // then
-    expect(validate().name).to.eql(EMPTY_DEPLOYMENT_NAME_ERROR);
-    expect(validate('').name).to.eql(EMPTY_DEPLOYMENT_NAME_ERROR);
-    expect(validate('deployment name').name).to.not.exist;
+    expect(validate()).to.eql(EMPTY_DEPLOYMENT_NAME_ERROR);
+    expect(validate('')).to.eql(EMPTY_DEPLOYMENT_NAME_ERROR);
+    expect(validate('deployment name')).to.not.exist;
   });
 
 
@@ -65,44 +69,144 @@ describe('<DeploymentConfigValidator>', () => {
   it('should validate username', () => {
 
     // given
-    const validate = username => validator.validateEndpoint({
-      authType: AuthTypes.basic,
-      username
-    });
+    const validate = username => validator.validateUsername(username, true);
 
     // then
-    expect(validate().username).to.eql(EMPTY_USERNAME_ERROR);
-    expect(validate('').username).to.eql(EMPTY_USERNAME_ERROR);
-    expect(validate('username').username).to.not.exist;
+    expect(validate()).to.eql(EMPTY_USERNAME_ERROR);
+    expect(validate('')).to.eql(EMPTY_USERNAME_ERROR);
+    expect(validate('username')).to.not.exist;
   });
 
 
   it('should validate password', () => {
 
     // given
-    const validate = password => validator.validateEndpoint({
-      authType: AuthTypes.basic,
-      password
-    });
+    const validate = password => validator.validatePassword(password, true);
 
     // then
-    expect(validate().password).to.eql(EMPTY_PASSWORD_ERROR);
-    expect(validate('').password).to.eql(EMPTY_PASSWORD_ERROR);
-    expect(validate('password').password).to.not.exist;
+    expect(validate()).to.eql(EMPTY_PASSWORD_ERROR);
+    expect(validate('')).to.eql(EMPTY_PASSWORD_ERROR);
+    expect(validate('password')).to.not.exist;
   });
 
 
   it('should validate token', () => {
 
     // given
-    const validate = token => validator.validateEndpoint({
-      authType: AuthTypes.bearer,
-      token
-    });
+    const validate = token => validator.validateToken(token, true);
 
     // then
-    expect(validate().token).to.eql(EMPTY_TOKEN_ERROR);
-    expect(validate('').token).to.eql(EMPTY_TOKEN_ERROR);
-    expect(validate('token').token).to.not.exist;
+    expect(validate()).to.eql(EMPTY_TOKEN_ERROR);
+    expect(validate('')).to.eql(EMPTY_TOKEN_ERROR);
+    expect(validate('token')).to.not.exist;
+  });
+
+
+  it('should validate endpoint URL completeness delayed if not submitting', (done) => {
+
+    // given
+    const setFieldErrorSpy = sinon.spy();
+    const onAuthDetection = noop;
+    const isOnBeforeSubmit = false;
+
+    const nonCompleteURL = 'https://';
+
+    // when
+    const result = validator.validateEndpointURL(
+      nonCompleteURL, setFieldErrorSpy, isOnBeforeSubmit, onAuthDetection
+    );
+
+    // then
+    expect(result).to.be.null;
+    expect(setFieldErrorSpy).to.not.have.been.called;
+    setTimeout(() => {
+      expect(setFieldErrorSpy).to.have.been.calledWith(ENDPOINT_URL_FIELDNAME, NON_COMPLETE_ERROR);
+      done();
+    }, 1100);
+  });
+
+
+  it('should validate endpoint URL completeness non delayed if submitting', () => {
+
+    // given
+    const setFieldErrorSpy = noop;
+    const onAuthDetection = noop;
+    const isOnBeforeSubmit = true;
+
+    const nonCompleteURL = 'https://';
+
+    // when
+    const result = validator.validateEndpointURL(
+      nonCompleteURL, setFieldErrorSpy, isOnBeforeSubmit, onAuthDetection
+    );
+
+    // then
+    expect(result).to.be.eql(NON_COMPLETE_ERROR);
+  });
+
+
+  it('should discard timed out connection checks', async () => {
+
+    // given
+    validator.validateConnection = () => new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          isSuccessful: true
+        });
+      }, 200);
+    });
+
+    // when
+    const check1 = validator.validateConnectionWithoutCredentials('url1');
+    const check2 = validator.validateConnectionWithoutCredentials('url2');
+
+    const oldResponse = await check1;
+    const newResponse = await check2;
+
+    // then
+    expect(oldResponse).to.eql({ isExpired: true });
+    expect(newResponse).to.eql({ isSuccessful: true });
+  });
+
+
+  it('should skip deployment name validation after submission if not resubmitted', () => {
+
+    // given
+    const {
+      validateDeploymentName
+    } = validator;
+
+    // when
+    expect(validateDeploymentName(null, false)).to.eql(null);
+    expect(validateDeploymentName(undefined, false)).to.eql(null);
+    expect(validateDeploymentName('', false)).to.eql(null);
+  });
+
+
+  it('should skip username validation after submission if not resubmitted', () => {
+
+    // given
+    const {
+      validateUsername
+    } = validator;
+
+    // when
+    expect(validateUsername(null, false)).to.eql(null);
+    expect(validateUsername(undefined, false)).to.eql(null);
+    expect(validateUsername('', false)).to.eql(null);
+  });
+
+
+  it('should skip password validation after submission if not resubmitted', () => {
+
+    // given
+    const {
+      validatePassword
+    } = validator;
+
+    // when
+    expect(validatePassword(null, false)).to.eql(null);
+    expect(validatePassword(undefined, false)).to.eql(null);
+    expect(validatePassword('', false)).to.eql(null);
   });
 });
