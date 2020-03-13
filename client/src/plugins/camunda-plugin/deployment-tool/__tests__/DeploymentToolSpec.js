@@ -210,7 +210,7 @@ describe('<DeploymentTool>', () => {
       expect(config.set).to.have.been.calledOnce;
       expect(config.set.args[0]).to.eql([
         ENGINE_ENDPOINTS_CONFIG_KEY,
-        [ { ...configuration.endpoint, password: '' } ]
+        [ omit(configuration.endpoint, ['username', 'password']) ]
       ]);
     });
 

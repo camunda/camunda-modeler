@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+/* global sinon */
+
 import React from 'react';
 
 import {
@@ -142,7 +144,7 @@ describe('<DeploymentConfigModal>', () => {
     });
 
 
-    it('should not display hint if the username and password are complete', async () => {
+    it('should not display hint if the username and password are complete', (done) => {
 
       // given
       const configuration = {
@@ -158,18 +160,28 @@ describe('<DeploymentConfigModal>', () => {
         }
       };
 
+      const validator = new MockValidator({
+        validateConnection: () => new Promise((resolve, err) => {
+          resolve(null);
+        })
+      });
+
       const {
         wrapper
       } = createModal({
-        configuration
+        configuration,
+        validator
       }, mount);
 
       // when
-
-      wrapper.update();
+      wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      expect(wrapper.find('.invalid-feedback')).to.have.length(0);
+      setTimeout(() => {
+        wrapper.update();
+        expect(wrapper.find('.invalid-feedback')).to.have.length(0);
+        done();
+      });
     });
 
 
@@ -200,6 +212,79 @@ describe('<DeploymentConfigModal>', () => {
       setTimeout(() => {
         wrapper.update();
         expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', false);
+        done();
+      });
+    });
+
+
+    it('should hide username password fields if auth is not needed', (done) => {
+
+      // given
+      const configuration = {
+        deployment: {
+          tenantId: '',
+          name: 'diagram'
+        },
+        endpoint: {
+          url: 'http://localhost:8088/engine-rest',
+          authType: AuthTypes.basic
+        }
+      };
+
+      const validator = new MockValidator({
+        validateConnectionWithoutCredentials: () => new Promise((resolve, reject) => {
+          resolve(null);
+        })
+      });
+
+      const {
+        wrapper
+      } = createModal({
+        configuration,
+        validator
+      }, mount);
+
+      // then
+      setTimeout(() => {
+        wrapper.update();
+        expect(wrapper.find('[id="endpoint.username"]')).to.have.length(0);
+        expect(wrapper.find('[id="endpoint.password"]')).to.have.length(0);
+        done();
+      });
+    });
+
+
+    it('should hide token field if auth is not needed', (done) => {
+
+      // given
+      const configuration = {
+        deployment: {
+          tenantId: '',
+          name: 'diagram'
+        },
+        endpoint: {
+          url: 'http://localhost:8088/engine-rest',
+          authType: AuthTypes.bearer
+        }
+      };
+
+      const validator = new MockValidator({
+        validateConnectionWithoutCredentials: () => new Promise((resolve, reject) => {
+          resolve(null);
+        })
+      });
+
+      const {
+        wrapper
+      } = createModal({
+        configuration,
+        validator
+      }, mount);
+
+      // then
+      setTimeout(() => {
+        wrapper.update();
+        expect(wrapper.find('[id="endpoint.token"]')).to.have.length(0);
         done();
       });
     });
@@ -236,6 +321,449 @@ describe('<DeploymentConfigModal>', () => {
       done();
     });
   });
+
+
+  it('should save username on edit when rememberCredentials checkbox is checked', (done) => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.basic,
+        rememberCredentials: true
+      }
+    };
+
+    const saveCredential = sinon.spy();
+
+    const validator = new MockValidator({
+      validateConnection: () => new Promise((resolve, err) => {
+        resolve({
+          code: 'UNAUTHORIZED'
+        });
+      })
+    });
+
+    const {
+      wrapper
+    } = createModal({
+      configuration,
+      validator,
+      saveCredential
+    }, mount);
+
+    // when
+    setTimeout(() => {
+      wrapper.update();
+      wrapper.find('input[name="endpoint.username"]').simulate('change', {
+        target: {
+          id: 'endpoint.username',
+          value: 'newusername'
+        }
+      });
+      expect(saveCredential).to.have.been.calledWith({
+        username: 'newusername'
+      });
+      done();
+    });
+  });
+
+
+  it('should not save username on edit when rememberCredentials checkbox is not checked', (done) => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.basic,
+        rememberCredentials: false
+      }
+    };
+
+    const saveCredential = sinon.spy();
+
+    const validator = new MockValidator({
+      validateConnection: () => new Promise((resolve, err) => {
+        resolve({
+          code: 'UNAUTHORIZED'
+        });
+      })
+    });
+
+    const {
+      wrapper
+    } = createModal({
+      configuration,
+      validator,
+      saveCredential
+    }, mount);
+
+    // when
+    setTimeout(() => {
+      wrapper.update();
+      wrapper.find('input[name="endpoint.username"]').simulate('change', {
+        target: {
+          id: 'endpoint.username',
+          value: 'newusername'
+        }
+      });
+      expect(saveCredential).to.not.have.been.called;
+      done();
+    });
+  });
+
+
+  it('should save password on edit when rememberCredentials checkbox is checked', (done) => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.basic,
+        rememberCredentials: true
+      }
+    };
+
+    const saveCredential = sinon.spy();
+
+    const validator = new MockValidator({
+      validateConnection: () => new Promise((resolve, err) => {
+        resolve({
+          code: 'UNAUTHORIZED'
+        });
+      })
+    });
+
+    const {
+      wrapper
+    } = createModal({
+      configuration,
+      validator,
+      saveCredential
+    }, mount);
+
+    // when
+    setTimeout(() => {
+      wrapper.update();
+      wrapper.find('input[name="endpoint.password"]').simulate('change', {
+        target: {
+          id: 'endpoint.password',
+          value: 'newpassword'
+        }
+      });
+      expect(saveCredential).to.have.been.calledWith({
+        password: 'newpassword'
+      });
+      done();
+    });
+  });
+
+
+  it('should not save password on edit when rememberCredentials checkbox is not checked', (done) => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.basic,
+        rememberCredentials: false
+      }
+    };
+
+    const saveCredential = sinon.spy();
+
+    const validator = new MockValidator({
+      validateConnection: () => new Promise((resolve, err) => {
+        resolve({
+          code: 'UNAUTHORIZED'
+        });
+      })
+    });
+
+    const {
+      wrapper
+    } = createModal({
+      configuration,
+      validator,
+      saveCredential
+    }, mount);
+
+    // when
+    setTimeout(() => {
+      wrapper.update();
+      wrapper.find('input[name="endpoint.password"]').simulate('change', {
+        target: {
+          id: 'endpoint.password',
+          value: 'newpassword'
+        }
+      });
+      expect(saveCredential).to.not.have.been.called;
+      done();
+    });
+  });
+
+
+  it('should save token on edit when rememberCredentials checkbox is checked', (done) => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.bearer,
+        rememberCredentials: true
+      }
+    };
+
+    const saveCredential = sinon.spy();
+
+    const validator = new MockValidator({
+      validateConnection: () => new Promise((resolve, err) => {
+        resolve({
+          code: 'UNAUTHORIZED'
+        });
+      })
+    });
+
+    const {
+      wrapper
+    } = createModal({
+      configuration,
+      validator,
+      saveCredential
+    }, mount);
+
+    // when
+    setTimeout(() => {
+      wrapper.update();
+      wrapper.find('input[name="endpoint.token"]').simulate('change', {
+        target: {
+          id: 'endpoint.token',
+          value: 'newtoken'
+        }
+      });
+      expect(saveCredential).to.have.been.calledWith({
+        token: 'newtoken'
+      });
+      done();
+    });
+  });
+
+
+  it('should not save token on edit when rememberCredentials checkbox is not checked', (done) => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.bearer,
+        rememberCredentials: false
+      }
+    };
+
+    const saveCredential = sinon.spy();
+
+    const validator = new MockValidator({
+      validateConnection: () => new Promise((resolve, err) => {
+        resolve({
+          code: 'UNAUTHORIZED'
+        });
+      })
+    });
+
+    const {
+      wrapper
+    } = createModal({
+      configuration,
+      validator,
+      saveCredential
+    }, mount);
+
+    // when
+    setTimeout(() => {
+      wrapper.update();
+      wrapper.find('input[name="endpoint.token"]').simulate('change', {
+        target: {
+          id: 'endpoint.token',
+          value: 'newtoken'
+        }
+      });
+      expect(saveCredential).to.not.have.been.called;
+      done();
+    });
+  });
+
+
+  it('should save username/password when rememberCredentials checkbox is checked and auth type is basic', (done) => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.basic,
+        username: 'testUserName',
+        password: 'testPassword'
+      }
+    };
+
+    const saveCredential = sinon.spy();
+
+    const validator = new MockValidator({
+      validateConnection: () => new Promise((resolve, err) => {
+        resolve({
+          code: 'UNAUTHORIZED'
+        });
+      })
+    });
+
+    const {
+      wrapper
+    } = createModal({
+      configuration,
+      validator,
+      saveCredential
+    }, mount);
+
+    // when
+    setTimeout(() => {
+      wrapper.update();
+      wrapper.find('input[type="checkbox"]').simulate('change', {
+        target: {
+          id: 'endpoint.rememberCredentials',
+          value: 'false'
+        }
+      });
+      expect(saveCredential).to.have.been.calledWith({
+        username: 'testUserName',
+        password: 'testPassword'
+      });
+      done();
+    });
+  });
+
+
+  it('should save token when rememberCredentials checkbox is checked and auth type is bearer', (done) => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.bearer,
+        token: 'testToken'
+      }
+    };
+
+    const saveCredential = sinon.spy();
+
+    const validator = new MockValidator({
+      validateConnection: () => new Promise((resolve, err) => {
+        resolve({
+          code: 'UNAUTHORIZED'
+        });
+      })
+    });
+
+    const {
+      wrapper
+    } = createModal({
+      configuration,
+      validator,
+      saveCredential
+    }, mount);
+
+    // when
+    setTimeout(() => {
+      wrapper.update();
+      wrapper.find('input[type="checkbox"]').simulate('change', {
+        target: {
+          id: 'endpoint.rememberCredentials',
+          value: 'false'
+        }
+      });
+      expect(saveCredential).to.have.been.calledWith({
+        token: 'testToken'
+      });
+      done();
+    });
+  });
+
+
+  it('should remove credentials when the rememberCredentials checkbox is not checked', (done) => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.basic
+      }
+    };
+
+    const removeCredentials = sinon.spy();
+
+    const validator = new MockValidator({
+      validateConnection: () => new Promise((resolve, err) => {
+        resolve({
+          code: 'UNAUTHORIZED'
+        });
+      })
+    });
+
+    const {
+      wrapper
+    } = createModal({
+      configuration,
+      validator,
+      removeCredentials
+    }, mount);
+
+    // when
+    setTimeout(() => {
+      wrapper.update();
+      wrapper.find('input[type="checkbox"]').simulate('change', {
+        target: {
+          id: 'endpoint.rememberCredentials',
+          value: 'true'
+        }
+      });
+      expect(removeCredentials).to.have.been.called;
+      done();
+    });
+  });
 });
 
 
@@ -250,10 +778,12 @@ function createModal(props={}, renderFn = shallow) {
     title,
     primaryAction,
     intro,
+    saveCredential,
+    removeCredentials,
     ...apiOverrides
   } = props;
 
-  const validator = new MockValidator(apiOverrides);
+  const validator = props.validator || new MockValidator(apiOverrides);
 
   const wrapper = renderFn(
     <DeploymentConfigModal
@@ -262,6 +792,8 @@ function createModal(props={}, renderFn = shallow) {
       onClose={ onClose || noop }
       title={ title }
       primaryAction={ primaryAction }
+      saveCredential={ saveCredential || noop }
+      removeCredentials={ removeCredentials || noop }
       intro={ intro }
     />
   );
@@ -294,8 +826,6 @@ class MockValidator extends DeploymentConfigValidator {
   constructor(apiStubs) {
     super();
 
-    Object.assign(this, {
-      ...apiStubs
-    });
+    Object.assign(this, { ...apiStubs });
   }
 }
