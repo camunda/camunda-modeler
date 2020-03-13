@@ -49,7 +49,7 @@ describe('<DeploymentConfigValidator>', () => {
 
     // given
     const validate = url => validator.validateEndpoint({
-      authType: AuthTypes.none,
+      authType: AuthTypes.basic,
       url
     });
 

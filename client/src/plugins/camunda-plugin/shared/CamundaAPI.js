@@ -161,8 +161,6 @@ export default class CamundaAPI {
 
       return `Basic ${credentials}`;
     }
-
-    throw new Error('Unknown auth options.');
   }
 
   async fetch(path, options = {}) {

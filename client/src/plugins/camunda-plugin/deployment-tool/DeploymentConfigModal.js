@@ -236,7 +236,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
                       onChange={ this.setAuthType(form) }
                       values={
                         [
-                          { value: AuthTypes.none, label: 'None' },
                           { value: AuthTypes.basic, label: 'HTTP Basic' },
                           { value: AuthTypes.bearer, label: 'Bearer token' }
                         ]
@@ -274,14 +273,12 @@ export default class DeploymentConfigModal extends React.PureComponent {
                       />
                     )}
 
-                    { form.values.endpoint.authType !== AuthTypes.none && (
-                      <Field
-                        name="endpoint.rememberCredentials"
-                        component={ CheckBox }
-                        type="checkbox"
-                        label="Remember credentials"
-                      />
-                    )}
+                    <Field
+                      name="endpoint.rememberCredentials"
+                      component={ CheckBox }
+                      type="checkbox"
+                      label="Remember credentials"
+                    />
                   </div>
                 </fieldset>
               </Modal.Body>

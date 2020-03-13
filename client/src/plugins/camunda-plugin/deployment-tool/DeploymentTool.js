@@ -34,7 +34,7 @@ const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
 
 const DEFAULT_ENDPOINT = {
   url: 'http://localhost:8080/rest',
-  authType: AuthTypes.none,
+  authType: AuthTypes.basic,
   rememberCredentials: false
 };
 
@@ -207,16 +207,14 @@ export default class DeploymentTool extends PureComponent {
     } = endpoint;
 
     const authConfiguration =
-      authType === AuthTypes.none
-        ? {}
-        : authType === AuthTypes.basic
-          ? {
-            username,
-            password: rememberCredentials ? password : ''
-          }
-          : {
-            token: rememberCredentials ? token : ''
-          };
+      authType === AuthTypes.basic
+        ? {
+          username,
+          password: rememberCredentials ? password : ''
+        }
+        : {
+          token: rememberCredentials ? token : ''
+        };
 
     const endpointConfiguration = {
       id,
@@ -342,6 +340,12 @@ export default class DeploymentTool extends PureComponent {
 
     if (!endpoint.url && (await this.isTomcatRunning())) {
       defaultUrl = TOMCAT_DEFAULT_URL;
+    }
+
+    // since we have deprecated AuthTypes.none, we should correct existing
+    // configurations
+    if (endpoint.authType !== AuthTypes.basic && endpoint.authType !== AuthTypes.bearer) {
+      endpoint.authType = DEFAULT_ENDPOINT.authType;
     }
 
     return {
