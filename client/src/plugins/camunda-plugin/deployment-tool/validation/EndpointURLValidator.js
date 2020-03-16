@@ -8,9 +8,14 @@
  * except in compliance with the MIT License.
  */
 
-export default class EndpointURLValidator {
+import BaseInputValidator from './BaseInputValidator';
 
-  constructor(validateNonEmpty, validatePattern, validateConnectionWithoutCredentials) {
+export default class EndpointURLValidator extends BaseInputValidator {
+
+  constructor(fieldName, validateNonEmpty, validatePattern, validateConnectionWithoutCredentials) {
+
+    super(fieldName);
+
     this.validateNonEmpty = validateNonEmpty;
     this.validatePattern = validatePattern;
     this.validateConnectionWithoutCredentials = validateConnectionWithoutCredentials;
@@ -28,7 +33,7 @@ export default class EndpointURLValidator {
   }
 
   setFieldError = (value, setFieldErrorMethod) => {
-    this.cachedReturnValue = value;
+    this.setCachedValidationResult(value);
     setFieldErrorMethod('endpoint.url', value);
   }
 
@@ -75,11 +80,18 @@ export default class EndpointURLValidator {
 
   validate(value = '', setFieldError, isOnBeforeSubmit, onAuthDetection) {
 
-    if (this.cachedValue === value && !isOnBeforeSubmit) {
-      return this.cachedReturnValue;
+    const {
+      getCachedValue,
+      setCachedValue,
+      getCachedValidationResult,
+      setCachedValidationResult
+    } = this;
+
+    if (getCachedValue() === value && !isOnBeforeSubmit) {
+      return getCachedValidationResult();
     }
 
-    this.cachedValue = value;
+    setCachedValue(value);
 
     const nonEmptyValidation = this.validateNonEmpty(value, 'Endpoint URL must not be empty.');
     const patternValidation = this.validatePattern(value, /^https?:\/\//, 'Endpoint URL must start with "http://" or "https://".');
@@ -89,17 +101,17 @@ export default class EndpointURLValidator {
 
     if (!isOnBeforeSubmit) {
 
-      this.cachedReturnValue = nonEmptyValidation || patternValidation || null;
+      setCachedValidationResult(nonEmptyValidation || patternValidation || null);
 
-      if (!this.cachedReturnValue) {
+      if (!getCachedValidationResult()) {
         this.setTimeout(value, setFieldError, onAuthDetection);
       }
     } else {
 
-      this.cachedReturnValue = nonEmptyValidation || patternValidation || completenessValidation;
+      setCachedValidationResult(nonEmptyValidation || patternValidation || completenessValidation);
     }
 
     this.isDirty = true;
-    return this.cachedReturnValue;
+    return getCachedValidationResult();
   }
 }

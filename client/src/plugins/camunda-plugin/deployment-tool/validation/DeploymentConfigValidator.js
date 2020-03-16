@@ -20,32 +20,50 @@ export default class DeploymentConfigValidator {
 
   constructor() {
     this.endpointURLValidator = new EndpointURLValidator(
+      'endpoint.url',
       this.validateNonEmpty,
       this.validatePattern,
       this.validateConnectionWithoutCredentials
     );
 
     this.deploymentNameValidator = new DefaultInputValidator(
+      'deployment.name',
       this.validateNonEmpty,
       'Deployment name must not be empty.'
     );
 
     this.usernameValidator = new DefaultInputValidator(
+      'endpoint.username',
       this.validateNonEmpty,
       'Credentials are required to connect to the server.'
     );
 
     this.passwordValidator = new DefaultInputValidator(
+      'endpoint.password',
       this.validateNonEmpty,
       'Credentials are required to connect to the server.'
     );
 
     this.tokenValidator = new DefaultInputValidator(
+      'endpoint.token',
       this.validateNonEmpty,
       'Token must not be empty.'
     );
 
     this.lastConnectionCheckID = 0;
+  }
+
+  onExternalError = (authType, details, code, setFieldError) => {
+    if (code === 'UNAUTHORIZED') {
+      if (authType === AuthTypes.basic) {
+        this.usernameValidator.onExternalError(details, setFieldError);
+        this.passwordValidator.onExternalError(details, setFieldError);
+      } else {
+        this.tokenValidator.onExternalError(details, setFieldError);
+      }
+    } else {
+      this.endpointURLValidator.onExternalError(details, setFieldError);
+    }
   }
 
   validateEndpointURL = (value, setFieldError, isOnBeforeSubmit, onAuthDetection) => {

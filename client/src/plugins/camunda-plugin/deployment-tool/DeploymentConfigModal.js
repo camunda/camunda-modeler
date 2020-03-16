@@ -71,20 +71,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
         });
       }
 
-      this.renderConnectionError(values.endpoint.authType, details, code, setFieldError);
-    }
-  }
-
-  renderConnectionError = (authType, details, code, setFieldError) => {
-    if (code === 'UNAUTHORIZED') {
-      if (authType === AuthTypes.basic) {
-        setFieldError('endpoint.username', details);
-        setFieldError('endpoint.password', details);
-      } else {
-        setFieldError('endpoint.token', details);
-      }
-    } else {
-      setFieldError('endpoint.url', details);
+      this.props.validator.onExternalError(values.endpoint.authType, details, code, setFieldError);
     }
   }
 

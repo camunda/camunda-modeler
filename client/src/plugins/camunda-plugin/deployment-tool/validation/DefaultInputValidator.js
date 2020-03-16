@@ -8,7 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-export default class DefaultInputValidator {
+import BaseInputValidator from './BaseInputValidator';
+
+export default class DefaultInputValidator extends BaseInputValidator {
 
   // This validator validates input fields:
   //    Not initially
@@ -19,42 +21,57 @@ export default class DefaultInputValidator {
   // the error dissapears and won't be shown until the form
   // is submitted again.
 
-  constructor(validateNonEmpty, text) {
+  constructor(fieldName, validateNonEmpty, text) {
+
+    super(fieldName);
+
     this.validateNonEmpty = validateNonEmpty;
     this.text = text;
   }
 
-  _validate(value, forceRecheck) {
-    const { text, validateNonEmpty, cachedValidationResult } = this;
+  _validate = (value, forceRecheck) => {
+    const {
+      text,
+      validateNonEmpty,
+      getCachedValidationResult,
+      setCachedValidationResult
+    } = this;
 
     if (forceRecheck) {
       const result = validateNonEmpty(value, text);
-      this.cachedValidationResult = result;
+      setCachedValidationResult(result);
       return result;
     }
-    return cachedValidationResult;
+    return getCachedValidationResult();
   }
 
-  validate(value, isOnBeforeSubmit) {
+  validate = (value, isOnBeforeSubmit) => {
+
+    const {
+      getCachedValue,
+      setCachedValue,
+      invalidateCachedValidationResult,
+      _validate
+    } = this;
 
     // always force validation before submit
     if (isOnBeforeSubmit) {
-      this.cachedValue = value;
-      return this._validate(value, true);
+      setCachedValue(value);
+      return _validate(value, true);
     }
 
     // user is typing on the field
-    if (value !== this.cachedValue) {
-      this.cachedValue = value;
-      this.cachedValidationResult = null;
+    if (value !== getCachedValue()) {
+      setCachedValue(value);
+      invalidateCachedValidationResult();
       return null;
     }
 
     // user is not typing on the field.
-    if (value === this.cachedValue) {
-      return this._validate(value, false);
+    if (value === getCachedValue()) {
+      return _validate(value, false);
     }
 
-    this.cachedValue = value;
+    setCachedValue(value);
   }
 }
