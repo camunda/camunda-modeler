@@ -209,4 +209,61 @@ describe('<DeploymentConfigValidator>', () => {
     expect(validatePassword(undefined, false)).to.eql(null);
     expect(validatePassword('', false)).to.eql(null);
   });
+
+
+  it('should have sticky username errors', () => {
+
+    // given
+    const {
+      onExternalError,
+      usernameValidator,
+      validateUsername
+    } = validator;
+
+    usernameValidator.setCachedValue('username');
+
+    // when
+    onExternalError(AuthTypes.basic, 'error', 'UNAUTHORIZED', noop);
+
+    // then
+    expect(validateUsername('username', false)).to.eql('error');
+  });
+
+
+  it('should have sticky password errors', () => {
+
+    // given
+    const {
+      onExternalError,
+      passwordValidator,
+      validatePassword
+    } = validator;
+
+    passwordValidator.setCachedValue('password');
+
+    // when
+    onExternalError(AuthTypes.basic, 'error', 'UNAUTHORIZED', noop);
+
+    // then
+    expect(validatePassword('password', false)).to.eql('error');
+  });
+
+
+  it('should have sticky token errors', () => {
+
+    // given
+    const {
+      onExternalError,
+      tokenValidator,
+      validateToken
+    } = validator;
+
+    tokenValidator.setCachedValue('token');
+
+    // when
+    onExternalError(AuthTypes.bearer, 'error', 'UNAUTHORIZED', noop);
+
+    // then
+    expect(validateToken('token', false)).to.eql('error');
+  });
 });
