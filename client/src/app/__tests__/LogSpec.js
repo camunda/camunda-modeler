@@ -264,7 +264,6 @@ describe('<Log>', function() {
       const handleCopy = spy(instance, 'handleCopy');
 
       // when
-      //
       instance.handleKeyDown({
         keyCode: 65,
         ctrlKey: true,
@@ -274,6 +273,46 @@ describe('<Log>', function() {
       // then
       expect(handleCopy).to.have.been.calledOnce;
     });
+
+
+    it('should update edit menu', async function() {
+
+      // given
+      const onUpdateMenu = spy();
+
+      const {
+        tree
+      } = createLog({
+        open: true,
+        onUpdateMenu
+      }, mount);
+
+      // when
+      tree.find('.entries').simulate('focus');
+
+      // then
+      expect(onUpdateMenu).to.be.calledOnceWithExactly({
+        editMenu: [
+          [
+            { enabled: false, role: 'undo' },
+            { enabled: false, role: 'redo' }
+          ],
+          [
+            { enabled: false, role: 'copy' },
+            { enabled: false, role: 'cut' },
+            { enabled: false, role: 'paste' },
+            { enabled: true, role: 'selectAll' }
+          ]
+        ]
+      });
+    });
+
+
+    /**
+     * @pinussilvestrus :
+     * Currently not possible to test systems clipboard content
+     */
+    it('select selected text on <CTRL+C>');
 
   });
 
@@ -347,6 +386,7 @@ function createLog(options = {}, mountFn = shallow) {
       layout={ layout }
       onClear={ options.onClear || noop }
       onLayoutChanged={ options.onLayoutChanged || noop }
+      onUpdateMenu={ options.onUpdateMenu || noop }
     />
   );
 

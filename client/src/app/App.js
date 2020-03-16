@@ -1929,6 +1929,7 @@ export class App extends PureComponent {
               layout={ layout.log }
               onClear={ this.clearLog }
               onLayoutChanged={ this.handleLayoutChanged }
+              onUpdateMenu={ this.updateMenu }
             />
 
             <PluginsRoot

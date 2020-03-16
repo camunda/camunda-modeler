@@ -33,7 +33,8 @@ const DEFAULT_LAYOUT = {
  *   entries={ [ { message, category }, ... ] }
  *   layout={ height, open }
  *   onClear={ () => { } }
- *   onLayoutChanged= () => { } } />
+ *   onLayoutChanged= { () => { } }
+ *   onUpdateMenu = { () => { } } />
  *
  */
 export default class Log extends PureComponent {
@@ -151,6 +152,48 @@ export default class Log extends PureComponent {
     document.execCommand('copy');
   }
 
+  updateMenu = () => {
+
+    const {
+      onUpdateMenu
+    } = this.props;
+
+    const enabled = hasSelection();
+
+    const editMenu = [
+      [
+        {
+          role: 'undo',
+          enabled: false
+        },
+        {
+          role: 'redo',
+          enabled: false
+        },
+      ],
+      [
+        {
+          role: 'copy',
+          enabled
+        },
+        {
+          role: 'cut',
+          enabled: false
+        },
+        {
+          role: 'paste',
+          enabled: false
+        },
+        {
+          role: 'selectAll',
+          enabled: true
+        }
+      ]
+    ];
+
+    onUpdateMenu({ editMenu });
+  }
+
   render() {
 
     const {
@@ -198,6 +241,7 @@ export default class Log extends PureComponent {
               className="entries"
               ref={ this.panelRef }
               onKeyDown={ this.handleKeyDown }
+              onFocus={ this.updateMenu }
             >
               <div className="controls">
                 <button className="copy-button" onClick={ this.handleCopy }>Copy</button>
@@ -252,11 +296,15 @@ export default class Log extends PureComponent {
 // helpers /////////////////////////////////
 
 function selectText(element) {
-  var range, selection;
+  let range, selection;
 
   selection = window.getSelection();
   range = document.createRange();
   range.selectNodeContents(element);
   selection.removeAllRanges();
   selection.addRange(range);
+}
+
+function hasSelection() {
+  return window.getSelection().toString() !== '';
 }
