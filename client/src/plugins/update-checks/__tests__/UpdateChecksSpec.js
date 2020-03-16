@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+/* global sinon */
+
 import React from 'react';
 
 import Flags, { DISABLE_REMOTE_INTERACTION } from '../../../util/Flags';
@@ -24,12 +26,12 @@ const UPDATE_CHECKS_CONFIG_KEY = 'editor.updateChecks';
 const EDITOR_ID_CONFIG_KEY = 'editor.id';
 const OS_INFO_CONFIG_KEY = 'os.info';
 
-describe('<UpdateChecks>', () => {
+
+describe('<UpdateChecks>', function() {
 
   beforeEach(() => {
     Metadata.init({ name: 'test-name', version: '3.5.0' });
   });
-
 
   afterEach(() => {
     Flags.reset();
@@ -42,30 +44,35 @@ describe('<UpdateChecks>', () => {
   });
 
 
-  it('should not be initialized if DISABLE_REMOTE_INTERACTION flag existent', () => {
+  it('should not check if DISABLE_REMOTE_INTERACTION flag is set', async function() {
 
+    // given
     Flags.init({
       [ DISABLE_REMOTE_INTERACTION ]: true
     });
 
-    const component = shallow(<UpdateChecks />);
+    const checkSpy = sinon.spy();
 
-    expect(component.state()).to.be.null;
+    // when
+    const {
+      component
+    } = createComponent({
+      onCheckPerformed: checkSpy
+    });
+
+    await tick(component);
+
+    // then
+    expect(checkSpy).not.to.have.been.called;
   });
 
 
+  it('should skip without privacy settings', async function() {
 
-  it('should be initialized if DISABLE_REMOTE_INTERACTION flag missing', () => {
+    // given
+    const checkSpy = sinon.spy();
 
-    const component = shallow(<UpdateChecks />);
-
-    expect(component.state('showModal')).to.be.false;
-  });
-
-
-  it('should be in checkNotAllowed state if privacy preference non existent', async () => {
-
-    const component = shallow(<UpdateChecks config={ {
+    const config = {
       get(key) {
         return new Promise((resolve, reject) => {
           if (key === PRIVACY_PREFERENCES_CONFIG_KEY) {
@@ -73,18 +80,33 @@ describe('<UpdateChecks>', () => {
           }
         });
       }
-    } } />);
+    };
 
-    await waitForNPromises(component, 1);
+    // when
+    const {
+      component
+    } = createComponent({
+      onCheckPerformed: checkSpy,
+      config
+    });
 
-    expect(component.state().checkNotAllowed).to.be.true;
+    await tick(component);
+
+    // then
+    expect(checkSpy).to.have.been.calledOnceWith({
+      resolution: 'skipped',
+      reason: 'privacy-settings'
+    });
 
   });
 
 
-  it('should be in checkNotAllowed state if ENABLE_UPDATE_CHECKS preference is false', async () => {
+  it('should skip if disallowed via privacy settings', async function() {
 
-    const component = shallow(<UpdateChecks config={ {
+    // given
+    const checkSpy = sinon.spy();
+
+    const config = {
       get(key) {
         return new Promise((resolve, reject) => {
           if (key === PRIVACY_PREFERENCES_CONFIG_KEY) {
@@ -94,59 +116,66 @@ describe('<UpdateChecks>', () => {
           }
         });
       }
-    } } />);
+    };
 
-    await waitForNPromises(component, 1);
+    // when
+    const {
+      component
+    } = createComponent({
+      onCheckPerformed: checkSpy,
+      config
+    });
 
-    expect(component.state().checkNotAllowed).to.be.true;
+    await tick(component);
+
+    // then
+    expect(checkSpy).to.have.been.calledOnceWith({
+      resolution: 'skipped',
+      reason: 'privacy-settings'
+    });
   });
 
 
-  it('should be in isChecking state if ENABLE_UPDATE_CHECKS preference is true', async () => {
+  it('should skip if not due yet', async function() {
 
-    const component = shallow(<UpdateChecks config={ {
+    // given
+    const checkSpy = sinon.spy();
+
+    const config = {
       get(key) {
         return new Promise((resolve, reject) => {
           if (key === PRIVACY_PREFERENCES_CONFIG_KEY) {
-            resolve({
+            return resolve({
               ENABLE_UPDATE_CHECKS: true
             });
-          } else if (key === UPDATE_CHECKS_CONFIG_KEY) {
-            resolve(null);
           }
-        });
-      }
-    } } />);
 
-    await waitForNPromises(component, 2);
-
-    expect(component.state().isChecking).to.be.true;
-  });
-
-
-  it('should be in checkNotNeeded state if last update check time not exceeded', async () => {
-
-    const component = shallow(<UpdateChecks config={ {
-      get(key) {
-        return new Promise((resolve, reject) => {
           if (key === UPDATE_CHECKS_CONFIG_KEY) {
-            resolve({ lastChecked: new Date().getTime() });
-          } else {
-            resolve({
-              ENABLE_UPDATE_CHECKS: true
-            });
+            return resolve({ lastChecked: new Date().getTime() });
           }
         });
       }
-    } } />);
+    };
 
-    await waitForNPromises(component, 2);
+    // when
+    const {
+      component
+    } = createComponent({
+      onCheckPerformed: checkSpy,
+      config
+    });
 
-    expect(component.state().checkNotNeeded).to.be.true;
+    await tick(component);
+
+    // then
+    expect(checkSpy).to.have.been.calledOnceWith({
+      reason: 'not-due',
+      resolution: 'skipped'
+    });
   });
 
 
-  it('should update latest update check config for empty server response', async () => {
+  it('should handle empty server response', async function() {
 
     let setValue = {};
 
@@ -154,17 +183,21 @@ describe('<UpdateChecks>', () => {
       setValue = value;
     };
 
-    const component = getUpdateCheckerComponent({ onConfigSet: onConfigSet });
+    const {
+      component
+    } = createComponent({
+      onConfigSet
+    });
 
     mockServerResponse(component, {});
 
-    await waitForNPromises(component, 5);
+    await tick(component);
 
     expect(setValue.lastChecked).to.exist;
   });
 
 
-  it('should update latest update check config based on server response', async () => {
+  it('should handle update response response', async function() {
 
     let setValue = {};
 
@@ -172,7 +205,11 @@ describe('<UpdateChecks>', () => {
       setValue = value;
     };
 
-    const component = getUpdateCheckerComponent({ onConfigSet: onConfigSet });
+    const {
+      component
+    } = createComponent({
+      onConfigSet
+    });
 
     mockServerResponse(component, {
       update: {
@@ -182,7 +219,7 @@ describe('<UpdateChecks>', () => {
       }
     });
 
-    await waitForNPromises(component, 5);
+    await tick(component);
 
     expect(setValue.latestVersion).to.be.eql('v3.7.0');
   });
@@ -190,19 +227,27 @@ describe('<UpdateChecks>', () => {
 
   it('should not show modal for empty server response', async () => {
 
-    const component = getUpdateCheckerComponent();
+    // given
+    const {
+      component
+    } = createComponent();
 
     mockServerResponse(component, {});
 
-    await waitForNPromises(component, 5);
+    // when
+    await tick(component);
 
+    // then
     expect(component.state().showModal).to.be.false;
   });
 
 
   it('should show modal for positive server response', async () => {
 
-    const component = getUpdateCheckerComponent();
+    // given
+    const {
+      component
+    } = createComponent();
 
     mockServerResponse(component, {
       update: {
@@ -212,28 +257,81 @@ describe('<UpdateChecks>', () => {
       }
     });
 
-    await waitForNPromises(component, 5);
+    // when
+    await tick(component);
 
+    // then
     expect(component.state().showModal).to.be.true;
   });
 
 
-  it('should be in requestError state if server connection fails', async () => {
+  it('should handle update check error', async () => {
 
-    const component = getUpdateCheckerComponent();
+    // given
+    const checkSpy = sinon.spy();
+
+    const error = new Error('These things happen.');
+
+    const {
+      component
+    } = createComponent({
+      onCheckPerformed: checkSpy
+    });
 
     component.instance().updateChecksAPI.sendRequest = () => {
-      throw new Error('These things happen.');
+      throw error;
     };
 
-    await waitForNPromises(component, 4);
+    // when
+    await tick(component);
 
-    expect(component.state().requestError).to.be.true;
+    // then
+    expect(checkSpy).to.have.been.calledOnceWith({
+      error,
+      resolution: 'failed'
+    });
   });
+
+
+  it('should check periodically (every N minutes)');
+
 });
 
-const getUpdateCheckerComponent = (confs) => {
-  return shallow(<UpdateChecks config={ {
+
+async function tick(component, n=10) {
+  for (let i = 0; i < n; i ++) {
+    await component.update();
+  }
+}
+
+const mockServerResponse = (component, resp, callback) => {
+  component.instance().updateChecksAPI.sendRequest = (url) => {
+    if (callback) {
+      callback(url);
+    }
+    return new Promise((resolve, reject) => {
+      resolve(resp);
+    });
+  };
+};
+
+
+function createComponent(props={}) {
+
+  const onConfigSet = props.onConfigSet || function() {};
+
+  const _getGlobal = props._getGlobal || function(key) {
+    if (key === 'plugins') {
+      return {
+        appPlugins: [
+          { name: 'plugin1', id: 'pluginID1' },
+          { name: 'plugin2', id: 'pluginID2' }
+        ]
+      };
+    }
+  };
+
+  const config = props.config || {
     get(key) {
       return new Promise((resolve, reject) => {
         if (key === UPDATE_CHECKS_CONFIG_KEY) {
@@ -249,36 +347,18 @@ const getUpdateCheckerComponent = (confs) => {
         }
       });
     },
-    set(key, value) {
-      if (confs && confs.onConfigSet) {
-        confs.onConfigSet(key, value);
-      }
-    }
-  } } _getGlobal={ (key) => {
-    if (key === 'plugins') {
-      return {
-        appPlugins: [
-          { name: 'plugin1', id: 'pluginID1' },
-          { name: 'plugin2', id: 'pluginID2' }
-        ]
-      };
-    }
-  } } />);
-};
-
-const waitForNPromises = async (component, n) => {
-  for (let i = 0; i < n; i ++) {
-    await component.update();
-  }
-};
-
-const mockServerResponse = (component, resp, callback) => {
-  component.instance().updateChecksAPI.sendRequest = (url) => {
-    if (callback) {
-      callback(url);
-    }
-    return new Promise((resolve, reject) => {
-      resolve(resp);
-    });
+    set: onConfigSet
   };
-};
+
+  const component = shallow(
+    <UpdateChecks
+      { ...props }
+      config={ config }
+      _getGlobal={ _getGlobal }
+    />
+  );
+
+  return {
+    component
+  };
+}
