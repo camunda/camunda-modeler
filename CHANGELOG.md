@@ -6,6 +6,27 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.7.1
+
+#### General
+
+* `FIX`: correctly export as image on Linux ([#1699](https://github.com/camunda/camunda-modeler/issues/1699))
+* `FIX`: always paste as plain text to properties panels
+* `CHORE`: make sure to daily check for updates if enabled ([`d2bf6a6`](https://github.com/camunda/camunda-modeler/commit/d2bf6a6fc147b73ecacaebdda7a334503d8c8928))
+
+#### BPMN
+
+* `FIX`: resize empty text annotations ([#1290](https://github.com/bpmn-io/bpmn-js/pull/1290))
+* `FIX`: correctly move flows when adding lane ([#1715](https://github.com/camunda/camunda-modeler/issues/1715))
+* `FIX`: restore semantic IDs for non flow nodes ([#1285](https://github.com/bpmn-io/bpmn-js/issues/1285))
+* `FIX`: export BPMNDI in correct order ([#1326](https://github.com/camunda/camunda-modeler/issues/1326))
+
+#### DMN
+
+* `FEAT(decision-table)`: add new rule on bottom rule \<enter> ([#345](https://github.com/bpmn-io/dmn-js/issues/345))
+* `FEAT(drd)`: activate direct editing after text annotation create ([#185](https://github.com/bpmn-io/dmn-js/issues/185))
+* `FIX`: update association's refs on element id change ([#397](https://github.com/bpmn-io/dmn-js/issues/397))
+
 ## 3.7.0
 
 #### General

@@ -23,7 +23,7 @@ jobs:
           -v ${PWD}:/project \
           -v ~/.cache/electron:/root/.cache/electron \
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-          electronuserland/builder:wine \
+          electronuserland/builder@sha256:b50e44a98ffe9f716b2f66c51b7898404670c8b74c8c3fc2b152c53f8af60513 \
           /bin/bash -c "npm i && npm run build -- --win --linux --publish"
     - stage: "distro [macos]"
       os: osx
