@@ -122,7 +122,7 @@ describe('<DeploymentConfigValidator>', () => {
     setTimeout(() => {
       expect(setFieldErrorSpy).to.have.been.calledWith(ENDPOINT_URL_FIELDNAME, NON_COMPLETE_ERROR);
       done();
-    }, 1100);
+    }, 1001);
   });
 
 
@@ -265,5 +265,28 @@ describe('<DeploymentConfigValidator>', () => {
 
     // then
     expect(validateToken('token', false)).to.eql('error');
+  });
+
+
+  it('should notify connection status to parent', (done) => {
+
+    // given
+    const setFieldError = noop;
+    const onAuthDetection = noop;
+    const isOnBeforeSubmit = false;
+    const onConnectionStatusUpdate = sinon.spy();
+
+    const nonCompleteURL = 'https://test.com';
+
+    // when
+    validator.validateEndpointURL(
+      nonCompleteURL, setFieldError, isOnBeforeSubmit, onAuthDetection, onConnectionStatusUpdate
+    );
+
+    // then
+    setTimeout(() => {
+      expect(onConnectionStatusUpdate).to.have.been.calledWith('CONNECTION_FAILED');
+      done();
+    }, 1001);
   });
 });

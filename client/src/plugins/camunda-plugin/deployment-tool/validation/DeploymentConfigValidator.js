@@ -10,7 +10,7 @@
 
 import AuthTypes from '../../shared/AuthTypes';
 
-import CamundaAPI from '../../shared/CamundaAPI';
+import { default as CamundaAPI, ApiErrorMessages } from '../../shared/CamundaAPI';
 
 import EndpointURLValidator from './EndpointURLValidator';
 
@@ -66,8 +66,10 @@ export default class DeploymentConfigValidator {
     }
   }
 
-  validateEndpointURL = (value, setFieldError, isOnBeforeSubmit, onAuthDetection) => {
-    return this.endpointURLValidator.validate(value, setFieldError, isOnBeforeSubmit, onAuthDetection);
+  validateEndpointURL = (value, setFieldError, isOnBeforeSubmit, onAuthDetection, onConnectionStatusUpdate) => {
+    return this.endpointURLValidator.validate(
+      value, setFieldError, isOnBeforeSubmit, onAuthDetection, onConnectionStatusUpdate
+    );
   }
 
   validatePattern = (value, pattern, message) => {
@@ -156,6 +158,16 @@ export default class DeploymentConfigValidator {
       return { isExpired: true };
     }
     return result;
+  }
+
+  clearEndpointURLError = (setFieldError) => {
+    this.endpointURLValidator.clearError(setFieldError);
+  }
+
+  updateEndpointURLError = (code, setFieldError) => {
+
+    const errorMessage = ApiErrorMessages[code];
+    this.endpointURLValidator.updateError(setFieldError, errorMessage);
   }
 
   validateBasic(configuration) {

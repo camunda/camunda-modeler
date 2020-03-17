@@ -55,6 +55,20 @@ export default class DeploymentTool extends PureComponent {
     this.props.subscribe('app.activeTabChanged', ({ activeTab }) => {
       this.setState({ activeTab });
     });
+
+    this.props.subscribe('app.focus-changed', () => {
+      if (this.focusChangeCallback) {
+        this.focusChangeCallback();
+      }
+    });
+  }
+
+  subscribeToFocusChange = (callback) => {
+    this.focusChangeCallback = callback;
+  }
+
+  unsubscribeFromFocusChange = () => {
+    delete this.focusChangeCallback;
   }
 
   saveTab = (tab) => {
@@ -412,6 +426,8 @@ export default class DeploymentTool extends PureComponent {
             validator={ this.validator }
             saveCredential={ this.saveCredential }
             removeCredentials={ this.removeCredentials }
+            subscribeToFocusChange={ this.subscribeToFocusChange }
+            unsubscribeFromFocusChange={ this.unsubscribeFromFocusChange }
           />
         </KeyboardInteractionTrap>
       }

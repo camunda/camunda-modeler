@@ -764,6 +764,207 @@ describe('<DeploymentConfigModal>', () => {
       done();
     });
   });
+
+
+  it('should subscribe to focus change event when mounted', () => {
+
+    // given
+    const subscribeToFocusChange = sinon.spy();
+
+    createModal({
+      subscribeToFocusChange
+    }, mount);
+
+    // then
+    expect(subscribeToFocusChange).to.have.been.called;
+  });
+
+
+  it('should unsubscribe from focus change event when unmounted', () => {
+
+    // given
+    const subscribeToFocusChange = sinon.spy();
+
+    createModal({
+      subscribeToFocusChange
+    }, mount);
+
+    // then
+    expect(subscribeToFocusChange).to.have.been.called;
+  });
+
+
+  it('should unsubscribe from focus change event when unmounted', () => {
+
+    // given
+    const unsubscribeFromFocusChange = sinon.spy();
+
+    const {
+      wrapper
+    } = createModal({
+      unsubscribeFromFocusChange
+    }, mount);
+
+    // when
+    wrapper.unmount();
+
+    // then
+    expect(unsubscribeFromFocusChange).to.have.been.called;
+  });
+
+
+  it('should validate connection when app gains focus if endpoint has a connection error', () => {
+
+    // given
+    const validateConnection = sinon.spy();
+
+    const validator = new MockValidator({ validateConnection });
+
+    const {
+      instance
+    } = createModal({
+      validator
+    }, mount);
+
+    const valuesCache = { endpoint: { test: true } };
+
+    instance.valuesCache = valuesCache;
+    instance.setFieldErrorCache = noop;
+    instance.externalErrorCodeCache = 'NO_INTERNET_CONNECTION';
+
+    // when
+    instance.onAppFocusChange();
+
+    // then
+    expect(validateConnection).to.have.been.calledWith(valuesCache.endpoint);
+  });
+
+
+  it('should check auth status on focus change', () => {
+
+    // given
+    const checkAuthStatusSpy = sinon.spy();
+
+    const { instance } = createModal({}, mount);
+
+    instance.checkAuthStatus = checkAuthStatusSpy;
+    instance.valuesCache = {};
+    instance.setFieldErrorCache = noop;
+
+    // when
+    instance.onAppFocusChange();
+
+    // then
+    expect(checkAuthStatusSpy).to.have.been.called;
+  });
+
+
+  it('should clear endpoint url errors on focus change if connection validated', async () => {
+
+    // given
+    const valuesCache = {};
+    const setFieldErrorCache = noop;
+    const clearEndpointURLError = sinon.spy();
+    const validateConnection = () => new Promise((resolve) => {
+      resolve(null);
+    });
+
+    const validator = new MockValidator({ clearEndpointURLError, validateConnection });
+
+    const { instance } = createModal({ validator }, mount);
+
+    instance.checkAuthStatus = noop;
+    instance.valuesCache = valuesCache;
+    instance.setFieldErrorCache = setFieldErrorCache;
+    instance.externalErrorCodeCache = 'NO_INTERNET_CONNECTION';
+
+    // when
+    await instance.onAppFocusChange();
+
+    // then
+    expect(clearEndpointURLError).to.have.been.calledWith(noop);
+  });
+
+
+  it('should update endpoint url errors on focus change if connection not validated', async () => {
+
+    // given
+    const valuesCache = {};
+    const setFieldErrorCache = noop;
+    const updateEndpointURLError = sinon.spy();
+    const validateConnection = () => new Promise((resolve) => {
+      resolve({ code: 'NOT_FOUND' });
+    });
+
+    const validator = new MockValidator({ updateEndpointURLError, validateConnection });
+
+    const { instance } = createModal({ validator }, mount);
+
+    instance.checkAuthStatus = noop;
+    instance.valuesCache = valuesCache;
+    instance.setFieldErrorCache = setFieldErrorCache;
+    instance.externalErrorCodeCache = 'NO_INTERNET_CONNECTION';
+
+    // when
+    await instance.onAppFocusChange();
+
+    // then
+    expect(updateEndpointURLError).to.have.been.calledWith('NOT_FOUND' ,noop);
+  });
+
+
+  it('should not update endpoint url errors on focus change if connection invalidated with a connection error', async () => {
+
+    // given
+    const valuesCache = {};
+    const setFieldErrorCache = noop;
+    const updateEndpointURLError = sinon.spy();
+    const validateConnection = () => new Promise((resolve) => {
+      resolve({ code: 'NOT_A_CONNECTION_ERROR' });
+    });
+
+    const validator = new MockValidator({ updateEndpointURLError, validateConnection });
+
+    const { instance } = createModal({ validator }, mount);
+
+    instance.checkAuthStatus = noop;
+    instance.valuesCache = valuesCache;
+    instance.setFieldErrorCache = setFieldErrorCache;
+    instance.externalErrorCodeCache = 'NO_INTERNET_CONNECTION';
+
+    // when
+    await instance.onAppFocusChange();
+
+    // then
+    expect(updateEndpointURLError).to.not.have.been.calledWith('NOT_A_CONNECTION_ERROR' ,noop);
+  });
+
+
+  it('should not validate connection when app gains focus if endpoint does not have a connection error', () => {
+
+    // given
+    const validateConnection = sinon.spy();
+
+    const validator = new MockValidator({ validateConnection });
+
+    const {
+      instance
+    } = createModal({
+      validator
+    }, mount);
+
+    const valuesCache = { endpoint: { test: true } };
+
+    instance.valuesCache = valuesCache;
+    instance.setFieldErrorCache = noop;
+    instance.externalErrorCodeCache = 'UNAUTHORIZED';
+
+    // when
+    instance.onAppFocusChange();
+
+    // then
+    expect(validateConnection).to.not.have.been.calledWith(valuesCache.endpoint);
+  });
 });
 
 
@@ -780,6 +981,8 @@ function createModal(props={}, renderFn = shallow) {
     intro,
     saveCredential,
     removeCredentials,
+    subscribeToFocusChange,
+    unsubscribeFromFocusChange,
     ...apiOverrides
   } = props;
 
@@ -795,6 +998,8 @@ function createModal(props={}, renderFn = shallow) {
       saveCredential={ saveCredential || noop }
       removeCredentials={ removeCredentials || noop }
       intro={ intro }
+      subscribeToFocusChange={ subscribeToFocusChange || noop }
+      unsubscribeFromFocusChange={ unsubscribeFromFocusChange || noop }
     />
   );
 

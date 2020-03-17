@@ -1654,6 +1654,10 @@ export class App extends PureComponent {
       return this.checkFileChanged(activeTab);
     }
 
+    if (action === 'notify-focus-change') {
+      return this.emit('app.focus-changed');
+    }
+
     if (action === 'resize') {
       return this.resizeTab();
     }
