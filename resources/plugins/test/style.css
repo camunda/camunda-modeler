@@ -1,3 +1,7 @@
+.bjs-powered-by {
+  display: block !important;
+}
+
 .bjs-powered-by > img {
   display: none;
 }
