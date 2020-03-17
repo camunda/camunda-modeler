@@ -41,6 +41,7 @@ export default function Radio(props) {
         <div className="form-check-inline">
           {
             values.map((child) => {
+              const id = toKebabCase(child.label);
               return (
                 <React.Fragment key={ child.label }>
                   <div className={
@@ -52,11 +53,11 @@ export default function Radio(props) {
                       value={ child.value }
                       checked={ isChecked(child.value) }
                       className="custom-control-input"
-                      id={ child.label }
+                      id={ id }
                       tabIndex={ 0 }
                       { ...restProps } />
                     <label
-                      htmlFor={ child.label }
+                      htmlFor={ id }
                       className="custom-control-label">
                       { child.label }
                     </label>
@@ -69,4 +70,22 @@ export default function Radio(props) {
       </div>
     </React.Fragment>
   );
+}
+
+
+
+// helper /////
+/**
+ * Converts text to kebab-case.
+ *
+ * @example
+ * const label = "HTTP Basic";
+ *
+ * // http-basic
+ * const id = toKebabCase(label);
+ *
+ * @param {string} name
+ */
+function toKebabCase(name) {
+  return name.toLowerCase().replace(/\s/g, '-');
 }
