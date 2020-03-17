@@ -41,7 +41,7 @@ export default function Radio(props) {
         <div className="form-check-inline">
           {
             values.map((child) => {
-              const id = toKebabCase(child.label);
+              const id = 'radio-element-' + toKebabCase(child.label);
               return (
                 <React.Fragment key={ child.label }>
                   <div className={
