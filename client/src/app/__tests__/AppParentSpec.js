@@ -158,6 +158,27 @@ describe('<AppParent>', function() {
 
     });
 
+
+    it('should fire notify-focus-change action', function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } }, mount);
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+
+      // when
+      backend.receive('client:window-focused');
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('notify-focus-change');
+
+    });
+
   });
 
 

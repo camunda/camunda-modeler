@@ -44,7 +44,7 @@ export default class EndpointURLValidator extends BaseInputValidator {
     }
   }
 
-  setTimeout(value, setFieldError, onAuthDetection) {
+  setTimeout(value, setFieldError, onAuthDetection, onConnectionStatusUpdate) {
     this.timeoutID = setTimeout(async () => {
       const completenessValidation = this.validateEndpointURLCompleteness(value);
 
@@ -65,6 +65,7 @@ export default class EndpointURLValidator extends BaseInputValidator {
           return;
         }
 
+        onConnectionStatusUpdate(code);
         onAuthDetection(code === 'UNAUTHORIZED');
 
         if (code !== 'UNAUTHORIZED') {
@@ -74,11 +75,12 @@ export default class EndpointURLValidator extends BaseInputValidator {
 
         // auth not needed
         onAuthDetection(false);
+        onConnectionStatusUpdate(null);
       }
     }, this.isDirty ? 1000 : 0);
   }
 
-  validate(value = '', setFieldError, isOnBeforeSubmit, onAuthDetection) {
+  validate(value = '', setFieldError, isOnBeforeSubmit, onAuthDetection, onConnectionStatusUpdate) {
 
     const {
       getCachedValue,
@@ -104,7 +106,7 @@ export default class EndpointURLValidator extends BaseInputValidator {
       setCachedValidationResult(nonEmptyValidation || patternValidation || null);
 
       if (!getCachedValidationResult()) {
-        this.setTimeout(value, setFieldError, onAuthDetection);
+        this.setTimeout(value, setFieldError, onAuthDetection, onConnectionStatusUpdate);
       }
     } else {
 

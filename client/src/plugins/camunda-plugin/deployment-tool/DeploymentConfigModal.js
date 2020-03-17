@@ -40,8 +40,65 @@ export default class DeploymentConfigModal extends React.PureComponent {
     this.state = {
       isAuthNeeded: false
     };
+  }
 
-    this.shouldCheckIfAuthNeeded = true;
+  componentDidMount = () => {
+    const {
+      configuration, subscribeToFocusChange
+    } = this.props;
+
+    const {
+      checkAuthStatus, onAppFocusChange
+    } = this;
+
+    checkAuthStatus(configuration);
+    subscribeToFocusChange(onAppFocusChange);
+  }
+
+  componentWillUnmount = () => {
+    this.props.unsubscribeFromFocusChange();
+  }
+
+  isConnectionError(code) {
+    return code === 'NOT_FOUND' || code === 'CONNECTION_FAILED' || code === 'NO_INTERNET_CONNECTION';
+  }
+
+  onAppFocusChange = async () => {
+
+    const {
+      valuesCache,
+      setFieldErrorCache,
+      externalErrorCodeCache,
+      isConnectionError
+    } = this;
+
+    if (!valuesCache || !setFieldErrorCache) {
+      return;
+    }
+
+    this.checkAuthStatus(valuesCache);
+
+    // User may fix connection related errors by focusing out from app (turn on wifi, start server etc.)
+    // In that case we want to check if errors are fixed when the users focuses back on to the app.
+    if (isConnectionError(externalErrorCodeCache)) {
+
+      const validationResult = await this.props.validator.validateConnection(valuesCache.endpoint);
+
+      if (!hasKeys(validationResult)) {
+
+        this.externalErrorCodeCache = null;
+        this.props.validator.clearEndpointURLError(setFieldErrorCache);
+      } else {
+
+        const { code } = validationResult;
+
+        if (isConnectionError(code) && code !== this.externalErrorCodeCache) {
+          this.props.validator.updateEndpointURLError(code, setFieldErrorCache);
+        }
+
+        this.externalErrorCodeCache = code;
+      }
+    }
   }
 
   onClose = (action = 'cancel', data) => this.props.onClose(action, data);
@@ -57,6 +114,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
     const connectionValidation = await this.props.validator.validateConnection(endpoint);
 
     if (!hasKeys(connectionValidation)) {
+      this.externalErrorCodeCache = null;
       this.onClose('deploy', values);
     } else {
 
@@ -71,6 +129,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
         });
       }
 
+      this.externalErrorCodeCache = code;
       this.props.validator.onExternalError(values.endpoint.authType, details, code, setFieldError);
     }
   }
@@ -119,17 +178,14 @@ export default class DeploymentConfigModal extends React.PureComponent {
     });
   }
 
-  checkAuthStatusOnlyOnce = (values) => {
-    if (this.shouldCheckIfAuthNeeded) {
-      this.props.validator.validateConnectionWithoutCredentials(values.endpoint.url).then((result) => {
-        if (!result) {
-          this.onAuthDetection(false);
-        } else if (!result.isExpired) {
-          this.onAuthDetection(!!result && (result.code === 'UNAUTHORIZED'));
-        }
-      });
-      this.shouldCheckIfAuthNeeded = false;
-    }
+  checkAuthStatus = (values) => {
+    this.props.validator.validateConnectionWithoutCredentials(values.endpoint.url).then((result) => {
+      if (!result) {
+        this.onAuthDetection(false);
+      } else if (!result.isExpired) {
+        this.onAuthDetection(!!result && (result.code === 'UNAUTHORIZED'));
+      }
+    });
   }
 
   render() {
@@ -155,11 +211,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
       isAuthNeeded
     } = this.state;
 
-    // @oguz:
-    // FormIK validateOnMount get executed only once but not everytime
-    // DeploymentConfigModal is mounted. Thats why we need this logic here.
-    this.checkAuthStatusOnlyOnce(values);
-
     return (
       <Modal className={ css.DeploymentConfigModal } onClose={ onClose }>
 
@@ -168,223 +219,231 @@ export default class DeploymentConfigModal extends React.PureComponent {
           onSubmit={ onSubmit }
           validateOnBlur={ false }
         >
-          { form => (
-            <form onSubmit={ form.handleSubmit }>
+          { form => {
 
-              <Modal.Title>
-                {
-                  title || 'Deploy Diagram'
-                }
-              </Modal.Title>
+            this.valuesCache = { ...form.values };
+            this.setFieldErrorCache = form.setFieldError;
 
-              <Modal.Body>
-                {
-                  intro && (
-                    <p className="intro">
-                      { intro }
-                    </p>
-                  )
-                }
-                <fieldset>
-                  <div className="fields">
+            return (
+              <form onSubmit={ form.handleSubmit }>
 
-                    <Field
-                      name="deployment.name"
-                      component={ TextInput }
-                      label="Deployment Name"
-                      fieldError={ fieldError }
-                      validate={ (value) => {
-                        return validator.validateDeploymentName(value, this.isOnBeforeSubmit);
-                      } }
-                      autoFocus
-                    />
+                <Modal.Title>
+                  {
+                    title || 'Deploy Diagram'
+                  }
+                </Modal.Title>
 
-                    <Field
-                      name="deployment.tenantId"
-                      component={ TextInput }
-                      fieldError={ fieldError }
-                      hint="Optional"
-                      label="Tenant ID"
-                    />
-                  </div>
-                </fieldset>
+                <Modal.Body>
+                  {
+                    intro && (
+                      <p className="intro">
+                        { intro }
+                      </p>
+                    )
+                  }
+                  <fieldset>
+                    <div className="fields">
 
-                <fieldset>
-                  <legend>
-                    Endpoint Configuration
-                  </legend>
-
-                  <div className="fields">
-
-                    <Field
-                      name="endpoint.url"
-                      component={ TextInput }
-                      fieldError={ fieldError }
-                      validate={ (value) => {
-                        return validator.validateEndpointURL(
-                          value,
-                          form.setFieldError,
-                          this.isOnBeforeSubmit,
-                          onAuthDetection
-                        );
-                      } }
-                      label="REST Endpoint"
-                      hint="Should point to a running Camunda Engine REST API endpoint."
-                    />
-
-                    {
-                      isAuthNeeded && (
-                        <Field
-                          name="endpoint.authType"
-                          label="Authentication"
-                          component={ Radio }
-                          onChange={ (event) => {
-                            form.handleChange(event);
-                            this.setAuthType(form);
-                          } }
-                          values={
-                            [
-                              { value: AuthTypes.basic, label: 'HTTP Basic' },
-                              { value: AuthTypes.bearer, label: 'Bearer token' }
-                            ]
-                          }
-                        />
-                      )
-                    }
-
-                    { isAuthNeeded && form.values.endpoint.authType === AuthTypes.basic && (
-                      <React.Fragment>
-                        <Field
-                          name="endpoint.username"
-                          component={ TextInput }
-                          fieldError={ fieldError }
-                          validate={ (value) => {
-                            return validator.validateUsername(value || '', this.isOnBeforeSubmit);
-                          } }
-                          label="Username"
-                          onChange={ (event) => {
-                            form.handleChange(event);
-                            if (form.values.endpoint.rememberCredentials) {
-                              saveCredential({
-                                username: event.target.value
-                              });
-                            }
-                          } }
-                        />
-
-                        <Field
-                          name="endpoint.password"
-                          component={ TextInput }
-                          fieldError={ fieldError }
-                          validate={ (value) => {
-                            return validator.validatePassword(value || '', this.isOnBeforeSubmit);
-                          } }
-                          label="Password"
-                          type="password"
-                          onChange={ (event) => {
-                            form.handleChange(event);
-                            if (form.values.endpoint.rememberCredentials) {
-                              saveCredential({
-                                password: event.target.value
-                              });
-                            }
-                          } }
-                        />
-                      </React.Fragment>
-                    )}
-
-                    { isAuthNeeded && form.values.endpoint.authType === AuthTypes.bearer && (
                       <Field
-                        name="endpoint.token"
+                        name="deployment.name"
+                        component={ TextInput }
+                        label="Deployment Name"
+                        fieldError={ fieldError }
+                        validate={ (value) => {
+                          return validator.validateDeploymentName(value, this.isOnBeforeSubmit);
+                        } }
+                        autoFocus
+                      />
+
+                      <Field
+                        name="deployment.tenantId"
+                        component={ TextInput }
+                        fieldError={ fieldError }
+                        hint="Optional"
+                        label="Tenant ID"
+                      />
+                    </div>
+                  </fieldset>
+
+                  <fieldset>
+                    <legend>
+                      Endpoint Configuration
+                    </legend>
+
+                    <div className="fields">
+
+                      <Field
+                        name="endpoint.url"
                         component={ TextInput }
                         fieldError={ fieldError }
                         validate={ (value) => {
-                          return validator.validateToken(value || '', this.isOnBeforeSubmit);
+                          this.externalErrorCodeCache = null;
+                          return validator.validateEndpointURL(
+                            value,
+                            form.setFieldError,
+                            this.isOnBeforeSubmit,
+                            onAuthDetection,
+                            (code) => { this.externalErrorCodeCache = code; }
+                          );
                         } }
-                        label="Token"
-                        onChange={ (event) => {
-                          form.handleChange(event);
-                          if (form.values.endpoint.rememberCredentials) {
-                            saveCredential({
-                              token: event.target.value
-                            });
-                          }
-                        } }
+                        label="REST Endpoint"
+                        hint="Should point to a running Camunda Engine REST API endpoint."
                       />
-                    )}
 
-                    {
-                      isAuthNeeded && (
-                        <Field
-                          name="endpoint.rememberCredentials"
-                          component={ CheckBox }
-                          type="checkbox"
-                          label="Remember credentials"
-                          onChange={ async (event) => {
-                            form.handleChange(event);
-                            const {
-                              endpoint
-                            } = form.values;
+                      {
+                        isAuthNeeded && (
+                          <Field
+                            name="endpoint.authType"
+                            label="Authentication"
+                            component={ Radio }
+                            onChange={ (event) => {
+                              form.handleChange(event);
+                              this.setAuthType(form);
+                            } }
+                            values={
+                              [
+                                { value: AuthTypes.basic, label: 'HTTP Basic' },
+                                { value: AuthTypes.bearer, label: 'Bearer token' }
+                              ]
+                            }
+                          />
+                        )
+                      }
 
-                            const {
-                              username,
-                              password,
-                              token,
-                              authType
-                            } = endpoint;
-                            const isChecked = !JSON.parse(event.target.value);
-                            if (isChecked) {
-                              if (authType == AuthTypes.basic) {
-                                saveCredential({ username, password });
-                              } else if (authType == AuthTypes.bearer) {
-                                saveCredential({ token });
+                      { isAuthNeeded && form.values.endpoint.authType === AuthTypes.basic && (
+                        <React.Fragment>
+                          <Field
+                            name="endpoint.username"
+                            component={ TextInput }
+                            fieldError={ fieldError }
+                            validate={ (value) => {
+                              return validator.validateUsername(value || '', this.isOnBeforeSubmit);
+                            } }
+                            label="Username"
+                            onChange={ (event) => {
+                              form.handleChange(event);
+                              if (form.values.endpoint.rememberCredentials) {
+                                saveCredential({
+                                  username: event.target.value
+                                });
                               }
-                            } else {
-                              removeCredentials();
+                            } }
+                          />
+
+                          <Field
+                            name="endpoint.password"
+                            component={ TextInput }
+                            fieldError={ fieldError }
+                            validate={ (value) => {
+                              return validator.validatePassword(value || '', this.isOnBeforeSubmit);
+                            } }
+                            label="Password"
+                            type="password"
+                            onChange={ (event) => {
+                              form.handleChange(event);
+                              if (form.values.endpoint.rememberCredentials) {
+                                saveCredential({
+                                  password: event.target.value
+                                });
+                              }
+                            } }
+                          />
+                        </React.Fragment>
+                      )}
+
+                      { isAuthNeeded && form.values.endpoint.authType === AuthTypes.bearer && (
+                        <Field
+                          name="endpoint.token"
+                          component={ TextInput }
+                          fieldError={ fieldError }
+                          validate={ (value) => {
+                            return validator.validateToken(value || '', this.isOnBeforeSubmit);
+                          } }
+                          label="Token"
+                          onChange={ (event) => {
+                            form.handleChange(event);
+                            if (form.values.endpoint.rememberCredentials) {
+                              saveCredential({
+                                token: event.target.value
+                              });
                             }
                           } }
                         />
-                      )
-                    }
+                      )}
+
+                      {
+                        isAuthNeeded && (
+                          <Field
+                            name="endpoint.rememberCredentials"
+                            component={ CheckBox }
+                            type="checkbox"
+                            label="Remember credentials"
+                            onChange={ async (event) => {
+                              form.handleChange(event);
+                              const {
+                                endpoint
+                              } = form.values;
+
+                              const {
+                                username,
+                                password,
+                                token,
+                                authType
+                              } = endpoint;
+                              const isChecked = !JSON.parse(event.target.value);
+                              if (isChecked) {
+                                if (authType == AuthTypes.basic) {
+                                  saveCredential({ username, password });
+                                } else if (authType == AuthTypes.bearer) {
+                                  saveCredential({ token });
+                                }
+                              } else {
+                                removeCredentials();
+                              }
+                            } }
+                          />
+                        )
+                      }
+                    </div>
+                  </fieldset>
+                </Modal.Body>
+
+                <Modal.Footer>
+                  <div className="form-submit">
+
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={ () => onClose('cancel') }
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      disabled={ form.isSubmitting }
+                      onClick={ () => {
+
+                        // @oguz:
+                        // this is a hack as FormIK does not seem to
+                        // set isSubmitting when this button is clicked.
+                        // if you come up with a better solution, please
+                        // do a PR.
+                        this.isOnBeforeSubmit = true;
+                        setTimeout(() => {
+                          this.isOnBeforeSubmit = false;
+                        });
+                      } }
+                    >
+                      { primaryAction || 'Deploy' }
+                    </button>
+
                   </div>
-                </fieldset>
-              </Modal.Body>
-
-              <Modal.Footer>
-                <div className="form-submit">
-
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={ () => onClose('cancel') }
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={ form.isSubmitting }
-                    onClick={ () => {
-
-                      // @oguz:
-                      // this is a hack as FormIK does not seem to
-                      // set isSubmitting when this button is clicked.
-                      // if you come up with a better solution, please
-                      // do a PR.
-                      this.isOnBeforeSubmit = true;
-                      setTimeout(() => {
-                        this.isOnBeforeSubmit = false;
-                      });
-                    } }
-                  >
-                    { primaryAction || 'Deploy' }
-                  </button>
-
-                </div>
-              </Modal.Footer>
-            </form>
-          )}
+                </Modal.Footer>
+              </form>
+            );
+          } }
         </Formik>
       </Modal>
     );

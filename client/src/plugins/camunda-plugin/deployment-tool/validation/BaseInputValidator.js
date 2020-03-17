@@ -16,6 +16,16 @@ export default class BaseInputValidator {
     this._cachedValidatonResult = null;
   }
 
+  clearError = (setFieldError) => {
+    this.setCachedValidationResult(null);
+    setFieldError(this.fieldName, null);
+  }
+
+  updateError = (setFieldError, errorMessage) => {
+    this.setCachedValidationResult(errorMessage);
+    setFieldError(this.fieldName, errorMessage);
+  }
+
   getCachedValue = () => {
     return this._cachedValue;
   }

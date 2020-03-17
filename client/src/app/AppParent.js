@@ -244,6 +244,7 @@ export default class AppParent extends PureComponent {
 
   handleFocus = (event) => {
     this.triggerAction(event, 'check-file-changed');
+    this.triggerAction(event, 'notify-focus-change');
   }
 
   handleStarted = async () => {
