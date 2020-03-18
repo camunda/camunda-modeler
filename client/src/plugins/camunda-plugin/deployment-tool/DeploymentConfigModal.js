@@ -40,6 +40,10 @@ export default class DeploymentConfigModal extends React.PureComponent {
     this.state = {
       isAuthNeeded: false
     };
+
+    this.initialConfigurations = {
+      ...props.configuration
+    };
   }
 
   componentDidMount = () => {
@@ -114,7 +118,32 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
   onClose = (action = 'cancel', data) => this.props.onClose(action, data);
 
-  onCancel = () => this.onClose('cancel');
+  onCancelButtonPressed = () => {
+
+    const {
+      onClose,
+      initialConfigurations
+    } = this;
+
+    const {
+      saveCredential,
+      removeCredentials
+    } = this.props;
+
+    // we want to revert authentication related configurations
+    // if the user presses on Cancel button
+    const {
+      username, password, token, rememberCredentials
+    } = initialConfigurations.endpoint;
+
+    if (!rememberCredentials) {
+      removeCredentials();
+    } else {
+      saveCredential({ username, password, token });
+    }
+
+    onClose('cancel');
+  }
 
   onSubmit = async (values, { setFieldError }) => {
 
@@ -206,7 +235,8 @@ export default class DeploymentConfigModal extends React.PureComponent {
       onSubmit,
       onClose,
       onAuthDetection,
-      onSetFieldValueReceived
+      onSetFieldValueReceived,
+      onCancelButtonPressed
     } = this;
 
     const {
@@ -429,7 +459,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
                     <button
                       type="button"
                       className="btn btn-secondary"
-                      onClick={ () => onClose('cancel') }
+                      onClick={ onCancelButtonPressed }
                     >
                       Cancel
                     </button>
