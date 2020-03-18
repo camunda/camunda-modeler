@@ -813,6 +813,71 @@ describe('<DeploymentConfigModal>', () => {
   });
 
 
+  it('should validate connection when modal is opened if endpoint has a connection error', () => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.basic
+      }
+    };
+
+    const validateConnection = sinon.spy();
+    const validator = new MockValidator({ validateConnection });
+
+    const {
+      wrapper
+    } = createModal({
+      validator, configuration
+    }, mount);
+
+    // when
+    wrapper.update();
+
+    // then
+    expect(validateConnection).to.have.been.calledWith(configuration.endpoint);
+  });
+
+
+  it('should not validate connection when modal is opened if endpoint does not have a connection error', () => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.basic
+      }
+    };
+
+    const updateEndpointURLError = sinon.spy();
+    const validateConnection = () => new Promise((resolve) => {
+      resolve({ code: 'NOT_A_CONNECTION_ERROR' });
+    });
+    const validator = new MockValidator({ validateConnection, updateEndpointURLError });
+
+    const {
+      wrapper
+    } = createModal({
+      validator, configuration
+    }, mount);
+
+    // when
+    wrapper.update();
+
+    // then
+    expect(updateEndpointURLError).to.not.have.been.called;
+  });
+
+
   it('should validate connection when app gains focus if endpoint has a connection error', () => {
 
     // given
@@ -909,7 +974,7 @@ describe('<DeploymentConfigModal>', () => {
     await instance.onAppFocusChange();
 
     // then
-    expect(updateEndpointURLError).to.have.been.calledWith('NOT_FOUND' ,noop);
+    expect(updateEndpointURLError).to.have.been.called;
   });
 
 

@@ -44,14 +44,13 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
   componentDidMount = () => {
     const {
-      configuration, subscribeToFocusChange
+      subscribeToFocusChange
     } = this.props;
 
     const {
-      checkAuthStatus, onAppFocusChange
+      onAppFocusChange
     } = this;
 
-    checkAuthStatus(configuration);
     subscribeToFocusChange(onAppFocusChange);
   }
 
@@ -63,24 +62,22 @@ export default class DeploymentConfigModal extends React.PureComponent {
     return code === 'NOT_FOUND' || code === 'CONNECTION_FAILED' || code === 'NO_INTERNET_CONNECTION';
   }
 
-  onAppFocusChange = async () => {
-
+  checkEndpointURLConnectivity = async (skipError) => {
     const {
       valuesCache,
       setFieldErrorCache,
       externalErrorCodeCache,
-      isConnectionError
+      isConnectionError,
+      checkAuthStatus
     } = this;
 
     if (!valuesCache || !setFieldErrorCache) {
       return;
     }
 
-    this.checkAuthStatus(valuesCache);
+    checkAuthStatus(valuesCache);
 
-    // User may fix connection related errors by focusing out from app (turn on wifi, start server etc.)
-    // In that case we want to check if errors are fixed when the users focuses back on to the app.
-    if (isConnectionError(externalErrorCodeCache)) {
+    if (isConnectionError(externalErrorCodeCache) || skipError) {
 
       const validationResult = await this.props.validator.validateConnection(valuesCache.endpoint);
 
@@ -99,6 +96,20 @@ export default class DeploymentConfigModal extends React.PureComponent {
         this.externalErrorCodeCache = code;
       }
     }
+  }
+
+  onSetFieldValueReceived = () => {
+
+    // Initial endpoint URL validation. Note that this is not a form validation
+    // and should affect only the Endpoint URL field.
+    return this.checkEndpointURLConnectivity(true);
+  }
+
+  onAppFocusChange = () => {
+
+    // User may fix connection related errors by focusing out from app (turn on wifi, start server etc.)
+    // In that case we want to check if errors are fixed when the users focuses back on to the app.
+    return this.checkEndpointURLConnectivity();
   }
 
   onClose = (action = 'cancel', data) => this.props.onClose(action, data);
@@ -194,7 +205,8 @@ export default class DeploymentConfigModal extends React.PureComponent {
       fieldError,
       onSubmit,
       onClose,
-      onAuthDetection
+      onAuthDetection,
+      onSetFieldValueReceived
     } = this;
 
     const {
@@ -222,7 +234,10 @@ export default class DeploymentConfigModal extends React.PureComponent {
           { form => {
 
             this.valuesCache = { ...form.values };
-            this.setFieldErrorCache = form.setFieldError;
+            if (!this.setFieldErrorCache) {
+              this.setFieldErrorCache = form.setFieldError;
+              onSetFieldValueReceived();
+            }
 
             return (
               <form onSubmit={ form.handleSubmit }>
