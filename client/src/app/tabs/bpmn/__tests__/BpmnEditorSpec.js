@@ -573,7 +573,9 @@ describe('<BpmnEditor>', function() {
 
       // given
       const onContentUpdated = sinon.spy();
-      const onAction = sinon.stub().resolves('yes');
+      const onAction = sinon.stub().resolves({
+        button: 'yes'
+      });
 
       // when
       renderEditor(activitiXML, {

@@ -136,13 +136,13 @@ export class MultiSheetTab extends CachedComponent {
       type
     } = tab;
 
-    const answer = await onAction('show-dialog', getErrorDialog({
+    const { button } = await onAction('show-dialog', getErrorDialog({
       error,
       name,
       type
     }));
 
-    if (answer === 'ask-in-forum') {
+    if (button === 'ask-in-forum') {
       onAction('open-external-url', {
         url: 'https://forum.camunda.org/c/modeler'
       });

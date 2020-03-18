@@ -72,7 +72,7 @@ describe('Dialog', function() {
       expect(dialogArgs.title).to.equal('error');
       expect(dialogArgs.buttons).to.have.length(2);
 
-      expect(result).to.equal('foo');
+      expect(result.button).to.equal('foo');
     });
 
 
@@ -104,7 +104,7 @@ describe('Dialog', function() {
       expect(dialogArgs.title).to.equal('warning');
       expect(dialogArgs.buttons).to.have.length(2);
 
-      expect(result).to.equal('foo');
+      expect(result.button).to.equal('foo');
     });
 
 
@@ -136,7 +136,7 @@ describe('Dialog', function() {
       expect(dialogArgs.title).to.equal('info');
       expect(dialogArgs.buttons).to.have.length(2);
 
-      expect(result).to.equal('foo');
+      expect(result.button).to.equal('foo');
     });
 
 
@@ -168,7 +168,39 @@ describe('Dialog', function() {
       expect(dialogArgs.title).to.equal('question');
       expect(dialogArgs.buttons).to.have.length(2);
 
-      expect(result).to.equal('foo');
+      expect(result.button).to.equal('foo');
+    });
+
+
+    it('should show dialog with checkbox', async function() {
+
+      // given
+      electronDialog.setResponse({
+        checkboxChecked: true,
+        response: 0
+      });
+
+      var options = {
+        buttons: [{
+          id: 'foo',
+          label: 'Foo'
+        }],
+        title: 'info',
+        type: 'info',
+        checkboxLabel: 'Bar'
+      };
+
+      // when
+      const result = await dialog.showDialog(options);
+
+      // then
+      var dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+
+      expect(electronDialog.showMessageBox).to.have.been.called;
+
+      expect(dialogArgs.checkboxLabel).to.equal('Bar');
+
+      expect(result.checkboxChecked).to.equal(true);
     });
 
   });
@@ -443,5 +475,5 @@ describe('Dialog', function() {
 // helpers //////////
 
 function getDialogArgs(method) {
-  return method.args[0][1];
+  return method.args[ 0 ][ 1 ];
 }
