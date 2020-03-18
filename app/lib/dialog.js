@@ -159,7 +159,10 @@ class Dialog {
     return this.electronDialog.showMessageBox(
       this.browserWindow, options
     ).then(response => {
-      return buttons[response.response].id;
+      return {
+        ...response,
+        button: buttons[ response.response ].id
+      };
     });
   }
 

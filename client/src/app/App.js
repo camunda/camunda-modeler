@@ -245,9 +245,9 @@ export class App extends PureComponent {
       return tab;
     }
 
-    const answer = await this.showDialog(getContentChangedDialog());
+    const { button } = await this.showDialog(getContentChangedDialog());
 
-    if (answer === 'ok') {
+    if (button === 'ok') {
       const updatedFile = await fileSystem.readFile(file.path);
 
       return this.updateTab(tab, {
@@ -370,11 +370,11 @@ export class App extends PureComponent {
     const { name } = file;
 
     if (this.isDirty(tab)) {
-      const response = await this.showCloseFileDialog({ name });
+      const { button } = await this.showCloseFileDialog({ name });
 
-      if (response === 'save') {
+      if (button === 'save') {
         await this.saveTab(tab);
-      } else if (response === 'cancel') {
+      } else if (button === 'cancel') {
         return false;
       }
     }
@@ -548,12 +548,12 @@ export class App extends PureComponent {
       return;
     }
 
-    const response = await dialog.showEmptyFileDialog({
+    const { button } = await dialog.showEmptyFileDialog({
       file,
       type: fileType
     });
 
-    if (response == 'create') {
+    if (button == 'create') {
 
       let tab = this.addTab(
         tabsProvider.createTabForFile({
@@ -1328,9 +1328,9 @@ export class App extends PureComponent {
         return this.tabSaved(tab, savedFile);
       } catch (err) {
 
-        const response = await this.askForSaveRetry(tab, err, getSaveFileErrorDialog);
+        const { button } = await this.askForSaveRetry(tab, err, getSaveFileErrorDialog);
 
-        if (response !== 'retry') {
+        if (button !== 'retry') {
 
           // cancel
           return false;
@@ -1519,9 +1519,9 @@ export class App extends PureComponent {
       } catch (err) {
         console.error('Tab export failed', err);
 
-        const response = await this.askForSaveRetry(tab, err, getExportFileErrorDialog);
+        const { button } = await this.askForSaveRetry(tab, err, getExportFileErrorDialog);
 
-        if (response !== 'retry') {
+        if (button !== 'retry') {
 
           // cancel
           return;
