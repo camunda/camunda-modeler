@@ -766,6 +766,77 @@ describe('<DeploymentConfigModal>', () => {
   });
 
 
+  it('should remove credential configurations when cancel is pressed if removeCredentials is initially false', () => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.basic,
+        rememberCredentials: false
+      }
+    };
+
+    const removeCredentials = sinon.spy();
+
+    const {
+      instance
+    } = createModal({
+      configuration,
+      removeCredentials
+    }, mount);
+
+    // when
+    instance.onCancelButtonPressed();
+
+    // then
+    expect(removeCredentials).to.have.been.called;
+  });
+
+
+  it('should restore credential configurations when cancel is pressed if removeCredentials is initially true', () => {
+
+    // given
+    const configuration = {
+      deployment: {
+        tenantId: '',
+        name: ''
+      },
+      endpoint: {
+        url: 'http://localhost:8088/engine-rest',
+        authType: AuthTypes.basic,
+        rememberCredentials: true,
+        username: 'test-user-name',
+        password: 'test-password',
+        token: 'test-token'
+      }
+    };
+
+    const saveCredential = sinon.spy();
+
+    const {
+      instance
+    } = createModal({
+      configuration,
+      saveCredential
+    }, mount);
+
+    // when
+    instance.onCancelButtonPressed();
+
+    // then
+    expect(saveCredential).to.have.been.calledWith({
+      username: 'test-user-name',
+      password: 'test-password',
+      token: 'test-token'
+    });
+  });
+
+
   it('should subscribe to focus change event when mounted', () => {
 
     // given
