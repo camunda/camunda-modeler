@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import { omit } from 'min-dash';
 
-import CamundaAPI from '../shared/CamundaAPI';
+import { default as CamundaAPI, ApiErrors } from '../shared/CamundaAPI';
 import AuthTypes from '../shared/AuthTypes';
 import KeyboardInteractionTrap from '../shared/KeyboardInteractionTrap';
 
@@ -382,20 +382,18 @@ export default class DeploymentTool extends PureComponent {
     };
   }
 
-  isTomcatRunning() {
-    return this.checkConnection(TOMCAT_DEFAULT_URL);
-  }
+  async isTomcatRunning() {
+    const result = await this.validator.validateConnectionWithoutCredentials(TOMCAT_DEFAULT_URL);
 
-  async checkConnection(url) {
-    const camundaApi = new CamundaAPI({ url });
-
-    try {
-      await camundaApi.checkConnection();
-
+    if (!result) {
       return true;
-    } catch {
-      return false;
     }
+
+    const { code } = result;
+
+    return (code !== ApiErrors.NO_INTERNET_CONNECTION &&
+            code !== ApiErrors.CONNECTION_FAILED &&
+              code !== ApiErrors.NOT_FOUND);
   }
 
   render() {

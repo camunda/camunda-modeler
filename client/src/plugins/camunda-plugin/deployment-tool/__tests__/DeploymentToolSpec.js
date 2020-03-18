@@ -272,14 +272,16 @@ describe('<DeploymentTool>', () => {
 
         // given
         const deploySpy = sinon.spy(),
-              activeTab = createTab({ name: 'foo.bpmn' }),
-              checkConnectionSpy = sinon.stub().resolves(true);
+              activeTab = createTab({ name: 'foo.bpmn' });
         const {
           instance
         } = createDeploymentTool({
           activeTab,
-          checkConnectionSpy,
           deploySpy
+        });
+
+        instance.validator.validateConnectionWithoutCredentials = () => new Promise((resolve) => {
+          resolve(null);
         });
 
         // when
