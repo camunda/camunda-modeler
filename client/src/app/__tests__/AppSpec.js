@@ -2392,6 +2392,36 @@ describe('<App>', function() {
   });
 
 
+  describe('#setConfig', function() {
+
+    afterEach(sinon.restore);
+
+
+    it('should set config', async function() {
+
+      // given
+      const setConfigSpy = spy();
+
+      const config = new Config({
+        set: setConfigSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      // when
+      app.setConfig('foo');
+
+      // then
+      expect(setConfigSpy).to.be.calledOnceWith('foo');
+    });
+
+  });
+
+
   describe('#loadPlugins', function() {
 
     it('should load plugins', function() {

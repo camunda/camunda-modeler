@@ -52,7 +52,7 @@ import applyDefaultTemplates from './modeler/features/apply-default-templates/ap
 import {
   findUsages as findNamespaceUsages,
   replaceUsages as replaceNamespaceUsages
-} from './util/namespace';
+} from '../util/namespace';
 
 import configureModeler from './util/configure';
 
