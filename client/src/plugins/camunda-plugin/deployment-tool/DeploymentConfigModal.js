@@ -41,9 +41,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
       isAuthNeeded: false
     };
 
-    this.initialConfigurations = {
-      ...props.configuration
-    };
+    this.valuesCache = { ...props.configuration };
   }
 
   componentDidMount = () => {
@@ -74,10 +72,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
       isConnectionError,
       checkAuthStatus
     } = this;
-
-    if (!valuesCache || !setFieldErrorCache) {
-      return;
-    }
 
     checkAuthStatus(valuesCache);
 
@@ -116,33 +110,24 @@ export default class DeploymentConfigModal extends React.PureComponent {
     return this.checkEndpointURLConnectivity();
   }
 
-  onClose = (action = 'cancel', data) => this.props.onClose(action, data);
+  onClose = (action = 'cancel', data = null, shouldOverrideCredentials = false) => {
 
-  onCancelButtonPressed = () => {
+    if (shouldOverrideCredentials) {
 
-    const {
-      onClose,
-      initialConfigurations
-    } = this;
+      const { valuesCache } = this;
+      const { endpoint } = valuesCache;
+      const {
+        username, password, token, rememberCredentials
+      } = endpoint;
 
-    const {
-      saveCredential,
-      removeCredentials
-    } = this.props;
-
-    // we want to revert authentication related configurations
-    // if the user presses on Cancel button
-    const {
-      username, password, token, rememberCredentials
-    } = initialConfigurations.endpoint;
-
-    if (!rememberCredentials) {
-      removeCredentials();
-    } else {
-      saveCredential({ username, password, token });
+      if (rememberCredentials) {
+        this.props.saveCredential({ username, password, token });
+      } else {
+        this.props.removeCredentials();
+      }
     }
 
-    onClose('cancel');
+    this.props.onClose(action, data);
   }
 
   onSubmit = async (values, { setFieldError }) => {
@@ -235,8 +220,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
       onSubmit,
       onClose,
       onAuthDetection,
-      onSetFieldValueReceived,
-      onCancelButtonPressed
+      onSetFieldValueReceived
     } = this;
 
     const {
@@ -244,9 +228,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
       validator,
       title,
       intro,
-      primaryAction,
-      saveCredential,
-      removeCredentials
+      primaryAction
     } = this.props;
 
     const {
@@ -254,7 +236,9 @@ export default class DeploymentConfigModal extends React.PureComponent {
     } = this.state;
 
     return (
-      <Modal className={ css.DeploymentConfigModal } onClose={ onClose }>
+      <Modal className={ css.DeploymentConfigModal } onClose={ () => {
+        onClose('cancel', null, true);
+      } }>
 
         <Formik
           initialValues={ values }
@@ -365,14 +349,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
                               return validator.validateUsername(value || '', this.isOnBeforeSubmit);
                             } }
                             label="Username"
-                            onChange={ (event) => {
-                              form.handleChange(event);
-                              if (form.values.endpoint.rememberCredentials) {
-                                saveCredential({
-                                  username: event.target.value
-                                });
-                              }
-                            } }
+                            onChange={ form.handleChange }
                           />
 
                           <Field
@@ -384,14 +361,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
                             } }
                             label="Password"
                             type="password"
-                            onChange={ (event) => {
-                              form.handleChange(event);
-                              if (form.values.endpoint.rememberCredentials) {
-                                saveCredential({
-                                  password: event.target.value
-                                });
-                              }
-                            } }
+                            onChange={ form.handleChange }
                           />
                         </React.Fragment>
                       )}
@@ -405,14 +375,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
                             return validator.validateToken(value || '', this.isOnBeforeSubmit);
                           } }
                           label="Token"
-                          onChange={ (event) => {
-                            form.handleChange(event);
-                            if (form.values.endpoint.rememberCredentials) {
-                              saveCredential({
-                                token: event.target.value
-                              });
-                            }
-                          } }
+                          onChange={ form.handleChange }
                         />
                       )}
 
@@ -423,29 +386,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
                             component={ CheckBox }
                             type="checkbox"
                             label="Remember credentials"
-                            onChange={ async (event) => {
-                              form.handleChange(event);
-                              const {
-                                endpoint
-                              } = form.values;
-
-                              const {
-                                username,
-                                password,
-                                token,
-                                authType
-                              } = endpoint;
-                              const isChecked = !JSON.parse(event.target.value);
-                              if (isChecked) {
-                                if (authType == AuthTypes.basic) {
-                                  saveCredential({ username, password });
-                                } else if (authType == AuthTypes.bearer) {
-                                  saveCredential({ token });
-                                }
-                              } else {
-                                removeCredentials();
-                              }
-                            } }
+                            onChange={ form.handleChange }
                           />
                         )
                       }
@@ -459,7 +400,9 @@ export default class DeploymentConfigModal extends React.PureComponent {
                     <button
                       type="button"
                       className="btn btn-secondary"
-                      onClick={ onCancelButtonPressed }
+                      onClick={ () => {
+                        onClose('cancel', null, false);
+                      } }
                     >
                       Cancel
                     </button>
