@@ -349,7 +349,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
                               return validator.validateUsername(value || '', this.isOnBeforeSubmit);
                             } }
                             label="Username"
-                            onChange={ form.handleChange }
                           />
 
                           <Field
@@ -361,7 +360,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
                             } }
                             label="Password"
                             type="password"
-                            onChange={ form.handleChange }
                           />
                         </React.Fragment>
                       )}
@@ -375,7 +373,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
                             return validator.validateToken(value || '', this.isOnBeforeSubmit);
                           } }
                           label="Token"
-                          onChange={ form.handleChange }
                         />
                       )}
 
@@ -386,7 +383,6 @@ export default class DeploymentConfigModal extends React.PureComponent {
                             component={ CheckBox }
                             type="checkbox"
                             label="Remember credentials"
-                            onChange={ form.handleChange }
                           />
                         )
                       }
