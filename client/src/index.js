@@ -76,7 +76,7 @@ async function render() {
   const onStarted = () => {
 
     // mark as finished loading
-    document.querySelector('body > .loader').classList.add('hidden');
+    document.querySelector('body > .spinner-border').classList.add('hidden');
   };
 
   ReactDOM.render(
