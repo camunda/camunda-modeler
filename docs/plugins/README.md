@@ -63,7 +63,7 @@ module.exports = function(electronApp, menuState) {
       shell.openExternal('https://camunda.org/bpmn/reference/');
     }
   }];
-});
+};
 ```
 
 Plug them into the modeler like this:
