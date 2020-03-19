@@ -19,7 +19,15 @@ export default class EndpointURLValidator extends BaseInputValidator {
     this.validateNonEmpty = validateNonEmpty;
     this.validatePattern = validatePattern;
     this.validateConnectionWithoutCredentials = validateConnectionWithoutCredentials;
+
     this.isDirty = false;
+
+    this.timeoutID = null;
+  }
+
+  cancel = () => {
+    this.isCanceled = true;
+    this.clearTimeout();
   }
 
   validateEndpointURLCompleteness(value) {
@@ -38,7 +46,7 @@ export default class EndpointURLValidator extends BaseInputValidator {
   }
 
   clearTimeout() {
-    if (this.timeoutID) {
+    if (this.timeoutID !== null) {
       clearTimeout(this.timeoutID);
       this.timeoutID = null;
     }
@@ -61,7 +69,7 @@ export default class EndpointURLValidator extends BaseInputValidator {
           isExpired
         } = connectionValidation;
 
-        if (isExpired) {
+        if (isExpired || this.isCanceled) {
           return;
         }
 

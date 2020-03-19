@@ -297,6 +297,9 @@ export default class DeploymentTool extends PureComponent {
           modalState: null
         });
 
+        // inform validator to cancel ongoing requests
+        this.validator.cancel();
+
         // contract: if configuration provided, user closed with O.K.
         // otherwise they canceled it
         return resolve({ action, configuration });
