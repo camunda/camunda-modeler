@@ -1729,6 +1729,12 @@ export class App extends PureComponent {
     return config.get(key, file, ...args);
   }
 
+  setConfig = (key, ...args) => {
+    const config = this.getGlobal('config');
+
+    return config.set(key, ...args);
+  }
+
   getPlugins = type => {
     return this.getGlobal('plugins').get(type);
   }
@@ -1921,6 +1927,7 @@ export class App extends PureComponent {
                     onAction={ this.triggerAction }
                     onModal={ this.openModal }
                     getConfig={ this.getConfig }
+                    setConfig={ this.setConfig }
                     getPlugins={ this.getPlugins }
                     ref={ this.tabRef }
                   />

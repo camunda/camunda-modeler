@@ -19,7 +19,7 @@ describe('tabs/dmn', function() {
 
       // then
       expect(contents).to.contain('id="Definitions_{{ ID }}"');
-      expect(contents).to.contain('id="Decision_{{ ID }}"');
+      expect(contents).to.contain('id="Decision_{{ ID:decision }}"');
     });
 
   });

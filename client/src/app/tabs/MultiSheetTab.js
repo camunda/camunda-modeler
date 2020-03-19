@@ -337,6 +337,19 @@ export class MultiSheetTab extends CachedComponent {
     return file && !file.path;
   }
 
+  onAction = (action, options) => {
+    const {
+      onAction,
+      tab
+    } = this.props;
+
+    if (action === 'close-tab') {
+      return onAction('close-tab', { tabId: tab.id });
+    }
+
+    return onAction(action, options);
+  }
+
   render() {
     let {
       activeSheet,
@@ -348,7 +361,6 @@ export class MultiSheetTab extends CachedComponent {
       id,
       xml,
       layout,
-      onAction,
       tab
     } = this.props;
 
@@ -376,7 +388,7 @@ export class MultiSheetTab extends CachedComponent {
             activeSheet={ activeSheet }
             onSheetsChanged={ this.sheetsChanged }
             onContextMenu={ this.handleContextMenu }
-            onAction={ onAction }
+            onAction={ this.onAction }
             onChanged={ this.handleChanged }
             onContentUpdated={ this.handleContentUpdated }
             onError={ this.handleError }
@@ -384,6 +396,7 @@ export class MultiSheetTab extends CachedComponent {
             onLayoutChanged={ this.handleLayoutChanged }
             onModal={ this.props.onModal }
             getConfig={ this.props.getConfig }
+            setConfig={ this.props.setConfig }
             getPlugins={ this.props.getPlugins }
           />
         </TabContainer>

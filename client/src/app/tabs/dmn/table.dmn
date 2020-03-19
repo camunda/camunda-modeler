@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-             id="Definitions_{{ ID }}"
-             name="DRD"
-             namespace="http://camunda.org/schema/1.0/dmn">
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_{{ ID }}" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
   <decision id="Decision_{{ ID }}" name="Decision 1">
-    <decisionTable id="decisionTable_1">
-      <input id="input_1">
-        <inputExpression id="inputExpression_1" typeRef="string">
+    <decisionTable id="DecisionTable_{{ ID }}">
+      <input id="Input_1">
+        <inputExpression id="InputExpression_1" typeRef="string">
           <text></text>
         </inputExpression>
       </input>
-      <output id="output_1" typeRef="string"></output>
+      <output id="Output_1" typeRef="string" />
     </decisionTable>
   </decision>
 </definitions>
