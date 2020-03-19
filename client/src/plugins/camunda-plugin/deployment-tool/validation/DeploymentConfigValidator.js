@@ -53,6 +53,10 @@ export default class DeploymentConfigValidator {
     this.lastConnectionCheckID = 0;
   }
 
+  cancel = () => {
+    this.endpointURLValidator.cancel();
+  }
+
   onExternalError = (authType, details, code, setFieldError) => {
     if (code === 'UNAUTHORIZED') {
       if (authType === AuthTypes.basic) {

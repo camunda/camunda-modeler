@@ -289,4 +289,26 @@ describe('<DeploymentConfigValidator>', () => {
       done();
     }, 1001);
   });
+
+
+  it('should cancel endpoint url validation', (done) => {
+
+    // given
+    const onConnectionStatusUpdate = sinon.spy();
+
+    validator.validateConnectionWithoutCredentials = () => new Promise((resolve) => {
+      setTimeout(() => { resolve({}); }, 100);
+    });
+
+    validator.endpointURLValidator.setTimeout('http://test.com', noop, noop, onConnectionStatusUpdate);
+
+    // when
+    validator.cancel();
+
+    // then
+    setTimeout(() => {
+      expect(onConnectionStatusUpdate).to.not.have.been.called;
+      done();
+    }, 1000);
+  });
 });
