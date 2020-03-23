@@ -6,6 +6,32 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.0.0-alpha.0
+
+#### General
+
+* `FEAT`: new loading indicator ([#1719](https://github.com/camunda/camunda-modeler/issues/1719))
+* `FEAT`: completely overhauled UX of the deployment diagram ([#1709](https://github.com/camunda/camunda-modeler/issues/1709))
+* `FEAT`: save and restore window size ([#576](https://github.com/camunda/camunda-modeler/issues/576))
+* `FEAT`: apply native keyboard shortcuts in log panel ([#1380](https://github.com/camunda/camunda-modeler/issues/1380))
+* `CHORE`: dialogs to return response instead of button ([`42d0ecc`](https://github.com/camunda/camunda-modeler/commit/42d0eccfae6143f472ec60b0280c7267b7d5a4e5))
+* `CHORE`: remove watermark ([#1731](https://github.com/camunda/camunda-modeler/issues/1731))
+
+#### DMN
+
+* `FEAT`: support for opening DMN 1.2 and DMN 1.3 diagrams
+* `FEAT`: migrate DMN 1.1 diagrams to DMN 1.3 on diagram open
+* `FEAT`: migrate DMN diagrams to DMN 1.3 on export ([`7eb32a8`](https://github.com/camunda/camunda-modeler/commit/7eb32a80508c214c63257795b37dc430778871f3))
+* `FEAT`: add resizing to DRD ([`3dd1265`](https://github.com/bpmn-io/dmn-js/commit/3dd12659bcc13abeb7e27cbcc9564a8171890abc))
+* `FEAT`: improve DRD label editing ([#213](https://github.com/bpmn-io/dmn-js/issues/213))
+* `FEAT`: set FEEL as default expression language ([#1710](https://github.com/camunda/camunda-modeler/issues/1710))
+* `CHORE`: bump to `dmn-js@8.2.0`
+
+### Breaking Changes
+
+* DMN editor is migrated to DMN 1.3. Users will be able to open DMN 1.1 and DMN 1.2 diagrams, however exported diagrams will automatically be migrated to DMN 1.3. ([`7eb32a8`](https://github.com/camunda/camunda-modeler/commit/7eb32a80508c214c63257795b37dc430778871f3))
+* This release is compatible with Camunda BPM versions 7.13.0, 7.12.4, 7.11.11, 7.10.17 and above.
+
 ## 3.7.1
 
 #### General
