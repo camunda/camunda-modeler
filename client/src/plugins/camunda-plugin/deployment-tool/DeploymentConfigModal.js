@@ -46,7 +46,8 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
   componentDidMount = () => {
     const {
-      subscribeToFocusChange
+      subscribeToFocusChange,
+      validator
     } = this.props;
 
     const {
@@ -54,6 +55,8 @@ export default class DeploymentConfigModal extends React.PureComponent {
     } = this;
 
     subscribeToFocusChange(onAppFocusChange);
+
+    validator.resetCancel();
   }
 
   componentWillUnmount = () => {
