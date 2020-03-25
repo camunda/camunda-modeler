@@ -478,14 +478,16 @@ export class CmmnEditor extends CachedComponent {
       onLayoutChanged
     } = this.props;
 
+    const imported = this.getModeler().getDefinitions();
+
     const {
-      importing,
+      importing
     } = this.state;
 
     return (
       <div className={ css.CmmnEditor }>
 
-        <Loader hidden={ !importing } />
+        <Loader hidden={ imported && !importing } />
 
         <div
           className="diagram"

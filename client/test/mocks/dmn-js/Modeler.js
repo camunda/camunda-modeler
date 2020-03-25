@@ -204,6 +204,10 @@ export default class Modeler {
     return commandStack._stackIdx;
   }
 
+  getDefinitions() {
+    return this.xml ? {} : null;
+  }
+
 }
 
 Modeler.prototype._modules = [];

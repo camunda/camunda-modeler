@@ -660,14 +660,16 @@ export class BpmnEditor extends CachedComponent {
       onLayoutChanged
     } = this.props;
 
+    const imported = this.getModeler().getDefinitions();
+
     const {
-      importing,
+      importing
     } = this.state;
 
     return (
       <div className={ css.BpmnEditor }>
 
-        <Loader hidden={ !importing } />
+        <Loader hidden={ imported && !importing } />
 
         <Fill slot="toolbar" group="5_color">
           <DropdownButton
