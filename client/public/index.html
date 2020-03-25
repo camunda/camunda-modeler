@@ -56,11 +56,15 @@
       border-color: var(--grey-base-40) var(--grey-base-40) var(--grey-base-40) transparent;
       animation: spinner-keyframe 0.7s linear infinite;
     }
+
+    .spinner-border-global {
+      z-index: 201;
+    }
   </style>
 </head>
 <body>
 
-  <div class="spinner-border"></div>
+  <div class="spinner-border spinner-border-global"></div>
 
   <div id="root"></div>
 
