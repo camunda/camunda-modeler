@@ -97,7 +97,7 @@ This project incorporates components from the projects listed below. The origina
 90.   sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
 91.   stackblur@1.0.0
 92.   table-js@6.0.3 (https://github.com/bpmn-io/table-js)
-93.   tiny-svg@2.2.2 (https://github.com/bpmn-io/tiny-svg)
+93.   tiny-svg@2.2.1 (https://github.com/bpmn-io/tiny-svg)
 94.   tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
 95.   xmldom@0.1.27 (https://github.com/jindw/xmldom)
 
@@ -2498,7 +2498,7 @@ THE SOFTWARE.
 END OF table-js@6.0.3 NOTICES AND INFORMATION
 
 
-%% tiny-svg@2.2.2 NOTICES AND INFORMATION BEGIN HERE
+%% tiny-svg@2.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -2523,7 +2523,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF tiny-svg@2.2.2 NOTICES AND INFORMATION
+END OF tiny-svg@2.2.1 NOTICES AND INFORMATION
 
 
 %% tiny-warning@1.0.3 NOTICES AND INFORMATION BEGIN HERE
