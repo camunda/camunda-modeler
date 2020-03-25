@@ -712,8 +712,10 @@ export class DmnEditor extends CachedComponent {
       onLayoutChanged
     } = this.props;
 
+    const imported = this.getModeler().getDefinitions();
+
     const {
-      importing,
+      importing
     } = this.state;
 
     const modeler = this.getModeler();
@@ -725,7 +727,7 @@ export class DmnEditor extends CachedComponent {
     return (
       <div className={ css.DmnEditor }>
 
-        <Loader hidden={ !importing } />
+        <Loader hidden={ imported && !importing } />
 
         <Fill slot="toolbar" group="6_align">
           <Button

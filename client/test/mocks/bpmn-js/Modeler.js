@@ -151,6 +151,10 @@ export default class Modeler {
     throw new Error(`service not provided: <${moduleName}>`);
   }
 
+  getDefinitions() {
+    return this.xml ? {} : null;
+  }
+
   invoke() {}
 }
 
