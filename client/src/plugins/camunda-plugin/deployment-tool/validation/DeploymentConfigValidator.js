@@ -53,6 +53,10 @@ export default class DeploymentConfigValidator {
     this.lastConnectionCheckID = 0;
   }
 
+  resetCancel = () => {
+    this.endpointURLValidator.resetCancel();
+  }
+
   cancel = () => {
     this.endpointURLValidator.cancel();
   }

@@ -25,6 +25,10 @@ export default class EndpointURLValidator extends BaseInputValidator {
     this.timeoutID = null;
   }
 
+  resetCancel = () => {
+    this.isCanceled = false;
+  }
+
   cancel = () => {
     this.isCanceled = true;
     this.clearTimeout();
