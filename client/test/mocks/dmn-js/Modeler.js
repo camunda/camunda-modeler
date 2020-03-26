@@ -203,6 +203,7 @@ export default class Modeler {
 
     return commandStack._stackIdx;
   }
+
 }
 
 Modeler.prototype._modules = [];
