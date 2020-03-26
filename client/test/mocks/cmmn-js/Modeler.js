@@ -143,6 +143,7 @@ export default class Modeler {
 
     throw new Error(`service not provided: <${moduleName}>`);
   }
+
 }
 
 Modeler.prototype._modules = [];
