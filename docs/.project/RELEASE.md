@@ -12,7 +12,7 @@ For patch releases turn to [this documentation](./PATCH_RELEASE.md).
 ```markdown
 Release Camunda Modeler `vVERSION`
 
-* [ ] put up code freeze appointment in calendar (include `modeling`, `qa`, `sre`, and `Team-Support`)
+* [ ] put up code freeze appointment in calendar (include `modeling`, `qa`, `infra`, and `Team-Support`)
 * [ ] make sure dependencies are released (`rm -rf node_modules && npm i && npm run all` works)
     * `bpmn-js`, `dmn-js`, `cmmn-js`, `*-properties-panel`, `*-moddle`, ...
 * [ ] close all issues which are solved by dependency updates
