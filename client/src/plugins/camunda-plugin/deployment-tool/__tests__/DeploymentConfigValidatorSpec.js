@@ -276,18 +276,26 @@ describe('<DeploymentConfigValidator>', () => {
     const isOnBeforeSubmit = false;
     const onConnectionStatusUpdate = sinon.spy();
 
-    const nonCompleteURL = 'https://test.com';
+    const url = 'https://test.com';
 
     // when
+    validator.endpointURLValidator.validateConnectionWithoutCredentials = () => {
+      return new Promise((resolve, reject) => {
+        resolve({
+          code: 'CONNECTION_FAILED'
+        });
+      });
+    };
+
     validator.validateEndpointURL(
-      nonCompleteURL, setFieldError, isOnBeforeSubmit, onAuthDetection, onConnectionStatusUpdate
+      url, setFieldError, isOnBeforeSubmit, onAuthDetection, onConnectionStatusUpdate
     );
 
     // then
     setTimeout(() => {
       expect(onConnectionStatusUpdate).to.have.been.calledWith('CONNECTION_FAILED');
       done();
-    }, 1001);
+    }, 1500);
   });
 
 

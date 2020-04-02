@@ -127,17 +127,20 @@ describe('<DeploymentConfigModal>', () => {
       };
 
       const {
-        wrapper
+        wrapper,
+        instance
       } = createModal({
         configuration
       }, mount);
 
       // when
+      instance.setState({ isAuthNeeded: true });
+      instance.isOnBeforeSubmit = true;
       wrapper.find('.btn-primary').simulate('submit');
 
       // then
       setTimeout(() => {
-        wrapper.update();
+        wrapper.setProps({});
         expect(wrapper.find('.invalid-feedback')).to.have.length(1);
         done();
       });
@@ -199,18 +202,27 @@ describe('<DeploymentConfigModal>', () => {
         }
       };
 
+      const validator = new MockValidator({
+        validateConnection: () => new Promise((resolve, err) => {
+          resolve({ code: 'NOT_FOUND' });
+        })
+      });
+
       const {
-        wrapper
+        wrapper,
+        instance
       } = createModal({
-        configuration
+        configuration,
+        validator
       }, mount);
 
       // when
+      instance.isOnBeforeSubmit = true;
       wrapper.find('.btn-primary').simulate('submit');
 
       // then
       setTimeout(() => {
-        wrapper.update();
+        wrapper.setProps({});
         expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', false);
         done();
       });
