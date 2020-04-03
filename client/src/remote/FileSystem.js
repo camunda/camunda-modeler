@@ -20,9 +20,9 @@ export default class FileSystem {
   /**
    * Read file.
    *
-   * @param {String} filePath - Filepath.
+   * @param {string} filePath - Filepath.
    * @param {Object} [options] - Options.
-   * @param {String} [options.encoding] - Encoding.
+   * @param {string} [options.encoding] - Encoding.
    *
    * @returns {Promise}
    */
@@ -45,7 +45,7 @@ export default class FileSystem {
   /**
    * Write file.
    *
-   * @param {String} filePath - Filepath.
+   * @param {string} filePath - Filepath.
    * @param {Object} file - File.
    * @param {Object} [options] - Options.
    * @param {Object} [options.encoding] - Encoding.

@@ -65,9 +65,9 @@ function getRootNamespace(xml) {
 /**
  * Try to infer a diagram type by parsing it.
  *
- * @param {String} contents
+ * @param {string} contents
  *
- * @return {String|null} parsed type
+ * @return {string|null} parsed type
  */
 export default function parseFileType(contents) {
   const nsUri = getRootNamespace(contents);

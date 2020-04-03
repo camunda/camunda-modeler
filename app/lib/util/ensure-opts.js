@@ -30,12 +30,12 @@ module.exports = function ensureOpts(expectedOptions, options) {
 
     var name, details;
 
-    // expectedOptions is an Array<String>
+    // expectedOptions is an Array<string>
     if (isNumber(key)) {
       name = value;
     }
 
-    // expectedOptions is an Object{String -> String}
+    // expectedOptions is an Object{string -> string}
     else {
       name = key;
       details = value;

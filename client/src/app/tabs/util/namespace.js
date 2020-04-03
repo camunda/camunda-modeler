@@ -16,8 +16,8 @@ import {
 /**
  * Find usage of uri as a namespace in the given XML document.
  *
- * @param {String} xml
- * @param {String} uri
+ * @param {string} xml
+ * @param {string} uri
  *
  * @return {false|{ uri, prefixes, targetNamespace }} uri}
  */

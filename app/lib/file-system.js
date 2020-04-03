@@ -36,9 +36,9 @@ const ENCODING_BASE64 = 'base64',
 /**
  * Read file.
  *
- * @param {String} filePath - Filepath.
+ * @param {string} filePath - Filepath.
  * @param {Object} [options] - Options.
- * @param {String} [options.encoding] - Encoding.
+ * @param {string} [options.encoding] - Encoding.
  *
  * @return {Object}
  */
@@ -76,7 +76,7 @@ module.exports.readFileStats = function(file) {
 /**
  * Write file.
  *
- * @param {String} filePath - Filepath.
+ * @param {string} filePath - Filepath.
  * @param {Object} file - File.
  * @param {Object} [options] - Options.
  * @param {Object} [options.encoding] - Encoding.
@@ -119,7 +119,7 @@ module.exports.writeFile = function(filePath, file, options = {}) {
 /**
  * Return last modified for the given file path.
  *
- * @param {String} filePath - Filepath.
+ * @param {string} filePath - Filepath.
  *
  * @return {Integer}
  */
@@ -167,10 +167,10 @@ function createFile(oldFile, newFile) {
  * Ensure that the file path has an extension,
  * defaulting to defaultExtension if non is present.
  *
- * @param {String} filePath
- * @param {String} defaultExtension
+ * @param {string} filePath
+ * @param {string} defaultExtension
  *
- * @return {String} filePath that definitely has an extension
+ * @return {string} filePath that definitely has an extension
  */
 function ensureExtension(filePath, defaultExtension) {
   const extension = path.extname(filePath);

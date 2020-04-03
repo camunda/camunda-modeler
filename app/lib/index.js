@@ -285,7 +285,7 @@ app.on('web-contents-created', (event, webContents) => {
 /**
  * Open the given filePaths in the editor.
  *
- * @param {Array<String>} filePaths
+ * @param {Array<string>} filePaths
  */
 app.openFiles = function(filePaths) {
 
@@ -580,8 +580,8 @@ function bootstrap() {
 /**
  * Returns the app title suffix based on app version.
  *
- * @param {String} version
- * @return {String}
+ * @param {string} version
+ * @return {string}
  */
 function getTitleSuffix(version) {
   if (version.includes('dev')) {

@@ -13,9 +13,9 @@
 /**
  * Provides platform specific import.
  *
- * @param {String} platform
+ * @param {string} platform
  *
- * @param {String} path
+ * @param {string} path
  */
 module.exports = function get(platform, path, defaultExport) {
 

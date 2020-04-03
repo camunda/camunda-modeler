@@ -21,8 +21,8 @@ const log = require('./log')('app:cli');
  * Parse file arguments from the command line
  * and return them as a list of paths.
  *
- * @param {Array<String>} args
- * @param {String} cwd
+ * @param {Array<string>} args
+ * @param {string} cwd
  *
  * @return {Object} parsed arguments as { files, flags }
  */
@@ -74,7 +74,7 @@ module.exports.appendArgs = appendArgs;
 /**
  * Check a possible filePath represents an existing file.
  *
- * @param {String} filePath
+ * @param {string} filePath
  *
  * @return {Boolean}
  */
