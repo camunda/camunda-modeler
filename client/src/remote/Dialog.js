@@ -20,9 +20,9 @@ export default class Dialog {
    * Show open dialog.
    *
    * @param {Object} options Options.
-   * @param {String} options.defaultPath Default path.
+   * @param {string} options.defaultPath Default path.
    * @param {Object} options.filters Extension filters.
-   * @param {String} [options.title] Dialog title.
+   * @param {string} [options.title] Dialog title.
    *
    * @returns {Promise}
    */
@@ -48,9 +48,9 @@ export default class Dialog {
    * Show save dialog.
    *
    * @param {Object} options Options.
-   * @param {String} [options.defaultPath] Default path.
+   * @param {string} [options.defaultPath] Default path.
    * @param {Object} [options.filters] Extension filters.
-   * @param {String} [options.title] Dialog title.
+   * @param {string} [options.title] Dialog title.
    *
    * @returns {Promise}
    */
@@ -63,8 +63,8 @@ export default class Dialog {
    *
    * @param {Object} options - Options.
    * @param {Object} [options.buttons] - Buttons.
-   * @param {String} [options.message] - Error message.
-   * @param {String} [options.title] - Title.
+   * @param {string} [options.message] - Error message.
+   * @param {string} [options.title] - Title.
    */
   showSaveFileErrorDialog(options) {
     return this.show(assign(options, {
@@ -77,10 +77,10 @@ export default class Dialog {
    *
    * @param {Object} options - Options.
    * @param {Array} [options.buttons] - Buttons.
-   * @param {String} [options.detail] - detail.
-   * @param {String} [options.message] - Message.
-   * @param {String} [options.title] - Title.
-   * @param {String} options.type - Type (info, warning, error, question).
+   * @param {string} [options.detail] - detail.
+   * @param {string} [options.message] - Message.
+   * @param {string} [options.title] - Title.
+   * @param {string} options.type - Type (info, warning, error, question).
    *
    * @returns {Promise}
    */
@@ -92,7 +92,7 @@ export default class Dialog {
    * Shows dialog asking the user to either save or discard changes before closing.
    *
    * @param {Object} options - Options.
-   * @param {String} [options.name] - Name.
+   * @param {string} [options.name] - Name.
    *
    * @returns {Promise}
    */
@@ -117,8 +117,8 @@ export default class Dialog {
    * Shows dialog asking the user to create a new file.
    *
    * @param {Object} options - Options.
-   * @param {String} file - File.
-   * @param {String} type - Filetype.
+   * @param {string} file - File.
+   * @param {string} type - Filetype.
    */
   showEmptyFileDialog = async (options) => {
     const {

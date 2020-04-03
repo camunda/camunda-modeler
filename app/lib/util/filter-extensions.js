@@ -60,7 +60,7 @@ var EXTENSIONS = {
  * The passed argument can be a single string or a list of strings
  * for which extension filter objects are being returned.
  *
- * @param {String|Array} types
+ * @param {string|Array} types
  *
  * @return {Array<Object>} extension filters
  */

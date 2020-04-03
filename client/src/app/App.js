@@ -1080,9 +1080,9 @@ export class App extends PureComponent {
   /**
    * Open log and add entry.
    *
-   * @param {String} message - Message to be logged.
-   * @param {String} category - Category of message.
-   * @param {String} action - Action to be triggered.
+   * @param {string} message - Message to be logged.
+   * @param {string} category - Category of message.
+   * @param {string} action - Action to be triggered.
    */
   logEntry(message, category, action) {
     this.toggleLog(true);
@@ -1216,10 +1216,10 @@ export class App extends PureComponent {
 
   /**
    * Saves current tab to given location
-   * @param {String} options.encoding
+   * @param {string} options.encoding
    * @param {File} options.originalFile
-   * @param {String} options.savePath
-   * @param {String} options.saveType
+   * @param {string} options.savePath
+   * @param {string} options.saveType
    *
    * @returns {File} saved file.
    */
@@ -1425,9 +1425,9 @@ export class App extends PureComponent {
   /**
    * Exports file to given export type.
    *
-   * @param {String} options.encoding
-   * @param {String} options.exportPath
-   * @param {String} options.exportType
+   * @param {string} options.encoding
+   * @param {string} options.exportPath
+   * @param {string} options.exportType
    * @param {File} options.originalFile
    */
   async exportAsFile(options) {

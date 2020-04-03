@@ -66,7 +66,7 @@ function merge(...objects) {
 /**
  * Read the given files and return { contents: [], errors: [] }.
  *
- * @param  {Array<String>} files
+ * @param  {Array<string>} files
  *
  * @return {Object}
  */
@@ -112,10 +112,10 @@ function readFileAsJSON(file) {
  * Find files by pattern in a list of search paths.
  *
  * @param {Object} options
- * @param {Array<String>} options.searchPaths
- * @param {String} options.pattern
+ * @param {Array<string>} options.searchPaths
+ * @param {string} options.pattern
  *
- * @return {Array<String>} list of found, absolute path names
+ * @return {Array<string>} list of found, absolute path names
  */
 function globFiles(options) {
 

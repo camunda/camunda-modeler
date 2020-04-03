@@ -250,8 +250,8 @@ function isRedo(event) {
 /**
  * Compare accelerators ignoring whitespace and upper/lowercase.
  *
- * @param {String} a - Accelerator a.
- * @param {String} b - Accelerator b.
+ * @param {string} a - Accelerator a.
+ * @param {string} b - Accelerator b.
  *
  * @returns {boolean}
  */
