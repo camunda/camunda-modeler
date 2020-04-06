@@ -52,12 +52,14 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correctly move flows when adding lane ([#1715](https://github.com/camunda/camunda-modeler/issues/1715))
 * `FIX`: restore semantic IDs for non flow nodes ([#1285](https://github.com/bpmn-io/bpmn-js/issues/1285))
 * `FIX`: export BPMNDI in correct order ([#1326](https://github.com/camunda/camunda-modeler/issues/1326))
+* `CHORE`: update to `bpmn-js@6.3.4`
 
 #### DMN
 
 * `FEAT(decision-table)`: add new rule on bottom rule \<enter> ([#345](https://github.com/bpmn-io/dmn-js/issues/345))
 * `FEAT(drd)`: activate direct editing after text annotation create ([#185](https://github.com/bpmn-io/dmn-js/issues/185))
 * `FIX`: update association's refs on element id change ([#397](https://github.com/bpmn-io/dmn-js/issues/397))
+* `CHORE`:  update to `dmn-js@7.5.0`
 
 ## 3.7.0
 
@@ -78,7 +80,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: improve space tool ([#1368](https://github.com/camunda/camunda-modeler/issues/1368))
 * `FIX`: correctly copy referenced root elements ([#1639](https://github.com/camunda/camunda-modeler/issues/1639))
 * `FIX`: copy signal event variables ([#1684](https://github.com/camunda/camunda-modeler/issues/1684))
-* `CHORE`: update to `bpmn-js@6.4.0`
+* `CHORE`: update to `bpmn-js@6.3.0`
 
 #### DMN
 
