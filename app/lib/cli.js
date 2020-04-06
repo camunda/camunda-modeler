@@ -76,7 +76,7 @@ module.exports.appendArgs = appendArgs;
  *
  * @param {string} filePath
  *
- * @return {Boolean}
+ * @return {boolean}
  */
 function isFile(filePath) {
 
