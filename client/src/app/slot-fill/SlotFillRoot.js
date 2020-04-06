@@ -37,7 +37,7 @@ export default class SlotFillRoot extends PureComponent {
       /**
        * Add the given fill to the list of fills.
        *
-       * @return {Number} id assigned to the fill
+       * @return {number} id assigned to the fill
        */
       addFill: (newFill) => {
 
