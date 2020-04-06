@@ -222,26 +222,25 @@
       color: var(--grey-darken-30);
     }
 
-    .invalid-tooltip::before,
-    .invalid-tooltip::after {
-      content: " ";
-      position: absolute;
-      width: 0;
-      height: 0;
-      right: 13px;
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-bottom-width: 7px;
-      border-bottom-style: solid;
-    }
-
-    .invalid-tooltip:before {
-      bottom: 100%;
-      border-bottom: 0.7em solid var(--silver-darken-80);
-    }
-
+    .invalid-tooltip:before,
     .invalid-tooltip:after {
+      position: absolute;
+      content: ' ';
+      pointer-events: none;
+      color: transparent;
+      border-style: solid;
       bottom: 100%;
+    }
+    .invalid-tooltip:before {
+      right: 15px;
+
+      border-width: 5px;
+      border-bottom-color: var(--silver-darken-80);
+    }
+    .invalid-tooltip:after {
+      right: 16px;
+
+      border-width: 4px;
       border-bottom-color: #ffffff;
     }
 
