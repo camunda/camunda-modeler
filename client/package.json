@@ -9,7 +9,7 @@
     "@bpmn-io/add-exporter": "^0.2.0",
     "@bpmn-io/align-to-origin": "^0.6.0",
     "@bpmn-io/replace-ids": "^0.2.0",
-    "bpmn-js": "^6.3.4",
+    "bpmn-js": "^6.3.5",
     "bpmn-js-disable-collapsed-subprocess": "^0.1.1",
     "bpmn-js-executable-fix": "^0.1.1",
     "bpmn-js-properties-panel": "^0.33.2",
