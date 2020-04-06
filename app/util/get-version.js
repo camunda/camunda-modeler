@@ -17,7 +17,7 @@ var semver = require('semver');
  *
  * @param {Object} pkg
  * @param {Object} options
- * @param {string|Boolean} [options.nightly=false] (specify dev or nightly)
+ * @param {string|boolean} [options.nightly=false] (specify dev or nightly)
  *
  * @return {string} actual app version
  */

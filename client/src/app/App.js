@@ -362,7 +362,7 @@ export class App extends PureComponent {
    *
    * @param {Tab} tab
    *
-   * @return {Promise<Boolean>} resolved to true if tab is closed
+   * @return {Promise<boolean>} resolved to true if tab is closed
    */
   closeTab = async (tab) => {
     const { file } = tab;
@@ -578,7 +578,7 @@ export class App extends PureComponent {
    * the tab corresponding to the activeFile or the last opened tab.
    *
    * @param {Array<File>} files
-   * @param {File|Boolean} activateFile
+   * @param {File|boolean} activateFile
    *
    * @return {Array<Tab>} all tabs that could be opened from the given files.
    */
