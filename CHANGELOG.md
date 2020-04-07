@@ -6,6 +6,16 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 3.7.2
+
+#### General
+
+* `CHORE`: bump to `bpmn-js@6.3.5`
+
+#### BPMN
+
+* `FIX`: correct accidental resizing of label target ([#1294](https://github.com/bpmn-io/bpmn-js/pull/1294))
+
 ## 3.7.1
 
 #### General
