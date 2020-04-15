@@ -93,6 +93,10 @@ const signingOptions = [
   `-c.forceCodeSigning=${false}`
 ];
 
+if (argv.certificateFingerprint) {
+  signingOptions.push(`-c.win.certificateSha1=${argv.certificateFingerprint}`);
+}
+
 if (publish && (argv.ia32 || argv.x64)) {
   console.error('Do not override arch; is manually pinned');
   process.exit(1);
