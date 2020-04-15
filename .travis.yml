@@ -1,3 +1,11 @@
+node_js: lts/*
+language: node_js
+
+env:
+  global: 
+    - ELECTRON_CACHE=$HOME/.cache/electron
+    - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
 cache:
   directories:
     - "$HOME/.npm"
@@ -7,89 +15,63 @@ cache:
 jobs:
   include:
     - stage: test
-      node_js: lts/*
-      language: node_js
       script:
-      - COVERAGE=1 npm run all -- --x64 --no-compress
-      - npx codecov
-    - stage: "distro [linux]"
+      - |
+        COVERAGE=1 npm run all -- --x64 --no-compress
+        npx codecov
+    - stage: "distro"
+      name: "Build Linux distro"
       os: linux
-      services: docker
-      language: generic
       script:
       - npm run build -- --linux --publish
-    - stage: "distro [windows]"
+    - stage: "distro"
+      name: "Build Windows distro"
       os: windows
-      node_js: lts/*
-      language: node_js
       script:
       - |
         echo $WIN_CSC_LINK > cert.p12
         certutil -p $WIN_CSC_KEY_PASSWORD -importpfx ./cert.p12
         npm run build -- --win --publish --certificateFingerprint=$WIN_CSC_FINGERPRINT
-    - stage: "distro [macos]"
+    - stage: "distro"
+      name: "Build MacOS distro"
       os: osx
       osx_image: xcode11.2
-      node_js: lts/*
-      language: node_js
-      env:
-        - ELECTRON_CACHE=$HOME/.cache/electron
-        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-      script: npm run build -- --mac --publish
+      script: 
+      - npm run build -- --mac --publish
     - stage: "post distro"
-      node_js: lts/*
-      language: node_js
       git:
         depth: false
       script:
       - npm run send-license-book-summary
-    - stage: "nightly build [linux]"
-      os: linux
-      services: docker
-      language: generic
+    - stage: "nightly build"
+      name: "Build Linux nightly"
       script:
       - |
         git checkout -b build-nightly
         npm run build -- --linux --nightly --publish
-    - stage: "nightly build [windows]"
+    - stage: "nightly build"
+      name: "Build Windows nightly"
       os: windows
-      node_js: lts/*
-      language: node_js
       script:
       - |
         git checkout -b build-nightly
         echo $WIN_CSC_LINK > cert.p12
         certutil -p $WIN_CSC_KEY_PASSWORD -importpfx ./cert.p12
         npm run build -- --win --nightly --publish --certificateFingerprint=$WIN_CSC_FINGERPRINT
-    - stage: "nightly build [macos]"
+    - stage: "nightly build"
+      name: "Build MacOS nightly"
       os: osx
       osx_image: xcode11.2
-      node_js: lts/*
-      language: node_js
-      env:
-        - ELECTRON_CACHE=$HOME/.cache/electron
-        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
       script:
       - |
         git checkout -b build-nightly
         npm run build -- --mac --nightly --publish
 
-before_cache:
-  - rm -rf "$HOME/.cache/electron-builder/wine"
-
 stages:
   - name: test
-  - name: "distro [linux]"
-    if: tag =~ ^v\d
-  - name: "distro [windows]"
-    if: tag =~ ^v\d
-  - name: "distro [macos]"
+  - name: "distro"
     if: tag =~ ^v\d
   - name: "post distro"
     if: tag =~ ^v\d
-  - name: "nightly build [linux]"
-    if: type IN (cron)
-  - name: "nightly build [windows]"
-    if: type IN (cron)
-  - name: "nightly build [macos]"
+  - name: "nightly build"
     if: type IN (cron)
