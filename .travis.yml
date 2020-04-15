@@ -12,19 +12,28 @@ jobs:
       script:
       - COVERAGE=1 npm run all -- --x64 --no-compress
       - npx codecov
-    - stage: "distro [windows+linux]"
+    - stage: "distro [linux]"
       os: linux
       services: docker
       language: generic
       script:
       - |
-        ENVS=`env | grep -iE '^(DEBUG|NODE_|ELECTRON_|NPM_|CI|TRAVIS|WIN_CSC_|CSC_|GH_|AWS_|BUILD_)([A-Z]|_)*=' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
+        ENVS=`env | grep -iE '^(DEBUG|NODE_|ELECTRON_|NPM_|CI|TRAVIS|CSC_|GH_|AWS_|BUILD_)([A-Z]|_)*=' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
         docker run $ENVS --rm \
           -v ${PWD}:/project \
           -v ~/.cache/electron:/root/.cache/electron \
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
           electronuserland/builder@sha256:b50e44a98ffe9f716b2f66c51b7898404670c8b74c8c3fc2b152c53f8af60513 \
-          /bin/bash -c "npm i && npm run build -- --win --linux --publish"
+          /bin/bash -c "npm i && npm run build -- --linux --publish"
+    - stage: "distro [windows]"
+      os: windows
+      node_js: lts/*
+      language: node_js
+      script:
+      - |
+        echo $WIN_CSC_LINK > cert.p12
+        certutil -p $WIN_CSC_KEY_PASSWORD -importpfx ./cert.p12
+        npm run build -- --win --publish --certificateFingerprint=$WIN_CSC_FINGERPRINT
     - stage: "distro [macos]"
       os: osx
       osx_image: xcode11.2
@@ -41,20 +50,30 @@ jobs:
         depth: false
       script:
       - npm run send-license-book-summary
-    - stage: "nightly build [windows+linux]"
+    - stage: "nightly build [linux]"
       os: linux
       services: docker
       language: generic
       script:
       - |
         git checkout -b build-nightly
-        ENVS=`env | grep -iE '^(DEBUG|NODE_|ELECTRON_|NPM_|CI|TRAVIS|WIN_CSC_|CSC_|GH_|AWS_|BUILD_)([A-Z]|_)*=' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
+        ENVS=`env | grep -iE '^(DEBUG|NODE_|ELECTRON_|NPM_|CI|TRAVIS|CSC_|GH_|AWS_|BUILD_)([A-Z]|_)*=' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
         docker run $ENVS --rm \
           -v ${PWD}:/project \
           -v ~/.cache/electron:/root/.cache/electron \
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
           electronuserland/builder@sha256:b50e44a98ffe9f716b2f66c51b7898404670c8b74c8c3fc2b152c53f8af60513 \
-          /bin/bash -c "npm i && npm run build -- --win --linux --nightly --publish"
+          /bin/bash -c "npm i && npm run build -- --linux --nightly --publish"
+    - stage: "nightly build [windows]"
+      os: windows
+      node_js: lts/*
+      language: node_js
+      script:
+      - |
+        git checkout -b build-nightly
+        echo $WIN_CSC_LINK > cert.p12
+        certutil -p $WIN_CSC_KEY_PASSWORD -importpfx ./cert.p12
+        npm run build -- --win --nightly --publish --certificateFingerprint=$WIN_CSC_FINGERPRINT
     - stage: "nightly build [macos]"
       os: osx
       osx_image: xcode11.2
@@ -72,14 +91,18 @@ before_cache:
   - rm -rf "$HOME/.cache/electron-builder/wine"
 
 stages:
-  - test
-  - name: "distro [windows+linux]"
+  - name: test
+  - name: "distro [linux]"
+    if: tag =~ ^v\d
+  - name: "distro [windows]"
     if: tag =~ ^v\d
   - name: "distro [macos]"
     if: tag =~ ^v\d
   - name: "post distro"
     if: tag =~ ^v\d
-  - name: "nightly build [windows+linux]"
+  - name: "nightly build [linux]"
+    if: type IN (cron)
+  - name: "nightly build [windows]"
     if: type IN (cron)
   - name: "nightly build [macos]"
     if: type IN (cron)
