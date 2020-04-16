@@ -1,6 +1,13 @@
 node_js: lts/*
 language: node_js
 
+definitions:
+  - import-cert-win: &import-cert-win
+    - |
+      echo $WIN_CSC_LINK > cert.p12
+      certutil -p $WIN_CSC_KEY_PASSWORD -importpfx ./cert.p12
+
+
 env:
   global:
     - ELECTRON_CACHE=$HOME/.cache/electron
@@ -23,6 +30,7 @@ jobs:
     - stage: test
       name: Test on Windows
       os: windows
+      before_install: *import-cert-win
       script:
       - npm run all -- --x64 --no-compress
     - stage: "distro"
@@ -33,11 +41,9 @@ jobs:
     - stage: "distro"
       name: "Build Windows distro"
       os: windows
+      before_install: *import-cert-win
       script:
-      - |
-        echo $WIN_CSC_LINK > cert.p12
-        certutil -p $WIN_CSC_KEY_PASSWORD -importpfx ./cert.p12
-        npm run build -- --win --publish
+      - npm run build -- --win --publish
     - stage: "distro"
       name: "Build MacOS distro"
       os: osx
@@ -58,11 +64,10 @@ jobs:
     - stage: "nightly build"
       name: "Build Windows nightly"
       os: windows
+      before_install: *import-cert-win
       script:
       - |
         git checkout -b build-nightly
-        echo $WIN_CSC_LINK > cert.p12
-        certutil -p $WIN_CSC_KEY_PASSWORD -importpfx ./cert.p12
         npm run build -- --win --nightly --publish
     - stage: "nightly build"
       name: "Build MacOS nightly"
