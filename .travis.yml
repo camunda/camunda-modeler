@@ -2,7 +2,7 @@ node_js: lts/*
 language: node_js
 
 env:
-  global: 
+  global:
     - ELECTRON_CACHE=$HOME/.cache/electron
     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
@@ -15,10 +15,16 @@ cache:
 jobs:
   include:
     - stage: test
+      name: Test on Linux
       script:
       - |
         COVERAGE=1 npm run all -- --x64 --no-compress
         npx codecov
+    - stage: test
+      name: Test on Windows
+      os: windows
+      script:
+      - npm run all -- --x64 --no-compress
     - stage: "distro"
       name: "Build Linux distro"
       os: linux
@@ -36,7 +42,7 @@ jobs:
       name: "Build MacOS distro"
       os: osx
       osx_image: xcode11.2
-      script: 
+      script:
       - npm run build -- --mac --publish
     - stage: "post distro"
       git:
