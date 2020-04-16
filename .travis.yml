@@ -1,3 +1,18 @@
+node_js: lts/*
+language: node_js
+
+definitions:
+  - import-cert-win: &import-cert-win
+    - |
+      echo $WIN_CSC_LINK > cert.p12
+      certutil -p $WIN_CSC_KEY_PASSWORD -importpfx ./cert.p12
+
+
+env:
+  global:
+    - ELECTRON_CACHE=$HOME/.cache/electron
+    - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
 cache:
   directories:
     - "$HOME/.npm"
@@ -7,79 +22,67 @@ cache:
 jobs:
   include:
     - stage: test
-      node_js: lts/*
-      language: node_js
-      script:
-      - COVERAGE=1 npm run all -- --x64 --no-compress
-      - npx codecov
-    - stage: "distro [windows+linux]"
-      os: linux
-      services: docker
-      language: generic
+      name: Test on Linux
       script:
       - |
-        ENVS=`env | grep -iE '^(DEBUG|NODE_|ELECTRON_|NPM_|CI|TRAVIS|WIN_CSC_|CSC_|GH_|AWS_|BUILD_)([A-Z]|_)*=' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
-        docker run $ENVS --rm \
-          -v ${PWD}:/project \
-          -v ~/.cache/electron:/root/.cache/electron \
-          -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-          electronuserland/builder@sha256:b50e44a98ffe9f716b2f66c51b7898404670c8b74c8c3fc2b152c53f8af60513 \
-          /bin/bash -c "npm i && npm run build -- --win --linux --publish"
-    - stage: "distro [macos]"
+        COVERAGE=1 npm run all -- --x64 --no-compress
+        npx codecov
+    - stage: test
+      name: Test on Windows
+      os: windows
+      before_install: *import-cert-win
+      script:
+      - npm run all -- --x64 --no-compress
+    - stage: "distro"
+      name: "Build Linux distro"
+      os: linux
+      script:
+      - npm run build -- --linux --publish
+    - stage: "distro"
+      name: "Build Windows distro"
+      os: windows
+      before_install: *import-cert-win
+      script:
+      - npm run build -- --win --publish
+    - stage: "distro"
+      name: "Build MacOS distro"
       os: osx
       osx_image: xcode11.2
-      node_js: lts/*
-      language: node_js
-      env:
-        - ELECTRON_CACHE=$HOME/.cache/electron
-        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-      script: npm run build -- --mac --publish
+      script:
+      - npm run build -- --mac --publish
     - stage: "post distro"
-      node_js: lts/*
-      language: node_js
       git:
         depth: false
       script:
       - npm run send-license-book-summary
-    - stage: "nightly build [windows+linux]"
-      os: linux
-      services: docker
-      language: generic
+    - stage: "nightly build"
+      name: "Build Linux nightly"
       script:
       - |
         git checkout -b build-nightly
-        ENVS=`env | grep -iE '^(DEBUG|NODE_|ELECTRON_|NPM_|CI|TRAVIS|WIN_CSC_|CSC_|GH_|AWS_|BUILD_)([A-Z]|_)*=' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
-        docker run $ENVS --rm \
-          -v ${PWD}:/project \
-          -v ~/.cache/electron:/root/.cache/electron \
-          -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-          electronuserland/builder@sha256:b50e44a98ffe9f716b2f66c51b7898404670c8b74c8c3fc2b152c53f8af60513 \
-          /bin/bash -c "npm i && npm run build -- --win --linux --nightly --publish"
-    - stage: "nightly build [macos]"
+        npm run build -- --linux --nightly --publish
+    - stage: "nightly build"
+      name: "Build Windows nightly"
+      os: windows
+      before_install: *import-cert-win
+      script:
+      - |
+        git checkout -b build-nightly
+        npm run build -- --win --nightly --publish
+    - stage: "nightly build"
+      name: "Build MacOS nightly"
       os: osx
       osx_image: xcode11.2
-      node_js: lts/*
-      language: node_js
-      env:
-        - ELECTRON_CACHE=$HOME/.cache/electron
-        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
       script:
       - |
         git checkout -b build-nightly
         npm run build -- --mac --nightly --publish
 
-before_cache:
-  - rm -rf "$HOME/.cache/electron-builder/wine"
-
 stages:
-  - test
-  - name: "distro [windows+linux]"
-    if: tag =~ ^v\d
-  - name: "distro [macos]"
+  - name: test
+  - name: "distro"
     if: tag =~ ^v\d
   - name: "post distro"
     if: tag =~ ^v\d
-  - name: "nightly build [windows+linux]"
-    if: type IN (cron)
-  - name: "nightly build [macos]"
+  - name: "nightly build"
     if: type IN (cron)
