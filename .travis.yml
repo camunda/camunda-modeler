@@ -37,7 +37,7 @@ jobs:
       - |
         echo $WIN_CSC_LINK > cert.p12
         certutil -p $WIN_CSC_KEY_PASSWORD -importpfx ./cert.p12
-        npm run build -- --win --publish --certificateFingerprint=$WIN_CSC_FINGERPRINT
+        npm run build -- --win --publish
     - stage: "distro"
       name: "Build MacOS distro"
       os: osx
@@ -63,7 +63,7 @@ jobs:
         git checkout -b build-nightly
         echo $WIN_CSC_LINK > cert.p12
         certutil -p $WIN_CSC_KEY_PASSWORD -importpfx ./cert.p12
-        npm run build -- --win --nightly --publish --certificateFingerprint=$WIN_CSC_FINGERPRINT
+        npm run build -- --win --nightly --publish
     - stage: "nightly build"
       name: "Build MacOS nightly"
       os: osx

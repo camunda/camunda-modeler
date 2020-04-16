@@ -93,8 +93,9 @@ const signingOptions = [
   `-c.forceCodeSigning=${false}`
 ];
 
-if (argv.certificateFingerprint) {
-  signingOptions.push(`-c.win.certificateSha1=${argv.certificateFingerprint}`);
+const certificateFingerprint = process.env.WIN_CSC_FINGERPRINT;
+if (certificateFingerprint) {
+  signingOptions.push(`-c.win.certificateSha1=${certificateFingerprint}`);
 }
 
 if (publish && (argv.ia32 || argv.x64)) {
