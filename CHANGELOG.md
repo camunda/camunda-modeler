@@ -6,6 +6,27 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.0.0-alpha.2
+
+#### General
+
+* `FIX`: prevent loader from flickering ([#1743](https://github.com/camunda/camunda-modeler/pull/1743))
+* `CHORE`: bump to `bpmn-js@6.5.0`
+* `CHORE`: bump to `diagram-js@6.6.1`
+* `CHORE`: bump to `dmn-js@8.3.0`
+* `CHORE`: bump to `ids@1.0.0`
+* `CHORE`: bump to `min-dash@3.5.2`
+
+#### BPMN
+
+* `FEAT`: prefer straight layout for sub-process connections ([#1309](https://github.com/bpmn-io/bpmn-js/pull/1309))
+
+#### DMN
+
+* `FEAT(drd)`: change layout of information requirements ([#492](https://github.com/bpmn-io/dmn-js/pull/492))
+* `FEAT(drd)`: add auto-place feature ([#492](https://github.com/bpmn-io/dmn-js/pull/492))
+* `FEAT(drd)`: connect from new shape to source on append ([#492](https://github.com/bpmn-io/dmn-js/pull/492))
+
 ## 3.7.2
 
 #### General
