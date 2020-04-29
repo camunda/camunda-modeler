@@ -4,13 +4,15 @@ Plugins allow you to change the appearance and behavior of the Camunda Modeler a
 
 ## Plugging into the Camunda Modeler
 
-You can plug into the modeler to change its appearance, add new menu entries or extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js). Adding a plugin is as easy as putting it into the `resources/plugins` directory relative to your [`{APP_DATA_DIRECTORY}`](../search-paths#app-data-directory) or [`{USER_DATA_DIRECTORY}`](../search-paths#user-data-directory) directory. The Camunda Modeler is only able to find plugins put directly into the `plugins/my-plugin` directory. `plugins/*/my-plugin` cannot be found. If you download and extract plugins from GitHub the extracted directory contains the actual plugin, so make sure to copy the plugin, not its parent directory.
+You can plug into the modeler to change its appearance, add new menu entries or extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js). Adding a plugin is as easy as putting it into the `resources/plugins` directory relative to your [`{APP_DATA_DIRECTORY}`](../search-paths#app-data-directory) or [`{USER_DATA_DIRECTORY}`](../search-paths#user-data-directory) directory. 
+
+The Camunda Modeler searches for available plug-in entry points via the `resources/plugins/*/index.js` glob. That being said, each plug-in must reside in it's own folder which is a direct child of the `plugins` directory. If you download and extract plugins from GitHub the extracted directory contains the actual plugin, so make sure to copy the plugin, not its parent directory.
 
 So let's dive into how to add your own plugins.
 
-Regardless of the type of your plugin, you have to export it as a [Node.js module](https://nodejs.org/api/modules.html). For the modeler to recognize your plugin, the filename must be `index.js`.
+### Plug-in Entry Point
 
-Example:
+Regardless of the type of your plugin, you have to export a [Node.js module](https://nodejs.org/api/modules.html) named `index.js` that acts as a plug-in entry point. The following shows an example of such entry point:
 
 ```javascript
 module.exports = {
