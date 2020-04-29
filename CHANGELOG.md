@@ -6,6 +6,14 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+#### General
+
+* `CHORE`: improve error handling and recovery on malformed input diagrams
+
+#### BPMN
+
+* `FIX`: prevent invalid BPMN 2.0 XML export certain diagrams
+
 ## 3.7.3
 
 #### General
