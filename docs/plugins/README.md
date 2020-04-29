@@ -4,7 +4,7 @@ Plugins allow you to change the appearance and behavior of the Camunda Modeler a
 
 ## Plugging into the Camunda Modeler
 
-You can plug into the modeler to change its appearance, add new menu entries or extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js). Adding a plugin is as easy as putting it into the `resources/plugins` directory relative to your [`{APP_DATA_DIRECTORY}`](../search-paths#app-data-directory) or [`{USER_DATA_DIRECTORY}`](../search-paths#user-data-directory) directory. The Camunda Modeler is only able to find plugins put directly into the `plugins` directory. `plugins/*/my-plugin` cannot be found. If you download and extract plugins from GitHub the extracted directory contains the actual plugin, so make sure to copy the plugin, not its parent directory.
+You can plug into the modeler to change its appearance, add new menu entries or extend the modeling tools for [BPMN](https://github.com/bpmn-io/bpmn-js), [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js). Adding a plugin is as easy as putting it into the `resources/plugins` directory relative to your [`{APP_DATA_DIRECTORY}`](../search-paths#app-data-directory) or [`{USER_DATA_DIRECTORY}`](../search-paths#user-data-directory) directory. The Camunda Modeler is only able to find plugins put directly into the `plugins/my-plugin` directory. `plugins/*/my-plugin` cannot be found. If you download and extract plugins from GitHub the extracted directory contains the actual plugin, so make sure to copy the plugin, not its parent directory.
 
 So let's dive into how to add your own plugins.
 
