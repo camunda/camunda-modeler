@@ -10,8 +10,6 @@
 
 const { notarize } = require('electron-notarize');
 
-const { isPullRequest } = require('builder-util');
-
 module.exports = async function(context) {
   const {
     electronPlatformName,
@@ -23,11 +21,7 @@ module.exports = async function(context) {
     return;
   }
 
-  if (isPullRequest()) {
-    console.log('  • skipped notarization for pull request');
-
-    return;
-  }
+  return;
 
   const {
     info: {
