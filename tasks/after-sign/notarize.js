@@ -21,8 +21,6 @@ module.exports = async function(context) {
     return;
   }
 
-  return;
-
   const {
     info: {
       options: {

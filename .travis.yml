@@ -82,7 +82,35 @@ jobs:
       - |
         git checkout -b build-nightly
         npm run build -- --mac --nightly --publish
-
+    - stage: "build on demand"
+      name: "Build On Demand - Linux"
+      before_install: &install-yarn
+        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.21.1
+        - export PATH="$HOME/.yarn/bin:$PATH"
+      before_script: npm run link-dependencies
+      script: >
+        AWS_ACCESS_KEY_ID=$AWS_ON_DEMAND_ACCESS_KEY_ID
+        AWS_SECRET_ACCESS_KEY=$AWS_ON_DEMAND_SECRET_ACCESS_KEY
+        npm run build -- --linux --publish --on-demand=$BUILD_NAME --region=$AWS_ON_DEMAND_REGION
+    - stage: "build on demand"
+      name: "Build On Demand - MacOS"
+      os: osx
+      osx_image: xcode11.2
+      before_install: *install-yarn
+      before_script: npm run link-dependencies
+      script: >
+        AWS_ACCESS_KEY_ID=$AWS_ON_DEMAND_ACCESS_KEY_ID
+        AWS_SECRET_ACCESS_KEY=$AWS_ON_DEMAND_SECRET_ACCESS_KEY
+        npm run build -- --mac --publish --on-demand=$BUILD_NAME --region=$AWS_ON_DEMAND_REGION
+    - stage: "build on demand"
+      name: "Build On Demand - Windows"
+      os: windows
+      before_install: *import-cert-win *install-yarn
+      before_script: npm run link-dependencies
+      script: >
+        AWS_ACCESS_KEY_ID=$AWS_ON_DEMAND_ACCESS_KEY_ID
+        AWS_SECRET_ACCESS_KEY=$AWS_ON_DEMAND_SECRET_ACCESS_KEY
+        npm run build -- --win --publish --on-demand=$BUILD_NAME --region=$AWS_ON_DEMAND_REGION
 stages:
   - name: test
   - name: "pre distro"
@@ -93,3 +121,5 @@ stages:
     if: tag =~ ^v\d
   - name: "nightly build"
     if: type IN (cron)
+  - name: "build on demand"
+    if: type == api AND env(ON_DEMAND) == "true" AND env(BUILD_NAME) != ""
