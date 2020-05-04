@@ -21,38 +21,40 @@ const pkg = require('../app/package');
 const {
   nightly,
   publish,
-  config
+  config,
+  pr
 } = argv;
 
 // in case of --nightly, update all package versions to the
 // next minor version with the nightly preid. This will
 // result in app and client being versioned like `v1.2.0-nightly.20191121`.
 
-const nightlyVersion = nightly && getVersion(pkg, {
-  nightly: 'nightly'
+const version = (pr || nightly) && getVersion(pkg, {
+  nightly,
+  pr
 });
 
-if (nightlyVersion) {
+if (version) {
 
-  const publishNightlyArgs = [
+  const lernaPublishArgs = [
     'publish',
-    `--repo-version=${nightlyVersion}`,
+    `--repo-version=${version}`,
     '--skip-npm',
     '--skip-git',
     '--yes'
   ];
 
   console.log(`
-Bumping ${pkg.name} version to ${nightlyVersion}
+Bumping ${pkg.name} version to ${version}
 
 ---
 
-lerna ${ publishNightlyArgs.join(' ') }
+lerna ${ lernaPublishArgs.join(' ') }
 
 ---
 `);
 
-  exec('lerna', publishNightlyArgs, {
+  exec('lerna', lernaPublishArgs, {
     stdio: 'inherit'
   });
 }
@@ -61,9 +63,13 @@ lerna ${ publishNightlyArgs.join(' ') }
 // this allows expert users to always fetch the nightly artifacts
 // from the same url
 
-const replaceVersion = nightly
-  ? s => s.replace('${version}', 'nightly')
-  : s => s;
+let replaceVersion = s => s;
+
+if (nightly) {
+  replaceVersion = s => s.replace('${version}', 'nightly');
+} else if (pr) {
+  replaceVersion = s => s.replace('${version}', `pr-${pr}`);
+}
 
 const artifactOptions = [
   '-c.artifactName=${name}-${version}-${os}-${arch}.${ext}',
@@ -83,11 +89,7 @@ const platforms = [
 
 const platformOptions = platforms.map(p => `--${p}`);
 
-const publishOptions = typeof publish !== undefined ? [
-  `--publish=${ publish ? 'always' : 'never' }`,
-  publish && nightly && '-c.publish.provider=s3',
-  publish && nightly && '-c.publish.bucket=camunda-modeler-nightly'
-].filter(f => f) : [];
+let publishOptions = getPublishOptions(publish, nightly, pr);
 
 const signingOptions = [
   `-c.forceCodeSigning=${false}`
@@ -124,7 +126,7 @@ Building ${pkg.name} distro
 
 ---
 
-  version: ${nightlyVersion || pkg.version}
+  version: ${version || pkg.version}
   platforms: [${ platforms.length && platforms || 'current' }]
   publish: ${publish || false}
 
@@ -137,3 +139,29 @@ electron-builder ${ args.join(' ') }
 exec('electron-builder', args, {
   stdio: 'inherit'
 });
+
+function getPublishOptions(publish, nightly, pr) {
+  if (typeof publish === undefined) {
+    return [];
+  }
+
+  if (nightly) {
+    return [
+      `--publish=${ publish ? 'always' : 'never' }`,
+      publish && '-c.publish.provider=s3',
+      publish && '-c.publish.bucket=camunda-modeler-nightly'
+    ].filter(f => f);
+  } else if (pr) {
+    return [
+      `--publish=${ publish ? 'always' : 'never' }`,
+      publish && '-c.publish.provider=s3',
+      publish && '-c.publish.bucket=camunda-modeler-pr',
+      publish && `-c.publish.path=pr-${pr}`,
+      publish && '-c.publish.endpoint=http://127.0.0.1:4568'
+    ].filter(f => f);
+  }
+
+  return [
+    `--publish=${ publish ? 'always' : 'never' }`
+  ];
+}

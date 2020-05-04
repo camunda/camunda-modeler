@@ -82,7 +82,22 @@ jobs:
       - |
         git checkout -b build-nightly
         npm run build -- --mac --nightly --publish
-
+    - stage: "build pr"
+      name: "Build Linux Pull Request"
+      script:
+        - npm run build -- --linux --publish --pr=$TRAVIS_PULL_REQUEST
+    - stage: "build pr"
+      name: "Build MacOS Pull Request"
+      os: osx
+      osx_image: xcode11.2
+      script:
+        - npm run build -- --mac --publish --pr=$TRAVIS_PULL_REQUEST
+    - stage: "build pr"
+      name: "Build Windows Pull Request"
+      os: windows
+      before_install: *import-cert-win
+      script:
+        - npm run build -- --win --publish --pr=$TRAVIS_PULL_REQUEST
 stages:
   - name: test
   - name: "pre distro"
@@ -93,3 +108,5 @@ stages:
     if: tag =~ ^v\d
   - name: "nightly build"
     if: type IN (cron)
+  - name: "build pr"
+    if: type == pull_request
