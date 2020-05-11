@@ -126,7 +126,7 @@ module.exports = {
 // helpers //////////////////////
 
 function sentryIntegration() {
-  if (!SENTRY_DSN || NODE_ENV !== 'production') {
+  if (!SENTRY_DSN) {
     return [];
   }
 
@@ -136,7 +136,7 @@ function sentryIntegration() {
   // variables are injected via Travis when building.
   return [
     new SentryWebpackPlugin({
-      release: version,
+      release: NODE_ENV === 'production' ? version : 'dev',
       include: '.',
       ignore: ['node_modules', 'webpack.config.js'],
     })
