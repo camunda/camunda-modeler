@@ -17,14 +17,9 @@ const {
 } = require('electron');
 
 const path = require('path');
+var os = require('os');
 
-/**
- * Report crashes.
- *
- * @see http://electron.atom.io/docs/v0.34.0/api/crash-reporter/
- */
-// TODO(nikku): do we want to do this?
-// require('crash-reporter').start();
+const Sentry = require('@sentry/node');
 
 const Cli = require('./cli');
 const Config = require('./config');
@@ -219,6 +214,34 @@ renderer.on('config:set', function(key, value, ...args) {
   } catch (error) {
     done(error);
   }
+});
+
+// error tracking //////////
+renderer.on('sentry:initialize', function(params) {
+  const { dsn, releaseTag, editorID } = params;
+
+  try {
+
+    // we tag the release with -backend postfix as we don't want to
+    // use the same tag with frontend Sentry in order not to have problems
+    // with source maps.
+    Sentry.init({ dsn, release: releaseTag + '-backend' });
+
+    Sentry.configureScope(scope => {
+      scope.setTag('editor-id', editorID);
+      scope.setTag('is-backend-error', true);
+      scope.setTag('platform', os.platform());
+      scope.setTag('os-version', os.release());
+    });
+  } catch (err) {
+
+    // Probably Sentry DSN is invalid.
+    log.error('Error initializing Sentry', err);
+  }
+});
+
+renderer.on('sentry:close', function() {
+  Sentry.close();
 });
 
 // plugin toggling //////////
