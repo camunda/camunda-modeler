@@ -16,6 +16,8 @@ import * as Sentry from '@sentry/browser';
 
 import Metadata from '../../util/Metadata';
 
+import Flags, { OVERRIDE_SENTRY_DSN } from '../../util/Flags';
+
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const EDITOR_ID_CONFIG_KEY = 'editor.id';
 const CRASH_REPORTS_CONFIG_KEY = 'ENABLE_CRASH_REPORTS';
@@ -33,7 +35,8 @@ export default class ErrorTracking extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.SENTRY_DSN = SENTRY_DSN;
+    // OVERRIDE_SENTRY_DSN flag is useful for development.
+    this.SENTRY_DSN = Flags.get(OVERRIDE_SENTRY_DSN) || SENTRY_DSN;
 
     // Setting this here so that we can mock later if necessary.
     this.SCHEDULE_TIME = ONE_MINUTE_MS;
