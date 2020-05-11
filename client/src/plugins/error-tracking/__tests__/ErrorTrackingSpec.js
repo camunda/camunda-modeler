@@ -14,7 +14,7 @@ import React from 'react';
 
 import { shallow } from 'enzyme';
 
-import Flags, { OVERRIDE_SENTRY_DSN } from '../../../util/Flags';
+import Flags, { SENTRY_DSN } from '../../../util/Flags';
 import Metadata from '../../../util/Metadata';
 
 import ErrorTracking from '../ErrorTracking';
@@ -104,7 +104,7 @@ describe('<ErrorTracking>', () => {
 
     // given
     Flags.init({
-      [ OVERRIDE_SENTRY_DSN ]: 'custom-sentry-dsn'
+      [ SENTRY_DSN ]: 'custom-sentry-dsn'
     });
 
     // when

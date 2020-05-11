@@ -16,7 +16,7 @@ import * as Sentry from '@sentry/browser';
 
 import Metadata from '../../util/Metadata';
 
-import Flags, { OVERRIDE_SENTRY_DSN } from '../../util/Flags';
+import Flags, { SENTRY_DSN } from '../../util/Flags';
 
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const EDITOR_ID_CONFIG_KEY = 'editor.id';
@@ -28,15 +28,15 @@ const log = debug('ErrorTracking');
 const ONE_MINUTE_MS = 1000 * 60;
 
 // DSN is set to Travis as an env variable, passed to client via WebPack DefinePlugin
-const SENTRY_DSN = process.env.SENTRY_DSN;
+const DEFINED_SENTRY_DSN = process.env.SENTRY_DSN;
 
 export default class ErrorTracking extends PureComponent {
 
   constructor(props) {
     super(props);
 
-    // OVERRIDE_SENTRY_DSN flag is useful for development.
-    this.SENTRY_DSN = Flags.get(OVERRIDE_SENTRY_DSN) || SENTRY_DSN;
+    // SENTRY_DSN flag is useful for development.
+    this.SENTRY_DSN = Flags.get(SENTRY_DSN) || DEFINED_SENTRY_DSN;
 
     // Setting this here so that we can mock later if necessary.
     this.SCHEDULE_TIME = ONE_MINUTE_MS;
