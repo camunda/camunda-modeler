@@ -14,7 +14,7 @@ import React from 'react';
 
 import { shallow } from 'enzyme';
 
-import Flags, { SENTRY_DSN } from '../../../util/Flags';
+import Flags, { SENTRY_DSN, DISABLE_REMOTE_INTERACTION } from '../../../util/Flags';
 import Metadata from '../../../util/Metadata';
 
 import ErrorTracking from '../ErrorTracking';
@@ -100,7 +100,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should use override-sentry-dsn flag', async () => {
+  it('should use sentry-dsn flag', async () => {
 
     // given
     Flags.init({
@@ -112,6 +112,30 @@ describe('<ErrorTracking>', () => {
 
     // then
     expect(instance.SENTRY_DSN).to.eql('custom-sentry-dsn');
+  });
+
+
+  it('should not initialize if DISABLE_REMOTE_INTERACTION flag is set', async () => {
+
+    // given
+    Flags.init({
+      [ DISABLE_REMOTE_INTERACTION ]: true
+    });
+
+    const initializeSentry = sinon.spy();
+
+    const { instance } = createErrorTracking({
+      initializeSentry,
+      dsn: 'TEST_DSN',
+      configValues: { 'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true } }
+    });
+
+    // when
+    await instance.componentDidMount();
+
+    // then
+    expect(initializeSentry).to.not.have.been.called;
+
   });
 
 
@@ -127,6 +151,25 @@ describe('<ErrorTracking>', () => {
 
     // then
     expect(scheduleCheck).to.have.been.called;
+  });
+
+
+  it('should not schedule check if DISABLE_REMOTE_INTERACTION flag is set', async () => {
+
+    // given
+    Flags.init({
+      [ DISABLE_REMOTE_INTERACTION ]: true
+    });
+
+    const scheduleCheck = sinon.spy();
+
+    const { instance } = createErrorTracking({ scheduleCheck });
+
+    // when
+    await instance.componentDidMount();
+
+    // then
+    expect(scheduleCheck).to.not.have.been.called;
   });
 
 
