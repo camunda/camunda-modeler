@@ -39,3 +39,4 @@ export const RELAUNCH = 'relaunch';
 export const DISABLE_REMOTE_INTERACTION = 'disable-remote-interaction';
 export const UPDATE_SERVER_URL = 'update-server-url';
 export const FORCE_UPDATE_CHECKS = 'force-update-checks';
+export const OVERRIDE_SENTRY_DSN = 'override-sentry-dsn';
