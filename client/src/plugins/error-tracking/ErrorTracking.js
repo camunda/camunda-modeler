@@ -16,7 +16,7 @@ import * as Sentry from '@sentry/browser';
 
 import Metadata from '../../util/Metadata';
 
-import Flags, { SENTRY_DSN } from '../../util/Flags';
+import Flags, { SENTRY_DSN, DISABLE_REMOTE_INTERACTION } from '../../util/Flags';
 
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const EDITOR_ID_CONFIG_KEY = 'editor.id';
@@ -50,10 +50,14 @@ export default class ErrorTracking extends PureComponent {
   async componentDidMount() {
     const { result, msg } = await this.canInitializeSentry();
 
-    // -> The user may turn on / off error reporting on the run/
-    // -> The user may never actually restart the modeler.
-    // That's why we'll schedule a check and turn on / off Sentry if necessary.
-    this.scheduleCheck();
+    if (!Flags.get(DISABLE_REMOTE_INTERACTION)) {
+
+      // If remove interaction is not disabled via flags:
+      // -> The user may turn on / off error reporting on the run
+      // -> The user may never actually restart the modeler.
+      // That's why we'll schedule a check and turn on / off Sentry if necessary.
+      this.scheduleCheck();
+    }
 
     if (!result) {
 
@@ -128,6 +132,13 @@ export default class ErrorTracking extends PureComponent {
   }
 
   async canInitializeSentry() {
+
+    if (Flags.get(DISABLE_REMOTE_INTERACTION)) {
+      return {
+        result: false,
+        msg: 'Remote interaction disabled via flag.'
+      };
+    }
 
     if (!this.SENTRY_DSN) {
       return {
