@@ -1045,6 +1045,9 @@ export class App extends PureComponent {
    * @param {Tab|string} [categoryOrTab]
    */
   handleError = (error, categoryOrTab) => {
+
+    this.emit('app.error-handled', error);
+
     const {
       onError
     } = this.props;
