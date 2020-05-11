@@ -13,9 +13,12 @@
 const path = require('path');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
+const SENTRY_DSN = process.env.SENTRY_DSN || null;
 
 const DEV = NODE_ENV === 'development';
 const LICENSE_CHECK = process.env.LICENSE_CHECK;
+
+const pkg = require('./package.json');
 
 const {
   DefinePlugin
@@ -23,6 +26,7 @@ const {
 
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 
 const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 
@@ -96,7 +100,8 @@ module.exports = {
   plugins: [
     new CaseSensitivePathsPlugin(),
     new DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
+      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
+      'process.env.SENTRY_DSN': JSON.stringify(SENTRY_DSN)
     }),
     new CopyWebpackPlugin([
       {
@@ -104,6 +109,7 @@ module.exports = {
         transform: DEV && applyDevCSP
       }
     ]),
+    ...sentryIntegration(),
     ...extractDependencies()
   ],
 
@@ -119,6 +125,23 @@ module.exports = {
 
 // helpers //////////////////////
 
+function sentryIntegration() {
+  if (!SENTRY_DSN || NODE_ENV !== 'production') {
+    return [];
+  }
+
+  const { version } = pkg;
+
+  // necessary SENTRY_AUTH_TOKEN, SENTRY_ORG and SENTRY_PROJECT environment
+  // variables are injected via Travis when building.
+  return [
+    new SentryWebpackPlugin({
+      release: version,
+      include: '.',
+      ignore: ['node_modules', 'webpack.config.js'],
+    })
+  ];
+}
 
 function cssLoader() {
 
