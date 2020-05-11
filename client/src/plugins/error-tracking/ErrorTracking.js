@@ -48,8 +48,8 @@ export default class ErrorTracking extends PureComponent {
   }
 
   async componentDidMount() {
-    const { result, msg } = await this.canInitializeSentry();
 
+    // check scheduling
     if (!Flags.get(DISABLE_REMOTE_INTERACTION)) {
 
       // If remove interaction is not disabled via flags:
@@ -58,6 +58,9 @@ export default class ErrorTracking extends PureComponent {
       // That's why we'll schedule a check and turn on / off Sentry if necessary.
       this.scheduleCheck();
     }
+
+    // initialization
+    const { result, msg } = await this.canInitializeSentry();
 
     if (!result) {
 
