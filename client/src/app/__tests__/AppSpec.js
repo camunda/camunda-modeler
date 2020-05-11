@@ -1579,6 +1579,23 @@ describe('<App>', function() {
         expect(changedSpy).to.have.been.calledTwice;
       });
 
+
+      it('on quit', function() {
+
+        // given
+        const changedSpy = spy(() => {});
+
+        const { app } = createApp({
+          onWorkspaceChanged: changedSpy
+        });
+
+        // when
+        app.quit();
+
+        // then
+        expect(changedSpy).to.have.been.calledOnce;
+      });
+
     });
 
   });
