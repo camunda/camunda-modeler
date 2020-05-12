@@ -80,13 +80,6 @@ export default class ErrorTracking extends PureComponent {
 
     try {
 
-      // We need to send a message to backend to initialize Sentry in the main process.
-      // Note that Sentry in renderer process (browser JS) and main process (node)
-      // has to be handled separately -> they have separate source maps and their Sentry
-      // modules are different (sentry-browser and sentry-node).
-      const backend = _getGlobal('backend');
-      backend.send('sentry:initialize', { dsn: this.SENTRY_DSN, releaseTag, editorID });
-
       // Source map uploaded to Sentry from WebPack is tagged with the
       // version number in package.json which is supposed to be the same
       // with Metadata.data.version (except for dev environments
@@ -122,12 +115,6 @@ export default class ErrorTracking extends PureComponent {
   }
 
   closeSentry() {
-
-    // tell backend to close Sentry-node instance.
-    const { _getGlobal } = this.props;
-    const backend = _getGlobal('backend');
-    backend.send('sentry:close');
-
     this._sentry.close();
     this._isInitialized = false;
 
@@ -176,14 +163,20 @@ export default class ErrorTracking extends PureComponent {
 
     if (result !== this._isInitialized) {
 
+      const { _getGlobal } = this.props;
+      const backend = _getGlobal('backend');
+
       // Status has changed:
       // The user turned on / off Error Tracking option through
       // Privacy Preferences modal.
-
       if (result) {
         this.initializeSentry();
+
+        backend.send('errorTracking:turnedOn');
       } else {
         this.closeSentry();
+
+        backend.send('errorTracking:turnedOff');
       }
     }
   }

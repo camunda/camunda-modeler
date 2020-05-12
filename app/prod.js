@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
- const pkg = require('./package');
+const pkg = require('./package');
 
 // ensure production mode
 process.env.NODE_ENV = 'production';

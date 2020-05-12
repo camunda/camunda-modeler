@@ -222,37 +222,6 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should inform backend on initialization', async () => {
-
-    // given
-    Metadata.init({ version: '3.5.0' });
-
-    const backendSendSpy = sinon.spy();
-
-    const { instance } = createErrorTracking({
-      backendSendSpy,
-      dsn: 'TEST_DSN',
-      configValues: {
-        'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true },
-        'editor.id': 'TEST_EDITOR_ID'
-      }
-    });
-
-    // when
-    await instance.componentDidMount();
-
-    // then
-    expect(backendSendSpy).to.have.been.calledWith({
-      key: 'sentry:initialize',
-      param: {
-        dsn: 'TEST_DSN',
-        releaseTag: '3.5.0',
-        editorID: 'TEST_EDITOR_ID'
-      }
-    });
-  });
-
-
   it('should subscribe to app.error-handled event on initialization', async () => {
 
     // given
@@ -305,9 +274,11 @@ describe('<ErrorTracking>', () => {
     // given
     let areCrashReportsEnabled = false;
 
+    const backendSendSpy = sinon.spy();
     const initializeSentrySpy = sinon.spy();
 
     const { instance } = createErrorTracking({
+      backendSendSpy,
       initializeSentry: initializeSentrySpy,
       keepScheduleAsItIs: true,
       overrideScheduleTime: 10,
@@ -336,6 +307,8 @@ describe('<ErrorTracking>', () => {
       setTimeout(() => {
 
         expect(initializeSentrySpy).to.have.been.called;
+        expect(backendSendSpy).to.have.been.calledWith('errorTracking:turnedOn');
+
         return resolve();
       }, 100);
     });
@@ -347,9 +320,11 @@ describe('<ErrorTracking>', () => {
     // given
     let areCrashReportsEnabled = true;
 
+    const backendSendSpy = sinon.spy();
     const sentryCloseSpy = sinon.spy();
 
     const { instance } = createErrorTracking({
+      backendSendSpy,
       sentryCloseSpy,
       keepScheduleAsItIs: true,
       overrideScheduleTime: 10,
@@ -379,32 +354,10 @@ describe('<ErrorTracking>', () => {
       setTimeout(() => {
 
         expect(sentryCloseSpy).to.have.been.called;
+        expect(backendSendSpy).to.have.been.calledWith('errorTracking:turnedOff');
+
         return resolve();
       }, 100);
-    });
-  });
-
-
-  it('should inform backend on close', async () => {
-
-    // given
-    const backendSendSpy = sinon.spy();
-
-    const { instance } = createErrorTracking({
-      backendSendSpy,
-      dsn: 'TEST_DSN',
-      configValues: { 'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true } }
-    });
-
-    // when
-    await instance.componentDidMount();
-
-    instance.closeSentry();
-
-    // then
-    expect(backendSendSpy).to.have.been.calledWith({
-      key: 'sentry:close',
-      param: undefined
     });
   });
 });
@@ -415,9 +368,9 @@ function createErrorTracking(props={}) {
 
   const _getGlobal = () => {
     return {
-      send: (key, param) => {
+      send: (key) => {
         if (props.backendSendSpy) {
-          props.backendSendSpy({ key, param });
+          props.backendSendSpy(key);
         }
       }
     };
