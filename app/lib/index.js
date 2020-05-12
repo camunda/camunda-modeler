@@ -16,10 +16,9 @@ const {
   BrowserWindow
 } = require('electron');
 
-const path = require('path');
-var os = require('os');
-
 const Sentry = require('@sentry/node');
+
+const path = require('path');
 
 const Cli = require('./cli');
 const Config = require('./config');
@@ -41,6 +40,8 @@ const {
 
 const browserOpen = require('./util/browser-open');
 const renderer = require('./util/renderer');
+
+const errorTracking = require('./util/error-tracking');
 
 const log = Log('app:main');
 const bootstrapLog = Log('app:main:bootstrap');
@@ -214,34 +215,6 @@ renderer.on('config:set', function(key, value, ...args) {
   } catch (error) {
     done(error);
   }
-});
-
-// error tracking //////////
-renderer.on('sentry:initialize', function(params) {
-  const { dsn, releaseTag, editorID } = params;
-
-  try {
-
-    // we tag the release with -backend postfix as we don't want to
-    // use the same tag with frontend Sentry in order not to have problems
-    // with source maps.
-    Sentry.init({ dsn, release: releaseTag + '-backend' });
-
-    Sentry.configureScope(scope => {
-      scope.setTag('editor-id', editorID);
-      scope.setTag('is-backend-error', true);
-      scope.setTag('platform', os.platform());
-      scope.setTag('os-version', os.release());
-    });
-  } catch (err) {
-
-    // Probably Sentry DSN is invalid.
-    log.error('Error initializing Sentry', err);
-  }
-});
-
-renderer.on('sentry:close', function() {
-  Sentry.close();
 });
 
 // plugin toggling //////////
@@ -546,6 +519,9 @@ function bootstrap() {
     paths: resourcesPaths,
     overrides: flagOverrides
   });
+
+  // error tracking can start as soon as config and flags are initialized.
+  errorTracking.start(Sentry, version, config, flags, renderer);
 
   // (4) menu
   const menu = new Menu({
