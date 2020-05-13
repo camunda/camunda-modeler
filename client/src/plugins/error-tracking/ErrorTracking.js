@@ -25,7 +25,6 @@ const NON_EXISTENT_EDITOR_ID = 'NON_EXISTENT_EDITOR_ID';
 
 const log = debug('ErrorTracking');
 
-const ONE_MINUTE_MS = 1000 * 60;
 
 // DSN is set to Travis as an env variable, passed to client via WebPack DefinePlugin
 const DEFINED_SENTRY_DSN = process.env.SENTRY_DSN;
@@ -39,9 +38,6 @@ export default class ErrorTracking extends PureComponent {
     this.SENTRY_DSN = Flags.get(SENTRY_DSN) || DEFINED_SENTRY_DSN;
 
     // Setting this here so that we can mock later if necessary.
-    this.SCHEDULE_TIME = ONE_MINUTE_MS;
-
-    // Setting this here so that we can mock later if necessary.
     this._sentry = Sentry;
 
     this._isInitialized = false;
@@ -52,11 +48,10 @@ export default class ErrorTracking extends PureComponent {
     // check scheduling
     if (!Flags.get(DISABLE_REMOTE_INTERACTION)) {
 
-      // If remove interaction is not disabled via flags:
+      // If remote interaction is not disabled via flags:
       // -> The user may turn on / off error reporting on the run
       // -> The user may never actually restart the modeler.
-      // That's why we'll schedule a check and turn on / off Sentry if necessary.
-      this.scheduleCheck();
+      this.props.subscribe('privacy-preferences.changed', this.handlePrivacyPreferencesChanged);
     }
 
     // initialization
@@ -181,11 +176,8 @@ export default class ErrorTracking extends PureComponent {
     }
   }
 
-  scheduleCheck() {
-    setTimeout(() => {
-      this.recheckSentry();
-      this.scheduleCheck();
-    }, this.SCHEDULE_TIME);
+  handlePrivacyPreferencesChanged = () => {
+    this.recheckSentry();
   }
 
   render() {
