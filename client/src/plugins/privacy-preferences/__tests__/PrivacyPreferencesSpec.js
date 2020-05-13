@@ -98,7 +98,10 @@ describe('<PrivacyPreferences>', () => {
         });
       },
       set() {
-        setSpy();
+        return new Promise((resolve, reject) => {
+          setSpy();
+          resolve(null);
+        });
       }
     } } subscribe={ () => {} } />);
 

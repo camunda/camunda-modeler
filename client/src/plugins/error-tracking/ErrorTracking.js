@@ -177,7 +177,7 @@ export default class ErrorTracking extends PureComponent {
   }
 
   handlePrivacyPreferencesChanged = () => {
-    this.recheckSentry();
+    return this.recheckSentry();
   }
 
   render() {

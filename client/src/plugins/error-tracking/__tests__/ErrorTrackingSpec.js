@@ -139,21 +139,6 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should schedule check', async () => {
-
-    // given
-    const scheduleCheck = sinon.spy();
-
-    const { instance } = createErrorTracking({ scheduleCheck });
-
-    // when
-    await instance.componentDidMount();
-
-    // then
-    expect(scheduleCheck).to.have.been.called;
-  });
-
-
   it('should not schedule check if DISABLE_REMOTE_INTERACTION flag is set', async () => {
 
     // given
@@ -237,8 +222,7 @@ describe('<ErrorTracking>', () => {
     await instance.componentDidMount();
 
     // then
-    expect(subscribeSpy).to.have.been.called;
-    expect(subscribeSpy.getCall(0).args[0]).to.eql('app.error-handled');
+    expect(subscribeSpy).to.have.been.calledWith('app.error-handled');
   });
 
 
@@ -260,7 +244,7 @@ describe('<ErrorTracking>', () => {
     // when
     await instance.componentDidMount();
 
-    const callback = subscribeSpy.getCall(0).args[1];
+    const callback = subscribeSpy.getCall(2).args[1];
 
     callback(handledError);
 
@@ -302,16 +286,11 @@ describe('<ErrorTracking>', () => {
 
     areCrashReportsEnabled = true;
 
-    return new Promise((resolve) => {
+    await instance.handlePrivacyPreferencesChanged();
 
-      setTimeout(() => {
-
-        expect(initializeSentrySpy).to.have.been.called;
-        expect(backendSendSpy).to.have.been.calledWith('errorTracking:turnedOn');
-
-        return resolve();
-      }, 100);
-    });
+    // then
+    expect(initializeSentrySpy).to.have.been.called;
+    expect(backendSendSpy).to.have.been.calledWith('errorTracking:turnedOn');
   });
 
 
@@ -349,16 +328,11 @@ describe('<ErrorTracking>', () => {
 
     areCrashReportsEnabled = false;
 
-    return new Promise((resolve) => {
+    await instance.handlePrivacyPreferencesChanged();
 
-      setTimeout(() => {
-
-        expect(sentryCloseSpy).to.have.been.called;
-        expect(backendSendSpy).to.have.been.calledWith('errorTracking:turnedOff');
-
-        return resolve();
-      }, 100);
-    });
+    // then
+    expect(sentryCloseSpy).to.have.been.called;
+    expect(backendSendSpy).to.have.been.calledWith('errorTracking:turnedOff');
   });
 });
 
