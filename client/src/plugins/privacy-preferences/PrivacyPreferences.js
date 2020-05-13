@@ -67,8 +67,14 @@ export default class PrivacyPreferences extends PureComponent {
   }
 
   onSaveAndClose = (preferences) => {
-    this.props.config.set(CONFIG_KEY, preferences);
+    this.props.config.set(CONFIG_KEY, preferences)
+      .then(() => this.emit('privacy-preferences.changed', preferences));
+
     this.onClose();
+  }
+
+  emit(event, payload) {
+    this.props.triggerAction('emit-event', { type: event, payload });
   }
 
   render() {
