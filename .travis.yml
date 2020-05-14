@@ -87,7 +87,7 @@ jobs:
 stages:
   - name: test
   - name: "pre distro"
-    if tag =~ ^v\d
+    if: tag =~ ^v\d
   - name: "distro"
     if: tag =~ ^v\d
   - name: "post distro"
