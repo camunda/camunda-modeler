@@ -27,6 +27,16 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT(drd)`: add auto-place feature ([#492](https://github.com/bpmn-io/dmn-js/pull/492))
 * `FEAT(drd)`: connect from new shape to source on append ([#492](https://github.com/bpmn-io/dmn-js/pull/492))
 
+## 3.7.3
+
+#### General
+
+* `CHORE`: bump to `dmn-js@7.5.1`
+
+#### DMN
+
+* `FIX`: changing decision ID via properties panel ([#1769](https://github.com/camunda/camunda-modeler/issues/1769))
+
 ## 3.7.2
 
 #### General
