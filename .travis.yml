@@ -33,6 +33,12 @@ jobs:
       before_install: *import-cert-win
       script:
       - npm run all -- --x64 --no-compress
+    - stage: "pre distro"
+      name: "Create GitHub release"
+      os: linux
+      script:
+      - sudo apt install hub
+      - GITHUB_TOKEN=$GH_TOKEN hub release create --draft --message=$TRAVIS_TAG $TRAVIS_TAG
     - stage: "distro"
       name: "Build Linux distro"
       os: linux
@@ -80,6 +86,8 @@ jobs:
 
 stages:
   - name: test
+  - name: "pre distro"
+    if tag =~ ^v\d
   - name: "distro"
     if: tag =~ ^v\d
   - name: "post distro"
