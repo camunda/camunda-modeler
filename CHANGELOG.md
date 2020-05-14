@@ -6,6 +6,13 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.0.0-alpha.3
+
+#### General
+
+* `FEAT`: Integrate error tracking ([#1796](https://github.com/camunda/camunda-modeler/pull/1796))
+* `FEAT`: Update Camunda logo ([#1794](https://github.com/camunda/camunda-modeler/pull/1794))
+
 ## 4.0.0-alpha.2
 
 #### General
