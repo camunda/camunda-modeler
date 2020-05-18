@@ -110,3 +110,14 @@ stages:
     if: type IN (cron)
   - name: "build pr"
     if: type == pull_request
+
+notifications:
+  webhooks:
+    if: type == pull_request
+    urls:
+      - https://14d5f7b3.ngrok.io/deploy-pr/travis
+    on_success: always # default: always
+    on_failure: always # default: always
+    on_start:   always # default: never
+    on_cancel:  always # default: always
+    on_error:   always # default: always
