@@ -156,8 +156,7 @@ function getPublishOptions(publish, nightly, pr) {
       `--publish=${ publish ? 'always' : 'never' }`,
       publish && '-c.publish.provider=s3',
       publish && '-c.publish.bucket=camunda-modeler-pr',
-      publish && `-c.publish.path=pr-${pr}`,
-      publish && '-c.publish.endpoint=http://127.0.0.1:4568'
+      publish && `-c.publish.path=pr-${pr}`
     ].filter(f => f);
   }
 
