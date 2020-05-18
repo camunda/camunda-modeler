@@ -108,8 +108,7 @@ class PropertiesContainerWrapped extends PureComponent {
     const {
       layout,
       forwardedRef,
-      className,
-      hideIfCollapsed
+      className
     } = this.props;
 
     const propertiesPanel = layout.propertiesPanel || DEFAULT_LAYOUT;
@@ -131,17 +130,14 @@ class PropertiesContainerWrapped extends PureComponent {
           { open }
         ) }
         style={ propertiesStyle }>
+        <div
+          className="toggle"
+          onClick={ this.handleToggle }
+          draggable
+          onDragStart={ this.handleResizeStart }
+        >Properties Panel</div>
         {
-          (open || !hideIfCollapsed) &&
-            <div
-              className="toggle"
-              onClick={ this.handleToggle }
-              draggable
-              onDragStart={ this.handleResizeStart }
-            >Properties Panel</div>
-        }
-        {
-          (open) &&
+          open &&
             <div
               className="resize-handle"
               draggable

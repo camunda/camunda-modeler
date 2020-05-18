@@ -815,6 +815,13 @@ describe('<DmnEditor>', function() {
       // then
       expect(propertiesAttachSpy).not.to.be.called;
     });
+
+
+    it('should reattach overview');
+
+
+    it('should NOT reattach overview');
+
   });
 
 
@@ -839,6 +846,8 @@ describe('<DmnEditor>', function() {
         layout,
         onLayoutChanged
       });
+
+      wrapper.update();
 
       const toggle = wrapper.find('.toggle');
 
@@ -869,6 +878,8 @@ describe('<DmnEditor>', function() {
         layout,
         onLayoutChanged
       });
+
+      wrapper.update();
 
       const toggle = wrapper.find('.toggle');
 
