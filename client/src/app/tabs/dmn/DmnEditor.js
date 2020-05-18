@@ -91,8 +91,14 @@ export class DmnEditor extends CachedComponent {
 
     const activeViewer = modeler.getActiveViewer();
 
+    let propertiesPanel;
+
     if (activeViewer) {
-      activeViewer.get('propertiesPanel').attachTo(this.propertiesPanelRef.current);
+      propertiesPanel = activeViewer.get('propertiesPanel', false);
+
+      if (propertiesPanel) {
+        propertiesPanel.attachTo(this.propertiesPanelRef.current);
+      }
     }
 
     this.checkImport();
@@ -231,10 +237,16 @@ export class DmnEditor extends CachedComponent {
 
     const activeViewer = modeler.getActiveViewer();
 
+    let propertiesPanel;
+
     // only attach properties panel if view is switched
     if (activeViewer &&
       (!previousView || previousView.element !== activeView.element)) {
-      activeViewer.get('propertiesPanel').attachTo(this.propertiesPanelRef.current);
+      propertiesPanel = activeViewer.get('propertiesPanel', false);
+
+      if (propertiesPanel) {
+        propertiesPanel.attachTo(this.propertiesPanelRef.current);
+      }
     }
 
     // must be called last
@@ -277,6 +289,8 @@ export class DmnEditor extends CachedComponent {
 
     const commandStack = activeViewer.get('commandStack');
 
+    const hasPropertiesPanel = !!activeViewer.get('propertiesPanel', false);
+
     const inputActive = isInputActive();
 
     const newState = {
@@ -287,7 +301,7 @@ export class DmnEditor extends CachedComponent {
       exportAs: 'saveSVG' in activeViewer ? EXPORT_AS : false,
       inputActive,
       paste: false,
-      propertiesPanel: true,
+      propertiesPanel: hasPropertiesPanel,
       redo: commandStack.canRedo(),
       save: true,
       undo: commandStack.canUndo()
@@ -724,6 +738,10 @@ export class DmnEditor extends CachedComponent {
 
     const hideIfCollapsed = activeView && activeView.type !== 'drd';
 
+    const activeViewer = modeler.getActiveViewer();
+
+    const hasPropertiesPanel = !importing && activeViewer && !!activeViewer.get('propertiesPanel', false);
+
     return (
       <div className={ css.DmnEditor }>
 
@@ -791,12 +809,16 @@ export class DmnEditor extends CachedComponent {
         </Fill>
         <div className="diagram" ref={ this.ref }></div>
 
-        <PropertiesContainer
-          className="properties"
-          layout={ layout }
-          ref={ this.propertiesPanelRef }
-          hideIfCollapsed={ hideIfCollapsed }
-          onLayoutChanged={ onLayoutChanged } />
+        {
+          hasPropertiesPanel && (
+            <PropertiesContainer
+              className="properties"
+              layout={ layout }
+              ref={ this.propertiesPanelRef }
+              hideIfCollapsed={ hideIfCollapsed }
+              onLayoutChanged={ onLayoutChanged } />
+          )
+        }
 
       </div>
     );

@@ -20,8 +20,6 @@ import propertiesPanelModule from 'dmn-js-properties-panel';
 import propertiesProviderModule from 'dmn-js-properties-panel/lib/provider/camunda';
 
 import drdAdapterModule from 'dmn-js-properties-panel/lib/adapter/drd';
-import decisionTableAdapterModule from 'dmn-js-properties-panel/lib/adapter/decision-table';
-import literalExpressionAdapterModule from 'dmn-js-properties-panel/lib/adapter/literal-expression';
 
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
 import decisionTableKeyboardModule from './features/decision-table-keyboard';
@@ -64,17 +62,7 @@ export default class CamundaDmnModeler extends DmnModeler {
         propertiesPanelKeyboardBindingsModule
       ]),
       decisionTable: mergeModules(decisionTable, [
-        propertiesPanelModule,
-        propertiesProviderModule,
-        decisionTableAdapterModule,
-        propertiesPanelKeyboardBindingsModule,
         decisionTableKeyboardModule
-      ]),
-      literalExpression: mergeModules(literalExpression, [
-        propertiesPanelModule,
-        propertiesProviderModule,
-        literalExpressionAdapterModule,
-        propertiesPanelKeyboardBindingsModule
       ]),
       moddleExtensions: {
         camunda: camundaModdleDescriptor,
