@@ -141,6 +141,7 @@ export class App extends PureComponent {
     }
 
     this.currentNotificationId = 0;
+    
   }
 
   createDiagram = async (type = 'bpmn', options) => {
