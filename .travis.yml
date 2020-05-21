@@ -90,7 +90,7 @@ jobs:
       script: >
         AWS_ACCESS_KEY_ID=$AWS_BUILD_PR_ACCESS_KEY_ID
         AWS_SECRET_ACCESS_KEY=$AWS_BUILD_PR_SECRET_ACCESS_KEY
-        npm run build -- --linux --publish --pr=$TRAVIS_PULL_REQUEST
+        npm run build -- --linux --publish --pr=$TRAVIS_PULL_REQUEST --region=$AWS_BUILD_PR_REGION
     - stage: "build pr"
       name: "Build MacOS Pull Request"
       os: osx
@@ -99,7 +99,7 @@ jobs:
       script: >
         AWS_ACCESS_KEY_ID=$AWS_BUILD_PR_ACCESS_KEY_ID
         AWS_SECRET_ACCESS_KEY=$AWS_BUILD_PR_SECRET_ACCESS_KEY
-        npm run build -- --mac --publish --pr=$TRAVIS_PULL_REQUEST
+        npm run build -- --mac --publish --pr=$TRAVIS_PULL_REQUEST --region=$AWS_BUILD_PR_REGION
     - stage: "build pr"
       name: "Build Windows Pull Request"
       os: windows
@@ -108,7 +108,7 @@ jobs:
       script: >
         AWS_ACCESS_KEY_ID=$AWS_BUILD_PR_ACCESS_KEY_ID
         AWS_SECRET_ACCESS_KEY=$AWS_BUILD_PR_SECRET_ACCESS_KEY
-        npm run build -- --win --publish --pr=$TRAVIS_PULL_REQUEST
+        npm run build -- --win --publish --pr=$TRAVIS_PULL_REQUEST --region=$AWS_BUILD_PR_REGION
 stages:
   - name: test
   - name: "pre distro"

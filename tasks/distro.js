@@ -22,7 +22,8 @@ const {
   nightly,
   publish,
   config,
-  pr
+  pr,
+  region
 } = argv;
 
 // in case of --nightly, update all package versions to the
@@ -89,7 +90,7 @@ const platforms = [
 
 const platformOptions = platforms.map(p => `--${p}`);
 
-let publishOptions = getPublishOptions(publish, nightly, pr);
+let publishOptions = getPublishOptions(publish, nightly, pr, region);
 
 const signingOptions = [
   `-c.forceCodeSigning=${false}`
@@ -140,7 +141,7 @@ exec('electron-builder', args, {
   stdio: 'inherit'
 });
 
-function getPublishOptions(publish, nightly, pr) {
+function getPublishOptions(publish, nightly, pr, region) {
   if (typeof publish === undefined) {
     return [];
   }
@@ -156,7 +157,8 @@ function getPublishOptions(publish, nightly, pr) {
       `--publish=${ publish ? 'always' : 'never' }`,
       publish && '-c.publish.provider=s3',
       publish && '-c.publish.bucket=camunda-modeler-pr',
-      publish && `-c.publish.path=pr-${pr}`
+      publish && `-c.publish.path=pr-${pr}`,
+      publish && region && `-c.publish.region=${region}`
     ].filter(f => f);
   }
 
