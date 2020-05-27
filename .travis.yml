@@ -37,7 +37,7 @@ jobs:
       name: "Create GitHub release"
       os: linux
       script:
-      - sudo apt install hub
+      - sudo snap install hub --classic
       - GITHUB_TOKEN=$GH_TOKEN hub release create --draft --message=$TRAVIS_TAG $TRAVIS_TAG
     - stage: "distro"
       name: "Build Linux distro"
