@@ -51,7 +51,7 @@ This project incorporates components from the projects listed below. The origina
 44.   bpmn-js-executable-fix@0.1.1 (https://github.com/bpmn-io/bpmn-js-executable-fix)
 45.   bpmn-js-properties-panel@0.33.2 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 46.   bpmn-js-signavio-compat@1.2.1 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
-47.   bpmn-js@6.5.0 (https://github.com/bpmn-io/bpmn-js)
+47.   bpmn-js@6.5.1 (https://github.com/bpmn-io/bpmn-js)
 48.   bpmn-moddle@6.0.6 (https://github.com/bpmn-io/bpmn-moddle)
 49.   camunda-bpmn-moddle@4.4.0 (https://github.com/camunda/camunda-bpmn-moddle)
 50.   camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
@@ -59,7 +59,7 @@ This project incorporates components from the projects listed below. The origina
 52.   canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
 53.   classnames@2.2.6 (https://github.com/JedWatson/classnames)
 54.   cmmn-js-properties-panel@0.8.3 (https://github.com/bpmn-io/cmmn-js-properties-panel)
-55.   cmmn-js@0.19.2 (https://github.com/bpmn-io/cmmn-js)
+55.   cmmn-js@0.20.0 (https://github.com/bpmn-io/cmmn-js)
 56.   cmmn-moddle@5.0.0 (https://github.com/bpmn-io/cmmn-moddle)
 57.   codemirror@5.46.0 (https://github.com/codemirror/CodeMirror)
 58.   css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape)
@@ -112,7 +112,7 @@ This project incorporates components from the projects listed below. The origina
 105.  sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
 106.  stackblur@1.0.0
 107.  table-js@6.0.3 (https://github.com/bpmn-io/table-js)
-108.  tiny-svg@2.2.2 (https://github.com/bpmn-io/tiny-svg)
+108.  tiny-svg@2.2.1 (https://github.com/bpmn-io/tiny-svg)
 109.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
 110.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
 111.  xmldom@0.1.27 (https://github.com/jindw/xmldom)
@@ -1271,7 +1271,7 @@ THE SOFTWARE.
 END OF bpmn-js-signavio-compat@1.2.1 NOTICES AND INFORMATION
 
 
-%% bpmn-js@6.5.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@6.5.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1297,7 +1297,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF bpmn-js@6.5.0 NOTICES AND INFORMATION
+END OF bpmn-js@6.5.1 NOTICES AND INFORMATION
 
 
 %% bpmn-moddle@6.0.6 NOTICES AND INFORMATION BEGIN HERE
@@ -1470,9 +1470,9 @@ THE SOFTWARE.
 END OF cmmn-js-properties-panel@0.8.3 NOTICES AND INFORMATION
 
 
-%% cmmn-js@0.19.2 NOTICES AND INFORMATION BEGIN HERE
+%% cmmn-js@0.20.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-Copyright (c) 2015-2018 camunda services GmbH
+Copyright (c) 2014-present Camunda Services GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in the
@@ -1484,10 +1484,10 @@ following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-The source code responsible for displaying the bpmn.io logo (two green cogwheels in
-a box) that links back to http://bpmn.io as part of rendered diagrams MUST NOT be
+The source code responsible for displaying the bpmn.io project watermark that
+links back to https://bpmn.io as part of rendered diagrams MUST NOT be
 removed or changed. When this software is being used in a website or application,
-the logo must stay fully visible and not visually overlapped by other elements.
+the watermark must stay fully visible and not visually overlapped by other elements.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
 INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
@@ -1495,8 +1495,9 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
+
 ==========================================
-END OF cmmn-js@0.19.2 NOTICES AND INFORMATION
+END OF cmmn-js@0.20.0 NOTICES AND INFORMATION
 
 
 %% cmmn-moddle@5.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -2898,7 +2899,7 @@ THE SOFTWARE.
 END OF table-js@6.0.3 NOTICES AND INFORMATION
 
 
-%% tiny-svg@2.2.2 NOTICES AND INFORMATION BEGIN HERE
+%% tiny-svg@2.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -2923,7 +2924,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF tiny-svg@2.2.2 NOTICES AND INFORMATION
+END OF tiny-svg@2.2.1 NOTICES AND INFORMATION
 
 
 %% tiny-warning@1.0.3 NOTICES AND INFORMATION BEGIN HERE
