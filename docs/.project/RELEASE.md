@@ -10,17 +10,23 @@ A list of activities to perform to cut a Camunda Modeler minor or major release.
 For patch releases turn to [this documentation](./PATCH_RELEASE.md).
 
 ```markdown
-Release Camunda Modeler `vVERSION`.
+<!-- Issue Title: Release Camunda Modeler vX.X.X -->
 
-#### What is inside?
+## What's inside?
 
-* 
-* 
+* ...
+* ...
+* ...
 
 
-#### Release Checklist
+## Release Checklist
+
+_To be done immediately after creating this issue._
 
 * [ ] put up code freeze appointment in calendar (include `modeling`, `qa`, `infra`, and `Team-Support`)
+
+_To be done after code freeze and prior to the release day to prepare and build the release._
+
 * [ ] make sure dependencies are released (`rm -rf node_modules && npm i && npm run all` works)
     * `bpmn-js`, `dmn-js`, `cmmn-js`, `*-properties-panel`, `*-moddle`, ...
 * [ ] close all issues which are solved by dependency updates
@@ -36,6 +42,9 @@ Release Camunda Modeler `vVERSION`.
     * [ ] Works on Windows
 * [ ] trigger QA for fuzzy testing
 * [ ] write blog post for [blog.camunda.org](https://github.com/camunda/blog.camunda.org), __do not publish until released version is available for download on [camunda.org](https://camunda.org/release/camunda-modeler/)__
+
+_To be done on release day to announce the release and making it publically available._
+
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
 * [ ] trigger mirroring of release to https://camunda.org/release/camunda-modeler/ via [Jenkins](https://ci.cambpm.camunda.cloud/job/sideprojects/job/camunda-modeler-desktop-RELEASE/build?delay=0sec)
 * [ ] update download version of Camunda Modeler at [camunda.com](https://github.com/camunda/camunda.com-new/blob/live/data/releases.json)
