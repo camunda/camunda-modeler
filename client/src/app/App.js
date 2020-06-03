@@ -39,6 +39,7 @@ import Toolbar from './Toolbar';
 
 import Log from './Log';
 
+import { KeyboardInteractionTrapContext } from './primitives/modal/KeyboardInteractionTrap';
 
 import {
   KeyboardShortcutsModal
@@ -1809,155 +1810,159 @@ export class App extends PureComponent {
 
         <div className={ css.App }>
 
-          <SlotFillRoot>
+          <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
 
-            <Toolbar />
+            <SlotFillRoot>
 
-            <Fill slot="toolbar" group="1_general">
-              <DropdownButton
-                title="Create diagram"
-                items={ [
-                  {
-                    text: 'Create new BPMN diagram',
-                    onClick: this.composeAction('create-bpmn-diagram'),
-                    type: 'bpmn'
-                  },
-                  {
-                    text: 'Create new DMN table',
-                    onClick: this.composeAction('create-dmn-table'),
-                    type: 'dmn'
-                  },
-                  {
-                    text: 'Create new DMN diagram (DRD)',
-                    onClick: this.composeAction('create-dmn-diagram'),
-                    type: 'dmn'
-                  },
-                  {
-                    text: 'Create new CMMN diagram',
-                    onClick: this.composeAction('create-cmmn-diagram'),
-                    type: 'cmmn'
-                  }
-                ].filter(entry => tabsProvider.hasProvider(entry.type)) }
-              >
-                <Icon name="new" />
-              </DropdownButton>
+              <Toolbar />
 
-              <Button
-                title="Open diagram"
-                onClick={ this.composeAction('open-diagram') }
-              >
-                <Icon name="open" />
-              </Button>
-            </Fill>
-
-            <Fill slot="toolbar" group="2_save">
-              <Button
-                disabled={ !canSave }
-                onClick={ canSave ? this.composeAction('save') : null }
-                title="Save diagram"
-              >
-                <Icon name="save" />
-              </Button>
-              <Button
-                disabled={ !canSaveAs }
-                onClick={ canSaveAs ? this.composeAction('save-as') : null }
-                title="Save diagram as..."
-              >
-                <Icon name="save-as" />
-              </Button>
-            </Fill>
-
-            <Fill slot="toolbar" group="3_editor">
-              <Button
-                disabled={ !tabState.undo }
-                onClick={ this.composeAction('undo') }
-                title="Undo last action"
-              >
-                <Icon name="undo" />
-              </Button>
-              <Button
-                disabled={ !tabState.redo }
-                onClick={ this.composeAction('redo') }
-                title="Redo last action"
-              >
-                <Icon name="redo" />
-              </Button>
-            </Fill>
-
-            {
-              tabState.exportAs && <Fill slot="toolbar" group="4_export">
-                <Button
-                  title="Export as image"
-                  onClick={ this.composeAction('export-as') }
+              <Fill slot="toolbar" group="1_general">
+                <DropdownButton
+                  title="Create diagram"
+                  items={ [
+                    {
+                      text: 'Create new BPMN diagram',
+                      onClick: this.composeAction('create-bpmn-diagram'),
+                      type: 'bpmn'
+                    },
+                    {
+                      text: 'Create new DMN table',
+                      onClick: this.composeAction('create-dmn-table'),
+                      type: 'dmn'
+                    },
+                    {
+                      text: 'Create new DMN diagram (DRD)',
+                      onClick: this.composeAction('create-dmn-diagram'),
+                      type: 'dmn'
+                    },
+                    {
+                      text: 'Create new CMMN diagram',
+                      onClick: this.composeAction('create-cmmn-diagram'),
+                      type: 'cmmn'
+                    }
+                  ].filter(entry => tabsProvider.hasProvider(entry.type)) }
                 >
-                  <Icon name="picture" />
+                  <Icon name="new" />
+                </DropdownButton>
+
+                <Button
+                  title="Open diagram"
+                  onClick={ this.composeAction('open-diagram') }
+                >
+                  <Icon name="open" />
                 </Button>
               </Fill>
-            }
 
-            <div className="tabs">
-              <TabLinks
-                className="primary"
-                tabs={ tabs }
-                dirtyTabs={ dirtyTabs }
-                unsavedTabs={ unsavedTabs }
-                activeTab={ activeTab }
-                onSelect={ this.selectTab }
-                onMoveTab={ this.moveTab }
-                onContextMenu={ this.openTabLinksMenu }
-                onClose={ this.handleCloseTab }
-                placeholder={ {
-                  label: '+',
-                  title: 'New BPMN diagram',
-                  onClick: this.composeAction('create-bpmn-diagram')
-                } }
-                draggable
-                scrollable
+              <Fill slot="toolbar" group="2_save">
+                <Button
+                  disabled={ !canSave }
+                  onClick={ canSave ? this.composeAction('save') : null }
+                  title="Save diagram"
+                >
+                  <Icon name="save" />
+                </Button>
+                <Button
+                  disabled={ !canSaveAs }
+                  onClick={ canSaveAs ? this.composeAction('save-as') : null }
+                  title="Save diagram as..."
+                >
+                  <Icon name="save-as" />
+                </Button>
+              </Fill>
+
+              <Fill slot="toolbar" group="3_editor">
+                <Button
+                  disabled={ !tabState.undo }
+                  onClick={ this.composeAction('undo') }
+                  title="Undo last action"
+                >
+                  <Icon name="undo" />
+                </Button>
+                <Button
+                  disabled={ !tabState.redo }
+                  onClick={ this.composeAction('redo') }
+                  title="Redo last action"
+                >
+                  <Icon name="redo" />
+                </Button>
+              </Fill>
+
+              {
+                tabState.exportAs && <Fill slot="toolbar" group="4_export">
+                  <Button
+                    title="Export as image"
+                    onClick={ this.composeAction('export-as') }
+                  >
+                    <Icon name="picture" />
+                  </Button>
+                </Fill>
+              }
+
+              <div className="tabs">
+                <TabLinks
+                  className="primary"
+                  tabs={ tabs }
+                  dirtyTabs={ dirtyTabs }
+                  unsavedTabs={ unsavedTabs }
+                  activeTab={ activeTab }
+                  onSelect={ this.selectTab }
+                  onMoveTab={ this.moveTab }
+                  onContextMenu={ this.openTabLinksMenu }
+                  onClose={ this.handleCloseTab }
+                  placeholder={ {
+                    label: '+',
+                    title: 'New BPMN diagram',
+                    onClick: this.composeAction('create-bpmn-diagram')
+                  } }
+                  draggable
+                  scrollable
+                />
+
+                <TabContainer className="main">
+                  {
+                    <Tab
+                      key={ activeTab.id }
+                      tab={ activeTab }
+                      layout={ layout }
+                      onChanged={ this.handleTabChanged(activeTab) }
+                      onError={ this.handleTabError(activeTab) }
+                      onWarning={ this.handleTabWarning(activeTab) }
+                      onShown={ this.handleTabShown(activeTab) }
+                      onLayoutChanged={ this.handleLayoutChanged }
+                      onContextMenu={ this.openTabMenu }
+                      onAction={ this.triggerAction }
+                      onModal={ this.openModal }
+                      getConfig={ this.getConfig }
+                      setConfig={ this.setConfig }
+                      getPlugins={ this.getPlugins }
+                      ref={ this.tabRef }
+                    />
+                  }
+                </TabContainer>
+              </div>
+
+              <Log
+                entries={ logEntries }
+                layout={ layout.log }
+                onClear={ this.clearLog }
+                onLayoutChanged={ this.handleLayoutChanged }
+                onUpdateMenu={ this.updateMenu }
               />
 
-              <TabContainer className="main">
-                {
-                  <Tab
-                    key={ activeTab.id }
-                    tab={ activeTab }
-                    layout={ layout }
-                    onChanged={ this.handleTabChanged(activeTab) }
-                    onError={ this.handleTabError(activeTab) }
-                    onWarning={ this.handleTabWarning(activeTab) }
-                    onShown={ this.handleTabShown(activeTab) }
-                    onLayoutChanged={ this.handleLayoutChanged }
-                    onContextMenu={ this.openTabMenu }
-                    onAction={ this.triggerAction }
-                    onModal={ this.openModal }
-                    getConfig={ this.getConfig }
-                    setConfig={ this.setConfig }
-                    getPlugins={ this.getPlugins }
-                    ref={ this.tabRef }
-                  />
-                }
-              </TabContainer>
-            </div>
+              <PluginsRoot
+                app={ this }
+                plugins={ this.plugins }
+              />
 
-            <Log
-              entries={ logEntries }
-              layout={ layout.log }
-              onClear={ this.clearLog }
-              onLayoutChanged={ this.handleLayoutChanged }
-              onUpdateMenu={ this.updateMenu }
-            />
+            </SlotFillRoot>
 
-            <PluginsRoot
-              app={ this }
-              plugins={ this.plugins }
-            />
+            { this.state.currentModal === 'KEYBOARD_SHORTCUTS' ?
+              <KeyboardShortcutsModal
+                getGlobal={ this.getGlobal }
+                onClose={ this.closeModal }
+              /> : null }
 
-          </SlotFillRoot>
-
-          { this.state.currentModal === 'KEYBOARD_SHORTCUTS' ?
-            <KeyboardShortcutsModal
-              getGlobal={ this.getGlobal }
-              onClose={ this.closeModal }
-            /> : null }
+          </KeyboardInteractionTrapContext.Provider>
 
         </div>
 
