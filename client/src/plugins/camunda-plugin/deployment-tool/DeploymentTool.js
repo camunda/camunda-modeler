@@ -14,7 +14,6 @@ import { omit } from 'min-dash';
 
 import { default as CamundaAPI, ApiErrors } from '../shared/CamundaAPI';
 import AuthTypes from '../shared/AuthTypes';
-import KeyboardInteractionTrap from '../shared/KeyboardInteractionTrap';
 
 import DeploymentConfigModal from './DeploymentConfigModal';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
@@ -416,21 +415,19 @@ export default class DeploymentTool extends PureComponent {
       </Fill> }
 
       { modalState &&
-        <KeyboardInteractionTrap triggerAction={ this.props.triggerAction }>
-          <DeploymentConfigModal
-            configuration={ modalState.configuration }
-            activeTab={ modalState.tab }
-            title={ modalState.title }
-            intro={ modalState.intro }
-            primaryAction={ modalState.primaryAction }
-            onClose={ modalState.handleClose }
-            validator={ this.validator }
-            saveCredential={ this.saveCredential }
-            removeCredentials={ this.removeCredentials }
-            subscribeToFocusChange={ this.subscribeToFocusChange }
-            unsubscribeFromFocusChange={ this.unsubscribeFromFocusChange }
-          />
-        </KeyboardInteractionTrap>
+      <DeploymentConfigModal
+        configuration={ modalState.configuration }
+        activeTab={ modalState.tab }
+        title={ modalState.title }
+        intro={ modalState.intro }
+        primaryAction={ modalState.primaryAction }
+        onClose={ modalState.handleClose }
+        validator={ this.validator }
+        saveCredential={ this.saveCredential }
+        removeCredentials={ this.removeCredentials }
+        subscribeToFocusChange={ this.subscribeToFocusChange }
+        unsubscribeFromFocusChange={ this.unsubscribeFromFocusChange }
+      />
       }
     </React.Fragment>;
   }

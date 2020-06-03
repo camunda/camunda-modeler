@@ -15,6 +15,7 @@ import classNames from 'classnames';
 
 import FocusTrap from './FocusTrap';
 import EscapeTrap from './EscapeTrap';
+import KeyboardInteractionTrap from './KeyboardInteractionTrap';
 
 import CloseIcon from '../../../../resources/icons/Close.svg';
 
@@ -60,14 +61,16 @@ export default class Modal extends PureComponent {
     } = this.props;
 
     return ReactDOM.createPortal(
-      <div className="modal" tabIndex="-1" role="dialog">
-        <div className={ classNames('modal-dialog', className) } ref={ this.modalRef } role="document">
-          <div className="modal-content">
-            { children }
-            { onClose && (<Close onClick={ this.close } />) }
+      <KeyboardInteractionTrap>
+        <div className="modal" tabIndex="-1" role="dialog">
+          <div className={ classNames('modal-dialog', className) } ref={ this.modalRef } role="document">
+            <div className="modal-content">
+              { children }
+              { onClose && (<Close onClick={ this.close } />) }
+            </div>
           </div>
         </div>
-      </div>,
+      </KeyboardInteractionTrap>,
       document.body
     );
   }
