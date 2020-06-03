@@ -19,19 +19,20 @@ import {
 
 import PrivacyPreferences from '../PrivacyPreferences';
 
-// eslint-disable-next-line no-undef
 const { spy } = sinon;
 
 describe('<PrivacyPreferences>', () => {
 
   it('should render', async () => {
 
-    await shallow(<PrivacyPreferences />);
+    // given
+    await createPrivacyPreferences();
   });
 
 
   it('should show modal on start if config non existent', async () => {
 
+    // when
     const wrapper = await shallow(<PrivacyPreferences config={ {
       get() {
         return new Promise((resolve, reject) => {
@@ -40,12 +41,14 @@ describe('<PrivacyPreferences>', () => {
       }
     } } />);
 
+    // then
     expect(wrapper.state('showModal')).to.be.true;
   });
 
 
   it('should not show modal on start if config existent', async () => {
 
+    // when
     const wrapper = await shallow(<PrivacyPreferences config={ {
       get() {
         return new Promise((resolve, reject) => {
@@ -54,12 +57,14 @@ describe('<PrivacyPreferences>', () => {
       }
     } } />);
 
+    // then
     expect(wrapper.state('showModal')).to.be.false;
   });
 
 
   it('should set isInitialPreferences on start if config non existent', async () => {
 
+    // when
     const wrapper = await shallow(<PrivacyPreferences config={ {
       get() {
         return new Promise((resolve, reject) => {
@@ -68,54 +73,67 @@ describe('<PrivacyPreferences>', () => {
       }
     } } />);
 
+    // then
     expect(wrapper.state('isInitialPreferences')).to.be.true;
   });
 
 
   it('should subscribe to show-privacy-preferences', async () => {
 
+    // given
     const subscribeSpy = spy();
 
-    await shallow(<PrivacyPreferences config={ {
-      get() {
-        return new Promise((resolve, reject) => {
-          resolve({});
-        });
-      }
-    } } subscribe={ subscribeSpy } />);
+    // when
+    await createPrivacyPreferences({
+      config: {
+        get() {
+          return new Promise((resolve, reject) => {
+            resolve({});
+          });
+        }
+      }, subscribe: subscribeSpy
+    });
 
+    // then
     expect(subscribeSpy).to.have.been.calledWith('show-privacy-preferences');
   });
 
 
   it('should save config', async () => {
 
+    // given
     const setSpy = spy();
-    const wrapper = await mount(<PrivacyPreferences config={ {
-      get() {
-        return new Promise((resolve, reject) => {
-          resolve(null);
-        });
-      },
-      set() {
-        return new Promise((resolve, reject) => {
-          setSpy();
-          resolve(null);
-        });
+    const wrapper = await createPrivacyPreferences({
+      config: {
+        get() {
+          return new Promise((resolve, reject) => {
+            resolve(null);
+          });
+        },
+        set() {
+          return new Promise((resolve, reject) => {
+            setSpy();
+            resolve(null);
+          });
+        }
       }
-    } } subscribe={ () => {} } />);
+    }, mount);
 
+    // when
     await wrapper.update();
     wrapper.find('.btn-primary').first().simulate('click');
+
+    // then
     expect(setSpy).to.have.been.called;
   });
 
 
   it('should open modal on show-privacy-preferences', async () => {
 
+    // given
     let subscribeFunc;
     const setSpy = spy();
-    const wrapper = await mount(<PrivacyPreferences config={ {
+    const config = {
       get() {
         return new Promise((resolve, reject) => {
           resolve({});
@@ -124,38 +142,63 @@ describe('<PrivacyPreferences>', () => {
       set() {
         setSpy();
       }
-    } } subscribe={ (type, func) => {
+    };
+    const subscribe = (type, func) => {
       if (type === 'show-privacy-preferences') {
         subscribeFunc = func;
       }
-    } } />);
+    };
+    const wrapper = await createPrivacyPreferences({
+      config, subscribe
+    }, mount);
 
+    // when
     await subscribeFunc();
     await wrapper.update();
+
+    // then
     expect(wrapper.find('.privacyPreferencesField')).to.have.length(1);
   });
 
 
   it('should not save config on cancel', async () => {
 
+    // given
     let subscribeFunc;
     const setSpy = spy();
-    const wrapper = await mount(<PrivacyPreferences config={ {
-      get() {
-        return new Promise((resolve, reject) => {
-          resolve({});
-        });
+    const wrapper = await createPrivacyPreferences({
+      config: {
+        get() {
+          return Promise.resolve({});
+        },
+        set() {
+          setSpy();
+        }
       },
-      set() {
-        setSpy();
+      subscribe: (type, func) => {
+        subscribeFunc = func;
       }
-    } } subscribe={ (type, func) => {
-      subscribeFunc = func;
-    } } />);
+    }, mount);
 
+    // when
     await subscribeFunc();
     await wrapper.update();
     wrapper.find('.btn-secondary').simulate('click');
+
+    // then
     expect(setSpy).to.not.have.been.called;
   });
 });
+
+
+
+// helper
+function createPrivacyPreferences({
+  config = {}, triggerAction = noop, subscribe = noop
+} = {}, mount = shallow) {
+  return mount(<PrivacyPreferences
+    config={ config } triggerAction={ triggerAction } subscribe={ subscribe }
+  />);
+}
+
+function noop() {}
