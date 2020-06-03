@@ -22,6 +22,8 @@ import {
 
 import Log from '../Log';
 
+import Flags, { DISABLE_REMOTE_INTERACTION } from '../../util/Flags';
+
 import {
   Backend,
   Cache,
@@ -2642,6 +2644,12 @@ function createApp(options = {}, mountFn=shallow) {
   }
 
   let app;
+
+  const flags = options.flags || {
+    [ DISABLE_REMOTE_INTERACTION ]: true
+  };
+
+  Flags.init(flags);
 
   const cache = options.cache || new Cache();
 
