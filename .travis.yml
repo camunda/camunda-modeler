@@ -24,9 +24,8 @@ jobs:
     - stage: test
       name: Test on Linux
       script:
-      - |
-        COVERAGE=1 npm run all -- --x64 --no-compress
-        npx codecov
+      - COVERAGE=1 npm run all -- --x64 --no-compress
+      after_success: npx codecov
     - stage: test
       name: Test on Windows
       os: windows
