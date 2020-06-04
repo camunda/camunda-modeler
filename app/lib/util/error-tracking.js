@@ -20,6 +20,10 @@ const NON_EXISTENT_EDITOR_ID = 'NON_EXISTENT_EDITOR_ID';
 const SENTRY_DSN_FLAG = 'sentry-dsn';
 const DISABLE_REMOTE_INTERACTION_FLAG = 'disable-remote-interaction';
 
+let isActive = false;
+
+const additionalTags = [];
+
 module.exports.start = function(Sentry, version, config, flags, renderer) {
   const editorID = config.get(EDITOR_ID_CONFIG_KEY) || NON_EXISTENT_EDITOR_ID;
 
@@ -34,6 +38,23 @@ module.exports.start = function(Sentry, version, config, flags, renderer) {
   // listen to frontend in case the user turned on/off error tracking option
   // via privacy preferences
   listenToFrontend(Sentry, editorID, version, flags, renderer);
+};
+
+/**
+ * Set additional tag in Sentry
+ *
+ * @param {import('@sentry/node')} Sentry
+ * @param {string} key
+ * @param {any} value
+ */
+module.exports.setTag = function(Sentry, key, value) {
+  additionalTags.push({ key, value });
+
+  if (isActive) {
+    Sentry.configureScope(scope => {
+      scope.setTag(key, value);
+    });
+  }
 };
 
 function listenToFrontend(Sentry, editorID, version, flags, renderer) {
@@ -95,10 +116,14 @@ function initializeSentry(Sentry, editorID, release, dsn) {
       scope.setTag('is-backend-error', true);
       scope.setTag('platform', os.platform());
       scope.setTag('os-version', os.release());
+
+      additionalTags.forEach(({ key, value }) => {
+        scope.setTag(key, value);
+      });
     });
 
     log.info('Sentry initialized.');
-
+    isActive = true;
   } catch (err) {
 
     log.error('Error initializing Sentry', err);
@@ -112,6 +137,7 @@ function closeSentry(Sentry) {
     Sentry.close();
 
     log.info('Sentry closed.');
+    isActive = false;
   } catch (err) {
 
     log.error('Error happened closing Sentry', err);
