@@ -13,7 +13,6 @@ import React, { PureComponent } from 'react';
 import PlayIcon from 'icons/Play.svg';
 
 import CamundaAPI from '../shared/CamundaAPI';
-import KeyboardInteractionTrap from '../shared/KeyboardInteractionTrap';
 
 import StartInstanceConfigModal from './StartInstanceConfigModal';
 
@@ -391,14 +390,12 @@ export default class StartInstanceTool extends PureComponent {
       }
 
       { modalState &&
-      <KeyboardInteractionTrap triggerAction={ this.props.triggerAction }>
         <StartInstanceConfigModal
           configuration={ modalState.configuration }
           activeTab={ modalState.tab }
           onClose={ modalState.handleClose }
           title={ modalState.title }
         />
-      </KeyboardInteractionTrap>
       }
     </React.Fragment>;
   }

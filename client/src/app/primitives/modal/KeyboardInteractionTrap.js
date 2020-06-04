@@ -8,8 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-import { PureComponent } from 'react';
+import React, { PureComponent, createContext } from 'react';
 
+export const KeyboardInteractionTrapContext = createContext(() => {});
 
 /**
  * A wrapper around a react component that ensures that
@@ -23,7 +24,19 @@ import { PureComponent } from 'react';
  * This only works under the assumption that the child component
  * is a modal that user and keyboard focus.
  */
-export default class KeyboardInteractionTrap extends PureComponent {
+export default function KeyboardInteractionTrap(props) {
+  return (
+    <KeyboardInteractionTrapContext.Consumer>
+      { triggerAction => (
+        <KeyboardInteractionTrapComponent triggerAction={ triggerAction }>
+          { props.children || null }
+        </KeyboardInteractionTrapComponent>
+      )}
+    </KeyboardInteractionTrapContext.Consumer>
+  );
+}
+
+class KeyboardInteractionTrapComponent extends PureComponent {
 
   handleFocus = (event) => {
     this.updateMenu(event.target);
