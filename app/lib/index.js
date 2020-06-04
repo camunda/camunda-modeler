@@ -565,6 +565,9 @@ function bootstrap() {
     paths
   });
 
+  // track plugins
+  errorTracking.setTag(Sentry, 'plugins', plugins.getAll().map(({ name }) => name));
+
   return {
     config,
     dialog,

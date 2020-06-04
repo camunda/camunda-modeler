@@ -225,6 +225,57 @@ describe('error-tracking', function() {
     // then
     expect(sentryCloseSpy).to.have.been.called;
   });
+
+
+  describe('#setTag', function() {
+
+    it('should set tag when error tracking is active on start', function() {
+
+      // given
+      const setTagSpy = sinon.spy();
+
+      const config = mockConfig({ 'editor.privacyPreferences': { 'ENABLE_CRASH_REPORTS': true } });
+      const flags = mockFlags();
+      const renderer = mockRenderer();
+      const Sentry = mockSentry({ setTagSpy });
+
+      // when
+      errorTracking.start(Sentry, 'v2', config, flags, renderer);
+      errorTracking.setTag(Sentry, 'key', 'value');
+
+      // then
+      expect(setTagSpy).to.have.been.calledWith({ key: 'key', value: 'value' });
+    });
+
+
+    it('should set tag when error tracking is restarted', function() {
+
+      // given
+      const rendererSpy = sinon.spy();
+      const setTagSpy = sinon.spy();
+
+      const config = mockConfig({ 'editor.privacyPreferences': { 'ENABLE_CRASH_REPORTS': false } });
+      const flags = mockFlags();
+      const renderer = mockRenderer(rendererSpy);
+      const Sentry = mockSentry({ setTagSpy });
+
+      // when
+      errorTracking.start(Sentry, 'v2', config, flags, renderer);
+
+      const calls = rendererSpy.getCalls();
+
+      errorTracking.setTag(Sentry, 'key', 'value');
+
+      // then
+      expect(setTagSpy).not.to.have.been.called;
+
+      // when
+      calls[0].args[1]();
+
+      // then
+      expect(setTagSpy).to.have.been.calledWith({ key: 'key', value: 'value' });
+    });
+  });
 });
 
 function mockConfig(valuesByKey = {}) {
