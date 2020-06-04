@@ -334,20 +334,51 @@ describe('<ErrorTracking>', () => {
     expect(sentryCloseSpy).to.have.been.called;
     expect(backendSendSpy).to.have.been.calledWith('errorTracking:turnedOff');
   });
+
+
+  it('should attach plugins to scope', async () => {
+
+    // given
+    const setTagSpy = sinon.spy();
+    const plugins = [ { name: 'test' } ];
+
+    const { instance } = createErrorTracking({
+      plugins,
+      setTagSpy,
+      dsn: 'TEST_DSN',
+      configValues: { 'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true } }
+    });
+
+    // when
+    await instance.componentDidMount();
+
+    // then
+    expect(setTagSpy).to.have.been.calledWith(
+      { key: 'plugins', value: plugins.map(({ name }) => name) }
+    );
+  });
 });
 
 function createErrorTracking(props={}) {
 
   const configValues = props.configValues || {};
 
-  const _getGlobal = () => {
-    return {
-      send: (key) => {
-        if (props.backendSendSpy) {
-          props.backendSendSpy(key);
+  const _getGlobal = name => {
+    if (name === 'backend') {
+      return {
+        send: (key) => {
+          if (props.backendSendSpy) {
+            props.backendSendSpy(key);
+          }
         }
-      }
-    };
+      };
+    } else if (name === 'plugins') {
+      return {
+        getAppPlugins() {
+          return props.plugins || [];
+        }
+      };
+    }
   };
 
   const subscribe = (key, callback) => {
