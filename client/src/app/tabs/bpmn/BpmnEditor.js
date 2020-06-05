@@ -529,18 +529,18 @@ export class BpmnEditor extends CachedComponent {
     return generateImage(type, svg);
   }
 
-  exportSVG() {
+  async exportSVG() {
     const modeler = this.getModeler();
 
-    return new Promise((resolve, reject) => {
-      modeler.saveSVG((err, svg) => {
-        if (err) {
-          return reject(err);
-        }
+    try {
 
-        return resolve(svg);
-      });
-    });
+      const { svg } = await modeler.saveSVG();
+
+      return svg;
+    } catch (err) {
+
+      return Promise.reject(err);
+    }
   }
 
   triggerAction = (action, context) => {
