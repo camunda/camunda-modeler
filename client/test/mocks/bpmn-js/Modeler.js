@@ -87,14 +87,22 @@ export default class Modeler {
     };
   }
 
-  importXML(xml, done) {
+  importXML(xml) {
     this.xml = xml;
 
-    const error = xml === 'import-error' ? new Error('error') : null;
+    let error = xml === 'import-error' ? new Error('error') : null;
 
     const warnings = xml === 'import-warnings' ? [ 'warning' ] : [];
 
-    done && done(error, warnings);
+    return new Promise(function(resolve, reject) {
+      if (error) {
+        error.warnings = warnings;
+
+        return reject(error);
+      }
+
+      return resolve({ warnings });
+    });
   }
 
   saveXML(options, done) {

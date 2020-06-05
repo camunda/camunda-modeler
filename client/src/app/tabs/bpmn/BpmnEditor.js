@@ -165,14 +165,6 @@ export class BpmnEditor extends CachedComponent {
     }
   }
 
-  ifMounted = (fn) => {
-    return (...args) => {
-      if (this._isMounted) {
-        fn(...args);
-      }
-    };
-  }
-
   listen(fn) {
     const modeler = this.getModeler();
 
@@ -470,7 +462,21 @@ export class BpmnEditor extends CachedComponent {
 
     const importedXML = await this.handleNamespace(xml);
 
-    modeler.importXML(importedXML, this.ifMounted(this.handleImport));
+
+    let error = null, warnings = null;
+    try {
+
+      const result = await modeler.importXML(importedXML);
+      warnings = result.warnings;
+    } catch (err) {
+
+      error = err;
+      warnings = err.warnings;
+    }
+
+    if (this._isMounted) {
+      this.handleImport(error, warnings);
+    }
   }
 
   /**
