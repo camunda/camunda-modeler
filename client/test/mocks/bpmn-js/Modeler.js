@@ -94,7 +94,7 @@ export default class Modeler {
 
     const warnings = xml === 'import-warnings' ? [ 'warning' ] : [];
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       if (error) {
         error.warnings = warnings;
 
@@ -105,15 +105,18 @@ export default class Modeler {
     });
   }
 
-  saveXML(options, done) {
+  saveXML(options) {
 
     const xml = this.xml;
 
-    if (xml === 'export-error') {
-      return done(new Error('failed to save xml'));
-    }
+    return new Promise((resolve, reject) => {
 
-    return done(null, xml);
+      if (xml === 'export-error') {
+        return reject(new Error('failed to save xml'));
+      }
+
+      return resolve({ xml });
+    });
   }
 
   saveSVG(done) {

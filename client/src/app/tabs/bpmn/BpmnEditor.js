@@ -490,7 +490,7 @@ export class BpmnEditor extends CachedComponent {
     return modeler;
   }
 
-  getXML() {
+  async getXML() {
     const {
       lastXML,
       modeler
@@ -500,29 +500,23 @@ export class BpmnEditor extends CachedComponent {
 
     const stackIdx = commandStack._stackIdx;
 
-    return new Promise((resolve, reject) => {
+    if (!this.isDirty()) {
+      return lastXML || this.props.xml;
+    }
 
-      if (!this.isDirty()) {
-        return resolve(lastXML || this.props.xml);
-      }
+    try {
 
-      modeler.saveXML({ format: true }, (err, xml) => {
-        this.setCached({
-          lastXML: xml,
-          stackIdx
-        });
+      const { xml } = await modeler.saveXML({ format: true });
 
-        if (err) {
-          this.handleError({
-            error: err
-          });
+      this.setCached({ lastXML: xml, stackIdx });
 
-          return reject(err);
-        }
+      return xml;
+    } catch (error) {
 
-        return resolve(xml);
-      });
-    });
+      this.handleError({ error });
+
+      return Promise.reject(error);
+    }
   }
 
   async exportAs(type) {
