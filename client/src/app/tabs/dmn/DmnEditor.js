@@ -200,8 +200,9 @@ export class DmnEditor extends CachedComponent {
 
   }
 
-  viewsChanged = ({ activeView, views }) => {
+  viewsChanged = ({ activeView }) => {
     const {
+      activeSheet: previousActiveSheet,
       onSheetsChanged
     } = this.props;
 
@@ -214,26 +215,18 @@ export class DmnEditor extends CachedComponent {
 
     const modeler = this.getModeler();
 
-    let activeSheet;
+    const { element } = activeView;
 
-    const sheets = views.map(view => {
-      const { element, type } = view;
+    const activeSheet = {
+      ...activeView,
+      id: element.id,
+      name: 'Diagram',
+      order: -1
+    };
 
-      const newSheet = {
-        element,
-        id: element.id,
-        name: getSheetName(view),
-        order: type === 'drd' ? -2 : -1
-      };
-
-      if (view === activeView) {
-        activeSheet = newSheet;
-      }
-
-      return newSheet;
-    });
-
-    onSheetsChanged(sheets, activeSheet);
+    if (previousActiveSheet.id !== activeSheet.id) {
+      onSheetsChanged([ activeSheet ], activeSheet);
+    }
 
     const activeViewer = modeler.getActiveViewer();
 
@@ -252,8 +245,7 @@ export class DmnEditor extends CachedComponent {
     // must be called last
     this.setCached({
       activeView,
-      dirty: dirty || modeler.getStackIdx() !== stackIdx,
-      views
+      dirty: dirty || modeler.getStackIdx() !== stackIdx
     });
 
     this.handleChanged();
@@ -895,19 +887,6 @@ export class DmnEditor extends CachedComponent {
 export default WithCache(WithCachedState(DmnEditor));
 
 // helpers //////////
-
-const viewNames = {
-  decisionTable: 'Decision Table',
-  literalExpression: 'Literal Expression'
-};
-
-function getSheetName(view) {
-  if (view.type === 'drd') {
-    return 'Diagram';
-  }
-
-  return view.element.name || viewNames[view.type];
-}
 
 function isCachedStateChange(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
