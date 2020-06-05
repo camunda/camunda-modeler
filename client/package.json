@@ -11,7 +11,7 @@
     "@bpmn-io/dmn-migrate": "^0.4.3",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@sentry/browser": "^5.15.5",
-    "bpmn-js": "^6.5.1",
+    "bpmn-js": "^7.0.1",
     "bpmn-js-disable-collapsed-subprocess": "^0.1.1",
     "bpmn-js-executable-fix": "^0.1.1",
     "bpmn-js-properties-panel": "^0.33.2",
