@@ -103,6 +103,14 @@ export default class CamundaDmnModeler extends DmnModeler {
         });
       });
 
+      viewer.on('propertiesPanel.focusin', event => {
+        this._emit('propertiesPanel.focusin', event);
+      });
+
+      viewer.on('propertiesPanel.focusout', event => {
+        this._emit('propertiesPanel.focusout', event);
+      });
+
     });
 
     addExporter(exporter, this);
