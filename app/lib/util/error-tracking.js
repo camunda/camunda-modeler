@@ -25,6 +25,10 @@ let isActive = false;
 const additionalTags = [];
 
 module.exports.start = function(Sentry, version, config, flags, renderer) {
+
+  // set initial module state
+  isActive = false;
+
   const editorID = config.get(EDITOR_ID_CONFIG_KEY) || NON_EXISTENT_EDITOR_ID;
 
   const { result, reason } = canInitializeSentry(config, flags);
