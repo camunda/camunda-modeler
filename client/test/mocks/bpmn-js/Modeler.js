@@ -119,13 +119,18 @@ export default class Modeler {
     });
   }
 
-  saveSVG(done) {
+  saveSVG() {
 
-    if (this.xml === 'export-as-error') {
-      return done(new Error('failed to save svg'));
-    }
+    const xml = this.xml;
 
-    return done(null, '<svg />');
+    return new Promise((resolve, reject) => {
+
+      if (xml === 'export-as-error') {
+        return reject(new Error('failed to save svg'));
+      }
+
+      return resolve({ svg: '<svg />' });
+    });
   }
 
   attachTo() {}
