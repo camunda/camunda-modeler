@@ -35,6 +35,8 @@ class Menu {
     this.rebuildMenu = this.rebuildMenu.bind(this);
 
     this.updateState = this.updateState.bind(this);
+
+    this.init();
   }
 
   init() {
