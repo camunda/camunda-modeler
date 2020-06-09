@@ -341,8 +341,6 @@ app.createEditorWindow = function() {
 
   dialog.setActiveWindow(mainWindow);
 
-  menu.init();
-
   let url = 'file://' + path.resolve(__dirname + '/../public/index.html');
 
   if (process.env.NODE_ENV === 'development') {

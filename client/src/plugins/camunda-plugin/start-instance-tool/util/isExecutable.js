@@ -16,24 +16,19 @@ import {
 
 var moddle = new BpmnModdle();
 
-export default function isExecutable(xml) {
+export default async function isExecutable(xml) {
 
-  return new Promise(resolve => {
-    moddle.fromXML(xml, function(err, definitions) {
+  try {
 
-      if (err) {
-        return resolve(false);
-      }
+    const { rootElement } = await moddle.fromXML(xml);
 
-      const {
-        rootElements
-      } = definitions;
+    const { rootElements } = rootElement;
 
-      const hasExecutableProcess = !!find(rootElements, r => r.isExecutable);
+    return !!find(rootElements, r => r.isExecutable);
 
-      resolve(hasExecutableProcess);
+  } catch (err) {
 
-    });
-  });
+    return false;
+  }
 
 }

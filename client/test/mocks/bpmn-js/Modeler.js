@@ -87,34 +87,50 @@ export default class Modeler {
     };
   }
 
-  importXML(xml, done) {
+  importXML(xml) {
     this.xml = xml;
 
-    const error = xml === 'import-error' ? new Error('error') : null;
+    let error = xml === 'import-error' ? new Error('error') : null;
 
     const warnings = xml === 'import-warnings' ? [ 'warning' ] : [];
 
-    done && done(error, warnings);
+    return new Promise((resolve, reject) => {
+      if (error) {
+        error.warnings = warnings;
+
+        return reject(error);
+      }
+
+      return resolve({ warnings });
+    });
   }
 
-  saveXML(options, done) {
+  saveXML(options) {
 
     const xml = this.xml;
 
-    if (xml === 'export-error') {
-      return done(new Error('failed to save xml'));
-    }
+    return new Promise((resolve, reject) => {
 
-    return done(null, xml);
+      if (xml === 'export-error') {
+        return reject(new Error('failed to save xml'));
+      }
+
+      return resolve({ xml });
+    });
   }
 
-  saveSVG(done) {
+  saveSVG() {
 
-    if (this.xml === 'export-as-error') {
-      return done(new Error('failed to save svg'));
-    }
+    const xml = this.xml;
 
-    return done(null, '<svg />');
+    return new Promise((resolve, reject) => {
+
+      if (xml === 'export-as-error') {
+        return reject(new Error('failed to save svg'));
+      }
+
+      return resolve({ svg: '<svg />' });
+    });
   }
 
   attachTo() {}

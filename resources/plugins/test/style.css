@@ -2,7 +2,7 @@
   display: block !important;
 }
 
-.bjs-powered-by > img {
+.bjs-powered-by > svg {
   display: none;
 }
 
