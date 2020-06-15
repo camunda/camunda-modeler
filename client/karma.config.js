@@ -8,7 +8,8 @@
  * except in compliance with the MIT License.
  */
 
-var coverage = process.env.COVERAGE;
+var coverage = process.env.COVERAGE,
+    modelers = process.env.MODELERS;
 
 if (coverage) {
 
@@ -49,7 +50,13 @@ var browsers =
       return browser;
     });
 
-var suite = coverage ? 'test/all.js' : 'test/suite.js';
+var suite = 'test/suite.js';
+
+if (coverage) {
+  suite = 'test/all.js';
+} else if (modelers) {
+  suite = 'test/modelers.js';
+}
 
 
 module.exports = function(karma) {
@@ -138,10 +145,10 @@ module.exports = function(karma) {
           resourcePath
         ],
         alias: {
-          'bpmn-js/lib/Modeler': 'test/mocks/bpmn-js/Modeler',
-          'cmmn-js/lib/Modeler': 'test/mocks/cmmn-js/Modeler',
-          'dmn-js/lib/Modeler': 'test/mocks/dmn-js/Modeler',
-          './DmnModeler': 'test/mocks/dmn-js/Modeler',
+          'bpmn-js/lib/Modeler': modelers ? 'bpmn-js/lib/Modeler' : 'test/mocks/bpmn-js/Modeler',
+          'cmmn-js/lib/Modeler': modelers ? 'cmmn-js/lib/Modeler' : 'test/mocks/cmmn-js/Modeler',
+          'dmn-js/lib/Modeler': modelers ? 'dmn-js/lib/Modeler' : 'test/mocks/dmn-js/Modeler',
+          './DmnModeler': modelers ? './DmnModeler' : 'test/mocks/dmn-js/Modeler',
           './CodeMirror': 'test/mocks/code-mirror/CodeMirror',
           'sourcemapped-stacktrace': 'test/mocks/sourcemapped-stacktrace'
         }

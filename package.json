@@ -10,6 +10,8 @@
     "client:auto-test": "(cd client && npm run auto-test)",
     "client:dev": "(cd client && npm run dev)",
     "client:test": "(cd client && npm run test)",
+    "bpmn-io-modelers:test": "(cd client && npm run bpmn-io-modelers:test)",
+    "bpmn-io-modelers:auto-test": "(cd client && npm run bpmn-io-modelers:auto-test)",
     "all": "run-s clean lint test \"build -- {@}\" --",
     "auto-test": "run-p *:auto-test",
     "clean": "del-cli 'dist/*' app/public",
