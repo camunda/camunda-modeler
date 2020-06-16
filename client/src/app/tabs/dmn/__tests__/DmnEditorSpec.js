@@ -727,28 +727,32 @@ describe('<DmnEditor>', function() {
 
     let instance;
 
-    const view1 = {
-      element: { id: 'foo' },
-      type: 'drd'
-    };
-
-    const view2 = {
-      element: { id: 'bar' },
+    const decisionTableView = {
+      element: { id: 'decisionTable' },
       type: 'decisionTable'
     };
 
-    const views = [view1, view2];
+    const drdView = {
+      element: { id: 'drd' },
+      type: 'drd'
+    };
+
+    const views = [
+      drdView,
+      decisionTableView
+    ];
 
     beforeEach(async function() {
-      instance = (await renderEditor(diagramXML)).instance;
+      ({ instance } = await renderEditor(diagramXML));
     });
 
-    it('should save dirty state', async function() {
+
+    it('should save dirty state', function() {
 
       // given
       const dirtySpy = spy(instance, 'isDirty');
 
-      const modeler = await instance.getModeler();
+      const modeler = instance.getModeler();
 
       const commandStack = modeler.getActiveViewer().get('commandStack');
 
@@ -758,7 +762,7 @@ describe('<DmnEditor>', function() {
 
       // when
       instance.viewsChanged({
-        activeView: view1,
+        activeView: drdView,
         views
       });
 
@@ -773,10 +777,10 @@ describe('<DmnEditor>', function() {
     });
 
 
-    it('should reattach properties panel on view switch', async function() {
+    it('should reattach properties panel on view switch', function() {
 
       // given
-      const modeler = await instance.getModeler();
+      const modeler = instance.getModeler();
 
       const propertiesPanel = modeler.getActiveViewer().get('propertiesPanel');
 
@@ -784,7 +788,7 @@ describe('<DmnEditor>', function() {
 
       // when
       instance.viewsChanged({
-        activeView: view1,
+        activeView: drdView,
         views
       });
 
@@ -792,13 +796,14 @@ describe('<DmnEditor>', function() {
       expect(propertiesAttachSpy).to.be.called;
     });
 
-    it('should NOT reattach properties panel when stay on view', async function() {
+
+    it('should NOT reattach properties panel when stay on view', function() {
 
       // given
-      const modeler = await instance.getModeler();
+      const modeler = instance.getModeler();
 
       instance.viewsChanged({
-        activeView: view1,
+        activeView: drdView,
         views
       });
 
@@ -808,7 +813,7 @@ describe('<DmnEditor>', function() {
 
       // when
       instance.viewsChanged({
-        activeView: view1,
+        activeView: drdView,
         views
       });
 
@@ -817,15 +822,137 @@ describe('<DmnEditor>', function() {
     });
 
 
-    it('should reattach overview');
+    it('should reattach overview when switching from DRD to decision table', async function() {
+
+      // given
+      instance.viewsChanged({
+        activeView: drdView,
+        views
+      });
+
+      const modeler = instance.getModeler();
+
+      sinon.stub(modeler, 'getActiveView').callsFake(() => decisionTableView);
+
+      const overviewAttachSpy = sinon.spy(modeler, 'attachOverviewTo');
+
+      // when
+      instance.viewsChanged({
+        activeView: decisionTableView,
+        views
+      });
+
+      // then
+      expect(overviewAttachSpy).to.have.been.called;
+    });
 
 
-    it('should NOT reattach overview');
+    it('should detach overview when switching to DRD', async function() {
+
+      // given
+      instance.viewsChanged({
+        activeView: decisionTableView,
+        views
+      });
+
+      const modeler = instance.getModeler();
+
+      sinon.stub(modeler, 'getActiveView').callsFake(() => drdView);
+
+      const overviewDetachSpy = sinon.spy(modeler, 'detachOverview');
+
+      // when
+      instance.viewsChanged({
+        activeView: drdView,
+        views
+      });
+
+      // then
+      expect(overviewDetachSpy).to.have.been.called;
+    });
 
   });
 
 
   describe('layout', function() {
+
+    it('should open overview', async function() {
+
+      // given
+      let layout = {
+        dmnOverview: {
+          open: false
+        }
+      };
+
+      function onLayoutChanged(newLayout) {
+        layout = newLayout;
+      }
+
+      const {
+        instance,
+        wrapper
+      } = await renderEditor(diagramXML, {
+        layout,
+        onLayoutChanged
+      });
+
+      const modeler = instance.getModeler();
+
+      modeler.open({ type: 'decisionTable' });
+
+      instance.handleChanged();
+
+      wrapper.update();
+
+      const toggle = wrapper.find('#button-toggle-overview');
+
+      // when
+      toggle.simulate('click');
+
+      // then
+      expect(layout.dmnOverview.open).to.be.true;
+    });
+
+
+    it('should close overview', async function() {
+
+      // given
+      let layout = {
+        dmnOverview: {
+          open: true
+        }
+      };
+
+      function onLayoutChanged(newLayout) {
+        layout = newLayout;
+      }
+
+      const {
+        instance,
+        wrapper
+      } = await renderEditor(diagramXML, {
+        layout,
+        onLayoutChanged
+      });
+
+      const modeler = instance.getModeler();
+
+      modeler.open({ type: 'decisionTable' });
+
+      instance.handleChanged();
+
+      wrapper.update();
+
+      const toggle = wrapper.find('#button-toggle-overview');
+
+      // when
+      toggle.simulate('click');
+
+      // then
+      expect(layout.dmnOverview.open).to.be.false;
+    });
+
 
     it('should open properties panel', async function() {
 

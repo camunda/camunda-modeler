@@ -1,0 +1,85 @@
+:local(.OverviewContainer) {
+  margin: 0 10px 10px 10px;
+  position: relative;
+
+  background-color: #fafafa;
+  border: solid 1px #dddddd;
+  border-radius: 3px;
+
+  &:not(.open) {
+    width: 0;
+    visibility: hidden;
+    margin-right: 0;
+  }
+
+  .resize-handle {
+    cursor: ew-resize;
+    z-index: 11;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -3px;
+    width: 6px;
+    user-select: none;
+  }
+
+  .toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 11;
+    opacity: 0.5;
+
+    &:before {
+      content: '\E80A';
+      font-family: 'app';
+      font-size: 14px;
+    }
+
+    &:hover {
+      opacity: 1;
+      color: #ff7400;
+    }
+  }
+
+  .overview-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    .dmn-drd-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+
+      .djs-element {
+        .djs-outline {
+          display: none;
+        }
+  
+        &.open,
+        &.can-open:hover {
+          .djs-visual {
+            rect {
+              stroke: #4285f4 !important;
+              fill: #cfe0fc !important;
+            }
+  
+            text {
+              fill: #4285f4 !important;
+            }
+          }
+        }
+      }
+  
+      .djs-overlay .drill-down-overlay {
+        color: #000000;
+        background: transparent;
+        pointer-events: none;
+      }
+    }
+  }
+
+}

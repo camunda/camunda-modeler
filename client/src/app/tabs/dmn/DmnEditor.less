@@ -2,16 +2,52 @@
   display: flex;
   flex: 1;
 
-  flex-direction: row;
+  flex-direction: column;
+
+  .top {
+    padding: 10px;
+
+    .button {
+      background: #fff;
+      padding: 8px;
+      border: solid 1px #CCC;
+      border-radius: 2px;
+      font-size: 14px;
+      color: #444;
+      font-weight: bold;
+      outline: none;
+      margin-right: 10px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &:hover {
+        background: #f6f6f6;
+      }
+    }
+
+  }
+
+  .bottom {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+  }
 
   .diagram {
     flex: 1;
     position: relative;
   }
+  
+  .diagram:not(.drd) {
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
 
   .dmn-decision-table-container,
-  .viewer-container {
-    padding: 10px;
+  .dmn-literal-expression-container {
+    padding-bottom: 10px;
   }
 
   .djs-overlay .drill-down-overlay {

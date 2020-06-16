@@ -15,6 +15,8 @@ import {
   isFunction
 } from 'min-dash';
 
+import classNames from 'classnames';
+
 import { Fill } from '../../slot-fill';
 
 import {
@@ -34,6 +36,8 @@ import {
   WithCachedState,
   CachedComponent
 } from '../../cached';
+
+import OverviewContainer from './OverviewContainer';
 
 import PropertiesContainer from '../PropertiesContainer';
 
@@ -59,6 +63,8 @@ import { findUsages as findNamespaceUsages } from '../util/namespace';
 
 import { migrateDiagram } from '@bpmn-io/dmn-migrate';
 
+import { DEFAULT_LAYOUT as overviewDefaultLayout } from './OverviewContainer';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 const NAMESPACE_URL_DMN11 = 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
@@ -75,6 +81,7 @@ export class DmnEditor extends CachedComponent {
     this.state = { };
 
     this.ref = React.createRef();
+    this.overviewRef = React.createRef();
     this.propertiesPanelRef = React.createRef();
 
     this.handleResize = debounce(this.handleResize);
@@ -99,6 +106,15 @@ export class DmnEditor extends CachedComponent {
       if (propertiesPanel) {
         propertiesPanel.attachTo(this.propertiesPanelRef.current);
       }
+
+      // attach overview
+      if (this.overviewRef.current) {
+        modeler.attachOverviewTo(this.overviewRef.current);
+
+        if (isOverviewOpen(this.props)) {
+          modeler._emit('overviewOpen');
+        }
+      }
     }
 
     this.checkImport();
@@ -116,6 +132,14 @@ export class DmnEditor extends CachedComponent {
 
   componentDidUpdate(prevProps) {
     this.checkImport(prevProps);
+
+    // We can only notify interested parties about overview open once its parent component was
+    // rendered
+    if (isOverviewOpened(this.props, prevProps)) {
+      const modeler = this.getModeler();
+
+      modeler._emit('overviewOpen');
+    }
 
     if (isCachedStateChange(prevProps, this.props)) {
       this.handleChanged();
@@ -211,7 +235,7 @@ export class DmnEditor extends CachedComponent {
       stackIdx
     } = this.getCached();
 
-    const previousView = this.getCached().activeView;
+    const previousActiveView = this.getCached().activeView;
 
     const modeler = this.getModeler();
 
@@ -234,11 +258,22 @@ export class DmnEditor extends CachedComponent {
 
     // only attach properties panel if view is switched
     if (activeViewer &&
-      (!previousView || previousView.element !== activeView.element)) {
+      (!previousActiveView || previousActiveView.element !== activeView.element)) {
       propertiesPanel = activeViewer.get('propertiesPanel', false);
 
       if (propertiesPanel) {
         propertiesPanel.attachTo(this.propertiesPanelRef.current);
+      }
+    }
+
+    // attach or detach overview
+    if (activeView.type === 'drd') {
+      modeler.detachOverview();
+    } else if (previousActiveView && previousActiveView.type === 'drd') {
+      modeler.attachOverviewTo(this.overviewRef.current);
+
+      if (isOverviewOpen(this.props)) {
+        modeler._emit('overviewOpen');
       }
     }
 
@@ -712,6 +747,32 @@ export class DmnEditor extends CachedComponent {
     });
   }
 
+  handleEditDrdClick = () => {
+    const modeler = this.getModeler();
+
+    const drdView = modeler._views.find(({ type }) => type === 'drd');
+
+    if (drdView) {
+      modeler.open(drdView);
+    }
+  }
+
+  handleToggleOverviewClick = () => {
+    const {
+      layout,
+      onLayoutChanged
+    } = this.props;
+
+    const dmnOverview = layout.dmnOverview || overviewDefaultLayout;
+
+    onLayoutChanged({
+      dmnOverview: {
+        ...dmnOverview,
+        open: !dmnOverview.open
+      }
+    });
+  }
+
   render() {
     const {
       layout,
@@ -728,9 +789,11 @@ export class DmnEditor extends CachedComponent {
 
     const activeView = modeler.getActiveView();
 
-    const hideIfCollapsed = activeView && activeView.type !== 'drd';
+    const isDrd = activeView && activeView.type === 'drd';
 
     const activeViewer = modeler.getActiveViewer();
+
+    const overviewOpen = isOverviewOpen(this.props);
 
     const hasPropertiesPanel = !importing && activeViewer && !!activeViewer.get('propertiesPanel', false);
 
@@ -799,18 +862,46 @@ export class DmnEditor extends CachedComponent {
             <Icon name="distribute-vertical-tool" />
           </Button>
         </Fill>
-        <div className="diagram" ref={ this.ref }></div>
 
         {
-          hasPropertiesPanel && (
-            <PropertiesContainer
-              className="properties"
-              layout={ layout }
-              ref={ this.propertiesPanelRef }
-              hideIfCollapsed={ hideIfCollapsed }
-              onLayoutChanged={ onLayoutChanged } />
+          !isDrd && (
+            <div className="top">
+              <button id="button-edit-drd" className="button" onClick={ this.handleEditDrdClick }>Edit DRD</button>
+              <button id="button-toggle-overview" className="button" onClick={ this.handleToggleOverviewClick }>{ overviewOpen ? 'Close' : 'Open' } Overview</button>
+            </div>
           )
         }
+
+        <div className="bottom">
+
+          {
+            !isDrd && (
+              <OverviewContainer
+                className="overview"
+                layout={ layout }
+                ref={ this.overviewRef }
+                onLayoutChanged={ onLayoutChanged } />
+            )
+          }
+
+          <div className={
+            classNames(
+              'diagram',
+              { 'drd': isDrd }
+            )
+          } ref={ this.ref }></div>
+
+          {
+            hasPropertiesPanel && (
+              <PropertiesContainer
+                className="properties"
+                layout={ layout }
+                ref={ this.propertiesPanelRef }
+                onLayoutChanged={ onLayoutChanged } />
+            )
+          }
+
+        </div>
 
       </div>
     );
@@ -845,7 +936,7 @@ export class DmnEditor extends CachedComponent {
       exporter: {
         name,
         version
-      },
+      }
     }, handleMiddlewareExtensions);
 
     if (warnings.length && isFunction(onError)) {
@@ -908,4 +999,31 @@ function getMigrationDialog() {
     checkboxChecked: true,
     checkboxLabel: 'Do not ask again.'
   };
+}
+
+/**
+ * Check layout whether overview is open.
+ *
+ * @param {Object} props
+ *
+ * @returns {boolean}
+ */
+function isOverviewOpen(props) {
+  const layout = props.layout || {};
+
+  const dmnOverview = layout.dmnOverview;
+
+  return !dmnOverview || dmnOverview.open;
+}
+
+/**
+ * Check layout whether overview was opened.
+ *
+ * @param {Object} props
+ * @param {Object} prevProps
+ *
+ * @returns {boolean}
+ */
+function isOverviewOpened(props, prevProps) {
+  return isOverviewOpen(prevProps) === false && isOverviewOpen(props) === true;
 }
