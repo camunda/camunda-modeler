@@ -52,10 +52,10 @@ var browsers =
 
 var suite = 'test/suite.js';
 
-if (coverage) {
-  suite = 'test/all.js';
-} else if (modelers) {
+if (modelers) {
   suite = 'test/modelers.js';
+} else if (coverage) {
+  suite = 'test/all.js';
 }
 
 
