@@ -39,7 +39,8 @@ const {
   nightly,
   win,
   linux,
-  mac
+  mac,
+  pr
 } = argv;
 
 const archs = [
@@ -92,7 +93,13 @@ const expectedFiles = {
 };
 
 
-const version = nightly ? 'nightly' : pkg.version;
+let version = pkg.version;
+
+if (nightly) {
+  version = 'nightly';
+} else if (pr) {
+  version = `pr-${pr}`;
+}
 
 // execute tests
 verifyArchives(platforms, version).then(

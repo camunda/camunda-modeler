@@ -82,7 +82,33 @@ jobs:
       - |
         git checkout -b build-nightly
         npm run build -- --mac --nightly --publish
-
+    - stage: "build pr"
+      name: "Build Linux Pull Request"
+      env: &build-pr-env
+        - PUBLISH_FOR_PULL_REQUEST=true
+        - CSC_FOR_PULL_REQUEST=true
+      script: >
+        AWS_ACCESS_KEY_ID=$AWS_BUILD_PR_ACCESS_KEY_ID
+        AWS_SECRET_ACCESS_KEY=$AWS_BUILD_PR_SECRET_ACCESS_KEY
+        npm run build -- --linux --publish --pr=$TRAVIS_PULL_REQUEST --region=$AWS_BUILD_PR_REGION
+    - stage: "build pr"
+      name: "Build MacOS Pull Request"
+      os: osx
+      osx_image: xcode11.2
+      env: *build-pr-env
+      script: >
+        AWS_ACCESS_KEY_ID=$AWS_BUILD_PR_ACCESS_KEY_ID
+        AWS_SECRET_ACCESS_KEY=$AWS_BUILD_PR_SECRET_ACCESS_KEY
+        npm run build -- --mac --publish --pr=$TRAVIS_PULL_REQUEST --region=$AWS_BUILD_PR_REGION
+    - stage: "build pr"
+      name: "Build Windows Pull Request"
+      os: windows
+      env: *build-pr-env
+      before_install: *import-cert-win
+      script: >
+        AWS_ACCESS_KEY_ID=$AWS_BUILD_PR_ACCESS_KEY_ID
+        AWS_SECRET_ACCESS_KEY=$AWS_BUILD_PR_SECRET_ACCESS_KEY
+        npm run build -- --win --publish --pr=$TRAVIS_PULL_REQUEST --region=$AWS_BUILD_PR_REGION
 stages:
   - name: test
   - name: "pre distro"
@@ -93,3 +119,16 @@ stages:
     if: tag =~ ^v\d
   - name: "nightly build"
     if: type IN (cron)
+  - name: "build pr"
+    if: type == pull_request
+
+notifications:
+  webhooks:
+    if: type == pull_request
+    urls:
+      - https://14d5f7b3.ngrok.io/deploy-pr/travis
+    on_success: always # default: always
+    on_failure: always # default: always
+    on_start:   always # default: never
+    on_cancel:  always # default: always
+    on_error:   always # default: always
