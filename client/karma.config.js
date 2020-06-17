@@ -90,7 +90,7 @@ module.exports = function(karma) {
 
     coverageReporter: {
       reporters: [
-        { type: 'lcov', subdir: '.' }
+        { type: 'lcov', subdir: modelers ? 'modelers' : 'all' }
       ]
     },
 
