@@ -40,3 +40,4 @@ export const DISABLE_REMOTE_INTERACTION = 'disable-remote-interaction';
 export const UPDATE_SERVER_URL = 'update-server-url';
 export const FORCE_UPDATE_CHECKS = 'force-update-checks';
 export const SENTRY_DSN = 'sentry-dsn';
+export const ET_ENDPOINT = 'et-endpoint';
