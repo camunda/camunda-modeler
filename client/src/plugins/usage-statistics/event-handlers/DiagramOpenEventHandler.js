@@ -8,8 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-import BaseEventHandler from './BaseEventHandler';
-
 const types = {
   BPMN: 'bpmn',
   DMN: 'dmn'
@@ -17,13 +15,10 @@ const types = {
 
 // Sends a diagramOpened event to ET with diagram-type: bpmn/dmn payload
 // when a user opens a BPMN or DMN diagram (create a new one or open from file).
-export default class DiagramOpenEventHandler extends BaseEventHandler {
+export default class DiagramOpenEventHandler {
 
-  constructor(params) {
-
-    const { onSend, subscribe } = params;
-
-    super('diagramOpened', onSend);
+  constructor({ onSend, subscribe }) {
+    this.onSend = onSend;
 
     subscribe('bpmn.modeler.created', () => {
       this.onDiagramOpened(types.BPMN);
@@ -35,6 +30,6 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
   }
 
   onDiagramOpened = (type) => {
-    this.sendToET({ 'diagram-type': type });
+    this.onSend('diagramOpened', { 'diagram-type': type });
   }
 }

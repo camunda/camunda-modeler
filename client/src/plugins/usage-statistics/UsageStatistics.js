@@ -54,15 +54,6 @@ export default class UsageStatistics extends PureComponent {
 
     // registered event handlers
     this._eventHandlers = [];
-
-    eventHandlers.forEach((eventHandlerConstructor) => {
-      this._eventHandlers.push(new eventHandlerConstructor({
-        onSend: this.sendRequest,
-        subscribe: props.subscribe
-      }));
-    });
-
-    log('Amount of event handlers initialized: ', eventHandlers.length);
   }
 
   isEnabled = () => {
@@ -72,17 +63,11 @@ export default class UsageStatistics extends PureComponent {
   enable = () => {
     log('Enabling');
     this._isEnabled = true;
-
-    this._eventHandlers.forEach((eventHandler) => {
-      eventHandler.enable();
-    });
   }
 
   disable = () => {
     log('Disabling.');
     this._isEnabled = false;
-
-    this._eventHandlers.forEach((eventHandler) => eventHandler.disable());
   }
 
   async componentDidMount() {
@@ -109,6 +94,15 @@ export default class UsageStatistics extends PureComponent {
     this._editorID = await this.props.config.get(EDITOR_ID_CONFIG_KEY);
 
     this.enable();
+
+    eventHandlers.forEach((eventHandlerConstructor) => {
+      this._eventHandlers.push(new eventHandlerConstructor({
+        onSend: this.onSend,
+        subscribe: this.props.subscribe
+      }));
+    });
+
+    log('Amount of event handlers initialized: ', eventHandlers.length);
   }
 
   async isUsageStatisticsEnabled() {
@@ -145,6 +139,10 @@ export default class UsageStatistics extends PureComponent {
   // We're setting this method because we want to be able to test this
   fetch = async (endpoint, payload) => {
     return fetch(endpoint, payload);
+  }
+
+  onSend = (event, payload = {}) => {
+    return this.sendRequest({ event, ...payload });
   }
 
   sendRequest = async (eventPayload) => {
