@@ -11,7 +11,6 @@
 import bpmnDiagram from './tabs/bpmn/diagram.bpmn';
 import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
-import dmnTable from './tabs/dmn/table.dmn';
 
 import replaceIds from '@bpmn-io/replace-ids';
 
@@ -148,8 +147,8 @@ export default class TabsProvider {
         getComponent(options) {
           return import('./tabs/dmn');
         },
-        getInitialContents(options) {
-          return options && options.table ? dmnTable : dmnDiagram;
+        getInitialContents() {
+          return dmnDiagram;
         },
         getHelpMenu() {
           return [{
@@ -210,13 +209,13 @@ export default class TabsProvider {
     return this.getProvider(type).getComponent(options);
   }
 
-  getInitialFileContents(type, options) {
-    const rawContents = this.getProvider(type).getInitialContents(options);
+  getInitialFileContents(type) {
+    const rawContents = this.getProvider(type).getInitialContents();
 
     return rawContents && replaceIds(rawContents, generateId);
   }
 
-  createFile(type, options) {
+  createFile(type) {
 
     const counter = (
       type in createdByType
@@ -226,7 +225,7 @@ export default class TabsProvider {
 
     const name = `diagram_${counter}.${type}`;
 
-    const contents = this.getInitialFileContents(type, options);
+    const contents = this.getInitialFileContents(type);
 
     return {
       name,

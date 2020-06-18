@@ -97,8 +97,6 @@ describe('TabsProvider', function() {
 
     verifyExists('cmmn');
 
-    verifyExists('dmn', { table: true });
-
     verifyExists('dmn');
 
   });
@@ -112,7 +110,6 @@ describe('TabsProvider', function() {
     // then
     expect(tabsProvider.createTab('bpmn')).to.exist;
     expect(tabsProvider.createTab('cmmn')).to.exist;
-    expect(tabsProvider.createTab('dmn', { table: true })).to.exist;
     expect(tabsProvider.createTab('dmn')).to.exist;
   });
 
@@ -127,7 +124,6 @@ describe('TabsProvider', function() {
       // then
       expect(await tabsProvider.getTabComponent('bpmn')).to.exist;
       expect(await tabsProvider.getTabComponent('cmmn')).to.exist;
-      expect(await tabsProvider.getTabComponent('dmn', { table: true })).to.exist;
       expect(await tabsProvider.getTabComponent('dmn')).to.exist;
 
       expect(await tabsProvider.getTabComponent('empty')).to.exist;

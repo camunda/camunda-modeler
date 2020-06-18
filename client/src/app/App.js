@@ -144,14 +144,14 @@ export class App extends PureComponent {
     this.currentNotificationId = 0;
   }
 
-  createDiagram = async (type = 'bpmn', options) => {
+  createDiagram = async (type = 'bpmn') => {
 
     const {
       tabsProvider
     } = this.props;
 
     const tab = this.addTab(
-      tabsProvider.createTab(type, options)
+      tabsProvider.createTab(type)
     );
 
     await this.showTab(tab);
@@ -1570,10 +1570,6 @@ export class App extends PureComponent {
       return this.createDiagram('dmn');
     }
 
-    if (action === 'create-dmn-table') {
-      return this.createDiagram('dmn', { table: true });
-    }
-
     if (action === 'create-cmmn-diagram') {
       return this.createDiagram('cmmn');
     }
@@ -1826,12 +1822,7 @@ export class App extends PureComponent {
                       type: 'bpmn'
                     },
                     {
-                      text: 'Create new DMN table',
-                      onClick: this.composeAction('create-dmn-table'),
-                      type: 'dmn'
-                    },
-                    {
-                      text: 'Create new DMN diagram (DRD)',
+                      text: 'Create new DMN diagram',
                       onClick: this.composeAction('create-dmn-diagram'),
                       type: 'dmn'
                     },
