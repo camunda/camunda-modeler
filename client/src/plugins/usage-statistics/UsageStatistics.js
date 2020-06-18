@@ -23,7 +23,7 @@ const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const USAGE_STATISTICS_CONFIG_KEY = 'ENABLE_USAGE_STATISTICS';
 const EDITOR_ID_CONFIG_KEY = 'editor.id';
 
-const PRODUCT_MODELER = 'Modeler';
+const PRODUCT_MODELER = 'Camunda Modeler';
 const PRODUCT_EDITION_COMMUNITY = 'Community';
 
 const FETCH_METHOD = 'POST';

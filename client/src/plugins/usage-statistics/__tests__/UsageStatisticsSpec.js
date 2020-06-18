@@ -307,7 +307,7 @@ describe('<UsageStatistics>', () => {
       body: JSON.stringify({
         installation: 'test-editor-id',
         product: {
-          name: 'Modeler',
+          name: 'Camunda Modeler',
           version: '3.5.0',
           edition: 'Community',
           internals: { event: 'test-event' }
