@@ -14,6 +14,7 @@ const path = require('path');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const SENTRY_DSN = process.env.SENTRY_DSN || null;
+const ET_ENDPOINT = process.env.ET_ENDPOINT || null;
 
 const DEV = NODE_ENV === 'development';
 const LICENSE_CHECK = process.env.LICENSE_CHECK;
@@ -101,7 +102,8 @@ module.exports = {
     new CaseSensitivePathsPlugin(),
     new DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
-      'process.env.SENTRY_DSN': JSON.stringify(SENTRY_DSN)
+      'process.env.SENTRY_DSN': JSON.stringify(SENTRY_DSN),
+      'process.env.ET_ENDPOINT': JSON.stringify(ET_ENDPOINT)
     }),
     new CopyWebpackPlugin([
       {
