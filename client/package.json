@@ -94,6 +94,8 @@
     "postbuild": "del-cli --force ../app/public && mv build ../app/public",
     "dev": "run-s start",
     "auto-test": "npm test -- --auto-watch --no-single-run",
-    "test": "karma start karma.config.js"
+    "test": "karma start karma.config.js",
+    "bpmn-io-modelers:test": "cross-env MODELERS=1 npm test",
+    "bpmn-io-modelers:auto-test": "cross-env MODELERS=1 npm run auto-test"
   }
 }
