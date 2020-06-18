@@ -8,16 +8,4 @@
  * except in compliance with the MIT License.
  */
 
-import CamundaPlugin from './camunda-plugin';
-import PrivacyPreferences from './privacy-preferences';
-import UpdateChecks from './update-checks';
-import ErrorTracking from './error-tracking';
-import UsageStatistics from './usage-statistics';
-
-export default [
-  CamundaPlugin,
-  PrivacyPreferences,
-  UpdateChecks,
-  ErrorTracking,
-  UsageStatistics
-];
+export default [];
