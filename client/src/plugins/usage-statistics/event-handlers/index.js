@@ -9,7 +9,9 @@
  */
 
 import PingEventHandler from './PingEventHandler';
+import DiagramOpenEventHandler from './DiagramOpenEventHandler';
 
 export default [
-  PingEventHandler
+  PingEventHandler,
+  DiagramOpenEventHandler
 ];
