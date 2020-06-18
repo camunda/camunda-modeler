@@ -176,6 +176,10 @@ export default class Modeler {
 
   detach() {}
 
+  attachOverviewTo() {}
+
+  detachOverview() {}
+
   on(event, priority, callback) {
     if (!callback) {
       callback = priority;

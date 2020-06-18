@@ -9,6 +9,7 @@
  */
 
 import DmnModeler from 'dmn-js/lib/Modeler';
+import DrdViewer from './DrdViewer';
 
 import diagramOriginModule from 'diagram-js-origin';
 
@@ -28,6 +29,9 @@ import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 
 import camundaModdleDescriptor from 'camunda-dmn-moddle/resources/camunda';
 
+import openDrgElementModule from './features/overview/open-drg-element';
+import overviewRendererModule from './features/overview/overview-renderer';
+
 import 'dmn-js/dist/assets/diagram-js.css';
 import 'dmn-js/dist/assets/dmn-font/css/dmn-embedded.css';
 import 'dmn-js/dist/assets/dmn-js-decision-table-controls.css';
@@ -37,6 +41,12 @@ import 'dmn-js/dist/assets/dmn-js-literal-expression.css';
 import 'dmn-js/dist/assets/dmn-js-shared.css';
 
 import 'dmn-js-properties-panel/dist/assets/dmn-js-properties-panel.css';
+
+const NOOP_MODULE = [ 'value', null ];
+
+const OVERVIEW_ZOOM_SCALE = 0.75;
+
+const LOW_PRIORITY = 500;
 
 
 export default class CamundaDmnModeler extends DmnModeler {
@@ -49,6 +59,7 @@ export default class CamundaDmnModeler extends DmnModeler {
       decisionTable,
       literalExpression,
       exporter,
+      overview,
       ...otherOptions
     } = options;
 
@@ -111,6 +122,7 @@ export default class CamundaDmnModeler extends DmnModeler {
 
     addExporter(exporter, this);
 
+    this._addOverview(overview);
   }
 
   /**
@@ -133,6 +145,169 @@ export default class CamundaDmnModeler extends DmnModeler {
 
     return commandStack._stackIdx;
   }
+
+  _addOverview(options = {}) {
+    const { layout } = options;
+
+    const overview = this._overview = new DrdViewer({
+      drd: {
+        additionalModules: [
+          openDrgElementModule,
+          overviewRendererModule
+        ],
+        openDrgElement: {
+          layout
+        }
+      }
+    });
+
+    // (1) import overview initially
+    this.on('import.parse.start', ({ xml }) => {
+      overview.importXML(xml, this._handleImport);
+    });
+
+    // keep track of view type
+    let previousActiveViewType;
+
+    this.on('views.changed', LOW_PRIORITY, ({ activeView }) => {
+      previousActiveViewType = activeView.type;
+    });
+
+    // (2) update overview on changes in modeler
+    let offCommandStackChanged;
+
+    this.on('views.changed', ({ activeView }) => {
+      if (previousActiveViewType === activeView.type) {
+        return;
+      }
+
+      // (2.1) remove previous listener
+      if (offCommandStackChanged) {
+        offCommandStackChanged();
+      }
+
+      const handleCommandStackChanged = () => {
+
+        // (2.3) stop listening until save XML done
+        offCommandStackChanged();
+
+        // (2.4) start listening again when save XML done
+        this.once('saveXML.done', onCommandStackChanged);
+
+        this._updateOverview();
+      };
+
+      const viewer = this._viewers[ activeView.type ];
+
+      const eventBus = viewer.get('eventBus', false);
+
+      const onCommandStackChanged = () => {
+        eventBus.on('commandStack.changed', handleCommandStackChanged);
+      };
+
+      offCommandStackChanged = () => {
+        eventBus.off('commandStack.changed', handleCommandStackChanged);
+      };
+
+      // (2.2) add new listener
+      onCommandStackChanged();
+    });
+
+    // (3) highlight current open DRG element on views changed
+    this.on('views.changed', ({ activeView }) => {
+      if (activeView.type !== 'drd') {
+        const activeViewer = overview.getActiveViewer();
+
+        if (activeViewer) {
+          activeViewer.get('eventBus').fire('drgElementOpened', {
+            id: activeView.element.id
+          });
+        }
+      }
+    });
+
+    // (4) propagate layout changes
+    this.on('overviewOpen', () => {
+      const activeViewer = this._overview.getActiveViewer();
+
+      if (activeViewer) {
+        activeViewer.get('eventBus').fire('overviewOpen');
+      }
+    });
+
+    overview.once('import.done', () => {
+      const activeViewer = overview.getActiveViewer();
+
+      // (5) open DRG element on click
+      activeViewer.on('openDrgElement', ({ id }) => {
+        const view = this.getViews().find(({ element }) => {
+          return element.id === id;
+        });
+
+        if (view && view.type !== 'drd') {
+          this.open(view);
+        }
+      });
+    });
+  }
+
+  _updateOverview = () => {
+    if (!this._overview) {
+      return;
+    }
+
+    this.saveXML((err, xml) => {
+      if (err) {
+        console.error(err);
+      } else {
+        this._overview.importXML(xml, this._handleImport);
+      }
+    });
+  }
+
+  _handleOverviewImport = err => {
+    if (!this._overview || !this._overview.getActiveViewer()) {
+      return;
+    }
+
+    if (err) {
+      console.error(err);
+    } else {
+      this._overview.getActiveViewer().get('canvas').zoom(OVERVIEW_ZOOM_SCALE);
+    }
+  }
+
+  attachOverviewTo = (parentNode) => {
+    this.detachOverview();
+
+    const activeViewer = this._overview.getActiveViewer();
+
+    if (!activeViewer) {
+      return;
+    }
+
+    this._emit('attachOverview');
+
+    parentNode.appendChild(activeViewer._container);
+
+    activeViewer.get('canvas').resized();
+  }
+
+  detachOverview = () => {
+    const activeViewer = this._overview.getActiveViewer();
+
+    if (!activeViewer) {
+      return;
+    }
+
+    const container = activeViewer._container;
+
+    if (container.parentNode) {
+      this._emit('detachOverview');
+
+      container.parentNode.removeChild(container);
+    }
+  }
 }
 
 
@@ -151,5 +326,3 @@ function mergeModules(editorConfig = {}, additionalModules) {
     ]
   };
 }
-
-const NOOP_MODULE = [ 'value', null ];
