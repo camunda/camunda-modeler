@@ -8,4 +8,8 @@
  * except in compliance with the MIT License.
  */
 
-export default [];
+import PingEventHandler from './PingEventHandler';
+
+export default [
+  PingEventHandler
+];
