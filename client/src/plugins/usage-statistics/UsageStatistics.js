@@ -36,9 +36,8 @@ const DEFINED_ET_ENDPOINT = process.env.ET_ENDPOINT;
 //
 // 1) Create a new event handler class under event-handlers
 // 2) This class should extend BaseEventHandler
-// 3) This class should use 'addData' super method to add an additional data to the payload.
-// 4) This class should use 'flush' super method to send a payload to ET
-// 5) This class should be exported via index.js in order to be recognize by UsageStatistics plugin.
+// 3) This class should use 'sendToET(data={})' super method to send a payload to ET
+// 4) This class should be exported via index.js in order to be recognize by UsageStatistics plugin.
 //
 // See the example implementations: PingEventHandler, DiagramOpenEventHandler.
 
