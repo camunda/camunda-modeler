@@ -40,13 +40,14 @@ describe('<PingEventHandler>', () => {
 
     const pingEventHandler = new PingEventHandler({ onSend });
 
-    pingEventHandler.setInterval = sinon.spy();
+    pingEventHandler.setInterval = sinon.stub().returns('testIntervalID');
 
     // when
     pingEventHandler.enable();
 
     // then
     expect(pingEventHandler.setInterval).to.have.been.called;
+    expect(pingEventHandler._intervalID).to.eql('testIntervalID');
   });
 
 
