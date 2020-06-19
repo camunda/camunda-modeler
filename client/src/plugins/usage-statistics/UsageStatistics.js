@@ -29,7 +29,7 @@ const PRODUCT_EDITION_COMMUNITY = 'Community';
 const FETCH_METHOD = 'POST';
 const FETCH_HEADERS = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
 
-// ET endpoint is set to Travis as an env variable, passed to client via WebPack DefinePlugin
+// ET endpoint is set to our CI provider as an env variable, passed to client via WebPack DefinePlugin
 const DEFINED_ET_ENDPOINT = process.env.ET_ENDPOINT;
 
 // In order to plug a new event handler:

@@ -26,7 +26,7 @@ const NON_EXISTENT_EDITOR_ID = 'NON_EXISTENT_EDITOR_ID';
 const log = debug('ErrorTracking');
 
 
-// DSN is set to Travis as an env variable, passed to client via WebPack DefinePlugin
+// DSN is set to our CI provider as an env variable, passed to client via WebPack DefinePlugin
 const DEFINED_SENTRY_DSN = process.env.SENTRY_DSN;
 
 export default class ErrorTracking extends PureComponent {
