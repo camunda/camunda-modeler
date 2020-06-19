@@ -10,10 +10,6 @@
 
 /* global sinon */
 
-import React from 'react';
-
-import { shallow } from 'enzyme';
-
 import UsageStatistics from '../UsageStatistics';
 import BaseEventHandler from '../event-handlers/BaseEventHandler';
 
@@ -41,7 +37,7 @@ describe('<UsageStatistics>', () => {
   it('should not enable if ET endpoint not configured', async () => {
 
     // given
-    const { instance } = createUsageStatistics();
+    const instance = createUsageStatistics();
 
     const enableSpy = sinon.spy();
 
@@ -63,7 +59,7 @@ describe('<UsageStatistics>', () => {
       [ DISABLE_REMOTE_INTERACTION ]: true
     });
 
-    const { instance } = createUsageStatistics();
+    const instance = createUsageStatistics();
 
     const enableSpy = sinon.spy();
 
@@ -84,7 +80,7 @@ describe('<UsageStatistics>', () => {
       [ ET_ENDPOINT ]: 'test-et-endpoint'
     });
 
-    const { instance } = createUsageStatistics({
+    const instance = createUsageStatistics({
       configValues: { 'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: false } }
     });
 
@@ -107,7 +103,7 @@ describe('<UsageStatistics>', () => {
       [ ET_ENDPOINT ]: 'test-et-endpoint'
     });
 
-    const { instance } = createUsageStatistics({
+    const instance = createUsageStatistics({
       configValues: { 'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true } }
     });
 
@@ -130,7 +126,7 @@ describe('<UsageStatistics>', () => {
       [ ET_ENDPOINT ]: 'test-et-endpoint'
     });
 
-    const { instance } = createUsageStatistics({
+    const instance = createUsageStatistics({
       configValues: { 'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true } }
     });
 
@@ -153,7 +149,7 @@ describe('<UsageStatistics>', () => {
       [ ET_ENDPOINT ]: 'test-et-endpoint'
     });
 
-    const { instance } = createUsageStatistics({
+    const instance = createUsageStatistics({
       configValues: { 'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true } }
     });
 
@@ -180,7 +176,7 @@ describe('<UsageStatistics>', () => {
 
     const subscribeSpy = sinon.spy();
 
-    const { instance } = createUsageStatistics({
+    const instance = createUsageStatistics({
       configValues: { 'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true } },
       subscribeSpy
     });
@@ -206,7 +202,7 @@ describe('<UsageStatistics>', () => {
 
     let usageStatisticsEnabled = false;
 
-    const { instance } = createUsageStatistics({
+    const instance = createUsageStatistics({
       configGet: () => {
         return { ENABLE_USAGE_STATISTICS: usageStatisticsEnabled };
       },
@@ -244,7 +240,7 @@ describe('<UsageStatistics>', () => {
 
     let usageStatisticsEnabled = true;
 
-    const { instance } = createUsageStatistics({
+    const instance = createUsageStatistics({
       configGet: () => {
         return { ENABLE_USAGE_STATISTICS: usageStatisticsEnabled };
       },
@@ -278,7 +274,7 @@ describe('<UsageStatistics>', () => {
       [ ET_ENDPOINT ]: 'test-et-endpoint'
     });
 
-    const { instance } = createUsageStatistics({
+    const instance = createUsageStatistics({
       configValues: {
         'editor.id': 'test-editor-id',
         'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true }
@@ -326,7 +322,7 @@ describe('<UsageStatistics>', () => {
       [ ET_ENDPOINT ]: 'test-et-endpoint'
     });
 
-    const { instance } = createUsageStatistics({
+    const instance = createUsageStatistics({
       configValues: {
         'editor.id': 'test-editor-id',
         'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: false }
@@ -356,27 +352,23 @@ function createUsageStatistics(props={}) {
     }
   };
 
-  const component = shallow(
-    <UsageStatistics
-      subscribe={ subscribe }
-      config={ {
-        get: (key) => {
+  // This component does not render anything.
+  // We don't need to mount it / or shallow.
+  return new UsageStatistics({
+    subscribe,
+    config: {
+      get: (key) => {
 
-          if (props.configGet) {
-            return props.configGet(key);
-          }
-
-          return new Promise((resolve) => {
-            resolve(configValues[key] || null);
-          });
+        if (props.configGet) {
+          return props.configGet(key);
         }
-      } }
-    />
-  );
 
-  const instance = component.instance();
-
-  return { component, instance };
+        return new Promise((resolve) => {
+          resolve(configValues[key] || null);
+        });
+      }
+    }
+  });
 }
 
 function getSubscriptionCallbackFromSpy(spy, key) {
