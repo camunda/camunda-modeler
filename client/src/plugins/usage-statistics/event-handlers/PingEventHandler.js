@@ -27,7 +27,7 @@ export default class PingEventHandler extends BaseEventHandler {
   }
 
   setInterval = (func) => {
-    setInterval(func, TWENTY_FOUR_HOURS_MS);
+    return setInterval(func, TWENTY_FOUR_HOURS_MS);
   }
 
   clearInterval = () => {
