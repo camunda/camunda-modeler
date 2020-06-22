@@ -29,7 +29,7 @@ describe('<ErrorTracking>', () => {
 
   it('should render', () => {
 
-    createErrorTracking();
+    shallow(<ErrorTracking />);
   });
 
 
@@ -38,7 +38,7 @@ describe('<ErrorTracking>', () => {
     // given
     const initializeSentry = sinon.spy();
 
-    const { instance } = createErrorTracking({ initializeSentry });
+    const instance = createErrorTracking({ initializeSentry });
 
     // when
     await instance.componentDidMount();
@@ -53,7 +53,7 @@ describe('<ErrorTracking>', () => {
     // given
     const initializeSentry = sinon.spy();
 
-    const { instance } = createErrorTracking({ initializeSentry, dsn: 'TEST_DSN' });
+    const instance = createErrorTracking({ initializeSentry, dsn: 'TEST_DSN' });
 
     // when
     await instance.componentDidMount();
@@ -68,7 +68,7 @@ describe('<ErrorTracking>', () => {
     // given
     const initializeSentry = sinon.spy();
 
-    const { instance } = createErrorTracking({
+    const instance = createErrorTracking({
       initializeSentry, dsn: 'TEST_DSN',
       configValues: { 'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: false } }
     });
@@ -86,7 +86,7 @@ describe('<ErrorTracking>', () => {
     // given
     const initializeSentry = sinon.spy();
 
-    const { instance } = createErrorTracking({
+    const instance = createErrorTracking({
       initializeSentry,
       dsn: 'TEST_DSN',
       configValues: { 'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true } }
@@ -108,7 +108,7 @@ describe('<ErrorTracking>', () => {
     });
 
     // when
-    const { instance } = createErrorTracking();
+    const instance = createErrorTracking();
 
     // then
     expect(instance.SENTRY_DSN).to.eql('custom-sentry-dsn');
@@ -124,7 +124,7 @@ describe('<ErrorTracking>', () => {
 
     const initializeSentry = sinon.spy();
 
-    const { instance } = createErrorTracking({
+    const instance = createErrorTracking({
       initializeSentry,
       dsn: 'TEST_DSN',
       configValues: { 'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true } }
@@ -148,7 +148,7 @@ describe('<ErrorTracking>', () => {
 
     const scheduleCheck = sinon.spy();
 
-    const { instance } = createErrorTracking({ scheduleCheck });
+    const instance = createErrorTracking({ scheduleCheck });
 
     // when
     await instance.componentDidMount();
@@ -165,7 +165,7 @@ describe('<ErrorTracking>', () => {
 
     const sentryInitSpy = sinon.spy();
 
-    const { instance } = createErrorTracking({
+    const instance = createErrorTracking({
       sentryInitSpy,
       dsn: 'TEST_DSN',
       configValues: { 'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true } }
@@ -187,7 +187,7 @@ describe('<ErrorTracking>', () => {
     // given
     const setTagSpy = sinon.spy();
 
-    const { instance } = createErrorTracking({
+    const instance = createErrorTracking({
       setTagSpy,
       dsn: 'TEST_DSN',
       configValues: {
@@ -212,7 +212,7 @@ describe('<ErrorTracking>', () => {
     // given
     const subscribeSpy = sinon.spy();
 
-    const { instance } = createErrorTracking({
+    const instance = createErrorTracking({
       subscribeSpy,
       dsn: 'TEST_DSN',
       configValues: { 'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true } }
@@ -234,7 +234,7 @@ describe('<ErrorTracking>', () => {
     const sentryCaptureExceptionSpy = sinon.spy();
     const subscribeSpy = sinon.spy();
 
-    const { instance } = createErrorTracking({
+    const instance = createErrorTracking({
       sentryCaptureExceptionSpy,
       subscribeSpy,
       dsn: 'TEST_DSN',
@@ -244,7 +244,7 @@ describe('<ErrorTracking>', () => {
     // when
     await instance.componentDidMount();
 
-    const callback = subscribeSpy.getCall(2).args[1];
+    const callback = subscribeSpy.getCall(1).args[1];
 
     callback(handledError);
 
@@ -261,7 +261,7 @@ describe('<ErrorTracking>', () => {
     const backendSendSpy = sinon.spy();
     const initializeSentrySpy = sinon.spy();
 
-    const { instance } = createErrorTracking({
+    const instance = createErrorTracking({
       backendSendSpy,
       initializeSentry: initializeSentrySpy,
       keepScheduleAsItIs: true,
@@ -302,7 +302,7 @@ describe('<ErrorTracking>', () => {
     const backendSendSpy = sinon.spy();
     const sentryCloseSpy = sinon.spy();
 
-    const { instance } = createErrorTracking({
+    const instance = createErrorTracking({
       backendSendSpy,
       sentryCloseSpy,
       keepScheduleAsItIs: true,
@@ -342,7 +342,7 @@ describe('<ErrorTracking>', () => {
     const setTagSpy = sinon.spy();
     const plugins = [ { name: 'test' } ];
 
-    const { instance } = createErrorTracking({
+    const instance = createErrorTracking({
       plugins,
       setTagSpy,
       dsn: 'TEST_DSN',
@@ -387,11 +387,11 @@ function createErrorTracking(props={}) {
     }
   };
 
-  const component = shallow(
-    <ErrorTracking
-      _getGlobal={ _getGlobal }
-      subscribe={ subscribe }
-      config={ {
+  const instance = new ErrorTracking(
+    {
+      _getGlobal,
+      subscribe,
+      config: {
         get: (key) => {
 
           if (props.configGet) {
@@ -402,11 +402,9 @@ function createErrorTracking(props={}) {
             resolve(configValues[key] || null);
           });
         }
-      } }
-    />
+      }
+    }
   );
-
-  const instance = component.instance();
 
   if (!props.keepScheduleAsItIs) {
     instance.scheduleCheck = props.scheduleCheck || function() {};
@@ -445,5 +443,5 @@ function createErrorTracking(props={}) {
     }
   };
 
-  return { component, instance };
+  return instance;
 }
