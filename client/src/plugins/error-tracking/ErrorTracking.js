@@ -81,7 +81,16 @@ export default class ErrorTracking extends PureComponent {
       // - we don't initialize dev in Sentry.)
       this._sentry.init({
         dsn: this.SENTRY_DSN,
-        release: releaseTag
+        release: releaseTag,
+        beforeSend: (event) => {
+
+          // We need to normalize the event path to match with uploaded sourcemaps.
+          // Since we're distributing the app to the clients, every exception
+          // has a different path. That's why if we skip this step, we'd have
+          // unmeaningful exceptions in Sentry.
+          // See this: https://github.com/camunda/camunda-modeler/issues/1831
+          return this.normalizeEventPath(event);
+        }
       });
 
       // OS information already exists by default in Sentry.
@@ -186,7 +195,39 @@ export default class ErrorTracking extends PureComponent {
     return this.recheckSentry();
   }
 
+  normalizeEventPath = (event) => {
+    try {
+
+      const { exception, request } = event;
+      const { values } = exception;
+
+      request.url = normalizeUrl(request.url);
+
+      values.forEach((exceptionVal) => {
+        const { stacktrace } = exceptionVal;
+        const { frames } = stacktrace;
+
+        frames.forEach((frame) => {
+          frame.filename = normalizeUrl(frame.filename);
+        });
+      });
+
+      return event;
+    } catch (err) {
+
+      // Don't loose the actual event in case things go wrong
+      return event;
+    }
+  }
+
   render() {
     return null;
   }
 }
+
+const normalizeUrl = (path) => {
+
+  // eslint-disable-next-line
+  const filename = path.replace(/^.*[\\\/]/, '');
+  return '~/build/' + filename;
+};
