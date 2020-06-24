@@ -174,11 +174,13 @@ describe('<ErrorTracking>', () => {
     // when
     await instance.componentDidMount();
 
+    const args = sentryInitSpy.getCall(0).args;
+
     // then
-    expect(sentryInitSpy).to.have.been.calledWith({
-      dsn: 'TEST_DSN',
-      release: '3.5.0'
-    });
+    expect(args).to.have.length(1);
+
+    expect(args[0].dsn).to.eql('TEST_DSN');
+    expect(args[0].release).to.eql('3.5.0');
   });
 
 
