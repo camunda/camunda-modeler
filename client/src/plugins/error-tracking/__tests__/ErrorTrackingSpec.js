@@ -181,6 +181,7 @@ describe('<ErrorTracking>', () => {
 
     expect(args[0].dsn).to.eql('TEST_DSN');
     expect(args[0].release).to.eql('3.5.0');
+    expect(args[0].beforeSend).to.exist;
   });
 
 
@@ -359,7 +360,84 @@ describe('<ErrorTracking>', () => {
       { key: 'plugins', value: plugins.map(({ name }) => name) }
     );
   });
+
+
+  describe('Path normalization', () => {
+
+    it('should normalize Windows paths', () => {
+
+      return normalizationTest('/C:/Users/user/test-user/Desktop/Camunda/resources/app.asar/public/');
+    });
+
+
+    it('should normalize Linux paths', () => {
+
+      return normalizationTest('/home/testuser/Aplications/camunda-modeler-4.0.0-linux-x64/resources/app.asar/public/');
+    });
+
+
+    it('should normalize Mac paths', () => {
+
+      return normalizationTest('/Applications/Camunda Modeler.app/Contents/Resources/app.asar/public/');
+    });
+
+
+    it('should normalize dev paths', () => {
+
+      return normalizationTest('webpack-internal:///./src/plugins/camunda-plugin/deployment-tool/');
+    });
+  });
 });
+
+async function normalizationTest(prefix) {
+
+  // given
+  const url = prefix + '2.2.js';
+
+  const sentryInitSpy = sinon.spy();
+
+  const instance = createErrorTracking({
+    sentryInitSpy,
+    dsn: 'TEST_DSN',
+    configValues: { 'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true } }
+  });
+
+  // when
+  await instance.componentDidMount();
+
+  const args = sentryInitSpy.getCall(0).args;
+
+  const { beforeSend } = args[0];
+
+  let event = createMockSentryEvent(url);
+
+  beforeSend(event);
+
+  // then
+  expect(event.request.url).to.eql('~/build/2.2.js');
+  expect(event.exception.values[0].stacktrace.frames[0].filename).to.eql('~/build/2.2.js');
+}
+
+function createMockSentryEvent(path) {
+  return {
+    exception: {
+      values: [
+        {
+          stacktrace: {
+            frames: [
+              {
+                filename: path
+              }
+            ]
+          }
+        }
+      ]
+    },
+    request: {
+      url: 'file://' + path
+    }
+  };
+}
 
 function createErrorTracking(props={}) {
 
