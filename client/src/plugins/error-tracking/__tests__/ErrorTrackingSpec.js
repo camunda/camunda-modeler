@@ -366,30 +366,30 @@ describe('<ErrorTracking>', () => {
 
     it('should normalize Windows paths', () => {
 
-      return normalizationTest('/C:/Users/user/test-user/Desktop/Camunda/resources/app.asar/public/');
+      return expectNormalization('/C:/Users/user/test-user/Desktop/Camunda/resources/app.asar/public/');
     });
 
 
     it('should normalize Linux paths', () => {
 
-      return normalizationTest('/home/testuser/Aplications/camunda-modeler-4.0.0-linux-x64/resources/app.asar/public/');
+      return expectNormalization('/home/testuser/Aplications/camunda-modeler-4.0.0-linux-x64/resources/app.asar/public/');
     });
 
 
     it('should normalize Mac paths', () => {
 
-      return normalizationTest('/Applications/Camunda Modeler.app/Contents/Resources/app.asar/public/');
+      return expectNormalization('/Applications/Camunda Modeler.app/Contents/Resources/app.asar/public/');
     });
 
 
     it('should normalize dev paths', () => {
 
-      return normalizationTest('webpack-internal:///./src/plugins/camunda-plugin/deployment-tool/');
+      return expectNormalization('webpack-internal:///./src/plugins/camunda-plugin/deployment-tool/');
     });
   });
 });
 
-async function normalizationTest(prefix) {
+async function expectNormalization(prefix) {
 
   // given
   const url = prefix + '2.2.js';
