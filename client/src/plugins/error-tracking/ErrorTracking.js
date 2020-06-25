@@ -197,11 +197,12 @@ export default class ErrorTracking extends PureComponent {
 
   normalizeEventPath = (event) => {
     try {
-
       const { exception, request } = event;
       const { values } = exception;
 
-      request.url = normalizeUrl(request.url);
+      if (request) {
+        request.url = normalizeUrl(request.url);
+      }
 
       values.forEach((exceptionVal) => {
         const { stacktrace } = exceptionVal;
@@ -215,8 +216,8 @@ export default class ErrorTracking extends PureComponent {
       return event;
     } catch (err) {
 
-      // Don't loose the actual event in case things go wrong
-      return event;
+      this.props.log(err);
+      return null;
     }
   }
 
