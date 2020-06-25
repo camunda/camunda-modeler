@@ -10,6 +10,10 @@
 
 /* global sinon */
 
+import React from 'react';
+
+import { shallow } from 'enzyme';
+
 import UsageStatistics from '../UsageStatistics';
 import BaseEventHandler from '../event-handlers/BaseEventHandler';
 
@@ -30,7 +34,7 @@ describe('<UsageStatistics>', () => {
 
   it('should render', () => {
 
-    createUsageStatistics();
+    shallow(<UsageStatistics subscribe={ () => {} } />);
   });
 
 
