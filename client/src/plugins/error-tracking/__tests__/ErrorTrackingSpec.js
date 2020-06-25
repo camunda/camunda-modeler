@@ -370,6 +370,12 @@ describe('<ErrorTracking>', () => {
     });
 
 
+    it('should normalize Windows paths with backslash', () => {
+
+      return expectNormalization('C:\\Users\\user\\test-user\\Desktop\\Camunda\\resources\\app.asar\\public\\');
+    });
+
+
     it('should normalize Linux paths', () => {
 
       return expectNormalization('/home/testuser/Aplications/camunda-modeler-4.0.0-linux-x64/resources/app.asar/public/');
