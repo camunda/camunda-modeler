@@ -113,7 +113,13 @@ function initializeSentry(Sentry, editorID, release, dsn) {
 
   try {
 
-    Sentry.init({ dsn, release });
+    Sentry.init({
+      dsn,
+      release,
+      beforeSend: (event) => {
+        return normalizeEventPath(event);
+      }
+    });
 
     Sentry.configureScope(scope => {
       scope.setTag('editor-id', editorID);
@@ -146,4 +152,37 @@ function closeSentry(Sentry) {
 
     log.error('Error happened closing Sentry', err);
   }
+}
+
+function normalizeEventPath(event) {
+  try {
+    const { exception, request } = event;
+    const { values } = exception;
+
+    if (request) {
+      request.url = normalizeUrl(request.url);
+    }
+
+    values.forEach((exceptionVal) => {
+      const { stacktrace } = exceptionVal;
+      const { frames } = stacktrace;
+
+      frames.forEach((frame) => {
+        frame.filename = normalizeUrl(frame.filename);
+      });
+    });
+
+    return event;
+  } catch (err) {
+
+    log.error('Error happened normalizing Path', err);
+    return null;
+  }
+}
+
+function normalizeUrl(path) {
+
+  // eslint-disable-next-line
+  const filename = path.replace(/^.*[\\\/]/, '');
+  return '~/build/' + filename;
 }

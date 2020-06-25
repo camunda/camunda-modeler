@@ -111,8 +111,12 @@ describe('error-tracking', function() {
     // when
     errorTracking.start(Sentry, 'v2', config, flags, renderer);
 
+    const params = sentryInitSpy.getCall(0).args[0];
+
     // then
-    expect(sentryInitSpy).to.have.been.calledWith({ dsn: 'SOME_SENTRY_DSN', release: 'v2' });
+    expect(params.dsn).to.eql('SOME_SENTRY_DSN');
+    expect(params.release).to.eql('v2');
+    expect(params.beforeSend).to.exist;
   });
 
 
@@ -129,8 +133,10 @@ describe('error-tracking', function() {
     // when
     errorTracking.start(Sentry, 'v2', config, flags, renderer);
 
+    const params = sentryInitSpy.getCall(0).args[0];
+
     // then
-    expect(sentryInitSpy).to.have.been.calledWith({ dsn: 'FLAG_SENTRY_DSN', release: 'v2' });
+    expect(params.dsn).to.eql('FLAG_SENTRY_DSN');
   });
 
 
