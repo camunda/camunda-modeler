@@ -40,25 +40,109 @@ describe('<DiagramOpenEventHandler>', () => {
   });
 
 
-  it('should send with diagram-type: bpmn', () => {
+  it('should send with diagram-type: bpmn', async () => {
 
     // given
     const subscribe = sinon.spy();
     const onSend = sinon.spy();
 
+    const config = { get: () => null };
+
     // when
-    const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe });
+    const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
 
     diagramOpenEventHandler.enable();
 
     const bpmnCallback = subscribe.getCall(0).args[1];
 
-    bpmnCallback();
+    await bpmnCallback({ tab: { file: {} } });
 
     // then
     expect(onSend).to.have.been.calledWith({
       event: 'diagramOpened',
-      'diagram-type': 'bpmn'
+      'diagram-type': 'bpmn',
+      elementTemplateCount: 0,
+      elementTemplates: []
+    });
+  });
+
+
+  it('should send element templates', async () => {
+
+    // given
+    const subscribe = sinon.spy();
+    const onSend = sinon.spy();
+
+    const configSpy = sinon.spy();
+
+    const config = { get: (key, file) => {
+      configSpy(key, file);
+
+      return mockElementTemplates();
+    } };
+
+    // when
+    const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+    diagramOpenEventHandler.enable();
+
+    const bpmnCallback = subscribe.getCall(0).args[1];
+
+    await bpmnCallback({ tab: { file: { path: 'testPath' } } });
+
+    const configArgs = configSpy.getCall(0).args;
+
+    // then
+    expect(configArgs).to.eql([ 'bpmn.elementTemplates', { path: 'testPath' } ]);
+    expect(onSend).to.have.been.calledWith({
+      event: 'diagramOpened',
+      'diagram-type': 'bpmn',
+      elementTemplateCount: 1,
+      elementTemplates: [
+        {
+          appliesTo: [ 'bpmn:ServiceTask' ],
+          properties: {
+            'camunda:asyncBefore': 1,
+            'camunda:class': 1,
+            'camunda:inputParameter': 3,
+            'camunda:outputParameter': 1
+          }
+        }
+      ]
+    });
+  });
+
+
+  it('should resend minimal data if payload is too big', async () => {
+
+    // given
+    const subscribe = sinon.spy();
+    const config = { get: () => mockElementTemplates() };
+
+    const onSendSpy = sinon.spy();
+
+    const onSend = (data) => new Promise((resolve, reject) => {
+
+      onSendSpy(data);
+
+      // http status: payload too big
+      resolve({ status: 413 });
+    });
+
+    // when
+    const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+    diagramOpenEventHandler.enable();
+
+    const bpmnCallback = subscribe.getCall(0).args[1];
+
+    await bpmnCallback({ tab: { file: { path: 'testPath' } } });
+
+    // then
+    expect(onSendSpy).to.have.been.calledWith({
+      event: 'diagramOpened',
+      'diagram-type': 'bpmn',
+      elementTemplateCount: 1,
     });
   });
 
@@ -85,3 +169,21 @@ describe('<DiagramOpenEventHandler>', () => {
     });
   });
 });
+
+// helpers //////
+
+function mockElementTemplates() {
+  return [
+    {
+      appliesTo: [ 'bpmn:ServiceTask'],
+      properties: [
+        { binding: { name: 'camunda:class', type: 'property' } },
+        { binding: { name: 'sender', type: 'camunda:inputParameter' } },
+        { binding: { name: 'receivers', type: 'camunda:inputParameter' } },
+        { binding: { name: 'messageBody', type: 'camunda:inputParameter' } },
+        { binding: { type: 'camunda:outputParameter' } },
+        { binding: { name: 'camunda:asyncBefore', type: 'property' } }
+      ]
+    }
+  ];
+}
