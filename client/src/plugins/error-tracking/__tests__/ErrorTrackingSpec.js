@@ -357,7 +357,7 @@ describe('<ErrorTracking>', () => {
 
     // then
     expect(setTagSpy).to.have.been.calledWith(
-      { key: 'plugins', value: plugins.map(({ name }) => name) }
+      { key: 'plugins', value: plugins.map(({ name }) => name).join(',') }
     );
   });
 

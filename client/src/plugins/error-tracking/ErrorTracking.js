@@ -100,7 +100,7 @@ export default class ErrorTracking extends PureComponent {
       // add plugins information
       const plugins = _getGlobal('plugins').getAppPlugins();
       this._sentry.configureScope(scope => {
-        scope.setTag('plugins', plugins.map(({ name }) => name));
+        scope.setTag('plugins', plugins.map(({ name }) => name).join(','));
       });
 
       const { subscribe } = this.props;
