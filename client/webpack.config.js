@@ -140,7 +140,7 @@ function sentryIntegration() {
     new SentryWebpackPlugin({
       release: NODE_ENV === 'production' ? version : 'dev',
       include: '.',
-      ignore: ['node_modules', 'webpack.config.js'],
+      ignore: ['node_modules', 'webpack.config.js', '*Spec.js'],
     })
   ];
 }
