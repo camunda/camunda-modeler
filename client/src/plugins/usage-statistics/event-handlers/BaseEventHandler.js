@@ -47,7 +47,7 @@ export default class BaseEventHandler {
       return;
     }
 
-    this._onSend({
+    return this._onSend({
       ...this._payload,
       ...data
     });
