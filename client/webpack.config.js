@@ -19,6 +19,8 @@ const ET_ENDPOINT = process.env.ET_ENDPOINT || null;
 const DEV = NODE_ENV === 'development';
 const LICENSE_CHECK = process.env.LICENSE_CHECK;
 
+const UPDATES_SERVER_PRODUCT_NAME = process.env.UPDATES_SERVER_PRODUCT_NAME || 'Camunda Modeler';
+
 const pkg = require('./package.json');
 
 const {
@@ -103,7 +105,8 @@ module.exports = {
     new DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
       'process.env.SENTRY_DSN': JSON.stringify(SENTRY_DSN),
-      'process.env.ET_ENDPOINT': JSON.stringify(ET_ENDPOINT)
+      'process.env.ET_ENDPOINT': JSON.stringify(ET_ENDPOINT),
+      'process.env.UPDATES_SERVER_PRODUCT_NAME': JSON.stringify(UPDATES_SERVER_PRODUCT_NAME)
     }),
     new CopyWebpackPlugin([
       {

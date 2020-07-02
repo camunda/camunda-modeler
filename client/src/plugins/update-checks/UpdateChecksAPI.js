@@ -15,11 +15,16 @@ const OS_INFO_CONFIG_KEY = 'os.info';
 
 const UPDATE_CHECK_API = 'update-check';
 
-const PRODUCT_CAMUNDA_MODELER = 'Camunda Modeler';
+// Set via Webpack define plugin
+const PRODUCT_NAME = process.env.UPDATES_SERVER_PRODUCT_NAME;
 
 export default class UpdateChecksAPI {
 
   constructor(endpointUrl) {
+
+    // setting this here so that we can mock this during tests.
+    this.productName = PRODUCT_NAME;
+
     this.endpointUrl = endpointUrl;
   }
 
@@ -52,7 +57,7 @@ export default class UpdateChecksAPI {
       url.searchParams.append('modelerVersion', modelerVersion);
       url.searchParams.append('os', osInfo.platform);
       url.searchParams.append('osVersion', osInfo.release);
-      url.searchParams.append('productName', PRODUCT_CAMUNDA_MODELER);
+      url.searchParams.append('productName', this.productName);
       plugins.forEach((plugin) => {
         url.searchParams.append('plugins[id]', plugin.id);
         url.searchParams.append('plugins[name]', plugin.name);
