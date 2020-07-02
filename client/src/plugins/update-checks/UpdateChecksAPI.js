@@ -15,6 +15,8 @@ const OS_INFO_CONFIG_KEY = 'os.info';
 
 const UPDATE_CHECK_API = 'update-check';
 
+const PRODUCT_CAMUNDA_MODELER = 'Camunda Modeler';
+
 export default class UpdateChecksAPI {
 
   constructor(endpointUrl) {
@@ -50,6 +52,7 @@ export default class UpdateChecksAPI {
       url.searchParams.append('modelerVersion', modelerVersion);
       url.searchParams.append('os', osInfo.platform);
       url.searchParams.append('osVersion', osInfo.release);
+      url.searchParams.append('productName', PRODUCT_CAMUNDA_MODELER);
       plugins.forEach((plugin) => {
         url.searchParams.append('plugins[id]', plugin.id);
         url.searchParams.append('plugins[name]', plugin.name);

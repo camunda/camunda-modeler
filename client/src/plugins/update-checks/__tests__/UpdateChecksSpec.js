@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import Flags, { DISABLE_REMOTE_INTERACTION } from '../../../util/Flags';
+import Flags, { DISABLE_REMOTE_INTERACTION, UPDATE_SERVER_URL } from '../../../util/Flags';
 import Metadata from '../../../util/Metadata';
 
 import {
@@ -295,6 +295,36 @@ describe('<UpdateChecks>', function() {
 
   it('should check periodically (every N minutes)');
 
+
+  it('should check with URL encoded parameters', async () => {
+
+    // given
+
+    Flags.init({
+      [ UPDATE_SERVER_URL ]: 'http://test-update-server.com'
+    });
+
+    const {
+      component
+    } = createComponent();
+
+    let calledURL = '';
+
+    mockServerResponse(component, {
+      update: {
+        latestVersion: 'v3.7.0',
+        downloadURL: 'test-download-url',
+        releases: []
+      }
+    }, (url) => { calledURL = url; });
+
+    // when
+    await tick(component);
+
+    // then
+    expect(calledURL).to.eql('http://test-update-server.com/update-check?editorID=test-id&newerThan=v3.5.0&modelerVersion=v3.5.0&os=windows&osVersion=98&productName=Camunda+Modeler&plugins%5Bid%5D=plugin1&plugins%5Bname%5D=plugin1&plugins%5Bid%5D=plugin2&plugins%5Bname%5D=plugin2');
+  });
+
 });
 
 
@@ -343,7 +373,7 @@ function createComponent(props={}) {
         } else if (key === EDITOR_ID_CONFIG_KEY) {
           resolve('test-id');
         } else if (key === OS_INFO_CONFIG_KEY) {
-          resolve({ platform: 'window', release: '98' });
+          resolve({ platform: 'windows', release: '98' });
         }
       });
     },
