@@ -166,9 +166,13 @@ export default class UsageStatistics extends PureComponent {
       });
 
       log('ET response: ', response);
+
+      return { status: response.status };
     } catch (err) {
 
       log('Error happened sending data to ET: ', err);
+
+      return { error: err };
     }
   }
 
