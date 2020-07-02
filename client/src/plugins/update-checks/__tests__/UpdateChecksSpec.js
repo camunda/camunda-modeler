@@ -305,8 +305,11 @@ describe('<UpdateChecks>', function() {
     });
 
     const {
-      component
+      component,
+      instance
     } = createComponent();
+
+    instance.updateChecksAPI.productName = 'Camunda Modeler';
 
     let calledURL = '';
 
@@ -388,7 +391,10 @@ function createComponent(props={}) {
     />
   );
 
+  const instance = component.instance();
+
   return {
-    component
+    component,
+    instance
   };
 }
