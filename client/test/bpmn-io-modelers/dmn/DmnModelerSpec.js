@@ -24,6 +24,8 @@ const DEFAULT_OPTIONS = {
   }
 };
 
+const OVERVIEW_ZOOM_SCALE = 0.66;
+
 const VERY_LOW_PRIORITY = 100;
 
 inlineCSS(require('dmn-js/dist/assets/diagram-js.css'));
@@ -236,6 +238,14 @@ describe('DmnModeler', function() {
 
       // then
       expect(modeler._overview.getDefinitions()).to.exist;
+    });
+
+
+    it('should set default zoom scale on import', function() {
+      const overviewCanvas = modeler._overview.getActiveViewer().get('canvas');
+
+      // then
+      expect(overviewCanvas.zoom()).to.equal(OVERVIEW_ZOOM_SCALE);
     });
 
 

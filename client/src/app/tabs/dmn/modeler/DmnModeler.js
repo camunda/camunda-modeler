@@ -44,7 +44,7 @@ import 'dmn-js-properties-panel/dist/assets/dmn-js-properties-panel.css';
 
 const NOOP_MODULE = [ 'value', null ];
 
-const OVERVIEW_ZOOM_SCALE = 0.75;
+const OVERVIEW_ZOOM_SCALE = 0.66;
 
 const LOW_PRIORITY = 500;
 
@@ -163,7 +163,7 @@ export default class CamundaDmnModeler extends DmnModeler {
 
     // (1) import overview initially
     this.on('import.parse.start', ({ xml }) => {
-      overview.importXML(xml, this._handleImport);
+      overview.importXML(xml, this._handleOverviewImport);
     });
 
     // keep track of view type
@@ -260,7 +260,7 @@ export default class CamundaDmnModeler extends DmnModeler {
       if (err) {
         console.error(err);
       } else {
-        this._overview.importXML(xml, this._handleImport);
+        this._overview.importXML(xml, this._handleOverviewImport);
       }
     });
   }
