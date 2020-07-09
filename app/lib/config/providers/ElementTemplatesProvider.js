@@ -22,8 +22,9 @@ const log = require('../../log')('app:config:element-templates');
  * Get element templates.
  */
 class ElementTemplatesProvider {
-  constructor(paths) {
+  constructor(paths, defaultProvider) {
     this._paths = paths;
+    this._defaultProvider = defaultProvider;
   }
 
   /**
@@ -42,7 +43,10 @@ class ElementTemplatesProvider {
       ...this._paths
     ];
 
-    return getTemplates(paths);
+    return [
+      ...getTemplates(paths),
+      ...this._defaultProvider.get('elementTemplates', [])
+    ];
   }
 }
 
