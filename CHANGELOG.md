@@ -6,6 +6,33 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.1.0
+
+### General
+
+* `FEAT`: send ping and diagram creation events to E.T. telemetrics platform ([#1805](https://github.com/camunda/camunda-modeler/issues/1805))
+* `FIX`: send correct source maps with crash reports ([#1813](https://github.com/camunda/camunda-modeler/issues/1831))
+* `FIX`: ensure plugins are correctly sent to Sentry ([#1847](https://github.com/camunda/camunda-modeler/issues/1847))
+* `FIX`: save workspace before quitting ([#1795](https://github.com/camunda/camunda-modeler/issues/1795))
+* `FIX`: ensure space key is working to check / uncheck modal check boxes ([#1692](https://github.com/camunda/camunda-modeler/issues/1692))
+* `FIX`: ensure menu is only initiated once ([#1816](https://github.com/camunda/camunda-modeler/issues/1816))
+
+### BPMN
+
+* `FEAT`: integrate promisified bpmn-js ([#1775](https://github.com/camunda/camunda-modeler/issues/1775))
+* `CHORE`: bump to `bpmn-js@7.2.1`
+
+### DMN
+
+* `FEAT`: add DMN overview navigation ([#1767](https://github.com/camunda/camunda-modeler/issues/1767))
+* `FEAT`: set default zoom scale when opening DMN overview ([#1848](https://github.com/camunda/camunda-modeler/issues/1848))
+* `FEAT`: improve decision table layout ([#494](https://github.com/bpmn-io/dmn-js/issues/494))
+* `FEAT`: improve literal expression layout ([#515](https://github.com/bpmn-io/dmn-js/issues/515))
+* `FEAT`: add ability to resize table columns ([#500](https://github.com/bpmn-io/dmn-js/issues/500))
+* `FIX`: allow association regardless of connection direction ([#1702](https://github.com/camunda/camunda-modeler/issues/1702))
+* `FIX`: ensure select-all is working DMN properties panel ([#1685](https://github.com/camunda/camunda-modeler/issues/1685))
+* `CHORE`: bump to `dmn-js@9.0.0`
+
 ## 4.0.0
 
 * `CHORE`: bump to `bpmn-js@6.5.1`
