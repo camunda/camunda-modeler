@@ -133,6 +133,31 @@ describe('<AppParent>', function() {
       }, mount);
     });
 
+
+    it('should return promise on workspace save', async function() {
+
+      // given
+      const workspace = new Workspace({
+        save: () => Promise.resolve()
+      });
+
+      const { appParent } = createAppParent({
+        globals: {
+          workspace
+        }
+      });
+
+      const config = {
+        tabs: []
+      };
+
+      // when
+      const returnValue = appParent.handleWorkspaceChanged(config);
+
+      // then
+      expect(returnValue).to.be.instanceOf(Promise);
+    });
+
   });
 
 
@@ -925,8 +950,10 @@ function createAppParent(options = {}, mountFn=shallow) {
 
   const onStarted = options.onStarted;
 
+  const AppParentComponent = mountFn !== shallow ? AppParent : ShallowAppParent;
+
   const tree = mountFn(
-    <AppParent
+    <AppParentComponent
       globals={ globals }
       keyboardBindings={ keyboardBindings }
       tabsProvider={ tabsProvider }
@@ -941,6 +968,14 @@ function createAppParent(options = {}, mountFn=shallow) {
     tree
   };
 
+}
+
+class ShallowAppParent extends AppParent {
+  getApp() {
+    return {
+      triggerAction() {}
+    };
+  }
 }
 
 function createTab(overrides = {}) {

@@ -138,11 +138,11 @@ export default class AppParent extends PureComponent {
 
     try {
       await workspace.save(workspaceConfig);
-    } catch (error) {
-      return log('workspace saved error', error);
-    }
 
-    log('workspace saved', workspaceConfig);
+      log('workspace saved', workspaceConfig);
+    } catch (error) {
+      log('workspace saved error', error);
+    }
   }
 
   restoreWorkspace = async () => {

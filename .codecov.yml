@@ -3,7 +3,3 @@ comment: off
 parsers:
   javascript:
     enable_partials: yes
-
-codecov:
-  ci:
-    - !appveyor
