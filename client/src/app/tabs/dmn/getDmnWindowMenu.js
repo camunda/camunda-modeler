@@ -11,7 +11,8 @@
 export default function getBpmnWindowMenu(state) {
   return [
     ...getZoomEntries(state),
-    ...getPropertiesPanelEntries(state)
+    ...getPropertiesPanelEntries(state),
+    ...getOverviewEntries(state)
   ];
 }
 
@@ -46,5 +47,17 @@ function getPropertiesPanelEntries({ propertiesPanel }) {
     label: 'Reset Properties Panel',
     accelerator: 'CommandOrControl+Shift+P',
     action: 'resetProperties'
+  }] : [];
+}
+
+function getOverviewEntries({ overview }) {
+  return overview ? [{
+    label: 'Toggle Overview',
+    accelerator: 'CommandOrControl+P',
+    action: 'toggleOverview'
+  }, {
+    label: 'Reset Overview',
+    accelerator: 'CommandOrControl+Shift+P',
+    action: 'resetOverview'
   }] : [];
 }

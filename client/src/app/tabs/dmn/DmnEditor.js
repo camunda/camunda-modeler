@@ -318,6 +318,8 @@ export class DmnEditor extends CachedComponent {
 
     const hasPropertiesPanel = !!activeViewer.get('propertiesPanel', false);
 
+    const hasOverview = activeView.type !== 'drd';
+
     const inputActive = isInputActive();
 
     const newState = {
@@ -327,6 +329,7 @@ export class DmnEditor extends CachedComponent {
       dirty,
       exportAs: 'saveSVG' in activeViewer ? EXPORT_AS : false,
       inputActive,
+      overview: hasOverview,
       paste: false,
       propertiesPanel: hasPropertiesPanel,
       redo: commandStack.canRedo(),
@@ -650,6 +653,12 @@ export class DmnEditor extends CachedComponent {
       };
     }
 
+    if (action === 'toggleOverview') {
+      return this.toggleOverview();
+    } else if (action === 'resetOverview') {
+      return this.resetOverview();
+    }
+
     modeler.getActiveViewer()
       .get('editorActions')
       .trigger(action, context);
@@ -757,7 +766,7 @@ export class DmnEditor extends CachedComponent {
     }
   }
 
-  handleToggleOverviewClick = () => {
+  toggleOverview = () => {
     const {
       layout,
       onLayoutChanged
@@ -769,6 +778,18 @@ export class DmnEditor extends CachedComponent {
       dmnOverview: {
         ...dmnOverview,
         open: !dmnOverview.open
+      }
+    });
+  }
+
+  resetOverview() {
+    const {
+      onLayoutChanged
+    } = this.props;
+
+    onLayoutChanged({
+      dmnOverview: {
+        ...overviewDefaultLayout
       }
     });
   }
@@ -867,7 +888,7 @@ export class DmnEditor extends CachedComponent {
           !isDrd && (
             <div className="top">
               <button id="button-edit-drd" className="button" onClick={ this.handleEditDrdClick }>Edit DRD</button>
-              <button id="button-toggle-overview" className="button" onClick={ this.handleToggleOverviewClick }>{ overviewOpen ? 'Close' : 'Open' } Overview</button>
+              <button id="button-toggle-overview" className="button" onClick={ this.toggleOverview }>{ overviewOpen ? 'Close' : 'Open' } Overview</button>
             </div>
           )
         }

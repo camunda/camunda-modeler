@@ -15,7 +15,8 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import {
-  find
+  find,
+  isArray
 } from 'min-dash';
 
 import {
@@ -41,6 +42,10 @@ import {
 import diagramXML from './diagram.dmn';
 
 import diagram11XML from './diagram11.dmn';
+
+import {
+  DEFAULT_LAYOUT
+} from '../OverviewContainer';
 
 const { spy } = sinon;
 
@@ -629,12 +634,6 @@ describe('<DmnEditor>', function() {
 
       describe('decision table', function() {
 
-        const includesEntryDeeply = (editMenu, label) => {
-          return editMenu.filter(entries => {
-            return entries.some(e => e.label === label);
-          }).length > 0;
-        };
-
         it('should provide rule entries', async function() {
 
           // given
@@ -656,8 +655,8 @@ describe('<DmnEditor>', function() {
           expect(changedSpy).to.be.calledOnce;
 
           const state = changedSpy.firstCall.args[0];
-          expect(includesEntryDeeply(state.editMenu, 'Add Rule')).to.be.true;
-          expect(includesEntryDeeply(state.editMenu, 'Remove Clause')).to.be.true;
+          expect(hasMenuEntry(state.editMenu, 'Add Rule')).to.be.true;
+          expect(hasMenuEntry(state.editMenu, 'Remove Clause')).to.be.true;
 
         });
 
@@ -684,8 +683,8 @@ describe('<DmnEditor>', function() {
 
           const state = changedSpy.firstCall.args[0];
 
-          expect(includesEntryDeeply(state.editMenu, 'Add Clause')).to.be.true;
-          expect(includesEntryDeeply(state.editMenu, 'Remove Clause')).to.be.true;
+          expect(hasMenuEntry(state.editMenu, 'Add Clause')).to.be.true;
+          expect(hasMenuEntry(state.editMenu, 'Remove Clause')).to.be.true;
 
         });
 
@@ -712,14 +711,97 @@ describe('<DmnEditor>', function() {
 
           const state = changedSpy.firstCall.args[0];
 
-          expect(includesEntryDeeply(state.editMenu, 'Select Cell Above')).to.be.true;
-          expect(includesEntryDeeply(state.editMenu, 'Select Cell Below')).to.be.true;
+          expect(hasMenuEntry(state.editMenu, 'Select Cell Above')).to.be.true;
+          expect(hasMenuEntry(state.editMenu, 'Select Cell Below')).to.be.true;
         });
 
       });
 
     });
 
+
+    describe('window menu', function() {
+
+      it('should provide toggle/reset overview entries for decision table', async function() {
+
+        // given
+        const changedSpy = sinon.spy();
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        changedSpy.resetHistory();
+
+        // when
+        const modeler = instance.getModeler();
+
+        modeler.open({ type: 'decisionTable' });
+        instance.handleChanged();
+
+        // then
+        expect(changedSpy).to.be.calledOnce;
+
+        const state = changedSpy.firstCall.args[0];
+
+        expect(hasMenuEntry(state.windowMenu, 'Toggle Overview')).to.be.true;
+        expect(hasMenuEntry(state.windowMenu, 'Reset Overview')).to.be.true;
+      });
+
+
+      it('should provide toggle/reset overview entries for literal expression', async function() {
+
+        // given
+        const changedSpy = sinon.spy();
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        changedSpy.resetHistory();
+
+        // when
+        const modeler = instance.getModeler();
+
+        modeler.open({ type: 'literalExpression' });
+        instance.handleChanged();
+
+        // then
+        expect(changedSpy).to.be.calledOnce;
+
+        const state = changedSpy.firstCall.args[0];
+
+        expect(hasMenuEntry(state.windowMenu, 'Toggle Overview')).to.be.true;
+        expect(hasMenuEntry(state.windowMenu, 'Reset Overview')).to.be.true;
+      });
+
+
+      it('should NOT provide toggle/reset overview entries for DRD', async function() {
+
+        // given
+        const changedSpy = sinon.spy();
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        changedSpy.resetHistory();
+
+        // when
+        const modeler = instance.getModeler();
+
+        modeler.open({ type: 'drd' });
+        instance.handleChanged();
+
+        // then
+        expect(changedSpy).to.be.calledOnce;
+
+        const state = changedSpy.firstCall.args[0];
+
+        expect(hasMenuEntry(state.windowMenu, 'Toggle Overview')).to.be.false;
+        expect(hasMenuEntry(state.windowMenu, 'Reset Overview')).to.be.false;
+      });
+    });
   });
 
 
@@ -1330,6 +1412,57 @@ describe('<DmnEditor>', function() {
   });
 
 
+  describe('overview actions', function() {
+
+    it('should toggle overview', async function() {
+
+      // given
+      const onLayoutChangedSpy = sinon.spy();
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        layout: {
+          dmnOverview: {
+            open: false,
+          }
+        },
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      instance.triggerAction('toggleOverview');
+
+      // then
+      expect(onLayoutChangedSpy).to.be.calledOnceWith({
+        dmnOverview: {
+          open: true,
+        }
+      });
+    });
+
+
+    it('should reset overview', async function() {
+
+      // given
+      const onLayoutChangedSpy = sinon.spy();
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      instance.triggerAction('resetOverview');
+
+      // then
+      expect(onLayoutChangedSpy).to.be.calledOnceWith({
+        dmnOverview: DEFAULT_LAYOUT
+      });
+    });
+
+  });
+
+
   describe('zoom actions', function() {
 
     let editorActionsStub,
@@ -1581,4 +1714,14 @@ async function renderEditor(xml, options = {}) {
 
 function getEvent(events, eventName) {
   return find(events, e => e.type === eventName);
+}
+
+function hasMenuEntry(editMenu, label) {
+  return !!editMenu.find(entry => {
+    if (isArray(entry)) {
+      return hasMenuEntry(entry, label);
+    } else {
+      return entry.label === label;
+    }
+  });
 }
