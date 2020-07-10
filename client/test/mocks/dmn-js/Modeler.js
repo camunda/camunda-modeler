@@ -51,10 +51,11 @@ class PropertiesPanel {
 
 class Viewer {
 
-  constructor(xml, modules) {
+  constructor(xml, modules, { type } = { type: 'drd' }) {
     this.modules = assign(this._getDefaultModules(), modules);
 
     this.xml = xml;
+    this.type = type;
   }
 
   _getDefaultModules() {
@@ -90,14 +91,22 @@ class Viewer {
     return done(null, '<svg />');
   }
 
-  get(moduleName) {
+  get(moduleName, strict) {
     const module = this.modules[moduleName];
+
+    if (this.type !== 'drd' && moduleName === 'propertiesPanel' && strict === false) {
+      return null;
+    }
 
     if (module) {
       return module;
     }
 
-    throw new Error(`service not provided: <${moduleName}>`);
+    if (strict === false) {
+      throw new Error(`service not provided: <${moduleName}>`);
+    }
+
+    return null;
   }
 }
 
@@ -122,7 +131,7 @@ export default class Modeler {
 
     this.xml = xml;
 
-    this.viewer = new Viewer(this.xml, this.modules);
+    this.viewer = new Viewer(this.xml, this.modules, this.activeView);
 
     const error = xml === 'import-error' ? new Error('error') : null;
 
@@ -136,11 +145,11 @@ export default class Modeler {
   }
 
   getActiveViewer() {
-    return this.viewer || new Viewer(this.xml, this.modules);
+    return this.viewer || new Viewer(this.xml, this.modules, this.activeView);
   }
 
   _getViewer() {
-    return this.viewer || new Viewer(this.xml, this.modules);
+    return this.viewer || new Viewer(this.xml, this.modules, this.activeView);
   }
 
   saveXML(options, done) {
@@ -201,7 +210,7 @@ export default class Modeler {
   }
 
   getStackIdx() {
-    const viewer = this.viewer || new Viewer(this.xml, this.modules);
+    const viewer = this.viewer || new Viewer(this.xml, this.modules, this.activeView);
 
     const commandStack = viewer.get('commandStack', false);
 
