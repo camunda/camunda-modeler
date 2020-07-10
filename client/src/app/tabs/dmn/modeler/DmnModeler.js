@@ -44,6 +44,10 @@ import 'dmn-js-properties-panel/dist/assets/dmn-js-properties-panel.css';
 
 const NOOP_MODULE = [ 'value', null ];
 
+const poweredByModule = {
+  poweredBy: NOOP_MODULE
+};
+
 const OVERVIEW_ZOOM_SCALE = 0.66;
 
 const LOW_PRIORITY = 500;
@@ -74,11 +78,13 @@ export default class CamundaDmnModeler extends DmnModeler {
       ]),
       decisionTable: mergeModules(decisionTable, [
         decisionTableKeyboardModule,
+        poweredByModule,
         {
           viewDrd: NOOP_MODULE
         }
       ]),
       literalExpression: mergeModules(literalExpression, [
+        poweredByModule,
         {
           viewDrd: NOOP_MODULE
         }
