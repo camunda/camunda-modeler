@@ -158,9 +158,6 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'DMN Table',
-            action: 'create-dmn-table'
-          }, {
             label: 'DMN Diagram',
             action: 'create-dmn-diagram'
           }];
