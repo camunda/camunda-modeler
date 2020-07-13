@@ -22,6 +22,7 @@ For patch releases turn to [this documentation](./PATCH_RELEASE.md).
 _To be done immediately after creating this issue._
 
 * [ ] put up code freeze appointment in calendar (include `modeling`, `qa`, `infra`, and `Team-Support`)
+* [ ] put up release appointment in calendar (include `modeling` and Marketing [Charley Mann & Christopher Rogers])
 * [ ] add Slack role to release manager (`@modeling-release-manager`)
 
 _To be done after code freeze and prior to the release day to prepare and build the release._
@@ -40,7 +41,7 @@ _To be done after code freeze and prior to the release day to prepare and build 
     * [ ] Works on Mac
     * [ ] Works on Windows
 * [ ] trigger QA for fuzzy testing
-* [ ] write blog post for [blog.camunda.org](https://github.com/camunda/blog.camunda.org), __do not publish until released version is available for download on [camunda.org](https://camunda.org/release/camunda-modeler/)__
+* [ ] write blog post for [blog.camunda.org](https://github.com/camunda/blog.camunda.org) and send it to Charley Mann and Christopher Rogers for review ideally before Friday prior to the release [which is on Tuesdays], __do not publish until released version is available for download on [camunda.org](https://camunda.org/release/camunda-modeler/)__
 
 _To be done on release day to announce the release and making it publically available._
 
