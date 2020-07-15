@@ -6,6 +6,17 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.1.1
+
+### General
+
+* `FIX`: remove _Create DMN Table_ from menu actions ([#1871](https://github.com/camunda/camunda-modeler/issues/1871))
+
+### DMN
+
+* `FIX`: correctly position cell header popup ([#1869](https://github.com/camunda/camunda-modeler/issues/1869))
+* `FIX`: hide watermark for non-DRD modelers ([#1867](https://github.com/camunda/camunda-modeler/issues/1867))
+
 ## 4.1.0
 
 ### General
