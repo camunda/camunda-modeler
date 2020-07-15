@@ -132,12 +132,10 @@ export class BpmnEditor extends CachedComponent {
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
 
-    if (this.shouldLoadTemplates()) {
-      try {
-        await this.loadTemplates();
-      } catch (error) {
-        this.handleError({ error });
-      }
+    try {
+      await this.loadTemplates();
+    } catch (error) {
+      this.handleError({ error });
     }
 
     this.checkImport();
@@ -192,14 +190,6 @@ export class BpmnEditor extends CachedComponent {
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
   }
 
-  shouldLoadTemplates() {
-    const {
-      templatesLoaded
-    } = this.getCached();
-
-    return !templatesLoaded;
-  }
-
   async loadTemplates() {
     const { getConfig } = this.props;
 
@@ -211,9 +201,15 @@ export class BpmnEditor extends CachedComponent {
 
     templatesLoader.setTemplates(templates);
 
-    this.setCached({
-      templatesLoaded: true
-    });
+    const propertiesPanel = modeler.get('propertiesPanel', false);
+
+    if (propertiesPanel) {
+      const currentElement = propertiesPanel._current && propertiesPanel._current.element;
+
+      if (currentElement) {
+        propertiesPanel.update(currentElement);
+      }
+    }
   }
 
   undo = () => {
@@ -603,6 +599,10 @@ export class BpmnEditor extends CachedComponent {
       context = {
         value: 'fit-viewport'
       };
+    }
+
+    if (action === 'elementTemplates.reload') {
+      return this.loadTemplates();
     }
 
     // TODO(nikku): handle all editor actions
