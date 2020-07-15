@@ -18,8 +18,8 @@
   &.multi-button:hover {
     .dropdown-opener:before {
       content: '';
-      background: #CCC;
-      box-shadow: 0 0 1px #EEE;
+      background: var(--color-cccccc);
+      box-shadow: 0 0 1px var(--color-eeeeee);
       width: 1px;
       height: 80%;
       position: absolute;
@@ -50,8 +50,8 @@
     margin: 0;
     font-size: 13px;
     line-height: 24px;
-    background: white;
-    border: solid 1px #CCC;
+    background: var(--color-ffffff);
+    border: solid 1px var(--color-cccccc);
     z-index: 1000;
 
     > .item {
@@ -62,7 +62,7 @@
       cursor: pointer;
 
       &:hover {
-        background: #D6EBFF;
+        background: var(--silver-darken-94);
       }
     }
   }

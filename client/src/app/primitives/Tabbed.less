@@ -1,5 +1,5 @@
 .tab-base() {
-  border: solid 1px #ddd;
+  border: solid 1px var(--color-dddddd);
   position: relative;
   flex: 1;
 }
@@ -71,8 +71,8 @@
     margin-right: 5px;
     padding: 6px 9px;
     text-align: center;
-    border: solid 1px #ddd;
-    color: #444;
+    border: solid 1px var(--color-dddddd);
+    color: var(--color-444444);
 
     background: #fff;
     cursor: default;
@@ -80,11 +80,11 @@
     position: relative;
     user-select: none;
 
-    background: #F6F6F6;
+    background: var(--color-f6f6f6);
 
     &:hover,
     &.active {
-      background: white;
+      background: var(--color-ffffff);
     }
 
     &.active:before {
@@ -103,15 +103,15 @@
     .tab {
       border-radius: 2px 2px 0 0;
       margin-bottom: -1px;
-      border-bottom: solid 2px #ddd;
+      border-bottom: solid 2px var(--color-dddddd);
 
       &.active {
-        border-top: solid 3px #52b415;
+        border-top: solid 3px var(--blue-base-65);
         border-radius: 3px 3px 0 0;
 
         &:before {
           bottom: -2px;
-          border-bottom: solid 3px white;
+          border-bottom: solid 3px var(--color-ffffff);
         }
       }
     }
@@ -127,7 +127,7 @@
       border-radius: 0 0 2px 2px;
       padding: 4px 8px;
       margin-top: -1px;
-      border-top: solid 2px #ddd;
+      border-top: solid 2px var(--color-dddddd);
 
       &:first-child {
         margin-left: 10px;
@@ -136,7 +136,7 @@
       &.active {
         &:before {
           top: -2px;
-          border-top: solid 3px white;
+          border-top: solid 3px var(--color-ffffff);
         }
       }
     }
@@ -158,7 +158,7 @@
     }
 
     &:hover {
-      color: orange;
+      color: var(--blue-darken-48);
     }
   }
 
@@ -166,7 +166,7 @@
   .tab.dirty .close {
 
     &:not(:hover) {
-      color: orange;
+      color: var(--silver-darken-80);
       margin-top: -3px;
       padding: 0;
       font-size: 22px;
