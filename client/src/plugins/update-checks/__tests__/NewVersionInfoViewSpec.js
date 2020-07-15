@@ -87,6 +87,16 @@ describe('<NewVersionInfoView>', () => {
   });
 
 
+  it('should auto focus primary button', () => {
+
+    // given
+    const positiveButton = wrapper.find('.btn-primary');
+
+    // then
+    expect(positiveButton.instance()).to.be.eql(document.activeElement);
+  });
+
+
   it('should render negative button', () => {
 
     const negativeButton = wrapper.find('.btn-secondary');
