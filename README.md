@@ -1,27 +1,16 @@
-# Camunda Modeler
+# QuantME Modeling and Transformation Framework
 
 [![Build Status](https://travis-ci.org/camunda/camunda-modeler.svg?branch=develop)](https://travis-ci.org/camunda/camunda-modeler)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An integrated modeling solution for BPMN, DMN and CMMN based on [bpmn.io](http://bpmn.io).
+A modeling solution for BPMN 2.0-based process models that need to integrate quantum applications.
+It supports [Quantum4BPMN](https://github.com/UST-QuAntiL/QuantME-Quantum4BPMN), a BPMN extension to support the Quantum Modeling Extension (QuantME).
 
-![Camunda Modeler](docs/screenshot.png)
-
-
-## Resources
-
-* [Changelog](./CHANGELOG.md)
-* [Download](https://camunda.com/download/modeler/) (see also [nightly builds](https://downloads.camunda.cloud/release/camunda-modeler/nightly/))
-* [Give Feedback](https://forum.camunda.org/c/modeler)
-* [Report a Bug](https://github.com/camunda/camunda-modeler/issues)
-* [User Documentation](https://docs.camunda.org/manual/latest/modeler/camunda-modeler/)
-
+Therefore, it enables to create process models orchestrating classical and quantum applications and to transform these process models to standard-compliant BPMN, to retain their portability.
 
 ## Building the Application
 
 ```sh
-# checkout a tag
-git checkout v1.1.0
-
 # install dependencies
 npm install
 
@@ -46,4 +35,4 @@ npm run dev
 
 MIT
 
-Uses [bpmn-js](https://github.com/bpmn-io/bpmn-js), [dmn-js](https://github.com/bpmn-io/dmn-js), and [cmmn-js](https://github.com/bpmn-io/cmmn-js), licensed under the [bpmn.io license](http://bpmn.io/license).
+Based on the [Camunda Modeler](https://github.com/camunda/camunda-modeler) and uses [bpmn-js](https://github.com/bpmn-io/bpmn-js), [dmn-js](https://github.com/bpmn-io/dmn-js), and [cmmn-js](https://github.com/bpmn-io/cmmn-js), licensed under the [bpmn.io license](http://bpmn.io/license).
