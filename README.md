@@ -8,7 +8,7 @@ It is based on [Quantum4BPMN](https://github.com/UST-QuAntiL/QuantME-Quantum4BPM
 
 Therefore, it enables to create process models orchestrating classical and quantum applications and to transform these process models to standard-compliant BPMN to retain their portability.
 
-The major part of the functionality of the modeling and transformation framework is implemented through the (QuantME-CamundaPlugin)[https://github.com/UST-QuAntiL/QuantME-CamundaPlugin]. Please refer to this repository for further documentation of the possible usage of the framework to model and transform Quantum4BPMN process models.
+The major part of the functionality of the modeling and transformation framework is implemented through the [QuantME-CamundaPlugin](https://github.com/UST-QuAntiL/QuantME-CamundaPlugin). Please refer to this repository for further documentation of the possible usage of the framework to model and transform Quantum4BPMN process models.
 
 ### Cloning the Repository
 
