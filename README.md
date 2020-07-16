@@ -4,11 +4,21 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A modeling solution for BPMN 2.0-based process models that need to integrate quantum applications.
-It supports [Quantum4BPMN](https://github.com/UST-QuAntiL/QuantME-Quantum4BPMN), a BPMN extension to support the Quantum Modeling Extension (QuantME).
+It is based on [Quantum4BPMN](https://github.com/UST-QuAntiL/QuantME-Quantum4BPMN), a BPMN extension to support the Quantum Modeling Extension (QuantME).
 
-Therefore, it enables to create process models orchestrating classical and quantum applications and to transform these process models to standard-compliant BPMN, to retain their portability.
+Therefore, it enables to create process models orchestrating classical and quantum applications and to transform these process models to standard-compliant BPMN to retain their portability.
 
-## Building the Application
+The major part of the functionality of the modeling and transformation framework is implemented through the (QuantME-CamundaPlugin)[https://github.com/UST-QuAntiL/QuantME-CamundaPlugin]. Please refer to this repository for further documentation of the possible usage of the framework to model and transform Quantum4BPMN process models.
+
+### Cloning the Repository
+
+As the repository is based on git submodules please use the following command to clone the repository:
+
+```
+git clone --recurse-submodules https://github.com/wederbn/QuantME-TransformationFramework.git
+```
+
+### Building the Application
 
 ```sh
 # install dependencies
