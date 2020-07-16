@@ -11,6 +11,13 @@
       ]
     }
   ],
+  "extraFiles": [
+            {
+              "from": "resources/plugins",
+              "to": "resources/plugins",
+              "filter": ["**/*"]
+            }
+  ],
   "afterPack": "./tasks/after-pack.js",
   "afterSign": "./tasks/after-sign.js",
   "afterAllArtifactBuild": "./tasks/after-all-artifact-build.js",
