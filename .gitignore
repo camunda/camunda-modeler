@@ -7,3 +7,4 @@ plugins/**
 .vscode
 coverage
 .nyc_output
+.linked-dependencies
