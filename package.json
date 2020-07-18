@@ -38,6 +38,7 @@
   "devDependencies": {
     "archiver": "^3.0.3",
     "builder-util": "^22.3.3",
+    "camunda-modeler-plugin-helpers": "^3.1.0",
     "chai": "^4.2.0",
     "cpx": "^1.5.0",
     "del": "^3.0.0",
@@ -67,5 +68,9 @@
     "tar-stream": "^2.1.0",
     "which": "^1.2.0",
     "yauzl": "^2.10.0"
+  },
+  "dependencies": {
+    "inherits": "^2.0.4",
+    "lodash": "^4.17.19"
   }
 }
