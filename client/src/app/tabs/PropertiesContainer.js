@@ -12,88 +12,86 @@ import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
+import { isFunction } from 'min-dash';
+
 import dragger from '../../util/dom/dragger';
 
 import css from './PropertiesContainer.less';
 
-import {
-  throttle
-} from '../../util';
+import { throttle } from '../../util';
 
-const DEFAULT_LAYOUT = {
+export const DEFAULT_LAYOUT = {
   open: false,
   width: 250
 };
 
+export const MIN_WIDTH = 150;
+export const MAX_WIDTH = 650;
+
 
 /**
- * A generic container to hold our editors properties panels.
- *
- * Adds resize and toggle support.
+ * Container for properties panel that can be resized and toggled.
  */
 class PropertiesContainerWrapped extends PureComponent {
-
   constructor(props) {
     super(props);
 
     this.handleResize = throttle(this.handleResize);
-  }
 
-  changeLayout = (newLayout) => {
+    this.ref = new React.createRef();
 
-    const {
-      onLayoutChanged
-    } = this.props;
-
-    if (typeof onLayoutChanged === 'function') {
-      onLayoutChanged(newLayout);
-    }
-  }
-
-  /**
-   * Toggle properties panel expanded state.
-   */
-  handleToggle = () => {
-
-    const {
-      layout
-    } = this.props;
-
-    const {
-      width,
-      open
-    } = layout && layout.propertiesPanel || DEFAULT_LAYOUT;
-
-    this.changeLayout({
-      propertiesPanel: {
-        open: !open,
-        width
-      }
-    });
+    this.context = {};
   }
 
   handleResizeStart = event => {
     const onDragStart = dragger(this.handleResize);
 
-    this.originalWidth = this.currentWidth;
-
     onDragStart(event);
+
+    const {
+      open,
+      width
+    } = getLayoutFromProps(this.props);
+
+    this.context = {
+      open,
+      startWidth: width
+    };
   }
 
   handleResize = (_, delta) => {
-    const {
-      x
-    } = delta;
+    const { x: dx } = delta;
 
-    if (x === 0) {
+    if (dx === 0) {
       return;
     }
 
-    const newWidth = this.originalWidth - x;
+    const { startWidth } = this.context;
 
-    const open = newWidth > 25;
+    const {
+      open,
+      width
+    } = getLayout(dx, startWidth);
 
-    const width = (open ? newWidth : DEFAULT_LAYOUT.width);
+    this.context = {
+      ...this.context,
+      open,
+      width
+    };
+
+    if (this.ref.current) {
+      this.ref.current.classList.toggle('open', open);
+      this.ref.current.style.width = `${ open ? width : 0 }px`;
+    }
+  }
+
+  handleResizeEnd = () => {
+    const {
+      open,
+      width
+    } = this.context;
+
+    this.context = {};
 
     this.changeLayout({
       propertiesPanel: {
@@ -103,38 +101,53 @@ class PropertiesContainerWrapped extends PureComponent {
     });
   }
 
-  render() {
-
-    const {
-      layout,
-      forwardedRef,
-      className
-    } = this.props;
+  handleToggle = () => {
+    const { layout } = this.props || {};
 
     const propertiesPanel = layout.propertiesPanel || DEFAULT_LAYOUT;
 
-    const open = propertiesPanel.open || propertiesPanel.width === 0;
-    const width = open ? propertiesPanel.width : 0;
+    this.changeLayout({
+      propertiesPanel: {
+        ...propertiesPanel,
+        open: !propertiesPanel.open
+      }
+    });
+  }
 
-    const propertiesStyle = {
+  changeLayout = (layout = {}) => {
+    const { onLayoutChanged } = this.props;
+
+    if (isFunction(onLayoutChanged)) {
+      onLayoutChanged(layout);
+    }
+  }
+
+  render() {
+    const {
+      className,
+      forwardedRef
+    } = this.props;
+
+    const {
+      open,
       width
-    };
-
-    this.currentWidth = width;
+    } = getLayoutFromProps(this.props);
 
     return (
       <div
+        ref={ this.ref }
         className={ classNames(
           css.PropertiesContainer,
           className,
           { open }
         ) }
-        style={ propertiesStyle }>
+        style={ { width } }>
         <div
           className="toggle"
           onClick={ this.handleToggle }
           draggable
           onDragStart={ this.handleResizeStart }
+          onDragEnd={ this.handleResizeEnd }
         >Properties Panel</div>
         {
           open &&
@@ -142,6 +155,7 @@ class PropertiesContainerWrapped extends PureComponent {
               className="resize-handle"
               draggable
               onDragStart={ this.handleResizeStart }
+              onDragEnd={ this.handleResizeEnd }
             ></div>
         }
         <div className="properties-container" ref={ forwardedRef }></div>
@@ -156,3 +170,35 @@ export default React.forwardRef(
     return <PropertiesContainerWrapped { ...props } forwardedRef={ ref } />;
   }
 );
+
+// helpers //////////
+
+function getLayout(dx, initialWidth) {
+  let width = Math.min(initialWidth - dx, MAX_WIDTH);
+
+  const open = width >= MIN_WIDTH;
+
+  if (!open) {
+    width = DEFAULT_LAYOUT.width;
+  }
+
+  return {
+    open,
+    width
+  };
+}
+
+function getLayoutFromProps(props) {
+  const layout = props.layout || {};
+
+  const propertiesPanel = layout.propertiesPanel || DEFAULT_LAYOUT;
+
+  const { open } = propertiesPanel;
+
+  const width = open ? propertiesPanel.width : 0;
+
+  return {
+    open,
+    width
+  };
+}
