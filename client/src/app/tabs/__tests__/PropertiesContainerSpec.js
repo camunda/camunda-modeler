@@ -12,11 +12,13 @@
 
 import React from 'react';
 
-import PropertiesContainer from '../PropertiesContainer';
+import PropertiesContainer, {
+  DEFAULT_LAYOUT,
+  MAX_WIDTH
+} from '../PropertiesContainer';
 
 import { mount } from 'enzyme';
 
-/* global sinon */
 const { spy } = sinon;
 
 
@@ -35,89 +37,186 @@ describe('<PropertiesContainer>', function() {
   });
 
 
-  it('should handle resize', function() {
+  it('should resize', function() {
 
     // given
     const layout = {
       propertiesPanel: {
         open: true,
-        width: 100
+        width: 500
       }
     };
+
     const onLayoutChangedSpy = spy();
 
     const {
-      wrapper,
-      instance
+      instance,
+      wrapper
     } = createPropertiesContainer({
       layout,
       onLayoutChanged: onLayoutChangedSpy
     });
 
-    instance.originalWidth = layout.propertiesPanel.width;
-
     // when
-    instance.handleResize(null, { x: -10 });
+    instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
+
+    instance.handleResize(null, { x: -50 });
+
+    instance.handleResizeEnd();
 
     // then
-    expect(onLayoutChangedSpy).to.be.calledWith({ propertiesPanel: { open: true, width: 110 } });
+    expect(onLayoutChangedSpy).to.be.calledWith({ propertiesPanel: { open: true, width: 550 } });
 
     // clean
     wrapper.unmount();
   });
 
 
-  it('should ignore delta x = 0', function() {
+  it('should close when resized to smaller than minimum size', function() {
 
     // given
     const layout = {
       propertiesPanel: {
         open: true,
-        width: 100
+        width: 500
       }
     };
+
     const onLayoutChangedSpy = spy();
 
     const {
-      wrapper,
-      instance
+      instance,
+      wrapper
     } = createPropertiesContainer({
       layout,
       onLayoutChanged: onLayoutChangedSpy
     });
 
-    instance.originalWidth = layout.propertiesPanel.width;
-
     // when
-    instance.handleResize(null, { x: 0 });
+    instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
+
+    instance.handleResize(null, { x: 400 });
+
+    instance.handleResizeEnd();
 
     // then
-    expect(onLayoutChangedSpy).to.not.be.called;
+    expect(onLayoutChangedSpy).to.be.calledWith({
+      propertiesPanel: {
+        open: false,
+        width: DEFAULT_LAYOUT.width
+      }
+    });
 
     // clean
     wrapper.unmount();
   });
+
+
+  it('should not resize to larger than maximum size', function() {
+
+    // given
+    const layout = {
+      propertiesPanel: {
+        open: true,
+        width: 500
+      }
+    };
+
+    const onLayoutChangedSpy = spy();
+
+    const {
+      instance,
+      wrapper
+    } = createPropertiesContainer({
+      layout,
+      onLayoutChanged: onLayoutChangedSpy
+    });
+
+    // when
+    instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
+
+    instance.handleResize(null, { x: -400 });
+
+    instance.handleResizeEnd();
+
+    // then
+    expect(onLayoutChangedSpy).to.be.calledWith({
+      propertiesPanel: {
+        open: true,
+        width: MAX_WIDTH
+      }
+    });
+
+    // clean
+    wrapper.unmount();
+  });
+
+
+  it('should toggle', function() {
+
+    // given
+    const layout = {
+      propertiesPanel: {
+        open: true,
+        width: 500
+      }
+    };
+
+    const onLayoutChangedSpy = spy();
+
+    const {
+      instance,
+      wrapper
+    } = createPropertiesContainer({
+      layout,
+      onLayoutChanged: onLayoutChangedSpy
+    });
+
+    // when
+    instance.handleToggle();
+
+    // then
+    expect(onLayoutChangedSpy).to.be.calledWith({ propertiesPanel: { open: false, width: 500 } });
+
+    // clean
+    wrapper.unmount();
+  });
+
 });
 
 
+// helpers //////////
 
-// helper /////
 function createPropertiesContainer(props = {}, mountFn = mount) {
-  const componentProps = {
+  props = {
     layout: {
       propertiesPanel: {
         open: true,
-        width: 100
+        width: 350
       }
     },
     ...props,
   };
 
-  const wrapper = mountFn(<PropertiesContainer { ...componentProps } />);
+  const wrapper = mountFn(<PropertiesContainer { ...props } />);
+
   const instance = wrapper.find('PropertiesContainerWrapped').first().instance();
 
   return {
-    wrapper,
-    instance
+    instance,
+    wrapper
   };
+}
+
+// helpers //////////
+
+function createMouseEvent(type, clientX, clientY) {
+  const event = document.createEvent('MouseEvent');
+
+  if (event.initMouseEvent) {
+    event.initMouseEvent(
+      type, true, true, window, 0, 0, 0, clientX, clientY, false, false, false, false, 0, null);
+  }
+
+  return event;
 }
