@@ -873,6 +873,32 @@ describe('<CmmnEditor>', function() {
 
   });
 
+
+  it('should notify when modeler was created', async function() {
+
+    // given
+    const emittedEvents = [];
+    const recordActions = (action, options) => {
+      emittedEvents.push(options);
+    };
+
+    const {
+      instance
+    } = await renderEditor(diagramXML, {
+      onAction: recordActions
+    });
+
+    // when
+    const modeler = instance.getModeler();
+
+    // then
+    expect(emittedEvents.length).to.eql(1);
+
+    const { type, payload } = emittedEvents[0];
+
+    expect(type).to.eql('cmmn.modeler.created');
+    expect(payload.modeler).to.equal(modeler);
+  });
 });
 
 
@@ -884,6 +910,7 @@ const TestEditor = WithCachedState(CmmnEditor);
 
 function renderEditor(xml, options = {}) {
   const {
+    onAction,
     layout,
     onChanged,
     onError,
@@ -896,6 +923,7 @@ function renderEditor(xml, options = {}) {
       id={ options.id || 'editor' }
       xml={ xml }
       activeSheet={ options.activeSheet || { id: 'cmmn' } }
+      onAction={ onAction || noop }
       onChanged={ onChanged || noop }
       onError={ onError || noop }
       onImport={ onImport || noop }

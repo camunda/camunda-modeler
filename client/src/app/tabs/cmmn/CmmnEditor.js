@@ -506,11 +506,13 @@ export class CmmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState() {
+  static createCachedState(props) {
     const {
       name,
       version
     } = Metadata;
+
+    const { onAction } = props;
 
     const modeler = new CamundaCmmnModeler({
       position: 'absolute',
@@ -523,6 +525,14 @@ export class CmmnEditor extends CachedComponent {
     const commandStack = modeler.get('commandStack');
 
     const stackIdx = commandStack._stackIdx;
+
+    // notify interested parties that modeler was created
+    onAction('emit-event', {
+      type: 'cmmn.modeler.created',
+      payload: {
+        modeler
+      }
+    });
 
     return {
       __destroy: () => {
