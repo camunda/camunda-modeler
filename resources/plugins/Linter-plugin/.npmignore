@@ -1,0 +1,5 @@
+client/
+docs/account-processing.bpmn
+.bpmnlintrc
+.travis.yml
+webpack.config.js
