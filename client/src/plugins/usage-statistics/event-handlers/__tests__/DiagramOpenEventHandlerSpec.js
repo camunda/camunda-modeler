@@ -40,6 +40,19 @@ describe('<DiagramOpenEventHandler>', () => {
   });
 
 
+  it('should subscribe to cmmn.modeler.created', () => {
+
+    // given
+    const subscribe = sinon.spy();
+
+    // when
+    new DiagramOpenEventHandler({ subscribe });
+
+    // then
+    expect(subscribe.getCall(2).args[0]).to.eql('cmmn.modeler.created');
+  });
+
+
   it('should send with diagram-type: bpmn', async () => {
 
     // given
@@ -166,6 +179,29 @@ describe('<DiagramOpenEventHandler>', () => {
     expect(onSend).to.have.been.calledWith({
       event: 'diagramOpened',
       'diagram-type': 'dmn'
+    });
+  });
+
+
+  it('should send with diagram-type: cmmn', () => {
+
+    // given
+    const subscribe = sinon.spy();
+    const onSend = sinon.spy();
+
+    // when
+    const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe });
+
+    diagramOpenEventHandler.enable();
+
+    const cmmnCallback = subscribe.getCall(2).args[1];
+
+    cmmnCallback();
+
+    // then
+    expect(onSend).to.have.been.calledWith({
+      event: 'diagramOpened',
+      'diagram-type': 'cmmn'
     });
   });
 });
