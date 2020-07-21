@@ -42,14 +42,16 @@ The `Diagram Opened Event` is sent in following situations:
 
  - User created a new BPMN diagram
  - User created a new DMN diagram
+ - User created a new CMMN diagram
  - User opened an existing BPMN diagram
  - User opened an existing DMN diagram
+ - User opened an existing CMMN diagram
 
 The Diagram Opened Event has the following core structure:
 ```json
 {
   "event": "diagramOpened",
-  "diagram-type": "[bpmn or dmn]"
+  "diagram-type": "[bpmn, dmn or cmmn]"
 }
 ```
 
