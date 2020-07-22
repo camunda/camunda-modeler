@@ -15,7 +15,8 @@ const path = require('path');
 
 const customLinkersMap = {
   'bpmn-io/bpmn-js': linkBpmnJs,
-  'bpmn-io/dmn-js': linkDmnJs
+  'bpmn-io/dmn-js': linkDmnJs,
+  'bpmn-io/diagram-js': linkDiagramJs
 };
 
 const clientDir = path.join(__dirname, '..', 'client');
@@ -42,11 +43,24 @@ function getDependencies() {
   const rawDependencies = process.env.LINKED_DEPENDENCIES || '';
   const dependenciesList = rawDependencies.split(',').filter(Boolean);
 
-  return dependenciesList.map(dependency => {
+  const unsortedDependencies = dependenciesList.map(dependency => {
     const [ repo, ref ] = dependency.split('#');
 
     return { repo, ref };
   });
+
+  return sortDependencies(unsortedDependencies);
+}
+
+function sortDependencies(dependencies) {
+  const diagramJs = dependencies.find(({ repo }) => repo === 'bpmn-io/diagram-js');
+
+  if (diagramJs) {
+    dependencies.splice(dependencies.indexOf(diagramJs), 1);
+    dependencies.unshift(diagramJs);
+  }
+
+  return dependencies;
 }
 
 /**
@@ -102,6 +116,13 @@ function linkDmnJs({ repo, ref }) {
   exec('npm ci', { cwd: rootDir });
   console.log('Installed dependencies.');
 
+  try {
+    exec('yarn link diagram-js', { cwd: rootDir });
+    console.log('Linked diagram-js.');
+  } catch (error) {
+    console.log('Unable to link diagram-js.');
+  }
+
   exec('npm run build-distro', { cwd: rootDir });
   console.log('Built distro.');
 
@@ -126,12 +147,39 @@ function linkBpmnJs({ repo, ref }) {
   exec('npm ci', { cwd: rootDir });
   console.log('Installed dependencies.');
 
+  try {
+    exec('yarn link diagram-js', { cwd: rootDir });
+    console.log('Linked diagram-js.');
+  } catch (error) {
+    console.log('Unable to link diagram-js.');
+  }
+
   exec('npm run distro', { cwd: rootDir });
   console.log('Built distro.');
 
   exec('yarn link', { cwd: rootDir });
 
   exec('yarn link bpmn-js', { cwd: clientDir });
+}
+
+/**
+ *
+ * @param {Dependency} dependency
+ */
+function linkDiagramJs({ repo, ref }) {
+  gitClone(repo);
+  console.log(`Cloned ${repo}.`);
+
+  const rootDir = path.join(dependenciesDir, 'diagram-js');
+  exec(`git checkout ${ref}`, { cwd: rootDir });
+  console.log(`Checked out ${ref}.`);
+
+  exec('npm ci', { cwd: rootDir });
+  console.log('Installed dependencies.');
+
+  exec('yarn link', { cwd: rootDir });
+
+  exec('yarn link diagram-js', { cwd: clientDir });
 }
 
 function gitClone(repo) {
