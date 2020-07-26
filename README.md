@@ -15,7 +15,7 @@ The major part of the functionality of the modeling and transformation framework
 As the repository is based on git submodules please use the following command to clone the repository:
 
 ```
-git clone --recurse-submodules https://github.com/wederbn/QuantME-TransformationFramework.git
+git clone --recurse-submodules https://github.com/UST-QuAntiL/QuantME-TransformationFramework.git
 ```
 
 ### Building the Application
