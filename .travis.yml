@@ -121,7 +121,7 @@ jobs:
         npm run build -- --win --publish --on-demand --region=$AWS_ON_DEMAND_REGION
 stages:
   - name: test
-    if: type == api AND env(SKIP_TESTS) != "true"
+    if: type != api OR env(SKIP_TESTS) != "true"
   - name: "pre distro"
     if: tag =~ ^v\d
   - name: "distro"
