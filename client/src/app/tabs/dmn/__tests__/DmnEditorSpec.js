@@ -634,61 +634,6 @@ describe('<DmnEditor>', function() {
 
       describe('decision table', function() {
 
-        it('should provide rule entries', async function() {
-
-          // given
-          const changedSpy = sinon.spy();
-
-          const { instance } = await renderEditor(diagramXML, {
-            onChanged: changedSpy
-          });
-
-          changedSpy.resetHistory();
-
-          // when
-          const modeler = instance.getModeler();
-          modeler.open({ type: 'decisionTable' });
-
-          instance.handleChanged();
-
-          // then
-          expect(changedSpy).to.be.calledOnce;
-
-          const state = changedSpy.firstCall.args[0];
-          expect(hasMenuEntry(state.editMenu, 'Add Rule')).to.be.true;
-          expect(hasMenuEntry(state.editMenu, 'Remove Clause')).to.be.true;
-
-        });
-
-
-        it('should provide clause entries', async function() {
-
-          // given
-          const changedSpy = sinon.spy();
-
-          const { instance } = await renderEditor(diagramXML, {
-            onChanged: changedSpy
-          });
-
-          changedSpy.resetHistory();
-
-          // when
-          const modeler = instance.getModeler();
-          modeler.open({ type: 'decisionTable' });
-
-          instance.handleChanged();
-
-          // then
-          expect(changedSpy).to.be.calledOnce;
-
-          const state = changedSpy.firstCall.args[0];
-
-          expect(hasMenuEntry(state.editMenu, 'Add Clause')).to.be.true;
-          expect(hasMenuEntry(state.editMenu, 'Remove Clause')).to.be.true;
-
-        });
-
-
         it('should provide select cell entries', async function() {
 
           // given
