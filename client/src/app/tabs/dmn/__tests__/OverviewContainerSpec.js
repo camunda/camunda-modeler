@@ -151,6 +151,42 @@ describe('<OverviewContainer>', function() {
     wrapper.unmount();
   });
 
+
+  it('should toggle', function() {
+
+    // given
+    const layout = {
+      dmnOverview: {
+        open: true,
+        width: 500
+      }
+    };
+
+    const onLayoutChangedSpy = spy();
+
+    const {
+      instance,
+      wrapper
+    } = createOverviewContainer({
+      layout,
+      onLayoutChanged: onLayoutChangedSpy
+    });
+
+    // when
+    instance.handleToggle();
+
+    // then
+    expect(onLayoutChangedSpy).to.be.calledWith({
+      dmnOverview: {
+        open: false,
+        width: 500
+      }
+    });
+
+    // clean
+    wrapper.unmount();
+  });
+
 });
 
 
