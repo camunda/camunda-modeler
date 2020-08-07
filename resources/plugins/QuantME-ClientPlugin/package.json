@@ -16,7 +16,6 @@
     "webpack-cli": "^3.3.8"
   },
   "dependencies": {
-    "list-github-dir-content": "^3.0.0",
-    "xmlhttprequest": "^1.8.0"
+    "list-github-dir-content": "^3.0.0"
   }
 }
