@@ -28,7 +28,9 @@ export const DEFAULT_LAYOUT = {
 export const MIN_WIDTH = 150;
 export const MAX_WIDTH = 650;
 
-
+/**
+ * Container for DMN overview that can be resized and toggled.
+ */
 class OverviewContainerWrapped extends PureComponent {
   constructor(props) {
     super(props);

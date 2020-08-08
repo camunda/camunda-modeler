@@ -17,11 +17,12 @@ const ELEMENT_TEMPLATES_CONFIG_KEY = 'bpmn.elementTemplates';
 
 const types = {
   BPMN: 'bpmn',
-  DMN: 'dmn'
+  DMN: 'dmn',
+  CMMN: 'cmmn'
 };
 
 // Sends a diagramOpened event to ET with diagram-type: bpmn/dmn payload
-// when a user opens a BPMN or DMN diagram (create a new one or open from file).
+// when a user opens a BPMN, DMN or CMMN diagram (create a new one or open from file).
 export default class DiagramOpenEventHandler extends BaseEventHandler {
 
   constructor(params) {
@@ -42,6 +43,10 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
     subscribe('dmn.modeler.created', () => {
       this.onDiagramOpened(types.DMN);
+    });
+
+    subscribe('cmmn.modeler.created', () => {
+      this.onDiagramOpened(types.CMMN);
     });
   }
 

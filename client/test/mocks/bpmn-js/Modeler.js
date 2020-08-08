@@ -44,9 +44,17 @@ class CommandStack {
 }
 
 class PropertiesPanel {
+  constructor() {
+    this._current = {
+      element: {}
+    };
+  }
+
   attachTo() {}
 
   detach() {}
+
+  update() {}
 }
 
 export default class Modeler {

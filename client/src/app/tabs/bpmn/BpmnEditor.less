@@ -25,7 +25,7 @@
       bottom: -2px;
       left: 0;
       right: 0;
-      border-bottom: solid 3px #f8f8f8;
+      border-bottom: solid 3px var(--silver-base-97);
       position: absolute;
     }
   }
@@ -33,7 +33,7 @@
   .djs-minimap {
 
     .toggle:hover {
-      color: rgb(255, 116, 0);
+      color: var(--blue-darken-48);
     }
 
     &:not(.open) .toggle:before {
@@ -62,13 +62,17 @@
       .toggle:hover {
         opacity: 1;
       }
+
+      .viewport-dom {
+        border-color: var(--blue-base-65);
+      }
     }
   }
 
 }
 
 :local(.Color) {
-  border: solid 1px #444;
+  border: solid 1px var(--color-444444);
   margin: 4px;
   width: 64px;
   height: 16px;

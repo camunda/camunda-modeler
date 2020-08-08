@@ -2,8 +2,8 @@
   margin: 0 10px 10px 10px;
   position: relative;
 
-  background-color: #fafafa;
-  border: solid 1px #dddddd;
+  background-color: var(--color-fafafa);
+  border: solid 1px var(--color-dddddd);
   border-radius: 3px;
 
   &:not(.open) {
@@ -38,7 +38,7 @@
 
     &:hover {
       opacity: 1;
-      color: #ff7400;
+      color: var(--blue-darken-48);
     }
   }
 
@@ -63,19 +63,19 @@
         &.can-open:hover {
           .djs-visual {
             rect {
-              stroke: #4285f4 !important;
-              fill: #cfe0fc !important;
+              stroke: var(--blue-base-65) !important;
+              fill: var(--blue-base-65-opacity-10) !important;
             }
   
             text {
-              fill: #4285f4 !important;
+              fill: var(--blue-base-65) !important;
             }
           }
         }
       }
   
       .djs-overlay .drill-down-overlay {
-        color: #000000;
+        color: var(--color-000000);
         background: transparent;
         pointer-events: none;
       }

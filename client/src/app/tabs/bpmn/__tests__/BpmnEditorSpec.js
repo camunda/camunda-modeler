@@ -977,7 +977,7 @@ describe('<BpmnEditor>', function() {
     });
 
 
-    it('should not reload templates if it once succeeded', async function() {
+    it('should reload templates on action triggered', async function() {
 
       // given
       const getConfigSpy = sinon.spy(),
@@ -1001,91 +1001,17 @@ describe('<BpmnEditor>', function() {
         getConfig: getConfigSpy
       });
 
-      instance.componentWillUnmount();
-      await instance.componentDidMount();
+      const propertiesPanel = instance.getModeler().get('propertiesPanel');
 
-      // expect
-      expect(getConfigSpy).to.be.calledOnce;
-      expect(getConfigSpy).to.be.calledWith('bpmn.elementTemplates');
-      expect(elementTemplatesLoaderStub.setTemplates).to.be.calledOnce;
-    });
+      const updateSpy = spy(propertiesPanel, 'update');
 
-
-    it('should retry loading templates on mount if they could not be loaded', async function() {
-
-      // given
-      const getConfigStub = sinon.stub(),
-            elementTemplatesLoaderStub = sinon.stub({ setTemplates() {} });
-
-      getConfigStub.onFirstCall()
-        .rejects()
-        .onSecondCall()
-        .resolves();
-
-      const cache = new Cache();
-
-      cache.add('editor', {
-        cached: {
-          modeler: new BpmnModeler({
-            modules: {
-              elementTemplatesLoader: elementTemplatesLoaderStub
-            }
-          })
-        }
-      });
-
-      // when
-      const { instance } = await renderEditor(diagramXML, {
-        cache,
-        getConfig: getConfigStub
-      });
-
-      instance.componentWillUnmount();
-      await instance.componentDidMount();
-
-      // expect
-      expect(getConfigStub).to.be.calledTwice;
-      expect(getConfigStub).to.be.calledWith('bpmn.elementTemplates');
-      expect(elementTemplatesLoaderStub.setTemplates).to.be.calledOnce;
-    });
-
-
-    it('should retry loading templates on mount if they could not be set', async function() {
-
-      // given
-      const getConfigSpy = sinon.spy(),
-            elementTemplatesLoaderStub = sinon.stub({ setTemplates() {} });
-
-      elementTemplatesLoaderStub.setTemplates.onFirstCall()
-        .throwsException()
-        .onSecondCall()
-        .returns();
-
-      const cache = new Cache();
-
-      cache.add('editor', {
-        cached: {
-          modeler: new BpmnModeler({
-            modules: {
-              elementTemplatesLoader: elementTemplatesLoaderStub
-            }
-          })
-        }
-      });
-
-      // when
-      const { instance } = await renderEditor(diagramXML, {
-        cache,
-        getConfig: getConfigSpy
-      });
-
-      instance.componentWillUnmount();
-      await instance.componentDidMount();
+      await instance.triggerAction('elementTemplates.reload');
 
       // expect
       expect(getConfigSpy).to.be.calledTwice;
-      expect(getConfigSpy).to.be.calledWith('bpmn.elementTemplates');
+      expect(getConfigSpy).to.be.always.calledWith('bpmn.elementTemplates');
       expect(elementTemplatesLoaderStub.setTemplates).to.be.calledTwice;
+      expect(updateSpy).to.have.been.called;
     });
 
 
