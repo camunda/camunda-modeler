@@ -20,7 +20,7 @@
     "all": "run-s clean lint test \"build -- {@}\" --",
     "auto-test": "run-p *:auto-test",
     "clean": "del-cli 'dist/*' app/public",
-    "dev": "run-s plugin \"app:dev -- {@}\" client:dev --",
+    "dev": "run-p \"app:dev -- {@}\" client:dev --",
     "build:distro": "node tasks/distro.js",
     "build:test-distro": "node tasks/test-distro.js",
     "build": "run-s plugin client:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
