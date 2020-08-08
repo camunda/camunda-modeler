@@ -11,5 +11,5 @@
 
 module.exports = {
   script: './dist/client.js',
-  name: 'quantme-client'
+  name: 'QuantME Client'
 };
