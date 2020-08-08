@@ -10,14 +10,6 @@ Therefore, it enables to create process models orchestrating classical and quant
 
 The major part of the functionality of the modeling and transformation framework is implemented through the [QuantME-CamundaPlugin](https://github.com/UST-QuAntiL/QuantME-CamundaPlugin). Please refer to this repository for further documentation of the possible usage of the framework to model and transform Quantum4BPMN process models.
 
-### Cloning the Repository
-
-As the repository is based on git submodules please use the following command to clone the repository:
-
-```
-git clone --recurse-submodules https://github.com/UST-QuAntiL/QuantME-TransformationFramework.git
-```
-
 ### Building the Application
 
 ```sh
