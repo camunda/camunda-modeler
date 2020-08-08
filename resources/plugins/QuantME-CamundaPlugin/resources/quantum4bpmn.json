@@ -1,0 +1,142 @@
+{
+    "name": "Quantum4BPMN",
+    "uri": "https://github.com/UST-QuAntiL/QuantME-Quantum4BPMN",
+    "prefix": "quantme",
+    "xml": {
+        "tagAlias": "lowerCase"
+    },
+    "types": [
+      {
+        "name": "QuantMEProcess",
+        "extends": [ "bpmn:Process" ],
+        "properties": [
+          {
+            "name": "flowElements",
+            "isMany": true,
+            "replaces": "bpmn:Process#flowElements",
+            "type": "bpmn:FlowElement"
+          }
+        ]
+      },
+      {
+        "name": "QuantumComputationTask",
+        "superClass": [ "bpmn:Task" ],
+        "properties": [
+          {
+            "name": "algorithm",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "provider",
+            "isAttr": true,
+            "type": "String"
+          }
+        ]
+      },
+      {
+        "name": "QuantumCircuitCreationTask",
+        "superClass": [ "bpmn:Task" ],
+        "properties": [
+          {
+            "name": "quantumCircuit",
+            "type": "String"
+          },
+          {
+            "name": "url",
+            "isAttr": true,
+            "type": "String"
+          }
+        ]
+      },
+      {
+        "name": "DataPreparationTask",
+        "superClass": [ "bpmn:Task" ],
+        "properties": [
+          {
+            "name": "encodingSchema",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "programmingLanguage",
+            "isAttr": true,
+            "type": "String"
+          }
+        ]
+      },
+      {
+        "name": "OracleExpansionTask",
+        "superClass": [ "bpmn:Task" ],
+        "properties": [
+          {
+            "name": "oracleId",
+            "isAttr": true,
+            "type": "Integer"
+          },
+          {
+            "name": "oracleCircuit",
+            "type": "String"
+          },
+          {
+            "name": "oracleFunction",
+            "type": "String"
+          },
+          {
+            "name": "programmingLanguage",
+            "isAttr": true,
+            "type": "String"
+          }
+        ]
+      },
+      {
+        "name": "QuantumCircuitExecutionTask",
+        "superClass": [ "bpmn:Task" ],
+        "properties": [
+          {
+            "name": "provider",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "qpu",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "shots",
+            "isAttr": true,
+            "type": "Integer"
+          },
+          {
+            "name": "programmingLanguage",
+            "isAttr": true,
+            "type": "String"
+          }
+        ]
+      },
+      {
+        "name": "ReadoutErrorMitigationTask",
+        "superClass": [ "bpmn:Task" ],
+        "properties": [
+          {
+            "name": "unfoldingTechnique",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "qpu",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "maxAge",
+            "isAttr": true,
+            "type": "Integer"
+          }
+        ]
+      }
+    ],
+    "enumerations": [],
+    "associations": []
+}

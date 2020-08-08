@@ -1,0 +1,78 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  outline: none;
+  padding: 0;
+}
+
+html, body, #container {
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.djs-label {
+  font-family: 'Arial', sans-serif;
+}
+
+.bpmn-icon-task-quantum-computation:before {
+  content: "";
+  display: block;
+  background: url("../resources/menu-icon-quantum-computation-task.png") no-repeat;
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin: 0 6px 0 0;
+}
+
+.bpmn-icon-circuit-creation:before {
+  content: "";
+  display: block;
+  background: url("../resources/menu-icon-quantum-circuit-creation-task.png") no-repeat;
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin: 0 6px 0 0;
+}
+
+.bpmn-icon-data-preparation:before {
+  content: "";
+  display: block;
+  background: url("../resources/menu-icon-data-preparation-task.png") no-repeat;
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin: 0 6px 0 0;
+}
+
+.bpmn-icon-oracle-expansion:before {
+  content: "";
+  display: block;
+  background: url("../resources/menu-icon-oracle-expansion-task.png") no-repeat;
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin: 0 6px 0 0;
+}
+
+.bpmn-icon-circuit-execution:before {
+  content: "";
+  display: block;
+  background: url("../resources/menu-icon-circuit-execution-task.png") no-repeat;
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin: 0 6px 0 0;
+}
+
+.bpmn-icon-error-mitigation:before {
+  content: "";
+  display: block;
+  background: url("../resources/menu-icon-readout-error-task.png") no-repeat;
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin: 0 6px 0 0;
+}
