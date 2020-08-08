@@ -8,3 +8,4 @@ plugins/**
 coverage
 .nyc_output
 .idea
+.linked-dependencies
