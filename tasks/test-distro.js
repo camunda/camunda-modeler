@@ -39,7 +39,8 @@ const {
   nightly,
   win,
   linux,
-  mac
+  mac,
+  'on-demand': onDemand
 } = argv;
 
 const archs = [
@@ -92,7 +93,13 @@ const expectedFiles = {
 };
 
 
-const version = nightly ? 'nightly' : pkg.version;
+let version = pkg.version;
+
+if (nightly) {
+  version = 'nightly';
+} else if (onDemand) {
+  version = process.env.BUILD_NAME;
+}
 
 // execute tests
 verifyArchives(platforms, version).then(

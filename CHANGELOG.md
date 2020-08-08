@@ -6,6 +6,31 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.2.0
+
+### General
+
+* `FEAT`: include CMMN diagramOpened event in usage-statistics ([#1887](https://github.com/camunda/camunda-modeler/issues/1887))
+* `CHORE`: adjust colors to match CAMUNDA color scheme ([#1844](https://github.com/camunda/camunda-modeler/issues/1844))
+* `FEAT`: allow plugins to get element templates from config ([#1893](https://github.com/camunda/camunda-modeler/pull/1893))
+* `CHORE`: bump to `bpmn-js@7.3.0`
+* `CHORE`: bump to `dmn-js@9.2.0`
+* `CHORE`: bump to `diagram-js@6.7.0`
+
+### BPMN
+
+* `FIX`: disallow typed start events in sub processes ([#498](https://github.com/camunda/camunda-modeler/issues/498))
+
+### DMN
+
+* `FIX`: remove unnecessary click event cancel action ([#1907](https://github.com/camunda/camunda-modeler/issues/1907))
+* `FEAT`: center the decision table resize hitbox ([#1906](https://github.com/camunda/camunda-modeler/issues/1906))
+* `FEAT`: remove clause and rule menu entries  ([#1901](https://github.com/camunda/camunda-modeler/issues/1901))
+* `FIX`: hide hit-policy input select on global mousedown event ([#1900](https://github.com/camunda/camunda-modeler/issues/1900))
+* `FIX`: correct decision table allowed values layout ([#1895](https://github.com/camunda/camunda-modeler/issues/1895))
+* `FIX`: complete direct editing on drill down in DRD ([#1892](https://github.com/camunda/camunda-modeler/issues/1892))
+* `FIX`: correctly display DMN decision table dragging layout ([#1899](https://github.com/camunda/camunda-modeler/issues/1899))
+
 ## 4.1.1
 
 ### General
