@@ -86,6 +86,124 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./client/GitHandler.js":
+/*!******************************!*\
+  !*** ./client/GitHandler.js ***!
+  \******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return GitHandler; });
+/* harmony import */ var node_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! node-fetch */ "./node_modules/node-fetch/browser.js");
+/* harmony import */ var node_fetch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(node_fetch__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * Copyright (c) 2020 Institute for the Architecture of Application System -
+ * University of Stuttgart
+ *
+ * This program and the accompanying materials are made available under the
+ * terms the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+class GitHandler {
+  /**
+   * Get the URLs to all folders in the given public repository
+   *
+   * @param userName the username or organisation name the repository belongs to
+   * @param repoName the name of the repository
+   */
+  static async getFoldersInRepository(userName, repoName) {
+    const directoryURLs = [];
+    let response = await node_fetch__WEBPACK_IMPORTED_MODULE_0___default()(`https://api.github.com/repos/${userName}/${repoName}/contents/?ref=HEAD`);
+    const contents = await response.json();
+
+    for (let i = 0; i < contents.length; i++) {
+      let item = contents[i];
+
+      if (item.type === 'dir') {
+        directoryURLs.push(item.url);
+      }
+    }
+
+    return directoryURLs;
+  }
+
+}
+
+/***/ }),
+
+/***/ "./client/QRMHandler.js":
+/*!******************************!*\
+  !*** ./client/QRMHandler.js ***!
+  \******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return QRMHandler; });
+/* harmony import */ var _GitHandler__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GitHandler */ "./client/GitHandler.js");
+/**
+ * Copyright (c) 2020 Institute for the Architecture of Application System -
+ * University of Stuttgart
+ *
+ * This program and the accompanying materials are made available under the
+ * terms the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+class QRMHandler {
+  /**
+   * Get the currently defined QRMs form the repository
+   *
+   * @param userName the Github username to which the QRM repository belongs
+   * @param repoName the Github repository name to load the QRMs from
+   * @returns {Promise<[QRM]>} an array with the current QRMs
+   */
+  static async getCurrentQRMs(userName, repoName) {
+    // get all folders of the defined QRM repository which could contain a QRM
+    let folders = await _GitHandler__WEBPACK_IMPORTED_MODULE_0__["default"].getFoldersInRepository(userName, repoName);
+    console.log('Found %i folders with QRM candidates!', folders.length); // filter invalid folders and retrieve QRMs
+
+    let QRMs = [];
+
+    for (let i = 0; i < folders.length; i++) {
+      let qrm = await this.getQRM(userName, repoName, folders[i]);
+
+      if (qrm != null) {
+        QRMs.push(qrm);
+      } else {
+        console.log('Folder %s does not contain a valid QRM!', folders[i]);
+      }
+    }
+
+    return QRMs;
+  }
+  /**
+   * Check whether the QRM at the given URL is valid and return it or otherwise null
+   *
+   * @param userName the Github username to which the QRM repository belongs
+   * @param repoName the Github repository name to load the QRMs from
+   * @param qrmUrl
+   * @returns {Promise<QRM>} the QRM if it is valid or null otherwise
+   */
+
+
+  static async getQRM(userName, repoName, qrmUrl) {
+    // TODO: check if folder contains detector and replacement fragment and download them
+    return null;
+  }
+
+}
+
+/***/ }),
+
 /***/ "./client/QuantMEClient.js":
 /*!*********************************!*\
   !*** ./client/QuantMEClient.js ***!
@@ -98,8 +216,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return QuantMEClient; });
 /* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "./node_modules/camunda-modeler-plugin-helpers/react.js");
 /* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var node_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! node-fetch */ "./node_modules/node-fetch/browser.js");
-/* harmony import */ var node_fetch__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(node_fetch__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _QRMHandler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./QRMHandler */ "./client/QRMHandler.js");
 /**
  * Copyright (c) 2020 Institute for the Architecture of Application System -
  * University of Stuttgart
@@ -112,46 +229,30 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+/**
+ * Client plugin to retrieve the current QRMs for the replacement from a Github repository
+ */
+
 class QuantMEClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor(props) {
     super(props);
-    const {
-      subscribe
-    } = props;
-    subscribe('tab.saved', event => {
+    props.subscribe('bpmn.modeler.created', event => {
       const {
-        tab
-      } = event;
-      console.log('[QuantMEClient]', 'Tab saved', tab);
-      this.getFoldersInRepository('UST-QuAntiL', 'QuantME-TransformationFramework').then(console.log);
+        modeler
+      } = event; // load current QRMs from defined Git repository and publish them via the event bus
+
+      modeler.on('QRMs.update', event => {
+        _QRMHandler__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentQRMs('UST-QuAntiL', 'QuantME-TransformationFramework').then(result => {
+          modeler._emit('QRMs.updated', {
+            data: result
+          });
+        });
+      });
     });
   }
 
   render() {
     return null;
-  }
-  /**
-   * Get the URLs to all folders in the given public repository
-   *
-   * @param userName the username or organisation name the repository belongs to
-   * @param repoName the name of the repository
-   */
-
-
-  async getFoldersInRepository(userName, repoName) {
-    const directoryURLs = [];
-    let response = await node_fetch__WEBPACK_IMPORTED_MODULE_1___default()(`https://api.github.com/repos/${userName}/${repoName}/contents/?ref=HEAD`);
-    const contents = await response.json();
-
-    for (let i = 0; i < contents.length; i++) {
-      let item = contents[i];
-
-      if (item.type === 'dir') {
-        directoryURLs.push(item.url);
-      }
-    }
-
-    return directoryURLs;
   }
 
 }

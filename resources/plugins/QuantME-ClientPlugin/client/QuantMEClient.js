@@ -11,49 +11,34 @@
 
 import { Component } from 'camunda-modeler-plugin-helpers/react';
 
-import Fetch from 'node-fetch';
+import QRMHandler from './QRMHandler';
 
+/**
+ * Client plugin to retrieve the current QRMs for the replacement from a Github repository
+ */
 export default class QuantMEClient extends Component {
 
   constructor(props) {
 
     super(props);
 
-    const {
-      subscribe
-    } = props;
+    props.subscribe('bpmn.modeler.created', (event) => {
 
-    subscribe('tab.saved', (event) => {
       const {
-        tab
+        modeler
       } = event;
 
-      console.log('[QuantMEClient]', 'Tab saved', tab);
-      this.getFoldersInRepository('UST-QuAntiL', 'QuantME-TransformationFramework').then(console.log);
+      // load current QRMs from defined Git repository and publish them via the event bus
+      modeler.on('QRMs.update', (event) => {
+        QRMHandler.getCurrentQRMs('UST-QuAntiL', 'QuantME-TransformationFramework')
+          .then(result => {
+            modeler._emit('QRMs.updated', { data: result });
+          });
+      });
     });
   }
 
   render() {
     return null;
-  }
-
-  /**
-   * Get the URLs to all folders in the given public repository
-   *
-   * @param userName the username or organisation name the repository belongs to
-   * @param repoName the name of the repository
-   */
-  async getFoldersInRepository(userName, repoName) {
-    const directoryURLs = [];
-    let response = await Fetch(`https://api.github.com/repos/${userName}/${repoName}/contents/?ref=HEAD`);
-    const contents = await response.json();
-
-    for (let i = 0; i < contents.length; i++) {
-      let item = contents[i];
-      if (item.type === 'dir') {
-        directoryURLs.push(item.url);
-      }
-    }
-    return directoryURLs;
   }
 }

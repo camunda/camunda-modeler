@@ -11,8 +11,11 @@
 
 let QuantMEAttributeChecker = require('./QuantMEAttributeChecker');
 
+let QRMs = [];
+
 export default class QuantMEReplacementUtility {
-  constructor(injector, bpmnjs, modeling, elementRegistry) {
+
+  constructor(injector, bpmnjs, modeling, elementRegistry, eventBus) {
 
     // register the startReplacementProcess() function as editor action to enable the invocation from the menu
     const editorActions = injector.get('editorActions', false);
@@ -23,9 +26,13 @@ export default class QuantMEReplacementUtility {
     console.log('modeling methods: ');
     console.log(getMethods(modeling));
 
-    console.log('elementRegistry methods: ');
-    console.log(getMethods(elementRegistry));
+    // update locally stored QRMs if update is received
+    eventBus.on('QRMs.updated', 1000, (event) => {
+      console.log('Recevied event to update QRMs!');
+      QRMs = event.data;
+    });
 
+    // start replacement on action in Camunda editor menu
     editorActions && editorActions.register({
       startReplacementProcess: function() {
         startReplacementProcess();
@@ -38,6 +45,9 @@ export default class QuantMEReplacementUtility {
     function startReplacementProcess() {
       console.log('Starting replacement process for the current process model...');
 
+      // request a update of the currently stored QRMs
+      eventBus.fire('QRMs.update', {});
+
       // get root element of the current diagram
       const rootElement = getRootProcess();
       if (typeof rootElement === 'undefined') {
@@ -47,13 +57,14 @@ export default class QuantMEReplacementUtility {
       const rootElementBo = elementRegistry.get(rootElement.id);
 
       // get all QuantME tasks from the process
-      const quantmeTasks = getQuantMETasks(rootElement)
+      const quantmeTasks = getQuantMETasks(rootElement);
       console.log('Process contains ' + quantmeTasks.length + ' QuantME tasks to replace...');
 
       // TODO: remove debug logging
       console.log('Definitions: ', bpmnjs.getDefinitions());
       console.log('Root element: ', rootElement);
       console.log('BO: ', rootElementBo);
+      console.log('Current QRMs: ', QRMs);
 
       // replace each QuantME tasks to retrieve standard-compliant BPMN
       for (let i = 0; i < quantmeTasks.length; i++) {
@@ -104,7 +115,7 @@ export default class QuantMEReplacementUtility {
   }
 }
 
-QuantMEReplacementUtility.$inject = ['injector', 'bpmnjs', 'modeling', 'elementRegistry'];
+QuantMEReplacementUtility.$inject = ['injector', 'bpmnjs', 'modeling', 'elementRegistry', 'eventBus'];
 
 function getMethods(obj) {
   let properties = new Set();
@@ -114,7 +125,6 @@ function getMethods(obj) {
   } while ((currentObj = Object.getPrototypeOf(currentObj)));
   return [...properties.keys()].filter(item => typeof obj[item] === 'function');
 }
-
 
 
 /**
