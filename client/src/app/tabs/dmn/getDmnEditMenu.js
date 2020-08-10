@@ -13,7 +13,6 @@ import {
   getCopyCutPasteEntries,
   getAlignDistributeEntries,
   getDefaultCopyCutPasteEntries,
-  getDefaultUndoRedoEntries,
   getSelectionEntries,
   getToolEntries,
   getUndoRedoEntries
@@ -61,21 +60,14 @@ export function getDmnDrdEditMenu(state) {
 }
 
 export function getDmnDecisionTableEditMenu(state) {
-  const {
-    defaultCopyCutPaste,
-    defaultUndoRedo
-  } = state;
-
-  const undoRedoEntries = defaultUndoRedo
-    ? getDefaultUndoRedoEntries()
-    : getUndoRedoEntries(state);
+  const { defaultCopyCutPaste } = state;
 
   const copyCutPasteEntries = defaultCopyCutPaste
     ? getDefaultCopyCutPasteEntries()
     : getCopyCutPasteEntries(state);
 
   return [
-    undoRedoEntries,
+    getUndoRedoEntries(state),
     copyCutPasteEntries,
     getSelectionEntries(state),
     ...getDecisionTableEntries(state)
