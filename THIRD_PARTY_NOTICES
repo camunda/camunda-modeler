@@ -69,12 +69,12 @@ This project incorporates components from the projects listed below. The origina
 62.   diagram-js-origin@1.3.1 (https://github.com/bpmn-io/diagram-js-origin)
 63.   diagram-js@6.7.0 (https://github.com/bpmn-io/diagram-js)
 64.   didi@4.0.0 (https://github.com/nikku/didi)
-65.   dmn-js-decision-table@9.2.0 (https://github.com/bpmn-io/dmn-js)
+65.   dmn-js-decision-table@9.2.1 (https://github.com/bpmn-io/dmn-js)
 66.   dmn-js-drd@9.2.0 (https://github.com/bpmn-io/dmn-js)
 67.   dmn-js-literal-expression@9.2.0 (https://github.com/bpmn-io/dmn-js)
 68.   dmn-js-properties-panel@0.5.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
 69.   dmn-js-shared@9.2.0 (https://github.com/bpmn-io/dmn-js)
-70.   dmn-js@9.2.0 (https://github.com/bpmn-io/dmn-js)
+70.   dmn-js@9.2.1 (https://github.com/bpmn-io/dmn-js)
 71.   dmn-moddle@9.1.0 (https://github.com/bpmn-io/dmn-moddle)
 72.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
 73.   escape-html@1.0.3 (https://github.com/component/escape-html)
@@ -1748,7 +1748,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF didi@4.0.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-decision-table@9.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-decision-table@9.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1774,7 +1774,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-decision-table@9.2.0 NOTICES AND INFORMATION
+END OF dmn-js-decision-table@9.2.1 NOTICES AND INFORMATION
 
 
 %% dmn-js-drd@9.2.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1891,7 +1891,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 END OF dmn-js-shared@9.2.0 NOTICES AND INFORMATION
 
 
-%% dmn-js@9.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js@9.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1917,7 +1917,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js@9.2.0 NOTICES AND INFORMATION
+END OF dmn-js@9.2.1 NOTICES AND INFORMATION
 
 
 %% dmn-moddle@9.1.0 NOTICES AND INFORMATION BEGIN HERE
