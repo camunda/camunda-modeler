@@ -901,6 +901,42 @@ describe('<DmnEditor>', function() {
   });
 
 
+  describe('#triggerAction', function() {
+
+    it('should return value of editor action', async function() {
+
+      // given
+      const editorActions = {
+        trigger(action, context) {
+          if (action === 'foo') {
+            return 'bar';
+          }
+        }
+      };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new DmnModeler({
+            editorActions
+          })
+        }
+      });
+
+      // when
+      const { instance } = await renderEditor(diagramXML, { cache });
+
+      // when
+      const returnValue = instance.triggerAction('foo');
+
+      // then
+      expect(returnValue).to.equal('bar');
+    });
+
+  });
+
+
   describe('layout', function() {
 
     it('should open overview', async function() {
