@@ -606,7 +606,7 @@ export class BpmnEditor extends CachedComponent {
     }
 
     // TODO(nikku): handle all editor actions
-    modeler.get('editorActions').trigger(action, context);
+    return modeler.get('editorActions').trigger(action, context);
   }
 
   handleSetColor = (fill, stroke) => {
