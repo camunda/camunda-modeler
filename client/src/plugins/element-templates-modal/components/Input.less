@@ -1,0 +1,81 @@
+:local(.Input) {
+  position: relative;
+
+  box-sizing: border-box;
+
+  .input__text {
+    padding: 3px 12px;
+    
+    outline: none;
+
+    border: solid 1px var(--silver-darken-87);
+    border-radius: 22px;
+
+    font-size: 12px;
+
+    &:focus {
+      border: solid 1px var(--blue-darken-55);
+
+      box-shadow: 0 0 0 4px var(--blue-lighten-82), 0 0 0 1px var(--silver-darken-80) inset;
+    }
+  }
+
+  .input__search-icon {
+    display: flex;
+
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 22px;
+
+    height: 22px;
+
+    pointer-events: none;
+  }
+  
+  .input__clear {
+    display: flex;
+
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    align-items: center;
+
+    justify-content: center;
+
+    outline: none;
+
+    border: none;
+    border-radius: 16px;
+
+    background-color: transparent;
+
+    width: 22px;
+
+    height: 22px;
+
+    font-size: 16px;
+
+    &:hover {
+      background-color: var(--silver-darken-87);
+    }
+  }
+
+  .input__text:focus + .input__clear:hover {
+    background-color: transparent;
+
+    color: var(--blue-darken-48);
+  }
+
+  .input__text:focus + .input__clear:hover {
+    background-color: var(--blue-darken-48);
+
+    color: var(--color-ffffff);
+  }
+}

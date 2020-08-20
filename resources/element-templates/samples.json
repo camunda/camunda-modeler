@@ -1,200 +1,18 @@
 [
   {
-    "name": "Mail Task",
-    "id": "com.camunda.example.MailTask",
+    "name": "Foo Task",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "id": "foo.task",
     "appliesTo": [
+      "bpmn:Task",
       "bpmn:ServiceTask"
     ],
     "properties": [
       {
-        "label": "Implementation Type",
+        "label": "Name",
         "type": "String",
-        "value": "com.mycompany.MailTaskImpl",
-        "editable": false,
-        "binding": {
-          "type": "property",
-          "name": "camunda:class"
-        }
-      },
-      {
-        "label": "Sender",
-        "type": "String",
-        "binding": {
-          "type": "camunda:inputParameter",
-          "name": "sender"
-        },
-        "constraints": {
-          "notEmpty": true,
-          "pattern": {
-            "value": "^[A-z0-9._%+-]+@[A-z0-9.-]+\\.[A-z]{2,}$",
-            "message": "Must be a valid email."
-          }
-        }
-      },
-      {
-        "label": "Receivers",
-        "type": "String",
-        "binding": {
-          "type": "camunda:inputParameter",
-          "name": "receivers"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Template",
-        "description": "By the way, you can use <a href=\"https://freemarker.apache.org/\">freemarker templates</a> here",
-        "value": "Hello ${firstName}!",
-        "type": "Text",
-        "binding": {
-          "type": "camunda:inputParameter",
-          "name": "messageBody",
-          "scriptFormat": "freemarker"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Result Status",
-        "description": "The process variable to which to assign the send result to",
-        "type": "String",
-        "value": "mailSendResult",
-        "binding": {
-          "type": "camunda:outputParameter",
-          "source": "${ resultStatus }"
-        }
-      },
-      {
-        "label": "Send Async?",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      }
-    ]
-  },
-  {
-    "name": "ConnectorGetTask",
-    "id": "my.connector.http.get.Task",
-    "appliesTo": [
-      "bpmn:Task"
-    ],
-    "properties": [],
-    "scopes": {
-      "camunda:Connector": {
-        "properties": [
-          {
-            "label": "ConnectorId",
-            "type": "String",
-            "value": "My Connector HTTP - GET",
-            "binding": {
-              "type": "property",
-              "name": "connectorId"
-            }
-          },
-          {
-            "label": "Method",
-            "type": "String",
-            "value": "GET",
-            "binding": {
-              "type": "camunda:inputParameter",
-              "name": "method"
-            }
-          },
-          {
-            "label": "URL",
-            "type": "String",
-            "value": "https://bpmn.io",
-            "binding": {
-              "type": "camunda:inputParameter",
-              "name": "url"
-            }
-          },
-          {
-            "label": "Response",
-            "type": "String",
-            "value": "wsResponse",
-            "binding": {
-              "type": "camunda:outputParameter",
-              "source": "${S(response)}",
-              "scriptFormat": "freemarker"
-            }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "name": "AsyncAwesomeTask",
-    "id": "com.camunda.example.AwesomeTask",
-    "appliesTo": [
-      "bpmn:Task"
-    ],
-    "properties": [
-      {
-        "label": "Are you awesome?",
-        "type": "Boolean",
-        "value": true,
-        "binding": {
-          "type": "property",
-          "name": "camunda:asyncBefore"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "asyncBefore": false
-    }
-  },
-  {
-    "name": "Custom ServiceTask",
-    "id": "com.camunda.example.CustomServiceTask",
-    "appliesTo": [
-      "bpmn:ServiceTask"
-    ],
-    "properties": [
-      {
-        "label": "Delegate to Call",
-        "type": "String",
-        "editable": false,
-        "value": "com.camunda.example.FooDelegate",
-        "binding": {
-          "type": "property",
-          "name": "camunda:delegateExpression"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "delegate": false,
-      "implementation": false
-    }
-  },
-  {
-    "name": "VIP-Order Path",
-    "id": "e.com.merce.FastPath",
-    "appliesTo": [
-      "bpmn:SequenceFlow"
-    ],
-    "properties": [
-      {
-        "label": "VIP-Ordering",
-        "type": "String",
-        "editable": false,
-        "value": "${ customer.vip }",
-        "binding": {
-          "type": "property",
-          "name": "conditionExpression"
-        }
-      },
-      {
-        "label": "Label",
-        "type": "Text",
-        "value": "YEY YEA!",
+        "value": "Foo",
+        "editable": true,
         "binding": {
           "type": "property",
           "name": "name"
@@ -203,277 +21,54 @@
     ]
   },
   {
-    "name": "WS Caller Task",
-    "id": "com.camunda.example.WsCaller",
+    "name": "Bar Task",
+    "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "id": "bar.task",
     "appliesTo": [
+      "bpmn:Task",
       "bpmn:ServiceTask"
     ],
     "properties": [
       {
-        "label": "Web Service URL",
-        "description": "Specify the url of the web service to talk to.",
+        "label": "Name",
         "type": "String",
-        "binding": {
-          "type": "camunda:property",
-          "name": "webServiceUrl"
-        },
-        "constraints": {
-          "notEmpty": true,
-          "pattern": {
-            "value": "^https://.*",
-            "message": "Must be https URL."
-          }
-        }
-      },
-      {
-        "type": "Hidden",
-        "value": "com.camunda.example.WsCaller",
+        "value": "Bar",
+        "editable": true,
         "binding": {
           "type": "property",
-          "name": "camunda:class"
+          "name": "name"
         }
       }
     ]
   },
   {
-    "name": "Check Invoice Task",
-    "id": "com.camunda.example.CheckInvoiceTask",
+    "name": "Baz Task",
+    "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "id": "baz.task",
     "appliesTo": [
-      "bpmn:UserTask"
-    ],
-    "properties": [
-      {
-        "label": "Candidate Users",
-        "description": "Users able to carry out this task",
-        "type": "String",
-        "value": "Walt, Jeff, Lisa",
-        "binding": {
-          "type": "property",
-          "name": "camunda:candidateUsers"
-        },
-        "constraints": {
-          "notEmpty": true,
-          "pattern": {
-            "value": "\\s*(\\w+,\\s?)*\\w+\\s*",
-            "message": "Use comma separated list of user names"
-          }
-        }
-      },
-      {
-        "label": "Candidate Groups",
-        "description": "Groups able to carry out this task",
-        "type": "String",
-        "value": "Backoffice",
-        "binding": {
-          "type": "property",
-          "name": "camunda:candidateGroups"
-        },
-        "constraints": {
-          "notEmpty": true,
-          "pattern": {
-            "value": "\\s*(\\w+,\\s?)*\\w+\\s*",
-            "message": "Use comma separated list of group names"
-          }
-        }
-      },
-      {
-        "label": "Task Priority",
-        "type": "Dropdown",
-        "value": "50",
-        "choices": [
-          { "name": "low", "value": "20" },
-          { "name": "medium", "value": "50" },
-          { "name": "height", "value": "100" }
-        ],
-        "binding": {
-          "type": "property",
-          "name": "camunda:priority"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "candidateUsers": false,
-      "candidateGroups": false
-    }
-  },
-  {
-    "name": "Caller",
-    "id": "com.camunda.example.Caller",
-    "appliesTo": [
-      "bpmn:CallActivity"
-    ],
-    "properties": [
-      {
-        "label": "Called Process",
-        "type": "String",
-        "editable": false,
-        "value": "calledProcess",
-        "binding": {
-          "type": "property",
-          "name": "calledElement"
-        }
-      },
-      {
-        "label": "Input source variable",
-        "type": "String",
-        "value": "var_local",
-        "binding": {
-          "type": "camunda:in",
-          "target": "var_called_source"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Output target (source variable)",
-        "type": "String",
-        "value": "var_called",
-        "binding": {
-          "type": "camunda:out",
-          "source": "var_local_source"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Input sourceExpression",
-        "type": "String",
-        "value": "${expr_local}",
-        "binding": {
-          "type": "camunda:in",
-          "target": "var_called_expr",
-          "expression": true
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Output target (sourceExpression)",
-        "type": "String",
-        "value": "var_local_expr",
-        "binding": {
-          "type": "camunda:out",
-          "sourceExpression": "${expr_called}"
-        },
-        "constraints": {
-          "notEmpty": true
-        }
-      },
-      {
-        "label": "Input all",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:in",
-          "variables": "all"
-        }
-      },
-      {
-        "label": "Output all",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:out",
-          "variables": "all"
-        }
-      },
-      {
-        "label": "Input all local",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:in",
-          "variables": "local"
-        }
-      },
-      {
-        "label": "Output all local",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:out",
-          "variables": "local"
-        }
-      },
-      {
-        "label": "Input business key",
-        "description": "Provide the expression retrieving the business key.",
-        "type": "String",
-        "value": "${execution.processBusinessKey}",
-        "binding": {
-          "type": "camunda:in:businessKey"
-        }
-      }
-    ]
-  },
-  {
-    "name": "Execution Listener",
-    "id": "com.camunda.example.ExecutionListener",
-    "appliesTo": [
-      "bpmn:Activity",
-      "bpmn:Event",
-      "bpmn:Gateway"
-    ],
-    "properties": [
-      {
-        "value": "println execution.eventName",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:executionListener",
-          "event": "start",
-          "scriptFormat": "groovy"
-        }
-      },
-      {
-        "value": "println end",
-        "type": "Hidden",
-        "binding": {
-          "type": "camunda:executionListener",
-          "event": "end",
-          "scriptFormat": "groovy"
-        }
-      }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "executionListeners": false,
-      "listener-event-type": false,
-      "listener-type": false,
-      "listener-value": false,
-      "listener-script-value": false,
-      "listener-fields": false,
-      "listener-field-name": false,
-      "listener-field-type": false,
-      "listener-field-value": false
-    }
-  },
-  {
-    "name": "Field Injections",
-    "id": "com.camunda.example.FieldInjections",
-    "appliesTo": [
+      "bpmn:Task",
       "bpmn:ServiceTask"
     ],
     "properties": [
       {
-        "label": "Field Injection String",
+        "label": "Name",
         "type": "String",
-        "value": "My Field Injection Value",
+        "value": "Baz",
+        "editable": true,
         "binding": {
-          "type": "camunda:field",
-          "name": "fieldInjectionString",
-          "expression": false
-        }
-      },
-      {
-        "label": "Field Injection Expression",
-        "type": "String",
-        "value": "${fieldInjectionExpression}",
-        "binding": {
-          "type": "camunda:field",
-          "name": "fieldInjectionExpression",
-          "expression": true
+          "type": "property",
+          "name": "name"
         }
       }
-    ]
+    ],
+    "metadata": {
+      "catalogOrganizationId": "00000000-0000-0000-0000-000000000000",
+      "catalogTemplateId": "00000000-0000-0000-0000-000000000000",
+      "created": 1111111111111,
+      "tags": [
+        "Foo Catalog"
+      ],
+      "updated": 1111111111111
+    }
   }
 ]
