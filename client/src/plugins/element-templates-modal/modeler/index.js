@@ -8,10 +8,14 @@
  * except in compliance with the MIT License.
  */
 
-var scopedTests = require.context('../src', true, /\/__tests__\/bpmn-io-modelers.*Spec\.js$/);
+import EditorActions from './EditorActions';
+import PropertiesProvider from './PropertiesProvider';
 
-scopedTests.keys().forEach(scopedTests);
-
-var allTests = require.context('.', true, /bpmn-io-modelers.*Spec\.js$/);
-
-allTests.keys().forEach(allTests);
+export default {
+  __init__: [
+    'elementTemplatesModalEditorActions',
+    'propertiesProvider'
+  ],
+  elementTemplatesModalEditorActions: [ 'type', EditorActions ],
+  propertiesProvider: [ 'type', PropertiesProvider ]
+};
