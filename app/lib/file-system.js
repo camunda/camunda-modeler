@@ -38,18 +38,18 @@ const ENCODING_BASE64 = 'base64',
  *
  * @param {string} filePath - Filepath.
  * @param {Object} [options] - Options.
- * @param {string} [options.encoding] - Encoding.
+ * @param {string|false} [options.encoding] - Encoding. Set to false to receive Buffer.
  *
  * @return {Object}
  */
 module.exports.readFile = function(filePath, options = {}) {
   let { encoding } = options;
 
-  if (!encoding) {
+  if (!encoding && encoding !== false) {
     encoding = ENCODING_UTF8;
   }
 
-  const fileContents = fs.readFileSync(filePath, encoding);
+  const fileContents = encoding ? fs.readFileSync(filePath, encoding) : fs.readFileSync(filePath);
 
   return createFile({
     path: filePath,
