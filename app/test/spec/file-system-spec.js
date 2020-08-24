@@ -99,6 +99,23 @@ describe('FileSystem', function() {
     });
 
 
+    it('should read file (encoding=false)', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      writeFile(fooPath, { contents: 'foo' });
+
+      // when
+      const file = readFile(fooPath, {
+        encoding: false
+      });
+
+      // then
+      expect(file.contents).to.eql(Buffer.from('foo'));
+    });
+
+
     it('should throw an error', function() {
 
       // given
