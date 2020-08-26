@@ -57,11 +57,11 @@ export default class QuantMERenderer extends BpmnRenderer {
 
         return task;
       },
-      'quantme:QuantumCircuitCreationTask': function(self, parentGfx, element) {
+      'quantme:QuantumCircuitLoadingTask': function(self, parentGfx, element) {
         var task = self.renderer('bpmn:Task')(parentGfx, element);
 
         // create circuit paths without filled shapes
-        var pathData = quantMEPathMap.getPath('TASK_TYPE_CIRCUIT_CREATION');
+        var pathData = quantMEPathMap.getPath('TASK_TYPE_CIRCUIT_LOADING');
         drawPath(parentGfx, pathData, {
           transform:'scale(0.25)',
           strokeWidth: 2.5,
@@ -70,7 +70,7 @@ export default class QuantMERenderer extends BpmnRenderer {
         });
 
         // create circuit paths with filled shapes
-        pathData = quantMEPathMap.getPath('TASK_TYPE_CIRCUIT_CREATION_FILL');
+        pathData = quantMEPathMap.getPath('TASK_TYPE_CIRCUIT_LOADING_FILL');
         drawPath(parentGfx, pathData, {
           transform:'scale(0.25)',
           strokeWidth: 2.5,

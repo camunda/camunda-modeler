@@ -245,22 +245,22 @@ export function addOracleCircuitEntry(group, translate) {
   }));
 }
 
-export function addOracleFunctionEntry(group, translate) {
+export function addOracleURLEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'oracleFunction',
-    label: translate('Oracle Function'),
-    modelProperty: 'oracleFunction',
+    id: 'oracleURL',
+    label: translate('Oracle URL'),
+    modelProperty: 'oracleURL',
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
-      let oracleFunction = bo && bo.oracleFunction;
-      return { oracleFunction: oracleFunction };
+      let oracleURL = bo && bo.oracleURL;
+      return { oracleURL: oracleURL };
     },
 
     set: function(element, values, node) {
       let bo = ModelUtil.getBusinessObject(element);
       return CmdHelper.updateBusinessObject(element, bo, {
-        oracleFunction: values.oracleFunction || undefined
+        oracleURL: values.oracleURL || undefined
       });
     },
 

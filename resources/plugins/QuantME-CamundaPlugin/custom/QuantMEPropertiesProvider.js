@@ -71,8 +71,8 @@ function addQuantMEEntries(group, element, translate) {
   case 'quantme:QuantumComputationTask':
     addQuantumComputationTaskEntries(group, translate);
     break;
-  case 'quantme:QuantumCircuitCreationTask':
-    addQuantumCircuitCreationTaskEntries(group, translate);
+  case 'quantme:QuantumCircuitLoadingTask':
+    addQuantumCircuitLoadingTaskEntries(group, translate);
     break;
   case 'quantme:DataPreparationTask':
     addDataPreparationTaskEntries(group, translate);
@@ -97,7 +97,7 @@ function addQuantumComputationTaskEntries(group, translate) {
   QuantMEPropertyEntryHandler.addProviderEntry(group, translate);
 }
 
-function addQuantumCircuitCreationTaskEntries(group, translate) {
+function addQuantumCircuitLoadingTaskEntries(group, translate) {
   // add quantumCircuit and url attributes
   QuantMEPropertyEntryHandler.addQuantumCircuitEntry(group, translate);
   QuantMEPropertyEntryHandler.addUrlEntry(group, translate);
@@ -113,7 +113,7 @@ function addOracleExpansionTaskEntries(group, translate) {
   // add oracleId, oracleCircuit, oracleFunction and programmingLanguage attributes
   QuantMEPropertyEntryHandler.addOracleIdEntry(group, translate);
   QuantMEPropertyEntryHandler.addOracleCircuitEntry(group, translate);
-  QuantMEPropertyEntryHandler.addOracleFunctionEntry(group, translate);
+  QuantMEPropertyEntryHandler.addOracleURLEntry(group, translate);
   QuantMEPropertyEntryHandler.addProgrammingLanguageEntry(group, translate);
 }
 

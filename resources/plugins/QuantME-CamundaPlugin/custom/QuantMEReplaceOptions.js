@@ -19,11 +19,11 @@ export var TASK = [
     }
   },
   {
-    label: 'Quantum Circuit Creation Task',
-    actionName: 'replace-with-quantum-circuit-creation-task',
-    className: 'bpmn-icon-circuit-creation',
+    label: 'Quantum Circuit Loading Task',
+    actionName: 'replace-with-quantum-circuit-loading-task',
+    className: 'bpmn-icon-circuit-loading',
     target: {
-      type: 'quantme:QuantumCircuitCreationTask'
+      type: 'quantme:QuantumCircuitLoadingTask'
     }
   },
   {

@@ -27,10 +27,10 @@ html, body, #container {
   margin: 0 6px 0 0;
 }
 
-.bpmn-icon-circuit-creation:before {
+.bpmn-icon-circuit-loading:before {
   content: "";
   display: block;
-  background: url("../resources/menu-icon-quantum-circuit-creation-task.png") no-repeat;
+  background: url("../resources/menu-icon-quantum-circuit-loading-task.png") no-repeat;
   width: 20px;
   height: 20px;
   float: left;

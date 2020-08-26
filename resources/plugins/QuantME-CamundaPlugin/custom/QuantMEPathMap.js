@@ -35,7 +35,7 @@ export default function QuantMEPathMap() {
       '11.33,123.07 43.84,116.41 76.94,96.52 ' +
       '110.05,76.63 131.19,51.05 124.18,39.38 Z'
     },
-    'TASK_TYPE_CIRCUIT_CREATION': {
+    'TASK_TYPE_CIRCUIT_LOADING': {
       d: 'M 4.32,12.32 ' +
       'C 4.32,12.32 125.70,12.32 125.70,12.32M 4.32,48.64 ' +
       'C 4.32,48.64 125.70,48.64 125.70,48.64M 4.32,87.36 ' +
@@ -55,7 +55,7 @@ export default function QuantMEPathMap() {
       'M 90.56,34.08 ' +
       'C 90.56,34.08 90.56,85.67 90.56,85.67'
     },
-    'TASK_TYPE_CIRCUIT_CREATION_FILL': {
+    'TASK_TYPE_CIRCUIT_LOADING_FILL': {
       d: 'M 32.16,13.44 ' +
         'C 32.16,7.87 36.67,3.36 42.24,3.36 ' +
         '47.81,3.36 52.32,7.87 52.32,13.44 ' +

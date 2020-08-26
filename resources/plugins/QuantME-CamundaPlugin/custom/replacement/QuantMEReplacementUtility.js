@@ -43,7 +43,7 @@ export default class QuantMEReplacementUtility {
      * Initiate the replacement process for the QuantME tasks that are contained in the current process model
      */
     function startReplacementProcess() {
-      console.log('Starting replacement process for the current process model...');
+      console.log('Starting test process for the current process model...');
 
       // request a update of the currently stored QRMs
       eventBus.fire('QRMs.update', {});

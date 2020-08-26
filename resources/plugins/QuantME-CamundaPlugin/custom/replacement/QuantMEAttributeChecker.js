@@ -11,6 +11,8 @@
 
 let ModelUtil = require('bpmn-js/lib/util/ModelUtil');
 
+export default class QuantMEAttributeChecker {}
+
 /**
  * Check whether the given QuantME task has all required elements set
  *
@@ -28,8 +30,8 @@ export function requiredAttributesAvailable(element) {
   switch (element.$type) {
   case 'quantme:QuantumComputationTask':
     return checkQuantumComputationTask(bo);
-  case 'quantme:QuantumCircuitCreationTask':
-    return checkQuantumCircuitCreationTask(bo);
+  case 'quantme:QuantumCircuitLoadingTask':
+    return checkQuantumCircuitLoadingTask(bo);
   case 'quantme:DataPreparationTask':
     return checkDataPreparationTask(bo);
   case 'quantme:OracleExpansionTask':
@@ -39,7 +41,7 @@ export function requiredAttributesAvailable(element) {
   case 'quantme:ReadoutErrorMitigationTask':
     return checkReadoutErrorMitigationTask(bo);
   default:
-    console.log('Unsupported QuantME element of type: ', element.type);
+    console.log('Unsupported QuantME element of type: ', element.$type);
     return false;
   }
 }
@@ -49,7 +51,7 @@ function checkQuantumComputationTask(bo) {
   return !(typeof bo.algorithm === 'undefined');
 }
 
-function checkQuantumCircuitCreationTask(bo) {
+function checkQuantumCircuitLoadingTask(bo) {
   // check if either a circuit or an URL is defined
   return !(typeof bo.quantumCircuit === 'undefined' && typeof bo.url === 'undefined');
 }
