@@ -3,12 +3,12 @@
 [![Build Status](https://travis-ci.org/camunda/camunda-modeler.svg?branch=develop)](https://travis-ci.org/camunda/camunda-modeler)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A modeling solution for BPMN 2.0-based process models that need to integrate quantum applications.
+A modeling solution for BPMN 2.0-based workflow models that need to integrate quantum applications.
 It is based on [Quantum4BPMN](https://github.com/UST-QuAntiL/QuantME-Quantum4BPMN), a BPMN extension to support the Quantum Modeling Extension (QuantME).
 
-Therefore, it enables to create process models orchestrating classical and quantum applications and to transform these process models to standard-compliant BPMN to retain their portability.
+Therefore, it enables to create workflow models orchestrating classical and quantum applications and to transform these workflow models to standard-compliant BPMN to retain their portability.
 
-The major part of the functionality of the modeling and transformation framework is implemented through the [QuantME-CamundaPlugin](https://github.com/UST-QuAntiL/QuantME-CamundaPlugin). Please refer to this repository for further documentation of the possible usage of the framework to model and transform Quantum4BPMN process models.
+Please refer to the [documentation](./docs) for details of the possible usage of the framework to model and transform Quantum4BPMN workflow models.
 
 ### Building the Application
 
@@ -23,15 +23,13 @@ npm run all
 npm run build
 ```
 
-
 ### Development Setup
 
-Spin up the application for development, all strings attached:
+First, build the plugins and then spin up the application for development:
 
 ```
 npm run dev
 ```
-
 
 ## License
 

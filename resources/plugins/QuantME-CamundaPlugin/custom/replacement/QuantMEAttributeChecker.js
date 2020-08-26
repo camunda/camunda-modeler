@@ -11,8 +11,6 @@
 
 let ModelUtil = require('bpmn-js/lib/util/ModelUtil');
 
-export default class QuantMEAttributeChecker {}
-
 /**
  * Check whether the given QuantME task has all required elements set
  *
