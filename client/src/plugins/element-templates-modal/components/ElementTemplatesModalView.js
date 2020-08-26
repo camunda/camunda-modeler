@@ -377,6 +377,14 @@ function getTagCounts(elementTemplates) {
   }, {});
 }
 
+function leftPad(string, length, character) {
+  while (string.length < length) {
+    string = `${ character }${ string }`;
+  }
+
+  return string;
+}
+
 function getDate(elementTemplate) {
   const { metadata } = elementTemplate;
 
@@ -384,5 +392,13 @@ function getDate(elementTemplate) {
     return;
   }
 
-  return new Date(metadata.updated).toLocaleDateString('en-US').split('/').reverse().join('-');
+  const dateUpdated = new Date(metadata.updated);
+
+  const year = dateUpdated.getFullYear();
+
+  const month = leftPad(String(dateUpdated.getMonth() + 1), 2, '0');
+
+  const date = leftPad(String(dateUpdated.getDate()), 2, '0');
+
+  return `${ year }-${ month }-${ date }`;
 }
