@@ -13,6 +13,17 @@ module.exports = function(electronApp, menuState) {
 
   return [
     {
+      label: 'Update from QRM repository',
+      enabled: function() {
+
+        // only enabled for BPMN diagrams
+        return menuState.bpmn;
+      },
+      action: function() {
+        electronApp.emit('menu:action', 'updateFromQRMRepo');
+      }
+    },
+    {
       label: 'Transform QuantME process model',
       enabled: function() {
 

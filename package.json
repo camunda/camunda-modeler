@@ -17,7 +17,7 @@
     "plugin:quantme-client": "(cd resources/plugins/QuantME-ClientPlugin && npm install && npm run all)",
     "plugin:linter": "(cd resources/plugins/Linter-plugin && npm install && npm run all)",
     "plugin:linter-extension": "(cd resources/plugins/QuantME-Linter-Extension-Plugin && npm install && npm run all)",
-    "all": "run-s clean lint test \"build -- {@}\" --",
+    "all": "run-s clean test \"build -- {@}\" --",
     "auto-test": "run-p *:auto-test",
     "clean": "del-cli 'dist/*' app/public",
     "dev": "run-p \"app:dev -- {@}\" client:dev --",

@@ -1,3 +1,5 @@
+import { requiredAttributesAvailable } from './QuantMEAttributeChecker';
+
 /**
  * Copyright (c) 2020 Institute for the Architecture of Application System -
  * University of Stuttgart
@@ -32,6 +34,13 @@ export default class QuantMEReplacementUtility {
       QRMs = event.data;
     });
 
+    // update current QRMs from repository on action in Camunda editor menu
+    editorActions && editorActions.register({
+      updateFromQRMRepo: function() {
+        updateFromQRMRepo();
+      }
+    });
+
     // start replacement on action in Camunda editor menu
     editorActions && editorActions.register({
       startReplacementProcess: function() {
@@ -44,9 +53,6 @@ export default class QuantMEReplacementUtility {
      */
     function startReplacementProcess() {
       console.log('Starting test process for the current process model...');
-
-      // request a update of the currently stored QRMs
-      eventBus.fire('QRMs.update', {});
 
       // get root element of the current diagram
       const rootElement = getRootProcess();
@@ -112,6 +118,15 @@ export default class QuantMEReplacementUtility {
       modeling.createShape({ type: 'quantme:ReadoutErrorMitigationTask' }, { x: 50, y: 50 }, parent, {});
       return true;
     }
+
+    /**
+     * Initiate the replacement process for the QuantME tasks that are contained in the current process model
+     */
+    function updateFromQRMRepo() {
+      // request a update of the currently stored QRMs
+      console.log('Updating QRMs from repository!');
+      eventBus.fire('QRMs.update', {});
+    }
   }
 }
 
@@ -125,7 +140,6 @@ function getMethods(obj) {
   } while ((currentObj = Object.getPrototypeOf(currentObj)));
   return [...properties.keys()].filter(item => typeof obj[item] === 'function');
 }
-
 
 /**
  * Check whether the given QuantME task can be replaced by an available QRM, which means check if a matching detector can be found
@@ -144,14 +158,4 @@ export function isReplaceable(element) {
   // TODO: search for matching detector in QRMs
   console.log('QuantMEReplacementUtility called with element:', element);
   return true;
-}
-
-/**
- * Check whether the given QuantME task has all required elements set
- *
- * @param element the element representing the QuantME task
- * @returns {boolean} true if attributes are available, otherwise false
- */
-export function requiredAttributesAvailable(element) {
-  return QuantMEAttributeChecker.requiredAttributesAvailable(element);
 }

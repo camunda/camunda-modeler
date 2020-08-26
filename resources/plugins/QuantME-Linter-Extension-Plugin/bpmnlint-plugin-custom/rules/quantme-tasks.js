@@ -1,3 +1,4 @@
+let QuantMEAttributeChecker = require('quantme/custom/replacement/QuantMEAttributeChecker');
 let QuantMEReplacementUtility = require('quantme/custom/replacement/QuantMEReplacementUtility');
 
 /**
@@ -7,7 +8,7 @@ module.exports = function() {
 
   function check(node, reporter) {
     if (node.$type && node.$type.startsWith('quantme:')) {
-      if (!QuantMEReplacementUtility.requiredAttributesAvailable(node)) {
+      if (!QuantMEAttributeChecker.requiredAttributesAvailable(node)) {
         reporter.report(node.id, 'Not all required attributes are set. Unable to replace task!');
         return;
       }

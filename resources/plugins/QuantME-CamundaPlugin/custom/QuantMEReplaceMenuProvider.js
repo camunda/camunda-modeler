@@ -29,12 +29,10 @@ export default class QuantMEReplaceMenuProvider extends ReplaceMenuProvider {
    */
   getEntries(element) {
     var options = super.getEntries(element);
-    console.log('Found ' + options.length + ' initial replacement options for element: ' + element.id);
 
     // add additional elements to replace tasks
     if (is(element, 'bpmn:Task')) {
       options = options.concat(super._createEntries(element, quantmeReplaceOptions.TASK));
-      console.log(options.length + ' replacement options after adding QuantME options!');
     }
     return options;
   }

@@ -1,10 +1,12 @@
 # Docs
 
-Developer and user documentation for the QuantME modeling and transformation framework.
+## Developer and user documentation for the QuantME modeling and transformation framework.
 
 ### [QuantME](./quantme)
 
-Developer documentation for the Camunda Modeler.
+This shows how to use and extend the QuantME modeling and transformation framework.
+
+## Developer documentation for the Camunda Modeler.
 
 ### [Element Templates](./element-templates)
 
