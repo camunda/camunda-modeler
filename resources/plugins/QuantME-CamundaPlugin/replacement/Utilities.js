@@ -19,3 +19,13 @@ export function getRootProcess(definitions) {
     }
   }
 }
+
+/**
+ * Check if the given task is a QuantME task
+ *
+ * @param task the task to check
+ * @returns true if the passed task is a QuantME task, false otherwise
+ */
+export function isQuantMETask(task) {
+  return task.$type.startsWith('quantme:');
+}

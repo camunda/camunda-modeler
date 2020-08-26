@@ -1,19 +1,18 @@
 /**
- * Copyright (c) 2020 Institute for the Architecture of Application System -
- * University of Stuttgart
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms the Apache Software License 2.0
- * which is available at https://www.apache.org/licenses/LICENSE-2.0.
- *
- * SPDX-License-Identifier: Apache-2.0
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
  */
 
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import elementTemplates from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates';
 import quantMEExtension from '../resources/quantum4bpmn.json';
 import quantMEModule from '../quantme';
-import { getRootProcess } from './Utilities';
+import { getRootProcess, isQuantMETask } from './Utilities';
 
 export default class QuantMEMatcher {
 
@@ -46,9 +45,135 @@ export default class QuantMEMatcher {
 
     // check whether the detector is valid and contains exactly one QuantME task
     let rootProcess = getRootProcess(bpmnModeler.getDefinitions());
-    console.log(rootProcess);
+    let flowElements = rootProcess.flowElements;
+    if (flowElements.length !== 1) {
+      console.log('Detector contains %i flow elements but must contain exactly one!', flowElements.length);
+      return false;
+    }
+    let detectorElement = flowElements[0];
+    if (!isQuantMETask(detectorElement)) {
+      console.log('Contained task is no QuantME task: %s', detectorElement.$task);
+      return false;
+    }
 
+    // check if QuantME task of the QRM matches the given task
+    return this.taskMatchesDetector(detectorElement, task);
+  }
+
+  /**
+   * Check if the given task matches the detector, i.e., has the same QuantME type and matching attributes
+   *
+   * @param detectorElement the QuantME task from the detector
+   * @param task the task to check
+   * @return true if the detector matches the task, false otherwise
+   */
+  static taskMatchesDetector(detectorElement, task) {
+    if (detectorElement.$type !== task.$type) {
+      console.log('Types of detector and task do not match!');
+      return false;
+    }
+
+    // check for attributes of the different task types
+    switch (task.$type) {
+    case 'quantme:QuantumComputationTask':
+      return QuantMEMatcher.matchQuantumComputationTask(detectorElement, task);
+    case 'quantme:QuantumCircuitLoadingTask':
+      return QuantMEMatcher.matchQuantumCircuitLoadingTask(detectorElement, task);
+    case 'quantme:DataPreparationTask':
+      return QuantMEMatcher.matchDataPreparationTask(detectorElement, task);
+    case 'quantme:OracleExpansionTask':
+      return QuantMEMatcher.matchOracleExpansionTask(detectorElement, task);
+    case 'quantme:QuantumCircuitExecutionTask':
+      return QuantMEMatcher.matchQuantumCircuitExecutionTask(detectorElement, task);
+    case 'quantme:ReadoutErrorMitigationTask':
+      return QuantMEMatcher.matchReadoutErrorMitigationTask(detectorElement, task);
+    default:
+      console.log('Unsupported QuantME element of type: ', task.$type);
+      return false;
+    }
+  }
+
+  /**
+   * Compare the properties of QuantumComputationTasks
+   */
+  static matchQuantumComputationTask(detectorElement, task) {
+    // check if algorithm and provider match
+    return this.matchesProperty(detectorElement.algorithm, task.algorithm, true)
+      && this.matchesProperty(detectorElement.provider, task.provider, false);
+  }
+
+  /**
+   * Compare the properties of QuantumCircuitLoadingTasks
+   */
+  static matchQuantumCircuitLoadingTask(detectorElement, task) {
     // TODO
     return false;
+  }
+
+  /**
+   * Compare the properties of DataPreparationTasks
+   */
+  static matchDataPreparationTask(detectorElement, task) {
+    // TODO
+    return false;
+  }
+
+  /**
+   * Compare the properties of OracleExpansionTasks
+   */
+  static matchOracleExpansionTask(detectorElement, task) {
+    // TODO
+    return false;
+  }
+
+  /**
+   * Compare the properties of QuantumCircuitExecutionTasks
+   */
+  static matchQuantumCircuitExecutionTask(detectorElement, task) {
+    // TODO
+    return false;
+  }
+
+  /**
+   * Compare the properties of ReadoutErrorMitigationTask
+   */
+  static matchReadoutErrorMitigationTask(detectorElement, task) {
+    // TODO
+    return false;
+  }
+
+  /**
+   * TODO
+   *
+   * @param detectorProperty
+   * @param taskProperty
+   * @param required
+   * @return {boolean}
+   */
+  static matchesProperty(detectorProperty, taskProperty, required) {
+    // the detector has to define each attribute
+    if (detectorProperty === undefined) {
+      return false;
+    }
+
+    // if wildcard is defined any value matches
+    if (detectorProperty === '*') {
+      return true;
+    }
+
+    // if an attribute is not defined in the task to replace, any value can be used if the attribute is not required
+    if (taskProperty === undefined) {
+      return !required;
+    }
+
+    // if the detector defines multiple values for the attribute, one has to match the task to replace
+    if (detectorProperty.includes(',')) {
+      // TODO: compare each entry
+      console.log(detectorProperty);
+      console.log(taskProperty);
+    }
+
+    // if the detector contains only one value it has to match exactly
+    return detectorProperty === taskProperty;
   }
 }

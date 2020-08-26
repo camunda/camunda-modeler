@@ -22,12 +22,6 @@ export default class QuantMETransformator {
     // register the startReplacementProcess() function as editor action to enable the invocation from the menu
     const editorActions = injector.get('editorActions', false);
 
-    console.log('bpmnJs methods: ');
-    console.log(getMethods(bpmnjs));
-
-    console.log('modeling methods: ');
-    console.log(getMethods(modeling));
-
     // update locally stored QRMs if update is received
     eventBus.on('QRMs.updated', 1000, (event) => {
       console.log('Received event to update QRMs!');
@@ -66,15 +60,9 @@ export default class QuantMETransformator {
       const quantmeTasks = getQuantMETasks(rootElement);
       console.log('Process contains ' + quantmeTasks.length + ' QuantME tasks to replace...');
 
-      // TODO: remove debug logging
-      console.log('Definitions: ', bpmnjs.getDefinitions());
-      console.log('Root element: ', rootElement);
-      console.log('BO: ', rootElementBo);
-      console.log('Current QRMs: ', QRMs);
-
       // replace each QuantME tasks to retrieve standard-compliant BPMN
       for (let i = 0; i < quantmeTasks.length; i++) {
-        const replacementSuccess = replaceQuantMETask(quantmeTasks[i], rootElementBo);
+        const replacementSuccess = await replaceQuantMETask(quantmeTasks[i], rootElementBo);
         if (!replacementSuccess) {
           console.log('Replacement of QuantME task with Id ' + quantmeTasks[i].id + ' failed. Aborting process!');
           return;
@@ -101,7 +89,7 @@ export default class QuantMETransformator {
      * Replace the given QuantME tasks by a suited QRM
      */
     async function replaceQuantMETask(task, parent) {
-      console.log('Replacing QuantME task with id: ', task.id);
+      console.log('Replacing QuantME task with id: %s', task.id);
       for (let i = 0; i < QRMs.length; i++) {
         let qrm = QRMs[i];
         if (await QuantMEMatcher.matchesQRM(qrm, task)) {
@@ -111,6 +99,7 @@ export default class QuantMETransformator {
           return true;
         }
       }
+      console.log('No matching QRM found for task with id: %s', task.id);
       return false;
     }
 
@@ -126,16 +115,6 @@ export default class QuantMETransformator {
 }
 
 QuantMETransformator.$inject = ['injector', 'bpmnjs', 'modeling', 'elementRegistry', 'eventBus'];
-
-// TODO: delete
-function getMethods(obj) {
-  let properties = new Set();
-  let currentObj = obj;
-  do {
-    Object.getOwnPropertyNames(currentObj).map(item => properties.add(item));
-  } while ((currentObj = Object.getPrototypeOf(currentObj)));
-  return [...properties.keys()].filter(item => typeof obj[item] === 'function');
-}
 
 /**
  * Check whether the given QuantME task can be replaced by an available QRM, which means check if a matching detector can be found
