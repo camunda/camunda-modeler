@@ -56,9 +56,17 @@ class ElementTemplatesView extends PureComponent {
 
     const selectedElementType = await triggerAction('getSelectedElementType');
 
-    elementTemplates = elementTemplates.filter(({ appliesTo }) => {
-      return appliesTo.includes(selectedElementType);
-    });
+    elementTemplates = elementTemplates
+      .filter(({ appliesTo }) => {
+        return appliesTo.includes(selectedElementType);
+      })
+      .sort((a, b) => {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
 
     const selectedElementAppliedElementTemplate = await triggerAction('getSelectedElementAppliedElementTemplate');
 

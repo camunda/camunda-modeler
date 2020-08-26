@@ -67,6 +67,25 @@ describe('<ElementTemplatesView>', function() {
     });
 
 
+    it('should get element templates sorted alphabetically', async function() {
+
+      // given
+      const {
+        instance,
+        wrapper
+      } = await createElementTemplatesModalView();
+
+      // when
+      await instance.getElementTemplates();
+
+      // then
+      expect(wrapper.state('elementTemplates').map(({ name }) => name)).to.eql([
+        'Template 1',
+        'Template 2'
+      ]);
+    });
+
+
     it('should list element templates', async function() {
 
       // given
@@ -266,24 +285,6 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     appliesTo: [
       'bpmn:ServiceTask'
     ],
-    id: 'some-rpa-template',
-    description: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    metadata: {
-      catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
-      catalogTemplateId: '00000000-0000-0000-0000-000000000000',
-      created: 1000000000000,
-      tags: [
-        'Walt\'s Catalog'
-      ],
-      updated: 1000000000000
-    },
-    name: 'Template 1',
-    properties: []
-  },
-  {
-    appliesTo: [
-      'bpmn:ServiceTask'
-    ],
     id: 'another-rpa-template',
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
@@ -312,6 +313,24 @@ const DEFAULT_ELEMENT_TEMPLATES = [
       updated: 1000000000000
     },
     name: 'Template 3',
+    properties: []
+  },
+  {
+    appliesTo: [
+      'bpmn:ServiceTask'
+    ],
+    id: 'some-rpa-template',
+    description: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    metadata: {
+      catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
+      catalogTemplateId: '00000000-0000-0000-0000-000000000000',
+      created: 1000000000000,
+      tags: [
+        'Walt\'s Catalog'
+      ],
+      updated: 1000000000000
+    },
+    name: 'Template 1',
     properties: []
   }
 ];
