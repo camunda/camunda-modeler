@@ -9,9 +9,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import QuantMETransformator from './QuantMETransformator';
-
-export default {
-  __init__: ['quantMETransformator'],
-  quantMETransformator: ['type', QuantMETransformator],
-};
+/**
+ * Get the root process element of the diagram
+ */
+export function getRootProcess(definitions) {
+  for (let i = 0; i < definitions.rootElements.length; i++) {
+    if (definitions.rootElements[i].$type === 'bpmn:Process') {
+      return definitions.rootElements[i];
+    }
+  }
+}

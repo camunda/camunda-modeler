@@ -11,11 +11,11 @@
 
 import { registerBpmnJSModdleExtension, registerBpmnJSPlugin } from 'camunda-modeler-plugin-helpers';
 import ModdleExtension from '../resources/quantum4bpmn.json';
-import customModule from '../quantme';
+import quantmeModule from '../quantme';
 import replacementModule from '../replacement';
 
 registerBpmnJSModdleExtension(ModdleExtension);
 
-registerBpmnJSPlugin(customModule);
+registerBpmnJSPlugin(quantmeModule);
 
 registerBpmnJSPlugin(replacementModule);

@@ -22,11 +22,6 @@ cache:
 jobs:
   include:
     - stage: test
-      name: Test on Linux
-      script:
-      - COVERAGE=1 npm run all -- --x64 --no-compress
-      after_success: npx codecov
-    - stage: test
       name: Test on Windows
       os: windows
       before_install: *import-cert-win

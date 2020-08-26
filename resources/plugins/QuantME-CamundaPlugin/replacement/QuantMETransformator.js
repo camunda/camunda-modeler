@@ -9,12 +9,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { requiredAttributesAvailable } from './QuantMEAttributeChecker';
 import QuantMEMatcher from './QuantMEMatcher';
+import { requiredAttributesAvailable } from './QuantMEAttributeChecker';
+import { getRootProcess } from './Utilities';
 
 let QRMs = [];
 
-export default class QuantMEReplacementUtility {
+export default class QuantMETransformator {
 
   constructor(injector, bpmnjs, modeling, elementRegistry, eventBus) {
 
@@ -42,19 +43,19 @@ export default class QuantMEReplacementUtility {
 
     // start replacement on action in Camunda editor menu
     editorActions && editorActions.register({
-      startReplacementProcess: function() {
-        startReplacementProcess();
+      startReplacementProcess: async function() {
+        await startReplacementProcess();
       }
     });
 
     /**
      * Initiate the replacement process for the QuantME tasks that are contained in the current process model
      */
-    function startReplacementProcess() {
+    async function startReplacementProcess() {
       console.log('Starting test process for the current process model...');
 
       // get root element of the current diagram
-      const rootElement = getRootProcess();
+      const rootElement = getRootProcess(bpmnjs.getDefinitions());
       if (typeof rootElement === 'undefined') {
         console.log('Unable to retrieve root process element from definitions!');
         return;
@@ -82,18 +83,6 @@ export default class QuantMEReplacementUtility {
     }
 
     /**
-     * Get the root process element of the diagram
-     */
-    function getRootProcess() {
-      const currentDefinitions = bpmnjs.getDefinitions();
-      for (let i = 0; i < currentDefinitions.rootElements.length; i++) {
-        if (currentDefinitions.rootElements[i].$type === 'bpmn:Process') {
-          return currentDefinitions.rootElements[i];
-        }
-      }
-    }
-
-    /**
      * Get QuantME tasks from process
      */
     function getQuantMETasks(process) {
@@ -111,11 +100,11 @@ export default class QuantMEReplacementUtility {
     /**
      * Replace the given QuantME tasks by a suited QRM
      */
-    function replaceQuantMETask(task, parent) {
+    async function replaceQuantMETask(task, parent) {
       console.log('Replacing QuantME task with id: ', task.id);
       for (let i = 0; i < QRMs.length; i++) {
         let qrm = QRMs[i];
-        if (QuantMEMatcher.matchesQRM(qrm, task)) {
+        if (await QuantMEMatcher.matchesQRM(qrm, task)) {
           console.log('Found matching detector. Starting replacement!');
           // TODO: replace task with QRM
           modeling.createShape({ type: 'quantme:ReadoutErrorMitigationTask' }, { x: 50, y: 50 }, parent, {});
@@ -136,7 +125,7 @@ export default class QuantMEReplacementUtility {
   }
 }
 
-QuantMEReplacementUtility.$inject = ['injector', 'bpmnjs', 'modeling', 'elementRegistry', 'eventBus'];
+QuantMETransformator.$inject = ['injector', 'bpmnjs', 'modeling', 'elementRegistry', 'eventBus'];
 
 // TODO: delete
 function getMethods(obj) {
@@ -163,6 +152,6 @@ export function isReplaceable(element) {
   }
 
   // TODO: search for matching detector in QRMs
-  console.log('QuantMEReplacementUtility called with element:', element);
+  console.log('QuantMETransformator called with element:', element);
   return true;
 }

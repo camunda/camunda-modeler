@@ -10,36 +10,43 @@
  */
 
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+import elementTemplates from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates';
 import quantMEExtension from '../resources/quantum4bpmn.json';
 import quantMEModule from '../quantme';
+import { getRootProcess } from './Utilities';
 
 export default class QuantMEMatcher {
 
   /**
    * Check whether the given task matches the detector of the given QRM
    */
-  static matchesQRM(qrm, task) {
+  static async matchesQRM(qrm, task) {
     console.log('Matching QRM %s and task with id %s!', qrm.qrmUrl, task.id);
 
-    // import the detector of the QRM to compare it to the given task
+    // create new modeler with the custom QuantME extensions
     const bpmnModeler = new BpmnModeler({
       additionalModules: [
+        elementTemplates,
         quantMEModule
       ],
       moddleExtensions: {
         quantME: quantMEExtension
       }
     });
-    bpmnModeler.importXML(qrm.detector, (err) => {
-      if (err) {
-        console.error(err);
-      }
-      console.log('Loaded...');
 
-      console.log(bpmnModeler.getDefinitions());
-    });
+    // import the detector of the QRM to compare it to the given task
+    function importXmlWrapper(xml) {
+      return new Promise((resolve) => {
+        bpmnModeler.importXML(xml,(successResponse) => {
+          resolve(successResponse);
+        });
+      });
+    }
+    await importXmlWrapper(qrm.detector);
 
-    console.log(bpmnModeler.getDefinitions());
+    // check whether the detector is valid and contains exactly one QuantME task
+    let rootProcess = getRootProcess(bpmnModeler.getDefinitions());
+    console.log(rootProcess);
 
     // TODO
     return false;
