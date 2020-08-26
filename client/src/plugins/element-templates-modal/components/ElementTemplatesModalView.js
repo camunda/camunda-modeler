@@ -33,6 +33,7 @@ class ElementTemplatesView extends PureComponent {
     this.state = {
       applied: null,
       elementTemplates: [],
+      elementTemplatesFiltered: [],
       expanded: null,
       filter: {
         tags: [],
@@ -73,6 +74,7 @@ class ElementTemplatesView extends PureComponent {
 
     this.setState({
       elementTemplates,
+      elementTemplatesFiltered: elementTemplates,
       applied: selectedElementAppliedElementTemplate
     });
   }
@@ -122,22 +124,29 @@ class ElementTemplatesView extends PureComponent {
   onSearchChange = search => {
     const { filter } = this.state;
 
-    this.setState({
-      filter: {
-        ...filter,
-        search
-      }
+    this.setFilter({
+      ...filter,
+      search
     });
   }
 
   onTagsChange = tags => {
     const { filter } = this.state;
 
+    this.setFilter({
+      ...filter,
+      tags
+    });
+  }
+
+  setFilter = filter => {
+    const { elementTemplates } = this.state;
+
+    const elementTemplatesFiltered = filterElementTemplates(elementTemplates, filter);
+
     this.setState({
-      filter: {
-        ...filter,
-        tags
-      }
+      elementTemplatesFiltered,
+      filter
     });
   }
 
@@ -151,6 +160,7 @@ class ElementTemplatesView extends PureComponent {
     const {
       applied,
       elementTemplates,
+      elementTemplatesFiltered,
       expanded,
       filter,
       scroll,
@@ -163,7 +173,7 @@ class ElementTemplatesView extends PureComponent {
 
     const tagCounts = getTagCounts(elementTemplates);
 
-    const filteredElementTemplates = filterElementTemplates(elementTemplates, filter);
+    const canApply = elementTemplatesFiltered.find(({ id }) => id === selected);
 
     return (
       <Modal className={ css.ElementTemplatesModalView } onClose={ onClose }>
@@ -185,8 +195,8 @@ class ElementTemplatesView extends PureComponent {
 
           <ul className="element-templates-list">
             {
-              filteredElementTemplates.length
-                ? filteredElementTemplates.map(elementTemplate => {
+              elementTemplatesFiltered.length
+                ? elementTemplatesFiltered.map(elementTemplate => {
                   const { id } = elementTemplate;
 
                   return (
@@ -203,7 +213,7 @@ class ElementTemplatesView extends PureComponent {
                 : null
             }
             {
-              !filteredElementTemplates.length ? (
+              !elementTemplatesFiltered.length ? (
                 <ElementTemplatesListItemEmpty />
               ) : null
             }
@@ -212,16 +222,17 @@ class ElementTemplatesView extends PureComponent {
 
         <Modal.Footer>
           <div className="form-submit">
-            <button className="btn btn-secondary" type="submit" onClick={ onClose }>
+            <button className="btn btn-secondary button--cancel" type="submit" onClick={ onClose }>
               Cancel
             </button>
-            {
-              true && (
-                <button disabled={ isNil(selected) } className="btn btn-primary" type="submit" onClick={ this.onApply }>
-                  Apply
-                </button>
-              )
-            }
+            <button
+              disabled={ !canApply }
+              className="btn btn-primary button--apply"
+              type="submit"
+              onClick={ this.onApply }
+            >
+              Apply
+            </button>
           </div>
         </Modal.Footer>
 

@@ -314,6 +314,30 @@ describe('<ElementTemplatesView>', function() {
       expect(wrapper.find(Dropdown)).to.have.length(0);
     });
 
+
+    it('should disable apply button if selected element template does not match filter', async function() {
+
+      // given
+      const {
+        instance,
+        wrapper
+      } = await createElementTemplatesModalView();
+
+      wrapper.update();
+
+      const elementTemplatesListItem = wrapper.find(ElementTemplatesListItem).first();
+
+      elementTemplatesListItem.simulate('click');
+
+      // when
+      instance.onSearchChange('Template 4');
+
+      wrapper.update();
+
+      // then
+      expect(wrapper.find('.button--apply').first().prop('disabled')).to.be.true;
+    });
+
   });
 
 });
