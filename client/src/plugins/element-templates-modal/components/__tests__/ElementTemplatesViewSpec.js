@@ -168,6 +168,7 @@ describe('<ElementTemplatesView>', function() {
 
       // then
       expect(wrapper.state('expanded')).to.equal('some-rpa-template');
+      expect(wrapper.state('selected')).to.be.null;
     });
 
 
@@ -189,6 +190,7 @@ describe('<ElementTemplatesView>', function() {
 
       // then
       expect(wrapper.state('expanded')).to.equal(null);
+      expect(wrapper.state('selected')).to.be.null;
     });
 
 
