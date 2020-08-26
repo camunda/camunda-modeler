@@ -98,6 +98,24 @@ describe('<ElementTemplatesView>', function() {
     });
 
 
+    it('should display meta data', async function() {
+
+      // given
+      const elementTemplate = DEFAULT_ELEMENT_TEMPLATES.find(({ name }) => name === 'Template 1');
+
+      const { wrapper } = await createElementTemplatesModalView();
+
+      wrapper.update();
+
+      // then
+      const listItem = wrapper.findWhere(n => n.prop('elementTemplate') === elementTemplate).first();
+
+      const meta = listItem.find('.element-templates-list__item-meta').first();
+
+      expect(meta.text()).to.equal('Walt\'s Catalog | 2001-09-09');
+    });
+
+
     it('should not list element templates (no element templates for element type)', async function() {
 
       // given
