@@ -1,5 +1,3 @@
-import { requiredAttributesAvailable } from './QuantMEAttributeChecker';
-
 /**
  * Copyright (c) 2020 Institute for the Architecture of Application System -
  * University of Stuttgart
@@ -11,7 +9,8 @@ import { requiredAttributesAvailable } from './QuantMEAttributeChecker';
  * SPDX-License-Identifier: Apache-2.0
  */
 
-let QuantMEAttributeChecker = require('./QuantMEAttributeChecker');
+import { requiredAttributesAvailable } from './QuantMEAttributeChecker';
+import QuantMEMatcher from './QuantMEMatcher';
 
 let QRMs = [];
 
@@ -114,9 +113,16 @@ export default class QuantMEReplacementUtility {
      */
     function replaceQuantMETask(task, parent) {
       console.log('Replacing QuantME task with id: ', task.id);
-      // TODO: search for suited QRM; replace task with QRM
-      modeling.createShape({ type: 'quantme:ReadoutErrorMitigationTask' }, { x: 50, y: 50 }, parent, {});
-      return true;
+      for (let i = 0; i < QRMs.length; i++) {
+        let qrm = QRMs[i];
+        if (QuantMEMatcher.matchesQRM(qrm, task)) {
+          console.log('Found matching detector. Starting replacement!');
+          // TODO: replace task with QRM
+          modeling.createShape({ type: 'quantme:ReadoutErrorMitigationTask' }, { x: 50, y: 50 }, parent, {});
+          return true;
+        }
+      }
+      return false;
     }
 
     /**
@@ -132,6 +138,7 @@ export default class QuantMEReplacementUtility {
 
 QuantMEReplacementUtility.$inject = ['injector', 'bpmnjs', 'modeling', 'elementRegistry', 'eventBus'];
 
+// TODO: delete
 function getMethods(obj) {
   let properties = new Set();
   let currentObj = obj;

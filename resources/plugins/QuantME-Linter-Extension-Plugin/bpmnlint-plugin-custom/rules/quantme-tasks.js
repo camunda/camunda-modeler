@@ -1,5 +1,5 @@
-let QuantMEAttributeChecker = require('quantme/custom/replacement/QuantMEAttributeChecker');
-let QuantMEReplacementUtility = require('quantme/custom/replacement/QuantMEReplacementUtility');
+let QuantMEAttributeChecker = require('quantme/replacement/QuantMEAttributeChecker');
+let QuantMEReplacementUtility = require('quantme/replacement/QuantMEReplacementUtility');
 
 /**
  * Rule that reports QuantME tasks for which no suited replacment model exists
