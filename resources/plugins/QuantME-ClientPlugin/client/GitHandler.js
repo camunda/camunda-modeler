@@ -32,4 +32,34 @@ export default class GitHandler {
     }
     return directoryURLs;
   }
+
+  /**
+   * Get the URLs to all files in the given folder of the github repository
+   *
+   * @param folderURL the URL to the folder in the github repository
+   */
+  static async getFilesInFolder(folderURL) {
+    const fileURLs = [];
+    let response = await Fetch(folderURL);
+    const contents = await response.json();
+
+    for (let i = 0; i < contents.length; i++) {
+      let item = contents[i];
+      if (item.type === 'file') {
+        fileURLs.push({ name: item.name, download_url: item.download_url });
+      }
+    }
+    return fileURLs;
+  }
+
+  /**
+   * Retrieve the content of the file at the specified URL
+   *
+   * @param fileURL the URL to the file to retrieve
+   * @returns the content of the given file
+   */
+  static async getFileContent(fileURL) {
+    let response = await Fetch(fileURL);
+    return await response.text();
+  }
 }

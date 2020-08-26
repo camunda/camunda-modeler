@@ -14,8 +14,5 @@
     "camunda-modeler-plugin-helpers": "^3.4.0-alpha.0",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.8"
-  },
-  "dependencies": {
-    "list-github-dir-content": "^3.0.0"
   }
 }

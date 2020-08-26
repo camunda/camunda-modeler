@@ -131,6 +131,43 @@ class GitHandler {
 
     return directoryURLs;
   }
+  /**
+   * Get the URLs to all files in the given folder of the github repository
+   *
+   * @param folderURL the URL to the folder in the github repository
+   */
+
+
+  static async getFilesInFolder(folderURL) {
+    const fileURLs = [];
+    let response = await node_fetch__WEBPACK_IMPORTED_MODULE_0___default()(folderURL);
+    const contents = await response.json();
+
+    for (let i = 0; i < contents.length; i++) {
+      let item = contents[i];
+
+      if (item.type === 'file') {
+        fileURLs.push({
+          name: item.name,
+          download_url: item.download_url
+        });
+      }
+    }
+
+    return fileURLs;
+  }
+  /**
+   * Retrieve the content of the file at the specified URL
+   *
+   * @param fileURL the URL to the file to retrieve
+   * @returns the content of the given file
+   */
+
+
+  static async getFileContent(fileURL) {
+    let response = await node_fetch__WEBPACK_IMPORTED_MODULE_0___default()(fileURL);
+    return await response.text();
+  }
 
 }
 
@@ -190,14 +227,45 @@ class QRMHandler {
    *
    * @param userName the Github username to which the QRM repository belongs
    * @param repoName the Github repository name to load the QRMs from
-   * @param qrmUrl
-   * @returns {Promise<QRM>} the QRM if it is valid or null otherwise
+   * @param qrmUrl the URL to the folder containing the potential QRM
+   * @returns the QRM if it is valid or null otherwise
    */
 
 
   static async getQRM(userName, repoName, qrmUrl) {
-    // TODO: check if folder contains detector and replacement fragment and download them
-    return null;
+    // get all files within the QRM folder
+    let files = await _GitHandler__WEBPACK_IMPORTED_MODULE_0__["default"].getFilesInFolder(qrmUrl); // search for detector and replacement fragment and extract URL
+
+    let detectorUrl = null;
+    let replacementUrl = null;
+
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].name === 'detector.bpmn') {
+        detectorUrl = files[i].download_url;
+      }
+
+      if (files[i].name === 'replacement.bpmn') {
+        replacementUrl = files[i].download_url;
+      }
+    } // check if both files are available
+
+
+    if (detectorUrl == null) {
+      console.log('QRM on URL %s does not contain a detector.bpmn file which is required!', qrmUrl);
+      return null;
+    }
+
+    if (replacementUrl == null) {
+      console.log('QRM on URL %s does not contain a replacement.bpmn file which is required!', qrmUrl);
+      return null;
+    } // download the content of the detector and replacement fragment and return
+
+
+    return {
+      'qrmUrl': qrmUrl,
+      'detector': await _GitHandler__WEBPACK_IMPORTED_MODULE_0__["default"].getFileContent(detectorUrl),
+      'replacement': await _GitHandler__WEBPACK_IMPORTED_MODULE_0__["default"].getFileContent(replacementUrl)
+    };
   }
 
 }
@@ -229,6 +297,8 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+let user = 'wederbn';
+let repo = 'qrm-test';
 /**
  * Client plugin to retrieve the current QRMs for the replacement from a Github repository
  */
@@ -242,10 +312,16 @@ class QuantMEClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORT
       } = event; // load current QRMs from defined Git repository and publish them via the event bus
 
       modeler.on('QRMs.update', event => {
-        _QRMHandler__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentQRMs('UST-QuAntiL', 'QuantME-TransformationFramework').then(result => {
+        _QRMHandler__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentQRMs(user, repo).then(result => {
           modeler._emit('QRMs.updated', {
             data: result
           });
+        });
+      }); // perform initial QRM loading
+
+      _QRMHandler__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentQRMs(user, repo).then(result => {
+        modeler._emit('QRMs.updated', {
+          data: result
         });
       });
     });

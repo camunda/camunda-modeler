@@ -30,7 +30,7 @@ export default class QuantMEReplacementUtility {
 
     // update locally stored QRMs if update is received
     eventBus.on('QRMs.updated', 1000, (event) => {
-      console.log('Recevied event to update QRMs!');
+      console.log('Received event to update QRMs!');
       QRMs = event.data;
     });
 

@@ -13,6 +13,9 @@ import { Component } from 'camunda-modeler-plugin-helpers/react';
 
 import QRMHandler from './QRMHandler';
 
+let user = 'wederbn';
+let repo = 'qrm-test';
+
 /**
  * Client plugin to retrieve the current QRMs for the replacement from a Github repository
  */
@@ -30,11 +33,17 @@ export default class QuantMEClient extends Component {
 
       // load current QRMs from defined Git repository and publish them via the event bus
       modeler.on('QRMs.update', (event) => {
-        QRMHandler.getCurrentQRMs('UST-QuAntiL', 'QuantME-TransformationFramework')
+        QRMHandler.getCurrentQRMs(user, repo)
           .then(result => {
             modeler._emit('QRMs.updated', { data: result });
           });
       });
+
+      // perform initial QRM loading
+      QRMHandler.getCurrentQRMs(user, repo)
+        .then(result => {
+          modeler._emit('QRMs.updated', { data: result });
+        });
     });
   }
 
