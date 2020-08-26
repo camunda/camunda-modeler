@@ -244,8 +244,15 @@ class ElementTemplatesView extends PureComponent {
 export default ElementTemplatesView;
 
 export class ElementTemplatesListItem extends React.PureComponent {
-  constructor(props) {
-    super(props);
+  onSelect = ({ target }) => {
+    const { onSelect } = this.props;
+
+    // Do not select on description expand click
+    if (target.classList.contains('element-templates-list__item-description-expand')) {
+      return;
+    }
+
+    onSelect();
   }
 
   render() {
@@ -253,7 +260,6 @@ export class ElementTemplatesListItem extends React.PureComponent {
       applied,
       elementTemplate,
       expanded,
-      onSelect,
       onToggleExpanded,
       selected
     } = this.props;
@@ -292,7 +298,7 @@ export class ElementTemplatesListItem extends React.PureComponent {
           { 'element-templates-list__item--selectable': id !== applied },
           { 'element-templates-list__item--selected': id === selected }
         )
-      } onClick={ id !== applied && id !== selected ? onSelect : null }>
+      } onClick={ id !== applied && id !== selected ? this.onSelect : null }>
         <div className="element-templates-list__item-header">
           <span className="element-templates-list__item-name">{ name }</span>
           {
