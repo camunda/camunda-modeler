@@ -86,6 +86,33 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./client/Config.js":
+/*!**************************!*\
+  !*** ./client/Config.js ***!
+  \**************************/
+/*! exports provided: config */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "config", function() { return config; });
+/**
+ * Copyright (c) 2020 Institute for the Architecture of Application System -
+ * University of Stuttgart
+ *
+ * This program and the accompanying materials are made available under the
+ * terms the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+const config = {
+  githubUsername: '',
+  githubRepositoryName: ''
+};
+
+/***/ }),
+
 /***/ "./client/GitHandler.js":
 /*!******************************!*\
   !*** ./client/GitHandler.js ***!
@@ -284,7 +311,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return QuantMEClient; });
 /* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "./node_modules/camunda-modeler-plugin-helpers/react.js");
 /* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _QRMHandler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./QRMHandler */ "./client/QRMHandler.js");
+/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Config */ "./client/Config.js");
+/* harmony import */ var _QRMHandler__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./QRMHandler */ "./client/QRMHandler.js");
 /**
  * Copyright (c) 2020 Institute for the Architecture of Application System -
  * University of Stuttgart
@@ -297,8 +325,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-let user = 'wederbn';
-let repo = 'qrm-test';
+
 /**
  * Client plugin to retrieve the current QRMs for the replacement from a Github repository
  */
@@ -312,14 +339,14 @@ class QuantMEClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORT
       } = event; // load current QRMs from defined Git repository and publish them via the event bus
 
       modeler.on('QRMs.update', event => {
-        _QRMHandler__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentQRMs(user, repo).then(result => {
+        _QRMHandler__WEBPACK_IMPORTED_MODULE_2__["default"].getCurrentQRMs(_Config__WEBPACK_IMPORTED_MODULE_1__["config"].githubUsername, _Config__WEBPACK_IMPORTED_MODULE_1__["config"].githubRepositoryName).then(result => {
           modeler._emit('QRMs.updated', {
             data: result
           });
         });
       }); // perform initial QRM loading
 
-      _QRMHandler__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentQRMs(user, repo).then(result => {
+      _QRMHandler__WEBPACK_IMPORTED_MODULE_2__["default"].getCurrentQRMs(_Config__WEBPACK_IMPORTED_MODULE_1__["config"].githubUsername, _Config__WEBPACK_IMPORTED_MODULE_1__["config"].githubRepositoryName).then(result => {
         modeler._emit('QRMs.updated', {
           data: result
         });

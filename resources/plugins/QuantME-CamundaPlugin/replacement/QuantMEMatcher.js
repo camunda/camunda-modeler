@@ -1,11 +1,12 @@
 /**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
+ * Copyright (c) 2020 Institute for the Architecture of Application System -
+ * University of Stuttgart
  *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
+ * This program and the accompanying materials are made available under the
+ * terms the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import BpmnModeler from 'bpmn-js/lib/Modeler';
@@ -63,6 +64,8 @@ export default class QuantMEMatcher {
   /**
    * Check if the given task matches the detector, i.e., has the same QuantME type and matching attributes
    *
+   * For details of the matching concepts see: https://github.com/UST-QuAntiL/QuantME-TransformationFramework/tree/develop/docs/quantme/qrm
+   *
    * @param detectorElement the QuantME task from the detector
    * @param task the task to check
    * @return true if the detector matches the task, false otherwise
@@ -114,8 +117,9 @@ export default class QuantMEMatcher {
    * Compare the properties of DataPreparationTasks
    */
   static matchDataPreparationTask(detectorElement, task) {
-    // TODO
-    return false;
+    // check if encodingSchema and programmingLanguage match
+    return this.matchesProperty(detectorElement.encodingSchema, task.encodingSchema, true)
+      && this.matchesProperty(detectorElement.programmingLanguage, task.programmingLanguage, true);
   }
 
   /**
@@ -130,28 +134,33 @@ export default class QuantMEMatcher {
    * Compare the properties of QuantumCircuitExecutionTasks
    */
   static matchQuantumCircuitExecutionTask(detectorElement, task) {
-    // TODO
-    return false;
+    // check if provider, qpu, shots, and programmingLanguage match
+    return this.matchesProperty(detectorElement.provider, task.provider, false)
+      && this.matchesProperty(detectorElement.qpu, task.qpu, false)
+      && this.matchesProperty(String(detectorElement.shots), String(task.shots), false)
+      && this.matchesProperty(String(detectorElement.programmingLanguage), String(task.programmingLanguage), true);
   }
 
   /**
    * Compare the properties of ReadoutErrorMitigationTask
    */
   static matchReadoutErrorMitigationTask(detectorElement, task) {
-    // TODO
-    return false;
+    // check if unfoldingTechnique, qpu, and maxAge match
+    return this.matchesProperty(detectorElement.unfoldingTechnique, task.unfoldingTechnique, true)
+      && this.matchesProperty(detectorElement.qpu, task.qpu, true)
+      && this.matchesProperty(String(detectorElement.maxAge), String(task.maxAge), false);
   }
 
   /**
-   * TODO
+   * Check if the attribute value of the detector mateches the value of the task
    *
-   * @param detectorProperty
-   * @param taskProperty
-   * @param required
-   * @return {boolean}
+   * @param detectorProperty the value of the detector for a certain attribute
+   * @param taskProperty the value of the task for a certain attribute
+   * @param required true if the attribute is required, false otherwise
+   * @return true if the attribute values of the detector and the task match, false otherwise
    */
   static matchesProperty(detectorProperty, taskProperty, required) {
-    // the detector has to define each attribute
+    // the detector has to define the attribute for a matching
     if (detectorProperty === undefined) {
       return false;
     }
@@ -163,17 +172,21 @@ export default class QuantMEMatcher {
 
     // if an attribute is not defined in the task to replace, any value can be used if the attribute is not required
     if (taskProperty === undefined) {
-      return !required;
+      return !required; // TODO: choice attributes?
     }
 
     // if the detector defines multiple values for the attribute, one has to match the task to replace
     if (detectorProperty.includes(',')) {
-      // TODO: compare each entry
-      console.log(detectorProperty);
-      console.log(taskProperty);
+      let valueList = detectorProperty.split(',');
+      for (let i = 0; i < valueList.length; i++) {
+        if (valueList[i].trim() === taskProperty.trim()) {
+          return true;
+        }
+      }
+      return false;
     }
 
     // if the detector contains only one value it has to match exactly
-    return detectorProperty === taskProperty;
+    return detectorProperty.trim() === taskProperty.trim();
   }
 }
