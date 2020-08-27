@@ -11,7 +11,7 @@
 
 import QuantMEMatcher from './QuantMEMatcher';
 import { requiredAttributesAvailable } from './QuantMEAttributeChecker';
-import { getRootProcess } from './Utilities';
+import { getRootProcess, getRootProcessFromXml, getSingleFlowElement, isQuantMETask } from './Utilities';
 
 let QRMs = [];
 
@@ -94,12 +94,28 @@ export default class QuantMETransformator {
         let qrm = QRMs[i];
         if (await QuantMEMatcher.matchesQRM(qrm, task)) {
           console.log('Found matching detector. Starting replacement!');
-          // TODO: replace task with QRM
-          modeling.createShape({ type: 'quantme:ReadoutErrorMitigationTask' }, { x: 50, y: 50 }, parent, {});
-          return true;
+          return await replaceByFragment(task, parent, qrm.replacement);
         }
       }
       console.log('No matching QRM found for task with id: %s', task.id);
+      return false;
+    }
+
+    /**
+     * Replace the given task by the content of the replacement fragment
+     */
+    async function replaceByFragment(task, parent, replacement) {
+
+      // get the root process of the replacement fragment
+      let replacementProcess = await getRootProcessFromXml(replacement);
+      let replacementElement = getSingleFlowElement(replacementProcess);
+      if (replacementElement === null) {
+        console.log('Unable to retrieve QuantME task from replacement fragment: ', replacement);
+        return false;
+      }
+
+      // TODO: replace task with QRM
+      console.log('Replacement element: ', replacementElement);
       return false;
     }
 
@@ -122,7 +138,7 @@ QuantMETransformator.$inject = ['injector', 'bpmnjs', 'modeling', 'elementRegist
  * @param element the element representing the QuantME task
  * @returns {boolean} true if the task can be replaced, false otherwise
  */
-export function isReplaceable(element) {
+export async function isReplaceable(element) {
 
   // check for required attributes
   if (!requiredAttributesAvailable(element)) {
@@ -130,7 +146,14 @@ export function isReplaceable(element) {
     return false;
   }
 
-  // TODO: search for matching detector in QRMs
-  console.log('QuantMETransformator called with element:', element);
-  return true;
+  // search for a suited QRM that can replace the given task
+  for (let i = 0; i < QRMs.length; i++) {
+    if (await QuantMEMatcher.matchesQRM(QRMs[i], element)) {
+      return true;
+    }
+  }
+
+  // no suited QRM found, and therefore, no replacement possible
+  console.log('No suited QRM found for task: ', element);
+  return true; // FIXME: QRMs are currently not accessible from this method
 }

@@ -9,6 +9,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import BpmnModeler from 'bpmn-js/lib/Modeler';
+import elementTemplates from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates';
+import quantMEModule from '../quantme';
+import quantMEExtension from '../resources/quantum4bpmn.json';
+
 /**
  * Get the root process element of the diagram
  */
@@ -28,4 +33,52 @@ export function getRootProcess(definitions) {
  */
 export function isQuantMETask(task) {
   return task.$type.startsWith('quantme:');
+}
+
+/**
+ * Get the root process from a xml string representing a BPMN diagram
+ *
+ * @param xml the xml representing the BPMN diagram
+ * @return the root process from the xml definitions
+ */
+export async function getRootProcessFromXml(xml) {
+
+  // create new modeler with the custom QuantME extensions
+  const bpmnModeler = new BpmnModeler({
+    additionalModules: [
+      elementTemplates,
+      quantMEModule
+    ],
+    moddleExtensions: {
+      quantME: quantMEExtension
+    }
+  });
+
+  // import the xml containing the definitions
+  function importXmlWrapper(xml) {
+    return new Promise((resolve) => {
+      bpmnModeler.importXML(xml,(successResponse) => {
+        resolve(successResponse);
+      });
+    });
+  }
+  await importXmlWrapper(xml);
+
+  // extract and return root process
+  return getRootProcess(bpmnModeler.getDefinitions());
+}
+
+/**
+ * Check if the given process contains only one flow element and return it
+ *
+ * @param process the process to retrieve the flow element from
+ * @return the flow element if only one is defined, or undefined if none or multiple flow elements exist in the process
+ */
+export function getSingleFlowElement(process) {
+  let flowElements = process.flowElements;
+  if (flowElements.length !== 1) {
+    console.log('Process contains %i flow elements but must contain exactly one!', flowElements.length);
+    return undefined;
+  }
+  return flowElements[0];
 }

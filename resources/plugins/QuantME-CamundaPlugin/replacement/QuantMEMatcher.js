@@ -9,11 +9,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import BpmnModeler from 'bpmn-js/lib/Modeler';
-import elementTemplates from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates';
-import quantMEExtension from '../resources/quantum4bpmn.json';
-import quantMEModule from '../quantme';
-import { getRootProcess, isQuantMETask } from './Utilities';
+import { getRootProcessFromXml, isQuantMETask, getSingleFlowElement } from './Utilities';
 
 export default class QuantMEMatcher {
 
@@ -23,37 +19,12 @@ export default class QuantMEMatcher {
   static async matchesQRM(qrm, task) {
     console.log('Matching QRM %s and task with id %s!', qrm.qrmUrl, task.id);
 
-    // create new modeler with the custom QuantME extensions
-    const bpmnModeler = new BpmnModeler({
-      additionalModules: [
-        elementTemplates,
-        quantMEModule
-      ],
-      moddleExtensions: {
-        quantME: quantMEExtension
-      }
-    });
-
-    // import the detector of the QRM to compare it to the given task
-    function importXmlWrapper(xml) {
-      return new Promise((resolve) => {
-        bpmnModeler.importXML(xml,(successResponse) => {
-          resolve(successResponse);
-        });
-      });
-    }
-    await importXmlWrapper(qrm.detector);
-
     // check whether the detector is valid and contains exactly one QuantME task
-    let rootProcess = getRootProcess(bpmnModeler.getDefinitions());
-    let flowElements = rootProcess.flowElements;
-    if (flowElements.length !== 1) {
-      console.log('Detector contains %i flow elements but must contain exactly one!', flowElements.length);
-      return false;
-    }
-    let detectorElement = flowElements[0];
-    if (!isQuantMETask(detectorElement)) {
-      console.log('Contained task is no QuantME task: %s', detectorElement.$task);
+    let rootProcess = await getRootProcessFromXml(qrm.detector);
+    let detectorElement = getSingleFlowElement(rootProcess);
+    console.log(detectorElement);
+    if (detectorElement === undefined || !isQuantMETask(detectorElement)) {
+      console.log('Unable to retrieve QuantME task from detector: ', qrm.detector);
       return false;
     }
 
@@ -109,8 +80,10 @@ export default class QuantMEMatcher {
    * Compare the properties of QuantumCircuitLoadingTasks
    */
   static matchQuantumCircuitLoadingTask(detectorElement, task) {
-    // TODO
-    return false;
+    // check if either quantumCircuit or url match
+    let detectorAlternatives = [detectorElement.quantumCircuit, detectorElement.url];
+    let taskAlternatives = [task.quantumCircuit, task.url];
+    return this.matchAlternativeProperties(detectorAlternatives, taskAlternatives);
   }
 
   /**
@@ -126,8 +99,12 @@ export default class QuantMEMatcher {
    * Compare the properties of OracleExpansionTasks
    */
   static matchOracleExpansionTask(detectorElement, task) {
-    // TODO
-    return false;
+    // check if oracleId, programmingLanguage and either oracleCircuit or oracleURL match
+    let detectorAlternatives = [detectorElement.oracleCircuit, detectorElement.oracleURL];
+    let taskAlternatives = [task.oracleCircuit, task.oracleURL];
+    return this.matchesProperty(detectorElement.oracleId, task.oracleId, true)
+      && this.matchesProperty(detectorElement.programmingLanguage, task.programmingLanguage, true)
+      && this.matchAlternativeProperties(detectorAlternatives, taskAlternatives);
   }
 
   /**
@@ -137,8 +114,8 @@ export default class QuantMEMatcher {
     // check if provider, qpu, shots, and programmingLanguage match
     return this.matchesProperty(detectorElement.provider, task.provider, false)
       && this.matchesProperty(detectorElement.qpu, task.qpu, false)
-      && this.matchesProperty(String(detectorElement.shots), String(task.shots), false)
-      && this.matchesProperty(String(detectorElement.programmingLanguage), String(task.programmingLanguage), true);
+      && this.matchesProperty(detectorElement.shots, task.shots, false)
+      && this.matchesProperty(detectorElement.programmingLanguage, task.programmingLanguage, true);
   }
 
   /**
@@ -148,11 +125,11 @@ export default class QuantMEMatcher {
     // check if unfoldingTechnique, qpu, and maxAge match
     return this.matchesProperty(detectorElement.unfoldingTechnique, task.unfoldingTechnique, true)
       && this.matchesProperty(detectorElement.qpu, task.qpu, true)
-      && this.matchesProperty(String(detectorElement.maxAge), String(task.maxAge), false);
+      && this.matchesProperty(detectorElement.maxAge, task.maxAge, false);
   }
 
   /**
-   * Check if the attribute value of the detector mateches the value of the task
+   * Check if the attribute value of the detector matches the value of the task
    *
    * @param detectorProperty the value of the detector for a certain attribute
    * @param taskProperty the value of the task for a certain attribute
@@ -172,7 +149,7 @@ export default class QuantMEMatcher {
 
     // if an attribute is not defined in the task to replace, any value can be used if the attribute is not required
     if (taskProperty === undefined) {
-      return !required; // TODO: choice attributes?
+      return !required;
     }
 
     // if the detector defines multiple values for the attribute, one has to match the task to replace
@@ -188,5 +165,43 @@ export default class QuantMEMatcher {
 
     // if the detector contains only one value it has to match exactly
     return detectorProperty.trim() === taskProperty.trim();
+  }
+
+  /**
+   * Check for a set of alternative properties if exactly one is defined in the task and if it matches the
+   * corresponding detector property
+   *
+   * For details have a look at the 'Alternative Properties' section in the Readme:
+   * https://github.com/UST-QuAntiL/QuantME-TransformationFramework/tree/develop/docs/quantme/qrm
+   *
+   * @param detectorProperties the set of alternative properties of the detector
+   * @param taskProperties the set of alternative properties of the task
+   * @return true if the task defines exactly one of the alternative properties and it matches the corresponding
+   * property of the detector, false otherwise
+   */
+  static matchAlternativeProperties(detectorProperties, taskProperties) {
+    if (detectorProperties.length !== taskProperties.length) {
+      console.log('Size of detector properties has to match size of task properties for alternative properties!');
+      return false;
+    }
+
+    // search the task property that is set
+    let taskAlternative = undefined;
+    let detectorAlternative = undefined;
+    for (let i = 0; i < taskProperties.length; i++) {
+      if (taskProperties[i] !== undefined) {
+
+        // only one of the alternative properties must be set for the task
+        if (taskAlternative !== undefined) {
+          console.log('Multiple alternatives are set in the task properties which is not allowed!');
+          return false;
+        }
+        taskAlternative = taskProperties[i];
+        detectorAlternative = detectorProperties[i];
+      }
+    }
+
+    // check if the found alternative property matches the detector
+    return this.matchesProperty(detectorAlternative, taskAlternative, true);
   }
 }

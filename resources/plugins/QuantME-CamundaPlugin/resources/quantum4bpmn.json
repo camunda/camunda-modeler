@@ -107,7 +107,7 @@
           {
             "name": "shots",
             "isAttr": true,
-            "type": "Integer"
+            "type": "String"
           },
           {
             "name": "programmingLanguage",
@@ -133,7 +133,7 @@
           {
             "name": "maxAge",
             "isAttr": true,
-            "type": "Integer"
+            "type": "String"
           }
         ]
       }
