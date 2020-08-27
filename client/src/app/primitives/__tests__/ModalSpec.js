@@ -142,4 +142,79 @@ describe('<Modal>', function() {
 
   });
 
+
+  describe('<Modal.Title>', function() {
+
+    it('should render', function() {
+      wrapper = mount(<Modal.Title />);
+    });
+
+
+    it('should render with custom props', function() {
+
+      // given
+      const onClickSpy = sinon.spy();
+
+      // when
+      wrapper = mount(<Modal.Title className="foo" onClick={ onClickSpy } />);
+
+      wrapper.simulate('click');
+
+      // then
+      expect(wrapper.getDOMNode().classList.contains('foo')).to.be.true;
+      expect(onClickSpy).to.have.been.called;
+    });
+
+  });
+
+
+  describe('<Modal.Body>', function() {
+
+    it('should render', function() {
+      wrapper = mount(<Modal.Body />);
+    });
+
+
+    it('should render with custom props', function() {
+
+      // given
+      const onClickSpy = sinon.spy();
+
+      // when
+      wrapper = mount(<Modal.Body className="foo" onClick={ onClickSpy } />);
+
+      wrapper.simulate('click');
+
+      // then
+      expect(wrapper.getDOMNode().classList.contains('foo')).to.be.true;
+      expect(onClickSpy).to.have.been.called;
+    });
+
+  });
+
+
+  describe('<Modal.Footer>', function() {
+
+    it('should render', function() {
+      wrapper = mount(<Modal.Footer />);
+    });
+
+
+    it('should render with custom props', function() {
+
+      // given
+      const onClickSpy = sinon.spy();
+
+      // when
+      wrapper = mount(<Modal.Footer className="foo" onClick={ onClickSpy } />);
+
+      wrapper.simulate('click');
+
+      // then
+      expect(wrapper.getDOMNode().classList.contains('foo')).to.be.true;
+      expect(onClickSpy).to.have.been.called;
+    });
+
+  });
+
 });

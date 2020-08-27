@@ -1,10 +1,28 @@
 :local(.ElementTemplatesModalView) {
+  .modal-body {
+    padding: 0;
+
+    min-height: 50vh;
+  }
+
   .header {
     display: flex;
-
+    position: sticky;
+    top: 0;
+    
     flex-direction: row;
 
-    margin: 0 0 16px 0;
+    align-items: center;
+    
+    padding: 16px 20px 16px 20px;
+
+    border-bottom: solid 1px transparent;
+
+    background-color: var(--silver-lighten-99);
+  }
+
+  .header--scroll {
+    border-bottom: solid 1px var(--silver-darken-87);
   }
 
   .header__title {
@@ -29,7 +47,7 @@
 
   .element-templates-list {
     margin: 0;
-    padding: 0;
+    padding: 0 20px 20px 20px;
   }
   
   .element-templates-list__item {
