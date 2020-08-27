@@ -9,9 +9,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import QuantMEMatcher from './QuantMEMatcher';
+import { matchesQRM } from './QuantMEMatcher';
 import { requiredAttributesAvailable } from './QuantMEAttributeChecker';
-import { getRootProcess, getRootProcessFromXml, getSingleFlowElement, isQuantMETask } from './Utilities';
+import { getRootProcess, getRootProcessFromXml, getSingleFlowElement } from './Utilities';
 
 let QRMs = [];
 
@@ -92,7 +92,7 @@ export default class QuantMETransformator {
       console.log('Replacing QuantME task with id: %s', task.id);
       for (let i = 0; i < QRMs.length; i++) {
         let qrm = QRMs[i];
-        if (await QuantMEMatcher.matchesQRM(qrm, task)) {
+        if (await matchesQRM(qrm, task)) {
           console.log('Found matching detector. Starting replacement!');
           return await replaceByFragment(task, parent, qrm.replacement);
         }
@@ -148,7 +148,7 @@ export async function isReplaceable(element) {
 
   // search for a suited QRM that can replace the given task
   for (let i = 0; i < QRMs.length; i++) {
-    if (await QuantMEMatcher.matchesQRM(QRMs[i], element)) {
+    if (await matchesQRM(QRMs[i], element)) {
       return true;
     }
   }
