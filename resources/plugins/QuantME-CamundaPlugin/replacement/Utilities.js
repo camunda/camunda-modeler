@@ -82,3 +82,15 @@ export function getSingleFlowElement(process) {
   }
   return flowElements[0];
 }
+
+/**
+ * Check if the given element is a flow like element that is represented as a BPMNEdge in the diagram, such as a SequenceFlow,
+ * MessageFlow or an Association
+ *
+ * @param type the type of the element to check
+ * @return true if the given element is a flow like element, false otherwise
+ */
+export function isFlowLikeElement(type) {
+  return type === 'bpmn:SequenceFlow' || type === 'bpmn:Association';
+  // TODO: handle further flow like elment types
+}
