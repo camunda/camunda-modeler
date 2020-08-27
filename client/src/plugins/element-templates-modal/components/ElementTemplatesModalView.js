@@ -38,6 +38,7 @@ class ElementTemplatesView extends PureComponent {
         tags: [],
         search: ''
       },
+      scroll: false,
       selected: null
     };
   }
@@ -140,6 +141,10 @@ class ElementTemplatesView extends PureComponent {
     });
   }
 
+  onScroll = ({ target }) => {
+    this.setState({ scroll: target.scrollTop > 0 });
+  }
+
   render() {
     const { onClose } = this.props;
 
@@ -148,6 +153,7 @@ class ElementTemplatesView extends PureComponent {
       elementTemplates,
       expanded,
       filter,
+      scroll,
       selected
     } = this.state;
 
@@ -164,8 +170,8 @@ class ElementTemplatesView extends PureComponent {
 
         <Modal.Title>Catalog</Modal.Title>
 
-        <Modal.Body>
-          <div className="header">
+        <Modal.Body onScroll={ this.onScroll }>
+          <div className={ classNames('header', { 'header--scroll': scroll }) }>
             <h2 className="header__title">Templates</h2>
             <div className="header__filter">
               <Input className="header__filter-item" value={ filter.search } onChange={ this.onSearchChange } />

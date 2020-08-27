@@ -86,18 +86,22 @@ Modal.Footer = Footer;
 
 
 function Title(props) {
+  const {
+    children,
+    className,
+    ...rest
+  } = props;
 
   return (
-    <div className="modal-header">
+    <div className={ classNames('modal-header', className) } { ...rest }>
       <h2 className="modal-title">
-        { props.children }
+        { children }
       </h2>
     </div>
   );
 }
 
 function Close(props) {
-
   const {
     onClick
   } = props;
@@ -110,16 +114,28 @@ function Close(props) {
 }
 
 function Body(props) {
+  const {
+    children,
+    className,
+    ...rest
+  } = props;
+
   return (
-    <div className="modal-body">
-      { props.children }
+    <div className={ classNames('modal-body', className) } { ...rest }>
+      { children }
     </div>
   );
 }
 
 function Footer(props) {
+  const {
+    children,
+    className,
+    ...rest
+  } = props;
+
   return (
-    <div className="modal-footer">
+    <div className={ classNames('modal-footer', className) } { ...rest }>
       { props.children }
     </div>
   );

@@ -191,6 +191,28 @@ describe('<ElementTemplatesView>', function() {
       expect(wrapper.state('expanded')).to.equal(null);
     });
 
+
+    it('should have sticky header', async function() {
+
+      // given
+      const {
+        instance,
+        wrapper
+      } = await createElementTemplatesModalView();
+
+      wrapper.update();
+
+      // when
+      instance.onScroll({
+        target: {
+          scrollTop: 100
+        }
+      });
+
+      // then
+      expect(wrapper.state('scroll')).to.be.true;
+    });
+
   });
 
 
