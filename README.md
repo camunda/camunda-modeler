@@ -1,6 +1,6 @@
 # QuantME Modeling and Transformation Framework
 
-[![Build Status](https://travis-ci.org/camunda/camunda-modeler.svg?branch=develop)](https://travis-ci.org/camunda/camunda-modeler)
+[![Build Status](https://travis-ci.com/UST-QuAntiL/QuantME-TransformationFramework.svg?branch=develop)](https://travis-ci.com/UST-QuAntiL/QuantME-TransformationFramework)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A modeling solution for BPMN 2.0-based workflow models that need to integrate quantum applications.
