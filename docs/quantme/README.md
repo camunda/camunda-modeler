@@ -10,6 +10,12 @@ This shows the concept of QuantME Replacement Models (QRMs) and how they are use
 
 ### [QRM Repository](./QRM-Repository)
 
-This shows how to configure the QuantME modeling and transformation framework to use a certain QRM repository as well as the structure of QRM repositories
+Information about how to configure the QuantME Modeling and Transformation Framework to use a certain QRM repository as well as the structure of QRM repositories
 
-TODO
+### [Tutorial](./Tutorial)
+
+A short example with different steps to create a QRM and use it to trasnform a QuantME workflow to a native BPMN workflow
+
+### [Development](./Development)
+
+Developer information about how to extend the QuantME Modeling and Transformation Framework
