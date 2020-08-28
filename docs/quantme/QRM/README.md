@@ -1,6 +1,8 @@
 # QuantME Replacement Models (QRMs)
 
-TODO
+_QuantME Replacement Models (QRMs)_ define workflow fragments that can be used to transform QuantME workflows to workflows using only native modeling constructs of the host workflow language.
+Therefore, they define a _detector_ that defines which kind of QuantME task can be replaced by a the QRM and a _replacement fragment_ containing the workflow fragment to replace the matching QuantME tasks.
+In the following, both constructs are introduced and it is shown how they can be created and used with the QuantME modeling and transformation framework.
 
 ### Detector
 
