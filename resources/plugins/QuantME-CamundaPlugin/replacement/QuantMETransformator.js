@@ -152,6 +152,16 @@ export default class QuantMETransformator {
       // store id to create sequence flows
       idMap[newElement['id']] = element.id;
 
+      // if the element is a subprocess, check if it is expanded in the replacement fragment and expand the new element
+      if (newElement.$type === 'bpmn:SubProcess') {
+        // get the shape element related to the subprocess
+        let shape = newElement.di;
+        if (shape && shape.isExpanded) {
+          // expand the new element
+          elementRegistry.get(element.id).businessObject.di.isExpanded = true;
+        }
+      }
+
       // update the properties of the new element
       modeling.updateProperties(element, getPropertiesToCopy(newElement));
 
