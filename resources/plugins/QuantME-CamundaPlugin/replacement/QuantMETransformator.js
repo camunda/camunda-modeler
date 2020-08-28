@@ -144,7 +144,7 @@ export default class QuantMETransformator {
       if (!isFlowLikeElement(newElement.$type)) {
         if (replace) {
           // replace old element to retain attached sequence flow, associations, data objects, ...
-          element = bpmnReplace.replaceElement(elementRegistry.get(oldElement.id), { type: newElement.$type, width: 500 });
+          element = bpmnReplace.replaceElement(elementRegistry.get(oldElement.id), { type: newElement.$type });
         } else {
           // create new shape for this element
           element = modeling.createShape({ type: newElement.$type }, { x: 50, y: 50 }, parent, {});

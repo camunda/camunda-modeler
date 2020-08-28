@@ -12,35 +12,54 @@
 import { isFlowLikeElement } from './Utilities';
 
 /**
- * Layout the given TODO
+ * Layout the given process to avoid overlapping elements, etc.
  *
  * @param modeling the modeling component with the imported diagram
  * @param elementRegistry the element registry for the imported diagram
  * @param process the root element to start the layouting process
  */
 export function layout(modeling, elementRegistry, process) {
-  console.log('Layout with root element: ', process.id);
+  console.log('Layout with root element: ', process);
 
-  if (!process.flowElements) {
-    console.log('Nothing to layout!');
-    return;
-  }
-
-  // get required nodes and edges for the layout method
-  let flowElements = process.flowElements;
+  // required nodes and edges for the layout method
   let nodes = [];
   let edges = [];
-  for (let i = 0; i < flowElements.length; i++) {
-    if (isFlowLikeElement(flowElements[i].$type)) {
-      console.log('Adding flow element as edge for layouting.', flowElements[i]);
-      edges.push(elementRegistry.get(flowElements[i].id));
-    } else {
-      console.log('Adding flow element as node for layouting: ', flowElements[i]);
-      nodes.push(elementRegistry.get(flowElements[i].id));
 
-      if (flowElements[i].$type === 'bpmn:SubProcess') {
-        console.log('Flow element is subprocess. Layouting contained elements...');
-        layout(modeling, elementRegistry, flowElements[i]);
+  // add flow elements from the process as nodes and edges
+  let flowElements = process.flowElements;
+  if (flowElements) {
+    for (let i = 0; i < flowElements.length; i++) {
+      if (isFlowLikeElement(flowElements[i].$type)) {
+        console.log('Adding flow element as edge for layouting.', flowElements[i]);
+        edges.push({ id: flowElements[i].id, sourceId: flowElements[i].sourceRef.id, targetId: flowElements[i].targetRef.id });
+      } else {
+        console.log('Adding flow element as node for layouting: ', flowElements[i]);
+
+        // layout elements in subprocess
+        if (flowElements[i].$type === 'bpmn:SubProcess') {
+          console.log('Flow element is subprocess. Layouting contained elements...');
+          let oldBounds = flowElements[i].di.bounds;
+          modeling.resizeShape(elementRegistry.get(flowElements[i].id), { x: oldBounds.x, y: oldBounds.y, height: 10, width:10 });
+
+          layout(modeling, elementRegistry, elementRegistry.get(flowElements[i].id).businessObject);
+        }
+
+        nodes.push(elementRegistry.get(flowElements[i].id));
+      }
+    }
+  }
+
+  // add artifacts from the process as nodes and edges
+  let artifacts = process.artifacts;
+  if (artifacts) {
+    for (let i = 0; i < artifacts.length; i++) {
+      let artifact = artifacts[i];
+
+      console.log('Adding artifact as node for layouting: ', artifact);
+      nodes.push(elementRegistry.get(artifact.id));
+
+      if (artifact.$type === 'bpmn:Association') {
+        edges.push({ id: artifact.id, sourceId: artifact.sourceRef.id, targetId: artifact.targetRef.id });
       }
     }
   }
@@ -56,18 +75,15 @@ function layoutWithDagre(modeling, elementRegistry, dagre, tasks, flows, options
   // add tasks as nodes to the graph
   console.log('Adding %i tasks to the graph for layouting: ', tasks.length);
   for (let i = 0; i < tasks.length; i++) {
-    console.log('Adding task with id: ', tasks[i].id);
-    g.setNode(tasks[i].id, { label: tasks[i].id, width: tasks[i].width, height: tasks[i].height });
+    let task = tasks[i];
+    g.setNode(task.id, { label: task.id, width: task.width, height: task.height });
   }
 
   // add flows as edges to the graph
   console.log('Adding %i flows to the graph for layouting: ', flows.length);
   for (let i = 0; i < flows.length; i++) {
-    console.log('Adding flow with id: ', flows[i].id);
     let flow = flows[i];
-    let sourceId = flow.source.id;
-    let targetId = flow.target.id;
-    g.setEdge(sourceId, targetId, { label: flow.id });
+    g.setEdge(flow['sourceId'], flow['targetId'], { label: flow['id'] });
   }
 
   // layout the graph
