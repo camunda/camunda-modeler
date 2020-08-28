@@ -9,6 +9,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { layout } from './Layouter';
 import { matchesQRM } from './QuantMEMatcher';
 import { requiredAttributesAvailable } from './QuantMEAttributeChecker';
 import { getRootProcess, getRootProcessFromXml, getSingleFlowElement, isFlowLikeElement } from './Utilities';
@@ -63,6 +64,7 @@ export default class QuantMETransformator {
       // replace each QuantME tasks to retrieve standard-compliant BPMN
       for (let i = 0; i < quantmeTasks.length; i++) {
         const replacementSuccess = await replaceQuantMETask(quantmeTasks[i], rootElementBo);
+        layout(modeling, elementRegistry, rootElement);
         if (!replacementSuccess) {
           console.log('Replacement of QuantME task with Id ' + quantmeTasks[i].id + ' failed. Aborting process!');
           return;
@@ -126,6 +128,8 @@ export default class QuantMETransformator {
      * @param parent the parent element under which the new element should be attached
      * @param newElement the new element to insert
      * @param idMap the idMap containing a mapping of ids defined in newElement to the new ids in the diagram
+     * @param replace true if the element should be inserted instead of an available element, false otherwise
+     * @param oldElement an old element that is only required if it should be replaced by the new element
      * @return the state (true/false) of the operation and the updated idMap
      */
     function insertShape(parent, newElement, idMap, replace, oldElement) {
@@ -140,7 +144,7 @@ export default class QuantMETransformator {
       if (!isFlowLikeElement(newElement.$type)) {
         if (replace) {
           // replace old element to retain attached sequence flow, associations, data objects, ...
-          element = bpmnReplace.replaceElement(elementRegistry.get(oldElement.id), { type: newElement.$type });
+          element = bpmnReplace.replaceElement(elementRegistry.get(oldElement.id), { type: newElement.$type, width: 500 });
         } else {
           // create new shape for this element
           element = modeling.createShape({ type: newElement.$type }, { x: 50, y: 50 }, parent, {});
