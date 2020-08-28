@@ -92,5 +92,5 @@ export function getSingleFlowElement(process) {
  */
 export function isFlowLikeElement(type) {
   return type === 'bpmn:SequenceFlow' || type === 'bpmn:Association';
-  // TODO: handle further flow like elment types
+  // TODO: handle further flow like element types
 }

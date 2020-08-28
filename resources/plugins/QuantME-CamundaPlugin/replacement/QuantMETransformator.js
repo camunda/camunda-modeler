@@ -17,7 +17,7 @@ let QRMs = [];
 
 export default class QuantMETransformator {
 
-  constructor(injector, bpmnjs, modeling, elementRegistry, eventBus) {
+  constructor(injector, bpmnjs, modeling, elementRegistry, eventBus, bpmnReplace) {
 
     // register the startReplacementProcess() function as editor action to enable the invocation from the menu
     const editorActions = injector.get('editorActions', false);
@@ -115,11 +115,9 @@ export default class QuantMETransformator {
       }
 
       console.log('Replacement element: ', replacementElement);
-      let success = insertShape(parent, replacementElement, {})['success'];
-      // TODO: handle ingoing/outgoing sequence flow
+      let result = insertShape(parent, replacementElement, {}, true, task);
       // TODO: handle attributes referenced in the replacement
-      modeling.removeShape(elementRegistry.get(task.id));
-      return success;
+      return result['success'];
     }
 
     /**
@@ -130,7 +128,7 @@ export default class QuantMETransformator {
      * @param idMap the idMap containing a mapping of ids defined in newElement to the new ids in the diagram
      * @return the state (true/false) of the operation and the updated idMap
      */
-    function insertShape(parent, newElement, idMap) {
+    function insertShape(parent, newElement, idMap, replace, oldElement) {
       console.log('Inserting shape for element: ', newElement);
 
       // create new id map if not provided
@@ -140,8 +138,13 @@ export default class QuantMETransformator {
 
       let element;
       if (!isFlowLikeElement(newElement.$type)) {
-        // create new shape for this element
-        element = modeling.createShape({ type: newElement.$type }, { x: 50, y: 50 }, parent, {});
+        if (replace) {
+          // replace old element to retain attached sequence flow, associations, data objects, ...
+          element = bpmnReplace.replaceElement(elementRegistry.get(oldElement.id), { type: newElement.$type });
+        } else {
+          // create new shape for this element
+          element = modeling.createShape({ type: newElement.$type }, { x: 50, y: 50 }, parent, {});
+        }
       } else {
         // create connection between two previously created elements
         let sourceElement = elementRegistry.get(idMap[newElement.sourceRef.id]);
@@ -179,14 +182,14 @@ export default class QuantMETransformator {
             continue;
           }
 
-          let result = insertShape(element, flowElements[i], idMap);
+          let result = insertShape(element, flowElements[i], idMap, false);
           success = success && result['success'];
           idMap = result['idMap'];
         }
 
         // handle sequence flow with new ids of added elements
         for (let i = 0; i < sequenceFlows.length; i++) {
-          let result = insertShape(element, sequenceFlows[i], idMap);
+          let result = insertShape(element, sequenceFlows[i], idMap, false);
           success = success && result['success'];
           idMap = result['idMap'];
         }
@@ -197,14 +200,14 @@ export default class QuantMETransformator {
       if (artifacts) {
         console.log('Element contains %i artifacts. Adding corresponding shapes...', artifacts.length);
         for (let i = 0; i < artifacts.length; i++) {
-          let result = insertShape(element, artifacts[i], idMap);
+          let result = insertShape(element, artifacts[i], idMap, false);
           success = success && result['success'];
           idMap = result['idMap'];
         }
       }
 
       // return success flag and idMap with id mappings of this element and all children
-      return { success: success, idMap: idMap };
+      return { success: success, idMap: idMap, element: element };
     }
 
     /**
@@ -259,7 +262,7 @@ export default class QuantMETransformator {
   }
 }
 
-QuantMETransformator.$inject = ['injector', 'bpmnjs', 'modeling', 'elementRegistry', 'eventBus'];
+QuantMETransformator.$inject = ['injector', 'bpmnjs', 'modeling', 'elementRegistry', 'eventBus', 'bpmnReplace'];
 
 /**
  * Check whether the given QuantME task can be replaced by an available QRM, which means check if a matching detector can be found

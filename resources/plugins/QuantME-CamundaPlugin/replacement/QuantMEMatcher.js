@@ -17,7 +17,6 @@ export async function matchesQRM(qrm, task) {
   // check whether the detector is valid and contains exactly one QuantME task
   let rootProcess = await getRootProcessFromXml(qrm.detector);
   let detectorElement = getSingleFlowElement(rootProcess);
-  console.log(detectorElement);
   if (detectorElement === undefined || !isQuantMETask(detectorElement)) {
     console.log('Unable to retrieve QuantME task from detector: ', qrm.detector);
     return false;
