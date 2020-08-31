@@ -9,6 +9,7 @@ It is based on [Quantum4BPMN](https://github.com/UST-QuAntiL/QuantME-Quantum4BPM
 Therefore, it enables to create workflow models orchestrating classical and quantum applications and to transform these workflow models to standard-compliant BPMN to retain their portability.
 
 Please refer to the [documentation](./docs) for details of the possible usage of the framework to model and transform Quantum4BPMN workflow models.
+For a quick start, please have a look at the [tutorial](./docs/quantme/Tutorial).
 
 ### Building the Application
 
