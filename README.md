@@ -16,9 +16,6 @@ Please refer to the [documentation](./docs) for details of the possible usage of
 # install dependencies
 npm install
 
-# execute all checks (lint, test and build)
-npm run all
-
 # build the application to ./dist
 npm run build
 ```

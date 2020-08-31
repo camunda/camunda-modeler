@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0y1feg0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.2.0-rc.0">
+  <bpmn:process id="Process_07u58w3" isExecutable="true">
+    <bpmn:subProcess id="SubProcess_1kiu9yj">
+      <bpmn:startEvent id="StartEvent_1p22nww">
+        <bpmn:outgoing>SequenceFlow_1ecljt8</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="SequenceFlow_1ecljt8" sourceRef="StartEvent_1p22nww" targetRef="Task_0wbznmw" />
+      <bpmn:sendTask id="Task_0wbznmw" name="Request Correction Matrix" camunda:type="external" camunda:topic="getCorrectionMatrix">
+        <bpmn:incoming>SequenceFlow_1ecljt8</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_1py0q7n</bpmn:outgoing>
+      </bpmn:sendTask>
+      <bpmn:sequenceFlow id="SequenceFlow_1py0q7n" sourceRef="Task_0wbznmw" targetRef="Task_0uytb1d" />
+      <bpmn:receiveTask id="Task_0uytb1d" name="Receive Correction Matrix" messageRef="Message_0e6kyuc">
+        <bpmn:incoming>SequenceFlow_1py0q7n</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_0mr726a</bpmn:outgoing>
+      </bpmn:receiveTask>
+      <bpmn:sequenceFlow id="SequenceFlow_0mr726a" sourceRef="Task_0uytb1d" targetRef="Task_1aw5scj" />
+      <bpmn:serviceTask id="Task_1aw5scj" name="Apply Correction Matrix" camunda:type="external" camunda:topic="applyCorrectionMatrix">
+        <bpmn:incoming>SequenceFlow_0mr726a</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_0riz0ix</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:endEvent id="EndEvent_09hm97m">
+        <bpmn:incoming>SequenceFlow_0riz0ix</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="SequenceFlow_0riz0ix" sourceRef="Task_1aw5scj" targetRef="EndEvent_09hm97m" />
+    </bpmn:subProcess>
+  </bpmn:process>
+  <bpmn:message id="Message_0e6kyuc" name="Message_2c2g5tp" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_07u58w3">
+      <bpmndi:BPMNShape id="SubProcess_1kiu9yj_di" bpmnElement="SubProcess_1kiu9yj" isExpanded="true">
+        <dc:Bounds x="170" y="80" width="590" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ecljt8_di" bpmnElement="SequenceFlow_1ecljt8">
+        <di:waypoint x="236" y="180" />
+        <di:waypoint x="270" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1py0q7n_di" bpmnElement="SequenceFlow_1py0q7n">
+        <di:waypoint x="370" y="180" />
+        <di:waypoint x="410" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0mr726a_di" bpmnElement="SequenceFlow_0mr726a">
+        <di:waypoint x="510" y="180" />
+        <di:waypoint x="550" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0riz0ix_di" bpmnElement="SequenceFlow_0riz0ix">
+        <di:waypoint x="650" y="180" />
+        <di:waypoint x="692" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_1p22nww_di" bpmnElement="StartEvent_1p22nww">
+        <dc:Bounds x="200" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SendTask_0cyp501_di" bpmnElement="Task_0wbznmw">
+        <dc:Bounds x="270" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ReceiveTask_1cg8fg8_di" bpmnElement="Task_0uytb1d">
+        <dc:Bounds x="410" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_15r5u1w_di" bpmnElement="Task_1aw5scj">
+        <dc:Bounds x="550" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_09hm97m_di" bpmnElement="EndEvent_09hm97m">
+        <dc:Bounds x="692" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
