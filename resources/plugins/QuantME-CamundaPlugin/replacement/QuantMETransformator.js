@@ -64,11 +64,11 @@ export default class QuantMETransformator {
       // replace each QuantME tasks to retrieve standard-compliant BPMN
       for (let i = 0; i < quantmeTasks.length; i++) {
         const replacementSuccess = await replaceQuantMETask(quantmeTasks[i], rootElementBo);
-        layout(modeling, elementRegistry, rootElement);
         if (!replacementSuccess) {
           console.log('Replacement of QuantME task with Id ' + quantmeTasks[i].id + ' failed. Aborting process!');
           return;
         }
+        layout(modeling, elementRegistry, rootElement);
       }
     }
 

@@ -5,6 +5,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ## Unreleased
 
 ___Note:__ Yet to be released changes appear here._
+* `FIX`: fix broken keyboard shortcuts and menu entries for Undo & Redo in decision tables ([#1843](https://github.com/camunda/camunda-modeler/issues/1843))
 
 ## 4.2.0
 

@@ -659,7 +659,7 @@ export class DmnEditor extends CachedComponent {
       return this.resetOverview();
     }
 
-    modeler.getActiveViewer()
+    return modeler.getActiveViewer()
       .get('editorActions')
       .trigger(action, context);
   }

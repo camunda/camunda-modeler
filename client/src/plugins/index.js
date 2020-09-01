@@ -13,11 +13,13 @@ import PrivacyPreferences from './privacy-preferences';
 import UpdateChecks from './update-checks';
 import ErrorTracking from './error-tracking';
 import UsageStatistics from './usage-statistics';
+import ElementTemplatesModal from './element-templates-modal';
 
 export default [
   CamundaPlugin,
   PrivacyPreferences,
   UpdateChecks,
   ErrorTracking,
-  UsageStatistics
+  UsageStatistics,
+  ElementTemplatesModal
 ];
