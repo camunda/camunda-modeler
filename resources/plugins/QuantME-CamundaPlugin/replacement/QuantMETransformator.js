@@ -55,58 +55,80 @@ export default class QuantMETransformator {
         console.log('Unable to retrieve root process element from definitions!');
         return;
       }
-      const rootElementBo = elementRegistry.get(rootElement.id);
 
       // get all QuantME tasks from the process
-      const quantmeTasks = getQuantMETasks(rootElement);
-      console.log('Process contains ' + quantmeTasks.length + ' QuantME tasks to replace...');
+      const replacementTasks = getQuantMETasks(rootElement);
+      console.log('Process contains ' + replacementTasks.length + ' QuantME tasks to replace...');
 
       // replace each QuantME tasks to retrieve standard-compliant BPMN
-      for (let i = 0; i < quantmeTasks.length; i++) {
-        const replacementSuccess = await replaceQuantMETask(quantmeTasks[i], rootElementBo);
-        if (!replacementSuccess) {
-          console.log('Replacement of QuantME task with Id ' + quantmeTasks[i].id + ' failed. Aborting process!');
+      for (let replacementTask of replacementTasks) {
+
+        // abort transformation if at least one task can not be replaced
+        replacementTask.qrm = await getMatchingQRM(replacementTask.task);
+        if (!replacementTask.qrm) {
+          console.log('Unable to replace task with id %s. Aborting transformation!', replacementTask.id);
           return;
         }
-        layout(modeling, elementRegistry, rootElement);
       }
+
+      // replace all QuantME tasks
+      for (let replacementTask of replacementTasks) {
+        console.log('Replacing task with id %s by using QRM: ', replacementTask.task.id, replacementTask.qrm);
+        const replacementSuccess = await replaceByFragment(replacementTask.task, replacementTask.parent, replacementTask.qrm.replacement);
+        if (!replacementSuccess) {
+          console.log('Replacement of QuantME task with Id ' + replacementTask.task.id + ' failed. Aborting process!');
+          return;
+        }
+      }
+
+      // layout diagram after successful transformation
+      layout(modeling, elementRegistry, rootElement);
     }
 
     /**
      * Get QuantME tasks from process
      */
     function getQuantMETasks(process) {
+      // retrieve parent object for later replacement
+      const processBo = elementRegistry.get(process.id);
+
       const quantmeTasks = [];
       const flowElements = process.flowElements;
       for (let i = 0; i < flowElements.length; i++) {
-        var flowElement = flowElements[i];
+        let flowElement = flowElements[i];
         if (flowElement.$type && flowElement.$type.startsWith('quantme:')) {
-          quantmeTasks.push(flowElement);
+          quantmeTasks.push({ task: flowElement , parent: processBo });
+        }
+
+        // recursively retrieve QuantME tasks if subprocess is found
+        if (flowElement.$type && flowElement.$type === 'bpmn:SubProcess') {
+          Array.prototype.push.apply(quantmeTasks, getQuantMETasks(flowElement));
         }
       }
       return quantmeTasks;
     }
 
     /**
-     * Replace the given QuantME tasks by a suited QRM
+     * Search for a matching QRM for the given task
      */
-    async function replaceQuantMETask(task, parent) {
-      console.log('Replacing QuantME task with id: %s', task.id);
+    async function getMatchingQRM(task) {
       for (let i = 0; i < QRMs.length; i++) {
-        let qrm = QRMs[i];
-        if (await matchesQRM(qrm, task)) {
-          console.log('Found matching detector. Starting replacement!');
-          return await replaceByFragment(task, parent, qrm.replacement);
+        if (await matchesQRM(QRMs[i], task)) {
+          return QRMs[i];
         }
       }
-      console.log('No matching QRM found for task with id: %s', task.id);
-      return false;
+      return undefined;
     }
 
     /**
      * Replace the given task by the content of the replacement fragment
      */
     async function replaceByFragment(task, parent, replacement) {
+
+      if (!replacement) {
+        console.log('Replacement fragment is undefined. Aborting replacement!');
+        return false;
+      }
 
       // get the root process of the replacement fragment
       let replacementProcess = await getRootProcessFromXml(replacement);
