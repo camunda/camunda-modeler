@@ -49,7 +49,7 @@ export default class QuantMERenderer extends BpmnRenderer {
         var pathData = quantMEPathMap.getPath('TASK_TYPE_QUANTUM_COMPUTATION');
 
         drawPath(parentGfx, pathData, {
-          transform:'scale(0.2)',
+          transform:'scale(0.3)',
           strokeWidth: 2.5,
           fill: getFillColor(element, defaultFillColor),
           stroke: getStrokeColor(element, defaultStrokeColor)
@@ -63,7 +63,7 @@ export default class QuantMERenderer extends BpmnRenderer {
         // create circuit paths without filled shapes
         var pathData = quantMEPathMap.getPath('TASK_TYPE_CIRCUIT_LOADING');
         drawPath(parentGfx, pathData, {
-          transform:'scale(0.25)',
+          transform:'scale(0.3)',
           strokeWidth: 2.5,
           fill: getFillColor(element, defaultStrokeColor),
           stroke: getStrokeColor(element, defaultStrokeColor)
@@ -72,7 +72,7 @@ export default class QuantMERenderer extends BpmnRenderer {
         // create circuit paths with filled shapes
         pathData = quantMEPathMap.getPath('TASK_TYPE_CIRCUIT_LOADING_FILL');
         drawPath(parentGfx, pathData, {
-          transform:'scale(0.25)',
+          transform:'scale(0.3)',
           strokeWidth: 2.5,
           fill: getFillColor(element, '#000000'),
           stroke: getStrokeColor(element, defaultStrokeColor)
@@ -85,7 +85,7 @@ export default class QuantMERenderer extends BpmnRenderer {
 
         var pathData = quantMEPathMap.getPath('TASK_TYPE_DATA_PREPARATION');
         drawPath(parentGfx, pathData, {
-          transform:'scale(0.25)',
+          transform:'scale(0.3)',
           strokeWidth: 2.5,
           fill: getFillColor(element, defaultFillColor),
           stroke: getStrokeColor(element, defaultStrokeColor)
@@ -94,7 +94,7 @@ export default class QuantMERenderer extends BpmnRenderer {
         // create circuit paths with filled shapes (black)
         pathData = quantMEPathMap.getPath('TASK_TYPE_DATA_PREPARATION_FILL_BLACK');
         drawPath(parentGfx, pathData, {
-          transform:'scale(0.25)',
+          transform:'scale(0.3)',
           strokeWidth: 2.5,
           fill: getFillColor(element, '#000000'),
           stroke: getStrokeColor(element, defaultStrokeColor)
@@ -103,7 +103,7 @@ export default class QuantMERenderer extends BpmnRenderer {
         // create circuit paths with filled shapes (background color)
         pathData = quantMEPathMap.getPath('TASK_TYPE_DATA_PREPARATION_FILL_BACKGROUND');
         drawPath(parentGfx, pathData, {
-          transform:'scale(0.25)',
+          transform:'scale(0.3)',
           strokeWidth: 2.5,
           fill: getFillColor(element, defaultStrokeColor),
           stroke: getStrokeColor(element, defaultStrokeColor)
@@ -112,10 +112,18 @@ export default class QuantMERenderer extends BpmnRenderer {
         // create circuit paths with dashed shapes
         pathData = quantMEPathMap.getPath('TASK_TYPE_DATA_PREPARATION_DASHED');
         drawPath(parentGfx, pathData, {
-          transform:'scale(0.25)',
+          transform:'scale(0.3)',
           strokeWidth: 2.5,
-          strokeDasharray: 10,
+          strokeDasharray: 5,
           stroke: getStrokeColor(element, defaultStrokeColor)
+        });
+
+        // create white line for database
+        pathData = quantMEPathMap.getPath('TASK_TYPE_DATA_PREPARATION_BACKGROUND');
+        drawPath(parentGfx, pathData, {
+          transform:'scale(0.3)',
+          strokeWidth: 2.5,
+          stroke: getFillColor(element, '#FFFFFF')
         });
 
         return task;
@@ -187,7 +195,7 @@ export default class QuantMERenderer extends BpmnRenderer {
         var pathData = quantMEPathMap.getPath('TASK_TYPE_ERROR_MITIGATION');
 
         drawPath(parentGfx, pathData, {
-          transform:'scale(0.28)',
+          transform:'scale(0.3)',
           strokeWidth: 0.5,
           fill: getFillColor(element, '#000000'),
           stroke: getStrokeColor(element, defaultStrokeColor)

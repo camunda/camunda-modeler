@@ -66,7 +66,7 @@ export default class QuantMETransformator {
         // abort transformation if at least one task can not be replaced
         replacementTask.qrm = await getMatchingQRM(replacementTask.task);
         if (!replacementTask.qrm) {
-          console.log('Unable to replace task with id %s. Aborting transformation!', replacementTask.id);
+          console.log('Unable to replace task with id %s. Aborting transformation!', replacementTask.task.id);
           return;
         }
       }
