@@ -7,7 +7,6 @@ definitions:
       echo $WIN_CSC_LINK > cert.p12
       certutil -p $WIN_CSC_KEY_PASSWORD -importpfx ./cert.p12
 
-
 env:
   global:
     - ELECTRON_CACHE=$HOME/.cache/electron
@@ -21,6 +20,11 @@ cache:
 
 jobs:
   include:
+    - stage: test
+      name: Test on Linux
+      script:
+      - COVERAGE=1 npm run all -- --x64 --no-compress
+      after_success: npx codecov
     - stage: test
       name: Test on Windows
       os: windows
