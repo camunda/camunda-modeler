@@ -59,10 +59,10 @@ class DefaultProvider {
       }
 
       this._json = null;
-
       log.error(`cannot read file ${ this._path }`, error);
 
-      throw new Error(`cannot read file ${ this._path }`);
+      // return empty object but do not throw
+      return {};
     }
   }
 
