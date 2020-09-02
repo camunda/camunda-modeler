@@ -66,6 +66,7 @@ function taskMatchesDetector(detectorElement, task) {
  * Compare the properties of QuantumComputationTasks
  */
 function matchQuantumComputationTask(detectorElement, task) {
+
   // check if algorithm and provider match
   return matchesProperty(detectorElement.algorithm, task.algorithm, true)
     && matchesProperty(detectorElement.provider, task.provider, false);
@@ -75,6 +76,7 @@ function matchQuantumComputationTask(detectorElement, task) {
  * Compare the properties of QuantumCircuitLoadingTasks
  */
 function matchQuantumCircuitLoadingTask(detectorElement, task) {
+
   // check if either quantumCircuit or url match
   let detectorAlternatives = [detectorElement.quantumCircuit, detectorElement.url];
   let taskAlternatives = [task.quantumCircuit, task.url];
@@ -85,6 +87,7 @@ function matchQuantumCircuitLoadingTask(detectorElement, task) {
  * Compare the properties of DataPreparationTasks
  */
 function matchDataPreparationTask(detectorElement, task) {
+
   // check if encodingSchema and programmingLanguage match
   return matchesProperty(detectorElement.encodingSchema, task.encodingSchema, true)
     && matchesProperty(detectorElement.programmingLanguage, task.programmingLanguage, true);
@@ -94,6 +97,7 @@ function matchDataPreparationTask(detectorElement, task) {
  * Compare the properties of OracleExpansionTasks
  */
 function matchOracleExpansionTask(detectorElement, task) {
+
   // check if oracleId, programmingLanguage and either oracleCircuit or oracleURL match
   let detectorAlternatives = [detectorElement.oracleCircuit, detectorElement.oracleURL];
   let taskAlternatives = [task.oracleCircuit, task.oracleURL];
@@ -106,6 +110,7 @@ function matchOracleExpansionTask(detectorElement, task) {
  * Compare the properties of QuantumCircuitExecutionTasks
  */
 function matchQuantumCircuitExecutionTask(detectorElement, task) {
+
   // check if provider, qpu, shots, and programmingLanguage match
   return matchesProperty(detectorElement.provider, task.provider, false)
     && matchesProperty(detectorElement.qpu, task.qpu, false)
@@ -117,6 +122,7 @@ function matchQuantumCircuitExecutionTask(detectorElement, task) {
  * Compare the properties of ReadoutErrorMitigationTask
  */
 function matchReadoutErrorMitigationTask(detectorElement, task) {
+
   // check if unfoldingTechnique, qpu, and maxAge match
   return matchesProperty(detectorElement.unfoldingTechnique, task.unfoldingTechnique, true)
     && matchesProperty(detectorElement.qpu, task.qpu, true)
@@ -132,6 +138,7 @@ function matchReadoutErrorMitigationTask(detectorElement, task) {
  * @return true if the attribute values of the detector and the task match, false otherwise
  */
 function matchesProperty(detectorProperty, taskProperty, required) {
+
   // the detector has to define the attribute for a matching
   if (detectorProperty === undefined) {
     return false;

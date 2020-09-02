@@ -89,6 +89,7 @@ export default class QuantMETransformator {
      * Get QuantME tasks from process
      */
     function getQuantMETasks(process) {
+
       // retrieve parent object for later replacement
       const processBo = elementRegistry.get(process.id);
 
@@ -140,6 +141,7 @@ export default class QuantMETransformator {
 
       console.log('Replacement element: ', replacementElement);
       let result = insertShape(parent, replacementElement, {}, true, task);
+
       // TODO: handle attributes referenced in the replacement
       return result['success'];
     }
@@ -165,13 +167,16 @@ export default class QuantMETransformator {
       let element;
       if (!isFlowLikeElement(newElement.$type)) {
         if (replace) {
+
           // replace old element to retain attached sequence flow, associations, data objects, ...
           element = bpmnReplace.replaceElement(elementRegistry.get(oldElement.id), { type: newElement.$type });
         } else {
+
           // create new shape for this element
           element = modeling.createShape({ type: newElement.$type }, { x: 50, y: 50 }, parent, {});
         }
       } else {
+
         // create connection between two previously created elements
         let sourceElement = elementRegistry.get(idMap[newElement.sourceRef.id]);
         let targetElement = elementRegistry.get(idMap[newElement.targetRef.id]);
@@ -183,9 +188,11 @@ export default class QuantMETransformator {
 
       // if the element is a subprocess, check if it is expanded in the replacement fragment and expand the new element
       if (newElement.$type === 'bpmn:SubProcess') {
+
         // get the shape element related to the subprocess
         let shape = newElement.di;
         if (shape && shape.isExpanded) {
+
           // expand the new element
           elementRegistry.get(element.id).businessObject.di.isExpanded = true;
         }
@@ -281,6 +288,7 @@ export default class QuantMETransformator {
      * Initiate the replacement process for the QuantME tasks that are contained in the current process model
      */
     function updateFromQRMRepo() {
+
       // request a update of the currently stored QRMs
       console.log('Updating QRMs from repository!');
       eventBus.fire('QRMs.update', {});

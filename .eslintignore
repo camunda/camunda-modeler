@@ -6,3 +6,4 @@ coverage/
 dist/
 docs/
 **/node_modules
+**/client.bundle.js

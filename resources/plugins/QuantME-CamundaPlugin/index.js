@@ -7,7 +7,7 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: Apache-2.0
-*/
+ */
 
 module.exports = {
   menu: './menu/menu',

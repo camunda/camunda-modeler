@@ -12,5 +12,5 @@ module.exports = function(electronApp, menuState) {
     action: function() {
       electronApp.emit('menu:action', 'toggleLinting');
     }
-  }]
+  }];
 };

@@ -20,6 +20,7 @@ export default class QuantMEFactory extends BpmnFactory {
   }
 
   _ensureId(element) {
+
     // handle all non QuantME elements as usual
     if (!isQuantME(element)) {
       super._ensureId(element);

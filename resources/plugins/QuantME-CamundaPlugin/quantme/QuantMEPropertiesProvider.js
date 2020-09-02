@@ -92,24 +92,28 @@ function addQuantMEEntries(group, element, translate) {
 }
 
 function addQuantumComputationTaskEntries(group, translate) {
+
   // add algorithm and provider attributes
   QuantMEPropertyEntryHandler.addAlgorithmEntry(group, translate);
   QuantMEPropertyEntryHandler.addProviderEntry(group, translate);
 }
 
 function addQuantumCircuitLoadingTaskEntries(group, translate) {
+
   // add quantumCircuit and url attributes
   QuantMEPropertyEntryHandler.addQuantumCircuitEntry(group, translate);
   QuantMEPropertyEntryHandler.addUrlEntry(group, translate);
 }
 
 function addDataPreparationTaskEntries(group, translate) {
+
   // add encodingSchema and programmingLanguage attributes
   QuantMEPropertyEntryHandler.addEncodingSchemaEntry(group, translate);
   QuantMEPropertyEntryHandler.addProgrammingLanguageEntry(group, translate);
 }
 
 function addOracleExpansionTaskEntries(group, translate) {
+
   // add oracleId, oracleCircuit, oracleFunction and programmingLanguage attributes
   QuantMEPropertyEntryHandler.addOracleIdEntry(group, translate);
   QuantMEPropertyEntryHandler.addOracleCircuitEntry(group, translate);
@@ -118,6 +122,7 @@ function addOracleExpansionTaskEntries(group, translate) {
 }
 
 function addQuantumCircuitExecutionTaskEntries(group, translate) {
+
   // add provider, qpu, shots and programmingLanguage attributes
   QuantMEPropertyEntryHandler.addProviderEntry(group, translate);
   QuantMEPropertyEntryHandler.addQpuEntry(group, translate);
@@ -126,6 +131,7 @@ function addQuantumCircuitExecutionTaskEntries(group, translate) {
 }
 
 function addReadoutErrorMitigationTaskEntries(group, translate) {
+
   // add unfoldingTechnique, qpu, and maxAge attributes
   QuantMEPropertyEntryHandler.addUnfoldingTechniqueEntry(group, translate);
   QuantMEPropertyEntryHandler.addQpuEntry(group, translate);

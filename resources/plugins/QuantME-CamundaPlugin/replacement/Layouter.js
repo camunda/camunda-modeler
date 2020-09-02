@@ -68,6 +68,7 @@ export function layout(modeling, elementRegistry, process) {
 }
 
 function layoutWithDagre(modeling, elementRegistry, dagre, tasks, flows, options) {
+
   // create layouting graph
   var g = new dagre.graphlib.Graph();
   g.setGraph(options);
