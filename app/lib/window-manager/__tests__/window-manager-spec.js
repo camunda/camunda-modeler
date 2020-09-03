@@ -190,13 +190,17 @@ class MockWindow extends EventEmitter {
     this._isFullScreen = enabled;
   }
 
+  isFullScreen() {
+    return !!this._isFullScreen;
+  }
+
+  isMaximized() {
+    return !!this._isMaximized;
+  }
+
   maximize() {
     this._isMaximized = true;
   }
-
-  isFullScreen = () => !!this._isFullScreen
-  isMaximized = () => !!this._isMaximized
-  getBounds = () => this._bounds
 }
 
 class MockScreen {
