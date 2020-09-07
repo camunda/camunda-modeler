@@ -14,6 +14,7 @@ const fs = require('fs');
 const path = require('path');
 
 const sinon = require('sinon');
+const { expect } = require('chai');
 
 describe('Config', function() {
 
@@ -93,6 +94,20 @@ describe('Config', function() {
         expect(value).to.eql(42);
       });
 
+
+      it('should NOT throw if cannot read config', function() {
+
+        // given
+        const config = new Config({
+          userPath: getAbsolutePath('fixtures/broken/config')
+        });
+
+        // when
+        const value = config.get('editor.privacyPreferences');
+
+        // then
+        expect(value).to.eql(null);
+      });
     });
 
 
