@@ -141,6 +141,14 @@ Let us consider the following example that defines a template for a mail sending
         "type": "camunda:outputParameter",
         "source": "${ resultStatus }"
       }
+    },
+    {
+        "label": "Async before?",
+        "type": "Boolean",
+        "binding": {
+            "type": "property",
+            "name": "camunda:asyncBefore"
+        }
     }
   ]
 }
@@ -177,6 +185,8 @@ The `Boolean` type maps to a checkbox that can be toggled by the user. It render
 
 ![Boolean / Checkbox control](field-boolean.png)
 
+When checked, it maps to `true` in the respective field (see [bindings](#Bindings)).
+
 
 ###### Dropdown Type
 
@@ -207,17 +217,79 @@ The resulting properties panel control looks like this:
 
 #### Bindings
 
-The following ways exist to map a custom field to the underlying BPMN 2.0 XML:
+The following ways exist to map a custom field to the underlying BPMN 2.0 XML. The _"mapping result"_ in the following section will use `[userInput]` to indicate where the input provided by the user in the `Properties Panel` is set in the BPMN XML. As default or if no user input was given, the value specified in `value` will be displayed and used for `[userInput]`. `[]` brackets will be used to indicate where the parameters are mapped to in the XML.
 
-* `property`: Maps to a named property in the BPMN 2.0 XML, i.e. `<bpmn:serviceTask {name}={userInput} />`
-* `camunda:property`: Maps to a `<camunda:property name="{name}" value="{userInput}" />` extension element
-* `camunda:inputParameter`: Maps to `<camunda:inputParameter name="{name}" />`
-* `camunda:outputParameter`: Maps to `<camunda:outputParameter name="{userInput}" />`
-* `camunda:in`: Maps to `<camunda:in target="{target}" />`
-* `camunda:out`: Maps to `<camunda:out source="{source}" />`
-* `camunda:executionListener`: Maps to `<camunda:executionListener event="{event}" />`
-* `camunda:field`: Maps to `<camunda:field name="{name}" />`
+##### `property`
 
+| **Binding `type`**  | `property`  |
+|---|---|
+| **Valid property `type`'s** | `String`<br />`Hidden`<br />`Dropdown`<br />`Boolean` |
+| **Binding parameters**  | `name`: the name of the property  |
+| **Mapping result** | `<... [name]=[userInput] ... />`  |
+
+##### `camunda:property`
+
+| **Binding `type`**  | `camunda:property`  |
+|---|---|
+| **Valid property `type`'s** | `String`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  | `name`: the name of the extension element property  |
+| **Mapping result** | `<camunda:property name="[name]" value="[userInput]" />`  |
+
+##### `camunda:inputParameter`
+
+| **Binding `type`**  | `camunda:inputParameter`  |
+|---|---|
+| **Valid property `type`'s** | `String`<br /> `Text`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  | `name`: the name of the input parameter<br />`scriptFormat`: the format of the script (if script is to be mapped)  |
+| **Mapping result** | If `scriptFormat` is not set:<br />`<camunda:inputParameter name="[name]">[userInput]</camunda:inputParameter>`<br /><br />If `scriptFormat` is set:<br />`<camunda:inputParameter name="[name]"><camunda:script scriptFormat="[scriptFormat]">[userInput]</camunda:script></camunda:inputParameter>`  |
+
+##### `camunda:outputParameter`
+
+|  **Binding `type`**  |  `camunda:outputParameter` |
+|---|---|
+| **Valid property `type`'s** | `String`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  | `source`: the source value to be mapped to the `outputParameter`<br />`scriptFormat`: the format of the script (if script is to be mapped)  |
+| **Mapping result (example)** | If `scriptFormat` is not set:<br />`<camunda:outputParameter name="[userInput]">[source]</camunda:inputParameter>`<br /><br />If `scriptFormat` is set:<br />`<camunda:outputParameter name="[userInput]"><camunda:script scriptFormat="[scriptFormat]">[source]</camunda:script></camunda:outputParameter>`  |
+
+##### `camunda:in`
+
+|  **Binding `type`**  |  `camunda:in` |
+|---|---|
+| **Valid property `type`'s** | `String`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  | `target`: the target value to be mapped to<br />`expression`: `true` indicates that the userInput is an expression<br />`variables`: either `all` or `local` indicating the variable mapping  |
+| **Mapping result** | If `target` is set:<br />`<camunda:in source="[userInput]" target="[target]"/>`<br /><br />If `target` is set and `expression` is set to `true`:<br />`<camunda:in sourceExpression="[userInput]" target="[target]" />`<br /><br /> If `variables` is set to `local`:<br />` <camunda:in local="true" variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`)<br /><br />If `variables` is set to `all`:<br />`<camunda:in variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`) |
+
+##### `camunda:in:businessKey`
+
+|  **Binding `type`**  |  `camunda:in:businessKey` |
+|---|---|
+| **Valid property `type`'s** | `String`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  |  |
+| **Mapping result** | `<camunda:in businessKey="[userInput]" />` |
+
+##### `camunda:out`
+
+|  **Binding `type`**  |  `camunda:out` |
+|---|---|
+| **Valid property `type`'s** | `String`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  |  `source`: the source value to be mapped<br />`sourceExpression`: a string containing the expression for the source attribute<br />`variables`: either `all` or `local` indicating the variable mapping  |
+| **Mapping result** | If `source` is set:<br />`<camunda:out source="[source]" target="[userInput]" />`<br /><br />If `sourceExpression` is set:<br />`<camunda:out sourceExpression="[sourceExpression]" target="[userInput]" />`<br /><br />If `variables` is set to `all`:<br />`<camunda:out variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`)<br /><br />If `variables` is set to `local`:<br />`<camunda:out local="true" variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`) |
+
+##### `camunda:executionListener`
+
+|  **Binding `type`**  |  `camunda:executionListener` |
+|---|---|
+| **Valid property `type`'s** | `Hidden` |
+| **Binding parameters**  | `event`: value for the `event` attribute<br />`scriptFormat`: value for the `scriptFormat` attribute |
+| **Mapping result** | `<camunda:executionListener event="[event]"><camunda:script scriptFormat="[scriptFormat]">[value]</camunda:script></camunda:executionListener>`<br />(Notice, that `[value]` needs to be set, since only `Hidden` is allowed as a type hence the user can not set a `[userInput]`) |
+
+##### `camunda:field`
+
+|  **Binding `type`**  |  `camunda:field` |
+|---|---|
+| **Valid property `type`'s** | `String`<br /> `Text`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  | `name`: value for the `name` attribute<br />`expression`: `true` that an expression is passed |
+| **Mapping result** | `<camunda:field name="[name]"><camunda:string>[userInput]</camunda:string></camunda:field>`<br /><br />If `expression` is set to `true`:<br />`<camunda:field name="[name]"><camunda:expression>[userInput]</camunda:expression>` |
 
 #### Scoped Bindings
 
