@@ -371,9 +371,9 @@ Together with the `pattern` constraint, you may define your custom error message
 ```
 
 
-### Controlling Default Entry Visibility
+<!-- ### Controlling Default Entry Visibility -->
 
-_TODO_
+<!-- _TODO_ -->
 
 
 ## Default Templates
