@@ -14,8 +14,8 @@ import entryFactory from 'bpmn-js-properties-panel/lib/factory/EntryFactory';
 
 
 export default class PropertiesProvider extends CamundaPropertiesProvider {
-  constructor(eventBus, canvas, bpmnFactory, elementRegistry, elementTemplates, translate, config) {
-    super(eventBus, canvas, bpmnFactory, elementRegistry, elementTemplates, translate);
+  constructor(config, injector, translate) {
+    super(...CamundaPropertiesProvider.$inject.map(dependency => injector.get(dependency)));
 
     this._translate = translate;
     this._config = config;
@@ -67,11 +67,7 @@ export default class PropertiesProvider extends CamundaPropertiesProvider {
 }
 
 PropertiesProvider.$inject = [
-  'eventBus',
-  'canvas',
-  'bpmnFactory',
-  'elementRegistry',
-  'elementTemplates',
-  'translate',
-  'config.propertiesProvider'
+  'config.propertiesProvider',
+  'injector',
+  'translate'
 ];
