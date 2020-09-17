@@ -58,10 +58,12 @@ export default class PropertiesProvider extends CamundaPropertiesProvider {
 
     const { openElementTemplatesModal } = this._config;
 
-    entries.splice(index + 1, 0, entryFactory.link({
+    entries.splice(index, 1, entryFactory.link({
       id: 'elementTemplatesModal',
-      label: this._translate('Select Element Template'),
-      handleClick: openElementTemplatesModal
+      buttonLabel: this._translate('Open Catalog'),
+      handleClick: openElementTemplatesModal,
+      label: this._translate('Template'),
+      cssClasses: 'bpp-entry-link-button'
     }));
   }
 }
