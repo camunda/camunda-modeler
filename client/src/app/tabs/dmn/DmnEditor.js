@@ -364,7 +364,7 @@ export class DmnEditor extends CachedComponent {
     } else if (activeView.type === 'decisionTable') {
       assign(newState, {
         defaultCopyCutPaste: true,
-        defaultUndoRedo: true,
+        defaultUndoRedo: false,
         hasSelection: activeViewer.get('selection').hasSelection(),
         removeSelected: inputActive,
         selectAll: inputActive
