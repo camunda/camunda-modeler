@@ -19,7 +19,7 @@ An integrated modeling solution for BPMN, DMN and CMMN based on [bpmn.io](http:/
 ## Building the Application
 
 ```sh
-# checkout a tag
+# checkout  tag
 git checkout v1.1.0
 
 # install dependencies
