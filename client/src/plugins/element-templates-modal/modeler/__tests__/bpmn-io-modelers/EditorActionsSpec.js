@@ -93,9 +93,9 @@ describe('EditorActions', function() {
   });
 
 
-  describe('getSelectedElementType', function() {
+  describe('getSelectedElement', function() {
 
-    it('should get selected element type', function() {
+    it('should get selected element', function() {
 
       // given
       const editorActions = modeler.get('editorActions'),
@@ -107,10 +107,11 @@ describe('EditorActions', function() {
       selection.select(serviceTask);
 
       // when
-      const selectedElementType = editorActions.trigger('getSelectedElementType');
+      const selectedElement = editorActions.trigger('getSelectedElement');
 
       // then
-      expect(selectedElementType).to.equal('bpmn:ServiceTask');
+      expect(selectedElement).to.exist;
+      expect(selectedElement.businessObject.$type).to.equal('bpmn:ServiceTask');
     });
 
 
@@ -120,10 +121,10 @@ describe('EditorActions', function() {
       const editorActions = modeler.get('editorActions');
 
       // when
-      const selectedElementType = editorActions.trigger('getSelectedElementType');
+      const selectedElement = editorActions.trigger('getSelectedElement');
 
       // then
-      expect(selectedElementType).to.be.null;
+      expect(selectedElement).not.to.exist;
     });
 
   });
