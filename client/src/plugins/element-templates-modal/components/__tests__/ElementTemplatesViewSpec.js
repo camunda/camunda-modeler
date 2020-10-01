@@ -17,6 +17,11 @@ import { mount } from 'enzyme';
 import ElementTemplatesView, { ElementTemplatesListItem, ElementTemplatesListItemEmpty } from '../ElementTemplatesModalView';
 import Dropdown from '../Dropdown';
 
+import BpmnModdle from 'bpmn-moddle';
+import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
+
+const moddle = new BpmnModdle({ camunda: camundaModdlePackage });
+
 
 describe('<ElementTemplatesView>', function() {
 
@@ -63,7 +68,7 @@ describe('<ElementTemplatesView>', function() {
       await instance.getElementTemplates();
 
       // then
-      expect(wrapper.state('elementTemplates')).to.have.length(2);
+      expect(wrapper.state('elementTemplates')).to.have.length(3);
     });
 
 
@@ -81,7 +86,8 @@ describe('<ElementTemplatesView>', function() {
       // then
       expect(wrapper.state('elementTemplates').map(({ name }) => name)).to.eql([
         'Template 1',
-        'Template 2'
+        'Template 2',
+        'Template 4'
       ]);
     });
 
@@ -94,7 +100,7 @@ describe('<ElementTemplatesView>', function() {
       wrapper.update();
 
       // then
-      expect(wrapper.find(ElementTemplatesListItem)).to.have.length(2);
+      expect(wrapper.find(ElementTemplatesListItem)).to.have.length(3);
     });
 
 
@@ -398,13 +404,23 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     },
     name: 'Template 1',
     properties: []
+  },
+  {
+    appliesTo: [
+      'bpmn:Activity'
+    ],
+    id: 'some-local-template',
+    name: 'Template 4',
+    properties: []
   }
 ];
 
 async function createElementTemplatesModalView(props = {}) {
   function triggerAction(action) {
-    if (action === 'getSelectedElementType') {
-      return 'bpmn:ServiceTask';
+    if (action === 'getSelectedElement') {
+      return {
+        businessObject: moddle.create('bpmn:ServiceTask')
+      };
     }
   }
 

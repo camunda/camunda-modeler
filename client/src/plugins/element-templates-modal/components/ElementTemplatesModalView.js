@@ -24,6 +24,8 @@ import {
   isNil
 } from 'min-dash';
 
+import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
+
 const MAX_DESCRIPTION_LENGTH = 200;
 
 class ElementTemplatesView extends PureComponent {
@@ -56,19 +58,23 @@ class ElementTemplatesView extends PureComponent {
 
     let elementTemplates = await config.get('bpmn.elementTemplates');
 
-    const selectedElementType = await triggerAction('getSelectedElementType');
+    const selectedElement = await triggerAction('getSelectedElement');
 
-    elementTemplates = elementTemplates
-      .filter(({ appliesTo }) => {
-        return appliesTo.includes(selectedElementType);
-      })
-      .sort((a, b) => {
-        if (a.name.toLowerCase() < b.name.toLowerCase()) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
+    if (selectedElement) {
+      elementTemplates = elementTemplates
+        .filter(({ appliesTo }) => {
+          return isAny(selectedElement, appliesTo);
+        })
+        .sort((a, b) => {
+          if (a.name.toLowerCase() < b.name.toLowerCase()) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
+    } else {
+      elementTemplates = [];
+    }
 
     const selectedElementAppliedElementTemplate = await triggerAction('getSelectedElementAppliedElementTemplate');
 
