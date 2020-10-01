@@ -35,7 +35,7 @@ npm run build
 
 ### Development Setup
 
-Spin up the application for development, all strings attached:
+Spin up the development application, all strings attached:
 
 ```
 npm run dev
