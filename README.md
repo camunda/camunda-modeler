@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/camunda/camunda-modeler.svg?branch=develop)](https://travis-ci.org/camunda/camunda-modeler)
 
+Camunda Modeler is a desktop application for modeling BPMN workflows and DMN decisions. It's user-friendly, allowing multiple developers to work together on the same diagrams. Camunda Modeler supports BPMN 2.0, CMMN 1.1 and DMN 1.1
+
 An integrated modeling solution for BPMN, DMN and CMMN based on [bpmn.io](http://bpmn.io).
 
 ![Camunda Modeler](docs/screenshot.png)
