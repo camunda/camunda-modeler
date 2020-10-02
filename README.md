@@ -44,6 +44,6 @@ npm run dev
 
 ## License
 
-MIT
+This content is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
-Uses [bpmn-js](https://github.com/bpmn-io/bpmn-js), [dmn-js](https://github.com/bpmn-io/dmn-js), and [cmmn-js](https://github.com/bpmn-io/cmmn-js), licensed under the [bpmn.io license](http://bpmn.io/license).
+Camunda Modeler uses [bpmn-js](https://github.com/bpmn-io/bpmn-js), [dmn-js](https://github.com/bpmn-io/dmn-js) and [cmmn-js](https://github.com/bpmn-io/cmmn-js) licensed under the [bpmn.io license](http://bpmn.io/license).
