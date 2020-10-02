@@ -140,11 +140,7 @@
           "name": "camunda:asyncBefore"
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "asyncBefore": false
-    }
+    ]
   },
   {
     "name": "Custom ServiceTask",
@@ -163,12 +159,7 @@
           "name": "camunda:delegateExpression"
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "delegate": false,
-      "implementation": false
-    }
+    ]
   },
   {
     "name": "VIP-Order Path",
@@ -286,12 +277,7 @@
           "name": "camunda:priority"
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "candidateUsers": false,
-      "candidateGroups": false
-    }
+    ]
   },
   {
     "name": "Caller",
@@ -429,19 +415,7 @@
           "scriptFormat": "groovy"
         }
       }
-    ],
-    "entriesVisible": {
-      "_all": true,
-      "executionListeners": false,
-      "listener-event-type": false,
-      "listener-type": false,
-      "listener-value": false,
-      "listener-script-value": false,
-      "listener-fields": false,
-      "listener-field-name": false,
-      "listener-field-type": false,
-      "listener-field-value": false
-    }
+    ]
   },
   {
     "name": "Field Injections",
@@ -471,5 +445,29 @@
         }
       }
     ]
-  }
+  },
+  {
+
+      "name": "Default Rendering",
+      "id": "com.camunda.example.DefaultRendering",
+      "appliesTo": [
+        "bpmn:ServiceTask"
+      ],
+      "properties": [
+        {
+          "label": "Input Parameter",
+          "binding": {
+            "type": "camunda:inputParameter",
+            "name": "processVar"
+          }
+        },
+        {
+          "label": "Output Parameter",
+          "binding": {
+            "type": "camunda:outputParameter",
+            "source": "outputParam"
+          }
+        }
+      ]
+    }
 ]
