@@ -18,7 +18,6 @@
       },
       {
         "label": "Sender",
-        "type": "String",
         "binding": {
           "type": "camunda:inputParameter",
           "name": "sender"
@@ -33,7 +32,6 @@
       },
       {
         "label": "Receivers",
-        "type": "String",
         "binding": {
           "type": "camunda:inputParameter",
           "name": "receivers"
@@ -46,7 +44,6 @@
         "label": "Template",
         "description": "By the way, you can use <a href=\"https://freemarker.apache.org/\">freemarker templates</a> here",
         "value": "Hello ${firstName}!",
-        "type": "Text",
         "binding": {
           "type": "camunda:inputParameter",
           "name": "messageBody",
@@ -59,7 +56,6 @@
       {
         "label": "Result Status",
         "description": "The process variable to which to assign the send result to",
-        "type": "String",
         "value": "mailSendResult",
         "binding": {
           "type": "camunda:outputParameter",
