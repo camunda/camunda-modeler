@@ -41,7 +41,7 @@ Flags passed as command line arguments take precedence over those configured via
 
 ### BPMN-only Mode
 
-To disable the CMMN and DMN editing capabilities of the App, configure your `flags.json` like below:
+To disable the [CMMN](https://github.com/bpmn-io/cmmn-js) and [DMN](https://github.com/bpmn-io/dmn-js) editing capabilities of the App, configure your `flags.json` like below:
 
 ```js
 {
@@ -50,6 +50,6 @@ To disable the CMMN and DMN editing capabilities of the App, configure your `fla
 }
 ```
 
-As a result, the app will only allow users to model BPMN diagrams.
+As a result, the app will only allow users to model [BPMN](https://github.com/bpmn-io/bpmn-js) diagrams.
 
 ![BPMN only mode](./bpmn-only.png)
