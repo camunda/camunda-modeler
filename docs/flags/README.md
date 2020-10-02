@@ -1,14 +1,14 @@
-> :warning: This feature got introduced in Camunda Modeler `v3.0.0` and may be subject to change at any time.
+> :warning: This feature got introduced in Camunda Modeler `v3.0.0` and __may be subject to change in the future__.
 
 
 # Flags
 
-Flags allow you to control the availability of certain features within the application.
+Flags will allow you to control the availability of certain features within the application.
 
 
 ## Configuring Flags
 
-You may configure flags in a `flags.json` file or pass them via CLI.
+You may configure flags in a `flags.json` file or pass them via CLI (Command Line Interface).
 
 ### Configure in `flags.json`
 
@@ -41,7 +41,7 @@ Flags passed as command line arguments take precedence over those configured via
 
 ### BPMN-only Mode
 
-To disable the CMMN and DMN editing capabilities of the App, configure your `flags.json` like this:
+To disable the CMMN and DMN editing capabilities of the App, configure your `flags.json` like below:
 
 ```js
 {
