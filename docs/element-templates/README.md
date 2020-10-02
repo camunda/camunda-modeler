@@ -1,5 +1,3 @@
-> :warning: __The feature Element Templates may be subject to change in the future.__ As an example, this may lead to changes in the way you configure templates in JSON.
-
 # Element Templates
 
 Element templates allow you to create pre-defined configurations for BPMN elements such as service and user tasks. Once applied via the properties panel they provide configured custom inputs to the user.
@@ -9,17 +7,18 @@ Element templates allow you to create pre-defined configurations for BPMN elemen
 
 ## Configuring Templates
 
-Element templates are defined as [JSON files](#defining-templates) and are searched for in the `resources/element-templates` folder, relative to the modelers executable _or_ relative to the modelers data directory ([see below](#example-setup)).
+Element templates are defined as [JSON files](#defining-templates). There are two ways to integrate them into the Camunda Modeler:
 
-Alternatively, they can be stored in a `.camunda/element-templates` directory that resides, relative to the currently opened diagram, anywhere in the diagrams path hierarchy.
+1. **Retrieve from Cawemo:** use the [Camunda Cloud Connect plugin](https://docs.camunda.org/cawemo/latest/technical-guide/integrations/modeler/) to integrate the Camunda Modeler with [Cawemo](https://cawemo.com/). The Modeler can then retrieve templates from catalog projects setup in Cawemo.
+2. **Local filesystem:** Store element templates as `.json` file in the `resources/element-templates` folder, relative to the modelers executable _or_ relative to the modelers data directory ([see below](#example-setup)). Alternatively, they can be stored in a `.camunda/element-templates` directory that resides, relative to the currently opened diagram, anywhere in the diagrams path hierarchy.
 
-New templates will be recognized on diagram reopen or modeler reload/restart.
+New templates will be recognized when reconnecting to Cawemo or on Camunda Modeler reload/restart.
 
 
 #### Example Setup
 
 
-Add a JSON file to the `resources/element-templates` sub-folder of your local [`{APP_DATA_DIRECTORY}`](../search-paths#app-data-directory) or [`{USER_DATA_DIRECTORY}`](../search-paths#user-data-directory) directory. You may have to create the `resources` and `element-templates` folders  yourself.
+Add a `.json` file to the `resources/element-templates` sub-folder of your local [`{APP_DATA_DIRECTORY}`](../search-paths#app-data-directory) or [`{USER_DATA_DIRECTORY}`](../search-paths#user-data-directory) directory. You may have to create the `resources` and `element-templates` folders  yourself.
 
 For local template discovery, create a `.camunda/element-templates` folder relative in the directory
 or any parent directory of the diagrams you are editing.
@@ -27,17 +26,30 @@ or any parent directory of the diagrams you are editing.
 
 ## Using Templates
 
-If a template matches a selected diagram element, the template chooser will be shown in the properties panel.
+If a template matches a selected diagram element, the template catalog button will be shown in the properties panel.
 
 ![Template Chooser](./chooser.png)
 
-Assigning a template will store it via the `camunda:modelerTemplate` property on the selected element:
+Clicking the `Catalog` button will bring up a modal menu allowing to browse and search available templates for the selected element.
+
+![Modal Menu](./modal.png)
+
+Applying a template will store it via the `camunda:modelerTemplate` property on the selected element:
 
 ```xml
 <bpmn:serviceTask id="MailTask" camunda:modelerTemplate="com.mycompany.MailTask" />
 ```
 
-It will also setup custom fields on the diagram element and make these available to the user for inspection and editing.
+It will also setup custom fields on the diagram element and make these available to the user for inspection and editing. Properties which were not configured in the element template using custom fields, will not be available for editing for the user.
+
+To remove an applied template from an element, either the *Unlink* or *Remove* function can be used:
+
+* *Remove*: Remove the element template from the `camunda:modelerTemplate` property and also reset all properties of the respective element.
+* *Unlink*: Remove the element template from the `camunda:modelerTemplate` property but keep the properties which were set.
+
+![Unlink or Remove](./unlink-remove.png)
+
+If a template is applied to an element but the respective template cannot be found on the system, the editing of the element will be disabled. Either *removing* the template for the element or adding the element template config will enable the editing again.
 
 
 ## Defining Templates
@@ -69,7 +81,6 @@ As seen in the code snippet a template consist of a number of important componen
 * `id`: Unique id of the template
 * `appliesTo`: List of BPMN types the template can be assigned to
 * `properties`: List of properties that are defined on the template
-* `entriesVisible`: Visibility customizer for default properties panel entries
 
 
 ### Defining Template Properties
@@ -212,6 +223,20 @@ The `Dropdown` type allows users to select from a number of pre-defined options 
 The resulting properties panel control looks like this:
 
 ![properties panel drop down](field-dropdown.png)
+
+###### Omitted Type
+
+By omitting the `type` configuration the default UI component will be rendered for the respective binding.
+
+For `camunda:inputParameter` and `camunda:outputParameter` bindings an Input / Output Parameter Mapping component will be rendered. The component will include a toggle to enable or disable the `Variable Assignment`. When untoggling, the respective `camunda:inputParameter` or `camunda:outputParameter` element will not be created in the BPMN XML.
+
+![default-rendering](./default-rendering.png)
+
+Note that the configuration options `editable` and `constraints` will have no effect for the `camunda:inputParameter` and `camunda:outputParameter` default component.
+
+For the `property`, `camunda:property`, `camunda:in`, `camunda:in:businessKey`, `camunda:out` and `camunda:field` bindings, an omitted `type` will lead to rendering the `String` component (single line input).
+
+For the `camunda:executionListener` binding, an omitted `type` will lead to the `Hidden` component (ie. no visible input for the user).
 
 
 #### Bindings
@@ -371,11 +396,6 @@ Together with the `pattern` constraint, you may define your custom error message
 ```
 
 
-<!-- ### Controlling Default Entry Visibility -->
-
-<!-- _TODO_ -->
-
-
 ## Default Templates
 
 A default template provides properties that are automatically applied for
@@ -416,9 +436,12 @@ Currently, element templates may be used on the following BPMN elements:
 * `bpmn:Activity` (including tasks, service tasks, and others)
 * `bpmn:SequenceFlow` (for maintaining `condition`)
 * `bpmn:Process`
+* `bpmn:Event`
 
 
 ## Learn more
+
+Use the [Camunda Cloud Connect plugin](https://docs.camunda.org/cawemo/latest/technical-guide/integrations/modeler/) to integrate the Camunda Modeler with [Cawemo](https://cawemo.com/) and retrieve templates from a Cawemo catalog project.
 
 Try playing around with custom elements and some [example templates](https://github.com/camunda/camunda-modeler/blob/master/resources/element-templates/samples.json).
 
