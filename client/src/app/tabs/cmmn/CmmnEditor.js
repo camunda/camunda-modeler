@@ -170,7 +170,11 @@ export class CmmnEditor extends CachedComponent {
 
     onImport(error, warnings);
 
-    if (!error) {
+    if (error) {
+      this.setCached({
+        lastXML: null
+      });
+    } else {
       this.setCached({
         lastXML: xml,
         stackIdx
