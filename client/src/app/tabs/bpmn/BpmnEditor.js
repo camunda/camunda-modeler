@@ -307,7 +307,12 @@ export class BpmnEditor extends CachedComponent {
 
     const stackIdx = commandStack._stackIdx;
 
-    if (!error) {
+    if (error) {
+      this.setCached({
+        defaultTemplatesApplied: false,
+        lastXML: null
+      });
+    } else {
 
       if (isNew && !defaultTemplatesApplied) {
         modeler.invoke(applyDefaultTemplates);
