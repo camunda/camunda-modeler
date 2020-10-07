@@ -660,6 +660,27 @@ describe('<DmnEditor>', function() {
           expect(hasMenuEntry(state.editMenu, 'Select Cell Below')).to.be.true;
         });
 
+
+        it('should provide und/redo entries', async function() {
+
+          // given
+          const changedSpy = (state) => {
+
+            const editMenuEntries = getUndoRedoEntries(state);
+
+            // then
+            expect(state.editMenu).to.deep.include(editMenuEntries);
+
+          };
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          // when
+          instance.handleChanged();
+        });
+
       });
 
     });

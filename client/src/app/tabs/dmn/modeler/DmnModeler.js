@@ -50,7 +50,8 @@ const poweredByModule = {
 
 const OVERVIEW_ZOOM_SCALE = 0.66;
 
-const LOW_PRIORITY = 500;
+const LOW_PRIORITY = 500,
+      HIGH_PRIORITY = 2500;
 
 
 export default class CamundaDmnModeler extends DmnModeler {
@@ -261,6 +262,9 @@ export default class CamundaDmnModeler extends DmnModeler {
     if (!this._overview) {
       return;
     }
+
+    // Prevent others from hooking in when updating overview
+    this.once('saveXML.start', HIGH_PRIORITY, () => false);
 
     this.saveXML((err, xml) => {
       if (err) {
