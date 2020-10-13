@@ -17,6 +17,11 @@ import { mount } from 'enzyme';
 import ElementTemplatesView, { ElementTemplatesListItem, ElementTemplatesListItemEmpty } from '../ElementTemplatesModalView';
 import Dropdown from '../Dropdown';
 
+import BpmnModdle from 'bpmn-moddle';
+import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
+
+const moddle = new BpmnModdle({ camunda: camundaModdlePackage });
+
 
 describe('<ElementTemplatesView>', function() {
 
@@ -63,7 +68,27 @@ describe('<ElementTemplatesView>', function() {
       await instance.getElementTemplates();
 
       // then
-      expect(wrapper.state('elementTemplates')).to.have.length(2);
+      expect(wrapper.state('elementTemplates')).to.have.length(3);
+    });
+
+
+    it('should get element templates sorted alphabetically', async function() {
+
+      // given
+      const {
+        instance,
+        wrapper
+      } = await createElementTemplatesModalView();
+
+      // when
+      await instance.getElementTemplates();
+
+      // then
+      expect(wrapper.state('elementTemplates').map(({ name }) => name)).to.eql([
+        'Template 1',
+        'Template 2',
+        'Template 4'
+      ]);
     });
 
 
@@ -75,7 +100,25 @@ describe('<ElementTemplatesView>', function() {
       wrapper.update();
 
       // then
-      expect(wrapper.find(ElementTemplatesListItem)).to.have.length(2);
+      expect(wrapper.find(ElementTemplatesListItem)).to.have.length(3);
+    });
+
+
+    it('should display meta data', async function() {
+
+      // given
+      const elementTemplate = DEFAULT_ELEMENT_TEMPLATES.find(({ name }) => name === 'Template 1');
+
+      const { wrapper } = await createElementTemplatesModalView();
+
+      wrapper.update();
+
+      // then
+      const listItem = wrapper.findWhere(n => n.prop('elementTemplate') === elementTemplate).first();
+
+      const meta = listItem.find('.element-templates-list__item-meta').first();
+
+      expect(meta.text()).to.equal('Walt\'s Catalog | 2001-09-09');
     });
 
 
@@ -131,6 +174,7 @@ describe('<ElementTemplatesView>', function() {
 
       // then
       expect(wrapper.state('expanded')).to.equal('some-rpa-template');
+      expect(wrapper.state('selected')).to.be.null;
     });
 
 
@@ -152,6 +196,29 @@ describe('<ElementTemplatesView>', function() {
 
       // then
       expect(wrapper.state('expanded')).to.equal(null);
+      expect(wrapper.state('selected')).to.be.null;
+    });
+
+
+    it('should have sticky header', async function() {
+
+      // given
+      const {
+        instance,
+        wrapper
+      } = await createElementTemplatesModalView();
+
+      wrapper.update();
+
+      // when
+      instance.onScroll({
+        target: {
+          scrollTop: 100
+        }
+      });
+
+      // then
+      expect(wrapper.state('scroll')).to.be.true;
     });
 
   });
@@ -255,6 +322,30 @@ describe('<ElementTemplatesView>', function() {
       expect(wrapper.find(Dropdown)).to.have.length(0);
     });
 
+
+    it('should disable apply button if selected element template does not match filter', async function() {
+
+      // given
+      const {
+        instance,
+        wrapper
+      } = await createElementTemplatesModalView();
+
+      wrapper.update();
+
+      const elementTemplatesListItem = wrapper.find(ElementTemplatesListItem).first();
+
+      elementTemplatesListItem.simulate('click');
+
+      // when
+      instance.onSearchChange('Template 4');
+
+      wrapper.update();
+
+      // then
+      expect(wrapper.find('.button--apply').first().prop('disabled')).to.be.true;
+    });
+
   });
 
 });
@@ -262,24 +353,6 @@ describe('<ElementTemplatesView>', function() {
 // helpers //////////
 
 const DEFAULT_ELEMENT_TEMPLATES = [
-  {
-    appliesTo: [
-      'bpmn:ServiceTask'
-    ],
-    id: 'some-rpa-template',
-    description: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    metadata: {
-      catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
-      catalogTemplateId: '00000000-0000-0000-0000-000000000000',
-      created: 1000000000000,
-      tags: [
-        'Walt\'s Catalog'
-      ],
-      updated: 1000000000000
-    },
-    name: 'Template 1',
-    properties: []
-  },
   {
     appliesTo: [
       'bpmn:ServiceTask'
@@ -313,13 +386,41 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     },
     name: 'Template 3',
     properties: []
+  },
+  {
+    appliesTo: [
+      'bpmn:ServiceTask'
+    ],
+    id: 'some-rpa-template',
+    description: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    metadata: {
+      catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
+      catalogTemplateId: '00000000-0000-0000-0000-000000000000',
+      created: 1000000000000,
+      tags: [
+        'Walt\'s Catalog'
+      ],
+      updated: 1000000000000
+    },
+    name: 'Template 1',
+    properties: []
+  },
+  {
+    appliesTo: [
+      'bpmn:Activity'
+    ],
+    id: 'some-local-template',
+    name: 'Template 4',
+    properties: []
   }
 ];
 
 async function createElementTemplatesModalView(props = {}) {
   function triggerAction(action) {
-    if (action === 'getSelectedElementType') {
-      return 'bpmn:ServiceTask';
+    if (action === 'getSelectedElement') {
+      return {
+        businessObject: moddle.create('bpmn:ServiceTask')
+      };
     }
   }
 

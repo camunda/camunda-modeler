@@ -24,6 +24,8 @@ import {
   isNil
 } from 'min-dash';
 
+import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
+
 const MAX_DESCRIPTION_LENGTH = 200;
 
 class ElementTemplatesView extends PureComponent {
@@ -33,11 +35,13 @@ class ElementTemplatesView extends PureComponent {
     this.state = {
       applied: null,
       elementTemplates: [],
+      elementTemplatesFiltered: [],
       expanded: null,
       filter: {
         tags: [],
         search: ''
       },
+      scroll: false,
       selected: null
     };
   }
@@ -54,16 +58,29 @@ class ElementTemplatesView extends PureComponent {
 
     let elementTemplates = await config.get('bpmn.elementTemplates');
 
-    const selectedElementType = await triggerAction('getSelectedElementType');
+    const selectedElement = await triggerAction('getSelectedElement');
 
-    elementTemplates = elementTemplates.filter(({ appliesTo }) => {
-      return appliesTo.includes(selectedElementType);
-    });
+    if (selectedElement) {
+      elementTemplates = elementTemplates
+        .filter(({ appliesTo }) => {
+          return isAny(selectedElement, appliesTo);
+        })
+        .sort((a, b) => {
+          if (a.name.toLowerCase() < b.name.toLowerCase()) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
+    } else {
+      elementTemplates = [];
+    }
 
     const selectedElementAppliedElementTemplate = await triggerAction('getSelectedElementAppliedElementTemplate');
 
     this.setState({
       elementTemplates,
+      elementTemplatesFiltered: elementTemplates,
       applied: selectedElementAppliedElementTemplate
     });
   }
@@ -113,23 +130,34 @@ class ElementTemplatesView extends PureComponent {
   onSearchChange = search => {
     const { filter } = this.state;
 
-    this.setState({
-      filter: {
-        ...filter,
-        search
-      }
+    this.setFilter({
+      ...filter,
+      search
     });
   }
 
   onTagsChange = tags => {
     const { filter } = this.state;
 
-    this.setState({
-      filter: {
-        ...filter,
-        tags
-      }
+    this.setFilter({
+      ...filter,
+      tags
     });
+  }
+
+  setFilter = filter => {
+    const { elementTemplates } = this.state;
+
+    const elementTemplatesFiltered = filterElementTemplates(elementTemplates, filter);
+
+    this.setState({
+      elementTemplatesFiltered,
+      filter
+    });
+  }
+
+  onScroll = ({ target }) => {
+    this.setState({ scroll: target.scrollTop > 0 });
   }
 
   render() {
@@ -138,8 +166,10 @@ class ElementTemplatesView extends PureComponent {
     const {
       applied,
       elementTemplates,
+      elementTemplatesFiltered,
       expanded,
       filter,
+      scroll,
       selected
     } = this.state;
 
@@ -149,15 +179,15 @@ class ElementTemplatesView extends PureComponent {
 
     const tagCounts = getTagCounts(elementTemplates);
 
-    const filteredElementTemplates = filterElementTemplates(elementTemplates, filter);
+    const canApply = elementTemplatesFiltered.find(({ id }) => id === selected);
 
     return (
       <Modal className={ css.ElementTemplatesModalView } onClose={ onClose }>
 
         <Modal.Title>Catalog</Modal.Title>
 
-        <Modal.Body>
-          <div className="header">
+        <Modal.Body onScroll={ this.onScroll }>
+          <div className={ classNames('header', { 'header--scroll': scroll }) }>
             <h2 className="header__title">Templates</h2>
             <div className="header__filter">
               <Input className="header__filter-item" value={ filter.search } onChange={ this.onSearchChange } />
@@ -171,8 +201,8 @@ class ElementTemplatesView extends PureComponent {
 
           <ul className="element-templates-list">
             {
-              filteredElementTemplates.length
-                ? filteredElementTemplates.map(elementTemplate => {
+              elementTemplatesFiltered.length
+                ? elementTemplatesFiltered.map(elementTemplate => {
                   const { id } = elementTemplate;
 
                   return (
@@ -189,7 +219,7 @@ class ElementTemplatesView extends PureComponent {
                 : null
             }
             {
-              !filteredElementTemplates.length ? (
+              !elementTemplatesFiltered.length ? (
                 <ElementTemplatesListItemEmpty />
               ) : null
             }
@@ -198,16 +228,17 @@ class ElementTemplatesView extends PureComponent {
 
         <Modal.Footer>
           <div className="form-submit">
-            <button className="btn btn-secondary" type="submit" onClick={ onClose }>
+            <button className="btn btn-secondary button--cancel" type="submit" onClick={ onClose }>
               Cancel
             </button>
-            {
-              true && (
-                <button disabled={ isNil(selected) } className="btn btn-primary" type="submit" onClick={ this.onApply }>
-                  Apply
-                </button>
-              )
-            }
+            <button
+              disabled={ !canApply }
+              className="btn btn-primary button--apply"
+              type="submit"
+              onClick={ this.onApply }
+            >
+              Apply
+            </button>
           </div>
         </Modal.Footer>
 
@@ -219,8 +250,15 @@ class ElementTemplatesView extends PureComponent {
 export default ElementTemplatesView;
 
 export class ElementTemplatesListItem extends React.PureComponent {
-  constructor(props) {
-    super(props);
+  onSelect = ({ target }) => {
+    const { onSelect } = this.props;
+
+    // Do not select on description expand click
+    if (target.classList.contains('element-templates-list__item-description-expand')) {
+      return;
+    }
+
+    onSelect();
   }
 
   render() {
@@ -228,7 +266,6 @@ export class ElementTemplatesListItem extends React.PureComponent {
       applied,
       elementTemplate,
       expanded,
-      onSelect,
       onToggleExpanded,
       selected
     } = this.props;
@@ -267,7 +304,7 @@ export class ElementTemplatesListItem extends React.PureComponent {
           { 'element-templates-list__item--selectable': id !== applied },
           { 'element-templates-list__item--selected': id === selected }
         )
-      } onClick={ id !== applied && id !== selected ? onSelect : null }>
+      } onClick={ id !== applied && id !== selected ? this.onSelect : null }>
         <div className="element-templates-list__item-header">
           <span className="element-templates-list__item-name">{ name }</span>
           {
@@ -369,6 +406,14 @@ function getTagCounts(elementTemplates) {
   }, {});
 }
 
+function leftPad(string, length, character) {
+  while (string.length < length) {
+    string = `${ character }${ string }`;
+  }
+
+  return string;
+}
+
 function getDate(elementTemplate) {
   const { metadata } = elementTemplate;
 
@@ -376,5 +421,13 @@ function getDate(elementTemplate) {
     return;
   }
 
-  return new Date(metadata.updated).toLocaleDateString('en-US').split('/').reverse().join('-');
+  const dateUpdated = new Date(metadata.updated);
+
+  const year = dateUpdated.getFullYear();
+
+  const month = leftPad(String(dateUpdated.getMonth() + 1), 2, '0');
+
+  const date = leftPad(String(dateUpdated.getDate()), 2, '0');
+
+  return `${ year }-${ month }-${ date }`;
 }

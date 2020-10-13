@@ -283,6 +283,24 @@ describe('DmnModeler', function() {
     });
 
 
+    it('should prevent others from hooking in when updating overview', async function() {
+
+      // given
+      const LOWER_PRIORITY = 1000,
+            spy = sinon.spy();
+
+      modeler.on('saveXML.start', LOWER_PRIORITY, spy);
+
+      await openDecisionTable(modeler);
+
+      // when
+      modeler.getActiveViewer().get('eventBus').fire('commandStack.changed');
+
+      // then
+      expect(spy).not.to.have.been.called;
+    });
+
+
     it('should highlight currently open DRG element', async function() {
 
       // when

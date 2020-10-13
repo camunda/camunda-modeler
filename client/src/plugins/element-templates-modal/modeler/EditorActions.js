@@ -27,16 +27,14 @@ export default class EditorActions {
       return true;
     });
 
-    editorActions.register('getSelectedElementType', () => {
+    editorActions.register('getSelectedElement', () => {
       const selectedElements = selection.get();
 
       if (selectedElements.length !== 1) {
         return null;
       }
 
-      const { type } = selectedElements[ 0 ];
-
-      return type;
+      return selectedElements[ 0 ];
     });
 
     editorActions.register('getSelectedElementAppliedElementTemplate', () => {

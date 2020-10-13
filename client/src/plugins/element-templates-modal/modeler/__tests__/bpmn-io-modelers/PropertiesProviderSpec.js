@@ -56,7 +56,7 @@ describe('PropertiesProvider', function() {
   });
 
 
-  it('should add entry', function() {
+  it('should replace entry', function() {
 
     // given
     const elementRegistry = modeler.get('elementRegistry'),
@@ -83,9 +83,8 @@ describe('PropertiesProvider', function() {
 
     const { entries } = generalGroup;
 
-    const entry = entries.find(({ id }) => id === 'elementTemplatesModal');
-
-    expect(entry).to.exist;
+    expect(entries.find(({ id }) => id === 'element-template-chooser')).not.to.exist;
+    expect(entries.find(({ id }) => id === 'elementTemplatesModal')).to.exist;
   });
 
 });

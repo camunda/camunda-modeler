@@ -45,77 +45,78 @@ This project incorporates components from the projects listed below. The origina
 38.   @bpmn-io/add-exporter@0.2.0 (https://github.com/bpmn-io/add-exporter)
 39.   @bpmn-io/align-to-origin@0.6.0 (https://github.com/bpmn-io/align-to-origin)
 40.   @bpmn-io/dmn-migrate@0.4.3 (https://github.com/bpmn-io/dmn-migrate)
-41.   @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
-42.   @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
-43.   bpmn-js-disable-collapsed-subprocess@0.1.2 (https://github.com/bpmn-io/bpmn-js-disable-collapsed-subprocess)
-44.   bpmn-js-executable-fix@0.1.2 (https://github.com/bpmn-io/bpmn-js-executable-fix)
-45.   bpmn-js-properties-panel@0.35.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
-46.   bpmn-js-signavio-compat@1.2.2 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
-47.   bpmn-js@7.3.0 (https://github.com/bpmn-io/bpmn-js)
-48.   bpmn-moddle@7.0.3 (https://github.com/bpmn-io/bpmn-moddle)
-49.   camunda-bpmn-moddle@4.4.0 (https://github.com/camunda/camunda-bpmn-moddle)
-50.   camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
-51.   camunda-dmn-moddle@1.0.0 (https://github.com/camunda/camunda-dmn-moddle)
-52.   canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
-53.   classnames@2.2.6 (https://github.com/JedWatson/classnames)
-54.   cmmn-js-properties-panel@0.8.3 (https://github.com/bpmn-io/cmmn-js-properties-panel)
-55.   cmmn-js@0.20.0 (https://github.com/bpmn-io/cmmn-js)
-56.   cmmn-moddle@5.0.0 (https://github.com/bpmn-io/cmmn-moddle)
-57.   codemirror@5.46.0 (https://github.com/codemirror/CodeMirror)
-58.   css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape)
-59.   deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
-60.   diagram-js-direct-editing@1.6.1 (https://github.com/bpmn-io/diagram-js-direct-editing)
-61.   diagram-js-minimap@2.0.3 (https://github.com/bpmn-io/diagram-js-minimap)
-62.   diagram-js-origin@1.3.1 (https://github.com/bpmn-io/diagram-js-origin)
-63.   diagram-js@6.7.0 (https://github.com/bpmn-io/diagram-js)
-64.   didi@4.0.0 (https://github.com/nikku/didi)
-65.   dmn-js-decision-table@9.2.1 (https://github.com/bpmn-io/dmn-js)
-66.   dmn-js-drd@9.2.0 (https://github.com/bpmn-io/dmn-js)
-67.   dmn-js-literal-expression@9.2.0 (https://github.com/bpmn-io/dmn-js)
-68.   dmn-js-properties-panel@0.5.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
-69.   dmn-js-shared@9.2.0 (https://github.com/bpmn-io/dmn-js)
-70.   dmn-js@9.2.1 (https://github.com/bpmn-io/dmn-js)
-71.   dmn-moddle@9.1.0 (https://github.com/bpmn-io/dmn-moddle)
-72.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
-73.   escape-html@1.0.3 (https://github.com/component/escape-html)
-74.   events@3.0.0 (https://github.com/Gozala/events)
-75.   formik@2.0.4 (https://github.com/jaredpalmer/formik)
-76.   hammerjs@2.0.8 (https://github.com/hammerjs/hammer.js)
-77.   hat@0.0.3 (https://github.com/substack/node-hat)
-78.   hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
-79.   ids@1.0.0 (https://github.com/bpmn-io/ids)
-80.   inferno@5.0.6 (https://github.com/infernojs/inferno)
-81.   lodash-es@4.17.15 (https://github.com/lodash/lodash)
-82.   lodash@4.17.19 (https://github.com/lodash/lodash)
-83.   min-dash@3.5.2 (https://github.com/bpmn-io/min-dash)
-84.   min-dom@3.1.1 (https://github.com/bpmn-io/min-dom)
-85.   mitt@1.1.3 (https://github.com/developit/mitt)
-86.   moddle-xml@9.0.3 (https://github.com/bpmn-io/moddle-xml)
-87.   moddle@5.0.1 (https://github.com/bpmn-io/moddle)
-88.   ms@2.1.1 (https://github.com/zeit/ms)
-89.   object-assign@4.1.1 (https://github.com/sindresorhus/object-assign)
-90.   object-refs@0.3.0 (https://github.com/bpmn-io/object-refs)
-91.   p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
-92.   p-reduce@2.1.0 (https://github.com/sindresorhus/p-reduce)
-93.   p-series@2.1.0 (https://github.com/sindresorhus/p-series)
-94.   path-intersection@2.2.0 (https://github.com/bpmn-io/path-intersection)
-95.   react-dom@16.8.6 (https://github.com/facebook/react)
-96.   react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
-97.   react-is@16.8.6 (https://github.com/facebook/react)
-98.   react@16.8.6 (https://github.com/facebook/react)
-99.   rgbcolor@0.0.4 (https://github.com/yetzt/node-rgbcolor)
-100.  saxen@8.1.2 (https://github.com/nikku/saxen)
-101.  scheduler@0.13.6 (https://github.com/facebook/react)
-102.  scroll-tabs@1.0.1 (https://github.com/bpmn-io/scroll-tabs)
-103.  selection-ranges@3.0.3 (https://github.com/nikku/selection-ranges)
-104.  selection-update@0.1.2 (https://github.com/nikku/selection-update)
-105.  sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
-106.  stackblur@1.0.0
-107.  table-js@6.1.0 (https://github.com/bpmn-io/table-js)
-108.  tiny-svg@2.2.2 (https://github.com/bpmn-io/tiny-svg)
-109.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
-110.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
-111.  xmldom@0.1.27 (https://github.com/jindw/xmldom)
+41.   @bpmn-io/extract-process-variables@0.3.0 (https://github.com/bpmn-io/extract-process-variables)
+42.   @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
+43.   @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
+44.   bpmn-js-disable-collapsed-subprocess@0.1.2 (https://github.com/bpmn-io/bpmn-js-disable-collapsed-subprocess)
+45.   bpmn-js-executable-fix@0.1.2 (https://github.com/bpmn-io/bpmn-js-executable-fix)
+46.   bpmn-js-properties-panel@0.37.1 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+47.   bpmn-js-signavio-compat@1.2.2 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
+48.   bpmn-js@7.3.1 (https://github.com/bpmn-io/bpmn-js)
+49.   bpmn-moddle@7.0.3 (https://github.com/bpmn-io/bpmn-moddle)
+50.   camunda-bpmn-moddle@4.4.0 (https://github.com/camunda/camunda-bpmn-moddle)
+51.   camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
+52.   camunda-dmn-moddle@1.0.0 (https://github.com/camunda/camunda-dmn-moddle)
+53.   canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
+54.   classnames@2.2.6 (https://github.com/JedWatson/classnames)
+55.   cmmn-js-properties-panel@0.8.3 (https://github.com/bpmn-io/cmmn-js-properties-panel)
+56.   cmmn-js@0.20.0 (https://github.com/bpmn-io/cmmn-js)
+57.   cmmn-moddle@5.0.0 (https://github.com/bpmn-io/cmmn-moddle)
+58.   codemirror@5.46.0 (https://github.com/codemirror/CodeMirror)
+59.   css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape)
+60.   deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
+61.   diagram-js-direct-editing@1.6.1 (https://github.com/bpmn-io/diagram-js-direct-editing)
+62.   diagram-js-minimap@2.0.3 (https://github.com/bpmn-io/diagram-js-minimap)
+63.   diagram-js-origin@1.3.1 (https://github.com/bpmn-io/diagram-js-origin)
+64.   diagram-js@6.7.1 (https://github.com/bpmn-io/diagram-js)
+65.   didi@4.0.0 (https://github.com/nikku/didi)
+66.   dmn-js-decision-table@9.3.2 (https://github.com/bpmn-io/dmn-js)
+67.   dmn-js-drd@9.3.2 (https://github.com/bpmn-io/dmn-js)
+68.   dmn-js-literal-expression@9.3.2 (https://github.com/bpmn-io/dmn-js)
+69.   dmn-js-properties-panel@0.5.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
+70.   dmn-js-shared@9.3.2 (https://github.com/bpmn-io/dmn-js)
+71.   dmn-js@9.3.2 (https://github.com/bpmn-io/dmn-js)
+72.   dmn-moddle@9.1.0 (https://github.com/bpmn-io/dmn-moddle)
+73.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
+74.   escape-html@1.0.3 (https://github.com/component/escape-html)
+75.   events@3.0.0 (https://github.com/Gozala/events)
+76.   formik@2.0.4 (https://github.com/jaredpalmer/formik)
+77.   hammerjs@2.0.8 (https://github.com/hammerjs/hammer.js)
+78.   hat@0.0.3 (https://github.com/substack/node-hat)
+79.   hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
+80.   ids@1.0.0 (https://github.com/bpmn-io/ids)
+81.   inferno@5.0.6 (https://github.com/infernojs/inferno)
+82.   lodash-es@4.17.15 (https://github.com/lodash/lodash)
+83.   lodash@4.17.20 (https://github.com/lodash/lodash)
+84.   min-dash@3.5.2 (https://github.com/bpmn-io/min-dash)
+85.   min-dom@3.1.1 (https://github.com/bpmn-io/min-dom)
+86.   mitt@1.1.3 (https://github.com/developit/mitt)
+87.   moddle-xml@9.0.3 (https://github.com/bpmn-io/moddle-xml)
+88.   moddle@5.0.1 (https://github.com/bpmn-io/moddle)
+89.   ms@2.1.1 (https://github.com/zeit/ms)
+90.   object-assign@4.1.1 (https://github.com/sindresorhus/object-assign)
+91.   object-refs@0.3.0 (https://github.com/bpmn-io/object-refs)
+92.   p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
+93.   p-reduce@2.1.0 (https://github.com/sindresorhus/p-reduce)
+94.   p-series@2.1.0 (https://github.com/sindresorhus/p-series)
+95.   path-intersection@2.2.0 (https://github.com/bpmn-io/path-intersection)
+96.   react-dom@16.8.6 (https://github.com/facebook/react)
+97.   react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
+98.   react-is@16.8.6 (https://github.com/facebook/react)
+99.   react@16.8.6 (https://github.com/facebook/react)
+100.  rgbcolor@0.0.4 (https://github.com/yetzt/node-rgbcolor)
+101.  saxen@8.1.2 (https://github.com/nikku/saxen)
+102.  scheduler@0.13.6 (https://github.com/facebook/react)
+103.  scroll-tabs@1.0.1 (https://github.com/bpmn-io/scroll-tabs)
+104.  selection-ranges@3.0.3 (https://github.com/nikku/selection-ranges)
+105.  selection-update@0.1.2 (https://github.com/nikku/selection-update)
+106.  sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
+107.  stackblur@1.0.0
+108.  table-js@6.1.0 (https://github.com/bpmn-io/table-js)
+109.  tiny-svg@2.2.2 (https://github.com/bpmn-io/tiny-svg)
+110.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
+111.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
+112.  xmldom@0.1.27 (https://github.com/jindw/xmldom)
 
 
 %% @sentry/apm@5.15.5 NOTICES AND INFORMATION BEGIN HERE
@@ -1159,6 +1160,33 @@ THE SOFTWARE.
 END OF @bpmn-io/dmn-migrate@0.4.3 NOTICES AND INFORMATION
 
 
+%% @bpmn-io/extract-process-variables@0.3.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2020-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF @bpmn-io/extract-process-variables@0.3.0 NOTICES AND INFORMATION
+
+
 %% @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
@@ -1216,7 +1244,7 @@ MIT
 END OF bpmn-js-executable-fix@0.1.2 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@0.35.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@0.37.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1240,7 +1268,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@0.35.0 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@0.37.1 NOTICES AND INFORMATION
 
 
 %% bpmn-js-signavio-compat@1.2.2 NOTICES AND INFORMATION BEGIN HERE
@@ -1271,7 +1299,7 @@ THE SOFTWARE.
 END OF bpmn-js-signavio-compat@1.2.2 NOTICES AND INFORMATION
 
 
-%% bpmn-js@7.3.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@7.3.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1298,7 +1326,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js@7.3.0 NOTICES AND INFORMATION
+END OF bpmn-js@7.3.1 NOTICES AND INFORMATION
 
 
 %% bpmn-moddle@7.0.3 NOTICES AND INFORMATION BEGIN HERE
@@ -1693,7 +1721,7 @@ THE SOFTWARE.
 END OF diagram-js-origin@1.3.1 NOTICES AND INFORMATION
 
 
-%% diagram-js@6.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@6.7.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1717,7 +1745,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@6.7.0 NOTICES AND INFORMATION
+END OF diagram-js@6.7.1 NOTICES AND INFORMATION
 
 
 %% didi@4.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1748,7 +1776,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF didi@4.0.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-decision-table@9.2.1 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-decision-table@9.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1774,10 +1802,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-decision-table@9.2.1 NOTICES AND INFORMATION
+END OF dmn-js-decision-table@9.3.2 NOTICES AND INFORMATION
 
 
-%% dmn-js-drd@9.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-drd@9.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1803,10 +1831,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-drd@9.2.0 NOTICES AND INFORMATION
+END OF dmn-js-drd@9.3.2 NOTICES AND INFORMATION
 
 
-%% dmn-js-literal-expression@9.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-literal-expression@9.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1832,7 +1860,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-literal-expression@9.2.0 NOTICES AND INFORMATION
+END OF dmn-js-literal-expression@9.3.2 NOTICES AND INFORMATION
 
 
 %% dmn-js-properties-panel@0.5.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1862,7 +1890,7 @@ THE SOFTWARE.
 END OF dmn-js-properties-panel@0.5.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-shared@9.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-shared@9.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1888,10 +1916,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-shared@9.2.0 NOTICES AND INFORMATION
+END OF dmn-js-shared@9.3.2 NOTICES AND INFORMATION
 
 
-%% dmn-js@9.2.1 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js@9.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1917,7 +1945,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js@9.2.1 NOTICES AND INFORMATION
+END OF dmn-js@9.3.2 NOTICES AND INFORMATION
 
 
 %% dmn-moddle@9.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -2222,7 +2250,7 @@ terms above.
 END OF lodash-es@4.17.15 NOTICES AND INFORMATION
 
 
-%% lodash@4.17.19 NOTICES AND INFORMATION BEGIN HERE
+%% lodash@4.17.20 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
 
@@ -2273,7 +2301,7 @@ licenses; we recommend you read them, as their terms may differ from the
 terms above.
 
 ==========================================
-END OF lodash@4.17.19 NOTICES AND INFORMATION
+END OF lodash@4.17.20 NOTICES AND INFORMATION
 
 
 %% min-dash@3.5.2 NOTICES AND INFORMATION BEGIN HERE

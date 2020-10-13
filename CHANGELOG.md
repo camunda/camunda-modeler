@@ -5,6 +5,39 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ## Unreleased
 
 ___Note:__ Yet to be released changes appear here._
+
+## 4.3.0
+
+### General
+
+* `FEAT`: add modal menu to search and use element templates ([#1890](https://github.com/camunda/camunda-modeler/issues/1890))
+* `FEAT`: introduce application, linking and unlinking logic of element templates ([#1889](https://github.com/camunda/camunda-modeler/issues/1889))
+* `FIX`: prevent stopPropagation errors in iOS devices ([`0fbbbd1e`](https://github.com/bpmn-io/diagram-js/commit/0fbbbd1e439007d80c47158aa8774be3a592f936))
+* `CHORE`: bump to `bpmn-js@7.3.1`
+* `CHORE`: bump to `dmn-js@9.3.1`
+* `CHORE`: bump to `diagram-js@6.7.1`
+* `CHORE`: bump to `bpmn-js-properties-panel@0.37.1`
+
+### BPMN
+
+* `FEAT`: detect process variables in properties panel ([#348](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/348))
+* `FEAT`: improve input/output mapping GUI component in properties panel ([#349](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/349))
+* `FEAT`: add process variable overview for (sub) processes in properties panel ([#343](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/343))
+* `FEAT`: add process variable typeAhead functionality in properties panel ([#345](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/345))
+* `FEAT`: adjust element template view in properties panel ([#358](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/358))
+* `FEAT`: crop descriptions in properties panel ([#369](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/369))
+* `FIX`: allow incoming message flows to boundary message events ([#1919](https://github.com/camunda/camunda-modeler/issues/1919))
+
+### DMN
+
+* `FEAT`: improve intuition by recognising input and output columns ([#552](https://github.com/bpmn-io/dmn-js/issues/552))
+* `FEAT`: move bpmn.io logo ([#573](https://github.com/bpmn-io/dmn-js/issues/573))
+* `FIX`: clear clipboard after pasting ([#1246](https://github.com/camunda/camunda-modeler/issues/1246))
+* `FIX`: handle undoing decision name direct editing ([#1912](https://github.com/camunda/camunda-modeler/issues/1912))
+* `FIX`: handle undoing decision table components ([#1923](https://github.com/camunda/camunda-modeler/issues/1923))
+* `FIX`: handle undoing deletion of decision elements ([#1921](https://github.com/camunda/camunda-modeler/issues/1921))
+* `FIX`: handle undoing via keyboard ([#1922](https://github.com/camunda/camunda-modeler/issues/1922))
+* `FIX`: save the size of resized text annotations in DRD ([#1941](https://github.com/camunda/camunda-modeler/issues/1941))
 * `FIX`: fix broken keyboard shortcuts and menu entries for Undo & Redo in decision tables ([#1843](https://github.com/camunda/camunda-modeler/issues/1843))
 
 ## 4.2.0
