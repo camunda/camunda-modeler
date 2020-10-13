@@ -59,6 +59,9 @@ export default class QuantMETransformator {
       // get all QuantME tasks from the process
       const replacementTasks = getQuantMETasks(rootElement);
       console.log('Process contains ' + replacementTasks.length + ' QuantME tasks to replace...');
+      if (!replacementTasks || !replacementTasks.length) {
+        return;
+      }
 
       // replace each QuantME tasks to retrieve standard-compliant BPMN
       for (let replacementTask of replacementTasks) {
@@ -98,7 +101,7 @@ export default class QuantMETransformator {
       for (let i = 0; i < flowElements.length; i++) {
         let flowElement = flowElements[i];
         if (flowElement.$type && flowElement.$type.startsWith('quantme:')) {
-          quantmeTasks.push({ task: flowElement , parent: processBo });
+          quantmeTasks.push({ task: flowElement, parent: processBo });
         }
 
         // recursively retrieve QuantME tasks if subprocess is found
@@ -154,7 +157,7 @@ export default class QuantMETransformator {
      * @param idMap the idMap containing a mapping of ids defined in newElement to the new ids in the diagram
      * @param replace true if the element should be inserted instead of an available element, false otherwise
      * @param oldElement an old element that is only required if it should be replaced by the new element
-     * @return the state (true/false) of the operation and the updated idMap
+     * @return {{success: boolean, idMap: *, element: *}}
      */
     function insertShape(parent, newElement, idMap, replace, oldElement) {
       console.log('Inserting shape for element: ', newElement);
@@ -198,37 +201,22 @@ export default class QuantMETransformator {
         }
       }
 
+      // add element to which a boundary event is attached
+      if (newElement.$type === 'bpmn:BoundaryEvent') {
+        let hostElement = elementRegistry.get(idMap[newElement.attachedToRef.id]);
+        modeling.updateProperties(element, { 'attachedToRef': hostElement.businessObject });
+        element.host = hostElement;
+      }
+
       // update the properties of the new element
       modeling.updateProperties(element, getPropertiesToCopy(newElement));
 
       // recursively handle children of the current element
-      let success = true;
-      let flowElements = newElement.flowElements;
-      let sequenceFlows = [];
-      if (flowElements) {
-        console.log('Element contains %i children. Adding corresponding shapes...', flowElements.length);
-        for (let i = 0; i < flowElements.length; i++) {
-
-          // skip sequence flows and add after all other elements
-          if (flowElements[i].$type === 'bpmn:SequenceFlow') {
-            sequenceFlows.push(flowElements[i]);
-            continue;
-          }
-
-          let result = insertShape(element, flowElements[i], idMap, false);
-          success = success && result['success'];
-          idMap = result['idMap'];
-        }
-
-        // handle sequence flow with new ids of added elements
-        for (let i = 0; i < sequenceFlows.length; i++) {
-          let result = insertShape(element, sequenceFlows[i], idMap, false);
-          success = success && result['success'];
-          idMap = result['idMap'];
-        }
-      }
+      let resultTuple = insertChildElements(element, newElement, idMap);
 
       // add artifacts with their shapes to the diagram
+      let success = resultTuple['success'];
+      idMap = resultTuple['idMap'];
       let artifacts = newElement.artifacts;
       if (artifacts) {
         console.log('Element contains %i artifacts. Adding corresponding shapes...', artifacts.length);
@@ -241,6 +229,57 @@ export default class QuantMETransformator {
 
       // return success flag and idMap with id mappings of this element and all children
       return { success: success, idMap: idMap, element: element };
+    }
+
+    /**
+     * Insert all children of the given element into the diagram
+     *
+     * @param parent the element that is the new parent of the inserted elements
+     * @param newElement the new element to insert the children for
+     * @param idMap the idMap containing a mapping of ids defined in newElement to the new ids in the diagram
+     * @return {{success: boolean, idMap: *, element: *}}
+     */
+    function insertChildElements(parent, newElement, idMap) {
+
+      let success = true;
+      let flowElements = newElement.flowElements;
+      let boundaryEvents = [];
+      let sequenceflows = [];
+      if (flowElements) {
+        console.log('Element contains %i children. Adding corresponding shapes...', flowElements.length);
+        for (let i = 0; i < flowElements.length; i++) {
+
+          // skip elements with references and add them after all other elements to set correct references
+          if (flowElements[i].$type === 'bpmn:SequenceFlow') {
+            sequenceflows.push(flowElements[i]);
+            continue;
+          }
+          if (flowElements[i].$type === 'bpmn:BoundaryEvent') {
+            boundaryEvents.push(flowElements[i]);
+            continue;
+          }
+
+          let result = insertShape(parent, flowElements[i], idMap, false);
+          success = success && result['success'];
+          idMap = result['idMap'];
+        }
+
+        // handle boundary events with new ids of added elements
+        for (let i = 0; i < boundaryEvents.length; i++) {
+          let result = insertShape(parent, boundaryEvents[i], idMap, false);
+          success = success && result['success'];
+          idMap = result['idMap'];
+        }
+
+        // handle boundary events with new ids of added elements
+        for (let i = 0; i < sequenceflows.length; i++) {
+          let result = insertShape(parent, sequenceflows[i], idMap, false);
+          success = success && result['success'];
+          idMap = result['idMap'];
+        }
+      }
+
+      return { success: success, idMap: idMap, element: parent };
     }
 
     /**
@@ -320,6 +359,5 @@ export async function isReplaceable(element) {
   }
 
   // no suited QRM found, and therefore, no replacement possible
-  console.log('No suited QRM found for task: ', element);
   return true; // FIXME: QRMs are currently not accessible from this method
 }

@@ -26,7 +26,6 @@ export async function matchesQRM(qrm, task) {
   return taskMatchesDetector(detectorElement, task);
 }
 
-
 /**
  * Check if the given task matches the detector, i.e., has the same QuantME type and matching attributes
  *
