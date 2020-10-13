@@ -67,7 +67,7 @@ function checkOracleExpansionTask(bo) {
 
   // check if oracleId and programmingLanguage, as well as one of oracleCircuit and oracleFunction are defined
   return !(typeof bo.oracleId === 'undefined' || typeof bo.programmingLanguage === 'undefined'
-    || (typeof bo.oracleCircuit === 'undefined' && typeof bo.oracleFunction === 'undefined'));
+    || (typeof bo.oracleCircuit === 'undefined' && typeof bo.oracleURL === 'undefined'));
 }
 
 function checkQuantumCircuitExecutionTask(bo) {
