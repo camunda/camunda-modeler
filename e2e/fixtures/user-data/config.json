@@ -1,0 +1,16 @@
+{
+  "workspace": {
+    "endpoints": [],
+    "layout": {
+      "dmnOverview": {
+        "open": false
+      },
+      "log": {
+        "open": false
+      },
+      "propertiesPanel": {
+        "open": false
+      }
+    }
+  }
+}

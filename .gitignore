@@ -8,3 +8,4 @@ plugins/**
 coverage
 .nyc_output
 .linked-dependencies
+e2e/tmp/
