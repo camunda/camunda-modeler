@@ -1,0 +1,32 @@
+from tkinter import *
+import tkinter.messagebox as tmsg
+import os
+def entry():
+    #pls make a folder on desktop and 
+    folder_path='Enter Path here'
+    with open(f"{folder_path}\\{name.get()}.txt",'w') as f:
+        f.write(f"Name:{name.get()}\n Father Name:{fname.get()}\n Roll NO:{roll.get()}\n DOB:{dob.get()}\n Branch:{branch.get()}\n Semester:{sem.get()}\n")
+        tmsg.showinfo("Submited","Thank You")
+obj=Tk()
+obj.title("Student Details")
+obj.geometry("280x280")
+name=StringVar()
+fname=StringVar()
+roll=StringVar()
+dob=StringVar()
+branch=StringVar()
+sem=StringVar()
+Label(obj,text="Name:",fg="Black",font="Arial 10 bold",pady=5).grid(row=0,column=0)
+Entry(obj,textvariable=name).grid(row=0,column=1)
+Label(obj,text="Father Name:",fg="Black",font="Arial 10 bold",pady=5).grid(row=1,column=0)
+Entry(obj,textvariable=fname).grid(row=1,column=1)
+Label(obj,text="Roll No.:",fg="Black",font="Arial 10 bold",pady=5).grid(row=2,column=0)
+Entry(obj,textvariable=roll).grid(row=2,column=1)
+Label(obj,text="DOB (dd/mm/yy):",fg="Black",font="Arial 10 bold",pady=5).grid(row=3,column=0)
+Entry(obj,textvariable=dob).grid(row=3,column=1)
+Label(obj,text="Branch:",fg="Black",font="Arial 10 bold",pady=5).grid(row=4,column=0)
+Entry(obj,textvariable=branch).grid(row=4,column=1)
+Label(obj,text="Semester:",fg="Black",font="Arial 10 bold",pady=5).grid(row=5,column=0)
+Entry(obj,textvariable=sem).grid(row=5,column=1)
+Button(obj,text="SUBMIT",fg="Black",font="Arial 10 bold",padx=20,borderwidth=5,command=entry).grid(row=6,columnspan=2,pady=10,padx=10)
+obj.mainloop()
