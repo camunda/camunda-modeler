@@ -11,6 +11,8 @@ Therefore, it enables to create workflow models orchestrating classical and quan
 Please refer to the [documentation](./docs) for details of the possible usage of the framework to model and transform Quantum4BPMN workflow models.
 For a quick start, please have a look at the [tutorial](./docs/quantme/Tutorial).
 
+The following repository contains different use cases that were modeled and transformed by using the QuantME Modeling and Transformation Framework: [QuantME-UseCases](https://github.com/UST-QuAntiL/QuantME-UseCases).
+
 ### Building the Application
 
 ```sh
