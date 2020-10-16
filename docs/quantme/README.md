@@ -14,7 +14,7 @@ Information about how to configure the QuantME Modeling and Transformation Frame
 
 ### [Tutorial](./Tutorial)
 
-A short example with different steps to create a QRM and use it to trasnform a QuantME workflow to a native BPMN workflow
+A short example with different steps to create a QRM and use it to transform a QuantME workflow to a native BPMN workflow
 
 ### [Development](./Development)
 
