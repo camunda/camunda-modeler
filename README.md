@@ -18,6 +18,8 @@ An integrated modeling solution for BPMN, DMN and CMMN based on [bpmn.io](http:/
 
 ## Building the Application
 
+Build the app in a Posix environment. On Windows that is Git Bash or WSL.
+
 ```sh
 # checkout a tag
 git checkout v1.1.0
