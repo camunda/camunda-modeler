@@ -55,7 +55,7 @@
     "eslint-plugin-camunda-licensed": "^0.4.3",
     "eslint-plugin-import": "^2.18.2",
     "execa": "^1.0.0",
-    "lerna": "^3.16.1",
+    "lerna": "^3.22.1",
     "license-checker": "^25.0.1",
     "mocha": "^5.2.0",
     "mri": "^1.1.4",
@@ -68,5 +68,8 @@
     "tar-stream": "^2.1.0",
     "which": "^1.2.0",
     "yauzl": "^2.10.0"
+  },
+  "dependencies": {
+    "composer": "^4.1.0"
   }
 }
