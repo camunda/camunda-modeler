@@ -370,13 +370,28 @@ export default class StartInstanceTool extends PureComponent {
   }
 
   handleDeploymentSuccess(tab, deployment) {
+
+    const {
+      triggerAction
+    } = this.props;
+
+    // notify interested parties
+    triggerAction('emit-event', {
+      type: 'deployment.done',
+      payload: {
+        deployment,
+        context: 'startInstanceTool'
+      }
+    });
+
     return this.saveProcessDefinition(tab, deployment);
   }
 
   handleDeploymentError(tab, error) {
     const {
       log,
-      displayNotification
+      displayNotification,
+      triggerAction
     } = this.props;
 
     displayNotification({
@@ -389,6 +404,15 @@ export default class StartInstanceTool extends PureComponent {
     log({
       category: 'deploy-error',
       message: error.problems || error.details || error.message
+    });
+
+    // notify interested parties
+    triggerAction('emit-event', {
+      type: 'deployment.error',
+      payload: {
+        error,
+        context: 'startInstanceTool'
+      }
     });
   }
 

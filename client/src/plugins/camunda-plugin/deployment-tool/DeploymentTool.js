@@ -144,13 +144,23 @@ export default class DeploymentTool extends PureComponent {
 
   handleDeploymentSuccess(tab, deployment) {
     const {
-      displayNotification
+      displayNotification,
+      triggerAction
     } = this.props;
 
     displayNotification({
       type: 'success',
       title: 'Deployment succeeded',
       duration: 4000
+    });
+
+    // notify interested parties
+    triggerAction('emit-event', {
+      type: 'deployment.done',
+      payload: {
+        deployment,
+        context: 'deploymentTool'
+      }
     });
   }
 
@@ -174,7 +184,8 @@ export default class DeploymentTool extends PureComponent {
   handleDeploymentError(tab, error) {
     const {
       log,
-      displayNotification
+      displayNotification,
+      triggerAction
     } = this.props;
 
     displayNotification({
@@ -187,6 +198,15 @@ export default class DeploymentTool extends PureComponent {
     log({
       category: 'deploy-error',
       message: error.problems || error.details || error.message
+    });
+
+    // notify interested parties
+    triggerAction('emit-event', {
+      type: 'deployment.error',
+      payload: {
+        error,
+        context: 'deploymentTool'
+      }
     });
   }
 
