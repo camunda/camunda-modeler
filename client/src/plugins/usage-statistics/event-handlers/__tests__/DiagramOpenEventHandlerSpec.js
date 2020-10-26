@@ -53,7 +53,7 @@ describe('<DiagramOpenEventHandler>', () => {
   });
 
 
-  it('should send with diagram-type: bpmn', async () => {
+  it('should send with diagram type: bpmn', async () => {
 
     // given
     const subscribe = sinon.spy();
@@ -73,8 +73,9 @@ describe('<DiagramOpenEventHandler>', () => {
     // then
     expect(onSend).to.have.been.calledWith({
       event: 'diagramOpened',
-      'diagram-type': 'bpmn',
+      diagramType: 'bpmn',
       elementTemplateCount: 0,
+      diagramMetrics: {},
       elementTemplates: []
     });
   });
@@ -109,7 +110,8 @@ describe('<DiagramOpenEventHandler>', () => {
     expect(configArgs).to.eql([ 'bpmn.elementTemplates', { path: 'testPath' } ]);
     expect(onSend).to.have.been.calledWith({
       event: 'diagramOpened',
-      'diagram-type': 'bpmn',
+      diagramType: 'bpmn',
+      diagramMetrics: {},
       elementTemplateCount: 1,
       elementTemplates: [
         {
@@ -154,13 +156,14 @@ describe('<DiagramOpenEventHandler>', () => {
     // then
     expect(onSendSpy).to.have.been.calledWith({
       event: 'diagramOpened',
-      'diagram-type': 'bpmn',
+      diagramMetrics: {},
+      diagramType: 'bpmn',
       elementTemplateCount: 1,
     });
   });
 
 
-  it('should send with diagram-type: dmn', () => {
+  it('should send with diagram type: dmn', () => {
 
     // given
     const subscribe = sinon.spy();
@@ -178,12 +181,12 @@ describe('<DiagramOpenEventHandler>', () => {
     // then
     expect(onSend).to.have.been.calledWith({
       event: 'diagramOpened',
-      'diagram-type': 'dmn'
+      diagramType: 'dmn'
     });
   });
 
 
-  it('should send with diagram-type: cmmn', () => {
+  it('should send with diagram type: cmmn', () => {
 
     // given
     const subscribe = sinon.spy();
@@ -201,7 +204,7 @@ describe('<DiagramOpenEventHandler>', () => {
     // then
     expect(onSend).to.have.been.calledWith({
       event: 'diagramOpened',
-      'diagram-type': 'cmmn'
+      diagramType: 'cmmn'
     });
   });
 });
