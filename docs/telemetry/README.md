@@ -51,7 +51,7 @@ The Diagram Opened Event has the following core structure:
 ```json
 {
   "event": "diagramOpened",
-  "diagram-type": "[bpmn, dmn or cmmn]"
+  "diagramType": "[bpmn, dmn or cmmn]"
 }
 ```
 
@@ -74,3 +74,60 @@ Diagram Opened Event payload:
   ]
 }
 ```
+
+Also in the case of BPMN diagrams, we add the number of available process variables:
+
+```json
+{
+  "diagramMetrics": {
+    "processVariablesCount": 3
+  }
+}
+```
+
+### Deployment Event
+The `Deployment Event` is sent in following situations:
+
+ - User deploys a BPMN diagram to the Camunda Engine
+ - User deploys a DMN diagram to the Camunda Engine
+
+The Deployment Event has the following core structure:
+```json
+{
+  "event": "deployment",
+  "diagramType": "[bpmn or dmn]",
+  "deployment": {
+    "outcome": "[success or failure]"
+  }
+}
+```
+
+In case the diagram deployment was not successful, the error code returned from the Camunda Engine will be added to the payload:
+
+```json
+{
+  "deployment": {
+    "outcome": "failure",
+    "error": "DIAGRAM_PARSE_ERROR"
+  }
+}
+```
+
+Furthermore, we add the component which initiated the deployment:
+
+```json
+{
+  "deployment": {
+    "context": "deploymentTool"
+  }
+}
+```
+
+In case of BPMN files, we add the number of available process variables in the diagram as part of the diagram metrics:
+
+```json
+{
+  "diagramMetrics": {
+    "processVariablesCount": 5
+  }
+}
