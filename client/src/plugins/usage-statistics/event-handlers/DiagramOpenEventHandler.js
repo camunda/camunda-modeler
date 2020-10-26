@@ -21,7 +21,7 @@ const types = {
   CMMN: 'cmmn'
 };
 
-// Sends a diagramOpened event to ET with diagram-type: bpmn/dmn payload
+// Sends a diagramOpened event to ET with diagram type: bpmn/dmn payload
 // when a user opens a BPMN, DMN or CMMN diagram (create a new one or open from file).
 export default class DiagramOpenEventHandler extends BaseEventHandler {
 
@@ -56,7 +56,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
       return;
     }
 
-    const payload = { 'diagram-type': type };
+    const payload = { diagramType: type };
 
     if (elementTemplates) {
       payload.elementTemplates = elementTemplates;
@@ -69,7 +69,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
       // Payload too large, send again with smaller payload
       this.sendToET({
-        'diagram-type': type,
+        diagramType: type,
         elementTemplateCount: payload.elementTemplateCount
       });
     }
