@@ -414,7 +414,7 @@ function leftPad(string, length, character) {
   return string;
 }
 
-function getDate(elementTemplate) {
+export function getDate(elementTemplate) {
   const { metadata } = elementTemplate;
 
   if (!metadata) {

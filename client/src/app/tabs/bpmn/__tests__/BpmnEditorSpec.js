@@ -980,6 +980,27 @@ describe('<BpmnEditor>', function() {
 
     });
 
+
+    it('should unset lastXML on import error', async function() {
+
+      // given
+      const { instance } = await renderEditor(diagramXML, {
+        onImport
+      });
+
+      async function onImport() {
+
+        // assume
+        expect(instance.getCached().lastXML).to.equal(diagramXML);
+
+        // when
+        await instance.handleError(new Error(), []);
+
+        // then
+        expect(instance.getCached().lastXML).to.be.null;
+      }
+    });
+
   });
 
 

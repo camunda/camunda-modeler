@@ -182,7 +182,7 @@ export default class StartInstanceTool extends PureComponent {
     if (showStartConfig) {
 
       const uiOptions = {
-        title: !configure ? 'Start Process Instance - Step 2 of 2' : null
+        title: configure ? 'Start Process Instance - Step 2 of 2' : null
       };
 
       // (3.3) Open Modal to enter start configuration
