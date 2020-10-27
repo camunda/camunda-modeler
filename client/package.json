@@ -14,7 +14,7 @@
     "bpmn-js": "^7.3.1",
     "bpmn-js-disable-collapsed-subprocess": "^0.1.2",
     "bpmn-js-executable-fix": "^0.1.2",
-    "bpmn-js-properties-panel": "^0.37.1",
+    "bpmn-js-properties-panel": "^0.37.3",
     "bpmn-js-signavio-compat": "^1.2.2",
     "camunda-bpmn-moddle": "^4.4.0",
     "camunda-cmmn-moddle": "^1.0.0",
