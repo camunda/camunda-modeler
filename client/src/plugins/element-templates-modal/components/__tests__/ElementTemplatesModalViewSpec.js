@@ -124,7 +124,7 @@ describe('<ElementTemplatesView>', function() {
 
       const meta = listItem.find('.element-templates-list__item-meta').first();
 
-      expect(meta.text()).to.equal(`Walt's Catalog | ${ getDate(new Date(timestamp)) }`);
+      expect(meta.text()).to.equal(`Walt's Catalog | ${ getDate(elementTemplate) }`);
     });
 
 
