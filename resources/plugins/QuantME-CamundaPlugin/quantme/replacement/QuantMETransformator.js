@@ -12,13 +12,21 @@
 import { layout } from './Layouter';
 import { matchesQRM } from './QuantMEMatcher';
 import { requiredAttributesAvailable } from './QuantMEAttributeChecker';
-import { getRootProcess, getRootProcessFromXml, getSingleFlowElement, isFlowLikeElement } from './Utilities';
+import {
+  getRootProcess,
+  getRootProcessFromXml,
+  getSingleFlowElement,
+  isFlowLikeElement,
+  getCamundaInputOutput,
+  getPropertiesToCopy
+} from '../Utilities';
+import { addQuantMEInputParameters } from './InputOutputHandler';
 
 let QRMs = [];
 
 export default class QuantMETransformator {
 
-  constructor(injector, bpmnjs, modeling, elementRegistry, eventBus, bpmnReplace) {
+  constructor(injector, bpmnjs, modeling, elementRegistry, eventBus, bpmnReplace, bpmnFactory) {
 
     // register the startReplacementProcess() function as editor action to enable the invocation from the menu
     const editorActions = injector.get('editorActions', false);
@@ -63,18 +71,25 @@ export default class QuantMETransformator {
         return;
       }
 
-      // replace each QuantME tasks to retrieve standard-compliant BPMN
+      // check for available replacement models for all QuantME tasks
       for (let replacementTask of replacementTasks) {
 
         // abort transformation if at least one task can not be replaced
         replacementTask.qrm = await getMatchingQRM(replacementTask.task);
         if (!replacementTask.qrm) {
           console.log('Unable to replace task with id %s. Aborting transformation!', replacementTask.task.id);
+
+          // inform user via notification in the modeler
+          let content = {
+            type: 'warning', title: 'Unable to transform workflow',
+            content: 'Unable to replace task with id \'' + replacementTask.task.id + '\' by suited QRM', duration: 10000
+          };
+          eventBus.fire('Notification.display', { data: content });
           return;
         }
       }
 
-      // replace all QuantME tasks
+      // replace each QuantME tasks to retrieve standard-compliant BPMN
       for (let replacementTask of replacementTasks) {
         console.log('Replacing task with id %s by using QRM: ', replacementTask.task.id, replacementTask.qrm);
         const replacementSuccess = await replaceByFragment(replacementTask.task, replacementTask.parent, replacementTask.qrm.replacement);
@@ -137,7 +152,7 @@ export default class QuantMETransformator {
       // get the root process of the replacement fragment
       let replacementProcess = await getRootProcessFromXml(replacement);
       let replacementElement = getSingleFlowElement(replacementProcess);
-      if (replacementElement === null) {
+      if (replacementElement === null || replacementElement === undefined) {
         console.log('Unable to retrieve QuantME task from replacement fragment: ', replacement);
         return false;
       }
@@ -145,7 +160,10 @@ export default class QuantMETransformator {
       console.log('Replacement element: ', replacementElement);
       let result = insertShape(parent, replacementElement, {}, true, task);
 
-      // TODO: handle attributes referenced in the replacement
+      // add all attributes of the replaced QuantME task to the input parameters of the replacement fragment
+      let inputOutputExtension = getCamundaInputOutput(result['element'].businessObject, bpmnFactory);
+      addQuantMEInputParameters(task, inputOutputExtension, bpmnFactory);
+
       return result['success'];
     }
 
@@ -283,47 +301,6 @@ export default class QuantMETransformator {
     }
 
     /**
-     * Get the properties that have to be copied from an element of a replacement fragment to the new element in the diagram
-     *
-     * @param element the element to retrieve the properties from
-     * @return the properties to copy
-     */
-    function getPropertiesToCopy(element) {
-      let properties = {};
-      for (let key in element) {
-
-        // ignore properties from parent element
-        if (!element.hasOwnProperty(key)) {
-          continue;
-        }
-
-        // ignore properties such as type
-        if (key.startsWith('$')) {
-          continue;
-        }
-
-        // ignore id as it is automatically generated with the shape
-        if (key === 'id') {
-          continue;
-        }
-
-        // ignore flow elements, as the children are added afterwards
-        if (key === 'flowElements') {
-          continue;
-        }
-
-        // ignore artifacts, as they are added afterwards with their shapes
-        if (key === 'artifacts') {
-          continue;
-        }
-
-        properties[key] = element[key];
-      }
-
-      return properties;
-    }
-
-    /**
      * Initiate the replacement process for the QuantME tasks that are contained in the current process model
      */
     function updateFromQRMRepo() {
@@ -335,7 +312,7 @@ export default class QuantMETransformator {
   }
 }
 
-QuantMETransformator.$inject = ['injector', 'bpmnjs', 'modeling', 'elementRegistry', 'eventBus', 'bpmnReplace'];
+QuantMETransformator.$inject = ['injector', 'bpmnjs', 'modeling', 'elementRegistry', 'eventBus', 'bpmnReplace', 'bpmnFactory'];
 
 /**
  * Check whether the given QuantME task can be replaced by an available QRM, which means check if a matching detector can be found

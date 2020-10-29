@@ -24,6 +24,10 @@ export default class GitHandler {
     let response = await Fetch(`https://api.github.com/repos/${userName}/${repoName}/contents/?ref=HEAD`);
     const contents = await response.json();
 
+    if (response.status !== 200) {
+      throw 'Status code not equal to 200: ' + response.status;
+    }
+
     for (let i = 0; i < contents.length; i++) {
       let item = contents[i];
       if (item.type === 'dir') {

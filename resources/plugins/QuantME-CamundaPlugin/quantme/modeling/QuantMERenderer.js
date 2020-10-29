@@ -11,6 +11,7 @@
 
 import BpmnRenderer from 'bpmn-js/lib/draw/BpmnRenderer';
 import * as quantmeReplaceOptions from './QuantMEReplaceOptions';
+import * as consts from '../Constants';
 import { append as svgAppend, attr as svgAttr, create as svgCreate } from 'tiny-svg';
 import { getFillColor, getStrokeColor } from 'bpmn-js/lib/draw/BpmnRenderUtil';
 
@@ -43,7 +44,7 @@ export default class QuantMERenderer extends BpmnRenderer {
     }
 
     this.quantMeHandlers = {
-      'quantme:QuantumComputationTask': function(self, parentGfx, element) {
+      [consts.QUANTUM_COMPUTATION_TASK]: function(self, parentGfx, element) {
         var task = self.renderer('bpmn:Task')(parentGfx, element);
 
         var pathData = quantMEPathMap.getPath('TASK_TYPE_QUANTUM_COMPUTATION');
@@ -57,7 +58,7 @@ export default class QuantMERenderer extends BpmnRenderer {
 
         return task;
       },
-      'quantme:QuantumCircuitLoadingTask': function(self, parentGfx, element) {
+      [consts.QUANTUM_CIRCUIT_LOADING_TASK]: function(self, parentGfx, element) {
         var task = self.renderer('bpmn:Task')(parentGfx, element);
 
         // create circuit paths without filled shapes
@@ -80,7 +81,7 @@ export default class QuantMERenderer extends BpmnRenderer {
 
         return task;
       },
-      'quantme:DataPreparationTask': function(self, parentGfx, element) {
+      [consts.DATA_PREPARATION_TASK]: function(self, parentGfx, element) {
         var task = self.renderer('bpmn:Task')(parentGfx, element);
 
         var pathData = quantMEPathMap.getPath('TASK_TYPE_DATA_PREPARATION');
@@ -128,7 +129,7 @@ export default class QuantMERenderer extends BpmnRenderer {
 
         return task;
       },
-      'quantme:OracleExpansionTask': function(self, parentGfx, element) {
+      [consts.ORACLE_EXPANSION_TASK]: function(self, parentGfx, element) {
         var task = self.renderer('bpmn:Task')(parentGfx, element);
 
         var pathData = quantMEPathMap.getPath('TASK_TYPE_ORACLE_EXPANSION');
@@ -168,7 +169,7 @@ export default class QuantMERenderer extends BpmnRenderer {
 
         return task;
       },
-      'quantme:QuantumCircuitExecutionTask': function(self, parentGfx, element) {
+      [consts.QUANTUM_CIRCUIT_EXECUTION_TASK]: function(self, parentGfx, element) {
         var task = self.renderer('bpmn:Task')(parentGfx, element);
 
         var pathData = quantMEPathMap.getPath('TASK_TYPE_CIRCUIT_EXECUTION');
@@ -189,7 +190,7 @@ export default class QuantMERenderer extends BpmnRenderer {
 
         return task;
       },
-      'quantme:ReadoutErrorMitigationTask': function(self, parentGfx, element) {
+      [consts.READOUT_ERROR_MITIGATION_TASK]: function(self, parentGfx, element) {
         var task = self.renderer('bpmn:Task')(parentGfx, element);
 
         var pathData = quantMEPathMap.getPath('TASK_TYPE_ERROR_MITIGATION');

@@ -9,11 +9,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-let QuantMEAttributeChecker = require('quantme/replacement/QuantMEAttributeChecker');
-let QuantMETransformator = require('quantme/replacement/QuantMETransformator');
+let QuantMEAttributeChecker = require('quantme/quantme/replacement/QuantMEAttributeChecker');
+let QuantMETransformator = require('quantme/quantme/replacement/QuantMETransformator');
 
 /**
- * Rule that reports QuantME tasks for which no suited replacment model exists
+ * Rule that reports QuantME tasks for which no suited replacement model exists
  */
 module.exports = function() {
 

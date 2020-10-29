@@ -61,3 +61,12 @@ An example replacement fragment can be found [here](./replacement.bpmn), which i
 First, the required correction matrix is requested by a send task, then it is received by a receive task, and finally, the correction matrix is applied to the input data which is passed to the subprocess by a variable.
 
 Note: Currently, only one activity element is supported in replacement fragments. Therefore, if the implementation of the QuantME task from the detector requires more than one task, please use a subprocess and wrap each required task into it.
+
+### Data Handling
+
+When modeling a QRM, the data flow within the replacement fragment can be modeled arbitrarily.
+However, often the replacement fragment must be configured depending on the property values of the QuantME task that is replaced by it.
+For example, a QRM could be implemented for a `quantme:quantumCircuitLoadingTask` to enable loading circuits from arbitrary URLs.
+Therefore, the `url` property in the detector is set to a wildcard (see above).
+However, after replacing a task by this QRM, the value of the `url` property of the replaced task must be available in the replacement fragment to enable loading the correct quantum circuit.
+Details about the data handling during transformation can be found [here](../Data-Handling).

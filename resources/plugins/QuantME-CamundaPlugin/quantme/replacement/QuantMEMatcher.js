@@ -9,7 +9,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { getRootProcessFromXml, isQuantMETask, getSingleFlowElement } from './Utilities';
+import { getRootProcessFromXml, isQuantMETask, getSingleFlowElement } from '../Utilities';
+import * as consts from '../Constants';
 
 export async function matchesQRM(qrm, task) {
   console.log('Matching QRM %s and task with id %s!', qrm.qrmUrl, task.id);
@@ -43,17 +44,17 @@ function taskMatchesDetector(detectorElement, task) {
 
   // check for attributes of the different task types
   switch (task.$type) {
-  case 'quantme:QuantumComputationTask':
+  case consts.QUANTUM_COMPUTATION_TASK:
     return matchQuantumComputationTask(detectorElement, task);
-  case 'quantme:QuantumCircuitLoadingTask':
+  case consts.QUANTUM_CIRCUIT_LOADING_TASK:
     return matchQuantumCircuitLoadingTask(detectorElement, task);
-  case 'quantme:DataPreparationTask':
+  case consts.DATA_PREPARATION_TASK:
     return matchDataPreparationTask(detectorElement, task);
-  case 'quantme:OracleExpansionTask':
+  case consts.ORACLE_EXPANSION_TASK:
     return matchOracleExpansionTask(detectorElement, task);
-  case 'quantme:QuantumCircuitExecutionTask':
+  case consts.QUANTUM_CIRCUIT_EXECUTION_TASK:
     return matchQuantumCircuitExecutionTask(detectorElement, task);
-  case 'quantme:ReadoutErrorMitigationTask':
+  case consts.READOUT_ERROR_MITIGATION_TASK:
     return matchReadoutErrorMitigationTask(detectorElement, task);
   default:
     console.log('Unsupported QuantME element of type: ', task.$type);

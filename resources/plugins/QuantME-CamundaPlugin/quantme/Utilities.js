@@ -11,8 +11,9 @@
 
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import elementTemplates from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates';
-import quantMEModule from '../quantme';
+import quantMEModule from './modeling';
 import quantMEExtension from '../resources/quantum4bpmn.json';
+import extensionElementsHelper from 'bpmn-js-properties-panel/lib/helper/ExtensionElementsHelper';
 
 /**
  * Get the root process element of the diagram
@@ -57,11 +58,12 @@ export async function getRootProcessFromXml(xml) {
   // import the xml containing the definitions
   function importXmlWrapper(xml) {
     return new Promise((resolve) => {
-      bpmnModeler.importXML(xml,(successResponse) => {
+      bpmnModeler.importXML(xml, (successResponse) => {
         resolve(successResponse);
       });
     });
   }
+
   await importXmlWrapper(xml);
 
   // extract and return root process
@@ -84,6 +86,31 @@ export function getSingleFlowElement(process) {
 }
 
 /**
+ * Get the 'camunda:InputOutput' extension element from the given business object
+ *
+ * @param bo the business object to retrieve the input/output extension for
+ * @param bpmnFactory the BPMN factory to create new BPMN elements
+ */
+export function getCamundaInputOutput(bo, bpmnFactory) {
+
+  // retrieve InputOutput element if already defined
+  let inputOutput = extensionElementsHelper.getExtensionElements(bo, 'camunda:InputOutput');
+
+  // create new InputOutput element if non existing
+  if (!inputOutput || inputOutput.length === 0) {
+    bo.extensionElements = extensionElementsHelper.addEntry(bo, bo, bpmnFactory.create('camunda:InputOutput'), bpmnFactory)['extensionElements'];
+    inputOutput = extensionElementsHelper.getExtensionElements(bo, 'camunda:InputOutput');
+
+    // initialize parameters as empty arrays to avoid access errors
+    inputOutput[0].inputParameters = [];
+    inputOutput[0].outputParameters = [];
+  }
+
+  // if there are multiple input/output definitions, take the first one as the modeler only uses this one
+  return inputOutput[0];
+}
+
+/**
  * Check if the given element is a flow like element that is represented as a BPMNEdge in the diagram, such as a SequenceFlow,
  * MessageFlow or an Association
  *
@@ -94,4 +121,46 @@ export function isFlowLikeElement(type) {
   return type === 'bpmn:SequenceFlow' || type === 'bpmn:Association';
 
   // TODO: handle further flow like element types
+}
+
+
+/**
+ * Get the properties that have to be copied from an element of a replacement fragment to the new element in the diagram
+ *
+ * @param element the element to retrieve the properties from
+ * @return the properties to copy
+ */
+export function getPropertiesToCopy(element) {
+  let properties = {};
+  for (let key in element) {
+
+    // ignore properties from parent element
+    if (!element.hasOwnProperty(key)) {
+      continue;
+    }
+
+    // ignore properties such as type
+    if (key.startsWith('$')) {
+      continue;
+    }
+
+    // ignore id as it is automatically generated with the shape
+    if (key === 'id') {
+      continue;
+    }
+
+    // ignore flow elements, as the children are added afterwards
+    if (key === 'flowElements') {
+      continue;
+    }
+
+    // ignore artifacts, as they are added afterwards with their shapes
+    if (key === 'artifacts') {
+      continue;
+    }
+
+    properties[key] = element[key];
+  }
+
+  return properties;
 }

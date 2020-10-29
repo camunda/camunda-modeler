@@ -12,12 +12,13 @@
 let EntryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory');
 let ModelUtil = require('bpmn-js/lib/util/ModelUtil');
 let CmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
+import * as consts from '../Constants';
 
 export function addAlgorithmEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'algorithm',
+    id: consts.ALGORITHM,
     label: translate('Algorithm'),
-    modelProperty: 'algorithm',
+    modelProperty: consts.ALGORITHM,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -44,9 +45,9 @@ export function addAlgorithmEntry(group, translate) {
 
 export function addProviderEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'provider',
+    id: consts.PROVIDER,
     label: translate('Provider'),
-    modelProperty: 'provider',
+    modelProperty: consts.PROVIDER,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -73,9 +74,9 @@ export function addProviderEntry(group, translate) {
 
 export function addQuantumCircuitEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'quantumCircuit',
+    id: consts.QUANTUM_CIRCUIT,
     label: translate('Quantum Circuit'),
-    modelProperty: 'quantumCircuit',
+    modelProperty: consts.QUANTUM_CIRCUIT,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -102,9 +103,9 @@ export function addQuantumCircuitEntry(group, translate) {
 
 export function addUrlEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'url',
+    id: consts.URL,
     label: translate('URL'),
-    modelProperty: 'url',
+    modelProperty: consts.URL,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -131,9 +132,9 @@ export function addUrlEntry(group, translate) {
 
 export function addEncodingSchemaEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'encodingSchema',
+    id: consts.ENCODING_SCHEMA,
     label: translate('Encoding Schema'),
-    modelProperty: 'encodingSchema',
+    modelProperty: consts.ENCODING_SCHEMA,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -160,9 +161,9 @@ export function addEncodingSchemaEntry(group, translate) {
 
 export function addProgrammingLanguageEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'programmingLanguage',
+    id: consts.PROGRAMMING_LANGUAGE,
     label: translate('Programming Language'),
-    modelProperty: 'programmingLanguage',
+    modelProperty: consts.PROGRAMMING_LANGUAGE,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -189,9 +190,9 @@ export function addProgrammingLanguageEntry(group, translate) {
 
 export function addOracleIdEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'oracleId',
+    id: consts.ORACLE_ID,
     label: translate('Oracle Id'),
-    modelProperty: 'oracleId',
+    modelProperty: consts.ORACLE_ID,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -218,9 +219,9 @@ export function addOracleIdEntry(group, translate) {
 
 export function addOracleCircuitEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'oracleCircuit',
+    id: consts.ORACLE_CIRCUIT,
     label: translate('Oracle Circuit'),
-    modelProperty: 'oracleCircuit',
+    modelProperty: consts.ORACLE_CIRCUIT,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -247,9 +248,9 @@ export function addOracleCircuitEntry(group, translate) {
 
 export function addOracleURLEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'oracleURL',
+    id: consts.ORACLE_URL,
     label: translate('Oracle URL'),
-    modelProperty: 'oracleURL',
+    modelProperty: consts.ORACLE_URL,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -276,9 +277,9 @@ export function addOracleURLEntry(group, translate) {
 
 export function addQpuEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'qpu',
+    id: consts.QPU,
     label: translate('QPU'),
-    modelProperty: 'qpu',
+    modelProperty: consts.QPU,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -305,9 +306,9 @@ export function addQpuEntry(group, translate) {
 
 export function addShotsEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'shots',
+    id: consts.SHOTS,
     label: translate('Shots'),
-    modelProperty: 'shots',
+    modelProperty: consts.SHOTS,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -334,9 +335,9 @@ export function addShotsEntry(group, translate) {
 
 export function addUnfoldingTechniqueEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'unfoldingTechnique',
+    id: consts.UNFOLDING_TECHNIQUE,
     label: translate('Unfolding Technique'),
-    modelProperty: 'unfoldingTechnique',
+    modelProperty: consts.UNFOLDING_TECHNIQUE,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);
@@ -363,9 +364,9 @@ export function addUnfoldingTechniqueEntry(group, translate) {
 
 export function addMaxAgeEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
-    id: 'maxAge',
+    id: consts.MAX_AGE,
     label: translate('Max Age (in minutes)'),
-    modelProperty: 'maxAge',
+    modelProperty: consts.MAX_AGE,
 
     get: function(element, node) {
       let bo = ModelUtil.getBusinessObject(element);

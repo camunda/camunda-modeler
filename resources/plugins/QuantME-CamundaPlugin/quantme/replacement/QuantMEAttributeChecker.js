@@ -10,6 +10,7 @@
  */
 
 let ModelUtil = require('bpmn-js/lib/util/ModelUtil');
+import * as consts from '../Constants';
 
 /**
  * Check whether the given QuantME task has all required elements set
@@ -27,17 +28,17 @@ export function requiredAttributesAvailable(element) {
 
   // check for attributes of the different task types
   switch (element.$type) {
-  case 'quantme:QuantumComputationTask':
+  case consts.QUANTUM_COMPUTATION_TASK:
     return checkQuantumComputationTask(bo);
-  case 'quantme:QuantumCircuitLoadingTask':
+  case consts.QUANTUM_CIRCUIT_LOADING_TASK:
     return checkQuantumCircuitLoadingTask(bo);
-  case 'quantme:DataPreparationTask':
+  case consts.DATA_PREPARATION_TASK:
     return checkDataPreparationTask(bo);
-  case 'quantme:OracleExpansionTask':
+  case consts.ORACLE_EXPANSION_TASK:
     return checkOracleExpansionTask(bo);
-  case 'quantme:QuantumCircuitExecutionTask':
+  case consts.QUANTUM_CIRCUIT_EXECUTION_TASK:
     return checkQuantumCircuitExecutionTask(bo);
-  case 'quantme:ReadoutErrorMitigationTask':
+  case consts.READOUT_ERROR_MITIGATION_TASK:
     return checkReadoutErrorMitigationTask(bo);
   default:
     console.log('Unsupported QuantME element of type: ', element.$type);

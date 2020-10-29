@@ -9,13 +9,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import * as consts from '../Constants';
+
 export var TASK = [
   {
     label: 'Quantum Computation Task',
     actionName: 'replace-with-quantum-computation-task',
     className: 'bpmn-icon-task-quantum-computation',
     target: {
-      type: 'quantme:QuantumComputationTask'
+      type: consts.QUANTUM_COMPUTATION_TASK
     }
   },
   {
@@ -23,7 +25,7 @@ export var TASK = [
     actionName: 'replace-with-quantum-circuit-loading-task',
     className: 'bpmn-icon-circuit-loading',
     target: {
-      type: 'quantme:QuantumCircuitLoadingTask'
+      type: consts.QUANTUM_CIRCUIT_LOADING_TASK
     }
   },
   {
@@ -31,7 +33,7 @@ export var TASK = [
     actionName: 'replace-with-data-preparation-task',
     className: 'bpmn-icon-data-preparation',
     target: {
-      type: 'quantme:DataPreparationTask'
+      type: consts.DATA_PREPARATION_TASK
     }
   },
   {
@@ -39,7 +41,7 @@ export var TASK = [
     actionName: 'replace-with-oracle-expansion-task',
     className: 'bpmn-icon-oracle-expansion',
     target: {
-      type: 'quantme:OracleExpansionTask'
+      type: consts.ORACLE_EXPANSION_TASK
     }
   },
   {
@@ -47,7 +49,7 @@ export var TASK = [
     actionName: 'replace-with-quantum-circuit-execution-task',
     className: 'bpmn-icon-circuit-execution',
     target: {
-      type: 'quantme:QuantumCircuitExecutionTask'
+      type: consts.QUANTUM_CIRCUIT_EXECUTION_TASK
     }
   },
   {
@@ -55,7 +57,7 @@ export var TASK = [
     actionName: 'replace-with-readout-error-mitigation-task',
     className: 'bpmn-icon-error-mitigation',
     target: {
-      type: 'quantme:ReadoutErrorMitigationTask'
+      type: consts.READOUT_ERROR_MITIGATION_TASK
     }
   }
 ];

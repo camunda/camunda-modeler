@@ -18,16 +18,28 @@ export default class QRMHandler {
    *
    * @param userName the Github username to which the QRM repository belongs
    * @param repoName the Github repository name to load the QRMs from
+   * @param props client object to trigger actions, such as creating notifications
    * @returns {Promise<[QRM]>} an array with the current QRMs
    */
-  static async getCurrentQRMs(userName, repoName) {
+  static async getCurrentQRMs(userName, repoName, props) {
+
+    let folders = [];
+    let QRMs = [];
 
     // get all folders of the defined QRM repository which could contain a QRM
-    let folders = await GitHandler.getFoldersInRepository(userName, repoName);
-    console.log('Found %i folders with QRM candidates!', folders.length);
+    try {
+      folders = await GitHandler.getFoldersInRepository(userName, repoName);
+    } catch (error) {
+      console.log(error);
+      let content = 'Unable to load QRMs from Github repository with username \''
+        + userName + '\' and repository name \'' + repoName
+        + '\'. Please adapt the configuration for a suited repository!';
+      props.displayNotification({ type: 'error', title: 'Unable to update QRMs', content: content, duration: 25000 });
+      return QRMs;
+    }
 
     // filter invalid folders and retrieve QRMs
-    let QRMs = [];
+    console.log('Found %i folders with QRM candidates!', folders.length);
     for (let i = 0; i < folders.length; i++) {
       let qrm = await this.getQRM(userName, repoName, folders[i]);
       if (qrm != null) {

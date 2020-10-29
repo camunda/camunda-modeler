@@ -11,6 +11,7 @@
 
 import PropertiesActivator from 'bpmn-js-properties-panel/lib/PropertiesActivator';
 import CamundaPropertiesProvider from 'bpmn-js-properties-panel/lib/provider/camunda/CamundaPropertiesProvider';
+import * as consts from '../Constants';
 
 let QuantMEPropertyEntryHandler = require('./QuantMEPropertyEntryHandler');
 
@@ -68,22 +69,22 @@ export default class QuantMEPropertiesProvider extends PropertiesActivator {
  */
 function addQuantMEEntries(group, element, translate) {
   switch (element.type) {
-  case 'quantme:QuantumComputationTask':
+  case consts.QUANTUM_COMPUTATION_TASK:
     addQuantumComputationTaskEntries(group, translate);
     break;
-  case 'quantme:QuantumCircuitLoadingTask':
+  case consts.QUANTUM_CIRCUIT_LOADING_TASK:
     addQuantumCircuitLoadingTaskEntries(group, translate);
     break;
-  case 'quantme:DataPreparationTask':
+  case consts.DATA_PREPARATION_TASK:
     addDataPreparationTaskEntries(group, translate);
     break;
-  case 'quantme:OracleExpansionTask':
+  case consts.ORACLE_EXPANSION_TASK:
     addOracleExpansionTaskEntries(group, translate);
     break;
-  case 'quantme:QuantumCircuitExecutionTask':
+  case consts.QUANTUM_CIRCUIT_EXECUTION_TASK:
     addQuantumCircuitExecutionTaskEntries(group, translate);
     break;
-  case 'quantme:ReadoutErrorMitigationTask':
+  case consts.READOUT_ERROR_MITIGATION_TASK:
     addReadoutErrorMitigationTaskEntries(group, translate);
     break;
   default:
