@@ -12,9 +12,12 @@
 
 import DeploymentEventHandler from '../DeploymentEventHandler';
 
+import diagramXML from './fixtures/process-variables.bpmn';
+
 const EXAMPLE_ERROR = 'something went wrong';
 
 const SUCCESS_STATUS = 'success';
+
 
 describe('<DeploymentEventHandler>', () => {
 
@@ -164,6 +167,70 @@ describe('<DeploymentEventHandler>', () => {
         context: 'foo'
       }
     });
+  });
+
+
+  describe('diagram metrics', () => {
+
+    it('should send process variables count', async () => {
+
+      // given
+      const tab = createTab({
+        type: 'bpmn',
+        file: {
+          contents: diagramXML
+        }
+      });
+
+      const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+      // when
+      await handleDeploymentDone({ tab });
+
+      // then
+      const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+      expect(metrics.processVariablesCount).to.equal(3);
+    });
+
+
+    it('should NOT send process variables count when no contents', async () => {
+
+      // given
+      const tab = createTab({
+        type: 'bpmn'
+      });
+
+      const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+      // when
+      await handleDeploymentDone({ tab });
+
+      // then
+      const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+      expect(metrics.processVariablesCount).not.to.exist;
+    });
+
+
+    it('should NOT send process variables count for dmn files', async () => {
+
+      // given
+      const tab = createTab({
+        type: 'dmn'
+      });
+
+      const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+      // when
+      await handleDeploymentDone({ tab });
+
+      // then
+      const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+      expect(metrics.processVariablesCount).not.to.exist;
+    });
+
   });
 
 });

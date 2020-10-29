@@ -10,6 +10,8 @@
 
 import BaseEventHandler from './BaseEventHandler';
 
+import { extractProcessVariables } from '../../../util';
+
 const RELEVANT_TAB_TYPES = ['bpmn', 'dmn'];
 
 // Sends a deployment event to ET everytime when a user triggers a deploy to
@@ -26,13 +28,23 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     subscribe('deployment.error', this.handleDeployment);
   }
 
-  // @pinussilvestrus: empty for now, we will need this for further metrics
-  // e.g. https://github.com/camunda/camunda-modeler/issues/1971
-  generateMetrics = (file) => {
-    return {};
+  generateMetrics = async (file, tabType) => {
+    let metrics = {};
+
+    // (1) process variables (bpmn only)
+    if (tabType === 'bpmn' && file.contents) {
+      const processVariables = await extractProcessVariables(file);
+
+      metrics = {
+        processVariablesCount: processVariables.length,
+        ...metrics
+      };
+    }
+
+    return metrics;
   }
 
-  handleDeployment = (event) => {
+  handleDeployment = async (event) => {
     const {
       error,
       tab,
@@ -58,7 +70,7 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     const outcome = error ? 'failure' : 'success';
 
     // (3) generate diagram related metrics, e.g. process variables
-    const diagramMetrics = this.generateMetrics(file);
+    const diagramMetrics = await this.generateMetrics(file, type);
 
     let payload = {
       diagramType: type,
