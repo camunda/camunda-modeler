@@ -127,8 +127,7 @@ export default class StartInstanceTool extends PureComponent {
 
     const {
       deployService,
-      displayNotification,
-      log
+      displayNotification
     } = this.props;
 
     // (1) Make sure active tab is saved
@@ -182,10 +181,10 @@ export default class StartInstanceTool extends PureComponent {
     if (showStartConfig) {
 
       const uiOptions = {
-        title: !configure ? 'Start Process Instance - Step 2 of 2' : null
+        title: configure ? 'Start Process Instance - Step 2 of 2' : null
       };
 
-      // (3.3) Open Modal to enter start configuration
+      // (4.3) Open Modal to enter start configuration
       const {
         action,
         configuration: userConfiguration
@@ -207,22 +206,12 @@ export default class StartInstanceTool extends PureComponent {
     try {
       const deployment = await this.deploy(tab, deploymentConfig);
 
-      // (5.1) Persist process definition
-      await this.saveProcessDefinition(tab, deployment);
+      await this.handleDeploymentSuccess(tab, deployment);
     } catch (error) {
-
-      displayNotification({
-        type: 'error',
-        title: START_INSTANCE_FAILED,
-        content: 'Deployment was not successful. See the log for further details.',
-        duration: 10000
-      });
-      log({ category: 'deploy-error', message: error.problems || error.message });
-
-      return null;
+      return await this.handleDeploymentError(tab, error);
     }
 
-    // (5.2) Get latest available process definition
+    // (5.1) Get latest available process definition
     // * current diagram version OR
     // * version before if diagram had no changes
     const processDefinition = await this.getSavedProcessDefinition(tab);
@@ -238,13 +227,7 @@ export default class StartInstanceTool extends PureComponent {
 
       await this.handleStartSuccess(processInstance, endpoint);
     } catch (error) {
-      displayNotification({
-        type: 'error',
-        title: START_INSTANCE_FAILED,
-        content: 'See the log for further details.',
-        duration: 10000
-      });
-      log({ category: 'start-instance-error', message: error.problems || error.message });
+      await this.handleStartError(tab, error);
     }
   }
 
@@ -364,6 +347,72 @@ export default class StartInstanceTool extends PureComponent {
       title: 'Process instance started successfully',
       content: <CockpitLink endpointUrl={ url } processInstance={ processInstance } />,
       duration: 10000
+    });
+  }
+
+  handleStartError(tab, error) {
+    const {
+      log,
+      displayNotification
+    } = this.props;
+
+    displayNotification({
+      type: 'error',
+      title: START_INSTANCE_FAILED,
+      content: 'See the log for further details.',
+      duration: 10000
+    });
+
+    log({
+      category: 'start-instance-error',
+      message: error.problems || error.message
+    });
+  }
+
+  handleDeploymentSuccess(tab, deployment) {
+
+    const {
+      triggerAction
+    } = this.props;
+
+    // notify interested parties
+    triggerAction('emit-event', {
+      type: 'deployment.done',
+      payload: {
+        deployment,
+        context: 'startInstanceTool'
+      }
+    });
+
+    return this.saveProcessDefinition(tab, deployment);
+  }
+
+  handleDeploymentError(tab, error) {
+    const {
+      log,
+      displayNotification,
+      triggerAction
+    } = this.props;
+
+    displayNotification({
+      type: 'error',
+      title: START_INSTANCE_FAILED,
+      content: 'Deployment was not successful. See the log for further details.',
+      duration: 10000
+    });
+
+    log({
+      category: 'deploy-error',
+      message: error.problems || error.details || error.message
+    });
+
+    // notify interested parties
+    triggerAction('emit-event', {
+      type: 'deployment.error',
+      payload: {
+        error,
+        context: 'startInstanceTool'
+      }
     });
   }
 

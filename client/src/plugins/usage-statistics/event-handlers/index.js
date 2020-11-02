@@ -10,8 +10,10 @@
 
 import PingEventHandler from './PingEventHandler';
 import DiagramOpenEventHandler from './DiagramOpenEventHandler';
+import DeploymentEventHandler from './DeploymentEventHandler';
 
 export default [
   PingEventHandler,
-  DiagramOpenEventHandler
+  DiagramOpenEventHandler,
+  DeploymentEventHandler
 ];

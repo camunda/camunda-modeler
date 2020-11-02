@@ -6,6 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: store variable events for conditional events in the correct property ([#836](https://github.com/camunda/camunda-modeler/issues/836))
+* `FIX`: re-enable `entriesVisible` property of templates ([#1975](https://github.com/camunda/camunda-modeler/issues/1975))
+
 ## 4.3.0
 
 ### General

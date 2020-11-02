@@ -10,16 +10,20 @@ This shows how to use and extend the QuantME modeling and transformation framewo
 
 ### [Element Templates](./element-templates)
 
-This shows how to setup and contribute pre-defined custom elements to the modeler
+Setup, use, and contribute pre-defined custom elements with the Camunda Modeler.
 
 ### [Flags](./flags)
 
-This shows how to use flags to toggle several features
+Use flags to toggle several Camunda Modeler features.
 
 ### [Plugins](./plugins)
 
-This shows how to use plug into the modeler
+Use or develop plugins to extend the Camunda Modeler.
 
 ### [Search Paths](./search-paths)
 
-This gives an overview about several local data paths
+Learn about local data paths the Camunda Modeler searches in.
+
+### [Telemetry](./telemetry)
+
+Get to know about the usage data we send to our telemetry server.

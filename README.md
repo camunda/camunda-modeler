@@ -15,6 +15,8 @@ The following repository contains different use cases that were modeled and tran
 
 ### Building the Application
 
+Build the app in a Posix environment. On Windows that is Git Bash or WSL.
+
 ```sh
 # install dependencies
 npm install

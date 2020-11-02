@@ -14,13 +14,19 @@ import React from 'react';
 
 import { mount } from 'enzyme';
 
-import ElementTemplatesView, { ElementTemplatesListItem, ElementTemplatesListItemEmpty } from '../ElementTemplatesModalView';
+import ElementTemplatesView, {
+  ElementTemplatesListItem,
+  ElementTemplatesListItemEmpty,
+  getDate
+} from '../ElementTemplatesModalView';
 import Dropdown from '../Dropdown';
 
 import BpmnModdle from 'bpmn-moddle';
 import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
 
 const moddle = new BpmnModdle({ camunda: camundaModdlePackage });
+
+const timestamp = 1000000000000;
 
 
 describe('<ElementTemplatesView>', function() {
@@ -118,7 +124,7 @@ describe('<ElementTemplatesView>', function() {
 
       const meta = listItem.find('.element-templates-list__item-meta').first();
 
-      expect(meta.text()).to.equal('Walt\'s Catalog | 2001-09-09');
+      expect(meta.text()).to.equal(`Walt's Catalog | ${ getDate(elementTemplate) }`);
     });
 
 
@@ -361,11 +367,11 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
       catalogTemplateId: '00000000-0000-0000-0000-000000000001',
-      created: 1000000000000,
+      created: timestamp,
       tags: [
         'Donald\'s Catalog'
       ],
-      updated: 1000000000000
+      updated: timestamp
     },
     name: 'Template 2',
     properties: []
@@ -378,11 +384,11 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
       catalogTemplateId: '00000000-0000-0000-0000-000000000002',
-      created: 1000000000000,
+      created: timestamp,
       tags: [
         'Donald\'s Catalog'
       ],
-      updated: 1000000000000
+      updated: timestamp
     },
     name: 'Template 3',
     properties: []
@@ -396,11 +402,11 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
       catalogTemplateId: '00000000-0000-0000-0000-000000000000',
-      created: 1000000000000,
+      created: timestamp,
       tags: [
         'Walt\'s Catalog'
       ],
-      updated: 1000000000000
+      updated: timestamp
     },
     name: 'Template 1',
     properties: []

@@ -202,7 +202,12 @@ export class DmnEditor extends CachedComponent {
 
     onImport(error, warnings);
 
-    if (!error) {
+    if (error) {
+      this.setCached({
+        dirty: false,
+        lastXML: null
+      });
+    } else {
       this.setCached({
         dirty: false,
         lastXML: xml,
