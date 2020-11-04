@@ -191,14 +191,14 @@ export default class KeyboardBindings {
   }
 
   update(menu) {
+    menu = this.updateRemoveSelectionEntry(menu);
+
     this.copy = findCopy(menu);
     this.cut = findCut(menu);
     this.paste = findPaste(menu);
     this.selectAll = findSelectAll(menu);
     this.undo = findUndo(menu);
     this.redo = findRedo(menu);
-
-    menu = this.updateRemoveSelectionEntry(menu);
 
     this.updateCustomEntries(menu);
 
