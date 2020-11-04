@@ -103,9 +103,12 @@ export default class AppParent extends PureComponent {
 
     const { editMenu } = state;
 
-    keyboardBindings.update(editMenu);
+    const updatedMenu = keyboardBindings.update(editMenu);
 
-    this.getBackend().sendMenuUpdate(state);
+    this.getBackend().sendMenuUpdate({
+      editMenu: updatedMenu,
+      ...state
+    });
   }
 
   handleContextMenu = (type, options) => {
