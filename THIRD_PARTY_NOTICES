@@ -50,11 +50,11 @@ This project incorporates components from the projects listed below. The origina
 43.   @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
 44.   bpmn-js-disable-collapsed-subprocess@0.1.2 (https://github.com/bpmn-io/bpmn-js-disable-collapsed-subprocess)
 45.   bpmn-js-executable-fix@0.1.2 (https://github.com/bpmn-io/bpmn-js-executable-fix)
-46.   bpmn-js-properties-panel@0.37.1 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+46.   bpmn-js-properties-panel@0.37.5 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 47.   bpmn-js-signavio-compat@1.2.2 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
-48.   bpmn-js@7.3.1 (https://github.com/bpmn-io/bpmn-js)
+48.   bpmn-js@7.4.0 (https://github.com/bpmn-io/bpmn-js)
 49.   bpmn-moddle@7.0.3 (https://github.com/bpmn-io/bpmn-moddle)
-50.   camunda-bpmn-moddle@4.4.0 (https://github.com/camunda/camunda-bpmn-moddle)
+50.   camunda-bpmn-moddle@4.4.1 (https://github.com/camunda/camunda-bpmn-moddle)
 51.   camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
 52.   camunda-dmn-moddle@1.0.0 (https://github.com/camunda/camunda-dmn-moddle)
 53.   canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
@@ -68,14 +68,14 @@ This project incorporates components from the projects listed below. The origina
 61.   diagram-js-direct-editing@1.6.1 (https://github.com/bpmn-io/diagram-js-direct-editing)
 62.   diagram-js-minimap@2.0.3 (https://github.com/bpmn-io/diagram-js-minimap)
 63.   diagram-js-origin@1.3.1 (https://github.com/bpmn-io/diagram-js-origin)
-64.   diagram-js@6.7.1 (https://github.com/bpmn-io/diagram-js)
+64.   diagram-js@6.8.0 (https://github.com/bpmn-io/diagram-js)
 65.   didi@4.0.0 (https://github.com/nikku/didi)
-66.   dmn-js-decision-table@9.3.2 (https://github.com/bpmn-io/dmn-js)
-67.   dmn-js-drd@9.3.2 (https://github.com/bpmn-io/dmn-js)
-68.   dmn-js-literal-expression@9.3.2 (https://github.com/bpmn-io/dmn-js)
+66.   dmn-js-decision-table@9.4.0 (https://github.com/bpmn-io/dmn-js)
+67.   dmn-js-drd@9.4.0 (https://github.com/bpmn-io/dmn-js)
+68.   dmn-js-literal-expression@9.4.0 (https://github.com/bpmn-io/dmn-js)
 69.   dmn-js-properties-panel@0.5.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
-70.   dmn-js-shared@9.3.2 (https://github.com/bpmn-io/dmn-js)
-71.   dmn-js@9.3.2 (https://github.com/bpmn-io/dmn-js)
+70.   dmn-js-shared@9.4.0 (https://github.com/bpmn-io/dmn-js)
+71.   dmn-js@9.4.0 (https://github.com/bpmn-io/dmn-js)
 72.   dmn-moddle@9.1.0 (https://github.com/bpmn-io/dmn-moddle)
 73.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
 74.   escape-html@1.0.3 (https://github.com/component/escape-html)
@@ -89,7 +89,7 @@ This project incorporates components from the projects listed below. The origina
 82.   lodash-es@4.17.15 (https://github.com/lodash/lodash)
 83.   lodash@4.17.20 (https://github.com/lodash/lodash)
 84.   min-dash@3.5.2 (https://github.com/bpmn-io/min-dash)
-85.   min-dom@3.1.1 (https://github.com/bpmn-io/min-dom)
+85.   min-dom@3.1.3 (https://github.com/bpmn-io/min-dom)
 86.   mitt@1.1.3 (https://github.com/developit/mitt)
 87.   moddle-xml@9.0.3 (https://github.com/bpmn-io/moddle-xml)
 88.   moddle@5.0.1 (https://github.com/bpmn-io/moddle)
@@ -1244,7 +1244,7 @@ MIT
 END OF bpmn-js-executable-fix@0.1.2 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@0.37.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@0.37.5 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1268,7 +1268,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@0.37.1 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@0.37.5 NOTICES AND INFORMATION
 
 
 %% bpmn-js-signavio-compat@1.2.2 NOTICES AND INFORMATION BEGIN HERE
@@ -1299,7 +1299,7 @@ THE SOFTWARE.
 END OF bpmn-js-signavio-compat@1.2.2 NOTICES AND INFORMATION
 
 
-%% bpmn-js@7.3.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@7.4.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1326,7 +1326,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js@7.3.1 NOTICES AND INFORMATION
+END OF bpmn-js@7.4.0 NOTICES AND INFORMATION
 
 
 %% bpmn-moddle@7.0.3 NOTICES AND INFORMATION BEGIN HERE
@@ -1356,7 +1356,7 @@ THE SOFTWARE.
 END OF bpmn-moddle@7.0.3 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-moddle@4.4.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-moddle@4.4.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1380,7 +1380,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-moddle@4.4.0 NOTICES AND INFORMATION
+END OF camunda-bpmn-moddle@4.4.1 NOTICES AND INFORMATION
 
 
 %% camunda-cmmn-moddle@1.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1721,7 +1721,7 @@ THE SOFTWARE.
 END OF diagram-js-origin@1.3.1 NOTICES AND INFORMATION
 
 
-%% diagram-js@6.7.1 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@6.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1745,7 +1745,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@6.7.1 NOTICES AND INFORMATION
+END OF diagram-js@6.8.0 NOTICES AND INFORMATION
 
 
 %% didi@4.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1776,7 +1776,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF didi@4.0.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-decision-table@9.3.2 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-decision-table@9.4.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1802,10 +1802,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-decision-table@9.3.2 NOTICES AND INFORMATION
+END OF dmn-js-decision-table@9.4.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-drd@9.3.2 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-drd@9.4.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1831,10 +1831,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-drd@9.3.2 NOTICES AND INFORMATION
+END OF dmn-js-drd@9.4.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-literal-expression@9.3.2 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-literal-expression@9.4.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1860,7 +1860,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-literal-expression@9.3.2 NOTICES AND INFORMATION
+END OF dmn-js-literal-expression@9.4.0 NOTICES AND INFORMATION
 
 
 %% dmn-js-properties-panel@0.5.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1890,7 +1890,7 @@ THE SOFTWARE.
 END OF dmn-js-properties-panel@0.5.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-shared@9.3.2 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-shared@9.4.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1916,10 +1916,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-shared@9.3.2 NOTICES AND INFORMATION
+END OF dmn-js-shared@9.4.0 NOTICES AND INFORMATION
 
 
-%% dmn-js@9.3.2 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js@9.4.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1945,7 +1945,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js@9.3.2 NOTICES AND INFORMATION
+END OF dmn-js@9.4.0 NOTICES AND INFORMATION
 
 
 %% dmn-moddle@9.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -2331,7 +2331,7 @@ THE SOFTWARE.
 END OF min-dash@3.5.2 NOTICES AND INFORMATION
 
 
-%% min-dom@3.1.1 NOTICES AND INFORMATION BEGIN HERE
+%% min-dom@3.1.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -2356,7 +2356,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF min-dom@3.1.1 NOTICES AND INFORMATION
+END OF min-dom@3.1.3 NOTICES AND INFORMATION
 
 
 %% mitt@1.1.3 NOTICES AND INFORMATION BEGIN HERE
