@@ -249,7 +249,7 @@ Notice that adherence to the following configuration options is not enforced. No
 
 | **Binding `type`**  | `property`  |
 |---|---|
-| **Valid property `type`'s** | `String`<br />`Hidden`<br />`Dropdown`<br />`Boolean` |
+| **Valid property `type`'s** | all property types are supported |
 | **Binding parameters**  | `name`: the name of the property  |
 | **Mapping result** | `<... [name]=[userInput] ... />`  |
 
