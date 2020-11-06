@@ -17,7 +17,8 @@ import { mount } from 'enzyme';
 import ElementTemplatesView, {
   ElementTemplatesListItem,
   ElementTemplatesListItemEmpty,
-  getDate
+  getDate,
+  toDateString
 } from '../ElementTemplatesModalView';
 import Dropdown from '../Dropdown';
 
@@ -26,7 +27,8 @@ import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
 
 const moddle = new BpmnModdle({ camunda: camundaModdlePackage });
 
-const timestamp = 1000000000000;
+const timestamp = 1000000000000,
+      dateString = toDateString(timestamp);
 
 
 describe('<ElementTemplatesView>', function() {
@@ -350,6 +352,64 @@ describe('<ElementTemplatesView>', function() {
 
       // then
       expect(wrapper.find('.button--apply').first().prop('disabled')).to.be.true;
+    });
+
+  });
+
+
+  describe('#getDate', function() {
+
+    it('should get date (updated)', function() {
+
+      // given
+      const elementTemplate = {
+        metadata: {
+          updated: timestamp
+        }
+      };
+
+      // when
+      // then
+      expect(getDate(elementTemplate)).to.eql(dateString);
+    });
+
+
+    it('should get date (created)', function() {
+
+      // given
+      const elementTemplate = {
+        metadata: {
+          created: timestamp
+        }
+      };
+
+      // when
+      // then
+      expect(getDate(elementTemplate)).to.eql(dateString);
+    });
+
+
+    it('should NOT get date (no metadata)', function() {
+
+      // given
+      const elementTemplate = {};
+
+      // when
+      // then
+      expect(getDate(elementTemplate)).to.be.null;
+    });
+
+
+    it('should NOT get date (no created or updated)', function() {
+
+      // given
+      const elementTemplate = {
+        metadata: {}
+      };
+
+      // when
+      // then
+      expect(getDate(elementTemplate)).to.be.null;
     });
 
   });

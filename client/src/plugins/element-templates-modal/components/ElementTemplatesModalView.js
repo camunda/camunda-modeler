@@ -418,16 +418,26 @@ export function getDate(elementTemplate) {
   const { metadata } = elementTemplate;
 
   if (!metadata) {
-    return;
+    return null;
   }
 
-  const dateUpdated = new Date(metadata.updated);
+  const { created, updated } = metadata;
 
-  const year = dateUpdated.getFullYear();
+  if (!created && !updated) {
+    return null;
+  }
 
-  const month = leftPad(String(dateUpdated.getMonth() + 1), 2, '0');
+  return toDateString(updated || created);
+}
 
-  const date = leftPad(String(dateUpdated.getDate()), 2, '0');
+export function toDateString(timestamp) {
+  const date = new Date(timestamp);
 
-  return `${ year }-${ month }-${ date }`;
+  const year = date.getFullYear();
+
+  const month = leftPad(String(date.getMonth() + 1), 2, '0');
+
+  const day = leftPad(String(date.getDate()), 2, '0');
+
+  return `${ year }-${ month }-${ day }`;
 }
