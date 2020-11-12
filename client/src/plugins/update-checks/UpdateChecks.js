@@ -29,7 +29,7 @@ class NoopComponent extends PureComponent {
 }
 
 const DEFAULT_UPDATE_SERVER_URL = process.env.NODE_ENV === 'production'
-  ? 'https://camunda-modeler-updates.camunda.com/'
+  ? 'https://camunda-modeler-updates.camunda.com'
   : 'https://camunda-modeler-update-server-staging.camunda.com';
 
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
