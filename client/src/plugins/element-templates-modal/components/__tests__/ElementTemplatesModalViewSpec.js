@@ -313,15 +313,13 @@ describe('<ElementTemplatesView>', function() {
 
       // when
       const { wrapper } = await createElementTemplatesModalView({
-        config: new Config({
-          get(key, ...args) {
-            if (key === 'bpmn.elementTemplates') {
-              return Promise.resolve([]);
-            }
-
-            throw Error('Unknown key');
+        getConfig: (key, ...args) => {
+          if (key === 'bpmn.elementTemplates') {
+            return Promise.resolve([]);
           }
-        })
+
+          throw Error('Unknown key');
+        }
       });
 
       // then
@@ -431,8 +429,8 @@ async function createElementTemplatesModalView(props = {}) {
   }
 
   const defaultProps = {
-    config: new Config(),
     displayNotification() {},
+    getConfig: defaultGetConfig,
     onApply() {},
     onClose() {},
     subscribe() {},
@@ -451,18 +449,10 @@ async function createElementTemplatesModalView(props = {}) {
   };
 }
 
-class Config {
-  constructor(overrides = {}) {
-    this.elementTemplates = DEFAULT_ELEMENT_TEMPLATES;
-
-    Object.assign(this, overrides);
+function defaultGetConfig(key, ...args) {
+  if (key === 'bpmn.elementTemplates') {
+    return Promise.resolve(DEFAULT_ELEMENT_TEMPLATES);
   }
 
-  get(key, ...args) {
-    if (key === 'bpmn.elementTemplates') {
-      return Promise.resolve(this.elementTemplates);
-    }
-
-    throw Error('Unknown key');
-  }
+  throw Error('Unknown key');
 }
