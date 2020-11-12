@@ -1,0 +1,78 @@
+{
+  "appliesTo": [
+    "bpmn:ServiceTask"
+  ],
+  "description": "foo",
+  "id": "23112asd-da-213sad-sad123",
+  "metadata": {
+    "catalogOrganizationId": "aafasda-asd12as-123123",
+    "catalogTemplateId": "asd-asd-asdsad",
+    "created": 1601556562335,
+    "tags": [
+      "Walt's Templates"
+    ]
+  },
+  "name": "New RPA template",
+  "properties": [
+    {
+      "binding": {
+        "name": "name",
+        "type": "property"
+      },
+      "type": "Hidden",
+      "value": "MyBot"
+    },
+    {
+      "binding": {
+        "name": "bot",
+        "type": "camunda:property"
+      },
+      "editable": false,
+      "label": "UiPath Package Name",
+      "type": "String",
+      "value": "foo"
+    },
+    {
+      "binding": {
+        "name": "foo",
+        "type": "camunda:inputParameter"
+      },
+      "description": "<Description of the IN argument, e.g. expected format of the value>",
+      "label": "foo",
+      "value": "${foo}"
+    },
+    {
+      "binding": {
+        "source": "${bar}",
+        "type": "camunda:outputParameter"
+      },
+      "description": "<Description of the OUT argument, e.g. format of the returned value>",
+      "label": "bar",
+      "value": "bar"
+    },
+    {
+      "binding": {
+        "name": "camunda:type",
+        "type": "property"
+      },
+      "type": "Hidden",
+      "value": "external"
+    },
+    {
+      "binding": {
+        "name": "camunda:topic",
+        "type": "property"
+      },
+      "type": "Hidden",
+      "value": "uipath"
+    },
+    {
+      "binding": {
+        "name": "camunda:asyncAfter",
+        "type": "property"
+      },
+      "type": "Hidden",
+      "value": "true"
+    }
+  ]
+}
