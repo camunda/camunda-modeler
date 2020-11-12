@@ -52,11 +52,11 @@ class ElementTemplatesView extends PureComponent {
 
   getElementTemplates = async () => {
     const {
-      config,
+      getConfig,
       triggerAction
     } = this.props;
 
-    let elementTemplates = await config.get('bpmn.elementTemplates');
+    let elementTemplates = await getConfig('bpmn.elementTemplates');
 
     const selectedElement = await triggerAction('getSelectedElement');
 

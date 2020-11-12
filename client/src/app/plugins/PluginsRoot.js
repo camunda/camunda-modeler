@@ -85,6 +85,8 @@ export default class PluginsRoot extends PureComponent {
           <PluginComponent
             triggerAction={ app.triggerAction }
             config={ config }
+            getConfig={ app.getConfig }
+            setConfig={ app.setConfig }
             subscribe={ subscribe }
             log={ this.log }
             displayNotification={ this.displayNotification }
