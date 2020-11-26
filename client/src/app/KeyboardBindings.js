@@ -15,17 +15,24 @@ import {
 } from 'diagram-js/lib/features/keyboard/KeyboardUtil';
 
 import {
+  findIndex,
+  forEach,
   isArray,
   omit
 } from 'min-dash';
 
 
 /**
- * Fixes issue with Electron applications on Linux and Windows. Checks for
- * menu item accelarators that can't be overridden (CommandOrControl+A/C/V) and
+ * Fixes issues with Electron applications on Linux, Windows and Mac. Checks for
+ * menu item accelerators that can't be overridden (CommandOrControl+A/C/V) and
  * manually triggers corresponding editor actions.
  *
  * See https://github.com/electron/electron/issues/7165.
+ *
+ * Also, adds actions to accelerators which are already registered to other ones, since
+ * multiple accelerators are currently not supported.
+ *
+ * See https://github.com/camunda/camunda-modeler/issues/1989.
  */
 export default class KeyboardBindings {
 
@@ -35,19 +42,24 @@ export default class KeyboardBindings {
    * @param {Object} options - Options.
    * @param {Object} [options.menu] - Menu.
    * @param {Function} [options.onAction] - Function to be called on action.
+   * @param {boolean} [options.isMac] - Whether platform is Mac or not.
    */
   constructor(options = {}) {
     const {
       menu,
-      onAction
+      onAction,
+      isMac
     } = options;
 
     this.onAction = onAction;
+
+    this.isMac = isMac,
 
     this.copy = null;
     this.cut = null;
     this.paste = null;
     this.selectAll = null;
+    this.removeSelection = null;
     this.undo = null;
     this.redo = null;
 
@@ -75,7 +87,10 @@ export default class KeyboardBindings {
   _keyDownHandler = (event) => {
     let action = null;
 
-    const { onAction } = this;
+    const {
+      isMac,
+      onAction
+    } = this;
 
     const commandOrCtrl = isCommandOrControl(event);
 
@@ -101,6 +116,14 @@ export default class KeyboardBindings {
       !hasRole(this.selectAll, 'selectAll')
     ) {
       action = getAction(this.selectAll);
+    }
+
+    // remove selection
+    if (isSecondaryRemoveSelection(event, isMac) &&
+      isEnabled(this.removeSelection) &&
+      !hasRole(this.removeSelection, 'delete')
+    ) {
+      action = getAction(this.removeSelection);
     }
 
     // undo
@@ -168,6 +191,8 @@ export default class KeyboardBindings {
   }
 
   update(menu) {
+    menu = this.updateRemoveSelectionEntry(menu);
+
     this.copy = findCopy(menu);
     this.cut = findCut(menu);
     this.paste = findPaste(menu);
@@ -176,6 +201,26 @@ export default class KeyboardBindings {
     this.redo = findRedo(menu);
 
     this.updateCustomEntries(menu);
+
+    return menu;
+  }
+
+  updateRemoveSelectionEntry(menu) {
+
+    // (1) set primary shortcut depending on platform
+    const primaryAccelerator = this.isMac ? 'Backspace' : 'Delete';
+
+    menu = findAndReplaceAll(
+      menu,
+      ({ accelerator }) => isAccelerator(accelerator, 'Delete'),
+      { accelerator: primaryAccelerator }
+    );
+
+    // (2) register it
+    this.removeSelection =
+      find(menu, ({ accelerator }) => isAccelerator(accelerator, primaryAccelerator));
+
+    return menu;
   }
 
   updateCustomEntries(menu) {
@@ -247,6 +292,14 @@ function isRedo(event) {
     (isKey([ 'y', 'Y' ], event) || (isKey(['z', 'Z'], event) && isShift(event)));
 }
 
+// Secondary delete shortcut
+// Delete (Mac), Backspace (Linux, Windows)
+function isSecondaryRemoveSelection(event, isMac) {
+  const key = isMac ? 'Delete' : 'Backspace';
+
+  return isKey(key, event);
+}
+
 /**
  * Compare accelerators ignoring whitespace and upper/lowercase.
  *
@@ -304,6 +357,48 @@ export function findAll(menu = [], matcher) {
 
     return found;
   }, []);
+}
+
+/**
+ * Find all matching entries and replace properties.
+ *
+ * @param {Array} [menu] - Menu.
+ * @param {Function} matcher - Matcher function.
+ * @param {Object} overrides - Overriding properties.
+ *
+ *
+ * @returns {Array<Object>}
+ */
+export function findAndReplaceAll(menu = [], matcher, overrides = {}) {
+
+  let updatedMenu = menu;
+
+  forEach(menu, entry => {
+    if (isArray(entry)) {
+      const idx = findIndex(menu, entry);
+
+      updatedMenu[idx] = findAndReplaceAll(entry, matcher, overrides);
+    }
+
+    if (matcher(entry)) {
+      const idx = findIndex(menu, entry);
+
+      updatedMenu[idx] = {
+        ...entry,
+        ...overrides
+      };
+    }
+
+    if (entry.submenu) {
+      entry = {
+        ...entry,
+        submenu: findAndReplaceAll(entry.submenu, matcher, overrides)
+      };
+    }
+
+  });
+
+  return updatedMenu;
 }
 
 function findCopy(menu) {
