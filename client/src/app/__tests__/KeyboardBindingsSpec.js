@@ -12,7 +12,8 @@
 
 import KeyboardBindings, {
   find,
-  findAll
+  findAll,
+  findAndReplaceAll
 } from '../KeyboardBindings';
 
 import {
@@ -248,6 +249,100 @@ describe('KeyboardBindings', function() {
   });
 
 
+  describe('removeSelection', function() {
+
+    it('should NOT update primary <removeSelection>', function() {
+
+      // given
+      keyboardBindings = new KeyboardBindings({
+        onAction: actionSpy,
+        isMac: false
+      });
+
+      const entry = {
+        accelerator: 'Delete',
+        action: 'removeSelection'
+      };
+
+      // when
+      const updated = keyboardBindings.update([ entry ]);
+
+      // then
+      expect(updated).to.deep.include(entry);
+      expect(keyboardBindings.removeSelection).to.eql(entry);
+    });
+
+
+    it('should update primary <removeSelection>', function() {
+
+      // given
+      keyboardBindings = new KeyboardBindings({
+        onAction: actionSpy,
+        isMac: true
+      });
+
+      const entry = {
+        accelerator: 'Delete',
+        action: 'removeSelection'
+      };
+
+      // when
+      const updated = keyboardBindings.update([ entry ]);
+
+      const expectedEntry = {
+        accelerator: 'Backspace',
+        action: 'removeSelection'
+      };
+
+      // then
+      expect(updated).not.to.deep.include(entry);
+      expect(updated).to.deep.include(expectedEntry);
+      expect(keyboardBindings.removeSelection).to.eql(expectedEntry);
+    });
+
+
+    it('secondary <removeSelection>', function() {
+
+      // given
+      event = createKeyEvent('Backspace');
+
+      keyboardBindings.update([{
+        accelerator: 'Delete',
+        action: 'removeSelection'
+      }]);
+
+      // when
+      keyboardBindings._keyDownHandler(event);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith(null, 'removeSelection');
+    });
+
+
+    it('secondary <removeSelection> - mac', function() {
+
+      // given
+      keyboardBindings = new KeyboardBindings({
+        onAction: actionSpy,
+        isMac: true
+      });
+
+      event = createKeyEvent('Delete');
+
+      keyboardBindings.update([{
+        accelerator: 'Delete',
+        action: 'removeSelection'
+      }]);
+
+      // when
+      keyboardBindings._keyDownHandler(event);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith(null, 'removeSelection');
+    });
+  });
+
+
   it('#setOnAction', function() {
 
     // given
@@ -320,6 +415,43 @@ describe('KeyboardBindings', function() {
       expect(entries).to.eql([
         menu[0][0],
         menu[1][0]
+      ]);
+    });
+
+  });
+
+
+  describe('#findAndReplaceAll', function() {
+
+    it('should find all and replace entries', function() {
+
+      // given
+      const menu = [
+        [
+          { accelerator: 'A', custom: true },
+          { accelerator: 'B' }
+        ],
+        [
+          { accelerator: 'C', custom: true }
+        ]
+      ];
+
+      // when
+      const updated = findAndReplaceAll(
+        menu,
+        entry => entry.accelerator === 'A',
+        { custom: false }
+      );
+
+      // then
+      expect(updated).to.deep.eql([
+        [
+          { accelerator: 'A', custom: false },
+          { accelerator: 'B' }
+        ],
+        [
+          { accelerator: 'C', custom: true }
+        ]
       ]);
     });
 

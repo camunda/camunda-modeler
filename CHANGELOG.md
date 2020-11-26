@@ -6,8 +6,32 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.4.0
+
+### General
+
+* `FEAT`: enable `Backspace` on MacOS for element removal ([#1989](https://github.com/camunda/camunda-modeler/issues/1989))
+* `FEAT`: enable `SHIFT + click` for multi-selection ([#1964](https://github.com/camunda/camunda-modeler/issues/1964))
+* `FIX`: correct switching between diagram and XML ([#1925](https://github.com/camunda/camunda-modeler/issues/1925))
+* `CHORE`: capture deployment and process variables in telemetry events
+* `CHORE`: bump to `bpmn-js@7.4.0`
+* `CHORE`: bump to `dmn-js@9.4.0`
+* `CHORE`: bump to `diagram-js@6.8.0`
+* `CHORE`: bump to `bpmn-js-properties-panel@0.37.5`
+
+### BPMN
+
+* `FIX`: correct removal of element templates from events ([#1990](https://github.com/camunda/camunda-modeler/issues/1990))
+* `FIX`: unlink incompatible element template during replace ([#1961](https://github.com/camunda/camunda-modeler/issues/1961))
 * `FIX`: store variable events for conditional events in the correct property ([#836](https://github.com/camunda/camunda-modeler/issues/836))
-* `FIX`: re-enable `entriesVisible` property of templates ([#1975](https://github.com/camunda/camunda-modeler/issues/1975))
+* `FIX`: re-enable `entriesVisible` property of element templates ([#1975](https://github.com/camunda/camunda-modeler/issues/1975))
+* `FIX`: correct label of start instance tool ([#1777](https://github.com/camunda/camunda-modeler/issues/1777))
+
+### DMN
+
+* `FEAT`: allow decision table name to take empty space
+* `FEAT`: focus cell in newly added row ([#928](https://github.com/camunda/camunda-modeler/issues/928))
+* `FIX`: render hit policy drop down in the correct location
 
 ## 4.3.0
 
