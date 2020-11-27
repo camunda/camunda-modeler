@@ -1,7 +1,7 @@
 {
-  "name": "camunda-modeler-client",
+  "name": "quantme-modeler-client",
   "version": "4.4.0",
-  "description": "Camunda Modeler client application",
+  "description": "QuantME Modeler client application",
   "private": true,
   "license": "MIT",
   "main": "src/index.js",

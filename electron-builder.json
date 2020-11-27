@@ -1,6 +1,6 @@
 {
-  "appId": "com.camunda.CamundaModeler",
-  "productName": "Camunda Modeler",
+  "appId": "org.quantil.QuantMEModeler",
+  "productName": "QuantME Modeler",
   "files": [
     {
       "filter": [

@@ -19,7 +19,7 @@ const ET_ENDPOINT = process.env.ET_ENDPOINT || null;
 const DEV = NODE_ENV === 'development';
 const LICENSE_CHECK = process.env.LICENSE_CHECK;
 
-const UPDATES_SERVER_PRODUCT_NAME = process.env.UPDATES_SERVER_PRODUCT_NAME || 'Camunda Modeler';
+const UPDATES_SERVER_PRODUCT_NAME = process.env.UPDATES_SERVER_PRODUCT_NAME || 'QuantME Modeler';
 
 const pkg = require('./package.json');
 

@@ -1,13 +1,12 @@
 {
-  "name": "camunda-modeler",
+  "name": "quantme-modeler",
   "version": "4.4.0",
-  "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
+  "description": "QuantME Modeling and Transformation Framework based on the Camunda Modeler",
   "private": true,
   "main": "prod.js",
   "author": {
-    "name": "Camunda Services GmbH",
-    "email": "info@camunda.com",
-    "url": "https://camunda.com"
+    "name": "UST-QuAntiL",
+    "url": "https://github.com/UST-QuAntiL"
   },
   "license": "MIT",
   "dependencies": {
@@ -19,9 +18,9 @@
     "node-fetch": "^2.1.2",
     "parents": "^1.0.1"
   },
-  "homepage": "https://github.com/camunda/camunda-modeler",
+  "homepage": "https://github.com/UST-QuAntiL/QuantME-TransformationFramework",
   "repository": {
     "type": "git",
-    "url": "https://github.com/camunda/camunda-modeler"
+    "url": "https://github.com/UST-QuAntiL/QuantME-TransformationFramework"
   }
 }

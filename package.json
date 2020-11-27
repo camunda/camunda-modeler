@@ -1,7 +1,7 @@
 {
-  "name": "camunda-modeler-builder",
+  "name": "quantme-modeler-builder",
   "version": "0.0.0",
-  "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
+  "description": "QuantME Modeling and Transformation Framework based on the Camunda Modeler",
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
     "app:dev": "electron ./app/dev.js --force-update-checks resources/diagram/simple.bpmn",
@@ -33,12 +33,12 @@
     "test": "run-s *:test",
     "start": "run-s \"dev -- {@}\" --"
   },
-  "author": "Camunda <http://camunda.com>",
+  "author": "UST-QuAntiL <https://github.com/UST-QuAntiL>",
   "license": "SEE LICENSE IN LICENSE",
-  "homepage": "https://github.com/camunda/camunda-modeler",
+  "homepage": "https://github.com/UST-QuAntiL/QuantME-TransformationFramework",
   "repository": {
     "type": "git",
-    "url": "https://github.com/camunda/camunda-modeler"
+    "url": "https://github.com/UST-QuAntiL/QuantME-TransformationFramework"
   },
   "devDependencies": {
     "archiver": "^3.0.3",

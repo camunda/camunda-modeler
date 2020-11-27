@@ -58,35 +58,35 @@ const platforms = [
 const expectedFiles = {
   win: [
     {
-      name: 'camunda-modeler-${version}-win-${arch}.zip',
+      name: 'quantme-modeler-${version}-win-${arch}.zip',
       archs,
       contents: [
-        'Camunda Modeler.exe',
+        'QuantME Modeler.exe',
         'support/register_fileassoc.bat',
-        'LICENSE.camunda-modeler.txt',
-        'THIRD_PARTY_NOTICES.camunda-modeler.txt',
+        'LICENSE.quantme-modeler.txt',
+        'THIRD_PARTY_NOTICES.quantme-modeler.txt',
         'VERSION'
       ]
     }
   ],
   linux: [
     {
-      name: 'camunda-modeler-${version}-linux-${arch}.tar.gz',
+      name: 'quantme-modeler-${version}-linux-${arch}.tar.gz',
       archs: [ 'x64' ],
       contents: [
-        'camunda-modeler-${version}-linux-${arch}/camunda-modeler',
-        'camunda-modeler-${version}-linux-${arch}/support/xdg_register.sh',
-        'camunda-modeler-${version}-linux-${arch}/VERSION'
+        'quantme-modeler-${version}-linux-${arch}/quantme-modeler',
+        'quantme-modeler-${version}-linux-${arch}/support/xdg_register.sh',
+        'quantme-modeler-${version}-linux-${arch}/VERSION'
       ]
     }
   ],
   mac: [
-    'camunda-modeler-${version}-mac.dmg',
+    'quantme-modeler-${version}-mac.dmg',
     {
-      name: 'camunda-modeler-${version}-mac.zip',
+      name: 'quantme-modeler-${version}-mac.zip',
       archs: [ 'x64' ],
       contents: [
-        'Camunda Modeler.app/Contents/Info.plist'
+        'QuantME Modeler.app/Contents/Info.plist'
       ]
     }
   ]
