@@ -31,12 +31,6 @@ jobs:
       before_install: *import-cert-win
       script:
       - npm run all -- --x64 --no-compress
-    - stage: "pre distro"
-      name: "Create GitHub release"
-      os: linux
-      script:
-      - sudo snap install hub --classic
-      - GITHUB_TOKEN=$GH_TOKEN hub release create --draft --message=$TRAVIS_TAG $TRAVIS_TAG
     - stage: "distro"
       name: "Build Linux distro"
       os: linux
@@ -59,75 +53,10 @@ jobs:
         depth: false
       script:
       - npm run send-license-book-summary
-    - stage: "nightly build"
-      name: "Build Linux nightly"
-      script:
-      - |
-        git checkout -b build-nightly
-        npm run build -- --linux --nightly --publish
-    - stage: "nightly build"
-      name: "Build Windows nightly"
-      os: windows
-      before_install: *import-cert-win
-      script:
-      - |
-        git checkout -b build-nightly
-        npm run build -- --win --nightly --publish
-    - stage: "nightly build"
-      name: "Build MacOS nightly"
-      os: osx
-      osx_image: xcode11.2
-      script:
-      - |
-        git checkout -b build-nightly
-        npm run build -- --mac --nightly --publish
-    - stage: "build on demand"
-      name: "Build On Demand - Linux"
-      env:
-        - YARN_GPG=no
-      before_install: &install-yarn
-        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.21.1
-        - export PATH="$HOME/.yarn/bin:$PATH"
-      before_script: npm run link-dependencies
-      script: >
-        AWS_ACCESS_KEY_ID=$AWS_ON_DEMAND_ACCESS_KEY_ID
-        AWS_SECRET_ACCESS_KEY=$AWS_ON_DEMAND_SECRET_ACCESS_KEY
-        npm run build -- --linux --publish --on-demand --region=$AWS_ON_DEMAND_REGION
-    - stage: "build on demand"
-      name: "Build On Demand - MacOS"
-      os: osx
-      osx_image: xcode11.2
-      env:
-        - YARN_GPG=no
-      before_install: *install-yarn
-      before_script: npm run link-dependencies
-      script: >
-        AWS_ACCESS_KEY_ID=$AWS_ON_DEMAND_ACCESS_KEY_ID
-        AWS_SECRET_ACCESS_KEY=$AWS_ON_DEMAND_SECRET_ACCESS_KEY
-        npm run build -- --mac --publish --on-demand --region=$AWS_ON_DEMAND_REGION
-    - stage: "build on demand"
-      name: "Build On Demand - Windows"
-      os: windows
-      env:
-        - YARN_GPG=no
-      before_install:
-        - *import-cert-win
-        - *install-yarn
-      before_script: npm run link-dependencies
-      script: >
-        AWS_ACCESS_KEY_ID=$AWS_ON_DEMAND_ACCESS_KEY_ID
-        AWS_SECRET_ACCESS_KEY=$AWS_ON_DEMAND_SECRET_ACCESS_KEY
-        npm run build -- --win --publish --on-demand --region=$AWS_ON_DEMAND_REGION
 stages:
   - name: test
     if: type != api OR env(SKIP_TESTS) != "true"
-  - name: "pre distro"
-    if: tag =~ ^v\d
   - name: "distro"
     if: tag =~ ^v\d
   - name: "post distro"
     if: tag =~ ^v\d
-  - name: "nightly build"
-    if: type IN (cron)
-  - name: "build on demand"
-    if: type == api AND env(ON_DEMAND) == "true" AND env(BUILD_NAME) != ""

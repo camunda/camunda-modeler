@@ -31,8 +31,7 @@
     "send-license-book-summary": "node tasks/send-license-book-summary.js -s",
     "release": "lerna publish --force-publish",
     "test": "run-s *:test",
-    "start": "run-s \"dev -- {@}\" --",
-    "link-dependencies": "node tasks/link-dependencies.js"
+    "start": "run-s \"dev -- {@}\" --"
   },
   "author": "Camunda <http://camunda.com>",
   "license": "SEE LICENSE IN LICENSE",
