@@ -8,16 +8,11 @@
  * except in compliance with the MIT License.
  */
 
-import {
-  getDefaultTemplate
-} from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates/Helper';
-
-
 export default function applyDefaultTemplates(elementRegistry, elementTemplates, commandStack) {
   const elements = elementRegistry.getAll();
 
   const commands = elements.reduce((currentCommands, element) => {
-    const template = getDefaultTemplate(element, elementTemplates);
+    const template = elementTemplates.getDefault(element);
 
     if (!template) {
       return currentCommands;
