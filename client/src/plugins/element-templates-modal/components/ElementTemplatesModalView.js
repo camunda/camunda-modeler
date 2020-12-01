@@ -20,6 +20,7 @@ import Input from './Input';
 import css from './ElementTemplatesModalView.less';
 
 import {
+  groupBy,
   isDefined,
   isNil
 } from 'min-dash';
@@ -61,17 +62,14 @@ class ElementTemplatesView extends PureComponent {
     const selectedElement = await triggerAction('getSelectedElement');
 
     if (selectedElement) {
-      elementTemplates = elementTemplates
-        .filter(({ appliesTo }) => {
-          return isAny(selectedElement, appliesTo);
-        })
-        .sort((a, b) => {
-          if (a.name.toLowerCase() < b.name.toLowerCase()) {
-            return -1;
-          } else {
-            return 1;
-          }
-        });
+
+      // (1) Filter by templates that can be applied
+      // (2) Filter by latest version
+      // (3) Sort alphabetically
+      elementTemplates = sortAlphabetically(filterByLatest(filterByApplicable(
+        elementTemplates,
+        selectedElement
+      )));
     } else {
       elementTemplates = [];
     }
@@ -346,6 +344,23 @@ export class ElementTemplatesListItemEmpty extends PureComponent {
 
 // helpers //////////
 
+function filterByApplicable(elementTemplates, element) {
+  return elementTemplates.filter(({ appliesTo }) => {
+    return isAny(element, appliesTo);
+  });
+}
+
+function filterByLatest(elementTemplates) {
+  return Object.values(groupBy(elementTemplates, 'id'))
+    .map(templates => templates.reduce((latest, template) => {
+      if (!latest || template.version > latest.version) {
+        return template;
+      }
+
+      return latest;
+    }, null));
+}
+
 function filterElementTemplates(elementTemplates, filter) {
   return elementTemplates.filter(elementTemplate => {
     const {
@@ -418,4 +433,14 @@ export function getVersion(elementTemplate) {
   }
 
   return null;
+}
+
+function sortAlphabetically(elementTemplates) {
+  return elementTemplates.sort((a, b) => {
+    if (a.name.toLowerCase() < b.name.toLowerCase()) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
 }
