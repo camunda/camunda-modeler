@@ -61,7 +61,7 @@ describe('<ElementTemplatesView>', function() {
     });
 
 
-    it('should get element templates for selected element type', async function() {
+    it('should get element templates (filtered by applicable)', async function() {
 
       // given
       const {
@@ -77,7 +77,36 @@ describe('<ElementTemplatesView>', function() {
     });
 
 
-    it('should get element templates sorted alphabetically', async function() {
+    it('should get element templates (filtered by latest)', async function() {
+
+      // given
+      const {
+        instance,
+        wrapper
+      } = await createElementTemplatesModalView({
+        triggerAction: action => {
+          if (action === 'getSelectedElement') {
+            return {
+              businessObject: moddle.create('bpmn:SendTask')
+            };
+          }
+        }
+      });
+
+      // when
+      await instance.getElementTemplates();
+
+      console.log(wrapper.state('elementTemplates').map(({ name }) => name));
+
+      // then
+      expect(wrapper.state('elementTemplates').map(({ name }) => name)).to.eql([
+        'Template 4',
+        'Template 5 v2'
+      ]);
+    });
+
+
+    it('should get element templates (sorted alphabetically)', async function() {
 
       // given
       const {
@@ -112,7 +141,7 @@ describe('<ElementTemplatesView>', function() {
     it('should display meta data', async function() {
 
       // given
-      const elementTemplate = DEFAULT_ELEMENT_TEMPLATES.find(({ name }) => name === 'Template 5 v1');
+      const elementTemplate = DEFAULT_ELEMENT_TEMPLATES.find(({ name }) => name === 'Template 5 v2');
 
       const { wrapper } = await createElementTemplatesModalView({
         triggerAction: action => {
@@ -428,7 +457,7 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     appliesTo: [
       'bpmn:SendTask'
     ],
-    id: 'versioned-template-1',
+    id: 'versioned-template',
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
       catalogTemplateId: '00000000-0000-0000-0000-000000000003',
@@ -446,7 +475,7 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     appliesTo: [
       'bpmn:SendTask'
     ],
-    id: 'versioned-template-2',
+    id: 'versioned-template',
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
       catalogTemplateId: '00000000-0000-0000-0000-000000000004',
