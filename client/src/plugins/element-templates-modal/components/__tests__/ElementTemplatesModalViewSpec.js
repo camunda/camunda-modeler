@@ -17,18 +17,15 @@ import { mount } from 'enzyme';
 import ElementTemplatesView, {
   ElementTemplatesListItem,
   ElementTemplatesListItemEmpty,
-  getDate,
-  toDateString
+  getVersion
 } from '../ElementTemplatesModalView';
+
 import Dropdown from '../Dropdown';
 
 import BpmnModdle from 'bpmn-moddle';
 import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
 
 const moddle = new BpmnModdle({ camunda: camundaModdlePackage });
-
-const timestamp = 1000000000000,
-      dateString = toDateString(timestamp);
 
 
 describe('<ElementTemplatesView>', function() {
@@ -115,9 +112,17 @@ describe('<ElementTemplatesView>', function() {
     it('should display meta data', async function() {
 
       // given
-      const elementTemplate = DEFAULT_ELEMENT_TEMPLATES.find(({ name }) => name === 'Template 1');
+      const elementTemplate = DEFAULT_ELEMENT_TEMPLATES.find(({ name }) => name === 'Template 5 v1');
 
-      const { wrapper } = await createElementTemplatesModalView();
+      const { wrapper } = await createElementTemplatesModalView({
+        triggerAction: action => {
+          if (action === 'getSelectedElement') {
+            return {
+              businessObject: moddle.create('bpmn:SendTask')
+            };
+          }
+        }
+      });
 
       wrapper.update();
 
@@ -126,7 +131,7 @@ describe('<ElementTemplatesView>', function() {
 
       const meta = listItem.find('.element-templates-list__item-meta').first();
 
-      expect(meta.text()).to.equal(`Walt's Catalog | ${ getDate(elementTemplate) }`);
+      expect(meta.text()).to.equal(`Joe's Catalog | ${ getVersion(elementTemplate) }`);
     });
 
 
@@ -354,64 +359,6 @@ describe('<ElementTemplatesView>', function() {
 
   });
 
-
-  describe('#getDate', function() {
-
-    it('should get date (updated)', function() {
-
-      // given
-      const elementTemplate = {
-        metadata: {
-          updated: timestamp
-        }
-      };
-
-      // when
-      // then
-      expect(getDate(elementTemplate)).to.eql(dateString);
-    });
-
-
-    it('should get date (created)', function() {
-
-      // given
-      const elementTemplate = {
-        metadata: {
-          created: timestamp
-        }
-      };
-
-      // when
-      // then
-      expect(getDate(elementTemplate)).to.eql(dateString);
-    });
-
-
-    it('should NOT get date (no metadata)', function() {
-
-      // given
-      const elementTemplate = {};
-
-      // when
-      // then
-      expect(getDate(elementTemplate)).to.be.null;
-    });
-
-
-    it('should NOT get date (no created or updated)', function() {
-
-      // given
-      const elementTemplate = {
-        metadata: {}
-      };
-
-      // when
-      // then
-      expect(getDate(elementTemplate)).to.be.null;
-    });
-
-  });
-
 });
 
 // helpers //////////
@@ -425,11 +372,11 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
       catalogTemplateId: '00000000-0000-0000-0000-000000000001',
-      created: timestamp,
+      created: 1000000000000,
       tags: [
         'Donald\'s Catalog'
       ],
-      updated: timestamp
+      updated: 1000000000000
     },
     name: 'Template 2',
     properties: []
@@ -442,11 +389,11 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
       catalogTemplateId: '00000000-0000-0000-0000-000000000002',
-      created: timestamp,
+      created: 1000000000000,
       tags: [
         'Donald\'s Catalog'
       ],
-      updated: timestamp
+      updated: 1000000000000
     },
     name: 'Template 3',
     properties: []
@@ -460,11 +407,11 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
       catalogTemplateId: '00000000-0000-0000-0000-000000000000',
-      created: timestamp,
+      created: 1000000000000,
       tags: [
         'Walt\'s Catalog'
       ],
-      updated: timestamp
+      updated: 1000000000000
     },
     name: 'Template 1',
     properties: []
@@ -475,6 +422,42 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     ],
     id: 'some-local-template',
     name: 'Template 4',
+    properties: []
+  },
+  {
+    appliesTo: [
+      'bpmn:SendTask'
+    ],
+    id: 'versioned-template-1',
+    metadata: {
+      catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
+      catalogTemplateId: '00000000-0000-0000-0000-000000000003',
+      created: 1000000000000,
+      tags: [
+        'Joe\'s Catalog'
+      ],
+      updated: 1000000000000
+    },
+    version: 1,
+    name: 'Template 5 v1',
+    properties: []
+  },
+  {
+    appliesTo: [
+      'bpmn:SendTask'
+    ],
+    id: 'versioned-template-2',
+    metadata: {
+      catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
+      catalogTemplateId: '00000000-0000-0000-0000-000000000004',
+      created: 1000000000000,
+      tags: [
+        'Joe\'s Catalog'
+      ],
+      updated: 1000000000000
+    },
+    version: 2,
+    name: 'Template 5 v2',
     properties: []
   }
 ];
