@@ -203,11 +203,11 @@ class ElementTemplatesView extends PureComponent {
             {
               elementTemplatesFiltered.length
                 ? elementTemplatesFiltered.map(elementTemplate => {
-                  const { id } = elementTemplate;
+                  const { id, version } = elementTemplate;
 
                   return (
                     <ElementTemplatesListItem
-                      key={ id }
+                      key={ getKey(id, version) }
                       applied={ applied }
                       expanded={ expanded }
                       elementTemplate={ elementTemplate }
@@ -279,7 +279,7 @@ export class ElementTemplatesListItem extends React.PureComponent {
     let meta = [];
 
     const tags = getTags(elementTemplate),
-          date = getDate(elementTemplate);
+          version = getVersion(elementTemplate);
 
     // Assume first tag is catalog name
     if (tags.length) {
@@ -289,10 +289,10 @@ export class ElementTemplatesListItem extends React.PureComponent {
       ];
     }
 
-    if (date) {
+    if (version) {
       meta = [
         ...meta,
-        date
+        version
       ];
     }
 
@@ -390,6 +390,10 @@ function getTags(elementTemplate) {
   return tags;
 }
 
+function getKey(id, version = '_') {
+  return `${ id }-${ version }`;
+}
+
 function getTagCounts(elementTemplates) {
   return elementTemplates.reduce((tagCounts, elementTemplate) => {
     const tags = getTags(elementTemplate);
@@ -406,38 +410,12 @@ function getTagCounts(elementTemplates) {
   }, {});
 }
 
-function leftPad(string, length, character) {
-  while (string.length < length) {
-    string = `${ character }${ string }`;
+export function getVersion(elementTemplate) {
+  const { version } = elementTemplate;
+
+  if (isDefined(version)) {
+    return `v${ version }`;
   }
 
-  return string;
-}
-
-export function getDate(elementTemplate) {
-  const { metadata } = elementTemplate;
-
-  if (!metadata) {
-    return null;
-  }
-
-  const { created, updated } = metadata;
-
-  if (!created && !updated) {
-    return null;
-  }
-
-  return toDateString(updated || created);
-}
-
-export function toDateString(timestamp) {
-  const date = new Date(timestamp);
-
-  const year = date.getFullYear();
-
-  const month = leftPad(String(date.getMonth() + 1), 2, '0');
-
-  const day = leftPad(String(date.getDate()), 2, '0');
-
-  return `${ year }-${ month }-${ day }`;
+  return null;
 }
