@@ -22,7 +22,8 @@ import css from './ElementTemplatesModalView.less';
 import {
   groupBy,
   isDefined,
-  isNil
+  isNil,
+  isUndefined
 } from 'min-dash';
 
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
@@ -277,7 +278,7 @@ export class ElementTemplatesListItem extends React.PureComponent {
     let meta = [];
 
     const tags = getTags(elementTemplate),
-          version = getVersion(elementTemplate);
+          versionOrDate = getVersionOrDate(elementTemplate);
 
     // Assume first tag is catalog name
     if (tags.length) {
@@ -287,10 +288,10 @@ export class ElementTemplatesListItem extends React.PureComponent {
       ];
     }
 
-    if (version) {
+    if (versionOrDate) {
       meta = [
         ...meta,
-        version
+        versionOrDate
       ];
     }
 
@@ -425,16 +426,6 @@ function getTagCounts(elementTemplates) {
   }, {});
 }
 
-export function getVersion(elementTemplate) {
-  const { version } = elementTemplate;
-
-  if (isDefined(version)) {
-    return `v${ version }`;
-  }
-
-  return null;
-}
-
 function sortAlphabetically(elementTemplates) {
   return elementTemplates.sort((a, b) => {
     if (a.name.toLowerCase() < b.name.toLowerCase()) {
@@ -443,4 +434,51 @@ function sortAlphabetically(elementTemplates) {
       return 1;
     }
   });
+}
+
+function leftPad(string, length, character) {
+  while (string.length < length) {
+    string = `${ character }${ string }`;
+  }
+
+  return string;
+}
+
+export function getVersionOrDate(elementTemplate) {
+  const {
+    metadata,
+    version
+  } = elementTemplate;
+
+  if (metadata) {
+    const { created, updated } = metadata;
+
+    if (isDefined(created)) {
+      return `Version ${ toDateString(created) }`;
+    } else if (isDefined(updated)) {
+      return `Version ${ toDateString(updated) }`;
+    }
+  }
+
+  if (isUndefined(version)) {
+    return null;
+  }
+
+  return `Version ${ version }`;
+}
+
+function toDateString(timestamp) {
+  const date = new Date(timestamp);
+
+  if (date.toTimeString() === 'Invalid Date') {
+    return null;
+  }
+
+  const year = date.getFullYear();
+
+  const month = leftPad(String(date.getMonth() + 1), 2, '0');
+
+  const day = leftPad(String(date.getDate()), 2, '0');
+
+  return `${ day }.${ month }.${ year }`;
 }
