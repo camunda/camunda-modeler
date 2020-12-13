@@ -17,7 +17,7 @@ import { mount } from 'enzyme';
 import ElementTemplatesView, {
   ElementTemplatesListItem,
   ElementTemplatesListItemEmpty,
-  getVersion
+  getVersionOrDate
 } from '../ElementTemplatesModalView';
 
 import Dropdown from '../Dropdown';
@@ -26,7 +26,6 @@ import BpmnModdle from 'bpmn-moddle';
 import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
 
 const moddle = new BpmnModdle({ camunda: camundaModdlePackage });
-
 
 describe('<ElementTemplatesView>', function() {
 
@@ -160,7 +159,7 @@ describe('<ElementTemplatesView>', function() {
 
       const meta = listItem.find('.element-templates-list__item-meta').first();
 
-      expect(meta.text()).to.equal(`Joe's Catalog | ${ getVersion(elementTemplate) }`);
+      expect(meta.text()).to.match(/Joe's Catalog | Version [0-9]{2}\.[0-9]{2}\.[0-9]{4}/);
     });
 
 
@@ -384,6 +383,57 @@ describe('<ElementTemplatesView>', function() {
 
       // then
       expect(wrapper.find('.button--apply').first().prop('disabled')).to.be.true;
+    });
+
+  });
+
+
+  describe('#getVersionOrDate', function() {
+
+    it('should get version as date string', function() {
+
+      // given
+      const template = {
+        version: 1,
+        metadata: {
+          created: 1000000000000,
+          updated: 1000000000000
+        }
+      };
+
+      // when
+      const versionOrDate = getVersionOrDate(template);
+
+      // then
+      expect(versionOrDate).to.match(/Version [0-9]{2}\.[0-9]{2}\.[0-9]{4}/);
+    });
+
+
+    it('should get version', function() {
+
+      // given
+      const template = {
+        version: 1
+      };
+
+      // when
+      const versionOrDate = getVersionOrDate(template);
+
+      // then
+      expect(versionOrDate).to.equal('Version 1');
+    });
+
+
+    it('should not get version', function() {
+
+      // given
+      const template = {};
+
+      // when
+      const versionOrDate = getVersionOrDate(template);
+
+      // then
+      expect(versionOrDate).to.be.null;
     });
 
   });
