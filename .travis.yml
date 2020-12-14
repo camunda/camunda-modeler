@@ -114,6 +114,8 @@ jobs:
       before_install:
         - *import-cert-win
         - *install-yarn
+        # Workaround for https://github.com/appveyor/ci/issues/2420
+        - export PATH="C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\libexec\git-core:$PATH"
       before_script: npm run link-dependencies
       script: >
         AWS_ACCESS_KEY_ID=$AWS_ON_DEMAND_ACCESS_KEY_ID
