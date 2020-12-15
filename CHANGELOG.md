@@ -5,6 +5,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ## Unreleased
 
 ___Note:__ Yet to be released changes appear here._
+* 'FEAT': set default value for `disable-cmmn`-flag to `true` ([#2036](https://github.com/camunda/camunda-modeler/issues/2036))
 
 ## 4.4.0
 

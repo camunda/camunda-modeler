@@ -165,8 +165,7 @@ export default class TabsProvider {
       }
     };
 
-
-    if (Flags.get('disable-cmmn')) {
+    if (Flags.get('disable-cmmn', true)) {
       delete this.providers.cmmn;
     }
 
