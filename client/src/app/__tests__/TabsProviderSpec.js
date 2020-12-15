@@ -29,23 +29,36 @@ describe('TabsProvider', function() {
   });
 
 
-  it('should provide BPMN, CMMN, DMN and empty tab', function() {
+  it('should provide BPMN, DMN and empty tab without flags', function() {
 
     // given
     const tabsProvider = new TabsProvider();
 
     // then
     expect(tabsProvider.getProvider('bpmn')).to.exist;
-    expect(tabsProvider.getProvider('cmmn')).to.exist;
     expect(tabsProvider.getProvider('dmn')).to.exist;
 
     expect(tabsProvider.getProvider('empty')).to.exist;
   });
 
 
+  it('should not provide CMMN tab without flags', function() {
+
+    // given
+    const tabsProvider = new TabsProvider();
+
+    // then
+    expect(tabsProvider.hasProvider('cmmn')).to.be.false;
+  });
+
+
   it('should export BPMN, CMMN and DMN as JPEG, PNG and SVG', function() {
 
     // given
+    Flags.init({
+      [DISABLE_CMMN]: false
+    });
+
     const tabsProvider = new TabsProvider();
 
     const expected = {
@@ -80,6 +93,10 @@ describe('TabsProvider', function() {
       return it(name + (opts ? ` ${JSON.stringify(opts)}` : ''), function() {
 
         // given
+        Flags.init({
+          [DISABLE_CMMN]: false
+        });
+
         const tabsProvider = new TabsProvider();
 
         // when
@@ -105,6 +122,10 @@ describe('TabsProvider', function() {
   it('should create tabs', function() {
 
     // given
+    Flags.init({
+      [DISABLE_CMMN]: false
+    });
+
     const tabsProvider = new TabsProvider();
 
     // then
@@ -217,6 +238,10 @@ describe('TabsProvider', function() {
   it('#getProviders', function() {
 
     // given
+    Flags.init({
+      [DISABLE_CMMN]: false
+    });
+
     const tabsProvider = new TabsProvider();
 
     // when
@@ -305,6 +330,21 @@ describe('TabsProvider', function() {
 
       // then
       expect(tabsProvider.hasProvider('cmmn')).to.be.false;
+    });
+
+
+    it('should enable CMMN', function() {
+
+      // given
+      Flags.init({
+        [DISABLE_CMMN]: false
+      });
+
+      // when
+      const tabsProvider = new TabsProvider();
+
+      // then
+      expect(tabsProvider.hasProvider('cmmn')).to.be.true;
     });
 
   });
