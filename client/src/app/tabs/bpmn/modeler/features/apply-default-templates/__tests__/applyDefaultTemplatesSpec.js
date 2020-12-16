@@ -12,8 +12,6 @@
 
 import Modeler from 'test/mocks/bpmn-js/Modeler';
 
-import * as helper from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates/Helper';
-
 import applyDefaultTemplates from '../applyDefaultTemplates';
 
 
@@ -25,10 +23,8 @@ describe('applyDefaultTemplates', function() {
   let getDefaultTemplateStub;
 
   beforeEach(function() {
-    getDefaultTemplateStub = sinon.stub(helper, 'getDefaultTemplate');
+    getDefaultTemplateStub = sinon.stub();
   });
-
-  afterEach(sinon.restore);
 
 
   it('should not throw errors for empty diagram', function() {
@@ -36,7 +32,7 @@ describe('applyDefaultTemplates', function() {
     // given
     const dependencies = getDependencies({
       elementTemplates: {
-        getAll: () => []
+        getDefault: getDefaultTemplateStub
       },
       elementRegistry: {
         getAll: () => []
@@ -73,9 +69,7 @@ describe('applyDefaultTemplates', function() {
     const dependencies = getDependencies({
       commandStack: commandStackStub,
       elementTemplates: {
-        getAll: () => [
-          getMockTemplate()
-        ]
+        getDefault: getDefaultTemplateStub
       },
       elementRegistry: {
         getAll: () => [ null ]
@@ -105,9 +99,7 @@ describe('applyDefaultTemplates', function() {
     const dependencies = getDependencies({
       commandStack: commandStackStub,
       elementTemplates: {
-        getAll: () => [
-          getMockTemplate()
-        ]
+        getDefault: getDefaultTemplateStub
       },
       elementRegistry: {
         getAll: () => [ null, null ]
@@ -139,9 +131,7 @@ describe('applyDefaultTemplates', function() {
     const dependencies = getDependencies({
       commandStack: commandStackStub,
       elementTemplates: {
-        getAll: () => [
-          getMockTemplate()
-        ]
+        getDefault: getDefaultTemplateStub
       },
       elementRegistry: {
         getAll: () => [ null, null ]
