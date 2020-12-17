@@ -12,7 +12,7 @@
     "@bpmn-io/extract-process-variables": "^0.3.0",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@sentry/browser": "^5.15.5",
-    "bpmn-js": "^7.4.0",
+    "bpmn-js": "^8.0.0",
     "bpmn-js-disable-collapsed-subprocess": "^0.1.2",
     "bpmn-js-executable-fix": "^0.1.2",
     "bpmn-js-properties-panel": "^0.38.0",
