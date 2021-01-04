@@ -36,6 +36,8 @@ or any parent directory of the diagrams you are editing.
 
 ## Using Templates
 
+### Applying Templates
+
 If a template matches a selected diagram element, the template catalog button will be shown in the properties panel.
 
 ![Template Chooser](./chooser.png)
@@ -44,13 +46,17 @@ Clicking the `Catalog` button will bring up a modal menu allowing to browse and 
 
 ![Modal Menu](./modal.png)
 
-Applying a template will store it via the `camunda:modelerTemplate` property on the selected element:
+Applying a template will store it via the `camunda:modelerTemplate` property and the optional `camunda:modelerTemplateVersion` property on the selected element:
 
 ```xml
-<bpmn:serviceTask id="MailTask" camunda:modelerTemplate="com.mycompany.MailTask" />
+<bpmn:serviceTask id="MailTask"
+  camunda:modelerTemplate="com.mycompany.MailTask"
+  camunda:modelerTemplateVesion="1" />
 ```
 
 It will also setup custom fields on the diagram element and make these available to the user for inspection and editing. Properties which were not configured in the element template using custom fields, will not be available for editing for the user.
+
+### Removing Templates
 
 To remove an applied template from an element, either the *Unlink* or *Remove* function can be used:
 
@@ -59,7 +65,23 @@ To remove an applied template from an element, either the *Unlink* or *Remove* f
 
 ![Unlink or Remove](./unlink-remove.png)
 
-If a template is applied to an element but the respective template cannot be found on the system, the editing of the element will be disabled. Either *removing* the template for the element or adding the element template config will enable the editing again.
+### Updating Templates
+
+If a template is applied and a new version of the template is found you can *update* the template. Learn more about updating templates [here](#updating-templates).
+
+![Update Template](./update-template.png)
+
+Templates are updated according to the following rules:
+
+1. If property is set in new template it will override unless property was set by old template and changed afterwards
+2. If property is not defined in new template it will unset
+3. Sub-properties of complex properties (e.g. camunda:In, camunda:Out, camunda:ExecutionListener) will be handled according to these rules if they can be identified
+
+### Missing Templates
+
+If a template is applied to an element but the respective template cannot be found on the system, the editing of the element will be disabled. *Unlinking* or *removing* the template for the element or adding the element template config will enable the editing again.
+
+![Template not Found](./template-not-found.png)
 
 
 ## Defining Templates
@@ -71,6 +93,7 @@ Templates are defined in template descriptor files as a JSON array:
   {
     "name": "Template 1",
     "id": "sometemplate",
+    "version": 1,
     "appliesTo": [
       "bpmn:ServiceTask"
     ],
@@ -87,10 +110,12 @@ Templates are defined in template descriptor files as a JSON array:
 
 As seen in the code snippet a template consist of a number of important components:
 
-* `name`: Identifier to appear in the template chooser
-* `id`: Unique id of the template
-* `appliesTo`: List of BPMN types the template can be assigned to
-* `properties`: List of properties that are defined on the template
+* `name : String`: Name of the template that will appear in the Catalog.
+* `id : String`: ID of the template.
+* `version : Integer`: Optional version of the template. If you add a version to a template it will be considered unique based on its ID and version. Two templates can have the same ID if their version is different.
+* `appliesTo : Array<String>`: List of BPMN types the template can be applied to.
+* `properties : Array<Object>`: List of properties of the template.
+
 
 
 ### Defining Template Properties
