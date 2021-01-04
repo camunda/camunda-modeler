@@ -1,5 +1,15 @@
 # Element Templates
 
+#### Contents
+
+1. [Configuring Templates](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#configuring-templates)
+2. [Using Templates](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#using-templates)
+3. [Defining Templates](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#defining-templates)
+4. [Default Templates](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#default-templates)
+5. [Development Worklow](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#development-workflow)
+6. [Supported BPMN Types](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#supported-bpmn-types)
+7. [Learn More](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#learn-more)
+
 Element templates allow you to create pre-defined configurations for BPMN elements such as service and user tasks. Once applied via the properties panel they provide configured custom inputs to the user.
 
 ![Element template applied](./overview.png)
