@@ -1,78 +1,141 @@
-{
-  "appliesTo": [
-    "bpmn:ServiceTask"
-  ],
-  "description": "foo",
-  "id": "23112asd-da-213sad-sad123",
-  "metadata": {
-    "catalogOrganizationId": "aafasda-asd12as-123123",
-    "catalogTemplateId": "asd-asd-asdsad",
-    "created": 1601556562335,
-    "tags": [
-      "Walt's Templates"
+[
+  {
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "description": "foo",
+    "id": "23112asd-da-213sad-sad123",
+    "metadata": {
+      "catalogOrganizationId": "aafasda-asd12as-123123",
+      "catalogTemplateId": "asd-asd-asdsad",
+      "created": 1601556562335,
+      "tags": [
+        "Walt's Templates"
+      ]
+    },
+    "name": "New RPA template",
+    "properties": [
+      {
+        "binding": {
+          "name": "name",
+          "type": "property"
+        },
+        "type": "Hidden",
+        "value": "MyBot"
+      },
+      {
+        "binding": {
+          "name": "bot",
+          "type": "camunda:property"
+        },
+        "editable": false,
+        "label": "UiPath Package Name",
+        "type": "String",
+        "value": "foo"
+      },
+      {
+        "binding": {
+          "name": "foo",
+          "type": "camunda:inputParameter"
+        },
+        "description": "<Description of the IN argument, e.g. expected format of the value>",
+        "label": "foo",
+        "value": "${foo}"
+      },
+      {
+        "binding": {
+          "source": "${bar}",
+          "type": "camunda:outputParameter"
+        },
+        "description": "<Description of the OUT argument, e.g. format of the returned value>",
+        "label": "bar",
+        "value": "bar"
+      },
+      {
+        "binding": {
+          "name": "camunda:type",
+          "type": "property"
+        },
+        "type": "Hidden",
+        "value": "external"
+      },
+      {
+        "binding": {
+          "name": "camunda:topic",
+          "type": "property"
+        },
+        "type": "Hidden",
+        "value": "uipath"
+      },
+      {
+        "binding": {
+          "name": "camunda:asyncAfter",
+          "type": "property"
+        },
+        "type": "Hidden",
+        "value": "true"
+      }
     ]
   },
-  "name": "New RPA template",
-  "properties": [
-    {
-      "binding": {
-        "name": "name",
-        "type": "property"
-      },
-      "type": "Hidden",
-      "value": "MyBot"
-    },
-    {
-      "binding": {
-        "name": "bot",
-        "type": "camunda:property"
-      },
-      "editable": false,
-      "label": "UiPath Package Name",
-      "type": "String",
-      "value": "foo"
-    },
-    {
-      "binding": {
-        "name": "foo",
-        "type": "camunda:inputParameter"
-      },
-      "description": "<Description of the IN argument, e.g. expected format of the value>",
-      "label": "foo",
-      "value": "${foo}"
-    },
-    {
-      "binding": {
-        "source": "${bar}",
-        "type": "camunda:outputParameter"
-      },
-      "description": "<Description of the OUT argument, e.g. format of the returned value>",
-      "label": "bar",
-      "value": "bar"
-    },
-    {
-      "binding": {
-        "name": "camunda:type",
-        "type": "property"
-      },
-      "type": "Hidden",
-      "value": "external"
-    },
-    {
-      "binding": {
-        "name": "camunda:topic",
-        "type": "property"
-      },
-      "type": "Hidden",
-      "value": "uipath"
-    },
-    {
-      "binding": {
-        "name": "camunda:asyncAfter",
-        "type": "property"
-      },
-      "type": "Hidden",
-      "value": "true"
+  {
+    "name": "RPA Template v2",
+    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet",
+    "id": "0a7096fb-47e8-4b4c-9da0-ecaee7af225e",
+    "appliesTo": [
+        "bpmn:ServiceTask",
+        "bpmn:StartEvent"
+    ],
+    "properties": [
+      {
+        "label": "Name",
+        "type": "String",
+        "editable": false,
+        "value": "Bar",
+        "binding": {
+          "type": "property",
+          "name": "name"
+        }
+      }
+    ],
+    "version": 946771200000,
+    "metadata": {
+        "templateVersionId": "c74fee95-b75d-4d80-aa7d-c153dcc90cb8",
+        "catalogOrganizationId": "82527756-ffbe-46bf-a27b-f12880878e77",
+        "created": 946771200000,
+        "updated": 946771200000,
+        "tags": [
+            "Walt's Catalog"
+        ]
     }
-  ]
-}
+  },
+  {
+      "name": "RPA Template v1",
+      "description": "At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+      "id": "0a7096fb-47e8-4b4c-9da0-ecaee7af225e",
+      "appliesTo": [
+          "bpmn:ServiceTask"
+      ],
+      "properties": [
+        {
+          "label": "Name",
+          "type": "String",
+          "editable": false,
+          "value": "Foo",
+          "binding": {
+            "type": "property",
+            "name": "name"
+          }
+        }
+      ],
+      "version": 946684800000,
+      "metadata": {
+          "templateVersionId": "df7d377e-e543-4d08-abd1-7014151b668f",
+          "catalogOrganizationId": "82527756-ffbe-46bf-a27b-f12880878e77",
+          "created": 946684800000,
+          "updated": 946684800000,
+          "tags": [
+              "Walt's Catalog"
+          ]
+      }
+  }
+]
