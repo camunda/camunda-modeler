@@ -11,6 +11,7 @@ __Target:__ Perform tests on nightly builds on supported platforms.
 ### Test Procedure
 
 * [ ] fetch [latest release/nightly](https://camunda.org/release/camunda-modeler/)
+* [ ] fetch [latest version of Cawemo plugin](https://downloads.camunda.cloud/enterprise-release/cawemo/cloud-connect-modeler-plugin/)
 * [ ] click like crazy (see [below](#test-checklist))
 
 
@@ -108,6 +109,19 @@ Based on the [test diagram](./test.bpmn.png):
     * [ ] [Downloading archive](https://github.com/camunda/camunda-modeler/releases), extracting and starting application works
     * [ ] [Downloading DMG](https://github.com/camunda/camunda-modeler/releases), installing and starting it works
 
+
+#### Cawemo Plugin
+
+> You need access to a Cawemo enterprise license to create templates on Cawemo.
+
+* [ ] Create and publish a template on Cawemo
+* [ ] Sync the catalog using the Cawemo plugin ▶️ Template available through catalog
+* [ ] Apply the template to an element ▶️ Element template tab visible
+* [ ] Change the template and publish a new version on Cawemo
+* [ ] Sync the catalog using the Cawemo plugin ▶️ _New version of template_ indicated
+* [ ] Update the template ▶️ No new version indicated
+* [ ] Delete the template on Cawemo
+* [ ] Sync the catalog using the Cawemo plugin ▶️ _Missing template_ indicated
 
 #### Other (platform specific)
 
