@@ -5,7 +5,29 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ## Unreleased
 
 ___Note:__ Yet to be released changes appear here._
-* 'FEAT': set default value for `disable-cmmn`-flag to `true` ([#2036](https://github.com/camunda/camunda-modeler/issues/2036))
+
+## 4.5.0
+
+### BPMN
+
+* `FEAT`: support versioned element templates ([#1969](https://github.com/camunda/camunda-modeler/issues/1969))
+* `FEAT`: support modeling `isCollection` marker for Data Objects ([#381](https://github.com/bpmn-io/bpmn-js/issues/381))
+* `FIX`: display local element templates in catalog ([#2012](https://github.com/camunda/camunda-modeler/issues/2012))
+* `FIX`: allow to set external resource script value for I/O parameters ([#2007](https://github.com/camunda/camunda-modeler/issues/2007))
+* `FIX`: escape element template properties ([#2031](https://github.com/camunda/camunda-modeler/issues/2031))
+* `FIX`: rename Collapsed Pool to Empty Pool ([#2022](https://github.com/camunda/camunda-modeler/issues/2022))
+* `FIX`: immediately activate tools when shortcut is pressed ([#664](https://github.com/camunda/camunda-modeler/issues/664), [#1229](https://github.com/camunda/camunda-modeler/issues/1229))
+* `CHORE`: update to `bpmn-js@8.0.0`
+
+### DMN
+
+* `FEAT`: make decision table headers and the first column sticky ([#269](https://github.com/bpmn-io/dmn-js/issues/269))
+* `FIX`: fix literal expression styles ([#2019](https://github.com/camunda/camunda-modeler/issues/2019))
+* `CHORE`: update to `dmn-js@10.0.0`
+
+### CMMN
+
+* `FEAT`: set default value for `disable-cmmn`-flag to `true` ([#2036](https://github.com/camunda/camunda-modeler/issues/2036)); run with `--no-disable-cmmn` or edit your local [flags.json](./docs/flags) to re-enable CMMN editor
 
 ## 4.4.0
 
