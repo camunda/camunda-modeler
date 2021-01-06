@@ -11,7 +11,9 @@ ___Note:__ Yet to be released changes appear here._
 ### BPMN
 
 * `FEAT`: support versioned element templates ([#1969](https://github.com/camunda/camunda-modeler/issues/1969))
-* `FEAT`: support modeling `isCollection` marker for Data Objects ([#381](https://github.com/bpmn-io/bpmn-js/issues/381))
+* `FEAT`: support modeling `isCollection` marker for Data Object ([#381](https://github.com/bpmn-io/bpmn-js/issues/381))
+* `FEAT`: support multi-instance pools ([#533](https://github.com/bpmn-io/bpmn-js/issues/533))
+* `FEAT`: allow to replace Data Store Reference with Data Object Reference ([#1372](https://github.com/bpmn-io/bpmn-js/issues/1372))
 * `FIX`: display local element templates in catalog ([#2012](https://github.com/camunda/camunda-modeler/issues/2012))
 * `FIX`: allow to set external resource script value for I/O parameters ([#2007](https://github.com/camunda/camunda-modeler/issues/2007))
 * `FIX`: escape element template properties ([#2031](https://github.com/camunda/camunda-modeler/issues/2031))
