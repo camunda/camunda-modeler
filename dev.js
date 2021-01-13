@@ -8,11 +8,11 @@
  * except in compliance with the MIT License.
  */
 
-const log = require('./lib/log')('app:dev');
+const log = require('./app/lib/log')('app:dev');
 
 const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 
-const getAppVersion = require('./util/get-version');
+const getAppVersion = require('./app/util/get-version');
 
 // enable development perks
 process.env.NODE_ENV = 'development';
@@ -27,7 +27,7 @@ pkg.version = getAppVersion(pkg, {
 // monkey-patch cli args to not open this file in application
 process.argv = process.argv.filter(arg => !arg.includes('dev.js'));
 
-const app = require('./lib');
+const app = require('./app/lib');
 
 
 // make sure the app quits and does not hang
@@ -45,7 +45,9 @@ app.on('app:window-created', async () => {
 });
 
 try {
-  require('electron-reloader')(module);
+
+  // reload on changes but ignore client source (we want to watch build dir)
+  require('electron-reloader')(module, { ignore: [ 'client/src' ] });
 } catch (err) {
 
   // ignore it

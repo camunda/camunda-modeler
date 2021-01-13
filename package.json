@@ -4,7 +4,7 @@
   "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
-    "app:dev": "electron ./app/dev.js --force-update-checks resources/diagram/simple.bpmn",
+    "app:dev": "electron ./dev.js --force-update-checks resources/diagram/simple.bpmn",
     "app:test": "nyc --reporter lcov --exclude \"app/test/**\" --exclude \"app/**/__tests__\" mocha --require ./app/test/expect \"app/**/*-spec.js\"",
     "client:build": "(cd client && npm run build)",
     "client:auto-test": "(cd client && npm run auto-test)",
@@ -49,7 +49,7 @@
     "electron-devtools-installer": "^2.2.4",
     "electron-notarize": "^0.2.1",
     "electron-publisher-s3": "^20.17.2",
-    "electron-reloader": "^0.2.0",
+    "electron-reloader": "^1.1.0",
     "eslint": "^5.16.0",
     "eslint-plugin-bpmn-io": "^0.11.0",
     "eslint-plugin-camunda-licensed": "^0.4.3",
