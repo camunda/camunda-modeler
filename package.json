@@ -49,7 +49,7 @@
     "electron-devtools-installer": "^2.2.4",
     "electron-notarize": "^0.2.1",
     "electron-publisher-s3": "^20.17.2",
-    "electron-reloader": "^1.1.0",
+    "electron-reloader": "^1.2.0",
     "eslint": "^5.16.0",
     "eslint-plugin-bpmn-io": "^0.11.0",
     "eslint-plugin-camunda-licensed": "^0.4.3",
