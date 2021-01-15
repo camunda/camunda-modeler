@@ -17,6 +17,8 @@ const DefaultMenuBuilder = require('./menu-builder');
 const renderer = require('../util/renderer');
 const requirePlatform = require('../util/require-platform');
 
+const { has } = require('min-dash');
+
 
 class Menu {
 
@@ -109,7 +111,7 @@ class Menu {
   }
 
   updateState(newState = this.state) {
-    if (!this.state.hasOwnProperty('devtools') && app.mainWindow) {
+    if (!has(this.state, 'devtools') && app.mainWindow) {
       const isDevToolsOpened = app.mainWindow.isDevToolsOpened();
 
       newState = Object.assign({}, newState, { devtools: isDevToolsOpened });

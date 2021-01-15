@@ -29,8 +29,6 @@ var { DefinePlugin } = require('webpack');
 var absoluteBasePath = path.resolve(__dirname);
 var resourcePath = path.resolve(__dirname + '/resources');
 
-/* global process */
-
 process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 // configures browsers to run test against
