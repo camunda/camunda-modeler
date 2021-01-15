@@ -12,7 +12,7 @@ import { omit } from 'min-dash';
 
 import BaseEventHandler from './BaseEventHandler';
 
-import { extractProcessVariables } from '../../../util';
+import { getMetrics } from '../../../util';
 
 const HTTP_STATUS_PAYLOAD_TOO_BIG = 413;
 
@@ -62,14 +62,9 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
   generateMetrics = async (file) => {
     let metrics = {};
 
-    // (1) process variables
+    // (1) telemetry metrics
     if (file.contents) {
-      const processVariables = await extractProcessVariables(file);
-
-      metrics = {
-        processVariablesCount: processVariables.length,
-        ...metrics
-      };
+      metrics = await getMetrics(file);
     }
 
     return metrics;

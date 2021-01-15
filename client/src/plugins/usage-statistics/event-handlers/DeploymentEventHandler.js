@@ -10,7 +10,7 @@
 
 import BaseEventHandler from './BaseEventHandler';
 
-import { extractProcessVariables } from '../../../util';
+import { getMetrics } from '../../../util';
 
 const RELEVANT_TAB_TYPES = ['bpmn', 'dmn'];
 
@@ -31,14 +31,9 @@ export default class DeploymentEventHandler extends BaseEventHandler {
   generateMetrics = async (file, tabType) => {
     let metrics = {};
 
-    // (1) process variables (bpmn only)
+    // (1) telemetry metrics (bpmn only)
     if (tabType === 'bpmn' && file.contents) {
-      const processVariables = await extractProcessVariables(file);
-
-      metrics = {
-        processVariablesCount: processVariables.length,
-        ...metrics
-      };
+      metrics = await getMetrics(file);
     }
 
     return metrics;
