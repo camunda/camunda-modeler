@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0sqedad" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.5.0-rc.0">
+  <bpmn:process id="Process_1554m1f" isExecutable="true">
+    <bpmn:userTask id="Activity_1xf1ap9" name="generic">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="FormField_1e5ue8a" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1x1qgom" name="other" camunda:formKey="other:formkey" />
+    <bpmn:userTask id="Activity_09jfbyf" name="embedded" camunda:formKey="embedded:formkey" />
+    <bpmn:userTask id="Activity_1aa7x4b" name="embedded" camunda:formKey="embedded:formkey" />
+    <bpmn:userTask id="Activity_01fvezr" name="embedded &#38; form fields" camunda:formKey="embedded:formkey">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="FormField_1vlna29" />
+          <camunda:formField id="FormField_3kehr64" />
+          <camunda:formField id="FormField_00ab6el" />
+          <camunda:formField id="FormField_1ge8dci" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0f53jd6" name="external" camunda:formKey="app:formkey" />
+    <bpmn:userTask id="Activity_0i0rung" name="blank" />
+    <bpmn:userTask id="Activity_1bwo0vq" name="blank" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1554m1f">
+      <bpmndi:BPMNShape id="Activity_1xf1ap9_di" bpmnElement="Activity_1xf1ap9">
+        <dc:Bounds x="580" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x1qgom_di" bpmnElement="Activity_1x1qgom">
+        <dc:Bounds x="440" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09jfbyf_di" bpmnElement="Activity_09jfbyf">
+        <dc:Bounds x="300" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1aa7x4b_di" bpmnElement="Activity_1aa7x4b">
+        <dc:Bounds x="160" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01fvezr_di" bpmnElement="Activity_01fvezr">
+        <dc:Bounds x="160" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0f53jd6_di" bpmnElement="Activity_0f53jd6">
+        <dc:Bounds x="300" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0i0rung_di" bpmnElement="Activity_0i0rung">
+        <dc:Bounds x="440" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bwo0vq_di" bpmnElement="Activity_1bwo0vq">
+        <dc:Bounds x="580" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
