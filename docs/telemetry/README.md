@@ -75,12 +75,24 @@ Diagram Opened Event payload:
 }
 ```
 
-Also in the case of BPMN diagrams, we add the number of available process variables:
+Also in the case of BPMN diagrams, we add the number of available process variables,
+as well as relevant information about user tasks and forms:
 
 ```json
 {
   "diagramMetrics": {
-    "processVariablesCount": 3
+    "processVariablesCount": 3,
+    "tasks": {
+      "userTask": {
+        "form": {
+          "count": 6,
+          "embedded": 3,
+          "external": 1,
+          "generic": 2,
+          "other": 1
+        }
+      }
+    },
   }
 }
 ```
@@ -123,11 +135,22 @@ Furthermore, we add the component which initiated the deployment:
 }
 ```
 
-In case of BPMN files, we add the number of available process variables in the diagram as part of the diagram metrics:
+In case of BPMN files, we add the number of available process variables in the diagram as part of the diagram metrics,
+as well as relevant information about user tasks and forms:
 
 ```json
 {
   "diagramMetrics": {
-    "processVariablesCount": 5
+    "processVariablesCount": 5,
+    "tasks": {
+      "userTask": {
+        "form": {
+          "count": 6,
+          "embedded": 3,
+          "external": 1,
+          "generic": 2,
+          "other": 1
+        }
+      }
   }
 }
