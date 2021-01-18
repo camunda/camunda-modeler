@@ -71,6 +71,16 @@ class MacMenuBuilder extends MenuBuilder {
     }));
   }
 
+  getWindowSubmenuTemplate() {
+    const submenuTemplate = super.getWindowSubmenuTemplate();
+
+    const fullScreenEntry = submenuTemplate.find(({ label }) => label === 'Fullscreen');
+
+    fullScreenEntry.accelerator = 'Ctrl+Cmd+F';
+
+    return submenuTemplate;
+  }
+
   build() {
     this.appendAppMenu();
 
