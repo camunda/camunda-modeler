@@ -40,7 +40,7 @@ describe('<UpdateChecks>', function() {
 
 
   it('should render', () => {
-    shallow(<UpdateChecks />);
+    createComponent();
   });
 
 
@@ -64,6 +64,26 @@ describe('<UpdateChecks>', function() {
 
     // then
     expect(checkSpy).not.to.have.been.called;
+  });
+
+
+  it('should subscribe to updateChecks.execute', async function() {
+
+    // given
+    const {
+      callSubscriber,
+      subscribe
+    } = createSubscribe('updateChecks.execute');
+
+    const { instance } = await createComponent({ subscribe });
+
+    const checkLatestVersionSpy = sinon.spy(instance, 'checkLatestVersion');
+
+    // when
+    await callSubscriber();
+
+    // then
+    expect(checkLatestVersionSpy).to.have.been.called;
   });
 
 
@@ -197,7 +217,7 @@ describe('<UpdateChecks>', function() {
   });
 
 
-  it('should handle update response response', async function() {
+  it('should handle update response', async function() {
 
     let setValue = {};
 
@@ -239,6 +259,49 @@ describe('<UpdateChecks>', function() {
 
     // then
     expect(component.state().showModal).to.be.false;
+  });
+
+
+  it('should show notification for empty server response', async () => {
+
+    // given
+    const displaySpy = sinon.spy();
+
+    const {
+      component,
+      instance
+    } = createComponent({
+      displayNotification: displaySpy
+    });
+
+    mockServerResponse(component, {});
+
+    // when
+    instance.checkLatestVersion(null, true);
+
+    // then
+    expect(displaySpy).to.not.have.been.called;
+  });
+
+
+  it('should not show notification for empty server response if not configured', async () => {
+
+    // given
+    const displaySpy = sinon.spy();
+
+    const {
+      component
+    } = createComponent({
+      displayNotification: displaySpy
+    });
+
+    mockServerResponse(component, {});
+
+    // when
+    await tick(component);
+
+    // then
+    expect(displaySpy).to.not.have.been.called;
   });
 
 
@@ -331,6 +394,8 @@ describe('<UpdateChecks>', function() {
 });
 
 
+// helper /////////////////////
+
 async function tick(component, n=10) {
   for (let i = 0; i < n; i ++) {
     await component.update();
@@ -387,7 +452,9 @@ function createComponent(props={}) {
     <UpdateChecks
       { ...props }
       config={ config }
+      displayNotification={ props.displayNotification || noop }
       _getGlobal={ _getGlobal }
+      subscribe={ props.subscribe || noop }
     />
   );
 
@@ -396,5 +463,32 @@ function createComponent(props={}) {
   return {
     component,
     instance
+  };
+}
+
+function noop() {}
+
+function createSubscribe(event) {
+  let callback = null;
+
+  function subscribe(_event, _callback) {
+    if (event === _event) {
+      callback = _callback;
+    }
+
+    return function cancel() {
+      callback = null;
+    };
+  }
+
+  async function callSubscriber(...args) {
+    if (callback) {
+      await callback(...args);
+    }
+  }
+
+  return {
+    callSubscriber,
+    subscribe
   };
 }
