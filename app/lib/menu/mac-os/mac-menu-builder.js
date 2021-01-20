@@ -29,6 +29,9 @@ class MacMenuBuilder extends MenuBuilder {
         label: 'About ' + this.options.appName,
         role: 'about'
       }, {
+        label: 'Check for Updates',
+        click: () => app.emit('menu:action', 'emit-event', { type: 'updateChecks.execute' })
+      },{
         type: 'separator'
       }, {
         label: 'Services',
@@ -77,6 +80,15 @@ class MacMenuBuilder extends MenuBuilder {
     const fullScreenEntry = submenuTemplate.find(({ label }) => label === 'Fullscreen');
 
     fullScreenEntry.accelerator = 'Ctrl+Cmd+F';
+
+    return submenuTemplate;
+  }
+
+  getHelpSubmenuTemplate() {
+    let submenuTemplate = super.getHelpSubmenuTemplate();
+
+    // remove check updates entry to avoid duplication with app menu
+    submenuTemplate = submenuTemplate.filter(({ label }) => label !== 'Check for Updates');
 
     return submenuTemplate;
   }
