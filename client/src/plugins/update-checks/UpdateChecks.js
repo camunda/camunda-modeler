@@ -58,7 +58,21 @@ export default class UpdateChecks extends PureComponent {
   }
 
   componentDidMount() {
-    this.scheduleCheck();
+    const {
+      config,
+      subscribe
+    } = this.props;
+
+    const self = this;
+
+    self.scheduleCheck();
+
+    subscribe('updateChecks.execute', async () => {
+
+      const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY);
+
+      self.checkLatestVersion(updateCheckInfo, true);
+    });
   }
 
   componentWillUnmount() {
@@ -138,19 +152,63 @@ export default class UpdateChecks extends PureComponent {
     return this.checkLatestVersion(updateCheckInfo);
   }
 
-  async checkLatestVersion(updateCheckInfo) {
+  async handleUpdateCheckSuccess(update, showNoUpdates = false) {
+    const {
+      displayNotification
+    } = this.props;
+
+    if (!update) {
+
+      log('No update');
+
+      if (showNoUpdates) {
+        displayNotification({
+          type: 'success',
+          title: 'You are running the latest version.',
+          duration: 4000
+        });
+      }
+
+      return;
+    }
+
+    const {
+      latestVersion,
+      downloadURL,
+      releases
+    } = update;
+
+    log('Found update', update.latestVersion);
+
+    const currentVersion = 'v' + Metadata.data.version;
+
+    this.setState({
+      currentVersion,
+      latestVersionInfo: {
+        latestVersion,
+        downloadURL,
+        releases
+      },
+      showModal: true
+    });
+
+  }
+
+  async checkLatestVersion(updateCheckInfo, showNoUpdates = false) {
 
     log('Checking for update');
 
     const {
       config,
-      _getGlobal
+      _getGlobal,
     } = this.props;
 
+    // (1) Send request to check for updates
     const responseJSON = await this.updateChecksAPI.checkLatestVersion(
       config, _getGlobal, updateCheckInfo && updateCheckInfo.latestVersion
     );
 
+    // (2a) Handle check failures
     if (!responseJSON.isSuccessful) {
       const {
         error
@@ -164,27 +222,16 @@ export default class UpdateChecks extends PureComponent {
 
     let newUpdateCheckInfo = updateCheckInfo || {};
 
+    // (2b) Response to user in case of success
+    this.handleUpdateCheckSuccess(update, showNoUpdates);
+
+    // (3) Persist configuration with latest check timestamp
     if (update) {
-      log('Found update', update.latestVersion);
-
-      const currentVersion = 'v' + Metadata.data.version;
-      const latestVersion = update.latestVersion;
-      const downloadURL = update.downloadURL;
-      const releases = update.releases;
-
-      this.setState({
-        currentVersion,
-        latestVersionInfo: {
-          latestVersion,
-          downloadURL,
-          releases
-        },
-        showModal: true
-      });
+      const {
+        latestVersion
+      } = update;
 
       newUpdateCheckInfo.latestVersion = latestVersion;
-    } else {
-      log('No update');
     }
 
     newUpdateCheckInfo.lastChecked = Date.now();
