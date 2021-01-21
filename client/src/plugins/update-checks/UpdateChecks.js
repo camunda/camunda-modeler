@@ -152,6 +152,9 @@ export default class UpdateChecks extends PureComponent {
 
     triggerAction('emit-event', {
       type: 'show-privacy-preferences',
+      payload: {
+        autoFocusKey: 'ENABLE_UPDATE_CHECKS'
+      }
     });
   }
 

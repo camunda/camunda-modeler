@@ -49,7 +49,16 @@ class PrivacyPreferencesView extends PureComponent {
     return preferences[key];
   }
 
+  hasAutoFocus(key) {
+    const {
+      autoFocusKey
+    } = this.props;
+
+    return key === autoFocusKey;
+  }
+
   renderPreferences() {
+
     return PREFERENCES_LIST.map((item) => (
       <Fragment key={ item.key }>
         <div className="privacyPreferencesCheckbox">
@@ -62,6 +71,7 @@ class PrivacyPreferencesView extends PureComponent {
                 type="checkbox"
                 className="custom-control-input"
                 defaultChecked={ this.isEnabled(item.key) }
+                autoFocus={ this.hasAutoFocus(item.key) }
                 onChange={ (event) => {
                   this.setState({ [item.key]: event.target.checked });
                 } } />
