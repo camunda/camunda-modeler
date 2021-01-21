@@ -14,6 +14,8 @@ import React, { PureComponent } from 'react';
 
 import NewVersionInfoView from './NewVersionInfoView';
 
+import PrivacyPreferencesLink from './PrivacyPreferencesLink';
+
 import UpdateChecksAPI from './UpdateChecksAPI';
 
 import Flags, { DISABLE_REMOTE_INTERACTION, FORCE_UPDATE_CHECKS, UPDATE_SERVER_URL } from '../../util/Flags';
@@ -133,13 +135,34 @@ export default class UpdateChecks extends PureComponent {
     });
   }
 
-  async performCheck() {
+  async areUpdateChecksEnabled() {
     const {
       config
     } = this.props;
 
     const privacyPreferences = await config.get(PRIVACY_PREFERENCES_CONFIG_KEY);
-    if (!privacyPreferences || !privacyPreferences.ENABLE_UPDATE_CHECKS) {
+
+    return privacyPreferences && privacyPreferences.ENABLE_UPDATE_CHECKS;
+  }
+
+  openPrivacyPreferences = () => {
+    const {
+      triggerAction
+    } = this.props;
+
+    triggerAction('emit-event', {
+      type: 'show-privacy-preferences',
+    });
+  }
+
+  async performCheck() {
+    const {
+      config
+    } = this.props;
+
+    const areUpdateChecksEnabled = await this.areUpdateChecksEnabled();
+
+    if (!areUpdateChecksEnabled) {
       return this.checkSkipped('privacy-settings');
     }
 
@@ -157,6 +180,8 @@ export default class UpdateChecks extends PureComponent {
       displayNotification
     } = this.props;
 
+    const updateChecksEnabled = await this.areUpdateChecksEnabled();
+
     if (!update) {
 
       log('No update');
@@ -165,7 +190,12 @@ export default class UpdateChecks extends PureComponent {
         displayNotification({
           type: 'success',
           title: 'You are running the latest version.',
-          duration: 4000
+          content: (
+            <PrivacyPreferencesLink
+              updateChecksEnabled={ updateChecksEnabled }
+              onOpenPrivacyPreferences={ this.openPrivacyPreferences } />
+          ),
+          duration: 10000
         });
       }
 
@@ -189,6 +219,7 @@ export default class UpdateChecks extends PureComponent {
         downloadURL,
         releases
       },
+      updateChecksEnabled,
       showModal: true
     });
 
@@ -268,15 +299,23 @@ export default class UpdateChecks extends PureComponent {
     const {
       showModal,
       latestVersionInfo,
-      currentVersion
+      currentVersion,
+      updateChecksEnabled
     } = this.state;
 
-    return <React.Fragment>
-      { showModal && <NewVersionInfoView
-        onClose={ this.onClose }
-        onGoToDownloadPage={ this.onGoToDownloadPage }
-        latestVersionInfo={ latestVersionInfo }
-        currentVersion={ currentVersion } /> }
-    </React.Fragment>;
+    return (
+      <React.Fragment>
+        {showModal && (
+          <NewVersionInfoView
+            onClose={ this.onClose }
+            onGoToDownloadPage={ this.onGoToDownloadPage }
+            onOpenPrivacyPreferences={ this.openPrivacyPreferences }
+            latestVersionInfo={ latestVersionInfo }
+            updateChecksEnabled={ updateChecksEnabled }
+            currentVersion={ currentVersion }
+          />
+        )}
+      </React.Fragment>
+    );
   }
 }

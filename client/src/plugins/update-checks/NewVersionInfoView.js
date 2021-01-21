@@ -14,6 +14,8 @@ import {
   Modal
 } from '../../app/primitives';
 
+import PrivacyPreferencesLink from './PrivacyPreferencesLink';
+
 import {
   MODAL_TITLE,
   BUTTON_NEGATIVE,
@@ -49,7 +51,9 @@ class NewVersionInfoView extends PureComponent {
       latestVersionInfo,
       currentVersion,
       onClose,
-      onGoToDownloadPage
+      onGoToDownloadPage,
+      onOpenPrivacyPreferences,
+      updateChecksEnabled
     } = this.props;
 
     const {
@@ -76,6 +80,10 @@ class NewVersionInfoView extends PureComponent {
               { this.renderHtmlSnippets(releases) }
             </div>
           </div>
+          <PrivacyPreferencesLink
+            onOpenPrivacyPreferences={ onOpenPrivacyPreferences }
+            updateChecksEnabled={ updateChecksEnabled }
+          />
         </Modal.Body>
 
         <Modal.Footer>
