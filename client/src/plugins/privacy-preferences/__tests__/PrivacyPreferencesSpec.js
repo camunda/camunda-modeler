@@ -33,13 +33,15 @@ describe('<PrivacyPreferences>', () => {
   it('should show modal on start if config non existent', async () => {
 
     // when
-    const wrapper = await shallow(<PrivacyPreferences config={ {
-      get() {
-        return new Promise((resolve, reject) => {
-          resolve(null);
-        });
+    const wrapper = await createPrivacyPreferences({
+      config: {
+        get() {
+          return new Promise((resolve, reject) => {
+            resolve(null);
+          });
+        }
       }
-    } } />);
+    });
 
     // then
     expect(wrapper.state('showModal')).to.be.true;
@@ -49,13 +51,15 @@ describe('<PrivacyPreferences>', () => {
   it('should not show modal on start if config existent', async () => {
 
     // when
-    const wrapper = await shallow(<PrivacyPreferences config={ {
-      get() {
-        return new Promise((resolve, reject) => {
-          resolve({});
-        });
+    const wrapper = await createPrivacyPreferences({
+      config: {
+        get() {
+          return new Promise((resolve, reject) => {
+            resolve({});
+          });
+        }
       }
-    } } />);
+    });
 
     // then
     expect(wrapper.state('showModal')).to.be.false;
@@ -65,13 +69,15 @@ describe('<PrivacyPreferences>', () => {
   it('should set isInitialPreferences on start if config non existent', async () => {
 
     // when
-    const wrapper = await shallow(<PrivacyPreferences config={ {
-      get() {
-        return new Promise((resolve, reject) => {
-          resolve(null);
-        });
+    const wrapper = await createPrivacyPreferences({
+      config: {
+        get() {
+          return new Promise((resolve, reject) => {
+            resolve(null);
+          });
+        }
       }
-    } } />);
+    });
 
     // then
     expect(wrapper.state('isInitialPreferences')).to.be.true;
@@ -103,6 +109,7 @@ describe('<PrivacyPreferences>', () => {
 
     // given
     const setSpy = spy();
+
     const wrapper = await createPrivacyPreferences({
       config: {
         get() {
@@ -121,6 +128,7 @@ describe('<PrivacyPreferences>', () => {
 
     // when
     await wrapper.update();
+
     wrapper.find('.btn-primary').first().simulate('click');
 
     // then
@@ -132,7 +140,9 @@ describe('<PrivacyPreferences>', () => {
 
     // given
     let subscribeFunc;
+
     const setSpy = spy();
+
     const config = {
       get() {
         return new Promise((resolve, reject) => {
@@ -143,17 +153,20 @@ describe('<PrivacyPreferences>', () => {
         setSpy();
       }
     };
+
     const subscribe = (type, func) => {
       if (type === 'show-privacy-preferences') {
         subscribeFunc = func;
       }
     };
+
     const wrapper = await createPrivacyPreferences({
       config, subscribe
     }, mount);
 
     // when
-    await subscribeFunc();
+    await subscribeFunc({});
+
     await wrapper.update();
 
     // then
@@ -165,7 +178,9 @@ describe('<PrivacyPreferences>', () => {
 
     // given
     let subscribeFunc;
+
     const setSpy = spy();
+
     const wrapper = await createPrivacyPreferences({
       config: {
         get() {
@@ -181,24 +196,35 @@ describe('<PrivacyPreferences>', () => {
     }, mount);
 
     // when
-    await subscribeFunc();
+    await subscribeFunc({});
     await wrapper.update();
     wrapper.find('.btn-secondary').simulate('click');
 
     // then
     expect(setSpy).to.not.have.been.called;
   });
+
 });
 
 
+// helper ///////////////////
 
-// helper
-function createPrivacyPreferences({
-  config = {}, triggerAction = noop, subscribe = noop
-} = {}, mount = shallow) {
-  return mount(<PrivacyPreferences
-    config={ config } triggerAction={ triggerAction } subscribe={ subscribe }
-  />);
+function createPrivacyPreferences(props = {}, mount = shallow) {
+  const {
+    autoFocusKey,
+    config,
+    triggerAction,
+    subscribe
+  } = props;
+
+  return mount(
+    <PrivacyPreferences
+      autoFocusKey={ autoFocusKey }
+      config={ config }
+      triggerAction={ triggerAction || noop }
+      subscribe={ subscribe || noop }
+    />
+  );
 }
 
 function noop() {}
