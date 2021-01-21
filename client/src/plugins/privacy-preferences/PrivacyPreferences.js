@@ -50,9 +50,14 @@ export default class PrivacyPreferences extends PureComponent {
       });
     }
 
-    this.props.subscribe('show-privacy-preferences', async () => {
+    this.props.subscribe('show-privacy-preferences', async (context) => {
+      const {
+        autoFocusKey
+      } = context;
+
       let preferences = await config.get(CONFIG_KEY);
       this.setState({
+        autoFocusKey,
         showModal: true,
         isInitialPreferences: false,
         preferences: preferences
@@ -79,6 +84,7 @@ export default class PrivacyPreferences extends PureComponent {
 
   render() {
     const {
+      autoFocusKey,
       showModal,
       isInitialPreferences,
       preferences
@@ -87,6 +93,7 @@ export default class PrivacyPreferences extends PureComponent {
     return <React.Fragment>
       { showModal &&
         <PrivacyPreferencesView
+          autoFocusKey={ autoFocusKey }
           onClose={ this.onClose }
           preferences={ preferences }
           onSaveAndClose={ this.onSaveAndClose }

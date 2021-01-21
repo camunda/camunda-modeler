@@ -135,10 +135,12 @@ describe('<PrivacyPreferencesView>', function() {
 
     it('should use default values if preferences empty', function() {
 
+      // when
       const wrapper = mount(<PrivacyPreferencesView />);
 
       const checkboxes = wrapper.find(PRIVACY_PREFERENCES_SELECTOR).find('input');
 
+      // then
       checkboxes.forEach(function(checkbox, index) {
         expect(checkbox.props().defaultChecked).to.be.eql(false);
       });
@@ -147,6 +149,7 @@ describe('<PrivacyPreferencesView>', function() {
 
     it('should load privacy preferences', function() {
 
+      // given
       const values = [false, true, false];
 
       const privacyPreferences = {
@@ -155,15 +158,45 @@ describe('<PrivacyPreferencesView>', function() {
         ENABLE_UPDATE_CHECKS: values[2]
       };
 
+      // when
       const wrapper = mount(
         <PrivacyPreferencesView preferences={ privacyPreferences } />
       );
 
       const checkboxes = wrapper.find(PRIVACY_PREFERENCES_SELECTOR).find('input');
 
+      // then
       checkboxes.forEach(function(checkbox, index) {
         expect(checkbox.props().defaultChecked).to.be.eql(values[index]);
       });
+    });
+
+    it('should not set autofocus', async () => {
+
+      // given
+      const preferenceKey = PREFERENCES_LIST[2].key;
+
+      // when
+      const wrapper = mount(<PrivacyPreferencesView />);
+
+      // then
+      expect(wrapper.find(`#${preferenceKey}`).is(':focus')).to.be.false;
+    });
+
+
+
+    it('should set autofocus if specified', async () => {
+
+      // given
+      const preferenceKey = PREFERENCES_LIST[2].key;
+
+      // when
+      const wrapper = mount(
+        <PrivacyPreferencesView autoFocusKey={ preferenceKey } />
+      );
+
+      // then
+      expect(wrapper.find(`#${preferenceKey}`).is(':focus')).to.be.true;
     });
 
 
