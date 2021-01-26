@@ -84,9 +84,9 @@ class DefaultProvider {
     try {
       fs.writeFileSync(this._path, JSON.stringify(this._json, null, 2), 'utf8');
     } catch (error) {
-      log.error(`cannot write file ${ this.path }`, error);
+      log.error(`cannot write file ${ this._path }`, error);
 
-      throw new Error(`cannot write file ${ this.path }`);
+      throw new Error(`cannot write file ${ this._path }`);
     }
   }
 }
