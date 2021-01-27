@@ -6,6 +6,10 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "bpmnlint-utils": "^1.0.1"
+    "bpmnlint-utils": "^1.0.1",
+    "camunda-modeler-plugin-helpers": "^3.4.0-alpha.0"
+  },
+  "devDependencies": {
+    "camunda-modeler-plugin-helpers": "^3.4.0-alpha.0"
   }
 }

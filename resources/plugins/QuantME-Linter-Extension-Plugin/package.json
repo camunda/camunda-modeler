@@ -19,7 +19,7 @@
     "bpmnlint": "^6.3.0",
     "bpmnlint-loader": "^0.1.4",
     "bpmnlint-plugin-custom": "file:bpmnlint-plugin-custom",
-    "camunda-modeler-plugin-helpers": "^3.0.0",
+    "camunda-modeler-plugin-helpers": "^3.4.0-alpha.0",
     "npm-run-all": "^4.1.5",
     "quantme": "file:../QuantME-CamundaPlugin",
     "webpack": "^4.28.1",

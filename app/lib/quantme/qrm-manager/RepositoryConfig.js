@@ -10,6 +10,6 @@
  */
 
 module.exports = {
-  script: './dist/client.js',
-  name: 'QuantME Client'
+  githubUsername: process.env.QRM_USERNAME,
+  githubRepositoryName: process.env.QRM_REPONAME
 };

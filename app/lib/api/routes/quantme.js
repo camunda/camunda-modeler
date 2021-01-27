@@ -9,8 +9,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { registerClientExtension } from 'camunda-modeler-plugin-helpers';
+const { Router } = require('express');
+const router = Router();
 
-import QuantMEClient from './QuantMEClient';
+router.get('/', (req, res) => {
+  res.json({ '_links': {
+    'self': { method: 'GET', href: req.header('host') + '/quantme' },
+    'qrms': { method: 'GET', title: 'Get all available QRMs', href: req.header('host') + '/quantme/qrms' }
+  } });
+});
 
-registerClientExtension(QuantMEClient);
+module.exports = router;

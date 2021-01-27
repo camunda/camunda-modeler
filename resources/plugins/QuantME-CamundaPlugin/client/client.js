@@ -9,13 +9,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { registerBpmnJSModdleExtension, registerBpmnJSPlugin } from 'camunda-modeler-plugin-helpers';
+import { registerBpmnJSModdleExtension, registerBpmnJSPlugin, registerClientExtension } from 'camunda-modeler-plugin-helpers';
 import ModdleExtension from '../resources/quantum4bpmn.json';
 import quantmeModelingModule from '../quantme/modeling';
-import quantmeReplacementModule from '../quantme/replacement';
+import QuantMETransformator from '../quantme/replacement/QuantMETransformator';
 
 registerBpmnJSModdleExtension(ModdleExtension);
 
 registerBpmnJSPlugin(quantmeModelingModule);
 
-registerBpmnJSPlugin(quantmeReplacementModule);
+registerClientExtension(QuantMETransformator);

@@ -9,7 +9,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const config = {
-  githubUsername: '',
-  githubRepositoryName: ''
+const root = require('./root');
+const workflow = require('./workflow');
+const quantme = require('./quantme');
+const qrm = require('./qrm');
+
+module.exports = {
+  root,
+  workflow,
+  quantme,
+  qrm
 };

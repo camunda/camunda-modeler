@@ -10,7 +10,6 @@
  */
 
 let QuantMEAttributeChecker = require('quantme/quantme/replacement/QuantMEAttributeChecker');
-let QuantMETransformator = require('quantme/quantme/replacement/QuantMETransformator');
 
 /**
  * Rule that reports QuantME tasks for which no suited replacement model exists
@@ -22,9 +21,6 @@ module.exports = function() {
       if (!QuantMEAttributeChecker.requiredAttributesAvailable(node)) {
         reporter.report(node.id, 'Not all required attributes are set. Unable to replace task!');
         return;
-      }
-      if (!QuantMETransformator.isReplaceable(node)) {
-        reporter.report(node.id, 'Unable to replace this node with available QRMs!');
       }
     }
   }

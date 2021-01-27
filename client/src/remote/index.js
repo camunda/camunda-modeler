@@ -15,6 +15,7 @@ import FileSystem from './FileSystem';
 import Log from './Log';
 import Plugins from './Plugins';
 import Workspace from './Workspace';
+import QuantME from './QuantME';
 
 const {
   metadata,
@@ -35,6 +36,8 @@ export const dialog = new Dialog(backend);
 export const plugins = new Plugins(appPlugins);
 
 export const workspace = new Workspace(backend);
+
+export const quantME = new QuantME(backend);
 
 export const log = new Log(backend);
 

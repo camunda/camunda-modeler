@@ -8,6 +8,4 @@
  * except in compliance with the MIT License.
  */
 
-const Menu = require('./menu');
-
-module.exports = Menu;
+module.exports = require('./menu');

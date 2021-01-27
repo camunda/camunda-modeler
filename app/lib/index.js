@@ -33,6 +33,11 @@ const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 
 const {
+  getQRMs,
+  updateQRMs
+} = require('./quantme');
+
+const {
   readFile,
   readFileStats,
   writeFile
@@ -49,10 +54,13 @@ const clientLog = Log('client');
 
 bootstrapLogging();
 
+// start API after bootstrapping the Logging to enable logging the used port
+require('./api');
+
 const name = app.name = 'QuantME Modeler';
 const version = app.version = require('../package').version;
 
-bootstrapLog.info(`starting ${ name } v${ version }`);
+bootstrapLog.info(`starting ${name} v${version}`);
 
 const {
   platform
@@ -189,6 +197,21 @@ renderer.on('file:write', function(filePath, file, options = {}, done) {
   }
 });
 
+// quantme //////////
+
+renderer.on('quantme:get-qrms', function(done) {
+  done(null, getQRMs());
+});
+
+renderer.on('quantme:update-qrms', async function(done) {
+  try {
+    let qrms = await updateQRMs();
+    done(null, qrms);
+  } catch (error) {
+    done(error);
+  }
+});
+
 // config //////////
 
 renderer.on('config:get', function(key, ...args) {
@@ -223,7 +246,7 @@ renderer.on('toggle-plugins', function() {
 
   const pluginsDisabled = flags.get('disable-plugins');
 
-  app.emit('restart', [ pluginsDisabled ? '--no-disable-plugins' : '--disable-plugins' ]);
+  app.emit('restart', [pluginsDisabled ? '--no-disable-plugins' : '--disable-plugins']);
 });
 
 // open file handling //////////
@@ -392,7 +415,7 @@ app.createEditorWindow = function() {
 
 app.on('restart', function(args) {
 
-  const effectiveArgs = Cli.appendArgs(process.argv.slice(1), [ ...args, '--relaunch' ]);
+  const effectiveArgs = Cli.appendArgs(process.argv.slice(1), [...args, '--relaunch']);
 
   log.info('restarting with args', effectiveArgs);
 

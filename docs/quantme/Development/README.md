@@ -1,5 +1,7 @@
 # Development
 
+## Extensions based on Plugins
+
 The QuantME Modeling and Transformation Framework is based on the Camunda Modeler and the major parts of the extensions are implemented using plugins for the Camunda Modeler.
 Details about Camunda Modeler plugins can be found [here](../../plugins).
 
@@ -27,8 +29,11 @@ Plugin containing the BPMN moddle extension for the QuantME tasks, as well as th
 Furthermore, the transformation logic is implemented in this plugin.
 Therefore, this plugin contains the major part of the QuantME extensions and should be extended, if, e.g., new tasks are added.
 
-### [QuantME-ClientPlugin](/resources/plugins/QuantME-ClientPlugin)
+## Extensions in the Backend
 
-Client extension plugin handling the [QRM-Repository](../QRM-Repository). 
-Thus, it implements the communication with Github as well as the validation of the QRMs (availability of detector.bpmn and replacement.bpmn).
-The currently available QRMs can be requested using the event bus and are then retrieved and send back via the event bus.
+In addition to the plugins, some extensions are directly implemented in the modeler backend, which will be discussed in the following.
+
+First, the handling of the [QRM-Repository](../QRM-Repository) is implemented in the backend.
+For this, the communication with Github as well as the validation of the QRMs (availability of detector.bpmn and replacement.bpmn) is added.
+
+Second, the REST API of the QuantME Modeling and Transformation Framework is part of the backend (see [REST API](../API) for details).

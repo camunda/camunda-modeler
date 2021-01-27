@@ -9,9 +9,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import QuantMETransformator from './QuantMETransformator';
-
-export default {
-  __init__: ['quantMETransformator'],
-  quantMETransformator: ['type', QuantMETransformator],
-};
+module.exports = require('./api');
