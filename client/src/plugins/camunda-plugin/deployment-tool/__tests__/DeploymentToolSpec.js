@@ -21,6 +21,8 @@ import { Config } from './../../../../app/__tests__/mocks';
 
 import DeploymentTool from '../DeploymentTool';
 import AuthTypes from '../../shared/AuthTypes';
+import { DeploymentError,
+  ConnectionError } from '../../shared/CamundaAPI';
 
 
 const CONFIG_KEY = 'deployment-tool';
@@ -245,7 +247,167 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should handle deployment error');
+    it('should handle deployment error given a DeploymentError', async () => {
+
+      // given
+      const deploymentErrorSpy = sinon.spy(),
+            configuration = createConfiguration(),
+            activeTab = createTab({ name: 'foo.bpmn' });
+
+      const errorThrown = new DeploymentError({ status: 500 });
+
+      const {
+        instance
+      } = createDeploymentTool({ activeTab, errorThrown, deploymentErrorSpy, ...configuration });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(deploymentErrorSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should not handle deployment error given a non DeploymentError', async () => {
+
+      // given
+      const deploymentErrorSpy = sinon.spy(),
+            configuration = createConfiguration(),
+            activeTab = createTab({ name: 'foo.bpmn' });
+
+      const errorThrown = [
+        new ConnectionError({ status: 500 }),
+        new Error()
+      ];
+
+      for (let i = 0; i < errorThrown.length; i++) {
+
+        // given
+        const {
+          instance
+        } = createDeploymentTool({ activeTab, errorThrown: errorThrown[i], deploymentErrorSpy, ...configuration });
+
+        let error;
+
+        // when
+        try {
+          await instance.deploy();
+        } catch (e) {
+          error = e;
+        }
+
+        // then
+        expect(error).to.equal(errorThrown[i]);
+        expect(deploymentErrorSpy).to.not.have.been.called;
+      }
+    });
+
+
+    describe('emit-event action', () => {
+
+      it('should trigger deployment.done action after successful deployment', async () => {
+
+        // given
+        const configuration = createConfiguration(),
+              activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.done',
+                handler:actionSpy
+              };
+
+        const {
+          instance
+        } = createDeploymentTool({ activeTab, actionTriggered, ...configuration });
+
+        // when
+        await instance.deploy();
+
+        // then
+        expect(actionSpy).to.have.been.calledOnce;
+      });
+
+
+      it('should not trigger deployment.done action after failed deployment', async () => {
+
+        // given
+        const configuration = createConfiguration(),
+              activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.done',
+                handler:actionSpy
+              };
+
+        const errorThrown = new DeploymentError({ status: 500 });
+
+        const {
+          instance
+        } = createDeploymentTool({ activeTab, actionTriggered, errorThrown, ...configuration });
+
+        // when
+        await instance.deploy();
+
+        // then
+        expect(actionSpy).to.not.have.been.called;
+      });
+
+
+      it('should trigger deployment.error action after failed deployment', async () => {
+
+        // given
+        const configuration = createConfiguration(),
+              activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.error',
+                handler:actionSpy
+              };
+
+        const errorThrown = new DeploymentError({ status: 500 });
+
+        const {
+          instance
+        } = createDeploymentTool({ activeTab, actionTriggered, errorThrown, ...configuration });
+
+        // when
+        await instance.deploy();
+
+        // then
+        expect(actionSpy).to.have.been.calledOnce;
+      });
+
+
+      it('should not trigger deployment.error action after successful deployment', async () => {
+
+        // given
+        const configuration = createConfiguration(),
+              activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.error',
+                handler:actionSpy
+              };
+
+        const {
+          instance
+        } = createDeploymentTool({ activeTab, actionTriggered, ...configuration });
+
+        // when
+        await instance.deploy();
+
+        // then
+        expect(actionSpy).to.not.have.been.called;
+      });
+    });
 
 
     describe('default url', () => {
@@ -391,7 +553,17 @@ class TestDeploymentTool extends DeploymentTool {
 
   // removes CamundaAPI dependency
   deployWithConfiguration(...args) {
+    if (this.props.errorThrown) {
+      throw this.props.errorThrown;
+    }
+
     return this.props.deploySpy && this.props.deploySpy(...args);
+  }
+
+  handleDeploymentError(...args) {
+    super.handleDeploymentError(...args);
+
+    return this.props.deploymentErrorSpy && this.props.deploymentErrorSpy(...args);
   }
 
   checkConnection = (...args) => {
@@ -436,10 +608,14 @@ function createDeploymentTool({
     event === 'app.activeTabChanged' && callback(activeTab);
   };
 
-  const triggerAction = event => {
-    switch (event) {
-    case 'save-tab':
+  const triggerAction = (event, context) => {
+    switch (true) {
+    case (event === 'save-tab'):
       return activeTab;
+    case (props.actionTriggered &&
+      props.actionTriggered.emitEvent == event &&
+      props.actionTriggered.type == context.type):
+      props.actionTriggered.handler();
     }
   };
 
