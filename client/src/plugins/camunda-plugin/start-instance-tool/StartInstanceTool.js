@@ -16,6 +16,8 @@ import CamundaAPI from '../shared/CamundaAPI';
 
 import StartInstanceConfigModal from './StartInstanceConfigModal';
 
+import { DeploymentError, StartInstanceError } from '../shared/CamundaAPI';
+
 import css from './StartInstanceTool.less';
 
 import { Fill } from '../../../app/slot-fill';
@@ -208,6 +210,10 @@ export default class StartInstanceTool extends PureComponent {
 
       await this.handleDeploymentSuccess(tab, deployment);
     } catch (error) {
+      if (!(error instanceof DeploymentError)) {
+        throw error;
+      }
+
       return await this.handleDeploymentError(tab, error);
     }
 
@@ -227,6 +233,10 @@ export default class StartInstanceTool extends PureComponent {
 
       await this.handleStartSuccess(processInstance, endpoint);
     } catch (error) {
+      if (!(error instanceof StartInstanceError)) {
+        throw error;
+      }
+
       await this.handleStartError(tab, error);
     }
   }

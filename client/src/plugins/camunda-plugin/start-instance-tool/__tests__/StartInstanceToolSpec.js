@@ -20,6 +20,10 @@ import { DeploymentService } from './mocks';
 
 import StartInstanceTool from '../StartInstanceTool';
 
+import { DeploymentError,
+  ConnectionError,
+  StartInstanceError } from '../../shared/CamundaAPI';
+
 describe('<StartInstanceTool>', () => {
 
   it('should render', () => {
@@ -239,6 +243,163 @@ describe('<StartInstanceTool>', () => {
       // 0: start-instance-tool, 1: process-definition
       expect(config.setForFile.args[1][2]).to.eql(deployedProcessDefinition);
     });
+
+
+    it('should handle deployment error given a DeploymentError', async () => {
+
+      // given
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const deployErrorThrown = new DeploymentError({ status: 500 }),
+            deploymentErrorSpy = sinon.spy(),
+            {
+              instance
+            } = createStartInstanceTool({ activeTab, deployErrorThrown, deploymentErrorSpy });
+
+      // when
+      await instance.startInstance();
+
+      // then
+      expect(deploymentErrorSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should not handle deployment error given a non DeploymentError', async () => {
+
+      // given
+      const deploymentErrorSpy = sinon.spy(),
+            activeTab = createTab({ name: 'foo.bpmn' });
+
+      const errorThrown = [
+        new ConnectionError({ status: 500 }),
+        new Error()
+      ];
+
+      for (let i = 0; i < errorThrown.length; i++) {
+
+        // given
+        const {
+          instance
+        } = createStartInstanceTool({ activeTab, deployErrorThrown: errorThrown[i], deploymentErrorSpy });
+
+        let error;
+
+        // when
+        try {
+          await instance.startInstance();
+        } catch (e) {
+          error = e;
+        }
+
+        // then
+        expect(error).to.equal(errorThrown[i]);
+        expect(deploymentErrorSpy).to.not.have.been.called;
+      }
+    });
+
+
+    describe('emit-event action', () => {
+
+      it('should trigger deployment.done action after successful deployment', async () => {
+
+        // given
+        const activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.done',
+                handler:actionSpy
+              };
+
+        const {
+          instance
+        } = createStartInstanceTool({ activeTab, actionTriggered });
+
+        // when
+        await instance.startInstance();
+
+        // then
+        expect(actionSpy).to.have.been.calledOnce;
+      });
+
+
+      it('should not trigger deployment.done action after failed deployment', async () => {
+
+        // given
+        const activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.done',
+                handler:actionSpy
+              };
+
+        const deployErrorThrown = new DeploymentError({ status: 500 });
+
+        const {
+          instance
+        } = createStartInstanceTool({ activeTab, actionTriggered, deployErrorThrown });
+
+        // when
+        await instance.startInstance();
+
+        // then
+        expect(actionSpy).to.not.have.been.called;
+      });
+
+
+      it('should trigger deployment.error action after failed deployment', async () => {
+
+        // given
+        const activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.error',
+                handler:actionSpy
+              };
+
+        const deployErrorThrown = new DeploymentError({ status: 500 });
+
+        const {
+          instance
+        } = createStartInstanceTool({ activeTab, actionTriggered, deployErrorThrown });
+
+        // when
+        await instance.startInstance();
+
+        // then
+        expect(actionSpy).to.have.been.calledOnce;
+      });
+
+
+      it('should not trigger deployment.error action after successful deployment', async () => {
+
+        // given
+        const activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.error',
+                handler:actionSpy
+              };
+
+        const {
+          instance
+        } = createStartInstanceTool({ activeTab, actionTriggered });
+
+        // when
+        await instance.startInstance();
+
+        // then
+        expect(actionSpy).to.not.have.been.called;
+      });
+    });
+
   });
 
 
@@ -356,7 +517,7 @@ describe('<StartInstanceTool>', () => {
       // given
       const startSpy = sinon.spy();
 
-      const deployStub = sinon.stub().throws();
+      const deployStub = sinon.stub().throws(new DeploymentError({ status: 500 }));
 
       const activeTab = createTab({ name: 'foo.bpmn' });
 
@@ -441,28 +602,29 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should handle start instance error', async () => {
+    it('should handle start instance error given StartInstanceError', async () => {
 
       // given
-      const startSpy = sinon.stub().throws();
+      const startSpy = sinon.stub().throws(new StartInstanceError({ status: 500 }));
 
       const logSpy = sinon.spy();
 
-      const activeTab = createTab({ name: 'foo.bpmn' });
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.done',
+              handler: actionSpy
+            };
 
-      const config = {
-        getForFile: () => {
-          return { businessKey: 'foo' };
-        }
-      };
+      const activeTab = createTab({ name: 'foo.bpmn' });
 
       const {
         instance
       } = createStartInstanceTool({
         activeTab,
-        config,
         log: logSpy,
-        startSpy
+        startSpy,
+        actionTriggered
       });
 
       // when
@@ -470,7 +632,52 @@ describe('<StartInstanceTool>', () => {
 
       // then
       expect(logSpy).to.have.been.calledOnce;
+      expect(actionSpy).to.have.been.calledOnce;
       expect(logSpy.args[0][0].category).to.eql('start-instance-error');
+    });
+
+
+    it('should not handle start instance error given non StartInstanceError', async () => {
+
+      // given
+      const errorThrown = new Error({ status: 500 });
+
+      const startSpy = sinon.stub().throws(errorThrown);
+
+      const logSpy = sinon.spy();
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.done',
+              handler: actionSpy
+            };
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const {
+        instance
+      } = createStartInstanceTool({
+        activeTab,
+        log: logSpy,
+        startSpy,
+        actionTriggered
+      });
+
+      let error;
+
+      // when
+      try {
+        await instance.startInstance();
+      } catch (e) {
+        error = e;
+      }
+
+      // then
+      expect(error).to.equal(errorThrown);
+      expect(logSpy).to.not.have.been.called;
+      expect(actionSpy).to.have.been.calledOnce; // deployment still succeeds
+      expect(logSpy.args.length).to.eql(0);
     });
 
 
@@ -561,7 +768,31 @@ class TestStartInstanceTool extends StartInstanceTool {
 
   // removes CamundaAPI dependency
   startWithConfiguration(...args) {
+    if (this.props.startInstanceErrorThrown) {
+      throw this.props.startInstanceErrorThrown;
+    }
+
     return this.props.startSpy && this.props.startSpy(...args);
+  }
+
+  async deploy(...args) {
+    if (this.props.deployErrorThrown) {
+      throw this.props.deployErrorThrown;
+    }
+
+    return await super.deploy(...args);
+  }
+
+  handleDeploymentError(...args) {
+    super.handleDeploymentError(...args);
+
+    return this.props.deploymentErrorSpy && this.props.deploymentErrorSpy(...args);
+  }
+
+  handleStartError(...args) {
+    super.handleStartError(...args);
+
+    return this.props.startInstanceErrorSpy && this.props.startInstanceErrorSpy(...args);
   }
 
   checkConnection = (...args) => {
@@ -607,10 +838,14 @@ function createStartInstanceTool({
     event === 'app.activeTabChanged' && callback(activeTab);
   };
 
-  const triggerAction = event => {
-    switch (event) {
-    case 'save':
+  const triggerAction = (event, context) => {
+    switch (true) {
+    case (event === 'save'):
       return activeTab;
+    case (props.actionTriggered &&
+      props.actionTriggered.emitEvent == event &&
+      props.actionTriggered.type == context.type):
+      props.actionTriggered.handler();
     }
   };
 
