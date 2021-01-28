@@ -17,6 +17,7 @@ import AuthTypes from '../shared/AuthTypes';
 
 import DeploymentConfigModal from './DeploymentConfigModal';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
+import { DeploymentError } from '../shared/CamundaAPI';
 
 import {
   generateId
@@ -138,6 +139,11 @@ export default class DeploymentTool extends PureComponent {
 
       await this.handleDeploymentSuccess(tab, deployment);
     } catch (error) {
+
+      if (!(error instanceof DeploymentError)) {
+        throw error;
+      }
+
       await this.handleDeploymentError(tab, error);
     }
   }
