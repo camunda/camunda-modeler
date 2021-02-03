@@ -2,7 +2,7 @@ name: Push Docker Image to Dockerhub
 
 on:
   push:
-    branches: [master, feature/docker]
+    branches: 'develop'
 
 jobs:
   multi:
