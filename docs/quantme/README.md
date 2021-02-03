@@ -24,6 +24,10 @@ A short example with different steps to create a QRM and use it to transform a Q
 
 Description of the REST API to trigger functions of the QuantME Modeling and Transformation Framework from outside the modeling UI
 
+### [Environment Variables](./Environment-Variables)
+
+Short summary of all environment variables that can be used to customize the QuantME Modeling and Transformation Framework
+
 ### [Development](./Development)
 
 Developer information about how to extend the QuantME Modeling and Transformation Framework

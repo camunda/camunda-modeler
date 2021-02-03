@@ -12,19 +12,21 @@
 const express = require('express');
 const routes = require('./routes');
 
+const quantumWorkflowController = require('./routes/quantum-workflow-controller');
+
 const log = require('../log')('app:api');
 const api = express();
 
 // add defined routes of controllers
 api.use('/', routes.root);
-api.use('/workflows', routes.workflow);
 api.use('/quantme', routes.quantme);
 api.use('/quantme/qrms', routes.qrm);
+api.use('/quantme/workflows', routes.quantumWorkflow);
 
 // retrieve port for the API from the environment variables or use default port 8081
 let port = process.env.PORT;
 if (port !== undefined) {
-  port = port.replace(/ /g,'');
+  port = port.replace(/ /g, '');
   port = parseInt(port);
 
   // defined port has to be between 0 and 65536
@@ -41,4 +43,32 @@ if (port !== undefined) {
 }
 
 // start REST API
-api.listen(port);
+const host = '0.0.0.0';
+api.listen(port, host, function(err) {
+  if (err) return log.error(err);
+  log.info('Listening at http://%s:%s', host, port);
+});
+
+/**
+ * Add the result of a long-running task to the result set of the corresponding controller
+ *
+ * @param targetRoute the route identifying the controller the long-running task belongs to
+ * @param id the id of the long-running task
+ * @param args the results of the long-running task
+ */
+module.exports.addResultOfLongRunningTask = function(targetRoute, id, args) {
+  log.info('Received result for long running task for route: {}. Forwarding to controller!', targetRoute);
+
+  if (targetRoute === null) {
+    log.error('Unable to forward result of long running task with targetRoute equal to null!');
+    return;
+  }
+
+  switch (targetRoute) {
+  case '/quantme/workflows':
+    quantumWorkflowController.addResultOfLongRunningTask(id, args);
+    break;
+  default:
+    log.error('Unable to forward result of long running task with targetRoute: ' + targetRoute);
+  }
+};

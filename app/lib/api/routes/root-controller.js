@@ -12,11 +12,12 @@
 const { Router } = require('express');
 const router = Router();
 
-router.get('/', (req, res) => {
+router.get('/', function(req, res) {
   res.json({ '_links': {
-    'self': { method: 'GET', href: req.header('host') + '/quantme' },
-    'qrms': { method: 'GET', title: 'Get all available QRMs', href: req.header('host') + '/quantme/qrms' }
+    'self': { method: 'GET', href: req.header('host') + '' },
+    'quantme': { method: 'GET', title: 'Get QuantME resources', href: req.header('host') + '/quantme' }
   } });
 });
 
 module.exports = router;
+

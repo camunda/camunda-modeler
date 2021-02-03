@@ -404,7 +404,13 @@ app.createEditorWindow = function() {
   });
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
+
+    // do not show main window if running in headless mode
+    if (process.env.HEADLESS === 'true') {
+      log.info('Running in headless mode. Window is not displayed!');
+    } else {
+      mainWindow.show();
+    }
   });
 
   app.emit('app:window-created', mainWindow);
