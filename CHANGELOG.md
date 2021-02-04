@@ -6,6 +6,31 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.6.0
+
+### General
+
+* `FEAT`: offer `Check for Update` option in the menu ([#2010](https://github.com/camunda/camunda-modeler/issues/2010))
+* `FEAT`: open fullscreen with Ctrl+Cmd+F on Mac ([#2050](https://github.com/camunda/camunda-modeler/issues/2050))
+* `FIX`: correctly log filepath when logging a `write file` error ([#2079](https://github.com/camunda/camunda-modeler/pull/2079))
+* `CHORE`: bump to `diagram-js@7.2.0`. Auxiliary mouse button events will now be passed as `element.*` mouse events to components (incl. components provided via plugins). You must filter your event listeners to prevent reactions to these events ([`1063f7c18`](https://github.com/bpmn-io/diagram-js/commit/1063f7c18474096d3d7c9e400ce82a1bf762a157)).
+
+### BPMN
+
+* `FEAT`: add `Participant-` prefix to respective `ID` and `Name` textInput labels to improve clarity ([#1738](https://github.com/camunda/camunda-modeler/issues/1738))
+* `CHORE`: capture userTask formKey metrics on `diagram open` and `diagram deploy` events ([#2062](https://github.com/camunda/camunda-modeler/issues/2062))
+* `FIX`: only catch DeploymentErrors and re-throw others when deploying a process or starting process instance fails ([#2078](https://github.com/camunda/camunda-modeler/issues/2078))
+* `FIX`: only allow cancel boundary event on transaction subprocesses ([#2026](https://github.com/camunda/camunda-modeler/issues/2026))
+* `CHORE`: bump to `bpmn-js@8.2.0`
+* `CHORE`: bump to `bpmn-js-properties-panel@0.40.0`
+* `CHORE`: bump to `@bpmn-io/extract-process-variables@0.4.0`
+
+### DMN
+
+* `FEAT`: add hand tool to DRD view ([#614](https://github.com/bpmn-io/dmn-js/pull/614))
+* `FIX`: don't lose association when switching from DRD to DMN view ([#1874](https://github.com/camunda/camunda-modeler/issues/1874) and [#2052](https://github.com/camunda/camunda-modeler/issues/2052))
+* `CHORE`: bump to `dmn-js@10.1.0-alpha.2`
+
 ## 4.5.0
 
 ### BPMN
