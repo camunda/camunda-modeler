@@ -41,7 +41,7 @@ function parseUserTaskForms(userTasks) {
     count: userTasks.filter((userTask) => hasFormKey(userTask) || hasFormField(userTask)).length,
     embedded: userTasks.filter((userTask) => hasFormKey(userTask) && isEmbedded(userTask.formKey)).length,
     external: userTasks.filter((userTask) => hasFormKey(userTask) && isExternal(userTask.formKey)).length,
-    generic: userTasks.filter((userTask) => !hasFormKey(userTask) && hasFormField(userTask)).length,
+    generated: userTasks.filter((userTask) => !hasFormKey(userTask) && hasFormField(userTask)).length,
     other: userTasks.filter((userTask) => hasFormKey(userTask) && isOther(userTask.formKey)).length,
   };
 }
