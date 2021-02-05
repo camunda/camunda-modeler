@@ -223,6 +223,8 @@ export default class TabsProvider {
 
     const contents = this.getInitialFileContents(type);
 
+    const contents = this.getInitialFileContents(type);
+
     return {
       name,
       contents,
@@ -267,6 +269,10 @@ export default class TabsProvider {
 
     if (!type) {
       return null;
+    }
+
+    if (!file.contents) {
+      file.contents = this.getInitialFileContents(type);
     }
 
     return {

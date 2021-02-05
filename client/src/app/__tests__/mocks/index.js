@@ -213,12 +213,6 @@ export class TabsProvider {
   getTabComponent(type) {
     return this.resolveTab(type);
   }
-
-
-  getInitialFileContents() {
-    return '<contents>';
-  }
-
 }
 
 
