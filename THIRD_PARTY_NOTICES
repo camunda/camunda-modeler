@@ -55,7 +55,7 @@ This project incorporates components from the projects listed below. The origina
 48.   @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
 49.   bpmn-js-disable-collapsed-subprocess@0.1.3 (https://github.com/bpmn-io/bpmn-js-disable-collapsed-subprocess)
 50.   bpmn-js-executable-fix@0.1.3 (https://github.com/bpmn-io/bpmn-js-executable-fix)
-51.   bpmn-js-properties-panel@0.40.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+51.   bpmn-js-properties-panel@0.39.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 52.   bpmn-js-signavio-compat@1.2.3 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
 53.   bpmn-js@8.2.0 (https://github.com/bpmn-io/bpmn-js)
 54.   bpmn-moddle@7.0.4 (https://github.com/bpmn-io/bpmn-moddle)
@@ -74,7 +74,7 @@ This project incorporates components from the projects listed below. The origina
 67.   diagram-js-direct-editing@1.6.2 (https://github.com/bpmn-io/diagram-js-direct-editing)
 68.   diagram-js-minimap@2.0.4 (https://github.com/bpmn-io/diagram-js-minimap)
 69.   diagram-js-origin@1.3.2 (https://github.com/bpmn-io/diagram-js-origin)
-70.   diagram-js@7.2.0 (https://github.com/bpmn-io/diagram-js)
+70.   diagram-js@7.0.0 (https://github.com/bpmn-io/diagram-js)
 71.   didi@5.2.1 (https://github.com/nikku/didi)
 72.   dmn-js-decision-table@10.1.0-alpha.2 (https://github.com/bpmn-io/dmn-js)
 73.   dmn-js-drd@10.1.0-alpha.2 (https://github.com/bpmn-io/dmn-js)
@@ -1457,7 +1457,7 @@ MIT
 END OF bpmn-js-executable-fix@0.1.3 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@0.40.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@0.39.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1481,7 +1481,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@0.40.0 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@0.39.0 NOTICES AND INFORMATION
 
 
 %% bpmn-js-signavio-compat@1.2.3 NOTICES AND INFORMATION BEGIN HERE
@@ -1960,7 +1960,7 @@ THE SOFTWARE.
 END OF diagram-js-origin@1.3.2 NOTICES AND INFORMATION
 
 
-%% diagram-js@7.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@7.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1984,7 +1984,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@7.2.0 NOTICES AND INFORMATION
+END OF diagram-js@7.0.0 NOTICES AND INFORMATION
 
 
 %% didi@5.2.1 NOTICES AND INFORMATION BEGIN HERE
