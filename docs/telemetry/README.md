@@ -89,7 +89,7 @@ as well as relevant information about user tasks and forms:
           "count": 4,
           "embedded": 1,
           "external": 2,
-          "generic": 0,
+          "generated": 0,
           "other": 1
         }
       }
@@ -150,7 +150,7 @@ as well as relevant information about user tasks and forms:
           "count": 4,
           "embedded": 1,
           "external": 2,
-          "generic": 0,
+          "generated": 0,
           "other": 1
         }
       }
