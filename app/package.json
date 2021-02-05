@@ -17,7 +17,8 @@
     "min-dash": "^3.5.2",
     "mri": "^1.1.6",
     "node-fetch": "^2.6.1",
-    "parents": "^1.0.1"
+    "parents": "^1.0.1",
+    "zeebe-node": "^0.23.2"
   },
   "homepage": "https://github.com/camunda/camunda-modeler",
   "repository": {

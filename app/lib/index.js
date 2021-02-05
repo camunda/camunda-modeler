@@ -20,6 +20,8 @@ const Sentry = require('@sentry/node');
 
 const path = require('path');
 
+const ZeebeNode = require('zeebe-node');
+
 const Cli = require('./cli');
 const Config = require('./config');
 const Dialog = require('./dialog');
@@ -31,6 +33,7 @@ const Platform = require('./platform');
 const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
+const ZeebeAPI = require('./zeebe-api');
 
 const {
   readFile,
@@ -65,7 +68,8 @@ const {
   flags,
   menu,
   plugins,
-  windowManager
+  windowManager,
+  zeebeAPI
 } = bootstrap();
 
 app.flags = flags;
@@ -184,6 +188,38 @@ renderer.on('file:write', function(filePath, file, options = {}, done) {
     const newFile = writeFile(filePath, file, options);
 
     done(null, newFile);
+  } catch (err) {
+    done(err);
+  }
+});
+
+// zeebe api //////////
+
+renderer.on('zeebe:checkConnection', async function(options, done) {
+  try {
+    const connectivity = await zeebeAPI.checkConnection(options);
+
+    done(null, connectivity);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:deploy', async function(options, done) {
+  try {
+    const deploymentResult = await zeebeAPI.deploy(options);
+
+    done(null, deploymentResult);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:run', async function(options, done) {
+  try {
+    const runResult = await zeebeAPI.run(options);
+
+    done(null, runResult);
   } catch (err) {
     done(err);
   }
@@ -536,16 +572,16 @@ function bootstrap() {
   // (6) workspace
   new Workspace(config);
 
-  // (7) plugins
-  const pluginsDisabled = flags.get('disable-plugins');
-
-  // (8) window manager
+  // (7) window manager
   const windowManager = new WindowManager({
     config,
     electronScreen
   });
 
   let paths;
+
+  // (8) plugins
+  const pluginsDisabled = flags.get('disable-plugins');
 
   if (pluginsDisabled) {
     paths = [];
@@ -566,6 +602,9 @@ function bootstrap() {
   // track plugins
   errorTracking.setTag(Sentry, 'plugins', generatePluginsTag(plugins));
 
+  // (9) zeebe API
+  const zeebeAPI = new ZeebeAPI({ readFile }, ZeebeNode);
+
   return {
     config,
     dialog,
@@ -573,7 +612,8 @@ function bootstrap() {
     flags,
     menu,
     plugins,
-    windowManager
+    windowManager,
+    zeebeAPI
   };
 }
 
