@@ -5,125 +5,1210 @@ Do Not Translate or Localize
 
 This project incorporates components from the projects listed below. The original copyright notices and the licenses under which Camunda received such components are set forth below.
 
-1.    @sentry/apm@5.15.5 (https://github.com/getsentry/sentry-javascript)
-2.    @sentry/browser@5.15.5 (https://github.com/getsentry/sentry-javascript)
-3.    @sentry/core@5.15.5 (https://github.com/getsentry/sentry-javascript)
-4.    @sentry/hub@5.15.5 (https://github.com/getsentry/sentry-javascript)
-5.    @sentry/minimal@5.15.5 (https://github.com/getsentry/sentry-javascript)
-6.    @sentry/node@5.15.5 (https://github.com/getsentry/sentry-javascript)
-7.    @sentry/types@5.15.5 (https://github.com/getsentry/sentry-javascript)
-8.    @sentry/utils@5.15.5 (https://github.com/getsentry/sentry-javascript)
-9.    agent-base@5.1.1 (https://github.com/TooTallNate/node-agent-base)
-10.   asynckit@0.4.0 (https://github.com/alexindigo/asynckit)
-11.   balanced-match@1.0.0 (https://github.com/juliangruber/balanced-match)
-12.   brace-expansion@1.1.11 (https://github.com/juliangruber/brace-expansion)
-13.   combined-stream@1.0.7 (https://github.com/felixge/node-combined-stream)
-14.   concat-map@0.0.1 (https://github.com/substack/node-concat-map)
-15.   cookie@0.3.1 (https://github.com/jshttp/cookie)
-16.   debug@4.1.1 (https://github.com/visionmedia/debug)
-17.   delayed-stream@1.0.0 (https://github.com/felixge/node-delayed-stream)
-18.   form-data@2.3.3 (https://github.com/form-data/form-data)
-19.   fs.realpath@1.0.0 (https://github.com/isaacs/fs.realpath)
-20.   glob@7.1.3 (https://github.com/isaacs/node-glob)
-21.   https-proxy-agent@4.0.0 (https://github.com/TooTallNate/node-https-proxy-agent)
-22.   inflight@1.0.6 (https://github.com/npm/inflight)
-23.   inherits@2.0.3 (https://github.com/isaacs/inherits)
-24.   lru_map@0.3.3 (https://github.com/rsms/js-lru)
-25.   mime-db@1.37.0 (https://github.com/jshttp/mime-db)
-26.   mime-types@2.1.21 (https://github.com/jshttp/mime-types)
-27.   min-dash@3.4.0 (https://github.com/bpmn-io/min-dash)
-28.   minimatch@3.0.4 (https://github.com/isaacs/minimatch)
-29.   mri@1.1.4 (https://github.com/lukeed/mri)
-30.   ms@2.1.2 (https://github.com/zeit/ms)
-31.   node-fetch@2.3.0 (https://github.com/bitinn/node-fetch)
-32.   once@1.4.0 (https://github.com/isaacs/once)
-33.   parents@1.0.1 (https://github.com/substack/node-parents)
-34.   path-is-absolute@1.0.1 (https://github.com/sindresorhus/path-is-absolute)
-35.   path-platform@0.11.15 (https://github.com/tjfontaine/node-path-platform)
-36.   tslib@1.11.2 (https://github.com/Microsoft/tslib)
-37.   wrappy@1.0.2 (https://github.com/npm/wrappy)
-38.   @bpmn-io/add-exporter@0.2.0 (https://github.com/bpmn-io/add-exporter)
-39.   @bpmn-io/align-to-origin@0.6.0 (https://github.com/bpmn-io/align-to-origin)
-40.   @bpmn-io/dmn-migrate@0.4.3 (https://github.com/bpmn-io/dmn-migrate)
-41.   @bpmn-io/extract-process-variables@0.3.0 (https://github.com/bpmn-io/extract-process-variables)
-42.   @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
-43.   @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
-44.   bpmn-js-disable-collapsed-subprocess@0.1.2 (https://github.com/bpmn-io/bpmn-js-disable-collapsed-subprocess)
-45.   bpmn-js-executable-fix@0.1.2 (https://github.com/bpmn-io/bpmn-js-executable-fix)
-46.   bpmn-js-properties-panel@0.38.1 (https://github.com/bpmn-io/bpmn-js-properties-panel)
-47.   bpmn-js-signavio-compat@1.2.2 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
-48.   bpmn-js@8.0.0 (https://github.com/bpmn-io/bpmn-js)
-49.   bpmn-moddle@7.0.4 (https://github.com/bpmn-io/bpmn-moddle)
-50.   camunda-bpmn-moddle@4.5.0 (https://github.com/camunda/camunda-bpmn-moddle)
-51.   camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
-52.   camunda-dmn-moddle@1.0.0 (https://github.com/camunda/camunda-dmn-moddle)
-53.   canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
-54.   classnames@2.2.6 (https://github.com/JedWatson/classnames)
-55.   cmmn-js-properties-panel@0.8.3 (https://github.com/bpmn-io/cmmn-js-properties-panel)
-56.   cmmn-js@0.20.0 (https://github.com/bpmn-io/cmmn-js)
-57.   cmmn-moddle@5.0.0 (https://github.com/bpmn-io/cmmn-moddle)
-58.   codemirror@5.46.0 (https://github.com/codemirror/CodeMirror)
-59.   css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape)
-60.   deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
-61.   diagram-js-direct-editing@1.6.1 (https://github.com/bpmn-io/diagram-js-direct-editing)
-62.   diagram-js-minimap@2.0.3 (https://github.com/bpmn-io/diagram-js-minimap)
-63.   diagram-js-origin@1.3.1 (https://github.com/bpmn-io/diagram-js-origin)
-64.   diagram-js@6.8.0 (https://github.com/bpmn-io/diagram-js)
-65.   didi@5.2.1 (https://github.com/nikku/didi)
-66.   dmn-js-decision-table@10.0.0 (https://github.com/bpmn-io/dmn-js)
-67.   dmn-js-drd@10.0.0 (https://github.com/bpmn-io/dmn-js)
-68.   dmn-js-literal-expression@10.0.0 (https://github.com/bpmn-io/dmn-js)
-69.   dmn-js-properties-panel@0.5.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
-70.   dmn-js-shared@10.0.0 (https://github.com/bpmn-io/dmn-js)
-71.   dmn-js@10.0.0 (https://github.com/bpmn-io/dmn-js)
-72.   dmn-moddle@9.1.0 (https://github.com/bpmn-io/dmn-moddle)
-73.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
-74.   escape-html@1.0.3 (https://github.com/component/escape-html)
-75.   events@3.0.0 (https://github.com/Gozala/events)
-76.   formik@2.0.4 (https://github.com/jaredpalmer/formik)
-77.   hammerjs@2.0.8 (https://github.com/hammerjs/hammer.js)
-78.   hat@0.0.3 (https://github.com/substack/node-hat)
-79.   hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
-80.   ids@1.0.0 (https://github.com/bpmn-io/ids)
-81.   inferno@5.0.6 (https://github.com/infernojs/inferno)
-82.   lodash-es@4.17.15 (https://github.com/lodash/lodash)
-83.   lodash@4.17.20 (https://github.com/lodash/lodash)
-84.   min-dash@3.5.2 (https://github.com/bpmn-io/min-dash)
-85.   min-dom@3.1.3 (https://github.com/bpmn-io/min-dom)
-86.   mitt@1.1.3 (https://github.com/developit/mitt)
-87.   moddle-xml@9.0.4 (https://github.com/bpmn-io/moddle-xml)
-88.   moddle@5.0.1 (https://github.com/bpmn-io/moddle)
-89.   ms@2.1.1 (https://github.com/zeit/ms)
-90.   object-assign@4.1.1 (https://github.com/sindresorhus/object-assign)
-91.   object-refs@0.3.0 (https://github.com/bpmn-io/object-refs)
-92.   p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
-93.   p-reduce@2.1.0 (https://github.com/sindresorhus/p-reduce)
-94.   p-series@2.1.0 (https://github.com/sindresorhus/p-series)
-95.   path-intersection@2.2.0 (https://github.com/bpmn-io/path-intersection)
-96.   react-dom@16.8.6 (https://github.com/facebook/react)
-97.   react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
-98.   react-is@16.8.6 (https://github.com/facebook/react)
-99.   react@16.8.6 (https://github.com/facebook/react)
-100.  rgbcolor@0.0.4 (https://github.com/yetzt/node-rgbcolor)
-101.  saxen@8.1.2 (https://github.com/nikku/saxen)
-102.  scheduler@0.13.6 (https://github.com/facebook/react)
-103.  scroll-tabs@1.0.1 (https://github.com/bpmn-io/scroll-tabs)
-104.  selection-ranges@3.0.3 (https://github.com/nikku/selection-ranges)
-105.  selection-update@0.1.2 (https://github.com/nikku/selection-update)
-106.  sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
-107.  stackblur@1.0.0
-108.  table-js@7.0.0 (https://github.com/bpmn-io/table-js)
-109.  tiny-svg@2.2.2 (https://github.com/bpmn-io/tiny-svg)
-110.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
-111.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
-112.  xmldom@0.1.27 (https://github.com/jindw/xmldom)
+1.    @sentry/core@5.30.0 (https://github.com/getsentry/sentry-javascript)
+2.    @sentry/hub@5.30.0 (https://github.com/getsentry/sentry-javascript)
+3.    @sentry/minimal@5.30.0 (https://github.com/getsentry/sentry-javascript)
+4.    @sentry/node@5.30.0 (https://github.com/getsentry/sentry-javascript)
+5.    @sentry/tracing@5.30.0 (https://github.com/getsentry/sentry-javascript)
+6.    @sentry/types@5.30.0 (https://github.com/getsentry/sentry-javascript)
+7.    @sentry/utils@5.30.0 (https://github.com/getsentry/sentry-javascript)
+8.    agent-base@6.0.2 (https://github.com/TooTallNate/node-agent-base)
+9.    asynckit@0.4.0 (https://github.com/alexindigo/asynckit)
+10.   balanced-match@1.0.0 (https://github.com/juliangruber/balanced-match)
+11.   brace-expansion@1.1.11 (https://github.com/juliangruber/brace-expansion)
+12.   combined-stream@1.0.8 (https://github.com/felixge/node-combined-stream)
+13.   concat-map@0.0.1 (https://github.com/substack/node-concat-map)
+14.   cookie@0.4.1 (https://github.com/jshttp/cookie)
+15.   debug@4.3.1 (https://github.com/visionmedia/debug)
+16.   delayed-stream@1.0.0 (https://github.com/felixge/node-delayed-stream)
+17.   form-data@2.5.1 (https://github.com/form-data/form-data)
+18.   fs.realpath@1.0.0 (https://github.com/isaacs/fs.realpath)
+19.   glob@7.1.6 (https://github.com/isaacs/node-glob)
+20.   https-proxy-agent@5.0.0 (https://github.com/TooTallNate/node-https-proxy-agent)
+21.   inflight@1.0.6 (https://github.com/npm/inflight)
+22.   inherits@2.0.4 (https://github.com/isaacs/inherits)
+23.   lru_map@0.3.3 (https://github.com/rsms/js-lru)
+24.   mime-db@1.45.0 (https://github.com/jshttp/mime-db)
+25.   mime-types@2.1.28 (https://github.com/jshttp/mime-types)
+26.   min-dash@3.5.2 (https://github.com/bpmn-io/min-dash)
+27.   minimatch@3.0.4 (https://github.com/isaacs/minimatch)
+28.   mri@1.1.6 (https://github.com/lukeed/mri)
+29.   ms@2.1.2 (https://github.com/zeit/ms)
+30.   node-fetch@2.6.1 (https://github.com/bitinn/node-fetch)
+31.   once@1.4.0 (https://github.com/isaacs/once)
+32.   parents@1.0.1 (https://github.com/substack/node-parents)
+33.   path-is-absolute@1.0.1 (https://github.com/sindresorhus/path-is-absolute)
+34.   path-platform@0.11.15 (https://github.com/tjfontaine/node-path-platform)
+35.   tslib@1.14.1 (https://github.com/Microsoft/tslib)
+36.   wrappy@1.0.2 (https://github.com/npm/wrappy)
+37.   @bpmn-io/add-exporter@0.2.0 (https://github.com/bpmn-io/add-exporter)
+38.   @bpmn-io/align-to-origin@0.6.0 (https://github.com/bpmn-io/align-to-origin)
+39.   @bpmn-io/dmn-migrate@0.4.3 (https://github.com/bpmn-io/dmn-migrate)
+40.   @bpmn-io/extract-process-variables@0.4.0 (https://github.com/bpmn-io/extract-process-variables)
+41.   @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
+42.   @sentry/browser@5.15.5 (https://github.com/getsentry/sentry-javascript)
+43.   @sentry/core@5.15.5 (https://github.com/getsentry/sentry-javascript)
+44.   @sentry/hub@5.15.5 (https://github.com/getsentry/sentry-javascript)
+45.   @sentry/minimal@5.15.5 (https://github.com/getsentry/sentry-javascript)
+46.   @sentry/types@5.15.5 (https://github.com/getsentry/sentry-javascript)
+47.   @sentry/utils@5.15.5 (https://github.com/getsentry/sentry-javascript)
+48.   @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
+49.   bpmn-js-disable-collapsed-subprocess@0.1.3 (https://github.com/bpmn-io/bpmn-js-disable-collapsed-subprocess)
+50.   bpmn-js-executable-fix@0.1.3 (https://github.com/bpmn-io/bpmn-js-executable-fix)
+51.   bpmn-js-properties-panel@0.40.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+52.   bpmn-js-signavio-compat@1.2.3 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
+53.   bpmn-js@8.2.0 (https://github.com/bpmn-io/bpmn-js)
+54.   bpmn-moddle@7.0.4 (https://github.com/bpmn-io/bpmn-moddle)
+55.   camunda-bpmn-moddle@4.5.0 (https://github.com/camunda/camunda-bpmn-moddle)
+56.   camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
+57.   camunda-dmn-moddle@1.1.0 (https://github.com/camunda/camunda-dmn-moddle)
+58.   canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
+59.   classnames@2.2.6 (https://github.com/JedWatson/classnames)
+60.   cmmn-js-properties-panel@0.8.3 (https://github.com/bpmn-io/cmmn-js-properties-panel)
+61.   cmmn-js@0.20.0 (https://github.com/bpmn-io/cmmn-js)
+62.   cmmn-moddle@5.0.0 (https://github.com/bpmn-io/cmmn-moddle)
+63.   codemirror@5.46.0 (https://github.com/codemirror/CodeMirror)
+64.   css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape)
+65.   debug@4.1.1 (https://github.com/visionmedia/debug)
+66.   deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
+67.   diagram-js-direct-editing@1.6.2 (https://github.com/bpmn-io/diagram-js-direct-editing)
+68.   diagram-js-minimap@2.0.4 (https://github.com/bpmn-io/diagram-js-minimap)
+69.   diagram-js-origin@1.3.2 (https://github.com/bpmn-io/diagram-js-origin)
+70.   diagram-js@7.2.0 (https://github.com/bpmn-io/diagram-js)
+71.   didi@5.2.1 (https://github.com/nikku/didi)
+72.   dmn-js-decision-table@10.1.0-alpha.2 (https://github.com/bpmn-io/dmn-js)
+73.   dmn-js-drd@10.1.0-alpha.2 (https://github.com/bpmn-io/dmn-js)
+74.   dmn-js-literal-expression@10.1.0-alpha.2 (https://github.com/bpmn-io/dmn-js)
+75.   dmn-js-properties-panel@0.6.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
+76.   dmn-js-shared@10.1.0-alpha.1 (https://github.com/bpmn-io/dmn-js)
+77.   dmn-js@10.1.0-alpha.2 (https://github.com/bpmn-io/dmn-js)
+78.   dmn-moddle@9.1.0 (https://github.com/bpmn-io/dmn-moddle)
+79.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
+80.   escape-html@1.0.3 (https://github.com/component/escape-html)
+81.   events@3.0.0 (https://github.com/Gozala/events)
+82.   formik@2.0.4 (https://github.com/jaredpalmer/formik)
+83.   hammerjs@2.0.8 (https://github.com/hammerjs/hammer.js)
+84.   hat@0.0.3 (https://github.com/substack/node-hat)
+85.   hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
+86.   ids@1.0.0 (https://github.com/bpmn-io/ids)
+87.   inferno@5.6.2 (https://github.com/infernojs/inferno)
+88.   inherits@2.0.3 (https://github.com/isaacs/inherits)
+89.   lodash-es@4.17.15 (https://github.com/lodash/lodash)
+90.   lodash@4.17.20 (https://github.com/lodash/lodash)
+91.   min-dom@3.1.3 (https://github.com/bpmn-io/min-dom)
+92.   mitt@1.1.3 (https://github.com/developit/mitt)
+93.   moddle-xml@9.0.4 (https://github.com/bpmn-io/moddle-xml)
+94.   moddle@5.0.1 (https://github.com/bpmn-io/moddle)
+95.   ms@2.1.1 (https://github.com/zeit/ms)
+96.   object-assign@4.1.1 (https://github.com/sindresorhus/object-assign)
+97.   object-refs@0.3.0 (https://github.com/bpmn-io/object-refs)
+98.   p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
+99.   p-reduce@2.1.0 (https://github.com/sindresorhus/p-reduce)
+100.  p-series@2.1.0 (https://github.com/sindresorhus/p-series)
+101.  path-intersection@2.2.0 (https://github.com/bpmn-io/path-intersection)
+102.  react-dom@16.8.6 (https://github.com/facebook/react)
+103.  react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
+104.  react-is@16.8.6 (https://github.com/facebook/react)
+105.  react@16.8.6 (https://github.com/facebook/react)
+106.  rgbcolor@0.0.4 (https://github.com/yetzt/node-rgbcolor)
+107.  saxen@8.1.2 (https://github.com/nikku/saxen)
+108.  scheduler@0.13.6 (https://github.com/facebook/react)
+109.  scroll-tabs@1.0.1 (https://github.com/bpmn-io/scroll-tabs)
+110.  selection-ranges@3.0.3 (https://github.com/nikku/selection-ranges)
+111.  selection-update@0.1.2 (https://github.com/nikku/selection-update)
+112.  sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
+113.  stackblur@1.0.0
+114.  table-js@7.1.0-alpha.0 (https://github.com/bpmn-io/table-js)
+115.  tiny-svg@2.2.2 (https://github.com/bpmn-io/tiny-svg)
+116.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
+117.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
+118.  xmldom@0.1.27 (https://github.com/jindw/xmldom)
 
 
-%% @sentry/apm@5.15.5 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/core@5.30.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-BSD-3-Clause
+BSD 3-Clause License
+
+Copyright (c) 2019, Sentry
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 ==========================================
-END OF @sentry/apm@5.15.5 NOTICES AND INFORMATION
+END OF @sentry/core@5.30.0 NOTICES AND INFORMATION
+
+
+%% @sentry/hub@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+BSD 3-Clause License
+
+Copyright (c) 2019, Sentry
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==========================================
+END OF @sentry/hub@5.30.0 NOTICES AND INFORMATION
+
+
+%% @sentry/minimal@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+BSD 3-Clause License
+
+Copyright (c) 2019, Sentry
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==========================================
+END OF @sentry/minimal@5.30.0 NOTICES AND INFORMATION
+
+
+%% @sentry/node@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+BSD 3-Clause License
+
+Copyright (c) 2019, Sentry
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==========================================
+END OF @sentry/node@5.30.0 NOTICES AND INFORMATION
+
+
+%% @sentry/tracing@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2020 Sentry (https://sentry.io/) and individual contributors.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF @sentry/tracing@5.30.0 NOTICES AND INFORMATION
+
+
+%% @sentry/types@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+BSD 3-Clause License
+
+Copyright (c) 2019, Sentry
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==========================================
+END OF @sentry/types@5.30.0 NOTICES AND INFORMATION
+
+
+%% @sentry/utils@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+BSD 3-Clause License
+
+Copyright (c) 2019, Sentry
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==========================================
+END OF @sentry/utils@5.30.0 NOTICES AND INFORMATION
+
+
+%% agent-base@6.0.2 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT
+==========================================
+END OF agent-base@6.0.2 NOTICES AND INFORMATION
+
+
+%% asynckit@0.4.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2016 Alex Indigo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF asynckit@0.4.0 NOTICES AND INFORMATION
+
+
+%% balanced-match@1.0.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+(MIT)
+
+Copyright (c) 2013 Julian Gruber &lt;julian@juliangruber.com&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF balanced-match@1.0.0 NOTICES AND INFORMATION
+
+
+%% brace-expansion@1.1.11 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF brace-expansion@1.1.11 NOTICES AND INFORMATION
+
+
+%% combined-stream@1.0.8 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+Copyright (c) 2011 Debuggable Limited <felix@debuggable.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF combined-stream@1.0.8 NOTICES AND INFORMATION
+
+
+%% concat-map@0.0.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+This software is released under the MIT license:
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF concat-map@0.0.1 NOTICES AND INFORMATION
+
+
+%% cookie@0.4.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+(The MIT License)
+
+Copyright (c) 2012-2014 Roman Shtylman <shtylman@gmail.com>
+Copyright (c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+==========================================
+END OF cookie@0.4.1 NOTICES AND INFORMATION
+
+
+%% debug@4.3.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+(The MIT License)
+
+Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
+and associated documentation files (the 'Software'), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial 
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+==========================================
+END OF debug@4.3.1 NOTICES AND INFORMATION
+
+
+%% delayed-stream@1.0.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+Copyright (c) 2011 Debuggable Limited <felix@debuggable.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF delayed-stream@1.0.0 NOTICES AND INFORMATION
+
+
+%% form-data@2.5.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+Copyright (c) 2012 Felix Geisendörfer (felix@debuggable.com) and contributors
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+
+==========================================
+END OF form-data@2.5.1 NOTICES AND INFORMATION
+
+
+%% fs.realpath@1.0.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+----
+
+This library bundles a version of the `fs.realpath` and `fs.realpathSync`
+methods from Node.js v0.10 under the terms of the Node.js MIT license.
+
+Node's license follows, also included at the header of `old.js` which contains
+the licensed code:
+
+  Copyright Joyent, Inc. and other Node contributors.
+
+  Permission is hereby granted, free of charge, to any person obtaining a
+  copy of this software and associated documentation files (the "Software"),
+  to deal in the Software without restriction, including without limitation
+  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+  and/or sell copies of the Software, and to permit persons to whom the
+  Software is furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+  DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF fs.realpath@1.0.0 NOTICES AND INFORMATION
+
+
+%% glob@7.1.6 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+## Glob Logo
+
+Glob's logo created by Tanya Brassie <http://tanyabrassie.com/>, licensed
+under a Creative Commons Attribution-ShareAlike 4.0 International License
+https://creativecommons.org/licenses/by-sa/4.0/
+
+==========================================
+END OF glob@7.1.6 NOTICES AND INFORMATION
+
+
+%% https-proxy-agent@5.0.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT
+==========================================
+END OF https-proxy-agent@5.0.0 NOTICES AND INFORMATION
+
+
+%% inflight@1.0.6 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+==========================================
+END OF inflight@1.0.6 NOTICES AND INFORMATION
+
+
+%% inherits@2.0.4 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+
+
+==========================================
+END OF inherits@2.0.4 NOTICES AND INFORMATION
+
+
+%% lru_map@0.3.3 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT
+==========================================
+END OF lru_map@0.3.3 NOTICES AND INFORMATION
+
+
+%% mime-db@1.45.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Jonathan Ong me@jongleberry.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF mime-db@1.45.0 NOTICES AND INFORMATION
+
+
+%% mime-types@2.1.28 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+(The MIT License)
+
+Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>
+Copyright (c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF mime-types@2.1.28 NOTICES AND INFORMATION
+
+
+%% min-dash@3.5.2 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2017-present camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF min-dash@3.5.2 NOTICES AND INFORMATION
+
+
+%% minimatch@3.0.4 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+==========================================
+END OF minimatch@3.0.4 NOTICES AND INFORMATION
+
+
+%% mri@1.1.6 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF mri@1.1.6 NOTICES AND INFORMATION
+
+
+%% ms@2.1.2 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2016 Zeit, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF ms@2.1.2 NOTICES AND INFORMATION
+
+
+%% node-fetch@2.6.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2016 David Frank
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+==========================================
+END OF node-fetch@2.6.1 NOTICES AND INFORMATION
+
+
+%% once@1.4.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+==========================================
+END OF once@1.4.0 NOTICES AND INFORMATION
+
+
+%% parents@1.0.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+This software is released under the MIT license:
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF parents@1.0.1 NOTICES AND INFORMATION
+
+
+%% path-is-absolute@1.0.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF path-is-absolute@1.0.1 NOTICES AND INFORMATION
+
+
+%% path-platform@0.11.15 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT -- see https://github.com/joyent/node for license
+
+This file is pulled directly from Node.js
+
+==========================================
+END OF path-platform@0.11.15 NOTICES AND INFORMATION
+
+
+%% tslib@1.14.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+==========================================
+END OF tslib@1.14.1 NOTICES AND INFORMATION
+
+
+%% wrappy@1.0.2 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+==========================================
+END OF wrappy@1.0.2 NOTICES AND INFORMATION
+
+
+%% @bpmn-io/add-exporter@0.2.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2018-present camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF @bpmn-io/add-exporter@0.2.0 NOTICES AND INFORMATION
+
+
+%% @bpmn-io/align-to-origin@0.6.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2019-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF @bpmn-io/align-to-origin@0.6.0 NOTICES AND INFORMATION
+
+
+%% @bpmn-io/dmn-migrate@0.4.3 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2020-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF @bpmn-io/dmn-migrate@0.4.3 NOTICES AND INFORMATION
+
+
+%% @bpmn-io/extract-process-variables@0.4.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2020-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF @bpmn-io/extract-process-variables@0.4.0 NOTICES AND INFORMATION
+
+
+%% @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2019 camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION
 
 
 %% @sentry/browser@5.15.5 NOTICES AND INFORMATION BEGIN HERE
@@ -270,42 +1355,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END OF @sentry/minimal@5.15.5 NOTICES AND INFORMATION
 
 
-%% @sentry/node@5.15.5 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-BSD 3-Clause License
-
-Copyright (c) 2019, Sentry
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-* Neither the name of the copyright holder nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-==========================================
-END OF @sentry/node@5.15.5 NOTICES AND INFORMATION
-
-
 %% @sentry/types@5.15.5 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 BSD 3-Clause License
@@ -378,842 +1427,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END OF @sentry/utils@5.15.5 NOTICES AND INFORMATION
 
 
-%% agent-base@5.1.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT
-==========================================
-END OF agent-base@5.1.1 NOTICES AND INFORMATION
-
-
-%% asynckit@0.4.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2016 Alex Indigo
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF asynckit@0.4.0 NOTICES AND INFORMATION
-
-
-%% balanced-match@1.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-(MIT)
-
-Copyright (c) 2013 Julian Gruber &lt;julian@juliangruber.com&gt;
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF balanced-match@1.0.0 NOTICES AND INFORMATION
-
-
-%% brace-expansion@1.1.11 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF brace-expansion@1.1.11 NOTICES AND INFORMATION
-
-
-%% combined-stream@1.0.7 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-Copyright (c) 2011 Debuggable Limited <felix@debuggable.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF combined-stream@1.0.7 NOTICES AND INFORMATION
-
-
-%% concat-map@0.0.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-This software is released under the MIT license:
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF concat-map@0.0.1 NOTICES AND INFORMATION
-
-
-%% cookie@0.3.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-(The MIT License)
-
-Copyright (c) 2012-2014 Roman Shtylman <shtylman@gmail.com>
-Copyright (c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-==========================================
-END OF cookie@0.3.1 NOTICES AND INFORMATION
-
-
-%% debug@4.1.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-(The MIT License)
-
-Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-and associated documentation files (the 'Software'), to deal in the Software without restriction, 
-including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial 
-portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
-LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-==========================================
-END OF debug@4.1.1 NOTICES AND INFORMATION
-
-
-%% delayed-stream@1.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-Copyright (c) 2011 Debuggable Limited <felix@debuggable.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF delayed-stream@1.0.0 NOTICES AND INFORMATION
-
-
-%% form-data@2.3.3 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-Copyright (c) 2012 Felix Geisendörfer (felix@debuggable.com) and contributors
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
-
-==========================================
-END OF form-data@2.3.3 NOTICES AND INFORMATION
-
-
-%% fs.realpath@1.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The ISC License
-
-Copyright (c) Isaac Z. Schlueter and Contributors
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-----
-
-This library bundles a version of the `fs.realpath` and `fs.realpathSync`
-methods from Node.js v0.10 under the terms of the Node.js MIT license.
-
-Node's license follows, also included at the header of `old.js` which contains
-the licensed code:
-
-  Copyright Joyent, Inc. and other Node contributors.
-
-  Permission is hereby granted, free of charge, to any person obtaining a
-  copy of this software and associated documentation files (the "Software"),
-  to deal in the Software without restriction, including without limitation
-  the rights to use, copy, modify, merge, publish, distribute, sublicense,
-  and/or sell copies of the Software, and to permit persons to whom the
-  Software is furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-  DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF fs.realpath@1.0.0 NOTICES AND INFORMATION
-
-
-%% glob@7.1.3 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The ISC License
-
-Copyright (c) Isaac Z. Schlueter and Contributors
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-==========================================
-END OF glob@7.1.3 NOTICES AND INFORMATION
-
-
-%% https-proxy-agent@4.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT
-==========================================
-END OF https-proxy-agent@4.0.0 NOTICES AND INFORMATION
-
-
-%% inflight@1.0.6 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The ISC License
-
-Copyright (c) Isaac Z. Schlueter
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-==========================================
-END OF inflight@1.0.6 NOTICES AND INFORMATION
-
-
-%% inherits@2.0.3 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The ISC License
-
-Copyright (c) Isaac Z. Schlueter
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-
-
-==========================================
-END OF inherits@2.0.3 NOTICES AND INFORMATION
-
-
-%% lru_map@0.3.3 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT
-==========================================
-END OF lru_map@0.3.3 NOTICES AND INFORMATION
-
-
-%% mime-db@1.37.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-
-The MIT License (MIT)
-
-Copyright (c) 2014 Jonathan Ong me@jongleberry.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF mime-db@1.37.0 NOTICES AND INFORMATION
-
-
-%% mime-types@2.1.21 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-(The MIT License)
-
-Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>
-Copyright (c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF mime-types@2.1.21 NOTICES AND INFORMATION
-
-
-%% min-dash@3.4.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2017 camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF min-dash@3.4.0 NOTICES AND INFORMATION
-
-
-%% minimatch@3.0.4 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The ISC License
-
-Copyright (c) Isaac Z. Schlueter and Contributors
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-==========================================
-END OF minimatch@3.0.4 NOTICES AND INFORMATION
-
-
-%% mri@1.1.4 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF mri@1.1.4 NOTICES AND INFORMATION
-
-
-%% ms@2.1.2 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2016 Zeit, Inc.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF ms@2.1.2 NOTICES AND INFORMATION
-
-
-%% node-fetch@2.3.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2016 David Frank
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-==========================================
-END OF node-fetch@2.3.0 NOTICES AND INFORMATION
-
-
-%% once@1.4.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The ISC License
-
-Copyright (c) Isaac Z. Schlueter and Contributors
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-==========================================
-END OF once@1.4.0 NOTICES AND INFORMATION
-
-
-%% parents@1.0.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-This software is released under the MIT license:
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF parents@1.0.1 NOTICES AND INFORMATION
-
-
-%% path-is-absolute@1.0.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF path-is-absolute@1.0.1 NOTICES AND INFORMATION
-
-
-%% path-platform@0.11.15 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT -- see https://github.com/joyent/node for license
-
-This file is pulled directly from Node.js
-
-==========================================
-END OF path-platform@0.11.15 NOTICES AND INFORMATION
-
-
-%% tslib@1.11.2 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-==========================================
-END OF tslib@1.11.2 NOTICES AND INFORMATION
-
-
-%% wrappy@1.0.2 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The ISC License
-
-Copyright (c) Isaac Z. Schlueter and Contributors
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-==========================================
-END OF wrappy@1.0.2 NOTICES AND INFORMATION
-
-
-%% @bpmn-io/add-exporter@0.2.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2018-present camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF @bpmn-io/add-exporter@0.2.0 NOTICES AND INFORMATION
-
-
-%% @bpmn-io/align-to-origin@0.6.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2019-present Camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF @bpmn-io/align-to-origin@0.6.0 NOTICES AND INFORMATION
-
-
-%% @bpmn-io/dmn-migrate@0.4.3 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2020-present Camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF @bpmn-io/dmn-migrate@0.4.3 NOTICES AND INFORMATION
-
-
-%% @bpmn-io/extract-process-variables@0.3.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2020-present Camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF @bpmn-io/extract-process-variables@0.3.0 NOTICES AND INFORMATION
-
-
-%% @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2019 camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION
-
-
 %% @sindresorhus/is@0.15.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
@@ -1230,21 +1443,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF @sindresorhus/is@0.15.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-disable-collapsed-subprocess@0.1.2 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-disable-collapsed-subprocess@0.1.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT
 ==========================================
-END OF bpmn-js-disable-collapsed-subprocess@0.1.2 NOTICES AND INFORMATION
+END OF bpmn-js-disable-collapsed-subprocess@0.1.3 NOTICES AND INFORMATION
 
 
-%% bpmn-js-executable-fix@0.1.2 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-executable-fix@0.1.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT
 ==========================================
-END OF bpmn-js-executable-fix@0.1.2 NOTICES AND INFORMATION
+END OF bpmn-js-executable-fix@0.1.3 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@0.38.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@0.40.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1268,10 +1481,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@0.38.1 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@0.40.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-signavio-compat@1.2.2 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-signavio-compat@1.2.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1296,10 +1509,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js-signavio-compat@1.2.2 NOTICES AND INFORMATION
+END OF bpmn-js-signavio-compat@1.2.3 NOTICES AND INFORMATION
 
 
-%% bpmn-js@8.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@8.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1326,7 +1539,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js@8.0.0 NOTICES AND INFORMATION
+END OF bpmn-js@8.2.0 NOTICES AND INFORMATION
 
 
 %% bpmn-moddle@7.0.4 NOTICES AND INFORMATION BEGIN HERE
@@ -1410,7 +1623,7 @@ THE SOFTWARE.
 END OF camunda-cmmn-moddle@1.0.0 NOTICES AND INFORMATION
 
 
-%% camunda-dmn-moddle@1.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-dmn-moddle@1.1.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1434,7 +1647,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-dmn-moddle@1.0.0 NOTICES AND INFORMATION
+END OF camunda-dmn-moddle@1.1.0 NOTICES AND INFORMATION
 
 
 %% canvg-browser@1.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1611,6 +1824,32 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF css.escape@1.5.1 NOTICES AND INFORMATION
 
 
+%% debug@4.1.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+(The MIT License)
+
+Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
+and associated documentation files (the 'Software'), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial 
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+==========================================
+END OF debug@4.1.1 NOTICES AND INFORMATION
+
+
 %% deepmerge@2.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
@@ -1639,7 +1878,7 @@ THE SOFTWARE.
 END OF deepmerge@2.2.1 NOTICES AND INFORMATION
 
 
-%% diagram-js-direct-editing@1.6.1 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js-direct-editing@1.6.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1663,10 +1902,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js-direct-editing@1.6.1 NOTICES AND INFORMATION
+END OF diagram-js-direct-editing@1.6.2 NOTICES AND INFORMATION
 
 
-%% diagram-js-minimap@2.0.3 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js-minimap@2.0.4 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1690,10 +1929,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js-minimap@2.0.3 NOTICES AND INFORMATION
+END OF diagram-js-minimap@2.0.4 NOTICES AND INFORMATION
 
 
-%% diagram-js-origin@1.3.1 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js-origin@1.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1718,10 +1957,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF diagram-js-origin@1.3.1 NOTICES AND INFORMATION
+END OF diagram-js-origin@1.3.2 NOTICES AND INFORMATION
 
 
-%% diagram-js@6.8.0 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@7.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1745,7 +1984,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@6.8.0 NOTICES AND INFORMATION
+END OF diagram-js@7.2.0 NOTICES AND INFORMATION
 
 
 %% didi@5.2.1 NOTICES AND INFORMATION BEGIN HERE
@@ -1776,7 +2015,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF didi@5.2.1 NOTICES AND INFORMATION
 
 
-%% dmn-js-decision-table@10.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-decision-table@10.1.0-alpha.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1802,10 +2041,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-decision-table@10.0.0 NOTICES AND INFORMATION
+END OF dmn-js-decision-table@10.1.0-alpha.2 NOTICES AND INFORMATION
 
 
-%% dmn-js-drd@10.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-drd@10.1.0-alpha.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1831,10 +2070,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-drd@10.0.0 NOTICES AND INFORMATION
+END OF dmn-js-drd@10.1.0-alpha.2 NOTICES AND INFORMATION
 
 
-%% dmn-js-literal-expression@10.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-literal-expression@10.1.0-alpha.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1860,10 +2099,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-literal-expression@10.0.0 NOTICES AND INFORMATION
+END OF dmn-js-literal-expression@10.1.0-alpha.2 NOTICES AND INFORMATION
 
 
-%% dmn-js-properties-panel@0.5.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-properties-panel@0.6.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1887,10 +2126,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF dmn-js-properties-panel@0.5.0 NOTICES AND INFORMATION
+END OF dmn-js-properties-panel@0.6.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-shared@10.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-shared@10.1.0-alpha.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1916,10 +2155,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-shared@10.0.0 NOTICES AND INFORMATION
+END OF dmn-js-shared@10.1.0-alpha.1 NOTICES AND INFORMATION
 
 
-%% dmn-js@10.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js@10.1.0-alpha.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -1945,7 +2184,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js@10.0.0 NOTICES AND INFORMATION
+END OF dmn-js@10.1.0-alpha.2 NOTICES AND INFORMATION
 
 
 %% dmn-moddle@9.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -2189,11 +2428,54 @@ THE SOFTWARE.
 END OF ids@1.0.0 NOTICES AND INFORMATION
 
 
-%% inferno@5.0.6 NOTICES AND INFORMATION BEGIN HERE
+%% inferno@5.6.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-MIT
+# MIT License
+Copyright (c) 2013-2016 Dominic Gannaway
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
 ==========================================
-END OF inferno@5.0.6 NOTICES AND INFORMATION
+END OF inferno@5.6.2 NOTICES AND INFORMATION
+
+
+%% inherits@2.0.3 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+
+
+==========================================
+END OF inherits@2.0.3 NOTICES AND INFORMATION
 
 
 %% lodash-es@4.17.15 NOTICES AND INFORMATION BEGIN HERE
@@ -2302,33 +2584,6 @@ terms above.
 
 ==========================================
 END OF lodash@4.17.20 NOTICES AND INFORMATION
-
-
-%% min-dash@3.5.2 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2017-present camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF min-dash@3.5.2 NOTICES AND INFORMATION
 
 
 %% min-dom@3.1.3 NOTICES AND INFORMATION BEGIN HERE
@@ -2896,7 +3151,7 @@ BSD-2-Clause
 END OF stackblur@1.0.0 NOTICES AND INFORMATION
 
 
-%% table-js@7.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% table-js@7.1.0-alpha.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -2920,7 +3175,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF table-js@7.0.0 NOTICES AND INFORMATION
+END OF table-js@7.1.0-alpha.0 NOTICES AND INFORMATION
 
 
 %% tiny-svg@2.2.2 NOTICES AND INFORMATION BEGIN HERE
