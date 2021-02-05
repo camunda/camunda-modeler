@@ -560,10 +560,7 @@ export class App extends PureComponent {
     if (button == 'create') {
 
       let tab = this.addTab(
-        tabsProvider.createTabForFile({
-          ...file,
-          contents: tabsProvider.getInitialFileContents(fileType)
-        }),
+        tabsProvider.createTabForFile(file),
         { unsaved: true }
       );
 

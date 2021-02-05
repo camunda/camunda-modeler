@@ -88,9 +88,9 @@ describe('TabsProvider', function() {
 
   describe('should provide initial tab contents', function() {
 
-    function verifyExists(name, opts) {
+    function verifyExists(name) {
 
-      return it(name + (opts ? ` ${JSON.stringify(opts)}` : ''), function() {
+      return it(name, function() {
 
         // given
         Flags.init({
@@ -100,7 +100,7 @@ describe('TabsProvider', function() {
         const tabsProvider = new TabsProvider();
 
         // when
-        const contents = tabsProvider.getInitialFileContents(name, opts);
+        const { file: { contents } } = tabsProvider.createTab(name);
 
         // then
         expect(contents).to.exist;
@@ -116,6 +116,24 @@ describe('TabsProvider', function() {
 
     verifyExists('dmn');
 
+
+    it('for an empty file of known type', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+      const file = {
+        name: 'diagram.bpmn',
+        path: '/a/diagram.bpmn'
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab.type).to.eql('bpmn');
+      expect(tab.file.contents).to.exist;
+      expect(tab.file.contents).to.have.lengthOf.above(0);
+    });
   });
 
 
