@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/camunda/camunda-modeler.svg?branch=develop)](https://travis-ci.com/camunda/camunda-modeler)
 
-An integrated modeling solution for BPMN, DMN and CMMN based on [bpmn.io](http://bpmn.io).
+An integrated modeling solution for BPMN and DMN based on [bpmn.io](http://bpmn.io).
 
 ![Camunda Modeler](docs/screenshot.png)
 
