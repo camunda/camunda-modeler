@@ -55,7 +55,7 @@ const clientLog = Log('client');
 bootstrapLogging();
 
 // start API after bootstrapping the Logging to enable logging the used port
-require('./api');
+const api = require('./api');
 
 const name = app.name = 'QuantME Modeler';
 const version = app.version = require('../package').version;
@@ -195,6 +195,12 @@ renderer.on('file:write', function(filePath, file, options = {}, done) {
   } catch (err) {
     done(err);
   }
+});
+
+// API //////////
+
+renderer.on('api:add-result', function(targetRoute, id, args) {
+  api.addResultOfLongRunningTask(targetRoute, id, args);
 });
 
 // quantme //////////

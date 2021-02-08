@@ -20,6 +20,7 @@ import {
 } from './app';
 
 import {
+  api,
   backend,
   config,
   dialog,
@@ -54,6 +55,7 @@ const keyboardBindings = new KeyboardBindings({
 const tabsProvider = new TabsProvider();
 
 const globals = {
+  api,
   backend,
   config,
   dialog,

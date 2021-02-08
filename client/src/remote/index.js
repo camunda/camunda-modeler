@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import API from './API';
 import Backend from './Backend';
 import Config from './Config';
 import Dialog from './Dialog';
@@ -26,6 +27,8 @@ const {
 } = window.getAppPreload();
 
 export const backend = new Backend(ipcRenderer, platform);
+
+export const api = new API(backend);
 
 export const fileSystem = new FileSystem(backend);
 

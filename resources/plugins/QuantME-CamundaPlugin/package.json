@@ -37,6 +37,7 @@
     "bpmn-js": "^3.2.2",
     "bpmn-js-cli": "1.1.0",
     "bpmn-js-properties-panel": "^0.32.0",
+    "camunda-bpmn-moddle": "^4.4.1",
     "dagre": "0.8.5",
     "downloadjs": "^1.4.7",
     "min-dash": "^3.4.0",

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2020 Institute for the Architecture of Application System -
+ * Copyright (c) 2021 Institute of Architecture of Application Systems -
  * University of Stuttgart
  *
  * This program and the accompanying materials are made available under the
@@ -12,10 +12,10 @@
 import { registerBpmnJSModdleExtension, registerBpmnJSPlugin, registerClientExtension } from 'camunda-modeler-plugin-helpers';
 import ModdleExtension from '../resources/quantum4bpmn.json';
 import quantmeModelingModule from '../quantme/modeling';
-import QuantMETransformator from '../quantme/replacement/QuantMETransformator';
+import QuantMEController from '../quantme/control/QuantMEController';
 
 registerBpmnJSModdleExtension(ModdleExtension);
 
 registerBpmnJSPlugin(quantmeModelingModule);
 
-registerClientExtension(QuantMETransformator);
+registerClientExtension(QuantMEController);

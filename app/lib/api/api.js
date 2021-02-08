@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2020 Institute for the Architecture of Application System -
+ * Copyright (c) 2021 Institute of Architecture of Application Systems -
  * University of Stuttgart
  *
  * This program and the accompanying materials are made available under the
@@ -21,7 +21,7 @@ const api = express();
 api.use('/', routes.root);
 api.use('/quantme', routes.quantme);
 api.use('/quantme/qrms', routes.qrm);
-api.use('/quantme/workflows', routes.quantumWorkflow);
+api.use('/quantme/workflows', routes.quantumWorkflow.default);
 
 // retrieve port for the API from the environment variables or use default port 8081
 let port = process.env.PORT;
@@ -57,7 +57,7 @@ api.listen(port, host, function(err) {
  * @param args the results of the long-running task
  */
 module.exports.addResultOfLongRunningTask = function(targetRoute, id, args) {
-  log.info('Received result for long running task for route: {}. Forwarding to controller!', targetRoute);
+  log.info('Received result for long running task for route: \'%s\'. Forwarding to controller!', targetRoute);
 
   if (targetRoute === null) {
     log.error('Unable to forward result of long running task with targetRoute equal to null!');

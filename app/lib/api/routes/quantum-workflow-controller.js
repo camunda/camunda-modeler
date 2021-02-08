@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2020 Institute for the Architecture of Application System -
+ * Copyright (c) 2021 Institute of Architecture of Application Systems -
  * University of Stuttgart
  *
  * This program and the accompanying materials are made available under the
@@ -9,10 +9,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+const { app } = require('electron');
 const { Router } = require('express');
+const fileUpload = require('express-fileupload');
 const router = Router();
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
+
+// use default oprions
+router.use(fileUpload({}));
 
 const log = require('../../log')('app:api:quantum-workflow-controller');
 
@@ -46,18 +51,26 @@ router.get('/', (req, res) => {
 
 // transform the given QuantME workflow model into a native workflow model
 router.post('/', jsonParser, function(req, res) {
+  let workflowXml = undefined;
   if (req.body === undefined || req.body.xml === undefined) {
-    res.status(400).send('Xml has to be set!');
-    return;
+    if (!req.files || Object.keys(req.files).length !== 1) {
+
+      // either xml in json or file with the diagram must be defined
+      res.status(400).send('Xml has to be set or file must be uploaded!');
+      return;
+    } else {
+      log.info('Loading input from file...');
+      workflowXml = req.files[(Object.keys(req.files)[0])].data.toString('utf8');
+    }
+  } else {
+    workflowXml = req.body.xml;
   }
-  let workflowXml = req.body.xml;
 
   // add workflow to list and increase id for the next request
   workflows.push({ id: id, status: 'transforming', xml: workflowXml });
+  app.emit('menu:action', 'transformWorkflow', { id: id, xml: workflowXml, returnPath: '/quantme/workflows' });
   res.status(201).json({ id: id });
   id++;
-
-  // TODO: invoke transformation
 });
 
 router.get('/:id', (req, res) => {
@@ -86,6 +99,29 @@ router.get('/:id', (req, res) => {
   });
 });
 
+router.get('/:id/download', (req, res) => {
+  let id = req.params.id;
+
+  // search the workflow with the given id
+  let workflow = undefined;
+  for (let i = 0; i < workflows.length; i++) {
+    let searchedWorkflow = workflows[i];
+    if (parseInt(searchedWorkflow.id) === parseInt(id)) {
+      workflow = searchedWorkflow;
+      break;
+    }
+  }
+
+  if (workflow === undefined) {
+    res.status(404).send();
+    return;
+  }
+
+  res.attachment('workflow' + id + '.bpmn');
+  res.type('bpmn');
+  res.send(workflow.xml);
+});
+
 module.exports.addResultOfLongRunningTask = function(id, args) {
   log.info('Updating workflow object with id: ' + id);
 
@@ -104,8 +140,10 @@ module.exports.addResultOfLongRunningTask = function(id, args) {
 
   // add updated workflow
   workflow.status = args.status;
-  workflow.xml = args.xml;
+  if (!(workflow.status === 'failed')) {
+    workflow.xml = args.xml;
+  }
   workflows.push(workflow);
 };
 
-module.exports = router;
+module.exports.default = router;

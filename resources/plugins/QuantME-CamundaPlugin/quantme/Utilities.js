@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2020 Institute for the Architecture of Application System -
+ * Copyright (c) 2021 Institute of Architecture of Application Systems -
  * University of Stuttgart
  *
  * This program and the accompanying materials are made available under the
@@ -9,11 +9,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import BpmnModeler from 'bpmn-js/lib/Modeler';
-import elementTemplates from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates';
-import quantMEModule from './modeling';
-import quantMEExtension from '../resources/quantum4bpmn.json';
 import extensionElementsHelper from 'bpmn-js-properties-panel/lib/helper/ExtensionElementsHelper';
+import { createModelerFromXml } from './replacement/ModelerGenerator';
 
 /**
  * Get the root process element of the diagram
@@ -43,28 +40,7 @@ export function isQuantMETask(task) {
  * @return the root process from the xml definitions
  */
 export async function getRootProcessFromXml(xml) {
-
-  // create new modeler with the custom QuantME extensions
-  const bpmnModeler = new BpmnModeler({
-    additionalModules: [
-      elementTemplates,
-      quantMEModule
-    ],
-    moddleExtensions: {
-      quantME: quantMEExtension
-    }
-  });
-
-  // import the xml containing the definitions
-  function importXmlWrapper(xml) {
-    return new Promise((resolve) => {
-      bpmnModeler.importXML(xml, (successResponse) => {
-        resolve(successResponse);
-      });
-    });
-  }
-
-  await importXmlWrapper(xml);
+  let bpmnModeler = await createModelerFromXml(xml);
 
   // extract and return root process
   return getRootProcess(bpmnModeler.getDefinitions());
