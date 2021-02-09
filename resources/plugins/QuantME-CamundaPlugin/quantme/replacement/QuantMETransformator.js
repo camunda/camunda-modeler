@@ -46,7 +46,7 @@ export async function startReplacementProcess(xml, currentQRMs) {
   const replacementTasks = getQuantMETasks(rootElement, elementRegistry);
   console.log('Process contains ' + replacementTasks.length + ' QuantME tasks to replace...');
   if (!replacementTasks || !replacementTasks.length) {
-    return { status: 'success', xml: xml };
+    return { status: 'transformed', xml: xml };
   }
 
   // check for available replacement models for all QuantME tasks
@@ -88,7 +88,7 @@ export async function startReplacementProcess(xml, currentQRMs) {
     });
   }
   let transformedXml = await exportXmlWrapper(modeler.getDefinitions());
-  return { status: 'success', xml: transformedXml };
+  return { status: 'transformed', xml: transformedXml };
 }
 
 /**

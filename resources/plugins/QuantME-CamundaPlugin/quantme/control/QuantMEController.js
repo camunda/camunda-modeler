@@ -70,7 +70,7 @@ export default class QuantMEController extends PureComponent {
           let currentQRMs = await self.quantME.getQRMs();
           let result = await startReplacementProcess(xml.xml, currentQRMs);
 
-          if (result.status === 'success') {
+          if (result.status === 'transformed') {
             await self.bpmnjs.importXML(result.xml);
           } else {
             self.props.displayNotification({

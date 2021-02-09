@@ -9,16 +9,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const root = require('./root-controller');
-const camunda = require('./camunda-engine-controller');
-const quantme = require('./quantme-controller');
-const qrm = require('./qrm-controller');
-const quantumWorkflow = require('./quantum-workflow-controller');
-
 module.exports = {
-  root,
-  camunda,
-  quantme,
-  qrm,
-  quantumWorkflow
+  ...require('./workflow'),
+  ...require('./services'),
 };

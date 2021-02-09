@@ -14,7 +14,9 @@ import {
 } from 'min-dash';
 
 const GET_CONFIG = 'config:get',
-      SET_CONFIG = 'config:set';
+      SET_CONFIG = 'config:set',
+      GET_CONFIG_FOR_MODAL = 'config:get-form-modal',
+      SET_CONFIG_FROM_MODAL = 'config:set-from-modal';
 
 /**
  * Get and set configuration through backend.
@@ -28,6 +30,24 @@ export default class Config {
    */
   constructor(backend) {
     this.backend = backend;
+  }
+
+  /**
+   * Update the configuration passed through the configuration modal in the backend
+   *
+   * @param config the set of configuration properties to update
+   */
+  setConfigFromModal(config) {
+    return this.backend.send(SET_CONFIG_FROM_MODAL, config);
+  }
+
+  /**
+   * Get the current configuration from the backend
+   *
+   * @returns {Promise<*>}
+   */
+  getConfigFromBackend() {
+    return this.backend.send(GET_CONFIG_FOR_MODAL);
   }
 
   /**
@@ -72,7 +92,7 @@ export default class Config {
 
     const files = await this.get('files') || {};
 
-    const configForFile = files[ path ];
+    const configForFile = files[path];
 
     if (!configForFile) {
       return null;
@@ -82,7 +102,7 @@ export default class Config {
       return configForFile;
     }
 
-    const value = configForFile[ key ];
+    const value = configForFile[key];
 
     if (isNil(value)) {
       return defaultValue;
@@ -105,9 +125,9 @@ export default class Config {
 
     const files = await this.get('files') || {};
 
-    const configForFile = files[ path ] = files[ path ] || {};
+    const configForFile = files[path] = files[path] || {};
 
-    configForFile[ key ] = value;
+    configForFile[key] = value;
 
     await this.set('files', files);
 
@@ -126,7 +146,7 @@ export default class Config {
   async getForPlugin(name, key, defaultValue = null) {
     const plugins = await this.get('plugins') || {};
 
-    const configForPlugin = plugins[ name ];
+    const configForPlugin = plugins[name];
 
     if (!configForPlugin) {
       return null;
@@ -136,7 +156,7 @@ export default class Config {
       return configForPlugin;
     }
 
-    const value = configForPlugin[ key ];
+    const value = configForPlugin[key];
 
     if (isNil(value)) {
       return defaultValue;
@@ -157,9 +177,9 @@ export default class Config {
   async setForPlugin(name, key, value) {
     const plugins = await this.get('plugins') || {};
 
-    const configForPlugin = plugins[ name ] = plugins[ name ] || {};
+    const configForPlugin = plugins[name] = plugins[name] || {};
 
-    configForPlugin[ key ] = value;
+    configForPlugin[key] = value;
 
     await this.set('plugins', plugins);
 

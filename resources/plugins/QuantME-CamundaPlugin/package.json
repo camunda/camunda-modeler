@@ -15,6 +15,8 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
     "camunda-modeler-plugin-helpers": "^3.4.0-alpha.0",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^2.1.0",
@@ -31,9 +33,8 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-preset-env": "^1.7.0",
+    "@babel/core": "^7.9.0",
+    "babel-loader": "^8.1.0",
     "bpmn-js": "^3.2.2",
     "bpmn-js-cli": "1.1.0",
     "bpmn-js-properties-panel": "^0.32.0",

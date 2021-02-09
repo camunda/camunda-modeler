@@ -9,6 +9,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+const { app } = require('electron');
 const log = require('../../log')('app:qrm-manager');
 const qrmHandler = require('./qrm-handler');
 const repositoryConfig = require('./RepositoryConfig');
@@ -35,6 +36,7 @@ module.exports.getQRMRepositoryName = function() {
 module.exports.setQRMRepositoryName = function(repositoryName) {
   if (repositoryName !== null && repositoryName !== undefined) {
     repositoryConfig.githubRepositoryName = repositoryName;
+    app.emit('menu:action', 'qrmRepoNameChanged', repositoryName);
   }
 };
 
@@ -58,6 +60,7 @@ module.exports.getQRMRepositoryUserName = function() {
 module.exports.setQRMUserName = function(userName) {
   if (userName !== null && userName !== undefined) {
     repositoryConfig.githubUsername = userName;
+    app.emit('menu:action', 'qrmUserNameChanged', userName);
   }
 };
 

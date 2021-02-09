@@ -15,6 +15,7 @@ const router = Router();
 router.get('/', function(req, res) {
   res.json({ '_links': {
     'self': { method: 'GET', href: req.header('host') + '' },
+    'camunda-engine': { method: 'GET', title: 'Get data about the connected Camunda engine', href: req.header('host') + '/camunda-engine' },
     'quantme': { method: 'GET', title: 'Get QuantME resources', href: req.header('host') + '/quantme' }
   } });
 });

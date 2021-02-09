@@ -5,6 +5,14 @@
   padding: 0;
 }
 
+.indent {
+  margin-left: 5px;
+}
+
+tr.spaceUnder>td {
+  padding-bottom: 1em;
+}
+
 html, body, #container {
   height: 100%;
 }

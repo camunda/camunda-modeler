@@ -13,9 +13,12 @@ import { registerBpmnJSModdleExtension, registerBpmnJSPlugin, registerClientExte
 import ModdleExtension from '../resources/quantum4bpmn.json';
 import quantmeModelingModule from '../quantme/modeling';
 import QuantMEController from '../quantme/control/QuantMEController';
+import ConfigPlugin from '../config/ConfigPlugin';
 
 registerBpmnJSModdleExtension(ModdleExtension);
 
 registerBpmnJSPlugin(quantmeModelingModule);
 
 registerClientExtension(QuantMEController);
+
+registerClientExtension(ConfigPlugin);
