@@ -28,7 +28,8 @@ import {
   Log,
   Plugins,
   TabsProvider,
-  Workspace
+  Workspace,
+  ZeebeAPI
 } from './mocks';
 
 
@@ -936,7 +937,8 @@ function createAppParent(options = {}, mountFn=shallow) {
     fileSystem: new FileSystem(),
     log: new Log(),
     plugins: new Plugins(),
-    workspace: new Workspace()
+    workspace: new Workspace(),
+    zeebeAPI: new ZeebeAPI()
   };
 
   const globals = {

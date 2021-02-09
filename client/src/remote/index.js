@@ -15,6 +15,7 @@ import FileSystem from './FileSystem';
 import Log from './Log';
 import Plugins from './Plugins';
 import Workspace from './Workspace';
+import ZeebeAPI from './ZeebeAPI';
 
 const {
   metadata,
@@ -37,6 +38,8 @@ export const plugins = new Plugins(appPlugins);
 export const workspace = new Workspace(backend);
 
 export const log = new Log(backend);
+
+export const zeebeAPI = new ZeebeAPI(backend);
 
 export {
   metadata,

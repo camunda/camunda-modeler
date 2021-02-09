@@ -32,7 +32,8 @@ import {
   FileSystem,
   Plugins,
   TabsProvider,
-  Workspace
+  Workspace,
+  ZeebeAPI
 } from './mocks';
 
 import pDefer from 'p-defer';
@@ -2676,7 +2677,8 @@ function createApp(options = {}, mountFn=shallow) {
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
     plugins: new Plugins(),
-    workspace: new Workspace()
+    workspace: new Workspace(),
+    zeebeAPI: new ZeebeAPI()
   };
 
   const globals = {
