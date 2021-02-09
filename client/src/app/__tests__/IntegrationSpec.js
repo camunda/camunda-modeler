@@ -19,7 +19,8 @@ import {
   Dialog,
   FileSystem,
   Plugins,
-  Workspace
+  Workspace,
+  ZeebeAPI
 } from './mocks';
 
 import {
@@ -155,7 +156,8 @@ function createApp(options = {}) {
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
     plugins: new Plugins(),
-    workspace: new Workspace()
+    workspace: new Workspace(),
+    zeebeAPI: new ZeebeAPI()
   };
 
   if (options.globals) {
