@@ -89,6 +89,9 @@ export default class TabsProvider {
         getInitialContents(options) {
           return bpmnDiagram;
         },
+        getInitialFilename(suffix) {
+          return `diagram_${suffix}.bpmn`;
+        },
         getHelpMenu() {
           return [{
             label: 'BPMN 2.0 Tutorial',
@@ -128,6 +131,9 @@ export default class TabsProvider {
         getInitialContents(options) {
           return cloudBpmnDiagram;
         },
+        getInitialFilename(suffix) {
+          return `diagram_${suffix}.bpmn`;
+        },
         getHelpMenu() {
           return [];
         },
@@ -158,6 +164,9 @@ export default class TabsProvider {
         },
         getInitialContents(options) {
           return cmmnDiagram;
+        },
+        getInitialFilename(suffix) {
+          return `diagram_${suffix}.dmn`;
         },
         getHelpMenu() {
           return [{
@@ -196,6 +205,9 @@ export default class TabsProvider {
         },
         getInitialContents() {
           return dmnDiagram;
+        },
+        getInitialFilename(suffix) {
+          return `diagram_${suffix}.cmmn`;
         },
         getHelpMenu() {
           return [{
@@ -272,7 +284,7 @@ export default class TabsProvider {
         : (createdByType[type] = 1)
     );
 
-    const name = `diagram_${counter}.${type}`;
+    const name = this._getInitialFilename(type, counter);
 
     const contents = this.getInitialFileContents(type);
 
@@ -281,6 +293,12 @@ export default class TabsProvider {
       contents,
       path: null
     };
+  }
+
+  _getInitialFilename(providerType, suffix) {
+    const provider = this.providers[providerType];
+
+    return provider.getInitialFilename(suffix);
   }
 
   createTab(type, options) {
