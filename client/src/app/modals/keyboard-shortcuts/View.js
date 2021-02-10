@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import {
   Modal
-} from '../../primitives';
+} from '../../../shared/ui';
 
 import css from './View.less';
 

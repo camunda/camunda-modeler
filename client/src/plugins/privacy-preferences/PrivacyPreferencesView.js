@@ -12,7 +12,7 @@ import React, { Fragment, PureComponent } from 'react';
 
 import {
   Modal
-} from '../../app/primitives';
+} from '../../shared/ui';
 
 import classNames from 'classnames';
 

@@ -12,7 +12,7 @@ import { filter } from 'min-dash';
 
 import {
   Modal
-} from '../app/primitives';
+} from '../shared/ui';
 
 import { Fill } from '../app/slot-fill';
 

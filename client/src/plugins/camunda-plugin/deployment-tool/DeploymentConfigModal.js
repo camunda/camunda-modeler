@@ -10,8 +10,6 @@
 
 import React from 'react';
 
-import { Modal } from '../../../app/primitives';
-
 import {
   omit
 } from 'min-dash';
@@ -21,10 +19,11 @@ import css from './DeploymentConfigModal.less';
 import AuthTypes from '../shared/AuthTypes';
 
 import {
+  Modal,
   CheckBox,
   Radio,
   TextInput
-} from '../shared/components';
+} from '../../../shared/ui';
 
 import {
   Formik,

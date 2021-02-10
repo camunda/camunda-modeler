@@ -15,11 +15,14 @@ import { isFunction } from 'min-dash';
 import { Fill } from '../../slot-fill';
 
 import {
-  Button,
-  DropdownButton,
-  Icon,
   Loader
 } from '../../primitives';
+
+import {
+  Button,
+  DropdownButton,
+  Icon
+} from '../../../shared/ui';
 
 import {
   debounce

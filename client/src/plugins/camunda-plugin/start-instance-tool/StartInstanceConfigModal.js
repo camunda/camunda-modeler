@@ -10,13 +10,12 @@
 
 import React from 'react';
 
-import { Modal } from '../../../app/primitives';
-
 import css from './StartInstanceConfigModal.less';
 
 import {
+  Modal,
   TextInput
-} from '../shared/components';
+} from '../../../shared/ui';
 
 import {
   Field,
