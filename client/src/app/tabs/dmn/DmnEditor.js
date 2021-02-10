@@ -20,10 +20,13 @@ import classNames from 'classnames';
 import { Fill } from '../../slot-fill';
 
 import {
-  Button,
-  Icon,
   Loader
 } from '../../primitives';
+
+import {
+  Button,
+  Icon
+} from '../../../shared/ui';
 
 import {
   debounce

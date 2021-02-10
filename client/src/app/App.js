@@ -39,21 +39,24 @@ import Toolbar from './Toolbar';
 
 import Log from './Log';
 
-import { KeyboardInteractionTrapContext } from './primitives/modal/KeyboardInteractionTrap';
+import { KeyboardInteractionTrapContext } from '../shared/ui/modal/KeyboardInteractionTrap';
 
 import {
   KeyboardShortcutsModal
 } from './modals';
 
 import {
-  Button,
-  DropdownButton,
   TabLinks,
   TabContainer,
   Tab,
-  Icon,
   Loader
 } from './primitives';
+
+import {
+  Button,
+  DropdownButton,
+  Icon
+} from '../shared/ui';
 
 import pDefer from 'p-defer';
 import pSeries from 'p-series';

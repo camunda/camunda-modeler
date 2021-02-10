@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
-import { Modal } from '../../../app/primitives';
+import { Modal } from '../../../shared/ui';
 
 import Dropdown from './Dropdown';
 import Input from './Input';

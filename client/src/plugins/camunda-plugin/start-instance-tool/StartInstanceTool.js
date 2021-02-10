@@ -25,7 +25,7 @@ import { Fill } from '../../../app/slot-fill';
 import {
   DropdownButton,
   Icon
-} from '../../../app/primitives';
+} from '../../../shared/ui';
 
 import isExecutable from './util/isExecutable';
 

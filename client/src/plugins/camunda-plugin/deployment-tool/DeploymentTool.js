@@ -28,7 +28,7 @@ import { Fill } from '../../../app/slot-fill';
 import {
   Button,
   Icon
-} from '../../../app/primitives';
+} from '../../../shared/ui';
 
 const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
