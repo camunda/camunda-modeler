@@ -1593,6 +1593,10 @@ export class App extends PureComponent {
       return this.createDiagram('cmmn');
     }
 
+    if (action === 'create-cloud-bpmn-diagram') {
+      return this.createDiagram('cloud-bpmn');
+    }
+
     if (action === 'open-diagram') {
       return this.showOpenFilesDialog();
     }
@@ -1820,10 +1824,6 @@ export class App extends PureComponent {
     const canSave = this.isUnsaved(activeTab) || this.isDirty(activeTab);
     const canSaveAs = !this.isEmptyTab(activeTab);
 
-    const {
-      tabsProvider
-    } = this.props;
-
     return (
       <DropZone
         onDrop={ this.handleDrop }
@@ -1840,23 +1840,7 @@ export class App extends PureComponent {
               <Fill slot="toolbar" group="1_general">
                 <DropdownButton
                   title="Create diagram"
-                  items={ [
-                    {
-                      text: 'Create new BPMN diagram',
-                      onClick: this.composeAction('create-bpmn-diagram'),
-                      type: 'bpmn'
-                    },
-                    {
-                      text: 'Create new DMN diagram',
-                      onClick: this.composeAction('create-dmn-diagram'),
-                      type: 'dmn'
-                    },
-                    {
-                      text: 'Create new CMMN diagram',
-                      onClick: this.composeAction('create-cmmn-diagram'),
-                      type: 'cmmn'
-                    }
-                  ].filter(entry => tabsProvider.hasProvider(entry.type)) }
+                  items={ this._getNewFileDropdownItems() }
                 >
                   <Icon name="new" />
                 </DropdownButton>
@@ -1986,6 +1970,26 @@ export class App extends PureComponent {
 
       </DropZone>
     );
+  }
+
+  _getNewFileDropdownItems() {
+    const items = [];
+    const providers = this.props.tabsProvider.getProviders();
+
+    forEach(providers, provider => {
+      const button = provider.getNewFileButton && provider.getNewFileButton();
+
+      if (!button) {
+        return;
+      }
+
+      items.push({
+        text: button.label,
+        onClick: () => this.triggerAction(button.action)
+      });
+    });
+
+    return items;
   }
 }
 

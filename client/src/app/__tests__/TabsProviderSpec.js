@@ -112,6 +112,8 @@ describe('TabsProvider', function() {
 
     verifyExists('bpmn');
 
+    verifyExists('cloud-bpmn');
+
     verifyExists('cmmn');
 
     verifyExists('dmn');

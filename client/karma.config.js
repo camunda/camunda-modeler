@@ -120,6 +120,7 @@ module.exports = function(karma) {
         ],
         alias: {
           'bpmn-js/lib/Modeler': modelers ? 'bpmn-js/lib/Modeler' : 'test/mocks/bpmn-js/Modeler',
+          'camunda-bpmn-js/lib/camunda-cloud/Modeler': modelers ? 'camunda-bpmn-js/lib/camunda-cloud/Modeler' : 'test/mocks/bpmn-js/Modeler',
           'cmmn-js/lib/Modeler': modelers ? 'cmmn-js/lib/Modeler' : 'test/mocks/cmmn-js/Modeler',
           'dmn-js/lib/Modeler': modelers ? 'dmn-js/lib/Modeler' : 'test/mocks/dmn-js/Modeler',
           './DmnModeler': modelers ? './DmnModeler' : 'test/mocks/dmn-js/Modeler',
