@@ -94,8 +94,15 @@ export default class DeploymentPlugin extends PureComponent {
       return;
     }
 
-    // (2) retrieve save config
+    // (2) retrieve saved config
     let config = await this.getSavedConfig(tab);
+
+    const endpoint = await this.getDefaultEndpoint(tab);
+
+    config = {
+      ...config,
+      endpoint
+    };
 
     // (2.1) open modal if config is incomplete
     const canDeploy = await this.canDeployWithConfig(config, options);
@@ -157,7 +164,7 @@ export default class DeploymentPlugin extends PureComponent {
     }
 
     // return early for missing essential parts
-    if (!config.deployment && !config.endpoint) {
+    if (!config.deployment || !config.endpoint) {
       return false;
     }
 
@@ -242,11 +249,7 @@ export default class DeploymentPlugin extends PureComponent {
     };
   }
 
-  async getDefaultConfig(savedConfig, tab) {
-    const deployment = {
-      name: withoutExtension(tab.name)
-    };
-
+  async getDefaultEndpoint(tab) {
     let endpoint = {
       id: generateId(),
       targetType: SELF_HOSTED,
@@ -266,6 +269,16 @@ export default class DeploymentPlugin extends PureComponent {
     if (previousEndpoints.length) {
       endpoint = previousEndpoints[0];
     }
+
+    return endpoint;
+  }
+
+  async getDefaultConfig(savedConfig, tab) {
+    const deployment = {
+      name: withoutExtension(tab.name)
+    };
+
+    const endpoint = await this.getDefaultEndpoint(tab);
 
     return {
       deployment: {

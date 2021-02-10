@@ -18,7 +18,7 @@ import { Config } from '../../../../app/__tests__/mocks';
 
 import DeploymentPlugin from '../DeploymentPlugin';
 
-const DEPLOYMENT_CONFIG_KEY = 'deployment-tool';
+const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 const ZEEBE_ENDPOINTS_CONFIG_KEY = 'zeebeEndpoints';
 
 
@@ -41,6 +41,154 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     // then
     expect(deploySpy).to.have.been.calledOnce;
+  });
+
+
+  it('should deploy immediately if configured', async () => {
+
+    // given
+    const storedTabConfiguration = {
+      deployment: { name: 'foo' },
+      endpointId: 'bar'
+    };
+
+    const deploySpy = sinon.spy();
+
+    const userActionSpy = sinon.spy();
+
+    const zeebeAPI = new MockZeebeAPI({
+      deploySpy
+    });
+
+    const config = {
+      getForFile(_, key) {
+        return key === DEPLOYMENT_CONFIG_KEY && storedTabConfiguration;
+      }
+    };
+
+    const { instance } = createDeploymentPlugin({
+      config,
+      zeebeAPI,
+      userActionSpy
+    });
+
+    // when
+    await instance.deploy({
+      isStart: true
+    });
+
+    // then
+    expect(deploySpy).to.have.been.calledOnce;
+    expect(userActionSpy).to.not.have.been.called;
+  });
+
+
+  it('should ask for configuration - missing endpoint', async () => {
+
+    // given
+    const storedTabConfiguration = {
+      deployment: { name: 'foo' }
+    };
+
+    const config = {
+      getForFile(_, key) {
+        return key === DEPLOYMENT_CONFIG_KEY && storedTabConfiguration;
+      }
+    };
+
+    const userActionSpy = sinon.spy();
+
+    const zeebeAPI = new MockZeebeAPI();
+
+    const { instance } = createDeploymentPlugin({
+      config,
+      zeebeAPI,
+      userActionSpy
+    });
+
+    // when
+    await instance.deploy();
+
+    // then
+    expect(userActionSpy).to.have.been.calledOnce;
+  });
+
+
+  it('should ask for configuration - missing deployment', async () => {
+
+    // given
+    const storedTabConfiguration = {
+      endpointId: 'bar'
+    };
+
+    const storedEndpoints = [{ id: storedTabConfiguration.endpointId }];
+
+    const config = {
+      get(key, defaultValue) {
+        return key === ZEEBE_ENDPOINTS_CONFIG_KEY ? storedEndpoints : defaultValue;
+      },
+      getForFile(_, key) {
+        return key === DEPLOYMENT_CONFIG_KEY && storedTabConfiguration;
+      }
+    };
+
+    const userActionSpy = sinon.spy();
+
+    const zeebeAPI = new MockZeebeAPI();
+
+    const { instance } = createDeploymentPlugin({
+      config,
+      zeebeAPI,
+      userActionSpy
+    });
+
+    // when
+    await instance.deploy();
+
+    // then
+    expect(userActionSpy).to.have.been.calledOnce;
+  });
+
+
+  it('should ask for configuration - connection failed', async () => {
+
+    // given
+    const userActionSpy = sinon.spy();
+
+    const storedTabConfiguration = {
+      deployment: { name: 'foo' },
+      endpointId: 'bar'
+    };
+
+    const config = {
+      getForFile(_, key) {
+        return key === DEPLOYMENT_CONFIG_KEY && storedTabConfiguration;
+      }
+    };
+
+    const connectionCheckResult = { success: false };
+
+    const connectionCheckSpy = sinon.spy();
+
+    const zeebeAPI = new MockZeebeAPI({
+      connectionCheckSpy,
+      connectionCheckResult
+    });
+
+    const { instance } = createDeploymentPlugin({
+      config,
+      zeebeAPI,
+      userActionSpy
+    });
+
+    // when
+    await instance.deploy({
+      isStart: true
+    });
+
+    // then
+    expect(connectionCheckSpy).to.have.been.calledOnce;
+    expect(userActionSpy).to.have.been.calledOnce;
   });
 
 
@@ -351,6 +499,7 @@ class TestDeploymentPlugin extends DeploymentPlugin {
   /**
    * @param {object} props
    * @param {'cancel'|'deploy'} [props.userAction='deploy'] user action in configuration modal
+   * @param {sinon.SinonSpy} [props.userActionSpy] spy on user configuration modal
    * @param {object} [props.endpoint] overrides for endpoint configuration
    * @param {object} [props.deployment] overrides for deployment configuration
    */
@@ -365,12 +514,17 @@ class TestDeploymentPlugin extends DeploymentPlugin {
     const { modalState } = this.state;
     const {
       userAction,
+      userActionSpy,
       endpoint,
       deployment
     } = this.props;
 
     if (modalState) {
       const action = userAction || 'deploy';
+
+      if (userActionSpy) {
+        userActionSpy();
+      }
 
       const config = action !== 'cancel' && {
         endpoint: {
@@ -429,7 +583,15 @@ function noop() {
   return null;
 }
 
-function MockZeebeAPI({ deploySpy, deploymentResult } = {}) {
+function MockZeebeAPI(options = {}) {
+
+  const {
+    deploySpy,
+    deploymentResult,
+    connectionCheckSpy,
+    connectionCheckResult
+  } = options;
+
   this.deploy = (...args) => {
     if (deploySpy) {
       deploySpy(...args);
@@ -437,6 +599,17 @@ function MockZeebeAPI({ deploySpy, deploymentResult } = {}) {
 
     const result = deploymentResult ||
       { success: true, response: { workflows: [ { bpmnProcessId: 'test' } ] } };
+
+    return Promise.resolve(result);
+  };
+
+  this.checkConnection = (...args) => {
+    if (connectionCheckSpy) {
+      connectionCheckSpy(...args);
+    }
+
+    const result = connectionCheckResult ||
+      { success: true, response: {} };
 
     return Promise.resolve(result);
   };
