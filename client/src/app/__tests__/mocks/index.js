@@ -133,6 +133,16 @@ export class TabsProvider {
         },
         extensions: [ 'bpmn', 'xml' ]
       },
+      'cloud-bpmn': {
+        name: null,
+        encoding: ENCODING_UTF8,
+        exports: {
+          png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'bpmn', 'xml' ]
+      },
       cmmn: {
         name: 'CMMN',
         encoding: ENCODING_UTF8,

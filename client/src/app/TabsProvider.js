@@ -9,6 +9,7 @@
  */
 
 import bpmnDiagram from './tabs/bpmn/diagram.bpmn';
+import cloudBpmnDiagram from './tabs/cloud-bpmn/diagram.bpmn';
 import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
 
@@ -68,6 +69,9 @@ export default class TabsProvider {
       empty: {
         getComponent() {
           return EmptyTab;
+        },
+        getNewFileButton() {
+          return null;
         }
       },
       bpmn: {
@@ -97,10 +101,47 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'BPMN Diagram',
+            label: 'BPMN Diagram (Camunda)',
             accelerator: 'CommandOrControl+T',
             action: 'create-bpmn-diagram'
           }];
+        },
+        getNewFileButton() {
+          return {
+            label: 'Create new BPMN Diagram (Camunda)',
+            action: 'create-bpmn-diagram'
+          };
+        }
+      },
+      'cloud-bpmn': {
+        name: null,
+        encoding: ENCODING_UTF8,
+        exports: {
+          png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'bpmn', 'xml' ],
+        getComponent(options) {
+          return import('./tabs/cloud-bpmn');
+        },
+        getInitialContents(options) {
+          return cloudBpmnDiagram;
+        },
+        getHelpMenu() {
+          return [];
+        },
+        getNewFileMenu() {
+          return [{
+            label: 'BPMN Diagram (Zeebe)',
+            action: 'create-cloud-bpmn-diagram'
+          }];
+        },
+        getNewFileButton() {
+          return {
+            label: 'Create new BPMN Diagram (Zeebe)',
+            action: 'create-cloud-bpmn-diagram'
+          };
         }
       },
       cmmn: {
@@ -133,6 +174,12 @@ export default class TabsProvider {
             label: 'CMMN Diagram',
             action: 'create-cmmn-diagram'
           }];
+        },
+        getNewFileButton() {
+          return {
+            label: 'Create new CMMN Diagram',
+            action: 'create-cmmn-diagram'
+          };
         }
       },
       dmn: {
@@ -158,9 +205,15 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'DMN Diagram',
+            label: 'DMN Diagram (Camunda)',
             action: 'create-dmn-diagram'
           }];
+        },
+        getNewFileButton() {
+          return {
+            label: 'Create new DMN Diagram (Camunda)',
+            action: 'create-dmn-diagram'
+          };
         }
       }
     };
@@ -223,8 +276,6 @@ export default class TabsProvider {
 
     const contents = this.getInitialFileContents(type);
 
-    const contents = this.getInitialFileContents(type);
-
     return {
       name,
       contents,
@@ -271,6 +322,7 @@ export default class TabsProvider {
       return null;
     }
 
+    // fill empty file with initial contents
     if (!file.contents) {
       file.contents = this.getInitialFileContents(type);
     }

@@ -315,6 +315,7 @@ describe('<App>', function() {
       await app.createDiagram('bpmn');
       await app.createDiagram('dmn');
       await app.createDiagram('cmmn');
+      await app.createDiagram('cloud-bpmn');
       await app.createDiagram();
 
       // then
@@ -322,15 +323,15 @@ describe('<App>', function() {
         tabs,
         activeTab
       } = app.state;
-
       expect(tabs.map(tab => tab.type)).to.eql([
         'bpmn',
         'dmn',
         'cmmn',
+        'cloud-bpmn',
         'bpmn'
       ]);
 
-      expect(activeTab).to.eql(tabs[3]);
+      expect(activeTab).to.eql(tabs[ tabs.length - 1 ]);
     });
 
   });
