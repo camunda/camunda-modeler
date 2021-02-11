@@ -25,9 +25,10 @@ const NON_EXISTENT_EDITOR_ID = 'NON_EXISTENT_EDITOR_ID';
 
 const log = debug('ErrorTracking');
 
-
 // DSN is set to our CI provider as an env variable, passed to client via WebPack DefinePlugin
 const DEFINED_SENTRY_DSN = process.env.SENTRY_DSN;
+
+const NONE_TAG = 'none';
 
 export default class ErrorTracking extends PureComponent {
 
@@ -100,7 +101,7 @@ export default class ErrorTracking extends PureComponent {
       // add plugins information
       const plugins = _getGlobal('plugins').getAppPlugins();
       this._sentry.configureScope(scope => {
-        scope.setTag('plugins', plugins.map(({ name }) => name).join(','));
+        scope.setTag('plugins', generatePluginsTag(plugins));
       });
 
       const { subscribe } = this.props;
@@ -226,9 +227,22 @@ export default class ErrorTracking extends PureComponent {
   }
 }
 
-const normalizeUrl = (path) => {
+
+// helpers ////////////////
+
+function normalizeUrl(path) {
 
   // eslint-disable-next-line
   const filename = path.replace(/^.*[\\\/]/, '');
   return '~/build/' + filename;
-};
+}
+
+function generatePluginsTag(plugins) {
+
+  if (!plugins || !plugins.length) {
+    return NONE_TAG;
+  }
+
+  return plugins.map(({ name }) => name).join(',');
+}
+

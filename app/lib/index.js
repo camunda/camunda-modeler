@@ -564,7 +564,7 @@ function bootstrap() {
   });
 
   // track plugins
-  errorTracking.setTag(Sentry, 'plugins', plugins.getAll().map(({ name }) => name).join(','));
+  errorTracking.setTag(Sentry, 'plugins', generatePluginsTag(plugins));
 
   return {
     config,
@@ -591,6 +591,16 @@ function getTitleSuffix(version) {
   }
   return '';
 }
+
+function generatePluginsTag(plugins) {
+
+  if (!plugins || !plugins.length) {
+    return 'none';
+  }
+
+  return plugins.map(({ name }) => name).join(',');
+}
+
 
 
 // expose app

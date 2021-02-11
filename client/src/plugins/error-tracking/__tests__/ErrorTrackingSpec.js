@@ -343,7 +343,10 @@ describe('<ErrorTracking>', () => {
 
     // given
     const setTagSpy = sinon.spy();
-    const plugins = [ { name: 'test' } ];
+    const plugins = [
+      { name: 'test' },
+      { name: 'foo' }
+    ];
 
     const instance = createErrorTracking({
       plugins,
@@ -357,7 +360,30 @@ describe('<ErrorTracking>', () => {
 
     // then
     expect(setTagSpy).to.have.been.calledWith(
-      { key: 'plugins', value: plugins.map(({ name }) => name).join(',') }
+      { key: 'plugins', value: 'test,foo' }
+    );
+  });
+
+
+  it('should attach <none> as plugins tag to scope', async () => {
+
+    // given
+    const setTagSpy = sinon.spy();
+    const plugins = [];
+
+    const instance = createErrorTracking({
+      plugins,
+      setTagSpy,
+      dsn: 'TEST_DSN',
+      configValues: { 'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true } }
+    });
+
+    // when
+    await instance.componentDidMount();
+
+    // then
+    expect(setTagSpy).to.have.been.calledWith(
+      { key: 'plugins', value: 'none' }
     );
   });
 
