@@ -127,4 +127,13 @@ describe('util - parseDiagramType', function() {
     expect(notation).to.equal(null);
   });
 
+
+  it('should return null on no content', function() {
+
+    // when
+    var notation = parseDiagramType();
+
+    // then
+    expect(notation).to.equal(null);
+  });
 });

@@ -69,7 +69,7 @@ function getRootNamespace(xml) {
  *
  * @return {string|null} parsed type
  */
-export default function parseFileType(contents) {
+export default function parseFileType(contents = '') {
   const nsUri = getRootNamespace(contents);
 
   return nsUri && findIndex(TYPES, function(uri) {
