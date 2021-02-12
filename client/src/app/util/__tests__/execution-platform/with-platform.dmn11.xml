@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/1.0" id="Definitions_07dtqfv" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <decision id="Decision_13nychf" name="Decision 1">
+    <extensionElements>
+      <biodi:bounds x="200" y="200" width="180" height="80" />
+    </extensionElements>
+    <decisionTable id="decisionTable_1">
+      <input id="input_1">
+        <inputExpression id="inputExpression_1" typeRef="string">
+          <text></text>
+        </inputExpression>
+      </input>
+      <output id="output_1" typeRef="string" />
+    </decisionTable>
+  </decision>
+</definitions>

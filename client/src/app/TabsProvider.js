@@ -17,9 +17,18 @@ import replaceIds from '@bpmn-io/replace-ids';
 
 import EmptyTab from './EmptyTab';
 
-import { forEach } from 'min-dash';
+import {
+  find,
+  forEach
+} from 'min-dash';
 
 import parseDiagramType from './util/parseDiagramType';
+
+import parseExecutionPlatform from './util/parseExecutionPlatform';
+
+import {
+  findUsages as findNamespaceUsages,
+} from './tabs/util/namespace';
 
 import {
   Flags,
@@ -58,6 +67,9 @@ const EXPORT_SVG = {
   extensions: [ 'svg' ]
 };
 
+const NAMESPACE_URL_ZEEBE = 'http://camunda.org/schema/zeebe/1.0';
+
+
 /**
  * A provider that allows us to customize available tabs.
  */
@@ -67,6 +79,9 @@ export default class TabsProvider {
 
     this.providers = {
       empty: {
+        canOpen(file) {
+          return false;
+        },
         getComponent() {
           return EmptyTab;
         },
@@ -83,6 +98,9 @@ export default class TabsProvider {
           svg: EXPORT_SVG
         },
         extensions: [ 'bpmn', 'xml' ],
+        canOpen(file) {
+          return parseDiagramType(file.contents) === 'bpmn';
+        },
         getComponent(options) {
           return import('./tabs/bpmn');
         },
@@ -125,6 +143,31 @@ export default class TabsProvider {
           svg: EXPORT_SVG
         },
         extensions: [ 'bpmn', 'xml' ],
+        canOpen(file) {
+          const {
+            contents
+          } = file;
+
+          // (0) can open only BPMN files
+          if (parseDiagramType(contents) !== 'bpmn') {
+            return false;
+          }
+
+          // (1) detect execution platform
+          const executionPlatformDetails = parseExecutionPlatform(contents);
+
+          if (executionPlatformDetails) {
+            return [
+              'Camunda Cloud',
+              'Zeebe'
+            ].includes(executionPlatformDetails.executionPlatform);
+          }
+
+          // (2) detect zeebe namespace
+          const used = findNamespaceUsages(contents, NAMESPACE_URL_ZEEBE);
+
+          return !!used;
+        },
         getComponent(options) {
           return import('./tabs/cloud-bpmn');
         },
@@ -159,6 +202,9 @@ export default class TabsProvider {
           svg: EXPORT_SVG
         },
         extensions: [ 'cmmn', 'xml' ],
+        canOpen(file) {
+          return parseDiagramType(file.contents) === 'cmmn';
+        },
         getComponent(options) {
           return import('./tabs/cmmn');
         },
@@ -166,7 +212,7 @@ export default class TabsProvider {
           return cmmnDiagram;
         },
         getInitialFilename(suffix) {
-          return `diagram_${suffix}.dmn`;
+          return `diagram_${suffix}.cmmn`;
         },
         getHelpMenu() {
           return [{
@@ -200,6 +246,9 @@ export default class TabsProvider {
           svg: EXPORT_SVG
         },
         extensions: [ 'dmn', 'xml' ],
+        canOpen(file) {
+          return parseDiagramType(file.contents) === 'dmn';
+        },
         getComponent(options) {
           return import('./tabs/dmn');
         },
@@ -207,7 +256,7 @@ export default class TabsProvider {
           return dmnDiagram;
         },
         getInitialFilename(suffix) {
-          return `diagram_${suffix}.cmmn`;
+          return `diagram_${suffix}.dmn`;
         },
         getHelpMenu() {
           return [{
@@ -230,14 +279,21 @@ export default class TabsProvider {
       }
     };
 
+    this.providersByFileType = {
+      bpmn: [ this.providers['cloud-bpmn'], this.providers.bpmn ],
+      dmn: [ this.providers.dmn ],
+      cmmn: [ this.providers.cmmn ]
+    };
+
     if (Flags.get('disable-cmmn', true)) {
       delete this.providers.cmmn;
+      delete this.providersByFileType.cmmn;
     }
 
     if (Flags.get('disable-dmn')) {
       delete this.providers.dmn;
+      delete this.providersByFileType.dmn;
     }
-
   }
 
   getProviderNames() {
@@ -258,8 +314,8 @@ export default class TabsProvider {
     return this.providers;
   }
 
-  hasProvider(type) {
-    return !!this.providers[type];
+  hasProvider(fileType) {
+    return !!this._getProvidersForExtension(fileType).length;
   }
 
   getProvider(type) {
@@ -308,33 +364,11 @@ export default class TabsProvider {
     return this.createTabForFile(file);
   }
 
-  getTabType(file) {
-
-    const {
-      name,
-      contents
-    } = file;
-
-    const typeFromExtension = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
-
-    if (this.hasProvider(typeFromExtension)) {
-      return typeFromExtension;
-    }
-
-    const typeFromContents = parseDiagramType(contents);
-
-    if (typeFromContents && this.hasProvider(typeFromContents)) {
-      return typeFromContents;
-    }
-
-    return null;
-  }
-
   createTabForFile(file) {
 
     const id = generateId();
 
-    const type = this.getTabType(file);
+    const type = this._getTabType(file);
 
     if (!type) {
       return null;
@@ -362,4 +396,77 @@ export default class TabsProvider {
 
   }
 
+  _getTabType(file) {
+    const provider = this._getFileProvider(file);
+
+    if (!provider) {
+      return null;
+    }
+
+    for (let type in this.providers) {
+      if (this.providers[type] === provider) {
+        return type;
+      }
+    }
+  }
+
+  /**
+   * Returns provider if available.
+   *
+   * Algorithm:
+   * * check if there are providers defined for the file extension
+   *   * if there is only one, return it (happy path)
+   *   * if there are more than one:
+   *     * return the first provider which can open the file
+   *     * otherwise return the last provider
+   *   * if there are none, return the first provider which can open the file or `null`
+   *
+   * @param {import('./TabsProvider').File} file
+   * @returns {string | null}
+   */
+  _getFileProvider(file) {
+    const typeFromExtension = getTypeFromFileExtension(file);
+
+    const providersForExtension = this._getProvidersForExtension(typeFromExtension);
+
+    // single provider specified for the extension
+    if (providersForExtension.length === 1) {
+      return providersForExtension[0];
+    }
+
+    // multiple providers specified for the extension
+    if (providersForExtension.length > 1) {
+      const provider = findProviderForFile(providersForExtension, file);
+
+      // return the matching provider or the last provider as fallback
+      return provider || providersForExtension[providersForExtension.length - 1];
+    }
+
+    // no providers specified for the extension; return the first that can open the file
+    const provider = findProviderForFile(this.providers, file);
+
+    return provider || null;
+  }
+
+  _getProvidersForExtension(extension) {
+    return this.providersByFileType[extension] || [];
+  }
+}
+
+
+
+// helper ///////////////////
+
+function getTypeFromFileExtension(file) {
+  const { name } = file;
+
+  return name.substring(name.lastIndexOf('.') + 1).toLowerCase();
+}
+
+function findProviderForFile(providers, file) {
+  return find(providers, provider => {
+    if (provider.canOpen(file)) {
+      return provider;
+    }
+  });
 }
