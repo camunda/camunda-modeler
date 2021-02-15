@@ -27,15 +27,6 @@ describe('<ZeebePlugin>', function() {
     expect(component).to.exist;
   });
 
-
-  /* @pinussilvestrus: implement as soon as we can distinguish.
-  * Cf. https://github.com/camunda/camunda-modeler/issues/2029
-  */
-  it.skip('should be present for zeebe tabs');
-
-
-  it.skip('should be empty for other tabs');
-
 });
 
 

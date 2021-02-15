@@ -27,14 +27,14 @@ export default class StartInstancePlugin extends PureComponent {
     super(props);
 
     this.state = {
-      hasActiveTab: false
+      activeTab: null
     };
   }
 
   componentDidMount() {
     this.props.subscribe('app.activeTabChanged', ({ activeTab }) => {
       this.setState({
-        hasActiveTab: activeTab && activeTab.type !== 'empty'
+        activeTab
       });
     });
   }
@@ -88,12 +88,12 @@ export default class StartInstancePlugin extends PureComponent {
   render() {
 
     const {
-      hasActiveTab
+      activeTab
     } = this.state;
 
     return <React.Fragment>
       {
-        hasActiveTab &&
+        isZeebeTab(activeTab) &&
         <Fill slot="toolbar" group="8_deploy" priority={ 0 }>
           <Button
             onClick={ this.onIconClicked }
@@ -106,4 +106,11 @@ export default class StartInstancePlugin extends PureComponent {
       }
     </React.Fragment>;
   }
+}
+
+
+// helpers ////////////////////
+
+function isZeebeTab(tab) {
+  return tab && tab.type === 'cloud-bpmn';
 }

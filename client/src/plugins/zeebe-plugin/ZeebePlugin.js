@@ -26,20 +26,6 @@ export default class ZeebePlugin extends PureComponent {
     super(props);
 
     this.subscriptions = {};
-
-    this.state = {
-      activeTab: null
-    };
-  }
-
-  componentDidMount() {
-    const {
-      subscribe
-    } = this.props;
-
-    subscribe('app.activeTabChanged', ({ activeTab }) => {
-      this.setState({ activeTab });
-    });
   }
 
   subscribeToMessaging = (pluginName, callback) => {
@@ -57,38 +43,20 @@ export default class ZeebePlugin extends PureComponent {
   }
 
   render() {
-    const {
-      activeTab
-    } = this.state;
 
-    return (
-      isZeebeDiagram(activeTab) ?
-        <React.Fragment>
-          <DeploymentPlugin
-            { ...this.props }
-            subscribeToMessaging={ this.subscribeToMessaging }
-            broadcastMessage={ this.broadcastMessage }
-            unsubscribeFromMessaging={ this.unsubscribeFromMessaging }
-          />
-          <StartInstancePlugin
-            { ...this.props }
-            subscribeToMessaging={ this.subscribeToMessaging }
-            broadcastMessage={ this.broadcastMessage }
-            unsubscribeFromMessaging={ this.unsubscribeFromMessaging }
-          />
-        </React.Fragment>
-        : null
-    );
+    return <React.Fragment>
+      <DeploymentPlugin
+        { ...this.props }
+        subscribeToMessaging={ this.subscribeToMessaging }
+        broadcastMessage={ this.broadcastMessage }
+        unsubscribeFromMessaging={ this.unsubscribeFromMessaging }
+      />
+      <StartInstancePlugin
+        { ...this.props }
+        subscribeToMessaging={ this.subscribeToMessaging }
+        broadcastMessage={ this.broadcastMessage }
+        unsubscribeFromMessaging={ this.unsubscribeFromMessaging }
+      />
+    </React.Fragment>;
   }
-}
-
-
-// helpers //////////////
-
-function isZeebeDiagram(tab) {
-
-  /* @pinussilvestrus: implement as soon as we can distinguish.
-  * Cf. https://github.com/camunda/camunda-modeler/issues/2029
-  */
-  return false;
 }

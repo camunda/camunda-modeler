@@ -26,6 +26,42 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
   });
 
 
+  it('should display for active zeebe tabs', () => {
+
+    // when
+    const { wrapper } = createStartInstancePlugin({
+      activeTab: {
+        type: 'cloud-bpmn'
+      }
+    });
+
+    // then
+    expect(wrapper.find('Button')).to.have.lengthOf(1);
+  });
+
+
+  it('should NOT display when no active tab', () => {
+
+    // when
+    const { wrapper } = createStartInstancePlugin({
+      activeTab: false
+    });
+
+    // then
+    expect(wrapper.find('Button')).to.have.lengthOf(0);
+  });
+
+
+  it('should NOT display for other tabs', () => {
+
+    // when
+    const { wrapper } = createStartInstancePlugin();
+
+    // then
+    expect(wrapper.find('Button')).to.have.lengthOf(0);
+  });
+
+
   it('should start process instance if deployment was successful', async () => {
 
     // given
