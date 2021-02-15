@@ -208,20 +208,34 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
   describe('ui', () => {
 
-    it('should display button if there is active tab', () => {
+    it('should display button if there is active zeebe tab', () => {
 
       // given
-      const { wrapper } = createDeploymentPlugin();
+      const { wrapper } = createDeploymentPlugin({
+        activeTab: {
+          type: 'cloud-bpmn'
+        }
+      });
 
       // then
       expect(wrapper.find('Button')).to.have.lengthOf(1);
     });
 
 
+    it('should NOT display button if there is no active zeebe tab', () => {
+
+      // given
+      const { wrapper } = createDeploymentPlugin();
+
+      // then
+      expect(wrapper.find('Button')).to.have.lengthOf(0);
+    });
+
+
     it('should NOT display button if there is no active tab', () => {
 
       // given
-      const { wrapper } = createDeploymentPlugin({ activeTab: false });
+      const { wrapper } = createDeploymentPlugin();
 
       // then
       expect(wrapper.find('Button')).to.have.lengthOf(0);

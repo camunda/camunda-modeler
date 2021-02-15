@@ -362,10 +362,8 @@ export default class DeploymentPlugin extends PureComponent {
       activeTab
     } = this.state;
 
-    const hasActiveTab = activeTab && activeTab.type !== 'empty';
-
     return <React.Fragment>
-      { hasActiveTab &&
+      { isZeebeTab(activeTab) &&
         <Fill slot="toolbar" group="8_deploy" priority={ 1 }>
           <Button
             onClick={ this.onIconClicked }
@@ -375,7 +373,7 @@ export default class DeploymentPlugin extends PureComponent {
           </Button>
         </Fill>
       }
-      { modalState && hasActiveTab &&
+      { modalState &&
         <DeploymentPluginModal
           onClose={ modalState.onClose }
           validator={ this.validator }
@@ -413,7 +411,8 @@ function addOrUpdateById(collection, element) {
 }
 
 
-// helper
+// helper ////////////////
+
 function withoutCredentials(endpointConfiguration) {
   return omit(endpointConfiguration, [
     'clientId',
@@ -421,4 +420,8 @@ function withoutCredentials(endpointConfiguration) {
     'camundaCloudClientId',
     'camundaCloudClientSecret'
   ]);
+}
+
+function isZeebeTab(tab) {
+  return tab && tab.type === 'cloud-bpmn';
 }
