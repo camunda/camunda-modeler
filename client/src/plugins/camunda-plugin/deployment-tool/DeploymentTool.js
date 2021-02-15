@@ -431,7 +431,7 @@ export default class DeploymentTool extends PureComponent {
     } = this.state;
 
     return <React.Fragment>
-      { activeTab && activeTab.type !== 'empty' && <Fill slot="toolbar" group="8_deploy">
+      { isCamundaTab(activeTab) && <Fill slot="toolbar" group="8_deploy">
         <Button
           onClick={ this.deploy }
           title="Deploy current diagram"
@@ -484,4 +484,12 @@ function addOrUpdateById(collection, element) {
     ...collection,
     element
   ];
+}
+
+function isCamundaTab(tab) {
+  return tab && [
+    'bpmn',
+    'cmmn',
+    'dmn'
+  ].includes(tab.type);
 }
