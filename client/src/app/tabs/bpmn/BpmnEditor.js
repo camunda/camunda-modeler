@@ -36,7 +36,7 @@ import {
 
 import PropertiesContainer from '../PropertiesContainer';
 
-import CamundaBpmnModeler from './modeler';
+import BpmnModeler from './modeler';
 
 import { active as isInputActive } from '../../../util/dom/isInput';
 
@@ -484,7 +484,7 @@ export class BpmnEditor extends CachedComponent {
   }
 
   /**
-   * @returns {CamundaBpmnModeler}
+   * @returns {BpmnModeler}
    */
   getModeler() {
     const {
@@ -820,7 +820,7 @@ export class BpmnEditor extends CachedComponent {
       );
     }
 
-    const modeler = new CamundaBpmnModeler({
+    const modeler = new BpmnModeler({
       ...options,
       position: 'absolute'
     });
