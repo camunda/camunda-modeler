@@ -39,13 +39,42 @@ describe('<DeploymentTool>', () => {
   });
 
 
-  it('should not display the button if there is no active tab', () => {
+  it('should display the button if there is an active tab', () => {
 
     // given
-    const { wrapper } = createDeploymentTool({ activeTab: { type: 'empty', id: '__empty' } });
+    const activeTab = createTab({ type: 'bpmn' });
+
+    // when
+    const { wrapper } = createDeploymentTool({ activeTab });
 
     // then
-    expect(wrapper).to.be.empty;
+    expect(wrapper.find('Button')).to.have.lengthOf(1);
+  });
+
+
+  it('should NOT display the button if there is no active tab', () => {
+
+    // given
+    const activeTab = createTab({ type: 'empty', id: '__empty' });
+
+    // when
+    const { wrapper } = createDeploymentTool({ activeTab });
+
+    // then
+    expect(wrapper.find('Button')).to.have.lengthOf(0);
+  });
+
+
+  it('should NOT display the button if there is no camunda tab', () => {
+
+    // given
+    const activeTab = createTab();
+
+    // when
+    const { wrapper } = createDeploymentTool({ activeTab });
+
+    // then
+    expect(wrapper.find('Button')).to.have.lengthOf(0);
   });
 
 
@@ -605,7 +634,7 @@ function createDeploymentTool({
   ...props
 } = {}, render = shallow) {
   const subscribe = (event, callback) => {
-    event === 'app.activeTabChanged' && callback(activeTab);
+    event === 'app.activeTabChanged' && callback({ activeTab });
   };
 
   const triggerAction = (event, context) => {
