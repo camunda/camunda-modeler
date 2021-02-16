@@ -91,6 +91,7 @@ Templates are defined in template descriptor files as a JSON array:
 ```json
 [
   {
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.2.0/resources/schema.json",
     "name": "Template 1",
     "id": "sometemplate",
     "description": "some description",
@@ -111,6 +112,7 @@ Templates are defined in template descriptor files as a JSON array:
 
 As seen in the code snippet a template consist of a number of important components:
 
+* `$schema : String`: Optional URI pointing towards the [JSON schema](https://json-schema.org/) which defines the structure of the element template `.json` file. Element template schemas are maintained in the [element templates JSON schema](https://github.com/camunda/element-templates-json-schema) repository. Following the [JSON schema](https://json-schema.org/) standard, you may use them for validation or to get assistance (e.g., auto-completion) when working with them in your favorite IDE.
 * `name : String`: Name of the template that will appear in the Catalog.
 * `id : String`: ID of the template.
 * `description : String`: Optional description of the template. Will be shown in the element template selection modal and in the properties panel (after having applied an element template).
