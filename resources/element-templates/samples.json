@@ -196,6 +196,7 @@
   {
     "name": "WS Caller Task",
     "id": "com.camunda.example.WsCaller",
+    "description": "Requires the user to provide a Web Service URL.",
     "appliesTo": [
       "bpmn:ServiceTask"
     ],

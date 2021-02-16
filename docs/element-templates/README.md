@@ -93,6 +93,7 @@ Templates are defined in template descriptor files as a JSON array:
   {
     "name": "Template 1",
     "id": "sometemplate",
+    "description": "some description",
     "version": 1,
     "appliesTo": [
       "bpmn:ServiceTask"
@@ -112,6 +113,7 @@ As seen in the code snippet a template consist of a number of important componen
 
 * `name : String`: Name of the template that will appear in the Catalog.
 * `id : String`: ID of the template.
+* `description : String`: Optional description of the template. Will be shown in the element template selection modal and in the properties panel (after having applied an element template).
 * `version : Integer`: Optional version of the template. If you add a version to a template it will be considered unique based on its ID and version. Two templates can have the same ID if their version is different.
 * `appliesTo : Array<String>`: List of BPMN types the template can be applied to.
 * `properties : Array<Object>`: List of properties of the template.
