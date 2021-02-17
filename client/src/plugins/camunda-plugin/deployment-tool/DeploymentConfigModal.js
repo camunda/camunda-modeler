@@ -124,7 +124,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
       } = endpoint;
 
       if (rememberCredentials) {
-        this.props.saveCredential({ username, password, token });
+        this.props.saveCredentials({ username, password, token });
       } else {
         this.props.removeCredentials();
       }

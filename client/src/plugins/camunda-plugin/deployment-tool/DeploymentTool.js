@@ -237,19 +237,30 @@ export default class DeploymentTool extends PureComponent {
 
   removeCredentials = async () => {
     const savedConfiguration = await this.getSavedConfiguration(this.state.activeTab);
-    const omited = omit(savedConfiguration.endpoint, ['username', 'password', 'token']);
+
+    // do not remove credentials from a non existing endpoint configuration
+    if (!savedConfiguration || !savedConfiguration.endpoint) {
+      return;
+    }
+
     this.saveEndpoint({
-      ...omited,
+      ...savedConfiguration.endpoint,
       rememberCredentials: false
     });
   }
 
-  saveCredential = async (credential) => {
+  saveCredentials = async (credentials) => {
     const savedConfiguration = await this.getSavedConfiguration(this.state.activeTab);
+
+    // do not save credentials on a non existing endpoint configuration
+    if (!savedConfiguration || !savedConfiguration.endpoint) {
+      return;
+    }
+
     this.saveEndpoint({
       ...savedConfiguration.endpoint,
       rememberCredentials: true,
-      ...credential
+      ...credentials
     });
   }
 
@@ -259,7 +270,7 @@ export default class DeploymentTool extends PureComponent {
       rememberCredentials
     } = endpoint;
 
-    const endpointToSave = rememberCredentials ? endpoint : omit(endpoint, ['username', 'password', 'token']);
+    const endpointToSave = rememberCredentials ? endpoint : withoutCredentials(endpoint);
 
     const existingEndpoints = await this.getEndpoints();
 
@@ -449,7 +460,7 @@ export default class DeploymentTool extends PureComponent {
         primaryAction={ modalState.primaryAction }
         onClose={ modalState.handleClose }
         validator={ this.validator }
-        saveCredential={ this.saveCredential }
+        saveCredentials={ this.saveCredentials }
         removeCredentials={ this.removeCredentials }
         subscribeToFocusChange={ this.subscribeToFocusChange }
         unsubscribeFromFocusChange={ this.unsubscribeFromFocusChange }
@@ -466,6 +477,10 @@ export default class DeploymentTool extends PureComponent {
 
 function withoutExtension(name) {
   return name.replace(/\.[^.]+$/, '');
+}
+
+function withoutCredentials(endpoint) {
+  return omit(endpoint, ['username', 'password', 'token']);
 }
 
 function addOrUpdateById(collection, element) {
