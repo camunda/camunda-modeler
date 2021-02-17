@@ -5,12 +5,79 @@
   padding: 0;
 }
 
+.workflow-deployment:before {
+  content: "";
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-size: contain;
+  background: url("../resources/workflow-deployment-icon.png") no-repeat center center;
+  float: left;
+}
+
+.config:before {
+  content: "";
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-size: contain;
+  background: url("../resources/config-icon.png") no-repeat center center;
+  float: left;
+}
+
+.app-icon-service-deployment:before { content: '\e805'; }
+
 .indent {
   margin-left: 5px;
 }
 
-tr.spaceUnder>td {
+ul {
+  padding-left: 20px;
+}
+
+table {
+  table-layout: fixed;
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+#progress {
+  width: 100%;
+  background-color: #ddd;
+}
+
+#bar {
+  width: 1%;
+  height: 30px;
+  background-color: #4CAF50;
+}
+
+.spaceUnder {
   padding-bottom: 1em;
+}
+
+.spaceUnderSmall {
+  padding-bottom: 0.3em;
+}
+
+.spaceAbove {
+  padding-top: 1em;
+}
+
+tr.spaceUnder>td {
 }
 
 html, body, #container {

@@ -136,6 +136,17 @@
             "type": "String"
           }
         ]
+      },
+      {
+        "name": "ServiceTask",
+        "extends": [ "bpmn:ServiceTask" ],
+        "properties": [
+          {
+            "name": "deploymentModelUrl",
+            "isAttr": true,
+            "type": "String"
+          }
+        ]
       }
     ],
     "enumerations": [],

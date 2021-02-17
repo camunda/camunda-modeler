@@ -10,14 +10,14 @@
  */
 
 const root = require('./root-controller');
-const camunda = require('./camunda-engine-controller');
+const config = require('./config-controller');
 const quantme = require('./quantme-controller');
 const qrm = require('./qrm-controller');
 const quantumWorkflow = require('./quantum-workflow-controller');
 
 module.exports = {
   root,
-  camunda,
+  config,
   quantme,
   qrm,
   quantumWorkflow

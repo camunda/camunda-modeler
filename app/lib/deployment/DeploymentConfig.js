@@ -11,5 +11,6 @@
 
 module.exports = {
   camundaEndpoint: process.env.CAMUNDA_ENDPOINT || 'http://localhost:8080/engine-rest',
-  opentoscaEndpoint: process.env.OPENTOSCA_ENDPOINT || 'http://localhost:1337/csars'
+  opentoscaEndpoint: process.env.OPENTOSCA_ENDPOINT || 'http://localhost:1337/csars',
+  wineryEndpoint: process.env.WINERY_ENDPOINT || 'http://localhost:8081/winery',
 };

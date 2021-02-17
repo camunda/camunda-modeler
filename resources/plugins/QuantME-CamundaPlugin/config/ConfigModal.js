@@ -21,11 +21,12 @@ const Footer = Modal.Footer || (({ children }) => <div>{children}</div>);
 export default function ConfigModal({ initValues, onClose }) {
   const [camundaEndpoint, setCamundaEndpoint] = useState(initValues.camundaEndpoint);
   const [opentoscaEndpoint, setOpentoscaEndpoint] = useState(initValues.opentoscaEndpoint);
+  const [wineryEndpoint, setWineryEndpoint] = useState(initValues.wineryEndpoint);
   const [qrmRepoName, setQrmRepoName] = useState(initValues.qrmRepoName);
   const [qrmUserName, setQrmUserName] = useState(initValues.qrmUserName);
 
   // return the new values to the config plugin
-  const onSubmit = () => onClose({ camundaEndpoint, opentoscaEndpoint, qrmRepoName, qrmUserName });
+  const onSubmit = () => onClose({ camundaEndpoint, opentoscaEndpoint, wineryEndpoint, qrmRepoName, qrmUserName });
 
   return <Modal onClose={onClose}>
 
@@ -55,6 +56,16 @@ export default function ConfigModal({ initValues, onClose }) {
                   name="opentoscaEndpoint"
                   value={opentoscaEndpoint}
                   onChange={event => setOpentoscaEndpoint(event.target.value)}/>
+              </td>
+            </tr>
+            <tr className="spaceUnder">
+              <td align="right">Winery Endpoint:</td>
+              <td align="left">
+                <input
+                  type="string"
+                  name="wineryEndpoint"
+                  value={wineryEndpoint}
+                  onChange={event => setWineryEndpoint(event.target.value)}/>
               </td>
             </tr>
             <tr className="spaceUnder">

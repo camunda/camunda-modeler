@@ -17,6 +17,8 @@ This can for example be used if only the API is required and not the graphical m
 
 * ```OPENTOSCA_ENDPOINT``` (default: 'http://localhost:1337/csars'): Defines the endpoint of the OpenTOSCA container to deploy services with
 
+* ```WINERY_ENDPOINT``` (default: 'http://localhost:8081/winery'): Defines the endpoint of the Winery to retrieve deployment models for services from
+
 ### Setting the Environment Variables
 
 When spinning up the framework in development mode, add the environment variables to the npm command:

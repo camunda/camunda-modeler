@@ -44,8 +44,11 @@ const {
 const {
   getCamundaEndpoint,
   setCamundaEndpoint,
+  getWineryEndpoint,
+  setWineryEndpoint,
   getOpenTOSCAEndpoint,
-  setOpenTOSCAEndpoint
+  setOpenTOSCAEndpoint,
+  deployWorkflow
 } = require('./deployment');
 
 const {
@@ -229,6 +232,13 @@ renderer.on('quantme:update-qrms', async function(done) {
   }
 });
 
+// deployment //////////
+
+renderer.on('deployment:deploy-workflow', async function(workflowName, workflowXml, done) {
+  let deploymentResult = await deployWorkflow(workflowName, workflowXml);
+  done(null, deploymentResult);
+});
+
 // config //////////
 
 renderer.on('config:get', function(key, ...args) {
@@ -263,6 +273,7 @@ renderer.on('config:get-form-modal', function(done) {
   let configurationJson = {
     camundaEndpoint: getCamundaEndpoint(),
     opentoscaEndpoint: getOpenTOSCAEndpoint(),
+    wineryEndpoint: getWineryEndpoint(),
     qrmRepoName: getQRMRepositoryUserName(),
     qrmUserName: getQRMRepositoryName()
   };
@@ -274,6 +285,7 @@ renderer.on('config:set-from-modal', function(config) {
   log.info('Updating config in the backend...');
   setCamundaEndpoint(config.camundaEndpoint);
   setOpenTOSCAEndpoint(config.opentoscaEndpoint);
+  setWineryEndpoint(config.wineryEndpoint);
   setQRMUserName(config.qrmUserName);
   setQRMRepositoryName(config.qrmRepoName);
 });

@@ -36,3 +36,27 @@ module.exports.setOpenTOSCAEndpoint = function(opentoscaEndpoint) {
   }
 };
 
+/**
+ * Get the endpoint of the configured Winery
+ *
+ * @return {string} the currently specified endpoint of the Winery
+ */
+module.exports.getWineryEndpoint = function() {
+  if (deploymentConfig.wineryEndpoint === undefined) {
+    return '';
+  }
+  return deploymentConfig.wineryEndpoint;
+};
+
+/**
+ * Set the endpoint of the Winery
+ *
+ * @param wineryEndpoint the endpoint of the Winery
+ */
+module.exports.setWineryEndpoint = function(wineryEndpoint) {
+  if (wineryEndpoint !== null && wineryEndpoint !== undefined) {
+    deploymentConfig.wineryEndpoint = wineryEndpoint.replace(/\/$/, '');
+    app.emit('menu:action', 'wineryEndpointChanged', deploymentConfig.wineryEndpoint);
+  }
+};
+
