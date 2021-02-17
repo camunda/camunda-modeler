@@ -9,7 +9,7 @@
     "@bpmn-io/add-exporter": "^0.2.0",
     "@bpmn-io/align-to-origin": "^0.6.0",
     "@bpmn-io/dmn-migrate": "^0.4.3",
-    "@bpmn-io/extract-process-variables": "^0.4.0",
+    "@bpmn-io/extract-process-variables": "^0.4.1",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@sentry/browser": "^5.15.5",
     "bpmn-js": "^8.2.0",
