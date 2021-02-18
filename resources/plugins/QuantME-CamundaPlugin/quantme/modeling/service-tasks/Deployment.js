@@ -37,11 +37,11 @@ export function deployment(element, bpmnFactory, options, translate, wineryEndpo
           let checks = 0;
           for (let i = 0; i < result.length; i++) {
             if (result[i].text === QUANTME_NAMESPACE_PULL) {
-              result[i].children.forEach(element => arrValues.push({ name: element.text, value: concatenateCsarEndpoint(wineryEndpoint, result[i].id, element.text) }));
+              result[i].children.forEach(element => arrValues.push({ name: element.text, value: concatenateCsarEndpoint('{{ wineryEndpoint }}', result[i].id, element.text) }));
               checks++;
             }
             if (result[i].text === QUANTME_NAMESPACE_PUSH) {
-              result[i].children.forEach(element => arrValues.push({ name: element.text, value: concatenateCsarEndpoint(wineryEndpoint, result[i].id, element.text) }));
+              result[i].children.forEach(element => arrValues.push({ name: element.text, value: concatenateCsarEndpoint('{{ wineryEndpoint }}', result[i].id, element.text) }));
               checks++;
             }
             if (checks === 2) {

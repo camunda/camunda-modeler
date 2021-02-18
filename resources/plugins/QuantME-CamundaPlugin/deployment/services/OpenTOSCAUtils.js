@@ -17,8 +17,9 @@ import { fetch } from 'whatwg-fetch';
  * @param opentoscaEndpoint the endpoint of the OpenTOSCA Container
  * @param csarName the name of the CSAR to upload
  * @param url the URL pointing to the CSAR
+ * @param wineryEndpoint the entpoint of the Winery containing the CSAR to upload
  */
-export async function uploadCSARToContainer(opentoscaEndpoint, csarName, url) {
+export async function uploadCSARToContainer(opentoscaEndpoint, csarName, url, wineryEndpoint) {
 
   if (opentoscaEndpoint === undefined) {
     console.error('OpenTOSCA endpoint is undefined. Unable to upload CSARs...');
@@ -26,6 +27,9 @@ export async function uploadCSARToContainer(opentoscaEndpoint, csarName, url) {
   }
 
   try {
+    if (url.startsWith('{{ wineryEndpoint }}')) {
+      url = url.replace('{{ wineryEndpoint }}', wineryEndpoint);
+    }
 
     // check if CSAR us already uploaded
     let getCSARResult = await getBuildPlanForCSAR(opentoscaEndpoint, csarName);
@@ -182,7 +186,7 @@ export async function createServiceInstance(csar, camundaEngineEndpoint) {
   while (!(state === 'CREATED' || state === 'FAILED')) {
 
     // wait 5 seconds for next poll
-    await new Promise(r => setTimeout(r, 5000));
+    await new Promise(r => setTimeout(r, 10000));
 
     // poll for current state
     let pollingResponse = await fetch(pollingUrl);

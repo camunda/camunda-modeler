@@ -61,6 +61,7 @@ export default class DeploymentPlugin extends PureComponent {
       this.eventBus.on('config.updated', function(config) {
         self.opentoscaEndpoint = config.opentoscaEndpoint;
         self.camundaEndpoint = config.camundaEndpoint;
+        self.wineryEndpoint = config.wineryEndpoint;
       });
     });
   }
@@ -109,7 +110,7 @@ export default class DeploymentPlugin extends PureComponent {
         let csar = csarList[i];
         console.log('Uploading CSAR to OpenTOSCA container: ', csar);
 
-        let uploadResult = await uploadCSARToContainer(this.opentoscaEndpoint, csar.csarName, csar.url);
+        let uploadResult = await uploadCSARToContainer(this.opentoscaEndpoint, csar.csarName, csar.url, this.wineryEndpoint);
         if (uploadResult.success === false) {
 
           // notify user about failed CSAR upload
