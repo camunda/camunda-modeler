@@ -24,7 +24,8 @@ const defaultConfig = {
   opentoscaEndpoint: '',
   wineryEndpoint: '',
   qrmRepoName: '',
-  qrmUserName: ''
+  qrmUserName: '',
+  qrmRepoPath: ''
 };
 
 export default class ConfigPlugin extends PureComponent {
@@ -87,6 +88,12 @@ export default class ConfigPlugin extends PureComponent {
       this.editorActions.register({
         qrmUserNameChanged: function(qrmUserName) {
           self.config.qrmUserName = qrmUserName;
+          self.eventBus.fire('config.updated', self.config);
+        }
+      });
+      this.editorActions.register({
+        qrmRepoPathChanged: function(qrmRepoPath) {
+          self.config.qrmRepoPath = qrmRepoPath;
           self.eventBus.fire('config.updated', self.config);
         }
       });

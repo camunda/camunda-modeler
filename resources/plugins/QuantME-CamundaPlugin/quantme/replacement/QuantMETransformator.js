@@ -214,7 +214,7 @@ function insertShape(parent, newElement, idMap, replace, bpmnReplace, elementReg
 
   // add element to which a boundary event is attached
   if (newElement.$type === 'bpmn:BoundaryEvent') {
-    let hostElement = this.elementRegistry.get(idMap[newElement.attachedToRef.id]);
+    let hostElement = elementRegistry.get(idMap[newElement.attachedToRef.id]);
     modeling.updateProperties(element, { 'attachedToRef': hostElement.businessObject });
     element.host = hostElement;
   }

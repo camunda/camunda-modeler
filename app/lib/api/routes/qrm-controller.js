@@ -33,7 +33,7 @@ router.get('/', (req, res) => {
       },
       'repository': {
         method: 'GET',
-        title: 'Get the name of the QRM repository',
+        title: 'Get the name of the QRM repository and the optional local path to the QRM folder',
         href: req.header('host') + '/quantme/qrms/repository'
       }
     }
@@ -70,11 +70,12 @@ router.put('/username', jsonParser, function(req, res) {
 router.get('/repository', (req, res) => {
   res.json({
     'name': qrmHandler.getQRMRepositoryName(),
+    'path': qrmHandler.getQRMRepositoryPath(),
     '_links': {
       'self': { method: 'GET', href: req.header('host') + '/quantme/qrms/repository' },
       'update': {
         method: 'PUT',
-        title: 'Update the name of the QRM repository',
+        title: 'Update the name of the QRM repository and the optional local path to the QRM folder',
         href: req.header('host') + '/quantme/qrms/repository'
       }
     }
@@ -83,12 +84,13 @@ router.get('/repository', (req, res) => {
 
 // update the repository name for the QRM repository
 router.put('/repository', jsonParser, function(req, res) {
-  if (req.body === undefined || req.body.repository === undefined) {
-    res.status(400).send('Repository has to be set!');
+  if (req.body === undefined || (req.body.name === undefined || req.body.path === undefined)) {
+    res.status(400).send('Name or path has to be set!');
     return;
   }
 
-  qrmHandler.setQRMRepositoryName(req.body.repository);
+  qrmHandler.setQRMRepositoryName(req.body.name);
+  qrmHandler.setQRMRepositoryPath(req.body.path);
   res.status(200).send();
 });
 

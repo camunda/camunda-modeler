@@ -24,9 +24,10 @@ export default function ConfigModal({ initValues, onClose }) {
   const [wineryEndpoint, setWineryEndpoint] = useState(initValues.wineryEndpoint);
   const [qrmRepoName, setQrmRepoName] = useState(initValues.qrmRepoName);
   const [qrmUserName, setQrmUserName] = useState(initValues.qrmUserName);
+  const [qrmRepoPath, setQrmRepoPath] = useState(initValues.qrmRepoPath);
 
   // return the new values to the config plugin
-  const onSubmit = () => onClose({ camundaEndpoint, opentoscaEndpoint, wineryEndpoint, qrmRepoName, qrmUserName });
+  const onSubmit = () => onClose({ camundaEndpoint, opentoscaEndpoint, wineryEndpoint, qrmUserName, qrmRepoName, qrmRepoPath });
 
   return <Modal onClose={onClose}>
 
@@ -68,6 +69,16 @@ export default function ConfigModal({ initValues, onClose }) {
                   onChange={event => setWineryEndpoint(event.target.value)}/>
               </td>
             </tr>
+            <tr>
+              <td align="right">QRM Repository User:</td>
+              <td align="left">
+                <input
+                  type="string"
+                  name="qrmUserName"
+                  value={qrmUserName}
+                  onChange={event => setQrmUserName(event.target.value)}/>
+              </td>
+            </tr>
             <tr className="spaceUnder">
               <td align="right">QRM Repository Name:</td>
               <td align="left">
@@ -79,13 +90,13 @@ export default function ConfigModal({ initValues, onClose }) {
               </td>
             </tr>
             <tr>
-              <td align="right">QRM Repository User:</td>
+              <td align="right">QRM Repository Path:</td>
               <td align="left">
                 <input
                   type="string"
-                  name="qrmUserName"
-                  value={qrmUserName}
-                  onChange={event => setQrmUserName(event.target.value)}/>
+                  name="qrmRepoPath"
+                  value={qrmRepoPath}
+                  onChange={event => setQrmRepoPath(event.target.value)}/>
               </td>
             </tr>
           </tbody>

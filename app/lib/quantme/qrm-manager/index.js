@@ -17,6 +17,30 @@ const repositoryConfig = require('./RepositoryConfig');
 let QRMs = [];
 
 /**
+ * Get the local path to the folder in the repository containing the QRMs
+ *
+ * @return {string} the specified repository path
+ */
+module.exports.getQRMRepositoryPath = function() {
+  if (repositoryConfig.githubRepositoryPath === undefined) {
+    return '';
+  }
+  return repositoryConfig.githubRepositoryPath;
+};
+
+/**
+ * Set the local path to the folder in the repository containing the QRMs
+ *
+ * @param repositoryPath the repository path
+ */
+module.exports.setQRMRepositoryPath = function(repositoryPath) {
+  if (repositoryPath !== null && repositoryPath !== undefined) {
+    repositoryConfig.githubRepositoryPath = repositoryPath;
+    app.emit('menu:action', 'qrmRepoPathChanged', repositoryPath);
+  }
+};
+
+/**
  * Get the repository name used to access the QRMs
  *
  * @return {string} the specified repository name
@@ -61,21 +85,6 @@ module.exports.setQRMUserName = function(userName) {
   if (userName !== null && userName !== undefined) {
     repositoryConfig.githubUsername = userName;
     app.emit('menu:action', 'qrmUserNameChanged', userName);
-  }
-};
-
-/**
- * Update the QRM repository configuration with the given username and repository name
- *
- * @param userName the Github username to which the QRM repository belongs
- * @param repoName the Github repository name to load the QRMs from
- */
-module.exports.updateQRMRepositoryConfig = function(userName, repoName) {
-  if (userName !== null && userName !== undefined) {
-    repositoryConfig.githubUsername = userName;
-  }
-  if (repoName !== null && repoName !== undefined) {
-    repositoryConfig.githubRepositoryName = repoName;
   }
 };
 

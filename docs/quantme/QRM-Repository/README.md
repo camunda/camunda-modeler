@@ -8,8 +8,10 @@ The QRM repository must be a publicly accessible Github repository.
 It can be configured using the [configuration file](../../../app/lib/quantme/qrm-manager/RepositoryConfig.js).
 Therefore, `githubUsername` should be used to configure the username or organisation name under which the Github repository is located.
 Furthermore, `githubRepositoryName` has to specify the name of the Github repository.
+Finally, `githubRepositoryPath` can be used to specify a subfolder in the Github repository containing the QRMs.
+It not set, the root folder is used to retrieve the QRMs.
 
-Another possibility to configure the QRM repository is using environment variables (QRM_USERNAME, QRM_REPONAME) when starting the framework or by updating the repository via the [REST API](../API).
+Another possibility to configure the QRM repository is using environment variables (QRM_USERNAME, QRM_REPONAME, QRM_REPOPATH) when starting the framework or by updating the repository via the [REST API](../API).
 
 ### Structure
 

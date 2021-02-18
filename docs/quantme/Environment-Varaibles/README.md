@@ -13,6 +13,9 @@ This can for example be used if only the API is required and not the graphical m
 
 * ```QRM_REPONAME``` (default: ' '): Defines the Github repository name to access the [QRM-Repository](../QRM-Repository)
 
+* ```QRM_REPOPATH``` (default: ' '): Defines the local path in the Github repository to the folder containing the [QRM-Repository](../QRM-Repository). 
+  This parameter is optional and if it is not set, the root folder of the repository is used.
+
 * ```CAMUNDA_ENDPOINT``` (default: 'http://localhost:8080/engine-rest'): Defines the endpoint of the Camunda engine to deploy workflows to
 
 * ```OPENTOSCA_ENDPOINT``` (default: 'http://localhost:1337/csars'): Defines the endpoint of the OpenTOSCA container to deploy services with

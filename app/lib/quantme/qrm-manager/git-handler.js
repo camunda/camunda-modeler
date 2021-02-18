@@ -16,10 +16,11 @@ const fetch = require('node-fetch');
  *
  * @param userName the username or organisation name the repository belongs to
  * @param repoName the name of the repository
+ * @param repoPath the path to the root folder in the repository to use
  */
-module.exports.getFoldersInRepository = async function(userName, repoName) {
+module.exports.getFoldersInRepository = async function(userName, repoName, repoPath) {
   const directoryURLs = [];
-  let response = await fetch(`https://api.github.com/repos/${userName}/${repoName}/contents/?ref=HEAD`);
+  let response = await fetch(`https://api.github.com/repos/${userName}/${repoName}/contents/${repoPath}?ref=HEAD`);
   const contents = await response.json();
 
   if (response.status !== 200) {

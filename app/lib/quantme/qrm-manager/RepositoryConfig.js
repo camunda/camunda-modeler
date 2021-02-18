@@ -11,5 +11,6 @@
 
 module.exports = {
   githubUsername: process.env.QRM_USERNAME,
-  githubRepositoryName: process.env.QRM_REPONAME
+  githubRepositoryName: process.env.QRM_REPONAME,
+  githubRepositoryPath: process.env.QRM_REPOPATH
 };

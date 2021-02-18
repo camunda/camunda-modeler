@@ -38,7 +38,9 @@ const {
   getQRMRepositoryName,
   setQRMRepositoryName,
   getQRMRepositoryUserName,
-  setQRMUserName
+  setQRMUserName,
+  getQRMRepositoryPath,
+  setQRMRepositoryPath
 } = require('./quantme');
 
 const {
@@ -274,8 +276,9 @@ renderer.on('config:get-form-modal', function(done) {
     camundaEndpoint: getCamundaEndpoint(),
     opentoscaEndpoint: getOpenTOSCAEndpoint(),
     wineryEndpoint: getWineryEndpoint(),
-    qrmRepoName: getQRMRepositoryUserName(),
-    qrmUserName: getQRMRepositoryName()
+    qrmUserName: getQRMRepositoryUserName(),
+    qrmRepoName: getQRMRepositoryName(),
+    qrmRepoPath: getQRMRepositoryPath()
   };
   done(null, configurationJson);
 });
@@ -288,6 +291,7 @@ renderer.on('config:set-from-modal', function(config) {
   setWineryEndpoint(config.wineryEndpoint);
   setQRMUserName(config.qrmUserName);
   setQRMRepositoryName(config.qrmRepoName);
+  setQRMRepositoryPath(config.qrmRepoPath);
 });
 
 // plugin toggling //////////
