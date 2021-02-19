@@ -326,40 +326,8 @@ export default class TabsProvider {
     return this.getProvider(type).getComponent(options);
   }
 
-  getInitialFileContents(type) {
-    const rawContents = this.getProvider(type).getInitialContents();
-
-    return rawContents && replaceIds(rawContents, generateId);
-  }
-
-  createFile(type) {
-
-    const counter = (
-      type in createdByType
-        ? (++createdByType[type])
-        : (createdByType[type] = 1)
-    );
-
-    const name = this._getInitialFilename(type, counter);
-
-    const contents = this.getInitialFileContents(type);
-
-    return {
-      name,
-      contents,
-      path: null
-    };
-  }
-
-  _getInitialFilename(providerType, suffix) {
-    const provider = this.providers[providerType];
-
-    return provider.getInitialFilename(suffix);
-  }
-
-  createTab(type, options) {
-
-    const file = this.createFile(type, options);
+  createTab(type) {
+    const file = this._createFile(type);
 
     return this.createTabForFile(file);
   }
@@ -376,7 +344,7 @@ export default class TabsProvider {
 
     // fill empty file with initial contents
     if (!file.contents) {
-      file.contents = this.getInitialFileContents(type);
+      file.contents = this._getInitialFileContents(type);
     }
 
     return {
@@ -393,7 +361,37 @@ export default class TabsProvider {
       },
       type
     };
+  }
 
+  _createFile(type) {
+
+    const counter = (
+      type in createdByType
+        ? (++createdByType[type])
+        : (createdByType[type] = 1)
+    );
+
+    const name = this._getInitialFilename(type, counter);
+
+    const contents = this._getInitialFileContents(type);
+
+    return {
+      name,
+      contents,
+      path: null
+    };
+  }
+
+  _getInitialFilename(providerType, suffix) {
+    const provider = this.providers[providerType];
+
+    return provider.getInitialFilename(suffix);
+  }
+
+  _getInitialFileContents(type) {
+    const rawContents = this.getProvider(type).getInitialContents();
+
+    return rawContents && replaceIds(rawContents, generateId);
   }
 
   _getTabType(file) {
