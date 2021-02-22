@@ -38,7 +38,7 @@ export default function TextInput(props) {
 
   const meta = form.getFieldMeta(fieldName);
 
-  const error = (fieldError || defaultFieldError)(meta);
+  const error = (fieldError || defaultFieldError)(meta, fieldName);
 
   return (
     <React.Fragment>

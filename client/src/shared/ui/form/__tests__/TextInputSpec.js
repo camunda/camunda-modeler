@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+/* global sinon */
+
 import React from 'react';
 
 import { shallow } from 'enzyme';
@@ -39,21 +41,51 @@ describe('<TextInput>', function() {
     expect(formControl.hasClass('is-invalid')).to.be.true;
   });
 
+
+  it('should pass field name to the error callback', function() {
+
+    // given
+    const fieldError = sinon.spy();
+    const field = {
+      name: 'name'
+    };
+    const fieldMeta = {
+      error: 'foo',
+      touched: true
+    };
+
+    // when
+    createTextInput({
+      field,
+      fieldError,
+      fieldMeta
+    });
+
+    // then
+    expect(fieldError).to.have.been.calledOnceWithExactly(fieldMeta, field.name);
+  });
 });
 
 
 // helpers ///////////////////
 
 function createTextInput(options = {}) {
+  const {
+    field,
+    fieldMeta,
+    form: mockForm,
+    ...props
+  } = options;
 
-  const form = options.form || {
+  const form = mockForm || {
     getFieldMeta: () => {
-      return options.fieldMeta || {};
+      return fieldMeta || {};
     }
   };
 
   return shallow(<TextInput
-    field={ options.field || {} }
+    { ...props }
+    field={ field || {} }
     form={ form }
   />);
 }
