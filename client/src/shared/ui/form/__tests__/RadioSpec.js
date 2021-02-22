@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+/* global sinon */
+
 import React from 'react';
 
 import { shallow } from 'enzyme';
@@ -44,6 +46,30 @@ describe('<Radio>', function() {
     expect(checkedInput.prop('checked')).to.be.true;
   });
 
+
+  it('should apply field\'s onChange callback', function() {
+
+    // given
+    const onChange = sinon.spy();
+    const wrapper = createRadio({
+      field: {
+        onChange
+      },
+      values: [
+        {
+          value: 'foo',
+          label: 'bar'
+        }
+      ]
+    });
+    const input = wrapper.find('.custom-control-input');
+
+    // when
+    input.simulate('change');
+
+    // then
+    expect(onChange).to.have.been.calledOnce;
+  });
 });
 
 

@@ -48,6 +48,7 @@ export default function Radio(props) {
                     classNames('custom-control', 'custom-radio')
                   }>
                     <input
+                      { ...field }
                       type="radio"
                       name={ fieldName }
                       value={ child.value }
