@@ -20,7 +20,7 @@
     "build:test-distro": "node tasks/test-distro.js",
     "build": "run-s client:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
     "lint": "eslint .",
-    "postinstall": "lerna bootstrap",
+    "postinstall": "electron-builder install-app-deps && lerna bootstrap",
     "prerelease": "run-s update-license-book",
     "update-license-book": "node tasks/license-book.js -o THIRD_PARTY_NOTICES -c",
     "send-license-book-summary": "node tasks/send-license-book-summary.js -s",

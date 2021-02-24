@@ -18,7 +18,7 @@
     "mri": "^1.1.6",
     "node-fetch": "^2.6.1",
     "parents": "^1.0.1",
-    "zeebe-node": "0.23.2"
+    "zeebe-node": "^0.26.0"
   },
   "homepage": "https://github.com/camunda/camunda-modeler",
   "repository": {
