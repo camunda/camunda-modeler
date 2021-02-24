@@ -85,7 +85,18 @@ export default class UsageStatistics extends PureComponent {
     this._eventHandlers.forEach((eventHandler) => eventHandler.disable());
   }
 
+  async setEditorId() {
+    this._editorID = await this.props.config.get(EDITOR_ID_CONFIG_KEY);
+
+    if (!this._editorID) {
+      throw new Error('missing editor id');
+    }
+  }
+
   async componentDidMount() {
+
+    // make sure we also set the editor although the plugin is not enabled
+    await this.setEditorId();
 
     if (!this.ET_ENDPOINT) {
       return log('Not enabled: ET Endpoint not configured.');
@@ -105,8 +116,6 @@ export default class UsageStatistics extends PureComponent {
     if (!isUsageStatisticsEnabled) {
       return log('Not enabled: Usage statistics are turned off via Privacy Preferences.');
     }
-
-    this._editorID = await this.props.config.get(EDITOR_ID_CONFIG_KEY);
 
     this.enable();
   }
