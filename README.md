@@ -44,6 +44,17 @@ npm run dev
 ```
 
 
+## Contributing
+
+Please checkout our [contributing guidelines](./.github/CONTRIBUTING.md) if you plan to
+file an issue or pull request.
+
+
+## Code of Conduct
+
+By participating to this project, please uphold to our [Code of Conduct](./.github/CONTRIBUTING.md).
+
+
 ## License
 
 MIT
