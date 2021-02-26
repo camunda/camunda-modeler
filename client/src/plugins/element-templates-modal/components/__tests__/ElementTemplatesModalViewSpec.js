@@ -89,9 +89,6 @@ describe('<ElementTemplatesView>', function() {
               businessObject: moddle.create('bpmn:SendTask')
             };
           }
-          if (action === 'getValidElementTemplates') {
-            return DEFAULT_ELEMENT_TEMPLATES;
-          }
         }
       });
 
@@ -150,9 +147,6 @@ describe('<ElementTemplatesView>', function() {
             return {
               businessObject: moddle.create('bpmn:SendTask')
             };
-          }
-          if (action === 'getValidElementTemplates') {
-            return DEFAULT_ELEMENT_TEMPLATES;
           }
         }
       });
@@ -553,10 +547,6 @@ async function createElementTemplatesModalView(props = {}) {
         businessObject: moddle.create('bpmn:ServiceTask')
       };
     }
-
-    if (action === 'getValidElementTemplates') {
-      return DEFAULT_ELEMENT_TEMPLATES;
-    }
   }
 
   const defaultProps = {
@@ -565,6 +555,9 @@ async function createElementTemplatesModalView(props = {}) {
     onApply() {},
     onClose() {},
     subscribe() {},
+    elementTemplates: {
+      getAll: defaultGetAllElementTemplates
+    },
     triggerAction
   };
 
@@ -586,4 +579,8 @@ function defaultGetConfig(key, ...args) {
   }
 
   throw Error('Unknown key');
+}
+
+function defaultGetAllElementTemplates() {
+  return DEFAULT_ELEMENT_TEMPLATES;
 }

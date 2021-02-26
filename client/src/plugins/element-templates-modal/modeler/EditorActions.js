@@ -9,7 +9,7 @@
  */
 
 export default class EditorActions {
-  constructor(commandStack, editorActions, selection, elementTemplates) {
+  constructor(commandStack, editorActions, selection) {
     editorActions.register('applyElementTemplate', elementTemplate => {
       const selectedElements = selection.get();
 
@@ -37,10 +37,6 @@ export default class EditorActions {
       return selectedElements[ 0 ];
     });
 
-    editorActions.register('getValidElementTemplates', () => {
-      return elementTemplates.getAll();
-    });
-
     editorActions.register('getSelectedElementAppliedElementTemplate', () => {
       const selectedElements = selection.get();
 
@@ -58,6 +54,5 @@ export default class EditorActions {
 EditorActions.$inject = [
   'commandStack',
   'editorActions',
-  'selection',
-  'elementTemplates'
+  'selection'
 ];

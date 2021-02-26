@@ -54,31 +54,32 @@ class ElementTemplatesView extends PureComponent {
 
   getElementTemplates = async () => {
     const {
-      triggerAction
+      triggerAction,
+      elementTemplates
     } = this.props;
 
-    let elementTemplates = await triggerAction('getValidElementTemplates');
+    let sortedElementTemplates;
 
     const selectedElement = await triggerAction('getSelectedElement');
 
-    if (selectedElement) {
+    if (selectedElement && elementTemplates && elementTemplates.getAll().length > 0) {
 
       // (1) Filter by templates that can be applied
       // (2) Filter by latest version
       // (3) Sort alphabetically
-      elementTemplates = sortAlphabetically(filterByLatest(filterByApplicable(
-        elementTemplates,
+      sortedElementTemplates = sortAlphabetically(filterByLatest(filterByApplicable(
+        elementTemplates.getAll(),
         selectedElement
       )));
     } else {
-      elementTemplates = [];
+      sortedElementTemplates = [];
     }
 
     const selectedElementAppliedElementTemplate = await triggerAction('getSelectedElementAppliedElementTemplate');
 
     this.setState({
-      elementTemplates,
-      elementTemplatesFiltered: elementTemplates,
+      elementTemplates: sortedElementTemplates,
+      elementTemplatesFiltered: sortedElementTemplates,
       applied: selectedElementAppliedElementTemplate
     });
   }

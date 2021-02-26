@@ -76,6 +76,26 @@ describe('<ElementTemplatesModal>', function() {
       expect(handleBpmnModelerConfigureSpy).to.have.been.called;
     });
 
+
+    it('should subscribe to bpmn.modeler.created', async function() {
+
+      // given
+      const {
+        callSubscriber,
+        subscribe
+      } = createSubscribe('bpmn.modeler.created');
+
+      const { instance } = await createElementTemplatesModal({ subscribe });
+
+      const handleBpmnModelerCreateSpy = sinon.spy(instance, 'handleBpmnModelerCreate');
+
+      // when
+      callSubscriber({ modeler: modelerMock({ elementTemplates: [] }) });
+
+      // then
+      expect(handleBpmnModelerCreateSpy).to.have.been.called;
+    });
+
   });
 
 
@@ -121,6 +141,57 @@ describe('<ElementTemplatesModal>', function() {
 
       // then
       expect(triggerActionSpy).not.to.have.been.called;
+    });
+
+  });
+
+
+  describe('set element templates state', function() {
+
+    const elementTemplatesA = [{
+      id: 'testTemplate',
+      name: 'Test Template'
+    }];
+
+    const elementTemplatesB = [{
+      id: 'testTemplateB',
+      name: 'Test TemplateB'
+    }];
+
+    it('should set elementTemplates state', async function() {
+
+      // given
+      const {
+        callSubscriber,
+        subscribe
+      } = createSubscribe('bpmn.modeler.created');
+
+      const { instance } = await createElementTemplatesModal({ subscribe });
+
+      // when
+      callSubscriber({ modeler: modelerMock({ elementTemplates: elementTemplatesA }) });
+
+      // then
+      expect(instance.state.elementTemplates).to.eql(elementTemplatesA);
+    });
+
+
+    it('should update elementTemplates state', async function() {
+
+      // given
+      const {
+        callSubscriber,
+        subscribe
+      } = createSubscribe('bpmn.modeler.created');
+
+      const { instance } = await createElementTemplatesModal({ subscribe });
+
+      // when
+      callSubscriber({ modeler: modelerMock({ elementTemplates: elementTemplatesA }) });
+      callSubscriber({ modeler: modelerMock({ elementTemplates: elementTemplatesB }) });
+
+      // then
+      expect(instance.state.elementTemplates).to.eql(elementTemplatesB);
     });
 
   });
@@ -221,4 +292,14 @@ function createTab(type = 'bpmn', name = 'diagram_1.bpmn') {
       name
     }
   };
+}
+
+function modelerMock(getReturnObject) {
+  return {
+    get: (serviceName) => {
+      return getReturnObject[serviceName];
+    }
+  };
+
+
 }

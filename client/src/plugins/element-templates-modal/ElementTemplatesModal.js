@@ -21,7 +21,8 @@ export default class ElementTemplatesModal extends PureComponent {
 
     this.state = {
       activeTab: null,
-      showModal: false
+      showModal: false,
+      elementTemplates: null
     };
   }
 
@@ -30,7 +31,8 @@ export default class ElementTemplatesModal extends PureComponent {
 
     this.subscriptions = [
       subscribe('app.activeTabChanged', (...args) => this.handleActiveTabChanged(...args)),
-      subscribe('bpmn.modeler.configure', (...args) => this.handleBpmnModelerConfigure(...args))
+      subscribe('bpmn.modeler.configure', (...args) => this.handleBpmnModelerConfigure(...args)),
+      subscribe('bpmn.modeler.created', (...args) => this.handleBpmnModelerCreate(...args))
     ];
   }
 
@@ -58,6 +60,10 @@ export default class ElementTemplatesModal extends PureComponent {
         }
       };
     });
+  }
+
+  handleBpmnModelerCreate = ({ modeler }) => {
+    this.setState({ elementTemplates: modeler.get('elementTemplates') });
   }
 
   onApply = elementTemplate => {
@@ -92,6 +98,7 @@ export default class ElementTemplatesModal extends PureComponent {
         <ElementTemplatesModalView
           onClose={ this.onClose }
           onApply={ this.onApply }
+          elementTemplates={ this.state.elementTemplates }
           { ...this.props } />
       )
       : null;
