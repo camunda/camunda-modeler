@@ -89,6 +89,9 @@ describe('<ElementTemplatesView>', function() {
               businessObject: moddle.create('bpmn:SendTask')
             };
           }
+          if (action === 'getValidElementTemplates') {
+            return DEFAULT_ELEMENT_TEMPLATES;
+          }
         }
       });
 
@@ -116,6 +119,9 @@ describe('<ElementTemplatesView>', function() {
             return {
               businessObject: moddle.create('bpmn:ServiceTask')
             };
+          }
+          if (action === 'getValidElementTemplates') {
+            return DEFAULT_ELEMENT_TEMPLATES;
           }
         }
       });
@@ -171,6 +177,9 @@ describe('<ElementTemplatesView>', function() {
             return {
               businessObject: moddle.create('bpmn:SendTask')
             };
+          }
+          if (action === 'getValidElementTemplates') {
+            return DEFAULT_ELEMENT_TEMPLATES;
           }
         }
       });
@@ -577,6 +586,10 @@ async function createElementTemplatesModalView(props = {}) {
       return {
         businessObject: moddle.create('bpmn:ServiceTask')
       };
+    }
+
+    if (action === 'getValidElementTemplates') {
+      return DEFAULT_ELEMENT_TEMPLATES;
     }
   }
 
