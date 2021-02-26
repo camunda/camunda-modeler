@@ -22,9 +22,14 @@ const {
   nightly,
   publish,
   config,
-  'on-demand': onDemand,
-  region
+  'on-demand': onDemand
 } = argv;
+
+// region has to be set explicitly to avoid permissions problems
+let region;
+if (onDemand) {
+  region = process.env.AWS_REGION;
+}
 
 // in case of --nightly, update all package versions to the
 // next minor version with the nightly preid. This will
