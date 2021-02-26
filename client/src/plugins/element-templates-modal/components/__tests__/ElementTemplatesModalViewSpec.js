@@ -107,33 +107,6 @@ describe('<ElementTemplatesView>', function() {
     });
 
 
-    it('should get element templates (filtered by validity)', async function() {
-
-      // given
-      const {
-        instance,
-        wrapper
-      } = await createElementTemplatesModalView({
-        triggerAction: action => {
-          if (action === 'getSelectedElement') {
-            return {
-              businessObject: moddle.create('bpmn:ServiceTask')
-            };
-          }
-          if (action === 'getValidElementTemplates') {
-            return DEFAULT_ELEMENT_TEMPLATES;
-          }
-        }
-      });
-
-      // when
-      await instance.getElementTemplates();
-
-      // then
-      expect(wrapper.state('elementTemplates').map(({ name }) => name)).to.not.include('Template invalid');
-    });
-
-
     it('should get element templates (sorted alphabetically)', async function() {
 
       // given
@@ -569,13 +542,6 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     },
     version: 2,
     name: 'Template 5 v2',
-    properties: []
-  },
-  {
-    name: 'Template invalid',
-    appliesTo: [
-      'bpmn:ServiceTask'
-    ],
     properties: []
   }
 ];
