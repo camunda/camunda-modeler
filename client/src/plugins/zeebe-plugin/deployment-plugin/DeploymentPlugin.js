@@ -151,9 +151,9 @@ export default class DeploymentPlugin extends PureComponent {
     const { response, success } = deploymentResult;
 
     if (!success) {
-      this.onDeploymentError(response, options);
+      this.onDeploymentError(response, config, options);
     } else {
-      this.onDeploymentSuccess(response, options);
+      this.onDeploymentSuccess(response, config, options);
     }
   }
 
@@ -336,11 +336,15 @@ export default class DeploymentPlugin extends PureComponent {
     return this.props.config.setForFile(tab.file, DEPLOYMENT_CONFIG_KEY, configuration);
   }
 
-  onDeploymentSuccess(response, options = {}) {
+  onDeploymentSuccess(response, configuration, options = {}) {
     const {
       displayNotification,
       triggerAction
     } = this.props;
+
+    const {
+      endpoint
+    } = configuration;
 
     const {
       isStart
@@ -359,17 +363,22 @@ export default class DeploymentPlugin extends PureComponent {
       type: 'deployment.done',
       payload: {
         deployment: response,
-        context: isStart ? 'startInstanceTool' : 'deploymentTool'
+        context: isStart ? 'startInstanceTool' : 'deploymentTool',
+        targetType: endpoint && endpoint.targetType
       }
     });
   }
 
-  onDeploymentError(response, options = {}) {
+  onDeploymentError(response, configuration, options = {}) {
     const {
       log,
       displayNotification,
       triggerAction
     } = this.props;
+
+    const {
+      endpoint
+    } = configuration;
 
     const {
       isStart
@@ -395,7 +404,8 @@ export default class DeploymentPlugin extends PureComponent {
           ...response,
           code: getGRPCErrorCode(response)
         },
-        context: isStart ? 'startInstanceTool' : 'deploymentTool'
+        context: isStart ? 'startInstanceTool' : 'deploymentTool',
+        targetType: endpoint && endpoint.targetType
       }
     });
   }
