@@ -13,7 +13,7 @@ import BpmnModeler from 'camunda-bpmn-js/lib/camunda-cloud/Modeler';
 import addExporterModule from '@bpmn-io/add-exporter';
 
 import completeDirectEditingModule from '../../bpmn/modeler/features/complete-direct-editing';
-import globalClipboardModule from '../../bpmn/modeler/features/global-clipboard';
+import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from '../../bpmn/modeler/features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
 
