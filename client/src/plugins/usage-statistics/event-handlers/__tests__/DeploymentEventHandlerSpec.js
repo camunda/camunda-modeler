@@ -95,6 +95,34 @@ describe('<DeploymentEventHandler>', () => {
   });
 
 
+  it('should send for type cloud-bpmn', async () => {
+
+    // given
+    const tab = createTab({
+      type: 'cloud-bpmn'
+    });
+
+    const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+    // when
+    await handleDeploymentDone({
+      tab,
+      context: 'foo'
+    });
+
+    // then
+    expect(onSend).to.have.been.calledWith({
+      event: 'deployment',
+      diagramType: 'bpmn',
+      diagramMetrics: {},
+      deployment: {
+        outcome: SUCCESS_STATUS,
+        context: 'foo'
+      }
+    });
+  });
+
+
   it('should send for type dmn', async () => {
 
     // given
