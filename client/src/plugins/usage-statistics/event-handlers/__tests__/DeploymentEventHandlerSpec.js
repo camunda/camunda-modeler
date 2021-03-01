@@ -13,9 +13,21 @@
 import DeploymentEventHandler from '../DeploymentEventHandler';
 
 import processVariablesXML from './fixtures/process-variables.bpmn';
+
 import userTasksXML from './fixtures/user-tasks.bpmn';
+
 import userTasksWithParticipantsXML from './fixtures/user-tasks-with-participants.bpmn';
+
 import userTasksWithSubprocessXML from './fixtures/user-tasks-with-subprocess.bpmn';
+
+import zeebeUserTasksXML from './fixtures/user-tasks.zeebe.bpmn';
+
+import zeebeUserTasksWithSubprocessXML from './fixtures/user-tasks-with-subprocess.zeebe.bpmn';
+
+import zeebeUserTasksWithParticipantsXML from './fixtures/user-tasks-with-participants.zeebe.bpmn';
+
+import engineProfileXML from './fixtures/engine-profile.bpmn';
+
 import emptyXML from './fixtures/empty.bpmn';
 
 const EXAMPLE_ERROR = 'something went wrong';
@@ -87,6 +99,7 @@ describe('<DeploymentEventHandler>', () => {
       event: 'deployment',
       diagramType: 'bpmn',
       diagramMetrics: {},
+      engineProfile: {},
       deployment: {
         outcome: SUCCESS_STATUS,
         context: 'foo'
@@ -115,6 +128,7 @@ describe('<DeploymentEventHandler>', () => {
       event: 'deployment',
       diagramType: 'bpmn',
       diagramMetrics: {},
+      engineProfile: {},
       deployment: {
         outcome: SUCCESS_STATUS,
         context: 'foo'
@@ -143,6 +157,7 @@ describe('<DeploymentEventHandler>', () => {
       event: 'deployment',
       diagramType: 'dmn',
       diagramMetrics: {},
+      engineProfile: {},
       deployment: {
         outcome: SUCCESS_STATUS,
         context: 'foo'
@@ -188,16 +203,14 @@ describe('<DeploymentEventHandler>', () => {
       context: 'foo'
     });
 
+    const deployment = onSend.getCall(0).args[0].deployment;
+
     // then
-    expect(onSend).to.have.been.calledWith({
-      event: 'deployment',
-      diagramType: 'bpmn',
-      diagramMetrics: {},
-      deployment: {
-        outcome: 'failure',
-        error: EXAMPLE_ERROR,
-        context: 'foo'
-      }
+    expect(onSend).to.have.been.calledOnce;
+    expect(deployment).to.eql({
+      outcome: 'failure',
+      error: EXAMPLE_ERROR,
+      context: 'foo'
     });
   });
 
@@ -268,7 +281,7 @@ describe('<DeploymentEventHandler>', () => {
     });
 
 
-    describe('user tasks', () => {
+    describe('user tasks - bpmn', () => {
 
       it('should send metrics with root level user tasks', async () => {
 
@@ -393,6 +406,126 @@ describe('<DeploymentEventHandler>', () => {
         });
       });
 
+    });
+
+
+    describe('user tasks - cloud', () => {
+
+      it('should send metrics with user tasks', async () => {
+
+        // given
+        const tab = createTab({
+          type: 'cloud-bpmn',
+          file: {
+            contents: zeebeUserTasksXML
+          }
+        });
+
+        const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+        // when
+        await handleDeploymentDone({ tab });
+
+        // then
+        const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+        expect(metrics.tasks.userTask).to.eql({
+          count: 3,
+          form: {
+            count: 3,
+            camundaForms: 3,
+            other: 0
+          }
+        });
+      });
+
+
+      it('should send metrics with user tasks in sub process', async () => {
+
+        // given
+        const tab = createTab({
+          type: 'cloud-bpmn',
+          file: {
+            contents: zeebeUserTasksWithSubprocessXML
+          }
+        });
+
+        const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+        // when
+        await handleDeploymentDone({ tab });
+
+        // then
+        const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+        expect(metrics.tasks.userTask).to.eql({
+          count: 4,
+          form: {
+            count: 4,
+            camundaForms: 4,
+            other: 0
+          }
+        });
+      });
+
+
+      it('should send metrics with user tasks in pools', async () => {
+
+        // given
+        const tab = createTab({
+          type: 'cloud-bpmn',
+          file: {
+            contents: zeebeUserTasksWithParticipantsXML
+          }
+        });
+
+        const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+        // when
+        await handleDeploymentDone({ tab });
+
+        // then
+        const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+        expect(metrics.tasks.userTask).to.eql({
+          count: 4,
+          form: {
+            count: 4,
+            camundaForms: 4,
+            other: 0
+          }
+        });
+      });
+
+    });
+
+  });
+
+
+  describe('engine profile', () => {
+
+    it('should send engine profile', async () => {
+
+      // given
+      const tab = createTab({
+        type: 'bpmn',
+        file: {
+          contents: engineProfileXML
+        }
+      });
+
+      const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+      // when
+      await handleDeploymentDone({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.15.0'
+      });
     });
 
   });
