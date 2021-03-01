@@ -19,6 +19,10 @@ import {
   getMetrics
 } from '../../../util';
 
+import {
+  getEngineProfile as parseEngineProfile
+} from '../../../util/parse';
+
 const BPMN_TAB_TYPE = 'bpmn';
 const CLOUD_BPMN_TAB_TYPE = 'cloud-bpmn';
 const DMN_TAB_TYPE = 'dmn';
@@ -57,6 +61,18 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     return metrics;
   }
 
+  getEngineProfile = async (file) => {
+    const {
+      contents
+    } = file;
+
+    if (!contents) {
+      return {};
+    }
+
+    return await parseEngineProfile(contents);
+  }
+
   handleDeployment = async (event) => {
     const {
       error,
@@ -85,16 +101,20 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     // (3) generate diagram related metrics, e.g. process variables
     const diagramMetrics = await this.generateMetrics(file, type);
 
+    // (4) retrieve engine profile
+    const engineProfile = await this.getEngineProfile(file);
+
     let payload = {
       diagramType: getDiagramType(type),
       deployment: {
         outcome,
         context
       },
-      diagramMetrics
+      diagramMetrics,
+      engineProfile
     };
 
-    // (4) retrieve deployment error
+    // (5) retrieve deployment error
     if (error) {
       payload.deployment.error = error.code;
     }
