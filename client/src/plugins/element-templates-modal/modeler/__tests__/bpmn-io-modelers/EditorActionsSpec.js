@@ -15,6 +15,7 @@ import BpmnModeler from '../../../../../app/tabs/bpmn/modeler/BpmnModeler';
 import EditorActions from '../../EditorActions';
 
 import diagramXML from './diagram.bpmn';
+import collaborationXML from './collaboration.bpmn';
 
 const DEFAULT_OPTIONS = {
   additionalModules: [
@@ -57,7 +58,7 @@ describe('EditorActions', function() {
 
   describe('applyElementTemplate', function() {
 
-    it('should apply element template', function() {
+    it('should apply element template to task', function() {
 
       // given
       const editorActions = modeler.get('editorActions'),
@@ -78,10 +79,35 @@ describe('EditorActions', function() {
     });
 
 
-    it('should not apply element template (no element selected)', function() {
+    it('should apply element template to process', function() {
 
       // given
-      const editorActions = modeler.get('editorActions');
+      const editorActions = modeler.get('editorActions'),
+            elementRegistry = modeler.get('elementRegistry');
+
+      const process = elementRegistry.get('Process_1');
+
+      // when
+      const applied = editorActions.trigger('applyElementTemplate', DEFAULT_ELEMENT_TEMPLATE);
+
+      // then
+      expect(applied).to.be.true;
+
+      expect(process.businessObject.modelerTemplate).to.equal(DEFAULT_ELEMENT_TEMPLATE.id);
+    });
+
+
+    it('should not apply element template given a multi-selection', function() {
+
+      // given
+      const editorActions = modeler.get('editorActions'),
+            elementRegistry = modeler.get('elementRegistry'),
+            selection = modeler.get('selection');
+
+      const serviceTask = elementRegistry.get('ServiceTask_1'),
+            process = elementRegistry.get('Process_1');
+
+      selection.select([ serviceTask, process ]);
 
       // when
       const applied = editorActions.trigger('applyElementTemplate', DEFAULT_ELEMENT_TEMPLATE);
@@ -115,7 +141,7 @@ describe('EditorActions', function() {
     });
 
 
-    it('should not get selected element type (no element selected)', function() {
+    it('should get root element (bpmn:Process) given no element is selected', function() {
 
       // given
       const editorActions = modeler.get('editorActions');
@@ -124,7 +150,48 @@ describe('EditorActions', function() {
       const selectedElement = editorActions.trigger('getSelectedElement');
 
       // then
-      expect(selectedElement).not.to.exist;
+      expect(selectedElement).to.exist;
+      expect(selectedElement.businessObject.$type).to.equal('bpmn:Process');
+    });
+
+
+    it('should get root element (bpmn:Collaboration) given no element is selected', async function() {
+
+      // given
+      container = TestContainer.get(this);
+
+      modeler = await createModeler({
+        container
+      }, collaborationXML);
+
+      const editorActions = modeler.get('editorActions');
+
+      // when
+      const selectedElement = editorActions.trigger('getSelectedElement');
+
+      // then
+      expect(selectedElement).to.exist;
+      expect(selectedElement.businessObject.$type).to.equal('bpmn:Collaboration');
+    });
+
+
+    it('should return null given multiple elements are selected', function() {
+
+      // given
+      const editorActions = modeler.get('editorActions'),
+            elementRegistry = modeler.get('elementRegistry'),
+            selection = modeler.get('selection');
+
+      const serviceTask1 = elementRegistry.get('ServiceTask_1'),
+            serviceTask2 = elementRegistry.get('ServiceTask_2');
+
+      selection.select([ serviceTask1, serviceTask2 ]);
+
+      // when
+      const selectedElement = editorActions.trigger('getSelectedElement');
+
+      // then
+      expect(selectedElement).to.be.null;
     });
 
   });
@@ -170,10 +237,17 @@ describe('EditorActions', function() {
     });
 
 
-    it('should not get selected element type (no element selected)', function() {
+    it('should not get selected element type (multiple elements selected)', function() {
 
       // given
-      const editorActions = modeler.get('editorActions');
+      const editorActions = modeler.get('editorActions'),
+            elementRegistry = modeler.get('elementRegistry'),
+            selection = modeler.get('selection');
+
+      const serviceTask1 = elementRegistry.get('ServiceTask_1'),
+            serviceTask2 = elementRegistry.get('ServiceTask_2');
+
+      selection.select([ serviceTask1, serviceTask2 ]);
 
       // when
       const selectedElementAppliedElementTemplate = editorActions.trigger('getSelectedElementAppliedElementTemplate');
@@ -190,20 +264,21 @@ describe('EditorActions', function() {
 
 const DEFAULT_ELEMENT_TEMPLATE = {
   appliesTo: [
-    'bpmn:ServiceTask'
+    'bpmn:ServiceTask',
+    'bpmn:Process'
   ],
   id: 'some-rpa-template',
   name: 'Template 1',
   properties: []
 };
 
-async function createModeler(options = {}) {
+async function createModeler(options = {}, diagram = diagramXML) {
   const modeler = new BpmnModeler({
     ...DEFAULT_OPTIONS,
     ...options
   });
 
-  await modeler.importXML(diagramXML);
+  await modeler.importXML(diagram);
 
   return modeler;
 }
