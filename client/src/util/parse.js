@@ -13,12 +13,15 @@ import { is } from 'bpmn-js/lib/util/ModelUtil';
 import BpmnModdle from 'bpmn-moddle';
 
 import CamundaBpmnModdle from 'camunda-bpmn-moddle/resources/camunda';
+import ZeebeBpmnModdle from 'zeebe-bpmn-moddle/resources/zeebe';
+
 import { selfAndAllFlowElements } from './elementsUtil';
 
 
 export async function getDefinitions(xml) {
   const moddle = new BpmnModdle({
     camunda: CamundaBpmnModdle,
+    zeebe: ZeebeBpmnModdle
   });
 
   const { rootElement: definitions } = await moddle.fromXML(xml);

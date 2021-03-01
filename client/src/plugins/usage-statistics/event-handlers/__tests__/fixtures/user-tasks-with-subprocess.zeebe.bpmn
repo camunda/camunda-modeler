@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_00q8pfg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.6.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.0.0">
+  <bpmn:process id="Process_02ok9dm" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_36lhsu6">{ "components": [] }</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_3nihbh5">{ "components": [] }</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_2rtngha">{ "components": [] }</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_0l50jv1">{ "components": [] }</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:subProcess id="SubProcess_1">
+      <bpmn:userTask id="UserTask_1" name="Task 1">
+        <bpmn:extensionElements>
+          <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_36lhsu6" />
+        </bpmn:extensionElements>
+      </bpmn:userTask>
+      <bpmn:userTask id="UserTask_2" name="Task 2">
+        <bpmn:extensionElements>
+          <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_3nihbh5" />
+        </bpmn:extensionElements>
+      </bpmn:userTask>
+      <bpmn:userTask id="UserTask_3" name="Task 3">
+        <bpmn:extensionElements>
+          <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_2rtngha" />
+        </bpmn:extensionElements>
+      </bpmn:userTask>
+    </bpmn:subProcess>
+    <bpmn:userTask id="UserTask_4" name="Task 4">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0l50jv1" />
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_02ok9dm">
+      <bpmndi:BPMNShape id="Activity_0e7pmy2_di" bpmnElement="UserTask_4">
+        <dc:Bounds x="160" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nhoroi_di" bpmnElement="SubProcess_1" isExpanded="true">
+        <dc:Bounds x="300" y="77" width="490" height="360" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vaoev4_di" bpmnElement="UserTask_1">
+        <dc:Bounds x="500" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wmp0e7_di" bpmnElement="UserTask_2">
+        <dc:Bounds x="500" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rv70yb_di" bpmnElement="UserTask_3">
+        <dc:Bounds x="500" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

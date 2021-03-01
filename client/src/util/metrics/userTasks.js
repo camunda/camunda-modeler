@@ -8,13 +8,30 @@
  * except in compliance with the MIT License.
  */
 
-import { getAllElementsByType } from '../parse';
+import {
+  isFunction
+} from 'min-dash';
 
-import { getFormFields } from '../formHelpers';
+import {
+  getAllElementsByType
+} from '../parse';
 
-export async function getUserTaskMetrics(file) {
+import {
+  getFormFields,
+  getFormDefinition
+} from '../formHelpers';
+
+export async function getUserTaskMetrics(file, type) {
   const userTasks = await getUserTasks(file);
-  const userTaskFormMetrics = parseUserTaskForms(userTasks);
+
+  const parseUserTaskForms = parseFormHandlers[type];
+
+  let userTaskFormMetrics = {};
+
+  if (isFunction(parseUserTaskForms)) {
+    userTaskFormMetrics = parseUserTaskForms(userTasks);
+  }
+
   const metrics = {
     count: userTasks.length,
     form: userTaskFormMetrics
@@ -29,7 +46,13 @@ async function getUserTasks(file) {
   return userTasks;
 }
 
-function parseUserTaskForms(userTasks) {
+const parseFormHandlers = {
+  'bpmn': parseCamundaUserTaskForms,
+  'cloud-bpmn': parseCloudUserTaskForms
+};
+
+
+function parseCamundaUserTaskForms(userTasks) {
 
   const hasFormField = (userTask) => !!(getFormFields(userTask).length);
   const hasFormKey = (userTask) => ('formKey' in userTask);
@@ -43,5 +66,18 @@ function parseUserTaskForms(userTasks) {
     external: userTasks.filter((userTask) => hasFormKey(userTask) && isExternal(userTask.formKey)).length,
     generated: userTasks.filter((userTask) => !hasFormKey(userTask) && hasFormField(userTask)).length,
     other: userTasks.filter((userTask) => hasFormKey(userTask) && isOther(userTask.formKey)).length,
+  };
+}
+
+function parseCloudUserTaskForms(userTasks) {
+
+  const hasFormDefinition = (userTask) => !!(getFormDefinition(userTask));
+  const isCamundaForm = (formKey) => formKey.startsWith('camunda-forms:');
+  const isOther = (formKey) => !isCamundaForm(formKey);
+
+  return {
+    count: userTasks.filter((userTask) => hasFormDefinition(userTask)).length,
+    camundaForms: userTasks.filter((userTask) => hasFormDefinition(userTask) && isCamundaForm(getFormDefinition(userTask).formKey)).length,
+    other: userTasks.filter((userTask) => hasFormDefinition(userTask) && isOther(getFormDefinition(userTask).formKey)).length,
   };
 }

@@ -27,7 +27,7 @@ export function getFormFields(element) {
 }
 
 /**
- * Return form data existing in the business object
+ * Return camunda form data existing in the business object
  *
  * @param {ModdleElement} element
  *
@@ -35,6 +35,17 @@ export function getFormFields(element) {
  */
 function getFormData(element) {
   return (getElements(element, 'camunda:FormData') || [])[0];
+}
+
+/**
+ * Return zeebe form definition existing in the business object
+ *
+ * @param {ModdleElement} element
+ *
+ * @return {ModdleElement}
+ */
+export function getFormDefinition(element) {
+  return (getElements(element, 'zeebe:FormDefinition') || [])[0];
 }
 
 function getElements(element, type, property) {
