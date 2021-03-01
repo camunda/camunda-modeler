@@ -8,17 +8,26 @@
  * except in compliance with the MIT License.
  */
 
-import { getProcessVariablesCount } from './processVariables';
-import { getUserTaskMetrics } from './userTasks';
+import {
+  getProcessVariablesCount
+} from './processVariables';
 
-export default async function(file) {
+import {
+  getUserTaskMetrics
+} from './userTasks';
+
+export default async function(file, type) {
   let metrics = {};
 
-  metrics.processVariablesCount = await getProcessVariablesCount(file);
-  const userTaskMetrics = await getUserTaskMetrics(file);
+  // (1) process variables
+  const processVariablesCount = await getProcessVariablesCount(file, type);
+
+  // (2) user tasks
+  const userTaskMetrics = await getUserTaskMetrics(file, type);
 
   metrics = {
     ...metrics,
+    processVariablesCount,
     tasks: {
       userTask: userTaskMetrics
     }

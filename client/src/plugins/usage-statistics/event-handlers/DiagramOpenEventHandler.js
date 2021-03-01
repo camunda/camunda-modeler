@@ -25,29 +25,38 @@ const types = {
   CMMN: 'cmmn'
 };
 
-// Sends a diagramOpened event to ET with diagram type: bpmn/dmn payload
-// when a user opens a BPMN, DMN or CMMN diagram (create a new one or open from file).
+// Sends a diagramOpened event to ET when an user opens any diagram
+// (create a new one or open from file).
 export default class DiagramOpenEventHandler extends BaseEventHandler {
 
-  constructor(params) {
+  constructor(props) {
 
-    const { onSend, subscribe, config } = params;
+    const {
+      onSend,
+      subscribe,
+      config
+    } = props;
 
     super('diagramOpened', onSend);
 
-    subscribe('bpmn.modeler.created', async (info) => {
+    this._config = config;
 
-      const { tab } = info;
-      const { file } = tab;
+    subscribe('bpmn.modeler.created', async (context) => {
 
-      const elementTemplates = await this.getElementTemplates(config, file);
+      const {
+        tab
+      } = context;
 
-      const diagramMetrics = await this.generateMetrics(file);
+      const {
+        file,
+        type
+      } = tab;
 
-      this.onDiagramOpened(types.BPMN, {
-        elementTemplates,
-        diagramMetrics
-      });
+      if (type === types.BPMN) {
+        return await this.onCamundaDiagramOpened(file);
+      } else { // <cloud-bpmn>, maybe more in the future
+        return await this.onBpmnDiagramOpened(file, type);
+      }
     });
 
     subscribe('dmn.modeler.created', () => {
@@ -59,12 +68,11 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
     });
   }
 
-  generateMetrics = async (file) => {
+  generateMetrics = async (file, type) => {
     let metrics = {};
 
-    // (1) telemetry metrics
     if (file.contents) {
-      metrics = await getMetrics(file);
+      metrics = await getMetrics(file, type);
     }
 
     return metrics;
@@ -78,10 +86,12 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
     const {
       elementTemplates,
-      diagramMetrics
+      diagramMetrics,
     } = context;
 
-    const payload = { diagramType: type };
+    const payload = {
+      diagramType: type
+    };
 
     if (elementTemplates) {
       payload.elementTemplates = elementTemplates;
@@ -94,14 +104,37 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
     const response = await this.sendToET(payload);
 
-    if (response.status === HTTP_STATUS_PAYLOAD_TOO_BIG) {
+    if (response && response.status === HTTP_STATUS_PAYLOAD_TOO_BIG) {
 
       // Payload too large, send again with smaller payload
       this.sendToET(omit(payload, ['elementTemplates']));
     }
   }
 
-  getElementTemplates = async (config, file) => {
+  onBpmnDiagramOpened = async (file, type, context = {}) => {
+
+    const diagramMetrics = await this.generateMetrics(file, type);
+
+    return await this.onDiagramOpened(types.BPMN, {
+      diagramMetrics,
+      ...context
+    });
+
+  }
+
+  onCamundaDiagramOpened = async (file) => {
+
+    const elementTemplates = await this.getElementTemplates(file);
+
+    return await this.onBpmnDiagramOpened(file, types.BPMN, {
+      elementTemplates
+    });
+
+  }
+
+  getElementTemplates = async (file) => {
+
+    const config = this._config;
 
     const elementTemplates = await config.get(ELEMENT_TEMPLATES_CONFIG_KEY, file);
 
