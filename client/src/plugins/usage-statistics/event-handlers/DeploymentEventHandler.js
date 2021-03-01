@@ -8,14 +8,33 @@
  * except in compliance with the MIT License.
  */
 
+import {
+  find,
+  keys
+} from 'min-dash';
+
 import BaseEventHandler from './BaseEventHandler';
 
-import { getMetrics } from '../../../util';
+import {
+  getMetrics
+} from '../../../util';
 
-const RELEVANT_TAB_TYPES = ['bpmn', 'dmn'];
+const BPMN_TAB_TYPE = 'bpmn';
+const CLOUD_BPMN_TAB_TYPE = 'cloud-bpmn';
+const DMN_TAB_TYPE = 'dmn';
 
-// Sends a deployment event to ET everytime when a user triggers a deploy to
-// the Camunda Engine, ignoring cmmn deployments
+const RELEVANT_TAB_TYPES = [
+  BPMN_TAB_TYPE,
+  CLOUD_BPMN_TAB_TYPE,
+  DMN_TAB_TYPE
+];
+
+const DIAGRAM_BY_TAB_TYPE = {
+  'bpmn': [ BPMN_TAB_TYPE, CLOUD_BPMN_TAB_TYPE],
+  'dmn': [ DMN_TAB_TYPE ]
+};
+
+// Sends a deployment event to ET everytime when a user triggers a deployment
 export default class DeploymentEventHandler extends BaseEventHandler {
 
   constructor(params) {
@@ -31,9 +50,8 @@ export default class DeploymentEventHandler extends BaseEventHandler {
   generateMetrics = async (file, tabType) => {
     let metrics = {};
 
-    // (1) telemetry metrics (bpmn only)
-    if (tabType === 'bpmn' && file.contents) {
-      metrics = await getMetrics(file);
+    if (tabType !== 'dmn' && file.contents) {
+      metrics = await getMetrics(file, tabType);
     }
 
     return metrics;
@@ -68,7 +86,7 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     const diagramMetrics = await this.generateMetrics(file, type);
 
     let payload = {
-      diagramType: type,
+      diagramType: getDiagramType(type),
       deployment: {
         outcome,
         context
@@ -84,4 +102,13 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     this.sendToET(payload);
   }
 
+}
+
+
+// helpers ////////////
+
+function getDiagramType(tabType) {
+  return find(keys(DIAGRAM_BY_TAB_TYPE), function(diagramType) {
+    return DIAGRAM_BY_TAB_TYPE[diagramType].includes(tabType);
+  });
 }

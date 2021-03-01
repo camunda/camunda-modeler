@@ -36,7 +36,28 @@ import DeploymentPluginModal from './DeploymentPluginModal';
 import DeploymentPluginValidator from './DeploymentPluginValidator';
 
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
+
 const ZEEBE_ENDPOINTS_CONFIG_KEY = 'zeebeEndpoints';
+
+const GRPC_ERROR_CODES = {
+  0: 'OK',
+  1: 'CANCELLED',
+  2: 'UNKNOWN',
+  3: 'INVALID_ARGUMENT',
+  4: 'DEADLINE_EXCEEDED',
+  5: 'NOT_FOUND',
+  6: 'ALREADY_EXISTS',
+  7: 'PERMISSION_DENIED',
+  8: 'RESOURCE_EXHAUSTED',
+  9: 'FAILED_PRECONDITION',
+  10: 'ABORTED',
+  11: 'OUT_OF_RANGE',
+  12: 'UNIMPLEMENTED',
+  13: 'INTERNAL',
+  14: 'UNAVAILABLE',
+  15: 'DATA_LOSS',
+  16: 'UNAUTHENTICATED'
+};
 
 export default class DeploymentPlugin extends PureComponent {
 
@@ -130,7 +151,7 @@ export default class DeploymentPlugin extends PureComponent {
     const { response, success } = deploymentResult;
 
     if (!success) {
-      this.onDeploymentError(response);
+      this.onDeploymentError(response, options);
     } else {
       this.onDeploymentSuccess(response, options);
     }
@@ -317,8 +338,13 @@ export default class DeploymentPlugin extends PureComponent {
 
   onDeploymentSuccess(response, options = {}) {
     const {
-      displayNotification
+      displayNotification,
+      triggerAction
     } = this.props;
+
+    const {
+      isStart
+    } = options;
 
     if (!options.skipNotificationOnSuccess) {
       displayNotification({
@@ -327,13 +353,27 @@ export default class DeploymentPlugin extends PureComponent {
         duration: 4000
       });
     }
+
+    // notify interested parties
+    triggerAction('emit-event', {
+      type: 'deployment.done',
+      payload: {
+        deployment: response,
+        context: isStart ? 'startInstanceTool' : 'deploymentTool'
+      }
+    });
   }
 
-  onDeploymentError(response) {
+  onDeploymentError(response, options = {}) {
     const {
       log,
-      displayNotification
+      displayNotification,
+      triggerAction
     } = this.props;
+
+    const {
+      isStart
+    } = options;
 
     displayNotification({
       type: 'error',
@@ -345,6 +385,18 @@ export default class DeploymentPlugin extends PureComponent {
     log({
       category: 'deploy-error',
       message: response.details
+    });
+
+    // notify interested parties
+    triggerAction('emit-event', {
+      type: 'deployment.error',
+      payload: {
+        error: {
+          ...response,
+          code: getGRPCErrorCode(response)
+        },
+        context: isStart ? 'startInstanceTool' : 'deploymentTool'
+      }
     });
   }
 
@@ -424,4 +476,12 @@ function withoutCredentials(endpointConfiguration) {
 
 function isZeebeTab(tab) {
   return tab && tab.type === 'cloud-bpmn';
+}
+
+function getGRPCErrorCode(error) {
+  const {
+    code
+  } = error;
+
+  return code ? GRPC_ERROR_CODES[code] : 'UNKNOWN';
 }

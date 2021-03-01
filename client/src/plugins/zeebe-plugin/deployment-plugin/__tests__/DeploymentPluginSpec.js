@@ -506,6 +506,209 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     // then
     expect(displayNotificationSpy).not.to.have.been.called;
   });
+
+
+  describe('emit-event action', () => {
+
+    it('should trigger deployment.done action after successful deployment', async () => {
+
+      // given
+      const deploymentResult = {
+        success: true
+      };
+
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult });
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.done',
+              handler: actionSpy
+            };
+
+      const { instance } = createDeploymentPlugin({
+        actionSpy,
+        actionTriggered,
+        zeebeAPI
+      });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(actionSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should trigger deployment.done with start instance context', async () => {
+
+      // given
+      const deploymentResult = {
+        success: true
+      };
+
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult });
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.done',
+              handler: actionSpy
+            };
+
+      const { instance } = createDeploymentPlugin({
+        actionSpy,
+        actionTriggered,
+        zeebeAPI
+      });
+
+      // when
+      await instance.deploy(({
+        isStart: true
+      }));
+
+      const context = actionSpy.getCall(0).args[0].payload.context;
+
+      // then
+      expect(actionSpy).to.have.been.calledOnce;
+      expect(context).to.eql('startInstanceTool');
+    });
+
+
+    it('should not trigger deployment.done action after failed deployment', async () => {
+
+      // given
+      const deploymentResult = {
+        success: false,
+        response: {
+          code: 3
+        }
+      };
+
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult });
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.done',
+              handler: actionSpy
+            };
+
+      const { instance } = createDeploymentPlugin({
+        actionSpy,
+        actionTriggered,
+        zeebeAPI
+      });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(actionSpy).to.not.have.been.calledOnce;
+    });
+
+
+    it('should trigger deployment.error action after failed deployment', async () => {
+
+      // given
+      const deploymentResult = {
+        success: false,
+        response: {
+          code: 3
+        }
+      };
+
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult });
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.error',
+              handler: actionSpy
+            };
+
+      const { instance } = createDeploymentPlugin({
+        actionSpy,
+        actionTriggered,
+        zeebeAPI
+      });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(actionSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should trigger deployment.done with start instance context', async () => {
+
+      // given
+      const deploymentResult = {
+        success: false,
+        response: {}
+      };
+
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult });
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.error',
+              handler: actionSpy
+            };
+
+      const { instance } = createDeploymentPlugin({
+        actionSpy,
+        actionTriggered,
+        zeebeAPI
+      });
+
+      // when
+      await instance.deploy(({
+        isStart: true
+      }));
+
+      const context = actionSpy.getCall(0).args[0].payload.context;
+
+      // then
+      expect(actionSpy).to.have.been.calledOnce;
+      expect(context).to.eql('startInstanceTool');
+    });
+
+
+
+    it('should not trigger deployment.error action after successful deployment', async () => {
+
+      // given
+      const deploymentResult = {
+        success: true
+      };
+
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult });
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.error',
+              handler: actionSpy
+            };
+
+      const { instance } = createDeploymentPlugin({
+        actionSpy,
+        actionTriggered,
+        zeebeAPI
+      });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(actionSpy).to.not.have.been.calledOnce;
+    });
+
+  });
+
 });
 
 class TestDeploymentPlugin extends DeploymentPlugin {
@@ -570,6 +773,17 @@ function createDeploymentPlugin({
     }
   };
 
+  const triggerAction = (event, context) => {
+    switch (true) {
+    case (event === 'save'):
+      return activeTab;
+    case (props.actionTriggered &&
+      props.actionTriggered.emitEvent == event &&
+      props.actionTriggered.type == context.type):
+      props.actionTriggered.handler(context);
+    }
+  };
+
   const config = new Config({
     get: (_, defaultValue) => defaultValue,
     ...props.config
@@ -579,7 +793,7 @@ function createDeploymentPlugin({
     broadcastMessage={ noop }
     subscribeToMessaging={ noop }
     unsubscribeFromMessaging={ noop }
-    triggerAction={ action => action === 'save' && activeTab }
+    triggerAction={ triggerAction }
     log={ noop }
     displayNotification={ noop }
     _getGlobal={ key => key === 'zeebeAPI' && zeebeAPI }
