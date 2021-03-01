@@ -26,6 +26,8 @@ import zeebeUserTasksWithSubprocessXML from './fixtures/user-tasks-with-subproce
 
 import zeebeUserTasksWithParticipantsXML from './fixtures/user-tasks-with-participants.zeebe.bpmn';
 
+import engineProfileXML from './fixtures/engine-profile.bpmn';
+
 import emptyXML from './fixtures/empty.bpmn';
 
 
@@ -594,6 +596,45 @@ describe('<DiagramOpenEventHandler>', () => {
 
       });
 
+    });
+
+  });
+
+
+  describe('engine profile', () => {
+
+    it('should send engine profile', async () => {
+
+      // given
+      const subscribe = sinon.spy();
+
+      const onSend = sinon.spy();
+
+      const tab = createTab({
+        type: 'bpmn',
+        file: {
+          contents: engineProfileXML
+        }
+      });
+
+      const config = { get: () => null };
+
+      // when
+      const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+      diagramOpenEventHandler.enable();
+
+      const bpmnCallback = subscribe.getCall(0).args[1];
+
+      await bpmnCallback({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.15.0'
+      });
     });
 
   });
