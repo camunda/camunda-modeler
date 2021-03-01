@@ -98,6 +98,17 @@ as well as relevant information about user tasks and forms:
 }
 ```
 
+In terms it is set in the diagram, we add the engine profile:
+
+```json
+{
+  "engineProfile": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "1.0.0"
+  }
+}
+```
+
 ### Deployment Event
 The `Deployment Event` is sent in following situations:
 
@@ -136,6 +147,16 @@ Furthermore, we add the component which initiated the deployment:
 }
 ```
 
+If provided, for example, when deploying to a Zeebe based platform, we add the target type of the deployment as well:
+
+```json
+{
+  "deployment": {
+    "targetType": "camundaCloud"
+  }
+}
+```
+
 In case of BPMN files, we add the number of available process variables in the diagram as part of the diagram metrics,
 as well as relevant information about user tasks and forms:
 
@@ -157,3 +178,15 @@ as well as relevant information about user tasks and forms:
     }
   }
 }
+```
+
+In terms it is set in the diagram, we add the engine profile:
+
+```json
+{
+  "engineProfile": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "1.0.0"
+  }
+}
+```
