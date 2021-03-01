@@ -530,6 +530,27 @@ describe('<DeploymentEventHandler>', () => {
 
   });
 
+
+  it('should send target type', async () => {
+
+    // given
+    const tab = createTab({
+      type: 'cloud-bpmn'
+    });
+
+    const cloudTargetType = 'camundaCloud';
+
+    const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+    // when
+    await handleDeploymentDone({ tab, targetType: cloudTargetType });
+
+    const { targetType } = onSend.getCall(0).args[0].deployment;
+
+    // then
+    expect(targetType).to.eql(cloudTargetType);
+  });
+
 });
 
 

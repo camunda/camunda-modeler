@@ -540,6 +540,41 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
+    it('should send target type on deployment.done', async () => {
+
+      // given
+      const deploymentResult = {
+        success: true
+      };
+
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult });
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.done',
+              handler: actionSpy
+            };
+
+      const { instance } = createDeploymentPlugin({
+        actionSpy,
+        actionTriggered,
+        zeebeAPI
+      });
+
+      // when
+      await instance.deploy(({
+        isStart: true
+      }));
+
+      const targetType = actionSpy.getCall(0).args[0].payload.targetType;
+
+      // then
+      expect(actionSpy).to.have.been.calledOnce;
+      expect(targetType).to.eql('selfHosted');
+    });
+
+
     it('should trigger deployment.done with start instance context', async () => {
 
       // given
@@ -638,6 +673,42 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // then
       expect(actionSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should send target type on deployment.error', async () => {
+
+      // given
+      const deploymentResult = {
+        success: false,
+        response: {}
+      };
+
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult });
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.error',
+              handler: actionSpy
+            };
+
+      const { instance } = createDeploymentPlugin({
+        actionSpy,
+        actionTriggered,
+        zeebeAPI
+      });
+
+      // when
+      await instance.deploy(({
+        isStart: true
+      }));
+
+      const targetType = actionSpy.getCall(0).args[0].payload.targetType;
+
+      // then
+      expect(actionSpy).to.have.been.calledOnce;
+      expect(targetType).to.eql('selfHosted');
     });
 
 
