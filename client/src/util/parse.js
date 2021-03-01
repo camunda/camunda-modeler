@@ -14,6 +14,7 @@ import BpmnModdle from 'bpmn-moddle';
 
 import CamundaBpmnModdle from 'camunda-bpmn-moddle/resources/camunda';
 import ZeebeBpmnModdle from 'zeebe-bpmn-moddle/resources/zeebe';
+import ModelerModdle from 'modeler-moddle/resources/modeler';
 
 import { selfAndAllFlowElements } from './elementsUtil';
 
@@ -21,12 +22,22 @@ import { selfAndAllFlowElements } from './elementsUtil';
 export async function getDefinitions(xml) {
   const moddle = new BpmnModdle({
     camunda: CamundaBpmnModdle,
-    zeebe: ZeebeBpmnModdle
+    zeebe: ZeebeBpmnModdle,
+    modeler: ModelerModdle
   });
 
   const { rootElement: definitions } = await moddle.fromXML(xml);
 
   return definitions;
+}
+
+export async function getEngineProfile(xml) {
+  const definition = await getDefinitions(xml);
+
+  return {
+    executionPlatform: definition.get('executionPlatform'),
+    executionPlatformVersion: definition.get('executionPlatformVersion')
+  };
 }
 
 /**

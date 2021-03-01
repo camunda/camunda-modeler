@@ -14,6 +14,8 @@ import BaseEventHandler from './BaseEventHandler';
 
 import { getMetrics } from '../../../util';
 
+import { getEngineProfile } from '../../../util/parse';
+
 const HTTP_STATUS_PAYLOAD_TOO_BIG = 413;
 
 const BINDING_TYPE_PROPERTY = 'property';
@@ -78,6 +80,18 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
     return metrics;
   }
 
+  getEngineProfile = async (file) => {
+    const {
+      contents
+    } = file;
+
+    if (!contents) {
+      return {};
+    }
+
+    return await getEngineProfile(contents);
+  }
+
   onDiagramOpened = async (type, context = {}) => {
 
     if (!this.isEnabled()) {
@@ -87,6 +101,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
     const {
       elementTemplates,
       diagramMetrics,
+      engineProfile
     } = context;
 
     const payload = {
@@ -102,6 +117,10 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
       payload.diagramMetrics = diagramMetrics;
     }
 
+    if (engineProfile) {
+      payload.engineProfile = engineProfile;
+    }
+
     const response = await this.sendToET(payload);
 
     if (response && response.status === HTTP_STATUS_PAYLOAD_TOO_BIG) {
@@ -115,8 +134,11 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
     const diagramMetrics = await this.generateMetrics(file, type);
 
+    const engineProfile = await this.getEngineProfile(file);
+
     return await this.onDiagramOpened(types.BPMN, {
       diagramMetrics,
+      engineProfile,
       ...context
     });
 
