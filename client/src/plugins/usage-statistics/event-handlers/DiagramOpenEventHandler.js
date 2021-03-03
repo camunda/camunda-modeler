@@ -14,7 +14,7 @@ import BaseEventHandler from './BaseEventHandler';
 
 import { getMetrics } from '../../../util';
 
-import { getEngineProfile } from '../../../util/parse';
+import { getEngineProfile as parseEngineProfile } from '../../../util/parse';
 
 const HTTP_STATUS_PAYLOAD_TOO_BIG = 413;
 
@@ -80,7 +80,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
     return metrics;
   }
 
-  getEngineProfile = async (file) => {
+  getEngineProfile = async (file, type) => {
     const {
       contents
     } = file;
@@ -91,10 +91,10 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
     const {
       executionPlatform
-    } = await getEngineProfile(contents);
+    } = await parseEngineProfile(contents);
 
     return {
-      executionPlatform
+      executionPlatform: executionPlatform || getDefaultExecutionPlatform(type)
     };
   }
 
@@ -140,7 +140,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
     const diagramMetrics = await this.generateMetrics(file, type);
 
-    const engineProfile = await this.getEngineProfile(file);
+    const engineProfile = await this.getEngineProfile(file, type);
 
     return await this.onDiagramOpened(types.BPMN, {
       diagramMetrics,
@@ -199,4 +199,15 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
       return { appliesTo, properties: propertyCounts };
     });
   }
+}
+
+
+// helper ////////////////
+
+function getDefaultExecutionPlatform(type) {
+  if (type === 'cloud-bpmn') {
+    return 'Camunda Cloud';
+  }
+
+  return 'Camunda Platform';
 }

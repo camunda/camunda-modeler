@@ -549,6 +549,56 @@ describe('<DeploymentEventHandler>', () => {
       });
     });
 
+
+    it('should send default engine profile', async () => {
+
+      // given
+      const tab = createTab({
+        type: 'bpmn',
+        file: {
+          contents: emptyXML
+        }
+      });
+
+      const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+      // when
+      await handleDeploymentDone({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Platform'
+      });
+
+    });
+
+
+    it('should send default engine profile (cloud tabs)', async () => {
+
+      // given
+      const tab = createTab({
+        type: 'cloud-bpmn',
+        file: {
+          contents: emptyXML
+        }
+      });
+
+      const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+      // when
+      await handleDeploymentDone({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Cloud'
+      });
+
+    });
+
   });
 
 

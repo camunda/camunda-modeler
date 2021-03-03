@@ -61,7 +61,7 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     return metrics;
   }
 
-  getEngineProfile = async (file) => {
+  getEngineProfile = async (file, type) => {
     const {
       contents
     } = file;
@@ -75,7 +75,7 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     } = await parseEngineProfile(contents);
 
     return {
-      executionPlatform
+      executionPlatform: executionPlatform || getDefaultExecutionPlatform(type)
     };
   }
 
@@ -109,7 +109,7 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     const diagramMetrics = await this.generateMetrics(file, type);
 
     // (4) retrieve engine profile
-    const engineProfile = await this.getEngineProfile(file);
+    const engineProfile = await this.getEngineProfile(file, type);
 
     let payload = {
       diagramType: getDiagramType(type),
@@ -143,4 +143,12 @@ function getDiagramType(tabType) {
   return find(keys(DIAGRAM_BY_TAB_TYPE), function(diagramType) {
     return DIAGRAM_BY_TAB_TYPE[diagramType].includes(tabType);
   });
+}
+
+function getDefaultExecutionPlatform(type) {
+  if (type === 'cloud-bpmn') {
+    return 'Camunda Cloud';
+  }
+
+  return 'Camunda Platform';
 }

@@ -697,6 +697,74 @@ describe('<DiagramOpenEventHandler>', () => {
       });
     });
 
+
+    it('should send default engine profile', async () => {
+
+      // given
+      const subscribe = sinon.spy();
+
+      const onSend = sinon.spy();
+
+      const tab = createTab({
+        type: 'bpmn',
+        file: {
+          contents: emptyXML
+        }
+      });
+
+      const config = { get: () => null };
+
+      // when
+      const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+      diagramOpenEventHandler.enable();
+
+      const bpmnCallback = subscribe.getCall(0).args[1];
+
+      await bpmnCallback({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Platform'
+      });
+    });
+
+
+    it('should send default engine profile (cloud tabs)', async () => {
+
+      // given
+      const subscribe = sinon.spy();
+
+      const onSend = sinon.spy();
+
+      const tab = createTab({
+        type: 'cloud-bpmn',
+        file: {
+          contents: emptyXML
+        }
+      });
+
+      const config = { get: () => null };
+
+      // when
+      const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+      diagramOpenEventHandler.enable();
+
+      const bpmnCallback = subscribe.getCall(0).args[1];
+
+      await bpmnCallback({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Cloud'
+      });
+    });
+
   });
 
 });
