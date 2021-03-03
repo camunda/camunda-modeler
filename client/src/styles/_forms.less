@@ -1,12 +1,15 @@
 .form-group {
 
+  --input-width: calc(100% - 40px);
+  --input-background-color: var(--color-ffffff);
+
   input[type=password].form-control,
   input[type=text].form-control {
     border-radius: 3px;
     border: solid 1px var(--silver-darken-80);
-    background-color: var(--color-ffffff);
-    width:556px;
-    height:30px;
+    background-color: var(--input-background-color);
+    width: var(--input-width);
+    height: 30px;
     font-size: 13px;
     padding-left: 8px;
     color: var(--grey-darken-30);
@@ -16,6 +19,47 @@
     line-height: normal;
     letter-spacing: normal;
     float: left;
+  }
+
+  // hide but remain accessible: https://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+  input[type=file].form-control {
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+  }
+
+  // use default webkit outline if input is focussed
+  input[type=file].form-control:focus-within + label {
+    outline: -webkit-focus-ring-color auto 5px;
+  }
+
+  // make sure outline doesn't cover the block
+  input[type=file].form-control + label {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-left: 4px;
+    min-width: 50px;
+    height: 25px;
+
+    font-size: 13px;
+    color: #fdfdfe;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+    border: solid 1px var(--blue-darken-62);
+    background-color: var(--blue-base-65);
+
+    &:hover {
+      border: solid 1px var(--blue-darken-55);
+      background-color: var(--blue-darken-62);
+    }
+
+    &:active {
+      border: solid 1px var(--blue-darken-48);
+      background-color: var(--blue-darken-55);
+    }
   }
 
   input[type=password].form-control::placeholder,
@@ -37,7 +81,7 @@
   }
 
   input[type=password].form-control.is-invalid,
-  input[type=text].form-control.is-invalid{
+  input[type=text].form-control.is-invalid {
     border: solid 1px var(--red-base-62);
   }
 
@@ -231,12 +275,14 @@
       border-style: solid;
       bottom: 100%;
     }
+
     .invalid-tooltip:before {
       right: 15px;
 
       border-width: 5px;
       border-bottom-color: var(--silver-darken-80);
     }
+
     .invalid-tooltip:after {
       right: 16px;
 
@@ -246,6 +292,68 @@
 
     &:hover .invalid-tooltip {
       visibility: visible;
+    }
+  }
+
+  .file-list {
+    padding-left: 8px;
+    padding-top: 5px;
+    margin: 0;
+
+    font-size: 13px;
+    list-style-type: none;
+  }
+
+  .file-list-item {
+    display: grid;
+    align-items: center;
+    grid-template-columns: var(--input-width) auto;
+  }
+
+  .file-list-item-content {
+    display: flex;
+    align-items: center;
+    grid-column: 1;
+
+    padding: 4px 0 3px;
+    border-bottom: 1px solid var(--silver-darken-80);
+
+    .remove {
+      display: flex;
+      align-items: center;
+
+      padding: 0;
+      margin: 0;
+      margin-left: auto;
+
+      border: none;
+      background-color: transparent;
+
+      svg {
+        transform: scale(.8)
+      }
+
+      &:hover {
+        background-color: var(--silver-darken-94);
+      }
+
+      &:focus {
+        background-color: var(--silver-darken-87);
+      }
+    }
+  }
+
+  .file-list-item .invalid-feedback {
+    grid-column: 2;
+
+    margin-top: 0;
+  }
+
+  .file-list-item.is-invalid {
+    color: var(--red-base-62);
+
+    .error {
+      margin-left: 3px;
     }
   }
 }

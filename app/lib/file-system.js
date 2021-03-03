@@ -20,10 +20,16 @@ const {
 
 const log = require('./log')('app:file-system');
 
+/**
+ * @typedef FileDescriptor
+ * @property {string|Buffer} contents
+ * @property {number} lastModified
+ * @property {string} name
+ * @property {string} path
+ */
+
 const FILE_PROPERTIES = [
   'contents',
-  'encoding',
-  'fileType',
   'lastModified',
   'name',
   'path'
@@ -40,7 +46,7 @@ const ENCODING_BASE64 = 'base64',
  * @param {Object} [options] - Options.
  * @param {string|false} [options.encoding] - Encoding. Set to false to receive Buffer.
  *
- * @return {Object}
+ * @return {FileDescriptor}
  */
 module.exports.readFile = function(filePath, options = {}) {
   let { encoding } = options;
