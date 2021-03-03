@@ -252,28 +252,6 @@ describe('<App>', function() {
     });
 
 
-    it('should allow user to create new diagram', async function() {
-
-      // given
-      const {
-        app,
-        tree
-      } = createApp(mount);
-
-      await app.showTab(EMPTY_TAB);
-
-      const createButton = tree.find('button.create-bpmn');
-
-      expect(createButton).to.exist;
-
-      // when
-      createButton.simulate('click');
-
-      // then
-      expect(app.state.tabs).to.have.length(1);
-    });
-
-
     it('should not allow user to execute save-as', async function() {
 
       // given

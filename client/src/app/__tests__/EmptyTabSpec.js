@@ -23,6 +23,33 @@ import Flags, { DISABLE_DMN } from '../../util/Flags';
 
 describe('<EmptyTab>', function() {
 
+  describe('dispatching action', function() {
+
+    it('should dispatch create-* actions', function() {
+
+      // given
+      const onAction = sinon.spy();
+      const {
+        tree
+      } = createEmptyTab({ onAction });
+      const buttons = tree.find('button');
+
+      // when
+      buttons.forEach(wrapper => wrapper.simulate('click'));
+
+      // then
+      expect(onAction).to.have.been.calledThrice;
+      expect(onAction.args).to.eql([
+        [ 'create-bpmn-diagram' ],
+        [ 'create-cloud-bpmn-diagram' ],
+        [ 'create-dmn-diagram' ]
+      ]);
+    });
+
+  });
+
+
+
   describe('disabling dmn', function() {
 
     afterEach(sinon.restore);
@@ -39,7 +66,7 @@ describe('<EmptyTab>', function() {
 
       // then
       expect(tree.findWhere(
-        wrapper => wrapper.text() === 'DMN diagram').first().exists()).to.be.false;
+        wrapper => wrapper.text().startsWith('DMN diagram')).first().exists()).to.be.false;
     });
 
 
@@ -52,7 +79,7 @@ describe('<EmptyTab>', function() {
 
       // then
       expect(tree.findWhere(
-        wrapper => wrapper.text() === 'DMN diagram').first().exists()).to.be.true;
+        wrapper => wrapper.text().startsWith('DMN diagram')).first().exists()).to.be.true;
     });
   });
 

@@ -8,9 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { PureComponent, Fragment } from 'react';
-
-import Slot from './slot-fill/Slot';
+import React, { PureComponent } from 'react';
 
 import css from './EmptyTab.less';
 
@@ -37,20 +35,16 @@ export default class EmptyTab extends PureComponent {
 
     return (
       <Tab className={ css.EmptyTab }>
-        <p className="create-buttons">
-          <span>Create a </span>
-          <button className="create-bpmn btn btn-secondary" onClick={ () => onAction('create-bpmn-diagram') }>BPMN diagram</button>
+        <div className="create-buttons">
+          <p>Create a new file:</p>
+          <button className="btn btn-secondary" onClick={ () => onAction('create-bpmn-diagram') }>BPMN diagram (Camunda Engine)</button>
+          <button className="btn btn-secondary" onClick={ () => onAction('create-cloud-bpmn-diagram') }>BPMN diagram (Zeebe Engine)</button>
           {
             !Flags.get(DISABLE_DMN) && (
-              <Fragment>
-                <span> or </span>
-                <button className="btn btn-secondary" onClick={ () => onAction('create-dmn-diagram') }>DMN diagram</button>
-              </Fragment>
+              <button className="btn btn-secondary" onClick={ () => onAction('create-dmn-diagram') }>DMN diagram (Camunda DMN Engine)</button>
             )
           }
-        </p>
-
-        <Slot name="empty-tab-buttons" />
+        </div>
       </Tab>
     );
   }
