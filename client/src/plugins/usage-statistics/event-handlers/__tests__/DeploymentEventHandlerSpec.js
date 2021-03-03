@@ -278,6 +278,28 @@ describe('<DeploymentEventHandler>', () => {
         expect(metrics.processVariablesCount).not.to.exist;
       });
 
+
+      it('should NOT send process variables count for cloud-bpmn files', async () => {
+
+        // given
+        const tab = createTab({
+          type: 'cloud-bpmn',
+          file: {
+            contents: emptyXML
+          }
+        });
+
+        const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+        // when
+        await handleDeploymentDone({ tab });
+
+        // then
+        const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+        expect(metrics.processVariablesCount).not.to.exist;
+      });
+
     });
 
 
@@ -523,8 +545,7 @@ describe('<DeploymentEventHandler>', () => {
 
       // then
       expect(engineProfile).to.eql({
-        executionPlatform: 'Camunda Platform',
-        executionPlatformVersion: '7.15.0'
+        executionPlatform: 'Camunda Platform'
       });
     });
 

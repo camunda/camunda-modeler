@@ -20,7 +20,7 @@ export async function getProcessVariablesCount(file, type) {
 
   // ignore other engine profiles for now
   if (type !== 'bpmn') {
-    return 0;
+    return null;
   }
 
   const processVariables = [];

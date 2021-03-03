@@ -9,6 +9,10 @@
  */
 
 import {
+  isNumber
+} from 'min-dash';
+
+import {
   getProcessVariablesCount
 } from './processVariables';
 
@@ -22,12 +26,18 @@ export default async function(file, type) {
   // (1) process variables
   const processVariablesCount = await getProcessVariablesCount(file, type);
 
+  if (isNumber(processVariablesCount)) {
+    metrics = {
+      ...metrics,
+      processVariablesCount
+    };
+  }
+
   // (2) user tasks
   const userTaskMetrics = await getUserTaskMetrics(file, type);
 
   metrics = {
     ...metrics,
-    processVariablesCount,
     tasks: {
       userTask: userTaskMetrics
     }

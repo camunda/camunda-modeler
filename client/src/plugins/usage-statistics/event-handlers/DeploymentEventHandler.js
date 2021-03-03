@@ -70,7 +70,13 @@ export default class DeploymentEventHandler extends BaseEventHandler {
       return {};
     }
 
-    return await parseEngineProfile(contents);
+    const {
+      executionPlatform
+    } = await parseEngineProfile(contents);
+
+    return {
+      executionPlatform
+    };
   }
 
   handleDeployment = async (event) => {
