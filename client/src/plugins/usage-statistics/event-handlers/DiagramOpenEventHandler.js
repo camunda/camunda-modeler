@@ -89,7 +89,13 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
       return {};
     }
 
-    return await getEngineProfile(contents);
+    const {
+      executionPlatform
+    } = await getEngineProfile(contents);
+
+    return {
+      executionPlatform
+    };
   }
 
   onDiagramOpened = async (type, context = {}) => {

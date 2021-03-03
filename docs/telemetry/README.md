@@ -103,8 +103,7 @@ In terms it is set in the diagram, we add the engine profile:
 ```json
 {
   "engineProfile": {
-    "executionPlatform": "Camunda Cloud",
-    "executionPlatformVersion": "1.0.0"
+    "executionPlatform": "Camunda Cloud"
   }
 }
 ```
@@ -185,8 +184,7 @@ In terms it is set in the diagram, we add the engine profile:
 ```json
 {
   "engineProfile": {
-    "executionPlatform": "Camunda Cloud",
-    "executionPlatformVersion": "1.0.0"
+    "executionPlatform": "Camunda Cloud"
   }
 }
 ```

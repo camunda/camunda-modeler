@@ -317,6 +317,67 @@ describe('<DiagramOpenEventHandler>', () => {
         expect(diagramMetrics.processVariablesCount).to.eql(0);
       });
 
+
+      it('should NOT send process variables count for dmn files', async () => {
+
+        // given
+        const subscribe = sinon.spy();
+
+        const onSend = sinon.spy();
+
+        const tab = createTab({
+          type: 'dmn'
+        });
+
+        const config = { get: () => null };
+
+        // when
+        const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+        diagramOpenEventHandler.enable();
+
+        const bpmnCallback = subscribe.getCall(0).args[1];
+
+        await bpmnCallback({ tab });
+
+        const { diagramMetrics } = onSend.getCall(0).args[0];
+
+        // then
+        expect(diagramMetrics.processVariablesCount).to.not.exist;
+      });
+
+
+      it('should NOT send process variables count for cloud-bpmn files', async () => {
+
+        // given
+        const subscribe = sinon.spy();
+
+        const onSend = sinon.spy();
+
+        const tab = createTab({
+          type: 'cloud-bpmn',
+          file: {
+            contents: emptyXML
+          }
+        });
+
+        const config = { get: () => null };
+
+        // when
+        const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+        diagramOpenEventHandler.enable();
+
+        const bpmnCallback = subscribe.getCall(0).args[1];
+
+        await bpmnCallback({ tab });
+
+        const { diagramMetrics } = onSend.getCall(0).args[0];
+
+        // then
+        expect(diagramMetrics.processVariablesCount).to.not.exist;
+      });
+
     });
 
 
@@ -632,8 +693,7 @@ describe('<DiagramOpenEventHandler>', () => {
 
       // then
       expect(engineProfile).to.eql({
-        executionPlatform: 'Camunda Platform',
-        executionPlatformVersion: '7.15.0'
+        executionPlatform: 'Camunda Platform'
       });
     });
 
