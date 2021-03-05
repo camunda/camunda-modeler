@@ -260,7 +260,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
 
                 <Modal.Title>
                   {
-                    title || 'Deploy Diagram'
+                    title || 'Deploy Diagram to Camunda Platform'
                   }
                 </Modal.Title>
 

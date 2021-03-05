@@ -62,7 +62,7 @@ export default class StartInstanceConfigModal extends React.PureComponent {
 
               <Modal.Body>
                 <p className="intro">
-                  Enter details to start a process instance on the Camunda Engine. Alternatively, you can start a process instance <a href="https://docs.camunda.org/get-started/quick-start/deploy/#start-a-process-instance">via a Rest Client</a>.
+                  Enter details to start a process instance on Camunda Platform. Alternatively, you can start a process instance <a href="https://docs.camunda.org/get-started/quick-start/deploy/#start-a-process-instance">via a Rest Client</a>.
                 </p>
 
                 <fieldset>

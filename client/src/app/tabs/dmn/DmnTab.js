@@ -18,7 +18,7 @@ const DmnTab = createTab('DmnTab', [
   {
     type: 'dmn',
     editor: DmnEditor,
-    defaultName: 'Diagram'
+    defaultName: 'Diagram (Camunda DMN Engine)'
   },
   {
     type: 'xml',

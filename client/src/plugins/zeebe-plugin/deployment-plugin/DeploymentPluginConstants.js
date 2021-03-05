@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-export const MODAL_TITLE = 'Deploy Diagram';
+export const MODAL_TITLE = 'Deploy Diagram to Camunda Cloud';
 export const ENDPOINT_CONFIGURATION_TITLE = 'Endpoint Configuration';
 export const CANCEL = 'Cancel';
 export const DEPLOY = 'Deploy';

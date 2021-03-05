@@ -18,7 +18,7 @@ const CloudBpmnTab = createTab('CloudBpmnTab', [
   {
     type: 'cloud-bpmn',
     editor: BpmnEditor,
-    defaultName: 'Diagram (Zeebe)'
+    defaultName: 'Diagram (Zeebe Engine)'
   },
   {
     type: 'xml',

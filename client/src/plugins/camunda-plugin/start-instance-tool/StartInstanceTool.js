@@ -95,7 +95,7 @@ export default class StartInstanceTool extends PureComponent {
       action
     } = await deployService.getDeployConfigurationFromUserInput(tab, deployConfig, {
       title: 'Start Process Instance - Step 1 of 2',
-      intro: 'Specify deployment details to deploy this diagram to Camunda.',
+      intro: 'Specify deployment details to deploy this diagram to Camunda Platform.',
       primaryAction: 'Next'
     });
 
