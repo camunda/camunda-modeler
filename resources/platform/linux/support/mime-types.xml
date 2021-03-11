@@ -29,4 +29,12 @@
     <root-XML namespaceURI="http://www.omg.org/spec/DMN/20151101/dmn11.xsd" localName="definitions"/>
     <root-XML namespaceURI="http://www.omg.org/spec/DMN/20151101/dmn.xsd" localName="definitions"/>
   </mime-type>
+  <mime-type type="application/camunda-form">
+    <comment>FORM file</comment>
+    <acronym>FORM</acronym>
+    <expanded-acronym>Camunda Form file</expanded-acronym>
+    <glob pattern="*.form"/>
+    <sub-class-of type="application/json"/>
+    <generic-icon name="application-json"/>
+  </mime-type>
 </mime-info>

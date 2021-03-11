@@ -31,7 +31,7 @@ cat << EOF > $DESKTOP_FILE
 Version=1.0
 Encoding=UTF-8
 Name=Camunda Modeler
-Keywords=bpmn;cmmn;dmn;modeler;camunda
+Keywords=bpmn;cmmn;dmn;form;modeler;camunda
 GenericName=Process Modeling Tool
 Type=Application
 Categories=Development
@@ -39,7 +39,7 @@ Terminal=false
 StartupNotify=true
 Path=$CAMUNDA_MODELER_BIN
 Exec="$CAMUNDA_MODELER_BIN/camunda-modeler" %F
-MimeType=application/bpmn;application/cmmn;application/dmn
+MimeType=application/bpmn;application/cmmn;application/dmn;application/camunda-form
 Icon=$ICON_NAME.png
 X-Ayatana-Desktop-Shortcuts=NewWindow;RepositoryBrowser
 EOF
