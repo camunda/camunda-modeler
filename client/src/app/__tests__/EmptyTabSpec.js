@@ -16,7 +16,7 @@ import {
 
 import EmptyTab from '../EmptyTab';
 
-import Flags, { DISABLE_DMN } from '../../util/Flags';
+import Flags, { DISABLE_DMN, DISABLE_FORM } from '../../util/Flags';
 
 /* global sinon */
 
@@ -38,11 +38,12 @@ describe('<EmptyTab>', function() {
       buttons.forEach(wrapper => wrapper.simulate('click'));
 
       // then
-      expect(onAction).to.have.been.calledThrice;
+      expect(onAction).to.have.callCount(4);
       expect(onAction.args).to.eql([
         [ 'create-bpmn-diagram' ],
         [ 'create-cloud-bpmn-diagram' ],
-        [ 'create-dmn-diagram' ]
+        [ 'create-dmn-diagram' ],
+        [ 'create-form' ]
       ]);
     });
 
@@ -81,6 +82,48 @@ describe('<EmptyTab>', function() {
       expect(tree.findWhere(
         wrapper => wrapper.text().startsWith('DMN diagram')).first().exists()).to.be.true;
     });
+  });
+
+
+
+  describe('disabling form', function() {
+
+    afterEach(sinon.restore);
+
+    it('should NOT display form on flag', function() {
+
+      // given
+      sinon.stub(Flags, 'get').withArgs(DISABLE_FORM).returns(true);
+
+      // when
+      const {
+        tree
+      } = createEmptyTab();
+
+      // then
+      expect(
+        tree.findWhere(
+          wrapper => wrapper.text().startsWith('Form')
+        ).first().exists()
+      ).to.be.false;
+    });
+
+
+    it('should display form without flag', function() {
+
+      // given
+      const {
+        tree
+      } = createEmptyTab();
+
+      // then
+      expect(
+        tree.findWhere(
+          wrapper => wrapper.text().startsWith('Form')
+        ).first().exists()
+      ).to.be.true;
+    });
+
   });
 
 });

@@ -69,7 +69,7 @@ module.exports = {
             use: 'react-svg-loader'
           },
           {
-            test: /\.(bpmn|cmmn|dmn)$/,
+            test: /\.(bpmn|cmmn|dmn|form)$/,
             use: 'raw-loader'
           },
           {

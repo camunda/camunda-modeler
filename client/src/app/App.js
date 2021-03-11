@@ -1593,6 +1593,10 @@ export class App extends PureComponent {
       return this.createDiagram('cmmn');
     }
 
+    if (action === 'create-form') {
+      return this.createDiagram('form');
+    }
+
     if (action === 'create-cloud-bpmn-diagram') {
       return this.createDiagram('cloud-bpmn');
     }

@@ -16,7 +16,7 @@ import {
   Tab
 } from './primitives';
 
-import Flags, { DISABLE_DMN } from '../util/Flags';
+import Flags, { DISABLE_DMN, DISABLE_FORM } from '../util/Flags';
 
 
 export default class EmptyTab extends PureComponent {
@@ -42,6 +42,12 @@ export default class EmptyTab extends PureComponent {
           {
             !Flags.get(DISABLE_DMN) && (
               <button className="btn btn-secondary" onClick={ () => onAction('create-dmn-diagram') }>DMN diagram (Camunda DMN Engine)</button>
+            )
+          }
+
+          {
+            !Flags.get(DISABLE_FORM) && (
+              <button className="btn btn-secondary" onClick={ () => onAction('create-form') }>Form</button>
             )
           }
         </div>
