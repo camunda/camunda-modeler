@@ -141,8 +141,14 @@ describe('<DeploymentConfigModal>', () => {
       // then
       setTimeout(() => {
         wrapper.setProps({});
-        expect(wrapper.find('.invalid-feedback')).to.have.length(1);
-        done();
+
+        try {
+          expect(wrapper.find('.invalid-feedback')).to.have.length(1);
+        } catch (err) {
+          return done(err);
+        }
+
+        return done();
       });
     });
 
