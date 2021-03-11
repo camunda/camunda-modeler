@@ -33,6 +33,7 @@ export default new Flags();
 
 export const DISABLE_CMMN = 'disable-cmmn';
 export const DISABLE_DMN = 'disable-dmn';
+export const DISABLE_FORM = 'disable-form';
 export const DISABLE_ADJUST_ORIGIN = 'disable-adjust-origin';
 export const DISABLE_PLUGINS = 'disable-plugins';
 export const RELAUNCH = 'relaunch';

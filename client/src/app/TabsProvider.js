@@ -12,6 +12,7 @@ import bpmnDiagram from './tabs/bpmn/diagram.bpmn';
 import cloudBpmnDiagram from './tabs/cloud-bpmn/diagram.bpmn';
 import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
+import form from './tabs/form/initial.form';
 
 import replaceIds from '@bpmn-io/replace-ids';
 
@@ -276,13 +277,47 @@ export default class TabsProvider {
             action: 'create-dmn-diagram'
           };
         }
+      },
+      form: {
+        name: 'FORM',
+        encoding: ENCODING_UTF8,
+        exports: {},
+        extensions: [ 'form' ],
+        canOpen(file) {
+          return file.name.endsWith('.form');
+        },
+        getComponent(options) {
+          return import('./tabs/form');
+        },
+        getInitialContents() {
+          return form;
+        },
+        getInitialFilename(suffix) {
+          return `form_${suffix}.form`;
+        },
+        getHelpMenu() {
+          return [];
+        },
+        getNewFileMenu() {
+          return [{
+            label: 'Form',
+            action: 'create-form'
+          }];
+        },
+        getNewFileButton() {
+          return {
+            label: 'Create new Form',
+            action: 'create-form'
+          };
+        }
       }
     };
 
     this.providersByFileType = {
       bpmn: [ this.providers['cloud-bpmn'], this.providers.bpmn ],
       dmn: [ this.providers.dmn ],
-      cmmn: [ this.providers.cmmn ]
+      cmmn: [ this.providers.cmmn ],
+      form: [ this.providers.form ]
     };
 
     if (Flags.get('disable-cmmn', true)) {
@@ -293,6 +328,11 @@ export default class TabsProvider {
     if (Flags.get('disable-dmn')) {
       delete this.providers.dmn;
       delete this.providersByFileType.dmn;
+    }
+
+    if (Flags.get('disable-form')) {
+      delete this.providers.form;
+      delete this.providersByFileType.form;
     }
   }
 

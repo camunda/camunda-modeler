@@ -29,7 +29,7 @@ describe('TabsProvider', function() {
   });
 
 
-  it('should provide BPMN, DMN and empty tab without flags', function() {
+  it('should provide BPMN, DMN, FORM and empty tab without flags', function() {
 
     // given
     const tabsProvider = new TabsProvider();
@@ -37,6 +37,7 @@ describe('TabsProvider', function() {
     // then
     expect(tabsProvider.getProvider('bpmn')).to.exist;
     expect(tabsProvider.getProvider('dmn')).to.exist;
+    expect(tabsProvider.getProvider('form')).to.exist;
 
     expect(tabsProvider.getProvider('empty')).to.exist;
   });
@@ -83,6 +84,7 @@ describe('TabsProvider', function() {
     expect(tabsProvider.getProvider('bpmn').exports).to.eql(expected);
     expect(tabsProvider.getProvider('cmmn').exports).to.eql(expected);
     expect(tabsProvider.getProvider('dmn').exports).to.eql(expected);
+    expect(tabsProvider.getProvider('form').exports).to.eql({});
   });
 
 
@@ -118,6 +120,8 @@ describe('TabsProvider', function() {
 
     verifyExists('dmn');
 
+    verifyExists('form');
+
 
     it('for an empty file of known type', function() {
 
@@ -152,6 +156,7 @@ describe('TabsProvider', function() {
     expect(tabsProvider.createTab('bpmn')).to.exist;
     expect(tabsProvider.createTab('cmmn')).to.exist;
     expect(tabsProvider.createTab('dmn')).to.exist;
+    expect(tabsProvider.createTab('form')).to.exist;
   });
 
 
@@ -166,6 +171,7 @@ describe('TabsProvider', function() {
       expect(await tabsProvider.getTabComponent('bpmn')).to.exist;
       expect(await tabsProvider.getTabComponent('cmmn')).to.exist;
       expect(await tabsProvider.getTabComponent('dmn')).to.exist;
+      expect(await tabsProvider.getTabComponent('form')).to.exist;
 
       expect(await tabsProvider.getTabComponent('empty')).to.exist;
     }
@@ -284,7 +290,7 @@ describe('TabsProvider', function() {
     const providerNames = tabsProvider.getProviderNames();
 
     // then
-    expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN' ]);
+    expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN', 'FORM' ]);
   });
 
 

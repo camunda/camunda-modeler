@@ -1,0 +1,9 @@
+{
+  "components": [
+    {
+      "key": "submit",
+      "label": "Submit",
+      "type": "button"
+    }
+  ]
+}
