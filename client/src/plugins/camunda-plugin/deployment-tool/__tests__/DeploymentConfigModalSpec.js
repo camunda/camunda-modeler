@@ -149,7 +149,7 @@ describe('<DeploymentConfigModal>', () => {
         }
 
         return done();
-      });
+      }, 100);
     });
 
 
