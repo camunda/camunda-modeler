@@ -20,9 +20,9 @@ const DEFAULT_OPTIONS = {
   additionalModules: [
     {
       __init__: [
-        'propertiesProvider',
+        'templatesPropertiesProvider',
       ],
-      propertiesProvider: [ 'type', PropertiesProvider ]
+      templatesPropertiesProvider: [ 'type', PropertiesProvider ]
     }
   ],
   exporter: {
@@ -67,8 +67,15 @@ describe('PropertiesProvider', function() {
 
     const serviceTask = elementRegistry.get('ServiceTask_1');
 
+    const providers = propertiesPanel._getProviders();
+
+    // assume
+    // [0] CamundaPropertiesProvider
+    // [1] our custom PropertiesProvider
+    expect(providers).to.have.length(2);
+
     // when
-    const tabs = propertiesPanel._propertiesProvider.getTabs(serviceTask);
+    const tabs = propertiesPanel._getTabs(serviceTask);
 
     // then
     const generalTab = tabs.find(({ id }) => id === 'general');

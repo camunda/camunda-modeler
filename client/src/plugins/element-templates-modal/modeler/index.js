@@ -14,8 +14,8 @@ import PropertiesProvider from './PropertiesProvider';
 export default {
   __init__: [
     'elementTemplatesModalEditorActions',
-    'propertiesProvider'
+    'templatesPropertiesProvider'
   ],
   elementTemplatesModalEditorActions: [ 'type', EditorActions ],
-  propertiesProvider: [ 'type', PropertiesProvider ]
+  templatesPropertiesProvider: [ 'type', PropertiesProvider ]
 };

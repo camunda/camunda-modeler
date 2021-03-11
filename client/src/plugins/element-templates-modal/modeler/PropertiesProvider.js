@@ -8,22 +8,20 @@
  * except in compliance with the MIT License.
  */
 
-import CamundaPropertiesProvider from 'bpmn-js-properties-panel/lib/provider/camunda/CamundaPropertiesProvider';
-
 import entryFactory from 'bpmn-js-properties-panel/lib/factory/EntryFactory';
 
 
-export default class PropertiesProvider extends CamundaPropertiesProvider {
-  constructor(config, injector, translate) {
-    super(...CamundaPropertiesProvider.$inject.map(dependency => injector.get(dependency)));
+export default class PropertiesProvider {
+  constructor(config, propertiesPanel, translate) {
+
+    propertiesPanel.registerProvider(this);
 
     this._translate = translate;
     this._config = config;
+  }
 
-    const getTabs = this.getTabs;
-
-    this.getTabs = element => {
-      const tabs = getTabs(element);
+  getTabs = element => {
+    return tabs => {
 
       const generalTab = tabs.find(({ id }) => id === 'general');
 
@@ -45,7 +43,7 @@ export default class PropertiesProvider extends CamundaPropertiesProvider {
 
       return tabs;
     };
-  }
+  };
 
   addElementTemplatesModalEntry = entries => {
     const elementTemplateChooserEntry = entries.find(({ id }) => id === 'elementTemplate-chooser');
@@ -70,6 +68,6 @@ export default class PropertiesProvider extends CamundaPropertiesProvider {
 
 PropertiesProvider.$inject = [
   'config.propertiesProvider',
-  'injector',
+  'propertiesPanel',
   'translate'
 ];
