@@ -235,6 +235,27 @@ describe('TabsProvider', function() {
     });
 
 
+    it('should take cloud-bpmn first for known bpmn file', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const file = {
+        name: 'foo.xml',
+        path: '/a/foo.xml',
+        contents: require('./TabsProviderSpec.cloud.bpmn')
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab.name).to.eql(file.name);
+      expect(tab.title).to.eql(file.path);
+      expect(tab.type).to.eql('cloud-bpmn');
+    });
+
+
     it('should not create for unknown file', function() {
 
       // given
