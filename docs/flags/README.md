@@ -29,10 +29,11 @@ Flags passed as command line arguments take precedence over those configured via
 
 | flag | default value |
 | ------------- | ------------- |
-| "disable-plugins"  | false  |
-| "disable-adjust-origin"  | false  |
+| "disable-plugins"  | false |
+| "disable-adjust-origin"  | false |
 | "disable-cmmn" | true |
 | "disable-dmn" | false |
+| "disable-remote-interaction" | false |
 | "single-instance" | false |
 | "user-data-dir" | [Electron default](../search-paths) |
 
