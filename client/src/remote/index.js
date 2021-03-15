@@ -24,6 +24,10 @@ const {
   ipcRenderer
 } = window.getAppPreload();
 
+// remove the preloaded handles from the global scope
+// related to https://github.com/camunda/camunda-modeler/issues/2143
+delete window.getAppPreload;
+
 export const backend = new Backend(ipcRenderer, platform);
 
 export const fileSystem = new FileSystem(backend);
