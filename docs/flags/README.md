@@ -35,6 +35,7 @@ Flags passed as command line arguments take precedence over those configured via
 | "disable-dmn" | false |
 | "single-instance" | false |
 | "user-data-dir" | [Electron default](../search-paths) |
+| "enable-zeebe-user-tasks" | false |
 
 
 ## Examples
