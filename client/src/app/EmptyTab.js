@@ -47,7 +47,7 @@ export default class EmptyTab extends PureComponent {
 
           {
             !Flags.get(DISABLE_FORM) && (
-              <button className="btn btn-secondary" onClick={ () => onAction('create-form') }>Form</button>
+              <button className="btn btn-secondary" onClick={ () => onAction('create-form') }>Form (Camunda Forms)</button>
             )
           }
         </div>

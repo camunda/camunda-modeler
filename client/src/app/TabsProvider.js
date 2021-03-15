@@ -300,13 +300,13 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'Form',
+            label: 'Form (Camunda Forms)',
             action: 'create-form'
           }];
         },
         getNewFileButton() {
           return {
-            label: 'Create new Form',
+            label: 'Create new Form (Camunda Forms)',
             action: 'create-form'
           };
         }
