@@ -89,51 +89,6 @@ export default class TabsProvider {
           return null;
         }
       },
-      bpmn: {
-        name: 'BPMN',
-        encoding: ENCODING_UTF8,
-        exports: {
-          png: EXPORT_PNG,
-          jpeg: EXPORT_JPEG,
-          svg: EXPORT_SVG
-        },
-        extensions: [ 'bpmn', 'xml' ],
-        canOpen(file) {
-          return parseDiagramType(file.contents) === 'bpmn';
-        },
-        getComponent(options) {
-          return import('./tabs/bpmn');
-        },
-        getInitialContents(options) {
-          return bpmnDiagram;
-        },
-        getInitialFilename(suffix) {
-          return `diagram_${suffix}.bpmn`;
-        },
-        getHelpMenu() {
-          return [{
-            label: 'BPMN 2.0 Tutorial',
-            action: 'https://camunda.org/bpmn/tutorial/'
-          },
-          {
-            label: 'BPMN Modeling Reference',
-            action: 'https://camunda.org/bpmn/reference/'
-          }];
-        },
-        getNewFileMenu() {
-          return [{
-            label: 'BPMN Diagram (Camunda Engine)',
-            accelerator: 'CommandOrControl+T',
-            action: 'create-bpmn-diagram'
-          }];
-        },
-        getNewFileButton() {
-          return {
-            label: 'Create new BPMN Diagram (Camunda Engine)',
-            action: 'create-bpmn-diagram'
-          };
-        }
-      },
       'cloud-bpmn': {
         name: null,
         encoding: ENCODING_UTF8,
@@ -190,6 +145,51 @@ export default class TabsProvider {
           return {
             label: 'Create new BPMN Diagram (Zeebe Engine)',
             action: 'create-cloud-bpmn-diagram'
+          };
+        }
+      },
+      bpmn: {
+        name: 'BPMN',
+        encoding: ENCODING_UTF8,
+        exports: {
+          png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'bpmn', 'xml' ],
+        canOpen(file) {
+          return parseDiagramType(file.contents) === 'bpmn';
+        },
+        getComponent(options) {
+          return import('./tabs/bpmn');
+        },
+        getInitialContents(options) {
+          return bpmnDiagram;
+        },
+        getInitialFilename(suffix) {
+          return `diagram_${suffix}.bpmn`;
+        },
+        getHelpMenu() {
+          return [{
+            label: 'BPMN 2.0 Tutorial',
+            action: 'https://camunda.org/bpmn/tutorial/'
+          },
+          {
+            label: 'BPMN Modeling Reference',
+            action: 'https://camunda.org/bpmn/reference/'
+          }];
+        },
+        getNewFileMenu() {
+          return [{
+            label: 'BPMN Diagram (Camunda Engine)',
+            accelerator: 'CommandOrControl+T',
+            action: 'create-bpmn-diagram'
+          }];
+        },
+        getNewFileButton() {
+          return {
+            label: 'Create new BPMN Diagram (Camunda Engine)',
+            action: 'create-bpmn-diagram'
           };
         }
       },
