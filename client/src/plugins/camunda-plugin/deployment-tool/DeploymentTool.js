@@ -226,7 +226,7 @@ export default class DeploymentTool extends PureComponent {
     await this.saveEndpoint(endpoint);
 
     const tabConfiguration = {
-      deployment,
+      deployment: withSerializedAttachments(deployment),
       endpointId: endpoint.id
     };
 
@@ -283,10 +283,12 @@ export default class DeploymentTool extends PureComponent {
       endpointId
     } = tabConfig;
 
+    const deploymentWithAttachments = await this.withAttachments(deployment);
+
     const endpoints = await this.getEndpoints();
 
     return {
-      deployment,
+      deployment: deploymentWithAttachments,
       endpoint: endpoints.find(endpoint => endpoint.id === endpointId)
     };
   }
@@ -304,12 +306,7 @@ export default class DeploymentTool extends PureComponent {
   }
 
   canDeployWithConfiguration(configuration) {
-
-    // TODO(nikku): we'll re-enable this, once we make re-deploy
-    // the primary button action: https://github.com/camunda/camunda-modeler/issues/1440
-    return false;
-
-    // return this.validator.isConfigurationValid(configuration);
+    return this.validator.isConfigurationValid(configuration);
   }
 
   async getConfigurationFromUserInput(tab, providedConfiguration, uiOptions) {
@@ -339,6 +336,46 @@ export default class DeploymentTool extends PureComponent {
         }
       });
     });
+  }
+
+  async withAttachments(deployment) {
+    const fileSystem = this.props._getGlobal('fileSystem');
+    const { attachments = [] } = deployment;
+
+    async function readFile(path) {
+      try {
+
+        // (1) try to read file from file system
+        const file = await fileSystem.readFile(path, { encoding: false });
+
+        // (2a) store contents as a File object
+        // @barmac: This is required for the performance reasons. The contents retrieved from FS
+        // is a Uint8Array. During the form submission, Formik builds a map of touched fields
+        // and it traverses all nested objects for that. The outcome was that the form would freeze
+        // for a couple of seconds when one tried to re-deploy a file of size >1MB, because Formik
+        // tried to build a map with bits' indexes as keys with all values as `true`. Wrapping the
+        // contents in a File object prevents such behavior.
+        return {
+          ...file,
+          contents: new File([ file.contents ], file.name)
+        };
+      } catch {
+
+        // (2b) if read fails, return an empty file descriptor
+        return {
+          contents: null,
+          path,
+          name: basename(path)
+        };
+      }
+    }
+
+    const files = await Promise.all(attachments.map(({ path }) => readFile(path)));
+
+    return {
+      ...deployment,
+      attachments: files
+    };
   }
 
   getEndpoints() {
@@ -404,6 +441,7 @@ export default class DeploymentTool extends PureComponent {
     return {
       endpoint,
       deployment: {
+        attachments: [],
         name: withoutExtension(tab.name),
         ...deployment
       }
@@ -430,10 +468,14 @@ export default class DeploymentTool extends PureComponent {
       modalState
     } = this.state;
 
+    // TODO(nikku): we'll remove the flag once we make re-deploy
+    // the primary button action: https://github.com/camunda/camunda-modeler/issues/1440
+    const deploy = () => this.deploy({ configure: true });
+
     return <React.Fragment>
       { isCamundaTab(activeTab) && <Fill slot="toolbar" group="8_deploy">
         <Button
-          onClick={ this.deploy }
+          onClick={ deploy }
           title="Deploy current diagram"
         >
           <Icon name="deploy" />
@@ -492,4 +534,15 @@ function isCamundaTab(tab) {
     'cmmn',
     'dmn'
   ].includes(tab.type);
+}
+
+function withSerializedAttachments(deployment) {
+  const { attachments: fileList = [] } = deployment;
+  const attachments = fileList.map(file => ({ path: file.path }));
+
+  return { ...deployment, attachments };
+}
+
+function basename(filePath) {
+  return filePath.split('\\').pop().split('/').pop();
 }

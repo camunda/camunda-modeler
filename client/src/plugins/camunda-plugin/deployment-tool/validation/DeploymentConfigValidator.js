@@ -108,7 +108,8 @@ export default class DeploymentConfigValidator {
 
   validateDeployment(deployment = {}) {
     return this.validate(deployment, {
-      name: this.validateDeploymentName
+      name: this.validateDeploymentName,
+      attachments: this.validateAttachments
     });
   }
 
@@ -120,6 +121,16 @@ export default class DeploymentConfigValidator {
       password: endpoint.authType === AuthTypes.basic && this.validatePassword,
       username: endpoint.authType === AuthTypes.basic && this.validateUsername
     });
+  }
+
+  validateAttachments(attachments = []) {
+    const errors = attachments.map(({ contents }) => {
+      if (contents === null) {
+        return 'File cannot be found.';
+      }
+    });
+
+    return errors.some(error => !!error) ? errors : undefined;
   }
 
   validate(values, validators) {
@@ -194,13 +205,21 @@ export default class DeploymentConfigValidator {
     });
   }
 
+  /**
+   * Check if configuration is valid.
+   *
+   * @param {*} configuration
+   * @returns {boolean}
+   */
   isConfigurationValid(configuration) {
+    if (!configuration) {
+      return false;
+    }
 
     const errors = this.validateBasic(configuration);
 
     return !hasKeys(errors);
   }
-
 }
 
 

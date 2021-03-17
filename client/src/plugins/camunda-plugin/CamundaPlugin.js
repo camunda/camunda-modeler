@@ -49,6 +49,7 @@ class DeployService {
   getSavedDeployConfiguration = (...args) => this.current().getSavedConfiguration(...args);
   getDeployConfigurationFromUserInput = (...args) => this.current().getConfigurationFromUserInput(...args);
   saveDeployConfiguration = (...args) => this.current().saveConfiguration(...args);
+  canDeployWithConfiguration = (...args) => this.current().canDeployWithConfiguration(...args);
 
   current() {
     return this.deploymentRef.current;

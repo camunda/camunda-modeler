@@ -22,7 +22,8 @@ import {
   Modal,
   CheckBox,
   Radio,
-  TextInput
+  TextInput,
+  FileInput
 } from '../../../shared/ui';
 
 import {
@@ -246,6 +247,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
           initialValues={ values }
           onSubmit={ onSubmit }
           validateOnBlur={ false }
+          validateOnMount
         >
           { form => {
 
@@ -389,6 +391,19 @@ export default class DeploymentConfigModal extends React.PureComponent {
                         )
                       }
                     </div>
+                  </fieldset>
+
+                  <fieldset>
+                    <legend>
+                      Include additional files
+                    </legend>
+
+                    <Field
+                      name="deployment.attachments"
+                      component={ FileInput }
+                      label="Select files"
+                      validate={ validator.validateAttachments }
+                    />
                   </fieldset>
                 </Modal.Body>
 

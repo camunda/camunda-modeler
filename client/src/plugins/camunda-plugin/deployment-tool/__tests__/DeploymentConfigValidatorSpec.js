@@ -15,6 +15,7 @@ import AuthTypes from '../../shared/AuthTypes';
 
 const EMPTY_ENDPOINT_ERROR = 'Endpoint URL must not be empty.';
 const EMPTY_DEPLOYMENT_NAME_ERROR = 'Deployment name must not be empty.';
+const FILE_NOT_FOUND_ERROR = 'File cannot be found.';
 const EMPTY_USERNAME_ERROR = 'Credentials are required to connect to the server.';
 const EMPTY_PASSWORD_ERROR = 'Credentials are required to connect to the server.';
 const EMPTY_TOKEN_ERROR = 'Token must not be empty.';
@@ -46,6 +47,22 @@ describe('<DeploymentConfigValidator>', () => {
     expect(validate()).to.eql(EMPTY_DEPLOYMENT_NAME_ERROR);
     expect(validate('')).to.eql(EMPTY_DEPLOYMENT_NAME_ERROR);
     expect(validate('deployment name')).to.not.exist;
+  });
+
+
+  it('should validate attachments', () => {
+
+    // given
+    const validate = attachments => validator.validateAttachments(attachments);
+
+    // then
+    expect(validate([])).to.not.exist;
+    expect(validate([{ contents: 'content' }])).to.not.exist;
+    expect(validate([{ contents: null }])).to.eql([ FILE_NOT_FOUND_ERROR ]);
+    expect(validate([
+      { contents: null },
+      { contents: 'content' }
+    ])).to.eql([ FILE_NOT_FOUND_ERROR, undefined ]);
   });
 
 
@@ -318,5 +335,111 @@ describe('<DeploymentConfigValidator>', () => {
       expect(onConnectionStatusUpdate).to.not.have.been.called;
       done();
     }, 1000);
+  });
+
+
+  describe('#isConfigurationValid', () => {
+
+    it('should return true for valid configuration', () => {
+
+      // given
+      const config = {
+        deployment: {
+          name: 'name',
+          attachments: []
+        },
+        endpoint: {
+          authType: AuthTypes.bearer,
+          url: 'http://localhost',
+          token: 'token',
+        }
+      };
+
+      // then
+      expect(validator.isConfigurationValid(config)).to.be.true;
+    });
+
+
+    it('should return false for missing attachments', () => {
+
+      // given
+      const config = {
+        deployment: {
+          name: 'name',
+          attachments: [{
+            contents: null
+          }]
+        },
+        endpoint: {
+          authType: AuthTypes.bearer,
+          url: 'http://localhost',
+          token: 'token',
+        }
+      };
+
+      // then
+      expect(validator.isConfigurationValid(config)).to.be.false;
+    });
+
+
+    it('should return false for missing configuration', () => {
+
+      // then
+      expect(validator.isConfigurationValid()).to.be.false;
+    });
+
+
+    // TODO(@barmac): The following test cases fail due to broken validation logic. To put it short,
+    // most validators ignore invalid values if no `isOnBeforeSubmit` parameter is passed to them.
+    // We should rewrite the validators so that they no longer care about the form state.
+    it.skip('should return false for invalid configuration', () => {
+
+      // given
+      const config = {
+        deployment: {
+          name: '',
+          attachments: []
+        },
+        endpoint: {
+          authType: AuthTypes.bearer,
+          url: 'http://localhost',
+          token: '',
+        }
+      };
+
+      // then
+      expect(validator.isConfigurationValid(config)).to.be.false;
+    });
+
+
+    it.skip('should return false for missing endpoint', () => {
+
+      // given
+      const config = {
+        deployment: {
+          name: '',
+          attachments: []
+        }
+      };
+
+      // then
+      expect(validator.isConfigurationValid(config)).to.be.false;
+    });
+
+
+    it.skip('should return false for missing deployment', () => {
+
+      // given
+      const config = {
+        endpoint: {
+          authType: AuthTypes.bearer,
+          url: 'http://localhost',
+          token: '',
+        }
+      };
+
+      // then
+      expect(validator.isConfigurationValid(config)).to.be.false;
+    });
   });
 });
