@@ -34,6 +34,18 @@ const TOMCAT_DEFAULT_URL = 'http://localhost:8080/engine-rest';
 
 describe('<DeploymentTool>', () => {
 
+  let fetch;
+
+  beforeEach(() => {
+    fetch = sinon.stub(window, 'fetch').rejects(new Error('fetch is disabled'));
+  });
+
+
+  afterEach(() => {
+    fetch.restore();
+  });
+
+
   it('should render', () => {
     createDeploymentTool();
   });
@@ -114,6 +126,7 @@ describe('<DeploymentTool>', () => {
         deployment: {
           name: 'diagram',
           tenantId: '',
+          attachments: []
         },
         endpointId: savedEndpoint.id
       };
@@ -187,6 +200,104 @@ describe('<DeploymentTool>', () => {
         CONFIG_KEY,
         { ...omit(configuration, [ 'endpoint' ]), endpointId: configuration.endpoint.id }
       ]);
+    });
+
+
+    it('should deploy with saved attachments', async () => {
+
+      // given
+      const file = {
+        path: '/file/path/user.form',
+        name: 'user.form',
+        contents: []
+      };
+      const attachments = [{
+        path: file.path
+      }];
+      const configuration = createConfiguration({ attachments });
+      const config = {
+        get(key, defaultValue) {
+          return key === ENGINE_ENDPOINTS_CONFIG_KEY ?
+            [ configuration.endpoint ] : defaultValue;
+        },
+        getForFile() {
+          return createSavedConfiguration(configuration);
+        }
+      };
+      const fileSystem = {
+        readFile() {
+          return file;
+        }
+      };
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+      const deploySpy = sinon.spy();
+
+      const {
+        instance
+      } = createDeploymentTool({ activeTab, deploySpy, config, fileSystem });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(deploySpy).to.have.been.calledOnce;
+
+      const { attachments: deployedAttachments } = deploySpy.args[0][1].deployment;
+
+      expect(deployedAttachments[0]).have.property('name', file.name);
+      expect(deployedAttachments[0]).have.property('path', file.path);
+      expect(deployedAttachments[0]).have.property('contents');
+    });
+
+
+    it('should deploy with user-provided configuration if file read fails', async () => {
+
+      // given
+      const file = {
+        path: '/file/path/user.form',
+        name: 'user.form',
+        contents: []
+      };
+      const attachments = [{
+        path: file.path
+      }];
+      const savedConfiguration = createConfiguration({ attachments });
+      const config = {
+        get(key, defaultValue) {
+          return key === ENGINE_ENDPOINTS_CONFIG_KEY ?
+            [ savedConfiguration.endpoint ] : defaultValue;
+        },
+        getForFile() {
+          return createSavedConfiguration(savedConfiguration);
+        }
+      };
+      const fileSystem = {
+        readFile() {
+          throw new Error('file not found');
+        }
+      };
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+      const deploySpy = sinon.spy();
+      const deployment = { ...savedConfiguration.deployment, attachments: [ file ] };
+
+      const {
+        instance
+      } = createDeploymentTool({ activeTab, deploySpy, config, fileSystem, deployment });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(deploySpy).to.have.been.calledOnce;
+
+      const { attachments: deployedAttachments } = deploySpy.args[0][1].deployment;
+
+      expect(deployedAttachments[0]).have.property('name', file.name);
+      expect(deployedAttachments[0]).have.property('path', file.path);
+      expect(deployedAttachments[0]).have.property('contents');
+      expect(deployedAttachments[0].contents).not.to.be.null;
     });
 
 
@@ -909,7 +1020,7 @@ function createDeploymentTool({
     case (props.actionTriggered &&
       props.actionTriggered.emitEvent == event &&
       props.actionTriggered.type == context.type):
-      props.actionTriggered.handler();
+      return props.actionTriggered.handler();
     }
   };
 
@@ -923,6 +1034,7 @@ function createDeploymentTool({
     triggerAction={ triggerAction }
     displayNotification={ noop }
     log={ noop }
+    _getGlobal={ (name) => (name === 'fileSystem' && createFileSystem(props.fileSystem)) }
     { ...props }
     config={ config }
   />);
@@ -953,6 +1065,7 @@ function createConfiguration(deployment, endpoint) {
     deployment: {
       name: 'diagram',
       tenantId: '',
+      attachments: [],
       ...deployment
     },
     endpoint: {
@@ -964,6 +1077,20 @@ function createConfiguration(deployment, endpoint) {
       rememberCredentials: true,
       ...endpoint
     }
+  };
+}
+
+function createSavedConfiguration(configuration) {
+  return {
+    deployment: configuration.deployment,
+    endpointId: configuration.endpoint.id
+  };
+}
+
+function createFileSystem(overrides = {}) {
+  return {
+    readFile() {},
+    ...overrides
   };
 }
 

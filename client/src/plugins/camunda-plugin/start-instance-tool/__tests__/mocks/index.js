@@ -29,4 +29,8 @@ export class DeploymentService extends Mock {
   getDeployConfigurationFromUserInput() {}
 
   saveDeployConfiguration() {}
+
+  canDeployWithConfiguration() {
+    return true;
+  }
 }

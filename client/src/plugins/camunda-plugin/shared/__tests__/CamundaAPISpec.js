@@ -133,6 +133,26 @@ describe('<CamundaAPI>', () => {
     });
 
 
+    it('should deploy with attachments', async () => {
+
+      // given
+      const api = createCamundaAPI();
+      const attachments = [ new File([], 'first'), new File([], 'second') ];
+
+      fetchSpy.resolves(new Response());
+
+      // when
+      const result = await api.deployDiagram(diagram, { ...deployment, attachments });
+
+      // then
+      expect(result).to.exist;
+
+      const formData = fetchSpy.getCall(0).args[1].body;
+      expect(formData.get('first')).to.exist;
+      expect(formData.get('second')).to.exist;
+    });
+
+
     it('should throw when fetch fails', async () => {
 
       // given
