@@ -45,29 +45,28 @@ function getFormData(element) {
  * @return {ModdleElement}
  */
 export function getFormDefinition(element) {
-  return (getElements(element, 'zeebe:FormDefinition') || [])[0];
+  return getElements(element, 'zeebe:FormDefinition')[0];
 }
 
 function getElements(element, type, property) {
-  const elements = getExtensionElements(element, type) || [];
+  const elements = getExtensionElements(element, type);
 
   return !property ? elements : (elements[0] || {})[property] || [];
 }
 
 function getExtensionElements(element, type) {
+  let elements = [];
   const extensionElements = element.get('extensionElements');
 
   if (typeof extensionElements !== 'undefined') {
     const extensionValues = extensionElements.get('values');
 
     if (typeof extensionValues !== 'undefined') {
-      const elements = filter(extensionValues, function(value) {
+      elements = filter(extensionValues, function(value) {
         return is(value, type);
       });
-
-      if (elements.length) {
-        return elements;
-      }
     }
   }
+
+  return elements;
 }
