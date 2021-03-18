@@ -10,15 +10,6 @@
 
 import './styles/style.less';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-import {
-  AppParent,
-  KeyboardBindings,
-  TabsProvider
-} from './app';
-
 import {
   backend,
   config,
@@ -31,6 +22,15 @@ import {
   workspace,
   zeebeAPI
 } from './remote';
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import {
+  AppParent,
+  KeyboardBindings,
+  TabsProvider
+} from './app';
 
 import Metadata from './util/Metadata';
 import Flags from './util/Flags';

@@ -241,7 +241,7 @@ describe('<DeploymentTool>', () => {
       expect(config.set).to.have.been.calledOnce;
       expect(config.set.args[0]).to.eql([
         ENGINE_ENDPOINTS_CONFIG_KEY,
-        [ omit(configuration.endpoint, ['username', 'password']) ]
+        [ withoutCredentials(configuration.endpoint) ]
       ]);
     });
 
@@ -563,6 +563,271 @@ describe('<DeploymentTool>', () => {
       expect(config.set).to.not.have.been.called;
     });
   });
+
+
+  describe('#saveCredentials', () => {
+
+    it('should save credentials', async () => {
+
+      // given
+      const configSetSpy = sinon.spy();
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const savedEndpoint = {
+        id: 'endpointId',
+        authType: AuthTypes.basic,
+        url: 'http://localhost:8088/engine-rest',
+        rememberCredentials: true
+      };
+
+      const savedConfiguration = {
+        deployment: {
+          name: 'diagram',
+          tenantId: '',
+        },
+        endpointId: savedEndpoint.id
+      };
+
+      const config = {
+        get: (key, defaultValue) => {
+          if (key === ENGINE_ENDPOINTS_CONFIG_KEY) {
+            return [
+              savedEndpoint
+            ];
+          }
+
+          return defaultValue;
+        },
+        getForFile: sinon.stub().returns(savedConfiguration),
+        set: configSetSpy
+      };
+
+      const credentials = {
+        username: 'username',
+        password: 'password',
+        token: 'token'
+      };
+
+      const {
+        instance
+      } = createDeploymentTool({
+        activeTab,
+        config
+      });
+
+      // when
+      await instance.saveCredentials(credentials);
+
+      // then
+      expect(configSetSpy).to.have.been.calledOnce;
+      expect(configSetSpy.args[0][1]).to.eql([
+        {
+          ...savedEndpoint,
+          ...credentials
+        }
+      ]);
+    });
+
+
+    it('should NOT save credentials - no configuration saved', async () => {
+
+      // given
+      const configSetSpy = sinon.spy();
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const config = {
+        set: configSetSpy
+      };
+
+      const credentials = {
+        username: 'username',
+        password: 'password',
+        token: 'token'
+      };
+
+      const {
+        instance
+      } = createDeploymentTool({
+        activeTab,
+        config
+      });
+
+      // when
+      await instance.saveCredentials(credentials);
+
+      // then
+      expect(configSetSpy).to.not.have.been.called;
+    });
+
+
+    it('should NOT save credentials - no endpoint available', async () => {
+
+      // given
+      const configSetSpy = sinon.spy();
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const savedConfiguration = {
+        deployment: {
+          name: 'diagram',
+          tenantId: '',
+        },
+        endpointId: null
+      };
+
+      const config = {
+        getForFile: sinon.stub().returns(savedConfiguration),
+        set: configSetSpy
+      };
+
+      const credentials = {
+        username: 'username',
+        password: 'password',
+        token: 'token'
+      };
+
+      const {
+        instance
+      } = createDeploymentTool({
+        activeTab,
+        config
+      });
+
+      // when
+      await instance.saveCredentials(credentials);
+
+      // then
+      expect(configSetSpy).to.not.have.been.called;
+    });
+
+  });
+
+
+  describe('#removeCredentials', () => {
+
+    it('should remove credentials', async () => {
+
+      // given
+      const configSetSpy = sinon.spy();
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const savedEndpoint = {
+        id: 'endpointId',
+        username: 'username',
+        password: 'password',
+        authType: AuthTypes.basic,
+        url: 'http://localhost:8088/engine-rest',
+        rememberCredentials: true
+      };
+
+      const savedConfiguration = {
+        deployment: {
+          name: 'diagram',
+          tenantId: '',
+        },
+        endpointId: savedEndpoint.id
+      };
+
+      const config = {
+        get: (key, defaultValue) => {
+          if (key === ENGINE_ENDPOINTS_CONFIG_KEY) {
+            return [
+              savedEndpoint
+            ];
+          }
+
+          return defaultValue;
+        },
+        getForFile: sinon.stub().returns(savedConfiguration),
+        set: configSetSpy
+      };
+
+      const {
+        instance
+      } = createDeploymentTool({
+        activeTab,
+        config
+      });
+
+      // when
+      await instance.removeCredentials();
+
+      // then
+      expect(configSetSpy).to.have.been.calledOnce;
+      expect(configSetSpy.args[0][1]).to.eql([
+        {
+          ...withoutCredentials(savedEndpoint),
+          rememberCredentials: false
+        }
+      ]);
+    });
+
+
+    it('should NOT remove credentials - no configuration saved', async () => {
+
+      // given
+      const configSetSpy = sinon.spy();
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const config = {
+        set: configSetSpy
+      };
+
+      const {
+        instance
+      } = createDeploymentTool({
+        activeTab,
+        config
+      });
+
+      // when
+      await instance.removeCredentials();
+
+      // then
+      expect(configSetSpy).to.not.have.been.calledOnce;
+    });
+
+
+    it('should NOT remove credentials - no endpoint available', async () => {
+
+      // given
+      const configSetSpy = sinon.spy();
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const savedConfiguration = {
+        deployment: {
+          name: 'diagram',
+          tenantId: '',
+        },
+        endpointId: null
+      };
+
+      const config = {
+        getForFile: sinon.stub().returns(savedConfiguration),
+        set: configSetSpy
+      };
+
+      const {
+        instance
+      } = createDeploymentTool({
+        activeTab,
+        config
+      });
+
+      // when
+      await instance.removeCredentials();
+
+      // then
+      expect(configSetSpy).to.not.have.been.called;
+    });
+
+  });
+
 });
 
 
@@ -703,3 +968,7 @@ function createConfiguration(deployment, endpoint) {
 }
 
 function noop() {}
+
+function withoutCredentials(endpoint) {
+  return omit(endpoint, ['username', 'password', 'token']);
+}

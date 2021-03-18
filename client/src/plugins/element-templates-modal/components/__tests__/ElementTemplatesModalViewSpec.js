@@ -95,13 +95,36 @@ describe('<ElementTemplatesView>', function() {
       // when
       await instance.getElementTemplates();
 
-      console.log(wrapper.state('elementTemplates').map(({ name }) => name));
 
       // then
       expect(wrapper.state('elementTemplates').map(({ name }) => name)).to.eql([
         'Template 4',
         'Template 5 v2'
       ]);
+    });
+
+
+    it('should get element templates (filtered by validity)', async function() {
+
+      // given
+      const {
+        instance,
+        wrapper
+      } = await createElementTemplatesModalView({
+        triggerAction: action => {
+          if (action === 'getSelectedElement') {
+            return {
+              businessObject: moddle.create('bpmn:ServiceTask')
+            };
+          }
+        }
+      });
+
+      // when
+      await instance.getElementTemplates();
+
+      // then
+      expect(wrapper.state('elementTemplates').map(({ name }) => name)).to.not.include('Template invalid');
     });
 
 
@@ -537,6 +560,13 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     },
     version: 2,
     name: 'Template 5 v2',
+    properties: []
+  },
+  {
+    name: 'Template invalid',
+    appliesTo: [
+      'bpmn:ServiceTask'
+    ],
     properties: []
   }
 ];

@@ -38,7 +38,7 @@ describe('<UsageStatistics>', () => {
   });
 
 
-  it('should not enable if ET endpoint not configured', async () => {
+  it('should NOT enable if ET endpoint not configured', async () => {
 
     // given
     const instance = createUsageStatistics();
@@ -55,7 +55,7 @@ describe('<UsageStatistics>', () => {
   });
 
 
-  it('should not enable if remote interaction is disabled via flag', async () => {
+  it('should NOT enable if remote interaction is disabled via flag', async () => {
 
     // given
     Flags.init({
@@ -77,7 +77,7 @@ describe('<UsageStatistics>', () => {
   });
 
 
-  it('should not enable if usage statistics preference turned off', async () => {
+  it('should NOT enable if usage statistics preference turned off', async () => {
 
     // given
     Flags.init({
@@ -85,7 +85,9 @@ describe('<UsageStatistics>', () => {
     });
 
     const instance = createUsageStatistics({
-      configValues: { 'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: false } }
+      configValues: {
+        'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: false }
+      }
     });
 
     const enableSpy = sinon.spy();
@@ -100,6 +102,36 @@ describe('<UsageStatistics>', () => {
   });
 
 
+  it('should NOT enable if editor id is missing', async () => {
+
+    // given
+    Flags.init({
+      [ ET_ENDPOINT ]: 'test-et-endpoint'
+    });
+
+    const instance = createUsageStatistics({
+      configValues: {
+        'editor.id': null,
+        'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true }
+      }
+    });
+
+    const enableSpy = sinon.spy();
+
+    instance.enable = enableSpy;
+
+    // when
+    try {
+      await instance.componentDidMount();
+    } catch (error) {
+      expect(error.message).to.eql('missing editor id');
+    }
+
+    // then
+    expect(enableSpy).to.not.have.been.called;
+  });
+
+
   it('should enable when mounted', async () => {
 
     // given
@@ -108,7 +140,9 @@ describe('<UsageStatistics>', () => {
     });
 
     const instance = createUsageStatistics({
-      configValues: { 'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true } }
+      configValues: {
+        'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true }
+      }
     });
 
     const enableSpy = sinon.spy();
@@ -131,7 +165,9 @@ describe('<UsageStatistics>', () => {
     });
 
     const instance = createUsageStatistics({
-      configValues: { 'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true } }
+      configValues: {
+        'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true }
+      }
     });
 
     const eventHandler = new BaseEventHandler('test-event', () => {});
@@ -154,7 +190,9 @@ describe('<UsageStatistics>', () => {
     });
 
     const instance = createUsageStatistics({
-      configValues: { 'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true } }
+      configValues: {
+        'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true }
+      }
     });
 
     const eventHandler = new BaseEventHandler('test-event', () => {});
@@ -181,7 +219,9 @@ describe('<UsageStatistics>', () => {
     const subscribeSpy = sinon.spy();
 
     const instance = createUsageStatistics({
-      configValues: { 'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true } },
+      configValues: {
+        'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true }
+      },
       subscribeSpy
     });
 
@@ -280,7 +320,6 @@ describe('<UsageStatistics>', () => {
 
     const instance = createUsageStatistics({
       configValues: {
-        'editor.id': 'test-editor-id',
         'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true }
       }
     });
@@ -317,7 +356,7 @@ describe('<UsageStatistics>', () => {
   });
 
 
-  it('should not send request to ET if not enabled', async () => {
+  it('should NOT send request to ET if not enabled', async () => {
 
     // given
     Metadata.init({ version: '3.5.0' });
@@ -344,11 +383,55 @@ describe('<UsageStatistics>', () => {
     // then
     expect(fetchSpy).to.not.have.been.called;
   });
+
+
+  it('should send installation if re-enabled', async () => {
+
+    // given
+    Flags.init({
+      [ ET_ENDPOINT ]: 'test-et-endpoint'
+    });
+
+    const editorID = 'test-editor-id';
+    const instance = createUsageStatistics({
+      configValues: {
+        'editor.id': editorID,
+        'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: false }
+      }
+    });
+    const fetchSpy = sinon.spy();
+    instance.fetch = fetchSpy;
+
+    // when
+    // (0) start as disabled
+    await instance.componentDidMount();
+
+    // (1) enable
+    instance.enable();
+
+    // (2) send request
+    await instance.sendRequest();
+
+
+    // then
+    expect(fetchSpy.called, 'fetch not called at all').to.be.true;
+    fetchSpy.args.forEach(args => {
+      const body = getRequestBody(args);
+
+      expect(body).to.have.property('installation', editorID, 'installation not sent');
+    });
+  });
 });
+
+
+// helpers //////////////////
 
 function createUsageStatistics(props={}) {
 
-  const configValues = props.configValues || {};
+  const configValues = {
+    'editor.id': 'test-editor-id',
+    ...props.configValues
+  };
 
   const subscribe = (key, callback) => {
     if (props.subscribeSpy) {
@@ -390,4 +473,14 @@ function getSubscriptionCallbackFromSpy(spy, key) {
   }
 
   return null;
+}
+
+function getRequestBody(fetchArgs) {
+  expect(fetchArgs).to.have.lengthOf(2, 'should pass url and options');
+
+  const [ _, options ] = fetchArgs;
+
+  expect(options.body).to.exist;
+
+  return JSON.parse(options.body);
 }

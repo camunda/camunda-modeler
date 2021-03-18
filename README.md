@@ -44,6 +44,17 @@ npm run dev
 ```
 
 
+## Contributing
+
+Please checkout our [contributing guidelines](./.github/CONTRIBUTING.md) if you plan to
+file an issue or pull request.
+
+
+## Code of Conduct
+
+By participating to this project, please uphold to our [Code of Conduct](https://github.com/camunda/.github/blob/main/.github/CODE_OF_CONDUCT.md).
+
+
 ## License
 
 MIT

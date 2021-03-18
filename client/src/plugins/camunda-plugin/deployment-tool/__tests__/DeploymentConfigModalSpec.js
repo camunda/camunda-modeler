@@ -359,20 +359,20 @@ describe('<DeploymentConfigModal>', () => {
       }
     };
 
-    const saveCredential = sinon.spy();
+    const saveCredentials = sinon.spy();
 
     const {
       wrapper
     } = createModal({
       configuration,
-      saveCredential
+      saveCredentials
     }, mount);
 
     // when
     wrapper.find('.close').simulate('click');
 
     // then
-    expect(saveCredential).to.have.been.calledWith({
+    expect(saveCredentials).to.have.been.calledWith({
       username: 'username1', password: '12345', token: 'testToken'
     });
   });
@@ -428,20 +428,20 @@ describe('<DeploymentConfigModal>', () => {
       }
     };
 
-    const saveCredential = sinon.spy();
+    const saveCredentials = sinon.spy();
 
     const {
       wrapper
     } = createModal({
       configuration,
-      saveCredential
+      saveCredentials
     }, mount);
 
     // when
     wrapper.find('.btn-secondary').simulate('click');
 
     // then
-    expect(saveCredential).to.not.have.been.called;
+    expect(saveCredentials).to.not.have.been.called;
   });
 
 
@@ -772,7 +772,7 @@ function createModal(props={}, renderFn = shallow) {
     title,
     primaryAction,
     intro,
-    saveCredential,
+    saveCredentials,
     removeCredentials,
     subscribeToFocusChange,
     unsubscribeFromFocusChange,
@@ -788,7 +788,7 @@ function createModal(props={}, renderFn = shallow) {
       onClose={ onClose || noop }
       title={ title }
       primaryAction={ primaryAction }
-      saveCredential={ saveCredential || noop }
+      saveCredentials={ saveCredentials || noop }
       removeCredentials={ removeCredentials || noop }
       intro={ intro }
       subscribeToFocusChange={ subscribeToFocusChange || noop }
