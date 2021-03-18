@@ -37,7 +37,9 @@ export default class CamundaAPI {
 
     form.append('deployment-name', name);
     form.append('deployment-source', 'Camunda Modeler');
-    form.append('deploy-changed-only', 'true');
+
+    // make sure that we do not re-deploy already existing deployment
+    form.append('enable-duplicate-filtering', 'true');
 
     if (tenantId) {
       form.append('tenant-id', tenantId);

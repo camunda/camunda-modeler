@@ -222,6 +222,25 @@ describe('<CamundaAPI>', () => {
       }
     });
 
+
+    it('should deploy with correct flags', async () => {
+
+      // given
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response());
+
+      // when
+      const result = await api.deployDiagram(diagram, deployment);
+
+      // then
+      expect(result).to.exist;
+
+      const formData = fetchSpy.getCall(0).args[1].body;
+      expect(formData.get('deploy-changed-only')).not.to.exist;
+      expect(formData.get('enable-duplicate-filtering')).to.equal('true');
+    });
+
   });
 
 
