@@ -16,6 +16,10 @@ import form from './tabs/form/initial.form';
 
 import replaceIds from '@bpmn-io/replace-ids';
 
+import {
+  sortBy
+} from 'min-dash';
+
 import EmptyTab from './EmptyTab';
 
 import {
@@ -70,6 +74,10 @@ const EXPORT_SVG = {
 
 const NAMESPACE_URL_ZEEBE = 'http://camunda.org/schema/zeebe/1.0';
 
+const DEFAULT_PRIORITY = 1000;
+
+const HIGHER_PRIORITY = 1001;
+
 
 /**
  * A provider that allows us to customize available tabs.
@@ -88,6 +96,51 @@ export default class TabsProvider {
         },
         getNewFileButton() {
           return null;
+        },
+      },
+      bpmn: {
+        name: 'BPMN',
+        encoding: ENCODING_UTF8,
+        exports: {
+          png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'bpmn', 'xml' ],
+        canOpen(file) {
+          return parseDiagramType(file.contents) === 'bpmn';
+        },
+        getComponent(options) {
+          return import('./tabs/bpmn');
+        },
+        getInitialContents(options) {
+          return bpmnDiagram;
+        },
+        getInitialFilename(suffix) {
+          return `diagram_${suffix}.bpmn`;
+        },
+        getHelpMenu() {
+          return [{
+            label: 'BPMN 2.0 Tutorial',
+            action: 'https://camunda.org/bpmn/tutorial/'
+          },
+          {
+            label: 'BPMN Modeling Reference',
+            action: 'https://camunda.org/bpmn/reference/'
+          }];
+        },
+        getNewFileMenu() {
+          return [{
+            label: 'BPMN Diagram (Camunda Engine)',
+            accelerator: 'CommandOrControl+T',
+            action: 'create-bpmn-diagram'
+          }];
+        },
+        getNewFileButton() {
+          return {
+            label: 'Create new BPMN Diagram (Camunda Engine)',
+            action: 'create-bpmn-diagram'
+          };
         }
       },
       'cloud-bpmn': {
@@ -99,6 +152,7 @@ export default class TabsProvider {
           svg: EXPORT_SVG
         },
         extensions: [ 'bpmn', 'xml' ],
+        priority: HIGHER_PRIORITY,
         canOpen(file) {
           const {
             contents
@@ -146,51 +200,6 @@ export default class TabsProvider {
           return {
             label: 'Create new BPMN Diagram (Zeebe Engine)',
             action: 'create-cloud-bpmn-diagram'
-          };
-        }
-      },
-      bpmn: {
-        name: 'BPMN',
-        encoding: ENCODING_UTF8,
-        exports: {
-          png: EXPORT_PNG,
-          jpeg: EXPORT_JPEG,
-          svg: EXPORT_SVG
-        },
-        extensions: [ 'bpmn', 'xml' ],
-        canOpen(file) {
-          return parseDiagramType(file.contents) === 'bpmn';
-        },
-        getComponent(options) {
-          return import('./tabs/bpmn');
-        },
-        getInitialContents(options) {
-          return bpmnDiagram;
-        },
-        getInitialFilename(suffix) {
-          return `diagram_${suffix}.bpmn`;
-        },
-        getHelpMenu() {
-          return [{
-            label: 'BPMN 2.0 Tutorial',
-            action: 'https://camunda.org/bpmn/tutorial/'
-          },
-          {
-            label: 'BPMN Modeling Reference',
-            action: 'https://camunda.org/bpmn/reference/'
-          }];
-        },
-        getNewFileMenu() {
-          return [{
-            label: 'BPMN Diagram (Camunda Engine)',
-            accelerator: 'CommandOrControl+T',
-            action: 'create-bpmn-diagram'
-          }];
-        },
-        getNewFileButton() {
-          return {
-            label: 'Create new BPMN Diagram (Camunda Engine)',
-            action: 'create-bpmn-diagram'
           };
         }
       },
@@ -457,7 +466,7 @@ export default class TabsProvider {
    *   * if there are more than one:
    *     * return the first provider which can open the file
    *     * otherwise return the last provider
-   *   * if there are none, return the first provider which can open the file or `null`
+   *   * if there are none, return the first provider (by priority) which can open the file or `null`
    *
    * @param {import('./TabsProvider').File} file
    * @returns {string | null}
@@ -481,7 +490,7 @@ export default class TabsProvider {
     }
 
     // no providers specified for the extension; return the first that can open the file
-    const provider = findProviderForFile(this.providers, file);
+    const provider = findProviderForFile(sortByPriority(this.providers), file);
 
     return provider || null;
   }
@@ -507,4 +516,14 @@ function findProviderForFile(providers, file) {
       return provider;
     }
   });
+}
+
+/**
+ * Sorts a list of providers by priority (descending).
+ *
+ * @param {Array|Object} providers
+ * @returns {Array}
+ */
+function sortByPriority(providers) {
+  return sortBy(providers, p => (p.priority || DEFAULT_PRIORITY) * -1);
 }
