@@ -1,9 +1,4 @@
 {
-  "components": [
-    {
-      "key": "submit",
-      "label": "Submit",
-      "type": "button"
-    }
-  ]
+  "type": "default",
+  "components": []
 }
