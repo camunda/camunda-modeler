@@ -503,7 +503,7 @@ describe('<DmnEditor>', function() {
 
     describe('edit menu', function() {
 
-      it('should provide und/redo entries', async function() {
+      it('should provide undo/redo entries', async function() {
 
         // given
         const changedSpy = (state) => {

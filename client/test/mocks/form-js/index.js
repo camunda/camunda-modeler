@@ -1,0 +1,26 @@
+export function createFormEditor({ schema }) {
+  if (schema.importError) {
+    throw new Error('error');
+  }
+
+  const listeners = {};
+
+  return {
+    getSchema() {
+      return schema;
+    },
+    on(event, callback) {
+      if (!listeners[ event ]) {
+        listeners[ event ] = [];
+      }
+  
+      listeners[ event ].push(callback);
+    },
+    off() {},
+    _emit(event) {
+      if (listeners[ event ]) {
+        listeners[ event ].forEach(callback => callback());
+      }
+    }
+  }
+}

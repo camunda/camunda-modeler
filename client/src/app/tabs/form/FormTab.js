@@ -8,20 +8,18 @@
  * except in compliance with the MIT License.
  */
 
-// import FormEditor from './FormEditor';
+import FormEditor from './FormEditor';
 import JSONEditor from '../json';
 
 import { createTab } from '../EditorTab';
 
-/**
-{
-  type: 'form',
-  editor: FormEditor,
-  defaultName: 'Form'
-},
-*/
 
 const FormTab = createTab('FormTab', [
+  {
+    type: 'form',
+    editor: FormEditor,
+    defaultName: 'Form'
+  },
   {
     type: 'json',
     editor: JSONEditor,

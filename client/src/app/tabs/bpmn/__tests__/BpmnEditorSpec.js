@@ -436,7 +436,7 @@ describe('<BpmnEditor>', function() {
         }).length > 0;
       };
 
-      it('should provide und/redo entries', async function() {
+      it('should provide undo/redo entries', async function() {
 
         // given
         const changedSpy = (state) => {
