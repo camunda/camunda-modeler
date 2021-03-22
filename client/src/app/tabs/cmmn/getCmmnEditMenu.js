@@ -26,11 +26,11 @@ export function getCmmnEditMenu(state) {
   } = state;
 
   const undoRedoEntries = defaultUndoRedo
-    ? getDefaultUndoRedoEntries()
+    ? getDefaultUndoRedoEntries(true)
     : getUndoRedoEntries(state);
 
   const copyCutPasteEntries = defaultCopyCutPaste
-    ? getDefaultCopyCutPasteEntries()
+    ? getDefaultCopyCutPasteEntries(true)
     : getCopyCutPasteEntries(state);
 
   return [

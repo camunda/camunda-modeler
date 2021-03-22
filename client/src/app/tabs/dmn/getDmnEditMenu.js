@@ -46,7 +46,7 @@ export function getDmnDrdEditMenu(state) {
   const { defaultCopyCutPaste } = state;
 
   const copyCutPasteEntries = defaultCopyCutPaste
-    ? getDefaultCopyCutPasteEntries()
+    ? getDefaultCopyCutPasteEntries(true)
     : getCopyCutPasteEntries(state);
 
   return [
@@ -63,7 +63,7 @@ export function getDmnDecisionTableEditMenu(state) {
   const { defaultCopyCutPaste } = state;
 
   const copyCutPasteEntries = defaultCopyCutPaste
-    ? getDefaultCopyCutPasteEntries()
+    ? getDefaultCopyCutPasteEntries(true)
     : getCopyCutPasteEntries(state);
 
   return [
@@ -78,7 +78,7 @@ export function getDmnLiteralExpressionEditMenu(state) {
   const { defaultCopyCutPaste } = state;
 
   const copyCutPasteEntries = defaultCopyCutPaste
-    ? getDefaultCopyCutPasteEntries()
+    ? getDefaultCopyCutPasteEntries(true)
     : getCopyCutPasteEntries(state);
 
   return [

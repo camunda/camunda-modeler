@@ -126,7 +126,8 @@ module.exports = function(karma) {
           'dmn-js/lib/Modeler': modelers ? 'dmn-js/lib/Modeler' : 'test/mocks/dmn-js/Modeler',
           './DmnModeler': modelers ? './DmnModeler' : 'test/mocks/dmn-js/Modeler',
           './CodeMirror': 'test/mocks/code-mirror/CodeMirror',
-          'sourcemapped-stacktrace': 'test/mocks/sourcemapped-stacktrace'
+          'sourcemapped-stacktrace': 'test/mocks/sourcemapped-stacktrace',
+          './editor/FormEditor': 'test/mocks/form-js'
         }
       }
     }

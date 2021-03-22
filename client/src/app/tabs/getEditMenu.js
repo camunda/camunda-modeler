@@ -151,16 +151,19 @@ export function getCopyCutPasteEntries({
   }];
 }
 
-export function getDefaultCopyCutPasteEntries() {
+export function getDefaultCopyCutPasteEntries(inputActive) {
   return [{
     label: 'Copy',
-    role: 'copy'
+    role: 'copy',
+    enabled: inputActive
   }, {
     label: 'Cut',
-    role: 'cut'
+    role: 'cut',
+    enabled: inputActive
   }, {
     label: 'Paste',
-    role: 'paste'
+    role: 'paste',
+    enabled: inputActive
   }];
 }
 
@@ -292,13 +295,15 @@ export function getUndoRedoEntries({
   }];
 }
 
-export function getDefaultUndoRedoEntries() {
+export function getDefaultUndoRedoEntries(inputActive) {
   return [{
     label: 'Undo',
-    role: 'undo'
+    role: 'undo',
+    enabled: inputActive
   }, {
     label: 'Redo',
-    role: 'redo'
+    role: 'redo',
+    enabled: inputActive
   }];
 }
 
