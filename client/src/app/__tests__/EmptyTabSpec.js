@@ -16,7 +16,7 @@ import {
 
 import EmptyTab from '../EmptyTab';
 
-import Flags, { DISABLE_DMN, DISABLE_FORM } from '../../util/Flags';
+import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE } from '../../util/Flags';
 
 /* global sinon */
 
@@ -38,10 +38,9 @@ describe('<EmptyTab>', function() {
       buttons.forEach(wrapper => wrapper.simulate('click'));
 
       // then
-      expect(onAction).to.have.callCount(4);
+      expect(onAction).to.have.callCount(3);
       expect(onAction.args).to.eql([
         [ 'create-bpmn-diagram' ],
-        [ 'create-cloud-bpmn-diagram' ],
         [ 'create-dmn-diagram' ],
         [ 'create-form' ]
       ]);
@@ -85,7 +84,6 @@ describe('<EmptyTab>', function() {
   });
 
 
-
   describe('disabling form', function() {
 
     afterEach(sinon.restore);
@@ -120,6 +118,47 @@ describe('<EmptyTab>', function() {
       expect(
         tree.findWhere(
           wrapper => wrapper.text().startsWith('Form')
+        ).first().exists()
+      ).to.be.true;
+    });
+
+  });
+
+
+  describe('enable zeebe', function() {
+
+    afterEach(sinon.restore);
+
+    it('should NOT display zeebe without flag', function() {
+
+      // when
+      const {
+        tree
+      } = createEmptyTab();
+
+      // then
+      expect(
+        tree.findWhere(
+          wrapper => wrapper.text().startsWith('BPMN diagram (Zeebe')
+        ).first().exists()
+      ).to.be.false;
+    });
+
+
+    it('should display zeebe with inverted flag', function() {
+
+      // given
+      sinon.stub(Flags, 'get').withArgs(DISABLE_ZEEBE).returns(false);
+
+      // given
+      const {
+        tree
+      } = createEmptyTab();
+
+      // then
+      expect(
+        tree.findWhere(
+          wrapper => wrapper.text().startsWith('BPMN diagram (Zeebe')
         ).first().exists()
       ).to.be.true;
     });

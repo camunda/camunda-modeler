@@ -329,6 +329,12 @@ export default class TabsProvider {
       form: [ this.providers.form ]
     };
 
+    if (Flags.get('disable-zeebe', true)) {
+      this.providersByFileType.bpmn.filter(p => p !== this.providers['cloud-bpmn']);
+
+      delete this.providers['cloud-bpmn'];
+    }
+
     if (Flags.get('disable-cmmn', true)) {
       delete this.providers.cmmn;
       delete this.providersByFileType.cmmn;

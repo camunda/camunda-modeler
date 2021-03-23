@@ -16,7 +16,7 @@ import {
   Tab
 } from './primitives';
 
-import Flags, { DISABLE_DMN, DISABLE_FORM } from '../util/Flags';
+import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE } from '../util/Flags';
 
 
 export default class EmptyTab extends PureComponent {
@@ -38,7 +38,13 @@ export default class EmptyTab extends PureComponent {
         <div className="create-buttons">
           <p>Create a new file:</p>
           <button className="btn btn-secondary" onClick={ () => onAction('create-bpmn-diagram') }>BPMN diagram (Camunda Engine)</button>
-          <button className="btn btn-secondary" onClick={ () => onAction('create-cloud-bpmn-diagram') }>BPMN diagram (Zeebe Engine)</button>
+
+          {
+            !Flags.get(DISABLE_ZEEBE, true) && (
+              <button className="btn btn-secondary" onClick={ () => onAction('create-cloud-bpmn-diagram') }>BPMN diagram (Zeebe Engine)</button>
+            )
+          }
+
           {
             !Flags.get(DISABLE_DMN) && (
               <button className="btn btn-secondary" onClick={ () => onAction('create-dmn-diagram') }>DMN diagram (Camunda DMN Engine)</button>
