@@ -10,7 +10,7 @@
  */
 
 const { Router } = require('express');
-const deploymentHandler = require('../../deployment');
+const config = require('../../framework-config');
 const bodyParser = require('body-parser');
 
 const router = Router();
@@ -18,9 +18,9 @@ const jsonParser = bodyParser.json();
 
 router.get('/', (req, res) => {
   res.json({
-    'camunda-endpoint': deploymentHandler.getCamundaEndpoint(),
-    'winery-endpoint': deploymentHandler.getWineryEndpoint(),
-    'opentosca-endpoint': deploymentHandler.getOpenTOSCAEndpoint(),
+    'camunda-endpoint': config.getCamundaEndpoint(),
+    'winery-endpoint': config.getWineryEndpoint(),
+    'opentosca-endpoint': config.getOpenTOSCAEndpoint(),
     '_links': {
       'self': { method: 'GET', href: req.header('host') + '/config' },
       'endpoint-update': {
@@ -41,13 +41,13 @@ router.put('/', jsonParser, function(req, res) {
 
   // update the given endpoints
   if (req.body.camundaEndpoint !== undefined) {
-    deploymentHandler.setCamundaEndpoint(req.body.camundaEndpoint);
+    config.setCamundaEndpoint(req.body.camundaEndpoint);
   }
   if (req.body.wineryEndpoint !== undefined) {
-    deploymentHandler.setWineryEndpoint(req.body.wineryEndpoint);
+    config.setWineryEndpoint(req.body.wineryEndpoint);
   }
   if (req.body.opentoscaEndpoint !== undefined) {
-    deploymentHandler.setOpenTOSCAEndpoint(req.body.opentoscaEndpoint);
+    config.setOpenTOSCAEndpoint(req.body.opentoscaEndpoint);
   }
   res.status(200).send();
 });

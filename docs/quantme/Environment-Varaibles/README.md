@@ -4,7 +4,7 @@ In the following, all environment variables that can be used to customize the Qu
 
 ### Overview
 
-* ```PORT``` (default: 8081): The port to run the [REST API](../API) on. 
+* ```PORT``` (default: 8888): The port to run the [REST API](../API) on. 
 
 * ```HEADLESS``` (default: false): If set to true, the framework is executed without displaying the UI. 
 This can for example be used if only the API is required and not the graphical modeler.
@@ -21,6 +21,11 @@ This can for example be used if only the API is required and not the graphical m
 * ```OPENTOSCA_ENDPOINT``` (default: 'http://localhost:1337/csars'): Defines the endpoint of the OpenTOSCA container to deploy services with
 
 * ```WINERY_ENDPOINT``` (default: 'http://localhost:8081/winery'): Defines the endpoint of the Winery to retrieve deployment models for services from
+
+* ```NISQ_ANALYZER_ENDPOINT``` (default: 'http://localhost:8098/nisq-analyzer'): Defines the endpoint of the [NISQ Analyzer](https://github.com/UST-QuAntiL/nisq-analyzer) to enable an automated hardware selection
+
+* ```TRANSFORMATION_FRAMEWORK_ENDPOINT``` (default: 'http://localhost:8888'): Defines the endpoint of the QuantME Transformation Framework to use for the automated hardware selection.
+  Can be set to localhost and the Port defined using the ```PORT``` environment variable if the local framework should be used
 
 ### Setting the Environment Variables
 

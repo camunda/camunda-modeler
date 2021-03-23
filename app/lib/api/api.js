@@ -24,7 +24,7 @@ api.use('/quantme', routes.quantme);
 api.use('/quantme/qrms', routes.qrm);
 api.use('/quantme/workflows', routes.quantumWorkflow.default);
 
-// retrieve port for the API from the environment variables or use default port 8081
+// retrieve port for the API from the environment variables or use default port 8888
 let port = process.env.PORT;
 if (port !== undefined) {
   port = port.replace(/ /g, '');
@@ -33,14 +33,14 @@ if (port !== undefined) {
   // defined port has to be between 0 and 65536
   if (isNaN(port) || port <= 0 || port > 65535) {
     log.warn('Passed invalid port for REST API as environment variable: \'' + port + '\'');
-    port = 8081;
-    log.info('Starting REST API on default port 8081!');
+    port = 8888;
+    log.info('Starting REST API on default port 8888!');
   } else {
     log.info('Starting REST API on defined port: %i', port);
   }
 } else {
-  log.info('No port defined in environment variables. Starting REST API on default port 8081!');
-  port = 8081;
+  log.info('No port defined in environment variables. Starting REST API on default port 8888!');
+  port = 8888;
 }
 
 // start REST API

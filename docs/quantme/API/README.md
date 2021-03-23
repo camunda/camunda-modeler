@@ -5,7 +5,7 @@ In the following, details about the configuration and functionality of the REST 
 ## Configuration
 
 The API Port can be defined using the ```PORT``` environment variable.
-If it is not set, the default port ```8081``` will be used.
+If it is not set, the default port ```8888``` will be used.
 Please make sure that the defined port is not already in use.
 
 ## Functionality

@@ -39,7 +39,7 @@ npm run dev
 If only the backend functionality available over the [REST API](./docs/quantme/API) is needed and not the graphical modeler, the application can also be started using Docker:
 
 ```
-docker run -p 8081:8081 planqk/quantme-backend
+docker run -p 8888:8888 planqk/quantme-backend
 ```
 
 ## License

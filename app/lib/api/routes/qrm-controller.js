@@ -10,6 +10,7 @@
  */
 
 const { Router } = require('express');
+const config = require('../../framework-config');
 const qrmHandler = require('../../quantme/qrm-manager');
 const bodyParser = require('body-parser');
 
@@ -43,7 +44,7 @@ router.get('/', (req, res) => {
 // retrieve current username for the QRM repository
 router.get('/username', (req, res) => {
   res.json({
-    'username': qrmHandler.getQRMRepositoryUserName(),
+    'username': config.getQRMRepositoryUserName(),
     '_links': {
       'self': { method: 'GET', href: req.header('host') + '/quantme/qrms/username' },
       'update': {
@@ -62,15 +63,15 @@ router.put('/username', jsonParser, function(req, res) {
     return;
   }
 
-  qrmHandler.setQRMUserName(req.body.username);
+  config.setQRMUserName(req.body.username);
   res.status(200).send();
 });
 
 // retrieve current repository name for the QRM repository
 router.get('/repository', (req, res) => {
   res.json({
-    'name': qrmHandler.getQRMRepositoryName(),
-    'path': qrmHandler.getQRMRepositoryPath(),
+    'name': config.getQRMRepositoryName(),
+    'path': config.getQRMRepositoryPath(),
     '_links': {
       'self': { method: 'GET', href: req.header('host') + '/quantme/qrms/repository' },
       'update': {
@@ -89,8 +90,8 @@ router.put('/repository', jsonParser, function(req, res) {
     return;
   }
 
-  qrmHandler.setQRMRepositoryName(req.body.name);
-  qrmHandler.setQRMRepositoryPath(req.body.path);
+  config.setQRMRepositoryName(req.body.name);
+  config.setQRMRepositoryPath(req.body.path);
   res.status(200).send();
 });
 

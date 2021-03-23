@@ -5,6 +5,26 @@
   padding: 0;
 }
 
+.qrm-reload:before {
+  content: "";
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-size: contain;
+  background: url("../resources/qrm-reload-icon.png") no-repeat center center;
+  float: left;
+}
+
+.workflow-transformation:before {
+  content: "";
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-size: contain;
+  background: url("../resources/worklow-transformation-icon.png") no-repeat center center;
+  float: left;
+}
+
 .workflow-deployment:before {
   content: "";
   display: block;
@@ -90,6 +110,16 @@ html, body, #container {
 
 .djs-label {
   font-family: 'Arial', sans-serif;
+}
+
+.bpmn-icon-hardware-selection-subprocess:before {
+  content: "";
+  display: block;
+  background: url("../resources/menu-icon-hardware-selection-subprocess.png") no-repeat;
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin: 0 6px 0 0;
 }
 
 .bpmn-icon-task-quantum-computation:before {

@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const repo = require('./index');
+const config = require('../../framework-config');
 
 const gitHandler = require('./git-handler');
 
@@ -23,19 +23,19 @@ module.exports.getCurrentQRMs = async function() {
   // get all folders of the defined QRM repository which could contain a QRM
   let folders = [];
   try {
-    let repoPath = repo.getQRMRepositoryPath().replace(/^\/|\/$/g, '');
-    folders = await gitHandler.getFoldersInRepository(repo.getQRMRepositoryUserName(), repo.getQRMRepositoryName(), repoPath);
+    let repoPath = config.getQRMRepositoryPath().replace(/^\/|\/$/g, '');
+    folders = await gitHandler.getFoldersInRepository(config.getQRMRepositoryUserName(), config.getQRMRepositoryName(), repoPath);
   } catch (error) {
     throw 'Unable to load QRMs from Github repository with username \''
-    + repo.getQRMRepositoryUserName() + '\', repository name \'' + repo.getQRMRepositoryName() + '\', and path \''
-    + repo.getQRMRepositoryPath() + '\'. ' + error + '. Please adapt the configuration for a suited repository!';
+    + config.getQRMRepositoryUserName() + '\', repository name \'' + config.getQRMRepositoryName() + '\', and path \''
+    + config.getQRMRepositoryPath() + '\'. ' + error + '. Please adapt the configuration for a suited repository!';
   }
 
   // filter invalid folders and retrieve QRMs
   console.log('Found %i folders with QRM candidates!', folders.length);
   let QRMs = [];
   for (let i = 0; i < folders.length; i++) {
-    let qrm = await getQRM(repo.getQRMRepositoryUserName(), repo.getQRMRepositoryName(), folders[i]);
+    let qrm = await getQRM(config.getQRMRepositoryUserName(), config.getQRMRepositoryName(), folders[i]);
     if (qrm != null) {
       QRMs.push(qrm);
     } else {

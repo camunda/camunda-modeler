@@ -10,6 +10,5 @@
  */
 
 module.exports = {
-  ...require('./workflow'),
-  ...require('./services'),
+  ...require('./workflow')
 };

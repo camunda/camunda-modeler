@@ -13,6 +13,14 @@ import * as consts from '../Constants';
 
 export var TASK = [
   {
+    label: 'Quantum Hardware Selection Subprocess',
+    actionName: 'replace-with-hardware-selection-subprocess',
+    className: 'bpmn-icon-hardware-selection-subprocess',
+    target: {
+      type: consts.QUANTUM_HARDWARE_SELECTION_SUBPROCESS
+    }
+  },
+  {
     label: 'Quantum Computation Task',
     actionName: 'replace-with-quantum-computation-task',
     className: 'bpmn-icon-task-quantum-computation',
@@ -58,6 +66,17 @@ export var TASK = [
     className: 'bpmn-icon-error-mitigation',
     target: {
       type: consts.READOUT_ERROR_MITIGATION_TASK
+    }
+  }
+];
+
+export var SUBPROCESS = [
+  {
+    label: 'Quantum Hardware Selection Subprocess',
+    actionName: 'replace-with-hardware-selection-subprocess',
+    className: 'bpmn-icon-hardware-selection-subprocess',
+    target: {
+      type: consts.QUANTUM_HARDWARE_SELECTION_SUBPROCESS
     }
   }
 ];

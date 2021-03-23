@@ -9,6 +9,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+const QUANTME_NAMESPACE_PULL_ENCODED = encodeURIComponent(encodeURIComponent('http://quantil.org/quantme/pull'));
+const QUANTME_NAMESPACE_PUSH_ENCODED = encodeURIComponent(encodeURIComponent('http://quantil.org/quantme/push'));
+
 /**
  * Check whether the given ServiceTask has an attached deployment model that should be bound using pull or push mode
  *
@@ -17,10 +20,6 @@
  * 'pull' if the corresponding service should be bound by pulling requests from a topic,
  * or undefined if unable to determine pull or push
  */
-
-const QUANTME_NAMESPACE_PULL_ENCODED = encodeURIComponent(encodeURIComponent('http://quantil.org/quantme/pull'));
-const QUANTME_NAMESPACE_PUSH_ENCODED = encodeURIComponent(encodeURIComponent('http://quantil.org/quantme/push'));
-
 export function getBindingType(serviceTask) {
   let urlSplit = serviceTask.deploymentModelUrl.split('servicetemplates/');
   if (urlSplit.length !== 2) {

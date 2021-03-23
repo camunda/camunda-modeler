@@ -47,6 +47,25 @@ export async function getRootProcessFromXml(xml) {
 }
 
 /**
+ * Export the current diagram in the given modeler as XML
+ *
+ * @param modeler the modeler to export the diagram
+ * @return the XML
+ */
+export async function exportXmlFromModeler(modeler) {
+
+  // export the xml and return to requester
+  function exportXmlWrapper(definitions) {
+    return new Promise((resolve) => {
+      modeler._moddle.toXML(definitions, (err, successResponse) => {
+        resolve(successResponse);
+      });
+    });
+  }
+  return await exportXmlWrapper(modeler.getDefinitions());
+}
+
+/**
  * Check if the given process contains only one flow element and return it
  *
  * @param process the process to retrieve the flow element from
@@ -99,6 +118,25 @@ export function isFlowLikeElement(type) {
   // TODO: handle further flow like element types
 }
 
+/**
+ * Get all flow elements recursively starting from the given element
+ *
+ * @param startElement the element to start the search
+ * @return the list of flow elements
+ */
+export function getFlowElementsRecursively(startElement) {
+  let flowElements = [];
+  for (let i = 0; i < startElement.flowElements.length; i++) {
+    let flowElement = startElement.flowElements[i];
+
+    if (flowElement.$type === 'bpmn:SubProcess') {
+      flowElements = flowElements.concat(getFlowElementsRecursively(flowElement));
+    } else {
+      flowElements.push(flowElement);
+    }
+  }
+  return flowElements;
+}
 
 /**
  * Get the properties that have to be copied from an element of a replacement fragment to the new element in the diagram

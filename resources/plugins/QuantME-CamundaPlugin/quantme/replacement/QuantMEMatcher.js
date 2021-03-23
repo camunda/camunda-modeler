@@ -125,6 +125,7 @@ function matchReadoutErrorMitigationTask(detectorElement, task) {
 
   // check if unfoldingTechnique, qpu, and maxAge match
   return matchesProperty(detectorElement.unfoldingTechnique, task.unfoldingTechnique, true)
+    && matchesProperty(detectorElement.provider, task.provider, true)
     && matchesProperty(detectorElement.qpu, task.qpu, true)
     && matchesProperty(detectorElement.maxAge, task.maxAge, false);
 }

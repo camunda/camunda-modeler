@@ -366,6 +366,10 @@ export class App extends PureComponent {
    * @return {Promise<boolean>} resolved to true if tab is closed
    */
   closeTab = async (tab) => {
+
+    // notify modeler about closed tab
+    this.triggerAction('emit-event', { type: 'app.closedTab', payload: tab });
+
     const { file } = tab;
 
     const { name } = file;

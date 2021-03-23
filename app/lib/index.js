@@ -33,23 +33,30 @@ const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 
 const {
-  getQRMs,
-  updateQRMs,
-  getQRMRepositoryName,
-  setQRMRepositoryName,
-  getQRMRepositoryUserName,
-  setQRMUserName,
-  getQRMRepositoryPath,
-  setQRMRepositoryPath
-} = require('./quantme');
-
-const {
   getCamundaEndpoint,
   setCamundaEndpoint,
   getWineryEndpoint,
   setWineryEndpoint,
   getOpenTOSCAEndpoint,
   setOpenTOSCAEndpoint,
+  getQRMRepositoryName,
+  setQRMRepositoryName,
+  getQRMRepositoryUserName,
+  setQRMUserName,
+  getQRMRepositoryPath,
+  setQRMRepositoryPath,
+  getNisqAnalyzerEndpoint,
+  getTransformationFrameworkEndpoint,
+  setNisqAnalyzerEndpoint,
+  setTransformationFrameworkEndpoint
+} = require('./framework-config');
+
+const {
+  getQRMs,
+  updateQRMs
+} = require('./quantme');
+
+const {
   deployWorkflow
 } = require('./deployment');
 
@@ -274,8 +281,10 @@ renderer.on('config:get-form-modal', function(done) {
   log.info('Updating config in the frontend...');
   let configurationJson = {
     camundaEndpoint: getCamundaEndpoint(),
+    nisqAnalyzerEndpoint: getNisqAnalyzerEndpoint(),
     opentoscaEndpoint: getOpenTOSCAEndpoint(),
     wineryEndpoint: getWineryEndpoint(),
+    transformationFrameworkEndpoint: getTransformationFrameworkEndpoint(),
     qrmUserName: getQRMRepositoryUserName(),
     qrmRepoName: getQRMRepositoryName(),
     qrmRepoPath: getQRMRepositoryPath()
@@ -292,6 +301,8 @@ renderer.on('config:set-from-modal', function(config) {
   setQRMUserName(config.qrmUserName);
   setQRMRepositoryName(config.qrmRepoName);
   setQRMRepositoryPath(config.qrmRepoPath);
+  setTransformationFrameworkEndpoint(config.transformationFrameworkEndpoint);
+  setNisqAnalyzerEndpoint(config.nisqAnalyzerEndpoint);
 });
 
 // plugin toggling //////////

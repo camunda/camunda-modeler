@@ -10,7 +10,6 @@
  */
 
 module.exports = {
-  menu: './menu/menu',
   script: './client/client.bundle.js',
   style: './css/app.css',
   name: 'QuantME'

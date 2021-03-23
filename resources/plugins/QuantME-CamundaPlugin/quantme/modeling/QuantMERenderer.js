@@ -44,6 +44,29 @@ export default class QuantMERenderer extends BpmnRenderer {
     }
 
     this.quantMeHandlers = {
+      [consts.QUANTUM_HARDWARE_SELECTION_SUBPROCESS]: function(self, parentGfx, element) {
+        var subprocess = self.renderer('bpmn:SubProcess')(parentGfx, element);
+
+        var pathData = quantMEPathMap.getPath('SUBPROCESS_QUANTUM_HARDWARE_SELECTION');
+
+        drawPath(parentGfx, pathData, {
+          transform:'scale(0.5)',
+          strokeWidth: 1.5,
+          fill: getFillColor(element, defaultFillColor),
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        });
+
+        // create circuit paths with filled shapes
+        pathData = quantMEPathMap.getPath('SUBPROCESS_QUANTUM_HARDWARE_SELECTION_FILL');
+        drawPath(parentGfx, pathData, {
+          transform:'scale(0.5)',
+          strokeWidth: 1.5,
+          fill: getFillColor(element, '#000000'),
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        });
+
+        return subprocess;
+      },
       [consts.QUANTUM_COMPUTATION_TASK]: function(self, parentGfx, element) {
         var task = self.renderer('bpmn:Task')(parentGfx, element);
 

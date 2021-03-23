@@ -112,7 +112,7 @@ export default function ServiceDeploymentInputModal({ onClose, initValues }) {
       {csarInputParts}
 
       <div hidden={true} ref={progressBarDivRef}>
-        <div className="spaceUnder spaceAbove">Upload progress:</div>
+        <div className="spaceUnder spaceAbove">Deployment progress:</div>
         <div id="progress">
           <div id="bar" ref={progressBarRef}/>
         </div>

@@ -26,7 +26,7 @@ export function requiredAttributesAvailable(element) {
     return false;
   }
 
-  // check for attributes of the different task types
+  // check for attributes of the different modeling constructs
   switch (element.$type) {
   case consts.QUANTUM_COMPUTATION_TASK:
     return checkQuantumComputationTask(bo);
@@ -40,10 +40,18 @@ export function requiredAttributesAvailable(element) {
     return checkQuantumCircuitExecutionTask(bo);
   case consts.READOUT_ERROR_MITIGATION_TASK:
     return checkReadoutErrorMitigationTask(bo);
+  case consts.QUANTUM_HARDWARE_SELECTION_SUBPROCESS:
+    return checkHardwareSelectionSubprocess(bo);
   default:
     console.log('Unsupported QuantME element of type: ', element.$type);
     return false;
   }
+}
+
+function checkHardwareSelectionSubprocess(bo) {
+
+  // check if simulatorsAllowed is defined
+  return !(typeof bo.simulatorsAllowed === 'undefined');
 }
 
 function checkQuantumComputationTask(bo) {
@@ -79,6 +87,6 @@ function checkQuantumCircuitExecutionTask(bo) {
 
 function checkReadoutErrorMitigationTask(bo) {
 
-  // check if unfoldingTechnique and qpu are defined
-  return !(typeof bo.unfoldingTechnique === 'undefined' || typeof bo.qpu === 'undefined');
+  // check if unfoldingTechnique, provider, and qpu are defined
+  return !(typeof bo.unfoldingTechnique === 'undefined'|| typeof bo.provider === 'undefined' || typeof bo.qpu === 'undefined');
 }

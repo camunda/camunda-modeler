@@ -9,37 +9,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { app } = require('electron');
 let FormData = require('form-data');
 const fetch = require('node-fetch');
+const config = require('../../framework-config');
 
 const log = require('../../log')('app:deployment');
-
-const deploymentConfig = require('../DeploymentConfig');
-
-/**
- * Get the endpoint of the configured Camunda engine to deploy to
- *
- * @return {string} the currently specified endpoint of the Camunda engine
- */
-module.exports.getCamundaEndpoint = function() {
-  if (deploymentConfig.camundaEndpoint === undefined) {
-    return '';
-  }
-  return deploymentConfig.camundaEndpoint;
-};
-
-/**
- * Set the endpoint of the Camunda engine to deploy to
- *
- * @param camundaEndpoint the endpoint of the Camunda engine
- */
-module.exports.setCamundaEndpoint = function(camundaEndpoint) {
-  if (camundaEndpoint !== null && camundaEndpoint !== undefined) {
-    deploymentConfig.camundaEndpoint = camundaEndpoint.replace(/\/$/, '');
-    app.emit('menu:action', 'camundaEndpointChanged', deploymentConfig.camundaEndpoint);
-  }
-};
 
 /**
  * Deploy the given workflow to the connected Camunda engine
@@ -49,7 +23,7 @@ module.exports.setCamundaEndpoint = function(camundaEndpoint) {
  * @return {Promise<{status: string}>} a promise with the deployment status as well as the endpoint of the deployed workflow if successful
  */
 module.exports.deployWorkflow = async function(workflowName, workflowXml) {
-  log.info('Deploying workflow to Camunda Engine at endpoint: %s', deploymentConfig.camundaEndpoint);
+  log.info('Deploying workflow to Camunda Engine at endpoint: %s', config.getCamundaEndpoint());
 
   // add required form data fields
   const form = new FormData({});
@@ -71,7 +45,7 @@ module.exports.deployWorkflow = async function(workflowName, workflowXml) {
 
   // make the request and wait for deployed endpoint
   try {
-    const response = await fetch(deploymentConfig.camundaEndpoint + '/deployment/create', {
+    const response = await fetch(config.getCamundaEndpoint() + '/deployment/create', {
       method: 'POST',
       body: form
     });

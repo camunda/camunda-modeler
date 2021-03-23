@@ -390,3 +390,90 @@ export function addMaxAgeEntry(group, translate) {
     }
   }));
 }
+
+export function addProvidersEntry(group, translate) {
+  group.entries.push(EntryFactory.textField({
+    id: consts.PROVIDERS,
+    label: translate('Providers for the Selection'),
+    modelProperty: consts.PROVIDERS,
+
+    get: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let providers = bo && bo.providers;
+      return { providers: providers };
+    },
+
+    set: function(element, values, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      return CmdHelper.updateBusinessObject(element, bo, {
+        providers: values.providers || undefined
+      });
+    },
+
+    validate: function(element, values, node) {
+      return true;
+    },
+
+    hidden: function(element, node) {
+      return false;
+    }
+  }));
+}
+
+export function addSimulatorsAllowedEntry(group, translate) {
+  group.entries.push(EntryFactory.textField({
+    id: consts.SIMULATORS_ALLOWED,
+    label: translate('Simulators Allowed (true/false)'),
+    modelProperty: consts.SIMULATORS_ALLOWED,
+
+    get: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let simulatorsAllowed = bo && bo.simulatorsAllowed;
+      return { simulatorsAllowed: simulatorsAllowed };
+    },
+
+    set: function(element, values, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      return CmdHelper.updateBusinessObject(element, bo, {
+        simulatorsAllowed: values.simulatorsAllowed || undefined
+      });
+    },
+
+    validate: function(element, values, node) {
+      return values.simulatorsAllowed === undefined || (values.simulatorsAllowed !== 'true' && values.simulatorsAllowed !== 'false') ? { simulatorsAllowed: translate('Simulators Allowed must either be true or false!') } : {};
+    },
+
+    hidden: function(element, node) {
+      return false;
+    }
+  }));
+}
+
+export function addSelectionStrategyEntry(group, translate) {
+  group.entries.push(EntryFactory.textField({
+    id: consts.SELECTION_STRATEGY,
+    label: translate('Selection Strategy'),
+    modelProperty: consts.SELECTION_STRATEGY,
+
+    get: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let selectionStrategy = bo && bo.selectionStrategy;
+      return { selectionStrategy: selectionStrategy };
+    },
+
+    set: function(element, values, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      return CmdHelper.updateBusinessObject(element, bo, {
+        selectionStrategy: values.selectionStrategy || undefined
+      });
+    },
+
+    validate: function(element, values, node) {
+      return (values.selectionStrategy && !consts.SELECTION_STRATEGY_LIST.includes(values.selectionStrategy)) ? { selectionStrategy: translate('Please define a supported selection strategy (see docs)!') } : {};
+    },
+
+    hidden: function(element, node) {
+      return false;
+    }
+  }));
+}

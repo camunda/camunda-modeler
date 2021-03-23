@@ -24,16 +24,7 @@ import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
 export async function createModelerFromXml(xml) {
 
   // create new modeler with the custom QuantME extensions
-  const bpmnModeler = new BpmnModeler({
-    additionalModules: [
-      elementTemplates,
-      quantMEModule
-    ],
-    moddleExtensions: {
-      camunda: camundaModdlePackage,
-      quantME: quantMEModdleExtension
-    }
-  });
+  const bpmnModeler = createModeler();
 
   // import the xml containing the definitions
   function importXmlWrapper(xml) {
@@ -47,4 +38,24 @@ export async function createModelerFromXml(xml) {
   await importXmlWrapper(xml);
 
   return bpmnModeler;
+}
+
+/**
+ * Create a new modeler object using the QuantME extensions
+ *
+ * @return {Modeler} the created modeler
+ */
+export function createModeler() {
+
+  // create new modeler with the custom QuantME extensions
+  return new BpmnModeler({
+    additionalModules: [
+      elementTemplates,
+      quantMEModule
+    ],
+    moddleExtensions: {
+      camunda: camundaModdlePackage,
+      quantME: quantMEModdleExtension
+    }
+  });
 }

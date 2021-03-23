@@ -19,6 +19,27 @@
         ]
       },
       {
+        "name": "QuantumHardwareSelectionSubprocess",
+        "superClass": [ "bpmn:SubProcess" ],
+        "properties": [
+          {
+            "name": "providers",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "simulatorsAllowed",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "selectionStrategy",
+            "isAttr": true,
+            "type": "String"
+          }
+        ]
+      },
+      {
         "name": "QuantumComputationTask",
         "superClass": [ "bpmn:Task" ],
         "properties": [
@@ -122,6 +143,11 @@
         "properties": [
           {
             "name": "unfoldingTechnique",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "provider",
             "isAttr": true,
             "type": "String"
           },

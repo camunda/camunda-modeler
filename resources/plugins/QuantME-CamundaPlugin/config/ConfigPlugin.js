@@ -21,11 +21,13 @@ const defaultState = {
 
 const defaultConfig = {
   camundaEndpoint: '',
+  nisqAnalyzerEndpoint: '',
   opentoscaEndpoint: '',
-  wineryEndpoint: '',
   qrmRepoName: '',
   qrmUserName: '',
-  qrmRepoPath: ''
+  qrmRepoPath: '',
+  transformationFrameworkEndpoint: '',
+  wineryEndpoint: ''
 };
 
 export default class ConfigPlugin extends PureComponent {
@@ -68,14 +70,14 @@ export default class ConfigPlugin extends PureComponent {
         }
       });
       this.editorActions.register({
-        opentoscaEndpointChanged: function(opentoscaEndpoint) {
-          self.config.opentoscaEndpoint = opentoscaEndpoint;
+        nisqAnalyzerEndpointChanged: function(nisqAnalyzerEndpoint) {
+          self.config.nisqAnalyzerEndpoint = nisqAnalyzerEndpoint;
           self.eventBus.fire('config.updated', self.config);
         }
       });
       this.editorActions.register({
-        wineryEndpointChanged: function(wineryEndpoint) {
-          self.config.wineryEndpoint = wineryEndpoint;
+        opentoscaEndpointChanged: function(opentoscaEndpoint) {
+          self.config.opentoscaEndpoint = opentoscaEndpoint;
           self.eventBus.fire('config.updated', self.config);
         }
       });
@@ -94,6 +96,18 @@ export default class ConfigPlugin extends PureComponent {
       this.editorActions.register({
         qrmRepoPathChanged: function(qrmRepoPath) {
           self.config.qrmRepoPath = qrmRepoPath;
+          self.eventBus.fire('config.updated', self.config);
+        }
+      });
+      this.editorActions.register({
+        transformationFrameworkEndpointChanged: function(transformationFrameworkEndpoint) {
+          self.config.transformationFrameworkEndpoint = transformationFrameworkEndpoint;
+          self.eventBus.fire('config.updated', self.config);
+        }
+      });
+      this.editorActions.register({
+        wineryEndpointChanged: function(wineryEndpoint) {
+          self.config.wineryEndpoint = wineryEndpoint;
           self.eventBus.fire('config.updated', self.config);
         }
       });

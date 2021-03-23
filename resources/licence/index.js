@@ -23,7 +23,7 @@ module.exports = {
       }
     },
     { // iaas licence for our plugins
-      files: ['resources/plugins/**', 'app/lib/api/**', 'app/lib/quantme/**', 'app/lib/deployment/**'],
+      files: ['resources/plugins/**', 'app/lib/api/**', 'app/lib/quantme/**', 'app/lib/deployment/**', 'app/lib/framework-config/**'],
       rules: {
         'license-header/header': [2, path.join(__dirname, './iaas-header.js') ]
       }

@@ -35,6 +35,11 @@ router.get('/', (req, res) => {
         title: 'Transform a given QuantME workflow into a native workflow!',
         href: req.header('host') + '/quantme/workflows'
       },
+      'hardware-selection': {
+        method: 'POST',
+        title: 'Transform a given QuantME workflow based on a dynamic hardware selection!',
+        href: req.header('host') + '/quantme/workflows/hardware-selection'
+      },
     }
   };
 
@@ -67,6 +72,30 @@ router.post('/', jsonParser, function(req, res) {
   // add workflow to list and increase id for the next request
   workflows.push({ id: id, status: 'transforming', xml: workflowXml });
   app.emit('menu:action', 'transformWorkflow', { id: id, xml: workflowXml, returnPath: '/quantme/workflows' });
+  res.status(201).json({ id: id });
+  id++;
+});
+
+
+// transform the given QuantME workflow model into a native workflow model based on the given hardware selection
+router.post('/hardware-selection', jsonParser, function(req, res) {
+  if (req.body === undefined || req.body.xml === undefined || req.body.provider === undefined || req.body.qpu === undefined || req.body.circuitLanguage === undefined) {
+    res.status(400).send('Circuit URL, provider, QPU, and circuit language must be set!');
+    return;
+  }
+  let workflowXml = req.body.xml;
+
+  // add workflow to list and increase id for the next request
+  workflows.push({ id: id, status: 'transforming', xml: workflowXml });
+  app.emit('menu:action', 'transformAndDeployWorkflow',
+    {
+      id: id,
+      xml: workflowXml,
+      returnPath: '/quantme/workflows',
+      provider: req.body.provider,
+      qpu:  req.body.qpu,
+      circuitLanguage: req.body.circuitLanguage
+    });
   res.status(201).json({ id: id });
   id++;
 });
@@ -198,6 +227,9 @@ module.exports.addResultOfLongRunningTask = function(id, args) {
   workflow.status = args.status;
   if (!(workflow.status === 'failed')) {
     workflow.xml = args.xml;
+    if (workflow.status === 'deployed') {
+      workflow.deployedProcessDefinition = args.deployedProcessDefinition;
+    }
   }
   updateWorkflow(workflow);
 };

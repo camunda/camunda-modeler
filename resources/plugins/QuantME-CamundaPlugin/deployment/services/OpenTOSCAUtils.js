@@ -30,8 +30,9 @@ export async function uploadCSARToContainer(opentoscaEndpoint, csarName, url, wi
     if (url.startsWith('{{ wineryEndpoint }}')) {
       url = url.replace('{{ wineryEndpoint }}', wineryEndpoint);
     }
+    console.log('Checking if CSAR at following URL is already uploaded to the OpenTOSCA Container: ', url);
 
-    // check if CSAR us already uploaded
+    // check if CSAR is already uploaded
     let getCSARResult = await getBuildPlanForCSAR(opentoscaEndpoint, csarName);
 
     if (!getCSARResult.success) {

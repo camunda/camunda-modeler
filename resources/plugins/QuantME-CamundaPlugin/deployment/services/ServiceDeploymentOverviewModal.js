@@ -20,6 +20,11 @@ const Footer = Modal.Footer || (({ children }) => <div>{children}</div>);
 
 export default function ServiceDeploymentOverviewModal({ onClose, initValues }) {
 
+  // close if no deployment required
+  if (!initValues || initValues.length === 0) {
+    onClose();
+  }
+
   let progressBarRef = React.createRef();
   let progressBarDivRef = React.createRef();
   let footerRef = React.createRef();
