@@ -222,4 +222,7 @@ export var POLL_FOR_TRANSFORMATION_SCRIPT = 'import groovy.json.*\n' +
   '       println "Resulting definition of deployed process: " + deployedProcessDefinition\n' +
   '       execution.setVariable("fragment_endpoint", deployedProcessDefinition.key);\n' +
   '   }\n' +
+  '   if(transformationStatus == "failed"){\n' +
+  '       throw new org.camunda.bpm.engine.delegate.BpmnError("Transformation of workflow failed!");\n' +
+  '   }\n' +
   '}';

@@ -110,6 +110,11 @@ export default class QuantMEController extends PureComponent {
               transformationFrameworkEndpoint: self.transformationFrameworkEndpoint,
               camundaEndpoint: self.camundaEndpoint
             });
+          if (result.status === 'failed') {
+            console.log('Transformation process failed with cause: ', result.cause);
+            self.api.sendResult(params.returnPath, params.id, { status: 'failed' });
+            return;
+          }
 
           // get all ServiceTasks that require a service deployment
           let modeler = await createModelerFromXml(result.xml);
