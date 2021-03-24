@@ -14,6 +14,8 @@ import css from './Log.less';
 
 import classNames from 'classnames';
 
+import { Fill } from './slot-fill';
+
 import dragger from '../util/dom/dragger';
 
 import {
@@ -217,73 +219,74 @@ export default class Log extends PureComponent {
           }
         ) }>
 
-        <div className="header">
+        <Fill slot="status-bar__app" group="9_log">
           <button
-            className="toggle-button"
+            className={ classNames('btn', 'toggle-button', { 'btn--active': open }) }
             title="Toggle log open state"
             onClick={ this.toggle }
           >Log</button>
-        </div>
-
-        <div
-          className="resizer"
-          onDragStart={ this.handleResizeStart }
-          draggable
-        ></div>
+        </Fill>
 
         { open &&
-          <div
-            className="body"
-            style={ { height } }>
-
+          <React.Fragment>
             <div
-              tabIndex="0"
-              className="entries"
-              ref={ this.panelRef }
-              onKeyDown={ this.handleKeyDown }
-              onFocus={ this.updateMenu }
-            >
-              <div className="controls">
-                <button className="copy-button" onClick={ this.handleCopy }>Copy</button>
-                <button className="clear-button" onClick={ onClear }>Clear</button>
+              className="resizer"
+              onDragStart={ this.handleResizeStart }
+              draggable
+            ></div>
+            <div
+              className="body"
+              style={ { height } }>
+
+              <div
+                tabIndex="0"
+                className="entries"
+                ref={ this.panelRef }
+                onKeyDown={ this.handleKeyDown }
+                onFocus={ this.updateMenu }
+              >
+                <div className="controls">
+                  <button className="copy-button" onClick={ this.handleCopy }>Copy</button>
+                  <button className="clear-button" onClick={ onClear }>Clear</button>
+                </div>
+
+                {
+                  entries.map((entry, idx) => {
+
+                    const {
+                      message,
+                      action,
+                      category
+                    } = entry;
+
+                    var msg;
+
+                    if (message) {
+                      msg = message;
+                    } else {
+                      msg = ' ';
+                    }
+
+                    return (
+                      <div className="entry" key={ idx } data-idx={ idx }>
+                        {
+                          <span>
+                            {
+                              action
+                                ? <a className="action" href="#" onClick={ action }>{ msg }</a>
+                                : msg
+                            }
+
+                            { category && <span className="category"> [ { category } ]</span> }
+                          </span>
+                        }
+                      </div>
+                    );
+                  })
+                }
               </div>
-
-              {
-                entries.map((entry, idx) => {
-
-                  const {
-                    message,
-                    action,
-                    category
-                  } = entry;
-
-                  var msg;
-
-                  if (message) {
-                    msg = message;
-                  } else {
-                    msg = ' ';
-                  }
-
-                  return (
-                    <div className="entry" key={ idx } data-idx={ idx }>
-                      {
-                        <span>
-                          {
-                            action
-                              ? <a className="action" href="#" onClick={ action }>{ msg }</a>
-                              : msg
-                          }
-
-                          { category && <span className="category"> [ { category } ]</span> }
-                        </span>
-                      }
-                    </div>
-                  );
-                })
-              }
             </div>
-          </div>
+          </React.Fragment>
         }
       </div>
     );

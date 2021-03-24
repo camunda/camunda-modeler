@@ -39,6 +39,8 @@ import Toolbar from './Toolbar';
 
 import Log from './Log';
 
+import { StatusBar } from './status-bar';
+
 import { KeyboardInteractionTrapContext } from '../shared/ui/modal/KeyboardInteractionTrap';
 
 import {
@@ -1952,6 +1954,8 @@ export class App extends PureComponent {
                 onLayoutChanged={ this.handleLayoutChanged }
                 onUpdateMenu={ this.updateMenu }
               />
+
+              <StatusBar />
 
               <PluginsRoot
                 app={ this }

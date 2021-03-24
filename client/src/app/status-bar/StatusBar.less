@@ -1,0 +1,46 @@
+:local(.StatusBar) {
+  display: flex;
+  flex-flow: row;
+  align-items: stretch;
+  flex: none;
+
+  height: 30px;
+  padding: 0 5px;
+
+  background-color: var(--grey-darken-23);
+  color: var(--color-cccccc);
+  font-size: 14px;
+
+  .status-bar__file {
+    flex: 1;
+  }
+
+  .status-bar__file,
+  .status-bar__app {
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+  }
+
+  .btn {
+    min-width: unset;
+    height: unset;
+
+    padding: 0 5px;
+    border: 0;
+    border-radius: 0;
+
+    color: inherit;
+    background-color: inherit;
+    font-weight: normal;
+
+    &.btn--active,
+    &:hover {
+      background-color: var(--grey-base-40);
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
