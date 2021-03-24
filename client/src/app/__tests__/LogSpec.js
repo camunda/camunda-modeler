@@ -160,7 +160,7 @@ describe('<Log>', function() {
       } = createLog({
         open: true,
         onLayoutChanged
-      }, mount);
+      });
 
       // when
       const button = tree.find('.toggle-button');
