@@ -524,6 +524,40 @@ describe('<MultiSheetTab>', function() {
       expect(sheetSwitchComponent.children()).to.have.lengthOf(0);
     });
   });
+
+
+  describe('EngineProfile', function() {
+
+    it('should display engine profile', function() {
+
+      // given
+      const engineProfile = 'Camunda Engine';
+      const tab = Object.assign({}, defaultTab, { meta: { engineProfile } });
+
+      // when
+      const { wrapper } = renderTab({ tab });
+
+      // then
+      const engineProfileComponent = wrapper.find('EngineProfile');
+
+      expect(engineProfileComponent.children()).to.have.lengthOf(1);
+    });
+
+
+    it('should NOT display engine profile if missing', function() {
+
+      // given
+      const tab = Object.assign({}, defaultTab, { meta: {} });
+
+      // when
+      const { wrapper } = renderTab({ tab });
+
+      // then
+      const engineProfileComponent = wrapper.find('EngineProfile');
+
+      expect(engineProfileComponent.children()).to.have.lengthOf(0);
+    });
+  });
 });
 
 
