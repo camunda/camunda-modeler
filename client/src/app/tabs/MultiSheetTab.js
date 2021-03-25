@@ -11,7 +11,6 @@
 import React from 'react';
 
 import {
-  TabLinks,
   TabContainer
 } from '../primitives';
 
@@ -22,6 +21,7 @@ import {
 } from '../cached';
 
 import css from './MultiSheetTab.less';
+import { Fill } from '../slot-fill';
 
 
 export class MultiSheetTab extends CachedComponent {
@@ -401,12 +401,11 @@ export class MultiSheetTab extends CachedComponent {
           />
         </TabContainer>
 
-        <TabLinks
-          className="secondary links"
-          tabs={ sheets }
-          activeTab={ activeSheet }
-          onSelect={ this.switchSheet } />
-
+        <SheetSwitch
+          sheets={ sheets }
+          activeSheet={ activeSheet }
+          onSelect={ this.switchSheet }
+        />
       </div>
     );
   }
@@ -414,6 +413,32 @@ export class MultiSheetTab extends CachedComponent {
 }
 
 export default WithCache(WithCachedState(MultiSheetTab));
+
+
+function SheetSwitch(props) {
+  const {
+    sheets,
+    activeSheet,
+    onSelect
+  } = props;
+
+  if (sheets.length < 2) {
+    return null;
+  }
+
+  const fallbackProvider = sheets.map(sheet => sheet.provider)
+    .find(provider => provider.isFallback);
+  const isFallback = activeSheet.provider === fallbackProvider;
+  const switchSheet = () => onSelect(sheets.find(sheet => sheet !== activeSheet));
+
+  return (
+    <Fill slot="status-bar__file" group="0_sheet">
+      <button className={ `btn${ isFallback ? ' btn--active' : '' }` } onClick={ switchSheet }>
+        { fallbackProvider.defaultName }
+      </button>
+    </Fill>
+  );
+}
 
 
 // helper //////////

@@ -343,7 +343,8 @@ describe('<MultiSheetTab>', function() {
         }, {
           type: 'bar',
           editor: DefaultEditor,
-          defaultName: 'Bar'
+          defaultName: 'Bar',
+          isFallback: true
         }]
       });
       const { sheets } = instance.getCached();
@@ -386,7 +387,8 @@ describe('<MultiSheetTab>', function() {
         }, {
           type: 'bar',
           editor: DefaultEditor,
-          defaultName: 'Bar'
+          defaultName: 'Bar',
+          isFallback: true
         }]
       }));
     });
@@ -496,6 +498,32 @@ describe('<MultiSheetTab>', function() {
     });
   });
 
+
+  describe('SheetSwitch', function() {
+
+    it('should display sheet switch for more than one sheet', function() {
+
+      // given
+      const { wrapper } = renderTab({ providers: defaultProviders });
+
+      // then
+      const sheetSwitchComponent = wrapper.find('SheetSwitch');
+
+      expect(sheetSwitchComponent.children()).to.have.lengthOf(1);
+    });
+
+
+    it('should NOT display sheet switch when there is only one sheet', function() {
+
+      // given
+      const { wrapper } = renderTab({ providers: [ defaultProviders[0] ] });
+
+      // then
+      const sheetSwitchComponent = wrapper.find('SheetSwitch');
+
+      expect(sheetSwitchComponent.children()).to.have.lengthOf(0);
+    });
+  });
 });
 
 
