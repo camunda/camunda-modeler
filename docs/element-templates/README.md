@@ -120,7 +120,19 @@ As seen in the code snippet a template consist of a number of important componen
 * `appliesTo : Array<String>`: List of BPMN types the template can be applied to.
 * `properties : Array<Object>`: List of properties of the template.
 
+### JSON Schema Compatibility
 
+The application uses the `$schema` property to ensure compatibility for a given element template. The currently supported [Camunda element templates JSON Schema version](https://github.com/camunda/element-templates-json-schema) is `v0.3`. The Camunda Modeler will ignore element templates defining a higher `$schema` version. Although, it will log a warning message. 
+
+For example, given the following `$schema` definition, the application takes `0.2.0` as the JSON Schema version of the element template.
+
+```json
+"$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.2.0/resources/schema.json"
+```
+
+The JSON Schema versioning is backward-compatible, meaning that all versions including or below the current one are supported. In case no `$schema` is defined, the Camunda Modeler assumes the latest JSON Schema version.
+
+Learn more about specifing a `$schema` [here](#defining-templates).
 
 ### Defining Template Properties
 
@@ -220,7 +232,7 @@ As seen in the example the important attributes in a property definition are:
 * `label`: A descriptive text shown with the property
 * `type`: Defining the visual appearance in the properties panel (may be any of `String`, `Text`, `Boolean`, `Dropdown` or `Hidden`)
 * `value`: An optional default value to be used if the property to be bound is not yet set
-* `binding`: Specifying how the property is mapped to BPMN or Camunda extension elements and attributes (may be any of `property`, `camunda:property`, `camunda:inputParameter`, `camunda:outputParameter`, `camunda:in`, `camunda:out`, `camunda:executionListener`, `camunda:field`)
+* `binding`: Specifying how the property is mapped to BPMN or Camunda extension elements and attributes (may be any of `property`, `camunda:property`, `camunda:inputParameter`, `camunda:outputParameter`, `camunda:in`, `camunda:out`, `camunda:executionListener`, `camunda:field`, `camunda:errorEventDefinition`)
 * `constraints`: A list of editing constraints to apply to the template
 
 
@@ -273,6 +285,12 @@ For `camunda:inputParameter` and `camunda:outputParameter` bindings an Input / O
 
 Note that the configuration options `editable` and `constraints` will have no effect for the `camunda:inputParameter` and `camunda:outputParameter` default component.
 
+For `camunda:errorEventDefinition` bindings, an Error component will be rendered. The component will include all properties of the referenced `bpmn:Error` element.
+
+![default-errors-rendering](./default-errors-rendering.png)
+
+Note that the configuration options `editable` and `constraints` will have no effect for the `camunda:errorEventDefinition` default component.
+
 For the `property`, `camunda:property`, `camunda:in`, `camunda:in:businessKey`, `camunda:out` and `camunda:field` bindings, an omitted `type` will lead to rendering the `String` component (single line input).
 
 For the `camunda:executionListener` binding, an omitted `type` will lead to the `Hidden` component (ie. no visible input for the user).
@@ -282,8 +300,7 @@ For the `camunda:executionListener` binding, an omitted `type` will lead to the 
 
 The following ways exist to map a custom field to the underlying BPMN 2.0 XML. The _"mapping result"_ in the following section will use `[userInput]` to indicate where the input provided by the user in the `Properties Panel` is set in the BPMN XML. As default or if no user input was given, the value specified in `value` will be displayed and used for `[userInput]`. `[]` brackets will be used to indicate where the parameters are mapped to in the XML.
 
-Notice that adherence to the following configuration options is not enforced. Not-adherence might lead to errors when using element templates.
-
+Notice that adherence to the following configuration options is enforced by design. If not adhering, it logs a validation error and ignores the respective element template.
 ##### `property`
 
 | **Binding `type`**  | `property`  |
@@ -356,6 +373,14 @@ Notice that adherence to the following configuration options is not enforced. No
 | **Binding parameters**  | `name`: value for the `name` attribute<br />`expression`: `true` that an expression is passed |
 | **Mapping result** | `<camunda:field name="[name]"><camunda:string>[userInput]</camunda:string></camunda:field>`<br /><br />If `expression` is set to `true`:<br />`<camunda:field name="[name]"><camunda:expression>[userInput]</camunda:expression>` |
 
+##### `camunda:errorEventDefinition`
+
+|  **Binding `type`**  |  `camunda:errorEventDefinition` |
+|---|---|
+| **Valid property `type`'s** | `String`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  | `errorRef`: reference to a scoped `bpmn:Error` binding, generates the `errorRef` attribute as unique id <br /> |
+| **Mapping result** | `<camunda:errorEventDefinition id="[unique element id]" expression="[userInput]" errorRef="Error_[errorRef]_[unique suffix]" />` <br /><br /> For the referenced scoped `bpmn:Error` binding: `<bpmn:Error id="Error_[errorRef]_[unique suffix]" />`   |
+
 #### Scoped Bindings
 
 As of Camunda Modeler `v1.11.0` we support special scoped bindings that allow you to configure nested elements, such as [connectors](https://docs.camunda.org/manual/7.7/user-guide/process-engine/connectors/#use-connectors).
@@ -368,8 +393,9 @@ As of Camunda Modeler `v1.11.0` we support special scoped bindings that allow yo
     "bpmn:Task"
   ],
   "properties": [],
-  "scopes": {
-    "camunda:Connector": {
+  "scopes": [
+    {
+      "type": "camunda:Connector",
       "properties": [
         {
           "label": "ConnectorId",
@@ -383,7 +409,7 @@ As of Camunda Modeler `v1.11.0` we support special scoped bindings that allow yo
         ...
       ]
     }
-  }
+  ]
 }
 ```
 
@@ -399,7 +425,8 @@ __Supported Scopes__
 
 | Name | Target |
 | ------------- | ------------- |
-| `camunda:Connector` | [Connectors](https://docs.camunda.org/manual/7.7/user-guide/process-engine/connectors/) |
+| `camunda:Connector` | [Connectors](https://docs.camunda.org/manual/latest/user-guide/process-engine/connectors/) |
+| `bpmn:Error` | Global BPMN Error Element |
 
 
 #### Constraints
