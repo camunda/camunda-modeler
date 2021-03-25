@@ -4,25 +4,18 @@
       "bpmn:ServiceTask"
     ],
     "description": "foo",
-    "id": "23112asd-da-213sad-sad123",
+    "id": "16319b98-513f-400e-b596-2944c7530d6c",
     "metadata": {
-      "catalogOrganizationId": "aafasda-asd12as-123123",
-      "catalogTemplateId": "asd-asd-asdsad",
-      "created": 1601556562335,
+      "catalogOrganizationId": "b810760f-167f-4b54-bd30-37cafcfdd08e",
+      "created": 1616669450772,
       "tags": [
-        "Walt's Templates"
-      ]
+        "Walts Templates"
+      ],
+      "templateVersionId": "5e48cd6b-b4d3-419d-8e1a-d11dee88d400",
+      "updated": 1616669450772
     },
     "name": "New RPA template",
     "properties": [
-      {
-        "binding": {
-          "name": "name",
-          "type": "property"
-        },
-        "type": "Hidden",
-        "value": "MyBot"
-      },
       {
         "binding": {
           "name": "bot",
@@ -32,6 +25,30 @@
         "label": "UiPath Package Name",
         "type": "String",
         "value": "foo"
+      },
+      {
+        "binding": {
+          "name": "camunda:asyncAfter",
+          "type": "property"
+        },
+        "type": "Hidden",
+        "value": "true"
+      },
+      {
+        "binding": {
+          "name": "camunda:type",
+          "type": "property"
+        },
+        "type": "Hidden",
+        "value": "external"
+      },
+      {
+        "binding": {
+          "name": "camunda:topic",
+          "type": "property"
+        },
+        "type": "Hidden",
+        "value": "uipath"
       },
       {
         "binding": {
@@ -53,29 +70,49 @@
       },
       {
         "binding": {
-          "name": "camunda:type",
-          "type": "property"
+          "errorRef": "fd47d07f-8060-4b2d-b536-dc3ae15cfa19",
+          "type": "camunda:errorEventDefinition"
         },
-        "type": "Hidden",
-        "value": "external"
-      },
-      {
-        "binding": {
-          "name": "camunda:topic",
-          "type": "property"
-        },
-        "type": "Hidden",
-        "value": "uipath"
-      },
-      {
-        "binding": {
-          "name": "camunda:asyncAfter",
-          "type": "property"
-        },
-        "type": "Hidden",
-        "value": "true"
+        "label": "my-error",
+        "value": "${true}"
       }
-    ]
+    ],
+    "scopes": [
+      {
+        "id": "fd47d07f-8060-4b2d-b536-dc3ae15cfa19",
+        "properties": [
+          {
+            "binding": {
+              "name": "errorCode",
+              "type": "property"
+            },
+            "label": "Error Code",
+            "type": "Hidden",
+            "value": "500"
+          },
+          {
+            "binding": {
+              "name": "camunda:errorMessage",
+              "type": "property"
+            },
+            "label": "Error Message",
+            "type": "Hidden",
+            "value": "custom error thrown"
+          },
+          {
+            "binding": {
+              "name": "name",
+              "type": "property"
+            },
+            "label": "Error Name",
+            "type": "Hidden",
+            "value": "my-error"
+          }
+        ],
+        "type": "bpmn:Error"
+      }
+    ],
+    "version": 1616669450772
   },
   {
     "name": "RPA Template v2",
