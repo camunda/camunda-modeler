@@ -10,6 +10,7 @@
   background-color: var(--grey-darken-23);
   color: var(--color-cccccc);
   font-size: 14px;
+  line-height: 30px;
 
   .status-bar__file {
     flex: 1;
@@ -20,6 +21,10 @@
     display: flex;
     flex-flow: row;
     align-items: stretch;
+
+    &>* {
+      padding: 0 5px;
+    }
   }
 
   .btn {

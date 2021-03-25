@@ -119,6 +119,11 @@ export default class TabsProvider {
         getInitialFilename(suffix) {
           return `diagram_${suffix}.bpmn`;
         },
+        getMeta(file) {
+          return {
+            engineProfile: 'Camunda Engine'
+          };
+        },
         getHelpMenu() {
           return [{
             label: 'BPMN 2.0 Tutorial',
@@ -187,6 +192,11 @@ export default class TabsProvider {
         getInitialFilename(suffix) {
           return `diagram_${suffix}.bpmn`;
         },
+        getMeta(file) {
+          return {
+            engineProfile: 'Zeebe Engine'
+          };
+        },
         getHelpMenu() {
           return [];
         },
@@ -223,6 +233,11 @@ export default class TabsProvider {
         },
         getInitialFilename(suffix) {
           return `diagram_${suffix}.cmmn`;
+        },
+        getMeta(file) {
+          return {
+            engineProfile: 'Camunda Engine'
+          };
         },
         getHelpMenu() {
           return [{
@@ -268,6 +283,11 @@ export default class TabsProvider {
         getInitialFilename(suffix) {
           return `diagram_${suffix}.dmn`;
         },
+        getMeta(file) {
+          return {
+            engineProfile: 'Camunda DMN Engine'
+          };
+        },
         getHelpMenu() {
           return [{
             label: 'DMN Tutorial',
@@ -303,6 +323,11 @@ export default class TabsProvider {
         },
         getInitialFilename(suffix) {
           return `form_${suffix}.form`;
+        },
+        getMeta(file) {
+          return {
+            engineProfile: 'Camunda Forms'
+          };
         },
         getHelpMenu() {
           return [];
@@ -402,6 +427,8 @@ export default class TabsProvider {
       file.contents = this._getInitialFileContents(type);
     }
 
+    const meta = this._getMeta(type, file);
+
     return {
       file,
       id,
@@ -414,6 +441,7 @@ export default class TabsProvider {
       get title() {
         return this.file.path || 'unsaved';
       },
+      meta,
       type
     };
   }
@@ -447,6 +475,12 @@ export default class TabsProvider {
     const rawContents = this.getProvider(type).getInitialContents();
 
     return rawContents && replaceIds(rawContents, generateId);
+  }
+
+  _getMeta(type, file) {
+    const provider = this.getProvider(type);
+
+    return provider.getMeta && provider.getMeta(file) || {};
   }
 
   _getTabType(file) {

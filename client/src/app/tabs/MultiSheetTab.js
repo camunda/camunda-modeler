@@ -406,6 +406,8 @@ export class MultiSheetTab extends CachedComponent {
           activeSheet={ activeSheet }
           onSelect={ this.switchSheet }
         />
+
+        <EngineProfile tab={ tab } />
       </div>
     );
   }
@@ -436,6 +438,24 @@ function SheetSwitch(props) {
       <button className={ `btn${ isFallback ? ' btn--active' : '' }` } onClick={ switchSheet }>
         { fallbackProvider.defaultName }
       </button>
+    </Fill>
+  );
+}
+
+function EngineProfile(props) {
+  const { tab } = props;
+
+  const engineProfile = tab.meta && tab.meta.engineProfile;
+
+  if (!engineProfile) {
+    return null;
+  }
+
+  return (
+    <Fill slot="status-bar__file" group="1_engine">
+      <span>
+        {engineProfile}
+      </span>
     </Fill>
   );
 }
