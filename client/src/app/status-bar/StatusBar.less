@@ -4,14 +4,14 @@
   align-items: stretch;
   flex: none;
 
-  height: 30px;
-  padding: 0 5px;
+  height: 29px;
+  padding: 0;
 
   background-color: var(--status-bar-background-color);
   border-top: 1px solid var(--status-bar-border-color);
   color: var(--status-bar-font-color);
   font-size: 14px;
-  line-height: 30px;
+  line-height: 28px;
 
   .status-bar__file {
     flex: 1;
@@ -24,7 +24,8 @@
     align-items: stretch;
 
     &>* {
-      padding: 0 5px;
+      padding: 0 10px;
+      margin: 0;
     }
   }
 
@@ -32,17 +33,31 @@
     min-width: unset;
     height: unset;
 
-    padding: 0 5px;
     border: 0;
     border-radius: 0;
 
     color: inherit;
     background-color: inherit;
     font-weight: normal;
+    font-size: inherit;
+    font-family: inherit;
 
-    &.btn--active,
+    &:hover,
+    &.btn--active {
+      margin-top: -1px;
+    }
+
     &:hover {
-      background-color: var(--status-bar-active-color);
+      background-color: var(--status-bar-hover-background-color);
+    }
+
+    &.btn--active {
+      color: var(--status-bar-active-font-color);
+      background-color: var(--status-bar-active-background-color);
+    }
+
+    &.btn--active:hover {
+      background-color: var(--status-bar-active-hover-background-color);
     }
 
     &:focus {
