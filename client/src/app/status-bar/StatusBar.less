@@ -7,8 +7,9 @@
   height: 30px;
   padding: 0 5px;
 
-  background-color: var(--grey-darken-23);
-  color: var(--color-cccccc);
+  background-color: var(--status-bar-background-color);
+  border-top: 1px solid var(--status-bar-border-color);
+  color: var(--status-bar-font-color);
   font-size: 14px;
   line-height: 30px;
 
@@ -41,7 +42,7 @@
 
     &.btn--active,
     &:hover {
-      background-color: var(--grey-base-40);
+      background-color: var(--status-bar-active-color);
     }
 
     &:focus {
