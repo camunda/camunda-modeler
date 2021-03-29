@@ -270,7 +270,7 @@ export default class TabsProvider {
         },
         getHelpMenu() {
           return [{
-            label: 'DMN 1.1 Tutorial',
+            label: 'DMN Tutorial',
             action: 'https://camunda.org/dmn/tutorial/'
           }];
         },
