@@ -22,6 +22,7 @@ import {
 
 import css from './MultiSheetTab.less';
 import { Fill } from '../slot-fill';
+import { EngineProfile } from './EngineProfile';
 
 
 export class MultiSheetTab extends CachedComponent {
@@ -438,24 +439,6 @@ function SheetSwitch(props) {
       <button className={ `btn${ isFallback ? ' btn--active' : '' }` } onClick={ switchSheet }>
         { fallbackProvider.defaultName }
       </button>
-    </Fill>
-  );
-}
-
-function EngineProfile(props) {
-  const { tab } = props;
-
-  const engineProfile = tab.meta && tab.meta.engineProfile;
-
-  if (!engineProfile) {
-    return null;
-  }
-
-  return (
-    <Fill slot="status-bar__file" group="1_engine">
-      <span>
-        {engineProfile}
-      </span>
     </Fill>
   );
 }
