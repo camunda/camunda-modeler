@@ -30,7 +30,7 @@ import {
 
 import { createFormEditor } from 'test/mocks/form-js';
 
-import schemaJSON from './form.json'
+import schemaJSON from './form.json';
 
 const schema = JSON.stringify(schemaJSON, null, 2);
 
@@ -103,9 +103,9 @@ describe('<FormEditor>', function() {
     it('changed', expectHandleChanged('changed'));
 
     it('propertiesPanel.focusin', expectHandleChanged('propertiesPanel.focusin'));
-    
+
     it('propertiesPanel.focusout', expectHandleChanged('propertiesPanel.focusout'));
-    
+
     it('selection.changed', expectHandleChanged('selection.changed'));
 
   });
