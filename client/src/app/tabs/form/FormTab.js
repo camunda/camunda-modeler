@@ -24,7 +24,7 @@ const FormTab = createTab('FormTab', [
     type: 'json',
     editor: JSONEditor,
     isFallback: true,
-    defaultName: 'Form (Camunda Forms)'
+    defaultName: 'JSON'
   }
 ]);
 
