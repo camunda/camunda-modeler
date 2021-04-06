@@ -60,14 +60,6 @@ Based on the [test diagram](./test.bpmn.png):
     * [ ] Change task to UserTask; implementation property is gone from XML (except Retry Time Cycle, Input/output Mapping and `asyncBefore`)
 
 
-####  CMMN modeling
-
-* [ ] create a new CMMN diagram
-* [ ] save diagram on disk
-* [ ] save as SVG, PNG and JPG
-* [ ] SVG, PNG and JPG open in browser (i.e. Chrome)
-
-
 #### DMN modeling
 
 * [ ] create a new DMN diagram
@@ -86,6 +78,16 @@ Based on the [test diagram](./test.bpmn.png):
 * [ ] SVG, PNG and JPG exports open in browser
 
 
+####  Forms modeling
+
+* [ ] create a new Camunda Form
+* [ ] build [this form](./test.form.png) from scratch
+* [ ] save file on disk as `test.form`
+* [ ] file imports correctly after save
+* [ ] add a `required` validation to the creditor field
+* [ ] add a regular expression (`^C-[0-9]+$`) to the invoice number field
+
+
 #### FS integration (platform specific)
 
 * [ ] external change detection works
@@ -94,8 +96,8 @@ Based on the [test diagram](./test.bpmn.png):
     * [ ] message to reload displays
 * [ ] double click in FS opens file in editor (existing instance _?_)
     * [ ] `.bpmn`
-    * [ ] `.cmmn`
     * [ ] `.dmn`
+    * [ ] `.form`
 
 
 #### Error Handling
