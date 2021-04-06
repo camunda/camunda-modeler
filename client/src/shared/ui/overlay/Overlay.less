@@ -1,0 +1,42 @@
+:local(.Overlay) {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+
+  width: 300px;
+
+  padding: 10px 0 15px;
+  z-index: 1001;
+
+  border: 1px solid var(--overlay-border-color);
+  box-shadow: 0 -2px 12px var(--color-000000-opacity-15);
+
+  background-color: var(--overlay-background-color);
+  color: var(--overlay-font-color);
+
+  font-size: 14px;
+
+  .overlay__header {
+    padding: 10px 10px 12px;
+
+    font-size: inherit;
+  }
+
+  .overlay__title {
+    margin: 0;
+
+    font-size: inherit;
+    font-weight: normal;
+    color: var(--overlay-title-color);
+  }
+
+  .overlay__body {
+    padding: 0 10px 15px;
+    font-size: inherit;
+  }
+
+  .overlay__footer {
+    padding: 15px 10px 0;
+    border-top: 1px solid var(--overlay-border-color);
+  }
+}
