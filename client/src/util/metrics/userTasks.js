@@ -58,12 +58,14 @@ function parseCamundaUserTaskForms(userTasks) {
   const hasFormKey = (userTask) => ('formKey' in userTask);
   const isEmbedded = (formKey) => formKey.startsWith('embedded:');
   const isExternal = (formKey) => formKey.startsWith('app:');
-  const isOther = (formKey) => !isEmbedded(formKey) && !isExternal(formKey);
+  const isCamundaForm = (formKey) => formKey.startsWith('camunda-forms:');
+  const isOther = (formKey) => !isEmbedded(formKey) && !isExternal(formKey) && !isCamundaForm(formKey);
 
   return {
     count: userTasks.filter((userTask) => hasFormKey(userTask) || hasFormField(userTask)).length,
     embedded: userTasks.filter((userTask) => hasFormKey(userTask) && isEmbedded(userTask.formKey)).length,
     external: userTasks.filter((userTask) => hasFormKey(userTask) && isExternal(userTask.formKey)).length,
+    camundaForms: userTasks.filter((userTask) => hasFormKey(userTask) && isCamundaForm(userTask.formKey)).length,
     generated: userTasks.filter((userTask) => !hasFormKey(userTask) && hasFormField(userTask)).length,
     other: userTasks.filter((userTask) => hasFormKey(userTask) && isOther(userTask.formKey)).length,
   };

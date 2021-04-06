@@ -410,10 +410,11 @@ describe('<DiagramOpenEventHandler>', () => {
 
         // then
         expect(diagramMetrics.tasks.userTask).to.eql({
-          count: 8,
+          count: 9,
           form: {
-            count: 6,
+            count: 7,
             embedded: 3,
+            camundaForms: 1,
             external: 1,
             generated: 1,
             other: 1
@@ -449,10 +450,11 @@ describe('<DiagramOpenEventHandler>', () => {
 
         // then
         expect(diagramMetrics.tasks.userTask).to.eql({
-          count: 8,
+          count: 9,
           form: {
-            count: 6,
+            count: 7,
             embedded: 3,
+            camundaForms: 1,
             external: 1,
             generated: 1,
             other: 1
@@ -488,11 +490,12 @@ describe('<DiagramOpenEventHandler>', () => {
 
         // then
         expect(diagramMetrics.tasks.userTask).to.eql({
-          count: 4,
+          count: 5,
           form: {
-            count: 4,
+            count: 5,
             embedded: 1,
             external: 2,
+            camundaForms: 1,
             generated: 0,
             other: 1
           }
@@ -531,6 +534,7 @@ describe('<DiagramOpenEventHandler>', () => {
           form: {
             count: 0,
             embedded: 0,
+            camundaForms: 0,
             external: 0,
             generated: 0,
             other: 0

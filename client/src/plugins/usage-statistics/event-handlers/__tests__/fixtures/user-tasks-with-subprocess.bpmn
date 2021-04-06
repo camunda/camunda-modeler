@@ -14,6 +14,7 @@
         </bpmn:subProcess>
       </bpmn:subProcess>
       <bpmn:userTask id="Activity_1syp7rc" name="external" camunda:formKey="app:formkey" />
+      <bpmn:userTask id="Activity_0k26x6s" name="camunda-forms" camunda:formKey="camunda-forms:deployment:forms/userTask.form" />
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="Flow_0efxlzs" sourceRef="Activity_0xw1dsc" targetRef="Activity_1esow8t" />
     <bpmn:userTask id="Activity_1esow8t" name="other" camunda:formKey="other:formkey">
@@ -33,14 +34,11 @@
       <bpmndi:BPMNShape id="Activity_0zmuzhd_di" bpmnElement="Activity_0x9y73u">
         <dc:Bounds x="160" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_051e013_di" bpmnElement="Activity_1esow8t">
-        <dc:Bounds x="1110" y="220" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1oj3mcw_di" bpmnElement="Activity_0xw1dsc" isExpanded="true">
-        <dc:Bounds x="320" y="80" width="750" height="390" />
+        <dc:Bounds x="320" y="80" width="750" height="430" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1syp7rc_di" bpmnElement="Activity_1syp7rc">
-        <dc:Bounds x="350" y="220" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0k26x6s_di" bpmnElement="Activity_0k26x6s">
+        <dc:Bounds x="680" y="410" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0afq40t_di" bpmnElement="Activity_0afq40t" isExpanded="true">
         <dc:Bounds x="490" y="125" width="550" height="270" />
@@ -50,6 +48,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1hke2ju_di" bpmnElement="Activity_13p2wbt">
         <dc:Bounds x="720" y="215" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1syp7rc_di" bpmnElement="Activity_1syp7rc">
+        <dc:Bounds x="350" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_051e013_di" bpmnElement="Activity_1esow8t">
+        <dc:Bounds x="1110" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

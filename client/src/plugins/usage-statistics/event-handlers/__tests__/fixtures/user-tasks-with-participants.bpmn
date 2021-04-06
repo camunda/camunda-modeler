@@ -15,6 +15,7 @@
         </camunda:formData>
       </bpmn:extensionElements>
     </bpmn:userTask>
+    <bpmn:userTask id="Activity_0jsl1bq" name="camunda-forms" camunda:formKey="camunda-forms:deployment:forms/userTask.form" />
   </bpmn:process>
   <bpmn:process id="Process_073q1fo" isExecutable="false">
     <bpmn:userTask id="Activity_1vuefoc" name="blank" />
@@ -34,7 +35,7 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_19qmlsq">
       <bpmndi:BPMNShape id="Participant_1pimrbc_di" bpmnElement="Participant_1pimrbc" isHorizontal="true">
-        <dc:Bounds x="160" y="59" width="610" height="250" />
+        <dc:Bounds x="160" y="59" width="770" height="250" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1s8htma_di" bpmnElement="Activity_1s8htma">
         <dc:Bounds x="220" y="140" width="100" height="80" />
@@ -47,6 +48,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0qtb7el_di" bpmnElement="Activity_0qtb7el">
         <dc:Bounds x="640" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jsl1bq_di" bpmnElement="Activity_0jsl1bq">
+        <dc:Bounds x="780" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_1qews1l_di" bpmnElement="Participant_1qews1l" isHorizontal="true">
         <dc:Bounds x="160" y="330" width="610" height="270" />

@@ -84,10 +84,11 @@ as well as relevant information about user tasks and forms:
     "processVariablesCount": 3,
     "tasks": {
       "userTask": {
-        "count": 4,
+        "count": 5,
         "form": {
-          "count": 4,
+          "count": 5,
           "embedded": 1,
+          "camundaForms": 1,
           "external": 2,
           "generated": 0,
           "other": 1
@@ -165,10 +166,11 @@ as well as relevant information about user tasks and forms:
     "processVariablesCount": 3,
     "tasks": {
       "userTask": {
-        "count": 4,
+        "count": 5,
         "form": {
-          "count": 4,
+          "count": 5,
           "embedded": 1,
+          "camundaForms": 1,
           "external": 2,
           "generated": 0,
           "other": 1
