@@ -6,6 +6,43 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.7.0
+
+### General
+
+* `FEAT`: set `enable-duplicate-filtering` flag on deployments ([#2160](https://github.com/camunda/camunda-modeler/issues/2160))
+* `FEAT`: allow deployments with multiple files ([#2131](https://github.com/camunda/camunda-modeler/issues/2131))
+* `FEAT`: introduce status bar ([#2175](https://github.com/camunda/camunda-modeler/issues/2175))
+* `FEAT`: introduce engine profile overlay ([#2187](https://github.com/camunda/camunda-modeler/issues/2187))
+* `CHORE`: capture used Camunda Forms in telemetry events ([#2188](https://github.com/camunda/camunda-modeler/issues/2188))
+
+### BPMN
+
+* `FEAT`: support creating, opening, deploying and starting Zeebe BPMN diagrams ([#2029](https://github.com/camunda/camunda-modeler/issues/2029))
+* `FEAT`: support non-default element templates for root elements ([#2121](https://github.com/camunda/camunda-modeler/issues/2121))
+* `FEAT`: support BPMN Errors on external service tasks ([#2070](https://github.com/camunda/camunda-modeler/issues/2070))
+* `FEAT`: introduce JSON Schema versioning via `$schema` property ([#2083](https://github.com/camunda/camunda-modeler/issues/2083))
+* `FEAT`: validate element templates against JSON Schema ([#2159](https://github.com/camunda/camunda-modeler/issues/2159))
+* `FEAT`: enable connection tool for text annotations ([#2042](https://github.com/camunda/camunda-modeler/issues/2042))
+* `FIX`: support property panel plugins again ([#1992](https://github.com/camunda/camunda-modeler/issues/1992))
+* `FIX`: consistently validate element templates in catalog ([#2110](https://github.com/camunda/camunda-modeler/issues/2110))
+* `FIX`: improve error messages for element templates ([#2111](https://github.com/camunda/camunda-modeler/issues/2111))
+* `FIX`: correctly display empty versions for element templates ([#2101](https://github.com/camunda/camunda-modeler/issues/2101))
+* `FIX`: correctly display long variable names in the overview ([#2166](https://github.com/camunda/camunda-modeler/issues/2166))
+* `CHORE`: disable Zeebe BPMN editor with flag ([#2171](https://github.com/camunda/camunda-modeler/pull/2171))
+* `CHORE`: bump to `bpmn-js@8.3.0`
+* `CHORE`: bump to `bpmn-js-properties-panel@0.42.0`
+
+### DMN
+
+* `CHORE`: bump to `dmn-js@10.1.0`
+
+### Forms
+
+* `FEAT`: add Forms editor ([#2149](https://github.com/camunda/camunda-modeler/issues/2149))
+* `FEAT`: allow opening `.form` files ([#2108](https://github.com/camunda/camunda-modeler/issues/2108))
+* `FEAT`: allow deploying Forms alongside BPMN diagrams ([#2100](https://github.com/camunda/camunda-modeler/issues/2100))
+
 ## 4.6.0
 
 ### General
