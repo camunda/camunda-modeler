@@ -27,6 +27,11 @@ export function createFormEditor({ schema }) {
       listeners[ event ].push(callback);
     },
     off() {},
+    emitter: {
+      emit() {},
+      on() {},
+      off() {}
+    },
     _emit(event) {
       if (listeners[ event ]) {
         listeners[ event ].forEach(callback => callback());
