@@ -43,6 +43,10 @@ export class FormEditor extends CachedComponent {
 
     if (this.ref.current) {
       attachForm(this.ref.current);
+
+      if (form) {
+        form.emitter.emit('attach');
+      }
     }
 
     this.checkImport();
@@ -57,6 +61,10 @@ export class FormEditor extends CachedComponent {
     } = this.getCached();
 
     detachForm();
+
+    if (form) {
+      form.emitter.emit('detach');
+    }
 
     this.listen('off', form);
   }
