@@ -10,7 +10,7 @@
 
 import TabsProvider from '../TabsProvider';
 
-import Flags, { DISABLE_DMN, DISABLE_CMMN, DISABLE_ZEEBE } from '../../util/Flags';
+import Flags, { DISABLE_DMN, DISABLE_CMMN } from '../../util/Flags';
 
 
 describe('TabsProvider', function() {
@@ -96,8 +96,7 @@ describe('TabsProvider', function() {
 
         // given
         Flags.init({
-          [DISABLE_CMMN]: false,
-          [DISABLE_ZEEBE]: false
+          [DISABLE_CMMN]: false
         });
 
         const tabsProvider = new TabsProvider();
@@ -245,9 +244,7 @@ describe('TabsProvider', function() {
     it('should take cloud-bpmn first for known bpmn file', function() {
 
       // given
-      Flags.init({
-        [DISABLE_ZEEBE]: false
-      });
+      Flags.init({});
 
       const tabsProvider = new TabsProvider();
 
