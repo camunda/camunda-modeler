@@ -18,8 +18,8 @@ import {
  */
 export default class Backend {
 
-  constructor(ipcRenderer, platform) {
-    this.ipcRenderer = ipcRenderer;
+  constructor(api, platform) {
+    this.api = api;
     this.platform = platform;
   }
 
@@ -47,21 +47,31 @@ export default class Backend {
         return resolve(args[1]);
       });
 
-      this.ipcRenderer.send(event, id, args);
+      this.api.send(event, id, args);
     });
 
   }
 
+  /**
+   * Subscribe to event.
+   *
+   * @param {string} event
+   * @param {Function} callback
+   * @returns {{ cancel: () => void }}
+   */
   on(event, callback) {
-    this.ipcRenderer.on(event, callback);
+    return this.api.on(event, callback);
   }
 
-  off(event, callback) {
-    this.ipcRenderer.off(event, callback);
-  }
-
+  /**
+   * Subscribe to event for one call.
+   *
+   * @param {string} event
+   * @param {Function} callback
+   * @returns {{ cancel: () => void }}
+   */
   once(event, callback) {
-    this.ipcRenderer.once(event, callback);
+    return this.api.once(event, callback);
   }
 
   sendQuitAllowed = () => {

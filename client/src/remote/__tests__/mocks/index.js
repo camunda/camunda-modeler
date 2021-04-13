@@ -41,10 +41,6 @@ export class IpcRenderer {
     this.listener = callback;
   }
 
-  off(event) {
-    this.listener = null;
-  }
-
   once(event, callback) {
     this.listener = callback;
   }

@@ -378,13 +378,23 @@ export class Backend extends Mock {
 
   on(event, listener) {
     this.listeners[event] = (this.listeners[event] || []).concat([ listener.bind(this) ]);
+
+    return {
+      cancel: () => {
+        this.listeners[event] = without(this.listeners[event], listener);
+      }
+    };
   }
 
   once(event, listener) {
     this.listeners[event] = (this.listeners[event] || []).concat([ listener.bind(this) ]);
-  }
 
-  off() {}
+    return {
+      cancel: () => {
+        this.listeners[event] = without(this.listeners[event], listener);
+      }
+    };
+  }
 
   registerMenu = () => Promise.resolve()
 
@@ -485,4 +495,8 @@ export class Plugins extends Mock {
   getAppPlugins() {
     return [];
   }
+}
+
+function without(arr, toRemove) {
+  return arr.filter(item => item !== toRemove);
 }

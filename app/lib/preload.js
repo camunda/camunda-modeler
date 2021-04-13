@@ -9,29 +9,82 @@
  */
 
 const {
-  remote,
+  contextBridge,
   ipcRenderer
 } = require('electron');
 
-const {
-  process,
-  app
-} = remote;
+const allowedEvents = [
+  'errorTracking:turnedOn',
+  'errorTracking:turnedOff',
+  'external:open-url',
+  'dialog:open-files',
+  'dialog:open-file-error',
+  'dialog:save-file',
+  'dialog:show',
+  'file:read',
+  'file:read-stats',
+  'file:write',
+  'zeebe:checkConnection',
+  'zeebe:deploy',
+  'zeebe:run',
+  'config:get',
+  'config:set',
+  'toggle-plugins',
+  'client:ready',
+  'client:error',
+  'app:quit-allowed',
+  'workspace:restore',
+  'workspace:save',
+  'menu:register',
+  'menu:update',
+  'context-menu:open'
+];
 
-const {
-  platform
-} = process;
+const api = {
+  send: (event, ...args) => {
+    if (!allowedEvents.includes(event)) {
+      throw new Error(`Disallowed event: ${event}`);
+    }
 
-/* global window */
+    ipcRenderer.send(event, ...args);
+  },
+  on: (event, callback) => {
+    ipcRenderer.on(event, callback);
 
-window.getAppPreload = function() {
+    return {
+      cancel() {
+        ipcRenderer.off(event, callback);
+      }
+    };
+  },
+  once: (event, callback) => {
+    ipcRenderer.once(event, callback);
+
+    return {
+      cancel() {
+        ipcRenderer.off(event, callback);
+      }
+    };
+  }
+};
+
+let executed = false;
+
+contextBridge.exposeInMainWorld('getAppPreload', function() {
+
+  // expose api only once
+  // related to https://github.com/camunda/camunda-modeler/issues/2143
+  if (executed) {
+    return;
+  }
+
+  executed = true;
 
   return {
-    metadata: app.metadata,
-    plugins: app.plugins.getAll(),
-    flags: app.flags.getAll(),
-    ipcRenderer,
-    platform
+    metadata: ipcRenderer.sendSync('app:get-metadata'),
+    plugins: ipcRenderer.sendSync('app:get-plugins'),
+    flags: ipcRenderer.sendSync('app:get-flags'),
+    api,
+    platform: process.platform
   };
-
-};
+});

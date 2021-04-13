@@ -41,18 +41,11 @@ describe('<AppParent>', function() {
 
   describe('keyboard bindings', function() {
 
-    let appParent,
-        bindSpy,
-        setOnActionSpy,
-        tree,
-        unbindSpy,
-        updateSpy;
-
-    beforeEach(function() {
-      bindSpy = spy();
-      setOnActionSpy = spy();
-      unbindSpy = spy();
-      updateSpy = spy();
+    function setup() {
+      const bindSpy = spy();
+      const setOnActionSpy = spy();
+      const unbindSpy = spy();
+      const updateSpy = spy();
 
       const keyboardBindings = {
         bind: bindSpy,
@@ -61,10 +54,25 @@ describe('<AppParent>', function() {
         update: updateSpy
       };
 
-      ({ appParent, tree } = createAppParent({ keyboardBindings }, mount));
-    });
+      const { appParent, tree } = createAppParent({ keyboardBindings }, mount);
+
+      return {
+        bindSpy,
+        setOnActionSpy,
+        updateSpy,
+        unbindSpy,
+        appParent,
+        tree
+      };
+    }
 
     it('should bind', function() {
+
+      // given
+      const {
+        bindSpy,
+        setOnActionSpy
+      } = setup();
 
       // then
       expect(bindSpy).to.have.been.called;
@@ -73,6 +81,12 @@ describe('<AppParent>', function() {
 
 
     it('should update', function() {
+
+      // given
+      const {
+        appParent,
+        updateSpy
+      } = setup();
 
       // when
       appParent.handleMenuUpdate();
@@ -83,6 +97,12 @@ describe('<AppParent>', function() {
 
 
     it('should unbind', function() {
+
+      // given
+      const {
+        unbindSpy,
+        tree
+      } = setup();
 
       // when
       tree.unmount();
