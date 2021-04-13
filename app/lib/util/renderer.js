@@ -46,6 +46,21 @@ function on(event, callback, that) {
 
 module.exports.on = on;
 
+/**
+ * Handle ipcRenderer.sendSync calls.
+ *
+ * @param {string} eventName
+ * @param {Function} callback
+ */
+function onSync(eventName, callback, that) {
+  ipcMain.on(eventName, (event, ...args) => {
+    const result = callback.apply(that || null, args);
+
+    event.returnValue = result;
+  });
+}
+
+module.exports.onSync = onSync;
 
 function send() {
   var args = Array.prototype.slice.call(arguments);

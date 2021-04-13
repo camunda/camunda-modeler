@@ -45,6 +45,7 @@ const browserOpen = require('./util/browser-open');
 const renderer = require('./util/renderer');
 
 const errorTracking = require('./util/error-tracking');
+const { pick } = require('min-dash');
 
 const log = Log('app:main');
 const bootstrapLog = Log('app:main:bootstrap');
@@ -110,6 +111,22 @@ if (flags.get('single-instance') === false) {
     app.quit();
   }
 }
+
+// preload script
+renderer.onSync('app:get-plugins', () => {
+
+  // expose only necessary properties (e.g. not `menu` function)
+  return plugins.getAll()
+    .map(plugin => pick(plugin, [ 'base', 'name', 'pluginPath', 'style', 'script' ]));
+});
+
+renderer.onSync('app:get-flags', () => {
+  return flags;
+});
+
+renderer.onSync('app:get-metadata', () => {
+  return app.metadata;
+});
 
 // external //////////
 
@@ -363,6 +380,7 @@ app.createEditorWindow = function() {
     title: 'Camunda Modeler' + getTitleSuffix(app.metadata.version),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
       nodeIntegration
     }
   };

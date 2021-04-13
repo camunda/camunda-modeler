@@ -335,15 +335,14 @@ export default class AppParent extends PureComponent {
 
     const backend = this.getBackend();
 
-    backend.on('menu:action', this.triggerAction);
-
-    backend.on('client:open-files', this.handleOpenFiles);
-
     backend.once('client:started', this.handleStarted);
 
-    backend.on('client:window-focused', this.handleFocus);
-
-    backend.on('backend:error', this.handleBackendError);
+    this.subscriptions = [
+      backend.on('menu:action', this.triggerAction),
+      backend.on('client:open-files', this.handleOpenFiles),
+      backend.on('client:window-focused', this.handleFocus),
+      backend.on('backend:error', this.handleBackendError)
+    ];
 
     this.registerMenus();
 
@@ -363,21 +362,7 @@ export default class AppParent extends PureComponent {
   componentWillUnmount() {
     const { keyboardBindings } = this.props;
 
-    const {
-      globals
-    } = this.props;
-
-    const {
-      backend
-    } = globals;
-
-    backend.off('menu:action', this.triggerAction);
-
-    backend.off('client:open-files', this.handleOpenFiles);
-
-    backend.off('client:window-focused', this.handleFocus);
-
-    backend.off('backend:error', this.handleBackendError);
+    this.subscriptions.map(subscription => subscription.cancel());
 
     keyboardBindings.unbind();
 
