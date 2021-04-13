@@ -38,9 +38,10 @@ describe('<EmptyTab>', function() {
       buttons.forEach(wrapper => wrapper.simulate('click'));
 
       // then
-      expect(onAction).to.have.callCount(3);
+      expect(onAction).to.have.callCount(4);
       expect(onAction.args).to.eql([
         [ 'create-bpmn-diagram' ],
+        [ 'create-cloud-bpmn-diagram' ],
         [ 'create-dmn-diagram' ],
         [ 'create-form' ]
       ]);
@@ -129,7 +130,7 @@ describe('<EmptyTab>', function() {
 
     afterEach(sinon.restore);
 
-    it('should NOT display zeebe without flag', function() {
+    it('should display zeebe without flag', function() {
 
       // when
       const {
@@ -141,14 +142,14 @@ describe('<EmptyTab>', function() {
         tree.findWhere(
           wrapper => wrapper.text().startsWith('BPMN diagram (Zeebe')
         ).first().exists()
-      ).to.be.false;
+      ).to.be.true;
     });
 
 
-    it('should display zeebe with inverted flag', function() {
+    it('should NOT display zeebe with flag', function() {
 
       // given
-      sinon.stub(Flags, 'get').withArgs(DISABLE_ZEEBE).returns(false);
+      sinon.stub(Flags, 'get').withArgs(DISABLE_ZEEBE).returns(true);
 
       // given
       const {
@@ -160,7 +161,7 @@ describe('<EmptyTab>', function() {
         tree.findWhere(
           wrapper => wrapper.text().startsWith('BPMN diagram (Zeebe')
         ).first().exists()
-      ).to.be.true;
+      ).to.be.false;
     });
 
   });

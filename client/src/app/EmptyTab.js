@@ -40,7 +40,7 @@ export default class EmptyTab extends PureComponent {
           <button className="btn btn-secondary" onClick={ () => onAction('create-bpmn-diagram') }>BPMN diagram (Camunda Engine)</button>
 
           {
-            !Flags.get(DISABLE_ZEEBE, true) && (
+            !Flags.get(DISABLE_ZEEBE) && (
               <button className="btn btn-secondary" onClick={ () => onAction('create-cloud-bpmn-diagram') }>BPMN diagram (Zeebe Engine)</button>
             )
           }
