@@ -267,6 +267,33 @@ describe('TabsProvider', function() {
     });
 
 
+    it('should use camunda for known bpmn file, if Zeebe is disabled', function() {
+
+      // given
+      Flags.init({
+        [DISABLE_ZEEBE]: true
+      });
+
+      const tabsProvider = new TabsProvider();
+
+      const file = {
+        name: 'foo.bpmn',
+        path: '/a/foo.bpmn',
+        contents: require('./TabsProviderSpec.cloud.bpmn')
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab).to.exist;
+
+      expect(tab.name).to.eql(file.name);
+      expect(tab.title).to.eql(file.path);
+      expect(tab.type).to.eql('bpmn');
+    });
+
+
     it('should not create for unknown file', function() {
 
       // given
