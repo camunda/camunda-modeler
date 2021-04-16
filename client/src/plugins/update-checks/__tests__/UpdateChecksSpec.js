@@ -44,351 +44,471 @@ describe('<UpdateChecks>', function() {
   });
 
 
-  it('should not check if DISABLE_REMOTE_INTERACTION flag is set', async function() {
+  describe('update checks', () => {
 
-    // given
-    Flags.init({
-      [ DISABLE_REMOTE_INTERACTION ]: true
+    it('should NOT check if DISABLE_REMOTE_INTERACTION flag is set', async function() {
+
+      // given
+      Flags.init({
+        [ DISABLE_REMOTE_INTERACTION ]: true
+      });
+
+      const checkSpy = sinon.spy();
+
+      // when
+      const {
+        component
+      } = createComponent({
+        onCheckPerformed: checkSpy
+      });
+
+      await tick(component);
+
+      // then
+      expect(checkSpy).not.to.have.been.called;
     });
 
-    const checkSpy = sinon.spy();
 
-    // when
-    const {
-      component
-    } = createComponent({
-      onCheckPerformed: checkSpy
+    it('should subscribe to updateChecks.execute', async function() {
+
+      // given
+      const {
+        callSubscriber,
+        subscribe
+      } = createSubscribe('updateChecks.execute');
+
+      const { instance } = await createComponent({ subscribe });
+
+      const checkLatestVersionSpy = sinon.spy(instance, 'checkLatestVersion');
+
+      // when
+      await callSubscriber();
+
+      // then
+      expect(checkLatestVersionSpy).to.have.been.called;
     });
 
-    await tick(component);
 
-    // then
-    expect(checkSpy).not.to.have.been.called;
+    it('should skip without privacy settings', async function() {
+
+      // given
+      const checkSpy = sinon.spy();
+
+      const config = {
+        get(key) {
+          return new Promise((resolve, reject) => {
+            if (key === PRIVACY_PREFERENCES_CONFIG_KEY) {
+              resolve(null);
+            }
+          });
+        }
+      };
+
+      // when
+      const {
+        component
+      } = createComponent({
+        onCheckPerformed: checkSpy,
+        config
+      });
+
+      await tick(component);
+
+      // then
+      expect(checkSpy).to.have.been.calledOnceWith({
+        resolution: 'skipped',
+        reason: 'privacy-settings'
+      });
+
+    });
+
+
+    it('should skip if disallowed via privacy settings', async function() {
+
+      // given
+      const checkSpy = sinon.spy();
+
+      const config = {
+        get(key) {
+          return new Promise((resolve, reject) => {
+            if (key === PRIVACY_PREFERENCES_CONFIG_KEY) {
+              resolve({
+                ENABLE_UPDATE_CHECKS: false
+              });
+            }
+          });
+        }
+      };
+
+      // when
+      const {
+        component
+      } = createComponent({
+        onCheckPerformed: checkSpy,
+        config
+      });
+
+      await tick(component);
+
+      // then
+      expect(checkSpy).to.have.been.calledOnceWith({
+        resolution: 'skipped',
+        reason: 'privacy-settings'
+      });
+    });
+
+
+    it('should skip if not due yet', async function() {
+
+      // given
+      const checkSpy = sinon.spy();
+
+      const config = {
+        get(key) {
+          return new Promise((resolve, reject) => {
+            if (key === PRIVACY_PREFERENCES_CONFIG_KEY) {
+              return resolve({
+                ENABLE_UPDATE_CHECKS: true
+              });
+            }
+
+            if (key === UPDATE_CHECKS_CONFIG_KEY) {
+              return resolve({ lastChecked: new Date().getTime() });
+            }
+          });
+        }
+      };
+
+      // when
+      const {
+        component
+      } = createComponent({
+        onCheckPerformed: checkSpy,
+        config
+      });
+
+      await tick(component);
+
+      // then
+      expect(checkSpy).to.have.been.calledOnceWith({
+        reason: 'not-due',
+        resolution: 'skipped'
+      });
+    });
+
+
+    it('should handle empty server response', async function() {
+
+      let setValue = {};
+
+      const onConfigSet = (key, value) => {
+        setValue = value;
+      };
+
+      const {
+        component
+      } = createComponent({
+        onConfigSet
+      });
+
+      mockServerResponse(component, {});
+
+      await tick(component);
+
+      expect(setValue.lastChecked).to.exist;
+    });
+
+
+    it('should handle update response', async function() {
+
+      let setValue = {};
+
+      const onConfigSet = (key, value) => {
+        setValue = value;
+      };
+
+      const {
+        component
+      } = createComponent({
+        onConfigSet
+      });
+
+      mockServerResponse(component, {
+        update: {
+          latestVersion: 'v3.7.0',
+          downloadURL: 'test-download-url',
+          releases: []
+        }
+      });
+
+      await tick(component);
+
+      expect(setValue.latestVersion).to.be.eql('v3.7.0');
+    });
+
+
+
+    it('should handle update check error', async () => {
+
+      // given
+      const checkSpy = sinon.spy();
+
+      const error = new Error('These things happen.');
+
+      const {
+        component
+      } = createComponent({
+        onCheckPerformed: checkSpy
+      });
+
+      component.instance().updateChecksAPI.sendRequest = () => {
+        throw error;
+      };
+
+      // when
+      await tick(component);
+
+      // then
+      expect(checkSpy).to.have.been.calledOnceWith({
+        error,
+        resolution: 'failed'
+      });
+    });
+
+
+
+    it('should check periodically (every N minutes)');
+
+
+    it('should check with URL encoded parameters', async () => {
+
+      // given
+
+      Flags.init({
+        [ UPDATE_SERVER_URL ]: 'http://test-update-server.com'
+      });
+
+      const {
+        component,
+        instance
+      } = createComponent();
+
+      instance.updateChecksAPI.productName = 'Camunda Modeler';
+
+      let calledURL = '';
+
+      mockServerResponse(component, {
+        update: {
+          latestVersion: 'v3.7.0',
+          downloadURL: 'test-download-url',
+          releases: []
+        }
+      }, (url) => { calledURL = url; });
+
+      // when
+      await tick(component);
+
+      // then
+      expect(calledURL).to.eql('http://test-update-server.com/update-check?editorID=test-id&newerThan=v3.5.0&modelerVersion=v3.5.0&os=windows&osVersion=98&productName=Camunda+Modeler&plugins%5Bid%5D=plugin1&plugins%5Bname%5D=plugin1&plugins%5Bid%5D=plugin2&plugins%5Bname%5D=plugin2');
+    });
+
   });
 
 
-  it('should subscribe to updateChecks.execute', async function() {
+  describe('visuals', () => {
 
-    // given
-    const {
-      callSubscriber,
-      subscribe
-    } = createSubscribe('updateChecks.execute');
+    it('should show modal for positive server response', async () => {
 
-    const { instance } = await createComponent({ subscribe });
+      // given
+      const {
+        component
+      } = createComponent();
 
-    const checkLatestVersionSpy = sinon.spy(instance, 'checkLatestVersion');
+      mockServerResponse(component, {
+        update: {
+          latestVersion: 'v3.7.0',
+          downloadURL: 'test-download-url',
+          releases: []
+        }
+      });
 
-    // when
-    await callSubscriber();
+      // when
+      await tick(component);
 
-    // then
-    expect(checkLatestVersionSpy).to.have.been.called;
-  });
-
-
-  it('should skip without privacy settings', async function() {
-
-    // given
-    const checkSpy = sinon.spy();
-
-    const config = {
-      get(key) {
-        return new Promise((resolve, reject) => {
-          if (key === PRIVACY_PREFERENCES_CONFIG_KEY) {
-            resolve(null);
-          }
-        });
-      }
-    };
-
-    // when
-    const {
-      component
-    } = createComponent({
-      onCheckPerformed: checkSpy,
-      config
+      // then
+      expect(component.state().showModal).to.be.true;
     });
 
-    await tick(component);
 
-    // then
-    expect(checkSpy).to.have.been.calledOnceWith({
-      resolution: 'skipped',
-      reason: 'privacy-settings'
+    it('should NOT show modal for empty server response', async () => {
+
+      // given
+      const {
+        component
+      } = createComponent();
+
+      mockServerResponse(component, {});
+
+      // when
+      await tick(component);
+
+      // then
+      expect(component.state().showModal).to.be.false;
     });
 
-  });
 
+    it('should show <no-updates> notification', async () => {
 
-  it('should skip if disallowed via privacy settings', async function() {
+      // given
+      const displaySpy = sinon.spy();
 
-    // given
-    const checkSpy = sinon.spy();
+      const {
+        component,
+        instance
+      } = createComponent({
+        displayNotification: displaySpy
+      });
 
-    const config = {
-      get(key) {
-        return new Promise((resolve, reject) => {
-          if (key === PRIVACY_PREFERENCES_CONFIG_KEY) {
-            resolve({
-              ENABLE_UPDATE_CHECKS: false
-            });
-          }
-        });
-      }
-    };
+      mockServerResponse(component, {});
 
-    // when
-    const {
-      component
-    } = createComponent({
-      onCheckPerformed: checkSpy,
-      config
+      // when
+      await instance.checkLatestVersion(null, false);
+
+      // then
+      expect(displaySpy).to.have.been.called;
     });
 
-    await tick(component);
 
-    // then
-    expect(checkSpy).to.have.been.calledOnceWith({
-      resolution: 'skipped',
-      reason: 'privacy-settings'
-    });
-  });
+    it('should NOT show <no-updates> notification on background checks', async () => {
 
+      // given
+      const displaySpy = sinon.spy();
 
-  it('should skip if not due yet', async function() {
+      const {
+        component
+      } = createComponent({
+        displayNotification: displaySpy
+      });
 
-    // given
-    const checkSpy = sinon.spy();
+      mockServerResponse(component, {});
 
-    const config = {
-      get(key) {
-        return new Promise((resolve, reject) => {
-          if (key === PRIVACY_PREFERENCES_CONFIG_KEY) {
-            return resolve({
-              ENABLE_UPDATE_CHECKS: true
-            });
-          }
+      // when
+      await tick(component);
 
-          if (key === UPDATE_CHECKS_CONFIG_KEY) {
-            return resolve({ lastChecked: new Date().getTime() });
-          }
-        });
-      }
-    };
-
-    // when
-    const {
-      component
-    } = createComponent({
-      onCheckPerformed: checkSpy,
-      config
+      // then
+      expect(displaySpy).to.not.have.been.called;
     });
 
-    await tick(component);
 
-    // then
-    expect(checkSpy).to.have.been.calledOnceWith({
-      reason: 'not-due',
-      resolution: 'skipped'
-    });
-  });
+    it('should show <update-check-error> notification', async () => {
 
+      // given
+      const displaySpy = sinon.spy();
 
-  it('should handle empty server response', async function() {
+      const error = new Error('These things happen.');
 
-    let setValue = {};
+      const {
+        component,
+        instance
+      } = createComponent({
+        displayNotification: displaySpy
+      });
 
-    const onConfigSet = (key, value) => {
-      setValue = value;
-    };
+      component.instance().updateChecksAPI.sendRequest = () => {
+        throw error;
+      };
 
-    const {
-      component
-    } = createComponent({
-      onConfigSet
-    });
+      // when
+      await instance.checkLatestVersion(null, false);
 
-    mockServerResponse(component, {});
-
-    await tick(component);
-
-    expect(setValue.lastChecked).to.exist;
-  });
-
-
-  it('should handle update response', async function() {
-
-    let setValue = {};
-
-    const onConfigSet = (key, value) => {
-      setValue = value;
-    };
-
-    const {
-      component
-    } = createComponent({
-      onConfigSet
+      // then
+      expect(displaySpy).to.have.been.calledOnceWith({
+        type: 'error',
+        title: 'Modeler update check failed',
+        content: 'See the log for further details.',
+        duration: 10000
+      });
     });
 
-    mockServerResponse(component, {
-      update: {
-        latestVersion: 'v3.7.0',
-        downloadURL: 'test-download-url',
-        releases: []
-      }
+
+    it('should NOT show <update-check-error> notification on background checks', async () => {
+
+      // given
+      const displaySpy = sinon.spy();
+
+      const error = new Error('These things happen.');
+
+      const {
+        component
+      } = createComponent({
+        displayNotification: displaySpy
+      });
+
+      component.instance().updateChecksAPI.sendRequest = () => {
+        throw error;
+      };
+
+      // when
+      await tick(component);
+
+      // then
+      expect(displaySpy).to.not.have.been.called;
     });
 
-    await tick(component);
 
-    expect(setValue.latestVersion).to.be.eql('v3.7.0');
-  });
+    it('should show <update-check-error> log', async () => {
 
+      // given
+      const logSpy = sinon.spy();
 
-  it('should not show modal for empty server response', async () => {
+      const error = new Error('These things happen.');
 
-    // given
-    const {
-      component
-    } = createComponent();
+      const {
+        component,
+        instance
+      } = createComponent({
+        log: logSpy
+      });
 
-    mockServerResponse(component, {});
+      component.instance().updateChecksAPI.sendRequest = () => {
+        throw error;
+      };
 
-    // when
-    await tick(component);
+      // when
+      await instance.checkLatestVersion(null, false);
 
-    // then
-    expect(component.state().showModal).to.be.false;
-  });
-
-
-  it('should show notification for empty server response', async () => {
-
-    // given
-    const displaySpy = sinon.spy();
-
-    const {
-      component,
-      instance
-    } = createComponent({
-      displayNotification: displaySpy
+      // then
+      expect(logSpy).to.have.been.calledOnceWith({
+        category: 'update-check-error',
+        message: error.message
+      });
     });
 
-    mockServerResponse(component, {});
 
-    // when
-    instance.checkLatestVersion(null, true);
+    it('should NOT show <update-check-error> log on background checks', async () => {
 
-    // then
-    expect(displaySpy).to.not.have.been.called;
-  });
+      // given
+      const logSpy = sinon.spy();
 
+      const error = new Error('These things happen.');
 
-  it('should not show notification for empty server response if not configured', async () => {
+      const {
+        component
+      } = createComponent({
+        log: logSpy
+      });
 
-    // given
-    const displaySpy = sinon.spy();
+      component.instance().updateChecksAPI.sendRequest = () => {
+        throw error;
+      };
 
-    const {
-      component
-    } = createComponent({
-      displayNotification: displaySpy
+      // when
+      await tick(component);
+
+      // then
+      expect(logSpy).to.not.have.been.called;
     });
 
-    mockServerResponse(component, {});
-
-    // when
-    await tick(component);
-
-    // then
-    expect(displaySpy).to.not.have.been.called;
-  });
-
-
-  it('should show modal for positive server response', async () => {
-
-    // given
-    const {
-      component
-    } = createComponent();
-
-    mockServerResponse(component, {
-      update: {
-        latestVersion: 'v3.7.0',
-        downloadURL: 'test-download-url',
-        releases: []
-      }
-    });
-
-    // when
-    await tick(component);
-
-    // then
-    expect(component.state().showModal).to.be.true;
-  });
-
-
-  it('should handle update check error', async () => {
-
-    // given
-    const checkSpy = sinon.spy();
-
-    const error = new Error('These things happen.');
-
-    const {
-      component
-    } = createComponent({
-      onCheckPerformed: checkSpy
-    });
-
-    component.instance().updateChecksAPI.sendRequest = () => {
-      throw error;
-    };
-
-    // when
-    await tick(component);
-
-    // then
-    expect(checkSpy).to.have.been.calledOnceWith({
-      error,
-      resolution: 'failed'
-    });
-  });
-
-
-  it('should check periodically (every N minutes)');
-
-
-  it('should check with URL encoded parameters', async () => {
-
-    // given
-
-    Flags.init({
-      [ UPDATE_SERVER_URL ]: 'http://test-update-server.com'
-    });
-
-    const {
-      component,
-      instance
-    } = createComponent();
-
-    instance.updateChecksAPI.productName = 'Camunda Modeler';
-
-    let calledURL = '';
-
-    mockServerResponse(component, {
-      update: {
-        latestVersion: 'v3.7.0',
-        downloadURL: 'test-download-url',
-        releases: []
-      }
-    }, (url) => { calledURL = url; });
-
-    // when
-    await tick(component);
-
-    // then
-    expect(calledURL).to.eql('http://test-update-server.com/update-check?editorID=test-id&newerThan=v3.5.0&modelerVersion=v3.5.0&os=windows&osVersion=98&productName=Camunda+Modeler&plugins%5Bid%5D=plugin1&plugins%5Bname%5D=plugin1&plugins%5Bid%5D=plugin2&plugins%5Bname%5D=plugin2');
   });
 
 });
@@ -453,6 +573,7 @@ function createComponent(props={}) {
       { ...props }
       config={ config }
       displayNotification={ props.displayNotification || noop }
+      log={ props.log || noop }
       _getGlobal={ _getGlobal }
       subscribe={ props.subscribe || noop }
     />
