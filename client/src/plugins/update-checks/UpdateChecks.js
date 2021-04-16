@@ -73,7 +73,7 @@ export default class UpdateChecks extends PureComponent {
 
       const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY);
 
-      self.checkLatestVersion(updateCheckInfo, true);
+      self.checkLatestVersion(updateCheckInfo, false);
     });
   }
 
@@ -100,20 +100,41 @@ export default class UpdateChecks extends PureComponent {
     this.rescheduleCheck();
 
     return this.performCheck().catch(error => {
-      this.checkFailed(error);
+      this.handleUpdateCheckFailed(error);
     });
   }
 
-  checkPerformed(result) {
+  handleUpdateCheckPerformed(result) {
     if (typeof this.props.onCheckPerformed === 'function') {
       this.props.onCheckPerformed(result);
     }
   }
 
-  checkFailed(error) {
-    log('failed', error);
+  handleUpdateCheckFailed(error, silentCheck = true) {
+    const {
+      displayNotification,
+      log: appLog
+    } = this.props;
 
-    this.checkPerformed({
+    if (!silentCheck) {
+      appLog({
+        category: 'update-check-error',
+        message: error.message
+      });
+
+      displayNotification({
+        type: 'error',
+        title: 'Modeler update check failed',
+        content: 'See the log for further details.',
+        duration: 10000
+      });
+    } else {
+
+      // don't disturb the user on background checks
+      log('failed', error);
+    }
+
+    this.handleUpdateCheckPerformed({
       resolution: 'failed',
       error
     });
@@ -122,14 +143,14 @@ export default class UpdateChecks extends PureComponent {
   checkSkipped(reason) {
     log('skipped', reason);
 
-    this.checkPerformed({
+    this.handleUpdateCheckPerformed({
       resolution: 'skipped',
       reason
     });
   }
 
-  checkCompleted(update) {
-    this.checkPerformed({
+  handleUpdateCheckCompleted(update) {
+    this.handleUpdateCheckPerformed({
       resolution: 'completed',
       update
     });
@@ -178,7 +199,7 @@ export default class UpdateChecks extends PureComponent {
     return this.checkLatestVersion(updateCheckInfo);
   }
 
-  async handleUpdateCheckSuccess(update, showNoUpdates = false) {
+  async handleUpdateCheckSuccess(update, silentCheck = true) {
     const {
       displayNotification
     } = this.props;
@@ -189,7 +210,7 @@ export default class UpdateChecks extends PureComponent {
 
       log('No update');
 
-      if (showNoUpdates) {
+      if (!silentCheck) {
         displayNotification({
           type: 'success',
           title: 'You are running the latest version.',
@@ -228,7 +249,7 @@ export default class UpdateChecks extends PureComponent {
 
   }
 
-  async checkLatestVersion(updateCheckInfo, showNoUpdates = false) {
+  async checkLatestVersion(updateCheckInfo, silentCheck = true) {
 
     log('Checking for update');
 
@@ -248,7 +269,7 @@ export default class UpdateChecks extends PureComponent {
         error
       } = responseJSON;
 
-      return this.checkFailed(error);
+      return this.handleUpdateCheckFailed(error, silentCheck);
     }
 
     const responseBody = responseJSON.response;
@@ -257,7 +278,7 @@ export default class UpdateChecks extends PureComponent {
     let newUpdateCheckInfo = updateCheckInfo || {};
 
     // (2b) Response to user in case of success
-    this.handleUpdateCheckSuccess(update, showNoUpdates);
+    this.handleUpdateCheckSuccess(update, silentCheck);
 
     // (3) Persist configuration with latest check timestamp
     if (update) {
@@ -272,7 +293,7 @@ export default class UpdateChecks extends PureComponent {
 
     await config.set(UPDATE_CHECKS_CONFIG_KEY, newUpdateCheckInfo);
 
-    return this.checkCompleted(update);
+    return this.handleUpdateCheckCompleted(update);
   }
 
   isTimeExceeded(previousTime) {
