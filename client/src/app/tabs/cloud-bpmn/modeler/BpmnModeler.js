@@ -18,8 +18,7 @@ import handToolOnSpaceModule from '../../bpmn/modeler/features/hand-tool-on-spac
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
 
 import Flags, {
-  DISABLE_ADJUST_ORIGIN,
-  ENABLE_ZEEBE_USER_TASKS
+  DISABLE_ADJUST_ORIGIN
 } from '../../../../util/Flags';
 
 import 'camunda-bpmn-js/dist/assets/camunda-cloud-modeler.css';
@@ -37,8 +36,7 @@ export default class CloudBpmnModeler extends BpmnModeler {
     super({
       ...otherOptions,
       moddleExtensions: moddleExtensions || {},
-      disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN),
-      enableZeebeUserTasks: Flags.get(ENABLE_ZEEBE_USER_TASKS),
+      disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN)
     });
   }
 }
