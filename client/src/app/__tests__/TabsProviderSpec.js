@@ -10,7 +10,7 @@
 
 import TabsProvider from '../TabsProvider';
 
-import Flags, { DISABLE_DMN, DISABLE_CMMN } from '../../util/Flags';
+import Flags, { DISABLE_DMN, DISABLE_CMMN, DISABLE_ZEEBE } from '../../util/Flags';
 
 
 describe('TabsProvider', function() {
