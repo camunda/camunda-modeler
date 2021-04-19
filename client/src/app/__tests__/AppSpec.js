@@ -17,7 +17,8 @@ import {
 
 import {
   App,
-  EMPTY_TAB
+  EMPTY_TAB,
+  getOpenFileErrorDialog
 } from '../App';
 
 import Log from '../Log';
@@ -2621,6 +2622,62 @@ describe('<App>', function() {
 
       // then
       expect(eventSpy).to.have.been.called;
+    });
+
+  });
+
+
+  describe('dialogs', function() {
+
+    describe('#getOpenFileErrorDialog', function() {
+
+      it('should list all supported file endings', function() {
+
+        // given
+        const options = {
+          name: 'file.ext',
+          providerNames: ['CMMN', 'BPMN', 'DMN', 'FORM']
+        };
+
+        // when
+        const { message, detail } = getOpenFileErrorDialog(options);
+
+        // then
+        expect(message).to.equal('Unable to open file.');
+        expect(detail).to.equal('"file.ext" is not a CMMN, BPMN, DMN or FORM file.');
+      });
+
+
+      it('should use correct separator for 2 providers', function() {
+
+        // given
+        const options = {
+          name: 'file.ext',
+          providerNames: ['BPMN', 'DMN']
+        };
+
+        // when
+        const { detail } = getOpenFileErrorDialog(options);
+
+        // then
+        expect(detail).to.equal('"file.ext" is not a BPMN or DMN file.');
+      });
+
+
+      it('should not use any separators for single providers', function() {
+
+        // given
+        const options = {
+          name: 'file.ext',
+          providerNames: ['BPMN']
+        };
+
+        // when
+        const { detail } = getOpenFileErrorDialog(options);
+
+        // then
+        expect(detail).to.equal('"file.ext" is not a BPMN file.');
+      });
     });
 
   });

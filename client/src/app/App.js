@@ -2055,7 +2055,7 @@ export default WithCache(App);
 
 // helpers //////////
 
-function getOpenFileErrorDialog(options) {
+export function getOpenFileErrorDialog(options) {
   const {
     name,
     providerNames
@@ -2068,7 +2068,7 @@ function getOpenFileErrorDialog(options) {
 
     let seperator = '';
 
-    if (isLast) {
+    if (isLast && !isFirst) {
       seperator = ' or ';
     } else if (!isFirst) {
       seperator = ', ';
