@@ -30,9 +30,9 @@
     clip: rect(1px 1px 1px 1px);
   }
 
-  // use default webkit outline if input is focussed
   input[type=file].form-control:focus-within + label {
-    outline: -webkit-focus-ring-color auto 5px;
+    box-shadow: var(--focus-shadow);
+    border: solid 1px var(--blue-darken-55);
   }
 
   // make sure outline doesn't cover the block
