@@ -20,68 +20,145 @@ describe('preload', function() {
     const window = createPreload();
 
     // when
-    const results = [ window.getAppPreload(), window.getAppPreload() ];
+    const result = window.getAppPreload();
+    const secondTry = () => window.getAppPreload();
 
     // then
-    expect(results[0]).to.exist;
-    expect(results[1]).not.to.exist;
+    expect(result).to.exist;
+    expect(secondTry).to.throw();
   });
 
 
-  it('should allow to unsubscribe with <on>', function() {
+  describe('backend#send', function() {
 
-    // given
-    const offSpy = sinon.spy();
-    const { api } = createPreload({
-      ipcRenderer: {
-        off: offSpy
-      }
-    }).getAppPreload();
-    const fn = () => {};
+    it('should throw error when an event outside of allowed list is sent', function() {
 
-    // when
-    const { cancel } = api.on('event', fn);
-    cancel();
+      // given
+      const { backend } = createPreload().getAppPreload();
 
-    // then
-    expect(offSpy).to.have.been.calledOnce;
-    expect(offSpy.args[0]).to.eql([ 'event', fn ]);
+      // when
+      const sendDangerousEvent = () => {
+        backend.send('DANGEROUS_EVENT', {});
+      };
+
+      // then
+      expect(sendDangerousEvent).to.throw();
+    });
+
+
+    it('should resolve if first argument is null', async function() {
+
+      // given
+      const { backend } = createPreload({
+        ipcRenderer: {
+          once(_, cb) {
+            cb(null, [ null, 'foo' ]);
+          }
+        }
+      }).getAppPreload();
+
+      // when
+      const response = await backend.send('client:ready');
+
+      // then
+      expect(response).to.eql('foo');
+    });
+
+
+    it('should reject if first argument is NOT null', async function() {
+
+      // given
+      const { backend } = createPreload({
+        ipcRenderer: {
+          once(_, cb) {
+            cb(null, [ new Error('cannot execute') ]);
+          }
+        }
+      }).getAppPreload();
+
+      // when
+      const result = await backend.send('client:ready').catch(error => {
+
+        // then
+        expect(error.message).to.eql('cannot execute');
+      });
+
+      expect(result).to.not.exist;
+    });
+
   });
 
 
-  it('should allow to unsubscribe with <once>', function() {
+  describe('backend#on', function() {
 
-    // given
-    const offSpy = sinon.spy();
-    const { api } = createPreload({
-      ipcRenderer: {
-        off: offSpy
-      }
-    }).getAppPreload();
-    const fn = () => {};
+    it('should allow to unsubscribe with <on>', function() {
 
-    // when
-    const { cancel } = api.once('event', fn);
-    cancel();
+      // given
+      const offSpy = sinon.spy();
+      const { backend } = createPreload({
+        ipcRenderer: {
+          off: offSpy
+        }
+      }).getAppPreload();
+      const fn = () => {};
 
-    // then
-    expect(offSpy).to.have.been.calledOnce;
-    expect(offSpy.args[0]).to.eql([ 'event', fn ]);
+      // when
+      const { cancel } = backend.on('event', fn);
+      cancel();
+
+      // then
+      expect(offSpy).to.have.been.calledOnce;
+      expect(offSpy.args[0]).to.eql([ 'event', fn ]);
+    });
+
   });
 
 
-  it('should throw error when an event outside of allowed list is sent', function() {
+  describe('backend#once', function() {
 
-    // given
-    const { api } = createPreload().getAppPreload();
+    it('should allow to unsubscribe with <once>', function() {
 
-    // when
-    const sendDangerousEvent = () => {
-      api.send('DANGEROUS_EVENT', {});
-    };
+      // given
+      const offSpy = sinon.spy();
+      const { backend } = createPreload({
+        ipcRenderer: {
+          off: offSpy
+        }
+      }).getAppPreload();
+      const fn = () => {};
 
-    // then
-    expect(sendDangerousEvent).to.throw();
+      // when
+      const { cancel } = backend.once('event', fn);
+      cancel();
+
+      // then
+      expect(offSpy).to.have.been.calledOnce;
+      expect(offSpy.args[0]).to.eql([ 'event', fn ]);
+    });
+
+  });
+
+
+  describe('backend#getPlatform', function() {
+
+    afterEach(function() {
+      sinon.restore();
+    });
+
+
+    it('should return platform', function() {
+
+      // given
+      const stub = sinon.stub(process, 'platform');
+      stub.value('windows');
+
+      // when
+      const { backend } = createPreload().getAppPreload();
+
+      // then
+      expect(backend.getPlatform()).to.eql('windows');
+    });
+
   });
 });
 

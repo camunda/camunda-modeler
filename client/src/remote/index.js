@@ -8,7 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-import Backend from './Backend';
 import Config from './Config';
 import Dialog from './Dialog';
 import FileSystem from './FileSystem';
@@ -20,12 +19,11 @@ import ZeebeAPI from './ZeebeAPI';
 const {
   metadata,
   flags,
-  platform,
   plugins: appPlugins,
-  api
+  backend: appBackend
 } = window.getAppPreload();
 
-export const backend = new Backend(api, platform);
+export const backend = appBackend;
 
 export const fileSystem = new FileSystem(backend);
 
