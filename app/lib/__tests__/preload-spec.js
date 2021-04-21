@@ -160,6 +160,35 @@ describe('preload', function() {
     });
 
   });
+
+
+  describe('backend#send*', function() {
+
+    [
+      'sendQuitAllowed',
+      'sendQuitAborted',
+      'sendReady',
+      'showContextMenu',
+      'sendTogglePlugins',
+      'sendMenuUpdate',
+      'registerMenu'
+    ].forEach(api => {
+
+      it(`should NOT throw for ${api}`, function() {
+
+        // given
+        const { backend } = createPreload().getAppPreload();
+
+        // when
+        const send = () => backend[api]({});
+
+        // then
+        expect(send).not.to.throw();
+      });
+    });
+
+
+  });
 });
 
 function createPreload(overrides = {}) {

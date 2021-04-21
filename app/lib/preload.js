@@ -35,6 +35,7 @@ const allowedEvents = [
   'client:ready',
   'client:error',
   'app:quit-allowed',
+  'app:quit-aborted',
   'workspace:restore',
   'workspace:save',
   'menu:register',
