@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_19y032x" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_0tcp45a">
+    <bpmn:participant id="Participant_1cyx06e" processRef="Process_0atutck" />
+    <bpmn:participant id="Participant_16oofhp" processRef="Process_1ev2u1n" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_0atutck" isExecutable="true">
+    <bpmn:serviceTask id="javaClass1" name="javaClass1" camunda:class="myClass" />
+    <bpmn:serviceTask id="javaClass2" name="javaClass2" camunda:class="" />
+    <bpmn:task id="BlankTask" name="BlankTask" />
+    <bpmn:serviceTask id="delegateExpression1" name="delegateExpression1" camunda:delegateExpression="${ foo }" />
+    <bpmn:serviceTask id="delegateExpression2" name="delegateExpression2" camunda:delegateExpression="" />
+    <bpmn:serviceTask id="external2" name="external2" camunda:type="external" camunda:topic="" />
+    <bpmn:serviceTask id="connector1" name="connector1">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:connectorId>myConnector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="connector2" name="connector2">
+      <bpmn:extensionElements>
+        <camunda:connector />
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="blank" name="blank" />
+  </bpmn:process>
+  <bpmn:process id="Process_1ev2u1n" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_0ijxdjf">
+      <bpmn:lane id="Lane_146bggs">
+        <bpmn:flowNodeRef>external1</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_17y8gja" />
+      <bpmn:lane id="Lane_1ucqstx" />
+    </bpmn:laneSet>
+    <bpmn:serviceTask id="external1" name="external1" camunda:type="external" camunda:topic="myTopic" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0tcp45a">
+      <bpmndi:BPMNShape id="Participant_1cyx06e_di" bpmnElement="Participant_1cyx06e" isHorizontal="true">
+        <dc:Bounds x="160" y="100" width="750" height="370" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0gn7pqp_di" bpmnElement="javaClass1">
+        <dc:Bounds x="350" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0w7pm3p_di" bpmnElement="javaClass2">
+        <dc:Bounds x="500" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01czflg_di" bpmnElement="BlankTask">
+        <dc:Bounds x="210" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07eprm9_di" bpmnElement="delegateExpression1">
+        <dc:Bounds x="210" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nnbp34_di" bpmnElement="delegateExpression2">
+        <dc:Bounds x="350" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dzu0xw_di" bpmnElement="external2">
+        <dc:Bounds x="650" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_063gwl0_di" bpmnElement="connector1">
+        <dc:Bounds x="790" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0u4aucn_di" bpmnElement="connector2">
+        <dc:Bounds x="210" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0g55lx2_di" bpmnElement="blank">
+        <dc:Bounds x="350" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_16oofhp_di" bpmnElement="Participant_16oofhp" isHorizontal="true">
+        <dc:Bounds x="160" y="550" width="750" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1ucqstx_di" bpmnElement="Lane_1ucqstx" isHorizontal="true">
+        <dc:Bounds x="190" y="750" width="720" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_17y8gja_di" bpmnElement="Lane_17y8gja" isHorizontal="true">
+        <dc:Bounds x="190" y="660" width="720" height="90" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_146bggs_di" bpmnElement="Lane_146bggs" isHorizontal="true">
+        <dc:Bounds x="190" y="550" width="720" height="110" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cyxtg4_di" bpmnElement="external1">
+        <dc:Bounds x="230" y="560" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
