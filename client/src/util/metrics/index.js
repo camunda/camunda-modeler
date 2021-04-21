@@ -20,6 +20,10 @@ import {
   getUserTaskMetrics
 } from './userTasks';
 
+import {
+  getServiceTaskMetrics
+} from './serviceTasks';
+
 export default async function(file, type) {
   let metrics = {};
 
@@ -33,13 +37,18 @@ export default async function(file, type) {
     };
   }
 
-  // (2) user tasks
+  // (2) elements
+  // (2.1) user tasks
   const userTaskMetrics = await getUserTaskMetrics(file, type);
+
+  // (2.2) service tasks
+  const serviceTaskMetrics = await getServiceTaskMetrics(file, type);
 
   metrics = {
     ...metrics,
     tasks: {
-      userTask: userTaskMetrics
+      userTask: userTaskMetrics,
+      serviceTask: serviceTaskMetrics
     }
   };
 

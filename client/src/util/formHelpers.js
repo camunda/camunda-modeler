@@ -8,9 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import { filter } from 'min-dash';
-
-import { is } from 'bpmn-js/lib/util/ModelUtil';
+import { getExtensionElements } from './extensionElementsHelpers';
 
 
 /**
@@ -52,21 +50,4 @@ function getElements(element, type, property) {
   const elements = getExtensionElements(element, type);
 
   return !property ? elements : (elements[0] || {})[property] || [];
-}
-
-function getExtensionElements(element, type) {
-  let elements = [];
-  const extensionElements = element.get('extensionElements');
-
-  if (typeof extensionElements !== 'undefined') {
-    const extensionValues = extensionElements.get('values');
-
-    if (typeof extensionValues !== 'undefined') {
-      elements = filter(extensionValues, function(value) {
-        return is(value, type);
-      });
-    }
-  }
-
-  return elements;
 }
