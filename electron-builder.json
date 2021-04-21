@@ -64,6 +64,6 @@
       "description": "FORM file",
       "role": "Editor",
       "mimeType": "application/camunda-form"
-    },
+    }
   ]
 }
