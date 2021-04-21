@@ -12,7 +12,17 @@
 
 import DeploymentEventHandler from '../DeploymentEventHandler';
 
+import engineProfileXML from './fixtures/engine-profile.bpmn';
+
+import emptyXML from './fixtures/empty.bpmn';
+
 import processVariablesXML from './fixtures/process-variables.bpmn';
+
+import serviceTasksXML from './fixtures/service-tasks.bpmn';
+
+import serviceTasksWithParticipantsXML from './fixtures/service-tasks-with-participants.bpmn';
+
+import serviceTasksWithSubprocessXML from './fixtures/service-tasks-with-subprocess.bpmn';
 
 import userTasksXML from './fixtures/user-tasks.bpmn';
 
@@ -26,9 +36,12 @@ import zeebeUserTasksWithSubprocessXML from './fixtures/user-tasks-with-subproce
 
 import zeebeUserTasksWithParticipantsXML from './fixtures/user-tasks-with-participants.zeebe.bpmn';
 
-import engineProfileXML from './fixtures/engine-profile.bpmn';
+import zeebeServiceTasksXML from './fixtures/service-tasks.zeebe.bpmn';
 
-import emptyXML from './fixtures/empty.bpmn';
+import zeebeServiceTasksWithSubprocessXML from './fixtures/service-tasks-with-subprocess.zeebe.bpmn';
+
+import zeebeServiceTasksWithParticipantsXML from './fixtures/service-tasks-with-participants.zeebe.bpmn';
+
 
 const EXAMPLE_ERROR = 'something went wrong';
 
@@ -303,226 +316,501 @@ describe('<DeploymentEventHandler>', () => {
     });
 
 
-    describe('user tasks - bpmn', () => {
+    describe('user tasks', () => {
 
-      it('should send metrics with root level user tasks', async () => {
+      describe('bpmn', () => {
 
-        // given
-        const tab = createTab({
-          type: 'bpmn',
-          file: {
-            contents: userTasksXML
-          }
+        it('should send metrics with root level user tasks', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: userTasksXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.userTask).to.eql({
+            count: 9,
+            form: {
+              count: 7,
+              embedded: 3,
+              camundaForms: 1,
+              external: 1,
+              generated: 1,
+              other: 1
+            }
+          });
         });
 
-        const handleDeploymentDone = subscribe.getCall(0).args[1];
 
-        // when
-        await handleDeploymentDone({ tab });
+        it('should send metrics with user tasks in pools', async () => {
 
-        // then
-        const metrics = onSend.getCall(0).args[0].diagramMetrics;
+          // given
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: userTasksWithParticipantsXML
+            }
+          });
 
-        expect(metrics.tasks.userTask).to.eql({
-          count: 9,
-          form: {
-            count: 7,
-            embedded: 3,
-            camundaForms: 1,
-            external: 1,
-            generated: 1,
-            other: 1
-          }
-        });
-      });
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
 
+          // when
+          await handleDeploymentDone({ tab });
 
-      it('should send metrics with user tasks in pools', async () => {
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
 
-        // given
-        const tab = createTab({
-          type: 'bpmn',
-          file: {
-            contents: userTasksWithParticipantsXML
-          }
-        });
-
-        const handleDeploymentDone = subscribe.getCall(0).args[1];
-
-        // when
-        await handleDeploymentDone({ tab });
-
-        // then
-        const metrics = onSend.getCall(0).args[0].diagramMetrics;
-
-        expect(metrics.tasks.userTask).to.eql({
-          count: 9,
-          form: {
-            count: 7,
-            embedded: 3,
-            camundaForms: 1,
-            external: 1,
-            generated: 1,
-            other: 1
-          }
-        });
-      });
-
-
-      it('should send metrics with user tasks in subprocess', async () => {
-
-        // given
-        const tab = createTab({
-          type: 'bpmn',
-          file: {
-            contents: userTasksWithSubprocessXML
-          }
+          expect(metrics.tasks.userTask).to.eql({
+            count: 9,
+            form: {
+              count: 7,
+              embedded: 3,
+              camundaForms: 1,
+              external: 1,
+              generated: 1,
+              other: 1
+            }
+          });
         });
 
-        const handleDeploymentDone = subscribe.getCall(0).args[1];
 
-        // when
-        await handleDeploymentDone({ tab });
+        it('should send metrics with user tasks in subprocess', async () => {
 
-        // then
-        const metrics = onSend.getCall(0).args[0].diagramMetrics;
+          // given
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: userTasksWithSubprocessXML
+            }
+          });
 
-        expect(metrics.tasks.userTask).to.eql({
-          count: 5,
-          form: {
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.userTask).to.eql({
             count: 5,
-            embedded: 1,
-            camundaForms: 1,
-            external: 2,
-            generated: 0,
-            other: 1
-          }
+            form: {
+              count: 5,
+              embedded: 1,
+              camundaForms: 1,
+              external: 2,
+              generated: 0,
+              other: 1
+            }
+          });
         });
+
+
+        it('should send empty metrics without any tasks', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: emptyXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.userTask).to.eql({
+            count: 0,
+            form: {
+              count: 0,
+              embedded: 0,
+              camundaForms: 0,
+              external: 0,
+              generated: 0,
+              other: 0
+            }
+          });
+        });
+
       });
 
 
-      it('should send empty metrics without any tasks', async () => {
+      describe('cloud', () => {
 
-        // given
-        const tab = createTab({
-          type: 'bpmn',
-          file: {
-            contents: emptyXML
-          }
+        it('should send metrics with user tasks', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeUserTasksXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.userTask).to.eql({
+            count: 3,
+            form: {
+              count: 3,
+              camundaForms: 3,
+              other: 0
+            }
+          });
         });
 
-        const handleDeploymentDone = subscribe.getCall(0).args[1];
 
-        // when
-        await handleDeploymentDone({ tab });
+        it('should send metrics with user tasks in sub process', async () => {
 
-        // then
-        const metrics = onSend.getCall(0).args[0].diagramMetrics;
+          // given
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeUserTasksWithSubprocessXML
+            }
+          });
 
-        expect(metrics.tasks.userTask).to.eql({
-          count: 0,
-          form: {
-            count: 0,
-            embedded: 0,
-            camundaForms: 0,
-            external: 0,
-            generated: 0,
-            other: 0
-          }
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.userTask).to.eql({
+            count: 4,
+            form: {
+              count: 4,
+              camundaForms: 4,
+              other: 0
+            }
+          });
         });
+
+
+        it('should send metrics with user tasks in pools', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeUserTasksWithParticipantsXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.userTask).to.eql({
+            count: 4,
+            form: {
+              count: 4,
+              camundaForms: 4,
+              other: 0
+            }
+          });
+        });
+
       });
 
     });
 
 
-    describe('user tasks - cloud', () => {
+    describe('service tasks', () => {
 
-      it('should send metrics with user tasks', async () => {
+      describe('bpmn', () => {
 
-        // given
-        const tab = createTab({
-          type: 'cloud-bpmn',
-          file: {
-            contents: zeebeUserTasksXML
-          }
+        it('should send metrics with root level service tasks', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: serviceTasksXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.serviceTask).to.eql({
+            count: 11,
+            implementation: {
+              count: 10,
+              java: 2,
+              expression: 2,
+              delegate: 2,
+              external: 2,
+              connector: 2
+            }
+          });
         });
 
-        const handleDeploymentDone = subscribe.getCall(0).args[1];
 
-        // when
-        await handleDeploymentDone({ tab });
+        it('should send metrics with service tasks in pools', async () => {
 
-        // then
-        const metrics = onSend.getCall(0).args[0].diagramMetrics;
+          // given
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: serviceTasksWithParticipantsXML
+            }
+          });
 
-        expect(metrics.tasks.userTask).to.eql({
-          count: 3,
-          form: {
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.serviceTask).to.eql({
+            count: 9,
+            implementation: {
+              count: 8,
+              java: 2,
+              expression: 0,
+              delegate: 2,
+              external: 2,
+              connector: 2
+            }
+          });
+        });
+
+
+        it('should send metrics with service tasks in subprocess', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: serviceTasksWithSubprocessXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.serviceTask).to.eql({
+            count: 4,
+            implementation: {
+              count: 3,
+              java: 1,
+              expression: 1,
+              delegate: 0,
+              external: 0,
+              connector: 1
+            }
+          });
+        });
+
+
+        it('should send empty metrics without any tasks', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: emptyXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.serviceTask).to.eql({
+            count: 0,
+            implementation: {
+              count: 0,
+              java: 0,
+              expression: 0,
+              delegate: 0,
+              external: 0,
+              connector: 0
+            }
+          });
+        });
+
+      });
+
+
+      describe('cloud', () => {
+
+        it('should send metrics with root level service tasks', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeServiceTasksXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.serviceTask).to.eql({
             count: 3,
-            camundaForms: 3,
-            other: 0
-          }
+            implementation: {
+              count: 2,
+              external: 2
+            }
+          });
         });
+
+
+        it('should send metrics with service tasks in pools', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeServiceTasksWithParticipantsXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.serviceTask).to.eql({
+            count: 3,
+            implementation: {
+              count: 2,
+              external: 2
+            }
+          });
+        });
+
+
+        it('should send metrics with service tasks in subprocess', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeServiceTasksWithSubprocessXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.serviceTask).to.eql({
+            count: 3,
+            implementation: {
+              count: 2,
+              external: 2
+            }
+          });
+        });
+
+
+        it('should send empty metrics without any tasks', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: emptyXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          // then
+          const metrics = onSend.getCall(0).args[0].diagramMetrics;
+
+          expect(metrics.tasks.serviceTask).to.eql({
+            count: 0,
+            implementation: {
+              count: 0,
+              external: 0
+            }
+          });
+        });
+
       });
 
+    });
 
-      it('should send metrics with user tasks in sub process', async () => {
 
-        // given
-        const tab = createTab({
-          type: 'cloud-bpmn',
-          file: {
-            contents: zeebeUserTasksWithSubprocessXML
-          }
-        });
+    it('should NOT send metrics for DMN', async () => {
 
-        const handleDeploymentDone = subscribe.getCall(0).args[1];
-
-        // when
-        await handleDeploymentDone({ tab });
-
-        // then
-        const metrics = onSend.getCall(0).args[0].diagramMetrics;
-
-        expect(metrics.tasks.userTask).to.eql({
-          count: 4,
-          form: {
-            count: 4,
-            camundaForms: 4,
-            other: 0
-          }
-        });
+      // given
+      const tab = createTab({
+        type: 'dmn'
       });
 
+      const handleDeploymentDone = subscribe.getCall(0).args[1];
 
-      it('should send metrics with user tasks in pools', async () => {
+      // when
+      await handleDeploymentDone({ tab });
 
-        // given
-        const tab = createTab({
-          type: 'cloud-bpmn',
-          file: {
-            contents: zeebeUserTasksWithParticipantsXML
-          }
-        });
+      // then
+      const metrics = onSend.getCall(0).args[0].diagramMetrics;
 
-        const handleDeploymentDone = subscribe.getCall(0).args[1];
-
-        // when
-        await handleDeploymentDone({ tab });
-
-        // then
-        const metrics = onSend.getCall(0).args[0].diagramMetrics;
-
-        expect(metrics.tasks.userTask).to.eql({
-          count: 4,
-          form: {
-            count: 4,
-            camundaForms: 4,
-            other: 0
-          }
-        });
-      });
-
+      expect(metrics.tasks).to.not.exist;
     });
 
   });

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0508elu" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0">
+  <bpmn:process id="Process_0cmzoi3" isExecutable="true">
+    <bpmn:subProcess id="Activity_0xw1dsc">
+      <bpmn:incoming>Flow_0qunqgu</bpmn:incoming>
+      <bpmn:subProcess id="Activity_0afq40t">
+        <bpmn:subProcess id="Activity_0i2tfu6">
+          <bpmn:serviceTask id="Activity_0d2y2fd" name="connector1">
+            <bpmn:extensionElements>
+              <camunda:connector>
+                <camunda:connectorId>myConnector</camunda:connectorId>
+              </camunda:connector>
+            </bpmn:extensionElements>
+          </bpmn:serviceTask>
+        </bpmn:subProcess>
+      </bpmn:subProcess>
+      <bpmn:serviceTask id="Activity_1i65tro" name="blank" />
+    </bpmn:subProcess>
+    <bpmn:serviceTask id="Activity_1om96k0" name="javaClass1" camunda:class="myClass">
+      <bpmn:outgoing>Flow_0qunqgu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0qunqgu" sourceRef="Activity_1om96k0" targetRef="Activity_0xw1dsc" />
+    <bpmn:serviceTask id="Activity_13xziu8" name="expression1" camunda:expression="${ foo }" camunda:resultVariable="bar" />
+    <bpmn:task id="Activity_0pw3w8d" name="BlankTask" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0cmzoi3">
+      <bpmndi:BPMNEdge id="Flow_0qunqgu_di" bpmnElement="Flow_0qunqgu">
+        <di:waypoint x="280" y="310" />
+        <di:waypoint x="320" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1om96k0_di" bpmnElement="Activity_1om96k0">
+        <dc:Bounds x="180" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13xziu8_di" bpmnElement="Activity_13xziu8">
+        <dc:Bounds x="1100" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pw3w8d_di" bpmnElement="Activity_0pw3w8d">
+        <dc:Bounds x="1100" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1oj3mcw_di" bpmnElement="Activity_0xw1dsc" isExpanded="true">
+        <dc:Bounds x="320" y="80" width="750" height="430" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1i65tro_di" bpmnElement="Activity_1i65tro">
+        <dc:Bounds x="360" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0afq40t_di" bpmnElement="Activity_0afq40t" isExpanded="true">
+        <dc:Bounds x="490" y="125" width="550" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0i2tfu6_di" bpmnElement="Activity_0i2tfu6" isExpanded="true">
+        <dc:Bounds x="590" y="165" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0d2y2fd_di" bpmnElement="Activity_0d2y2fd">
+        <dc:Bounds x="690" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

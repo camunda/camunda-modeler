@@ -12,7 +12,17 @@
 
 import DiagramOpenEventHandler from '../DiagramOpenEventHandler';
 
+import emptyXML from './fixtures/empty.bpmn';
+
+import engineProfileXML from './fixtures/engine-profile.bpmn';
+
 import processVariablesXML from './fixtures/process-variables.bpmn';
+
+import serviceTasksXML from './fixtures/service-tasks.bpmn';
+
+import serviceTasksWithParticipantsXML from './fixtures/service-tasks-with-participants.bpmn';
+
+import serviceTasksWithSubprocessXML from './fixtures/service-tasks-with-subprocess.bpmn';
 
 import userTasksXML from './fixtures/user-tasks.bpmn';
 
@@ -26,9 +36,11 @@ import zeebeUserTasksWithSubprocessXML from './fixtures/user-tasks-with-subproce
 
 import zeebeUserTasksWithParticipantsXML from './fixtures/user-tasks-with-participants.zeebe.bpmn';
 
-import engineProfileXML from './fixtures/engine-profile.bpmn';
+import zeebeServiceTasksXML from './fixtures/service-tasks.zeebe.bpmn';
 
-import emptyXML from './fixtures/empty.bpmn';
+import zeebeServiceTasksWithSubprocessXML from './fixtures/service-tasks-with-subprocess.zeebe.bpmn';
+
+import zeebeServiceTasksWithParticipantsXML from './fixtures/service-tasks-with-participants.zeebe.bpmn';
 
 
 describe('<DiagramOpenEventHandler>', () => {
@@ -381,164 +393,286 @@ describe('<DiagramOpenEventHandler>', () => {
     });
 
 
-    describe('user tasks - bpmn', () => {
+    describe('user tasks', () => {
 
-      it('should send metrics with root level user tasks', async () => {
+      describe('bpmn', () => {
 
-        // given
-        const subscribe = sinon.spy();
-        const onSend = sinon.spy();
-        const tab = createTab({
-          type: 'bpmn',
-          file: {
-            contents: userTasksXML
-          }
+        it('should send metrics with root level user tasks', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: userTasksXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.userTask).to.eql({
+            count: 9,
+            form: {
+              count: 7,
+              embedded: 3,
+              camundaForms: 1,
+              external: 1,
+              generated: 1,
+              other: 1
+            }
+          });
         });
 
-        const config = { get: () => null };
 
-        // when
-        const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+        it('should send metrics with user tasks in pools', async () => {
 
-        diagramOpenEventHandler.enable();
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: userTasksWithParticipantsXML
+            }
+          });
 
-        const bpmnCallback = subscribe.getCall(0).args[1];
+          const config = { get: () => null };
 
-        await bpmnCallback({ tab });
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
 
-        const { diagramMetrics } = onSend.getCall(0).args[0];
+          diagramOpenEventHandler.enable();
 
-        // then
-        expect(diagramMetrics.tasks.userTask).to.eql({
-          count: 9,
-          form: {
-            count: 7,
-            embedded: 3,
-            camundaForms: 1,
-            external: 1,
-            generated: 1,
-            other: 1
-          }
-        });
-      });
+          const bpmnCallback = subscribe.getCall(0).args[1];
 
+          await bpmnCallback({ tab });
 
-      it('should send metrics with user tasks in pools', async () => {
+          const { diagramMetrics } = onSend.getCall(0).args[0];
 
-        // given
-        const subscribe = sinon.spy();
-        const onSend = sinon.spy();
-        const tab = createTab({
-          type: 'bpmn',
-          file: {
-            contents: userTasksWithParticipantsXML
-          }
-        });
-
-        const config = { get: () => null };
-
-        // when
-        const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
-
-        diagramOpenEventHandler.enable();
-
-        const bpmnCallback = subscribe.getCall(0).args[1];
-
-        await bpmnCallback({ tab });
-
-        const { diagramMetrics } = onSend.getCall(0).args[0];
-
-        // then
-        expect(diagramMetrics.tasks.userTask).to.eql({
-          count: 9,
-          form: {
-            count: 7,
-            embedded: 3,
-            camundaForms: 1,
-            external: 1,
-            generated: 1,
-            other: 1
-          }
-        });
-      });
-
-
-      it('should send metrics with user tasks in subprocess', async () => {
-
-        // given
-        const subscribe = sinon.spy();
-        const onSend = sinon.spy();
-        const tab = createTab({
-          type: 'bpmn',
-          file: {
-            contents: userTasksWithSubprocessXML
-          }
+          // then
+          expect(diagramMetrics.tasks.userTask).to.eql({
+            count: 9,
+            form: {
+              count: 7,
+              embedded: 3,
+              camundaForms: 1,
+              external: 1,
+              generated: 1,
+              other: 1
+            }
+          });
         });
 
-        const config = { get: () => null };
 
-        // when
-        const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+        it('should send metrics with user tasks in subprocess', async () => {
 
-        diagramOpenEventHandler.enable();
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: userTasksWithSubprocessXML
+            }
+          });
 
-        const bpmnCallback = subscribe.getCall(0).args[1];
+          const config = { get: () => null };
 
-        await bpmnCallback({ tab });
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
 
-        const { diagramMetrics } = onSend.getCall(0).args[0];
+          diagramOpenEventHandler.enable();
 
-        // then
-        expect(diagramMetrics.tasks.userTask).to.eql({
-          count: 5,
-          form: {
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.userTask).to.eql({
             count: 5,
-            embedded: 1,
-            external: 2,
-            camundaForms: 1,
-            generated: 0,
-            other: 1
-          }
+            form: {
+              count: 5,
+              embedded: 1,
+              external: 2,
+              camundaForms: 1,
+              generated: 0,
+              other: 1
+            }
+          });
         });
+
+
+        it('should send empty metrics without any tasks', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: emptyXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.userTask).to.eql({
+            count: 0,
+            form: {
+              count: 0,
+              embedded: 0,
+              camundaForms: 0,
+              external: 0,
+              generated: 0,
+              other: 0
+            }
+          });
+
+        });
+
       });
 
 
-      it('should send empty metrics without any tasks', async () => {
+      describe('cloud', () => {
 
-        // given
-        const subscribe = sinon.spy();
-        const onSend = sinon.spy();
-        const tab = createTab({
-          type: 'bpmn',
-          file: {
-            contents: emptyXML
-          }
+        it('should send metrics with user tasks', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeUserTasksXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.userTask).to.eql({
+            count: 3,
+            form: {
+              count: 3,
+              camundaForms: 3,
+              other: 0
+            }
+          });
+
         });
 
-        const config = { get: () => null };
 
-        // when
-        const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+        it('should send metrics with user tasks - sub processes', async () => {
 
-        diagramOpenEventHandler.enable();
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeUserTasksWithSubprocessXML
+            }
+          });
 
-        const bpmnCallback = subscribe.getCall(0).args[1];
+          const config = { get: () => null };
 
-        await bpmnCallback({ tab });
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
 
-        const { diagramMetrics } = onSend.getCall(0).args[0];
+          diagramOpenEventHandler.enable();
 
-        // then
-        expect(diagramMetrics.tasks.userTask).to.eql({
-          count: 0,
-          form: {
-            count: 0,
-            embedded: 0,
-            camundaForms: 0,
-            external: 0,
-            generated: 0,
-            other: 0
-          }
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.userTask).to.eql({
+            count: 4,
+            form: {
+              count: 4,
+              camundaForms: 4,
+              other: 0
+            }
+          });
+
+        });
+
+
+        it('should send metrics with user tasks - participants', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeUserTasksWithParticipantsXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.userTask).to.eql({
+            count: 4,
+            form: {
+              count: 4,
+              camundaForms: 4,
+              other: 0
+            }
+          });
+
         });
 
       });
@@ -546,120 +680,376 @@ describe('<DiagramOpenEventHandler>', () => {
     });
 
 
-    describe('user tasks - cloud', () => {
+    describe('service tasks', () => {
 
-      it('should send metrics with user tasks', async () => {
+      describe('bpmn', () => {
 
-        // given
-        const subscribe = sinon.spy();
-        const onSend = sinon.spy();
-        const tab = createTab({
-          type: 'cloud-bpmn',
-          file: {
-            contents: zeebeUserTasksXML
-          }
+        it('should send metrics with root level service tasks', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: serviceTasksXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.serviceTask).to.eql({
+            count: 11,
+            implementation: {
+              count: 10,
+              java: 2,
+              expression: 2,
+              delegate: 2,
+              external: 2,
+              connector: 2
+            }
+          });
         });
 
-        const config = { get: () => null };
 
-        // when
-        const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+        it('should send metrics with service tasks in pools', async () => {
 
-        diagramOpenEventHandler.enable();
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: serviceTasksWithParticipantsXML
+            }
+          });
 
-        const bpmnCallback = subscribe.getCall(0).args[1];
+          const config = { get: () => null };
 
-        await bpmnCallback({ tab });
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
 
-        const { diagramMetrics } = onSend.getCall(0).args[0];
+          diagramOpenEventHandler.enable();
 
-        // then
-        expect(diagramMetrics.tasks.userTask).to.eql({
-          count: 3,
-          form: {
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.serviceTask).to.eql({
+            count: 9,
+            implementation: {
+              count: 8,
+              java: 2,
+              expression: 0,
+              delegate: 2,
+              external: 2,
+              connector: 2
+            }
+          });
+        });
+
+
+        it('should send metrics with service tasks in subprocess', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: serviceTasksWithSubprocessXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.serviceTask).to.eql({
+            count: 4,
+            implementation: {
+              count: 3,
+              java: 1,
+              expression: 1,
+              delegate: 0,
+              external: 0,
+              connector: 1
+            }
+          });
+        });
+
+
+        it('should send empty metrics without any tasks', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: emptyXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.serviceTask).to.eql({
+            count: 0,
+            implementation: {
+              count: 0,
+              java: 0,
+              expression: 0,
+              delegate: 0,
+              external: 0,
+              connector: 0
+            }
+          });
+
+        });
+
+      });
+
+
+      describe('cloud', () => {
+
+        it('should send metrics with root level service tasks', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeServiceTasksXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.serviceTask).to.eql({
             count: 3,
-            camundaForms: 3,
-            other: 0
-          }
+            implementation: {
+              count: 2,
+              external: 2
+            }
+          });
+        });
+
+
+        it('should send metrics with service tasks in pools', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeServiceTasksWithParticipantsXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.serviceTask).to.eql({
+            count: 3,
+            implementation: {
+              count: 2,
+              external: 2
+            }
+          });
+        });
+
+
+        it('should send metrics with service tasks in subprocess', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: zeebeServiceTasksWithSubprocessXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.serviceTask).to.eql({
+            count: 3,
+            implementation: {
+              count: 2,
+              external: 2
+            }
+          });
+        });
+
+
+        it('should send empty metrics without any tasks', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: emptyXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.tasks.serviceTask).to.eql({
+            count: 0,
+            implementation: {
+              count: 0,
+              external: 0
+            }
+          });
+
         });
 
       });
 
+    });
 
-      it('should send metrics with user tasks - sub processes', async () => {
 
-        // given
-        const subscribe = sinon.spy();
-        const onSend = sinon.spy();
-        const tab = createTab({
-          type: 'cloud-bpmn',
-          file: {
-            contents: zeebeUserTasksWithSubprocessXML
-          }
-        });
+    it('should not send metrics for DMN', async () => {
 
-        const config = { get: () => null };
-
-        // when
-        const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
-
-        diagramOpenEventHandler.enable();
-
-        const bpmnCallback = subscribe.getCall(0).args[1];
-
-        await bpmnCallback({ tab });
-
-        const { diagramMetrics } = onSend.getCall(0).args[0];
-
-        // then
-        expect(diagramMetrics.tasks.userTask).to.eql({
-          count: 4,
-          form: {
-            count: 4,
-            camundaForms: 4,
-            other: 0
-          }
-        });
-
+      // given
+      const subscribe = sinon.spy();
+      const onSend = sinon.spy();
+      const tab = createTab({
+        type: 'dmn'
       });
 
+      const config = { get: () => null };
 
-      it('should send metrics with user tasks - participants', async () => {
+      // when
+      const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
 
-        // given
-        const subscribe = sinon.spy();
-        const onSend = sinon.spy();
-        const tab = createTab({
-          type: 'cloud-bpmn',
-          file: {
-            contents: zeebeUserTasksWithParticipantsXML
-          }
-        });
+      diagramOpenEventHandler.enable();
 
-        const config = { get: () => null };
+      const bpmnCallback = subscribe.getCall(0).args[1];
 
-        // when
-        const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+      await bpmnCallback({ tab });
 
-        diagramOpenEventHandler.enable();
+      const { diagramMetrics } = onSend.getCall(0).args[0];
 
-        const bpmnCallback = subscribe.getCall(0).args[1];
+      // then
+      expect(diagramMetrics.tasks).to.not.exist;
 
-        await bpmnCallback({ tab });
+    });
 
-        const { diagramMetrics } = onSend.getCall(0).args[0];
 
-        // then
-        expect(diagramMetrics.tasks.userTask).to.eql({
-          count: 4,
-          form: {
-            count: 4,
-            camundaForms: 4,
-            other: 0
-          }
-        });
+    it('should not send metrics for forms', async () => {
 
+      // given
+      const subscribe = sinon.spy();
+      const onSend = sinon.spy();
+      const tab = createTab({
+        type: 'form'
       });
+
+      const config = { get: () => null };
+
+      // when
+      const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+      diagramOpenEventHandler.enable();
+
+      const bpmnCallback = subscribe.getCall(0).args[1];
+
+      await bpmnCallback({ tab });
+
+      const { diagramMetrics } = onSend.getCall(0).args[0];
+
+      // then
+      expect(diagramMetrics.tasks).to.not.exist;
 
     });
 
