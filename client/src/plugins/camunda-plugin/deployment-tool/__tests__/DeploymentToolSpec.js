@@ -408,7 +408,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should not handle deployment error given a non DeploymentError', async () => {
+    it('should not handle deployment error given a non DeploymentError during getVersion', async () => {
 
       // given
       const deploymentErrorSpy = sinon.spy(),
@@ -420,12 +420,12 @@ describe('<DeploymentTool>', () => {
         new Error()
       ];
 
-      for (let i = 0; i < errorThrown.length; i++) {
+      errorThrown.forEach(async (err) => {
 
         // given
         const {
           instance
-        } = createDeploymentTool({ activeTab, errorThrown: errorThrown[i], deploymentErrorSpy, ...configuration });
+        } = createDeploymentTool({ activeTab, getVersionErrorThrown: err, deploymentErrorSpy, ...configuration });
 
         let error;
 
@@ -437,9 +437,114 @@ describe('<DeploymentTool>', () => {
         }
 
         // then
-        expect(error).to.equal(errorThrown[i]);
+        expect(error).to.equal(err);
         expect(deploymentErrorSpy).to.not.have.been.called;
-      }
+      });
+    });
+
+
+    it('should not handle deployment error given a non DeploymentError during deployment', async () => {
+
+      // given
+      const deploymentErrorSpy = sinon.spy(),
+            configuration = createConfiguration(),
+            activeTab = createTab({ name: 'foo.bpmn' });
+
+      const errorThrown = [
+        new ConnectionError({ status: 500 }),
+        new Error()
+      ];
+
+      errorThrown.forEach(async (err) => {
+
+        // given
+        const {
+          instance
+        } = createDeploymentTool({ activeTab, errorThrown: err, deploymentErrorSpy, ...configuration });
+
+        let error;
+
+        // when
+        try {
+          await instance.deploy();
+        } catch (e) {
+          error = e;
+        }
+
+        // then
+        expect(error).to.equal(err);
+        expect(deploymentErrorSpy).to.not.have.been.called;
+      });
+    });
+
+
+    it('should fetch the executionPlatformVersion', async () => {
+
+      // given
+      const deploySpy = sinon.spy();
+      const getVersionSpy = sinon.spy(() => { return { version: '7.15.0' }; });
+      const activeTab = createTab({ name: 'foo.bpmn' });
+      const {
+        instance
+      } = createDeploymentTool({ activeTab, deploySpy, getVersionSpy });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(getVersionSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should use saved config to fetch executionPlatformVersion', async () => {
+
+      // given
+      const savedEndpoint = {
+        id: 'endpointId',
+        authType: AuthTypes.basic,
+        username: 'demo',
+        password: 'demo',
+        url: 'http://localhost:8088/engine-rest',
+        rememberCredentials: true
+      };
+
+      const savedConfiguration = {
+        deployment: {
+          name: 'diagram',
+          tenantId: '',
+          attachments: []
+        },
+        endpointId: savedEndpoint.id
+      };
+
+      const config = {
+        get: (key, defaultValue) => {
+          if (key === ENGINE_ENDPOINTS_CONFIG_KEY) {
+            return [
+              { id: 'OTHER_ENDPOINT' },
+              savedEndpoint
+            ];
+          }
+
+          return defaultValue;
+        },
+        getForFile: sinon.stub().returns(savedConfiguration)
+      };
+
+      const getVersionSpy = sinon.spy(() => { return { version: '7.15.0' }; });
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const {
+        instance
+      } = createDeploymentTool({ activeTab, config, getVersionSpy });
+
+      // when
+      await instance.deployTab(activeTab);
+
+      // then
+      expect(getVersionSpy).to.have.been.calledOnce;
+      expect(getVersionSpy.args[0][0].endpoint).to.equal(savedEndpoint);
     });
 
 
@@ -467,6 +572,37 @@ describe('<DeploymentTool>', () => {
 
         // then
         expect(actionSpy).to.have.been.calledOnce;
+      });
+
+
+      it('should include executionPlatform metrics in deployment.done', async () => {
+
+        // given
+        const configuration = createConfiguration(),
+              activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.done',
+                handler:actionSpy
+              };
+
+        const getVersionSpy = sinon.spy(() => { return { version: '7.14.0' }; });
+
+        const {
+          instance
+        } = createDeploymentTool({ activeTab, actionTriggered, getVersionSpy, ...configuration });
+
+        // when
+        await instance.deploy();
+
+        // then
+        expect(actionSpy).to.have.been.calledOnce;
+
+        const deployedTo = actionSpy.args[0][0].payload.deployedTo;
+        expect(deployedTo.executionPlatform).to.eql('camunda');
+        expect(deployedTo.executionPlatformVersion).to.eql('7.14.0');
       });
 
 
@@ -547,6 +683,40 @@ describe('<DeploymentTool>', () => {
         // then
         expect(actionSpy).to.not.have.been.called;
       });
+
+
+      it('should include executionPlatform metrics in deployment.error given deploymentError', async () => {
+
+        // given
+        const configuration = createConfiguration(),
+              activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.error',
+                handler:actionSpy
+              };
+
+        const getVersionSpy = sinon.spy(() => { return { version: '7.14.0' }; });
+
+        const errorThrown = new DeploymentError({ status: 500 });
+
+        const {
+          instance
+        } = createDeploymentTool({ activeTab, actionTriggered, getVersionSpy, errorThrown, ...configuration });
+
+        // when
+        await instance.deploy();
+
+        // then
+        expect(actionSpy).to.have.been.calledOnce;
+
+        const deployedTo = actionSpy.args[0][0].payload.deployedTo;
+        expect(deployedTo.executionPlatform).to.eql('camunda');
+        expect(deployedTo.executionPlatformVersion).to.eql('7.14.0');
+      });
+
     });
 
 
@@ -640,13 +810,29 @@ describe('<DeploymentTool>', () => {
       const deploySpy = sinon.spy();
       const {
         instance
-      } = createDeploymentTool({ userAction: 'save' });
+      } = createDeploymentTool({ userAction: 'save', deploySpy });
 
       // when
       await instance.deploy();
 
       // then
       expect(deploySpy).to.have.not.been.called;
+    });
+
+
+    it('should not get version when user decided to only save configuration', async () => {
+
+      // given
+      const getVersionSpy = sinon.spy();
+      const {
+        instance
+      } = createDeploymentTool({ userAction: 'save', getVersionSpy });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(getVersionSpy).to.have.not.been.called;
     });
   });
 
@@ -965,6 +1151,18 @@ class TestDeploymentTool extends DeploymentTool {
     return this.props.deploySpy && this.props.deploySpy(...args);
   }
 
+  getVersion(...args) {
+    if (this.props.getVersionErrorThrown) {
+      throw this.props.getVersionErrorThrown;
+    }
+
+    if (this.props.getVersionSpy) {
+      return this.props.getVersionSpy && this.props.getVersionSpy(...args);
+    }
+
+    return { version: '7.15.0' };
+  }
+
   handleDeploymentError(...args) {
     super.handleDeploymentError(...args);
 
@@ -1020,7 +1218,7 @@ function createDeploymentTool({
     case (props.actionTriggered &&
       props.actionTriggered.emitEvent == event &&
       props.actionTriggered.type == context.type):
-      return props.actionTriggered.handler();
+      return props.actionTriggered.handler(context);
     }
   };
 

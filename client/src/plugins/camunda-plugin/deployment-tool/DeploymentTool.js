@@ -42,6 +42,8 @@ const DEFAULT_ENDPOINT = {
 
 const TOMCAT_DEFAULT_URL = 'http://localhost:8080/engine-rest';
 
+const ET_EXECUTION_PLATFORM_NAME = 'camunda';
+
 export default class DeploymentTool extends PureComponent {
 
   state = {
@@ -129,26 +131,32 @@ export default class DeploymentTool extends PureComponent {
     }
 
     // (3) Trigger deployment
-    // (3.1) Show deployment result (success or error)
+    let version;
 
     try {
+
+      // (3.1) Retrieve version we deploy to via API
+      version = (await this.getVersion(configuration)).version;
+
+      // (3.2) Deploy via API
       const deployment = await this.deployWithConfiguration(tab, configuration);
 
-      // (3.2) save deployed process definition
+      // (3.3) save deployed process definition
       await this.saveProcessDefinition(tab, deployment);
 
-      await this.handleDeploymentSuccess(tab, deployment);
+      // (3.4) Handle deployment success or error
+      await this.handleDeploymentSuccess(tab, deployment, version);
     } catch (error) {
 
       if (!(error instanceof DeploymentError)) {
         throw error;
       }
 
-      await this.handleDeploymentError(tab, error);
+      await this.handleDeploymentError(tab, error, version);
     }
   }
 
-  handleDeploymentSuccess(tab, deployment) {
+  handleDeploymentSuccess(tab, deployment, version) {
     const {
       displayNotification,
       triggerAction
@@ -165,6 +173,10 @@ export default class DeploymentTool extends PureComponent {
       type: 'deployment.done',
       payload: {
         deployment,
+        deployedTo: {
+          executionPlatformVersion: version,
+          executionPlatform: ET_EXECUTION_PLATFORM_NAME
+        },
         context: 'deploymentTool'
       }
     });
@@ -187,7 +199,7 @@ export default class DeploymentTool extends PureComponent {
     return await config.setForFile(tab.file, PROCESS_DEFINITION_CONFIG_KEY, processDefinition);
   }
 
-  handleDeploymentError(tab, error) {
+  handleDeploymentError(tab, error, version) {
     const {
       log,
       displayNotification,
@@ -206,12 +218,17 @@ export default class DeploymentTool extends PureComponent {
       message: error.problems || error.details || error.message
     });
 
+    // If we retrieved the executionPlatformVersion, include it in event
+    const deployedTo = (version &&
+      { executionPlatformVersion: version, executionPlatform: ET_EXECUTION_PLATFORM_NAME }) || undefined;
+
     // notify interested parties
     triggerAction('emit-event', {
       type: 'deployment.error',
       payload: {
         error,
-        context: 'deploymentTool'
+        context: 'deploymentTool',
+        ...(deployedTo && { deployedTo: deployedTo })
       }
     });
   }
@@ -314,6 +331,15 @@ export default class DeploymentTool extends PureComponent {
     const api = new CamundaAPI(endpoint);
 
     return api.deployDiagram(tab.file, deployment);
+  }
+
+  getVersion(configuration) {
+
+    const { endpoint } = configuration;
+
+    const api = new CamundaAPI(endpoint);
+
+    return api.getVersion();
   }
 
   canDeployWithConfiguration(configuration) {
