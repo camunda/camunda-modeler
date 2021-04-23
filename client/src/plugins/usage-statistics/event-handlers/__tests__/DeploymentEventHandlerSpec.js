@@ -104,7 +104,11 @@ describe('<DeploymentEventHandler>', () => {
     // when
     await handleDeploymentDone({
       tab,
-      context: 'foo'
+      context: 'foo',
+      deployedTo: {
+        executionPlatformVersion: '7.15.0',
+        executionPlatform: 'Camunda'
+      }
     });
 
     // then
@@ -115,7 +119,9 @@ describe('<DeploymentEventHandler>', () => {
       engineProfile: {},
       deployment: {
         outcome: SUCCESS_STATUS,
-        context: 'foo'
+        context: 'foo',
+        executionPlatformVersion: '7.15.0',
+        executionPlatform: 'Camunda'
       }
     });
   });
@@ -162,7 +168,11 @@ describe('<DeploymentEventHandler>', () => {
     // when
     await handleDeploymentDone({
       tab,
-      context: 'foo'
+      context: 'foo',
+      deployedTo: {
+        executionPlatformVersion: '7.15.0',
+        executionPlatform: 'Camunda'
+      }
     });
 
     // then
@@ -173,7 +183,9 @@ describe('<DeploymentEventHandler>', () => {
       engineProfile: {},
       deployment: {
         outcome: SUCCESS_STATUS,
-        context: 'foo'
+        context: 'foo',
+        executionPlatformVersion: '7.15.0',
+        executionPlatform: 'Camunda'
       }
     });
   });
@@ -213,7 +225,11 @@ describe('<DeploymentEventHandler>', () => {
     await handleDeploymentError({
       tab,
       error,
-      context: 'foo'
+      context: 'foo',
+      deployedTo: {
+        executionPlatformVersion: '7.15.0',
+        executionPlatform: 'camunda'
+      }
     });
 
     const deployment = onSend.getCall(0).args[0].deployment;
@@ -223,7 +239,9 @@ describe('<DeploymentEventHandler>', () => {
     expect(deployment).to.eql({
       outcome: 'failure',
       error: EXAMPLE_ERROR,
-      context: 'foo'
+      context: 'foo',
+      executionPlatformVersion: '7.15.0',
+      executionPlatform: 'camunda'
     });
   });
 

@@ -84,7 +84,8 @@ export default class DeploymentEventHandler extends BaseEventHandler {
       error,
       tab,
       context,
-      targetType
+      targetType,
+      deployedTo
     } = event;
 
     const {
@@ -129,6 +130,14 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     // (6) set target type if available
     if (targetType) {
       payload.deployment.targetType = targetType;
+    }
+
+    // (7) include executionPlatform details
+    if (deployedTo) {
+      payload.deployment = {
+        ...payload.deployment,
+        ...deployedTo
+      };
     }
 
     this.sendToET(payload);
