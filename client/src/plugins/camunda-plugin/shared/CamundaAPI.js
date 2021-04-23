@@ -117,6 +117,21 @@ export default class CamundaAPI {
     throw new ConnectionError(response);
   }
 
+  async getVersion() {
+
+    const response = await this.fetch('/version');
+
+    const { version } = await response.json();
+
+    if (response.ok) {
+      return {
+        version: version
+      };
+    }
+
+    throw new ConnectionError(response);
+  }
+
   getAuthentication(endpoint) {
 
     const {

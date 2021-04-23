@@ -377,6 +377,167 @@ describe('<CamundaAPI>', () => {
   });
 
 
+  describe('#getVersion', () => {
+
+    it('should return server version', async () => {
+
+      // given
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response({
+        ok: true,
+        status: 200,
+        json: () => { return {
+          version: '7.15.0'
+        }; }
+      }));
+
+      // when
+      const { version } = await api.getVersion();
+
+      // then
+      expect(version).to.eql('7.15.0');
+    });
+
+
+    it('should return undefined if version cannot be parsed', async () => {
+
+      // given
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response({
+        ok: true,
+        status: 200,
+        json: () => { return { }; }
+      }));
+
+      // when
+      const { version } = await api.getVersion();
+
+      // then
+      expect(version).to.be.undefined;
+    });
+
+
+    it('should throw when fetch fails', async () => {
+
+      // given
+      const api = createCamundaAPI();
+
+      fetchSpy.rejects(new TypeError('Failed to fetch'));
+
+      // when
+      let error;
+
+      try {
+        await api.getVersion();
+      } catch (e) {
+        error = e;
+      } finally {
+
+        // then
+        expect(error).to.exist;
+      }
+    });
+
+
+    it('should throw when response is not ok', async () => {
+
+      // given
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response({ ok: false }));
+
+      // when
+      let error;
+
+      try {
+        await api.getVersion();
+      } catch (e) {
+        error = e;
+      } finally {
+
+        // then
+        expect(error).to.exist;
+      }
+    });
+
+
+    it('should handle failed response with non-JSON body', async () => {
+
+      // given
+      const api = createCamundaAPI();
+
+      fetchSpy.resolves(new Response({
+        ok: false,
+        status: 401,
+        json: () => JSON.parse('401 Unauthorized')
+      }));
+
+      // when
+      let error;
+
+      try {
+        await api.getVersion();
+      } catch (e) {
+        error = e;
+      } finally {
+
+        // then
+        expect(error).to.exist;
+      }
+    });
+
+
+    describe('timeout handling', () => {
+
+      let clock;
+
+      before(() => {
+        clock = sinon.useFakeTimers();
+      });
+
+      after(() => clock.restore());
+
+
+      it('should abort request on timeout', async () => {
+
+        // given
+        const api = createCamundaAPI();
+
+        fetchSpy.callsFake((_, { signal }) => {
+          return new Promise(resolve => {
+            for (let i = 0; i < 10; i++) {
+              if (signal && signal.aborted) {
+                throw new Error('timeout');
+              }
+
+              clock.tick(2000);
+            }
+
+            resolve(new Response());
+          });
+        });
+
+        // when
+        let error;
+
+        try {
+          await api.getVersion();
+        } catch (e) {
+          error = e;
+        } finally {
+
+          // then
+          expect(error).to.exist;
+        }
+      });
+
+    });
+
+  });
+
+
   describe('#startInstance', () => {
 
     const processDefinition = {
