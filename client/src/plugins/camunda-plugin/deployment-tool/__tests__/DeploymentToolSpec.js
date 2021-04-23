@@ -633,7 +633,7 @@ describe('<DeploymentTool>', () => {
       });
 
 
-      it('should trigger deployment.error action after failed deployment', async () => {
+      it('should trigger deployment.error action given deployment error', async () => {
 
         // given
         const configuration = createConfiguration(),
@@ -657,6 +657,41 @@ describe('<DeploymentTool>', () => {
 
         // then
         expect(actionSpy).to.have.been.calledOnce;
+      });
+
+
+      it('should not trigger deployment.error action given non-deployment error', async () => {
+
+        // given
+        const configuration = createConfiguration(),
+              activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.error',
+                handler:actionSpy
+              };
+
+        const errorThrown = new ConnectionError({ status: 500 });
+
+        const {
+          instance
+        } = createDeploymentTool({ activeTab, actionTriggered, errorThrown, ...configuration });
+
+        // when
+        let error;
+        try {
+          await instance.deploy();
+        } catch (err) {
+          error = err;
+        }
+
+        // then
+        expect(actionSpy).to.not.have.been.called;
+
+        expect(error).to.exist;
+        expect(error).to.equal(errorThrown);
       });
 
 
