@@ -35,6 +35,8 @@ const START_INSTANCE_FAILED = 'Starting process instance failed';
 
 const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
 
+const ET_EXECUTION_PLATFORM_NAME = 'camunda';
+
 export default class StartInstanceTool extends PureComponent {
 
   state = {
@@ -80,6 +82,15 @@ export default class StartInstanceTool extends PureComponent {
     } = this.props;
 
     return await deployService.deployWithConfiguration(tab, configuration);
+  }
+
+  async getVersion(configuration) {
+
+    const {
+      deployService
+    } = this.props;
+
+    return await deployService.getVersion(configuration);
   }
 
   async ensureDeployConfig(tab) {
@@ -206,16 +217,24 @@ export default class StartInstanceTool extends PureComponent {
     }
 
     // (5) Trigger deployment
+    let version;
+
     try {
+
+      // (5.1) Retrieve version via API
+      version = (await this.getVersion(deploymentConfig)).version;
+
+      // (5.2) Deploy via API
       const deployment = await this.deploy(tab, deploymentConfig);
 
-      await this.handleDeploymentSuccess(tab, deployment);
+      // (5.3) Handle success or error
+      await this.handleDeploymentSuccess(tab, deployment, version);
     } catch (error) {
       if (!(error instanceof DeploymentError)) {
         throw error;
       }
 
-      return await this.handleDeploymentError(tab, error);
+      return await this.handleDeploymentError(tab, error, version);
     }
 
     // (5.1) Get latest available process definition
@@ -380,7 +399,7 @@ export default class StartInstanceTool extends PureComponent {
     });
   }
 
-  handleDeploymentSuccess(tab, deployment) {
+  handleDeploymentSuccess(tab, deployment, version) {
 
     const {
       triggerAction
@@ -391,14 +410,18 @@ export default class StartInstanceTool extends PureComponent {
       type: 'deployment.done',
       payload: {
         deployment,
-        context: 'startInstanceTool'
+        context: 'startInstanceTool',
+        deployedTo: {
+          executionPlatformVersion: version,
+          executionPlatform: ET_EXECUTION_PLATFORM_NAME
+        }
       }
     });
 
     return this.saveProcessDefinition(tab, deployment);
   }
 
-  handleDeploymentError(tab, error) {
+  handleDeploymentError(tab, error, version) {
     const {
       log,
       displayNotification,
@@ -417,12 +440,17 @@ export default class StartInstanceTool extends PureComponent {
       message: error.problems || error.details || error.message
     });
 
+    // If we retrieved the executionPlatformVersion, include it in event
+    const deployedTo = (version &&
+      { executionPlatformVersion: version, executionPlatform: ET_EXECUTION_PLATFORM_NAME }) || undefined;
+
     // notify interested parties
     triggerAction('emit-event', {
       type: 'deployment.error',
       payload: {
         error,
-        context: 'startInstanceTool'
+        context: 'startInstanceTool',
+        ...(deployedTo && { deployedTo: deployedTo })
       }
     });
   }

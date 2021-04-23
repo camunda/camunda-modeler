@@ -30,6 +30,8 @@ export class DeploymentService extends Mock {
 
   saveDeployConfiguration() {}
 
+  getVersion() {}
+
   canDeployWithConfiguration() {
     return true;
   }
