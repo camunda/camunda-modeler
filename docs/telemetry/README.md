@@ -75,8 +75,7 @@ Diagram Opened Event payload:
 }
 ```
 
-Also in the case of BPMN diagrams, we add the number of available process variables,
-as well as relevant information about user tasks and forms:
+Also in the case of BPMN diagrams, we add selected diagram metrics:
 
 ```json
 {
@@ -92,6 +91,17 @@ as well as relevant information about user tasks and forms:
           "external": 2,
           "generated": 0,
           "other": 1
+        }
+      },
+      "serviceTask": {
+        "count": 5,
+        "implementation": {
+          "count": 5,
+          "java": 1,
+          "expression": 1,
+          "delegate": 2,
+          "external": 0,
+          "connector": 1
         }
       }
     }
@@ -157,8 +167,7 @@ If provided, for example, when deploying to a Zeebe based platform, we add the t
 }
 ```
 
-In case of BPMN files, we add the number of available process variables in the diagram as part of the diagram metrics,
-as well as relevant information about user tasks and forms:
+In case of BPMN files, we add selected diagram metrics:
 
 ```json
 {
@@ -174,6 +183,17 @@ as well as relevant information about user tasks and forms:
           "external": 2,
           "generated": 0,
           "other": 1
+        }
+      },
+      "serviceTask": {
+        "count": 5,
+        "implementation": {
+          "count": 5,
+          "java": 1,
+          "expression": 1,
+          "delegate": 2,
+          "external": 0,
+          "connector": 1
         }
       }
     }
