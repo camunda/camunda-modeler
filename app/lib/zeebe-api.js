@@ -25,7 +25,8 @@ const errorReasons = {
   UNAUTHORIZED: 'UNAUTHORIZED',
   CLUSTER_UNAVAILABLE: 'CLUSTER_UNAVAILABLE',
   FORBIDDEN: 'FORBIDDEN',
-  OAUTH_URL: 'OAUTH_URL'
+  OAUTH_URL: 'OAUTH_URL',
+  UNSUPPORTED_ENGINE: 'UNSUPPORTED_ENGINE'
 };
 
 const endpointTypes = {
@@ -273,12 +274,14 @@ function getErrorReason(error, endpoint) {
     type
   } = endpoint;
 
-  // (1) handle endpoint (grpc) unavailable
+  // (1) handle grpc errors
   if (code === 14) {
     return (type === endpointTypes.CAMUNDA_CLOUD
       ? errorReasons.CLUSTER_UNAVAILABLE
       : errorReasons.CONTACT_POINT_UNAVAILABLE
     );
+  } else if (code === 12) {
+    return errorReasons.UNSUPPORTED_ENGINE;
   }
 
   // (2) handle <unknown>
