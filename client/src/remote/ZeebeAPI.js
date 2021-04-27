@@ -59,6 +59,12 @@ export default class ZeebeAPI {
     });
   }
 
+  getTopology(endpoint) {
+    const configuration = getEndpointConfiguration(endpoint);
+
+    return this.backend.send('zeebe:getTopology', { endpoint: configuration });
+  }
+
 
 }
 
