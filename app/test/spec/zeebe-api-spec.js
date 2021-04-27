@@ -414,6 +414,35 @@ describe('ZeebeAPI', function() {
       expect(result.response.message).to.be.eql('TEST ERROR.');
     });
 
+
+    it('should return serialized error', async function() {
+
+      // given
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function() {
+          return {
+            createWorkflowInstance: function() {
+              throw new Error('TEST ERROR.');
+            }
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'testURL'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.run(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.response).not.to.be.instanceOf(Error);
+    });
+
   });
 
 
@@ -469,6 +498,37 @@ describe('ZeebeAPI', function() {
       expect(result).to.exist;
       expect(result.success).to.be.false;
       expect(result.response).to.exist;
+    });
+
+
+    it('should return serialized error', async function() {
+
+      // given
+      const error = new Error('test');
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function() {
+          return {
+            deployWorkflow: function() {
+              throw error;
+            }
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'testURL'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.deploy(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.response).not.to.be.instanceOf(Error);
     });
 
 
