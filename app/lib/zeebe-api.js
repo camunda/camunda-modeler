@@ -143,7 +143,7 @@ class ZeebeAPI {
 
       return {
         success: false,
-        response: err
+        response: asSerializedError(err)
       };
     }
   }
@@ -179,7 +179,7 @@ class ZeebeAPI {
 
       return {
         success: false,
-        response: err
+        response: asSerializedError(err)
       };
     }
   }
@@ -351,4 +351,8 @@ function prepareDeploymentName(name, filePath) {
   }
 
   return name;
+}
+
+function asSerializedError(error) {
+  return pick(error, [ 'message', 'code', 'details' ]);
 }
