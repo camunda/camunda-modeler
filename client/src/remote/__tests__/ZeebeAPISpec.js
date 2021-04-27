@@ -209,6 +209,37 @@ describe('<ZeebeAPI>', function() {
 
   });
 
+
+  describe('#getTopology', () => {
+
+    it('should execute', () => {
+
+      // given
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const contactPoint = 'contactPoint';
+
+      const endpoint = {
+        targetType: targetTypes.SELF_HOSTED,
+        authType: authTypes.NONE,
+        contactPoint
+      };
+
+      // when
+      zeebeAPI.getTopology(endpoint);
+
+      // then
+      expect(sendSpy).to.have.been.calledWith('zeebe:getTopology', {
+        endpoint: {
+          type: targetTypes.SELF_HOSTED,
+          url: contactPoint
+        }
+      });
+
+    });
+
+  });
+
 });
 
 
