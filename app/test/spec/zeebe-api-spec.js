@@ -328,6 +328,34 @@ describe('ZeebeAPI', function() {
         expect(result.reason).to.eql('UNKNOWN');
       });
 
+
+      it('for <Method not found>', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('Method not found', 12);
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'selfHosted'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.checkConnection(parameters);
+
+        // then
+        expect(result.reason).to.eql('UNSUPPORTED_ENGINE');
+
+      });
+
     });
 
   });

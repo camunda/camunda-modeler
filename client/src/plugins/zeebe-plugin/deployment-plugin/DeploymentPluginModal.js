@@ -119,6 +119,11 @@ export default class DeploymentPluginModal extends React.PureComponent {
         CONNECTION_ERROR_MESSAGES[failureReason];
     case ERROR_REASONS.CLUSTER_UNAVAILABLE:
       return fieldName === 'camundaCloudClusterId' && CONNECTION_ERROR_MESSAGES[failureReason];
+    case ERROR_REASONS.UNSUPPORTED_ENGINE:
+      return [
+        'contactPoint',
+        'camundaCloudClusterId'
+      ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
     case ERROR_REASONS.UNAUTHORIZED:
     case ERROR_REASONS.FORBIDDEN:
       return [
