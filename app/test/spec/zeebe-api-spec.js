@@ -682,6 +682,354 @@ describe('ZeebeAPI', function() {
   });
 
 
+  describe('#getTopology', function() {
+
+    it('should set success=true if topology was retrieved', async () => {
+
+      // given
+      const zeebeAPI = mockZeebeNode();
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'https://google.com'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.getTopology(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+    });
+
+
+    it('should return TopologyResponse if topology was retrieved', async () => {
+
+      // given
+      const topologyResponse = { clusterSize: 3, gatewayVersion: '0.26.0' };
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function() {
+          return {
+            topology: function() {
+              return topologyResponse;
+            }
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'https://google.com'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.getTopology(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.equal(topologyResponse);
+    });
+
+
+    it('should set success=false on failure', async () => {
+
+      // given
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function() {
+          return {
+            topology: function() {
+              throw new Error('TEST ERROR.');
+            }
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'https://google.com'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.getTopology(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.response).to.be.undefined;
+    });
+
+
+    describe('should return correct error reason on failure', function() {
+
+      it('for <endpoint-unavailable>', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('TEST ERROR.', 14);
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'selfHosted'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getTopology(parameters);
+
+        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
+      });
+
+
+      it('for <endpoint-unavailable> (Cloud)', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('TEST ERROR.', 14);
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'camundaCloud'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getTopology(parameters);
+
+        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
+      });
+
+
+      it('for <not-found>', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('ENOTFOUND');
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'selfHosted'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getTopology(parameters);
+
+        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
+      });
+
+
+      it('for <not-found> (OAuth)', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('ENOTFOUND');
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'oauth'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getTopology(parameters);
+
+        expect(result.reason).to.eql('OAUTH_URL');
+      });
+
+
+      it('for <not-found> (Cloud)', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('ENOTFOUND');
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'camundaCloud'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getTopology(parameters);
+
+        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
+      });
+
+
+      it('for <unauthorized>', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('Unauthorized');
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'camundaCloud'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getTopology(parameters);
+
+        expect(result.reason).to.eql('UNAUTHORIZED');
+      });
+
+
+      it('for <forbidden>', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('Forbidden');
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'camundaCloud'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getTopology(parameters);
+
+        expect(result.reason).to.eql('FORBIDDEN');
+      });
+
+
+      it('for <unsupported-protocol>', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('Unsupported protocol');
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'oauth'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getTopology(parameters);
+
+        expect(result.reason).to.eql('OAUTH_URL');
+      });
+
+
+      it('for <unknown>', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('Some random error');
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'oauth'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getTopology(parameters);
+
+        expect(result.reason).to.eql('UNKNOWN');
+      });
+
+
+      it('for no message', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError();
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'oauth'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getTopology(parameters);
+
+        expect(result.reason).to.eql('UNKNOWN');
+      });
+
+    });
+
+  });
+
+
   describe('create client', () => {
 
     it('should create client with correct url', async () => {

@@ -69,6 +69,14 @@ const BPMN_SUFFIX = '.bpmn';
  * @property {string} clientSecret
  */
 
+/**
+ * @typedef {object} TopologyResponse
+ * @property {'brokers'} type
+ * @property {number} clusterSize
+ * @property {number} partitionsCount
+ * @property {number} replicationFactor
+ * @property {string} gatewayVersion
+ */
 
 class ZeebeAPI {
   constructor(fs, ZeebeNode) {
@@ -180,6 +188,34 @@ class ZeebeAPI {
       return {
         success: false,
         response: asSerializedError(err)
+      };
+    }
+  }
+
+  /**
+   * @public
+   * Get topology of given broker/cluster endpoint.
+   *
+   * @param {ZeebeClientParameters} parameters
+   * @returns {{ success: boolean, response?: TopologyResponse, reason?: string }}
+   */
+  async getTopology(parameters) {
+
+    const {
+      endpoint
+    } = parameters;
+
+    const client = this._getZeebeClient(endpoint);
+
+    try {
+      const response = await client.topology();
+      return { success: true, response };
+    } catch (err) {
+      log.error('Failed to connect with config (secrets omitted):', withoutSecrets(parameters), err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
       };
     }
   }
