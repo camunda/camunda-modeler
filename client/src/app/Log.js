@@ -222,7 +222,7 @@ export default class Log extends PureComponent {
         <Fill slot="status-bar__app" group="9_log">
           <button
             className={ classNames('btn', 'toggle-button', { 'btn--active': open }) }
-            title="Toggle log open state"
+            title="Toggle log"
             onClick={ this.toggle }
           >Log</button>
         </Fill>
