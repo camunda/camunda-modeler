@@ -44,6 +44,7 @@ export function EngineProfile(props) {
       <button
         className={ classnames('btn', { 'btn--active': open }) }
         onClick={ () => setOpen(val => !val) } ref={ buttonRef }
+        title={ 'Display engine profile information' }
       >
         {engineProfile}
       </button>

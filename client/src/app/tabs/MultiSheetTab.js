@@ -436,7 +436,11 @@ function SheetSwitch(props) {
 
   return (
     <Fill slot="status-bar__file" group="0_sheet">
-      <button className={ `btn${ isFallback ? ' btn--active' : '' }` } onClick={ switchSheet }>
+      <button
+        className={ `btn${ isFallback ? ' btn--active' : '' }` }
+        onClick={ switchSheet }
+        title={ `Toggle ${fallbackProvider.defaultName}` }
+      >
         { fallbackProvider.defaultName }
       </button>
     </Fill>
