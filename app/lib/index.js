@@ -55,6 +55,10 @@ bootstrapLogging();
 
 const name = app.name = 'Camunda Modeler';
 const version = app.version = require('../package').version;
+const MINIMUM_SIZE = {
+  width: 640,
+  height: 480
+};
 
 bootstrapLog.info(`starting ${ name } v${ version }`);
 
@@ -378,6 +382,8 @@ app.createEditorWindow = function() {
     resizable: true,
     show: false,
     title: 'Camunda Modeler' + getTitleSuffix(app.metadata.version),
+    minWidth: MINIMUM_SIZE.width,
+    minHeight: MINIMUM_SIZE.height,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
