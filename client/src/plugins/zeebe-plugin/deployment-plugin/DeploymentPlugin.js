@@ -37,6 +37,8 @@ import DeploymentPluginValidator from './DeploymentPluginValidator';
 
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 
+const ET_EXECUTION_PLATFORM_NAME = 'zeebe';
+
 const ZEEBE_ENDPOINTS_CONFIG_KEY = 'zeebeEndpoints';
 
 const GRPC_ERROR_CODES = {
@@ -145,11 +147,18 @@ export default class DeploymentPlugin extends PureComponent {
     // (4) deploy
     const deploymentResult = await this.deployWithConfig(savedTab, config);
 
-    // (5) notify interested parties
+    // (5) fetch version deployed as contextual information
+    const getTopologyResult = await this.getTopology(config);
+
+    const { gatewayVersion } = getTopologyResult.response;
+    options.gatewayVersion = gatewayVersion;
+
+    // (6) notify interested parties
     notifyResult({ deploymentResult, endpoint: config.endpoint });
 
     const { response, success } = deploymentResult;
 
+    // (7) Handle success or error
     if (!success) {
       this.onDeploymentError(response, config, options);
     } else {
@@ -171,6 +180,16 @@ export default class DeploymentPlugin extends PureComponent {
       name,
       endpoint
     });
+  }
+
+  getTopology(config) {
+    const {
+      endpoint
+    } = config;
+
+    const zeebeAPI = this.props._getGlobal('zeebeAPI');
+
+    return zeebeAPI.getTopology(endpoint);
   }
 
   saveTab(tab) {
@@ -350,6 +369,10 @@ export default class DeploymentPlugin extends PureComponent {
       isStart
     } = options;
 
+    const {
+      gatewayVersion
+    } = options;
+
     if (!options.skipNotificationOnSuccess) {
       displayNotification({
         type: 'success',
@@ -364,7 +387,11 @@ export default class DeploymentPlugin extends PureComponent {
       payload: {
         deployment: response,
         context: isStart ? 'startInstanceTool' : 'deploymentTool',
-        targetType: endpoint && endpoint.targetType
+        targetType: endpoint && endpoint.targetType,
+        deployedTo: {
+          executionPlatformVersion: gatewayVersion,
+          executionPlatform: ET_EXECUTION_PLATFORM_NAME
+        }
       }
     });
   }
@@ -383,6 +410,14 @@ export default class DeploymentPlugin extends PureComponent {
     const {
       isStart
     } = options;
+
+    const {
+      gatewayVersion
+    } = options;
+
+    // If we retrieved the gatewayVersion, include it in event
+    const deployedTo = (gatewayVersion &&
+      { executionPlatformVersion: gatewayVersion, executionPlatform: ET_EXECUTION_PLATFORM_NAME }) || undefined;
 
     displayNotification({
       type: 'error',
@@ -405,6 +440,7 @@ export default class DeploymentPlugin extends PureComponent {
           code: getGRPCErrorCode(response)
         },
         context: isStart ? 'startInstanceTool' : 'deploymentTool',
+        ...(deployedTo && { deployedTo: deployedTo }),
         targetType: endpoint && endpoint.targetType
       }
     });
