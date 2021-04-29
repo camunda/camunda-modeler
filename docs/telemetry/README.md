@@ -122,8 +122,8 @@ In terms it is set in the diagram, we add the engine profile:
 ### Deployment Event
 The `Deployment Event` is sent in following situations:
 
- - User deploys a BPMN diagram to the Camunda Engine
- - User deploys a DMN diagram to the Camunda Engine
+ - User deploys a BPMN diagram to Camunda Platform or Camunda Cloud
+ - User deploys a DMN diagram to Camunda Platform
 
 The Deployment Event has the following core structure:
 ```json
@@ -131,7 +131,10 @@ The Deployment Event has the following core structure:
   "event": "deployment",
   "diagramType": "[bpmn or dmn]",
   "deployment": {
-    "outcome": "[success or failure]"
+    "outcome": "[success or failure]",
+    "context": "[deploymentTool or startInstanceTool]",
+    "executionPlatform": "[Camunda Cloud or Camunda Platform]",
+    "executionPlatformVersion": "[version deployed to]"
   }
 }
 ```
@@ -143,16 +146,6 @@ In case the diagram deployment was not successful, the error code returned from 
   "deployment": {
     "outcome": "failure",
     "error": "DIAGRAM_PARSE_ERROR"
-  }
-}
-```
-
-Furthermore, we add the component which initiated the deployment:
-
-```json
-{
-  "deployment": {
-    "context": "deploymentTool"
   }
 }
 ```
@@ -201,7 +194,7 @@ In case of BPMN files, we add selected diagram metrics:
 }
 ```
 
-In terms it is set in the diagram, we add the engine profile:
+If it is set in the diagram, we also add target engine profile information:
 
 ```json
 {
