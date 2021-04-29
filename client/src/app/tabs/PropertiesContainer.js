@@ -20,6 +20,8 @@ import css from './PropertiesContainer.less';
 
 import { throttle } from '../../util';
 
+import HandlebarRightIcon from '../../../resources/icons/HandlebarRight.svg';
+
 export const DEFAULT_LAYOUT = {
   open: false,
   width: 250
@@ -148,16 +150,13 @@ class PropertiesContainerWrapped extends PureComponent {
           draggable
           onDragStart={ this.handleResizeStart }
           onDragEnd={ this.handleResizeEnd }
-        >Properties Panel</div>
-        {
-          open &&
-            <div
-              className="resize-handle"
-              draggable
-              onDragStart={ this.handleResizeStart }
-              onDragEnd={ this.handleResizeEnd }
-            ></div>
-        }
+        ><HandlebarRightIcon /></div>
+        <div
+          className="resize-handle"
+          draggable
+          onDragStart={ this.handleResizeStart }
+          onDragEnd={ this.handleResizeEnd }
+        ></div>
         <div className="properties-container" ref={ forwardedRef }></div>
       </div>
     );

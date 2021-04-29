@@ -8,24 +8,21 @@
   &.open {
     border-left: solid 1px var(--color-cccccc);
     box-shadow: 0 0 2px var(--color-000000-opacity-30);
+
+    .toggle {
+      display: none;
+    }
   }
 
   .toggle {
     position: absolute;
-    left: -30px;
+    opacity: .33;
     top: 50%;
-    background: var(--silver-base-97);
-    padding: 7px 10px;
-    transform: rotate(-90deg);
-    white-space: nowrap;
-    font-size: 13px;
-    border: solid 1px var(--color-cccccc);
-    border-bottom: none;
-    border-radius: 2px 2px 0 0;
-    transform-origin: top left;
-    z-index: 10;
-    cursor: default;
-    user-select: none;
+    transform: translateY(-50%);
+    right: 3px;
+    width: 9px;
+    height: 64px;
+    left: -15px;
   }
 
   .resize-handle {
