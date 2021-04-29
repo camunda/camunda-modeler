@@ -44,6 +44,21 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
+  it('should getTopology', async () => {
+
+    // given
+    const getTopologySpy = sinon.spy();
+    const zeebeAPI = new MockZeebeAPI({ getTopologySpy });
+    const { instance } = createDeploymentPlugin({ zeebeAPI });
+
+    // when
+    await instance.deploy();
+
+    // then
+    expect(getTopologySpy).to.have.been.calledOnce;
+  });
+
+
   it('should deploy immediately if configured', async () => {
 
     // given
@@ -247,7 +262,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     // given
     const deploySpy = sinon.spy();
-    const zeebeAPI = new MockZeebeAPI({ deploySpy });
+    const getTopologySpy = sinon.spy();
+    const zeebeAPI = new MockZeebeAPI({ deploySpy, getTopologySpy });
     const storedTabConfiguration = {
       deployment: { name: 'foo' },
       endpointId: 'bar'
@@ -271,6 +287,9 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     // then
     expect(deploySpy).to.have.been.calledOnce;
     expect(deploySpy.args[0][0].endpoint).to.have.property('id', storedEndpoints[0].id);
+
+    expect(getTopologySpy).to.have.been.calledOnce;
+    expect(getTopologySpy.args[0][0]).to.have.property('id', storedEndpoints[0].id);
   });
 
 
@@ -575,6 +594,49 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
+    it('should send deployedTo on deployment.done', async () => {
+
+      // given
+      const deploymentResult = {
+        success: true
+      };
+
+      const getTopologyResult = {
+        success: true,
+        response: {
+          gatewayVersion: '1.33.7'
+        }
+      };
+
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult, getTopologyResult });
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.done',
+              handler: actionSpy
+            };
+
+      const { instance } = createDeploymentPlugin({
+        actionSpy,
+        actionTriggered,
+        zeebeAPI
+      });
+
+      // when
+      await instance.deploy(({
+        isStart: true
+      }));
+
+      const deployedTo = actionSpy.getCall(0).args[0].payload.deployedTo;
+
+      // then
+      expect(actionSpy).to.have.been.calledOnce;
+      expect(deployedTo.executionPlatformVersion).to.eql('1.33.7');
+      expect(deployedTo.executionPlatform).to.eql('zeebe');
+    });
+
+
     it('should trigger deployment.done with start instance context', async () => {
 
       // given
@@ -709,6 +771,91 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       // then
       expect(actionSpy).to.have.been.calledOnce;
       expect(targetType).to.eql('selfHosted');
+    });
+
+
+    it('should send deployedTo on deployment.error given getTopology was successful', async () => {
+
+      // given
+      const deploymentResult = {
+        success: false,
+        response: {}
+      };
+
+      const getTopologyResult = {
+        success: true,
+        response: {
+          gatewayVersion: '1.33.7'
+        }
+      };
+
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult, getTopologyResult });
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.error',
+              handler: actionSpy
+            };
+
+      const { instance } = createDeploymentPlugin({
+        actionSpy,
+        actionTriggered,
+        zeebeAPI
+      });
+
+      // when
+      await instance.deploy(({
+        isStart: true
+      }));
+
+      const deployedTo = actionSpy.getCall(0).args[0].payload.deployedTo;
+
+      // then
+      expect(actionSpy).to.have.been.calledOnce;
+      expect(deployedTo.executionPlatformVersion).to.eql('1.33.7');
+      expect(deployedTo.executionPlatform).to.eql('zeebe');
+    });
+
+
+    it('should not send deployedTo on deployment.error given getTopology was not successful', async () => {
+
+      // given
+      const deploymentResult = {
+        success: false,
+        response: {}
+      };
+
+      const getTopologyResult = {
+        success: false,
+        response: { }
+      };
+
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult, getTopologyResult });
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.error',
+              handler: actionSpy
+            };
+
+      const { instance } = createDeploymentPlugin({
+        actionSpy,
+        actionTriggered,
+        zeebeAPI
+      });
+
+      // when
+      await instance.deploy(({
+        isStart: true
+      }));
+
+      const deployedTo = actionSpy.getCall(0).args[0].payload.deployedTo;
+
+      // then
+      expect(actionSpy).to.have.been.calledOnce;
+      expect(deployedTo).to.not.exist;
     });
 
 
@@ -885,10 +1032,12 @@ function noop() {
 function MockZeebeAPI(options = {}) {
 
   const {
+    connectionCheckSpy,
+    connectionCheckResult,
     deploySpy,
     deploymentResult,
-    connectionCheckSpy,
-    connectionCheckResult
+    getTopologyResult,
+    getTopologySpy
   } = options;
 
   this.deploy = (...args) => {
@@ -912,6 +1061,18 @@ function MockZeebeAPI(options = {}) {
 
     return Promise.resolve(result);
   };
+
+  this.getTopology = (...args) => {
+    if (getTopologySpy) {
+      getTopologySpy(...args);
+    }
+
+    const result = getTopologyResult ||
+      { success: true, response: { gatewayVersion: '0.26.0' } };
+
+    return Promise.resolve(result);
+  };
+
 }
 
 function createTab(overrides = {}) {
