@@ -601,7 +601,7 @@ describe('<DeploymentTool>', () => {
         expect(actionSpy).to.have.been.calledOnce;
 
         const deployedTo = actionSpy.args[0][0].payload.deployedTo;
-        expect(deployedTo.executionPlatform).to.eql('camunda');
+        expect(deployedTo.executionPlatform).to.eql('Camunda Platform');
         expect(deployedTo.executionPlatformVersion).to.eql('7.14.0');
       });
 
@@ -748,7 +748,7 @@ describe('<DeploymentTool>', () => {
         expect(actionSpy).to.have.been.calledOnce;
 
         const deployedTo = actionSpy.args[0][0].payload.deployedTo;
-        expect(deployedTo.executionPlatform).to.eql('camunda');
+        expect(deployedTo.executionPlatform).to.eql('Camunda Platform');
         expect(deployedTo.executionPlatformVersion).to.eql('7.14.0');
       });
 

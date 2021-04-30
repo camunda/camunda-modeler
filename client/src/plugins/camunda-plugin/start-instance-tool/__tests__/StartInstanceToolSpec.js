@@ -386,7 +386,7 @@ describe('<StartInstanceTool>', () => {
         const deployedTo = actionSpy.args[0][0].payload.deployedTo;
         expect(deployedTo).to.exist;
         expect(deployedTo.executionPlatformVersion).to.equal('7.14.0');
-        expect(deployedTo.executionPlatform).to.equal('camunda');
+        expect(deployedTo.executionPlatform).to.equal('Camunda Platform');
       });
 
 
@@ -469,7 +469,7 @@ describe('<StartInstanceTool>', () => {
         const deployedTo = actionSpy.args[0][0].payload.deployedTo;
         expect(deployedTo).to.exist;
         expect(deployedTo.executionPlatformVersion).to.equal('7.15.0');
-        expect(deployedTo.executionPlatform).to.equal('camunda');
+        expect(deployedTo.executionPlatform).to.equal('Camunda Platform');
       });
 
 

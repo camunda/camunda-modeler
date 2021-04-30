@@ -633,7 +633,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       // then
       expect(actionSpy).to.have.been.calledOnce;
       expect(deployedTo.executionPlatformVersion).to.eql('1.33.7');
-      expect(deployedTo.executionPlatform).to.eql('zeebe');
+      expect(deployedTo.executionPlatform).to.eql('Camunda Cloud');
     });
 
 
@@ -814,7 +814,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       // then
       expect(actionSpy).to.have.been.calledOnce;
       expect(deployedTo.executionPlatformVersion).to.eql('1.33.7');
-      expect(deployedTo.executionPlatform).to.eql('zeebe');
+      expect(deployedTo.executionPlatform).to.eql('Camunda Cloud');
     });
 
 
