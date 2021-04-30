@@ -35,7 +35,7 @@ const START_INSTANCE_FAILED = 'Starting process instance failed';
 
 const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
 
-const ET_EXECUTION_PLATFORM_NAME = 'camunda';
+const ET_EXECUTION_PLATFORM_NAME = 'Camunda Platform';
 
 export default class StartInstanceTool extends PureComponent {
 

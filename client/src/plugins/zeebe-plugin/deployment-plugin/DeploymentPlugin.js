@@ -37,7 +37,7 @@ import DeploymentPluginValidator from './DeploymentPluginValidator';
 
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 
-const ET_EXECUTION_PLATFORM_NAME = 'zeebe';
+const ET_EXECUTION_PLATFORM_NAME = 'Camunda Cloud';
 
 const ZEEBE_ENDPOINTS_CONFIG_KEY = 'zeebeEndpoints';
 

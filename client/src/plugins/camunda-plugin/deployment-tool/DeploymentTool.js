@@ -42,7 +42,7 @@ const DEFAULT_ENDPOINT = {
 
 const TOMCAT_DEFAULT_URL = 'http://localhost:8080/engine-rest';
 
-const ET_EXECUTION_PLATFORM_NAME = 'camunda';
+const ET_EXECUTION_PLATFORM_NAME = 'Camunda Platform';
 
 export default class DeploymentTool extends PureComponent {
 
