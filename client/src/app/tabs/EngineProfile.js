@@ -108,10 +108,10 @@ function Description(props) {
     return (
       <Fragment>
         <Overlay.Body>
-          This form is supposed to be used with <em>Camunda Platform</em>.
+          This form is supposed to be used with <em>Camunda Platform</em> or <em>Camunda Cloud</em>.
           The properties panel provides the related implementation features.
-          This form can be attached to a BPMN diagram deployment and is rendered
-          in a connected Camunda Tasklist.
+          This form can be attached to a BPMN diagram or deployment
+          and is rendered in a connected Camunda Tasklist.
         </Overlay.Body>
         <Overlay.Footer>
           <Link href="https://docs.camunda.org/manual/latest/">Learn more</Link>
