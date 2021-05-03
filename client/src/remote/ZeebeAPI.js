@@ -59,10 +59,10 @@ export default class ZeebeAPI {
     });
   }
 
-  getTopology(endpoint) {
+  getGatewayVersion(endpoint) {
     const configuration = getEndpointConfiguration(endpoint);
 
-    return this.backend.send('zeebe:getTopology', { endpoint: configuration });
+    return this.backend.send('zeebe:getGatewayVersion', { endpoint: configuration });
   }
 
 

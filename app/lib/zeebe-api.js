@@ -194,12 +194,12 @@ class ZeebeAPI {
 
   /**
    * @public
-   * Get topology of given broker/cluster endpoint.
+   * Get gateway version of given broker/cluster endpoint.
    *
    * @param {ZeebeClientParameters} parameters
-   * @returns {{ success: boolean, response?: TopologyResponse, reason?: string }}
+   * @returns {{ success: boolean, response?: object, response?.gatewayVersion: string }}
    */
-  async getTopology(parameters) {
+  async getGatewayVersion(parameters) {
 
     const {
       endpoint
@@ -208,8 +208,14 @@ class ZeebeAPI {
     const client = this._getZeebeClient(endpoint);
 
     try {
-      const response = await client.topology();
-      return { success: true, response };
+      const topologyResponse = await client.topology();
+
+      return {
+        success: true,
+        response: {
+          gatewayVersion: topologyResponse.gatewayVersion
+        }
+      };
     } catch (err) {
       log.error('Failed to connect with config (secrets omitted):', withoutSecrets(parameters), err);
 

@@ -210,7 +210,7 @@ describe('<ZeebeAPI>', function() {
   });
 
 
-  describe('#getTopology', () => {
+  describe('#getGatewayVersion', () => {
 
     it('should execute', () => {
 
@@ -226,10 +226,10 @@ describe('<ZeebeAPI>', function() {
       };
 
       // when
-      zeebeAPI.getTopology(endpoint);
+      zeebeAPI.getGatewayVersion(endpoint);
 
       // then
-      expect(sendSpy).to.have.been.calledWith('zeebe:getTopology', {
+      expect(sendSpy).to.have.been.calledWith('zeebe:getGatewayVersion', {
         endpoint: {
           type: targetTypes.SELF_HOSTED,
           url: contactPoint

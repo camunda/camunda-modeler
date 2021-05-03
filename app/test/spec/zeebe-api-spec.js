@@ -682,29 +682,9 @@ describe('ZeebeAPI', function() {
   });
 
 
-  describe('#getTopology', function() {
+  describe('#getGatewayVersion', function() {
 
     it('should set success=true if topology was retrieved', async () => {
-
-      // given
-      const zeebeAPI = mockZeebeNode();
-
-      const parameters = {
-        endpoint: {
-          type: 'selfHosted',
-          url: 'https://google.com'
-        }
-      };
-
-      // when
-      const result = await zeebeAPI.getTopology(parameters);
-
-      // then
-      expect(result.success).to.be.true;
-    });
-
-
-    it('should return TopologyResponse if topology was retrieved', async () => {
 
       // given
       const topologyResponse = { clusterSize: 3, gatewayVersion: '0.26.0' };
@@ -727,11 +707,41 @@ describe('ZeebeAPI', function() {
       };
 
       // when
-      const result = await zeebeAPI.getTopology(parameters);
+      const result = await zeebeAPI.getGatewayVersion(parameters);
 
       // then
       expect(result.success).to.be.true;
-      expect(result.response).to.equal(topologyResponse);
+    });
+
+
+    it('should return gatewayVersion if topology was retrieved', async () => {
+
+      // given
+      const topologyResponse = { clusterSize: 3, gatewayVersion: '0.26.0' };
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function() {
+          return {
+            topology: function() {
+              return topologyResponse;
+            }
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'https://google.com'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.getGatewayVersion(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response.gatewayVersion).to.equal(topologyResponse.gatewayVersion);
     });
 
 
@@ -756,7 +766,7 @@ describe('ZeebeAPI', function() {
       };
 
       // when
-      const result = await zeebeAPI.getTopology(parameters);
+      const result = await zeebeAPI.getGatewayVersion(parameters);
 
       // then
       expect(result.success).to.be.false;
@@ -786,7 +796,7 @@ describe('ZeebeAPI', function() {
         };
 
         // when
-        const result = await zeebeAPI.getTopology(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
       });
@@ -812,7 +822,7 @@ describe('ZeebeAPI', function() {
         };
 
         // when
-        const result = await zeebeAPI.getTopology(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
       });
@@ -838,7 +848,7 @@ describe('ZeebeAPI', function() {
         };
 
         // when
-        const result = await zeebeAPI.getTopology(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
       });
@@ -864,7 +874,7 @@ describe('ZeebeAPI', function() {
         };
 
         // when
-        const result = await zeebeAPI.getTopology(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('OAUTH_URL');
       });
@@ -890,7 +900,7 @@ describe('ZeebeAPI', function() {
         };
 
         // when
-        const result = await zeebeAPI.getTopology(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
       });
@@ -916,7 +926,7 @@ describe('ZeebeAPI', function() {
         };
 
         // when
-        const result = await zeebeAPI.getTopology(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('UNAUTHORIZED');
       });
@@ -942,7 +952,7 @@ describe('ZeebeAPI', function() {
         };
 
         // when
-        const result = await zeebeAPI.getTopology(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('FORBIDDEN');
       });
@@ -968,7 +978,7 @@ describe('ZeebeAPI', function() {
         };
 
         // when
-        const result = await zeebeAPI.getTopology(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('OAUTH_URL');
       });
@@ -994,7 +1004,7 @@ describe('ZeebeAPI', function() {
         };
 
         // when
-        const result = await zeebeAPI.getTopology(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('UNKNOWN');
       });
@@ -1020,7 +1030,7 @@ describe('ZeebeAPI', function() {
         };
 
         // when
-        const result = await zeebeAPI.getTopology(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('UNKNOWN');
       });

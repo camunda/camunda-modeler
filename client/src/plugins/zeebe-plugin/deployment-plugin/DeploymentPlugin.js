@@ -147,11 +147,8 @@ export default class DeploymentPlugin extends PureComponent {
     // (4) deploy
     const deploymentResult = await this.deployWithConfig(savedTab, config);
 
-    // (5) fetch version deployed as contextual information
-    const getTopologyResult = await this.getTopology(config);
-
-    const { gatewayVersion } = getTopologyResult.response;
-    options.gatewayVersion = gatewayVersion;
+    // (5) include version deployed to as contextual information
+    options.gatewayVersion = await this.getGatewayVersion(config);
 
     // (6) notify interested parties
     notifyResult({ deploymentResult, endpoint: config.endpoint });
@@ -182,14 +179,18 @@ export default class DeploymentPlugin extends PureComponent {
     });
   }
 
-  getTopology(config) {
+  async getGatewayVersion(config) {
     const {
       endpoint
     } = config;
 
     const zeebeAPI = this.props._getGlobal('zeebeAPI');
 
-    return zeebeAPI.getTopology(endpoint);
+    const getGatewayVersionResult = await zeebeAPI.getGatewayVersion(endpoint);
+
+    const { gatewayVersion } = getGatewayVersionResult.response;
+
+    return gatewayVersion;
   }
 
   saveTab(tab) {
