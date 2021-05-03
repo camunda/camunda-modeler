@@ -44,18 +44,18 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should getTopology', async () => {
+  it('should getGatewayVersion', async () => {
 
     // given
-    const getTopologySpy = sinon.spy();
-    const zeebeAPI = new MockZeebeAPI({ getTopologySpy });
+    const getGatewayVersionSpy = sinon.spy();
+    const zeebeAPI = new MockZeebeAPI({ getGatewayVersionSpy });
     const { instance } = createDeploymentPlugin({ zeebeAPI });
 
     // when
     await instance.deploy();
 
     // then
-    expect(getTopologySpy).to.have.been.calledOnce;
+    expect(getGatewayVersionSpy).to.have.been.calledOnce;
   });
 
 
@@ -262,8 +262,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     // given
     const deploySpy = sinon.spy();
-    const getTopologySpy = sinon.spy();
-    const zeebeAPI = new MockZeebeAPI({ deploySpy, getTopologySpy });
+    const getGatewayVersionSpy = sinon.spy();
+    const zeebeAPI = new MockZeebeAPI({ deploySpy, getGatewayVersionSpy });
     const storedTabConfiguration = {
       deployment: { name: 'foo' },
       endpointId: 'bar'
@@ -288,8 +288,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     expect(deploySpy).to.have.been.calledOnce;
     expect(deploySpy.args[0][0].endpoint).to.have.property('id', storedEndpoints[0].id);
 
-    expect(getTopologySpy).to.have.been.calledOnce;
-    expect(getTopologySpy.args[0][0]).to.have.property('id', storedEndpoints[0].id);
+    expect(getGatewayVersionSpy).to.have.been.calledOnce;
+    expect(getGatewayVersionSpy.args[0][0]).to.have.property('id', storedEndpoints[0].id);
   });
 
 
@@ -601,14 +601,14 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
         success: true
       };
 
-      const getTopologyResult = {
+      const getGatewayVersionResult = {
         success: true,
         response: {
           gatewayVersion: '1.33.7'
         }
       };
 
-      const zeebeAPI = new MockZeebeAPI({ deploymentResult, getTopologyResult });
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult, getGatewayVersionResult });
 
       const actionSpy = sinon.spy(),
             actionTriggered = {
@@ -774,7 +774,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should send deployedTo on deployment.error given getTopology was successful', async () => {
+    it('should send deployedTo on deployment.error given getGatewayVersion was successful', async () => {
 
       // given
       const deploymentResult = {
@@ -782,14 +782,14 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
         response: {}
       };
 
-      const getTopologyResult = {
+      const getGatewayVersionResult = {
         success: true,
         response: {
           gatewayVersion: '1.33.7'
         }
       };
 
-      const zeebeAPI = new MockZeebeAPI({ deploymentResult, getTopologyResult });
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult, getGatewayVersionResult });
 
       const actionSpy = sinon.spy(),
             actionTriggered = {
@@ -818,7 +818,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should not send deployedTo on deployment.error given getTopology was not successful', async () => {
+    it('should not send deployedTo on deployment.error given getGatewayVersion was not successful', async () => {
 
       // given
       const deploymentResult = {
@@ -826,12 +826,12 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
         response: {}
       };
 
-      const getTopologyResult = {
+      const getGatewayVersionResult = {
         success: false,
         response: { }
       };
 
-      const zeebeAPI = new MockZeebeAPI({ deploymentResult, getTopologyResult });
+      const zeebeAPI = new MockZeebeAPI({ deploymentResult, getGatewayVersionResult });
 
       const actionSpy = sinon.spy(),
             actionTriggered = {
@@ -1036,8 +1036,8 @@ function MockZeebeAPI(options = {}) {
     connectionCheckResult,
     deploySpy,
     deploymentResult,
-    getTopologyResult,
-    getTopologySpy
+    getGatewayVersionResult,
+    getGatewayVersionSpy
   } = options;
 
   this.deploy = (...args) => {
@@ -1062,12 +1062,12 @@ function MockZeebeAPI(options = {}) {
     return Promise.resolve(result);
   };
 
-  this.getTopology = (...args) => {
-    if (getTopologySpy) {
-      getTopologySpy(...args);
+  this.getGatewayVersion = (...args) => {
+    if (getGatewayVersionSpy) {
+      getGatewayVersionSpy(...args);
     }
 
-    const result = getTopologyResult ||
+    const result = getGatewayVersionResult ||
       { success: true, response: { gatewayVersion: '0.26.0' } };
 
     return Promise.resolve(result);

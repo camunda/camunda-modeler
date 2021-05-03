@@ -246,11 +246,11 @@ renderer.on('zeebe:run', async function(options, done) {
   }
 });
 
-renderer.on('zeebe:getTopology', async function(options, done) {
+renderer.on('zeebe:getGatewayVersion', async function(options, done) {
   try {
-    const topology = await zeebeAPI.getTopology(options);
+    const gatewayVersionResponse = await zeebeAPI.getGatewayVersion(options);
 
-    done(null, topology);
+    done(null, gatewayVersionResponse);
   } catch (err) {
     done(err);
   }

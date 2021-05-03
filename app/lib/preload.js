@@ -28,7 +28,7 @@ const allowedEvents = [
   'file:write',
   'zeebe:checkConnection',
   'zeebe:deploy',
-  'zeebe:getTopology',
+  'zeebe:getGatewayVersion',
   'zeebe:run',
   'config:get',
   'config:set',
