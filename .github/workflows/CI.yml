@@ -2,7 +2,10 @@ name: CI
 on: [ push, pull_request ]
 jobs:
   Build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-10.15, windows-latest ]
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout
@@ -22,5 +25,12 @@ jobs:
           ${{ runner.OS }}-
     - name: Install dependencies
       run: npm ci
+    - name: Build with code coverage
+      if: ${{ runner.OS == 'Linux' }}
+      run: COVERAGE=1 npm run all -- --x64 --no-compress
     - name: Build
+      if: ${{ runner.OS != 'Linux' }}
       run: npm run all -- --x64 --no-compress
+    - name: Upload coverage
+      if: ${{ runner.OS == 'Linux' }}
+      run: npx codecov
