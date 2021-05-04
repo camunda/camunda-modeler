@@ -156,18 +156,14 @@ function getPublishOptions(publish, nightly, onDemand, region) {
     return [];
   }
 
-  if (nightly) {
+  if (nightly || onDemand) {
+    const bucket = process.env.AWS_BUCKET;
+
     return [
       `--publish=${ publish ? 'always' : 'never' }`,
       publish && '-c.publish.provider=s3',
-      publish && '-c.publish.bucket=camunda-modeler-nightly'
-    ].filter(f => f);
-  } else if (onDemand) {
-    return [
-      `--publish=${ publish ? 'always' : 'never' }`,
-      publish && '-c.publish.provider=s3',
-      publish && '-c.publish.bucket=camunda-modeler-on-demand',
-      publish && `-c.publish.path=${buildName}`,
+      publish && `-c.publish.bucket=${bucket}`,
+      publish && buildName && `-c.publish.path=${buildName}`,
       publish && region && `-c.publish.region=${region}`
     ].filter(f => f);
   }
