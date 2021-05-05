@@ -140,7 +140,7 @@ describe('<EmptyTab>', function() {
       // then
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('BPMN diagram (Zeebe')
+          wrapper => wrapper.text().startsWith('BPMN diagram (Camunda Cloud')
         ).first().exists()
       ).to.be.true;
     });
@@ -159,7 +159,7 @@ describe('<EmptyTab>', function() {
       // then
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('BPMN diagram (Zeebe')
+          wrapper => wrapper.text().startsWith('BPMN diagram (Camunda Cloud')
         ).first().exists()
       ).to.be.false;
     });

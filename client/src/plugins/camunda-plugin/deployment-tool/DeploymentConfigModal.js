@@ -320,7 +320,7 @@ export default class DeploymentConfigModal extends React.PureComponent {
                           );
                         } }
                         label="REST Endpoint"
-                        hint="Should point to a running Camunda Engine REST API endpoint."
+                        hint="Should point to a running Camunda Platform REST API endpoint."
                       />
 
                       {

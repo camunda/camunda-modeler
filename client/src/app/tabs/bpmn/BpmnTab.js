@@ -18,7 +18,7 @@ const BpmnTab = createTab('BpmnTab', [
   {
     type: 'bpmn',
     editor: BpmnEditor,
-    defaultName: 'Diagram (Camunda Engine)'
+    defaultName: 'Diagram (Camunda Platform)'
   },
   {
     type: 'xml',
