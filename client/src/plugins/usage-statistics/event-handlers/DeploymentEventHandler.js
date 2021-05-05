@@ -27,10 +27,17 @@ const BPMN_TAB_TYPE = 'bpmn';
 const CLOUD_BPMN_TAB_TYPE = 'cloud-bpmn';
 const DMN_TAB_TYPE = 'dmn';
 
+// Tabs for which we send telemetry data on deployment
 const RELEVANT_TAB_TYPES = [
   BPMN_TAB_TYPE,
   CLOUD_BPMN_TAB_TYPE,
   DMN_TAB_TYPE
+];
+
+// Tabs for which we include engineProfile information in the XML
+const ENGINE_PROFILE_TAB_TYPES = [
+  BPMN_TAB_TYPE,
+  CLOUD_BPMN_TAB_TYPE
 ];
 
 const DIAGRAM_BY_TAB_TYPE = {
@@ -109,30 +116,32 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     // (3) generate diagram related metrics, e.g. process variables
     const diagramMetrics = await this.generateMetrics(file, type);
 
-    // (4) retrieve engine profile
-    const engineProfile = await this.getEngineProfile(file, type);
-
+    // (4) construct payload
     let payload = {
       diagramType: getDiagramType(type),
       deployment: {
         outcome,
         context
       },
-      diagramMetrics,
-      engineProfile
+      diagramMetrics
     };
 
-    // (5) retrieve deployment error
+    // (5) (potentially) add engineProfile
+    if (ENGINE_PROFILE_TAB_TYPES.includes(type)) {
+      payload.engineProfile = await this.getEngineProfile(file, type) || { };
+    }
+
+    // (6) (potentially) add deployment error
     if (error) {
       payload.deployment.error = error.code;
     }
 
-    // (6) set target type if available
+    // (7) (potentially) add target type
     if (targetType) {
       payload.deployment.targetType = targetType;
     }
 
-    // (7) include executionPlatform details
+    // (8) (potentially) add executionPlatform details
     if (deployedTo) {
       payload.deployment = {
         ...payload.deployment,
