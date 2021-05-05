@@ -121,7 +121,7 @@ export default class TabsProvider {
         },
         getMeta(file) {
           return {
-            engineProfile: 'Camunda Engine'
+            engineProfile: 'Camunda Platform'
           };
         },
         getHelpMenu() {
@@ -136,14 +136,14 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'BPMN Diagram (Camunda Engine)',
+            label: 'BPMN Diagram (Camunda Platform)',
             accelerator: 'CommandOrControl+T',
             action: 'create-bpmn-diagram'
           }];
         },
         getNewFileButton() {
           return {
-            label: 'Create new BPMN Diagram (Camunda Engine)',
+            label: 'Create new BPMN Diagram (Camunda Platform)',
             action: 'create-bpmn-diagram'
           };
         }
@@ -194,7 +194,7 @@ export default class TabsProvider {
         },
         getMeta(file) {
           return {
-            engineProfile: 'Zeebe Engine'
+            engineProfile: 'Camunda Cloud'
           };
         },
         getHelpMenu() {
@@ -202,13 +202,13 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'BPMN Diagram (Zeebe Engine)',
+            label: 'BPMN Diagram (Camunda Cloud)',
             action: 'create-cloud-bpmn-diagram'
           }];
         },
         getNewFileButton() {
           return {
-            label: 'Create new BPMN Diagram (Zeebe Engine)',
+            label: 'Create new BPMN Diagram (Camunda Cloud)',
             action: 'create-cloud-bpmn-diagram'
           };
         }
@@ -236,7 +236,7 @@ export default class TabsProvider {
         },
         getMeta(file) {
           return {
-            engineProfile: 'Camunda Engine'
+            engineProfile: 'Camunda Platform'
           };
         },
         getHelpMenu() {
@@ -285,7 +285,7 @@ export default class TabsProvider {
         },
         getMeta(file) {
           return {
-            engineProfile: 'Camunda DMN Engine'
+            engineProfile: 'Camunda Platform'
           };
         },
         getHelpMenu() {
@@ -296,13 +296,13 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'DMN Diagram (Camunda DMN Engine)',
+            label: 'DMN Diagram (Camunda Platform)',
             action: 'create-dmn-diagram'
           }];
         },
         getNewFileButton() {
           return {
-            label: 'Create new DMN Diagram (Camunda DMN Engine)',
+            label: 'Create new DMN Diagram (Camunda Platform)',
             action: 'create-dmn-diagram'
           };
         }
@@ -326,7 +326,7 @@ export default class TabsProvider {
         },
         getMeta(file) {
           return {
-            engineProfile: 'Camunda Forms'
+            engineProfile: 'Camunda Platform or Cloud'
           };
         },
         getHelpMenu() {
@@ -334,13 +334,13 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'Form (Camunda Forms)',
+            label: 'Form (Camunda Platform or Cloud)',
             action: 'create-form'
           }];
         },
         getNewFileButton() {
           return {
-            label: 'Create new Form (Camunda Forms)',
+            label: 'Create new Form (Camunda Platform or Cloud)',
             action: 'create-form'
           };
         }

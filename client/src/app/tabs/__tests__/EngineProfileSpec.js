@@ -62,10 +62,10 @@ describe('<EngineProfile>', function() {
   });
 
 
-  it('should work with BPMN (Camunda)', function() {
+  it('should work with BPMN (Platform)', function() {
 
     // given
-    const engineProfile = 'Camunda Engine';
+    const engineProfile = 'Camunda Platform';
     const tab = Object.assign({}, defaultTab, { meta: { engineProfile } });
     const wrapper = renderEngineProfile({ tab });
 
@@ -77,10 +77,10 @@ describe('<EngineProfile>', function() {
   });
 
 
-  it('should work with BPMN (Zeebe) tab', function() {
+  it('should work with BPMN (Cloud) tab', function() {
 
     // given
-    const engineProfile = 'Zeebe Engine';
+    const engineProfile = 'Camunda Cloud';
     const tab = Object.assign({}, defaultTab, { meta: { engineProfile } });
     const wrapper = renderEngineProfile({ tab });
 
@@ -95,7 +95,7 @@ describe('<EngineProfile>', function() {
   it('should work with DMN tab', function() {
 
     // given
-    const engineProfile = 'Camunda DMN Engine';
+    const engineProfile = 'Camunda Platform';
     const tab = Object.assign({}, defaultTab, { meta: { engineProfile } });
     const wrapper = renderEngineProfile({ tab });
 
@@ -110,7 +110,7 @@ describe('<EngineProfile>', function() {
   it('should work with Forms tab', function() {
 
     // given
-    const engineProfile = 'Camunda Forms';
+    const engineProfile = 'Camunda Platform or Cloud';
     const tab = Object.assign({}, defaultTab, { meta: { engineProfile } });
     const wrapper = renderEngineProfile({ tab });
 

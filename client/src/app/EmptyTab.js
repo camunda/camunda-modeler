@@ -37,23 +37,23 @@ export default class EmptyTab extends PureComponent {
       <Tab className={ css.EmptyTab }>
         <div className="create-buttons">
           <p>Create a new file:</p>
-          <button className="btn btn-secondary" onClick={ () => onAction('create-bpmn-diagram') }>BPMN diagram (Camunda Engine)</button>
+          <button className="btn btn-secondary" onClick={ () => onAction('create-bpmn-diagram') }>BPMN diagram (Camunda Platform)</button>
 
           {
             !Flags.get(DISABLE_ZEEBE) && (
-              <button className="btn btn-secondary" onClick={ () => onAction('create-cloud-bpmn-diagram') }>BPMN diagram (Zeebe Engine)</button>
+              <button className="btn btn-secondary" onClick={ () => onAction('create-cloud-bpmn-diagram') }>BPMN diagram (Camunda Cloud)</button>
             )
           }
 
           {
             !Flags.get(DISABLE_DMN) && (
-              <button className="btn btn-secondary" onClick={ () => onAction('create-dmn-diagram') }>DMN diagram (Camunda DMN Engine)</button>
+              <button className="btn btn-secondary" onClick={ () => onAction('create-dmn-diagram') }>DMN diagram (Camunda Platform)</button>
             )
           }
 
           {
             !Flags.get(DISABLE_FORM) && (
-              <button className="btn btn-secondary" onClick={ () => onAction('create-form') }>Form (Camunda Forms)</button>
+              <button className="btn btn-secondary" onClick={ () => onAction('create-form') }>Form (Camunda Platform or Cloud)</button>
             )
           }
         </div>

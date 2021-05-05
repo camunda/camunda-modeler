@@ -65,46 +65,33 @@ function EngineProfileOverlay(props) {
 function Description(props) {
   const { engineProfile } = props;
 
-  if (engineProfile === 'Camunda Engine') {
+  if (engineProfile === 'Camunda Platform') {
     return (
       <Fragment>
         <Overlay.Body>
           This diagram is supposed to be executed on <em>Camunda Platform</em>.
           The properties panel provides the related implementation features.
-          This diagram can be deployed to and started in a connected <em>Camunda Engine</em>.
+          This diagram can be deployed to and started in a connected <em>Camunda Platform</em> system.
         </Overlay.Body>
         <Overlay.Footer>
           <Link href="https://docs.camunda.org/manual/latest/">Learn more</Link>
         </Overlay.Footer>
       </Fragment>
     );
-  } else if (engineProfile === 'Zeebe Engine') {
+  } else if (engineProfile === 'Camunda Cloud') {
     return (
       <Fragment>
         <Overlay.Body>
           This diagram is supposed to be executed on <em>Camunda Cloud</em>.
           The properties panel provides the related implementation features.
-          This diagram can be deployed to and started in a connected <em>Zeebe Engine</em>.
+          This diagram can be deployed to and started in a connected <em>Camunda Cloud</em> system.
         </Overlay.Body>
         <Overlay.Footer>
           <Link href="https://docs.camunda.io/">Learn more</Link>
         </Overlay.Footer>
       </Fragment>
     );
-  } else if (engineProfile === 'Camunda DMN Engine') {
-    return (
-      <Fragment>
-        <Overlay.Body>
-          This diagram is supposed to be executed on <em>Camunda Platform</em>.
-          The properties panel provides the related implementation features.
-          This diagram can be deployed to a connected <em>Camunda DMN Engine</em>.
-        </Overlay.Body>
-        <Overlay.Footer>
-          <Link href="https://docs.camunda.org/manual/latest/">Learn more</Link>
-        </Overlay.Footer>
-      </Fragment>
-    );
-  } else if (engineProfile === 'Camunda Forms') {
+  } else if (engineProfile === 'Camunda Platform or Cloud') {
     return (
       <Fragment>
         <Overlay.Body>

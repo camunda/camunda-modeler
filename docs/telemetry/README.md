@@ -139,7 +139,7 @@ The Deployment Event has the following core structure:
 }
 ```
 
-In case the diagram deployment was not successful, the error code returned from the Camunda Engine will be added to the payload:
+In case the diagram deployment was not successful, the error code returned from the Camunda Platform will be added to the payload:
 
 ```json
 {

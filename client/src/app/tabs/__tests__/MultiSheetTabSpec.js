@@ -531,7 +531,7 @@ describe('<MultiSheetTab>', function() {
     it('should display engine profile', function() {
 
       // given
-      const engineProfile = 'Camunda Engine';
+      const engineProfile = 'Camunda Platform';
       const tab = Object.assign({}, defaultTab, { meta: { engineProfile } });
 
       // when
