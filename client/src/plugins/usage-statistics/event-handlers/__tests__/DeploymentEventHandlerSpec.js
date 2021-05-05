@@ -14,6 +14,8 @@ import DeploymentEventHandler from '../DeploymentEventHandler';
 
 import engineProfileXML from './fixtures/engine-profile.bpmn';
 
+import emptyDMN from './fixtures/empty.dmn';
+
 import emptyXML from './fixtures/empty.bpmn';
 
 import processVariablesXML from './fixtures/process-variables.bpmn';
@@ -180,7 +182,6 @@ describe('<DeploymentEventHandler>', () => {
       event: 'deployment',
       diagramType: 'dmn',
       diagramMetrics: {},
-      engineProfile: {},
       deployment: {
         outcome: SUCCESS_STATUS,
         context: 'foo',
@@ -906,6 +907,29 @@ describe('<DeploymentEventHandler>', () => {
       expect(engineProfile).to.eql({
         executionPlatform: 'Camunda Cloud'
       });
+
+    });
+
+
+    it('should not send engine profile (dmn)', async () => {
+
+      // given
+      const tab = createTab({
+        type: 'dmn',
+        file: {
+          contents: emptyDMN
+        }
+      });
+
+      const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+      // when
+      await handleDeploymentDone({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.be.undefined;
 
     });
 

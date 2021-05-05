@@ -19,7 +19,7 @@ import ModelerModdle from 'modeler-moddle/resources/modeler';
 import { selfAndAllFlowElements } from './elementsUtil';
 
 
-export async function getDefinitions(xml) {
+export async function getBpmnDefinitions(xml) {
   const moddle = new BpmnModdle({
     camunda: CamundaBpmnModdle,
     zeebe: ZeebeBpmnModdle,
@@ -32,7 +32,7 @@ export async function getDefinitions(xml) {
 }
 
 export async function getEngineProfile(xml) {
-  const definition = await getDefinitions(xml);
+  const definition = await getBpmnDefinitions(xml);
 
   return {
     executionPlatform: definition.get('executionPlatform'),
@@ -50,7 +50,7 @@ export async function getEngineProfile(xml) {
  * @return {Array<Object>} a list of elements matching the type
  */
 export async function getAllElementsByType(xml, type) {
-  const definitions = await getDefinitions(xml);
+  const definitions = await getBpmnDefinitions(xml);
 
   const processes = definitions.rootElements.filter((e) => is(e, 'bpmn:Process'));
   const elements = [];
