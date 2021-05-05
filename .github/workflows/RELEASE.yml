@@ -1,0 +1,95 @@
+name: RELEASE
+on:
+  push:
+    tags:
+      - 'v[0-9]'
+jobs:
+  Pre_release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create GitHub release
+        run: |
+          gh config set prompt disabled
+          TAG=$(git describe --tags --abbrev=0)
+          gh release create $TAG --draft --title $TAG
+
+  Build_release:
+    needs: Pre_release
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-10.15, windows-latest ]
+    runs-on: ${{ matrix.os }}
+
+    # Required to upload release artifacts to GitHub
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - name: Cache Node.js modules
+      uses: actions/cache@v2
+      with:
+        # npm cache files are stored in `~/.npm` on Linux/macOS
+        path: ~/.npm
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-
+          ${{ runner.OS }}-
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build release (Linux)
+      if: ${{ runner.OS == 'Linux' }}
+      env:
+        CSC_LINK: "${{ secrets.CSC_LINK }}"
+        CSC_KEY_PASSWORD: "${{ secrets.CSC_KEY_PASSWORD }}"
+        ET_ENDPOINT: "${{ secrets.ET_ENDPOINT }}"
+        SENTRY_AUTH_TOKEN: "${{ secrets.SENTRY_AUTH_TOKEN }}"
+        SENTRY_DSN: "${{ secrets.SENTRY_DSN }}"
+        SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
+        SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
+        UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
+      run: npm run build -- --linux --publish
+    - name: Build release (MacOS)
+      if: ${{ runner.os == 'macOS' }}
+      env:
+        APPLE_DEVELOPER_ID: "${{ secrets.APPLE_DEVELOPER_ID }}"
+        APPLE_DEVELOPER_ID_PASSWORD: "${{ secrets.APPLE_DEVELOPER_ID_PASSWORD }}"
+        CSC_LINK: "${{ secrets.CSC_LINK }}"
+        CSC_KEY_PASSWORD: "${{ secrets.CSC_KEY_PASSWORD }}"
+        ET_ENDPOINT: "${{ secrets.ET_ENDPOINT }}"
+        SENTRY_AUTH_TOKEN: "${{ secrets.SENTRY_AUTH_TOKEN }}"
+        SENTRY_DSN: "${{ secrets.SENTRY_DSN }}"
+        SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
+        SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
+        UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
+      run: npm run build -- --mac --publish
+    - name: Build release (Windows)
+      if: ${{ runner.os == 'Windows' }}
+      env:
+        CSC_LINK: "${{ secrets.WIN_CSC_LINK }}"
+        CSC_KEY_PASSWORD: "${{ secrets.WIN_CSC_KEY_PASSWORD }}"
+        ET_ENDPOINT: "${{ secrets.ET_ENDPOINT }}"
+        SENTRY_AUTH_TOKEN: "${{ secrets.SENTRY_AUTH_TOKEN }}"
+        SENTRY_DSN: "${{ secrets.SENTRY_DSN }}"
+        SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
+        SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
+        UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
+      run: npm run build -- --win --publish
+
+    - name: Send license book summary
+      if: ${{ runner.os == 'Linux' }}
+      env:
+        EMAIL_HOST: "${{ secrets.EMAIL_HOST }}"
+        EMAIL_PASSWORD: "${{ secrets.EMAIL_PASSWORD }}"
+        EMAIL_REPLY_TO: "${{ secrets.EMAIL_REPLY_TO }}"
+        EMAIL_TO: "${{ secrets.EMAIL_TO }}"
+        EMAIL_USERNAME: "${{ secrets.EMAIL_USERNAME }}"
+      run: npm run send-license-book-summary
