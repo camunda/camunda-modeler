@@ -4,7 +4,28 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ## Unreleased
 
-___Note:__ Yet to be released changes appear here._
+___Note:__ Yet to be released changes appear here.
+
+## 4.8.0
+
+### General
+
+* `FEAT`: enable Camunda Cloud BPMN tab ([#2210](https://github.com/camunda/camunda-modeler/issues/2210))
+* `FEAT`: enable telemetry for engine version of deployments ([#2219](https://github.com/camunda/camunda-modeler/issues/2219))
+* `FEAT`: enable telemetry for usage of BPMN service tasks ([#2218](https://github.com/camunda/camunda-modeler/issues/2218))
+* `FEAT`: show error notification if update check triggered by user fails ([#2086](https://github.com/camunda/camunda-modeler/issues/2086))
+* `FIX`: set minimum window size ([#2235](https://github.com/camunda/camunda-modeler/pull/2235))
+* `FIX`: fix deployments of DMN to Camunda Platform ([#2241](https://github.com/camunda/camunda-modeler/issues/2241))
+* `CHORE`: update to electron@12 ([#1926](https://github.com/camunda/camunda-modeler/issues/1926))
+* `CHORE`: update to zeebe-node@1.0.0 ([#2169](https://github.com/camunda/camunda-modeler/issues/2169))
+
+### BPMN
+
+* `FEAT`: automatically scroll canvas when creating new elements ([#1249](https://github.com/camunda/camunda-modeler/issues/1249))
+* `FIX`: copy root element references on replace ([#2185](https://github.com/camunda/camunda-modeler/issues/2185))
+* `FIX`: do not override existing documentation ([#1682](https://github.com/camunda/camunda-modeler/issues/1682))
+* `FIX`: reconnect message flows when collapsing participant ([#1651](https://github.com/camunda/camunda-modeler/issues/1651))
+* `FIX`: don't change namespace prefixes of the xml namespace ([#2214](https://github.com/camunda/camunda-modeler/issues/2214))
 
 ## 4.7.0
 
