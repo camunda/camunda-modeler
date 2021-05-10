@@ -4,7 +4,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ## Unreleased
 
-___Note:__ Yet to be released changes appear here.
+___Note:__ Yet to be released changes appear here._
 
 ## 4.8.0
 
