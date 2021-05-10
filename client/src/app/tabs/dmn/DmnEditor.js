@@ -66,6 +66,8 @@ import { findUsages as findNamespaceUsages } from '../util/namespace';
 
 import { migrateDiagram } from '@bpmn-io/dmn-migrate';
 
+import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesContainer';
+
 import { DEFAULT_LAYOUT as overviewDefaultLayout } from './OverviewContainer';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
@@ -595,11 +597,13 @@ export class DmnEditor extends CachedComponent {
 
   triggerAction = (action, context) => {
     const {
-      layout: {
-        propertiesPanel: propertiesPanelLayout
-      },
+      layout = {},
       onLayoutChanged: handleLayoutChange
     } = this.props;
+
+    const {
+      propertiesPanel: propertiesPanelLayout = {}
+    } = layout;
 
     const modeler = this.getModeler();
 
@@ -610,6 +614,7 @@ export class DmnEditor extends CachedComponent {
     if (action === 'toggleProperties') {
       const newLayout = {
         propertiesPanel: {
+          ...propertiesPanelDefaultLayout,
           ...propertiesPanelLayout,
           open: !propertiesPanelLayout.open
         }
@@ -621,7 +626,7 @@ export class DmnEditor extends CachedComponent {
     if (action === 'resetProperties') {
       const newLayout = {
         propertiesPanel: {
-          width: 250,
+          ...propertiesPanelDefaultLayout,
           open: true
         }
       };

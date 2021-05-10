@@ -104,10 +104,13 @@ class PropertiesContainerWrapped extends PureComponent {
   handleToggle = () => {
     const { layout } = this.props || {};
 
-    const propertiesPanel = layout.propertiesPanel || DEFAULT_LAYOUT;
+    const {
+      propertiesPanel = {}
+    } = layout;
 
     this.changeLayout({
       propertiesPanel: {
+        ...DEFAULT_LAYOUT,
         ...propertiesPanel,
         open: !propertiesPanel.open
       }
