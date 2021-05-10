@@ -182,6 +182,36 @@ describe('<PropertiesContainer>', function() {
     wrapper.unmount();
   });
 
+
+  it('should have default width', function() {
+
+    // given
+    const layout = {
+      propertiesPanel: {
+        open: false
+      }
+    };
+
+    const onLayoutChangedSpy = spy();
+
+    const {
+      instance,
+      wrapper
+    } = createPropertiesContainer({
+      layout,
+      onLayoutChanged: onLayoutChangedSpy
+    });
+
+    // when
+    instance.handleToggle();
+
+    // then
+    expect(onLayoutChangedSpy).to.be.calledWith({ propertiesPanel: { open: true, width: 250 } });
+
+    // clean
+    wrapper.unmount();
+  });
+
 });
 
 

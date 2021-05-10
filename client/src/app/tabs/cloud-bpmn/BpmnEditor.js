@@ -52,6 +52,8 @@ import generateImage from '../../util/generateImage';
 
 import Metadata from '../../../util/Metadata';
 
+import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesContainer';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 const COLORS = [{
@@ -444,7 +446,14 @@ export class BpmnEditor extends CachedComponent {
   }
 
   triggerAction = (action, context) => {
-    const { propertiesPanel: propertiesPanelLayout } = this.props.layout;
+    const {
+      layout = {}
+    } = this.props;
+
+    const {
+      propertiesPanel: propertiesPanelLayout = {}
+    } = layout;
+
     const modeler = this.getModeler();
 
     if (action === 'resize') {
@@ -454,6 +463,7 @@ export class BpmnEditor extends CachedComponent {
     if (action === 'toggleProperties') {
       const newLayout = {
         propertiesPanel: {
+          ...propertiesPanelDefaultLayout,
           ...propertiesPanelLayout,
           open: !propertiesPanelLayout.open
         }
@@ -465,7 +475,7 @@ export class BpmnEditor extends CachedComponent {
     if (action === 'resetProperties') {
       const newLayout = {
         propertiesPanel: {
-          width: 250,
+          ...propertiesPanelDefaultLayout,
           open: true
         }
       };
