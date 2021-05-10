@@ -16,6 +16,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: show error notification if update check triggered by user fails ([#2086](https://github.com/camunda/camunda-modeler/issues/2086))
 * `FIX`: set minimum window size ([#2235](https://github.com/camunda/camunda-modeler/pull/2235))
 * `FIX`: fix deployments of DMN to Camunda Platform ([#2241](https://github.com/camunda/camunda-modeler/issues/2241))
+* `FIX`: fix error that appears when starting process instance ([#2249](https://github.com/camunda/camunda-modeler/issues/2249))
 * `CHORE`: update to electron@12 ([#1926](https://github.com/camunda/camunda-modeler/issues/1926))
 * `CHORE`: update to zeebe-node@1.0.0 ([#2169](https://github.com/camunda/camunda-modeler/issues/2169))
 
