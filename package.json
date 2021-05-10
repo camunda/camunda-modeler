@@ -1,6 +1,7 @@
 {
   "name": "camunda-modeler-builder",
   "version": "0.0.0",
+  "private": true,
   "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
