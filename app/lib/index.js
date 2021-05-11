@@ -125,7 +125,7 @@ renderer.onSync('app:get-plugins', () => {
 });
 
 renderer.onSync('app:get-flags', () => {
-  return flags;
+  return flags.getAll();
 });
 
 renderer.onSync('app:get-metadata', () => {
