@@ -134,3 +134,5 @@ Based on the [test diagram](./test.bpmn.png):
 * [ ] OS specific menus are being displayed
 * [ ] menu bar (icons, correctly disabled + enabled)
 * [ ] correct modeler version displayed in about menu
+* [ ] [flags](https://github.com/camunda/camunda-modeler/tree/develop/docs/flags) work (e.g., start with `$ ./camunda-modeler --no-disable-cmmn` or provide flag in [`flags.json` file](https://github.com/camunda/camunda-modeler/tree/develop/docs/flags#configure-in-flagsjson) => CMMN diagrams can be created)
+  * Note: On MacOS, you need to `$ cd Camunda\ Modeler.app/Contents/MacOS` first.
