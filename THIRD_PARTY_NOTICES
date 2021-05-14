@@ -17,13 +17,13 @@ This project incorporates components from the projects listed below. The origina
 10.   @protobufjs/path@1.1.2 (https://github.com/dcodeIO/protobuf.js)
 11.   @protobufjs/pool@1.1.0 (https://github.com/dcodeIO/protobuf.js)
 12.   @protobufjs/utf8@1.1.0 (https://github.com/dcodeIO/protobuf.js)
-13.   @sentry/core@5.30.0 (https://github.com/getsentry/sentry-javascript)
-14.   @sentry/hub@5.30.0 (https://github.com/getsentry/sentry-javascript)
-15.   @sentry/minimal@5.30.0 (https://github.com/getsentry/sentry-javascript)
-16.   @sentry/node@5.30.0 (https://github.com/getsentry/sentry-javascript)
-17.   @sentry/tracing@5.30.0 (https://github.com/getsentry/sentry-javascript)
-18.   @sentry/types@5.30.0 (https://github.com/getsentry/sentry-javascript)
-19.   @sentry/utils@5.30.0 (https://github.com/getsentry/sentry-javascript)
+13.   @sentry/core@6.3.6 (https://github.com/getsentry/sentry-javascript)
+14.   @sentry/hub@6.3.6 (https://github.com/getsentry/sentry-javascript)
+15.   @sentry/minimal@6.3.6 (https://github.com/getsentry/sentry-javascript)
+16.   @sentry/node@6.3.6 (https://github.com/getsentry/sentry-javascript)
+17.   @sentry/tracing@6.3.6 (https://github.com/getsentry/sentry-javascript)
+18.   @sentry/types@6.3.6 (https://github.com/getsentry/sentry-javascript)
+19.   @sentry/utils@6.3.6 (https://github.com/getsentry/sentry-javascript)
 20.   @sindresorhus/is@0.14.0 (https://github.com/sindresorhus/is)
 21.   @szmarczak/http-timer@1.1.2 (https://github.com/szmarczak/http-timer)
 22.   @types/bytebuffer@5.0.42 (https://github.com/DefinitelyTyped/DefinitelyTyped)
@@ -230,93 +230,88 @@ This project incorporates components from the projects listed below. The origina
 223.  @bpmn-io/form-js-viewer@0.0.12 (https://github.com/bpmn-io/form-js)
 224.  @bpmn-io/form-js@0.0.12 (https://github.com/bpmn-io/form-js)
 225.  @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
-226.  @sentry/browser@5.15.5 (https://github.com/getsentry/sentry-javascript)
-227.  @sentry/core@5.15.5 (https://github.com/getsentry/sentry-javascript)
-228.  @sentry/hub@5.15.5 (https://github.com/getsentry/sentry-javascript)
-229.  @sentry/minimal@5.15.5 (https://github.com/getsentry/sentry-javascript)
-230.  @sentry/types@5.15.5 (https://github.com/getsentry/sentry-javascript)
-231.  @sentry/utils@5.15.5 (https://github.com/getsentry/sentry-javascript)
-232.  @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
-233.  array-move@3.0.1 (https://github.com/sindresorhus/array-move)
-234.  atoa@1.0.0 (https://github.com/bevacqua/atoa)
-235.  bpmn-js-disable-collapsed-subprocess@0.1.3 (https://github.com/bpmn-io/bpmn-js-disable-collapsed-subprocess)
-236.  bpmn-js-executable-fix@0.1.3 (https://github.com/bpmn-io/bpmn-js-executable-fix)
-237.  bpmn-js-properties-panel@0.43.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
-238.  bpmn-js-signavio-compat@1.2.3 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
-239.  bpmn-js@8.5.0 (https://github.com/bpmn-io/bpmn-js)
-240.  bpmn-moddle@7.0.5 (https://github.com/bpmn-io/bpmn-moddle)
-241.  camunda-bpmn-js@0.7.0 (https://github.com/camunda/camunda-bpmn-js)
-242.  camunda-bpmn-moddle@5.1.2 (https://github.com/camunda/camunda-bpmn-moddle)
-243.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
-244.  camunda-dmn-moddle@1.1.0 (https://github.com/camunda/camunda-dmn-moddle)
-245.  canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
-246.  classnames@2.2.6 (https://github.com/JedWatson/classnames)
-247.  cmmn-js-properties-panel@0.8.3 (https://github.com/bpmn-io/cmmn-js-properties-panel)
-248.  cmmn-js@0.20.0 (https://github.com/bpmn-io/cmmn-js)
-249.  cmmn-moddle@5.0.0 (https://github.com/bpmn-io/cmmn-moddle)
-250.  codemirror@5.46.0 (https://github.com/codemirror/CodeMirror)
-251.  contra@1.9.4 (https://github.com/bevacqua/contra)
-252.  crossvent@1.5.5 (https://github.com/bevacqua/crossvent)
-253.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape)
-254.  custom-event@1.0.1 (https://github.com/webmodules/custom-event)
-255.  debug@4.1.1 (https://github.com/visionmedia/debug)
-256.  deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
-257.  diagram-js-direct-editing@1.6.2 (https://github.com/bpmn-io/diagram-js-direct-editing)
-258.  diagram-js-minimap@2.0.4 (https://github.com/bpmn-io/diagram-js-minimap)
-259.  diagram-js-origin@1.3.2 (https://github.com/bpmn-io/diagram-js-origin)
-260.  diagram-js@7.3.0 (https://github.com/bpmn-io/diagram-js)
-261.  didi@5.2.1 (https://github.com/nikku/didi)
-262.  dmn-js-decision-table@10.1.0 (https://github.com/bpmn-io/dmn-js)
-263.  dmn-js-drd@10.2.0 (https://github.com/bpmn-io/dmn-js)
-264.  dmn-js-literal-expression@10.1.0 (https://github.com/bpmn-io/dmn-js)
-265.  dmn-js-properties-panel@0.6.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
-266.  dmn-js-shared@10.1.0 (https://github.com/bpmn-io/dmn-js)
-267.  dmn-js@10.2.0 (https://github.com/bpmn-io/dmn-js)
-268.  dmn-moddle@9.1.0 (https://github.com/bpmn-io/dmn-moddle)
-269.  drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
-270.  dragula@3.7.3 (https://github.com/bevacqua/dragula)
-271.  escape-html@1.0.3 (https://github.com/component/escape-html)
-272.  events@3.0.0 (https://github.com/Gozala/events)
-273.  formik@2.0.4 (https://github.com/jaredpalmer/formik)
-274.  hammerjs@2.0.8 (https://github.com/hammerjs/hammer.js)
-275.  hat@0.0.3 (https://github.com/substack/node-hat)
-276.  hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
-277.  inferno@5.6.2 (https://github.com/infernojs/inferno)
-278.  lodash-es@4.17.15 (https://github.com/lodash/lodash)
-279.  lodash@4.17.20 (https://github.com/lodash/lodash)
-280.  min-dash@3.7.0 (https://github.com/bpmn-io/min-dash)
-281.  min-dom@3.1.3 (https://github.com/bpmn-io/min-dom)
-282.  mitt@1.1.3 (https://github.com/developit/mitt)
-283.  moddle-xml@9.0.5 (https://github.com/bpmn-io/moddle-xml)
-284.  moddle@5.0.2 (https://github.com/bpmn-io/moddle)
-285.  modeler-moddle@0.1.0 (https://github.com/camunda/modeler-moddle)
-286.  ms@2.1.1 (https://github.com/zeit/ms)
-287.  object-refs@0.3.0 (https://github.com/bpmn-io/object-refs)
-288.  p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
-289.  p-reduce@2.1.0 (https://github.com/sindresorhus/p-reduce)
-290.  p-series@2.1.0 (https://github.com/sindresorhus/p-series)
-291.  path-intersection@2.2.1 (https://github.com/bpmn-io/path-intersection)
-292.  preact@10.5.13 (https://github.com/preactjs/preact)
-293.  react-dom@16.8.6 (https://github.com/facebook/react)
-294.  react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
-295.  react-is@16.8.6 (https://github.com/facebook/react)
-296.  react@16.8.6 (https://github.com/facebook/react)
-297.  rgbcolor@0.0.4 (https://github.com/yetzt/node-rgbcolor)
-298.  saxen@8.1.2 (https://github.com/nikku/saxen)
-299.  scheduler@0.13.6 (https://github.com/facebook/react)
-300.  scroll-tabs@1.0.1 (https://github.com/bpmn-io/scroll-tabs)
-301.  selection-ranges@3.0.3 (https://github.com/nikku/selection-ranges)
-302.  selection-update@0.1.2 (https://github.com/nikku/selection-update)
-303.  semver@6.3.0 (https://github.com/npm/node-semver)
-304.  sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
-305.  stackblur@1.0.0
-306.  table-js@7.1.0 (https://github.com/bpmn-io/table-js)
-307.  ticky@1.0.1 (https://github.com/bevacqua/ticky)
-308.  tiny-svg@2.2.2 (https://github.com/bpmn-io/tiny-svg)
-309.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
-310.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
-311.  xmldom@0.1.27 (https://github.com/jindw/xmldom)
-312.  zeebe-bpmn-moddle@0.6.0 (https://github.com/zeebe-io/zeebe-bpmn-moddle)
+226.  @sentry/browser@6.3.6 (https://github.com/getsentry/sentry-javascript)
+227.  @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
+228.  array-move@3.0.1 (https://github.com/sindresorhus/array-move)
+229.  atoa@1.0.0 (https://github.com/bevacqua/atoa)
+230.  bpmn-js-disable-collapsed-subprocess@0.1.3 (https://github.com/bpmn-io/bpmn-js-disable-collapsed-subprocess)
+231.  bpmn-js-executable-fix@0.1.3 (https://github.com/bpmn-io/bpmn-js-executable-fix)
+232.  bpmn-js-properties-panel@0.43.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+233.  bpmn-js-signavio-compat@1.2.3 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
+234.  bpmn-js@8.5.0 (https://github.com/bpmn-io/bpmn-js)
+235.  bpmn-moddle@7.0.5 (https://github.com/bpmn-io/bpmn-moddle)
+236.  camunda-bpmn-js@0.7.0 (https://github.com/camunda/camunda-bpmn-js)
+237.  camunda-bpmn-moddle@5.1.2 (https://github.com/camunda/camunda-bpmn-moddle)
+238.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
+239.  camunda-dmn-moddle@1.1.0 (https://github.com/camunda/camunda-dmn-moddle)
+240.  canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
+241.  classnames@2.2.6 (https://github.com/JedWatson/classnames)
+242.  cmmn-js-properties-panel@0.8.3 (https://github.com/bpmn-io/cmmn-js-properties-panel)
+243.  cmmn-js@0.20.0 (https://github.com/bpmn-io/cmmn-js)
+244.  cmmn-moddle@5.0.0 (https://github.com/bpmn-io/cmmn-moddle)
+245.  codemirror@5.46.0 (https://github.com/codemirror/CodeMirror)
+246.  contra@1.9.4 (https://github.com/bevacqua/contra)
+247.  crossvent@1.5.5 (https://github.com/bevacqua/crossvent)
+248.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape)
+249.  custom-event@1.0.1 (https://github.com/webmodules/custom-event)
+250.  debug@4.1.1 (https://github.com/visionmedia/debug)
+251.  deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
+252.  diagram-js-direct-editing@1.6.2 (https://github.com/bpmn-io/diagram-js-direct-editing)
+253.  diagram-js-minimap@2.0.4 (https://github.com/bpmn-io/diagram-js-minimap)
+254.  diagram-js-origin@1.3.2 (https://github.com/bpmn-io/diagram-js-origin)
+255.  diagram-js@7.3.0 (https://github.com/bpmn-io/diagram-js)
+256.  didi@5.2.1 (https://github.com/nikku/didi)
+257.  dmn-js-decision-table@10.1.0 (https://github.com/bpmn-io/dmn-js)
+258.  dmn-js-drd@10.2.0 (https://github.com/bpmn-io/dmn-js)
+259.  dmn-js-literal-expression@10.1.0 (https://github.com/bpmn-io/dmn-js)
+260.  dmn-js-properties-panel@0.6.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
+261.  dmn-js-shared@10.1.0 (https://github.com/bpmn-io/dmn-js)
+262.  dmn-js@10.2.0 (https://github.com/bpmn-io/dmn-js)
+263.  dmn-moddle@9.1.0 (https://github.com/bpmn-io/dmn-moddle)
+264.  drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
+265.  dragula@3.7.3 (https://github.com/bevacqua/dragula)
+266.  escape-html@1.0.3 (https://github.com/component/escape-html)
+267.  events@3.0.0 (https://github.com/Gozala/events)
+268.  formik@2.0.4 (https://github.com/jaredpalmer/formik)
+269.  hammerjs@2.0.8 (https://github.com/hammerjs/hammer.js)
+270.  hat@0.0.3 (https://github.com/substack/node-hat)
+271.  hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
+272.  inferno@5.6.2 (https://github.com/infernojs/inferno)
+273.  lodash-es@4.17.15 (https://github.com/lodash/lodash)
+274.  lodash@4.17.20 (https://github.com/lodash/lodash)
+275.  min-dash@3.7.0 (https://github.com/bpmn-io/min-dash)
+276.  min-dom@3.1.3 (https://github.com/bpmn-io/min-dom)
+277.  mitt@1.1.3 (https://github.com/developit/mitt)
+278.  moddle-xml@9.0.5 (https://github.com/bpmn-io/moddle-xml)
+279.  moddle@5.0.2 (https://github.com/bpmn-io/moddle)
+280.  modeler-moddle@0.1.0 (https://github.com/camunda/modeler-moddle)
+281.  ms@2.1.1 (https://github.com/zeit/ms)
+282.  object-refs@0.3.0 (https://github.com/bpmn-io/object-refs)
+283.  p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
+284.  p-reduce@2.1.0 (https://github.com/sindresorhus/p-reduce)
+285.  p-series@2.1.0 (https://github.com/sindresorhus/p-series)
+286.  path-intersection@2.2.1 (https://github.com/bpmn-io/path-intersection)
+287.  preact@10.5.13 (https://github.com/preactjs/preact)
+288.  react-dom@16.8.6 (https://github.com/facebook/react)
+289.  react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
+290.  react-is@16.8.6 (https://github.com/facebook/react)
+291.  react@16.8.6 (https://github.com/facebook/react)
+292.  rgbcolor@0.0.4 (https://github.com/yetzt/node-rgbcolor)
+293.  saxen@8.1.2 (https://github.com/nikku/saxen)
+294.  scheduler@0.13.6 (https://github.com/facebook/react)
+295.  scroll-tabs@1.0.1 (https://github.com/bpmn-io/scroll-tabs)
+296.  selection-ranges@3.0.3 (https://github.com/nikku/selection-ranges)
+297.  selection-update@0.1.2 (https://github.com/nikku/selection-update)
+298.  semver@6.3.0 (https://github.com/npm/node-semver)
+299.  sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
+300.  stackblur@1.0.0
+301.  table-js@7.1.0 (https://github.com/bpmn-io/table-js)
+302.  ticky@1.0.1 (https://github.com/bevacqua/ticky)
+303.  tiny-svg@2.2.2 (https://github.com/bpmn-io/tiny-svg)
+304.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
+305.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
+306.  xmldom@0.1.27 (https://github.com/jindw/xmldom)
+307.  zeebe-bpmn-moddle@0.6.0 (https://github.com/zeebe-io/zeebe-bpmn-moddle)
 
 
 %% @grpc/grpc-js@1.3.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1065,7 +1060,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END OF @protobufjs/utf8@1.1.0 NOTICES AND INFORMATION
 
 
-%% @sentry/core@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/core@6.3.6 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 BSD 3-Clause License
 
@@ -1098,10 +1093,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ==========================================
-END OF @sentry/core@5.30.0 NOTICES AND INFORMATION
+END OF @sentry/core@6.3.6 NOTICES AND INFORMATION
 
 
-%% @sentry/hub@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/hub@6.3.6 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 BSD 3-Clause License
 
@@ -1134,10 +1129,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ==========================================
-END OF @sentry/hub@5.30.0 NOTICES AND INFORMATION
+END OF @sentry/hub@6.3.6 NOTICES AND INFORMATION
 
 
-%% @sentry/minimal@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/minimal@6.3.6 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 BSD 3-Clause License
 
@@ -1170,10 +1165,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ==========================================
-END OF @sentry/minimal@5.30.0 NOTICES AND INFORMATION
+END OF @sentry/minimal@6.3.6 NOTICES AND INFORMATION
 
 
-%% @sentry/node@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/node@6.3.6 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 BSD 3-Clause License
 
@@ -1206,10 +1201,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ==========================================
-END OF @sentry/node@5.30.0 NOTICES AND INFORMATION
+END OF @sentry/node@6.3.6 NOTICES AND INFORMATION
 
 
-%% @sentry/tracing@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/tracing@6.3.6 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -1234,10 +1229,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @sentry/tracing@5.30.0 NOTICES AND INFORMATION
+END OF @sentry/tracing@6.3.6 NOTICES AND INFORMATION
 
 
-%% @sentry/types@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/types@6.3.6 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 BSD 3-Clause License
 
@@ -1270,10 +1265,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ==========================================
-END OF @sentry/types@5.30.0 NOTICES AND INFORMATION
+END OF @sentry/types@6.3.6 NOTICES AND INFORMATION
 
 
-%% @sentry/utils@5.30.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/utils@6.3.6 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 BSD 3-Clause License
 
@@ -1306,7 +1301,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ==========================================
-END OF @sentry/utils@5.30.0 NOTICES AND INFORMATION
+END OF @sentry/utils@6.3.6 NOTICES AND INFORMATION
 
 
 %% @sindresorhus/is@0.14.0 NOTICES AND INFORMATION BEGIN HERE
@@ -8330,7 +8325,7 @@ THE SOFTWARE.
 END OF @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION
 
 
-%% @sentry/browser@5.15.5 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/browser@6.3.6 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 BSD 3-Clause License
 
@@ -8363,187 +8358,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ==========================================
-END OF @sentry/browser@5.15.5 NOTICES AND INFORMATION
-
-
-%% @sentry/core@5.15.5 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-BSD 3-Clause License
-
-Copyright (c) 2019, Sentry
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-* Neither the name of the copyright holder nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-==========================================
-END OF @sentry/core@5.15.5 NOTICES AND INFORMATION
-
-
-%% @sentry/hub@5.15.5 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-BSD 3-Clause License
-
-Copyright (c) 2019, Sentry
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-* Neither the name of the copyright holder nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-==========================================
-END OF @sentry/hub@5.15.5 NOTICES AND INFORMATION
-
-
-%% @sentry/minimal@5.15.5 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-BSD 3-Clause License
-
-Copyright (c) 2019, Sentry
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-* Neither the name of the copyright holder nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-==========================================
-END OF @sentry/minimal@5.15.5 NOTICES AND INFORMATION
-
-
-%% @sentry/types@5.15.5 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-BSD 3-Clause License
-
-Copyright (c) 2019, Sentry
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-* Neither the name of the copyright holder nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-==========================================
-END OF @sentry/types@5.15.5 NOTICES AND INFORMATION
-
-
-%% @sentry/utils@5.15.5 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-BSD 3-Clause License
-
-Copyright (c) 2019, Sentry
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-* Neither the name of the copyright holder nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-==========================================
-END OF @sentry/utils@5.15.5 NOTICES AND INFORMATION
+END OF @sentry/browser@6.3.6 NOTICES AND INFORMATION
 
 
 %% @sindresorhus/is@0.15.0 NOTICES AND INFORMATION BEGIN HERE
