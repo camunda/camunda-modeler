@@ -8,7 +8,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 4.8.1
 
-`FIX`: pass flags to client correctly ([#2257](https://github.com/camunda/camunda-modeler/pull/2257))
+* `FIX`: pass flags to client correctly ([#2257](https://github.com/camunda/camunda-modeler/pull/2257))
 
 ## 4.8.0
 
