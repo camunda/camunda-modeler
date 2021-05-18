@@ -25,12 +25,6 @@ const {
   'on-demand': onDemand
 } = argv;
 
-// region has to be set explicitly to avoid permissions problems
-let region;
-if (onDemand) {
-  region = process.env.AWS_REGION;
-}
-
 // in case of --nightly, update all package versions to the
 // next minor version with the nightly preid. This will
 // result in app and client being versioned like `v1.2.0-nightly.20191121`.
@@ -100,7 +94,7 @@ const platforms = [
 
 const platformOptions = platforms.map(p => `--${p}`);
 
-let publishOptions = getPublishOptions(publish, nightly, onDemand, region);
+const publishOptions = getPublishOptions(publish, nightly, onDemand);
 
 const signingOptions = [
   `-c.forceCodeSigning=${false}`
@@ -151,13 +145,16 @@ exec('electron-builder', args, {
   stdio: 'inherit'
 });
 
-function getPublishOptions(publish, nightly, onDemand, region) {
+function getPublishOptions(publish, nightly, onDemand) {
   if (typeof publish === undefined) {
     return [];
   }
 
   if (nightly || onDemand) {
     const bucket = process.env.AWS_BUCKET;
+
+    // region has to be set explicitly to avoid permissions problems
+    const region = process.env.AWS_REGION;
 
     return [
       `--publish=${ publish ? 'always' : 'never' }`,
