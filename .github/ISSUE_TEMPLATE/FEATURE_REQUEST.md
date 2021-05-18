@@ -22,4 +22,4 @@ A clear and concise description of any alternative solutions or features you've 
 
 __Additional context__
 
-Add any other context or screenshots about the feature request here.
+Add any other context or screenshots about the feature request here. For example, provide the execution platform you're operating on (Camunda Platform, Camunda Cloud, ...).
