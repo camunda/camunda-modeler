@@ -37,11 +37,9 @@ export default class Plugins {
     const stylePlugins = filter(appPlugins, appPlugin => appPlugin.style),
           scriptPlugins = filter(appPlugins, appPlugin => appPlugin.script);
 
-    // load style plugins
-    stylePlugins.forEach(this._loadStylePlugin);
-
-    // load script plugins
-    return Promise.all(scriptPlugins.map(this._loadScriptPlugin));
+    return Promise.resolve()
+      .then(() => Promise.all(stylePlugins.map(this._loadStylePlugin)))
+      .then(() => Promise.all(scriptPlugins.map(this._loadScriptPlugin)));
   }
 
   /**
@@ -97,12 +95,15 @@ export default class Plugins {
   _loadStylePlugin(stylePlugin) {
     const { style } = stylePlugin;
 
-    const styleTag = document.createElement('link');
+    return new Promise(resolve => {
+      const styleTag = document.createElement('link');
 
-    styleTag.href = style;
-    styleTag.rel = 'stylesheet';
+      styleTag.href = style;
+      styleTag.rel = 'stylesheet';
+      styleTag.onload = resolve;
 
-    document.head.appendChild(styleTag);
+      document.head.appendChild(styleTag);
+    });
   }
 
   /**
