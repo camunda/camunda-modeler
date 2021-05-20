@@ -138,7 +138,7 @@ function sentryIntegration() {
   const { version } = pkg;
 
   // necessary SENTRY_AUTH_TOKEN, SENTRY_ORG and SENTRY_PROJECT environment
-  // variables are injected via Travis when building.
+  // variables are injected via CI when building.
   return [
     new SentryWebpackPlugin({
       release: NODE_ENV === 'production' ? version : 'dev',
