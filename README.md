@@ -18,7 +18,7 @@ An integrated modeling solution for BPMN and DMN based on [bpmn.io](http://bpmn.
 
 ## Building the Application
 
-Build the app in a Posix environment. On Windows that is Git Bash or WSL.
+Build the app in a Posix environment. On Windows that is Git Bash or WSL. Make sure you have installed all the [necessary tools](https://github.com/nodejs/node-gyp#installation) to install and compile Node.js C++ addons.
 
 ```sh
 # checkout a tag

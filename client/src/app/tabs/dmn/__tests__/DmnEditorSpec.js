@@ -1038,6 +1038,35 @@ describe('<DmnEditor>', function() {
     });
 
 
+    it('should open properties panel (no layout)', async function() {
+
+      // given
+      let layout = {};
+
+      function onLayoutChanged(newLayout) {
+        layout = newLayout;
+      }
+
+      const {
+        wrapper
+      } = await renderEditor(diagramXML, {
+        layout,
+        onLayoutChanged
+      });
+
+      wrapper.update();
+
+      const toggle = wrapper.find('.toggle');
+
+      // when
+      toggle.simulate('click');
+
+      // then
+      expect(layout.propertiesPanel.open).to.be.true;
+      expect(layout.propertiesPanel.width).to.equal(250);
+    });
+
+
     it('should open properties panel', async function() {
 
       // given
@@ -1067,6 +1096,7 @@ describe('<DmnEditor>', function() {
 
       // then
       expect(layout.propertiesPanel.open).to.be.true;
+      expect(layout.propertiesPanel.width).to.equal(250);
     });
 
 
@@ -1405,6 +1435,7 @@ describe('<DmnEditor>', function() {
       expect(onLayoutChangedSpy).to.be.calledOnceWith({
         propertiesPanel: {
           open: true,
+          width: 250
         }
       });
     });
