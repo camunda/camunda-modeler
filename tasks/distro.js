@@ -112,18 +112,13 @@ if (publish && (argv.ia32 || argv.x64)) {
 
 const archOptions = [ 'x64', 'ia32' ].filter(a => argv[a]).map(a => `--${a}`);
 
-const extraMetadataOptions = [
-  `-c.extraMetadata.SENTRY_DSN=${ process.env.SENTRY_DSN || null }`
-];
-
 const args = [
   ...[ config && `-c=${config}` ].filter(f => f),
   ...archOptions,
   ...signingOptions,
   ...platformOptions,
   ...publishOptions,
-  ...artifactOptions,
-  ...extraMetadataOptions
+  ...artifactOptions
 ];
 
 console.log(`

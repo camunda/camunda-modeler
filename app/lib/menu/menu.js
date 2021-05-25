@@ -15,7 +15,6 @@ const { app } = require('electron');
 const DefaultMenuBuilder = require('./menu-builder');
 
 const renderer = require('../util/renderer');
-const requirePlatform = require('../util/require-platform');
 
 const { has } = require('min-dash');
 
@@ -32,7 +31,7 @@ class Menu {
     this.state = {};
     this.providers = {};
 
-    this.MenuBuilder = requirePlatform(platform, __dirname, DefaultMenuBuilder);
+    this.MenuBuilder = isMac(platform) ? require('./mac-os') : DefaultMenuBuilder;
 
     this.rebuildMenu = this.rebuildMenu.bind(this);
 
@@ -160,3 +159,7 @@ class Menu {
 }
 
 module.exports = Menu;
+
+function isMac(platform) {
+  return platform === 'darwin';
+}

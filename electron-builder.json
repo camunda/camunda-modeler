@@ -2,14 +2,9 @@
   "appId": "com.camunda.CamundaModeler",
   "productName": "Camunda Modeler",
   "files": [
-    {
-      "filter": [
-        "**",
-        "!**/__tests__",
-        "!test",
-        "!dev.js"
-      ]
-    }
+    "dist/",
+    "public/",
+    "node_modules/"
   ],
   "afterPack": "./tasks/after-pack.js",
   "afterSign": "./tasks/after-sign.js",

@@ -69,7 +69,7 @@ class Plugins {
           style,
           script,
           menu
-        } = require(pluginPath);
+        } = dynamicRequire(pluginPath);
 
         if (!name) {
           throw new Error('plug-in descriptor is missing <name>');
@@ -111,7 +111,7 @@ class Plugins {
           const menuPath = path.join(base, menu);
 
           try {
-            plugin.menu = require(menuPath);
+            plugin.menu = dynamicRequire(menuPath);
           } catch (error) {
             log.error('failed to load menu extension %s', menuPath, error);
 
@@ -169,3 +169,11 @@ class Plugins {
 }
 
 module.exports = Plugins;
+
+
+function dynamicRequire(moduleName) {
+  // eslint-disable-next-line no-undef
+  const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
+
+  return requireFunc(moduleName);
+}

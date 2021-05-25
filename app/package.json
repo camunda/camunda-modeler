@@ -3,7 +3,7 @@
   "version": "4.8.1",
   "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
   "private": true,
-  "main": "prod.js",
+  "main": "dist/prod.bundle.js",
   "author": {
     "name": "Camunda Services GmbH",
     "email": "info@camunda.com",

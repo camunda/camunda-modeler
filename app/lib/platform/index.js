@@ -10,10 +10,21 @@
 
 'use strict';
 
-var requirePlatform = require('../util/require-platform');
-
 module.exports.create = function create(platform, app, config) {
-  var Platform = requirePlatform(platform, __dirname);
+  const Platform = require('./' + platformToDirname(platform));
 
   return new Platform(app, config);
 };
+
+function platformToDirname(platform) {
+  switch (platform) {
+  case 'win32':
+    return 'windows';
+  case 'darwin':
+    return 'mac-os';
+  case 'linux':
+    return 'linux';
+  default:
+    throw new Error('your platform < ' + platform + ' > is not supported.');
+  }
+}

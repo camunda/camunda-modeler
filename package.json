@@ -5,6 +5,7 @@
   "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
+    "app:build": "cross-env NODE_ENV=production webpack -c app/webpack.config.js",
     "app:dev": "electron ./dev.js --force-update-checks resources/diagram/simple.bpmn",
     "app:test": "nyc --reporter lcov --exclude \"app/test/**\" --exclude \"app/**/__tests__\" mocha --require ./app/test/expect \"app/**/*-spec.js\"",
     "client:build": "(cd client && npm run build)",
@@ -19,7 +20,7 @@
     "dev": "run-p \"app:dev -- {@}\" client:dev --",
     "build:distro": "node tasks/distro.js",
     "build:test-distro": "node tasks/test-distro.js",
-    "build": "run-s client:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
+    "build": "run-s client:build app:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
     "lint": "eslint .",
     "postinstall": "electron-builder install-app-deps && lerna bootstrap",
     "prerelease": "run-s update-license-book",
@@ -38,10 +39,12 @@
     "url": "https://github.com/camunda/camunda-modeler"
   },
   "devDependencies": {
+    "@sentry/webpack-plugin": "^1.15.1",
     "archiver": "^3.0.3",
     "builder-util": "^22.3.3",
     "chai": "^4.2.0",
     "cpx": "^1.5.0",
+    "cross-env": "^7.0.3",
     "del": "^3.0.0",
     "del-cli": "^1.1.0",
     "diff2html": "^2.11.2",
@@ -67,6 +70,8 @@
     "sinon": "^9.2.3",
     "sinon-chai": "^3.5.0",
     "tar-stream": "^2.1.0",
+    "webpack": "^5.37.1",
+    "webpack-cli": "^4.7.0",
     "which": "^1.2.0",
     "yauzl": "^2.10.0"
   }
