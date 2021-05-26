@@ -19,6 +19,9 @@ export default function getBpmnWindowMenu(state) {
 function getZoomEntries({ zoom }) {
   return zoom ? [{
     label: 'Zoom In',
+
+    // We use Ctrl + = instead of Ctrl + + which works as expected but is shown incorrectly.
+    // cf. https://github.com/camunda/camunda-modeler/issues/2286
     accelerator: 'CommandOrControl+=',
     action: 'zoomIn'
   }, {
