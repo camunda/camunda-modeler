@@ -17,6 +17,12 @@ const mri = require('mri');
 
 const log = require('./log')('app:cli');
 
+const chromiumSwitches = [ '--allow-file-access-from-files' ];
+
+function isChromiumSwitch(argument) {
+  return chromiumSwitches.includes(argument);
+}
+
 /**
  * Parse file arguments from the command line
  * and return them as a list of paths.
@@ -33,7 +39,7 @@ function parse(args, cwd) {
   const {
     _,
     ...flags
-  } = mri(args.slice(1));
+  } = mri(filterArgs(args).slice(1));
 
   const files = _.filter(isPath).map(f => path.resolve(cwd, f)).filter(isFile);
 
@@ -70,6 +76,14 @@ function appendArgs(args, additionalArgs) {
 }
 
 module.exports.appendArgs = appendArgs;
+
+
+function filterArgs(args) {
+  return args.filter((argument) => !isChromiumSwitch(argument));
+}
+
+module.exports.filterArgs = filterArgs;
+
 
 /**
  * Check a possible filePath represents an existing file.

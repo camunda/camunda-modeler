@@ -172,6 +172,23 @@ describe('cli', function() {
 
   });
 
+
+  describe('#filterArgs', function() {
+
+    it('should filter chromium switches', function() {
+
+      // given
+      var args = [ '--allow-file-access-from-files', '--bar', '-xyz', '--hello=1231', '123' ];
+
+      // when
+      var actualArgs = Cli.filterArgs(args);
+
+      // then
+      expect(actualArgs).to.eql([ '--bar', '-xyz', '--hello=1231', '123' ]);
+    });
+
+  });
+
 });
 
 
