@@ -37,10 +37,6 @@ import Flags from './util/Flags';
 
 import debug from 'debug';
 
-// This fix is necessary because dragular expects `global` to be defined, see
-// https://github.com/bevacqua/dragula/issues/602 for context
-window.global = window;
-
 if (process.env.NODE_ENV !== 'production') {
   debug.enable('*,-sockjs-client:*');
 }

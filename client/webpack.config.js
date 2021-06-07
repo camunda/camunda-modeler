@@ -106,7 +106,11 @@ module.exports = {
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
       'process.env.SENTRY_DSN': JSON.stringify(SENTRY_DSN),
       'process.env.ET_ENDPOINT': JSON.stringify(ET_ENDPOINT),
-      'process.env.UPDATES_SERVER_PRODUCT_NAME': JSON.stringify(UPDATES_SERVER_PRODUCT_NAME)
+      'process.env.UPDATES_SERVER_PRODUCT_NAME': JSON.stringify(UPDATES_SERVER_PRODUCT_NAME),
+
+      // This fix is necessary because dragula expects `global` to be defined, see
+      // https://github.com/bevacqua/dragula/issues/602 for context
+      global: 'window'
     }),
     new CopyWebpackPlugin([
       {
