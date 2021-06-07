@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "type": "default",
+  "components": [
+    {
+      "key": "deploymentName",
+      "label": "Deployment Name",
+      "description": "Should point to a running Camunda Platform REST API endpoint.",
+      "type": "textfield",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "key": "tenantId",
+      "label": "Tenant ID",
+      "type": "textfield"
+    },
+    {
+      "text": "## Endpoint Configuration",
+      "type": "text"
+    },
+    {
+      "key": "endpointUrl",
+      "label": "REST Endpoint",
+      "type": "textfield",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "key": "authType",
+      "label": "Authentication",
+      "type": "radio",
+      "values": [
+        {
+          "label": "HTTP Basic",
+          "value": "basic"
+        },
+        {
+          "value": "bearer",
+          "label": "Bearer token"
+        }
+      ]
+    },
+    {
+      "key": "username",
+      "label": "Username",
+      "type": "textfield"
+    },
+    {
+      "key": "password",
+      "label": "Password",
+      "type": "textfield"
+    },
+    {
+      "key": "rememberCredentials",
+      "label": "Remember credentials",
+      "type": "checkbox"
+    }
+  ]
+}
