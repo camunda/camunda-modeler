@@ -244,11 +244,15 @@ export class BpmnEditor extends CachedComponent {
 
   handleElementTemplateErrors = (event) => {
     const {
+      onWarning
+    } = this.props;
+
+    const {
       errors
     } = event;
 
     errors.forEach(error => {
-      this.handleError({ error });
+      onWarning({ message: error.message });
     });
   }
 
