@@ -15,6 +15,7 @@ import ErrorTracking from './error-tracking';
 import UsageStatistics from './usage-statistics';
 import ElementTemplatesModal from './element-templates-modal';
 import ZeebePlugin from './zeebe-plugin';
+import VersionInfo from './version-info';
 
 export default [
   CamundaPlugin,
@@ -23,5 +24,6 @@ export default [
   ErrorTracking,
   UsageStatistics,
   ElementTemplatesModal,
-  ZeebePlugin
+  ZeebePlugin,
+  VersionInfo
 ];
