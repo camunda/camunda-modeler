@@ -1211,6 +1211,30 @@ describe('<BpmnEditor>', function() {
       });
     });
 
+
+    it('should handle template errors as warning', async function() {
+
+      // given
+      const warningSpy = spy();
+
+      const error1 = new Error('template error 1');
+      const error2 = new Error('template error 2');
+      const error3 = new Error('template error 3');
+
+      const { instance } = await renderEditor(diagramXML, {
+        onWarning: warningSpy
+      });
+
+      // when
+      await instance.handleElementTemplateErrors({ errors: [ error1, error2, error3 ] });
+
+      // then
+      expect(warningSpy).to.have.been.calledThrice;
+      expect(warningSpy).to.have.been.calledWith({ message: error1.message });
+      expect(warningSpy).to.have.been.calledWith({ message: error2.message });
+      expect(warningSpy).to.have.been.calledWith({ message: error3.message });
+    });
+
   });
 
 
@@ -1491,6 +1515,7 @@ async function renderEditor(xml, options = {}) {
     onChanged,
     onContentUpdated,
     onError,
+    onWarning,
     onImport,
     onLayoutChanged,
     onModal,
@@ -1508,6 +1533,7 @@ async function renderEditor(xml, options = {}) {
       onAction={ onAction || noop }
       onChanged={ onChanged || noop }
       onError={ onError || noop }
+      onWarning={ onWarning || noop }
       onImport={ onImport || noop }
       onLayoutChanged={ onLayoutChanged || noop }
       onContentUpdated={ onContentUpdated || noop }

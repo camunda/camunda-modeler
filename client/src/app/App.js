@@ -1091,7 +1091,7 @@ export class App extends PureComponent {
 
   /**
    * Propagates warnings to parent.
-   * @param {Error} error
+   * @param {Error|{ message: string }} warning
    * @param {Tab|string} [categoryOrTab]
    */
   handleWarning(warning, categoryOrTab) {
