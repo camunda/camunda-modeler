@@ -5,7 +5,7 @@
 
   width: 300px;
 
-  padding: 10px 0 15px;
+  padding: 0;
   z-index: 1001;
 
   border: 1px solid var(--overlay-border-color);
@@ -16,9 +16,17 @@
 
   font-size: 14px;
 
-  .overlay__header {
-    padding: 10px 10px 12px;
+  .overlay__header,
+  .overlay__body,
+  .overlay__footer {
+    padding: 12px;
+  }
 
+  .overlay__body:not(:first-child) {
+    padding-top: 0;
+  }
+
+  .overlay__header {
     font-size: inherit;
   }
 
@@ -31,12 +39,10 @@
   }
 
   .overlay__body {
-    padding: 0 10px 15px;
     font-size: inherit;
   }
 
   .overlay__footer {
-    padding: 15px 10px 0;
     border-top: 1px solid var(--overlay-border-color);
   }
 }

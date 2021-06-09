@@ -569,6 +569,10 @@ class MenuBuilder {
       {
         label: 'Version ' + app.version,
         enabled: false
+      },
+      {
+        label: 'What\'s new',
+        click: () => app.emit('menu:action', 'emit-event', { type: 'versionInfo.open' })
       }
     ];
 
