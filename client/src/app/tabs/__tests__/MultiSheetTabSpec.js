@@ -259,24 +259,63 @@ describe('<MultiSheetTab>', function() {
   });
 
 
-  it('#openFallback', function() {
+  describe('#openFallback', function() {
 
-    // given
-    const {
-      instance
-    } = renderTab();
+    it('should open fallback', function() {
 
-    // when
-    instance.openFallback();
+      // given
+      const {
+        instance
+      } = renderTab();
 
-    // then
-    const {
-      activeSheet
-    } = instance.getCached();
+      // when
+      instance.openFallback();
 
-    expect(activeSheet.id).to.equal('fallback');
+      // then
+      const {
+        activeSheet
+      } = instance.getCached();
+
+      expect(activeSheet.id).to.equal('fallback');
+    });
+
+
+    it('should open fallback on error during first mount', function() {
+
+      // given
+      class BrokenEditor extends DefaultEditor {
+        constructor(props) {
+          super(props);
+        }
+
+        componentDidMount() {
+          this.props.onImport(new Error('error'));
+        }
+      }
+
+      const providers = [{
+        type: 'default',
+        editor: BrokenEditor,
+        defaultName: 'Default'
+      }, {
+        type: 'fallback',
+        editor: DefaultEditor,
+        defaultName: 'Fallback',
+        isFallback: true
+      }];
+
+      // when
+      const { instance } = renderTab({ providers });
+
+      // then
+      const {
+        activeSheet
+      } = instance.getCached();
+
+      expect(activeSheet.id).to.equal('fallback');
+    });
+
   });
-
 
   describe('#sheetsChanged', function() {
 
