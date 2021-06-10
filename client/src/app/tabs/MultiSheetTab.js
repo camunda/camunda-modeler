@@ -31,6 +31,17 @@ export class MultiSheetTab extends CachedComponent {
     super(props);
 
     this.editorRef = React.createRef();
+
+    let { sheets } = this.getCached();
+
+    if (!sheets) {
+      sheets = this.getDefaultSheets();
+
+      this.setCached({
+        sheets,
+        activeSheet: sheets[0]
+      });
+    }
   }
 
   /**
@@ -307,19 +318,6 @@ export class MultiSheetTab extends CachedComponent {
         type
       };
     });
-  }
-
-  componentDidMount() {
-    let { sheets } = this.getCached();
-
-    if (!sheets) {
-      sheets = this.getDefaultSheets();
-
-      this.setCached({
-        sheets,
-        activeSheet: sheets[0]
-      });
-    }
   }
 
   componentDidUpdate(prevProps) {
