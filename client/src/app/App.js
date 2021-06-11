@@ -1917,8 +1917,8 @@ export class App extends PureComponent {
                   onClose={ this.handleCloseTab }
                   placeholder={ {
                     label: '+',
-                    title: 'New BPMN diagram',
-                    onClick: this.composeAction('create-bpmn-diagram')
+                    title: 'New diagram',
+                    onClick: this.composeAction(determineNewTabActionType(activeTab))
                   } }
                   draggable
                   scrollable
@@ -2235,7 +2235,6 @@ function getExportFileDialogFilters(provider) {
   return filters;
 }
 
-
 function failSafe(fn, errorHandler) {
 
   return async (...args) => {
@@ -2246,4 +2245,19 @@ function failSafe(fn, errorHandler) {
       errorHandler(error);
     }
   };
+}
+
+function determineNewTabActionType(activeTab) {
+  switch (activeTab.type) {
+  case 'bpmn':
+    return 'create-bpmn-diagram';
+  case 'cloud-bpmn':
+    return 'create-cloud-bpmn-diagram';
+  case 'form':
+    return 'create-form';
+  case 'dmn':
+    return 'create-dmn-diagram';
+  default:
+    return 'create-bpmn-diagram';
+  }
 }
