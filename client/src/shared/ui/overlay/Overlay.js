@@ -25,7 +25,14 @@ const DEFAULT_OFFSET = {
   left: 0
 };
 
-
+/**
+ * @typedef {object} OverlayProps
+ * @prop {Node} anchor
+ * @prop {{ bottom?: number, left?: number, right?: number }} [offset={}]
+ * @prop {function} [onClose]
+ *
+ * @extends {PureComponent<OverlayProps>}
+ */
 export class Overlay extends PureComponent {
 
   constructor(props) {
@@ -67,9 +74,20 @@ export class Overlay extends PureComponent {
     const bodyRect = document.body.getBoundingClientRect();
     const anchorRect = anchor.getBoundingClientRect();
 
-    return {
+    const style = {
       position: 'absolute',
-      bottom: Math.round(bodyRect.height - anchorRect.top + (offset.bottom || DEFAULT_OFFSET.bottom)),
+      bottom: Math.round(bodyRect.height - anchorRect.top + (offset.bottom || DEFAULT_OFFSET.bottom))
+    };
+
+    if ('right' in offset) {
+      return {
+        ...style,
+        right: Math.round(bodyRect.width - anchorRect.right + offset.right)
+      };
+    }
+
+    return {
+      ...style,
       left: Math.round(anchorRect.left + (offset.left || DEFAULT_OFFSET.left))
     };
   }
