@@ -64,6 +64,48 @@ describe('<Overlay>', function() {
     expect(wrapper.contains(<div>{ 'Test' }</div>)).to.be.true;
   });
 
+  describe('props#offset', function() {
+
+    it('should use provided offset { left }', function() {
+
+      // given
+      const offset = {
+        left: 100
+      };
+
+      // when
+      wrapper = mount(<Overlay anchor={ anchor } offset={ offset } />);
+
+      // then
+      const overlay = wrapper.getDOMNode();
+
+      expect(boundingRect(overlay).left).to.be.closeTo(boundingRect(anchor).left + offset.left, 5);
+    });
+
+
+    it('should use provided offset { right }', function() {
+
+      // given
+      const offset = {
+        right: 10
+      };
+
+      // when
+      wrapper = mount(
+        <Overlay anchor={ anchor } offset={ offset }>
+          Content
+        </Overlay>
+      );
+
+      // then
+      const overlay = wrapper.getDOMNode();
+      const overlayRect = boundingRect(overlay);
+      const anchorRect = boundingRect(anchor);
+
+      expect(overlayRect.right).to.be.closeTo(anchorRect.right + offset.right, 5);
+    });
+  });
+
 
   describe('onClose handling', function() {
 
@@ -228,3 +270,7 @@ describe('<Overlay>', function() {
   });
 
 });
+
+function boundingRect(domNode) {
+  return domNode.getBoundingClientRect();
+}
