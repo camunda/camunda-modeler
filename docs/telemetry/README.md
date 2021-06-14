@@ -203,3 +203,30 @@ If it is set in the diagram, we also add target engine profile information:
   }
 }
 ```
+
+
+### Version Info Events
+
+The version info events are sent in following situations:
+
+ - User opens version info overlay via the button on the status bar
+ - User opens version info overlay via the menu
+ - User opens a link in the version info overlay
+
+In the two first cases, a `versionInfoOpened` event is sent:
+
+```json
+{
+  "event": "versionInfoOpened",
+  "source": "[menu or statusBar]"
+}
+```
+
+When a link is clicked, a `versionInfoLinkOpened` event is sent:
+
+```json
+{
+  "event": "versionInfoLinkOpened",
+  "label": "[anchor content, e.g. Camunda Modeler docs]"
+}
+```
