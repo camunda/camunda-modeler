@@ -11,7 +11,7 @@ In the following we will assume the repository is available under the `UST-QuAnt
 Please adapt these values to your setup in the following steps.
 
 3. Configure the QuantME Modeling and Transformation Framework to use the created QRM repository:
-- Navigate to the configuration file that is located [here](../../../app/lib/quantme/qrm-manager/RepositoryConfig.js)
+- Navigate to the configuration file that is located [here](../../../app/lib/framework-config/config.js)
 - Insert the user/organisation name and repository name:
 
   ```JS
