@@ -660,9 +660,8 @@ function bootstrap() {
 function getTitleSuffix(version) {
   if (version.includes('dev')) {
     return ' (dev)';
-  } else if (version.includes('nightly')) {
-    return ' (' + version.split('-')[1] + ')';
   }
+
   return '';
 }
 
