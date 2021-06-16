@@ -16,7 +16,8 @@ const path = require('path');
 const customLinkersMap = {
   'bpmn-io/bpmn-js': linkBpmnJs,
   'bpmn-io/dmn-js': linkDmnJs,
-  'bpmn-io/diagram-js': linkDiagramJs
+  'bpmn-io/diagram-js': linkDiagramJs,
+  'bpmn-io/form-js': linkFormJs
 };
 
 const clientDir = path.join(__dirname, '..', 'client');
@@ -180,6 +181,37 @@ function linkDiagramJs({ repo, ref }) {
   exec('yarn link', { cwd: rootDir });
 
   exec('yarn link diagram-js', { cwd: clientDir });
+}
+
+/**
+ *
+ * @param {Dependency} dependency
+ */
+function linkFormJs({ repo, ref }) {
+  gitClone(repo);
+  console.log(`Cloned ${repo}.`);
+
+  const rootDir = path.join(dependenciesDir, 'form-js');
+  exec(`git checkout ${ref}`, { cwd: rootDir });
+  console.log(`Checked out ${ref}.`);
+
+  exec('npm ci', { cwd: rootDir });
+  console.log('Installed dependencies.');
+
+  try {
+    exec('yarn link diagram-js', { cwd: rootDir });
+    console.log('Linked diagram-js.');
+  } catch (error) {
+    console.log('Unable to link diagram-js.');
+  }
+
+  exec('npm run build-distro', { cwd: rootDir });
+  console.log('Built distro.');
+
+  const formJsDir = path.join(rootDir, 'packages', 'form-js');
+  exec('yarn link', { cwd: formJsDir });
+
+  exec('yarn link @bpmn-io/form-js', { cwd: clientDir });
 }
 
 function gitClone(repo) {
