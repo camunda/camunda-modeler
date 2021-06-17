@@ -35,16 +35,14 @@ export default class PingEventHandler extends BaseEventHandler {
   }
 
   onAfterEnable = () => {
-    const { sendToET } = this;
-
     if (!this.sentInitially) {
-      sendToET();
+      this.sendToET();
 
       this.sentInitially = true;
     }
 
     if (this._intervalID === null) {
-      this._intervalID = this.setInterval(sendToET.bind(this));
+      this._intervalID = this.setInterval(() => this.sendToET());
     }
   }
 
