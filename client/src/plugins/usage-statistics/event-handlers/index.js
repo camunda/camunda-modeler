@@ -11,9 +11,13 @@
 import PingEventHandler from './PingEventHandler';
 import DiagramOpenEventHandler from './DiagramOpenEventHandler';
 import DeploymentEventHandler from './DeploymentEventHandler';
+import VersionInfoOpenedEventHandler from './VersionInfoOpenedEventHandler';
+import VersionInfoLinkOpenedEventHandler from './VersionInfoLinkOpenedEventHandler';
 
 export default [
   PingEventHandler,
   DiagramOpenEventHandler,
-  DeploymentEventHandler
+  DeploymentEventHandler,
+  VersionInfoOpenedEventHandler,
+  VersionInfoLinkOpenedEventHandler
 ];

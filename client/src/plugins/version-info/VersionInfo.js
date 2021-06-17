@@ -36,25 +36,39 @@ export class VersionInfo extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.subscribe('versionInfo.open', () => {
-      this.setOpen(true);
+    this._subscription = this.props.subscribe('versionInfo.open', () => {
+      if (this.state.open) {
+        return;
+      }
+
+      this.open('menu');
     });
 
     this._checkIfUnread();
   }
 
-  componentDidUpdate() {
+  toggle = () => {
     if (this.state.open) {
-      this._onOpen();
+      this.close();
+    } else {
+      this.open();
     }
   }
 
-  toggle = () => {
-    this.setState(state => ({ ...state, open: !state.open }));
+  open(source = 'statusBar') {
+    this.setState({ open: true });
+
+    this._onOpen(source);
   }
 
-  setOpen = value => {
-    this.setState({ open: value });
+  close() {
+    this.setState({ open: false });
+  }
+
+  _triggerEvent(event) {
+    if (event.type === 'open') {
+      this.props.triggerAction('emit-event', { type: 'versionInfo.opened', payload: event });
+    }
   }
 
   async _checkIfUnread() {
@@ -67,7 +81,9 @@ export class VersionInfo extends PureComponent {
     this.setState({ unread: false });
   }
 
-  async _onOpen() {
+  async _onOpen(source) {
+    this._triggerEvent({ type: 'open', source });
+
     if (!this.state.unread) {
       return;
     }
@@ -89,10 +105,9 @@ export class VersionInfo extends PureComponent {
     const {
       _buttonRef: buttonRef,
       _version: version,
-      setOpen,
       toggle
     } = this;
-    const close = () => setOpen(false);
+    const close = () => this.close();
 
     return (
       <Fragment>
