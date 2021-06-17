@@ -8,9 +8,11 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { Overlay } from '../../shared/ui';
+
+import { ReleaseInfo } from './ReleaseInfo';
 
 import css from './VersionInfoOverlay.less';
 
@@ -26,30 +28,14 @@ export function VersionInfoOverlay(props) {
       anchor={ props.anchor } onClose={ props.onClose } offset={ OFFSET }
       className={ css.VersionInfoOverlay }
     >
-      <ReleaseInfo version={ props.version } />
-      <LearnMore />
-    </Overlay>
-  );
-}
-
-function ReleaseInfo(props) {
-  return (
-    <Fragment>
       <Overlay.Title>
         What's new in Modeler { props.version }
       </Overlay.Title>
-      <Overlay.Body className={ css.ReleaseInfo }>
-        <ReleaseInfoContent />
+      <Overlay.Body>
+        <ReleaseInfo />
       </Overlay.Body>
-    </Fragment>
-  );
-}
-
-function ReleaseInfoContent(props) {
-  return (
-    <p>
-      Edit both Camunda Platform and Camunda Cloud BPMN diagrams.
-    </p>
+      <LearnMore />
+    </Overlay>
   );
 }
 
