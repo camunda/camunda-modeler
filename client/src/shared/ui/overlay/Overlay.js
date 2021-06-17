@@ -95,15 +95,19 @@ export class Overlay extends PureComponent {
   render() {
     const {
       className,
-      children
+      children,
+      id
     } = this.props;
+
+    // set id only if passed via props
+    const optionalId = id ? { id } : {};
 
     const style = this.getStyle();
 
     return ReactDOM.createPortal(
       <KeyboardInteractionTrap>
         <div
-          className={ classNames(css.Overlay, className) } style={ style }
+          className={ classNames(css.Overlay, className) } style={ style } { ...optionalId }
           ref={ this.overlayRef } role="dialog"
         >
           { children }

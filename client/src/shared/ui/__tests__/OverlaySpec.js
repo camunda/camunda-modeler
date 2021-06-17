@@ -64,6 +64,40 @@ describe('<Overlay>', function() {
     expect(wrapper.contains(<div>{ 'Test' }</div>)).to.be.true;
   });
 
+
+  describe('DOM props', function() {
+
+    it('should allow to pass custom class', function() {
+
+      // when
+      wrapper = mount(<Overlay anchor={ anchor } className="custom" />);
+
+      // then
+      expect(wrapper.exists('.custom'), 'Class is not set').to.be.true;
+    });
+
+
+    it('should allow to pass custom id', function() {
+
+      // when
+      wrapper = mount(<Overlay anchor={ anchor } id="custom" />);
+
+      // then
+      expect(wrapper.exists('#custom'), 'Id is not set').to.be.true;
+    });
+
+
+    it('should NOT set id if not provided', function() {
+
+      // when
+      wrapper = mount(<Overlay anchor={ anchor } />);
+
+      // then
+      expect(wrapper.getDOMNode().id).to.eql('');
+    });
+  });
+
+
   describe('props#offset', function() {
 
     it('should use provided offset { left }', function() {
