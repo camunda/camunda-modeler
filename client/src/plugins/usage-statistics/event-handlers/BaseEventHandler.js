@@ -21,27 +21,27 @@ export default class BaseEventHandler {
     this._onSend = onSend;
   }
 
-  onAfterEnable = () => {}
+  onAfterEnable() {}
 
-  onAfterDisable = () => {}
+  onAfterDisable() {}
 
-  isEnabled = () => {
+  isEnabled() {
     return this._isEnabled;
   }
 
-  enable = () => {
+  enable() {
     this._isEnabled = true;
 
     this.onAfterEnable();
   }
 
-  disable = () => {
+  disable() {
     this._isEnabled = false;
 
     this.onAfterDisable();
   }
 
-  sendToET = (data) => {
+  sendToET(data) {
 
     if (!this.isEnabled()) {
       return;

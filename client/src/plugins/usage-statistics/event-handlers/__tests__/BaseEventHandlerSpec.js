@@ -111,4 +111,45 @@ describe('<BaseEventHandler>', () => {
     // then
     expect(sendSpy).to.not.have.been.called;
   });
+
+
+  describe('hooks', () => {
+
+    it('should call <onAfterEnable>', () => {
+
+      // given
+      const spy = sinon.spy();
+      class TestHandler extends BaseEventHandler {
+        onAfterEnable() {
+          spy();
+        }
+      }
+      const testHandler = new TestHandler('test', noop);
+
+      // when
+      testHandler.enable();
+
+      // then
+      expect(spy).to.have.been.calledOnce;
+    });
+
+
+    it('should call <onAfterDisable>', () => {
+
+      // given
+      const spy = sinon.spy();
+      class TestHandler extends BaseEventHandler {
+        onAfterDisable() {
+          spy();
+        }
+      }
+      const testHandler = new TestHandler('test', noop);
+
+      // when
+      testHandler.disable();
+
+      // then
+      expect(spy).to.have.been.calledOnce;
+    });
+  });
 });
