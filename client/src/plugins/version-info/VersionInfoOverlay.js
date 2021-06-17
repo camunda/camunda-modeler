@@ -25,7 +25,7 @@ const OFFSET = { right: 0 };
 export function VersionInfoOverlay(props) {
   return (
     <Overlay
-      anchor={ props.anchor } onClose={ props.onClose } offset={ OFFSET }
+      id="version-info-overlay" anchor={ props.anchor } onClose={ props.onClose } offset={ OFFSET }
       className={ css.VersionInfoOverlay }
     >
       <Overlay.Title>

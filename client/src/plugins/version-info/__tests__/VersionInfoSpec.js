@@ -32,17 +32,6 @@ describe('<VersionInfo>', () => {
   });
 
 
-  it('should listen to menu events', () => {
-
-    // given
-    const subscribe = sinon.spy();
-    createVersionInfo({ subscribe });
-
-    // then
-    expect(subscribe).to.have.been.calledOnceWith('versionInfo.open');
-  });
-
-
   it('should open when button is clicked', () => {
 
     // given
@@ -50,6 +39,20 @@ describe('<VersionInfo>', () => {
 
     // when
     wrapper.find('button').simulate('click');
+
+    // then
+    expect(wrapper.exists('VersionInfoOverlay'), 'Overlay should be displayed').to.be.true;
+  });
+
+
+  it('should open via menu events', () => {
+
+    // given
+    const subscribe = createSubscribe();
+    const wrapper = createVersionInfo({ subscribe });
+
+    // when
+    subscribe.emit({ source: 'menu' });
 
     // then
     expect(wrapper.exists('VersionInfoOverlay'), 'Overlay should be displayed').to.be.true;
@@ -116,7 +119,7 @@ describe('<VersionInfo>', () => {
     });
 
 
-    it('should NOT display unread marker when has been already opened', () => {
+    it('should NOT display unread marker if it has been already opened', () => {
 
       // given
       const get = key => key === 'versionInfo' && { lastOpenedVersion: 'TEST_VERSION' };
@@ -129,19 +132,75 @@ describe('<VersionInfo>', () => {
       });
     });
   });
+
+
+  describe('events', () => {
+
+    it('should notify that overlay was opened', () => {
+
+      // given
+      const triggerAction = sinon.spy();
+      const wrapper = createVersionInfo({ triggerAction });
+
+      // when
+      wrapper.find('button').simulate('click');
+
+      // then
+      expect(triggerAction).to.have.been.calledOnceWith(
+        'emit-event', { type: 'versionInfo.opened', payload: { type: 'open', source: 'statusBar' } }
+      );
+    });
+
+
+    it('should propagate the source', () => {
+
+      // given
+      const triggerAction = sinon.spy();
+      const wrapper = createVersionInfo({ triggerAction });
+      const instance = wrapper.instance();
+
+      // when
+      instance.open('menu');
+
+      // then
+      expect(triggerAction).to.have.been.calledOnceWith(
+        'emit-event', { type: 'versionInfo.opened', payload: { type: 'open', source: 'menu' } }
+      );
+    });
+
+
+    it('should NOT notify again when overlay is already open', () => {
+
+      // given
+      const triggerAction = sinon.spy();
+      const subscribe = createSubscribe();
+      const wrapper = createVersionInfo({ subscribe, triggerAction });
+      const instance = wrapper.instance();
+      instance.open('menu');
+      triggerAction.resetHistory();
+
+      // when
+      subscribe.emit({ source: 'menu' });
+
+      // then
+      expect(triggerAction).to.not.have.been.called;
+    });
+  });
 });
 
 
 function createVersionInfo(props = {}, mount = shallow) {
   const {
     config = new Config(),
-    subscribe
+    subscribe = noop,
+    triggerAction = noop
   } = props;
 
   return mount(
     <VersionInfo
       config={ config }
-      subscribe={ subscribe || noop }
+      subscribe={ subscribe }
+      triggerAction={ triggerAction }
     />
   );
 }
@@ -175,4 +234,23 @@ async function expectEventually(wrapper, expectStatement) {
 
   // let it fail correctly
   expectStatement();
+}
+
+function createSubscribe() {
+
+  let cb = noop;
+
+  function subscribe(_, callback) {
+    cb = callback;
+
+    return {
+      cancel() {
+        cb = noop;
+      }
+    };
+  }
+
+  subscribe.emit = (payload) => cb(payload);
+
+  return subscribe;
 }
