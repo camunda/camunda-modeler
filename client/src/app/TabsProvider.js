@@ -137,7 +137,6 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [{
             label: 'BPMN Diagram (Camunda Platform)',
-            accelerator: 'CommandOrControl+T',
             action: 'create-bpmn-diagram'
           }];
         },
