@@ -251,33 +251,6 @@ describe('<App>', function() {
       expect(tabs).to.be.empty;
       expect(activeTab).to.equal(EMPTY_TAB);
     });
-
-
-    it('should not allow user to execute save-as', async function() {
-
-      // given
-      const {
-        app,
-        tree
-      } = createApp(mount);
-
-      const actionSpy = sinon.spy(app, 'triggerAction');
-
-      await app.showTab(EMPTY_TAB);
-
-      const saveAsButton = tree.find('Button[title="Save diagram as..."]').first();
-
-      // assure
-      expect(saveAsButton).to.exist;
-
-      // when
-      saveAsButton.simulate('click');
-
-      // then
-      expect(saveAsButton.prop('disabled')).to.be.true;
-      expect(actionSpy).to.have.not.been.calledWith('save-as');
-    });
-
   });
 
 
@@ -740,22 +713,6 @@ describe('<App>', function() {
     });
 
     afterEach(sinon.restore);
-
-
-    it('should not try to save when save button is disabled', async function() {
-
-      // given
-      const actionSpy = sinon.spy(app, 'triggerAction');
-      const saveButton = rendered.tree.find('Button[title="Save diagram"]').first();
-
-
-      // when
-      saveButton.simulate('click');
-
-      // then
-      expect(saveButton.prop('disabled')).to.be.true;
-      expect(actionSpy).to.have.not.been.calledWith('save');
-    });
 
 
     it('should save new file', async function() {
