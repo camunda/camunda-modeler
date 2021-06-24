@@ -19,6 +19,9 @@ import { Config } from '../../../../app/__tests__/mocks';
 import StartInstancePlugin from '../StartInstancePlugin';
 
 
+const BUTTON_SELECTOR = '[title="Start Current Diagram"]';
+
+
 describe('<StartInstancePlugin> (Zeebe)', () => {
 
   it('should render', () => {
@@ -35,8 +38,10 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
       }
     });
 
+    console.log(wrapper.debug());
+
     // then
-    expect(wrapper.find('Button')).to.have.lengthOf(1);
+    expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(1);
   });
 
 
@@ -48,7 +53,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
     // then
-    expect(wrapper.find('Button')).to.have.lengthOf(0);
+    expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
   });
 
 
@@ -58,7 +63,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     const { wrapper } = createStartInstancePlugin();
 
     // then
-    expect(wrapper.find('Button')).to.have.lengthOf(0);
+    expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
   });
 
 

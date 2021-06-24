@@ -19,7 +19,6 @@ import pDefer from 'p-defer';
 import { Fill } from '../../../app/slot-fill';
 
 import {
-  Button,
   Icon
 } from '../../../shared/ui';
 
@@ -463,13 +462,14 @@ export default class DeploymentPlugin extends PureComponent {
 
     return <React.Fragment>
       { isZeebeTab(activeTab) &&
-        <Fill slot="toolbar" group="8_deploy" priority={ 1 }>
-          <Button
+        <Fill slot="status-bar__file" group="8_deploy" priority={ 1 }>
+          <button
             onClick={ this.onIconClicked }
+            className="btn"
             title="Deploy current diagram"
           >
             <Icon name="deploy" />
-          </Button>
+          </button>
         </Fill>
       }
       { modalState &&

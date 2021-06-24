@@ -31,6 +31,8 @@ const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
 const SPRING_DEFAULT_URL = 'http://localhost:8080/rest';
 const TOMCAT_DEFAULT_URL = 'http://localhost:8080/engine-rest';
 
+const BUTTON_SELECTOR = '[title="Deploy current diagram"]';
+
 
 describe('<DeploymentTool>', () => {
 
@@ -60,7 +62,7 @@ describe('<DeploymentTool>', () => {
     const { wrapper } = createDeploymentTool({ activeTab });
 
     // then
-    expect(wrapper.find('Button')).to.have.lengthOf(1);
+    expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(1);
   });
 
 
@@ -73,7 +75,7 @@ describe('<DeploymentTool>', () => {
     const { wrapper } = createDeploymentTool({ activeTab });
 
     // then
-    expect(wrapper.find('Button')).to.have.lengthOf(0);
+    expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
   });
 
 
@@ -86,7 +88,7 @@ describe('<DeploymentTool>', () => {
     const { wrapper } = createDeploymentTool({ activeTab });
 
     // then
-    expect(wrapper.find('Button')).to.have.lengthOf(0);
+    expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
   });
 
 
