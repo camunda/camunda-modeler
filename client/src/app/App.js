@@ -55,7 +55,6 @@ import {
 } from './primitives';
 
 import {
-  Button,
   DropdownButton,
   Icon
 } from '../shared/ui';
@@ -1818,7 +1817,6 @@ export class App extends PureComponent {
     const {
       tabs,
       activeTab,
-      tabState,
       layout,
       logEntries,
       dirtyTabs,
@@ -1826,9 +1824,6 @@ export class App extends PureComponent {
     } = this.state;
 
     const Tab = this.getTabComponent(activeTab);
-
-    const canSave = this.isUnsaved(activeTab) || this.isDirty(activeTab);
-    const canSaveAs = !this.isEmptyTab(activeTab);
 
     return (
       <DropZone
@@ -1850,59 +1845,7 @@ export class App extends PureComponent {
                 >
                   <Icon name="new" />
                 </DropdownButton>
-
-                <Button
-                  title="Open diagram"
-                  onClick={ this.composeAction('open-diagram') }
-                >
-                  <Icon name="open" />
-                </Button>
               </Fill>
-
-              <Fill slot="toolbar" group="2_save">
-                <Button
-                  disabled={ !canSave }
-                  onClick={ canSave ? this.composeAction('save') : null }
-                  title="Save diagram"
-                >
-                  <Icon name="save" />
-                </Button>
-                <Button
-                  disabled={ !canSaveAs }
-                  onClick={ canSaveAs ? this.composeAction('save-as') : null }
-                  title="Save diagram as..."
-                >
-                  <Icon name="save-as" />
-                </Button>
-              </Fill>
-
-              <Fill slot="toolbar" group="3_editor">
-                <Button
-                  disabled={ !tabState.undo }
-                  onClick={ this.composeAction('undo') }
-                  title="Undo last action"
-                >
-                  <Icon name="undo" />
-                </Button>
-                <Button
-                  disabled={ !tabState.redo }
-                  onClick={ this.composeAction('redo') }
-                  title="Redo last action"
-                >
-                  <Icon name="redo" />
-                </Button>
-              </Fill>
-
-              {
-                tabState.exportAs && <Fill slot="toolbar" group="4_export">
-                  <Button
-                    title="Export as image"
-                    onClick={ this.composeAction('export-as') }
-                  >
-                    <Icon name="picture" />
-                  </Button>
-                </Fill>
-              }
 
               <div className="tabs">
                 <TabLinks
