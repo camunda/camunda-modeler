@@ -16,6 +16,20 @@
 
   font-size: 14px;
 
+  a[href] {
+    color: var(--overlay-link-color);
+    text-decoration: none;
+  }
+
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline-style: auto;
+    outline-color: var(--focus-outline-color);
+  }
+
   .overlay__header,
   .overlay__body,
   .overlay__footer {
