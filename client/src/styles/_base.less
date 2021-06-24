@@ -8,11 +8,12 @@ body {
 }
 
 :root {
-  --focus-shadow: 0 0 0 4px var(--blue-lighten-82);
+  --focus-outline-color: var(--blue-lighten-82);
+  --focus-shadow: 0 0 0 4px var(--focus-outline-color);
 }
 
 :focus {
-  outline-color: var(--blue-lighten-82);
+  outline-color: var(--focus-outline-color);
 }
 
 .bjs-powered-by {
