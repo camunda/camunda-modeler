@@ -26,7 +26,6 @@ import {
 import { Fill } from '../../../app/slot-fill';
 
 import {
-  Button,
   Icon
 } from '../../../shared/ui';
 
@@ -510,13 +509,14 @@ export default class DeploymentTool extends PureComponent {
     const deploy = () => this.deploy({ configure: true });
 
     return <React.Fragment>
-      { isCamundaTab(activeTab) && <Fill slot="toolbar" group="8_deploy">
-        <Button
+      { isCamundaTab(activeTab) && <Fill slot="status-bar__file" group="8_deploy">
+        <button
           onClick={ deploy }
           title="Deploy current diagram"
+          className="btn"
         >
           <Icon name="deploy" />
-        </Button>
+        </button>
       </Fill> }
 
       { modalState &&

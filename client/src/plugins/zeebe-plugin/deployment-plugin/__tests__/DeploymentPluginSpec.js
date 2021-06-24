@@ -223,6 +223,9 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
   describe('ui', () => {
 
+    const BUTTON_SELECTOR = '[title="Deploy current diagram"]';
+
+
     it('should display button if there is active zeebe tab', () => {
 
       // given
@@ -233,7 +236,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       });
 
       // then
-      expect(wrapper.find('Button')).to.have.lengthOf(1);
+      expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(1);
     });
 
 
@@ -243,7 +246,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       const { wrapper } = createDeploymentPlugin();
 
       // then
-      expect(wrapper.find('Button')).to.have.lengthOf(0);
+      expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
     });
 
 
@@ -253,7 +256,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       const { wrapper } = createDeploymentPlugin();
 
       // then
-      expect(wrapper.find('Button')).to.have.lengthOf(0);
+      expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
     });
   });
 

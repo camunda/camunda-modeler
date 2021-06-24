@@ -14,7 +14,7 @@ import { Fill } from '../../../app/slot-fill';
 
 import PlayIcon from 'icons/Play.svg';
 
-import { Button } from '../../../shared/ui';
+import { OverlayDropdown } from '../../../shared/ui';
 
 import css from './StartInstancePlugin.less';
 
@@ -29,6 +29,10 @@ export default class StartInstancePlugin extends PureComponent {
     this.state = {
       activeTab: null
     };
+
+    this._items = [
+      { text: 'Start process instance', onClick: () => this.startInstance() }
+    ];
   }
 
   componentDidMount() {
@@ -94,14 +98,14 @@ export default class StartInstancePlugin extends PureComponent {
     return <React.Fragment>
       {
         isZeebeTab(activeTab) &&
-        <Fill slot="toolbar" group="8_deploy" priority={ 0 }>
-          <Button
-            onClick={ this.onIconClicked }
+        <Fill slot="status-bar__file" group="8_deploy" priority={ 0 }>
+          <OverlayDropdown
+            items={ this._items }
             title="Start Current Diagram"
-            className={ css.StartInstancePlugin }
+            className={ 'btn ' + css.StartInstancePlugin }
           >
             <PlayIcon className="icon" />
-          </Button>
+          </OverlayDropdown>
         </Fill>
       }
     </React.Fragment>;

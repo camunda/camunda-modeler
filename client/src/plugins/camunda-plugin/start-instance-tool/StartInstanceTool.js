@@ -23,8 +23,8 @@ import css from './StartInstanceTool.less';
 import { Fill } from '../../../app/slot-fill';
 
 import {
-  DropdownButton,
-  Icon
+  Icon,
+  OverlayDropdown
 } from '../../../shared/ui';
 
 import isExecutable from './util/isExecutable';
@@ -464,16 +464,14 @@ export default class StartInstanceTool extends PureComponent {
     return <React.Fragment>
 
       { isBpmnTab(activeTab) &&
-      <Fill slot="toolbar" group="8_deploy">
-        <DropdownButton
-          onClick={ this.startInstance.bind(this) }
+      <Fill slot="status-bar__file" group="8_deploy">
+        <OverlayDropdown
           title="Start Current Diagram"
           className={ css.StartInstanceTool }
-          multiButton
           items={ this.START_ACTIONS }
         >
           <PlayIcon className="icon" />
-        </DropdownButton>
+        </OverlayDropdown>
       </Fill>
       }
 
