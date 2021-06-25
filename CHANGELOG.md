@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: allow to connect call activity with message flow ([#942](https://github.com/camunda/camunda-modeler/issues/942))
+
 ## 4.8.1
 
 * `FIX`: pass flags to client correctly ([#2257](https://github.com/camunda/camunda-modeler/pull/2257))
