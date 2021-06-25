@@ -13,7 +13,7 @@
     "@bpmn-io/form-js": "0.0.12",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@sentry/browser": "^6.3.6",
-    "bpmn-js": "^8.7.0",
+    "bpmn-js": "^8.7.1",
     "bpmn-js-properties-panel": "^0.43.1",
     "camunda-bpmn-js": "^0.9.0",
     "camunda-bpmn-moddle": "^5.1.2",
