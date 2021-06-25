@@ -15,7 +15,7 @@
     "@sentry/browser": "^6.3.6",
     "bpmn-js": "^8.7.1",
     "bpmn-js-properties-panel": "^0.43.1",
-    "camunda-bpmn-js": "^0.9.0",
+    "camunda-bpmn-js": "^0.9.1",
     "camunda-bpmn-moddle": "^5.1.2",
     "camunda-cmmn-moddle": "^1.0.0",
     "camunda-dmn-moddle": "^1.1.0",
