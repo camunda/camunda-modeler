@@ -49,9 +49,7 @@ export function OverlayDropdown(props) {
       </button>
       { open && (
         <Overlay className={ css.OverlayDropdown } onClose={ close } anchor={ buttonRef.current }>
-          <Overlay.Body>
-            <Options items={ items } onSelect={ onSelect } />
-          </Overlay.Body>
+          <Options items={ items } onSelect={ onSelect } />
         </Overlay>
       ) }
     </React.Fragment>
@@ -76,8 +74,8 @@ function Option(props) {
   const { text, onClick } = props;
 
   return (
-    <li>
-      <button onClick={ onClick } type="button">{ text }</button>
+    <li onClick={ onClick }>
+      <button type="button">{ text }</button>
     </li>
   );
 }
