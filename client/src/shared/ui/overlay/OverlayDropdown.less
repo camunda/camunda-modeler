@@ -5,13 +5,24 @@
     list-style: none;
   }
 
-  ul, li, button {
+  ul, button {
     margin: 0;
     padding: 0;
   }
 
+  li {
+    margin: 0;
+    padding: 6px;
+
+    cursor: pointer;
+  }
+
+  li:hover {
+    background-color: var(--silver-darken-94);
+  }
+
   li + li {
-    margin-top: 8px;
+    padding-top: 6px;
   }
 
   li button {
@@ -19,6 +30,7 @@
 
     background-color: transparent;
     color: var(--overlay-link-color);
-    cursor: pointer;
+
+    cursor: inherit;
   }
 }
