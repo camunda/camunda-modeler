@@ -80,3 +80,16 @@ jobs:
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
       run: npm run build -- --win --publish --nightly
+
+  Post-Failure:
+    needs: Build_nightly
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+    - name: Post to a Slack channel
+      uses: slackapi/slack-github-action@v1.15.0
+      with:
+        channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+        slack-message: "Nightly build failed. <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to the build.>"
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
