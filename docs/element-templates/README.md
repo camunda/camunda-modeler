@@ -122,7 +122,7 @@ As seen in the code snippet a template consist of a number of important componen
 
 ### JSON Schema Compatibility
 
-The application uses the `$schema` property to ensure compatibility for a given element template. The currently supported [Camunda element templates JSON Schema version](https://github.com/camunda/element-templates-json-schema) is `v0.3`. The Camunda Modeler will ignore element templates defining a higher `$schema` version. Although, it will log a warning message. 
+The application uses the `$schema` property to ensure compatibility for a given element template. The currently supported [Camunda element templates JSON Schema version](https://github.com/camunda/element-templates-json-schema) is `v0.3`. The Camunda Modeler will ignore element templates defining a higher `$schema` version. Although, it will log a warning message.
 
 For example, given the following `$schema` definition, the application takes `0.2.0` as the JSON Schema version of the element template.
 
@@ -339,7 +339,7 @@ Notice that adherence to the following configuration options is enforced by desi
 |---|---|
 | **Valid property `type`'s** | `String`<br />`Hidden`<br />`Dropdown` |
 | **Binding parameters**  | `target`: the target value to be mapped to<br />`expression`: `true` indicates that the userInput is an expression<br />`variables`: either `all` or `local` indicating the variable mapping  |
-| **Mapping result** | If `target` is set:<br />`<camunda:in source="[userInput]" target="[target]"/>`<br /><br />If `target` is set and `expression` is set to `true`:<br />`<camunda:in sourceExpression="[userInput]" target="[target]" />`<br /><br /> If `variables` is set to `local`:<br />` <camunda:in local="true" variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`)<br /><br />If `variables` is set to `all`:<br />`<camunda:in variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`) |
+| **Mapping result** | If `target` is set:<br />`<camunda:in source="[userInput]" target="[target]"/>`<br /><br />If `target` is set and `expression` is set to `true`:<br />`<camunda:in sourceExpression="[userInput]" target="[target]" />`<br /><br /> If `variables` is set to `local`:<br />` <camunda:in local="true" variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`)<br /><br />If `variables` is set to `local` and `target` is set:<br />`<camunda:in local="true" source="[userInput]" target="[target]" />`<br /><br />If `variables` is set to `local`, `target` is set and `expression` is set to `true`:<br />`<camunda:in local="true" sourceExpression="[userInput]" target="[target]" />`<br /><br />If `variables` is set to `all`:<br />`<camunda:in variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`) |
 
 ##### `camunda:in:businessKey`
 
@@ -355,7 +355,7 @@ Notice that adherence to the following configuration options is enforced by desi
 |---|---|
 | **Valid property `type`'s** | `String`<br />`Hidden`<br />`Dropdown` |
 | **Binding parameters**  |  `source`: the source value to be mapped<br />`sourceExpression`: a string containing the expression for the source attribute<br />`variables`: either `all` or `local` indicating the variable mapping  |
-| **Mapping result** | If `source` is set:<br />`<camunda:out source="[source]" target="[userInput]" />`<br /><br />If `sourceExpression` is set:<br />`<camunda:out sourceExpression="[sourceExpression]" target="[userInput]" />`<br /><br />If `variables` is set to `all`:<br />`<camunda:out variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`)<br /><br />If `variables` is set to `local`:<br />`<camunda:out local="true" variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`) |
+| **Mapping result** | If `source` is set:<br />`<camunda:out source="[source]" target="[userInput]" />`<br /><br />If `sourceExpression` is set:<br />`<camunda:out sourceExpression="[sourceExpression]" target="[userInput]" />`<br /><br />If `variables` is set to `all`:<br />`<camunda:out variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`)<br /><br />If `variables` is set to `local` and `source` is set:<br />`<camunda:out local="true" source="[source]" target="[userInput]" />`<br /><br />If `variables` is set to `local` and `sourceExpression` is set:<br />`<camunda:out local="true" sourceExpression="[source]" target="[userInput]" />`<br /><br />If `variables` is set to `local`:<br />`<camunda:out local="true" variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`) |
 
 ##### `camunda:executionListener`
 

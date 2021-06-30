@@ -1,6 +1,6 @@
 [
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "Mail Task",
     "id": "com.camunda.example.MailTask",
     "appliesTo": [
@@ -323,12 +323,52 @@
         }
       },
       {
+        "label": "Input source variable local scope",
+        "type": "String",
+        "value": "var_local",
+        "binding": {
+          "type": "camunda:in",
+          "target": "var_called_source",
+          "variables": "local"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Input sourceExpression local scope",
+        "type": "String",
+        "value": "${ var_local + 2 }",
+        "binding": {
+          "type": "camunda:in",
+          "target": "var_called_expr",
+          "variables": "local",
+          "expression": "true"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
         "label": "Output target (source variable)",
         "type": "String",
         "value": "var_called",
         "binding": {
           "type": "camunda:out",
           "source": "var_local_source"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Output target (source variable local scope)",
+        "type": "String",
+        "value": "var_called",
+        "binding": {
+          "type": "camunda:out",
+          "source": "var_local_source",
+          "variables": "local"
         },
         "constraints": {
           "notEmpty": true
@@ -354,6 +394,19 @@
         "binding": {
           "type": "camunda:out",
           "sourceExpression": "${expr_called}"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Output target (sourceExpression local scope)",
+        "type": "String",
+        "value": "var_local_expr",
+        "binding": {
+          "type": "camunda:out",
+          "sourceExpression": "${ expr_called }",
+          "variables": "local"
         },
         "constraints": {
           "notEmpty": true
