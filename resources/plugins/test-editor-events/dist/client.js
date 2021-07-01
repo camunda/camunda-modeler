@@ -285,7 +285,7 @@ __webpack_require__.r(__webpack_exports__);
  * Validate and register a client plugin.
  *
  * @param {Object} plugin
- * @param {string} type
+ * @param {String} type
  */
 function registerClientPlugin(plugin, type) {
   var plugins = window.plugins || [];
@@ -371,7 +371,7 @@ function registerBpmnJSModdleExtension(descriptor) {
  *
  * @deprecated Will be removed in future Camunda Modeler versions without replacement.
  *
- * @return {string}
+ * @return {String}
  */
 function getModelerDirectory() {
   return window.getModelerDirectory();
@@ -382,7 +382,7 @@ function getModelerDirectory() {
  *
  * @deprecated Will be removed in future Camunda Modeler versions without replacement.
  *
- * @return {string}
+ * @return {String}
  */
 function getPluginsDirectory() {
   return window.getPluginsDirectory();
