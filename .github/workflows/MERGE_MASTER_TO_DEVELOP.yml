@@ -27,6 +27,6 @@ jobs:
       if: failure()
       with:
         channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
-        slack-message: "Could not merge <https://github.com/${{ github.repository }}/tree/${{ github.ref }}|${{ github.ref }}> to <https://github.com/${{ github.repository }}/tree/develop|${{ github.repository }}#develop>."
+        slack-message: "Automatic merge of <https://github.com/${{ github.repository }}/tree/${{ github.ref }}|${{ github.ref }}> to <https://github.com/${{ github.repository }}/tree/develop|${{ github.repository }}#develop failed."
       env:
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
