@@ -122,7 +122,7 @@ As seen in the code snippet a template consist of a number of important componen
 
 ### JSON Schema Compatibility
 
-The application uses the `$schema` property to ensure compatibility for a given element template. The currently supported [Camunda element templates JSON Schema version](https://github.com/camunda/element-templates-json-schema) is `v0.3`. The Camunda Modeler will ignore element templates defining a higher `$schema` version. Although, it will log a warning message.
+The application uses the `$schema` property to ensure compatibility for a given element template. The currently supported [Camunda element templates JSON Schema version](https://github.com/camunda/element-templates-json-schema) is `v0.4`. The Camunda Modeler will ignore element templates defining a higher `$schema` version. Although, it will log a warning message.
 
 For example, given the following `$schema` definition, the application takes `0.2.0` as the JSON Schema version of the element template.
 
