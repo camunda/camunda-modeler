@@ -71,7 +71,7 @@ function Description(props) {
         <Overlay.Body>
           This diagram is supposed to be executed on <em>Camunda Platform</em>.
           The properties panel provides the related implementation features.
-          This diagram can be deployed to and started in a connected <em>Camunda Platform</em> system.
+          This diagram can be deployed to and started in a connected <em>Camunda Platform</em> instance.
         </Overlay.Body>
         <Overlay.Footer>
           <Link href="https://docs.camunda.org/manual/latest/">Learn more</Link>
@@ -84,7 +84,7 @@ function Description(props) {
         <Overlay.Body>
           This diagram is supposed to be executed on <em>Camunda Cloud</em>.
           The properties panel provides the related implementation features.
-          This diagram can be deployed to and started in a connected <em>Camunda Cloud</em> system.
+          This diagram can be deployed to and started in a connected <em>Camunda Cloud</em> instance.
         </Overlay.Body>
         <Overlay.Footer>
           <Link href="https://docs.camunda.io/">Learn more</Link>
@@ -98,7 +98,7 @@ function Description(props) {
           This form is supposed to be used with <em>Camunda Platform</em> or <em>Camunda Cloud</em>.
           The properties panel provides the related implementation features.
           This form can be attached to a BPMN diagram or deployment
-          and is rendered in a connected Camunda Tasklist.
+          and gets rendered in a connected Camunda Tasklist.
         </Overlay.Body>
         <Overlay.Footer>
           <Link href="https://docs.camunda.org/manual/latest/">Learn more</Link>
