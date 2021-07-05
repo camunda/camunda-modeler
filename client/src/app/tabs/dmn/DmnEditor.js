@@ -194,7 +194,7 @@ export class DmnEditor extends CachedComponent {
     this.handleChanged();
   }
 
-  handleImport = (error, warnings) => {
+  handleImport(error, warnings) {
     const {
       activeSheet,
       onImport,
@@ -495,7 +495,10 @@ export class DmnEditor extends CachedComponent {
       return;
     }
 
-    modeler.importXML(importedXML, this.ifMounted(this.handleImport));
+    return modeler.importXML(importedXML).then(
+      this.ifMounted(({ warnings }) => this.handleImport(null, warnings)),
+      this.ifMounted((error) => this.handleImport(error, error.warnings))
+    );
   }
 
   handleMigration = async (xml) => {
@@ -710,7 +713,7 @@ export class DmnEditor extends CachedComponent {
     eventBus.fire('propertiesPanel.resized');
   }
 
-  getXML() {
+  async getXML() {
     const {
       lastXML,
       modeler
@@ -718,29 +721,38 @@ export class DmnEditor extends CachedComponent {
 
     const stackIdx = modeler.getStackIdx();
 
-    return new Promise((resolve, reject) => {
-      if (!this.isDirty()) {
-        return resolve(lastXML || this.props.xml);
-      }
+    if (!this.isDirty()) {
+      return lastXML || this.props.xml;
+    }
 
-      modeler.saveXML({ format: true }, (err, xml) => {
-        this.setCached({
-          dirty: false,
-          lastXML: xml,
-          stackIdx
-        });
+    let xml = null;
+    let error = null;
 
-        if (err) {
-          this.handleError({
-            error: err
-          });
+    try {
+      const {
+        xml: _xml
+      } = await modeler.saveXML({ format: true });
 
-          return reject(err);
-        }
+      xml = _xml;
+    } catch (_error) {
+      error = _error;
+    }
 
-        return resolve(xml);
-      });
+    this.setCached({
+      dirty: false,
+      lastXML: xml,
+      stackIdx
     });
+
+    if (error) {
+      this.handleError({
+        error
+      });
+
+      return Promise.reject(error);
+    }
+
+    return xml;
   }
 
   async exportAs(type) {
@@ -753,20 +765,19 @@ export class DmnEditor extends CachedComponent {
     return generateImage(type, svg);
   }
 
-  exportSVG() {
+  async exportSVG() {
     const modeler = this.getModeler();
 
     const viewer = modeler.getActiveViewer();
 
-    return new Promise((resolve, reject) => {
-      viewer.saveSVG((err, svg) => {
-        if (err) {
-          return reject(err);
-        }
+    if ('saveSVG' in viewer) {
 
-        return resolve(svg);
-      });
-    });
+      const { svg } = await viewer.saveSVG();
+
+      return svg;
+    } else {
+      throw new Error('SVG export not supported in current view');
+    }
   }
 
   handleEditDrdClick = () => {

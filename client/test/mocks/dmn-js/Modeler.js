@@ -82,13 +82,15 @@ class Viewer {
     };
   }
 
-  saveSVG(done) {
+  async saveSVG() {
 
     if (this.xml === 'export-as-error') {
-      return done(new Error('failed to save svg'));
+      throw new Error('failed to save svg');
     }
 
-    return done(null, '<svg />');
+    return {
+      svg: '<svg />'
+    };
   }
 
   get(moduleName, strict) {
@@ -123,21 +125,22 @@ export default class Modeler {
     this.listeners = {};
   }
 
-  importXML(xml, options, done) {
-
-    if (typeof options !== 'object') {
-      done = options;
-    }
+  async importXML(xml, options) {
 
     this.xml = xml;
 
     this.viewer = new Viewer(this.xml, this.modules, this.activeView);
 
     const error = xml === 'import-error' ? new Error('error') : null;
-
     const warnings = xml === 'import-warnings' ? [ 'warning' ] : [];
 
-    done && done(error, warnings);
+    if (error) {
+      throw Object.assign(error, { warnings });
+    }
+
+    return {
+      warnings
+    };
   }
 
   getActiveView() {
@@ -152,15 +155,17 @@ export default class Modeler {
     return this.viewer || new Viewer(this.xml, this.modules, this.activeView);
   }
 
-  saveXML(options, done) {
+  async saveXML(options) {
 
     const xml = this.xml;
 
     if (xml === 'export-error') {
-      return done(new Error('failed to save xml'));
+      throw new Error('failed to save xml');
     }
 
-    return done(null, xml);
+    return {
+      xml
+    };
   }
 
   _getInitialView() {
