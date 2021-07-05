@@ -6,7 +6,39 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `FIX`: allow to connect call activity with message flow ([#942](https://github.com/camunda/camunda-modeler/issues/942))
+## 4.9.0
+
+### General
+
+* `FEAT`: support Zeebe 1.1 / Camunda Cloud 1.1 ([#2319](https://github.com/camunda/camunda-modeler/issues/2319), [#2298](https://github.com/camunda/camunda-modeler/issues/2298), [#2297](https://github.com/camunda/camunda-modeler/issues/2297), [#2296](https://github.com/camunda/camunda-modeler/issues/2296))
+* `FEAT`: improve status bar ([#2318](https://github.com/camunda/camunda-modeler/issues/2318), [#2303](https://github.com/camunda/camunda-modeler/issues/2303))
+* `FEAT`: add basic what's new communication ([#2303](https://github.com/camunda/camunda-modeler/issues/2303))
+* `FEAT`: remove ambiguous `+` button ([#2312](https://github.com/camunda/camunda-modeler/issues/2312), [#2293](https://github.com/camunda/camunda-modeler/issues/2293))
+* `FEAT`: await loading of plug-in provided, injected styles ([`e038073a`](https://github.com/camunda/camunda-modeler/commit/e038073a76f5e9d150724fb35b15f5dd059da422))
+* `FIX`: correct opening of files in already running editor instance ([#2268](https://github.com/camunda/camunda-modeler/issues/2268))
+* `CHORE`: migrate to GitHub actions ([#2245](https://github.com/camunda/camunda-modeler/issues/2245), [#2242](https://github.com/camunda/camunda-modeler/issues/2242))
+
+### BPMN
+
+* `FEAT`: support [bpmn-in-color](https://github.com/bpmn-miwg/bpmn-in-color)
+* `FEAT`: support setting `variables` and `local` property via element templates independently ([#2334](https://github.com/camunda/camunda-modeler/issues/2334)
+* `FIX`: support expressions in `bpmn:CallActivity#processId` field ([#2267](https://github.com/camunda/camunda-modeler/issues/2267))
+* `FIX`: connect message flows to call activities ([#942](https://github.com/camunda/camunda-modeler/issues/942))
+* `FIX`: correct Windows newlines being lost on paste ([#2280](https://github.com/camunda/camunda-modeler/issues/2280))
+* `FIX`: report element template validation errors as warnings ([#2287](https://github.com/camunda/camunda-modeler/issues/2287))
+* `FIX`: fallback to default properties panel layout ([#2255](https://github.com/camunda/camunda-modeler/issues/2255))
+* `DEPS`: update to `bpmn-js@8.7.1`
+
+### DMN
+
+* `FEAT`: set focus on newly created row ([#2259](https://github.com/camunda/camunda-modeler/issues/2259))
+* `FIX`: correct Windows newlines being lost on paste ([#2280](https://github.com/camunda/camunda-modeler/issues/2280))
+* `DEPS`: update to `dmn-js@11.0.1`
+
+### Forms
+
+* `FEAT`: register Camunda Modeler for `.form` files on Windows ([#2292](https://github.com/camunda/camunda-modeler/issues/2292))
+* `FIX`: open fallback editor if schema opening fails ([#2294](https://github.com/camunda/camunda-modeler/issues/2294))
 
 ## 4.8.1
 
