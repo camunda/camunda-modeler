@@ -251,6 +251,10 @@ export default class CamundaDmnModeler extends DmnModeler {
     overview.once('import.done', () => {
       const activeViewer = overview.getActiveViewer();
 
+      if (!activeViewer) {
+        return;
+      }
+
       // (5) open DRG element on click
       activeViewer.on('openDrgElement', ({ id }) => {
         const view = this.getViews().find(({ element }) => {
