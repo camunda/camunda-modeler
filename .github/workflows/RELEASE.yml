@@ -32,8 +32,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 0 # required to compare versions in the license book summary
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
@@ -98,6 +96,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        # required to compare versions in the
+        # license book summary
+        fetch-depth: 0
     - name: Send license book summary
       env:
         EMAIL_HOST: "${{ secrets.EMAIL_HOST }}"
