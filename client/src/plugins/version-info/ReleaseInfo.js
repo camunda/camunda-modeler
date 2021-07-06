@@ -43,7 +43,7 @@ export function ReleaseInfo(props) {
   return (
     <div className={ css.ReleaseInfo }>
       <p>
-        Edit both Camunda Platform and Camunda Cloud BPMN diagrams.
+        Model Camunda Cloud 1.1 BPMN diagrams. Connect message flows to call activities and color your BPMN elements in a <a href="https://github.com/bpmn-miwg/bpmn-in-color">cross-vendor fashion</a>.
       </p>
     </div>
   );
