@@ -1,6 +1,6 @@
 # Camunda Modeler
 
-[![Build Status](https://travis-ci.com/camunda/camunda-modeler.svg?branch=develop)](https://travis-ci.com/camunda/camunda-modeler)
+[![CI](https://github.com/camunda/camunda-modeler/actions/workflows/CI.yml/badge.svg)](https://github.com/camunda/camunda-modeler/actions/workflows/CI.yml)
 
 An integrated modeling solution for BPMN and DMN based on [bpmn.io](http://bpmn.io).
 
