@@ -59,6 +59,7 @@ jobs:
         SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
+        GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       run: npm run build -- --linux --publish
     - name: Build release (MacOS)
       if: ${{ runner.os == 'macOS' }}
@@ -73,6 +74,7 @@ jobs:
         SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
+        GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       run: npm run build -- --mac --publish
     - name: Build release (Windows)
       if: ${{ runner.os == 'Windows' }}
@@ -85,6 +87,7 @@ jobs:
         SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
+        GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       run: npm run build -- --win --publish
 
     - name: Send license book summary
