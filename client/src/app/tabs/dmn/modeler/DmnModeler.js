@@ -132,6 +132,12 @@ export default class CamundaDmnModeler extends DmnModeler {
     this._addOverview(overview);
   }
 
+  showOverview(xml) {
+    return this._overview.importXML(xml).then(
+      () => {}, err => err
+    ).then(err => this._handleOverviewImport(err));
+  }
+
   /**
    * Get stack index of active viewer.
    *
@@ -170,7 +176,7 @@ export default class CamundaDmnModeler extends DmnModeler {
 
     // (1) import overview initially
     this.on('import.parse.start', ({ xml }) => {
-      overview.importXML(xml, this._handleOverviewImport);
+      this.showOverview(xml);
     });
 
     // keep track of view type
@@ -266,12 +272,10 @@ export default class CamundaDmnModeler extends DmnModeler {
     // Prevent others from hooking in when updating overview
     this.once('saveXML.start', HIGH_PRIORITY, () => false);
 
-    this.saveXML((err, xml) => {
-      if (err) {
-        console.error(err);
-      } else {
-        this._overview.importXML(xml, this._handleOverviewImport);
-      }
+    return this.saveXML().then(
+      ({ xml }) => this.showOverview(xml)
+    ).catch(err => {
+      console.error(err);
     });
   }
 
