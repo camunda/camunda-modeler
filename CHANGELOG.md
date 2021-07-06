@@ -14,7 +14,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: improve status bar ([#2318](https://github.com/camunda/camunda-modeler/issues/2318), [#2303](https://github.com/camunda/camunda-modeler/issues/2303))
 * `FEAT`: add basic what's new communication ([#2303](https://github.com/camunda/camunda-modeler/issues/2303))
 * `FEAT`: remove ambiguous `+` button ([#2312](https://github.com/camunda/camunda-modeler/issues/2312), [#2293](https://github.com/camunda/camunda-modeler/issues/2293))
-* `FEAT`: await loading of plug-in provided, injected styles ([`e038073a`](https://github.com/camunda/camunda-modeler/commit/e038073a76f5e9d150724fb35b15f5dd059da422))
+* `FEAT`: await loading of plug-in provided, injected styles ([`#2281`](https://github.com/camunda/camunda-modeler/pull/2281))
 * `FIX`: correct opening of files in already running editor instance ([#2268](https://github.com/camunda/camunda-modeler/issues/2268))
 * `CHORE`: migrate to GitHub actions ([#2245](https://github.com/camunda/camunda-modeler/issues/2245), [#2242](https://github.com/camunda/camunda-modeler/issues/2242))
 
