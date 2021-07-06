@@ -21,7 +21,7 @@ ___Note:__ Yet to be released changes appear here._
 ### BPMN
 
 * `FEAT`: support [bpmn-in-color](https://github.com/bpmn-miwg/bpmn-in-color)
-* `FEAT`: support setting `variables` and `local` property via element templates independently ([#2334](https://github.com/camunda/camunda-modeler/issues/2334)
+* `FEAT`: support setting `variables` and `local` property via element templates independently ([#2334](https://github.com/camunda/camunda-modeler/issues/2334))
 * `FIX`: support expressions in `bpmn:CallActivity#processId` field ([#2267](https://github.com/camunda/camunda-modeler/issues/2267))
 * `FIX`: connect message flows to call activities ([#942](https://github.com/camunda/camunda-modeler/issues/942))
 * `FIX`: correct Windows newlines being lost on paste ([#2280](https://github.com/camunda/camunda-modeler/issues/2280))
