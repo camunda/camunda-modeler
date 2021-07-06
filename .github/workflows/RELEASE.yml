@@ -12,8 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh config set prompt disabled
           TAG=$(git describe --tags --abbrev=0)
           gh release create $TAG --draft --title $TAG
 
