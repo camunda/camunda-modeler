@@ -22,11 +22,31 @@ jobs:
         git config user.email github-actions@github.com
         git merge -m 'Merge master to develop' --no-edit origin/master
         git push
-    - name: Notify on Slack if merge fails
+
+  Create_pull_request_and_notify:
+    needs: Merge_master_to_develop
+    runs-on: ubuntu-latest
+    if: failure()
+    permissions:
+      pull-requests: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Create pull request
+      id: open-pr
+      uses: repo-sync/pull-request@65194d8015be7624d231796ddee1cd52a5023cb3
+      with:
+        source_branch: ""                                       # If blank, default: triggered branch
+        destination_branch: "develop"                           # If blank, default: master
+        pr_title: "Merge master to develop"                     # Title of pull request
+        pr_body: "This integrates latest changes from master."  # Full markdown support, requires pr_title to be set
+        pr_reviewer: "camunda/modeling-dev"                     # Comma-separated list (no spaces)
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Notify on Slack
       uses: slackapi/slack-github-action@v1.15.0
-      if: failure()
       with:
         channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
-        slack-message: "Automatic merge of <https://github.com/${{ github.repository }}/tree/${{ github.ref }}|${{ github.ref }}> to <https://github.com/${{ github.repository }}/tree/develop|${{ github.repository }}#develop failed."
+        slack-message: "Automatic merge of <https://github.com/${{ github.repository }}/tree/${{ github.ref }}|${{ github.ref }}> to <https://github.com/${{ github.repository }}/tree/develop|${{ github.repository }}#develop> failed. Created <${{ steps.open-pr.outputs.pr_url }}|a pull request> instead."
       env:
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
