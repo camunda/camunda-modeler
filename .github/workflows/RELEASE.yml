@@ -9,14 +9,14 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Create GitHub release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG=$(git describe --tags --abbrev=0)
-          gh release create $TAG --draft --title $TAG
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Create GitHub release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        TAG=$(git describe --tags --abbrev=0)
+        gh release create $TAG --draft --title $TAG
 
   Build_release:
     needs: Pre_release
@@ -90,8 +90,13 @@ jobs:
         GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       run: npm run build -- --win --publish
 
+  Post_release:
+    needs: Build_release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Send license book summary
-      if: ${{ runner.os == 'Linux' }}
       env:
         EMAIL_HOST: "${{ secrets.EMAIL_HOST }}"
         EMAIL_PASSWORD: "${{ secrets.EMAIL_PASSWORD }}"
