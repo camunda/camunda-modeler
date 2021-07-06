@@ -358,6 +358,11 @@ export default class TabsProvider {
       delete this.providers['cloud-bpmn'];
     }
 
+    if (Flags.get('disable-platform', true)) {
+      this.providersByFileType.bpmn = this.providersByFileType.bpmn.filter(p => p !== this.providers['bpmn']);
+      delete this.providers['bpmn'];
+    }
+
     if (Flags.get('disable-cmmn', true)) {
       delete this.providers.cmmn;
       delete this.providersByFileType.cmmn;

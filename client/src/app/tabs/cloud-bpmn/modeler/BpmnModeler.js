@@ -19,6 +19,7 @@ import addExporterModule from '@bpmn-io/add-exporter';
 import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
+  DesignPropertiesProviderModule,
   ZeebePropertiesProviderModule
 } from '@bpmn-io/bpmn-properties-panel';
 
@@ -26,6 +27,8 @@ import completeDirectEditingModule from '../../bpmn/modeler/features/complete-di
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from '../../bpmn/modeler/features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
+
+import toggleExecutionProperties from './features/testing/ToggleExecutionProperties';
 
 import Flags, {
   DISABLE_ADJUST_ORIGIN
@@ -63,7 +66,9 @@ const extensionModules = [
   propertiesPanelKeyboardBindingsModule,
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
-  ZeebePropertiesProviderModule
+  DesignPropertiesProviderModule,
+  ZeebePropertiesProviderModule,
+  toggleExecutionProperties
 ];
 
 CloudBpmnModeler.prototype._modules = [

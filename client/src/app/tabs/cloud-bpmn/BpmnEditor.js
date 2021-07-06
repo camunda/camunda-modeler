@@ -117,7 +117,12 @@ export class BpmnEditor extends CachedComponent {
 
     const propertiesPanel = modeler.get('propertiesPanel');
 
-    propertiesPanel.attachTo(this.propertiesPanelRef.current);
+    const eventBus = modeler.get('eventBus');
+
+    // wait until we have an element to be rendered
+    eventBus.once('root.added', (event) => {
+      propertiesPanel.attachTo(this.propertiesPanelRef.current, event.element);
+    });
 
     this.checkImport();
   }
@@ -690,6 +695,7 @@ export class BpmnEditor extends CachedComponent {
 
     const {
       onAction,
+      onOpenEngineProfile
     } = props;
 
     // TODO @pinussilvestrus: ignore plugins for now
@@ -703,7 +709,10 @@ export class BpmnEditor extends CachedComponent {
 
     const modeler = new BpmnModeler({
       ...options,
-      position: 'absolute'
+      position: 'absolute',
+      designPropertiesProvider: {
+        openEngineProfile: onOpenEngineProfile
+      }
     });
 
     const commandStack = modeler.get('commandStack');

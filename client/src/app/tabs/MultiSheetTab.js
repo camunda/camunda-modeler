@@ -360,7 +360,8 @@ export class MultiSheetTab extends CachedComponent {
       id,
       xml,
       layout,
-      tab
+      tab,
+      onEvent
     } = this.props;
 
     if (!sheets) {
@@ -370,6 +371,13 @@ export class MultiSheetTab extends CachedComponent {
     if (!activeSheet) {
       activeSheet = sheets[0];
     }
+
+    // @pinussilvestrus: user testing hack
+    const onOpenEngineProfile = () => {
+      this.onAction('emit-event', {
+        type: 'engineProfile.open',
+      });
+    };
 
     const Editor = activeSheet.provider.editor;
 
@@ -396,6 +404,7 @@ export class MultiSheetTab extends CachedComponent {
             onModal={ this.props.onModal }
             getConfig={ this.props.getConfig }
             setConfig={ this.props.setConfig }
+            onOpenEngineProfile={ onOpenEngineProfile }
             getPlugins={ this.props.getPlugins }
             onWarning={ this.handleWarning }
           />
@@ -407,7 +416,12 @@ export class MultiSheetTab extends CachedComponent {
           onSelect={ this.switchSheet }
         />
 
-        <EngineProfile tab={ tab } />
+        <EngineProfile
+          tab={ tab }
+          onAction={ this.onAction }
+          onEvent={ onEvent }
+          getConfigForFile={ this.props.getConfigForFile }
+          setConfigForFile={ this.props.setConfigForFile } />
       </div>
     );
   }
