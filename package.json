@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "QuantME Modeling and Transformation Framework based on the Camunda Modeler",
   "scripts": {
-    "app:dev": "electron ./app/dev.js --force-update-checks resources/diagram/simple.bpmn",
+    "app:dev": "electron ./app/dev.js --force-update-checks",
     "app:test": "nyc --reporter lcov --exclude \"app/test/**\" --exclude \"app/**/__tests__\" mocha --require ./app/test/expect \"app/**/*-spec.js\"",
     "client:build": "(cd client && npm run build)",
     "client:dev": "(cd client && npm run dev)",
@@ -20,8 +20,6 @@
     "build": "run-s plugin client:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
     "lint": "eslint .",
     "postinstall": "lerna bootstrap",
-    "update-license-book": "node tasks/license-book.js -o THIRD_PARTY_NOTICES -c",
-    "send-license-book-summary": "node tasks/send-license-book-summary.js -s",
     "test": "run-s *:test",
     "start": "run-s \"dev -- {@}\" --"
   },
@@ -42,7 +40,7 @@
     "diff2html": "^2.11.2",
     "electron": "^7.1.12",
     "electron-builder": "^22.3.2",
-    "electron-devtools-installer": "^2.2.4",
+    "electron-devtools-installer": "^3.2.0",
     "electron-notarize": "^0.2.1",
     "electron-publisher-s3": "^20.17.2",
     "electron-reloader": "^0.2.0",
