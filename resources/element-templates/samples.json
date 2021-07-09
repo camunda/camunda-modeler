@@ -313,10 +313,10 @@
       {
         "label": "Input source variable",
         "type": "String",
-        "value": "var_local",
+        "value": "var_local_1",
         "binding": {
           "type": "camunda:in",
-          "target": "var_called_source"
+          "target": "var_called_source_1"
         },
         "constraints": {
           "notEmpty": true
@@ -325,10 +325,10 @@
       {
         "label": "Input source variable local scope",
         "type": "String",
-        "value": "var_local",
+        "value": "var_local_2",
         "binding": {
           "type": "camunda:in",
-          "target": "var_called_source",
+          "target": "var_called_source_2",
           "variables": "local"
         },
         "constraints": {
@@ -341,7 +341,7 @@
         "value": "${ var_local + 2 }",
         "binding": {
           "type": "camunda:in",
-          "target": "var_called_expr",
+          "target": "var_called_expr_1",
           "variables": "local",
           "expression": true
         },
@@ -352,10 +352,10 @@
       {
         "label": "Output target (source variable)",
         "type": "String",
-        "value": "var_called",
+        "value": "var_called_1",
         "binding": {
           "type": "camunda:out",
-          "source": "var_local_source"
+          "source": "var_local_source_1"
         },
         "constraints": {
           "notEmpty": true
@@ -364,10 +364,10 @@
       {
         "label": "Output target (source variable local scope)",
         "type": "String",
-        "value": "var_called",
+        "value": "var_called_2",
         "binding": {
           "type": "camunda:out",
-          "source": "var_local_source",
+          "source": "var_local_source_2",
           "variables": "local"
         },
         "constraints": {
@@ -377,10 +377,10 @@
       {
         "label": "Input sourceExpression",
         "type": "String",
-        "value": "${expr_local}",
+        "value": "${ expr_local }",
         "binding": {
           "type": "camunda:in",
-          "target": "var_called_expr",
+          "target": "var_called_expr_2",
           "expression": true
         },
         "constraints": {
@@ -390,10 +390,10 @@
       {
         "label": "Output target (sourceExpression)",
         "type": "String",
-        "value": "var_local_expr",
+        "value": "var_local_expr_1",
         "binding": {
           "type": "camunda:out",
-          "sourceExpression": "${expr_called}"
+          "sourceExpression": "${ expr_called_1 }"
         },
         "constraints": {
           "notEmpty": true
@@ -402,14 +402,43 @@
       {
         "label": "Output target (sourceExpression local scope)",
         "type": "String",
-        "value": "var_local_expr",
+        "value": "var_local_expr_2",
         "binding": {
           "type": "camunda:out",
-          "sourceExpression": "${ expr_called }",
+          "sourceExpression": "${ expr_called_2 }",
           "variables": "local"
         },
         "constraints": {
           "notEmpty": true
+        }
+      },
+      {
+        "label": "Input business key",
+        "description": "Provide the expression retrieving the business key.",
+        "type": "String",
+        "value": "${ execution.processBusinessKey }",
+        "binding": {
+          "type": "camunda:in:businessKey"
+        }
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "name": "Caller All IO",
+    "id": "com.camunda.example.CallerAllIO",
+    "appliesTo": [
+      "bpmn:CallActivity"
+    ],
+    "properties": [
+      {
+        "label": "Called Process",
+        "type": "String",
+        "editable": false,
+        "value": "calledProcess",
+        "binding": {
+          "type": "property",
+          "name": "calledElement"
         }
       },
       {
@@ -427,6 +456,26 @@
           "type": "camunda:out",
           "variables": "all"
         }
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "name": "Caller All IO Local",
+    "id": "com.camunda.example.CallerAllIOLocal",
+    "appliesTo": [
+      "bpmn:CallActivity"
+    ],
+    "properties": [
+      {
+        "label": "Called Process",
+        "type": "String",
+        "editable": false,
+        "value": "calledProcess",
+        "binding": {
+          "type": "property",
+          "name": "calledElement"
+        }
       },
       {
         "label": "Input all local",
@@ -442,15 +491,6 @@
         "binding": {
           "type": "camunda:out",
           "variables": "local"
-        }
-      },
-      {
-        "label": "Input business key",
-        "description": "Provide the expression retrieving the business key.",
-        "type": "String",
-        "value": "${execution.processBusinessKey}",
-        "binding": {
-          "type": "camunda:in:businessKey"
         }
       }
     ]
