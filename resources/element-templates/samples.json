@@ -343,7 +343,7 @@
           "type": "camunda:in",
           "target": "var_called_expr",
           "variables": "local",
-          "expression": "true"
+          "expression": true
         },
         "constraints": {
           "notEmpty": true
