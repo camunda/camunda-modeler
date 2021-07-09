@@ -79,7 +79,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "ConnectorGetTask",
     "id": "my.connector.http.get.Task",
     "appliesTo": [
@@ -132,7 +132,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "AsyncAwesomeTask",
     "id": "com.camunda.example.AwesomeTask",
     "appliesTo": [
@@ -151,7 +151,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "Custom ServiceTask",
     "id": "com.camunda.example.CustomServiceTask",
     "appliesTo": [
@@ -171,7 +171,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "VIP-Order Path",
     "id": "e.com.merce.FastPath",
     "appliesTo": [
@@ -200,7 +200,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "WS Caller Task",
     "id": "com.camunda.example.WsCaller",
     "description": "Requires the user to provide a Web Service URL.",
@@ -235,7 +235,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "Check Invoice Task",
     "id": "com.camunda.example.CheckInvoiceTask",
     "appliesTo": [
@@ -293,7 +293,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "Caller",
     "id": "com.camunda.example.Caller",
     "appliesTo": [
@@ -424,7 +424,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "Caller All IO",
     "id": "com.camunda.example.CallerAllIO",
     "appliesTo": [
@@ -460,7 +460,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "Caller All IO Local",
     "id": "com.camunda.example.CallerAllIOLocal",
     "appliesTo": [
@@ -496,7 +496,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "Execution Listener",
     "id": "com.camunda.example.ExecutionListener",
     "appliesTo": [
@@ -526,7 +526,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "Field Injections",
     "id": "com.camunda.example.FieldInjections",
     "appliesTo": [
@@ -556,7 +556,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "Default Rendering",
     "id": "com.camunda.example.DefaultRendering",
     "appliesTo": [
@@ -580,7 +580,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "External Service Task (with Errors)",
     "id": "com.camunda.example.ExternalServiceTaskWithErrors",
     "appliesTo": [
@@ -648,7 +648,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.3.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
     "name": "Default Errors Rendering",
     "id": "com.camunda.example.DefaultErrorsRendering",
     "appliesTo": [
