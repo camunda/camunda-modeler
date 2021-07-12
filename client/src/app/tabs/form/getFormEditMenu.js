@@ -10,24 +10,25 @@
 
 import {
   getDefaultCopyCutPasteEntries,
-  getDefaultUndoRedoEntries
+  getDefaultUndoRedoEntries,
+  getUndoRedoEntries
 } from '../getEditMenu';
 
-export function getCopyCutPasteEntries(state) {
+function getCopyCutPasteEntries(state) {
   const { inputActive } = state;
 
   return getDefaultCopyCutPasteEntries(inputActive);
 }
 
-export function getUndoRedoEntries(state) {
-  const { inputActive } = state;
-
-  return getDefaultUndoRedoEntries(inputActive);
-}
-
 export function getFormEditMenu(state) {
+  const { defaultUndoRedo } = state;
+
+  const undoRedoEntries = defaultUndoRedo
+    ? getDefaultUndoRedoEntries(true)
+    : getUndoRedoEntries(state);
+
   return [
-    getUndoRedoEntries(state),
+    undoRedoEntries,
     getCopyCutPasteEntries(state)
   ];
 }
