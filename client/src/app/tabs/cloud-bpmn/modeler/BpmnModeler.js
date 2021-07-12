@@ -8,9 +8,19 @@
  * except in compliance with the MIT License.
  */
 
+import {
+  has
+} from 'min-dash';
+
 import BpmnModeler from 'camunda-bpmn-js/lib/camunda-cloud/Modeler';
 
 import addExporterModule from '@bpmn-io/add-exporter';
+
+import {
+  BpmnPropertiesPanelModule,
+  BpmnPropertiesProviderModule,
+  ZeebePropertiesProviderModule
+} from '@bpmn-io/bpmn-properties-panel';
 
 import completeDirectEditingModule from '../../bpmn/modeler/features/complete-direct-editing';
 import globalClipboardModule from './features/global-clipboard';
@@ -22,6 +32,8 @@ import Flags, {
 } from '../../../../util/Flags';
 
 import 'camunda-bpmn-js/dist/assets/camunda-cloud-modeler.css';
+
+import '@bpmn-io/bpmn-properties-panel/dist/assets/properties-panel.css';
 
 
 export default class CloudBpmnModeler extends BpmnModeler {
@@ -49,9 +61,22 @@ const extensionModules = [
   globalClipboardModule,
   handToolOnSpaceModule,
   propertiesPanelKeyboardBindingsModule,
+  BpmnPropertiesPanelModule,
+  BpmnPropertiesProviderModule,
+  ZeebePropertiesProviderModule
 ];
 
 CloudBpmnModeler.prototype._modules = [
-  ...defaultModules,
+  ...excludeOldModules(defaultModules),
   ...extensionModules
 ];
+
+
+// helper /////////////////////
+
+/**
+ * Excludes old properties panel + provider coming from camunda-bpmn-js.
+ */
+function excludeOldModules(modules) {
+  return modules.filter(m => !has(m, 'propertiesPanel') && !has(m, 'propertiesProvider'));
+}

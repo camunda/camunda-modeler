@@ -67,7 +67,7 @@ export default class PropertiesPanelKeyboardBindings {
   }
 
   _getContainer() {
-    return this._propertiesPanel._container;
+    return this._propertiesPanel._parentNode || this._propertiesPanel._container;
   }
 }
 
