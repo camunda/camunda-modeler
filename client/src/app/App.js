@@ -843,6 +843,40 @@ export class App extends PureComponent {
     });
   }
 
+  lintTab = async (tab, contents) => {
+    const { tabsProvider } = this.props;
+
+    const tabProvider = tabsProvider.getProvider(tab.type);
+
+    if (!tabProvider.getLinter) {
+      return;
+    }
+
+    const linter = tabProvider.getLinter(tab);
+
+    if (!linter) {
+      return;
+    }
+
+    if (!contents) {
+      contents = tab.file.contents;
+    }
+
+    const results = await linter.lint(contents);
+
+    console.log(`Linting took ${ (performance.now() - window.lintStart).toFixed(2) } ms`, results);
+
+    if (results.length) {
+      this.clearLog();
+
+      this.logEntry(tab.file.path);
+
+      results.forEach(({ id, message }) => {
+        this.logEntry(`#${ id } : ${ message }`, null, () => this.triggerAction('selectElement', { id }));
+      });
+    }
+  }
+
   resizeTab = () => {
     const tab = this.tabRef.current;
 
@@ -1569,6 +1603,15 @@ export class App extends PureComponent {
 
 
     log('App#triggerAction %s %o', action, options);
+
+    if (action === 'lint-tab') {
+      const {
+        tab,
+        contents
+      } = options;
+
+      return this.lintTab(tab, contents);
+    }
 
     if (action === 'select-tab') {
       if (options === 'next') {

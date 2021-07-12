@@ -26,7 +26,13 @@ import { active as isInputActive } from '../../../util/dom/isInput';
 
 import { FormEditor as Form } from './editor/FormEditor';
 
-import { isFunction } from 'min-dash';
+import {
+  debounce,
+  isFunction
+} from 'min-dash';
+
+const LOW_PRIORITY = 500;
+
 
 export class FormEditor extends CachedComponent {
   constructor(props) {
@@ -37,6 +43,8 @@ export class FormEditor extends CachedComponent {
     this.state = {
       importing: false
     };
+
+    this.handleLinting = debounce(this.handleLinting.bind(this), 300);
   }
 
   componentDidMount() {
@@ -163,6 +171,9 @@ export class FormEditor extends CachedComponent {
       'propertiesPanel.focusout',
       'selection.changed'
     ].forEach((event) => form[ fn ](event, this.handleChanged));
+
+    // TODO: Support priorities
+    form[ fn ]('commandStack.changed', this.handleLinting);
   }
 
   handleChanged = () => {
@@ -191,6 +202,14 @@ export class FormEditor extends CachedComponent {
     }
 
     this.setState(newState);
+  }
+
+  handleLinting = () => {
+    window.lintStart = performance.now();
+
+    const contents = this.getXML(false);
+
+    this.props.onAction('lint', { contents });
   }
 
   isDirty() {

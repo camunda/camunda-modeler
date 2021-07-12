@@ -10,7 +10,7 @@
 
 import React, { Component } from 'react';
 
-import { isFunction } from 'min-dash';
+import { isFunction, throttle } from 'min-dash';
 
 import { Fill } from '../../slot-fill';
 
@@ -98,6 +98,8 @@ const COLORS = [{
   stroke: 'rgb(142, 36, 170)'
 }];
 
+const LOW_PRIORITY = 500;
+
 
 export class BpmnEditor extends CachedComponent {
 
@@ -110,6 +112,8 @@ export class BpmnEditor extends CachedComponent {
     this.propertiesPanelRef = React.createRef();
 
     this.handleResize = debounce(this.handleResize);
+
+    this.handleLinting = debounce(this.handleLinting.bind(this), 300);
   }
 
   async componentDidMount() {
@@ -186,6 +190,8 @@ export class BpmnEditor extends CachedComponent {
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
+
+    modeler[fn]('commandStack.changed', LOW_PRIORITY, this.handleLinting);
 
     modeler[fn]('elementTemplates.errors', this.handleElementTemplateErrors);
 
@@ -414,6 +420,14 @@ export class BpmnEditor extends CachedComponent {
     this.setState(newState);
   }
 
+  handleLinting = async () => {
+    window.lintStart = performance.now();
+
+    const contents = await this.getXML(false);
+
+    this.props.onAction('lint', { contents });
+  }
+
   isDirty() {
     const {
       modeler,
@@ -499,7 +513,7 @@ export class BpmnEditor extends CachedComponent {
     return modeler;
   }
 
-  async getXML() {
+  async getXML(save = true) {
     const {
       lastXML,
       modeler
@@ -517,7 +531,9 @@ export class BpmnEditor extends CachedComponent {
 
       const { xml } = await modeler.saveXML({ format: true });
 
-      this.setCached({ lastXML: xml, stackIdx });
+      if (save) {
+        this.setCached({ lastXML: xml, stackIdx });
+      }
 
       return xml;
     } catch (error) {
@@ -626,8 +642,12 @@ export class BpmnEditor extends CachedComponent {
       return this.loadTemplates();
     }
 
+    const editorActions = modeler.get('editorActions');
+
     // TODO(nikku): handle all editor actions
-    return modeler.get('editorActions').trigger(action, context);
+    if (editorActions.isRegistered(action)) {
+      return editorActions.trigger(action, context);
+    }
   }
 
   handleSetColor = (fill, stroke) => {
