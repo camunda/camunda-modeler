@@ -121,6 +121,7 @@ export default class TabsProvider {
         },
         getMeta(file) {
           return {
+            contentType: 'xml',
             engineProfile: 'Camunda Platform'
           };
         },
@@ -193,6 +194,7 @@ export default class TabsProvider {
         },
         getMeta(file) {
           return {
+            contentType: 'xml',
             engineProfile: 'Camunda Cloud'
           };
         },
@@ -235,6 +237,7 @@ export default class TabsProvider {
         },
         getMeta(file) {
           return {
+            contentType: 'xml',
             engineProfile: 'Camunda Platform'
           };
         },
@@ -284,6 +287,7 @@ export default class TabsProvider {
         },
         getMeta(file) {
           return {
+            contentType: 'xml',
             engineProfile: 'Camunda Platform'
           };
         },
@@ -325,6 +329,7 @@ export default class TabsProvider {
         },
         getMeta(file) {
           return {
+            contentType: 'json',
             engineProfile: 'Camunda Platform or Cloud'
           };
         },

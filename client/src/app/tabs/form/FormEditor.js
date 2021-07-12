@@ -204,7 +204,7 @@ export class FormEditor extends CachedComponent {
     return commandStack._stackIdx !== stackIdx;
   }
 
-  getXML() {
+  getXML(save = true) {
     const {
       form,
       lastSchema
@@ -220,21 +220,36 @@ export class FormEditor extends CachedComponent {
 
     const schema = JSON.stringify(form.saveSchema(), null, 2);
 
-    this.setCached({
-      lastSchema: schema,
-      stackIdx
-    });
+    if (save) {
+      this.setCached({
+        lastSchema: schema,
+        stackIdx
+      });
+    }
 
     return schema;
   }
 
   triggerAction(action, context) {
+    const { onContentUpdated } = this.props;
+
     const { form } = this.getCached();
 
     const editorActions = form.get('editorActions');
 
     if (editorActions.isRegistered(action)) {
-      return form.get('editorActions').trigger(action, context);
+
+      const result = form.get('editorActions').trigger(action, context);
+
+      if (action === 'setExecutionPlatform') {
+        const xml = this.getXML(false);
+
+        this.setCached({ lastSchema: xml });
+
+        onContentUpdated(xml);
+      }
+
+      return result;
     }
   }
 

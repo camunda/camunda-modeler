@@ -407,7 +407,10 @@ export class MultiSheetTab extends CachedComponent {
           onSelect={ this.switchSheet }
         />
 
-        <EngineProfile tab={ tab } />
+        <EngineProfile
+          tab={ tab }
+          triggerAction={ this.triggerAction }
+          xml={ lastXML || xml } />
       </div>
     );
   }

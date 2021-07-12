@@ -26,14 +26,39 @@ const MODELER_NAMESPACE = 'http://camunda.org/schema/modeler/1.0';
  * @param {string} contents
  * @returns {null | { executionPlatform: string, executionPlatformVersion: string | null }}
  */
-export default function parseExecutionPlatform(contents = '') {
-  const executionPlatformDetails = getExecutionPlatformDetails(contents);
-
-  return executionPlatformDetails;
+export default function parseExecutionPlatform(contents = '', contentType = 'xml') {
+  if (contentType === 'json') {
+    return getExecutionPlatformDetailsJSON(contents);
+  } else {
+    return getExecutionPlatformDetailsXML(contents);
+  }
 }
 
+function getExecutionPlatformDetailsJSON(json) {
+  let meta = null;
 
-function getExecutionPlatformDetails(xml) {
+  try {
+    json = JSON.parse(json);
+
+    const {
+      executionPlatform,
+      executionPlatformVersion = null
+    } = json;
+
+    if (executionPlatform) {
+      meta = {
+        executionPlatform,
+        executionPlatformVersion
+      };
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
+  return meta;
+}
+
+function getExecutionPlatformDetailsXML(xml) {
   let meta = null;
 
   const parser = new Parser();
