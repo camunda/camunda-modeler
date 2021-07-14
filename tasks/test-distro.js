@@ -242,7 +242,6 @@ async function verifyArchives(platforms, version) {
         console.log('     > verifying contents');
 
         const files = await parseCompressedFile(archivePath);
-        console.log('     > archive contains ' + files);
 
         for (const expectedFile of contents) {
           console.log('          > verifying file ' + expectedFile);
