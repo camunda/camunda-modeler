@@ -242,14 +242,17 @@ async function verifyArchives(platforms, version) {
         console.log('     > verifying contents');
 
         const files = await parseCompressedFile(archivePath);
+        console.log('     > archive contains ' + files);
 
         for (const expectedFile of contents) {
+          console.log('          > verifying file ' + expectedFile);
 
           const contained = files.some(file => file === expectedFile);
 
           if (!contained) {
             throw new Error(`expected <${name}> to contain <${expectedFile}>`);
           }
+          console.log('          > ok');
         }
 
         console.log('     > ok');
