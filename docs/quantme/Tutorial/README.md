@@ -4,15 +4,15 @@ In the following, it is described how to set up the QuantME Modeling and Transfo
 
 1. Clone the QuantME Modeling and Transformation Framework: 
 
-  ```git clone https://github.com/UST-QuAntiL/QuantME-TransformationFramework.git```
+    ```git clone https://github.com/UST-QuAntiL/QuantME-TransformationFramework.git```
 
 2. Create a Github repository for your QRMs. 
 In the following we will assume the repository is available under the `UST-QuAntiL` Github organization and has the repository name `qrm-test`.
 Please adapt these values to your setup in the following steps.
 
-3. Configure the QuantME Modeling and Transformation Framework to use the created QRM repository:
-- Navigate to the configuration file that is located [here](../../../app/lib/framework-config/config.js)
-- Insert the user/organisation name and repository name:
+3. Configure the QuantME Modeling and Transformation Framework to use the created QRM repository using one of the two options provided bellow:
+- Navigate to the configuration file that is located [here](../../../app/lib/framework-config/config.js).
+Insert the user/organisation name and repository name:
 
   ```JS
   module.exports = {
@@ -20,13 +20,19 @@ Please adapt these values to your setup in the following steps.
     githubRepositoryName: 'qrm-test'
   };
   ```
+- Alternatively, you can also configure the QRM repository after starting the framework using the `Configuration Button` in the toolbar. 
+However, please note that configuration changes during runtime are currently *not* stored in the configuration file.
+This means you have to reconfigure the QRM repository after restarting the framework.
 
 4. Start the QuantME Modeling and Transformation Framework:
 
-- In development mode: Build the plugins contained in this [folder](../../../resources/plugins) and then run ```npm run install``` and ```npm run dev``` in the root folder.
+- Please make sure to execute the following commands using a Posix environment. 
+On Windows, that is Git Bash or WSL.
+
+- In development mode: Build the plugins contained in this [folder](../../../resources/plugins) and then run ```npm install``` and ```npm run dev``` in the root folder.
 Then, the framework will start automatically.
 
-- In production mode: Run ```npm run install``` and ```npm run build```.
+- In production mode: Run ```npm install``` and ```npm run build```.
 The application is build in ```.\dist``` and can be started depending on your operating system.
 
 5. Use the framework to create a QRM (detector and replacement fragment):
@@ -50,7 +56,7 @@ The application is build in ```.\dist``` and can be started depending on your op
     <kbd><img src="./set-attributes.gif" width="900"/></kbd>
   
     In this example, we want to create a replacement fragment that can apply the _correction matrix_ unfolding technique to calculations performed on _ibmq_rome_ or _ibmq_london_. 
-    Therefore, we define ```Correction Matrix``` for the _unfolding technique_ attribute of the task and the list ```ibmq_rome, ibmq_london``` for the _QPU_ attribute.
+    Therefore, we define ```Correction Matrix``` for the _unfolding technique_ attribute of the task, ```IBMQ``` for the _provider_ attribute, and the list ```ibmq_rome, ibmq_london``` for the _QPU_ attribute.
     Our implementation will handle arbitrary values for the _max age_ attribute, thus, we add a wildcard (```*```) for this attribute.
     Note: For workflows only numerical values are allowed for the _max age_ attribute. 
     Therefore, the wildcard is marked as faulty.
@@ -84,15 +90,16 @@ The application is build in ```.\dist``` and can be started depending on your op
     
     <kbd><img src="./example-workflow.png" /></kbd>
     
-    Please note the defined attributes of the ReadoutErrorMitigationTask as shown in the bottom left corner of the figure.
+    Please note the defined attributes of the ReadoutErrorMitigationTask as shown in the bottom right corner of the figure.
     The example workflow in XML format can be found [here](./example-workflow.bpmn).
     
   * Update the QRM repository: 
     The QRM repository is loaded into the QuantME Modeling and Transformation Framework at startup.
     Therefore, if there are updates in the repository during the runtime of the framework, the QRM repository has to be reloaded.
-    This can be requested in the menu: 
+    Furthermore, an update is also needed after updating the QRM repository configuration during runtime.
+    This can be requested in the toolbar: 
     
-    <kbd><img src="./reload-qrms.gif" width="900"/></kbd>
+    <kbd><img src="./reload-qrms.png" /></kbd>
     
     Note: The Github API takes some time to return the updated files.
     Thus, if you experience some issues, wait some time and then update the QRM repository again.
