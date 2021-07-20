@@ -9,21 +9,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { layout } from './Layouter';
+import { layout } from 'client/src/app/quantme/layouter/Layouter';
 import { matchesQRM } from './QuantMEMatcher';
 import {
   getRootProcess,
-  getRootProcessFromXml,
   getSingleFlowElement,
   isFlowLikeElement,
   getCamundaInputOutput,
   getPropertiesToCopy,
   exportXmlFromModeler
-} from '../Utilities';
-import { addQuantMEInputParameters } from './InputOutputHandler';
-import * as Constants from '../Constants';
+} from 'client/src/app/quantme/utilities/Utilities';
+import { getRootProcessFromXml, createModelerFromXml } from '../Utilities';
+import { addQuantMEInputParameters } from 'client/src/app/quantme/replacement/InputOutputHandler';
+import * as Constants from 'client/src/app/quantme/Constants';
 import { replaceHardwareSelectionSubprocess } from './hardware-selection/QuantMEHardwareSelectionHandler';
-import { createModelerFromXml } from './ModelerGenerator';
 
 /**
  * Initiate the replacement process for the QuantME tasks that are contained in the current process model

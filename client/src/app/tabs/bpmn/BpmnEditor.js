@@ -8,28 +8,20 @@
  * except in compliance with the MIT License.
  */
 
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+
 import React, { Component } from 'react';
 
 import { isFunction } from 'min-dash';
 
 import { Fill } from '../../slot-fill';
 
-import {
-  Button,
-  DropdownButton,
-  Icon,
-  Loader
-} from '../../primitives';
+import { Button, DropdownButton, Icon, Loader } from '../../primitives';
 
-import {
-  debounce
-} from '../../../util';
+import { debounce } from '../../../util';
 
-import {
-  WithCache,
-  WithCachedState,
-  CachedComponent
-} from '../../cached';
+import { CachedComponent, WithCache, WithCachedState } from '../../cached';
 
 import PropertiesContainer from '../PropertiesContainer';
 
@@ -49,14 +41,13 @@ import generateImage from '../../util/generateImage';
 
 import applyDefaultTemplates from './modeler/features/apply-default-templates/applyDefaultTemplates';
 
-import {
-  findUsages as findNamespaceUsages,
-  replaceUsages as replaceNamespaceUsages
-} from '../util/namespace';
+import { findUsages as findNamespaceUsages, replaceUsages as replaceNamespaceUsages } from '../util/namespace';
 
 import configureModeler from './util/configure';
 
 import Metadata from '../../../util/Metadata';
+import { getServiceTasksToDeploy } from '../../quantme/deployment/DeploymentUtils';
+import { getRootProcess } from '../../quantme/utilities/Utilities';
 
 
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
@@ -66,7 +57,7 @@ const NAMESPACE_CAMUNDA = {
   prefix: 'camunda'
 };
 
-const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
+const EXPORT_AS = [ 'png', 'jpeg', 'svg', 'zip' ];
 
 const COLORS = [{
   title: 'White',
@@ -520,14 +511,61 @@ export class BpmnEditor extends CachedComponent {
     }
   }
 
-  async exportAs(type) {
+  async exportAs(type, tab) {
     const svg = await this.exportSVG();
 
     if (type === 'svg') {
       return svg;
     }
 
+    if (type === 'zip') {
+      let contents = await this.exportQAA(tab);
+      saveAs(contents, tab.name.split('.')[0] + '.zip');
+      return;
+    }
+
     return generateImage(type, svg);
+  }
+
+  async exportQAA(tab) {
+    console.log('Starting QAA export!');
+
+    // get modeler and JS zipper
+    let jszip = new JSZip();
+    const modeler = this.getModeler();
+
+    // write the BPMN diagram to the zip
+    const { xml } = await modeler.saveXML({ format: true });
+    jszip.file(tab.name, xml);
+
+    // get list of deployment models defined at service tasks
+    let csarsToAdd = getServiceTasksToDeploy(getRootProcess(modeler.getDefinitions()));
+    if (csarsToAdd && csarsToAdd.length > 0) {
+      console.log('Adding %i CSARs to QAA!', csarsToAdd.length);
+
+      // add folder for related deployment models to the QAA
+      const deploymentModelFolder = jszip.folder('deployment-models');
+
+      for (let id in csarsToAdd) {
+        const csarToAdd = csarsToAdd[id];
+
+        // create folder for the CSAR contents
+        const csarFolder = deploymentModelFolder.folder(csarToAdd.csarName);
+
+        // download CSAR from Winery
+        const csarUrl = csarToAdd.url.replace('{{ wineryEndpoint }}', modeler.config.wineryEndpoint);
+        const response = await fetch(csarUrl);
+        const blob = await response.blob();
+
+        // add content of the CSAR to the created folder
+        await csarFolder.loadAsync(blob);
+      }
+    } else {
+      console.log('No CSARs connected with service tasks!');
+    }
+
+    // export zip file
+    return jszip.generateAsync({ type:'blob' });
   }
 
   async exportSVG() {

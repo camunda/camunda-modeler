@@ -16,11 +16,11 @@ import { Fill } from 'camunda-modeler-plugin-helpers/components';
 import ServiceDeploymentOverviewModal from './ServiceDeploymentOverviewModal';
 import ServiceDeploymentInputModal from './ServiceDeploymentInputModal';
 import ServiceDeploymentBindingModal from './ServiceDeploymentBindingModal';
-import { getRootProcess } from '../../quantme/Utilities';
+import { getRootProcess } from 'client/src/app/quantme/utilities/Utilities';
 
-import { createServiceInstance, uploadCSARToContainer } from './OpenTOSCAUtils';
-import { bindUsingPull, bindUsingPush, getBindingType } from './BindingUtils';
-import { getServiceTasksToDeploy } from './DeploymentUtils';
+import { createServiceInstance, uploadCSARToContainer } from 'client/src/app/quantme/deployment/OpenTOSCAUtils';
+import { bindUsingPull, bindUsingPush, getBindingType } from 'client/src/app/quantme/deployment/BindingUtils';
+import { getServiceTasksToDeploy } from 'client/src/app/quantme/deployment/DeploymentUtils';
 
 const defaultState = {
   windowOpenDeploymentOverview: false,
@@ -58,15 +58,6 @@ export default class DeploymentPlugin extends PureComponent {
       // save modeler and activate as current modeler
       this.modelers[tab.id] = modeler;
       this.modeler = modeler;
-
-      // subscribe to event bus to receive updates in the OpenTOSCA Container endpoint
-      const self = this;
-      this.eventBus = modeler.get('eventBus');
-      this.eventBus.on('config.updated', function(config) {
-        self.opentoscaEndpoint = config.opentoscaEndpoint;
-        self.camundaEndpoint = config.camundaEndpoint;
-        self.wineryEndpoint = config.wineryEndpoint;
-      });
     });
 
     // change to modeler corresponding to the active tab
@@ -125,7 +116,7 @@ export default class DeploymentPlugin extends PureComponent {
         let csar = csarList[i];
         console.log('Uploading CSAR to OpenTOSCA container: ', csar);
 
-        let uploadResult = await uploadCSARToContainer(this.opentoscaEndpoint, csar.csarName, csar.url, this.wineryEndpoint);
+        let uploadResult = await uploadCSARToContainer(this.modeler.config.opentoscaEndpoint, csar.csarName, csar.url, this.modeler.config.wineryEndpoint);
         if (uploadResult.success === false) {
 
           // notify user about failed CSAR upload
@@ -197,7 +188,7 @@ export default class DeploymentPlugin extends PureComponent {
         let csar = csarList[i];
         console.log('Creating service instance for CSAR: ', csar);
 
-        let instanceCreationResponse = await createServiceInstance(csar, this.camundaEndpoint);
+        let instanceCreationResponse = await createServiceInstance(csar, this.modeler.config.camundaEndpoint);
         if (instanceCreationResponse.success === false) {
 
           // notify user about failed instance creation

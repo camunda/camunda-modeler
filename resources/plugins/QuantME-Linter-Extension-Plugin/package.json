@@ -21,7 +21,7 @@
     "bpmnlint-plugin-custom": "file:bpmnlint-plugin-custom",
     "camunda-modeler-plugin-helpers": "^3.4.0-alpha.0",
     "npm-run-all": "^4.1.5",
-    "quantme": "file:../QuantME-CamundaPlugin",
+    "client": "file:../../../client",
     "webpack": "^4.28.1",
     "webpack-cli": "^3.3.12"
   }

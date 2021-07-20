@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { exportXmlFromModeler, getCamundaInputOutput, getPropertiesToCopy, getRootProcess } from '../../Utilities';
+import { exportXmlFromModeler, getCamundaInputOutput, getPropertiesToCopy, getRootProcess } from 'client/src/app/quantme/utilities/Utilities';
 import { getQuantMETasks, insertShape } from '../QuantMETransformator';
 import {
   INVOKE_NISQ_ANALYZER_SCRIPT,
@@ -18,9 +18,9 @@ import {
   RETRIEVE_FRAGMENT_SCRIPT_SUFFIX,
   SELECT_ON_QUEUE_SIZE_SCRIPT
 } from './HardwareSelectionScripts';
-import * as consts from '../../Constants';
+import * as consts from 'client/src/app/quantme/Constants';
 import extensionElementsHelper from 'bpmn-js-properties-panel/lib/helper/ExtensionElementsHelper';
-import { createModeler, createModelerFromXml } from '../ModelerGenerator';
+import { createModeler, createModelerFromXml } from '../../Utilities';
 
 /**
  * Replace the given QuantumHardwareSelectionSubprocess by a native subprocess orchestrating the hardware selection

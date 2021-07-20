@@ -12,7 +12,7 @@
 let EntryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory');
 let ModelUtil = require('bpmn-js/lib/util/ModelUtil');
 let CmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
-import * as consts from '../Constants';
+import * as consts from 'client/src/app/quantme/Constants';
 
 export function addAlgorithmEntry(group, translate) {
   group.entries.push(EntryFactory.textField({

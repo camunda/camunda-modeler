@@ -11,7 +11,7 @@
 
 import BpmnRenderer from 'bpmn-js/lib/draw/BpmnRenderer';
 import * as quantmeReplaceOptions from './QuantMEReplaceOptions';
-import * as consts from '../Constants';
+import * as consts from 'client/src/app/quantme/Constants';
 import { append as svgAppend, attr as svgAttr, create as svgCreate } from 'tiny-svg';
 import { getFillColor, getStrokeColor } from 'bpmn-js/lib/draw/BpmnRenderUtil';
 

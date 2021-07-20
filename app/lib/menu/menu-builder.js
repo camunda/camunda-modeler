@@ -215,13 +215,23 @@ class MenuBuilder {
 
   appendExportAs() {
     const exportState = this.options.state.exportAs;
-    const enabled = exportState && exportState.length > 0;
 
+    const imageExportEnabled = exportState && exportState.length > 0;
     this.menu.append(new MenuItem({
       label: 'Export As Image',
-      enabled: enabled,
+      enabled: imageExportEnabled,
       click: function() {
-        app.emit('menu:action', 'export-as', exportState || []);
+        app.emit('menu:action', 'export-as', exportState.filter(state => state !== 'zip') || []);
+      }
+    }));
+
+    const qaaExportEnabled = exportState && exportState.filter(state => state === 'zip').length > 0;
+    console.log('QAA export enabled...' + qaaExportEnabled);
+    this.menu.append(new MenuItem({
+      label: 'Export As QAA',
+      enabled: qaaExportEnabled,
+      click: function() {
+        app.emit('menu:action', 'export-as', 'zip');
       }
     }));
 

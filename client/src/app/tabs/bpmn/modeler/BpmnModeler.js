@@ -43,6 +43,7 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 
 import 'diagram-js-minimap/assets/diagram-js-minimap.css';
+import quantMEModdleExtension from '../../../../../resources/quantme/quantum4bpmn.json';
 
 
 export default class CamundaBpmnModeler extends BpmnModeler {
@@ -58,6 +59,7 @@ export default class CamundaBpmnModeler extends BpmnModeler {
       ...otherOptions,
       moddleExtensions: {
         camunda: camundaModdlePackage,
+        quantME: quantMEModdleExtension,
         ...(moddleExtensions || {})
       }
     });

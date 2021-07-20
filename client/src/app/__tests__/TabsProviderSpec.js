@@ -43,7 +43,7 @@ describe('TabsProvider', function() {
   });
 
 
-  it('should export BPMN, CMMN and DMN as JPEG, PNG and SVG', function() {
+  it('should export CMMN and DMN as JPEG, PNG and SVG', function() {
 
     // given
     const tabsProvider = new TabsProvider();
@@ -67,9 +67,41 @@ describe('TabsProvider', function() {
     };
 
     // then
-    expect(tabsProvider.getProvider('bpmn').exports).to.eql(expected);
     expect(tabsProvider.getProvider('cmmn').exports).to.eql(expected);
     expect(tabsProvider.getProvider('dmn').exports).to.eql(expected);
+  });
+
+
+  it('should export BPMN as JPEG, PNG, SVG, and QAA/ZIP', function() {
+
+    // given
+    const tabsProvider = new TabsProvider();
+
+    const expected = {
+      png: {
+        name: 'PNG image',
+        encoding: 'base64',
+        extensions: ['png']
+      },
+      jpeg: {
+        name: 'JPEG image',
+        encoding: 'base64',
+        extensions: ['jpeg']
+      },
+      svg: {
+        name: 'SVG image',
+        encoding: 'utf8',
+        extensions: ['svg']
+      },
+      zip: {
+        name: 'Quantum application archive',
+        encoding: 'binary',
+        extensions: ['zip']
+      }
+    };
+
+    // then
+    expect(tabsProvider.getProvider('bpmn').exports).to.eql(expected);
   });
 
 

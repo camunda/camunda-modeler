@@ -15,11 +15,11 @@ import { Fill } from 'camunda-modeler-plugin-helpers/components';
 
 import { startReplacementProcess } from '../replacement/QuantMETransformator';
 import { configureBasedOnHardwareSelection } from '../replacement/hardware-selection/QuantMEHardwareSelectionHandler';
-import { getServiceTasksToDeploy } from '../../deployment/services/DeploymentUtils';
-import { exportXmlFromModeler, getRootProcess } from '../Utilities';
-import { createModelerFromXml } from '../replacement/ModelerGenerator';
-import { createServiceInstance, uploadCSARToContainer } from '../../deployment/services/OpenTOSCAUtils';
-import { bindUsingPull, bindUsingPush } from '../../deployment/services/BindingUtils';
+import { getServiceTasksToDeploy } from 'client/src/app/quantme/deployment/DeploymentUtils';
+import { exportXmlFromModeler, getRootProcess } from 'client/src/app/quantme/utilities/Utilities';
+import { createModelerFromXml } from '../Utilities';
+import { createServiceInstance, uploadCSARToContainer } from 'client/src/app/quantme/deployment/OpenTOSCAUtils';
+import { bindUsingPull, bindUsingPush } from 'client/src/app/quantme/deployment/BindingUtils';
 
 export default class QuantMEController extends PureComponent {
 
@@ -52,18 +52,7 @@ export default class QuantMEController extends PureComponent {
       // save modeler and activate as current modeler
       this.modelers[tab.id] = modeler;
       this.modeler = modeler;
-
-      // subscribe to event bus to receive updates in the endpoints
       const self = this;
-      this.eventBus = modeler.get('eventBus');
-      this.eventBus.on('config.updated', function(config) {
-        console.log(config);
-        self.nisqAnalyzerEndpoint = config.nisqAnalyzerEndpoint;
-        self.transformationFrameworkEndpoint = config.transformationFrameworkEndpoint;
-        self.camundaEndpoint = config.camundaEndpoint;
-        self.opentoscaEndpoint = config.opentoscaEndpoint;
-        self.wineryEndpoint = config.wineryEndpoint;
-      });
 
       // register actions to enable invocation over the menu and the API
       this.editorActions = modeler.get('editorActions');
@@ -75,9 +64,9 @@ export default class QuantMEController extends PureComponent {
           let currentQRMs = await self.quantME.getQRMs();
           let result = await startReplacementProcess(params.xml, currentQRMs,
             {
-              nisqAnalyzerEndpoint: self.nisqAnalyzerEndpoint,
-              transformationFrameworkEndpoint: self.transformationFrameworkEndpoint,
-              camundaEndpoint: self.camundaEndpoint
+              nisqAnalyzerEndpoint: self.modeler.config.nisqAnalyzerEndpoint,
+              transformationFrameworkEndpoint: self.modeler.config.transformationFrameworkEndpoint,
+              camundaEndpoint: self.modeler.config.camundaEndpoint
             });
 
           // return result to API
@@ -106,9 +95,9 @@ export default class QuantMEController extends PureComponent {
           // transform to native BPMN
           let result = await startReplacementProcess(configurationResult.xml, currentQRMs,
             {
-              nisqAnalyzerEndpoint: self.nisqAnalyzerEndpoint,
-              transformationFrameworkEndpoint: self.transformationFrameworkEndpoint,
-              camundaEndpoint: self.camundaEndpoint
+              nisqAnalyzerEndpoint: self.modeler.config.nisqAnalyzerEndpoint,
+              transformationFrameworkEndpoint: self.modeler.config.transformationFrameworkEndpoint,
+              camundaEndpoint: self.modeler.config.camundaEndpoint
             });
           if (result.status === 'failed') {
             console.log('Transformation process failed with cause: ', result.cause);
@@ -124,7 +113,7 @@ export default class QuantMEController extends PureComponent {
           // upload the CSARs to the OpenTOSCA Container
           for (let i = 0; i < csarsToDeploy.length; i++) {
             let csar = csarsToDeploy[i];
-            let uploadResult = await uploadCSARToContainer(self.opentoscaEndpoint, csar.csarName, csar.url, self.wineryEndpoint);
+            let uploadResult = await uploadCSARToContainer(self.modeler.config.opentoscaEndpoint, csar.csarName, csar.url, self.modeler.config.wineryEndpoint);
             console.log('Uploaded CSAR \'%s\' to OpenTOSCA container with result: ', csar.csarName, uploadResult);
 
             // abort if upload is not successful
@@ -137,7 +126,7 @@ export default class QuantMEController extends PureComponent {
 
             // create a service instance of the CSAR
             console.log('Successfully uploaded CSAR to OpenTOSCA Container. Creating service instance...');
-            let instanceCreationResponse = await createServiceInstance(csar, self.camundaEndpoint);
+            let instanceCreationResponse = await createServiceInstance(csar, self.modeler.config.camundaEndpoint);
             console.log('Creation of service instance of CSAR \'%s\' returned result: ', csar.csarName, instanceCreationResponse);
 
             // bind the service instance using the specified binding pattern
@@ -223,9 +212,9 @@ export default class QuantMEController extends PureComponent {
     let currentQRMs = await this.quantME.getQRMs();
     let result = await startReplacementProcess(xml.xml, currentQRMs,
       {
-        nisqAnalyzerEndpoint: this.nisqAnalyzerEndpoint,
-        transformationFrameworkEndpoint: this.transformationFrameworkEndpoint,
-        camundaEndpoint: this.camundaEndpoint
+        nisqAnalyzerEndpoint: this.modeler.config.nisqAnalyzerEndpoint,
+        transformationFrameworkEndpoint: this.modeler.config.transformationFrameworkEndpoint,
+        camundaEndpoint: this.modeler.config.camundaEndpoint
       });
 
     if (result.status === 'transformed') {

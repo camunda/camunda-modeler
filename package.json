@@ -49,6 +49,8 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-license-header": "^0.2.0",
     "execa": "^1.0.0",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.6.0",
     "lerna": "^3.16.1",
     "license-checker": "^25.0.1",
     "mocha": "^5.2.0",

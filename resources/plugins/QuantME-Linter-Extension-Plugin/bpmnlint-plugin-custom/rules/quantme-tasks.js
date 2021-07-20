@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-let QuantMEAttributeChecker = require('quantme/quantme/replacement/QuantMEAttributeChecker');
+let QuantMEAttributeChecker = require('client/src/app/quantme/replacement/QuantMEAttributeChecker');
 
 /**
  * Rule that reports QuantME tasks for which no suited replacement model exists

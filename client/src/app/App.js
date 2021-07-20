@@ -1457,7 +1457,7 @@ export class App extends PureComponent {
    * @param {string} options.exportType
    * @param {File} options.originalFile
    */
-  async exportAsFile(options) {
+  async exportAsFile(options, tab) {
     const {
       encoding,
       exportType,
@@ -1468,17 +1468,34 @@ export class App extends PureComponent {
     const fileSystem = this.getGlobal('fileSystem');
 
     try {
+
+      // inform the user over pending QAA export
+      if (exportType === 'zip') {
+        this.displayNotification({
+          type: 'info',
+          title: 'QAA export pending!',
+          content: 'QAA export is currently pending. Retrieving required CSARs from connected Winery. Please wait until the file dialog opens to store the QAA locally!',
+          duration: 100000
+        });
+      }
+
       const contents = await this.tabRef.current.triggerAction('export-as', {
-        fileType: exportType
+        fileType: exportType,
+        tab: tab
       });
 
-      return fileSystem.writeFile(exportPath, {
-        ...originalFile,
-        contents
-      }, {
-        encoding,
-        fileType: exportType
-      });
+      // QAAs have to be exported directly as their size prevents sending them to the backend
+      if (exportType !== 'zip') {
+
+        // export using the file system facility of the backend
+        return fileSystem.writeFile(exportPath, {
+          ...originalFile,
+          contents
+        }, {
+          encoding,
+          fileType: exportType
+        });
+      }
     } catch (err) {
       this.logEntry(err.message, 'ERROR');
     }
@@ -1487,8 +1504,9 @@ export class App extends PureComponent {
   /**
    * Asks the user for file type to export.
    * @param {Tab} tab
+   * @param [options] options
    */
-  async askForExportType(tab) {
+  async askForExportType(tab, options) {
     const {
       tabsProvider
     } = this.props;
@@ -1501,18 +1519,27 @@ export class App extends PureComponent {
 
     const provider = tabsProvider.getProvider(type);
 
-    const filters = getExportFileDialogFilters(provider);
+    const filters = getExportFileDialogFilters(provider, options);
 
-    const exportPath = await this.showSaveFileDialog(tab, {
-      filters,
-      title: `Export ${ name } as...`
-    });
+    let exportType;
+    let exportPath;
+    if (options !== 'zip') {
+      exportPath = await this.showSaveFileDialog(tab, {
+        filters,
+        title: `Export ${name} as...`
+      });
 
-    if (!exportPath) {
-      return false;
+      exportType = getFileTypeFromExtension(exportPath);
+
+      if (!exportPath) {
+        return false;
+      }
+    } else {
+
+      // file dialog for QAA is shown on export
+      exportPath = 'QAA.zip';
+      exportType = 'zip';
     }
-
-    const exportType = getFileTypeFromExtension(exportPath);
 
     // handle missing extension / export type as abortion
     // this ensures file export does not fail on Linux,
@@ -1531,7 +1558,7 @@ export class App extends PureComponent {
     };
   }
 
-  async exportAs(tab) {
+  async exportAs(tab, options) {
 
     // do as long as it was successful or cancelled
     const infinite = true;
@@ -1540,9 +1567,9 @@ export class App extends PureComponent {
 
       try {
 
-        const exportOptions = await this.askForExportType(tab);
+        const exportOptions = await this.askForExportType(tab, options);
 
-        return exportOptions ? await this.exportAsFile(exportOptions) : false;
+        return exportOptions ? await this.exportAsFile(exportOptions, tab) : false;
       } catch (err) {
         console.error('Tab export failed', err);
 
@@ -1654,7 +1681,7 @@ export class App extends PureComponent {
     }
 
     if (action === 'export-as') {
-      return this.exportAs(activeTab);
+      return this.exportAs(activeTab, options);
     }
 
     if (action === 'show-dialog') {
@@ -2209,19 +2236,28 @@ function getSaveFileDialogFilters(provider) {
   }, FILTER_ALL_EXTENSIONS];
 }
 
-function getExportFileDialogFilters(provider) {
+function getExportFileDialogFilters(provider, options) {
   const filters = [];
 
-  forEach(provider.exports, (exports) => {
-    const {
-      extensions,
-      name
-    } = exports;
+  // iterate over each export format defined by the provider (e.g., BPMN, DMN, ...)
+  let keys = Object.keys(provider.exports);
+  keys.forEach(key => {
 
-    filters.push({
-      name,
-      extensions
-    });
+    // check if export format is defined in given options
+    if (options && options.indexOf(key) > -1) {
+      let exportFormat = provider.exports[key];
+
+      const {
+        extensions,
+        name
+      } = exportFormat;
+
+      // add export format for file dialog
+      filters.push({
+        name,
+        extensions
+      });
+    }
   });
 
   return filters;

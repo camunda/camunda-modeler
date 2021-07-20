@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as consts from '../Constants';
+import * as consts from 'client/src/app/quantme/Constants';
 
 export var TASK = [
   {

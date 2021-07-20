@@ -10,7 +10,7 @@
  */
 
 import BpmnFactory from 'bpmn-js/lib/features/modeling/BpmnFactory';
-import { isQuantMETask } from '../Utilities';
+import { isQuantMETask } from 'client/src/app/quantme/utilities/Utilities';
 
 /**
  * This class implements functionality when creating shapes representing QuantME tasks

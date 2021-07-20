@@ -1028,7 +1028,7 @@ describe('<App>', function() {
       dialog.setShowSaveFileDialogResponse('foo.svg');
 
       // when
-      await app.triggerAction('export-as');
+      await app.triggerAction('export-as', ['svg']);
 
       // then
       expect(showSaveFileDialogSpy).to.have.been.called;
@@ -1055,7 +1055,7 @@ describe('<App>', function() {
       dialog.setShowSaveFileDialogResponse('foo.png');
 
       // when
-      await app.triggerAction('export-as');
+      await app.triggerAction('export-as', ['png']);
 
       // then
       expect(showSaveFileDialogSpy).to.have.been.called;
@@ -1087,7 +1087,7 @@ describe('<App>', function() {
       fileSystem.setWriteFileResponse(Promise.reject(err));
 
       // when
-      await app.triggerAction('export-as');
+      await app.triggerAction('export-as', ['svg']);
 
       // then
       expect(showSaveFileErrorDialogSpy).to.have.been.called;
