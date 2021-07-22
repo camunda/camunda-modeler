@@ -494,7 +494,7 @@ export class App extends PureComponent {
 
     const filters = getOpenFilesDialogFilters(providers);
 
-    const filePaths = await dialog.showOpenFilesDialog({
+    let filePaths = await dialog.showOpenFilesDialog({
       activeFile: activeTab.file,
       filters
     });
@@ -503,9 +503,31 @@ export class App extends PureComponent {
       return;
     }
 
-    const files = await this.readFileList(filePaths);
+    // filter QAAs as they have to be uploaded differently due to their size
+    let qaaPaths = filePaths.filter(path => path.endsWith('zip'));
+    filePaths = filePaths.filter(path => !path.endsWith('zip'));
+
+    let files = await this.readFileList(filePaths);
+
+    // unzip QAAs and extract BPMN files
+    if (qaaPaths && qaaPaths.length > 0) {
+      files = files.concat(await this.openQAAs(qaaPaths));
+    }
 
     await this.openFiles(files);
+  }
+
+  openQAAs = async (qaaPaths) => {
+    this.displayNotification({
+      type: 'info',
+      title: 'QAA import pending!',
+      content: 'QAA import for ' + qaaPaths.length + ' QAAs is running in the background. Uploading CSARs to connected Winery!',
+      duration: 100000
+    });
+
+    return await this.tabRef.current.triggerAction('import-qaa', {
+      qaaPaths: qaaPaths
+    });
   }
 
   showCloseFileDialog = (file) => {

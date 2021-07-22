@@ -86,7 +86,7 @@ export default class TabsProvider {
           svg: EXPORT_SVG,
           zip: EXPORT_QAA
         },
-        extensions: [ 'bpmn', 'xml' ],
+        extensions: [ 'bpmn', 'xml', 'zip' ],
         getComponent(options) {
           return import('./tabs/bpmn');
         },

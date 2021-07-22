@@ -9,6 +9,7 @@
  */
 
 import JSZip from 'jszip';
+import $ from 'jquery';
 import { saveAs } from 'file-saver';
 
 import React, { Component } from 'react';
@@ -48,7 +49,6 @@ import configureModeler from './util/configure';
 import Metadata from '../../../util/Metadata';
 import { getServiceTasksToDeploy } from '../../quantme/deployment/DeploymentUtils';
 import { getRootProcess } from '../../quantme/utilities/Utilities';
-
 
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
 
@@ -566,6 +566,85 @@ export class BpmnEditor extends CachedComponent {
 
     // export zip file
     return jszip.generateAsync({ type:'blob' });
+  }
+
+  async importQAAs(qaaPaths) {
+    console.log('Importing QAAs from paths: ', qaaPaths);
+
+    let resultList = [];
+    for (let id in qaaPaths) {
+      resultList.push(await this.importQAA(qaaPaths[id]));
+    }
+    return resultList;
+  }
+
+  importQAA(qaaPath) {
+
+    // retrieve Winery endpoint to upload CSARs to
+    const wineryEndpoint = this.getModeler().config.wineryEndpoint;
+
+    return new Promise(function(resolve, reject) {
+
+      // request zip file representing QAA
+      const xmlhttp = new XMLHttpRequest();
+      xmlhttp.responseType = 'blob';
+      xmlhttp.onload = async function(callback) {
+        if (xmlhttp.status === 200) {
+          console.log('Request finished with status code 200 for QAA at path %s!', qaaPath);
+          const blob = new Blob([xmlhttp.response], { type: 'application/zip' });
+
+          // load zip file using JSZip
+          let jszip = new JSZip();
+          let zip = await jszip.loadAsync(blob);
+          console.log('Successfully loaded zip!', zip);
+
+          // find BPMN file in QAA
+          let files = zip.filter(function(relativePath, file) {
+            return !relativePath.startsWith('deployment-models') && relativePath.endsWith('.bpmn');
+          });
+
+          // check if exaclty one workflow is contained in the QAA
+          if (files.length !== 1) {
+            console.error('QAA with path %s must contain exactly one BPMN file but contains %i!', qaaPath, files.length);
+            reject('QAA with path %s must contain exactly one BPMN file but contains %i!', qaaPath, files.length);
+          }
+
+          // get folders representing CSARs
+          let deploymentModels = zip.folder('deployment-models');
+          deploymentModels.forEach(function(relativePath, file) {
+
+            // CSARs must be direct subfolders
+            if (file.dir && relativePath.split('/').length === 2) {
+              let csar = zip.folder(file.name);
+              csar.generateAsync({ type: 'blob' }).then(function(blob) {
+
+                const fd = new FormData();
+                fd.append('overwrite', 'false');
+                fd.append('file', blob);
+                $.ajax({
+                  type: 'POST',
+                  url: wineryEndpoint,
+                  data: fd,
+                  processData: false,
+                  contentType: false,
+                  success: function() {
+                    console.log('Successfully uploaded CSAR: %s', file.name.split('/')[1]);
+                  }
+                });
+              });
+            }
+          });
+
+          // import BPMN file
+          resolve({
+            contents: await files[0].async('string'),
+            name: files[0].name
+          });
+        }
+      };
+      xmlhttp.open('GET', 'file:///' + qaaPath, true);
+      xmlhttp.send();
+    });
   }
 
   async exportSVG() {

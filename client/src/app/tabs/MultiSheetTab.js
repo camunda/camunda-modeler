@@ -253,6 +253,10 @@ export class MultiSheetTab extends CachedComponent {
       const { fileType, tab } = options;
 
       return await editor.exportAs(fileType, tab);
+    } else if (action === 'import-qaa') {
+      const { qaaPaths } = options;
+
+      return await editor.importQAAs(qaaPaths);
     }
 
     return editor.triggerAction(action, options);
