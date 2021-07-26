@@ -54,6 +54,8 @@ import Metadata from '../../../util/Metadata';
 
 import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesContainer';
 
+import { EngineProfile } from '../EngineProfile';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 const COLORS = [{
@@ -81,6 +83,10 @@ const COLORS = [{
   fill: 'rgb(225, 190, 231)',
   stroke: 'rgb(142, 36, 170)'
 }];
+
+export const engineProfile = {
+  executionPlatform: 'Camunda Cloud'
+};
 
 
 export class BpmnEditor extends CachedComponent {
@@ -681,6 +687,8 @@ export class BpmnEditor extends CachedComponent {
           layout={ layout }
           ref={ this.propertiesPanelRef }
           onLayoutChanged={ onLayoutChanged } />
+
+        <EngineProfile type="bpmn" engineProfile={ engineProfile } />
       </div>
     );
   }
