@@ -63,6 +63,8 @@ import Metadata from '../../../util/Metadata';
 
 import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesContainer';
 
+import { EngineProfile } from '../EngineProfile';
+
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
 
 const NAMESPACE_CAMUNDA = {
@@ -97,6 +99,10 @@ const COLORS = [{
   fill: 'rgb(225, 190, 231)',
   stroke: 'rgb(142, 36, 170)'
 }];
+
+export const engineProfile = {
+  executionPlatform: 'Camunda Platform'
+};
 
 
 export class BpmnEditor extends CachedComponent {
@@ -792,6 +798,8 @@ export class BpmnEditor extends CachedComponent {
           layout={ layout }
           ref={ this.propertiesPanelRef }
           onLayoutChanged={ onLayoutChanged } />
+
+        <EngineProfile type="bpmn" engineProfile={ engineProfile } />
       </div>
     );
   }
