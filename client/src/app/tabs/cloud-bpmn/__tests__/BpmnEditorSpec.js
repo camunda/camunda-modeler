@@ -1122,6 +1122,20 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
   });
 
+
+  describe('engine profile', function() {
+
+    it('should show engine profile (no engine profile)', async function() {
+
+      // when
+      const { wrapper } = await renderEditor(diagramXML);
+
+      // then
+      expect(wrapper.find('EngineProfile').exists()).to.be.true;
+    });
+
+  });
+
 });
 
 
