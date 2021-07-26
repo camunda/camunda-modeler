@@ -70,12 +70,18 @@ import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesCon
 
 import { DEFAULT_LAYOUT as overviewDefaultLayout } from './OverviewContainer';
 
+import { EngineProfile } from '../EngineProfile';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 const NAMESPACE_URL_DMN11 = 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
       NAMESPACE_URL_DMN12 = 'http://www.omg.org/spec/DMN/20180521/MODEL/';
 
 const CONFIG_KEY = 'editor.askDmnMigration';
+
+export const engineProfile = {
+  executionPlatform: 'Camunda Platform'
+};
 
 
 export class DmnEditor extends CachedComponent {
@@ -962,6 +968,8 @@ export class DmnEditor extends CachedComponent {
           }
 
         </div>
+
+        <EngineProfile type="dmn" engineProfile={ engineProfile } />
 
       </div>
     );
