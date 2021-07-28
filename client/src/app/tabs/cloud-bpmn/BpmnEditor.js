@@ -327,7 +327,9 @@ export class BpmnEditor extends CachedComponent {
       return;
     }
 
-    this.importXML();
+    const { xml } = this.props;
+
+    this.importXML(xml);
   }
 
   isImportNeeded(prevProps) {
@@ -354,11 +356,7 @@ export class BpmnEditor extends CachedComponent {
     return xml !== lastXML;
   }
 
-  async importXML() {
-    const {
-      xml
-    } = this.props;
-
+  async importXML(xml) {
     this.setState({
       importing: true
     });

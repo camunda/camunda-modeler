@@ -447,7 +447,9 @@ export class DmnEditor extends CachedComponent {
       return this.checkSheetChange(prevProps);
     }
 
-    this.importXML();
+    const { xml } = this.props;
+
+    this.importXML(xml);
   }
 
   isImportNeeded(prevProps) {
@@ -474,11 +476,7 @@ export class DmnEditor extends CachedComponent {
     return xml !== lastXML;
   }
 
-  async importXML() {
-    const {
-      xml
-    } = this.props;
-
+  async importXML(xml) {
     const {
       modeler
     } = this.getCached();
