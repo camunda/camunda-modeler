@@ -70,6 +70,15 @@ import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesCon
 
 import { DEFAULT_LAYOUT as overviewDefaultLayout } from './OverviewContainer';
 
+import customTranslate from '../translate';
+
+// Our custom translation module
+// We need to use the array syntax that is used by bpmn-js internally
+// 'value' tells bmpn-js to use the function instead of trying to instanciate it
+const customTranslateModule = {
+  translate: [ 'value', customTranslate ]
+};
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 const NAMESPACE_URL_DMN11 = 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
@@ -994,6 +1003,9 @@ export class DmnEditor extends CachedComponent {
 
     const modeler = new CamundaDmnModeler({
       ...options,
+      additionalModules: [
+        customTranslateModule
+      ],
       position: 'absolute'
     });
 

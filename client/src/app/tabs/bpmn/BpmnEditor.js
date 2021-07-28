@@ -63,6 +63,15 @@ import Metadata from '../../../util/Metadata';
 
 import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesContainer';
 
+import customTranslate from '../translate';
+
+// Our custom translation module
+// We need to use the array syntax that is used by bpmn-js internally
+// 'value' tells bmpn-js to use the function instead of trying to instanciate it
+const customTranslateModule = {
+  translate: [ 'value', customTranslate ]
+};
+
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
 
 const NAMESPACE_CAMUNDA = {
@@ -835,6 +844,9 @@ export class BpmnEditor extends CachedComponent {
 
     const modeler = new BpmnModeler({
       ...options,
+      additionalModules: [
+        customTranslateModule
+      ],
       position: 'absolute'
     });
 

@@ -39,6 +39,15 @@ import generateImage from '../../util/generateImage';
 
 import Metadata from '../../../util/Metadata';
 
+import customTranslate from '../translate';
+
+// Our custom translation module
+// We need to use the array syntax that is used by bpmn-js internally
+// 'value' tells bmpn-js to use the function instead of trying to instanciate it
+const customTranslateModule = {
+  translate: [ 'value', customTranslate ]
+};
+
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
@@ -520,6 +529,9 @@ export class CmmnEditor extends CachedComponent {
 
     const modeler = new CamundaCmmnModeler({
       position: 'absolute',
+      additionalModules: [
+        customTranslateModule
+      ],
       exporter: {
         name,
         version
