@@ -11,7 +11,7 @@
 import { assign } from 'min-dash';
 
 
-class CommandStack {
+export class CommandStack {
   constructor() {
     this._stackIdx = -1;
     this._maxStackIdx = this._stackIdx;

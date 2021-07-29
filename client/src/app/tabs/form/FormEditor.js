@@ -16,13 +16,15 @@ import {
   CachedComponent
 } from '../../cached';
 
+import { Loader } from '../../primitives';
+
 import css from './FormEditor.less';
 
 import { getFormEditMenu } from './getFormEditMenu';
 
 import { active as isInputActive } from '../../../util/dom/isInput';
 
-import { createFormEditor } from './editor/FormEditor';
+import { FormEditor as Form } from './editor/FormEditor';
 
 import { isFunction } from 'min-dash';
 
@@ -32,41 +34,33 @@ export class FormEditor extends CachedComponent {
 
     this.ref = createRef();
 
-    this.state = {};
+    this.state = {
+      importing: false
+    };
   }
 
   componentDidMount() {
-    let {
-      attachForm,
-      form
-    } = this.getCached();
+    this._isMounted = true;
+
+    let { form } = this.getCached();
 
     if (this.ref.current) {
-      attachForm(this.ref.current);
-
-      if (form) {
-        form.emitter.emit('attach');
-      }
+      form.attachTo(this.ref.current);
     }
 
     this.checkImport();
 
-    this.listen('on', form);
+    this.listen('on');
   }
 
   componentWillUnmount() {
-    const {
-      detachForm,
-      form
-    } = this.getCached();
+    this._isMounted = false;
 
-    detachForm();
+    const { form } = this.getCached();
 
-    if (form) {
-      form.emitter.emit('detach');
-    }
+    form.detach();
 
-    this.listen('off', form);
+    this.listen('off');
   }
 
   componentDidUpdate(prevProps) {
@@ -81,10 +75,18 @@ export class FormEditor extends CachedComponent {
     this.importSchema();
   }
 
-  isImportNeeded(prevProps) {
+  isImportNeeded(prevProps = {}) {
+    const { importing } = this.state;
+
+    if (importing) {
+      return false;
+    }
+
     const { xml: schema } = this.props;
 
-    if (prevProps && prevProps.xml === schema) {
+    const { xml: prevSchema } = prevProps;
+
+    if (schema === prevSchema) {
       return false;
     }
 
@@ -93,27 +95,42 @@ export class FormEditor extends CachedComponent {
     return schema !== lastSchema;
   }
 
-  importSchema() {
-    const { container } = this.getCached();
+  async importSchema() {
+    this.setState({
+      importing: true
+    });
 
     const { xml: schema } = this.props;
 
-    let form = null,
-        error = null;
+    const { form } = this.getCached();
+
+    let error = null,
+        warnings = null;
 
     try {
-      form = createFormEditor({
-        container,
-        schema: JSON.parse(schema)
-      });
+      const schemaJSON = JSON.parse(schema);
+
+      ({ error, warnings } = await form.importSchema(schemaJSON));
     } catch (err) {
       error = err;
+
+      if (err.warnings) {
+        warnings = err.warnings;
+      }
     }
 
-    this.handleImport(form, error);
+    if (this._isMounted) {
+      this.handleImport(error, warnings);
+    }
   }
 
-  handleImport(form, error) {
+  handleImport(error, warnings) {
+    const { form } = this.getCached();
+
+    const commandStack = form.get('commandStack');
+
+    const stackIdx = commandStack._stackIdx;
+
     const {
       onImport,
       xml: schema
@@ -121,45 +138,50 @@ export class FormEditor extends CachedComponent {
 
     if (error) {
       this.setCached({
-        form: null,
         lastSchema: null
       });
     } else {
       this.setCached({
-        form,
-        lastSchema: schema
+        lastSchema: schema,
+        stackIdx
       });
-
-      this.listen('on', form);
     }
 
-    onImport(error);
+    this.setState({
+      importing: false
+    });
+
+    onImport(error, warnings);
   }
 
-  listen(fn, form) {
-    if (!form) {
-      return;
-    }
-
-    // TODO(philippfromme): Refactor dirty checking once we have commands
-    form[ fn ]('changed', this.setDirty);
+  listen(fn) {
+    const { form } = this.getCached();
 
     [
+      'commandStack.changed',
+      'import.done',
       'propertiesPanel.focusin',
       'propertiesPanel.focusout',
       'selection.changed'
     ].forEach((event) => form[ fn ](event, this.handleChanged));
   }
 
-  handleChanged = (dirty = false) => {
+  handleChanged = () => {
     const { onChanged } = this.props;
+
+    const { form } = this.getCached();
+
+    const commandStack = form.get('commandStack');
 
     const inputActive = isInputActive();
 
     const newState = {
-      dirty: dirty || this.isDirty(),
+      defaultUndoRedo: inputActive,
+      dirty: this.isDirty(),
       inputActive,
-      save: true
+      redo: commandStack.canRedo(),
+      save: true,
+      undo: commandStack.canUndo()
     };
 
     if (isFunction(onChanged)) {
@@ -172,62 +194,81 @@ export class FormEditor extends CachedComponent {
     this.setState(newState);
   }
 
-  setDirty = () => {
-    this.setCached({ dirty: true });
-
-    this.handleChanged(true);
-  }
-
   isDirty() {
-    const { dirty = false } = this.getCached();
+    const {
+      form,
+      stackIdx
+    } = this.getCached();
 
-    return dirty;
+    const commandStack = form.get('commandStack');
+
+    return commandStack._stackIdx !== stackIdx;
   }
 
   getXML() {
-    const { form } = this.getCached();
+    const {
+      form,
+      lastSchema
+    } = this.getCached();
 
-    const schema = JSON.stringify(form.getSchema(), null, 2);
+    const commandStack = form.get('commandStack');
+
+    const stackIdx = commandStack._stackIdx;
+
+    if (!this.isDirty()) {
+      return lastSchema || this.props.xml;
+    }
+
+    const schema = JSON.stringify(form.saveSchema(), null, 2);
 
     this.setCached({
-      dirty: false,
-      lastSchema: schema
+      lastSchema: schema,
+      stackIdx
     });
 
     return schema;
   }
 
-  triggerAction() {}
+  triggerAction(action, context) {
+    const { form } = this.getCached();
+
+    const editorActions = form.get('editorActions');
+
+    if (editorActions.isRegistered(action)) {
+      return editorActions.trigger(action, context);
+    }
+  }
 
   render() {
+    const { importing } = this.state;
+
     return (
-      <div
-        className={ css.FormEditor }
-        onFocus={ this.handleChanged }
-        ref={ this.ref } />
+      <div className={ css.FormEditor }>
+        <Loader hidden={ !importing } />
+
+        <div
+          className="form"
+          onFocus={ this.handleChanged }
+          ref={ this.ref }
+        ></div>
+      </div>
     );
   }
 
   static createCachedState() {
-    const container = document.createElement('div');
+    const form = new Form({});
 
-    container.classList.add('container');
+    const commandStack = form.get('commandStack');
 
-    const attachForm = (parentNode) => {
-      parentNode.appendChild(container);
-    };
-
-    const detachForm = () => {
-      container.remove();
-    };
+    const stackIdx = commandStack._stackIdx;
 
     return {
-      __destroy: () => {},
-      container,
-      attachForm,
-      detachForm,
-      dirty: false,
-      lastSchema: null
+      __destroy: () => {
+        form.destroy();
+      },
+      form,
+      lastSchema: null,
+      stackIdx
     };
   }
 }
