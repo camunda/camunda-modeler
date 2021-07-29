@@ -422,7 +422,15 @@ export class BpmnEditor extends CachedComponent {
   }
 
   async exportAs(type) {
-    const svg = await this.exportSVG();
+    let svg;
+
+    try {
+      svg = await this.exportSVG();
+    } catch (error) {
+      this.handleError({ error });
+
+      return Promise.reject(error);
+    }
 
     if (type === 'svg') {
       return svg;
@@ -435,7 +443,6 @@ export class BpmnEditor extends CachedComponent {
     const modeler = this.getModeler();
 
     try {
-
       const { svg } = await modeler.saveSVG();
 
       return svg;
