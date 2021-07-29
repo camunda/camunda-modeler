@@ -756,7 +756,15 @@ export class DmnEditor extends CachedComponent {
   }
 
   async exportAs(type) {
-    const svg = await this.exportSVG();
+    let svg;
+
+    try {
+      svg = await this.exportSVG();
+    } catch (error) {
+      this.handleError({ error });
+
+      return Promise.reject(error);
+    }
 
     if (type === 'svg') {
       return svg;
@@ -770,13 +778,17 @@ export class DmnEditor extends CachedComponent {
 
     const viewer = modeler.getActiveViewer();
 
-    if ('saveSVG' in viewer) {
+    if (!viewer.saveSVG) {
+      return Promise.reject(new Error('SVG export not supported in current view'));
+    }
 
+    try {
       const { svg } = await viewer.saveSVG();
 
       return svg;
-    } else {
-      throw new Error('SVG export not supported in current view');
+    } catch (err) {
+
+      return Promise.reject(err);
     }
   }
 
