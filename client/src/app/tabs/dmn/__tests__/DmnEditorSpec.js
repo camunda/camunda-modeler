@@ -392,7 +392,7 @@ describe('<DmnEditor>', function() {
     it('should notify about changes', async function() {
 
       // given
-      const changedSpy = (state) => {
+      const onChangedSpy = spy((state) => {
 
         // then
         expect(state).to.include({
@@ -405,7 +405,7 @@ describe('<DmnEditor>', function() {
           removeSelected: false,
           undo: true
         });
-      };
+      });
 
       const cache = new Cache();
 
@@ -432,11 +432,15 @@ describe('<DmnEditor>', function() {
       const { instance } = await renderEditor(diagramXML, {
         id: 'editor',
         cache,
-        onChanged: changedSpy
+        onChanged: onChangedSpy,
+        waitForImport: false
       });
 
       // when
       instance.handleChanged();
+
+      // then
+      expect(onChangedSpy).to.have.been.called;
     });
 
 
@@ -1179,6 +1183,58 @@ describe('<DmnEditor>', function() {
       expect(errorSpy).to.have.been.calledOnce;
     });
 
+
+    it('should handle image export error', async function() {
+
+      // given
+      const errorSpy = spy();
+
+      const { instance } = await renderEditor('export-as-error', {
+        onError: errorSpy
+      });
+
+      // when
+      let err;
+
+      try {
+        await instance.exportAs('svg');
+      } catch (e) {
+        err = e;
+      }
+
+      // then
+      expect(err).to.exist;
+      expect(err.message).to.equal('failed to save svg');
+      expect(errorSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should handle image export error (SVG export not supported)', async function() {
+
+      // given
+      const errorSpy = spy();
+
+      const { instance } = await renderEditor('export-as-error', {
+        onError: errorSpy
+      });
+
+      instance.getModeler().getActiveViewer().saveSVG = false;
+
+      // when
+      let err;
+
+      try {
+        await instance.exportAs('svg');
+      } catch (e) {
+        err = e;
+      }
+
+      // then
+      expect(err).to.exist;
+      expect(err.message).to.equal('SVG export not supported in current view');
+      expect(errorSpy).to.have.been.calledOnce;
+    });
+
   });
 
 
@@ -1206,72 +1262,63 @@ describe('<DmnEditor>', function() {
     afterEach(sinon.restore);
 
 
-    it('should import without errors and warnings', function(done) {
+    it('should import without errors and warnings', async function() {
+
+      // given
+      const onImportSpy = spy((error, warnings) => {
+
+        // then
+        expect(error).to.not.exist;
+        expect(warnings).to.be.empty;
+      });
 
       // when
-      renderEditor(diagramXML, {
-        onImport
+      await renderEditor(diagramXML, {
+        onImport: onImportSpy
       });
 
       // then
-      function onImport(error, warnings) {
-        try {
-          expect(error).to.not.exist;
-          expect(warnings).to.have.length(0);
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onImportSpy).to.have.been.calledOnce;
     });
 
 
-    it('should import with warnings', function(done) {
+    it('should import with warnings', async function() {
 
       // given
-      const warningInducingFakeXML = 'import-warnings';
+      const onImportSpy = spy((error, warnings) => {
+
+        // then
+        expect(error).to.not.exist;
+        expect(warnings).to.have.length(1);
+      });
 
       // when
-      renderEditor(warningInducingFakeXML, {
-        onImport
+      await renderEditor('import-warnings', {
+        onImport: onImportSpy
       });
 
       // then
-      function onImport(error, warnings) {
-        try {
-          expect(error).to.not.exist;
-          expect(warnings).to.have.length(1);
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onImportSpy).to.have.been.calledOnce;
     });
 
 
-    it('should import with error', function(done) {
+    it('should import with error', async function() {
 
       // given
-      const errorInducingFakeXML = 'import-error';
+      const onImportSpy = spy((error, warnings) => {
+
+        // then
+        expect(error).to.exist;
+        expect(warnings).to.have.length(0);
+      });
 
       // when
-      renderEditor(errorInducingFakeXML, {
-        onImport
+      await renderEditor('import-error', {
+        onImport: onImportSpy
       });
 
       // then
-      function onImport(error, warnings) {
-        try {
-          expect(error).to.exist;
-          expect(warnings).to.have.length(0);
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onImportSpy).to.have.been.calledOnce;
     });
 
 
@@ -1279,6 +1326,7 @@ describe('<DmnEditor>', function() {
 
       // given
       const isImportNeededSpy = sinon.spy(DmnEditor.prototype, 'isImportNeeded');
+
       const cache = new Cache();
 
       cache.add('editor', {
@@ -1289,16 +1337,20 @@ describe('<DmnEditor>', function() {
       });
 
       await renderEditor(diagramXML, {
-        cache
+        cache,
+        waitForImport: false
       });
 
       // then
-      expect(isImportNeededSpy).to.be.called;
-      expect(isImportNeededSpy).to.have.always.returned(false);
+      // DmnEditor#componentDidMount is async
+      process.nextTick(() => {
+        expect(isImportNeededSpy).to.have.been.calledOnce;
+        expect(isImportNeededSpy).to.have.always.returned(false);
+      });
     });
 
 
-    it('should not import when props did not changed', async function() {
+    it('should not import when props did not change', async function() {
 
       // given
       const {
@@ -1308,7 +1360,10 @@ describe('<DmnEditor>', function() {
       const isImportNeededSpy = sinon.spy(instance, 'isImportNeeded');
 
       // when
-      await instance.componentDidUpdate(instance.props);
+      await instance.componentDidUpdate({
+        activeSheet: defaultActiveSheet,
+        xml: diagramXML
+      });
 
       // then
       expect(isImportNeededSpy).to.be.called;
@@ -1320,21 +1375,16 @@ describe('<DmnEditor>', function() {
     it('should unset lastXML on import error', async function() {
 
       // given
-      const { instance } = await renderEditor(diagramXML, {
-        onImport
-      });
+      const { instance } = await renderEditor(diagramXML);
 
-      async function onImport() {
+      // assume
+      expect(instance.getCached().lastXML).to.equal(diagramXML);
 
-        // assume
-        expect(instance.getCached().lastXML).to.equal(diagramXML);
+      // when
+      await instance.importXML('import-error');
 
-        // when
-        await instance.handleError(new Error(), []);
-
-        // then
-        expect(instance.getCached().lastXML).to.be.null;
-      }
+      // then
+      expect(instance.getCached().lastXML).to.be.null;
     });
 
   });
@@ -1652,57 +1702,77 @@ describe('<DmnEditor>', function() {
 
   describe('#handleMigration', function() {
 
-    it('should migrate to DMN 1.3', function(done) {
+    it('should migrate to DMN 1.3', async function() {
 
       // given
-      const onAction = sinon.stub().withArgs('show-dialog').resolves({
-        button: 'yes'
+      const onActionSpy = spy((action) => {
+        if (action === 'show-dialog') {
+          return { button: 'yes' };
+        }
       });
 
-      const onContentUpdated = sinon.spy();
+      const onContentUpdatedSpy = sinon.spy();
 
-      function onImport() {
-        try {
+      const cache = new Cache();
 
-          // then
-          expect(onContentUpdated).to.be.calledOnce;
-          expect(onContentUpdated).to.be.calledOnceWith(sinon.match('dmndi:DMNDI'));
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      cache.add('editor', {
+        cached: {
+          modeler: new DmnModeler()
+        },
+        __destroy: () => {}
+      });
 
       // when
-      renderEditor(diagram11XML, {
-        onAction,
-        onContentUpdated,
-        onImport
+      await renderEditor(diagram11XML, {
+        id: 'editor',
+        cache,
+        onAction: onActionSpy,
+        onContentUpdated: onContentUpdatedSpy
       });
+
+      // then
+      expect(onActionSpy).to.have.been.calledOnce;
+      expect(onActionSpy.firstCall.args[ 0 ]).to.eql('show-dialog');
+
+      expect(onContentUpdatedSpy).to.have.been.calledOnce;
+      expect(onContentUpdatedSpy).to.have.been.calledOnceWith(sinon.match('dmndi:DMNDI'));
     });
 
 
-    it('shoud NOT migrate to DMN 1.3', function(done) {
+    it('shoud NOT migrate to DMN 1.3', async function() {
 
       // given
-      const onAction = sinon.stub();
-
-      onAction.withArgs('show-dialog').onFirstCall().resolves({
-        button: 'cancel'
+      const onActionSpy = spy((action) => {
+        if (action === 'show-dialog') {
+          return { button: 'cancel' };
+        }
       });
 
-      onAction.withArgs('close-tab').onFirstCall().callsFake(function() {
-        done();
-      });
+      const onContentUpdatedSpy = sinon.spy();
 
-      const onContentUpdated = sinon.spy();
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new DmnModeler()
+        },
+        __destroy: () => {}
+      });
 
       // when
-      renderEditor(diagram11XML, {
-        onAction,
-        onContentUpdated
+      await renderEditor(diagram11XML, {
+        id: 'editor',
+        cache,
+        onAction: onActionSpy,
+        onContentUpdated: onContentUpdatedSpy
       });
+
+      // then
+      expect(onActionSpy).to.have.been.calledTwice;
+      expect(onActionSpy.firstCall.args[ 0 ]).to.eql('show-dialog');
+      expect(onActionSpy.secondCall.args[ 0 ]).to.eql('close-tab');
+
+      expect(onContentUpdatedSpy).not.to.have.been.called;
     });
 
   });
@@ -1716,54 +1786,93 @@ function noop() {}
 
 const TestEditor = WithCachedState(DmnEditor);
 
-async function renderEditor(xml, options = {}) {
+const defaultActiveSheet = { id: 'dmn' };
+
+const defaultLayout = {
+  minimap: {
+    open: false
+  },
+  propertiesPanel: {
+    open: true
+  }
+};
+
+function renderEditor(xml, options = {}) {
   const {
-    layout,
-    onAction,
-    onChanged,
-    onContentUpdated,
-    onError,
-    onImport,
-    onLayoutChanged,
-    onModal,
-    onSheetsChanged,
-    getConfig,
-    getPlugins
+    activeSheet = defaultActiveSheet,
+    cache = new Cache(),
+    getConfig = noop,
+    getPlugins = () => [],
+    id = 'editor',
+    isNew = true,
+    layout = defaultLayout,
+    onAction = noop,
+    onChanged = noop,
+    onContentUpdated = noop,
+    onError = noop,
+    onImport = noop,
+    onLayoutChanged = noop,
+    onModal = noop,
+    onSheetsChanged = noop,
+    onWarning = noop,
+    waitForImport = true
   } = options;
 
-  const wrapper = await mount(
-    <TestEditor
-      id={ options.id || 'editor' }
-      xml={ xml }
-      activeSheet={ options.activeSheet || { id: 'dmn' } }
-      onAction={ onAction || noop }
-      onContentUpdated={ onContentUpdated || noop }
-      onChanged={ onChanged || noop }
-      onError={ onError || noop }
-      onImport={ onImport || noop }
-      onLayoutChanged={ onLayoutChanged || noop }
-      onModal={ onModal || noop }
-      onSheetsChanged={ onSheetsChanged || noop }
-      getConfig={ getConfig || (() => {}) }
-      getPlugins={ getPlugins || (() => []) }
-      cache={ options.cache || new Cache() }
-      layout={ layout || {
-        minimap: {
-          open: false
-        },
-        propertiesPanel: {
-          open: true
-        }
-      } }
-    />
-  );
+  return new Promise((resolve) => {
+    let instance,
+        wrapper;
 
-  const instance = wrapper.find(DmnEditor).instance();
+    const resolveOnImport = (...args) => {
+      onImport(...args);
 
-  return {
-    instance,
-    wrapper
-  };
+      resolve({
+        instance,
+        wrapper
+      });
+    };
+
+    const resolveOnAction = (action, ...args) => {
+      if (action === 'close-tab') {
+        resolve({
+          instance,
+          wrapper
+        });
+      }
+
+      return onAction(action, ...args);
+    };
+
+    wrapper = mount(
+      <TestEditor
+        activeSheet={ activeSheet }
+        cache={ cache }
+        getConfig={ getConfig }
+        getPlugins={ getPlugins }
+        id={ id }
+        isNew={ isNew }
+        layout={ layout }
+        onAction={ waitForImport ? resolveOnAction : onAction }
+        onChanged={ onChanged }
+        onContentUpdated={ onContentUpdated }
+        onError={ onError }
+        onImport={ waitForImport ? resolveOnImport : onImport }
+        onLayoutChanged={ onLayoutChanged }
+        onModal={ onModal }
+        onSheetsChanged={ onSheetsChanged }
+        onWarning={ onWarning }
+        xml={ xml }
+      />
+    );
+
+    instance = wrapper.find(DmnEditor).instance();
+
+    if (!waitForImport) {
+      resolve({
+        instance,
+        wrapper
+      });
+    }
+  });
 }
 
 function getEvent(events, eventName) {
