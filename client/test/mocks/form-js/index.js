@@ -8,34 +8,88 @@
  * except in compliance with the MIT License.
  */
 
-export function createFormEditor({ schema }) {
-  if (schema.importError) {
-    throw new Error('error');
+import { assign } from 'min-dash';
+
+import { CommandStack } from '../bpmn-js/Modeler';
+
+export class FormEditor {
+  constructor(options = {}) {
+    this.options = options;
+
+    this.modules = assign(this._getDefaultModules(), options.modules || {});
+
+    this.schema = null;
+
+    this.listeners = {};
   }
 
-  const listeners = {};
+  _getDefaultModules() {
+    return {
+      eventBus: {
+        fire() {}
+      },
+      commandStack: new CommandStack(),
+      selection: {
+        get() {
+          return [];
+        }
+      }
+    };
+  }
 
-  return {
-    getSchema() {
-      return schema;
-    },
-    on(event, callback) {
-      if (!listeners[ event ]) {
-        listeners[ event ] = [];
+  importSchema(schema) {
+    this.schema = schema;
+
+    const error = schema.importError ? new Error('error') : null;
+
+    const warnings = [];
+
+    return new Promise((resolve, reject) => {
+      if (error) {
+        error.warnings = warnings;
+
+        return reject(error);
       }
 
-      listeners[ event ].push(callback);
-    },
-    off() {},
-    emitter: {
-      emit() {},
-      on() {},
-      off() {}
-    },
-    _emit(event) {
-      if (listeners[ event ]) {
-        listeners[ event ].forEach(callback => callback());
-      }
+      return resolve({ warnings });
+    });
+  }
+
+  attachTo() {}
+
+  detach() {}
+
+  on(event, callback) {
+    if (!this.listeners[ event ]) {
+      this.listeners[ event ] = [];
     }
-  };
+
+    this.listeners[ event ].push(callback);
+  }
+
+  off() {}
+
+  _emit(event) {
+    if (this.listeners[ event ]) {
+      this.listeners[ event ].forEach(callback => callback());
+    }
+  }
+
+  get(moduleName) {
+    const module = this.modules[moduleName];
+
+    if (module) {
+      return module;
+    }
+
+    throw new Error(`service not provided: <${moduleName}>`);
+  }
+
+  getSchema() {
+    return this.saveSchema();
+  }
+
+  saveSchema() {
+    return this.schema;
+  }
 }
