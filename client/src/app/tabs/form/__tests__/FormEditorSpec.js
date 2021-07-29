@@ -40,9 +40,7 @@ const { spy } = sinon;
 describe('<FormEditor>', function() {
 
   it('should render', async function() {
-    const {
-      instance
-    } = await renderEditor(schema);
+    const { instance } = await renderEditor(schema);
 
     expect(instance).to.exist;
   });
@@ -50,14 +48,14 @@ describe('<FormEditor>', function() {
 
   describe('caching behavior', function() {
 
-    let createSpy;
+    let createCachedStateSpy;
 
     beforeEach(function() {
-      createSpy = sinon.spy(FormEditor, 'createCachedState');
+      createCachedStateSpy = sinon.spy(FormEditor, 'createCachedState');
     });
 
     afterEach(function() {
-      createSpy.restore();
+      createCachedStateSpy.restore();
     });
 
 
@@ -74,7 +72,7 @@ describe('<FormEditor>', function() {
       } = instance.getCached();
 
       expect(form).to.exist;
-      expect(createSpy).to.have.been.calledOnce;
+      expect(createCachedStateSpy).to.have.been.calledOnce;
     });
 
 
@@ -97,7 +95,7 @@ describe('<FormEditor>', function() {
       });
 
       // then
-      expect(createSpy).not.to.have.been.called;
+      expect(createCachedStateSpy).not.to.have.been.called;
     });
 
   });
@@ -106,19 +104,14 @@ describe('<FormEditor>', function() {
   it('#getXML', async function() {
 
     // given
-    const { instance } = await renderEditor(schema, {
-      onImport
-    });
+    const { instance } = await renderEditor(schema);
 
-    function onImport() {
+    // when
+    const exportedSchema = instance.getXML();
 
-      // when
-      const exportedSchema = instance.getXML();
-
-      // then
-      expect(exportedSchema).to.exist;
-      expect(exportedSchema).to.eql(schema);
-    }
+    // then
+    expect(exportedSchema).to.exist;
+    expect(exportedSchema).to.eql(schema);
   });
 
 
@@ -138,17 +131,18 @@ describe('<FormEditor>', function() {
           __destroy: () => {}
         });
 
-        const changedSpy = spy();
+        const onChangedSpy = spy();
 
         await renderEditor(schema, {
           id: 'editor',
           cache,
-          onChanged: changedSpy
+          onChanged: onChangedSpy,
+          waitForImport: false
         });
 
         form._emit(event);
 
-        expect(changedSpy).to.have.been.called;
+        expect(onChangedSpy).to.have.been.called;
       };
     }
 
@@ -169,7 +163,7 @@ describe('<FormEditor>', function() {
     it('should notify about changes', async function() {
 
       // given
-      const changedSpy = (state) => {
+      const onChangedSpy = spy((state) => {
 
         // then
         expect(state).to.include({
@@ -180,7 +174,7 @@ describe('<FormEditor>', function() {
           save: true,
           undo: true
         });
-      };
+      });
 
       const cache = new Cache();
 
@@ -205,13 +199,17 @@ describe('<FormEditor>', function() {
       });
 
       const { instance } = await renderEditor(schema, {
-        id: 'editor',
         cache,
-        onChanged: changedSpy
+        id: 'editor',
+        onChanged: onChangedSpy,
+        waitForImport: false
       });
 
       // when
       instance.handleChanged();
+
+      // then
+      expect(onChangedSpy).to.have.been.calledOnce;
     });
 
 
@@ -220,40 +218,46 @@ describe('<FormEditor>', function() {
       it('should provide undo/redo entries', async function() {
 
         // given
-        const changedSpy = (state) => {
+        const onChangedSpy = spy((state) => {
 
           const editMenuEntries = getUndoRedoEntries(state);
 
           // then
           expect(state.editMenu).to.deep.include(editMenuEntries);
-        };
+        });
 
         const { instance } = await renderEditor(schema, {
-          onChanged: changedSpy
+          onChanged: onChangedSpy
         });
 
         // when
         instance.handleChanged();
+
+        // then
+        expect(onChangedSpy).to.have.been.calledOnce;
       });
 
 
       it('should provide copy/paste entries', async function() {
 
         // given
-        const changedSpy = (state) => {
+        const onChangedSpy = spy((state) => {
 
           const editMenuEntries = getDefaultCopyCutPasteEntries(false);
 
           // then
           expect(state.editMenu).to.deep.include(editMenuEntries);
-        };
+        });
 
         const { instance } = await renderEditor(schema, {
-          onChanged: changedSpy
+          onChanged: onChangedSpy
         });
 
         // when
         instance.handleChanged();
+
+        // then
+        expect(onChangedSpy).to.have.been.calledOnce;
       });
 
     });
@@ -307,46 +311,43 @@ describe('<FormEditor>', function() {
     afterEach(sinon.restore);
 
 
-    it('should import without errors', function(done) {
+    it('should import without errors and warnings', async function() {
+
+      // given
+      const onImportSpy = spy((error, warnings) => {
+
+        // then
+        expect(error).to.not.exist;
+        expect(warnings).to.be.empty;
+      });
 
       // when
-      renderEditor(schema, {
-        onImport
+      await renderEditor(schema, {
+        onImport: onImportSpy
       });
 
       // then
-      function onImport(error) {
-        try {
-          expect(error).to.not.exist;
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onImportSpy).to.have.been.calledOnce;
     });
 
 
-    it('should import with error', function(done) {
+    it('should import with error', async function() {
 
       // given
-      const errorInducingFakeJSON = '{ "importError": true }';
+      const onImportSpy = spy((error, warnings) => {
+
+        // then
+        expect(error).to.exist;
+        expect(warnings).to.have.length(0);
+      });
 
       // when
-      renderEditor(errorInducingFakeJSON, {
-        onImport
+      await renderEditor('{ "importError": true }', {
+        onImport: onImportSpy
       });
 
       // then
-      function onImport(error) {
-        try {
-          expect(error).to.exist;
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onImportSpy).to.have.been.calledOnce;
     });
 
 
@@ -354,6 +355,7 @@ describe('<FormEditor>', function() {
 
       // given
       const isImportNeededSpy = sinon.spy(FormEditor.prototype, 'isImportNeeded');
+
       const cache = new Cache();
 
       cache.add('editor', {
@@ -365,21 +367,20 @@ describe('<FormEditor>', function() {
       });
 
       await renderEditor(schema, {
-        cache
+        cache,
+        waitForImport: false
       });
 
       // then
-      expect(isImportNeededSpy).to.be.called;
+      expect(isImportNeededSpy).to.have.been.calledOnce;
       expect(isImportNeededSpy).to.have.always.returned(false);
     });
 
 
-    it('should not import when props did not changed', async function() {
+    it('should not import when props did not change', async function() {
 
       // given
-      const {
-        instance
-      } = await renderEditor(schema);
+      const { instance } = await renderEditor(schema);
 
       const isImportNeededSpy = sinon.spy(instance, 'isImportNeeded');
 
@@ -389,30 +390,24 @@ describe('<FormEditor>', function() {
       });
 
       // then
-      expect(isImportNeededSpy).to.be.called;
+      expect(isImportNeededSpy).to.have.been.calledOnce;
       expect(isImportNeededSpy).to.have.always.returned(false);
-
     });
 
 
     it('should unset lastXML on import error', async function() {
 
       // given
-      const { instance } = await renderEditor(schema, {
-        onImport
-      });
+      const { instance } = await renderEditor(schema);
 
-      async function onImport() {
+      // assume
+      expect(instance.getCached().lastSchema).to.equal(schema);
 
-        // assume
-        expect(instance.getCached().lastSchema).to.equal(schema);
+      // when
+      await instance.importSchema('{ "importError": true }');
 
-        // when
-        await instance.handleError(new Error(), []);
-
-        // then
-        expect(instance.getCached().lastSchema).to.be.null;
-      }
+      // then
+      expect(instance.getCached().lastSchema).to.be.null;
     });
 
   });
@@ -499,40 +494,57 @@ const TestEditor = WithCachedState(FormEditor);
 
 async function renderEditor(schema, options = {}) {
   const {
-    id,
-    layout,
-    onAction,
-    onChanged,
-    onContentUpdated,
-    onError,
-    onImport,
-    onLayoutChanged,
-    onModal,
-    getConfig
+    cache = new Cache(),
+    getConfig = noop,
+    id = 'editor',
+    layout = {},
+    onAction = noop,
+    onChanged = noop,
+    onContentUpdated = noop,
+    onError = noop,
+    onImport = noop,
+    onLayoutChanged = noop,
+    onModal = noop,
+    waitForImport = true,
   } = options;
 
-  const wrapper = await mount(
-    <TestEditor
-      id={ id || 'editor' }
-      xml={ schema }
-      activeSheet={ options.activeSheet || { id: 'form' } }
-      onAction={ onAction || noop }
-      onChanged={ onChanged || noop }
-      onError={ onError || noop }
-      onImport={ onImport || noop }
-      onLayoutChanged={ onLayoutChanged || noop }
-      onContentUpdated={ onContentUpdated || noop }
-      onModal={ onModal || noop }
-      getConfig={ getConfig || noop }
-      cache={ options.cache || new Cache() }
-      layout={ layout || {} }
-    />
-  );
+  return new Promise((resolve) => {
+    let instance,
+        wrapper;
 
-  const instance = wrapper.find(FormEditor).instance();
+    const resolveOnImport = (...args) => {
+      onImport(...args);
 
-  return {
-    instance,
-    wrapper
-  };
+      resolve({
+        instance,
+        wrapper
+      });
+    };
+
+    wrapper = mount(
+      <TestEditor
+        cache={ cache }
+        getConfig={ getConfig }
+        id={ id }
+        layout={ layout }
+        onAction={ onAction }
+        onChanged={ onChanged }
+        onContentUpdated={ onContentUpdated }
+        onError={ onError }
+        onImport={ waitForImport ? resolveOnImport : onImport }
+        onLayoutChanged={ onLayoutChanged }
+        onModal={ onModal }
+        xml={ schema }
+      />
+    );
+
+    instance = wrapper.find(FormEditor).instance();
+
+    if (!waitForImport) {
+      resolve({
+        instance,
+        wrapper
+      });
+    }
+  });
 }
