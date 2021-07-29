@@ -21,7 +21,7 @@ import {
 import {
   Button,
   DropdownButton,
-  Icon,
+  Icon
 } from '../../../shared/ui';
 
 import {
@@ -322,7 +322,6 @@ export class BpmnEditor extends CachedComponent {
   }
 
   checkImport(prevProps) {
-
     if (!this.isImportNeeded(prevProps)) {
       return;
     }
