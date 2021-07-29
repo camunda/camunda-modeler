@@ -72,7 +72,9 @@ export class FormEditor extends CachedComponent {
       return;
     }
 
-    this.importSchema();
+    const { xml: schema } = this.props;
+
+    this.importSchema(schema);
   }
 
   isImportNeeded(prevProps = {}) {
@@ -95,12 +97,10 @@ export class FormEditor extends CachedComponent {
     return schema !== lastSchema;
   }
 
-  async importSchema() {
+  async importSchema(schema) {
     this.setState({
       importing: true
     });
-
-    const { xml: schema } = this.props;
 
     const { form } = this.getCached();
 
