@@ -211,19 +211,14 @@ describe('<BpmnEditor>', function() {
   it('#getXML', async function() {
 
     // given
-    const { instance } = await renderEditor(diagramXML, {
-      onImport
-    });
+    const { instance } = await renderEditor(diagramXML);
 
-    async function onImport() {
+    // when
+    const xml = await instance.getXML();
 
-      // when
-      const xml = await instance.getXML();
-
-      // then
-      expect(xml).to.exist;
-      expect(xml).to.eql(diagramXML);
-    }
+    // then
+    expect(xml).to.exist;
+    expect(xml).to.eql(diagramXML);
   });
 
 
@@ -338,7 +333,7 @@ describe('<BpmnEditor>', function() {
     it('should notify about changes', async function() {
 
       // given
-      const changedSpy = (state) => {
+      const onChangedSpy = spy((state) => {
 
         // then
         expect(state).to.include({
@@ -363,7 +358,7 @@ describe('<BpmnEditor>', function() {
           spaceTool: true,
           undo: true
         });
-      };
+      });
 
       const cache = new Cache();
 
@@ -393,11 +388,15 @@ describe('<BpmnEditor>', function() {
       const { instance } = await renderEditor(diagramXML, {
         id: 'editor',
         cache,
-        onChanged: changedSpy
+        onChanged: onChangedSpy,
+        waitForImport: false
       });
 
       // when
       instance.handleChanged();
+
+      // then
+      expect(onChangedSpy).to.have.been.calledOnce;
     });
 
 
@@ -569,7 +568,7 @@ describe('<BpmnEditor>', function() {
 
   describe('#handleNamespace', function() {
 
-    it('should replace namespace', function(done) {
+    it('should replace namespace', async function() {
 
       // given
       const onContentUpdated = sinon.spy();
@@ -578,102 +577,66 @@ describe('<BpmnEditor>', function() {
       });
 
       // when
-      renderEditor(activitiXML, {
+      await renderEditor(activitiXML, {
         onAction,
-        onContentUpdated,
-        onImport
+        onContentUpdated
       });
 
       // then
-      function onImport() {
-        try {
-          expect(onContentUpdated).to.be.calledOnce;
-          expect(onContentUpdated).to.be.calledWith(activitiConvertedXML);
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onContentUpdated).to.be.calledOnce;
+      expect(onContentUpdated).to.be.calledWith(activitiConvertedXML);
     });
 
 
-    it('should not convert the diagram if declined', function(done) {
+    it('should not convert the diagram if declined', async function() {
 
       // given
       const onContentUpdated = sinon.spy();
       const onAction = sinon.stub().resolves('cancel');
 
       // when
-      renderEditor(activitiXML, {
+      await renderEditor(activitiXML, {
         onAction,
-        onContentUpdated,
-        onImport
+        onContentUpdated
       });
 
       // then
-      function onImport() {
-        try {
-          expect(onContentUpdated).to.not.have.been.called;
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onContentUpdated).to.not.have.been.called;
     });
 
 
-    it('should not ask for permission if diagram does not have seeked namespace', function(done) {
+    it('should not ask for permission if diagram does not have seeked namespace', async function() {
 
       // given
       const onContentUpdated = sinon.spy();
       const onAction = sinon.spy();
 
       // when
-      renderEditor(diagramXML, {
+      await renderEditor(diagramXML, {
         onAction,
-        onContentUpdated,
-        onImport
+        onContentUpdated
       });
 
       // then
-      function onImport() {
-        try {
-          expect(onContentUpdated).to.not.have.been.called;
-          expect(onAction).to.not.have.been.calledWith('show-dialog');
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onContentUpdated).to.not.have.been.called;
+      expect(onAction).to.not.have.been.calledWith('show-dialog');
     });
 
 
-    it('should not fail import for broken diagrams', function(done) {
+    it('should not fail import for broken diagrams', async function() {
 
       // given
       const onContentUpdated = sinon.spy();
       const onAction = sinon.stub().resolves('yes');
 
       // when
-      renderEditor('broken-diagram', {
+      await renderEditor('broken-diagram', {
         onAction,
-        onContentUpdated,
-        onImport
+        onContentUpdated
       });
 
       // then
-      function onImport() {
-        try {
-          expect(onContentUpdated).to.have.not.been.called;
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onContentUpdated).to.have.not.been.called;
     });
 
   });
@@ -838,8 +801,7 @@ describe('<BpmnEditor>', function() {
       const errorSpy = spy();
 
       const { instance } = await renderEditor('export-error', {
-        onError: errorSpy,
-        onImport
+        onError: errorSpy
       });
 
       // make sure editor is dirty
@@ -847,21 +809,18 @@ describe('<BpmnEditor>', function() {
 
       commandStack.execute(1);
 
-      async function onImport() {
+      // when
+      let err;
 
-        // when
-        let err;
-
-        try {
-          await instance.getXML();
-        } catch (e) {
-          err = e;
-        }
-
-        // then
-        expect(err).to.exist;
-        expect(errorSpy).to.have.been.calledOnce;
+      try {
+        await instance.getXML();
+      } catch (e) {
+        err = e;
       }
+
+      // then
+      expect(err).to.exist;
+      expect(errorSpy).to.have.been.calledOnce;
     });
 
 
@@ -871,25 +830,22 @@ describe('<BpmnEditor>', function() {
       const errorSpy = spy();
 
       const { instance } = await renderEditor('export-as-error', {
-        onError: errorSpy,
-        onImport
+        onError: errorSpy
       });
 
-      async function onImport() {
+      // when
+      let err;
 
-        // when
-        let err;
-
-        try {
-          await instance.exportAs('svg');
-        } catch (e) {
-          err = e;
-        }
-
-        // then
-        expect(err).to.exist;
-        expect(errorSpy).to.have.been.calledOnce;
+      try {
+        await instance.exportAs('svg');
+      } catch (e) {
+        err = e;
       }
+
+      // then
+      expect(err).to.exist;
+      expect(err.message).to.equal('failed to save svg');
+      expect(errorSpy).to.have.been.calledOnce;
     });
 
   });
@@ -900,72 +856,63 @@ describe('<BpmnEditor>', function() {
     afterEach(sinon.restore);
 
 
-    it('should import without errors and warnings', function(done) {
+    it('should import without errors and warnings', async function() {
+
+      // given
+      const onImportSpy = spy((error, warnings) => {
+
+        // then
+        expect(error).to.not.exist;
+        expect(warnings).to.be.empty;
+      });
 
       // when
-      renderEditor(diagramXML, {
-        onImport
+      await renderEditor(diagramXML, {
+        onImport: onImportSpy
       });
 
       // then
-      function onImport(error, warnings) {
-        try {
-          expect(error).to.not.exist;
-          expect(warnings).to.have.length(0);
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onImportSpy).to.have.been.calledOnce;
     });
 
 
-    it('should import with warnings', function(done) {
+    it('should import with warnings', async function() {
 
       // given
-      const warningInducingFakeXML = 'import-warnings';
+      const onImportSpy = spy((error, warnings) => {
+
+        // then
+        expect(error).to.not.exist;
+        expect(warnings).to.have.length(1);
+      });
 
       // when
-      renderEditor(warningInducingFakeXML, {
-        onImport
+      await renderEditor('import-warnings', {
+        onImport: onImportSpy
       });
 
       // then
-      function onImport(error, warnings) {
-        try {
-          expect(error).to.not.exist;
-          expect(warnings).to.have.length(1);
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onImportSpy).to.have.been.calledOnce;
     });
 
 
-    it('should import with error', function(done) {
+    it('should import with error', async function() {
 
       // given
-      const errorInducingFakeXML = 'import-error';
+      const onImportSpy = spy((error, warnings) => {
+
+        // then
+        expect(error).to.exist;
+        expect(warnings).to.have.length(0);
+      });
 
       // when
-      renderEditor(errorInducingFakeXML, {
-        onImport
+      await renderEditor('import-error', {
+        onImport: onImportSpy
       });
 
       // then
-      function onImport(error, warnings) {
-        try {
-          expect(error).to.exist;
-          expect(warnings).to.have.length(0);
-
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
+      expect(onImportSpy).to.have.been.calledOnce;
     });
 
 
@@ -973,6 +920,7 @@ describe('<BpmnEditor>', function() {
 
       // given
       const isImportNeededSpy = sinon.spy(BpmnEditor.prototype, 'isImportNeeded');
+
       const cache = new Cache();
 
       cache.add('editor', {
@@ -983,16 +931,20 @@ describe('<BpmnEditor>', function() {
       });
 
       await renderEditor(diagramXML, {
-        cache
+        cache,
+        waitForImport: false
       });
 
       // then
-      expect(isImportNeededSpy).to.be.called;
-      expect(isImportNeededSpy).to.have.always.returned(false);
+      // BpmnEditor#componentDidMount is async
+      process.nextTick(() => {
+        expect(isImportNeededSpy).to.have.been.calledOnce;
+        expect(isImportNeededSpy).to.have.always.returned(false);
+      });
     });
 
 
-    it('should not import when props did not changed', async function() {
+    it('should not import when props did not change', async function() {
 
       // given
       const {
@@ -1016,21 +968,16 @@ describe('<BpmnEditor>', function() {
     it('should unset lastXML on import error', async function() {
 
       // given
-      const { instance } = await renderEditor(diagramXML, {
-        onImport
-      });
+      const { instance } = await renderEditor(diagramXML);
 
-      async function onImport() {
+      // assume
+      expect(instance.getCached().lastXML).to.equal(diagramXML);
 
-        // assume
-        expect(instance.getCached().lastXML).to.equal(diagramXML);
+      // when
+      await instance.importXML('import-error');
 
-        // when
-        await instance.handleError(new Error(), []);
-
-        // then
-        expect(instance.getCached().lastXML).to.be.null;
-      }
+      // then
+      expect(instance.getCached().lastXML).to.be.null;
     });
 
   });
@@ -1106,7 +1053,7 @@ describe('<BpmnEditor>', function() {
     });
 
 
-    it('should apply default templates to unsaved diagram', function(done) {
+    it('should apply default templates to unsaved diagram', async function() {
 
       // given
       const modeler = new BpmnModeler();
@@ -1121,27 +1068,18 @@ describe('<BpmnEditor>', function() {
         }
       });
 
-      function onImport() {
-
-        try {
-          expect(invokeSpy).to.have.been.calledWith(applyDefaultTemplates);
-        } catch (error) {
-          return done(error);
-        }
-
-        done();
-      }
-
       // when
-      renderEditor(diagramXML, {
-        isNew: true,
+      await renderEditor(diagramXML, {
         cache,
-        onImport
+        isNew: true
       });
+
+      // then
+      expect(invokeSpy).to.have.been.calledWith(applyDefaultTemplates);
     });
 
 
-    it('should NOT apply default templates to unsaved diagram twice', function(done) {
+    it('should NOT apply default templates to unsaved diagram twice', async function() {
 
       // given
       const modeler = new BpmnModeler();
@@ -1157,27 +1095,18 @@ describe('<BpmnEditor>', function() {
         }
       });
 
-      function onImport() {
-
-        try {
-          expect(invokeSpy).not.to.have.been.called;
-        } catch (error) {
-          return done(error);
-        }
-
-        done();
-      }
-
       // when
-      renderEditor(diagramXML, {
-        isNew: true,
+      await renderEditor(diagramXML, {
         cache,
-        onImport
+        isNew: true
       });
+
+      // then
+      expect(invokeSpy).not.to.have.been.called;
     });
 
 
-    it('should NOT apply default templates to saved diagram', function(done) {
+    it('should NOT apply default templates to saved diagram', async function() {
 
       // given
       const modeler = new BpmnModeler();
@@ -1192,23 +1121,14 @@ describe('<BpmnEditor>', function() {
         }
       });
 
-      function onImport() {
-
-        try {
-          expect(invokeSpy).not.to.have.been.called;
-        } catch (error) {
-          return done(error);
-        }
-
-        done();
-      }
-
       // when
       renderEditor(diagramXML, {
-        isNew: false,
         cache,
-        onImport
+        isNew: false
       });
+
+      // then
+      expect(invokeSpy).not.to.have.been.called;
     });
 
 
@@ -1507,57 +1427,76 @@ function noop() {}
 
 const TestEditor = WithCachedState(BpmnEditor);
 
-async function renderEditor(xml, options = {}) {
+const defaultLayout = {
+  minimap: {
+    open: false
+  },
+  propertiesPanel: {
+    open: true
+  }
+};
+
+function renderEditor(xml, options = {}) {
   const {
-    id,
-    layout,
-    onAction,
-    onChanged,
-    onContentUpdated,
-    onError,
-    onWarning,
-    onImport,
-    onLayoutChanged,
-    onModal,
-    getConfig,
-    getPlugins,
-    isNew
+    cache = new Cache(),
+    getConfig = noop,
+    getPlugins = () => [],
+    id = 'editor',
+    isNew = true,
+    layout = defaultLayout,
+    onAction = noop,
+    onChanged = noop,
+    onContentUpdated = noop,
+    onError = noop,
+    onImport = noop,
+    onLayoutChanged = noop,
+    onModal = noop,
+    onWarning = noop,
+    waitForImport = true
   } = options;
 
-  const wrapper = await mount(
-    <TestEditor
-      id={ id || 'editor' }
-      xml={ xml }
-      isNew={ isNew !== false }
-      activeSheet={ options.activeSheet || { id: 'bpmn' } }
-      onAction={ onAction || noop }
-      onChanged={ onChanged || noop }
-      onError={ onError || noop }
-      onWarning={ onWarning || noop }
-      onImport={ onImport || noop }
-      onLayoutChanged={ onLayoutChanged || noop }
-      onContentUpdated={ onContentUpdated || noop }
-      onModal={ onModal || noop }
-      getConfig={ getConfig || noop }
-      getPlugins={ getPlugins || (() => []) }
-      cache={ options.cache || new Cache() }
-      layout={ layout || {
-        minimap: {
-          open: false
-        },
-        propertiesPanel: {
-          open: true
-        }
-      } }
-    />
-  );
+  return new Promise((resolve) => {
+    let instance,
+        wrapper;
 
-  const instance = wrapper.find(BpmnEditor).instance();
+    const resolveOnImport = (...args) => {
+      onImport(...args);
 
-  return {
-    instance,
-    wrapper
-  };
+      resolve({
+        instance,
+        wrapper
+      });
+    };
+
+    wrapper = mount(
+      <TestEditor
+        cache={ cache }
+        getConfig={ getConfig }
+        getPlugins={ getPlugins }
+        id={ id }
+        isNew={ isNew }
+        layout={ layout }
+        onAction={ onAction }
+        onChanged={ onChanged }
+        onContentUpdated={ onContentUpdated }
+        onError={ onError }
+        onImport={ waitForImport ? resolveOnImport : onImport }
+        onLayoutChanged={ onLayoutChanged }
+        onModal={ onModal }
+        onWarning={ onWarning }
+        xml={ xml }
+      />
+    );
+
+    instance = wrapper.find(BpmnEditor).instance();
+
+    if (!waitForImport) {
+      resolve({
+        instance,
+        wrapper
+      });
+    }
+  });
 }
 
 function getEvent(events, eventName) {
