@@ -96,7 +96,7 @@ export class BpmnEditor extends CachedComponent {
     this.handleResize = debounce(this.handleResize);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this._isMounted = true;
 
     const {
