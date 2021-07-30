@@ -426,12 +426,13 @@ export class BpmnEditor extends CachedComponent {
   }
 
   checkImport(prevProps) {
-
     if (!this.isImportNeeded(prevProps)) {
       return;
     }
 
-    this.importXML();
+    const { xml } = this.props;
+
+    this.importXML(xml);
   }
 
   isImportNeeded(prevProps) {
@@ -458,11 +459,7 @@ export class BpmnEditor extends CachedComponent {
     return xml !== lastXML;
   }
 
-  async importXML() {
-    const {
-      xml
-    } = this.props;
-
+  async importXML(xml) {
     this.setState({
       importing: true
     });
@@ -529,7 +526,15 @@ export class BpmnEditor extends CachedComponent {
   }
 
   async exportAs(type) {
-    const svg = await this.exportSVG();
+    let svg;
+
+    try {
+      svg = await this.exportSVG();
+    } catch (error) {
+      this.handleError({ error });
+
+      return Promise.reject(error);
+    }
 
     if (type === 'svg') {
       return svg;
@@ -542,7 +547,6 @@ export class BpmnEditor extends CachedComponent {
     const modeler = this.getModeler();
 
     try {
-
       const { svg } = await modeler.saveSVG();
 
       return svg;
