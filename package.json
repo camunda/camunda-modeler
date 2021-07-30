@@ -52,7 +52,7 @@
     "electron-publisher-s3": "^20.17.2",
     "electron-reloader": "^1.2.0",
     "eslint": "^7.17.0",
-    "eslint-plugin-bpmn-io": "^0.11.0",
+    "eslint-plugin-bpmn-io": "^0.12.0",
     "eslint-plugin-camunda-licensed": "^0.4.4",
     "eslint-plugin-import": "^2.22.1",
     "execa": "^1.0.0",
