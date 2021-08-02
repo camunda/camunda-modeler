@@ -9,7 +9,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { getRootProcess } from 'client/src/app/quantme/utilities/Utilities';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import elementTemplates from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates';
 import quantMEModule from './modeling';
@@ -17,16 +16,14 @@ import quantMEModdleExtension from 'client/resources/quantme/quantum4bpmn.json';
 import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
 
 /**
- * Get the root process from a xml string representing a BPMN diagram
+ * Get the definitions from a xml string representing a BPMN diagram
  *
  * @param xml the xml representing the BPMN diagram
- * @return the root process from the xml definitions
+ * @return the definitions from the xml definitions
  */
-export async function getRootProcessFromXml(xml) {
+export async function getDefinitionsFromXml(xml) {
   let bpmnModeler = await createModelerFromXml(xml);
-
-  // extract and return root process
-  return getRootProcess(bpmnModeler.getDefinitions());
+  return bpmnModeler.getDefinitions();
 }
 
 /**

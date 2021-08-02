@@ -25,7 +25,11 @@ import { createModeler, createModelerFromXml } from '../../Utilities';
 /**
  * Replace the given QuantumHardwareSelectionSubprocess by a native subprocess orchestrating the hardware selection
  */
-export async function replaceHardwareSelectionSubprocess(subprocess, parent, bpmnFactory, bpmnReplace, elementRegistry, modeling, nisqAnalyzerEndpoint, transformationFrameworkEndpoint, camundaEndpoint) {
+export async function replaceHardwareSelectionSubprocess(subprocess, parent, modeler, nisqAnalyzerEndpoint, transformationFrameworkEndpoint, camundaEndpoint) {
+  let bpmnReplace = modeler.get('bpmnReplace');
+  let bpmnFactory = modeler.get('bpmnFactory');
+  let modeling = modeler.get('modeling');
+  let elementRegistry = modeler.get('elementRegistry');
 
   // replace QuantumHardwareSelectionSubprocess with traditional subprocess
   let element = bpmnReplace.replaceElement(elementRegistry.get(subprocess.id), { type: 'bpmn:SubProcess' });
@@ -286,7 +290,8 @@ async function getHardwareSelectionFragment(subprocess) {
   await initializeModeler();
 
   // retrieve root element to add extracted workflow fragment
-  let rootElement = getRootProcess(modeler.getDefinitions());
+  let definitions = modeler.getDefinitions();
+  let rootElement = getRootProcess(definitions);
   let rootElementBo = elementRegistry.get(rootElement.id);
 
   // add start and end event to the new process
@@ -294,7 +299,7 @@ async function getHardwareSelectionFragment(subprocess) {
   let endEvent = modeling.createShape({ type: 'bpmn:EndEvent' }, { x: 50, y: 50 }, rootElementBo, {});
 
   // insert given subprocess and connect to start and end event
-  let insertedSubprocess = insertShape(rootElementBo, subprocess, {}, false, bpmnReplace, elementRegistry, modeling).element;
+  let insertedSubprocess = insertShape(definitions, rootElementBo, subprocess, {}, false, modeler).element;
   modeling.connect(startEvent, insertedSubprocess, { type: 'bpmn:SequenceFlow' });
   modeling.connect(insertedSubprocess, endEvent, { type: 'bpmn:SequenceFlow' });
 

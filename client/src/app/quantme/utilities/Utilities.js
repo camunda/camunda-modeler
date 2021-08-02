@@ -159,6 +159,11 @@ export function getPropertiesToCopy(element) {
       continue;
     }
 
+    // ignore messages, as they are added before
+    if (key === 'messageRef') {
+      continue;
+    }
+
     properties[key] = element[key];
   }
 

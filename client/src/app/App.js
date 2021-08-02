@@ -522,7 +522,7 @@ export class App extends PureComponent {
       type: 'info',
       title: 'QAA import pending!',
       content: 'QAA import for ' + qaaPaths.length + ' QAAs is running in the background. Uploading CSARs to connected Winery!',
-      duration: 100000
+      duration: 300000
     });
 
     return await this.tabRef.current.triggerAction('import-qaa', {
@@ -1497,7 +1497,7 @@ export class App extends PureComponent {
           type: 'info',
           title: 'QAA export pending!',
           content: 'QAA export is currently pending. Retrieving required CSARs from connected Winery. Please wait until the file dialog opens to store the QAA locally!',
-          duration: 100000
+          duration: 300000
         });
       }
 

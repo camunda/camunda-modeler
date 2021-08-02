@@ -19,7 +19,7 @@ import {
   getPropertiesToCopy,
   exportXmlFromModeler
 } from 'client/src/app/quantme/utilities/Utilities';
-import { getRootProcessFromXml, createModelerFromXml } from '../Utilities';
+import { getDefinitionsFromXml, createModelerFromXml } from '../Utilities';
 import { addQuantMEInputParameters } from 'client/src/app/quantme/replacement/InputOutputHandler';
 import * as Constants from 'client/src/app/quantme/Constants';
 import { replaceHardwareSelectionSubprocess } from './hardware-selection/QuantMEHardwareSelectionHandler';
@@ -33,13 +33,13 @@ import { replaceHardwareSelectionSubprocess } from './hardware-selection/QuantME
  */
 export async function startReplacementProcess(xml, currentQRMs, endpointConfig) {
   let modeler = await createModelerFromXml(xml);
-  let bpmnReplace = modeler.get('bpmnReplace');
   let modeling = modeler.get('modeling');
-  let factory = modeler.get('bpmnFactory');
   let elementRegistry = modeler.get('elementRegistry');
 
   // get root element of the current diagram
-  const rootElement = getRootProcess(modeler.getDefinitions());
+  const definitions = modeler.getDefinitions();
+  const rootElement = getRootProcess(definitions);
+  console.log(rootElement);
   if (typeof rootElement === 'undefined') {
     console.log('Unable to retrieve root process element from definitions!');
     return { status: 'failed', cause: 'Unable to retrieve root process element from definitions!' };
@@ -76,11 +76,10 @@ export async function startReplacementProcess(xml, currentQRMs, endpointConfig) 
     let replacementSuccess = false;
     if (replacementConstruct.task.$type === Constants.QUANTUM_HARDWARE_SELECTION_SUBPROCESS) {
       console.log('Transforming QuantumHardwareSelectionSubprocess...');
-      replacementSuccess = await replaceHardwareSelectionSubprocess(replacementConstruct.task, replacementConstruct.parent, factory,
-        bpmnReplace, elementRegistry, modeling, endpointConfig.nisqAnalyzerEndpoint, endpointConfig.transformationFrameworkEndpoint, endpointConfig.camundaEndpoint);
+      replacementSuccess = await replaceHardwareSelectionSubprocess(replacementConstruct.task, replacementConstruct.parent, modeler, endpointConfig.nisqAnalyzerEndpoint, endpointConfig.transformationFrameworkEndpoint, endpointConfig.camundaEndpoint);
     } else {
       console.log('Replacing task with id %s by using QRM: ', replacementConstruct.task.id, replacementConstruct.qrm);
-      replacementSuccess = await replaceByFragment(replacementConstruct.task, replacementConstruct.parent, replacementConstruct.qrm.replacement, factory, bpmnReplace, elementRegistry, modeling);
+      replacementSuccess = await replaceByFragment(definitions, replacementConstruct.task, replacementConstruct.parent, replacementConstruct.qrm.replacement, modeler);
     }
 
     if (!replacementSuccess) {
@@ -139,7 +138,8 @@ async function getMatchingQRM(task, currentQRMs) {
 /**
  * Replace the given task by the content of the replacement fragment
  */
-async function replaceByFragment(task, parent, replacement, bpmnFactory, bpmnReplace, elementRegistry, modeling) {
+async function replaceByFragment(definitions, task, parent, replacement, modeler) {
+  let bpmnFactory = modeler.get('bpmnFactory');
 
   if (!replacement) {
     console.log('Replacement fragment is undefined. Aborting replacement!');
@@ -147,7 +147,7 @@ async function replaceByFragment(task, parent, replacement, bpmnFactory, bpmnRep
   }
 
   // get the root process of the replacement fragment
-  let replacementProcess = await getRootProcessFromXml(replacement);
+  let replacementProcess = getRootProcess(await getDefinitionsFromXml(replacement));
   let replacementElement = getSingleFlowElement(replacementProcess);
   if (replacementElement === null || replacementElement === undefined) {
     console.log('Unable to retrieve QuantME task from replacement fragment: ', replacement);
@@ -155,7 +155,7 @@ async function replaceByFragment(task, parent, replacement, bpmnFactory, bpmnRep
   }
 
   console.log('Replacement element: ', replacementElement);
-  let result = insertShape(parent, replacementElement, {}, true, bpmnReplace, elementRegistry, modeling, task);
+  let result = insertShape(definitions, parent, replacementElement, {}, true, modeler, task);
 
   // add all attributes of the replaced QuantME task to the input parameters of the replacement fragment
   let inputOutputExtension = getCamundaInputOutput(result['element'].businessObject, bpmnFactory);
@@ -167,18 +167,21 @@ async function replaceByFragment(task, parent, replacement, bpmnFactory, bpmnRep
 /**
  * Insert the given element and all child elements into the diagram
  *
+ * @param definitions the definitions element of the BPMN diagram
  * @param parent the parent element under which the new element should be attached
  * @param newElement the new element to insert
  * @param idMap the idMap containing a mapping of ids defined in newElement to the new ids in the diagram
  * @param replace true if the element should be inserted instead of an available element, false otherwise
- * @param bpmnReplace the facility to replace BPMN elements
- * @param elementRegistry the registry to retrieve elements from the diagram
- * @param modeling the facility to access shapes in the diagram
+ * @param modeler the BPMN modeler containing the target BPMN diagram
  * @param oldElement an old element that is only required if it should be replaced by the new element
  * @return {{success: boolean, idMap: *, element: *}}
  */
-export function insertShape(parent, newElement, idMap, replace, bpmnReplace, elementRegistry, modeling, oldElement) {
+export function insertShape(definitions, parent, newElement, idMap, replace, modeler, oldElement) {
   console.log('Inserting shape for element: ', newElement);
+  let bpmnReplace = modeler.get('bpmnReplace');
+  let bpmnFactory = modeler.get('bpmnFactory');
+  let modeling = modeler.get('modeling');
+  let elementRegistry = modeler.get('elementRegistry');
 
   // create new id map if not provided
   if (idMap === undefined) {
@@ -217,6 +220,27 @@ export function insertShape(parent, newElement, idMap, replace, bpmnReplace, ele
       // expand the new element
       elementRegistry.get(element.id).businessObject.di.isExpanded = true;
     }
+
+    // preserve messages defined in ReceiveTasks
+  } else if (newElement.$type === 'bpmn:ReceiveTask') {
+
+    // get message from the replacement and check if a corresponding message was already created
+    let oldMessage = newElement.messageRef;
+    if (idMap[oldMessage.id] === undefined) {
+
+      // add a new message element to the definitions document and link it to the receive task
+      let message = bpmnFactory.create('bpmn:Message');
+      message.name = oldMessage.name;
+      definitions.rootElements.push(message);
+      modeling.updateProperties(element, { 'messageRef': message });
+
+      // store id if other receive tasks reference the same message
+      idMap[oldMessage.id] = message.id;
+    } else {
+
+      // reuse already created message and add it to receive task
+      modeling.updateProperties(element, { 'messageRef': idMap[oldMessage.id] });
+    }
   }
 
   // add element to which a boundary event is attached
@@ -230,7 +254,7 @@ export function insertShape(parent, newElement, idMap, replace, bpmnReplace, ele
   modeling.updateProperties(element, getPropertiesToCopy(newElement));
 
   // recursively handle children of the current element
-  let resultTuple = insertChildElements(element, newElement, idMap, bpmnReplace, elementRegistry, modeling);
+  let resultTuple = insertChildElements(definitions, element, newElement, idMap, modeler);
 
   // add artifacts with their shapes to the diagram
   let success = resultTuple['success'];
@@ -239,7 +263,7 @@ export function insertShape(parent, newElement, idMap, replace, bpmnReplace, ele
   if (artifacts) {
     console.log('Element contains %i artifacts. Adding corresponding shapes...', artifacts.length);
     for (let i = 0; i < artifacts.length; i++) {
-      let result = insertShape(element, artifacts[i], idMap, false, bpmnReplace, elementRegistry, modeling);
+      let result = insertShape(definitions, element, artifacts[i], idMap, false, modeler);
       success = success && result['success'];
       idMap = result['idMap'];
     }
@@ -252,15 +276,14 @@ export function insertShape(parent, newElement, idMap, replace, bpmnReplace, ele
 /**
  * Insert all children of the given element into the diagram
  *
+ * @param definitions the definitions element of the BPMN diagram
  * @param parent the element that is the new parent of the inserted elements
  * @param newElement the new element to insert the children for
  * @param idMap the idMap containing a mapping of ids defined in newElement to the new ids in the diagram
- * @param bpmnReplace the facility to replace BPMN elements
- * @param elementRegistry the registry to retrieve elements from the diagram
- * @param modeling the facility to access shapes in the diagram
+ * @param modeler the BPMN modeler containing the target BPMN diagram
  * @return {{success: boolean, idMap: *, element: *}}
  */
-function insertChildElements(parent, newElement, idMap, bpmnReplace, elementRegistry, modeling) {
+function insertChildElements(definitions, parent, newElement, idMap, modeler) {
 
   let success = true;
   let flowElements = newElement.flowElements;
@@ -280,21 +303,21 @@ function insertChildElements(parent, newElement, idMap, bpmnReplace, elementRegi
         continue;
       }
 
-      let result = insertShape(parent, flowElements[i], idMap, false, bpmnReplace, elementRegistry, modeling);
+      let result = insertShape(definitions, parent, flowElements[i], idMap, false, modeler);
       success = success && result['success'];
       idMap = result['idMap'];
     }
 
     // handle boundary events with new ids of added elements
     for (let i = 0; i < boundaryEvents.length; i++) {
-      let result = insertShape(parent, boundaryEvents[i], idMap, false, bpmnReplace, elementRegistry, modeling);
+      let result = insertShape(definitions, parent, boundaryEvents[i], idMap, false, modeler);
       success = success && result['success'];
       idMap = result['idMap'];
     }
 
     // handle boundary events with new ids of added elements
     for (let i = 0; i < sequenceflows.length; i++) {
-      let result = insertShape(parent, sequenceflows[i], idMap, false, bpmnReplace, elementRegistry, modeling);
+      let result = insertShape(definitions, parent, sequenceflows[i], idMap, false, modeler);
       success = success && result['success'];
       idMap = result['idMap'];
     }
