@@ -304,3 +304,17 @@ export function engineProfilesEqual(a, b) {
     && a.executionPlatform === b.executionPlatform
     && a.executionPlatformVersion === b.executionPlatformVersion;
 }
+
+export function isKnownEngineProfile(engineProfile = {}) {
+  if (!engineProfile.executionPlatform || !engineProfile.executionPlatformVersion) {
+    return false;
+  }
+
+  const knownEngineProfile = engineProfiles.find(({ executionPlatform }) => executionPlatform === engineProfile.executionPlatform);
+
+  if (!knownEngineProfile || !knownEngineProfile.executionPlatformVersions.includes(engineProfile.executionPlatformVersion)) {
+    return false;
+  }
+
+  return true;
+}

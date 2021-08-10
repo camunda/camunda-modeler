@@ -12,7 +12,7 @@ import React, { createRef } from 'react';
 
 import {
   isFunction,
-  isUndefined
+  isNil
 } from 'min-dash';
 
 import {
@@ -33,7 +33,8 @@ import { FormEditor as Form } from './editor/FormEditor';
 
 import {
   EngineProfile,
-  engineProfilesEqual
+  engineProfilesEqual,
+  isKnownEngineProfile
 } from '../EngineProfile';
 
 
@@ -151,25 +152,22 @@ export class FormEditor extends CachedComponent {
         lastSchema: null
       });
     } else {
-      const {
-        executionPlatform,
-        executionPlatformVersion
-      } = form.getSchema();
+      const engineProfile = this.getEngineProfile();
 
-      let engineProfile = null;
+      if (isNil(engineProfile) || isKnownEngineProfile(engineProfile)) {
+        this.setCached({
+          engineProfile,
+          lastSchema: schema,
+          stackIdx
+        });
+      } else {
+        error = new Error(getUnknownEngineProfileErrorMessage(engineProfile));
 
-      if (!isUndefined(executionPlatform)) {
-        engineProfile = {
-          executionPlatform,
-          executionPlatformVersion
-        };
+        this.setCached({
+          engineProfile: null,
+          lastSchema: null
+        });
       }
-
-      this.setCached({
-        engineProfile,
-        lastSchema: schema,
-        stackIdx
-      });
     }
 
     this.setState({
@@ -288,6 +286,10 @@ export class FormEditor extends CachedComponent {
       executionPlatformVersion
     } = schema;
 
+    if (!executionPlatform && !executionPlatformVersion) {
+      return null;
+    }
+
     return {
       executionPlatform,
       executionPlatformVersion
@@ -349,3 +351,14 @@ export class FormEditor extends CachedComponent {
 }
 
 export default WithCache(WithCachedState(FormEditor));
+
+// helpers //////////
+
+function getUnknownEngineProfileErrorMessage(engineProfile = {}) {
+  const {
+    executionPlatform = '<no-execution-platform>',
+    executionPlatformVersion = '<no-execution-platform-version>'
+  } = engineProfile;
+
+  return `An unknown execution platform (${ executionPlatform } ${ executionPlatformVersion }) was detected.`;
+}

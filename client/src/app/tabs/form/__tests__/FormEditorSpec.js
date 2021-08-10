@@ -32,9 +32,11 @@ import { FormEditor as FormEditorMock } from 'test/mocks/form-js';
 
 import schemaJSON from './form.json';
 import engineProfileSchemaJSON from './engine-profile.json';
+import unknownEngineProfileSchemaJSON from './unknown-engine-profile.json';
 
 const schema = JSON.stringify(schemaJSON, null, 2),
-      engineProfileSchema = JSON.stringify(engineProfileSchemaJSON, null, 2);
+      engineProfileSchema = JSON.stringify(engineProfileSchemaJSON, null, 2),
+      unknownEngineProfileSchema = JSON.stringify(unknownEngineProfileSchemaJSON, null, 2);
 
 const { spy } = sinon;
 
@@ -541,6 +543,24 @@ describe('<FormEditor>', function() {
         executionPlatform: 'Camunda Cloud',
         executionPlatformVersion: '1.1'
       });
+    });
+
+
+    it('should not open form if unknown execution profile', async function() {
+
+      // given
+      const onImportSpy = spy();
+
+      // when
+      const { instance } = await renderEditor(unknownEngineProfileSchema, {
+        onImport: onImportSpy
+      });
+
+      // then
+      expect(onImportSpy).to.have.been.calledOnce;
+      expect(onImportSpy).to.have.been.calledWith(sinon.match({ message: 'An unknown execution platform (John Doe Platform 1.0) was detected.' }), []);
+
+      expect(instance.getCached().engineProfile).to.be.null;
     });
 
   });
