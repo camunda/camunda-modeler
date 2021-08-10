@@ -83,7 +83,8 @@ function getEndpointConfiguration(endpoint) {
     contactPoint,
     camundaCloudClientId,
     camundaCloudClientSecret,
-    camundaCloudClusterId
+    camundaCloudClusterId,
+    camundaCloudClusterRegion
   } = endpoint;
 
   if (targetType === targetTypes.SELF_HOSTED) {
@@ -112,7 +113,8 @@ function getEndpointConfiguration(endpoint) {
       type: targetTypes.CAMUNDA_CLOUD,
       clientId: camundaCloudClientId,
       clientSecret: camundaCloudClientSecret,
-      clusterId: camundaCloudClusterId
+      clusterId: camundaCloudClusterId,
+      ...(camundaCloudClusterRegion ? { clusterRegion: camundaCloudClusterRegion } : {})
     };
   }
 

@@ -67,6 +67,7 @@ const BPMN_SUFFIX = '.bpmn';
  * @property {string} clusterId
  * @property {string} clientId
  * @property {string} clientSecret
+ * @property {string} [clusterRegion] if not provided, zeebe-node will assume 'bru-2'
  */
 
 /**
@@ -290,7 +291,8 @@ class ZeebeAPI {
           clientId: endpoint.clientId,
           clientSecret: endpoint.clientSecret,
           clusterId: endpoint.clusterId,
-          cacheOnDisk: false
+          cacheOnDisk: false,
+          ...(endpoint.clusterRegion ? { clusterRegion: endpoint.clusterRegion } : {})
         },
         useTLS: true
       };
