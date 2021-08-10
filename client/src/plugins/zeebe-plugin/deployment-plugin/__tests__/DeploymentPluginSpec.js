@@ -296,6 +296,45 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
+  it('should migrate clusterID given no clusterURL', async () => {
+
+    // given
+    const deploySpy = sinon.spy();
+    const getGatewayVersionSpy = sinon.spy();
+    const zeebeAPI = new MockZeebeAPI({ deploySpy, getGatewayVersionSpy });
+    const storedTabConfiguration = {
+      deployment: { name: 'foo' },
+      camundaCloudClusterId: '1234-abcd'
+    };
+    const storedEndpoints = [{
+      camundaCloudClusterId: storedTabConfiguration.camundaCloudClusterId
+    }];
+
+    const config = {
+      get(key, defaultValue) {
+        return key === ZEEBE_ENDPOINTS_CONFIG_KEY ? storedEndpoints : defaultValue;
+      },
+      getForFile(_, key) {
+        return key === DEPLOYMENT_CONFIG_KEY && storedTabConfiguration;
+      }
+    };
+
+    const { instance } = createDeploymentPlugin({ zeebeAPI, config });
+
+    // when
+    await instance.deploy();
+
+    // then
+    expect(deploySpy).to.have.been.calledOnce;
+    expect(deploySpy.args[0][0].endpoint).to.have.property('camundaCloudClusterUrl',
+      '1234-abcd.bru-2.zeebe.camunda.io:443');
+
+    expect(getGatewayVersionSpy).to.have.been.calledOnce;
+    expect(getGatewayVersionSpy.args[0][0]).to.have.property('camundaCloudClusterUrl',
+      '1234-abcd.bru-2.zeebe.camunda.io:443');
+  });
+
+
   it('should save tab configuration', async () => {
 
     // given

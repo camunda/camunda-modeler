@@ -310,6 +310,11 @@ export default class DeploymentPlugin extends PureComponent {
       endpoint = previousEndpoints[0];
     }
 
+    // #2375 => if we only have a clusterId, transform it to clusterURL for backwards-compatability
+    if (!endpoint.camundaCloudClusterUrl && endpoint.camundaCloudClusterId) {
+      endpoint.camundaCloudClusterUrl = createCamundaCloudClusterUrl(endpoint.camundaCloudClusterId);
+    }
+
     return endpoint;
   }
 
@@ -531,4 +536,8 @@ function getGRPCErrorCode(error) {
   } = error;
 
   return code ? GRPC_ERROR_CODES[code] : 'UNKNOWN';
+}
+
+function createCamundaCloudClusterUrl(camundaCloudClusterId) {
+  return camundaCloudClusterId + '.bru-2.zeebe.camunda.io:443';
 }
