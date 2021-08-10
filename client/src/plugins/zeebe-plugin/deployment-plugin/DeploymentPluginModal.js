@@ -82,7 +82,7 @@ export default class DeploymentPluginModal extends React.PureComponent {
       clientSecret: validator.validateClientSecret,
       camundaCloudClientId: validator.validateClientId,
       camundaCloudClientSecret: validator.validateClientSecret,
-      camundaCloudClusterId: validator.validateClusterId
+      camundaCloudClusterUrl: validator.validateClusterUrl
     };
 
     this.connectionChecker = validator.createConnectionChecker();
@@ -118,11 +118,11 @@ export default class DeploymentPluginModal extends React.PureComponent {
       return fieldName === 'contactPoint' &&
         CONNECTION_ERROR_MESSAGES[failureReason];
     case ERROR_REASONS.CLUSTER_UNAVAILABLE:
-      return fieldName === 'camundaCloudClusterId' && CONNECTION_ERROR_MESSAGES[failureReason];
+      return fieldName === 'camundaCloudClusterUrl' && CONNECTION_ERROR_MESSAGES[failureReason];
     case ERROR_REASONS.UNSUPPORTED_ENGINE:
       return [
         'contactPoint',
-        'camundaCloudClusterId'
+        'camundaCloudClusterUrl'
       ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
     case ERROR_REASONS.UNAUTHORIZED:
     case ERROR_REASONS.FORBIDDEN:
@@ -137,7 +137,7 @@ export default class DeploymentPluginModal extends React.PureComponent {
     case ERROR_REASONS.UNKNOWN:
       return [
         'contactPoint',
-        'camundaCloudClusterId'
+        'camundaCloudClusterUrl'
       ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
     }
   }
@@ -299,11 +299,11 @@ export default class DeploymentPluginModal extends React.PureComponent {
                         form.values.endpoint.targetType === CAMUNDA_CLOUD && (
                           <React.Fragment>
                             <Field
-                              name="endpoint.camundaCloudClusterId"
+                              name="endpoint.camundaCloudClusterUrl"
                               component={ TextInput }
                               label={ CLUSTER_ID }
                               fieldError={ this.endpointConfigurationFieldError }
-                              validate={ validatorFunctionsByFieldNames.camundaCloudClusterId }
+                              validate={ validatorFunctionsByFieldNames.camundaCloudClusterUrl }
                               autoFocus
                             />
                             <Field

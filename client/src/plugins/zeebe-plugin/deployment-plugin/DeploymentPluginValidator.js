@@ -15,7 +15,7 @@ import {
   AUDIENCE_MUST_NOT_BE_EMPTY,
   CLIENT_ID_MUST_NOT_BE_EMPTY,
   CLIENT_SECRET_MUST_NOT_BE_EMPTY,
-  CLUSTER_ID_MUST_NOT_BE_EMPTY,
+  CLUSTER_URL_MUST_BE_VALID_CLOUD_URL
 } from './DeploymentPluginConstants';
 
 import { AUTH_TYPES } from '../shared/ZeebeAuthTypes';
@@ -39,6 +39,10 @@ export default class DeploymentPluginValidator {
     return value ? null : message;
   }
 
+  validateUrl = (value, message = CLUSTER_URL_MUST_BE_VALID_CLOUD_URL) => {
+    return validCloudUrl(value) ? null : message;
+  }
+
   validateZeebeContactPoint = (value) => {
     return this.validateNonEmpty(value, CONTACT_POINT_MUST_NOT_BE_EMPTY);
   }
@@ -59,8 +63,8 @@ export default class DeploymentPluginValidator {
     return this.validateNonEmpty(value, CLIENT_SECRET_MUST_NOT_BE_EMPTY);
   }
 
-  validateClusterId = (value) => {
-    return this.validateNonEmpty(value, CLUSTER_ID_MUST_NOT_BE_EMPTY);
+  validateClusterUrl = (value) => {
+    return this.validateUrl(value, CLUSTER_URL_MUST_BE_VALID_CLOUD_URL);
   }
 
   validateConnection = (endpoint) => {
@@ -87,7 +91,7 @@ export default class DeploymentPluginValidator {
       validators = {
         camundaCloudClientId: this.validateClientId,
         camundaCloudClientSecret: this.validateClientSecret,
-        camundaCloudClusterId: this.validateClusterId
+        camundaCloudClusterUrl: this.validateClusterUrl
       };
     } else if (targetType === SELF_HOSTED) {
       if (endpoint.authType === AUTH_TYPES.NONE) {
@@ -302,4 +306,8 @@ function hash(el) {
 
 function shallowEquals(a, b) {
   return hash(a) === hash(b);
+}
+
+function validCloudUrl(url) {
+  return /^(https:\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io:443/.test(url);
 }
