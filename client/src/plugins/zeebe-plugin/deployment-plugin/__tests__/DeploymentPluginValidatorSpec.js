@@ -18,7 +18,7 @@ import {
   AUDIENCE_MUST_NOT_BE_EMPTY,
   CLIENT_ID_MUST_NOT_BE_EMPTY,
   CLIENT_SECRET_MUST_NOT_BE_EMPTY,
-  CLUSTER_ID_MUST_NOT_BE_EMPTY,
+  CLUSTER_URL_MUST_BE_VALID_CLOUD_URL,
 } from '../DeploymentPluginConstants';
 
 
@@ -88,15 +88,17 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    it('should validate cluster id', () => {
+    it('should validate cluster url', () => {
 
       // given
-      const nonValidClusterId = '';
-      const validClusterId = 'validClusterId';
+      const nonValidClusterUrl = '';
+      const validClusterUrlHttps = 'https://asdf2-a1213-123a.ber-05.zeebe.camunda.io:443';
+      const validClusterUrl = 'asdf2-a1213-123a.ber-05.zeebe.camunda.io:443';
 
       // then
-      expect(validator.validateClusterId(nonValidClusterId)).to.eql(CLUSTER_ID_MUST_NOT_BE_EMPTY);
-      expect(validator.validateClusterId(validClusterId)).to.not.exist;
+      expect(validator.validateClusterUrl(nonValidClusterUrl)).to.eql(CLUSTER_URL_MUST_BE_VALID_CLOUD_URL);
+      expect(validator.validateClusterUrl(validClusterUrlHttps)).to.not.exist;
+      expect(validator.validateClusterUrl(validClusterUrl)).to.not.exist;
     });
 
 
@@ -111,7 +113,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
           targetType: 'camundaCloud',
           camundaCloudClientId: 'test',
           camundaCloudClientSecret: 'test',
-          camundaCloudClusterId: 'test'
+          camundaCloudClusterUrl: 'a213-asdf1-312as.bru-02.zeebe.camunda.io:443'
         }
       };
       const wrongConfig = {

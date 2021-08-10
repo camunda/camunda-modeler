@@ -26,7 +26,7 @@ export const OAUTH_URL = 'OAuth URL';
 export const AUDIENCE = 'Audience';
 export const CLIENT_ID = 'Client ID';
 export const CLIENT_SECRET = 'Client Secret';
-export const CLUSTER_ID = 'Cluster ID';
+export const CLUSTER_ID = 'Cluster URL';
 export const REMEMBER_CREDENTIALS = 'Remember credentials';
 
 export const MUST_PROVIDE_A_VALUE = 'Must provide a value.';
@@ -35,8 +35,8 @@ export const OAUTH_URL_MUST_NOT_BE_EMPTY = 'OAuth URL must not be empty.';
 export const AUDIENCE_MUST_NOT_BE_EMPTY = 'Audience must not be empty.';
 export const CLIENT_ID_MUST_NOT_BE_EMPTY = 'Client ID must not be empty.';
 export const CLIENT_SECRET_MUST_NOT_BE_EMPTY = 'Client Secret must not be empty.';
-export const CLUSTER_ID_MUST_NOT_BE_EMPTY = 'Cluster ID must not be empty.';
 export const FILL_IN_ALL_THE_FIELDS = 'You must fill in all the fields';
+export const CLUSTER_URL_MUST_BE_VALID_CLOUD_URL = 'Must be a valid Camunda Cloud URL.';
 
 export const ERROR_REASONS = {
   UNKNOWN: 'UNKNOWN',
