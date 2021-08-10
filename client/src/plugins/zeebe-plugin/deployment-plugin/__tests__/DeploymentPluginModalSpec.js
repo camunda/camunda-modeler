@@ -56,6 +56,59 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
+  it('should extract clusterId and clusterRegion', done => {
+
+    // given
+    const { wrapper } = createDeploymentPluginModal({
+      onDeploy,
+      config: {
+        endpoint: {
+          targetType: 'camundaCloud',
+          camundaCloudClusterUrl: '7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443'
+        }
+      } });
+
+    // when
+    const form = wrapper.find('form');
+    form.simulate('submit');
+
+    // then
+    function onDeploy(values) {
+      const { endpoint } = values;
+
+      expect(endpoint.camundaCloudClusterId).to.equal('7edda473-891c-4978-aa27-2e727d8560ff');
+      expect(endpoint.camundaCloudClusterRegion).to.equal('ber-5');
+      done();
+    }
+  });
+
+
+  it('should extract clusterId with https', done => {
+
+    // given
+    const { wrapper } = createDeploymentPluginModal({
+      onDeploy,
+      config: {
+        endpoint: {
+          targetType: 'camundaCloud',
+          camundaCloudClusterUrl: 'https://7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443'
+        }
+      } });
+
+    // when
+    const form = wrapper.find('form');
+    form.simulate('submit');
+
+    // then
+    function onDeploy(values) {
+      const { endpoint } = values;
+
+      expect(endpoint.camundaCloudClusterId).to.equal('7edda473-891c-4978-aa27-2e727d8560ff');
+      done();
+    }
+  });
+
+
   it('should close when pressed on secondary button', async () => {
 
     // given

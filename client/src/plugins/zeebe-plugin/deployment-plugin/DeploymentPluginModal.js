@@ -168,9 +168,16 @@ export default class DeploymentPluginModal extends React.PureComponent {
   }
 
   handleFormSubmit = async (values, { setSubmitting }) => {
+    const { endpoint } = values;
+
+    // Extract clusterId and clusterRegion as required by zeebeAPI for camundaCloud
+    if (endpoint.targetType === CAMUNDA_CLOUD && endpoint.camundaCloudClusterUrl) {
+      endpoint.camundaCloudClusterId = extractClusterId(endpoint.camundaCloudClusterUrl);
+      endpoint.camundaCloudClusterRegion = extractClusterRegion(endpoint.camundaCloudClusterUrl);
+    }
 
     // check connection
-    const { connectionResult } = await this.connectionChecker.check(values.endpoint);
+    const { connectionResult } = await this.connectionChecker.check(endpoint);
 
     if (!connectionResult.success) {
       return setSubmitting(false);
@@ -361,4 +368,28 @@ export default class DeploymentPluginModal extends React.PureComponent {
       </Modal>
     );
   }
+}
+
+
+// helper ////////
+
+/**
+  * extractClusterId
+  *
+  * @param  {string} camundaCloudClusterUrl
+  * @return {string} camundaCloudClusterId
+  */
+function extractClusterId(camundaCloudClusterUrl) {
+  return camundaCloudClusterUrl.match(/([a-z\d]+-){2,}[a-z\d]+/g)[0];
+}
+
+
+/**
+ * extractClusterRegion - description
+ *
+ * @param  {type} camundaCloudClusterUrl description
+ * @return {type} camundaCloudClusterRegion
+ */
+function extractClusterRegion(camundaCloudClusterUrl) {
+  return camundaCloudClusterUrl.match(/(?<=\.)[a-z]+-[\d]+/g)[0];
 }
