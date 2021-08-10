@@ -301,7 +301,7 @@ export default class DeploymentPlugin extends PureComponent {
       clientSecret: '',
       camundaCloudClientId: '',
       camundaCloudClientSecret: '',
-      camundaCloudClusterId: '',
+      camundaCloudClusterUrl: '',
       rememberCredentials: false
     };
 
