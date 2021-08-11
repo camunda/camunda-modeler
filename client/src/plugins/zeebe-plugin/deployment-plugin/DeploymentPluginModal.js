@@ -385,9 +385,9 @@ function extractClusterId(camundaCloudClusterUrl) {
 
 
 /**
- * extractClusterRegion - description
+ * extractClusterRegion
  *
- * @param  {type} camundaCloudClusterUrl description
+ * @param  {type} camundaCloudClusterUrl
  * @return {type} camundaCloudClusterRegion
  */
 function extractClusterRegion(camundaCloudClusterUrl) {
