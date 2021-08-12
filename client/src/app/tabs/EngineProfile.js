@@ -8,28 +8,55 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import classnames from 'classnames';
+
+import { isNil } from 'min-dash';
 
 import { Overlay } from '../../shared/ui';
 import { Fill } from '../slot-fill';
 
+import Arrow from '../../../resources/icons/Arrow.svg';
 import LinkArrow from '../../../resources/icons/LinkArrow.svg';
+
 import css from './EngineProfile.less';
+
+const engineProfiles = [
+  {
+    executionPlatform: 'Camunda Platform',
+    executionPlatformVersions: [ '7.15' ]
+  },
+  {
+    executionPlatform: 'Camunda Cloud',
+    executionPlatformVersions: [ '1.1', '1.0' ]
+  }
+];
 
 
 export function EngineProfile(props) {
-  const { tab } = props;
+  const {
+    engineProfile = null,
+    setEngineProfile = null,
+    type
+  } = props;
 
   const [ open, setOpen ] = React.useState(false, []);
   const buttonRef = React.useRef(null);
 
-  const engineProfile = tab.meta && tab.meta.engineProfile;
+  let label = 'No platform selected';
 
-  if (!engineProfile) {
-    return null;
+  if (engineProfile) {
+    const {
+      executionPlatform,
+      executionPlatformVersion
+    } = engineProfile;
+
+    if (setEngineProfile) {
+      label = `${ executionPlatform } ${ executionPlatformVersion }`;
+    } else {
+      label = executionPlatform;
+    }
   }
-
 
   return (
     <Fill slot="status-bar__file" group="1_engine">
@@ -39,33 +66,182 @@ export function EngineProfile(props) {
           anchor={ buttonRef.current }
           onClose={ () => setOpen(false) }
           engineProfile={ engineProfile }
+          setEngineProfile={ setEngineProfile }
+          type={ type }
         />
       }
       <button
         className={ classnames('btn', { 'btn--active': open }) }
         onClick={ () => setOpen(val => !val) } ref={ buttonRef }
-        title={ 'Display engine profile information' }
+        title={ setEngineProfile ? 'Set engine profile' : 'Display engine profile information' }
       >
-        {engineProfile}
+        { label }
+        {
+          setEngineProfile && <Arrow className="icon icon-arrow-down" />
+        }
       </button>
     </Fill>
   );
 }
 
 function EngineProfileOverlay(props) {
-  const { anchor, onClose, engineProfile } = props;
+  const {
+    anchor,
+    onClose,
+    engineProfile,
+    setEngineProfile,
+    type
+  } = props;
 
   return (
     <Overlay anchor={ anchor } onClose={ onClose }>
-      <Description engineProfile={ engineProfile } />
+      {
+        type === 'form'
+          ? <EngineProfileSelection engineProfile={ engineProfile } onClose={ onClose } setEngineProfile={ setEngineProfile } />
+          : <EngineProfileDescription engineProfile={ engineProfile } />
+      }
     </Overlay>
   );
 }
 
-function Description(props) {
+function EngineProfileSelection(props) {
+  const {
+    engineProfile,
+    onClose
+  } = props;
+
+  const [ selectedEngineProfile, setSelectedEngineProfile ] = useState(engineProfile);
+
+  const [ error, setError ] = useState(null);
+
+  const onSelectEngineProfile = (newExecutionPlatform, newExecutionPlatformVersion) => {
+    const newEngineProfile = {
+      executionPlatform: newExecutionPlatform,
+      executionPlatformVersion: newExecutionPlatformVersion
+    };
+
+    if (engineProfilesEqual(selectedEngineProfile, newEngineProfile)) {
+      setSelectedEngineProfile(null);
+    } else {
+      setSelectedEngineProfile({
+        executionPlatform: newExecutionPlatform,
+        executionPlatformVersion: newExecutionPlatformVersion
+      });
+
+      setError(null);
+    }
+  };
+
+  const setEngineProfile = () => {
+    if (!selectedEngineProfile) {
+      setError(true);
+
+      return;
+    }
+
+    if (!engineProfilesEqual(selectedEngineProfile, engineProfile)) {
+      props.setEngineProfile(selectedEngineProfile);
+    }
+
+    onClose();
+  };
+
+  return (
+    <Fragment>
+      <Overlay.Title>
+        Select the execution platform
+      </Overlay.Title>
+      <Overlay.Body className={ css.EngineProfileSelection }>
+        <div className="form-group form-inline">
+          {
+            engineProfiles.map((engineProfile) => {
+              return <EngineProfileOption
+                engineProfile={ engineProfile }
+                key={ engineProfile.executionPlatform }
+                onSelectEngineProfile={ onSelectEngineProfile }
+                selectedEngineProfile={ selectedEngineProfile } />;
+            })
+          }
+          { error && <div className="error">Select one option.</div> }
+          <button className="btn btn-primary apply" onClick={ setEngineProfile }>Apply</button>
+        </div>
+      </Overlay.Body>
+      <Overlay.Footer>
+        <Link href="https://docs.camunda.org/manual/latest/">Learn more</Link>
+      </Overlay.Footer>
+    </Fragment>
+  );
+}
+
+function EngineProfileOption(props) {
+  const {
+    engineProfile,
+    onSelectEngineProfile,
+    selectedEngineProfile
+  } = props;
+
+  const {
+    executionPlatform,
+    executionPlatformVersions
+  } = engineProfile;
+
+  const id = `execution-platform-${ executionPlatform.replace(/\s/, '-').toLowerCase() }`;
+
+  const checked = !isNil(selectedEngineProfile) && selectedEngineProfile.executionPlatform === executionPlatform;
+
+  const [ selectedExecutionPlatformVersion, setSelectedExecutionPlatformVersion ] = useState(
+    selectedEngineProfile && selectedEngineProfile.executionPlatform === executionPlatform
+      ? selectedEngineProfile.executionPlatformVersion
+      : executionPlatformVersions[ 0 ]);
+
+  const onSelectExecutionPlatformVersion = (executionPlatformVersion) => {
+    setSelectedExecutionPlatformVersion(executionPlatformVersion);
+
+    onSelectEngineProfile(executionPlatform, executionPlatformVersion);
+  };
+
+  return <div
+    className="custom-control custom-radio platform"
+    key={ executionPlatform }>
+    <input
+      id={ id }
+      className="custom-control-input"
+      type="radio"
+      checked={ checked }
+      onChange={ () => {} }
+      onClick={ () => onSelectEngineProfile(executionPlatform, selectedExecutionPlatformVersion) } />
+    <label className="custom-control-label" htmlFor={ id }>
+      { `${ executionPlatform }${ executionPlatformVersions.length === 1 ? ` ${ executionPlatformVersions[ 0 ] }` : '' }` }
+    </label>
+    {
+      executionPlatformVersions.length > 1
+        ? (
+          <select
+            className="form-control version"
+            onChange={ ({ target }) => onSelectExecutionPlatformVersion(target.value) }
+            value={ selectedExecutionPlatformVersion }>
+            {
+              executionPlatformVersions.map((executionPlatformVersion => {
+                return <option
+                  key={ executionPlatformVersion }
+                  value={ executionPlatformVersion }>
+                  { executionPlatformVersion }
+                </option>;
+              }))
+            }
+          </select>
+        )
+        : null
+    }
+  </div>;
+}
+
+function EngineProfileDescription(props) {
   const { engineProfile } = props;
 
-  if (engineProfile === 'Camunda Platform') {
+  const { executionPlatform } = engineProfile;
+
+  if (executionPlatform === 'Camunda Platform') {
     return (
       <Fragment>
         <Overlay.Body>
@@ -78,7 +254,7 @@ function Description(props) {
         </Overlay.Footer>
       </Fragment>
     );
-  } else if (engineProfile === 'Camunda Cloud') {
+  } else if (executionPlatform === 'Camunda Cloud') {
     return (
       <Fragment>
         <Overlay.Body>
@@ -91,7 +267,7 @@ function Description(props) {
         </Overlay.Footer>
       </Fragment>
     );
-  } else if (engineProfile === 'Camunda Platform or Cloud') {
+  } else if (executionPlatform === 'Camunda Platform or Cloud') {
     return (
       <Fragment>
         <Overlay.Body>
@@ -120,4 +296,11 @@ function Link(props) {
       <LinkArrow />
     </a>
   );
+}
+
+function engineProfilesEqual(a, b) {
+  return !isNil(a)
+    && !isNil(b)
+    && a.executionPlatform === b.executionPlatform
+    && a.executionPlatformVersion === b.executionPlatformVersion;
 }

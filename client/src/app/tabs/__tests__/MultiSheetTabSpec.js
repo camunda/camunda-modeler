@@ -564,39 +564,6 @@ describe('<MultiSheetTab>', function() {
     });
   });
 
-
-  describe('EngineProfile', function() {
-
-    it('should display engine profile', function() {
-
-      // given
-      const engineProfile = 'Camunda Platform';
-      const tab = Object.assign({}, defaultTab, { meta: { engineProfile } });
-
-      // when
-      const { wrapper } = renderTab({ tab });
-
-      // then
-      const engineProfileComponent = wrapper.find('EngineProfile');
-
-      expect(engineProfileComponent.children()).to.have.lengthOf(1);
-    });
-
-
-    it('should NOT display engine profile if missing', function() {
-
-      // given
-      const tab = Object.assign({}, defaultTab, { meta: {} });
-
-      // when
-      const { wrapper } = renderTab({ tab });
-
-      // then
-      const engineProfileComponent = wrapper.find('EngineProfile');
-
-      expect(engineProfileComponent.children()).to.have.lengthOf(0);
-    });
-  });
 });
 
 

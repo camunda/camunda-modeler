@@ -22,7 +22,6 @@ import {
 
 import css from './MultiSheetTab.less';
 import { Fill } from '../slot-fill';
-import { EngineProfile } from './EngineProfile';
 
 
 export class MultiSheetTab extends CachedComponent {
@@ -407,7 +406,6 @@ export class MultiSheetTab extends CachedComponent {
           onSelect={ this.switchSheet }
         />
 
-        <EngineProfile tab={ tab } />
       </div>
     );
   }

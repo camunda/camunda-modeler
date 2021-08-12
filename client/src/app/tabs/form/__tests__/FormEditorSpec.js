@@ -31,8 +31,10 @@ import {
 import { FormEditor as FormEditorMock } from 'test/mocks/form-js';
 
 import schemaJSON from './form.json';
+import engineProfileSchemaJSON from './engine-profile.json';
 
-const schema = JSON.stringify(schemaJSON, null, 2);
+const schema = JSON.stringify(schemaJSON, null, 2),
+      engineProfileSchema = JSON.stringify(engineProfileSchemaJSON, null, 2);
 
 const { spy } = sinon;
 
@@ -482,6 +484,35 @@ describe('<FormEditor>', function() {
     });
 
   });
+
+
+  describe('engine profile', function() {
+
+    it('should show engine profile (no engine profile)', async function() {
+
+      // when
+      const { instance, wrapper } = await renderEditor(schema);
+
+      // then
+      expect(wrapper.find('EngineProfile').exists()).to.be.true;
+
+      expect(instance.getCached().engineProfile).to.be.null;
+    });
+
+
+    it('should show engine profile (Camunda Platform 7.15)', async function() {
+
+      // when
+      const { instance, wrapper } = await renderEditor(engineProfileSchema);
+
+      // then
+      expect(wrapper.find('EngineProfile').exists()).to.be.true;
+
+      expect(instance.getCached().engineProfile).to.eql({
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.15'
+      });
+    });
 
 });
 
