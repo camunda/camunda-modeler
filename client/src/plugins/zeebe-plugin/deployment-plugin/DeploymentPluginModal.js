@@ -28,7 +28,7 @@ import {
   AUDIENCE,
   CLIENT_ID,
   CLIENT_SECRET,
-  CLUSTER_ID,
+  CLUSTER_URL,
   REMEMBER_CREDENTIALS,
   ERROR_REASONS,
   CONNECTION_ERROR_MESSAGES
@@ -308,7 +308,7 @@ export default class DeploymentPluginModal extends React.PureComponent {
                             <Field
                               name="endpoint.camundaCloudClusterUrl"
                               component={ TextInput }
-                              label={ CLUSTER_ID }
+                              label={ CLUSTER_URL }
                               fieldError={ this.endpointConfigurationFieldError }
                               validate={ validatorFunctionsByFieldNames.camundaCloudClusterUrl }
                               autoFocus
