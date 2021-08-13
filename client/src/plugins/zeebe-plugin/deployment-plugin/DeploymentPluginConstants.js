@@ -26,7 +26,7 @@ export const OAUTH_URL = 'OAuth URL';
 export const AUDIENCE = 'Audience';
 export const CLIENT_ID = 'Client ID';
 export const CLIENT_SECRET = 'Client Secret';
-export const CLUSTER_ID = 'Cluster URL';
+export const CLUSTER_URL = 'Cluster URL';
 export const REMEMBER_CREDENTIALS = 'Remember credentials';
 
 export const MUST_PROVIDE_A_VALUE = 'Must provide a value.';
