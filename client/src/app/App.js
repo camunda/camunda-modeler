@@ -378,7 +378,11 @@ export class App extends PureComponent {
       const { button } = await this.showCloseFileDialog({ name });
 
       if (button === 'save') {
-        await this.saveTab(tab);
+        var saved = await this.saveTab(tab);
+
+        if (!saved) {
+          return false;
+        }
       } else if (button === 'cancel') {
         return false;
       }
