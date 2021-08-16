@@ -93,12 +93,20 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
       // given
       const nonValidClusterUrl = '';
       const validClusterUrlHttps = 'https://asdf2-a1213-123a.ber-05.zeebe.camunda.io:443';
+      const validClusterUrlHttpsSlash = 'https://asdf2-a1213-123a.ber-05.zeebe.camunda.io:443/';
+      const validClusterUrlHttpsNoPort = 'https://asdf2-a1213-123a.ber-05.zeebe.camunda.io';
+      const validClusterUrlHttpsNoPortSlash = 'https://asdf2-a1213-123a.ber-05.zeebe.camunda.io/';
       const validClusterUrl = 'asdf2-a1213-123a.ber-05.zeebe.camunda.io:443';
+      const validClusterUrlSlash = 'asdf2-a1213-123a.ber-05.zeebe.camunda.io:443/';
 
       // then
       expect(validator.validateClusterUrl(nonValidClusterUrl)).to.eql(CLUSTER_URL_MUST_BE_VALID_CLOUD_URL);
       expect(validator.validateClusterUrl(validClusterUrlHttps)).to.not.exist;
+      expect(validator.validateClusterUrl(validClusterUrlHttpsSlash)).to.not.exist;
+      expect(validator.validateClusterUrl(validClusterUrlHttpsNoPort)).to.not.exist;
+      expect(validator.validateClusterUrl(validClusterUrlHttpsNoPortSlash)).to.not.exist;
       expect(validator.validateClusterUrl(validClusterUrl)).to.not.exist;
+      expect(validator.validateClusterUrl(validClusterUrlSlash)).to.not.exist;
     });
 
 
