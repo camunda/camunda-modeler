@@ -31,7 +31,10 @@ import { active as isInputActive } from '../../../util/dom/isInput';
 
 import { FormEditor as Form } from './editor/FormEditor';
 
-import { EngineProfile } from '../EngineProfile';
+import {
+  EngineProfile,
+  engineProfilesEqual
+} from '../EngineProfile';
 
 
 export class FormEditor extends CachedComponent {
@@ -214,6 +217,16 @@ export class FormEditor extends CachedComponent {
     }
 
     this.setState(newState);
+
+    const engineProfile = this.getEngineProfile();
+
+    const { engineProfile: cachedEngineProfile } = this.getCached();
+
+    if (!engineProfilesEqual(engineProfile, cachedEngineProfile)) {
+      this.setCached({
+        engineProfile
+      });
+    }
   }
 
   isDirty() {
@@ -259,6 +272,26 @@ export class FormEditor extends CachedComponent {
     if (editorActions.isRegistered(action)) {
       return editorActions.trigger(action, context);
     }
+  }
+
+  getEngineProfile = () => {
+    const { form } = this.getCached();
+
+    const schema = form.getSchema();
+
+    if (!schema) {
+      return null;
+    }
+
+    const {
+      executionPlatform,
+      executionPlatformVersion
+    } = schema;
+
+    return {
+      executionPlatform,
+      executionPlatformVersion
+    };
   }
 
   setEngineProfile = (engineProfile) => {
