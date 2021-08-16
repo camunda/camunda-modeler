@@ -514,6 +514,37 @@ describe('<FormEditor>', function() {
       });
     });
 
+
+    it('should update cached engine profile on change', async function() {
+
+      // given
+      const { instance, wrapper } = await renderEditor(engineProfileSchema);
+
+      // assume
+      expect(wrapper.find('EngineProfile').exists()).to.be.true;
+
+      expect(instance.getCached().engineProfile).to.eql({
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.15'
+      });
+
+      // when
+      const { schema } = instance.getCached().form;
+
+      schema.executionPlatform = 'Camunda Cloud';
+      schema.executionPlatformVersion = '1.1';
+
+      instance.handleChanged();
+
+      // then
+      expect(instance.getCached().engineProfile).to.eql({
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '1.1'
+      });
+    });
+
+  });
+
 });
 
 

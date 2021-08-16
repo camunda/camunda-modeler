@@ -298,7 +298,7 @@ function Link(props) {
   );
 }
 
-function engineProfilesEqual(a, b) {
+export function engineProfilesEqual(a, b) {
   return !isNil(a)
     && !isNil(b)
     && a.executionPlatform === b.executionPlatform
