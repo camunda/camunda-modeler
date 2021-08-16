@@ -645,6 +645,41 @@ describe('<App>', function() {
     });
 
 
+    it('should not close tab when saving dialog is canceled', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      const {
+        app
+      } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const tab = await app.createDiagram();
+
+      app.setState({
+        ...app.setDirty(tab)
+      });
+
+      dialog.setShowCloseFileDialogResponse({ button: 'save' });
+      dialog.setShowSaveFileDialogResponse(false);
+
+      // when
+      const closeTabResponse = await app.closeTab(tab);
+
+      // then
+      const {
+        tabs
+      } = app.state;
+
+      expect(tabs).to.contain(tab);
+      expect(closeTabResponse).to.eql(false);
+    });
+
+
     it('should resolve to false if saving was canceled', async function() {
 
       // given
