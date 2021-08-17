@@ -89,6 +89,57 @@ describe('<UpdateChecks>', function() {
     });
 
 
+    it('should pass stagedRollout=false on manual check', async function() {
+
+      // given
+      const {
+        callSubscriber,
+        subscribe
+      } = createSubscribe('updateChecks.execute');
+
+      const {
+        component,
+        instance
+      } = await createComponent({ subscribe });
+
+      await tick(component);
+
+      const checkLatestVersionSpy = sinon.spy(instance, 'checkLatestVersion');
+
+      // when
+      await callSubscriber();
+
+      // then
+      expect(checkLatestVersionSpy).to.have.been.calledOnceWith({
+        lastChecked: 0,
+        latestVersion: 'v3.5.0',
+        stagedRollout: false
+      });
+    });
+
+
+    it('should pass stagedRollout=true on scheduled check', async function() {
+
+      // given
+      const {
+        component,
+        instance
+      } = await createComponent();
+
+      const checkLatestVersionSpy = sinon.spy(instance, 'checkLatestVersion');
+
+      // when
+      await tick(component);
+
+      // then
+      expect(checkLatestVersionSpy).to.have.been.calledOnceWith({
+        lastChecked: 0,
+        latestVersion: 'v3.5.0',
+        stagedRollout: true
+      });
+    });
+
+
     it('should skip without privacy settings', async function() {
 
       // given
@@ -309,7 +360,7 @@ describe('<UpdateChecks>', function() {
       await tick(component);
 
       // then
-      expect(calledURL).to.eql('http://test-update-server.com/update-check?editorID=test-id&newerThan=v3.5.0&modelerVersion=v3.5.0&os=windows&osVersion=98&productName=Camunda+Modeler&plugins%5Bid%5D=plugin1&plugins%5Bname%5D=plugin1&plugins%5Bid%5D=plugin2&plugins%5Bname%5D=plugin2');
+      expect(calledURL).to.eql('http://test-update-server.com/update-check?editorID=test-id&newerThan=v3.5.0&modelerVersion=v3.5.0&os=windows&osVersion=98&productName=Camunda+Modeler&stagedRollout=true&plugins%5Bid%5D=plugin1&plugins%5Bname%5D=plugin1&plugins%5Bid%5D=plugin2&plugins%5Bname%5D=plugin2');
     });
 
   });
