@@ -42,7 +42,7 @@ export default class UpdateChecksAPI {
     });
   }
 
-  async checkLatestVersion(config, getGlobal, latestVersion) {
+  async checkLatestVersion(config, getGlobal, latestVersion, stagedRollout) {
 
     try {
       const editorID = await config.get(EDITOR_ID_CONFIG_KEY);
@@ -58,6 +58,7 @@ export default class UpdateChecksAPI {
       url.searchParams.append('os', osInfo.platform);
       url.searchParams.append('osVersion', osInfo.release);
       url.searchParams.append('productName', this.productName);
+      url.searchParams.append('stagedRollout', stagedRollout);
       plugins.forEach((plugin) => {
         url.searchParams.append('plugins[id]', plugin.id);
         url.searchParams.append('plugins[name]', plugin.name);
