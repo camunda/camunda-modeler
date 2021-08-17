@@ -71,7 +71,9 @@ export default class UpdateChecks extends PureComponent {
 
     subscribe('updateChecks.execute', async () => {
 
-      const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY);
+      const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY) || {};
+
+      updateCheckInfo.stagedRollout = false;
 
       self.checkLatestVersion(updateCheckInfo, false);
     });
@@ -190,7 +192,9 @@ export default class UpdateChecks extends PureComponent {
       return this.checkSkipped('privacy-settings');
     }
 
-    const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY);
+    const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY) || {};
+
+    updateCheckInfo.stagedRollout = true;
 
     if (!Flags.get(FORCE_UPDATE_CHECKS) && !this.isTimeExceeded(updateCheckInfo && updateCheckInfo.lastChecked || 0)) {
       return this.checkSkipped('not-due');
@@ -260,7 +264,7 @@ export default class UpdateChecks extends PureComponent {
 
     // (1) Send request to check for updates
     const responseJSON = await this.updateChecksAPI.checkLatestVersion(
-      config, _getGlobal, updateCheckInfo && updateCheckInfo.latestVersion
+      config, _getGlobal, updateCheckInfo && updateCheckInfo.latestVersion, updateCheckInfo && updateCheckInfo.stagedRollout
     );
 
     // (2a) Handle check failures
