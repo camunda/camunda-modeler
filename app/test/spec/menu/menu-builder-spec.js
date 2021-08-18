@@ -244,10 +244,102 @@ describe('MenuBuilder', () => {
       const { click: action } = pluginMenu.submenu[0];
 
       expect(action).to.exist;
-      expect(() => action(), 'Assigned action should handle the error').to.not.throw();
+      expect(() => callAction(action), 'Assigned action should handle the error').to.not.throw();
       expect(actionStub).to.be.called;
     });
 
+  });
+
+
+  describe('edit menu', () => {
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+
+    it('should call action when item is clicked', () => {
+
+      // given
+      const action = sinon.spy(ElectronApp, 'emit');
+      const menuBuilder = new MenuBuilder({
+        state: {
+          editMenu: [{
+            label: 'label',
+            enabled: true,
+            action
+          }]
+        }
+      });
+
+      // when
+      const { menu } = menuBuilder.build();
+
+      // then
+      const editMenu = menu.find(item => item.label === 'Edit');
+      const { click } = editMenu.submenu[0];
+
+      expect(click).to.exist;
+
+      callAction(click, {}, false);
+      expect(action).to.have.been.calledOnce;
+    });
+
+
+    it('should call action when shortcut is used in a window', () => {
+
+      // given
+      const action = sinon.spy(ElectronApp, 'emit');
+      const menuBuilder = new MenuBuilder({
+        state: {
+          editMenu: [{
+            label: 'label',
+            enabled: true,
+            action
+          }]
+        }
+      });
+
+      // when
+      const { menu } = menuBuilder.build();
+
+      // then
+      const editMenu = menu.find(item => item.label === 'Edit');
+      const { click } = editMenu.submenu[0];
+
+      expect(click).to.exist;
+
+      callAction(click, {}, true);
+      expect(action).to.have.been.calledOnce;
+    });
+
+
+    it('should NOT call action if triggered via shortcut with no browser window', () => {
+
+      // given
+      const action = sinon.spy(ElectronApp, 'emit');
+      const menuBuilder = new MenuBuilder({
+        state: {
+          editMenu: [{
+            label: 'label',
+            enabled: true,
+            action
+          }]
+        }
+      });
+
+      // when
+      const { menu } = menuBuilder.build();
+
+      // then
+      const editMenu = menu.find(item => item.label === 'Edit');
+      const { click } = editMenu.submenu[0];
+
+      expect(click).to.exist;
+
+      callAction(click, null, true);
+      expect(action).not.to.have.been.called;
+    });
   });
 
 });
@@ -265,4 +357,12 @@ function getOptionsWithPlugins(plugins) {
       }
     }
   };
+}
+
+function callAction(fn, browserWindow = {}, triggeredByAccelerator = false) {
+  if (browserWindow === null) {
+    browserWindow = undefined;
+  }
+
+  return fn(null, browserWindow, { triggeredByAccelerator });
 }
