@@ -42,6 +42,7 @@ const {
 } = require('./file-system');
 
 const browserOpen = require('./util/browser-open');
+const fileExplorerOpen = require('./util/file-explorer-open');
 const renderer = require('./util/renderer');
 
 const errorTracking = require('./util/error-tracking');
@@ -184,6 +185,14 @@ renderer.on('dialog:show', async function(options, done) {
   const response = await dialog.showDialog(options);
 
   done(null, response);
+});
+
+renderer.on('dialog:open-file-explorer', function(options, done) {
+  const { path } = options;
+
+  fileExplorerOpen(path);
+
+  done(null, undefined);
 });
 
 // filesystem //////////
