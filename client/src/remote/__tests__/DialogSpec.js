@@ -224,4 +224,27 @@ describe('dialog', function() {
     dialog.showEmptyFileDialog(options);
   });
 
+
+  it('#showFileExplorerDialog', function() {
+
+    // given
+    const sendSpy = (type, opts) => {
+
+      // then
+      expect(type).to.equal('dialog:open-file-explorer');
+
+      expect(opts).to.eql(options);
+    };
+
+    const backend = new Backend({ send: sendSpy });
+    const dialog = new Dialog(backend);
+
+    const options = {
+      path: 'foo'
+    };
+
+    // when
+    dialog.showFileExplorerDialog(options);
+  });
+
 });

@@ -21,6 +21,7 @@ const allowedEvents = [
   'external:open-url',
   'dialog:open-files',
   'dialog:open-file-error',
+  'dialog:open-file-explorer',
   'dialog:save-file',
   'dialog:show',
   'file:read',

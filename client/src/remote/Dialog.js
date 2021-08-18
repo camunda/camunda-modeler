@@ -59,6 +59,18 @@ export default class Dialog {
   }
 
   /**
+   * Show file explorer dialog.
+   *
+   * @param {Object} options Options.
+   * @param {string} [options.path] Path where to open the file explorer.
+   *
+   * @returns {Promise}
+   */
+  showFileExplorerDialog(options) {
+    return this.backend.send('dialog:open-file-explorer', options);
+  }
+
+  /**
    * Show save error dialog.
    *
    * @param {Object} options - Options.
