@@ -316,7 +316,7 @@ class MenuBuilder {
     if (action) {
       menuItemOptions = {
         ...menuItemOptions,
-        click: () => app.emit('menu:action', action, options)
+        click: wrapActionInactiveInDevtools(() => app.emit('menu:action', action, options))
       };
     }
 
@@ -475,7 +475,7 @@ class MenuBuilder {
                 label,
                 accelerator,
                 enabled: isFunction(enabled) ? Boolean(enabled()) : enabled,
-                click: action && wrapPluginAction(action, name),
+                click: action && wrapActionInactiveInDevtools(wrapPluginAction(action, name)),
                 submenu,
                 visible
               });
@@ -673,4 +673,22 @@ function wrapPluginAction(fn, pluginName) {
       log.error('[%s] Menu action error: %O', pluginName, error);
     }
   };
+}
+
+function wrapActionInactiveInDevtools(fn) {
+
+  /**
+   * @param {*} _
+   * @param {import('electron').BrowserWindow | undefined} focusedWindow
+   * @param {import('electron').KeyboardEvent} event
+   */
+  function wrapped(_, focusedWindow, event) {
+    if (event.triggeredByAccelerator && !focusedWindow) {
+      return;
+    }
+
+    fn.apply(null, arguments);
+  }
+
+  return wrapped;
 }
