@@ -47,7 +47,22 @@ describe('MenuBuilder', () => {
 
 
   it('should build context menu', () => {
-    const menuBuilder = new MenuBuilder({ type: 'tab' });
+    const menuBuilder = new MenuBuilder({
+      type: 'tab',
+      attrs: {
+        tabId: '123abc'
+      },
+      state: {
+        tabs: [
+          {
+            id: '123abc',
+            file: {
+              path: null
+            }
+          }
+        ]
+      }
+    });
 
     const contextMenu = menuBuilder.buildContextMenu();
 

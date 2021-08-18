@@ -230,6 +230,27 @@ describe('<App>', function() {
 
     });
 
+
+    it('should include tabs', async function() {
+
+      // given
+      const updateMenuSpy = spy();
+
+      const {
+        app
+      } = createApp({
+        onMenuUpdate: updateMenuSpy
+      }, mount);
+
+      // when
+      await app.openFiles([
+        createFile('1.bpmn')
+      ]);
+
+      // then
+      expect(updateMenuSpy.args[0][0]).to.have.property('tabs');
+    });
+
   });
 
 
@@ -2670,6 +2691,35 @@ describe('<App>', function() {
         // then
         expect(detail).to.equal('"file.ext" is not a BPMN file.');
       });
+    });
+
+  });
+
+
+  describe('#revealTabInFileExplorer', function() {
+
+    it('should call dialog#showFileExplorerDialog', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      const showFileExplorerDialogSpy = sinon.spy(dialog, 'showFileExplorerDialog');
+
+      const { app } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const [ tab ] = await app.openFiles([ createFile('1.bpmn') ]);
+
+      const { id: tabId } = tab;
+
+      // when
+      app.revealTabInFileExplorer((t) => t.id === tabId);
+
+      // then
+      expect(showFileExplorerDialogSpy).to.have.been.calledOnce;
     });
 
   });
