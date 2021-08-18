@@ -1416,6 +1416,28 @@ export class App extends PureComponent {
     return pSeries(closeTasks);
   }
 
+  revealFile = (path) => {
+    return this.getGlobal('dialog').showFileExplorerDialog({ path });
+  }
+
+  revealTabInFileExplorer = (matcher) => {
+
+    const {
+      tabs
+    } = this.state;
+
+    const allTabs = tabs.slice();
+
+    const revealTab = allTabs.find(matcher);
+
+    if (revealTab && revealTab.file.path) {
+
+      return this.revealFile(revealTab.file.path);
+    }
+
+    return Promise.reject(new Error('cannot open file explorer: tab not found or no path'));
+  }
+
   reopenLastTab = () => {
 
     const lastTab = this.closedTabs.pop();
@@ -1446,7 +1468,8 @@ export class App extends PureComponent {
     onMenuUpdate({
       ...options,
       tabsCount: this.state.tabs.length,
-      lastTab: !!this.closedTabs.get()
+      lastTab: !!this.closedTabs.get(),
+      tabs: this.state.tabs
     });
   }
 
@@ -1652,6 +1675,10 @@ export class App extends PureComponent {
 
     if (action === 'reopen-last-tab') {
       return this.reopenLastTab();
+    }
+
+    if (action === 'reveal-tab') {
+      return this.revealTabInFileExplorer(t => options && t.id === options.tabId);
     }
 
     if (action === 'show-shortcuts') {

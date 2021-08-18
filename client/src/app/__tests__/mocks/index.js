@@ -249,6 +249,7 @@ export class Dialog extends Mock {
     this.showResponse = new Response();
     this.showCloseFileDialogResponse = new Response();
     this.showEmptyFileDialogResponse = new Response();
+    this.showFileExplorerDialogResponse = new Response();
   }
 
   setShowOpenFilesDialogResponse(index, response) {
@@ -305,6 +306,10 @@ export class Dialog extends Mock {
 
   showEmptyFileDialog() {
     return this.showEmptyFileDialogResponse.next();
+  }
+
+  showFileExplorerDialog() {
+    return this.showFileExplorerDialogResponse.next();
   }
 }
 
