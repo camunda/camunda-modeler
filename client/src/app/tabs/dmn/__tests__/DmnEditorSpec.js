@@ -687,6 +687,37 @@ describe('<DmnEditor>', function() {
 
       });
 
+
+      describe('literal expression', function() {
+
+        it('Remove shortcut should always have role: delete', async function() {
+
+          // given
+          const changedSpy = sinon.spy();
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          changedSpy.resetHistory();
+
+          // when
+          const modeler = instance.getModeler();
+
+          modeler.open({ type: 'literalExpression' });
+          instance.handleChanged();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+
+          expect(hasMenuEntry(state.editMenu, 'Remove Selected')).to.be.true;
+          expect(getMenuEntry(state.editMenu, 'Remove Selected').role).to.equal('delete');
+        });
+
+      });
+
     });
 
 
@@ -1877,6 +1908,25 @@ function renderEditor(xml, options = {}) {
 
 function getEvent(events, eventName) {
   return find(events, e => e.type === eventName);
+}
+
+function getMenuEntry(editMenu, label) {
+  for (let i = 0; i < editMenu.length; i++) {
+    const entry = editMenu[i];
+
+    if (isArray(entry)) {
+      const res = getMenuEntry(entry, label);
+      if (res) {
+        return res;
+      }
+    } else {
+      if (entry.label === label) {
+        return entry;
+      }
+    }
+  }
+
+  return false;
 }
 
 function hasMenuEntry(editMenu, label) {

@@ -394,6 +394,11 @@ export class DmnEditor extends CachedComponent {
         selectAll: true
       });
 
+      // The literalExpressions editor does not fire events when
+      // elements are selected, so we always set inputActive to true.
+      // cf. https://github.com/camunda/camunda-modeler/pull/2394
+      newState.inputActive = true;
+
       editMenu = getDmnLiteralExpressionEditMenu(newState);
     }
 
