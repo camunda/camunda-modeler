@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: add context action to tabs to reveal respective file in file explorer ([#1834](https://github.com/camunda/camunda-modeler/issues/1834))
+
 ## 4.9.0
 
 ### General
