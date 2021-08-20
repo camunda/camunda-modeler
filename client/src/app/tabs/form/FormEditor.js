@@ -160,12 +160,20 @@ export class FormEditor extends CachedComponent {
     } else {
       const engineProfile = this.getEngineProfile();
 
-      if (isNil(engineProfile) || isKnownEngineProfile(engineProfile)) {
+      if (isNil(engineProfile)) {
         this.setCached({
           engineProfile,
           lastSchema: schema,
           stackIdx
         });
+      } else if (isKnownEngineProfile(engineProfile)) {
+        this.setCached({
+          engineProfile,
+          lastSchema: schema,
+          stackIdx
+        });
+
+        this.handleLinting();
       } else {
         error = new Error(getUnknownEngineProfileErrorMessage(engineProfile));
 
