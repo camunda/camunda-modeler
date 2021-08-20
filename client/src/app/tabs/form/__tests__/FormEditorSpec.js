@@ -568,6 +568,24 @@ describe('<FormEditor>', function() {
 
   describe('linting', function() {
 
+    it('should lint on import (engine profile)', async function() {
+
+      // given
+      const onActionSpy = spy();
+
+      // when
+      const { instance } = await renderEditor(engineProfileSchema, {
+        onAction: onActionSpy
+      });
+
+      // then
+      const { form } = instance.getCached();
+
+      expect(onActionSpy).to.have.been.calledOnce;
+      expect(onActionSpy).to.have.been.calledWith('lint-tab', { contents: form.getSchema() });
+    });
+
+
     it('should lint on commandStack.changed (engine profile)', async function() {
 
       // given
@@ -583,12 +601,12 @@ describe('<FormEditor>', function() {
       form._emit('commandStack.changed');
 
       // then
-      expect(onActionSpy).to.have.been.calledOnce;
-      expect(onActionSpy).to.have.been.calledWith('lint-tab', { contents: form.getSchema() });
+      expect(onActionSpy).to.have.been.calledTwice;
+      expect(onActionSpy).to.have.been.always.calledWith('lint-tab', { contents: form.getSchema() });
     });
 
 
-    it('should not lint on commandStack.changed (no engine profile)', async function() {
+    it('should not lint on import or commandStack.changed (no engine profile)', async function() {
 
       // given
       const onActionSpy = spy();
