@@ -43,6 +43,7 @@ const {
 
 const browserOpen = require('./util/browser-open');
 const fileExplorerOpen = require('./util/file-explorer-open');
+const clipboardWriteText = require('./util/clipboard-write-text');
 const renderer = require('./util/renderer');
 
 const errorTracking = require('./util/error-tracking');
@@ -191,6 +192,16 @@ renderer.on('dialog:open-file-explorer', function(options, done) {
   const { path } = options;
 
   fileExplorerOpen(path);
+
+  done(null, undefined);
+});
+
+// clipboard ///////////
+
+renderer.on('system-clipboard:write-text', function(options, done) {
+  const { text } = options;
+
+  clipboardWriteText(text);
 
   done(null, undefined);
 });
