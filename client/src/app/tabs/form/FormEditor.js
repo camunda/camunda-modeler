@@ -15,6 +15,8 @@ import {
   isNil
 } from 'min-dash';
 
+import debounce from '../../../util/debounce';
+
 import {
   WithCache,
   WithCachedState,
@@ -37,6 +39,8 @@ import {
   isKnownEngineProfile
 } from '../EngineProfile';
 
+const LOW_PRIORITY = 500;
+
 
 export class FormEditor extends CachedComponent {
   constructor(props) {
@@ -47,6 +51,8 @@ export class FormEditor extends CachedComponent {
     this.state = {
       importing: false
     };
+
+    this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
   }
 
   componentDidMount() {
@@ -187,6 +193,8 @@ export class FormEditor extends CachedComponent {
       'propertiesPanel.focusout',
       'selection.changed'
     ].forEach((event) => form[ fn ](event, this.handleChanged));
+
+    form[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
   }
 
   handleChanged = () => {
@@ -225,6 +233,23 @@ export class FormEditor extends CachedComponent {
         engineProfile
       });
     }
+  }
+
+  handleLinting = () => {
+    const {
+      engineProfile,
+      form
+    } = this.getCached();
+
+    if (!engineProfile) {
+      return;
+    }
+
+    const contents = form.getSchema();
+
+    const { onAction } = this.props;
+
+    onAction('lint-tab', { contents });
   }
 
   isDirty() {

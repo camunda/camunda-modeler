@@ -40,6 +40,8 @@ import {
   generateId
 } from '../util';
 
+import FormLinter from './tabs/form/linting/FormLinter';
+
 const createdByType = {};
 
 const noopProvider = {
@@ -96,7 +98,7 @@ export default class TabsProvider {
         },
         getNewFileButton() {
           return null;
-        },
+        }
       },
       bpmn: {
         name: 'BPMN',
@@ -140,6 +142,9 @@ export default class TabsProvider {
             label: 'Create new BPMN Diagram (Camunda Platform)',
             action: 'create-bpmn-diagram'
           };
+        },
+        getLinter() {
+          return null;
         }
       },
       'cloud-bpmn': {
@@ -200,6 +205,9 @@ export default class TabsProvider {
             label: 'Create new BPMN Diagram (Camunda Cloud)',
             action: 'create-cloud-bpmn-diagram'
           };
+        },
+        getLinter() {
+          return null;
         }
       },
       cmmn: {
@@ -244,6 +252,9 @@ export default class TabsProvider {
             label: 'Create new CMMN Diagram',
             action: 'create-cmmn-diagram'
           };
+        },
+        getLinter() {
+          return null;
         }
       },
       dmn: {
@@ -284,6 +295,9 @@ export default class TabsProvider {
             label: 'Create new DMN Diagram (Camunda Platform)',
             action: 'create-dmn-diagram'
           };
+        },
+        getLinter() {
+          return null;
         }
       },
       form: {
@@ -317,6 +331,9 @@ export default class TabsProvider {
             label: 'Create new Form (Camunda Platform or Cloud)',
             action: 'create-form'
           };
+        },
+        getLinter() {
+          return FormLinter;
         }
       }
     };

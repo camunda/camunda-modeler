@@ -565,6 +565,49 @@ describe('<FormEditor>', function() {
 
   });
 
+
+  describe('linting', function() {
+
+    it('should lint on commandStack.changed (engine profile)', async function() {
+
+      // given
+      const onActionSpy = spy();
+
+      const { instance } = await renderEditor(engineProfileSchema, {
+        onAction: onActionSpy
+      });
+
+      // when
+      const { form } = instance.getCached();
+
+      form._emit('commandStack.changed');
+
+      // then
+      expect(onActionSpy).to.have.been.calledOnce;
+      expect(onActionSpy).to.have.been.calledWith('lint-tab', { contents: form.getSchema() });
+    });
+
+
+    it('should not lint on commandStack.changed (no engine profile)', async function() {
+
+      // given
+      const onActionSpy = spy();
+
+      const { instance } = await renderEditor(schema, {
+        onAction: onActionSpy
+      });
+
+      // when
+      const { form } = instance.getCached();
+
+      form._emit('commandStack.changed');
+
+      // then
+      expect(onActionSpy).not.to.have.been.called;
+    });
+
+  });
+
 });
 
 
@@ -587,7 +630,7 @@ async function renderEditor(schema, options = {}) {
     onImport = noop,
     onLayoutChanged = noop,
     onModal = noop,
-    waitForImport = true,
+    waitForImport = true
   } = options;
 
   return new Promise((resolve) => {

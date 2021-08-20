@@ -131,7 +131,10 @@ export class TabsProvider {
           jpeg: EXPORT_JPEG,
           svg: EXPORT_SVG
         },
-        extensions: [ 'bpmn', 'xml' ]
+        extensions: [ 'bpmn', 'xml' ],
+        getLinter() {
+          return null;
+        }
       },
       'cloud-bpmn': {
         name: null,
@@ -141,7 +144,10 @@ export class TabsProvider {
           jpeg: EXPORT_JPEG,
           svg: EXPORT_SVG
         },
-        extensions: [ 'bpmn', 'xml' ]
+        extensions: [ 'bpmn', 'xml' ],
+        getLinter() {
+          return null;
+        }
       },
       cmmn: {
         name: 'CMMN',
@@ -151,7 +157,10 @@ export class TabsProvider {
           jpeg: EXPORT_JPEG,
           svg: EXPORT_SVG
         },
-        extensions: [ 'cmmn', 'xml' ]
+        extensions: [ 'cmmn', 'xml' ],
+        getLinter() {
+          return null;
+        }
       },
       dmn: {
         name: 'DMN',
@@ -161,7 +170,33 @@ export class TabsProvider {
           jpeg: EXPORT_JPEG,
           svg: EXPORT_SVG
         },
-        extensions: [ 'dmn', 'xml' ]
+        extensions: [ 'dmn', 'xml' ],
+        getLinter() {
+          return null;
+        }
+      },
+      form: {
+        name: 'FORM',
+        encoding: ENCODING_UTF8,
+        exports: {},
+        extensions: [ 'form' ],
+        getLinter() {
+          return {
+            lint(contents) {
+              if (contents === 'linting-errors') {
+                return [
+                  {
+                    id: 'Field_1',
+                    path: [],
+                    message: 'foo'
+                  }
+                ];
+              }
+
+              return [];
+            }
+          };
+        }
       }
     };
   }

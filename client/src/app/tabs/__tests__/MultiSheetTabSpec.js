@@ -535,6 +535,29 @@ describe('<MultiSheetTab>', function() {
       // then
       expect(onAction).to.have.been.calledWith('close-tab', { tabId: instance.props.tab.id });
     });
+
+
+    it('should handle lint-tab action', async function() {
+
+      // given
+      const onAction = sinon.spy();
+
+      const {
+        instance
+      } = renderTab({
+        onAction
+      });
+
+      // when
+      await instance.onAction('lint-tab', { contents: 'FOO' });
+
+      // then
+      expect(onAction).to.have.been.calledWith('lint-tab', {
+        contents: 'FOO',
+        tab: instance.props.tab
+      });
+    });
+
   });
 
 

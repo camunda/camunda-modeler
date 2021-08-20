@@ -375,6 +375,49 @@ describe('TabsProvider', function() {
   });
 
 
+  describe('#getLinter', function() {
+
+    [
+      'bpmn',
+      'cloud-bpmn',
+      'cmmn',
+      'dmn'
+    ].forEach((type) => {
+
+      it(type, function() {
+
+        // given
+        Flags.init({
+          [DISABLE_CMMN]: false
+        });
+
+        const tabsProvider = new TabsProvider().getProvider(type);
+
+        // when
+        const linter = tabsProvider.getLinter();
+
+        // then
+        expect(linter).to.be.null;
+      });
+
+    });
+
+
+    it('form', function() {
+
+      // given
+      const tabsProvider = new TabsProvider().getProvider('form');
+
+      // when
+      const linter = tabsProvider.getLinter();
+
+      // then
+      expect(linter).to.exist;
+    });
+
+  });
+
+
   describe('flags', function() {
 
     afterEach(Flags.reset);
