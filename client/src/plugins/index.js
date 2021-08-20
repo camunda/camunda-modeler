@@ -9,21 +9,23 @@
  */
 
 import CamundaPlugin from './camunda-plugin';
-import PrivacyPreferences from './privacy-preferences';
-import UpdateChecks from './update-checks';
-import ErrorTracking from './error-tracking';
-import UsageStatistics from './usage-statistics';
 import ElementTemplatesModal from './element-templates-modal';
-import ZeebePlugin from './zeebe-plugin';
+import ErrorTracking from './error-tracking';
+import PrivacyPreferences from './privacy-preferences';
+import ReportFeedback from './report-feedback';
+import UpdateChecks from './update-checks';
+import UsageStatistics from './usage-statistics';
 import VersionInfo from './version-info';
+import ZeebePlugin from './zeebe-plugin';
 
 export default [
   CamundaPlugin,
-  PrivacyPreferences,
-  UpdateChecks,
-  ErrorTracking,
-  UsageStatistics,
   ElementTemplatesModal,
-  ZeebePlugin,
-  VersionInfo
+  ErrorTracking,
+  PrivacyPreferences,
+  ReportFeedback,
+  UpdateChecks,
+  UsageStatistics,
+  VersionInfo,
+  ZeebePlugin
 ];

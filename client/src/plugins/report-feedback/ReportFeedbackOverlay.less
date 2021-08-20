@@ -1,0 +1,29 @@
+:local(.ReportFeedbackOverlay) {
+  max-height: calc(100vh - 250px);
+
+  overflow: auto;
+
+  h1, h2, h3, h4 {
+    font-size: inherit;
+  }
+
+  h1, h2, h3, h4, p {
+    margin: 12px 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+  }
+
+  form {
+    margin: 12px 0 0;
+
+    button {
+      margin-top: 8px;
+
+      width: 100%;
+    }
+  }
+
+}

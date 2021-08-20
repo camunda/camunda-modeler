@@ -540,7 +540,7 @@ class MenuBuilder {
       },
       {
         label: 'Report Issue',
-        click: () => browserOpen('https://github.com/camunda/camunda-modeler/issues/new/choose')
+        click: () => app.emit('menu:action', 'emit-event', { type: 'reportFeedback.open' })
       },
       ... (app.flags && !app.flags.get('disable-remote-interaction')) ? [
         getSeparatorTemplate(),
