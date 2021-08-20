@@ -32,6 +32,7 @@ import {
   Dialog,
   FileSystem,
   Plugins,
+  SystemClipboard,
   TabsProvider,
   Workspace,
   ZeebeAPI
@@ -2755,6 +2756,7 @@ function createApp(options = {}, mountFn=shallow) {
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
     plugins: new Plugins(),
+    systemClipboard: new SystemClipboard(),
     workspace: new Workspace(),
     zeebeAPI: new ZeebeAPI()
   };

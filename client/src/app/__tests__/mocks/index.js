@@ -502,6 +502,12 @@ export class Plugins extends Mock {
   }
 }
 
+export class SystemClipboard extends Mock {
+  writeText() {
+    return undefined;
+  }
+}
+
 function without(arr, toRemove) {
   return arr.filter(item => item !== toRemove);
 }

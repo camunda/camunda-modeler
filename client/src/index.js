@@ -15,10 +15,11 @@ import {
   config,
   dialog,
   fileSystem,
-  plugins,
   flags,
   log,
   metadata,
+  plugins,
+  systemClipboard,
   workspace,
   zeebeAPI
 } from './remote';
@@ -65,6 +66,7 @@ const globals = {
   isMac,
   log,
   plugins,
+  systemClipboard,
   workspace,
   zeebeAPI
 };
