@@ -407,7 +407,7 @@ describe('<App>', function() {
         }
       });
 
-      const file1 = createFile('1.bpmn', null, '');
+      const file1 = createFile('1.bpmn', { contents: '' });
       const file2 = createFile('2.bpmn');
 
       // when
@@ -484,7 +484,7 @@ describe('<App>', function() {
         }
       });
 
-      const file1 = createFile('1.bpmn', null, '');
+      const file1 = createFile('1.bpmn', { contents: '' });
 
       // when
       const tab = await app.openEmptyFile(file1);
@@ -519,7 +519,7 @@ describe('<App>', function() {
         }
       });
 
-      const file1 = createFile('1.bpmn', null, '');
+      const file1 = createFile('1.bpmn', { contents: '' });
 
       // when
       await app.openEmptyFile(file1);
@@ -547,7 +547,7 @@ describe('<App>', function() {
 
       const lastTab = app.state.activeTab;
 
-      const file1 = createFile('1.txt', null, '');
+      const file1 = createFile('1.txt', { contents: '' });
 
       // when
       await app.openEmptyFile(file1);
@@ -1888,8 +1888,12 @@ describe('<App>', function() {
 
     beforeEach(function() {
 
-      file1 = createFile('1.bpmn', 'foo', 'foo', 0);
-      file2 = createFile('2.bpmn', 'foobar');
+      file1 = createFile('1.bpmn', {
+        contents: 'foo',
+        lastModified: 0
+      });
+
+      file2 = createFile('2.bpmn');
 
       readFileSpy = spy(_ => {
         return assign(file1, {
@@ -2097,6 +2101,7 @@ describe('<App>', function() {
 
       tab = tabs[0];
     });
+
 
     it('should update tab', async function() {
 
@@ -2725,6 +2730,120 @@ describe('<App>', function() {
 
   });
 
+
+  describe('linting', function() {
+
+    it('should lint tab (no errors)', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const openedTabs = await app.openFiles([
+        createFile('1.form', {
+          contents: 'foo',
+          type: 'form'
+        })
+      ]);
+
+      // when
+      const updatedTab = await app.lintTab(openedTabs[ 0 ]);
+
+      // then
+      expect(updatedTab.linting).to.exist;
+      expect(updatedTab.linting).to.be.empty;
+    });
+
+
+    it('should lint tab (errors)', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const openedTabs = await app.openFiles([
+        createFile('1.form', {
+          contents: 'linting-errors',
+          type: 'form'
+        })
+      ]);
+
+      // when
+      const updatedTab = await app.lintTab(openedTabs[ 0 ]);
+
+      // then
+      expect(updatedTab.linting).to.exist;
+      expect(updatedTab.linting).to.have.length(1);
+    });
+
+
+    it('should lint tab (custom contents)', async function() {
+
+      // given
+      const contents = JSON.stringify({
+        components: [],
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.15',
+        id: 'Form_1',
+        type: 'default'
+      });
+
+      const { app } = createApp();
+
+      const openedTabs = await app.openFiles([
+        createFile('1.form', {
+          contents,
+          type: 'form'
+        })
+      ]);
+
+      // when
+      const updatedTab = await app.lintTab(openedTabs[ 0 ], 'linting-errors');
+
+      // then
+      expect(updatedTab.linting).to.exist;
+      expect(updatedTab.linting).to.have.length(1);
+    });
+
+
+    it('should not lint tab (no linter)', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const openedTabs = await app.openFiles([
+        createFile('1.bpmn')
+      ]);
+
+      // when
+      const updatedTab = await app.lintTab(openedTabs[ 0 ]);
+
+      // then
+      expect(updatedTab).to.equal(openedTabs[ 0 ]);
+      expect(updatedTab.linting).not.to.exist;
+    });
+
+
+    it('should lint tab through #triggerAction', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const openedTabs = await app.openFiles([
+        createFile('1.form', {
+          contents: 'foo',
+          type: 'form'
+        })
+      ]);
+
+      // when
+      const updatedTab = await app.triggerAction('lint-tab', { tab: openedTabs[ 0 ] });
+
+      // then
+      expect(updatedTab.linting).to.exist;
+      expect(updatedTab.linting).to.be.empty;
+    });
+
+  });
+
 });
 
 
@@ -2816,15 +2935,20 @@ function createApp(options = {}, mountFn=shallow) {
 }
 
 
-function createFile(name, path, contents = 'foo', lastModified) {
-
-  path = typeof path === 'undefined' ? name : path;
+function createFile(name, options = {}) {
+  const {
+    contents = 'foo',
+    lastModified,
+    path = name,
+    type = 'bpmn'
+  } = options;
 
   return {
     contents,
+    lastModified,
     name,
     path,
-    lastModified
+    type
   };
 }
 

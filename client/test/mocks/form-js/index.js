@@ -59,7 +59,11 @@ export class FormEditor {
 
   detach() {}
 
-  on(event, callback) {
+  on(event, priority, callback) {
+    if (!callback) {
+      callback = priority;
+    }
+
     if (!this.listeners[ event ]) {
       this.listeners[ event ] = [];
     }

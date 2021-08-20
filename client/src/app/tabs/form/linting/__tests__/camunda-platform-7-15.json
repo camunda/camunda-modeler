@@ -1,0 +1,46 @@
+{
+  "components": [
+    {
+      "id": "Field_1",
+      "key": "creditor",
+      "label": "Creditor",
+      "type": "textfield",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "description": "An invoice number in the format: C-123.",
+      "id": "Field_2",
+      "key": "invoiceNumber",
+      "label": "Invoice Number",
+      "type": "textfield",
+      "validate": {
+        "pattern": "^C-[0-9]+$"
+      }
+    },
+    {
+      "id": "Field_3",
+      "key": "approvedBy",
+      "label": "Approved By",
+      "type": "textfield"
+    },
+    {
+      "id": "Field_4",
+      "key": "submit",
+      "label": "Submit",
+      "type": "button"
+    },
+    {
+      "id": "Field_5",
+      "action": "reset",
+      "key": "reset",
+      "label": "Reset",
+      "type": "button"
+    }
+  ],
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.15",
+  "id": "Form_1",
+  "type": "default"
+}

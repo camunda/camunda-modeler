@@ -847,6 +847,30 @@ export class App extends PureComponent {
     });
   }
 
+  lintTab = async (tab, contents) => {
+    const { tabsProvider } = this.props;
+
+    const { type } = tab;
+
+    const tabProvider = tabsProvider.getProvider(type);
+
+    const linter = tabProvider.getLinter(tab);
+
+    if (!linter) {
+      return tab;
+    }
+
+    if (!contents) {
+      contents = tab.file.contents;
+    }
+
+    const results = await linter.lint(contents);
+
+    return this.updateTab(tab, {
+      linting: results
+    });
+  }
+
   resizeTab = () => {
     const tab = this.tabRef.current;
 
@@ -1596,6 +1620,15 @@ export class App extends PureComponent {
 
 
     log('App#triggerAction %s %o', action, options);
+
+    if (action === 'lint-tab') {
+      const {
+        tab,
+        contents
+      } = options;
+
+      return this.lintTab(tab, contents);
+    }
 
     if (action === 'select-tab') {
       if (options === 'next') {

@@ -345,6 +345,15 @@ export class MultiSheetTab extends CachedComponent {
       return onAction('close-tab', { tabId: tab.id });
     }
 
+    if (action === 'lint-tab') {
+      const { contents } = options;
+
+      return onAction('lint-tab', {
+        contents,
+        tab
+      });
+    }
+
     return onAction(action, options);
   }
 
@@ -397,6 +406,7 @@ export class MultiSheetTab extends CachedComponent {
             setConfig={ this.props.setConfig }
             getPlugins={ this.props.getPlugins }
             onWarning={ this.handleWarning }
+            linting={ tab.linting }
           />
         </TabContainer>
 
