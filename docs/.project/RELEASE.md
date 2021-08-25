@@ -22,9 +22,14 @@ For patch releases turn to [this documentation](./PATCH_RELEASE.md).
 _To be done immediately after creating this issue._
 
 * [ ] put up code freeze appointment in calendar (include `modeling`, `qa`, `infra`, and `Team-Support`)
-* [ ] schedule a meeting to inform QA about the release and its details so they can prepare for testing
 * [ ] put up release appointment in calendar (include `modeling`, `DevRel` and Marketing [ `Christopher Rogers` ])
 * [ ] add Slack role to release manager (`@modeling-release-manager`)
+
+_To be done prior to the code freeze._
+
+* [ ] schedule a meeting to inform QA about the release and its details so they can prepare for testing
+* [ ] Get in touch with the team (PM, UX and Engineering side), to clarify what topics will be included in the Release and their priority. Use this information to start preparing a concept for the *blog post* (see below) and *release info* (see below)
+    * [ ] (optional) if possible, already create feature branch to update [Release Info](https://github.com/camunda/camunda-modeler/blob/develop/client/src/plugins/version-info/ReleaseInfo.js) following our [guidelines](https://github.com/bpmn-io/internal-docs/tree/master/camunda-modeler#whats-new-communication)
 
 _To be done after code freeze and prior to the release day to prepare and build the release._
 
@@ -35,6 +40,8 @@ _To be done after code freeze and prior to the release day to prepare and build 
 * [ ] verify `develop` is up to date with `master`: `git checkout master && git pull && git checkout develop && git merge master`
 * [ ] smoke test to verify all diagrams can be created
 * [ ] update [Release Info](https://github.com/camunda/camunda-modeler/blob/develop/client/src/plugins/version-info/ReleaseInfo.js)
+    * [ ] create a draft following [our guidelines](https://github.com/bpmn-io/internal-docs/tree/master/camunda-modeler#whats-new-communication) and based on priorities which were aligned with the team (PM, UX, and Engineering side)
+   * [ ] create PR to merge the draft into `develop`. Assign to PM, UX and Engineering for review
 * [ ] update CHANGELOG
 * [ ] merge to master: `git checkout master && git merge develop`
 * [ ] create release candidate (`npm run release`), e.g. v1.0.0-rc.0
