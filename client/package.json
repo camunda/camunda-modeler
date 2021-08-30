@@ -43,6 +43,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "scroll-tabs": "^1.0.1",
+    "semver-compare": "^1.0.0",
     "sourcemapped-stacktrace": "^1.1.9",
     "ua-parser-js": "^0.7.28",
     "zeebe-bpmn-moddle": "^0.7.0"
