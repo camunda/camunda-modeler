@@ -8,7 +8,22 @@
  * except in compliance with the MIT License.
  */
 
-import { isString } from 'min-dash';
+import {
+  isNil,
+  isString
+} from 'min-dash';
+
+import cmp from 'semver-compare';
+
+const formJSVersions = {
+  'Camunda Cloud': {
+    '1.0': '0.0.1',
+    '1.1': '0.1.0'
+  },
+  'Camunda Platform': {
+    '7.15': '0.0.1'
+  }
+};
 
 
 export default class FormLinter {
@@ -36,8 +51,9 @@ export default class FormLinter {
       'textfield'
     ];
 
-    if ((executionPlatform === 'Camunda Platform' && executionPlatformVersion === '7.16')
-      || (executionPlatform === 'Camunda Cloud' && executionPlatformVersion === '1.1')) {
+    const formJSVersion = getFormJSVersion(executionPlatform, executionPlatformVersion);
+
+    if (!isNil(formJSVersion) && cmp(formJSVersion, '0.1.0') >= 0) {
       types.push(
         'checkbox',
         'number',
@@ -77,4 +93,12 @@ function textToLabel(text = '...') {
   }
 
   return text;
+}
+
+function getFormJSVersion(executionPlatform, executionPlatformVersion) {
+  if (!formJSVersions[ executionPlatform ]) {
+    return null;
+  }
+
+  return formJSVersions[ executionPlatform ][ executionPlatformVersion ] || null;
 }
