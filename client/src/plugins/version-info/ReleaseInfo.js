@@ -42,9 +42,31 @@ import css from './ReleaseInfo.less';
 export function ReleaseInfo(props) {
   return (
     <div className={ css.ReleaseInfo }>
-      <p>
-        Model Camunda Cloud 1.1 BPMN diagrams. Connect message flows to call activities and color your BPMN elements in a <a href="https://github.com/bpmn-miwg/bpmn-in-color">cross-vendor fashion</a>.
-      </p>
+      <ul>
+        <li>
+          <b>New components for Forms</b><br />
+          We added five additional form components such as select, checkbox, and radio
+          button. We also included a markdown text component, which allows you to provide
+          static information in your form.
+        </li>
+        <li>
+          <b>Modeling guidance for Forms</b><br />
+          By clicking on the platform label on the left side of the status bar,
+          you can now select the execution platform you want to deploy the form to.
+          This will lead to the form being validated to ensure that it can be successfully executed.
+          The results will be presented in a new panel, helping you to find issues before the
+          deployment.
+        </li>
+        <li>
+          <b>Improved properties panel for Cloud BPMN diagrams</b><br />
+          The properties panel for BPMN diagrams was modernized to
+          provide an improved user experience. One fundamental change is that
+          the tabs were replaced by expandable sections that indicate at a glance
+          whether properties exist in the respective section.
+        </li>
+        <li>Plus, various smaller bug fixes and usability improvements.</li>
+      </ul>
+
     </div>
   );
 }
