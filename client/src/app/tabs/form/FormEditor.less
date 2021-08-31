@@ -1,18 +1,12 @@
 :local(.FormEditor) {
   display: flex;
   flex: 1;
-  flex-direction: row;
+  flex-direction: column;
 
   .form {
     display: flex;
     flex: 1;
     flex-direction: row;
-  
-    .container {
-      display: flex;
-      flex: 1;
-      flex-direction: row;
-    }
   
     .fjs-container {
       display: flex;
@@ -20,11 +14,8 @@
       flex-direction: row;
     }
   
-    .fjs-editor-container .fjs-form-container {
-      position: relative;
-    }
-  
     .fjs-editor-container .fjs-form,
+    .fjs-editor-container .fjs-palette,
     .fjs-editor-container .fjs-properties-panel {
       position: absolute;
       top: 0;
