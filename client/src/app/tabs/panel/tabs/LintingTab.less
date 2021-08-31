@@ -1,0 +1,37 @@
+:local(.LintingIssue) {
+  align-items: flex-start;
+  border-bottom: solid 1px var(--color-dddddd);
+  display: flex;
+  padding: 6px 8px 4px 8px;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  svg {
+    fill: var(--red-base-62);
+    margin-right: 8px;
+  }
+
+  .linting-issue__icon {
+    padding-top: 1px;
+  }
+
+  .linting-issue__text {
+    line-height: 16px;
+
+    .linting-issue__link {
+      background-color: var(--blue-lighten-93);
+      border-radius: 4px;
+      margin-left: 4px;
+      margin-right: 4px;
+      padding: 2px 4px;
+  
+      &:hover {
+        background-color: var(--blue-base-65);
+        color: var(--color-ffffff);
+      }
+    }
+  }
+
+}

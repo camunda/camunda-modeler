@@ -307,6 +307,47 @@ describe('<FormEditor>', function() {
       expect(returnValue).to.equal('bar');
     });
 
+
+    it('should trigger selectFormField', async function() {
+
+      // given
+      const triggerActionSpy = spy();
+
+      const editorActions = {
+        isRegistered(action) {
+          return action === 'selectFormField';
+        },
+        trigger: triggerActionSpy
+      };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          form: new FormEditorMock({
+            modules: {
+              editorActions
+            }
+          })
+        }
+      });
+
+      // when
+      const { instance } = await renderEditor(schema, { cache });
+
+      // when
+      instance.triggerAction('selectElement', {
+        id: 'foo',
+        path: []
+      });
+
+      // then
+      expect(triggerActionSpy).to.have.been.calledOnceWith('selectFormField', {
+        id: 'foo',
+        path: []
+      });
+    });
+
   });
 
 
@@ -624,6 +665,30 @@ describe('<FormEditor>', function() {
       expect(onActionSpy).not.to.have.been.called;
     });
 
+
+    it('should show linting in status bar', async function() {
+
+      // when
+      const { wrapper } = await renderEditor(engineProfileSchema);
+
+      wrapper.update();
+
+      // then
+      expect(wrapper.find('Linting').exists()).to.be.true;
+    });
+
+
+    it('should not show linting in status bar (no engine profile)', async function() {
+
+      // when
+      const { wrapper } = await renderEditor(schema);
+
+      wrapper.update();
+
+      // then
+      expect(wrapper.find('Linting').exists()).to.be.false;
+    });
+
   });
 
 });
@@ -641,6 +706,7 @@ async function renderEditor(schema, options = {}) {
     getConfig = noop,
     id = 'editor',
     layout = {},
+    linting = [],
     onAction = noop,
     onChanged = noop,
     onContentUpdated = noop,
@@ -670,6 +736,7 @@ async function renderEditor(schema, options = {}) {
         getConfig={ getConfig }
         id={ id }
         layout={ layout }
+        linting={ linting }
         onAction={ onAction }
         onChanged={ onChanged }
         onContentUpdated={ onContentUpdated }

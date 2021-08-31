@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { createRef } from 'react';
+import React, { createRef, Fragment } from 'react';
 
 import {
   isFunction,
@@ -38,6 +38,12 @@ import {
   engineProfilesEqual,
   isKnownEngineProfile
 } from '../EngineProfile';
+
+import { Linting } from '../Linting';
+
+import Panel from '../panel/Panel';
+
+import LintingTab from '../panel/tabs/LintingTab';
 
 const LOW_PRIORITY = 500;
 
@@ -300,6 +306,10 @@ export class FormEditor extends CachedComponent {
 
     const editorActions = form.get('editorActions');
 
+    if (action === 'selectElement') {
+      editorActions.trigger('selectFormField', context);
+    }
+
     if (editorActions.isRegistered(action)) {
       return editorActions.trigger(action, context);
     }
@@ -344,6 +354,13 @@ export class FormEditor extends CachedComponent {
   render() {
     const { engineProfile } = this.getCached();
 
+    const {
+      layout,
+      linting = [],
+      onAction,
+      onLayoutChanged
+    } = this.props;
+
     const { importing } = this.state;
 
     return (
@@ -360,6 +377,23 @@ export class FormEditor extends CachedComponent {
           type="form"
           engineProfile={ engineProfile }
           setEngineProfile={ this.setEngineProfile } />
+
+        {
+          engineProfile && <Fragment>
+            <Panel
+              layout={ layout }>
+              <LintingTab
+                layout={ layout }
+                linting={ linting }
+                onAction={ onAction }
+                onLayoutChanged={ onLayoutChanged } />
+            </Panel>
+            <Linting
+              layout={ layout }
+              linting={ linting }
+              onLayoutChanged={ onLayoutChanged } />
+          </Fragment>
+        }
       </div>
     );
   }
