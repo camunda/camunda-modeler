@@ -689,6 +689,30 @@ describe('<FormEditor>', function() {
       expect(wrapper.find('Linting').exists()).to.be.false;
     });
 
+
+    it('should unsubscribe on unmount', async function() {
+
+      // given
+      const onActionSpy = spy();
+
+      const {
+        instance,
+        wrapper
+      } = await renderEditor(engineProfileSchema, {
+        onAction: onActionSpy
+      });
+
+      const { form } = instance.getCached();
+
+      // when
+      wrapper.unmount();
+
+      form._emit('commandStack.changed');
+
+      // then
+      expect(onActionSpy).to.have.been.calledOnce;
+    });
+
   });
 
 });

@@ -208,7 +208,11 @@ export class FormEditor extends CachedComponent {
       'selection.changed'
     ].forEach((event) => form[ fn ](event, this.handleChanged));
 
-    form[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
+    if (fn === 'on') {
+      form.on('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
+    } else if (fn === 'off') {
+      form.off('commandStack.changed', this.handleLintingDebounced);
+    }
   }
 
   handleChanged = () => {

@@ -71,7 +71,11 @@ export class FormEditor {
     this.listeners[ event ].push(callback);
   }
 
-  off() {}
+  off(event, callback) {
+    if (this.listeners[ event ]) {
+      this.listeners[ event ] = this.listeners[ event ].filter(cb => cb !== callback);
+    }
+  }
 
   _emit(event) {
     if (this.listeners[ event ]) {
