@@ -14,7 +14,7 @@
     "@bpmn-io/form-js": "^0.4.2",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@sentry/browser": "^6.3.6",
-    "bpmn-js": "^8.7.1",
+    "bpmn-js": "^8.7.3",
     "bpmn-js-properties-panel": "^0.44.0",
     "camunda-bpmn-js": "^0.9.3",
     "camunda-bpmn-moddle": "^5.1.2",
@@ -26,10 +26,10 @@
     "cmmn-js-properties-panel": "^0.8.3",
     "codemirror": "^5.46.0",
     "debug": "^4.1.1",
-    "diagram-js": "^7.3.0",
+    "diagram-js": "^7.3.1",
     "diagram-js-direct-editing": "^1.6.3",
     "diagram-js-origin": "^1.3.2",
-    "dmn-js": "^11.0.1",
+    "dmn-js": "^11.0.2",
     "dmn-js-properties-panel": "^0.6.1",
     "drag-tabs": "^2.3.0",
     "events": "^3.0.0",
@@ -46,7 +46,7 @@
     "semver-compare": "^1.0.0",
     "sourcemapped-stacktrace": "^1.1.9",
     "ua-parser-js": "^0.7.28",
-    "zeebe-bpmn-moddle": "^0.7.0"
+    "zeebe-bpmn-moddle": "^0.7.1"
   },
   "homepage": ".",
   "devDependencies": {
