@@ -6,7 +6,34 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.10.0
+
+### General
+
+* `FEAT`: add `Provide Feedback` button in the status bar, allowing to copy system information to clipboard ([#2388](https://github.com/camunda/camunda-modeler/issues/2388))
 * `FEAT`: add context action to tabs to reveal respective file in file explorer ([#1834](https://github.com/camunda/camunda-modeler/issues/1834))
+* `FIX`: disable editor shortcuts when developer tools are open ([#2389](https://github.com/camunda/camunda-modeler/issues/2389))
+* `FIX`: ensure that user retrieves an update notification when using the manual `Check for Updates` action by not using the staged rollout mechanism ([#2263](https://github.com/camunda/camunda-modeler/issues/2263))
+* `FIX`: keep tab open when a save dialog was canceled ([#2359](https://github.com/camunda/camunda-modeler/issues/2359))
+
+### BPMN
+
+* `FEAT`: UX and technical re-write of the Properties Panel for Camunda Cloud diagrams ([#2347](https://github.com/camunda/camunda-modeler/issues/2347))
+* `FEAT`: allow the user to deploy diagrams to different Camunda Cloud regions by using the Cluster URL (instead of Cluster ID) ([#2375](https://github.com/camunda/camunda-modeler/issues/2375))
+* `FIX`: correctly encode Camunda-Forms inside UserTasks ([#2365](https://github.com/camunda/camunda-modeler/issues/2365))
+* `DEPS`: update to `bpmn-js@8.7.3`
+
+### DMN
+
+* `FIX`: display edit cell button in decision table view in correct position after changing cells ([#543](https://github.com/bpmn-io/dmn-js/issues/543))
+* `FIX`: fix an error that was thrown when using the BACKSPACE key in literal expression editor in some situations ([#2095](https://github.com/camunda/camunda-modeler/issues/2095))
+* `DEPS`: update to `dmn-js@11.0.2`
+
+### Forms
+
+* `FEAT`: allow setting the execution platform version for a form via the status bar ([#2323](https://github.com/camunda/camunda-modeler/issues/2323))
+* `FEAT`: based on the selected execution platform version, show validation errors in case form components are not supported ([#2323](https://github.com/camunda/camunda-modeler/issues/2323))
+* `DEPS`: update to `form-js@0.4.2` ([#2407](https://github.com/camunda/camunda-modeler/pull/2407))
 
 ## 4.9.0
 
