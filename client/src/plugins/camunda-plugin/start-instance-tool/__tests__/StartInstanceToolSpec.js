@@ -277,6 +277,62 @@ describe('<StartInstanceTool>', () => {
     });
 
 
+    it('should deploy even if version could not be fetched due to a ConnectionError', async () => {
+
+      // given
+      let deployedTo;
+      const actionTriggered = {
+        emitEvent: 'emit-event',
+        type: 'deployment.done',
+        handler: deployment => deployedTo = deployment.payload.deployedTo
+      };
+      const deployService = {
+        getVersion() {
+          throw new ConnectionError({ status: 404 });
+        }
+      };
+      const { instance } = createStartInstanceTool({ actionTriggered, deployService });
+
+      // when
+      await instance.startInstance();
+
+      // then
+      expect(deployedTo).to.exist;
+      expect(deployedTo.executionPlatformVersion).to.be.null;
+      expect(deployedTo.executionPlatform).to.equal('Camunda Platform');
+    });
+
+
+    it('should NOT hide errors other than Connection Error', async () => {
+
+      // given
+      const handler = sinon.spy();
+      const actionTriggered = {
+        emitEvent: 'emit-event',
+        type: 'deployment.done',
+        handler
+      };
+      const deployService = {
+        getVersion() {
+          throw new TypeError('we don\'t want to ignore that!');
+        }
+      };
+      const { instance } = createStartInstanceTool({ actionTriggered, deployService });
+
+      // when
+      let error;
+      try {
+        await instance.startInstance();
+      } catch (e) {
+        error = e;
+      }
+
+      // then
+      expect(error).to.exist;
+      expect(handler).not.to.have.been.called;
+    });
+
+
     it('should handle deployment error given a DeploymentError', async () => {
 
       // given
