@@ -405,16 +405,17 @@ export default class StartInstanceTool extends PureComponent {
       triggerAction
     } = this.props;
 
+    // If we retrieved the executionPlatformVersion, include it in event
+    const deployedTo = (version &&
+      { executionPlatformVersion: version, executionPlatform: ET_EXECUTION_PLATFORM_NAME }) || undefined;
+
     // notify interested parties
     triggerAction('emit-event', {
       type: 'deployment.done',
       payload: {
         deployment,
         context: 'startInstanceTool',
-        deployedTo: {
-          executionPlatformVersion: version,
-          executionPlatform: ET_EXECUTION_PLATFORM_NAME
-        }
+        ...(deployedTo && { deployedTo: deployedTo })
       }
     });
 

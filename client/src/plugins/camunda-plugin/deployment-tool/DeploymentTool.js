@@ -167,16 +167,17 @@ export default class DeploymentTool extends PureComponent {
       duration: 4000
     });
 
+    // If we retrieved the executionPlatformVersion, include it in event
+    const deployedTo = (version &&
+      { executionPlatformVersion: version, executionPlatform: ET_EXECUTION_PLATFORM_NAME }) || undefined;
+
     // notify interested parties
     triggerAction('emit-event', {
       type: 'deployment.done',
       payload: {
         deployment,
-        deployedTo: {
-          executionPlatformVersion: version,
-          executionPlatform: ET_EXECUTION_PLATFORM_NAME
-        },
-        context: 'deploymentTool'
+        context: 'deploymentTool',
+        ...(deployedTo && { deployedTo: deployedTo })
       }
     });
   }
