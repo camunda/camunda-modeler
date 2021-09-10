@@ -622,7 +622,11 @@ describe('<FormEditor>', function() {
       // then
       const { form } = instance.getCached();
 
-      expect(onActionSpy).to.have.been.calledOnce;
+      const calls = onActionSpy.getCalls()
+        .filter(call => call.args[0] === 'lint-tab');
+
+      // then
+      expect(calls).to.have.lengthOf(1);
       expect(onActionSpy).to.have.been.calledWith('lint-tab', { contents: form.getSchema() });
     });
 
@@ -641,9 +645,15 @@ describe('<FormEditor>', function() {
 
       form._emit('commandStack.changed');
 
+      const calls = onActionSpy.getCalls()
+        .filter(call => call.args[0] === 'lint-tab');
+
       // then
-      expect(onActionSpy).to.have.been.calledTwice;
-      expect(onActionSpy).to.have.been.always.calledWith('lint-tab', { contents: form.getSchema() });
+      expect(calls).to.have.lengthOf(2);
+
+      calls.forEach(function(call) {
+        expect(call[1] === form.getSchema());
+      });
     });
 
 
@@ -662,7 +672,7 @@ describe('<FormEditor>', function() {
       form._emit('commandStack.changed');
 
       // then
-      expect(onActionSpy).not.to.have.been.called;
+      expect(onActionSpy).not.to.have.been.calledWith('lint-tab');
     });
 
 
@@ -709,8 +719,11 @@ describe('<FormEditor>', function() {
 
       form._emit('commandStack.changed');
 
+      const calls = onActionSpy.getCalls()
+        .filter(call => call.args[0] === 'lint-tab');
+
       // then
-      expect(onActionSpy).to.have.been.calledOnce;
+      expect(calls).to.have.lengthOf(1);
     });
 
   });
