@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/camunda/camunda-modeler/actions/workflows/CI.yml/badge.svg)](https://github.com/camunda/camunda-modeler/actions/workflows/CI.yml)
 
-An integrated modeling solution for BPMN and DMN based on [bpmn.io](http://bpmn.io).
+An integrated modeling solution for BPMN, DMN, and Forms based on [bpmn.io](http://bpmn.io).
 
 ![Camunda Modeler](docs/screenshot.png)
 
