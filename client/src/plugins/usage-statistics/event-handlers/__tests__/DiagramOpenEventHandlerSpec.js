@@ -14,7 +14,13 @@ import DiagramOpenEventHandler from '../DiagramOpenEventHandler';
 
 import emptyXML from './fixtures/empty.bpmn';
 
+import brokenForm from './fixtures/broken-form.form';
+
 import engineProfileXML from './fixtures/engine-profile.bpmn';
+
+import engineProfilePlatform from './fixtures/engine-platform.form';
+
+import engineProfileCloud from './fixtures/engine-cloud.form';
 
 import processVariablesXML from './fixtures/process-variables.bpmn';
 
@@ -81,6 +87,19 @@ describe('<DiagramOpenEventHandler>', () => {
 
     // then
     expect(subscribe.getCall(2).args[0]).to.eql('cmmn.modeler.created');
+  });
+
+
+  it('should subscribe to form.modeler.created', () => {
+
+    // given
+    const subscribe = sinon.spy();
+
+    // when
+    new DiagramOpenEventHandler({ subscribe });
+
+    // then
+    expect(subscribe.getCall(3).args[0]).to.eql('form.modeler.created');
   });
 
 
@@ -163,6 +182,65 @@ describe('<DiagramOpenEventHandler>', () => {
     expect(onSend).to.have.been.calledWith({
       event: 'diagramOpened',
       diagramType: 'cmmn'
+    });
+  });
+
+
+  it('should send with diagram type: form', async () => {
+
+    // given
+    const subscribe = sinon.spy();
+
+    const onSend = sinon.spy();
+
+    const tab = createTab({
+      file: {},
+      type: 'form'
+    });
+
+    // when
+    const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe });
+
+    diagramOpenEventHandler.enable();
+
+    const bpmnCallback = subscribe.getCall(3).args[1];
+
+    await bpmnCallback({ tab });
+
+    // then
+    expect(onSend).to.have.been.calledWith({
+      event: 'diagramOpened',
+      diagramType: 'form'
+    });
+  });
+
+  it('should not send with broken file contents: form', async () => {
+
+    // given
+    const subscribe = sinon.spy();
+
+    const onSend = sinon.spy();
+
+    const tab = createTab({
+      type: 'form',
+      file: {
+        contents: brokenForm
+      }
+    });
+
+    // when
+    const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe });
+
+    diagramOpenEventHandler.enable();
+
+    const bpmnCallback = subscribe.getCall(3).args[1];
+
+    await bpmnCallback({ tab });
+
+    // then
+    expect(onSend).to.not.have.been.calledWith({
+      event: 'diagramOpened',
+      diagramType: 'form'
     });
   });
 
@@ -1156,6 +1234,74 @@ describe('<DiagramOpenEventHandler>', () => {
       // then
       expect(engineProfile).to.eql({
         executionPlatform: 'Camunda Cloud'
+      });
+    });
+
+    it('should send Platform engine profile (forms)', async () => {
+
+      // given
+      const subscribe = sinon.spy();
+
+      const onSend = sinon.spy();
+
+      const tab = createTab({
+        type: 'form',
+        file: {
+          contents: engineProfilePlatform
+        }
+      });
+
+      const config = { get: () => null };
+
+      // when
+      const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+      diagramOpenEventHandler.enable();
+
+      const bpmnCallback = subscribe.getCall(3).args[1];
+
+      await bpmnCallback({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.15'
+      });
+    });
+
+    it('should send Cloud engine profile (forms)', async () => {
+
+      // given
+      const subscribe = sinon.spy();
+
+      const onSend = sinon.spy();
+
+      const tab = createTab({
+        type: 'form',
+        file: {
+          contents: engineProfileCloud
+        }
+      });
+
+      const config = { get: () => null };
+
+      // when
+      const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+      diagramOpenEventHandler.enable();
+
+      const bpmnCallback = subscribe.getCall(3).args[1];
+
+      await bpmnCallback({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '1.1'
       });
     });
 

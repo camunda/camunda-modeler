@@ -402,12 +402,22 @@ export class FormEditor extends CachedComponent {
     );
   }
 
-  static createCachedState() {
+  static createCachedState(props) {
+
+    const {
+      onAction,
+    } = props;
+
     const form = new Form({});
 
     const commandStack = form.get('commandStack');
 
     const stackIdx = commandStack._stackIdx;
+
+    onAction('emit-event', {
+      type: 'form.modeler.created',
+      payload: form
+    });
 
     return {
       __destroy: () => {
