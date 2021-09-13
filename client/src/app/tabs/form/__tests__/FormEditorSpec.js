@@ -728,6 +728,46 @@ describe('<FormEditor>', function() {
 
   });
 
+
+  describe('extensions event emitting', function() {
+
+    let recordActions, emittedEvents;
+
+    beforeEach(function() {
+      emittedEvents = [];
+
+      recordActions = (action, options) => {
+        emittedEvents.push(options);
+      };
+    });
+
+
+    it('should notify when form was created', async function() {
+
+      // when
+      const {
+        instance
+      } = await renderEditor(engineProfileSchema, {
+        onAction: recordActions
+      });
+
+      const {
+        form
+      } = instance.getCached();
+
+      // then
+      const modelerCreatedEvent = getEvent(emittedEvents, 'form.modeler.created');
+
+      const {
+        payload,
+      } = modelerCreatedEvent;
+
+      expect(modelerCreatedEvent).to.exist;
+      expect(payload).to.eql(form);
+    });
+
+  });
+
 });
 
 
@@ -794,4 +834,9 @@ async function renderEditor(schema, options = {}) {
       });
     }
   });
+}
+
+
+function getEvent(events, eventName) {
+  return events.find(e => e.type === eventName);
 }

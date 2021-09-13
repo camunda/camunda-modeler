@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Text Field",
+      "type": "textfield",
+      "id": "Field_0kal0d6",
+      "key": "field_130zyus",
+      "description": "description"
+    },
+    {
+      "action": "submit",
+      "label": "Button",
+      "type": "button",
+      "id": "Field_1vao9q9",
+      "key": "field_0bqqfun"
+    }
+  ],
+  "type": "default",
+  "id": "Form_0sczxmf",
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.15"
+}

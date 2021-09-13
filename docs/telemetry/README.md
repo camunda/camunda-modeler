@@ -43,15 +43,28 @@ The `Diagram Opened Event` is sent in following situations:
  - User created a new BPMN diagram
  - User created a new DMN diagram
  - User created a new CMMN diagram
+ - User created a new Form
  - User opened an existing BPMN diagram
  - User opened an existing DMN diagram
  - User opened an existing CMMN diagram
+ - User opened an existing Form
 
 The Diagram Opened Event has the following core structure:
 ```json
 {
   "event": "diagramOpened",
-  "diagramType": "[bpmn, dmn or cmmn]"
+  "diagramType": "[bpmn, dmn, cmmn or form]"
+}
+```
+
+In the case of bpmn and form, we add the engine profile:
+
+```json
+{
+  "engineProfile": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "1.1"
+  }
 }
 ```
 
@@ -109,15 +122,6 @@ Also in the case of BPMN diagrams, we add selected diagram metrics:
 }
 ```
 
-In terms it is set in the diagram, we add the engine profile:
-
-```json
-{
-  "engineProfile": {
-    "executionPlatform": "Camunda Cloud"
-  }
-}
-```
 
 ### Deployment Event
 The `Deployment Event` is sent in following situations:
