@@ -402,10 +402,16 @@ app.openFiles = function(filePaths) {
  */
 app.createEditorWindow = function() {
 
-  const nodeIntegration = !!flags.get('dangerously-enable-node-integration');
+  const nodeIntegration = flags.get('dangerously-enable-node-integration', false);
 
   if (nodeIntegration) {
     log.warn('nodeIntegration is enabled via --dangerously-enable-node-integration');
+  }
+
+  const contextIsolation = !flags.get('dangerously-disable-context-isolation', false);
+
+  if (contextIsolation) {
+    log.warn('contextIsolation is disabled via --dangerously-disable-context-isolation');
   }
 
   const windowOptions = {
@@ -416,7 +422,7 @@ app.createEditorWindow = function() {
     minHeight: MINIMUM_SIZE.height,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: true,
+      contextIsolation,
       nodeIntegration
     }
   };
