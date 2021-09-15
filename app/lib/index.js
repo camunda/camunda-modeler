@@ -410,7 +410,7 @@ app.createEditorWindow = function() {
 
   const contextIsolation = !flags.get('dangerously-disable-context-isolation', false);
 
-  if (contextIsolation) {
+  if (!contextIsolation) {
     log.warn('contextIsolation is disabled via --dangerously-disable-context-isolation');
   }
 
