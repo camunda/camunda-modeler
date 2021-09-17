@@ -18,10 +18,12 @@ import cmp from 'semver-compare';
 const formJSVersions = {
   'Camunda Cloud': {
     '1.0': '0.0.1',
-    '1.1': '0.1.0'
+    '1.1': '0.1.0',
+    '1.2': '0.1.0'
   },
   'Camunda Platform': {
-    '7.15': '0.0.1'
+    '7.15': '0.0.1',
+    '7.16': '0.1.0'
   }
 };
 
