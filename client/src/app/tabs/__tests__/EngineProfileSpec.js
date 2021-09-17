@@ -19,13 +19,33 @@ import {
   Slot
 } from '../../slot-fill';
 
-import { EngineProfile } from '../EngineProfile';
+import {
+  EngineProfile,
+  engineProfiles,
+  toKebapCase
+} from '../EngineProfile';
 
 import { engineProfile as bpmnEngineProfile } from '../bpmn/BpmnEditor';
 import { engineProfile as cloudBpmnEngineProfile } from '../cloud-bpmn/BpmnEditor';
 import { engineProfile as dmnEngineProfile } from '../dmn/DmnEditor';
 
 const spy = sinon.spy;
+
+const allEngineProfiles = engineProfiles.reduce((allEngineProfiles, engineProfile) => {
+  const {
+    executionPlatform,
+    executionPlatformVersions
+  } = engineProfile;
+
+  executionPlatformVersions.forEach((executionPlatformVersion) => {
+    allEngineProfiles.push({
+      executionPlatform,
+      executionPlatformVersion
+    });
+  });
+
+  return allEngineProfiles;
+}, []);
 
 
 describe('<EngineProfile>', function() {
@@ -183,71 +203,35 @@ describe('<EngineProfile>', function() {
 
     describe('show selected engine profile', function() {
 
-      it('should show selected engine profile (Camunda Platform 7.15)', function() {
+      allEngineProfiles.forEach(({ executionPlatform, executionPlatformVersion }) => {
 
-        // given
-        wrapper = renderEngineProfile({
-          type: 'form',
-          engineProfile: {
-            executionPlatform: 'Camunda Platform',
-            executionPlatformVersion: '7.15'
-          }
+        it(`should show selected engine profile (${ executionPlatform } ${ executionPlatformVersion })`, function() {
+
+          // given
+          wrapper = renderEngineProfile({
+            type: 'form',
+            engineProfile: {
+              executionPlatform,
+              executionPlatformVersion
+            }
+          });
+
+          // when
+          wrapper.find('button').simulate('click');
+
+          // then
+          expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
+          expect(wrapper.find('EngineProfileSelection').exists()).to.be.true;
+
+          const input = wrapper.find('input').filterWhere((item) => item.prop('id') === `execution-platform-${ toKebapCase(executionPlatform) }`);
+
+          expect(input.prop('checked')).to.be.true;
+
+          const select = wrapper.find('select').filterWhere((item) => item.prop('id') === `execution-platform-version-${ toKebapCase(executionPlatform) }`);
+
+          expect(select.prop('value')).to.equal(executionPlatformVersion);
         });
 
-        // when
-        wrapper.find('button').simulate('click');
-
-        // then
-        expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
-        expect(wrapper.find('EngineProfileSelection').exists()).to.be.true;
-
-        expect(wrapper.find('input').filterWhere((item) => item.prop('id') === 'execution-platform-camunda-platform').prop('checked')).to.be.true;
-      });
-
-
-      it('should show selected engine profile (Camunda Cloud 1.1)', function() {
-
-        // given
-        wrapper = renderEngineProfile({
-          type: 'form',
-          engineProfile: {
-            executionPlatform: 'Camunda Cloud',
-            executionPlatformVersion: '1.1'
-          }
-        });
-
-        // when
-        wrapper.find('button').simulate('click');
-
-        // then
-        expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
-        expect(wrapper.find('EngineProfileSelection').exists()).to.be.true;
-
-        expect(wrapper.find('input').filterWhere((item) => item.prop('id') === 'execution-platform-camunda-cloud').prop('checked')).to.be.true;
-        expect(wrapper.find('select').prop('value')).to.equal('1.1');
-      });
-
-
-      it('should show selected engine profile (Camunda Cloud 1.0)', function() {
-
-        // given
-        wrapper = renderEngineProfile({
-          type: 'form',
-          engineProfile: {
-            executionPlatform: 'Camunda Cloud',
-            executionPlatformVersion: '1.0'
-          }
-        });
-
-        // when
-        wrapper.find('button').simulate('click');
-
-        // then
-        expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
-        expect(wrapper.find('EngineProfileSelection').exists()).to.be.true;
-
-        expect(wrapper.find('input').filterWhere((item) => item.prop('id') === 'execution-platform-camunda-cloud').prop('checked')).to.be.true;
-        expect(wrapper.find('select').prop('value')).to.equal('1.0');
       });
 
     });
@@ -255,83 +239,41 @@ describe('<EngineProfile>', function() {
 
     describe('set engine profile', function() {
 
-      it('should set engine profile (Camunda Platform 7.15)', function() {
+      allEngineProfiles.forEach(({ executionPlatform, executionPlatformVersion }) => {
 
-        // given
-        const setEngineProfileSpy = spy();
+        it(`should set engine profile (${ executionPlatform } ${ executionPlatformVersion })`, function() {
 
-        wrapper = renderEngineProfile({
-          type: 'form',
-          setEngineProfile: setEngineProfileSpy
+          // given
+          const setEngineProfileSpy = spy();
+
+          wrapper = renderEngineProfile({
+            type: 'form',
+            setEngineProfile: setEngineProfileSpy
+          });
+
+          wrapper.find('button').simulate('click');
+
+          // when
+          const input = wrapper.find('input').filterWhere((item) => item.prop('id') === `execution-platform-${ toKebapCase(executionPlatform) }`);
+
+          input.simulate('click');
+
+          const select = wrapper.find('select').filterWhere((item) => item.prop('id') === `execution-platform-version-${ toKebapCase(executionPlatform) }`);
+
+          if (select.instance().value !== executionPlatformVersion) {
+            select.simulate('change', { target: { value : executionPlatformVersion } });
+          }
+
+          wrapper.find('.apply').simulate('click');
+
+          // then
+          expect(setEngineProfileSpy).to.have.been.calledOnce;
+          expect(setEngineProfileSpy).to.have.been.calledWith({
+            executionPlatform,
+            executionPlatformVersion
+          });
         });
 
-        wrapper.find('button').simulate('click');
-
-        // when
-        wrapper.find('input').filterWhere((item) => item.prop('id') === 'execution-platform-camunda-platform').simulate('click');
-
-        wrapper.find('.apply').simulate('click');
-
-        // then
-        expect(setEngineProfileSpy).to.have.been.calledOnce;
-        expect(setEngineProfileSpy).to.have.been.calledWith({
-          executionPlatform: 'Camunda Platform',
-          executionPlatformVersion: '7.15'
-        });
-      });
-
-
-      it('should set engine profile (Camunda Cloud 1.1)', function() {
-
-        // given
-        const setEngineProfileSpy = spy();
-
-        wrapper = renderEngineProfile({
-          type: 'form',
-          setEngineProfile: setEngineProfileSpy
-        });
-
-        wrapper.find('button').simulate('click');
-
-        // when
-        wrapper.find('input').filterWhere((item) => item.prop('id') === 'execution-platform-camunda-cloud').simulate('click');
-
-        wrapper.find('.apply').simulate('click');
-
-        // then
-        expect(setEngineProfileSpy).to.have.been.calledOnce;
-        expect(setEngineProfileSpy).to.have.been.calledWith({
-          executionPlatform: 'Camunda Cloud',
-          executionPlatformVersion: '1.1'
-        });
-      });
-
-
-      it('should set engine profile (Camunda Cloud 1.0)', function() {
-
-        // given
-        const setEngineProfileSpy = spy();
-
-        wrapper = renderEngineProfile({
-          type: 'form',
-          setEngineProfile: setEngineProfileSpy
-        });
-
-        wrapper.find('button').simulate('click');
-
-        // when
-        wrapper.find('input').filterWhere((item) => item.prop('id') === 'execution-platform-camunda-cloud').simulate('click');
-
-        wrapper.find('select').simulate('change', { target: { value : '1.0' } });
-
-        wrapper.find('.apply').simulate('click');
-
-        // then
-        expect(setEngineProfileSpy).to.have.been.calledOnce;
-        expect(setEngineProfileSpy).to.have.been.calledWith({
-          executionPlatform: 'Camunda Cloud',
-          executionPlatformVersion: '1.0'
-        });
       });
 
     });

@@ -21,14 +21,14 @@ import LinkArrow from '../../../resources/icons/LinkArrow.svg';
 
 import css from './EngineProfile.less';
 
-const engineProfiles = [
+export const engineProfiles = [
   {
     executionPlatform: 'Camunda Platform',
-    executionPlatformVersions: [ '7.15' ]
+    executionPlatformVersions: [ '7.16', '7.15' ]
   },
   {
     executionPlatform: 'Camunda Cloud',
-    executionPlatformVersions: [ '1.1', '1.0' ]
+    executionPlatformVersions: [ '1.2', '1.1', '1.0' ]
   }
 ];
 
@@ -185,7 +185,7 @@ function EngineProfileOption(props) {
     executionPlatformVersions
   } = engineProfile;
 
-  const id = `execution-platform-${ executionPlatform.replace(/\s/, '-').toLowerCase() }`;
+  const id = `execution-platform-${ toKebapCase(executionPlatform) }`;
 
   const checked = !isNil(selectedEngineProfile) && selectedEngineProfile.executionPlatform === executionPlatform;
 
@@ -217,6 +217,7 @@ function EngineProfileOption(props) {
       executionPlatformVersions.length > 1
         ? (
           <select
+            id={ `execution-platform-version-${ toKebapCase(executionPlatform) }` }
             className="form-control version"
             onChange={ ({ target }) => onSelectExecutionPlatformVersion(target.value) }
             value={ selectedExecutionPlatformVersion }>
@@ -317,4 +318,8 @@ export function isKnownEngineProfile(engineProfile = {}) {
   }
 
   return true;
+}
+
+export function toKebapCase(string) {
+  return string.replace(/\s/, '-').toLowerCase();
 }
