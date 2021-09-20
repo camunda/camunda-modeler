@@ -1,0 +1,45 @@
+# configure dependabot automatic dependency upgrades (PRs)
+#
+# @see https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Berlin"
+    reviewers:
+      - "bpmn-io/modeling-dev"
+    commit-message:
+      prefix: "deps:"
+    versioning-strategy: "increase-if-necessary"
+    open-pull-requests-limit: 0
+  - package-ecosystem: "npm"
+    directory: "app"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Berlin"
+    reviewers:
+      - "bpmn-io/modeling-dev"
+    commit-message:
+      prefix: "deps:"
+    versioning-strategy: "increase-if-necessary"
+    open-pull-requests-limit: 0
+  - package-ecosystem: "npm"
+    directory: "client"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Berlin"
+    reviewers:
+      - "bpmn-io/modeling-dev"
+    commit-message:
+      prefix: "deps:"
+    versioning-strategy: "increase-if-necessary"
+    open-pull-requests-limit: 0
