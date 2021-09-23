@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import { omit } from 'min-dash';
 
-import { default as CamundaAPI, ApiErrors } from '../shared/CamundaAPI';
+import { default as CamundaAPI, ApiErrors, ConnectionError } from '../shared/CamundaAPI';
 import AuthTypes from '../shared/AuthTypes';
 
 import DeploymentConfigModal from './DeploymentConfigModal';
@@ -135,7 +135,14 @@ export default class DeploymentTool extends PureComponent {
     try {
 
       // (3.1) Retrieve version we deploy to via API
-      version = (await this.getVersion(configuration)).version;
+      try {
+        version = (await this.getVersion(configuration)).version;
+      } catch (error) {
+        if (!(error instanceof ConnectionError)) {
+          throw error;
+        }
+        version = null;
+      }
 
       // (3.2) Deploy via API
       const deployment = await this.deployWithConfiguration(tab, configuration);
@@ -167,17 +174,16 @@ export default class DeploymentTool extends PureComponent {
       duration: 4000
     });
 
-    // If we retrieved the executionPlatformVersion, include it in event
-    const deployedTo = (version &&
-      { executionPlatformVersion: version, executionPlatform: ET_EXECUTION_PLATFORM_NAME }) || undefined;
-
     // notify interested parties
     triggerAction('emit-event', {
       type: 'deployment.done',
       payload: {
         deployment,
-        context: 'deploymentTool',
-        ...(deployedTo && { deployedTo: deployedTo })
+        deployedTo: {
+          executionPlatformVersion: version,
+          executionPlatform: ET_EXECUTION_PLATFORM_NAME
+        },
+        context: 'deploymentTool'
       }
     });
   }
