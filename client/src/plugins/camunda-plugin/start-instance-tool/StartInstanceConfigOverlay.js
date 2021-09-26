@@ -63,7 +63,7 @@ export default class StartInstanceConfigOverlay extends React.PureComponent {
 
                 <Section.Body>
                   <p className="intro">
-                    Enter details to start a process instance on Camunda Platform. Alternatively, you can start a process instance <a href="https://docs.camunda.org/get-started/quick-start/deploy/#start-a-process-instance">via a Rest Client</a>.
+                    Enter details to start a process instance on Camunda Platform. Alternatively, you can start a process instance <a href="https://docs.camunda.org/manual/latest/reference/rest/process-definition/post-start-process-instance/#request">via a Rest Client</a>.
                   </p>
 
                   <fieldset>
@@ -74,6 +74,24 @@ export default class StartInstanceConfigOverlay extends React.PureComponent {
                         label="Business Key"
                         hint="A business key is a domain-specific identifier of a process instance."
                         autoFocus
+                      />
+                      <Field
+                        name="variables"
+                        component={ TextInput }
+                        multiline={ true }
+                        label="Variables (optional)"
+                        description={ <p>Must be a proper JSON variables object. <a href="https://docs.camunda.org/manual/latest/reference/rest/process-definition/post-start-process-instance/#request">Learn more and find an example for variables</a>.</p> }
+                        hint="A JSON object containing the variables the process is to be initialized with."
+                        validate={ (value) => {
+                          if (value && value.trim().length > 0) {
+                            try {
+                              JSON.parse(value);
+                            } catch (e) {
+                              return 'Variables is not a valid JSON';
+                            }
+                            return null;
+                          }
+                        } }
                       />
                     </div>
                   </fieldset>

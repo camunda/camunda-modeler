@@ -264,7 +264,7 @@ export default class StartInstanceTool extends PureComponent {
        } = deploymentConfig;
 
        const processInstance =
-         await this.startWithConfiguration(startConfiguration, processDefinition, endpoint);
+         await this.startWithConfiguration(this.decorateVariables(startConfiguration), processDefinition, endpoint);
 
        await this.handleStartSuccess(processInstance, endpoint);
      } catch (error) {
@@ -274,6 +274,16 @@ export default class StartInstanceTool extends PureComponent {
 
        await this.handleStartError(tab, error);
      }
+   }
+
+   decorateVariables = (startConfiguration) => {
+     let variables = startConfiguration.variables;
+     if (variables && variables.trim().length > 0) {
+       startConfiguration.variables = JSON.parse(variables);
+     } else {
+       startConfiguration.variables = null;
+     }
+     return startConfiguration;
    }
 
    async saveConfiguration(tab, configuration) {
@@ -309,6 +319,7 @@ export default class StartInstanceTool extends PureComponent {
 
      return {
        businessKey: 'default',
+       variables: '',
        ...startInstance
      };
    }

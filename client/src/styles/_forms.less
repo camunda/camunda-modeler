@@ -8,6 +8,8 @@
   input[type=password].form-control,
   input[type=number].form-control,
   input[type=text].form-control,
+  textarea.form-control,
+  p.form-control,
   select.form-control {
     border-radius: 3px;
     border: solid 1px var(--color-grey-225-10-75);
@@ -24,6 +26,18 @@
     line-height: normal;
     letter-spacing: normal;
     float: left;
+  }
+
+  p.form-control {
+    border: none;
+    padding-left: 0;
+    padding-top: 8px;
+  }
+
+  textarea.form-control {
+    max-height: 50vh;
+    min-height: 12em;
+    resize: vertical;
   }
 
   // hide but remain accessible: https://snook.ca/archives/html_and_css/hiding-content-for-accessibility
@@ -68,6 +82,7 @@
   }
 
   input[type=password].form-control::placeholder,
+  textarea.form-control::placeholder,
   input[type=text].form-control::placeholder {
     font-size: 13px;
     font-weight: normal;
@@ -80,6 +95,7 @@
 
   input[type=password].form-control:focus,
   input[type=text].form-control:focus,
+  textarea.form-control:focus,
   select.form-control:focus {
     outline: none;
     box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
@@ -87,11 +103,13 @@
   }
 
   input[type=password].form-control.is-invalid,
+  textarea.form-control.is-invalid,
   input[type=text].form-control.is-invalid {
     border: solid 1px var(--color-red-360-100-45);
   }
 
   input[type=password].form-control.is-invalid:focus,
+  textarea.form-control.is-invalid:focus,
   input[type=text].form-control.is-invalid:focus {
     outline: none;
     box-shadow: 0 0 0 1px var(--color-red-360-100-92), 0 0 0 1px var(--color-grey-225-10-75) inset;
@@ -338,8 +356,8 @@
 
     .file-list-item-name {
       text-overflow: ellipsis;
-      overflow: hidden; 
-      max-width: 234px; 
+      overflow: hidden;
+      max-width: 234px;
       white-space: nowrap;
     }
 
@@ -393,49 +411,49 @@
     .error {
       margin-left: 3px;
     }
-  } 
+  }
 }
 
 .custom-control-toggle {
 
   margin-top: -8px;
-  
+
   > .description {
     margin:6px 0 6px 38px;
     font-size: 13px;
     color: var(--color-grey-225-10-35);
 
   }
-  
+
   .toggle-switch .field-wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
   }
-  
+
   .toggle-switch > .label {
     font-size: var(--text-size-base);
   }
-  
+
   .toggle-switch .toggle-switch__label {
     margin: 0;
     margin-left: 6px;
     font-size: var(--text-size-base);
   }
-  
+
   .toggle-switch .toggle-switch__switcher {
     position: relative;
     width: 32px;
     height: 16px;
     margin: 0;
   }
-  
+
   .toggle-switch .toggle-switch__switcher input[type='checkbox'] {
     opacity: 0;
     width: 0;
     height: 0;
   }
-  
+
   .toggle-switch .toggle-switch__switcher .toggle-switch__slider {
     position: absolute;
     top: 0;
@@ -447,7 +465,7 @@
     transition: 0.4s;
     border-radius: 34px;
   }
-  
+
   .toggle-switch .toggle-switch__switcher .toggle-switch__slider:before {
     position: absolute;
     content: "";
@@ -460,7 +478,7 @@
     transition: 0.4s;
     border-radius: 50%;
   }
-  
+
   .toggle-switch .toggle-switch__switcher input[type='checkbox']:checked + .toggle-switch__slider {
     background-color: var(--toggle-switch-on-background-color);
     box-shadow: 0 0 1px ;
@@ -470,7 +488,7 @@
     background-color: var(--toggle-switch-disabled-background-color);
     box-shadow: none ;
   }
-  
+
   .toggle-switch .toggle-switch__switcher input[type='checkbox']:checked + .toggle-switch__slider:before {
     -webkit-transform: translateX(16px);
     -ms-transform: translateX(16px);
