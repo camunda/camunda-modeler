@@ -833,6 +833,47 @@ describe('<StartInstanceTool>', () => {
       expect(logSpy.args.length).to.eql(0);
     });
 
+    it('should start process instance with variables', async () => {
+
+      // given
+      const startSpy = sinon.spy();
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const variables = {
+        'aVariable' : {
+          'value' : 'aStringValue',
+          'type': 'String'
+        },
+        'anotherVariable' : {
+          'value' : true,
+          'type': 'Boolean'
+        }
+      };
+
+      const config = {
+        getForFile: () => {
+          return { businessKey: 'foo', variables: JSON.stringify(variables) };
+        }
+      };
+
+      const {
+        instance
+      } = createStartInstanceTool({
+        activeTab,
+        config,
+        startSpy
+      });
+
+      // when
+      await instance.startInstance();
+
+      // then
+      expect(startSpy).to.have.been.calledOnce;
+      expect(startSpy.args[0][0].businessKey).to.equal('foo');
+      expect(startSpy.args[0][0].variables).to.eql(variables);
+    });
+
 
     describe('Cockpit link', function() {
 
