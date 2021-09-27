@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import PlayIcon from 'icons/Play.svg';
 
-import CamundaAPI from '../shared/CamundaAPI';
+import CamundaAPI, { ConnectionError } from '../shared/CamundaAPI';
 
 import StartInstanceConfigModal from './StartInstanceConfigModal';
 
@@ -222,7 +222,14 @@ export default class StartInstanceTool extends PureComponent {
     try {
 
       // (5.1) Retrieve version via API
-      version = (await this.getVersion(deploymentConfig)).version;
+      try {
+        version = (await this.getVersion(deploymentConfig)).version;
+      } catch (error) {
+        if (!(error instanceof ConnectionError)) {
+          throw error;
+        }
+        version = null;
+      }
 
       // (5.2) Deploy via API
       const deployment = await this.deploy(tab, deploymentConfig);

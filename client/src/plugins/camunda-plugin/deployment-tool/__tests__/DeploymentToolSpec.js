@@ -498,6 +498,24 @@ describe('<DeploymentTool>', () => {
     });
 
 
+    it('should fetch the executionPlatformVersion but no version is available', async () => {
+
+      // given
+      const deploySpy = sinon.spy();
+      const getVersionSpy = sinon.spy(() => { return { version: null }; });
+      const activeTab = createTab({ name: 'foo.bpmn' });
+      const {
+        instance
+      } = createDeploymentTool({ activeTab, deploySpy, getVersionSpy });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(getVersionSpy).to.have.been.calledOnce;
+    });
+
+
     it('should use saved config to fetch executionPlatformVersion', async () => {
 
       // given

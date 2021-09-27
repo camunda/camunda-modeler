@@ -121,9 +121,8 @@ export default class CamundaAPI {
 
     const response = await this.fetch('/version');
 
-    const { version } = await response.json();
-
     if (response.ok) {
+      const { version } = await response.json();
       return {
         version: version
       };
