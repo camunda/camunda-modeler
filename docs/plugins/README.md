@@ -141,11 +141,11 @@ Bundle your plugin:
 npm run build
 ```
 
-Finally, put the folder into the `resources/plugins` directory relative to your Camunda Modeler installation directory. You can now use your plugin!
+Finally, put the folder into the `resources/plugins` directory related to your Camunda Modeler installation directory. You can now use your plugin!
 
 ### Development Workflow
 
-When creating a plugin, you can place the directory containing your plugin in the aforementioned `resources/plugins` directory.
+While creating a plugin, you can place the directory containing your plugin in the aforementioned `resources/plugins` directory.
 
 Plugins will be loaded on application startup (menu plugins) or reload (style and modeling tool plugins). To reload the application, open the developer tools F12 and press `CtrlOrCmd + R`. This will clear all unsaved diagrams!
 
