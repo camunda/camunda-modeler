@@ -50,6 +50,13 @@ Please checkout our [contributing guidelines](./.github/CONTRIBUTING.md) if you 
 file an issue or pull request.
 
 
+## Hacktoberfest 2021
+
+Please do not spam our repositories with low value pull requests for the sake of some swag. They will not be tolerated. So please make sure that your 
+contribution is meaningful. If you want to find out more about participation guidelines, rules and more info, please visit [this link](https://camunda.com/hacktoberfest2021/).
+Happy hacking!
+
+
 ## Code of Conduct
 
 By participating to this project, please uphold to our [Code of Conduct](https://github.com/camunda/.github/blob/main/.github/CODE_OF_CONDUCT.md).
