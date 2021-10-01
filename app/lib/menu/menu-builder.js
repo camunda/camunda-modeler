@@ -8,29 +8,40 @@
  * except in compliance with the MIT License.
  */
 
- 'use strict';
+/* eslint-disable no-mixed-spaces-and-tabs */
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
 
- const {
-   app,
-   Menu,
-   MenuItem
- } = require('electron');
- 
- const {
-   assign,
-   find,
-   isFunction,
-   map,
-   merge
- } = require('min-dash');
- 
- const browserOpen = require('../util/browser-open');
- 
- const log = require('../log')('app:menu');
- 
- 
- class MenuBuilder {
-   constructor(options) {
+'use strict';
+
+const {
+  app,
+  Menu,
+  MenuItem
+} = require('electron');
+
+const {
+  assign,
+  find,
+  isFunction,
+  map,
+  merge
+} = require('min-dash');
+
+const browserOpen = require('../util/browser-open');
+
+const log = require('../log')('app:menu');
+
+
+class MenuBuilder {
+  constructor(options) {
 	 this.options = merge({
 	   appName: app.name,
 	   state: {
@@ -41,15 +52,15 @@
 	   },
 	   providers: {}
 	 }, options);
- 
+
 	 if (this.options.template) {
 	   this.menu = Menu.buildFromTemplate(this.options.template);
 	 } else {
 	   this.menu = new Menu();
 	 }
-   }
- 
-   build() {
+  }
+
+  build() {
 	 this.appendFileMenu(
 	   new MenuBuilder(this.options)
 		 .appendNewFile()
@@ -66,21 +77,21 @@
 		 .appendQuit()
 		 .get()
 	 );
- 
+
 	 if ('editMenu' in this.options.state) {
 	   this.appendEditMenu();
 	 }
- 
+
 	 this.appendWindowMenu();
 	 this.appendPluginsMenu();
 	 this.appendHelpMenu();
- 
+
 	 return this;
-   }
- 
-   buildContextMenu() {
+  }
+
+  buildContextMenu() {
 	 const { contextMenu } = this.options.state;
- 
+
 	 if (this.options.type === 'tab') {
 	   return this.appendNewFile()
 		 .appendSeparator()
@@ -90,66 +101,66 @@
 		 .appendSeparator()
 		 .appendReopenLastTab();
 	 }
- 
+
 	 if (contextMenu) {
 	   this.menu = Menu.buildFromTemplate(contextMenu.map(mapMenuEntryTemplate));
- 
+
 	   return this;
 	 }
-   }
- 
-   setMenu() {
+  }
+
+  setMenu() {
 	 Menu.setApplicationMenu(this.menu);
- 
+
 	 return this;
-   }
- 
-   openPopup() {
+  }
+
+  openPopup() {
 	 this.menu.popup({});
-   }
- 
-   appendFileMenu(submenu) {
+  }
+
+  appendFileMenu(submenu) {
 	 this.menu.append(new MenuItem({
 	   label: 'File',
 	   submenu: submenu
 	 }));
- 
+
 	 return this;
-   }
- 
-   appendNewFile() {
+  }
+
+  appendNewFile() {
 	 const submenuTemplate = this.getNewFileSubmenuTemplate();
- 
+
 	 this.menu.append(new MenuItem({
 	   label: 'New File',
 	   submenu: Menu.buildFromTemplate(submenuTemplate)
 	 }));
- 
+
 	 return this;
-   }
- 
-   getNewFileSubmenuTemplate() {
+  }
+
+  getNewFileSubmenuTemplate() {
 	 const providedMenus = map(this.options.providers, provider => provider.newFileMenu)
 	   .filter(menu => Boolean(menu.length));
- 
+
 	 if (!providedMenus.length) {
 	   return [{
 		 label: 'Empty',
 		 enabled: false
 	   }];
 	 }
- 
+
 	 const template = providedMenus.reduce((newFileMenus, current) => {
 	   return [
 		 ...newFileMenus,
 		 ...current.map(mapMenuEntryTemplate),
 	   ];
 	 }, []);
- 
+
 	 return template;
-   }
- 
-   appendOpen() {
+  }
+
+  appendOpen() {
 	 this.menu.append(new MenuItem({
 	   label: 'Open File...',
 	   accelerator: 'CommandOrControl+O',
@@ -157,13 +168,13 @@
 		 app.emit('menu:action', 'open-diagram');
 	   }
 	 }));
- 
+
 	 this.appendReopenLastTab();
- 
+
 	 return this;
-   }
- 
-   appendReopenLastTab() {
+  }
+
+  appendReopenLastTab() {
 	 this.menu.append(new MenuItem({
 	   label: 'Reopen Last File',
 	   enabled: this.options.state.lastTab,
@@ -172,11 +183,11 @@
 		 app.emit('menu:action', 'reopen-last-tab');
 	   }
 	 }));
- 
+
 	 return this;
-   }
- 
-   appendSaveFile() {
+  }
+
+  appendSaveFile() {
 	 this.menu.append(new MenuItem({
 	   label: 'Save File',
 	   enabled: this.options.state.save,
@@ -185,11 +196,11 @@
 		 app.emit('menu:action', 'save');
 	   }
 	 }));
- 
+
 	 return this;
-   }
- 
-   appendSaveAsFile() {
+  }
+
+  appendSaveAsFile() {
 	 this.menu.append(new MenuItem({
 	   label: 'Save File As..',
 	   accelerator: 'CommandOrControl+Shift+S',
@@ -198,11 +209,11 @@
 		 app.emit('menu:action', 'save-as');
 	   }
 	 }));
- 
+
 	 return this;
-   }
- 
-   appendSaveAllFiles() {
+  }
+
+  appendSaveAllFiles() {
 	 this.menu.append(new MenuItem({
 	   label: 'Save All Files',
 	   accelerator: 'CommandOrControl+Alt+S',
@@ -211,29 +222,29 @@
 		 app.emit('menu:action', 'save-all');
 	   }
 	 }));
- 
+
 	 return this;
-   }
- 
-   appendExportAs() {
+  }
+
+  appendExportAs() {
 	 const exportState = this.options.state.exportAs;
 	 const enabled = exportState && exportState.length > 0;
- 
+
 	 this.menu.append(new MenuItem({
 	   label: 'Export As Image',
 	   enabled: enabled,
-	   accelerator: "CommandOrControl+SHIFT+E",
+	   accelerator: 'CommandOrControl+SHIFT+E',
 	   click: function() {
 		 app.emit('menu:action', 'export-as', exportState || []);
 	   }
 	 }));
- 
+
 	 this.appendSeparator();
- 
+
 	 return this;
-   }
- 
-   appendCloseTab() {
+  }
+
+  appendCloseTab() {
 	 this.menu.append(new MenuItem({
 	   label: 'Close Tab',
 	   enabled: canCloseTab(this.options.state),
@@ -242,7 +253,7 @@
 		 app.emit('menu:action', 'close-active-tab');
 	   }
 	 }));
- 
+
 	 this.menu.append(new MenuItem({
 	   label: 'Close All Tabs',
 	   enabled: canCloseTab(this.options.state),
@@ -250,7 +261,7 @@
 		 app.emit('menu:action', 'close-all-tabs');
 	   }
 	 }));
- 
+
 	 this.menu.append(new MenuItem({
 	   label: 'Close Other Tabs',
 	   enabled: canSwitchTab(this.options.state),
@@ -258,11 +269,11 @@
 		 app.emit('menu:action', 'close-other-tabs');
 	   }
 	 }));
- 
+
 	 return this;
-   }
- 
-   appendSwitchTab(submenu) {
+  }
+
+  appendSwitchTab(submenu) {
 	 this.menu.append(new MenuItem({
 	   label: 'Switch Tab..',
 	   submenu: submenu || Menu.buildFromTemplate([{
@@ -278,13 +289,13 @@
 		 click: () => app.emit('menu:action', 'select-tab', 'previous')
 	   }])
 	 }));
- 
+
 	 this.appendSeparator();
- 
+
 	 return this;
-   }
- 
-   appendQuit() {
+  }
+
+  appendQuit() {
 	 this.menu.append(new MenuItem({
 	   label: 'Quit',
 	   accelerator: 'CommandOrControl+Q',
@@ -292,11 +303,11 @@
 		 app.emit('app:quit');
 	   }
 	 }));
- 
+
 	 return this;
-   }
- 
-   appendMenuItem(builder, menuItem) {
+  }
+
+  appendMenuItem(builder, menuItem) {
 	 const {
 	   accelerator,
 	   action,
@@ -307,7 +318,7 @@
 	   submenu,
 	   visible
 	 } = menuItem;
- 
+
 	 let menuItemOptions = {
 	   accelerator,
 	   enabled,
@@ -315,27 +326,27 @@
 	   role,
 	   visible
 	 };
- 
+
 	 if (action) {
 	   menuItemOptions = {
 		 ...menuItemOptions,
 		 click: wrapActionInactiveInDevtools(() => app.emit('menu:action', action, options))
 	   };
 	 }
- 
+
 	 if (submenu) {
 	   menuItemOptions = {
 		 ...menuItemOptions,
 		 submenu: Menu.buildFromTemplate(menuItem.submenu.map(mapMenuEntryTemplate))
 	   };
 	 }
- 
+
 	 builder.menu.append(new MenuItem(menuItemOptions));
-   }
- 
-   getEditMenu(menuItems) {
+  }
+
+  getEditMenu(menuItems) {
 	 const builder = new MenuBuilder(this.options);
- 
+
 	 menuItems.forEach((menuItem, index) => {
 	   if (Array.isArray(menuItem)) {
 		 if (index !== 0) {
@@ -349,50 +360,50 @@
 		 this.appendMenuItem(builder, menuItem);
 	   }
 	 });
- 
+
 	 return builder.get();
-   }
- 
-   appendEditMenu() {
+  }
+
+  appendEditMenu() {
 	 let subMenu;
- 
+
 	 if (this.options.state.editMenu) {
 	   subMenu = this.getEditMenu(this.options.state.editMenu, this.options);
 	 }
- 
+
 	 this.menu.append(new MenuItem({
 	   label: 'Edit',
 	   submenu: subMenu
 	 }));
- 
+
 	 return this;
-   }
- 
-   appendWindowMenu() {
+  }
+
+  appendWindowMenu() {
 	 if (!app.mainWindow) {
 	   return this;
 	 }
- 
+
 	 const submenuTemplate = this.getWindowSubmenuTemplate();
- 
+
 	 this.menu.append(new MenuItem({
 	   label: 'Window',
 	   submenu: Menu.buildFromTemplate(submenuTemplate)
 	 }));
- 
+
 	 return this;
-   }
- 
-   getWindowSubmenuTemplate() {
+  }
+
+  getWindowSubmenuTemplate() {
 	 const submenuTemplate = [];
- 
+
 	 if (this.options.state.windowMenu) {
 	   submenuTemplate.push(
 		 ...this.options.state.windowMenu.map(mapMenuEntryTemplate),
 		 getSeparatorTemplate()
 	   );
 	 }
- 
+
 	 if (this.options.state.development || this.options.state.devtools) {
 	   submenuTemplate.push({
 		 label: 'Reload',
@@ -400,13 +411,13 @@
 		 click: (_, browserWindow) => browserWindow.reload()
 	   });
 	 }
- 
+
 	 submenuTemplate.push({
 	   label: 'Toggle DevTools',
 	   accelerator: 'F12',
 	   click: (_, browserWindow) => {
 		 const isDevToolsOpened = browserWindow.isDevToolsOpened();
- 
+
 		 if (isDevToolsOpened) {
 		   app.mainWindow.once('devtools-closed', () => {
 			 app.emit('menu:update', assign({}, this.options.state, {
@@ -429,42 +440,42 @@
 	   accelerator: 'F11',
 	   click: (_, browserWindow) => {
 		 const isFullScreen = browserWindow.isFullScreen();
- 
+
 		 browserWindow.setFullScreen(!isFullScreen);
 	   }
 	 });
- 
+
 	 return submenuTemplate;
-   }
- 
-   appendPluginsMenu() {
+  }
+
+  appendPluginsMenu() {
 	 const provider = find(this.options.providers, provider => provider.plugins);
- 
+
 	 const plugins = provider && provider.plugins || [];
- 
+
 	 // do not append menu, if no plug-ins are installed
 	 if (!plugins.length) {
 	   return this;
 	 }
- 
+
 	 // construct sub-menus for each plug-in
 	 const submenuTemplate = plugins.map(plugin => {
 	   const { name } = plugin;
- 
+
 	   const menuItemDescriptor = {
 		 label: name,
 		 enabled: false
 	   };
- 
+
 	   if (plugin.menu) {
- 
+
 		 try {
 		   const menuEntries = plugin.menu(app, this.options.state);
- 
+
 		   menuItemDescriptor.enabled = true;
 		   menuItemDescriptor.submenu = Menu.buildFromTemplate(
 			 menuEntries.map((entry) => {
- 
+
 			   const {
 				 accelerator,
 				 action,
@@ -473,7 +484,7 @@
 				 submenu,
 				 visible
 			   } = entry;
- 
+
 			   return new MenuItem({
 				 label,
 				 accelerator,
@@ -487,40 +498,40 @@
 		 } catch (error) {
 		   plugin.error = true;
 		   menuItemDescriptor.enabled = false;
- 
+
 		   log.error('[%s] Failed to build menu: %O', name, error);
 		 }
 	   }
- 
+
 	   if (plugin.error) {
 		 menuItemDescriptor.label = menuItemDescriptor.label.concat(' <error>');
 	   }
- 
+
 	   return new MenuItem(menuItemDescriptor);
 	 });
- 
+
 	 // create actual menu entry, based on previously
 	 // constructed sub-menus
 	 this.menu.append(new MenuItem({
 	   label: 'Plugins',
 	   submenu: Menu.buildFromTemplate(submenuTemplate)
 	 }));
- 
+
 	 return this;
-   }
- 
-   appendHelpMenu() {
+  }
+
+  appendHelpMenu() {
 	 const submenuTemplate = this.getHelpSubmenuTemplate();
- 
+
 	 this.menu.append(new MenuItem({
 	   label: 'Help',
 	   submenu: Menu.buildFromTemplate(submenuTemplate)
 	 }));
- 
+
 	 return this;
-   }
- 
-   getHelpSubmenuTemplate() {
+  }
+
+  getHelpSubmenuTemplate() {
 	 const topPart = [
 	   {
 		 label: 'Documentation',
@@ -556,10 +567,10 @@
 	   ] : [],
 	   getSeparatorTemplate()
 	 ];
- 
+
 	 const providedMenus = map(this.options.providers, provider => provider.helpMenu)
 	   .filter(menu => Boolean(menu.length));
- 
+
 	 const middlePart = providedMenus.reduce((helpMenus, current) => {
 	   return [
 		 ...helpMenus,
@@ -567,7 +578,7 @@
 		 getSeparatorTemplate()
 	   ];
 	 }, []);
- 
+
 	 const bottomPart = [
 	   {
 		 label: 'Version ' + app.version,
@@ -578,24 +589,24 @@
 		 click: () => app.emit('menu:action', 'emit-event', { type: 'versionInfo.open' })
 	   }
 	 ];
- 
+
 	 return [
 	   ...topPart,
 	   ...middlePart,
 	   ...bottomPart
 	 ];
-   }
- 
-   appendSeparator() {
+  }
+
+  appendSeparator() {
 	 this.menu.append(new MenuItem({
 	   type: 'separator'
 	 }));
 	 return this;
-   }
- 
-   appendContextCloseTab() {
+  }
+
+  appendContextCloseTab() {
 	 const attrs = this.options.attrs;
- 
+
 	 this.menu.append(new MenuItem({
 	   label: 'Close Tab',
 	   enabled: canCloseTab(this.options.state),
@@ -604,7 +615,7 @@
 		 app.emit('menu:action', 'close-tab', attrs);
 	   }
 	 }));
- 
+
 	 this.menu.append(new MenuItem({
 	   label: 'Close All Tabs',
 	   enabled: canCloseTab(this.options.state),
@@ -612,7 +623,7 @@
 		 app.emit('menu:action', 'close-all-tabs');
 	   }
 	 }));
- 
+
 	 this.menu.append(new MenuItem({
 	   label: 'Close Other Tabs',
 	   enabled: canSwitchTab(this.options.state),
@@ -620,17 +631,17 @@
 		 app.emit('menu:action', 'close-other-tabs', attrs);
 	   }
 	 }));
- 
+
 	 return this;
-   }
- 
-   appendContextRevealInFileExplorerTab() {
+  }
+
+  appendContextRevealInFileExplorerTab() {
 	 const attrs = this.options.attrs,
 		   tabs = this.options.state.tabs,
 		   tabId = attrs.tabId;
- 
+
 	 const tabFilePath = tabs.find(t => t.id === tabId).file.path;
- 
+
 	 this.menu.append(new MenuItem({
 	   label: 'Reveal in File Explorer',
 	   enabled: !!tabFilePath,
@@ -638,78 +649,78 @@
 		 app.emit('menu:action', 'reveal-tab', attrs);
 	   }
 	 }));
- 
+
 	 return this;
-   }
- 
-   get() {
+  }
+
+  get() {
 	 return this.menu;
-   }
- }
- 
- module.exports = MenuBuilder;
- 
- 
- 
- // helpers //////
- function mapMenuEntryTemplate(entry) {
-   if (entry.type === 'separator') {
+  }
+}
+
+module.exports = MenuBuilder;
+
+
+
+// helpers //////
+function mapMenuEntryTemplate(entry) {
+  if (entry.type === 'separator') {
 	 return getSeparatorTemplate();
-   }
- 
-   return {
+  }
+
+  return {
 	 label: entry.label,
 	 accelerator: entry.accelerator,
 	 enabled: entry.enabled !== undefined ? entry.enabled : true,
 	 click: () => app.emit('menu:action', entry.action, entry.options),
-   };
- }
- 
- function mapHelpMenuTemplate(menu) {
-   return {
+  };
+}
+
+function mapHelpMenuTemplate(menu) {
+  return {
 	 label: menu.label,
 	 click: () => browserOpen(menu.action)
-   };
- }
- 
- function getSeparatorTemplate() {
-   return {
+  };
+}
+
+function getSeparatorTemplate() {
+  return {
 	 type: 'separator'
-   };
- }
- 
- function canSwitchTab(state) {
-   return state.tabsCount > 1;
- }
- 
- function canCloseTab(state) {
-   return Boolean(state.tabsCount);
- }
- 
- function wrapPluginAction(fn, pluginName) {
-   return async function() {
+  };
+}
+
+function canSwitchTab(state) {
+  return state.tabsCount > 1;
+}
+
+function canCloseTab(state) {
+  return Boolean(state.tabsCount);
+}
+
+function wrapPluginAction(fn, pluginName) {
+  return async function() {
 	 try {
 	   await fn();
 	 } catch (error) {
 	   log.error('[%s] Menu action error: %O', pluginName, error);
 	 }
-   };
- }
- 
- function wrapActionInactiveInDevtools(fn) {
- 
-   /**
+  };
+}
+
+function wrapActionInactiveInDevtools(fn) {
+
+  /**
 	* @param {*} _
 	* @param {import('electron').BrowserWindow | undefined} focusedWindow
 	* @param {import('electron').KeyboardEvent} event
 	*/
-   function wrapped(_, focusedWindow, event) {
+  function wrapped(_, focusedWindow, event) {
 	 if (event.triggeredByAccelerator && !focusedWindow) {
 	   return;
 	 }
- 
+
 	 fn.apply(null, arguments);
-   }
- 
-   return wrapped;
- }
+  }
+
+  return wrapped;
+}
