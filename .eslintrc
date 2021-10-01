@@ -5,5 +5,5 @@
   "extends": [
     "plugin:bpmn-io/es6",
     "plugin:camunda-licensed/mit"
-  ] 
+  ]
 }
