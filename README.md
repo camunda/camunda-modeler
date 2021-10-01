@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/camunda/camunda-modeler/actions/workflows/CI.yml/badge.svg)](https://github.com/camunda/camunda-modeler/actions/workflows/CI.yml)
 
-An integrated modeling solution for BPMN, DMN, and Forms based on [bpmn.io](http://bpmn.io).
+[bpmn.io](http://bpmn.io) provides integrated modeling of BPMN, DMN, and Forms.
 
 ![Camunda Modeler](docs/screenshot.png)
 
@@ -18,7 +18,7 @@ An integrated modeling solution for BPMN, DMN, and Forms based on [bpmn.io](http
 
 ## Building the Application
 
-Build the app in a Posix environment. On Windows that is Git Bash or WSL. Make sure you have installed all the [necessary tools](https://github.com/nodejs/node-gyp#installation) to install and compile Node.js C++ addons.
+Develop the app in a Posix environment. On Windows, this is Git Bash or WSL. Make sure you have installed all the [necessary tools](https://github.com/nodejs/node-gyp#installation) to install and compile Node.js C++ addons.
 
 ```sh
 # checkout a tag
