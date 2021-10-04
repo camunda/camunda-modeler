@@ -32,10 +32,12 @@ const INITIAL_VALUES = {
 const BUTTON_DISABLED_TIME = 3000;
 
 
+
 export function ReportFeedbackSystemInfo(props) {
   const { onSubmit } = props;
 
   const [hasSubmitCompleted, setHasSubmitCompleted] = useState(false);
+  const [isNoFieldSelected , setButtonAsDisabled] = useState(false);
 
   let timer;
 
@@ -53,6 +55,18 @@ export function ReportFeedbackSystemInfo(props) {
     }, BUTTON_DISABLED_TIME);
   };
 
+  const selectedFieldHandler = (event) => {
+    let count =0;
+    INITIAL_VALUES[event.target.id] = !INITIAL_VALUES[event.target.id];
+    for (const property in INITIAL_VALUES) {
+      if (INITIAL_VALUES[property]) {
+        count++;
+      }
+    }
+    if (count == 0) setButtonAsDisabled(true);
+    else setButtonAsDisabled(false);
+  };
+
   return (
     <Overlay.Footer>
       <h2 className="overlay__title">
@@ -66,31 +80,35 @@ export function ReportFeedbackSystemInfo(props) {
           <Field
             name="version"
             component={ CheckBox }
+            onClick={ selectedFieldHandler }
             type="checkbox"
             label="Version"
           />
           <Field
             name="operatingSystem"
             component={ CheckBox }
+            onClick={ selectedFieldHandler }
             type="checkbox"
             label="Operating System"
           />
           <Field
             name="installedPlugins"
             component={ CheckBox }
+            onClick={ selectedFieldHandler }
             type="checkbox"
             label="Installed Plugins"
           />
           <Field
             name="executionPlatform"
             component={ CheckBox }
+            onClick={ selectedFieldHandler }
             type="checkbox"
             label="Execution Platform"
           />
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={ hasSubmitCompleted }
+            disabled={ hasSubmitCompleted || isNoFieldSelected }
           >
             {!hasSubmitCompleted ? 'Copy to clipboard': 'Copied!' }
           </button>
