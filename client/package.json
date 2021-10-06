@@ -8,16 +8,16 @@
   "dependencies": {
     "@bpmn-io/add-exporter": "^0.2.0",
     "@bpmn-io/align-to-origin": "^0.7.0",
-    "@bpmn-io/bpmn-properties-panel": "github:bpmn-io/bpmn-properties-panel#v0.2.0",
+    "@bpmn-io/bpmn-properties-panel": "github:bpmn-io/bpmn-properties-panel#v0.3.0",
     "@bpmn-io/dmn-migrate": "^0.4.3",
     "@bpmn-io/extract-process-variables": "^0.4.3",
     "@bpmn-io/form-js": "^0.4.2",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@sentry/browser": "^6.3.6",
     "bpmn-js": "^8.7.3",
-    "bpmn-js-properties-panel": "^0.44.0",
-    "camunda-bpmn-js": "^0.10.0",
-    "camunda-bpmn-moddle": "^5.1.2",
+    "bpmn-js-properties-panel": "^0.45.0",
+    "camunda-bpmn-js": "^0.11.1",
+    "camunda-bpmn-moddle": "^6.1.0",
     "camunda-cmmn-moddle": "^1.0.0",
     "camunda-dmn-moddle": "^1.1.0",
     "canvg-browser": "^1.0.0",
@@ -46,7 +46,7 @@
     "semver-compare": "^1.0.0",
     "sourcemapped-stacktrace": "^1.1.9",
     "ua-parser-js": "^0.7.28",
-    "zeebe-bpmn-moddle": "^0.7.1"
+    "zeebe-bpmn-moddle": "^0.8.0"
   },
   "homepage": ".",
   "devDependencies": {
