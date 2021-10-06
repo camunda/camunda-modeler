@@ -6,6 +6,17 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.11.0
+
+### General
+
+* `FEAT`: support Zeebe 1.2 / Camunda Cloud 1.2 ([#2423](https://github.com/camunda/camunda-modeler/issues/2423), [#2428](https://github.com/camunda/camunda-modeler/issues/2428), [#2420](https://github.com/camunda/camunda-modeler/issues/2420))
+* `FEAT`: support for Camunda Platform 7.16 ([#2428](https://github.com/camunda/camunda-modeler/issues/2428), [#2295](https://github.com/camunda/camunda-modeler/issues/2295))
+* `FIX`: link to correct timer event documentation ([#2413](https://github.com/camunda/camunda-modeler/issues/2413))
+### BPMN
+* `FEAT`: allow Form reference bindings for User Tasks and Start Events ([#2295](https://github.com/camunda/camunda-modeler/issues/2295))
+* `FIX`: allow deployment to Camunda Platform version 7.8.0 and below ([#2340](https://github.com/camunda/camunda-modeler/issues/2340))
+
 ## 4.10.0
 
 ### General
