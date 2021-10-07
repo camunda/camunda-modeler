@@ -51,10 +51,10 @@ export function ReleaseInfo(props) {
         <li>
           <b>Form reference bindings for User Tasks and Start Events</b><br />
           With the Camunda Platform 7.16.0 release you now have an additional way to bind Camunda Forms to
-          User Tasks or Start Events. Besides the existing way of binding using a
-          <a href="https://docs.camunda.org/manual/latest/user-guide/task-forms/#form-key">form key</a>,
-          you can now alternatively use a
-          <a href="https://docs.camunda.org/manual/latest/user-guide/task-forms/#form-reference">form reference</a>.
+          User Tasks or Start Events. Besides the existing way of binding using
+          a <a href="https://docs.camunda.org/manual/latest/user-guide/task-forms/#form-key">form key</a>,
+          you can now alternatively use
+          a <a href="https://docs.camunda.org/manual/latest/user-guide/task-forms/#form-reference">form reference</a>.
           This allows you to bind a specific version, or the latest version from the deployment.
         </li>
         <li>
