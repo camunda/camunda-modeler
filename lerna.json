@@ -1,5 +1,5 @@
 {
-  "version": "4.10.0",
+  "version": "4.11.0-rc.1",
   "packages": [
     "app",
     "client"
