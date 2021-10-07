@@ -192,7 +192,7 @@ This project incorporates components from the projects listed below. The origina
 185.  strip-indent@1.0.1 (https://github.com/sindresorhus/strip-indent)
 186.  supports-color@2.0.0 (https://github.com/chalk/supports-color)
 187.  supports-color@5.5.0 (https://github.com/chalk/supports-color)
-188.  tar@6.1.0 (https://github.com/npm/node-tar)
+188.  tar@6.1.11 (https://github.com/npm/node-tar)
 189.  to-readable-stream@1.0.0 (https://github.com/sindresorhus/to-readable-stream)
 190.  trim-newlines@1.0.0 (https://github.com/sindresorhus/trim-newlines)
 191.  tslib@1.14.1 (https://github.com/Microsoft/tslib)
@@ -226,12 +226,12 @@ This project incorporates components from the projects listed below. The origina
 219.  atoa@1.0.0 (https://github.com/bevacqua/atoa)
 220.  bpmn-js-disable-collapsed-subprocess@0.1.3 (https://github.com/bpmn-io/bpmn-js-disable-collapsed-subprocess)
 221.  bpmn-js-executable-fix@0.1.3 (https://github.com/bpmn-io/bpmn-js-executable-fix)
-222.  bpmn-js-properties-panel@0.44.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+222.  bpmn-js-properties-panel@0.45.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 223.  bpmn-js-signavio-compat@1.2.3 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
 224.  bpmn-js@8.7.3 (https://github.com/bpmn-io/bpmn-js)
 225.  bpmn-moddle@7.1.2 (https://github.com/bpmn-io/bpmn-moddle)
-226.  camunda-bpmn-js@0.9.3 (https://github.com/camunda/camunda-bpmn-js)
-227.  camunda-bpmn-moddle@5.1.2 (https://github.com/camunda/camunda-bpmn-moddle)
+226.  camunda-bpmn-js@0.11.1 (https://github.com/camunda/camunda-bpmn-js)
+227.  camunda-bpmn-moddle@6.1.0 (https://github.com/camunda/camunda-bpmn-moddle)
 228.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
 229.  camunda-dmn-moddle@1.1.0 (https://github.com/camunda/camunda-dmn-moddle)
 230.  canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
@@ -303,7 +303,7 @@ This project incorporates components from the projects listed below. The origina
 296.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
 297.  ua-parser-js@0.7.28 (https://github.com/faisalman/ua-parser-js)
 298.  xmldom@0.1.27 (https://github.com/jindw/xmldom)
-299.  zeebe-bpmn-moddle@0.7.1 (https://github.com/zeebe-io/zeebe-bpmn-moddle)
+299.  zeebe-bpmn-moddle@0.8.0 (https://github.com/zeebe-io/zeebe-bpmn-moddle)
 
 
 %% @grpc/grpc-js@1.3.4 NOTICES AND INFORMATION BEGIN HERE
@@ -6976,7 +6976,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF supports-color@5.5.0 NOTICES AND INFORMATION
 
 
-%% tar@6.1.0 NOTICES AND INFORMATION BEGIN HERE
+%% tar@6.1.11 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The ISC License
 
@@ -6995,7 +6995,7 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ==========================================
-END OF tar@6.1.0 NOTICES AND INFORMATION
+END OF tar@6.1.11 NOTICES AND INFORMATION
 
 
 %% to-readable-stream@1.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -8141,7 +8141,7 @@ MIT
 END OF bpmn-js-executable-fix@0.1.3 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@0.44.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@0.45.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -8165,7 +8165,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@0.44.0 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@0.45.0 NOTICES AND INFORMATION
 
 
 %% bpmn-js-signavio-compat@1.2.3 NOTICES AND INFORMATION BEGIN HERE
@@ -8253,7 +8253,7 @@ THE SOFTWARE.
 END OF bpmn-moddle@7.1.2 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@0.9.3 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@0.11.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -8277,10 +8277,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@0.9.3 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@0.11.1 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-moddle@5.1.2 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-moddle@6.1.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -8304,7 +8304,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-moddle@5.1.2 NOTICES AND INFORMATION
+END OF camunda-bpmn-moddle@6.1.0 NOTICES AND INFORMATION
 
 
 %% camunda-cmmn-moddle@1.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -10240,7 +10240,7 @@ http://www.gnu.org/licenses/lgpl.html
 END OF xmldom@0.1.27 NOTICES AND INFORMATION
 
 
-%% zeebe-bpmn-moddle@0.7.1 NOTICES AND INFORMATION BEGIN HERE
+%% zeebe-bpmn-moddle@0.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -10264,4 +10264,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF zeebe-bpmn-moddle@0.7.1 NOTICES AND INFORMATION
+END OF zeebe-bpmn-moddle@0.8.0 NOTICES AND INFORMATION
