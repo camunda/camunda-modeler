@@ -230,7 +230,7 @@ This project incorporates components from the projects listed below. The origina
 223.  bpmn-js-signavio-compat@1.2.3 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
 224.  bpmn-js@8.7.3 (https://github.com/bpmn-io/bpmn-js)
 225.  bpmn-moddle@7.1.2 (https://github.com/bpmn-io/bpmn-moddle)
-226.  camunda-bpmn-js@0.11.1 (https://github.com/camunda/camunda-bpmn-js)
+226.  camunda-bpmn-js@0.11.2 (https://github.com/camunda/camunda-bpmn-js)
 227.  camunda-bpmn-moddle@6.1.0 (https://github.com/camunda/camunda-bpmn-moddle)
 228.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
 229.  camunda-dmn-moddle@1.1.0 (https://github.com/camunda/camunda-dmn-moddle)
@@ -8253,7 +8253,7 @@ THE SOFTWARE.
 END OF bpmn-moddle@7.1.2 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@0.11.1 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@0.11.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -8277,7 +8277,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@0.11.1 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@0.11.2 NOTICES AND INFORMATION
 
 
 %% camunda-bpmn-moddle@6.1.0 NOTICES AND INFORMATION BEGIN HERE
