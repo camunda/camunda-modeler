@@ -34,10 +34,11 @@ const BUTTON_DISABLED_TIME = 3000;
 
 
 export function ReportFeedbackSystemInfo(props) {
+  let displayMessage = '';
   const { onSubmit } = props;
 
   const [hasSubmitCompleted, setHasSubmitCompleted] = useState(false);
-  const [isNoFieldSelected , setButtonAsDisabled] = useState(false);
+  const [ message , setDisplayMessage] = useState(displayMessage);
 
   let timer;
 
@@ -63,8 +64,8 @@ export function ReportFeedbackSystemInfo(props) {
         count++;
       }
     }
-    if (count == 0) setButtonAsDisabled(true);
-    else setButtonAsDisabled(false);
+    if (count == 0) setDisplayMessage(<h2 className="overlay__message">Select Atleast One checkbox</h2>);
+    else setDisplayMessage('');
   };
 
   return (
@@ -105,10 +106,11 @@ export function ReportFeedbackSystemInfo(props) {
             type="checkbox"
             label="Execution Platform"
           />
+          {message}
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={ hasSubmitCompleted || isNoFieldSelected }
+            disabled={ hasSubmitCompleted }
           >
             {!hasSubmitCompleted ? 'Copy to clipboard': 'Copied!' }
           </button>
