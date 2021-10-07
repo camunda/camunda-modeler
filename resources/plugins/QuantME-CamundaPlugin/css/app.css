@@ -51,6 +51,30 @@
   margin-left: 5px;
 }
 
+.btn-primary:focus {
+  border: solid 1px var(--blue-darken-48);
+  background-color: var(--blue-darken-55);
+}
+
+.innerConfig {
+  min-width: 100px;
+  height: 35px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.innerConfig + .innerConfig {
+  margin-left: 15px;
+}
+
 ul {
   padding-left: 20px;
 }
