@@ -44,25 +44,23 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul>
         <li>
-          <b>New components for Forms</b><br />
-          We added five additional form components such as select, checkbox, and radio
-          button. We also included a markdown text component, which allows you to provide
-          static information in your form.
+          <b>Support for Camunda Cloud 1.2</b><br />
+          With this release, we added new BPMN elements supported by Camunda Cloud 1.2.
+          These new elements are message intermediate throw events, message end events, and manual tasks.
         </li>
         <li>
-          <b>Modeling guidance for Forms</b><br />
-          By clicking on the platform label on the left side of the status bar,
-          you can now select the execution platform you want to deploy the form to.
-          This will lead to the form being validated to ensure that it can be successfully executed.
-          The results will be presented in a new panel, helping you to find issues before the
-          deployment.
+          <b>Form reference bindings for User Tasks and Start Events</b><br />
+          With the Camunda Platform 7.16.0 release you now have an additional way to bind Camunda Forms to
+          User Tasks or Start Events. Besides the existing way of binding using
+          a <a href="https://docs.camunda.org/manual/latest/user-guide/task-forms/#form-key">form key</a>,
+          you can now alternatively use
+          a <a href="https://docs.camunda.org/manual/latest/user-guide/task-forms/#form-reference">form reference</a>.
+          This allows you to bind a specific version, or the latest version from the deployment.
         </li>
         <li>
-          <b>Improved properties panel for Cloud BPMN diagrams</b><br />
-          The properties panel for BPMN diagrams was modernized to
-          provide an improved user experience. One fundamental change is that
-          the tabs were replaced by expandable sections that indicate at a glance
-          whether properties exist in the respective section.
+          <b>New rule sets to check the compatibility of Forms</b><br />
+          In addition to existing versions, you can now select the latest Platform 7.16.0 and Cloud 1.2.0 versions in
+          the Form editor. This allows you to easily check the compatibility of your form with the product version you are using.
         </li>
         <li>Plus, various smaller bug fixes and usability improvements.</li>
       </ul>
