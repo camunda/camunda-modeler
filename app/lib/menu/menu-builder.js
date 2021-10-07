@@ -221,6 +221,7 @@ class MenuBuilder {
 
     this.menu.append(new MenuItem({
       label: 'Export As Image',
+      accelerator: 'CommandOrControl+Shift+E',
       enabled: enabled,
       click: function() {
         app.emit('menu:action', 'export-as', exportState || []);
