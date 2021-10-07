@@ -80,7 +80,7 @@ export default class StartInstanceConfigModal extends React.PureComponent {
                     <Field
                       name="variables"
                       component={ TextInput }
-                      label="Variables"
+                      label={ <p>Variables (should be a proper variables <a href="https://www.json.org/">JSON</a> object, you can see examples <a href="https://docs.camunda.org/manual/current/reference/rest/process-definition/post-start-process-instance/#example">here</a>).</p> }
                       hint="A JSON object containing the variables the process is to be initialized with."
                       validate={ (value) => {
                         try {
