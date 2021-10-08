@@ -58,8 +58,8 @@ bootstrapLogging();
 const name = app.name = 'Camunda Modeler';
 const version = app.version = require('../package').version;
 const MINIMUM_SIZE = {
-  width: 640,
-  height: 480
+  width: 780,
+  height: 580
 };
 
 bootstrapLog.info(`starting ${ name } v${ version }`);

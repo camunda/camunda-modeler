@@ -38,12 +38,13 @@ describe('<EmptyTab>', function() {
       buttons.forEach(wrapper => wrapper.simulate('click'));
 
       // then
-      expect(onAction).to.have.callCount(4);
+      expect(onAction).to.have.callCount(5);
       expect(onAction.args).to.eql([
         [ 'create-bpmn-diagram' ],
-        [ 'create-cloud-bpmn-diagram' ],
         [ 'create-dmn-diagram' ],
-        [ 'create-form' ]
+        [ 'create-form' ],
+        [ 'create-cloud-bpmn-diagram' ],
+        [ 'create-form' ] // TODO(smbea): replace with 'create-cloud-form'
       ]);
     });
 
@@ -138,10 +139,11 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
+      expect(tree.find('.create-buttons')).to.have.length(2);
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('BPMN diagram (Camunda Cloud')
-        ).first().exists()
+          wrapper => wrapper.text().startsWith('Camunda Cloud')
+        ).exists()
       ).to.be.true;
     });
 
@@ -157,10 +159,11 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
+      expect(tree.find('.create-buttons')).to.have.length(1);
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('BPMN diagram (Camunda Cloud')
-        ).first().exists()
+          wrapper => wrapper.text().startsWith('Camunda Cloud')
+        ).exists()
       ).to.be.false;
     });
 
