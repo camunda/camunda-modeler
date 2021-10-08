@@ -52,7 +52,7 @@ export function ReportFeedbackSystemInfo(props) {
         count++;
       }
     }
-    if (count == 0) setDisplayMessage(<h2 className="overlay__message">Select Atleast One checkbox</h2>);
+    if (count == 0) setDisplayMessage(<h2 className="feedback__message">Select Atleast One checkbox</h2>);
     else setDisplayMessage('');
   };
 
