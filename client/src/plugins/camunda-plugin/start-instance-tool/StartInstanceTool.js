@@ -473,7 +473,7 @@ export default class StartInstanceTool extends PureComponent {
       { isBpmnTab(activeTab) &&
       <Fill slot="status-bar__file" group="8_deploy">
         <OverlayDropdown
-          title="Start Current Diagram"
+          title="Start process instance"
           className={ css.StartInstanceTool }
           items={ this.START_ACTIONS }
         >
