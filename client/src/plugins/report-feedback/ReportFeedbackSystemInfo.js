@@ -22,6 +22,7 @@ import {
   CheckBox
 } from '../../shared/ui';
 
+
 const INITIAL_VALUES = {
   version: true,
   operatingSystem: true,
@@ -36,7 +37,6 @@ export function ReportFeedbackSystemInfo(props) {
   const { onSubmit } = props;
 
   const [hasSubmitCompleted, setHasSubmitCompleted] = useState(false);
-
   let timer;
 
   useEffect(() => {
@@ -52,6 +52,21 @@ export function ReportFeedbackSystemInfo(props) {
       setHasSubmitCompleted(false);
     }, BUTTON_DISABLED_TIME);
   };
+  function allFieldsTruthy(object) {
+    for (const field in object) {
+      if (!object[field]) {
+        return false;
+      }
+    }
+    return true;
+  }
+  const validateFormData = values => {
+    const errors = {};
+    if (!values.installedPlugins && !values.version && !values.operatingSystem && !values.executionPlatform) {
+      errors._form = 'Select at least one checkbox.';
+    }
+    return errors;
+  };
 
   return (
     <Overlay.Footer>
@@ -61,40 +76,46 @@ export function ReportFeedbackSystemInfo(props) {
       <Formik
         initialValues={ INITIAL_VALUES }
         onSubmit={ submitForm }
+        validate={ validateFormData }
       >
-        <Form>
-          <Field
-            name="version"
-            component={ CheckBox }
-            type="checkbox"
-            label="Version"
-          />
-          <Field
-            name="operatingSystem"
-            component={ CheckBox }
-            type="checkbox"
-            label="Operating System"
-          />
-          <Field
-            name="installedPlugins"
-            component={ CheckBox }
-            type="checkbox"
-            label="Installed Plugins"
-          />
-          <Field
-            name="executionPlatform"
-            component={ CheckBox }
-            type="checkbox"
-            label="Execution Platform"
-          />
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={ hasSubmitCompleted }
-          >
-            {!hasSubmitCompleted ? 'Copy to clipboard': 'Copied!' }
-          </button>
-        </Form>
+        {formik => {
+          return (
+            <Form>
+              <Field
+                name="version"
+                component={ CheckBox }
+                type="checkbox"
+                label="Version"
+              />
+              <Field
+                name="operatingSystem"
+                component={ CheckBox }
+                type="checkbox"
+                label="Operating System"
+              />
+              <Field
+                name="installedPlugins"
+                component={ CheckBox }
+                type="checkbox"
+                label="Installed Plugins"
+              />
+              <Field
+                name="executionPlatform"
+                component={ CheckBox }
+                type="checkbox"
+                label="Execution Platform"
+              />
+              {formik.errors._form && allFieldsTruthy(formik.touched) && <div className="feedback__message">{formik.errors._form}</div>}
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={ hasSubmitCompleted }
+              >
+                {!hasSubmitCompleted ? 'Copy to clipboard': 'Copied!' }
+              </button>
+            </Form>
+          );
+        }}
       </Formik>
     </Overlay.Footer>
   );
