@@ -52,10 +52,18 @@ export function ReportFeedbackSystemInfo(props) {
       setHasSubmitCompleted(false);
     }, BUTTON_DISABLED_TIME);
   };
+  function allFieldsTruthy(object) {
+    for (const field in object) {
+      if (!object[field]) {
+        return false;
+      }
+    }
+    return true;
+  }
   const validateFormData = values => {
     const errors = {};
     if (!values.installedPlugins && !values.version && !values.operatingSystem && !values.executionPlatform) {
-      errors.installedPlugins = 'Please Select Atleast one Checkbox';
+      errors._form = 'Select Atleast One Checkbox';
     }
     return errors;
   };
@@ -97,12 +105,11 @@ export function ReportFeedbackSystemInfo(props) {
                 type="checkbox"
                 label="Execution Platform"
               />
-              {formik.errors.installedPlugins && formik.touched.installedPlugins && <div className="feedback__message">{formik.errors.installedPlugins}</div>}
+              {formik.errors._form && allFieldsTruthy(formik.touched) && <div className="feedback__message">{formik.errors._form}</div>}
               <button
                 type="submit"
                 className="btn btn-primary"
                 disabled={ hasSubmitCompleted }
-                onClick={ () => formik.validateForm() }
               >
                 {!hasSubmitCompleted ? 'Copy to clipboard': 'Copied!' }
               </button>
