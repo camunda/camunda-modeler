@@ -22,6 +22,7 @@ import {
   CheckBox
 } from '../../shared/ui';
 
+
 const INITIAL_VALUES = {
   version: true,
   operatingSystem: true,
@@ -36,7 +37,6 @@ export function ReportFeedbackSystemInfo(props) {
   const { onSubmit } = props;
 
   const [hasSubmitCompleted, setHasSubmitCompleted] = useState(false);
-  const [message , setDisplayMessage] = useState('');
   let timer;
 
   useEffect(() => {
@@ -44,17 +44,6 @@ export function ReportFeedbackSystemInfo(props) {
       clearTimeout(timer);
     };
   }, []);
-  const selectedFieldHandler = (event) => {
-    let count =0;
-    INITIAL_VALUES[event.target.id] = !INITIAL_VALUES[event.target.id];
-    for (const property in INITIAL_VALUES) {
-      if (INITIAL_VALUES[property]) {
-        count++;
-      }
-    }
-    if (count == 0) setDisplayMessage(<h2 className="feedback__message">Select Atleast One checkbox</h2>);
-    else setDisplayMessage('');
-  };
 
   const submitForm = (data) => {
     setHasSubmitCompleted(true);
@@ -62,6 +51,13 @@ export function ReportFeedbackSystemInfo(props) {
     timer = setTimeout(function() {
       setHasSubmitCompleted(false);
     }, BUTTON_DISABLED_TIME);
+  };
+  const validateFormData = values => {
+    const errors = {};
+    if (!values.installedPlugins && !values.version && !values.operatingSystem && !values.executionPlatform) {
+      errors.installedPlugins = 'Please Select Atleast one Checkbox';
+    }
+    return errors;
   };
 
   return (
@@ -72,45 +68,47 @@ export function ReportFeedbackSystemInfo(props) {
       <Formik
         initialValues={ INITIAL_VALUES }
         onSubmit={ submitForm }
+        validate={ validateFormData }
       >
-        <Form>
-          <Field
-            name="version"
-            component={ CheckBox }
-            onClick={ selectedFieldHandler }
-            type="checkbox"
-            label="Version"
-          />
-          <Field
-            name="operatingSystem"
-            component={ CheckBox }
-            onClick={ selectedFieldHandler }
-            type="checkbox"
-            label="Operating System"
-          />
-          <Field
-            name="installedPlugins"
-            component={ CheckBox }
-            onClick={ selectedFieldHandler }
-            type="checkbox"
-            label="Installed Plugins"
-          />
-          <Field
-            name="executionPlatform"
-            component={ CheckBox }
-            onClick={ selectedFieldHandler }
-            type="checkbox"
-            label="Execution Platform"
-          />
-          {message}
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={ hasSubmitCompleted }
-          >
-            {!hasSubmitCompleted ? 'Copy to clipboard': 'Copied!' }
-          </button>
-        </Form>
+        {formik => {
+          return (
+            <Form>
+              <Field
+                name="version"
+                component={ CheckBox }
+                type="checkbox"
+                label="Version"
+              />
+              <Field
+                name="operatingSystem"
+                component={ CheckBox }
+                type="checkbox"
+                label="Operating System"
+              />
+              <Field
+                name="installedPlugins"
+                component={ CheckBox }
+                type="checkbox"
+                label="Installed Plugins"
+              />
+              <Field
+                name="executionPlatform"
+                component={ CheckBox }
+                type="checkbox"
+                label="Execution Platform"
+              />
+              {formik.errors.installedPlugins && formik.touched.installedPlugins && <div className="feedback__message">{formik.errors.installedPlugins}</div>}
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={ hasSubmitCompleted }
+                onClick={ () => formik.validateForm() }
+              >
+                {!hasSubmitCompleted ? 'Copy to clipboard': 'Copied!' }
+              </button>
+            </Form>
+          );
+        }}
       </Formik>
     </Overlay.Footer>
   );
