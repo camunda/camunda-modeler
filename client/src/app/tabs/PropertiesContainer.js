@@ -43,7 +43,7 @@ class PropertiesContainerWrapped extends PureComponent {
     this.context = {};
   }
 
-  handleResizeStart = event => {
+  handleResizeStart = (event) => {
     const onDragStart = dragger(this.handleResize);
 
     onDragStart(event);
@@ -102,11 +102,9 @@ class PropertiesContainerWrapped extends PureComponent {
   }
 
   handleToggle = () => {
-    const { layout } = this.props || {};
+    const { layout = {} } = this.props;
 
-    const {
-      propertiesPanel = {}
-    } = layout;
+    const { propertiesPanel = {} } = layout;
 
     this.changeLayout({
       propertiesPanel: {
