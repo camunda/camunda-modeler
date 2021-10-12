@@ -1955,7 +1955,7 @@ export class App extends PureComponent {
 
               <Log
                 entries={ logEntries }
-                layout={ layout.log }
+                layout={ layout }
                 onClear={ this.clearLog }
                 onLayoutChanged={ this.handleLayoutChanged }
                 onUpdateMenu={ this.updateMenu }

@@ -8,71 +8,72 @@
  * except in compliance with the MIT License.
  */
 
+/* global sinon */
+
 import React from 'react';
 
+import { isFunction } from 'min-dash';
+
 import {
-  shallow,
-  mount
+  mount,
+  shallow
 } from 'enzyme';
 
-import Log from '../Log';
+import Log, {
+  DEFAULT_LAYOUT,
+  KEYCODE_ESCAPE,
+  MAX_HEIGHT
+} from '../Log';
 
-const DEFAULT_LAYOUT = {
-  height: 130,
-  open: false
-};
-
-/* global sinon */
 const { spy } = sinon;
+
+const LOG_OPEN_LAYOUT = {
+  log: {
+    height: 300,
+    open: true
+  }
+};
 
 
 describe('<Log>', function() {
 
   describe('entries', function() {
 
-    it('should hide, if collapsed', function() {
+    it('should hide if not open', function() {
 
       // given
-      const {
-        tree
-      } = createLog({
-        open: false,
+      const { wrapper } = createLog({
         entries: [
-          { category: 'warning', message: 'HE' },
-          { category: 'error', message: 'HO' },
-          {}
+          { category: 'warning', message: 'foo' },
+          { category: 'error', message: 'bar' }
         ]
       });
 
       // when
-      const entries = tree.find('.entries');
+      const entries = wrapper.find('.entries');
 
       // then
       expect(entries).to.be.empty;
     });
 
 
-    it('should show, if expanded', function() {
+    it('should show if open', function() {
 
       // given
-      const {
-        tree
-      } = createLog({
-        open: true,
+      const { wrapper } = createLog({
         entries: [
-          { category: 'warning', message: 'HE' },
-          { category: 'error', message: 'HO' },
-          {}
-        ]
+          { category: 'warning', message: 'foo' },
+          { category: 'error', message: 'bar' }
+        ],
+        layout: LOG_OPEN_LAYOUT
       }, mount);
 
       // when
-      const entry = tree.find('.entry');
+      const entries = wrapper.find('.entry');
 
       // then
-      expect(entry.at(0).text()).to.eql('HE [ warning ]');
-      expect(entry.at(1).text()).to.eql('HO [ error ]');
-      expect(entry.at(2).text()).to.eql(' ');
+      expect(entries.at(0).text()).to.eql('foo [ warning ]');
+      expect(entries.at(1).text()).to.eql('bar [ error ]');
     });
 
 
@@ -81,19 +82,17 @@ describe('<Log>', function() {
       // given
       const actionSpy = spy();
 
-      const {
-        tree
-      } = createLog({
-        open: true,
+      const { wrapper } = createLog({
         entries: [
-          { category: 'warning', message: 'HE', action: actionSpy }
-        ]
+          { category: 'warning', message: 'foo', action: actionSpy }
+        ],
+        layout: LOG_OPEN_LAYOUT
       }, mount);
 
-      const entry = tree.find('.action').at(0);
+      const action = wrapper.find('.action').at(0);
 
       // when
-      entry.simulate('click');
+      action.simulate('click');
 
       // then
       expect(actionSpy).to.have.been.called;
@@ -102,45 +101,35 @@ describe('<Log>', function() {
   });
 
 
-  describe('scroll handling', function() {
+  describe('scroll into view', function() {
 
-    it('should check without entries', function() {
+    it('should not throw error when no entries', function() {
 
       // given
-      const {
-        instance
-      } = createLog({
-        open: true,
-        entries: []
+      const { instance } = createLog({
+        entries: [],
+        layout: LOG_OPEN_LAYOUT
       }, mount);
 
       // when
-      instance.checkFocus();
-
-      // then
-      // no error threw :o)
+      expect(() => instance.checkFocus()).not.to.throw();
     });
 
 
-    it('should focus last entry', function() {
+    it('should scroll last entry into view', function() {
 
       // given
-      const {
-        instance
-      } = createLog({
-        open: true,
+      const { instance } = createLog({
         entries: [
-          { category: 'warning', message: 'HE' },
-          { category: 'error', message: 'HO' },
+          { category: 'warning', message: 'foo' },
+          { category: 'error', message: 'bar' },
           {}
-        ]
+        ],
+        layout: LOG_OPEN_LAYOUT
       }, mount);
 
       // when
-      instance.checkFocus();
-
-      // then
-      // no error threw :o)
+      expect(() => instance.checkFocus()).not.to.throw();
     });
 
   });
@@ -148,150 +137,108 @@ describe('<Log>', function() {
 
   describe('controls', function() {
 
-    it('should toggle log', function() {
-
-      const onLayoutChanged = spy(({ log }) => {
-        expect(log.open).to.be.false;
-      });
-
-      // given
-      const {
-        tree
-      } = createLog({
-        open: true,
-        onLayoutChanged
-      });
-
-      // when
-      const button = tree.find('.toggle-button');
-
-      button.simulate('click');
-
-      // then
-      expect(onLayoutChanged).to.have.been.calledOnce;
-    });
-
-
-    it('log copy', function() {
+    it('should copy log', function() {
 
       // given
       const {
         instance,
-        tree
+        wrapper
       } = createLog({
-        open: true
+        layout: LOG_OPEN_LAYOUT
       }, mount);
 
-      const handleCopy = spy(instance, 'handleCopy');
+      const handleCopySpy = spy(instance, 'handleCopy');
 
-      const handleWindowSelection = spy(window, 'getSelection');
+      const getSelectionSpy = spy(window, 'getSelection');
 
       instance.setState({
         focussed: true
       });
 
       // when
-      const button = tree.find('.copy-button');
+      const button = wrapper.find('.copy-button');
 
       button.simulate('click');
 
       // then
-      expect(handleCopy).to.have.been.calledOnce;
-      expect(handleWindowSelection).to.have.been.called;
+      expect(handleCopySpy).to.have.been.calledOnce;
+      expect(getSelectionSpy).to.have.been.calledOnce;
     });
 
 
     it('should clear log', function() {
 
       // given
-      const onClear = spy();
+      const onClearSpy = spy();
 
-      const {
-        tree
-      } = createLog({
-        open: true,
-        onClear
+      const { wrapper } = createLog({
+        layout: LOG_OPEN_LAYOUT,
+        onClear: onClearSpy
       }, mount);
 
       // when
-      const button = tree.find('.clear-button');
+      const button = wrapper.find('.clear-button');
 
       button.simulate('click');
 
       // then
-      expect(onClear).to.have.been.calledOnce;
+      expect(onClearSpy).to.have.been.calledOnce;
     });
 
   });
 
 
-  describe('keyboard shortcuts', function() {
+  describe('keyboard', function() {
 
     it('should close on <ESC>', function() {
 
       // given
-      const onLayoutChanged = spy(({ log }) => {
-        expect(log.open).to.be.false;
-      });
+      const onLayoutChanged = spy();
 
       const {
         instance
       } = createLog({
-        open: true,
+        layout: LOG_OPEN_LAYOUT,
         onLayoutChanged
       });
 
       // when
       instance.handleKeyDown({
-        keyCode: 27,
+        keyCode: KEYCODE_ESCAPE,
         preventDefault: noop
       });
 
       // then
-      expect(onLayoutChanged).to.have.been.calledOnce;
-    });
-
-
-    it('should select all on <CTRL + A>', function() {
-
-      // given
-      const {
-        instance
-      } = createLog({
-        open: true
-      }, mount);
-
-      const handleCopy = spy(instance, 'handleCopy');
-
-      // when
-      instance.handleKeyDown({
-        keyCode: 65,
-        ctrlKey: true,
-        preventDefault: noop
+      expect(onLayoutChanged).to.have.been.calledOnceWithExactly({
+        log: {
+          height: 300,
+          open: false
+        }
       });
-
-      // then
-      expect(handleCopy).to.have.been.calledOnce;
     });
 
+  });
 
-    it('should update edit menu', async function() {
+
+  describe('focus', function() {
+
+    it('should update edit menu on focus', async function() {
 
       // given
-      const onUpdateMenu = spy();
+      const onUpdateMenuSpy = spy();
 
       const {
-        tree
+        wrapper
       } = createLog({
-        open: true,
-        onUpdateMenu
+        layout: LOG_OPEN_LAYOUT,
+        onUpdateMenu: onUpdateMenuSpy
       }, mount);
 
       // when
-      tree.find('.entries').simulate('focus');
+      wrapper.find('.entries').simulate('focus');
 
       // then
-      expect(onUpdateMenu).to.be.calledOnceWithExactly({
+      expect(onUpdateMenuSpy).to.be.calledOnceWithExactly({
         editMenu: [
           [
             { enabled: false, role: 'undo' },
@@ -307,56 +254,163 @@ describe('<Log>', function() {
       });
     });
 
-
-    /**
-     * @pinussilvestrus :
-     * Currently not possible to test systems clipboard content
-     */
-    it('select selected text on <CTRL+C>');
-
   });
 
 
-  describe('resize', function() {
+  describe('layout', function() {
 
-    it('should handle resize', function() {
+    it('should toggle log', function() {
 
       // given
-      const onLayoutChanged = spy();
+      const onLayoutChangedSpy = spy();
 
-      const {
-        instance
-      } = createLog({ onLayoutChanged });
-
-      instance.originalHeight = 100;
+      const { wrapper } = createLog({
+        layout: LOG_OPEN_LAYOUT,
+        onLayoutChanged: onLayoutChangedSpy
+      });
 
       // when
-      instance.handleResize(null, { y: -10 });
+      const button = wrapper.find('.toggle-button');
+
+      button.simulate('click');
 
       // then
-      expect(onLayoutChanged).to.be.calledOnceWithExactly({
+      expect(onLayoutChangedSpy).to.have.been.calledOnceWithExactly({
         log: {
-          open: true,
-          height: 110
+          height: 300,
+          open: false
         }
       });
     });
 
 
-    it('should ignore delta y = 0', function() {
+    it('should have default width', function() {
 
       // given
-      const {
-        instance
-      } = createLog();
+      const onLayoutChangedSpy = spy();
 
-      const originalState = instance.state;
+      const { instance } = createLog({
+        layout: {
+          log: {
+            open: false
+          }
+        },
+        onLayoutChanged: onLayoutChangedSpy
+      });
 
       // when
-      instance.handleResize(null, { y: 0 });
+      instance.handleToggle();
 
       // then
-      expect(instance.state).to.eql(originalState);
+      expect(onLayoutChangedSpy).to.have.been.calledOnceWithExactly({
+        log: {
+          height: 130,
+          open: true
+        }
+      });
+    });
+
+
+    describe('resize', function() {
+
+      it('should resize', function() {
+
+        // given
+        const onLayoutChangedSpy = spy();
+
+        const {
+          instance,
+          wrapper
+        } = createLog({
+          layout: LOG_OPEN_LAYOUT,
+          onLayoutChanged: onLayoutChangedSpy
+        });
+
+        // when
+        instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
+
+        instance.handleResize(null, { y: 50 });
+
+        instance.handleResizeEnd();
+
+        // then
+        expect(onLayoutChangedSpy).to.be.calledOnceWithExactly({
+          log: {
+            height: 250,
+            open: true
+          }
+        });
+
+        // clean
+        wrapper.unmount();
+      });
+
+
+      it('should close when resized to smaller than minimum size', function() {
+
+        // given
+        const onLayoutChangedSpy = spy();
+
+        const {
+          instance,
+          wrapper
+        } = createLog({
+          layout: LOG_OPEN_LAYOUT,
+          onLayoutChanged: onLayoutChangedSpy
+        });
+
+        // when
+        instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
+
+        instance.handleResize(null, { y: 400 });
+
+        instance.handleResizeEnd();
+
+        // then
+        expect(onLayoutChangedSpy).to.be.calledOnceWithExactly({
+          log: {
+            height: DEFAULT_LAYOUT.height,
+            open: false
+          }
+        });
+
+        // clean
+        wrapper.unmount();
+      });
+
+
+      it('should not resize to larger than maximum size', function() {
+
+        // given
+        const onLayoutChangedSpy = spy();
+
+        const {
+          instance,
+          wrapper
+        } = createLog({
+          layout: LOG_OPEN_LAYOUT,
+          onLayoutChanged: onLayoutChangedSpy
+        });
+
+        // when
+        instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
+
+        instance.handleResize(null, { y: -400 });
+
+        instance.handleResizeEnd();
+
+        // then
+        expect(onLayoutChangedSpy).to.be.calledOnceWithExactly({
+          log: {
+            height: MAX_HEIGHT,
+            open: true
+          }
+        });
+
+        // clean
+        wrapper.unmount();
+      });
+
     });
 
   });
@@ -365,36 +419,50 @@ describe('<Log>', function() {
 });
 
 
-// helpers /////////////////////////////////////
+// helpers //////////
 
 function noop() {}
 
-function createLog(options = {}, mountFn = shallow) {
+function createLog(props = {}, mountFn = shallow) {
+  if (isFunction(props)) {
+    mountFn = props;
 
-  if (typeof options === 'function') {
-    mountFn = options;
-    options = {};
+    props = {};
   }
 
-  const layout = options.layout || DEFAULT_LAYOUT;
+  const {
+    entries,
+    layout = DEFAULT_LAYOUT,
+    onClear = noop,
+    onLayoutChanged = noop,
+    onUpdateMenu = noop
+  } = props;
 
-  layout.open = !!options.open;
-
-  const tree = mountFn(
-    <Log
-      entries={ options.entries || [] }
-      layout={ layout }
-      onClear={ options.onClear || noop }
-      onLayoutChanged={ options.onLayoutChanged || noop }
-      onUpdateMenu={ options.onUpdateMenu || noop }
-    />
-  );
-
-  const instance = tree.instance();
-
-  return {
-    tree,
-    instance
+  props = {
+    entries,
+    layout,
+    onClear,
+    onLayoutChanged,
+    onUpdateMenu
   };
 
+  const wrapper = mountFn(<Log { ...props } />);
+
+  const instance = wrapper.instance();
+
+  return {
+    instance,
+    wrapper
+  };
+}
+
+function createMouseEvent(type, clientX, clientY) {
+  const event = document.createEvent('MouseEvent');
+
+  if (event.initMouseEvent) {
+    event.initMouseEvent(
+      type, true, true, window, 0, 0, 0, clientX, clientY, false, false, false, false, 0, null);
+  }
+
+  return event;
 }
