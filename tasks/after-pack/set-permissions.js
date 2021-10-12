@@ -17,51 +17,55 @@ const DIR_PERMISSIONS = 0o755;
 
 module.exports = function(context) {
   const {
-    appOutDir
+    appOutDir,
+    electronPlatformName
   } = context;
 
-  const flatten = (lists) =>
-    lists.reduce((a, b) => a.concat(b), []);
+  if (electronPlatformName !== 'linux') {
+    console.log(`  • skipped file permission update for ${ electronPlatformName }`);
 
-  const getDirectories = (srcpath) =>
-    fs.readdirSync(srcpath)
-      .map(file => path.join(srcpath))
-      .filter(path => fs.statSync(path).isDirectory());
+    return;
+  }
 
-  const getFiles = (srcpath) =>
-    fs.readdirSync(srcpath)
-      .map(file => path.join(srcpath, file))
-      .filter(path => !fs.statSync(path).isDirectory());
+  console.log(`  • setting file permissions    file=${appOutDir}`);
 
-  const getDirectoriesRecursive = (srcpath) =>
-    [
-      srcpath,
-      ...flatten(getDirectories(srcpath)
-        .map(getDirectoriesRecursive))
-    ];
+  const executableFiles = [
+    'camunda-modeler',
+    'chrome-sandbox',
+    'support/xdg_register.sh',
+    'support/xdg_unregister.sh'
+  ].reduce((files, name) => {
+    files[path.join(appOutDir, name)] = 1;
+    return files;
+  }, {});
 
-  // get list of directories and files recursively
-  const dirs = getDirectoriesRecursive(appOutDir);
-  let files = dirs.map(dir => getFiles(dir));
-  files = flatten(files);
+  function walk(root) {
 
-  // TODO: get list of executable files
-  const execFiles = [];
+    const entries = fs.readdirSync(root, { withFileTypes: true });
 
-  // change perms for files
-  files.forEach((filename) => {
-    fs.chmodSync(filename, FILE_PERMISSIONS);
-  });
+    for (const entry of entries) {
 
-  // change perms for directories
-  dirs.forEach((dirname) => {
-    fs.chmodSync(dirname, DIR_PERMISSIONS);
-  });
+      const entryPath = path.join(root, entry.name);
 
-  // change executable file permissions
-  execFiles.forEach((filename) => {
-    fs.chmodSync(filename, EXEC_FILE_PERMISSIONS);
-  });
+      const isDirectory = entry.isDirectory();
 
+      const permissions = (
+        isDirectory ? DIR_PERMISSIONS : (
+          entryPath in executableFiles
+            ? EXEC_FILE_PERMISSIONS
+            : FILE_PERMISSIONS
+        )
+      );
+
+      fs.chmodSync(entryPath, permissions);
+
+      // recurse
+      if (isDirectory) {
+        walk(entryPath);
+      }
+    }
+  }
+
+  walk(appOutDir);
 };
 
