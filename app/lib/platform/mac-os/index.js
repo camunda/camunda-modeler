@@ -70,7 +70,7 @@ function MacOSPlatform(app) {
    * called or the window was closed.
    */
   app.on('window-all-closed', function(e) {
-    if (app.terminating) {
+    if (app.terminating || app.quitRequested) {
       return app.quit();
     }
 
@@ -79,6 +79,16 @@ function MacOSPlatform(app) {
     log.info('Keeping app in the dock');
 
     app.terminating = false;
+  });
+
+  /**
+   * Make sure app quits and does not hang after last
+   * window was closed.
+   *
+   * Cf. https://github.com/camunda/camunda-modeler/issues/1803
+   */
+  app.on('before-quit', function() {
+    app.quitRequested = true;
   });
 
   /**
