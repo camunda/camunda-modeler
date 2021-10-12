@@ -14,6 +14,8 @@ import css from './Log.less';
 
 import classNames from 'classnames';
 
+import { isFunction } from 'min-dash';
+
 import { Fill } from './slot-fill';
 
 import dragger from '../util/dom/dragger';
@@ -22,95 +24,129 @@ import {
   throttle
 } from '../util';
 
-const DEFAULT_LAYOUT = {
+export const DEFAULT_LAYOUT = {
   height: 130,
   open: false
 };
 
+export const MIN_HEIGHT = 25;
+export const MAX_HEIGHT = 300;
+
+export const KEYCODE_ESCAPE = 27;
+
 
 /**
- * A log component
+ * A log component.
  *
  * <Log
  *   entries={ [ { message, category }, ... ] }
- *   layout={ height, open }
+ *   layout={ { log: { height, open } } }
  *   onClear={ () => { } }
  *   onLayoutChanged= { () => { } }
  *   onUpdateMenu = { () => { } } />
  *
  */
 export default class Log extends PureComponent {
-  static defaultProps = {
-    entries: [],
-    layout: DEFAULT_LAYOUT
-  };
-
   constructor(props) {
     super(props);
 
-    this.panelRef = React.createRef();
-
     this.handleResize = throttle(this.handleResize);
+
+    this.ref = new React.createRef();
+    this.focusRef = React.createRef();
+
+    this.context = {};
   }
 
-  changeLayout = (newLayout) => {
-    this.props.onLayoutChanged({
-      log: newLayout
-    });
-  }
-
-  toggle = () => {
-    const {
-      layout
-    } = this.props;
-
-    this.changeLayout({
-      ...layout,
-      open: !layout.open
-    });
-  }
-
-  handleResizeStart = event => {
+  handleResizeStart = (event) => {
     const onDragStart = dragger(this.handleResize);
 
-    this.originalHeight = this.currentHeight;
-
     onDragStart(event);
+
+    const {
+      height,
+      open
+    } = getLayoutFromProps(this.props);
+
+    this.context = {
+      open,
+      startHeight: height
+    };
   }
 
   handleResize = (_, delta) => {
-    const {
-      y
-    } = delta;
+    const { y: dy } = delta;
 
-    if (y === 0) {
+    if (dy === 0) {
       return;
     }
 
-    const newHeight = this.originalHeight - y;
+    const { startHeight } = this.context;
 
-    const open = newHeight > 25;
+    const {
+      height,
+      open
+    } = getLayout(dy, startHeight);
 
-    const height = open ? newHeight : DEFAULT_LAYOUT.height;
+    this.context = {
+      ...this.context,
+      height,
+      open
+    };
+
+    if (this.ref.current) {
+      this.ref.current.classList.toggle('open', open);
+      this.ref.current.style.height = `${ open ? height : 0 }px`;
+    }
+  }
+
+  handleResizeEnd = () => {
+    const {
+      height,
+      open
+    } = this.context;
+
+    this.context = {};
 
     this.changeLayout({
-      open,
-      height
+      log: {
+        height,
+        open
+      }
     });
   }
 
+  handleToggle = () => {
+    const { layout = {} } = this.props;
+
+    const { log = {} } = layout;
+
+    this.changeLayout({
+      log: {
+        ...DEFAULT_LAYOUT,
+        ...log,
+        open: !log.open
+      }
+    });
+  }
+
+  changeLayout = (layout = {}) => {
+    const { onLayoutChanged } = this.props;
+
+    if (isFunction(onLayoutChanged)) {
+      onLayoutChanged(layout);
+    }
+  }
+
   checkFocus = () => {
+    const panel = this.focusRef.current;
 
-    const panel = this.panelRef.current;
-
-    const {
-      entries
-    } = this.props;
+    const { entries } = this.props;
 
     const lastIdx = entries.length - 1;
 
     if (lastIdx !== -1) {
-      const node = panel.querySelector(`*[data-idx='${lastIdx}']`);
+      const node = panel.querySelector(`*[data-idx='${ lastIdx }']`);
 
       node.scrollIntoView();
     }
@@ -128,37 +164,23 @@ export default class Log extends PureComponent {
   }
 
   handleKeyDown = (event) => {
+    const { keyCode } = event;
 
-    const {
-      keyCode,
-      ctrlKey,
-      metaKey
-    } = event;
-
-    if (keyCode === 27) { // ESC
+    if (keyCode === KEYCODE_ESCAPE) {
       event.preventDefault();
 
-      return this.toggle();
-    }
-
-    if (keyCode === 65 && (ctrlKey || metaKey)) { // <A>
-      event.preventDefault();
-
-      return this.handleCopy();
+      return this.handleToggle();
     }
   }
 
-  handleCopy = (event) => {
-    selectText(this.panelRef.current);
+  handleCopy = () => {
+    selectText(this.focusRef.current);
 
     document.execCommand('copy');
   }
 
   updateMenu = () => {
-
-    const {
-      onUpdateMenu
-    } = this.props;
+    const { onUpdateMenu } = this.props;
 
     const enabled = hasSelection();
 
@@ -197,19 +219,15 @@ export default class Log extends PureComponent {
   }
 
   render() {
-
     const {
-      entries,
-      layout,
+      entries = [],
       onClear
     } = this.props;
 
     const {
       height,
       open
-    } = layout;
-
-    this.currentHeight = height;
+    } = getLayoutFromProps(this.props);
 
     return (
       <div
@@ -223,7 +241,7 @@ export default class Log extends PureComponent {
           <button
             className={ classNames('btn', 'toggle-button', { 'btn--active': open }) }
             title="Toggle log"
-            onClick={ this.toggle }
+            onClick={ this.handleToggle }
           >Log</button>
         </Fill>
 
@@ -232,16 +250,18 @@ export default class Log extends PureComponent {
             <div
               className="resizer"
               onDragStart={ this.handleResizeStart }
+              onDragEnd={ this.handleResizeEnd }
               draggable
             ></div>
             <div
               className="body"
+              ref={ this.ref }
               style={ { height } }>
 
               <div
                 tabIndex="0"
                 className="entries"
-                ref={ this.panelRef }
+                ref={ this.focusRef }
                 onKeyDown={ this.handleKeyDown }
                 onFocus={ this.updateMenu }
               >
@@ -259,7 +279,7 @@ export default class Log extends PureComponent {
                       category
                     } = entry;
 
-                    var msg;
+                    let msg;
 
                     if (message) {
                       msg = message;
@@ -295,19 +315,50 @@ export default class Log extends PureComponent {
 }
 
 
+// helpers //////////
 
-// helpers /////////////////////////////////
+function getLayout(dy, initialHeight) {
+  let height = Math.min(initialHeight - dy, MAX_HEIGHT);
+
+  const open = height >= MIN_HEIGHT;
+
+  if (!open) {
+    height = DEFAULT_LAYOUT.height;
+  }
+
+  return {
+    height,
+    open
+  };
+}
+
+function getLayoutFromProps(props) {
+  const layout = props.layout || {};
+
+  const log = layout.log || DEFAULT_LAYOUT;
+
+  const { open } = log;
+
+  const height = open ? log.height : 0;
+
+  return {
+    height,
+    open
+  };
+}
+
+function hasSelection() {
+  return window.getSelection().toString() !== '';
+}
 
 function selectText(element) {
   let range, selection;
 
   selection = window.getSelection();
+
   range = document.createRange();
   range.selectNodeContents(element);
+
   selection.removeAllRanges();
   selection.addRange(range);
-}
-
-function hasSelection() {
-  return window.getSelection().toString() !== '';
 }

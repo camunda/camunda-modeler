@@ -1660,7 +1660,7 @@ describe('<App>', function() {
       const log = tree.find(Log).first();
 
       // then
-      expect(log.props().layout.open).to.be.true;
+      expect(log.props().layout.log.open).to.be.true;
     });
 
 
@@ -1685,7 +1685,7 @@ describe('<App>', function() {
         category: 'bar'
       }]);
 
-      expect(log.props().layout.open).to.be.true;
+      expect(log.props().layout.log.open).to.be.true;
     });
 
   });
