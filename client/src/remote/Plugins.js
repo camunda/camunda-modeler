@@ -11,7 +11,8 @@
 import { filter } from 'min-dash';
 
 import {
-  Modal
+  Modal,
+  Overlay
 } from '../shared/ui';
 
 import { Fill } from '../app/slot-fill';
@@ -53,7 +54,8 @@ export default class Plugins {
 
     global.components = {
       Fill,
-      Modal
+      Modal,
+      Overlay
     };
 
     global.getModelerDirectory = () => {
