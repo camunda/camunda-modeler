@@ -1,4 +1,6 @@
 {
   "type": "default",
-  "components": []
+  "components": [],
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.16"
 }

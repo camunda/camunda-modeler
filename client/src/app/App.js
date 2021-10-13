@@ -1658,6 +1658,10 @@ export class App extends PureComponent {
       return this.createDiagram('form');
     }
 
+    if (action === 'create-cloud-form') {
+      return this.createDiagram('cloud-form');
+    }
+
     if (action === 'create-cloud-bpmn-diagram') {
       return this.createDiagram('cloud-bpmn');
     }

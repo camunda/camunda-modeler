@@ -13,6 +13,7 @@ import cloudBpmnDiagram from './tabs/cloud-bpmn/diagram.bpmn';
 import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
 import form from './tabs/form/initial.form';
+import cloudForm from './tabs/form/initial-cloud.form';
 
 import replaceIds from '@bpmn-io/replace-ids';
 
@@ -322,14 +323,50 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'Form (Camunda Platform or Cloud)',
+            label: 'Form (Camunda Platform)',
             action: 'create-form'
           }];
         },
         getNewFileButton() {
           return {
-            label: 'Create new Form (Camunda Platform or Cloud)',
+            label: 'Create new Form (Camunda Platform)',
             action: 'create-form'
+          };
+        },
+        getLinter() {
+          return FormLinter;
+        }
+      },
+      'cloud-form': {
+        name: null,
+        encoding: ENCODING_UTF8,
+        exports: {},
+        extensions: [ 'form' ],
+        canOpen(file) {
+          return file.name.endsWith('.form');
+        },
+        getComponent(options) {
+          return import('./tabs/form');
+        },
+        getInitialContents() {
+          return cloudForm;
+        },
+        getInitialFilename(suffix) {
+          return `form_${suffix}.form`;
+        },
+        getHelpMenu() {
+          return [];
+        },
+        getNewFileMenu() {
+          return [{
+            label: 'Form (Camunda Cloud)',
+            action: 'create-cloud-form'
+          }];
+        },
+        getNewFileButton() {
+          return {
+            label: 'Create new Form (Camunda Cloud)',
+            action: 'create-cloud-form'
           };
         },
         getLinter() {
@@ -342,7 +379,7 @@ export default class TabsProvider {
       bpmn: [ this.providers['cloud-bpmn'], this.providers.bpmn ],
       dmn: [ this.providers.dmn ],
       cmmn: [ this.providers.cmmn ],
-      form: [ this.providers.form ]
+      form: [ this.providers['cloud-form'], this.providers.form ]
     };
 
     if (Flags.get('disable-zeebe')) {
@@ -362,6 +399,7 @@ export default class TabsProvider {
 
     if (Flags.get('disable-form')) {
       delete this.providers.form;
+      delete this.providers['cloud-form'];
       delete this.providersByFileType.form;
     }
   }
