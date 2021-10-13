@@ -128,7 +128,7 @@ export function isDropableItem(item) {
     return false;
   }
 
-  return /^(text\/.*|application\/([^+]*\+)?xml|application\/(cmmn|bpmn|dmn))?$/.test(type);
+  return /^(text\/.*|application\/([^+]*\+)?xml|application\/(cmmn|bpmn|dmn|camunda-form))?$/.test(type);
 }
 
 /**
