@@ -230,6 +230,7 @@ describe('DropZone - isDropableItem', function() {
       fileItem('application/cmmn'),
       fileItem('application/dmn'),
       fileItem('application/bpmn'),
+      fileItem('application/camunda-form'),
       fileItem('text/xml'),
       vsCodeItem('/my-file')
     ];
