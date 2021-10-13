@@ -11,7 +11,7 @@
     "@bpmn-io/bpmn-properties-panel": "github:bpmn-io/bpmn-properties-panel#v0.3.0",
     "@bpmn-io/dmn-migrate": "^0.4.3",
     "@bpmn-io/extract-process-variables": "^0.4.3",
-    "@bpmn-io/form-js": "^0.4.2",
+    "@bpmn-io/form-js": "^0.5.0",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@sentry/browser": "^6.3.6",
     "bpmn-js": "^8.7.3",
