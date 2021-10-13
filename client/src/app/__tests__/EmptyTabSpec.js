@@ -44,7 +44,7 @@ describe('<EmptyTab>', function() {
         [ 'create-dmn-diagram' ],
         [ 'create-form' ],
         [ 'create-cloud-bpmn-diagram' ],
-        [ 'create-form' ] // TODO(smbea): replace with 'create-cloud-form'
+        [ 'create-cloud-form' ]
       ]);
     });
 

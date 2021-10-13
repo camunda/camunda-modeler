@@ -122,6 +122,7 @@ describe('TabsProvider', function() {
 
     verifyExists('form');
 
+    verifyExists('cloud-form');
 
     it('for an empty file of known type', function() {
 
