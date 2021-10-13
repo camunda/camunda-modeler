@@ -57,10 +57,7 @@ describe('<DropZone>', function() {
       const wrapper = shallow(<DropZone />);
 
       // when
-      const event = new MockDragEvent({
-        type: 'image/gif',
-        kind: 'file'
-      });
+      const event = new MockDragEvent(fileItem('image/gif'));
 
       wrapper.simulate('dragover', event);
 
@@ -76,10 +73,7 @@ describe('<DropZone>', function() {
       const wrapper = shallow(<DropZone />);
 
       // when
-      const event = new MockDragEvent({
-        type: '',
-        kind: 'file'
-      });
+      const event = new MockDragEvent(fileItem());
 
       wrapper.simulate('dragover', event);
 
@@ -98,14 +92,8 @@ describe('<DropZone>', function() {
       // given
       const wrapper = shallow(<DropZone />);
 
-      const dragOverEvent = new MockDragEvent({
-        type: '',
-        kind: 'file'
-      });
-      const dragLeaveEvent = new MockDragEvent({
-        type: '',
-        kind: 'file'
-      });
+      const dragOverEvent = new MockDragEvent(fileItem());
+      const dragLeaveEvent = new MockDragEvent(fileItem());
 
       dragLeaveEvent.relatedTarget = null;
 
@@ -124,14 +112,8 @@ describe('<DropZone>', function() {
       // given
       const wrapper = shallow(<DropZone />);
 
-      const dragOverEvent = new MockDragEvent({
-        type: '',
-        kind: 'file'
-      });
-      const dragLeaveEvent = new MockDragEvent({
-        type: '',
-        kind: 'file'
-      });
+      const dragOverEvent = new MockDragEvent(fileItem());
+      const dragLeaveEvent = new MockDragEvent(fileItem());
 
       dragLeaveEvent.relatedTarget = document.createElement('div');
 
@@ -154,14 +136,8 @@ describe('<DropZone>', function() {
       // given
       const wrapper = shallow(<DropZone />);
 
-      const dragOverEvent = new MockDragEvent({
-        type: '',
-        kind: 'file'
-      });
-      const dropEvent = new MockDragEvent({
-        type: '',
-        kind: 'file'
-      });
+      const dragOverEvent = new MockDragEvent(fileItem('bpmn'));
+      const dropEvent = new MockDragEvent(fileItem('bpmn', '/path.bpmn'));
 
       // when
       wrapper.simulate('dragover', dragOverEvent);
@@ -193,33 +169,48 @@ describe('<DropZone>', function() {
     });
 
 
-    it('should call passed onDrop prop with files', function() {
+    it('should call passed onDrop prop with filepaths from file', function() {
 
       // given
       const dropSpy = sinon.spy();
 
       const wrapper = shallow(<DropZone onDrop={ dropSpy } />);
 
-      const dragOverEvent = new MockDragEvent({
-        type: '',
-        kind: 'file'
-      });
-      const dropEvent = new MockDragEvent({
-        type: '',
-        kind: 'file'
-      });
+      const dragOverEvent = new MockDragEvent(fileItem('text/bpmn'));
+      const dropEvent = new MockDragEvent(fileItem('text/bpmn', '/diagram_1.bpmn'));
 
       // when
       wrapper.simulate('dragover', dragOverEvent);
       wrapper.simulate('drop', dropEvent);
 
       // then
-      expect(dropSpy).to.be.calledOnce;
-      expect(dropSpy.getCall(0).args).to.have.lengthOf(1);
-      expect(dropSpy.getCall(0).args[0]).to.be.an('Array').with.lengthOf(1);
-
+      return expectEventually(() => {
+        expect(dropSpy).to.be.calledOnce;
+        expect(dropSpy).to.have.been.calledOnceWithExactly([ '/diagram_1.bpmn' ]);
+      });
     });
 
+
+    it('should call passed onDrop prop with filepaths from VSCode', function() {
+
+      // given
+      const dropSpy = sinon.spy();
+
+      const wrapper = shallow(<DropZone onDrop={ dropSpy } />);
+
+      const dragOverEvent = new MockDragEvent(vsCodeItem());
+      const dropEvent = new MockDragEvent(vsCodeItem('/diagram.bpmn', '/form.form'));
+
+      // when
+      wrapper.simulate('dragover', dragOverEvent);
+      wrapper.simulate('drop', dropEvent);
+
+      // then
+      return expectEventually(() => {
+        expect(dropSpy).to.be.calledOnce;
+        expect(dropSpy).to.have.been.calledOnceWithExactly([ '/diagram.bpmn', '/form.form' ]);
+      });
+    });
   });
 
 });
@@ -227,24 +218,20 @@ describe('<DropZone>', function() {
 
 describe('DropZone - isDropableItem', function() {
 
-  function item(kind, type) {
-    return { kind, type };
-  }
-
-
   it('should detect droppable file types', function() {
 
     // given
     const droppables = [
-      item('file', ''),
-      item('file', 'text/plain'),
-      item('file', 'application/xml'),
-      item('file', 'application/rss+xml'),
-      item('file', 'application/bpmn+xml'),
-      item('file', 'application/cmmn'),
-      item('file', 'application/dmn'),
-      item('file', 'application/bpmn'),
-      item('file', 'text/xml')
+      fileItem(''),
+      fileItem('text/plain'),
+      fileItem('application/xml'),
+      fileItem('application/rss+xml'),
+      fileItem('application/bpmn+xml'),
+      fileItem('application/cmmn'),
+      fileItem('application/dmn'),
+      fileItem('application/bpmn'),
+      fileItem('text/xml'),
+      vsCodeItem('/my-file')
     ];
 
 
@@ -263,7 +250,8 @@ describe('DropZone - isDropableItem', function() {
     // given
     const nonDroppables = [
       item('foo', 'application/xml'),
-      item('file', 'application/png+image')
+      item('file', 'application/png+image'),
+      item('string', 'text/plain')
     ];
 
     // then
@@ -283,11 +271,58 @@ class MockDragEvent {
   constructor(...items) {
     this.dataTransfer = {
       items,
-      files: items
+      files: items.filter(item => item.path)
     };
   }
 
   preventDefault() {}
 
   stopPropagation() {}
+}
+
+function item(kind, type, rest) {
+  return {
+    kind,
+    type,
+    ...rest
+  };
+}
+
+function fileItem(type = '', path = '') {
+  return item('file', type, { path });
+}
+
+function vsCodeItem(...filepaths) {
+  return item('string', 'codefiles', {
+    getAsString(cb) {
+      cb(JSON.stringify(filepaths));
+    }
+  });
+}
+
+async function expectEventually(expectStatement) {
+  const sleep = time => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, time);
+    });
+  };
+
+  for (let i = 0; i < 10; i++) {
+    try {
+      expectStatement();
+
+      // success
+      return;
+    } catch {
+
+      // do nothing
+    }
+
+    await sleep(50);
+  }
+
+  // let it fail correctly
+  expectStatement();
 }

@@ -12,6 +12,8 @@ import React from 'react';
 
 import css from './DropZone.less';
 
+const VSCODE_FILE_TYPE = 'codefiles';
+
 
 export class DropZone extends React.PureComponent {
   constructor(props) {
@@ -67,7 +69,14 @@ export class DropZone extends React.PureComponent {
 
     this.setState({ draggingOver: false });
 
-    this.props.onDrop(event.dataTransfer.files);
+    const filesToOpen = await Promise.all([
+      handleDropFromFileSystem(event),
+      handleDropFromVSCode(event)
+    ]).then(result => result.flat());
+
+    if (filesToOpen.length) {
+      this.props.onDrop(filesToOpen);
+    }
   }
 
   render() {
@@ -104,16 +113,58 @@ function DropOverlay() {
  * Checks for droppable items e.g. text/foo, text/plain, application/foo+xml,
  * application/bpmn, application/cmmn, application/dmn.
  *
- * @param {Object} item - Item to be dropped.
+ * @param {DataTransferItem} item - Item to be dropped.
  *
  * @returns {boolean}
  */
 export function isDropableItem(item) {
   const { kind, type } = item;
 
+  if (kind === 'string' && type === VSCODE_FILE_TYPE) {
+    return true;
+  }
+
   if (kind !== 'file') {
     return false;
   }
 
   return /^(text\/.*|application\/([^+]*\+)?xml|application\/(cmmn|bpmn|dmn))?$/.test(type);
+}
+
+/**
+ * Retrieve file paths from file system drop event.
+ *
+ * @param {DragEvent} dropEvent
+ */
+function handleDropFromFileSystem(dropEvent) {
+  const { files } = dropEvent.dataTransfer;
+
+  return Array.from(files).map(file => file.path);
+}
+
+/**
+ * Retrieve file paths from VS Code drop event.
+ *
+ * @param {DragEvent} dropEvent
+ */
+async function handleDropFromVSCode(dropEvent) {
+  const { items } = dropEvent.dataTransfer;
+
+  const vscodeFilesItem = Array.from(items).find(item => item.type === VSCODE_FILE_TYPE);
+
+  if (!vscodeFilesItem) {
+    return [];
+  }
+
+  try {
+    const filePaths = await new Promise(resolve => {
+      vscodeFilesItem.getAsString(itemContent => {
+        resolve(JSON.parse(itemContent));
+      });
+    });
+
+    return filePaths;
+  } catch (error) {
+    return [];
+  }
 }

@@ -2568,15 +2568,9 @@ describe('<App>', function() {
       directoryReadError.code = 'EISDIR';
 
       const files = [
-        {
-          path: '/dev/null/'
-        },
-        {
-          path: './CamundaModeler'
-        },
-        {
-          path: './diagram.bpmn'
-        }
+        '/dev/null/',
+        './CamundaModeler',
+        './diagram.bpmn'
       ];
 
       const fileSystem = new FileSystem();
