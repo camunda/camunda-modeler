@@ -91,6 +91,12 @@ Based on the [test diagram](./test.bpmn.png):
 * [ ] Set the **Execution Platform Version** to `Camunda Cloud 1.2`
     * [ ] 0 errors are shown
 
+#### BPMN + Camunda Forms deployment
+
+* [ ] Create a simple `Start Event -> User Task -> End Event` process
+* [ ] Create a simple form with id `foo`
+* [ ] Reference the form in the user task via `Camunda Forms -> reference=foo`
+* [ ] Verify that deployment of BPMN + Form file works
 
 #### FS integration (platform specific)
 
