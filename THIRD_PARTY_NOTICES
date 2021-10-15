@@ -211,7 +211,7 @@ This project incorporates components from the projects listed below. The origina
 204.  zeebe-node@1.4.0 (https://github.com/camunda-community-hub/zeebe-client-node-js)
 205.  @bpmn-io/add-exporter@0.2.0 (https://github.com/bpmn-io/add-exporter)
 206.  @bpmn-io/align-to-origin@0.7.0 (https://github.com/bpmn-io/align-to-origin)
-207.  @bpmn-io/bpmn-properties-panel@0.2.0 (https://github.com/bpmn-io/bpmn-properties-panel)
+207.  @bpmn-io/bpmn-properties-panel@0.3.0 (https://github.com/bpmn-io/bpmn-properties-panel)
 208.  @bpmn-io/dmn-migrate@0.4.3 (https://github.com/bpmn-io/dmn-migrate)
 209.  @bpmn-io/element-templates-validator@0.2.0 (https://github.com/bpmn-io/element-templates-validator)
 210.  @bpmn-io/extract-process-variables@0.4.3 (https://github.com/bpmn-io/extract-process-variables)
@@ -230,8 +230,8 @@ This project incorporates components from the projects listed below. The origina
 223.  bpmn-js-signavio-compat@1.2.3 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
 224.  bpmn-js@8.7.3 (https://github.com/bpmn-io/bpmn-js)
 225.  bpmn-moddle@7.1.2 (https://github.com/bpmn-io/bpmn-moddle)
-226.  camunda-bpmn-js@0.11.2 (https://github.com/camunda/camunda-bpmn-js)
-227.  camunda-bpmn-moddle@6.1.0 (https://github.com/camunda/camunda-bpmn-moddle)
+226.  camunda-bpmn-js@0.11.3 (https://github.com/camunda/camunda-bpmn-js)
+227.  camunda-bpmn-moddle@6.1.1 (https://github.com/camunda/camunda-bpmn-moddle)
 228.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
 229.  camunda-dmn-moddle@1.1.0 (https://github.com/camunda/camunda-dmn-moddle)
 230.  canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
@@ -7781,7 +7781,7 @@ THE SOFTWARE.
 END OF @bpmn-io/align-to-origin@0.7.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/bpmn-properties-panel@0.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/bpmn-properties-panel@0.3.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -7805,7 +7805,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/bpmn-properties-panel@0.2.0 NOTICES AND INFORMATION
+END OF @bpmn-io/bpmn-properties-panel@0.3.0 NOTICES AND INFORMATION
 
 
 %% @bpmn-io/dmn-migrate@0.4.3 NOTICES AND INFORMATION BEGIN HERE
@@ -8253,7 +8253,7 @@ THE SOFTWARE.
 END OF bpmn-moddle@7.1.2 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@0.11.2 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@0.11.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -8277,10 +8277,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@0.11.2 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@0.11.3 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-moddle@6.1.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-moddle@6.1.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -8304,7 +8304,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-moddle@6.1.0 NOTICES AND INFORMATION
+END OF camunda-bpmn-moddle@6.1.1 NOTICES AND INFORMATION
 
 
 %% camunda-cmmn-moddle@1.0.0 NOTICES AND INFORMATION BEGIN HERE
