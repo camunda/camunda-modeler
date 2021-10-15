@@ -6,6 +6,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.11.1
+
+* `FIX`: correct deployment of Camunda Forms with `camunda:formRefBinding=latest` ([#2484](https://github.com/camunda/camunda-modeler/issues/2484))
+* `FIX`: quit application on MacOS when forcefully requested ([#1803](https://github.com/camunda/camunda-modeler/issues/1803))
+
 ## 4.11.0
 
 ### General
