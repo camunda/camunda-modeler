@@ -1,4 +1,6 @@
 .modal {
+  --input-width: calc(100% - 40px);
+
   position: absolute;
   top: 0;
   left: 0;
@@ -98,6 +100,16 @@
   .fields {
     display: grid;
     grid-row-gap: 15px;
+  }
+
+  input[type=password].form-control,
+  input[type=text].form-control,
+  select.form-control {
+    width: var(--input-width);
+  }
+
+  .file-list-item {
+    grid-template-columns: var(--input-width) auto;
   }
 }
 
