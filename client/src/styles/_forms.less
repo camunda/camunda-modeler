@@ -1,6 +1,4 @@
 .form-group {
-
-  --input-width: calc(100% - 40px);
   --input-background-color: var(--color-ffffff);
 
   input[type=password].form-control,
@@ -9,7 +7,7 @@
     border-radius: 3px;
     border: solid 1px var(--silver-darken-80);
     background-color: var(--input-background-color);
-    width: var(--input-width);
+    width: 100%;
     height: 30px;
     font-size: 13px;
     padding-left: 8px;
@@ -309,7 +307,7 @@
   .file-list-item {
     display: grid;
     align-items: center;
-    grid-template-columns: var(--input-width) auto;
+    grid-template-columns: 100% auto;
   }
 
   .file-list-item-content {
