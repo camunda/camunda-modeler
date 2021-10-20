@@ -16,7 +16,7 @@ import {
 
 import EmptyTab from '../EmptyTab';
 
-import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE } from '../../util/Flags';
+import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../util/Flags';
 
 /* global sinon */
 
@@ -122,6 +122,49 @@ describe('<EmptyTab>', function() {
           wrapper => wrapper.text().startsWith('Form')
         ).first().exists()
       ).to.be.true;
+    });
+
+  });
+
+
+  describe('enable platform', function() {
+
+    afterEach(sinon.restore);
+
+    it('should display platform without flag', function() {
+
+      // when
+      const {
+        tree
+      } = createEmptyTab();
+
+      // then
+      expect(tree.find('.create-buttons')).to.have.length(2);
+      expect(
+        tree.findWhere(
+          wrapper => wrapper.text().startsWith('Camunda Platform')
+        ).exists()
+      ).to.be.true;
+    });
+
+
+    it('should NOT display platform with flag', function() {
+
+      // given
+      sinon.stub(Flags, 'get').withArgs(DISABLE_PLATFORM).returns(true);
+
+      // given
+      const {
+        tree
+      } = createEmptyTab();
+
+      // then
+      expect(tree.find('.create-buttons')).to.have.length(1);
+      expect(
+        tree.findWhere(
+          wrapper => wrapper.text().startsWith('Camunda Platform')
+        ).exists()
+      ).to.be.false;
     });
 
   });

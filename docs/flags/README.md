@@ -33,6 +33,7 @@ Flags passed as command line arguments take precedence over those configured via
 | "disable-adjust-origin"  | false |
 | "disable-cmmn" | true |
 | "disable-dmn" | false |
+| "disable-platform" | false |
 | "disable-zeebe" | false |
 | "disable-remote-interaction" | false |
 | "single-instance" | false |
