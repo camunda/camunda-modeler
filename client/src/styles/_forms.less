@@ -1,5 +1,8 @@
 .form-group {
   --input-background-color: var(--color-ffffff);
+  --toggle-switch-on-background-color: var(--blue-darken-55);
+  --toggle-switch-off-background-color: var(--color-cccccc);
+  --toggle-switch-switcher-background-color: var(--color-ffffff);
 
   input[type=password].form-control,
   input[type=text].form-control,
@@ -355,5 +358,82 @@
     .error {
       margin-left: 3px;
     }
+  } 
+}
+
+.custom-control-toggle {
+
+  margin-top: -8px;
+  
+  > .description {
+    margin:6px 0 6px 38px;
+    font-size: 13px;
+    color: var(--grey-lighten-56);
+
+  }
+  
+  .toggle-switch .field-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .toggle-switch > .label {
+    font-size: var(--text-size-base);
+  }
+  
+  .toggle-switch .toggle-switch__label {
+    margin: 0;
+    margin-left: 6px;
+    font-size: var(--text-size-base);
+  }
+  
+  .toggle-switch .toggle-switch__switcher {
+    position: relative;
+    width: 32px;
+    height: 16px;
+  }
+  
+  .toggle-switch .toggle-switch__switcher input[type='checkbox'] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .toggle-switch .toggle-switch__switcher .toggle-switch__slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--toggle-switch-off-background-color);
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+  
+  .toggle-switch .toggle-switch__switcher .toggle-switch__slider:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 2px;
+    bottom: 2px;
+    background-color: var(--toggle-switch-switcher-background-color);
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  .toggle-switch .toggle-switch__switcher input[type='checkbox']:checked + .toggle-switch__slider {
+    background-color: var(--toggle-switch-on-background-color);
+    box-shadow: 0 0 1px ;
+  }
+  
+  .toggle-switch .toggle-switch__switcher input[type='checkbox']:checked + .toggle-switch__slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
   }
 }
+
