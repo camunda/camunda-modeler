@@ -22,7 +22,7 @@ import {
   Tab
 } from './primitives';
 
-import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE } from '../util/Flags';
+import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM } from '../util/Flags';
 
 
 export default class EmptyTab extends PureComponent {
@@ -96,7 +96,11 @@ export default class EmptyTab extends PureComponent {
 
     return (
       <Tab className={ css.EmptyTab }>
-        {this.renderPlatformColumn()}
+        {
+          !Flags.get(DISABLE_PLATFORM) && (
+            this.renderPlatformColumn()
+          )
+        }
 
         {
           !Flags.get(DISABLE_ZEEBE) && (

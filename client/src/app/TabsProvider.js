@@ -37,11 +37,12 @@ import {
 } from './tabs/util/namespace';
 
 import {
-  Flags,
   generateId
 } from '../util';
 
 import FormLinter from './tabs/form/linting/FormLinter';
+
+import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM, DISABLE_CMMN } from '../util/Flags';
 
 const createdByType = {};
 
@@ -382,22 +383,35 @@ export default class TabsProvider {
       form: [ this.providers['cloud-form'], this.providers.form ]
     };
 
-    if (Flags.get('disable-zeebe')) {
+    if (Flags.get(DISABLE_ZEEBE)) {
       this.providersByFileType.bpmn = this.providersByFileType.bpmn.filter(p => p !== this.providers['cloud-bpmn']);
       delete this.providers['cloud-bpmn'];
     }
 
-    if (Flags.get('disable-cmmn', true)) {
+    if (Flags.get(DISABLE_PLATFORM)) {
+      this.providersByFileType.bpmn = this.providersByFileType.bpmn.filter(p => p !== this.providers.bpmn);
+      delete this.providers.bpmn;
+
+      delete this.providers.cmmn;
+      delete this.providersByFileType.cmmn;
+
+      delete this.providers.dmn;
+      delete this.providersByFileType.dmn;
+
+      delete this.providers.form;
+    }
+
+    if (Flags.get(DISABLE_CMMN, true)) {
       delete this.providers.cmmn;
       delete this.providersByFileType.cmmn;
     }
 
-    if (Flags.get('disable-dmn')) {
+    if (Flags.get(DISABLE_DMN)) {
       delete this.providers.dmn;
       delete this.providersByFileType.dmn;
     }
 
-    if (Flags.get('disable-form')) {
+    if (Flags.get(DISABLE_FORM)) {
       delete this.providers.form;
       delete this.providers['cloud-form'];
       delete this.providersByFileType.form;
