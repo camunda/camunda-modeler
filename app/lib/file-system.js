@@ -7,121 +7,98 @@
  * Camunda licenses this file to you under the MIT; you may not use this file
  * except in compliance with the MIT License.
  */
-
 'use strict';
-
 const fs = require('fs'),
-      path = require('path');
-
+	path = require('path');
 const {
-  assign,
-  pick
+	assign,
+	pick
 } = require('min-dash');
-
 const log = require('./log')('app:file-system');
-
-/**
- * @typedef FileDescriptor
- * @property {string|Buffer} contents
- * @property {number} lastModified
- * @property {string} name
- * @property {string} path
+/*
+  -> @typedef FileDescripter
+  -> @property {string|Buffer} Contents
+  -> @property {number} LastModified
+  -> @property {string} Name
+ -> @property {string} Path
  */
-
-const FILE_PROPERTIES = [
-  'contents',
-  'lastModified',
-  'name',
-  'path'
-];
-
+const FILE_PROPERTIES = ['contents', 'lastModified', 'name', 'path'];
 const ENCODING_BASE64 = 'base64',
-      ENCODING_UTF8 = 'utf8';
+	ENCODING_UTF8 = 'utf8';
+/*
+  -> Read file.
+ 
+  -> @param {string} filePath - Filepath.
+  -> @param {Object} [options] - Options.
+  -> @param {string|false} [options.encoding] - Encoding. Set false to receive Buffer.
 
-
-/**
- * Read file.
- *
- * @param {string} filePath - Filepath.
- * @param {Object} [options] - Options.
- * @param {string|false} [options.encoding] - Encoding. Set to false to receive Buffer.
- *
- * @return {FileDescriptor}
+ -> @return {FileDescriptor}
  */
-module.exports.readFile = function(filePath, options = {}) {
-  let { encoding } = options;
-
-  if (!encoding && encoding !== false) {
-    encoding = ENCODING_UTF8;
-  }
-
-  const fileContents = encoding ? fs.readFileSync(filePath, encoding) : fs.readFileSync(filePath);
-
-  return createFile({
-    path: filePath,
-    contents: fileContents,
-    lastModified: getLastModifiedTicks(filePath)
-  });
+module.exports.readFile = function (filePath, options = {}) {
+	let {
+		encoding
+	} = options;
+	if (!encoding && encoding !== false) {
+		encoding = ENCODING_UTF8;
+	}
+	const fileContents = encoding ? fs.readFileSync(filePath, encoding) : fs.readFileSync(filePath);
+	return createFile({
+		path: filePath,
+		contents: fileContents,
+		lastModified: getLastModifiedTicks(filePath)
+	});
 };
-
-/**
- * Read file stats for file.
- *
- * @param {Object} file - File.
- *
- * @return {FileDescriptor}
+/*
+ -> Read file stats for file.
+ 
+ -> @param {Object} file - File.
+ 
+ ->  @return {FileDescriptor}
  */
-module.exports.readFileStats = function(file) {
-  const { path } = file;
-
-  return createFile(file, {
-    lastModified: getLastModifiedTicks(path)
-  });
+module.exports.readFileStats = function (file) {
+	const {
+		path
+	} = file;
+	return createFile(file, {
+		lastModified: getLastModifiedTicks(path)
+	});
 };
-
-/**
+/*
  * Write file.
- *
- * @param {string} filePath - Filepath.
- * @param {Object} file - File.
- * @param {Object} [options] - Options.
- * @param {Object} [options.encoding] - Encoding.
- *
- * @return {Object}
+ 
+  -> @param {string} filePath - Filepath.
+  -> @param {Object} file - File.
+  -> @param {Object} [options] - Options.
+  -> @param {Object} [options.encoding] - Encoding.
+ 
+ -> @return {Object}
  */
-module.exports.writeFile = function(filePath, file, options = {}) {
-  let { contents } = file;
-
-  let {
-    encoding,
-    fileType
-  } = options;
-
-  if (!encoding) {
-    encoding = ENCODING_UTF8;
-  }
-
-  if (encoding === ENCODING_BASE64) {
-    contents = getBase64Contents(contents);
-  }
-
-  if (fileType) {
-    filePath = ensureExtension(filePath, fileType);
-  }
-
-  file = createFile(file, {
-    path: filePath
-  });
-
-  fs.writeFileSync(filePath, contents, encoding);
-
-  return createFile(file, {
-    lastModified: getLastModifiedTicks(filePath)
-  });
+module.exports.writeFile = function (filePath, file, options = {}) {
+	let {
+		contents
+	} = file;
+	let {
+		encoding,
+		fileType
+	} = options;
+	if (!encoding) {
+		encoding = ENCODING_UTF8;
+	}
+	if (encoding === ENCODING_BASE64) {
+		contents = getBase64Contents(contents);
+	}
+	if (fileType) {
+		filePath = ensureExtension(filePath, fileType);
+	}
+	file = createFile(file, {
+		path: filePath
+	});
+	fs.writeFileSync(filePath, contents, encoding);
+	return createFile(file, {
+		lastModified: getLastModifiedTicks(filePath)
+	});
 };
-
 // helpers //////////
-
 /**
  * Return last modified for the given file path.
  *
@@ -130,18 +107,14 @@ module.exports.writeFile = function(filePath, file, options = {}) {
  * @return {Integer}
  */
 function getLastModifiedTicks(filePath) {
-  try {
-    const stats = fs.statSync(filePath);
-
-    return stats.mtime.getTime() || 0;
-  } catch (err) {
-    log.error(`Unable to read lastModified of file "${ filePath }"`);
-
-    return 0;
-  }
+	try {
+		const stats = fs.statSync(filePath);
+		return stats.mtime.getTime() || 0;
+	} catch (err) {
+		log.error(`Unable to read lastModified of file "${ filePath }"`);
+		return 0;
+	}
 }
-
-
 /**
  * Create a file descriptor from optional old file and new file properties.
  * Assures only known properties are used.
@@ -152,23 +125,18 @@ function getLastModifiedTicks(filePath) {
  * @return {FileDescriptor}
  */
 function createFile(oldFile, newFile) {
-  if (!newFile) {
-    newFile = oldFile;
-    oldFile = {};
-  } else {
-    oldFile = pick(oldFile, FILE_PROPERTIES);
-  }
-
-  newFile = pick(newFile, FILE_PROPERTIES);
-
-  if (newFile.path) {
-    newFile.name = path.basename(newFile.path);
-  }
-
-  return assign({}, oldFile, newFile);
+	if (!newFile) {
+		newFile = oldFile;
+		oldFile = {};
+	} else {
+		oldFile = pick(oldFile, FILE_PROPERTIES);
+	}
+	newFile = pick(newFile, FILE_PROPERTIES);
+	if (newFile.path) {
+		newFile.name = path.basename(newFile.path);
+	}
+	return assign({}, oldFile, newFile);
 }
-
-
 /**
  * Ensure that the file path has an extension,
  * defaulting to defaultExtension if non is present.
@@ -179,11 +147,10 @@ function createFile(oldFile, newFile) {
  * @return {string} filePath that definitely has an extension
  */
 function ensureExtension(filePath, defaultExtension) {
-  const extension = path.extname(filePath);
-
-  return extension ? filePath : `${filePath}.${defaultExtension}`;
+	const extension = path.extname(filePath);
+	return extension ? filePath : `${filePath}.${defaultExtension}`;
 }
 
 function getBase64Contents(contents) {
-  return contents.replace(/^data:image\/(jpeg|png)+;base64,/, '');
-}
+	return contents.replace(/^data:image\/(jpeg|png)+;base64,/, '');
+} 
