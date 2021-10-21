@@ -5,6 +5,19 @@
 
   flex-direction: column;
 
+  .dmn-drd-container {
+    --drd-font-family-monospace: var(--font-family-monospace);
+  }
+
+  .dmn-decision-table-container {
+    --decision-table-font-family: var(--font-family);
+  }
+
+  .dmn-literal-expression-container {
+    --literal-expression-font-family: var(--font-family);
+    --literal-expression-font-family-monospace: var(--font-family-monospace);
+  }
+
   :not(.top) + .bottom {
     .dmn-decision-table-container,
     .dmn-literal-expression-container {
