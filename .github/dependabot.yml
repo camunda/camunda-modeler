@@ -14,32 +14,40 @@ updates:
     reviewers:
       - "bpmn-io/modeling-dev"
     commit-message:
-      prefix: "deps:"
+      prefix: "deps(builder):"
     versioning-strategy: "increase-if-necessary"
     open-pull-requests-limit: 0
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "bpmn-io/modeling-dev"
+    commit-message:
+      prefix: "deps(builder):"
+    versioning-strategy: "increase"
+    open-pull-requests-limit: 2
+    allow:
+      - dependency-name: "electron"
+      - dependency-name: "electron-builder"
+      - dependency-name: "electron-notarize"
   - package-ecosystem: "npm"
     directory: "app"
     schedule:
       interval: "monthly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Europe/Berlin"
     reviewers:
       - "bpmn-io/modeling-dev"
     commit-message:
-      prefix: "deps:"
+      prefix: "deps(app):"
     versioning-strategy: "increase-if-necessary"
     open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "client"
     schedule:
       interval: "monthly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Europe/Berlin"
     reviewers:
       - "bpmn-io/modeling-dev"
     commit-message:
-      prefix: "deps:"
+      prefix: "deps(client):"
     versioning-strategy: "increase-if-necessary"
     open-pull-requests-limit: 0
