@@ -146,35 +146,47 @@
     display: inline-block;
     vertical-align: middle;
     padding: 0 2px;
-    margin-left: 3px;
 
     font-size: 18px;
     line-height: 9px;
     vertical-align: middle;
     width: 13px;
 
-    &:before {
-      content: '×';
+    .icon {
+      margin-top: -1px;
+    }
+
+    .close-icon {
+      transform: scale(0.9);
+      fill: var(--color-000000);
     }
 
     &:hover {
-      color: var(--blue-darken-48);
+      .close-icon {
+        fill: var(--blue-darken-48);
+      }
     }
   }
 
 
   .tab.dirty .close {
-
-    &:not(:hover) {
-      color: var(--silver-darken-80);
-      margin-top: -3px;
-      padding: 0;
-      font-size: 22px;
-      font-weight: bold;
+    .dirty-icon {
+      transform: scale(0.8);
+      fill: var(--silver-darken-80);
     }
 
-    &:not(:hover):before {
-      content: '○';
+    .close-icon {
+      display: none;
+    }
+
+    &:hover {
+      .close-icon {
+        display: block;
+      }
+      
+      .dirty-icon {
+        display: none
+      }
     }
   }
 }

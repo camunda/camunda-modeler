@@ -27,6 +27,9 @@ import {
   debounce
 } from '../../util';
 
+import TabCloseIcon from '../../../resources/icons/TabClose.svg';
+import CircleIcon from '../../../resources/icons/Circle.svg';
+
 const noop = () => {};
 
 const TABS_OPTS = {
@@ -169,7 +172,12 @@ export default class TabLinks extends PureComponent {
 
                         onClose(tab);
                       } }
-                    />
+                    >
+                      {
+                        dirty ? <CircleIcon className="icon dirty-icon" /> : null
+                      }
+                      <TabCloseIcon className="icon close-icon" />
+                    </span>
                   }
                 </span>
               );
