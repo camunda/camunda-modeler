@@ -1,6 +1,6 @@
 # Security
 
-Camunda takes security bugs in the our software products seriously. This covers source code repositories managed through our GitHub organizations, including [Camunda](https://github.com/camunda) and [bpmn.io](https://github.com/bpmn-io). 
+Camunda takes security bugs in the software products seriously. This covers source code repositories managed through our GitHub organizations, including [Camunda](https://github.com/camunda) and [bpmn.io](https://github.com/bpmn-io). 
 
 If you believe you have found a security vulnerability in the [Camunda Modeler](https://github.com/camunda/camunda-modeler) or a [bpmn.io library](https://github.com/bpmn-io), please report it to us [as described below](#reporting-security-issues). Head over to the [Camunda security page](https://docs.camunda.org/security/report-vulnerability/) to report vulnerabilities in other Camunda products.
 
