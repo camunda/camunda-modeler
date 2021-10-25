@@ -23,26 +23,28 @@ export default function ToggleSwitch(props) {
   } = props;
 
   return (
-    <div className="custom-control-toggle" data-entry-id={ id }>
-      <div className="toggle-switch">
-        <label className="label"
-          htmlFor={ id }>
-          { label }
-        </label>
-        <div className="field-wrapper custom-control custom-checkbox">
-          <label className="toggle-switch__switcher">
-            <input
-              type="checkbox"
-              { ...field }
-              { ...restProps }
-              checked={ field.value }
-            />
-            <span className="toggle-switch__slider" />
+    <div className="form-group">
+      <div className="custom-control-toggle" data-entry-id={ id }>
+        <div className="toggle-switch">
+          <label className="label"
+            htmlFor={ id }>
+            { label }
           </label>
-          <p className="toggle-switch__label">{ switcherLabel }</p>
+          <div className="field-wrapper">
+            <label className="toggle-switch__switcher">
+              <input
+                type="checkbox"
+                { ...field }
+                { ...restProps }
+                checked={ field.value }
+              />
+              <span className="toggle-switch__slider" />
+            </label>
+            <p className="toggle-switch__label">{ switcherLabel }</p>
+          </div>
         </div>
+        { description && <div className="description">{ description }</div> }
       </div>
-      { description && <div className="description">{ description }</div> }
     </div>
   );
 }
