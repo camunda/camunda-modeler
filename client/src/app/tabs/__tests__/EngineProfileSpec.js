@@ -29,6 +29,8 @@ import { engineProfile as bpmnEngineProfile } from '../bpmn/BpmnEditor';
 import { engineProfile as cloudBpmnEngineProfile } from '../cloud-bpmn/BpmnEditor';
 import { engineProfile as dmnEngineProfile } from '../dmn/DmnEditor';
 
+import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../../util/Flags';
+
 const spy = sinon.spy;
 
 const allEngineProfiles = engineProfiles.reduce((allEngineProfiles, engineProfile) => {
@@ -232,6 +234,70 @@ describe('<EngineProfile>', function() {
           expect(select.prop('value')).to.equal(executionPlatformVersion);
         });
 
+      });
+
+    });
+
+
+    describe('not show disabled engine profile', function() {
+
+      afterEach(sinon.restore);
+
+      it('should not show Cloud if DISABLE_ZEEBE ', function() {
+
+        // given
+        sinon.stub(Flags, 'get').withArgs(DISABLE_ZEEBE).returns(true);
+
+        wrapper = renderEngineProfile({
+          type: 'form',
+          engineProfile: {
+            executionPlatform:'Camunda Platform',
+            executionPlatformVersion:'7.16'
+          }
+        });
+
+        // when
+        wrapper.find('button').simulate('click');
+
+        // then
+        expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
+        expect(wrapper.find('EngineProfileSelection').exists()).to.be.true;
+
+        const platformInput = wrapper.find('label').filterWhere((item) => item.prop('htmlFor') === `execution-platform-${ toKebapCase('Camunda Platform') }`);
+        expect(platformInput.exists()).to.be.true;
+
+        const cloudInput = wrapper.find('label').filterWhere((item) => item.prop('htmlFor') === `execution-platform-${ toKebapCase('Camunda Cloud') }`);
+        expect(cloudInput.exists()).to.be.false;
+
+      });
+
+
+      it('should not show Platform if DISABLE_PLATFORM ', function() {
+
+        // given
+        sinon.stub(Flags, 'get').withArgs(DISABLE_PLATFORM).returns(true);
+
+        wrapper = renderEngineProfile({
+          type: 'form',
+          engineProfile: {
+            executionPlatform:'Camunda Cloud',
+            executionPlatformVersion:'1.2'
+          }
+        });
+
+        // when
+        wrapper.find('button').simulate('click');
+
+        // then
+        expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
+        expect(wrapper.find('EngineProfileSelection').exists()).to.be.true;
+
+
+        const cloudInput = wrapper.find('label').filterWhere((item) => item.prop('htmlFor') === `execution-platform-${ toKebapCase('Camunda Cloud') }`);
+        expect(cloudInput.exists()).to.be.true;
+
+        const platformInput = wrapper.find('label').filterWhere((item) => item.prop('htmlFor') === `execution-platform-${ toKebapCase('Camunda Platform') }`);
+        expect(platformInput.exists()).to.be.false;
       });
 
     });

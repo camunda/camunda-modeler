@@ -19,6 +19,8 @@ import { Fill } from '../slot-fill';
 import Arrow from '../../../resources/icons/Arrow.svg';
 import LinkArrow from '../../../resources/icons/LinkArrow.svg';
 
+import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../util/Flags';
+
 import css from './EngineProfile.less';
 
 export const engineProfiles = [
@@ -114,6 +116,8 @@ function EngineProfileSelection(props) {
 
   const [ error, setError ] = useState(null);
 
+  const enabledEngineOptions = filterEngineOptions();
+
   const onSelectEngineProfile = (newExecutionPlatform, newExecutionPlatformVersion) => {
     const newEngineProfile = {
       executionPlatform: newExecutionPlatform,
@@ -139,6 +143,15 @@ function EngineProfileSelection(props) {
       return;
     }
 
+    if (enabledEngineOptions.length === 1 && isEngineDisabled(selectedEngineProfile)) {
+      const allowedEngine = filterEngineOptions()[0];
+
+      props.setEngineProfile({
+        executionPlatform: allowedEngine.executionPlatform,
+        executionPlatformVersion: allowedEngine.executionPlatformVersions[0]
+      });
+    }
+
     if (!engineProfilesEqual(selectedEngineProfile, engineProfile)) {
       props.setEngineProfile(selectedEngineProfile);
     }
@@ -154,12 +167,13 @@ function EngineProfileSelection(props) {
       <Overlay.Body className={ css.EngineProfileSelection }>
         <div className="form-group form-inline">
           {
-            engineProfiles.map((engineProfile) => {
+            enabledEngineOptions.map((engineProfile) => {
               return <EngineProfileOption
                 engineProfile={ engineProfile }
                 key={ engineProfile.executionPlatform }
                 onSelectEngineProfile={ onSelectEngineProfile }
-                selectedEngineProfile={ selectedEngineProfile } />;
+                selectedEngineProfile={ selectedEngineProfile }
+                onlyEngine={ enabledEngineOptions.length === 1 } />;
             })
           }
           { error && <div className="error">Select one option.</div> }
@@ -177,7 +191,8 @@ function EngineProfileOption(props) {
   const {
     engineProfile,
     onSelectEngineProfile,
-    selectedEngineProfile
+    selectedEngineProfile,
+    onlyEngine
   } = props;
 
   const {
@@ -203,13 +218,18 @@ function EngineProfileOption(props) {
   return <div
     className="custom-control custom-radio platform"
     key={ executionPlatform }>
-    <input
-      id={ id }
-      className="custom-control-input"
-      type="radio"
-      checked={ checked }
-      onChange={ () => {} }
-      onClick={ () => onSelectEngineProfile(executionPlatform, selectedExecutionPlatformVersion) } />
+
+    { onlyEngine ? null
+      : (
+        <input
+          id={ id }
+          className="custom-control-input"
+          type="radio"
+          checked={ checked }
+          onChange={ () => {} }
+          onClick={ () => onSelectEngineProfile(executionPlatform, selectedExecutionPlatformVersion) } />
+      )
+    }
     <label className="custom-control-label" htmlFor={ id }>
       { `${ executionPlatform }${ executionPlatformVersions.length === 1 ? ` ${ executionPlatformVersions[ 0 ] }` : '' }` }
     </label>
@@ -297,6 +317,22 @@ function Link(props) {
       <LinkArrow />
     </a>
   );
+}
+
+function filterEngineOptions() {
+
+  if (!Flags.get(DISABLE_PLATFORM) && ! Flags.get(DISABLE_ZEEBE))
+    return engineProfiles;
+
+  return engineProfiles.filter(
+    option => (
+      Flags.get(DISABLE_PLATFORM) && option.executionPlatform != 'Camunda Platform' ||
+      Flags.get(DISABLE_ZEEBE) && option.executionPlatform != 'Camunda Cloud'
+    ));
+}
+
+function isEngineDisabled(engineProfile) {
+  return !filterEngineOptions().includes(engineProfile);
 }
 
 export function engineProfilesEqual(a, b) {
