@@ -18,6 +18,7 @@ updates:
     versioning-strategy: "increase-if-necessary"
     open-pull-requests-limit: 0
   - package-ecosystem: "npm"
+    target-branch: "develop"
     directory: "/"
     schedule:
       interval: "weekly"
