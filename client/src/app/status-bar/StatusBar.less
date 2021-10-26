@@ -46,6 +46,10 @@
     font-size: inherit;
     font-family: inherit;
 
+    svg {
+      color: var(--status-bar-icon-font-color);
+    }
+
     &:hover {
       background-color: var(--status-bar-hover-background-color);
     }
@@ -55,7 +59,7 @@
       background-color: var(--status-bar-active-background-color);
 
       svg {
-        fill: var(--status-bar-active-font-color)
+        color: var(--status-bar-active-font-color);
       }
     }
 
