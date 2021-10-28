@@ -385,7 +385,9 @@ export default class TabsProvider {
 
     if (Flags.get(DISABLE_ZEEBE)) {
       this.providersByFileType.bpmn = this.providersByFileType.bpmn.filter(p => p !== this.providers['cloud-bpmn']);
+      this.providersByFileType.form = this.providersByFileType.form.filter(p => p !== this.providers['cloud-form']);
       delete this.providers['cloud-bpmn'];
+      delete this.providers['cloud-form'];
     }
 
     if (Flags.get(DISABLE_PLATFORM)) {
