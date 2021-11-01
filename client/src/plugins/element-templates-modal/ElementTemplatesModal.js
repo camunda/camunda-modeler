@@ -52,8 +52,8 @@ export default class ElementTemplatesModal extends PureComponent {
           ...config.additionalModules || [],
           additionalModule
         ],
-        propertiesProvider: {
-          ...config.propertiesProvider || {},
+        foo: {
+          ...config.foo || {},
           openElementTemplatesModal: this.onOpen
         }
       };

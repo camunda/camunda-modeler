@@ -9,13 +9,13 @@
  */
 
 import EditorActions from './EditorActions';
-import PropertiesProvider from './PropertiesProvider';
+import Foo from './Foo';
 
 export default {
   __init__: [
     'elementTemplatesModalEditorActions',
-    'templatesPropertiesProvider'
+    'foo'
   ],
   elementTemplatesModalEditorActions: [ 'type', EditorActions ],
-  templatesPropertiesProvider: [ 'type', PropertiesProvider ]
+  foo: [ 'type', Foo ]
 };
