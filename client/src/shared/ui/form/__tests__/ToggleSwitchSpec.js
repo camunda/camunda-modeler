@@ -35,8 +35,8 @@ describe('<ToggleSwitch>', function() {
     const input = wrapper.find('input');
 
     // then
-    expect(input.prop('checked')).to.be.true;
-
+    expect(input.prop('value')).to.be.true;
+    expect(input.prop('defaultChecked')).to.be.true;
   });
 
 });

@@ -36,7 +36,7 @@ export default function ToggleSwitch(props) {
                 type="checkbox"
                 { ...field }
                 { ...restProps }
-                checked={ field.value }
+                defaultChecked={ field.value }
               />
               <span className="toggle-switch__slider" />
             </label>
