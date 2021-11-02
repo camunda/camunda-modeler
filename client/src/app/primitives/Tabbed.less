@@ -1,5 +1,5 @@
 .tab-base() {
-  border: solid 1px var(--color-dddddd);
+  border: solid 1px var(--color-grey-225-10-75);
   position: relative;
   flex: 1;
 }
@@ -71,20 +71,20 @@
     margin-right: 5px;
     padding: 6px 9px;
     text-align: center;
-    border: solid 1px var(--color-dddddd);
-    color: var(--color-444444);
+    border: solid 1px var(--color-grey-225-10-75);
+    color: var(--color-grey-225-10-15);
 
-    background: #fff;
+    background: var(--color-white);
     cursor: default;
 
     position: relative;
     user-select: none;
 
-    background: var(--color-f6f6f6);
+    background: var(--color-grey-225-10-97);
 
     &:hover,
     &.active {
-      background: var(--color-ffffff);
+      background: var(--color-white);
     }
 
     &.active:before {
@@ -103,15 +103,15 @@
     .tab {
       border-radius: 2px 2px 0 0;
       margin-bottom: -1px;
-      border-bottom: solid 2px var(--color-dddddd);
+      border-bottom: solid 2px var(--color-grey-225-10-75);
 
       &.active {
-        border-top: solid 3px var(--blue-base-65);
+        border-top: solid 3px var(--color-blue-205-100-50);
         border-radius: 3px 3px 0 0;
 
         &:before {
           bottom: -2px;
-          border-bottom: solid 3px var(--color-ffffff);
+          border-bottom: solid 3px var(--color-white);
         }
       }
     }
@@ -127,7 +127,7 @@
       border-radius: 0 0 2px 2px;
       padding: 4px 8px;
       margin-top: -1px;
-      border-top: solid 2px var(--color-dddddd);
+      border-top: solid 2px var(--color-grey-225-10-75);
 
       &:first-child {
         margin-left: 10px;
@@ -136,7 +136,7 @@
       &.active {
         &:before {
           top: -2px;
-          border-top: solid 3px var(--color-ffffff);
+          border-top: solid 3px var(--color-white);
         }
       }
     }
@@ -158,12 +158,12 @@
 
     .close-icon {
       transform: scale(0.9);
-      fill: var(--color-000000);
+      fill: var(--color-grey-225-10-35);
     }
 
     &:hover {
       .close-icon {
-        fill: var(--blue-darken-48);
+        fill: var(--color-blue-205-100-45);
       }
     }
   }
@@ -172,7 +172,7 @@
   .tab.dirty .close {
     .dirty-icon {
       transform: scale(0.8);
-      fill: var(--silver-darken-80);
+      fill: var(--color-grey-225-10-75);
     }
 
     .close-icon {
