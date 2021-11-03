@@ -21,9 +21,10 @@ import {
 
 import {
   EngineProfile,
-  engineProfiles,
   toKebapCase
 } from '../EngineProfile';
+
+import { ENGINE_PROFILES } from '../../../util/Engines';
 
 import { engineProfile as bpmnEngineProfile } from '../bpmn/BpmnEditor';
 import { engineProfile as cloudBpmnEngineProfile } from '../cloud-bpmn/BpmnEditor';
@@ -33,7 +34,7 @@ import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../../util/Flags';
 
 const spy = sinon.spy;
 
-const allEngineProfiles = engineProfiles.reduce((allEngineProfiles, engineProfile) => {
+const allEngineProfiles = ENGINE_PROFILES.reduce((allEngineProfiles, engineProfile) => {
   const {
     executionPlatform,
     executionPlatformVersions

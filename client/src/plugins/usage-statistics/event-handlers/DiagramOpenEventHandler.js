@@ -16,6 +16,8 @@ import { getMetrics } from '../../../util';
 
 import { getEngineProfile as parseEngineProfile } from '../../../util/parse';
 
+import { ENGINES } from '../../../util/Engines';
+
 const HTTP_STATUS_PAYLOAD_TOO_BIG = 413;
 
 const BINDING_TYPE_PROPERTY = 'property';
@@ -257,8 +259,8 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
 function getDefaultExecutionPlatform(type) {
   if (type === 'cloud-bpmn') {
-    return 'Camunda Cloud';
+    return ENGINES.CLOUD;
   }
 
-  return 'Camunda Platform';
+  return ENGINES.PLATFORM;
 }

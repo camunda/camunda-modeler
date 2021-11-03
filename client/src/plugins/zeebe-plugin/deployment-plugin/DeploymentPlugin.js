@@ -34,9 +34,9 @@ import DeploymentPluginModal from './DeploymentPluginModal';
 
 import DeploymentPluginValidator from './DeploymentPluginValidator';
 
-const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
+import { ENGINES } from '../../../util/Engines';
 
-const ET_EXECUTION_PLATFORM_NAME = 'Camunda Cloud';
+const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 
 const ZEEBE_ENDPOINTS_CONFIG_KEY = 'zeebeEndpoints';
 
@@ -395,7 +395,7 @@ export default class DeploymentPlugin extends PureComponent {
         targetType: endpoint && endpoint.targetType,
         deployedTo: {
           executionPlatformVersion: gatewayVersion,
-          executionPlatform: ET_EXECUTION_PLATFORM_NAME
+          executionPlatform: ENGINES.CLOUD
         }
       }
     });
@@ -422,7 +422,7 @@ export default class DeploymentPlugin extends PureComponent {
 
     // If we retrieved the gatewayVersion, include it in event
     const deployedTo = (gatewayVersion &&
-      { executionPlatformVersion: gatewayVersion, executionPlatform: ET_EXECUTION_PLATFORM_NAME }) || undefined;
+      { executionPlatformVersion: gatewayVersion, executionPlatform: ENGINES.CLOUD }) || undefined;
 
     displayNotification({
       type: 'error',
