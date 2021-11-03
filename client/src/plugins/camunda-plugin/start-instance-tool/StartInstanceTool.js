@@ -29,13 +29,13 @@ import {
 
 import isExecutable from './util/isExecutable';
 
+import { ENGINES } from '../../../util/Engines';
+
 const START_DETAILS_CONFIG_KEY = 'start-instance-tool';
 
 const START_INSTANCE_FAILED = 'Starting process instance failed';
 
 const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
-
-const ET_EXECUTION_PLATFORM_NAME = 'Camunda Platform';
 
 export default class StartInstanceTool extends PureComponent {
 
@@ -420,7 +420,7 @@ export default class StartInstanceTool extends PureComponent {
         context: 'startInstanceTool',
         deployedTo: {
           executionPlatformVersion: version,
-          executionPlatform: ET_EXECUTION_PLATFORM_NAME
+          executionPlatform: ENGINES.PLATFORM
         }
       }
     });
@@ -449,7 +449,7 @@ export default class StartInstanceTool extends PureComponent {
 
     // If we retrieved the executionPlatformVersion, include it in event
     const deployedTo = (version &&
-      { executionPlatformVersion: version, executionPlatform: ET_EXECUTION_PLATFORM_NAME }) || undefined;
+      { executionPlatformVersion: version, executionPlatform: ENGINES.PLATFORM }) || undefined;
 
     // notify interested parties
     triggerAction('emit-event', {

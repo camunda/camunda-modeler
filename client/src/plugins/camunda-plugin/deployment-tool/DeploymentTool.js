@@ -29,6 +29,8 @@ import {
   Icon
 } from '../../../shared/ui';
 
+import { ENGINES } from '../../../util/Engines';
+
 const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
 const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
@@ -40,8 +42,6 @@ const DEFAULT_ENDPOINT = {
 };
 
 const TOMCAT_DEFAULT_URL = 'http://localhost:8080/engine-rest';
-
-const ET_EXECUTION_PLATFORM_NAME = 'Camunda Platform';
 
 export default class DeploymentTool extends PureComponent {
 
@@ -181,7 +181,7 @@ export default class DeploymentTool extends PureComponent {
         deployment,
         deployedTo: {
           executionPlatformVersion: version,
-          executionPlatform: ET_EXECUTION_PLATFORM_NAME
+          executionPlatform: ENGINES.PLATFORM
         },
         context: 'deploymentTool'
       }
@@ -226,7 +226,7 @@ export default class DeploymentTool extends PureComponent {
 
     // If we retrieved the executionPlatformVersion, include it in event
     const deployedTo = (version &&
-      { executionPlatformVersion: version, executionPlatform: ET_EXECUTION_PLATFORM_NAME }) || undefined;
+      { executionPlatformVersion: version, executionPlatform: ENGINES.PLATFORM }) || undefined;
 
     // notify interested parties
     triggerAction('emit-event', {
