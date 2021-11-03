@@ -65,6 +65,8 @@ import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesCon
 
 import { EngineProfile } from '../EngineProfile';
 
+import { ENGINES } from '../../../util/Engines';
+
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
 
 const NAMESPACE_CAMUNDA = {
@@ -101,7 +103,7 @@ const COLORS = [{
 }];
 
 export const engineProfile = {
-  executionPlatform: 'Camunda Platform'
+  executionPlatform: ENGINES.PLATFORM
 };
 
 

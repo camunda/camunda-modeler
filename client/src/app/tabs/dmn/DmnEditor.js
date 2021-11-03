@@ -72,6 +72,8 @@ import { DEFAULT_LAYOUT as overviewDefaultLayout } from './OverviewContainer';
 
 import { EngineProfile } from '../EngineProfile';
 
+import { ENGINES } from '../../../util/Engines';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 const NAMESPACE_URL_DMN11 = 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
@@ -80,7 +82,7 @@ const NAMESPACE_URL_DMN11 = 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
 const CONFIG_KEY = 'editor.askDmnMigration';
 
 export const engineProfile = {
-  executionPlatform: 'Camunda Platform'
+  executionPlatform: ENGINES.PLATFORM
 };
 
 
