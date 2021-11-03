@@ -20,19 +20,9 @@ import Arrow from '../../../resources/icons/Arrow.svg';
 import LinkArrow from '../../../resources/icons/LinkArrow.svg';
 
 import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../util/Flags';
+import { ENGINES, ENGINE_PROFILES } from '../../util/Engines';
 
 import css from './EngineProfile.less';
-
-export const engineProfiles = [
-  {
-    executionPlatform: 'Camunda Platform',
-    executionPlatformVersions: [ '7.16', '7.15' ]
-  },
-  {
-    executionPlatform: 'Camunda Cloud',
-    executionPlatformVersions: [ '1.2', '1.1', '1.0' ]
-  }
-];
 
 
 export function EngineProfile(props) {
@@ -262,7 +252,7 @@ function EngineProfileDescription(props) {
 
   const { executionPlatform } = engineProfile;
 
-  if (executionPlatform === 'Camunda Platform') {
+  if (executionPlatform === ENGINES.PLATFORM) {
     return (
       <Fragment>
         <Overlay.Body>
@@ -275,7 +265,7 @@ function EngineProfileDescription(props) {
         </Overlay.Footer>
       </Fragment>
     );
-  } else if (executionPlatform === 'Camunda Cloud') {
+  } else if (executionPlatform === ENGINES.CLOUD) {
     return (
       <Fragment>
         <Overlay.Body>
@@ -322,12 +312,12 @@ function Link(props) {
 function filterEngineOptions() {
 
   if (!Flags.get(DISABLE_PLATFORM) && ! Flags.get(DISABLE_ZEEBE))
-    return engineProfiles;
+    return ENGINE_PROFILES;
 
-  return engineProfiles.filter(
+  return ENGINE_PROFILES.filter(
     option => (
-      Flags.get(DISABLE_PLATFORM) && option.executionPlatform != 'Camunda Platform' ||
-      Flags.get(DISABLE_ZEEBE) && option.executionPlatform != 'Camunda Cloud'
+      Flags.get(DISABLE_PLATFORM) && option.executionPlatform != ENGINES.PLATFORM ||
+      Flags.get(DISABLE_ZEEBE) && option.executionPlatform != ENGINES.CLOUD
     ));
 }
 
@@ -347,7 +337,7 @@ export function isKnownEngineProfile(engineProfile = {}) {
     return false;
   }
 
-  const knownEngineProfile = engineProfiles.find(({ executionPlatform }) => executionPlatform === engineProfile.executionPlatform);
+  const knownEngineProfile = ENGINE_PROFILES.find(({ executionPlatform }) => executionPlatform === engineProfile.executionPlatform);
 
   if (!knownEngineProfile || !knownEngineProfile.executionPlatformVersions.includes(engineProfile.executionPlatformVersion)) {
     return false;

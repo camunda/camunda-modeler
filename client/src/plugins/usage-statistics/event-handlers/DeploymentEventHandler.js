@@ -23,6 +23,8 @@ import {
   getEngineProfile as parseEngineProfile
 } from '../../../util/parse';
 
+import { ENGINES } from '../../../util/Engines';
+
 const BPMN_TAB_TYPE = 'bpmn';
 const CLOUD_BPMN_TAB_TYPE = 'cloud-bpmn';
 const DMN_TAB_TYPE = 'dmn';
@@ -165,8 +167,8 @@ function getDiagramType(tabType) {
 
 function getDefaultExecutionPlatform(type) {
   if (type === 'cloud-bpmn') {
-    return 'Camunda Cloud';
+    return ENGINES.CLOUD;
   }
 
-  return 'Camunda Platform';
+  return ENGINES.PLATFORM;
 }
