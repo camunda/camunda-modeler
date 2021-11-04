@@ -316,8 +316,8 @@ function filterEngineOptions() {
 
   return ENGINE_PROFILES.filter(
     option => (
-      Flags.get(DISABLE_PLATFORM) && option.executionPlatform != ENGINES.PLATFORM ||
-      Flags.get(DISABLE_ZEEBE) && option.executionPlatform != ENGINES.CLOUD
+      Flags.get(DISABLE_PLATFORM) && option.executionPlatform !== ENGINES.PLATFORM ||
+      Flags.get(DISABLE_ZEEBE) && option.executionPlatform !== ENGINES.CLOUD
     ));
 }
 
