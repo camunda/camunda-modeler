@@ -2,16 +2,24 @@
   display: flex;
   flex: 1;
 
-  flex-direction: row;
+  flex-direction: column;
 
-  .diagram {
+  .editor {
     flex: 1;
-    position: relative;
+
+    display: flex;
+    flex-direction: row;
+
+    .diagram {
+      flex: 1;
+      position: relative;
+    }
+  
+    .properties {
+      flex: none;
+    }
   }
 
-  .properties {
-    flex: none;
-  }
 
   .bjs-container {
     --bjs-font-family: var(--font-family);
