@@ -81,7 +81,7 @@ const NAMESPACE_URL_DMN11 = 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
 
 const CONFIG_KEY = 'editor.askDmnMigration';
 
-export const engineProfile = {
+const DEFAULT_ENGINE_PROFILE = {
   executionPlatform: ENGINES.PLATFORM
 };
 
@@ -842,6 +842,7 @@ export class DmnEditor extends CachedComponent {
   }
 
   render() {
+
     const {
       layout,
       onLayoutChanged
@@ -971,7 +972,8 @@ export class DmnEditor extends CachedComponent {
 
         </div>
 
-        <EngineProfile type="dmn" engineProfile={ engineProfile } />
+        <EngineProfile
+          engineProfile={ DEFAULT_ENGINE_PROFILE } />
 
       </div>
     );

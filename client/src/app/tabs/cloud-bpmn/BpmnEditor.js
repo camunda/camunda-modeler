@@ -10,7 +10,10 @@
 
 import React, { Component } from 'react';
 
-import { isFunction } from 'min-dash';
+import {
+  isFunction,
+  isNil
+} from 'min-dash';
 
 import { Fill } from '../../slot-fill';
 
@@ -54,7 +57,16 @@ import Metadata from '../../../util/Metadata';
 
 import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesContainer';
 
-import { EngineProfile } from '../EngineProfile';
+import {
+  EngineProfile,
+  isKnownEngineProfile,
+  getEngineProfileFromBpmn,
+  engineProfilesEqual
+} from '../EngineProfile';
+
+import {
+  ENGINES
+} from '../../../util/Engines';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
@@ -84,8 +96,8 @@ const COLORS = [{
   stroke: 'rgb(142, 36, 170)'
 }];
 
-export const engineProfile = {
-  executionPlatform: 'Camunda Cloud'
+const DEFAULT_ENGINE_PROFILE = {
+  executionPlatform: ENGINES.CLOUD
 };
 
 
@@ -227,14 +239,32 @@ export class BpmnEditor extends CachedComponent {
 
     if (error) {
       this.setCached({
+        engineProfile: null,
         lastXML: null
       });
     } else {
+      const engineProfile = this.getEngineProfile();
 
-      this.setCached({
-        lastXML: xml,
-        stackIdx
-      });
+      if (isNil(engineProfile)) {
+        this.setCached({
+          engineProfile,
+          lastXML: xml,
+          stackIdx
+        });
+      } else if (isKnownEngineProfile(engineProfile)) {
+        this.setCached({
+          engineProfile,
+          lastXML: xml,
+          stackIdx
+        });
+      } else {
+        error = new Error(getUnknownEngineProfileErrorMessage(engineProfile));
+
+        this.setCached({
+          engineProfile: null,
+          lastXML: null
+        });
+      }
 
       this.setState({
         importing: false
@@ -314,6 +344,16 @@ export class BpmnEditor extends CachedComponent {
     }
 
     this.setState(newState);
+
+    const engineProfile = this.getEngineProfile();
+
+    const { engineProfile: cachedEngineProfile } = this.getCached();
+
+    if (!engineProfilesEqual(engineProfile, cachedEngineProfile) && isKnownEngineProfile(engineProfile)) {
+      this.setCached({
+        engineProfile
+      });
+    }
   }
 
   isDirty() {
@@ -573,7 +613,37 @@ export class BpmnEditor extends CachedComponent {
     eventBus.fire('propertiesPanel.resized');
   }
 
+  getEngineProfile = () => {
+    const modeler = this.getModeler();
+
+    const definitions = modeler.getDefinitions();
+
+    return getEngineProfileFromBpmn(definitions, DEFAULT_ENGINE_PROFILE);
+  }
+
+  setEngineProfile = (engineProfile) => {
+    const modeler = this.getModeler();
+
+    const canvas = modeler.get('canvas'),
+          modeling = modeler.get('modeling');
+
+    const definitions = modeler.getDefinitions();
+
+    const {
+      executionPlatform,
+      executionPlatformVersion
+    } = engineProfile;
+
+    modeling.updateModdleProperties(canvas.getRootElement(), definitions, {
+      'modeler:executionPlatform': executionPlatform,
+      'modeler:executionPlatformVersion': executionPlatformVersion
+    });
+
+    this.setCached({ engineProfile });
+  }
+
   render() {
+    const { engineProfile } = this.getCached();
 
     const {
       layout,
@@ -688,7 +758,11 @@ export class BpmnEditor extends CachedComponent {
           ref={ this.propertiesPanelRef }
           onLayoutChanged={ onLayoutChanged } />
 
-        <EngineProfile type="bpmn" engineProfile={ engineProfile } />
+        { engineProfile && <EngineProfile
+          type="bpmn"
+          engineProfile={ engineProfile }
+          onChange={ this.setEngineProfile } />
+        }
       </div>
     );
   }
@@ -734,6 +808,7 @@ export class BpmnEditor extends CachedComponent {
       __destroy: () => {
         modeler.destroy();
       },
+      engineProfile: null,
       lastXML: null,
       modeler,
       stackIdx
@@ -773,4 +848,13 @@ class Color extends Component {
 
 function isCacheStateChanged(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
+}
+
+function getUnknownEngineProfileErrorMessage(engineProfile = {}) {
+  const {
+    executionPlatform = '<no-execution-platform>',
+    executionPlatformVersion = '<no-execution-platform-version>'
+  } = engineProfile;
+
+  return `An unknown execution platform (${ executionPlatform } ${ executionPlatformVersion }) was detected.`;
 }

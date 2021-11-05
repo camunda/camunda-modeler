@@ -36,8 +36,11 @@ import { FormEditor as Form } from './editor/FormEditor';
 import {
   EngineProfile,
   engineProfilesEqual,
-  isKnownEngineProfile
+  isKnownEngineProfile,
+  getEngineProfileFromForm
 } from '../EngineProfile';
+
+import { ENGINES } from '../../../util/Engines';
 
 import { Linting } from '../Linting';
 
@@ -46,6 +49,10 @@ import Panel from '../panel/Panel';
 import LintingTab from '../panel/tabs/LintingTab';
 
 const LOW_PRIORITY = 500;
+
+const DEFAULT_ENGINE_PROFILE = {
+  executionPlatform: ENGINES.PLATFORM
+};
 
 
 export class FormEditor extends CachedComponent {
@@ -324,23 +331,7 @@ export class FormEditor extends CachedComponent {
 
     const schema = form.getSchema();
 
-    if (!schema) {
-      return null;
-    }
-
-    const {
-      executionPlatform,
-      executionPlatformVersion
-    } = schema;
-
-    if (!executionPlatform && !executionPlatformVersion) {
-      return null;
-    }
-
-    return {
-      executionPlatform,
-      executionPlatformVersion
-    };
+    return getEngineProfileFromForm(schema, DEFAULT_ENGINE_PROFILE);
   }
 
   setEngineProfile = (engineProfile) => {
@@ -377,10 +368,9 @@ export class FormEditor extends CachedComponent {
           ref={ this.ref }
         ></div>
 
-        <EngineProfile
-          type="form"
+        { engineProfile && <EngineProfile
           engineProfile={ engineProfile }
-          setEngineProfile={ this.setEngineProfile } />
+          onChange={ this.setEngineProfile } /> }
 
         {
           engineProfile && <Fragment>
