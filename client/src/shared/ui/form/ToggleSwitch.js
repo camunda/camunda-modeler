@@ -19,6 +19,7 @@ export default function ToggleSwitch(props) {
     description,
     field,
     form,
+    disabled,
     ...restProps
   } = props;
 
@@ -37,6 +38,7 @@ export default function ToggleSwitch(props) {
                 { ...field }
                 { ...restProps }
                 defaultChecked={ field.value }
+                disabled={ disabled }
               />
               <span className="toggle-switch__slider" />
             </label>

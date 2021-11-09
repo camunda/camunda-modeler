@@ -1,7 +1,8 @@
 .form-group {
   --input-background-color: var(--color-white);
   --toggle-switch-on-background-color: var(--color-blue-205-100-50);
-  --toggle-switch-off-background-color: var(--color-grey-225-10-75);
+  --toggle-switch-off-background-color: var(--color-grey-225-10-55);
+  --toggle-switch-disabled-background-color: var(--color-grey-225-10-85);
   --toggle-switch-switcher-background-color: var(--color-white);
 
   input[type=password].form-control,
@@ -431,6 +432,11 @@
   .toggle-switch .toggle-switch__switcher input[type='checkbox']:checked + .toggle-switch__slider {
     background-color: var(--toggle-switch-on-background-color);
     box-shadow: 0 0 1px ;
+  }
+
+  .toggle-switch .toggle-switch__switcher input[type='checkbox']:disabled + .toggle-switch__slider {
+    background-color: var(--toggle-switch-disabled-background-color);
+    box-shadow: none ;
   }
   
   .toggle-switch .toggle-switch__switcher input[type='checkbox']:checked + .toggle-switch__slider:before {
