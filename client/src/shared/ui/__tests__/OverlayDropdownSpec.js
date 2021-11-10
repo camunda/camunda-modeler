@@ -12,8 +12,6 @@
 
 import React from 'react';
 
-import TestContainer from 'mocha-test-container-support';
-
 import {
   mount
 } from 'enzyme';
@@ -23,31 +21,19 @@ import { OverlayDropdown } from '..';
 
 describe('<OverlayDropdown>', function() {
 
-  let wrapper, anchor;
-
+  let mockButtonRef;
 
   beforeEach(function() {
-    anchor = document.createElement('button');
-    anchor.textContent = 'Anchor';
-
-    const testContainer = TestContainer.get(this);
-
-    testContainer.appendChild(anchor);
+    mockButtonRef = {
+      current: <button />
+    };
   });
-
-
-  afterEach(function() {
-    if (wrapper && wrapper.exists()) {
-      wrapper.unmount();
-    }
-  });
-
 
   it('should render button content', () => {
 
     // given
     const wrapper = mount((
-      <OverlayDropdown items={ [] }>
+      <OverlayDropdown items={ [] } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));
@@ -61,7 +47,7 @@ describe('<OverlayDropdown>', function() {
 
     // given
     const wrapper = mount((
-      <OverlayDropdown items={ [] }>
+      <OverlayDropdown items={ [] } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));
@@ -78,7 +64,7 @@ describe('<OverlayDropdown>', function() {
 
     // given
     const wrapper = mount((
-      <OverlayDropdown items={ [] }>
+      <OverlayDropdown items={ [] } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));
@@ -97,7 +83,7 @@ describe('<OverlayDropdown>', function() {
     // given
     const items = [{ text: 'TestOption', onClick: () => {} }];
     const wrapper = mount((
-      <OverlayDropdown items={ items }>
+      <OverlayDropdown items={ items } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));
@@ -117,7 +103,7 @@ describe('<OverlayDropdown>', function() {
     const spy = sinon.spy();
     const items = [{ text: 'TestOption', onClick: spy }];
     const wrapper = mount((
-      <OverlayDropdown items={ items }>
+      <OverlayDropdown items={ items } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));

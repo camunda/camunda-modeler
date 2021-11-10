@@ -19,7 +19,8 @@ export function Section(props) {
 
   const {
     children,
-    maxHeight
+    maxHeight,
+    relativePos
   } = props;
 
   let style = {};
@@ -35,6 +36,13 @@ export function Section(props) {
         '--section-max-height': isString(maxHeight) ? maxHeight : `${maxHeight}px`
       };
     }
+  }
+
+  if (relativePos) {
+    style = {
+      'position': 'relative',
+      ...style
+    };
   }
 
   return (

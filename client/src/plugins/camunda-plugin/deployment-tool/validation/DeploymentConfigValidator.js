@@ -126,7 +126,7 @@ export default class DeploymentConfigValidator {
   validateAttachments(attachments = []) {
     const errors = attachments.map(({ contents }) => {
       if (contents === null) {
-        return 'File cannot be found.';
+        return 'File not found.';
       }
     });
 

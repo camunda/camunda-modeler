@@ -51,6 +51,7 @@ class DeployService {
   saveDeployConfiguration = (...args) => this.current().saveConfiguration(...args);
   canDeployWithConfiguration = (...args) => this.current().canDeployWithConfiguration(...args);
   getVersion = (...args) => this.current().getVersion(...args);
+  closeOverlay = (...args) => this.current().closeOverlay(...args)
 
   current() {
     return this.deploymentRef.current;

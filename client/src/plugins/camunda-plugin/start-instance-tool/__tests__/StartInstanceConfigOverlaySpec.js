@@ -15,26 +15,29 @@ import {
   shallow
 } from 'enzyme';
 
-import StartInstanceConfigModal from '../StartInstanceConfigModal';
+import StartInstanceConfigOverlay from '../StartInstanceConfigOverlay';
 
-describe('<StartInstanceConfigModal>', () => {
+describe('<StartInstanceConfigOverlay>', () => {
 
   it('should render', () => {
-    createModal();
+    createOverlay();
   });
 
 
   it('should render with customizations', () => {
 
     // given
+    const anchor = document.createElement('button');
+
     const options = {
       title: 'title',
+      anchor
     };
 
     // when
-    const { wrapper } = createModal(options, mount);
+    const { wrapper } = createOverlay(options, mount);
 
-    const titleWrapper = wrapper.find('.modal-title');
+    const titleWrapper = wrapper.find('.section__header');
 
     // then
     expect(titleWrapper.text()).to.eql(options.title);
@@ -45,20 +48,22 @@ describe('<StartInstanceConfigModal>', () => {
 
 // helpers //////////
 
-function createModal(props={}, renderFn = shallow) {
+function createOverlay(props={}, renderFn = shallow) {
 
   const {
     configuration,
     onClose,
     title,
+    anchor
   } = props;
 
 
   const wrapper = renderFn(
-    <StartInstanceConfigModal
+    <StartInstanceConfigOverlay
       configuration={ configuration || getDefaultConfiguration() }
       onClose={ onClose || noop }
       title={ title }
+      anchor={ anchor }
     />
   );
 

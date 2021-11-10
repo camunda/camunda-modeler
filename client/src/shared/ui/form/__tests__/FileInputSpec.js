@@ -128,8 +128,7 @@ describe('<FileInput>', function() {
     }, mount);
 
     // then
-    const errorWrapper = wrapper.find('FormFeedback');
-
+    const errorWrapper = wrapper.findWhere((e) => e.is('svg') && e.hasClass('error-icon'));
     expect(errorWrapper).to.have.lengthOf(1);
   });
 });

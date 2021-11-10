@@ -17,7 +17,7 @@ import classNames from 'classnames';
 import { default as CamundaAPI, ApiErrors, ConnectionError } from '../shared/CamundaAPI';
 import AuthTypes from '../shared/AuthTypes';
 
-import DeploymentConfigModal from './DeploymentConfigModal';
+import DeploymentConfigOverlay from './DeploymentConfigOverlay';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
 import { DeploymentError } from '../shared/CamundaAPI';
 
@@ -46,13 +46,18 @@ const DEFAULT_ENDPOINT = {
 const TOMCAT_DEFAULT_URL = 'http://localhost:8080/engine-rest';
 
 export default class DeploymentTool extends PureComponent {
+  constructor() {
+    super();
 
-  state = {
-    modalState: null,
-    activeTab: null
+    this.state = {
+      overlayState: null,
+      activeTab: null,
+      anchor: null
+    };
+
+    this.validator = new DeploymentConfigValidator();
+    this._anchorRef = React.createRef();
   }
-
-  validator = new DeploymentConfigValidator();
 
   componentDidMount() {
     this.props.subscribe('app.activeTabChanged', ({ activeTab }) => {
@@ -87,10 +92,10 @@ export default class DeploymentTool extends PureComponent {
       activeTab
     } = this.state;
 
-    return this.deployTab(activeTab, options);
+    return this.deployTab(activeTab, options, this._anchorRef);
   }
 
-  async deployTab(tab, options={}) {
+  async deployTab(tab, options={}, anchor) {
 
     const {
       configure
@@ -117,7 +122,7 @@ export default class DeploymentTool extends PureComponent {
       const {
         action,
         configuration: userConfiguration
-      } = await this.getConfigurationFromUserInput(tab, configuration);
+      } = await this.getConfigurationFromUserInput(tab, configuration, { anchor });
 
       // (2.3.1) Handle user cancelation
       if (action === 'cancel') {
@@ -361,7 +366,8 @@ export default class DeploymentTool extends PureComponent {
       const handleClose = (action, configuration) => {
 
         this.setState({
-          modalState: null
+          overlayState: null,
+          activeButton: false
         });
 
         // inform validator to cancel ongoing requests
@@ -373,7 +379,7 @@ export default class DeploymentTool extends PureComponent {
       };
 
       this.setState({
-        modalState: {
+        overlayState: {
           tab,
           configuration,
           handleClose,
@@ -507,40 +513,57 @@ export default class DeploymentTool extends PureComponent {
               code !== ApiErrors.NOT_FOUND);
   }
 
+  closeOverlay(overlayState) {
+    const currentModalState = overlayState || this.state.overlayState;
+    currentModalState.handleClose('cancel', null);
+  }
+
   render() {
     const {
       activeTab,
-      modalState
+      overlayState
     } = this.state;
 
     // TODO(nikku): we'll remove the flag once we make re-deploy
     // the primary button action: https://github.com/camunda/camunda-modeler/issues/1440
-    const deploy = () => this.deploy({ configure: true });
+
+    const isDeployOpen = () => {
+      return overlayState ? overlayState.anchor===this._anchorRef : false;
+    };
+
+    const onClick = () => {
+      if (overlayState)
+        this.closeOverlay(overlayState);
+
+      else this.deploy({ configure: true });
+    };
 
     return <React.Fragment>
       { isCamundaTab(activeTab) && <Fill slot="status-bar__file" group="8_deploy">
         <button
-          onClick={ deploy }
+          onClick={ onClick }
           title="Deploy current diagram"
-          className={ classNames('btn', { 'btn--active': modalState }, css.DeploymentTool) }
+          className={ classNames('btn', css.DeploymentTool, { 'btn--active': isDeployOpen() }) }
+          ref={ this._anchorRef }
         >
           <DeployIcon className="icon" />
         </button>
       </Fill> }
 
-      { modalState &&
-      <DeploymentConfigModal
-        configuration={ modalState.configuration }
-        activeTab={ modalState.tab }
-        title={ modalState.title }
-        intro={ modalState.intro }
-        primaryAction={ modalState.primaryAction }
-        onClose={ modalState.handleClose }
+      { overlayState &&
+      <DeploymentConfigOverlay
+        configuration={ overlayState.configuration }
+        activeTab={ overlayState.tab }
+        title={ overlayState.title }
+        intro={ overlayState.intro }
+        primaryAction={ overlayState.primaryAction }
+        onClose={ overlayState.handleClose }
         validator={ this.validator }
         saveCredentials={ this.saveCredentials }
         removeCredentials={ this.removeCredentials }
         subscribeToFocusChange={ this.subscribeToFocusChange }
         unsubscribeFromFocusChange={ this.unsubscribeFromFocusChange }
+        anchor={ overlayState ? overlayState.anchor.current : null }
       />
       }
     </React.Fragment>;

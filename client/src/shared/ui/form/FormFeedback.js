@@ -10,8 +10,6 @@
 
 import React from 'react';
 
-import WarningIcon from 'icons/Warning.svg';
-
 export default function FormFeedback(props) {
 
   const {
@@ -22,8 +20,7 @@ export default function FormFeedback(props) {
     <React.Fragment>
       { error && (
         <div className="invalid-feedback">
-          <WarningIcon />
-          <span className="invalid-tooltip">{ error }</span>
+          { error }
         </div>
       ) }
     </React.Fragment>
