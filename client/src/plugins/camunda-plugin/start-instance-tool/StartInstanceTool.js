@@ -14,7 +14,7 @@ import PlayIcon from 'icons/Play.svg';
 
 import CamundaAPI, { ConnectionError } from '../shared/CamundaAPI';
 
-import StartInstanceConfigModal from './StartInstanceConfigModal';
+import StartInstanceConfigOverlay from './StartInstanceConfigOverlay';
 
 import { DeploymentError, StartInstanceError } from '../shared/CamundaAPI';
 
@@ -30,6 +30,7 @@ import {
 import isExecutable from './util/isExecutable';
 
 import { ENGINES } from '../../../util/Engines';
+import classNames from 'classnames';
 
 const START_DETAILS_CONFIG_KEY = 'start-instance-tool';
 
@@ -40,7 +41,7 @@ const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
 export default class StartInstanceTool extends PureComponent {
 
   state = {
-    modalState: null,
+    overlayState: null,
     activeTab: null
   }
 
@@ -54,6 +55,8 @@ export default class StartInstanceTool extends PureComponent {
       onClick: this.startInstance.bind(this, { configure: true })
     }
   ];
+
+  anchorRef = React.createRef();
 
   componentDidMount() {
 
@@ -107,10 +110,12 @@ export default class StartInstanceTool extends PureComponent {
     } = await deployService.getDeployConfigurationFromUserInput(tab, deployConfig, {
       title: 'Start Process Instance - Step 1 of 2',
       intro: 'Specify deployment details to deploy this diagram to Camunda Platform.',
-      primaryAction: 'Next'
+      primaryAction: 'Next',
+      anchor: this.anchorRef
     });
 
     if (action === 'cancel') {
+      this.setState({ activeButton: false });
       return;
     }
 
@@ -175,6 +180,8 @@ export default class StartInstanceTool extends PureComponent {
 
     if (showDeployConfig) {
 
+      this.setState({ activeButton: true });
+
       // (3.2) Open Modal to enter deployment configuration
       deploymentConfig = await this.ensureDeployConfig(tab);
 
@@ -194,8 +201,11 @@ export default class StartInstanceTool extends PureComponent {
 
     if (showStartConfig) {
 
+      this.setState({ activeButton: true });
+
       const uiOptions = {
-        title: configure ? 'Start Process Instance - Step 2 of 2' : null
+        title: configure ? 'Start Process Instance - Step 2 of 2' : null,
+        anchor: this.anchorRef
       };
 
       // (4.3) Open Modal to enter start configuration
@@ -210,6 +220,7 @@ export default class StartInstanceTool extends PureComponent {
 
       // (4.3.1) Handle user cancelation
       if (action === 'cancel') {
+        this.setState({ activeButton: false });
         return;
       }
 
@@ -344,7 +355,8 @@ export default class StartInstanceTool extends PureComponent {
       const handleClose = (action, configuration) => {
 
         this.setState({
-          modalState: null
+          overlayState: null,
+          activeButton: false
         });
 
         // contract: if configuration provided, user closed with O.K.
@@ -353,7 +365,7 @@ export default class StartInstanceTool extends PureComponent {
       };
 
       this.setState({
-        modalState: {
+        overlayState: {
           tab,
           configuration,
           handleClose,
@@ -465,8 +477,12 @@ export default class StartInstanceTool extends PureComponent {
   render() {
     const {
       activeTab,
-      modalState
+      overlayState
     } = this.state;
+
+    const toggleOverlay = () => {
+      this.props.deployService.closeOverlay(overlayState);
+    };
 
     return <React.Fragment>
 
@@ -474,20 +490,25 @@ export default class StartInstanceTool extends PureComponent {
       <Fill slot="status-bar__file" group="8_deploy">
         <OverlayDropdown
           title="Start process instance"
-          className={ css.StartInstanceTool }
+          className={ classNames(css.StartInstanceTool, { 'btn--active': this.state.activeButton }) }
           items={ this.START_ACTIONS }
+          buttonRef={ this.anchorRef }
+          overlayState={ this.state.activeButton }
+          onClose={ toggleOverlay }
         >
           <PlayIcon className="icon" />
         </OverlayDropdown>
       </Fill>
       }
 
-      { modalState &&
-        <StartInstanceConfigModal
-          configuration={ modalState.configuration }
-          activeTab={ modalState.tab }
-          onClose={ modalState.handleClose }
-          title={ modalState.title }
+      { overlayState &&
+        <StartInstanceConfigOverlay
+          configuration={ overlayState.configuration }
+          activeTab={ overlayState.tab }
+          onSubmit={ overlayState.handleClose }
+          onClose={ overlayState.handleClose }
+          title={ overlayState.title }
+          anchor={ this.anchorRef.current }
         />
       }
     </React.Fragment>;

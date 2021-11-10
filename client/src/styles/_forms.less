@@ -34,14 +34,15 @@
     clip: rect(1px 1px 1px 1px);
   }
 
-  input[type=file].form-control:focus-within + label {
-    box-shadow: var(--focus-shadow);
-    border: solid 1px var(--color-blue-205-100-50);
-  }
-
   // make sure outline doesn't cover the block
   input[type=file].form-control + label {
-    display: inline-flex;
+    height: 20px;
+    width: 20px;
+    padding: 2px;
+    position: absolute;
+    right: 9px;
+    top: 11px;
+    /* display: inline-flex;
     justify-content: center;
     align-items: center;
 
@@ -53,16 +54,15 @@
     color: var(--color-white);
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
     border: solid 1px var(--color-blue-205-100-45);
-    background-color: var(--color-blue-205-100-50);
+    background-color: var(--color-blue-205-100-50); */
 
     &:hover {
-      border: solid 1px var(--color-blue-205-100-50);
+      border-radius: 100%;
       background-color: var(--color-blue-205-100-45);
-    }
 
-    &:active {
-      border: solid 1px var(--color-blue-205-100-45);
-      background-color: var(--color-blue-205-100-50);
+      path {
+        fill: var(--color-white);
+      }
     }
   }
 
@@ -238,12 +238,10 @@
 
   // feedback / tooltip
   .invalid-feedback {
-      width: 16px;
-      height: 14px;
+      color: var(--color-red-360-100-45);
+      margin-top: 6px;
+      font-size: 13px;
       display: inline-block;
-      margin-left: 6px;
-      margin-top: 8px;
-      position: relative;
 
     .invalid-tooltip {
       visibility: hidden;
@@ -301,12 +299,13 @@
   }
 
   .file-list {
-    padding-left: 8px;
-    padding-top: 5px;
-    margin: 0;
+    padding: 0;
+    margin: 10px 0;
 
     font-size: 13px;
     list-style-type: none;
+    max-height: 86px;
+    overflow: scroll;
   }
 
   .file-list-item {
@@ -319,32 +318,65 @@
     display: flex;
     align-items: center;
     grid-column: 1;
-
+    position: relative;
     padding: 4px 0 3px;
-    border-bottom: 1px solid var(--color-grey-225-10-75);
+    height: 24px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 5px;
+    }
+
+    .error-icon {
+      margin-right: 2px;
+      margin-left: -3px;
+      width: 22px;
+      height: 22px;
+      fill: var(--color-red-360-100-45);
+    }
+
+    .file-list-item-name {
+      text-overflow: ellipsis;
+      overflow: hidden; 
+      max-width: 234px; 
+      white-space: nowrap;
+    }
+
+
+    .default_file-icon {
+      background-color: var(--overlay-font-color);
+      border-radius: 100%;
+      padding: 2px;
+      margin: 6px;
+      margin-right: 10px;
+    }
+
+    &:hover .remove {
+      visibility: visible;
+    }
 
     .remove {
+      visibility: hidden;
+      padding: 2px;
       display: flex;
-      align-items: center;
-
-      padding: 0;
-      margin: 0;
-      margin-left: auto;
-
       border: none;
       background-color: transparent;
+      margin-right: 2px;
+      position: absolute;
+      right: -2px;
+      top: 1px;
 
       svg {
-        transform: scale(.8);
-        fill: var(--color-grey-225-10-35);
+        color: var(--color-red-360-100-45);
+        margin: 0;
       }
 
-      &:hover {
-        background-color: var(--color-grey-225-10-95);
-      }
-
-      &:focus {
-        background-color: var(--color-grey-225-10-75);
+      &:hover,
+      &:focus
+       {
+        background-color: var(--color-red-360-100-92);
+        border-radius: 100%;
       }
     }
   }

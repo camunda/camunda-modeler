@@ -912,7 +912,7 @@ class TestStartInstanceTool extends StartInstanceTool {
 
   /**
    * @param {object} props
-   * @param {'cancel'|'start'} [props.userAction='start'] user action in configuration modal
+   * @param {'cancel'|'start'} [props.userAction='start'] user action in configuration overlay
    * @param {object} [props.businessKey] overrides for businessKey configuration
    */
   constructor(props) {
@@ -960,24 +960,24 @@ class TestStartInstanceTool extends StartInstanceTool {
     return true;
   }
 
-  // closes automatically when modal is opened
+  // closes automatically when overlay is opened
   componentDidUpdate(...args) {
     super.componentDidUpdate && super.componentDidUpdate(...args);
 
-    const { modalState } = this.state;
+    const { overlayState } = this.state;
     const {
       userAction,
       businessKey
     } = this.props;
 
-    if (modalState) {
+    if (overlayState) {
       const action = userAction || 'start';
 
       const configuration = action !== 'cancel' && {
-        businessKey: businessKey || modalState.configuration.businessKey
+        businessKey: businessKey || overlayState.configuration.businessKey
       };
 
-      modalState.handleClose(action, configuration);
+      overlayState.handleClose(action, configuration);
     }
   }
 

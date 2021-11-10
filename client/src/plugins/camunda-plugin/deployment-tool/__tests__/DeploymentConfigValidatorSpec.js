@@ -15,7 +15,7 @@ import AuthTypes from '../../shared/AuthTypes';
 
 const EMPTY_ENDPOINT_ERROR = 'Endpoint URL must not be empty.';
 const EMPTY_DEPLOYMENT_NAME_ERROR = 'Deployment name must not be empty.';
-const FILE_NOT_FOUND_ERROR = 'File cannot be found.';
+const FILE_NOT_FOUND_ERROR = 'File not found.';
 const EMPTY_USERNAME_ERROR = 'Credentials are required to connect to the server.';
 const EMPTY_PASSWORD_ERROR = 'Credentials are required to connect to the server.';
 const EMPTY_TOKEN_ERROR = 'Token must not be empty.';

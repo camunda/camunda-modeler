@@ -15,8 +15,12 @@ import { uniqueBy } from 'min-dash';
 import { getIn } from 'formik';
 import classNames from 'classnames';
 
-import CloseIcon from '../../../../resources/icons/Close.svg';
-import FormFeedback from './FormFeedback';
+import DeteleIcon from '../../../../resources/icons/Delete.svg';
+import CreateIcon from '../../../../resources/icons/Create.svg';
+import BPMNIcon from '../../../../resources/icons/file-types/BPMN.svg';
+import DMNIcon from '../../../../resources/icons/file-types/DMN.svg';
+import FormIcon from '../../../../resources/icons/file-types/Form.svg';
+import ErrorIcon from '../../../../resources/icons/Error.svg';
 
 /**
  * @typedef FileDescriptor
@@ -64,8 +68,8 @@ export default function FileInput(props) {
         ref={ inputRef }
       />
 
-      <label className="btn" htmlFor={ name }>
-        {label}
+      <label htmlFor={ name }>
+        <CreateIcon />
       </label>
 
       <FileList
@@ -103,18 +107,22 @@ function ListItem(props) {
   const { error, name, onRemove } = props;
 
   return (
-    <li className={ classNames('file-list-item', { 'is-invalid': !!error }) }>
+    <li
+      className={ classNames('file-list-item', { 'is-invalid': !!error }) }
+      title={ getFileLabel(name, error) }>
       <span className="file-list-item-content">
-        { name }
-        { error ? <span className="error">{'- ' + error}</span> : null }
+        {getIconFromFileType(name, error)}
+        <span className="file-list-item-name">
+          { name }
+        </span>
         <button className="remove" type="button" onClick={ onRemove } aria-label={ `Remove ${name}` }>
-          <CloseIcon aria-hidden="true" />
+          <DeteleIcon aria-hidden="true" />
         </button>
       </span>
-      <FormFeedback error={ error } />
     </li>
   );
 }
+
 
 /**
  *
@@ -131,4 +139,31 @@ function toFileDescriptors(fileList) {
         contents: file
       };
     });
+}
+
+function getTypeFromFileExtension(name) {
+  return name.substring(name.lastIndexOf('.') + 1).toLowerCase();
+}
+
+function getFileLabel(name, error) {
+  return error ?
+    `${error.slice(0, -1)}: ${name}`
+    : name;
+}
+
+function getIconFromFileType(name, error) {
+  const extension = getTypeFromFileExtension(name);
+
+  if (error) return <ErrorIcon className="error-icon" />;
+
+  switch (extension) {
+  case 'bpmn':
+    return <BPMNIcon />;
+  case 'dmn':
+    return <DMNIcon />;
+  case 'form':
+    return <FormIcon />;
+  default:
+    return <div className="default_file-icon" />;
+  }
 }

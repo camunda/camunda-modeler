@@ -20,16 +20,21 @@ import {
 import { merge } from 'min-dash';
 
 import AuthTypes from '../../shared/AuthTypes';
-import DeploymentConfigModal from '../DeploymentConfigModal';
+import DeploymentConfigOverlay from '../DeploymentConfigOverlay';
 import DeploymentConfigValidator from '../validation/DeploymentConfigValidator';
-
 
 let mounted;
 
-describe('<DeploymentConfigModal>', () => {
+describe('<DeploymentConfigOverlay>', () => {
+
+  var anchor;
+
+  beforeEach(function() {
+    anchor = document.createElement('button');
+  });
 
   it('should render', () => {
-    createModal();
+    createOverlay();
   });
 
 
@@ -39,13 +44,15 @@ describe('<DeploymentConfigModal>', () => {
     const options = {
       title: 'title',
       intro: 'intro',
-      primaryAction: 'primaryAction'
+      primaryAction: 'primaryAction',
+      anchor
     };
 
     // when
-    const { wrapper } = createModal(options, mount);
 
-    const titleWrapper = wrapper.find('.modal-title'),
+    const { wrapper } = createOverlay(options, mount);
+
+    const titleWrapper = wrapper.find('.section__header').first(),
           introWrapper = wrapper.find('.intro'),
           primaryActionWrapper = wrapper.find('.btn-primary');
 
@@ -91,7 +98,8 @@ describe('<DeploymentConfigModal>', () => {
       const {
         wrapper,
         instance
-      } = createModal({
+      } = createOverlay({
+        anchor,
         configuration,
         validator
       }, mount);
@@ -131,7 +139,8 @@ describe('<DeploymentConfigModal>', () => {
       const {
         wrapper,
         instance
-      } = createModal({
+      } = createOverlay({
+        anchor,
         configuration
       }, mount);
 
@@ -179,7 +188,8 @@ describe('<DeploymentConfigModal>', () => {
 
       const {
         wrapper
-      } = createModal({
+      } = createOverlay({
+        anchor,
         configuration,
         validator
       }, mount);
@@ -219,7 +229,8 @@ describe('<DeploymentConfigModal>', () => {
       const {
         wrapper,
         instance
-      } = createModal({
+      } = createOverlay({
+        anchor,
         configuration,
         validator
       }, mount);
@@ -259,7 +270,8 @@ describe('<DeploymentConfigModal>', () => {
 
       const {
         wrapper
-      } = createModal({
+      } = createOverlay({
+        anchor,
         configuration,
         validator
       }, mount);
@@ -296,7 +308,8 @@ describe('<DeploymentConfigModal>', () => {
 
       const {
         wrapper
-      } = createModal({
+      } = createOverlay({
+        anchor,
         configuration,
         validator
       }, mount);
@@ -327,7 +340,8 @@ describe('<DeploymentConfigModal>', () => {
 
     const {
       wrapper
-    } = createModal({
+    } = createOverlay({
+      anchor,
       configuration
     }, mount);
 
@@ -343,7 +357,7 @@ describe('<DeploymentConfigModal>', () => {
   });
 
 
-  it('should save credentials when [X] icon is clicked and rememberCredentials is checked', () => {
+  it('should save credentials when closed and rememberCredentials is checked', () => {
 
     // given
     const configuration = {
@@ -365,22 +379,22 @@ describe('<DeploymentConfigModal>', () => {
 
     const {
       wrapper
-    } = createModal({
+    } = createOverlay({
+      anchor,
       configuration,
-      saveCredentials
+      saveCredentials,
     }, mount);
 
     // when
-    wrapper.find('.close').simulate('click');
+    wrapper.instance().onClose('save', null, true);
 
     // then
-    expect(saveCredentials).to.have.been.calledWith({
-      username: 'username1', password: '12345', token: 'testToken'
-    });
+    expect(saveCredentials).to.have.been.called;
+
   });
 
 
-  it('should remove credentials when [X] icon is clicked and rememberCredentials is not checked', () => {
+  it('should remove credentials when closed and rememberCredentials is not checked', () => {
 
     // given
     const configuration = {
@@ -399,83 +413,17 @@ describe('<DeploymentConfigModal>', () => {
 
     const {
       wrapper
-    } = createModal({
+    } = createOverlay({
+      anchor,
       configuration,
       removeCredentials
     }, mount);
 
     // when
-    wrapper.find('.close').simulate('click');
+    wrapper.instance().onClose('save', null, true);
 
     // then
     expect(removeCredentials).to.have.been.called;
-  });
-
-
-  it('should not save credentials when Cancel button is clicked and rememberCredentials is checked', () => {
-
-    // given
-    const configuration = {
-      deployment: {
-        tenantId: '',
-        name: ''
-      },
-      endpoint: {
-        url: 'http://localhost:8088/engine-rest',
-        authType: AuthTypes.basic,
-        rememberCredentials: true,
-        username: 'username1',
-        password: 'password1',
-        token: 'token1'
-      }
-    };
-
-    const saveCredentials = sinon.spy();
-
-    const {
-      wrapper
-    } = createModal({
-      configuration,
-      saveCredentials
-    }, mount);
-
-    // when
-    wrapper.find('.btn-secondary').simulate('click');
-
-    // then
-    expect(saveCredentials).to.not.have.been.called;
-  });
-
-
-  it('should not remove credentials when Cancel button is clicked and rememberCredentials is not checked', () => {
-
-    // given
-    const configuration = {
-      deployment: {
-        tenantId: '',
-        name: ''
-      },
-      endpoint: {
-        url: 'http://localhost:8088/engine-rest',
-        authType: AuthTypes.basic,
-        rememberCredentials: false
-      }
-    };
-
-    const removeCredentials = sinon.spy();
-
-    const {
-      wrapper
-    } = createModal({
-      configuration,
-      removeCredentials
-    }, mount);
-
-    // when
-    wrapper.find('.btn-secondary').simulate('click');
-
-    // then
-    expect(removeCredentials).to.not.have.been.called;
   });
 
 
@@ -484,7 +432,8 @@ describe('<DeploymentConfigModal>', () => {
     // given
     const subscribeToFocusChange = sinon.spy();
 
-    createModal({
+    createOverlay({
+      anchor,
       subscribeToFocusChange
     }, mount);
 
@@ -498,7 +447,8 @@ describe('<DeploymentConfigModal>', () => {
     // given
     const subscribeToFocusChange = sinon.spy();
 
-    createModal({
+    createOverlay({
+      anchor,
       subscribeToFocusChange
     }, mount);
 
@@ -514,7 +464,8 @@ describe('<DeploymentConfigModal>', () => {
 
     const {
       wrapper
-    } = createModal({
+    } = createOverlay({
+      anchor,
       unsubscribeFromFocusChange
     }, mount);
 
@@ -526,7 +477,7 @@ describe('<DeploymentConfigModal>', () => {
   });
 
 
-  it('should validate connection when modal is opened if endpoint has a connection error', () => {
+  it('should validate connection when overlay is opened if endpoint has a connection error', () => {
 
     // given
     const configuration = {
@@ -545,8 +496,10 @@ describe('<DeploymentConfigModal>', () => {
 
     const {
       wrapper
-    } = createModal({
-      validator, configuration
+    } = createOverlay({
+      anchor,
+      validator,
+      configuration
     }, mount);
 
     // when
@@ -557,7 +510,7 @@ describe('<DeploymentConfigModal>', () => {
   });
 
 
-  it('should not validate connection when modal is opened if endpoint does not have a connection error', () => {
+  it('should not validate connection when overlay is opened if endpoint does not have a connection error', () => {
 
     // given
     const configuration = {
@@ -579,8 +532,10 @@ describe('<DeploymentConfigModal>', () => {
 
     const {
       wrapper
-    } = createModal({
-      validator, configuration
+    } = createOverlay({
+      anchor,
+      validator,
+      configuration
     }, mount);
 
     // when
@@ -600,7 +555,8 @@ describe('<DeploymentConfigModal>', () => {
 
     const {
       instance
-    } = createModal({
+    } = createOverlay({
+      anchor,
       validator
     }, mount);
 
@@ -623,7 +579,7 @@ describe('<DeploymentConfigModal>', () => {
     // given
     const checkAuthStatusSpy = sinon.spy();
 
-    const { instance } = createModal({}, mount);
+    const { instance } = createOverlay({ anchor }, mount);
 
     instance.checkAuthStatus = checkAuthStatusSpy;
     instance.valuesCache = {};
@@ -649,7 +605,7 @@ describe('<DeploymentConfigModal>', () => {
 
     const validator = new MockValidator({ clearEndpointURLError, validateConnection });
 
-    const { instance } = createModal({ validator }, mount);
+    const { instance } = createOverlay({ anchor, validator }, mount);
 
     instance.checkAuthStatus = noop;
     instance.valuesCache = valuesCache;
@@ -676,7 +632,7 @@ describe('<DeploymentConfigModal>', () => {
 
     const validator = new MockValidator({ updateEndpointURLError, validateConnection });
 
-    const { instance } = createModal({ validator }, mount);
+    const { instance } = createOverlay({ anchor, validator }, mount);
 
     instance.checkAuthStatus = noop;
     instance.valuesCache = valuesCache;
@@ -703,7 +659,7 @@ describe('<DeploymentConfigModal>', () => {
 
     const validator = new MockValidator({ updateEndpointURLError, validateConnection });
 
-    const { instance } = createModal({ validator }, mount);
+    const { instance } = createOverlay({ anchor, validator }, mount);
 
     instance.checkAuthStatus = noop;
     instance.valuesCache = valuesCache;
@@ -723,11 +679,12 @@ describe('<DeploymentConfigModal>', () => {
     // given
     const validateConnection = sinon.spy();
 
-    const validator = new MockValidator({ validateConnection });
+    const validator = new MockValidator({ anchor, validateConnection });
 
     const {
       instance
-    } = createModal({
+    } = createOverlay({
+      anchor,
       validator
     }, mount);
 
@@ -753,7 +710,8 @@ describe('<DeploymentConfigModal>', () => {
     const validator = new MockValidator({ resetCancel });
 
     // when
-    createModal({
+    createOverlay({
+      anchor,
       validator
     }, mount);
 
@@ -766,7 +724,7 @@ describe('<DeploymentConfigModal>', () => {
 
 // helpers //////////
 
-function createModal(props={}, renderFn = shallow) {
+function createOverlay(props={}, renderFn = shallow) {
 
   const {
     configuration,
@@ -778,13 +736,14 @@ function createModal(props={}, renderFn = shallow) {
     removeCredentials,
     subscribeToFocusChange,
     unsubscribeFromFocusChange,
+    anchor,
     ...apiOverrides
   } = props;
 
   const validator = props.validator || new MockValidator(apiOverrides);
 
   const wrapper = renderFn(
-    <DeploymentConfigModal
+    <DeploymentConfigOverlay
       validator={ validator }
       configuration={ getConfiguration(configuration) }
       onClose={ onClose || noop }
@@ -795,6 +754,7 @@ function createModal(props={}, renderFn = shallow) {
       intro={ intro }
       subscribeToFocusChange={ subscribeToFocusChange || noop }
       unsubscribeFromFocusChange={ unsubscribeFromFocusChange || noop }
+      anchor={ anchor }
     />
   );
 

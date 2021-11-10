@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 
 import { Overlay } from '..';
@@ -24,11 +24,16 @@ import css from './OverlayDropdown.less';
  * @param {{ children: React.ReactChildren, items: Item[], className?: string }} props
  */
 export function OverlayDropdown(props) {
-  const { children, className = '', items, ...restProps } = props;
-
-  const buttonRef = useRef(null);
+  const { children, className = '', items, buttonRef, overlayState, onClose,...restProps } = props;
   const [open, setOpen] = useState(false);
-  const toggle = () => setOpen(open => !open);
+
+  const toggle = () => {
+    if (!overlayState)
+      setOpen(open => !open);
+
+    else onClose();
+  };
+
   const close = () => setOpen(false);
 
   const onSelect = item => {

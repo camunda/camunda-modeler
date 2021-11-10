@@ -1232,28 +1232,28 @@ class TestDeploymentTool extends DeploymentTool {
   componentDidUpdate(...args) {
     super.componentDidUpdate && super.componentDidUpdate(...args);
 
-    const { modalState } = this.state;
+    const { overlayState } = this.state;
     const {
       userAction,
       endpoint,
       deployment
     } = this.props;
 
-    if (modalState) {
+    if (overlayState) {
       const action = userAction || 'deploy';
 
       const configuration = action !== 'cancel' && {
         endpoint: {
-          ...modalState.configuration.endpoint,
+          ...overlayState.configuration.endpoint,
           ...endpoint
         },
         deployment: {
-          ...modalState.configuration.deployment,
+          ...overlayState.configuration.deployment,
           ...deployment
         }
       };
 
-      modalState.handleClose(action, configuration);
+      overlayState.handleClose(action, configuration);
     }
   }
 }
