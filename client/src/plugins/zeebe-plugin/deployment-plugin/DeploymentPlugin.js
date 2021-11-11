@@ -16,6 +16,8 @@ import {
 
 import pDefer from 'p-defer';
 
+import classNames from 'classnames';
+
 import { Fill } from '../../../app/slot-fill';
 
 import {
@@ -470,8 +472,8 @@ export default class DeploymentPlugin extends PureComponent {
         <Fill slot="status-bar__file" group="8_deploy" priority={ 1 }>
           <button
             onClick={ this.onIconClicked }
-            className="btn"
             title="Deploy current diagram"
+            className={ classNames('btn', { 'btn--active': modalState }) }
           >
             <Icon name="deploy" />
           </button>
