@@ -12,6 +12,8 @@ import React, { PureComponent } from 'react';
 
 import { omit } from 'min-dash';
 
+import classNames from 'classnames';
+
 import { default as CamundaAPI, ApiErrors, ConnectionError } from '../shared/CamundaAPI';
 import AuthTypes from '../shared/AuthTypes';
 
@@ -520,7 +522,7 @@ export default class DeploymentTool extends PureComponent {
         <button
           onClick={ deploy }
           title="Deploy current diagram"
-          className="btn"
+          className={ classNames('btn', { 'btn--active': modalState }) }
         >
           <Icon name="deploy" />
         </button>
