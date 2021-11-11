@@ -21,15 +21,15 @@ import DeploymentConfigModal from './DeploymentConfigModal';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
 import { DeploymentError } from '../shared/CamundaAPI';
 
+import css from './DeploymentTool.less';
+
 import {
   generateId
 } from '../../../util';
 
 import { Fill } from '../../../app/slot-fill';
 
-import {
-  Icon
-} from '../../../shared/ui';
+import DeployIcon from 'icons/Deploy.svg';
 
 import { ENGINES } from '../../../util/Engines';
 
@@ -522,9 +522,9 @@ export default class DeploymentTool extends PureComponent {
         <button
           onClick={ deploy }
           title="Deploy current diagram"
-          className={ classNames('btn', { 'btn--active': modalState }) }
+          className={ classNames('btn', { 'btn--active': modalState }, css.DeploymentTool) }
         >
-          <Icon name="deploy" />
+          <DeployIcon className="icon" />
         </button>
       </Fill> }
 

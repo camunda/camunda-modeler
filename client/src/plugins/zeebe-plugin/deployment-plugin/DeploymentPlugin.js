@@ -20,9 +20,7 @@ import classNames from 'classnames';
 
 import { Fill } from '../../../app/slot-fill';
 
-import {
-  Icon
-} from '../../../shared/ui';
+import DeployIcon from 'icons/Deploy.svg';
 
 import {
   generateId
@@ -37,6 +35,8 @@ import DeploymentPluginModal from './DeploymentPluginModal';
 import DeploymentPluginValidator from './DeploymentPluginValidator';
 
 import { ENGINES } from '../../../util/Engines';
+
+import css from './DeploymentPlugin.less';
 
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 
@@ -473,9 +473,9 @@ export default class DeploymentPlugin extends PureComponent {
           <button
             onClick={ this.onIconClicked }
             title="Deploy current diagram"
-            className={ classNames('btn', { 'btn--active': modalState }) }
+            className={ classNames('btn', { 'btn--active': modalState }, css.DeploymentPlugin) }
           >
-            <Icon name="deploy" />
+            <DeployIcon className="icon" />
           </button>
         </Fill>
       }
