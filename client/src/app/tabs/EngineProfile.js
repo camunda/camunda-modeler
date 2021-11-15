@@ -16,7 +16,6 @@ import { isNil } from 'min-dash';
 import { Overlay } from '../../shared/ui';
 import { Fill } from '../slot-fill';
 
-import Arrow from '../../../resources/icons/Arrow.svg';
 import LinkArrow from '../../../resources/icons/LinkArrow.svg';
 
 import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../util/Flags';
@@ -68,9 +67,6 @@ export function EngineProfile(props) {
         title={ setEngineProfile ? 'Set execution platform' : 'Display execution platform information' }
       >
         { label }
-        {
-          setEngineProfile && <Arrow className="icon icon-arrow-down" />
-        }
       </button>
     </Fill>
   );
