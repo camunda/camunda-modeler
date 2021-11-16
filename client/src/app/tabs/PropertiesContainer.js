@@ -22,10 +22,10 @@ import { throttle } from '../../util';
 
 export const DEFAULT_LAYOUT = {
   open: false,
-  width: 250
+  width: 280
 };
 
-export const MIN_WIDTH = 150;
+export const MIN_WIDTH = 280;
 export const MAX_WIDTH = 650;
 
 
