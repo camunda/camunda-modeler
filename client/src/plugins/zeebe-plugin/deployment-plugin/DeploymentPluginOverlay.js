@@ -1,0 +1,381 @@
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+import React from 'react';
+
+import {
+  OVERLAY_TITLE,
+  DEPLOY,
+  START,
+  DEPLOYMENT_NAME,
+  SELF_HOSTED_TEXT,
+  OAUTH_TEXT,
+  NONE,
+  CAMUNDA_CLOUD_TEXT,
+  CONTACT_POINT,
+  DEPLOYMENT_NAME_HINT,
+  CONTACT_POINT_HINT,
+  OAUTH_URL,
+  AUDIENCE,
+  CLIENT_ID,
+  CLIENT_SECRET,
+  CLUSTER_URL,
+  REMEMBER_CREDENTIALS,
+  ERROR_REASONS,
+  CONNECTION_ERROR_MESSAGES
+} from './DeploymentPluginConstants';
+
+import { AUTH_TYPES } from './../shared/ZeebeAuthTypes';
+
+import {
+  SELF_HOSTED,
+  CAMUNDA_CLOUD
+} from '../shared/ZeebeTargetTypes';
+
+import {
+  Formik,
+  Field
+} from 'formik';
+
+import {
+  Overlay,
+  ToggleSwitch,
+  Radio,
+  TextInput,
+  Section
+} from '../../../shared/ui';
+
+import css from './DeploymentPluginOverlay.less';
+
+
+const CONNECTION_STATE = {
+  INITIAL: 'initial',
+  INVALID_ENDPOINT: 'invalidEndpoint',
+  ERROR: 'error',
+  CONNECTED: 'connected'
+};
+
+export default class DeploymentPluginOverlay extends React.PureComponent {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      connectionState: { type: CONNECTION_STATE.INITIAL }
+    };
+
+    const { validator } = props;
+
+    this.validatorFunctionsByFieldNames = {
+      contactPoint: validator.validateZeebeContactPoint,
+      oauthURL: validator.validateOAuthURL,
+      audience: validator.validateAudience,
+      clientId: validator.validateClientId,
+      clientSecret: validator.validateClientSecret,
+      camundaCloudClientId: validator.validateClientId,
+      camundaCloudClientSecret: validator.validateClientSecret,
+      camundaCloudClusterUrl: validator.validateClusterUrl
+    };
+
+    this.connectionChecker = validator.createConnectionChecker();
+  }
+
+  async componentDidMount() {
+    this.connectionChecker.subscribe({
+      onComplete: this.handleConnectionCheckResult
+    });
+  }
+
+  componentWillUnmount() {
+    this.connectionChecker.unsubscribe();
+  }
+
+  endpointConfigurationFieldError = (meta, fieldName) => {
+    return this.getConnectionError(fieldName) || (meta.touched && meta.error);
+  }
+
+  getConnectionError(rawFieldName) {
+    const { connectionState } = this.state;
+
+    // no connection error
+    if (connectionState.type !== CONNECTION_STATE.ERROR) {
+      return;
+    }
+
+    const fieldName = rawFieldName.replace('endpoint.', '');
+    const { failureReason } = connectionState;
+
+    switch (failureReason) {
+    case ERROR_REASONS.CONTACT_POINT_UNAVAILABLE:
+      return fieldName === 'contactPoint' &&
+        CONNECTION_ERROR_MESSAGES[failureReason];
+    case ERROR_REASONS.CLUSTER_UNAVAILABLE:
+      return fieldName === 'camundaCloudClusterUrl' && CONNECTION_ERROR_MESSAGES[failureReason];
+    case ERROR_REASONS.UNSUPPORTED_ENGINE:
+      return [
+        'contactPoint',
+        'camundaCloudClusterUrl'
+      ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
+    case ERROR_REASONS.UNAUTHORIZED:
+    case ERROR_REASONS.FORBIDDEN:
+      return [
+        'clientId',
+        'clientSecret',
+        'camundaCloudClientId',
+        'camundaCloudClientSecret'
+      ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
+    case ERROR_REASONS.OAUTH_URL:
+      return fieldName === 'oauthURL' && CONNECTION_ERROR_MESSAGES[failureReason];
+    case ERROR_REASONS.UNKNOWN:
+      return [
+        'contactPoint',
+        'camundaCloudClusterUrl'
+      ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
+    }
+  }
+
+  scheduleConnectionCheck = formValues => {
+    this.connectionChecker.check(formValues.endpoint);
+  }
+
+  handleConnectionCheckResult = result => {
+    const { connectionResult, endpointErrors } = result;
+
+    if (endpointErrors) {
+      return this.setConnectionState({ type: CONNECTION_STATE.INVALID_ENDPOINT });
+    }
+
+    if (!connectionResult.success) {
+      return this.setConnectionState({
+        type: CONNECTION_STATE.ERROR,
+        failureReason: connectionResult.reason
+      });
+    }
+
+    return this.setConnectionState({ type: CONNECTION_STATE.CONNECTED });
+  }
+
+  setConnectionState(connectionState) {
+    this.setState({ connectionState });
+  }
+
+  handleFormSubmit = async (values, { setSubmitting }) => {
+    const { endpoint } = values;
+
+    // Extract clusterId and clusterRegion as required by zeebeAPI for camundaCloud
+    if (endpoint.targetType === CAMUNDA_CLOUD && endpoint.camundaCloudClusterUrl) {
+      endpoint.camundaCloudClusterId = extractClusterId(endpoint.camundaCloudClusterUrl);
+      endpoint.camundaCloudClusterRegion = extractClusterRegion(endpoint.camundaCloudClusterUrl);
+    }
+
+    // check connection
+    const { connectionResult } = await this.connectionChecker.check(endpoint);
+
+    if (!connectionResult.success) {
+      return setSubmitting(false);
+    }
+
+    this.props.onDeploy(values);
+  }
+
+  render() {
+
+    const {
+      onClose: closeOverlay,
+      config,
+      isStart,
+      anchor
+    } = this.props;
+
+    const onClose = () => closeOverlay(null);
+
+    const {
+      validatorFunctionsByFieldNames
+    } = this;
+
+    return (
+      <Overlay className={ css.DeploymentPluginOverlay } onClose={ onClose } anchor={ anchor }>
+        <Formik
+          initialValues={ config }
+          onSubmit={ this.handleFormSubmit }
+          validate={ this.scheduleConnectionCheck }
+          validateOnMount
+        >
+          {
+            form => (
+              <form onSubmit={ form.handleSubmit }>
+                <Section>
+                  <Section.Header> { OVERLAY_TITLE } </Section.Header>
+                  <Section.Body>
+                    <fieldset className="fieldset">
+                      <div className="fields">
+                        <Field
+                          name="deployment.name"
+                          component={ TextInput }
+                          label={ DEPLOYMENT_NAME }
+                          hint={ DEPLOYMENT_NAME_HINT }
+                          autoFocus
+                        />
+                        <Field
+                          name="endpoint.targetType"
+                          component={ Radio }
+                          label={ 'Target' }
+                          className="target_radio"
+                          values={
+                            [
+                              { value: SELF_HOSTED, label: SELF_HOSTED_TEXT },
+                              { value: CAMUNDA_CLOUD, label: CAMUNDA_CLOUD_TEXT }
+                            ]
+                          }
+                        />
+                        {
+                          form.values.endpoint.targetType === SELF_HOSTED && (
+                            <React.Fragment>
+                              <Field
+                                name="endpoint.contactPoint"
+                                component={ TextInput }
+                                label={ CONTACT_POINT }
+                                fieldError={ this.endpointConfigurationFieldError }
+                                hint={ CONTACT_POINT_HINT }
+                                autoFocus
+                              />
+                              <Field
+                                name="endpoint.authType"
+                                component={ Radio }
+                                label={ 'Authentication' }
+                                values={
+                                  [
+                                    { value: AUTH_TYPES.NONE, label: NONE },
+                                    { value: AUTH_TYPES.OAUTH, label: OAUTH_TEXT }
+                                  ]
+                                }
+                              />
+                            </React.Fragment>
+                          )
+                        }
+                        {
+                          form.values.endpoint.targetType === SELF_HOSTED &&
+                            form.values.endpoint.authType === AUTH_TYPES.OAUTH && (
+                            <React.Fragment>
+                              <Field
+                                name="endpoint.clientId"
+                                component={ TextInput }
+                                label={ CLIENT_ID }
+                                fieldError={ this.endpointConfigurationFieldError }
+                                validate={ validatorFunctionsByFieldNames.clientId }
+                              />
+                              <Field
+                                name="endpoint.clientSecret"
+                                component={ TextInput }
+                                label={ CLIENT_SECRET }
+                                fieldError={ this.endpointConfigurationFieldError }
+                                validate={ validatorFunctionsByFieldNames.clientSecret }
+                                type="password"
+                              />
+                              <Field
+                                name="endpoint.oauthURL"
+                                component={ TextInput }
+                                label={ OAUTH_URL }
+                                fieldError={ this.endpointConfigurationFieldError }
+                                validate={ validatorFunctionsByFieldNames.oauthURL }
+                              />
+                              <Field
+                                name="endpoint.audience"
+                                component={ TextInput }
+                                label={ AUDIENCE }
+                                fieldError={ this.endpointConfigurationFieldError }
+                                validate={ validatorFunctionsByFieldNames.audience }
+                              />
+                            </React.Fragment>
+                          )
+                        }
+                        {
+                          form.values.endpoint.targetType === CAMUNDA_CLOUD && (
+                            <React.Fragment>
+                              <Field
+                                name="endpoint.camundaCloudClusterUrl"
+                                component={ TextInput }
+                                label={ CLUSTER_URL }
+                                fieldError={ this.endpointConfigurationFieldError }
+                                validate={ validatorFunctionsByFieldNames.camundaCloudClusterUrl }
+                                autoFocus
+                              />
+                              <Field
+                                name="endpoint.camundaCloudClientId"
+                                component={ TextInput }
+                                label={ CLIENT_ID }
+                                fieldError={ this.endpointConfigurationFieldError }
+                                validate={ validatorFunctionsByFieldNames.camundaCloudClientId }
+                              />
+                              <Field
+                                name="endpoint.camundaCloudClientSecret"
+                                component={ TextInput }
+                                label={ CLIENT_SECRET }
+                                fieldError={ this.endpointConfigurationFieldError }
+                                validate={ validatorFunctionsByFieldNames.camundaCloudClientSecret }
+                                type="password"
+                              />
+                            </React.Fragment>
+                          )
+                        }
+                        {
+                          (form.values.endpoint.authType !== AUTH_TYPES.NONE || form.values.endpoint.targetType === CAMUNDA_CLOUD) &&
+                            <Field
+                              name={ 'endpoint.rememberCredentials' }
+                              component={ ToggleSwitch }
+                              switcherLabel={ REMEMBER_CREDENTIALS }
+                            />
+                        }
+                      </div>
+                    </fieldset>
+                    <Section.Actions>
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        disabled={ form.isSubmitting }
+                      >
+                        { isStart ? START : DEPLOY }
+                      </button>
+                    </Section.Actions>
+
+                  </Section.Body>
+                </Section>
+              </form>
+            )
+          }
+        </Formik>
+      </Overlay>
+    );
+  }
+}
+
+
+// helper ////////
+
+/**
+  * extractClusterId
+  *
+  * @param  {string} camundaCloudClusterUrl
+  * @return {string} camundaCloudClusterId
+  */
+function extractClusterId(camundaCloudClusterUrl) {
+  return camundaCloudClusterUrl.match(/([a-z\d]+-){2,}[a-z\d]+/g)[0];
+}
+
+
+/**
+ * extractClusterRegion
+ *
+ * @param  {type} camundaCloudClusterUrl
+ * @return {type} camundaCloudClusterRegion
+ */
+function extractClusterRegion(camundaCloudClusterUrl) {
+  return camundaCloudClusterUrl.match(/(?<=\.)[a-z]+-[\d]+/g)[0];
+}

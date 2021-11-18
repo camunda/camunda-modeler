@@ -14,12 +14,18 @@ import React from 'react';
 
 import { mount } from 'enzyme';
 
-import DeploymentPluginModal from '../DeploymentPluginModal';
+import DeploymentPluginOverlay from '../DeploymentPluginOverlay';
 
 describe('<DeploymentPluginModal> (Zeebe)', () => {
 
+  var anchor;
+
+  beforeEach(function() {
+    anchor = document.createElement('button');
+  });
+
   it('should render', () => {
-    createDeploymentPluginModal();
+    createDeploymentPluginModal({ anchor });
   });
 
 
@@ -30,7 +36,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
     const validator = {
       createConnectionChecker: () => createConnectionChecker({ check: spy })
     };
-    createDeploymentPluginModal({ validator });
+    createDeploymentPluginModal({ anchor, validator });
 
     // then
     setTimeout(() => {
@@ -43,7 +49,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   it('should deploy', done => {
 
     // given
-    const { wrapper } = createDeploymentPluginModal({ onDeploy });
+    const { wrapper } = createDeploymentPluginModal({ anchor, onDeploy });
 
     // when
     const form = wrapper.find('form');
@@ -60,6 +66,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
 
     // given
     const { wrapper } = createDeploymentPluginModal({
+      anchor,
       onDeploy,
       config: {
         endpoint: {
@@ -87,6 +94,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
 
     // given
     const { wrapper } = createDeploymentPluginModal({
+      anchor,
       onDeploy,
       config: {
         endpoint: {
@@ -107,21 +115,6 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
       done();
     }
   });
-
-
-  it('should close when pressed on secondary button', async () => {
-
-    // given
-    const onClose = sinon.spy();
-    const { wrapper, instance } = createDeploymentPluginModal({ onClose });
-
-    // when
-    await instance.componentDidMount();
-    wrapper.find('.btn-secondary').simulate('click');
-
-    // then
-    expect(onClose).to.have.been.called;
-  });
 });
 
 
@@ -130,7 +123,7 @@ const createDeploymentPluginModal = ({ ...props } = {}) => {
   const config = createConfig(props.config);
   const validator = new Validator(props.validator);
 
-  const wrapper = mount(<DeploymentPluginModal
+  const wrapper = mount(<DeploymentPluginOverlay
     validator={ validator }
     onDeploy={ noop }
     onClose={ noop }

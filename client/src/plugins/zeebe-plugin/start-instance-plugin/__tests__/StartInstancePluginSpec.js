@@ -38,8 +38,6 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
       }
     });
 
-    console.log(wrapper.debug());
-
     // then
     expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(1);
   });
