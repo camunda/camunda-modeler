@@ -16,7 +16,6 @@ import { getIn } from 'formik';
 import classNames from 'classnames';
 
 import CloseIcon from '../../../../resources/icons/Close.svg';
-import FormFeedback from './FormFeedback';
 
 /**
  * @typedef FileDescriptor
@@ -111,7 +110,6 @@ function ListItem(props) {
           <CloseIcon aria-hidden="true" />
         </button>
       </span>
-      <FormFeedback error={ error } />
     </li>
   );
 }

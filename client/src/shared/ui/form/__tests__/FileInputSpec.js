@@ -128,7 +128,7 @@ describe('<FileInput>', function() {
     }, mount);
 
     // then
-    const errorWrapper = wrapper.find('FormFeedback');
+    const errorWrapper = wrapper.find('.error');
 
     expect(errorWrapper).to.have.lengthOf(1);
   });
