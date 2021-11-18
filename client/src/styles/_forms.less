@@ -1,112 +1,56 @@
+@import "_form-definitions.less";
+
+/**
+ * Theme
+ */
+:root {
+  --label-color: var(--color-grey-225-10-15);
+  --description-color: var(--color-grey-225-10-55);
+  --placeholder-color: var(--color-grey-225-10-75);
+  --error-color: var(--color-red-360-100-45);
+
+  --input-background-color: var(--color-grey-225-10-97);
+  --input-border-color: var(--color-grey-225-10-75);
+
+  --input-focus-background-color: var(--color-blue-205-100-95);
+  --input-focus-border-color: var(--color-blue-205-100-50);
+
+  --input-error-background-color: var(--color-red-360-100-97);
+  --input-error-border-color: var(--color-red-360-100-45);
+  --input-error-focus-border-color: var(--color-red-360-100-45);
+
+  --input-disabled-color: var(--color-grey-225-10-55);
+  --input-disabled-background-color: var(--color-grey-225-10-97);
+  --input-disabled-border-color: var(--color-grey-225-10-90);
+
+  --checkbox-hover-background-color: var(--color-grey-225-10-95);
+  --radio-hover-background-color: var(--color-grey-225-10-95);
+  --toggle-hover-background-color: var(--color-grey-225-10-95);
+
+  --file-button-color: var(--color-white);
+  --file-button-background-color: var(--color-blue-205-100-50);
+  --file-button-hover-background-color: var(--color-blue-205-100-45);
+  --file-button-focus-color: var(--color-blue-205-100-50);
+}
+
+/**
+ * Modeler styles
+ */
 .form-group {
-  --input-background-color: var(--color-white);
-  --toggle-switch-on-background-color: var(--color-blue-205-100-50);
-  --toggle-switch-off-background-color: var(--color-grey-225-10-55);
-  --toggle-switch-disabled-background-color: var(--color-grey-225-10-85);
-  --toggle-switch-switcher-background-color: var(--color-white);
-
   input[type=password].form-control,
+  input[type=number].form-control,
   input[type=text].form-control,
+  textarea.form-control,
   select.form-control {
-    border-radius: 3px;
-    border: solid 1px var(--color-grey-225-10-75);
-    background-color: var(--input-background-color);
-    width: 100%;
-    height: 30px;
-    font-size: 13px;
-    padding-left: 8px;
-    color: var(--color-grey-225-10-15);
-    font-family: inherit;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    float: left;
-  }
-
-  // hide but remain accessible: https://snook.ca/archives/html_and_css/hiding-content-for-accessibility
-  input[type=file].form-control {
-    position: absolute !important;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-    clip: rect(1px 1px 1px 1px);
-  }
-
-  input[type=file].form-control:focus-within + label {
-    box-shadow: var(--focus-shadow);
-    border: solid 1px var(--color-blue-205-100-50);
-  }
-
-  // make sure outline doesn't cover the block
-  input[type=file].form-control + label {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    margin-left: 4px;
-    min-width: 50px;
-    height: 25px;
-
-    font-size: 13px;
-    color: var(--color-white);
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
-    border: solid 1px var(--color-blue-205-100-45);
-    background-color: var(--color-blue-205-100-50);
-
-    &:hover {
-      border: solid 1px var(--color-blue-205-100-50);
-      background-color: var(--color-blue-205-100-45);
-    }
-
-    &:active {
-      border: solid 1px var(--color-blue-205-100-45);
-      background-color: var(--color-blue-205-100-50);
-    }
-  }
-
-  input[type=password].form-control::placeholder,
-  input[type=text].form-control::placeholder {
-    font-size: 13px;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: italic;
-    line-height: normal;
-    letter-spacing: normal;
-    color: var(--color-grey-225-10-55);
-  }
-
-  input[type=password].form-control:focus,
-  input[type=text].form-control:focus,
-  select.form-control:focus {
-    outline: none;
-    box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
-    border: solid 1px var(--color-blue-205-100-50);
-  }
-
-  input[type=password].form-control.is-invalid,
-  input[type=text].form-control.is-invalid {
-    border: solid 1px var(--color-red-360-100-45);
-  }
-
-  input[type=password].form-control.is-invalid:focus,
-  input[type=text].form-control.is-invalid:focus {
-    outline: none;
-    box-shadow: 0 0 0 1px var(--color-red-360-100-92), 0 0 0 1px var(--color-grey-225-10-75) inset;
-    border: solid 1px var(--color-red-360-100-45);
+    .input-base();
   }
 
   label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 12px;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: var(--color-grey-225-10-15);
+    .label-base();
+  }
+
+  input[type=file].form-control {
+    .file-base();
   }
 
   .form-check-inline {
@@ -115,191 +59,37 @@
     grid-auto-flow: column;
   }
 
-  .custom-control {
-
-    label {
-      font-size: 13px;
-    }
-
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: var(--color-grey-225-10-15);
-
-    .custom-control-input:checked,
-    .custom-control-input:not(:checked) {
-      position: absolute;
-      left: -9999px;
-    }
-
-    // the text
-    .custom-control-input:checked + .custom-control-label,
-    .custom-control-input:not(:checked) + .custom-control-label {
-        position: relative;
-        padding-left: 26px;
-        line-height: 20px;
-        display: inline-block;
-    }
-
-    // radio control
-    .custom-control-input:not(:checked) + .custom-control-label:after {
-        opacity: 0;
-    }
-    .custom-control-input:checked + .custom-control-label:after {
-        opacity: 1;
-    }
-
-    .custom-control-label:focus {
-      outline: none;
-    }
-
-    .custom-control-input:focus + .custom-control-label:before {
-      box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
-      border: solid 1px var(--color-blue-205-100-50) !important;
-    }
-  }
-
+  /**
+   * Checkbox 
+   */
   .custom-checkbox {
-
-    // border of the radio
-    .custom-control-input:checked + .custom-control-label:before,
-    .custom-control-input:not(:checked) + .custom-control-label:before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 16px;
-        height: 16px;
-        border: 1px solid var(--color-grey-225-10-75);
-        border-radius: 3px;
-        background: var(--color-white);
-    }
-
-    // inside the checkbox
-    .custom-control-input:checked + .custom-control-label:after,
-    .custom-control-input:not(:checked) + .custom-control-label:after {
-      position: absolute;
-      left: 1px;
-      width: 16px;
-      height: 16px;
-      content: "";
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill-rule='evenodd' points='5.743 14.314 1 9.57 2.897 7.673 5.743 10.519 13.103 3.16 15 5.057'/%3E%3C/svg%3E%0A");
-    }
+    .checkbox-base();
   }
 
+  /**
+   * Radio 
+   */
   .custom-radio {
-
-    // border of the radio
-    .custom-control-input:checked + .custom-control-label:before,
-    .custom-control-input:not(:checked) + .custom-control-label:before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 16px;
-        height: 16px;
-        border: 1px solid var(--color-grey-225-10-75);
-        border-radius: 100%;
-        background: var(--color-white);
-    }
-
-    // inside the radio
-    .custom-control-input:checked + .custom-control-label:after,
-    .custom-control-input:not(:checked) + .custom-control-label:after {
-        content: '';
-        width: 8px;
-        height: 8px;
-        background-color: var(--color-grey-225-10-15);
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        border-radius: 100%;
-    }
-
-    // radio control
-    .custom-control-input:not(:checked) + .custom-control-label:after {
-        opacity: 0;
-    }
-    .custom-control-input:checked + .custom-control-label:after {
-        opacity: 1;
-    }
-
-    .custom-control-label:focus {
-      outline: none;
-    }
-
-    .custom-control-input:focus + .custom-control-label:before {
-      box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
-      border: solid 1px var(--color-blue-205-100-50) !important;
-    }
+    .radio-base();
   }
 
-  // feedback / tooltip
+  /**
+   * Toggle
+   */
+  .custom-toggle {
+    .toggle-base();
+  }
+
+  /**
+   * Input errors
+   */
   .invalid-feedback {
-      width: 16px;
-      height: 14px;
-      display: inline-block;
-      margin-left: 6px;
-      margin-top: 8px;
-      position: relative;
-
-    .invalid-tooltip {
-      visibility: hidden;
-      padding-left: 10px;
-      padding-right: 10px;
-      height: 32px;
-      border-radius: 3px;
-      box-shadow: 0 1px 2px 0 var(--color-black-opacity-30);
-      border: solid 1px var(--color-grey-225-10-75);
-      top: 20px;
-      right: -13px;
-      white-space: nowrap;
-      background-color: var(--color-white);
-      position: absolute;
-      z-index: 1;
-      font-size: 13px;
-      font-weight: normal;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: normal;
-      letter-spacing: normal;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-grey-225-10-15);
-    }
-
-    .invalid-tooltip:before,
-    .invalid-tooltip:after {
-      position: absolute;
-      content: ' ';
-      pointer-events: none;
-      color: transparent;
-      border-style: solid;
-      bottom: 100%;
-    }
-
-    .invalid-tooltip:before {
-      right: 15px;
-
-      border-width: 5px;
-      border-bottom-color: var(--color-grey-225-10-75);
-    }
-
-    .invalid-tooltip:after {
-      right: 16px;
-
-      border-width: 4px;
-      border-bottom-color: var(--color-white);
-    }
-
-    &:hover .invalid-tooltip {
-      visibility: visible;
-    }
+    .error-base();
   }
 
+  /**
+   * File list
+   */
   .file-list {
     padding-left: 8px;
     padding-top: 5px;
@@ -362,87 +152,5 @@
       margin-left: 3px;
     }
   } 
-}
-
-.custom-control-toggle {
-
-  margin-top: -8px;
-  
-  > .description {
-    margin:6px 0 6px 38px;
-    font-size: 13px;
-    color: var(--color-grey-225-10-35);
-
-  }
-  
-  .toggle-switch .field-wrapper {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  }
-  
-  .toggle-switch > .label {
-    font-size: var(--text-size-base);
-  }
-  
-  .toggle-switch .toggle-switch__label {
-    margin: 0;
-    margin-left: 6px;
-    font-size: var(--text-size-base);
-  }
-  
-  .toggle-switch .toggle-switch__switcher {
-    position: relative;
-    width: 32px;
-    height: 16px;
-    margin: 0;
-  }
-  
-  .toggle-switch .toggle-switch__switcher input[type='checkbox'] {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  .toggle-switch .toggle-switch__switcher .toggle-switch__slider {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--toggle-switch-off-background-color);
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-    border-radius: 34px;
-  }
-  
-  .toggle-switch .toggle-switch__switcher .toggle-switch__slider:before {
-    position: absolute;
-    content: "";
-    height: 12px;
-    width: 12px;
-    left: 2px;
-    bottom: 2px;
-    background-color: var(--toggle-switch-switcher-background-color);
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-    border-radius: 50%;
-  }
-  
-  .toggle-switch .toggle-switch__switcher input[type='checkbox']:checked + .toggle-switch__slider {
-    background-color: var(--toggle-switch-on-background-color);
-    box-shadow: 0 0 1px ;
-  }
-
-  .toggle-switch .toggle-switch__switcher input[type='checkbox']:disabled + .toggle-switch__slider {
-    background-color: var(--toggle-switch-disabled-background-color);
-    box-shadow: none ;
-  }
-  
-  .toggle-switch .toggle-switch__switcher input[type='checkbox']:checked + .toggle-switch__slider:before {
-    -webkit-transform: translateX(16px);
-    -ms-transform: translateX(16px);
-    transform: translateX(16px);
-  }
 }
 
