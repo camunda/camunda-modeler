@@ -45,7 +45,7 @@ export default function Radio(props) {
               return (
                 <React.Fragment key={ child.label }>
                   <div className={
-                    classNames('custom-control', 'custom-radio')
+                    classNames('form-control-custom', 'custom-radio')
                   }>
                     <input
                       { ...field }
@@ -53,13 +53,11 @@ export default function Radio(props) {
                       name={ fieldName }
                       value={ child.value }
                       checked={ isChecked(child.value) }
-                      className="custom-control-input"
                       id={ id }
                       tabIndex={ 0 }
                       { ...restProps } />
                     <label
-                      htmlFor={ id }
-                      className="custom-control-label">
+                      htmlFor={ id }>
                       { child.label }
                     </label>
                   </div>

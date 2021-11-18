@@ -39,7 +39,7 @@ describe('<Radio>', function() {
       ]
     });
 
-    const checkedInput = wrapper.find('.custom-control-input');
+    const checkedInput = wrapper.find('.custom-radio input');
 
     // then
     expect(checkedInput).to.have.length(1);
@@ -62,7 +62,7 @@ describe('<Radio>', function() {
         }
       ]
     });
-    const input = wrapper.find('.custom-control-input');
+    const input = wrapper.find('.custom-radio input');
 
     // when
     input.simulate('change');

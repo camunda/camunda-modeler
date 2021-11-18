@@ -202,21 +202,20 @@ function EngineProfileOption(props) {
   };
 
   return <div
-    className="custom-control custom-radio platform"
+    className="form-control-custom custom-radio platform"
     key={ executionPlatform }>
 
     { onlyEngine ? null
       : (
         <input
           id={ id }
-          className="custom-control-input"
           type="radio"
           checked={ checked }
           onChange={ () => {} }
           onClick={ () => onSelectEngineProfile(executionPlatform, selectedExecutionPlatformVersion) } />
       )
     }
-    <label className="custom-control-label" htmlFor={ id }>
+    <label htmlFor={ id }>
       { `${ executionPlatform }${ executionPlatformVersions.length === 1 ? ` ${ executionPlatformVersions[ 0 ] }` : '' }` }
     </label>
     {
