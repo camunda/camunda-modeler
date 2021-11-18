@@ -26,8 +26,8 @@
 /** @type WindowConfig */
 const DEFAULT_CONFIG = {
   bounds: {
-    height: 600,
-    width: 800,
+    height: 768,
+    width: 1024,
     x: 0,
     y: 0
   },

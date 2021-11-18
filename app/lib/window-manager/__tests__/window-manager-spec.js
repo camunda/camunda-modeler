@@ -36,7 +36,7 @@ describe('window-manager', function() {
       // then
       expect(window.setBounds).to.have.been.calledOnce;
       expect(window.setBounds.args).to.eql([
-        [ { x: 0, y: 0, width: 800, height: 600 } ]
+        [ { x: 0, y: 0, width: 1024, height: 768 } ]
       ]);
     });
 
@@ -47,7 +47,7 @@ describe('window-manager', function() {
       const config = new MockConfig(),
             window = new MockWindow({ setBounds: sinon.spy() }),
             screen = new MockScreen(),
-            savedBounds = { x: 0, y: 0, width: 1024, height: 768 };
+            savedBounds = { x: 0, y: 0, width: 1280, height: 800 };
       config.set('window', { bounds: savedBounds });
 
       const windowManager = new WindowManager({ config, electronScreen: screen });
@@ -125,8 +125,8 @@ describe('window-manager', function() {
         bounds: {
           x: 0,
           y: 0,
-          width: 800,
-          height: 600
+          width: 1024,
+          height: 768
         },
         fullScreen: false,
         maximize: false
