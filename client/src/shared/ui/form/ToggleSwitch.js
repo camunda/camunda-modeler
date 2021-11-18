@@ -10,11 +10,11 @@
 
 import React from 'react';
 
+import classNames from 'classnames';
 
 export default function ToggleSwitch(props) {
   const {
     id,
-    label,
     switcherLabel,
     description,
     field,
@@ -24,29 +24,21 @@ export default function ToggleSwitch(props) {
   } = props;
 
   return (
-    <div className="form-group">
-      <div className="custom-control-toggle" data-entry-id={ id }>
-        <div className="toggle-switch">
-          <label className="label"
-            htmlFor={ id }>
-            { label }
-          </label>
-          <div className="field-wrapper">
-            <label className="toggle-switch__switcher">
-              <input
-                type="checkbox"
-                { ...field }
-                { ...restProps }
-                defaultChecked={ field.value }
-                disabled={ disabled }
-              />
-              <span className="toggle-switch__slider" />
-            </label>
-            <p className="toggle-switch__label">{ switcherLabel }</p>
-          </div>
+    <React.Fragment>
+      <div className="form-group">
+        <div className={ classNames('form-control-custom', 'custom-toggle') }>
+          <input
+            id={ id }
+            type="checkbox"
+            { ...field }
+            { ...restProps }
+            defaultChecked={ field.value }
+            disabled={ disabled }
+          />
+          <label htmlFor={ id }>{ switcherLabel }</label>
         </div>
         { description && <div className="description">{ description }</div> }
       </div>
-    </div>
+    </React.Fragment>
   );
 }
