@@ -1,3 +1,5 @@
+@import url("../../styles/_form-definitions.less");
+
 :local(.PropertiesContainer) {
 
   position: relative;
@@ -53,6 +55,25 @@
     --font-family: inherit;
     --font-family-monospace: inherit;
     background: var(--color-white);
+
+    .bio-properties-panel-input { 
+      .input-base();
+    }
+
+    .bio-properties-panel-checkbox {
+      .checkbox-base();
+
+      margin-left: -1px;
+
+      input[type="checkbox"] {
+        + label {
+          display: block;
+          margin-left: 0;
+          padding: 0 0 1px 20px;
+          line-height: 17px;
+        }
+      }
+    }
   }
 
 }
