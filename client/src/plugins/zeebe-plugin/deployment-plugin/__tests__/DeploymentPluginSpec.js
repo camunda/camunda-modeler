@@ -89,7 +89,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     // when
     await instance.deploy({
-      isStart: true
+      isStart: true,
+      onClose: () => {}
     });
 
     // then
@@ -198,7 +199,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     // when
     await instance.deploy({
-      isStart: true
+      isStart: true,
+      onClose: () => {}
     });
 
     // then
@@ -625,7 +627,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // when
       await instance.deploy(({
-        isStart: true
+        isStart: true,
+        onClose: () => {}
       }));
 
       const targetType = actionSpy.getCall(0).args[0].payload.targetType;
@@ -667,7 +670,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // when
       await instance.deploy(({
-        isStart: true
+        isStart: true,
+        onClose: () => {}
       }));
 
       const deployedTo = actionSpy.getCall(0).args[0].payload.deployedTo;
@@ -703,7 +707,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // when
       await instance.deploy(({
-        isStart: true
+        isStart: true,
+        onClose: () => {}
       }));
 
       const context = actionSpy.getCall(0).args[0].payload.context;
@@ -805,7 +810,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // when
       await instance.deploy(({
-        isStart: true
+        isStart: true,
+        onClose: () => {}
       }));
 
       const targetType = actionSpy.getCall(0).args[0].payload.targetType;
@@ -848,7 +854,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // when
       await instance.deploy(({
-        isStart: true
+        isStart: true,
+        onClose: () => {}
       }));
 
       const deployedTo = actionSpy.getCall(0).args[0].payload.deployedTo;
@@ -890,7 +897,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // when
       await instance.deploy(({
-        isStart: true
+        isStart: true,
+        onClose: () => {}
       }));
 
       const deployedTo = actionSpy.getCall(0).args[0].payload.deployedTo;
@@ -926,7 +934,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // when
       await instance.deploy(({
-        isStart: true
+        isStart: true,
+        onClose: () => {}
       }));
 
       const context = actionSpy.getCall(0).args[0].payload.context;
@@ -975,8 +984,8 @@ class TestDeploymentPlugin extends DeploymentPlugin {
 
   /**
    * @param {object} props
-   * @param {'cancel'|'deploy'} [props.userAction='deploy'] user action in configuration modal
-   * @param {sinon.SinonSpy} [props.userActionSpy] spy on user configuration modal
+   * @param {'cancel'|'deploy'} [props.userAction='deploy'] user action in configuration overlay
+   * @param {sinon.SinonSpy} [props.userActionSpy] spy on user configuration overlay
    * @param {object} [props.endpoint] overrides for endpoint configuration
    * @param {object} [props.deployment] overrides for deployment configuration
    */
@@ -984,11 +993,11 @@ class TestDeploymentPlugin extends DeploymentPlugin {
     super(props);
   }
 
-  // closes automatically when modal is opened
+  // closes automatically when overlay is opened
   componentDidUpdate(...args) {
     super.componentDidUpdate && super.componentDidUpdate(...args);
 
-    const { modalState } = this.state;
+    const { overlayState } = this.state;
     const {
       userAction,
       userActionSpy,
@@ -996,7 +1005,7 @@ class TestDeploymentPlugin extends DeploymentPlugin {
       deployment
     } = this.props;
 
-    if (modalState) {
+    if (overlayState) {
       const action = userAction || 'deploy';
 
       if (userActionSpy) {
@@ -1005,16 +1014,16 @@ class TestDeploymentPlugin extends DeploymentPlugin {
 
       const config = action !== 'cancel' && {
         endpoint: {
-          ...modalState.config.endpoint,
+          ...overlayState.config.endpoint,
           ...endpoint
         },
         deployment: {
-          ...modalState.config.deployment,
+          ...overlayState.config.deployment,
           ...deployment
         }
       };
 
-      modalState.onClose(config);
+      overlayState.onClose(config);
     }
   }
 }
@@ -1083,6 +1092,7 @@ function MockZeebeAPI(options = {}) {
   } = options;
 
   this.deploy = (...args) => {
+
     if (deploySpy) {
       deploySpy(...args);
     }

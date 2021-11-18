@@ -21,6 +21,7 @@ export default function Radio(props) {
     form,
     children,
     values,
+    className,
     ...restProps
   } = props;
 
@@ -35,7 +36,7 @@ export default function Radio(props) {
   return (
     <React.Fragment>
       <div className={
-        classNames('form-group', 'form-inline')
+        classNames('form-group', 'form-inline', className)
       }>
         <label htmlFor={ fieldName }>{ label }</label>
         <div className="form-check-inline">

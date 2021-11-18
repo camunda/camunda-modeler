@@ -14,11 +14,11 @@ import { Fill } from '../../../app/slot-fill';
 
 import PlayIcon from 'icons/Play.svg';
 
-import { OverlayDropdown } from '../../../shared/ui';
-
 import css from './StartInstancePlugin.less';
 
 import pDefer from 'p-defer';
+import classNames from 'classnames';
+import { OverlayDropdown } from '../../../shared/ui';
 
 
 export default class StartInstancePlugin extends PureComponent {
@@ -27,12 +27,16 @@ export default class StartInstancePlugin extends PureComponent {
     super(props);
 
     this.state = {
-      activeTab: null
+      activeTab: null,
+      openOverlay: false,
+      activeButton: false
     };
 
     this._items = [
       { text: 'Start process instance', onClick: () => this.startInstance() }
     ];
+
+    this._anchorRef = React.createRef();
   }
 
   componentDidMount() {
@@ -72,8 +76,9 @@ export default class StartInstancePlugin extends PureComponent {
     });
   }
 
-  onIconClicked = async () => {
-    this.startInstance();
+  onOverlayClose = async () => {
+    this.props.broadcastMessage('cancel');
+    this.setState({ activeButton: false });
   }
 
   deployActiveTab() {
@@ -81,8 +86,12 @@ export default class StartInstancePlugin extends PureComponent {
     const body = {
       isStart: true,
       skipNotificationOnSuccess: true,
-      done: deferred.resolve
+      done: deferred.resolve,
+      anchorRef: this._anchorRef,
+      onClose: () => { this.setState({ activeButton: false }); }
     };
+
+    this.setState({ activeButton: true });
 
     this.props.broadcastMessage('deploy', body);
 
@@ -102,7 +111,10 @@ export default class StartInstancePlugin extends PureComponent {
           <OverlayDropdown
             items={ this._items }
             title="Start Current Diagram"
-            className={ 'btn ' + css.StartInstancePlugin }
+            buttonRef={ this._anchorRef }
+            className={ classNames(css.StartInstancePlugin, { 'btn--active': this.state.activeButton }) }
+            overlayState={ this.state.activeButton }
+            onClose={ this.onOverlayClose }
           >
             <PlayIcon className="icon" />
           </OverlayDropdown>

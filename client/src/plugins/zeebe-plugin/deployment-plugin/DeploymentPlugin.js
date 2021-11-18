@@ -30,7 +30,7 @@ import { AUTH_TYPES } from './../shared/ZeebeAuthTypes';
 
 import { SELF_HOSTED } from '../shared/ZeebeTargetTypes';
 
-import DeploymentPluginModal from './DeploymentPluginModal';
+import DeploymentPluginOverlay from './DeploymentPluginOverlay';
 
 import DeploymentPluginValidator from './DeploymentPluginValidator';
 
@@ -69,10 +69,11 @@ export default class DeploymentPlugin extends PureComponent {
 
     this.state = {
       activeTab: null,
-      modalState: null
+      overlayState: null
     };
     this.validator = new DeploymentPluginValidator(props._getGlobal('zeebeAPI'));
     this.connectionChecker = this.validator.createConnectionChecker();
+    this._anchorRef = React.createRef();
   }
 
   componentDidMount() {
@@ -128,17 +129,23 @@ export default class DeploymentPlugin extends PureComponent {
       endpoint
     };
 
-    // (2.1) open modal if config is incomplete
+    // (2.1) open overlay if config is incomplete
     const canDeploy = await this.canDeployWithConfig(config, options);
 
     if (!canDeploy) {
-      config = await this.getConfigFromUser(config, savedTab, options);
+      config = await this.getConfigFromUser({}, savedTab, options);
 
       // user canceled
       if (!config) {
         notifyResult({ deploymentResult: null });
 
         return;
+      }
+    } else {
+
+      // no more input needed for start instance
+      if (options.isStart) {
+        options.onClose();
       }
     }
 
@@ -200,7 +207,7 @@ export default class DeploymentPlugin extends PureComponent {
 
   async canDeployWithConfig(config, options) {
 
-    // always open modal for deployment tool
+    // always open overlay for deployment tool
     if (!options.isStart) {
       return false;
     }
@@ -226,23 +233,29 @@ export default class DeploymentPlugin extends PureComponent {
 
     const p = pDefer();
 
-    const onClose = config => {
-      this.closeModal();
+    const onClose = (config) => {
+
+      if (options.onClose) {
+        options.onClose();
+      }
+
+      this.closeOverlay();
 
       return p.resolve(config);
     };
 
     const defaultConfiguration = await this.getDefaultConfig(savedConfig, tab);
 
-    const modalState = {
+    const overlayState = {
       config: defaultConfiguration,
       isStart: !!options.isStart,
-      onClose
+      onClose,
+      anchorRef: options.anchorRef || this._anchorRef
     };
 
-    // open modal
+    // open overlay
     this.setState({
-      modalState
+      overlayState
     });
 
     return p.promise;
@@ -251,6 +264,10 @@ export default class DeploymentPlugin extends PureComponent {
   onMessageReceived = (msg, body) => {
     if (msg === 'deploy') {
       this.deploy(body);
+    }
+
+    if (msg === 'cancel') {
+      this.state.overlayState.onClose(null);
     }
   }
 
@@ -453,17 +470,32 @@ export default class DeploymentPlugin extends PureComponent {
     });
   }
 
-  closeModal() {
-    this.setState({ modalState: null });
+  closeOverlay() {
+    this.setState({ overlayState: null });
   }
 
   onIconClicked = async () => {
-    this.deploy();
+    const {
+      overlayState
+    } = this.state;
+
+    if (overlayState && !overlayState.isStart)
+      this.closeOverlay();
+
+    else this.deploy();
+  }
+
+  isButtonActive = () => {
+    const {
+      overlayState
+    } = this.state;
+
+    return overlayState ? !overlayState.isStart : null;
   }
 
   render() {
     const {
-      modalState,
+      overlayState,
       activeTab
     } = this.state;
 
@@ -473,19 +505,21 @@ export default class DeploymentPlugin extends PureComponent {
           <button
             onClick={ this.onIconClicked }
             title="Deploy current diagram"
-            className={ classNames('btn', { 'btn--active': modalState }, css.DeploymentPlugin) }
+            className={ classNames('btn', css.DeploymentPlugin, { 'btn--active': this.isButtonActive() }) }
+            ref={ this._anchorRef }
           >
             <DeployIcon className="icon" />
           </button>
         </Fill>
       }
-      { modalState &&
-        <DeploymentPluginModal
-          onClose={ modalState.onClose }
+      { overlayState &&
+        <DeploymentPluginOverlay
+          onClose={ overlayState.onClose }
           validator={ this.validator }
-          onDeploy={ modalState.onClose }
-          isStart={ modalState.isStart }
-          config={ modalState.config }
+          onDeploy={ overlayState.onClose }
+          isStart={ overlayState.isStart }
+          config={ overlayState.config }
+          anchor={ overlayState.anchorRef.current }
         />
       }
     </React.Fragment>;
