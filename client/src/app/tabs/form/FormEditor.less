@@ -1,3 +1,5 @@
+@import url("../../../styles/_form-definitions.less");
+
 :local(.FormEditor) {
   display: flex;
   flex: 1;
@@ -28,6 +30,36 @@
   
     .fjs-powered-by {
       display: none;
+    }
+
+    .fjs-properties-panel {
+
+      .fjs-properties-panel-input {
+        .input-base();
+
+        box-shadow: none;
+        background-color: var(--color-white);
+      }
+
+      .fjs-properties-panel-checkbox {
+        .checkbox-base();
+
+        margin-left: -2px;
+
+        .fjs-properties-panel-label {
+          padding: 3px 0 1px 26px;
+          line-height: 17px;
+        }
+
+        input[type="checkbox"] {
+          &:not(:disabled):hover:after,
+          &:not(:disabled):focus:after,
+          &:not(:disabled):active:after {
+            background-color: var(--color-grey-225-10-90);
+          }
+        }
+      }
+
     }
   }
 }
