@@ -266,8 +266,8 @@ export default class Log extends PureComponent {
                 onFocus={ this.updateMenu }
               >
                 <div className="controls">
-                  <button className="copy-button" onClick={ this.handleCopy }>Copy</button>
-                  <button className="clear-button" onClick={ onClear }>Clear</button>
+                  <button className="btn btn-secondary copy-button" onClick={ this.handleCopy }>Copy</button>
+                  <button className="btn btn-secondary clear-button" onClick={ onClear }>Clear</button>
                 </div>
 
                 {

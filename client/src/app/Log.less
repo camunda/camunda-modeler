@@ -59,21 +59,16 @@
     background: var(--color-white);
   }
 
-  button {
-    padding: 4px 10px;
-    background: var(--color-grey-225-10-95);
-
+  .btn {
+    min-width: 0;
     display: inline-block;
-    border: solid 1px var(--color-grey-225-10-75);
-    border-radius: 2px;
     padding: 3px 8px;
     cursor: default;
     user-select: none;
     outline: none;
-
-    &:hover {
-      background: var(--color-grey-225-10-97);
-    }
+    border: none;
+    box-shadow: none;
+    font-family: var(--font-family);
   }
 
   button + button {

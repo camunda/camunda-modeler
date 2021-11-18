@@ -1,22 +1,43 @@
+/**
+ * Theme
+ */
+:root {
+  --button-primary-color: var(--color-white);
+  --button-primary-background-color: var(--color-blue-205-100-50);
+  --button-primary-hover-background-color: var(--color-blue-205-100-45);
+
+  --button-secondary-color: var(--color-grey-225-10-15);
+  --button-secondary-background-color: var(--color-grey-225-10-95);
+  --button-secondary-hover-background-color: var(--color-grey-225-10-90);
+
+  --button-disabled-color: var(--color-grey-225-10-15);
+  --button-disabled-background-color: var(--color-grey-225-10-75);
+
+  --button-primary-outline-color: var(--color-blue-205-100-50);
+  --button-secondary-outline-color: var(--color-grey-225-10-95);
+  --button-focus-color: var(--color-blue-205-100-50);
+}
+
 .btn {
+  padding: 2px 16px;
+  border-radius: 4px;
   min-width: 120px;
-  height: 35px;
-  border-radius: 3px;
-  font-size: 13px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 400;
   font-stretch: normal;
   font-style: normal;
-  font-family: inherit;
-  line-height: normal;
   letter-spacing: normal;
+  font-family: inherit;
+  line-height: 21px;
   text-align: center;
-  padding-left: 15px;
-  padding-right: 15px;
+  border: solid 1px transparent;
 
   &:focus {
     box-shadow: var(--focus-shadow);
-    border: solid 1px var(--color-blue-205-100-50);
+    border-color: var(--button-focus-color);
     outline: none;
+    outline-style: auto;
+    outline-color: var(--button-primary-outline-color);
   }
 
   [class^="app-icon-"]:before,
@@ -26,50 +47,35 @@
 }
 
 .btn-primary {
-  color: var(--color-white);
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
-  border: solid 1px var(--color-blue-205-100-45);
-  background-color: var(--color-blue-205-100-50);
+  color: var(--button-primary-color);
+  background-color: var(--button-primary-background-color);
 
   &:hover {
-    border: solid 1px var(--color-blue-205-100-50);
-    background-color: var(--color-blue-205-100-45);
-  }
-
-  &:active {
-    border: solid 1px var(--color-blue-205-100-45);
-    background-color: var(--color-blue-205-100-50);
+    background-color: var(--button-primary-hover-background-color);
   }
 
   &:disabled {
-    box-shadow: none;
-    border: none;
-    background-color: var(--color-grey-225-10-75);
-    color: var(--color-grey-225-10-15);
+    background-color: var(--button-disabled-background-color);
+    color: var(--button-disabled-color);
   }
 }
 
 .btn-secondary {
-  color: var(--color-grey-225-10-15);
-  box-shadow: 0 2px 2px 0 var(--color-black-opacity-10);
-  border: solid 1px var(--color-grey-225-10-75);
-  background-color: var(--color-grey-225-10-95);
+  color: var(--button-secondary-color);
+  background-color: var(--button-secondary-background-color);
 
   &:hover {
-    background-color: var(--color-grey-225-10-90);
-  }
-
-  &:active {
-    background-color: var(--color-grey-225-10-75);
+    background-color: var(--button-secondary-hover-background-color);
   }
 
   &:disabled {
-    box-shadow: none;
-    border: solid 1px var(--color-grey-225-10-75);
-    background-color: var(--color-grey-225-10-95);
-    color: var(--color-grey-225-10-75);
+    background-color: var(--button-disabled-background-color);
+    color: var(--button-disabled-color);
   }
 
+  &:focus {
+    outline-color: var(--button-secondary-outline-color);
+  }
 }
 
 .btn + .btn {
