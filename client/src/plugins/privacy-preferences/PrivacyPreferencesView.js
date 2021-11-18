@@ -58,24 +58,22 @@ class PrivacyPreferencesView extends PureComponent {
   }
 
   renderPreferences() {
-
     return PREFERENCES_LIST.map((item) => (
       <Fragment key={ item.key }>
         <div className="privacyPreferencesCheckbox">
           <div className="form-group">
             <div className={
-              classNames('custom-control', 'custom-checkbox')
+              classNames('form-control-custom', 'custom-checkbox')
             }>
               <input
                 id={ item.key }
                 type="checkbox"
-                className="custom-control-input"
                 defaultChecked={ this.isEnabled(item.key) }
                 autoFocus={ this.hasAutoFocus(item.key) }
                 onChange={ (event) => {
                   this.setState({ [item.key]: event.target.checked });
                 } } />
-              <label className="custom-control-label" htmlFor={ item.key }> </label>
+              <label htmlFor={ item.key }> </label>
             </div>
           </div>
         </div>

@@ -30,16 +30,16 @@ export default function CheckBox(props) {
     <React.Fragment>
       <div className="form-group">
         <div className={
-          classNames('custom-control', 'custom-checkbox')
+          classNames('form-control-custom', 'custom-checkbox')
         }>
           <input
             { ...field }
+            type="checkbox"
             disabled={ form.isSubmitting }
-            className="custom-control-input"
             id={ fieldName }
             { ...restProps }
           />
-          <label className="custom-control-label" htmlFor={ fieldName }>{ label }</label>
+          <label htmlFor={ fieldName }>{ label }</label>
         </div>
       </div>
     </React.Fragment>
