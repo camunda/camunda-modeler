@@ -1,4 +1,6 @@
 :local(.Overlay) {
+  --input-width: 100%;
+
   display: flex;
   flex: auto;
   flex-direction: column;
@@ -18,16 +20,7 @@
 
   a[href] {
     color: var(--overlay-link-color);
-    text-decoration: none;
-  }
-
-  :focus {
-    outline: none;
-  }
-
-  :focus-visible {
-    outline-style: auto;
-    outline-color: var(--focus-outline-color);
+    text-decoration: underline;
   }
 
   .overlay__header,
@@ -69,6 +62,12 @@
   .fields {
     display: grid;
     grid-gap: 12px;
+  }
+
+  input[type=password].form-control,
+  input[type=text].form-control,
+  select.form-control {
+    width: var(--input-width);
   }
 
   button[type="submit"] {
