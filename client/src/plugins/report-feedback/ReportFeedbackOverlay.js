@@ -8,9 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 
-import { Overlay } from '../../shared/ui';
+import { Overlay, Section } from '../../shared/ui';
 
 import { ReportFeedbackSystemInfo } from './ReportFeedbackSystemInfo';
 
@@ -27,12 +27,14 @@ export function ReportFeedbackOverlay(props) {
     <Overlay
       anchor={ props.anchor }
       onClose={ props.onClose }
+      maxHeight="calc(100vh - 250px)"
       offset={ OFFSET }
       className={ css.ReportFeedbackOverlay }
     >
       <ReportFeedbackChannels
         onClose={ props.onClose }
       />
+
       <ReportFeedbackSystemInfo
         onSubmit={ props.onSubmit }
       />
@@ -41,31 +43,26 @@ export function ReportFeedbackOverlay(props) {
 }
 
 function ReportFeedbackChannels(props) {
-  return (
-    <Fragment>
-      <Overlay.Title>
-        Your feedback is welcome
-      </Overlay.Title>
-      <Overlay.Body>
-        <ReportFeedbackChannelsContent
-          onClose={ props.onClose }
-        />
-      </Overlay.Body>
-    </Fragment>
-  );
-}
 
-function ReportFeedbackChannelsContent(props) {
+  const {
+    onClose
+  } = props;
+
   return (
-    <Fragment>
-      <p>
-        Have you found an issue or would like to send a feature request?<br />
-        <a onClick={ props.onClose } href={ REPORT_ISSUE_LINK }>Report an issue on GitHub</a>
-      </p>
-      <p>
-        Would you like to discuss with other users?<br />
-        <a onClick={ props.onClose } href={ USER_FORUM_LINK }>Visit the User Forum</a>
-      </p>
-    </Fragment>
+    <Section>
+      <Section.Header>
+        Your feedback is welcome
+      </Section.Header>
+      <Section.Body>
+        <p>
+          Have you found an issue or would like to send a feature request?<br />
+          <a onClick={ onClose } href={ REPORT_ISSUE_LINK }>Report an issue on GitHub</a>
+        </p>
+        <p>
+          Would you like to discuss with other users?<br />
+          <a onClick={ onClose } href={ USER_FORUM_LINK }>Visit the User Forum</a>
+        </p>
+      </Section.Body>
+    </Section>
   );
 }
