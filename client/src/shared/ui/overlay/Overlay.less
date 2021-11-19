@@ -1,4 +1,6 @@
 :local(.Overlay) {
+  --overlay-max-height: auto;
+
   display: flex;
   flex: auto;
   flex-direction: column;
@@ -13,6 +15,9 @@
 
   background-color: var(--overlay-background-color);
   color: var(--overlay-font-color);
+
+  max-height: var(--overlay-max-height);
+  overflow-y: auto;
 
   font-size: 14px;
 
