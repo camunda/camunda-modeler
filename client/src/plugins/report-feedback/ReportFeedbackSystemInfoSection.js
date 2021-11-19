@@ -64,7 +64,7 @@ export function ReportFeedbackSystemInfoSection(props) {
   }
   const validateFormData = values => {
     const errors = {};
-    if (!values.installedPlugins && !values.version && !values.operatingSystem && !values.executionPlatform) {
+    if (!Object.values(values).some(v => v)) {
       errors._form = 'Select at least one checkbox.';
     }
     return errors;
