@@ -98,6 +98,41 @@ describe('<Overlay>', function() {
   });
 
 
+  describe('props#maxHeight', function() {
+
+    function expectStyle(wrapper, expectedStyle) {
+      expect(wrapper.find('.test[style]').prop('style')).to.include(expectedStyle);
+    }
+
+
+    it('should specify string (maxHeight="100vh")', function() {
+
+      // when
+      wrapper = mount(<Overlay className="test" anchor={ anchor } maxHeight="100vh" />);
+
+      // then
+      expectStyle(wrapper, {
+        '--overlay-max-height': '100vh'
+      });
+
+    });
+
+
+    it('should specify (pixel) number (maxHeight=100)', function() {
+
+      // when
+      wrapper = mount(<Overlay className="test" anchor={ anchor } maxHeight={ 100 } />);
+
+      // then
+      expectStyle(wrapper, {
+        '--overlay-max-height': '100px'
+      });
+
+    });
+
+  });
+
+
   describe('props#offset', function() {
 
     it('should use provided offset { left }', function() {
