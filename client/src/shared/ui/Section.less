@@ -1,0 +1,46 @@
+:local(.Section) {
+  --section-max-height: initial;
+
+  display: flex;
+  flex-direction: column;
+  max-height: var(--section-max-height);
+  flex: inherit;
+
+  .section__header,
+  .section__body {
+    padding: 12px;
+  }
+
+  .section__body:not(:first-child) {
+    padding-top: 0;
+  }
+
+  .section__header {
+    margin: 0;
+
+    font-size: inherit;
+    font-weight: normal;
+    color: var(--overlay-title-color);
+  }
+
+  .section__body {
+    font-size: inherit;
+    overflow-y: auto;
+
+    p {
+      margin: 0;
+    }
+
+    p + p {
+      margin-top: 15px;
+    }
+  }
+
+  .section__actions .btn {
+    margin-top: 8px;
+  }
+
+  & + :local(.Section) {
+    border-top: 1px solid var(--overlay-border-color);
+  }
+}
