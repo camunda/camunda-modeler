@@ -11,6 +11,8 @@
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 
+import { isString } from 'min-dash';
+
 import classNames from 'classnames';
 
 import FocusTrap from '../modal/FocusTrap';
@@ -70,14 +72,27 @@ export class Overlay extends PureComponent {
   }
 
   getStyle() {
-    const { anchor, offset = {} } = this.props;
+
+    const {
+      maxHeight,
+      anchor,
+      offset = {}
+    } = this.props;
+
     const bodyRect = document.body.getBoundingClientRect();
     const anchorRect = anchor.getBoundingClientRect();
 
-    const style = {
+    let style = {
       position: 'absolute',
       bottom: Math.round(bodyRect.height - anchorRect.top + (offset.bottom || DEFAULT_OFFSET.bottom))
     };
+
+    if (maxHeight) {
+      style = {
+        ...style,
+        '--overlay-max-height': isString(maxHeight) ? maxHeight : `${maxHeight}px`
+      };
+    }
 
     if ('right' in offset) {
       return {
