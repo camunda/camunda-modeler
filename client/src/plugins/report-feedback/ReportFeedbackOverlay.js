@@ -12,7 +12,7 @@ import React from 'react';
 
 import { Overlay, Section } from '../../shared/ui';
 
-import { ReportFeedbackSystemInfo } from './ReportFeedbackSystemInfo';
+import { ReportFeedbackSystemInfoSection } from './ReportFeedbackSystemInfoSection';
 
 import css from './ReportFeedbackOverlay.less';
 
@@ -31,18 +31,18 @@ export function ReportFeedbackOverlay(props) {
       offset={ OFFSET }
       className={ css.ReportFeedbackOverlay }
     >
-      <ReportFeedbackChannels
+      <ReportFeedbackChannelsSection
         onClose={ props.onClose }
       />
 
-      <ReportFeedbackSystemInfo
+      <ReportFeedbackSystemInfoSection
         onSubmit={ props.onSubmit }
       />
     </Overlay>
   );
 }
 
-function ReportFeedbackChannels(props) {
+function ReportFeedbackChannelsSection(props) {
 
   const {
     onClose

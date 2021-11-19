@@ -33,7 +33,7 @@ const INITIAL_VALUES = {
 const BUTTON_DISABLED_TIME = 3000;
 
 
-export function ReportFeedbackSystemInfo(props) {
+export function ReportFeedbackSystemInfoSection(props) {
   const {
     onSubmit
   } = props;
