@@ -12,10 +12,10 @@ import React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { ReportFeedbackSystemInfo } from '../ReportFeedbackSystemInfo';
+import { ReportFeedbackSystemInfoSection } from '../ReportFeedbackSystemInfoSection';
 
 
-describe('<ReportFeedbackSystemInfo>', () => {
+describe('<ReportFeedbackSystemInfoSection>', () => {
 
   it('should render', function() {
 
@@ -30,7 +30,7 @@ describe('<ReportFeedbackSystemInfo>', () => {
 
 function createReportFeedbackSystemInfo(props = {}, mount = shallow) {
   return mount(
-    <ReportFeedbackSystemInfo
+    <ReportFeedbackSystemInfoSection
       onSubmit={ props.onSubmit || noop }
     />
   );
