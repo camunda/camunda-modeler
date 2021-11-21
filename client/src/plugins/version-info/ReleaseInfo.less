@@ -1,12 +1,6 @@
 :local(.ReleaseInfo) {
-  overflow: auto;
 
-  h1, h2, h3, h4 {
-    font-size: inherit;
-    font-weight: bold;
-  }
-
-  h1, h2, h3, h4, p, ul, ol {
+  h1, h2, h3, h4, p {
     margin: 12px 0;
 
     &:first-child {
@@ -16,5 +10,9 @@
     &:last-child {
       margin-bottom: 0;
     }
+  }
+  
+  li {
+    margin-bottom: 8px !important;
   }
 }

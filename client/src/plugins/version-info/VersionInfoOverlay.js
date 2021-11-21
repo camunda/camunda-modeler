@@ -14,8 +14,6 @@ import { Overlay, Section } from '../../shared/ui';
 
 import { ReleaseInfo } from './ReleaseInfo';
 
-import css from './VersionInfoOverlay.less';
-
 const RELEASE_NOTES_LINK = 'https://camunda.com/blog/category/modeling/?tag=camunda-modeler&release-note';
 const DOCS_LINK = 'https://docs.camunda.org/manual/latest/modeler/';
 const CHANGELOG_LINK = 'https://github.com/camunda/camunda-modeler/blob/master/CHANGELOG.md';
@@ -26,7 +24,6 @@ export function VersionInfoOverlay(props) {
   return (
     <Overlay
       id="version-info-overlay" anchor={ props.anchor } onClose={ props.onClose } offset={ OFFSET }
-      className={ css.VersionInfoOverlay }
     >
       <WhatsNewSection version={ props.version } />
 
@@ -38,7 +35,7 @@ export function VersionInfoOverlay(props) {
 function WhatsNewSection(props) {
 
   return (
-    <Section maxHeight="calc(100vh - 250px)">
+    <Section maxHeight="500px">
       <Section.Header>
         What's new in Modeler { props.version }
       </Section.Header>
@@ -56,7 +53,7 @@ function LearnMoreSection(props) {
         Learn More
       </Section.Header>
       <Section.Body>
-        <ul>
+        <ul className="dashed">
           <li><a href={ RELEASE_NOTES_LINK }>Release Notes on Camunda blog</a></li>
           <li><a href={ DOCS_LINK }>Camunda Modeler docs</a></li>
           <li><a href={ CHANGELOG_LINK }>Changelog on GitHub</a></li>
