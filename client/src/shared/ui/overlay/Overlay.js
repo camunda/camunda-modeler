@@ -23,7 +23,7 @@ import GlobalClickListener from './GlobalClickListener';
 import css from './Overlay.less';
 
 const DEFAULT_OFFSET = {
-  bottom: 0,
+  bottom: 1,
   left: 0
 };
 

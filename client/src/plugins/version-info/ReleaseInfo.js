@@ -42,14 +42,14 @@ import css from './ReleaseInfo.less';
 export function ReleaseInfo(props) {
   return (
     <div className={ css.ReleaseInfo }>
-      <ul>
+      <ul className="dashed">
         <li>
-          <b>Support for Camunda Cloud 1.2</b><br />
+          <h4>Support for Camunda Cloud 1.2</h4>
           With this release, we added new BPMN elements supported by Camunda Cloud 1.2.
           These new elements are message intermediate throw events, message end events, and manual tasks.
         </li>
         <li>
-          <b>Form reference bindings for User Tasks and Start Events</b><br />
+          <h4>Form reference bindings for User Tasks and Start Events</h4>
           With the Camunda Platform 7.16.0 release you now have an additional way to bind Camunda Forms to
           User Tasks or Start Events. Besides the existing way of binding using
           a <a href="https://docs.camunda.org/manual/latest/user-guide/task-forms/#form-key">form key</a>,
@@ -58,7 +58,7 @@ export function ReleaseInfo(props) {
           This allows you to bind a specific version, or the latest version from the deployment.
         </li>
         <li>
-          <b>New rule sets to check the compatibility of Forms</b><br />
+          <h4>New rule sets to check the compatibility of Forms</h4>
           In addition to existing versions, you can now select the latest Platform 7.16.0 and Cloud 1.2.0 versions in
           the Form editor. This allows you to easily check the compatibility of your form with the product version you are using.
         </li>

@@ -16,8 +16,6 @@ import { isNil } from 'min-dash';
 import { Overlay } from '../../shared/ui';
 import { Fill } from '../slot-fill';
 
-import LinkArrow from '../../../resources/icons/LinkArrow.svg';
-
 import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../util/Flags';
 import { ENGINES, ENGINE_PROFILES } from '../../util/Engines';
 
@@ -300,7 +298,6 @@ function Link(props) {
   return (
     <a className={ css.Link } href={ href }>
       { children }
-      <LinkArrow />
     </a>
   );
 }
