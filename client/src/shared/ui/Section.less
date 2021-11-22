@@ -27,12 +27,14 @@
     font-size: inherit;
     overflow-y: auto;
 
-    p {
-      margin: 0;
+    p, ul, ol {
+      margin: 0 0 15px 0;
     }
 
-    p + p {
-      margin-top: 15px;
+    p:last-child,
+    ul:last-child,
+    ol:last-child {
+      margin-bottom: 0;
     }
   }
 
