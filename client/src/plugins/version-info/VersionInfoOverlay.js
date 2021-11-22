@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { Overlay } from '../../shared/ui';
+import { Overlay, Section } from '../../shared/ui';
 
 import { ReleaseInfo } from './ReleaseInfo';
 
@@ -28,28 +28,40 @@ export function VersionInfoOverlay(props) {
       id="version-info-overlay" anchor={ props.anchor } onClose={ props.onClose } offset={ OFFSET }
       className={ css.VersionInfoOverlay }
     >
-      <Overlay.Title>
-        What's new in Modeler { props.version }
-      </Overlay.Title>
-      <Overlay.Body>
-        <ReleaseInfo />
-      </Overlay.Body>
-      <LearnMore />
+      <WhatsNewSection version={ props.version } />
+
+      <LearnMoreSection />
     </Overlay>
   );
 }
 
-function LearnMore(props) {
+function WhatsNewSection(props) {
+
   return (
-    <Overlay.Footer>
-      <h2 className="overlay__title">
+    <Section maxHeight="calc(100vh - 250px)">
+      <Section.Header>
+        What's new in Modeler { props.version }
+      </Section.Header>
+      <Section.Body>
+        <ReleaseInfo />
+      </Section.Body>
+    </Section>
+  );
+}
+
+function LearnMoreSection(props) {
+  return (
+    <Section>
+      <Section.Header>
         Learn More
-      </h2>
-      <ul>
-        <li><a href={ RELEASE_NOTES_LINK }>Release Notes on Camunda blog</a></li>
-        <li><a href={ DOCS_LINK }>Camunda Modeler docs</a></li>
-        <li><a href={ CHANGELOG_LINK }>Changelog on GitHub</a></li>
-      </ul>
-    </Overlay.Footer>
+      </Section.Header>
+      <Section.Body>
+        <ul>
+          <li><a href={ RELEASE_NOTES_LINK }>Release Notes on Camunda blog</a></li>
+          <li><a href={ DOCS_LINK }>Camunda Modeler docs</a></li>
+          <li><a href={ CHANGELOG_LINK }>Changelog on GitHub</a></li>
+        </ul>
+      </Section.Body>
+    </Section>
   );
 }
