@@ -20,6 +20,6 @@ export const ENGINE_PROFILES = [
   },
   {
     executionPlatform: ENGINES.CLOUD,
-    executionPlatformVersions: [ '1.2', '1.1', '1.0' ]
+    executionPlatformVersions: [ '1.3', '1.2', '1.1', '1.0' ]
   }
 ];
