@@ -14,6 +14,7 @@ import camundaCloud10 from './camunda-cloud-1-0.json';
 import camundaCloud10Errors from './camunda-cloud-1-0-errors.json';
 import camundaCloud11 from './camunda-cloud-1-1.json';
 import camundaCloud12 from './camunda-cloud-1-2.json';
+import camundaCloud13 from './camunda-cloud-1-3.json';
 import camundaPlatform715 from './camunda-platform-7-15.json';
 import camundaPlatform715Errors from './camunda-platform-7-15-errors.json';
 import camundaPlatform716 from './camunda-platform-7-16.json';
@@ -60,7 +61,8 @@ describe('FormLinter', function() {
     [ 'Camunda Platform 7.16', camundaPlatform716 ],
     [ 'Camunda Cloud 1.0', camundaCloud10, camundaCloud10Errors ],
     [ 'Camunda Cloud 1.1', camundaCloud11 ],
-    [ 'Camunda Cloud 1.2', camundaCloud12 ]
+    [ 'Camunda Cloud 1.2', camundaCloud12 ],
+    [ 'Camunda Cloud 1.3', camundaCloud13 ]
   ].forEach(([ engineProfile, noErrorsSchema, errorsSchema ]) => {
 
     describe(engineProfile, function() {
