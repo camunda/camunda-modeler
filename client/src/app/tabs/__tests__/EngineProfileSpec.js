@@ -26,9 +26,9 @@ import {
 
 import { ENGINE_PROFILES } from '../../../util/Engines';
 
-import { engineProfile as bpmnEngineProfile } from '../bpmn/BpmnEditor';
-import { engineProfile as cloudBpmnEngineProfile } from '../cloud-bpmn/BpmnEditor';
-import { engineProfile as dmnEngineProfile } from '../dmn/DmnEditor';
+import { DEFAULT_ENGINE_PROFILE as bpmnEngineProfile } from '../bpmn/BpmnEditor';
+import { DEFAULT_ENGINE_PROFILE as cloudBpmnEngineProfile } from '../cloud-bpmn/BpmnEditor';
+import { DEFAULT_ENGINE_PROFILE as dmnEngineProfile } from '../dmn/DmnEditor';
 
 import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../../util/Flags';
 

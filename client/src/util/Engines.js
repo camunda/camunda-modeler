@@ -16,10 +16,10 @@ export const ENGINES = {
 export const ENGINE_PROFILES = [
   {
     executionPlatform: ENGINES.PLATFORM,
-    executionPlatformVersions: [ '7.16', '7.15' ]
+    executionPlatformVersions: [ '7.16.0', '7.15.0' ]
   },
   {
     executionPlatform: ENGINES.CLOUD,
-    executionPlatformVersions: [ '1.3', '1.2', '1.1', '1.0' ]
+    executionPlatformVersions: [ '1.3.0', '1.2.0', '1.1.0', '1.0.0' ]
   }
 ];
