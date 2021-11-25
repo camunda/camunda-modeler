@@ -36,8 +36,11 @@ import { FormEditor as Form } from './editor/FormEditor';
 import {
   EngineProfile,
   engineProfilesEqual,
-  isKnownEngineProfile
+  isKnownEngineProfile,
+  getEngineProfileFromForm
 } from '../EngineProfile';
+
+import { ENGINES } from '../../../util/Engines';
 
 import { Linting } from '../Linting';
 
@@ -46,6 +49,10 @@ import Panel from '../panel/Panel';
 import LintingTab from '../panel/tabs/LintingTab';
 
 const LOW_PRIORITY = 500;
+
+export const DEFAULT_ENGINE_PROFILE = {
+  executionPlatform: ENGINES.PLATFORM
+};
 
 
 export class FormEditor extends CachedComponent {
@@ -87,6 +94,10 @@ export class FormEditor extends CachedComponent {
 
   componentDidUpdate(prevProps) {
     this.checkImport(prevProps);
+
+    if (isCacheStateChanged(prevProps, this.props)) {
+      this.handleChanged();
+    }
   }
 
   checkImport(prevProps) {
@@ -246,7 +257,7 @@ export class FormEditor extends CachedComponent {
 
     const { engineProfile: cachedEngineProfile } = this.getCached();
 
-    if (!engineProfilesEqual(engineProfile, cachedEngineProfile)) {
+    if (!engineProfilesEqual(engineProfile, cachedEngineProfile) && isKnownEngineProfile(engineProfile)) {
       this.setCached({
         engineProfile
       });
@@ -259,7 +270,7 @@ export class FormEditor extends CachedComponent {
       form
     } = this.getCached();
 
-    if (!engineProfile) {
+    if (!engineProfile || !engineProfile.executionPlatformVersion) {
       return;
     }
 
@@ -324,23 +335,7 @@ export class FormEditor extends CachedComponent {
 
     const schema = form.getSchema();
 
-    if (!schema) {
-      return null;
-    }
-
-    const {
-      executionPlatform,
-      executionPlatformVersion
-    } = schema;
-
-    if (!executionPlatform && !executionPlatformVersion) {
-      return null;
-    }
-
-    return {
-      executionPlatform,
-      executionPlatformVersion
-    };
+    return getEngineProfileFromForm(schema, DEFAULT_ENGINE_PROFILE);
   }
 
   setEngineProfile = (engineProfile) => {
@@ -377,10 +372,9 @@ export class FormEditor extends CachedComponent {
           ref={ this.ref }
         ></div>
 
-        <EngineProfile
-          type="form"
+        { engineProfile && <EngineProfile
           engineProfile={ engineProfile }
-          setEngineProfile={ this.setEngineProfile } />
+          onChange={ this.setEngineProfile } /> }
 
         {
           engineProfile && <Fragment>
@@ -442,4 +436,8 @@ function getUnknownEngineProfileErrorMessage(engineProfile = {}) {
   } = engineProfile;
 
   return `An unknown execution platform (${ executionPlatform } ${ executionPlatformVersion }) was detected.`;
+}
+
+function isCacheStateChanged(prevProps, props) {
+  return prevProps.cachedState !== props.cachedState;
 }
