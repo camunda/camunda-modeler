@@ -20,12 +20,14 @@ import css from './PropertiesContainer.less';
 
 import { throttle } from '../../util';
 
+import Flags, { ENABLE_NEW_PROPERTIES_PANEL } from '../../util/Flags';
+
 export const DEFAULT_LAYOUT = {
   open: false,
-  width: 250
+  width: Flags.get(ENABLE_NEW_PROPERTIES_PANEL) ? 280 : 250
 };
 
-export const MIN_WIDTH = 150;
+export const MIN_WIDTH = Flags.get(ENABLE_NEW_PROPERTIES_PANEL) ? 280 : 150;
 export const MAX_WIDTH = 650;
 
 

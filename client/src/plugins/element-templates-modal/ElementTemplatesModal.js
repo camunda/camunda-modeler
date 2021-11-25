@@ -13,6 +13,9 @@ import React, { PureComponent } from 'react';
 import ElementTemplatesModalView from './components/ElementTemplatesModalView';
 
 import additionalModule from './modeler';
+import NewPropertiesProvider from './modeler/NewPropertiesProvider';
+
+import Flags, { ENABLE_NEW_PROPERTIES_PANEL } from '../../util/Flags';
 
 export default class ElementTemplatesModal extends PureComponent {
 
@@ -50,7 +53,7 @@ export default class ElementTemplatesModal extends PureComponent {
         ...config,
         additionalModules: [
           ...config.additionalModules || [],
-          additionalModule
+          replacePropertiesProviderIfNecessary(additionalModule)
         ],
         propertiesProvider: {
           ...config.propertiesProvider || {},
@@ -96,4 +99,15 @@ export default class ElementTemplatesModal extends PureComponent {
       )
       : null;
   }
+}
+
+function replacePropertiesProviderIfNecessary(module) {
+  if (!Flags.get(ENABLE_NEW_PROPERTIES_PANEL)) {
+    return module;
+  }
+
+  return {
+    ...module,
+    templatesPropertiesProvider: [ 'type', NewPropertiesProvider ]
+  };
 }
