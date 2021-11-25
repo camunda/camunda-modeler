@@ -19,36 +19,16 @@ import {
   Slot
 } from '../../slot-fill';
 
-import {
-  EngineProfile,
-  toKebapCase
-} from '../EngineProfile';
+import { EngineProfile } from '../EngineProfile';
 
 import { ENGINE_PROFILES } from '../../../util/Engines';
 
 import { DEFAULT_ENGINE_PROFILE as bpmnEngineProfile } from '../bpmn/BpmnEditor';
 import { DEFAULT_ENGINE_PROFILE as cloudBpmnEngineProfile } from '../cloud-bpmn/BpmnEditor';
 import { DEFAULT_ENGINE_PROFILE as dmnEngineProfile } from '../dmn/DmnEditor';
-
-import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../../util/Flags';
+import { DEFAULT_ENGINE_PROFILE as formEngineProfile } from '../form/FormEditor';
 
 const spy = sinon.spy;
-
-const allEngineProfiles = ENGINE_PROFILES.reduce((allEngineProfiles, engineProfile) => {
-  const {
-    executionPlatform,
-    executionPlatformVersions
-  } = engineProfile;
-
-  executionPlatformVersions.forEach((executionPlatformVersion) => {
-    allEngineProfiles.push({
-      executionPlatform,
-      executionPlatformVersion
-    });
-  });
-
-  return allEngineProfiles;
-}, []);
 
 
 describe('<EngineProfile>', function() {
@@ -66,10 +46,7 @@ describe('<EngineProfile>', function() {
 
     // given
     wrapper = renderEngineProfile({
-      type: 'bpmn',
-      engineProfile: {
-        executionPlatform: 'Camunda Platform'
-      }
+      engineProfile: bpmnEngineProfile
     });
 
     // then
@@ -81,10 +58,7 @@ describe('<EngineProfile>', function() {
 
     // given
     wrapper = renderEngineProfile({
-      type: 'bpmn',
-      engineProfile: {
-        executionPlatform: 'Camunda Platform'
-      }
+      engineProfile: bpmnEngineProfile
     });
 
     // when
@@ -99,10 +73,7 @@ describe('<EngineProfile>', function() {
 
     // given
     wrapper = renderEngineProfile({
-      type: 'bpmn',
-      engineProfile: {
-        executionPlatform: 'Camunda Platform'
-      }
+      engineProfile: bpmnEngineProfile
     });
 
     wrapper.find('button').simulate('click');
@@ -115,13 +86,76 @@ describe('<EngineProfile>', function() {
   });
 
 
+  describe('show selected engine profile', function() {
+
+    eachProfile((executionPlatform, executionPlatformVersion) => {
+
+      it(`should show selected engine profile (${ executionPlatform } ${ executionPlatformVersion })`, function() {
+
+        // given
+        wrapper = renderEngineProfile({
+          engineProfile: {
+            executionPlatform,
+            executionPlatformVersion,
+          },
+          onChange: () => {}
+        });
+
+        // when
+        wrapper.find('button').simulate('click');
+
+        // then
+        expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
+
+        expectVersion(wrapper, executionPlatformVersion);
+      });
+
+    });
+
+  });
+
+
+  describe('set engine profile', function() {
+
+    eachProfile((executionPlatform, executionPlatformVersion) => {
+
+      it(`should set engine profile (${ executionPlatform } ${ executionPlatformVersion })`, function() {
+
+        // given
+        const onChangeSpy = spy();
+
+        wrapper = renderEngineProfile({
+          engineProfile: {
+            executionPlatform,
+            executionPlatformVersion: null
+          },
+          onChange: onChangeSpy
+        });
+
+        wrapper.find('button').simulate('click');
+
+        // when
+        selectVersion(wrapper, executionPlatformVersion);
+
+        // then
+        expect(onChangeSpy).to.have.been.calledOnce;
+        expect(onChangeSpy).to.have.been.calledWith({
+          executionPlatform,
+          executionPlatformVersion
+        });
+      });
+
+    });
+
+  });
+
+
   describe('BPMN', function() {
 
     it('should show description', function() {
 
       // given
       wrapper = renderEngineProfile({
-        type: 'bpmn',
         engineProfile: bpmnEngineProfile
       });
 
@@ -129,10 +163,23 @@ describe('<EngineProfile>', function() {
       wrapper.find('button').simulate('click');
 
       // then
-      expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
-      expect(wrapper.find('EngineProfileDescription').exists()).to.be.true;
-      expect(wrapper.find('Link').exists()).to.be.true;
-      expect(wrapper.find('Link').prop('href')).to.equal('https://docs.camunda.org/manual/latest/');
+      expectPlatformHelp(wrapper);
+    });
+
+
+    it('should show selection', function() {
+
+      // given
+      wrapper = renderEngineProfile({
+        engineProfile: bpmnEngineProfile,
+        onChange: () => {}
+      });
+
+      // when
+      wrapper.find('button').simulate('click');
+
+      // then
+      expectPlatformHelp(wrapper);
     });
 
   });
@@ -144,7 +191,6 @@ describe('<EngineProfile>', function() {
 
       // given
       wrapper = renderEngineProfile({
-        type: 'cloud-bpmn',
         engineProfile: cloudBpmnEngineProfile
       });
 
@@ -152,10 +198,23 @@ describe('<EngineProfile>', function() {
       wrapper.find('button').simulate('click');
 
       // then
-      expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
-      expect(wrapper.find('EngineProfileDescription').exists()).to.be.true;
-      expect(wrapper.find('Link').exists()).to.be.true;
-      expect(wrapper.find('Link').prop('href')).to.equal('https://docs.camunda.io/');
+      expectCloudHelp(wrapper);
+    });
+
+
+    it('should show selection', function() {
+
+      // given
+      wrapper = renderEngineProfile({
+        engineProfile: cloudBpmnEngineProfile,
+        onChange: () => {}
+      });
+
+      // when
+      wrapper.find('button').simulate('click');
+
+      // then
+      expectCloudHelp(wrapper);
     });
 
   });
@@ -167,7 +226,6 @@ describe('<EngineProfile>', function() {
 
       // given
       wrapper = renderEngineProfile({
-        type: 'dmn',
         engineProfile: dmnEngineProfile
       });
 
@@ -175,10 +233,7 @@ describe('<EngineProfile>', function() {
       wrapper.find('button').simulate('click');
 
       // then
-      expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
-      expect(wrapper.find('EngineProfileDescription').exists()).to.be.true;
-      expect(wrapper.find('Link').exists()).to.be.true;
-      expect(wrapper.find('Link').prop('href')).to.equal('https://docs.camunda.org/manual/latest/');
+      expectPlatformHelp(wrapper);
     });
 
   });
@@ -186,216 +241,34 @@ describe('<EngineProfile>', function() {
 
   describe('Form', function() {
 
-    it('should show selection', function() {
+    it('should show description', function() {
 
       // given
       wrapper = renderEngineProfile({
-        type: 'form'
+        engineProfile: formEngineProfile
       });
 
       // when
       wrapper.find('button').simulate('click');
 
       // then
-      expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
-      expect(wrapper.find('EngineProfileSelection').exists()).to.be.true;
-      expect(wrapper.find('Link').exists()).to.be.true;
-      expect(wrapper.find('Link').prop('href')).to.equal('https://docs.camunda.org/manual/latest/');
+      expectPlatformHelp(wrapper);
     });
 
 
-    describe('show selected engine profile', function() {
+    it('should show selection', function() {
 
-      allEngineProfiles.forEach(({ executionPlatform, executionPlatformVersion }) => {
-
-        it(`should show selected engine profile (${ executionPlatform } ${ executionPlatformVersion })`, function() {
-
-          // given
-          wrapper = renderEngineProfile({
-            type: 'form',
-            engineProfile: {
-              executionPlatform,
-              executionPlatformVersion
-            }
-          });
-
-          // when
-          wrapper.find('button').simulate('click');
-
-          // then
-          expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
-          expect(wrapper.find('EngineProfileSelection').exists()).to.be.true;
-
-          const input = wrapper.find('input').filterWhere((item) => item.prop('id') === `execution-platform-${ toKebapCase(executionPlatform) }`);
-
-          expect(input.prop('checked')).to.be.true;
-
-          const select = wrapper.find('select').filterWhere((item) => item.prop('id') === `execution-platform-version-${ toKebapCase(executionPlatform) }`);
-
-          expect(select.prop('value')).to.equal(executionPlatformVersion);
-        });
-
+      // given
+      wrapper = renderEngineProfile({
+        engineProfile: formEngineProfile,
+        onChange: () => {}
       });
 
-    });
+      // when
+      wrapper.find('button').simulate('click');
 
-
-    describe('not show disabled engine profile', function() {
-
-      afterEach(sinon.restore);
-
-      it('should not show Cloud if DISABLE_ZEEBE ', function() {
-
-        // given
-        sinon.stub(Flags, 'get').withArgs(DISABLE_ZEEBE).returns(true);
-
-        wrapper = renderEngineProfile({
-          type: 'form',
-          engineProfile: {
-            executionPlatform:'Camunda Platform',
-            executionPlatformVersion:'7.16'
-          }
-        });
-
-        // when
-        wrapper.find('button').simulate('click');
-
-        // then
-        expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
-        expect(wrapper.find('EngineProfileSelection').exists()).to.be.true;
-
-        const platformInput = wrapper.find('label').filterWhere((item) => item.prop('htmlFor') === `execution-platform-${ toKebapCase('Camunda Platform') }`);
-        expect(platformInput.exists()).to.be.true;
-
-        const cloudInput = wrapper.find('label').filterWhere((item) => item.prop('htmlFor') === `execution-platform-${ toKebapCase('Camunda Cloud') }`);
-        expect(cloudInput.exists()).to.be.false;
-
-      });
-
-
-      it('should not show Platform if DISABLE_PLATFORM ', function() {
-
-        // given
-        sinon.stub(Flags, 'get').withArgs(DISABLE_PLATFORM).returns(true);
-
-        wrapper = renderEngineProfile({
-          type: 'form',
-          engineProfile: {
-            executionPlatform:'Camunda Cloud',
-            executionPlatformVersion:'1.2'
-          }
-        });
-
-        // when
-        wrapper.find('button').simulate('click');
-
-        // then
-        expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
-        expect(wrapper.find('EngineProfileSelection').exists()).to.be.true;
-
-
-        const cloudInput = wrapper.find('label').filterWhere((item) => item.prop('htmlFor') === `execution-platform-${ toKebapCase('Camunda Cloud') }`);
-        expect(cloudInput.exists()).to.be.true;
-
-        const platformInput = wrapper.find('label').filterWhere((item) => item.prop('htmlFor') === `execution-platform-${ toKebapCase('Camunda Platform') }`);
-        expect(platformInput.exists()).to.be.false;
-      });
-
-    });
-
-
-    describe('set engine profile', function() {
-
-      allEngineProfiles.forEach(({ executionPlatform, executionPlatformVersion }) => {
-
-        it(`should set engine profile (${ executionPlatform } ${ executionPlatformVersion })`, function() {
-
-          // given
-          const setEngineProfileSpy = spy();
-
-          wrapper = renderEngineProfile({
-            type: 'form',
-            setEngineProfile: setEngineProfileSpy
-          });
-
-          wrapper.find('button').simulate('click');
-
-          // when
-          const input = wrapper.find('input').filterWhere((item) => item.prop('id') === `execution-platform-${ toKebapCase(executionPlatform) }`);
-
-          input.simulate('click');
-
-          const select = wrapper.find('select').filterWhere((item) => item.prop('id') === `execution-platform-version-${ toKebapCase(executionPlatform) }`);
-
-          if (select.instance().value !== executionPlatformVersion) {
-            select.simulate('change', { target: { value : executionPlatformVersion } });
-          }
-
-          wrapper.find('.apply').simulate('click');
-
-          // then
-          expect(setEngineProfileSpy).to.have.been.calledOnce;
-          expect(setEngineProfileSpy).to.have.been.calledWith({
-            executionPlatform,
-            executionPlatformVersion
-          });
-        });
-
-      });
-
-    });
-
-
-    describe('error', function() {
-
-      it('should show error if no engine profile selected', function() {
-
-        // given
-        const setEngineProfileSpy = spy();
-
-        wrapper = renderEngineProfile({
-          type: 'form',
-          setEngineProfile: setEngineProfileSpy
-        });
-
-        wrapper.find('button').simulate('click');
-
-        // when
-        wrapper.find('.apply').simulate('click');
-
-        // then
-        expect(setEngineProfileSpy).not.to.have.been.called;
-
-        expect(wrapper.find('.error').exists()).to.be.true;
-      });
-
-
-      it('should hide error if engine profile selected', function() {
-
-        // given
-        const setEngineProfileSpy = spy();
-
-        wrapper = renderEngineProfile({
-          type: 'form',
-          setEngineProfile: setEngineProfileSpy
-        });
-
-        wrapper.find('button').simulate('click');
-
-        wrapper.find('.apply').simulate('click');
-
-        // assume
-        expect(setEngineProfileSpy).not.to.have.been.called;
-
-        expect(wrapper.find('.error').exists()).to.be.true;
-
-        // when
-        wrapper.find('input').filterWhere((item) => item.prop('id') === 'execution-platform-camunda-platform').simulate('click');
-
-        // then
-        expect(wrapper.find('.error').exists()).to.be.false;
-      });
-
+      // then
+      expectPlatformHelp(wrapper);
     });
 
   });
@@ -409,7 +282,7 @@ function renderEngineProfile(options = {}) {
   const {
     type,
     engineProfile,
-    setEngineProfile
+    onChange
   } = options;
 
   return mount(
@@ -418,7 +291,49 @@ function renderEngineProfile(options = {}) {
       <EngineProfile
         type={ type }
         engineProfile={ engineProfile }
-        setEngineProfile={ setEngineProfile } />
+        onChange={ onChange } />
     </SlotFillRoot>
   );
+}
+
+
+function eachProfile(fn) {
+  ENGINE_PROFILES.forEach(({ executionPlatform, executionPlatformVersions }) => {
+    [ undefined, ...executionPlatformVersions].forEach((executionPlatformVersion) => {
+      fn(executionPlatform, executionPlatformVersion);
+    });
+  });
+}
+
+
+function expectHelpText(wrapper, helpLink) {
+  expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
+  expect(wrapper.find('a').exists()).to.be.true;
+  expect(wrapper.find('a').prop('href')).to.equal(helpLink);
+}
+
+function expectCloudHelp(wrapper) {
+  expectHelpText(wrapper, 'https://docs.camunda.io/');
+}
+
+function expectPlatformHelp(wrapper) {
+  expectHelpText(wrapper, 'https://docs.camunda.org/manual/latest/');
+}
+
+function selectVersion(wrapper, version) {
+
+  const select = wrapper.find('select');
+
+  if (select.instance().value !== version) {
+    select.simulate('change', { target: { value : version || '' } });
+  }
+
+  wrapper.find('form').simulate('submit');
+}
+
+
+function expectVersion(wrapper, version) {
+  const select = wrapper.find('select');
+
+  expect(select.prop('value')).to.equal(version || '');
 }

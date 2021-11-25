@@ -24,7 +24,8 @@ import {
 } from '../../../cached';
 
 import {
-  BpmnEditor
+  BpmnEditor,
+  DEFAULT_ENGINE_PROFILE
 } from '../BpmnEditor';
 
 import BpmnModeler from 'test/mocks/bpmn-js/Modeler';
@@ -32,6 +33,13 @@ import BpmnModeler from 'test/mocks/bpmn-js/Modeler';
 import diagramXML from './diagram.bpmn';
 import activitiXML from './activiti.bpmn';
 import activitiConvertedXML from './activitiConverted.bpmn';
+
+import engineProfileXML from '../../__tests__/EngineProfile.platform.bpmn';
+import noEngineProfileXML from '../../__tests__/EngineProfile.vanilla.bpmn';
+import unknownEngineProfileXML from '../../__tests__/EngineProfile.unknown.bpmn';
+import missingPatchEngineProfileXML from '../../__tests__/EngineProfile.missing-patch.platform.bpmn';
+import patchEngineProfileXML from '../../__tests__/EngineProfile.patch.platform.bpmn';
+import namespaceEngineProfileXML from '../../__tests__/EngineProfile.namespace.platform.bpmn';
 
 import applyDefaultTemplates from
   '../modeler/features/apply-default-templates/applyDefaultTemplates';
@@ -364,6 +372,7 @@ describe('<BpmnEditor>', function() {
 
       cache.add('editor', {
         cached: {
+          engineProfile: DEFAULT_ENGINE_PROFILE,
           lastXML: diagramXML,
           modeler: new BpmnModeler({
             modules: {
@@ -1421,13 +1430,67 @@ describe('<BpmnEditor>', function() {
 
   describe('engine profile', function() {
 
-    it('should show engine profile (no engine profile)', async function() {
+    function expectEngineProfile(xml, engineProfile) {
+      return async function() {
+
+        // when
+        const { instance, wrapper } = await renderEditor(xml);
+
+        wrapper.update();
+
+        // then
+        expect(wrapper.find('EngineProfile').exists()).to.be.true;
+
+        expect(instance.getCached().engineProfile).to.eql(engineProfile);
+      };
+    }
+
+
+    it('should show engine profile (no engine profile)', expectEngineProfile(noEngineProfileXML, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: undefined
+    }));
+
+
+    it('should show engine profile (with namespace)', expectEngineProfile(namespaceEngineProfileXML, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: undefined
+    }));
+
+
+    it('should show engine profile (Camunda Platform 7.16.0)', expectEngineProfile(engineProfileXML, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: '7.16.0'
+    }));
+
+
+    it('should show engine profile (Camunda Platform 7.16)', expectEngineProfile(missingPatchEngineProfileXML, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: '7.16.0'
+    }));
+
+
+    it('should show engine profile (Camunda Platform 7.16.1)', expectEngineProfile(patchEngineProfileXML, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: '7.16.1'
+    }));
+
+
+    it('should not open form if unknown execution profile', async function() {
+
+      // given
+      const onImportSpy = spy();
 
       // when
-      const { wrapper } = await renderEditor(diagramXML);
+      const { instance } = await renderEditor(unknownEngineProfileXML, {
+        onImport: onImportSpy
+      });
 
       // then
-      expect(wrapper.find('EngineProfile').exists()).to.be.true;
+      expect(onImportSpy).to.have.been.calledOnce;
+      expect(onImportSpy).to.have.been.calledWith(sinon.match({ message: 'An unknown execution platform (Camunda Unknown 7.15.0) was detected.' }), []);
+
+      expect(instance.getCached().engineProfile).to.be.null;
     });
 
   });

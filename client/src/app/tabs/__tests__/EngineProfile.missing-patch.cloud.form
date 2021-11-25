@@ -1,0 +1,6 @@
+{
+  "type": "default",
+  "components": [],
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.1"
+}
