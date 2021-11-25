@@ -494,4 +494,48 @@ describe('TabsProvider', function() {
 
   });
 
+
+  describe('#getTabIcon', function() {
+
+    let tabsProvider;
+
+    beforeEach(function() {
+      Flags.init({
+        [DISABLE_CMMN]: false
+      });
+
+      tabsProvider = new TabsProvider();
+    });
+
+    [
+      'bpmn',
+      'cloud-bpmn',
+      'dmn',
+      'form',
+      'cloud-form'
+    ].forEach((type) => {
+
+      it(`should have icon <${type}>`, function() {
+
+        // when
+        const icon = tabsProvider.getTabIcon(type);
+
+        // then
+        expect(icon).to.exist;
+      });
+
+    });
+
+
+    it('should NOT have icon', function() {
+
+      // when
+      const icon = tabsProvider.getTabIcon('cmmn');
+
+      // then
+      expect(icon).to.not.exist;
+    });
+
+  });
+
 });
