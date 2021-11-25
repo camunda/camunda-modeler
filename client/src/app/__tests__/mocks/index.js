@@ -258,6 +258,10 @@ export class TabsProvider {
   getTabComponent(type) {
     return this.resolveTab(type);
   }
+
+  getTabIcon() {
+    return null;
+  }
 }
 
 

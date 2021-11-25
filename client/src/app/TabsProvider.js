@@ -49,6 +49,10 @@ import FormLinter from './tabs/form/linting/FormLinter';
 
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM, DISABLE_CMMN } from '../util/Flags';
 
+import BPMNIcon from '../../resources/icons/file-types/BPMN-16x16.svg';
+import DMNIcon from '../../resources/icons/file-types/DMN-16x16.svg';
+import FormIcon from '../../resources/icons/file-types/Form-16x16.svg';
+
 const createdByType = {};
 
 const noopProvider = {
@@ -103,6 +107,9 @@ export default class TabsProvider {
         getComponent() {
           return EmptyTab;
         },
+        getIcon() {
+          return null;
+        },
         getNewFileButton() {
           return null;
         }
@@ -121,6 +128,9 @@ export default class TabsProvider {
         },
         getComponent(options) {
           return import('./tabs/bpmn');
+        },
+        getIcon() {
+          return BPMNIcon;
         },
         getInitialContents(options) {
           return bpmnDiagram;
@@ -192,6 +202,9 @@ export default class TabsProvider {
         getComponent(options) {
           return import('./tabs/cloud-bpmn');
         },
+        getIcon() {
+          return BPMNIcon;
+        },
         getInitialContents(options) {
           return cloudBpmnDiagram;
         },
@@ -231,6 +244,9 @@ export default class TabsProvider {
         },
         getComponent(options) {
           return import('./tabs/cmmn');
+        },
+        getIcon() {
+          return null;
         },
         getInitialContents(options) {
           return cmmnDiagram;
@@ -279,6 +295,9 @@ export default class TabsProvider {
         getComponent(options) {
           return import('./tabs/dmn');
         },
+        getIcon() {
+          return DMNIcon;
+        },
         getInitialContents() {
           return dmnDiagram;
         },
@@ -318,6 +337,9 @@ export default class TabsProvider {
         getComponent(options) {
           return import('./tabs/form');
         },
+        getIcon() {
+          return FormIcon;
+        },
         getInitialContents() {
           return form;
         },
@@ -353,6 +375,9 @@ export default class TabsProvider {
         },
         getComponent(options) {
           return import('./tabs/form');
+        },
+        getIcon() {
+          return FormIcon;
         },
         getInitialContents() {
           return cloudForm;
@@ -453,6 +478,10 @@ export default class TabsProvider {
 
   getTabComponent(type, options) {
     return this.getProvider(type).getComponent(options);
+  }
+
+  getTabIcon(type, options) {
+    return this.getProvider(type).getIcon(options);
   }
 
   createTab(type) {
