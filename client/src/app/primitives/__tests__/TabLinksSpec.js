@@ -135,32 +135,6 @@ describe('<TabLinks>', function() {
   });
 
 
-  describe('scrolling', function() {
-
-    it('should handle scroll', function() {
-
-      // given
-      const selectSpy = spy();
-
-      const {
-        tree,
-        tabLinks
-      } = renderTabLinks({
-        onSelect: selectSpy
-      });
-
-      const node = tree.find('.tab[data-tab-id="tab2"]').getDOMNode();
-
-      // when
-      tabLinks.handleScroll(node);
-
-      // then
-      expect(selectSpy).to.have.been.calledWith(defaultTabs[1]);
-    });
-
-  });
-
-
   describe('dragging', function() {
 
     it('should handle dragstart', function() {

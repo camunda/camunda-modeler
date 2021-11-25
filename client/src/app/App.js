@@ -1910,7 +1910,6 @@ export class App extends PureComponent {
                     title: 'Welcome Screen'
                   } }
                   draggable
-                  scrollable
                 />
 
                 <TabContainer className="main">
