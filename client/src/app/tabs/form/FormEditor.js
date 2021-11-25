@@ -10,10 +10,7 @@
 
 import React, { createRef, Fragment } from 'react';
 
-import {
-  isFunction,
-  isNil
-} from 'min-dash';
+import { isFunction } from 'min-dash';
 
 import debounce from '../../../util/debounce';
 
@@ -35,10 +32,10 @@ import { FormEditor as Form } from './editor/FormEditor';
 
 import {
   EngineProfile,
-  engineProfilesEqual,
-  isKnownEngineProfile,
   getEngineProfileFromForm
 } from '../EngineProfile';
+
+import EngineProfileHelper from '../EngineProfileHelper';
 
 import { ENGINES } from '../../../util/Engines';
 
@@ -64,6 +61,27 @@ export class FormEditor extends CachedComponent {
     this.state = {
       importing: false
     };
+
+    this.engineProfile = new EngineProfileHelper({
+      get: () => {
+        const { form } = this.getCached();
+
+        const schema = form.getSchema();
+
+        return getEngineProfileFromForm(schema, DEFAULT_ENGINE_PROFILE);
+      },
+      set: (engineProfile) => {
+        const { form } = this.getCached();
+
+        const root = form._state.schema;
+
+        const modeling = form.get('modeling');
+
+        modeling.editFormField(root, engineProfile);
+      },
+      getCached: () => this.getCached(),
+      setCached: (state) => this.setCached(state)
+    });
 
     this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
   }
@@ -169,36 +187,27 @@ export class FormEditor extends CachedComponent {
       xml: schema
     } = this.props;
 
+    let engineProfile = null;
+
+    try {
+      engineProfile = this.engineProfile.get(true);
+    } catch (err) {
+      error = err;
+    }
+
     if (error) {
       this.setCached({
         engineProfile: null,
         lastSchema: null
       });
     } else {
-      const engineProfile = this.getEngineProfile();
+      this.setCached({
+        engineProfile,
+        lastSchema: schema,
+        stackIdx
+      });
 
-      if (isNil(engineProfile)) {
-        this.setCached({
-          engineProfile,
-          lastSchema: schema,
-          stackIdx
-        });
-      } else if (isKnownEngineProfile(engineProfile)) {
-        this.setCached({
-          engineProfile,
-          lastSchema: schema,
-          stackIdx
-        });
-
-        this.handleLinting();
-      } else {
-        error = new Error(getUnknownEngineProfileErrorMessage(engineProfile));
-
-        this.setCached({
-          engineProfile: null,
-          lastSchema: null
-        });
-      }
+      this.handleLinting();
     }
 
     this.setState({
@@ -253,22 +262,20 @@ export class FormEditor extends CachedComponent {
 
     this.setState(newState);
 
-    const engineProfile = this.getEngineProfile();
+    try {
+      const engineProfile = this.engineProfile.get();
 
-    const { engineProfile: cachedEngineProfile } = this.getCached();
+      this.engineProfile.setCached(engineProfile);
+    } catch (err) {
 
-    if (!engineProfilesEqual(engineProfile, cachedEngineProfile) && isKnownEngineProfile(engineProfile)) {
-      this.setCached({
-        engineProfile
-      });
+      // TODO
     }
   }
 
   handleLinting = () => {
-    const {
-      engineProfile,
-      form
-    } = this.getCached();
+    const engineProfile = this.engineProfile.getCached();
+
+    const { form } = this.getCached();
 
     if (!engineProfile || !engineProfile.executionPlatformVersion) {
       return;
@@ -330,28 +337,8 @@ export class FormEditor extends CachedComponent {
     }
   }
 
-  getEngineProfile = () => {
-    const { form } = this.getCached();
-
-    const schema = form.getSchema();
-
-    return getEngineProfileFromForm(schema, DEFAULT_ENGINE_PROFILE);
-  }
-
-  setEngineProfile = (engineProfile) => {
-    const { form } = this.getCached();
-
-    const root = form._state.schema;
-
-    const modeling = form.get('modeling');
-
-    modeling.editFormField(root, engineProfile);
-
-    this.setCached({ engineProfile });
-  }
-
   render() {
-    const { engineProfile } = this.getCached();
+    const engineProfile = this.engineProfile.getCached();
 
     const {
       layout,
@@ -374,7 +361,7 @@ export class FormEditor extends CachedComponent {
 
         { engineProfile && <EngineProfile
           engineProfile={ engineProfile }
-          onChange={ this.setEngineProfile } /> }
+          onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } /> }
 
         {
           engineProfile && <Fragment>
@@ -428,15 +415,6 @@ export class FormEditor extends CachedComponent {
 export default WithCache(WithCachedState(FormEditor));
 
 // helpers //////////
-
-function getUnknownEngineProfileErrorMessage(engineProfile = {}) {
-  const {
-    executionPlatform = '<no-execution-platform>',
-    executionPlatformVersion = '<no-execution-platform-version>'
-  } = engineProfile;
-
-  return `An unknown execution platform (${ executionPlatform } ${ executionPlatformVersion }) was detected.`;
-}
 
 function isCacheStateChanged(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;

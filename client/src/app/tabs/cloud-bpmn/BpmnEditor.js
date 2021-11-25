@@ -10,10 +10,7 @@
 
 import React from 'react';
 
-import {
-  isFunction,
-  isNil
-} from 'min-dash';
+import { isFunction } from 'min-dash';
 
 import {
   Loader
@@ -51,10 +48,10 @@ import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesCon
 
 import {
   EngineProfile,
-  isKnownEngineProfile,
-  getEngineProfileFromBpmn,
-  engineProfilesEqual
+  getEngineProfileFromBpmn
 } from '../EngineProfile';
+
+import EngineProfileHelper from '../EngineProfileHelper';
 
 import {
   ENGINES
@@ -76,6 +73,36 @@ export class BpmnEditor extends CachedComponent {
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
+
+    this.engineProfile = new EngineProfileHelper({
+      get: () => {
+        const modeler = this.getModeler();
+
+        const definitions = modeler.getDefinitions();
+
+        return getEngineProfileFromBpmn(definitions, DEFAULT_ENGINE_PROFILE);
+      },
+      set: (engineProfile) => {
+        const modeler = this.getModeler();
+
+        const canvas = modeler.get('canvas'),
+              modeling = modeler.get('modeling');
+
+        const definitions = modeler.getDefinitions();
+
+        const {
+          executionPlatform,
+          executionPlatformVersion
+        } = engineProfile;
+
+        modeling.updateModdleProperties(canvas.getRootElement(), definitions, {
+          'modeler:executionPlatform': executionPlatform,
+          'modeler:executionPlatformVersion': executionPlatformVersion
+        });
+      },
+      getCached: () => this.getCached(),
+      setCached: (state) => this.setCached(state)
+    });
 
     this.handleResize = debounce(this.handleResize);
   }
@@ -203,39 +230,31 @@ export class BpmnEditor extends CachedComponent {
 
     const stackIdx = commandStack._stackIdx;
 
+    let engineProfile = null;
+
+    try {
+      engineProfile = this.engineProfile.get(true);
+    } catch (err) {
+      error = err;
+    }
+
     if (error) {
       this.setCached({
+        defaultTemplatesApplied: false,
         engineProfile: null,
         lastXML: null
       });
     } else {
-      const engineProfile = this.getEngineProfile();
-
-      if (isNil(engineProfile)) {
-        this.setCached({
-          engineProfile,
-          lastXML: xml,
-          stackIdx
-        });
-      } else if (isKnownEngineProfile(engineProfile)) {
-        this.setCached({
-          engineProfile,
-          lastXML: xml,
-          stackIdx
-        });
-      } else {
-        error = new Error(getUnknownEngineProfileErrorMessage(engineProfile));
-
-        this.setCached({
-          engineProfile: null,
-          lastXML: null
-        });
-      }
-
-      this.setState({
-        importing: false
+      this.setCached({
+        engineProfile,
+        lastXML: xml,
+        stackIdx
       });
     }
+
+    this.setState({
+      importing: false
+    });
 
     onImport(error, warnings);
   }
@@ -311,14 +330,13 @@ export class BpmnEditor extends CachedComponent {
 
     this.setState(newState);
 
-    const engineProfile = this.getEngineProfile();
+    try {
+      const engineProfile = this.engineProfile.get();
 
-    const { engineProfile: cachedEngineProfile } = this.getCached();
+      this.engineProfile.setCached(engineProfile);
+    } catch (err) {
 
-    if (!engineProfilesEqual(engineProfile, cachedEngineProfile) && isKnownEngineProfile(engineProfile)) {
-      this.setCached({
-        engineProfile
-      });
+      // TODO
     }
   }
 
@@ -579,37 +597,8 @@ export class BpmnEditor extends CachedComponent {
     eventBus.fire('propertiesPanel.resized');
   }
 
-  getEngineProfile = () => {
-    const modeler = this.getModeler();
-
-    const definitions = modeler.getDefinitions();
-
-    return getEngineProfileFromBpmn(definitions, DEFAULT_ENGINE_PROFILE);
-  }
-
-  setEngineProfile = (engineProfile) => {
-    const modeler = this.getModeler();
-
-    const canvas = modeler.get('canvas'),
-          modeling = modeler.get('modeling');
-
-    const definitions = modeler.getDefinitions();
-
-    const {
-      executionPlatform,
-      executionPlatformVersion
-    } = engineProfile;
-
-    modeling.updateModdleProperties(canvas.getRootElement(), definitions, {
-      'modeler:executionPlatform': executionPlatform,
-      'modeler:executionPlatformVersion': executionPlatformVersion
-    });
-
-    this.setCached({ engineProfile });
-  }
-
   render() {
-    const { engineProfile } = this.getCached();
+    const engineProfile = this.engineProfile.getCached();
 
     const {
       layout,
@@ -643,7 +632,7 @@ export class BpmnEditor extends CachedComponent {
         { engineProfile && <EngineProfile
           type="bpmn"
           engineProfile={ engineProfile }
-          onChange={ this.setEngineProfile } />
+          onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } />
         }
       </div>
     );
@@ -706,13 +695,4 @@ export default WithCache(WithCachedState(BpmnEditor));
 
 function isCacheStateChanged(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
-}
-
-function getUnknownEngineProfileErrorMessage(engineProfile = {}) {
-  const {
-    executionPlatform = '<no-execution-platform>',
-    executionPlatformVersion = '<no-execution-platform-version>'
-  } = engineProfile;
-
-  return `An unknown execution platform (${ executionPlatform } ${ executionPlatformVersion }) was detected.`;
 }
