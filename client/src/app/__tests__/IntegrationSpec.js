@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+/* global sinon */
+
 import React from 'react';
 
 import { App } from '../App';
@@ -35,7 +37,8 @@ import { BpmnEditor } from '../tabs/bpmn/BpmnEditor';
 
 import { MultiSheetTab } from '../tabs/MultiSheetTab';
 
-/* global sinon */
+import integrationSpec1XML from './IntegrationSpec.1.xml';
+import integrationSpec2XML from './IntegrationSpec.2.xml';
 
 
 describe('Integration', function() {
@@ -72,14 +75,13 @@ describe('Integration', function() {
       await app.updateTab(tab2, {
         file: {
           ...file2,
-          contents: 'bar'
+          contents: integrationSpec2XML
         }
       });
 
-      // then
       const modeler = findRenderedComponentWithType(app, BpmnEditor).getModeler();
 
-      expect(modeler.xml).to.eql('bar');
+      expect(modeler.xml).to.eql(integrationSpec2XML);
     });
 
 
@@ -195,18 +197,11 @@ function createApp(options = {}) {
   );
 }
 
-
-function createFile(name, path, contents = 'foo', lastModified) {
-
-  if (!path) {
-    path = name;
-  }
-
+function createFile(name) {
   return {
-    contents,
+    contents: integrationSpec1XML,
     name,
-    path,
-    lastModified
+    path: name
   };
 }
 
@@ -220,7 +215,7 @@ function createFile(name, path, contents = 'foo', lastModified) {
 function ensureUnsavedChanges(modeler) {
   const commandStack = modeler.get('commandStack');
 
-  const unsavedXML = 'bar';
+  const unsavedXML = integrationSpec2XML;
 
   modeler.xml = unsavedXML;
 
