@@ -34,7 +34,5 @@
       "type": "button"
     }
   ],
-  "type": "default",
-  "executionPlatform": "Camunda Platform",
-  "executionPlatformVersion": "7.15"
+  "type": "default"
 }

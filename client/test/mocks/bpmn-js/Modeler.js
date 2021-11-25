@@ -8,7 +8,11 @@
  * except in compliance with the MIT License.
  */
 
+import BpmnModdle from 'bpmn-moddle';
+
 import { assign } from 'min-dash';
+
+const moddle = new BpmnModdle();
 
 
 export class CommandStack {
@@ -98,7 +102,7 @@ export default class Modeler {
   importXML(xml) {
     this.xml = xml;
 
-    let error = xml === 'import-error' ? new Error('error') : null;
+    const error = xml === 'import-error' ? new Error('error') : null;
 
     const warnings = xml === 'import-warnings' ? [ 'warning' ] : [];
 
@@ -109,7 +113,17 @@ export default class Modeler {
         return reject(error);
       }
 
-      return resolve({ warnings });
+      if (warnings.length) {
+        return resolve({ warnings });
+      }
+
+      moddle.fromXML(xml).then(({ rootElement }) => {
+        this.definitions = rootElement;
+
+        resolve({ warnings });
+      }).catch((error) => {
+        reject(error);
+      });
     });
   }
 
@@ -176,7 +190,7 @@ export default class Modeler {
   }
 
   getDefinitions() {
-    return this.xml ? {} : null;
+    return this.definitions;
   }
 
   invoke() {}

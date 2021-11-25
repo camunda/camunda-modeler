@@ -20,6 +20,7 @@ import {
 } from '../../../cached';
 
 import {
+  DEFAULT_ENGINE_PROFILE,
   FormEditor
 } from '../FormEditor';
 
@@ -30,13 +31,14 @@ import {
 
 import { FormEditor as FormEditorMock } from 'test/mocks/form-js';
 
-import schemaJSON from './form.json';
-import engineProfileSchemaJSON from './engine-profile.json';
-import unknownEngineProfileSchemaJSON from './unknown-engine-profile.json';
+import schema from './form.form';
 
-const schema = JSON.stringify(schemaJSON, null, 2),
-      engineProfileSchema = JSON.stringify(engineProfileSchemaJSON, null, 2),
-      unknownEngineProfileSchema = JSON.stringify(unknownEngineProfileSchemaJSON, null, 2);
+import engineProfileSchema from '../../__tests__/EngineProfile.platform.form';
+import noEngineProfile from '../../__tests__/EngineProfile.vanilla.form';
+import unknownEngineProfileSchema from '../../__tests__/EngineProfile.unknown.form';
+import missingPatchEngineProfile from '../../__tests__/EngineProfile.missing-patch.platform.form';
+import patchEngineProfile from '../../__tests__/EngineProfile.patch.platform.form';
+
 
 const { spy } = sinon;
 
@@ -164,26 +166,12 @@ describe('<FormEditor>', function() {
 
   describe('#handleChanged', function() {
 
-    it('should notify about changes', async function() {
-
-      // given
-      const onChangedSpy = spy((state) => {
-
-        // then
-        expect(state).to.include({
-          defaultUndoRedo: false,
-          dirty: true,
-          inputActive: false,
-          redo: true,
-          save: true,
-          undo: true
-        });
-      });
-
+    function createCache() {
       const cache = new Cache();
 
       cache.add('editor', {
         cached: {
+          engineProfile: DEFAULT_ENGINE_PROFILE,
           form: new FormEditorMock({
             modules: {
               commandStack: {
@@ -202,8 +190,27 @@ describe('<FormEditor>', function() {
         __destroy: () => {}
       });
 
+      return cache;
+    }
+
+    it('should notify about changes', async function() {
+
+      // given
+      const onChangedSpy = spy((state) => {
+
+        // then
+        expect(state).to.include({
+          defaultUndoRedo: false,
+          dirty: true,
+          inputActive: false,
+          redo: true,
+          save: true,
+          undo: true
+        });
+      });
+
       const { instance } = await renderEditor(schema, {
-        cache,
+        cache: createCache(),
         id: 'editor',
         onChanged: onChangedSpy,
         waitForImport: false
@@ -231,7 +238,10 @@ describe('<FormEditor>', function() {
         });
 
         const { instance } = await renderEditor(schema, {
-          onChanged: onChangedSpy
+          cache: createCache(),
+          id: 'editor',
+          onChanged: onChangedSpy,
+          waitForImport: false
         });
 
         // when
@@ -254,7 +264,10 @@ describe('<FormEditor>', function() {
         });
 
         const { instance } = await renderEditor(schema, {
-          onChanged: onChangedSpy
+          cache: createCache(),
+          id: 'editor',
+          onChanged: onChangedSpy,
+          waitForImport: false
         });
 
         // when
@@ -531,31 +544,44 @@ describe('<FormEditor>', function() {
 
   describe('engine profile', function() {
 
-    it('should show engine profile (no engine profile)', async function() {
+    function expectEngineProfile(schema, engineProfile) {
+      return async function() {
 
-      // when
-      const { instance, wrapper } = await renderEditor(schema);
+        // when
+        const { instance, wrapper } = await renderEditor(schema);
 
-      // then
-      expect(wrapper.find('EngineProfile').exists()).to.be.true;
+        wrapper.update();
 
-      expect(instance.getCached().engineProfile).to.be.null;
-    });
+        // then
+        expect(wrapper.find('EngineProfile').exists()).to.be.true;
+
+        expect(instance.getCached().engineProfile).to.eql(engineProfile);
+      };
+    }
 
 
-    it('should show engine profile (Camunda Platform 7.15)', async function() {
+    it('should show engine profile (no engine profile)', expectEngineProfile(noEngineProfile, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: undefined
+    }));
 
-      // when
-      const { instance, wrapper } = await renderEditor(engineProfileSchema);
 
-      // then
-      expect(wrapper.find('EngineProfile').exists()).to.be.true;
+    it('should show engine profile (Camunda Platform 7.16.0)', expectEngineProfile(engineProfileSchema, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: '7.16.0'
+    }));
 
-      expect(instance.getCached().engineProfile).to.eql({
-        executionPlatform: 'Camunda Platform',
-        executionPlatformVersion: '7.15'
-      });
-    });
+
+    it('should show engine profile (Camunda Platform 7.16)', expectEngineProfile(missingPatchEngineProfile, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: '7.16.0'
+    }));
+
+
+    it('should show engine profile (Camunda Platform 7.16.1)', expectEngineProfile(patchEngineProfile, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: '7.16.1'
+    }));
 
 
     it('should update cached engine profile on change', async function() {
@@ -563,26 +589,28 @@ describe('<FormEditor>', function() {
       // given
       const { instance, wrapper } = await renderEditor(engineProfileSchema);
 
+      wrapper.update();
+
       // assume
       expect(wrapper.find('EngineProfile').exists()).to.be.true;
 
       expect(instance.getCached().engineProfile).to.eql({
         executionPlatform: 'Camunda Platform',
-        executionPlatformVersion: '7.15'
+        executionPlatformVersion: '7.16.0'
       });
 
       // when
       const { schema } = instance.getCached().form;
 
-      schema.executionPlatform = 'Camunda Cloud';
-      schema.executionPlatformVersion = '1.1';
+      schema.executionPlatform = 'Camunda Platform';
+      schema.executionPlatformVersion = '7.15.0';
 
       instance.handleChanged();
 
       // then
       expect(instance.getCached().engineProfile).to.eql({
-        executionPlatform: 'Camunda Cloud',
-        executionPlatformVersion: '1.1'
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.15.0'
       });
     });
 
@@ -599,7 +627,7 @@ describe('<FormEditor>', function() {
 
       // then
       expect(onImportSpy).to.have.been.calledOnce;
-      expect(onImportSpy).to.have.been.calledWith(sinon.match({ message: 'An unknown execution platform (John Doe Platform 1.0) was detected.' }), []);
+      expect(onImportSpy).to.have.been.calledWith(sinon.match({ message: 'An unknown execution platform (Camunda Unknown 7.16.0) was detected.' }), []);
 
       expect(instance.getCached().engineProfile).to.be.null;
     });
@@ -685,18 +713,6 @@ describe('<FormEditor>', function() {
 
       // then
       expect(wrapper.find('Linting').exists()).to.be.true;
-    });
-
-
-    it('should not show linting in status bar (no engine profile)', async function() {
-
-      // when
-      const { wrapper } = await renderEditor(schema);
-
-      wrapper.update();
-
-      // then
-      expect(wrapper.find('Linting').exists()).to.be.false;
     });
 
 
