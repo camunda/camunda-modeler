@@ -17,7 +17,8 @@ import {
   getDiagramFindEntries,
   getSelectionEntries,
   getToolEntries,
-  getUndoRedoEntries
+  getUndoRedoEntries,
+  getColorEntries
 } from '../getEditMenu';
 
 
@@ -40,6 +41,7 @@ export function getBpmnEditMenu(state) {
     copyCutPasteEntries,
     getToolEntries(state),
     getAlignDistributeEntries(state),
+    getColorEntries(state),
     getDiagramFindEntries(state),
     [
       ...getCanvasEntries(state),

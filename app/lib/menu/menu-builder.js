@@ -10,11 +10,13 @@
 
 'use strict';
 
+const electron = require('electron');
+
 const {
   app,
   Menu,
   MenuItem
-} = require('electron');
+} = electron;
 
 const {
   assign,
@@ -662,6 +664,9 @@ function mapMenuEntryTemplate(entry) {
     accelerator: entry.accelerator,
     enabled: entry.enabled !== undefined ? entry.enabled : true,
     click: () => app.emit('menu:action', entry.action, entry.options),
+    icon: entry.icon ?
+      getIconImage(entry.icon)
+      : null
   };
 }
 
@@ -712,4 +717,9 @@ function wrapActionInactiveInDevtools(fn) {
   }
 
   return wrapped;
+}
+
+function getIconImage(path) {
+  path = 'app/' + path;
+  return electron.nativeImage.createFromPath(path).resize({ width:12, height:12 });
 }
