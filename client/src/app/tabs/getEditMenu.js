@@ -12,6 +12,33 @@ import Flags, { DISABLE_ADJUST_ORIGIN } from '../../util/Flags';
 
 const SPACE_KEY = ' ';
 
+const COLORS = [
+  {
+    title: 'Default',
+    fill: undefined,
+    stroke: undefined
+  }, {
+    title: 'Blue',
+    fill: 'rgb(187, 222, 251)',
+    stroke: 'rgb(30, 136, 229)'
+  }, {
+    title: 'Orange',
+    fill: 'rgb(255, 224, 178)',
+    stroke: 'rgb(251, 140, 0)'
+  }, {
+    title: 'Green',
+    fill: 'rgb(200, 230, 201)',
+    stroke: 'rgb(67, 160, 71)'
+  }, {
+    title: 'Red',
+    fill: 'rgb(255, 205, 210)',
+    stroke: 'rgb(229, 57, 53)'
+  }, {
+    title: 'Purple',
+    fill: 'rgb(225, 190, 231)',
+    stroke: 'rgb(142, 36, 170)'
+  }];
+
 export function getAlignDistributeEntries({
   align,
   distribute
@@ -47,6 +74,28 @@ export function getAlignDistributeEntries({
         type: 'vertical'
       }
     }]
+  }];
+}
+
+
+export function getColorEntries({
+  setColor
+}) {
+  return [{
+    label: 'Set Color',
+    enabled: setColor,
+    submenu: COLORS.map(color => {
+      return {
+        label: `${color.title}`,
+        enabled: setColor,
+        action: 'setColor',
+        options: {
+          fill: color.fill,
+          stroke: color.stroke
+        },
+        icon: `resources/icons/${color.title.toLowerCase()}-circle.png`
+      };
+    })
   }];
 }
 
