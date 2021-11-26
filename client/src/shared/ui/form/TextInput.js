@@ -28,6 +28,7 @@ export default function TextInput(props) {
     form,
     fieldError,
     children,
+    multiline,
     ...restProps
   } = props;
 
@@ -40,22 +41,41 @@ export default function TextInput(props) {
 
   const error = (fieldError || defaultFieldError)(meta, fieldName);
 
+  function textElement() {
+    if (multiline) {
+      return <textarea
+        { ...field }
+        type="text"
+        value={ fieldValue || '' }
+        disabled={ form.isSubmitting }
+        className={ classNames('form-control', {
+          'is-invalid': !!error
+        }) }
+        id={ fieldName }
+        placeholder={ hint }
+        { ...restProps }
+      />;
+    } else {
+      return <input
+        { ...field }
+        type="text"
+        value={ fieldValue || '' }
+        disabled={ form.isSubmitting }
+        className={ classNames('form-control', {
+          'is-invalid': !!error
+        }) }
+        id={ fieldName }
+        placeholder={ hint }
+        { ...restProps }
+      />;
+    }
+  }
+
   return (
     <React.Fragment>
       <div className="form-group">
         <label htmlFor={ fieldName }>{ label }</label>
-        <input
-          { ...field }
-          type="text"
-          value={ fieldValue || '' }
-          disabled={ form.isSubmitting }
-          className={ classNames('form-control', {
-            'is-invalid': !!error
-          }) }
-          id={ fieldName }
-          placeholder={ hint }
-          { ...restProps }
-        />
+        {textElement()}
         <FormFeedback
           error={ error }
         />

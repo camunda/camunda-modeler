@@ -278,8 +278,10 @@ export default class StartInstanceTool extends PureComponent {
 
    decorateVariables = (startConfiguration) => {
     let variables = startConfiguration.variables;
-    if (variables) {
+    if (variables && variables.trim().length > 0) {
       startConfiguration.variables = JSON.parse(variables);
+    } else {
+      startConfiguration.variables = null;
     }
     return startConfiguration;
   }
@@ -317,7 +319,7 @@ export default class StartInstanceTool extends PureComponent {
 
      return {
        businessKey: 'default',
-       variables: '{}',
+       variables: '',
       ...startInstance
     };
   }

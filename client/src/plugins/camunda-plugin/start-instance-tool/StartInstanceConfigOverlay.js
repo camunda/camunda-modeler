@@ -75,6 +75,23 @@ export default class StartInstanceConfigOverlay extends React.PureComponent {
                         hint="A business key is a domain-specific identifier of a process instance."
                         autoFocus
                       />
+                      <Field
+                        name="variables"
+                        component={ TextInput }
+                        multiline={ true }
+                        label={ <p>Variables (<b>optional</b>; should be a proper variables <a href="https://www.json.org/">JSON</a> object, you can see examples <a href="https://docs.camunda.org/manual/current/reference/rest/process-definition/post-start-process-instance/#example">here</a>).</p> }
+                        hint="A JSON object containing the variables the process is to be initialized with."
+                        validate={ (value) => {
+                          if (value && value.trim().length > 0) {
+                            try {
+                              JSON.parse(value);
+                            } catch (e) {
+                              return 'Variables is not a valid JSON';
+                            }
+                            return null;
+                          }
+                        } }
+                      />
                     </div>
                   </fieldset>
 
