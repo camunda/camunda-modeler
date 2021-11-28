@@ -469,6 +469,12 @@ class MenuBuilder {
 
         browserWindow.setFullScreen(!isFullScreen);
       }
+    }, {
+      label: 'Show Command Palette',
+      accelerator: 'CommandOrControl+P',
+      click: function() {
+        app.emit('menu:action', 'show-command-palette');
+      }
     });
 
     return submenuTemplate;

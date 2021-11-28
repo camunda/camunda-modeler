@@ -18,3 +18,51 @@
 * {
   user-select: none;
 }
+
+.command-palette {
+  width: 300px;
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translate(-50%);
+  padding: 10px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .16), 0 2px 16px 0 rgba(0, 0, 0, .16);
+  background-color: var(--overlay-background-color);
+  color: var(--overlay-font-color);
+  border-radius: 2px;
+}
+
+.command-palette__input input[type="text"] {
+  border-radius: 3px;
+  border: solid 1px var(--color-grey-225-10-75);
+  background-color: var(--input-background-color);
+  width: 100%;
+  height: 30px;
+  font-size: 13px;
+  padding-left: 8px;
+  color: var(--color-grey-225-10-15);
+  font-family: inherit;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+}
+
+.command-palette__result {
+  margin-top: 1px;
+  padding: 10px;
+  color: var(--color-grey-225-10-15);
+  font-family: inherit;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  font-size: var(--text-size-base);
+}
+
+.command-palette__result--selected {
+  background: var(--color-blue-205-100-45);
+  color: var(--color-white);
+}

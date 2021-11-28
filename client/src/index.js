@@ -30,7 +30,9 @@ import ReactDOM from 'react-dom';
 import {
   AppParent,
   KeyboardBindings,
-  TabsProvider
+  TabsProvider,
+  Commands,
+  CommandPalette
 } from './app';
 
 import Metadata from './util/Metadata';
@@ -58,6 +60,8 @@ const keyboardBindings = new KeyboardBindings({
 
 const tabsProvider = new TabsProvider();
 
+const commands = new Commands();
+
 const globals = {
   backend,
   config,
@@ -68,7 +72,9 @@ const globals = {
   plugins,
   systemClipboard,
   workspace,
-  zeebeAPI
+  zeebeAPI,
+  commands,
+  commandPalette: new CommandPalette(commands)
 };
 
 

@@ -8,7 +8,8 @@
  * except in compliance with the MIT License.
  */
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 
 import debug from 'debug';
 
@@ -66,6 +67,7 @@ import css from './App.less';
 
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 
+import KeyboardInteractionTrap from '../shared/ui/modal/KeyboardInteractionTrap';
 
 const log = debug('App');
 
@@ -92,7 +94,8 @@ const INITIAL_STATE = {
   logEntries: [],
   notifications: [],
   currentModal: null,
-  endpoints: []
+  endpoints: [],
+  showCommandPalette: false
 };
 
 
@@ -143,6 +146,22 @@ export class App extends PureComponent {
     }
 
     this.currentNotificationId = 0;
+
+    this.getGlobal('commands').registerCommand('tab.create.bpmn.plaform', () => this.triggerAction('create-bpmn-diagram'));
+    this.getGlobal('commands').registerCommand('tab.create.bpmn.cloud', () => this.triggerAction('create-cloud-bpmn-diagram'));
+    this.getGlobal('commands').registerCommand('tab.create.form.plaform', () => this.triggerAction('create-form'));
+    this.getGlobal('commands').registerCommand('tab.create.form.cloud', () => this.triggerAction('create-cloud-form'));
+    this.getGlobal('commands').registerCommand('tab.create.dmn', () => this.triggerAction('create-dmn-diagram'));
+    this.getGlobal('commands').registerCommand('tab.close', () => {
+      this.triggerAction('close-tab', { tabId: this.state.activeTab.id });
+    });
+
+    this.getGlobal('commandPalette').registerCommand('Create new Platform BPMN tab', 'tab.create.bpmn.plaform');
+    this.getGlobal('commandPalette').registerCommand('Create new Cloud BPMN tab' ,'tab.create.bpmn.cloud');
+    this.getGlobal('commandPalette').registerCommand('Create new Platform Form', 'tab.create.form.plaform');
+    this.getGlobal('commandPalette').registerCommand('Create new Cloud Form' ,'tab.create.form.cloud');
+    this.getGlobal('commandPalette').registerCommand('Create new DMN diagram' ,'tab.create.dmn');
+    this.getGlobal('commandPalette').registerCommand('Close tab' ,'tab.close');
   }
 
   createDiagram = async (type = 'bpmn') => {
@@ -1791,6 +1810,10 @@ export class App extends PureComponent {
       return this.resizeTab();
     }
 
+    if (action === 'show-command-palette') {
+      return this.showCommandPalette(true);
+    }
+
     if (action === 'log') {
       const {
         action,
@@ -1823,6 +1846,12 @@ export class App extends PureComponent {
 
     return tab.triggerAction(action, options);
   }, this.handleError)
+
+  showCommandPalette = (show) => {
+    this.setState({
+      showCommandPalette: show
+    });
+  }
 
   openExternalUrl(options) {
     this.getGlobal('backend').send('external:open-url', options);
@@ -1924,7 +1953,8 @@ export class App extends PureComponent {
       layout,
       logEntries,
       dirtyTabs,
-      unsavedTabs
+      unsavedTabs,
+      showCommandPalette
     } = this.state;
 
     const Tab = this.getTabComponent(activeTab);
@@ -2011,6 +2041,10 @@ export class App extends PureComponent {
         </div>
 
         <Notifications notifications={ this.state.notifications } />
+
+        {
+          showCommandPalette && <CommandPalette commandPalette={ this.getGlobal('commandPalette') } onClose={ () => this.showCommandPalette(false) } />
+        }
 
       </DropZone>
     );
@@ -2317,4 +2351,111 @@ function failSafe(fn, errorHandler) {
       errorHandler(error);
     }
   };
+}
+
+function CommandPalette(props) {
+  const {
+    commandPalette,
+    onClose
+  } = props;
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
+
+  const [matchingCommands, setMatchingCommands] = useState(
+    commandPalette.getRegistered()
+  );
+
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current && ref.current.focus();
+  }, []);
+
+  const onSearchTermInput = (event) => {
+    const newSearchTerm = event.target.value;
+
+    setSearchTerm(newSearchTerm);
+
+    setMatchingCommands(
+      commandPalette.getRegistered(({ title }) => {
+        return (
+          !searchTerm.length ||
+          title.toLowerCase().indexOf(newSearchTerm.toLowerCase()) !== -1
+        );
+      })
+    );
+
+    setSelectedCommandIndex(0);
+  };
+
+  const onKeyDown = (event) => {
+    const { key } = event;
+
+    if (key === 'Enter') {
+      if (!matchingCommands.length) {
+        return;
+      }
+
+      const command = matchingCommands[selectedCommandIndex];
+
+      commandPalette.executeCommand(command.command);
+
+      onClose();
+    }
+
+    if (key === 'Escape') {
+      onClose();
+    }
+
+    if (key === 'ArrowUp') {
+      setSelectedCommandIndex(Math.max(selectedCommandIndex - 1, 0));
+    }
+
+    if (key === 'ArrowDown') {
+      setSelectedCommandIndex(
+        Math.min(selectedCommandIndex + 1, matchingCommands.length - 1)
+      );
+    }
+  };
+
+  return ReactDOM.createPortal(
+    <KeyboardInteractionTrap>
+      <div className="command-palette" onKeyDown={ onKeyDown }>
+        <div className="command-palette__input">
+          <input
+            placeholder="Start typing..."
+            ref={ ref }
+            type="text"
+            onInput={ onSearchTermInput }
+            spellCheck="false"
+          />
+        </div>
+        <div className="command-palette__results">
+          {matchingCommands.length ? null : (
+            <div className="command-palette__result command-palette__result--selected">
+              No matching commands
+            </div>
+          )}
+          {matchingCommands.map((command, index) => {
+            return (
+              <div
+                key={ command.command }
+                className={
+                  index === selectedCommandIndex
+                    ? 'command-palette__result command-palette__result--selected'
+                    : 'command-palette__result'
+                }
+                onClick={ () => commandPalette.executeCommand(command.command) }
+              >
+                {command.title}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </KeyboardInteractionTrap>,
+    document.body
+  );
 }
