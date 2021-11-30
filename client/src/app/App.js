@@ -1896,11 +1896,11 @@ export class App extends PureComponent {
 
               <div className="tabs">
                 <TabLinks
-                  className="primary"
                   tabs={ tabs }
                   dirtyTabs={ dirtyTabs }
                   unsavedTabs={ unsavedTabs }
                   activeTab={ activeTab }
+                  getTabIcon={ this._getTabIcon }
                   onSelect={ this.selectTab }
                   onMoveTab={ this.moveTab }
                   onContextMenu={ this.openTabLinksMenu }
@@ -1986,6 +1986,18 @@ export class App extends PureComponent {
     });
 
     return items;
+  }
+
+  _getTabIcon = (tab) => {
+    const {
+      tabsProvider
+    } = this.props;
+
+    const {
+      type
+    } = tab;
+
+    return tabsProvider.getTabIcon(type);
   }
 }
 
