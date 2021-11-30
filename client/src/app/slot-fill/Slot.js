@@ -20,12 +20,12 @@ import SlotContext from './SlotContext';
  *
  * <!-- default slot, shows fills in registration order -->
  *
- * <Slot name="toolbar" />
+ * <Slot name="status-bar__app" />
  *
  * <!-- slot with custom grouping and separators -->
  *
  * <Slot
- *   name="toolbar"
+ *   name="status-bar__app"
  *   group={ (fills) => [ fills ] }
  *   separator={ () => <hr /> }
  * />

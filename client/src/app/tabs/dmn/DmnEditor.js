@@ -17,16 +17,9 @@ import {
 
 import classNames from 'classnames';
 
-import { Fill } from '../../slot-fill';
-
 import {
   Loader
 } from '../../primitives';
-
-import {
-  Button,
-  Icon
-} from '../../../shared/ui';
 
 import {
   debounce
@@ -869,67 +862,6 @@ export class DmnEditor extends CachedComponent {
       <div className={ css.DmnEditor }>
 
         <Loader hidden={ imported && !importing } />
-
-        <Fill slot="toolbar" group="6_align">
-          <Button
-            title="Align elements left"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('left') }
-          >
-            <Icon name="align-left-tool" />
-          </Button>
-          <Button
-            title="Align elements center"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('center') }
-          >
-            <Icon name="align-center-tool" />
-          </Button>
-          <Button
-            title="Align elements right"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('right') }
-          >
-            <Icon name="align-right-tool" />
-          </Button>
-          <Button
-            title="Align elements top"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('top') }>
-            <Icon name="align-top-tool" />
-          </Button>
-          <Button
-            title="Align elements middle"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('middle') }
-          >
-            <Icon name="align-middle-tool" />
-          </Button>
-          <Button
-            title="Align elements bottom"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('bottom') }
-          >
-            <Icon name="align-bottom-tool" />
-          </Button>
-        </Fill>
-
-        <Fill slot="toolbar" group="7_distribute">
-          <Button
-            title="Distribute elements horizontally"
-            disabled={ !this.state.distribute }
-            onClick={ () => this.handleDistributeElements('horizontal') }
-          >
-            <Icon name="distribute-horizontal-tool" />
-          </Button>
-          <Button
-            title="Distribute elements vertically"
-            disabled={ !this.state.distribute }
-            onClick={ () => this.handleDistributeElements('vertical') }
-          >
-            <Icon name="distribute-vertical-tool" />
-          </Button>
-        </Fill>
 
         {
           !isDrd && (

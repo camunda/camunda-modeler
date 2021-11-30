@@ -31,11 +31,8 @@ import { WithCache } from './cached';
 import { DropZone } from './drop-zone';
 
 import {
-  Fill,
   SlotFillRoot
 } from './slot-fill';
-
-import Toolbar from './Toolbar';
 
 import Log from './Log';
 
@@ -53,11 +50,6 @@ import {
   Tab,
   Loader
 } from './primitives';
-
-import {
-  DropdownButton,
-  Icon
-} from '../shared/ui';
 
 import pDefer from 'p-defer';
 import pSeries from 'p-series';
@@ -1901,17 +1893,6 @@ export class App extends PureComponent {
           <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
 
             <SlotFillRoot>
-
-              <Toolbar />
-
-              <Fill slot="toolbar" group="1_general">
-                <DropdownButton
-                  title="Create diagram"
-                  items={ this._getNewFileDropdownItems() }
-                >
-                  <Icon name="new" />
-                </DropdownButton>
-              </Fill>
 
               <div className="tabs">
                 <TabLinks

@@ -8,21 +8,13 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 
 import { isFunction } from 'min-dash';
-
-import { Fill } from '../../slot-fill';
 
 import {
   Loader
 } from '../../primitives';
-
-import {
-  Button,
-  DropdownButton,
-  Icon
-} from '../../../shared/ui';
 
 import {
   debounce
@@ -75,32 +67,6 @@ const NAMESPACE_CAMUNDA = {
 };
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
-
-const COLORS = [{
-  title: 'White',
-  fill: 'white',
-  stroke: 'black'
-}, {
-  title: 'Blue',
-  fill: 'rgb(187, 222, 251)',
-  stroke: 'rgb(30, 136, 229)'
-}, {
-  title: 'Orange',
-  fill: 'rgb(255, 224, 178)',
-  stroke: 'rgb(251, 140, 0)'
-}, {
-  title: 'Green',
-  fill: 'rgb(200, 230, 201)',
-  stroke: 'rgb(67, 160, 71)'
-}, {
-  title: 'Red',
-  fill: 'rgb(255, 205, 210)',
-  stroke: 'rgb(229, 57, 53)'
-}, {
-  title: 'Purple',
-  fill: 'rgb(225, 190, 231)',
-  stroke: 'rgb(142, 36, 170)'
-}];
 
 export const engineProfile = {
   executionPlatform: ENGINES.PLATFORM
@@ -704,90 +670,6 @@ export class BpmnEditor extends CachedComponent {
 
         <Loader hidden={ imported && !importing } />
 
-        <Fill slot="toolbar" group="5_color">
-          <DropdownButton
-            title="Set element color"
-            disabled={ !this.state.setColor }
-            items={
-              () => COLORS.map((color, index) => {
-                const { fill, stroke, title } = color;
-
-                return (
-                  <Color
-                    fill={ fill }
-                    key={ index }
-                    stroke={ stroke }
-                    title={ title }
-                    onClick={ () => this.handleSetColor(fill, stroke) } />
-                );
-              })
-            }
-          >
-            <Icon name="set-color-tool" />
-          </DropdownButton>
-        </Fill>
-
-        <Fill slot="toolbar" group="6_align">
-          <Button
-            title="Align elements left"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('left') }
-          >
-            <Icon name="align-left-tool" />
-          </Button>
-          <Button
-            title="Align elements center"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('center') }
-          >
-            <Icon name="align-center-tool" />
-          </Button>
-          <Button
-            title="Align elements right"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('right') }
-          >
-            <Icon name="align-right-tool" />
-          </Button>
-          <Button
-            title="Align elements top"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('top') }>
-            <Icon name="align-top-tool" />
-          </Button>
-          <Button
-            title="Align elements middle"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('middle') }
-          >
-            <Icon name="align-middle-tool" />
-          </Button>
-          <Button
-            title="Align elements bottom"
-            disabled={ !this.state.align }
-            onClick={ () => this.handleAlignElements('bottom') }
-          >
-            <Icon name="align-bottom-tool" />
-          </Button>
-        </Fill>
-
-        <Fill slot="toolbar" group="7_distribute">
-          <Button
-            title="Distribute elements horizontally"
-            disabled={ !this.state.distribute }
-            onClick={ () => this.handleDistributeElements('horizontal') }
-          >
-            <Icon name="distribute-horizontal-tool" />
-          </Button>
-          <Button
-            title="Distribute elements vertically"
-            disabled={ !this.state.distribute }
-            onClick={ () => this.handleDistributeElements('vertical') }
-          >
-            <Icon name="distribute-vertical-tool" />
-          </Button>
-        </Fill>
-
         <div
           className="diagram"
           ref={ this.ref }
@@ -880,30 +762,6 @@ export class BpmnEditor extends CachedComponent {
 
 
 export default WithCache(WithCachedState(BpmnEditor));
-
-class Color extends Component {
-  render() {
-    const {
-      fill,
-      onClick,
-      stroke,
-      title,
-      ...rest
-    } = this.props;
-
-    return (
-      <div
-        className={ css.Color }
-        onClick={ onClick }
-        style={ {
-          backgroundColor: fill,
-          borderColor: stroke
-        } }
-        title={ title }
-        { ...rest }></div>
-    );
-  }
-}
 
 // helpers //////////
 
