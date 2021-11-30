@@ -19,7 +19,6 @@ import {
 } from '../util/dragger';
 
 import TabCloseIcon from '../../../resources/icons/TabClose.svg';
-import CircleIcon from '../../../resources/icons/Circle.svg';
 
 const noop = () => {};
 
@@ -27,10 +26,13 @@ const TABS_OPTS = {
   selectors: {
     tabsContainer: '.tabs-container',
     tab: '.tab',
-    active: '.active',
-    ignore: '.ignore'
+    active: '.tab--active',
+    ignore: '.tab--ignore'
   }
 };
+
+const TAB_SMALL_SELECTOR = 'tab--small';
+const SMALL_TAB_WIDTH = 45;
 
 
 export default class TabLinks extends PureComponent {
@@ -87,6 +89,7 @@ export default class TabLinks extends PureComponent {
     const {
       activeTab,
       tabs,
+      getTabIcon,
       onSelect,
       onContextMenu,
       onClose,
@@ -102,57 +105,139 @@ export default class TabLinks extends PureComponent {
           {
             tabs.map(tab => {
               const dirty = this.isDirty(tab);
+              const active = tab === activeTab;
 
               return (
-                <span
+                <Tab
                   key={ tab.id }
-                  data-tab-id={ tab.id }
-                  title={ tab.title }
-                  className={ classNames('tab', {
-                    active: tab === activeTab,
-                    dirty
-                  }) }
-                  onClick={ () => onSelect(tab, event) }
-                  onContextMenu={ (event) => (onContextMenu || noop)(tab, event) }
-                  draggable
-                >
-                  {tab.name}
-                  {
-                    onClose && <span
-                      className="close"
-                      title="Close Tab"
-                      onClick={ e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        onClose(tab);
-                      } }
-                    >
-                      {
-                        dirty ? <CircleIcon className="icon dirty-icon" /> : null
-                      }
-                      <TabCloseIcon className="icon close-icon" />
-                    </span>
-                  }
-                </span>
+                  tab={ tab }
+                  active={ active }
+                  dirty={ dirty }
+                  getTabIcon={ getTabIcon }
+                  onClose={ onClose }
+                  onContextMenu={ onContextMenu }
+                  onSelect={ onSelect }
+                />
               );
             })
           }
 
           {
-            placeholder && <span
+            placeholder && <div
               key="__placeholder"
-              className={ classNames('tab placeholder ignore', {
-                active: tabs.length === 0
+              className={ classNames('tab tab--ignore tab--placeholder', {
+                'tab--active': tabs.length === 0
               }) }
               onClick={ placeholder.onClick }
               title={ placeholder.title }
             >
-              { placeholder.label }
-            </span>
+              <span className="tab__content">
+                { placeholder.label }
+              </span>
+            </div>
           }
         </div>
       </div>
     );
   }
+}
+
+function Tab(props) {
+  const {
+    active,
+    dirty,
+    getTabIcon,
+    onClose,
+    onContextMenu,
+    onSelect,
+    tab
+  } = props;
+
+  const tabRef = React.useRef(0);
+
+  // set tab to <small> once a defined threshold is reached (be responsive)
+  React.useEffect(() => {
+    if (!tabRef.current) {
+      return;
+    }
+
+    const tabNode = tabRef.current;
+    const width = tabNode.getBoundingClientRect().width;
+
+    tabNode.classList.toggle(TAB_SMALL_SELECTOR, width < SMALL_TAB_WIDTH);
+  });
+
+  return (
+    <div
+      ref={ tabRef }
+      data-tab-id={ tab.id }
+      title={ tab.title }
+      className={ classNames('tab', {
+        'tab--active': active,
+        'tab--dirty': dirty
+      }) }
+      onClick={ (event) => onSelect(tab, event) }
+      onContextMenu={ (event) => (onContextMenu || noop)(tab, event) }
+      draggable
+    >
+      <div className="tab__content">
+        <TabType tab={ tab } getTabIcon={ getTabIcon } />
+        {
+          dirty && <TabDirty />
+        }
+        <p className="tab__name">{tab.name}</p>
+        {
+          active && (
+            <TabClose
+              tab={ tab }
+              dirty={ dirty }
+              onClose={ onClose } />
+          )
+        }
+      </div>
+    </div>
+  );
+}
+
+function TabType(props) {
+  const {
+    getTabIcon,
+    tab
+  } = props;
+
+  const IconComponent = getTabIcon(tab);
+
+  return (
+    <span className="tab__type">
+      { IconComponent && <IconComponent /> }
+    </span>
+  );
+}
+
+function TabClose(props) {
+  const {
+    onClose,
+    tab
+  } = props;
+
+  return (
+    <span
+      className="tab__close"
+      title="Close tab"
+      onClick={ e => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        onClose && onClose(tab);
+      } }
+    >
+      <TabCloseIcon className="tab__icon-close" />
+    </span>
+  );
+}
+
+function TabDirty() {
+  return (
+    <span title="unsaved" className="tab__dirty-marker"></span>
+  );
 }

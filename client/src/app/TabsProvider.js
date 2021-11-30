@@ -515,7 +515,7 @@ export default class TabsProvider {
         this.file.name = newName;
       },
       get title() {
-        return this.file.path || 'unsaved';
+        return this.file.path || '(new file)';
       },
       type
     };

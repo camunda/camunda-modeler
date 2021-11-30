@@ -33,6 +33,209 @@ const { spy } = sinon;
 
 describe('<TabLinks>', function() {
 
+  describe('render', function() {
+
+    it('should display tab type', function() {
+
+      // given
+      const {
+        tree
+      } = renderTabLinks();
+
+      // when
+      const type = tree.find('.tab[data-tab-id="tab1"] .tab__type');
+
+      // then
+      expect(type.exists()).to.be.true;
+    });
+
+
+    it('should render type component', function() {
+
+      // given
+      const getTabIcon = () => NoopComponent;
+
+      const {
+        tree
+      } = renderTabLinks({
+        getTabIcon
+      });
+
+      // when
+      const type = tree.find('.tab[data-tab-id="tab1"] .tab__type');
+
+      // then
+      expect(type.find('.empty')).to.exist;
+    });
+
+
+    it('should display tab name', function() {
+
+      // given
+      const {
+        tree
+      } = renderTabLinks();
+
+      // when
+      const name = tree.find('.tab[data-tab-id="tab1"] .tab__name');
+
+      // then
+      expect(name.text()).to.eql(tab1.name);
+    });
+
+
+    it('should display tab title', function() {
+
+      // given
+      const {
+        tree
+      } = renderTabLinks();
+
+      // when
+      const node = tree.find('.tab[data-tab-id="tab1"]').getDOMNode();
+
+      // then
+      expect(node.title).to.eql(tab1.title);
+    });
+
+
+    it('should display close on active', function() {
+
+      // given
+      const {
+        tree
+      } = renderTabLinks();
+
+      // when
+      const close = tree.find('.tab[data-tab-id="tab1"] .tab__close');
+
+      // then
+      expect(close.exists()).to.be.true;
+    });
+
+
+    it('should NOT display close on non active', function() {
+
+      // given
+      const {
+        tree
+      } = renderTabLinks();
+
+      // when
+      const close = tree.find('.tab[data-tab-id="tab2"] .tab__close');
+
+      // then
+      expect(close.exists()).to.be.false;
+    });
+
+
+    it('should display dirty', function() {
+
+      // given
+      const {
+        tree
+      } = renderTabLinks({
+        dirtyTabs: {
+          tab1: true
+        }
+      });
+
+      // when
+      const close = tree.find('.tab[data-tab-id="tab1"] .tab__dirty-marker');
+
+      // then
+      expect(close.exists()).to.be.true;
+    });
+
+
+    it('should NOT display dirty', function() {
+
+      // given
+      const {
+        tree
+      } = renderTabLinks({
+        dirtyTabs: {
+          tab1: false
+        }
+      });
+
+      // when
+      const close = tree.find('.tab[data-tab-id="tab1"] .tab__dirty-marker');
+
+      // then
+      expect(close.exists()).to.be.false;
+    });
+
+  });
+
+
+  describe('actions', function() {
+
+    it('should call <onSelect> handler', function() {
+
+      // given
+      const clickSpy = sinon.spy();
+
+      const {
+        tree
+      } = renderTabLinks({
+        onSelect: clickSpy
+      });
+
+      const close = tree.find('.tab[data-tab-id="tab1"]');
+
+      // when
+      close.simulate('click');
+
+      // then
+      expect(clickSpy).to.have.been.calledWith(tab1);
+    });
+
+
+    it('should call <onContextMenu> handler', function() {
+
+      // given
+      const contextMenuSpy = sinon.spy();
+
+      const {
+        tree
+      } = renderTabLinks({
+        onContextMenu: contextMenuSpy
+      });
+
+      const tab = tree.find('.tab[data-tab-id="tab1"]');
+
+      // when
+      tab.simulate('contextmenu');
+
+      // then
+      expect(contextMenuSpy).to.have.been.called;
+    });
+
+
+    it('should call <onClose> handler', function() {
+
+      // given
+      const closeSpy = sinon.spy();
+
+      const {
+        tree
+      } = renderTabLinks({
+        onClose: closeSpy
+      });
+
+      const close = tree.find('.tab[data-tab-id="tab1"] .tab__close');
+
+      // when
+      close.simulate('click');
+
+      // then
+      expect(closeSpy).to.have.been.calledWith(tab1);
+    });
+
+  });
+
+
   describe('dirty state', function() {
 
     it('should be dirty if dirty OR unsaved', function() {
@@ -71,24 +274,6 @@ describe('<TabLinks>', function() {
   });
 
 
-  describe('title', function() {
-
-    it('should display tab title', function() {
-
-      const {
-        tree
-      } = renderTabLinks();
-
-      // when
-      const node = tree.find('.tab[data-tab-id="tab1"]').getDOMNode();
-
-      // then
-      expect(node.title).to.eql(tab1.title);
-    });
-
-  });
-
-
   describe('placeholder', function() {
 
     it('should display empty tab handle', function() {
@@ -106,7 +291,7 @@ describe('<TabLinks>', function() {
       } = renderTabLinks({ placeholder });
 
       // when
-      const tab = tree.find('.tab.placeholder');
+      const tab = tree.find('.tab--placeholder');
 
       // then
       expect(tab.exists()).to.be.true;
@@ -187,14 +372,49 @@ describe('<TabLinks>', function() {
 
   });
 
+
+  describe('small state', function() {
+
+    it('should set <small> selector', function() {
+
+      // given
+      const tabs = Array(20).fill().map((_, i) => {
+        return {
+          id: `tab${i}`,
+          name: `tab${i}.tab`
+        };
+      });
+
+      const {
+        tree
+      } = renderTabLinks({
+        tabs
+      });
+
+      // when
+      const tabNode = tree.find('.tab[data-tab-id="tab1"]').getDOMNode();
+
+      // then
+      expect(tabNode.classList.contains('tab--small')).to.be.true;
+    });
+
+  });
+
 });
 
 function noop() {}
+
+function NoopComponent() {
+  return <span className="empty"></span>;
+}
 
 function renderTabLinks(options = {}) {
   const {
     activeTab,
     tabs,
+    getTabIcon,
+    onClose,
+    onContextMenu,
     onMoveTab,
     onSelect,
     dirtyTabs,
@@ -206,6 +426,9 @@ function renderTabLinks(options = {}) {
     <TabLinks
       activeTab={ activeTab || defaultActiveTab }
       tabs={ tabs || defaultTabs }
+      getTabIcon={ getTabIcon || noop }
+      onContextMenu={ onContextMenu || noop }
+      onClose={ onClose || noop }
       onMoveTab={ onMoveTab || noop }
       onSelect={ onSelect || noop }
       dirtyTabs={ dirtyTabs || {} }

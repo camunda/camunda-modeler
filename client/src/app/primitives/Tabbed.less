@@ -1,5 +1,4 @@
 .tab-base() {
-  border-top: solid 1px var(--color-grey-225-10-75);
   position: relative;
   flex: 1;
 }
@@ -17,176 +16,173 @@
 
 :local(.LinksContainer) {
   display: flex;
-  flex: initial;
-  flex-shrink: 0;
+  justify-content: space-between;
 
   position: relative;
   z-index: 100;
 
-  overflow: hidden;
+  flex-basis: 28px;
+  height: 32px;
+  background: var(--tab-bar-background-color);
+  border-bottom: 1px solid var(--tab-bar-border-color);
 
   .tabs-container {
-    order: 0;
+    flex-grow: 1;
+    display: flex;
+    margin-right: 40px;
 
     white-space: nowrap;
-    overflow: hidden;
-  }
-
-  .scroll-tabs-button {
-    flex: initial;
-    box-sizing: border-box;
-
-    padding: 0 5px;
-    margin: 0;
-    position: relative;
-    top: 3px;
-    cursor: pointer;
-    font-size: 16px;
-
-    &.scroll-tabs-left {
-      order: -1;
-    }
-
-    &.scroll-tabs-right {
-      order: 1;
-    }
-  }
-
-  &.scroll-tabs-overflow {
-    .ignore {
-      display: none;
-    }
-  }
-
-  &:not(.scroll-tabs-overflow) {
-    .scroll-tabs-button {
-      display: none;
-    }
+    background-color: var(--tabs-container-background-color);
   }
 
   .tab {
     position: relative;
-    display: inline-block;
-    min-width: 30px;
-    margin-right: 5px;
-    padding: 6px 9px;
-    text-align: center;
-    border: solid 1px var(--color-grey-225-10-75);
-    color: var(--color-grey-225-10-15);
-
-    background: var(--color-white);
-    cursor: default;
-
-    position: relative;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 20px;
+    max-width: 160px;
+    color: var(--tab-font-color);
+    border-right: 1px solid var(--tab-border-right-color);
     user-select: none;
 
-    background: var(--color-grey-225-10-97);
-
-    &:hover,
-    &.active {
-      background: var(--color-white);
+    .tab__content {
+      position: absolute;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      overflow: hidden;
+      pointer-events: none;
     }
 
-    &.active:before {
+    .tab__type {
+      pointer-events: all;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      align-self: center;
+      margin: 0 6px;
+  
+      svg {
+        fill: var(--tab-icon-color);
+        height: 16px;
+        width: 16px;
+      }
+    }
+
+    .tab__name {
+      pointer-events: all;
+      line-height: 26px;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
+      margin: 0 6px 0 0;
+    }
+
+    .tab__dirty-marker {
+      pointer-events: all;
+      z-index: 5;
       content: '';
       position: absolute;
-      left: 0;
-      right: 0;
-      z-index: 5;
+      top: 7px;
+      left: 16px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--tab-dirty-marker-background-color);
+      border: 1px solid var(--tab-dirty-marker-border-color);
+      box-sizing: content-box;
+      box-shadow: 0 0 0 2px var(--tab-dirty-marker-box-shadow-color);
     }
 
-  }
+    .tab__close {
+      position: absolute;
+      pointer-events: all;
+      right: 6px;
+      z-index: 4;
+      padding: 0 2px;
+      line-height: 26px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--tab-close-background-color);
 
-  &.primary {
-    margin-bottom: -1px;
+      .tab__icon-close {
+        margin: auto 0 auto -1px;
+        fill: var(--tab-close-icon-fill-color);
+      }
 
-    .tab {
-      border-radius: 2px 2px 0 0;
-      margin-bottom: -1px;
-      border-bottom: solid 2px var(--color-grey-225-10-75);
+      &:hover {
+        background-color: var(--tab-close-hover-background-color);
+      }
+    }
 
-      &.active {
-        border-top: solid 3px var(--color-blue-205-100-50);
-        border-radius: 3px 3px 0 0;
+    &.tab--small {
+      .tab__type {
+        margin: auto;
+      }
 
-        &:before {
-          bottom: -2px;
-          border-bottom: solid 3px var(--color-white);
+      .tab__name {
+        display: none;
+      }
+
+      .tab__dirty-marker {
+        left: calc(50% + 3px);
+      }
+
+      &.tab--active {
+        .tab__close {
+          position: relative;
+          right: 0;
+          margin: auto;
+        }
+
+        .tab__dirty-marker {
+          left: calc(50% + 6px);
+        }
+
+        .tab__type {
+          display: none;
         }
       }
     }
-  }
 
-  &.secondary {
-    position: absolute;
-    bottom: 0;
-    margin-bottom: -23px;
-    z-index: 100;
-
-    .tab {
-      border-radius: 0 0 2px 2px;
-      padding: 4px 8px;
-      margin-top: -1px;
-      border-top: solid 2px var(--color-grey-225-10-75);
-
-      &:first-child {
-        margin-left: 10px;
-      }
-
-      &.active {
-        &:before {
-          top: -2px;
-          border-top: solid 3px var(--color-white);
-        }
-      }
-    }
-  }
-
-  .close {
-    display: inline-block;
-    vertical-align: middle;
-    padding: 0 2px;
-
-    font-size: 18px;
-    line-height: 9px;
-    vertical-align: middle;
-    width: 13px;
-
-    .icon {
-      margin-top: -1px;
-    }
-
-    .close-icon {
-      transform: scale(0.9);
-      fill: var(--color-grey-225-10-35);
-    }
-
-    &:hover {
-      .close-icon {
-        fill: var(--color-blue-205-100-45);
-      }
-    }
-  }
-
-
-  .tab.dirty .close {
-    .dirty-icon {
-      transform: scale(0.8);
-      fill: var(--color-grey-225-10-75);
-    }
-
-    .close-icon {
-      display: none;
-    }
-
-    &:hover {
-      .close-icon {
-        display: block;
-      }
+    &.tab--placeholder {
+      font-style: italic;
       
-      .dirty-icon {
-        display: none
+      .tab__content {
+        padding-left: 12px;
       }
+    }
+
+    &.tab--active {
+      .tab__name {
+        margin-right: 28px;
+      }
+    }
+
+    /* tab bottom lines (active + hover) */
+    &.tab--active::after,
+    &:not(.tab--active):hover::after {
+      z-index: 3;
+      position: absolute;
+      content: '';
+      bottom: -1px;
+      left: -1px;
+      right: -1px;
+      height: 2px;
+    }
+
+    &:not(.tab--active):hover::after {
+      background-color: var(--tab-line-hover-background-color);
+    }
+
+    &.tab--active::after {
+      background-color: var(--tab-line-active-background-color);
     }
   }
 }
