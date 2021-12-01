@@ -342,6 +342,6 @@ export function toSemver(versionString) {
  * @param {string|null} string
  * @return {string|null}
  */
-function toSemverMinor(string) {
+export function toSemverMinor(string) {
   return string && string.split(/\./).slice(0, 2).join('.');
 }

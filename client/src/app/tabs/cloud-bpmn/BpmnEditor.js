@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import { isFunction } from 'min-dash';
 
@@ -53,6 +53,12 @@ import {
 
 import EngineProfileHelper from '../EngineProfileHelper';
 
+import { Linting } from '../Linting';
+
+import Panel from '../panel/Panel';
+
+import LintingTab from '../panel/tabs/LintingTab';
+
 import {
   ENGINES
 } from '../../../util/Engines';
@@ -62,6 +68,8 @@ const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 export const DEFAULT_ENGINE_PROFILE = {
   executionPlatform: ENGINES.CLOUD
 };
+
+const LOW_PRIORITY = 500;
 
 
 export class BpmnEditor extends CachedComponent {
@@ -105,6 +113,8 @@ export class BpmnEditor extends CachedComponent {
     });
 
     this.handleResize = debounce(this.handleResize);
+
+    this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
   }
 
   componentDidMount() {
@@ -178,6 +188,8 @@ export class BpmnEditor extends CachedComponent {
     modeler[fn]('error', 1500, this.handleError);
 
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
+
+    modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
   }
 
   undo = () => {
@@ -250,6 +262,8 @@ export class BpmnEditor extends CachedComponent {
         lastXML: xml,
         stackIdx
       });
+
+      this.handleLinting();
     }
 
     this.setState({
@@ -338,6 +352,23 @@ export class BpmnEditor extends CachedComponent {
 
       // TODO
     }
+  }
+
+  handleLinting = () => {
+    const {
+      engineProfile,
+      modeler
+    } = this.getCached();
+
+    if (!engineProfile) {
+      return;
+    }
+
+    const contents = modeler.getDefinitions();
+
+    const { onAction } = this.props;
+
+    onAction('lint-tab', { contents });
   }
 
   isDirty() {
@@ -549,6 +580,25 @@ export class BpmnEditor extends CachedComponent {
       };
     }
 
+    if (action === 'selectElement') {
+      const { id } = context;
+
+      const modeler = this.getModeler(),
+            canvas = modeler.get('canvas'),
+            elementRegistry = modeler.get('elementRegistry'),
+            selection = modeler.get('selection');
+
+      const element = elementRegistry.get(id);
+
+      if (element) {
+        selection.select(element);
+
+        canvas.scrollToElement(element);
+      }
+
+      return;
+    }
+
     // TODO(nikku): handle all editor actions
     return modeler.get('editorActions').trigger(action, context);
   }
@@ -602,6 +652,8 @@ export class BpmnEditor extends CachedComponent {
 
     const {
       layout,
+      linting = [],
+      onAction,
       onLayoutChanged
     } = this.props;
 
@@ -616,23 +668,42 @@ export class BpmnEditor extends CachedComponent {
 
         <Loader hidden={ imported && !importing } />
 
-        <div
-          className="diagram"
-          ref={ this.ref }
-          onFocus={ this.handleChanged }
-          onContextMenu={ this.handleContextMenu }
-        ></div>
+        <div className="editor">
+          <div
+            className="diagram"
+            ref={ this.ref }
+            onFocus={ this.handleChanged }
+            onContextMenu={ this.handleContextMenu }
+          ></div>
 
-        <PropertiesContainer
-          className="properties"
-          layout={ layout }
-          ref={ this.propertiesPanelRef }
-          onLayoutChanged={ onLayoutChanged } />
+          <PropertiesContainer
+            className="properties"
+            layout={ layout }
+            ref={ this.propertiesPanelRef }
+            onLayoutChanged={ onLayoutChanged } />
+        </div>
 
         { engineProfile && <EngineProfile
           type="bpmn"
           engineProfile={ engineProfile }
           onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } />
+        }
+
+        {
+          engineProfile && <Fragment>
+            <Panel
+              layout={ layout }>
+              <LintingTab
+                layout={ layout }
+                linting={ linting }
+                onAction={ onAction }
+                onLayoutChanged={ onLayoutChanged } />
+            </Panel>
+            <Linting
+              layout={ layout }
+              linting={ linting }
+              onLayoutChanged={ onLayoutChanged } />
+          </Fragment>
         }
       </div>
     );
