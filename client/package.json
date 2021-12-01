@@ -46,7 +46,7 @@
     "semver-compare": "^1.0.0",
     "sourcemapped-stacktrace": "^1.1.9",
     "ua-parser-js": "^0.7.28",
-    "zeebe-bpmn-moddle": "^0.8.0"
+    "zeebe-bpmn-moddle": "^0.10.0"
   },
   "homepage": ".",
   "devDependencies": {
