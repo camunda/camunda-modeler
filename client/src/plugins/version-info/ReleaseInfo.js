@@ -44,25 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul>
         <li>
-          <b>Support for Camunda Cloud 1.2</b><br />
-          With this release, we added new BPMN elements supported by Camunda Cloud 1.2.
-          These new elements are message intermediate throw events, message end events, and manual tasks.
+          <b>Support for Camunda Cloud 1.3</b><br />
+          With this release, we added support for Camunda Cloud 1.3.<br />
+          You can now assign a User Task to a specific assignee or to a group of candidates.
+          Both fields can be configured in the assignment section of the properties panel using a static value or an expression.
+          Learn more about this feature in the <a href="https://docs.camunda.io/docs/reference/bpmn-processes/user-tasks/user-tasks/#assignments">Camunda Cloud docs.</a>
         </li>
         <li>
-          <b>Form reference bindings for User Tasks and Start Events</b><br />
-          With the Camunda Platform 7.16.0 release you now have an additional way to bind Camunda Forms to
-          User Tasks or Start Events. Besides the existing way of binding using
-          a <a href="https://docs.camunda.org/manual/latest/user-guide/task-forms/#form-key">form key</a>,
-          you can now alternatively use
-          a <a href="https://docs.camunda.org/manual/latest/user-guide/task-forms/#form-reference">form reference</a>.
-          This allows you to bind a specific version, or the latest version from the deployment.
+          <b>Keep IDs when copy and pasting elements between diagrams</b><br />
+          When you now copy BPMN elements between different diagrams, they will keep their original ID unless it is already used in the target diagram.
         </li>
-        <li>
-          <b>New rule sets to check the compatibility of Forms</b><br />
-          In addition to existing versions, you can now select the latest Platform 7.16.0 and Cloud 1.2.0 versions in
-          the Form editor. This allows you to easily check the compatibility of your form with the product version you are using.
-        </li>
-        <li>Plus, various smaller bug fixes and usability improvements.</li>
       </ul>
 
     </div>
