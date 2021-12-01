@@ -45,6 +45,7 @@ import {
   generateId
 } from '../util';
 
+import BpmnLinter from './tabs/cloud-bpmn/linting/BpmnLinter';
 import FormLinter from './tabs/form/linting/FormLinter';
 
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM, DISABLE_CMMN } from '../util/Flags';
@@ -227,7 +228,7 @@ export default class TabsProvider {
           };
         },
         getLinter() {
-          return null;
+          return BpmnLinter;
         }
       },
       cmmn: {
