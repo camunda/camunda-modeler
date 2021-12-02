@@ -31,7 +31,6 @@ const TABS_OPTS = {
   }
 };
 
-const TAB_SMALL_SELECTOR = 'tab--small';
 const SMALL_TAB_WIDTH = 45;
 
 
@@ -154,18 +153,23 @@ function Tab(props) {
   } = props;
 
   const tabRef = React.useRef(0);
+  const [ small, setSmall ] = React.useState(false);
 
-  // set tab to <small> once a defined threshold is reached (be responsive)
+  const tabNode = tabRef.current;
+
   React.useEffect(() => {
-    if (!tabRef.current) {
+    if (!tabNode) {
       return;
     }
 
-    const tabNode = tabRef.current;
-    const width = tabNode.getBoundingClientRect().width;
+    const resizeObserver = new ResizeObserver(() => {
+      const width = tabNode.getBoundingClientRect().width;
+      setSmall(width < SMALL_TAB_WIDTH);
+    });
 
-    tabNode.classList.toggle(TAB_SMALL_SELECTOR, width < SMALL_TAB_WIDTH);
-  });
+    resizeObserver.observe(tabNode);
+    return () => resizeObserver.disconnect();
+  }, [ tabNode ]);
 
   return (
     <div
@@ -174,7 +178,8 @@ function Tab(props) {
       title={ tab.title }
       className={ classNames('tab', {
         'tab--active': active,
-        'tab--dirty': dirty
+        'tab--dirty': dirty,
+        'tab--small': small
       }) }
       onClick={ (event) => onSelect(tab, event) }
       onContextMenu={ (event) => (onContextMenu || noop)(tab, event) }
