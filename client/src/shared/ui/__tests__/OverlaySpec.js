@@ -98,34 +98,59 @@ describe('<Overlay>', function() {
   });
 
 
-  describe('props#maxHeight', function() {
+  [
+    'maxHeight',
+    'maxWidth',
+    'minHeight',
+    'minWidth'
+  ].forEach(function(property) {
 
-    function expectStyle(wrapper, expectedStyle) {
-      expect(wrapper.find('.test[style]').prop('style')).to.include(expectedStyle);
+    const cssProperty = `--overlay-${camelCaseToDash(property)}`;
+
+    function createOverlay(props={}) {
+      const {
+        maxHeight,
+        maxWidth,
+        minHeight,
+        minWidth
+      } = props;
+
+      return mount(
+        <Overlay
+          className="test"
+          anchor={ anchor }
+          maxHeight={ maxHeight }
+          maxWidth={ maxWidth }
+          minHeight={ minHeight }
+          minWidth={ minWidth }
+        />);
     }
 
+    describe(`props#${property}`, function() {
 
-    it('should specify string (maxHeight="100vh")', function() {
+      it(`should specify string (${property}="100vh")`, function() {
 
-      // when
-      wrapper = mount(<Overlay className="test" anchor={ anchor } maxHeight="100vh" />);
+        // when
+        wrapper = createOverlay({ [property]: '100vh' });
 
-      // then
-      expectStyle(wrapper, {
-        '--overlay-max-height': '100vh'
+        // then
+        expectStyle(wrapper, {
+          [cssProperty]: '100vh'
+        });
+
       });
 
-    });
 
+      it(`should specify (pixel) number (${property}=100)`, function() {
 
-    it('should specify (pixel) number (maxHeight=100)', function() {
+        // when
+        wrapper = createOverlay({ [property]: 100 });
 
-      // when
-      wrapper = mount(<Overlay className="test" anchor={ anchor } maxHeight={ 100 } />);
+        // then
+        expectStyle(wrapper, {
+          [cssProperty]: '100px'
+        });
 
-      // then
-      expectStyle(wrapper, {
-        '--overlay-max-height': '100px'
       });
 
     });
@@ -173,6 +198,7 @@ describe('<Overlay>', function() {
 
       expect(overlayRect.right).to.be.closeTo(anchorRect.right + offset.right, 5);
     });
+
   });
 
 
@@ -340,6 +366,17 @@ describe('<Overlay>', function() {
 
 });
 
+
+// helper ///////////////////
+
 function boundingRect(domNode) {
   return domNode.getBoundingClientRect();
+}
+
+function expectStyle(wrapper, expectedStyle) {
+  expect(wrapper.find('.test[style]').prop('style')).to.include(expectedStyle);
+}
+
+function camelCaseToDash(str) {
+  return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
 }
