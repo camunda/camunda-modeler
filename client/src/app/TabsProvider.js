@@ -109,9 +109,6 @@ export default class TabsProvider {
         },
         getIcon() {
           return null;
-        },
-        getNewFileButton() {
-          return null;
         }
       },
       bpmn: {
@@ -150,15 +147,10 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'BPMN Diagram (Camunda Platform)',
+            label: 'BPMN diagram',
+            group: 'Camunda Platform',
             action: 'create-bpmn-diagram'
           }];
-        },
-        getNewFileButton() {
-          return {
-            label: 'Create new BPMN Diagram (Camunda Platform)',
-            action: 'create-bpmn-diagram'
-          };
         },
         getLinter() {
           return null;
@@ -216,15 +208,10 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'BPMN Diagram (Camunda Cloud)',
+            label: 'BPMN diagram',
+            group: 'Camunda Cloud',
             action: 'create-cloud-bpmn-diagram'
           }];
-        },
-        getNewFileButton() {
-          return {
-            label: 'Create new BPMN Diagram (Camunda Cloud)',
-            action: 'create-cloud-bpmn-diagram'
-          };
         },
         getLinter() {
           return null;
@@ -266,15 +253,10 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'CMMN Diagram',
+            label: 'CMMN diagram',
+            group: 'Camunda Platform',
             action: 'create-cmmn-diagram'
           }];
-        },
-        getNewFileButton() {
-          return {
-            label: 'Create new CMMN Diagram',
-            action: 'create-cmmn-diagram'
-          };
         },
         getLinter() {
           return null;
@@ -312,15 +294,10 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'DMN Diagram (Camunda Platform)',
+            label: 'DMN diagram',
+            group: 'Camunda Platform',
             action: 'create-dmn-diagram'
           }];
-        },
-        getNewFileButton() {
-          return {
-            label: 'Create new DMN Diagram (Camunda Platform)',
-            action: 'create-dmn-diagram'
-          };
         },
         getLinter() {
           return null;
@@ -351,15 +328,10 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'Form (Camunda Platform)',
+            label: 'Form',
+            group: 'Camunda Platform',
             action: 'create-form'
           }];
-        },
-        getNewFileButton() {
-          return {
-            label: 'Create new Form (Camunda Platform)',
-            action: 'create-form'
-          };
         },
         getLinter() {
           return FormLinter;
@@ -390,15 +362,10 @@ export default class TabsProvider {
         },
         getNewFileMenu() {
           return [{
-            label: 'Form (Camunda Cloud)',
+            label: 'Form',
+            group: 'Camunda Cloud',
             action: 'create-cloud-form'
           }];
-        },
-        getNewFileButton() {
-          return {
-            label: 'Create new Form (Camunda Cloud)',
-            action: 'create-cloud-form'
-          };
         },
         getLinter() {
           return FormLinter;
