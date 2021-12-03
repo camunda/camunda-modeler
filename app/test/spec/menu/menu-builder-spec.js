@@ -357,6 +357,42 @@ describe('MenuBuilder', () => {
     });
   });
 
+
+  describe('new file menu', () => {
+
+    it('should separate by group', () => {
+
+      // given
+      const providers = [
+        {
+          helpMenu: [],
+          newFileMenu: [ {
+            label: 'foo',
+            group: 'A',
+          } ]
+        },
+        {
+          helpMenu: [],
+          newFileMenu: [ {
+            label: 'bar',
+            group: 'B',
+          } ]
+        },
+      ];
+
+      const menuBuilder = new MenuBuilder({ providers });
+
+      // when
+      const { menu } = menuBuilder.build();
+
+      const editMenu = menu.find(item => item.label === 'File');
+      const newFileMenu = editMenu.submenu.find(item => item.label === 'New File');
+
+      expect(newFileMenu.submenu.length).to.equal(4);
+    });
+
+  });
+
 });
 
 
