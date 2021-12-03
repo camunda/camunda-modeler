@@ -30,7 +30,11 @@ const DEFAULT_OFFSET = {
 /**
  * @typedef {object} OverlayProps
  * @prop {Node} anchor
- * @prop {{ bottom?: number, left?: number, right?: number }} [offset={}]
+ * @prop {{ top?: number, bottom?: number, left?: number, right?: number }} [offset={}]
+ * @prop {Number} [maxHeight]
+ * @prop {Number} [maxWidth]
+ * @prop {Number} [minHeight]
+ * @prop {Number} [minWidth]
  * @prop {function} [onClose]
  *
  * @extends {PureComponent<OverlayProps>}
