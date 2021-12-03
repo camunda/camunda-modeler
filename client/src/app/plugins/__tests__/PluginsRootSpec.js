@@ -34,6 +34,7 @@ describe('<PluginParent>', function() {
           expect(props.log).to.exist;
           expect(props.displayNotification).to.exist;
           expect(props._getGlobal).to.exist;
+          expect(props._getFromApp).to.exist;
 
           return null;
         }

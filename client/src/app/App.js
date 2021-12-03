@@ -1970,7 +1970,7 @@ export class App extends PureComponent {
     );
   }
 
-  _getNewFileItems() {
+  _getNewFileItems = () => {
     let items = [];
     const providers = this.props.tabsProvider.getProviders();
 

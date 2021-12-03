@@ -9,6 +9,7 @@
  */
 
 import CamundaPlugin from './camunda-plugin';
+import CreateNewAction from './create-new-action';
 import ElementTemplatesModal from './element-templates-modal';
 import ErrorTracking from './error-tracking';
 import PrivacyPreferences from './privacy-preferences';
@@ -20,6 +21,7 @@ import ZeebePlugin from './zeebe-plugin';
 
 export default [
   CamundaPlugin,
+  CreateNewAction,
   ElementTemplatesModal,
   ErrorTracking,
   PrivacyPreferences,
