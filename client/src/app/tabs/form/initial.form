@@ -1,6 +1,7 @@
 {
   "type": "default",
+  "id": "Form_{{ ID }}",
   "components": [],
   "executionPlatform": "Camunda Platform",
-  "executionPlatformVersion": "7.16"
+  "executionPlatformVersion": "{{ CAMUNDA_PLATFORM_VERSION }}"
 }
