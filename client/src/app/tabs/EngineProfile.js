@@ -218,7 +218,7 @@ function PlatformHint(props) {
 
   return (
     <div className={ className }>
-      This diagram can be deployed and executed on { executionPlatform }.
+      This file can be deployed and executed on { executionPlatform }.
       The properties panel provides the related implementation features. <a href={ HELP_LINKS[executionPlatform] }>
         Learn more
       </a>
