@@ -11,27 +11,52 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 
-import { Overlay } from '..';
+import { map } from 'min-dash';
+
+import { Overlay, Section } from '..';
 
 import css from './OverlayDropdown.less';
 
 /**
- * @typedef {{ text: string, onClick: Function }} Item
+ * @typedef {{ text: String, onClick: Function, icon?: React.Component }} Item
  */
 
 /**
- * Dropdown displayed as an overlay above the status bar.
- * @param {{ children: React.ReactChildren, items: Item[], className?: string }} props
+ * @typedef {{ key: String, label: String, items: Array<Item> }} ItemGroup
+ */
+
+
+/**
+ * Dropdown displayed as an overlay.
+ * @param {Object} props
+ * @param {Node} props.buttonRef
+ * @param {React.ReactChildren} props.children
+ * @param {String} [props.className]
+ * @param {Array<Item> | Array<ItemGroup>} props.items
+ * @param {Function} [props.onClose]
+ * @param {Object} [props.overlayConfig]
+ * @param {Boolean} [props.overlayState]
  */
 export function OverlayDropdown(props) {
-  const { children, className = '', items, buttonRef, overlayState, onClose,...restProps } = props;
-  const [open, setOpen] = useState(false);
+  const {
+    buttonRef,
+    children,
+    className = '',
+    items,
+    onClose,
+    overlayConfig,
+    overlayState,
+    ...restProps
+  } = props;
+
+  const [ open, setOpen ] = useState(false);
 
   const toggle = () => {
-    if (!overlayState)
+    if (!overlayState) {
       setOpen(open => !open);
-
-    else onClose();
+    } else {
+      onClose();
+    }
   };
 
   const close = () => setOpen(false);
@@ -53,11 +78,46 @@ export function OverlayDropdown(props) {
         { children }
       </button>
       { open && (
-        <Overlay className={ css.OverlayDropdown } onClose={ close } anchor={ buttonRef.current }>
-          <Options items={ items } onSelect={ onSelect } />
+        <Overlay
+          { ...overlayConfig }
+          className={ css.OverlayDropdown }
+          onClose={ close }
+          anchor={ buttonRef.current }>
+          {
+            isGrouped(items) ? (
+              map(items, (group) =>
+                <OptionGroup
+                  key={ group.key }
+                  label={ group.label }
+                  items={ group.items }
+                  onSelect={ onSelect } />
+              )
+            ) : (
+              <Section>
+                <Options items={ items } onSelect={ onSelect } />
+              </Section>
+            )
+          }
         </Overlay>
       ) }
     </React.Fragment>
+  );
+}
+
+function OptionGroup(props) {
+  const {
+    items,
+    label,
+    onSelect
+  } = props;
+
+  return (
+    <Section>
+      <Section.Header>
+        { label }
+      </Section.Header>
+      <Options items={ items } onSelect={ onSelect }></Options>
+    </Section>
   );
 }
 
@@ -65,22 +125,42 @@ function Options(props) {
   const { items, onSelect } = props;
 
   return (
-    <ul>
-      {
-        items.map((item, index) =>
-          <Option key={ index } text={ item.text } onClick={ () => onSelect(item) } />
-        )
-      }
-    </ul>
+    <Section.Body>
+      <ul>
+        {
+          items.map((item, index) =>
+            <Option
+              key={ index }
+              icon={ item.icon }
+              text={ item.text }
+              onClick={ () => onSelect(item) } />
+          )
+        }
+      </ul>
+    </Section.Body>
   );
 }
 
 function Option(props) {
-  const { text, onClick } = props;
+  const {
+    onClick,
+    text,
+    icon: IconComponent
+  } = props;
 
   return (
     <li onClick={ onClick }>
-      <button type="button">{ text }</button>
+      <button type="button" title={ text }>
+        { IconComponent && <IconComponent /> }
+        { text }
+      </button>
     </li>
   );
+}
+
+
+// helper ///////////
+
+function isGrouped(items) {
+  return items.length && items[0].key;
 }

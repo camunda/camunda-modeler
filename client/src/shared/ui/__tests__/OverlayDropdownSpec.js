@@ -115,4 +115,28 @@ describe('<OverlayDropdown>', function() {
     // then
     expect(spy).to.have.been.calledOnce;
   });
+
+
+  it('should group options', () => {
+
+    // given
+    const items = [
+      { key: 'A', items: [ { text: 'foo' } ] },
+      { key: 'B', items: [ { text: 'bar' } ] },
+      { key: 'C', items: [ { text: 'foo' } ] }
+    ];
+
+    const wrapper = mount((
+      <OverlayDropdown items={ items } buttonRef={ mockButtonRef }>
+        TestButton
+      </OverlayDropdown>
+    ));
+
+    // when
+    wrapper.find('button').simulate('click');
+
+    // then
+    expect(wrapper.find('Overlay section')).to.have.length(3);
+  });
+
 });

@@ -1,5 +1,34 @@
+:root {
+  --overlay-dropdown-section-header-color: var(--color-grey-225-10-55);
+  --overlay-dropdown-option-background-color: var(--color-white);
+  --overlay-dropdown-option-color: var(--color-grey-225-10-15);
+  --overlay-dropdown-option-icon-color: var(--color-grey-225-10-35);
+  --overlay-dropdown-option-hover-background-color: var(--color-grey-225-10-95);
+  --overlay-dropdown-focus-hover-background-color: var(--color-grey-225-10-95);
+
+  --overlay-dropdown-header-font-size: 13px;
+  --overlay-dropdown-option-font-size: 14px;
+}
+
 :local(.OverlayDropdown) {
   width: auto;
+
+  section {
+    padding: 4px 0 !important;
+  }
+
+  .section__header {
+    color: var(--overlay-dropdown-section-header-color) !important;
+    font-weight: 400 !important;
+    font-size: var(--overlay-dropdown-header-font-size) !important;
+    padding: 4px 10px !important;
+    line-height: 17px !important;
+  }
+
+  .section__body {
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+  }
 
   ul {
     list-style: none;
@@ -12,26 +41,48 @@
 
   li {
     margin: 0;
-    padding: 12px;
-
+    padding: 0;
     cursor: pointer;
+    background-color: var(--overlay-dropdown-option-background-color);
   }
 
   li:hover {
-    background-color: var(--color-grey-225-10-95);
+    background-color: var(--overlay-dropdown-option-hover-background-color);
   }
 
-  li + li {
-    padding-top: 6px;
+  li button:focus-visible {
+    background-color: var(--overlay-dropdown-focus-hover-background-color);
+    outline: none;
+    box-shadow: none;
   }
 
   li button {
-    border: none;
-
-    background-color: transparent;
-    color: var(--overlay-link-color);
-    text-decoration: underline;
-
+    color: var(--overlay-dropdown-option-color);
+    background-color: inherit;
     cursor: inherit;
+    font-family: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    font-weight: 400;
+    font-size: var(--overlay-dropdown-option-font-size);
+    line-height: 21px;
+    padding: 4px 12px;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    overflow-y: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+      display: inline-block;
+      margin: 0 6px 2px -2px;
+      fill: var(--overlay-dropdown-option-icon-color);
+    }
   }
 }
