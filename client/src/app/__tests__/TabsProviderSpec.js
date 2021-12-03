@@ -12,6 +12,11 @@ import TabsProvider from '../TabsProvider';
 
 import Flags, { DISABLE_DMN, DISABLE_CMMN, DISABLE_ZEEBE } from '../../util/Flags';
 
+import {
+  ENGINE_PROFILES,
+  ENGINES
+} from '../../util/Engines';
+
 
 describe('TabsProvider', function() {
 
@@ -107,8 +112,8 @@ describe('TabsProvider', function() {
         // then
         expect(contents).to.exist;
 
-        // without the {{ ID }} placeholder
-        expect(contents).not.to.contain('{{ ID');
+        // without the {{ ID }} and {{ CAMUNDA_* }} placeholders
+        expect(contents).not.to.contain('{{ ');
       });
     }
 
@@ -123,6 +128,7 @@ describe('TabsProvider', function() {
     verifyExists('form');
 
     verifyExists('cloud-form');
+
 
     it('for an empty file of known type', function() {
 
@@ -141,6 +147,24 @@ describe('TabsProvider', function() {
       expect(tab.file.contents).to.exist;
       expect(tab.file.contents).to.have.lengthOf.above(0);
     });
+
+
+    it('replacing version placeholder with actual latest version', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const latestCloudVersion = ENGINE_PROFILES.find(
+        p => p.executionPlatform === ENGINES.CLOUD
+      ).executionPlatformVersions[0];
+
+      // when
+      const { file: { contents } } = tabsProvider.createTab('cloud-bpmn');
+
+      // then
+      expect(contents).to.include(`modeler:executionPlatformVersion="${latestCloudVersion}"`);
+    });
+
   });
 
 

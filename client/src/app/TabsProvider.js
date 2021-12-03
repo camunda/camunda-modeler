@@ -15,6 +15,11 @@ import dmnDiagram from './tabs/dmn/diagram.dmn';
 import form from './tabs/form/initial.form';
 import cloudForm from './tabs/form/initial-cloud.form';
 
+import {
+  ENGINES,
+  ENGINE_PROFILES
+} from '../util/Engines';
+
 import replaceIds from '@bpmn-io/replace-ids';
 
 import {
@@ -515,7 +520,7 @@ export default class TabsProvider {
   _getInitialFileContents(type) {
     const rawContents = this.getProvider(type).getInitialContents();
 
-    return rawContents && replaceIds(rawContents, generateId);
+    return rawContents && replaceVersions(replaceIds(rawContents, generateId));
   }
 
   _getTabType(file) {
@@ -601,4 +606,22 @@ function findProviderForFile(providers, file) {
  */
 function sortByPriority(providers) {
   return sortBy(providers, p => (p.priority || DEFAULT_PRIORITY) * -1);
+}
+
+
+function replaceVersions(contents) {
+
+  const latestPlatformVersion = ENGINE_PROFILES.find(
+    p => p.executionPlatform === ENGINES.PLATFORM
+  ).executionPlatformVersions[0];
+
+  const latestCloudVersion = ENGINE_PROFILES.find(
+    p => p.executionPlatform === ENGINES.CLOUD
+  ).executionPlatformVersions[0];
+
+  return (
+    contents
+      .replace('{{ CAMUNDA_PLATFORM_VERSION }}', latestPlatformVersion)
+      .replace('{{ CAMUNDA_CLOUD_VERSION }}', latestCloudVersion)
+  );
 }
