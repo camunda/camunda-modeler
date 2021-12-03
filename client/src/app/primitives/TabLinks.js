@@ -175,7 +175,7 @@ function Tab(props) {
     <div
       ref={ tabRef }
       data-tab-id={ tab.id }
-      title={ tab.title }
+      title={ getTitleTag(tab, dirty) }
       className={ classNames('tab', {
         'tab--active': active,
         'tab--dirty': dirty,
@@ -243,6 +243,18 @@ function TabClose(props) {
 
 function TabDirty() {
   return (
-    <span title="unsaved" className="tab__dirty-marker"></span>
+    <span className="tab__dirty-marker"></span>
   );
+}
+
+
+// helper //////////
+
+function getTitleTag(tab, dirty) {
+  const {
+    file,
+    title
+  } = tab;
+
+  return title + (dirty || (file && !file.path) ? ' - unsaved' : '');
 }
