@@ -1,0 +1,54 @@
+:root {
+  --tab-action-icon-color: var(--color-grey-225-10-35);
+  --tab-action-hover-background-color: var(--color-grey-225-10-80);
+  --tab-action-active-background-color: var(--color-grey-225-10-75);
+  --tab-action-active-icon-color: var(--color-grey-225-10-35);
+}
+
+:local(.TabActions) {
+  position: relative;
+  display: flex;
+
+  .btn--tab-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    min-width: unset;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: inherit;
+    margin-right: 10px;
+    margin-left: 0;
+
+    &:last-child {
+      margin-right: 16px;
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--tab-action-icon-color);
+    }
+
+    &:hover {
+      background-color: var(--tab-action-hover-background-color);
+    }
+
+    &.btn--active {
+      background-color: var(--tab-action-active-background-color);
+
+      svg {
+        fill: var(--tab-action-active-icon-color);
+      }
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+}

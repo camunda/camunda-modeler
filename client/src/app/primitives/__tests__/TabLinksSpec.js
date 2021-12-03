@@ -16,6 +16,8 @@ import { mount } from 'enzyme';
 
 import TabLinks from '../TabLinks';
 
+import { SlotFillRoot } from '../../slot-fill';
+
 import {
   defaultActiveTab,
   defaultTabs
@@ -442,20 +444,22 @@ function renderTabLinks(options = {}) {
   } = options;
 
   const tree = mount(
-    <TabLinks
-      activeTab={ activeTab || defaultActiveTab }
-      tabs={ tabs || defaultTabs }
-      getTabIcon={ getTabIcon || noop }
-      onContextMenu={ onContextMenu || noop }
-      onClose={ onClose || noop }
-      onMoveTab={ onMoveTab || noop }
-      onSelect={ onSelect || noop }
-      dirtyTabs={ dirtyTabs || {} }
-      unsavedTabs={ unsavedTabs || {} }
-      placeholder={ placeholder } />
+    <SlotFillRoot>
+      <TabLinks
+        activeTab={ activeTab || defaultActiveTab }
+        tabs={ tabs || defaultTabs }
+        getTabIcon={ getTabIcon || noop }
+        onContextMenu={ onContextMenu || noop }
+        onClose={ onClose || noop }
+        onMoveTab={ onMoveTab || noop }
+        onSelect={ onSelect || noop }
+        dirtyTabs={ dirtyTabs || {} }
+        unsavedTabs={ unsavedTabs || {} }
+        placeholder={ placeholder } />
+    </SlotFillRoot>
   );
 
-  const tabLinks = tree.instance();
+  const tabLinks = tree.find('TabLinks').first().instance();
 
   return {
     tree,
