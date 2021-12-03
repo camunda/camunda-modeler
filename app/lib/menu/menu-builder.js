@@ -21,9 +21,13 @@ const {
 const {
   assign,
   find,
+  flatten,
+  groupBy,
   isFunction,
+  keys,
   map,
-  merge
+  merge,
+  reduce
 } = require('min-dash');
 
 const browserOpen = require('../util/browser-open');
@@ -141,14 +145,33 @@ class MenuBuilder {
       }];
     }
 
-    const template = providedMenus.reduce((newFileMenus, current) => {
+    const groups = groupBy(flatten(providedMenus), 'group');
+
+    // (1) handle per group
+    if (keys(groups).length > 1) {
+      return reduce(groups, (newFileMenus, current, group) => {
+        return [
+          ...newFileMenus,
+
+          // as long we can't have sub menu titles, use extended labels
+          ...map(current, entry => {
+            return mapMenuEntryTemplate({
+              ...entry,
+              label: `${entry.label} (${group})`
+            });
+          }),
+          getSeparatorTemplate()
+        ];
+      }, []);
+    }
+
+    // (2) handle flat menu
+    return reduce(providedMenus, (newFileMenus, current) => {
       return [
         ...newFileMenus,
-        ...current.map(mapMenuEntryTemplate),
+        ...map(current, mapMenuEntryTemplate),
       ];
     }, []);
-
-    return template;
   }
 
   appendOpen() {
