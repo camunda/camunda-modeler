@@ -73,6 +73,8 @@ export default class PluginsRoot extends PureComponent {
         subscribe
       } = subscriber;
 
+      const getFromApp = (prop) => app[prop];
+
       log('render plug-in', name);
 
       return (
@@ -90,6 +92,7 @@ export default class PluginsRoot extends PureComponent {
             subscribe={ subscribe }
             log={ this.log }
             displayNotification={ this.displayNotification }
+            _getFromApp={ getFromApp }
             _getGlobal={ app.getGlobal }
           />
         </PluginParent>
