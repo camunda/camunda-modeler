@@ -18,6 +18,8 @@ import {
   addDragger
 } from '../util/dragger';
 
+import { TabActions } from '../tab-actions';
+
 import TabCloseIcon from '../../../resources/icons/TabClose.svg';
 
 const noop = () => {};
@@ -136,6 +138,8 @@ export default class TabLinks extends PureComponent {
             </div>
           }
         </div>
+
+        <TabActions />
       </div>
     );
   }
