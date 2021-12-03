@@ -75,6 +75,9 @@ export class Overlay extends PureComponent {
 
     const {
       maxHeight,
+      maxWidth,
+      minHeight,
+      minWidth,
       anchor,
       offset = {}
     } = this.props;
@@ -83,14 +86,46 @@ export class Overlay extends PureComponent {
     const anchorRect = anchor.getBoundingClientRect();
 
     let style = {
-      position: 'absolute',
-      bottom: Math.round(bodyRect.height - anchorRect.top + (offset.bottom || DEFAULT_OFFSET.bottom))
+      position: 'absolute'
     };
 
     if (maxHeight) {
       style = {
         ...style,
         '--overlay-max-height': isString(maxHeight) ? maxHeight : `${maxHeight}px`
+      };
+    }
+
+    if (maxWidth) {
+      style = {
+        ...style,
+        '--overlay-max-width': isString(maxWidth) ? maxWidth : `${maxWidth}px`
+      };
+    }
+
+    if (minHeight) {
+      style = {
+        ...style,
+        '--overlay-min-height': isString(minHeight) ? minHeight : `${minHeight}px`
+      };
+    }
+
+    if (minWidth) {
+      style = {
+        ...style,
+        '--overlay-min-width': isString(minWidth) ? minWidth : `${minWidth}px`
+      };
+    }
+
+    if ('top' in offset) {
+      style = {
+        ...style,
+        top: Math.round(anchorRect.top + anchorRect.height + offset.top)
+      };
+    } else {
+      style = {
+        ...style,
+        bottom: Math.round(bodyRect.height - anchorRect.top + (offset.bottom || DEFAULT_OFFSET.bottom))
       };
     }
 
