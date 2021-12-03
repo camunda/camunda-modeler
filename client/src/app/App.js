@@ -16,7 +16,9 @@ import {
   assign,
   debounce,
   forEach,
+  groupBy,
   isString,
+  map,
   reduce
 } from 'min-dash';
 
@@ -1968,24 +1970,40 @@ export class App extends PureComponent {
     );
   }
 
-  _getNewFileDropdownItems() {
-    const items = [];
+  _getNewFileItems() {
+    let items = [];
     const providers = this.props.tabsProvider.getProviders();
 
     forEach(providers, provider => {
-      const button = provider.getNewFileButton && provider.getNewFileButton();
+      const entries = provider.getNewFileMenu && provider.getNewFileMenu();
 
-      if (!button) {
+      if (!entries || !entries.length) {
         return;
       }
 
-      items.push({
-        text: button.label,
-        onClick: () => this.triggerAction(button.action)
-      });
+      items = [
+        ...items,
+        ...entries.map(entry => {
+          return {
+            text: entry.label,
+            group: entry.group,
+            icon: provider.getIcon(),
+            onClick: () => this.triggerAction(entry.action)
+          };
+        })
+      ];
+
     });
 
-    return items;
+    const groupedItems = map(groupBy(items, 'group'), (group, key) => {
+      return {
+        items: group,
+        key,
+        label: key
+      };
+    });
+
+    return groupedItems;
   }
 
   _getTabIcon = (tab) => {
