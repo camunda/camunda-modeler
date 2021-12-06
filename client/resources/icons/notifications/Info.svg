@@ -1,0 +1,5 @@
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="notification-info" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M12,1 C18.0751322,1 23,5.92486775 23,12 C23,18.0751322 18.0751322,23 12,23 C5.92486775,23 1,18.0751322 1,12 C1,5.92486775 5.92486775,1 12,1 Z M13,11 L11,11 L11,17 L13,17 L13,11 Z M11,16 L11,17 L10,17 L10,16 L11,16 Z M14,16 L14,17 L13,17 L13,16 L14,16 Z M11,11 L11,12 L10,12 L10,11 L11,11 Z M13,7 L13,9 L11,9 L11,7 L13,7 Z" id="Combined-Shape" fill="#505562"></path>
+    </g>
+</svg>

@@ -14,6 +14,12 @@ import classnames from 'classnames';
 
 import css from './Notification.less';
 
+import CloseIcon from '../../../resources/icons/notifications/Close.svg';
+import InfoIcon from '../../../resources/icons/notifications/Info.svg';
+import SuccessIcon from '../../../resources/icons/notifications/Success.svg';
+import WarningIcon from '../../../resources/icons/notifications/Warning.svg';
+import ErrorIcon from '../../../resources/icons/notifications/Error.svg';
+
 export const NOTIFICATION_TYPES = [ 'info', 'success', 'error', 'warning' ];
 
 export default class Notification extends PureComponent {
@@ -72,11 +78,30 @@ export default class Notification extends PureComponent {
     } = this.props;
 
     return this.state.error ? null : <div className={ classnames(css.Notification, type) }>
-      <span className="close" onClick={ close } />
-      <h2>
-        { title }
-      </h2>
+      <div>
+        {getIconByType(type)}
+        <h3>
+          { title }
+        </h3>
+        <CloseIcon onClick={ close } className="close" />
+      </div>
       { content && <div className="content">{ content }</div> }
     </div>;
+  }
+}
+
+
+// helpers
+
+function getIconByType(type) {
+  switch (type) {
+  case 'info':
+    return <InfoIcon />;
+  case 'warning':
+    return <WarningIcon />;
+  case 'success':
+    return <SuccessIcon />;
+  case 'error':
+    return <ErrorIcon />;
   }
 }

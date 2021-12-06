@@ -1,37 +1,48 @@
 :local(.Notification) {
-  width: 300px;
+  width: 330px;
   background: var(--color-white);
-  box-shadow: 0 1px 4px var(--color-black-opacity-10);
-  border-radius: 2px;
-  padding: 20px;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+  border-radius: 6px;
+  border: 1px solid var(--color-grey-225-10-85);
+  background-color: var(--color-grey-225-10-95);
+  padding: 18px;
   margin-bottom: 20px;
 
-  h2 {
+  div {
+    display: flex;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  h3 {
     margin: 0;
-    font-weight: normal;
+    font-weight: 500;
+    margin-left: 12px;
+    font-size: 14px;
+    color: var(--color-grey-225-10-15);
+    display: flex;
+    align-items: center;
+    width: 230px;
+    min-height: 24px;
   }
 
   .content {
-    margin-top: 10px
+    margin-top: 6px;
+    font-size: 14px;
+    color: var(--color-grey-225-10-35);
+    margin-left: 36px;
+    margin-right: 16px;
   }
 
   .close {
-    vertical-align: middle;
-    padding: 0 2px;
-    margin-left: 3px;
-
-    font-size: 18px;
-    line-height: 9px;
-    width: 13px;
-    float: right;
-    color: var(--color-grey-225-10-35);
-
-    &:before {
-      content: '×';
-    }
+    margin: 0 -2px 0 auto;
 
     &:hover {
-      color: var(--color-blue-205-100-45);
+      background-color: var(--color-grey-225-10-90);
+      border-radius: 100%;
     }
   }
 }
