@@ -25,7 +25,7 @@
     "prerelease": "run-s update-license-book",
     "update-license-book": "node tasks/license-book.js -o THIRD_PARTY_NOTICES -c",
     "send-license-book-summary": "node tasks/send-license-book-summary.js -s",
-    "release": "lerna publish --force-publish",
+    "release": "lerna publish --force-publish=*",
     "test": "run-s *:test",
     "start": "run-s \"dev -- {@}\" --",
     "link-dependencies": "node tasks/link-dependencies.js"

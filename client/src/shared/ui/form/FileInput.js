@@ -31,7 +31,6 @@ import ErrorIcon from '../../../../resources/icons/Error.svg';
 
 export default function FileInput(props) {
   const {
-    label,
     field,
     form
   } = props;

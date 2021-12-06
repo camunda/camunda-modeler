@@ -6,6 +6,14 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 4.12.0
+
+* `FEAT`: define engine profiles globally ([#2544](https://github.com/camunda/camunda-modeler/issues/2544))
+* `FEAT`: support Zeebe 1.3 / Camunda Cloud 1.3 ([#2578](https://github.com/camunda/camunda-modeler/issues/2578), [#2535](https://github.com/camunda/camunda-modeler/issues/2535))
+* `FIX`: keep original IDs when copy and pasting elements between diagrams ([#1410](https://github.com/camunda/camunda-modeler/issues/1410))
+* `FIX`: hide disabled engines in Form Editor select ([#2512](https://github.com/camunda/camunda-modeler/issues/2512))
+* `DEPS`: update to `bpmn-js@8.8.2`
+
 ## 4.11.1
 
 * `FIX`: correct deployment of Camunda Forms with `camunda:formRefBinding=latest` ([#2484](https://github.com/camunda/camunda-modeler/issues/2484))

@@ -62,9 +62,7 @@ import {
 
 import EngineProfileHelper from '../EngineProfileHelper';
 
-import {
-  ENGINES
-} from '../../../util/Engines';
+import { ENGINES } from '../../../util/Engines';
 
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
 

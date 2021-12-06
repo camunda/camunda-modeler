@@ -211,7 +211,7 @@ This project incorporates components from the projects listed below. The origina
 204.  zeebe-node@1.4.0 (https://github.com/camunda-community-hub/zeebe-client-node-js)
 205.  @bpmn-io/add-exporter@0.2.0 (https://github.com/bpmn-io/add-exporter)
 206.  @bpmn-io/align-to-origin@0.7.0 (https://github.com/bpmn-io/align-to-origin)
-207.  @bpmn-io/bpmn-properties-panel@0.3.0 (https://github.com/bpmn-io/bpmn-properties-panel)
+207.  @bpmn-io/bpmn-properties-panel@0.5.2 (https://github.com/bpmn-io/bpmn-properties-panel)
 208.  @bpmn-io/dmn-migrate@0.4.3 (https://github.com/bpmn-io/dmn-migrate)
 209.  @bpmn-io/element-templates-validator@0.2.0 (https://github.com/bpmn-io/element-templates-validator)
 210.  @bpmn-io/extract-process-variables@0.4.3 (https://github.com/bpmn-io/extract-process-variables)
@@ -226,11 +226,11 @@ This project incorporates components from the projects listed below. The origina
 219.  atoa@1.0.0 (https://github.com/bevacqua/atoa)
 220.  bpmn-js-disable-collapsed-subprocess@0.1.3 (https://github.com/bpmn-io/bpmn-js-disable-collapsed-subprocess)
 221.  bpmn-js-executable-fix@0.1.3 (https://github.com/bpmn-io/bpmn-js-executable-fix)
-222.  bpmn-js-properties-panel@0.45.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+222.  bpmn-js-properties-panel@0.46.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 223.  bpmn-js-signavio-compat@1.2.3 (https://github.com/bpmn-io/bpmn-js-signavio-compat)
-224.  bpmn-js@8.7.3 (https://github.com/bpmn-io/bpmn-js)
+224.  bpmn-js@8.8.2 (https://github.com/bpmn-io/bpmn-js)
 225.  bpmn-moddle@7.1.2 (https://github.com/bpmn-io/bpmn-moddle)
-226.  camunda-bpmn-js@0.11.3 (https://github.com/camunda/camunda-bpmn-js)
+226.  camunda-bpmn-js@0.12.2 (https://github.com/camunda/camunda-bpmn-js)
 227.  camunda-bpmn-moddle@6.1.1 (https://github.com/camunda/camunda-bpmn-moddle)
 228.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
 229.  camunda-dmn-moddle@1.1.0 (https://github.com/camunda/camunda-dmn-moddle)
@@ -303,7 +303,7 @@ This project incorporates components from the projects listed below. The origina
 296.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
 297.  ua-parser-js@0.7.28 (https://github.com/faisalman/ua-parser-js)
 298.  xmldom@0.1.27 (https://github.com/jindw/xmldom)
-299.  zeebe-bpmn-moddle@0.8.0 (https://github.com/zeebe-io/zeebe-bpmn-moddle)
+299.  zeebe-bpmn-moddle@0.10.0 (https://github.com/zeebe-io/zeebe-bpmn-moddle)
 
 
 %% @grpc/grpc-js@1.3.4 NOTICES AND INFORMATION BEGIN HERE
@@ -7781,7 +7781,7 @@ THE SOFTWARE.
 END OF @bpmn-io/align-to-origin@0.7.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/bpmn-properties-panel@0.3.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/bpmn-properties-panel@0.5.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -7805,7 +7805,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/bpmn-properties-panel@0.3.0 NOTICES AND INFORMATION
+END OF @bpmn-io/bpmn-properties-panel@0.5.2 NOTICES AND INFORMATION
 
 
 %% @bpmn-io/dmn-migrate@0.4.3 NOTICES AND INFORMATION BEGIN HERE
@@ -8141,7 +8141,7 @@ MIT
 END OF bpmn-js-executable-fix@0.1.3 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@0.45.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@0.46.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -8165,7 +8165,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@0.45.0 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@0.46.0 NOTICES AND INFORMATION
 
 
 %% bpmn-js-signavio-compat@1.2.3 NOTICES AND INFORMATION BEGIN HERE
@@ -8196,7 +8196,7 @@ THE SOFTWARE.
 END OF bpmn-js-signavio-compat@1.2.3 NOTICES AND INFORMATION
 
 
-%% bpmn-js@8.7.3 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@8.8.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -8223,7 +8223,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js@8.7.3 NOTICES AND INFORMATION
+END OF bpmn-js@8.8.2 NOTICES AND INFORMATION
 
 
 %% bpmn-moddle@7.1.2 NOTICES AND INFORMATION BEGIN HERE
@@ -8253,7 +8253,7 @@ THE SOFTWARE.
 END OF bpmn-moddle@7.1.2 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@0.11.3 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@0.12.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -8277,7 +8277,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@0.11.3 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@0.12.2 NOTICES AND INFORMATION
 
 
 %% camunda-bpmn-moddle@6.1.1 NOTICES AND INFORMATION BEGIN HERE
@@ -10240,7 +10240,7 @@ http://www.gnu.org/licenses/lgpl.html
 END OF xmldom@0.1.27 NOTICES AND INFORMATION
 
 
-%% zeebe-bpmn-moddle@0.8.0 NOTICES AND INFORMATION BEGIN HERE
+%% zeebe-bpmn-moddle@0.10.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -10264,4 +10264,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF zeebe-bpmn-moddle@0.8.0 NOTICES AND INFORMATION
+END OF zeebe-bpmn-moddle@0.10.0 NOTICES AND INFORMATION

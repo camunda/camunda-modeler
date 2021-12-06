@@ -41,8 +41,7 @@ import missingPatchEngineProfileXML from '../../__tests__/EngineProfile.missing-
 import patchEngineProfileXML from '../../__tests__/EngineProfile.patch.platform.bpmn';
 import namespaceEngineProfileXML from '../../__tests__/EngineProfile.namespace.platform.bpmn';
 
-import applyDefaultTemplates from
-  '../modeler/features/apply-default-templates/applyDefaultTemplates';
+import applyDefaultTemplates from '../modeler/features/apply-default-templates/applyDefaultTemplates';
 
 import {
   getCanvasEntries,
