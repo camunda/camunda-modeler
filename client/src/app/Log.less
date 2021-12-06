@@ -1,5 +1,6 @@
 :root {
   --log-font-family: var(--font-family-monospace);
+  --log-font-size: var(--font-size-default);
   --log-color: var(--color-grey-225-10-15);
   --log-border-color: var(--color-grey-225-10-75);
   --log-background-color: var(--color-white);
@@ -28,7 +29,7 @@
   .entries {
     border: none;
 
-    font-size: 13px;
+    font-size: var(--log-font-size);
     font-family: var(--log-font-family);
     color: var(--log-color);
 
