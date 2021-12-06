@@ -8,6 +8,7 @@
   --status-bar-active-hover-background-color: var(--color-grey-225-10-75);
   --status-bar-active-font-color: var(--color-grey-225-10-15);
   --status-bar-active-icon-font-color: var(--color-grey-225-10-35);
+  --status-bar-font-size: var(--font-size-default);
 }
 
 :local(.StatusBar) {
@@ -22,7 +23,7 @@
   background-color: var(--status-bar-background-color);
   border-top: 1px solid var(--status-bar-border-color);
   color: var(--status-bar-font-color);
-  font-size: 14px;
+  font-size: var(--status-bar-font-size);
   line-height: 28px;
 
   .status-bar__file {
