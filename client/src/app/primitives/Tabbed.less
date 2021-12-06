@@ -1,3 +1,7 @@
+:root {
+  --tab-max-width: 220px;
+}
+
 .tab-base() {
   position: relative;
   flex: 1;
@@ -40,7 +44,7 @@
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: 20px;
-    max-width: 160px;
+    max-width: var(--tab-max-width);
     color: var(--tab-font-color);
     border-right: 1px solid var(--tab-border-right-color);
     user-select: none;
