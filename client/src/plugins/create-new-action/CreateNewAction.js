@@ -24,12 +24,38 @@ export class CreateNewAction extends PureComponent {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      open: false
+    };
+  }
+
+  componentDidMount() {
+    const {
+      subscribe
+    } = this.props;
+
+    subscribe('createNewAction.open', () => {
+      this.open();
+    });
+  }
+
+  open() {
+    this.setState({ open: true });
+  }
+
+  onClose = () => {
+    this.setState({ open: false });
   }
 
   render() {
     const {
       newFileItems = []
     } = this.props;
+
+    const {
+      open
+    } = this.state;
 
     const buttonRef = React.createRef();
 
@@ -45,6 +71,8 @@ export class CreateNewAction extends PureComponent {
         title="Create new ..."
         buttonRef={ buttonRef }
         overlayConfig={ overlayConfig }
+        shouldOpen={ open }
+        onClose={ this.onClose }
       >
         <PlusIcon />
       </OverlayDropdown>

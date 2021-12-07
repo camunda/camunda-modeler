@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+/* global sinon */
+
 import React from 'react';
 
 import {
@@ -83,6 +85,27 @@ describe('<CreateNewAction>', function() {
     expect(sections).to.have.length(3);
   });
 
+
+  it('should open via event', () => {
+
+    // given
+    const subscribe = createSubscribe();
+
+    const spy = sinon.spy();
+
+    const {
+      instance
+    } = createTabAction({ subscribe });
+
+    instance.open = spy;
+
+    // when
+    subscribe.emit();
+
+    // then
+    expect(spy).to.have.been.called;
+  });
+
 });
 
 
@@ -90,11 +113,14 @@ describe('<CreateNewAction>', function() {
 
 function createTabAction(options = {}) {
   const {
-    newFileItems
+    newFileItems,
+    subscribe
   } = options;
 
   const tree = mount(
-    <CreateNewAction newFileItems={ newFileItems || DEFAULT_ITEMS } />
+    <CreateNewAction
+      newFileItems={ newFileItems || DEFAULT_ITEMS }
+      subscribe={ subscribe || createSubscribe() } />
   );
 
   const instance = tree.instance();
@@ -103,4 +129,25 @@ function createTabAction(options = {}) {
     tree,
     instance
   };
+}
+
+function noop() {}
+
+function createSubscribe() {
+
+  let cb = noop;
+
+  function subscribe(_, callback) {
+    cb = callback;
+
+    return {
+      cancel() {
+        cb = noop;
+      }
+    };
+  }
+
+  subscribe.emit = (payload) => cb(payload);
+
+  return subscribe;
 }

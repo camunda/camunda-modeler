@@ -124,7 +124,17 @@ class MenuBuilder {
   }
 
   appendNewFile() {
-    const submenuTemplate = this.getNewFileSubmenuTemplate();
+    let submenuTemplate = this.getNewFileSubmenuTemplate();
+
+    // add dropdown shortcut
+    submenuTemplate = [
+      ...submenuTemplate,
+      {
+        label: 'Open new file options...',
+        accelerator: 'CommandOrControl+N',
+        click: () => app.emit('menu:action', 'emit-event', { type: 'createNewAction.open' })
+      }
+    ];
 
     this.menu.append(new MenuItem({
       label: 'New File',
