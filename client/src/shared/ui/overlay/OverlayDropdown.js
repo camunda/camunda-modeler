@@ -44,12 +44,17 @@ export function OverlayDropdown(props) {
     className = '',
     items,
     onClose,
+    shouldOpen,
     overlayConfig,
     overlayState,
     ...restProps
   } = props;
 
   const [ open, setOpen ] = useState(false);
+
+  React.useEffect(() => {
+    setOpen(shouldOpen);
+  }, [ shouldOpen ]);
 
   const toggle = () => {
     if (!overlayState) {
@@ -59,7 +64,10 @@ export function OverlayDropdown(props) {
     }
   };
 
-  const close = () => setOpen(false);
+  const close = () => {
+    setOpen(false);
+    onClose && onClose();
+  };
 
   const onSelect = item => {
     item.onClick();

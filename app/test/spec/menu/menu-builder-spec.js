@@ -388,7 +388,14 @@ describe('MenuBuilder', () => {
       const editMenu = menu.find(item => item.label === 'File');
       const newFileMenu = editMenu.submenu.find(item => item.label === 'New File');
 
-      expect(newFileMenu.submenu.length).to.equal(4);
+      /*
+       * - group A item
+       * - separator
+       * - group B item
+       * - separator
+       * - open new file options ...
+       */
+      expect(newFileMenu.submenu.length).to.equal(5);
     });
 
   });
