@@ -77,16 +77,25 @@ export default class Notification extends PureComponent {
       type
     } = this.props;
 
-    return this.state.error ? null : <div className={ classnames(css.Notification, type) }>
-      <div>
-        {getIconByType(type)}
-        <h3>
-          { title }
-        </h3>
-        <CloseIcon onClick={ close } className="close" />
-      </div>
-      { content && <div className="content">{ content }</div> }
-    </div>;
+    return this.state.error ? null :
+      (
+        <div
+          className={ classnames(css.Notification, type) }
+          onMouseOver={ ()=> {this.resetTimeout(); } }
+          onMouseOut={ ()=> {this.setupTimeout(this.props.duration);} }>
+
+          <div>
+            {getIconByType(type)}
+            <h3>
+              { title }
+            </h3>
+            <CloseIcon onClick={ close } className="close" />
+          </div>
+          <div>
+            { content && <div className="content">{ content }</div> }
+          </div>
+        </div>
+      );
   }
 }
 

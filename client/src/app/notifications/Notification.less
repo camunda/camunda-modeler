@@ -6,7 +6,23 @@
   border: 1px solid var(--color-grey-225-10-85);
   background-color: var(--color-grey-225-10-95);
   padding: 18px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+
+  /* animation */
+  transition-timing-function: linear;
+  animation-duration: 800ms;
+  animation-name: slidein;
+
+  @keyframes slidein {
+    from {
+      margin-bottom: -140px;
+    }
+
+    to {
+      margin-bottom: 10px;
+    }
+  }
 
   div {
     display: flex;
