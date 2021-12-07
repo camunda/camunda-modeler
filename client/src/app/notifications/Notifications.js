@@ -34,7 +34,7 @@ export default class Notifications extends PureComponent {
   render() {
     const notifications = this.props.notifications.map(({ id, ...props }) => {
       return <Notification key={ id } { ...props } />;
-    }).reverse();
+    });
 
     return createPortal(<div className={ css.Notifications }>{ notifications }</div>, this.container);
   }
