@@ -80,6 +80,12 @@ module.exports = function(karma) {
       module: {
         rules: [
           {
+            test: /\.bpmnlintrc$/,
+            use: [
+              'bpmnlint-loader'
+            ]
+          },
+          {
             test: /\.js$/,
             exclude: /node_modules/,
             use: 'babel-loader'

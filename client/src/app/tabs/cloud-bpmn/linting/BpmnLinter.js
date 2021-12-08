@@ -12,35 +12,13 @@ import { Linter } from 'bpmnlint';
 
 import BpmnModdle from 'bpmn-moddle';
 
-import StaticResolver from 'bpmnlint/lib/resolver/static-resolver';
-
 import { isString } from 'min-dash';
 
-import {
-  camundaCloud10Rule,
-  camundaCloud11Rule,
-  camundaCloud12Rule,
-  camundaCloud13Rule
-} from './rules';
-
-const linter = new Linter({
-  resolver: new StaticResolver({
-    'rule:bpmnlint-plugin-camunda-platform/camunda-cloud-1-0': camundaCloud10Rule,
-    'rule:bpmnlint-plugin-camunda-platform/camunda-cloud-1-1': camundaCloud11Rule,
-    'rule:bpmnlint-plugin-camunda-platform/camunda-cloud-1-2': camundaCloud12Rule,
-    'rule:bpmnlint-plugin-camunda-platform/camunda-cloud-1-3': camundaCloud13Rule
-  }),
-  config: {
-    rules: {
-      'camunda-platform/camunda-cloud-1-0': 'error',
-      'camunda-platform/camunda-cloud-1-1': 'error',
-      'camunda-platform/camunda-cloud-1-2': 'error',
-      'camunda-platform/camunda-cloud-1-3': 'error'
-    }
-  }
-});
+import linterConfig from '../../.bpmnlintrc';
 
 const moddle = new BpmnModdle();
+
+const linter = new Linter(linterConfig);
 
 export default class BpmnLinter {
   static async lint(contents) {
