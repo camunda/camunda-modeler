@@ -12,29 +12,13 @@ import { Linter } from 'bpmnlint';
 
 import BpmnModdle from 'bpmn-moddle';
 
-import StaticResolver from 'bpmnlint/lib/resolver/static-resolver';
 import { isString } from 'min-dash';
+
+import linterConfig from '../../.bpmnlintrc';
 
 const moddle = new BpmnModdle();
 
-const linter = new Linter({
-  resolver: new StaticResolver({
-    'rule:bpmnlint-plugin-camunda-platform/camunda-cloud-1-0': () => {
-      return {
-        check: (node, reporter) => {
-          if (node.$instanceOf(node, 'bpmn:UserTask')) {
-            reporter.report(node.id || node.$type, 'User task bad');
-          }
-        }
-      };
-    }
-  }),
-  config: {
-    rules: {
-      'camunda-platform/camunda-cloud-1-0': 'error'
-    }
-  }
-});
+const linter = new Linter(linterConfig);
 
 export default class BpmnLinter {
   static async lint(contents) {
