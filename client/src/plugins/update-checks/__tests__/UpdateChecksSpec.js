@@ -477,7 +477,7 @@ describe('<UpdateChecks>', function() {
         type: 'error',
         title: 'Modeler update check failed',
         content: 'See the log for further details.',
-        duration: 10000
+        duration: 4000
       });
     });
 

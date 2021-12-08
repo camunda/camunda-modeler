@@ -128,7 +128,7 @@ export default class UpdateChecks extends PureComponent {
         type: 'error',
         title: 'Modeler update check failed',
         content: 'See the log for further details.',
-        duration: 10000
+        duration: 4000
       });
     } else {
 
@@ -223,7 +223,7 @@ export default class UpdateChecks extends PureComponent {
               updateChecksEnabled={ updateChecksEnabled }
               onOpenPrivacyPreferences={ this.openPrivacyPreferences } />
           ),
-          duration: 10000
+          duration: 8000
         });
       }
 

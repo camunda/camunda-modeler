@@ -24,7 +24,7 @@
     }
   }
 
-  div {
+  & > div {
     display: flex;
 
     svg {
@@ -60,5 +60,20 @@
       background-color: var(--color-grey-225-10-90);
       border-radius: 100%;
     }
+  }
+
+  a[href] {
+    color: var(--overlay-link-color);
+  }
+
+  code {
+    font-family: var(--font-family-monospace);
+    user-select: text;
+    background-color: var(--color-grey-225-10-90);
+    border-radius: 3px;
+    padding: 0.5px 0;
+    word-break: break-all;
+    font-size: 13px;
+    margin-left: 4px;
   }
 }

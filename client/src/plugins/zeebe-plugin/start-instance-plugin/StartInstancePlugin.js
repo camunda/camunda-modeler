@@ -19,6 +19,7 @@ import css from './StartInstancePlugin.less';
 import pDefer from 'p-defer';
 import classNames from 'classnames';
 import { OverlayDropdown } from '../../../shared/ui';
+import { CAMUNDA_CLOUD } from '../shared/ZeebeTargetTypes';
 
 
 export default class StartInstancePlugin extends PureComponent {
@@ -67,12 +68,17 @@ export default class StartInstancePlugin extends PureComponent {
 
     const zeebeAPI = _getGlobal('zeebeAPI');
 
-    await zeebeAPI.run({ processId, endpoint });
+    const startInstanceResult = await zeebeAPI.run({ processId, endpoint });
+
+    const content = endpoint.targetType === CAMUNDA_CLOUD ?
+      <CloudLink endpoint={ endpoint } response={ startInstanceResult.response } />
+      : null;
 
     this.props.displayNotification({
       type: 'success',
-      title: 'Process instance deployed and started successfully',
-      duration: 10000
+      title: 'Process instance started',
+      content: content,
+      duration: 8000
     });
   }
 
@@ -122,6 +128,37 @@ export default class StartInstancePlugin extends PureComponent {
       }
     </React.Fragment>;
   }
+}
+
+function CloudLink(props) {
+  const {
+    endpoint,
+    response
+  } = props;
+
+  const {
+    camundaCloudClusterUrl,
+    camundaCloudClusterRegion
+  } = endpoint;
+
+  const {
+    processInstanceKey
+  } = response;
+
+  const cluster = camundaCloudClusterUrl.substring(0, camundaCloudClusterUrl.indexOf('.'));
+  const cloudUrl = `https://${camundaCloudClusterRegion}.operate.camunda.io/${cluster}/instances/${processInstanceKey}`;
+
+  return (
+    <div className={ css.CloudLink }>
+      <div>
+        Process Instance ID:
+        <code>{processInstanceKey}</code>
+      </div>
+      <a href={ cloudUrl }>
+        Open in Camunda Operate
+      </a>
+    </div>
+  );
 }
 
 

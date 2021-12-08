@@ -17,6 +17,7 @@ import { shallow } from 'enzyme';
 import { Config } from '../../../../app/__tests__/mocks';
 
 import DeploymentPlugin from '../DeploymentPlugin';
+import { CAMUNDA_CLOUD } from '../../shared/ZeebeTargetTypes';
 
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 const ZEEBE_ENDPOINTS_CONFIG_KEY = 'zeebeEndpoints';
@@ -385,7 +386,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should display notification on deployment success', async () => {
+  it('should display notification without link on deployment success', async () => {
 
     // given
     const displayNotificationSpy = sinon.spy();
@@ -399,9 +400,48 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     // then
     expect(displayNotificationSpy).to.have.been.calledWith({
       type: 'success',
-      title: 'Deployment succeeded',
-      duration: 4000
+      title: 'Process definition deployed',
+      content: null,
+      duration: 8000
     });
+  });
+
+  it('should display notification with link after deployment success', async () => {
+
+    // given
+    const displayNotification = sinon.spy();
+    const { instance } = createDeploymentPlugin({
+      displayNotification,
+      endpoint : {
+        targetType: CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'clusterId.region.zeebe.camunda.io',
+        camundaCloudClusterRegion:'region'
+      },
+    });
+
+    // when
+    await instance.deploy();
+
+    expect(displayNotification).to.have.been.calledOnce;
+
+    const notification = displayNotification.getCall(0).args[0];
+    console.log(notification);
+
+    expect(
+      {
+        type: notification.type,
+        title: notification.title,
+        duration: notification.duration
+      }).to.eql(
+      {
+        type: 'success',
+        title: 'Process definition deployed',
+        duration: 8000
+      }
+    );
+
+    expect(notification.content).to.not.be.null;
+
   });
 
 
@@ -423,7 +463,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       type: 'error',
       title: 'Deployment failed',
       content: 'See the log for further details.',
-      duration: 10000
+      duration: 4000
     });
   });
 

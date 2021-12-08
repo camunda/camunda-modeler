@@ -658,7 +658,7 @@ describe('<StartInstanceTool>', () => {
       // then
       expect(displayNotification).to.have.been.calledWith({
         content: 'No executable process available.',
-        duration: 10000,
+        duration: 4000,
         title: 'Starting process instance failed',
         type: 'error'
       });

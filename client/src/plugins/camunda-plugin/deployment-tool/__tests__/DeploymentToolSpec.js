@@ -1180,6 +1180,60 @@ describe('<DeploymentTool>', () => {
 
   });
 
+
+  describe('Cockpit link', function() {
+
+    function testCockpitLink(expectedCockpitLink) {
+
+      return done => {
+
+        // given
+        const activeTab = createTab({ name: 'foo.bpmn' });
+
+        const deploySpy = sinon.stub().returns({ id: 'foo' });
+
+        const configuration = createConfiguration();
+
+        const {
+          instance
+        } = createDeploymentTool({
+          activeTab,
+          configuration,
+          displayNotification,
+          deploySpy
+        });
+
+        // when
+        instance.deploy();
+
+        function displayNotification(notification) {
+
+          // then
+          try {
+            const cockpitLink = shallow(notification.content).find('a').first();
+            const { href } = cockpitLink.props();
+
+            expect(href).to.eql(expectedCockpitLink);
+
+            done();
+          } catch (error) {
+            done(error);
+          }
+        }
+      };
+    }
+
+    function query(id) {
+      return `deploymentsQuery=%5B%7B%22type%22:%22id%22,%22operator%22:%22eq%22,%22value%22:%22${id}%22%7D%5D`;
+    }
+
+
+    it('should display Spring-specific Cockpit link', testCockpitLink(
+      `http://localhost:8080/app/cockpit/default/#/repository/?${query('foo')}`
+    ));
+  });
+
+
 });
 
 

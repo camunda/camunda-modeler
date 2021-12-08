@@ -158,7 +158,7 @@ export default class DeploymentTool extends PureComponent {
       await this.saveProcessDefinition(tab, deployment);
 
       // (3.4) Handle deployment success or error
-      await this.handleDeploymentSuccess(tab, deployment, version);
+      await this.handleDeploymentSuccess(tab, deployment, version, configuration);
     } catch (error) {
 
       if (!(error instanceof DeploymentError)) {
@@ -169,16 +169,25 @@ export default class DeploymentTool extends PureComponent {
     }
   }
 
-  handleDeploymentSuccess(tab, deployment, version) {
+  handleDeploymentSuccess(tab, deployment, version, configuration) {
     const {
       displayNotification,
       triggerAction
     } = this.props;
 
+    const {
+      endpoint
+    } = configuration;
+
+    const {
+      url
+    } = endpoint;
+
     displayNotification({
       type: 'success',
-      title: 'Deployment succeeded',
-      duration: 4000
+      title: 'Process definition deployed',
+      content: <CockpitLink endpointUrl={ url } deployment={ deployment } />,
+      duration: 8000
     });
 
     // notify interested parties
@@ -223,7 +232,7 @@ export default class DeploymentTool extends PureComponent {
       type: 'error',
       title: 'Deployment failed',
       content: 'See the log for further details.',
-      duration: 10000
+      duration: 4000
     });
 
     log({
@@ -571,7 +580,38 @@ export default class DeploymentTool extends PureComponent {
 
 }
 
+function CockpitLink(props) {
+  const {
+    endpointUrl,
+    deployment
+  } = props;
 
+  const {
+    id,
+    deployedProcessDefinition
+  } = deployment;
+
+  const baseUrl = getWebAppsBaseUrl(endpointUrl);
+
+  const query = `deploymentsQuery=%5B%7B%22type%22:%22id%22,%22operator%22:%22eq%22,%22value%22:%22${id}%22%7D%5D`;
+  const cockpitUrl = `${baseUrl}/cockpit/default/#/repository/?${query}`;
+
+  return (
+    <div className={ css.CockpitLink }>
+      {deployedProcessDefinition ?
+        (
+          <div>
+            Process definition ID:
+            <code>{deployedProcessDefinition.id} </code>
+          </div>
+        )
+        : null}
+      <a href={ cockpitUrl }>
+        Open in Camunda Cockpit
+      </a>
+    </div>
+  );
+}
 
 // helpers //////////
 
@@ -618,4 +658,14 @@ function withSerializedAttachments(deployment) {
 
 function basename(filePath) {
   return filePath.split('\\').pop().split('/').pop();
+}
+
+function getWebAppsBaseUrl(url) {
+  const [ protocol,, host, restRoot ] = url.split('/');
+
+  return isTomcat(restRoot) ? `${protocol}//${host}/camunda/app` : `${protocol}//${host}/app`;
+}
+
+function isTomcat(restRoot) {
+  return restRoot === 'engine-rest';
 }
