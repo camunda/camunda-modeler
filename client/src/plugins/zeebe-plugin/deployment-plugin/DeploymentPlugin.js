@@ -28,7 +28,7 @@ import {
 
 import { AUTH_TYPES } from './../shared/ZeebeAuthTypes';
 
-import { SELF_HOSTED } from '../shared/ZeebeTargetTypes';
+import { CAMUNDA_CLOUD, SELF_HOSTED } from '../shared/ZeebeTargetTypes';
 
 import DeploymentPluginOverlay from './DeploymentPluginOverlay';
 
@@ -397,11 +397,16 @@ export default class DeploymentPlugin extends PureComponent {
       gatewayVersion
     } = options;
 
+    const content = endpoint.targetType === CAMUNDA_CLOUD ?
+      <CloudLink endpoint={ endpoint } response={ response } />
+      : null;
+
     if (!options.skipNotificationOnSuccess) {
       displayNotification({
         type: 'success',
-        title: 'Deployment succeeded',
-        duration: 4000
+        title: 'Process definition deployed',
+        content: content,
+        duration: 8000
       });
     }
 
@@ -447,7 +452,7 @@ export default class DeploymentPlugin extends PureComponent {
       type: 'error',
       title: 'Deployment failed',
       content: 'See the log for further details.',
-      duration: 10000
+      duration: 4000
     });
 
     log({
@@ -524,6 +529,37 @@ export default class DeploymentPlugin extends PureComponent {
       }
     </React.Fragment>;
   }
+}
+
+
+function CloudLink(props) {
+  const {
+    endpoint,
+    response
+  } = props;
+
+  const {
+    camundaCloudClusterUrl,
+    camundaCloudClusterRegion
+  } = endpoint;
+
+  const processId = response.workflows[0].bpmnProcessId;
+
+  const query = `?process=${processId}&version=all&active=true&incidents=true`;
+  const cluster = camundaCloudClusterUrl.substring(0, camundaCloudClusterUrl.indexOf('.'));
+  const cloudUrl = `https://${camundaCloudClusterRegion}.operate.camunda.io/${cluster}/instances/${query}`;
+
+  return (
+    <div className={ css.CloudLink }>
+      <div>
+        Process Definition ID:
+        <code>{processId}</code>
+      </div>
+      <a href={ cloudUrl }>
+        Open in Camunda Operate
+      </a>
+    </div>
+  );
 }
 
 // helpers //////////

@@ -17,7 +17,7 @@ import { shallow } from 'enzyme';
 import { Config } from '../../../../app/__tests__/mocks';
 
 import StartInstancePlugin from '../StartInstancePlugin';
-
+import { CAMUNDA_CLOUD } from '../../shared/ZeebeTargetTypes';
 
 const BUTTON_SELECTOR = '[title="Start Current Diagram"]';
 
@@ -129,7 +129,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
   });
 
 
-  it('should display notification after starting process instance', async () => {
+  it('should display notification without link after starting process instance', async () => {
 
     // given
     const displayNotification = sinon.spy();
@@ -141,11 +141,53 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     // then
     expect(displayNotification).to.have.been.calledWith({
       type: 'success',
-      title: 'Process instance deployed and started successfully',
-      duration: 10000
+      content: null,
+      title: 'Process instance started',
+      duration: 8000
     });
+
+  });
+
+
+  it('should display notification with link after starting process instance', async () => {
+
+    // given
+    const displayNotification = sinon.spy();
+    const { instance } = createStartInstancePlugin({
+      displayNotification,
+      deploymentEndpoint : {
+        targetType: CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'clusterId.region.zeebe.camunda.io',
+        camundaCloudClusterRegion:'region'
+      },
+    });
+
+    // when
+    await instance.startInstance();
+
+    expect(displayNotification).to.have.been.calledOnce;
+
+    const notification = displayNotification.getCall(0).args[0];
+
+    expect(
+      {
+        type: notification.type,
+        title: notification.title,
+        duration: notification.duration
+      }).to.eql(
+      {
+        type: 'success',
+        title: 'Process instance started',
+        duration: 8000
+      }
+    );
+
+    expect(notification.content).to.not.be.null;
+
   });
 });
+
+
 
 function createStartInstancePlugin({
   zeebeAPI = new MockZeebeAPI(),
