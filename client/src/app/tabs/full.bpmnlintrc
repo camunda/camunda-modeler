@@ -1,0 +1,24 @@
+{
+  "extends": [
+    "plugin:camunda-compat/recommended"
+  ],
+  "rules": {
+    "bpmnlint/conditional-flows": "warn",
+    "bpmnlint/end-event-required": "warn",
+    "bpmnlint/event-sub-process-typed-start-event": "warn",
+    "bpmnlint/fake-join": "warn",
+    "bpmnlint/label-required": "warn",
+    "bpmnlint/no-bpmndi": "warn",
+    "bpmnlint/no-complex-gateway": "warn",
+    "bpmnlint/no-disconnected": "warn",
+    "bpmnlint/no-duplicate-sequence-flows": "warn",
+    "bpmnlint/no-gateway-join-fork": "warn",
+    "bpmnlint/no-implicit-split": "warn",
+    "bpmnlint/no-inclusive-gateway": "warn",
+    "bpmnlint/single-blank-start-event": "warn",
+    "bpmnlint/single-event-definition": "warn",
+    "bpmnlint/start-event-required": "warn",
+    "bpmnlint/sub-process-blank-start-event": "warn",
+    "bpmnlint/superfluous-gateway": "warn"
+  }
+}

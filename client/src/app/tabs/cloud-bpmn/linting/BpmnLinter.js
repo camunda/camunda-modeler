@@ -19,15 +19,29 @@ import { isString } from 'min-dash';
 
 import linterConfig from '../../.bpmnlintrc';
 
+import fullLinterConfig from '../../full.bpmnlintrc';
+
+import {
+  default as Flags,
+  ENABLE_BPMNLINT_RECOMMENDED
+} from '../../../../util/Flags';
+
 const moddle = new BpmnModdle({
   modeler: modelerModdleSchema,
   zeebe: zeebeModdleSchema
 });
 
-const linter = new Linter(linterConfig);
 
 export default class BpmnLinter {
   static async lint(contents) {
+
+    const linter = new Linter(
+      Flags.get(ENABLE_BPMNLINT_RECOMMENDED)
+        ? fullLinterConfig
+        : linterConfig
+    );
+
+
     let rootElement;
 
     if (isString(contents)) {
@@ -37,6 +51,8 @@ export default class BpmnLinter {
     }
 
     const results = await linter.lint(rootElement);
+
+    console.log(results);
 
     return Object.values(results).reduce((results, result) => {
       return [ ...results, ...result ];

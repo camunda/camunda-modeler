@@ -17,6 +17,7 @@ import Panel from '../Panel';
 import css from './LintingTab.less';
 
 import ErrorIcon from '../../../../../resources/icons/Error.svg';
+import WarningIcon from '../../../../../resources/icons/Warning.svg';
 
 
 export default function LintingTab(props) {
@@ -67,13 +68,16 @@ function LintingIssue(props) {
   const {
     id,
     label,
-    message
+    message,
+    category
   } = issue;
 
+  console.log(issue);
+
   return <div className={ classnames(css.LintingIssue, 'linting-issue') }>
-    <ErrorIcon />
+    { category === 'error' ? <ErrorIcon /> : <WarningIcon /> }
     <div className="linting-issue__text">
-      Error : <span className="linting-issue__link" onClick={ onClick }>{ label || id }</span> - { message }
+      { category === 'error' ? 'Error' : 'Warning' } : <span className="linting-issue__link" onClick={ onClick }>{ label || id }</span> - { message }
     </div>
   </div>;
 }
