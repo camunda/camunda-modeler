@@ -3,18 +3,21 @@
   flex: 1;
   overflow: hidden;
 
-  flex-direction: row;
+  flex-direction: column;
 
-  .diagram {
+  .editor {
     flex: 1;
-    position: relative;
-  }
 
-  .properties {
-    flex: none;
+    display: flex;
+    flex-direction: row;
 
-    .toggle {
-      top: 350px;
+    .diagram {
+      flex: 1;
+      position: relative;
+    }
+  
+    .properties {
+      flex: none;
     }
   }
 

@@ -759,18 +759,20 @@ export class BpmnEditor extends CachedComponent {
 
         <Loader hidden={ imported && !importing } />
 
-        <div
-          className="diagram"
-          ref={ this.ref }
-          onFocus={ this.handleChanged }
-          onContextMenu={ this.handleContextMenu }
-        ></div>
+        <div className="editor">
+          <div
+            className="diagram"
+            ref={ this.ref }
+            onFocus={ this.handleChanged }
+            onContextMenu={ this.handleContextMenu }
+          ></div>
 
-        <PropertiesContainer
-          className="properties"
-          layout={ layout }
-          ref={ this.propertiesPanelRef }
-          onLayoutChanged={ onLayoutChanged } />
+          <PropertiesContainer
+            className="properties"
+            layout={ layout }
+            ref={ this.propertiesPanelRef }
+            onLayoutChanged={ onLayoutChanged } />
+        </div>
 
         { engineProfile && <EngineProfile
           type="bpmn"
