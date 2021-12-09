@@ -13,7 +13,12 @@ import {
   isString
 } from 'min-dash';
 
+import {
+  toSemverMinor
+} from '../../EngineProfile';
+
 import cmp from 'semver-compare';
+
 
 const formJSVersions = {
   'Camunda Cloud': {
@@ -41,12 +46,16 @@ export default class FormLinter {
 
     const {
       executionPlatform,
-      executionPlatformVersion
+      executionPlatformVersion: _executionPlatformVersion
     } = schema;
 
     if (!executionPlatform) {
       return [];
     }
+
+    // normalize execution platform version
+    // (account for <major>.<minor> vs <major>.<minor>.<patch> parsed from form)
+    const executionPlatformVersion = toSemverMinor(_executionPlatformVersion);
 
     const types = [
       'button',
@@ -103,5 +112,5 @@ function getFormJSVersion(executionPlatform, executionPlatformVersion) {
     return null;
   }
 
-  return formJSVersions[ executionPlatform ][ executionPlatformVersion ] || null;
+  return formJSVersions[ executionPlatform ][ executionPlatformVersion ];
 }
