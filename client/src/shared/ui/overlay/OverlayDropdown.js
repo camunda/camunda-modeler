@@ -17,6 +17,8 @@ import { Overlay, Section } from '..';
 
 import css from './OverlayDropdown.less';
 
+const LIST_ITEM_SELECTOR = 'li[role="menuitem"]';
+
 /**
  * @typedef {{ text: String, onClick: Function, icon?: React.Component }} Item
  */
@@ -140,7 +142,7 @@ function Options(props) {
 
   return (
     <Section.Body>
-      <ul>
+      <ul role="menu">
         {
           items.map((item, index) =>
             <Option
@@ -162,8 +164,22 @@ function Option(props) {
     icon: IconComponent
   } = props;
 
+  const handleKeydown = (event) => {
+    const {
+      key,
+      keyCode,
+      currentTarget
+    } = event;
+
+    if (key === 'ArrowDown' || keyCode == 40) {
+      focusNext(currentTarget);
+    } else if (key === 'ArrowUp' || keyCode == 38) {
+      focusPrevious(currentTarget);
+    }
+  };
+
   return (
-    <li onClick={ onClick }>
+    <li role="menuitem" onClick={ onClick } onKeyDown={ handleKeydown }>
       <button type="button" title={ text }>
         { IconComponent && <IconComponent /> }
         { text }
@@ -177,4 +193,66 @@ function Option(props) {
 
 function isGrouped(items) {
   return items.length && items[0].key;
+}
+
+/**
+ *
+ * @param {Node} focusElement
+ */
+function focusNext(focusElement) {
+  const { nextSibling } = focusElement;
+
+  // (1) focus immediate neighbor
+  if (nextSibling) {
+    return nextSibling.querySelector('button').focus();
+  }
+
+  // (2) try to find neighbor in other section
+  const currenSection = focusElement.closest('section');
+  const { nextElementSibling: nextSection } = currenSection;
+
+  if (nextSection) {
+    return nextSection.querySelector(`${LIST_ITEM_SELECTOR} button`).focus();
+  }
+
+  // (3) when on end of sections, try first one
+  const parentContainer = focusElement.closest('[role="dialog"]');
+
+  const lastSection = parentContainer.querySelector('section:last-child');
+  const firstSection = parentContainer.querySelector('section:first-child');
+
+  if (currenSection === lastSection) {
+    return firstSection.querySelector(`${LIST_ITEM_SELECTOR} button`).focus();
+  }
+}
+
+/**
+ *
+ * @param {Node} focusElement
+ */
+function focusPrevious(focusElement) {
+  const { previousSibling } = focusElement;
+
+  // (1) focus immediate neighbor
+  if (previousSibling) {
+    return previousSibling.querySelector('button').focus();
+  }
+
+  // (2) try to find neighbor in other section
+  const currenSection = focusElement.closest('section');
+  const { previousElementSibling: previousSection } = currenSection;
+
+  if (previousSection) {
+    return previousSection.querySelector(`${LIST_ITEM_SELECTOR}:last-child button`).focus();
+  }
+
+  // (3) when on start of sections, try last one
+  const parentContainer = focusElement.closest('[role="dialog"]');
+
+  const lastSection = parentContainer.querySelector('section:last-child');
+  const firstSection = parentContainer.querySelector('section:first-child');
+
+  if (currenSection === firstSection) {
+    return lastSection.querySelector(`${LIST_ITEM_SELECTOR}:last-child button`).focus();
+  }
 }
