@@ -164,4 +164,105 @@ describe('<OverlayDropdown>', function() {
     });
   });
 
+
+  describe('arrow navigation', () => {
+
+    let wrapper;
+
+    function expectFocus(selector) {
+      const newFocus = wrapper.find(selector).getDOMNode();
+      expect(document.activeElement).to.eql(newFocus);
+    }
+
+    function focusAndNavigate(selector, keyCode) {
+      const item = wrapper.find(selector);
+
+      item.getDOMNode().focus();
+      item.simulate('keyDown', { keyCode });
+    }
+
+    beforeEach(() => {
+
+      const items = [
+        { key: 'section1', items: [ { text: 'item1' }, { text: 'item2' } ] },
+        { key: 'section2', items: [ { text: 'item3' }, { text: 'item4' } ] },
+        { key: 'section3', items: [ { text: 'item5' }, { text: 'item6' } ] }
+      ];
+
+      wrapper = mount((
+        <OverlayDropdown shouldOpen={ true } items={ items } buttonRef={ mockButtonRef }>
+          foo
+        </OverlayDropdown>
+      ));
+    });
+
+
+    it('should auto-focus first element', () => {
+
+      // then
+      expectFocus('button[title="item1"]', wrapper);
+    });
+
+
+    it('should focus next item', () => {
+
+      // when
+      focusAndNavigate('button[title="item1"]', 40);
+
+      // then
+      expectFocus('button[title="item2"]', wrapper);
+    });
+
+
+    it('should focus next section', () => {
+
+      // when
+      focusAndNavigate('button[title="item2"]', 40);
+
+      // then
+      expectFocus('button[title="item3"]', wrapper);
+    });
+
+
+    it('should focus first section', () => {
+
+      // when
+      focusAndNavigate('button[title="item6"]', 40);
+
+      // then
+      expectFocus('button[title="item1"]', wrapper);
+    });
+
+
+    it('should focus previous item', () => {
+
+      // when
+      focusAndNavigate('button[title="item2"]', 38);
+
+      // then
+      expectFocus('button[title="item1"]', wrapper);
+    });
+
+
+    it('should focus previous section', () => {
+
+      // when
+      focusAndNavigate('button[title="item3"]', 38);
+
+      // then
+      expectFocus('button[title="item2"]', wrapper);
+    });
+
+
+    it('should focus last section', () => {
+
+      // when
+      focusAndNavigate('button[title="item1"]', 38);
+
+      // then
+      expectFocus('button[title="item6"]', wrapper);
+    });
+
+  });
+
 });
