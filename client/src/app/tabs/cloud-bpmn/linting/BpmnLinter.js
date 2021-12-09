@@ -12,11 +12,17 @@ import { Linter } from 'bpmnlint';
 
 import BpmnModdle from 'bpmn-moddle';
 
+import modelerModdleSchema from 'modeler-moddle/resources/modeler.json';
+import zeebeModdleSchema from 'zeebe-bpmn-moddle/resources/zeebe.json';
+
 import { isString } from 'min-dash';
 
 import linterConfig from '../../.bpmnlintrc';
 
-const moddle = new BpmnModdle();
+const moddle = new BpmnModdle({
+  modeler: modelerModdleSchema,
+  zeebe: zeebeModdleSchema
+});
 
 const linter = new Linter(linterConfig);
 
