@@ -574,7 +574,6 @@ describe('TabsProvider', function() {
   describe('#getLinter', function() {
 
     [
-      'bpmn',
       'cmmn',
       'dmn'
     ].forEach((type) => {
@@ -598,29 +597,24 @@ describe('TabsProvider', function() {
     });
 
 
-    it('cloud-bpmn', function() {
+    [
+      'bpmn',
+      'cloud-bpmn',
+      'form'
+    ].forEach((type) => {
 
-      // given
-      const tabsProvider = new TabsProvider().getProvider('cloud-bpmn');
+      it(type, function() {
 
-      // when
-      const linter = tabsProvider.getLinter();
+        // given
+        const tabsProvider = new TabsProvider().getProvider(type);
 
-      // then
-      expect(linter).to.exist;
-    });
+        // when
+        const linter = tabsProvider.getLinter();
 
+        // then
+        expect(linter).to.exist;
+      });
 
-    it('form', function() {
-
-      // given
-      const tabsProvider = new TabsProvider().getProvider('form');
-
-      // when
-      const linter = tabsProvider.getLinter();
-
-      // then
-      expect(linter).to.exist;
     });
 
   });

@@ -2879,7 +2879,7 @@ describe('<App>', function() {
       const { app } = createApp();
 
       const openedTabs = await app.openFiles([
-        createFile('1.bpmn')
+        createFile('1.dmn')
       ]);
 
       // when

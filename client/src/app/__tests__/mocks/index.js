@@ -133,7 +133,20 @@ export class TabsProvider {
         },
         extensions: [ 'bpmn', 'xml' ],
         getLinter() {
-          return null;
+          return {
+            lint(contents) {
+              if (contents === 'linting-errors') {
+                return [
+                  {
+                    id: 'Task_1',
+                    message: 'foo'
+                  }
+                ];
+              }
+
+              return [];
+            }
+          };
         }
       },
       'cloud-bpmn': {
@@ -146,7 +159,20 @@ export class TabsProvider {
         },
         extensions: [ 'bpmn', 'xml' ],
         getLinter() {
-          return null;
+          return {
+            lint(contents) {
+              if (contents === 'linting-errors') {
+                return [
+                  {
+                    id: 'Task_1',
+                    message: 'foo'
+                  }
+                ];
+              }
+
+              return [];
+            }
+          };
         }
       },
       cmmn: {
