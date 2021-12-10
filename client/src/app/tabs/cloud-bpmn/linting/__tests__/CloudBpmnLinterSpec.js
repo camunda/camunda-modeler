@@ -10,22 +10,26 @@
 
 import BpmnModdle from 'bpmn-moddle';
 
-import BpmnLinter from '../BpmnLinter';
+import modelerModdle from 'modeler-moddle/resources/modeler.json';
+import zeebeModdle from 'zeebe-bpmn-moddle/resources/zeebe.json';
+
+import CloudBpmnLinter from '../CloudBpmnLinter';
 
 import camundaCloud10XML from './camunda-cloud-1-0.bpmn';
 import camundaCloud10ErrorsXML from './camunda-cloud-1-0-errors.bpmn';
 import camundaCloud11XML from './camunda-cloud-1-1.bpmn';
 import camundaCloud12XML from './camunda-cloud-1-2.bpmn';
 import camundaCloud13XML from './camunda-cloud-1-3.bpmn';
+import camundaCloud14XML from './camunda-cloud-1-4.bpmn';
 import noEngineProfileXML from './no-engine-profile.bpmn';
 
 
-describe('BpmnLinter', function() {
+describe('CloudBpmnLinter', function() {
 
   it('should lint (XML string)', async function() {
 
     // when
-    const results = await BpmnLinter.lint(camundaCloud10XML);
+    const results = await CloudBpmnLinter.lint(camundaCloud10XML);
 
     // then
     expect(results).to.exist;
@@ -38,7 +42,7 @@ describe('BpmnLinter', function() {
     // when
     const definitions = await parseDefinitions(camundaCloud10XML);
 
-    const results = await BpmnLinter.lint(definitions);
+    const results = await CloudBpmnLinter.lint(definitions);
 
     // then
     expect(results).to.exist;
@@ -49,7 +53,7 @@ describe('BpmnLinter', function() {
   it('should not lint if no engine profile', async function() {
 
     // when
-    const results = await BpmnLinter.lint(noEngineProfileXML);
+    const results = await CloudBpmnLinter.lint(noEngineProfileXML);
 
     // then
     expect(results).to.exist;
@@ -61,7 +65,8 @@ describe('BpmnLinter', function() {
     [ 'Camunda Cloud 1.0', camundaCloud10XML, camundaCloud10ErrorsXML ],
     [ 'Camunda Cloud 1.1', camundaCloud11XML ],
     [ 'Camunda Cloud 1.2', camundaCloud12XML ],
-    [ 'Camunda Cloud 1.3', camundaCloud13XML ]
+    [ 'Camunda Cloud 1.3', camundaCloud13XML ],
+    [ 'Camunda Cloud 1.4', camundaCloud14XML ]
   ].forEach(([ engineProfile, noErrorsXML, errorsXML ]) => {
 
     describe(engineProfile, function() {
@@ -69,7 +74,7 @@ describe('BpmnLinter', function() {
       it('should lint without errors', async function() {
 
         // when
-        const results = await BpmnLinter.lint(noErrorsXML);
+        const results = await CloudBpmnLinter.lint(noErrorsXML);
 
         // then
         expect(results).to.exist;
@@ -80,7 +85,7 @@ describe('BpmnLinter', function() {
       errorsXML && it('should lint with errors', async function() {
 
         // when
-        const results = await BpmnLinter.lint(errorsXML);
+        const results = await CloudBpmnLinter.lint(errorsXML);
 
         // then
         expect(results).to.exist;
@@ -100,7 +105,10 @@ describe('BpmnLinter', function() {
 });
 
 async function parseDefinitions(xml) {
-  const moddle = new BpmnModdle();
+  const moddle = new BpmnModdle({
+    modeler: modelerModdle,
+    zeebe: zeebeModdle
+  });
 
   const { rootElement } = await moddle.fromXML(xml);
 
