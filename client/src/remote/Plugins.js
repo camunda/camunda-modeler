@@ -13,6 +13,7 @@ import { filter } from 'min-dash';
 import {
   Modal,
   Overlay,
+  Section,
   ToggleSwitch
 } from '../shared/ui';
 
@@ -57,6 +58,7 @@ export default class Plugins {
       Fill,
       Modal,
       Overlay,
+      Section,
       ToggleSwitch
     };
 
