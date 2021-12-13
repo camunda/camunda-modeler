@@ -166,15 +166,76 @@ describe('plugins', function() {
 
       const plugins = new Plugins();
 
+      // when
       plugins.bindHelpers(global);
 
-      // when
+      // then
       expect(() => {
         global.getModelerDirectory();
       }).to.throw('not implemented in Camunda Modeler >= 3');
 
     });
 
+
+    it('should expose properties panel building blocks via window#vendor.propertiesPanel.common',
+      function() {
+
+        // given
+        const global = {};
+
+        const plugins = new Plugins();
+
+        // when
+        plugins.bindHelpers(global);
+
+        // then
+        expect(global.vendor.propertiesPanel.common).to.exist;
+        expect(global.vendor.propertiesPanel.common).to.have.property('PropertiesPanel');
+        expect(global.vendor.propertiesPanel.common).to.have.property('Group');
+        expect(global.vendor.propertiesPanel.common).to.have.property('ListGroup');
+        expect(global.vendor.propertiesPanel.common).to.have.property('TextFieldEntry');
+      }
+    );
+
+
+    it('should expose properties panel preact with subpackages via window#vendor.propertiesPanel.preact[...]',
+      function() {
+
+        // given
+        const global = {};
+
+        const plugins = new Plugins();
+
+        // when
+        plugins.bindHelpers(global);
+
+        // then
+        expect(global.vendor.propertiesPanel.preact).to.exist;
+        expect(global.vendor.propertiesPanel.preact.root).to.exist;
+        expect(global.vendor.propertiesPanel.preact.compat).to.exist;
+        expect(global.vendor.propertiesPanel.preact.compat.default).to.exist;
+        expect(global.vendor.propertiesPanel.preact.hooks).to.exist;
+        expect(global.vendor.propertiesPanel.preact.jsxRuntime).to.exist;
+      }
+    );
+
+
+    it('should expose BPMN properties panel building blocks via window#vendor.propertiesPanel.bpmn',
+      function() {
+
+        // given
+        const global = {};
+
+        const plugins = new Plugins();
+
+        // when
+        plugins.bindHelpers(global);
+
+        // then
+        expect(global.vendor.propertiesPanel.bpmn).to.exist;
+        expect(global.vendor.propertiesPanel.bpmn).to.have.property('useService');
+      }
+    );
   });
 
 });
