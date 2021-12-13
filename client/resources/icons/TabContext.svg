@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>tab-context</title>
+    <g id="tab-context" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M2.5,6.5 C1.675,6.5 1,7.175 1,8 C1,8.825 1.675,9.5 2.5,9.5 C3.325,9.5 4,8.825 4,8 C4,7.175 3.325,6.5 2.5,6.5 Z M13.5,6.5 C12.675,6.5 12,7.175 12,8 C12,8.825 12.675,9.5 13.5,9.5 C14.325,9.5 15,8.825 15,8 C15,7.175 14.325,6.5 13.5,6.5 Z M8,6.5 C7.175,6.5 6.5,7.175 6.5,8 C6.5,8.825 7.175,9.5 8,9.5 C8.825,9.5 9.5,8.825 9.5,8 C9.5,7.175 8.825,6.5 8,6.5 Z" id="Shape" fill="#505562" fill-rule="nonzero"></path>
+    </g>
+</svg>
