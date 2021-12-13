@@ -88,7 +88,7 @@ export function CreateNewActionPlugin(props) {
   const newFileItems = _getFromApp('_getNewFileItems')();
 
   return (
-    <Fill slot="tab-actions">
+    <Fill slot="tab-actions" priority={ 2 }>
       <CreateNewAction newFileItems={ newFileItems } { ...props } />
     </Fill>
   );

@@ -9,6 +9,7 @@
  */
 
 import CamundaPlugin from './camunda-plugin';
+import ContextAction from './tab-context-action';
 import CreateNewAction from './create-new-action';
 import ElementTemplatesModal from './element-templates-modal';
 import ErrorTracking from './error-tracking';
@@ -21,6 +22,7 @@ import ZeebePlugin from './zeebe-plugin';
 
 export default [
   CamundaPlugin,
+  ContextAction,
   CreateNewAction,
   ElementTemplatesModal,
   ErrorTracking,
