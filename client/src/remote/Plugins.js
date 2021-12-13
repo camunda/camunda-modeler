@@ -21,6 +21,13 @@ import { Fill } from '../app/slot-fill';
 
 import React, * as ReactExports from 'react';
 
+import * as PropertiesPanel from '@bpmn-io/properties-panel';
+import * as Preact from '@bpmn-io/properties-panel/preact';
+import PreactCompat, * as PreactCompatExports from '@bpmn-io/properties-panel/preact/compat';
+import * as PreactHooks from '@bpmn-io/properties-panel/preact/hooks';
+import * as PreactJsxRuntime from '@bpmn-io/properties-panel/preact/jsx-runtime';
+import * as BpmnJsPropertiesPanel from 'bpmn-js-properties-panel';
+
 
 const PLUGINS_PROTOCOL = 'app-plugins://';
 
@@ -50,10 +57,12 @@ export default class Plugins {
    */
   bindHelpers(global) {
 
+    // React exports for the client plugins
     global.react = ReactExports;
 
     global.react.React = React;
 
+    // Camunda Modeler UI components
     global.components = {
       Fill,
       Modal,
@@ -62,6 +71,7 @@ export default class Plugins {
       ToggleSwitch
     };
 
+    // deprecated helpers
     global.getModelerDirectory = () => {
       throw new Error('not implemented in Camunda Modeler >= 3.0.0');
     };
@@ -77,6 +87,23 @@ export default class Plugins {
       return PLUGINS_PROTOCOL;
     };
 
+    // vendored packages
+    const vendor = global.vendor = {};
+
+    // properties panel
+    vendor.propertiesPanel = {
+      common: PropertiesPanel,
+      preact: {
+        root: Preact,
+        compat: {
+          ...PreactCompatExports,
+          default: PreactCompat
+        },
+        hooks: PreactHooks,
+        jsxRuntime: PreactJsxRuntime
+      },
+      bpmn: BpmnJsPropertiesPanel
+    };
   }
 
   /**
