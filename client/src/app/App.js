@@ -1015,6 +1015,12 @@ export class App extends PureComponent {
       }
     }
 
+    if (tabs !== prevState.tabs) {
+      this.emit('app.tabsChanged', {
+        tabs
+      });
+    }
+
     if (
       activeTab !== prevState.activeTab ||
       tabs !== prevState.tabs ||

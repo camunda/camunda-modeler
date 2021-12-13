@@ -735,6 +735,27 @@ describe('<App>', function() {
       expect(closeTabResponse).to.eql(false);
     });
 
+
+    it('should emit <app.tabsChanged> event on tab closed', async function() {
+
+      // given
+      const eventSpy = sinon.spy();
+
+      const {
+        app
+      } = createApp();
+
+      const tab = await app.createDiagram('bpmn');
+
+      app.on('app.tabsChanged', eventSpy);
+
+      // when
+      await app.closeTab(tab);
+
+      // then
+      expect(eventSpy).to.have.been.calledOnce;
+    });
+
   });
 
 
@@ -1199,6 +1220,25 @@ describe('<App>', function() {
         [ 'tab-changed', tab ],
         [ 'tab-shown', tab ]
       ]);
+    });
+
+
+    it('should emit <app.tabsChanged> event on tab created', async function() {
+
+      // given
+      const eventSpy = sinon.spy();
+
+      const {
+        app
+      } = createApp();
+
+      app.on('app.tabsChanged', eventSpy);
+
+      // when
+      await app.createDiagram('bpmn');
+
+      // then
+      expect(eventSpy).to.have.been.calledOnce;
     });
 
   });
