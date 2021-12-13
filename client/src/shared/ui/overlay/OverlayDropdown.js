@@ -22,7 +22,7 @@ import css from './OverlayDropdown.less';
  */
 
 /**
- * @typedef {{ key: String, label: String, items: Array<Item> }} ItemGroup
+ * @typedef {{ key: String, label: String, items: Array<Item>, maxHeight: Number | String }} ItemGroup
  */
 
 
@@ -98,6 +98,7 @@ export function OverlayDropdown(props) {
                   key={ group.key }
                   label={ group.label }
                   items={ group.items }
+                  maxHeight={ group.maxHeight }
                   onSelect={ onSelect } />
               )
             ) : (
@@ -116,14 +117,19 @@ function OptionGroup(props) {
   const {
     items,
     label,
+    maxHeight,
     onSelect
   } = props;
 
   return (
-    <Section>
-      <Section.Header>
-        { label }
-      </Section.Header>
+    <Section maxHeight={ maxHeight }>
+      { label ?
+        (
+          <Section.Header>
+            { label }
+          </Section.Header>
+        ) : null
+      }
       <Options items={ items } onSelect={ onSelect }></Options>
     </Section>
   );

@@ -139,4 +139,29 @@ describe('<OverlayDropdown>', function() {
     expect(wrapper.find('Overlay section')).to.have.length(3);
   });
 
+
+  it('should set max height for option group', () => {
+
+    // given
+    const items = [
+      { key: 'section', items: [], maxHeight: 300 }
+    ];
+
+    const wrapper = mount((
+      <OverlayDropdown items={ items } buttonRef={ mockButtonRef }>
+        TestButton
+      </OverlayDropdown>
+    ));
+
+    // when
+    wrapper.find('button').simulate('click');
+
+    const section = wrapper.find('Overlay section').at(0);
+
+    // then
+    expect(section.prop('style')).to.eql({
+      '--section-max-height': '300px'
+    });
+  });
+
 });
