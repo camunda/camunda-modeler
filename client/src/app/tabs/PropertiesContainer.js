@@ -18,16 +18,16 @@ import dragger from '../../util/dom/dragger';
 
 import css from './PropertiesContainer.less';
 
+import HandleBar from '../../../resources/icons/HandleBar.svg';
+
 import { throttle } from '../../util';
+
+export const MIN_WIDTH = 250;
 
 export const DEFAULT_LAYOUT = {
   open: false,
-  width: 250
+  width: MIN_WIDTH
 };
-
-export const MIN_WIDTH = 150;
-export const MAX_WIDTH = 650;
-
 
 /**
  * Container for properties panel that can be resized and toggled.
@@ -36,30 +36,78 @@ class PropertiesContainerWrapped extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleResize = throttle(this.handleResize);
+    this.handlePanelResize = throttle(this.handlePanelResize);
 
-    this.ref = new React.createRef();
+    this.containerRef = new React.createRef();
+    this.resizeHandlerRef = new React.createRef();
 
     this.context = {};
+
+    this.state = {
+      lastSetWidth: this.getStartWidth()
+    };
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  getStartWidth = () => {
+    const layout = this.props.layout || {};
+
+    const propertiesPanel = layout.propertiesPanel || DEFAULT_LAYOUT;
+
+    const width = propertiesPanel.width || DEFAULT_LAYOUT.width;
+
+    return width;
   }
 
   handleResizeStart = (event) => {
-    const onDragStart = dragger(this.handleResize);
+    adjustHandlerDragStyles(
+      this.resizeHandlerRef.current,
+      { dragging: true }
+    );
+
+    const onDragStart = dragger(this.handlePanelResize);
 
     onDragStart(event);
 
     const {
       open,
-      width
+      width,
+      fullWidth
     } = getLayoutFromProps(this.props);
 
     this.context = {
       open,
-      startWidth: width
+      startWidth: width,
+      fullWidth
     };
   }
 
-  handleResize = (_, delta) => {
+  handleResize = () => {
+    const width = getCurrentWidth(this.containerRef.current);
+
+    if (width >= getMaxWidth()) {
+
+      const newWidth = getWindowWidth();
+      this.containerRef.current.style.width = `${newWidth}px`;
+
+      this.changeLayout({
+        propertiesPanel: {
+          open: true,
+          width: newWidth,
+          fullWidth: true
+        }
+      });
+    }
+  }
+
+  handlePanelResize = (_, delta) => {
     const { x: dx } = delta;
 
     if (dx === 0) {
@@ -70,33 +118,52 @@ class PropertiesContainerWrapped extends PureComponent {
 
     const {
       open,
-      width
+      width,
+      fullWidth
     } = getLayout(dx, startWidth);
 
     this.context = {
       ...this.context,
       open,
-      width
+      width: width === 0 ? this.state.lastSetWidth : width,
+      fullWidth
     };
 
-    if (this.ref.current) {
-      this.ref.current.classList.toggle('open', open);
-      this.ref.current.style.width = `${ open ? width : 0 }px`;
+    const styledWidth = open ? `${width}px` : 0;
+
+    if (this.containerRef.current) {
+      this.containerRef.current.classList.toggle('open', open);
+      this.containerRef.current.style.width = styledWidth;
+    }
+
+    if (this.resizeHandlerRef.current) {
+      adjustHandlerSnapStyles(this.resizeHandlerRef.current, this.context);
     }
   }
 
   handleResizeEnd = () => {
+    adjustHandlerDragStyles(
+      this.resizeHandlerRef.current,
+      { dragging: false }
+    );
+
     const {
       open,
-      width
+      width,
+      fullWidth
     } = this.context;
 
     this.context = {};
 
+    if (open) {
+      this.setState ({ lastSetWidth: width });
+    }
+
     this.changeLayout({
       propertiesPanel: {
         open,
-        width
+        width,
+        fullWidth
       }
     });
   }
@@ -110,7 +177,8 @@ class PropertiesContainerWrapped extends PureComponent {
       propertiesPanel: {
         ...DEFAULT_LAYOUT,
         ...propertiesPanel,
-        open: !propertiesPanel.open
+        open: !propertiesPanel.open,
+        width: this.state.lastSetWidth
       }
     });
   }
@@ -131,12 +199,13 @@ class PropertiesContainerWrapped extends PureComponent {
 
     const {
       open,
-      width
+      width,
+      fullWidth
     } = getLayoutFromProps(this.props);
 
     return (
       <div
-        ref={ this.ref }
+        ref={ this.containerRef }
         className={ classNames(
           css.PropertiesContainer,
           className,
@@ -149,16 +218,24 @@ class PropertiesContainerWrapped extends PureComponent {
           draggable
           onDragStart={ this.handleResizeStart }
           onDragEnd={ this.handleResizeEnd }
-        >Properties Panel</div>
-        {
-          open &&
-            <div
-              className="resize-handle"
-              draggable
-              onDragStart={ this.handleResizeStart }
-              onDragEnd={ this.handleResizeEnd }
-            ></div>
-        }
+        >
+          {!open && <HandleBar />}
+        </div>
+
+        <div
+          ref={ this.resizeHandlerRef }
+          className={ classNames(
+            'resize-area',
+            { 'snapped-right': !open },
+            { 'snapped-left': fullWidth },
+          ) }
+          draggable
+          onDragStart={ this.handleResizeStart }
+          onDragEnd={ this.handleResizeEnd }
+        >
+          <div className="resize-handle" />
+        </div>
+
         <div className="properties-container" ref={ forwardedRef }></div>
       </div>
     );
@@ -175,16 +252,43 @@ export default React.forwardRef(
 // helpers //////////
 
 function getLayout(dx, initialWidth) {
-  let width = Math.min(initialWidth - dx, MAX_WIDTH);
+  let width = initialWidth - dx;
+  const max_width = getMaxWidth();
 
-  const open = width >= MIN_WIDTH;
+  let open = width > MIN_WIDTH;
+  let fullWidth = width > max_width;
 
   if (!open) {
-    width = DEFAULT_LAYOUT.width;
+
+    // if was already closed and drags 40px
+    if (initialWidth < MIN_WIDTH && dx < -40) {
+
+      // snap to min_width
+      width = MIN_WIDTH;
+      open = true;
+
+    } else {
+      width = 0;
+    }
+  }
+
+  if (fullWidth) {
+
+    // if was already fulled and drags 40px
+    if (initialWidth > max_width && dx > 40) {
+
+      // snap to max_width
+      width = max_width;
+      fullWidth = false;
+
+    } else {
+      width = getWindowWidth();
+    }
   }
 
   return {
     open,
+    fullWidth,
     width
   };
 }
@@ -194,12 +298,56 @@ function getLayoutFromProps(props) {
 
   const propertiesPanel = layout.propertiesPanel || DEFAULT_LAYOUT;
 
-  const { open } = propertiesPanel;
+  const { open, fullWidth } = propertiesPanel;
 
   const width = open ? propertiesPanel.width : 0;
 
   return {
     open,
-    width
+    width,
+    fullWidth
   };
+}
+
+function adjustHandlerSnapStyles(handle, context) {
+  const {
+    open,
+    fullWidth
+  } = context;
+
+  handle.classList.remove('snapped-right');
+  handle.classList.remove('snapped-left');
+
+  if (!open) {
+    handle.classList.add('snapped-right');
+  }
+
+  if (fullWidth) {
+    handle.classList.add('snapped-left');
+  }
+}
+
+function adjustHandlerDragStyles(handle, context) {
+
+  Object.keys(context).forEach(state => {
+
+    if (context[state]) {
+      handle.classList.add(state);
+    } else {
+      handle.classList.remove(state);
+    }
+
+  });
+}
+
+function getWindowWidth() {
+  return window.innerWidth;
+}
+
+function getMaxWidth() {
+  return getWindowWidth() * 0.8;
+}
+
+function getCurrentWidth(panel) {
+  return panel.getBoundingClientRect().width;
 }

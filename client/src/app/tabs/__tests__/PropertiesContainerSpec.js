@@ -12,10 +12,7 @@
 
 import React from 'react';
 
-import PropertiesContainer, {
-  DEFAULT_LAYOUT,
-  MAX_WIDTH
-} from '../PropertiesContainer';
+import PropertiesContainer, { MIN_WIDTH } from '../PropertiesContainer';
 
 import { mount } from 'enzyme';
 
@@ -60,12 +57,18 @@ describe('<PropertiesContainer>', function() {
     // when
     instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
 
-    instance.handleResize(null, { x: -50 });
+    instance.handlePanelResize(null, { x: -50 });
 
     instance.handleResizeEnd();
 
     // then
-    expect(onLayoutChangedSpy).to.be.calledWith({ propertiesPanel: { open: true, width: 550 } });
+    expect(onLayoutChangedSpy).to.be.calledWith({
+      propertiesPanel: {
+        open: true,
+        width: 550,
+        fullWidth: false
+      }
+    });
 
     // clean
     wrapper.unmount();
@@ -95,7 +98,7 @@ describe('<PropertiesContainer>', function() {
     // when
     instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
 
-    instance.handleResize(null, { x: 400 });
+    instance.handlePanelResize(null, { x: 400 });
 
     instance.handleResizeEnd();
 
@@ -103,7 +106,8 @@ describe('<PropertiesContainer>', function() {
     expect(onLayoutChangedSpy).to.be.calledWith({
       propertiesPanel: {
         open: false,
-        width: DEFAULT_LAYOUT.width
+        width: 500,
+        fullWidth: false
       }
     });
 
@@ -112,13 +116,56 @@ describe('<PropertiesContainer>', function() {
   });
 
 
-  it('should not resize to larger than maximum size', function() {
+  it('should resize to full width when larger than maximum size', function() {
 
     // given
     const layout = {
       propertiesPanel: {
         open: true,
         width: 500
+      }
+    };
+
+    global.innerWidth = 1000;
+
+    const onLayoutChangedSpy = spy();
+
+    const {
+      instance,
+      wrapper
+    } = createPropertiesContainer({
+      layout,
+      onLayoutChanged: onLayoutChangedSpy
+    });
+
+    // when
+    instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
+
+    instance.handlePanelResize(null, { x: -1000 });
+
+    instance.handleResizeEnd();
+
+    // then
+    expect(onLayoutChangedSpy).to.be.calledWith({
+      propertiesPanel: {
+        open: true,
+        width: 1000,
+        fullWidth: true
+      }
+    });
+
+    // clean
+    wrapper.unmount();
+  });
+
+
+  it('should open to min width after dragging at least 40 px to open', function() {
+
+    // given
+    const layout = {
+      propertiesPanel: {
+        open: false,
+        width: 0
       }
     };
 
@@ -134,16 +181,57 @@ describe('<PropertiesContainer>', function() {
 
     // when
     instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
-
-    instance.handleResize(null, { x: -400 });
-
+    instance.handlePanelResize(null, { x: -50 });
     instance.handleResizeEnd();
 
     // then
     expect(onLayoutChangedSpy).to.be.calledWith({
       propertiesPanel: {
         open: true,
-        width: MAX_WIDTH
+        width: MIN_WIDTH,
+        fullWidth: false
+      }
+    });
+
+    // clean
+    wrapper.unmount();
+  });
+
+
+  it('should close to max width after dragging at least 40 px', function() {
+
+    // given
+    const layout = {
+      propertiesPanel: {
+        open: true,
+        width: 1000,
+        fullWidth: true
+      }
+    };
+
+    global.innerWidth = 1000;
+
+    const onLayoutChangedSpy = spy();
+
+    const {
+      instance,
+      wrapper
+    } = createPropertiesContainer({
+      layout,
+      onLayoutChanged: onLayoutChangedSpy
+    });
+
+    // when
+    instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
+    instance.handlePanelResize(null, { x: 50 });
+    instance.handleResizeEnd();
+
+    // then
+    expect(onLayoutChangedSpy).to.be.calledWith({
+      propertiesPanel: {
+        open: true,
+        width: 1000 * 0.8,
+        fullWidth: false
       }
     });
 
@@ -212,6 +300,36 @@ describe('<PropertiesContainer>', function() {
     wrapper.unmount();
   });
 
+});
+
+it('should toggle', function() {
+
+  // given
+  const layout = {
+    propertiesPanel: {
+      open: true,
+      width: 500
+    }
+  };
+
+  const onLayoutChangedSpy = spy();
+
+  const {
+    instance,
+    wrapper
+  } = createPropertiesContainer({
+    layout,
+    onLayoutChanged: onLayoutChangedSpy
+  });
+
+  // when
+  instance.handleToggle();
+
+  // then
+  expect(onLayoutChangedSpy).to.be.calledWith({ propertiesPanel: { open: false, width: 500 } });
+
+  // clean
+  wrapper.unmount();
 });
 
 
