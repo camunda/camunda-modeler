@@ -19,7 +19,7 @@ import ServiceDeploymentBindingModal from './ServiceDeploymentBindingModal';
 import { getRootProcess } from 'client/src/app/quantme/utilities/Utilities';
 
 import { createServiceInstance, uploadCSARToContainer } from 'client/src/app/quantme/deployment/OpenTOSCAUtils';
-import { bindUsingPull, bindUsingPush, getBindingType } from 'client/src/app/quantme/deployment/BindingUtils';
+import { bindUsingPull, bindUsingPush } from 'client/src/app/quantme/deployment/BindingUtils';
 import { getServiceTasksToDeploy } from 'client/src/app/quantme/deployment/DeploymentUtils';
 
 const defaultState = {

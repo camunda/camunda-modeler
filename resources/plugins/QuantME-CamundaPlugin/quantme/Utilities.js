@@ -70,3 +70,13 @@ export function createModeler() {
     }
   });
 }
+
+/**
+ * Return all QuantumCircuitExecutionTasks from the given list of modeling elements
+ *
+ * @param modelingElements the list of modeling elements
+ * @return the list of contained QuantumCircuitExecutionTasks
+ */
+export function getQuantumCircuitExecutionTasks(modelingElements) {
+  return modelingElements.filter(element => element.$type === 'quantme:QuantumCircuitExecutionTask');
+}

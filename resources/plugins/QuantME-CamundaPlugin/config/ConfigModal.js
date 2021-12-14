@@ -27,6 +27,7 @@ export default function ConfigModal({ initValues, onClose }) {
   const [qrmRepoName, setQrmRepoName] = useState(initValues.qrmRepoName);
   const [qrmUserName, setQrmUserName] = useState(initValues.qrmUserName);
   const [qrmRepoPath, setQrmRepoPath] = useState(initValues.qrmRepoPath);
+  const [qiskitRuntimeHandlerEndpoint, setQiskitRuntimeHandlerEndpoint] = useState(initValues.qiskitRuntimeHandlerEndpoint);
 
   // return the new values to the config plugin
   const onSubmit = () => onClose({
@@ -37,7 +38,8 @@ export default function ConfigModal({ initValues, onClose }) {
     nisqAnalyzerEndpoint,
     qrmUserName,
     qrmRepoName,
-    qrmRepoPath
+    qrmRepoPath,
+    qiskitRuntimeHandlerEndpoint
   });
 
 
@@ -63,26 +65,36 @@ export default function ConfigModal({ initValues, onClose }) {
       <form id="quantmeConfigForm" onSubmit={onSubmit}>
 
         <div id="quantmeConfigButtons">
-          <button type="button" className="innerConfig btn-primary" onClick={() => openTab('CamundaEngineEndpointTab', 0)}>Camunda</button>
+          <button type="button" className="innerConfig btn-primary" onClick={() => openTab('BPMNTab', 0)}>BPMN</button>
           <button type="button" className="innerConfig btn-primary" onClick={() => openTab('OpenTOSCAEndpointTab', 1)}>OpenTOSCA</button>
-          <button type="button" className="innerConfig btn-primary" onClick={() => openTab('QuantMEFrameworkEndpointTab', 2)}>QuantME</button>
-          <button type="button" className="innerConfig btn-primary" onClick={() => openTab('NISQAnalyzerEndpointTab', 3)}>NISQ Analyzer</button>
-          <button type="button" className="innerConfig btn-primary" onClick={() => openTab('QRMDataTab', 4)}>QRM Data</button>
+          <button type="button" className="innerConfig btn-primary" onClick={() => openTab('NISQAnalyzerEndpointTab', 2)}>NISQ Analyzer</button>
+          <button type="button" className="innerConfig btn-primary" onClick={() => openTab('QRMDataTab', 3)}>QRM Data</button>
+          <button type="button" className="innerConfig btn-primary" onClick={() => openTab('HybridRuntimesTab', 4)}>Hybrid Runtimes</button>
         </div>
 
         <div id="quantmeConfigElements" ref={elementsRootRef}>
-          <div className="spaceAbove" hidden={false} id="CamundaEngineEndpointTab">
-            <h3>Camunda Engine</h3>
+          <div className="spaceAbove" hidden={false} id="BPMNTab">
+            <h3>BPMN related configurations:</h3>
             <table>
               <tbody>
                 <tr className="spaceUnder">
-                  <td align="right">Camunda Engine Endpoint:</td>
+                  <td align="right">Camunda Engine Endpoint</td>
                   <td align="left">
                     <input
                       type="string"
                       name="camundaEndpoint"
                       value={camundaEndpoint}
                       onChange={event => setCamundaEndpoint(event.target.value)}/>
+                  </td>
+                </tr>
+                <tr className="spaceUnder">
+                  <td align="right">QuantME Framework Endpoint</td>
+                  <td align="left">
+                    <input
+                      type="string"
+                      name="transformationFrameworkEndpoint"
+                      value={transformationFrameworkEndpoint}
+                      onChange={event => setTransformationFrameworkEndpoint(event.target.value)}/>
                   </td>
                 </tr>
               </tbody>
@@ -111,24 +123,6 @@ export default function ConfigModal({ initValues, onClose }) {
                       name="wineryEndpoint"
                       value={wineryEndpoint}
                       onChange={event => setWineryEndpoint(event.target.value)}/>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div className="spaceAbove" hidden={true} id="QuantMEFrameworkEndpointTab">
-            <h3>QuantME Framework</h3>
-            <table>
-              <tbody>
-                <tr className="spaceUnder">
-                  <td align="right">QuantME Framework Endpoint:</td>
-                  <td align="left">
-                    <input
-                      type="string"
-                      name="transformationFrameworkEndpoint"
-                      value={transformationFrameworkEndpoint}
-                      onChange={event => setTransformationFrameworkEndpoint(event.target.value)}/>
                   </td>
                 </tr>
               </tbody>
@@ -185,6 +179,24 @@ export default function ConfigModal({ initValues, onClose }) {
                       name="qrmRepoPath"
                       value={qrmRepoPath}
                       onChange={event => setQrmRepoPath(event.target.value)}/>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="spaceAbove" hidden={true} id="HybridRuntimesTab">
+            <h3>Hybrid Runtime Handler Endpoints</h3>
+            <table>
+              <tbody>
+                <tr className="spaceUnder">
+                  <td align="right">Qiskit Runtime Handler Endpoint:</td>
+                  <td align="left">
+                    <input
+                      type="string"
+                      name="qiskitRuntimeHandlerEndpoint"
+                      value={qiskitRuntimeHandlerEndpoint}
+                      onChange={event => setQiskitRuntimeHandlerEndpoint(event.target.value)}/>
                   </td>
                 </tr>
               </tbody>

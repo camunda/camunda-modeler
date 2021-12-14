@@ -10,6 +10,7 @@
  */
 
 import extensionElementsHelper from 'bpmn-js-properties-panel/lib/helper/ExtensionElementsHelper';
+import $ from 'jquery';
 
 /**
  * Get the root process element of the diagram
@@ -168,4 +169,24 @@ export function getPropertiesToCopy(element) {
   }
 
   return properties;
+}
+
+export function performAjax(targetUrl, dataToSend) {
+  return new Promise(function(resolve, reject) {
+    $.ajax({
+      type: 'POST',
+      url: targetUrl,
+      data: dataToSend,
+      processData: false,
+      contentType: false,
+      beforeSend: function() {
+      },
+      success: function(data) {
+        resolve(data);
+      },
+      error: function(err) {
+        reject(err);
+      }
+    });
+  });
 }

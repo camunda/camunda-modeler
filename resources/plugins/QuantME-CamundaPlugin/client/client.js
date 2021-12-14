@@ -14,8 +14,11 @@ import quantmeModelingModule from '../quantme/modeling';
 import QuantMEController from '../quantme/control/QuantMEController';
 import ConfigPlugin from '../config/ConfigPlugin';
 import DeploymentPlugin from '../deployment/services/DeploymentPlugin';
+import AdaptationPlugin from '../adaptation/AdaptationPlugin';
 
 registerBpmnJSPlugin(quantmeModelingModule);
+
+registerClientExtension(AdaptationPlugin);
 
 registerClientExtension(QuantMEController);
 

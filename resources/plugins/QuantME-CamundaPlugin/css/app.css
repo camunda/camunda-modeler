@@ -15,6 +15,16 @@
   float: left;
 }
 
+.hybrid-loop-adaptation:before {
+   content: "";
+   display: block;
+   width: 15px;
+   height: 15px;
+   background-size: contain;
+   background: url("../../../../client/resources/quantme/hybrid-loop-adapation-icon.png") no-repeat center center;
+   float: left;
+ }
+
 .workflow-transformation:before {
   content: "";
   display: block;
@@ -67,12 +77,12 @@
   line-height: normal;
   letter-spacing: normal;
   text-align: center;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .innerConfig + .innerConfig {
-  margin-left: 15px;
+  margin-left: 10px;
 }
 
 ul {
@@ -204,4 +214,52 @@ html, body, #container {
   height: 20px;
   float: left;
   margin: 0 6px 0 0;
+}
+
+.adaptation-tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.adaptation-tab-button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: 0.3s;
+  padding: 14px 16px;
+}
+
+/* Change background color of buttons on hover */
+.adaptation-tab-button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.adaptation-tab-button.active {
+  background-color: #ccc;
+}
+
+.rewrite-failed-button:after {
+  content: "";
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-size: contain;
+  background: url("../../../../client/resources/quantme/info.png") no-repeat center center;
+  float: right;
+  padding-left: 20px;
+}
+
+.rewrite-failed-button:disabled{
+  background-color: #f44336;
+  color: #000000;
+}
+
+.rewrite-successful-button:disabled{
+  background-color: #008000;
+  color: #000000;
 }

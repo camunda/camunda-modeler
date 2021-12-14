@@ -603,7 +603,7 @@ export class BpmnEditor extends CachedComponent {
             return !relativePath.startsWith('deployment-models') && relativePath.endsWith('.bpmn');
           });
 
-          // check if exaclty one workflow is contained in the QAA
+          // check if exactly one workflow is contained in the QAA
           if (files.length !== 1) {
             console.error('QAA with path %s must contain exactly one BPMN file but contains %i!', qaaPath, files.length);
             reject('QAA with path %s must contain exactly one BPMN file but contains %i!', qaaPath, files.length);
