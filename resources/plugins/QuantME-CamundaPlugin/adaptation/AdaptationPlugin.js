@@ -153,7 +153,7 @@ export default class AdaptationPlugin extends PureComponent {
 
         // display error in modal
         rewriteButton.title = programGenerationResult.error;
-        rewriteButton.innerText = 'Rewriting not possible!';
+        rewriteButton.innerText = 'Rewrite not possible!';
         rewriteButton.className = rewriteButton.className + ' rewrite-failed-button';
         return;
       } else {
@@ -166,14 +166,14 @@ export default class AdaptationPlugin extends PureComponent {
 
           // display error in modal
           rewriteButton.title = programGenerationResult.error;
-          rewriteButton.innerText = 'Rewriting not possible!';
+          rewriteButton.innerText = 'Rewrite not possible!';
           rewriteButton.className = rewriteButton.className + ' rewrite-failed-button';
         } else {
           console.log('Rewriting workflow successfully!');
 
           // display success in modal
           rewriteButton.title = programGenerationResult.error;
-          rewriteButton.innerText = 'Rewriting successfully!';
+          rewriteButton.innerText = 'Rewrite successful!';
           rewriteButton.className = rewriteButton.className + ' rewrite-successful-button';
         }
         return;

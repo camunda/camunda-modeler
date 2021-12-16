@@ -117,7 +117,7 @@ export default function RewriteModal({ onClose, candidates }) {
 
     <Footer>
       <div id="rewriteFormButtons">
-        <button type="button" className="btn btn-secondary" onClick={() => onClose()}>Cancel</button>
+        <button type="button" className="btn btn-secondary" onClick={() => onClose()}>Done</button>
       </div>
     </Footer>
   </Modal>;

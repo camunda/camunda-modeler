@@ -38,7 +38,7 @@ export default function AdaptationModal({ onClose }) {
     <Body>
       <h3 className="spaceUnder">This wizard guides you through the analysis and rewrite process for quantum workflows to benefit from hybrid runtimes.</h3>
       <div className="spaceUnder">
-        The hybrid loop detection analyses the workflow to find loops consisting of quantum and classical processing, which can be executed more efficiently using hybrid runtimes.
+        The hybrid loop detection analyzes the workflow to find loops consisting of quantum and classical processing, which can be executed more efficiently using hybrid runtimes.
         Thereby, it displays possible optimization candidates and enables rewriting the workflow to invoke a hybrid runtime instead of orchestrating the loop.
         Further information, as well as current restrictions, can be found in the <a href="https://github.com/UST-QuAntiL/QuantME-TransformationFramework/tree/develop/docs/quantme/Analysis-and-Rewrite">documentation</a>.
       </div>
@@ -50,7 +50,7 @@ export default function AdaptationModal({ onClose }) {
 
     <Footer>
       <div id="hybridLoopAdaptationFormButtons">
-        <button ref={analysisButtonRef} type="submit" className="btn btn-primary" onClick={() => onSubmit()}>Analyse Workflow</button>
+        <button ref={analysisButtonRef} type="submit" className="btn btn-primary" onClick={() => onSubmit()}>Analyze Workflow</button>
         <button type="button" className="btn btn-secondary" onClick={() => onClose()}>Cancel</button>
       </div>
     </Footer>
