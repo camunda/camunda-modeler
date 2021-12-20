@@ -66,13 +66,13 @@ export class FormEditor extends CachedComponent {
 
     let { form } = this.getCached();
 
+    this.listen('on');
+
     if (this.ref.current) {
       form.attachTo(this.ref.current);
     }
 
     this.checkImport();
-
-    this.listen('on');
   }
 
   componentWillUnmount() {
@@ -201,6 +201,7 @@ export class FormEditor extends CachedComponent {
     const { form } = this.getCached();
 
     [
+      'attach',
       'commandStack.changed',
       'import.done',
       'propertiesPanel.focusin',
