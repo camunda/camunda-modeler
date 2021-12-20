@@ -201,6 +201,7 @@ export class FormEditor extends CachedComponent {
     const { form } = this.getCached();
 
     [
+      'attach',
       'commandStack.changed',
       'import.done',
       'propertiesPanel.focusin',
