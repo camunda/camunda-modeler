@@ -161,6 +161,8 @@ describe('<FormEditor>', function() {
 
     it('selection.changed', expectHandleChanged('selection.changed'));
 
+    it('attach', expectHandleChanged('attach'));
+
   });
 
 

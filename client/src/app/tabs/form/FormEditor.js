@@ -111,6 +111,7 @@ export class FormEditor extends CachedComponent {
   }
 
   componentDidUpdate(prevProps) {
+    console.log("formeditor component did update");
     this.checkImport(prevProps);
 
     if (isCacheStateChanged(prevProps, this.props)) {
@@ -149,6 +150,7 @@ export class FormEditor extends CachedComponent {
   }
 
   async importSchema(schema) {
+    console.log("importing schema");
     this.setState({
       importing: true
     });
@@ -221,12 +223,19 @@ export class FormEditor extends CachedComponent {
     const { form } = this.getCached();
 
     [
+      'attach',
+      'form.init',
       'commandStack.changed',
       'import.done',
       'propertiesPanel.focusin',
       'propertiesPanel.focusout',
       'selection.changed'
-    ].forEach((event) => form[ fn ](event, this.handleChanged));
+    ].forEach((event) => {
+      console.log("here because of ", fn, event);
+
+      form[ fn ](event, this.handleChanged);
+    }
+    );
 
     if (fn === 'on') {
       form.on('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
@@ -237,6 +246,10 @@ export class FormEditor extends CachedComponent {
 
   handleChanged = () => {
     const { onChanged } = this.props;
+
+    console.log(this);
+
+    console.log(onChanged);
 
     const { form } = this.getCached();
 
@@ -338,7 +351,10 @@ export class FormEditor extends CachedComponent {
   }
 
   render() {
+    console.log("formEditor render is called");
     const engineProfile = this.engineProfile.getCached();
+
+    this.handleChanged();
 
     const {
       layout,
