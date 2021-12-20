@@ -2179,6 +2179,21 @@ describe('<App>', function() {
     });
 
 
+    it('should update with attributes getters', async function() {
+
+      // given
+      const tab = await app.createDiagram('form');
+
+      // when
+      const updatedTab = await app.triggerAction('lint-tab', { tab });
+
+      updatedTab.file.name = 'newname.form';
+
+      // then
+      expect(updatedTab.name).to.eql(updatedTab.file.name);
+    });
+
+
     it('should update navigation history', async function() {
 
       // given
@@ -2217,7 +2232,7 @@ describe('<App>', function() {
       } = app.state;
 
       // then
-      expect(updatedTab).to.not.eql(tab);
+      expect(updatedTab).to.include(newAttrs);
       expect(updatedTab).to.eql(activeTab);
       expect(tabs).to.not.include(tab);
       expect(tabs).to.include(updatedTab);
