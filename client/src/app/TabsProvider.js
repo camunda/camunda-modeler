@@ -344,7 +344,18 @@ export default class TabsProvider {
         exports: {},
         extensions: [ 'form' ],
         canOpen(file) {
-          return file.name.endsWith('.form');
+          const {
+            contents
+          } = file;
+
+          try {
+            const obj = JSON.parse(contents);
+            const { executionPlatform } = obj;
+            return file.name.endsWith('.form') && executionPlatform === ENGINES.CLOUD;
+
+          } catch (e) {
+            return false;
+          }
         },
         getComponent(options) {
           return import('./tabs/form');

@@ -333,6 +333,75 @@ describe('TabsProvider', function() {
       expect(tab).not.to.exist;
     });
 
+
+    it('should take form for forms if no engine defined', function() {
+
+      // given
+      Flags.init({});
+
+      const tabsProvider = new TabsProvider();
+
+      const file = {
+        name: 'foo.form',
+        path: '/a/foo.form',
+        contents: '{"type": "default"}'
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab.name).to.eql(file.name);
+      expect(tab.title).to.eql(file.path);
+      expect(tab.type).to.eql('form');
+    });
+
+
+    it('should take cloud-form for forms with Cloud as defined engine', function() {
+
+      // given
+      Flags.init({});
+
+      const tabsProvider = new TabsProvider();
+
+      const file = {
+        name: 'foo.form',
+        path: '/a/foo.form',
+        contents: require('./TabsProviderSpec.cloud.form')
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab.name).to.eql(file.name);
+      expect(tab.title).to.eql(file.path);
+      expect(tab.type).to.eql('cloud-form');
+    });
+
+
+    it('should take form for forms with Platform as defined engine', function() {
+
+      // given
+      Flags.init({});
+
+      const tabsProvider = new TabsProvider();
+
+      const file = {
+        name: 'foo.form',
+        path: '/a/foo.form',
+        contents: require('./TabsProviderSpec.form')
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab.name).to.eql(file.name);
+      expect(tab.title).to.eql(file.path);
+      expect(tab.type).to.eql('form');
+    });
+
   });
 
 
