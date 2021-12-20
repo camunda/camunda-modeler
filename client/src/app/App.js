@@ -275,10 +275,14 @@ export class App extends PureComponent {
       throw new Error('must not change tab.id');
     }
 
-    const updatedTab = {
-      ...tab,
-      ...newAttrs
-    };
+    const {
+      tabsProvider
+    } = this.props;
+
+    let updatedTab = tabsProvider.createTabForFile(tab.file);
+    updatedTab.id = tab.id;
+
+    assign(updatedTab, newAttrs);
 
     this.setState((state) => {
 
