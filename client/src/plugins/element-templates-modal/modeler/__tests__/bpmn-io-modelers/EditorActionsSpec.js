@@ -17,6 +17,8 @@ import EditorActions from '../../EditorActions';
 import diagramXML from './diagram.bpmn';
 import collaborationXML from './collaboration.bpmn';
 
+import templatesJSON from './templates.json';
+
 const DEFAULT_OPTIONS = {
   additionalModules: [
     {
@@ -116,6 +118,39 @@ describe('EditorActions', function() {
       expect(applied).to.be.false;
     });
 
+  });
+
+
+  describe('getElementTemplates', function() {
+
+    it('should return empty array if no templates are set', function() {
+
+      // given
+      const editorActions = modeler.get('editorActions');
+
+      // when
+      const templates = editorActions.trigger('getElementTemplates');
+
+      // then
+      expect(templates).to.exist;
+      expect(templates).to.be.empty;
+    });
+
+
+    it('should return element templates', function() {
+
+      // given
+      const editorActions = modeler.get('editorActions');
+      const elementTemplatesLoader = modeler.get('elementTemplatesLoader');
+      elementTemplatesLoader.setTemplates(templatesJSON);
+
+      // when
+      const elementTemplates = editorActions.trigger('getElementTemplates');
+
+      // then
+      expect(elementTemplates).to.exist;
+      expect(elementTemplates).not.to.be.empty;
+    });
   });
 
 

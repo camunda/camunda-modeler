@@ -12,9 +12,24 @@ import TestContainer from 'mocha-test-container-support';
 
 import BpmnModeler from '../../../../../app/tabs/bpmn/modeler/BpmnModeler';
 
+import Flags from '../../../../../util/Flags';
+
 import PropertiesProvider from '../../PropertiesProvider';
 
 import diagramXML from './diagram.bpmn';
+
+/* global sinon */
+
+const DEFAULT_ELEMENT_TEMPLATE = {
+  appliesTo: [
+    'bpmn:Process'
+  ],
+  id: 'some-rpa-template',
+  name: 'Template 1',
+  properties: []
+};
+
+const DEFAULT_ELEMENT_TEMPLATES = [ DEFAULT_ELEMENT_TEMPLATE ];
 
 const DEFAULT_OPTIONS = {
   additionalModules: [
@@ -31,84 +46,45 @@ const DEFAULT_OPTIONS = {
   },
   propertiesProvider: {
     openElementTemplatesModal() {}
-  }
+  },
+  elementTemplates: DEFAULT_ELEMENT_TEMPLATES
 };
 
 
 describe('PropertiesProvider', function() {
 
-  let container,
-      modeler;
+  let container;
 
-  beforeEach(async function() {
+  beforeEach(function() {
     container = TestContainer.get(this);
+  });
 
-    modeler = await createModeler({
-      container
-    });
+  afterEach(function() {
+    Flags.reset();
   });
 
 
-  it('should bootstrap', async function() {
-
-    // then
-    expect(modeler).to.exist;
-  });
-
-
-  it('should replace entry', function() {
+  it('should open modal when "select" button is clicked', async function() {
 
     // given
-    const elementRegistry = modeler.get('elementRegistry'),
-          elementTemplatesLoader = modeler.get('elementTemplatesLoader'),
-          propertiesPanel = modeler.get('propertiesPanel');
-
-    elementTemplatesLoader.setTemplates(DEFAULT_ELEMENT_TEMPLATES);
-
-    const serviceTask = elementRegistry.get('ServiceTask_1');
-
-    const providers = propertiesPanel._getProviders();
-
-    // assume
-    // [0] CamundaPropertiesProvider
-    // [1] our custom PropertiesProvider
-    expect(providers).to.have.length(2);
+    const spy = sinon.spy();
+    await createModeler({
+      container,
+      propertiesProvider: {
+        openElementTemplatesModal: spy
+      }
+    });
 
     // when
-    const tabs = propertiesPanel._getTabs(serviceTask);
+    const selectTemplate = container.querySelector('.bio-properties-panel-select-template-button');
+    selectTemplate.click();
 
     // then
-    const generalTab = tabs.find(({ id }) => id === 'general');
-
-    expect(generalTab).to.exist;
-
-    const { groups } = generalTab;
-
-    const generalGroup = groups.find(({ id }) => id === 'general');
-
-    expect(generalGroup).to.exist;
-
-    const { entries } = generalGroup;
-
-    expect(entries.find(({ id }) => id === 'element-template-chooser')).not.to.exist;
-    expect(entries.find(({ id }) => id === 'elementTemplatesModal')).to.exist;
+    expect(spy).to.have.been.calledOnce;
   });
-
 });
 
 // helpers //////////
-
-const DEFAULT_ELEMENT_TEMPLATE = {
-  appliesTo: [
-    'bpmn:ServiceTask'
-  ],
-  id: 'some-rpa-template',
-  name: 'Template 1',
-  properties: []
-};
-
-const DEFAULT_ELEMENT_TEMPLATES = [ DEFAULT_ELEMENT_TEMPLATE ];
-
 async function createModeler(options = {}) {
   const modeler = new BpmnModeler({
     ...DEFAULT_OPTIONS,
@@ -116,6 +92,10 @@ async function createModeler(options = {}) {
   });
 
   await modeler.importXML(diagramXML);
+
+  const propertiesPanel = modeler.get('propertiesPanel');
+
+  propertiesPanel.attachTo(options.container);
 
   return modeler;
 }
