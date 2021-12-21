@@ -83,12 +83,8 @@ describe('<ElementTemplatesView>', function() {
         instance,
         wrapper
       } = await createElementTemplatesModalView({
-        triggerAction: action => {
-          if (action === 'getSelectedElement') {
-            return {
-              businessObject: moddle.create('bpmn:SendTask')
-            };
-          }
+        selectedElement: {
+          businessObject: moddle.create('bpmn:SendTask')
         }
       });
 
@@ -101,30 +97,6 @@ describe('<ElementTemplatesView>', function() {
         'Template 4',
         'Template 5 v2'
       ]);
-    });
-
-
-    it('should get element templates (filtered by validity)', async function() {
-
-      // given
-      const {
-        instance,
-        wrapper
-      } = await createElementTemplatesModalView({
-        triggerAction: action => {
-          if (action === 'getSelectedElement') {
-            return {
-              businessObject: moddle.create('bpmn:ServiceTask')
-            };
-          }
-        }
-      });
-
-      // when
-      await instance.getElementTemplates();
-
-      // then
-      expect(wrapper.state('elementTemplates').map(({ name }) => name)).to.not.include('Template invalid');
     });
 
 
@@ -166,12 +138,8 @@ describe('<ElementTemplatesView>', function() {
       const elementTemplate = DEFAULT_ELEMENT_TEMPLATES.find(({ name }) => name === 'Template 5 v2');
 
       const { wrapper } = await createElementTemplatesModalView({
-        triggerAction: action => {
-          if (action === 'getSelectedElement') {
-            return {
-              businessObject: moddle.create('bpmn:SendTask')
-            };
-          }
+        selectedElement: {
+          businessObject: moddle.create('bpmn:SendTask')
         }
       });
 
@@ -371,13 +339,7 @@ describe('<ElementTemplatesView>', function() {
 
       // when
       const { wrapper } = await createElementTemplatesModalView({
-        getConfig: (key, ...args) => {
-          if (key === 'bpmn.elementTemplates') {
-            return Promise.resolve([]);
-          }
-
-          throw Error('Unknown key');
-        }
+        elementTemplates: []
       });
 
       // then
@@ -561,28 +523,23 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     version: 2,
     name: 'Template 5 v2',
     properties: []
-  },
-  {
-    name: 'Template invalid',
-    appliesTo: [
-      'bpmn:ServiceTask'
-    ],
-    properties: []
   }
 ];
 
 async function createElementTemplatesModalView(props = {}) {
   function triggerAction(action) {
     if (action === 'getSelectedElement') {
-      return {
+      return props.selectedElement || {
         businessObject: moddle.create('bpmn:ServiceTask')
       };
+    } else if (action === 'getElementTemplates') {
+      return props.elementTemplates || DEFAULT_ELEMENT_TEMPLATES;
     }
   }
 
   const defaultProps = {
     displayNotification() {},
-    getConfig: defaultGetConfig,
+    getConfig() {},
     onApply() {},
     onClose() {},
     subscribe() {},
@@ -599,12 +556,4 @@ async function createElementTemplatesModalView(props = {}) {
     instance,
     wrapper
   };
-}
-
-function defaultGetConfig(key, ...args) {
-  if (key === 'bpmn.elementTemplates') {
-    return Promise.resolve(DEFAULT_ELEMENT_TEMPLATES);
-  }
-
-  throw Error('Unknown key');
 }

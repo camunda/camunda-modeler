@@ -9,7 +9,7 @@
  */
 
 export default class EditorActions {
-  constructor(commandStack, editorActions, selection, canvas) {
+  constructor(commandStack, editorActions, selection, canvas, elementTemplates) {
 
     // Register action to apply an element template to the selected element
     editorActions.register('applyElementTemplate', elementTemplate => {
@@ -45,6 +45,10 @@ export default class EditorActions {
       return null;
     });
 
+    editorActions.register('getElementTemplates', () => {
+      return elementTemplates.getAll();
+    });
+
     // helper //////////////////////////////////
 
     /**
@@ -75,5 +79,6 @@ EditorActions.$inject = [
   'commandStack',
   'editorActions',
   'selection',
-  'canvas'
+  'canvas',
+  'elementTemplates'
 ];

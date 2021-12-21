@@ -28,8 +28,6 @@ import {
 
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
 
-import Validator from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates/Validator';
-
 const MAX_DESCRIPTION_LENGTH = 200;
 
 class ElementTemplatesView extends PureComponent {
@@ -56,11 +54,10 @@ class ElementTemplatesView extends PureComponent {
 
   getElementTemplates = async () => {
     const {
-      getConfig,
       triggerAction
     } = this.props;
 
-    let elementTemplates = await getConfig('bpmn.elementTemplates');
+    let elementTemplates = await triggerAction('getElementTemplates');
 
     const selectedElement = await triggerAction('getSelectedElement');
 
@@ -70,10 +67,10 @@ class ElementTemplatesView extends PureComponent {
       // (2) Filter by templates that can be applied
       // (3) Filter by latest version
       // (4) Sort alphabetically
-      elementTemplates = filterValid(sortAlphabetically(filterByLatest(filterByApplicable(
+      elementTemplates = sortAlphabetically(filterByLatest(filterByApplicable(
         elementTemplates,
         selectedElement
-      ))));
+      )));
     } else {
       elementTemplates = [];
     }
@@ -363,13 +360,6 @@ function filterByLatest(elementTemplates) {
 
       return latest;
     }, null));
-}
-
-function filterValid(elementTemplates) {
-
-  const validator = new Validator().addAll(elementTemplates);
-
-  return validator.getValidTemplates();
 }
 
 function filterElementTemplates(elementTemplates, filter) {

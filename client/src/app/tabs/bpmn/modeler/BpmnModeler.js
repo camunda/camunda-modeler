@@ -48,7 +48,7 @@ const extensionModules = [
   completeDirectEditingModule,
   globalClipboardModule,
   handToolOnSpaceModule,
-  propertiesPanelKeyboardBindingsModule,
+  propertiesPanelKeyboardBindingsModule
 ];
 
 PlatformBpmnModeler.prototype._modules = [
