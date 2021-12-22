@@ -29,6 +29,7 @@ export default function TextInput(props) {
     fieldError,
     children,
     multiline,
+    description,
     ...restProps
   } = props;
 
@@ -42,7 +43,7 @@ export default function TextInput(props) {
   const error = (fieldError || defaultFieldError)(meta, fieldName);
 
   function textElement() {
-    if (multiline) {
+    function getTextarea() {
       return <textarea
         { ...field }
         value={ fieldValue || '' }
@@ -54,6 +55,17 @@ export default function TextInput(props) {
         placeholder={ hint }
         { ...restProps }
       />;
+    }
+
+    if (multiline) {
+      if (description) {
+        return <React.Fragment>
+          {getTextarea()}
+          <p className="form-control">{description}</p>
+        </React.Fragment>;
+      } else {
+        return getTextarea();
+      }
     } else {
       return <input
         { ...field }

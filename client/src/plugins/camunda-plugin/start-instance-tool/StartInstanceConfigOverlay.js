@@ -79,7 +79,8 @@ export default class StartInstanceConfigOverlay extends React.PureComponent {
                         name="variables"
                         component={ TextInput }
                         multiline={ true }
-                        label={ <p>Variables (<b>optional</b>; should be a proper variables <a href="https://www.json.org/">JSON</a> object, you can see examples <a href="https://docs.camunda.org/manual/current/reference/rest/process-definition/post-start-process-instance/#example">here</a>).</p> }
+                        label="Variables (optional)"
+                        description={ <p>Must be a proper JSON object. <a href="https://docs.camunda.io/docs/components/concepts/variables/">Learn more about variables</a>.</p> }
                         hint="A JSON object containing the variables the process is to be initialized with."
                         validate={ (value) => {
                           if (value && value.trim().length > 0) {
