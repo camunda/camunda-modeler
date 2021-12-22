@@ -45,7 +45,6 @@ export default function TextInput(props) {
     if (multiline) {
       return <textarea
         { ...field }
-        type="text"
         value={ fieldValue || '' }
         disabled={ form.isSubmitting }
         className={ classNames('form-control', {
