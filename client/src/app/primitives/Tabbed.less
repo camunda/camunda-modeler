@@ -100,7 +100,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: clip;
-      margin: 0 6px 0 0;
+      margin: 0 28px 0 0;
     }
 
     .tab__dirty-marker {
@@ -142,6 +142,14 @@
     }
 
     &.tab--small {
+      &:not(.tab--active) {
+        .tab__name {
+          margin-right: 6px;
+        }
+      }
+    }
+
+    &.tab--smaller {
       .tab__type {
         margin: auto;
       }
@@ -176,12 +184,6 @@
       
       .tab__content {
         padding-left: 12px;
-      }
-    }
-
-    &.tab--active {
-      .tab__name {
-        margin-right: 28px;
       }
     }
 
