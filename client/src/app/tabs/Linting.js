@@ -63,11 +63,17 @@ export function Linting(props) {
 
   return <Fill slot="status-bar__file" group="9_linting">
     <button
-      className={ classnames(css.Linting, 'btn', { 'btn--active': panel.open && panel.tab === 'linting' }) }
+      className={ classnames(
+        css.Linting,
+        'btn',
+        { 'btn--active': panel.open && panel.tab === 'linting',
+          'has-errors': errors > 0
+        }
+      ) }
       onClick={ onClick }
       title="Toggle Errors"
     >
-      <ErrorIcon className={ classnames({ 'has-errors': errors > 0 }) } />
+      <ErrorIcon />
       { errors } { errors === 1 ? 'error' : 'errors' }
     </button>
   </Fill>;
