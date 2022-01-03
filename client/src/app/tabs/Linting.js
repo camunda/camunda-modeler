@@ -61,7 +61,7 @@ export function Linting(props) {
     });
   };
 
-  return <Fill slot="status-bar__file" group="2_linting">
+  return <Fill slot="status-bar__file" group="9_linting">
     <button
       className={ classnames(css.Linting, 'btn', { 'btn--active': panel.open && panel.tab === 'linting' }) }
       onClick={ onClick }
