@@ -2243,6 +2243,26 @@ describe('<App>', function() {
         expect(e.message).to.eql('must not change tab.id');
       }
     });
+
+
+    it('should emit <app.tabsChanged> event on tab updated', async function() {
+
+      // given
+      const eventSpy = sinon.spy();
+
+      const newAttrs = {
+        name: 'foo.bpmn'
+      };
+
+      app.on('app.tabsChanged', eventSpy);
+
+      // when
+      await app.updateTab(tab, newAttrs);
+
+      // then
+      expect(eventSpy).to.have.been.calledOnce;
+    });
+
   });
 
 
