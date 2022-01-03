@@ -33,7 +33,8 @@ const TABS_OPTS = {
   }
 };
 
-const SMALL_TAB_WIDTH = 45;
+const SMALL_TAB_WIDTH = 90;
+const SMALLER_TAB_WIDTH = 45;
 
 
 export default class TabLinks extends PureComponent {
@@ -158,6 +159,7 @@ function Tab(props) {
 
   const tabRef = React.useRef(0);
   const [ small, setSmall ] = React.useState(false);
+  const [ smaller, setSmaller ] = React.useState(false);
 
   const tabNode = tabRef.current;
 
@@ -169,6 +171,7 @@ function Tab(props) {
     const resizeObserver = new ResizeObserver(() => {
       const width = tabNode.getBoundingClientRect().width;
       setSmall(width < SMALL_TAB_WIDTH);
+      setSmaller(width < SMALLER_TAB_WIDTH);
     });
 
     resizeObserver.observe(tabNode);
@@ -183,7 +186,8 @@ function Tab(props) {
       className={ classNames('tab', {
         'tab--active': active,
         'tab--dirty': dirty,
-        'tab--small': small
+        'tab--small': small,
+        'tab--smaller': smaller
       }) }
       onClick={ (event) => onSelect(tab, event) }
       onContextMenu={ (event) => (onContextMenu || noop)(tab, event) }
@@ -196,7 +200,7 @@ function Tab(props) {
         }
         <p className="tab__name">{tab.name}</p>
         {
-          active && (
+          (active || !small) && (
             <TabClose
               tab={ tab }
               dirty={ dirty }

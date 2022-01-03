@@ -116,7 +116,7 @@ describe('<TabLinks>', function() {
     });
 
 
-    it('should NOT display close on non active', function() {
+    it('should display close on non active', function() {
 
       // given
       const {
@@ -127,7 +127,7 @@ describe('<TabLinks>', function() {
       const close = tree.find('.tab[data-tab-id="tab2"] .tab__close');
 
       // then
-      expect(close.exists()).to.be.false;
+      expect(close.exists()).to.be.true;
     });
 
 
@@ -395,6 +395,53 @@ describe('<TabLinks>', function() {
     // TODO(pinussilvestrus): the resize observer is hard to test
     // in the current test environment
     it.skip('should set <small> selector on resize', function() {
+
+      // given
+      const tabs = Array(10).fill().map((_, i) => {
+        return {
+          id: `tab${i}`,
+          name: `tab${i}.tab`
+        };
+      });
+
+      const {
+        tree
+      } = renderTabLinks({
+        tabs
+      });
+
+      // when
+      const tabNode = tree.find('.tab[data-tab-id="tab1"]').getDOMNode();
+
+      tabNode.dispatchEvent(new Event('resize'));
+
+      // then
+      expect(tabNode.classList.contains('tab--small')).to.be.true;
+    });
+
+  });
+
+
+  describe('smaller state', function() {
+
+    it('should NOT set <smaller> selector initially', function() {
+
+      // given
+      const {
+        tree
+      } = renderTabLinks();
+
+      // when
+      const tabNode = tree.find('.tab[data-tab-id="tab1"]').getDOMNode();
+
+      // then
+      expect(tabNode.classList.contains('tab--smaller')).to.be.false;
+    });
+
+
+    // TODO(pinussilvestrus): the resize observer is hard to test
+    // in the current test environment
+    it.skip('should set <smaller> selector on resize', function() {
 
       // given
       const tabs = Array(20).fill().map((_, i) => {
