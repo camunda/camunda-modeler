@@ -116,7 +116,7 @@ async function run(args) {
     return;
   }
 
-  const changes = exec('git', ['status', '--short']).stdout.trim();
+  const changes = exec('git', [ 'status', '--short' ]).stdout.trim();
 
   if (!changes) {
     console.log('No license book changes, skipping commit');

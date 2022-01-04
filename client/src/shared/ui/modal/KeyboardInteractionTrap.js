@@ -44,7 +44,7 @@ class KeyboardInteractionTrapComponent extends PureComponent {
 
   updateMenu(element) {
 
-    const enabled = ['INPUT', 'TEXTAREA'].includes(element.tagName);
+    const enabled = [ 'INPUT', 'TEXTAREA' ].includes(element.tagName);
 
     const editMenu = [
       [

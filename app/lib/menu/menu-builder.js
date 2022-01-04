@@ -149,10 +149,10 @@ class MenuBuilder {
       .filter(menu => Boolean(menu.length));
 
     if (!providedMenus.length) {
-      return [{
+      return [ {
         label: 'Empty',
         enabled: false
-      }];
+      } ];
     }
 
     const groups = groupBy(flatten(providedMenus), 'group');
@@ -300,7 +300,7 @@ class MenuBuilder {
   appendSwitchTab(submenu) {
     this.menu.append(new MenuItem({
       label: 'Switch Tab..',
-      submenu: submenu || Menu.buildFromTemplate([{
+      submenu: submenu || Menu.buildFromTemplate([ {
         label: 'Select Next Tab',
         enabled: canSwitchTab(this.options.state),
         accelerator: 'Control+TAB',
@@ -311,7 +311,7 @@ class MenuBuilder {
         enabled: canSwitchTab(this.options.state),
         accelerator: 'Control+SHIFT+TAB',
         click: () => app.emit('menu:action', 'select-tab', 'previous')
-      }])
+      } ])
     }));
 
     this.appendSeparator();

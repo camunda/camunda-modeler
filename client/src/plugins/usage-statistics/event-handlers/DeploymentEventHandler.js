@@ -43,7 +43,7 @@ const ENGINE_PROFILE_TAB_TYPES = [
 ];
 
 const DIAGRAM_BY_TAB_TYPE = {
-  'bpmn': [ BPMN_TAB_TYPE, CLOUD_BPMN_TAB_TYPE],
+  'bpmn': [ BPMN_TAB_TYPE, CLOUD_BPMN_TAB_TYPE ],
   'dmn': [ DMN_TAB_TYPE ]
 };
 

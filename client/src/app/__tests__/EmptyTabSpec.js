@@ -219,7 +219,7 @@ describe('<EmptyTab>', function() {
 
 function noop() {}
 
-function createEmptyTab(options = {}, mountFn=shallow) {
+function createEmptyTab(options = {}, mountFn = shallow) {
 
   if (typeof options === 'function') {
     mountFn = options;

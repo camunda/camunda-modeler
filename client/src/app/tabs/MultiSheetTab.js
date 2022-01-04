@@ -466,13 +466,13 @@ function getErrorDialog({
     type: 'error',
     title: 'Import Error',
     message: 'Ooops!',
-    buttons: [{
+    buttons: [ {
       id: 'close',
       label: 'Close'
     }, {
       id: 'ask-in-forum',
       label: 'Ask in Forum'
-    }],
+    } ],
     detail: [
       error.message,
       '',

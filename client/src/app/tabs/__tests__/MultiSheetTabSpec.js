@@ -293,7 +293,7 @@ describe('<MultiSheetTab>', function() {
         }
       }
 
-      const providers = [{
+      const providers = [ {
         type: 'default',
         editor: BrokenEditor,
         defaultName: 'Default'
@@ -302,7 +302,7 @@ describe('<MultiSheetTab>', function() {
         editor: DefaultEditor,
         defaultName: 'Fallback',
         isFallback: true
-      }];
+      } ];
 
       // when
       const { instance } = renderTab({ providers });
@@ -375,7 +375,7 @@ describe('<MultiSheetTab>', function() {
       const emitEventSpy = sinon.spy();
       const { instance } = renderTab({
         onAction: (...args) => args[0] === 'emit-event' && emitEventSpy(...args),
-        providers: [{
+        providers: [ {
           type: 'foo',
           editor: DefaultEditor,
           defaultName: 'Foo'
@@ -384,7 +384,7 @@ describe('<MultiSheetTab>', function() {
           editor: DefaultEditor,
           defaultName: 'Bar',
           isFallback: true
-        }]
+        } ]
       });
       const { sheets } = instance.getCached();
 
@@ -419,7 +419,7 @@ describe('<MultiSheetTab>', function() {
       ({ instance, wrapper } = renderTab({
         xml: INITIAL_XML,
         cache,
-        providers: [{
+        providers: [ {
           type: 'foo',
           editor: DefaultEditor,
           defaultName: 'Foo'
@@ -428,7 +428,7 @@ describe('<MultiSheetTab>', function() {
           editor: DefaultEditor,
           defaultName: 'Bar',
           isFallback: true
-        }]
+        } ]
       }));
     });
 

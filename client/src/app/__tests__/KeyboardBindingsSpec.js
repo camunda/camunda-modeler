@@ -46,12 +46,12 @@ describe('KeyboardBindings', function() {
       // given
       event = createKeyEvent('F');
 
-      keyboardBindings.update([{
+      keyboardBindings.update([ {
         custom: {
           key: 'F',
           keydown: 'foo'
         }
-      }]);
+      } ]);
 
       // when
       keyboardBindings._keyDownHandler(event);
@@ -70,12 +70,12 @@ describe('KeyboardBindings', function() {
       // given
       event = createKeyEvent('F');
 
-      keyboardBindings.update([{
+      keyboardBindings.update([ {
         custom: {
           key: 'F',
           keypress: 'foo'
         }
-      }]);
+      } ]);
 
       // when
       keyboardBindings._keyPressHandler(event);
@@ -98,12 +98,12 @@ describe('KeyboardBindings', function() {
       // given
       event = createKeyEvent('F');
 
-      keyboardBindings.update([{
+      keyboardBindings.update([ {
         custom: {
           key: 'F',
           keyup: 'foo'
         }
-      }]);
+      } ]);
 
       // when
       keyboardBindings._keyUpHandler(event);
@@ -124,10 +124,10 @@ describe('KeyboardBindings', function() {
     // given
     event = createKeyEvent('C', { ctrlKey: true });
 
-    keyboardBindings.update([{
+    keyboardBindings.update([ {
       accelerator: 'CommandOrControl + C',
       action: 'copy'
-    }]);
+    } ]);
 
     // when
     keyboardBindings._keyDownHandler(event);
@@ -142,10 +142,10 @@ describe('KeyboardBindings', function() {
     // given
     event = createKeyEvent('X', { ctrlKey: true });
 
-    keyboardBindings.update([{
+    keyboardBindings.update([ {
       accelerator: 'CommandOrControl + X',
       action: 'cut'
-    }]);
+    } ]);
 
     // when
     keyboardBindings._keyDownHandler(event);
@@ -160,10 +160,10 @@ describe('KeyboardBindings', function() {
     // given
     event = createKeyEvent('V', { ctrlKey: true });
 
-    keyboardBindings.update([{
+    keyboardBindings.update([ {
       accelerator: 'CommandOrControl + V',
       action: 'paste'
-    }]);
+    } ]);
 
     // when
     keyboardBindings._keyDownHandler(event);
@@ -178,10 +178,10 @@ describe('KeyboardBindings', function() {
     // given
     event = createKeyEvent('Z', { ctrlKey: true });
 
-    keyboardBindings.update([{
+    keyboardBindings.update([ {
       accelerator: 'CommandOrControl + Z',
       action: 'undo'
-    }]);
+    } ]);
 
     // when
     keyboardBindings._keyDownHandler(event);
@@ -198,10 +198,10 @@ describe('KeyboardBindings', function() {
       // given
       event = createKeyEvent('Y', { ctrlKey: true });
 
-      keyboardBindings.update([{
+      keyboardBindings.update([ {
         accelerator: 'CommandOrControl + Y',
         action: 'redo'
-      }]);
+      } ]);
 
       // when
       keyboardBindings._keyDownHandler(event);
@@ -216,10 +216,10 @@ describe('KeyboardBindings', function() {
       // given
       event = createKeyEvent('Z', { ctrlKey: true, shiftKey: true });
 
-      keyboardBindings.update([{
+      keyboardBindings.update([ {
         accelerator: 'CommandOrControl + Y',
         action: 'redo'
-      }]);
+      } ]);
 
       // when
       keyboardBindings._keyDownHandler(event);
@@ -236,10 +236,10 @@ describe('KeyboardBindings', function() {
     // given
     event = createKeyEvent('A', { ctrlKey: true });
 
-    keyboardBindings.update([{
+    keyboardBindings.update([ {
       accelerator: 'CommandOrControl + A',
       action: 'selectAll'
-    }]);
+    } ]);
 
     // when
     keyboardBindings._keyDownHandler(event);
@@ -306,10 +306,10 @@ describe('KeyboardBindings', function() {
       // given
       event = createKeyEvent('Backspace');
 
-      keyboardBindings.update([{
+      keyboardBindings.update([ {
         accelerator: 'Delete',
         action: 'removeSelection'
-      }]);
+      } ]);
 
       // when
       keyboardBindings._keyDownHandler(event);
@@ -329,10 +329,10 @@ describe('KeyboardBindings', function() {
 
       event = createKeyEvent('Delete');
 
-      keyboardBindings.update([{
+      keyboardBindings.update([ {
         accelerator: 'Delete',
         action: 'removeSelection'
-      }]);
+      } ]);
 
       // when
       keyboardBindings._keyDownHandler(event);
@@ -348,10 +348,10 @@ describe('KeyboardBindings', function() {
     // given
     event = createKeyEvent('A', { ctrlKey: true });
 
-    keyboardBindings.update([{
+    keyboardBindings.update([ {
       accelerator: 'CommandOrControl + A',
       action: 'selectAll'
-    }]);
+    } ]);
 
     const newActionSpy = spy();
 

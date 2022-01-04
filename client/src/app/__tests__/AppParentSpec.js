@@ -884,7 +884,7 @@ describe('<AppParent>', function() {
       });
 
       const plugins = new Plugins({
-        getAppPlugins: () => [{}]
+        getAppPlugins: () => [ {} ]
       });
 
       const { appParent } = createAppParent({
@@ -942,7 +942,7 @@ describe('<AppParent>', function() {
 });
 
 
-function createAppParent(options = {}, mountFn=shallow) {
+function createAppParent(options = {}, mountFn = shallow) {
 
   if (typeof options === 'function') {
     mountFn = options;

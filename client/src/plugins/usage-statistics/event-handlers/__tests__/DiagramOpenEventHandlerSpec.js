@@ -1315,7 +1315,7 @@ describe('<DiagramOpenEventHandler>', () => {
 function mockElementTemplates() {
   return [
     {
-      appliesTo: [ 'bpmn:ServiceTask'],
+      appliesTo: [ 'bpmn:ServiceTask' ],
       properties: [
         { binding: { name: 'camunda:class', type: 'property' } },
         { binding: { name: 'sender', type: 'camunda:inputParameter' } },

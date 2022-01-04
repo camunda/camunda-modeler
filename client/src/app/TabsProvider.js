@@ -137,21 +137,21 @@ export default class TabsProvider {
           return `diagram_${suffix}.bpmn`;
         },
         getHelpMenu() {
-          return [{
+          return [ {
             label: 'BPMN 2.0 Tutorial',
             action: 'https://camunda.org/bpmn/tutorial/'
           },
           {
             label: 'BPMN Modeling Reference',
             action: 'https://camunda.org/bpmn/reference/'
-          }];
+          } ];
         },
         getNewFileMenu() {
-          return [{
+          return [ {
             label: 'BPMN diagram',
             group: 'Camunda Platform',
             action: 'create-bpmn-diagram'
-          }];
+          } ];
         },
         getLinter() {
           return null;
@@ -208,11 +208,11 @@ export default class TabsProvider {
           return [];
         },
         getNewFileMenu() {
-          return [{
+          return [ {
             label: 'BPMN diagram',
             group: 'Camunda Cloud',
             action: 'create-cloud-bpmn-diagram'
-          }];
+          } ];
         },
         getLinter() {
           return BpmnLinter;
@@ -243,21 +243,21 @@ export default class TabsProvider {
           return `diagram_${suffix}.cmmn`;
         },
         getHelpMenu() {
-          return [{
+          return [ {
             label: 'CMMN 1.1 Tutorial',
             action: 'https://docs.camunda.org/get-started/cmmn11/'
           },
           {
             label: 'CMMN Modeling Reference',
             action: 'https://docs.camunda.org/manual/latest/reference/cmmn11/'
-          }];
+          } ];
         },
         getNewFileMenu() {
-          return [{
+          return [ {
             label: 'CMMN diagram',
             group: 'Camunda Platform',
             action: 'create-cmmn-diagram'
-          }];
+          } ];
         },
         getLinter() {
           return null;
@@ -288,17 +288,17 @@ export default class TabsProvider {
           return `diagram_${suffix}.dmn`;
         },
         getHelpMenu() {
-          return [{
+          return [ {
             label: 'DMN Tutorial',
             action: 'https://camunda.org/dmn/tutorial/'
-          }];
+          } ];
         },
         getNewFileMenu() {
-          return [{
+          return [ {
             label: 'DMN diagram',
             group: 'Camunda Platform',
             action: 'create-dmn-diagram'
-          }];
+          } ];
         },
         getLinter() {
           return null;
@@ -328,11 +328,11 @@ export default class TabsProvider {
           return [];
         },
         getNewFileMenu() {
-          return [{
+          return [ {
             label: 'Form',
             group: 'Camunda Platform',
             action: 'create-form'
-          }];
+          } ];
         },
         getLinter() {
           return FormLinter;
@@ -373,11 +373,11 @@ export default class TabsProvider {
           return [];
         },
         getNewFileMenu() {
-          return [{
+          return [ {
             label: 'Form',
             group: 'Camunda Cloud',
             action: 'create-cloud-form'
-          }];
+          } ];
         },
         getLinter() {
           return FormLinter;

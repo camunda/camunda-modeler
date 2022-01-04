@@ -88,7 +88,7 @@ const artifactOptions = [
 // --win, --linux, --mac
 const platforms = [
   argv.win ? 'win' : null,
-  argv.linux ? 'linux': null,
+  argv.linux ? 'linux' : null,
   argv.mac ? 'mac' : null
 ].filter(f => f);
 

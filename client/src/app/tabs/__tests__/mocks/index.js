@@ -32,7 +32,7 @@ export class Editor extends Component {
   }
 }
 
-export const providers = [{
+export const providers = [ {
   type: 'editor',
   editor: Editor,
   defaultName: 'Editor'
@@ -41,7 +41,7 @@ export const providers = [{
   editor: Editor,
   defaultName: 'Fallback',
   isFallback: true
-}];
+} ];
 
 export const tab = {
   id: 42,

@@ -78,11 +78,11 @@ describe('<DropdownButton>', function() {
 
     function openDropdown(props) {
 
-      const items = [{
+      const items = [ {
         text: 'foo'
       }, {
         text: 'bar'
-      }];
+      } ];
 
       const wrapper = mount(<DropdownButton items={ items } { ...props } />);
 
@@ -147,10 +147,10 @@ describe('<DropdownButton>', function() {
     // given
     const spy = sinon.spy();
 
-    const items = [{
+    const items = [ {
       text: 'foo',
       onClick: spy
-    }];
+    } ];
 
     const wrapper = shallow(<DropdownButton items={ items } />);
 

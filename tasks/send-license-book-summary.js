@@ -179,12 +179,12 @@ function getChangesSummary({ currentVersion, previousVersion, file }) {
 }
 
 function getDiff({ currentVersion, previousVersion, file }) {
-  const previousFile = exec('git', ['show', `${previousVersion}:${file}`]).stdout;
+  const previousFile = exec('git', [ 'show', `${previousVersion}:${file}` ]).stdout;
 
   // diff exits with <1> if a diff exists; we must account for that special behavior
   // cf. https://github.com/nodejs/node/issues/19494#issuecomment-374721063
   try {
-    return exec('diff', ['-u', '-', file], { input: previousFile }).stdout;
+    return exec('diff', [ '-u', '-', file ], { input: previousFile }).stdout;
   } catch (e) {
 
     if (e.code !== 1) {

@@ -42,7 +42,7 @@ export default function create(options) {
   }, {
     autoCloseTags: true,
     dragDrop: true,
-    allowDropFileTypes: ['text/plain'],
+    allowDropFileTypes: [ 'text/plain' ],
     lineWrapping: true,
     lineNumbers: true,
     mode: {

@@ -426,7 +426,7 @@ describe('<UsageStatistics>', () => {
 
 // helpers //////////////////
 
-function createUsageStatistics(props={}) {
+function createUsageStatistics(props = {}) {
 
   const configValues = {
     'editor.id': 'test-editor-id',

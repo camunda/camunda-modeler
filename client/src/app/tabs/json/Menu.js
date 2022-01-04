@@ -13,7 +13,7 @@ import {
 } from '../getEditMenu';
 
 function getFindEntries() {
-  return [{
+  return [ {
     label: 'Find',
     accelerator: 'CommandOrControl+F',
     action: 'find'
@@ -29,7 +29,7 @@ function getFindEntries() {
     label: 'Replace',
     accelerator: 'Shift+CommandOrControl+F',
     action: 'replace'
-  }];
+  } ];
 }
 
 function getCopyCutPasteEntries() {

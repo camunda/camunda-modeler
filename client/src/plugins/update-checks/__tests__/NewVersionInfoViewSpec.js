@@ -36,13 +36,13 @@ describe('<NewVersionInfoView>', () => {
 
     wrapper = mount(<NewVersionInfoView latestVersionInfo={ {
       latestVersion: 'v3.7.0',
-      releases: [{
+      releases: [ {
         version: 'v3.5.0',
         releaseNoteHTML: 'HTML 1'
       }, {
         version: 'v3.6.0',
         releaseNoteHTML: 'HTML 2'
-      }]
+      } ]
     } } currentVersion={ 'v3.4.0' } />);
   });
 

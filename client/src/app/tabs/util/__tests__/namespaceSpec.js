@@ -44,7 +44,7 @@ describe('tabs/bpmn/util - namespace', function() {
       // then
       expect(used).to.eql({
         uri: NAMESPACE_URL_ACTIVITI,
-        prefixes: ['activiti']
+        prefixes: [ 'activiti' ]
       });
     });
 

@@ -1720,10 +1720,10 @@ describe('<App>', function() {
       // then
       const log = tree.find(Log).first();
 
-      expect(app.state.logEntries).to.eql([{
+      expect(app.state.logEntries).to.eql([ {
         message: 'foo',
         category: 'bar'
-      }]);
+      } ]);
 
       expect(log.props().layout.log.open).to.be.true;
     });
@@ -2525,10 +2525,10 @@ describe('<App>', function() {
         globals: {
           plugins: {
             get(type) {
-              return [{
+              return [ {
                 __init__: [ type ],
                 [ type ]: [ 'type', noop ]
-              }];
+              } ];
             }
           }
         }
@@ -2538,10 +2538,10 @@ describe('<App>', function() {
       const plugins = app.getPlugins('foo');
 
       // then
-      expect(plugins).to.eql([{
+      expect(plugins).to.eql([ {
         __init__: [ 'foo' ],
         foo: [ 'type', noop ]
-      }]);
+      } ]);
     });
   });
 
@@ -2724,7 +2724,7 @@ describe('<App>', function() {
         // given
         const options = {
           name: 'file.ext',
-          providerNames: ['CMMN', 'BPMN', 'DMN', 'FORM']
+          providerNames: [ 'CMMN', 'BPMN', 'DMN', 'FORM' ]
         };
 
         // when
@@ -2741,7 +2741,7 @@ describe('<App>', function() {
         // given
         const options = {
           name: 'file.ext',
-          providerNames: ['BPMN', 'DMN']
+          providerNames: [ 'BPMN', 'DMN' ]
         };
 
         // when
@@ -2757,7 +2757,7 @@ describe('<App>', function() {
         // given
         const options = {
           name: 'file.ext',
-          providerNames: ['BPMN']
+          providerNames: [ 'BPMN' ]
         };
 
         // when
@@ -2921,7 +2921,7 @@ class MockTab {
   triggerAction() {}
 }
 
-function createApp(options = {}, mountFn=shallow) {
+function createApp(options = {}, mountFn = shallow) {
 
   if (typeof options === 'function') {
     mountFn = options;

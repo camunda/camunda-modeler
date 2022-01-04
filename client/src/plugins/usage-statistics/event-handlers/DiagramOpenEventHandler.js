@@ -148,7 +148,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
     if (response && response.status === HTTP_STATUS_PAYLOAD_TOO_BIG) {
 
       // Payload too large, send again with smaller payload
-      this.sendToET(omit(payload, ['elementTemplates']));
+      this.sendToET(omit(payload, [ 'elementTemplates' ]));
     }
   }
 

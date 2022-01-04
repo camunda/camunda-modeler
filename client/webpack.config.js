@@ -39,7 +39,7 @@ module.exports = {
   mode: DEV ? 'development' : (LICENSE_CHECK ? 'none' : 'production'),
   target: 'web',
   entry: {
-    bundle: ['./src/index.js']
+    bundle: [ './src/index.js' ]
   },
   output: {
     path: __dirname + '/build',
@@ -97,7 +97,7 @@ module.exports = {
           {
 
             // exclude files served otherwise
-            exclude: [/\.(js|jsx|mjs|bpmnlintrc)$/, /\.html$/, /\.json$/],
+            exclude: [ /\.(js|jsx|mjs|bpmnlintrc)$/, /\.html$/, /\.json$/ ],
             loader: 'file-loader',
             options: {
               name: 'static/media/[name].[hash:8].[ext]',
@@ -150,7 +150,7 @@ function sentryIntegration() {
     new SentryWebpackPlugin({
       release: NODE_ENV === 'production' ? version : 'dev',
       include: '.',
-      ignore: ['node_modules', 'webpack.config.js', '*Spec.js'],
+      ignore: [ 'node_modules', 'webpack.config.js', '*Spec.js' ],
     })
   ];
 }

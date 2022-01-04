@@ -213,9 +213,9 @@ describe('<DeploymentTool>', () => {
         name: 'user.form',
         contents: []
       };
-      const attachments = [{
+      const attachments = [ {
         path: file.path
-      }];
+      } ];
       const configuration = createConfiguration({ attachments });
       const config = {
         get(key, defaultValue) {
@@ -261,9 +261,9 @@ describe('<DeploymentTool>', () => {
         name: 'user.form',
         contents: []
       };
-      const attachments = [{
+      const attachments = [ {
         path: file.path
-      }];
+      } ];
       const savedConfiguration = createConfiguration({ attachments });
       const config = {
         get(key, defaultValue) {
@@ -1404,5 +1404,5 @@ function createFileSystem(overrides = {}) {
 function noop() {}
 
 function withoutCredentials(endpoint) {
-  return omit(endpoint, ['username', 'password', 'token']);
+  return omit(endpoint, [ 'username', 'password', 'token' ]);
 }

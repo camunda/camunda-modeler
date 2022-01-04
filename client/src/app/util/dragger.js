@@ -12,7 +12,7 @@ import dragTabs from 'drag-tabs';
 
 const noop = () => {};
 
-export function addDragger(node, options, onDrag, onStart=noop) {
+export function addDragger(node, options, onDrag, onStart = noop) {
 
   const dragger = dragTabs(node, options);
 

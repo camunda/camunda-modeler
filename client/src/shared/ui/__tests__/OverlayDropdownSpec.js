@@ -81,7 +81,7 @@ describe('<OverlayDropdown>', function() {
   it('should close when option is selected', () => {
 
     // given
-    const items = [{ text: 'TestOption', onClick: () => {} }];
+    const items = [ { text: 'TestOption', onClick: () => {} } ];
     const wrapper = mount((
       <OverlayDropdown items={ items } buttonRef={ mockButtonRef }>
         TestButton
@@ -101,7 +101,7 @@ describe('<OverlayDropdown>', function() {
 
     // given
     const spy = sinon.spy();
-    const items = [{ text: 'TestOption', onClick: spy }];
+    const items = [ { text: 'TestOption', onClick: spy } ];
     const wrapper = mount((
       <OverlayDropdown items={ items } buttonRef={ mockButtonRef }>
         TestButton
