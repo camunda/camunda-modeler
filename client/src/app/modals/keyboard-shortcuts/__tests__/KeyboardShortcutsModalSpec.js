@@ -85,7 +85,7 @@ describe('<KeyboardShortcutsModal>', function() {
 });
 
 
-function renderOverlay(options={}) {
+function renderOverlay(options = {}) {
 
   const platform = options.platform || 'win32';
 

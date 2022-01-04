@@ -95,7 +95,7 @@ export default class DeploymentTool extends PureComponent {
     return this.deployTab(activeTab, options, this._anchorRef);
   }
 
-  async deployTab(tab, options={}, anchor) {
+  async deployTab(tab, options = {}, anchor) {
 
     const {
       configure
@@ -537,7 +537,7 @@ export default class DeploymentTool extends PureComponent {
     // the primary button action: https://github.com/camunda/camunda-modeler/issues/1440
 
     const isDeployOpen = () => {
-      return overlayState ? overlayState.anchor===this._anchorRef : false;
+      return overlayState ? overlayState.anchor === this._anchorRef : false;
     };
 
     const onClick = () => {
@@ -620,7 +620,7 @@ function withoutExtension(name) {
 }
 
 function withoutCredentials(endpoint) {
-  return omit(endpoint, ['username', 'password', 'token']);
+  return omit(endpoint, [ 'username', 'password', 'token' ]);
 }
 
 function addOrUpdateById(collection, element) {

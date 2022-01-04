@@ -12,7 +12,7 @@ function getCopyPasteEntries({
   copy,
   paste
 }) {
-  return [{
+  return [ {
     label: 'Copy',
     accelerator: 'CommandOrControl+C',
     enabled: copy,
@@ -22,7 +22,7 @@ function getCopyPasteEntries({
     accelerator: 'CommandOrControl+V',
     enabled: paste,
     action: 'paste'
-  }];
+  } ];
 }
 
 export default function getBpmnContextMenu(state) {

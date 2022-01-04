@@ -25,7 +25,7 @@ class MacMenuBuilder extends MenuBuilder {
 
   appendAppMenu() {
     const subMenu = new MacMenuBuilder({
-      template: [{
+      template: [ {
         label: 'About ' + this.options.appName,
         role: 'about'
       }, {
@@ -52,7 +52,7 @@ class MacMenuBuilder extends MenuBuilder {
         role: 'unhide'
       }, {
         type: 'separator'
-      }]
+      } ]
     }).appendQuit().get();
 
     this.menu.append(new MenuItem({

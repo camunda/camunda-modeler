@@ -134,7 +134,7 @@ export default class StartInstanceTool extends PureComponent {
      return null;
    }
 
-   async startInstance(options={}) {
+   async startInstance(options = {}) {
 
      const {
        configure
@@ -209,7 +209,7 @@ export default class StartInstanceTool extends PureComponent {
        const {
          action,
          configuration: userConfiguration
-       }= await this.getConfigurationFromUserInput(
+       } = await this.getConfigurationFromUserInput(
          tab,
          startConfiguration,
          uiOptions

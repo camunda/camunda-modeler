@@ -269,7 +269,7 @@ export class App extends PureComponent {
    * @param {Object} newAttrs
    * @param {Object} [newState={}]
    */
-  updateTab(tab, newAttrs, newState={}) {
+  updateTab(tab, newAttrs, newState = {}) {
 
     if (newAttrs.id && newAttrs.id !== tab.id) {
       throw new Error('must not change tab.id');
@@ -2239,10 +2239,10 @@ function getSaveFileDialogFilters(provider) {
     name
   } = provider;
 
-  return [{
+  return [ {
     name,
     extensions
-  }, FILTER_ALL_EXTENSIONS];
+  }, FILTER_ALL_EXTENSIONS ];
 }
 
 function getExportFileDialogFilters(provider) {

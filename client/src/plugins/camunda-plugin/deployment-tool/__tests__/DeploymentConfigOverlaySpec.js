@@ -724,7 +724,7 @@ describe('<DeploymentConfigOverlay>', () => {
 
 // helpers //////////
 
-function createOverlay(props={}, renderFn = shallow) {
+function createOverlay(props = {}, renderFn = shallow) {
 
   const {
     configuration,

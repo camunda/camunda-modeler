@@ -57,8 +57,8 @@ describe('<DeploymentConfigValidator>', () => {
 
     // then
     expect(validate([])).to.not.exist;
-    expect(validate([{ contents: 'content' }])).to.not.exist;
-    expect(validate([{ contents: null }])).to.eql([ FILE_NOT_FOUND_ERROR ]);
+    expect(validate([ { contents: 'content' } ])).to.not.exist;
+    expect(validate([ { contents: null } ])).to.eql([ FILE_NOT_FOUND_ERROR ]);
     expect(validate([
       { contents: null },
       { contents: 'content' }
@@ -366,9 +366,9 @@ describe('<DeploymentConfigValidator>', () => {
       const config = {
         deployment: {
           name: 'name',
-          attachments: [{
+          attachments: [ {
             contents: null
-          }]
+          } ]
         },
         endpoint: {
           authType: AuthTypes.bearer,

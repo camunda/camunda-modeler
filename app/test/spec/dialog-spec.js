@@ -50,13 +50,13 @@ describe('Dialog', function() {
       electronDialog.setResponse({ response: 0 });
 
       var options = {
-        buttons: [{
+        buttons: [ {
           id: 'foo',
           label: 'Foo'
         }, {
           id: 'bar',
           label: 'Bar'
-        }],
+        } ],
         title: 'error',
         type: 'error'
       };
@@ -82,13 +82,13 @@ describe('Dialog', function() {
       electronDialog.setResponse({ response: 0 });
 
       var options = {
-        buttons: [{
+        buttons: [ {
           id: 'foo',
           label: 'Foo'
         }, {
           id: 'bar',
           label: 'Bar'
-        }],
+        } ],
         title: 'warning',
         type: 'warning'
       };
@@ -114,13 +114,13 @@ describe('Dialog', function() {
       electronDialog.setResponse({ response: 0 });
 
       var options = {
-        buttons: [{
+        buttons: [ {
           id: 'foo',
           label: 'Foo'
         }, {
           id: 'bar',
           label: 'Bar'
-        }],
+        } ],
         title: 'info',
         type: 'info'
       };
@@ -146,13 +146,13 @@ describe('Dialog', function() {
       electronDialog.setResponse({ response: 0 });
 
       var options = {
-        buttons: [{
+        buttons: [ {
           id: 'foo',
           label: 'Foo'
         }, {
           id: 'bar',
           label: 'Bar'
-        }],
+        } ],
         title: 'question',
         type: 'question'
       };
@@ -181,10 +181,10 @@ describe('Dialog', function() {
       });
 
       var options = {
-        buttons: [{
+        buttons: [ {
           id: 'foo',
           label: 'Foo'
-        }],
+        } ],
         title: 'info',
         type: 'info',
         checkboxLabel: 'Bar'

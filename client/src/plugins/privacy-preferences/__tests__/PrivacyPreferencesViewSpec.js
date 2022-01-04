@@ -150,7 +150,7 @@ describe('<PrivacyPreferencesView>', function() {
     it('should load privacy preferences', function() {
 
       // given
-      const values = [false, true, false];
+      const values = [ false, true, false ];
 
       const privacyPreferences = {
         ENABLE_CRASH_REPORTS: values[0],

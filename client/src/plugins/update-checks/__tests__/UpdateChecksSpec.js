@@ -567,7 +567,7 @@ describe('<UpdateChecks>', function() {
 
 // helper /////////////////////
 
-async function tick(component, n=10) {
+async function tick(component, n = 10) {
   for (let i = 0; i < n; i ++) {
     await component.update();
   }
@@ -585,7 +585,7 @@ const mockServerResponse = (component, resp, callback) => {
 };
 
 
-function createComponent(props={}) {
+function createComponent(props = {}) {
 
   const onConfigSet = props.onConfigSet || function() {};
 

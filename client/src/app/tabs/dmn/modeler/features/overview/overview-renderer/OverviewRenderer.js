@@ -76,7 +76,7 @@ export default function DrdRenderer(eventBus, pathMap, styles, textRenderer) {
       // fix for safari / chrome / firefox bug not correctly
       // resetting stroke dash array
       if (attrs.strokeDasharray === 'none') {
-        attrs.strokeDasharray = [10000, 1];
+        attrs.strokeDasharray = [ 10000, 1 ];
       }
 
       var marker = svgCreate('marker');

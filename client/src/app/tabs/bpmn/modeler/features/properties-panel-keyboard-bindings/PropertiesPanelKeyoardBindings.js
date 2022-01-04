@@ -76,9 +76,9 @@ PropertiesPanelKeyboardBindings.$inject = [ 'commandStack', 'eventBus', 'propert
 // helpers //////////
 
 function isUndo(event) {
-  return isCommandOrControl(event) && !isShift(event) && isKey(['z', 'Z'], event);
+  return isCommandOrControl(event) && !isShift(event) && isKey([ 'z', 'Z' ], event);
 }
 
 function isRedo(event) {
-  return isCommandOrControl(event) && (isKey(['y', 'Y'], event) || (isKey(['z', 'Z'], event) && isShift(event)));
+  return isCommandOrControl(event) && (isKey([ 'y', 'Y' ], event) || (isKey([ 'z', 'Z' ], event) && isShift(event)));
 }

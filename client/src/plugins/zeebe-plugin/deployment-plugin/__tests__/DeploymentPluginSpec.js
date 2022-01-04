@@ -138,7 +138,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       endpointId: 'bar'
     };
 
-    const storedEndpoints = [{ id: storedTabConfiguration.endpointId }];
+    const storedEndpoints = [ { id: storedTabConfiguration.endpointId } ];
 
     const config = {
       get(key, defaultValue) {
@@ -274,7 +274,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       deployment: { name: 'foo' },
       endpointId: 'bar'
     };
-    const storedEndpoints = [{ id: storedTabConfiguration.endpointId }];
+    const storedEndpoints = [ { id: storedTabConfiguration.endpointId } ];
 
     const config = {
       get(key, defaultValue) {
@@ -309,9 +309,9 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       deployment: { name: 'foo' },
       camundaCloudClusterId: '1234-abcd'
     };
-    const storedEndpoints = [{
+    const storedEndpoints = [ {
       camundaCloudClusterId: storedTabConfiguration.camundaCloudClusterId
-    }];
+    } ];
 
     const config = {
       get(key, defaultValue) {
@@ -363,7 +363,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       deployment: { name: 'foo' },
       endpointId: 'bar'
     };
-    const storedEndpoints = [{ id: storedTabConfiguration.endpointId }];
+    const storedEndpoints = [ { id: storedTabConfiguration.endpointId } ];
 
     const config = {
       set: setEndpointsSpy,

@@ -141,10 +141,10 @@ class Dialog {
         buttons: buttons.map(({ label }) => label)
       });
     } else {
-      buttons = [{
+      buttons = [ {
         id: 'close',
         label: 'Close'
-      }];
+      } ];
 
       assign(options, {
         buttons: [ 'Close' ]

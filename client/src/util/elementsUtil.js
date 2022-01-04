@@ -24,7 +24,7 @@ function eachElement(elements, fn, depth) {
   depth = depth || 0;
 
   if (!isArray(elements)) {
-    elements = [elements];
+    elements = [ elements ];
   }
 
   forEach(elements, function(s, i) {

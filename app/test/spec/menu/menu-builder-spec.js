@@ -279,11 +279,11 @@ describe('MenuBuilder', () => {
       const action = sinon.spy(ElectronApp, 'emit');
       const menuBuilder = new MenuBuilder({
         state: {
-          editMenu: [{
+          editMenu: [ {
             label: 'label',
             enabled: true,
             action
-          }]
+          } ]
         }
       });
 
@@ -307,11 +307,11 @@ describe('MenuBuilder', () => {
       const action = sinon.spy(ElectronApp, 'emit');
       const menuBuilder = new MenuBuilder({
         state: {
-          editMenu: [{
+          editMenu: [ {
             label: 'label',
             enabled: true,
             action
-          }]
+          } ]
         }
       });
 
@@ -335,11 +335,11 @@ describe('MenuBuilder', () => {
       const action = sinon.spy(ElectronApp, 'emit');
       const menuBuilder = new MenuBuilder({
         state: {
-          editMenu: [{
+          editMenu: [ {
             label: 'label',
             enabled: true,
             action
-          }]
+          } ]
         }
       });
 

@@ -299,7 +299,7 @@ function renderEngineProfile(options = {}) {
 
 function eachProfile(fn) {
   ENGINE_PROFILES.forEach(({ executionPlatform, executionPlatformVersions }) => {
-    [ undefined, ...executionPlatformVersions].forEach((executionPlatformVersion) => {
+    [ undefined, ...executionPlatformVersions ].forEach((executionPlatformVersion) => {
       fn(executionPlatform, executionPlatformVersion);
     });
   });

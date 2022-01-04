@@ -107,7 +107,7 @@ describe('<Overlay>', function() {
 
     const cssProperty = `--overlay-${camelCaseToDash(property)}`;
 
-    function createOverlay(props={}) {
+    function createOverlay(props = {}) {
       const {
         maxHeight,
         maxWidth,

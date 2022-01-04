@@ -471,7 +471,7 @@ function createMockSentryEvent(path) {
   };
 }
 
-function createErrorTracking(props={}) {
+function createErrorTracking(props = {}) {
 
   const configValues = props.configValues || {};
 

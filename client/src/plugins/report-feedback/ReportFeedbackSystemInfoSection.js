@@ -38,7 +38,7 @@ export function ReportFeedbackSystemInfoSection(props) {
     onSubmit
   } = props;
 
-  const [hasSubmitCompleted, setHasSubmitCompleted] = useState(false);
+  const [ hasSubmitCompleted, setHasSubmitCompleted ] = useState(false);
   let timer;
 
   useEffect(() => {
@@ -116,7 +116,7 @@ export function ReportFeedbackSystemInfoSection(props) {
                     className="btn btn-primary"
                     disabled={ hasSubmitCompleted }
                   >
-                    {!hasSubmitCompleted ? 'Copy to clipboard': 'Copied!' }
+                    {!hasSubmitCompleted ? 'Copy to clipboard' : 'Copied!' }
                   </button>
                 </Section.Actions>
               </Form>

@@ -110,7 +110,7 @@ describe('<ClipboardCopySystemInfo>', function() {
 
       // then
       const clipboardText = writeTextSpy.args[0][0].text;
-      expect(clipboardText).to.not.contain(' * Operating System: '+ currentOSInfo);
+      expect(clipboardText).to.not.contain(' * Operating System: ' + currentOSInfo);
     });
 
 

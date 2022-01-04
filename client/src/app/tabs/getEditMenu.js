@@ -37,13 +37,13 @@ const COLORS = [
     title: 'Purple',
     fill: 'rgb(225, 190, 231)',
     stroke: 'rgb(142, 36, 170)'
-  }];
+  } ];
 
 export function getAlignDistributeEntries({
   align,
   distribute
 }) {
-  return [{
+  return [ {
     label: 'Align Elements',
     enabled: align,
     submenu: [ 'Left', 'Right', 'Center', 'Top', 'Bottom', 'Middle' ].map(direction => {
@@ -59,7 +59,7 @@ export function getAlignDistributeEntries({
   }, {
     label: 'Distribute Elements',
     enabled: distribute,
-    submenu: [{
+    submenu: [ {
       label: 'Distribute Horizontally',
       enabled: distribute,
       action: 'distributeElements',
@@ -73,15 +73,15 @@ export function getAlignDistributeEntries({
       options: {
         type: 'vertical'
       }
-    }]
-  }];
+    } ]
+  } ];
 }
 
 
 export function getColorEntries({
   setColor
 }) {
-  return [{
+  return [ {
     label: 'Set Color',
     enabled: setColor,
     submenu: COLORS.map(color => {
@@ -96,7 +96,7 @@ export function getColorEntries({
         icon: `resources/icons/${color.title.toLowerCase()}-circle.png`
       };
     })
-  }];
+  } ];
 }
 
 export function getCanvasEntries({
@@ -182,7 +182,7 @@ export function getCopyCutPasteEntries({
   cut,
   paste
 }) {
-  return [{
+  return [ {
     label: 'Copy',
     accelerator: 'CommandOrControl + C',
     enabled: copy,
@@ -197,11 +197,11 @@ export function getCopyCutPasteEntries({
     accelerator: 'CommandOrControl + V',
     enabled: paste,
     action: 'paste'
-  }];
+  } ];
 }
 
 export function getDefaultCopyCutPasteEntries(inputActive) {
-  return [{
+  return [ {
     label: 'Copy',
     role: 'copy',
     enabled: inputActive
@@ -213,18 +213,18 @@ export function getDefaultCopyCutPasteEntries(inputActive) {
     label: 'Paste',
     role: 'paste',
     enabled: inputActive
-  }];
+  } ];
 }
 
 export function getDiagramFindEntries({
   find
 }) {
-  return [{
+  return [ {
     label: 'Find',
     accelerator: 'CommandOrControl+F',
     enabled: find,
     action: 'find'
-  }];
+  } ];
 }
 
 export function getSelectionEntries({
@@ -331,7 +331,7 @@ export function getUndoRedoEntries({
   redo,
   undo
 }) {
-  return [{
+  return [ {
     label: 'Undo',
     accelerator: 'CommandOrControl+Z',
     enabled: undo,
@@ -341,11 +341,11 @@ export function getUndoRedoEntries({
     accelerator: 'CommandOrControl+Y',
     enabled: redo,
     action: 'redo'
-  }];
+  } ];
 }
 
 export function getDefaultUndoRedoEntries(inputActive) {
-  return [{
+  return [ {
     label: 'Undo',
     role: 'undo',
     enabled: inputActive
@@ -353,7 +353,7 @@ export function getDefaultUndoRedoEntries(inputActive) {
     label: 'Redo',
     role: 'redo',
     enabled: inputActive
-  }];
+  } ];
 }
 
 // helpers //////////

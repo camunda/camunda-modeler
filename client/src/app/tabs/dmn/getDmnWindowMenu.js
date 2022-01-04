@@ -17,7 +17,7 @@ export default function getBpmnWindowMenu(state) {
 }
 
 function getZoomEntries({ zoom }) {
-  return zoom ? [{
+  return zoom ? [ {
     label: 'Zoom In',
 
     // We use Ctrl + = instead of Ctrl + + which works as expected but is shown incorrectly.
@@ -38,11 +38,11 @@ function getZoomEntries({ zoom }) {
     action: 'zoomFit'
   }, {
     type: 'separator'
-  }] : [];
+  } ] : [];
 }
 
 function getPropertiesPanelEntries({ propertiesPanel }) {
-  return propertiesPanel ? [{
+  return propertiesPanel ? [ {
     label: 'Toggle Properties Panel',
     accelerator: 'CommandOrControl+P',
     action: 'toggleProperties'
@@ -50,11 +50,11 @@ function getPropertiesPanelEntries({ propertiesPanel }) {
     label: 'Reset Properties Panel',
     accelerator: 'CommandOrControl+Shift+P',
     action: 'resetProperties'
-  }] : [];
+  } ] : [];
 }
 
 function getOverviewEntries({ overview }) {
-  return overview ? [{
+  return overview ? [ {
     label: 'Toggle Overview',
     accelerator: 'CommandOrControl+P',
     action: 'toggleOverview'
@@ -62,5 +62,5 @@ function getOverviewEntries({ overview }) {
     label: 'Reset Overview',
     accelerator: 'CommandOrControl+Shift+P',
     action: 'resetOverview'
-  }] : [];
+  } ] : [];
 }

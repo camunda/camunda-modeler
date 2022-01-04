@@ -18,7 +18,7 @@ var {
 var EXTENSIONS = {
   all: {
     name: 'All files',
-    extensions: ['*']
+    extensions: [ '*' ]
   },
   supported: {
     name: 'All supported',
@@ -50,7 +50,7 @@ var EXTENSIONS = {
   },
   svg: {
     name: 'SVG Image',
-    extensions: ['svg']
+    extensions: [ 'svg' ]
   }
 };
 
