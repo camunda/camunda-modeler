@@ -1,10 +1,22 @@
+:root {
+  --notification-border-color: var(--color-grey-225-10-85);
+  --notification-background-color: var(--color-grey-225-10-95);
+  --notification-light-background-color: var(--color-grey-225-10-90);
+  --notification-title-font-color: var(--color-grey-225-10-15);
+  --notification-link-color: var(--color-blue-205-100-50);
+  --notification-font-color: var(--color-blue-205-100-35);
+  
+  --notification-font-size: 14px;
+  --notification-code-font-size: 13px;
+}
+
 :local(.Notification) {
   width: 330px;
   background: var(--color-white);
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16);
   border-radius: 6px;
-  border: 1px solid var(--color-grey-225-10-85);
-  background-color: var(--color-grey-225-10-95);
+  border: 1px solid var(--notification-border-color);
+  background-color: var(--notification-background-color);
   padding: 18px;
   margin-bottom: 10px;
   margin-top: 10px;
@@ -37,8 +49,8 @@
     margin: 0;
     font-weight: 500;
     margin-left: 12px;
-    font-size: 14px;
-    color: var(--color-grey-225-10-15);
+    font-size: var(--notification-font-size);
+    color: var(--notification-title-font-color);
     display: flex;
     align-items: center;
     width: 230px;
@@ -47,17 +59,27 @@
 
   .content {
     margin-top: 6px;
-    font-size: 14px;
-    color: var(--color-grey-225-10-35);
+    font-size: var(--notification-font-size);
+    color: var(--notification-font-color);
     margin-left: 36px;
     margin-right: 16px;
+
+    button {
+      border: none;
+      background-color: transparent;
+      margin: 0;
+      padding: 0;
+      color: var(--notification-link-color);
+      text-decoration: underline;
+      cursor: pointer;
+    }
   }
 
   .close {
     margin: 0 -2px 0 auto;
 
     &:hover {
-      background-color: var(--color-grey-225-10-90);
+      background-color: var(--notification-light-background-color);
       border-radius: 100%;
     }
   }
@@ -69,11 +91,11 @@
   code {
     font-family: var(--font-family-monospace);
     user-select: text;
-    background-color: var(--color-grey-225-10-90);
+    background-color: var(--notification-light-background-color);
     border-radius: 3px;
     padding: 0.5px 0;
     word-break: break-all;
-    font-size: 13px;
+    font-size: var(--notification-code-font-size);
     margin-left: 4px;
   }
 }

@@ -760,7 +760,7 @@ describe('<StartInstanceTool>', () => {
       // given
       const startSpy = sinon.stub().throws(new StartInstanceError({ status: 500 }));
 
-      const logSpy = sinon.spy();
+      const displayNotification = sinon.spy();
 
       const actionSpy = sinon.spy(),
             actionTriggered = {
@@ -775,7 +775,7 @@ describe('<StartInstanceTool>', () => {
         instance
       } = createStartInstanceTool({
         activeTab,
-        log: logSpy,
+        displayNotification,
         startSpy,
         actionTriggered
       });
@@ -784,9 +784,14 @@ describe('<StartInstanceTool>', () => {
       await instance.startInstance();
 
       // then
-      expect(logSpy).to.have.been.calledOnce;
+      expect(displayNotification).to.have.been.calledOnce;
       expect(actionSpy).to.have.been.calledOnce;
-      expect(logSpy.args[0][0].category).to.eql('start-instance-error');
+
+      const notification = displayNotification.getCall(0).args[0];
+
+      expect(notification.title).to.eql('Starting process instance failed');
+      expect(notification.content.type).to.eql('button');
+
     });
 
 
@@ -831,6 +836,49 @@ describe('<StartInstanceTool>', () => {
       expect(logSpy).to.not.have.been.called;
       expect(actionSpy).to.have.been.calledOnce; // deployment still succeeds
       expect(logSpy.args.length).to.eql(0);
+    });
+
+
+    it('should open log error via StartInstanceError notification', async () => {
+
+      // given
+      const startSpy = sinon.stub().throws(new StartInstanceError({ status: 500 }));
+
+      const displayNotification = sinon.spy();
+      const logSpy = sinon.spy();
+
+      const actionSpy = sinon.spy(),
+            actionTriggered = {
+              emitEvent: 'emit-event',
+              type: 'deployment.done',
+              handler: actionSpy
+            };
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const {
+        instance
+      } = createStartInstanceTool({
+        activeTab,
+        displayNotification,
+        startSpy,
+        actionTriggered,
+        log:logSpy
+      });
+
+      // when
+      await instance.startInstance();
+
+      // then
+      expect(displayNotification).to.have.been.calledOnce;
+      const notification = displayNotification.getCall(0).args[0];
+
+      notification.content.props.onClick();
+
+      expect(logSpy).to.have.been.calledOnceWith({
+        category: 'start-instance-error',
+        message: 'Starting instance failed'
+      });
     });
 
 

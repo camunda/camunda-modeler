@@ -119,15 +119,21 @@ export default class UpdateChecks extends PureComponent {
     } = this.props;
 
     if (!silentCheck) {
-      appLog({
+
+      const logMessage = {
         category: 'update-check-error',
         message: error.message
-      });
+      };
 
-      displayNotification({
+      const content = <button
+        onClick={ ()=> appLog(logMessage) }>
+        See the log for further details.
+      </button>;
+
+      return displayNotification({
         type: 'error',
         title: 'Modeler update check failed',
-        content: 'See the log for further details.',
+        content: content,
         duration: 4000
       });
     } else {

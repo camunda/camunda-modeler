@@ -402,16 +402,21 @@ export default class StartInstanceTool extends PureComponent {
        displayNotification
      } = this.props;
 
+     const logMessage = {
+       category: 'start-instance-error',
+       message: error.problems || error.message
+     };
+
+     const content = <button
+       onClick={ ()=> log(logMessage) }>
+       See the log for further details.
+     </button>;
+
      displayNotification({
        type: 'error',
        title: START_INSTANCE_FAILED,
-       content: 'See the log for further details.',
+       content: content,
        duration: 4000
-     });
-
-     log({
-       category: 'start-instance-error',
-       message: error.problems || error.message
      });
    }
 
@@ -444,16 +449,21 @@ export default class StartInstanceTool extends PureComponent {
        triggerAction
      } = this.props;
 
+     const logMessage = {
+       category: 'deploy-error',
+       message: error.problems || error.details || error.message
+     };
+
+     const content = <button
+       onClick={ ()=> log(logMessage) }>
+       See the log for further details.
+     </button>;
+
      displayNotification({
        type: 'error',
        title: START_INSTANCE_FAILED,
-       content: 'Deployment was not successful. See the log for further details.',
+       content,
        duration: 4000
-     });
-
-     log({
-       category: 'deploy-error',
-       message: error.problems || error.details || error.message
      });
 
      // If we retrieved the executionPlatformVersion, include it in event

@@ -425,7 +425,6 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     expect(displayNotification).to.have.been.calledOnce;
 
     const notification = displayNotification.getCall(0).args[0];
-    console.log(notification);
 
     expect(
       {
@@ -459,11 +458,55 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     await instance.deploy();
 
     // then
-    expect(displayNotificationSpy).to.have.been.calledWith({
-      type: 'error',
-      title: 'Deployment failed',
-      content: 'See the log for further details.',
-      duration: 4000
+    expect(displayNotificationSpy).to.have.been.calledOnce;
+
+    const notification = displayNotificationSpy.getCall(0).args[0];
+
+    expect(
+      {
+        type: notification.type,
+        title: notification.title,
+        duration: notification.duration,
+        contentType: notification.content.type
+      }).to.eql(
+      {
+        type: 'error',
+        title: 'Deployment failed',
+        duration: 4000,
+        contentType: 'button'
+      }
+    );
+  });
+
+
+  it('should open log via deployment failure notification', async () => {
+
+    // given
+    const displayNotificationSpy = sinon.spy();
+    const logSpy = sinon.spy();
+
+    const mockResult = { success: false, response: { details:'some error' } };
+    const zeebeAPI = new MockZeebeAPI({ deploymentResult: mockResult });
+    const { instance } = createDeploymentPlugin({
+      displayNotification: displayNotificationSpy,
+      zeebeAPI,
+      log: logSpy
+    });
+
+    await instance.deploy();
+
+    // assume
+    expect(displayNotificationSpy).to.have.been.calledOnce;
+
+    const notification = displayNotificationSpy.getCall(0).args[0];
+
+    // when
+    notification.content.props.onClick();
+
+    // then
+    expect(logSpy).to.have.been.calledOnceWith({
+      category: 'deploy-error',
+      message: mockResult.response.details
     });
   });
 

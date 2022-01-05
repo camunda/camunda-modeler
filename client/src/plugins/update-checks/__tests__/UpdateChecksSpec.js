@@ -473,12 +473,24 @@ describe('<UpdateChecks>', function() {
       await instance.checkLatestVersion(null, false);
 
       // then
-      expect(displaySpy).to.have.been.calledOnceWith({
-        type: 'error',
-        title: 'Modeler update check failed',
-        content: 'See the log for further details.',
-        duration: 4000
-      });
+      expect(displaySpy).to.have.been.calledOnce;
+
+      const notification = displaySpy.getCall(0).args[0];
+
+      expect(
+        {
+          type: notification.type,
+          title: notification.title,
+          duration: notification.duration,
+          contentType: notification.content.type
+        }).to.eql(
+        {
+          type: 'error',
+          title: 'Modeler update check failed',
+          duration: 4000,
+          contentType: 'button'
+        }
+      );
     });
 
 
@@ -507,9 +519,10 @@ describe('<UpdateChecks>', function() {
     });
 
 
-    it('should show <update-check-error> log', async () => {
+    it('should show log via <update-check-error> notification', async () => {
 
       // given
+      const displayNotification = sinon.spy();
       const logSpy = sinon.spy();
 
       const error = new Error('These things happen.');
@@ -518,6 +531,7 @@ describe('<UpdateChecks>', function() {
         component,
         instance
       } = createComponent({
+        displayNotification,
         log: logSpy
       });
 
@@ -529,6 +543,11 @@ describe('<UpdateChecks>', function() {
       await instance.checkLatestVersion(null, false);
 
       // then
+      expect(displayNotification).to.have.been.calledOnce;
+      const notification = displayNotification.getCall(0).args[0];
+
+      notification.content.props.onClick();
+
       expect(logSpy).to.have.been.calledOnceWith({
         category: 'update-check-error',
         message: error.message

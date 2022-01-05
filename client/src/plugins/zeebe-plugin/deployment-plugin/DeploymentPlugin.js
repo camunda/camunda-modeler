@@ -448,16 +448,21 @@ export default class DeploymentPlugin extends PureComponent {
     const deployedTo = (gatewayVersion &&
       { executionPlatformVersion: gatewayVersion, executionPlatform: ENGINES.CLOUD }) || undefined;
 
+    const logMessage = {
+      category: 'deploy-error',
+      message: response.details
+    };
+
+    const content = <button
+      onClick={ ()=> log(logMessage) }>
+      See the log for further details.
+    </button>;
+
     displayNotification({
       type: 'error',
       title: 'Deployment failed',
-      content: 'See the log for further details.',
+      content,
       duration: 4000
-    });
-
-    log({
-      category: 'deploy-error',
-      message: response.details
     });
 
     // notify interested parties
