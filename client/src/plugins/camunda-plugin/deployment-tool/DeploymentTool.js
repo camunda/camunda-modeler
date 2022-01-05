@@ -228,16 +228,21 @@ export default class DeploymentTool extends PureComponent {
       triggerAction
     } = this.props;
 
+    const logMessage = {
+      category: 'deploy-error',
+      message: error.problems || error.details || error.message
+    };
+
+    const content = <button
+      onClick={ ()=> log(logMessage) }>
+      See the log for further details.
+    </button>;
+
     displayNotification({
       type: 'error',
       title: 'Deployment failed',
-      content: 'See the log for further details.',
+      content,
       duration: 4000
-    });
-
-    log({
-      category: 'deploy-error',
-      message: error.problems || error.details || error.message
     });
 
     // If we retrieved the executionPlatformVersion, include it in event

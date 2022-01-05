@@ -69,6 +69,28 @@ export default class Notification extends PureComponent {
     this.props.close();
   }
 
+  getContent() {
+    const {
+      content,
+      close
+    } = this.props;
+
+    // allow button to close notification
+    if (content && content.type === 'button') {
+      const onClick = ()=> {
+        content.props.onClick();
+        close();
+      };
+
+      return React.cloneElement(
+        content,
+        { onClick }
+      );
+    }
+
+    return content;
+  }
+
   render() {
     const {
       close,
@@ -92,7 +114,7 @@ export default class Notification extends PureComponent {
             <CloseIcon onClick={ close } className="close" />
           </div>
           <div>
-            { content && <div className="content">{ content }</div> }
+            { content && <div className="content">{ this.getContent() }</div> }
           </div>
         </div>
       );

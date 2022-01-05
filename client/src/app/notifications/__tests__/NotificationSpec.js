@@ -92,6 +92,23 @@ describe('<Notification>', function() {
       expect(closeSpy).to.have.not.been.called;
     });
 
+
+    it('should close on action button click', function() {
+
+      // given
+      const content = <button onClick={ ()=>{} }>iu</button>;
+
+      const closeSpy = sinon.spy();
+
+      const wrapper = shallow(<Notification close={ closeSpy } content={ content } />);
+      const button = wrapper.find('button');
+
+      // when
+      button.simulate('click');
+
+      // then
+      expect(closeSpy).to.have.been.calledOnce;
+    });
   });
 
 
