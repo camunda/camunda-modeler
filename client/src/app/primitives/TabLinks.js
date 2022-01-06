@@ -33,6 +33,13 @@ const TABS_OPTS = {
   }
 };
 
+/**
+ * markers to indicate a tab has less width than
+ * a defined threshold
+ *
+ * a) 90px => small
+ * b) 45px => even smaller
+ */
 const SMALL_TAB_WIDTH = 90;
 const SMALLER_TAB_WIDTH = 45;
 
