@@ -235,7 +235,7 @@ export class TabsProvider {
     forEach(this.providers, (provider) => {
       const { name } = provider;
 
-      if (name) {
+      if (name && !names.includes(name)) {
         names.push(name);
       }
     });

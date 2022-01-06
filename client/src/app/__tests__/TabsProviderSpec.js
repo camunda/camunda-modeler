@@ -10,7 +10,7 @@
 
 import TabsProvider from '../TabsProvider';
 
-import Flags, { DISABLE_DMN, DISABLE_CMMN, DISABLE_ZEEBE } from '../../util/Flags';
+import Flags, { DISABLE_DMN, DISABLE_ZEEBE, DISABLE_PLATFORM, DISABLE_CMMN } from '../../util/Flags';
 
 import {
   ENGINE_PROFILES,
@@ -424,17 +424,73 @@ describe('TabsProvider', function() {
     expect(providers['empty']).to.exist;
   });
 
+  describe('#getProviderNames', function() {
 
-  it('#getProviderNames', function() {
+    it('should return default provider names', function() {
 
-    // given
-    const tabsProvider = new TabsProvider();
+      // given
+      Flags.init({});
+      const tabsProvider = new TabsProvider();
 
-    // when
-    const providerNames = tabsProvider.getProviderNames();
+      // when
+      const providerNames = tabsProvider.getProviderNames();
 
-    // then
-    expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN', 'FORM' ]);
+      // then
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM' ]);
+
+    });
+
+
+    it('should return all provider names', function() {
+
+      // given
+      Flags.init({
+        [DISABLE_CMMN]: false
+      });
+      const tabsProvider = new TabsProvider();
+
+      // when
+      const providerNames = tabsProvider.getProviderNames();
+
+      // then
+      expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN', 'FORM' ]);
+
+    });
+
+
+    it('should return cloud provider names only', function() {
+
+      // given
+      Flags.init({
+        [DISABLE_PLATFORM]: true
+      });
+      const tabsProvider = new TabsProvider();
+
+      // when
+      const providerNames = tabsProvider.getProviderNames();
+
+      // then
+      expect(providerNames).to.eql([ 'BPMN', 'FORM' ]);
+
+    });
+
+
+    it('should return platform provider names only', function() {
+
+      // given
+      Flags.init({
+        [DISABLE_ZEEBE]: true
+      });
+      const tabsProvider = new TabsProvider();
+
+      // when
+      const providerNames = tabsProvider.getProviderNames();
+
+      // then
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM' ]);
+
+    });
+
   });
 
 
