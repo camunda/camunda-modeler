@@ -158,7 +158,7 @@ export default class TabsProvider {
         }
       },
       'cloud-bpmn': {
-        name: null,
+        name: 'BPMN',
         encoding: ENCODING_UTF8,
         exports: {
           png: EXPORT_PNG,
@@ -339,7 +339,7 @@ export default class TabsProvider {
         }
       },
       'cloud-form': {
-        name: null,
+        name: 'FORM',
         encoding: ENCODING_UTF8,
         exports: {},
         extensions: [ 'form' ],
@@ -435,7 +435,7 @@ export default class TabsProvider {
     forEach(this.providers, (provider) => {
       const { name } = provider;
 
-      if (name) {
+      if (name && !names.includes(name)) {
         names.push(name);
       }
     });
