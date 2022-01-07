@@ -15,6 +15,8 @@ import {
   mount
 } from 'enzyme';
 
+import { axe } from 'jest-axe';
+
 import {
   App,
   EMPTY_TAB,
@@ -2911,6 +2913,39 @@ describe('<App>', function() {
       expect(updatedTab.linting).to.be.empty;
     });
 
+  });
+
+
+  describe('a11y', function() {
+
+    let wrapper;
+
+    beforeEach(async function() {
+
+      const rendered = createApp({}, mount);
+
+      const app = rendered.app;
+      wrapper = rendered.tree;
+
+      // when
+      await app.openFiles(
+        [ ...Array(20) ].map((_, i) => createFile(`${i}.bpmn`))
+      );
+    });
+
+
+    it('should have no violations', async function() {
+
+      // when
+      const results = await axe(wrapper.getDOMNode(), {
+        runOnly: [ 'best-practice', 'wcag2a', 'wcag2aa' ]
+      });
+
+      // then
+      expect(results.passes).to.be.not.empty;
+      expect(results.incomplete).to.be.empty;
+      expect(results.violations).to.be.empty;
+    });
   });
 
 });
