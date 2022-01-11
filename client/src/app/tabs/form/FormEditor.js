@@ -230,7 +230,9 @@ export class FormEditor extends CachedComponent {
       dirty: this.isDirty(),
       inputActive,
       redo: commandStack.canRedo(),
+      removeSelected: inputActive,
       save: true,
+      selectAll: true,
       undo: commandStack.canUndo()
     };
 
