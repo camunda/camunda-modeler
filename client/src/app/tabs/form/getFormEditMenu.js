@@ -11,6 +11,7 @@
 import {
   getDefaultCopyCutPasteEntries,
   getDefaultUndoRedoEntries,
+  getSelectionEntries,
   getUndoRedoEntries
 } from '../getEditMenu';
 
@@ -29,6 +30,7 @@ export function getFormEditMenu(state) {
 
   return [
     undoRedoEntries,
-    getCopyCutPasteEntries(state)
+    getCopyCutPasteEntries(state),
+    getSelectionEntries(state)
   ];
 }
