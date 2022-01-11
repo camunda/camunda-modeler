@@ -277,19 +277,19 @@ export default class StartInstanceTool extends PureComponent {
    }
 
    decorateVariables = (startConfiguration) => {
-    let variables = startConfiguration.variables;
-    if (variables && variables.trim().length > 0) {
-      startConfiguration.variables = JSON.parse(variables);
-    } else {
-      startConfiguration.variables = null;
-    }
-    return startConfiguration;
-  }
+     let variables = startConfiguration.variables;
+     if (variables && variables.trim().length > 0) {
+       startConfiguration.variables = JSON.parse(variables);
+     } else {
+       startConfiguration.variables = null;
+     }
+     return startConfiguration;
+   }
 
-  async saveConfiguration(tab, configuration) {
-    const {
-      config
-    } = this.props;
+   async saveConfiguration(tab, configuration) {
+     const {
+       config
+     } = this.props;
 
      await config.setForFile(tab.file, START_DETAILS_CONFIG_KEY, configuration);
 
@@ -320,9 +320,9 @@ export default class StartInstanceTool extends PureComponent {
      return {
        businessKey: 'default',
        variables: '',
-      ...startInstance
-    };
-  }
+       ...startInstance
+     };
+   }
 
    async getSavedConfiguration(tab) {
      const {
