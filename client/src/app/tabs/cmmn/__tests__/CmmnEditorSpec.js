@@ -846,7 +846,7 @@ describe('<CmmnEditor>', function() {
       expect(onLayoutChangedSpy).to.be.calledOnceWith({
         propertiesPanel: {
           open: true,
-          width: 250
+          width: 280
         }
       });
     });

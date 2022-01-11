@@ -404,7 +404,7 @@ export class CmmnEditor extends CachedComponent {
     if (action === 'resetProperties') {
       const newLayout = {
         propertiesPanel: {
-          width: 250,
+          width: 280,
           open: true
         }
       };

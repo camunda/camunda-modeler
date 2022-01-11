@@ -294,7 +294,7 @@ describe('<PropertiesContainer>', function() {
     instance.handleToggle();
 
     // then
-    expect(onLayoutChangedSpy).to.be.calledWith({ propertiesPanel: { open: true, width: 250 } });
+    expect(onLayoutChangedSpy).to.be.calledWith({ propertiesPanel: { open: true, width: 280 } });
 
     // clean
     wrapper.unmount();
