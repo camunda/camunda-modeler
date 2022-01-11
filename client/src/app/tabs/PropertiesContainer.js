@@ -22,7 +22,7 @@ import HandleBar from '../../../resources/icons/HandleBar.svg';
 
 import { throttle } from '../../util';
 
-export const MIN_WIDTH = 250;
+export const MIN_WIDTH = 280;
 
 export const DEFAULT_LAYOUT = {
   open: false,

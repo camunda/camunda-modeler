@@ -603,7 +603,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       // then
       expect(layout.propertiesPanel.open).to.be.true;
-      expect(layout.propertiesPanel.width).to.equal(250);
+      expect(layout.propertiesPanel.width).to.equal(280);
     });
 
 
@@ -636,7 +636,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       // then
       expect(layout.propertiesPanel.open).to.be.true;
-      expect(layout.propertiesPanel.width).to.equal(250);
+      expect(layout.propertiesPanel.width).to.equal(280);
     });
 
 
@@ -971,7 +971,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       expect(onLayoutChangedSpy).to.be.calledOnceWith({
         propertiesPanel: {
           open: true,
-          width: 250
+          width: 280
         }
       });
     });
@@ -994,7 +994,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       expect(onLayoutChangedSpy).to.be.calledOnceWith({
         propertiesPanel: {
           open: true,
-          width: 250
+          width: 280
         }
       });
     });
