@@ -37,6 +37,8 @@ const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
 const PROCESS_DEFINITION_CONFIG_KEY = 'process-definition';
 
+const SELF_HOSTED = 'selfHosted';
+
 const DEFAULT_ENDPOINT = {
   url: 'http://localhost:8080/rest',
   authType: AuthTypes.basic,
@@ -195,6 +197,7 @@ export default class DeploymentTool extends PureComponent {
       type: 'deployment.done',
       payload: {
         deployment,
+        targetType: SELF_HOSTED,
         deployedTo: {
           executionPlatformVersion: version,
           executionPlatform: ENGINES.PLATFORM
@@ -254,6 +257,7 @@ export default class DeploymentTool extends PureComponent {
       type: 'deployment.error',
       payload: {
         error,
+        targetType: SELF_HOSTED,
         context: 'deploymentTool',
         ...(deployedTo && { deployedTo: deployedTo })
       }

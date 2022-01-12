@@ -594,6 +594,36 @@ describe('<DeploymentTool>', () => {
         expect(actionSpy).to.have.been.calledOnce;
       });
 
+      it('should send target type on deployment.done', async () => {
+
+        // given
+        const configuration = createConfiguration(),
+              activeTab = createTab({ name: 'foo.bpmn' });
+
+        const actionSpy = sinon.spy(),
+              actionTriggered = {
+                emitEvent: 'emit-event',
+                type: 'deployment.done',
+                handler: actionSpy
+              };
+
+        const {
+          instance
+        } = createDeploymentTool({ activeTab, actionTriggered, ...configuration });
+
+        // when
+        await instance.deploy(({
+          isStart: true,
+          onClose: () => { }
+        }));
+
+        const targetType = actionSpy.getCall(0).args[0].payload.targetType;
+
+        // then
+        expect(actionSpy).to.have.been.calledOnce;
+        expect(targetType).to.eql('selfHosted');
+      });
+
 
       it('should include executionPlatform metrics in deployment.done', async () => {
 
