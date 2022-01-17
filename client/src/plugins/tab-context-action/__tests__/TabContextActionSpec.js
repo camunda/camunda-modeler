@@ -220,7 +220,7 @@ describe('<TabContextAction>', function() {
         tree.find('button').simulate('click');
 
         // when
-        const item = tree.find('Overlay li').at(index);
+        const item = tree.find('Overlay li button').at(index);
         item.simulate('click');
 
         // then
@@ -241,7 +241,7 @@ describe('<TabContextAction>', function() {
       tree.find('button').simulate('click');
 
       // when
-      const item = tree.find('Overlay li').at(4);
+      const item = tree.find('Overlay li button').at(4);
       item.simulate('click');
 
       // then
