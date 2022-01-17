@@ -73,9 +73,11 @@ export default class UpdateChecks extends PureComponent {
 
       const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY) || {};
 
-      updateCheckInfo.stagedRollout = false;
-
-      self.checkLatestVersion(updateCheckInfo, false);
+      self.checkLatestVersion({
+        ...updateCheckInfo,
+        stagedRollout: false,
+        latestVersion: `v${Metadata.data.version}`
+      }, false);
     });
   }
 
