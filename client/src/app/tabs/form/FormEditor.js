@@ -30,6 +30,8 @@ import { active as isInputActive } from '../../../util/dom/isInput';
 
 import { FormEditor as Form } from './editor/FormEditor';
 
+import Metadata from '../../../util/Metadata';
+
 import {
   EngineProfile,
   getEngineProfileFromForm
@@ -390,7 +392,17 @@ export class FormEditor extends CachedComponent {
       onAction,
     } = props;
 
-    const form = new Form({});
+    const {
+      name,
+      version
+    } = Metadata;
+
+    const form = new Form({
+      exporter: {
+        name,
+        version
+      }
+    });
 
     const commandStack = form.get('commandStack');
 
