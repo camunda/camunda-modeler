@@ -1,6 +1,10 @@
 {
   "type": "default",
   "id": "Form_{{ ID }}",
+  "exporter": {
+    "name": "{{ EXPORTER_NAME }}",
+    "version": "{{ EXPORTER_VERSION }}"
+  },
   "components": [],
   "executionPlatform": "Camunda Platform",
   "executionPlatformVersion": "{{ CAMUNDA_PLATFORM_VERSION }}"

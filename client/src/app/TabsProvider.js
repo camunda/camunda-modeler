@@ -37,6 +37,8 @@ import parseDiagramType from './util/parseDiagramType';
 
 import parseExecutionPlatform from './util/parseExecutionPlatform';
 
+import Metadata from '../util/Metadata';
+
 import {
   findUsages as findNamespaceUsages,
 } from './tabs/util/namespace';
@@ -528,7 +530,7 @@ export default class TabsProvider {
   _getInitialFileContents(type) {
     const rawContents = this.getProvider(type).getInitialContents();
 
-    return rawContents && replaceVersions(replaceIds(rawContents, generateId));
+    return rawContents && replaceExporter(replaceVersions(replaceIds(rawContents, generateId)));
   }
 
   _getTabType(file) {
@@ -631,5 +633,18 @@ function replaceVersions(contents) {
     contents
       .replace('{{ CAMUNDA_PLATFORM_VERSION }}', latestPlatformVersion)
       .replace('{{ CAMUNDA_CLOUD_VERSION }}', latestCloudVersion)
+  );
+}
+
+function replaceExporter(contents) {
+  const {
+    name,
+    version
+  } = Metadata;
+
+  return (
+    contents
+      .replace('{{ EXPORTER_NAME }}', name)
+      .replace('{{ EXPORTER_VERSION }}', version)
   );
 }

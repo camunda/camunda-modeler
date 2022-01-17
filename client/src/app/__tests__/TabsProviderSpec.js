@@ -17,6 +17,8 @@ import {
   ENGINES
 } from '../../util/Engines';
 
+import Metadata from '../../util/Metadata';
+
 
 describe('TabsProvider', function() {
 
@@ -149,7 +151,7 @@ describe('TabsProvider', function() {
     });
 
 
-    it('replacing version placeholder with actual latest version', function() {
+    it('should replace version placeholder with actual latest version', function() {
 
       // given
       const tabsProvider = new TabsProvider();
@@ -162,7 +164,50 @@ describe('TabsProvider', function() {
       const { file: { contents } } = tabsProvider.createTab('cloud-bpmn');
 
       // then
-      expect(contents).to.include(`modeler:executionPlatformVersion="${latestCloudVersion}"`);
+      expect(contents).to.include(`modeler:executionPlatformVersion="${ latestCloudVersion }"`);
+    });
+
+
+    describe('replacing exporter placeholder with actual exporter', function() {
+
+      it('bpmn', function() {
+
+        // given
+        const tabsProvider = new TabsProvider();
+
+        const {
+          name,
+          version
+        } = Metadata;
+
+        // when
+        const { file: { contents } } = tabsProvider.createTab('bpmn');
+
+        // then
+        expect(contents).to.include(`exporter="${ name }" exporterVersion="${ version }"`);
+      });
+
+
+      it('form', function() {
+
+        // given
+        const tabsProvider = new TabsProvider();
+
+        const {
+          name,
+          version
+        } = Metadata;
+
+        // when
+        const { file: { contents } } = tabsProvider.createTab('form');
+
+        // then
+        expect(JSON.parse(contents).exporter).to.eql({
+          name,
+          version
+        });
+      });
+
     });
 
   });
@@ -423,6 +468,7 @@ describe('TabsProvider', function() {
     expect(providers['dmn']).to.exist;
     expect(providers['empty']).to.exist;
   });
+
 
   describe('#getProviderNames', function() {
 
