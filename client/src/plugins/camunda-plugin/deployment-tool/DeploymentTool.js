@@ -185,7 +185,7 @@ export default class DeploymentTool extends PureComponent {
 
     displayNotification({
       type: 'success',
-      title: 'Process definition deployed',
+      title: `${getDeploymentType(tab)} deployed`,
       content: <CockpitLink endpointUrl={ url } deployment={ deployment } />,
       duration: 8000
     });
@@ -653,6 +653,26 @@ function isCamundaTab(tab) {
     'dmn',
     'form'
   ].includes(tab.type);
+}
+
+function getDeploymentType(tab) {
+  const { type } = tab;
+
+  if (type === 'bpmn') {
+    return 'Process definition';
+  }
+
+  else if (type === 'dmn') {
+    return 'Decision definition';
+  }
+
+  else if (type === 'cmmn') {
+    return 'Case definition';
+  }
+
+  else if (type === 'form') {
+    return 'Form';
+  }
 }
 
 function withSerializedAttachments(deployment) {
