@@ -179,8 +179,8 @@ function Option(props) {
   };
 
   return (
-    <li role="menuitem" onClick={ onClick } onKeyDown={ handleKeydown }>
-      <button type="button" title={ text }>
+    <li role="menuitem" onKeyDown={ handleKeydown }>
+      <button type="button" title={ text } onClick={ onClick }>
         { IconComponent && <IconComponent /> }
         { text }
       </button>
