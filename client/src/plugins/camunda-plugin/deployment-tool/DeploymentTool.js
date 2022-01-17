@@ -650,7 +650,8 @@ function isCamundaTab(tab) {
   return tab && [
     'bpmn',
     'cmmn',
-    'dmn'
+    'dmn',
+    'form'
   ].includes(tab.type);
 }
 

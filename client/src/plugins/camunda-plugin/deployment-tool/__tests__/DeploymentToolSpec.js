@@ -53,10 +53,23 @@ describe('<DeploymentTool>', () => {
   });
 
 
-  it('should display the button if there is an active tab', () => {
+  it('should display the button if there is an active bpmn tab', () => {
 
     // given
     const activeTab = createTab({ type: 'bpmn' });
+
+    // when
+    const { wrapper } = createDeploymentTool({ activeTab });
+
+    // then
+    expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(1);
+  });
+
+
+  it('should display the button if there is an active form tab', () => {
+
+    // given
+    const activeTab = createTab({ type: 'form' });
 
     // when
     const { wrapper } = createDeploymentTool({ activeTab });
