@@ -19,7 +19,7 @@ import { Config } from '../../../../app/__tests__/mocks';
 import StartInstancePlugin from '../StartInstancePlugin';
 
 
-const BUTTON_SELECTOR = '[title="Start Current Diagram"]';
+const BUTTON_SELECTOR = '[title="Start current diagram"]';
 
 
 describe('<StartInstancePlugin> (Zeebe)', () => {

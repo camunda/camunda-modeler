@@ -101,7 +101,7 @@ export default class StartInstancePlugin extends PureComponent {
         <Fill slot="status-bar__file" group="8_deploy" priority={ 0 }>
           <OverlayDropdown
             items={ this._items }
-            title="Start Current Diagram"
+            title="Start current diagram"
             className={ 'btn ' + css.StartInstancePlugin }
           >
             <PlayIcon className="icon" />
