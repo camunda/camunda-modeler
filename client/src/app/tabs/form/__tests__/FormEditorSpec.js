@@ -26,6 +26,7 @@ import {
 
 import {
   getDefaultCopyCutPasteEntries,
+  getSelectionEntries,
   getUndoRedoEntries
 } from '../../getEditMenu';
 
@@ -277,6 +278,26 @@ describe('<FormEditor>', function() {
 
         // then
         expect(onChangedSpy).to.have.been.calledOnce;
+      });
+
+
+      it('should provide selection entries', async function() {
+
+        // given
+        const onChangedSpy = (state) => {
+
+          const editMenuEntries = getSelectionEntries(state);
+
+          // then
+          expect(state.editMenu).to.deep.include(editMenuEntries);
+        };
+
+        const { instance } = await renderEditor(schema, {
+          onChanged: onChangedSpy
+        });
+
+        // when
+        instance.handleChanged();
       });
 
     });

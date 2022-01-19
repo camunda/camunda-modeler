@@ -118,6 +118,37 @@ describe('<UpdateChecks>', function() {
     });
 
 
+    it('should revert latestVersion to current on manual check', async function() {
+
+      // given
+      const {
+        callSubscriber,
+        subscribe
+      } = createSubscribe('updateChecks.execute');
+
+      const {
+        component,
+        instance
+      } = await createComponent({ subscribe });
+
+      await tick(component);
+
+      const checkLatestVersionSpy = sinon.spy(instance, 'checkLatestVersion');
+
+      Metadata.init({ name: 'test-name', version: '3.0.0' });
+
+      // when
+      await callSubscriber();
+
+      // then
+      expect(checkLatestVersionSpy).to.have.been.calledOnceWith({
+        lastChecked: 0,
+        latestVersion: 'v3.0.0',
+        stagedRollout: false
+      });
+    });
+
+
     it('should pass stagedRollout=true on scheduled check', async function() {
 
       // given
