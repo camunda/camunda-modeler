@@ -22,7 +22,7 @@ Build the app in a Posix environment. On Windows that is Git Bash or WSL. Make s
 
 ```sh
 # checkout a tag
-git checkout v1.1.0
+git checkout master
 
 # install dependencies
 npm install
