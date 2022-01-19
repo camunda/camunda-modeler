@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-export const MODAL_TITLE = 'A New Version Is Available';
+export const MODAL_TITLE = 'A new version is available';
 
 export const BUTTON_NEGATIVE = 'Skip this version';
 
