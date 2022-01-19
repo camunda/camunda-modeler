@@ -38,11 +38,13 @@ class NewVersionInfoView extends PureComponent {
         releaseNoteHTML
       } = release;
 
-      return (<div
-        className="htmlSnippetItem"
-        key={ version }
-        dangerouslySetInnerHTML={ { __html: releaseNoteHTML } }
-      />);
+      return (
+        <div
+          className="htmlSnippetItem"
+          key={ version }>
+          <div><b>{ version }</b></div>
+          <div dangerouslySetInnerHTML={ { __html: releaseNoteHTML } } />
+        </div>);
     });
   }
 
