@@ -13,7 +13,7 @@ import React from 'react';
 import {
   OVERLAY_TITLE,
   DEPLOY,
-  START,
+  NEXT,
   DEPLOYMENT_NAME,
   SELF_HOSTED_TEXT,
   OAUTH_TEXT,
@@ -341,7 +341,7 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
                         className="btn btn-primary"
                         disabled={ form.isSubmitting }
                       >
-                        { isStart ? START : DEPLOY }
+                        { isStart ? NEXT : DEPLOY }
                       </button>
                     </Section.Actions>
 

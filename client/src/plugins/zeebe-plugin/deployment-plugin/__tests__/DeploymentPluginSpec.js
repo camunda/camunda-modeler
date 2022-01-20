@@ -511,11 +511,18 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should allow to deploy via message', done => {
+  it('should allow to get deploy config via message', done => {
+
+    const body = {
+      isStart: true,
+      skipNotificationOnSuccess: true,
+      done: doneCallback,
+      notifyResult: true
+    };
 
     // given
     const subscribeToMessaging = (_, callback) => {
-      callback('deploy', { done: doneCallback });
+      callback('getDeployConfig', body);
     };
 
     // when
@@ -528,11 +535,43 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should pass deploymentResult=null if tab was not saved', done => {
+  it('should allow to deploy with config via message', done => {
+
+    const body = {
+      done: doneCallback,
+      deploymentConfig: {
+        config: { deployment:{ name:'foo' } , enpoint:{} },
+        savedTab: { id: 1, name: 'foo.bar', type: 'bar', title: 'unsaved', file: {} }
+      }
+    };
 
     // given
     const subscribeToMessaging = (_, callback) => {
-      callback('deploy', { done: doneCallback });
+      callback('deployWithConfig', body);
+    };
+
+    // when
+    createDeploymentPlugin({ subscribeToMessaging });
+
+    // then
+    function doneCallback() {
+      done();
+    }
+  });
+
+
+  it('should pass null if tab was not saved', done => {
+
+    const body = {
+      isStart: true,
+      skipNotificationOnSuccess: true,
+      done: doneCallback,
+      notifyResult: true
+    };
+
+    // given
+    const subscribeToMessaging = (_, callback) => {
+      callback('getDeployConfig', body);
     };
 
     // when
@@ -543,9 +582,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       let error;
 
       try {
-        expect(result).to.eql({
-          deploymentResult: null
-        });
+        expect(result).to.be.null;
       } catch (err) {
         error = err;
       } finally {
@@ -555,11 +592,18 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should pass deploymentResult=null if config was not provided', done => {
+  it('should pass null if config was not provided', done => {
+
+    const body = {
+      isStart: true,
+      skipNotificationOnSuccess: true,
+      done: doneCallback,
+      notifyResult: true
+    };
 
     // given
     const subscribeToMessaging = (_, callback) => {
-      callback('deploy', { done: doneCallback });
+      callback('getDeployConfig', body);
     };
 
     // when
@@ -570,9 +614,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       let error;
 
       try {
-        expect(result).to.eql({
-          deploymentResult: null
-        });
+        expect(result).to.be.null;
       } catch (err) {
         error = err;
       } finally {
@@ -588,8 +630,17 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     const deploySpy = sinon.spy();
     const deploymentResult = { success: true, response: {} };
     const zeebeAPI = new MockZeebeAPI({ deploySpy, deploymentResult });
+
+    const body = {
+      done: doneCallback,
+      deploymentConfig: {
+        config: { deployment:{ name:'foo' } , enpoint:{} },
+        savedTab: { id: 1, name: 'foo.bar', type: 'bar', title: 'unsaved', file: {} }
+      }
+    };
+
     const subscribeToMessaging = (_, callback) => {
-      callback('deploy', { done: doneCallback });
+      callback('deployWithConfig', body);
     };
 
     // when

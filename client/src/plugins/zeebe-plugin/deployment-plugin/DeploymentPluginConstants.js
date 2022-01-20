@@ -12,7 +12,7 @@ export const OVERLAY_TITLE = 'Deploy Diagram to Camunda Cloud';
 export const ENDPOINT_CONFIGURATION_TITLE = 'Endpoint Configuration';
 export const CANCEL = 'Cancel';
 export const DEPLOY = 'Deploy';
-export const START = 'Start';
+export const NEXT = 'Next';
 
 export const DEPLOYMENT_NAME = 'Deployment Name';
 export const SELF_HOSTED_TEXT = 'Camunda Cloud Self-Managed';

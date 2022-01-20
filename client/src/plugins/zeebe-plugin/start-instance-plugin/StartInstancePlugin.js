@@ -18,8 +18,10 @@ import css from './StartInstancePlugin.less';
 
 import pDefer from 'p-defer';
 import classNames from 'classnames';
-import { OverlayDropdown } from '../../../shared/ui';
 import { CAMUNDA_CLOUD } from '../shared/ZeebeTargetTypes';
+import StartInstanceConfigOverlay from './StartInstanceConfigOverlay';
+
+const DEFAULT_CONFIGURATION = { variables: '' };
 
 
 export default class StartInstancePlugin extends PureComponent {
@@ -29,8 +31,8 @@ export default class StartInstancePlugin extends PureComponent {
 
     this.state = {
       activeTab: null,
-      openOverlay: false,
-      activeButton: false
+      activeButton: false,
+      overlayState: null
     };
 
     this._items = [
@@ -48,33 +50,194 @@ export default class StartInstancePlugin extends PureComponent {
     });
   }
 
-
   async startInstance() {
-    const { deploymentResult, endpoint } = await this.deployActiveTab();
+    const {
+      overlayState,
+      activeTab
+    } = this.state;
 
-    // cancel on deployment error or deployment cancelled
+    // (1) toggle overlay
+    if (overlayState) {
+      overlayState.onClose('cancel', null);
+      return;
+    }
+
+    this.setState({ activeButton: true });
+
+    // (2) get deploy configuration
+
+    // (2.1) get deployment configuration
+    const deploymentConfig = await this.getDeployConfig();
+
+    // (2.1) user cancelled
+    if (!deploymentConfig) {
+      return;
+    }
+
+    this.setState({ overlayState: {
+      configuration: deploymentConfig,
+      onClose: () => {
+        this.props.broadcastMessage('cancel');
+        this.setState({ activeButton: false });
+      }
+    } });
+
+    // (3) get start instance configuration
+
+    // (3.1) get start configuration
+    const startConfiguration = await this.getSavedConfiguration(activeTab, 'start-process-instance');
+
+    // (3.2) get configuration from user
+    this.setState({ activeButton: true });
+
+    const {
+      action,
+      configuration : startInstanceConfig
+    } = await this.getConfigurationFromUser(startConfiguration);
+
+    // (3.3) handle user cancelation
+    if (action === 'cancel') {
+      return;
+    }
+
+    this.saveConfiguration(activeTab, 'start-process-instance', startInstanceConfig);
+
+    // (4) trigger start instance
+    await this.startInstanceProcess(deploymentConfig, startInstanceConfig);
+  }
+
+  async getConfigurationFromUser(startConfiguration) {
+    const configuration = startConfiguration || DEFAULT_CONFIGURATION;
+
+    return new Promise(resolve => {
+      const onClose = (action, configuration) => {
+        this.setState({
+          overlayState: null,
+          activeButton: false
+        });
+
+        // contract: if configuration provided, user closed with O.K.
+        // otherwise they canceled it
+        return resolve({ action, configuration });
+      };
+
+      this.setState({
+        overlayState: {
+          isStart: true,
+          configuration,
+          onClose
+        }
+      });
+    });
+  }
+
+  async startInstanceProcess(deploymentConfig, startInstanceConfig) {
+
+    // (1) deploy with deployment config
+    const { deploymentResult, endpoint } = await this.deployWithConfig(deploymentConfig);
+
+    // (1.1) cancel on deployment cancelled
     if (!deploymentResult || !deploymentResult.success) {
       return;
     }
 
-    return this.startProcessInstance(
-      deploymentResult.response.workflows[0].bpmnProcessId, endpoint);
-  }
+    // (2) set status-bar button as inactive and close overlay
+    this.setState({
+      activeButton: false,
+      overlayState: null
+    });
 
-  startProcessInstance = async (processId, endpoint) => {
+    // (3) start process instance
     const {
       _getGlobal
     } = this.props;
 
     const zeebeAPI = _getGlobal('zeebeAPI');
+    const processId = deploymentResult.response.workflows[0].bpmnProcessId;
+    const decoratedConfig = this.decorateVariables(startInstanceConfig);
 
-    const startInstanceResult = await zeebeAPI.run({ processId, endpoint });
+    try {
+
+      // (3.1) trigger run
+      const startInstanceResult = await zeebeAPI.run({ processId, endpoint, ...decoratedConfig });
+
+      // (3.1.1) handle start instance error
+      if (!startInstanceResult.success) {
+        this.handleStartError(startInstanceResult.response);
+        return;
+      }
+
+      // (3.1.2) handle start instance success
+      this.handleStartSuccess(startInstanceResult, endpoint);
+
+    } catch (error) {
+
+      // (3.1.3) handle start instance exception
+      this.handleStartError(error);
+    }
+  }
+
+  decorateVariables = (startConfiguration) => {
+    let {
+      variables
+    } = startConfiguration;
+
+    if (variables && variables.trim().length > 0) {
+      variables = JSON.parse(variables);
+    } else {
+      variables = null;
+    }
+
+    return { ...startConfiguration, variables };
+  }
+
+  async getDeployConfig() {
+    const deferred = pDefer();
+    const body = {
+      isStart: true,
+      skipNotificationOnSuccess: true,
+      done: deferred.resolve,
+      anchorRef: this._anchorRef,
+      notifyResult: true,
+      onClose: () => {
+        this.setState({
+          activeButton: false,
+          overlayState: null
+        });
+      }
+    };
+
+    this.props.broadcastMessage('getDeployConfig', body);
+
+    return deferred.promise;
+  }
+
+  async deployWithConfig(deploymentConfig) {
+    const deferred = pDefer();
+    const body = {
+      isStart: true,
+      skipNotificationOnSuccess: true,
+      done: deferred.resolve,
+      anchorRef: this._anchorRef,
+      tab: this.state.activeTab,
+      deploymentConfig
+    };
+
+    this.props.broadcastMessage('deployWithConfig', body);
+
+    return deferred.promise;
+  }
+
+  handleStartSuccess(processInstance, endpoint) {
+    const {
+      displayNotification
+    } = this.props;
 
     const content = endpoint.targetType === CAMUNDA_CLOUD ?
-      <CloudLink endpoint={ endpoint } response={ startInstanceResult.response } />
+      <CloudLink endpoint={ endpoint } response={ processInstance.response } />
       : null;
 
-    this.props.displayNotification({
+    displayNotification({
       type: 'success',
       title: 'Process instance started',
       content: content,
@@ -82,50 +245,94 @@ export default class StartInstancePlugin extends PureComponent {
     });
   }
 
-  onOverlayClose = async () => {
-    this.props.broadcastMessage('cancel');
-    this.setState({ activeButton: false });
+  handleStartError(error) {
+    const {
+      log,
+      displayNotification
+    } = this.props;
+
+    const logMessage = {
+      category: 'start-instance-error',
+      message: error.details || error.message
+    };
+
+    const content = <button
+      onClick={ ()=> log(logMessage) }>
+      See the log for further details.
+    </button>;
+
+    displayNotification({
+      type: 'error',
+      title: 'Starting process instance failed',
+      content: content,
+      duration: 4000
+    });
   }
 
-  deployActiveTab() {
-    const deferred = pDefer();
-    const body = {
-      isStart: true,
-      skipNotificationOnSuccess: true,
-      done: deferred.resolve,
-      anchorRef: this._anchorRef,
-      onClose: () => { this.setState({ activeButton: false }); }
-    };
+  async getSavedConfiguration(tab, key) {
+    const {
+      config
+    } = this.props;
+
+    return config.getForFile(tab.file, key);
+  }
+
+  async saveConfiguration(tab, key, configuration) {
+    const {
+      config
+    } = this.props;
+
+    await config.setForFile(tab.file, key, configuration);
+
+    return configuration;
+  }
+
+  toggleOverlay() {
+    const {
+      overlayState
+    } = this.state;
+
+    if (overlayState) {
+      this.setState({ activeButton: false });
+      overlayState.onClose();
+    }
 
     this.setState({ activeButton: true });
 
-    this.props.broadcastMessage('deploy', body);
-
-    return deferred.promise;
   }
+
 
   render() {
 
     const {
-      activeTab
+      activeTab,
+      overlayState
     } = this.state;
 
     return <React.Fragment>
       {
         isZeebeTab(activeTab) &&
         <Fill slot="status-bar__file" group="8_deploy" priority={ 0 }>
-          <OverlayDropdown
-            items={ this._items }
+          <button
+            className={ classNames(css.StartInstancePlugin, 'btn', { 'btn--active': this.state.activeButton }) }
+            onClick={ this.startInstance.bind(this) }
+            ref={ this._anchorRef }
+            type="button"
             title="Start current diagram"
-            buttonRef={ this._anchorRef }
-            className={ classNames(css.StartInstancePlugin, { 'btn--active': this.state.activeButton }) }
-            overlayState={ this.state.activeButton }
-            onClose={ this.onOverlayClose }
           >
-            <PlayIcon className="icon" />
-          </OverlayDropdown>
+            <PlayIcon
+              className="icon" />
+          </button>
         </Fill>
       }
+
+      {overlayState && overlayState.isStart &&
+      <StartInstanceConfigOverlay
+        anchor={ this._anchorRef.current }
+        onSubmit={ overlayState.onClose }
+        onClose={ overlayState.onClose }
+        configuration={ overlayState.configuration }
+      />}
     </React.Fragment>;
   }
 }
