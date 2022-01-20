@@ -159,6 +159,8 @@ export default class Modeler {
 
     const xml = this.xml;
 
+    this.viewer.get('commandStack').execute(1);
+
     if (xml === 'export-error') {
       throw new Error('failed to save xml');
     }
