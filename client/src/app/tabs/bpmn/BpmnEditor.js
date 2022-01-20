@@ -512,8 +512,6 @@ export class BpmnEditor extends CachedComponent {
 
     const commandStack = modeler.get('commandStack');
 
-    const stackIdx = commandStack._stackIdx;
-
     if (!this.isDirty()) {
       return lastXML || this.props.xml;
     }
@@ -521,6 +519,7 @@ export class BpmnEditor extends CachedComponent {
     try {
 
       const { xml } = await modeler.saveXML({ format: true });
+      const stackIdx = commandStack._stackIdx;
 
       this.setCached({ lastXML: xml, stackIdx });
 
