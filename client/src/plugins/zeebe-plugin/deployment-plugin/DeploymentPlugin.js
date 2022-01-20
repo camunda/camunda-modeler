@@ -91,10 +91,9 @@ export default class DeploymentPlugin extends PureComponent {
   }
 
   async deploy(options = {}) {
-    return this.deployTab(this.state.activeTab, options);
-  }
-
-  async deployTab(tab, options) {
+    const {
+      activeTab: tab
+    } = this.state;
 
     /**
      * Notify interested parties via optional callback.
@@ -103,19 +102,34 @@ export default class DeploymentPlugin extends PureComponent {
      * @param {object|null} result.deploymentResult - null for cancellation
      * @param {object} [result.endpoint]
      */
-    function notifyResult(result) {
-      const { done } = options;
 
-      return done && done(result);
+
+    // (1) get deploy config
+    const deployConfig = await this.getDeployConfig(tab, options);
+
+    if (!deployConfig) {
+      return;
     }
+
+    // (3) deploy
+    await this.deployWithConfig(options, deployConfig);
+  }
+
+  notifyResult(result, options) {
+    const { done } = options;
+
+    return done && done(result);
+  }
+
+
+  async getDeployConfig(tab, options) {
 
     // (1) save tab
     const savedTab = await this.saveTab(tab);
 
     // cancel action if save was cancelled
     if (!savedTab) {
-      notifyResult({ deploymentResult: null });
-
+      this.notifyResult(null, options);
       return;
     }
 
@@ -137,8 +151,7 @@ export default class DeploymentPlugin extends PureComponent {
 
       // user canceled
       if (!config) {
-        notifyResult({ deploymentResult: null });
-
+        this.notifyResult(null, options);
         return;
       }
     } else {
@@ -149,21 +162,32 @@ export default class DeploymentPlugin extends PureComponent {
       }
     }
 
-    // (3) save config
-    await this.saveConfig(savedTab, config);
+    if (options.notifyResult) {
+      this.notifyResult({ config, savedTab }, options);
+    }
 
-    // (4) deploy
-    const deploymentResult = await this.deployWithConfig(savedTab, config);
+    config = await this.saveConfig(savedTab, config);
 
-    // (5) include version deployed to as contextual information
+    return { savedTab, config };
+  }
+
+  async deployWithConfig(options, deployConfig) {
+    const { savedTab, config } = deployConfig;
+
+    const deploymentResult = await this.deployTab(savedTab, config);
+
+    // (4) include version deployed to as contextual information
     options.gatewayVersion = await this.getGatewayVersion(config);
 
-    // (6) notify interested parties
-    notifyResult({ deploymentResult, endpoint: config.endpoint });
+    // (5) notify interested parties
+    this.notifyResult({
+      deploymentResult,
+      endpoint: config.endpoint
+    }, options);
 
     const { response, success } = deploymentResult;
 
-    // (7) Handle success or error
+    // (6) Handle success or error
     if (!success) {
       this.onDeploymentError(response, config, options);
     } else {
@@ -171,7 +195,7 @@ export default class DeploymentPlugin extends PureComponent {
     }
   }
 
-  deployWithConfig(tab, config) {
+  deployTab(tab, config) {
     const { file: { path } } = tab;
     const {
       deployment: { name },
@@ -207,8 +231,11 @@ export default class DeploymentPlugin extends PureComponent {
 
   async canDeployWithConfig(config, options) {
 
-    // always open overlay for deployment tool
-    if (!options.isStart) {
+    const {
+      isStart
+    } = options;
+
+    if (!isStart) {
       return false;
     }
 
@@ -261,13 +288,23 @@ export default class DeploymentPlugin extends PureComponent {
     return p.promise;
   }
 
-  onMessageReceived = (msg, body) => {
-    if (msg === 'deploy') {
-      this.deploy(body);
+  onMessageReceived = async (msg, body) => {
+
+    if (msg === 'deployWithConfig') {
+      const { deploymentConfig } = body;
+      this.deployWithConfig(body, deploymentConfig);
+    }
+
+    if (msg === 'getDeployConfig') {
+      this.getDeployConfig(this.state.activeTab, body);
     }
 
     if (msg === 'cancel') {
-      this.state.overlayState.onClose(null);
+      const { overlayState } = this.state;
+
+      if (overlayState) {
+        this.state.overlayState.onClose(null);
+      }
     }
   }
 
@@ -450,7 +487,7 @@ export default class DeploymentPlugin extends PureComponent {
 
     const logMessage = {
       category: 'deploy-error',
-      message: response.details
+      message: response.details || response.message
     };
 
     const content = <button

@@ -161,13 +161,14 @@ class ZeebeAPI {
    * @public
    * Run process instance.
    *
-   * @param {ZeebeClientParameters & { processId: string }} parameters
+   * @param {ZeebeClientParameters & { endpoint: object, processId: string, variables: object }} parameters
    * @returns {{ success: boolean, response: object }}
    */
   async run(parameters) {
 
     const {
       endpoint,
+      variables,
       processId
     } = parameters;
 
@@ -176,7 +177,8 @@ class ZeebeAPI {
     try {
 
       const response = await client.createWorkflowInstance({
-        bpmnProcessId: processId
+        bpmnProcessId: processId,
+        variables
       });
 
       return {
