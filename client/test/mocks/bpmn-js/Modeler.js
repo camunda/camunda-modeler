@@ -117,6 +117,9 @@ export default class Modeler {
 
     const xml = this.xml;
 
+    // execute align to origin
+    this.get('commandStack').execute(1);
+
     return new Promise((resolve, reject) => {
 
       if (xml === 'export-error') {

@@ -730,8 +730,6 @@ export class DmnEditor extends CachedComponent {
       modeler
     } = this.getCached();
 
-    const stackIdx = modeler.getStackIdx();
-
     if (!this.isDirty()) {
       return lastXML || this.props.xml;
     }
@@ -748,6 +746,8 @@ export class DmnEditor extends CachedComponent {
     } catch (_error) {
       error = _error;
     }
+
+    const stackIdx = modeler.getStackIdx();
 
     this.setCached({
       dirty: false,
