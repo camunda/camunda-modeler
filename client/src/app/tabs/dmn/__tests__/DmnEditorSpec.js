@@ -1489,6 +1489,34 @@ describe('<DmnEditor>', function() {
       expect(dirty).to.be.false;
     });
 
+
+    it('should be dirty after failed save', async function() {
+
+      // given
+      let err;
+      const {
+        instance
+      } = await renderEditor('export-error');
+
+      const { modeler } = instance.getCached();
+
+      // execute 1 command
+      modeler.getActiveViewer().get('commandStack').execute(1);
+
+      // when
+      try {
+        await instance.getXML();
+      } catch (e) {
+        err = e;
+      }
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(err).to.exist;
+      expect(dirty).to.be.true;
+    });
+
   });
 
 
