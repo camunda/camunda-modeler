@@ -597,6 +597,9 @@ export class DmnEditor extends CachedComponent {
     }
 
     if (!activeView || activeView.element !== element) {
+
+      // dirty must be cached before switching active view
+      // if active view has unsaved changes editor must still be dirty after switching active view
       this.setCached({
         dirty: dirty || this.getModeler().getStackIdx() !== stackIdx
       });
