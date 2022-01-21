@@ -408,15 +408,14 @@ export class BpmnEditor extends CachedComponent {
     }
 
     try {
-
       const { xml } = await modeler.saveXML({ format: true });
+
       const stackIdx = commandStack._stackIdx;
 
       this.setCached({ lastXML: xml, stackIdx });
 
       return xml;
     } catch (error) {
-
       this.handleError({ error });
 
       return Promise.reject(error);
