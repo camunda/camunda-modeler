@@ -73,7 +73,7 @@ function LintingIssue(props) {
   return <div className={ classnames(css.LintingIssue, 'linting-issue') }>
     <ErrorIcon />
     <div className="linting-issue__text">
-      Error : <span className="linting-issue__link" onClick={ onClick }>{ label || id }</span> - { message }
+      Error : <span className="linting-issue__link" onClick={ onClick }>{label || id}</span> - <span className="linting-issue__message">{message}</span>
     </div>
   </div>;
 }
