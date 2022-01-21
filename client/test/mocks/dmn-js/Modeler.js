@@ -159,6 +159,7 @@ export default class Modeler {
 
     const xml = this.xml;
 
+    // commands may be executed during export
     this.viewer.get('commandStack').execute(1);
 
     if (xml === 'export-error') {

@@ -736,6 +736,7 @@ export class DmnEditor extends CachedComponent {
 
     try {
       const { xml } = await modeler.saveXML({ format: true });
+
       const stackIdx = modeler.getStackIdx();
 
       this.setCached({
@@ -746,9 +747,7 @@ export class DmnEditor extends CachedComponent {
 
       return xml;
     } catch (error) {
-      this.handleError({
-        error
-      });
+      this.handleError({ error });
 
       return Promise.reject(error);
     }
