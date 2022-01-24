@@ -131,6 +131,9 @@ export default class Modeler {
 
     const xml = this.xml;
 
+    // commands may be executed during export
+    this.get('commandStack').execute(1);
+
     return new Promise((resolve, reject) => {
 
       if (xml === 'export-error') {

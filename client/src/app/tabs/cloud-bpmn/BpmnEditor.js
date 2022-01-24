@@ -458,21 +458,19 @@ export class BpmnEditor extends CachedComponent {
 
     const commandStack = modeler.get('commandStack');
 
-    const stackIdx = commandStack._stackIdx;
-
     if (!this.isDirty()) {
       return lastXML || this.props.xml;
     }
 
     try {
-
       const { xml } = await modeler.saveXML({ format: true });
+
+      const stackIdx = commandStack._stackIdx;
 
       this.setCached({ lastXML: xml, stackIdx });
 
       return xml;
     } catch (error) {
-
       this.handleError({ error });
 
       return Promise.reject(error);

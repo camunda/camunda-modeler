@@ -1234,6 +1234,33 @@ describe('<BpmnEditor>', function() {
       expect(dirty).to.be.false;
     });
 
+
+    it('should be dirty after export error', async function() {
+
+      // given
+      const { instance } = await renderEditor('export-error');
+
+      const { modeler } = instance.getCached();
+
+      // execute 1 command
+      modeler.get('commandStack').execute(1);
+
+      let err;
+
+      // when
+      try {
+        await instance.getXML();
+      } catch (e) {
+        err = e;
+      }
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(err).to.exist;
+      expect(dirty).to.be.true;
+    });
+
   });
 
 

@@ -422,9 +422,7 @@ describe('<DmnEditor>', function() {
               get: () => []
             }
           }),
-          stackIdx: {
-            drd: 2
-          }
+          stackIdx: 2
         },
         __destroy: () => {}
       });
@@ -1472,7 +1470,7 @@ describe('<DmnEditor>', function() {
     });
 
 
-    it('should NOT be dirty after save', async function() {
+    it('should NOT be dirty after export', async function() {
 
       // given
       const { modeler } = instance.getCached();
@@ -1487,6 +1485,33 @@ describe('<DmnEditor>', function() {
       const dirty = instance.isDirty();
 
       expect(dirty).to.be.false;
+    });
+
+
+    it('should be dirty after export error', async function() {
+
+      // given
+      const { instance } = await renderEditor('export-error');
+
+      const { modeler } = instance.getCached();
+
+      // execute 1 command
+      modeler.getActiveViewer().get('commandStack').execute(1);
+
+      let err;
+
+      // when
+      try {
+        await instance.getXML();
+      } catch (e) {
+        err = e;
+      }
+
+      // then
+      const dirty = instance.isDirty();
+
+      expect(err).to.exist;
+      expect(dirty).to.be.true;
     });
 
   });

@@ -590,6 +590,9 @@ export class DmnEditor extends CachedComponent {
     }
 
     if (!activeView || activeView.element !== element) {
+
+      // dirty must be cached before switching active view
+      // if active view has unsaved changes editor must still be dirty after switching active view
       this.setCached({
         dirty: dirty || this.getModeler().getStackIdx() !== stackIdx
       });
@@ -723,40 +726,27 @@ export class DmnEditor extends CachedComponent {
       modeler
     } = this.getCached();
 
-    const stackIdx = modeler.getStackIdx();
-
     if (!this.isDirty()) {
       return lastXML || this.props.xml;
     }
 
-    let xml = null;
-    let error = null;
-
     try {
-      const {
-        xml: _xml
-      } = await modeler.saveXML({ format: true });
+      const { xml } = await modeler.saveXML({ format: true });
 
-      xml = _xml;
-    } catch (_error) {
-      error = _error;
-    }
+      const stackIdx = modeler.getStackIdx();
 
-    this.setCached({
-      dirty: false,
-      lastXML: xml,
-      stackIdx
-    });
-
-    if (error) {
-      this.handleError({
-        error
+      this.setCached({
+        dirty: false,
+        lastXML: xml,
+        stackIdx
       });
+
+      return xml;
+    } catch (error) {
+      this.handleError({ error });
 
       return Promise.reject(error);
     }
-
-    return xml;
   }
 
   async exportAs(type) {
