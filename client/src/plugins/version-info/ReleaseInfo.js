@@ -44,18 +44,25 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Support for Camunda Cloud 1.3</h4>
-          With this release, we added support for Camunda Cloud 1.3.<br />
-          You can now assign a User Task to a specific assignee or to a group of candidates.
-          Both fields can be configured in the assignment section of the properties panel using a static value or an expression.
-          Learn more about this feature in the <a href="https://docs.camunda.io/docs/reference/bpmn-processes/user-tasks/user-tasks/#assignments">Camunda Cloud docs.</a>
+          <h4>Support for Camunda Cloud 1.4</h4>
+          With this release, we added support for Camunda Cloud 1.4.<br />
+          You can now evaluate DMN decision in a Business Rules Task.
+          Specify called decision by ID and assign the result to a variable via the properties panel.
+          Learn more about this feature in the <a href="https://docs.camunda.io/docs/components/modeler/bpmn/business-rule-tasks/business-rule-tasks/">Camunda Cloud docs on Business Rule Task.</a>
         </li>
         <li>
-          <h4>Keep IDs when copy and pasting elements between diagrams</h4>
-          When you now copy BPMN elements between different diagrams, they will keep their original ID unless it is already used in the target diagram.
+          <h4>New properties panel</h4>
+          The properties panel has been completely redesigned.
+          Tabs have been replaced with sections which can be opened and closed individually.
+          A granular breakdown with clear titles allows to identify relevant topics at a glance.
         </li>
+        <li>
+          <h4>Global information panel</h4>
+          On the bottom of the window, you will find a new panel which displays information about the current process.
+          Currently, it allows to identify elements unsupported by the selected engine version.
+        </li>
+        <li>Plus, various smaller bug fixes and usability improvements.</li>
       </ul>
-
     </div>
   );
 }
