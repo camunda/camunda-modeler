@@ -51,15 +51,15 @@ export function ReleaseInfo(props) {
           Learn more about this feature in the <a href="https://docs.camunda.io/docs/components/modeler/bpmn/business-rule-tasks/business-rule-tasks/">Camunda Cloud docs on Business Rule Tasks.</a>
         </li>
         <li>
-          <h4>New properties panel</h4>
-          The properties panel has been completely redesigned.
-          Tabs have been replaced with sections which can be opened and closed individually.
+          <h4>Improved overall UI to become a "Visual IDE"</h4>
+          New welcome screen allows to easily create Platform and Cloud diagrams and forms.
+          The tab bar displays icons according to the file type and provides a new file menu via the plus button.
+          The properties panel has been completely redesigned. Tabs have been replaced with sections which can be opened and closed individually.
           A granular breakdown with clear titles allows to identify relevant topics at a glance.
         </li>
         <li>
-          <h4>Global information panel</h4>
-          On the bottom of the window, you will find a new panel which displays information about the current process.
-          Currently, it allows to identify elements unsupported by the selected engine version.
+          <h4>Process Debugging for BPMN</h4>
+          For Camunda Cloud, the Modeler will now validate and show if BPMN elements are not supported in the target platform.
         </li>
         <li>Plus, various smaller bug fixes and usability improvements.</li>
       </ul>
