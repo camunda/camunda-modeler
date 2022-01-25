@@ -6,6 +6,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### DMN
+
+* `FIX`: keep selection of a replaced element ([#2306](https://github.com/camunda/camunda-modeler/issues/2306))
+* `DEPS`: update to `dmn-js@11.1.2`
+
 ## 4.12.0
 
 * `FEAT`: define engine profiles globally ([#2544](https://github.com/camunda/camunda-modeler/issues/2544))
