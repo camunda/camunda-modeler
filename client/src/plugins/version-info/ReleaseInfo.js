@@ -61,7 +61,6 @@ export function ReleaseInfo(props) {
           <h4>Process Debugging for BPMN</h4>
           For Camunda Cloud, the Modeler will now validate and show if BPMN elements are not supported in the target platform.
         </li>
-        <li>Plus, various smaller bug fixes and usability improvements.</li>
       </ul>
     </div>
   );
