@@ -48,7 +48,7 @@ export function ReleaseInfo(props) {
           With this release, we added support for Camunda Cloud 1.4.<br />
           You can now evaluate a DMN decision in a Business Rules Task.
           Specify the called decision (DMN) by its ID and assign the result to a variable via the properties panel.
-          Learn more about this feature in the <a href="https://docs.camunda.io/docs/components/modeler/bpmn/business-rule-tasks/business-rule-tasks/">Camunda Cloud docs on Business Rule Task.</a>
+          Learn more about this feature in the <a href="https://docs.camunda.io/docs/components/modeler/bpmn/business-rule-tasks/business-rule-tasks/">Camunda Cloud docs on Business Rule Tasks.</a>
         </li>
         <li>
           <h4>New properties panel</h4>
