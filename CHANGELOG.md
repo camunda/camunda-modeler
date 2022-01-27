@@ -6,10 +6,68 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.0.0-alpha.0
+
+### General
+
+* `FEAT`: track Camunda Platform as target type in telemetry ([#2238](https://github.com/camunda/camunda-modeler/issues/2238))
+* `FEAT`: expose properties panel library to plugins ([#2632](https://github.com/camunda/camunda-modeler/pull/2632))
+* `FEAT`: redesign properties panel handle bar ([#2633](https://github.com/camunda/camunda-modeler/issues/2633))
+* `FEAT`: add tab context menu ([#2630](https://github.com/camunda/camunda-modeler/issues/2630), [#1240](https://github.com/camunda/camunda-modeler/issues/1240))
+* `FEAT`: redesign the notifications ([#2607](https://github.com/camunda/camunda-modeler/issues/2607), [#2643](https://github.com/camunda/camunda-modeler/issues/2643))
+* `FEAT`: add new file button with keyboard shortcut and navigation ([#2556](https://github.com/camunda/camunda-modeler/issues/2556), [#2626](https://github.com/camunda/camunda-modeler/issues/2626))
+* `FEAT`: remove toolbar ([#2569](https://github.com/camunda/camunda-modeler/issues/2569))
+* `FEAT`: redesign the tab container ([#2562](https://github.com/camunda/camunda-modeler/issues/2562))
+* `FEAT`: redesign and improve UX of the status bar ([#2488](https://github.com/camunda/camunda-modeler/issues/2488))
+* `FEAT`: increase default window size ([`9a00eff`](https://github.com/camunda/camunda-modeler/commit/9a00effc4c7d3a5c1b06280ea11add4ca7b2ede5))
+* `FEAT`: implement reduced color scheme ([#2459](https://github.com/camunda/camunda-modeler/issues/2459)), ([#2550](https://github.com/camunda/camunda-modeler/issues/2550))
+* `FEAT`: redesign the tab bar ([#2507](https://github.com/camunda/camunda-modeler/issues/2507), [#2563](https://github.com/camunda/camunda-modeler/issues/2563), [#2440](https://github.com/camunda/camunda-modeler/issues/2440))
+* `FEAT`: allow to drop files from VSCode ([#2299](https://github.com/camunda/camunda-modeler/issues/2299))
+* `FEAT`: expose Overlay component ([#2492](https://github.com/camunda/camunda-modeler/pull/2492))
+* `FEAT`: make file permissions for Linux more strict ([#2439](https://github.com/camunda/camunda-modeler/issues/2439))
+* `FEAT`: improve welcome tab UI ([#2470](https://github.com/camunda/camunda-modeler/issues/2470), [#2479](https://github.com/camunda/camunda-modeler/issues/2479))
+* `FIX`: restrict height of log ([#2258](https://github.com/camunda/camunda-modeler/issues/2258))
+* `FIX`: require at least one item of system information to be checked ([#2414](https://github.com/camunda/camunda-modeler/issues/2414))
+* `DEPS`: update to `electron@12.1.2`
+
+### BPMN
+
+* `FEAT`: support Camunda Cloud 1.4 ([[#2524](https://github.com/camunda/camunda-modeler/issues/2524)]), ([[#2641](https://github.com/camunda/camunda-modeler/issues/2641)])
+* `FEAT`: UX and technical re-write of the properties panel for Camunda Platform diagrams  ([#2663](https://github.com/camunda/camunda-modeler/issues/2663))
+* `FEAT`: validate diagrams ([#2466](https://github.com/camunda/camunda-modeler/issues/2466), [#2464](https://github.com/camunda/camunda-modeler/issues/2464))
+* `FEAT`: allow to pass variables when starting an instance ([#2437](https://github.com/camunda/camunda-modeler/issues/2437))
+* `FEAT`: allow to set execution platform version ([#2465](https://github.com/camunda/camunda-modeler/issues/2465))
+* `FEAT`: move color picker to the edit menu ([#2568](https://github.com/camunda/camunda-modeler/issues/2568))
+* `FEAT`: use text area for form JSON configuration in Camunda Cloud diagram ([#2579](https://github.com/camunda/camunda-modeler/issues/2579))
+* `FEAT`: add `--disable-platform` flag which allows to disable Camunda Platform features ([#2506](https://github.com/camunda/camunda-modeler/issues/2506))
+* `FEAT`: use overlay for deploy and start instance tools ([#2489](https://github.com/camunda/camunda-modeler/issues/2489))
+* `FIX`: do not display compensation SubProcess in the list of activities to be compensated ([#2397](https://github.com/camunda/camunda-modeler/issues/2397))
+* `FIX`: rename "Target" to "Called element" for Camunda Cloud Call Activity ([#2586](https://github.com/camunda/camunda-modeler/issues/2586))
+* `FIX`: keep properties panel updated when root changes ([[#2374](https://github.com/camunda/camunda-modeler/issues/2374))
+* `FIX`: set correct attributes when coloring connections ([#2599](https://github.com/camunda/camunda-modeler/issues/2599))
+* `FIX`: show proper tooltip on start instance tool ([#2429](https://github.com/camunda/camunda-modeler/issues/2429))
+* `DEPS`: update to `bpmn-js@8.9.1` 
+
 ### DMN
 
 * `FIX`: keep selection of a replaced element ([#2306](https://github.com/camunda/camunda-modeler/issues/2306))
 * `DEPS`: update to `dmn-js@11.1.2`
+
+### Forms
+
+* `FEAT`: split Camunda Platform and Camunda Cloud forms ([#2650](https://github.com/camunda/camunda-modeler/issues/2650))
+* `FEAT`: allow to deploy Camunda Platform forms ([#2498](https://github.com/camunda/camunda-modeler/issues/2498))
+* `FEAT`: allow to drag and drop forms ([#2490](https://github.com/camunda/camunda-modeler/issues/2490))
+* `FIX`: properly set exporter metadata ([#2540](https://github.com/camunda/camunda-modeler/issues/2540))
+* `FIX`: enable "Select all" in properties panel ([#2411](https://github.com/camunda/camunda-modeler/issues/2411))
+* `FIX`: do not disable save options when tab is switched ([#2635](https://github.com/camunda/camunda-modeler/issues/2635))
+* `FIX`: make sure select component can be selected via click ([#2415](https://github.com/camunda/camunda-modeler/issues/2415))
+* `DEPS`: update to `@bpmn-io/form-js@0.6.0`
+
+### Breaking Changes
+
+* The properties panel extensions for `0.x` series don't work with the new properties panel. Check out [the project's changelog](https://github.com/bpmn-io/bpmn-js-properties-panel/blob/master/CHANGELOG.md#breaking-changes) with the example migration for guidance.
+* The `toolbar` slot has been removed. Consider moving your plugin's buttons to the status bar.
 
 ## 4.12.0
 
