@@ -46,7 +46,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: keep properties panel updated when root changes ([[#2374](https://github.com/camunda/camunda-modeler/issues/2374))
 * `FIX`: set correct attributes when coloring connections ([#2599](https://github.com/camunda/camunda-modeler/issues/2599))
 * `FIX`: show proper tooltip on start instance tool ([#2429](https://github.com/camunda/camunda-modeler/issues/2429))
-* `DEPS`: update to `bpmn-js@8.9.1` 
+* `DEPS`: update to `bpmn-js@8.9.1`
 
 ### DMN
 
