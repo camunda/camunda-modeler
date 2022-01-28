@@ -64,7 +64,8 @@ describe('Integration', function() {
     });
 
 
-    it('should reimport on externally changed file', async function() {
+    // cf. https://github.com/camunda/camunda-modeler/pull/2629#issuecomment-1023705291
+    it.skip('should reimport on externally changed file', async function() {
 
       // given
       const multiSheetTab = findRenderedComponentWithType(app, MultiSheetTab);
