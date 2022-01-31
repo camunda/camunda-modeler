@@ -309,6 +309,5 @@ function shallowEquals(a, b) {
 }
 
 function validCloudUrl(url) {
-  return /^(https:\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.[\w.]+\.[\w]+(:443|)\/?$/
-    .test(url);
+  return /^(https:\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url);
 }
