@@ -46,7 +46,7 @@
     "del-cli": "^1.1.0",
     "diff2html": "^2.11.2",
     "electron": "^12.1.2",
-    "electron-builder": "^22.14.5",
+    "electron-builder": "^22.14.13",
     "electron-devtools-installer": "^3.1.1",
     "electron-notarize": "^1.1.1",
     "electron-publisher-s3": "^20.17.2",
