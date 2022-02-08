@@ -78,7 +78,9 @@ export default class AdaptationPlugin extends PureComponent {
       result.refs.analysisButtonRef.current.hidden = true;
 
       // get all optimization candidates within the workflow model
+      const analysisStartDate = Date.now();
       const optimizationCandidates = await findOptimizationCandidates(this.modeler);
+      console.log('Searching for optimization candidates took: %d ms', Date.now() - analysisStartDate);
 
       if (optimizationCandidates === undefined || optimizationCandidates.length === 0) {
         console.log('Unable to find suitable optimization candidates!');
