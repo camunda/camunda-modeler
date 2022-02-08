@@ -296,7 +296,7 @@ function getOptimizationCandidate(candidate) {
     console.log('Element has more or less than one ingoing flow: ', candidate.currentElement);
 
     // found complete candidate
-    if (candidate.currentElement === candidate.entryPoint) {
+    if (candidate.currentElement.id === candidate.entryPoint.id) {
       return candidate;
     } else {
       return undefined;
@@ -316,7 +316,7 @@ function getOptimizationCandidate(candidate) {
       candidate.exitPoint = candidate.currentElement;
 
       // follow first path
-      let pathOneCandidate = candidate;
+      let pathOneCandidate = lodash.cloneDeep(candidate);
       let pathOneSequenceFlow = candidate.currentElement.outgoing[0];
       let pathOneNextElement = pathOneSequenceFlow.targetRef;
       pathOneCandidate.expression = pathOneSequenceFlow.conditionExpression;
