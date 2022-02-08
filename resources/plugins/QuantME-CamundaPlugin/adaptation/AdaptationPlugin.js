@@ -139,6 +139,9 @@ export default class AdaptationPlugin extends PureComponent {
       rewriteButton.disabled = true;
       rewriteButton.innerText = 'Rewriting in progress...';
 
+      // track start time of hybrid program generation and workflow rewrite
+      const rewriteStartDate = Date.now();
+
       let rewriteCandidate = result.candidates[result.rewriteCandidateId];
       let programGenerationResult;
       switch (result.runtimeName) {
@@ -171,7 +174,7 @@ export default class AdaptationPlugin extends PureComponent {
           rewriteButton.innerText = 'Rewrite not possible!';
           rewriteButton.className = rewriteButton.className + ' rewrite-failed-button';
         } else {
-          console.log('Rewriting workflow successfully!');
+          console.log('Rewriting workflow successfully after %d ms!', Date.now() - rewriteStartDate);
 
           // display success in modal
           rewriteButton.title = programGenerationResult.error;
