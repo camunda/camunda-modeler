@@ -358,11 +358,11 @@ describe('<DeploymentEventHandler>', () => {
           const metrics = onSend.getCall(0).args[0].diagramMetrics;
 
           expect(metrics.tasks.userTask).to.eql({
-            count: 9,
+            count: 10,
             form: {
-              count: 7,
+              count: 8,
               embedded: 3,
-              camundaForms: 1,
+              camundaForms: 2,
               external: 1,
               generated: 1,
               other: 1

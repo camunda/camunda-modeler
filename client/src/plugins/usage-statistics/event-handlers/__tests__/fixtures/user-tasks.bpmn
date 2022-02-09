@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0sqedad" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.5.0-rc.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0sqedad" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
   <bpmn:process id="Process_1554m1f" isExecutable="true">
     <bpmn:userTask id="Activity_1xf1ap9" name="generic">
       <bpmn:extensionElements>
@@ -25,6 +25,7 @@
     <bpmn:userTask id="Activity_0i0rung" name="blank" />
     <bpmn:userTask id="Activity_1bwo0vq" name="blank" />
     <bpmn:userTask id="Activity_1aq3x2x" name="camunda-forms" camunda:formKey="camunda-forms:deployment:forms/userTask.form" />
+    <bpmn:userTask id="camunda-forms-formRef" name="camunda-forms-formRef" camunda:formRef="foo" camunda:formRefBinding="latest" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1554m1f">
@@ -54,6 +55,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1aq3x2x_di" bpmnElement="Activity_1aq3x2x">
         <dc:Bounds x="720" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0v24o7g_di" bpmnElement="camunda-forms-formRef">
+        <dc:Bounds x="880" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
