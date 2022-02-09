@@ -175,15 +175,16 @@ async function invokeQiskitRuntimeHandler(candidate, requiredPrograms, qiskitRun
     let timeout = 0;
     let result = undefined;
     while (!complete) {
+      timeout++;
+      console.log('Next polling iteration: ', timeout);
+
       let pollingResponse = await fetch(taskLocation);
       let pollingResponseJson = await pollingResponse.json();
 
-      if (pollingResponseJson['complete'] === true || timeout >= 20) {
+      if (pollingResponseJson['complete'] === true || timeout > 50) {
         complete = true;
         result = pollingResponseJson;
       }
-      timeout++;
-      console.log('Next polling iteration: ', timeout);
 
       await new Promise(r => setTimeout(r, 5000));
     }
