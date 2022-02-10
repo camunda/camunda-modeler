@@ -6,6 +6,13 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.0.0-alpha.1
+
+### BPMN
+* `FEAT`: support drilldown into subprocesses ([#1443](https://github.com/bpmn-io/bpmn-js/issues/1443))
+* `FEAT`: support linting in platform diagrams ([2625](https://github.com/camunda/camunda-modeler/issues/2625))
+* `FEAT`: track userTask formRef usage ([#2737](https://github.com/camunda/camunda-modeler/pull/2737))
+
 ## 5.0.0-alpha.0
 
 ### General
