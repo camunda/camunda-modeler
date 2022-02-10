@@ -58,8 +58,14 @@ export function ReleaseInfo(props) {
           A granular breakdown with clear titles allows to identify relevant topics at a glance.
         </li>
         <li>
+          <h4>Support drilldown into collapsed subprocesses</h4>
+          With this release, we improved modeling of collapsed subprocesses for Camunda Platform.<br />
+          You can model collapsed subprocesses through the command pallet or by collapsing an expanded subprocess.
+          Use the blue drilldown icon to view and model the contents of the subprocess.
+        </li>
+        <li>
           <h4>Process Debugging for BPMN</h4>
-          For Camunda Cloud, the Modeler will now validate and show if BPMN elements are not supported in the target platform.
+          The Modeler will now validate and show if BPMN elements are not supported in the target platform.
         </li>
       </ul>
     </div>
