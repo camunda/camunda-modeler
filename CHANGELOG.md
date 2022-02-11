@@ -39,7 +39,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### BPMN
 
-* `FEAT`: support Camunda Cloud 1.4 ([#2524](https://github.com/camunda/camunda-modeler/issues/2524)), ([#2641](https://github.com/camunda/camunda-modeler/issues/2641))
+* `FEAT`: support Camunda Cloud 1.4 ([#2524](https://github.com/camunda/camunda-modeler/issues/2524), [#2641](https://github.com/camunda/camunda-modeler/issues/2641))
 * `FEAT`: UX and technical re-write of the properties panel for Camunda Platform diagrams  ([#2663](https://github.com/camunda/camunda-modeler/issues/2663))
 * `FEAT`: validate diagrams ([#2466](https://github.com/camunda/camunda-modeler/issues/2466), [#2464](https://github.com/camunda/camunda-modeler/issues/2464))
 * `FEAT`: allow to pass variables when starting an instance ([#2437](https://github.com/camunda/camunda-modeler/issues/2437))
