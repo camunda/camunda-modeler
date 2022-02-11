@@ -72,7 +72,7 @@
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
     "file-loader": "^3.0.1",
-    "karma": "^4.1.0",
+    "karma": "^6.3.14",
     "karma-chrome-launcher": "^2.1.1",
     "karma-coverage": "^1.1.2",
     "karma-env-preprocessor": "^0.1.1",
