@@ -189,7 +189,11 @@ export class BpmnEditor extends CachedComponent {
 
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
 
-    modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
+    if (fn === 'on') {
+      modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
+    } else if (fn === 'off') {
+      modeler[ fn ]('commandStack.changed', this.handleLintingDebounced);
+    }
   }
 
   undo = () => {
