@@ -299,6 +299,67 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
   });
 
 
+  describe('linting', function() {
+
+    let modeler, actionSpy, container;
+
+    beforeEach(async function() {
+      modeler = new BpmnModeler();
+      actionSpy = spy();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler
+        },
+        __destroy: () => {}
+      });
+
+
+      const { wrapper } = await renderEditor(diagramXML, {
+        id: 'editor',
+        cache,
+        onAction: actionSpy
+      });
+
+      container = wrapper;
+    });
+
+
+    it('should call linting on change', async function() {
+
+      // assume
+      // lint on import
+      expect(actionSpy).to.have.been.calledOnce;
+
+      // when
+      modeler._emit('commandStack.changed');
+
+      // then
+      expect(actionSpy).to.have.been.calledTwice;
+    });
+
+
+    it('should only register once', async function() {
+
+      // assume
+      // lint on import
+      expect(actionSpy).to.have.been.calledOnce;
+
+      // when
+      container.unmount();
+      container.mount();
+
+      modeler._emit('commandStack.changed');
+
+      // then
+      expect(actionSpy).to.have.been.calledTwice;
+    });
+
+  });
+
+
   describe('#handleChanged', function() {
 
     it('should notify about changes', async function() {

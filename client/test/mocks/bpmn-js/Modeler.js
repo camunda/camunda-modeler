@@ -174,7 +174,14 @@ export default class Modeler {
     this.listeners[ event ].push(callback);
   }
 
-  off() {}
+  off(event, callback) {
+    const listeners = this.listeners[ event ];
+    if (!listeners) {
+      return;
+    }
+
+    this.listeners[ event ] = listeners.filter(l => l !== callback);
+  }
 
   _emit(event) {
     if (this.listeners[ event ]) {
