@@ -121,7 +121,12 @@ export class CmmnEditor extends CachedComponent {
       modeler[fn](event, this.handleChanged);
     });
 
-    modeler[fn]('error', 1500, this.handleError);
+    if (fn === 'on') {
+      modeler[fn]('error', 1500, this.handleError);
+    }
+    else if (fn === 'off') {
+      modeler[fn]('error', this.handleError);
+    }
   }
 
   undo = () => {
