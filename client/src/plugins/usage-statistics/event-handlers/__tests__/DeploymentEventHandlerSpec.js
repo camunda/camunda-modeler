@@ -931,6 +931,114 @@ describe('<DeploymentEventHandler>', () => {
 
       });
 
+
+      describe('cloud-bpmn', () => {
+
+        it('should send metrics with subprocess plane', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: subprocessesWithContentXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 1,
+            nesting: 1
+          });
+
+        });
+
+
+        it('should send empty metrics with empty subprocess plane', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: subprocessEmptyXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 0,
+            nesting: 0
+          });
+
+        });
+
+
+        it('should send metrics with nested subprocess planes', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: subprocessesNestedXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 4,
+            nesting: 3
+          });
+
+        });
+
+
+        it('should send metrics with subprocess planes in pools', async () => {
+
+          // given
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: subprocessesInPoolXML
+            }
+          });
+
+          const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+          // when
+          await handleDeploymentDone({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 4,
+            nesting: 3
+          });
+
+        });
+
+      });
+
     });
 
 

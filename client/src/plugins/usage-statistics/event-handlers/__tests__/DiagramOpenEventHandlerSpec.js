@@ -1225,6 +1225,146 @@ describe('<DiagramOpenEventHandler>', () => {
 
       });
 
+
+      describe('cloud-bpmn', () => {
+
+        it('should send metrics with subprocess plane', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: subprocessesWithContentXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 1,
+            nesting: 1
+          });
+
+        });
+
+
+        it('should send empty metrics with empty subprocess plane', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: subprocessEmptyXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 0,
+            nesting: 0
+          });
+
+        });
+
+
+        it('should send metrics with nested subprocess planes', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: subprocessesNestedXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 4,
+            nesting: 3
+          });
+
+        });
+
+
+        it('should send metrics with subprocess planes in pools', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'cloud-bpmn',
+            file: {
+              contents: subprocessesInPoolXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 4,
+            nesting: 3
+          });
+
+        });
+
+      });
+
     });
 
 
