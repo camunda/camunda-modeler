@@ -24,6 +24,10 @@ import {
   getServiceTaskMetrics
 } from './serviceTasks';
 
+import {
+  getSubprocessPlaneMetrics
+} from './subprocessPlanes';
+
 export default async function(file, type) {
   let metrics = {};
 
@@ -44,12 +48,16 @@ export default async function(file, type) {
   // (2.2) service tasks
   const serviceTaskMetrics = await getServiceTaskMetrics(file, type);
 
+  // (3) subprocess planes
+  const subprocessPlanes = await getSubprocessPlaneMetrics(file, type);
+
   metrics = {
     ...metrics,
     tasks: {
       userTask: userTaskMetrics,
       serviceTask: serviceTaskMetrics
-    }
+    },
+    subprocessPlanes
   };
 
   return metrics;

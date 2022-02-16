@@ -30,6 +30,14 @@ import serviceTasksWithParticipantsXML from './fixtures/service-tasks-with-parti
 
 import serviceTasksWithSubprocessXML from './fixtures/service-tasks-with-subprocess.bpmn';
 
+import subprocessEmptyXML from './fixtures/subprocess-empty.bpmn';
+
+import subprocessesNestedXML from './fixtures/subprocess-nested.bpmn';
+
+import subprocessesInPoolXML from './fixtures/subprocess-pool.bpmn';
+
+import subprocessesWithContentXML from './fixtures/subprocess-content.bpmn';
+
 import userTasksXML from './fixtures/user-tasks.bpmn';
 
 import userTasksWithParticipantsXML from './fixtures/user-tasks-with-participants.bpmn';
@@ -1067,6 +1075,150 @@ describe('<DiagramOpenEventHandler>', () => {
               count: 0,
               external: 0
             }
+          });
+
+        });
+
+      });
+
+    });
+
+
+    describe('subprocess planes', () => {
+
+      describe('bpmn', () => {
+
+        it('should send metrics with subprocess plane', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: subprocessesWithContentXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 1,
+            nesting: 1
+          });
+
+        });
+
+
+        it('should send empty metrics with empty subprocess plane', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: subprocessEmptyXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 0,
+            nesting: 0
+          });
+
+        });
+
+
+        it('should send metrics with nested subprocess planes', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: subprocessesNestedXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 4,
+            nesting: 3
+          });
+
+        });
+
+
+        it('should send metrics with subprocess planes in pools', async () => {
+
+          // given
+          const subscribe = sinon.spy();
+          const onSend = sinon.spy();
+          const tab = createTab({
+            type: 'bpmn',
+            file: {
+              contents: subprocessesInPoolXML
+            }
+          });
+
+          const config = { get: () => null };
+
+          // when
+          const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+          diagramOpenEventHandler.enable();
+
+          const bpmnCallback = subscribe.getCall(0).args[1];
+
+          await bpmnCallback({ tab });
+
+          const { diagramMetrics } = onSend.getCall(0).args[0];
+
+          // then
+          expect(diagramMetrics.subprocessPlanes).to.eql({
+            count: 4,
+            nesting: 3
           });
 
         });
