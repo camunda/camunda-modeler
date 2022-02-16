@@ -3,3 +3,12 @@ comment: off
 parsers:
   javascript:
     enable_partials: yes
+coverage:
+  status:
+    patch:
+      default:
+        informational: false
+        threshold: 5.0
+    project:
+      default:
+        informational: true
