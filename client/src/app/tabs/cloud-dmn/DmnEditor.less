@@ -1,0 +1,103 @@
+:local(.DmnEditor) {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+
+  flex-direction: column;
+
+  .dmn-drd-container {
+    --drd-font-family-monospace: var(--font-family-monospace);
+  }
+
+  .dmn-decision-table-container {
+    --decision-table-font-family: var(--font-family);
+  }
+
+  .dmn-literal-expression-container {
+    --literal-expression-font-family: var(--font-family);
+    --literal-expression-font-family-monospace: var(--font-family-monospace);
+  }
+
+  :not(.top) + .bottom {
+    .dmn-decision-table-container,
+    .dmn-literal-expression-container {
+      display: none;
+    }
+  }
+
+  &>.top {
+    padding: 10px;
+
+    .button {
+      background: var(--color-white);
+      padding: 8px;
+      border: solid 1px var(--color-grey-225-10-75);
+      border-radius: 2px;
+      font-size: 14px;
+      color: var(--color-grey-225-10-15);
+      font-weight: bold;
+      font-family: inherit;
+      outline: none;
+      margin-right: 10px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &:hover {
+        background-color: var(--color-grey-225-10-97);
+      }
+    }
+
+  }
+
+  &>.bottom {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+  }
+
+  .diagram {
+    flex: 1;
+    position: relative;
+  }
+
+  .diagram:not(.drd) {
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  .djs-overlay .drill-down-overlay {
+    padding: 0px 5px 2px;
+  }
+
+  .djs-container > .dmn-definitions {
+    display: none;
+  }
+
+  .properties {
+    flex: none;
+
+    .toggle {
+      top: 350px;
+    }
+  }
+
+  /**
+   * Fix properties tabbing
+   */
+  .bpp-properties-tabs-links > .bpp-active a {
+    position: relative;
+
+    &:before {
+      content: '';
+      z-index: 5;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      border-bottom: solid 3px var(--color-grey-225-10-95);
+      position: absolute;
+    }
+  }
+
+}

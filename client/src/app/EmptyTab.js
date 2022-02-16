@@ -58,6 +58,7 @@ export default class EmptyTab extends PureComponent {
         <p>Create a new file</p>
 
         {this.renderDiagramButton('create-cloud-bpmn-diagram', 'BPMN diagram', <BPMNIcon />)}
+        {this.renderDiagramButton('create-dmn-diagram', 'DMN diagram', <DMNIcon />)}
         {
           !Flags.get(DISABLE_FORM) && (
             this.renderDiagramButton('create-cloud-form', 'Form', <FormIcon />)

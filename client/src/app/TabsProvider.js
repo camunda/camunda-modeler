@@ -307,6 +307,44 @@ export default class TabsProvider {
           return null;
         }
       },
+      'cloud-dmn': {
+        name: 'DMN',
+        encoding: ENCODING_UTF8,
+        exports: {
+          png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'dmn', 'xml' ],
+        canOpen(file) {
+          return parseDiagramType(file.contents) === 'dmn';
+        },
+        getComponent(options) {
+          return import('./tabs/cloud-dmn');
+        },
+        getIcon() {
+          return DMNIcon;
+        },
+        getInitialContents() {
+          return dmnDiagram;
+        },
+        getInitialFilename(suffix) {
+          return `diagram_${suffix}.dmn`;
+        },
+        getHelpMenu() {
+          return [];
+        },
+        getNewFileMenu() {
+          return [ {
+            label: 'DMN diagram',
+            group: 'Camunda Cloud',
+            action: 'create-dmn-diagram'
+          } ];
+        },
+        getLinter() {
+          return null;
+        }
+      },
       form: {
         name: 'FORM',
         encoding: ENCODING_UTF8,
@@ -390,7 +428,7 @@ export default class TabsProvider {
 
     this.providersByFileType = {
       bpmn: [ this.providers['cloud-bpmn'], this.providers.bpmn ],
-      dmn: [ this.providers.dmn ],
+      dmn: [ this.providers.dmn, this.providers['cloud-dmn'] ],
       cmmn: [ this.providers.cmmn ],
       form: [ this.providers['cloud-form'], this.providers.form ]
     };
