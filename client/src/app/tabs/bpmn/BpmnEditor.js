@@ -416,6 +416,7 @@ export class BpmnEditor extends CachedComponent {
       moveToOrigin: !inputActive,
       moveSelection: !inputActive && !!selectionLength,
       paste: !modeler.get('clipboard').isEmpty(),
+      platform: 'platform',
       propertiesPanel: true,
       redo: commandStack.canRedo(),
       removeSelected: !!selectionLength || inputActive,
