@@ -117,6 +117,10 @@ Also in the case of BPMN diagrams, we add selected diagram metrics:
           "connector": 1
         }
       }
+    },
+    "subprocessPlanes": {
+      "count": 5,
+      "nesting:": 2
     }
   }
 }
@@ -193,6 +197,10 @@ In case of BPMN files, we add selected diagram metrics:
           "connector": 1
         }
       }
+    },
+    "subprocessPlanes": {
+      "count": 5,
+      "nesting:": 2
     }
   }
 }
