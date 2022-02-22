@@ -119,7 +119,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
   describe('plugins', function() {
 
-    it('should NOT accept plugins', async function() {
+    it('should accept plugins', async function() {
 
       // given
       const additionalModule = {
@@ -156,13 +156,44 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // then
       const { modeler } = instance.getCached();
 
-      expect(modeler.options.additionalModules).to.not.exist;
+      expect(modeler.options.additionalModules).to.include(additionalModule);
 
-      expect(modeler.options.moddleExtensions).to.not.include({
+      expect(modeler.options.moddleExtensions).to.include({
         bar: moddleExtension
       });
     });
 
+  });
+
+  it('should handle invalid moddle extensions', async function() {
+
+    // given
+    const onErrorSpy = sinon.spy();
+
+    const unnamedModdleExtension = {};
+
+    const circularModdleExtension = {};
+    circularModdleExtension.name = circularModdleExtension;
+
+    const props = {
+      getPlugins(type) {
+        switch (type) {
+        case 'bpmn.modeler.moddleExtension':
+          return [
+            unnamedModdleExtension,
+            circularModdleExtension
+          ];
+        }
+
+        return [];
+      },
+      onError: onErrorSpy,
+      onAction: noop
+    };
+
+    // then
+    expect(() => BpmnEditor.createCachedState(props)).to.not.throw();
+    expect(onErrorSpy).to.be.calledOnce;
   });
 
 
@@ -1181,7 +1212,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       };
     });
 
-    it('should NOT notify when modeler configures', async function() {
+    it('should notify when modeler configures', async function() {
 
       // when
       await renderEditor(diagramXML, {
@@ -1191,7 +1222,12 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // then
       const modelerConfigureEvent = getEvent(emittedEvents, 'bpmn.modeler.configure');
 
-      expect(modelerConfigureEvent).to.not.exist;
+      const {
+        payload
+      } = modelerConfigureEvent;
+
+      expect(modelerConfigureEvent).to.exist;
+      expect(payload.middlewares).to.exist;
     });
 
 
