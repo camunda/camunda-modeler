@@ -49,7 +49,7 @@ import {
   replaceUsages as replaceNamespaceUsages
 } from '../util/namespace';
 
-import configureModeler from './util/configure';
+import configureModeler from '../bpmn-shared/util/configure';
 
 import Metadata from '../../../util/Metadata';
 

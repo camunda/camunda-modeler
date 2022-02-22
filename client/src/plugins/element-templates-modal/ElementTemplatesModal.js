@@ -44,7 +44,14 @@ export default class ElementTemplatesModal extends PureComponent {
     this.setState({ activeTab });
   }
 
-  handleBpmnModelerConfigure = async ({ middlewares }) => {
+  handleBpmnModelerConfigure = async ({ middlewares, tab }) => {
+
+    // todo(Skaiir): workaround to deal with the co-dependencies between cloud element templates and plugins
+    // cf. https://github.com/camunda/camunda-modeler/issues/2731
+    if (tab.type !== 'bpmn') {
+      return;
+    }
+
     middlewares.push(config => {
       return {
         ...config,

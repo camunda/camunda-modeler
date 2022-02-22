@@ -46,6 +46,7 @@ export default function configureModeler(
   const middlewares = [
 
     function moddleExtensionsMiddleware(options, logWarning) {
+
       const plugins = getPlugins('bpmn.modeler.moddleExtension');
 
       const moddleExtensions = plugins.reduce((extensions, extension) => {

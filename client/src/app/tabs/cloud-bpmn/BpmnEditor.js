@@ -42,6 +42,8 @@ import css from './BpmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 
+import configureModeler from '../bpmn-shared/util/configure';
+
 import Metadata from '../../../util/Metadata';
 
 import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesContainer';
@@ -720,17 +722,38 @@ export class BpmnEditor extends CachedComponent {
     } = Metadata;
 
     const {
+      getPlugins,
       onAction,
+      onError
     } = props;
 
-    // TODO @pinussilvestrus: ignore plugins for now
-    const options = {
-      position: 'absolute',
+    // notify interested parties that modeler will be configured
+    const handleMiddlewareExtensions = (middlewares) => {
+      onAction('emit-event', {
+        type: 'bpmn.modeler.configure',
+        payload: {
+          middlewares
+        }
+      });
+    };
+
+    const {
+      options,
+      warnings
+    } = configureModeler(getPlugins, {
       exporter: {
         name,
         version
-      }
-    };
+      },
+    }, handleMiddlewareExtensions);
+
+    if (warnings.length && isFunction(onError)) {
+      onError(
+        'Problem(s) configuring BPMN editor: \n\t' +
+        warnings.map(error => error.message).join('\n\t') +
+        '\n'
+      );
+    }
 
     const modeler = new BpmnModeler({
       ...options,
