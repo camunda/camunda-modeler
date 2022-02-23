@@ -12,7 +12,10 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import {
+  shallow,
+  mount
+} from 'enzyme';
 
 import { Config } from './../../../../app/__tests__/mocks';
 
@@ -20,9 +23,16 @@ import { DeploymentService } from './mocks';
 
 import StartInstanceTool from '../StartInstanceTool';
 
-import { DeploymentError,
+import {
+  DeploymentError,
   ConnectionError,
-  StartInstanceError } from '../../shared/CamundaAPI';
+  StartInstanceError
+} from '../../shared/CamundaAPI';
+
+import {
+  Slot,
+  SlotFillRoot
+} from '../../../../app/slot-fill';
 
 describe('<StartInstanceTool>', () => {
 
@@ -923,6 +933,89 @@ describe('<StartInstanceTool>', () => {
     });
 
 
+    describe('overlay dropdown', () => {
+
+      it('should open', async () => {
+
+        // given
+        const activeTab = createTab({ type: 'bpmn' });
+
+        const {
+          wrapper
+        } = createStartInstanceTool({
+          activeTab,
+          withFillSlot: true
+        }, mount);
+
+        // when
+        const statusBarBtn = wrapper.find("button[title='Start current diagram']");
+        statusBarBtn.simulate('click');
+
+        // then
+        expect(wrapper.find("button[title='Start process instance']").exists()).to.be.true;
+
+      });
+
+
+      it('should close on button click', async () => {
+
+        // given
+        const activeTab = createTab({ type: 'bpmn' });
+        const {
+          wrapper
+        } = createStartInstanceTool({
+          activeTab,
+          withFillSlot: true
+        }, mount);
+
+        // open overlay
+        const statusBarBtn = wrapper.find("button[title='Start current diagram']");
+        statusBarBtn.simulate('click');
+
+        // assume
+        expect(wrapper.find("button[title='Start process instance']").exists()).to.be.true;
+
+        // then
+        statusBarBtn.simulate('click');
+        wrapper.update();
+
+        // assume
+        expect(wrapper.find("button[title='Start process instance']").exists()).to.be.false;
+
+      });
+
+
+      it('should close on background click', async () => {
+
+        // given
+        const activeTab = createTab({ type: 'bpmn' });
+
+        const {
+          wrapper
+        } = createStartInstanceTool({
+          activeTab,
+          withFillSlot: true
+        }, mount);
+
+        // open overlay
+        const statusBarBtn = wrapper.find("button[title='Start current diagram']");
+        statusBarBtn.simulate('click');
+
+        // assume
+        expect(wrapper.find("button[title='Start process instance']").exists()).to.be.true;
+
+        // when
+        document.body.dispatchEvent(new MouseEvent('mousedown'));
+        wrapper.update();
+
+        // then
+        expect(wrapper.find("button[title='Start process instance']").exists()).to.be.false;
+
+      });
+
+    });
+
+
     describe('Cockpit link', function() {
 
       function testCockpitLink(deploymentUrl, expectedCockpitLink) {
@@ -1077,7 +1170,7 @@ function createStartInstanceTool({
   ...props
 } = {}, render = shallow) {
   const subscribe = (event, callback) => {
-    event === 'app.activeTabChanged' && callback(activeTab);
+    event === 'app.activeTabChanged' && callback({ activeTab });
   };
 
   const triggerAction = (event, context) => {
@@ -1111,15 +1204,28 @@ function createStartInstanceTool({
     ...props.deployService
   });
 
-  const wrapper = render(<TestStartInstanceTool
-    subscribe={ subscribe }
-    triggerAction={ triggerAction }
-    displayNotification={ noop }
-    log={ props.log || noop }
-    { ...props }
-    deployService={ deployService }
-    config={ config }
-  />);
+  const StartInstance = (
+    <TestStartInstanceTool
+      subscribe={ subscribe }
+      triggerAction={ triggerAction }
+      displayNotification={ noop }
+      log={ props.log || noop }
+      { ...props }
+      deployService={ deployService }
+      config={ config }
+    />
+  );
+
+  const StartInstanceWithFillSlot = (
+    <SlotFillRoot>
+      <Slot name="status-bar__file" />
+      {StartInstance}
+    </SlotFillRoot>
+  );
+
+  const wrapper = render(
+    props.withFillSlot ? StartInstanceWithFillSlot : StartInstance
+  );
 
   return {
     wrapper,
