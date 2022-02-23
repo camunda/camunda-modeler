@@ -498,10 +498,6 @@ export default class StartInstanceTool extends PureComponent {
        overlayState
      } = this.state;
 
-     const toggleOverlay = () => {
-       this.props.deployService.closeOverlay(overlayState);
-     };
-
      return <React.Fragment>
 
        { isBpmnTab(activeTab) &&
@@ -512,7 +508,6 @@ export default class StartInstanceTool extends PureComponent {
            items={ this.START_ACTIONS }
            buttonRef={ this.anchorRef }
            overlayState={ this.state.activeButton }
-           onClose={ toggleOverlay }
          >
            <PlayIcon className="icon" />
          </OverlayDropdown>
