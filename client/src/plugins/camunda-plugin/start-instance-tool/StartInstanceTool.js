@@ -62,7 +62,11 @@ export default class StartInstanceTool extends PureComponent {
      } = this.props;
 
      subscribe('app.activeTabChanged', ({ activeTab }) => {
-       this.setState({ activeTab });
+       this.setState({
+         activeTab,
+         overlayState: null,
+         activeButton: false
+       });
      });
 
    }

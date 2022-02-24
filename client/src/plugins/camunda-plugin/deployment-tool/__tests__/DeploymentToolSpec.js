@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import {
   omit
 } from 'min-dash';
@@ -23,7 +23,7 @@ import DeploymentTool from '../DeploymentTool';
 import AuthTypes from '../../shared/AuthTypes';
 import { DeploymentError,
   ConnectionError } from '../../shared/CamundaAPI';
-
+import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
 
 const CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
@@ -1221,105 +1221,167 @@ describe('<DeploymentTool>', () => {
       expect(configSetSpy).to.not.have.been.called;
     });
 
-  });
 
+    describe('overlay', function() {
 
-  describe('Cockpit link', function() {
-
-    function testCockpitLink(expectedCockpitLink) {
-
-      return done => {
+      it('should open', async () => {
 
         // given
-        const activeTab = createTab({ name: 'foo.bpmn' });
-
-        const deploySpy = sinon.stub().returns({ id: 'foo' });
-
-        const configuration = createConfiguration();
+        const activeTab = createTab({ type: 'bpmn' });
 
         const {
-          instance
+          wrapper
         } = createDeploymentTool({
           activeTab,
-          configuration,
-          displayNotification,
-          deploySpy
-        });
+          withFillSlot: true,
+          keepOpen: true
+        }, mount);
 
         // when
-        instance.deploy();
+        const statusBarBtn = wrapper.find("button[title='Deploy current diagram']");
+        statusBarBtn.simulate('click');
 
-        function displayNotification(notification) {
+        await new Promise(function(resolve) {
+          setTimeout(resolve, 10);
+        });
 
-          // then
-          try {
-            const cockpitLink = shallow(notification.content).find('a').first();
-            const { href } = cockpitLink.props();
+        // then
+        expect(wrapper.html().includes('form')).to.be.true;
+      });
 
-            expect(href).to.eql(expectedCockpitLink);
 
-            done();
-          } catch (error) {
-            done(error);
+      it('should close when active tab changes', async () => {
+
+        // given
+        const activeTab = createTab({ type: 'bpmn' });
+        const { subscribe, callSubscriber } = createSubscribe(activeTab);
+
+        const {
+          wrapper
+        } = createDeploymentTool({
+          activeTab,
+          subscribe,
+          withFillSlot: true,
+          keepOpen: true
+        }, mount);
+
+        // open overlay
+        const statusBarBtn = wrapper.find("button[title='Deploy current diagram']");
+        statusBarBtn.simulate('click');
+
+        await new Promise(function(resolve) {
+          setTimeout(resolve, 10);
+        });
+
+        // assume
+        expect(wrapper.html().includes('form')).to.be.true;
+
+        // then
+        callSubscriber({ activeTab: createTab() });
+
+        // expect
+        expect(wrapper.html().includes('form')).to.not.be.true;
+      });
+
+    });
+
+
+    describe('Cockpit link', function() {
+
+      function testCockpitLink(expectedCockpitLink) {
+
+        return done => {
+
+          // given
+          const activeTab = createTab({ name: 'foo.bpmn' });
+
+          const deploySpy = sinon.stub().returns({ id: 'foo' });
+
+          const configuration = createConfiguration();
+
+          const {
+            instance
+          } = createDeploymentTool({
+            activeTab,
+            configuration,
+            displayNotification,
+            deploySpy
+          });
+
+          // when
+          instance.deploy();
+
+          function displayNotification(notification) {
+
+            // then
+            try {
+              const cockpitLink = shallow(notification.content).find('a').first();
+              const { href } = cockpitLink.props();
+
+              expect(href).to.eql(expectedCockpitLink);
+
+              done();
+            } catch (error) {
+              done(error);
+            }
           }
-        }
-      };
-    }
+        };
+      }
 
-    function query(id) {
-      return `deploymentsQuery=%5B%7B%22type%22:%22id%22,%22operator%22:%22eq%22,%22value%22:%22${id}%22%7D%5D`;
-    }
+      function query(id) {
+        return `deploymentsQuery=%5B%7B%22type%22:%22id%22,%22operator%22:%22eq%22,%22value%22:%22${id}%22%7D%5D`;
+      }
 
 
-    it('should display Spring-specific Cockpit link', testCockpitLink(
-      `http://localhost:8080/app/cockpit/default/#/repository/?${query('foo')}`
-    ));
+      it('should display Spring-specific Cockpit link', testCockpitLink(
+        `http://localhost:8080/app/cockpit/default/#/repository/?${query('foo')}`
+      ));
+    });
+
+
   });
 
 
-});
 
+  // helper ////
+  class TestDeploymentTool extends DeploymentTool {
 
-
-// helper ////
-class TestDeploymentTool extends DeploymentTool {
-
-  /**
+    /**
    * @param {object} props
    * @param {'cancel'|'save'|'deploy'} [props.userAction='deploy'] user action in configuration modal
    * @param {object} [props.endpoint] overrides for endpoint configuration
    * @param {object} [props.deployment] overrides for deployment configuration
    */
-  constructor(props) {
-    super(props);
-  }
-
-  // removes CamundaAPI dependency
-  deployWithConfiguration(...args) {
-    if (this.props.errorThrown) {
-      throw this.props.errorThrown;
+    constructor(props) {
+      super(props);
     }
 
-    return this.props.deploySpy && this.props.deploySpy(...args);
-  }
+    // removes CamundaAPI dependency
+    deployWithConfiguration(...args) {
+      if (this.props.errorThrown) {
+        throw this.props.errorThrown;
+      }
 
-  getVersion(...args) {
-    if (this.props.getVersionErrorThrown) {
-      throw this.props.getVersionErrorThrown;
+      return this.props.deploySpy && this.props.deploySpy(...args);
     }
 
-    if (this.props.getVersionSpy) {
-      return this.props.getVersionSpy && this.props.getVersionSpy(...args);
+    getVersion(...args) {
+      if (this.props.getVersionErrorThrown) {
+        throw this.props.getVersionErrorThrown;
+      }
+
+      if (this.props.getVersionSpy) {
+        return this.props.getVersionSpy && this.props.getVersionSpy(...args);
+      }
+
+      return { version: '7.15.0' };
     }
 
-    return { version: '7.15.0' };
-  }
+    handleDeploymentError(...args) {
+      super.handleDeploymentError(...args);
 
-  handleDeploymentError(...args) {
-    super.handleDeploymentError(...args);
-
-    return this.props.deploymentErrorSpy && this.props.deploymentErrorSpy(...args);
-  }
+      return this.props.deploymentErrorSpy && this.props.deploymentErrorSpy(...args);
+    }
 
   checkConnection = (...args) => {
     return this.props.checkConnectionSpy && this.props.checkConnectionSpy(...args);
@@ -1333,7 +1395,8 @@ class TestDeploymentTool extends DeploymentTool {
     const {
       userAction,
       endpoint,
-      deployment
+      deployment,
+      keepOpen
     } = this.props;
 
     if (overlayState) {
@@ -1350,50 +1413,65 @@ class TestDeploymentTool extends DeploymentTool {
         }
       };
 
-      overlayState.handleClose(action, configuration);
+      if (!keepOpen) {
+        overlayState.handleClose(action, configuration);
+      }
     }
   }
-}
+  }
 
-function createDeploymentTool({
-  activeTab = createTab(),
-  ...props
-} = {}, render = shallow) {
-  const subscribe = (event, callback) => {
-    event === 'app.activeTabChanged' && callback({ activeTab });
-  };
+  function createDeploymentTool({
+    activeTab = createTab(),
+    ...props
+  } = {}, render = shallow) {
+    const subscribe = (event, callback) => {
+      event === 'app.activeTabChanged' && callback({ activeTab });
+    };
 
-  const triggerAction = (event, context) => {
-    switch (true) {
-    case (event === 'save-tab'):
-      return activeTab;
-    case (props.actionTriggered &&
+    const triggerAction = (event, context) => {
+      switch (true) {
+      case (event === 'save-tab'):
+        return activeTab;
+      case (props.actionTriggered &&
       props.actionTriggered.emitEvent == event &&
       props.actionTriggered.type == context.type):
-      return props.actionTriggered.handler(context);
-    }
-  };
+        return props.actionTriggered.handler(context);
+      }
+    };
 
-  const config = new Config({
-    get: (_, defaultValue) => defaultValue,
-    ...props.config
-  });
+    const config = new Config({
+      get: (_, defaultValue) => defaultValue,
+      ...props.config
+    });
 
-  const wrapper = render(<TestDeploymentTool
-    subscribe={ subscribe }
-    triggerAction={ triggerAction }
-    displayNotification={ noop }
-    log={ noop }
-    _getGlobal={ (name) => (name === 'fileSystem' && createFileSystem(props.fileSystem)) }
-    { ...props }
-    config={ config }
-  />);
+    const DeploymentTool = (
+      <TestDeploymentTool
+        subscribe={ props.subcribe || subscribe }
+        triggerAction={ triggerAction }
+        displayNotification={ noop }
+        log={ noop }
+        _getGlobal={ (name) => (name === 'fileSystem' && createFileSystem(props.fileSystem)) }
+        { ...props }
+        config={ config }
+      />
+    );
 
-  return {
-    wrapper,
-    instance: wrapper.instance()
-  };
-}
+    const DeploymentToolWithFillSlot = (
+      <SlotFillRoot>
+        <Slot name="status-bar__file" />
+        {DeploymentTool}
+      </SlotFillRoot>
+    );
+
+    const wrapper = render(
+      props.withFillSlot ? DeploymentToolWithFillSlot : DeploymentTool
+    );
+
+    return {
+      wrapper,
+      instance: wrapper.instance()
+    };
+  }});
 
 function createTab(overrides = {}) {
   return {
@@ -1448,4 +1526,27 @@ function noop() {}
 
 function withoutCredentials(endpoint) {
   return omit(endpoint, [ 'username', 'password', 'token' ]);
+}
+
+
+function createSubscribe(activeTab) {
+  let callback = null;
+
+  function subscribe(event, _callback) {
+    if (event === 'app.activeTabChanged') {
+      callback = _callback;
+      callback({ activeTab });
+    }
+  }
+
+  async function callSubscriber(...args) {
+    if (callback) {
+      await callback(...args);
+    }
+  }
+
+  return {
+    callSubscriber,
+    subscribe
+  };
 }

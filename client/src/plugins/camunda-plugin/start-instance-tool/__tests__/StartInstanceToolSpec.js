@@ -933,7 +933,72 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    describe('overlay dropdown', () => {
+    describe('overlay', function() {
+
+      describe('overlay dropdown', () => {
+
+        it('should open', async () => {
+
+          // given
+          const activeTab = createTab({ type: 'bpmn' });
+
+          const {
+            wrapper
+          } = createStartInstanceTool({
+            activeTab,
+            withFillSlot: true
+          }, mount);
+
+          expectOverlayDropdown(wrapper);
+        });
+
+
+        it('should close on button click', async () => {
+
+          // given
+          const activeTab = createTab({ type: 'bpmn' });
+          const {
+            wrapper
+          } = createStartInstanceTool({
+            activeTab,
+            withFillSlot: true
+          }, mount);
+
+          const statusBarBtn = expectOverlayDropdown(wrapper);
+
+          // then
+          statusBarBtn.simulate('click');
+          wrapper.update();
+
+          // assume
+          expect(wrapper.find("button[title='Start process instance']").exists()).to.be.false;
+        });
+
+
+        it('should close on background click', async () => {
+
+          // given
+          const activeTab = createTab({ type: 'bpmn' });
+
+          const {
+            wrapper
+          } = createStartInstanceTool({
+            activeTab,
+            withFillSlot: true
+          }, mount);
+
+          expectOverlayDropdown(wrapper);
+
+          // when
+          document.body.dispatchEvent(new MouseEvent('mousedown'));
+          wrapper.update();
+
+          // then
+          expect(wrapper.find("button[title='Start process instance']").exists()).to.be.false;
+        });
+
+      });
+
 
       it('should open', async () => {
 
@@ -944,73 +1009,44 @@ describe('<StartInstanceTool>', () => {
           wrapper
         } = createStartInstanceTool({
           activeTab,
-          withFillSlot: true
+          withFillSlot: true,
+          keepOpen: true
         }, mount);
 
-        // when
-        const statusBarBtn = wrapper.find("button[title='Start current diagram']");
-        statusBarBtn.simulate('click');
+        // open dropdown overlay
+        expectOverlayDropdown(wrapper);
 
-        // then
-        expect(wrapper.find("button[title='Start process instance']").exists()).to.be.true;
-
+        // open start instance overlay
+        expectStartInstanceOverlay(wrapper);
       });
 
 
-      it('should close on button click', async () => {
+      it('should close when active tab changes', async () => {
 
         // given
         const activeTab = createTab({ type: 'bpmn' });
-        const {
-          wrapper
-        } = createStartInstanceTool({
-          activeTab,
-          withFillSlot: true
-        }, mount);
-
-        // open overlay
-        const statusBarBtn = wrapper.find("button[title='Start current diagram']");
-        statusBarBtn.simulate('click');
-
-        // assume
-        expect(wrapper.find("button[title='Start process instance']").exists()).to.be.true;
-
-        // then
-        statusBarBtn.simulate('click');
-        wrapper.update();
-
-        // assume
-        expect(wrapper.find("button[title='Start process instance']").exists()).to.be.false;
-
-      });
-
-
-      it('should close on background click', async () => {
-
-        // given
-        const activeTab = createTab({ type: 'bpmn' });
+        const { subscribe, callSubscriber } = createSubscribe(activeTab);
 
         const {
           wrapper
         } = createStartInstanceTool({
           activeTab,
-          withFillSlot: true
+          subscribe,
+          withFillSlot: true,
+          keepOpen: true
         }, mount);
 
-        // open overlay
-        const statusBarBtn = wrapper.find("button[title='Start current diagram']");
-        statusBarBtn.simulate('click');
+        // open dropdown overlay
+        expectOverlayDropdown(wrapper);
 
-        // assume
-        expect(wrapper.find("button[title='Start process instance']").exists()).to.be.true;
-
-        // when
-        document.body.dispatchEvent(new MouseEvent('mousedown'));
-        wrapper.update();
+        // open start instance overlay
+        expectStartInstanceOverlay(wrapper);
 
         // then
-        expect(wrapper.find("button[title='Start process instance']").exists()).to.be.false;
+        callSubscriber({ activeTab: createTab() });
 
+        // expect
+        expect(wrapper.html().includes('form')).to.not.be.true;
       });
 
     });
@@ -1149,7 +1185,8 @@ class TestStartInstanceTool extends StartInstanceTool {
     const { overlayState } = this.state;
     const {
       userAction,
-      businessKey
+      businessKey,
+      keepOpen
     } = this.props;
 
     if (overlayState) {
@@ -1159,7 +1196,9 @@ class TestStartInstanceTool extends StartInstanceTool {
         businessKey: businessKey || overlayState.configuration.businessKey
       };
 
-      overlayState.handleClose(action, configuration);
+      if (!keepOpen) {
+        overlayState.handleClose(action, configuration);
+      }
     }
   }
 
@@ -1206,7 +1245,7 @@ function createStartInstanceTool({
 
   const StartInstance = (
     <TestStartInstanceTool
-      subscribe={ subscribe }
+      subscribe={ props.subscribe || subscribe }
       triggerAction={ triggerAction }
       displayNotification={ noop }
       log={ props.log || noop }
@@ -1249,3 +1288,51 @@ function createTab(overrides = {}) {
 }
 
 function noop() {}
+
+function createSubscribe(activeTab) {
+  let callback = null;
+
+  function subscribe(event, _callback) {
+    if (event === 'app.activeTabChanged') {
+      callback = _callback;
+      callback({ activeTab });
+    }
+  }
+
+  async function callSubscriber(...args) {
+    if (callback) {
+      await callback(...args);
+    }
+  }
+
+  return {
+    callSubscriber,
+    subscribe
+  };
+}
+
+function expectOverlayDropdown(wrapper) {
+
+  // when
+  const statusBarBtn = wrapper.find("button[title='Start current diagram']");
+  statusBarBtn.simulate('click');
+
+  // then
+  expect(wrapper.find("button[title='Start process instance']").exists()).to.be.true;
+
+  return statusBarBtn;
+}
+
+async function expectStartInstanceOverlay(wrapper) {
+
+  // open start instance overlay
+  const dropDownButton = wrapper.find("button[title='Start process instance']");
+  dropDownButton.simulate('click');
+
+  await new Promise(function(resolve) {
+    setTimeout(resolve, 10);
+  });
+
+  // assume
+  expect(wrapper.html().includes('form')).to.be.true;
+}

@@ -12,12 +12,13 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 
 import { Config } from '../../../../app/__tests__/mocks';
 
 import DeploymentPlugin from '../DeploymentPlugin';
 import { CAMUNDA_CLOUD } from '../../shared/ZeebeTargetTypes';
+import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
 
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 const ZEEBE_ENDPOINTS_CONFIG_KEY = 'zeebeEndpoints';
@@ -260,6 +261,70 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // then
       expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
+    });
+
+
+    describe('overlay', function() {
+
+      it('should open', async () => {
+
+        // given
+        const activeTab = createTab({ type: 'cloud-bpmn' });
+
+        const {
+          wrapper
+        } = createDeploymentPlugin({
+          activeTab,
+          withFillSlot: true,
+          keepOpen: true
+        }, mount);
+
+        // when
+        const statusBarBtn = wrapper.find("button[title='Deploy current diagram']");
+        statusBarBtn.simulate('click');
+
+        await new Promise(function(resolve) {
+          setTimeout(resolve, 10);
+        });
+
+        // then
+        expect(wrapper.html().includes('form')).to.be.true;
+      });
+
+
+      it('should close when active tab changes', async () => {
+
+        // given
+        const activeTab = createTab({ type: 'cloud-bpmn' });
+        const { subscribe, callSubscriber } = createSubscribe(activeTab);
+
+        const {
+          wrapper
+        } = createDeploymentPlugin({
+          activeTab,
+          subscribe,
+          withFillSlot: true,
+          keepOpen: true
+        }, mount);
+
+        // open overlay
+        const statusBarBtn = wrapper.find("button[title='Deploy current diagram']");
+        statusBarBtn.simulate('click');
+
+        await new Promise(function(resolve) {
+          setTimeout(resolve, 10);
+        });
+
+        // assume
+        expect(wrapper.html().includes('form')).to.be.true;
+
+        // then
+        callSubscriber({ activeTab: createTab() });
+
+        // expect
+        expect(wrapper.html().includes('form')).to.not.be.true;
+      });
+
     });
   });
 
@@ -1136,7 +1201,8 @@ class TestDeploymentPlugin extends DeploymentPlugin {
       userAction,
       userActionSpy,
       endpoint,
-      deployment
+      deployment,
+      keepOpen
     } = this.props;
 
     if (overlayState) {
@@ -1157,7 +1223,9 @@ class TestDeploymentPlugin extends DeploymentPlugin {
         }
       };
 
-      overlayState.onClose(config);
+      if (!keepOpen) {
+        overlayState.onClose(config);
+      }
     }
   }
 }
@@ -1167,7 +1235,7 @@ function createDeploymentPlugin({
   zeebeAPI = new MockZeebeAPI(),
   activeTab = createTab(),
   ...props
-} = {}) {
+} = {}, render = shallow) {
   const subscribe = (type, callback) => {
     if (type === 'app.activeTabChanged') {
       callback({
@@ -1192,18 +1260,30 @@ function createDeploymentPlugin({
     ...props.config
   });
 
-  const wrapper = shallow(<TestDeploymentPlugin
-    broadcastMessage={ noop }
-    subscribeToMessaging={ noop }
-    unsubscribeFromMessaging={ noop }
-    triggerAction={ triggerAction }
-    log={ noop }
-    displayNotification={ noop }
-    _getGlobal={ key => key === 'zeebeAPI' && zeebeAPI }
-    subscribe={ subscribe }
-    { ...props }
-    config={ config }
-  />);
+  const DeploymentPlugin = (
+    <TestDeploymentPlugin
+      broadcastMessage={ noop }
+      subscribeToMessaging={ noop }
+      unsubscribeFromMessaging={ noop }
+      triggerAction={ triggerAction }
+      log={ noop }
+      displayNotification={ noop }
+      _getGlobal={ key => key === 'zeebeAPI' && zeebeAPI }
+      subscribe={ props.subcribe || subscribe }
+      { ...props }
+      config={ config } />
+  );
+
+  const DeploymentPluginWithFillSlot = (
+    <SlotFillRoot>
+      <Slot name="status-bar__file" />
+      {DeploymentPlugin}
+    </SlotFillRoot>
+  );
+
+  const wrapper = render(
+    props.withFillSlot ? DeploymentPluginWithFillSlot : DeploymentPlugin
+  );
 
   const instance = wrapper.instance();
 
@@ -1273,5 +1353,27 @@ function createTab(overrides = {}) {
       path: null
     },
     ...overrides
+  };
+}
+
+function createSubscribe(activeTab) {
+  let callback = null;
+
+  function subscribe(event, _callback) {
+    if (event === 'app.activeTabChanged') {
+      callback = _callback;
+      callback({ activeTab });
+    }
+  }
+
+  async function callSubscriber(...args) {
+    if (callback) {
+      await callback(...args);
+    }
+  }
+
+  return {
+    callSubscriber,
+    subscribe
   };
 }
