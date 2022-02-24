@@ -63,7 +63,11 @@ export default class DeploymentTool extends PureComponent {
 
   componentDidMount() {
     this.props.subscribe('app.activeTabChanged', ({ activeTab }) => {
-      this.setState({ activeTab });
+      this.setState({
+        activeTab,
+        overlayState: null,
+        activeButton: false
+      });
     });
 
     this.props.subscribe('app.focus-changed', () => {

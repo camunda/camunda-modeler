@@ -79,7 +79,8 @@ export default class DeploymentPlugin extends PureComponent {
   componentDidMount() {
     this.props.subscribe('app.activeTabChanged', ({ activeTab }) => {
       this.setState({
-        activeTab
+        activeTab,
+        overlayState: null
       });
     });
 

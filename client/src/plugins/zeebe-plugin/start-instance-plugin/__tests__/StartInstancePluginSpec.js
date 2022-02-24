@@ -12,12 +12,13 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 
 import { Config } from '../../../../app/__tests__/mocks';
 
 import StartInstancePlugin from '../StartInstancePlugin';
 import { CAMUNDA_CLOUD } from '../../shared/ZeebeTargetTypes';
+import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
 
 const BUTTON_SELECTOR = '[title="Start current diagram"]';
 
@@ -251,6 +252,70 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
   });
 
 
+  describe('overlay', function() {
+
+    it('should open', async () => {
+
+      // given
+      const activeTab = createTab({ type: 'cloud-bpmn' });
+
+      const {
+        wrapper
+      } = createStartInstancePlugin({
+        activeTab,
+        withFillSlot: true,
+        keepOpen: true
+      }, mount);
+
+      // when
+      const statusBarBtn = wrapper.find("button[title='Start current diagram']");
+      statusBarBtn.simulate('click');
+
+      await new Promise(function(resolve) {
+        setTimeout(resolve, 10);
+      });
+
+      // then
+      expect(wrapper.html().includes('form')).to.be.true;
+    });
+
+
+    it('should close when active tab changes', async () => {
+
+      // given
+      const activeTab = createTab({ type: 'cloud-bpmn' });
+      const { subscribe, callSubscriber } = createSubscribe(activeTab);
+
+      const {
+        wrapper
+      } = createStartInstancePlugin({
+        activeTab,
+        subscribe,
+        withFillSlot: true,
+        keepOpen: true
+      }, mount);
+
+      // open overlay
+      const statusBarBtn = wrapper.find("button[title='Start current diagram']");
+      statusBarBtn.simulate('click');
+
+      await new Promise(function(resolve) {
+        setTimeout(resolve, 10);
+      });
+
+      // assume
+      expect(wrapper.html().includes('form')).to.be.true;
+
+      // then
+      callSubscriber({ activeTab: createTab() });
+
+      // expect
+      expect(wrapper.html().includes('form')).to.not.be.true;
+    });
+
+  });
+
+
   describe('Operate link', () => {
 
     it('should display notification without link after starting process instance', async () => {
@@ -324,7 +389,7 @@ function createStartInstancePlugin({
   },
   deploymentEndpoint = {},
   ...props
-} = {}) {
+} = {}, render = shallow) {
   const subscribe = (key, callback) => {
     if (key === 'app.activeTabChanged') {
       callback({
@@ -352,18 +417,32 @@ function createStartInstancePlugin({
     }
   };
 
-  const wrapper = shallow(<TestStartInstancePlugin
-    subscribe={ subscribe }
-    _getGlobal={ key => key === 'zeebeAPI' && zeebeAPI }
-    displayNotification={ noop }
-    log={ noop }
-    triggerAction={ key => key === 'save' && activeTab }
-    subscribeToMessaging={ noop }
-    unsubscribeFromMessaging={ noop }
-    broadcastMessage={ broadcastMessage }
-    { ...props }
-    config={ config }
-  />);
+  const StartInstancePlugin = (
+    <TestStartInstancePlugin
+      subscribe={ props.subscribe || subscribe }
+      _getGlobal={ key => key === 'zeebeAPI' && zeebeAPI }
+      displayNotification={ noop }
+      log={ noop }
+      triggerAction={ key => key === 'save' && activeTab }
+      subscribeToMessaging={ noop }
+      unsubscribeFromMessaging={ noop }
+      broadcastMessage={ broadcastMessage }
+      { ...props }
+      config={ config }
+    />
+  );
+
+  const StartInstancePluginWithFillSlot = (
+    <SlotFillRoot>
+      <Slot name="status-bar__file" />
+      {StartInstancePlugin}
+    </SlotFillRoot>
+  );
+
+  const wrapper = render(
+    props.withFillSlot ? StartInstancePluginWithFillSlot : StartInstancePlugin
+  );
+
 
   const instance = wrapper.instance();
 
@@ -407,18 +486,46 @@ class TestStartInstancePlugin extends StartInstancePlugin {
     super(props);
   }
 
-  getConfigurationFromUser(startConfiguration) {
-    const configuration = startConfiguration || { variables:'' };
+  componentDidUpdate(...args) {
+    super.componentDidUpdate && super.componentDidUpdate(...args);
+
     const { overlayState } = this.state;
     const {
-      userAction
+      userAction,
+      keepOpen
     } = this.props;
 
-    if (userAction === 'cancel') {
-      overlayState.onClose('cancel', null);
-    }
 
-    return { action: userAction || null, configuration };
+    if (overlayState && overlayState.isStart) {
+      const action = userAction || 'start';
+
+      const configuration = action !== 'cancel' && overlayState.configuration;
+
+      if (!keepOpen) {
+        overlayState.onClose(action, configuration);
+      }
+    }
+  }
+}
+
+function createSubscribe(activeTab) {
+  let callback = null;
+
+  function subscribe(event, _callback) {
+    if (event === 'app.activeTabChanged') {
+      callback = _callback;
+      callback({ activeTab });
+    }
   }
 
+  async function callSubscriber(...args) {
+    if (callback) {
+      await callback(...args);
+    }
+  }
+
+  return {
+    callSubscriber,
+    subscribe
+  };
 }
