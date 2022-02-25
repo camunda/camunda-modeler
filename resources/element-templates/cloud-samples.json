@@ -1,0 +1,432 @@
+[
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Email Connector",
+    "id": "io.camunda.examples.EmailConnector",
+    "description": "A Email sending task.",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "send-email",
+        "binding": {
+          "type": "zeebe:taskDefinition:type"
+        }
+      },
+      {
+        "label": "Hostname",
+        "description": "Specify the email server (SMTP) host name",
+        "type": "String",
+        "binding": {
+          "type": "zeebe:input",
+          "name": "HOST_NAME"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Port",
+        "description": "Specify the email server (SMTP) port (default=25)",
+        "type": "String",
+        "value": "= 25",
+        "optional": true,
+        "binding": {
+          "type": "zeebe:input",
+          "name": "PORT"
+        }
+      },
+      {
+        "label": "Username",
+        "description": "Specify the user name to authenticate with",
+        "type": "String",
+        "optional": true,
+        "binding": {
+          "type": "zeebe:input",
+          "name": "USER_NAME"
+        }
+      },
+      {
+        "label": "Password",
+        "description": "Specify the password to authenticate with",
+        "type": "String",
+        "optional": true,
+        "binding": {
+          "type": "zeebe:input",
+          "name": "PASSWORD"
+        }
+      },
+      {
+        "label": "Sender",
+        "description": "Enter the FROM field",
+        "type": "String",
+        "binding": {
+          "type": "zeebe:input",
+          "name": "sender"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Recipient",
+        "description": "Enter the TO field",
+        "type": "String",
+        "binding": {
+          "type": "zeebe:input",
+          "name": "recipient"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Subject",
+        "description": "Enter the mail subject",
+        "type": "String",
+        "binding": {
+          "type": "zeebe:input",
+          "name": "subject"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Body",
+        "description": "Enter the email message body",
+        "type": "Text",
+        "binding": {
+          "type": "zeebe:input",
+          "name": "message"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "REST Connector",
+    "id": "io.camunda.examples.RestConnector",
+    "description": "A REST API invocation task.",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "http",
+        "binding": {
+          "type": "zeebe:taskDefinition:type"
+        }
+      },
+      {
+        "label": "REST Endpoint URL",
+        "description": "Specify the url of the REST API to talk to.",
+        "type": "String",
+        "binding": {
+          "type": "zeebe:taskHeader",
+          "key": "url"
+        },
+        "constraints": {
+          "notEmpty": true,
+          "pattern": {
+            "value": "^https?://.*",
+            "message": "Must be http(s) URL."
+          }
+        }
+      },
+      {
+        "label": "REST Method",
+        "description": "Specify the HTTP method to use.",
+        "type": "Dropdown",
+        "value": "get",
+        "choices": [
+          { "name": "GET", "value": "get" },
+          { "name": "POST", "value": "post" },
+          { "name": "PATCH", "value": "patch" },
+          { "name": "DELETE", "value": "delete" }
+        ],
+        "binding": {
+          "type": "zeebe:taskHeader",
+          "key": "method"
+        }
+      },
+      {
+        "label": "Request Body",
+        "description": "Data to send to the endpoint.",
+        "value": "",
+        "type": "String",
+        "optional": true,
+        "binding": {
+          "type": "zeebe:input",
+          "name": "body"
+        }
+      },
+      {
+        "label": "Result Variable",
+        "description": "Name of variable to store the response data in.",
+        "value": "response",
+        "type": "String",
+        "optional": true,
+        "binding": {
+          "type": "zeebe:output",
+          "source": "= body"
+        }
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Groups",
+    "id": "io.camunda.examples.Groups",
+    "description": "Example template to provide groups.",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "http",
+        "binding": {
+          "type": "zeebe:taskDefinition:type"
+        }
+      },
+      {
+        "label": "REST Endpoint URL",
+        "description": "Specify the url of the REST API to talk to.",
+        "group": "headers",
+        "type": "String",
+        "binding": {
+          "type": "zeebe:taskHeader",
+          "key": "url"
+        },
+        "constraints": {
+          "notEmpty": true,
+          "pattern": {
+            "value": "^https?://.*",
+            "message": "Must be http(s) URL."
+          }
+        }
+      },
+      {
+        "label": "REST Method",
+        "description": "Specify the HTTP method to use.",
+        "group": "headers",
+        "type": "Dropdown",
+        "value": "get",
+        "choices": [
+          { "name": "GET", "value": "get" },
+          { "name": "POST", "value": "post" },
+          { "name": "PATCH", "value": "patch" },
+          { "name": "DELETE", "value": "delete" }
+        ],
+        "binding": {
+          "type": "zeebe:taskHeader",
+          "key": "method"
+        }
+      },
+      {
+        "label": "Request Body",
+        "description": "Data to send to the endpoint.",
+        "value": "",
+        "group": "payload",
+        "type": "String",
+        "binding": {
+          "type": "zeebe:input",
+          "name": "body"
+        }
+      },
+      {
+        "label": "Result Variable",
+        "description": "Name of variable to store the response data in.",
+        "group": "mapping",
+        "value": "response",
+        "type": "String",
+        "binding": {
+          "type": "zeebe:output",
+          "source": "= body"
+        }
+      }
+    ],
+    "groups": [
+      {
+        "id": "headers",
+        "label": "Request headers"
+      },
+      {
+        "id": "payload",
+        "label": "Request payload"
+      },
+      {
+        "id": "mapping",
+        "label": "Response mapping"
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "id": "io.camunda.examples.ScriptWorker",
+    "name": "Script Worker",
+    "description": "A script task worker",
+    "appliesTo": [
+      "bpmn:ScriptTask"
+    ],
+    "properties":[
+      {
+        "label": "Job type",
+        "type": "String",
+        "value": "script",
+        "group": "job-definition",
+        "binding": {
+          "type": "zeebe:taskDefinition:type"
+        }
+      },
+      {
+        "label": "Language",
+        "value": "javascript",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "FEEL",
+            "value": "feel"
+          },
+          {
+            "name": "Groovy",
+            "value": "groovy"
+          },
+          {
+            "name": "JavaScript",
+            "value": "javascript"
+          },
+          {
+            "name": "Kotlin",
+            "value": "kotlin"
+          },
+          {
+            "name": "Mustache",
+            "value": "mustache"
+          }
+        ],
+        "group": "script",
+        "binding": {
+          "type": "zeebe:taskHeader",
+          "key": "language"
+        }
+      },
+      {
+        "label": "Script",
+        "value": "a + b",
+        "type": "Text",
+        "group": "script",
+        "binding": {
+          "type": "zeebe:taskHeader",
+          "key": "script"
+        }
+      }
+    ],
+    "groups": [
+      {
+        "id": "job-definition",
+        "label": "Job definition"
+      },
+      {
+        "id": "script",
+        "label": "Script"
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "id": "io.camunda.examples.PaymentTask",
+    "name": "Payment task",
+    "description": "A payment task worker",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties":[
+      {
+        "label": "Job type",
+        "type": "String",
+        "value": "payment-service",
+        "group": "job-definition",
+        "binding": {
+          "type": "zeebe:taskDefinition:type"
+        }
+      },
+      {
+        "label": "Method",
+        "value": "visa",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "American Express",
+            "value": "american-express"
+          },
+          {
+            "name": "Mastercard",
+            "value": "mastercard"
+          },
+          {
+            "name": "Visa",
+            "value": "visa"
+          }
+        ],
+        "group": "headers",
+        "binding": {
+          "type": "zeebe:taskHeader",
+          "key": "method"
+        }
+      }
+    ],
+    "groups": [
+      {
+        "id": "job-definition",
+        "label": "Job definition"
+      },
+      {
+        "id": "headers",
+        "label": "Headers"
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "id": "io.camunda.examples.KafkaTask",
+    "name": "Kafka worker",
+    "description": "A kafka task worker",
+    "appliesTo": [
+      "bpmn:ServiceTask",
+      "bpmn:SendTask"
+    ],
+    "properties":[
+      {
+        "type": "Hidden",
+        "value": "kafka",
+        "binding": {
+          "type": "zeebe:taskDefinition:type"
+        }
+      },
+      {
+        "label": "Method",
+        "value": "payment",
+        "type": "String",
+        "group": "headers",
+        "binding": {
+          "type": "zeebe:taskHeader",
+          "key": "kafka-topic"
+        }
+      }
+    ],
+    "groups": [
+      {
+        "id": "headers",
+        "label": "Headers"
+      }
+    ]
+  }
+]
