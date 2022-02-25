@@ -158,6 +158,7 @@ function getDependencies(mockModules = {}) {
       eventBus: {
         on(_, callback) { callback(); }
       },
+      'config.changeTemplateCommand': 'propertiesPanel.camunda.changeTemplate',
       ...mockModules
     }
   });
