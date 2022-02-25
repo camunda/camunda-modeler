@@ -42,6 +42,8 @@ import css from './BpmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 
+import applyDefaultTemplates from '../bpmn-shared/modeler/features/apply-default-templates/applyDefaultTemplates';
+
 import configureModeler from '../bpmn-shared/util/configure';
 
 import Metadata from '../../../util/Metadata';
@@ -64,6 +66,8 @@ import LintingTab from '../panel/tabs/LintingTab';
 import {
   ENGINES
 } from '../../../util/Engines';
+
+import { getCloudTemplates } from '../../../util/elementTemplates';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
@@ -119,7 +123,7 @@ export class BpmnEditor extends CachedComponent {
     this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
 
     const {
@@ -141,6 +145,13 @@ export class BpmnEditor extends CachedComponent {
     const propertiesPanel = modeler.get('propertiesPanel');
 
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
+
+
+    try {
+      await this.loadTemplates();
+    } catch (error) {
+      this.handleError({ error });
+    }
 
     this.checkImport();
   }
@@ -187,6 +198,8 @@ export class BpmnEditor extends CachedComponent {
       modeler[fn](event, this.handleChanged);
     });
 
+    modeler[fn]('elementTemplates.errors', this.handleElementTemplateErrors);
+
     modeler[fn]('error', 1500, this.handleError);
 
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
@@ -195,6 +208,28 @@ export class BpmnEditor extends CachedComponent {
       modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
     } else if (fn === 'off') {
       modeler[ fn ]('commandStack.changed', this.handleLintingDebounced);
+    }
+  }
+
+  async loadTemplates() {
+    const { getConfig } = this.props;
+
+    const modeler = this.getModeler();
+
+    const templatesLoader = modeler.get('elementTemplatesLoader');
+
+    let templates = await getConfig('bpmn.elementTemplates');
+
+    templatesLoader.setTemplates(getCloudTemplates(templates));
+
+    const propertiesPanel = modeler.get('propertiesPanel', false);
+
+    if (propertiesPanel) {
+      const currentElement = propertiesPanel._current && propertiesPanel._current.element;
+
+      if (currentElement) {
+        propertiesPanel.update(currentElement);
+      }
     }
   }
 
@@ -224,6 +259,20 @@ export class BpmnEditor extends CachedComponent {
     });
   }
 
+  handleElementTemplateErrors = (event) => {
+    const {
+      onWarning
+    } = this.props;
+
+    const {
+      errors
+    } = event;
+
+    errors.forEach(error => {
+      onWarning({ message: error.message });
+    });
+  }
+
   handleError = (event) => {
     const {
       error
@@ -238,9 +287,14 @@ export class BpmnEditor extends CachedComponent {
 
   handleImport = (error, warnings) => {
     const {
+      isNew,
       onImport,
       xml
     } = this.props;
+
+    let {
+      defaultTemplatesApplied
+    } = this.getCached();
 
     const modeler = this.getModeler();
 
@@ -263,7 +317,14 @@ export class BpmnEditor extends CachedComponent {
         lastXML: null
       });
     } else {
+      if (isNew && !defaultTemplatesApplied) {
+        modeler.invoke(applyDefaultTemplates);
+
+        defaultTemplatesApplied = true;
+      }
+
       this.setCached({
+        defaultTemplatesApplied,
         engineProfile,
         lastXML: xml,
         stackIdx
@@ -604,6 +665,10 @@ export class BpmnEditor extends CachedComponent {
       return;
     }
 
+    if (action === 'elementTemplates.reload') {
+      return this.loadTemplates();
+    }
+
     // TODO(nikku): handle all editor actions
     return modeler.get('editorActions').trigger(action, context);
   }
@@ -757,7 +822,8 @@ export class BpmnEditor extends CachedComponent {
 
     const modeler = new BpmnModeler({
       ...options,
-      position: 'absolute'
+      position: 'absolute',
+      changeTemplateCommand: 'propertiesPanel.zeebe.changeTemplate'
     });
 
     const commandStack = modeler.get('commandStack');
@@ -779,7 +845,8 @@ export class BpmnEditor extends CachedComponent {
       engineProfile: null,
       lastXML: null,
       modeler,
-      stackIdx
+      stackIdx,
+      templatesLoaded: false
     };
   }
 
