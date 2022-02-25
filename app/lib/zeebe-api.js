@@ -35,7 +35,7 @@ const endpointTypes = {
   CAMUNDA_CLOUD: 'camundaCloud'
 };
 
-const BPMN_SUFFIX = '.bpmn';
+const BPMN_SUFFIX = '.dmn';
 
 /**
  * @typedef {object} ZeebeClientParameters

@@ -641,7 +641,7 @@ function withoutCredentials(endpointConfiguration) {
 }
 
 function isZeebeTab(tab) {
-  return tab && tab.type === 'cloud-bpmn';
+  return tab && [ 'cloud-bpmn', 'cloud-dmn' ].includes(tab.type);
 }
 
 function getGRPCErrorCode(error) {
