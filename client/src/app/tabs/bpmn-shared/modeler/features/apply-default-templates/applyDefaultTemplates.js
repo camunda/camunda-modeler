@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-export default function applyDefaultTemplates(elementRegistry, elementTemplates, commandStack) {
+export default function applyDefaultTemplates(elementRegistry, elementTemplates, commandStack, changeTemplateCommand) {
   const elements = elementRegistry.getAll();
 
   const commands = elements.reduce((currentCommands, element) => {
@@ -18,7 +18,7 @@ export default function applyDefaultTemplates(elementRegistry, elementTemplates,
       return currentCommands;
     }
 
-    const command = getChangeTemplateCommand(element, template);
+    const command = getChangeTemplateCommand(element, template, changeTemplateCommand);
 
     return [ ...currentCommands, command ];
   }, []);
@@ -41,9 +41,9 @@ applyDefaultTemplates.$inject = [
 
 
 // helpers //////////
-function getChangeTemplateCommand(element, template) {
+function getChangeTemplateCommand(element, template, cmd) {
   return {
-    cmd: 'propertiesPanel.camunda.changeTemplate',
+    cmd: cmd,
     context: {
       element,
       newTemplate: template
