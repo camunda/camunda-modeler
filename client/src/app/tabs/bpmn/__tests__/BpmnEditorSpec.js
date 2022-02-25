@@ -41,7 +41,7 @@ import missingPatchEngineProfileXML from '../../__tests__/EngineProfile.missing-
 import patchEngineProfileXML from '../../__tests__/EngineProfile.patch.platform.bpmn';
 import namespaceEngineProfileXML from '../../__tests__/EngineProfile.namespace.platform.bpmn';
 
-import applyDefaultTemplates from '../modeler/features/apply-default-templates/applyDefaultTemplates';
+import applyDefaultTemplates from '../../bpmn-shared/modeler/features/apply-default-templates/applyDefaultTemplates';
 
 import {
   getCanvasEntries,
@@ -1119,6 +1119,66 @@ describe('<BpmnEditor>', function() {
       expect(getConfigSpy).to.be.always.calledWith('bpmn.elementTemplates');
       expect(elementTemplatesLoaderStub.setTemplates).to.be.calledTwice;
       expect(updateSpy).to.have.been.called;
+    });
+
+
+    it('should only load platform templates', async function() {
+
+      // given
+      const platformTemplates = [
+        {
+          '$schema': 'https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json',
+          'id': 'one'
+        },
+        {
+          'id': 'two'
+        },
+        {
+          '$schema': 'https://unpkg.com/@camunda/element-templates-json-schema0.6.0/resources/schema.json',
+          'id': 'three'
+        },
+        {
+          '$schema': 'https://cdn.jsdelivr.net/npm/@camunda/element-templates-json-schema/resources/schema.json',
+          'id': 'four'
+        }
+      ];
+
+      const otherTemplates = [
+        {
+          '$schema': 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+          'id': 'five'
+        }
+      ];
+
+      const allTemplates = [
+        ...platformTemplates, ...otherTemplates
+      ];
+
+      const getConfig = () => allTemplates;
+
+      const elementTemplatesLoaderStub = sinon.stub({ setTemplates() {} });
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              elementTemplatesLoader: elementTemplatesLoaderStub
+            }
+          })
+        }
+      });
+
+      // when
+      await renderEditor(diagramXML, {
+        cache,
+        getConfig
+      });
+
+      // expect
+      expect(elementTemplatesLoaderStub.setTemplates).not.to.be.calledWith(allTemplates);
+      expect(elementTemplatesLoaderStub.setTemplates).to.be.calledWith(platformTemplates);
     });
 
 

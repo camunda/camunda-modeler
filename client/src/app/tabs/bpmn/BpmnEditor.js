@@ -42,7 +42,7 @@ import css from './BpmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 
-import applyDefaultTemplates from './modeler/features/apply-default-templates/applyDefaultTemplates';
+import applyDefaultTemplates from '../bpmn-shared/modeler/features/apply-default-templates/applyDefaultTemplates';
 
 import {
   findUsages as findNamespaceUsages,
@@ -71,6 +71,8 @@ import LintingTab from '../panel/tabs/LintingTab';
 import {
   ENGINES
 } from '../../../util/Engines';
+
+import { getPlatformTemplates } from '../../../util/elementTemplates';
 
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
 
@@ -230,7 +232,7 @@ export class BpmnEditor extends CachedComponent {
 
     const templates = await getConfig('bpmn.elementTemplates');
 
-    templatesLoader.setTemplates(templates);
+    templatesLoader.setTemplates(getPlatformTemplates(templates));
 
     const propertiesPanel = modeler.get('propertiesPanel', false);
 
@@ -846,7 +848,8 @@ export class BpmnEditor extends CachedComponent {
 
     const modeler = new BpmnModeler({
       ...options,
-      position: 'absolute'
+      position: 'absolute',
+      changeTemplateCommand: 'propertiesPanel.camunda.changeTemplate'
     });
 
     const commandStack = modeler.get('commandStack');
