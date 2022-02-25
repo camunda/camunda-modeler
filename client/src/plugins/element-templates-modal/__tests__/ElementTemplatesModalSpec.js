@@ -76,6 +76,69 @@ describe('<ElementTemplatesModal>', function() {
       expect(handleBpmnModelerConfigureSpy).to.have.been.called;
     });
 
+
+    it('should configure on <bpmn> tab', async function() {
+
+      // given
+      const {
+        callSubscriber,
+        subscribe
+      } = createSubscribe('bpmn.modeler.configure');
+
+      const middlewares = [];
+      const tab = { type: 'bpmn' };
+
+      await createElementTemplatesModal({ subscribe });
+
+      // when
+      callSubscriber({ middlewares, tab });
+
+      // then
+      expect(middlewares).not.to.be.empty;
+    });
+
+
+    it('should configure on <cloud-bpmn> tab', async function() {
+
+      // given
+      const {
+        callSubscriber,
+        subscribe
+      } = createSubscribe('bpmn.modeler.configure');
+
+      const middlewares = [];
+      const tab = { type: 'cloud-bpmn' };
+
+      await createElementTemplatesModal({ subscribe });
+
+      // when
+      callSubscriber({ middlewares, tab });
+
+      // then
+      expect(middlewares).not.to.be.empty;
+    });
+
+
+    it('should NOT configure on <foo> tab', async function() {
+
+      // given
+      const {
+        callSubscriber,
+        subscribe
+      } = createSubscribe('bpmn.modeler.configure');
+
+      const middlewares = [];
+      const tab = { type: 'foo' };
+
+      await createElementTemplatesModal({ subscribe });
+
+      // when
+      callSubscriber({ middlewares, tab });
+
+      // then
+      expect(middlewares).to.be.empty;
+    });
+
   });
 
 

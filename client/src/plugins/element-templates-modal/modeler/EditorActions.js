@@ -9,14 +9,14 @@
  */
 
 export default class EditorActions {
-  constructor(commandStack, editorActions, selection, canvas, elementTemplates) {
+  constructor(commandStack, editorActions, selection, canvas, elementTemplates, changeTemplateCommand) {
 
     // Register action to apply an element template to the selected element
     editorActions.register('applyElementTemplate', elementTemplate => {
       const element = getSelectedElement();
 
       if (element) {
-        commandStack.execute('propertiesPanel.camunda.changeTemplate', {
+        commandStack.execute(changeTemplateCommand, {
           element,
           newTemplate: elementTemplate
         });
@@ -39,7 +39,9 @@ export default class EditorActions {
       if (selectedElement) {
         const { businessObject } = selectedElement;
 
-        return businessObject.get('camunda:modelerTemplate') || null;
+        // todo: elementTemplates._getTemplateId
+        // https://github.com/bpmn-io/bpmn-js-properties-panel/pull/585/files#diff-c59c24ee0669c0f08660111bc3669a775eacc41e5edd877a04beb71560cba11dR17
+        return businessObject.get('modelerTemplate') || null;
       }
 
       return null;
@@ -80,5 +82,6 @@ EditorActions.$inject = [
   'editorActions',
   'selection',
   'canvas',
-  'elementTemplates'
+  'elementTemplates',
+  'config.changeTemplateCommand'
 ];
