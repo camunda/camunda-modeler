@@ -31,7 +31,8 @@ const DEFAULT_OPTIONS = {
   exporter: {
     name: 'my-tool',
     version: '120-beta.100'
-  }
+  },
+  changeTemplateCommand: 'propertiesPanel.camunda.changeTemplate'
 };
 
 
