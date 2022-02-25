@@ -1,0 +1,64 @@
+[
+  {
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.6.0/resources/schema.json",
+    "name": "Platform Task 1",
+    "id": "com.camunda.example.PlatformTask-1",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": []
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.6.0/resources/schema.json",
+    "name": "Platform Task 2",
+    "id": "com.camunda.example.PlatformTask-1",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": []
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema@0.1.0/resources/schema.json",
+    "name": "Cloud Task 1",
+    "id": "com.camunda.example.CloudTask-1",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": []
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema@0.1.0/resources/schema.json",
+    "name": "Cloud Task 2",
+    "id": "com.camunda.example.CloudTask-2",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": []
+  },
+  {
+    "name": "No schema",
+    "id": "com.camunda.example.NoSchema",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": []
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.6.0/resources/schema.json",
+    "name": "Platform Task 3",
+    "id": "com.camunda.example.PlatformTask-3",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": []
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema@0.1.0/resources/schema.json",
+    "name": "Cloud Task 3",
+    "id": "com.camunda.example.CloudTask-3",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": []
+  }
+]
