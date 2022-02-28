@@ -1,6 +1,6 @@
 [
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "Mail Task",
     "id": "com.camunda.example.MailTask",
     "appliesTo": [
@@ -79,7 +79,106 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "name": "Mail Task (Groups)",
+    "id": "com.camunda.example.MailTask-groups",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Implementation Type",
+        "type": "String",
+        "group": "definition",
+        "value": "com.mycompany.MailTaskImpl",
+        "editable": false,
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        }
+      },
+      {
+        "label": "Sender",
+        "type": "String",
+        "group": "request",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "sender"
+        },
+        "constraints": {
+          "notEmpty": true,
+          "pattern": {
+            "value": "^[A-z0-9._%+-]+@[A-z0-9.-]+\\.[A-z]{2,}$",
+            "message": "Must be a valid email."
+          }
+        }
+      },
+      {
+        "label": "Receivers",
+        "type": "String",
+        "group": "request",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "receivers"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Template",
+        "description": "By the way, you can use <a href=\"https://freemarker.apache.org/\">freemarker templates</a> here",
+        "value": "Hello ${firstName}!",
+        "type": "Text",
+        "group": "request",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "messageBody",
+          "scriptFormat": "freemarker"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Result Status",
+        "description": "The process variable to which to assign the send result to",
+        "value": "mailSendResult",
+        "type": "String",
+        "group": "result",
+        "binding": {
+          "type": "camunda:outputParameter",
+          "source": "${ resultStatus }"
+        }
+      },
+      {
+        "label": "Send Async?",
+        "type": "Boolean",
+        "group": "definition",
+        "value": true,
+        "binding": {
+          "type": "property",
+          "name": "camunda:asyncBefore"
+        }
+      }
+    ],
+    "groups": [
+      {
+        "id": "definition",
+        "label": "Task definition"
+      },
+      {
+        "id": "request",
+        "label": "Request payload"
+      },
+      {
+        "id": "result",
+        "label": "Result mapping"
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "ConnectorGetTask",
     "id": "my.connector.http.get.Task",
     "appliesTo": [
@@ -132,7 +231,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "AsyncAwesomeTask",
     "id": "com.camunda.example.AwesomeTask",
     "appliesTo": [
@@ -151,7 +250,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "Custom ServiceTask",
     "id": "com.camunda.example.CustomServiceTask",
     "appliesTo": [
@@ -171,7 +270,27 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "name": "Custom ServiceTask (Entries visible)",
+    "id": "com.camunda.example.CustomServiceTask-entriesVisible",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "entriesVisible": true,
+    "properties": [
+      {
+        "label": "Delegate to Call",
+        "type": "Hidden",
+        "value": "com.camunda.example.FooDelegate",
+        "binding": {
+          "type": "property",
+          "name": "camunda:delegateExpression"
+        }
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "VIP-Order Path",
     "id": "e.com.merce.FastPath",
     "appliesTo": [
@@ -200,7 +319,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "WS Caller Task",
     "id": "com.camunda.example.WsCaller",
     "description": "Requires the user to provide a Web Service URL.",
@@ -235,7 +354,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "Check Invoice Task",
     "id": "com.camunda.example.CheckInvoiceTask",
     "appliesTo": [
@@ -293,7 +412,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "Caller",
     "id": "com.camunda.example.Caller",
     "appliesTo": [
@@ -424,7 +543,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "Caller All IO",
     "id": "com.camunda.example.CallerAllIO",
     "appliesTo": [
@@ -460,7 +579,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "Caller All IO Local",
     "id": "com.camunda.example.CallerAllIOLocal",
     "appliesTo": [
@@ -496,7 +615,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "Execution Listener",
     "id": "com.camunda.example.ExecutionListener",
     "appliesTo": [
@@ -526,7 +645,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "Field Injections",
     "id": "com.camunda.example.FieldInjections",
     "appliesTo": [
@@ -556,7 +675,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "Default Rendering",
     "id": "com.camunda.example.DefaultRendering",
     "appliesTo": [
@@ -580,7 +699,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "External Service Task (with Errors)",
     "id": "com.camunda.example.ExternalServiceTaskWithErrors",
     "appliesTo": [
@@ -648,7 +767,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.4.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
     "name": "Default Errors Rendering",
     "id": "com.camunda.example.DefaultErrorsRendering",
     "appliesTo": [
