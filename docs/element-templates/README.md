@@ -5,10 +5,11 @@
 1. [Configuring Templates](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#configuring-templates)
 2. [Using Templates](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#using-templates)
 3. [Defining Templates](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#defining-templates)
-4. [Default Templates](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#default-templates)
-5. [Development Worklow](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#development-workflow)
-6. [Supported BPMN Types](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#supported-bpmn-types)
-7. [Learn More](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#learn-more)
+4. [Display All Entries](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#display-all-entries)
+5. [Default Templates](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#default-templates)
+6. [Development Worklow](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#development-workflow)
+7. [Supported BPMN Types](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#supported-bpmn-types)
+8. [Learn More](https://github.com/camunda/camunda-modeler/tree/develop/docs/element-templates#learn-more)
 
 Element templates allow you to create pre-defined configurations for BPMN elements such as service and user tasks. Once applied via the properties panel they provide configured custom inputs to the user.
 
@@ -112,7 +113,20 @@ Templates are defined in template descriptor files as a JSON array:
 
 As seen in the code snippet a template consist of a number of important components:
 
-* `$schema : String`: Optional URI pointing towards the [JSON schema](https://json-schema.org/) which defines the structure of the element template `.json` file. Element template schemas are maintained in the [element templates JSON schema](https://github.com/camunda/element-templates-json-schema) repository. Following the [JSON schema](https://json-schema.org/) standard, you may use them for validation or to get assistance (e.g., auto-completion) when working with them in your favorite IDE.
+* `$schema : String`: URI pointing towards the [JSON schema](https://json-schema.org/) which defines the structure of the element template `.json` file. Element template schemas are maintained in the [element templates JSON schema](https://github.com/camunda/element-templates-json-schema) repository. Following the [JSON schema](https://json-schema.org/) standard, you may use them for validation or to get assistance (e.g., auto-completion) when working with them in your favorite IDE. Note that the `$schema` attribute is **required** for Camunda Cloud element templates.
+
+  Example (Camunda Platform)
+
+  ```json
+  "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.6.0/resources/schema.json"
+  ```
+
+  Example (Camunda Cloud)
+
+  ```json
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema@0.1.0/resources/schema.json"
+  ```
+
 * `name : String`: Name of the template that will appear in the Catalog.
 * `id : String`: ID of the template.
 * `description : String`: Optional description of the template. Will be shown in the element template selection modal and in the properties panel (after having applied an element template).
@@ -122,15 +136,20 @@ As seen in the code snippet a template consist of a number of important componen
 
 ### JSON Schema Compatibility
 
-The application uses the `$schema` property to ensure compatibility for a given element template. The currently supported [Camunda element templates JSON Schema version](https://github.com/camunda/element-templates-json-schema) is `v0.4`. The Camunda Modeler will ignore element templates defining a higher `$schema` version. Although, it will log a warning message.
+The application uses the `$schema` property to ensure compatibility for a given element template. The latest supported [Camunda element templates JSON Schema versions](https://github.com/camunda/element-templates-json-schema) are
 
-For example, given the following `$schema` definition, the application takes `0.2.0` as the JSON Schema version of the element template.
+* `v0.7.0` (Camunda Platform)
+* `v0.1.0` (Camunda Cloud)
+
+The Camunda Modeler will ignore element templates defining a higher `$schema` version and will log a warning message.
+
+For example, given the following `$schema` definition, the application takes `0.6.0` as the JSON Schema version of the element template.
 
 ```json
-"$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.2.0/resources/schema.json"
+"$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.6.0/resources/schema.json"
 ```
 
-The JSON Schema versioning is backward-compatible, meaning that all versions including or below the current one are supported. In case no `$schema` is defined, the Camunda Modeler assumes the latest JSON Schema version.
+The JSON Schema versioning is backward-compatible, meaning that all versions including or below the current one are supported. In case no `$schema` is defined, the Camunda Modeler assumes the latest JSON Schema version for Camunda Platform element templates.
 
 Learn more about specifing a `$schema` [here](#defining-templates).
 
@@ -142,6 +161,7 @@ Let us consider the following example that defines a template for a mail sending
 
 ```json
 {
+  "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
   "name": "Mail Task",
   "id": "com.camunda.example.MailTask",
   "appliesTo": [
@@ -301,7 +321,10 @@ For the `camunda:executionListener` binding, an omitted `type` will lead to the 
 The following ways exist to map a custom field to the underlying BPMN 2.0 XML. The _"mapping result"_ in the following section will use `[userInput]` to indicate where the input provided by the user in the `Properties Panel` is set in the BPMN XML. As default or if no user input was given, the value specified in `value` will be displayed and used for `[userInput]`. `[]` brackets will be used to indicate where the parameters are mapped to in the XML.
 
 Notice that adherence to the following configuration options is enforced by design. If not adhering, it logs a validation error and ignores the respective element template.
-##### `property`
+
+##### Bindings for `Camunda Platform` or `Camunda Cloud`
+
+###### `property`
 
 | **Binding `type`**  | `property`  |
 |---|---|
@@ -309,7 +332,10 @@ Notice that adherence to the following configuration options is enforced by desi
 | **Binding parameters**  | `name`: the name of the property  |
 | **Mapping result** | `<... [name]=[userInput] ... />`  |
 
-##### `camunda:property`
+The `property` binding is supported both in Camunda Platform and Cloud.
+##### Bindings for `Camunda Platform`
+
+###### `camunda:property`
 
 | **Binding `type`**  | `camunda:property`  |
 |---|---|
@@ -317,7 +343,7 @@ Notice that adherence to the following configuration options is enforced by desi
 | **Binding parameters**  | `name`: the name of the extension element property  |
 | **Mapping result** | `<camunda:property name="[name]" value="[userInput]" />`  |
 
-##### `camunda:inputParameter`
+###### `camunda:inputParameter`
 
 | **Binding `type`**  | `camunda:inputParameter`  |
 |---|---|
@@ -325,7 +351,7 @@ Notice that adherence to the following configuration options is enforced by desi
 | **Binding parameters**  | `name`: the name of the input parameter<br />`scriptFormat`: the format of the script (if script is to be mapped)  |
 | **Mapping result** | If `scriptFormat` is not set:<br />`<camunda:inputParameter name="[name]">[userInput]</camunda:inputParameter>`<br /><br />If `scriptFormat` is set:<br />`<camunda:inputParameter name="[name]"><camunda:script scriptFormat="[scriptFormat]">[userInput]</camunda:script></camunda:inputParameter>`  |
 
-##### `camunda:outputParameter`
+###### `camunda:outputParameter`
 
 |  **Binding `type`**  |  `camunda:outputParameter` |
 |---|---|
@@ -333,7 +359,7 @@ Notice that adherence to the following configuration options is enforced by desi
 | **Binding parameters**  | `source`: the source value to be mapped to the `outputParameter`<br />`scriptFormat`: the format of the script (if script is to be mapped)  |
 | **Mapping result (example)** | If `scriptFormat` is not set:<br />`<camunda:outputParameter name="[userInput]">[source]</camunda:inputParameter>`<br /><br />If `scriptFormat` is set:<br />`<camunda:outputParameter name="[userInput]"><camunda:script scriptFormat="[scriptFormat]">[source]</camunda:script></camunda:outputParameter>`  |
 
-##### `camunda:in`
+###### `camunda:in`
 
 |  **Binding `type`**  |  `camunda:in` |
 |---|---|
@@ -341,7 +367,7 @@ Notice that adherence to the following configuration options is enforced by desi
 | **Binding parameters**  | `target`: the target value to be mapped to<br />`expression`: `true` indicates that the userInput is an expression<br />`variables`: either `all` or `local` indicating the variable mapping  |
 | **Mapping result** | If `target` is set:<br />`<camunda:in source="[userInput]" target="[target]"/>`<br /><br />If `target` is set and `expression` is set to `true`:<br />`<camunda:in sourceExpression="[userInput]" target="[target]" />`<br /><br /> If `variables` is set to `local`:<br />` <camunda:in local="true" variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`)<br /><br />If `variables` is set to `local` and `target` is set:<br />`<camunda:in local="true" source="[userInput]" target="[target]" />`<br /><br />If `variables` is set to `local`, `target` is set and `expression` is set to `true`:<br />`<camunda:in local="true" sourceExpression="[userInput]" target="[target]" />`<br /><br />If `variables` is set to `all`:<br />`<camunda:in variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`) |
 
-##### `camunda:in:businessKey`
+###### `camunda:in:businessKey`
 
 |  **Binding `type`**  |  `camunda:in:businessKey` |
 |---|---|
@@ -349,7 +375,7 @@ Notice that adherence to the following configuration options is enforced by desi
 | **Binding parameters**  |  |
 | **Mapping result** | `<camunda:in businessKey="[userInput]" />` |
 
-##### `camunda:out`
+###### `camunda:out`
 
 |  **Binding `type`**  |  `camunda:out` |
 |---|---|
@@ -357,7 +383,7 @@ Notice that adherence to the following configuration options is enforced by desi
 | **Binding parameters**  |  `source`: the source value to be mapped<br />`sourceExpression`: a string containing the expression for the source attribute<br />`variables`: either `all` or `local` indicating the variable mapping  |
 | **Mapping result** | If `source` is set:<br />`<camunda:out source="[source]" target="[userInput]" />`<br /><br />If `sourceExpression` is set:<br />`<camunda:out sourceExpression="[sourceExpression]" target="[userInput]" />`<br /><br />If `variables` is set to `all`:<br />`<camunda:out variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`)<br /><br />If `variables` is set to `local` and `source` is set:<br />`<camunda:out local="true" source="[source]" target="[userInput]" />`<br /><br />If `variables` is set to `local` and `sourceExpression` is set:<br />`<camunda:out local="true" sourceExpression="[source]" target="[userInput]" />`<br /><br />If `variables` is set to `local`:<br />`<camunda:out local="true" variables="all" />` (Notice there is no `[userInput]`, therefore has to use property `type` of value `Hidden`) |
 
-##### `camunda:executionListener`
+###### `camunda:executionListener`
 
 |  **Binding `type`**  |  `camunda:executionListener` |
 |---|---|
@@ -365,7 +391,7 @@ Notice that adherence to the following configuration options is enforced by desi
 | **Binding parameters**  | `event`: value for the `event` attribute<br />`scriptFormat`: value for the `scriptFormat` attribute |
 | **Mapping result** | `<camunda:executionListener event="[event]"><camunda:script scriptFormat="[scriptFormat]">[value]</camunda:script></camunda:executionListener>`<br />(Notice that `[value]` needs to be set, since only `Hidden` is allowed as a type hence the user can not set a `[userInput]`) |
 
-##### `camunda:field`
+###### `camunda:field`
 
 |  **Binding `type`**  |  `camunda:field` |
 |---|---|
@@ -373,13 +399,99 @@ Notice that adherence to the following configuration options is enforced by desi
 | **Binding parameters**  | `name`: value for the `name` attribute<br />`expression`: `true` that an expression is passed |
 | **Mapping result** | `<camunda:field name="[name]"><camunda:string>[userInput]</camunda:string></camunda:field>`<br /><br />If `expression` is set to `true`:<br />`<camunda:field name="[name]"><camunda:expression>[userInput]</camunda:expression>` |
 
-##### `camunda:errorEventDefinition`
+###### `camunda:errorEventDefinition`
 
 |  **Binding `type`**  |  `camunda:errorEventDefinition` |
 |---|---|
 | **Valid property `type`'s** | `String`<br />`Hidden`<br />`Dropdown` |
 | **Binding parameters**  | `errorRef`: reference to a scoped `bpmn:Error` binding, generates the `errorRef` attribute as unique id <br /> |
 | **Mapping result** | `<camunda:errorEventDefinition id="[unique element id]" expression="[userInput]" errorRef="Error_[errorRef]_[unique suffix]" />` <br /><br /> For the referenced scoped `bpmn:Error` binding: `<bpmn:Error id="Error_[errorRef]_[unique suffix]" />`   |
+
+
+##### Bindings for `Camunda Cloud`
+
+###### `zeebe:input`
+
+| **Binding `type`**  | `zeebe:input`  |
+|---|---|
+| **Valid property `type`'s** | `String`<br /> `Text`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  | `name`: the name of the input parameter |
+| **Mapping result** | `<zeebe:input target="[name]" source="[userInput] />`  |
+
+###### `zeebe:output`
+
+| **Binding `type`**  | `zeebe:output`  |
+|---|---|
+| **Valid property `type`'s** | `String`<br /> `Text`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  | `source`: the source of the output parameter |
+| **Mapping result** | `<zeebe:output target="[userInput]" source="[source] />`  |
+
+###### `zeebe:taskHeader`
+
+| **Binding `type`**  | `zeebe:taskHeader`  |
+|---|---|
+| **Valid property `type`'s** | `String`<br /> `Text`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  | `key`: the key of the task header |
+| **Mapping result** | `<zeebe:header key="[key]" value="[userInput] />`  |
+
+###### `zeebe:taskDefinition:type`
+
+| **Binding `type`**  | `zeebe:taskDefinition:type`  |
+|---|---|
+| **Valid property `type`'s** | `String`<br /> `Text`<br />`Hidden`<br />`Dropdown` |
+| **Binding parameters**  |  |
+| **Mapping result** | `<zeebe:taskDefinition type="[userInput]" />` |
+
+#### Optional Bindings
+
+As of Camunda Modeler `v5.0.0`, we support optional bindings that do not persist empty values in the underlying BPMN 2.0 XML. 
+
+If a user removes the value in the configured control, it will also remove the mapped element.
+
+```json
+[
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Task example",
+    "id": "some-template",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "label": "Request",
+        "type": "String",
+        "optional": true,
+        "binding": {
+          "type": "zeebe:input",
+          "name": "reuqest"
+        }
+      },
+      {
+        "label": "Response",
+        "type": "Text",
+        "optional": true,
+        "binding": {
+          "type": "zeebe:output",
+          "source": "response"
+        }
+      }
+    ]
+  }
+]
+```
+
+
+__Supported Bindings__
+
+Camunda Platform
+
+*Optional bindings are currently not supported for Camunda Platform element templates.*
+
+Camunda Cloud
+
+* `zeebe:input`
+* `zeebe:output`
 
 #### Scoped Bindings
 
@@ -423,11 +535,67 @@ exposed to the user in a separate custom fields section.
 __Supported Scopes__
 
 
-| Name | Target |
-| ------------- | ------------- |
-| `camunda:Connector` | [Connectors](https://docs.camunda.org/manual/latest/user-guide/process-engine/connectors/) |
-| `bpmn:Error` | Global BPMN Error Element |
+| Name | Target | Supported by |
+| ------------- | ------------- | ------------- | 
+| `camunda:Connector` | [Connectors](https://docs.camunda.org/manual/latest/user-guide/process-engine/connectors/) | Camunda Platform |
+| `bpmn:Error` | Global BPMN Error Element | Camunda Platform |
 
+
+#### Groups
+
+As of Camunda Modeler `v5.0.0,` it is possible to define `groups` and order custom fields together.
+
+```json
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "name": "Groups",
+  "id": "group-example",
+  "appliesTo": [
+    "bpmn:ServiceTask"
+  ],
+    "groups": [
+    {
+      "id": "definition",
+      "label": "Task definition"
+    },
+    {
+      "id": "request",
+      "label": "Request payload"
+    },
+    {
+      "id": "result",
+      "label": "Result mapping"
+    }
+  ],
+  "properties": [
+    ...
+  ]
+}
+```
+
+Custom fields may use the defined group ids. The order of the custom fields also determines the groups' order in the properties panel.
+
+```json
+{
+  ...
+  "properties": [
+    {
+      "label": "Implementation Type",
+      "type": "String",
+      "group": "definition",
+      "binding": {
+        "type": "property",
+        "name": "camunda:class"
+      }
+    },
+    ...
+  ],
+  ...
+}
+```
+
+
+*TODO: screenshot*
 
 #### Constraints
 
@@ -462,6 +630,29 @@ Together with the `pattern` constraint, you may define your custom error message
 ```
 
 
+
+#### Display All Entries
+
+Per default, the element template defines the visible entries of the properties panel. All other property controls are hidden. If you want to bring all the default entries back, it is possible to use the `entriesVisible` property.
+
+```json
+[
+  {
+    "name": "Template 1",
+    "id": "sometemplate",
+    "entriesVisible": true,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      ...
+    ]
+  }
+]
+```
+
+![Display default entries](./entries-visible.png)
+
 ## Default Templates
 
 A default template provides properties that are automatically applied for
@@ -486,7 +677,6 @@ To mark a template as _default_ set the `isDefault` property on the template to 
 ```
 
 Other templates may not be applied, once an element is subject to a default template.
-
 
 ## Development Workflow
 
