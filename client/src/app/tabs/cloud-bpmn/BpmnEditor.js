@@ -221,16 +221,6 @@ export class BpmnEditor extends CachedComponent {
     let templates = await getConfig('bpmn.elementTemplates');
 
     templatesLoader.setTemplates(getCloudTemplates(templates));
-
-    const propertiesPanel = modeler.get('propertiesPanel', false);
-
-    if (propertiesPanel) {
-      const currentElement = propertiesPanel._current && propertiesPanel._current.element;
-
-      if (currentElement) {
-        propertiesPanel.update(currentElement);
-      }
-    }
   }
 
   undo = () => {

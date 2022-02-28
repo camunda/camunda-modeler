@@ -1108,17 +1108,12 @@ describe('<BpmnEditor>', function() {
         getConfig: getConfigSpy
       });
 
-      const propertiesPanel = instance.getModeler().get('propertiesPanel');
-
-      const updateSpy = spy(propertiesPanel, 'update');
-
       await instance.triggerAction('elementTemplates.reload');
 
       // expect
       expect(getConfigSpy).to.be.calledTwice;
       expect(getConfigSpy).to.be.always.calledWith('bpmn.elementTemplates');
       expect(elementTemplatesLoaderStub.setTemplates).to.be.calledTwice;
-      expect(updateSpy).to.have.been.called;
     });
 
 
