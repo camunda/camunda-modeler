@@ -75,21 +75,6 @@ describe('<VersionInfo>', () => {
   });
 
 
-  it('should show custom version if configured via flag', async () => {
-
-    // given
-    Flags.init({ [ CUSTOM_VERSION_INFO ]: '1.2.3.4' });
-
-    const wrapper = createVersionInfo();
-
-    // when
-    const buttonHtml = wrapper.find('button').html();
-
-    // then
-    expect(buttonHtml).to.contain('1.2.3.4');
-  });
-
-
   describe('unread marker', () => {
 
     beforeEach(() => {
@@ -203,6 +188,41 @@ describe('<VersionInfo>', () => {
       expect(triggerAction).to.not.have.been.called;
     });
   });
+
+
+  describe('version', () => {
+
+    it('should show version from Metadata', async () => {
+
+      // given
+      Metadata.init({ version: '0.1.2' });
+
+      const wrapper = createVersionInfo();
+
+      // when
+      const buttonHtml = wrapper.find('button').html();
+
+      // then
+      expect(buttonHtml).to.contain('0.1.2');
+    });
+
+
+    it('should show custom version if configured via flag', async () => {
+
+      // given
+      Flags.init({ [ CUSTOM_VERSION_INFO ]: '1.2.3.4' });
+
+      const wrapper = createVersionInfo();
+
+      // when
+      const buttonHtml = wrapper.find('button').html();
+
+      // then
+      expect(buttonHtml).to.contain('1.2.3.4');
+    });
+
+  });
+
 });
 
 
