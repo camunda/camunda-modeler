@@ -594,8 +594,7 @@ Custom fields may use the defined group ids. The order of the custom fields also
 }
 ```
 
-
-*TODO: screenshot*
+![Groups](./groups.png)
 
 #### Constraints
 
