@@ -14,6 +14,8 @@ import { shallow } from 'enzyme';
 
 import { VersionInfo } from '../VersionInfo';
 
+import Flags, { CUSTOM_VERSION_INFO } from '../../../util/Flags';
+
 import { Config } from '../../../app/__tests__/mocks';
 import Metadata from '../../../util/Metadata';
 
@@ -70,6 +72,21 @@ describe('<VersionInfo>', () => {
 
     // then
     expect(wrapper.exists('VersionInfoOverlay'), 'Overlay should be gone').to.be.false;
+  });
+
+
+  it('should show custom version if configured via flag', async () => {
+
+    // given
+    Flags.init({ [ CUSTOM_VERSION_INFO ]: '1.2.3.4' });
+
+    const wrapper = createVersionInfo();
+
+    // when
+    const buttonHtml = wrapper.find('button').html();
+
+    // then
+    expect(buttonHtml).to.contain('1.2.3.4');
   });
 
 

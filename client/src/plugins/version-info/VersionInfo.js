@@ -15,6 +15,8 @@ import React, {
 
 import classNames from 'classnames';
 
+import Flags, { CUSTOM_VERSION_INFO } from '../../util/Flags';
+
 import { Fill } from '../../app/slot-fill';
 import Metadata from '../../util/Metadata';
 import { VersionInfoOverlay } from './VersionInfoOverlay';
@@ -29,7 +31,7 @@ export class VersionInfo extends PureComponent {
   constructor(props) {
     super(props);
 
-    this._version = Metadata.version;
+    this._version = Flags.get(CUSTOM_VERSION_INFO) || Metadata.version;
     this._buttonRef = React.createRef(null);
 
     this.state = { open: false, unread: true };
