@@ -16,6 +16,8 @@ import { getMetrics } from '../../../util';
 
 import { getEngineProfile as parseEngineProfile } from '../../../util/parse';
 
+import { getCloudTemplates, getPlatformTemplates } from '../../../util/elementTemplates';
+
 import { ENGINES } from '../../../util/Engines';
 
 const HTTP_STATUS_PAYLOAD_TOO_BIG = 413;
@@ -57,11 +59,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
         type
       } = tab;
 
-      if (type === types.BPMN) {
-        return await this.onCamundaDiagramOpened(file);
-      } else { // <cloud-bpmn>, maybe more in the future
-        return await this.onBpmnDiagramOpened(file, type);
-      }
+      return await this.onBpmnDiagramOpened(file, type);
     });
 
     subscribe('dmn.modeler.created', () => {
@@ -192,28 +190,19 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
   onBpmnDiagramOpened = async (file, type, context = {}) => {
 
     const diagramMetrics = await this.generateMetrics(file, type);
-
     const engineProfile = await this.getEngineProfile(file, type);
+    const elementTemplates = await this.getElementTemplates(file, type);
 
     return await this.onDiagramOpened(types.BPMN, {
       diagramMetrics,
       engineProfile,
+      elementTemplates,
       ...context
     });
 
   }
 
-  onCamundaDiagramOpened = async (file) => {
-
-    const elementTemplates = await this.getElementTemplates(file);
-
-    return await this.onBpmnDiagramOpened(file, types.BPMN, {
-      elementTemplates
-    });
-
-  }
-
-  getElementTemplates = async (file) => {
+  getElementTemplates = async (file, type) => {
 
     const config = this._config;
 
@@ -223,7 +212,9 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
       return [];
     }
 
-    return elementTemplates.map((elementTemplate) => {
+    const elementTemplateFilter = getElementTemplatesFilter(type);
+
+    return elementTemplateFilter(elementTemplates).map((elementTemplate) => {
       const { appliesTo, properties } = elementTemplate;
 
       const propertyCounts = properties.map((property) => {
@@ -263,4 +254,12 @@ function getDefaultExecutionPlatform(type) {
   }
 
   return ENGINES.PLATFORM;
+}
+
+function getElementTemplatesFilter(type) {
+  if (type === 'cloud-bpmn') {
+    return getCloudTemplates;
+  }
+
+  return getPlatformTemplates;
 }

@@ -222,6 +222,7 @@ describe('<DiagramOpenEventHandler>', () => {
     });
   });
 
+
   it('should not send with broken file contents: form', async () => {
 
     // given
@@ -255,7 +256,7 @@ describe('<DiagramOpenEventHandler>', () => {
 
   describe('element templates', () => {
 
-    it('should send element templates', async () => {
+    async function expectTemplatesSent(elementTemplates, type, expected) {
 
       // given
       const subscribe = sinon.spy();
@@ -267,12 +268,12 @@ describe('<DiagramOpenEventHandler>', () => {
       const config = { get: (key, file) => {
         configSpy(key, file);
 
-        return mockElementTemplates();
+        return elementTemplates;
       } };
 
       const tab = createTab({
         file: { path: 'testPath' },
-        type: 'bpmn'
+        type
       });
 
       // when
@@ -286,11 +287,22 @@ describe('<DiagramOpenEventHandler>', () => {
 
       const configArgs = configSpy.getCall(0).args;
 
-      const elementTemplates = onSend.getCall(0).args[0].elementTemplates;
+      const sentElementTemplates = onSend.getCall(0).args[0].elementTemplates;
 
       // then
       expect(configArgs).to.eql([ 'bpmn.elementTemplates', { path: 'testPath' } ]);
-      expect(elementTemplates).to.eql([
+      expect(sentElementTemplates).to.eql(expected);
+    }
+
+
+    it('should send element templates - platform', async () => {
+
+      // given
+      const elementTemplates = mockPlatformElementTemplates();
+
+      const type = 'bpmn';
+
+      const expected = [
         {
           appliesTo: [ 'bpmn:ServiceTask' ],
           properties: {
@@ -300,7 +312,104 @@ describe('<DiagramOpenEventHandler>', () => {
             'camunda:outputParameter': 1
           }
         }
-      ]);
+      ];
+
+      // then
+      await expectTemplatesSent(
+        elementTemplates,
+        type,
+        expected
+      );
+    });
+
+
+    it('should send element templates - cloud', async () => {
+
+      // given
+      const elementTemplates = mockCloudElementTemplates();
+
+      const type = 'cloud-bpmn';
+
+      const expected = [
+        {
+          appliesTo: [ 'bpmn:ServiceTask' ],
+          properties: {
+            'zeebe:input': 3,
+            'zeebe:output': 1,
+            'zeebe:taskDefinition:type': 1,
+            'zeebe:taskHeader': 1
+          }
+        }
+      ];
+
+      // then
+      await expectTemplatesSent(
+        elementTemplates,
+        type,
+        expected
+      );
+    });
+
+
+    it('should ONLY send platform element templates (mixture)', async () => {
+
+      // given
+      const elementTemplates = [
+        ...mockPlatformElementTemplates(),
+        ...mockCloudElementTemplates()
+      ];
+
+      const type = 'bpmn';
+
+      const expected = [
+        {
+          appliesTo: [ 'bpmn:ServiceTask' ],
+          properties: {
+            'camunda:asyncBefore': 1,
+            'camunda:class': 1,
+            'camunda:inputParameter': 3,
+            'camunda:outputParameter': 1
+          }
+        }
+      ];
+
+      // then
+      await expectTemplatesSent(
+        elementTemplates,
+        type,
+        expected
+      );
+    });
+
+
+    it('should ONLY send cloud element templates (mixture)', async () => {
+
+      // given
+      const elementTemplates = [
+        ...mockPlatformElementTemplates(),
+        ...mockCloudElementTemplates()
+      ];
+
+      const type = 'cloud-bpmn';
+
+      const expected = [
+        {
+          appliesTo: [ 'bpmn:ServiceTask' ],
+          properties: {
+            'zeebe:input': 3,
+            'zeebe:output': 1,
+            'zeebe:taskDefinition:type': 1,
+            'zeebe:taskHeader': 1
+          }
+        }
+      ];
+
+      // then
+      await expectTemplatesSent(
+        elementTemplates,
+        type,
+        expected
+      );
     });
 
 
@@ -309,7 +418,7 @@ describe('<DiagramOpenEventHandler>', () => {
       // given
       const subscribe = sinon.spy();
 
-      const config = { get: () => mockElementTemplates() };
+      const config = { get: () => mockPlatformElementTemplates() };
 
       const onSendSpy = sinon.spy();
 
@@ -1604,7 +1713,7 @@ describe('<DiagramOpenEventHandler>', () => {
 
 // helpers //////
 
-function mockElementTemplates() {
+function mockPlatformElementTemplates() {
   return [
     {
       appliesTo: [ 'bpmn:ServiceTask' ],
@@ -1615,6 +1724,23 @@ function mockElementTemplates() {
         { binding: { name: 'messageBody', type: 'camunda:inputParameter' } },
         { binding: { type: 'camunda:outputParameter' } },
         { binding: { name: 'camunda:asyncBefore', type: 'property' } }
+      ]
+    }
+  ];
+}
+
+function mockCloudElementTemplates() {
+  return [
+    {
+      $schema: 'https://example.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+      appliesTo: [ 'bpmn:ServiceTask' ],
+      properties: [
+        { binding: { type: 'zeebe:taskDefinition:type' } },
+        { binding: { name: 'sender', type: 'zeebe:input' } },
+        { binding: { name: 'receivers', type: 'zeebe:input' } },
+        { binding: { name: 'messageBody', type: 'zeebe:input' } },
+        { binding: { source: 'result', type: 'zeebe:output' } },
+        { binding: { key: 'header', type: 'zeebe:taskHeader' } }
       ]
     }
   ];
