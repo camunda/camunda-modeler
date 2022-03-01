@@ -20,6 +20,8 @@ const Sentry = require('@sentry/node');
 
 const path = require('path');
 
+const fs = require('fs');
+
 const ZeebeNode = require('zeebe-node');
 
 const Cli = require('./cli');
@@ -61,6 +63,8 @@ const MINIMUM_SIZE = {
   width: 780,
   height: 580
 };
+
+var DEFAULT_USER_PATH = path.join(app.getPath('appData'), 'camunda-modeler');
 
 bootstrapLog.info(`starting ${ name } v${ version }`);
 
@@ -577,9 +581,7 @@ function bootstrap() {
   } = Cli.parse(process.argv, cwd);
 
   // (1) user path
-  if (flagOverrides['user-data-dir']) {
-    app.setPath('userData', flagOverrides['user-data-dir']);
-  }
+  setUserPath(flagOverrides['user-data-dir']);
 
   const userPath = app.getPath('userData');
 
@@ -694,6 +696,14 @@ function generatePluginsTag(plugins) {
   return plugins.map(({ name }) => name).join(',');
 }
 
+
+function setUserPath(path = DEFAULT_USER_PATH) {
+  if (!fs.existsSync(path)) {
+    fs.mkdirSync(path);
+  }
+
+  app.setPath('userData', path);
+}
 
 
 // expose app
