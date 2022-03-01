@@ -47,12 +47,22 @@ Clicking the `Catalog` button will bring up a modal menu allowing to browse and 
 
 ![Modal Menu](./modal.png)
 
-Applying a template will store it via the `camunda:modelerTemplate` property and the optional `camunda:modelerTemplateVersion` property on the selected element:
+Applying a template will store it via the `modelerTemplate` property and the optional `modelerTemplateVersion` property on the selected element:
+
+Camunda Platform
 
 ```xml
 <bpmn:serviceTask id="MailTask"
   camunda:modelerTemplate="com.mycompany.MailTask"
   camunda:modelerTemplateVesion="1" />
+```
+
+Camunda Cloud
+
+```xml
+<bpmn:serviceTask id="MailTask"
+  zeebe:modelerTemplate="com.mycompany.MailTask"
+  zeebe:modelerTemplateVesion="1" />
 ```
 
 It will also setup custom fields on the diagram element and make these available to the user for inspection and editing. Properties which were not configured in the element template using custom fields, will not be available for editing for the user.
@@ -61,8 +71,8 @@ It will also setup custom fields on the diagram element and make these available
 
 To remove an applied template from an element, either the *Unlink* or *Remove* function can be used:
 
-* *Remove*: Remove the element template from the `camunda:modelerTemplate` property and also reset all properties of the respective element.
-* *Unlink*: Remove the element template from the `camunda:modelerTemplate` property but keep the properties which were set.
+* *Remove*: Remove the element template from the `modelerTemplate` property and also reset all properties of the respective element.
+* *Unlink*: Remove the element template from the `modelerTemplate` property but keep the properties which were set.
 
 ![Unlink or Remove](./unlink-remove.png)
 
