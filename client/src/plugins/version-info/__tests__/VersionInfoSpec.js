@@ -14,7 +14,7 @@ import { shallow } from 'enzyme';
 
 import { VersionInfo } from '../VersionInfo';
 
-import Flags, { CUSTOM_VERSION_INFO } from '../../../util/Flags';
+import Flags, { DISPLAY_VERSION } from '../../../util/Flags';
 
 import { Config } from '../../../app/__tests__/mocks';
 import Metadata from '../../../util/Metadata';
@@ -210,7 +210,7 @@ describe('<VersionInfo>', () => {
     it('should show custom version if configured via flag', async () => {
 
       // given
-      Flags.init({ [ CUSTOM_VERSION_INFO ]: '1.2.3.4' });
+      Flags.init({ [ DISPLAY_VERSION ]: '1.2.3.4' });
 
       const wrapper = createVersionInfo();
 
