@@ -38,7 +38,7 @@ Flags passed as command line arguments take precedence over those configured via
 | "disable-remote-interaction" | false |
 | "single-instance" | false |
 | "user-data-dir" | [Electron default](../search-paths) |
-| "custom-version-info" | `undefined` |
+| "display-version" | `undefined` |
 
 ## Examples
 
@@ -63,8 +63,8 @@ To display a custom version information in the status bar of the app, configure 
 
 ```js
 {
-    "custom-version-info": "1.2.3"
+    "display-version": "1.2.3"
 }
 ```
 
-![Custom version info](./custom-version-info.png)
+![Custom version info](./display-version.png)
