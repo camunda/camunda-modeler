@@ -833,8 +833,8 @@ export class BpmnEditor extends CachedComponent {
       exporter: {
         name,
         version
-      },
-    }, handleMiddlewareExtensions);
+      }
+    }, handleMiddlewareExtensions, 'platform');
 
     if (warnings.length && isFunction(onError)) {
       onError(

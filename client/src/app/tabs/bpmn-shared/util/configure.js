@@ -9,7 +9,7 @@
  */
 
 export default function configureModeler(
-    getPlugins, defaultOptions = {}, handleMiddlewareExtensions
+    getPlugins, defaultOptions = {}, handleMiddlewareExtensions, platformKey
 ) {
 
   const warnings = [];
@@ -43,61 +43,69 @@ export default function configureModeler(
     };
   });
 
+  function moddleExtensionsMiddleware(options, logWarning) {
+
+    var registeredModdleExtensions = getPlugins('bpmn.modeler.moddleExtension');
+
+    if (platformKey) {
+      registeredModdleExtensions = registeredModdleExtensions.concat(getPlugins('bpmn.' + platformKey + '.modeler.moddleExtension'));
+    }
+
+    const moddleExtensions = registeredModdleExtensions.reduce((extensions, extension) => {
+      let {
+        name
+      } = extension;
+
+      if (typeof name !== 'string') {
+        logWarning('A bpmn moddle extension plugin is missing a <name> property');
+
+        return extensions;
+      }
+
+      extensions = extensions || {};
+
+      if (name in extensions) {
+        logWarning('A bpmn moddle extension with name <' + name + '> was overriden due to a clash');
+      }
+
+      return {
+        ...extensions,
+        [name]: extension
+      };
+    }, options.moddleExtensions);
+
+    if (moddleExtensions) {
+      return {
+        ...options,
+        moddleExtensions
+      };
+    }
+
+    return options;
+  }
+
+  function additionalModulesMiddleware(options) {
+
+    const additionalModules = getPlugins('bpmn.modeler.additionalModules');
+    const platformSpecificAdditionalModules = platformKey ? getPlugins('bpmn.' + platformKey + '.modeler.additionalModules') : [];
+
+    if (additionalModules.length) {
+      return {
+        ...options,
+        additionalModules: [
+          ...(options.additionalModules || []),
+          ...additionalModules,
+          ...platformSpecificAdditionalModules
+        ]
+      };
+    }
+
+    return options;
+  }
+
   const middlewares = [
-
-    function moddleExtensionsMiddleware(options, logWarning) {
-
-      const plugins = getPlugins('bpmn.modeler.moddleExtension');
-
-      const moddleExtensions = plugins.reduce((extensions, extension) => {
-        let {
-          name
-        } = extension;
-
-        if (typeof name !== 'string') {
-          logWarning('bpmn.modeler.moddleExtension is missing <name> property');
-
-          return extensions;
-        }
-
-        extensions = extensions || {};
-
-        if (name in extensions) {
-          logWarning('bpmn.modeler.moddleExtension overrides moddle extension with name <' + name + '>');
-        }
-
-        return {
-          ...extensions,
-          [ name ]: extension
-        };
-      }, options.moddleExtensions);
-
-      if (moddleExtensions) {
-        return {
-          ...options,
-          moddleExtensions
-        };
-      }
-
-      return options;
-    },
-
-    function additionalModulesMiddleware(options) {
-      const additionalModules = getPlugins('bpmn.modeler.additionalModules');
-
-      if (additionalModules.length) {
-        return {
-          ...options,
-          additionalModules: [
-            ...(options.additionalModules || []),
-            ...additionalModules
-          ]
-        };
-      }
-
-      return options;
-    },
-
+    additionalModulesMiddleware,
+    moddleExtensionsMiddleware,
     ...dynamicMiddlewares
   ];
 
