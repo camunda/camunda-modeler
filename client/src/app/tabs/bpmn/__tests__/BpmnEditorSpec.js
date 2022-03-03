@@ -131,10 +131,40 @@ describe('<BpmnEditor>', function() {
         foo: [ 'type', noop ]
       };
 
+      const additionalModulePlatform = {
+        __init__: [ 'platfoo' ],
+        platfoo: [ 'type', noop ]
+      };
+
+      const additionalModuleCloud = {
+        __init__: [ 'cloudfoo' ],
+        cloudfoo: [ 'type', noop ]
+      };
+
       const moddleExtension = {
         name: 'bar',
         uri: 'http://bar',
         prefix: 'bar',
+        xml: {
+          tagAlias: 'lowerCase'
+        },
+        types: []
+      };
+
+      const moddleExtensionPlatform = {
+        name: 'platbar',
+        uri: 'http://platbar',
+        prefix: 'platbar',
+        xml: {
+          tagAlias: 'lowerCase'
+        },
+        types: []
+      };
+
+      const moddleExtensionCloud = {
+        name: 'cloudbar',
+        uri: 'http://cloudbar',
+        prefix: 'cloudbar',
         xml: {
           tagAlias: 'lowerCase'
         },
@@ -149,8 +179,16 @@ describe('<BpmnEditor>', function() {
           switch (type) {
           case 'bpmn.modeler.additionalModules':
             return [ additionalModule ];
+          case 'bpmn.platform.modeler.additionalModules':
+            return [ additionalModulePlatform ];
+          case 'bpmn.cloud.modeler.additionalModules':
+            return [ additionalModuleCloud ];
           case 'bpmn.modeler.moddleExtension':
             return [ moddleExtension ];
+          case 'bpmn.platform.modeler.moddleExtension':
+            return [ moddleExtensionPlatform ];
+          case 'bpmn.cloud.modeler.moddleExtension':
+            return [ moddleExtensionCloud ];
           }
 
           return [];
@@ -161,10 +199,16 @@ describe('<BpmnEditor>', function() {
       const { modeler } = instance.getCached();
 
       expect(modeler.options.additionalModules).to.include(additionalModule);
+      expect(modeler.options.additionalModules).to.include(additionalModulePlatform);
+      expect(modeler.options.additionalModules).to.not.include(additionalModuleCloud);
 
       expect(modeler.options.moddleExtensions).to.include({
-        bar: moddleExtension
+        bar: moddleExtension,
+        platbar: moddleExtensionPlatform,
       });
+
+      expect(modeler.options.moddleExtensions).to.not.have.property('cloudbar');
+
     });
 
 

@@ -800,7 +800,7 @@ export class BpmnEditor extends CachedComponent {
         name,
         version
       },
-    }, handleMiddlewareExtensions);
+    }, handleMiddlewareExtensions, 'cloud');
 
     if (warnings.length && isFunction(onError)) {
       onError(

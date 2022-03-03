@@ -826,7 +826,7 @@ export class BpmnEditor extends CachedComponent {
         name,
         version
       },
-    }, handleMiddlewareExtensions);
+    }, handleMiddlewareExtensions, 'platform');
 
     if (warnings.length && isFunction(onError)) {
       onError(
