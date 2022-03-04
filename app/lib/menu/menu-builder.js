@@ -559,7 +559,7 @@ class MenuBuilder {
     const topPart = [
       {
         label: 'Documentation',
-        click: () => browserOpen('https://docs.camunda.org/manual/latest/modeler/camunda-modeler')
+        click: () => browserOpen('https://docs.camunda.io/docs/components/modeler/desktop-modeler/')
       },
       {
         label: 'User Forum',

@@ -3,7 +3,6 @@ node_modules
 dist/
 app/public/
 plugins/**
-!docs/plugins/**
 .vscode
 coverage
 .nyc_output
