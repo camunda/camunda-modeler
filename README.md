@@ -4,7 +4,7 @@
 
 An integrated modeling solution for BPMN, DMN, and Forms based on [bpmn.io](http://bpmn.io).
 
-![Camunda Modeler](docs/screenshot.png)
+![Camunda Modeler](resources/screenshot.png)
 
 
 ## Resources
