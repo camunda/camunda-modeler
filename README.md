@@ -13,7 +13,7 @@ An integrated modeling solution for BPMN, DMN, and Forms based on [bpmn.io](http
 * [Download](https://camunda.com/download/modeler/) (see also [nightly builds](https://downloads.camunda.cloud/release/camunda-modeler/nightly/))
 * [Give Feedback](https://forum.camunda.org/c/modeler)
 * [Report a Bug](https://github.com/camunda/camunda-modeler/issues)
-* [User Documentation](https://docs.camunda.org/manual/latest/modeler/camunda-modeler/)
+* [User Documentation](https://docs.camunda.io/docs/components/modeler/desktop-modeler/)
 
 
 ## Building the Application

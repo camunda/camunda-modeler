@@ -275,7 +275,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### CMMN
 
-* `FEAT`: set default value for `disable-cmmn`-flag to `true` ([#2036](https://github.com/camunda/camunda-modeler/issues/2036)); run with `--no-disable-cmmn` or edit your local [flags.json](./docs/flags) to re-enable CMMN editor
+* `FEAT`: set default value for `disable-cmmn`-flag to `true` ([#2036](https://github.com/camunda/camunda-modeler/issues/2036)); run with `--no-disable-cmmn` or edit your local [flags.json](https://docs.camunda.io/docs/components/modeler/desktop-modeler/flags/) to re-enable CMMN editor
 
 ## 4.4.0
 
