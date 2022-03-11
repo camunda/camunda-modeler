@@ -1938,6 +1938,7 @@ export class App extends PureComponent {
                       onContextMenu={ this.openTabMenu }
                       onAction={ this.triggerAction }
                       onModal={ this.openModal }
+                      onUpdateMenu={ this.updateMenu }
                       getConfig={ this.getConfig }
                       setConfig={ this.setConfig }
                       getPlugins={ this.getPlugins }
