@@ -740,7 +740,8 @@ export class BpmnEditor extends CachedComponent {
       layout,
       linting = [],
       onAction,
-      onLayoutChanged
+      onLayoutChanged,
+      onUpdateMenu
     } = this.props;
 
     const imported = this.getModeler().getDefinitions();
@@ -778,7 +779,8 @@ export class BpmnEditor extends CachedComponent {
         {
           engineProfile && <Fragment>
             <Panel
-              layout={ layout }>
+              layout={ layout }
+              onUpdateMenu={ onUpdateMenu }>
               <LintingTab
                 layout={ layout }
                 linting={ linting }

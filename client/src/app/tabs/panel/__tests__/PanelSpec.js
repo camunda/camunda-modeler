@@ -18,6 +18,8 @@ import { SlotFillRoot } from '../../../slot-fill';
 
 import Panel from '../Panel';
 
+const noop = () => {};
+
 const spy = sinon.spy;
 
 
@@ -192,6 +194,39 @@ describe('<Panel>', function() {
       });
     });
 
+
+    it('should update edit menu', async function() {
+
+      // given
+      const onUpdateMenu = spy();
+
+      const wrapper = renderPanel({
+        children: createTab({
+          children: <div className="foo" />
+        }),
+        onUpdateMenu
+      });
+
+      // when
+      wrapper.find('.panel__body').simulate('focus');
+
+      // then
+      expect(onUpdateMenu).to.be.calledOnceWithExactly({
+        editMenu: [
+          [
+            { enabled: false, role: 'undo' },
+            { enabled: false, role: 'redo' }
+          ],
+          [
+            { enabled: false, role: 'copy' },
+            { enabled: false, role: 'cut' },
+            { enabled: false, role: 'paste' },
+            { enabled: false, role: 'selectAll' }
+          ]
+        ]
+      });
+    });
+
   });
 
 });
@@ -213,7 +248,7 @@ function createTab(options = {}) {
     label = 'Foo',
     layout = defaultLayout,
     number,
-    onLayoutChanged = () => {},
+    onLayoutChanged = noop,
     priority = 1
   } = options;
 
@@ -234,13 +269,15 @@ function createTab(options = {}) {
 function renderPanel(options = {}) {
   const {
     children,
-    layout = defaultLayout
+    layout = defaultLayout,
+    onUpdateMenu = noop
   } = options;
 
   return mount(
     <SlotFillRoot>
       <Panel
-        layout={ layout }>
+        layout={ layout }
+        onUpdateMenu={ onUpdateMenu }>
         { children }
       </Panel>
     </SlotFillRoot>

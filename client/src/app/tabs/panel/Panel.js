@@ -31,6 +31,45 @@ export default class Panel extends PureComponent {
     };
   }
 
+  updateMenu = () => {
+    const { onUpdateMenu } = this.props;
+
+    const enabled = hasSelection();
+
+    const editMenu = [
+      [
+        {
+          role: 'undo',
+          enabled: false
+        },
+        {
+          role: 'redo',
+          enabled: false
+        },
+      ],
+      [
+        {
+          role: 'copy',
+          enabled
+        },
+        {
+          role: 'cut',
+          enabled: false
+        },
+        {
+          role: 'paste',
+          enabled: false
+        },
+        {
+          role: 'selectAll',
+          enabled: false
+        }
+      ]
+    ];
+
+    onUpdateMenu({ editMenu });
+  }
+
   render() {
     const {
       children,
@@ -49,7 +88,7 @@ export default class Panel extends PureComponent {
       <div className="panel__links">
         <Slot name="panel-link" />
       </div>
-      <div className="panel__body">
+      <div tabIndex="0" className="panel__body" onFocus={ this.updateMenu }>
         <div className="panel__inner">
           <Slot name="panel-body" />
         </div>
@@ -110,4 +149,11 @@ function Tab(props) {
       )
     }
   </div>;
+}
+
+
+// helpers //////////
+
+function hasSelection() {
+  return window.getSelection().toString() !== '';
 }
