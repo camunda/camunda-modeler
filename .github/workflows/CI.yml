@@ -12,4 +12,4 @@ jobs:
       with:
         node-version: 14
     - name: update npm when necessary
-      run: [[ "$(npm --version)" =~ "^[6-7]" ]] && npm i -g npm@8
+      run: if [[ "$(npm --version)" =~ "^[6-7]" ]]; then npm i -g npm@8
