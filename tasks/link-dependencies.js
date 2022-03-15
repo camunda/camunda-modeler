@@ -16,7 +16,6 @@ const path = require('path');
 const customLinkersMap = {
   'bpmn-io/bpmn-js': linkBpmnJs,
   'bpmn-io/dmn-js': linkDmnJs,
-  'bpmn-io/diagram-js': linkDiagramJs,
   'bpmn-io/form-js': linkFormJs
 };
 
@@ -161,26 +160,6 @@ function linkBpmnJs({ repo, ref }) {
   exec('yarn link', { cwd: rootDir });
 
   exec('yarn link bpmn-js', { cwd: clientDir });
-}
-
-/**
- *
- * @param {Dependency} dependency
- */
-function linkDiagramJs({ repo, ref }) {
-  gitClone(repo);
-  console.log(`Cloned ${repo}.`);
-
-  const rootDir = path.join(dependenciesDir, 'diagram-js');
-  exec(`git checkout ${ref}`, { cwd: rootDir });
-  console.log(`Checked out ${ref}.`);
-
-  exec('npm ci', { cwd: rootDir });
-  console.log('Installed dependencies.');
-
-  exec('yarn link', { cwd: rootDir });
-
-  exec('yarn link diagram-js', { cwd: clientDir });
 }
 
 /**

@@ -11,15 +11,15 @@
     "@bpmn-io/dmn-migrate": "^0.4.3",
     "@bpmn-io/extract-process-variables": "^0.4.3",
     "@bpmn-io/form-js": "^0.7.0",
-    "@bpmn-io/properties-panel": "^0.10.2",
+    "@bpmn-io/properties-panel": "^0.11.0",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@ibm/plex": "^6.0.0",
     "@sentry/browser": "^6.3.6",
-    "bpmn-js": "^9.0.0-alpha.2",
-    "bpmn-js-properties-panel": "^1.0.0-alpha.3",
+    "bpmn-js": "^9.0.2",
+    "bpmn-js-properties-panel": "^1.0.0-alpha.5",
     "bpmn-moddle": "^7.1.2",
     "bpmnlint": "^7.2.1",
-    "camunda-bpmn-js": "^0.13.0-alpha.3",
+    "camunda-bpmn-js": "0.13.0-alpha.3",
     "camunda-bpmn-moddle": "^6.1.1",
     "camunda-cmmn-moddle": "^1.0.0",
     "camunda-dmn-moddle": "^1.1.0",
@@ -106,5 +106,12 @@
     "test": "karma start karma.config.js",
     "bpmn-io-modelers:test": "cross-env MODELERS=1 npm test",
     "bpmn-io-modelers:auto-test": "cross-env MODELERS=1 npm run auto-test"
+  },
+  "overrides": {
+    "@bpmn-io/properties-panel": "$@bpmn-io/properties-panel",
+    "bpmn-js": "$bpmn-js",
+    "bpmn-js-properties-panel": "$bpmn-js-properties-panel",
+    "camunda-bpmn-js": "$camunda-bpmn-js",
+    "dmn-js": "$dmn-js"
   }
 }
