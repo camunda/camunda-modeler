@@ -265,7 +265,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
 
                 <Section>
 
-                  <Section.Header>{title || 'Deployment'}</Section.Header>
+                  <Section.Header>{title || 'Deploy diagram'}</Section.Header>
 
                   <Section.Body>
                     {

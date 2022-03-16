@@ -8,17 +8,17 @@
  * except in compliance with the MIT License.
  */
 
-export const OVERLAY_TITLE = 'Deploy Diagram to Camunda Cloud';
+export const OVERLAY_TITLE = 'Deploy diagram';
 export const ENDPOINT_CONFIGURATION_TITLE = 'Endpoint Configuration';
 export const CANCEL = 'Cancel';
 export const DEPLOY = 'Deploy';
 export const NEXT = 'Next';
 
-export const DEPLOYMENT_NAME = 'Deployment Name';
-export const SELF_HOSTED_TEXT = 'Camunda Cloud Self-Managed';
+export const DEPLOYMENT_NAME = 'Deployment name';
+export const SELF_HOSTED_TEXT = 'Camunda Platform 8 Self-Managed';
 export const OAUTH_TEXT = 'OAuth';
 export const NONE = 'None';
-export const CAMUNDA_CLOUD_TEXT = 'Camunda Cloud SaaS';
+export const CAMUNDA_CLOUD_TEXT = 'Camunda Platform 8 SaaS';
 export const CONTACT_POINT = 'Contact Point';
 export const DEPLOYMENT_NAME_HINT = 'Default value is the file name.';
 export const CONTACT_POINT_HINT = 'Default value is 0.0.0.0:26500';
