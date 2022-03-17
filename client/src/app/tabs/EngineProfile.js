@@ -19,7 +19,7 @@ import {
 
 import { Fill } from '../slot-fill';
 
-import { ENGINES, ENGINE_PROFILES } from '../../util/Engines';
+import { ENGINES, ENGINE_LABELS, ENGINE_PROFILES } from '../../util/Engines';
 
 import css from './EngineProfile.less';
 
@@ -50,11 +50,10 @@ export function EngineProfile(props) {
   }
 
   const {
-    executionPlatform,
     executionPlatformVersion
   } = engineProfile;
 
-  const label = `${ executionPlatform } ${ toSemverMinor(executionPlatformVersion) || '' }`;
+  const label = `Camunda Platform ${ toSemverMinor(executionPlatformVersion) || '' }`;
 
   const handleChange = onChange ? (engineProfile) => {
     onChange(engineProfile);
@@ -143,10 +142,16 @@ function EditableVersionSection(props) {
     e.preventDefault();
   };
 
+  const {
+    executionPlatform
+  } = engineProfile;
+
+  const engineLabel = ENGINE_LABELS[executionPlatform];
+
   return (
     <Section>
       <Section.Header>
-        Select the { engineProfile.executionPlatform } version
+        Select the { engineLabel } version
       </Section.Header>
       <Section.Body>
         <form onSubmit={ handleApply } className="fields">
@@ -175,7 +180,7 @@ function EditableVersionSection(props) {
             </select>
           </div>
 
-          <PlatformHint className="form-group form-description" executionPlatform={ engineProfile.executionPlatform } />
+          <PlatformHint className="form-group form-description" executionPlatform={ executionPlatform } displayLabel={ engineLabel } />
 
           <Section.Actions>
             <button className="btn btn-primary" type="submit">Apply</button>
@@ -193,16 +198,19 @@ function ReadonlyVersionSection(props) {
     engineProfile
   } = props;
 
+  const engineLabel = ENGINE_LABELS[engineProfile.executionPlatform];
+
   return (
     <Section>
       <Section.Header>
-        { engineProfile.executionPlatform }
+        { engineLabel }
       </Section.Header>
       <Section.Body>
         <form>
           <PlatformHint
             className="form-control form-description"
-            executionPlatform={ engineProfile.executionPlatform } />
+            executionPlatform={ engineProfile.executionPlatform }
+            displayLabel={ engineLabel } />
         </form>
       </Section.Body>
     </Section>
@@ -213,12 +221,13 @@ function ReadonlyVersionSection(props) {
 function PlatformHint(props) {
   const {
     executionPlatform,
+    displayLabel,
     className
   } = props;
 
   return (
     <div className={ className }>
-      This file can be deployed and executed on { executionPlatform }.
+      This file can be deployed and executed on { displayLabel }.
       The properties panel provides the related implementation features. <a href={ HELP_LINKS[executionPlatform] }>
         Learn more
       </a>
