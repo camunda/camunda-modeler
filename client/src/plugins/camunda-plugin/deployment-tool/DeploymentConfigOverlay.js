@@ -282,7 +282,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                         <Field
                           name="deployment.name"
                           component={ TextInput }
-                          label="Deployment Name"
+                          label="Deployment name"
                           fieldError={ fieldError }
                           validate={ (value) => {
                             return validator.validateDeploymentName(value, this.isOnBeforeSubmit);
@@ -312,7 +312,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                               (code) => { this.externalErrorCodeCache = code; }
                             );
                           } }
-                          label="REST Endpoint"
+                          label="REST endpoint"
                           hint="Should point to a running Camunda Platform REST API endpoint."
                         />
 

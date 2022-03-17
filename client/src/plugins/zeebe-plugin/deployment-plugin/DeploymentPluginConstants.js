@@ -25,7 +25,7 @@ export const CONTACT_POINT_HINT = 'Default value is 0.0.0.0:26500';
 export const OAUTH_URL = 'OAuth URL';
 export const AUDIENCE = 'Audience';
 export const CLIENT_ID = 'Client ID';
-export const CLIENT_SECRET = 'Client Secret';
+export const CLIENT_SECRET = 'Client secret';
 export const CLUSTER_URL = 'Cluster URL';
 export const REMEMBER_CREDENTIALS = 'Remember credentials';
 
