@@ -115,51 +115,6 @@ export default class TabsProvider {
           return null;
         }
       },
-      bpmn: {
-        name: 'BPMN',
-        encoding: ENCODING_UTF8,
-        exports: {
-          png: EXPORT_PNG,
-          jpeg: EXPORT_JPEG,
-          svg: EXPORT_SVG
-        },
-        extensions: [ 'bpmn', 'xml' ],
-        canOpen(file) {
-          return parseDiagramType(file.contents) === 'bpmn';
-        },
-        getComponent(options) {
-          return import('./tabs/bpmn');
-        },
-        getIcon() {
-          return BPMNIcon;
-        },
-        getInitialContents(options) {
-          return bpmnDiagram;
-        },
-        getInitialFilename(suffix) {
-          return `diagram_${suffix}.bpmn`;
-        },
-        getHelpMenu() {
-          return [ {
-            label: 'BPMN 2.0 Tutorial',
-            action: 'https://camunda.org/bpmn/tutorial/'
-          },
-          {
-            label: 'BPMN Modeling Reference',
-            action: 'https://camunda.org/bpmn/reference/'
-          } ];
-        },
-        getNewFileMenu() {
-          return [ {
-            label: 'BPMN diagram',
-            group: 'Camunda Platform',
-            action: 'create-bpmn-diagram'
-          } ];
-        },
-        getLinter() {
-          return BpmnLinter;
-        }
-      },
       'cloud-bpmn': {
         name: 'BPMN',
         encoding: ENCODING_UTF8,
@@ -213,12 +168,57 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'BPMN diagram',
-            group: 'Camunda Cloud',
+            group: 'Camunda Platform 8',
             action: 'create-cloud-bpmn-diagram'
           } ];
         },
         getLinter() {
           return CloudBpmnLinter;
+        }
+      },
+      bpmn: {
+        name: 'BPMN',
+        encoding: ENCODING_UTF8,
+        exports: {
+          png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'bpmn', 'xml' ],
+        canOpen(file) {
+          return parseDiagramType(file.contents) === 'bpmn';
+        },
+        getComponent(options) {
+          return import('./tabs/bpmn');
+        },
+        getIcon() {
+          return BPMNIcon;
+        },
+        getInitialContents(options) {
+          return bpmnDiagram;
+        },
+        getInitialFilename(suffix) {
+          return `diagram_${suffix}.bpmn`;
+        },
+        getHelpMenu() {
+          return [ {
+            label: 'BPMN 2.0 Tutorial',
+            action: 'https://camunda.org/bpmn/tutorial/'
+          },
+          {
+            label: 'BPMN Modeling Reference',
+            action: 'https://camunda.org/bpmn/reference/'
+          } ];
+        },
+        getNewFileMenu() {
+          return [ {
+            label: 'BPMN diagram',
+            group: 'Camunda Platform 7',
+            action: 'create-bpmn-diagram'
+          } ];
+        },
+        getLinter() {
+          return BpmnLinter;
         }
       },
       cmmn: {
@@ -258,7 +258,7 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'CMMN diagram',
-            group: 'Camunda Platform',
+            group: 'Camunda Platform 7',
             action: 'create-cmmn-diagram'
           } ];
         },
@@ -299,46 +299,12 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'DMN diagram',
-            group: 'Camunda Platform',
+            group: 'Camunda Platform 7',
             action: 'create-dmn-diagram'
           } ];
         },
         getLinter() {
           return null;
-        }
-      },
-      form: {
-        name: 'FORM',
-        encoding: ENCODING_UTF8,
-        exports: {},
-        extensions: [ 'form' ],
-        canOpen(file) {
-          return file.name.endsWith('.form');
-        },
-        getComponent(options) {
-          return import('./tabs/form');
-        },
-        getIcon() {
-          return FormIcon;
-        },
-        getInitialContents() {
-          return form;
-        },
-        getInitialFilename(suffix) {
-          return `form_${suffix}.form`;
-        },
-        getHelpMenu() {
-          return [];
-        },
-        getNewFileMenu() {
-          return [ {
-            label: 'Form',
-            group: 'Camunda Platform',
-            action: 'create-form'
-          } ];
-        },
-        getLinter() {
-          return FormLinter;
         }
       },
       'cloud-form': {
@@ -378,8 +344,42 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'Form',
-            group: 'Camunda Cloud',
+            group: 'Camunda Platform 8',
             action: 'create-cloud-form'
+          } ];
+        },
+        getLinter() {
+          return FormLinter;
+        }
+      },
+      form: {
+        name: 'FORM',
+        encoding: ENCODING_UTF8,
+        exports: {},
+        extensions: [ 'form' ],
+        canOpen(file) {
+          return file.name.endsWith('.form');
+        },
+        getComponent(options) {
+          return import('./tabs/form');
+        },
+        getIcon() {
+          return FormIcon;
+        },
+        getInitialContents() {
+          return form;
+        },
+        getInitialFilename(suffix) {
+          return `form_${suffix}.form`;
+        },
+        getHelpMenu() {
+          return [];
+        },
+        getNewFileMenu() {
+          return [ {
+            label: 'Form',
+            group: 'Camunda Platform 7',
+            action: 'create-form'
           } ];
         },
         getLinter() {
