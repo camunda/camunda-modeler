@@ -20,7 +20,7 @@ import camundaCloud10ErrorsXML from './camunda-cloud-1-0-errors.bpmn';
 import camundaCloud11XML from './camunda-cloud-1-1.bpmn';
 import camundaCloud12XML from './camunda-cloud-1-2.bpmn';
 import camundaCloud13XML from './camunda-cloud-1-3.bpmn';
-import camundaCloud14XML from './camunda-cloud-1-4.bpmn';
+import camundaCloud80XML from './camunda-cloud-8-0.bpmn';
 import noEngineProfileXML from './no-engine-profile.bpmn';
 
 
@@ -62,11 +62,11 @@ describe('CloudBpmnLinter', function() {
 
 
   [
-    [ 'Camunda Cloud 1.0', camundaCloud10XML, camundaCloud10ErrorsXML ],
-    [ 'Camunda Cloud 1.1', camundaCloud11XML ],
-    [ 'Camunda Cloud 1.2', camundaCloud12XML ],
-    [ 'Camunda Cloud 1.3', camundaCloud13XML ],
-    [ 'Camunda Cloud 1.4', camundaCloud14XML ]
+    [ 'Zeebe 1.0', camundaCloud10XML, camundaCloud10ErrorsXML ],
+    [ 'Zeebe 1.1', camundaCloud11XML ],
+    [ 'Zeebe 1.2', camundaCloud12XML ],
+    [ 'Zeebe 1.3', camundaCloud13XML ],
+    [ 'Camunda Platform 8.0', camundaCloud80XML ]
   ].forEach(([ engineProfile, noErrorsXML, errorsXML ]) => {
 
     describe(engineProfile, function() {
