@@ -81,7 +81,7 @@ export default class DeploymentEventHandler extends BaseEventHandler {
 
     const {
       executionPlatform
-    } = await parseEngineProfile(contents);
+    } = await parseEngineProfile(contents, type);
 
     return {
       executionPlatform: executionPlatform || getDefaultExecutionPlatform(type)

@@ -22,7 +22,7 @@ import {
 } from '../formHelpers';
 
 export async function getUserTaskMetrics(file, type) {
-  const userTasks = await getUserTasks(file);
+  const userTasks = await getUserTasks(file, type);
 
   const parseUserTaskForms = parseFormHandlers[type];
 
@@ -40,8 +40,8 @@ export async function getUserTaskMetrics(file, type) {
   return metrics;
 }
 
-async function getUserTasks(file) {
-  const userTasks = await getAllElementsByType(file.contents, 'bpmn:UserTask');
+async function getUserTasks(file, type) {
+  const userTasks = await getAllElementsByType(file.contents, 'bpmn:UserTask', type);
 
   return userTasks;
 }

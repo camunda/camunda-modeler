@@ -21,7 +21,7 @@ import {
 } from '../extensionElementsHelpers';
 
 export async function getServiceTaskMetrics(file, type) {
-  const serviceTasks = await getServiceTasks(file);
+  const serviceTasks = await getServiceTasks(file, type);
 
   const parseServiceTasks = parseFormHandlers[type];
 
@@ -39,8 +39,8 @@ export async function getServiceTaskMetrics(file, type) {
   return metrics;
 }
 
-async function getServiceTasks(file) {
-  const serviceTasks = await getAllElementsByType(file.contents, 'bpmn:ServiceTask');
+async function getServiceTasks(file, type) {
+  const serviceTasks = await getAllElementsByType(file.contents, 'bpmn:ServiceTask', type);
 
   return serviceTasks;
 }
