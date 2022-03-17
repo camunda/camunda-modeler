@@ -40,11 +40,11 @@ describe('<EmptyTab>', function() {
       // then
       expect(onAction).to.have.callCount(5);
       expect(onAction.args).to.eql([
+        [ 'create-cloud-bpmn-diagram' ],
+        [ 'create-cloud-form' ],
         [ 'create-bpmn-diagram' ],
         [ 'create-dmn-diagram' ],
-        [ 'create-form' ],
-        [ 'create-cloud-bpmn-diagram' ],
-        [ 'create-cloud-form' ]
+        [ 'create-form' ]
       ]);
     });
 
@@ -142,7 +142,7 @@ describe('<EmptyTab>', function() {
       expect(tree.find('.create-buttons')).to.have.length(2);
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda Platform')
+          wrapper => wrapper.text().startsWith('Camunda Platform 7')
         ).exists()
       ).to.be.true;
     });
@@ -162,7 +162,7 @@ describe('<EmptyTab>', function() {
       expect(tree.find('.create-buttons')).to.have.length(1);
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda Platform')
+          wrapper => wrapper.text().startsWith('Camunda Platform 7')
         ).exists()
       ).to.be.false;
     });
@@ -185,7 +185,7 @@ describe('<EmptyTab>', function() {
       expect(tree.find('.create-buttons')).to.have.length(2);
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda Cloud')
+          wrapper => wrapper.text().startsWith('Camunda Platform 8')
         ).exists()
       ).to.be.true;
     });
@@ -205,7 +205,7 @@ describe('<EmptyTab>', function() {
       expect(tree.find('.create-buttons')).to.have.length(1);
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda Cloud')
+          wrapper => wrapper.text().startsWith('Camunda Platform 8')
         ).exists()
       ).to.be.false;
     });
