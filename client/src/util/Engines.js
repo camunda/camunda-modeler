@@ -23,3 +23,8 @@ export const ENGINE_PROFILES = [
     executionPlatformVersions: [ '1.3.0', '1.2.0', '1.1.0', '1.0.0' ]
   }
 ];
+
+export const ENGINE_LABELS = {
+  'Camunda Platform':'Camunda Platform 7',
+  'Camunda Cloud': 'Camunda Platform 8'
+};
