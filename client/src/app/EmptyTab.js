@@ -10,8 +10,8 @@
 
 import React, { PureComponent } from 'react';
 
-import CloudIcon from '../../resources/icons/Platform.svg';
-import PlatformIcon from '../../resources/icons/Cloud.svg';
+import CloudIcon from '../../resources/icons/Cloud.svg';
+import PlatformIcon from '../../resources/icons/Platform.svg';
 import BPMNIcon from '../../resources/icons/file-types/BPMN.svg';
 import DMNIcon from '../../resources/icons/file-types/DMN.svg';
 import FormIcon from '../../resources/icons/file-types/Form.svg';
@@ -52,9 +52,13 @@ export default class EmptyTab extends PureComponent {
     return (
       <div className="create-buttons">
 
-        <PlatformIcon className="engineIcon" />
+        <CloudIcon className="engineIcon" />
 
-        <span className="engine">Camunda Cloud</span>
+        <div className="engine">
+          <span>Camunda Platform 8</span>
+          <p>Scalable Process Automation as a Service</p>
+        </div>
+
         <p>Create a new file</p>
 
         {this.renderDiagramButton('create-cloud-bpmn-diagram', 'BPMN diagram', <BPMNIcon />)}
@@ -72,9 +76,13 @@ export default class EmptyTab extends PureComponent {
     return (
       <div className="create-buttons">
 
-        <CloudIcon className="engineIcon" />
+        <PlatformIcon className="engineIcon" />
 
-        <span className="engine">Camunda Platform</span>
+        <div className="engine">
+          <span>Camunda Platform 7</span>
+          <p>Embedded Platform for Process Automation</p>
+        </div>
+
         <p>Create a new file</p>
 
         {this.renderDiagramButton('create-bpmn-diagram', 'BPMN diagram', <BPMNIcon />)}
@@ -97,14 +105,14 @@ export default class EmptyTab extends PureComponent {
     return (
       <Tab className={ css.EmptyTab }>
         {
-          !Flags.get(DISABLE_PLATFORM) && (
-            this.renderPlatformColumn()
+          !Flags.get(DISABLE_ZEEBE) && (
+            this.renderCloudColumn()
           )
         }
 
         {
-          !Flags.get(DISABLE_ZEEBE) && (
-            this.renderCloudColumn()
+          !Flags.get(DISABLE_PLATFORM) && (
+            this.renderPlatformColumn()
           )
         }
       </Tab>
