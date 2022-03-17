@@ -11,15 +11,15 @@
     "@bpmn-io/dmn-migrate": "^0.4.3",
     "@bpmn-io/extract-process-variables": "^0.4.3",
     "@bpmn-io/form-js": "^0.7.0",
-    "@bpmn-io/properties-panel": "^0.10.2",
+    "@bpmn-io/properties-panel": "^0.11.0",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@ibm/plex": "^6.0.0",
     "@sentry/browser": "^6.3.6",
-    "bpmn-js": "^9.0.0-alpha.2",
-    "bpmn-js-properties-panel": "^1.0.0-alpha.3",
+    "bpmn-js": "^9.0.3",
+    "bpmn-js-properties-panel": "^1.0.0-alpha.5",
     "bpmn-moddle": "^7.1.2",
     "bpmnlint": "^7.2.1",
-    "camunda-bpmn-js": "^0.13.0-alpha.3",
+    "camunda-bpmn-js": "^0.13.0-alpha.4",
     "camunda-bpmn-moddle": "^6.1.1",
     "camunda-cmmn-moddle": "^1.0.0",
     "camunda-dmn-moddle": "^1.1.0",
@@ -49,7 +49,7 @@
     "semver-compare": "^1.0.0",
     "sourcemapped-stacktrace": "^1.1.9",
     "ua-parser-js": "^0.7.28",
-    "zeebe-bpmn-moddle": "^0.10.0"
+    "zeebe-bpmn-moddle": "^0.11.0"
   },
   "homepage": ".",
   "devDependencies": {
