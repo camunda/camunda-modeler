@@ -25,7 +25,7 @@ export async function getProcessVariablesCount(file, type) {
 
   const processVariables = [];
 
-  const definitions = await getBpmnDefinitions(contents);
+  const definitions = await getBpmnDefinitions(contents, type);
 
   const rootElements = definitions.get('rootElements');
 

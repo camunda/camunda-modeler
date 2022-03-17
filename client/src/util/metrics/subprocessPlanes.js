@@ -22,7 +22,7 @@ export async function getSubprocessPlaneMetrics(file, type) {
     nesting: 0
   };
 
-  const definitions = await getBpmnDefinitions(contents);
+  const definitions = await getBpmnDefinitions(contents, type);
 
   const diagrams = definitions.diagrams;
 
