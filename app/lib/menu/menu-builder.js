@@ -11,6 +11,7 @@
 'use strict';
 
 const electron = require('electron');
+const path = require('path');
 
 const {
   app,
@@ -752,7 +753,7 @@ function wrapActionInactiveInDevtools(fn) {
   return wrapped;
 }
 
-function getIconImage(path) {
-  path = 'app/' + path;
-  return electron.nativeImage.createFromPath(path).resize({ width:12, height:12 });
+function getIconImage(iconPath) {
+  iconPath = path.join(__dirname, '/../../', iconPath);
+  return electron.nativeImage.createFromPath(iconPath).resize({ width:12, height:12 });
 }
