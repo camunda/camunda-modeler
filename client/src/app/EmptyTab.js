@@ -49,7 +49,7 @@ export default class EmptyTab extends PureComponent {
     );
   }
 
-  renderPlatform8Column = () => {
+  renderCloudColumn = () => {
 
     return (
       <div className="welcome-card relative">
@@ -79,7 +79,7 @@ export default class EmptyTab extends PureComponent {
     );
   }
 
-  renderPlatform7Column = () => {
+  renderPlatformColumn = () => {
 
     return (
       <div className="welcome-card">
@@ -143,8 +143,8 @@ export default class EmptyTab extends PureComponent {
       <Tab className={ css.EmptyTab }>
         {!Flags.get(DISABLE_ZEEBE) && !Flags.get(DISABLE_PLATFORM) && <h2 className="welcome-header">Choose the right version for your project:</h2>}
         <div className="welcome-cards">
-          {!Flags.get(DISABLE_ZEEBE) && <>{this.renderPlatform8Column()}<div className="flex-spacer" /></>}
-          {!Flags.get(DISABLE_PLATFORM) && <>{this.renderPlatform7Column()}<div className="flex-spacer" /></>}
+          {!Flags.get(DISABLE_ZEEBE) && <>{this.renderCloudColumn()}<div className="flex-spacer" /></>}
+          {!Flags.get(DISABLE_PLATFORM) && <>{this.renderPlatformColumn()}<div className="flex-spacer" /></>}
           {this.renderLearnMoreColumn()}
         </div>
       </Tab>
