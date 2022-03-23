@@ -22,6 +22,8 @@ import {
   Tab
 } from './primitives';
 
+import NewBadge from '../shared/ui/NewBadge';
+
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM } from '../util/Flags';
 
 
@@ -50,18 +52,24 @@ export default class EmptyTab extends PureComponent {
   renderCloudColumn = () => {
 
     return (
-      <div className="create-buttons">
-
-        <CloudIcon className="engineIcon" />
-
-        <div className="engine">
-          <span>Camunda Platform 8</span>
-          <p>Scalable Process Automation as a Service</p>
+      <div className="welcome-card relative">
+        <NewBadge top="10px" right="10px" />
+        <div className="engine-info">
+          <div className="engine-info-heading">
+            <CloudIcon className="engine-icon cloud-icon" />
+            <h3>Camunda Platform 8</h3>
+          </div>
+          <a href="https://camunda.com/products/cloud/">See version details</a>
         </div>
 
         <p>Create a new file</p>
 
         {this.renderDiagramButton('create-cloud-bpmn-diagram', 'BPMN diagram', <BPMNIcon />)}
+        {
+          !Flags.get(DISABLE_DMN) && (
+            this.renderDiagramButton('create-cloud-dmn-diagram', 'DMN diagram', <DMNIcon />)
+          )
+        }
         {
           !Flags.get(DISABLE_FORM) && (
             this.renderDiagramButton('create-cloud-form', 'Form', <FormIcon />)
@@ -74,13 +82,13 @@ export default class EmptyTab extends PureComponent {
   renderPlatformColumn = () => {
 
     return (
-      <div className="create-buttons">
-
-        <PlatformIcon className="engineIcon" />
-
-        <div className="engine">
-          <span>Camunda Platform 7</span>
-          <p>Embedded Platform for Process Automation</p>
+      <div className="welcome-card">
+        <div className="engine-info">
+          <div className="engine-info-heading">
+            <PlatformIcon className="engine-icon platform-icon" />
+            <h3>Camunda Platform 7</h3>
+          </div>
+          <a href="https://camunda.com/products/camunda-platform/">See version details</a>
         </div>
 
         <p>Create a new file</p>
@@ -100,21 +108,45 @@ export default class EmptyTab extends PureComponent {
     );
   }
 
+  renderLearnMoreColumn = () => {
+
+    return (
+      <div className="welcome-card">
+        <div className="learn-more">
+          <h3>Learn more</h3>
+          <div className="article relative">
+            <p>Blog posts<br />placeholder</p>
+            <a>Read blog post</a>
+            <NewBadge top="-7px" right="-40px" />
+          </div>
+          <div className="article relative">
+            <p>Migrating from Camunda 7</p>
+            <a href="https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/">Camunda Docs</a>
+            <NewBadge top="-7px" right="-40px" />
+          </div>
+          <div className="article">
+            <p>About Modeler 5</p>
+            <a href="#" onClick={ () => this.props.onAction('emit-event', { type: 'versionInfo.open' }) }>Open "What's new"</a>
+          </div>
+          <div className="article">
+            <p>Model your first diagram</p>
+            <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/model-your-first-diagram/">Camunda Modeler Docs</a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
 
     return (
       <Tab className={ css.EmptyTab }>
-        {
-          !Flags.get(DISABLE_ZEEBE) && (
-            this.renderCloudColumn()
-          )
-        }
-
-        {
-          !Flags.get(DISABLE_PLATFORM) && (
-            this.renderPlatformColumn()
-          )
-        }
+        {!Flags.get(DISABLE_ZEEBE) && !Flags.get(DISABLE_PLATFORM) && <h2 className="welcome-header">Choose the right version for your project:</h2>}
+        <div className="welcome-cards">
+          {!Flags.get(DISABLE_ZEEBE) && <>{this.renderCloudColumn()}<div className="flex-spacer" /></>}
+          {!Flags.get(DISABLE_PLATFORM) && <>{this.renderPlatformColumn()}<div className="flex-spacer" /></>}
+          {this.renderLearnMoreColumn()}
+        </div>
       </Tab>
     );
   }
