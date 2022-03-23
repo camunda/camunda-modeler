@@ -42,14 +42,14 @@ export default class EmptyTab extends PureComponent {
     } = this.props;
 
     return (
-      <button className="btn btn-secondary" onClick={() => onAction(action)}>
+      <button className="btn btn-secondary" onClick={ () => onAction(action) }>
         {icon}
         {title}
       </button>
     );
   }
 
-  renderCloudColumn = () => {
+  renderPlatform8Column = () => {
 
     return (
       <div className="welcome-card relative">
@@ -79,7 +79,7 @@ export default class EmptyTab extends PureComponent {
     );
   }
 
-  renderPlatformColumn = () => {
+  renderPlatform7Column = () => {
 
     return (
       <div className="welcome-card">
@@ -115,7 +115,7 @@ export default class EmptyTab extends PureComponent {
         <div className="learn-more">
           <h3>Learn more</h3>
           <div className="article relative">
-            <p>Blog postssssssssssssss<br />placeholder</p>
+            <p>Blog post <br />placeholder</p>
             <a>Read blog post</a>
             <NewBadge top="-7px" right="-40px" />
           </div>
@@ -126,7 +126,7 @@ export default class EmptyTab extends PureComponent {
           </div>
           <div className="article">
             <p>About Modeler 5</p>
-            <a href="#" onClick={() => this.props.onAction('emit-event', { type: 'versionInfo.open' })}>Open "What's new"</a>
+            <a href="#" onClick={ () => this.props.onAction('emit-event', { type: 'versionInfo.open' }) }>Open "What's new"</a>
           </div>
           <div className="article">
             <p>Model your first diagram</p>
@@ -140,11 +140,11 @@ export default class EmptyTab extends PureComponent {
   render() {
 
     return (
-      <Tab className={css.EmptyTab}>
+      <Tab className={ css.EmptyTab }>
         {!Flags.get(DISABLE_ZEEBE) && !Flags.get(DISABLE_PLATFORM) && <h2 className="welcome-header">Choose the right version for your project:</h2>}
         <div className="welcome-cards">
-          {!Flags.get(DISABLE_ZEEBE) && <>{this.renderCloudColumn()}<div className="flex-spacer" /></>}
-          {!Flags.get(DISABLE_PLATFORM) && <>{this.renderPlatformColumn()}<div className="flex-spacer" /></>}
+          {!Flags.get(DISABLE_ZEEBE) && <>{this.renderPlatform8Column()}<div className="flex-spacer" /></>}
+          {!Flags.get(DISABLE_PLATFORM) && <>{this.renderPlatform7Column()}<div className="flex-spacer" /></>}
           {this.renderLearnMoreColumn()}
         </div>
       </Tab>
