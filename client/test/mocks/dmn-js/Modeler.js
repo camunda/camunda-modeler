@@ -233,3 +233,4 @@ export default class Modeler {
 Modeler.prototype._modules = [];
 
 export const CamundaPlatformModeler = Modeler;
+export const CamundaCloudModeler = Modeler;

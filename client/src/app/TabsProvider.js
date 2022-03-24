@@ -12,6 +12,7 @@ import bpmnDiagram from './tabs/bpmn/diagram.bpmn';
 import cloudBpmnDiagram from './tabs/cloud-bpmn/diagram.bpmn';
 import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
+import cloudDmnDiagram from './tabs/cloud-dmn/diagram.dmn';
 import form from './tabs/form/initial.form';
 import cloudForm from './tabs/form/initial-cloud.form';
 
@@ -266,6 +267,64 @@ export default class TabsProvider {
           return null;
         }
       },
+      'cloud-dmn': {
+        name: 'DMN',
+        encoding: ENCODING_UTF8,
+        exports: {
+          png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'dmn', 'xml' ],
+        canOpen(file) {
+          const {
+            contents
+          } = file;
+
+          // (0) can open only DMN files
+          if (parseDiagramType(contents) !== 'dmn') {
+            return false;
+          }
+
+          // (1) detect execution platform
+          const executionPlatformDetails = parseExecutionPlatform(contents);
+
+          if (executionPlatformDetails) {
+            return executionPlatformDetails.executionPlatform === 'Camunda Cloud';
+          }
+
+          // (2) don't open DMN files without execution platform
+          return false;
+        },
+        getComponent(options) {
+          return import('./tabs/cloud-dmn');
+        },
+        getIcon() {
+          return DMNIcon;
+        },
+        getInitialContents() {
+          return cloudDmnDiagram;
+        },
+        getInitialFilename(suffix) {
+          return `diagram_${suffix}.dmn`;
+        },
+        getHelpMenu() {
+          return [ {
+            label: 'DMN Tutorial',
+            action: 'https://camunda.org/dmn/tutorial/'
+          } ];
+        },
+        getNewFileMenu() {
+          return [ {
+            label: 'DMN diagram',
+            group: 'Camunda Platform 8',
+            action: 'create-cloud-dmn-diagram'
+          } ];
+        },
+        getLinter() {
+          return null;
+        }
+      },
       dmn: {
         name: 'DMN',
         encoding: ENCODING_UTF8,
@@ -390,15 +449,17 @@ export default class TabsProvider {
 
     this.providersByFileType = {
       bpmn: [ this.providers['cloud-bpmn'], this.providers.bpmn ],
-      dmn: [ this.providers.dmn ],
+      dmn: [ this.providers['cloud-dmn'], this.providers.dmn ],
       cmmn: [ this.providers.cmmn ],
       form: [ this.providers['cloud-form'], this.providers.form ]
     };
 
     if (Flags.get(DISABLE_ZEEBE)) {
       this.providersByFileType.bpmn = this.providersByFileType.bpmn.filter(p => p !== this.providers['cloud-bpmn']);
+      this.providersByFileType.dmn = this.providersByFileType.dmn.filter(p => p !== this.providers['cloud-dmn']);
       this.providersByFileType.form = this.providersByFileType.form.filter(p => p !== this.providers['cloud-form']);
       delete this.providers['cloud-bpmn'];
+      delete this.providers['cloud-dmn'];
       delete this.providers['cloud-form'];
     }
 
@@ -422,6 +483,7 @@ export default class TabsProvider {
 
     if (Flags.get(DISABLE_DMN)) {
       delete this.providers.dmn;
+      delete this.providers['cloud-dmn'];
       delete this.providersByFileType.dmn;
     }
 

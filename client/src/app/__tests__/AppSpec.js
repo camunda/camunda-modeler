@@ -290,6 +290,7 @@ describe('<App>', function() {
       await app.createDiagram('dmn');
       await app.createDiagram('cmmn');
       await app.createDiagram('cloud-bpmn');
+      await app.createDiagram('cloud-dmn');
       await app.createDiagram();
 
       // then
@@ -302,6 +303,7 @@ describe('<App>', function() {
         'dmn',
         'cmmn',
         'cloud-bpmn',
+        'cloud-dmn',
         'bpmn'
       ]);
 
