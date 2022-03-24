@@ -28,13 +28,7 @@ const OVERVIEW_ZOOM_SCALE = 0.66;
 
 const VERY_LOW_PRIORITY = 100;
 
-inlineCSS(require('dmn-js/dist/assets/diagram-js.css'));
-inlineCSS(require('dmn-js/dist/assets/dmn-font/css/dmn-embedded.css'));
-inlineCSS(require('dmn-js/dist/assets/dmn-js-decision-table-controls.css'));
-inlineCSS(require('dmn-js/dist/assets/dmn-js-decision-table.css'));
-inlineCSS(require('dmn-js/dist/assets/dmn-js-drd.css'));
-inlineCSS(require('dmn-js/dist/assets/dmn-js-literal-expression.css'));
-inlineCSS(require('dmn-js/dist/assets/dmn-js-shared.css'));
+inlineCSS(require('camunda-dmn-js/dist/assets/camunda-platform-modeler.css'));
 
 inlineCSS(`
   .test-content-container {
