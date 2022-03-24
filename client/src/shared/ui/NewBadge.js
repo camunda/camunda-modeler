@@ -14,9 +14,9 @@ import classNames from 'classnames';
 
 import css from './NewBadge.less';
 
-export default function NewBadge({ isAnchored = true, top = 0, right = 0 }) {
+export default function NewBadge({ inline = false, anchored = false, top = 0, right = 0, style = {} }) {
 
   return (
-    <div className={ classNames(css.NewBadge, { 'anchor': isAnchored }) } style={ { top: top || '0', right: right || '0' } }>New</div>
+    <div className={ classNames(css.NewBadge, { 'anchored': anchored }, { 'inline': inline }) } style={ { top: top || '0', right: right || '0', ...style } }>New</div>
   );
 }

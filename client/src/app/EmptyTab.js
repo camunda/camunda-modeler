@@ -53,7 +53,7 @@ export default class EmptyTab extends PureComponent {
 
     return (
       <div className="welcome-card relative">
-        <NewBadge top="10px" right="10px" />
+        <NewBadge anchored top="10px" right="10px" />
         <div className="engine-info">
           <div className="engine-info-heading">
             <CloudIcon className="engine-icon cloud-icon" />
@@ -117,12 +117,12 @@ export default class EmptyTab extends PureComponent {
           <div className="article relative">
             <p>Blog post <br />placeholder</p>
             <a>Read blog post</a>
-            <NewBadge top="-7px" right="-40px" />
+            <NewBadge anchored top="-7px" right="-40px" />
           </div>
           <div className="article relative">
             <p>Migrating from Camunda 7</p>
             <a href="https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/">Camunda Docs</a>
-            <NewBadge top="-7px" right="-40px" />
+            <NewBadge anchored top="-7px" right="-40px" />
           </div>
           <div className="article">
             <p>About Modeler 5</p>
