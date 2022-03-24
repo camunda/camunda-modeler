@@ -188,6 +188,19 @@ export class TabsProvider {
           return null;
         }
       },
+      'cloud-dmn': {
+        name: 'DMN',
+        encoding: ENCODING_UTF8,
+        exports: {
+          png: EXPORT_PNG,
+          jpeg: EXPORT_JPEG,
+          svg: EXPORT_SVG
+        },
+        extensions: [ 'dmn', 'xml' ],
+        getLinter() {
+          return null;
+        }
+      },
       dmn: {
         name: 'DMN',
         encoding: ENCODING_UTF8,

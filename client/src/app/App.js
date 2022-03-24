@@ -1670,6 +1670,10 @@ export class App extends PureComponent {
       return this.createDiagram('cloud-bpmn');
     }
 
+    if (action === 'create-cloud-dmn-diagram') {
+      return this.createDiagram('cloud-dmn');
+    }
+
     if (action === 'open-diagram') {
       return this.showOpenFilesDialog();
     }

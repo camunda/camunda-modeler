@@ -43,7 +43,9 @@ describe('TabsProvider', function() {
 
     // then
     expect(tabsProvider.getProvider('bpmn')).to.exist;
+    expect(tabsProvider.getProvider('cloud-bpmn')).to.exist;
     expect(tabsProvider.getProvider('dmn')).to.exist;
+    expect(tabsProvider.getProvider('cloud-dmn')).to.exist;
     expect(tabsProvider.getProvider('form')).to.exist;
 
     expect(tabsProvider.getProvider('empty')).to.exist;
@@ -89,8 +91,10 @@ describe('TabsProvider', function() {
 
     // then
     expect(tabsProvider.getProvider('bpmn').exports).to.eql(expected);
+    expect(tabsProvider.getProvider('cloud-bpmn').exports).to.eql(expected);
     expect(tabsProvider.getProvider('cmmn').exports).to.eql(expected);
     expect(tabsProvider.getProvider('dmn').exports).to.eql(expected);
+    expect(tabsProvider.getProvider('cloud-dmn').exports).to.eql(expected);
     expect(tabsProvider.getProvider('form').exports).to.eql({});
   });
 
@@ -127,12 +131,14 @@ describe('TabsProvider', function() {
 
     verifyExists('dmn');
 
+    verifyExists('cloud-dmn');
+
     verifyExists('form');
 
     verifyExists('cloud-form');
 
 
-    it('for an empty file of known type', function() {
+    it('for an empty file of known type (BPMN)', function() {
 
       // given
       const tabsProvider = new TabsProvider();
@@ -151,7 +157,26 @@ describe('TabsProvider', function() {
     });
 
 
-    it('should replace version placeholder with actual latest version', function() {
+    it('for an empty file of known type (DMN)', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+      const file = {
+        name: 'diagram.dmn',
+        path: '/a/diagram.dmn'
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab.type).to.eql('dmn');
+      expect(tab.file.contents).to.exist;
+      expect(tab.file.contents).to.have.lengthOf.above(0);
+    });
+
+
+    it('should replace version placeholder with actual latest version (BPMN)', function() {
 
       // given
       const tabsProvider = new TabsProvider();
@@ -162,6 +187,40 @@ describe('TabsProvider', function() {
 
       // when
       const { file: { contents } } = tabsProvider.createTab('cloud-bpmn');
+
+      // then
+      expect(contents).to.include(`modeler:executionPlatformVersion="${ latestCloudVersion }"`);
+    });
+
+
+    it('should replace version placeholder with actual latest version (DMN)', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const latestPlatformVersion = ENGINE_PROFILES.find(
+        p => p.executionPlatform === ENGINES.PLATFORM
+      ).executionPlatformVersions[0];
+
+      // when
+      const { file: { contents } } = tabsProvider.createTab('dmn');
+
+      // then
+      expect(contents).to.include(`modeler:executionPlatformVersion="${ latestPlatformVersion }"`);
+    });
+
+
+    it('should replace version placeholder with actual latest version (Cloud DMN)', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const latestCloudVersion = ENGINE_PROFILES.find(
+        p => p.executionPlatform === ENGINES.CLOUD
+      ).executionPlatformVersions[0];
+
+      // when
+      const { file: { contents } } = tabsProvider.createTab('cloud-dmn');
 
       // then
       expect(contents).to.include(`modeler:executionPlatformVersion="${ latestCloudVersion }"`);
@@ -182,6 +241,24 @@ describe('TabsProvider', function() {
 
         // when
         const { file: { contents } } = tabsProvider.createTab('bpmn');
+
+        // then
+        expect(contents).to.include(`exporter="${ name }" exporterVersion="${ version }"`);
+      });
+
+
+      it('dmn', function() {
+
+        // given
+        const tabsProvider = new TabsProvider();
+
+        const {
+          name,
+          version
+        } = Metadata;
+
+        // when
+        const { file: { contents } } = tabsProvider.createTab('dmn');
 
         // then
         expect(contents).to.include(`exporter="${ name }" exporterVersion="${ version }"`);
@@ -224,8 +301,10 @@ describe('TabsProvider', function() {
 
     // then
     expect(tabsProvider.createTab('bpmn')).to.exist;
+    expect(tabsProvider.createTab('cloud-bpmn')).to.exist;
     expect(tabsProvider.createTab('cmmn')).to.exist;
     expect(tabsProvider.createTab('dmn')).to.exist;
+    expect(tabsProvider.createTab('cloud-dmn')).to.exist;
     expect(tabsProvider.createTab('form')).to.exist;
   });
 
@@ -239,8 +318,10 @@ describe('TabsProvider', function() {
 
       // then
       expect(await tabsProvider.getTabComponent('bpmn')).to.exist;
+      expect(await tabsProvider.getTabComponent('cloud-bpmn')).to.exist;
       expect(await tabsProvider.getTabComponent('cmmn')).to.exist;
       expect(await tabsProvider.getTabComponent('dmn')).to.exist;
+      expect(await tabsProvider.getTabComponent('cloud-dmn')).to.exist;
       expect(await tabsProvider.getTabComponent('form')).to.exist;
 
       expect(await tabsProvider.getTabComponent('empty')).to.exist;
@@ -355,6 +436,29 @@ describe('TabsProvider', function() {
     });
 
 
+    it('should take cloud-dmn first for known dmn file', function() {
+
+      // given
+      Flags.init({});
+
+      const tabsProvider = new TabsProvider();
+
+      const file = {
+        name: 'foo.xml',
+        path: '/a/foo.xml',
+        contents: require('./TabsProviderSpec.cloud.dmn')
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab.name).to.eql(file.name);
+      expect(tab.title).to.eql(file.path);
+      expect(tab.type).to.eql('cloud-dmn');
+    });
+
+
     it('should use camunda for known bpmn file, if Zeebe is disabled', function() {
 
       // given
@@ -379,6 +483,33 @@ describe('TabsProvider', function() {
       expect(tab.name).to.eql(file.name);
       expect(tab.title).to.eql(file.path);
       expect(tab.type).to.eql('bpmn');
+    });
+
+
+    it('should use camunda for known dmn file, if Zeebe is disabled', function() {
+
+      // given
+      Flags.init({
+        [DISABLE_ZEEBE]: true
+      });
+
+      const tabsProvider = new TabsProvider();
+
+      const file = {
+        name: 'foo.dmn',
+        path: '/a/foo.dmn',
+        contents: require('./TabsProviderSpec.cloud.dmn')
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab).to.exist;
+
+      expect(tab.name).to.eql(file.name);
+      expect(tab.title).to.eql(file.path);
+      expect(tab.type).to.eql('dmn');
     });
 
 
@@ -485,8 +616,10 @@ describe('TabsProvider', function() {
 
     // then
     expect(providers['bpmn']).to.exist;
+    expect(providers['cloud-bpmn']).to.exist;
     expect(providers['cmmn']).to.exist;
     expect(providers['dmn']).to.exist;
+    expect(providers['cloud-dmn']).to.exist;
     expect(providers['empty']).to.exist;
   });
 
@@ -537,7 +670,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'FORM' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM' ]);
 
     });
 
@@ -658,6 +791,7 @@ describe('TabsProvider', function() {
 
       // then
       expect(tabsProvider.hasProvider('dmn')).to.be.false;
+      expect(tabsProvider.hasProvider('cloud-dmn')).to.be.false;
     });
 
 
@@ -709,6 +843,7 @@ describe('TabsProvider', function() {
       'bpmn',
       'cloud-bpmn',
       'dmn',
+      'cloud-dmn',
       'form',
       'cloud-form'
     ].forEach((type) => {
