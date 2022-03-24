@@ -8,39 +8,22 @@
  * except in compliance with the MIT License.
  */
 
-import DmnModeler from 'dmn-js/lib/Modeler';
+import { CamundaPlatformModeler as DmnModeler } from 'camunda-dmn-js';
 import DrdViewer from './DrdViewer';
 
-import diagramOriginModule from 'diagram-js-origin';
-
-import alignToOriginModule from '@bpmn-io/align-to-origin';
 import addExporter from '@bpmn-io/add-exporter/add-exporter';
 
 import completeDirectEditingModule from '../../bpmn/modeler/features/complete-direct-editing';
-import propertiesPanelModule from 'dmn-js-properties-panel';
-import propertiesProviderModule from 'dmn-js-properties-panel/lib/provider/camunda';
-
-import drdAdapterModule from 'dmn-js-properties-panel/lib/adapter/drd';
 
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
 import decisionTableKeyboardModule from './features/decision-table-keyboard';
 
 import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 
-import camundaModdleDescriptor from 'camunda-dmn-moddle/resources/camunda';
-
 import openDrgElementModule from './features/overview/open-drg-element';
 import overviewRendererModule from './features/overview/overview-renderer';
 
-import 'dmn-js/dist/assets/diagram-js.css';
-import 'dmn-js/dist/assets/dmn-font/css/dmn-embedded.css';
-import 'dmn-js/dist/assets/dmn-js-decision-table-controls.css';
-import 'dmn-js/dist/assets/dmn-js-decision-table.css';
-import 'dmn-js/dist/assets/dmn-js-drd.css';
-import 'dmn-js/dist/assets/dmn-js-literal-expression.css';
-import 'dmn-js/dist/assets/dmn-js-shared.css';
-
-import 'dmn-js-properties-panel/dist/assets/dmn-js-properties-panel.css';
+import 'camunda-dmn-js/dist/assets/camunda-platform-modeler.css';
 
 const NOOP_MODULE = [ 'value', null ];
 
@@ -59,8 +42,8 @@ export default class CamundaDmnModeler extends DmnModeler {
   constructor(options = {}) {
 
     const {
-      moddleExtensions,
-      drd,
+      moddleExtensions = {},
+      drd: drdConfig,
       decisionTable,
       literalExpression,
       exporter,
@@ -68,13 +51,14 @@ export default class CamundaDmnModeler extends DmnModeler {
       ...otherOptions
     } = options;
 
+    const drd = {
+      ...drdConfig,
+      disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN)
+    };
+
     super({
       ...otherOptions,
       drd: mergeModules(drd, [
-        Flags.get(DISABLE_ADJUST_ORIGIN) ? diagramOriginModule : alignToOriginModule,
-        propertiesPanelModule,
-        propertiesProviderModule,
-        drdAdapterModule,
         propertiesPanelKeyboardBindingsModule
       ]),
       decisionTable: mergeModules(decisionTable, [
@@ -90,10 +74,7 @@ export default class CamundaDmnModeler extends DmnModeler {
           viewDrd: NOOP_MODULE
         }
       ]),
-      moddleExtensions: {
-        camunda: camundaModdleDescriptor,
-        ...(moddleExtensions || {})
-      }
+      moddleExtensions
     });
 
     this.on('viewer.created', ({ viewer }) => {
