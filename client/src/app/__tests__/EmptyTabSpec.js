@@ -38,9 +38,10 @@ describe('<EmptyTab>', function() {
       buttons.forEach(wrapper => wrapper.simulate('click'));
 
       // then
-      expect(onAction).to.have.callCount(5);
+      expect(onAction).to.have.callCount(6);
       expect(onAction.args).to.eql([
         [ 'create-cloud-bpmn-diagram' ],
+        [ 'create-cloud-dmn-diagram' ],
         [ 'create-cloud-form' ],
         [ 'create-bpmn-diagram' ],
         [ 'create-dmn-diagram' ],
@@ -80,8 +81,11 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
-      expect(tree.findWhere(
-        wrapper => wrapper.text().startsWith('DMN diagram')).first().exists()).to.be.true;
+      expect(
+        tree.findWhere(
+          wrapper => wrapper.text().startsWith('DMN diagram')
+        )
+      ).to.have.length(2);
     });
   });
 
@@ -120,8 +124,8 @@ describe('<EmptyTab>', function() {
       expect(
         tree.findWhere(
           wrapper => wrapper.text().startsWith('Form')
-        ).first().exists()
-      ).to.be.true;
+        )
+      ).to.have.length(2);
     });
 
   });
@@ -139,7 +143,8 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
-      expect(tree.find('.create-buttons')).to.have.length(2);
+      expect(tree.find('.welcome-header')).to.have.length(1);
+      expect(tree.find('.welcome-card')).to.have.length(3);
       expect(
         tree.findWhere(
           wrapper => wrapper.text().startsWith('Camunda Platform 7')
@@ -159,7 +164,8 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
-      expect(tree.find('.create-buttons')).to.have.length(1);
+      expect(tree.find('.welcome-header')).to.have.length(0);
+      expect(tree.find('.welcome-card')).to.have.length(2);
       expect(
         tree.findWhere(
           wrapper => wrapper.text().startsWith('Camunda Platform 7')
@@ -182,7 +188,8 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
-      expect(tree.find('.create-buttons')).to.have.length(2);
+      expect(tree.find('.welcome-header')).to.have.length(1);
+      expect(tree.find('.welcome-card')).to.have.length(3);
       expect(
         tree.findWhere(
           wrapper => wrapper.text().startsWith('Camunda Platform 8')
@@ -202,7 +209,8 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
-      expect(tree.find('.create-buttons')).to.have.length(1);
+      expect(tree.find('.welcome-header')).to.have.length(0);
+      expect(tree.find('.welcome-card')).to.have.length(2);
       expect(
         tree.findWhere(
           wrapper => wrapper.text().startsWith('Camunda Platform 8')

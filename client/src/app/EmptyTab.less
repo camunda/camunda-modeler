@@ -1,10 +1,11 @@
 :local(.EmptyTab) {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 
   align-items: center;
   justify-content: center;
 
+  padding: 7px;
   overflow-y: auto;
   position: absolute;
   top: 0;
@@ -12,48 +13,101 @@
   bottom: 0;
   left: 0;
 
-  .create-buttons {
+
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'IBM Plex Sans';
+
+  .flex-spacer {
+    min-width: 5px;
+    max-width: 40px;
+    width: 1%;
+  }
+
+  h2.welcome-header {
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 35px;
+  }
+
+  .welcome-cards {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .welcome-card {
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: var(--color-grey-225-10-97);
     color: var(--color-grey-225-10-15);
     border-radius: 10px;
-    width: 320px;
-    min-height: 405px;
-    margin: 50px 20px 20px 20px;
+    width: 280px;
+    min-height: 390px;
+    padding: 15px;
+    padding-top: 20px;
     position: relative;
 
-    .engineIcon {
+    h3 {
+      font-size: 16px;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    a {
+      color: var(--color-blue-205-100-50);
+      font-weight: 14px;
+    }
+
+    .relative {
+      position: relative;
+    }
+
+    .cloud-icon {
+      margin-left: -10px;
+    }
+
+    .platform-icon {
+      margin-left: -20px;
+      margin-right: -7px;
+    }
+
+    .engine-icon {
       color: var(--color-grey-225-10-35);
-      position: absolute;
-      top: -32px;
     }
 
-    .engine {
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 50px 0 10px 0;
-
-      span {
-        font-size: 16px;
-        font-weight: 500;
+    .engine-info {
+      .engine-info-heading {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 10px;
       }
 
-      p {
-        max-width: 205px;
-        text-align: center;
-        font-size: 14px;
-      }
-
-      &+p{
-        font-size: 14px;
-        margin-bottom: 26px;
-      }
+      text-align: center;
+      margin-bottom: 30px;
     }
 
+    .learn-more {
+      padding-right: 20px;
+      align-items: flex-start;
+
+      h3 {
+        margin-top: 22px;
+        margin-bottom: 34px;
+      }
+
+      .article {
+        margin-bottom: 25px;
+
+        p {
+          margin-bottom: 0;
+        }
+      }
+    }
   
     button {
       margin: 0.5em;
