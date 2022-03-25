@@ -311,6 +311,27 @@ describe('TabsProvider', function() {
     });
 
 
+    it('should create for file of recognized contents (DMN 1.3)', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const file = {
+        name: 'foo.xml',
+        path: '/a/foo.xml',
+        contents: require('./TabsProviderSpec.dmn13.xml')
+      };
+
+      // when
+      const tab = tabsProvider.createTabForFile(file);
+
+      // then
+      expect(tab.name).to.eql(file.name);
+      expect(tab.title).to.eql(file.path);
+      expect(tab.type).to.eql('dmn');
+    });
+
+
     it('should take cloud-bpmn first for known bpmn file', function() {
 
       // given
