@@ -42,6 +42,8 @@ import { StatusBar } from './status-bar';
 
 import { KeyboardInteractionTrapContext } from '../shared/ui/modal/KeyboardInteractionTrap';
 
+import NewBadge from '../shared/ui/NewBadge';
+
 import {
   KeyboardShortcutsModal
 } from './modals';
@@ -2007,11 +2009,18 @@ export class App extends PureComponent {
     });
 
     const groupedItems = map(groupBy(items, 'group'), (group, key) => {
-      return {
+
+      let item = {
         items: group,
         key,
-        label: key
+        label: key,
       };
+
+      if (key === 'Camunda Platform 8') {
+        item.labelSuffix = <NewBadge inline style={ { marginLeft: '20px', transform: 'translate(0px, -1px)' } } />;
+      }
+
+      return item;
     });
 
     return groupedItems;

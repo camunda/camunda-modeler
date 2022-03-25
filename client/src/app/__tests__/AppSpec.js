@@ -311,6 +311,29 @@ describe('<App>', function() {
   });
 
 
+  describe('#_getNewFileitems', function() {
+
+    it('should include labelSuffix for Camunda Platform 8', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+      const {
+        app
+      } = createApp({ tabsProvider });
+
+      // when
+      const fileItems = app._getNewFileItems();
+
+      // then
+      const platformGroup = fileItems[0];
+      const cloudGroup = fileItems[1];
+
+      expect(platformGroup.labelSuffix).to.not.exist;
+      expect(cloudGroup.labelSuffix).to.exist;
+    });
+  });
+
+
   describe('#openFiles', function() {
 
     it('should create tabs', async function() {
