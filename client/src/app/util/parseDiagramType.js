@@ -19,9 +19,9 @@ import {
 } from 'saxen';
 
 const TYPES = {
-  bpmn: 'http://www.omg.org/spec/BPMN',
-  dmn: 'http://www.omg.org/spec/DMN',
-  cmmn: 'http://www.omg.org/spec/CMMN'
+  bpmn: [ 'http://www.omg.org/spec/BPMN' ],
+  dmn: [ 'http://www.omg.org/spec/DMN', 'https://www.omg.org/spec/DMN' ],
+  cmmn: [ 'http://www.omg.org/spec/CMMN' ]
 };
 
 
@@ -72,7 +72,7 @@ function getRootNamespace(xml) {
 export default function parseFileType(contents = '') {
   const nsUri = getRootNamespace(contents);
 
-  return nsUri && findIndex(TYPES, function(uri) {
-    return nsUri.startsWith(uri);
+  return nsUri && findIndex(TYPES, function(uris) {
+    return uris.some(uri => nsUri.startsWith(uri));
   }) || null;
 }
