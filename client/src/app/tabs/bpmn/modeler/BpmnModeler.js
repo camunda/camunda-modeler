@@ -17,6 +17,10 @@ import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from './features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
 
+import connectorsExtensionModule from 'bpmn-js-connectors-extension';
+
+import 'bpmn-js-connectors-extension/dist/connectors-extension.css';
+
 import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 
 import 'camunda-bpmn-js/dist/assets/camunda-platform-modeler.css';
@@ -36,6 +40,10 @@ export default class PlatformBpmnModeler extends BpmnModeler {
       disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN),
       moddleExtensions: {
         ...(moddleExtensions || {})
+      },
+      connectorsExtension: {
+        appendAnything: true,
+        elementTemplateChooser: false
       }
     });
   }
@@ -48,7 +56,8 @@ const extensionModules = [
   completeDirectEditingModule,
   globalClipboardModule,
   handToolOnSpaceModule,
-  propertiesPanelKeyboardBindingsModule
+  propertiesPanelKeyboardBindingsModule,
+  connectorsExtensionModule
 ];
 
 PlatformBpmnModeler.prototype._modules = [

@@ -21,6 +21,10 @@ import Flags, {
   DISABLE_ADJUST_ORIGIN
 } from '../../../../util/Flags';
 
+import connectorsExtensionModule from 'bpmn-js-connectors-extension';
+
+import 'bpmn-js-connectors-extension/dist/connectors-extension.css';
+
 import 'camunda-bpmn-js/dist/assets/camunda-cloud-modeler.css';
 
 
@@ -36,7 +40,11 @@ export default class CloudBpmnModeler extends BpmnModeler {
     super({
       ...otherOptions,
       moddleExtensions: moddleExtensions || {},
-      disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN)
+      disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN),
+      connectorsExtension: {
+        appendAnything: true,
+        elementTemplateChooser: false
+      }
     });
   }
 }
@@ -49,5 +57,6 @@ CloudBpmnModeler.prototype._modules = [
   completeDirectEditingModule,
   globalClipboardModule,
   handToolOnSpaceModule,
-  propertiesPanelKeyboardBindingsModule
+  propertiesPanelKeyboardBindingsModule,
+  connectorsExtensionModule
 ];
