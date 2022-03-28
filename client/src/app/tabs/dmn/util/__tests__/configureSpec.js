@@ -57,7 +57,7 @@ describe('tabs/dmn/util - configure', function() {
       });
 
 
-      it('dmn.modeler.drd.additionalModules', function() {
+      it('dmn.modeler.decisionTable.additionalModules', function() {
 
         // given
         var module1 = { __id: 1 };
@@ -97,7 +97,7 @@ describe('tabs/dmn/util - configure', function() {
       });
 
 
-      it('dmn.modeler.drd.additionalModules', function() {
+      it('dmn.modeler.literalExpression.additionalModules', function() {
 
         // given
         var module1 = { __id: 1 };
