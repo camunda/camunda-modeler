@@ -16,34 +16,38 @@ const noop = () => {};
 
 describe('<PingEventHandler>', () => {
 
-  it('should send initially after enabling', () => {
+  let config = {
+    get: () => {}
+  };
+
+  it('should send initially after enabling', async () => {
 
     // given
     const onSend = sinon.spy();
 
-    const pingEventHandler = new PingEventHandler({ onSend });
+    const pingEventHandler = new PingEventHandler({ onSend, config });
 
     pingEventHandler.setTimeout = noop;
 
     // when
-    pingEventHandler.enable();
+    await pingEventHandler.enable();
 
     // then
-    expect(onSend).to.have.been.calledWith({ event: 'ping' });
+    expect(onSend).to.have.been.calledWith({ event: 'ping', plugins: [] });
   });
 
 
-  it('should set interval after enabling', () => {
+  it('should set interval after enabling', async () => {
 
     // given
     const onSend = noop;
 
-    const pingEventHandler = new PingEventHandler({ onSend });
+    const pingEventHandler = new PingEventHandler({ onSend, config });
 
     pingEventHandler.setInterval = sinon.stub().returns('testIntervalID');
 
     // when
-    pingEventHandler.enable();
+    await pingEventHandler.enable();
 
     // then
     expect(pingEventHandler.setInterval).to.have.been.called;
@@ -51,18 +55,18 @@ describe('<PingEventHandler>', () => {
   });
 
 
-  it('should clear interval after disabling', () => {
+  it('should clear interval after disabling', async () => {
 
     // given
     const onSend = noop;
 
-    const pingEventHandler = new PingEventHandler({ onSend });
+    const pingEventHandler = new PingEventHandler({ onSend, config });
 
     pingEventHandler.setInterval = noop;
     pingEventHandler.clearInterval = sinon.spy();
 
     // when
-    pingEventHandler.enable();
+    await pingEventHandler.enable();
     pingEventHandler.disable();
 
     // then
@@ -70,22 +74,48 @@ describe('<PingEventHandler>', () => {
   });
 
 
-  it('should not send immediately after re-enabling', () => {
+  it('should not send immediately after re-enabling', async () => {
 
     // given
     const onSend = sinon.spy();
 
-    const pingEventHandler = new PingEventHandler({ onSend });
+    const pingEventHandler = new PingEventHandler({ onSend, config });
 
     pingEventHandler.setInterval = noop;
     pingEventHandler.clearInterval = sinon.spy();
 
     // when
-    pingEventHandler.enable();
+    await pingEventHandler.enable();
     pingEventHandler.disable();
-    pingEventHandler.enable();
+    await pingEventHandler.enable();
 
     // then
     expect(onSend).to.have.been.calledOnce;
+  });
+
+
+  it('should send installed plugins', async () => {
+
+    // given
+    const onSend = sinon.spy();
+
+    config = {
+      get: () => new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve({ pluginName: {} });
+        }, 1000);
+      })
+    };
+
+    const pingEventHandler = new PingEventHandler({ onSend, config });
+
+    pingEventHandler.setTimeout = noop;
+
+    // when
+    await pingEventHandler.enable();
+
+    // then
+
+    expect(onSend).to.have.been.calledWith({ event: 'ping', plugins: [ 'pluginName' ] });
   });
 });

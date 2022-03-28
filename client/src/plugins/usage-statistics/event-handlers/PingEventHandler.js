@@ -24,6 +24,17 @@ export default class PingEventHandler extends BaseEventHandler {
     this._intervalID = null;
 
     this.sentInitially = false;
+    this.config = params.config;
+  }
+
+  getPlugins = async (config) => {
+    const plugins = await config.get('plugins');
+
+    if (plugins) {
+      return Object.keys(plugins);
+    } else {
+      return [];
+    }
   }
 
   setInterval = (func) => {
@@ -34,15 +45,17 @@ export default class PingEventHandler extends BaseEventHandler {
     clearInterval(this._intervalID);
   }
 
-  onAfterEnable = () => {
+  onAfterEnable = async () => {
+    const plugins = await this.getPlugins(this.config);
+
     if (!this.sentInitially) {
-      this.sendToET();
+      this.sendToET({ plugins });
 
       this.sentInitially = true;
     }
 
     if (this._intervalID === null) {
-      this._intervalID = this.setInterval(() => this.sendToET());
+      this._intervalID = this.setInterval(() => this.sendToET({ plugins }));
     }
   }
 
