@@ -27,6 +27,7 @@ import PreactCompat, * as PreactCompatExports from '@bpmn-io/properties-panel/pr
 import * as PreactHooks from '@bpmn-io/properties-panel/preact/hooks';
 import * as PreactJsxRuntime from '@bpmn-io/properties-panel/preact/jsx-runtime';
 import * as BpmnJsPropertiesPanel from 'bpmn-js-properties-panel';
+import * as DmnJsPropertiesPanel from 'dmn-js-properties-panel';
 
 
 const PLUGINS_PROTOCOL = 'app-plugins://';
@@ -102,7 +103,8 @@ export default class Plugins {
         hooks: PreactHooks,
         jsxRuntime: PreactJsxRuntime
       },
-      bpmn: BpmnJsPropertiesPanel
+      bpmn: BpmnJsPropertiesPanel,
+      dmn: DmnJsPropertiesPanel
     };
   }
 

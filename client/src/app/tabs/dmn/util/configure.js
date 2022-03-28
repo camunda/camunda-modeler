@@ -9,7 +9,7 @@
  */
 
 export default function configureModeler(
-    getPlugins, defaultOptions = {}, handleMiddlewareExtensions
+    getPlugins, defaultOptions = {}, handleMiddlewareExtensions, platformKey
 ) {
 
   const warnings = [];
@@ -23,10 +23,73 @@ export default function configureModeler(
     warnings.push(warning);
   }
 
+  const dynamicMiddlewares = getPlugins('dmn.modeler.configure').map(fn => {
+
+    return function wrappedMiddleware(options, logWarning) {
+
+      try {
+        const newOptions = fn(options, logWarning);
+
+        if (!newOptions) {
+          logWarning('dmn.modeler.configure does not return options');
+        }
+
+        return newOptions || options;
+      } catch (err) {
+        logWarning(err);
+      }
+
+      return options;
+    };
+  });
+
+  function moddleExtensionsMiddleware(options, logWarning) {
+    let registeredModdleExtensions = getPlugins('dmn.modeler.moddleExtension');
+
+    if (platformKey) {
+      registeredModdleExtensions = registeredModdleExtensions.concat(getPlugins(`dmn.${platformKey}.modeler.moddleExtension`));
+    }
+
+    const moddleExtensions = registeredModdleExtensions.reduce((extensions, extension) => {
+      let {
+        name
+      } = extension;
+
+      if (typeof name !== 'string') {
+        logWarning('A dmn moddle extension plugin is missing a <name> property');
+
+        return extensions;
+      }
+
+      extensions = extensions || {};
+
+      if (name in extensions) {
+        logWarning(`A dmn moddle extension with name <${name}> was overriden due to a clash`);
+      }
+
+      return {
+        ...extensions,
+        [ name ]: extension
+      };
+    }, options.moddleExtensions);
+
+    if (moddleExtensions) {
+      return {
+        ...options,
+        moddleExtensions
+      };
+    }
+
+    return options;
+  }
+
   function additionalModulesMiddleware(component) {
 
     return function(options) {
-      const additionalModules = getPlugins(`dmn.modeler.${component}.additionalModules`);
+      const additionalModules = [
+        ...getPlugins(`dmn.modeler.${component}.additionalModules`),
+        ...(platformKey ? getPlugins(`dmn.${platformKey}.modeler.${component}.additionalModules`) : [])
+      ];
 
       if (additionalModules.length) {
         return {
@@ -46,46 +109,11 @@ export default function configureModeler(
   }
 
   const middlewares = [
-
-    function moddleExtensionsMiddleware(options, logWarning) {
-      const plugins = getPlugins('dmn.modeler.moddleExtension');
-
-      const moddleExtensions = plugins.reduce((extensions, extension) => {
-        let {
-          name
-        } = extension;
-
-        if (typeof name !== 'string') {
-          logWarning('dmn.modeler.moddleExtension is missing <name> property');
-
-          return extensions;
-        }
-
-        extensions = extensions || {};
-
-        if (name in extensions) {
-          logWarning('dmn.modeler.moddleExtension overrides moddle extension with name <' + name + '>');
-        }
-
-        return {
-          ...extensions,
-          [ name ]: extension
-        };
-      }, options.moddleExtensions);
-
-      if (moddleExtensions) {
-        return {
-          ...options,
-          moddleExtensions
-        };
-      }
-
-      return options;
-    },
-
+    moddleExtensionsMiddleware,
     additionalModulesMiddleware('drd'),
     additionalModulesMiddleware('decisionTable'),
-    additionalModulesMiddleware('literalExpression')
+    additionalModulesMiddleware('literalExpression'),
+    ...dynamicMiddlewares
   ];
 
   let options = {

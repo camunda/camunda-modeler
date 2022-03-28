@@ -236,6 +236,24 @@ describe('plugins', function() {
         expect(global.vendor.propertiesPanel.bpmn).to.have.property('useService');
       }
     );
+
+
+    it('should expose DMN properties panel building blocks via window#vendor.propertiesPanel.dmn',
+      function() {
+
+        // given
+        const global = {};
+
+        const plugins = new Plugins();
+
+        // when
+        plugins.bindHelpers(global);
+
+        // then
+        expect(global.vendor.propertiesPanel.dmn).to.exist;
+        expect(global.vendor.propertiesPanel.dmn).to.have.property('useService');
+      }
+    );
   });
 
 });
