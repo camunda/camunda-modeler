@@ -17,7 +17,7 @@ import { mount, shallow } from 'enzyme';
 import { Config } from '../../../../app/__tests__/mocks';
 
 import DeploymentPlugin from '../DeploymentPlugin';
-import { CAMUNDA_CLOUD } from '../../shared/ZeebeTargetTypes';
+import { CAMUNDA_CLOUD, SELF_HOSTED } from '../../shared/ZeebeTargetTypes';
 import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
 
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
@@ -80,6 +80,9 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     const config = {
       getForFile(_, key) {
         return key === DEPLOYMENT_CONFIG_KEY && storedTabConfiguration;
+      },
+      get(key, _) {
+        return key === ZEEBE_ENDPOINTS_CONFIG_KEY && [ { targetType: SELF_HOSTED } ];
       }
     };
 
@@ -181,6 +184,9 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     const config = {
       getForFile(_, key) {
         return key === DEPLOYMENT_CONFIG_KEY && storedTabConfiguration;
+      },
+      get(key, _) {
+        return key === ZEEBE_ENDPOINTS_CONFIG_KEY && [ { targetType: SELF_HOSTED } ];
       }
     };
 
@@ -456,7 +462,10 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     // given
     const displayNotificationSpy = sinon.spy();
     const { instance } = createDeploymentPlugin({
-      displayNotification: displayNotificationSpy
+      displayNotification: displayNotificationSpy,
+      endpoint: {
+        targetType: SELF_HOSTED
+      },
     });
 
     // when
@@ -477,7 +486,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     const displayNotification = sinon.spy();
     const { instance } = createDeploymentPlugin({
       displayNotification,
-      endpoint : {
+      endpoint: {
         targetType: CAMUNDA_CLOUD,
         camundaCloudClusterUrl: 'clusterId.region.zeebe.camunda.io',
         camundaCloudClusterRegion:'region'
@@ -605,7 +614,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     const body = {
       done: doneCallback,
       deploymentConfig: {
-        config: { deployment:{ name:'foo' } , enpoint:{} },
+        config: { deployment:{ name:'foo' } , endpoint:{} },
         savedTab: { id: 1, name: 'foo.bar', type: 'bar', title: 'unsaved', file: {} }
       }
     };
@@ -699,7 +708,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     const body = {
       done: doneCallback,
       deploymentConfig: {
-        config: { deployment:{ name:'foo' } , enpoint:{} },
+        config: { deployment:{ name:'foo' } , endpoint:{} },
         savedTab: { id: 1, name: 'foo.bar', type: 'bar', title: 'unsaved', file: {} }
       }
     };
@@ -834,7 +843,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // then
       expect(actionSpy).to.have.been.calledOnce;
-      expect(targetType).to.eql('selfHosted');
+      expect(targetType).to.eql('camundaCloud');
     });
 
 
@@ -1017,7 +1026,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // then
       expect(actionSpy).to.have.been.calledOnce;
-      expect(targetType).to.eql('selfHosted');
+      expect(targetType).to.eql('camundaCloud');
     });
 
 

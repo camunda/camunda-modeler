@@ -28,7 +28,7 @@ import {
 
 import { AUTH_TYPES } from './../shared/ZeebeAuthTypes';
 
-import { CAMUNDA_CLOUD, SELF_HOSTED } from '../shared/ZeebeTargetTypes';
+import { CAMUNDA_CLOUD } from '../shared/ZeebeTargetTypes';
 
 import DeploymentPluginOverlay from './DeploymentPluginOverlay';
 
@@ -349,7 +349,7 @@ export default class DeploymentPlugin extends PureComponent {
   async getDefaultEndpoint(tab) {
     let endpoint = {
       id: generateId(),
-      targetType: SELF_HOSTED,
+      targetType: CAMUNDA_CLOUD,
       authType: AUTH_TYPES.NONE,
       contactPoint: '0.0.0.0:26500',
       oauthURL: '',
