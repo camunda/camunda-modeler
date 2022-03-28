@@ -100,6 +100,7 @@ export function OverlayDropdown(props) {
                   key={ group.key }
                   label={ group.label }
                   items={ group.items }
+                  labelSuffix={ group.labelSuffix }
                   maxHeight={ group.maxHeight }
                   onSelect={ onSelect } />
               )
@@ -119,6 +120,7 @@ function OptionGroup(props) {
   const {
     items,
     label,
+    labelSuffix,
     maxHeight,
     onSelect
   } = props;
@@ -128,7 +130,7 @@ function OptionGroup(props) {
       { label ?
         (
           <Section.Header>
-            { label }
+            { label }{ labelSuffix }
           </Section.Header>
         ) : null
       }

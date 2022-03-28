@@ -147,7 +147,15 @@ export class TabsProvider {
               return [];
             }
           };
-        }
+        },
+        getNewFileMenu() {
+          return [ {
+            label: 'BPMN diagram',
+            group: 'Camunda Platform 7',
+            action: 'create-bpmn-diagram'
+          } ];
+        },
+        getIcon() { return null; }
       },
       'cloud-bpmn': {
         name: null,
@@ -173,7 +181,15 @@ export class TabsProvider {
               return [];
             }
           };
-        }
+        },
+        getNewFileMenu() {
+          return [ {
+            label: 'BPMN diagram',
+            group: 'Camunda Platform 8',
+            action: 'create-cloud-bpmn-diagram'
+          } ];
+        },
+        getIcon() { return null; }
       },
       cmmn: {
         name: 'CMMN',
