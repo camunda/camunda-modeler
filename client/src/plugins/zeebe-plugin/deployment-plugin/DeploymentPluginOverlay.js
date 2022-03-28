@@ -230,8 +230,8 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
                           className="target_radio"
                           values={
                             [
-                              { value: SELF_HOSTED, label: SELF_HOSTED_TEXT },
-                              { value: CAMUNDA_CLOUD, label: CAMUNDA_CLOUD_TEXT }
+                              { value: CAMUNDA_CLOUD, label: CAMUNDA_CLOUD_TEXT },
+                              { value: SELF_HOSTED, label: SELF_HOSTED_TEXT }
                             ]
                           }
                         />
@@ -305,7 +305,6 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
                                 label={ CLUSTER_URL }
                                 fieldError={ this.endpointConfigurationFieldError }
                                 validate={ validatorFunctionsByFieldNames.camundaCloudClusterUrl }
-                                autoFocus
                               />
                               <Field
                                 name="endpoint.camundaCloudClientId"
