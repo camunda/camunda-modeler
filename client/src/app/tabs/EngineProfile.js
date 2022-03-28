@@ -49,11 +49,7 @@ export function EngineProfile(props) {
     throw new Error('<engineProfileVersions: string[]> not found');
   }
 
-  const {
-    executionPlatformVersion
-  } = engineProfile;
-
-  const label = `Camunda Platform ${ toSemverMinor(executionPlatformVersion) || '' }`;
+  const label = getStatusBarLabel(engineProfile);
 
   const handleChange = onChange ? (engineProfile) => {
     onChange(engineProfile);
@@ -172,7 +168,7 @@ function EditableVersionSection(props) {
                 engineProfileVersions.map(version => {
                   return (
                     <option key={ version } value={ version }>
-                      { toSemverMinor(version) }
+                      { getAnnotatedVersion(toSemverMinor(version)) }
                     </option>
                   );
                 })
@@ -237,6 +233,26 @@ function PlatformHint(props) {
 
 function getExecutionPlatformHash(a) {
   return `${a && a.executionPlatform || 'undefined'}#${a && toSemver(a.executionPlatformVersion) || 'undefined' }`;
+}
+
+export function getStatusBarLabel(engineProfile) {
+
+  const {
+    executionPlatformVersion,
+    executionPlatform
+  } = engineProfile;
+
+  if (!executionPlatformVersion) {
+    return `${ENGINE_LABELS[executionPlatform]}`;
+  } else if (executionPlatformVersion.startsWith('1.')) {
+    return `${ENGINE_LABELS[executionPlatform]} (Zeebe ${toSemverMinor(executionPlatformVersion)})`;
+  } else {
+    return `Camunda Platform ${toSemverMinor(executionPlatformVersion)}`;
+  }
+}
+
+export function getAnnotatedVersion(version) {
+  return version.startsWith('1.') ? 'Zeebe ' + version : version;
 }
 
 export function engineProfilesEqual(a, b) {

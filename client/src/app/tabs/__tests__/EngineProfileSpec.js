@@ -19,9 +19,9 @@ import {
   Slot
 } from '../../slot-fill';
 
-import { EngineProfile } from '../EngineProfile';
+import { EngineProfile, getAnnotatedVersion, getStatusBarLabel } from '../EngineProfile';
 
-import { ENGINE_PROFILES } from '../../../util/Engines';
+import { ENGINES, ENGINE_PROFILES } from '../../../util/Engines';
 
 import { DEFAULT_ENGINE_PROFILE as bpmnEngineProfile } from '../bpmn/BpmnEditor';
 import { DEFAULT_ENGINE_PROFILE as cloudBpmnEngineProfile } from '../cloud-bpmn/BpmnEditor';
@@ -90,7 +90,7 @@ describe('<EngineProfile>', function() {
 
     eachProfile((executionPlatform, executionPlatformVersion) => {
 
-      it(`should show selected engine profile (${ executionPlatform } ${ executionPlatformVersion })`, function() {
+      it(`should show selected engine profile (${executionPlatform} ${executionPlatformVersion})`, function() {
 
         // given
         wrapper = renderEngineProfile({
@@ -98,7 +98,7 @@ describe('<EngineProfile>', function() {
             executionPlatform,
             executionPlatformVersion,
           },
-          onChange: () => {}
+          onChange: () => { }
         });
 
         // when
@@ -119,7 +119,7 @@ describe('<EngineProfile>', function() {
 
     eachProfile((executionPlatform, executionPlatformVersion) => {
 
-      it(`should set engine profile (${ executionPlatform } ${ executionPlatformVersion })`, function() {
+      it(`should set engine profile (${executionPlatform} ${executionPlatformVersion})`, function() {
 
         // given
         const onChangeSpy = spy();
@@ -150,6 +150,53 @@ describe('<EngineProfile>', function() {
   });
 
 
+  describe('#getAnnotatedVersion', function() {
+
+    it('should return correct annotated versions', function() {
+
+      // given
+      const inputs =
+      [ [ '1.0', 'Zeebe 1.0' ],
+        [ '1.2', 'Zeebe 1.2' ],
+        [ '10.0', '10.0' ],
+        [ '7.14', '7.14' ],
+        [ '8.0', '8.0' ] ];
+
+      // then
+      inputs.forEach((input) => {
+        expect(getAnnotatedVersion(input[0])).to.equal(input[1]);
+      });
+
+    });
+
+  });
+
+  describe('#getStatusBarLabel', function() {
+
+    it('should return correct annotated versions', function() {
+
+      // given
+      const inputs =
+      [ [ ENGINES.PLATFORM, '7.0', 'Camunda Platform 7.0' ],
+        [ ENGINES.PLATFORM, '7.14', 'Camunda Platform 7.14' ],
+        [ ENGINES.PLATFORM, '', 'Camunda Platform 7' ],
+        [ ENGINES.CLOUD, '1.3', 'Camunda Platform 8 (Zeebe 1.3)' ],
+        [ ENGINES.CLOUD, '8.1', 'Camunda Platform 8.1' ],
+        [ ENGINES.CLOUD, '', 'Camunda Platform 8' ] ];
+
+      // then
+      inputs.forEach((input) => {
+        expect(getStatusBarLabel({
+          executionPlatform: input[0],
+          executionPlatformVersion: input[1]
+        })).to.equal(input[2]);
+      });
+
+    });
+
+  });
+
+
   describe('BPMN', function() {
 
     it('should show description', function() {
@@ -172,7 +219,7 @@ describe('<EngineProfile>', function() {
       // given
       wrapper = renderEngineProfile({
         engineProfile: bpmnEngineProfile,
-        onChange: () => {}
+        onChange: () => { }
       });
 
       // when
@@ -207,7 +254,7 @@ describe('<EngineProfile>', function() {
       // given
       wrapper = renderEngineProfile({
         engineProfile: cloudBpmnEngineProfile,
-        onChange: () => {}
+        onChange: () => { }
       });
 
       // when
@@ -261,7 +308,7 @@ describe('<EngineProfile>', function() {
       // given
       wrapper = renderEngineProfile({
         engineProfile: formEngineProfile,
-        onChange: () => {}
+        onChange: () => { }
       });
 
       // when
@@ -325,7 +372,7 @@ function selectVersion(wrapper, version) {
   const select = wrapper.find('select');
 
   if (select.instance().value !== version) {
-    select.simulate('change', { target: { value : version || '' } });
+    select.simulate('change', { target: { value: version || '' } });
   }
 
   wrapper.find('form').simulate('submit');

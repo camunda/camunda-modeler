@@ -25,6 +25,6 @@ export const ENGINE_PROFILES = [
 ];
 
 export const ENGINE_LABELS = {
-  'Camunda Platform':'Camunda Platform 7',
-  'Camunda Cloud': 'Camunda Platform 8'
+  [ ENGINES.PLATFORM ]: 'Camunda Platform 7',
+  [ ENGINES.CLOUD ]: 'Camunda Platform 8'
 };
