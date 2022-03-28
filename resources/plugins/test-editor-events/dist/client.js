@@ -99,6 +99,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "./node_modules/camunda-modeler-plugin-helpers/react.js");
 /* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _bpmn_modeler_extension__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bpmn-modeler-extension */ "./client/bpmn-modeler-extension/index.js");
+/* harmony import */ var _dmn_modeler_extension__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dmn-modeler-extension */ "./client/dmn-modeler-extension/index.js");
 /**
  * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
  * under one or more contributor license agreements. See the NOTICE file
@@ -108,6 +109,7 @@ __webpack_require__.r(__webpack_exports__);
  * Camunda licenses this file to you under the MIT; you may not use this file
  * except in compliance with the MIT License.
  */
+
 
 
 /**
@@ -134,7 +136,16 @@ class TestEditorEvents extends camunda_modeler_plugin_helpers_react__WEBPACK_IMP
       log('Creating editor for tab', tab);
       middlewares.push(addModule(_bpmn_modeler_extension__WEBPACK_IMPORTED_MODULE_1__["default"]));
     });
-    subscribe('bpmn.modeler.created', event => {
+    subscribe('dmn.modeler.configure', event => {
+      const {
+        tab,
+        middlewares
+      } = event;
+      log('Creating editor for tab', tab);
+      middlewares.push(addDmnModule(_dmn_modeler_extension__WEBPACK_IMPORTED_MODULE_2__["default"]));
+    });
+
+    const onModelerCreated = event => {
       const {
         tab,
         modeler
@@ -146,7 +157,10 @@ class TestEditorEvents extends camunda_modeler_plugin_helpers_react__WEBPACK_IMP
         } = event;
         log('Saving XML with definitions', definitions, tab);
       });
-    });
+    };
+
+    subscribe('bpmn.modeler.created', onModelerCreated);
+    subscribe('dmn.modeler.created', onModelerCreated);
     subscribe('tab.saved', event => {
       const {
         tab
@@ -180,6 +194,21 @@ function addModule(extensionModule) {
     return { ...config,
       additionalModules: [...additionalModules, extensionModule]
     };
+  };
+}
+
+function addDmnModule(extensionModule) {
+  return config => {
+    const newConfig = { ...config
+    };
+
+    for (const viewer of ['drd', 'decisionTable', 'literalExpression']) {
+      newConfig[viewer] = newConfig[viewer] || {};
+      const additionalModules = newConfig[viewer] && newConfig[viewer].additionalModules || [];
+      newConfig[viewer].additionalModules = [...additionalModules, extensionModule];
+    }
+
+    return newConfig;
   };
 }
 
@@ -236,6 +265,67 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   __init__: ['testEditorEventsLogger'],
   testEditorEventsLogger: ['type', _TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0___default.a]
+});
+
+/***/ }),
+
+/***/ "./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js":
+/*!*******************************************************************!*\
+  !*** ./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+function EditorEventsLogger(eventBus) {
+  eventBus.on('shape.added', function (event) {
+    console.log('[EditorEventsLogger]', 'shape got added', event);
+  });
+  eventBus.on('col.add', function (event) {
+    console.log('[EditorEventsLogger]', 'col got added', event);
+  });
+  eventBus.on('row.add', function (event) {
+    console.log('[EditorEventsLogger]', 'row got added', event);
+  });
+}
+
+EditorEventsLogger.$inject = ['eventBus'];
+module.exports = EditorEventsLogger;
+
+/***/ }),
+
+/***/ "./client/dmn-modeler-extension/index.js":
+/*!***********************************************!*\
+  !*** ./client/dmn-modeler-extension/index.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DmnTestEditorEventsLogger */ "./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js");
+/* harmony import */ var _DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  __init__: ['testEditorEventsLogger'],
+  testEditorEventsLogger: ['type', _DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0___default.a]
 });
 
 /***/ }),
