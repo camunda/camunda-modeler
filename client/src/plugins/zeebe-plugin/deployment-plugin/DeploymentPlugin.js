@@ -190,9 +190,9 @@ export default class DeploymentPlugin extends PureComponent {
 
     // (6) Handle success or error
     if (!success) {
-      this.onDeploymentError(response, config, options);
+      this.onDeploymentError(response, deployConfig, options);
     } else {
-      this.onDeploymentSuccess(response, config, options);
+      this.onDeploymentSuccess(response, deployConfig, options);
     }
   }
 
@@ -208,7 +208,8 @@ export default class DeploymentPlugin extends PureComponent {
     return zeebeAPI.deploy({
       filePath: path,
       name,
-      endpoint
+      endpoint,
+      diagramType: tab.type === 'cloud-dmn' ? 'dmn' : 'bpmn'
     });
   }
 
@@ -418,6 +419,8 @@ export default class DeploymentPlugin extends PureComponent {
   }
 
   onDeploymentSuccess(response, configuration, options = {}) {
+    const { config, savedTab } = configuration;
+
     const {
       displayNotification,
       triggerAction
@@ -425,7 +428,7 @@ export default class DeploymentPlugin extends PureComponent {
 
     const {
       endpoint
-    } = configuration;
+    } = config;
 
     const {
       isStart
@@ -442,7 +445,7 @@ export default class DeploymentPlugin extends PureComponent {
     if (!options.skipNotificationOnSuccess) {
       displayNotification({
         type: 'success',
-        title: 'Process definition deployed',
+        title: this._getSuccessNotification(savedTab),
         content: content,
         duration: 8000
       });
@@ -463,7 +466,13 @@ export default class DeploymentPlugin extends PureComponent {
     });
   }
 
+  _getSuccessNotification(tab) {
+    return `${tab.type === 'cloud-dmn' ? 'Decision' : 'Process'} definition deployed`;
+  }
+
   onDeploymentError(response, configuration, options = {}) {
+    const { config } = configuration;
+
     const {
       log,
       displayNotification,
@@ -472,7 +481,7 @@ export default class DeploymentPlugin extends PureComponent {
 
     const {
       endpoint
-    } = configuration;
+    } = config;
 
     const {
       isStart
@@ -586,7 +595,11 @@ function CloudLink(props) {
     camundaCloudClusterRegion
   } = endpoint;
 
-  const processId = response.workflows[0].bpmnProcessId;
+  const processId = getProcessId(response);
+
+  if (!processId) {
+    return null;
+  }
 
   const query = `?process=${processId}&version=all&active=true&incidents=true`;
   const cluster = camundaCloudClusterUrl.substring(0, camundaCloudClusterUrl.indexOf('.'));
@@ -630,8 +643,6 @@ function addOrUpdateById(collection, element) {
 }
 
 
-// helper ////////////////
-
 function withoutCredentials(endpointConfiguration) {
   return omit(endpointConfiguration, [
     'clientId',
@@ -642,7 +653,7 @@ function withoutCredentials(endpointConfiguration) {
 }
 
 function isZeebeTab(tab) {
-  return tab && tab.type === 'cloud-bpmn';
+  return tab && [ 'cloud-bpmn', 'cloud-dmn' ].includes(tab.type);
 }
 
 function getGRPCErrorCode(error) {
@@ -655,4 +666,8 @@ function getGRPCErrorCode(error) {
 
 function createCamundaCloudClusterUrl(camundaCloudClusterId) {
   return camundaCloudClusterId + '.bru-2.zeebe.camunda.io:443';
+}
+
+function getProcessId(response) {
+  return response.workflows && response.workflows[0] && response.workflows[0].bpmnProcessId || null;
 }

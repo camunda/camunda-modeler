@@ -46,6 +46,38 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
+  it('should deploy BPMN tab with correct diagram type', async () => {
+
+    // given
+    const deploySpy = sinon.spy();
+    const zeebeAPI = new MockZeebeAPI({ deploySpy });
+    const { instance } = createDeploymentPlugin({ zeebeAPI, activeTab: createTab({ type: 'cloud-bpmn' }) });
+
+    // when
+    await instance.deploy();
+
+    // then
+    expect(deploySpy).to.have.been.calledOnce;
+    expect(deploySpy.args[0][0]).to.have.property('diagramType', 'bpmn');
+  });
+
+
+  it('should deploy DMN tab with correct diagram type', async () => {
+
+    // given
+    const deploySpy = sinon.spy();
+    const zeebeAPI = new MockZeebeAPI({ deploySpy });
+    const { instance } = createDeploymentPlugin({ zeebeAPI, activeTab: createTab({ type: 'cloud-dmn' }) });
+
+    // when
+    await instance.deploy();
+
+    // then
+    expect(deploySpy).to.have.been.calledOnce;
+    expect(deploySpy.args[0][0]).to.have.property('diagramType', 'dmn');
+  });
+
+
   it('should getGatewayVersion', async () => {
 
     // given
@@ -236,7 +268,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     const BUTTON_SELECTOR = '[title="Deploy current diagram"]';
 
 
-    it('should display button if there is active zeebe tab', () => {
+    it('should display button if there is active Cloud BPMN tab', () => {
 
       // given
       const { wrapper } = createDeploymentPlugin({
@@ -250,10 +282,24 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
+    it('should display button if there is active Cloud DMN tab', () => {
+
+      // given
+      const { wrapper } = createDeploymentPlugin({
+        activeTab: {
+          type: 'cloud-dmn'
+        }
+      });
+
+      // then
+      expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(1);
+    });
+
+
     it('should NOT display button if there is no active zeebe tab', () => {
 
       // given
-      const { wrapper } = createDeploymentPlugin();
+      const { wrapper } = createDeploymentPlugin({ activeTab: createTab({ type: 'form' }) });
 
       // then
       expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
@@ -263,7 +309,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     it('should NOT display button if there is no active tab', () => {
 
       // given
-      const { wrapper } = createDeploymentPlugin();
+      const { wrapper } = createDeploymentPlugin({ activeTab: null });
 
       // then
       expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
@@ -480,7 +526,33 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
   });
 
-  it('should display notification with link after deployment success', async () => {
+
+  it('should display notification without link on DMN deployment success', async () => {
+
+    // given
+    const displayNotificationSpy = sinon.spy();
+    const { instance } = createDeploymentPlugin({
+      displayNotification: displayNotificationSpy,
+      activeTab: createTab({ type: 'cloud-dmn' }),
+      endpoint: {
+        targetType: SELF_HOSTED
+      }
+    });
+
+    // when
+    await instance.deploy();
+
+    // then
+    expect(displayNotificationSpy).to.have.been.calledWith({
+      type: 'success',
+      title: 'Decision definition deployed',
+      content: null,
+      duration: 8000
+    });
+  });
+
+
+  it('should display notification with link after deployment to Cloud success', async () => {
 
     // given
     const displayNotification = sinon.spy();
@@ -490,12 +562,13 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
         targetType: CAMUNDA_CLOUD,
         camundaCloudClusterUrl: 'clusterId.region.zeebe.camunda.io',
         camundaCloudClusterRegion:'region'
-      },
+      }
     });
 
     // when
     await instance.deploy();
 
+    // then
     expect(displayNotification).to.have.been.calledOnce;
 
     const notification = displayNotification.getCall(0).args[0];
@@ -515,6 +588,46 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     expect(notification.content).to.not.be.null;
 
+  });
+
+
+  it('should display notification without link after DMN deployment to Cloud success', async () => {
+
+    // given
+    const displayNotification = sinon.spy();
+    const { instance } = createDeploymentPlugin({
+      zeebeAPI: new MockZeebeAPI({ deploymentResult: { success: true, response: { workflows: [] } } }),
+      displayNotification,
+      endpoint : {
+        targetType: CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'clusterId.region.zeebe.camunda.io',
+        camundaCloudClusterRegion:'region'
+      },
+      activeTab: createTab({ type: 'cloud-dmn' })
+    });
+
+    // when
+    await instance.deploy();
+
+    // then
+    expect(displayNotification).to.have.been.calledOnce;
+
+    const notification = displayNotification.getCall(0).args[0];
+
+    expect(
+      {
+        type: notification.type,
+        title: notification.title,
+        duration: notification.duration
+      }).to.eql(
+      {
+        type: 'success',
+        title: 'Decision definition deployed',
+        duration: 8000
+      }
+    );
+
+    expect(shallow(notification.content).isEmptyRender()).to.be.true;
   });
 
 
@@ -1354,7 +1467,7 @@ function createTab(overrides = {}) {
   return {
     id: 42,
     name: 'foo.bar',
-    type: 'bar',
+    type: 'cloud-bpmn',
     title: 'unsaved',
     file: {
       name: 'foo.bar',

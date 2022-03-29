@@ -35,8 +35,6 @@ const endpointTypes = {
   CAMUNDA_CLOUD: 'camundaCloud'
 };
 
-const BPMN_SUFFIX = '.bpmn';
-
 /**
  * @typedef {object} ZeebeClientParameters
  * @property {Endpoint} endpoint
@@ -128,7 +126,8 @@ class ZeebeAPI {
     const {
       endpoint,
       filePath,
-      name
+      name,
+      diagramType
     } = parameters;
 
     const {
@@ -140,7 +139,7 @@ class ZeebeAPI {
     try {
       const response = await client.deployWorkflow({
         definition: contents,
-        name: prepareDeploymentName(name, filePath)
+        name: prepareDeploymentName(name, filePath, diagramType)
       });
 
       return {
@@ -377,18 +376,26 @@ function withoutSecrets(parameters) {
 //
 // If name is empty, we'll return the file name. If name is not empty
 // but does not end with .bpmn, we'll add the suffix.
-function prepareDeploymentName(name, filePath) {
+/**
+ * With zeebe-node 0.23.0, the deployment name should end with
+ * file type appropriate suffix.
+ *
+ * If name is empty, we'll return the file name with suffix added. If name is not empty
+ * but does not end with .bpmn, we'll add the suffix.
+ * @param {string} name
+ * @param {string} filePath
+ * @param {'bpmn'|'dmn'} [suffix='bpmn']
+ * @returns {`${string}.${'bpmn'|'dmn'}`}
+ */
+function prepareDeploymentName(name, filePath, suffix = 'bpmn') {
 
   try {
-
     if (!name || name.length === 0) {
-
-      return path.basename(filePath, path.extname(filePath)) + BPMN_SUFFIX;
+      return `${path.basename(filePath, path.extname(filePath))}.${suffix}`;
     }
 
-    if (!name.endsWith(BPMN_SUFFIX)) {
-
-      return name + BPMN_SUFFIX;
+    if (!name.endsWith(suffix)) {
+      return `${name}.${suffix}`;
     }
 
   } catch (err) {

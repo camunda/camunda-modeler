@@ -590,6 +590,37 @@ describe('ZeebeAPI', function() {
     });
 
 
+    it('should suffix deployment name with .dmn if necessary', async () => {
+
+      // given
+      const deployWorkflowSpy = sinon.spy();
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function() {
+          return {
+            deployWorkflow: deployWorkflowSpy,
+          };
+        }
+      });
+
+      // when
+      await zeebeAPI.deploy({
+        filePath: 'filePath',
+        name: 'not_suffixed',
+        endpoint: {
+          type: 'selfHosted',
+          url: 'testURL'
+        },
+        diagramType: 'dmn'
+      });
+
+      const { args } = deployWorkflowSpy.getCall(0);
+
+      // then
+      expect(args[0].name).to.eql('not_suffixed.dmn');
+    });
+
+
     it('should not suffix deployment name with .bpmn if not necessary', async () => {
 
       // given
@@ -617,6 +648,37 @@ describe('ZeebeAPI', function() {
 
       // then
       expect(args[0].name).to.eql('suffixed.bpmn');
+    });
+
+
+    it('should not suffix deployment name with .dmn if not necessary', async () => {
+
+      // given
+      const deployWorkflowSpy = sinon.spy();
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function() {
+          return {
+            deployWorkflow: deployWorkflowSpy,
+          };
+        }
+      });
+
+      // when
+      await zeebeAPI.deploy({
+        filePath: 'filePath',
+        name: 'suffixed.dmn',
+        endpoint: {
+          type: 'selfHosted',
+          url: 'testURL'
+        },
+        diagramType: 'dmn'
+      });
+
+      const { args } = deployWorkflowSpy.getCall(0);
+
+      // then
+      expect(args[0].name).to.eql('suffixed.dmn');
     });
 
 
@@ -677,6 +739,37 @@ describe('ZeebeAPI', function() {
 
       // then
       expect(args[0].name).to.eql('xmlFile.bpmn');
+    });
+
+
+    it('should add dmn suffix if extension is other than dmn and diagramType=dmn', async () => {
+
+      // given
+      const deployWorkflowSpy = sinon.spy();
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function() {
+          return {
+            deployWorkflow: deployWorkflowSpy,
+          };
+        }
+      });
+
+      // when
+      await zeebeAPI.deploy({
+        filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
+        name: '',
+        endpoint: {
+          type: 'selfHosted',
+          url: 'testURL'
+        },
+        diagramType: 'dmn'
+      });
+
+      const { args } = deployWorkflowSpy.getCall(0);
+
+      // then
+      expect(args[0].name).to.eql('xmlFile.dmn');
     });
 
   });
