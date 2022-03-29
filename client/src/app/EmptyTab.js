@@ -115,8 +115,8 @@ export default class EmptyTab extends PureComponent {
         <div className="learn-more">
           <h3>Learn more</h3>
           <div className="article relative">
-            <p>Blog post <br />placeholder</p>
-            <a>Read blog post</a>
+            <p>Introduction to Camunda 8</p>
+            <a href="tbd">Read blog post</a>
             <NewBadge anchored top="-7px" right="-40px" />
           </div>
           <div className="article relative">
