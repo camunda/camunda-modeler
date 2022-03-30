@@ -52,7 +52,7 @@ export default class EmptyTab extends PureComponent {
   renderCloudColumn = () => {
 
     return (
-      <div className="welcome-card relative">
+      <div id="welcome-page-cloud" className="welcome-card relative">
         <NewBadge anchored top="10px" right="10px" />
         <div className="engine-info">
           <div className="engine-info-heading">
@@ -82,7 +82,7 @@ export default class EmptyTab extends PureComponent {
   renderPlatformColumn = () => {
 
     return (
-      <div className="welcome-card">
+      <div id="welcome-page-platform" className="welcome-card">
         <div className="engine-info">
           <div className="engine-info-heading">
             <PlatformIcon className="engine-icon platform-icon" />
@@ -111,12 +111,12 @@ export default class EmptyTab extends PureComponent {
   renderLearnMoreColumn = () => {
 
     return (
-      <div className="welcome-card">
+      <div id="welcome-page-learn-more" className="welcome-card">
         <div className="learn-more">
           <h3>Learn more</h3>
           <div className="article relative">
             <p>Introduction to Camunda 8</p>
-            <a href="tbd">Read blog post</a>
+            <a href="#">Read blog post</a>
             <NewBadge anchored top="-7px" right="-40px" />
           </div>
           <div className="article relative">

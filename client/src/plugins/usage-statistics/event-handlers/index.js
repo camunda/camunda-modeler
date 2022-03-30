@@ -12,12 +12,12 @@ import PingEventHandler from './PingEventHandler';
 import DiagramOpenEventHandler from './DiagramOpenEventHandler';
 import DeploymentEventHandler from './DeploymentEventHandler';
 import VersionInfoOpenedEventHandler from './VersionInfoOpenedEventHandler';
-import VersionInfoLinkOpenedEventHandler from './VersionInfoLinkOpenedEventHandler';
+import UserTrackedClickEventHandler from './UserTrackedClickEventHandler';
 
 export default [
   PingEventHandler,
   DiagramOpenEventHandler,
   DeploymentEventHandler,
   VersionInfoOpenedEventHandler,
-  VersionInfoLinkOpenedEventHandler
+  UserTrackedClickEventHandler
 ];
