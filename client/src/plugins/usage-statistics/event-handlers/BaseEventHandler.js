@@ -29,10 +29,10 @@ export default class BaseEventHandler {
     return this._isEnabled;
   }
 
-  async enable() {
+  enable() {
     this._isEnabled = true;
 
-    await this.onAfterEnable();
+    this.onAfterEnable();
   }
 
   disable() {
