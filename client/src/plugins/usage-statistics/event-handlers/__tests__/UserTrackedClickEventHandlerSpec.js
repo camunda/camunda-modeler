@@ -12,12 +12,12 @@
 
 import MochaTestContainer from 'mocha-test-container-support';
 
-import VersionInfoLinkOpenedEventHandler from '../VersionInfoLinkOpenedEventHandler';
+import UserTrackedClickEventHandler from '../UserTrackedClickEventHandler';
 
 
-describe('<VersionInfoLinkOpenedEventHandler>', () => {
+describe('<UserTrackedClickEventHandler>', () => {
 
-  let container, linkInside, linkOutside;
+  let container, linkInside, linkOutside, linkHttp, button;
 
   beforeEach(function() {
     container = MochaTestContainer.get(this);
@@ -27,8 +27,12 @@ describe('<VersionInfoLinkOpenedEventHandler>', () => {
 
     linkInside = createAnchor('inside');
     linkOutside = createAnchor('outside');
+    linkHttp = createAnchor('http', 'https://camunda.com/');
+    button = createButton('click-me');
 
     versionInfoOverlay.appendChild(linkInside);
+    versionInfoOverlay.appendChild(linkHttp);
+    versionInfoOverlay.appendChild(button);
 
     container.appendChild(linkOutside);
     container.appendChild(versionInfoOverlay);
@@ -44,7 +48,7 @@ describe('<VersionInfoLinkOpenedEventHandler>', () => {
 
     // given
     const onSend = sinon.spy();
-    const handler = new VersionInfoLinkOpenedEventHandler({ onSend });
+    const handler = new UserTrackedClickEventHandler({ onSend });
     handler.enable();
 
     // when
@@ -52,7 +56,41 @@ describe('<VersionInfoLinkOpenedEventHandler>', () => {
 
     // then
     expect(onSend).to.have.been.calledOnceWith({
-      event: 'versionInfoLinkOpened', label: 'inside'
+      event: 'userTrackedClick', type: 'internal-link', label: 'inside', parent: 'version-info-overlay'
+    });
+  });
+
+
+  it('should include link reference on http link clicked', () => {
+
+    // given
+    const onSend = sinon.spy();
+    const handler = new UserTrackedClickEventHandler({ onSend });
+    handler.enable();
+
+    // when
+    linkHttp.click();
+
+    // then
+    expect(onSend).to.have.been.calledOnceWith({
+      event: 'userTrackedClick', type: 'external-link', label: 'http', link: 'https://camunda.com/', parent: 'version-info-overlay'
+    });
+  });
+
+
+  it('should send event on button clicked', () => {
+
+    // given
+    const onSend = sinon.spy();
+    const handler = new UserTrackedClickEventHandler({ onSend });
+    handler.enable();
+
+    // when
+    button.click();
+
+    // then
+    expect(onSend).to.have.been.calledOnceWith({
+      event: 'userTrackedClick', type: 'button', label: 'click-me', parent: 'version-info-overlay'
     });
   });
 
@@ -61,7 +99,7 @@ describe('<VersionInfoLinkOpenedEventHandler>', () => {
 
     // given
     const onSend = sinon.spy();
-    const handler = new VersionInfoLinkOpenedEventHandler({ onSend });
+    const handler = new UserTrackedClickEventHandler({ onSend });
     handler.enable();
 
     // when
@@ -76,7 +114,7 @@ describe('<VersionInfoLinkOpenedEventHandler>', () => {
 
     // given
     const onSend = sinon.spy();
-    const handler = new VersionInfoLinkOpenedEventHandler({ onSend });
+    const handler = new UserTrackedClickEventHandler({ onSend });
     handler.enable();
 
     // when
@@ -86,13 +124,13 @@ describe('<VersionInfoLinkOpenedEventHandler>', () => {
 
     // then
     expect(onSend).to.have.been.calledOnceWith({
-      event: 'versionInfoLinkOpened', label: 'inside'
+      event: 'userTrackedClick', type: 'internal-link', label: 'inside', parent: 'version-info-overlay'
     });
   });
 });
 
 
-function createAnchor(label, href = 'test') {
+function createAnchor(label, href = '#') {
   const anchor = document.createElement('a');
   anchor.textContent = label;
   anchor.href = href;
@@ -101,4 +139,10 @@ function createAnchor(label, href = 'test') {
   anchor.addEventListener('click', event => event.preventDefault());
 
   return anchor;
+}
+
+function createButton(label) {
+  const button = document.createElement('button');
+  button.textContent = label;
+  return button;
 }
