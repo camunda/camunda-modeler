@@ -454,7 +454,8 @@ function createUsageStatistics(props = {}) {
           resolve(configValues[key] || null);
         });
       }
-    }
+    },
+    _getGlobal: () => ({})
   });
 }
 

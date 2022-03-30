@@ -58,7 +58,8 @@ export default class UsageStatistics extends PureComponent {
       this._eventHandlers.push(new eventHandlerConstructor({
         onSend: this.sendRequest,
         subscribe: props.subscribe,
-        config: props.config
+        config: props.config,
+        getGlobal: props._getGlobal
       }));
     });
 
