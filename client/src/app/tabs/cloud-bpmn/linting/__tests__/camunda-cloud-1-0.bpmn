@@ -12,6 +12,9 @@
     <bpmn:serviceTask id="Activity_1" name="Task">
       <bpmn:incoming>Flow_0cqe3wf</bpmn:incoming>
       <bpmn:outgoing>Flow_06m98nn</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="foo" retries="bar" />
+      </bpmn:extensionElements>
     </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
