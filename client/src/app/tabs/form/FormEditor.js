@@ -333,7 +333,7 @@ export class FormEditor extends CachedComponent {
 
     const editorActions = form.get('editorActions');
 
-    if (action === 'selectElement') {
+    if (action === 'showLintError') {
       editorActions.trigger('selectFormField', context);
     }
 

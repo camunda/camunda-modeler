@@ -41,7 +41,7 @@ describe('<LintingTab>', function() {
     expect(wrapper.find('.panel__link-number').text()).to.equal('1');
 
     expect(wrapper.find('.linting-issue__text')).to.have.length(1);
-    expect(wrapper.find('.linting-issue__text').text()).to.equal('Error : Foo - Form field of type <number> not supported by Camunda Cloud 1.0');
+    expect(wrapper.find('.linting-issue__text').text()).to.equal('Error : foo - Form field of type <number> not supported by Camunda Cloud 1.0');
   });
 
 
@@ -67,7 +67,7 @@ describe('<LintingTab>', function() {
   });
 
 
-  it('should select element on click', function() {
+  it('should show lint error on click', function() {
 
     // when
     const onActionSpy = spy();
@@ -80,9 +80,11 @@ describe('<LintingTab>', function() {
     wrapper.find('.linting-issue__link').at(0).simulate('click');
 
     // then
-    expect(onActionSpy).to.have.been.calledOnceWith('selectElement', {
+    expect(onActionSpy).to.have.been.calledOnce;
+    expect(onActionSpy).to.have.been.calledWithMatch('showLintError', {
       id: 'foo',
-      path: []
+      path: [],
+      message: 'Form field of type <number> not supported by Camunda Cloud 1.0'
     });
   });
 
@@ -102,7 +104,6 @@ const defaultLinting = [
   {
     category: 'error',
     id: 'foo',
-    label: 'Foo',
     path: [],
     message: 'Form field of type <number> not supported by Camunda Cloud 1.0'
   }

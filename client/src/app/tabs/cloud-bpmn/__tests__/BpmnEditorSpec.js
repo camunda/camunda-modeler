@@ -711,6 +711,73 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       expect(returnValue).to.equal('bar');
     });
 
+
+    it('should trigger showLintError', async function() {
+
+      // given
+      const fireSpy = spy();
+
+      const scrollToElementSpy = spy();
+
+      const selectSpy = spy();
+
+      const element = { id: 'foo' },
+            rootElement = { id: 'bar' };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              canvas: {
+                getRootElement: () => rootElement,
+                resized: () => {},
+                scrollToElement: scrollToElementSpy
+              },
+              elementRegistry: {
+                get: () => element
+              },
+              eventBus: {
+                fire: fireSpy
+              },
+              selection: {
+                get: () => [],
+                select: selectSpy
+              }
+            }
+          })
+        }
+      });
+
+      const lintError = {
+        id: 'foo',
+        message: 'bar',
+        path: [ 'foo', 'bar' ]
+      };
+
+      // when
+      const { instance } = await renderEditor(diagramXML, { cache });
+
+      // when
+      fireSpy.resetHistory();
+
+      instance.triggerAction('showLintError', lintError);
+
+      // then
+      expect(fireSpy).to.have.been.calledOnce;
+      expect(fireSpy).to.have.been.calledWithMatch('propertiesPanel.showError', {
+        focus: true,
+        id: 'foo',
+        message: 'bar',
+        path: [ 'foo', 'bar' ]
+      });
+
+      expect(scrollToElementSpy).to.have.been.calledOnceWith(element);
+
+      expect(selectSpy).to.have.been.calledOnceWith(element);
+    });
+
   });
 
 
