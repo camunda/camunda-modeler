@@ -636,21 +636,8 @@ export class BpmnEditor extends CachedComponent {
       };
     }
 
-    if (action === 'selectElement') {
-      const { id } = context;
-
-      const modeler = this.getModeler(),
-            canvas = modeler.get('canvas'),
-            elementRegistry = modeler.get('elementRegistry'),
-            selection = modeler.get('selection');
-
-      const element = elementRegistry.get(id);
-
-      if (element) {
-        selection.select(element);
-
-        canvas.scrollToElement(element);
-      }
+    if (action === 'showLintError') {
+      showLintError(modeler, context);
 
       return;
     }
@@ -851,4 +838,32 @@ export default WithCache(WithCachedState(BpmnEditor));
 
 function isCacheStateChanged(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
+}
+
+function showLintError(modeler, error) {
+  let {
+    id,
+    message,
+    ...rest
+  } = error;
+
+  const canvas = modeler.get('canvas'),
+        elementRegistry = modeler.get('elementRegistry'),
+        eventBus = modeler.get('eventBus'),
+        selection = modeler.get('selection');
+
+  const element = elementRegistry.get(id);
+
+  if (element !== canvas.getRootElement()) {
+    canvas.scrollToElement(element);
+  }
+
+  selection.select(element);
+
+  eventBus.fire('propertiesPanel.showError', {
+    focus: true,
+    id,
+    message,
+    ...rest
+  });
 }

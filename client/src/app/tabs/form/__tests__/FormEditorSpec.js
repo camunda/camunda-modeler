@@ -344,16 +344,16 @@ describe('<FormEditor>', function() {
     });
 
 
-    it('should trigger selectFormField', async function() {
+    it('should trigger showLintError', async function() {
 
       // given
-      const triggerActionSpy = spy();
+      const triggerSpy = spy();
 
       const editorActions = {
         isRegistered(action) {
           return action === 'selectFormField';
         },
-        trigger: triggerActionSpy
+        trigger: triggerSpy
       };
 
       const cache = new Cache();
@@ -372,13 +372,13 @@ describe('<FormEditor>', function() {
       const { instance } = await renderEditor(schema, { cache });
 
       // when
-      instance.triggerAction('selectElement', {
+      instance.triggerAction('showLintError', {
         id: 'foo',
         path: []
       });
 
       // then
-      expect(triggerActionSpy).to.have.been.calledOnceWith('selectFormField', {
+      expect(triggerSpy).to.have.been.calledOnceWith('selectFormField', {
         id: 'foo',
         path: []
       });

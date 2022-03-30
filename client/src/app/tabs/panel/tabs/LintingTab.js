@@ -27,11 +27,8 @@ export default function LintingTab(props) {
     onLayoutChanged
   } = props;
 
-  const onClick = ({ id, path }) => () => {
-    onAction('selectElement', {
-      id,
-      path
-    });
+  const onClick = (issue) => () => {
+    onAction('showLintError', issue);
   };
 
   return <Panel.Tab
