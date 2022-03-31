@@ -346,6 +346,34 @@ describe('DmnModeler', function() {
 
   });
 
+
+  describe('execution platform', function() {
+
+    it('should set execution platform when namespace is missing', async function() {
+
+      // given
+      const modeler = await createModeler({
+        container: modelerContainer
+      });
+
+      // when
+      const executionPlatformHelper = modeler.getActiveViewer().get('executionPlatform');
+      executionPlatformHelper.setExecutionPlatform({
+        name: 'Camunda Platform',
+        version: '7.16.0'
+      });
+
+      // then
+      const { xml } = await modeler.saveXML();
+
+      expect(executionPlatformHelper.getExecutionPlatform()).to.eql({
+        name: 'Camunda Platform',
+        version: '7.16.0'
+      });
+      expect(xml).to.contain('xmlns:modeler="http://camunda.org/schema/modeler/1.0"');
+    });
+  });
+
 });
 
 // helpers //////////

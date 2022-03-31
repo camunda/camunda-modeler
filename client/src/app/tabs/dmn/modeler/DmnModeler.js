@@ -23,6 +23,9 @@ import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 import openDrgElementModule from './features/overview/open-drg-element';
 import overviewRendererModule from './features/overview/overview-renderer';
 
+import executionPlatformModule from '@camunda/execution-platform';
+import modelerModdle from 'modeler-moddle/resources/dmn-modeler.json';
+
 import 'camunda-dmn-js/dist/assets/camunda-platform-modeler.css';
 
 const NOOP_MODULE = [ 'value', null ];
@@ -59,22 +62,28 @@ export default class CamundaDmnModeler extends DmnModeler {
     super({
       ...otherOptions,
       drd: mergeModules(drd, [
-        propertiesPanelKeyboardBindingsModule
+        propertiesPanelKeyboardBindingsModule,
+        executionPlatformModule
       ]),
       decisionTable: mergeModules(decisionTable, [
         decisionTableKeyboardModule,
         poweredByModule,
+        executionPlatformModule,
         {
           viewDrd: NOOP_MODULE
         }
       ]),
       literalExpression: mergeModules(literalExpression, [
         poweredByModule,
+        executionPlatformModule,
         {
           viewDrd: NOOP_MODULE
         }
       ]),
-      moddleExtensions
+      moddleExtensions: {
+        ...moddleExtensions,
+        modeler: modelerModdle
+      }
     });
 
     this.on('viewer.created', ({ viewer }) => {

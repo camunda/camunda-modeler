@@ -63,7 +63,9 @@ import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesCon
 
 import { DEFAULT_LAYOUT as overviewDefaultLayout } from './OverviewContainer';
 
-import { EngineProfile } from '../EngineProfile';
+import { EngineProfile, toSemver } from '../EngineProfile';
+
+import EngineProfileHelper from '../EngineProfileHelper';
 
 import { ENGINES } from '../../../util/Engines';
 
@@ -75,7 +77,8 @@ const NAMESPACE_URL_DMN11 = 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
 const CONFIG_KEY = 'editor.askDmnMigration';
 
 export const DEFAULT_ENGINE_PROFILE = {
-  executionPlatform: ENGINES.PLATFORM
+  executionPlatform: ENGINES.PLATFORM,
+  executionPlatformVersion: undefined
 };
 
 
@@ -91,6 +94,35 @@ export class DmnEditor extends CachedComponent {
     this.propertiesPanelRef = React.createRef();
 
     this.handleResize = debounce(this.handleResize);
+
+    this.engineProfile = new EngineProfileHelper({
+      get: () => {
+        const modeler = this.getModeler();
+        const activeViewer = modeler.getActiveViewer();
+        const executionPlatformHelper = activeViewer.get('executionPlatform');
+        const executionPlatform = executionPlatformHelper.getExecutionPlatform();
+
+        if (!executionPlatform) {
+          return DEFAULT_ENGINE_PROFILE;
+        }
+
+        return {
+          executionPlatform: executionPlatform.name,
+          executionPlatformVersion: toSemver(executionPlatform.version)
+        };
+      },
+      set: engineProfile => {
+        const modeler = this.getModeler();
+        const executionPlatformHelper = modeler.getActiveViewer().get('executionPlatform');
+
+        executionPlatformHelper.setExecutionPlatform({
+          name: engineProfile.executionPlatform,
+          version: engineProfile.executionPlatformVersion
+        });
+      },
+      getCached: () => this.getCached(),
+      setCached: (state) => this.setCached(state)
+    });
   }
 
   componentDidMount() {
@@ -206,16 +238,25 @@ export class DmnEditor extends CachedComponent {
 
     const stackIdx = modeler.getStackIdx();
 
+    let engineProfile = null;
+    try {
+      engineProfile = this.engineProfile.get();
+    } catch (err) {
+      error = err;
+    }
+
     onImport(error, warnings);
 
     if (error) {
       this.setCached({
         dirty: false,
+        engineProfile,
         lastXML: null
       });
     } else {
       this.setCached({
         dirty: false,
+        engineProfile,
         lastXML: xml,
         stackIdx
       });
@@ -421,6 +462,10 @@ export class DmnEditor extends CachedComponent {
         windowMenu
       });
     }
+
+
+    const engineProfile = this.engineProfile.get();
+    this.engineProfile.setCached(engineProfile);
 
     this.setState(newState);
   }
@@ -826,6 +871,7 @@ export class DmnEditor extends CachedComponent {
   }
 
   render() {
+    const engineProfile = this.engineProfile.getCached();
 
     const {
       layout,
@@ -895,8 +941,11 @@ export class DmnEditor extends CachedComponent {
 
         </div>
 
-        <EngineProfile
-          engineProfile={ DEFAULT_ENGINE_PROFILE } />
+        {
+          engineProfile && <EngineProfile
+            engineProfile={ engineProfile }
+            onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } />
+        }
 
       </div>
     );

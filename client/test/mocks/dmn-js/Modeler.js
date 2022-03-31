@@ -10,6 +10,8 @@
 
 import { assign } from 'min-dash';
 
+import parseExecutionPlatform from 'src/app/util/parseExecutionPlatform.js';
+
 class CommandStack {
   constructor() {
     this._stackIdx = -1;
@@ -48,6 +50,14 @@ class PropertiesPanel {
   detach() {}
 }
 
+class ExecutionPlatform {
+  getExecutionPlatform() {
+    return this._engineProfile;
+  }
+  setExecutionPlatform(value) {
+    this._engineProfile = value;
+  }
+}
 
 class Viewer {
 
@@ -67,6 +77,7 @@ class Viewer {
         resized() {}
       },
       commandStack: new CommandStack(),
+      executionPlatform: new ExecutionPlatform(),
       propertiesPanel: new PropertiesPanel(),
       selection: {
         get() {
@@ -132,6 +143,20 @@ export default class Modeler {
 
     const error = xml === 'import-error' ? new Error('error') : null;
     const warnings = xml === 'import-warnings' ? [ 'warning' ] : [];
+
+    try {
+      const engineProfile = parseExecutionPlatform(xml);
+
+      if (engineProfile) {
+        this.viewer.get('executionPlatform').setExecutionPlatform({
+          name: engineProfile.executionPlatform,
+          version: engineProfile.executionPlatformVersion
+        });
+      }
+    } catch {
+
+      // do nothing
+    }
 
     if (error) {
       throw Object.assign(error, { warnings });

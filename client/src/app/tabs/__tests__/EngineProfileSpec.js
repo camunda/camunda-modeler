@@ -26,6 +26,7 @@ import { ENGINES, ENGINE_PROFILES } from '../../../util/Engines';
 import { DEFAULT_ENGINE_PROFILE as bpmnEngineProfile } from '../bpmn/BpmnEditor';
 import { DEFAULT_ENGINE_PROFILE as cloudBpmnEngineProfile } from '../cloud-bpmn/BpmnEditor';
 import { DEFAULT_ENGINE_PROFILE as dmnEngineProfile } from '../dmn/DmnEditor';
+import { DEFAULT_ENGINE_PROFILE as cloudDmnEngineProfile } from '../cloud-dmn/DmnEditor';
 import { DEFAULT_ENGINE_PROFILE as formEngineProfile } from '../form/FormEditor';
 
 const spy = sinon.spy;
@@ -83,6 +84,23 @@ describe('<EngineProfile>', function() {
 
     // then
     expect(wrapper.find('EngineProfileOverlay').exists()).to.be.false;
+  });
+
+
+  it('should filter versions', function() {
+
+    // given
+    wrapper = renderEngineProfile({
+      engineProfile: { ...cloudDmnEngineProfile, executionPlatformVersion: '8.0.0' },
+      onChange: () => {},
+      filterVersions: version => version === '8.0.0'
+    });
+
+    // when
+    wrapper.find('button').simulate('click');
+
+    // then
+    expect(wrapper.find('option').length).to.equal(1);
   });
 
 
@@ -283,6 +301,56 @@ describe('<EngineProfile>', function() {
       expectPlatformHelp(wrapper);
     });
 
+
+    it('should show selection', function() {
+
+      // given
+      wrapper = renderEngineProfile({
+        engineProfile: dmnEngineProfile,
+        onChange: () => { }
+      });
+
+      // when
+      wrapper.find('button').simulate('click');
+
+      // then
+      expectPlatformHelp(wrapper);
+    });
+
+  });
+
+
+  describe('Cloud DMN', function() {
+
+    it('should show description', function() {
+
+      // given
+      wrapper = renderEngineProfile({
+        engineProfile: cloudDmnEngineProfile
+      });
+
+      // when
+      wrapper.find('button').simulate('click');
+
+      // then
+      expectCloudHelp(wrapper);
+    });
+
+
+    it('should show selection', function() {
+
+      // given
+      wrapper = renderEngineProfile({
+        engineProfile: cloudDmnEngineProfile,
+        onChange: () => { }
+      });
+
+      // when
+      wrapper.find('button').simulate('click');
+
+      // then
+      expectCloudHelp(wrapper);
+    });
   });
 
 
@@ -329,7 +397,8 @@ function renderEngineProfile(options = {}) {
   const {
     type,
     engineProfile,
-    onChange
+    onChange,
+    ...rest
   } = options;
 
   return mount(
@@ -338,7 +407,8 @@ function renderEngineProfile(options = {}) {
       <EngineProfile
         type={ type }
         engineProfile={ engineProfile }
-        onChange={ onChange } />
+        onChange={ onChange }
+        { ...rest } />
     </SlotFillRoot>
   );
 }
