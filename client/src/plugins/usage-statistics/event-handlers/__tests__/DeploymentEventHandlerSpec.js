@@ -13,6 +13,7 @@
 import DeploymentEventHandler from '../DeploymentEventHandler';
 
 import engineProfileXML from './fixtures/engine-profile.bpmn';
+import engineProfileDMN from './fixtures/engine-platform.dmn';
 
 import emptyDMN from './fixtures/empty.dmn';
 
@@ -190,10 +191,46 @@ describe('<DeploymentEventHandler>', () => {
       event: 'deployment',
       diagramType: 'dmn',
       diagramMetrics: {},
+      engineProfile: {},
       deployment: {
         outcome: SUCCESS_STATUS,
         context: 'foo',
         executionPlatformVersion: '7.15.0',
+        executionPlatform: 'Camunda'
+      }
+    });
+  });
+
+
+  it('should send for type cloud dmn', async () => {
+
+    // given
+    const tab = createTab({
+      type: 'cloud-dmn'
+    });
+
+    const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+    // when
+    await handleDeploymentDone({
+      tab,
+      context: 'foo',
+      deployedTo: {
+        executionPlatformVersion: '8.0.0',
+        executionPlatform: 'Camunda'
+      }
+    });
+
+    // then
+    expect(onSend).to.have.been.calledWith({
+      event: 'deployment',
+      diagramType: 'dmn',
+      diagramMetrics: {},
+      engineProfile: {},
+      deployment: {
+        outcome: SUCCESS_STATUS,
+        context: 'foo',
+        executionPlatformVersion: '8.0.0',
         executionPlatform: 'Camunda'
       }
     });
@@ -1139,26 +1176,78 @@ describe('<DeploymentEventHandler>', () => {
     });
 
 
-    it('should not send engine profile (dmn)', async () => {
+    describe('dmn', function() {
 
-      // given
-      const tab = createTab({
-        type: 'dmn',
-        file: {
-          contents: emptyDMN
-        }
+      it('should send engine profile', async () => {
+
+        // given
+        const tab = createTab({
+          type: 'dmn',
+          file: {
+            contents: engineProfileDMN
+          }
+        });
+
+        const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+        // when
+        await handleDeploymentDone({ tab });
+
+        const { engineProfile } = onSend.getCall(0).args[0];
+
+        // then
+        expect(engineProfile).to.eql({
+          executionPlatform: 'Camunda Platform'
+        });
       });
 
-      const handleDeploymentDone = subscribe.getCall(0).args[1];
 
-      // when
-      await handleDeploymentDone({ tab });
+      it('should send default engine profile', async () => {
 
-      const { engineProfile } = onSend.getCall(0).args[0];
+        // given
+        const tab = createTab({
+          type: 'dmn',
+          file: {
+            contents: emptyDMN
+          }
+        });
 
-      // then
-      expect(engineProfile).to.be.undefined;
+        const handleDeploymentDone = subscribe.getCall(0).args[1];
 
+        // when
+        await handleDeploymentDone({ tab });
+
+        const { engineProfile } = onSend.getCall(0).args[0];
+
+        // then
+        expect(engineProfile).to.eql({
+          executionPlatform: 'Camunda Platform'
+        });
+      });
+
+
+      it('should send default engine profile (cloud tabs)', async () => {
+
+        // given
+        const tab = createTab({
+          type: 'cloud-dmn',
+          file: {
+            contents: emptyDMN
+          }
+        });
+
+        const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+        // when
+        await handleDeploymentDone({ tab });
+
+        const { engineProfile } = onSend.getCall(0).args[0];
+
+        // then
+        expect(engineProfile).to.eql({
+          executionPlatform: 'Camunda Cloud'
+        });
+      });
     });
 
   });

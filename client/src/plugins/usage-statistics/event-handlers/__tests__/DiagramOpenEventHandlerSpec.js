@@ -22,6 +22,10 @@ import engineProfilePlatform from './fixtures/engine-platform.form';
 
 import engineProfileCloud from './fixtures/engine-cloud.form';
 
+import engineProfilePlatformDMN from './fixtures/engine-platform.dmn';
+
+import engineProfileCloudDMN from './fixtures/engine-cloud.dmn';
+
 import processVariablesXML from './fixtures/process-variables.bpmn';
 
 import serviceTasksXML from './fixtures/service-tasks.bpmn';

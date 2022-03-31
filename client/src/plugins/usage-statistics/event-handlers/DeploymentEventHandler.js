@@ -28,23 +28,19 @@ import { ENGINES } from '../../../util/Engines';
 const BPMN_TAB_TYPE = 'bpmn';
 const CLOUD_BPMN_TAB_TYPE = 'cloud-bpmn';
 const DMN_TAB_TYPE = 'dmn';
+const CLOUD_DMN_TAB_TYPE = 'cloud-dmn';
 
 // Tabs for which we send telemetry data on deployment
 const RELEVANT_TAB_TYPES = [
   BPMN_TAB_TYPE,
   CLOUD_BPMN_TAB_TYPE,
-  DMN_TAB_TYPE
-];
-
-// Tabs for which we include engineProfile information in the XML
-const ENGINE_PROFILE_TAB_TYPES = [
-  BPMN_TAB_TYPE,
-  CLOUD_BPMN_TAB_TYPE
+  DMN_TAB_TYPE,
+  CLOUD_DMN_TAB_TYPE
 ];
 
 const DIAGRAM_BY_TAB_TYPE = {
   'bpmn': [ BPMN_TAB_TYPE, CLOUD_BPMN_TAB_TYPE ],
-  'dmn': [ DMN_TAB_TYPE ]
+  'dmn': [ DMN_TAB_TYPE, CLOUD_DMN_TAB_TYPE ]
 };
 
 // Sends a deployment event to ET everytime when a user triggers a deployment
@@ -63,7 +59,7 @@ export default class DeploymentEventHandler extends BaseEventHandler {
   generateMetrics = async (file, tabType) => {
     let metrics = {};
 
-    if (tabType !== 'dmn' && file.contents) {
+    if (getDiagramType(tabType) !== 'dmn' && file.contents) {
       metrics = await getMetrics(file, tabType);
     }
 
@@ -128,10 +124,8 @@ export default class DeploymentEventHandler extends BaseEventHandler {
       diagramMetrics
     };
 
-    // (5) (potentially) add engineProfile
-    if (ENGINE_PROFILE_TAB_TYPES.includes(type)) {
-      payload.engineProfile = await this.getEngineProfile(file, type) || { };
-    }
+    // (5) add engineProfile
+    payload.engineProfile = await this.getEngineProfile(file, type) || { };
 
     // (6) (potentially) add deployment error
     if (error) {
@@ -166,7 +160,7 @@ function getDiagramType(tabType) {
 }
 
 function getDefaultExecutionPlatform(type) {
-  if (type === 'cloud-bpmn') {
+  if (/^cloud/.test(type)) {
     return ENGINES.CLOUD;
   }
 
