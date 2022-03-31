@@ -342,6 +342,7 @@ export class DmnEditor extends CachedComponent {
       inputActive,
       overview: hasOverview,
       paste: false,
+      platform: 'platform',
       propertiesPanel: hasPropertiesPanel,
       redo: commandStack.canRedo(),
       save: true,
@@ -931,7 +932,7 @@ export class DmnEditor extends CachedComponent {
         name,
         version
       }
-    }, handleMiddlewareExtensions);
+    }, handleMiddlewareExtensions, 'platform');
 
     if (warnings.length && isFunction(onError)) {
       onError(

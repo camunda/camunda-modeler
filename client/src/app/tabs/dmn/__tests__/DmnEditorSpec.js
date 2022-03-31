@@ -272,6 +272,98 @@ describe('<DmnEditor>', function() {
       expect(onErrorSpy).to.be.calledOnce;
     });
 
+
+    it('should accept general & platform plugins', async function() {
+
+      // given
+      const additionalModule = {
+        __init__: [ 'foo' ],
+        foo: [ 'type', noop ]
+      };
+
+      const platformAdditionalModule = {
+        __init__: [ 'foo' ],
+        foo: [ 'type', noop ]
+      };
+
+      const cloudAdditionalModule = {
+        __init__: [ 'foo' ],
+        foo: [ 'type', noop ]
+      };
+
+      const moddleExtension = {
+        name: 'bar',
+        uri: 'http://bar',
+        prefix: 'bar',
+        xml: {
+          tagAlias: 'lowerCase'
+        },
+        types: []
+      };
+
+      const platformModdleExtension = {
+        name: 'platformbar',
+        uri: 'http://platformbar',
+        prefix: 'platformbar',
+        xml: {
+          tagAlias: 'lowerCase'
+        },
+        types: []
+      };
+
+      const cloudModdleExtension = {
+        name: 'cloudbar',
+        uri: 'http://cloudbar',
+        prefix: 'cloudbar',
+        xml: {
+          tagAlias: 'lowerCase'
+        },
+        types: []
+      };
+
+      // when
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        getPlugins(type) {
+          switch (type) {
+          case 'dmn.modeler.literalExpression.additionalModules':
+            return [ additionalModule ];
+          case 'dmn.platform.modeler.literalExpression.additionalModules':
+            return [ platformAdditionalModule ];
+          case 'dmn.cloud.modeler.literalExpression.additionalModules':
+            return [ cloudAdditionalModule ];
+          case 'dmn.modeler.moddleExtension':
+            return [ moddleExtension ];
+          case 'dmn.platform.modeler.moddleExtension':
+            return [ platformModdleExtension ];
+          case 'dmn.cloud.modeler.moddleExtension':
+            return [ cloudModdleExtension ];
+          }
+
+          return [];
+        }
+      });
+
+      // then
+      const { modeler } = instance.getCached();
+
+      expect(modeler.modules.literalExpression.additionalModules).to.include(additionalModule);
+      expect(modeler.modules.literalExpression.additionalModules).to.include(platformAdditionalModule);
+      expect(modeler.modules.literalExpression.additionalModules).to.not.include(cloudAdditionalModule);
+
+
+      expect(modeler.modules.moddleExtensions).to.include({
+        bar: moddleExtension
+      });
+      expect(modeler.modules.moddleExtensions).to.include({
+        platformbar: platformModdleExtension
+      });
+      expect(modeler.modules.moddleExtensions).to.not.include({
+        cloudbar: cloudModdleExtension
+      });
+    });
+
   });
 
 
@@ -557,6 +649,24 @@ describe('<DmnEditor>', function() {
           // then
           expect(state.editMenu).to.deep.include(editMenuEntries);
 
+        };
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        // when
+        instance.handleChanged();
+      });
+
+
+      it('should provide platform = platform', async function() {
+
+        // given
+        const changedSpy = (state) => {
+
+          // then
+          expect(state).to.have.property('platform', 'platform');
         };
 
         const { instance } = await renderEditor(diagramXML, {

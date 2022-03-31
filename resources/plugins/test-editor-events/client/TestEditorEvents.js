@@ -11,6 +11,7 @@
 import { PureComponent } from 'camunda-modeler-plugin-helpers/react';
 
 import BpmnModelerExtension from './bpmn-modeler-extension';
+import DmnModelerExtension from './dmn-modeler-extension';
 
 
 /**
@@ -45,8 +46,19 @@ export default class TestEditorEvents extends PureComponent {
     });
 
 
-    subscribe('bpmn.modeler.created', (event) => {
+    subscribe('dmn.modeler.configure', (event) => {
 
+      const {
+        tab,
+        middlewares
+      } = event;
+
+      log('Creating editor for tab', tab);
+
+      middlewares.push(addDmnModule(DmnModelerExtension));
+    });
+
+    const onModelerCreated = event => {
       const {
         tab,
         modeler,
@@ -62,9 +74,10 @@ export default class TestEditorEvents extends PureComponent {
 
         log('Saving XML with definitions', definitions, tab);
       });
+    };
 
-    });
-
+    subscribe('bpmn.modeler.created', onModelerCreated);
+    subscribe('dmn.modeler.created', onModelerCreated);
 
     subscribe('tab.saved', (event) => {
       const {
@@ -109,5 +122,25 @@ function addModule(extensionModule) {
         extensionModule
       ]
     };
+  };
+}
+
+function addDmnModule(extensionModule) {
+
+  return (config) => {
+    const newConfig = { ...config };
+
+    for (const viewer of [ 'drd', 'decisionTable', 'literalExpression' ]) {
+      newConfig[viewer] = newConfig[viewer] || {};
+
+      const additionalModules = (newConfig[viewer] && newConfig[viewer].additionalModules) || [];
+
+      newConfig[viewer].additionalModules = [
+        ...additionalModules,
+        extensionModule
+      ];
+    }
+
+    return newConfig;
   };
 }
