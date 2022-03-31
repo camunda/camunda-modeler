@@ -262,13 +262,18 @@ export default class DeploymentPlugin extends PureComponent {
 
     const p = pDefer();
 
-    const onClose = (config) => {
+    const onClose = (config, userAction) => {
 
       if (options.onClose) {
         options.onClose();
       }
 
       this.closeOverlay();
+
+      if (userAction === 'cancel') {
+        this.saveConfig(tab, config);
+        return p.resolve(null);
+      }
 
       return p.resolve(config);
     };
@@ -531,13 +536,14 @@ export default class DeploymentPlugin extends PureComponent {
     this.setState({ overlayState: null });
   }
 
-  onIconClicked = async () => {
+  onIconClicked = () => {
     const {
       overlayState
     } = this.state;
 
-    if (overlayState && !overlayState.isStart)
+    if (overlayState && !overlayState.isStart) {
       this.closeOverlay();
+    }
 
     else this.deploy();
   }

@@ -68,7 +68,8 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
     super(props);
 
     this.state = {
-      connectionState: { type: CONNECTION_STATE.INITIAL }
+      connectionState: { type: CONNECTION_STATE.INITIAL },
+      configValues: {}
     };
 
     const { validator } = props;
@@ -143,6 +144,16 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
 
   scheduleConnectionCheck = formValues => {
     this.connectionChecker.check(formValues.endpoint);
+
+    const { endpoint } = formValues;
+
+    // Extract clusterId and clusterRegion as required by zeebeAPI for camundaCloud
+    if (endpoint.targetType === CAMUNDA_CLOUD && endpoint.camundaCloudClusterUrl) {
+      endpoint.camundaCloudClusterId = extractClusterId(endpoint.camundaCloudClusterUrl);
+      endpoint.camundaCloudClusterRegion = extractClusterRegion(endpoint.camundaCloudClusterUrl);
+    }
+
+    this.setState({ configValues: formValues });
   }
 
   handleConnectionCheckResult = result => {
@@ -194,7 +205,7 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
       anchor
     } = this.props;
 
-    const onClose = () => closeOverlay(null);
+    const onClose = () => closeOverlay(this.state.configValues, 'cancel');
 
     const {
       validatorFunctionsByFieldNames
@@ -326,14 +337,11 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
                             </React.Fragment>
                           )
                         }
-                        {
-                          (form.values.endpoint.authType !== AUTH_TYPES.NONE || form.values.endpoint.targetType === CAMUNDA_CLOUD) &&
-                            <Field
-                              name={ 'endpoint.rememberCredentials' }
-                              component={ ToggleSwitch }
-                              switcherLabel={ REMEMBER_CREDENTIALS }
-                            />
-                        }
+                        <Field
+                          name={ 'endpoint.rememberCredentials' }
+                          component={ ToggleSwitch }
+                          switcherLabel={ REMEMBER_CREDENTIALS }
+                        />
                       </div>
                     </fieldset>
                     <Section.Actions>
@@ -367,7 +375,8 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
   * @return {string} camundaCloudClusterId
   */
 function extractClusterId(camundaCloudClusterUrl) {
-  return camundaCloudClusterUrl.match(/([a-z\d]+-){2,}[a-z\d]+/g)[0];
+  const matches = camundaCloudClusterUrl.match(/([a-z\d]+-){2,}[a-z\d]+/g);
+  return matches ? matches[0] : null;
 }
 
 
@@ -378,5 +387,6 @@ function extractClusterId(camundaCloudClusterUrl) {
  * @return {type} camundaCloudClusterRegion
  */
 function extractClusterRegion(camundaCloudClusterUrl) {
-  return camundaCloudClusterUrl.match(/(?<=\.)[a-z]+-[\d]+/g)[0];
+  const matches = camundaCloudClusterUrl.match(/(?<=\.)[a-z]+-[\d]+/g);
+  return matches ? matches[0] : null;
 }
