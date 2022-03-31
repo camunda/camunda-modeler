@@ -14,6 +14,8 @@ import DiagramOpenEventHandler from '../DiagramOpenEventHandler';
 
 import emptyXML from './fixtures/empty.bpmn';
 
+import emptyDMN from './fixtures/empty.dmn';
+
 import brokenForm from './fixtures/broken-form.form';
 
 import engineProfileXML from './fixtures/engine-profile.bpmn';
@@ -150,12 +152,17 @@ describe('<DiagramOpenEventHandler>', () => {
   });
 
 
-  it('should send with diagram type: dmn', () => {
+  it('should send with diagram type: dmn', async () => {
 
     // given
     const subscribe = sinon.spy();
 
     const onSend = sinon.spy();
+
+    const tab = createTab({
+      file: {},
+      type: 'dmn'
+    });
 
     // when
     const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe });
@@ -164,12 +171,13 @@ describe('<DiagramOpenEventHandler>', () => {
 
     const dmnCallback = subscribe.getCall(1).args[1];
 
-    dmnCallback();
+    await dmnCallback({ tab });
 
     // then
     expect(onSend).to.have.been.calledWith({
       event: 'diagramOpened',
-      diagramType: 'dmn'
+      diagramType: 'dmn',
+      engineProfile: {}
     });
   });
 
@@ -1641,6 +1649,143 @@ describe('<DiagramOpenEventHandler>', () => {
         executionPlatform: 'Camunda Cloud'
       });
     });
+
+
+    it('should send engine profile (DMN)', async () => {
+
+      // given
+      const subscribe = sinon.spy();
+
+      const onSend = sinon.spy();
+
+      const tab = createTab({
+        type: 'dmn',
+        file: {
+          contents: engineProfilePlatformDMN
+        }
+      });
+
+      const config = { get: () => null };
+
+      // when
+      const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+      diagramOpenEventHandler.enable();
+
+      const dmnCallback = subscribe.getCall(1).args[1];
+
+      await dmnCallback({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Platform'
+      });
+    });
+
+
+    it('should send engine profile (Cloud DMN)', async () => {
+
+      // given
+      const subscribe = sinon.spy();
+
+      const onSend = sinon.spy();
+
+      const tab = createTab({
+        type: 'dmn',
+        file: {
+          contents: engineProfileCloudDMN
+        }
+      });
+
+      const config = { get: () => null };
+
+      // when
+      const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+      diagramOpenEventHandler.enable();
+
+      const dmnCallback = subscribe.getCall(1).args[1];
+
+      await dmnCallback({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Cloud'
+      });
+    });
+
+
+    it('should send default engine profile', async () => {
+
+      // given
+      const subscribe = sinon.spy();
+
+      const onSend = sinon.spy();
+
+      const tab = createTab({
+        type: 'dmn',
+        file: {
+          contents: emptyDMN
+        }
+      });
+
+      const config = { get: () => null };
+
+      // when
+      const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+      diagramOpenEventHandler.enable();
+
+      const dmnCallback = subscribe.getCall(1).args[1];
+
+      await dmnCallback({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Platform'
+      });
+    });
+
+
+    it('should send default engine profile (cloud DMN)', async () => {
+
+      // given
+      const subscribe = sinon.spy();
+
+      const onSend = sinon.spy();
+
+      const tab = createTab({
+        type: 'cloud-dmn',
+        file: {
+          contents: emptyDMN
+        }
+      });
+
+      const config = { get: () => null };
+
+      // when
+      const diagramOpenEventHandler = new DiagramOpenEventHandler({ onSend, subscribe, config });
+
+      diagramOpenEventHandler.enable();
+
+      const dmnCallback = subscribe.getCall(1).args[1];
+
+      await dmnCallback({ tab });
+
+      const { engineProfile } = onSend.getCall(0).args[0];
+
+      // then
+      expect(engineProfile).to.eql({
+        executionPlatform: 'Camunda Cloud'
+      });
+    });
+
 
     it('should send Platform engine profile (forms)', async () => {
 
