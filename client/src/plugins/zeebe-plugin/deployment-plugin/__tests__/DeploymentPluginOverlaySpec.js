@@ -62,6 +62,44 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
+  it('should check connection with updated cluster values on input change', (done) => {
+
+    // given
+    const spy = sinon.stub();
+    const validator = {
+      createConnectionChecker: () => createConnectionChecker({ check: spy })
+    };
+
+    const { wrapper } = createDeploymentPluginModal({
+      anchor,
+      validator,
+      config: {
+        endpoint: {
+          targetType: 'camundaCloud',
+          camundaCloudClusterUrl: '7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443'
+        }
+      }
+    });
+
+    // assume
+    expect(spy).to.have.been.calledOnce;
+    expect(spy.getCall(0).args[0].camundaCloudClusterId).to.equal('7edda473-891c-4978-aa27-2e727d8560ff');
+    expect(spy.getCall(0).args[0].camundaCloudClusterRegion).to.equal('ber-5');
+
+    // when
+    const input = wrapper.find('input[id="endpoint.camundaCloudClusterUrl"]');
+    input.instance().value = 'a-b-c.foo-1.zeebe.camunda.io:443';
+    input.simulate('change');
+
+    // then
+    expect(spy).to.have.been.calledTwice;
+    expect(spy.getCall(1).args[0].camundaCloudClusterId).to.equal('a-b-c');
+    expect(spy.getCall(1).args[0].camundaCloudClusterRegion).to.equal('foo-1');
+
+    done();
+  });
+
+
   it('should extract clusterId and clusterRegion', done => {
 
     // given

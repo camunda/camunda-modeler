@@ -263,6 +263,20 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
+  it('should save tab on close', async () => {
+
+    // given
+    const config = { set: sinon.spy() };
+    const { instance } = createDeploymentPlugin({ config, userAction: 'cancel' });
+
+    // when
+    await instance.deploy();
+
+    // then
+    expect(config.set).to.have.been.calledOnce;
+  });
+
+
   describe('ui', () => {
 
     const BUTTON_SELECTOR = '[title="Deploy current diagram"]';
@@ -1328,13 +1342,11 @@ class TestDeploymentPlugin extends DeploymentPlugin {
     } = this.props;
 
     if (overlayState) {
-      const action = userAction || 'deploy';
-
       if (userActionSpy) {
         userActionSpy();
       }
 
-      const config = action !== 'cancel' && {
+      const config = {
         endpoint: {
           ...overlayState.config.endpoint,
           ...endpoint
@@ -1346,7 +1358,7 @@ class TestDeploymentPlugin extends DeploymentPlugin {
       };
 
       if (!keepOpen) {
-        overlayState.onClose(config);
+        overlayState.onClose(config, userAction);
       }
     }
   }
