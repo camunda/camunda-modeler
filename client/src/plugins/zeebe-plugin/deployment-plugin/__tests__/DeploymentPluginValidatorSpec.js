@@ -19,6 +19,7 @@ import {
   CLIENT_ID_MUST_NOT_BE_EMPTY,
   CLIENT_SECRET_MUST_NOT_BE_EMPTY,
   CLUSTER_URL_MUST_BE_VALID_CLOUD_URL,
+  CONTACT_POINT_MUST_BE_URL_OR_IP
 } from '../DeploymentPluginConstants';
 
 
@@ -28,15 +29,34 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
 
     const validator = new DeploymentPluginValidator(null);
 
-    it('should validate Zeebe contact point', () => {
+    it('should validate Zeebe contact point - IP address', () => {
 
       // given
-      const nonValidZeebeContactPoint = '';
-      const validZeebeContactPoint = 'validZeebeContactPoint';
+      const emptyZeebeContactPoint = '';
+      const noPortZeebeContactPoint = '0.0.0.0';
+      const validZeebeContactPoint = '0.0.0.0:0001';
 
       // then
-      expect(validator.validateZeebeContactPoint(nonValidZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_NOT_BE_EMPTY);
+      expect(validator.validateZeebeContactPoint(emptyZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_NOT_BE_EMPTY);
+      expect(validator.validateZeebeContactPoint(noPortZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_BE_URL_OR_IP);
       expect(validator.validateZeebeContactPoint(validZeebeContactPoint)).to.not.exist;
+    });
+
+
+    it('should validate Zeebe contact point - URL', () => {
+
+      // given
+      const emptyZeebeContactPoint = '';
+      const noPortZeebeContactPoint = 'foo.bar';
+      const validZeebeContactPoint = 'foo.bar:0001';
+      const validZeebeContactPointFullURL = 'https://foo.bar:0001';
+
+      // then
+      expect(validator.validateZeebeContactPoint(emptyZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_NOT_BE_EMPTY);
+      expect(validator.validateZeebeContactPoint(noPortZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_BE_URL_OR_IP);
+      expect(validator.validateZeebeContactPoint(validZeebeContactPoint)).to.not.exist;
+      expect(validator.validateZeebeContactPoint(validZeebeContactPointFullURL)).to.not.exist;
+
     });
 
 
@@ -152,7 +172,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
         endpoint: {
           targetType: 'selfHosted',
           authType: 'none',
-          contactPoint: 'https://camunda.com'
+          contactPoint: 'https://camunda.com:0001'
         }
       };
 
@@ -167,7 +187,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
 
       // then
       expect(Object.keys(validator.validateConfig(config))).to.have.lengthOf(0);
-      expect(Object.keys(validator.validateConfig(wrongConfig))).to.have.lengthOf(1);
+      expect(Object.keys(validator.validateConfig(wrongConfig))).to.have.lengthOf(2);
     });
 
 
@@ -181,7 +201,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
         endpoint: {
           targetType: 'selfHosted',
           authType: 'oauth',
-          contactPoint: 'https://camunda.com',
+          contactPoint: 'https://camunda.com:0001',
           oauthURL: 'https://camunda.com',
           audience: 'bearer',
           clientId: 'test',
@@ -203,7 +223,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
 
       // then
       expect(Object.keys(validator.validateConfig(config))).to.have.lengthOf(0);
-      expect(Object.keys(validator.validateConfig(wrongConfig))).to.have.lengthOf(3);
+      expect(Object.keys(validator.validateConfig(wrongConfig))).to.have.lengthOf(4);
     });
   });
 

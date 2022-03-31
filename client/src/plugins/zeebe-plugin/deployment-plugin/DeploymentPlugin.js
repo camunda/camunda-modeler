@@ -352,7 +352,7 @@ export default class DeploymentPlugin extends PureComponent {
       id: generateId(),
       targetType: CAMUNDA_CLOUD,
       authType: AUTH_TYPES.NONE,
-      contactPoint: '0.0.0.0:26500',
+      contactPoint: '',
       oauthURL: '',
       audience: '',
       clientId: '',

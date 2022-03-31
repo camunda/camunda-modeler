@@ -15,7 +15,8 @@ import {
   AUDIENCE_MUST_NOT_BE_EMPTY,
   CLIENT_ID_MUST_NOT_BE_EMPTY,
   CLIENT_SECRET_MUST_NOT_BE_EMPTY,
-  CLUSTER_URL_MUST_BE_VALID_CLOUD_URL
+  CLUSTER_URL_MUST_BE_VALID_CLOUD_URL,
+  CONTACT_POINT_MUST_BE_URL_OR_IP
 } from './DeploymentPluginConstants';
 
 import { AUTH_TYPES } from '../shared/ZeebeAuthTypes';
@@ -39,12 +40,10 @@ export default class DeploymentPluginValidator {
     return value ? null : message;
   }
 
-  validateUrl = (value, message = CLUSTER_URL_MUST_BE_VALID_CLOUD_URL) => {
-    return validCloudUrl(value) ? null : message;
-  }
-
   validateZeebeContactPoint = (value) => {
-    return this.validateNonEmpty(value, CONTACT_POINT_MUST_NOT_BE_EMPTY);
+    return this.validateNonEmpty(value, CONTACT_POINT_MUST_NOT_BE_EMPTY) ||
+      validateUrl(value, CONTACT_POINT_MUST_BE_URL_OR_IP) ||
+      checkPort(value, CONTACT_POINT_MUST_BE_URL_OR_IP);
   }
 
   validateOAuthURL = (value) => {
@@ -64,7 +63,7 @@ export default class DeploymentPluginValidator {
   }
 
   validateClusterUrl = (value) => {
-    return this.validateUrl(value, CLUSTER_URL_MUST_BE_VALID_CLOUD_URL);
+    return validCloudUrl(value) ? null : CLUSTER_URL_MUST_BE_VALID_CLOUD_URL;
   }
 
   validateConnection = (endpoint) => {
@@ -311,3 +310,31 @@ function shallowEquals(a, b) {
 function validCloudUrl(url) {
   return /^(https:\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url);
 }
+
+const validateUrl = (value, message) => {
+  let fullURL = value;
+
+  if (!(value.startsWith('https://') || value.startsWith('http://'))) {
+    fullURL = 'http://' + value;
+  }
+
+  try {
+    new URL(fullURL);
+    return null;
+
+  } catch (e) {
+    return message;
+  }
+};
+
+const checkPort = (value, message) => {
+  var parts = value.split(':');
+  var port = (parts.length > 1) ? parts[parts.length - 1] : null;
+
+  if (port) {
+    const number = parseInt(port);
+    return isNaN(number) ? message : null;
+  }
+
+  return message;
+};
