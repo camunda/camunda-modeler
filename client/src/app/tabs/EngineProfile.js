@@ -30,6 +30,7 @@ const HELP_LINKS = {
 
 export function EngineProfile(props) {
   const {
+    filterVersions = () => true,
     engineProfile,
     onChange = null
   } = props;
@@ -43,7 +44,7 @@ export function EngineProfile(props) {
 
   const engineProfileForExecutionPlatform = ENGINE_PROFILES.find(p => p.executionPlatform === engineProfile.executionPlatform);
 
-  const engineProfileVersions = engineProfileForExecutionPlatform && engineProfileForExecutionPlatform.executionPlatformVersions;
+  const engineProfileVersions = engineProfileForExecutionPlatform && engineProfileForExecutionPlatform.executionPlatformVersions.filter(filterVersions);
 
   if (!engineProfileVersions) {
     throw new Error('<engineProfileVersions: string[]> not found');

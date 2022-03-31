@@ -43,6 +43,13 @@ import diagramXML from './diagram.dmn';
 
 import diagram11XML from './diagram11.dmn';
 
+import engineProfileXML from '../../__tests__/EngineProfile.platform.dmn';
+import noEngineProfileXML from '../../__tests__/EngineProfile.vanilla.dmn';
+import unknownEngineProfileXML from '../../__tests__/EngineProfile.unknown.dmn';
+import missingPatchEngineProfileXML from '../../__tests__/EngineProfile.missing-patch.platform.dmn';
+import patchEngineProfileXML from '../../__tests__/EngineProfile.patch.platform.dmn';
+import namespaceEngineProfileXML from '../../__tests__/EngineProfile.namespace.dmn';
+
 import {
   DEFAULT_LAYOUT
 } from '../OverviewContainer';
@@ -1946,13 +1953,64 @@ describe('<DmnEditor>', function() {
 
   describe('engine profile', function() {
 
-    it('should show engine profile (no engine profile)', async function() {
+    function expectEngineProfile(xml, engineProfile) {
+      return async function() {
+
+        // when
+        const { instance, wrapper } = await renderEditor(xml);
+
+        wrapper.update();
+
+        // then
+        expect(wrapper.find('EngineProfile').exists()).to.be.true;
+        expect(instance.getCached().engineProfile).to.eql(engineProfile);
+      };
+    }
+
+
+    it('should show engine profile (no engine profile)', expectEngineProfile(noEngineProfileXML, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: undefined
+    }));
+
+
+    it('should show engine profile (with namespace)', expectEngineProfile(namespaceEngineProfileXML, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: undefined
+    }));
+
+
+    it('should show engine profile (Camunda Platform 7.16.0)', expectEngineProfile(engineProfileXML, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: '7.16.0'
+    }));
+
+
+    it('should show engine profile (Camunda Platform 7.16)', expectEngineProfile(missingPatchEngineProfileXML, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: '7.16.0'
+    }));
+
+
+    it('should show engine profile (Camunda Platform 7.16.1)', expectEngineProfile(patchEngineProfileXML, {
+      executionPlatform: 'Camunda Platform',
+      executionPlatformVersion: '7.16.1'
+    }));
+
+
+    it('should reject unknown engine profile', async function() {
+
+      // given
+      const onImportSpy = spy();
 
       // when
-      const { wrapper } = await renderEditor(diagramXML);
+      const { instance } = await renderEditor(unknownEngineProfileXML, { onImport: onImportSpy });
 
       // then
-      expect(wrapper.find('EngineProfile').exists()).to.be.true;
+      expect(onImportSpy).to.have.been.calledOnce;
+      expect(onImportSpy).to.have.been.calledWith(sinon.match({ message: 'An unknown execution platform (Camunda Unknown 7.15.0) was detected.' }), []);
+
+      expect(instance.getCached().engineProfile).to.be.null;
     });
 
   });
