@@ -62,8 +62,13 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
       return await this.onBpmnDiagramOpened(file, type);
     });
 
-    subscribe('dmn.modeler.created', () => {
-      this.onDiagramOpened(types.DMN);
+    subscribe('dmn.modeler.created', context => {
+      const {
+        file,
+        type
+      } = context.tab;
+
+      return this.onDmnDiagramOpened(file, type);
     });
 
     subscribe('cmmn.modeler.created', () => {
@@ -202,6 +207,15 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
   }
 
+  onDmnDiagramOpened = async (file, type, context = {}) => {
+    const engineProfile = await this.getEngineProfile(file, type);
+
+    return await this.onDiagramOpened(types.DMN, {
+      engineProfile,
+      ...context
+    });
+  }
+
   getElementTemplates = async (file, type) => {
 
     const config = this._config;
@@ -249,7 +263,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 // helper ////////////////
 
 function getDefaultExecutionPlatform(type) {
-  if (type === 'cloud-bpmn') {
+  if (/^cloud/.test(type)) {
     return ENGINES.CLOUD;
   }
 
