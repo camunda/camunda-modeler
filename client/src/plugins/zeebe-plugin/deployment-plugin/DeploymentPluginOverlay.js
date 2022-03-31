@@ -292,6 +292,7 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
                                 label={ AUDIENCE }
                                 fieldError={ this.endpointConfigurationFieldError }
                                 validate={ validatorFunctionsByFieldNames.audience }
+                                description="Identifier for the access token. Usually the base URI of the cluster endpoint."
                               />
                             </React.Fragment>
                           )
