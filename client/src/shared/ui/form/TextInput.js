@@ -67,18 +67,23 @@ export default function TextInput(props) {
         return getTextarea();
       }
     } else {
-      return <input
-        { ...field }
-        type="text"
-        value={ fieldValue || '' }
-        disabled={ form.isSubmitting }
-        className={ classNames('form-control', {
-          'is-invalid': !!error
-        }) }
-        id={ fieldName }
-        placeholder={ hint }
-        { ...restProps }
-      />;
+      return <React.Fragment>
+        <input
+          { ...field }
+          type="text"
+          value={ fieldValue || '' }
+          disabled={ form.isSubmitting }
+          className={ classNames('form-control', {
+            'is-invalid': !!error
+          }) }
+          id={ fieldName }
+          placeholder={ hint }
+          { ...restProps }
+        />
+        {description &&
+          <p className="form-control">{description}</p>
+        }
+      </React.Fragment>;
     }
   }
 
