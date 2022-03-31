@@ -242,6 +242,7 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
                                 name="endpoint.contactPoint"
                                 component={ TextInput }
                                 label={ CONTACT_POINT }
+                                validate={ validatorFunctionsByFieldNames.contactPoint }
                                 fieldError={ this.endpointConfigurationFieldError }
                                 hint={ CONTACT_POINT_HINT }
                                 autoFocus
