@@ -17,6 +17,7 @@ import ZeebeBpmnModdle from 'zeebe-bpmn-moddle/resources/zeebe';
 import ModelerModdle from 'modeler-moddle/resources/modeler';
 
 import { selfAndAllFlowElements } from './elementsUtil';
+import parseExecutionPlatform from '../app/util/parseExecutionPlatform';
 
 
 export async function getBpmnDefinitions(xml, diagramType) {
@@ -40,12 +41,10 @@ export async function getBpmnDefinitions(xml, diagramType) {
   return definitions;
 }
 
-export async function getEngineProfile(xml, diagramType) {
-  const definition = await getBpmnDefinitions(xml, diagramType);
 
+export async function getEngineProfile(xml, diagramType) {
   return {
-    executionPlatform: definition.get('executionPlatform'),
-    executionPlatformVersion: definition.get('executionPlatformVersion')
+    ...parseExecutionPlatform(xml)
   };
 }
 
