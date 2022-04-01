@@ -215,7 +215,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
     const elementTemplateFilter = getElementTemplatesFilter(type);
 
     return elementTemplateFilter(elementTemplates).map((elementTemplate) => {
-      const { appliesTo, properties } = elementTemplate;
+      const { appliesTo, properties, icon } = elementTemplate;
 
       const propertyCounts = properties.map((property) => {
 
@@ -240,7 +240,16 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
         return propertyCounts;
       }, {});
 
-      return { appliesTo, properties: propertyCounts };
+      const reducedTemplate = {
+        appliesTo,
+        properties: propertyCounts
+      };
+
+      if (icon) {
+        reducedTemplate.icon = true;
+      }
+
+      return reducedTemplate;
     });
   }
 }

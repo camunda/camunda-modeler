@@ -454,6 +454,39 @@ describe('<DiagramOpenEventHandler>', () => {
       expect(elementTemplateCount).to.equal(1);
     });
 
+
+    it('should send icon usage', async () => {
+
+      // given
+      const elementTemplates = mockCloudElementTemplates({
+        icon: {
+          'contents': 'data:image/svg+xml,%3Csvg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3C/svg%3E'
+        }
+      });
+
+      const type = 'cloud-bpmn';
+
+      const expected = [
+        {
+          appliesTo: [ 'bpmn:ServiceTask' ],
+          properties: {
+            'zeebe:input': 3,
+            'zeebe:output': 1,
+            'zeebe:taskDefinition:type': 1,
+            'zeebe:taskHeader': 1
+          },
+          icon: true
+        }
+      ];
+
+      // then
+      await expectTemplatesSent(
+        elementTemplates,
+        type,
+        expected
+      );
+    });
+
   });
 
 
@@ -1729,7 +1762,7 @@ function mockPlatformElementTemplates() {
   ];
 }
 
-function mockCloudElementTemplates() {
+function mockCloudElementTemplates(overrides = {}) {
   return [
     {
       $schema: 'https://example.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
@@ -1741,7 +1774,8 @@ function mockCloudElementTemplates() {
         { binding: { name: 'messageBody', type: 'zeebe:input' } },
         { binding: { source: 'result', type: 'zeebe:output' } },
         { binding: { key: 'header', type: 'zeebe:taskHeader' } }
-      ]
+      ],
+      ...overrides
     }
   ];
 }
