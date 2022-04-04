@@ -554,6 +554,7 @@ describe('<UpdateChecks>', function() {
 
       // given
       const displayNotification = sinon.spy();
+      const triggerAction = sinon.spy();
       const logSpy = sinon.spy();
 
       const error = new Error('These things happen.');
@@ -563,6 +564,7 @@ describe('<UpdateChecks>', function() {
         instance
       } = createComponent({
         displayNotification,
+        triggerAction,
         log: logSpy
       });
 
@@ -576,13 +578,16 @@ describe('<UpdateChecks>', function() {
       // then
       expect(displayNotification).to.have.been.calledOnce;
       const notification = displayNotification.getCall(0).args[0];
-
-      notification.content.props.onClick();
-
       expect(logSpy).to.have.been.calledOnceWith({
         category: 'update-check-error',
-        message: error.message
+        message: error.message,
+        silent: true
       });
+
+      expect(triggerAction).to.not.have.been.called;
+      notification.content.props.onClick();
+      expect(triggerAction).to.have.been.calledOnceWith('open-log');
+
     });
 
 

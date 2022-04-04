@@ -502,11 +502,14 @@ export default class DeploymentPlugin extends PureComponent {
 
     const logMessage = {
       category: 'deploy-error',
-      message: response.details || response.message
+      message: response.details || response.message,
+      silent: true
     };
 
+    log(logMessage);
+
     const content = <button
-      onClick={ ()=> log(logMessage) }>
+      onClick={ () => triggerAction('open-log') }>
       See the log for further details.
     </button>;
 

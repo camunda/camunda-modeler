@@ -1141,9 +1141,13 @@ export class App extends PureComponent {
    * @param {string} message - Message to be logged.
    * @param {string} category - Category of message.
    * @param {string} action - Action to be triggered.
+   * @param {bool} silent - Log without opening the panel.
    */
-  logEntry(message, category, action) {
-    this.toggleLog(true);
+  logEntry(message, category, action, silent) {
+
+    if (!silent) {
+      this.toggleLog(true);
+    }
 
     const logEntry = {
       category,
@@ -1772,10 +1776,15 @@ export class App extends PureComponent {
       const {
         action,
         category,
-        message
+        message,
+        silent
       } = options;
 
-      return this.logEntry(message, category, action);
+      return this.logEntry(message, category, action, silent);
+    }
+
+    if (action === 'open-log') {
+      return this.toggleLog(true);
     }
 
     if (action === 'display-notification') {
