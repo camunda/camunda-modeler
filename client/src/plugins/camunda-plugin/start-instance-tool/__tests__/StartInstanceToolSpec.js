@@ -900,8 +900,7 @@ describe('<StartInstanceTool>', () => {
 
       const actionSpy = sinon.spy(),
             actionTriggered = {
-              emitEvent: 'emit-event',
-              type: 'deployment.done',
+              emitEvent: 'open-log',
               handler: actionSpy
             };
 
@@ -923,13 +922,16 @@ describe('<StartInstanceTool>', () => {
       // then
       expect(displayNotification).to.have.been.calledOnce;
       const notification = displayNotification.getCall(0).args[0];
-
-      notification.content.props.onClick();
-
       expect(logSpy).to.have.been.calledOnceWith({
         category: 'start-instance-error',
-        message: 'Starting instance failed'
+        message: 'Starting instance failed',
+        silent: true
       });
+
+      expect(actionSpy).to.not.have.been.called;
+      notification.content.props.onClick();
+      expect(actionSpy).to.have.been.calledOnce;
+
     });
 
 
@@ -1218,7 +1220,7 @@ function createStartInstanceTool({
       return activeTab;
     case (props.actionTriggered &&
       props.actionTriggered.emitEvent == event &&
-      props.actionTriggered.type == context.type):
+      props.actionTriggered.type == (context ? context.type : undefined)):
       props.actionTriggered.handler(context);
     }
   };

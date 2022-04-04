@@ -117,6 +117,7 @@ export default class UpdateChecks extends PureComponent {
   handleUpdateCheckFailed(error, silentCheck = true) {
     const {
       displayNotification,
+      triggerAction,
       log: appLog
     } = this.props;
 
@@ -124,11 +125,14 @@ export default class UpdateChecks extends PureComponent {
 
       const logMessage = {
         category: 'update-check-error',
-        message: error.message
+        message: error.message,
+        silent: true
       };
 
+      appLog(logMessage);
+
       const content = <button
-        onClick={ ()=> appLog(logMessage) }>
+        onClick={ () => triggerAction('open-log') }>
         See the log for further details.
       </button>;
 

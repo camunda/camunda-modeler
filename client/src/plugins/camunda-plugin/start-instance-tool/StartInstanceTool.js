@@ -414,16 +414,20 @@ export default class StartInstanceTool extends PureComponent {
    handleStartError(tab, error) {
      const {
        log,
-       displayNotification
+       displayNotification,
+       triggerAction
      } = this.props;
 
      const logMessage = {
        category: 'start-instance-error',
-       message: error.problems || error.message
+       message: error.problems || error.message,
+       silent: true
      };
 
+     log(logMessage);
+
      const content = <button
-       onClick={ ()=> log(logMessage) }>
+       onClick={ () => triggerAction('open-log') }>
        See the log for further details.
      </button>;
 

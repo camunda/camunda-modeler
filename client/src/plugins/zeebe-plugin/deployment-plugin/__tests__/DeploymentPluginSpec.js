@@ -674,27 +674,36 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     const mockResult = { success: false, response: { details:'some error' } };
     const zeebeAPI = new MockZeebeAPI({ deploymentResult: mockResult });
+
+    const actionSpy = sinon.spy(),
+          actionTriggered = {
+            emitEvent: 'open-log',
+            handler: actionSpy
+          };
+
     const { instance } = createDeploymentPlugin({
       displayNotification: displayNotificationSpy,
+      actionTriggered,
       zeebeAPI,
       log: logSpy
     });
 
+    // when
     await instance.deploy();
 
-    // assume
-    expect(displayNotificationSpy).to.have.been.calledOnce;
-
-    const notification = displayNotificationSpy.getCall(0).args[0];
-
-    // when
-    notification.content.props.onClick();
-
     // then
+    expect(displayNotificationSpy).to.have.been.calledOnce;
+    const notification = displayNotificationSpy.getCall(0).args[0];
     expect(logSpy).to.have.been.calledOnceWith({
       category: 'deploy-error',
-      message: mockResult.response.details
+      message: mockResult.response.details,
+      silent: true
     });
+
+    expect(actionSpy).to.not.have.been.called;
+    notification.content.props.onClick();
+    expect(actionSpy).to.have.been.calledOnce;
+
   });
 
 
@@ -1372,7 +1381,7 @@ function createDeploymentPlugin({
       return activeTab;
     case (props.actionTriggered &&
       props.actionTriggered.emitEvent == event &&
-      props.actionTriggered.type == context.type):
+      props.actionTriggered.type == (context ? context.type : undefined)):
       props.actionTriggered.handler(context);
     }
   };

@@ -237,11 +237,14 @@ export default class DeploymentTool extends PureComponent {
 
     const logMessage = {
       category: 'deploy-error',
-      message: error.problems || error.details || error.message
+      message: error.problems || error.details || error.message,
+      silent: true
     };
 
+    log(logMessage);
+
     const content = <button
-      onClick={ ()=> log(logMessage) }>
+      onClick={ () => triggerAction('open-log') }>
       See the log for further details.
     </button>;
 
