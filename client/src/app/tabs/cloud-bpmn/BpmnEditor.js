@@ -854,6 +854,10 @@ function showLintError(modeler, error) {
 
   const element = elementRegistry.get(id);
 
+  if (!element) {
+    return;
+  }
+
   if (element !== canvas.getRootElement()) {
     canvas.scrollToElement(element);
   }
