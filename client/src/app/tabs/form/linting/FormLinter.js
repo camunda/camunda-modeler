@@ -25,14 +25,25 @@ const formJSVersions = {
     '1.0': '0.0.1',
     '1.1': '0.1.0',
     '1.2': '0.1.0',
-    '1.3': '0.1.0'
+    '1.3': '0.1.0',
+    '8.0': '0.2.0'
   },
   'Camunda Platform': {
     '7.15': '0.0.1',
-    '7.16': '0.1.0'
+    '7.16': '0.1.0',
+    '7.17': '0.2.0'
   }
 };
 
+const executionPlatformLabels = {
+  'Camunda Cloud': {
+    '1.0': 'Camunda Platform 8 (Zeebe 1.0)',
+    '1.1': 'Camunda Platform 8 (Zeebe 1.1)',
+    '1.2': 'Camunda Platform 8 (Zeebe 1.2)',
+    '1.3': 'Camunda Platform 8 (Zeebe 1.3)',
+    '8.0': 'Camunda Platform 8'
+  }
+};
 
 export default class FormLinter {
   static lint(contents) {
@@ -86,8 +97,8 @@ export default class FormLinter {
       if (!types.includes(type)) {
         results.push({
           id,
-          label: label || textToLabel(text),
-          message: `Form field of type <${ type }> not supported by ${ executionPlatform } ${ executionPlatformVersion }`,
+          label: label || (text && textToLabel(text)) || id,
+          message: `A <${ capitalize(type) }> is not supported by ${ getExecutionPlatformLabel(executionPlatform, executionPlatformVersion) }`,
           category: 'error'
         });
       }
@@ -113,4 +124,16 @@ function getFormJSVersion(executionPlatform, executionPlatformVersion) {
   }
 
   return formJSVersions[ executionPlatform ][ executionPlatformVersion ];
+}
+
+function getExecutionPlatformLabel(executionPlatform, executionPlatformVersion) {
+  if (executionPlatformLabels[ executionPlatform ] && executionPlatformLabels[ executionPlatform ][ executionPlatformVersion ]) {
+    return executionPlatformLabels[ executionPlatform ][ executionPlatformVersion ];
+  }
+
+  return `${ executionPlatform } ${ executionPlatformVersion }`;
+}
+
+function capitalize(string) {
+  return `${ string.slice(0, 1).toUpperCase()}${ string.slice(1) }`;
 }
