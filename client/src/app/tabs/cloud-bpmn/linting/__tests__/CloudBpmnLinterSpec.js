@@ -62,11 +62,11 @@ describe('CloudBpmnLinter', function() {
 
 
   [
-    [ 'Zeebe 1.0', camundaCloud10XML, camundaCloud10ErrorsXML ],
-    [ 'Zeebe 1.1', camundaCloud11XML ],
-    [ 'Zeebe 1.2', camundaCloud12XML ],
-    [ 'Zeebe 1.3', camundaCloud13XML ],
-    [ 'Camunda Platform 8.0', camundaCloud80XML ]
+    [ 'Camunda Platform 8 (Zeebe 1.0)', camundaCloud10XML, camundaCloud10ErrorsXML ],
+    [ 'Camunda Platform 8 (Zeebe 1.1)', camundaCloud11XML ],
+    [ 'Camunda Platform 8 (Zeebe 1.2)', camundaCloud12XML ],
+    [ 'Camunda Platform 8 (Zeebe 1.3)', camundaCloud13XML ],
+    [ 'Camunda Platform 8', camundaCloud80XML ]
   ].forEach(([ engineProfile, noErrorsXML, errorsXML ]) => {
 
     describe(engineProfile, function() {
@@ -89,13 +89,17 @@ describe('CloudBpmnLinter', function() {
 
         // then
         expect(results).to.exist;
-        expect(results).to.eql([
-          {
-            id: 'Activity_1',
-            message: `Element of type <bpmn:BusinessRuleTask> not supported by ${ engineProfile }`,
-            category: 'error'
-          }
-        ]);
+        expect(results).to.have.length(1);
+        expect(results[ 0 ]).to.eql({
+          id: 'Activity_1',
+          label: 'Task',
+          message: `A <Business Rule Task> is not supported by ${ engineProfile }`,
+          error: {
+            type: 'elementType',
+            element: 'bpmn:BusinessRuleTask'
+          },
+          category: 'error'
+        });
       });
 
     });
