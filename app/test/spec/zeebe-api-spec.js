@@ -121,6 +121,32 @@ describe('ZeebeAPI', function() {
       });
 
 
+      it('for <endpoint-unavailable> (Cloud)', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('TEST ERROR.', 13);
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'camundaCloud'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.checkConnection(parameters);
+
+        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
+      });
+
+
       it('for <not-found>', async () => {
 
         // given
@@ -195,11 +221,37 @@ describe('ZeebeAPI', function() {
         // when
         const result = await zeebeAPI.checkConnection(parameters);
 
-        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
+        expect(result.reason).to.eql('INVALID_CLIENT_ID');
       });
 
 
       it('for <unauthorized>', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('Unauthorized');
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'selfHosted'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.checkConnection(parameters);
+
+        expect(result.reason).to.eql('UNAUTHORIZED');
+      });
+
+
+      it('for <unauthorized> - Cloud', async () => {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -221,7 +273,7 @@ describe('ZeebeAPI', function() {
         // when
         const result = await zeebeAPI.checkConnection(parameters);
 
-        expect(result.reason).to.eql('UNAUTHORIZED');
+        expect(result.reason).to.eql('INVALID_CREDENTIALS');
       });
 
 
@@ -921,6 +973,32 @@ describe('ZeebeAPI', function() {
       });
 
 
+      it('for <endpoint-unavailable> (Cloud)', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('TEST ERROR.', 13);
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'camundaCloud'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getGatewayVersion(parameters);
+
+        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
+      });
+
+
       it('for <not-found>', async () => {
 
         // given
@@ -995,11 +1073,37 @@ describe('ZeebeAPI', function() {
         // when
         const result = await zeebeAPI.getGatewayVersion(parameters);
 
-        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
+        expect(result.reason).to.eql('INVALID_CLIENT_ID');
       });
 
 
       it('for <unauthorized>', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('Unauthorized');
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'selfHosted'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getGatewayVersion(parameters);
+
+        expect(result.reason).to.eql('UNAUTHORIZED');
+      });
+
+
+      it('for <unauthorized> - Cloud', async () => {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1019,9 +1123,9 @@ describe('ZeebeAPI', function() {
         };
 
         // when
-        const result = await zeebeAPI.getGatewayVersion(parameters);
+        const result = await zeebeAPI.checkConnection(parameters);
 
-        expect(result.reason).to.eql('UNAUTHORIZED');
+        expect(result.reason).to.eql('INVALID_CREDENTIALS');
       });
 
 

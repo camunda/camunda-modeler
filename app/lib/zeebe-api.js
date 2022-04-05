@@ -26,7 +26,9 @@ const errorReasons = {
   CLUSTER_UNAVAILABLE: 'CLUSTER_UNAVAILABLE',
   FORBIDDEN: 'FORBIDDEN',
   OAUTH_URL: 'OAUTH_URL',
-  UNSUPPORTED_ENGINE: 'UNSUPPORTED_ENGINE'
+  UNSUPPORTED_ENGINE: 'UNSUPPORTED_ENGINE',
+  INVALID_CLIENT_ID: 'INVALID_CLIENT_ID',
+  INVALID_CREDENTIALS: 'INVALID_CREDENTIALS'
 };
 
 const endpointTypes = {
@@ -325,6 +327,8 @@ function getErrorReason(error, endpoint) {
       ? errorReasons.CLUSTER_UNAVAILABLE
       : errorReasons.CONTACT_POINT_UNAVAILABLE
     );
+  } else if (code === 13 && type === endpointTypes.CAMUNDA_CLOUD) {
+    return errorReasons.CLUSTER_UNAVAILABLE;
   } else if (code === 12) {
     return errorReasons.UNSUPPORTED_ENGINE;
   }
@@ -339,7 +343,7 @@ function getErrorReason(error, endpoint) {
     if (type === endpointTypes.OAUTH) {
       return errorReasons.OAUTH_URL;
     } else if (type === endpointTypes.CAMUNDA_CLOUD) {
-      return errorReasons.CLUSTER_UNAVAILABLE;
+      return errorReasons.INVALID_CLIENT_ID;
     }
 
     return errorReasons.CONTACT_POINT_UNAVAILABLE;
@@ -347,7 +351,10 @@ function getErrorReason(error, endpoint) {
 
   // (4) handle other error messages
   if (message.includes('Unauthorized')) {
-    return errorReasons.UNAUTHORIZED;
+    return (type === endpointTypes.CAMUNDA_CLOUD
+      ? errorReasons.INVALID_CREDENTIALS
+      : errorReasons.UNAUTHORIZED
+    );
   }
 
   if (message.includes('Forbidden')) {
