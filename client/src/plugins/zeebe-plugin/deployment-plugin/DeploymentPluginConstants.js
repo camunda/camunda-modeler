@@ -46,7 +46,9 @@ export const ERROR_REASONS = {
   UNAUTHORIZED: 'UNAUTHORIZED',
   FORBIDDEN: 'FORBIDDEN',
   OAUTH_URL: 'OAUTH_URL',
-  UNSUPPORTED_ENGINE: 'UNSUPPORTED_ENGINE'
+  UNSUPPORTED_ENGINE: 'UNSUPPORTED_ENGINE',
+  INVALID_CLIENT_ID: 'INVALID_CLIENT_ID',
+  INVALID_CREDENTIALS: 'INVALID_CREDENTIALS'
 };
 
 export const CONNECTION_ERROR_MESSAGES = {
@@ -56,5 +58,7 @@ export const CONNECTION_ERROR_MESSAGES = {
   [ ERROR_REASONS.FORBIDDEN ]: 'This user is not permitted to deploy. Please use different credentials or get this user enabled to deploy.',
   [ ERROR_REASONS.OAUTH_URL ]: 'Should point to a running OAuth service.',
   [ ERROR_REASONS.UNKNOWN ]: 'Unknown error. Please check Zeebe cluster status.',
-  [ ERROR_REASONS.UNSUPPORTED_ENGINE ]: 'Unsupported Zeebe version.'
+  [ ERROR_REASONS.UNSUPPORTED_ENGINE ]: 'Unsupported Zeebe version.',
+  [ ERROR_REASONS.INVALID_CLIENT_ID ]: 'Please provide a valid Client ID.',
+  [ ERROR_REASONS.INVALID_CREDENTIALS ]: 'The client secret is not valid for the Client ID provided.'
 };
