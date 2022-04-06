@@ -167,15 +167,27 @@ describe('dialog', function() {
       // then
       expect(type).to.equal('dialog:show');
 
+      let buttons;
+
+      if (process.platform == 'linux') {
+        buttons = [
+          { id: 'discard', label: 'Don\'t Save' },
+          { id: 'cancel', label: 'Cancel' },
+          { id: 'save', label: 'Save' },
+        ];
+      } else {
+        buttons = [
+          { id: 'save', label: 'Save' },
+          { id: 'discard', label: 'Don\'t Save' },
+          { id: 'cancel', label: 'Cancel' },
+        ];
+      }
+
       expect(opts).to.eql({
         type: 'question',
         title: 'Close File',
         message: 'Save changes to "foo" before closing?',
-        buttons: [
-          { id: 'cancel', label: 'Cancel' },
-          { id: 'save', label: 'Save' },
-          { id: 'discard', label: 'Don\'t Save' }
-        ]
+        buttons
       });
     };
 
