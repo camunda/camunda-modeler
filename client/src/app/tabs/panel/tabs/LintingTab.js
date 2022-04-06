@@ -31,8 +31,6 @@ export default function LintingTab(props) {
     onAction('showLintError', issue);
   };
 
-  console.log('sorted', JSON.stringify(sortIssues(linting), null, 2));
-
   return <Panel.Tab
     id="linting"
     label="Errors"
