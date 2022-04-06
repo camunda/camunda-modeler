@@ -6,6 +6,67 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.0.0
+
+### General
+
+* `FEAT`: update app icon ([#2875](https://github.com/camunda/camunda-modeler/pull/2875))
+* `FEAT`: overhaul the welcome page design and add `new` badge for Camunda Platform 8 ([#2829](https://github.com/camunda/camunda-modeler/pull/2829) and [#2830](https://github.com/camunda/camunda-modeler/issues/2830))
+* `FEAT`: rename Camunda Platform to Camunda Platform 7 and Camunda Cloud to Camunda Platform 8 ([`129af3`](https://github.com/camunda/camunda-modeler/commit/129af3c14ba81a4dd21de6210240c58eee35ca77), [`33e5e8`](https://github.com/camunda/camunda-modeler/commit/33e5e86990274c590fadc3c508c1b27cda900ff2), [`673293`](https://github.com/camunda/camunda-modeler/commit/67329359a19be2cd5335499b941d05218631467e), [`86ccec`](https://github.com/camunda/camunda-modeler/commit/86ccec8dd7e70c80da7454f863816ed06f5990d5), and [#2834](https://github.com/camunda/camunda-modeler/issues/2834))
+* `FEAT`: add Camunda Platform 8 and Camunda Platform 7.17 in platform version selector ([#2736](https://github.com/camunda/camunda-modeler/issues/2736))
+* `FEAT`: link to new docs homepage ([`d036a0`](https://github.com/camunda/camunda-modeler/commit/d036a0a520b7ff4b68dcd74575fc4d29b39dd4f6), [`555abb`](https://github.com/camunda/camunda-modeler/commit/555abb368880f5d631d461b0d109a749ef880d65), and [`d92633`](https://github.com/camunda/camunda-modeler/commit/d92633eeaf5b97f8bf699d81821991612e2522cd))
+* `FEAT`: add display-version flag ([#2790](https://github.com/camunda/camunda-modeler/issues/2790) and [`5ca662`](https://github.com/camunda/camunda-modeler/commit/5ca6621848d7b314eb56f6fc96a98d7b72f9ecc2))
+* `FEAT`: send telemetry data for usage of plugins ([#2818](https://github.com/camunda/camunda-modeler/issues/2818))
+* `FEAT`: send telemetry data for button/link clicks on welcome page ([#2828](https://github.com/camunda/camunda-modeler/issues/2828))
+* `FIX`: always show active tab indicator ([#2732](https://github.com/camunda/camunda-modeler/issues/2732))
+* `FIX`: avoid error when closing startInstance overlay via canvas click ([#2727](https://github.com/camunda/camunda-modeler/issues/2727))
+* `FIX`: log errors in context of toast notifications ([#2793](https://github.com/camunda/camunda-modeler/issues/2793))
+* `DEPS`: bump to `electron@17.1.0` ([#2797](https://github.com/camunda/camunda-modeler/pull/2797))
+* `DEPS`: bump to `zeebe-node@2.1.0` ([#2783](https://github.com/camunda/camunda-modeler/issues/2783))
+
+### BPMN
+
+* `FEAT`: add element template support for Camunda Platform 8 BPMN diagrams ([#2785](https://github.com/camunda/camunda-modeler/pull/2785))
+* `FEAT`: allow configuration of custom groups for element template configurations ([#2673](https://github.com/camunda/camunda-modeler/issues/2673))
+* `FEAT`: send telemetry data for usage of element templates used for Camunda Platform 8 BPMN diagrams ([#2786](https://github.com/camunda/camunda-modeler/issues/2786), and [`268c53`](https://github.com/camunda/camunda-modeler/commit/268c53b00f9bd75055dfddf9683ba603c5c7337d))
+* `FEAT`: make deploy to Camunda Platform 8 SaaS the default selection in deploy tool ([#2832](https://github.com/camunda/camunda-modeler/issues/2832))
+* `FEAT`: show error in properties panel on click on respective error ([#2861](https://github.com/camunda/camunda-modeler/pull/2861))
+* `FEAT`: add implementation level validation and respective errors ([#2891](https://github.com/camunda/camunda-modeler/pull/2891))
+* `FEAT`: improve UI of deploy tool ([#2863](https://github.com/camunda/camunda-modeler/issues/2863), and [#2860](https://github.com/camunda/camunda-modeler/issues/2860))
+* `FEAT`: let plugins differentiate between BPMN tabs for either cloud, platform, or both ([#2757](https://github.com/camunda/camunda-modeler/issues/2757))
+* `FEAT`: pick up `bpmn-js` and `moddle` plugins for cloud BPMN tabs ([#2766](https://github.com/camunda/camunda-modeler/issues/2766))
+* `FEAT`: send telemetry data for usage of collapsed subprocesses ([#2756](https://github.com/camunda/camunda-modeler/issues/2756))
+* `FIX`: show properties-panel icon for ad-hoc subProcess ([#2749](https://github.com/camunda/camunda-modeler/issues/2749))
+* `FIX`: make labels for formType selection in properties panel easier to understand ([#2496](https://github.com/camunda/camunda-modeler/issues/2496))
+* `FIX`: avoid error in deployPlugin when file menu is used ([#2762](https://github.com/camunda/camunda-modeler/issues/2762))
+* `FIX`: allow copy&paste of linting errors on MacOS ([#2716](https://github.com/camunda/camunda-modeler/issues/2716))
+* `FIX`: correctly show color icons in edit > color menu ([#2733](https://github.com/camunda/camunda-modeler/issues/2733))
+* `FIX`: show variableName and variableEvents for Conditional Events ([#2866](https://github.com/camunda/camunda-modeler/issues/2866))
+* `FIX`: correctly persist Message End Events with external task configuration to XML ([#2865](https://github.com/camunda/camunda-modeler/issues/2865))
+* `DEPS`: bump to `bpmn-js-properties-panel@1.0.0-alpha.12` ([`b3ec90`](https://github.com/camunda/camunda-modeler/commit/b3ec90616543816a38fac1ef87dbf93f0c286738))
+* `DEPS`: bump to `camunda-bpmn-js@0.13.0-alpha.8` ([`b3ec90`](https://github.com/camunda/camunda-modeler/commit/b3ec90616543816a38fac1ef87dbf93f0c286738))
+* `DEPS`: bump to `diagram-js@8.2.1` ([`b3ec90`](https://github.com/camunda/camunda-modeler/commit/b3ec90616543816a38fac1ef87dbf93f0c286738))
+* `DEPS`: bump to `zeebe-bpmn-moddle@0.12.1` ([`b3ec90`](https://github.com/camunda/camunda-modeler/commit/b3ec90616543816a38fac1ef87dbf93f0c286738))
+
+### DMN
+
+* `FEAT`: add DMN modeler for Camunda Platform 8 ([#2525](https://github.com/camunda/camunda-modeler/issues/2525))
+* `FEAT`: add deploy tool for Camunda Platform 8 DMN diagrams ([#2526](https://github.com/camunda/camunda-modeler/issues/2526))
+* `FEAT`: let plugins differentiate between DMN tabs for either cloud, platform, or both ([#2854](https://github.com/camunda/camunda-modeler/issues/2854))
+* `FEAT`: support engine profile selection for DMN diagrams ([#2872](https://github.com/camunda/camunda-modeler/issues/2872))
+* `FEAT`: send telemetry data for engine usage within DMN diagrams on diagramOpen or diagramDeploy ([#2853](https://github.com/camunda/camunda-modeler/issues/2853))
+* `FIX`: allow opening of DMN 1.3 files with xml file extension ([#2841](https://github.com/camunda/camunda-modeler/issues/2841))
+* `DEPS`: add `camunda-dmn-js@0.2.2` ([`ba3a6c`](https://github.com/camunda/camunda-modeler/commit/ba3a6cc00b3b68d5be718f35ec927ed439c67c4f))
+* `DEPS`: bump to `dmn-js@12.1.0` ([`ba3a6c`](https://github.com/camunda/camunda-modeler/commit/ba3a6cc00b3b68d5be718f35ec927ed439c67c4f))
+
+### Forms
+
+* `DEPS`: bump to form-js@0.7.0 ([`3a20df`](https://github.com/camunda/camunda-modeler/commit/3a20df7a61d4fa498e250c8ae31ebc62b51a50f5))
+
+### Breaking Changes
+
+* `Camunda Platform` is now consistenly labeled as `Camunda Platform 7` and `Camunda Cloud` as `Camunda Platform 8`. This is a UI-level change and diagram data is not affected.
+
 ## 5.0.0-alpha.1
 
 ### BPMN
