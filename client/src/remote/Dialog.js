@@ -113,12 +113,19 @@ export default class Dialog {
       name
     } = options;
 
+    const buttons = [
+      { id: 'save', label: 'Save' },
+      { id: 'discard', label: 'Don\'t Save' },
+      { id: 'cancel', label: 'Cancel' },
+    ];
+
+    // Re-order buttons for linux
+    if (this.backend.getPlatform() == 'linux') {
+      buttons.push(buttons.shift());
+    }
+
     return this.show({
-      buttons: [
-        { id: 'cancel', label: 'Cancel' },
-        { id: 'save', label: 'Save' },
-        { id: 'discard', label: 'Don\'t Save' }
-      ],
+      buttons,
       message: `Save changes to "${ name }" before closing?`,
       type: 'question',
       title: 'Close File'
