@@ -67,6 +67,42 @@ describe('<LintingTab>', function() {
   });
 
 
+  it('should sort', function() {
+
+    // when
+    const wrapper = renderLintingTab({
+      linting: [
+        {
+          category: 'error',
+          id: 'foo',
+          label: 'Foo',
+          path: [],
+          message: 'foo error'
+        },
+        {
+          category: 'error',
+          id: 'bar',
+          label: 'Bar',
+          path: [],
+          message: 'bar error'
+        },
+        {
+          category: 'error',
+          id: 'baz',
+          path: [],
+          message: 'baz error'
+        }
+      ]
+    });
+
+    // then
+    expect(wrapper.find('.linting-issue__text')).to.have.length(3);
+    expect(wrapper.find('.linting-issue__text').at(0).text()).to.equal('Error : Bar - bar error');
+    expect(wrapper.find('.linting-issue__text').at(1).text()).to.equal('Error : baz - baz error');
+    expect(wrapper.find('.linting-issue__text').at(2).text()).to.equal('Error : Foo - foo error');
+  });
+
+
   it('should show lint error on click', function() {
 
     // when
