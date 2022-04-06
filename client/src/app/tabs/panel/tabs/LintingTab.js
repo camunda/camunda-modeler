@@ -31,6 +31,8 @@ export default function LintingTab(props) {
     onAction('showLintError', issue);
   };
 
+  console.log('sorted', JSON.stringify(sortIssues(linting), null, 2));
+
   return <Panel.Tab
     id="linting"
     label="Errors"
@@ -40,7 +42,7 @@ export default function LintingTab(props) {
     priority={ 1 }>
     { linting.length ? null : <span className={ classnames(css.LintingIssue, 'linting-issue') }>No errors.</span> }
     {
-      linting.map((issue => {
+      sortIssues(linting).map((issue => {
         const {
           id,
           message
@@ -70,7 +72,17 @@ function LintingIssue(props) {
   return <div className={ classnames(css.LintingIssue, 'linting-issue') }>
     <ErrorIcon />
     <div className="linting-issue__text">
-      Error : <span className="linting-issue__link" onClick={ onClick }>{label || id}</span> - <span className="linting-issue__message">{message}</span>
+      Error : <span className="linting-issue__link" onClick={ onClick }>{ label || id }</span> - <span className="linting-issue__message">{message}</span>
     </div>
   </div>;
+}
+
+function sortIssues(issues) {
+  return issues.sort((a, b) => {
+    if ((a.label || a.id).toLowerCase() <= (b.label || b.id).toLowerCase()) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
 }
