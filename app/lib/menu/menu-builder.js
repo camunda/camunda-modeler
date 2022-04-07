@@ -564,7 +564,7 @@ class MenuBuilder {
       },
       {
         label: 'User Forum',
-        click: () => browserOpen('https://forum.camunda.org/c/modeler')
+        click: () => browserOpen('https://forum.camunda.io/c/modeler/')
       },
       {
         label: 'Keyboard Shortcuts',
