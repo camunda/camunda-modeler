@@ -14,10 +14,12 @@ import { UAParser } from 'ua-parser-js';
 
 
 const TAB_TYPE_MAPPING = {
-  'bpmn': 'BPMN - Camunda Platform',
-  'cloud-bpmn': 'BPMN - Camunda Cloud',
-  'dmn': 'DMN - Camunda Platform or Cloud',
-  'form': 'Form - Camunda Platform or Cloud'
+  'bpmn': 'BPMN - Camunda Platform 7',
+  'cloud-bpmn': 'BPMN - Camunda Platform 8',
+  'dmn': 'DMN - Camunda Platform 7',
+  'cloud-dmn': 'DMN - Camunda Platform 8',
+  'form': 'Form - Camunda Platform 7',
+  'cloud-form': 'Form - Camunda Platform 8'
 };
 
 
