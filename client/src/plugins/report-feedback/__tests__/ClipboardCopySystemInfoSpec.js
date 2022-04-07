@@ -177,7 +177,7 @@ describe('<ClipboardCopySystemInfo>', function() {
     });
 
 
-    it('should include executionPlatform with activeTab', function() {
+    it('should include executionPlatform with activeTab (BPMN)', function() {
 
       // given
       const writeTextSpy = new spy();
@@ -193,7 +193,107 @@ describe('<ClipboardCopySystemInfo>', function() {
 
       // then
       const clipboardText = writeTextSpy.args[0][0].text;
-      expect(clipboardText).to.contain(' * Execution Platform: BPMN - Camunda Platform');
+      expect(clipboardText).to.contain(' * Execution Platform: BPMN - Camunda Platform 7');
+    });
+
+
+    it('should include executionPlatform with activeTab (Cloud BPMN)', function() {
+
+      // given
+      const writeTextSpy = new spy();
+      const clipboardCopySystemInfo = setupClipboardCopySystemInfo({
+        systemClipboard: new SystemClipboardMock({ writeTextSpy }),
+        activeTab: {
+          type: 'cloud-bpmn'
+        }
+      });
+
+      // when
+      clipboardCopySystemInfo.clipboardCopy({ executionPlatform: true });
+
+      // then
+      const clipboardText = writeTextSpy.args[0][0].text;
+      expect(clipboardText).to.contain(' * Execution Platform: BPMN - Camunda Platform 8');
+    });
+
+
+    it('should include executionPlatform with activeTab (DMN)', function() {
+
+      // given
+      const writeTextSpy = new spy();
+      const clipboardCopySystemInfo = setupClipboardCopySystemInfo({
+        systemClipboard: new SystemClipboardMock({ writeTextSpy }),
+        activeTab: {
+          type: 'dmn'
+        }
+      });
+
+      // when
+      clipboardCopySystemInfo.clipboardCopy({ executionPlatform: true });
+
+      // then
+      const clipboardText = writeTextSpy.args[0][0].text;
+      expect(clipboardText).to.contain(' * Execution Platform: DMN - Camunda Platform 7');
+    });
+
+
+    it('should include executionPlatform with activeTab (Cloud DMN)', function() {
+
+      // given
+      const writeTextSpy = new spy();
+      const clipboardCopySystemInfo = setupClipboardCopySystemInfo({
+        systemClipboard: new SystemClipboardMock({ writeTextSpy }),
+        activeTab: {
+          type: 'cloud-dmn'
+        }
+      });
+
+      // when
+      clipboardCopySystemInfo.clipboardCopy({ executionPlatform: true });
+
+      // then
+      const clipboardText = writeTextSpy.args[0][0].text;
+      expect(clipboardText).to.contain(' * Execution Platform: DMN - Camunda Platform 8');
+    });
+
+
+    it('should include executionPlatform with activeTab (FORM)', function() {
+
+      // given
+      const writeTextSpy = new spy();
+      const clipboardCopySystemInfo = setupClipboardCopySystemInfo({
+        systemClipboard: new SystemClipboardMock({ writeTextSpy }),
+        activeTab: {
+          type: 'form'
+        }
+      });
+
+      // when
+      clipboardCopySystemInfo.clipboardCopy({ executionPlatform: true });
+
+      // then
+      const clipboardText = writeTextSpy.args[0][0].text;
+      expect(clipboardText).to.contain(' * Execution Platform: Form - Camunda Platform 7');
+    });
+
+
+    it('should include executionPlatform with activeTab (Cloud FORM)', function() {
+
+      // given
+      const writeTextSpy = new spy();
+      const clipboardCopySystemInfo = setupClipboardCopySystemInfo({
+        systemClipboard: new SystemClipboardMock({ writeTextSpy }),
+        activeTab: {
+          type: 'cloud-form'
+        }
+      });
+
+      // when
+      clipboardCopySystemInfo.clipboardCopy({ executionPlatform: true });
+
+      // then
+      const clipboardText = writeTextSpy.args[0][0].text;
+      expect(clipboardText).to.contain(' * Execution Platform: Form - Camunda Platform 8');
     });
 
 
