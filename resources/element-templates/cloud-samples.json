@@ -502,5 +502,71 @@
         "label": "Headers"
       }
     ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "id": "io.camunda.examples.WithIcon",
+    "name": "With Icon",
+    "description": "An example element template with custom icon.",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "documentationRef": "https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/defining-templates/#icons",
+    "icon": {
+      "contents": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' fill='none'%3E%3Ccircle cx='11' cy='11' r='9' fill='black'/%3E%3Ccircle cx='11' cy='11' r='9' fill='black'/%3E%3Cpath d='M7.05691 7.72727H8.95321L10.9561 12.6136H11.0413L13.0441 7.72727H14.9404V15H13.449V10.2663H13.3886L11.5065 14.9645H10.4909L8.60875 10.2486H8.54838V15H7.05691V7.72727Z' fill='white'/%3E%3C/svg%3E"
+    },
+    "properties":[
+      {
+        "type": "Hidden",
+        "value": "With icon",
+        "binding": {
+          "type": "property",
+          "name": "name"
+        }
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Element Type",
+    "id": "io.camunda.examples.ElementType",
+    "description": "An example element template that changes the element type.",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "elementType": {
+      "value": "bpmn:ServiceTask"
+    },
+    "documentationRef": "https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/defining-templates/",
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "Change element type",
+        "binding": {
+          "type": "property",
+          "name": "name"
+        }
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Documentation URL",
+    "id": "io.camunda.examples.DocumentationRef",
+    "description": "An example element template with documentation URL.",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "documentationRef": "https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/",
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "With documentationRef",
+        "binding": {
+          "type": "property",
+          "name": "name"
+        }
+      }
+    ]
   }
 ]
