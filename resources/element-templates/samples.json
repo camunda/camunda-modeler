@@ -1,6 +1,6 @@
 [
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Mail Task",
     "id": "com.camunda.example.MailTask",
     "appliesTo": [
@@ -79,7 +79,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Mail Task (Groups)",
     "id": "com.camunda.example.MailTask-groups",
     "appliesTo": [
@@ -178,7 +178,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "ConnectorGetTask",
     "id": "my.connector.http.get.Task",
     "appliesTo": [
@@ -231,7 +231,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "AsyncAwesomeTask",
     "id": "com.camunda.example.AwesomeTask",
     "appliesTo": [
@@ -250,7 +250,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Custom ServiceTask",
     "id": "com.camunda.example.CustomServiceTask",
     "appliesTo": [
@@ -270,7 +270,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Custom ServiceTask (Entries visible)",
     "id": "com.camunda.example.CustomServiceTask-entriesVisible",
     "appliesTo": [
@@ -290,7 +290,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "VIP-Order Path",
     "id": "e.com.merce.FastPath",
     "appliesTo": [
@@ -319,7 +319,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "WS Caller Task",
     "id": "com.camunda.example.WsCaller",
     "description": "Requires the user to provide a Web Service URL.",
@@ -354,7 +354,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Check Invoice Task",
     "id": "com.camunda.example.CheckInvoiceTask",
     "appliesTo": [
@@ -412,7 +412,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Caller",
     "id": "com.camunda.example.Caller",
     "appliesTo": [
@@ -543,7 +543,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Caller All IO",
     "id": "com.camunda.example.CallerAllIO",
     "appliesTo": [
@@ -579,7 +579,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Caller All IO Local",
     "id": "com.camunda.example.CallerAllIOLocal",
     "appliesTo": [
@@ -615,7 +615,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Execution Listener",
     "id": "com.camunda.example.ExecutionListener",
     "appliesTo": [
@@ -645,7 +645,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Field Injections",
     "id": "com.camunda.example.FieldInjections",
     "appliesTo": [
@@ -675,7 +675,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Default Rendering",
     "id": "com.camunda.example.DefaultRendering",
     "appliesTo": [
@@ -699,7 +699,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "External Service Task (with Errors)",
     "id": "com.camunda.example.ExternalServiceTaskWithErrors",
     "appliesTo": [
@@ -767,7 +767,7 @@
     ]
   },
   {
-    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema@0.7.0/resources/schema.json",
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
     "name": "Default Errors Rendering",
     "id": "com.camunda.example.DefaultErrorsRendering",
     "appliesTo": [
@@ -820,6 +820,49 @@
             }
           }
         ]
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
+    "name": "Element Type",
+    "id": "com.camunda.example.ElementType",
+    "description": "An example element template that changes the element type.",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "elementType": {
+      "value": "bpmn:ServiceTask"
+    },
+    "documentationRef": "https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/defining-templates/",
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "Change element type",
+        "binding": {
+          "type": "property",
+          "name": "name"
+        }
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/element-templates-json-schema/resources/schema.json",
+    "name": "Documentation URL",
+    "id": "com.camunda.example.DocumentationRef",
+    "description": "An example element template with documentation URL.",
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "documentationRef": "https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/",
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "With documentationRef",
+        "binding": {
+          "type": "property",
+          "name": "name"
+        }
       }
     ]
   }
