@@ -345,11 +345,11 @@ renderer.on('client:error', function(...args) {
 
 app.on('web-contents-created', (event, webContents) => {
 
-  // open all external links in new window
-  webContents.on('new-window', function(event, url) {
-    event.preventDefault();
+  // open new window externally
+  webContents.setWindowOpenHandler(event => {
+    browserOpen(event.url);
 
-    browserOpen(url);
+    return { action: 'deny' };
   });
 
   // disable web-view (not used)
@@ -357,13 +357,12 @@ app.on('web-contents-created', (event, webContents) => {
     event.preventDefault();
   });
 
-  // open in-page links externally by default
+  // open in-page links externally
   // @see https://github.com/electron/electron/issues/1344#issuecomment-171516636
   webContents.on('will-navigate', (event, url) => {
+    event.preventDefault();
 
     if (url !== webContents.getURL()) {
-      event.preventDefault();
-
       browserOpen(url);
     }
   });
