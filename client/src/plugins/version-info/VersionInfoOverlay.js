@@ -14,8 +14,8 @@ import { Overlay, Section } from '../../shared/ui';
 
 import { ReleaseInfo } from './ReleaseInfo';
 
-const RELEASE_NOTES_LINK = 'https://camunda.com/blog/category/modeling/?tag=camunda-modeler&release-note';
-const DOCS_LINK = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/';
+const RELEASE_NOTES_LINK = 'https://camunda.com/blog/category/modeling/?tag=camunda-modeler&release-note&utm_source=modeler&utm_medium=referral';
+const DOCS_LINK = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/?utm_source=modeler&utm_medium=referral';
 const CHANGELOG_LINK = 'https://github.com/camunda/camunda-modeler/blob/master/CHANGELOG.md';
 
 const OFFSET = { right: 0 };

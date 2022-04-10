@@ -430,7 +430,7 @@ function expectHelpText(wrapper, helpLink) {
 }
 
 function expectCloudHelp(wrapper) {
-  expectHelpText(wrapper, 'https://docs.camunda.io/');
+  expectHelpText(wrapper, 'https://docs.camunda.io/?utm_source=modeler&utm_medium=referral');
 }
 
 function expectPlatformHelp(wrapper) {
