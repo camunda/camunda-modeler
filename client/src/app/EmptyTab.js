@@ -59,7 +59,7 @@ export default class EmptyTab extends PureComponent {
             <CloudIcon className="engine-icon cloud-icon" />
             <h3>Camunda Platform 8</h3>
           </div>
-          <a href="https://camunda.com/products/cloud/">See version details</a>
+          <a href="https://camunda.com/products/cloud/?utm_source=modeler&utm_medium=referral">See version details</a>
         </div>
 
         <p>Create a new file</p>
@@ -88,7 +88,7 @@ export default class EmptyTab extends PureComponent {
             <PlatformIcon className="engine-icon platform-icon" />
             <h3>Camunda Platform 7</h3>
           </div>
-          <a href="https://camunda.com/products/camunda-platform/">See version details</a>
+          <a href="https://camunda.com/products/camunda-platform/?utm_source=modeler&utm_medium=referral">See version details</a>
         </div>
 
         <p>Create a new file</p>
