@@ -25,7 +25,7 @@ import css from './EngineProfile.less';
 
 const HELP_LINKS = {
   [ ENGINES.PLATFORM ]: 'https://docs.camunda.org/manual/latest/',
-  [ ENGINES.CLOUD ]: 'https://docs.camunda.io/'
+  [ ENGINES.CLOUD ]: 'https://docs.camunda.io/?utm_source=modeler&utm_medium=referral'
 };
 
 export function EngineProfile(props) {
