@@ -84,8 +84,10 @@
   
   fieldset {
     border: none;
-    margin: 0 0 5px 0;
-    padding: 0;
+    margin: 0 -12px 5px 0;
+    padding: 0 12px 0 0;
+    max-height: calc(100vh - 176px);
+    overflow-y: auto;
   }
   
   .fields {
@@ -113,6 +115,7 @@
 
   ul.dashed {
     list-style: none;
+    max-height: calc(100vh - 250px);
 
     li {
       margin-bottom: 4px;

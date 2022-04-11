@@ -27,7 +27,6 @@ export function ReportFeedbackOverlay(props) {
     <Overlay
       anchor={ props.anchor }
       onClose={ props.onClose }
-      maxHeight="calc(100vh - 250px)"
       offset={ OFFSET }
       className={ css.ReportFeedbackOverlay }
     >
