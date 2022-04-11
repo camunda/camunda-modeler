@@ -21,6 +21,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: always show active tab indicator ([#2732](https://github.com/camunda/camunda-modeler/issues/2732))
 * `FIX`: avoid error when closing startInstance overlay via canvas click ([#2727](https://github.com/camunda/camunda-modeler/issues/2727))
 * `FIX`: log errors in context of toast notifications ([#2793](https://github.com/camunda/camunda-modeler/issues/2793))
+* `FIX`: don't open external links twice in some situations ([#2905](https://github.com/camunda/camunda-modeler/issues/2905))
+* `CHORE`: add query parameters to external camunda.com and camunda.io links ([`0708ac`](https://github.com/camunda/camunda-modeler/commit/0708ace145056e7d3dbf35dab492651036a919d6))
 * `DEPS`: bump to `electron@17.1.0` ([#2797](https://github.com/camunda/camunda-modeler/pull/2797))
 * `DEPS`: bump to `zeebe-node@2.1.0` ([#2783](https://github.com/camunda/camunda-modeler/issues/2783))
 
