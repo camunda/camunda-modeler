@@ -88,6 +88,7 @@ const INITIAL_STATE = {
   layout: {},
   tabs: [],
   tabState: {},
+  lintingState: {},
   logEntries: [],
   notifications: [],
   currentModal: null,
@@ -866,8 +867,31 @@ export class App extends PureComponent {
 
     const results = await linter.lint(contents);
 
-    return this.updateTab(tab, {
-      linting: results
+    this.setLintingState(tab, results);
+  }
+
+  getLintingState = (tab) => {
+    return this.state.lintingState[ tab.id ];
+  }
+
+  setLintingState = (tab, results) => {
+    const { tabs } = this.state;
+
+    const lintingState = reduce(tabs, (lintingState, t) => {
+      if (t === tab) {
+        return lintingState;
+      }
+
+      return {
+        ...lintingState,
+        [ t.id ]: this.getLintingState(t)
+      };
+    }, {
+      [ tab.id ]: results
+    });
+
+    this.setState({
+      lintingState
     });
   }
 
@@ -1945,6 +1969,7 @@ export class App extends PureComponent {
                       key={ activeTab.id }
                       tab={ activeTab }
                       layout={ layout }
+                      linting={ this.getLintingState(activeTab) }
                       onChanged={ this.handleTabChanged(activeTab) }
                       onError={ this.handleTabError(activeTab) }
                       onWarning={ this.handleTabWarning(activeTab) }
