@@ -2210,7 +2210,7 @@ describe('<App>', function() {
       const tab = await app.createDiagram('form');
 
       // when
-      const updatedTab = await app.triggerAction('lint-tab', { tab });
+      const updatedTab = await app.updateTab(tab, {});
 
       updatedTab.file.name = 'newname.form';
 
@@ -2838,13 +2838,16 @@ describe('<App>', function() {
           type: 'form'
         })
       ]);
+      const currentTab = openedTabs[ 0 ];
 
       // when
-      const updatedTab = await app.lintTab(openedTabs[ 0 ]);
+      await app.lintTab(currentTab);
 
       // then
-      expect(updatedTab.linting).to.exist;
-      expect(updatedTab.linting).to.be.empty;
+      const lintingState = app.getLintingState(currentTab);
+
+      expect(lintingState).to.exist;
+      expect(lintingState).to.be.empty;
     });
 
 
@@ -2859,13 +2862,16 @@ describe('<App>', function() {
           type: 'form'
         })
       ]);
+      const currentTab = openedTabs[ 0 ];
 
       // when
-      const updatedTab = await app.lintTab(openedTabs[ 0 ]);
+      await app.lintTab(currentTab);
 
       // then
-      expect(updatedTab.linting).to.exist;
-      expect(updatedTab.linting).to.have.length(1);
+      const lintingState = app.getLintingState(currentTab);
+
+      expect(lintingState).to.exist;
+      expect(lintingState).to.have.length(1);
     });
 
 
@@ -2888,13 +2894,17 @@ describe('<App>', function() {
           type: 'form'
         })
       ]);
+      const currentTab = openedTabs[ 0 ];
+
 
       // when
-      const updatedTab = await app.lintTab(openedTabs[ 0 ], 'linting-errors');
+      await app.lintTab(currentTab, 'linting-errors');
 
       // then
-      expect(updatedTab.linting).to.exist;
-      expect(updatedTab.linting).to.have.length(1);
+      const lintingState = app.getLintingState(currentTab);
+
+      expect(lintingState).to.exist;
+      expect(lintingState).to.have.length(1);
     });
 
 
@@ -2906,13 +2916,15 @@ describe('<App>', function() {
       const openedTabs = await app.openFiles([
         createFile('1.dmn')
       ]);
+      const currentTab = openedTabs[ 0 ];
 
       // when
-      const updatedTab = await app.lintTab(openedTabs[ 0 ]);
+      await app.lintTab(currentTab);
 
       // then
-      expect(updatedTab).to.equal(openedTabs[ 0 ]);
-      expect(updatedTab.linting).not.to.exist;
+      const lintingState = app.getLintingState(currentTab);
+
+      expect(lintingState).not.to.exist;
     });
 
 
@@ -2927,13 +2939,16 @@ describe('<App>', function() {
           type: 'form'
         })
       ]);
+      const currentTab = openedTabs[ 0 ];
 
       // when
-      const updatedTab = await app.triggerAction('lint-tab', { tab: openedTabs[ 0 ] });
+      await app.triggerAction('lint-tab', { tab: currentTab });
 
       // then
-      expect(updatedTab.linting).to.exist;
-      expect(updatedTab.linting).to.be.empty;
+      const lintingState = app.getLintingState(currentTab);
+
+      expect(lintingState).to.exist;
+      expect(lintingState).to.be.empty;
     });
 
   });
