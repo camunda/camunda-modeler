@@ -58,14 +58,7 @@ export default function TextInput(props) {
     }
 
     if (multiline) {
-      if (description) {
-        return <React.Fragment>
-          {getTextarea()}
-          <p className="form-control">{description}</p>
-        </React.Fragment>;
-      } else {
-        return getTextarea();
-      }
+      return getTextarea();
     } else {
       return <React.Fragment>
         <input
@@ -80,9 +73,6 @@ export default function TextInput(props) {
           placeholder={ hint }
           { ...restProps }
         />
-        {description &&
-          <p className="form-control">{description}</p>
-        }
       </React.Fragment>;
     }
   }
@@ -91,10 +81,13 @@ export default function TextInput(props) {
     <React.Fragment>
       <div className="form-group">
         <label htmlFor={ fieldName }>{ label }</label>
-        {textElement()}
+        { textElement() }
         <FormFeedback
           error={ error }
         />
+        { description &&
+          <p className="form-control">{ description }</p>
+        }
       </div>
     </React.Fragment>
   );
