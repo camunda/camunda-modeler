@@ -390,6 +390,13 @@ export class App extends PureComponent {
 
     await this._removeTab(tab);
 
+    this.triggerAction('emit-event', {
+      type: 'tab.closed',
+      payload: {
+        tab
+      }
+    });
+
     return true;
   }
 

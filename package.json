@@ -69,5 +69,8 @@
     "tar-stream": "^2.1.0",
     "which": "^1.2.0",
     "yauzl": "^2.10.0"
+  },
+  "dependencies": {
+    "bpmn-js": "^9.0.3"
   }
 }
