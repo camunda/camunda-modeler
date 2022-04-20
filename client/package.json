@@ -43,6 +43,7 @@
     "ids": "^1.0.0",
     "min-dash": "^3.8.1",
     "min-dom": "^3.1.3",
+    "mixpanel-browser": "^2.45.0",
     "modeler-moddle": "^0.2.0",
     "p-defer": "^3.0.0",
     "p-series": "^2.1.0",

@@ -18,6 +18,7 @@ import ModelerModdle from 'modeler-moddle/resources/modeler';
 
 import { selfAndAllFlowElements } from './elementsUtil';
 import parseExecutionPlatform from '../app/util/parseExecutionPlatform';
+import { ENGINES } from './Engines';
 
 
 export async function getBpmnDefinitions(xml, diagramType) {
@@ -42,10 +43,30 @@ export async function getBpmnDefinitions(xml, diagramType) {
 }
 
 
-export async function getEngineProfile(xml, diagramType) {
-  return {
-    ...parseExecutionPlatform(xml)
-  };
+export async function getEngineProfile(contents, diagramType) {
+
+  let engineProfile;
+
+  if (!contents) {
+    return {};
+  }
+
+  if (diagramType === 'form') {
+    engineProfile = parseForm(contents);
+
+    if (!engineProfile) return null;
+
+  } else {
+    engineProfile = {
+      ...parseExecutionPlatform(contents)
+    };
+  }
+
+  const { executionPlatform } = engineProfile;
+
+  engineProfile.executionPlatform = executionPlatform || getDefaultExecutionPlatform(diagramType);
+
+  return engineProfile;
 }
 
 /**
@@ -70,4 +91,21 @@ export async function getAllElementsByType(xml, elementType, diagramType) {
   });
 
   return elements;
+}
+
+function getDefaultExecutionPlatform(type) {
+  if (/^cloud/.test(type)) {
+    return ENGINES.CLOUD;
+  }
+
+  return ENGINES.PLATFORM;
+}
+
+function parseForm(contents) {
+  try {
+    return JSON.parse(contents);
+
+  } catch (error) {
+    return null;
+  }
 }
