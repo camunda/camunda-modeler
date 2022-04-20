@@ -17,6 +17,7 @@ import PrivacyPreferences from './privacy-preferences';
 import ReportFeedback from './report-feedback';
 import UpdateChecks from './update-checks';
 import UsageStatistics from './usage-statistics';
+import UserJourneyStatistics from './user-journey-statistics';
 import VersionInfo from './version-info';
 import ZeebePlugin from './zeebe-plugin';
 
@@ -31,5 +32,6 @@ export default [
   UpdateChecks,
   UsageStatistics,
   VersionInfo,
-  ZeebePlugin
+  ZeebePlugin,
+  UserJourneyStatistics
 ];
