@@ -44,7 +44,8 @@ class MenuBuilder {
         save: false,
         exportAs: false,
         development: process.env.NODE_ENV === 'development',
-        devtools: false
+        devtools: false,
+        lastTab: false
       },
       providers: {}
     }, options);
