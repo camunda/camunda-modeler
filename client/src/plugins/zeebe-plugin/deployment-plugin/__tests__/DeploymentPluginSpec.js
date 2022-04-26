@@ -19,6 +19,7 @@ import { Config } from '../../../../app/__tests__/mocks';
 import DeploymentPlugin from '../DeploymentPlugin';
 import { CAMUNDA_CLOUD, SELF_HOSTED } from '../../shared/ZeebeTargetTypes';
 import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
+import { AUTH_TYPES } from '../../shared/ZeebeAuthTypes';
 
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 const ZEEBE_ENDPOINTS_CONFIG_KEY = 'zeebeEndpoints';
@@ -274,6 +275,27 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     // then
     expect(config.set).to.have.been.calledOnce;
+  });
+
+
+  describe('default endpoint', async () => {
+
+    it('should add null credential values if remember credentials was turned off', async () => {
+
+      // given
+      const getDefaultEndpointSpy = sinon.stub();
+      const { instance } = createDeploymentPlugin({ getEndpointSpy: getDefaultEndpointSpy });
+
+      // when
+      await instance.deploy();
+
+      // then
+      expect(getDefaultEndpointSpy.args[0][0]).to.have.property('clientId', '');
+      expect(getDefaultEndpointSpy.args[0][0]).to.have.property('clientSecret', '');
+      expect(getDefaultEndpointSpy.args[0][0]).to.have.property('camundaCloudClientId', '');
+      expect(getDefaultEndpointSpy.args[0][0]).to.have.property('camundaCloudClientSecret', '');
+    });
+
   });
 
 
@@ -1371,6 +1393,31 @@ class TestDeploymentPlugin extends DeploymentPlugin {
       }
     }
   }
+
+  getEndpoints() {
+    if (this.props.getEndpointSpy) {
+      return [ {
+        id: 'id',
+        targetType: CAMUNDA_CLOUD,
+        authType: AUTH_TYPES.OAUTH,
+        contactPoint: '',
+        oauthURL: 'url',
+        audience: 'audience',
+        rememberCredentials: false
+      } ];
+    }
+    else return super.getEndpoints();
+  }
+
+  async getDefaultEndpoint() {
+    const { getEndpointSpy } = this.props;
+    const endpoint = await super.getDefaultEndpoint();
+
+    if (getEndpointSpy) {
+      getEndpointSpy(endpoint);
+    }
+    return endpoint;
+  }
 }
 
 
@@ -1413,6 +1460,7 @@ function createDeploymentPlugin({
       displayNotification={ noop }
       _getGlobal={ key => key === 'zeebeAPI' && zeebeAPI }
       subscribe={ props.subcribe || subscribe }
+      getEndpointSpy={ props.getEndpointSpy }
       { ...props }
       config={ config } />
   );
