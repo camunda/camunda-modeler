@@ -353,6 +353,13 @@ export default class DeploymentPlugin extends PureComponent {
   }
 
   async getDefaultEndpoint(tab) {
+    const credentials = {
+      clientId: '',
+      clientSecret: '',
+      camundaCloudClientId: '',
+      camundaCloudClientSecret: ''
+    };
+
     let endpoint = {
       id: generateId(),
       targetType: CAMUNDA_CLOUD,
@@ -360,17 +367,17 @@ export default class DeploymentPlugin extends PureComponent {
       contactPoint: '',
       oauthURL: '',
       audience: '',
-      clientId: '',
-      clientSecret: '',
-      camundaCloudClientId: '',
-      camundaCloudClientSecret: '',
       camundaCloudClusterUrl: '',
+      ...credentials,
       rememberCredentials: false
     };
 
     const previousEndpoints = await this.getEndpoints();
     if (previousEndpoints.length) {
-      endpoint = previousEndpoints[0];
+      endpoint = {
+        ...credentials,
+        ...previousEndpoints[0]
+      };
     }
 
     // #2375 => if we only have a clusterId, transform it to clusterURL for backwards-compatability
