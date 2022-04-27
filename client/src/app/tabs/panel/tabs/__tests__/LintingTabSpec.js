@@ -82,24 +82,39 @@ describe('<LintingTab>', function() {
         {
           category: 'error',
           id: 'bar',
-          label: 'Bar',
+          label: 'Bar 1',
           path: [],
-          message: 'bar error'
+          message: 'bar 1 error'
+        },
+        {
+          category: 'error',
+          id: 'bar',
+          label: 'Bar 2',
+          path: [],
+          message: 'bar 2 error'
         },
         {
           category: 'error',
           id: 'baz',
           path: [],
-          message: 'baz error'
+          message: 'baz 1 error'
+        },
+        {
+          category: 'error',
+          id: 'baz',
+          path: [],
+          message: 'baz 2 error'
         }
       ]
     });
 
     // then
-    expect(wrapper.find('.linting-issue__text')).to.have.length(3);
-    expect(wrapper.find('.linting-issue__text').at(0).text()).to.equal('Error : Bar - bar error');
-    expect(wrapper.find('.linting-issue__text').at(1).text()).to.equal('Error : baz - baz error');
-    expect(wrapper.find('.linting-issue__text').at(2).text()).to.equal('Error : Foo - foo error');
+    expect(wrapper.find('.linting-issue__text')).to.have.length(5);
+    expect(wrapper.find('.linting-issue__text').at(0).text()).to.equal('Error : Bar 1 - bar 1 error');
+    expect(wrapper.find('.linting-issue__text').at(1).text()).to.equal('Error : Bar 2 - bar 2 error');
+    expect(wrapper.find('.linting-issue__text').at(2).text()).to.equal('Error : baz - baz 1 error');
+    expect(wrapper.find('.linting-issue__text').at(3).text()).to.equal('Error : baz - baz 2 error');
+    expect(wrapper.find('.linting-issue__text').at(4).text()).to.equal('Error : Foo - foo error');
   });
 
 
