@@ -77,7 +77,12 @@ function LintingIssue(props) {
 
 function sortIssues(issues) {
   return issues.sort((a, b) => {
-    if ((a.label || a.id).toLowerCase() <= (b.label || b.id).toLowerCase()) {
+    const labelA = (a.label || a.id).toLowerCase(),
+          labelB = (b.label || b.id).toLowerCase();
+
+    if (labelA === labelB) {
+      return 0;
+    } else if (labelA < labelB) {
       return -1;
     } else {
       return 1;
