@@ -78,7 +78,7 @@ const ENCODING_UTF8 = 'utf8';
 
 const FILTER_ALL_EXTENSIONS = {
   name: 'All Files',
-  extensions: [ '*' ]
+  extensions: ['*']
 };
 
 const INITIAL_STATE = {
@@ -157,7 +157,7 @@ export class App extends PureComponent {
     await this.showTab(tab);
 
     return tab;
-  }
+  };
 
   /**
    * Add a tab to the tab list.
@@ -262,7 +262,7 @@ export class App extends PureComponent {
         }
       }, this.setUnsaved(tab, true));
     }
-  }
+  };
 
   /**
    * Update the tab with new attributes.
@@ -271,7 +271,7 @@ export class App extends PureComponent {
    * @param {Object} newAttrs
    * @param {Object} [newState={}]
    */
-  updateTab(tab, newAttrs, newState={}) {
+  updateTab(tab, newAttrs, newState = {}) {
 
     if (newAttrs.id && newAttrs.id !== tab.id) {
       throw new Error('must not change tab.id');
@@ -387,22 +387,22 @@ export class App extends PureComponent {
     await this._removeTab(tab);
 
     return true;
-  }
+  };
 
   isEmptyTab = (tab) => {
     return tab === EMPTY_TAB;
-  }
+  };
 
   isDirty = (tab) => {
     return !!this.state.dirtyTabs[tab.id];
-  }
+  };
 
   isUnsaved = (tab) => {
     const { unsavedTabs } = this.state;
     const { id, file } = tab;
 
     return unsavedTabs[id] || (file && !file.path);
-  }
+  };
 
   async _removeTab(tab) {
 
@@ -457,14 +457,14 @@ export class App extends PureComponent {
   selectTab = async tab => {
     const updatedTab = await this.checkFileChanged(tab);
     return this.showTab(updatedTab || tab);
-  }
+  };
 
   moveTab = (tab, newIndex) => {
     const {
       tabs
     } = this.state;
 
-    if (!tabs[ newIndex ]) {
+    if (!tabs[newIndex]) {
       throw new Error('invalid index');
     }
 
@@ -477,7 +477,7 @@ export class App extends PureComponent {
     this.setState({
       tabs: newTabs
     });
-  }
+  };
 
   showOpenFilesDialog = async () => {
     const dialog = this.getGlobal('dialog');
@@ -515,7 +515,7 @@ export class App extends PureComponent {
     }
 
     await this.openFiles(files);
-  }
+  };
 
   openQAAs = async (qaaPaths) => {
     this.displayNotification({
@@ -528,13 +528,61 @@ export class App extends PureComponent {
     return await this.tabRef.current.triggerAction('import-qaa', {
       qaaPaths: qaaPaths
     });
-  }
+  };
+
+  showGenerateWorkflowDialog = async () => {
+
+    const dialog = this.getGlobal('dialog');
+
+    const {
+      activeTab
+    } = this.state;
+
+    // only zip files containing the Python file with a related requirements.txt are supported
+    const filters = [{ name: 'Python Zip Archive', extensions: ['zip'] }, FILTER_ALL_EXTENSIONS];
+
+    let filePaths = await dialog.showOpenFilesDialog({
+      activeFile: activeTab.file,
+      filters
+    });
+
+    if (!filePaths.length) {
+      return;
+    }
+
+    // filter only zip files as they are allowed for workflow generation
+    let zipPaths = filePaths.filter(path => path.endsWith('zip'));
+
+    // unzip QAAs and extract BPMN files
+    let files = [];
+    if (zipPaths && zipPaths.length > 0) {
+
+      // generate workflow model
+      files = files.concat(await this.generateWorkflows(zipPaths));
+    }
+
+    // open generated workflow models
+    await this.openFiles(files);
+  };
+
+  generateWorkflows = async (zipPaths) => {
+    this.displayNotification({
+      type: 'info',
+      title: 'Workflow generation pending!',
+      content: 'Workflow generation for ' + zipPaths.length + ' Python Zip archive(s) is running in the background!',
+      duration: 300000
+    });
+
+    return await this.tabRef.current.triggerAction('generate-workflows', {
+      zipPaths: zipPaths
+    });
+  };
 
   showCloseFileDialog = (file) => {
     const { name } = file;
 
     return this.getGlobal('dialog').showCloseFileDialog({ name });
-  }
+  };
 
   showSaveFileDialog = (file, options = {}) => {
     const {
@@ -547,7 +595,7 @@ export class App extends PureComponent {
       filters,
       title
     });
-  }
+  };
 
   showSaveFileErrorDialog(options) {
     return this.getGlobal('dialog').showSaveFileErrorDialog(options);
@@ -594,7 +642,7 @@ export class App extends PureComponent {
 
       return tab;
     }
-  }
+  };
 
   /**
    * Open the given files, optionally passing a file
@@ -644,7 +692,7 @@ export class App extends PureComponent {
     }
 
     return openedTabs;
-  }
+  };
 
   readFileList = async filePaths => {
     const readOperations = filePaths.map(this.readFileFromPath);
@@ -654,7 +702,7 @@ export class App extends PureComponent {
     const files = rawFiles.filter(Boolean);
 
     return files;
-  }
+  };
 
   readFileFromPath = async (filePath) => {
 
@@ -685,7 +733,7 @@ export class App extends PureComponent {
     }
 
     return file;
-  }
+  };
 
   /**
    * Find existing tabs for given files. If no tab was found for one tab,
@@ -768,13 +816,13 @@ export class App extends PureComponent {
     event.preventDefault();
 
     this.props.onContextMenu('tab', { tabId: tab.id });
-  }
+  };
 
   openTabMenu = (event, type, context) => {
     event.preventDefault();
 
     this.props.onContextMenu(type);
-  }
+  };
 
   handleLayoutChanged = (newLayout) => {
     const {
@@ -785,7 +833,7 @@ export class App extends PureComponent {
       ...layout,
       ...newLayout
     });
-  }
+  };
 
 
   /**
@@ -816,7 +864,7 @@ export class App extends PureComponent {
       },
       tabLoadingState: 'shown'
     });
-  }
+  };
 
   /**
    * Handle tab error.
@@ -827,7 +875,7 @@ export class App extends PureComponent {
    */
   handleTabError = (tab) => (error) => {
     this.handleError(error, tab);
-  }
+  };
 
   /**
    * Handle tab warning.
@@ -838,7 +886,7 @@ export class App extends PureComponent {
    */
   handleTabWarning = (tab) => (warning) => {
     this.handleWarning(warning, tab);
-  }
+  };
 
   /**
    * Handle tab changed.
@@ -866,13 +914,13 @@ export class App extends PureComponent {
         ...properties
       }
     });
-  }
+  };
 
   resizeTab = () => {
     const tab = this.tabRef.current;
 
     return tab.triggerAction('resize');
-  }
+  };
 
   setDirty(tab, dirty = true) {
     const { tabs } = this.state;
@@ -884,10 +932,10 @@ export class App extends PureComponent {
 
       return {
         ...dirtyTabs,
-        [ t.id ]: this.isDirty(t)
+        [t.id]: this.isDirty(t)
       };
     }, {
-      [ tab.id ]: dirty
+      [tab.id]: dirty
     });
 
     return {
@@ -905,10 +953,10 @@ export class App extends PureComponent {
 
       return {
         ...unsavedTabs,
-        [ t.id ]: this.isUnsaved(t)
+        [t.id]: this.isUnsaved(t)
       };
     }, {
-      [ tab.id ]: unsaved
+      [tab.id]: unsaved
     });
 
     return {
@@ -928,7 +976,7 @@ export class App extends PureComponent {
     const unsavedState = this.setUnsaved(tab, false);
 
     this.setState({
-      tabs: [ ...tabs ],
+      tabs: [...tabs],
       ...dirtyState,
       ...unsavedState
     });
@@ -1048,7 +1096,7 @@ export class App extends PureComponent {
    */
   workspaceChangedDebounced = () => {
     return this.workspaceChanged(false);
-  }
+  };
 
   /**
    * Save workspace. Debounced by default.
@@ -1083,7 +1131,7 @@ export class App extends PureComponent {
       layout,
       endpoints
     });
-  }
+  };
 
   /**
    * Propagates errors to parent.
@@ -1099,7 +1147,7 @@ export class App extends PureComponent {
     } = this.props;
 
     return onError(error, categoryOrTab);
-  }
+  };
 
   getGlobal = (name) => {
     const {
@@ -1111,7 +1159,7 @@ export class App extends PureComponent {
     }
 
     throw new Error(`global <${name}> not exposed`);
-  }
+  };
 
   /**
    * Propagates warnings to parent.
@@ -1326,7 +1374,7 @@ export class App extends PureComponent {
 
       savePath = await this.showSaveFileDialog(file, {
         filters,
-        title: `Save ${ name } as...`
+        title: `Save ${name} as...`
       });
     } else {
       savePath = tab.file.path;
@@ -1405,7 +1453,7 @@ export class App extends PureComponent {
       });
 
     return pSeries(saveTasks);
-  }
+  };
 
   clearLog = () => {
     this.setState({
@@ -1435,7 +1483,7 @@ export class App extends PureComponent {
     });
 
     return pSeries(closeTasks);
-  }
+  };
 
   reopenLastTab = () => {
 
@@ -1448,7 +1496,7 @@ export class App extends PureComponent {
     }
 
     return Promise.reject(new Error('no last tab'));
-  }
+  };
 
   showShortcuts = () => this.openModal('KEYBOARD_SHORTCUTS');
 
@@ -1469,7 +1517,7 @@ export class App extends PureComponent {
       tabsCount: this.state.tabs.length,
       lastTab: !!this.closedTabs.get()
     });
-  }
+  };
 
   /**
    * Exports file to given export type.
@@ -1570,7 +1618,7 @@ export class App extends PureComponent {
       return false;
     }
 
-    const { encoding } = provider.exports && provider.exports[ exportType ] || ENCODING_UTF8;
+    const { encoding } = provider.exports && provider.exports[exportType] || ENCODING_UTF8;
 
     return {
       encoding,
@@ -1648,6 +1696,10 @@ export class App extends PureComponent {
 
     if (action === 'open-diagram') {
       return this.showOpenFilesDialog();
+    }
+
+    if (action === 'generate-workflow') {
+      return this.showGenerateWorkflowDialog();
     }
 
     if (action === 'save-all') {
@@ -1760,7 +1812,7 @@ export class App extends PureComponent {
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
-  }, this.handleError)
+  }, this.handleError);
 
   openExternalUrl(options) {
     this.getGlobal('backend').send('external:open-url', options);
@@ -1777,7 +1829,7 @@ export class App extends PureComponent {
 
   handleCloseTab = (tab) => {
     this.triggerAction('close-tab', { tabId: tab.id }).catch(console.error);
-  }
+  };
 
   handleDrop = async (files) => {
     const filePaths = Array.from(files).map(({ path }) => path);
@@ -1789,7 +1841,7 @@ export class App extends PureComponent {
     } catch (error) {
       this.handleError(error);
     }
-  }
+  };
 
   getConfig = (key, ...args) => {
     const config = this.getGlobal('config');
@@ -1799,17 +1851,17 @@ export class App extends PureComponent {
     const { file } = activeTab;
 
     return config.get(key, file, ...args);
-  }
+  };
 
   setConfig = (key, ...args) => {
     const config = this.getGlobal('config');
 
     return config.set(key, ...args);
-  }
+  };
 
   getPlugins = type => {
     return this.getGlobal('plugins').get(type);
-  }
+  };
 
   async quit() {
     try {
@@ -1854,7 +1906,7 @@ export class App extends PureComponent {
     this.__actionCache[actionName] = { fn, args };
 
     return fn;
-  }
+  };
 
   render() {
 
@@ -2025,11 +2077,11 @@ export class App extends PureComponent {
 
             </SlotFillRoot>
 
-            { this.state.currentModal === 'KEYBOARD_SHORTCUTS' ?
+            {this.state.currentModal === 'KEYBOARD_SHORTCUTS' ?
               <KeyboardShortcutsModal
                 getGlobal={ this.getGlobal }
                 onClose={ this.closeModal }
-              /> : null }
+              /> : null}
 
           </KeyboardInteractionTrapContext.Provider>
 
@@ -2054,7 +2106,7 @@ function missingProvider(providerType) {
       return (
         <Tab key="missing-provider">
           <span>
-            Cannot open tab: no provider for { providerType }.
+            Cannot open tab: no provider for {providerType}.
           </span>
         </Tab>
       );
@@ -2066,7 +2118,8 @@ function missingProvider(providerType) {
 
 class LoadingTab extends PureComponent {
 
-  triggerAction() {}
+  triggerAction() {
+  }
 
   render() {
     return (
@@ -2115,12 +2168,12 @@ function getOpenFileErrorDialog(options) {
       seperator = ', ';
     }
 
-    return `${ string }${ seperator }${ providerName }`;
+    return `${string}${seperator}${providerName}`;
   }, '');
 
   return {
     message: 'Unable to open file.',
-    detail: `"${ name }" is not a ${ providerNamesString } file.`
+    detail: `"${name}" is not a ${providerNamesString} file.`
   };
 }
 
@@ -2133,10 +2186,10 @@ function getSaveFileErrorDialog(options) {
   return {
     buttons: [
       { id: 'cancel', label: 'Cancel' },
-      { id: 'retry', label: `Save ${ name } as...` }
+      { id: 'retry', label: `Save ${name} as...` }
     ],
     message: [
-      `${ name } could not be saved.`,
+      `${name} could not be saved.`,
       '',
       'Error:',
       message
@@ -2154,10 +2207,10 @@ function getExportFileErrorDialog(options) {
   return {
     buttons: [
       { id: 'cancel', label: 'Cancel' },
-      { id: 'retry', label: `Export ${ name } as...` }
+      { id: 'retry', label: `Export ${name} as...` }
     ],
     message: [
-      `${ name } could not be exported.`,
+      `${name} could not be exported.`,
       '',
       'Error:',
       message
@@ -2208,7 +2261,7 @@ function getOpenFilesDialogFilters(providers) {
 
     filters.push({
       name,
-      extensions: [ ...extensions ]
+      extensions: [...extensions]
     });
   });
 

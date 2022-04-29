@@ -264,7 +264,7 @@ export async function createNewArtifactTemplate(wineryEndpoint, localNamePrefix,
  * @param serviceTemplateNamespace the namespace of the ServiceTemplate to create a new version from
  * @return the URL to the new version, or an error if the base ServiceTemplate is not available at the given Winery endpoint
  */
-export async function createNewAgentServiceTemplate(wineryEndpoint, serviceTemplateId, serviceTemplateNamespace) {
+export async function createNewServiceTemplateVersion(wineryEndpoint, serviceTemplateId, serviceTemplateNamespace) {
   console.log('Creating new version of Service Template with ID %s and namespace %s', serviceTemplateId, serviceTemplateNamespace);
 
   // retrieve the currently available ServiceTemplates

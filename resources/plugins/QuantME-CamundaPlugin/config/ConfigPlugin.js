@@ -105,6 +105,17 @@ export default class ConfigPlugin extends PureComponent {
           eventBus.fire('config.updated', self.modeler.config);
         }
       });
+      editorActions.register({
+        scriptSplitterEndpointChanged: function(scriptSplitterEndpoint) {
+          self.modeler.config.scriptSplitterEndpoint = scriptSplitterEndpoint;
+          eventBus.fire('config.updated', self.modeler.config);
+        }
+      });
+      editorActions.register({
+        scriptSplitterThresholdChanged: function(scriptSplitterEndpoint) {
+          self.modeler.config.scriptSplitterThreshold = scriptSplitterEndpoint;
+        }
+      });
     });
 
     // change to modeler corresponding to the active tab

@@ -48,7 +48,9 @@ import configureModeler from './util/configure';
 
 import Metadata from '../../../util/Metadata';
 import { getServiceTasksToDeploy } from '../../quantme/deployment/DeploymentUtils';
-import { getRootProcess } from '../../quantme/utilities/Utilities';
+import { getRootProcess, createModeler } from '../../quantme/utilities/Utilities';
+import { layout } from '../../quantme/layouter/Layouter';
+import { createNewArtifactTemplate, createNewServiceTemplateVersion } from '../../quantme/deployment/OpenTOSCAUtils';
 
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
 
@@ -57,7 +59,7 @@ const NAMESPACE_CAMUNDA = {
   prefix: 'camunda'
 };
 
-const EXPORT_AS = [ 'png', 'jpeg', 'svg', 'zip' ];
+const EXPORT_AS = ['png', 'jpeg', 'svg', 'zip'];
 
 const COLORS = [{
   title: 'White',
@@ -207,19 +209,19 @@ export class BpmnEditor extends CachedComponent {
     const modeler = this.getModeler();
 
     modeler.get('commandStack').undo();
-  }
+  };
 
   redo = () => {
     const modeler = this.getModeler();
 
     modeler.get('commandStack').redo();
-  }
+  };
 
   handleAlignElements = (type) => {
     this.triggerAction('alignElements', {
       type
     });
-  }
+  };
 
   handleMinimapToggle = (event) => {
     this.handleLayoutChange({
@@ -227,7 +229,7 @@ export class BpmnEditor extends CachedComponent {
         open: event.open
       }
     });
-  }
+  };
 
   handleElementTemplateErrors = (event) => {
     const {
@@ -237,7 +239,7 @@ export class BpmnEditor extends CachedComponent {
     errors.forEach(error => {
       this.handleError({ error });
     });
-  }
+  };
 
   handleError = (event) => {
     const {
@@ -249,7 +251,7 @@ export class BpmnEditor extends CachedComponent {
     } = this.props;
 
     onError(error);
-  }
+  };
 
   handleNamespace = async (xml) => {
     const used = findNamespaceUsages(xml, NAMESPACE_URL_ACTIVITI);
@@ -273,7 +275,7 @@ export class BpmnEditor extends CachedComponent {
     onContentUpdated(convertedXML);
 
     return convertedXML;
-  }
+  };
 
   async shouldConvert() {
     const { button } = await this.props.onAction('show-dialog', getNamespaceDialog());
@@ -323,7 +325,7 @@ export class BpmnEditor extends CachedComponent {
     }
 
     onImport(error, warnings);
-  }
+  };
 
   handleChanged = () => {
     const modeler = this.getModeler();
@@ -395,7 +397,7 @@ export class BpmnEditor extends CachedComponent {
     }
 
     this.setState(newState);
-  }
+  };
 
   isDirty() {
     const {
@@ -565,7 +567,7 @@ export class BpmnEditor extends CachedComponent {
     }
 
     // export zip file
-    return jszip.generateAsync({ type:'blob' });
+    return jszip.generateAsync({ type: 'blob' });
   }
 
   async importQAAs(qaaPaths) {
@@ -645,6 +647,557 @@ export class BpmnEditor extends CachedComponent {
       xmlhttp.open('GET', 'file:///' + qaaPath, true);
       xmlhttp.send();
     });
+  }
+
+  async generateWorkflows(zipPaths) {
+    console.log('Generating workflows from paths: ', zipPaths);
+
+    let resultList = [];
+    for (let id in zipPaths) {
+      console.log('Generating workflow from path: ', zipPaths[id]);
+      try {
+        let workflow = await this.generateWorkflow(zipPaths[id]);
+        if (workflow != null) {
+          resultList.push(workflow);
+        }
+      } catch (error) {
+        console.log('No workflow generation possible: ', error);
+      }
+    }
+    console.log('Returning list of generated workflows: ', resultList);
+    return resultList;
+  }
+
+  generateWorkflow(path) {
+
+    // retrieve script splitter endpoint
+    let scriptSplitterEndpoint = this.getModeler().config.scriptSplitterEndpoint;
+    scriptSplitterEndpoint += scriptSplitterEndpoint.endsWith('/') ? '' : '/';
+    console.log('Requesting script splitting at endpoint: ', scriptSplitterEndpoint);
+    let self = this;
+
+    return new Promise(function(resolve, reject) {
+
+      // request zip file representing QAA
+      const xmlhttp = new XMLHttpRequest();
+      xmlhttp.responseType = 'blob';
+      xmlhttp.onload = async function(callback) {
+        if (xmlhttp.status === 200) {
+          console.log('Request finished with status code 200 for archive at path %s!', path);
+          const blob = new Blob([xmlhttp.response], { type: 'application/zip' });
+
+          // load zip file using JSZip
+          let jszip = new JSZip();
+          let zip = await jszip.loadAsync(blob);
+          console.log('Successfully loaded zip!', zip);
+
+          // get all Python files within the Zip archive
+          let pythonFiles = zip.filter(function(relativePath, file) {
+            return relativePath.endsWith('.py');
+          });
+          console.log('Found %d Python file(s) in the given archive!', pythonFiles.length);
+
+          // check if exactly one Python file is contained in the archive
+          if (pythonFiles.length !== 1) {
+            console.error('Archive with path %s must contain exactly one Python file but contains %i!', path, pythonFiles.length);
+            reject('Archive with path ' + path + ' must contain exactly one Python file but contains ' + pythonFiles.length);
+            return;
+          }
+
+          // get all txt files within the Zip archive
+          let requirementsFiles = zip.filter(function(relativePath, file) {
+            return relativePath.endsWith('requirements.txt');
+          });
+          console.log('Found %d requirements.txt file(s) in the given archive!', requirementsFiles.length);
+
+          // check if exactly one requirements.txt file is contained in the archive
+          if (requirementsFiles.length !== 1) {
+            console.error('Archive with path %s must contain exactly one requirements file but contains %i!', path, requirementsFiles.length);
+            reject('Archive with path ' + path + ' must contain exactly one requirements file but contains ' + requirementsFiles.length);
+            return;
+          }
+
+          console.log('Archive is valid, starting workflow generation!');
+          let pythonFile = await pythonFiles[0].async('blob');
+          let requirementsFile = await requirementsFiles[0].async('blob');
+
+          // send request to script splitter
+          const fd = new FormData();
+          fd.append('script', pythonFile);
+          fd.append('requirements', requirementsFile);
+          fd.append('splitting_threshold', self.getModeler().config.scriptSplitterThreshold);
+          $.ajax({
+            type: 'POST',
+            url: scriptSplitterEndpoint + 'qc-script-splitter/api/v1.0/split-qc-script',
+            data: fd,
+            processData: false,
+            contentType: false,
+            success: async function(result) {
+              let pollingResult = await self.pollForResult(scriptSplitterEndpoint + result.Location.substring(1));
+              let resultUrl = scriptSplitterEndpoint + pollingResult.resultUrl.substring(1);
+              console.log('Retrieved URL to retrieve result zip file: ', resultUrl);
+
+              // fetch result zip and get folder with script parts and meta-data
+              let response = await fetch(resultUrl);
+              const resultZipBlob = await response.blob();
+              let resultZip = await new JSZip().loadAsync(resultZipBlob);
+
+              // generate deployment models
+              let deploymentModelUrls = await self.getDeploymentModelUrls(resultZip);
+              console.log('Retrieved the following deployment model URLs: ', deploymentModelUrls);
+
+              // get iterator scripts
+              let contentFolder = resultZip.folder(pollingResult.jobId);
+              let iteratorScripts = await self.getIteratorScripts(contentFolder);
+
+              // extract workflow meta-data file and generate corresponding workflow model
+              let workflowFile = contentFolder.file('workflow.json');
+              let bpmnFile = await self.generateBpmnWorkflow(workflowFile, deploymentModelUrls, iteratorScripts);
+
+              // import generated BPMN file
+              resolve({
+                contents: bpmnFile,
+                name: pollingResult.jobId
+              });
+            }
+          });
+        }
+      };
+
+      // open file from given path using xmlhttp
+      xmlhttp.open('GET', 'file:///' + path, true);
+      xmlhttp.send();
+    });
+  }
+
+  /**
+   * Generate a workflow for the given meta-data file and associate the given deployment model URLs with the service tasks
+   *
+   * @param workflowFile
+   * @param deploymentModelUrls
+   * @param iteratorScripts
+   */
+  async generateBpmnWorkflow(workflowFile, deploymentModelUrls, iteratorScripts) {
+    let workflowJson = JSON.parse(await workflowFile.async('string'));
+    console.log('Generating workflow based on Json: ', workflowJson);
+
+    // create modeler to host the generated workflow
+    let modeler = createModeler();
+
+    // initialize the modeler
+    function initializeModeler() {
+      return new Promise((resolve) => {
+        modeler.createDiagram((err, successResponse) => {
+          resolve(successResponse);
+        });
+      });
+    }
+    await initializeModeler();
+    let modeling = modeler.get('modeling');
+    let elementRegistry = modeler.get('elementRegistry');
+    let bpmnFactory = modeler.get('bpmnFactory');
+
+    // get root process of the modeler
+    let rootElement = getRootProcess(modeler.getDefinitions());
+    rootElement.isExecutable = true;
+
+    // delete initial start event
+    let startElement = elementRegistry.get(rootElement.flowElements[0].id);
+    modeling.removeShape(startElement);
+
+    // handle all elements of the workflow meta-data file
+    let workflowElement = null;
+    let lastIfs = [];
+    let lastLoops = [];
+    for (let i = 0; i < workflowJson.length; i++) {
+      let metaElement = workflowJson[i];
+      console.log('Handling element: ', metaElement);
+
+      let dict = await this.createElementInWorkflow(modeling, elementRegistry, bpmnFactory, rootElement, workflowElement,
+        metaElement, lastIfs, lastLoops, deploymentModelUrls, iteratorScripts);
+      workflowElement = dict.newElement;
+      lastIfs = dict.lastIfs;
+      lastLoops = dict.lastLoops;
+    }
+
+    // layout the generated workflow model
+    layout(modeling, elementRegistry, rootElement);
+
+    // return the XML of the generated workflow
+    function exportXmlWrapper() {
+      return new Promise((resolve) => {
+        modeler.saveXML((err, successResponse) => {
+          resolve(successResponse);
+        });
+      });
+    }
+    return await exportXmlWrapper();
+  }
+
+  /**
+   * Add a workflow element based on the entry of the given meta-data file
+   *
+   * @param modeling the modeling of the modeler to add the element to
+   * @param elementRegistry the element registry to access the elements within the modeler
+   * @param bpmnFactory the BPMN factory to create new element
+   * @param parent the parent of the element to add
+   * @param previousElement the previous element to connect the newly created element to
+   * @param metaElement the entry of the meta-data file
+   * @param lastIfs a list with the last if elements that were opened but not closed
+   * @param lastLoops a list with the last loop elements that were opened but not closed
+   * @param deploymentModelMap a map with URLs to deployment models to use for generated service tasks
+   * @param iteratorScripts a map with scripts implementing iterators of for loops
+   */
+  async createElementInWorkflow(modeling, elementRegistry, bpmnFactory, parent, previousElement, metaElement,
+      lastIfs, lastLoops, deploymentModelMap, iteratorScripts) {
+    let rootElementBo = elementRegistry.get(parent.id);
+    let newElement = null;
+    let lastIfsElement = null;
+    let lastLoopElement = null;
+    let entryGateway = null;
+
+    switch (metaElement.type) {
+    case 'start':
+      console.log('Generating StartEvent for element: ', metaElement);
+      newElement = modeling.createShape({ type: 'bpmn:StartEvent' }, { x: 0, y: 0 }, rootElementBo, {});
+      break;
+
+    case 'task':
+      console.log('Generating ServiceTask for element: ', metaElement);
+      newElement = modeling.createShape({ type: 'bpmn:ServiceTask' }, { x: 0, y: 0 }, rootElementBo, {});
+      newElement.businessObject.name = 'Execute part: ' + metaElement.file;
+
+      if (deploymentModelMap[metaElement.file] !== null) {
+        console.log('Adding deployment model URL: ', deploymentModelMap[metaElement.file]);
+        newElement.businessObject.deploymentModelUrl = deploymentModelMap[metaElement.file];
+      } else {
+        console.error('Unable to find related deployment model URL!');
+      }
+      break;
+
+    case 'end':
+      console.log('Generating EndEvent for element: ', metaElement);
+      newElement = modeling.createShape({ type: 'bpmn:EndEvent' }, { x: 0, y: 0 }, rootElementBo, {});
+      break;
+
+    case 'start_if':
+      console.log('Generating XOR Gateway for element: ', metaElement);
+      newElement = modeling.createShape({ type: 'bpmn:ExclusiveGateway' }, { x: 0, y: 0 }, rootElementBo, {});
+
+      // store if for later connections of else statements
+      lastIfs.push({ start_gateway: newElement, conditions: [metaElement.condition], branches: [] });
+      break;
+
+    case 'else_if':
+      console.log('Changing branch for else_if element: ', metaElement);
+
+      // update lasIfs to contain last element of the previous branch which has to be connected with the closing gateway for the if
+      lastIfsElement = lastIfs.pop();
+      lastIfsElement.branches.push(previousElement);
+
+      // add condition
+      lastIfsElement.conditions.push(metaElement.condition);
+      lastIfs.push(lastIfsElement);
+
+      // the next element in the meta-data file should be connected with the gateway representing the last if statement
+      newElement = lastIfsElement.start_gateway;
+      return { newElement: newElement, lastIfs: lastIfs, lastLoops: lastLoops };
+
+    case 'else':
+      console.log('No generation required for else element: ', metaElement);
+
+      // update lasIfs to contain last element of the previous branch which has to be connected with the closing gateway for the if
+      lastIfsElement = lastIfs.pop();
+      lastIfsElement.branches.push(previousElement);
+
+      // the condition of the else branch is concatenated from the conditions of the other branches
+      // eslint-disable-next-line no-case-declarations
+      let condition = '!(' + lastIfsElement.conditions.join(' || ') + ')';
+      console.log('Condition of else branch: ', condition);
+      lastIfsElement.conditions.push(condition);
+      lastIfs.push(lastIfsElement);
+
+      // the next element in the meta-data file should be connected with the gateway representing the last if statement
+      newElement = lastIfsElement.start_gateway;
+      return { newElement: newElement, lastIfs: lastIfs, lastLoops: lastLoops };
+
+    case 'end_if':
+      console.log('Adding closing XOR Gateway for end_if element: ', metaElement);
+      newElement = modeling.createShape({ type: 'bpmn:ExclusiveGateway' }, { x: 0, y: 0 }, rootElementBo, {});
+
+      // connect branches to new gateway
+      lastIfsElement = lastIfs.pop();
+      lastIfsElement.branches.push(previousElement);
+      console.log('Closing if based on the following information: ', lastIfsElement);
+      for (let elementToConnect of lastIfsElement.branches) {
+        console.log('Connecting element: ', elementToConnect);
+        modeling.connect(elementToConnect, newElement, { type: 'bpmn:SequenceFlow' });
+      }
+
+      return { newElement: newElement, lastIfs: lastIfs, lastLoops: lastLoops };
+
+    case 'start_for':
+      console.log('Adding Script Task and XOR Gateways representing for loop: ', metaElement);
+
+      // add XOR Gateways and Script Task with iterator representing body of the for loop
+      entryGateway = modeling.createShape({ type: 'bpmn:ExclusiveGateway' }, { x: 0, y: 0 }, rootElementBo, {});
+      lastLoops = this.connectPreviousAndNewElement(bpmnFactory, modeling, elementRegistry, previousElement, entryGateway, lastIfs, lastLoops);
+
+      // create ScriptTask and add retrieved iterator script
+      // eslint-disable-next-line no-case-declarations
+      let script = modeling.createShape({ type: 'bpmn:ScriptTask' }, { x: 0, y: 0 }, rootElementBo, {});
+      script.businessObject.name = 'Iterator: ' + metaElement.iterator;
+      script.businessObject.scriptFormat = 'javascript';
+      script.businessObject.script = await iteratorScripts[metaElement.iterator].async('text');
+      script.businessObject.asyncBefore = true;
+
+      // connect XOR ans Script
+      lastLoops = this.connectPreviousAndNewElement(bpmnFactory, modeling, elementRegistry, entryGateway, script, lastIfs, lastLoops);
+
+      // create final XOR and connect with Script
+      newElement = modeling.createShape({ type: 'bpmn:ExclusiveGateway' }, { x: 0, y: 0 }, rootElementBo, {});
+      lastLoops = this.connectPreviousAndNewElement(bpmnFactory, modeling, elementRegistry, script, newElement, lastIfs, lastLoops);
+      newElement.businessObject.name = metaElement.iterator + ' == null?';
+
+      // add loop meta data
+      lastLoops.push({ entryGateway: entryGateway, exitGateway: newElement, exitCondition: metaElement.iterator + ' == null' });
+      return { newElement: newElement, lastIfs: lastIfs, lastLoops: lastLoops };
+
+    case 'end_while':
+    case 'end_for':
+      console.log('Terminating loop by resetting last element to connect next element to: ', metaElement);
+
+      // connect last part of the loop with the entry gateway and reset to continue sequence flow at exit gateway
+      console.log('Currently %d open loops available!', lastLoops.length);
+      lastLoopElement = lastLoops[lastLoops.length - 1];
+      if (lastLoopElement.entryGateway.incoming.length === 2 && lastLoops.length >= 2) {
+
+        // if there are two sequential end_for statements, the exit gateway of the inner one must be connected with the entry gateway of the outer
+        console.log('Found two sequential end_for or end_while statements!');
+        let previous = lastLoops[lastLoops.length - 2];
+        lastLoops = this.connectPreviousAndNewElement(bpmnFactory, modeling, elementRegistry, lastLoopElement.exitGateway, previous.entryGateway, lastIfs, lastLoops);
+        lastLoopElement = previous;
+        console.log('Remaining open loops: ', lastLoops.length);
+      } else {
+        lastLoops = this.connectPreviousAndNewElement(bpmnFactory, modeling, elementRegistry, previousElement, lastLoopElement.entryGateway, lastIfs, lastLoops);
+      }
+
+      return { newElement: lastLoopElement.exitGateway, lastIfs: lastIfs, lastLoops: lastLoops };
+
+    case 'start_while':
+      console.log('Adding XOR Gateways representing while loop: ', metaElement);
+
+      // add entry gateway
+      entryGateway = modeling.createShape({ type: 'bpmn:ExclusiveGateway' }, { x: 0, y: 0 }, rootElementBo, {});
+      lastLoops = this.connectPreviousAndNewElement(bpmnFactory, modeling, elementRegistry, previousElement, entryGateway, lastIfs, lastLoops);
+
+      // add exit gateway
+      newElement = modeling.createShape({ type: 'bpmn:ExclusiveGateway' }, { x: 0, y: 0 }, rootElementBo, {});
+      lastLoops = this.connectPreviousAndNewElement(bpmnFactory, modeling, elementRegistry, entryGateway, newElement, lastIfs, lastLoops);
+      newElement.businessObject.name = metaElement.condition + '?';
+
+      // store while loop for connection of exit path
+      lastLoops.push({ entryGateway: entryGateway, exitGateway: newElement, exitCondition: metaElement.condition });
+      return { newElement: newElement, lastIfs: lastIfs, lastLoops: lastLoops };
+
+    default:
+      console.log('Unable to handle element of type: ', metaElement.type);
+    }
+
+    // connect the newly added element with the previous one
+    lastLoops = this.connectPreviousAndNewElement(bpmnFactory, modeling, elementRegistry, previousElement, newElement, lastIfs, lastLoops);
+    return { newElement: newElement, lastIfs: lastIfs, lastLoops: lastLoops };
+  }
+
+  /**
+   * Connect the previous and the new element within the generated workflow and add a corresponding condition if it is
+   * part of a loop or an if statement
+   *
+   * @param bpmnFactory
+   * @param modeling
+   * @param elementRegistry
+   * @param previousElement
+   * @param newElement
+   * @param lastIfs
+   * @param lastLoops
+   */
+  connectPreviousAndNewElement(bpmnFactory, modeling, elementRegistry, previousElement, newElement, lastIfs, lastLoops) {
+    if (newElement !== null && previousElement !== null) {
+      let sequenceFlow = modeling.connect(previousElement, newElement, { type: 'bpmn:SequenceFlow' });
+      let sequenceFlowBo = elementRegistry.get(sequenceFlow.id).businessObject;
+
+      // if previous element was a gateway, check if we have to add a corresponding condition
+      if (previousElement.type === 'bpmn:ExclusiveGateway' && (lastIfs.length > 0 || lastLoops.length > 0)) {
+        console.log('Previous element was ExclusiveGateway, checking if a condition has to be added: ', previousElement);
+
+        // handle ifs
+        if (lastIfs.length > 0 && lastIfs[lastIfs.length - 1].start_gateway === previousElement) {
+          let metaDataIf = lastIfs[lastIfs.length - 1];
+          let condition = metaDataIf.conditions[metaDataIf.conditions.length - 1];
+          console.log('Previous element is ExclusiveGateway starting an if statement, adding condition: ', condition);
+
+          // add condition
+          sequenceFlowBo.name = condition;
+          let formalExpression = bpmnFactory.create('bpmn:FormalExpression');
+          formalExpression.body = '${' + condition + '}';
+          sequenceFlowBo.conditionExpression = formalExpression;
+        }
+
+        // handle loops
+        if (lastLoops.length > 0 && lastLoops[lastLoops.length - 1].exitGateway === previousElement) {
+          let metaDataLoop = lastLoops[lastLoops.length - 1];
+          let condition;
+          console.log('Previous element is ExclusiveGateway terminating a loop: ', metaDataLoop);
+
+          // add inverted exit condition for sequence flow within the loop
+          console.log('Gateway: ', metaDataLoop.exitGateway);
+          if (metaDataLoop.exitGateway.outgoing.length < 2) {
+            condition = '${' + metaDataLoop.exitCondition + '}';
+            sequenceFlowBo.name = 'true';
+          } else {
+            condition = '${!(' + metaDataLoop.exitCondition + ')}';
+            sequenceFlowBo.name = 'false';
+
+            lastLoops.pop();
+          }
+          let formalExpression = bpmnFactory.create('bpmn:FormalExpression');
+          formalExpression.body = condition;
+          sequenceFlowBo.conditionExpression = formalExpression;
+        }
+      }
+    }
+    return lastLoops;
+  }
+
+  /**
+   * Get a map with all iterator scripts for the given zip file
+   *
+   * @param zip
+   * @return {Promise<{}>}
+   */
+  async getIteratorScripts(zip) {
+    let iteratorScripts = {};
+    zip.folder('iterators').forEach(function(relativePath, file) {
+      let iteratorName = relativePath.split('.')[0];
+      iteratorScripts[iteratorName] = file;
+    });
+
+    console.log('Retrieved iterator scripts: ', iteratorScripts);
+    return iteratorScripts;
+  }
+
+  /**
+   * Get a dict with URLs to deployment models for the script parts contained in the given zip
+   *
+   * @param zip
+   * @return {Promise<{}>}
+   */
+  async getDeploymentModelUrls(zip) {
+
+    // iterate through the files and generate a deployment model for the script part
+    let deploymentModelUrls = {};
+    for (let fileName in zip.files) {
+      let dockerFile = zip.file(fileName);
+
+      // we need a Dockerfile file to build the container for the script part
+      if (!dockerFile.name.endsWith('Dockerfile')) {
+        continue;
+      }
+      console.log('Found Dockerfile for script part with path "%s". Searching for related service.zip...', fileName);
+
+      // search service.zip
+      let zipFile = zip.file(dockerFile.name.replace('Dockerfile', 'service.zip'));
+      if (zipFile == null) {
+        console.log('Unable to find service.zip file!');
+        continue;
+      }
+
+      // get name of the script part
+      let scriptPartName = dockerFile.name.split('/');
+      if (scriptPartName.length !== 3) {
+        continue;
+      }
+      scriptPartName = scriptPartName[1];
+      console.log('Name of found script part: ', scriptPartName);
+
+      // generate deployment model and retrieve URL
+      deploymentModelUrls[scriptPartName] = await this.generateDeploymentModel(scriptPartName, dockerFile, zipFile,
+        this.getModeler().config.wineryEndpoint);
+    }
+
+    return deploymentModelUrls;
+  }
+
+  /**
+   * Generate a deployment model for the script part defined by the given Python and requirements file
+   *
+   * @param scriptPartName
+   * @param dockerFile
+   * @param zipFile
+   * @param wineryEndpoint
+   * @return {Promise<string>}
+   */
+  async generateDeploymentModel(scriptPartName, dockerFile, zipFile, wineryEndpoint) {
+    console.log('Generating new ArtifactTemplate for Dockerfile: ', scriptPartName);
+
+    // create blob for the DeploymentArtifact containing the Dockerfile and the Zip
+    let daZip = new JSZip();
+    await daZip.file('Dockerfile', await dockerFile.async('blob'));
+    await daZip.file('service.zip', await zipFile.async('blob'));
+    let daBlob = await daZip.generateAsync({ type: 'blob' });
+
+    // create a new ArtifactTemplate and upload the script part, requirements, polling agent, and dockerfile
+    let artifactName = await createNewArtifactTemplate(wineryEndpoint, 'script-part-' + scriptPartName,
+      'http://quantil.org/quantme/pull/artifacttemplates',
+      '{http://opentosca.org/artifacttypes}DockerContainerArtifact', daBlob,
+      'script-part.zip');
+    console.log('Created ArtifactTemplate with name: ', artifactName);
+
+    // create new ServiceTemplate for the script by adding a new version of the predefined template
+    let serviceTemplateURL = await createNewServiceTemplateVersion(wineryEndpoint, 'ScriptPartService', 'http://quantil.org/quantme/pull');
+    if (serviceTemplateURL.error !== undefined) {
+      console.error('ServiceTemplate creation resulted in error: ', serviceTemplateURL.error);
+      return serviceTemplateURL.error;
+    }
+
+    // update DA reference within the created ServiceTemplate version
+    let getTemplateXmlResult = await fetch(serviceTemplateURL + 'xml');
+    let getTemplateXmlResultJson = await getTemplateXmlResult.text();
+    getTemplateXmlResultJson = getTemplateXmlResultJson.replace(':ScriptPartContainer_DA"', ':' + artifactName + '"');
+    await fetch(serviceTemplateURL, {
+      method: 'PUT',
+      body: getTemplateXmlResultJson,
+      headers: { 'Content-Type': 'application/xml' }
+    });
+
+    // replace concrete Winery endpoint with abstract placeholder to enable QAA transfer into another environment
+    let deploymentModelUrl = serviceTemplateURL.replace(wineryEndpoint, '{{ wineryEndpoint }}');
+    deploymentModelUrl += '?csar';
+    return deploymentModelUrl;
+  }
+
+  async pollForResult(url) {
+    console.log('Polling for task resource at: ', url);
+
+    let complete = false;
+    let resultUrl = '';
+    let jobId = '';
+    while (complete === false) {
+
+      // wait 5 seconds for next poll
+      await new Promise(r => setTimeout(r, 5000));
+
+      // poll for current state
+      let pollingResponse = await fetch(url);
+      let pollingResponseJson = await pollingResponse.json();
+      console.log('Polling response: ', pollingResponseJson);
+
+      complete = pollingResponseJson.complete;
+      resultUrl = pollingResponseJson.script_parts_url;
+      jobId = pollingResponseJson.id;
+    }
+
+    return { jobId: jobId, resultUrl: resultUrl };
   }
 
   async exportSVG() {
@@ -729,20 +1282,20 @@ export class BpmnEditor extends CachedComponent {
 
     // TODO(nikku): handle all editor actions
     return modeler.get('editorActions').trigger(action, context);
-  }
+  };
 
   handleSetColor = (fill, stroke) => {
     this.triggerAction('setColor', {
       fill,
       stroke
     });
-  }
+  };
 
   handleDistributeElements = (type) => {
     this.triggerAction('distributeElements', {
       type
     });
-  }
+  };
 
   handleContextMenu = (event) => {
 
@@ -753,7 +1306,7 @@ export class BpmnEditor extends CachedComponent {
     if (isFunction(onContextMenu)) {
       onContextMenu(event);
     }
-  }
+  };
 
   handleLayoutChange(newLayout) {
     const {
@@ -773,7 +1326,7 @@ export class BpmnEditor extends CachedComponent {
 
     canvas.resized();
     eventBus.fire('propertiesPanel.resized');
-  }
+  };
 
   render() {
 

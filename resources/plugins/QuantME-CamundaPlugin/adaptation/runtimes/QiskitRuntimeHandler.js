@@ -11,12 +11,15 @@
 
 import JSZip from 'jszip';
 import { fetch } from 'whatwg-fetch';
-import { createModelerFromXml, getQuantumCircuitExecutionTasks } from '../../quantme/Utilities';
+import { createModelerFromXml } from '../../quantme/Utilities';
 import { startReplacementProcess } from '../../quantme/replacement/QuantMETransformator';
-import { getRootProcess, performAjax } from 'client/src/app/quantme/utilities/Utilities';
 import {
-  createNewAgentServiceTemplate,
-  createNewArtifactTemplate
+  getQuantumCircuitExecutionTasks,
+  getRootProcess,
+  performAjax
+} from 'client/src/app/quantme/utilities/Utilities';
+import {
+  createNewArtifactTemplate, createNewServiceTemplateVersion
 } from 'client/src/app/quantme/deployment/OpenTOSCAUtils';
 
 /**
@@ -108,7 +111,7 @@ async function createDeploymentModel(candidate, programBlobs, wineryEndpoint) {
     'hybrid_program_agent.zip');
 
   // create new ServiceTemplate for the hybrid program by adding a new version of the predefined template
-  let serviceTemplateURL = await createNewAgentServiceTemplate(wineryEndpoint, 'QiskitRuntimeAgentService', 'http://quantil.org/quantme/pull');
+  let serviceTemplateURL = await createNewServiceTemplateVersion(wineryEndpoint, 'QiskitRuntimeAgentService', 'http://quantil.org/quantme/pull');
   if (serviceTemplateURL.error !== undefined) {
     return { error: serviceTemplateURL.error };
   }

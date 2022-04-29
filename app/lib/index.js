@@ -50,7 +50,11 @@ const {
   setNisqAnalyzerEndpoint,
   setTransformationFrameworkEndpoint,
   getQiskitRuntimeHandlerEndpoint,
-  setQiskitRuntimeHandlerEndpoint
+  setQiskitRuntimeHandlerEndpoint,
+  getScriptSplitterEndpoint,
+  setScriptSplitterEndpoint,
+  getScriptSplitterThreshold,
+  setScriptSplitterThreshold
 } = require('./framework-config');
 
 const {
@@ -290,7 +294,9 @@ renderer.on('config:get-form-modal', function(done) {
     qrmUserName: getQRMRepositoryUserName(),
     qrmRepoName: getQRMRepositoryName(),
     qrmRepoPath: getQRMRepositoryPath(),
-    qiskitRuntimeHandlerEndpoint: getQiskitRuntimeHandlerEndpoint()
+    qiskitRuntimeHandlerEndpoint: getQiskitRuntimeHandlerEndpoint(),
+    scriptSplitterEndpoint: getScriptSplitterEndpoint(),
+    scriptSplitterThreshold: getScriptSplitterThreshold()
   };
   done(null, configurationJson);
 });
@@ -307,6 +313,8 @@ renderer.on('config:set-from-modal', function(config) {
   setTransformationFrameworkEndpoint(config.transformationFrameworkEndpoint);
   setNisqAnalyzerEndpoint(config.nisqAnalyzerEndpoint);
   setQiskitRuntimeHandlerEndpoint(config.qiskitRuntimeHandlerEndpoint);
+  setScriptSplitterEndpoint(config.scriptSplitterEndpoint);
+  setScriptSplitterThreshold(config.scriptSplitterThreshold);
 });
 
 // plugin toggling //////////

@@ -54,6 +54,7 @@ class MenuBuilder {
       new MenuBuilder(this.options)
         .appendNewFile()
         .appendOpen()
+        .appendGenerateWorkflow()
         .appendSeparator()
         .appendSwitchTab()
         .appendSaveFile()
@@ -153,6 +154,19 @@ class MenuBuilder {
       accelerator: 'CommandOrControl+O',
       click: function() {
         app.emit('menu:action', 'open-diagram');
+      }
+    }));
+
+    this.appendReopenLastTab();
+
+    return this;
+  }
+
+  appendGenerateWorkflow() {
+    this.menu.append(new MenuItem({
+      label: 'Generate Workflow...',
+      click: function() {
+        app.emit('menu:action', 'generate-workflow');
       }
     }));
 

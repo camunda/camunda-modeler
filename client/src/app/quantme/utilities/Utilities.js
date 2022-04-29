@@ -11,6 +11,10 @@
 
 import extensionElementsHelper from 'bpmn-js-properties-panel/lib/helper/ExtensionElementsHelper';
 import $ from 'jquery';
+import BpmnModeler from 'bpmn-js/lib/Modeler';
+import { elementTemplates } from 'bpmn-js-properties-panel/lib/provider/camunda/element-templates';
+import quantMEModdleExtension from '../../../../resources/quantme/quantum4bpmn.json';
+import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
 
 /**
  * Get the root process element of the diagram
@@ -49,6 +53,7 @@ export async function exportXmlFromModeler(modeler) {
       });
     });
   }
+
   return await exportXmlWrapper(modeler.getDefinitions());
 }
 
@@ -126,6 +131,16 @@ export function getFlowElementsRecursively(startElement) {
 }
 
 /**
+ * Return all QuantumCircuitExecutionTasks from the given list of modeling elements
+ *
+ * @param modelingElements the list of modeling elements
+ * @return the list of contained QuantumCircuitExecutionTasks
+ */
+export function getQuantumCircuitExecutionTasks(modelingElements) {
+  return modelingElements.filter(element => element.$type === 'quantme:QuantumCircuitExecutionTask');
+}
+
+/**
  * Get the properties that have to be copied from an element of a replacement fragment to the new element in the diagram
  *
  * @param element the element to retrieve the properties from
@@ -169,6 +184,24 @@ export function getPropertiesToCopy(element) {
   }
 
   return properties;
+}
+
+/**
+ * Create a new modeler object with the QuantME moodle but without exentsion modules
+ *
+ * @return {Modeler} the created modeler
+ */
+export function createModeler() {
+
+  return new BpmnModeler({
+    additionalModules: [
+      elementTemplates
+    ],
+    moddleExtensions: {
+      camunda: camundaModdlePackage,
+      quantME: quantMEModdleExtension
+    }
+  });
 }
 
 export function performAjax(targetUrl, dataToSend) {

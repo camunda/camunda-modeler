@@ -220,3 +220,51 @@ module.exports.setQiskitRuntimeHandlerEndpoint = function(endpoint) {
     app.emit('menu:action', 'qiskitRuntimeHandlerEndpointChanged', endpoint);
   }
 };
+
+/**
+ * Get the endpoint of the Script Splitter
+ *
+ * @return {string} the specified endpoint
+ */
+module.exports.getScriptSplitterEndpoint = function() {
+  if (config.scriptSplitterEndpoint === undefined) {
+    return '';
+  }
+  return config.scriptSplitterEndpoint;
+};
+
+/**
+ * Set the endpoint of the Script Splitter
+ *
+ * @param endpoint the endpoint
+ */
+module.exports.setScriptSplitterEndpoint = function(endpoint) {
+  if (endpoint !== null && endpoint !== undefined) {
+    config.scriptSplitterEndpoint = endpoint;
+    app.emit('menu:action', 'scriptSplitterEndpointChanged', endpoint);
+  }
+};
+
+/**
+ * Get the splitting threshold for the Script Splitter
+ *
+ * @return {int} the specified threshold
+ */
+module.exports.getScriptSplitterThreshold = function() {
+  if (config.scriptSplitterThreshold === undefined) {
+    return 0;
+  }
+  return config.scriptSplitterThreshold;
+};
+
+/**
+ * Set the splitting threshold of the Script Splitter
+ *
+ * @param threshold the threshold
+ */
+module.exports.setScriptSplitterThreshold = function(threshold) {
+  if (threshold !== null && threshold !== undefined) {
+    config.scriptSplitterThreshold = threshold;
+    app.emit('menu:action', 'scriptSplitterThresholdChanged', threshold);
+  }
+};

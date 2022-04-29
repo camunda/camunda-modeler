@@ -28,6 +28,8 @@ export default function ConfigModal({ initValues, onClose }) {
   const [qrmUserName, setQrmUserName] = useState(initValues.qrmUserName);
   const [qrmRepoPath, setQrmRepoPath] = useState(initValues.qrmRepoPath);
   const [qiskitRuntimeHandlerEndpoint, setQiskitRuntimeHandlerEndpoint] = useState(initValues.qiskitRuntimeHandlerEndpoint);
+  const [scriptSplitterEndpoint, setScriptSplitterEndpoint] = useState(initValues.scriptSplitterEndpoint);
+  const [scriptSplitterThreshold, setScriptSplitterThreshold] = useState(initValues.scriptSplitterThreshold);
 
   // return the new values to the config plugin
   const onSubmit = () => onClose({
@@ -39,7 +41,9 @@ export default function ConfigModal({ initValues, onClose }) {
     qrmUserName,
     qrmRepoName,
     qrmRepoPath,
-    qiskitRuntimeHandlerEndpoint
+    qiskitRuntimeHandlerEndpoint,
+    scriptSplitterEndpoint,
+    scriptSplitterThreshold
   });
 
 
@@ -65,7 +69,7 @@ export default function ConfigModal({ initValues, onClose }) {
       <form id="quantmeConfigForm" onSubmit={onSubmit}>
 
         <div id="quantmeConfigButtons">
-          <button type="button" className="innerConfig btn-primary" onClick={() => openTab('BPMNTab', 0)}>BPMN</button>
+          <button type="button" className="innerConfig btn-primary" onClick={() => openTab('BPMNTab', 0)}>Workflows</button>
           <button type="button" className="innerConfig btn-primary" onClick={() => openTab('OpenTOSCAEndpointTab', 1)}>OpenTOSCA</button>
           <button type="button" className="innerConfig btn-primary" onClick={() => openTab('NISQAnalyzerEndpointTab', 2)}>NISQ Analyzer</button>
           <button type="button" className="innerConfig btn-primary" onClick={() => openTab('QRMDataTab', 3)}>QRM Data</button>
@@ -95,6 +99,31 @@ export default function ConfigModal({ initValues, onClose }) {
                       name="transformationFrameworkEndpoint"
                       value={transformationFrameworkEndpoint}
                       onChange={event => setTransformationFrameworkEndpoint(event.target.value)}/>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Workflow generation:</h3>
+            <table>
+              <tbody>
+                <tr className="spaceUnder">
+                  <td align="right">Script Splitter Endpoint</td>
+                  <td align="left">
+                    <input
+                      type="string"
+                      name="scriptSplitterEndpoint"
+                      value={scriptSplitterEndpoint}
+                      onChange={event => setScriptSplitterEndpoint(event.target.value)}/>
+                  </td>
+                </tr>
+                <tr className="spaceUnder">
+                  <td align="right">Script Splitter Threshold</td>
+                  <td align="left">
+                    <input
+                      type="int"
+                      name="scriptSplitterThreshold"
+                      value={scriptSplitterThreshold}
+                      onChange={event => setScriptSplitterThreshold(event.target.value)}/>
                   </td>
                 </tr>
               </tbody>

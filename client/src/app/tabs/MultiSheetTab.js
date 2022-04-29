@@ -257,6 +257,10 @@ export class MultiSheetTab extends CachedComponent {
       const { qaaPaths } = options;
 
       return await editor.importQAAs(qaaPaths);
+    } else if (action === 'generate-workflows') {
+      const { zipPaths } = options;
+
+      return await editor.generateWorkflows(zipPaths);
     }
 
     return editor.triggerAction(action, options);
