@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="definitions_0pm5f1p" name="Decision" namespace="http://camunda.org/schema/1.0/dmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">>
+  <decision id="Decision_13nychf" name="Which Season">
+    <informationRequirement id="InformationRequirement_14co6no">
+      <requiredInput href="#InputData_1srou0x" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_0xrkotr">
+      <output id="OutputClause_0op0fkk" typeRef="string" />
+    </decisionTable>
+  </decision>
+  <decision id="Decision_17gs2k3" name="Which Region">
+    <variable id="InformationItem_1xcwjob" name="InformationItem_1xcwjob" />
+    <literalExpression id="LiteralExpression_169mwud" />
+  </decision>
+  <inputData id="InputData_1srou0x" name="Regional Weather" />
+  <decision id="Decision_1kizwj6" name="Go on Holidays?">
+    <informationRequirement id="InformationRequirement_00ajgoz">
+      <requiredDecision href="#Decision_13nychf" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_1ugvlci">
+      <requiredDecision href="#Decision_17gs2k3" />
+    </informationRequirement>
+  </decision>
+  <textAnnotation id="TextAnnotation_1ytoitl">
+    <text>We decide for holidays when we agreed on
+season + region</text>
+  </textAnnotation>
+  <association id="Association_0ni2cyy">
+    <sourceRef href="#Decision_11sdtl8" />
+    <targetRef href="#TextAnnotation_1ytoitl" />
+  </association>
+  <association id="Association_11uhskx">
+    <sourceRef href="#Decision_1kizwj6" />
+    <targetRef href="#TextAnnotation_1ytoitl" />
+  </association>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_13nychf">
+        <dc:Bounds height="80" width="180" x="61" y="261" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_14co6no">
+        <di:waypoint x="105" y="447" />
+        <di:waypoint x="149" y="341" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape dmnElementRef="Decision_17gs2k3">
+        <dc:Bounds height="80" width="180" x="360" y="252" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="InputData_1srou0x">
+        <dc:Bounds height="45" width="125" x="37" y="447" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="Decision_1kizwj6">
+        <dc:Bounds height="80" width="180" x="198" y="68" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_00ajgoz">
+        <di:waypoint x="196" y="261" />
+        <di:waypoint x="274" y="148" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_1ugvlci">
+        <di:waypoint x="405" y="252" />
+        <di:waypoint x="345" y="148" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape dmnElementRef="TextAnnotation_1ytoitl">
+        <dc:Bounds height="80" width="100" x="484" y="36" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="Association_0ni2cyy">
+        <di:waypoint x="389" y="113" />
+        <di:waypoint x="567" y="63" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="Association_11uhskx">
+        <di:waypoint x="378" y="98" />
+        <di:waypoint x="484" y="86" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
