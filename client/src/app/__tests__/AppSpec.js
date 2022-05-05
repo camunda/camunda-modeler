@@ -781,6 +781,27 @@ describe('<App>', function() {
       expect(eventSpy).to.have.been.calledOnce;
     });
 
+
+    it('should emit <tab.closed> event on tab closed', async function() {
+
+      // given
+      const eventSpy = sinon.spy();
+
+      const {
+        app
+      } = createApp();
+
+      const tab = await app.createDiagram('bpmn');
+
+      app.on('tab.closed', eventSpy);
+
+      // when
+      await app.closeTab(tab);
+
+      // then
+      expect(eventSpy).to.have.been.calledOnce;
+    });
+
   });
 
 
