@@ -1,0 +1,32 @@
+name: COMMENT_DEVELOP_FIX
+on:
+  pull_request:
+    branches:
+      - develop
+permissions:
+  pull-requests: write
+jobs:
+  comment-on-fix-to-develop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for fix commits
+        env:
+          COMMITS_URL: ${{ github.event.pull_request.commits_url }}
+        run: |
+          echo "Checking commits via $COMMITS_URL"
+
+          if [[ $(curl $COMMITS_URL) =~ ."\"message\": \"fix".* ]]
+          then
+            echo "FIX_COMMITS_PRESENT=true" >> $GITHUB_ENV
+          else
+            echo "FIX_COMMITS_PRESENT=false" >> $GITHUB_ENV
+          fi
+      - name: Create comment
+        if: ${{ env.FIX_COMMITS_PRESENT == 'true' }}
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            This Pull Request targets `develop` branch, but contains `fix` commits.
+
+            Consider targeting `master` instead.
