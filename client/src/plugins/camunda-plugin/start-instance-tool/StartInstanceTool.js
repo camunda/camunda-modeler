@@ -363,6 +363,13 @@ export default class StartInstanceTool extends PureComponent {
    async getConfigurationFromUserInput(tab, providedConfiguration, uiOptions) {
      const configuration = await this.getDefaultConfiguration(providedConfiguration);
 
+     this.props.triggerAction('emit-event', {
+       type:'deployment.opened',
+       payload: {
+         context: 'startInstanceTool'
+       }
+     });
+
      return new Promise(resolve => {
        const handleClose = (action, configuration) => {
 
@@ -370,6 +377,15 @@ export default class StartInstanceTool extends PureComponent {
            overlayState: null,
            activeButton: false
          });
+
+         if (action === 'cancel') {
+           this.props.triggerAction('emit-event', {
+             type:'deployment.closed',
+             payload: {
+               context: 'startInstanceTool'
+             }
+           });
+         }
 
          // contract: if configuration provided, user closed with O.K.
          // otherwise they canceled it

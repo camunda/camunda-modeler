@@ -129,6 +129,13 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
       }
     }
 
+    this.props.triggerAction('emit-event',{
+      type: 'deployment.closed',
+      payload: {
+        context: 'deploymentTool'
+      }
+    });
+
     this.props.onClose(action, data);
   }
 

@@ -546,9 +546,25 @@ export default class DeploymentPlugin extends PureComponent {
 
     if (overlayState && !overlayState.isStart) {
       this.closeOverlay();
+
+      this.props.triggerAction('emit-event', {
+        type: 'deployment.closed',
+        payload: {
+          context: 'deploymentTool'
+        }
+      });
     }
 
-    else this.deploy();
+    else {
+      this.props.triggerAction('emit-event', {
+        type: 'deployment.opened',
+        payload: {
+          context: 'deploymentTool'
+        }
+      });
+
+      this.deploy();
+    }
   }
 
   isButtonActive = () => {

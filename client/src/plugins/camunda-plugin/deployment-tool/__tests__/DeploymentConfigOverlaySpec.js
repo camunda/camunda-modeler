@@ -755,6 +755,7 @@ function createOverlay(props = {}, renderFn = shallow) {
       subscribeToFocusChange={ subscribeToFocusChange || noop }
       unsubscribeFromFocusChange={ unsubscribeFromFocusChange || noop }
       anchor={ anchor }
+      triggerAction={ noop }
     />
   );
 

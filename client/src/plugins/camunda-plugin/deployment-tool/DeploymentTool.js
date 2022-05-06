@@ -549,6 +549,10 @@ export default class DeploymentTool extends PureComponent {
       overlayState
     } = this.state;
 
+    const {
+      triggerAction
+    } = this.props;
+
     // TODO(nikku): we'll remove the flag once we make re-deploy
     // the primary button action: https://github.com/camunda/camunda-modeler/issues/1440
 
@@ -557,10 +561,24 @@ export default class DeploymentTool extends PureComponent {
     };
 
     const onClick = () => {
-      if (overlayState)
-        this.closeOverlay(overlayState);
+      let eventName;
 
-      else this.deploy({ configure: true });
+      if (overlayState) {
+        eventName = 'deployment.closed';
+        this.closeOverlay(overlayState);
+      }
+
+      else {
+        eventName = 'deployment.opened';
+        this.deploy({ configure: true });
+      }
+
+      triggerAction('emit-event', {
+        type: eventName,
+        payload: {
+          context: 'deploymentTool'
+        }
+      });
     };
 
     return <React.Fragment>
@@ -589,6 +607,7 @@ export default class DeploymentTool extends PureComponent {
         subscribeToFocusChange={ this.subscribeToFocusChange }
         unsubscribeFromFocusChange={ this.unsubscribeFromFocusChange }
         anchor={ overlayState ? overlayState.anchor.current : null }
+        triggerAction={ triggerAction }
       />
       }
     </React.Fragment>;

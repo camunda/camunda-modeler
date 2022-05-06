@@ -111,12 +111,28 @@ export default class StartInstancePlugin extends PureComponent {
   async getConfigurationFromUser(startConfiguration) {
     const configuration = startConfiguration || DEFAULT_CONFIGURATION;
 
+    this.props.triggerAction('emit-event', {
+      type: 'deployment.opened',
+      payload: {
+        context: 'startInstanceTool'
+      }
+    });
+
     return new Promise(resolve => {
       const onClose = (action, configuration) => {
         this.setState({
           overlayState: null,
           activeButton: false
         });
+
+        if (action === 'cencel') {
+          this.props.triggerAction('emit-event', {
+            type: 'deployment.closed',
+            payload: {
+              context: 'startInstanceTool'
+            }
+          });
+        }
 
         // contract: if configuration provided, user closed with O.K.
         // otherwise they canceled it
