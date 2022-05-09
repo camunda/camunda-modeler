@@ -935,6 +935,23 @@ describe('<App>', function() {
     });
 
 
+    it('should save  multiple times', async function() {
+
+      // given
+      const file = createFile('diagram_1.bpmn');
+      fileSystem.setWriteFileResponse(0, Promise.resolve(file));
+
+      await app.openFiles([ file ]);
+
+      // when
+      await app.triggerAction('save');
+      await app.triggerAction('save');
+
+      // then
+      expect(writeFileSpy).to.have.been.calledTwice;
+    });
+
+
     it('should save all tabs');
 
 
