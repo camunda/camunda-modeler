@@ -13,7 +13,7 @@
     "client:test": "(cd client && npm run test)",
     "bpmn-io-modelers:test": "(cd client && npm run bpmn-io-modelers:test)",
     "bpmn-io-modelers:auto-test": "(cd client && npm run bpmn-io-modelers:auto-test)",
-    "all": "run-s clean lint test \"build -- {@}\" --",
+    "all": "run-s clean \"build -- {@}\" --",
     "auto-test": "run-p *:auto-test",
     "clean": "del-cli 'dist/*' app/public",
     "dev": "run-p \"app:dev -- {@}\" client:dev --",
