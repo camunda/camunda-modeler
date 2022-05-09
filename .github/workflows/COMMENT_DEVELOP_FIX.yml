@@ -1,6 +1,8 @@
 name: COMMENT_DEVELOP_FIX
 on:
   pull_request:
+    types:
+      - opened
     branches:
       - develop
 permissions:
