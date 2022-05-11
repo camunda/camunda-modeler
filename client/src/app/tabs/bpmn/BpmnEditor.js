@@ -855,6 +855,7 @@ export class BpmnEditor extends CachedComponent {
     let lastIfsElement = null;
     let lastLoopElement = null;
     let entryGateway = null;
+    let condition = null;
 
     switch (metaElement.type) {
     case 'start':
@@ -885,7 +886,7 @@ export class BpmnEditor extends CachedComponent {
       newElement = modeling.createShape({ type: 'bpmn:ExclusiveGateway' }, { x: 0, y: 0 }, rootElementBo, {});
 
       // store if for later connections of else statements
-      lastIfs.push({ start_gateway: newElement, conditions: [metaElement.condition], branches: [] });
+      lastIfs.push({ start_gateway: newElement, conditions: [metaElement.condition], lastCondition: metaElement.condition, branches: [] });
       break;
 
     case 'else_if':
@@ -896,6 +897,9 @@ export class BpmnEditor extends CachedComponent {
       lastIfsElement.branches.push(previousElement);
 
       // add condition
+      condition = '!(' + lastIfsElement.conditions.join(' || ') + ') && ' + metaElement.condition;
+      console.log('Condition of else_if branch: ', condition);
+      lastIfsElement.lastCondition = condition;
       lastIfsElement.conditions.push(metaElement.condition);
       lastIfs.push(lastIfsElement);
 
@@ -911,10 +915,9 @@ export class BpmnEditor extends CachedComponent {
       lastIfsElement.branches.push(previousElement);
 
       // the condition of the else branch is concatenated from the conditions of the other branches
-      // eslint-disable-next-line no-case-declarations
-      let condition = '!(' + lastIfsElement.conditions.join(' || ') + ')';
+      condition = '!(' + lastIfsElement.conditions.join(' || ') + ')';
       console.log('Condition of else branch: ', condition);
-      lastIfsElement.conditions.push(condition);
+      lastIfsElement.lastCondition = condition;
       lastIfs.push(lastIfsElement);
 
       // the next element in the meta-data file should be connected with the gateway representing the last if statement
@@ -1033,7 +1036,7 @@ export class BpmnEditor extends CachedComponent {
         // handle ifs
         if (lastIfs.length > 0 && lastIfs[lastIfs.length - 1].start_gateway === previousElement) {
           let metaDataIf = lastIfs[lastIfs.length - 1];
-          let condition = metaDataIf.conditions[metaDataIf.conditions.length - 1];
+          let condition = metaDataIf.lastCondition;
           console.log('Previous element is ExclusiveGateway starting an if statement, adding condition: ', condition);
 
           // add condition
