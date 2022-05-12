@@ -15,12 +15,16 @@ import zeebeModdle from 'zeebe-bpmn-moddle/resources/zeebe.json';
 
 import CloudBpmnLinter from '../CloudBpmnLinter';
 
-import camundaCloud10XML from './camunda-cloud-1-0.bpmn';
-import camundaCloud10ErrorsXML from './camunda-cloud-1-0-errors.bpmn';
-import camundaCloud11XML from './camunda-cloud-1-1.bpmn';
-import camundaCloud12XML from './camunda-cloud-1-2.bpmn';
-import camundaCloud13XML from './camunda-cloud-1-3.bpmn';
-import camundaCloud80XML from './camunda-cloud-8-0.bpmn';
+import camundaCloud10ValidXML from './camunda-cloud-1-0-valid.bpmn';
+import camundaCloud10InvalidXML from './camunda-cloud-1-0-invalid.bpmn';
+import camundaCloud11ValidXML from './camunda-cloud-1-1-valid.bpmn';
+import camundaCloud11InvalidXML from './camunda-cloud-1-1-invalid.bpmn';
+import camundaCloud12ValidXML from './camunda-cloud-1-2-valid.bpmn';
+import camundaCloud12InvalidXML from './camunda-cloud-1-2-invalid.bpmn';
+import camundaCloud13ValidXML from './camunda-cloud-1-3-valid.bpmn';
+import camundaCloud13InvalidXML from './camunda-cloud-1-3-invalid.bpmn';
+import camundaCloud80ValidXML from './camunda-cloud-8-0-valid.bpmn';
+import camundaCloud80InvalidXML from './camunda-cloud-8-0-invalid.bpmn';
 import noEngineProfileXML from './no-engine-profile.bpmn';
 
 
@@ -29,7 +33,7 @@ describe('CloudBpmnLinter', function() {
   it('should lint (XML string)', async function() {
 
     // when
-    const results = await CloudBpmnLinter.lint(camundaCloud10XML);
+    const results = await CloudBpmnLinter.lint(camundaCloud10ValidXML);
 
     // then
     expect(results).to.exist;
@@ -40,7 +44,7 @@ describe('CloudBpmnLinter', function() {
   it('should lint (moddle instance)', async function() {
 
     // when
-    const definitions = await parseDefinitions(camundaCloud10XML);
+    const definitions = await parseDefinitions(camundaCloud10ValidXML);
 
     const results = await CloudBpmnLinter.lint(definitions);
 
@@ -62,11 +66,11 @@ describe('CloudBpmnLinter', function() {
 
 
   [
-    [ 'Camunda Platform 8 (Zeebe 1.0)', camundaCloud10XML, camundaCloud10ErrorsXML ],
-    [ 'Camunda Platform 8 (Zeebe 1.1)', camundaCloud11XML ],
-    [ 'Camunda Platform 8 (Zeebe 1.2)', camundaCloud12XML ],
-    [ 'Camunda Platform 8 (Zeebe 1.3)', camundaCloud13XML ],
-    [ 'Camunda Platform 8', camundaCloud80XML ]
+    [ 'Camunda Platform 8 (Zeebe 1.0)', camundaCloud10ValidXML, camundaCloud10InvalidXML ],
+    [ 'Camunda Platform 8 (Zeebe 1.1)', camundaCloud11ValidXML, camundaCloud11InvalidXML ],
+    [ 'Camunda Platform 8 (Zeebe 1.2)', camundaCloud12ValidXML, camundaCloud12InvalidXML ],
+    [ 'Camunda Platform 8 (Zeebe 1.3)', camundaCloud13ValidXML, camundaCloud13InvalidXML ],
+    [ 'Camunda Platform 8', camundaCloud80ValidXML, camundaCloud80InvalidXML ]
   ].forEach(([ engineProfile, noErrorsXML, errorsXML ]) => {
 
     describe(engineProfile, function() {
@@ -89,17 +93,7 @@ describe('CloudBpmnLinter', function() {
 
         // then
         expect(results).to.exist;
-        expect(results).to.have.length(1);
-        expect(results[ 0 ]).to.eql({
-          id: 'Activity_1',
-          label: 'Task',
-          message: `A <Business Rule Task> is not supported by ${ engineProfile }`,
-          error: {
-            type: 'elementType',
-            element: 'bpmn:BusinessRuleTask'
-          },
-          category: 'error'
-        });
+        expect(results).not.to.be.empty;
       });
 
     });

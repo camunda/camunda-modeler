@@ -8,17 +8,8 @@
  * except in compliance with the MIT License.
  */
 
-import createBpmnLinter from '../../bpmn/linting/createBpmnLinter';
-
-import config from '../../.bpmnlintrc';
-
-import modelerModdle from 'modeler-moddle/resources/modeler.json';
-import camundaModdle from 'camunda-bpmn-moddle/resources/camunda.json';
-
-export default createBpmnLinter({
-  config,
-  moddleExtensions: {
-    modeler: modelerModdle,
-    camunda: camundaModdle
+export default class BpmnLinter {
+  static async lint() {
+    return [];
   }
-});
+}
