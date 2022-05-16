@@ -1,0 +1,17 @@
+name: Task
+description: Describe a generic activity we should carry out.
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What should we do?
+      description: Clearly describe the activity we should carry out.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why should we do it?
+      description: Argue why doing it is a healthy investment of our time.
+    validations:
+      required: true
