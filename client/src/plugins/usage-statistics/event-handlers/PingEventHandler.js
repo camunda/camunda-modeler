@@ -10,6 +10,8 @@
 
 import BaseEventHandler from './BaseEventHandler';
 
+import Flags from '../../../util/Flags';
+
 const TWENTY_FOUR_HOURS_MS = 1000 * 60 * 60 * 24;
 
 // Sends a ping event to ET when it is enabled for the first time
@@ -38,6 +40,8 @@ export default class PingEventHandler extends BaseEventHandler {
     return appPlugins.map(plugin => plugin.name);
   }
 
+  getFlags = () => Flags.data;
+
   setInterval = (func) => {
     return setInterval(func, TWENTY_FOUR_HOURS_MS);
   }
@@ -47,16 +51,17 @@ export default class PingEventHandler extends BaseEventHandler {
   }
 
   onAfterEnable = () => {
-    const plugins = this.getPlugins();
+    const plugins = this.getPlugins(),
+          flags = this.getFlags();
 
     if (!this.sentInitially) {
-      this.sendToET({ plugins });
+      this.sendToET({ plugins, flags });
 
       this.sentInitially = true;
     }
 
     if (this._intervalID === null) {
-      this._intervalID = this.setInterval(() => this.sendToET({ plugins }));
+      this._intervalID = this.setInterval(() => this.sendToET({ plugins, flags }));
     }
   }
 

@@ -12,11 +12,17 @@
 
 import PingEventHandler from '../PingEventHandler';
 
+import Flags from '../../../../util/Flags';
+
 const noop = () => {};
 
 describe('<PingEventHandler>', () => {
 
-  let getGlobal = () => ([ ]);
+  let getGlobal;
+
+  beforeEach(function() {
+    getGlobal = () => ([ ]);
+  });
 
   it('should send initially after enabling', async () => {
 
@@ -31,7 +37,7 @@ describe('<PingEventHandler>', () => {
     pingEventHandler.enable();
 
     // then
-    expect(onSend).to.have.been.calledWith({ event: 'ping', plugins: [] });
+    expect(onSend).to.have.been.calledWith({ event: 'ping', flags: {}, plugins: [] });
   });
 
 
@@ -91,25 +97,62 @@ describe('<PingEventHandler>', () => {
     expect(onSend).to.have.been.calledOnce;
   });
 
+  describe('metadata', function() {
 
-  it('should send installed plugins', async () => {
+    describe('plugins', function() {
 
-    // given
-    const onSend = sinon.spy();
+      it('should send installed plugins', async () => {
 
-    getGlobal = () => ({
-      appPlugins: [ { name: 'pluginName' } ]
+        // given
+        const onSend = sinon.spy();
+
+        getGlobal = () => ({
+          appPlugins: [ { name: 'pluginName' } ]
+        });
+
+        const pingEventHandler = new PingEventHandler({ onSend, getGlobal });
+
+        pingEventHandler.setTimeout = noop;
+
+        // when
+        pingEventHandler.enable();
+
+        // then
+        expect(onSend).to.have.been.calledWith({ event: 'ping', flags: {}, plugins: [ 'pluginName' ] });
+      });
+
     });
 
-    const pingEventHandler = new PingEventHandler({ onSend, getGlobal });
 
-    pingEventHandler.setTimeout = noop;
+    describe('flags', function() {
 
-    // when
-    pingEventHandler.enable();
+      afterEach(function() {
+        Flags.reset();
+      });
 
-    // then
 
-    expect(onSend).to.have.been.calledWith({ event: 'ping', plugins: [ 'pluginName' ] });
+      it('should send set flags', async () => {
+
+        // given
+        const onSend = sinon.spy();
+
+        Flags.init({
+          myFlag: true
+        });
+
+        const pingEventHandler = new PingEventHandler({ onSend, getGlobal });
+
+        pingEventHandler.setTimeout = noop;
+
+        // when
+        pingEventHandler.enable();
+
+        // then
+        expect(onSend).to.have.been.calledWith({ event: 'ping', flags: { myFlag: true }, plugins: [] });
+      });
+
+    });
+
   });
+
 });
