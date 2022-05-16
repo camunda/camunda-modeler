@@ -137,7 +137,8 @@ describe('<PingEventHandler>', () => {
         const onSend = sinon.spy();
 
         Flags.init({
-          myFlag: true
+          myFlagA: true,
+          myFlagB: false
         });
 
         const pingEventHandler = new PingEventHandler({ onSend, getGlobal });
@@ -148,7 +149,53 @@ describe('<PingEventHandler>', () => {
         pingEventHandler.enable();
 
         // then
-        expect(onSend).to.have.been.calledWith({ event: 'ping', flags: { myFlag: true }, plugins: [] });
+        expect(onSend).to.have.been.calledWith({ event: 'ping', flags: {
+          myFlagA: true,
+          myFlagB: false
+        },
+        plugins: [] });
+      });
+
+
+      it('should mask non-boolean flags', async () => {
+
+        // given
+        const onSend = sinon.spy();
+
+        Flags.init({
+          flagWithPrivateDataSet: 'my/custom/filepath'
+        });
+
+        const pingEventHandler = new PingEventHandler({ onSend, getGlobal });
+
+        pingEventHandler.setTimeout = noop;
+
+        // when
+        pingEventHandler.enable();
+
+        // then
+        expect(onSend).to.have.been.calledWith({ event: 'ping', flags: { flagWithPrivateDataSet: true }, plugins: [] });
+      });
+
+
+      it('should not overwrite original Flags through masking', async () => {
+
+        // given
+        const onSend = () => {};
+
+        Flags.init({
+          flagWithPrivateDataSet: 'my/custom/filepath'
+        });
+
+        const pingEventHandler = new PingEventHandler({ onSend, getGlobal });
+
+        pingEventHandler.setTimeout = noop;
+
+        // when
+        pingEventHandler.enable();
+
+        // then
+        expect(Flags.data.flagWithPrivateDataSet).to.eql('my/custom/filepath');
       });
 
     });
