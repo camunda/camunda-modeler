@@ -19,6 +19,8 @@ import {
   WithCachedState
 } from '../../../cached';
 
+import { SlotFillRoot } from '../../../slot-fill';
+
 import {
   DEFAULT_ENGINE_PROFILE,
   FormEditor
@@ -847,21 +849,23 @@ async function renderEditor(schema, options = {}) {
     };
 
     wrapper = mount(
-      <TestEditor
-        cache={ cache }
-        getConfig={ getConfig }
-        id={ id }
-        layout={ layout }
-        linting={ linting }
-        onAction={ onAction }
-        onChanged={ onChanged }
-        onContentUpdated={ onContentUpdated }
-        onError={ onError }
-        onImport={ waitForImport ? resolveOnImport : onImport }
-        onLayoutChanged={ onLayoutChanged }
-        onModal={ onModal }
-        xml={ schema }
-      />
+      <SlotFillRoot>
+        <TestEditor
+          cache={ cache }
+          getConfig={ getConfig }
+          id={ id }
+          layout={ layout }
+          linting={ linting }
+          onAction={ onAction }
+          onChanged={ onChanged }
+          onContentUpdated={ onContentUpdated }
+          onError={ onError }
+          onImport={ waitForImport ? resolveOnImport : onImport }
+          onLayoutChanged={ onLayoutChanged }
+          onModal={ onModal }
+          xml={ schema }
+        />
+      </SlotFillRoot>
     );
 
     instance = wrapper.find(FormEditor).instance();

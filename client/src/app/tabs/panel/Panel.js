@@ -19,7 +19,16 @@ import {
   Slot
 } from '../../slot-fill';
 
+import ResizableContainer from '../ResizableContainer';
+
 import css from './Panel.less';
+
+export const MIN_HEIGHT = 100;
+
+export const DEFAULT_LAYOUT = {
+  open: false,
+  height: MIN_HEIGHT
+};
 
 
 export default class Panel extends PureComponent {
@@ -70,33 +79,56 @@ export default class Panel extends PureComponent {
     onUpdateMenu({ editMenu });
   }
 
+  handleResizeContainer = (newLayout) => {
+    const {
+      layout = {},
+      onLayoutChanged
+    } = this.props;
+
+    const panel = layout.panel || {};
+    const newPanel = newLayout.panel || {};
+
+    onLayoutChanged({
+      panel: {
+        ...panel,
+        ...newPanel
+      }
+    });
+  }
+
   render() {
     const {
       children,
-      layout = {}
+      layout,
     } = this.props;
 
     const { panel = {} } = layout;
 
-    const { open } = panel;
-
-    if (!open) {
-      return null;
-    }
-
-    return <div className={ classnames(css.Panel, { open }) }>
-      <div className="panel__links">
-        <Slot name="panel-link" />
-      </div>
-      <div tabIndex="0" className="panel__body" onFocus={ this.updateMenu }>
-        <div className="panel__inner">
-          <Slot name="panel-body" />
+    return (
+      <ResizableContainer
+        className={ css.Panel }
+        defaultLayout={ DEFAULT_LAYOUT }
+        layout={ layout }
+        layoutProp="panel"
+        minHeight={ MIN_HEIGHT }
+        onLayoutChanged={ this.handleResizeContainer }
+        position="bottom"
+      >
+        <div className="panel__container">
+          <div className={ classnames('panel__links', { open: panel.open }) }>
+            <Slot name="panel-link" />
+          </div>
+          <div tabIndex="0" className="panel__body" onFocus={ this.updateMenu }>
+            <div className="panel__inner">
+              <Slot name="panel-body" />
+            </div>
+          </div>
+          {
+            children
+          }
         </div>
-      </div>
-      {
-        children
-      }
-    </div>;
+      </ResizableContainer>
+    );
   }
 }
 

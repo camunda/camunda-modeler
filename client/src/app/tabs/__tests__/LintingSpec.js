@@ -21,6 +21,8 @@ import {
 
 import { Linting } from '../Linting';
 
+import { MIN_HEIGHT } from '../panel/Panel';
+
 const spy = sinon.spy;
 
 
@@ -116,7 +118,8 @@ describe('Linting', function() {
       expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
         panel: {
           open: true,
-          tab: 'linting'
+          tab: 'linting',
+          height: MIN_HEIGHT
         }
       });
     });
@@ -144,7 +147,8 @@ describe('Linting', function() {
       expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
         panel: {
           open: true,
-          tab: 'linting'
+          tab: 'linting',
+          height: MIN_HEIGHT
         }
       });
     });
@@ -172,7 +176,8 @@ describe('Linting', function() {
       expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
         panel: {
           open: false,
-          tab: 'linting'
+          tab: 'linting',
+          height: 0
         }
       });
     });

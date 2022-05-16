@@ -16,6 +16,8 @@ import { Fill } from '../slot-fill';
 
 import ErrorIcon from '../../../resources/icons/Error.svg';
 
+import { DEFAULT_LAYOUT } from './panel/Panel';
+
 import css from './Linting.less';
 
 
@@ -34,6 +36,7 @@ export function Linting(props) {
     if (!panel.open) {
       onLayoutChanged({
         panel: {
+          ...DEFAULT_LAYOUT,
           open: true,
           tab: 'linting'
         }
@@ -45,6 +48,7 @@ export function Linting(props) {
     if (panel.tab === 'linting') {
       onLayoutChanged({
         panel: {
+          height: 0,
           open: false,
           tab: 'linting'
         }
@@ -55,6 +59,7 @@ export function Linting(props) {
 
     onLayoutChanged({
       panel: {
+        ...DEFAULT_LAYOUT,
         open: true,
         tab: 'linting'
       }

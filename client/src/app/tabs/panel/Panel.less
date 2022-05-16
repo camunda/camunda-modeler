@@ -1,17 +1,32 @@
-:local(.Panel) {
-  display: flex;
-  flex-direction: column;
+:root {
+  --panel-background-color: var(--color-white);
+  --panel-links-background-color: var(--color-grey-225-10-95);
+  --panel-links-border-bottom-color: var(--color-grey-225-10-75);
+  --panel-link-active-border-bottom-color: var(--color-grey-225-10-15);
+  --panel-link-number-color: var(--color-white);
+  --panel-link-number-background-color: var(--color-grey-225-10-15);
+}
 
-  &.open {
-    height: 200px;
+:local(.Panel) {
+ 
+  z-index: 101;
+
+  .panel__container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--panel-background-color);
   }
 
   .panel__links {
-    background-color: var(--color-grey-225-10-95);
-    border-bottom: solid 1px var(--color-grey-225-10-75);
-    border-top: solid 1px var(--color-grey-225-10-75);
+    background-color: var(--panel-links-background-color);
+    border-bottom: solid 1px var(--panel-links-border-bottom-color);
     display: flex;
     flex-direction: row;
+
+    &:not(.open) {
+      display: none;
+    }
 
     .panel__link {
       background: none;
@@ -21,13 +36,13 @@
       padding: 4px 8px;
 
       &.panel__link--active {
-        border-bottom: solid 2px var(--color-grey-225-10-15);
+        border-bottom: solid 2px var(--panel-link-active-border-bottom-color);
       }
 
       .panel__link-number {
-        background-color: var(--color-grey-225-10-15);
+        background-color: var(--panel-link-number-background-color);
         border-radius: 9px;
-        color: var(--color-white);
+        color: var(--panel-link-number-color);
         display: inline-block;
         margin-left: 4px;
         padding: 2px 6px;

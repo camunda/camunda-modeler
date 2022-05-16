@@ -35,7 +35,7 @@ describe('<Panel>', function() {
   });
 
 
-  it('should not render (closed)', function() {
+  it('should render (closed)', function() {
 
     // when
     const wrapper = renderPanel({
@@ -47,7 +47,7 @@ describe('<Panel>', function() {
     });
 
     // then
-    expect(wrapper.find('.panel__body')).to.have.length(0);
+    expect(wrapper.find('.panel__body')).to.have.length(1);
   });
 
 
@@ -195,6 +195,46 @@ describe('<Panel>', function() {
     });
 
 
+    it('should change layout on resize', function() {
+
+      // given
+      const onLayoutChangedSpy = spy();
+
+      const layout = {
+        panel: {
+          open: true,
+          height: 300
+        }
+      };
+
+      const wrapper = renderPanel({
+        children: createTab({
+          children: <div className="foo" />
+        }),
+        layout,
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      const resizableContainer = wrapper.find('ResizableContainer').first().instance();
+
+      // when
+      resizableContainer.handleResizeStart(createMouseEvent('dragstart', 0, 0));
+
+      resizableContainer.handleContainerResize(null, { y: -50 });
+
+      resizableContainer.handleResizeEnd();
+
+      // then
+      expect(onLayoutChangedSpy).to.be.calledWith({
+        panel: {
+          open: true,
+          height: 350,
+          fullHeight: false
+        }
+      });
+    });
+
+
     it('should update edit menu', async function() {
 
       // given
@@ -270,16 +310,29 @@ function renderPanel(options = {}) {
   const {
     children,
     layout = defaultLayout,
-    onUpdateMenu = noop
+    onUpdateMenu = noop,
+    onLayoutChanged = noop
   } = options;
 
   return mount(
     <SlotFillRoot>
       <Panel
         layout={ layout }
-        onUpdateMenu={ onUpdateMenu }>
+        onUpdateMenu={ onUpdateMenu }
+        onLayoutChanged={ onLayoutChanged }>
         { children }
       </Panel>
     </SlotFillRoot>
   );
+}
+
+function createMouseEvent(type, clientX, clientY) {
+  const event = document.createEvent('MouseEvent');
+
+  if (event.initMouseEvent) {
+    event.initMouseEvent(
+      type, true, true, window, 0, 0, 0, clientX, clientY, false, false, false, false, 0, null);
+  }
+
+  return event;
 }

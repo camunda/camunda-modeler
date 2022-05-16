@@ -23,6 +23,8 @@ import {
   WithCachedState
 } from '../../../cached';
 
+import { SlotFillRoot } from '../../../slot-fill';
+
 import {
   BpmnEditor,
   DEFAULT_ENGINE_PROFILE
@@ -801,7 +803,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       wrapper.update();
 
-      const toggle = wrapper.find('.toggle');
+      const toggle = wrapper.find('.properties .toggle');
 
       // when
       toggle.simulate('click');
@@ -834,7 +836,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       wrapper.update();
 
-      const toggle = wrapper.find('.toggle');
+      const toggle = wrapper.find('.properties .toggle');
 
       // when
       toggle.simulate('click');
@@ -865,7 +867,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         onLayoutChanged
       });
 
-      const toggle = wrapper.find('.toggle');
+      const toggle = wrapper.find('.properties .toggle');
 
       // when
       toggle.simulate('click');
@@ -1720,23 +1722,25 @@ function renderEditor(xml, options = {}) {
     };
 
     wrapper = mount(
-      <TestEditor
-        cache={ cache }
-        getConfig={ getConfig }
-        getPlugins={ getPlugins }
-        id={ id }
-        isNew={ isNew }
-        layout={ layout }
-        onAction={ onAction }
-        onChanged={ onChanged }
-        onContentUpdated={ onContentUpdated }
-        onError={ onError }
-        onImport={ waitForImport ? resolveOnImport : onImport }
-        onLayoutChanged={ onLayoutChanged }
-        onModal={ onModal }
-        onWarning={ onWarning }
-        xml={ xml }
-      />
+      <SlotFillRoot>
+        <TestEditor
+          cache={ cache }
+          getConfig={ getConfig }
+          getPlugins={ getPlugins }
+          id={ id }
+          isNew={ isNew }
+          layout={ layout }
+          onAction={ onAction }
+          onChanged={ onChanged }
+          onContentUpdated={ onContentUpdated }
+          onError={ onError }
+          onImport={ waitForImport ? resolveOnImport : onImport }
+          onLayoutChanged={ onLayoutChanged }
+          onModal={ onModal }
+          onWarning={ onWarning }
+          xml={ xml }
+        />
+      </SlotFillRoot>
     );
 
     instance = wrapper.find(BpmnEditor).instance();

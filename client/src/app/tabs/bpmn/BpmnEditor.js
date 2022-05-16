@@ -780,6 +780,7 @@ export class BpmnEditor extends CachedComponent {
           engineProfile && <Fragment>
             <Panel
               layout={ layout }
+              onLayoutChanged={ onLayoutChanged }
               onUpdateMenu={ onUpdateMenu }>
               <LintingTab
                 layout={ layout }
