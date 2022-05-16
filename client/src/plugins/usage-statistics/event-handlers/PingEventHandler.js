@@ -40,7 +40,17 @@ export default class PingEventHandler extends BaseEventHandler {
     return appPlugins.map(plugin => plugin.name);
   }
 
-  getFlags = () => Flags.data;
+  getFlags = () => {
+    const maskedFlags = Object.assign({}, Flags.data);
+
+    // Mask non-boolean values to <true>, indicating the flag was set.
+    // This shall ensure custom strings are not leaked via telemetry.
+    for (const key in maskedFlags) {
+      maskedFlags[key] = !!maskedFlags[key];
+    }
+
+    return maskedFlags;
+  }
 
   setInterval = (func) => {
     return setInterval(func, TWENTY_FOUR_HOURS_MS);
