@@ -1,0 +1,23 @@
+name: ADD_TO_PROJECT
+
+on:
+  issues:
+    types:
+      - opened
+      - transferred
+      - labeled
+  pull_request:
+    types:
+      - opened
+      - labeled
+
+jobs:
+  Exec:
+    name: Add issue to project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@fea7d52087e249d0623836766958d9193b0f2385
+        with:
+          project-url: ${{ secrets.CONNECTORS_PROJECT_URL }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          labeled: connectors
