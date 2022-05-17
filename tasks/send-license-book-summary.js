@@ -27,6 +27,8 @@ const {
   processLicenses
 } = require('./license-book-handlers');
 
+const CURRENT_VERSION = 'v' + require('../app/package.json').version;
+
 const {
   help,
   ...args
@@ -89,9 +91,9 @@ async function sendSummary(args) {
     output
   } = args;
 
-  const { previousVersion, currentVersion } = getVersions();
+  const previousVersion = getPreviousVersion();
 
-  console.log(`Generating summary for version ${currentVersion}`);
+  console.log(`Generating summary for version ${CURRENT_VERSION}`);
 
   console.log('Generating license book summary...');
 
@@ -100,12 +102,11 @@ async function sendSummary(args) {
   console.log('Generating changes summary...');
 
   const changesSummary = getChangesSummary({
-    currentVersion,
     previousVersion,
     file
   });
 
-  const draftEmail = getDraftEmail(summary, currentVersion, changesSummary);
+  const draftEmail = getDraftEmail(summary, changesSummary);
 
   if (print) {
     console.log(`Draft email:
@@ -129,22 +130,14 @@ ${draftEmail.text}
   }
 }
 
-function getVersions() {
-  const currentVersion = exec('git', [
-    'describe',
-    '--abbrev=0'
-  ]).stdout;
-
+function getPreviousVersion() {
   const previousVersion = exec('git', [
     'describe',
     '--abbrev=0',
-    `${currentVersion}^`
+    `${CURRENT_VERSION}^`
   ]).stdout;
 
-  return {
-    currentVersion,
-    previousVersion
-  };
+  return previousVersion;
 }
 
 async function getSummary() {
@@ -162,11 +155,11 @@ async function getSummary() {
   return generateSummary(processedLicenses);
 }
 
-function getChangesSummary({ currentVersion, previousVersion, file }) {
+function getChangesSummary({ previousVersion, file }) {
   try {
     const diff = getDiff({ previousVersion, file });
 
-    const html = getHtmlFromDiff(diff, currentVersion);
+    const html = getHtmlFromDiff(diff);
 
     console.log('Changes summary generated');
 
@@ -178,7 +171,7 @@ function getChangesSummary({ currentVersion, previousVersion, file }) {
   }
 }
 
-function getDiff({ currentVersion, previousVersion, file }) {
+function getDiff({ previousVersion, file }) {
   const previousFile = exec('git', [ 'show', `${previousVersion}:${file}` ]).stdout;
 
   // diff exits with <1> if a diff exists; we must account for that special behavior
@@ -195,7 +188,7 @@ function getDiff({ currentVersion, previousVersion, file }) {
   }
 }
 
-function getHtmlFromDiff(diff, currentVersion) {
+function getHtmlFromDiff(diff) {
   const style = fs.readFileSync(require.resolve('diff2html/dist/diff2html.min.css'));
 
   const diffHtml = diff2html.getPrettyHtml(diff, { inputFormat: 'diff', showFiles: true, matching: 'lines', outputFormat: 'side-by-side' });
@@ -206,7 +199,7 @@ function getHtmlFromDiff(diff, currentVersion) {
 <html>
 <head>
 <meta charset="utf-8">
-<title>Camunda Modeler ${currentVersion} Third Party Notices Changes Summary</title>
+<title>Camunda Modeler ${CURRENT_VERSION} Third Party Notices Changes Summary</title>
 <style>${style}</style>
 </head>
 <body>
@@ -221,9 +214,9 @@ ${diffHtml}
   return html;
 }
 
-function getDraftEmail(summary, currentVersion, changesSummary) {
-  const subject = `Camunda Modeler ${currentVersion} Third Party Summary`;
-  const text = getMessageText(summary, currentVersion, changesSummary);
+function getDraftEmail(summary, changesSummary) {
+  const subject = `Camunda Modeler ${CURRENT_VERSION} Third Party Summary`;
+  const text = getMessageText(summary, changesSummary);
   const attachment = changesSummary;
 
   return {
@@ -233,10 +226,10 @@ function getDraftEmail(summary, currentVersion, changesSummary) {
   };
 }
 
-function getMessageText(summary, version, changesSummary) {
+function getMessageText(summary, changesSummary) {
   let message = `${summary}
 
-Third party notices: https://github.com/camunda/camunda-modeler/blob/${version}/THIRD_PARTY_NOTICES
+Third party notices: https://github.com/camunda/camunda-modeler/blob/${CURRENT_VERSION}/THIRD_PARTY_NOTICES
   `;
 
   if (changesSummary) {
