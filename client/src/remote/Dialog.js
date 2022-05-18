@@ -113,6 +113,8 @@ export default class Dialog {
       name
     } = options;
 
+    const isLinux = this.backend.getPlatform() == 'linux';
+
     const buttons = [
       { id: 'save', label: 'Save' },
       { id: 'discard', label: 'Don\'t Save' },
@@ -120,12 +122,13 @@ export default class Dialog {
     ];
 
     // Re-order buttons for linux
-    if (this.backend.getPlatform() == 'linux') {
+    if (isLinux) {
       buttons.push(buttons.shift());
     }
 
     return this.show({
       buttons,
+      defaultId: isLinux ? 2 : 0,
       message: `Save changes to "${ name }" before closing?`,
       type: 'question',
       title: 'Close File'
@@ -147,11 +150,21 @@ export default class Dialog {
 
     const typeUpperCase = type.toUpperCase();
 
+    const isLinux = this.backend.getPlatform() == 'linux';
+
+    const buttons = [
+      { id: 'create', label: 'Create' },
+      { id: 'cancel', label: 'Cancel' }
+    ];
+
+    // Re-order buttons for linux
+    if (isLinux) {
+      buttons.push(buttons.shift());
+    }
+
     return this.show({
-      buttons: [
-        { id: 'cancel', label: 'Cancel' },
-        { id: 'create', label: 'Create' }
-      ],
+      buttons,
+      defaultId: isLinux ? 1 : 0,
       detail: `Would you like to create a new ${ typeUpperCase } file?`,
       message: `The file "${ file.name }" is empty.`,
       title: [
