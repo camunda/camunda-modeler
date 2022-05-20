@@ -886,7 +886,7 @@ export class BpmnEditor extends CachedComponent {
       newElement = modeling.createShape({ type: 'bpmn:ExclusiveGateway' }, { x: 0, y: 0 }, rootElementBo, {});
 
       // store if for later connections of else statements
-      lastIfs.push({ start_gateway: newElement, conditions: [metaElement.condition], lastCondition: metaElement.condition, branches: [] });
+      lastIfs.push({ start_gateway: newElement, conditions: [metaElement.condition], lastCondition: metaElement.condition, branches: [], containsElse: false });
       break;
 
     case 'else_if':
@@ -918,6 +918,7 @@ export class BpmnEditor extends CachedComponent {
       condition = '!(' + lastIfsElement.conditions.join(' || ') + ')';
       console.log('Condition of else branch: ', condition);
       lastIfsElement.lastCondition = condition;
+      lastIfsElement.containsElse = true;
       lastIfs.push(lastIfsElement);
 
       // the next element in the meta-data file should be connected with the gateway representing the last if statement
@@ -935,6 +936,17 @@ export class BpmnEditor extends CachedComponent {
       for (let elementToConnect of lastIfsElement.branches) {
         console.log('Connecting element: ', elementToConnect);
         modeling.connect(elementToConnect, newElement, { type: 'bpmn:SequenceFlow' });
+      }
+
+      // handle empty else branch
+      if (!lastIfsElement.containsElse) {
+        let sequenceFlow = modeling.connect(lastIfsElement.start_gateway, newElement, { type: 'bpmn:SequenceFlow' });
+        let sequenceFlowBo = elementRegistry.get(sequenceFlow.id).businessObject;
+
+        let formalExpression = bpmnFactory.create('bpmn:FormalExpression');
+        formalExpression.body = '${!(' + lastIfsElement.conditions.join(' || ') + ')}';
+        sequenceFlowBo.conditionExpression = formalExpression;
+        sequenceFlowBo.name = 'else';
       }
 
       return { newElement: newElement, lastIfs: lastIfs, lastLoops: lastLoops };
