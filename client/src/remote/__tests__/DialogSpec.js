@@ -167,9 +167,11 @@ describe('dialog', function() {
       // then
       expect(type).to.equal('dialog:show');
 
+      const isLinux = process.platform === 'linux';
+
       let buttons;
 
-      if (process.platform == 'linux') {
+      if (isLinux) {
         buttons = [
           { id: 'discard', label: 'Don\'t Save' },
           { id: 'cancel', label: 'Cancel' },
@@ -184,10 +186,11 @@ describe('dialog', function() {
       }
 
       expect(opts).to.eql({
+        buttons,
+        defaultId: isLinux ? 2 : 0,
         type: 'question',
         title: 'Close File',
         message: 'Save changes to "foo" before closing?',
-        buttons
       });
     };
 
@@ -211,13 +214,27 @@ describe('dialog', function() {
       // then
       expect(type).to.equal('dialog:show');
 
-      expect(opts).to.eql({
-        type: 'info',
-        title: 'Empty FOO file',
-        buttons: [
+      const isLinux = process.platform === 'linux';
+
+      let buttons;
+
+      if (isLinux) {
+        buttons = [
           { id: 'cancel', label: 'Cancel' },
           { id: 'create', label: 'Create' }
-        ],
+        ];
+      } else {
+        buttons = [
+          { id: 'create', label: 'Create' },
+          { id: 'cancel', label: 'Cancel' }
+        ];
+      }
+
+      expect(opts).to.eql({
+        buttons,
+        defaultId: isLinux ? 1 : 0,
+        type: 'info',
+        title: 'Empty FOO file',
         message: 'The file "foo" is empty.\nWould you like to create a new FOO diagram?'
       });
     };
