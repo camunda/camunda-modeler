@@ -20,10 +20,8 @@ import {
 } from '../../../util';
 
 import {
-  getEngineProfile as parseEngineProfile
+  getEngineProfile
 } from '../../../util/parse';
-
-import { ENGINES } from '../../../util/Engines';
 
 const BPMN_TAB_TYPE = 'bpmn';
 const CLOUD_BPMN_TAB_TYPE = 'cloud-bpmn';
@@ -66,24 +64,6 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     return metrics;
   }
 
-  getEngineProfile = async (file, type) => {
-    const {
-      contents
-    } = file;
-
-    if (!contents) {
-      return {};
-    }
-
-    const {
-      executionPlatform
-    } = await parseEngineProfile(contents, type);
-
-    return {
-      executionPlatform: executionPlatform || getDefaultExecutionPlatform(type)
-    };
-  }
-
   handleDeployment = async (event) => {
     const {
       error,
@@ -97,6 +77,11 @@ export default class DeploymentEventHandler extends BaseEventHandler {
       type,
       file
     } = tab;
+
+    const {
+      contents
+    } = file;
+
 
     // (0) check whether usage statistics are enabled
     if (!this.isEnabled()) {
@@ -125,7 +110,7 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     };
 
     // (5) add engineProfile
-    payload.engineProfile = await this.getEngineProfile(file, type) || { };
+    payload.engineProfile = await getEngineProfile(contents, type) || { };
 
     // (6) (potentially) add deployment error
     if (error) {
@@ -157,12 +142,4 @@ function getDiagramType(tabType) {
   return find(keys(DIAGRAM_BY_TAB_TYPE), function(diagramType) {
     return DIAGRAM_BY_TAB_TYPE[diagramType].includes(tabType);
   });
-}
-
-function getDefaultExecutionPlatform(type) {
-  if (/^cloud/.test(type)) {
-    return ENGINES.CLOUD;
-  }
-
-  return ENGINES.PLATFORM;
 }

@@ -1611,7 +1611,8 @@ describe('<DiagramOpenEventHandler>', () => {
 
       // then
       expect(engineProfile).to.eql({
-        executionPlatform: 'Camunda Platform'
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.15.0'
       });
     });
 
@@ -1713,7 +1714,8 @@ describe('<DiagramOpenEventHandler>', () => {
 
       // then
       expect(engineProfile).to.eql({
-        executionPlatform: 'Camunda Platform'
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.16.0'
       });
     });
 
@@ -1747,7 +1749,8 @@ describe('<DiagramOpenEventHandler>', () => {
 
       // then
       expect(engineProfile).to.eql({
-        executionPlatform: 'Camunda Cloud'
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '8.0.0'
       });
     });
 

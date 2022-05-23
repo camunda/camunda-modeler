@@ -1121,7 +1121,8 @@ describe('<DeploymentEventHandler>', () => {
 
       // then
       expect(engineProfile).to.eql({
-        executionPlatform: 'Camunda Platform'
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.15.0'
       });
     });
 
@@ -1197,7 +1198,8 @@ describe('<DeploymentEventHandler>', () => {
 
         // then
         expect(engineProfile).to.eql({
-          executionPlatform: 'Camunda Platform'
+          executionPlatform: 'Camunda Platform',
+          executionPlatformVersion: '7.16.0'
         });
       });
 

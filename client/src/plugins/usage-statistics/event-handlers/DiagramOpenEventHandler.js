@@ -14,11 +14,9 @@ import BaseEventHandler from './BaseEventHandler';
 
 import { getMetrics } from '../../../util';
 
-import { getEngineProfile as parseEngineProfile } from '../../../util/parse';
+import { getEngineProfile } from '../../../util/parse';
 
 import { getCloudTemplates, getPlatformTemplates } from '../../../util/elementTemplates';
-
-import { ENGINES } from '../../../util/Engines';
 
 const HTTP_STATUS_PAYLOAD_TOO_BIG = 413;
 
@@ -99,24 +97,6 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
     return metrics;
   }
 
-  getEngineProfile = async (file, type) => {
-    const {
-      contents
-    } = file;
-
-    if (!contents) {
-      return {};
-    }
-
-    const {
-      executionPlatform
-    } = await parseEngineProfile(contents, type);
-
-    return {
-      executionPlatform: executionPlatform || getDefaultExecutionPlatform(type)
-    };
-  }
-
   onDiagramOpened = async (type, context = {}) => {
 
     if (!this.isEnabled()) {
@@ -194,8 +174,12 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
   onBpmnDiagramOpened = async (file, type, context = {}) => {
 
+    const {
+      contents
+    } = file;
+
     const diagramMetrics = await this.generateMetrics(file, type);
-    const engineProfile = await this.getEngineProfile(file, type);
+    const engineProfile = await getEngineProfile(contents, type);
     const elementTemplates = await this.getElementTemplates(file, type);
 
     return await this.onDiagramOpened(types.BPMN, {
@@ -208,7 +192,12 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
   }
 
   onDmnDiagramOpened = async (file, type, context = {}) => {
-    const engineProfile = await this.getEngineProfile(file, type);
+
+    const {
+      contents
+    } = file;
+
+    const engineProfile = await getEngineProfile(contents, type);
 
     return await this.onDiagramOpened(types.DMN, {
       engineProfile,
@@ -270,14 +259,6 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
 
 // helper ////////////////
-
-function getDefaultExecutionPlatform(type) {
-  if (/^cloud/.test(type)) {
-    return ENGINES.CLOUD;
-  }
-
-  return ENGINES.PLATFORM;
-}
 
 function getElementTemplatesFilter(type) {
   if (type === 'cloud-bpmn') {
