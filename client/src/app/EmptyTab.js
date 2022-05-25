@@ -22,8 +22,6 @@ import {
   Tab
 } from './primitives';
 
-import NewBadge from '../shared/ui/NewBadge';
-
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM } from '../util/Flags';
 
 
@@ -53,7 +51,6 @@ export default class EmptyTab extends PureComponent {
 
     return (
       <div id="welcome-page-cloud" className="welcome-card relative">
-        <NewBadge anchored top="10px" right="10px" />
         <div className="engine-info">
           <div className="engine-info-heading">
             <CloudIcon className="engine-icon cloud-icon" />
@@ -117,12 +114,10 @@ export default class EmptyTab extends PureComponent {
           <div className="article relative">
             <p>Introduction to Camunda 8</p>
             <a href="https://camunda.com/blog/2022/04/camunda-platform-8-orchestrate-all-the-things?utm_source=modeler&utm_medium=referral">Read blog post</a>
-            <NewBadge anchored top="-7px" right="-40px" />
           </div>
           <div className="article relative">
             <p>Migrating from Camunda 7</p>
             <a href="https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/">Camunda Docs</a>
-            <NewBadge anchored top="-7px" right="-40px" />
           </div>
           <div className="article">
             <p>About Modeler 5</p>
