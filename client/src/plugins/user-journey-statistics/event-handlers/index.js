@@ -9,9 +9,11 @@
  */
 
 import DeploymentEventHandler from './DeploymentEventHandler';
+import LinkEventHandler from './LinkEventHandler';
 import TabEventHandler from './TabEventHandler';
 
 export default [
   DeploymentEventHandler,
+  LinkEventHandler,
   TabEventHandler
 ];
