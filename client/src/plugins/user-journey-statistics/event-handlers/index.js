@@ -8,8 +8,10 @@
  * except in compliance with the MIT License.
  */
 
+import DeploymentEventHandler from './DeploymentEventHandler';
 import TabEventHandler from './TabEventHandler';
 
 export default [
+  DeploymentEventHandler,
   TabEventHandler
 ];
