@@ -16,7 +16,7 @@ import {
   getEngineProfile
 } from '../../../util/parse';
 
-export default class DeploymentEventHandler {
+export default class UIEventHandler {
   constructor(props) {
 
     const {
@@ -26,33 +26,38 @@ export default class DeploymentEventHandler {
 
     this.track = track;
 
-    this.subscribeToDeploymentEvents(subscribe);
+    this.subscribeEvents(subscribe);
   }
 
-    subscribeToDeploymentEvents = (subscribe) => {
+    subscribeEvents = (subscribe) => {
 
-      subscribe('deployment.done', async (event) => {
+      // deploy
+      subscribe('deployment.opened', async (event) => {
         const { tab } = event;
         const type = getDiagramType(tab.type);
 
-        await this.trackDeploymentAction(type, true, event);
+        await this.trackDeploymentOverlay(type, 'opened', event);
       });
 
-      subscribe('deployment.error', async (event) => {
+      subscribe('deployment.closed', async (event) => {
         const { tab } = event;
         const type = getDiagramType(tab.type);
 
-        await this.trackDeploymentAction(type, false, event);
+        await this.trackDeploymentOverlay(type, 'closed', event);
       });
 
+      // version info
+      subscribe('versionInfo.opened', async ({ source }) => {
+        await this.track('overlay:versionInfo:opened', {
+          source
+        });
+      });
     }
 
-    trackDeploymentAction = async (diagramType, success, event) => {
+    trackDeploymentOverlay = async (diagramType, action, event) => {
+
       const {
         context,
-        deployedTo,
-        targetType,
-        error,
         tab
       } = event;
 
@@ -64,44 +69,15 @@ export default class DeploymentEventHandler {
         contents
       } = file;
 
-      if (!diagramType) {
-        return;
-      }
-
       const baseEvent = context === 'deploymentTool' ? 'deploy' : 'startInstance';
-      const outcome = success ? 'success' : 'error';
-
-      const eventName = baseEvent + ':' + outcome;
+      const eventName = `overlay:${baseEvent}:${action}`;
 
       const engineProfile = await getEngineProfile(contents, diagramType);
 
-      let payload = {
+      this.track(eventName, {
         diagramType,
         ...engineProfile
-      };
-
-      if (targetType) {
-        payload = {
-          ...payload,
-          targetType
-        };
-      }
-
-      if (!success) {
-        payload = {
-          ...payload,
-          error: error.code
-        };
-      }
-
-      if (deployedTo) {
-        payload = {
-          ...payload,
-          deployedTo
-        };
-      }
-
-      this.track(eventName, payload);
+      });
     };
 
 }
