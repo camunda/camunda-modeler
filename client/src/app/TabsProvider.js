@@ -8,6 +8,16 @@
  * except in compliance with the MIT License.
  */
 
+import {
+  find,
+  forEach,
+  sortBy
+} from 'min-dash';
+
+import replaceIds from '@bpmn-io/replace-ids';
+
+import { Linter as BpmnLinter } from '@camunda/linting/lib/Linter';
+
 import bpmnDiagram from './tabs/bpmn/diagram.bpmn';
 import cloudBpmnDiagram from './tabs/cloud-bpmn/diagram.bpmn';
 import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
@@ -21,18 +31,7 @@ import {
   ENGINE_PROFILES
 } from '../util/Engines';
 
-import replaceIds from '@bpmn-io/replace-ids';
-
-import {
-  sortBy
-} from 'min-dash';
-
 import EmptyTab from './EmptyTab';
-
-import {
-  find,
-  forEach
-} from 'min-dash';
 
 import parseDiagramType from './util/parseDiagramType';
 
@@ -48,8 +47,6 @@ import {
   generateId
 } from '../util';
 
-import BpmnLinter from './tabs/bpmn/linting/BpmnLinter';
-import CloudBpmnLinter from './tabs/cloud-bpmn/linting/CloudBpmnLinter';
 import FormLinter from './tabs/form/linting/FormLinter';
 
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM, DISABLE_CMMN } from '../util/Flags';
@@ -174,7 +171,7 @@ export default class TabsProvider {
           } ];
         },
         getLinter() {
-          return CloudBpmnLinter;
+          return BpmnLinter;
         }
       },
       bpmn: {
