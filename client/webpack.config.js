@@ -58,13 +58,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.bpmnlintrc$/,
-        use: [
-          'bpmnlint-loader'
-        ]
-      },
-
-      {
         test: /\.js$/,
         exclude: /node_modules/,
         use: 'babel-loader'

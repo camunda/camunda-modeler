@@ -863,7 +863,7 @@ export class App extends PureComponent {
     const linter = tabProvider.getLinter(tab);
 
     if (!linter) {
-      return tab;
+      return;
     }
 
     if (!contents) {
