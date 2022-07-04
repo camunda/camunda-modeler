@@ -108,6 +108,10 @@ const DEFAULT_PRIORITY = 1000;
 
 const HIGHER_PRIORITY = 1001;
 
+const bpmnLinter = new BpmnLinter({
+  modeler: 'desktop'
+});
+
 
 /**
  * A provider that allows us to customize available tabs.
@@ -186,7 +190,7 @@ export default class TabsProvider {
           } ];
         },
         getLinter() {
-          return BpmnLinter;
+          return bpmnLinter;
         }
       },
       bpmn: {
@@ -224,7 +228,7 @@ export default class TabsProvider {
           } ];
         },
         getLinter() {
-          return BpmnLinter;
+          return bpmnLinter;
         }
       },
       cmmn: {
