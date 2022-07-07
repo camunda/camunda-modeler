@@ -1,22 +1,27 @@
 :local(.LintingIssue) {
-  align-items: center;
-  border-bottom: solid 1px var(--color-grey-225-10-75);
   display: flex;
-  padding: 6px 8px 4px 8px;
+  align-items: flex-start;
+  padding: 3px 8px 3px 8px;
+  border-bottom: solid 1px var(--color-grey-225-10-95);
 
   &:last-child {
     border-bottom: none;
   }
 
-  svg {
-    fill: var(--color-red-360-100-45);
-    margin-right: 8px;
-    width: 20px;
+  .linting-issue__icon {
     height: 20px;
+
+    svg {
+      fill: var(--color-red-360-100-45);
+      margin-right: 8px;
+      width: 20px;
+      height: 20px;
+    }
   }
 
   .linting-issue__text {
-    line-height: 16px;
+    font-size: 14px;
+    line-height: 20px;
     user-select: text;
 
     * {
@@ -24,11 +29,15 @@
     }
 
     .linting-issue__link {
+      max-width: 200px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
       background-color: var(--color-blue-205-100-95);
       border-radius: 4px;
       margin-left: 4px;
       margin-right: 4px;
-      padding: 2px 4px;
+      padding: 1px 4px;
       cursor: default;
   
       &:hover {

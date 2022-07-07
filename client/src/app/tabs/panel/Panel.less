@@ -14,6 +14,9 @@
     flex-direction: row;
 
     .panel__link {
+      font-family: var(--font-family);
+      font-size: 14px;
+      color: var(--color-grey-225-10-35);
       background: none;
       border: none;
       border-bottom: solid 2px transparent;
@@ -21,16 +24,16 @@
       padding: 4px 8px;
 
       &.panel__link--active {
-        border-bottom: solid 2px var(--color-grey-225-10-15);
+        border-bottom: solid 2px var(--color-grey-225-10-35);
       }
 
       .panel__link-number {
-        background-color: var(--color-grey-225-10-15);
-        border-radius: 9px;
+        background-color: var(--color-grey-225-10-35);
+        border-radius: 11px;
         color: var(--color-white);
         display: inline-block;
-        margin-left: 4px;
-        padding: 2px 6px;
+        margin-left: 6px;
+        padding: 1px 7px;
       }
     }
   }
