@@ -38,7 +38,16 @@ export default function LintingTab(props) {
     number={ linting.length }
     onLayoutChanged={ onLayoutChanged }
     priority={ 1 }>
-    { linting.length ? null : <span className={ classnames(css.LintingIssue, 'linting-issue') }>No errors.</span> }
+    { linting.length
+      ? null
+      : (
+        <div className={ classnames(css.LintingIssue, 'linting-issue') }>
+          <div className="linting-issue__text">
+            <span className="linting-issue__message">No errors.</span>
+          </div>
+        </div>
+      )
+    }
     {
       sortIssues(linting).map((issue => {
         const {
@@ -68,7 +77,9 @@ function LintingIssue(props) {
   } = issue;
 
   return <div className={ classnames(css.LintingIssue, 'linting-issue') }>
-    <ErrorIcon />
+    <div className="linting-issue__icon">
+      <ErrorIcon viewBox="2 2 20 20" />
+    </div>
     <div className="linting-issue__text">
       Error : <span className="linting-issue__link" onClick={ onClick }>{ name || id }</span> - <span className="linting-issue__message">{ message }</span>
     </div>
