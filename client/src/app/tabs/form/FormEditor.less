@@ -7,9 +7,20 @@
     display: flex;
     flex: 1;
     flex-direction: row;
+
+    .fjs-pgl-root {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      top: 0;
+    }
   
     .fjs-container {
       --font-family: inherit;
+    }
+
+    .fjs-editor-container {
       display: flex;
       flex: 1;
       flex-direction: row;
@@ -25,9 +36,17 @@
       bottom: 0;
       overflow-y: auto;
     }
+
+    .fjs-editor-container .fjs-palette-container {
+      width: 75px;
+    }
   
     .fjs-powered-by {
       display: none;
     }
+  }
+
+  .fjs-pgl-section .header-items {
+    display: none;
   }
 }

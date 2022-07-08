@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { createRef, Fragment } from 'react';
+import React, { createRef } from 'react';
 
 import { isFunction } from 'min-dash';
 
@@ -28,7 +28,8 @@ import { getFormEditMenu } from './getFormEditMenu';
 
 import { active as isInputActive } from '../../../util/dom/isInput';
 
-import { FormEditor as Form } from './editor/FormEditor';
+// todo: add toggle between FormEditor and Playground
+import { Playground as Form } from './editor/FormEditor';
 
 import Metadata from '../../../util/Metadata';
 
@@ -43,9 +44,13 @@ import { ENGINES } from '../../../util/Engines';
 
 import { Linting } from '../Linting';
 
+import { FormData } from '../FormData';
+
 import Panel from '../panel/Panel';
 
 import LintingTab from '../panel/tabs/LintingTab';
+
+import FormDataTab from '../panel/tabs/FormDataTab';
 
 const LOW_PRIORITY = 500;
 
@@ -61,7 +66,8 @@ export class FormEditor extends CachedComponent {
     this.ref = createRef();
 
     this.state = {
-      importing: false
+      importing: false,
+      previewOpen: true
     };
 
     this.engineProfile = new EngineProfileHelper({
@@ -89,9 +95,14 @@ export class FormEditor extends CachedComponent {
   }
 
   componentDidMount() {
-    this._isMounted = true;
 
     let { form } = this.getCached();
+
+    const {
+      layout
+    } = this.props;
+
+    const { panel = {} } = layout;
 
     this.listen('on');
 
@@ -99,7 +110,19 @@ export class FormEditor extends CachedComponent {
       form.attachTo(this.ref.current);
     }
 
-    this.checkImport();
+    // wait a couple of secs to playground be rendered
+    // todo: how to wait properly for full playground init?
+    setTimeout(() => {
+      this._isMounted = true;
+      this.checkImport();
+
+      if (!panel.open) {
+        this.closePreview();
+      } else {
+        this.openPreview();
+      }
+
+    }, 200);
   }
 
   componentWillUnmount() {
@@ -163,7 +186,12 @@ export class FormEditor extends CachedComponent {
     try {
       const schemaJSON = JSON.parse(schema);
 
-      ({ error, warnings } = await form.importSchema(schemaJSON));
+      const result = await form.importSchema(schemaJSON);
+
+      if (result) {
+        ({ error, warnings } = result);
+      }
+
     } catch (err) {
       error = err;
 
@@ -331,6 +359,11 @@ export class FormEditor extends CachedComponent {
   triggerAction(action, context) {
     const { form } = this.getCached();
 
+    // todo: form editor is not ready, yet. why?
+    if (!form.getFormEditor()) {
+      return;
+    }
+
     const editorActions = form.get('editorActions');
 
     if (action === 'showLintError') {
@@ -340,6 +373,58 @@ export class FormEditor extends CachedComponent {
     if (editorActions.isRegistered(action)) {
       return editorActions.trigger(action, context);
     }
+  }
+
+  openPreview = () => {
+    const { form } = this.getCached();
+
+    const {
+      onLayoutChanged
+    } = this.props;
+
+    onLayoutChanged({
+      panel: {
+        open: true,
+        tab: 'form-data'
+      }
+    });
+
+    form.setShowDataPreview(true);
+    this.setState({
+      previewOpen: true
+    });
+  }
+
+  closePreview = () => {
+    const { form } = this.getCached();
+
+    const {
+      onLayoutChanged
+    } = this.props;
+
+    onLayoutChanged({
+      panel: {
+        open: false,
+        tab: 'form-data'
+      }
+    });
+
+    form.setShowDataPreview(false);
+    this.setState({
+      previewOpen: false
+    });
+  }
+
+  attachDataContainers = (context) => {
+    const { form } = this.getCached();
+
+    const {
+      dataContainer,
+      resultContainer
+    } = context;
+
+    dataContainer && form.attachDataContainer(dataContainer);
+    resultContainer && form.attachResultContainer(resultContainer);
   }
 
   render() {
@@ -353,7 +438,7 @@ export class FormEditor extends CachedComponent {
       onUpdateMenu
     } = this.props;
 
-    const { importing } = this.state;
+    const { importing, previewOpen } = this.state;
 
     return (
       <div className={ css.FormEditor }>
@@ -369,23 +454,31 @@ export class FormEditor extends CachedComponent {
           engineProfile={ engineProfile }
           onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } /> }
 
-        {
-          engineProfile && <Fragment>
-            <Panel
-              layout={ layout }
-              onUpdateMenu={ onUpdateMenu }>
-              <LintingTab
-                layout={ layout }
-                linting={ linting }
-                onAction={ onAction }
-                onLayoutChanged={ onLayoutChanged } />
-            </Panel>
-            <Linting
-              layout={ layout }
-              linting={ linting }
-              onLayoutChanged={ onLayoutChanged } />
-          </Fragment>
-        }
+        <Panel
+          layout={ layout }
+          onUpdateMenu={ onUpdateMenu }>
+          { engineProfile && <LintingTab
+            layout={ layout }
+            linting={ linting }
+            onAction={ onAction }
+            onLayoutChanged={ onLayoutChanged } />
+          }
+          <FormDataTab
+            layout={ layout }
+            onLayoutChanged={ onLayoutChanged }
+            onAttachContainers={ this.attachDataContainers }
+          />
+        </Panel>
+        <Linting
+          layout={ layout }
+          linting={ linting }
+          onLayoutChanged={ onLayoutChanged } />
+        <FormData
+          layout={ layout }
+          onClosePreview={ this.closePreview }
+          onOpenPreview={ this.openPreview }
+          previewOpen={ previewOpen }
+        />
       </div>
     );
   }
@@ -405,12 +498,15 @@ export class FormEditor extends CachedComponent {
       exporter: {
         name,
         version
-      }
+      },
+      hideData: true
     });
 
-    const commandStack = form.get('commandStack');
+    // todo: form editor is not ready yet
+    // todo: how to access form editor on lazy import (wait for full render)?
+    // const commandStack = form.get('commandStack');
 
-    const stackIdx = commandStack._stackIdx;
+    // const stackIdx = commandStack._stackIdx;
 
     onAction('emit-event', {
       type: 'form.modeler.created',
@@ -422,9 +518,10 @@ export class FormEditor extends CachedComponent {
         form.destroy();
       },
       engineProfile: null,
-      form,
+      form: form,
       lastSchema: null,
-      stackIdx
+
+      // stackIdx
     };
   }
 }

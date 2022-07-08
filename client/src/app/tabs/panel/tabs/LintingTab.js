@@ -37,7 +37,7 @@ export default function LintingTab(props) {
     layout={ layout }
     number={ linting.length }
     onLayoutChanged={ onLayoutChanged }
-    priority={ 1 }>
+    priority={ 2 }>
     { linting.length ? null : <span className={ classnames(css.LintingIssue, 'linting-issue') }>No errors.</span> }
     {
       sortIssues(linting).map((issue => {

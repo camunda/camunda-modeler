@@ -11,5 +11,7 @@
 import '@bpmn-io/form-js/dist/assets/dragula.css';
 import '@bpmn-io/form-js/dist/assets/form-js.css';
 import '@bpmn-io/form-js/dist/assets/form-js-editor.css';
+import '@bpmn-io/form-js/dist/assets/properties-panel.css';
+import '@bpmn-io/form-js/dist/assets/form-js-playground.css';
 
-export { FormEditor } from '@bpmn-io/form-js';
+export { FormEditor, Playground } from '@bpmn-io/form-js';
