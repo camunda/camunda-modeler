@@ -63,7 +63,7 @@ Based on the [test diagram](./test.bpmn.png):
 - [ ] build [this diagram](./test.dmn.png) from scratch
 - [ ] morph `Go on Holidays` to a decision table
 - [ ] morph `Which Season` to a decision table
-- [ ] moprh `Which Region` to a literal expression
+- [ ] morph `Which Region` to a literal expression
 - [ ] click onto blue overlay on `Go on Holidays` jumps into table editing mode
 - [ ] changing name reflects in DRD
 - [ ] save file on disk as `test.dmn` from table editing mode
@@ -81,10 +81,10 @@ Based on the [test diagram](./test.bpmn.png):
 - [ ] add a regular expression (`^CAM-[0-9]+$`) to the invoice number field
 - [ ] save file on disk as `test.form`
 - [ ] file imports correctly after save
-- [ ] Set the **Execution Platform Version** to `Camunda Cloud 1.0`
+- [ ] Set the **Execution Platform Version** to `Camunda Platform 8 (Zeebe 1.0)`
   - [ ] 4 errors are shown: `Text`, `Number`, `Checkbox`, and `Radio` are not supported
   - [ ] Clicking on an error focuses the respective element
-- [ ] Set the **Execution Platform Version** to `Camunda Cloud 1.2`
+- [ ] Set the **Execution Platform Version** to `Camunda Platform 8 (Zeebe 1.2)`
   - [ ] 0 errors are shown
 
 #### BPMN + Camunda Forms deployment
