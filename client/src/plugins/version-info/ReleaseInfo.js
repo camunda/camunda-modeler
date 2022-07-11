@@ -44,35 +44,28 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Support for Camunda 8</h4>
-          With this release, we added support for Camunda 8.<br />
-          You can now model BPMN and DMN diagrams as well as Forms for Camunda 8.
-          Using plugins, you can now also customize the Modeler specifically for Camunda 8.
-          Element templates will now work for Camunda 8 BPMN diagrams, too.
-          We will now also use a more concise naming: <i>Camunda Platform</i> becomes Camunda 7
-          and <i>Camunda Cloud</i> becomes Camunda 8.<br />
-          Learn more about Camunda 8 in general <a href="https://camunda.com/blog/2022/04/camunda-platform-8-orchestrate-all-the-things?utm_source=modeler&utm_medium=referral">in the Camunda 8 blogpost.</a>
+          <h4>Context pad for multi-selection</h4>
+          This release adds the context pad to multiple selected elements.<br />
+          You can now conveniently perform actions on multiple elements, such as Align and Distribute.
+          We also improved the behavior of this actions to be more intuitive and to give you more control.
         </li>
         <li>
-          <h4>Improved overall UI to become a "Visual IDE"</h4>
-          We re-worked the entire Modeler, including welcome screen, properties panel, status bar, tab bar, and bottom panel
-          following our visions of a "Visual IDE".<br />
-          Learn more <a href="https://camunda.com/blog/2022/01/camunda-modeler-5-0-0-alpha-0-released?utm_source=modeler&utm_medium=referral">in a dedicated blog post about the UI improvements</a>.
+          <h4>Refined selection UX</h4>
+          We refined the whole selection behavior to make changes to complex process models more convenient.<br />
+          This includes an improved selection outline and a dedicated multi-selection state in the properties panel.
         </li>
         <li>
-          <h4>Process Debugging for Camunda 8 BPMN diagrams</h4>
-          The Modeler will now support you when automating BPMN processes with Camunda 8 by showing implementation errors,
-          and giving hints on how to fix them.
+          <h4>Conditional properties for element templates</h4>
+          This release adds support for conditional properties in your element templates.<br />
+          This allows you to define element template properties to be conditionally shown/hidden and bound to the diagram,
+          making the properties panel and the resulting BPMN model responsive to user input.<br />
+          You can learn more about how to define conditional properties in the <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/defining-templates/?utm_source=modeler&utm_medium=referral">element templates documentation</a>.
         </li>
         <li>
-          <h4>Support drill down into collapsed subprocesses</h4>
-          In Camunda 7 BPMN diagrams, you can now model collapsed subprocesses by
-          collapsing an expanded subprocess. Use the blue drill down icon to view and model the contents of the subprocess.
-        </li>
-        <li>
-          <h4>New customization features for element templates</h4>
-          We added various new element templates features: <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/defining-templates/?utm_source=modeler&utm_medium=referral#groups">custom grouping</a>, <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/defining-templates/?utm_source=modeler&utm_medium=referral">documentation reference</a>, <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/defining-templates/?utm_source=modeler&utm_medium=referral">target element type</a>, and <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/defining-templates/?utm_source=modeler&utm_medium=referral#icons">custom task icons</a>.<br />
-          Discover all configuration options <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/about-templates/?utm_source=modeler&utm_medium=referral">in the element templates docs</a>.
+          <h4>Adjusted telemetry</h4>
+          We carefully added additional data points to our telemetry to better understand how our app works.
+          As always, you decide whether you want that information to be shared.<br />
+          Find a comprehensive overview of what we track, how we do this and why in our <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/telemetry/?utm_source=modeler&utm_medium=referral">telemetry documentation</a>.
         </li>
       </ul>
     </div>
