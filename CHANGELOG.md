@@ -8,25 +8,14 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 5.1.0
 
-### Main changes
-
-* Multi-element context pad added to our tools for quick deletion, alignment, and spacing
-* Telemetry migrated to Mixpanel
-* BPMN and DMN editors have received UX improvements:
-	* clearer selection and multiselection
-	* input fields in the properties panel no longer lose changes
-* Conditional element template properties available in C8 
-* Stability and QOL improvements across the application
+_Multi-element context pad, clearer selection in editors and conditional element template properties in C8_
 
 ### General
 
 * `FEAT`: mask non-boolean flag values for ping event ([#2963](https://github.com/camunda/camunda-modeler/pull/2963))
 * `FEAT`: track set flags via ping event ([#2963](https://github.com/camunda/camunda-modeler/pull/2963))
 * `FEAT`: use @camunda/linting ([#2976](https://github.com/camunda/camunda-modeler/pull/2976))
-* `FEAT`: implement mixpanel telemetry ([#2934](https://github.com/camunda/camunda-modeler/issues/2934), [fec6ee4](https://github.com/camunda/camunda-modeler/commit/fec6ee4))
-* `FEAT`: track diagram deployments in mixpanel ([#2934](https://github.com/camunda/camunda-modeler/issues/2934), [a3e48b0](https://github.com/camunda/camunda-modeler/commit/a3e48b0))
-* `FEAT`: track link and button clicks in mixpanel ([#2934](https://github.com/camunda/camunda-modeler/issues/2934), [bbf0914](https://github.com/camunda/camunda-modeler/commit/bbf0914))
-* `FEAT`: track overlay usage in mixpanel ([#2934](https://github.com/camunda/camunda-modeler/issues/2934), [4e09d2e](https://github.com/camunda/camunda-modeler/commit/4e09d2e))
+* `FEAT`: implement mixpanel telemetry ([#2934](https://github.com/camunda/camunda-modeler/issues/2934))
 * `FIX`: debounced input fields no longer lose their values ([#2990](https://github.com/camunda/camunda-modeler/issues/2990))
 * `FIX`: reorder close file dialog buttons to match convention ([#2895](https://github.com/camunda/camunda-modeler/pull/2895))
 * `FIX`: always write file when save is triggered ([#2925](https://github.com/camunda/camunda-modeler/issues/2925))
