@@ -8,31 +8,28 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 5.1.0
 
-_Multi-element context pad, clearer selection in editors and conditional element template properties in C8_
+_Adds a multi-element context, improves overall selection UX in diagram editors, and ships conditional element template properties (C8 only)._
 
 ### General
 
-* `FEAT`: mask non-boolean flag values for ping event ([#2963](https://github.com/camunda/camunda-modeler/pull/2963))
-* `FEAT`: track set flags via ping event ([#2963](https://github.com/camunda/camunda-modeler/pull/2963))
-* `FEAT`: use @camunda/linting ([#2976](https://github.com/camunda/camunda-modeler/pull/2976))
-* `FEAT`: implement mixpanel telemetry ([#2934](https://github.com/camunda/camunda-modeler/issues/2934))
+* `CHORE`: mask non-boolean flag values for ping event ([#2963](https://github.com/camunda/camunda-modeler/pull/2963))
+* `CHORE`: track set flags via ping event ([#2963](https://github.com/camunda/camunda-modeler/pull/2963))
+* `CHORE`: use @camunda/linting ([#2976](https://github.com/camunda/camunda-modeler/pull/2976))
+* `CHORE`: implement mixpanel telemetry ([#2934](https://github.com/camunda/camunda-modeler/issues/2934))
 * `FIX`: debounced input fields no longer lose their values ([#2990](https://github.com/camunda/camunda-modeler/issues/2990))
-* `FIX`: reorder close file dialog buttons to match convention ([#2895](https://github.com/camunda/camunda-modeler/pull/2895))
 * `FIX`: always write file when save is triggered ([#2925](https://github.com/camunda/camunda-modeler/issues/2925))
 * `FIX`: explicitly specify default credentials during deploy ([#2924](https://github.com/camunda/camunda-modeler/pull/2924))
 * `FIX`: reverse order of input error and description during deploy ([#2918](https://github.com/camunda/camunda-modeler/issues/2918))
-* `FIX`: make sorting deterministic ([#2933](https://github.com/camunda/camunda-modeler/pull/2933))
+* `FIX`: make sorting of error diagram errors deterministic ([#2933](https://github.com/camunda/camunda-modeler/pull/2933))
 * `FIX`: disable reopen last tab on empty start ([#2893](https://github.com/camunda/camunda-modeler/pull/2893))
 * `FIX`: adjust overlay max heights to alway fit viewport ([#2915](https://github.com/camunda/camunda-modeler/pull/2915))
 * `FIX`: use separate linting state ([#2917](https://github.com/camunda/camunda-modeler/pull/2917))
 * `FIX`: add form-js notice to license ([#2947](https://github.com/camunda/camunda-modeler/pull/2947))
 * `FIX`: improved file dialogs to match OS defaults ([#2300](https://github.com/camunda/camunda-modeler/issues/2300), [#2971](https://github.com/camunda/camunda-modeler/pull/2971))
+* `FIX`: reorder close file dialog buttons to match convention ([#2895](https://github.com/camunda/camunda-modeler/pull/2895))
 * `CHORE`: configure process env for mixpanel ([#2941](https://github.com/camunda/camunda-modeler/pull/2941))
 * `CHORE`: removed 'new' badge for C8 ([#2953](https://github.com/camunda/camunda-modeler/issues/2953)) 
 * `DEPS`: bump electron to 19.0.6 ([#2998](https://github.com/camunda/camunda-modeler/pull/2998), [#3004](https://github.com/camunda/camunda-modeler/pull/3004))
-* `DEPS`: bump protobufjs to 6.11.3 in /app ([#2984](https://github.com/camunda/camunda-modeler/pull/2984))
-* `DEPS`: bump ejs to 3.1.7 ([#2945](https://github.com/camunda/camunda-modeler/pull/2945))
-* `DEPS`: bump shell-quote to 1.7.3 ([#2997](https://github.com/camunda/camunda-modeler/pull/2997))
 * `DEPS`: bump properties-panel to 1.2.0 ([bc8b74870](https://github.com/camunda/camunda-modeler/commit/bc8b74870))
 * `DEPS`: bump diagram-js to 8.7.0 ([bc8b74870](https://github.com/camunda/camunda-modeler/commit/bc8b74870))
 
