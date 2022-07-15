@@ -21,8 +21,6 @@ import Flags, {
   DISABLE_ADJUST_ORIGIN
 } from '../../../../util/Flags';
 
-import 'camunda-bpmn-js/dist/assets/camunda-cloud-modeler.css';
-
 
 export default class CloudBpmnModeler extends BpmnModeler {
 

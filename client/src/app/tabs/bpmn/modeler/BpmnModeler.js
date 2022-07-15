@@ -19,8 +19,6 @@ import propertiesPanelKeyboardBindingsModule from './features/properties-panel-k
 
 import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 
-import 'camunda-bpmn-js/dist/assets/camunda-platform-modeler.css';
-
 
 export default class PlatformBpmnModeler extends BpmnModeler {
 
