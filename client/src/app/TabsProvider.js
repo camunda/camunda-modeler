@@ -305,12 +305,6 @@ export default class TabsProvider {
         getInitialFilename(suffix) {
           return `diagram_${suffix}.dmn`;
         },
-        getHelpMenu() {
-          return [ {
-            label: 'DMN Tutorial',
-            action: 'https://camunda.org/dmn/tutorial/'
-          } ];
-        },
         getNewFileMenu() {
           return [ {
             label: 'DMN diagram',
