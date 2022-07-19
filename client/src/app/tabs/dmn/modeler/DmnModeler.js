@@ -26,8 +26,6 @@ import overviewRendererModule from './features/overview/overview-renderer';
 import executionPlatformModule from '@camunda/execution-platform';
 import modelerModdle from 'modeler-moddle/resources/dmn-modeler.json';
 
-import 'camunda-dmn-js/dist/assets/camunda-platform-modeler.css';
-
 const NOOP_MODULE = [ 'value', null ];
 
 const poweredByModule = {
