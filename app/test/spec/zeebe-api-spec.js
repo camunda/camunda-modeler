@@ -1388,6 +1388,50 @@ describe('ZeebeAPI', function() {
       expect(closeSpy).to.have.been.calledOnce;
     });
 
+
+    it('should pass root certificate from flag', async () => {
+
+      // given
+      let usedConfig;
+
+      const zeebeAPI = mockZeebeNode({
+        flags: {
+          get() {
+            return '/path/to/cert.pem';
+          }
+        },
+        fs: {
+          readFile() {
+            return { contents: 'CERTIFICATE' };
+          }
+        },
+        ZBClient: function(...args) {
+          usedConfig = args;
+
+          return {
+            deployWorkflow: noop
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'https://camunda.com'
+        }
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      // then
+      const { customSSL } = usedConfig[1];
+      expect(customSSL).to.exist;
+
+      const { rootCerts } = customSSL;
+      console.log(rootCerts.toString('utf8'));
+      expect(Buffer.from('CERTIFICATE').equals(rootCerts)).to.be.true;
+    });
   });
 
 });
@@ -1398,6 +1442,9 @@ describe('ZeebeAPI', function() {
 function mockZeebeNode(options = {}) {
   const fs = options.fs || {
     readFile: () => ({})
+  };
+  const flags = options.flags || {
+    get: () => {}
   };
 
   const ZeebeNode = {
@@ -1411,7 +1458,7 @@ function mockZeebeNode(options = {}) {
     }
   };
 
-  return new ZeebeAPI(fs, ZeebeNode);
+  return new ZeebeAPI(fs, ZeebeNode, flags);
 }
 
 function noop() {}

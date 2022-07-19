@@ -80,10 +80,11 @@ const endpointTypes = {
  */
 
 class ZeebeAPI {
-  constructor(fs, ZeebeNode) {
+  constructor(fs, ZeebeNode, flags) {
     this._fs = fs;
 
     this._ZeebeNode = ZeebeNode;
+    this._flags = flags;
 
     this._zeebeClient = null;
   }
@@ -301,7 +302,31 @@ class ZeebeAPI {
       };
     }
 
+    options = this._withTLSConfig(options);
+
     return new this._ZeebeNode.ZBClient(url, options);
+  }
+
+  _withTLSConfig(options) {
+    const customCertificatePath = this._flags.get('zeebe-ssl-certificate');
+
+    if (customCertificatePath) {
+      try {
+        const cert = this._fs.readFile(customCertificatePath, { encoding: false });
+
+        return {
+          ...options,
+          useTLS: true,
+          customSSL: {
+            rootCerts: cert.contents
+          }
+        };
+      } catch (err) {
+        log.error('Failed to read custom SSL certificate:', err);
+      }
+    }
+
+    return options;
   }
 }
 
