@@ -658,7 +658,7 @@ function bootstrap() {
   errorTracking.setTag(Sentry, 'plugins', generatePluginsTag(plugins));
 
   // (9) zeebe API
-  const zeebeAPI = new ZeebeAPI({ readFile }, ZeebeNode);
+  const zeebeAPI = new ZeebeAPI({ readFile }, ZeebeNode, flags);
 
   return {
     config,
