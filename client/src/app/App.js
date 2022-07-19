@@ -62,9 +62,6 @@ import { PluginsRoot } from './plugins';
 
 import css from './App.less';
 
-// monkey-patch to fix styling issues ahead of release 5.1, tracked here https://github.com/camunda/camunda-modeler/issues/3025
-import './App-patch.css';
-
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 
 
