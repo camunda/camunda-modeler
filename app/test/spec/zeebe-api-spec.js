@@ -17,6 +17,11 @@ const ZeebeAPI = require('../../lib/zeebe-api');
 
 describe('ZeebeAPI', function() {
 
+
+  // TODO(barmac): remove when system keychain certificates are tested
+  setupPlatformStub();
+
+
   describe('#checkConnection', function() {
 
     it('should set success=true for correct check', async () => {
@@ -1438,6 +1443,17 @@ describe('ZeebeAPI', function() {
 
 
 // helpers //////////////////////
+function setupPlatformStub() {
+  let platformStub;
+
+  before(() => {
+    platformStub = sinon.stub(process, 'platform').value('CI');
+  });
+
+  after(() => {
+    platformStub.restore();
+  });
+}
 
 function mockZeebeNode(options = {}) {
   const fs = options.fs || {

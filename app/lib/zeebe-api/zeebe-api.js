@@ -11,8 +11,9 @@
 'use strict';
 
 const path = require('path');
+const getSystemCertificates = require('./get-system-certificates');
 
-const log = require('./log')('app:zeebe-api');
+const log = require('../log')('app:zeebe-api');
 
 const {
   pick,
@@ -102,7 +103,7 @@ class ZeebeAPI {
       endpoint
     } = parameters;
 
-    const client = this._getZeebeClient(endpoint);
+    const client = await this._getZeebeClient(endpoint);
 
     try {
       await client.topology();
@@ -137,7 +138,7 @@ class ZeebeAPI {
       contents
     } = this._fs.readFile(filePath, { encoding: false });
 
-    const client = this._getZeebeClient(endpoint);
+    const client = await this._getZeebeClient(endpoint);
 
     try {
       const response = await client.deployWorkflow({
@@ -174,7 +175,7 @@ class ZeebeAPI {
       processId
     } = parameters;
 
-    const client = this._getZeebeClient(endpoint);
+    const client = await this._getZeebeClient(endpoint);
 
     try {
 
@@ -210,7 +211,7 @@ class ZeebeAPI {
       endpoint
     } = parameters;
 
-    const client = this._getZeebeClient(endpoint);
+    const client = await this._getZeebeClient(endpoint);
 
     try {
       const topologyResponse = await client.topology();
@@ -239,7 +240,7 @@ class ZeebeAPI {
     }
   }
 
-  _getZeebeClient(endpoint) {
+  async _getZeebeClient(endpoint) {
 
     // (1) use existing Zeebe Client for endpoint
     const cachedZeebeClient = this._getCachedZeebeClient(endpoint);
@@ -252,7 +253,7 @@ class ZeebeAPI {
     this._shutdownZeebeClientInstance();
 
     // (3) create new Zeebe Client for endpoint configuration
-    this._zeebeClient = this._createZeebeClient(endpoint);
+    this._zeebeClient = await this._createZeebeClient(endpoint);
     this._cachedEndpoint = endpoint;
 
     return this._zeebeClient;
@@ -262,7 +263,7 @@ class ZeebeAPI {
     this._zeebeClient && this._zeebeClient.close();
   }
 
-  _createZeebeClient(endpoint) {
+  async _createZeebeClient(endpoint) {
     const {
       type,
       url
@@ -302,31 +303,48 @@ class ZeebeAPI {
       };
     }
 
-    options = this._withTLSConfig(options);
+    options = await this._withTLSConfig(url, options);
 
     return new this._ZeebeNode.ZBClient(url, options);
   }
 
-  _withTLSConfig(options) {
+  async _withTLSConfig(url, options) {
+    const rootCerts = [];
+
+    // (0) force TLS only for https endpoints; don't parse the URL to avoid errors at this step
+    const tlsOptions = {};
+    if (/^https:\/\//.test(url)) {
+      tlsOptions.useTLS = true;
+    }
+
+    // (1) use certificate from flag
     const customCertificatePath = this._flags.get('zeebe-ssl-certificate');
 
     if (customCertificatePath) {
       try {
-        const cert = this._fs.readFile(customCertificatePath, { encoding: false });
+        const cert = this._fs.readFile(customCertificatePath);
 
-        return {
-          ...options,
-          useTLS: true,
-          customSSL: {
-            rootCerts: cert.contents
-          }
-        };
+        rootCerts.push(cert.contents);
       } catch (err) {
         log.error('Failed to read custom SSL certificate:', err);
       }
     }
 
-    return options;
+    // (2) use certificates from OS keychain
+    const systemCertificates = await getSystemCertificates();
+    rootCerts.push(...systemCertificates);
+
+    if (!rootCerts.length) {
+      return { ...options, ...tlsOptions };
+    }
+
+    return {
+      ...options,
+      ...tlsOptions,
+      customSSL: {
+        rootCerts: Buffer.from(rootCerts.join('\n'))
+      }
+    };
   }
 }
 
