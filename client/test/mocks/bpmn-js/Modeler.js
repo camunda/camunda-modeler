@@ -61,6 +61,20 @@ class PropertiesPanel {
   update() {}
 }
 
+class Selection {
+  constructor() {
+    this._selectedElements = [];
+  }
+
+  get() {
+    return this._selectedElements;
+  }
+
+  select(elements) {
+    this._selectedElements = elements;
+  }
+}
+
 export default class Modeler {
   constructor(options = {}) {
     this.options = options;
@@ -78,6 +92,7 @@ export default class Modeler {
         fire() {}
       },
       canvas: {
+        getRootElement() {},
         resized() {}
       },
       clipboard: {
@@ -91,11 +106,7 @@ export default class Modeler {
         toggle() {}
       },
       propertiesPanel: new PropertiesPanel(),
-      selection: {
-        get() {
-          return [];
-        }
-      }
+      selection: new Selection()
     };
   }
 
@@ -183,9 +194,9 @@ export default class Modeler {
     this.listeners[ event ] = listeners.filter(l => l !== callback);
   }
 
-  _emit(event) {
+  _emit(event, data) {
     if (this.listeners[ event ]) {
-      this.listeners[ event ].forEach(callback => callback());
+      this.listeners[ event ].forEach(callback => callback(data));
     }
   }
 

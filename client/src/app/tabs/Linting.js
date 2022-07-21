@@ -23,43 +23,12 @@ export function Linting(props) {
   const {
     layout,
     linting,
-    onLayoutChanged
+    onToggleLinting
   } = props;
 
   const { panel = {} } = layout;
 
   const errors = linting.filter(({ category }) => category === 'error').length;
-
-  const onClick = () => {
-    if (!panel.open) {
-      onLayoutChanged({
-        panel: {
-          open: true,
-          tab: 'linting'
-        }
-      });
-
-      return;
-    }
-
-    if (panel.tab === 'linting') {
-      onLayoutChanged({
-        panel: {
-          open: false,
-          tab: 'linting'
-        }
-      });
-
-      return;
-    }
-
-    onLayoutChanged({
-      panel: {
-        open: true,
-        tab: 'linting'
-      }
-    });
-  };
 
   return <Fill slot="status-bar__file" group="9_linting">
     <button
@@ -70,7 +39,7 @@ export function Linting(props) {
           'has-errors': errors > 0
         }
       ) }
-      onClick={ onClick }
+      onClick={ onToggleLinting }
       title="Toggle Errors"
     >
       <ErrorIcon />
