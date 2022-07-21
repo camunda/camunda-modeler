@@ -75,21 +75,21 @@ describe('<LintingTab>', function() {
         {
           category: 'error',
           id: 'foo',
-          label: 'Foo',
+          name: 'Foo',
           path: [],
           message: 'foo error'
         },
         {
           category: 'error',
           id: 'bar',
-          label: 'Bar 1',
+          name: 'Bar 1',
           path: [],
           message: 'bar 1 error'
         },
         {
           category: 'error',
           id: 'bar',
-          label: 'Bar 2',
+          name: 'Bar 2',
           path: [],
           message: 'bar 2 error'
         },

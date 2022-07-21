@@ -100,81 +100,20 @@ describe('Linting', function() {
     });
 
 
-    it('should open', function() {
+    it('should call callback on toggle', function() {
 
       // given
-      const onLayoutChangedSpy = spy();
+      const onToggleLintingSpy = spy();
 
       const wrapper = renderLinting({
-        onLayoutChanged: onLayoutChangedSpy
+        onToggleLinting: onToggleLintingSpy
       });
 
       // when
       wrapper.find('.btn').simulate('click');
 
       // then
-      expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
-        panel: {
-          open: true,
-          tab: 'linting'
-        }
-      });
-    });
-
-
-    it('should open (different tab open)', function() {
-
-      // given
-      const onLayoutChangedSpy = spy();
-
-      const wrapper = renderLinting({
-        layout: {
-          panel: {
-            open: true,
-            tab: 'foo'
-          }
-        },
-        onLayoutChanged: onLayoutChangedSpy
-      });
-
-      // when
-      wrapper.find('.btn').simulate('click');
-
-      // then
-      expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
-        panel: {
-          open: true,
-          tab: 'linting'
-        }
-      });
-    });
-
-
-    it('should close', function() {
-
-      // given
-      const onLayoutChangedSpy = spy();
-
-      const wrapper = renderLinting({
-        layout: {
-          panel: {
-            open: true,
-            tab: 'linting'
-          }
-        },
-        onLayoutChanged: onLayoutChangedSpy
-      });
-
-      // when
-      wrapper.find('.btn').simulate('click');
-
-      // then
-      expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
-        panel: {
-          open: false,
-          tab: 'linting'
-        }
-      });
+      expect(onToggleLintingSpy).to.have.been.calledOnce;
     });
 
   });
@@ -205,7 +144,7 @@ function renderLinting(options = {}) {
   const {
     layout = defaultLayout,
     linting = defaultLinting,
-    onLayoutChanged
+    onToggleLinting
   } = options;
 
   return mount(
@@ -214,7 +153,7 @@ function renderLinting(options = {}) {
       <Linting
         layout={ layout }
         linting={ linting }
-        onLayoutChanged={ onLayoutChanged } />
+        onToggleLinting={ onToggleLinting } />
     </SlotFillRoot>
   );
 }

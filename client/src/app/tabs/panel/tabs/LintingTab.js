@@ -63,26 +63,39 @@ function LintingIssue(props) {
 
   const {
     id,
-    label,
+    name,
     message
   } = issue;
 
   return <div className={ classnames(css.LintingIssue, 'linting-issue') }>
     <ErrorIcon />
     <div className="linting-issue__text">
-      Error : <span className="linting-issue__link" onClick={ onClick }>{ label || id }</span> - <span className="linting-issue__message">{message}</span>
+      Error : <span className="linting-issue__link" onClick={ onClick }>{ name || id }</span> - <span className="linting-issue__message">{ message }</span>
     </div>
   </div>;
 }
 
+function getName(issue) {
+  const {
+    id,
+    name
+  } = issue;
+
+  if (name) {
+    return name.toLowerCase();
+  }
+
+  return id.toLowerCase();
+}
+
 function sortIssues(issues) {
   return issues.sort((a, b) => {
-    const labelA = (a.label || a.id).toLowerCase(),
-          labelB = (b.label || b.id).toLowerCase();
+    a = getName(a),
+    b = getName(b);
 
-    if (labelA === labelB) {
+    if (a === b) {
       return 0;
-    } else if (labelA < labelB) {
+    } else if (a < b) {
       return -1;
     } else {
       return 1;

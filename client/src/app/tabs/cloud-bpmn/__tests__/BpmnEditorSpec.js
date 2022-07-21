@@ -50,6 +50,8 @@ import {
   getUndoRedoEntries
 } from '../../getEditMenu';
 
+import { SlotFillRoot } from '../../../slot-fill';
+
 const { spy } = sinon;
 
 
@@ -378,60 +380,316 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
   describe('linting', function() {
 
-    let modeler, actionSpy, container;
+    describe('behavior', function() {
 
-    beforeEach(async function() {
-      modeler = new BpmnModeler();
-      actionSpy = spy();
+      let modeler,
+          onActionSpy,
+          wrapper;
 
-      const cache = new Cache();
+      beforeEach(async function() {
+        modeler = new BpmnModeler();
 
-      cache.add('editor', {
-        cached: {
-          modeler
-        },
-        __destroy: () => {}
+        onActionSpy = spy();
+
+        const cache = new Cache();
+
+        cache.add('editor', {
+          cached: {
+            modeler
+          },
+          __destroy: () => {}
+        });
+
+
+        ({ wrapper } = await renderEditor(diagramXML, {
+          id: 'editor',
+          cache,
+          onAction: onActionSpy
+        }));
       });
 
 
-      const { wrapper } = await renderEditor(diagramXML, {
-        id: 'editor',
-        cache,
-        onAction: actionSpy
+      it('should call linting on change', async function() {
+
+        // assume
+        // lint on import
+        expect(onActionSpy).to.have.been.calledOnce;
+
+        // when
+        modeler._emit('commandStack.changed');
+
+        // then
+        expect(onActionSpy).to.have.been.calledTwice;
       });
 
-      container = wrapper;
+
+      it('should only register once', async function() {
+
+        // assume
+        // lint on import
+        expect(onActionSpy).to.have.been.calledOnce;
+
+        // when
+        wrapper.unmount();
+        wrapper.mount();
+
+        modeler._emit('commandStack.changed');
+
+        // then
+        expect(onActionSpy).to.have.been.calledTwice;
+      });
+
     });
 
 
-    it('should call linting on change', async function() {
+    describe('#isLintingActive', function() {
 
-      // assume
-      // lint on import
-      expect(actionSpy).to.have.been.calledOnce;
+      it('should be active', async function() {
 
-      // when
-      modeler._emit('commandStack.changed');
+        // when
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: true
+            }
+          }
+        });
 
-      // then
-      expect(actionSpy).to.have.been.calledTwice;
+        // then
+        expect(instance.isLintingActive()).to.be.true;
+      });
+
+
+      it('should not be active', async function() {
+
+        // when
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: false
+            }
+          }
+        });
+
+        // then
+        expect(instance.isLintingActive()).to.be.false;
+      });
+
     });
 
 
-    it('should only register once', async function() {
+    describe('#onToggleLinting', function() {
 
-      // assume
-      // lint on import
-      expect(actionSpy).to.have.been.calledOnce;
+      it('should open', async function() {
 
-      // when
-      container.unmount();
-      container.mount();
+        // given
+        const onLayoutChangedSpy = spy();
 
-      modeler._emit('commandStack.changed');
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: false
+            }
+          },
+          onLayoutChanged: onLayoutChangedSpy
+        });
 
-      // then
-      expect(actionSpy).to.have.been.calledTwice;
+        // when
+        instance.onToggleLinting();
+
+        // then
+        expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
+          panel: {
+            open: true,
+            tab: 'linting'
+          }
+        });
+      });
+
+
+      it('should open (different tab open)', async function() {
+
+        // given
+        const onLayoutChangedSpy = spy();
+
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'foo'
+            }
+          },
+          onLayoutChanged: onLayoutChangedSpy
+        });
+
+        // when
+        instance.onToggleLinting();
+
+        // then
+        expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
+          panel: {
+            open: true,
+            tab: 'linting'
+          }
+        });
+      });
+
+
+      it('should close', async function() {
+
+        // given
+        const onLayoutChangedSpy = spy();
+
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'linting'
+            }
+          },
+          onLayoutChanged: onLayoutChangedSpy
+        });
+
+        // when
+        instance.onToggleLinting();
+
+        // then
+        expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
+          panel: {
+            open: false,
+            tab: 'linting'
+          }
+        });
+      });
+
+    });
+
+
+    describe('#updatePropertiesPanelErrors', function() {
+
+      let cache,
+          instance,
+          modeler;
+
+      beforeEach(async function() {
+        modeler = new BpmnModeler();
+
+        cache = new Cache();
+
+        cache.add('editor', {
+          cached: {
+            modeler
+          },
+          __destroy: () => {}
+        });
+      });
+
+
+      it('should set errors', async function() {
+
+        // given
+        ({ instance } = await renderEditor(diagramXML, {
+          id: 'editor',
+          cache,
+          linting: [
+            {
+              id: 'foo',
+              error: {
+                type: 'propertyRequired',
+                requiredProperty: 'type',
+                node: {
+                  $type: 'zeebe:TaskDefinition'
+                }
+              }
+            }
+          ],
+          layout: {
+            panel: {
+              open: true
+            }
+          }
+        }));
+
+        modeler.get('selection').select([
+          {
+            businessObject: {
+              get(name) {
+                if (name === 'id') {
+                  return 'foo';
+                }
+              }
+            }
+          }
+        ]);
+
+        const setErrorsSpy = spy((argsss) => console.log('whoa ', argsss));
+
+        modeler.on('propertiesPanel.setErrors', setErrorsSpy);
+
+        // when
+        instance.updatePropertiesPanelErrors();
+
+        // then
+        expect(setErrorsSpy).to.have.been.calledOnce;
+        expect(setErrorsSpy).to.have.been.calledWithMatch({
+          errors: {
+            taskDefinitionType: 'Type must be defined.'
+          }
+        });
+      });
+
+
+      it('should unset errors', async function() {
+
+        // given
+        ({ instance } = await renderEditor(diagramXML, {
+          id: 'editor',
+          cache,
+          linting: [
+            {
+              id: 'foo',
+              error: {
+                type: 'propertyRequired',
+                requiredProperty: 'type',
+                node: {
+                  $type: 'zeebe:TaskDefinition'
+                }
+              }
+            }
+          ],
+          layout: {
+            panel: {
+              open: false
+            }
+          }
+        }));
+
+        modeler.get('selection').select([
+          {
+            businessObject: {
+              get(name) {
+                if (name === 'id') {
+                  return 'foo';
+                }
+              }
+            }
+          }
+        ]);
+
+        const setErrorsSpy = spy((argsss) => console.log('whoa ', argsss));
+
+        modeler.on('propertiesPanel.setErrors', setErrorsSpy);
+
+        // when
+        instance.updatePropertiesPanelErrors();
+
+        // then
+        expect(setErrorsSpy).to.have.been.calledOnce;
+        expect(setErrorsSpy).to.have.been.calledWithMatch({
+          errors: {}
+        });
+      });
+
     });
 
   });
@@ -751,9 +1009,9 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       });
 
       const lintError = {
-        id: 'foo',
-        message: 'bar',
-        path: [ 'foo', 'bar' ]
+        propertiesPanel: {
+          entryId: 'taskDefinition'
+        }
       };
 
       // when
@@ -766,11 +1024,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       // then
       expect(fireSpy).to.have.been.calledOnce;
-      expect(fireSpy).to.have.been.calledWithMatch('propertiesPanel.showError', {
-        focus: true,
-        id: 'foo',
-        message: 'bar',
-        path: [ 'foo', 'bar' ]
+      expect(fireSpy).to.have.been.calledWithMatch('propertiesPanel.showEntry', {
+        id: 'taskDefinition'
       });
 
       expect(scrollToElementSpy).to.have.been.calledOnceWith(element);
@@ -1695,6 +1950,7 @@ function renderEditor(xml, options = {}) {
     id = 'editor',
     isNew = true,
     layout = defaultLayout,
+    linting = [],
     onAction = noop,
     onChanged = noop,
     onContentUpdated = noop,
@@ -1720,23 +1976,26 @@ function renderEditor(xml, options = {}) {
     };
 
     wrapper = mount(
-      <TestEditor
-        cache={ cache }
-        getConfig={ getConfig }
-        getPlugins={ getPlugins }
-        id={ id }
-        isNew={ isNew }
-        layout={ layout }
-        onAction={ onAction }
-        onChanged={ onChanged }
-        onContentUpdated={ onContentUpdated }
-        onError={ onError }
-        onImport={ waitForImport ? resolveOnImport : onImport }
-        onLayoutChanged={ onLayoutChanged }
-        onModal={ onModal }
-        onWarning={ onWarning }
-        xml={ xml }
-      />
+      <SlotFillRoot>
+        <TestEditor
+          cache={ cache }
+          getConfig={ getConfig }
+          getPlugins={ getPlugins }
+          id={ id }
+          isNew={ isNew }
+          layout={ layout }
+          linting={ linting }
+          onAction={ onAction }
+          onChanged={ onChanged }
+          onContentUpdated={ onContentUpdated }
+          onError={ onError }
+          onImport={ waitForImport ? resolveOnImport : onImport }
+          onLayoutChanged={ onLayoutChanged }
+          onModal={ onModal }
+          onWarning={ onWarning }
+          xml={ xml }
+        />
+      </SlotFillRoot>
     );
 
     instance = wrapper.find(BpmnEditor).instance();
