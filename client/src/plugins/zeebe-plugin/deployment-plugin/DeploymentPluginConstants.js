@@ -31,6 +31,7 @@ export const REMEMBER_CREDENTIALS = 'Remember credentials';
 
 export const MUST_PROVIDE_A_VALUE = 'Must provide a value.';
 export const CONTACT_POINT_MUST_NOT_BE_EMPTY = 'Cluster endpoint must not be empty.';
+export const CONTACT_POINT_MUST_START_WITH_PROTOCOL = 'Cluster endpoint must start with "http://" or "https://".';
 export const CONTACT_POINT_MUST_BE_URL_OR_IP = 'Cluster endpoint must a valid URL or IP address with a valid port.';
 export const OAUTH_URL_MUST_NOT_BE_EMPTY = 'OAuth URL must not be empty.';
 export const AUDIENCE_MUST_NOT_BE_EMPTY = 'Audience must not be empty.';

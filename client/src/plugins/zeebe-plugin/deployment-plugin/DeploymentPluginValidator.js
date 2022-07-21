@@ -16,7 +16,8 @@ import {
   CLIENT_ID_MUST_NOT_BE_EMPTY,
   CLIENT_SECRET_MUST_NOT_BE_EMPTY,
   CLUSTER_URL_MUST_BE_VALID_CLOUD_URL,
-  CONTACT_POINT_MUST_BE_URL_OR_IP
+  CONTACT_POINT_MUST_BE_URL_OR_IP,
+  CONTACT_POINT_MUST_START_WITH_PROTOCOL
 } from './DeploymentPluginConstants';
 
 import { AUTH_TYPES } from '../shared/ZeebeAuthTypes';
@@ -42,8 +43,7 @@ export default class DeploymentPluginValidator {
 
   validateZeebeContactPoint = (value) => {
     return this.validateNonEmpty(value, CONTACT_POINT_MUST_NOT_BE_EMPTY) ||
-      validateUrl(value, CONTACT_POINT_MUST_BE_URL_OR_IP) ||
-      checkPort(value, CONTACT_POINT_MUST_BE_URL_OR_IP);
+      validateUrl(value, CONTACT_POINT_MUST_BE_URL_OR_IP);
   };
 
   validateOAuthURL = (value) => {
@@ -312,29 +312,13 @@ function validCloudUrl(url) {
 }
 
 const validateUrl = (value, message) => {
-  let fullURL = value;
-
-  if (!(value.startsWith('https://') || value.startsWith('http://'))) {
-    fullURL = 'http://' + value;
+  if (!/^https?:\/\//.test(value)) {
+    return CONTACT_POINT_MUST_START_WITH_PROTOCOL;
   }
 
   try {
-    new URL(fullURL);
-    return null;
-
+    new URL(value);
   } catch (e) {
     return message;
   }
-};
-
-const checkPort = (value, message) => {
-  var parts = value.split(':');
-  var port = (parts.length > 1) ? parts[parts.length - 1] : null;
-
-  if (port) {
-    const number = parseInt(port);
-    return isNaN(number) ? message : null;
-  }
-
-  return message;
 };

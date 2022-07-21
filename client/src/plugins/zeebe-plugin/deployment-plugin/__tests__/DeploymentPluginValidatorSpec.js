@@ -14,6 +14,7 @@ import DeploymentPluginValidator from '../DeploymentPluginValidator';
 
 import {
   CONTACT_POINT_MUST_NOT_BE_EMPTY,
+  CONTACT_POINT_MUST_START_WITH_PROTOCOL,
   OAUTH_URL_MUST_NOT_BE_EMPTY,
   AUDIENCE_MUST_NOT_BE_EMPTY,
   CLIENT_ID_MUST_NOT_BE_EMPTY,
@@ -34,11 +35,16 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
       // given
       const emptyZeebeContactPoint = '';
       const noPortZeebeContactPoint = '0.0.0.0';
-      const validZeebeContactPoint = '0.0.0.0:0001';
+      const noProtocolZeebeContactPoint = '0.0.0.0:0001';
+      const invalidUrlZeebeContactPoint = 'http://\\';
+      const validZeebeContactPoint = 'http://localhost:26500';
 
       // then
       expect(validator.validateZeebeContactPoint(emptyZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_NOT_BE_EMPTY);
-      expect(validator.validateZeebeContactPoint(noPortZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_BE_URL_OR_IP);
+      expect(validator.validateZeebeContactPoint(noProtocolZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_START_WITH_PROTOCOL);
+      expect(validator.validateZeebeContactPoint(noPortZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_START_WITH_PROTOCOL);
+      expect(validator.validateZeebeContactPoint(noPortZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_START_WITH_PROTOCOL);
+      expect(validator.validateZeebeContactPoint(invalidUrlZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_BE_URL_OR_IP);
       expect(validator.validateZeebeContactPoint(validZeebeContactPoint)).to.not.exist;
     });
 
@@ -48,13 +54,13 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
       // given
       const emptyZeebeContactPoint = '';
       const noPortZeebeContactPoint = 'foo.bar';
-      const validZeebeContactPoint = 'foo.bar:0001';
+      const missingProtocolZeebeContactPoint = 'foo.bar:0001';
       const validZeebeContactPointFullURL = 'https://foo.bar:0001';
 
       // then
       expect(validator.validateZeebeContactPoint(emptyZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_NOT_BE_EMPTY);
-      expect(validator.validateZeebeContactPoint(noPortZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_BE_URL_OR_IP);
-      expect(validator.validateZeebeContactPoint(validZeebeContactPoint)).to.not.exist;
+      expect(validator.validateZeebeContactPoint(noPortZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_START_WITH_PROTOCOL);
+      expect(validator.validateZeebeContactPoint(missingProtocolZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_START_WITH_PROTOCOL);
       expect(validator.validateZeebeContactPoint(validZeebeContactPointFullURL)).to.not.exist;
 
     });
@@ -181,7 +187,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
         endpoint: {
           targetType: 'selfHosted',
           authType: 'none',
-          contactPoint: 'https://camunda.com'
+          contactPoint: 'ftp://camunda.com'
         }
       };
 
@@ -216,7 +222,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
         endpoint: {
           targetType: 'selfHosted',
           authType: 'oauth',
-          contactPoint: 'https://camunda.com',
+          contactPoint: 'ftp://camunda.com',
           oauthURL: 'https://camunda.com'
         }
       };
