@@ -1437,6 +1437,66 @@ describe('ZeebeAPI', function() {
       console.log(rootCerts.toString('utf8'));
       expect(Buffer.from('CERTIFICATE').equals(rootCerts)).to.be.true;
     });
+
+
+    it('should set `useTLS` to true for https endpoint', async () => {
+
+      // given
+      let usedConfig;
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function(...args) {
+          usedConfig = args;
+
+          return {
+            deployWorkflow: noop
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'https://camunda.com'
+        }
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      // then
+      expect(usedConfig[1]).to.have.property('useTLS', true);
+    });
+
+
+    it('should NOT set `useTLS` for http endpoint', async () => {
+
+      // given
+      let usedConfig;
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function(...args) {
+          usedConfig = args;
+
+          return {
+            deployWorkflow: noop
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'http://camunda.com'
+        }
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      // then
+      expect(usedConfig[1]).not.to.have.property('useTLS');
+    });
   });
 
 });

@@ -28,7 +28,7 @@ import {
 
 import { AUTH_TYPES } from './../shared/ZeebeAuthTypes';
 
-import { CAMUNDA_CLOUD } from '../shared/ZeebeTargetTypes';
+import { CAMUNDA_CLOUD, SELF_HOSTED } from '../shared/ZeebeTargetTypes';
 
 import DeploymentPluginOverlay from './DeploymentPluginOverlay';
 
@@ -144,11 +144,14 @@ export default class DeploymentPlugin extends PureComponent {
       endpoint
     };
 
+    // (2a) patch self-hosted config with protocol
+    config = patchWithProtocol(config);
+
     // (2.1) open overlay if config is incomplete
     const canDeploy = await this.canDeployWithConfig(config, options);
 
     if (!canDeploy) {
-      config = await this.getConfigFromUser({}, savedTab, options);
+      config = await this.getConfigFromUser(config, savedTab, options);
 
       // user canceled
       if (!config) {
@@ -400,7 +403,10 @@ export default class DeploymentPlugin extends PureComponent {
         ...deployment,
         ...savedConfig.deployment
       },
-      endpoint
+      endpoint: {
+        ...endpoint,
+        ...savedConfig.endpoint
+      }
     };
   }
 
@@ -686,4 +692,30 @@ function createCamundaCloudClusterUrl(camundaCloudClusterId) {
 
 function getProcessId(response) {
   return response.workflows && response.workflows[0] && response.workflows[0].bpmnProcessId || null;
+}
+
+function patchWithProtocol(config = {}) {
+  const {
+    endpoint
+  } = config;
+
+  if (!endpoint) {
+    return config;
+  }
+
+  if (endpoint.targetType !== SELF_HOSTED) {
+    return config;
+  }
+
+  if (/^https?:\/\//.test(endpoint.contactPoint)) {
+    return config;
+  }
+
+  return {
+    ...config,
+    endpoint: {
+      ...endpoint,
+      contactPoint: 'http://' + endpoint.contactPoint
+    }
+  };
 }
