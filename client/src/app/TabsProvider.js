@@ -55,6 +55,21 @@ import BPMNIcon from '../../resources/icons/file-types/BPMN-16x16.svg';
 import DMNIcon from '../../resources/icons/file-types/DMN-16x16.svg';
 import FormIcon from '../../resources/icons/file-types/Form-16x16.svg';
 
+const BPMN_HELP_MENU = [
+  {
+    label: 'BPMN 2.0 Tutorial',
+    action: 'https://camunda.org/bpmn/tutorial/'
+  },
+  {
+    label: 'BPMN Modeling Reference',
+    action: 'https://camunda.org/bpmn/reference/'
+  }
+];
+
+const DMN_HELP_MENU = [
+
+];
+
 const createdByType = {};
 
 const noopProvider = {
@@ -161,7 +176,7 @@ export default class TabsProvider {
           return `diagram_${suffix}.bpmn`;
         },
         getHelpMenu() {
-          return [];
+          return BPMN_HELP_MENU;
         },
         getNewFileMenu() {
           return [ {
@@ -199,14 +214,7 @@ export default class TabsProvider {
           return `diagram_${suffix}.bpmn`;
         },
         getHelpMenu() {
-          return [ {
-            label: 'BPMN 2.0 Tutorial',
-            action: 'https://camunda.org/bpmn/tutorial/'
-          },
-          {
-            label: 'BPMN Modeling Reference',
-            action: 'https://camunda.org/bpmn/reference/'
-          } ];
+          return BPMN_HELP_MENU;
         },
         getNewFileMenu() {
           return [ {
@@ -306,10 +314,7 @@ export default class TabsProvider {
           return `diagram_${suffix}.dmn`;
         },
         getHelpMenu() {
-          return [ {
-            label: 'DMN Tutorial',
-            action: 'https://camunda.org/dmn/tutorial/'
-          } ];
+          return DMN_HELP_MENU;
         },
         getNewFileMenu() {
           return [ {
@@ -347,10 +352,7 @@ export default class TabsProvider {
           return `diagram_${suffix}.dmn`;
         },
         getHelpMenu() {
-          return [ {
-            label: 'DMN Tutorial',
-            action: 'https://camunda.org/dmn/tutorial/'
-          } ];
+          return DMN_HELP_MENU;
         },
         getNewFileMenu() {
           return [ {
