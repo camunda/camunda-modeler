@@ -400,11 +400,55 @@ describe('MenuBuilder', () => {
 
   });
 
+
+  describe('help menu', () => {
+
+    it('should prevent duplicates', () => {
+
+      // given
+      const providers = [
+        {
+          newFileMenu: [],
+          helpMenu: [
+            {
+              label: 'foo'
+            },
+            {
+              label: 'bar'
+            }
+          ]
+        },
+        {
+          newFileMenu: [],
+          helpMenu: [
+            {
+              label: 'bar'
+            },
+            {
+              label: 'foobar'
+            }
+          ]
+        },
+      ];
+
+      const menuBuilder = new MenuBuilder({ providers });
+
+      // when
+      const { menu } = menuBuilder.build();
+
+      const helpMenu = menu.find(item => item.label === 'Help');
+      const barEntry = helpMenu.submenu.filter(menu => menu.label === 'bar');
+
+      // then
+      expect(barEntry).to.have.length(1);
+    });
+  });
+
 });
 
 
-
 // helper /////////
+
 function getOptionsWithPlugins(plugins) {
   return {
     providers: {

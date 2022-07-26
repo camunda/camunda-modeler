@@ -22,6 +22,7 @@ const {
 const {
   assign,
   find,
+  filter,
   flatten,
   groupBy,
   isFunction,
@@ -598,9 +599,17 @@ class MenuBuilder {
       .filter(menu => Boolean(menu.length));
 
     const middlePart = providedMenus.reduce((helpMenus, current) => {
+
+      // check for duplicates
+      const withoutDuplicates = filter(current, e => !findHelpMenuEntry(helpMenus, e));
+
+      if (!withoutDuplicates.length) {
+        return helpMenus;
+      }
+
       return [
         ...helpMenus,
-        ...current.map(mapHelpMenuTemplate),
+        ...withoutDuplicates.map(mapHelpMenuTemplate),
         getSeparatorTemplate()
       ];
     }, []);
@@ -687,8 +696,8 @@ class MenuBuilder {
 module.exports = MenuBuilder;
 
 
-
 // helpers //////
+
 function mapMenuEntryTemplate(entry) {
   if (entry.type === 'separator') {
     return getSeparatorTemplate();
@@ -757,4 +766,8 @@ function wrapActionInactiveInDevtools(fn) {
 function getIconImage(iconPath) {
   iconPath = path.join(__dirname, '/../../', iconPath);
   return electron.nativeImage.createFromPath(iconPath).resize({ width:12, height:12 });
+}
+
+function findHelpMenuEntry(helpMenus, entry) {
+  return find(helpMenus, (menu) => entry.label === menu.label);
 }
