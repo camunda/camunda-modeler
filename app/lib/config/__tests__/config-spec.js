@@ -155,8 +155,11 @@ describe('Config', function() {
       // then
       expect(templates).to.eql([
         { id: 'com.foo.Bar' }, // local
+        { id: 'com.yml.Bar' }, // local (YAML)
         { id: 'com.foo.Bar', FOO: 'BAR' }, // global
-        { id: 'single', FOO: 'BAR' } // global
+        { id: 'single', FOO: 'BAR' }, // global
+        { id: 'com.yml.Bar', FOO: 'BAR' }, // global (YAML)
+        { id: 'single-yml', FOO: 'BAR' } // global (YAML)
       ]);
     });
 
@@ -181,7 +184,9 @@ describe('Config', function() {
       // then
       expect(templates).to.eql([
         { id: 'com.foo.Bar', FOO: 'BAR' },
-        { id: 'single', FOO: 'BAR' }
+        { id: 'single', FOO: 'BAR' },
+        { id: 'com.yml.Bar', FOO: 'BAR' },
+        { id: 'single-yml', FOO: 'BAR' }
       ]);
     });
 
@@ -201,6 +206,24 @@ describe('Config', function() {
       // when
       expect(() => config.get('bpmn.elementTemplates', file))
         .to.throw(/template .* parse error: Unexpected token I.*/);
+    });
+
+
+    it('should throw if YML#load errors', function() {
+
+      // given
+      const file = null;
+
+      const config = new Config({
+        resourcesPaths: [
+          getAbsolutePath('fixtures/broken-yml')
+        ],
+        userPath: 'foo'
+      });
+
+      // when
+      expect(() => config.get('bpmn.elementTemplates', file))
+        .to.throw(/template .* parse error: end of the stream or a document separator is expected */);
     });
 
   });
