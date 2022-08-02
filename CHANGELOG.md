@@ -6,6 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### BPMN
+* `FEAT`: add FEEL editor for FEEL properties ([#158](https://github.com/bpmn-io/properties-panel/pull/158))
+
 ## 5.1.0
 
 _Adds a multi-element context, improves overall selection UX in diagram editors, and ships conditional element template properties (C8 only)._
