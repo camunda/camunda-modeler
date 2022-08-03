@@ -37,6 +37,15 @@ const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 
 const resourcePath = path.resolve(__dirname + '/resources');
 
+
+const copyPattern = {
+  from: './public'
+};
+
+if (DEV) {
+  copyPattern.transform = applyDevCSP;
+}
+
 module.exports = {
   mode: DEV ? 'development' : (LICENSE_CHECK ? 'none' : 'production'),
   target: 'web',
@@ -44,16 +53,17 @@ module.exports = {
     bundle: [ './src/index.js' ]
   },
   output: {
-    path: __dirname + '/build',
-    filename: '[name].js',
-    chunkFilename: '[name].[id].js'
+    path: __dirname + '/build'
   },
   resolve: {
-    mainFields: DEV ? [ 'browser', 'dev:module', 'module', 'main' ] : undefined,
+    mainFields: DEV ? [ 'browser', 'dev:module', 'module', 'main' ] : [ 'browser', 'module', 'main' ],
     modules: [
       'node_modules',
       resourcePath
-    ]
+    ],
+    fallback: {
+      util: require.resolve('util/')
+    }
   },
   module: {
     rules: [
@@ -112,12 +122,9 @@ module.exports = {
       'process.env.MIXPANEL_TOKEN': JSON.stringify(MIXPANEL_TOKEN),
       'process.env.MIXPANEL_STAGE': JSON.stringify(MIXPANEL_STAGE),
     }),
-    new CopyWebpackPlugin([
-      {
-        from: './public',
-        transform: DEV && applyDevCSP
-      }
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [ copyPattern ]
+    }),
     ...sentryIntegration(),
     ...extractDependencies()
   ],
@@ -127,7 +134,7 @@ module.exports = {
   devServer: {
     writeToDisk: true
   },
-  devtool: DEV ? 'cheap-module-eval-source-map' : 'source-map'
+  devtool: DEV ? 'cheap-module-source-map' : 'source-map'
 };
 
 
