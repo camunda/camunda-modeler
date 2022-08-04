@@ -20,5 +20,6 @@ module.exports = {
   scriptSplitterThreshold: process.env.SCRIPT_SPLITTER_THRESHOLD || 5,
   githubUsername: process.env.QRM_USERNAME,
   githubRepositoryName: process.env.QRM_REPONAME,
-  githubRepositoryPath: process.env.QRM_REPOPATH
+  githubRepositoryPath: process.env.QRM_REPOPATH,
+  hybridRuntimeProvenance: false
 };

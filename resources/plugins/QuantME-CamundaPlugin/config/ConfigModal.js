@@ -30,6 +30,9 @@ export default function ConfigModal({ initValues, onClose }) {
   const [qiskitRuntimeHandlerEndpoint, setQiskitRuntimeHandlerEndpoint] = useState(initValues.qiskitRuntimeHandlerEndpoint);
   const [scriptSplitterEndpoint, setScriptSplitterEndpoint] = useState(initValues.scriptSplitterEndpoint);
   const [scriptSplitterThreshold, setScriptSplitterThreshold] = useState(initValues.scriptSplitterThreshold);
+  const [hybridRuntimeProvenance, setHybridRuntimeProvenance] = useState(initValues.hybridRuntimeProvenance);
+
+  let hybridRuntimeProvenanceBoolean = (hybridRuntimeProvenance === 'true');
 
   // return the new values to the config plugin
   const onSubmit = () => onClose({
@@ -43,9 +46,9 @@ export default function ConfigModal({ initValues, onClose }) {
     qrmRepoPath,
     qiskitRuntimeHandlerEndpoint,
     scriptSplitterEndpoint,
-    scriptSplitterThreshold
+    scriptSplitterThreshold,
+    hybridRuntimeProvenance
   });
-
 
   // refs to enable changing the state through the plugin
   let elementsRootRef = React.createRef();
@@ -226,6 +229,23 @@ export default function ConfigModal({ initValues, onClose }) {
                       name="qiskitRuntimeHandlerEndpoint"
                       value={qiskitRuntimeHandlerEndpoint}
                       onChange={event => setQiskitRuntimeHandlerEndpoint(event.target.value)}/>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Provenance Collection for Hybrid Runtime</h3>
+            <table>
+              <tbody>
+                <tr className="spaceUnder">
+                  <td align="right">Retrieve Intermediate Results:</td>
+                  <td align="left">
+                    <input
+                      type="checkbox"
+                      name="hybridRuntimeProvenance"
+                      checked={hybridRuntimeProvenanceBoolean}
+                      onChange={() => {
+                        hybridRuntimeProvenanceBoolean = !hybridRuntimeProvenanceBoolean;
+                        setHybridRuntimeProvenance(hybridRuntimeProvenanceBoolean.toString());}}/>
                   </td>
                 </tr>
               </tbody>

@@ -268,3 +268,27 @@ module.exports.setScriptSplitterThreshold = function(threshold) {
     app.emit('menu:action', 'scriptSplitterThresholdChanged', threshold);
   }
 };
+
+/**
+ * Get the hybrid runtime provenance flag
+ *
+ * @return {boolean} the current value of the hybrid runtime provenance flag
+ */
+module.exports.getHybridRuntimeProvenance = function() {
+  if (config.hybridRuntimeProvenance === undefined) {
+    return false;
+  }
+  return config.hybridRuntimeProvenance;
+};
+
+/**
+ * Set the hybrid runtime provenance flag
+ *
+ * @param hybridRuntimeProvenance the new value of the hybrid runtime provenance flag
+ */
+module.exports.setHybridRuntimeProvenance = function(hybridRuntimeProvenance) {
+  if (hybridRuntimeProvenance !== null && hybridRuntimeProvenance !== undefined) {
+    config.hybridRuntimeProvenance = hybridRuntimeProvenance;
+    app.emit('menu:action', 'hybridRuntimeProvenanceChanged', hybridRuntimeProvenance);
+  }
+};

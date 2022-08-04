@@ -106,6 +106,12 @@ export default class ConfigPlugin extends PureComponent {
         }
       });
       editorActions.register({
+        hybridRuntimeProvenanceChanged: function(hybridRuntimeProvenance) {
+          self.modeler.config.hybridRuntimeProvenance = hybridRuntimeProvenance;
+          eventBus.fire('config.updated', self.modeler.config);
+        }
+      });
+      editorActions.register({
         scriptSplitterEndpointChanged: function(scriptSplitterEndpoint) {
           self.modeler.config.scriptSplitterEndpoint = scriptSplitterEndpoint;
           eventBus.fire('config.updated', self.modeler.config);

@@ -54,7 +54,9 @@ const {
   getScriptSplitterEndpoint,
   setScriptSplitterEndpoint,
   getScriptSplitterThreshold,
-  setScriptSplitterThreshold
+  setScriptSplitterThreshold,
+  getHybridRuntimeProvenance,
+  setHybridRuntimeProvenance
 } = require('./framework-config');
 
 const {
@@ -296,7 +298,8 @@ renderer.on('config:get-form-modal', function(done) {
     qrmRepoPath: getQRMRepositoryPath(),
     qiskitRuntimeHandlerEndpoint: getQiskitRuntimeHandlerEndpoint(),
     scriptSplitterEndpoint: getScriptSplitterEndpoint(),
-    scriptSplitterThreshold: getScriptSplitterThreshold()
+    scriptSplitterThreshold: getScriptSplitterThreshold(),
+    hybridRuntimeProvenance: getHybridRuntimeProvenance()
   };
   done(null, configurationJson);
 });
@@ -315,6 +318,7 @@ renderer.on('config:set-from-modal', function(config) {
   setQiskitRuntimeHandlerEndpoint(config.qiskitRuntimeHandlerEndpoint);
   setScriptSplitterEndpoint(config.scriptSplitterEndpoint);
   setScriptSplitterThreshold(config.scriptSplitterThreshold);
+  setHybridRuntimeProvenance(config.hybridRuntimeProvenance);
 });
 
 // plugin toggling //////////
