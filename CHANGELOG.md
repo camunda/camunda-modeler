@@ -8,7 +8,14 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `DEPS`: bump camunda-bpmn-js to 0.16.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump @camunda/linting to v0.3.4 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump bpmn-js to v9.3.2 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump camunda-bpmn-js to v0.16.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump diagram-js to v8.7.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump diagram-js-direct-editing to v1.7.0 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump diagram-js-origin to v1.3.3 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump min-dom to v3.2.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+
 
 ### BPMN
 * `FEAT`: add FEEL editor for FEEL properties ([#158](https://github.com/bpmn-io/properties-panel/pull/158))
