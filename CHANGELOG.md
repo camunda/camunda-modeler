@@ -6,8 +6,13 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `DEPS`: bump camunda-bpmn-js to 0.16.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+
 ### BPMN
 * `FEAT`: add FEEL editor for FEEL properties ([#158](https://github.com/bpmn-io/properties-panel/pull/158))
+* `FIX`: check for replacement using actual target ([#1699](https://github.com/bpmn-io/bpmn-js/pull/1699))
 
 ## 5.1.0
 
