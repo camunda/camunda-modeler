@@ -69,6 +69,8 @@ import {
 
 import { getCloudTemplates } from '../../../util/elementTemplates';
 
+import { getErrors } from '@camunda/linting/lib/utils/properties-panel';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 export const DEFAULT_ENGINE_PROFILE = {
@@ -176,6 +178,8 @@ export class BpmnEditor extends CachedComponent {
     if (isCacheStateChanged(prevProps, this.props)) {
       this.handleChanged();
     }
+
+    this.updatePropertiesPanelErrors();
   }
 
   listen(fn) {
@@ -402,6 +406,8 @@ export class BpmnEditor extends CachedComponent {
 
     this.setState(newState);
 
+    this.updatePropertiesPanelErrors();
+
     try {
       const engineProfile = this.engineProfile.get();
 
@@ -427,6 +433,75 @@ export class BpmnEditor extends CachedComponent {
     const { onAction } = this.props;
 
     onAction('lint-tab', { contents });
+  }
+
+  isLintingActive = () => {
+    const { layout = {} } = this.props;
+
+    const { panel = {} } = layout;
+
+    return !!panel.open;
+  }
+
+  onToggleLinting = () => {
+    const {
+      layout = {},
+      onLayoutChanged
+    } = this.props;
+
+    const { panel = {} } = layout;
+
+    this.updatePropertiesPanelErrors();
+
+    if (!panel.open) {
+      onLayoutChanged({
+        panel: {
+          open: true,
+          tab: 'linting'
+        }
+      });
+
+      return;
+    }
+
+    if (panel.tab === 'linting') {
+      onLayoutChanged({
+        panel: {
+          open: false,
+          tab: 'linting'
+        }
+      });
+
+      return;
+    }
+
+    onLayoutChanged({
+      panel: {
+        open: true,
+        tab: 'linting'
+      }
+    });
+  }
+
+  updatePropertiesPanelErrors() {
+    const lintingActive = this.isLintingActive();
+
+    const modeler = this.getModeler();
+
+    let errors = {};
+
+    if (lintingActive) {
+      const { linting = [] } = this.props;
+
+      const canvas = modeler.get('canvas'),
+            selection = modeler.get('selection');
+
+      const element = selection.get()[ 0 ] || canvas.getRootElement();
+
+      errors = getErrors(linting, element);
+    }
+
+    modeler._emit('propertiesPanel.setErrors', { errors });
   }
 
   isDirty() {
@@ -751,7 +826,7 @@ export class BpmnEditor extends CachedComponent {
             <Linting
               layout={ layout }
               linting={ linting }
-              onLayoutChanged={ onLayoutChanged } />
+              onToggleLinting={ this.onToggleLinting } />
           </Fragment>
         }
       </div>
@@ -841,10 +916,9 @@ function isCacheStateChanged(prevProps, props) {
 }
 
 function showLintError(modeler, error) {
-  let {
+  const {
     id,
-    message,
-    ...rest
+    propertiesPanel = {}
   } = error;
 
   const canvas = modeler.get('canvas'),
@@ -864,10 +938,9 @@ function showLintError(modeler, error) {
 
   selection.select(element);
 
-  eventBus.fire('propertiesPanel.showError', {
-    focus: true,
-    id,
-    message,
-    ...rest
+  const { entryId } = propertiesPanel;
+
+  eventBus.fire('propertiesPanel.showEntry', {
+    id: entryId
   });
 }

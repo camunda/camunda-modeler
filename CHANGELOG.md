@@ -6,6 +6,27 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.2.0
+
+### General
+
+* `FEAT`: toggle properties panel errors when toggling error panel ([#3014](https://github.com/camunda/camunda-modeler/pull/3014))
+* `FIX`: fix error panel styles ([#3015](https://github.com/camunda/camunda-modeler/pull/3015))
+* `FIX`: load modeling styles globally ([#3031](https://github.com/camunda/camunda-modeler/pull/3031))
+* `DEPS`: bump @camunda/linting to v0.3.4 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump diagram-js to v8.7.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump diagram-js-direct-editing to v1.7.0 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump diagram-js-origin to v1.3.3 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump min-dom to v3.2.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+
+
+### BPMN
+* `FEAT`: add FEEL editor for FEEL properties ([#158](https://github.com/bpmn-io/properties-panel/pull/158))
+* `FIX`: check for replacement using actual target ([#1699](https://github.com/bpmn-io/bpmn-js/pull/1699))
+* `FIX`: do not update empty business key ([#2](https://github.com/camunda/camunda-bpmn-js-behaviors/pull/2))
+* `DEPS`: bump bpmn-js to v9.3.2 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump camunda-bpmn-js to v0.16.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+
 ## 5.1.0
 
 _Adds a multi-element context, improves overall selection UX in diagram editors, and ships conditional element template properties (C8 only)._
