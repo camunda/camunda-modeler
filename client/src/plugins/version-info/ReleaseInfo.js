@@ -44,28 +44,12 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Context pad for multi-selection</h4>
-          This release adds the context pad to multiple selected elements.<br />
-          You can now conveniently perform actions on multiple elements, such as Align and Distribute.
-          We also improved the behavior of this actions to be more intuitive and to give you more control.
+          <h4>Edit FEEL expressions in the properties panel</h4>
+          This release adds syntax highlighting and autosuggestion for FEEL expressions to the properties panel.
         </li>
         <li>
-          <h4>Refined selection UX</h4>
-          We refined the whole selection behavior to make changes to complex process models more convenient.<br />
-          This includes an improved selection outline and a dedicated multi-selection state in the properties panel.
-        </li>
-        <li>
-          <h4>Conditional properties for element templates</h4>
-          This release adds support for conditional properties in your element templates.<br />
-          This allows you to define element template properties to be conditionally shown/hidden and bound to the diagram,
-          making the properties panel and the resulting BPMN model responsive to user input.<br />
-          You can learn more about how to define conditional properties in the <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/defining-templates/?utm_source=modeler&utm_medium=referral">element templates documentation</a>.
-        </li>
-        <li>
-          <h4>Adjusted telemetry</h4>
-          We carefully added additional data points to our telemetry to better understand how our app works.
-          As always, you decide whether you want that information to be shared.<br />
-          Find a comprehensive overview of what we track, how we do this and why in our <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/telemetry/?utm_source=modeler&utm_medium=referral">telemetry documentation</a>.
+          <h4>Lint errors in the properties panel</h4>
+          As of this release, all lint errors are also shown in the properties panel. Open the error panel to show these errors.
         </li>
       </ul>
     </div>
