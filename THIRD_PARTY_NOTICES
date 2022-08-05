@@ -139,7 +139,7 @@ This project incorporates components from the projects listed below. The origina
 132.  @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
 133.  @bpmn-io/snarkdown@2.1.0 (https://github.com/bpmn-io/snarkdown)
 134.  @camunda/execution-platform@0.3.2 (https://github.com/camunda/execution-platform)
-135.  @camunda/linting@0.3.4
+135.  @camunda/linting@0.3.5
 136.  @ibm/plex@6.0.0 (https://github.com/ibm/plex)
 137.  @sentry/browser@6.3.6 (https://github.com/getsentry/sentry-javascript)
 138.  @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
@@ -150,7 +150,7 @@ This project incorporates components from the projects listed below. The origina
 143.  bpmn-js-properties-panel@1.4.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 144.  bpmn-js@9.3.2 (https://github.com/bpmn-io/bpmn-js)
 145.  bpmn-moddle@7.1.2 (https://github.com/bpmn-io/bpmn-moddle)
-146.  bpmnlint-plugin-camunda-compat@0.9.1 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
+146.  bpmnlint-plugin-camunda-compat@0.9.2 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
 147.  bpmnlint-utils@1.0.2 (https://github.com/bpmn-io/bpmnlint-utils)
 148.  bpmnlint@7.8.0 (https://github.com/bpmn-io/bpmnlint)
 149.  camunda-bpmn-js-behaviors@0.1.1 (https://github.com/camunda/camunda-bpmn-js-behaviors)
@@ -4262,11 +4262,11 @@ THE SOFTWARE.
 END OF @camunda/execution-platform@0.3.2 NOTICES AND INFORMATION
 
 
-%% @camunda/linting@0.3.4 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/linting@0.3.5 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT
 ==========================================
-END OF @camunda/linting@0.3.4 NOTICES AND INFORMATION
+END OF @camunda/linting@0.3.5 NOTICES AND INFORMATION
 
 
 %% @ibm/plex@6.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -4562,7 +4562,7 @@ THE SOFTWARE.
 END OF bpmn-moddle@7.1.2 NOTICES AND INFORMATION
 
 
-%% bpmnlint-plugin-camunda-compat@0.9.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmnlint-plugin-camunda-compat@0.9.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -4586,7 +4586,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmnlint-plugin-camunda-compat@0.9.1 NOTICES AND INFORMATION
+END OF bpmnlint-plugin-camunda-compat@0.9.2 NOTICES AND INFORMATION
 
 
 %% bpmnlint-utils@1.0.2 NOTICES AND INFORMATION BEGIN HERE
