@@ -67,7 +67,10 @@ const BPMN_HELP_MENU = [
 ];
 
 const DMN_HELP_MENU = [
-
+  {
+    label: 'DMN Tutorial',
+    action: 'https://camunda.org/dmn/tutorial/'
+  }
 ];
 
 const createdByType = {};
