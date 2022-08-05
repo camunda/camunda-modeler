@@ -14,7 +14,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: fix error panel styles ([#3015](https://github.com/camunda/camunda-modeler/pull/3015))
 * `FIX`: load modeling styles globally ([#3031](https://github.com/camunda/camunda-modeler/pull/3031))
 * `FIX`: fix PNG export on DRD diagrams ([#3068](https://github.com/camunda/camunda-modeler/issues/3068))
-* `FIX`: fix DRD image export ([#3068](https://github.com/camunda/camunda-modeler/issues/3068))
 * `DEPS`: bump @camunda/linting to v0.3.4 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
 * `DEPS`: bump diagram-js to v8.7.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
 * `DEPS`: bump diagram-js-direct-editing to v1.7.0 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
