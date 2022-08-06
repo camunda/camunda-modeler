@@ -1,4 +1,4 @@
-FROM node:15.6.0-alpine3.10 as builder
+FROM node:16.16-alpine3.16 as builder
 COPY . /tmp
 WORKDIR /tmp
 

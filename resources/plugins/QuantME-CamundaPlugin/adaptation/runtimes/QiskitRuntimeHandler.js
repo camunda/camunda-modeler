@@ -26,11 +26,11 @@ import {
  * Generate a Qiskit Runtime program for the given candidate
  *
  * @param candidate the candidate to generate the Qiskit Runtime program for
- * @param endpoints endpoints of the connected services
+ * @param modelerConfig current configuration of the modeler
  * @param qrms the set of QRMs currently available in the framework
  * @return the updated candidate with the URL to the deployment model for the generated Qiskit Runtime program or an error message if the generation fails
  */
-export async function getQiskitRuntimeProgramDeploymentModel(candidate, endpoints, qrms) {
+export async function getQiskitRuntimeProgramDeploymentModel(candidate, modelerConfig, qrms) {
 
   // check if all contained QuantumCircuitExecutionTasks belong to an execution with IBMQ as provider
   let quantumCircuitExecutionTasks = getQuantumCircuitExecutionTasks(candidate.containedElements);
@@ -53,7 +53,7 @@ export async function getQiskitRuntimeProgramDeploymentModel(candidate, endpoint
   let xml = await exportXmlWrapper();
 
   // transform QuantME tasks within candidate
-  let transformationResult = await startReplacementProcess(xml, qrms, endpoints);
+  let transformationResult = await startReplacementProcess(xml, qrms, modelerConfig);
   if (transformationResult.status === 'failed') {
     console.log('Unable to transform QuantME tasks within the candidates!');
     return { error: 'Unable to transform QuantME tasks within the candidates. Please provide valid QRMs!' };
@@ -71,19 +71,20 @@ export async function getQiskitRuntimeProgramDeploymentModel(candidate, endpoint
   }
 
   // check if all service tasks have either a deployment model attached and all script tasks provide the code inline and retrieve the files
-  let requiredPrograms = await getRequiredPrograms(rootElement, endpoints.wineryEndpoint);
+  let requiredPrograms = await getRequiredPrograms(rootElement, modelerConfig.wineryEndpoint);
   if (requiredPrograms.error !== undefined) {
     return { error: requiredPrograms.error };
   }
 
   // invoke handler and return resulting hybrid program or error message
-  let programBlobs = await invokeQiskitRuntimeHandler(candidate, requiredPrograms, endpoints.qiskitRuntimeHandlerEndpoint, modeler);
+  let programBlobs = await invokeQiskitRuntimeHandler(candidate, requiredPrograms, modelerConfig.qiskitRuntimeHandlerEndpoint,
+    modelerConfig.hybridRuntimeProvenance, modeler);
   if (programBlobs.error !== undefined) {
     return { error: programBlobs.error };
   }
 
   // generate the deployment model to deploy the Qiskit Runtime program and the corresponding agent
-  let deploymentModelUrl = await createDeploymentModel(candidate, programBlobs, endpoints.wineryEndpoint);
+  let deploymentModelUrl = await createDeploymentModel(candidate, programBlobs, modelerConfig.wineryEndpoint);
   if (deploymentModelUrl.error !== undefined) {
     return { error: deploymentModelUrl.error };
   }
@@ -138,10 +139,11 @@ async function createDeploymentModel(candidate, programBlobs, wineryEndpoint) {
  * @param candidate the candidate for which the Qiskit Runtime program should be generated
  * @param requiredPrograms the programs that have to be merged into the Qiskit Runtime program
  * @param qiskitRuntimeHandlerEndpoint the endpoint of the external Qiskit Runtime Handler performing the program generation
+ * @param provenanceCollection a boolean specifying if the hybrid program to generate should include provenance collection
  * @param modeler the modeler comprising the transformed workflow model of the candidate
  * @return the generated Qiskit Runtime program if successful, an error message otherwise
  */
-async function invokeQiskitRuntimeHandler(candidate, requiredPrograms, qiskitRuntimeHandlerEndpoint, modeler) {
+async function invokeQiskitRuntimeHandler(candidate, requiredPrograms, qiskitRuntimeHandlerEndpoint, provenanceCollection, modeler) {
 
   // remove trailing slash from endpoint
   qiskitRuntimeHandlerEndpoint = qiskitRuntimeHandlerEndpoint.endsWith('/') ? qiskitRuntimeHandlerEndpoint.slice(0, -1) : qiskitRuntimeHandlerEndpoint;
@@ -163,6 +165,7 @@ async function invokeQiskitRuntimeHandler(candidate, requiredPrograms, qiskitRun
   fd.append('afterLoop', afterLoop);
   fd.append('loopCondition', candidate.expression.body);
   fd.append('requiredPrograms', requiredPrograms.programs);
+  fd.append('provenanceCollection', provenanceCollection);
   try {
     let generationResult = await performAjax(qiskitRuntimeHandlerEndpoint + '/qiskit-runtime-handler/api/v1.0/generate-hybrid-program', fd);
 
