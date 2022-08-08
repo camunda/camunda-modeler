@@ -48,8 +48,8 @@ export function ReleaseInfo(props) {
           This release adds syntax highlighting and autosuggestion for FEEL expressions to the properties panel.
         </li>
         <li>
-          <h4>Lint errors in the properties panel</h4>
-          All lint errors are shown in the properties panel as of this release. Open the error panel for the errors to be shown.
+          <h4>Diagram errors in the properties panel</h4>
+          All diagram errors are shown in the properties panel as of this release. Open the error panel for the errors to be shown.
         </li>
       </ul>
     </div>
