@@ -28,6 +28,10 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: bump bpmn-js to v9.3.2 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
 * `DEPS`: bump camunda-bpmn-js to v0.16.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
 
+### DMN
+
+* `FIX`: attach and detach DMN overview properly ([#3080](https://github.com/camunda/camunda-modeler/pull/3080))
+
 ## 5.1.0
 
 _Adds a multi-element context, improves overall selection UX in diagram editors, and ships conditional element template properties (C8 only)._

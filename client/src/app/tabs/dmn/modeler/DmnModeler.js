@@ -294,7 +294,7 @@ export default class CamundaDmnModeler extends DmnModeler {
 
     this._emit('attachOverview');
 
-    parentNode.appendChild(activeViewer._container);
+    this._overview.attachTo(parentNode);
 
     activeViewer.get('canvas').resized();
   }
@@ -306,13 +306,9 @@ export default class CamundaDmnModeler extends DmnModeler {
       return;
     }
 
-    const container = activeViewer._container;
+    this._emit('detachOverview');
 
-    if (container.parentNode) {
-      this._emit('detachOverview');
-
-      container.parentNode.removeChild(container);
-    }
+    this._overview.detach();
   }
 }
 
