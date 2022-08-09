@@ -45,7 +45,7 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Edit FEEL expressions in the properties panel</h4>
-          This release adds syntax highlighting and autosuggestion for FEEL expressions to the properties panel.
+          This release adds syntax highlighting and autocomplete for FEEL expressions to the properties panel.
         </li>
         <li>
           <h4>Diagram errors in the properties panel</h4>
