@@ -177,11 +177,11 @@ This project incorporates components from the projects listed below. The origina
 170.  diagram-js@8.7.1 (https://github.com/bpmn-io/diagram-js)
 171.  didi@8.0.0 (https://github.com/nikku/didi)
 172.  dmn-js-decision-table@12.2.0 (https://github.com/bpmn-io/dmn-js)
-173.  dmn-js-drd@12.2.0 (https://github.com/bpmn-io/dmn-js)
+173.  dmn-js-drd@12.2.1 (https://github.com/bpmn-io/dmn-js)
 174.  dmn-js-literal-expression@12.2.0 (https://github.com/bpmn-io/dmn-js)
 175.  dmn-js-properties-panel@1.1.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
 176.  dmn-js-shared@12.2.0 (https://github.com/bpmn-io/dmn-js)
-177.  dmn-js@12.2.0 (https://github.com/bpmn-io/dmn-js)
+177.  dmn-js@12.2.1 (https://github.com/bpmn-io/dmn-js)
 178.  dmn-moddle@10.0.0 (https://github.com/bpmn-io/dmn-moddle)
 179.  drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
 180.  dragula@3.7.3 (https://github.com/bevacqua/dragula)
@@ -5279,7 +5279,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 END OF dmn-js-decision-table@12.2.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-drd@12.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-drd@12.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -5305,7 +5305,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-drd@12.2.0 NOTICES AND INFORMATION
+END OF dmn-js-drd@12.2.1 NOTICES AND INFORMATION
 
 
 %% dmn-js-literal-expression@12.2.0 NOTICES AND INFORMATION BEGIN HERE
@@ -5393,7 +5393,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 END OF dmn-js-shared@12.2.0 NOTICES AND INFORMATION
 
 
-%% dmn-js@12.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js@12.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -5419,7 +5419,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js@12.2.0 NOTICES AND INFORMATION
+END OF dmn-js@12.2.1 NOTICES AND INFORMATION
 
 
 %% dmn-moddle@10.0.0 NOTICES AND INFORMATION BEGIN HERE
