@@ -167,27 +167,15 @@ describe('dialog', function() {
       // then
       expect(type).to.equal('dialog:show');
 
-      const isLinux = process.env.PLATFORM === 'linux';
-
-      let buttons;
-
-      if (isLinux) {
-        buttons = [
-          { id: 'discard', label: 'Don\'t Save' },
-          { id: 'cancel', label: 'Cancel' },
-          { id: 'save', label: 'Save' },
-        ];
-      } else {
-        buttons = [
-          { id: 'save', label: 'Save' },
-          { id: 'discard', label: 'Don\'t Save' },
-          { id: 'cancel', label: 'Cancel' },
-        ];
-      }
+      const buttons = [
+        { id: 'save', label: 'Save' },
+        { id: 'discard', label: 'Don\'t Save' },
+        { id: 'cancel', label: 'Cancel' },
+      ];
 
       expect(opts).to.eql({
         buttons,
-        defaultId: isLinux ? 2 : 0,
+        defaultId: 0,
         type: 'question',
         title: 'Close File',
         message: 'Save changes to "foo" before closing?',

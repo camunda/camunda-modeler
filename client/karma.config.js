@@ -108,8 +108,7 @@ module.exports = function(karma) {
         new DefinePlugin({
           'process.env': {
             NODE_ENV: JSON.stringify('test'),
-            WINDOWS: JSON.stringify(windows),
-            PLATFORM: JSON.stringify(platform)
+            WINDOWS: JSON.stringify(windows)
           }
         })
       ],
