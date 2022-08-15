@@ -329,9 +329,20 @@ export default class DeploymentPlugin extends PureComponent {
    * Deploy the current workflow to the Camunda engine
    */
   async deployWorkflow() {
+
+    // get XML of the current workflow
     const rootElement = getRootProcess(this.modeler.getDefinitions());
     const xml = (await this.modeler.saveXML()).xml;
-    let result = await this.backend.send('deployment:deploy-workflow', rootElement.id, xml);
+
+    // check if there are views defined for the modeler and include them in the deployment
+    let viewsDict = {};
+    if (this.modeler.views !== undefined) {
+      console.log('Adding additional views during deployment: ', this.modeler.views);
+      viewsDict = this.modeler.views;
+    }
+
+    // start deployment of workflow and views
+    let result = await this.backend.send('deployment:deploy-workflow', rootElement.id, xml, viewsDict);
 
     if (result.status === 'failed') {
       this.props.displayNotification({

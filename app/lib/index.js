@@ -251,8 +251,8 @@ renderer.on('quantme:update-qrms', async function(done) {
 
 // deployment //////////
 
-renderer.on('deployment:deploy-workflow', async function(workflowName, workflowXml, done) {
-  let deploymentResult = await deployWorkflow(workflowName, workflowXml);
+renderer.on('deployment:deploy-workflow', async function(workflowName, workflowXml, viewMap, done) {
+  let deploymentResult = await deployWorkflow(workflowName, workflowXml, viewMap);
   done(null, deploymentResult);
 });
 

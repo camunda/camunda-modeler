@@ -151,7 +151,7 @@ export default class QuantMEController extends PureComponent {
           // deploy the transformed and bound workflow to the Camunda engine
           const rootElement = getRootProcess(modeler.getDefinitions());
           let boundWorkflowXml = await exportXmlFromModeler(modeler);
-          let workflowDeploymentResult = await self.backend.send('deployment:deploy-workflow', rootElement.id, boundWorkflowXml);
+          let workflowDeploymentResult = await self.backend.send('deployment:deploy-workflow', rootElement.id, boundWorkflowXml, {});
           if (workflowDeploymentResult === undefined || workflowDeploymentResult.status !== 'deployed') {
             console.error('Failed to deploy workflow: ', workflowDeploymentResult);
             self.api.sendResult(params.returnPath, params.id, { status: 'failed' });

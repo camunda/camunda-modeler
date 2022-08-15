@@ -21,6 +21,29 @@ export async function rewriteWorkflow(modeler, candidate) {
   let modeling = modeler.get('modeling');
   let elementRegistry = modeler.get('elementRegistry');
 
+  // store XML before rewriting to generate corresponding view
+  const xml = (await modeler.saveXML()).xml;
+  console.log('XML of workflow before rewriting: ', xml);
+
+  // save XML in view dict
+  let viewDict;
+  if (modeler.views === undefined) {
+    viewDict = { 'view-before-rewriting': xml };
+  } else {
+    viewDict = modeler.views;
+
+    // skip views which comprise partially rewritten workflows
+    if ('view-before-rewriting' in viewDict) {
+      console.log('View before rewriting already exists. Skipping intermediate view between multiple rewrites!');
+    } else {
+      viewDict['view-before-rewriting'] = xml;
+    }
+  }
+
+  // attach view dict to modeler
+  console.log('View dict: ', viewDict);
+  modeler.views = viewDict;
+
   // get entry point of the hybrid loop to retrieve ingoing sequence flow
   let entryPoint = elementRegistry.get(candidate.entryPoint.id).businessObject;
   console.log('Entry point: ', entryPoint);
