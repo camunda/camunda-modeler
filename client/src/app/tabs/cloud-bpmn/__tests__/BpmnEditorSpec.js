@@ -1293,7 +1293,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       // then
       // BpmnEditor#componentDidMount is async
-      process.nextTick(() => {
+      setTimeout(() => {
         expect(isImportNeededSpy).to.have.been.calledOnce;
         expect(isImportNeededSpy).to.have.always.returned(false);
       });

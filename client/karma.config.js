@@ -24,7 +24,6 @@ var os = require('os');
 var platform = os.platform();
 var windows = /^win/.test(platform);
 
-const webpack = require('webpack');
 var { DefinePlugin } = require('webpack');
 
 var absoluteBasePath = path.resolve(__dirname);
@@ -106,13 +105,11 @@ module.exports = function(karma) {
         ]
       },
       plugins: [
-        new webpack.ProvidePlugin({
-          process: 'process/browser',
-        }),
         new DefinePlugin({
           'process.env': {
             NODE_ENV: JSON.stringify('test'),
-            WINDOWS: JSON.stringify(windows)
+            WINDOWS: JSON.stringify(windows),
+            PLATFORM: JSON.stringify(platform)
           }
         })
       ],
