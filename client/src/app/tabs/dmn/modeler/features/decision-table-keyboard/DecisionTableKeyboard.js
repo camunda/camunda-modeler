@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import { inherits } from 'util';
+import inherits from 'inherits-browser';
 
 import Keyboard from 'dmn-js-decision-table/lib/features/keyboard/Keyboard';
 

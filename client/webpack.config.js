@@ -60,10 +60,7 @@ module.exports = {
     modules: [
       'node_modules',
       resourcePath
-    ],
-    fallback: {
-      util: require.resolve('util/')
-    }
+    ]
   },
   module: {
     rules: [
