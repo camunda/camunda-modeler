@@ -431,13 +431,11 @@ class MenuBuilder {
       );
     }
 
-    if (this.options.state.development || this.options.state.devtools) {
-      submenuTemplate.push({
-        label: 'Reload',
-        accelerator: 'CommandOrControl+R',
-        click: (_, browserWindow) => browserWindow.reload()
-      });
-    }
+    submenuTemplate.push({
+      label: 'Reload',
+      accelerator: 'CommandOrControl+R',
+      click: (_, browserWindow) => browserWindow.reload()
+    });
 
     submenuTemplate.push({
       label: 'Toggle DevTools',
