@@ -463,7 +463,7 @@ describe('<AppParent>', function() {
       backend.receive('backend:error', {}, message);
 
       // then
-      process.nextTick(() => {
+      setTimeout(() => {
         expect(actionSpy).to.be.calledWith('log', {
           message,
           category: 'error'

@@ -1489,7 +1489,7 @@ describe('<DmnEditor>', function() {
 
       // then
       // DmnEditor#componentDidMount is async
-      process.nextTick(() => {
+      setTimeout(() => {
         expect(isImportNeededSpy).to.have.been.calledOnce;
         expect(isImportNeededSpy).to.have.always.returned(false);
       });

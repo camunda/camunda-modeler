@@ -167,7 +167,7 @@ describe('dialog', function() {
       // then
       expect(type).to.equal('dialog:show');
 
-      const isLinux = process.platform === 'linux';
+      const isLinux = process.env.PLATFORM === 'linux';
 
       let buttons;
 
