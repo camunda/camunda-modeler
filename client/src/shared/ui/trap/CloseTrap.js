@@ -8,8 +8,24 @@
  * except in compliance with the MIT License.
  */
 
-export { default as CloseTrap } from './CloseTrap';
-export { default as EscapeTrap } from './EscapeTrap';
-export { default as FocusTrap } from './FocusTrap';
-export { default as GlobalClickTrap } from './GlobalClickTrap';
-export { default as KeyboardInteractionTrap } from './KeyboardInteractionTrap';
+export default function CloseTrap(initiator) {
+
+  let focusElement;
+
+  function mount() {
+    focusElement = initiator;
+  }
+
+  function unmount() {
+    if (focusElement) {
+      focusElement.focus();
+      focusElement = null;
+    }
+  }
+
+  return {
+    mount,
+    unmount
+  };
+
+}
