@@ -1,7 +1,6 @@
 # QuantME Modeling and Transformation Framework
 
 ![Test on Linux and Windows](https://github.com/UST-QuAntiL/QuantME-TransformationFramework/workflows/Test%20on%20Linux%20and%20Windows/badge.svg)
-![Docker Build](https://github.com/UST-QuAntiL/QuantME-TransformationFramework/workflows/Push%20Docker%20Image%20to%20Dockerhub/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A modeling solution for BPMN 2.0-based workflow models that need to integrate quantum applications.
