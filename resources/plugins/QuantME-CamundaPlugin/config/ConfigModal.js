@@ -31,6 +31,7 @@ export default function ConfigModal({ initValues, onClose }) {
   const [scriptSplitterEndpoint, setScriptSplitterEndpoint] = useState(initValues.scriptSplitterEndpoint);
   const [scriptSplitterThreshold, setScriptSplitterThreshold] = useState(initValues.scriptSplitterThreshold);
   const [hybridRuntimeProvenance, setHybridRuntimeProvenance] = useState(initValues.hybridRuntimeProvenance);
+  const [awsRuntimeHandlerEndpoint, setAWSRuntimeHandlerEndpoint] = useState(initValues.awsRuntimeHandlerEndpoint);
 
   let hybridRuntimeProvenanceBoolean = (hybridRuntimeProvenance === 'true');
 
@@ -45,6 +46,7 @@ export default function ConfigModal({ initValues, onClose }) {
     qrmRepoName,
     qrmRepoPath,
     qiskitRuntimeHandlerEndpoint,
+    awsRuntimeHandlerEndpoint,
     scriptSplitterEndpoint,
     scriptSplitterThreshold,
     hybridRuntimeProvenance
@@ -229,6 +231,16 @@ export default function ConfigModal({ initValues, onClose }) {
                       name="qiskitRuntimeHandlerEndpoint"
                       value={qiskitRuntimeHandlerEndpoint}
                       onChange={event => setQiskitRuntimeHandlerEndpoint(event.target.value)}/>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="right">AWS Runtime Handler Endpoint:</td>
+                  <td align="left">
+                    <input
+                      type="string"
+                      name="awsRuntimeHandlerEndpoint"
+                      value={awsRuntimeHandlerEndpoint}
+                      onChange={event => setAWSRuntimeHandlerEndpoint(event.target.value)}/>
                   </td>
                 </tr>
               </tbody>

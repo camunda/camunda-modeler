@@ -56,7 +56,9 @@ const {
   getScriptSplitterThreshold,
   setScriptSplitterThreshold,
   getHybridRuntimeProvenance,
-  setHybridRuntimeProvenance
+  setHybridRuntimeProvenance,
+  getAWSRuntimeHandlerEndpoint,
+  setAWSRuntimeHandlerEndpoint
 } = require('./framework-config');
 
 const {
@@ -297,6 +299,7 @@ renderer.on('config:get-form-modal', function(done) {
     qrmRepoName: getQRMRepositoryName(),
     qrmRepoPath: getQRMRepositoryPath(),
     qiskitRuntimeHandlerEndpoint: getQiskitRuntimeHandlerEndpoint(),
+    awsRuntimeHandlerEndpoint: getAWSRuntimeHandlerEndpoint(),
     scriptSplitterEndpoint: getScriptSplitterEndpoint(),
     scriptSplitterThreshold: getScriptSplitterThreshold(),
     hybridRuntimeProvenance: getHybridRuntimeProvenance()
@@ -316,6 +319,7 @@ renderer.on('config:set-from-modal', function(config) {
   setTransformationFrameworkEndpoint(config.transformationFrameworkEndpoint);
   setNisqAnalyzerEndpoint(config.nisqAnalyzerEndpoint);
   setQiskitRuntimeHandlerEndpoint(config.qiskitRuntimeHandlerEndpoint);
+  setAWSRuntimeHandlerEndpoint(config.awsRuntimeHandlerEndpoint);
   setScriptSplitterEndpoint(config.scriptSplitterEndpoint);
   setScriptSplitterThreshold(config.scriptSplitterThreshold);
   setHybridRuntimeProvenance(config.hybridRuntimeProvenance);

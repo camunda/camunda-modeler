@@ -16,7 +16,8 @@ import { Fill } from 'camunda-modeler-plugin-helpers/components';
 import AdaptationModal from './AdaptationModal';
 import { findOptimizationCandidates } from './CandidateDetector';
 import RewriteModal from './RewriteModal';
-import { getQiskitRuntimeProgram, getQiskitRuntimeProgramDeploymentModel } from './runtimes/QiskitRuntimeHandler';
+import { getQiskitRuntimeProgramDeploymentModel } from './runtimes/QiskitRuntimeHandler';
+import { getAWSRuntimeProgramDeploymentModel } from './runtimes/AWSRuntimeHandler';
 import { rewriteWorkflow } from './WorkflowRewriter';
 
 const defaultState = {
@@ -112,14 +113,20 @@ export default class AdaptationPlugin extends PureComponent {
       let selectedTab = result.candidatesRootRef.current.children[result.rewriteCandidateId];
       let runtimeTable = selectedTab.children[3];
       let runtimeLines = runtimeTable.children[0].children;
+      let otherButtons = [];
       for (let runtimeLine of runtimeLines) {
 
         // check if table line corresponding to runtime is found
+        let button = runtimeLine.children[1].children[0]
         if (runtimeLine.children[0].innerText === result.runtimeName) {
 
           // get the button reference
-          rewriteButton = runtimeLine.children[1].children[0];
-          break;
+          rewriteButton = button;
+        } else {
+          // get other buttons to deactivate if they are not already deactivated
+          if (button.disabled === false) {
+            otherButtons.push(button);
+          }
         }
       }
 
@@ -139,6 +146,12 @@ export default class AdaptationPlugin extends PureComponent {
       rewriteButton.disabled = true;
       rewriteButton.innerText = 'Rewriting in progress...';
 
+      // deactivate all other buttons
+      for (let otherButton of otherButtons) {
+        console.log('Deactivating button: ', otherButton);
+        otherButton.disabled = true;
+      }
+
       // track start time of hybrid program generation and workflow rewrite
       const rewriteStartDate = Date.now();
 
@@ -147,6 +160,9 @@ export default class AdaptationPlugin extends PureComponent {
       switch (result.runtimeName) {
       case 'Qiskit Runtime':
         programGenerationResult = await getQiskitRuntimeProgramDeploymentModel(rewriteCandidate, this.modeler.config, await this.quantME.getQRMs());
+        break;
+      case 'AWS Runtime':
+        programGenerationResult = await getAWSRuntimeProgramDeploymentModel(rewriteCandidate, this.modeler.config, await this.quantME.getQRMs());
         break;
       default:
         programGenerationResult = { error: 'Unable to find suitable runtime handler for: ' + result.runtimeName };
@@ -160,6 +176,13 @@ export default class AdaptationPlugin extends PureComponent {
         rewriteButton.title = programGenerationResult.error;
         rewriteButton.innerText = 'Rewrite not possible!';
         rewriteButton.className = rewriteButton.className + ' rewrite-failed-button';
+
+        // reactivate all other buttons
+        for (let otherButton of otherButtons) {
+          console.log('Reactivating button: ', otherButton);
+          otherButton.disabled = false;
+        }
+
         return;
       } else {
         console.log('Hybrid program generation successful!');
@@ -173,6 +196,12 @@ export default class AdaptationPlugin extends PureComponent {
           rewriteButton.title = programGenerationResult.error;
           rewriteButton.innerText = 'Rewrite not possible!';
           rewriteButton.className = rewriteButton.className + ' rewrite-failed-button';
+
+          // reactivate all other buttons
+          for (let otherButton of otherButtons) {
+            console.log('Reactivating button: ', otherButton);
+            otherButton.disabled = false;
+          }
         } else {
           console.log('Rewriting workflow successfully after %d ms!', Date.now() - rewriteStartDate);
 

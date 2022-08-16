@@ -106,6 +106,12 @@ export default class ConfigPlugin extends PureComponent {
         }
       });
       editorActions.register({
+        awsRuntimeHandlerEndpointChanged: function(awsRuntimeHandlerEndpoint) {
+          self.modeler.config.awsRuntimeHandlerEndpoint = awsRuntimeHandlerEndpoint;
+          eventBus.fire('config.updated', self.modeler.config);
+        }
+      });
+      editorActions.register({
         hybridRuntimeProvenanceChanged: function(hybridRuntimeProvenance) {
           self.modeler.config.hybridRuntimeProvenance = hybridRuntimeProvenance;
           eventBus.fire('config.updated', self.modeler.config);

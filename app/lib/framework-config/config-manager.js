@@ -292,3 +292,27 @@ module.exports.setHybridRuntimeProvenance = function(hybridRuntimeProvenance) {
     app.emit('menu:action', 'hybridRuntimeProvenanceChanged', hybridRuntimeProvenance);
   }
 };
+
+/**
+ * Get the endpoint of the AWS Runtime Handler
+ *
+ * @return {string} the specified endpoint
+ */
+module.exports.getAWSRuntimeHandlerEndpoint = function () {
+  if (config.awsRuntimeHandlerEndpoint === undefined) {
+    return '';
+  }
+  return config.awsRuntimeHandlerEndpoint;
+};
+
+/**
+ * Set the endpoint of the AWS Runtime Handler
+ *
+ * @param endpoint the endpoint
+ */
+module.exports.setAWSRuntimeHandlerEndpoint = function(endpoint) {
+  if (endpoint !== null && endpoint !== undefined) {
+    config.awsRuntimeHandlerEndpoint = endpoint;
+    app.emit('menu:action', 'awsRuntimeHandlerEndpointChanged', endpoint);
+  }
+};
