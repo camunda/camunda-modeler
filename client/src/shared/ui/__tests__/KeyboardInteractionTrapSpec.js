@@ -17,7 +17,7 @@ import {
 } from 'enzyme';
 
 import KeyboardInteractionTrap,
-{ KeyboardInteractionTrapContext } from '../modal/KeyboardInteractionTrap';
+{ KeyboardInteractionTrapContext } from '../trap/KeyboardInteractionTrap';
 
 
 describe('<KeyboardInteractionTrap>', function() {

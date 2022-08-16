@@ -40,7 +40,7 @@ import Log from './Log';
 
 import { StatusBar } from './status-bar';
 
-import { KeyboardInteractionTrapContext } from '../shared/ui/modal/KeyboardInteractionTrap';
+import { KeyboardInteractionTrapContext } from '../shared/ui/trap/KeyboardInteractionTrap';
 
 import {
   KeyboardShortcutsModal

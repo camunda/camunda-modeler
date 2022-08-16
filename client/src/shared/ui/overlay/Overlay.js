@@ -15,10 +15,12 @@ import { isString } from 'min-dash';
 
 import classNames from 'classnames';
 
-import FocusTrap from '../modal/FocusTrap';
-import EscapeTrap from '../modal/EscapeTrap';
-import KeyboardInteractionTrap from '../modal/KeyboardInteractionTrap';
-import GlobalClickListener from './GlobalClickListener';
+import {
+  EscapeTrap,
+  FocusTrap,
+  GlobalClickTrap,
+  KeyboardInteractionTrap
+} from '../trap';
 
 import css from './Overlay.less';
 
@@ -52,7 +54,7 @@ export class Overlay extends PureComponent {
       this.close();
     });
 
-    this.globalClickTrap = GlobalClickListener(() => {
+    this.globalClickTrap = GlobalClickTrap(() => {
       return [ this.overlayRef.current, this.props.anchor ];
     }, this.close);
   }

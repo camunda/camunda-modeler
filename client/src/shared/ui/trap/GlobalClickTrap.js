@@ -14,7 +14,7 @@
  * @param {() => Element[]} getIgnoredElements
  * @param {() => void} callback
  */
-export default function GlobalClickListener(getIgnoredElements, callback) {
+export default function GlobalClickTrap(getIgnoredElements, callback) {
 
   function mount() {
     document.addEventListener('mousedown', handleMouseDown, { capture: true });

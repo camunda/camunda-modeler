@@ -13,9 +13,11 @@ import ReactDOM from 'react-dom';
 
 import classNames from 'classnames';
 
-import FocusTrap from './FocusTrap';
-import EscapeTrap from './EscapeTrap';
-import KeyboardInteractionTrap from './KeyboardInteractionTrap';
+import {
+  EscapeTrap,
+  FocusTrap,
+  KeyboardInteractionTrap
+} from '../trap';
 
 import CloseIcon from '../../../../resources/icons/Close.svg';
 
