@@ -35,10 +35,6 @@ export default class StartInstancePlugin extends PureComponent {
       overlayState: null
     };
 
-    this._items = [
-      { text: 'Start process instance', onClick: () => this.startInstance() }
-    ];
-
     this._anchorRef = React.createRef();
   }
 
@@ -54,13 +50,11 @@ export default class StartInstancePlugin extends PureComponent {
 
   async startInstance() {
     const {
-      overlayState,
-      activeTab
+      activeTab,
     } = this.state;
 
     // (1) toggle overlay
-    if (overlayState) {
-      overlayState.onClose('cancel', null);
+    if (this.toggleOverlay()) {
       return;
     }
 
@@ -75,14 +69,6 @@ export default class StartInstancePlugin extends PureComponent {
     if (!deploymentConfig) {
       return;
     }
-
-    this.setState({ overlayState: {
-      configuration: deploymentConfig,
-      onClose: () => {
-        this.props.broadcastMessage('cancel');
-        this.setState({ activeButton: false });
-      }
-    } });
 
     // (3) get start instance configuration
 
@@ -203,8 +189,7 @@ export default class StartInstancePlugin extends PureComponent {
       notifyResult: true,
       onClose: () => {
         this.setState({
-          activeButton: false,
-          overlayState: null
+          activeButton: false
         });
       }
     };
@@ -291,16 +276,23 @@ export default class StartInstancePlugin extends PureComponent {
 
   toggleOverlay() {
     const {
+      activeButton,
       overlayState
     } = this.state;
 
+    // (1) toggle overlay
     if (overlayState) {
-      this.setState({ activeButton: false });
-      overlayState.onClose();
+
+      // (1.1) close start instance overlay
+      overlayState.onClose('cancel', null);
+      return true;
+
+    } else if (!overlayState && activeButton) {
+
+      // (1.2) close deploy overlay
+      this.props.broadcastMessage('cancel');
+      return true;
     }
-
-    this.setState({ activeButton: true });
-
   }
 
 
