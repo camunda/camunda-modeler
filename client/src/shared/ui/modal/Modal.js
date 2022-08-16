@@ -14,6 +14,7 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
 import {
+  CloseTrap,
   EscapeTrap,
   FocusTrap,
   KeyboardInteractionTrap
@@ -36,6 +37,8 @@ export default class Modal extends PureComponent {
     this.escapeTrap = EscapeTrap(() => {
       this.close();
     });
+
+    this.closeTrap = CloseTrap(document.activeElement);
   }
 
   close = () => {
@@ -47,11 +50,13 @@ export default class Modal extends PureComponent {
   componentDidMount() {
     this.focusTrap.mount();
     this.escapeTrap.mount();
+    this.closeTrap.mount();
   }
 
   componentWillUnmount() {
     this.focusTrap.unmount();
     this.escapeTrap.unmount();
+    this.closeTrap.unmount();
   }
 
   render() {

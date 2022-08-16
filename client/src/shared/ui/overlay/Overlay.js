@@ -16,6 +16,7 @@ import { isString } from 'min-dash';
 import classNames from 'classnames';
 
 import {
+  CloseTrap,
   EscapeTrap,
   FocusTrap,
   GlobalClickTrap,
@@ -57,6 +58,8 @@ export class Overlay extends PureComponent {
     this.globalClickTrap = GlobalClickTrap(() => {
       return [ this.overlayRef.current, this.props.anchor ];
     }, this.close);
+
+    this.closeTrap = CloseTrap(document.activeElement);
   }
 
   close = () => {
@@ -69,12 +72,14 @@ export class Overlay extends PureComponent {
     this.focusTrap.mount();
     this.escapeTrap.mount();
     this.globalClickTrap.mount();
+    this.closeTrap.mount();
   }
 
   componentWillUnmount() {
     this.focusTrap.unmount();
     this.escapeTrap.unmount();
     this.globalClickTrap.unmount();
+    this.closeTrap.unmount();
   }
 
   getStyle() {
