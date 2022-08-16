@@ -17,7 +17,7 @@ import AdaptationModal from './AdaptationModal';
 import { findOptimizationCandidates } from './CandidateDetector';
 import RewriteModal from './RewriteModal';
 import { getQiskitRuntimeProgramDeploymentModel } from './runtimes/QiskitRuntimeHandler';
-import { getAWSRuntimeProgramDeploymentModel } from './runtimes/AWSRuntimeHandler';
+import { getAWSRuntimeProgramDeploymentModel } from './runtimes/AwsRuntimeHandler';
 import { rewriteWorkflow } from './WorkflowRewriter';
 
 const defaultState = {
