@@ -44,9 +44,9 @@ export async function rewriteWorkflow(modeler, candidate, provenanceCollectionEn
     }
 
     // adapt process view before export
+    let firstElement = 'true';
     for (let i = 0; i < candidate.containedElements.length; i++) {
       let elementOfCandidate = candidate.containedElements[i];
-      let firstElement = true;
 
       // label all tasks within the candidate as part of the hybrid program execution
       if (elementOfCandidate.$type !== 'bpmn:ExclusiveGateway' && elementOfCandidate.$type !== 'bpmn:SequenceFlow') {
@@ -58,7 +58,7 @@ export async function rewriteWorkflow(modeler, candidate, provenanceCollectionEn
 
         // first element of candidate is used to visualize process token while hybrid program is queued
         element.$attrs['quantme:hybridProgramEntryPoint'] = firstElement;
-        firstElement = false;
+        firstElement = 'false';
       }
     }
 
