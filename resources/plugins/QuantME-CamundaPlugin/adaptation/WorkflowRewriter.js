@@ -9,6 +9,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createModelerFromXml } from '../quantme/Utilities';
+
 /**
  * Rewrite the workflow available within the given modeler using the given optimization candidate
  *
@@ -26,28 +28,47 @@ export async function rewriteWorkflow(modeler, candidate, provenanceCollectionEn
   // check if views should be created which require the collection of provenance data about hybrid programs
   if (provenanceCollectionEnabled) {
 
-    // store XML before rewriting to generate corresponding view
-    const xml = (await modeler.saveXML()).xml;
-    console.log('XML of workflow before rewriting: ', xml);
-
-    // save XML in view dict
-    let viewDict;
+    // check if there is already a view from a previous rewrite and update it then, otherwise, add new view
+    let viewElementRegistry, viewModeler;
     if (modeler.views === undefined) {
-      viewDict = { 'view-before-rewriting': xml };
+      console.log('Creating new view!');
+      modeler.views = {};
+      viewModeler = modeler;
+      viewElementRegistry = elementRegistry;
     } else {
-      viewDict = modeler.views;
+      console.log('View before rewriting already exists. Updating existing view!');
+      let existingView = modeler.views['view-before-rewriting'];
+      console.log('Existing view has Xml: ', existingView);
+      viewModeler = await createModelerFromXml(existingView);
+      viewElementRegistry = viewModeler.get('elementRegistry');
+    }
 
-      // skip views which comprise partially rewritten workflows
-      if ('view-before-rewriting' in viewDict) {
-        console.log('View before rewriting already exists. Skipping intermediate view between multiple rewrites!');
-      } else {
-        viewDict['view-before-rewriting'] = xml;
+    // adapt process view before export
+    for (let i = 0; i < candidate.containedElements.length; i++) {
+      let elementOfCandidate = candidate.containedElements[i];
+      let firstElement = true;
+
+      // label all tasks within the candidate as part of the hybrid program execution
+      if (elementOfCandidate.$type !== 'bpmn:ExclusiveGateway' && elementOfCandidate.$type !== 'bpmn:SequenceFlow') {
+        console.log('Labeling element as part of hybrid program: ', elementOfCandidate);
+        let element = viewElementRegistry.get(elementOfCandidate.id).businessObject;
+        console.log('Found corresponding element in process view: ', element);
+        element.$attrs['quantme:hybridRuntimeExecution'] = 'true';
+        element.$attrs['quantme:hybridProgramId'] = 'hybridJob-' + hybridProgramId + '-activeTask';
+
+        // first element of candidate is used to visualize process token while hybrid program is queued
+        element.$attrs['quantme:hybridProgramEntryPoint'] = firstElement;
+        firstElement = false;
       }
     }
 
-    // attach view dict to modeler
-    console.log('View dict: ', viewDict);
-    modeler.views = viewDict;
+    // store XML before rewriting to generate corresponding view
+    console.log('Storing Xml from view modeler: ', viewModeler);
+    const xml = await exportXmlWrapper(viewModeler);
+    console.log('XML of workflow before rewriting: ', xml);
+
+    // save XML in view dict
+    modeler.views['view-before-rewriting'] = xml;
   }
 
   // get entry point of the hybrid loop to retrieve ingoing sequence flow
@@ -75,7 +96,7 @@ export async function rewriteWorkflow(modeler, candidate, provenanceCollectionEn
 
   // add provenance specific attributes to service task
   if (provenanceCollectionEnabled) {
-    invokeHybridRuntimeBo.$attrs['quantme:hybridRuntimeExecution'] = true;
+    invokeHybridRuntimeBo.$attrs['quantme:hybridRuntimeExecution'] = 'true';
     invokeHybridRuntimeBo.$attrs['quantme:hybridProgramId'] = 'hybridJob-' + hybridProgramId + '-activeTask';
   }
 
@@ -140,6 +161,14 @@ function calculatePosition(coordinate1, coordinate2) {
   } else {
     return coordinate1 - ((coordinate1 - coordinate2) / 2);
   }
+}
+
+function exportXmlWrapper(modeler) {
+  return new Promise((resolve) => {
+    modeler.saveXML((err, successResponse) => {
+      resolve(successResponse);
+    });
+  });
 }
 
 /**

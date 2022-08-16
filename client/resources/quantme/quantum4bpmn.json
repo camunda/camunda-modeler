@@ -173,6 +173,27 @@
             "type": "String"
           }
         ]
+      },
+      {
+        "name": "Task",
+        "extends": [ "bpmn:Task" ],
+        "properties": [
+          {
+            "name": "hybridRuntimeExecution",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "hybridProgramId",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "hybridProgramEntryPoint",
+            "isAttr": true,
+            "type": "String"
+          }
+        ]
       }
     ],
     "enumerations": [],
