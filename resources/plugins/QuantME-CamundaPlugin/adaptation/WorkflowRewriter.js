@@ -14,35 +14,41 @@
  *
  * @param modeler the modeler containing the workflow to rewrite
  * @param candidate the candidate to perform the rewrite for
+ * @param provenanceCollectionEnabled the configuration property of the modeler specifying if provenance data should be collected for hybrid programs
+ * @param hybridProgramId the Id of the hybrid program that is used instead of orchestrating the tasks of the candidate
  * @return an error message if the rewriting failed
  */
-export async function rewriteWorkflow(modeler, candidate) {
+export async function rewriteWorkflow(modeler, candidate, provenanceCollectionEnabled, hybridProgramId) {
   console.log('Starting rewrite for candidate: ', candidate);
   let modeling = modeler.get('modeling');
   let elementRegistry = modeler.get('elementRegistry');
 
-  // store XML before rewriting to generate corresponding view
-  const xml = (await modeler.saveXML()).xml;
-  console.log('XML of workflow before rewriting: ', xml);
+  // check if views should be created which require the collection of provenance data about hybrid programs
+  if (provenanceCollectionEnabled) {
 
-  // save XML in view dict
-  let viewDict;
-  if (modeler.views === undefined) {
-    viewDict = { 'view-before-rewriting': xml };
-  } else {
-    viewDict = modeler.views;
+    // store XML before rewriting to generate corresponding view
+    const xml = (await modeler.saveXML()).xml;
+    console.log('XML of workflow before rewriting: ', xml);
 
-    // skip views which comprise partially rewritten workflows
-    if ('view-before-rewriting' in viewDict) {
-      console.log('View before rewriting already exists. Skipping intermediate view between multiple rewrites!');
+    // save XML in view dict
+    let viewDict;
+    if (modeler.views === undefined) {
+      viewDict = { 'view-before-rewriting': xml };
     } else {
-      viewDict['view-before-rewriting'] = xml;
-    }
-  }
+      viewDict = modeler.views;
 
-  // attach view dict to modeler
-  console.log('View dict: ', viewDict);
-  modeler.views = viewDict;
+      // skip views which comprise partially rewritten workflows
+      if ('view-before-rewriting' in viewDict) {
+        console.log('View before rewriting already exists. Skipping intermediate view between multiple rewrites!');
+      } else {
+        viewDict['view-before-rewriting'] = xml;
+      }
+    }
+
+    // attach view dict to modeler
+    console.log('View dict: ', viewDict);
+    modeler.views = viewDict;
+  }
 
   // get entry point of the hybrid loop to retrieve ingoing sequence flow
   let entryPoint = elementRegistry.get(candidate.entryPoint.id).businessObject;
@@ -66,6 +72,12 @@ export async function rewriteWorkflow(modeler, candidate) {
   let invokeHybridRuntimeBo = elementRegistry.get(invokeHybridRuntime.id).businessObject;
   invokeHybridRuntimeBo.name = 'Invoke Hybrid Program';
   invokeHybridRuntimeBo.deploymentModelUrl = candidate.deploymentModelUrl;
+
+  // add provenance specific attributes to service task
+  if (provenanceCollectionEnabled) {
+    invokeHybridRuntimeBo.$attrs['quantme:hybridRuntimeExecution'] = true;
+    invokeHybridRuntimeBo.$attrs['quantme:hybridProgramId'] = 'hybridJob-' + hybridProgramId + '-activeTask';
+  }
 
   // redirect ingoing sequence flows of the entry point (except sequence flow representing the loop)
   console.log('Adding ingoing sequence flow to new ServiceTask!');

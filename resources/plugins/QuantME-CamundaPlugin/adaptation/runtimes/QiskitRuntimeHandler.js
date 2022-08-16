@@ -77,19 +77,22 @@ export async function getQiskitRuntimeProgramDeploymentModel(candidate, modelerC
   }
 
   // invoke handler and return resulting hybrid program or error message
-  let programBlobs = await invokeQiskitRuntimeHandler(candidate, requiredPrograms, modelerConfig.qiskitRuntimeHandlerEndpoint,
+  let runtimeGenerationResult = await invokeQiskitRuntimeHandler(candidate, requiredPrograms, modelerConfig.qiskitRuntimeHandlerEndpoint,
     modelerConfig.hybridRuntimeProvenance, modeler);
-  if (programBlobs.error !== undefined) {
-    return { error: programBlobs.error };
+  if (runtimeGenerationResult.error !== undefined) {
+    return { error: runtimeGenerationResult.error };
   }
 
   // generate the deployment model to deploy the Qiskit Runtime program and the corresponding agent
-  let deploymentModelUrl = await createDeploymentModel(candidate, programBlobs, modelerConfig.wineryEndpoint);
+  let deploymentModelUrl = await createDeploymentModel(candidate, runtimeGenerationResult, modelerConfig.wineryEndpoint);
   if (deploymentModelUrl.error !== undefined) {
     return { error: deploymentModelUrl.error };
   }
   console.log('Received deployment model URL: ', deploymentModelUrl.deploymentModelUrl);
   candidate.deploymentModelUrl = deploymentModelUrl.deploymentModelUrl;
+
+  console.log('Hybrid program has ID: ', runtimeGenerationResult.hybridProgramId);
+  candidate.hybridProgramId = runtimeGenerationResult.hybridProgramId;
 
   // return candidate with added deployment model URL
   return candidate;
@@ -216,7 +219,7 @@ async function invokeQiskitRuntimeHandler(candidate, requiredPrograms, qiskitRun
     response = await fetch(pollingAgentUrl);
     let pollingAgentBlob = await response.blob();
     console.log('Successfully downloaded resulting hybrid program and agent!');
-    return { hybridProgramBlob: hybridProgramBlob, pollingAgentBlob: pollingAgentBlob };
+    return { hybridProgramBlob: hybridProgramBlob, pollingAgentBlob: pollingAgentBlob, hybridProgramId: result['id'] };
   } catch (e) {
     return { error: 'Unable to connect to the Qiskit Runtime handler.\nPlease check the endpoint!' };
   }

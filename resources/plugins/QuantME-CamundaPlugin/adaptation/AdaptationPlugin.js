@@ -165,7 +165,7 @@ export default class AdaptationPlugin extends PureComponent {
         console.log('Hybrid program generation successful!');
 
         // rewrite the workflow and display the result for the user
-        let rewritingResult = await rewriteWorkflow(this.modeler, rewriteCandidate);
+        let rewritingResult = await rewriteWorkflow(this.modeler, rewriteCandidate, this.modeler.config.hybridRuntimeProvenance, programGenerationResult.hybridProgramId);
         if (rewritingResult.error) {
           console.log('Rewriting workflow failed with error: ', rewritingResult.error);
 
