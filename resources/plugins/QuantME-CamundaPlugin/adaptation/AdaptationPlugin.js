@@ -117,12 +117,13 @@ export default class AdaptationPlugin extends PureComponent {
       for (let runtimeLine of runtimeLines) {
 
         // check if table line corresponding to runtime is found
-        let button = runtimeLine.children[1].children[0]
+        let button = runtimeLine.children[1].children[0];
         if (runtimeLine.children[0].innerText === result.runtimeName) {
 
           // get the button reference
           rewriteButton = button;
         } else {
+
           // get other buttons to deactivate if they are not already deactivated
           if (button.disabled === false) {
             otherButtons.push(button);

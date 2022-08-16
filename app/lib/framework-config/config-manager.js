@@ -298,7 +298,7 @@ module.exports.setHybridRuntimeProvenance = function(hybridRuntimeProvenance) {
  *
  * @return {string} the specified endpoint
  */
-module.exports.getAWSRuntimeHandlerEndpoint = function () {
+module.exports.getAWSRuntimeHandlerEndpoint = function() {
   if (config.awsRuntimeHandlerEndpoint === undefined) {
     return '';
   }
