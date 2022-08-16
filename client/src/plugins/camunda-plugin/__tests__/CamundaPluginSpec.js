@@ -45,7 +45,8 @@ describe('<CamundaPlugin>', () => {
       'getDeployConfigurationFromUserInput',
       'saveDeployConfiguration',
       'canDeployWithConfiguration',
-      'getVersion'
+      'getVersion',
+      'closeOverlay'
     ];
 
     // when

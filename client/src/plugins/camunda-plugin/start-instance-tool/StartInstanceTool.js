@@ -381,6 +381,7 @@ export default class StartInstanceTool extends PureComponent {
            tab,
            configuration,
            handleClose,
+           isStart: true,
            ...uiOptions
          }
        });
@@ -500,6 +501,24 @@ export default class StartInstanceTool extends PureComponent {
      });
    }
 
+   toggleOverlay() {
+     const {
+       activeButton,
+       overlayState
+     } = this.state;
+
+     if (overlayState) {
+
+       // (1.1) close start instance overlay
+       overlayState.handleClose();
+
+     } else if (!overlayState && activeButton) {
+
+       // (1.2) close deploy overlay
+       this.props.deployService.closeOverlay();
+     }
+   }
+
    render() {
      const {
        activeTab,
@@ -516,13 +535,14 @@ export default class StartInstanceTool extends PureComponent {
            items={ this.START_ACTIONS }
            buttonRef={ this.anchorRef }
            overlayState={ this.state.activeButton }
+           onClose={ this.toggleOverlay.bind(this) }
          >
            <PlayIcon className="icon" />
          </OverlayDropdown>
        </Fill>
        }
 
-       { overlayState &&
+       { overlayState && overlayState.isStart &&
          <StartInstanceConfigOverlay
            configuration={ overlayState.configuration }
            activeTab={ overlayState.tab }
