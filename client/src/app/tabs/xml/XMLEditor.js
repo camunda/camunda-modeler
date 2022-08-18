@@ -78,29 +78,7 @@ export class XMLEditor extends CachedComponent {
       editor
     } = this.getCached();
 
-    if (action === 'undo') {
-      editor.doc.undo();
-    }
-
-    if (action === 'redo') {
-      editor.doc.redo();
-    }
-
-    if (action === 'find') {
-      editor.execCommand('findPersistent');
-    }
-
-    if (action === 'findNext') {
-      editor.execCommand('findNext');
-    }
-
-    if (action === 'findPrev') {
-      editor.execCommand('findPrev');
-    }
-
-    if (action === 'replace') {
-      editor.execCommand('replace');
-    }
+    return editor.execCommand(action);
   }
 
   checkImport() {
@@ -121,8 +99,6 @@ export class XMLEditor extends CachedComponent {
         stackIdx
       });
     }
-
-    editor.refresh();
   }
 
   isDirty() {
@@ -143,7 +119,7 @@ export class XMLEditor extends CachedComponent {
       editor
     } = this.getCached();
 
-    const history = editor.doc.historySize();
+    const history = editor.historySize();
 
     const editMenu = getXMLEditMenu({
       canRedo: !!history.redo,

@@ -17,7 +17,6 @@ export default function create(options = {}) {
     attachTo() {},
     detach() {},
     destroy() {},
-    execCommand() {},
     on() {},
     off() {},
     getValue() {
@@ -27,30 +26,28 @@ export default function create(options = {}) {
       value = newValue;
     },
     refresh() {},
-    doc: {
-      clearHistory() {},
-      historySize() {
-        return {
-          undo,
-          redo
-        };
-      },
-      undo() {
-        if (undo) {
-          undo--;
-          redo++;
-        }
-      },
-      redo() {
-        if (redo) {
-          undo++;
-          redo--;
-        }
-      },
-      execute(commands) {
-        undo += commands;
-        redo = 0;
+    clearHistory() {},
+    historySize() {
+      return {
+        undo,
+        redo
+      };
+    },
+    undo() {
+      if (undo) {
+        undo--;
+        redo++;
       }
+    },
+    redo() {
+      if (redo) {
+        undo++;
+        redo--;
+      }
+    },
+    execCommand(commands) {
+      undo += commands;
+      redo = 0;
     },
     get _stackIdx() {
       return undo;
