@@ -8,75 +8,149 @@
  * except in compliance with the MIT License.
  */
 
-import CodeMirror from 'codemirror';
+import mitt from 'mitt';
 
-// xml syntax highlighting
-import 'codemirror/mode/xml/xml';
+import { basicSetup } from 'codemirror';
 
-// auto close tags
-import 'codemirror/addon/fold/xml-fold';
-import 'codemirror/addon/edit/closetag';
+import { EditorView } from '@codemirror/view';
 
-// search addons
-import 'codemirror/addon/search/search';
-import 'codemirror/addon/search/searchcursor';
+import { EditorState, Compartment } from '@codemirror/state';
 
-import 'codemirror/addon/dialog/dialog';
+import {
+  undo,
+  redo,
+  undoDepth,
+  redoDepth
+} from '@codemirror/commands';
 
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/addon/dialog/dialog.css';
+import {
+  findNext,
+  findPrevious,
+  openSearchPanel,
+  replaceNext,
+  search
+} from '@codemirror/search';
 
+import { xml } from '@codemirror/lang-xml';
 
 /**
  * Create a code mirror instance with an editor API.
  *
  * @param  {Object} options
- * @return {CodeMirror}
+ * @return {EditorView}
  */
-export default function create(options) {
+export default function create() {
 
-  var el = this;
+  const emitter = mitt();
 
-  var instance = CodeMirror(function(_el) {
-    el = _el;
-  }, {
-    autoCloseTags: true,
-    dragDrop: true,
-    allowDropFileTypes: [ 'text/plain' ],
-    lineWrapping: true,
-    lineNumbers: true,
-    mode: {
-      name: 'application/xml',
-      htmlMode: false
-    },
-    tabSize: 2
-  });
+  const language = new Compartment().of(xml());
+  const tabSize = new Compartment().of(EditorState.tabSize.of(2));
+  const searchExtension = new Compartment().of(search({ top: true }));
 
-  instance.attachTo = function(parentNode) {
-    parentNode.appendChild(el);
+  function createState(doc, extensions = []) {
+    return EditorState.create({
+      doc,
+      extensions: [
+        basicSetup,
+        language,
+        tabSize,
+        searchExtension,
+        ...extensions
+      ]
+    });
+  }
 
-    this.refresh();
+  function createView() {
+
+    const updateListener = EditorView.updateListener.of(update => {
+      if (update.docChanged) {
+        emitter.emit('change', {
+          value: update.view.state.doc.toString()
+        });
+      }
+    });
+
+    const view = new EditorView({
+      state: createState('', [ updateListener ])
+    });
+
+    view.setValue = function(value) {
+      this.setState(createState(value, [ updateListener ]));
+    };
+
+    return view;
+  }
+
+  const instance = createView();
+
+  instance.getValue = function() {
+    return this.state.doc.toString();
+  };
+
+  instance.on = emitter.on;
+  instance.off = emitter.off;
+
+  instance.attachTo = function(container) {
+    container.appendChild(instance.dom);
   };
 
   instance.detach = function() {
-    if (el.parentNode) {
-      el.parentNode.removeChild(el);
+    if (instance.dom.parentNode) {
+      instance.dom.parentNode.removeChild(instance.dom);
     }
   };
 
   instance.importXML = function(xml) {
     this.setValue(xml);
-
-    this.doc.clearHistory();
   };
-
-  instance.destroy = function() { };
 
   Object.defineProperty(instance, '_stackIdx', {
     get() {
-      return this.doc.historySize().undo;
+      return undoDepth(this.state);
     }
   });
+
+  instance.execCommand = function(command) {
+
+    if (command === 'undo') {
+      return undo(this);
+    }
+
+    if (command === 'undo') {
+      return redo(this);
+    }
+
+    if (command === 'find') {
+      openSearchPanel(this);
+    }
+
+    if (command === 'findNext') {
+      findNext(this);
+    }
+
+    if (command === 'findPrev') {
+      findPrevious(this);
+    }
+
+    if (command === 'replace') {
+      replaceNext(this);
+    }
+  };
+
+  instance.historySize = function() {
+    return {
+      undo: undoDepth(this.state),
+      redo: redoDepth(this.state)
+    };
+  };
+
+  instance.undo = function() {
+    return this.execCommand('undo');
+  };
+
+  instance.redo = function() {
+    return this.execCommand('redo');
+  };
 
   return instance;
 }

@@ -10,16 +10,27 @@
     position: relative;
   }
 
-  .CodeMirror {
+  .cm-editor {
     height: 100%;
+    width: 100%;
     font-size: 13px;
     font-family: var(--font-family-monospace);
 
-    position: absolute;
+    position: absolute !important;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+
+    .cm-scroller {
+      overflow-y: auto !important;
+    }
+
+    .cm-content {
+      width: 100%;
+      white-space: normal;
+      padding-right: 16px;
+    }
   }
 
 }

@@ -157,7 +157,7 @@ describe('<XMLEditor>', function() {
 
       // when
       // execute 1 command
-      editor.doc.execute(1);
+      editor.execCommand(1);
 
       // then
       const dirty = instance.isDirty();
@@ -171,10 +171,10 @@ describe('<XMLEditor>', function() {
       // given
       const { editor } = instance.getCached();
 
-      editor.doc.execute(1);
+      editor.execCommand(1);
 
       // when
-      editor.doc.undo();
+      editor.undo();
 
       // then
       const dirty = instance.isDirty();
@@ -189,7 +189,7 @@ describe('<XMLEditor>', function() {
       const { editor } = instance.getCached();
 
       // execute 1 command
-      editor.doc.execute(1);
+      editor.execCommand(1);
 
       // when
       await instance.getXML();
