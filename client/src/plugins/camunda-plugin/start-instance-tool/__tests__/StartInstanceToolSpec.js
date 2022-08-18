@@ -1023,6 +1023,32 @@ describe('<StartInstanceTool>', () => {
       });
 
 
+      it('should close when button is clicked', async () => {
+
+        // given
+        const activeTab = createTab({ type: 'bpmn' });
+
+        const {
+          wrapper
+        } = createStartInstanceTool({
+          activeTab,
+          withFillSlot: true,
+          keepOpen: true
+        }, mount);
+
+        // open dropdown overlay
+        expectOverlayDropdown(wrapper);
+
+        // open start instance overlay
+        expectStartInstanceOverlay(wrapper);
+
+        // click status bar button
+        clickButton(wrapper, "button[title='Start current diagram']");
+
+        expect(wrapper.html().includes('form')).to.be.false;
+      });
+
+
       it('should close when active tab changes', async () => {
 
         // given
@@ -1191,7 +1217,7 @@ class TestStartInstanceTool extends StartInstanceTool {
       keepOpen
     } = this.props;
 
-    if (overlayState) {
+    if (overlayState && overlayState.configuration) {
       const action = userAction || 'start';
 
       const configuration = action !== 'cancel' && {
@@ -1313,11 +1339,17 @@ function createSubscribe(activeTab) {
   };
 }
 
+function clickButton(wrapper, searchString) {
+  const button = wrapper.find(searchString);
+  button.simulate('click');
+
+  return button;
+}
+
 function expectOverlayDropdown(wrapper) {
 
   // when
-  const statusBarBtn = wrapper.find("button[title='Start current diagram']");
-  statusBarBtn.simulate('click');
+  const statusBarBtn = clickButton(wrapper, "button[title='Start current diagram']");
 
   // then
   expect(wrapper.find("button[title='Start process instance']").exists()).to.be.true;
@@ -1328,8 +1360,7 @@ function expectOverlayDropdown(wrapper) {
 async function expectStartInstanceOverlay(wrapper) {
 
   // open start instance overlay
-  const dropDownButton = wrapper.find("button[title='Start process instance']");
-  dropDownButton.simulate('click');
+  clickButton(wrapper, "button[title='Start process instance']");
 
   await new Promise(function(resolve) {
     setTimeout(resolve, 10);

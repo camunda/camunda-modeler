@@ -313,6 +313,38 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
       expect(wrapper.html().includes('form')).to.not.be.true;
     });
 
+
+    it('should close when button is clicked', async () => {
+
+      // given
+      const activeTab = createTab({ type: 'cloud-bpmn' });
+
+      const {
+        wrapper
+      } = createStartInstancePlugin({
+        activeTab,
+        withFillSlot: true,
+        keepOpen: true
+      }, mount);
+
+      // open overlay
+      const statusBarBtn = wrapper.find("button[title='Start current diagram']");
+      statusBarBtn.simulate('click');
+
+      await new Promise(function(resolve) {
+        setTimeout(resolve, 10);
+      });
+
+      // assume
+      expect(wrapper.html().includes('form')).to.be.true;
+
+      // then
+      statusBarBtn.simulate('click');
+
+      // expect
+      expect(wrapper.html().includes('form')).to.not.be.true;
+    });
+
   });
 
 
