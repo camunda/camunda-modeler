@@ -56,18 +56,26 @@ export default class PropertiesPanelKeyboardBindings {
     if (isUndo(event)) {
       commandStack.canUndo() && commandStack.undo();
 
-      event.preventDefault();
+      this._cancel(event);
     }
 
     if (isRedo(event)) {
       commandStack.canRedo() && commandStack.redo();
 
-      event.preventDefault();
+      this._cancel(event);
     }
   }
 
   _getContainer() {
     return this._propertiesPanel._container;
+  }
+
+  /**
+   * @param {KeyboardEvent} event
+   */
+  _cancel(event) {
+    event.preventDefault();
+    event.stopPropagation();
   }
 }
 
