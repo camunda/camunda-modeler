@@ -1,0 +1,14 @@
+name: Release Issue
+on:
+  issues:
+    types: [closed]
+jobs:
+  createReleaseIssue:
+    runs-on: ubuntu-latest
+    steps:
+     - if: contains(github.event.issue.labels.*.name, 'release')
+       name: Create new Release Issue
+       uses: bpmn-io/actions/release-issue@latest
+       with:
+         template-path: 'docs/.project/RELEASE_TEMPLATE.md'
+         package-path: 'app/package.json'
