@@ -98,7 +98,7 @@ module.exports = function(karma) {
               },
               {
                 test: /\.(css|bpmn|cmmn|dmn|less|xml|png|svg|form)$/,
-                use: 'raw-loader'
+                type: 'asset/source'
               }
             ]
           }
