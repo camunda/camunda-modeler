@@ -210,11 +210,20 @@ function addQuantumCircuitExecutionTaskEntries(group, translate) {
 
 function addReadoutErrorMitigationTaskEntries(group, translate) {
 
-  // add unfoldingTechnique, qpu, and maxAge attributes
-  QuantMEPropertyEntryHandler.addUnfoldingTechniqueEntry(group, translate);
+  // add provider, qpu, mitigation method, calibration method, shots, method-specific and restriction attributes
   QuantMEPropertyEntryHandler.addProviderEntry(group, translate);
   QuantMEPropertyEntryHandler.addQpuEntry(group, translate);
+  QuantMEPropertyEntryHandler.addMitigationMethodEntry(group, translate);
+  QuantMEPropertyEntryHandler.addCalibrationMethodEntry(group, translate);
+  QuantMEPropertyEntryHandler.addShotsEntry(group, translate);
+  QuantMEPropertyEntryHandler.addDNNHiddenLayersEntry(group, translate);
+  QuantMEPropertyEntryHandler.addNeighborhoodRangeEntry(group, translate);
+  QuantMEPropertyEntryHandler.addObjectiveFunctionEntry(group, translate);
+  QuantMEPropertyEntryHandler.addOptimizerEntry(group, translate);
   QuantMEPropertyEntryHandler.addMaxAgeEntry(group, translate);
+  QuantMEPropertyEntryHandler.addMaxCMSizeEntry(group, translate);
+  QuantMEPropertyEntryHandler.addMaxREMCostsEntry(group, translate);
+
 }
 
 function addHardwareSelectionSubprocessEntries(group, translate) {

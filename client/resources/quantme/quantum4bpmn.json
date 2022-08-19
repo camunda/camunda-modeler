@@ -142,11 +142,6 @@
         "superClass": [ "bpmn:Task" ],
         "properties": [
           {
-            "name": "unfoldingTechnique",
-            "isAttr": true,
-            "type": "String"
-          },
-          {
             "name": "provider",
             "isAttr": true,
             "type": "String"
@@ -156,8 +151,58 @@
             "isAttr": true,
             "type": "String"
           },
+		  {
+            "name": "shots",
+            "isAttr": true,
+            "type": "String"
+          },
+		  {
+            "name": "calibrationMethod",
+            "isAttr": true,
+            "type": "String"
+          },
+		  {
+            "name": "mitigationMethod",
+            "isAttr": true,
+            "type": "String"
+          },
+		  {
+            "name": "timeOfExecution",
+            "isAttr": true,
+            "type": "String"
+          },
+		  {
+            "name": "dnnHiddenLayer",
+            "isAttr": true,
+            "type": "String"
+          },
+		  {
+            "name": "neighborhoodRange",
+            "isAttr": true,
+            "type": "String"
+          },
+		  {
+            "name": "objectiveFunction",
+            "isAttr": true,
+            "type": "String"
+          },
+		  {
+            "name": "optimizer",
+            "isAttr": true,
+            "type": "String"
+          },
           {
             "name": "maxAge",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "maxREMCosts",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "maxCMSize",
             "isAttr": true,
             "type": "String"
           }

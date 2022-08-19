@@ -106,12 +106,18 @@ function matchQuantumCircuitExecutionTask(detectorElement, task) {
  * Compare the properties of ReadoutErrorMitigationTask
  */
 function matchReadoutErrorMitigationTask(detectorElement, task) {
-
-  // check if unfoldingTechnique, qpu, and maxAge match
-  return matchesProperty(detectorElement.unfoldingTechnique, task.unfoldingTechnique, true)
+  return matchesProperty(detectorElement.mitigationMethod, task.mitigationMethod, true)
     && matchesProperty(detectorElement.provider, task.provider, true)
     && matchesProperty(detectorElement.qpu, task.qpu, true)
-    && matchesProperty(detectorElement.maxAge, task.maxAge, false);
+    && matchesProperty(detectorElement.calibrationMethod, task.calibrationMethod, false)
+    && matchesProperty(detectorElement.shots, task.shots, false)
+    && matchesProperty(detectorElement.dnnHiddenLayer, task.dnnHiddenLayer, false)
+    && matchesProperty(detectorElement.neighborhoodRange, task.neighborhoodRange, false)
+    && matchesProperty(detectorElement.objectiveFunction, task.objectiveFunction, false)
+    && matchesProperty(detectorElement.optimizer, task.optimizer, false)
+    && matchesProperty(detectorElement.maxCMSize, task.maxCMSize, false)
+    && matchesProperty(detectorElement.maxAge, task.maxAge, false)
+    && matchesProperty(detectorElement.maxREMCosts, task.maxREMCosts, false);
 }
 
 /**

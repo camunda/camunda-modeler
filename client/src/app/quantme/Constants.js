@@ -31,12 +31,19 @@ export const ORACLE_CIRCUIT = 'oracleCircuit';
 export const ORACLE_URL = 'oracleURL';
 export const QPU = 'qpu';
 export const SHOTS = 'shots';
-export const UNFOLDING_TECHNIQUE = 'unfoldingTechnique';
 export const MAX_AGE = 'maxAge';
 export const SIMULATORS_ALLOWED = 'simulatorsAllowed';
 export const SELECTION_STRATEGY = 'selectionStrategy';
+export const CALIBRATION_METHOD = 'calibrationMethod';
+export const MITIGATION_METHOD = 'mitigationMethod';
+export const DNN_HIDDEN_LAYER = 'dnnHiddenLayer';
+export const NEIGHBORHOOD_RANGE = 'neighborhoodRange';
+export const OBJECTIVE_FUNCTION = 'objectiveFunction';
+export const OPTIMIZER = 'optimizer';
+export const MAX_REM_COSTS = 'maxREMCosts';
+export const MAX_CM_SIZE = 'maxCMSize';
 
-// enpoint paths of connected services
+// endpoint paths of connected services
 export const NISQ_ANALYZER_QPU_SELECTION_PATH = 'qpu-selection';
 
 // supported selection strategies
@@ -45,4 +52,5 @@ export const SELECTION_STRATEGY_LIST = [SELECTION_STRATEGY_SHORTEST_QUEUE_SIZE];
 
 // list of QuantME attributes to check if a given attribute belongs to the extension or not
 export const QUANTME_ATTRIBUTES = [ALGORITHM, PROVIDER, PROVIDERS, QUANTUM_CIRCUIT, URL, ENCODING_SCHEMA, PROGRAMMING_LANGUAGE,
-  ORACLE_ID, ORACLE_CIRCUIT, ORACLE_URL, QPU, SHOTS, UNFOLDING_TECHNIQUE, MAX_AGE, SIMULATORS_ALLOWED, SELECTION_STRATEGY];
+  ORACLE_ID, ORACLE_CIRCUIT, ORACLE_URL, QPU, SHOTS, MAX_AGE, SIMULATORS_ALLOWED, SELECTION_STRATEGY, CALIBRATION_METHOD,
+  MITIGATION_METHOD, DNN_HIDDEN_LAYER, NEIGHBORHOOD_RANGE, OBJECTIVE_FUNCTION, OPTIMIZER, MAX_REM_COSTS, MAX_CM_SIZE ];

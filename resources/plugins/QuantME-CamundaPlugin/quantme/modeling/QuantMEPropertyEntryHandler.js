@@ -333,35 +333,6 @@ export function addShotsEntry(group, translate) {
   }));
 }
 
-export function addUnfoldingTechniqueEntry(group, translate) {
-  group.entries.push(EntryFactory.textField({
-    id: consts.UNFOLDING_TECHNIQUE,
-    label: translate('Unfolding Technique'),
-    modelProperty: consts.UNFOLDING_TECHNIQUE,
-
-    get: function(element, node) {
-      let bo = ModelUtil.getBusinessObject(element);
-      let unfoldingTechnique = bo && bo.unfoldingTechnique;
-      return { unfoldingTechnique: unfoldingTechnique };
-    },
-
-    set: function(element, values, node) {
-      let bo = ModelUtil.getBusinessObject(element);
-      return CmdHelper.updateBusinessObject(element, bo, {
-        unfoldingTechnique: values.unfoldingTechnique || undefined
-      });
-    },
-
-    validate: function(element, values, node) {
-      return true;
-    },
-
-    hidden: function(element, node) {
-      return false;
-    }
-  }));
-}
-
 export function addMaxAgeEntry(group, translate) {
   group.entries.push(EntryFactory.textField({
     id: consts.MAX_AGE,
@@ -474,6 +445,277 @@ export function addSelectionStrategyEntry(group, translate) {
 
     hidden: function(element, node) {
       return false;
+    }
+  }));
+}
+
+export function addCalibrationMethodEntry(group, translate) {
+  group.entries.push(EntryFactory.selectBox({
+    id: consts.CALIBRATION_METHOD,
+    label: translate('Calibration Matrix Generation Method'),
+    selectOptions: [
+      { value:'fullMatrix',name:'Full Matrix' } , { value:'tpnm',name:'TPNM' }, { value:'ctmp',name:'CTMP' } , { value:'ddot',name:'DDOT' }, { value:'conditionallyRigorous',name:'Conditionally Rigorous' } ,
+      { value:'fuzzyCMeans',name:'Fuzzy C-Means' } , { value:'cumulantCM',name:'Cumulant CM' } , { value:'sclableTMatrix',name:'Sclable T-Matrix' }
+    ],
+    modelProperty: consts.CALIBRATION_METHOD,
+
+    get: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let calibrationMethod = bo && bo.calibrationMethod;
+      return { calibrationMethod: calibrationMethod };
+    },
+
+    set: function(element, values, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      return CmdHelper.updateBusinessObject(element, bo, {
+        calibrationMethod: values.calibrationMethod || undefined
+      });
+    },
+
+    validate: function(element, values, node) {
+      return true;
+    },
+
+    hidden: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let mitigationMethod = bo && bo.mitigationMethod;
+      return !(mitigationMethod === 'matrixInversion' || mitigationMethod === 'pertubativeREM' || mitigationMethod === 'geneticBasedREM' || mitigationMethod === 'mthree');
+    }
+  }));
+}
+
+export function addMitigationMethodEntry(group, translate) {
+  group.entries.push(EntryFactory.selectBox({
+    id: consts.MITIGATION_METHOD,
+    label: translate('Mitigation Method'),
+    selectOptions: [
+      { value:'matrixInversion',name:'Matrix Inversion' } , { value:'pertubativeREM',name:'Pertubative REM' }, { value:'mthree',name:'Mthree' }, { value:'geneticBasedREM',name:'Genetic-Based REM' },
+      { value:'activeREM',name:'Active REM' } , { value:'modelFreeREM',name:'Model-Free REM' }, { value:'hybridREM',name:'Hybrid REM' }, { value:'crosstalkREM',name:'Crosstalk-Focused REM' },
+      { value:'sim',name:'SIM' } , { value:'aim',name:'AIM' }, { value:'bfa',name:'BFA' }, { value:'truncatedNeumannSeries',name:'Truncated Neumann Series' },
+      { value:'lsu',name:'LSU' } , { value:'dnnREM',name:'DNN-Based REM' }
+    ],
+    modelProperty: consts.MITIGATION_METHOD,
+
+    get: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let mitigationMethod = bo && bo.mitigationMethod;
+      return { mitigationMethod: mitigationMethod };
+    },
+
+    set: function(element, values, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      const isCM = (values.mitigationMethod === 'matrixInversion' || values.mitigationMethod === 'pertubativeREM' || values.mitigationMethod === 'geneticBasedREM' || values.mitigationMethod === 'mthree');
+
+      // remove CM value if non CM method is selected
+      if (!isCM) {
+        return CmdHelper.updateBusinessObject(element, bo, {
+          mitigationMethod: values.mitigationMethod || undefined,
+          calibrationMethod: undefined
+        });
+      } // set default CM value if CM method is selected and non CM method was selected previously
+      else if (isCM && !bo.calibrationMethod) {
+        return CmdHelper.updateBusinessObject(element, bo, {
+          mitigationMethod: values.mitigationMethod || undefined,
+          calibrationMethod: 'fullMatrix'
+        });
+      }
+      return CmdHelper.updateBusinessObject(element, bo, {
+        mitigationMethod: values.mitigationMethod || undefined,
+      });
+    },
+
+    validate: function(element, values, node) {
+      return true;
+    },
+
+    hidden: function(element, node) {
+      return false;
+    }
+  }));
+}
+
+export function addDNNHiddenLayersEntry(group, translate) {
+  group.entries.push(EntryFactory.textField({
+    id: consts.DNN_HIDDEN_LAYER,
+    label: translate('Number of DNN Hidden Layers'),
+    modelProperty: consts.DNN_HIDDEN_LAYER,
+
+    get: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let dnnHiddenLayer = bo && bo.dnnHiddenLayer;
+      return { dnnHiddenLayer: dnnHiddenLayer };
+    },
+
+    set: function(element, values, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      return CmdHelper.updateBusinessObject(element, bo, {
+        dnnHiddenLayer: values.dnnHiddenLayer || undefined
+      });
+    },
+
+    validate: function(element, values, node) {
+      return true;
+    },
+
+    hidden: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let mitigationMethod = bo && bo.mitigationMethod;
+      return !(mitigationMethod === 'dnnREM');
+    }
+  }));
+}
+
+export function addNeighborhoodRangeEntry(group, translate) {
+
+  // const mm = group.entries.get(consts.MITIGATION_METHOD);
+  group.entries.push(EntryFactory.textField({
+    id: consts.NEIGHBORHOOD_RANGE,
+    label: translate('Neighborhood Range'),
+    modelProperty: consts.NEIGHBORHOOD_RANGE,
+
+    get: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let neighborhoodRange = bo && bo.neighborhoodRange;
+      return { neighborhoodRange: neighborhoodRange };
+    },
+
+    set: function(element, values, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      return CmdHelper.updateBusinessObject(element, bo, {
+        neighborhoodRange: values.neighborhoodRange || undefined
+      });
+    },
+
+    validate: function(element, values, node) {
+      return values.neighborhoodRange && isNaN(values.neighborhoodRange) ? { neighborhoodRange: translate('Shots attribute must contain an Integer!') } : {};
+    },
+
+    hidden: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let calibrationMethod = bo && bo.calibrationMethod;
+      return !(calibrationMethod === 'sclableTMatrix');
+    }
+  }));
+}
+
+export function addObjectiveFunctionEntry(group, translate) {
+  group.entries.push(EntryFactory.textField({
+    id: consts.OBJECTIVE_FUNCTION,
+    label: translate('Objective Function'),
+    modelProperty: consts.OBJECTIVE_FUNCTION,
+
+    get: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let objectiveFunction = bo && bo.objectiveFunction;
+      return { objectiveFunction: objectiveFunction };
+    },
+
+    set: function(element, values, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      return CmdHelper.updateBusinessObject(element, bo, {
+        objectiveFunction: values.objectiveFunction || undefined
+      });
+    },
+
+    validate: function(element, values, node) {
+      return true;
+    },
+
+    hidden: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let mitigationMethod = bo && bo.mitigationMethod;
+      return !(mitigationMethod === 'geneticBasedREM');
+    }
+  }));
+}
+
+export function addOptimizerEntry(group, translate) {
+  group.entries.push(EntryFactory.textField({
+    id: consts.OPTIMIZER,
+    label: translate('Optimizer'),
+    modelProperty: consts.OPTIMIZER,
+
+    get: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let optimizer = bo && bo.optimizer;
+      return { optimizer: optimizer };
+    },
+
+    set: function(element, values, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      return CmdHelper.updateBusinessObject(element, bo, {
+        optimizer: values.optimizer || undefined
+      });
+    },
+
+    validate: function(element, values, node) {
+      return true;
+    },
+
+    hidden: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let mitigationMethod = bo && bo.mitigationMethod;
+      return !(mitigationMethod === 'geneticBasedREM');
+    }
+  }));
+}
+
+export function addMaxREMCostsEntry(group, translate) {
+  group.entries.push(EntryFactory.textField({
+    id: consts.MAX_REM_COSTS,
+    label: translate('Max REM Costs (in $)'),
+    modelProperty: consts.MAX_REM_COSTS,
+
+    get: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let maxREMCosts = bo && bo.maxREMCosts;
+      return { maxREMCosts: maxREMCosts };
+    },
+
+    set: function(element, values, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      return CmdHelper.updateBusinessObject(element, bo, {
+        maxREMCosts: values.maxREMCosts || undefined
+      });
+    },
+
+    validate: function(element, values, node) {
+      return values.maxREMCosts && isNaN(values.maxREMCosts) ? { maxREMCosts: translate('Max REM Costs attribute must contain an Integer!') } : {};
+    },
+
+    hidden: function(element, node) {
+      return false;
+    }
+  }));
+}
+
+export function addMaxCMSizeEntry(group, translate) {
+  group.entries.push(EntryFactory.textField({
+    id: consts.MAX_CM_SIZE,
+    label: translate('Max CM Size (in MB)'),
+    modelProperty: consts.MAX_CM_SIZE,
+
+    get: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let maxCMSize = bo && bo.maxCMSize;
+      return { maxCMSize: maxCMSize };
+    },
+
+    set: function(element, values, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      return CmdHelper.updateBusinessObject(element, bo, {
+        maxCMSize: values.maxCMSize || undefined
+      });
+    },
+
+    validate: function(element, values, node) {
+      return values.maxCMSize && isNaN(values.maxCMSize) ? { maxCMSize: translate('Max CM Size attribute must contain an Integer!') } : {};
+    },
+
+    hidden: function(element, node) {
+      let bo = ModelUtil.getBusinessObject(element);
+      let mitigationMethod = bo && bo.mitigationMethod;
+      return !(mitigationMethod === 'matrixInversion' || mitigationMethod === 'pertubativeREM' || mitigationMethod === 'geneticBasedREM' || mitigationMethod === 'mthree');
     }
   }));
 }

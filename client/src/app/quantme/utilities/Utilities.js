@@ -85,16 +85,32 @@ export function getCamundaInputOutput(bo, bpmnFactory) {
 
   // create new InputOutput element if non existing
   if (!inputOutput || inputOutput.length === 0) {
-    bo.extensionElements = extensionElementsHelper.addEntry(bo, bo, bpmnFactory.create('camunda:InputOutput'), bpmnFactory)['extensionElements'];
+
+    const extensionEntry = extensionElementsHelper.addEntry(bo, bo, bpmnFactory.create('camunda:InputOutput'), bpmnFactory);
+
+    if (extensionEntry['extensionElements']) {
+      bo.extensionElements = extensionEntry['extensionElements'];
+    } else {
+      bo.extensionElements = extensionEntry['context']['currentObject'];
+    }
     inputOutput = extensionElementsHelper.getExtensionElements(bo, 'camunda:InputOutput');
 
-    // initialize parameters as empty arrays to avoid access errors
-    inputOutput[0].inputParameters = [];
-    inputOutput[0].outputParameters = [];
-  }
+    if (!inputOutput) {
+      let inout = bpmnFactory.create('camunda:InputOutput');
+      inout.inputParameters = [];
+      inout.outputParameters = [];
+      bo.extensionElements.values.push(inout);
+      return inout;
+    } else {
 
-  // if there are multiple input/output definitions, take the first one as the modeler only uses this one
-  return inputOutput[0];
+      // initialize parameters as empty arrays to avoid access errors
+      inputOutput[0].inputParameters = [];
+      inputOutput[0].outputParameters = [];
+
+      // if there are multiple input/output definitions, take the first one as the modeler only uses this one
+      return inputOutput[0];
+    }
+  }
 }
 
 /**

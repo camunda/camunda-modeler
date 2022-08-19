@@ -11,6 +11,7 @@
 
 import BpmnFactory from 'bpmn-js/lib/features/modeling/BpmnFactory';
 import { isQuantMETask } from 'client/src/app/quantme/utilities/Utilities';
+import { READOUT_ERROR_MITIGATION_TASK } from '../../../../../client/src/app/quantme/Constants';
 
 /**
  * This class implements functionality when creating shapes representing QuantME tasks
@@ -32,6 +33,12 @@ export default class QuantMEFactory extends BpmnFactory {
     if (!element.id) {
       var prefix = (element.$type || '').replace(/^[^:]*:/g, '') + '_';
       element.id = this._model.ids.nextPrefixed(prefix, element);
+    }
+
+    // setting default for selectlist
+    if (element.$type === READOUT_ERROR_MITIGATION_TASK) {
+      element.mitigationMethod = 'matrixInversion';
+      element.calibrationMethod = 'fullMatrix';
     }
   }
 }
