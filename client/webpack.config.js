@@ -53,7 +53,8 @@ module.exports = {
     bundle: [ './src/index.js' ]
   },
   output: {
-    path: __dirname + '/build'
+    path: __dirname + '/build',
+    assetModuleFilename: 'static/media/[name].[hash:8][ext]'
   },
   resolve: {
     mainFields: DEV ? [ 'browser', 'dev:module', 'module', 'main' ] : [ 'browser', 'module', 'main' ],
@@ -79,7 +80,7 @@ module.exports = {
           },
           {
             test: /\.(bpmn|cmmn|dmn|form)$/,
-            use: 'raw-loader'
+            type: 'asset/source'
           },
           {
             test: /\.css$/,
@@ -100,10 +101,7 @@ module.exports = {
 
             // exclude files served otherwise
             exclude: [ /\.(js|jsx|mjs|bpmnlintrc)$/, /\.html$/, /\.json$/ ],
-            loader: 'file-loader',
-            options: {
-              name: 'static/media/[name].[hash:8].[ext]',
-            }
+            type: 'asset/resource'
           }
         ]
       }
