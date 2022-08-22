@@ -36,7 +36,9 @@ export default class MixpanelHandler {
   }
 
   enable(token, id, stage) {
-    mixpanel.init(token);
+    mixpanel.init(token, {
+      property_blacklist: [ '$current_url' ]
+    });
 
     mixpanel.identify(id);
 
