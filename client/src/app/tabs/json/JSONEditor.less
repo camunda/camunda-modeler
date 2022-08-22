@@ -1,3 +1,12 @@
+:root {
+  --json-editor-button-color: var(--color-grey-225-10-15);
+  --json-editor-button-border-color: var(--color-grey-225-10-75);
+  --json-editor-button-background-color: var(--color-grey-225-10-95);
+  --json-editor-font-size: var(--font-size-default);
+  --json-editor-font-size-small: 13px;
+  --json-editor-string-color: #a11;
+}
+
 :local(.JSONEditor) {
   display: flex;
   flex: 1;
@@ -13,7 +22,7 @@
   .cm-editor {
     height: 100%;
     width: 100%;
-    font-size: 13px;
+    font-size: var(--json-editor-font-size);
     font-family: var(--font-family-monospace);
 
     position: absolute !important;
@@ -29,7 +38,60 @@
     .cm-content {
       width: 100%;
       white-space: normal;
-      padding-right: 16px;
+      padding-right: 18px;
+    }
+
+    .cm-line {
+      .ͼm {
+        color: var(--json-editor-tag-color);
+      }
+
+      .ͼi {
+        color: var(--json-editor-string-color);
+      }
+    }
+
+    .cm-button {
+      background: transparent;
+      font-family: var(--font-family);
+      font-weight: 500;
+      font-size: var(--json-editor-font-size-small);
+      border-radius: 2px;
+      height: 28px;
+      padding: 4px 14px;
+      color: var(--json-editor-button-color);
+      border: solid 1px var(--json-editor-button-border-color);
+      background-color: var(--json-editor-button-background-color);
+      text-transform: capitalize;
+    }
+    
+    .cm-textfield {
+      padding: 4px 8px;
+      font-family: var(--font-family-monospace);
+      font-size: var(--json-editor-font-size-small);
+      height: 28px;
+      border-radius: 4px;
+
+      &::placeholder {
+        font-family: var(--font-family);
+      }
+    }
+    
+    .cm-panel.cm-search {
+      label {
+        font-size: var(--json-editor-font-size-small);
+        font-family: var(--font-family);
+        display: inline-flex;
+        gap: 4px;
+        line-height: 19px;
+        text-transform: capitalize;
+        vertical-align: middle;
+      }
+
+      [name=close] {
+        font-size: 24px;
+        padding: 0px 8px; 
+      }
     }
   }
 
