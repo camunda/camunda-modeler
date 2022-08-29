@@ -58,7 +58,8 @@ export default function LintingTab(props) {
         return <LintingIssue
           key={ `${ id }-${ message }` }
           issue={ issue }
-          onClick={ onClick(issue) } />;
+          onClick={ onClick(issue) }
+        />;
       }))
     }
   </Panel.Tab>;
