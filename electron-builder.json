@@ -65,5 +65,6 @@
       "role": "Editor",
       "mimeType": "application/camunda-form"
     }
-  ]
+  ],
+  "npmArgs": "--workspaces=false"
 }
