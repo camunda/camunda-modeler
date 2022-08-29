@@ -44,7 +44,8 @@ class NewVersionInfoView extends PureComponent {
           key={ version }>
           <div><b>{ version }</b></div>
           <div dangerouslySetInnerHTML={ { __html: releaseNoteHTML } } />
-        </div>);
+        </div>
+      );
     });
   }
 
