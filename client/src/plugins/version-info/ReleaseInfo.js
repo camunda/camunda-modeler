@@ -44,12 +44,15 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Edit FEEL expressions in the properties panel</h4>
-          This release adds syntax highlighting and autocomplete for FEEL expressions to the properties panel.
+          <h4>Diagram errors on the canvas</h4>
+          Diagram errors are now shown directly on the canvas. Click on an error to show details.
         </li>
         <li>
-          <h4>Diagram errors in the properties panel</h4>
-          All diagram errors are shown in the properties panel as of this release. Open the error panel for the errors to be shown.
+          <h4>Sticky properties panel headers</h4>
+          The section headers of the BPMN and DMN properties panels are now sticky to provide reliable context when you scroll.</li>
+        <li>
+          <h4>Modeling UX improvements and bug fixes</h4>
+          This release includes a lot of modeling UX improvements. Sequence flows are now always displayed on top. Also, we fixed several issues to improve the copy and paste behavior.
         </li>
       </ul>
     </div>
