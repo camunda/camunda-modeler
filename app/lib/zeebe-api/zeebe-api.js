@@ -322,7 +322,9 @@ class ZeebeAPI {
 
     if (customCertificatePath) {
       try {
-        const cert = this._fs.readFile(customCertificatePath);
+        const absolutePath = path.isAbsolute(customCertificatePath) ?
+          customCertificatePath : path.join(process.cwd(), customCertificatePath);
+        const cert = this._fs.readFile(absolutePath);
 
         rootCerts.push(cert.contents);
       } catch (err) {
