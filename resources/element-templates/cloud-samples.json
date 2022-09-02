@@ -471,7 +471,7 @@
       {
         "label": "Result Variable",
         "description": "Name of variable to store the response data in.",
-        "value": "response",
+        "value": "= response",
         "optional": true,
         "type": "String",
         "binding": {
