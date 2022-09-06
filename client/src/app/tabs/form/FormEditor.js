@@ -293,6 +293,44 @@ export class FormEditor extends CachedComponent {
     onAction('lint-tab', { contents });
   }
 
+  onToggleLinting = () => {
+    const {
+      layout = {},
+      onLayoutChanged
+    } = this.props;
+
+    const { panel = {} } = layout;
+
+    if (!panel.open) {
+      onLayoutChanged({
+        panel: {
+          open: true,
+          tab: 'linting'
+        }
+      });
+
+      return;
+    }
+
+    if (panel.tab === 'linting') {
+      onLayoutChanged({
+        panel: {
+          open: false,
+          tab: 'linting'
+        }
+      });
+
+      return;
+    }
+
+    onLayoutChanged({
+      panel: {
+        open: true,
+        tab: 'linting'
+      }
+    });
+  }
+
   isDirty() {
     const {
       form,
@@ -383,7 +421,7 @@ export class FormEditor extends CachedComponent {
             <Linting
               layout={ layout }
               linting={ linting }
-              onLayoutChanged={ onLayoutChanged } />
+              onToggleLinting={ this.onToggleLinting } />
           </Fragment>
         }
       </div>
