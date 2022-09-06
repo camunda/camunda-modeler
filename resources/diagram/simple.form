@@ -17,7 +17,7 @@
       }
     },
     {
-      "description": "An invoice number in the format: C-123.",
+      "description": "An invoice number in the format: C-1234.",
       "key": "invoiceNumber",
       "label": "Invoice Number",
       "type": "textfield",
