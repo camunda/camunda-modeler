@@ -40,6 +40,7 @@ import unknownEngineProfileSchema from '../../__tests__/EngineProfile.unknown.fo
 import missingPatchEngineProfile from '../../__tests__/EngineProfile.missing-patch.platform.form';
 import patchEngineProfile from '../../__tests__/EngineProfile.patch.platform.form';
 
+import { SlotFillRoot } from '../../../slot-fill';
 
 const { spy } = sinon;
 
@@ -660,109 +661,200 @@ describe('<FormEditor>', function() {
 
   describe('linting', function() {
 
-    it('should lint on import (engine profile)', async function() {
+    describe('behavior', function() {
 
-      // given
-      const onActionSpy = spy();
+      it('should lint on import (engine profile)', async function() {
 
-      // when
-      const { instance } = await renderEditor(engineProfileSchema, {
-        onAction: onActionSpy
+        // given
+        const onActionSpy = spy();
+
+        // when
+        const { instance } = await renderEditor(engineProfileSchema, {
+          onAction: onActionSpy
+        });
+
+        // then
+        const { form } = instance.getCached();
+
+        const calls = onActionSpy.getCalls()
+          .filter(call => call.args[0] === 'lint-tab');
+
+        // then
+        expect(calls).to.have.lengthOf(1);
+        expect(onActionSpy).to.have.been.calledWith('lint-tab', { contents: form.getSchema() });
       });
 
-      // then
-      const { form } = instance.getCached();
 
-      const calls = onActionSpy.getCalls()
-        .filter(call => call.args[0] === 'lint-tab');
+      it('should lint on commandStack.changed (engine profile)', async function() {
 
-      // then
-      expect(calls).to.have.lengthOf(1);
-      expect(onActionSpy).to.have.been.calledWith('lint-tab', { contents: form.getSchema() });
+        // given
+        const onActionSpy = spy();
+
+        const { instance } = await renderEditor(engineProfileSchema, {
+          onAction: onActionSpy
+        });
+
+        // when
+        const { form } = instance.getCached();
+
+        form._emit('commandStack.changed');
+
+        const calls = onActionSpy.getCalls()
+          .filter(call => call.args[0] === 'lint-tab');
+
+        // then
+        expect(calls).to.have.lengthOf(2);
+
+        calls.forEach(function(call) {
+          expect(call[1] === form.getSchema());
+        });
+      });
+
+
+      it('should not lint on import or commandStack.changed (no engine profile)', async function() {
+
+        // given
+        const onActionSpy = spy();
+
+        const { instance } = await renderEditor(schema, {
+          onAction: onActionSpy
+        });
+
+        // when
+        const { form } = instance.getCached();
+
+        form._emit('commandStack.changed');
+
+        // then
+        expect(onActionSpy).not.to.have.been.calledWith('lint-tab');
+      });
+
+
+      it('should show linting in status bar', async function() {
+
+        // when
+        const { wrapper } = await renderEditor(engineProfileSchema);
+
+        wrapper.update();
+
+        // then
+        expect(wrapper.find('Linting').exists()).to.be.true;
+      });
+
+
+      it('should unsubscribe on unmount', async function() {
+
+        // given
+        const onActionSpy = spy();
+
+        const {
+          instance,
+          wrapper
+        } = await renderEditor(engineProfileSchema, {
+          onAction: onActionSpy
+        });
+
+        const { form } = instance.getCached();
+
+        // when
+        wrapper.unmount();
+
+        form._emit('commandStack.changed');
+
+        const calls = onActionSpy.getCalls()
+          .filter(call => call.args[0] === 'lint-tab');
+
+        // then
+        expect(calls).to.have.lengthOf(1);
+      });
+
     });
 
 
-    it('should lint on commandStack.changed (engine profile)', async function() {
+    describe('#onToggleLinting', function() {
 
-      // given
-      const onActionSpy = spy();
+      it('should open', async function() {
 
-      const { instance } = await renderEditor(engineProfileSchema, {
-        onAction: onActionSpy
+        // given
+        const onLayoutChangedSpy = spy();
+
+        const { instance } = await renderEditor(schema, {
+          layout: {
+            panel: {
+              open: false
+            }
+          },
+          onLayoutChanged: onLayoutChangedSpy
+        });
+
+        // when
+        instance.onToggleLinting();
+
+        // then
+        expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
+          panel: {
+            open: true,
+            tab: 'linting'
+          }
+        });
       });
 
-      // when
-      const { form } = instance.getCached();
 
-      form._emit('commandStack.changed');
+      it('should open (different tab open)', async function() {
 
-      const calls = onActionSpy.getCalls()
-        .filter(call => call.args[0] === 'lint-tab');
+        // given
+        const onLayoutChangedSpy = spy();
 
-      // then
-      expect(calls).to.have.lengthOf(2);
+        const { instance } = await renderEditor(schema, {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'foo'
+            }
+          },
+          onLayoutChanged: onLayoutChangedSpy
+        });
 
-      calls.forEach(function(call) {
-        expect(call[1] === form.getSchema());
-      });
-    });
+        // when
+        instance.onToggleLinting();
 
-
-    it('should not lint on import or commandStack.changed (no engine profile)', async function() {
-
-      // given
-      const onActionSpy = spy();
-
-      const { instance } = await renderEditor(schema, {
-        onAction: onActionSpy
-      });
-
-      // when
-      const { form } = instance.getCached();
-
-      form._emit('commandStack.changed');
-
-      // then
-      expect(onActionSpy).not.to.have.been.calledWith('lint-tab');
-    });
-
-
-    it('should show linting in status bar', async function() {
-
-      // when
-      const { wrapper } = await renderEditor(engineProfileSchema);
-
-      wrapper.update();
-
-      // then
-      expect(wrapper.find('Linting').exists()).to.be.true;
-    });
-
-
-    it('should unsubscribe on unmount', async function() {
-
-      // given
-      const onActionSpy = spy();
-
-      const {
-        instance,
-        wrapper
-      } = await renderEditor(engineProfileSchema, {
-        onAction: onActionSpy
+        // then
+        expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
+          panel: {
+            open: true,
+            tab: 'linting'
+          }
+        });
       });
 
-      const { form } = instance.getCached();
 
-      // when
-      wrapper.unmount();
+      it('should close', async function() {
 
-      form._emit('commandStack.changed');
+        // given
+        const onLayoutChangedSpy = spy();
 
-      const calls = onActionSpy.getCalls()
-        .filter(call => call.args[0] === 'lint-tab');
+        const { instance } = await renderEditor(schema, {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'linting'
+            }
+          },
+          onLayoutChanged: onLayoutChangedSpy
+        });
 
-      // then
-      expect(calls).to.have.lengthOf(1);
+        // when
+        instance.onToggleLinting();
+
+        // then
+        expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
+          panel: {
+            open: false,
+            tab: 'linting'
+          }
+        });
+      });
+
     });
 
   });
@@ -847,21 +939,23 @@ async function renderEditor(schema, options = {}) {
     };
 
     wrapper = mount(
-      <TestEditor
-        cache={ cache }
-        getConfig={ getConfig }
-        id={ id }
-        layout={ layout }
-        linting={ linting }
-        onAction={ onAction }
-        onChanged={ onChanged }
-        onContentUpdated={ onContentUpdated }
-        onError={ onError }
-        onImport={ waitForImport ? resolveOnImport : onImport }
-        onLayoutChanged={ onLayoutChanged }
-        onModal={ onModal }
-        xml={ schema }
-      />
+      <SlotFillRoot>
+        <TestEditor
+          cache={ cache }
+          getConfig={ getConfig }
+          id={ id }
+          layout={ layout }
+          linting={ linting }
+          onAction={ onAction }
+          onChanged={ onChanged }
+          onContentUpdated={ onContentUpdated }
+          onError={ onError }
+          onImport={ waitForImport ? resolveOnImport : onImport }
+          onLayoutChanged={ onLayoutChanged }
+          onModal={ onModal }
+          xml={ schema }
+        />
+      </SlotFillRoot>
     );
 
     instance = wrapper.find(FormEditor).instance();
