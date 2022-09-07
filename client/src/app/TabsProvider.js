@@ -17,6 +17,7 @@ import {
 import replaceIds from '@bpmn-io/replace-ids';
 
 import { Linter as BpmnLinter } from '@camunda/linting/lib/Linter';
+import { FormLinter } from '@camunda/form-linting/lib/FormLinter';
 
 import bpmnDiagram from './tabs/bpmn/diagram.bpmn';
 import cloudBpmnDiagram from './tabs/cloud-bpmn/diagram.bpmn';
@@ -46,8 +47,6 @@ import {
 import {
   generateId
 } from '../util';
-
-import FormLinter from './tabs/form/linting/FormLinter';
 
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM, DISABLE_CMMN } from '../util/Flags';
 
@@ -115,6 +114,7 @@ const bpmnLinter = new BpmnLinter({
   modeler: 'desktop'
 });
 
+const formLinter = new FormLinter();
 
 /**
  * A provider that allows us to customize available tabs.
@@ -414,7 +414,7 @@ export default class TabsProvider {
           } ];
         },
         getLinter() {
-          return FormLinter;
+          return formLinter;
         }
       },
       form: {
@@ -448,7 +448,7 @@ export default class TabsProvider {
           } ];
         },
         getLinter() {
-          return FormLinter;
+          return formLinter;
         }
       }
     };
