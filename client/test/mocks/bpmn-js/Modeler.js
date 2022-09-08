@@ -106,7 +106,13 @@ export default class Modeler {
         toggle() {}
       },
       propertiesPanel: new PropertiesPanel(),
-      selection: new Selection()
+      selection: new Selection(),
+      linting: {
+        activate() {},
+        deactivate() {},
+        setErrors() {},
+        showError() {}
+      }
     };
   }
 

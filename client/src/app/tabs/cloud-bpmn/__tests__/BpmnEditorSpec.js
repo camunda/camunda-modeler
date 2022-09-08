@@ -213,6 +213,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
   });
 
+
   it('should handle invalid moddle extensions', async function() {
 
     // given
@@ -565,129 +566,104 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     });
 
 
-    describe('#updatePropertiesPanelErrors', function() {
-
-      let cache,
-          instance,
-          modeler;
-
-      beforeEach(async function() {
-        modeler = new BpmnModeler();
-
-        cache = new Cache();
-
-        cache.add('editor', {
-          cached: {
-            modeler
-          },
-          __destroy: () => {}
-        });
-      });
-
+    describe('linting plugin', function() {
 
       it('should set errors', async function() {
 
         // given
-        ({ instance } = await renderEditor(diagramXML, {
-          id: 'editor',
-          cache,
-          linting: [
-            {
-              id: 'foo',
-              error: {
-                type: 'propertyRequired',
-                requiredProperty: 'type',
-                node: {
-                  $type: 'zeebe:TaskDefinition'
-                }
-              }
-            }
-          ],
+        const linting = [
+          {
+            id: 'foo',
+            message: 'Foo'
+          }
+        ];
+
+        const { instance } = await renderEditor(diagramXML, {
+          linting
+        });
+
+        const setErrorsSpy = spy(instance.getModeler().get('linting'), 'setErrors');
+
+        // when
+        const oldLinting = [
+          {
+            id: 'bar',
+            message: 'Bar'
+          }
+        ];
+
+        // TODO @philippfromme: update props instead of calling lifecycle method directly
+        instance.componentDidUpdate({ ...instance.props, linting: oldLinting });
+
+        // then
+        expect(setErrorsSpy).to.have.been.calledOnce;
+        expect(setErrorsSpy).to.have.been.calledWithMatch(linting);
+      });
+
+
+      it('should not set errors', async function() {
+
+        // given
+        const linting = [
+          {
+            id: 'foo',
+            message: 'Foo'
+          }
+        ];
+
+        const { instance } = await renderEditor(diagramXML, {
+          linting
+        });
+
+        const setErrorsSpy = spy(instance.getModeler().get('linting'), 'setErrors');
+
+        // when
+        instance.componentDidUpdate({ ...instance.props, linting });
+
+        // then
+        expect(setErrorsSpy).not.to.have.been.called;
+      });
+
+
+      it('should activate', async function() {
+
+        // given
+        const { instance } = await renderEditor(diagramXML, {
           layout: {
             panel: {
               open: true
             }
           }
-        }));
+        });
 
-        modeler.get('selection').select([
-          {
-            businessObject: {
-              get(name) {
-                if (name === 'id') {
-                  return 'foo';
-                }
-              }
-            }
-          }
-        ]);
-
-        const setErrorsSpy = spy((argsss) => console.log('whoa ', argsss));
-
-        modeler.on('propertiesPanel.setErrors', setErrorsSpy);
+        const activateSpy = spy(instance.getModeler().get('linting'), 'activate');
 
         // when
-        instance.updatePropertiesPanelErrors();
+        instance.componentDidUpdate(instance.props);
 
         // then
-        expect(setErrorsSpy).to.have.been.calledOnce;
-        expect(setErrorsSpy).to.have.been.calledWithMatch({
-          errors: {
-            taskDefinitionType: 'Type must be defined.'
-          }
-        });
+        expect(activateSpy).to.have.been.calledOnce;
       });
 
 
-      it('should unset errors', async function() {
+      it('should deactivate', async function() {
 
         // given
-        ({ instance } = await renderEditor(diagramXML, {
-          id: 'editor',
-          cache,
-          linting: [
-            {
-              id: 'foo',
-              error: {
-                type: 'propertyRequired',
-                requiredProperty: 'type',
-                node: {
-                  $type: 'zeebe:TaskDefinition'
-                }
-              }
-            }
-          ],
+        const { instance } = await renderEditor(diagramXML, {
           layout: {
             panel: {
               open: false
             }
           }
-        }));
+        });
 
-        modeler.get('selection').select([
-          {
-            businessObject: {
-              get(name) {
-                if (name === 'id') {
-                  return 'foo';
-                }
-              }
-            }
-          }
-        ]);
-
-        const setErrorsSpy = spy((argsss) => console.log('whoa ', argsss));
-
-        modeler.on('propertiesPanel.setErrors', setErrorsSpy);
+        const deactivateSpy = spy(instance.getModeler().get('linting'), 'deactivate');
 
         // when
-        instance.updatePropertiesPanelErrors();
+        instance.componentDidUpdate(instance.props);
 
         // then
-        expect(setErrorsSpy).to.have.been.calledOnce;
-        expect(setErrorsSpy).to.have.been.calledWithMatch({
-          errors: {}
-        });
+        expect(deactivateSpy).to.have.been.calledOnce;
       });
 
     });
@@ -973,64 +949,21 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     it('should trigger showLintError', async function() {
 
       // given
-      const fireSpy = spy();
-
-      const scrollToElementSpy = spy();
-
-      const selectSpy = spy();
-
-      const element = { id: 'foo' },
-            rootElement = { id: 'bar' };
-
-      const cache = new Cache();
-
-      cache.add('editor', {
-        cached: {
-          modeler: new BpmnModeler({
-            modules: {
-              canvas: {
-                getRootElement: () => rootElement,
-                resized: () => {},
-                scrollToElement: scrollToElementSpy
-              },
-              elementRegistry: {
-                get: () => element
-              },
-              eventBus: {
-                fire: fireSpy
-              },
-              selection: {
-                get: () => [],
-                select: selectSpy
-              }
-            }
-          })
-        }
-      });
-
       const lintError = {
-        propertiesPanel: {
-          entryId: 'taskDefinition'
-        }
+        id: 'foo',
+        message: 'Foo'
       };
 
-      // when
-      const { instance } = await renderEditor(diagramXML, { cache });
+      const { instance } = await renderEditor(diagramXML);
+
+      const showErrorSpy = spy(instance.getModeler().get('linting'), 'showError');
 
       // when
-      fireSpy.resetHistory();
-
       instance.triggerAction('showLintError', lintError);
 
       // then
-      expect(fireSpy).to.have.been.calledOnce;
-      expect(fireSpy).to.have.been.calledWithMatch('propertiesPanel.showEntry', {
-        id: 'taskDefinition'
-      });
-
-      expect(scrollToElementSpy).to.have.been.calledOnceWith(element);
-
-      expect(selectSpy).to.have.been.calledOnceWith(element);
+      expect(showErrorSpy).to.have.been.calledOnce;
+      expect(showErrorSpy).to.have.been.calledWithMatch(lintError);
     });
 
   });
