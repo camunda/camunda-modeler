@@ -6,6 +6,47 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.3.0
+
+### General
+
+* `FEAT`: add sticky group headers in properties panels ([#726](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/726))
+* `FEAT`: allow application reload via keyboard shortcut ([#3089](https://github.com/camunda/camunda-modeler/issues/3089))
+* `FIX`: restore focus after modal and overlay close ([#2942](https://github.com/camunda/camunda-modeler/issues/2942))
+* `FIX`: properly highlight selected text in XML editor ([#2923](https://github.com/camunda/camunda-modeler/issues/2923))
+* `FIX`: remove user path from Mixpanel tracking ([#3105](https://github.com/camunda/camunda-modeler/pull/3105))
+* `DEPS`: bump @camunda/linting to v0.5.0 ([#3118](https://github.com/camunda/camunda-modeler/pull/3118))
+* `DEPS`: bump codemirror to v6.0.1 ([#3103](https://github.com/camunda/camunda-modeler/pull/3103))
+* `DEPS`: bump diagram-js to v8.9.0 ([#3113](https://github.com/camunda/camunda-modeler/pull/3113))
+* `DEPS`: bump @bpmn-io/properties-panel to v0.20.1 ([#3120](https://github.com/camunda/camunda-modeler/pull/3120))
+
+### BPMN
+
+* `FEAT`: show diagram errors on canvas ([#3118](https://github.com/camunda/camunda-modeler/pull/3118))
+* `FEAT`: add support for extension properties in Camunda Platform 8.1 ([#731](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/731))
+* `FEAT`: allow `zeebe:Properties` only in Camunda Platform 8.1 or higher ([#43](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/43))
+* `FEAT`: show error on duplicate task header keys ([#4](https://github.com/camunda/linting/issues/4))
+* `FIX`: only claim existing element IDs ([#3086](https://github.com/camunda/camunda-modeler/issues/3085))
+* `FIX`: move labels when collapsing sub processes ([#1695](https://github.com/bpmn-io/bpmn-js/issues/1695))
+* `FIX`: render sequence flows always on top ([#1716](https://github.com/bpmn-io/bpmn-js/issues/1716))
+* `FIX`: show FEEL syntax errors in properties panel ([#173](https://github.com/bpmn-io/properties-panel/pull/173))
+* `FIX`: focus expanded FEEL editor on click ([#3072](https://github.com/camunda/camunda-modeler/issues/3072))
+* `FIX`: preserve `isExecutable` flag when deleting pool ([#149](https://github.com/camunda/camunda-bpmn-js/issues/149))
+* `FIX`: only remove one execution listener on undo ([#3016](https://github.com/camunda/camunda-modeler/issues/3016))
+* `FIX`: close start instance overlay on icon click ([#3052](https://github.com/camunda/camunda-modeler/issues/3052))
+* `DEPS`: bump bpmn-moddle to v7.1.3 ([#3113](https://github.com/camunda/camunda-modeler/pull/3113))
+* `DEPS`: bump camunda-bpmn-moddle to v7.0.1 ([#3113](https://github.com/camunda/camunda-modeler/pull/3113))
+* `DEPS`: bump zeebe-bpmn-moddle to v0.15.0 ([#3113](https://github.com/camunda/camunda-modeler/pull/3113))
+* `DEPS`: bump bpmn-js to v9.4.0 ([#3113](https://github.com/camunda/camunda-modeler/pull/3113))
+* `DEPS`: bump bpmn-js-properties-panel to v1.6.1 ([#3124](https://github.com/camunda/camunda-modeler/pull/3124))
+* `DEPS`: bump camunda-bpmn-js to v0.17.2 ([#3124](https://github.com/camunda/camunda-modeler/pull/3124))
+
+### DMN
+
+* `DEPS`: bump dmn-js to v12.3.0 ([#3108](https://github.com/camunda/camunda-modeler/pull/3108))
+* `DEPS`: bump dmn-js-properties-panel to v1.1.2 ([#3120](https://github.com/camunda/camunda-modeler/pull/3120))
+* `DEPS`: bump camunda-dmn-js to v0.6.1 ([#3120](https://github.com/camunda/camunda-modeler/pull/3120))
+
 ## 5.2.0
 
 ### General
@@ -22,6 +63,7 @@ ___Note:__ Yet to be released changes appear here._
 
 
 ### BPMN
+
 * `FEAT`: add FEEL editor for FEEL properties ([#158](https://github.com/bpmn-io/properties-panel/pull/158))
 * `FIX`: check for replacement using actual target ([#1699](https://github.com/bpmn-io/bpmn-js/pull/1699))
 * `FIX`: do not update empty business key ([#2](https://github.com/camunda/camunda-bpmn-js-behaviors/pull/2))
