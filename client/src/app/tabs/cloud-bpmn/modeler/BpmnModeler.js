@@ -16,6 +16,7 @@ import completeDirectEditingModule from '../../bpmn/modeler/features/complete-di
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from '../../bpmn/modeler/features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
+import lintingAnnotationsModule from '@camunda/linting/modeler';
 
 import Flags, {
   DISABLE_ADJUST_ORIGIN
@@ -47,5 +48,6 @@ CloudBpmnModeler.prototype._modules = [
   completeDirectEditingModule,
   globalClipboardModule,
   handToolOnSpaceModule,
-  propertiesPanelKeyboardBindingsModule
+  propertiesPanelKeyboardBindingsModule,
+  lintingAnnotationsModule
 ];

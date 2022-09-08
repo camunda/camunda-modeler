@@ -69,8 +69,6 @@ import {
 
 import { getCloudTemplates } from '../../../util/elementTemplates';
 
-import { getErrors } from '@camunda/linting/lib/utils/properties-panel';
-
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 export const DEFAULT_ENGINE_PROFILE = {
@@ -179,7 +177,15 @@ export class BpmnEditor extends CachedComponent {
       this.handleChanged();
     }
 
-    this.updatePropertiesPanelErrors();
+    if (prevProps.linting !== this.props.linting) {
+      this.getModeler().get('linting').setErrors(this.props.linting || []);
+    }
+
+    if (this.isLintingActive()) {
+      this.getModeler().get('linting').activate();
+    } else {
+      this.getModeler().get('linting').deactivate();
+    }
   }
 
   listen(fn) {
@@ -406,8 +412,6 @@ export class BpmnEditor extends CachedComponent {
 
     this.setState(newState);
 
-    this.updatePropertiesPanelErrors();
-
     try {
       const engineProfile = this.engineProfile.get();
 
@@ -451,8 +455,6 @@ export class BpmnEditor extends CachedComponent {
 
     const { panel = {} } = layout;
 
-    this.updatePropertiesPanelErrors();
-
     if (!panel.open) {
       onLayoutChanged({
         panel: {
@@ -481,27 +483,6 @@ export class BpmnEditor extends CachedComponent {
         tab: 'linting'
       }
     });
-  }
-
-  updatePropertiesPanelErrors() {
-    const lintingActive = this.isLintingActive();
-
-    const modeler = this.getModeler();
-
-    let errors = {};
-
-    if (lintingActive) {
-      const { linting = [] } = this.props;
-
-      const canvas = modeler.get('canvas'),
-            selection = modeler.get('selection');
-
-      const element = selection.get()[ 0 ] || canvas.getRootElement();
-
-      errors = getErrors(linting, element);
-    }
-
-    modeler._emit('propertiesPanel.setErrors', { errors });
   }
 
   isDirty() {
@@ -712,7 +693,7 @@ export class BpmnEditor extends CachedComponent {
     }
 
     if (action === 'showLintError') {
-      showLintError(modeler, context);
+      this.getModeler().get('linting').showError(context);
 
       return;
     }
@@ -913,34 +894,4 @@ export default WithCache(WithCachedState(BpmnEditor));
 
 function isCacheStateChanged(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
-}
-
-function showLintError(modeler, error) {
-  const {
-    id,
-    propertiesPanel = {}
-  } = error;
-
-  const canvas = modeler.get('canvas'),
-        elementRegistry = modeler.get('elementRegistry'),
-        eventBus = modeler.get('eventBus'),
-        selection = modeler.get('selection');
-
-  const element = elementRegistry.get(id);
-
-  if (!element) {
-    return;
-  }
-
-  if (element !== canvas.getRootElement()) {
-    canvas.scrollToElement(element);
-  }
-
-  selection.select(element);
-
-  const { entryId } = propertiesPanel;
-
-  eventBus.fire('propertiesPanel.showEntry', {
-    id: entryId
-  });
 }
