@@ -64,6 +64,8 @@ import css from './App.less';
 
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 
+import AppContext from './AppContext';
+
 
 const log = debug('App');
 
@@ -1824,6 +1826,10 @@ export class App extends PureComponent {
       return this.emitWithTab(type, activeTab, payload);
     }
 
+    if (action === 'selectLintingIssue') {
+      return this.emit('selectLintingIssue', options);
+    }
+
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
@@ -1934,90 +1940,97 @@ export class App extends PureComponent {
 
     const Tab = this.getTabComponent(activeTab);
 
+    const appContext = {
+      subscribe: (...args) => this.on(...args),
+      unsubscribe: (...args) => this.off(...args)
+    };
+
     return (
-      <DropZone
-        onDrop={ this.handleDrop }
-      >
+      <AppContext.Provider value={ appContext }>
+        <DropZone
+          onDrop={ this.handleDrop }
+        >
 
-        <div className={ css.App }>
+          <div className={ css.App }>
 
-          <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
+            <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
 
-            <SlotFillRoot>
+              <SlotFillRoot>
 
-              <div className="tabs">
-                <TabLinks
-                  tabs={ tabs }
-                  dirtyTabs={ dirtyTabs }
-                  unsavedTabs={ unsavedTabs }
-                  activeTab={ activeTab }
-                  getTabIcon={ this._getTabIcon }
-                  onSelect={ this.selectTab }
-                  onMoveTab={ this.moveTab }
-                  onContextMenu={ this.openTabLinksMenu }
-                  onClose={ this.handleCloseTab }
-                  placeholder={ tabs.length ? false : {
-                    label: 'Welcome',
-                    title: 'Welcome Screen'
-                  } }
-                  draggable
+                <div className="tabs">
+                  <TabLinks
+                    tabs={ tabs }
+                    dirtyTabs={ dirtyTabs }
+                    unsavedTabs={ unsavedTabs }
+                    activeTab={ activeTab }
+                    getTabIcon={ this._getTabIcon }
+                    onSelect={ this.selectTab }
+                    onMoveTab={ this.moveTab }
+                    onContextMenu={ this.openTabLinksMenu }
+                    onClose={ this.handleCloseTab }
+                    placeholder={ tabs.length ? false : {
+                      label: 'Welcome',
+                      title: 'Welcome Screen'
+                    } }
+                    draggable
+                  />
+
+                  <TabContainer className="main">
+                    {
+                      <Tab
+                        key={ activeTab.id }
+                        tab={ activeTab }
+                        layout={ layout }
+                        linting={ this.getLintingState(activeTab) }
+                        onChanged={ this.handleTabChanged(activeTab) }
+                        onError={ this.handleTabError(activeTab) }
+                        onWarning={ this.handleTabWarning(activeTab) }
+                        onShown={ this.handleTabShown(activeTab) }
+                        onLayoutChanged={ this.handleLayoutChanged }
+                        onContextMenu={ this.openTabMenu }
+                        onAction={ this.triggerAction }
+                        onModal={ this.openModal }
+                        onUpdateMenu={ this.updateMenu }
+                        getConfig={ this.getConfig }
+                        setConfig={ this.setConfig }
+                        getPlugins={ this.getPlugins }
+                        ref={ this.tabRef }
+                      />
+                    }
+                  </TabContainer>
+                </div>
+
+                <Log
+                  entries={ logEntries }
+                  layout={ layout }
+                  onClear={ this.clearLog }
+                  onLayoutChanged={ this.handleLayoutChanged }
+                  onUpdateMenu={ this.updateMenu }
                 />
 
-                <TabContainer className="main">
-                  {
-                    <Tab
-                      key={ activeTab.id }
-                      tab={ activeTab }
-                      layout={ layout }
-                      linting={ this.getLintingState(activeTab) }
-                      onChanged={ this.handleTabChanged(activeTab) }
-                      onError={ this.handleTabError(activeTab) }
-                      onWarning={ this.handleTabWarning(activeTab) }
-                      onShown={ this.handleTabShown(activeTab) }
-                      onLayoutChanged={ this.handleLayoutChanged }
-                      onContextMenu={ this.openTabMenu }
-                      onAction={ this.triggerAction }
-                      onModal={ this.openModal }
-                      onUpdateMenu={ this.updateMenu }
-                      getConfig={ this.getConfig }
-                      setConfig={ this.setConfig }
-                      getPlugins={ this.getPlugins }
-                      ref={ this.tabRef }
-                    />
-                  }
-                </TabContainer>
-              </div>
+                <StatusBar />
 
-              <Log
-                entries={ logEntries }
-                layout={ layout }
-                onClear={ this.clearLog }
-                onLayoutChanged={ this.handleLayoutChanged }
-                onUpdateMenu={ this.updateMenu }
-              />
+                <PluginsRoot
+                  app={ this }
+                  plugins={ this.plugins }
+                />
 
-              <StatusBar />
+              </SlotFillRoot>
 
-              <PluginsRoot
-                app={ this }
-                plugins={ this.plugins }
-              />
+              { this.state.currentModal === 'KEYBOARD_SHORTCUTS' ?
+                <KeyboardShortcutsModal
+                  getGlobal={ this.getGlobal }
+                  onClose={ this.closeModal }
+                /> : null }
 
-            </SlotFillRoot>
+            </KeyboardInteractionTrapContext.Provider>
 
-            { this.state.currentModal === 'KEYBOARD_SHORTCUTS' ?
-              <KeyboardShortcutsModal
-                getGlobal={ this.getGlobal }
-                onClose={ this.closeModal }
-              /> : null }
+          </div>
 
-          </KeyboardInteractionTrapContext.Provider>
+          <Notifications notifications={ this.state.notifications } />
 
-        </div>
-
-        <Notifications notifications={ this.state.notifications } />
-
-      </DropZone>
+        </DropZone>
+      </AppContext.Provider>
     );
   }
 

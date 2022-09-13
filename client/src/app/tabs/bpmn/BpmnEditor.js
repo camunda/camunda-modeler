@@ -225,7 +225,23 @@ export class BpmnEditor extends CachedComponent {
     } else if (fn === 'off') {
       modeler[ fn ]('commandStack.changed', this.handleLintingDebounced);
     }
+
+    modeler[fn]('lintingAnnotations.click', this.handleLintingAnnotationClick);
+
+    modeler[fn]('selection.changed', this.handleSelectionChanged);
   }
+
+  handleLintingAnnotationClick = ({ report }) => {
+    const { onAction } = this.props;
+
+    onAction('selectLintingIssue', { report });
+  };
+
+  handleSelectionChanged = () => {
+    const { onAction } = this.props;
+
+    onAction('selectLintingIssue', { report: null });
+  };
 
   async loadTemplates() {
     const { getConfig } = this.props;

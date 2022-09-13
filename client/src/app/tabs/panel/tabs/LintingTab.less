@@ -3,6 +3,22 @@
   align-items: flex-start;
   padding: 3px 8px 3px 8px;
   border-bottom: solid 1px var(--color-grey-225-10-95);
+  cursor: default;
+
+  &.linting-issue--selected {
+    background-color: var(--color-blue-205-100-95);
+  }
+
+  &:hover {
+    background-color: var(--color-blue-205-100-50);
+    color: var(--color-white);
+
+    .linting-issue__icon {
+      svg {
+        fill: var(--color-white);
+      }
+    }
+  }
 
   &:last-child {
     border-bottom: none;
@@ -35,17 +51,12 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      background-color: var(--color-blue-205-100-95);
+      background-color: rgba(0, 0, 0, 0.1);
       border-radius: 4px;
       margin-left: 4px;
       margin-right: 4px;
       padding: 0px 4px;
       cursor: default;
-  
-      &:hover {
-        background-color: var(--color-blue-205-100-50);
-        color: var(--color-white);
-      }
     }
   }
 

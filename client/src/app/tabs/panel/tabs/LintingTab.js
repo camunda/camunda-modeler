@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import classnames from 'classnames';
 
@@ -18,8 +18,27 @@ import css from './LintingTab.less';
 
 import ErrorIcon from '../../../../../resources/icons/Error.svg';
 
+import AppContext from '../../../AppContext';
+
 
 export default function LintingTab(props) {
+  const {
+    subscribe,
+    unsubscribe
+  } = useContext(AppContext);
+
+  const [ selectedIssue, setSelectedIssue ] = useState(null);
+
+  const onSelectLintingIssue = ({ report }) => {
+    setSelectedIssue(report);
+  };
+
+  useEffect(() => {
+    subscribe('selectLintingIssue', onSelectLintingIssue);
+
+    return () => unsubscribe('selectLintingIssue', onSelectLintingIssue);
+  }, []);
+
   const {
     layout,
     linting,
@@ -29,6 +48,8 @@ export default function LintingTab(props) {
 
   const onClick = (issue) => () => {
     onAction('showLintError', issue);
+
+    setSelectedIssue(issue);
   };
 
   return <Panel.Tab
@@ -59,6 +80,7 @@ export default function LintingTab(props) {
           key={ `${ id }-${ message }` }
           issue={ issue }
           onClick={ onClick(issue) }
+          selected={ issue === selectedIssue }
         />;
       }))
     }
@@ -68,7 +90,8 @@ export default function LintingTab(props) {
 function LintingIssue(props) {
   const {
     issue,
-    onClick
+    onClick,
+    selected = false
   } = props;
 
   const {
@@ -77,12 +100,25 @@ function LintingIssue(props) {
     message
   } = issue;
 
-  return <div className={ classnames(css.LintingIssue, 'linting-issue') }>
+  const ref = useRef();
+
+  useEffect(() => {
+    if (selected) {
+      ref.current && ref.current.scrollIntoView({
+        block: 'nearest',
+      });
+    }
+  }, [ selected ]);
+
+  return <div
+    className={ classnames(css.LintingIssue, 'linting-issue', { 'linting-issue--selected': selected }) }
+    ref={ ref }
+    onClick={ onClick }>
     <div className="linting-issue__icon">
       <ErrorIcon viewBox="2 2 20 20" />
     </div>
     <div className="linting-issue__text">
-      Error : <span className="linting-issue__link" onClick={ onClick }>{ name || id }</span> - <span className="linting-issue__message">{ message }</span>
+      Error : <span className="linting-issue__link">{ name || id }</span> - <span className="linting-issue__message">{ message }</span>
     </div>
   </div>;
 }
