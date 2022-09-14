@@ -42,7 +42,7 @@ export default class ElementTemplatesModal extends PureComponent {
 
   handleActiveTabChanged = ({ activeTab }) => {
     this.setState({ activeTab });
-  }
+  };
 
   handleBpmnModelerConfigure = async ({ middlewares, tab }) => {
 
@@ -63,7 +63,7 @@ export default class ElementTemplatesModal extends PureComponent {
         }
       };
     });
-  }
+  };
 
   onApply = elementTemplate => {
     const { triggerAction } = this.props;
@@ -75,19 +75,19 @@ export default class ElementTemplatesModal extends PureComponent {
     }
 
     triggerAction('applyElementTemplate', elementTemplate);
-  }
+  };
 
   onOpen = () => {
     this.setState({
       showModal: true
     });
-  }
+  };
 
   onClose = () => {
     this.setState({
       showModal: false
     });
-  }
+  };
 
   render() {
     const { showModal } = this.state;

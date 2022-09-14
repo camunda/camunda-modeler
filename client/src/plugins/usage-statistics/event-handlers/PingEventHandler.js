@@ -38,7 +38,7 @@ export default class PingEventHandler extends BaseEventHandler {
     }
 
     return appPlugins.map(plugin => plugin.name);
-  }
+  };
 
   getFlags = () => {
     const maskedFlags = Object.assign({}, Flags.data);
@@ -50,15 +50,15 @@ export default class PingEventHandler extends BaseEventHandler {
     }
 
     return maskedFlags;
-  }
+  };
 
   setInterval = (func) => {
     return setInterval(func, TWENTY_FOUR_HOURS_MS);
-  }
+  };
 
   clearInterval = () => {
     clearInterval(this._intervalID);
-  }
+  };
 
   onAfterEnable = () => {
     const plugins = this.getPlugins(),
@@ -73,7 +73,7 @@ export default class PingEventHandler extends BaseEventHandler {
     if (this._intervalID === null) {
       this._intervalID = this.setInterval(() => this.sendToET({ plugins, flags }));
     }
-  }
+  };
 
   onAfterDisable = () => {
     if (this._intervalID !== null) {
@@ -81,5 +81,5 @@ export default class PingEventHandler extends BaseEventHandler {
     }
 
     this._intervalID = null;
-  }
+  };
 }

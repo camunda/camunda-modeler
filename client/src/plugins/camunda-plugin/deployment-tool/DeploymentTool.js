@@ -79,11 +79,11 @@ export default class DeploymentTool extends PureComponent {
 
   subscribeToFocusChange = (callback) => {
     this.focusChangeCallback = callback;
-  }
+  };
 
   unsubscribeFromFocusChange = () => {
     delete this.focusChangeCallback;
-  }
+  };
 
   saveTab = (tab) => {
     const {
@@ -91,7 +91,7 @@ export default class DeploymentTool extends PureComponent {
     } = this.props;
 
     return triggerAction('save-tab', { tab });
-  }
+  };
 
   deploy = (options = {}) => {
     const {
@@ -99,7 +99,7 @@ export default class DeploymentTool extends PureComponent {
     } = this.state;
 
     return this.deployTab(activeTab, options, this._anchorRef);
-  }
+  };
 
   async deployTab(tab, options = {}, anchor) {
 
@@ -302,7 +302,7 @@ export default class DeploymentTool extends PureComponent {
       ...savedConfiguration.endpoint,
       rememberCredentials: false
     });
-  }
+  };
 
   saveCredentials = async (credentials) => {
     const savedConfiguration = await this.getSavedConfiguration(this.state.activeTab);
@@ -317,7 +317,7 @@ export default class DeploymentTool extends PureComponent {
       rememberCredentials: true,
       ...credentials
     });
-  }
+  };
 
   async saveEndpoint(endpoint) {
 

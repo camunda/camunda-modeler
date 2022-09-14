@@ -100,7 +100,7 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
 
   endpointConfigurationFieldError = (meta, fieldName) => {
     return this.getConnectionError(fieldName) || (meta.touched && meta.error);
-  }
+  };
 
   getConnectionError(rawFieldName) {
     const { connectionState } = this.state;
@@ -158,7 +158,7 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
     }
 
     this.setState({ configValues: formValues });
-  }
+  };
 
   handleConnectionCheckResult = result => {
     const { connectionResult, endpointErrors } = result;
@@ -175,7 +175,7 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
     }
 
     return this.setConnectionState({ type: CONNECTION_STATE.CONNECTED });
-  }
+  };
 
   setConnectionState(connectionState) {
     this.setState({ connectionState });
@@ -198,7 +198,7 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
     }
 
     this.props.onDeploy(values);
-  }
+  };
 
   render() {
 

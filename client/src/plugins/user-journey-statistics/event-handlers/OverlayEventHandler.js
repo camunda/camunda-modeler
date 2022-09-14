@@ -29,55 +29,55 @@ export default class UIEventHandler {
     this.subscribeEvents(subscribe);
   }
 
-    subscribeEvents = (subscribe) => {
+  subscribeEvents = (subscribe) => {
 
-      // deploy
-      subscribe('deployment.opened', async (event) => {
-        const { tab } = event;
-        const type = getDiagramType(tab.type);
+    // deploy
+    subscribe('deployment.opened', async (event) => {
+      const { tab } = event;
+      const type = getDiagramType(tab.type);
 
-        await this.trackDeploymentOverlay(type, 'opened', event);
+      await this.trackDeploymentOverlay(type, 'opened', event);
+    });
+
+    subscribe('deployment.closed', async (event) => {
+      const { tab } = event;
+      const type = getDiagramType(tab.type);
+
+      await this.trackDeploymentOverlay(type, 'closed', event);
+    });
+
+    // version info
+    subscribe('versionInfo.opened', async ({ source }) => {
+      await this.track('overlay:versionInfo:opened', {
+        source
       });
+    });
+  };
 
-      subscribe('deployment.closed', async (event) => {
-        const { tab } = event;
-        const type = getDiagramType(tab.type);
+  trackDeploymentOverlay = async (diagramType, action, event) => {
 
-        await this.trackDeploymentOverlay(type, 'closed', event);
-      });
+    const {
+      context,
+      tab
+    } = event;
 
-      // version info
-      subscribe('versionInfo.opened', async ({ source }) => {
-        await this.track('overlay:versionInfo:opened', {
-          source
-        });
-      });
-    }
+    const {
+      file
+    } = tab;
 
-    trackDeploymentOverlay = async (diagramType, action, event) => {
+    const {
+      contents
+    } = file;
 
-      const {
-        context,
-        tab
-      } = event;
+    const baseEvent = context === 'deploymentTool' ? 'deploy' : 'startInstance';
+    const eventName = `overlay:${baseEvent}:${action}`;
 
-      const {
-        file
-      } = tab;
+    const engineProfile = await getEngineProfile(contents, diagramType);
 
-      const {
-        contents
-      } = file;
-
-      const baseEvent = context === 'deploymentTool' ? 'deploy' : 'startInstance';
-      const eventName = `overlay:${baseEvent}:${action}`;
-
-      const engineProfile = await getEngineProfile(contents, diagramType);
-
-      this.track(eventName, {
-        diagramType,
-        ...engineProfile
-      });
-    };
+    this.track(eventName, {
+      diagramType,
+      ...engineProfile
+    });
+  };
 
 }

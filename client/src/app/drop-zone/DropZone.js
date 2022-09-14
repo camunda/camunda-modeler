@@ -39,7 +39,7 @@ export class DropZone extends React.PureComponent {
     event.stopPropagation();
 
     this.setState({ draggingOver: true });
-  }
+  };
 
   /**
    * @param {DragEvent} event
@@ -57,7 +57,7 @@ export class DropZone extends React.PureComponent {
     if (this.state.draggingOver && !event.relatedTarget) {
       this.setState({ draggingOver: false });
     }
-  }
+  };
 
   handleDrop = async (event) => {
     if (!this.state.draggingOver) {
@@ -77,7 +77,7 @@ export class DropZone extends React.PureComponent {
     if (filesToOpen.length) {
       this.props.onDrop(filesToOpen);
     }
-  }
+  };
 
   render() {
     return (

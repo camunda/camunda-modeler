@@ -95,7 +95,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
     }
 
     return metrics;
-  }
+  };
 
   onDiagramOpened = async (type, context = {}) => {
 
@@ -133,7 +133,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
       // Payload too large, send again with smaller payload
       this.sendToET(omit(payload, [ 'elementTemplates' ]));
     }
-  }
+  };
 
   onFormOpened = async (file, context = {}) => {
 
@@ -170,7 +170,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
     return await this.onDiagramOpened(types.FORM, context);
 
-  }
+  };
 
   onBpmnDiagramOpened = async (file, type, context = {}) => {
 
@@ -189,7 +189,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
       ...context
     });
 
-  }
+  };
 
   onDmnDiagramOpened = async (file, type, context = {}) => {
 
@@ -203,7 +203,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
       engineProfile,
       ...context
     });
-  }
+  };
 
   getElementTemplates = async (file, type) => {
 
@@ -254,7 +254,7 @@ export default class DiagramOpenEventHandler extends BaseEventHandler {
 
       return reducedTemplate;
     });
-  }
+  };
 }
 
 

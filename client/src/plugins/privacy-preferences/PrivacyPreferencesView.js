@@ -47,7 +47,7 @@ class PrivacyPreferencesView extends PureComponent {
     }
 
     return preferences[key];
-  }
+  };
 
   hasAutoFocus(key) {
     const {

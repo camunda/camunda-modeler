@@ -69,23 +69,23 @@ export class ReportFeedback extends PureComponent {
 
   toggle = () => {
     this.setState(state => ({ ...state, open: !state.open }));
-  }
+  };
 
   setOpen = value => {
     this.setState(state => ({ ...state, open: value }));
-  }
+  };
 
   setActiveTab = tab => {
     this.setState(state => ({ ...state, activeTab: tab }));
-  }
+  };
 
   copySystemInfo = config => {
     this.clipboardCopySystemInfo.clipboardCopy(config);
-  }
+  };
 
   close = () => {
     this.setOpen(false);
-  }
+  };
 
   render() {
     const {

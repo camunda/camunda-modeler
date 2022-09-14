@@ -46,7 +46,7 @@ export default class UserTrackedClickEventHandler extends BaseEventHandler {
     if (payload) {
       this.sendToET(payload);
     }
-  }
+  };
 
   _getEventPayload(target) {
 

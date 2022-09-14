@@ -269,7 +269,7 @@ export default class CamundaDmnModeler extends DmnModeler {
     ).catch(err => {
       console.error(err);
     });
-  }
+  };
 
   _handleOverviewImport = err => {
     if (!this._overview || !this._overview.getActiveViewer()) {
@@ -281,7 +281,7 @@ export default class CamundaDmnModeler extends DmnModeler {
     } else {
       this._overview.getActiveViewer().get('canvas').zoom(OVERVIEW_ZOOM_SCALE);
     }
-  }
+  };
 
   attachOverviewTo = (parentNode) => {
     this.detachOverview();
@@ -297,7 +297,7 @@ export default class CamundaDmnModeler extends DmnModeler {
     this._overview.attachTo(parentNode);
 
     activeViewer.get('canvas').resized();
-  }
+  };
 
   detachOverview = () => {
     const activeViewer = this._overview.getActiveViewer();
@@ -309,7 +309,7 @@ export default class CamundaDmnModeler extends DmnModeler {
     this._emit('detachOverview');
 
     this._overview.detach();
-  }
+  };
 }
 
 

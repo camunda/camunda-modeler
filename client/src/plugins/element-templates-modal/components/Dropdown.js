@@ -56,7 +56,7 @@ export default class Dropdown extends PureComponent {
     };
 
     return _onGlobalMousedown;
-  }
+  };
 
   toggleOpen = (event) => {
     const { open } = this.state;
@@ -66,13 +66,13 @@ export default class Dropdown extends PureComponent {
     });
 
     document.addEventListener('mousedown', this.onGlobalMousedown(event));
-  }
+  };
 
   clearTags = () => {
     const { onChange } = this.props;
 
     onChange([]);
-  }
+  };
 
   toggleTag = tag => {
     const {
@@ -88,7 +88,7 @@ export default class Dropdown extends PureComponent {
         tag
       ]);
     }
-  }
+  };
 
   render() {
     const {

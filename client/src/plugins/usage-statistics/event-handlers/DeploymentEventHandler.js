@@ -62,7 +62,7 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     }
 
     return metrics;
-  }
+  };
 
   handleDeployment = async (event) => {
     const {
@@ -131,7 +131,7 @@ export default class DeploymentEventHandler extends BaseEventHandler {
     }
 
     this.sendToET(payload);
-  }
+  };
 
 }
 

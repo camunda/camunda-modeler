@@ -100,7 +100,7 @@ export class CmmnEditor extends CachedComponent {
         fn(...args);
       }
     };
-  }
+  };
 
   listen(fn) {
     const modeler = this.getModeler();
@@ -133,13 +133,13 @@ export class CmmnEditor extends CachedComponent {
     const modeler = this.getModeler();
 
     modeler.get('commandStack').undo();
-  }
+  };
 
   redo = () => {
     const modeler = this.getModeler();
 
     modeler.get('commandStack').redo();
-  }
+  };
 
   align = (type) => {
     const modeler = this.getModeler();
@@ -147,7 +147,7 @@ export class CmmnEditor extends CachedComponent {
     const selection = modeler.get('selection').get();
 
     modeler.get('alignElements').trigger(selection, type);
-  }
+  };
 
   handleError = (event) => {
     const {
@@ -159,7 +159,7 @@ export class CmmnEditor extends CachedComponent {
     } = this.props;
 
     onError(error);
-  }
+  };
 
   handleImport = (error, warnings) => {
     const {
@@ -189,7 +189,7 @@ export class CmmnEditor extends CachedComponent {
         importing: false
       });
     }
-  }
+  };
 
   handleChanged = () => {
     const modeler = this.getModeler();
@@ -253,7 +253,7 @@ export class CmmnEditor extends CachedComponent {
     }
 
     this.setState(newState);
-  }
+  };
 
   isDirty() {
     const {
@@ -451,14 +451,14 @@ export class CmmnEditor extends CachedComponent {
 
     // TODO(nikku): handle all editor actions
     return modeler.get('editorActions').trigger(action, context);
-  }
+  };
 
   handleSetColor = (fill, stroke) => {
     this.triggerAction('setColor', {
       fill,
       stroke
     });
-  }
+  };
 
   handleContextMenu = (event) => {
 
@@ -469,7 +469,7 @@ export class CmmnEditor extends CachedComponent {
     if (typeof onContextMenu === 'function') {
       onContextMenu(event);
     }
-  }
+  };
 
   handleResize = () => {
     const modeler = this.getModeler();
@@ -479,7 +479,7 @@ export class CmmnEditor extends CachedComponent {
 
     canvas.resized();
     eventBus.fire('propertiesPanel.resized');
-  }
+  };
 
   render() {
     const {

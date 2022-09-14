@@ -24,7 +24,7 @@ class Flags {
 
   reset = () => {
     this.data = {};
-  }
+  };
 
 }
 

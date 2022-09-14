@@ -29,79 +29,79 @@ export default class DeploymentEventHandler {
     this.subscribeToDeploymentEvents(subscribe);
   }
 
-    subscribeToDeploymentEvents = (subscribe) => {
+  subscribeToDeploymentEvents = (subscribe) => {
 
-      subscribe('deployment.done', async (event) => {
-        const { tab } = event;
-        const type = getDiagramType(tab.type);
+    subscribe('deployment.done', async (event) => {
+      const { tab } = event;
+      const type = getDiagramType(tab.type);
 
-        await this.trackDeploymentAction(type, true, event);
-      });
+      await this.trackDeploymentAction(type, true, event);
+    });
 
-      subscribe('deployment.error', async (event) => {
-        const { tab } = event;
-        const type = getDiagramType(tab.type);
+    subscribe('deployment.error', async (event) => {
+      const { tab } = event;
+      const type = getDiagramType(tab.type);
 
-        await this.trackDeploymentAction(type, false, event);
-      });
+      await this.trackDeploymentAction(type, false, event);
+    });
 
+  };
+
+  trackDeploymentAction = async (diagramType, success, event) => {
+    const {
+      context,
+      deployedTo,
+      targetType,
+      error,
+      tab
+    } = event;
+
+    const {
+      file
+    } = tab;
+
+    const {
+      contents
+    } = file;
+
+    if (!diagramType) {
+      return;
     }
 
-    trackDeploymentAction = async (diagramType, success, event) => {
-      const {
-        context,
-        deployedTo,
-        targetType,
-        error,
-        tab
-      } = event;
+    const baseEvent = context === 'deploymentTool' ? 'deploy' : 'startInstance';
+    const outcome = success ? 'success' : 'error';
 
-      const {
-        file
-      } = tab;
+    const eventName = baseEvent + ':' + outcome;
 
-      const {
-        contents
-      } = file;
+    const engineProfile = await getEngineProfile(contents, diagramType);
 
-      if (!diagramType) {
-        return;
-      }
-
-      const baseEvent = context === 'deploymentTool' ? 'deploy' : 'startInstance';
-      const outcome = success ? 'success' : 'error';
-
-      const eventName = baseEvent + ':' + outcome;
-
-      const engineProfile = await getEngineProfile(contents, diagramType);
-
-      let payload = {
-        diagramType,
-        ...engineProfile
-      };
-
-      if (targetType) {
-        payload = {
-          ...payload,
-          targetType
-        };
-      }
-
-      if (!success) {
-        payload = {
-          ...payload,
-          error: error.code
-        };
-      }
-
-      if (deployedTo) {
-        payload = {
-          ...payload,
-          deployedTo
-        };
-      }
-
-      this.track(eventName, payload);
+    let payload = {
+      diagramType,
+      ...engineProfile
     };
+
+    if (targetType) {
+      payload = {
+        ...payload,
+        targetType
+      };
+    }
+
+    if (!success) {
+      payload = {
+        ...payload,
+        error: error.code
+      };
+    }
+
+    if (deployedTo) {
+      payload = {
+        ...payload,
+        deployedTo
+      };
+    }
+
+    this.track(eventName, payload);
+  };
 
 }

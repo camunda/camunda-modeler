@@ -36,5 +36,5 @@ export default class VersionInfoOpenedEventHandler extends BaseEventHandler {
 
   handleEvent = payload => {
     return this.sendToET({ source: payload.source });
-  }
+  };
 }

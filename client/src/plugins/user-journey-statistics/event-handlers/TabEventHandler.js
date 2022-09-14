@@ -71,7 +71,7 @@ export default class TabEventHandler {
 
       this.track('diagram:closed', payload);
     });
-  }
+  };
 
   trackDiagramOpened = async (diagramType, { tab }, engineProfile) => {
 

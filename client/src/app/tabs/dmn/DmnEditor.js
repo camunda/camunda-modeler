@@ -190,7 +190,7 @@ export class DmnEditor extends CachedComponent {
         fn(...args);
       }
     };
-  }
+  };
 
   listen(fn) {
     const modeler = this.getModeler();
@@ -221,11 +221,11 @@ export class DmnEditor extends CachedComponent {
     } = this.getCached();
 
     return dirty || modeler.getStackIdx() !== stackIdx;
-  }
+  };
 
   viewContentChanged = () => {
     this.handleChanged();
-  }
+  };
 
   handleImport(error, warnings) {
     const {
@@ -336,19 +336,19 @@ export class DmnEditor extends CachedComponent {
     });
 
     this.handleChanged();
-  }
+  };
 
   undo = () => {
     const modeler = this.getModeler();
 
     modeler.getActiveViewer().get('commandStack').undo();
-  }
+  };
 
   redo = () => {
     const modeler = this.getModeler();
 
     modeler.getActiveViewer().get('commandStack').redo();
-  }
+  };
 
   handleChanged = () => {
     const modeler = this.getModeler();
@@ -468,7 +468,7 @@ export class DmnEditor extends CachedComponent {
     this.engineProfile.setCached(engineProfile);
 
     this.setState(newState);
-  }
+  };
 
   handleError = (event) => {
     const {
@@ -480,19 +480,19 @@ export class DmnEditor extends CachedComponent {
     } = this.props;
 
     onError(error);
-  }
+  };
 
   handleDistributeElements = (type) => {
     this.triggerAction('distributeElements', {
       type
     });
-  }
+  };
 
   handleAlignElements = (type) => {
     this.triggerAction('alignElements', {
       type
     });
-  }
+  };
 
   checkImport(prevProps) {
     if (!this.isImportNeeded(prevProps)) {
@@ -588,7 +588,7 @@ export class DmnEditor extends CachedComponent {
     onContentUpdated(migratedXML);
 
     return migratedXML;
-  }
+  };
 
   async shouldMigrate() {
     const { onAction } = this.props;
@@ -649,7 +649,7 @@ export class DmnEditor extends CachedComponent {
         stackIdx: this.getModeler().getStackIdx()
       });
     }
-  }
+  };
 
   triggerAction = (action, context) => {
     const {
@@ -731,7 +731,7 @@ export class DmnEditor extends CachedComponent {
     return modeler.getActiveViewer()
       .get('editorActions')
       .trigger(action, context);
-  }
+  };
 
   /**
    * @returns {CamundaDmnModeler}
@@ -764,7 +764,7 @@ export class DmnEditor extends CachedComponent {
 
     canvas.resized();
     eventBus.fire('propertiesPanel.resized');
-  }
+  };
 
   async getXML() {
     const {
@@ -840,7 +840,7 @@ export class DmnEditor extends CachedComponent {
     if (drdView) {
       modeler.open(drdView);
     }
-  }
+  };
 
   toggleOverview = () => {
     const {
@@ -856,7 +856,7 @@ export class DmnEditor extends CachedComponent {
         open: !dmnOverview.open
       }
     });
-  }
+  };
 
   resetOverview() {
     const {

@@ -50,7 +50,7 @@ class ElementTemplatesView extends PureComponent {
 
   componentDidMount = () => {
     this.getElementTemplates();
-  }
+  };
 
   getElementTemplates = async () => {
     const {
@@ -82,13 +82,13 @@ class ElementTemplatesView extends PureComponent {
       elementTemplatesFiltered: elementTemplates,
       applied: selectedElementAppliedElementTemplate
     });
-  }
+  };
 
   onSelect = ({ id }) => {
     this.setState({
       selected: id
     });
-  }
+  };
 
   onToggleExpanded = ({ id }) => {
     const { expanded } = this.state;
@@ -102,7 +102,7 @@ class ElementTemplatesView extends PureComponent {
         expanded: id
       });
     }
-  }
+  };
 
   onApply = () => {
     const {
@@ -124,7 +124,7 @@ class ElementTemplatesView extends PureComponent {
     onApply(elementTemplate);
 
     onClose();
-  }
+  };
 
   onSearchChange = search => {
     const { filter } = this.state;
@@ -133,7 +133,7 @@ class ElementTemplatesView extends PureComponent {
       ...filter,
       search
     });
-  }
+  };
 
   onTagsChange = tags => {
     const { filter } = this.state;
@@ -142,7 +142,7 @@ class ElementTemplatesView extends PureComponent {
       ...filter,
       tags
     });
-  }
+  };
 
   setFilter = filter => {
     const { elementTemplates } = this.state;
@@ -153,11 +153,11 @@ class ElementTemplatesView extends PureComponent {
       elementTemplatesFiltered,
       filter
     });
-  }
+  };
 
   onScroll = ({ target }) => {
     this.setState({ scroll: target.scrollTop > 0 });
-  }
+  };
 
   render() {
     const { onClose } = this.props;
@@ -258,7 +258,7 @@ export class ElementTemplatesListItem extends React.PureComponent {
     }
 
     onSelect();
-  }
+  };
 
   render() {
     const {

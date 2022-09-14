@@ -35,7 +35,7 @@ export default class PrivacyPreferences extends PureComponent {
     showModal: false,
     isInitialPreferences: false,
     preferences: null
-  }
+  };
 
   async componentDidMount() {
     const {
@@ -69,14 +69,14 @@ export default class PrivacyPreferences extends PureComponent {
     this.setState({
       showModal: false
     });
-  }
+  };
 
   onSaveAndClose = (preferences) => {
     this.props.config.set(CONFIG_KEY, preferences)
       .then(() => this.emit('privacy-preferences.changed', preferences));
 
     this.onClose();
-  }
+  };
 
   emit(event, payload) {
     this.props.triggerAction('emit-event', { type: event, payload });

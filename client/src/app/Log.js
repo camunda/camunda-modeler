@@ -72,7 +72,7 @@ export default class Log extends PureComponent {
       open,
       startHeight: height
     };
-  }
+  };
 
   handleResize = (_, delta) => {
     const { y: dy } = delta;
@@ -98,7 +98,7 @@ export default class Log extends PureComponent {
       this.ref.current.classList.toggle('open', open);
       this.ref.current.style.height = `${ open ? height : 0 }px`;
     }
-  }
+  };
 
   handleResizeEnd = () => {
     const {
@@ -114,7 +114,7 @@ export default class Log extends PureComponent {
         open
       }
     });
-  }
+  };
 
   handleToggle = () => {
     const { layout = {} } = this.props;
@@ -128,7 +128,7 @@ export default class Log extends PureComponent {
         open: !log.open
       }
     });
-  }
+  };
 
   changeLayout = (layout = {}) => {
     const { onLayoutChanged } = this.props;
@@ -136,7 +136,7 @@ export default class Log extends PureComponent {
     if (isFunction(onLayoutChanged)) {
       onLayoutChanged(layout);
     }
-  }
+  };
 
   checkFocus = () => {
     const panel = this.focusRef.current;
@@ -150,7 +150,7 @@ export default class Log extends PureComponent {
 
       node.scrollIntoView();
     }
-  }
+  };
 
   componentDidUpdate = (prevProps) => {
     const {
@@ -161,7 +161,7 @@ export default class Log extends PureComponent {
     if (layout.open && prevProps.entries !== entries) {
       this.checkFocus();
     }
-  }
+  };
 
   handleKeyDown = (event) => {
     const { keyCode } = event;
@@ -171,13 +171,13 @@ export default class Log extends PureComponent {
 
       return this.handleToggle();
     }
-  }
+  };
 
   handleCopy = () => {
     selectText(this.focusRef.current);
 
     document.execCommand('copy');
-  }
+  };
 
   updateMenu = () => {
     const { onUpdateMenu } = this.props;
@@ -216,7 +216,7 @@ export default class Log extends PureComponent {
     ];
 
     onUpdateMenu({ editMenu });
-  }
+  };
 
   render() {
     const {

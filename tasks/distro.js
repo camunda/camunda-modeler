@@ -25,6 +25,8 @@ const {
   'on-demand': onDemand
 } = argv;
 
+console.log('PUBLISH:', typeof publish);
+
 // in case of --nightly, update all package versions to the
 // next minor version with the nightly preid. This will
 // result in app and client being versioned like `v1.2.0-nightly.20191121`.
@@ -146,10 +148,6 @@ exec('electron-builder', args, {
 });
 
 function getPublishOptions(publish, nightly, onDemand) {
-  if (typeof publish === undefined) {
-    return [];
-  }
-
   if (nightly || onDemand) {
     const bucket = process.env.AWS_BUCKET;
 

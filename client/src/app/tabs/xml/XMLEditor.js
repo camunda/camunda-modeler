@@ -153,7 +153,7 @@ export class XMLEditor extends CachedComponent {
     this.setState({
       ...newState
     });
-  }
+  };
 
   getXML() {
     const {

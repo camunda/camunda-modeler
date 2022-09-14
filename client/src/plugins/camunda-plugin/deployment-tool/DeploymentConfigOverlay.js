@@ -56,11 +56,11 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
     subscribeToFocusChange(onAppFocusChange);
 
     validator.resetCancel();
-  }
+  };
 
   componentWillUnmount = () => {
     this.props.unsubscribeFromFocusChange();
-  }
+  };
 
   isConnectionError(code) {
     return code === 'NOT_FOUND' || code === 'CONNECTION_FAILED' || code === 'NO_INTERNET_CONNECTION';
@@ -96,21 +96,21 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
         this.externalErrorCodeCache = code;
       }
     }
-  }
+  };
 
   onSetFieldValueReceived = () => {
 
     // Initial endpoint URL validation. Note that this is not a form validation
     // and should affect only the Endpoint URL field.
     return this.checkEndpointURLConnectivity(true);
-  }
+  };
 
   onAppFocusChange = () => {
 
     // User may fix connection related errors by focusing out from app (turn on wifi, start server etc.)
     // In that case we want to check if errors are fixed when the users focuses back on to the app.
     return this.checkEndpointURLConnectivity();
-  }
+  };
 
   onClose = (action = 'cancel', data = null, shouldOverrideCredentials = false) => {
 
@@ -130,7 +130,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
     }
 
     this.props.onClose(action, data);
-  }
+  };
 
   onSubmit = async (values, { setFieldError }) => {
 
@@ -162,11 +162,11 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
       this.externalErrorCodeCache = code;
       this.props.validator.onExternalError(values.endpoint.authType, details, code, setFieldError);
     }
-  }
+  };
 
   fieldError = (meta) => {
     return meta.error;
-  }
+  };
 
   setAuthType = (form) => {
 
@@ -200,13 +200,13 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
       });
     };
 
-  }
+  };
 
   onAuthDetection = (isAuthNeeded) => {
     this.setState({
       isAuthNeeded
     });
-  }
+  };
 
   checkAuthStatus = (values) => {
     this.props.validator.validateConnectionWithoutCredentials(values.endpoint.url).then((result) => {
@@ -216,7 +216,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
         this.onAuthDetection(!!result && (result.code === 'UNAUTHORIZED'));
       }
     });
-  }
+  };
 
   render() {
 

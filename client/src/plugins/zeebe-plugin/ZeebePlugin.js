@@ -30,17 +30,17 @@ export default class ZeebePlugin extends PureComponent {
 
   subscribeToMessaging = (pluginName, callback) => {
     this.subscriptions[pluginName] = callback;
-  }
+  };
 
   unsubscribeFromMessaging = (pluginName) => {
     this.subscriptions = omit(this.subscriptions, pluginName);
-  }
+  };
 
   broadcastMessage = (message, body) => {
     forEach(this.subscriptions, (callback) => {
       callback(message, body);
     });
-  }
+  };
 
   render() {
 

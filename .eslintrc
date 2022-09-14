@@ -1,9 +1,11 @@
 {
-  "env": {
-    "es6": true
-  },
   "extends": [
-    "plugin:bpmn-io/es6",
     "plugin:camunda-licensed/mit"
+  ],
+  "overrides": [
+    {
+      "files": [ "dev.js" ],
+      "extends": "plugin:bpmn-io/node"
+    }
   ]
 }

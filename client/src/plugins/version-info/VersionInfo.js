@@ -55,7 +55,7 @@ export class VersionInfo extends PureComponent {
     } else {
       this.open();
     }
-  }
+  };
 
   open(source = 'statusBar') {
     this.setState({ open: true });

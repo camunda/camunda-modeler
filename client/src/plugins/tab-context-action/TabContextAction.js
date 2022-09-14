@@ -48,7 +48,7 @@ export class TabContextAction extends React.PureComponent {
     this.setState({
       tabs
     });
-  }
+  };
 
   getActionOptions = () => {
     const {
@@ -85,7 +85,7 @@ export class TabContextAction extends React.PureComponent {
     }
 
     return options;
-  }
+  };
 
   getOpenedEditorsOptions = () => {
     const {
@@ -103,7 +103,7 @@ export class TabContextAction extends React.PureComponent {
       maxHeight: SECTION_MAX_HEIGHT,
       items: getOpenTabsList(tabs, onSelect, getTabIcon)
     };
-  }
+  };
 
   componentDidMount() {
     const {

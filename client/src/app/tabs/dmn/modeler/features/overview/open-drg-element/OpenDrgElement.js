@@ -91,7 +91,7 @@ export default class OpenDrgElement {
     const hasDecisionLogic = !!businessObject.decisionLogic;
 
     return isAny(element, [ 'dmn:Decision', 'dmn:LiteralExpression' ]) && hasDecisionLogic;
-  }
+  };
 
   centerViewbox = element => {
     const viewbox = this._canvas.viewbox();
@@ -108,7 +108,7 @@ export default class OpenDrgElement {
     this._canvas.viewbox(newViewbox);
 
     this._canvas.zoom(viewbox.scale);
-  }
+  };
 }
 
 OpenDrgElement.$inject = [

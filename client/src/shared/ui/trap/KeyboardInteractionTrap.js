@@ -40,7 +40,7 @@ class KeyboardInteractionTrapComponent extends PureComponent {
 
   handleFocus = (event) => {
     this.updateMenu(event.target);
-  }
+  };
 
   updateMenu(element) {
 

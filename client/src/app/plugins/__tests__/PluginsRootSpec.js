@@ -56,19 +56,19 @@ function createPluginsRoot(props = {}) {
 }
 
 class App {
-  getConfig = () => {}
+  getConfig = () => {};
 
-  setConfig = () => {}
+  setConfig = () => {};
 
   getGlobal = name => {
     if (name === 'config') {
       return new Config();
     }
-  }
+  };
 
-  triggerAction = () => {}
+  triggerAction = () => {};
 }
 
 class Config {
-  get = () => {}
+  get = () => {};
 }

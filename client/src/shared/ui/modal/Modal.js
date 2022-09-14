@@ -45,7 +45,7 @@ export default class Modal extends PureComponent {
     if (this.props.onClose) {
       return this.props.onClose();
     }
-  }
+  };
 
   componentDidMount() {
     this.focusTrap.mount();

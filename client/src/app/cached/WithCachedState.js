@@ -88,7 +88,7 @@ export default function(Comp) {
 
         return newState;
       });
-    }
+    };
 
 
     render() {

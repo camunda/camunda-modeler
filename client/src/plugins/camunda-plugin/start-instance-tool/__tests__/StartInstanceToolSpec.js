@@ -1196,7 +1196,7 @@ class TestStartInstanceTool extends StartInstanceTool {
 
   checkConnection = (...args) => {
     return this.props.connectionStub && this.props.connectionStub(...args);
-  }
+  };
 
   hasExecutableProcess = (...args) => {
     if (this.props.executableStub) {
@@ -1204,7 +1204,7 @@ class TestStartInstanceTool extends StartInstanceTool {
     }
 
     return true;
-  }
+  };
 
   // closes automatically when overlay is opened
   componentDidUpdate(...args) {

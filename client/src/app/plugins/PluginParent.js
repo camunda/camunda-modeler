@@ -18,13 +18,13 @@ export default class PluginParent extends PureComponent {
   static defaultProps = {
     onError: () => {},
     cancelSubscriptions: () => {}
-  }
+  };
 
   static getDerivedStateFromError() {
     return { error: true };
   }
 
-  state = { error: false }
+  state = { error: false };
 
   componentDidCatch(error) {
     this.props.cancelSubscriptions();

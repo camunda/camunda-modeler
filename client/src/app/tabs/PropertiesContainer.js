@@ -64,7 +64,7 @@ class PropertiesContainerWrapped extends PureComponent {
     const width = propertiesPanel.width || DEFAULT_LAYOUT.width;
 
     return width;
-  }
+  };
 
   handleResizeStart = (event) => {
     adjustHandlerDragStyles(
@@ -87,7 +87,7 @@ class PropertiesContainerWrapped extends PureComponent {
       startWidth: width,
       fullWidth
     };
-  }
+  };
 
   handleResize = () => {
     const width = getCurrentWidth(this.containerRef.current);
@@ -105,7 +105,7 @@ class PropertiesContainerWrapped extends PureComponent {
         }
       });
     }
-  }
+  };
 
   handlePanelResize = (_, delta) => {
     const { x: dx } = delta;
@@ -139,7 +139,7 @@ class PropertiesContainerWrapped extends PureComponent {
     if (this.resizeHandlerRef.current) {
       adjustHandlerSnapStyles(this.resizeHandlerRef.current, this.context);
     }
-  }
+  };
 
   handleResizeEnd = () => {
     adjustHandlerDragStyles(
@@ -166,7 +166,7 @@ class PropertiesContainerWrapped extends PureComponent {
         fullWidth
       }
     });
-  }
+  };
 
   handleToggle = () => {
     const { layout = {} } = this.props;
@@ -181,7 +181,7 @@ class PropertiesContainerWrapped extends PureComponent {
         width: this.state.lastSetWidth
       }
     });
-  }
+  };
 
   changeLayout = (layout = {}) => {
     const { onLayoutChanged } = this.props;
@@ -189,7 +189,7 @@ class PropertiesContainerWrapped extends PureComponent {
     if (isFunction(onLayoutChanged)) {
       onLayoutChanged(layout);
     }
-  }
+  };
 
   render() {
     const {

@@ -27,12 +27,12 @@ export default class EndpointURLValidator extends BaseInputValidator {
 
   resetCancel = () => {
     this.isCanceled = false;
-  }
+  };
 
   cancel = () => {
     this.isCanceled = true;
     this.clearTimeout();
-  }
+  };
 
   validateEndpointURLCompleteness(value) {
     const trimmed = value.trim();
@@ -47,7 +47,7 @@ export default class EndpointURLValidator extends BaseInputValidator {
   setFieldError = (value, setFieldErrorMethod) => {
     this.setCachedValidationResult(value);
     setFieldErrorMethod('endpoint.url', value);
-  }
+  };
 
   clearTimeout() {
     if (this.timeoutID !== null) {
