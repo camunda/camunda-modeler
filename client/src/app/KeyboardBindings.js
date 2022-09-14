@@ -146,7 +146,7 @@ export default class KeyboardBindings {
 
       event.preventDefault();
     }
-  }
+  };
 
   _keyPressHandler = (event) => {
     let action = null;
@@ -167,7 +167,7 @@ export default class KeyboardBindings {
 
       event.preventDefault();
     }
-  }
+  };
 
   _keyUpHandler = (event) => {
     let action = null;
@@ -188,7 +188,7 @@ export default class KeyboardBindings {
     var { key } = event;
 
     delete this.pressedKeys[ key ];
-  }
+  };
 
   update(menu) {
     menu = this.updateRemoveSelectionEntry(menu);

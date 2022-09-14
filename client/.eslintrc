@@ -1,9 +1,14 @@
 {
   "extends": [
-    "plugin:bpmn-io/es6",
-    "plugin:bpmn-io/jsx",
-    "plugin:bpmn-io/mocha"
+    "plugin:bpmn-io/browser",
+    "plugin:bpmn-io/jsx"
   ],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "globals": {
+    "process": "readonly"
+  },
   "rules": {
     "import/first": "error",
     "import/no-amd": "error",
@@ -14,13 +19,19 @@
   "plugins": [
     "import"
   ],
-  "env": {
-    "browser": true,
-    "es6": true
-  },
   "settings": {
     "react": {
-      "version": "16.4"
+      "version": "16.8"
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": [ "test/**/*.js", "**/__tests__/**/*.js" ],
+      "extends": "plugin:bpmn-io/mocha"
+    },
+    {
+      "files": [ "karma.config.js", "webpack.config.js" ],
+      "extends": "plugin:bpmn-io/node"
+    }
+  ]
 }

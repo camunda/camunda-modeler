@@ -55,11 +55,11 @@ export default class DeploymentConfigValidator {
 
   resetCancel = () => {
     this.endpointURLValidator.resetCancel();
-  }
+  };
 
   cancel = () => {
     this.endpointURLValidator.cancel();
-  }
+  };
 
   onExternalError = (authType, details, code, setFieldError) => {
     if (code === 'UNAUTHORIZED') {
@@ -72,39 +72,39 @@ export default class DeploymentConfigValidator {
     } else {
       this.endpointURLValidator.onExternalError(details, setFieldError);
     }
-  }
+  };
 
   validateEndpointURL = (value, setFieldError, isOnBeforeSubmit, onAuthDetection, onConnectionStatusUpdate) => {
     return this.endpointURLValidator.validate(
       value, setFieldError, isOnBeforeSubmit, onAuthDetection, onConnectionStatusUpdate
     );
-  }
+  };
 
   validatePattern = (value, pattern, message) => {
     const matches = pattern.test(value);
 
     return matches ? null : message;
-  }
+  };
 
   validateNonEmpty = (value, message = 'Must provide a value.') => {
     return value ? null : message;
-  }
+  };
 
   validateDeploymentName = (value, isOnBeforeSubmit) => {
     return this.deploymentNameValidator.validate(value, isOnBeforeSubmit);
-  }
+  };
 
   validateToken = (value, isOnBeforeSubmit) => {
     return this.tokenValidator.validate(value, isOnBeforeSubmit);
-  }
+  };
 
   validatePassword = (value, isOnBeforeSubmit) => {
     return this.passwordValidator.validate(value, isOnBeforeSubmit);
-  }
+  };
 
   validateUsername = (value, isOnBeforeSubmit) => {
     return this.usernameValidator.validate(value, isOnBeforeSubmit);
-  }
+  };
 
   validateDeployment(deployment = {}) {
     return this.validate(deployment, {
@@ -164,7 +164,7 @@ export default class DeploymentConfigValidator {
     }
 
     return null;
-  }
+  };
 
   validateConnectionWithoutCredentials = async (url) => {
     this.lastConnectionCheckID ++;
@@ -177,17 +177,17 @@ export default class DeploymentConfigValidator {
       return { isExpired: true };
     }
     return result;
-  }
+  };
 
   clearEndpointURLError = (setFieldError) => {
     this.endpointURLValidator.clearError(setFieldError);
-  }
+  };
 
   updateEndpointURLError = (code, setFieldError) => {
 
     const errorMessage = ApiErrorMessages[code];
     this.endpointURLValidator.updateError(setFieldError, errorMessage);
-  }
+  };
 
   validateBasic(configuration) {
 

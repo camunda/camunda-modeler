@@ -80,7 +80,7 @@ export class MultiSheetTab extends CachedComponent {
       sheets,
       activeSheet
     });
-  }
+  };
 
   handleChanged = (newState = {}) => {
     const {
@@ -93,7 +93,7 @@ export class MultiSheetTab extends CachedComponent {
       ...newState,
       dirty
     });
-  }
+  };
 
   handleError = (error) => {
     const {
@@ -101,7 +101,7 @@ export class MultiSheetTab extends CachedComponent {
     } = this.props;
 
     onError(error);
-  }
+  };
 
   handleWarning = (warning) => {
     const {
@@ -109,7 +109,7 @@ export class MultiSheetTab extends CachedComponent {
     } = this.props;
 
     onWarning(warning);
-  }
+  };
 
   /**
    * Check wether or not tab is dirty.
@@ -179,7 +179,7 @@ export class MultiSheetTab extends CachedComponent {
 
       this.handleError(error);
     }
-  }
+  };
 
   displayImportWarningsNotification(warnings) {
     this.props.onAction('display-notification', {
@@ -222,7 +222,7 @@ export class MultiSheetTab extends CachedComponent {
     this.setCached({
       lastXML: xml
     });
-  }
+  };
 
   handleContextMenu = (event, context) => {
 
@@ -238,7 +238,7 @@ export class MultiSheetTab extends CachedComponent {
       onContextMenu(event, activeSheet.type, context);
     }
 
-  }
+  };
 
   handleLayoutChanged = (newLayout) => {
     const {
@@ -246,7 +246,7 @@ export class MultiSheetTab extends CachedComponent {
     } = this.props;
 
     onLayoutChanged(newLayout);
-  }
+  };
 
   triggerAction = async (action, options) => {
 
@@ -267,7 +267,7 @@ export class MultiSheetTab extends CachedComponent {
     }
 
     return editor.triggerAction(action, options);
-  }
+  };
 
   switchSheet = async (sheet) => {
     const {
@@ -295,7 +295,7 @@ export class MultiSheetTab extends CachedComponent {
       type: 'tab.activeSheetChanged',
       payload: { activeSheet: sheet }
     });
-  }
+  };
 
   getDefaultSheets = () => {
     const {
@@ -317,7 +317,7 @@ export class MultiSheetTab extends CachedComponent {
         type
       };
     });
-  }
+  };
 
   componentDidUpdate(prevProps) {
     const { xml } = this.props;
@@ -333,7 +333,7 @@ export class MultiSheetTab extends CachedComponent {
     const { file } = tab;
 
     return file && !file.path;
-  }
+  };
 
   onAction = (action, options) => {
     const {
@@ -355,7 +355,7 @@ export class MultiSheetTab extends CachedComponent {
     }
 
     return onAction(action, options);
-  }
+  };
 
   render() {
     let {

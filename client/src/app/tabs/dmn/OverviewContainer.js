@@ -56,7 +56,7 @@ class OverviewContainerWrapped extends PureComponent {
       open,
       startWidth: width
     };
-  }
+  };
 
   handleResize = (_, delta) => {
     const { x: dx } = delta;
@@ -82,7 +82,7 @@ class OverviewContainerWrapped extends PureComponent {
       this.ref.current.classList.toggle('open', open);
       this.ref.current.style.width = `${ open ? width : 0 }px`;
     }
-  }
+  };
 
   handleResizeEnd = () => {
     const {
@@ -98,7 +98,7 @@ class OverviewContainerWrapped extends PureComponent {
         width
       }
     });
-  }
+  };
 
   handleToggle = () => {
     const { layout } = this.props || {};
@@ -111,7 +111,7 @@ class OverviewContainerWrapped extends PureComponent {
         open: false
       }
     });
-  }
+  };
 
   changeLayout = (layout = {}) => {
     const { onLayoutChanged } = this.props;
@@ -119,7 +119,7 @@ class OverviewContainerWrapped extends PureComponent {
     if (isFunction(onLayoutChanged)) {
       onLayoutChanged(layout);
     }
-  }
+  };
 
   render() {
     const {

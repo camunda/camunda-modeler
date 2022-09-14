@@ -74,7 +74,7 @@ export default class AppParent extends PureComponent {
     };
 
     return exec().catch(this.handleError);
-  }
+  };
 
   handleOpenFiles = (event, newFiles) => {
 
@@ -96,7 +96,7 @@ export default class AppParent extends PureComponent {
     log('open files', newFiles);
 
     this.getApp().openFiles(newFiles);
-  }
+  };
 
   handleMenuUpdate = (state = {}) => {
     const { keyboardBindings } = this.props;
@@ -109,11 +109,11 @@ export default class AppParent extends PureComponent {
       editMenu: updatedMenu,
       ...state
     });
-  }
+  };
 
   handleContextMenu = (type, options) => {
     this.getBackend().showContextMenu(type, options);
-  }
+  };
 
   handleWorkspaceChanged = async (config) => {
 
@@ -146,7 +146,7 @@ export default class AppParent extends PureComponent {
     } catch (error) {
       log('workspace saved error', error);
     }
-  }
+  };
 
   restoreWorkspace = async () => {
 
@@ -179,7 +179,7 @@ export default class AppParent extends PureComponent {
     };
 
     log('workspace restored');
-  }
+  };
 
   hasPlugins() {
     return this.getPlugins().getAppPlugins().length;
@@ -187,7 +187,7 @@ export default class AppParent extends PureComponent {
 
   togglePlugins = () => {
     this.getBackend().sendTogglePlugins();
-  }
+  };
 
   handleError = async (error, source) => {
     const errorMessage = this.getErrorMessage(source);
@@ -205,13 +205,13 @@ export default class AppParent extends PureComponent {
     }
 
     log(errorMessage, error, source);
-  }
+  };
 
   handleBackendError = async (_, message) => {
     const entry = await getErrorEntry({ message });
 
     this.logToClient(entry.client);
-  }
+  };
 
   getErrorMessage(categoryOrTab) {
     const prefix = categoryOrTab ? (isString(categoryOrTab) ? categoryOrTab : 'tab') : 'app';
@@ -228,7 +228,7 @@ export default class AppParent extends PureComponent {
     this.logToClient(entry);
 
     log(warningMessage, warning, source);
-  }
+  };
 
   getWarningMessage(categoryOrTab) {
     const prefix = categoryOrTab ? (isString(categoryOrTab) ? categoryOrTab : 'tab') : 'app';
@@ -241,14 +241,14 @@ export default class AppParent extends PureComponent {
     await this.restoreWorkspace();
 
     this.getBackend().sendReady();
-  }
+  };
 
   handleResize = () => this.triggerAction(null, 'resize');
 
   handleFocus = (event) => {
     this.triggerAction(event, 'check-file-changed');
     this.triggerAction(event, 'notify-focus-change');
-  }
+  };
 
   handleStarted = async () => {
 
@@ -276,7 +276,7 @@ export default class AppParent extends PureComponent {
     if (typeof onStarted === 'function') {
       onStarted();
     }
-  }
+  };
 
   getApp() {
     return this.appRef.current;

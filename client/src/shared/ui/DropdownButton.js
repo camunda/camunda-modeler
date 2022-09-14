@@ -52,13 +52,13 @@ export default class DropdownButton extends PureComponent {
     }
 
     this.close();
-  }
+  };
 
   onItemClick = item => {
     if (typeof item.onClick === 'function') {
       item.onClick();
     }
-  }
+  };
 
   onDropdownClick = () => {
     const {
@@ -68,7 +68,7 @@ export default class DropdownButton extends PureComponent {
     if (closeOnClick !== false) {
       this.close();
     }
-  }
+  };
 
   toggle = (event) => {
 
@@ -86,7 +86,7 @@ export default class DropdownButton extends PureComponent {
     this.setState({
       active: disabled || !active
     });
-  }
+  };
 
   handleClick = (event) => {
 
@@ -109,13 +109,13 @@ export default class DropdownButton extends PureComponent {
     } else {
       this.toggle(event);
     }
-  }
+  };
 
   close = () => {
     this.setState({
       active: false
     });
-  }
+  };
 
   renderDropdown(items) {
 

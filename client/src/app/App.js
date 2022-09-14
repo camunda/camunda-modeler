@@ -156,7 +156,7 @@ export class App extends PureComponent {
     await this.showTab(tab);
 
     return tab;
-  }
+  };
 
   /**
    * Add a tab to the tab list.
@@ -261,7 +261,7 @@ export class App extends PureComponent {
         }
       }, this.setUnsaved(tab, true));
     }
-  }
+  };
 
   /**
    * Update the tab with new attributes.
@@ -397,22 +397,22 @@ export class App extends PureComponent {
     await this._removeTab(tab);
 
     return true;
-  }
+  };
 
   isEmptyTab = (tab) => {
     return tab === EMPTY_TAB;
-  }
+  };
 
   isDirty = (tab) => {
     return !!this.state.dirtyTabs[tab.id];
-  }
+  };
 
   isUnsaved = (tab) => {
     const { unsavedTabs } = this.state;
     const { id, file } = tab;
 
     return unsavedTabs[id] || (file && !file.path);
-  }
+  };
 
   async _removeTab(tab) {
 
@@ -467,7 +467,7 @@ export class App extends PureComponent {
   selectTab = async tab => {
     const updatedTab = await this.checkFileChanged(tab);
     return this.showTab(updatedTab || tab);
-  }
+  };
 
   moveTab = (tab, newIndex) => {
     const {
@@ -487,7 +487,7 @@ export class App extends PureComponent {
     this.setState({
       tabs: newTabs
     });
-  }
+  };
 
   showOpenFilesDialog = async () => {
     const dialog = this.getGlobal('dialog');
@@ -516,13 +516,13 @@ export class App extends PureComponent {
     const files = await this.readFileList(filePaths);
 
     await this.openFiles(files);
-  }
+  };
 
   showCloseFileDialog = (file) => {
     const { name } = file;
 
     return this.getGlobal('dialog').showCloseFileDialog({ name });
-  }
+  };
 
   showSaveFileDialog = (file, options = {}) => {
     const {
@@ -535,7 +535,7 @@ export class App extends PureComponent {
       filters,
       title
     });
-  }
+  };
 
   showSaveFileErrorDialog(options) {
     return this.getGlobal('dialog').showSaveFileErrorDialog(options);
@@ -579,7 +579,7 @@ export class App extends PureComponent {
 
       return tab;
     }
-  }
+  };
 
   /**
    * Open the given files, optionally passing a file
@@ -629,7 +629,7 @@ export class App extends PureComponent {
     }
 
     return openedTabs;
-  }
+  };
 
   readFileList = async filePaths => {
     const readOperations = filePaths.map(this.readFileFromPath);
@@ -639,7 +639,7 @@ export class App extends PureComponent {
     const files = rawFiles.filter(Boolean);
 
     return files;
-  }
+  };
 
   readFileFromPath = async (filePath) => {
 
@@ -670,7 +670,7 @@ export class App extends PureComponent {
     }
 
     return file;
-  }
+  };
 
   /**
    * Find existing tabs for given files. If no tab was found for one tab,
@@ -753,13 +753,13 @@ export class App extends PureComponent {
     event.preventDefault();
 
     this.props.onContextMenu('tab', { tabId: tab.id });
-  }
+  };
 
   openTabMenu = (event, type, context) => {
     event.preventDefault();
 
     this.props.onContextMenu(type);
-  }
+  };
 
   handleLayoutChanged = (newLayout) => {
     const {
@@ -770,7 +770,7 @@ export class App extends PureComponent {
       ...layout,
       ...newLayout
     });
-  }
+  };
 
 
   /**
@@ -801,7 +801,7 @@ export class App extends PureComponent {
       },
       tabLoadingState: 'shown'
     });
-  }
+  };
 
   /**
    * Handle tab error.
@@ -812,7 +812,7 @@ export class App extends PureComponent {
    */
   handleTabError = (tab) => (error) => {
     this.handleError(error, tab);
-  }
+  };
 
   /**
    * Handle tab warning.
@@ -823,7 +823,7 @@ export class App extends PureComponent {
    */
   handleTabWarning = (tab) => (warning) => {
     this.handleWarning(warning, tab);
-  }
+  };
 
   /**
    * Handle tab changed.
@@ -851,7 +851,7 @@ export class App extends PureComponent {
         ...properties
       }
     });
-  }
+  };
 
   lintTab = async (tab, contents) => {
     const { tabsProvider } = this.props;
@@ -873,11 +873,11 @@ export class App extends PureComponent {
     const results = await linter.lint(contents);
 
     this.setLintingState(tab, results);
-  }
+  };
 
   getLintingState = (tab) => {
     return this.state.lintingState[ tab.id ];
-  }
+  };
 
   setLintingState = (tab, results) => {
     const { tabs } = this.state;
@@ -898,13 +898,13 @@ export class App extends PureComponent {
     this.setState({
       lintingState
     });
-  }
+  };
 
   resizeTab = () => {
     const tab = this.tabRef.current;
 
     return tab.triggerAction('resize');
-  }
+  };
 
   setDirty(tab, dirty = true) {
     const { tabs } = this.state;
@@ -1086,7 +1086,7 @@ export class App extends PureComponent {
    */
   workspaceChangedDebounced = () => {
     return this.workspaceChanged(false);
-  }
+  };
 
   /**
    * Save workspace. Debounced by default.
@@ -1121,7 +1121,7 @@ export class App extends PureComponent {
       layout,
       endpoints
     });
-  }
+  };
 
   /**
    * Propagates errors to parent.
@@ -1137,7 +1137,7 @@ export class App extends PureComponent {
     } = this.props;
 
     return onError(error, categoryOrTab);
-  }
+  };
 
   getGlobal = (name) => {
     const {
@@ -1149,7 +1149,7 @@ export class App extends PureComponent {
     }
 
     throw new Error(`global <${name}> not exposed`);
-  }
+  };
 
   /**
    * Propagates warnings to parent.
@@ -1442,7 +1442,7 @@ export class App extends PureComponent {
       });
 
     return pSeries(saveTasks);
-  }
+  };
 
   clearLog = () => {
     this.setState({
@@ -1472,11 +1472,11 @@ export class App extends PureComponent {
     });
 
     return pSeries(closeTasks);
-  }
+  };
 
   revealFile = (path) => {
     return this.getGlobal('dialog').showFileExplorerDialog({ path });
-  }
+  };
 
   revealTabInFileExplorer = (matcher) => {
 
@@ -1494,7 +1494,7 @@ export class App extends PureComponent {
     }
 
     return Promise.reject(new Error('cannot open file explorer: tab not found or no path'));
-  }
+  };
 
   reopenLastTab = () => {
 
@@ -1507,7 +1507,7 @@ export class App extends PureComponent {
     }
 
     return Promise.reject(new Error('no last tab'));
-  }
+  };
 
   showShortcuts = () => this.openModal('KEYBOARD_SHORTCUTS');
 
@@ -1529,7 +1529,7 @@ export class App extends PureComponent {
       lastTab: !!this.closedTabs.get(),
       tabs: this.state.tabs
     });
-  }
+  };
 
   /**
    * Exports file to given export type.
@@ -1827,7 +1827,7 @@ export class App extends PureComponent {
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
-  }, this.handleError)
+  }, this.handleError);
 
   openExternalUrl(options) {
     this.getGlobal('backend').send('external:open-url', options);
@@ -1844,7 +1844,7 @@ export class App extends PureComponent {
 
   handleCloseTab = (tab) => {
     this.triggerAction('close-tab', { tabId: tab.id }).catch(console.error);
-  }
+  };
 
   handleDrop = async (filePaths = []) => {
     try {
@@ -1854,7 +1854,7 @@ export class App extends PureComponent {
     } catch (error) {
       this.handleError(error);
     }
-  }
+  };
 
   getConfig = (key, ...args) => {
     const config = this.getGlobal('config');
@@ -1864,17 +1864,17 @@ export class App extends PureComponent {
     const { file } = activeTab;
 
     return config.get(key, file, ...args);
-  }
+  };
 
   setConfig = (key, ...args) => {
     const config = this.getGlobal('config');
 
     return config.set(key, ...args);
-  }
+  };
 
   getPlugins = type => {
     return this.getGlobal('plugins').get(type);
-  }
+  };
 
   async quit() {
     try {
@@ -1919,7 +1919,7 @@ export class App extends PureComponent {
     this.__actionCache[actionName] = { fn, args };
 
     return fn;
-  }
+  };
 
   render() {
 
@@ -2055,7 +2055,7 @@ export class App extends PureComponent {
     });
 
     return groupedItems;
-  }
+  };
 
   _getTabIcon = (tab) => {
     const {
@@ -2067,7 +2067,7 @@ export class App extends PureComponent {
     } = tab;
 
     return tabsProvider.getTabIcon(type);
-  }
+  };
 }
 
 

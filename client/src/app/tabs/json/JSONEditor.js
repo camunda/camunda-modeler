@@ -154,7 +154,7 @@ export class JSONEditor extends CachedComponent {
     this.setState({
       ...newState
     });
-  }
+  };
 
   getXML() {
     const {

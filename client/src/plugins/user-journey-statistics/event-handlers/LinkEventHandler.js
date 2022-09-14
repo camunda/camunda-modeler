@@ -17,43 +17,43 @@ export default class LinkEventHandler {
     document.addEventListener('click', this.trackClick);
   }
 
-   trackClick = ({ target }) => {
-     let payload, payloadType;
+  trackClick = ({ target }) => {
+    let payload, payloadType;
 
-     for (const parent of TRACKED_LINK_PARENT_IDS) {
+    for (const parent of TRACKED_LINK_PARENT_IDS) {
 
-       if (target.matches(`#${parent} a[href]`)) {
-         payload = {
-           parent,
-           label: target.textContent
-         };
-         payloadType = 'link';
+      if (target.matches(`#${parent} a[href]`)) {
+        payload = {
+          parent,
+          label: target.textContent
+        };
+        payloadType = 'link';
 
-         // Only provide href for external links
-         if (target.href.startsWith('http') && !target.href.startsWith('http://localhost')) {
-           payload.link = target.href;
-           payload.type = 'external-link';
-         } else {
-           payload.type = 'internal-link';
-         }
-       }
+        // Only provide href for external links
+        if (target.href.startsWith('http') && !target.href.startsWith('http://localhost')) {
+          payload.link = target.href;
+          payload.type = 'external-link';
+        } else {
+          payload.type = 'internal-link';
+        }
+      }
 
-       if (target.matches(`#${parent} button`)) {
-         payloadType = 'button';
-         payload = {
-           parent,
-           label: target.textContent,
-           type: payloadType
-         };
-       }
-     }
+      if (target.matches(`#${parent} button`)) {
+        payloadType = 'button';
+        payload = {
+          parent,
+          label: target.textContent,
+          type: payloadType
+        };
+      }
+    }
 
-     if (payloadType) {
-       const action = payloadType === 'link' ? 'opened' : 'clicked';
-       const event = `${payloadType}:${action}`;
+    if (payloadType) {
+      const action = payloadType === 'link' ? 'opened' : 'clicked';
+      const event = `${payloadType}:${action}`;
 
-       this.track(event, payload);
-     }
+      this.track(event, payload);
+    }
 
-   }
+  };
 }

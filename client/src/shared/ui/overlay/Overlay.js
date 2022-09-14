@@ -66,7 +66,7 @@ export class Overlay extends PureComponent {
     if (this.props.onClose) {
       return this.props.onClose();
     }
-  }
+  };
 
   componentDidMount() {
     this.focusTrap.mount();

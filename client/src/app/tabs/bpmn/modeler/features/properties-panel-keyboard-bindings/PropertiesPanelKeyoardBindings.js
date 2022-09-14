@@ -32,7 +32,7 @@ export default class PropertiesPanelKeyboardBindings {
     container.addEventListener('focusin', this.handleFocusin);
     container.addEventListener('focusout', this.handleFocusout);
     container.addEventListener('keydown', this.handleKeydown);
-  }
+  };
 
   _removeEventListeners = () => {
     const container = this._getContainer();
@@ -40,15 +40,15 @@ export default class PropertiesPanelKeyboardBindings {
     container.removeEventListener('focusin', this.handleFocusin);
     container.removeEventListener('focusout', this.handleFocusout);
     container.removeEventListener('keydown', this.handleKeydown);
-  }
+  };
 
   handleFocusin = () => {
     this._eventBus.fire('propertiesPanel.focusin');
-  }
+  };
 
   handleFocusout = () => {
     this._eventBus.fire('propertiesPanel.focusout');
-  }
+  };
 
   handleKeydown = event => {
     const commandStack = this._commandStack;
@@ -64,7 +64,7 @@ export default class PropertiesPanelKeyboardBindings {
 
       this._cancel(event);
     }
-  }
+  };
 
   _getContainer() {
     return this._propertiesPanel._container;

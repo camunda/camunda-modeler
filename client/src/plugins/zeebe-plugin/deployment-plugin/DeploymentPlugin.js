@@ -313,7 +313,7 @@ export default class DeploymentPlugin extends PureComponent {
         this.state.overlayState.onClose(null);
       }
     }
-  }
+  };
 
   async saveConfig(tab, config) {
     const {
@@ -556,7 +556,7 @@ export default class DeploymentPlugin extends PureComponent {
     }
 
     else this.deploy();
-  }
+  };
 
   isButtonActive = () => {
     const {
@@ -564,7 +564,7 @@ export default class DeploymentPlugin extends PureComponent {
     } = this.state;
 
     return overlayState ? !overlayState.isStart : null;
-  }
+  };
 
   render() {
     const {

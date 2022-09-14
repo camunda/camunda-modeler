@@ -43,7 +43,7 @@ export default class DefaultInputValidator extends BaseInputValidator {
       return result;
     }
     return getCachedValidationResult();
-  }
+  };
 
   validate = (value, isOnBeforeSubmit) => {
 
@@ -73,5 +73,5 @@ export default class DefaultInputValidator extends BaseInputValidator {
     }
 
     setCachedValue(value);
-  }
+  };
 }

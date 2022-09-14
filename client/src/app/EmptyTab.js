@@ -45,7 +45,7 @@ export default class EmptyTab extends PureComponent {
         {title}
       </button>
     );
-  }
+  };
 
   renderCloudColumn = () => {
 
@@ -74,7 +74,7 @@ export default class EmptyTab extends PureComponent {
         }
       </div>
     );
-  }
+  };
 
   renderPlatformColumn = () => {
 
@@ -103,7 +103,7 @@ export default class EmptyTab extends PureComponent {
         }
       </div>
     );
-  }
+  };
 
   renderLearnMoreColumn = () => {
 
@@ -130,7 +130,7 @@ export default class EmptyTab extends PureComponent {
         </div>
       </div>
     );
-  }
+  };
 
   render() {
 

@@ -191,7 +191,7 @@ export default class UpdateChecks extends PureComponent {
         autoFocusKey: 'ENABLE_UPDATE_CHECKS'
       }
     });
-  }
+  };
 
   async performCheck() {
     const {
@@ -320,7 +320,7 @@ export default class UpdateChecks extends PureComponent {
     this.setState({
       showModal: false
     });
-  }
+  };
 
   onGoToDownloadPage = () => {
     const {
@@ -333,7 +333,7 @@ export default class UpdateChecks extends PureComponent {
 
     _getGlobal('backend').send('external:open-url', { url: latestVersionInfo.downloadURL });
     this.onClose();
-  }
+  };
 
   render() {
     const {

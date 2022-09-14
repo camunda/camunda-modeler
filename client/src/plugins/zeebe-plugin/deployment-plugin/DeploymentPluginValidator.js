@@ -38,48 +38,48 @@ export default class DeploymentPluginValidator {
 
   validateNonEmpty = (value, message = MUST_PROVIDE_A_VALUE) => {
     return value ? null : message;
-  }
+  };
 
   validateZeebeContactPoint = (value) => {
     return this.validateNonEmpty(value, CONTACT_POINT_MUST_NOT_BE_EMPTY) ||
       validateUrl(value, CONTACT_POINT_MUST_BE_URL_OR_IP) ||
       checkPort(value, CONTACT_POINT_MUST_BE_URL_OR_IP);
-  }
+  };
 
   validateOAuthURL = (value) => {
     return this.validateNonEmpty(value, OAUTH_URL_MUST_NOT_BE_EMPTY);
-  }
+  };
 
   validateAudience = (value) => {
     return this.validateNonEmpty(value, AUDIENCE_MUST_NOT_BE_EMPTY);
-  }
+  };
 
   validateClientId = (value) => {
     return this.validateNonEmpty(value, CLIENT_ID_MUST_NOT_BE_EMPTY);
-  }
+  };
 
   validateClientSecret = (value) => {
     return this.validateNonEmpty(value, CLIENT_SECRET_MUST_NOT_BE_EMPTY);
-  }
+  };
 
   validateClusterUrl = (value) => {
     return validCloudUrl(value) ? null : CLUSTER_URL_MUST_BE_VALID_CLOUD_URL;
-  }
+  };
 
   validateConnection = (endpoint) => {
     return this.zeebeAPI.checkConnection(endpoint);
-  }
+  };
 
   validateConfig = config => {
     const endpointErrors = this.validateEndpoint(config.endpoint);
     const deploymentErrors = this.validateDeployment(config.deployment);
 
     return { ...endpointErrors, ...deploymentErrors };
-  }
+  };
 
   validateDeployment = deployment => {
     return this.validate(deployment, { name: this.validateNonEmpty });
-  }
+  };
 
   validateEndpoint = endpoint => {
     const { authType, targetType } = endpoint;
@@ -109,7 +109,7 @@ export default class DeploymentPluginValidator {
     }
 
     return this.validate(endpoint, validators);
-  }
+  };
 
   validate(values, validators) {
 

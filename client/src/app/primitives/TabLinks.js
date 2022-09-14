@@ -70,7 +70,7 @@ export default class TabLinks extends PureComponent {
     const tab = tabs.find(({ id }) => id === dragTab.dataset.tabId);
 
     onSelect(tab);
-  }
+  };
 
   handleDrag = ({ dragTab, newIndex }) => {
     const {
@@ -81,7 +81,7 @@ export default class TabLinks extends PureComponent {
     const tab = tabs.find(({ id }) => id === dragTab.dataset.tabId);
 
     onMoveTab(tab, newIndex);
-  }
+  };
 
   isDirty = (tab) => {
     const {
@@ -91,7 +91,7 @@ export default class TabLinks extends PureComponent {
 
     return (dirtyTabs && !!dirtyTabs[ tab.id ]) ||
            (unsavedTabs && !!unsavedTabs[ tab.id ]);
-  }
+  };
 
   render() {
 

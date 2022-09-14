@@ -177,7 +177,7 @@ export default class StartInstancePlugin extends PureComponent {
     }
 
     return { ...startConfiguration, variables };
-  }
+  };
 
   async getDeployConfig() {
     const deferred = pDefer();

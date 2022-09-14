@@ -42,7 +42,7 @@ export default class Dialog {
    */
   showOpenFileErrorDialog = async (options) => {
     return this.backend.send('dialog:open-file-error', options);
-  }
+  };
 
   /**
    * Show save dialog.
@@ -174,6 +174,6 @@ export default class Dialog {
       ].join(''),
       type: 'info'
     });
-  }
+  };
 
 }

@@ -495,7 +495,7 @@ export class Backend extends Mock {
     };
   }
 
-  registerMenu = () => Promise.resolve()
+  registerMenu = () => Promise.resolve();
 
   getPlatform() {}
 

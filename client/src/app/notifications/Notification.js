@@ -29,7 +29,7 @@ export default class Notification extends PureComponent {
 
   state = {
     error: false
-  }
+  };
 
   componentDidMount() {
     const { duration } = this.props;

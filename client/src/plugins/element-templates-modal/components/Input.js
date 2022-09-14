@@ -22,13 +22,13 @@ export default class Input extends PureComponent {
     const { onChange } = this.props;
 
     onChange(event.target.value);
-  }
+  };
 
   onClear = () => {
     const { onChange } = this.props;
 
     onChange('');
-  }
+  };
 
   render() {
     const {

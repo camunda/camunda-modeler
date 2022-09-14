@@ -275,7 +275,7 @@ export class FormEditor extends CachedComponent {
 
       // TODO
     }
-  }
+  };
 
   handleLinting = () => {
     const engineProfile = this.engineProfile.getCached();
@@ -291,7 +291,7 @@ export class FormEditor extends CachedComponent {
     const { onAction } = this.props;
 
     onAction('lint-tab', { contents });
-  }
+  };
 
   onToggleLinting = () => {
     const {
@@ -329,7 +329,7 @@ export class FormEditor extends CachedComponent {
         tab: 'linting'
       }
     });
-  }
+  };
 
   isDirty() {
     const {

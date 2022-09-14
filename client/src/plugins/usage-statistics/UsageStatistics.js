@@ -68,7 +68,7 @@ export default class UsageStatistics extends PureComponent {
 
   isEnabled = () => {
     return this._isEnabled;
-  }
+  };
 
   enable = () => {
     log('Enabling');
@@ -77,14 +77,14 @@ export default class UsageStatistics extends PureComponent {
     this._eventHandlers.forEach((eventHandler) => {
       eventHandler.enable();
     });
-  }
+  };
 
   disable = () => {
     log('Disabling.');
     this._isEnabled = false;
 
     this._eventHandlers.forEach((eventHandler) => eventHandler.disable());
-  }
+  };
 
   async setEditorId() {
     this._editorID = await this.props.config.get(EDITOR_ID_CONFIG_KEY);
@@ -137,7 +137,7 @@ export default class UsageStatistics extends PureComponent {
     }
 
     return this.disable();
-  }
+  };
 
   generatePayload = (data) => {
 
@@ -150,12 +150,12 @@ export default class UsageStatistics extends PureComponent {
         internals: { ...data }
       }
     };
-  }
+  };
 
   // We're setting this method because we want to be able to test this
   fetch = async (endpoint, payload) => {
     return fetch(endpoint, payload);
-  }
+  };
 
   sendRequest = async (eventPayload) => {
 
@@ -185,7 +185,7 @@ export default class UsageStatistics extends PureComponent {
 
       return { error: err };
     }
-  }
+  };
 
   render() {
     return null;

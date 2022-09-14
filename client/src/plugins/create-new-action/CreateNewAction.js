@@ -46,7 +46,7 @@ export class CreateNewAction extends PureComponent {
 
   onClose = () => {
     this.setState({ open: false });
-  }
+  };
 
   render() {
     const {

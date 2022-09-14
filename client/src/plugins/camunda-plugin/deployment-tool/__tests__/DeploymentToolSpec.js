@@ -1383,41 +1383,41 @@ describe('<DeploymentTool>', () => {
       return this.props.deploymentErrorSpy && this.props.deploymentErrorSpy(...args);
     }
 
-  checkConnection = (...args) => {
-    return this.props.checkConnectionSpy && this.props.checkConnectionSpy(...args);
-  }
+    checkConnection = (...args) => {
+      return this.props.checkConnectionSpy && this.props.checkConnectionSpy(...args);
+    };
 
-  // closes automatically when modal is opened
-  componentDidUpdate(...args) {
-    super.componentDidUpdate && super.componentDidUpdate(...args);
+    // closes automatically when modal is opened
+    componentDidUpdate(...args) {
+      super.componentDidUpdate && super.componentDidUpdate(...args);
 
-    const { overlayState } = this.state;
-    const {
-      userAction,
-      endpoint,
-      deployment,
-      keepOpen
-    } = this.props;
+      const { overlayState } = this.state;
+      const {
+        userAction,
+        endpoint,
+        deployment,
+        keepOpen
+      } = this.props;
 
-    if (overlayState) {
-      const action = userAction || 'deploy';
+      if (overlayState) {
+        const action = userAction || 'deploy';
 
-      const configuration = action !== 'cancel' && {
-        endpoint: {
-          ...overlayState.configuration.endpoint,
-          ...endpoint
-        },
-        deployment: {
-          ...overlayState.configuration.deployment,
-          ...deployment
+        const configuration = action !== 'cancel' && {
+          endpoint: {
+            ...overlayState.configuration.endpoint,
+            ...endpoint
+          },
+          deployment: {
+            ...overlayState.configuration.deployment,
+            ...deployment
+          }
+        };
+
+        if (!keepOpen) {
+          overlayState.handleClose(action, configuration);
         }
-      };
-
-      if (!keepOpen) {
-        overlayState.handleClose(action, configuration);
       }
     }
-  }
   }
 
   function createDeploymentTool({

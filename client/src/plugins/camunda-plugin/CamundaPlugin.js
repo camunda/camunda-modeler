@@ -20,23 +20,23 @@ import StartInstanceTool from './start-instance-tool';
  */
 export default class CamundaPlugin extends PureComponent {
 
-    deployRef = React.createRef();
+  deployRef = React.createRef();
 
-    render() {
+  render() {
 
-      const deployService = new DeployService(this.deployRef);
+    const deployService = new DeployService(this.deployRef);
 
-      return <React.Fragment>
-        <DeploymentTool
-          ref={ this.deployRef }
-          { ...this.props } />
+    return <React.Fragment>
+      <DeploymentTool
+        ref={ this.deployRef }
+        { ...this.props } />
 
-        <StartInstanceTool
-          ref={ this.startInstanceRef }
-          deployService={ deployService }
-          { ...this.props } />
-      </React.Fragment>;
-    }
+      <StartInstanceTool
+        ref={ this.startInstanceRef }
+        deployService={ deployService }
+        { ...this.props } />
+    </React.Fragment>;
+  }
 }
 
 class DeployService {
@@ -51,7 +51,7 @@ class DeployService {
   saveDeployConfiguration = (...args) => this.current().saveConfiguration(...args);
   canDeployWithConfiguration = (...args) => this.current().canDeployWithConfiguration(...args);
   getVersion = (...args) => this.current().getVersion(...args);
-  closeOverlay = (...args) => this.current().closeOverlay(...args)
+  closeOverlay = (...args) => this.current().closeOverlay(...args);
 
   current() {
     return this.deploymentRef.current;

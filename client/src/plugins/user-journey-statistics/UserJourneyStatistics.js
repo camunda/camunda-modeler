@@ -67,86 +67,86 @@ export default class UserJourneyStatistics extends PureComponent {
     });
   }
 
-   isEnabled = () => {
-     return this._isEnabled;
-   }
+  isEnabled = () => {
+    return this._isEnabled;
+  };
 
-   enable = () => {
-     log('Enabling');
+  enable = () => {
+    log('Enabling');
 
-     this.mixpanel.enable(this.MIXPANEL_TOKEN, this._editorID, this.MIXPANEL_STAGE);
-     this._isEnabled = true;
-   }
+    this.mixpanel.enable(this.MIXPANEL_TOKEN, this._editorID, this.MIXPANEL_STAGE);
+    this._isEnabled = true;
+  };
 
-   disable = () => {
-     log('Disabling.');
+  disable = () => {
+    log('Disabling.');
 
-     this.mixpanel.disable();
-     this._isEnabled = false;
-   }
+    this.mixpanel.disable();
+    this._isEnabled = false;
+  };
 
-   async setEditorId() {
-     this._editorID = await this.props.config.get(EDITOR_ID_CONFIG_KEY);
+  async setEditorId() {
+    this._editorID = await this.props.config.get(EDITOR_ID_CONFIG_KEY);
 
-     if (!this._editorID) {
-       throw new Error('missing editor id');
-     }
-   }
+    if (!this._editorID) {
+      throw new Error('missing editor id');
+    }
+  }
 
-   async componentDidMount() {
+  async componentDidMount() {
 
-     // make sure we also set the editor although the plugin is not enabled
-     await this.setEditorId();
+    // make sure we also set the editor although the plugin is not enabled
+    await this.setEditorId();
 
-     if (!this.MIXPANEL_TOKEN) {
-       return log('Not enabled: Mixpanel project token not configured.');
-     }
+    if (!this.MIXPANEL_TOKEN) {
+      return log('Not enabled: Mixpanel project token not configured.');
+    }
 
-     if (!this.MIXPANEL_STAGE) {
-       return log('Not enabled: Mixpanel stage not configured.');
-     }
+    if (!this.MIXPANEL_STAGE) {
+      return log('Not enabled: Mixpanel stage not configured.');
+    }
 
-     if (Flags.get(DISABLE_REMOTE_INTERACTION)) {
-       return log('Not enabled: Remote interaction disabled.');
-     }
+    if (Flags.get(DISABLE_REMOTE_INTERACTION)) {
+      return log('Not enabled: Remote interaction disabled.');
+    }
 
-     // If remote interaction is not disabled via flags:
-     // -> The user may turn on / off usage statistics on the run
-     // -> The user may never actually restart the modeler.
-     this.props.subscribe('privacy-preferences.changed', this.handlePrivacyPreferencesChanged);
+    // If remote interaction is not disabled via flags:
+    // -> The user may turn on / off usage statistics on the run
+    // -> The user may never actually restart the modeler.
+    this.props.subscribe('privacy-preferences.changed', this.handlePrivacyPreferencesChanged);
 
-     const isUsageStatisticsEnabled = await this.isUsageStatisticsEnabled();
+    const isUsageStatisticsEnabled = await this.isUsageStatisticsEnabled();
 
-     if (!isUsageStatisticsEnabled) {
-       return log('Not enabled: Usage statistics are turned off via Privacy Preferences.');
-     }
+    if (!isUsageStatisticsEnabled) {
+      return log('Not enabled: Usage statistics are turned off via Privacy Preferences.');
+    }
 
-     this.enable();
-   }
+    this.enable();
+  }
 
-   async isUsageStatisticsEnabled() {
-     const { config } = this.props;
+  async isUsageStatisticsEnabled() {
+    const { config } = this.props;
 
-     const privacyPreferences = await config.get(PRIVACY_PREFERENCES_CONFIG_KEY);
+    const privacyPreferences = await config.get(PRIVACY_PREFERENCES_CONFIG_KEY);
 
-     return !!(privacyPreferences && privacyPreferences[USAGE_STATISTICS_CONFIG_KEY]);
-   }
+    return !!(privacyPreferences && privacyPreferences[USAGE_STATISTICS_CONFIG_KEY]);
+  }
 
-   handlePrivacyPreferencesChanged = async () => {
-     const isUsageStatisticsEnabled = await this.isUsageStatisticsEnabled();
+  handlePrivacyPreferencesChanged = async () => {
+    const isUsageStatisticsEnabled = await this.isUsageStatisticsEnabled();
 
-     if (isUsageStatisticsEnabled) {
-       return this.enable();
-     }
+    if (isUsageStatisticsEnabled) {
+      return this.enable();
+    }
 
-     return this.disable();
-   }
+    return this.disable();
+  };
 
-   toggle = () => {
-     this.setState(state => ({ ...state, open: !state.open }));
-   }
+  toggle = () => {
+    this.setState(state => ({ ...state, open: !state.open }));
+  };
 
-   render() {
-     return null;
-   }
+  render() {
+    return null;
+  }
 }

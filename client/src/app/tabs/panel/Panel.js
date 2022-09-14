@@ -68,7 +68,7 @@ export default class Panel extends PureComponent {
     ];
 
     onUpdateMenu({ editMenu });
-  }
+  };
 
   render() {
     const {

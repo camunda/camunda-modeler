@@ -194,7 +194,7 @@ export default class ErrorTracking extends PureComponent {
 
   handlePrivacyPreferencesChanged = () => {
     return this.recheckSentry();
-  }
+  };
 
   normalizeEventPath = (event) => {
     try {
@@ -220,7 +220,7 @@ export default class ErrorTracking extends PureComponent {
       this.props.log(err);
       return null;
     }
-  }
+  };
 
   render() {
     return null;

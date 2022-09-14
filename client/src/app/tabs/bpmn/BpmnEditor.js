@@ -239,19 +239,19 @@ export class BpmnEditor extends CachedComponent {
     const modeler = this.getModeler();
 
     modeler.get('commandStack').undo();
-  }
+  };
 
   redo = () => {
     const modeler = this.getModeler();
 
     modeler.get('commandStack').redo();
-  }
+  };
 
   handleAlignElements = (type) => {
     this.triggerAction('alignElements', {
       type
     });
-  }
+  };
 
   handleMinimapToggle = (event) => {
     this.handleLayoutChange({
@@ -259,7 +259,7 @@ export class BpmnEditor extends CachedComponent {
         open: event.open
       }
     });
-  }
+  };
 
   handleElementTemplateErrors = (event) => {
     const {
@@ -273,7 +273,7 @@ export class BpmnEditor extends CachedComponent {
     errors.forEach(error => {
       onWarning({ message: error.message });
     });
-  }
+  };
 
   handleError = (event) => {
     const {
@@ -285,7 +285,7 @@ export class BpmnEditor extends CachedComponent {
     } = this.props;
 
     onError(error);
-  }
+  };
 
   handleNamespace = async (xml) => {
     const used = findNamespaceUsages(xml, NAMESPACE_URL_ACTIVITI);
@@ -309,7 +309,7 @@ export class BpmnEditor extends CachedComponent {
     onContentUpdated(convertedXML);
 
     return convertedXML;
-  }
+  };
 
   async shouldConvert() {
     const { button } = await this.props.onAction('show-dialog', getNamespaceDialog());
@@ -370,7 +370,7 @@ export class BpmnEditor extends CachedComponent {
     });
 
     onImport(error, warnings);
-  }
+  };
 
   handleChanged = () => {
     const modeler = this.getModeler();
@@ -452,7 +452,7 @@ export class BpmnEditor extends CachedComponent {
 
       // TODO
     }
-  }
+  };
 
   handleLinting = () => {
     const {
@@ -469,7 +469,7 @@ export class BpmnEditor extends CachedComponent {
     const { onAction } = this.props;
 
     onAction('lint-tab', { contents });
-  }
+  };
 
   onToggleLinting = () => {
     const {
@@ -507,7 +507,7 @@ export class BpmnEditor extends CachedComponent {
         tab: 'linting'
       }
     });
-  }
+  };
 
   isDirty() {
     const {
@@ -725,20 +725,20 @@ export class BpmnEditor extends CachedComponent {
 
     // TODO(nikku): handle all editor actions
     return modeler.get('editorActions').trigger(action, context);
-  }
+  };
 
   handleSetColor = (fill, stroke) => {
     this.triggerAction('setColor', {
       fill,
       stroke
     });
-  }
+  };
 
   handleDistributeElements = (type) => {
     this.triggerAction('distributeElements', {
       type
     });
-  }
+  };
 
   handleContextMenu = (event) => {
 
@@ -749,7 +749,7 @@ export class BpmnEditor extends CachedComponent {
     if (isFunction(onContextMenu)) {
       onContextMenu(event);
     }
-  }
+  };
 
   handleLayoutChange(newLayout) {
     const {
@@ -769,7 +769,7 @@ export class BpmnEditor extends CachedComponent {
 
     canvas.resized();
     eventBus.fire('propertiesPanel.resized');
-  }
+  };
 
   render() {
     const engineProfile = this.engineProfile.getCached();
