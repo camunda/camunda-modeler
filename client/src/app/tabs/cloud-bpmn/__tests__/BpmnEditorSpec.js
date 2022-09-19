@@ -410,35 +410,43 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       });
 
 
-      it('should call linting on change', async function() {
+      it('should lint on import', async function() {
 
-        // assume
-        // lint on import
+        // then
         expect(onActionSpy).to.have.been.calledOnce;
+        expect(onActionSpy).to.have.been.calledWithMatch('lint-tab');
+      });
+
+
+      it('should lint on change', async function() {
+
+        onActionSpy.resetHistory();
 
         // when
         modeler._emit('commandStack.changed');
 
         // then
-        expect(onActionSpy).to.have.been.calledTwice;
-      });
-
-
-      it('should only register once', async function() {
-
-        // assume
-        // lint on import
         expect(onActionSpy).to.have.been.calledOnce;
-
-        // when
-        wrapper.unmount();
-        wrapper.mount();
-
-        modeler._emit('commandStack.changed');
-
-        // then
-        expect(onActionSpy).to.have.been.calledTwice;
+        expect(onActionSpy).to.have.been.calledWithMatch('lint-tab');
       });
+
+
+      it('should subscribe on mount and unsubscribe on unmount',
+        async function() {
+
+          onActionSpy.resetHistory();
+
+          // when
+          wrapper.unmount();
+          wrapper.mount();
+
+          modeler._emit('commandStack.changed');
+
+          // then
+          expect(onActionSpy).to.have.been.calledOnce;
+          expect(onActionSpy).to.have.been.calledWithMatch('lint-tab');
+        }
+      );
 
     });
 
@@ -451,7 +459,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         const { instance } = await renderEditor(diagramXML, {
           layout: {
             panel: {
-              open: true
+              open: true,
+              tab: 'linting'
             }
           }
         });
@@ -461,7 +470,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       });
 
 
-      it('should not be active', async function() {
+      it('should not be active (open=false)', async function() {
 
         // when
         const { instance } = await renderEditor(diagramXML, {
@@ -476,10 +485,27 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         expect(instance.isLintingActive()).to.be.false;
       });
 
+
+      it('should not be active (tab!=linting)', async function() {
+
+        // when
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'foo'
+            }
+          }
+        });
+
+        // then
+        expect(instance.isLintingActive()).to.be.false;
+      });
+
     });
 
 
-    describe('#onToggleLinting', function() {
+    describe('#handleToggleLinting', function() {
 
       it('should open', async function() {
 
@@ -496,7 +522,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         });
 
         // when
-        instance.onToggleLinting();
+        instance.handleToggleLinting();
 
         // then
         expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
@@ -524,7 +550,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         });
 
         // when
-        instance.onToggleLinting();
+        instance.handleToggleLinting();
 
         // then
         expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
@@ -552,7 +578,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         });
 
         // when
-        instance.onToggleLinting();
+        instance.handleToggleLinting();
 
         // then
         expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
@@ -631,7 +657,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         const { instance } = await renderEditor(diagramXML, {
           layout: {
             panel: {
-              open: true
+              open: false
             }
           }
         });
@@ -639,7 +665,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         const activateSpy = spy(instance.getModeler().get('linting'), 'activate');
 
         // when
-        instance.componentDidUpdate(instance.props);
+        instance.handleToggleLinting();
 
         // then
         expect(activateSpy).to.have.been.calledOnce;
@@ -652,7 +678,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         const { instance } = await renderEditor(diagramXML, {
           layout: {
             panel: {
-              open: false
+              open: true,
+              tab: 'linting'
             }
           }
         });
@@ -660,7 +687,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         const deactivateSpy = spy(instance.getModeler().get('linting'), 'deactivate');
 
         // when
-        instance.componentDidUpdate(instance.props);
+        instance.handleToggleLinting();
 
         // then
         expect(deactivateSpy).to.have.been.calledOnce;
