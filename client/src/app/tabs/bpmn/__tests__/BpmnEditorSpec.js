@@ -412,40 +412,102 @@ describe('<BpmnEditor>', function() {
       });
 
 
-      it('should call linting on change', async function() {
-
-        // assume
-        // lint on import
-        expect(onActionSpy).to.have.been.calledOnce;
-
-        // when
-        modeler._emit('commandStack.changed');
+      it('should lint on import', async function() {
 
         // then
-        expect(onActionSpy).to.have.been.calledTwice;
+        expect(onActionSpy).to.have.been.calledOnce;
+        expect(onActionSpy).to.have.been.calledWithMatch('lint-tab');
       });
 
 
-      it('should only register once', async function() {
+      it('should lint on change', async function() {
 
-        // assume
-        // lint on import
-        expect(onActionSpy).to.have.been.calledOnce;
+        onActionSpy.resetHistory();
 
         // when
-        wrapper.unmount();
-        wrapper.mount();
-
         modeler._emit('commandStack.changed');
 
         // then
-        expect(onActionSpy).to.have.been.calledTwice;
+        expect(onActionSpy).to.have.been.calledOnce;
+        expect(onActionSpy).to.have.been.calledWithMatch('lint-tab');
+      });
+
+
+      it('should subscribe on mount and unsubscribe on unmount',
+        async function() {
+
+          onActionSpy.resetHistory();
+
+          // when
+          wrapper.unmount();
+          wrapper.mount();
+
+          modeler._emit('commandStack.changed');
+
+          // then
+          expect(onActionSpy).to.have.been.calledOnce;
+          expect(onActionSpy).to.have.been.calledWithMatch('lint-tab');
+        }
+      );
+
+    });
+
+
+    describe('#isLintingActive', function() {
+
+      it('should be active', async function() {
+
+        // when
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'linting'
+            }
+          }
+        });
+
+        // then
+        expect(instance.isLintingActive()).to.be.true;
+      });
+
+
+      it('should not be active (open=false)', async function() {
+
+        // when
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: false
+            }
+          }
+        });
+
+        // then
+        expect(instance.isLintingActive()).to.be.false;
+      });
+
+
+      it('should not be active (tab!=linting)', async function() {
+
+        // when
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'foo'
+            }
+          }
+        });
+
+        // then
+        expect(instance.isLintingActive()).to.be.false;
       });
 
     });
 
 
-    describe('#onToggleLinting', function() {
+    describe('#handleToggleLinting', function() {
 
       it('should open', async function() {
 
@@ -462,7 +524,7 @@ describe('<BpmnEditor>', function() {
         });
 
         // when
-        instance.onToggleLinting();
+        instance.handleToggleLinting();
 
         // then
         expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
@@ -490,7 +552,7 @@ describe('<BpmnEditor>', function() {
         });
 
         // when
-        instance.onToggleLinting();
+        instance.handleToggleLinting();
 
         // then
         expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
@@ -518,7 +580,7 @@ describe('<BpmnEditor>', function() {
         });
 
         // when
-        instance.onToggleLinting();
+        instance.handleToggleLinting();
 
         // then
         expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
@@ -527,6 +589,110 @@ describe('<BpmnEditor>', function() {
             tab: 'linting'
           }
         });
+      });
+
+    });
+
+
+    describe('linting plugin', function() {
+
+      it('should set errors', async function() {
+
+        // given
+        const linting = [
+          {
+            id: 'foo',
+            message: 'Foo'
+          }
+        ];
+
+        const { instance } = await renderEditor(diagramXML, {
+          linting
+        });
+
+        const setErrorsSpy = spy(instance.getModeler().get('linting'), 'setErrors');
+
+        // when
+        const oldLinting = [
+          {
+            id: 'bar',
+            message: 'Bar'
+          }
+        ];
+
+        // TODO @philippfromme: update props instead of calling lifecycle method directly
+        instance.componentDidUpdate({ ...instance.props, linting: oldLinting });
+
+        // then
+        expect(setErrorsSpy).to.have.been.calledOnce;
+        expect(setErrorsSpy).to.have.been.calledWithMatch(linting);
+      });
+
+
+      it('should not set errors', async function() {
+
+        // given
+        const linting = [
+          {
+            id: 'foo',
+            message: 'Foo'
+          }
+        ];
+
+        const { instance } = await renderEditor(diagramXML, {
+          linting
+        });
+
+        const setErrorsSpy = spy(instance.getModeler().get('linting'), 'setErrors');
+
+        // when
+        instance.componentDidUpdate({ ...instance.props, linting });
+
+        // then
+        expect(setErrorsSpy).not.to.have.been.called;
+      });
+
+
+      it('should activate', async function() {
+
+        // given
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: false
+            }
+          }
+        });
+
+        const activateSpy = spy(instance.getModeler().get('linting'), 'activate');
+
+        // when
+        instance.handleToggleLinting();
+
+        // then
+        expect(activateSpy).to.have.been.calledOnce;
+      });
+
+
+      it('should deactivate', async function() {
+
+        // given
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'linting'
+            }
+          }
+        });
+
+        const deactivateSpy = spy(instance.getModeler().get('linting'), 'deactivate');
+
+        // when
+        instance.handleToggleLinting();
+
+        // then
+        expect(deactivateSpy).to.have.been.calledOnce;
       });
 
     });
