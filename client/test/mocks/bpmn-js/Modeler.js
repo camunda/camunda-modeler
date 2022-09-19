@@ -61,6 +61,28 @@ class PropertiesPanel {
   update() {}
 }
 
+class Linting {
+  constructor(options = {}) {
+    this._isActive = options.active;
+  }
+
+  activate() {
+    this._isActive = true;
+  }
+
+  deactivate() {
+    this._isActive = false;
+  }
+
+  isActive() {
+    return this._isActive;
+  }
+
+  setErrors() {}
+
+  showError() {}
+}
+
 class Selection {
   constructor() {
     this._selectedElements = [];
@@ -79,14 +101,14 @@ export default class Modeler {
   constructor(options = {}) {
     this.options = options;
 
-    this.modules = assign(this._getDefaultModules(), options.modules || {});
+    this.modules = assign(this._getDefaultModules(options), options.modules || {});
 
     this.xml = null;
 
     this.listeners = {};
   }
 
-  _getDefaultModules() {
+  _getDefaultModules(options = {}) {
     return {
       eventBus: {
         fire() {}
@@ -107,12 +129,7 @@ export default class Modeler {
       },
       propertiesPanel: new PropertiesPanel(),
       selection: new Selection(),
-      linting: {
-        activate() {},
-        deactivate() {},
-        setErrors() {},
-        showError() {}
-      }
+      linting: new Linting(options.linting)
     };
   }
 
