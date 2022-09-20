@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `DEPS`: bump @camunda/linting to v0.6.0 ([#3146](https://github.com/camunda/camunda-modeler/pull/3146))
+
 ## 5.3.0
 
 ### General
