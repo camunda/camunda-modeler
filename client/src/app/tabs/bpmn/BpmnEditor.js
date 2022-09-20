@@ -477,7 +477,7 @@ export class BpmnEditor extends CachedComponent {
 
   isLintingActive = () => {
     return this.getModeler().get('linting').isActive();
-  }
+  };
 
   handleToggleLinting = () => {
     const { onLayoutChanged } = this.props;
@@ -503,7 +503,7 @@ export class BpmnEditor extends CachedComponent {
         }
       });
     }
-  }
+  };
 
   isDirty() {
     const {
