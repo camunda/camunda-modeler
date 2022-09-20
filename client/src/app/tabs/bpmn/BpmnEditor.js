@@ -188,6 +188,10 @@ export class BpmnEditor extends CachedComponent {
     if (isCacheStateChanged(prevProps, this.props)) {
       this.handleChanged();
     }
+
+    if (prevProps.linting !== this.props.linting) {
+      this.getModeler().get('linting').setErrors(this.props.linting || []);
+    }
   }
 
   listen(fn) {
@@ -471,43 +475,35 @@ export class BpmnEditor extends CachedComponent {
     onAction('lint-tab', { contents });
   };
 
-  onToggleLinting = () => {
-    const {
-      layout = {},
-      onLayoutChanged
-    } = this.props;
+  isLintingActive = () => {
+    return this.getModeler().get('linting').isActive();
+  }
 
-    const { panel = {} } = layout;
+  handleToggleLinting = () => {
+    const { onLayoutChanged } = this.props;
 
-    if (!panel.open) {
-      onLayoutChanged({
-        panel: {
-          open: true,
-          tab: 'linting'
-        }
-      });
+    const linting = this.getModeler().get('linting');
 
-      return;
-    }
+    if (linting.isActive()) {
+      linting.deactivate();
 
-    if (panel.tab === 'linting') {
       onLayoutChanged({
         panel: {
           open: false,
           tab: 'linting'
         }
       });
+    } else {
+      linting.activate();
 
-      return;
+      onLayoutChanged({
+        panel: {
+          open: true,
+          tab: 'linting'
+        }
+      });
     }
-
-    onLayoutChanged({
-      panel: {
-        open: true,
-        tab: 'linting'
-      }
-    });
-  };
+  }
 
   isDirty() {
     const {
@@ -828,7 +824,7 @@ export class BpmnEditor extends CachedComponent {
             <Linting
               layout={ layout }
               linting={ linting }
-              onToggleLinting={ this.onToggleLinting } />
+              onToggleLinting={ this.handleToggleLinting } />
           </Fragment>
         }
       </div>
@@ -845,7 +841,8 @@ export class BpmnEditor extends CachedComponent {
     const {
       getPlugins,
       onAction,
-      onError
+      onError,
+      layout = {}
     } = props;
 
     // notify interested parties that modeler will be configured
@@ -879,7 +876,10 @@ export class BpmnEditor extends CachedComponent {
     const modeler = new BpmnModeler({
       ...options,
       position: 'absolute',
-      changeTemplateCommand: 'propertiesPanel.camunda.changeTemplate'
+      changeTemplateCommand: 'propertiesPanel.camunda.changeTemplate',
+      linting: {
+        active: layout.panel && layout.panel.open && layout.panel.tab === 'linting'
+      }
     });
 
     const commandStack = modeler.get('commandStack');

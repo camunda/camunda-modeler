@@ -16,6 +16,7 @@ import completeDirectEditingModule from './features/complete-direct-editing';
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from './features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
+import lintingAnnotationsModule from '@camunda/linting/modeler';
 
 import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 
@@ -46,7 +47,8 @@ const extensionModules = [
   completeDirectEditingModule,
   globalClipboardModule,
   handToolOnSpaceModule,
-  propertiesPanelKeyboardBindingsModule
+  propertiesPanelKeyboardBindingsModule,
+  lintingAnnotationsModule
 ];
 
 PlatformBpmnModeler.prototype._modules = [

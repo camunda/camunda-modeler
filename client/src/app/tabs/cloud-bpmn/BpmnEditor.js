@@ -180,12 +180,6 @@ export class BpmnEditor extends CachedComponent {
     if (prevProps.linting !== this.props.linting) {
       this.getModeler().get('linting').setErrors(this.props.linting || []);
     }
-
-    if (this.isLintingActive()) {
-      this.getModeler().get('linting').activate();
-    } else {
-      this.getModeler().get('linting').deactivate();
-    }
   }
 
   listen(fn) {
@@ -440,50 +434,34 @@ export class BpmnEditor extends CachedComponent {
   };
 
   isLintingActive = () => {
-    const { layout = {} } = this.props;
+    return this.getModeler().get('linting').isActive();
+  }
 
-    const { panel = {} } = layout;
+  handleToggleLinting = () => {
+    const { onLayoutChanged } = this.props;
 
-    return !!panel.open;
-  };
+    const linting = this.getModeler().get('linting');
 
-  onToggleLinting = () => {
-    const {
-      layout = {},
-      onLayoutChanged
-    } = this.props;
+    if (linting.isActive()) {
+      linting.deactivate();
 
-    const { panel = {} } = layout;
-
-    if (!panel.open) {
-      onLayoutChanged({
-        panel: {
-          open: true,
-          tab: 'linting'
-        }
-      });
-
-      return;
-    }
-
-    if (panel.tab === 'linting') {
       onLayoutChanged({
         panel: {
           open: false,
           tab: 'linting'
         }
       });
+    } else {
+      linting.activate();
 
-      return;
+      onLayoutChanged({
+        panel: {
+          open: true,
+          tab: 'linting'
+        }
+      });
     }
-
-    onLayoutChanged({
-      panel: {
-        open: true,
-        tab: 'linting'
-      }
-    });
-  };
+  }
 
   isDirty() {
     const {
@@ -807,7 +785,7 @@ export class BpmnEditor extends CachedComponent {
             <Linting
               layout={ layout }
               linting={ linting }
-              onToggleLinting={ this.onToggleLinting } />
+              onToggleLinting={ this.handleToggleLinting } />
           </Fragment>
         }
       </div>
@@ -824,7 +802,8 @@ export class BpmnEditor extends CachedComponent {
     const {
       getPlugins,
       onAction,
-      onError
+      onError,
+      layout = {}
     } = props;
 
     // notify interested parties that modeler will be configured
@@ -858,7 +837,10 @@ export class BpmnEditor extends CachedComponent {
     const modeler = new BpmnModeler({
       ...options,
       position: 'absolute',
-      changeTemplateCommand: 'propertiesPanel.zeebe.changeTemplate'
+      changeTemplateCommand: 'propertiesPanel.zeebe.changeTemplate',
+      linting: {
+        active: layout.panel && layout.panel.open && layout.panel.tab === 'linting'
+      }
     });
 
     const commandStack = modeler.get('commandStack');
