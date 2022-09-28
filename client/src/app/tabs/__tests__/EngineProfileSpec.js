@@ -178,7 +178,8 @@ describe('<EngineProfile>', function() {
         [ '1.2', 'Zeebe 1.2' ],
         [ '10.0', '10.0' ],
         [ '7.14', '7.14' ],
-        [ '8.0', '8.0' ] ];
+        [ '8.0', '8.0' ],
+        [ '8.1', '8.1' ] ];
 
       // then
       inputs.forEach((input) => {
