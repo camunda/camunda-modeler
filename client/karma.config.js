@@ -133,7 +133,9 @@ module.exports = function(karma) {
           './DmnModeler': modelers ? './DmnModeler' : 'test/mocks/dmn-js/Modeler',
           './CodeMirror': 'test/mocks/code-mirror/CodeMirror',
           'sourcemapped-stacktrace': 'test/mocks/sourcemapped-stacktrace',
-          './editor/FormEditor': 'test/mocks/form-js'
+          './editor/FormEditor': 'test/mocks/form-js',
+          '@camunda/linting': 'test/mocks/linting',
+          '@camunda/linting/modeler': 'test/mocks/linting/modeler'
         }
       }
     }

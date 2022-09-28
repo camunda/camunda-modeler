@@ -16,7 +16,7 @@ import {
 
 import replaceIds from '@bpmn-io/replace-ids';
 
-import { Linter as BpmnLinter } from '@camunda/linting/lib/Linter';
+import { Linter as BpmnLinter } from '@camunda/linting';
 import { FormLinter } from '@camunda/form-linting/lib/FormLinter';
 
 import bpmnDiagram from './tabs/bpmn/diagram.bpmn';
