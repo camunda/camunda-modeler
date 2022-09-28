@@ -1,0 +1,15 @@
+{
+  "name": "bpmnlint-plugin-custom",
+  "version": "0.0.0",
+  "private": true,
+  "description": "bpmnlint custom rules example plug-in",
+  "main": "index.js",
+  "author": {
+    "name": "Nico Rehwaldt",
+    "url": "https://github.com/nikku"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bpmnlint-utils": "^1.0.1"
+  }
+}
