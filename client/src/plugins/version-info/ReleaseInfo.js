@@ -44,15 +44,19 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Diagram errors on the canvas</h4>
-          Diagram errors are now shown directly on the canvas. Click on an error to show details.
+          <h4>Better BPMN support in Camunda Platform 8.1</h4>
+          Camunda Platform 8.1 now supports diverging inclusive gateways and terminate end events.
+          Additionally, you can now use cron in your timer definitions.
         </li>
         <li>
-          <h4>Sticky properties panel headers</h4>
-          The section headers of the BPMN and DMN properties panels are now sticky to provide reliable context when you scroll.</li>
+          <h4>New form components and dynamic data loading</h4>
+          When designing forms, you can now use two multi-select components: Taglist and Checklist. To populate your
+          select components with process data, select "Input data" as an options source.
+        </li>
         <li>
-          <h4>Modeling UX improvements and bug fixes</h4>
-          This release includes a lot of modeling UX improvements. Sequence flows are now always displayed on top. Also, we fixed several issues to improve the copy and paste behavior.
+          <h4>Improved FEEL editor support</h4>
+          The FEEL editor now offers improved indentation support and built-in suggestions. When typing, you will get a list of supported
+          functions and operators which you can use in FEEL.
         </li>
       </ul>
     </div>
