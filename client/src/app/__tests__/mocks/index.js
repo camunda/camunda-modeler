@@ -17,6 +17,8 @@ import {
 
 import EmptyTab from '../../EmptyTab';
 
+import { Linter as BpmnLinter } from 'test/mocks/linting';
+
 const ENCODING_BASE64 = 'base64',
       ENCODING_UTF8 = 'utf8';
 
@@ -132,21 +134,8 @@ export class TabsProvider {
           svg: EXPORT_SVG
         },
         extensions: [ 'bpmn', 'xml' ],
-        getLinter() {
-          return {
-            lint(contents) {
-              if (contents === 'linting-errors') {
-                return [
-                  {
-                    id: 'Task_1',
-                    message: 'foo'
-                  }
-                ];
-              }
-
-              return [];
-            }
-          };
+        getLinter(plugins) {
+          return new BpmnLinter({ plugins });
         },
         getNewFileMenu() {
           return [ {
@@ -166,21 +155,8 @@ export class TabsProvider {
           svg: EXPORT_SVG
         },
         extensions: [ 'bpmn', 'xml' ],
-        getLinter() {
-          return {
-            lint(contents) {
-              if (contents === 'linting-errors') {
-                return [
-                  {
-                    id: 'Task_1',
-                    message: 'foo'
-                  }
-                ];
-              }
-
-              return [];
-            }
-          };
+        getLinter(plugins) {
+          return new BpmnLinter({ plugins });
         },
         getNewFileMenu() {
           return [ {
