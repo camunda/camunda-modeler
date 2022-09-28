@@ -2966,6 +2966,41 @@ describe('<App>', function() {
       expect(lintingState).to.be.empty;
     });
 
+
+    it('should pass plugins to linter', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({
+        globals: {
+          plugins: {
+            get(type) {
+              if (type === 'lintRules.cloud-bpmn') {
+                return [ 'FooPlugin', 'BarPlugin', 'BazPlugin' ];
+              }
+
+              return [];
+            }
+          }
+        },
+        tabsProvider
+      });
+
+      await app.createDiagram('cloud-bpmn');
+
+      const { activeTab } = app.state;
+
+      // when
+      await app.lintTab(activeTab);
+
+      // then
+      expect(getLinterSpy).to.have.been.calledOnce;
+      expect(getLinterSpy).to.have.been.calledWith([ 'FooPlugin', 'BarPlugin', 'BazPlugin' ]);
+    });
+
   });
 
 });
