@@ -110,10 +110,6 @@ const DEFAULT_PRIORITY = 1000;
 
 const HIGHER_PRIORITY = 1001;
 
-const bpmnLinter = new BpmnLinter({
-  modeler: 'desktop'
-});
-
 const formLinter = new FormLinter();
 
 /**
@@ -192,8 +188,11 @@ export default class TabsProvider {
             action: 'create-cloud-bpmn-diagram'
           } ];
         },
-        getLinter() {
-          return bpmnLinter;
+        getLinter(plugins) {
+          return new BpmnLinter({
+            modeler: 'desktop',
+            plugins
+          });
         }
       },
       bpmn: {
@@ -230,8 +229,11 @@ export default class TabsProvider {
             action: 'create-bpmn-diagram'
           } ];
         },
-        getLinter() {
-          return bpmnLinter;
+        getLinter(plugins) {
+          return new BpmnLinter({
+            modeler: 'desktop',
+            plugins
+          });
         }
       },
       cmmn: {

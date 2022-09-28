@@ -771,6 +771,35 @@ describe('TabsProvider', function() {
 
     });
 
+
+    [
+      'bpmn',
+      'cloud-bpmn'
+    ].forEach((type) => {
+
+      it(`${ type } plugins`, function() {
+
+        // given
+        const plugin = {
+          config: {},
+          resolver: {
+            resolveConfig() {},
+            resolveRule() {}
+          }
+        };
+
+        const tabsProvider = new TabsProvider().getProvider(type);
+
+        // when
+        const linter = tabsProvider.getLinter([ plugin ]);
+
+        // then
+        expect(linter).to.exist;
+        expect(linter.getPlugins()).to.have.length(1);
+      });
+
+    });
+
   });
 
 
