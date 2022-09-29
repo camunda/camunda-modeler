@@ -6,7 +6,17 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `DEPS`: bump @camunda/linting to v0.6.0 ([#3146](https://github.com/camunda/camunda-modeler/pull/3146))
+### General
+
+* `DEPS`: bump @camunda/linting to v0.7.2 ([#3184](https://github.com/camunda/camunda-modeler/pull/3184))
+
+### BPMN
+
+* `FEAT`: support modeling of terminate end events in Camunda 8 ([#167](https://github.com/camunda/camunda-bpmn-js/pull/167))
+* `FEAT`: support modeling of inclusive gateways in Camunda 8 ([#162](https://github.com/camunda/camunda-bpmn-js/pull/162))
+* `FEAT`: support `bpmnlint` plugins ([#20](https://github.com/camunda/linting/pull/20))
+* `FEAT`: support cron expressions for timer cycle ([#772](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/772))
+* `FIX`: unset timer type correctly ([#775](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/775))
 
 ## 5.3.0
 
