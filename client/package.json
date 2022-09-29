@@ -38,7 +38,7 @@
     "cmmn-js-properties-panel": "^0.8.3",
     "codemirror": "^6.0.1",
     "debug": "^4.1.1",
-    "diagram-js": "^8.9.0",
+    "diagram-js": "^9.0.0",
     "diagram-js-direct-editing": "^1.7.0",
     "diagram-js-origin": "^1.3.3",
     "dmn-js": "^12.3.0",
