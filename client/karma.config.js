@@ -76,7 +76,7 @@ module.exports = function(karma) {
     autoWatch: false,
 
     webpack: {
-      mode: 'development',
+      mode: 'none',
       module: {
         rules: [
           {
