@@ -11,7 +11,7 @@
     "@babel/core": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.6",
-    "camunda-modeler-plugin-helpers": "^3.4.0-alpha.0",
+    "camunda-modeler-plugin-helpers": "^5.0.0",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.8"
   }
