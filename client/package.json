@@ -35,7 +35,7 @@
     "canvg-browser": "^1.0.0",
     "classnames": "^2.2.6",
     "cmmn-js": "^0.20.0",
-    "cmmn-js-properties-panel": "^0.8.3",
+    "cmmn-js-properties-panel": "^0.9.0",
     "codemirror": "^6.0.1",
     "debug": "^4.1.1",
     "diagram-js": "^8.9.0",
