@@ -13,9 +13,16 @@ const glob = require('glob');
 const parents = require('parents');
 const path = require('path');
 
-const { isArray } = require('min-dash');
+const { flatten, isArray, keys } = require('min-dash');
+
+const YAML = require('js-yaml');
 
 const log = require('../../log')('app:config:element-templates');
+
+const FILE_HANDLERS = {
+  'json': getJSONTemplatesForPath,
+  'yml': getYAMLTemplatesForPath
+};
 
 
 /**
@@ -80,7 +87,9 @@ function getTemplates(paths) {
 
     // do not throw if file not accessible or no such file
     try {
-      files = globTemplates(path);
+      files = flatten(keys(FILE_HANDLERS).map(type => {
+        return globTemplates(path, type);
+      }));
     } catch (error) {
       log.error(`templates ${ path } glob error`, error);
 
@@ -105,9 +114,14 @@ function getTemplatesForPaths(paths) {
   return paths.reduce((templates, path) => {
     return [
       ...templates,
-      ...getTemplatesForPath(path)
+      ...getFileHandler(path)(path)
     ];
   }, []);
+}
+
+function getFileHandler(file) {
+  const extension = path.extname(file).slice(1);
+  return FILE_HANDLERS[extension];
 }
 
 /**
@@ -117,7 +131,7 @@ function getTemplatesForPaths(paths) {
  *
  * @return {Array<Template>}
  */
-function getTemplatesForPath(path) {
+function getJSONTemplatesForPath(path) {
   let templates;
 
   try {
@@ -139,15 +153,41 @@ function getTemplatesForPath(path) {
  * Glob element templates from `<path>/resources`.
  *
  * @param {string} path
+ * @param {string} type
  *
  * @return {Array<string>}
  */
-function globTemplates(path) {
+function globTemplates(path, type) {
   const globOptions = {
     cwd: path,
     nodir: true,
     realpath: true
   };
 
-  return glob.sync('element-templates/**/*.json', globOptions);
+  return glob.sync('element-templates/**/*.' + type, globOptions);
+}
+
+/**
+ * Get element templates from paths.
+ *
+ * @param  {string} path
+ *
+ * @return {Array<Template>}
+ */
+function getYAMLTemplatesForPath(path) {
+  let templates;
+
+  try {
+    templates = YAML.load(fs.readFileSync(path, 'utf8'));
+
+    if (!isArray(templates)) {
+      templates = [ templates ];
+    }
+
+    return templates;
+  } catch (error) {
+    log.error(`template ${ path } parse error`, error);
+
+    throw new Error(`template ${ path } parse error: ${ error.message }`);
+  }
 }
