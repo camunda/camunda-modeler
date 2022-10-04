@@ -60,7 +60,7 @@ module.exports = function(karma) {
       [suite]: [ 'webpack', 'env' ]
     },
 
-    reporters: [ 'spec' ].concat(coverage ? 'coverage' : []),
+    reporters: [ 'progress' ].concat(coverage ? 'coverage' : []),
 
     coverageReporter: {
       reporters: [
