@@ -45,13 +45,13 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Better BPMN support in Camunda Platform 8.1</h4>
-          Camunda Platform 8.1 now supports diverging inclusive gateways and terminate end events.
+          Camunda Platform 8.1 now supports <a title="Camunda Platform Docs" href="https://docs.camunda.io/docs/components/modeler/bpmn/inclusive-gateways/">diverging inclusive gateways</a> and <a title="Camunda Platform Docs" href="https://docs.camunda.io/docs/components/modeler/bpmn/terminate-events/">terminate end events</a>.
           Additionally, you can now use cron in your timer definitions.
         </li>
         <li>
           <h4>New form components and dynamic data loading</h4>
-          When designing forms, you can now use two multi-select components: Taglist and Checklist. To populate your
-          select components with process data, select "Input data" as an options source.
+          When designing forms, you can now use two multi-select components: <a title="Camunda Platform Docs" href="https://docs.camunda.io/docs/components/modeler/forms/form-element-library/forms-element-library-taglist/">Taglist</a> and <a title="Camunda Platform Docs" href="https://docs.camunda.io/docs/components/modeler/forms/form-element-library/forms-element-library-checklist/">Checklist</a>. To populate your
+          select components with process data, select "Input data" as an <a title="Camunda Platform Docs" href="https://docs.camunda.io/docs/components/modeler/forms/configuration/forms-config-options/">options source</a>.
         </li>
         <li>
           <h4>Improved FEEL editor support</h4>
