@@ -8,20 +8,18 @@
  * except in compliance with the MIT License.
  */
 
-import inherits from 'inherits-browser';
-
 import Keyboard from 'dmn-js-decision-table/lib/features/keyboard/Keyboard';
 
 
-export default function DecisionTableKeyboard(injector, decisionTable) {
-  injector.invoke(Keyboard, this, { 'config.keyboard': getKeyboardConfig(decisionTable) });
+export default class DecisionTableKeyboard extends Keyboard {
+  constructor(decisionTable, ...superDependencies) {
+    super(getKeyboardConfig(decisionTable), ...superDependencies);
+  }
 }
 
-inherits(DecisionTableKeyboard, Keyboard);
-
 DecisionTableKeyboard.$inject = [
-  'injector',
-  'decisionTable'
+  'decisionTable',
+  ...Keyboard.$inject.filter(dependency => dependency !== 'config.keyboard')
 ];
 
 function getKeyboardConfig(decisionTable) {

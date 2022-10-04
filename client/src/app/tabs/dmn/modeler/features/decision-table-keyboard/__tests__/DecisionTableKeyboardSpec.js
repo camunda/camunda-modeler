@@ -10,27 +10,21 @@
 
 import DecisionTableKeyboard from '../DecisionTableKeyboard';
 
-/* global sinon */
 
 describe('DecisionTableKeyboard', function() {
 
-  it('should pass correct locals to injector#invoke', function() {
+  it('should create with correct config', function() {
 
     // given
-    const injectorStub = sinon.stub({ invoke() {} });
-    const decisionTable = { _container: '_container' };
+    const decisionTable = { _container: '_container' },
+          eventBus = { on() {} };
 
     // when
-    const module = new DecisionTableKeyboard(injectorStub, decisionTable);
+    const module = new DecisionTableKeyboard(decisionTable, eventBus);
 
     // then
     expect(module).to.exist;
-    expect(injectorStub.invoke).to.be.calledOnce;
-
-    const locals = injectorStub.invoke.getCall(0).args[2];
-
-    expect(locals).to.have.property('config.keyboard')
-      .which.has.property('bindTo').eql(decisionTable._container);
+    expect(module._config).to.have.property('bindTo', decisionTable._container);
   });
 
 });
