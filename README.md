@@ -17,6 +17,8 @@ The following repository contains different use cases that were modeled and tran
 
 Build the app in a Posix environment. On Windows that is Git Bash or WSL.
 
+[npm v8](https://www.npmjs.com/package/npm) and [Node.js v14](https://nodejs.org/en/blog/release/v14.17.3/) are required to build the QuantME Modeling and Transformation Framework.
+
 ```sh
 # install dependencies
 npm install
@@ -40,6 +42,12 @@ If only the backend functionality available over the [REST API](./docs/quantme/A
 ```
 docker run -p 8888:8888 planqk/quantme-backend
 ```
+
+### Troubleshooting
+
+If there are errors during the build process of the application ensure that the correct npm and Node.js versions are installed.
+
+In case conflicting package issues persist, the ``--legacy-peer-deps`` can be used to resolve them.
 
 ## License
 
