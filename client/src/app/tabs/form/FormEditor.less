@@ -3,27 +3,39 @@
   flex: 1;
   flex-direction: column;
 
+  .cfp-root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+  }
+
   .form {
     display: flex;
     flex: 1;
     flex-direction: row;
   
     .fjs-container {
-      --font-family: var(--font-family);
+      --font-family: inherit;
       display: flex;
       flex: 1;
-      flex-direction: row;
+      flex-direction: column;
     }
-  
-    .fjs-editor-container .fjs-form,
-    .fjs-editor-container .fjs-palette,
-    .fjs-editor-container .fjs-properties-panel {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      overflow-y: auto;
+
+    .bio-properties-panel {
+      --font-family: inherit;
+    }
+
+    .cm-editor {
+      .cm-scroller {
+        font-family: var(--font-family-monospace);
+        
+        * {
+          user-select: text;
+        }
+      }
     }
   
     .fjs-editor-container .fjs-properties-panel {

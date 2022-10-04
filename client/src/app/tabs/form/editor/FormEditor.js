@@ -8,8 +8,5 @@
  * except in compliance with the MIT License.
  */
 
-import '@bpmn-io/form-js/dist/assets/dragula.css';
-import '@bpmn-io/form-js/dist/assets/form-js.css';
-import '@bpmn-io/form-js/dist/assets/form-js-editor.css';
-
-export { FormEditor } from '@bpmn-io/form-js';
+export { CamundaFormPlayground as FormPlayground } from '@camunda/form-playground';
+export { createCamundaFormPlayground } from '@camunda/form-playground';

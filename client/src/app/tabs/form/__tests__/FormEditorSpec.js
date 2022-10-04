@@ -30,7 +30,7 @@ import {
   getUndoRedoEntries
 } from '../../getEditMenu';
 
-import { FormEditor as FormEditorMock } from 'test/mocks/form-js';
+import { FormPlayground as FormPlaygroundMock } from 'test/mocks/form-js';
 
 import schema from './form.form';
 
@@ -84,14 +84,14 @@ describe('<FormEditor>', function() {
     });
 
 
-    it('should use cached modeler', async function() {
+    it('should use cached form', async function() {
 
       // given
       const cache = new Cache();
 
       cache.add('editor', {
         cached: {
-          form: new FormEditorMock()
+          form: new FormPlaygroundMock()
         },
         __destroy: () => {}
       });
@@ -127,7 +127,7 @@ describe('<FormEditor>', function() {
 
     function expectHandleChanged(event) {
       return async function() {
-        const form = new FormEditorMock();
+        const form = new FormPlaygroundMock();
 
         const cache = new Cache();
 
@@ -148,7 +148,7 @@ describe('<FormEditor>', function() {
           waitForImport: false
         });
 
-        form._emit(event);
+        form._editor._emit(event);
 
         expect(onChangedSpy).to.have.been.called;
       };
@@ -176,7 +176,7 @@ describe('<FormEditor>', function() {
       cache.add('editor', {
         cached: {
           engineProfile: DEFAULT_ENGINE_PROFILE,
-          form: new FormEditorMock({
+          form: new FormPlaygroundMock({
             modules: {
               commandStack: {
                 canRedo: () => true,
@@ -326,7 +326,7 @@ describe('<FormEditor>', function() {
 
       cache.add('editor', {
         cached: {
-          form: new FormEditorMock({
+          form: new FormPlaygroundMock({
             modules: {
               editorActions
             }
@@ -361,7 +361,7 @@ describe('<FormEditor>', function() {
 
       cache.add('editor', {
         cached: {
-          form: new FormEditorMock({
+          form: new FormPlaygroundMock({
             modules: {
               editorActions
             }
@@ -383,6 +383,36 @@ describe('<FormEditor>', function() {
         id: 'foo',
         path: []
       });
+    });
+
+
+    it('should trigger collapsePreview', async function() {
+
+      // given
+      const { instance } = await renderEditor(schema);
+
+      const triggerSpy = sinon.spy(instance, 'onCollapsePreview');
+
+      // when
+      instance.triggerAction('collapsePreview');
+
+      // then
+      expect(triggerSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should trigger openPreview', async function() {
+
+      // given
+      const { instance } = await renderEditor(schema);
+
+      const triggerSpy = sinon.spy(instance, 'onOpenPreview');
+
+      // when
+      instance.triggerAction('openPreview');
+
+      // then
+      expect(triggerSpy).to.have.been.calledOnce;
     });
 
   });
@@ -442,7 +472,7 @@ describe('<FormEditor>', function() {
 
       cache.add('editor', {
         cached: {
-          form: new FormEditorMock(),
+          form: new FormPlaygroundMock(),
           lastSchema: schema
         },
         __destroy: () => {}
@@ -624,7 +654,7 @@ describe('<FormEditor>', function() {
       });
 
       // when
-      const { schema } = instance.getCached().form;
+      const schema = instance.getCached().form.getSchema();
 
       schema.executionPlatform = 'Camunda Platform';
       schema.executionPlatformVersion = '7.15.0';
@@ -697,7 +727,7 @@ describe('<FormEditor>', function() {
         // when
         const { form } = instance.getCached();
 
-        form._emit('commandStack.changed');
+        form._editor._emit('commandStack.changed');
 
         const calls = onActionSpy.getCalls()
           .filter(call => call.args[0] === 'lint-tab');
@@ -723,7 +753,7 @@ describe('<FormEditor>', function() {
         // when
         const { form } = instance.getCached();
 
-        form._emit('commandStack.changed');
+        form.emit('commandStack.changed');
 
         // then
         expect(onActionSpy).not.to.have.been.calledWith('lint-tab');
@@ -759,7 +789,7 @@ describe('<FormEditor>', function() {
         // when
         wrapper.unmount();
 
-        form._emit('commandStack.changed');
+        form.emit('commandStack.changed');
 
         const calls = onActionSpy.getCalls()
           .filter(call => call.args[0] === 'lint-tab');
@@ -857,6 +887,143 @@ describe('<FormEditor>', function() {
 
     });
 
+  });
+
+
+  describe('form preview', function() {
+
+    it('should set initial layout state', async function() {
+
+      // given
+      const collapseSpy = spy();
+      const openSpy = spy();
+
+      const { instance } = await renderEditor(schema, {
+        layout: {
+          formEditor: {
+            'form-preview': { open: true },
+            'form-input': { open: false },
+            'form-output': { open: false }
+          }
+        }
+      });
+
+      const { form } = instance.getCached();
+      form.collapse = collapseSpy;
+      form.open = openSpy;
+
+      // when
+      instance.handleInitialPlaygroundLayout();
+
+      // then
+      expect(collapseSpy).to.have.been.calledOnceWith([
+        'form-input', 'form-output'
+      ]);
+
+      expect(openSpy).to.have.been.calledOnceWith([
+        'form-preview'
+      ]);
+    });
+
+
+    it('should notify on layout changes', async function() {
+
+      // given
+      const onLayoutChangedSpy = spy();
+
+      const { instance } = await renderEditor(schema, {
+        layout: {
+          panel: {
+            open: false
+          }
+        },
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      const { form } = instance.getCached();
+
+      // when
+      form.emit('formPlayground.layoutChanged', {
+        layout: {
+          'form-preview': { open: true }
+        }
+      });
+
+      // then
+      expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
+        formEditor: {
+          'form-preview': { open: true }
+        }
+      });
+    });
+
+
+    it('#onCollapsePreview', async function() {
+
+      // given
+      const onLayoutChangedSpy = spy();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          form: new FormPlaygroundMock({
+            emitLayoutChanged: true
+          })
+        }
+      });
+
+      const { instance } = await renderEditor(schema, {
+        cache,
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      instance.onCollapsePreview();
+
+      // then
+      expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
+        formEditor: {
+          'form-preview': { open: false },
+          'form-input': { open: false },
+          'form-output': { open: false }
+        }
+      });
+    });
+
+
+    it('#onOpenPreview', async function() {
+
+      // given
+      const onLayoutChangedSpy = spy();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          form: new FormPlaygroundMock({
+            emitLayoutChanged: true
+          })
+        }
+      });
+
+      const { instance } = await renderEditor(schema, {
+        cache,
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      instance.onOpenPreview();
+
+      // then
+      expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
+        formEditor: {
+          'form-preview': { open: true },
+          'form-input': { open: true },
+          'form-output': { open: true }
+        }
+      });
+    });
   });
 
 
@@ -959,6 +1126,10 @@ async function renderEditor(schema, options = {}) {
     );
 
     instance = wrapper.find(FormEditor).instance();
+
+    // properly mock form playground instantiation
+    const { form } = instance.getCached();
+    form.emit('formPlayground.rendered');
 
     if (!waitForImport) {
       resolve({

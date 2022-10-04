@@ -10,7 +10,7 @@
 
 import React, { createRef, Fragment } from 'react';
 
-import { isFunction } from 'min-dash';
+import { isFunction, keys } from 'min-dash';
 
 import debounce from '../../../util/debounce';
 
@@ -26,9 +26,11 @@ import css from './FormEditor.less';
 
 import { getFormEditMenu } from './getFormEditMenu';
 
+import { getFormWindowMenu } from './getFormWindowMenu';
+
 import { active as isInputActive } from '../../../util/dom/isInput';
 
-import { FormEditor as Form } from './editor/FormEditor';
+import { FormPlayground as Form } from './editor/FormEditor';
 
 import Metadata from '../../../util/Metadata';
 
@@ -43,6 +45,8 @@ import { ENGINES } from '../../../util/Engines';
 
 import { Linting } from '../Linting';
 
+import { FormPreviewToggle } from './FormPreviewToggle';
+
 import Panel from '../panel/Panel';
 
 import LintingTab from '../panel/tabs/LintingTab';
@@ -53,15 +57,28 @@ export const DEFAULT_ENGINE_PROFILE = {
   executionPlatform: ENGINES.PLATFORM
 };
 
+const FORM_LAYOUT_KEY = 'formEditor';
+
+const DEFAULT_LAYOUT = {
+  'form-preview': { open: false },
+  'form-input': { open: false },
+  'form-output': { open: false }
+};
+
 
 export class FormEditor extends CachedComponent {
   constructor(props) {
     super(props);
 
+    const {
+      layout = {}
+    } = props;
+
     this.ref = createRef();
 
     this.state = {
-      importing: false
+      importing: false,
+      previewOpen: isValidation(getInitialFormLayout(layout))
     };
 
     this.engineProfile = new EngineProfileHelper({
@@ -75,9 +92,11 @@ export class FormEditor extends CachedComponent {
       set: (engineProfile) => {
         const { form } = this.getCached();
 
-        const root = form._state.schema;
+        const editor = form.getEditor();
 
-        const modeling = form.get('modeling');
+        const root = editor._state.schema;
+
+        const modeling = editor.get('modeling');
 
         modeling.editFormField(root, engineProfile);
       },
@@ -89,17 +108,20 @@ export class FormEditor extends CachedComponent {
   }
 
   componentDidMount() {
-    this._isMounted = true;
-
-    let { form } = this.getCached();
-
-    this.listen('on');
+    let { form, lastSchema } = this.getCached();
 
     if (this.ref.current) {
       form.attachTo(this.ref.current);
     }
 
-    this.checkImport();
+    if (lastSchema) {
+      this.handlePlaygroundRendered();
+      this.handleInitialPlaygroundLayout();
+    } else {
+
+      // wait for proper instantiation
+      form.on('formPlayground.rendered', this.handlePlaygroundRendered);
+    }
   }
 
   componentWillUnmount() {
@@ -108,6 +130,9 @@ export class FormEditor extends CachedComponent {
     const { form } = this.getCached();
 
     form.detach();
+
+    // notify current dragula instance to properly destroy from editor
+    form.getEditor().get('eventBus').fire('detach');
 
     this.listen('off');
   }
@@ -163,7 +188,18 @@ export class FormEditor extends CachedComponent {
     try {
       const schemaJSON = JSON.parse(schema);
 
-      ({ error, warnings } = await form.importSchema(schemaJSON));
+      /*
+       * Note @pinussilvestrus:
+       * Consider https://github.com/bpmn-io/form-js/issues/322.
+       *
+       * In the meanwhile, simply use editor import,
+       * the playground is handling the orchestration
+       */
+      const result = await form.getEditor().importSchema(schemaJSON);
+
+      if (result) {
+        ({ error, warnings } = result);
+      }
     } catch (err) {
       error = err;
 
@@ -180,14 +216,16 @@ export class FormEditor extends CachedComponent {
   handleImport(error, warnings) {
     const { form } = this.getCached();
 
-    const commandStack = form.get('commandStack');
-
-    const stackIdx = commandStack._stackIdx;
-
     const {
       onImport,
       xml: schema
     } = this.props;
+
+    const editor = form.getEditor();
+
+    const commandStack = editor.get('commandStack');
+
+    const stackIdx = commandStack._stackIdx;
 
     let engineProfile = null;
 
@@ -222,6 +260,8 @@ export class FormEditor extends CachedComponent {
   listen(fn) {
     const { form } = this.getCached();
 
+    const editor = form.getEditor();
+
     [
       'attach',
       'commandStack.changed',
@@ -229,28 +269,34 @@ export class FormEditor extends CachedComponent {
       'propertiesPanel.focusin',
       'propertiesPanel.focusout',
       'selection.changed'
-    ].forEach((event) => form[ fn ](event, this.handleChanged));
+    ].forEach((event) => editor[ fn ](event, this.handleChanged));
 
     if (fn === 'on') {
-      form.on('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
+      editor.on('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
+      form.on('formPlayground.layoutChanged', this.handlePlaygroundLayoutChanged);
     } else if (fn === 'off') {
-      form.off('commandStack.changed', this.handleLintingDebounced);
+      editor.off('commandStack.changed', this.handleLintingDebounced);
+      form.off('formPlayground.layoutChanged', this.handlePlaygroundLayoutChanged);
     }
   }
 
   handleChanged = () => {
+
     const { onChanged } = this.props;
+
+    const { previewOpen } = this.state;
 
     const { form } = this.getCached();
 
-    const commandStack = form.get('commandStack');
+    const commandStack = form.getEditor().get('commandStack');
 
-    const inputActive = isInputActive();
+    const inputActive = isInputActive() || formOutputFocused();
 
     const newState = {
       defaultUndoRedo: inputActive,
       dirty: this.isDirty(),
       inputActive,
+      previewOpen,
       redo: commandStack.canRedo(),
       removeSelected: inputActive,
       save: true,
@@ -261,7 +307,8 @@ export class FormEditor extends CachedComponent {
     if (isFunction(onChanged)) {
       onChanged({
         ...newState,
-        editMenu: getFormEditMenu(newState)
+        editMenu: getFormEditMenu(newState),
+        windowMenu: getFormWindowMenu(newState)
       });
     }
 
@@ -277,6 +324,66 @@ export class FormEditor extends CachedComponent {
     }
   };
 
+  handlePlaygroundRendered = () => {
+    const { form } = this.getCached();
+
+    this._isMounted = true;
+    this.listen('on');
+
+    // notify current dragula instance to properly re-attach
+    form.getEditor().get('eventBus').fire('attach');
+
+    this.checkImport();
+  };
+
+  handleInitialPlaygroundLayout() {
+
+    const { form } = this.getCached();
+
+    const { layout } = this.props;
+
+    // adjust collapsible panels state according to global layout
+    const formLayout = getInitialFormLayout(layout);
+
+    const openedContainers = getOpenContainers(formLayout);
+    openedContainers.length && form.open(openedContainers);
+
+    const collapsedContainers = getCollapsedContainers(formLayout);
+    collapsedContainers.length && form.collapse(collapsedContainers);
+  }
+
+  handlePlaygroundLayoutChanged = (event) => {
+    const {
+      layout
+    } = event;
+
+    const {
+      onLayoutChanged
+    } = this.props;
+
+    this.setState({
+      previewOpen: isValidation(layout)
+    });
+
+    if (isFunction(onLayoutChanged)) {
+      onLayoutChanged({
+        [FORM_LAYOUT_KEY]: layout
+      });
+    }
+
+    this.handleChanged();
+  };
+
+  onCollapsePreview = () => {
+    const { form } = this.getCached();
+    form.collapse();
+  };
+
+  onOpenPreview = () => {
+    const { form } = this.getCached();
+    form.open();
+  };
+
   handleLinting = () => {
     const engineProfile = this.engineProfile.getCached();
 
@@ -286,7 +393,7 @@ export class FormEditor extends CachedComponent {
       return;
     }
 
-    const contents = form.getSchema();
+    const contents = form.getEditor().saveSchema();
 
     const { onAction } = this.props;
 
@@ -337,7 +444,7 @@ export class FormEditor extends CachedComponent {
       stackIdx
     } = this.getCached();
 
-    const commandStack = form.get('commandStack');
+    const commandStack = form.getEditor().get('commandStack');
 
     return commandStack._stackIdx !== stackIdx;
   }
@@ -348,7 +455,7 @@ export class FormEditor extends CachedComponent {
       lastSchema
     } = this.getCached();
 
-    const commandStack = form.get('commandStack');
+    const commandStack = form.getEditor().get('commandStack');
 
     const stackIdx = commandStack._stackIdx;
 
@@ -369,7 +476,20 @@ export class FormEditor extends CachedComponent {
   triggerAction(action, context) {
     const { form } = this.getCached();
 
-    const editorActions = form.get('editorActions');
+    if (action === 'collapsePreview') {
+      return this.onCollapsePreview();
+    }
+
+    if (action === 'openPreview') {
+      return this.onOpenPreview();
+    }
+
+    // editor is not yet available
+    if (!this._isMounted) {
+      return;
+    }
+
+    const editorActions = form.getEditor().get('editorActions');
 
     if (action === 'showLintError') {
       editorActions.trigger('selectFormField', context);
@@ -391,7 +511,10 @@ export class FormEditor extends CachedComponent {
       onUpdateMenu
     } = this.props;
 
-    const { importing } = this.state;
+    const {
+      importing,
+      previewOpen
+    } = this.state;
 
     return (
       <div className={ css.FormEditor }>
@@ -424,6 +547,11 @@ export class FormEditor extends CachedComponent {
               onToggleLinting={ this.onToggleLinting } />
           </Fragment>
         }
+
+        <FormPreviewToggle
+          previewOpen={ previewOpen }
+          onCollapsePreview={ this.onCollapsePreview }
+          onOpenPreview={ this.onOpenPreview } />
       </div>
     );
   }
@@ -431,7 +559,8 @@ export class FormEditor extends CachedComponent {
   static createCachedState(props) {
 
     const {
-      onAction,
+      layout = {},
+      onAction
     } = props;
 
     const {
@@ -440,15 +569,16 @@ export class FormEditor extends CachedComponent {
     } = Metadata;
 
     const form = new Form({
+      schema: {
+        components: [],
+        type: 'default'
+      },
+      layout: getInitialFormLayout(layout),
       exporter: {
         name,
         version
       }
     });
-
-    const commandStack = form.get('commandStack');
-
-    const stackIdx = commandStack._stackIdx;
 
     onAction('emit-event', {
       type: 'form.modeler.created',
@@ -462,7 +592,7 @@ export class FormEditor extends CachedComponent {
       engineProfile: null,
       form,
       lastSchema: null,
-      stackIdx
+      stackIdx: -1
     };
   }
 }
@@ -473,4 +603,47 @@ export default WithCache(WithCachedState(FormEditor));
 
 function isCacheStateChanged(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
+}
+
+function isValidation(layout = {}) {
+  return (
+    (layout['form-preview'] || {}).open ||
+    (layout['form-input'] || {}).open ||
+    (layout['form-output'] || {}).open
+  );
+}
+
+function getInitialFormLayout(layout) {
+  const {
+    [FORM_LAYOUT_KEY]: formLayout
+  } = layout;
+
+  return formLayout || DEFAULT_LAYOUT;
+}
+
+function filterContainersByState(formLayout, open) {
+  return keys(formLayout).reduce((collapsed, key) => {
+    const layout = formLayout[key];
+
+    if (layout.open === open) {
+      collapsed.push(key);
+    }
+
+    return collapsed;
+  }, []);
+}
+
+function getCollapsedContainers(formLayout) {
+  return filterContainersByState(formLayout, false);
+}
+
+function getOpenContainers(formLayout) {
+  return filterContainersByState(formLayout, true);
+}
+
+function formOutputFocused() {
+  const formOutputNode =
+    document.body.querySelector('.cfp-collapsible-panel[data-idx="form-output"] .cfp-collapsible-panel-content');
+
+  return !!formOutputNode && formOutputNode.contains(document.activeElement);
 }
