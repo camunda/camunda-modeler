@@ -11,7 +11,12 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FEAT`: support Camunda 8.1 and 7.18 as target platform ([#3158](https://github.com/camunda/camunda-modeler/issues/3158))
-* `DEPS`: bump @camunda/linting to v0.7.2 ([#3184](https://github.com/camunda/camunda-modeler/pull/3184))
+* `DEPS`: bump `@camunda/linting` to v0.7.2 ([#3184](https://github.com/camunda/camunda-modeler/pull/3184))
+* `DEPS`: bump `diagram-js` to v9.1.0 ([03d303a59](https://github.com/camunda/camunda-modeler/commit/03d303a59c5ef06403490ee398fc1570b27a503a))
+* `DEPS`: bump `diagram-js-direct-editing` to v2.0.0 ([5c4c02a45](https://github.com/camunda/camunda-modeler/commit/5c4c02a45ea262b01bafe67dec0feec2a90ffc2c))
+* `DEPS`: bump `min-dash` to v4.0.0 ([372a27026](https://github.com/camunda/camunda-modeler/commit/372a27026906a7522dd882581831e04822d3aa92))
+* `DEPS`: bump `min-dom` to v4.0.3 ([03d303a59](https://github.com/camunda/camunda-modeler/commit/03d303a59c5ef06403490ee398fc1570b27a503a))
+* `DEPS`: bump `@bpmn-io/properties-panel` to v0.23.0 ([03d303a59](https://github.com/camunda/camunda-modeler/commit/03d303a59c5ef06403490ee398fc1570b27a503a))
 
 ### BPMN
 
@@ -29,6 +34,16 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: support `zeebe:property` binding for creation of elements from element templates ([#762](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/762))
 * `FIX`: support conditional properties for creation of elements from element templates ([#762](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/762))
 * `CHORE`: remove default values from _Variable assignment value_ of _Input_ and _Output_ ([#757](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/757))
+* `DEPS`: bump `bpmn-js` to v10.2.0 ([03d303a59](https://github.com/camunda/camunda-modeler/commit/03d303a59c5ef06403490ee398fc1570b27a503a))
+* `DEPS`: bump `bpmn-js-properties-panel` to v1.9.0 ([03d303a59](https://github.com/camunda/camunda-modeler/commit/03d303a59c5ef06403490ee398fc1570b27a503a))
+* `DEPS`: bump `bpmn-moddle` to v8.0.0 ([5c4c02a45](https://github.com/camunda/camunda-modeler/commit/5c4c02a45ea262b01bafe67dec0feec2a90ffc2c))
+* `DEPS`: bump `camunda-bpmn-js` to v0.21.0 ([03d303a59](https://github.com/camunda/camunda-modeler/commit/03d303a59c5ef06403490ee398fc1570b27a503a))
+
+### DMN
+
+* `DEPS`: bump `camunda-dmn-js` to v0.7.0 ([03d303a59](https://github.com/camunda/camunda-modeler/commit/03d303a59c5ef06403490ee398fc1570b27a503a))
+* `DEPS`: bump `dmn-js` to v13.0.0 ([03d303a59](https://github.com/camunda/camunda-modeler/commit/03d303a59c5ef06403490ee398fc1570b27a503a))
+* `DEPS`: bump `dmn-js-properties-panel` to v1.2.1 ([03d303a59](https://github.com/camunda/camunda-modeler/commit/03d303a59c5ef06403490ee398fc1570b27a503a))
 
 ### Forms
 
@@ -37,6 +52,11 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: load dynamic input data ([#197](https://github.com/bpmn-io/form-js/issues/197))
 * `FIX`: use outline for field focus state ([#267](https://github.com/bpmn-io/form-js/issues/267))
 * `FIX`: filter invalid taglist options ([#303](https://github.com/bpmn-io/form-js/issues/303))
+* `DEPS`: bump `@bpmn-io/form-js` to v0.9.6 ([f42afd84b](https://github.com/camunda/camunda-modeler/commit/f42afd84bf92f95461188e456675e2f0db5f5ba2))
+
+### CMMN
+
+* `DEPS`: bump `cmmn-js-properties-panel` to v0.9.0 ([5c4c02a45](https://github.com/camunda/camunda-modeler/commit/5c4c02a45ea262b01bafe67dec0feec2a90ffc2c))
 
 ## 5.3.0
 
