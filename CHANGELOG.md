@@ -6,8 +6,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.4.0
+
 ### General
 
+* `FEAT`: support Camunda 8.1 and 7.18 as target platform ([#3158](https://github.com/camunda/camunda-modeler/issues/3158))
 * `DEPS`: bump @camunda/linting to v0.7.2 ([#3184](https://github.com/camunda/camunda-modeler/pull/3184))
 
 ### BPMN
@@ -16,7 +19,24 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: support modeling of inclusive gateways in Camunda 8 ([#162](https://github.com/camunda/camunda-bpmn-js/pull/162))
 * `FEAT`: support `bpmnlint` plugins ([#20](https://github.com/camunda/linting/pull/20))
 * `FEAT`: support cron expressions for timer cycle ([#772](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/772))
+* `FEAT`: show conditions group if source is inclusive gateway ([#756](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/756))
+* `FEAT`: support element template properties without default value ([#763](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/763))
+* `FEAT`: support deprecated element templates ([#766](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/766))
+* `FEAT`: support automatic indentation in FEEL editor ([#13](https://github.com/bpmn-io/feel-editor/issues/13))
+* `FEAT`: suggest built-in functions in FEEL editor ([#11](https://github.com/bpmn-io/feel-editor/issues/11))
+* `FEAT`: suggest built-in snippets in FEEL editor ([#14](https://github.com/bpmn-io/feel-editor/issues/14))
 * `FIX`: unset timer type correctly ([#775](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/775))
+* `FIX`: support `zeebe:property` binding for creation of elements from element templates ([#762](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/762))
+* `FIX`: support conditional properties for creation of elements from element templates ([#762](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/762))
+* `CHORE`: remove default values from _Variable assignment value_ of _Input_ and _Output_ ([#757](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/757))
+
+### Forms
+
+* `FEAT`: add `checklist` component ([#196](https://github.com/bpmn-io/form-js/issues/196))
+* `FEAT`: add `taglist` component ([#198](https://github.com/bpmn-io/form-js/issues/198))
+* `FEAT`: load dynamic input data ([#197](https://github.com/bpmn-io/form-js/issues/197))
+* `FIX`: use outline for field focus state ([#267](https://github.com/bpmn-io/form-js/issues/267))
+* `FIX`: filter invalid taglist options ([#303](https://github.com/bpmn-io/form-js/issues/303))
 
 ## 5.3.0
 
