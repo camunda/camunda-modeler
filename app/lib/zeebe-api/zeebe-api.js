@@ -120,7 +120,7 @@ class ZeebeAPI {
 
   /**
    * @public
-   * Deploy workflow.
+   * Deploy Process.
    *
    * @param {ZeebeClientParameters & { name: string, filePath: string }} parameters
    * @returns {{ success: boolean, response: object }}
@@ -141,7 +141,7 @@ class ZeebeAPI {
     const client = await this._getZeebeClient(endpoint);
 
     try {
-      const response = await client.deployWorkflow({
+      const response = await client.deployProcess({
         definition: contents,
         name: prepareDeploymentName(name, filePath, diagramType)
       });
@@ -179,10 +179,7 @@ class ZeebeAPI {
 
     try {
 
-      const response = await client.createWorkflowInstance({
-        bpmnProcessId: processId,
-        variables
-      });
+      const response = await client.createProcessInstance(processId, variables);
 
       return {
         success: true,

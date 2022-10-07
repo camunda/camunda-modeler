@@ -447,7 +447,7 @@ describe('ZeebeAPI', function() {
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            createWorkflowInstance: function() {
+            createProcessInstance: function() {
               throw new Error('TEST ERROR.');
             }
           };
@@ -478,7 +478,7 @@ describe('ZeebeAPI', function() {
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            createWorkflowInstance: function() {
+            createProcessInstance: function() {
               throw new Error('TEST ERROR.');
             }
           };
@@ -534,7 +534,7 @@ describe('ZeebeAPI', function() {
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            deployWorkflow: function() {
+            deployProcess: function() {
               throw error;
             }
           };
@@ -566,7 +566,7 @@ describe('ZeebeAPI', function() {
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            deployWorkflow: function() {
+            deployProcess: function() {
               throw error;
             }
           };
@@ -620,12 +620,12 @@ describe('ZeebeAPI', function() {
     it('should suffix deployment name with .bpmn if necessary', async () => {
 
       // given
-      const deployWorkflowSpy = sinon.spy();
+      const deployProcessSpy = sinon.spy();
 
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            deployWorkflow: deployWorkflowSpy,
+            deployProcess: deployProcessSpy,
           };
         }
       });
@@ -640,7 +640,7 @@ describe('ZeebeAPI', function() {
         }
       });
 
-      const { args } = deployWorkflowSpy.getCall(0);
+      const { args } = deployProcessSpy.getCall(0);
 
       // then
       expect(args[0].name).to.eql('not_suffixed.bpmn');
@@ -650,12 +650,12 @@ describe('ZeebeAPI', function() {
     it('should suffix deployment name with .dmn if necessary', async () => {
 
       // given
-      const deployWorkflowSpy = sinon.spy();
+      const deployProcessSpy = sinon.spy();
 
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            deployWorkflow: deployWorkflowSpy,
+            deployProcess: deployProcessSpy,
           };
         }
       });
@@ -671,7 +671,7 @@ describe('ZeebeAPI', function() {
         diagramType: 'dmn'
       });
 
-      const { args } = deployWorkflowSpy.getCall(0);
+      const { args } = deployProcessSpy.getCall(0);
 
       // then
       expect(args[0].name).to.eql('not_suffixed.dmn');
@@ -681,12 +681,12 @@ describe('ZeebeAPI', function() {
     it('should not suffix deployment name with .bpmn if not necessary', async () => {
 
       // given
-      const deployWorkflowSpy = sinon.spy();
+      const deployProcessSpy = sinon.spy();
 
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            deployWorkflow: deployWorkflowSpy,
+            deployProcess: deployProcessSpy,
           };
         }
       });
@@ -701,7 +701,7 @@ describe('ZeebeAPI', function() {
         }
       });
 
-      const { args } = deployWorkflowSpy.getCall(0);
+      const { args } = deployProcessSpy.getCall(0);
 
       // then
       expect(args[0].name).to.eql('suffixed.bpmn');
@@ -711,12 +711,12 @@ describe('ZeebeAPI', function() {
     it('should not suffix deployment name with .dmn if not necessary', async () => {
 
       // given
-      const deployWorkflowSpy = sinon.spy();
+      const deployProcessSpy = sinon.spy();
 
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            deployWorkflow: deployWorkflowSpy,
+            deployProcess: deployProcessSpy,
           };
         }
       });
@@ -732,7 +732,7 @@ describe('ZeebeAPI', function() {
         diagramType: 'dmn'
       });
 
-      const { args } = deployWorkflowSpy.getCall(0);
+      const { args } = deployProcessSpy.getCall(0);
 
       // then
       expect(args[0].name).to.eql('suffixed.dmn');
@@ -742,12 +742,12 @@ describe('ZeebeAPI', function() {
     it('should use file path if deployment name is empty', async () => {
 
       // given
-      const deployWorkflowSpy = sinon.spy();
+      const deployProcessSpy = sinon.spy();
 
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            deployWorkflow: deployWorkflowSpy,
+            deployProcess: deployProcessSpy,
           };
         }
       });
@@ -762,7 +762,7 @@ describe('ZeebeAPI', function() {
         }
       });
 
-      const { args } = deployWorkflowSpy.getCall(0);
+      const { args } = deployProcessSpy.getCall(0);
 
       // then
       expect(args[0].name).to.eql('process.bpmn');
@@ -772,12 +772,12 @@ describe('ZeebeAPI', function() {
     it('should add bpmn suffix to filename if extension is other than bpmn', async () => {
 
       // given
-      const deployWorkflowSpy = sinon.spy();
+      const deployProcessSpy = sinon.spy();
 
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            deployWorkflow: deployWorkflowSpy,
+            deployProcess: deployProcessSpy,
           };
         }
       });
@@ -792,7 +792,7 @@ describe('ZeebeAPI', function() {
         }
       });
 
-      const { args } = deployWorkflowSpy.getCall(0);
+      const { args } = deployProcessSpy.getCall(0);
 
       // then
       expect(args[0].name).to.eql('xmlFile.bpmn');
@@ -802,12 +802,12 @@ describe('ZeebeAPI', function() {
     it('should add dmn suffix if extension is other than dmn and diagramType=dmn', async () => {
 
       // given
-      const deployWorkflowSpy = sinon.spy();
+      const deployProcessSpy = sinon.spy();
 
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            deployWorkflow: deployWorkflowSpy,
+            deployProcess: deployProcessSpy,
           };
         }
       });
@@ -823,7 +823,7 @@ describe('ZeebeAPI', function() {
         diagramType: 'dmn'
       });
 
-      const { args } = deployWorkflowSpy.getCall(0);
+      const { args } = deployProcessSpy.getCall(0);
 
       // then
       expect(args[0].name).to.eql('xmlFile.dmn');
@@ -1254,7 +1254,7 @@ describe('ZeebeAPI', function() {
           usedConfig = args;
 
           return {
-            deployWorkflow: noop
+            deployProcess: noop
           };
         }
       });
@@ -1327,7 +1327,7 @@ describe('ZeebeAPI', function() {
 
       // given
       const createSpy = sinon.stub().returns({
-        deployWorkflow: noop,
+        deployProcess: noop,
         close: noop
       });
 
@@ -1366,7 +1366,7 @@ describe('ZeebeAPI', function() {
       const zeebeAPI = mockZeebeNode({
         ZBClient: function() {
           return {
-            deployWorkflow: noop,
+            deployProcess: noop,
             close: closeSpy
           };
         }
@@ -1414,7 +1414,7 @@ describe('ZeebeAPI', function() {
           usedConfig = args;
 
           return {
-            deployWorkflow: noop
+            deployProcess: noop
           };
         }
       });
@@ -1449,7 +1449,7 @@ describe('ZeebeAPI', function() {
           usedConfig = args;
 
           return {
-            deployWorkflow: noop
+            deployProcess: noop
           };
         }
       });
@@ -1479,7 +1479,7 @@ describe('ZeebeAPI', function() {
           usedConfig = args;
 
           return {
-            deployWorkflow: noop
+            deployProcess: noop
           };
         }
       });
@@ -1527,8 +1527,8 @@ function mockZeebeNode(options = {}) {
     ZBClient: options.ZBClient || function() {
       return {
         topology: noop,
-        deployWorkflow: noop,
-        createWorkflowInstance: noop,
+        deployProcess: noop,
+        createProcessInstance: noop,
         close: noop
       };
     }
