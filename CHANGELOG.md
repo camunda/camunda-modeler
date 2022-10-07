@@ -6,6 +6,12 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.4.1
+
+### General
+
+* `FIX`: fix deployment to C8 SaaS ([#3223](https://github.com/camunda/camunda-modeler/issues/3223))
+
 ## 5.4.0
 
 ### General
