@@ -141,7 +141,7 @@ export default class StartInstancePlugin extends PureComponent {
     } = this.props;
 
     const zeebeAPI = _getGlobal('zeebeAPI');
-    const processId = deploymentResult.response.workflows[0].bpmnProcessId;
+    const processId = deploymentResult.response.processes[0].bpmnProcessId;
     const decoratedConfig = this.decorateVariables(startInstanceConfig);
 
     try {

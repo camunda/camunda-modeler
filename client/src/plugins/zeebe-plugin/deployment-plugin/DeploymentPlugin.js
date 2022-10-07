@@ -691,7 +691,7 @@ function createCamundaCloudClusterUrl(camundaCloudClusterId) {
 }
 
 function getProcessId(response) {
-  return response.workflows && response.workflows[0] && response.workflows[0].bpmnProcessId || null;
+  return response.processes && response.processes[0] && response.processes[0].bpmnProcessId || null;
 }
 
 function patchWithProtocol(config = {}) {
