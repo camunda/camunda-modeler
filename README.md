@@ -27,7 +27,7 @@ git checkout master
 # install dependencies
 npm install
 
-# execute all checks (lint, test and build)
+# execute all checks (lint, test, and build)
 npm run all
 
 # build the application to ./dist
@@ -52,7 +52,7 @@ file an issue or pull request.
 
 ## Code of Conduct
 
-By participating to this project, please uphold to our [Code of Conduct](https://github.com/camunda/.github/blob/main/.github/CODE_OF_CONDUCT.md).
+By participating in this project, please uphold to our [Code of Conduct](https://github.com/camunda/.github/blob/main/.github/CODE_OF_CONDUCT.md).
 
 
 ## License
