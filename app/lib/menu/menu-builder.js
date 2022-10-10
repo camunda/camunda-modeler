@@ -614,6 +614,11 @@ class MenuBuilder {
 
     const bottomPart = [
       {
+        label: 'FEEL Reference',
+        click: () => browserOpen('https://docs.camunda.io/docs/components/modeler/feel/what-is-feel/')
+      },
+      getSeparatorTemplate(),
+      {
         label: 'Version ' + app.version,
         enabled: false
       },
