@@ -9,7 +9,7 @@
     flex-direction: row;
   
     .fjs-container {
-      --font-family: inherit;
+      --font-family: var(--font-family);
       display: flex;
       flex: 1;
       flex-direction: row;
@@ -28,6 +28,11 @@
   
     .fjs-editor-container .fjs-properties-panel {
       left: 1px;
+
+      .bio-properties-panel {
+        --font-family: var(--font-family);
+        --font-family-monospace: var(--font-family-monospace);
+      }
     }
 
     .fjs-powered-by {
