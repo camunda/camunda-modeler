@@ -1529,7 +1529,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set NOT `useTLS=false` for no protocol endpoint (cloud)', async () => {
+    it('should set `useTLS=true` for no protocol endpoint (cloud)', async () => {
 
       // given
       let usedConfig;
