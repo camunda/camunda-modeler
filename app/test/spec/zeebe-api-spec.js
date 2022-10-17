@@ -1469,7 +1469,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should NOT set `useTLS` for http endpoint', async () => {
+    it('should set `useTLS=false` for http endpoint (no auth)', async () => {
 
       // given
       let usedConfig;
@@ -1495,7 +1495,67 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(usedConfig[1]).not.to.have.property('useTLS');
+      expect(usedConfig[1]).to.have.property('useTLS', false);
+    });
+
+
+    it('should set `useTLS=false` for http endpoint (oauth)', async () => {
+
+      // given
+      let usedConfig;
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function(...args) {
+          usedConfig = args;
+
+          return {
+            deployProcess: noop
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'oauth',
+          url: 'http://camunda.com'
+        }
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      // then
+      expect(usedConfig[1]).to.have.property('useTLS', false);
+    });
+
+
+    it('should set `useTLS=true` for no protocol endpoint (cloud)', async () => {
+
+      // given
+      let usedConfig;
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function(...args) {
+          usedConfig = args;
+
+          return {
+            deployProcess: noop
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'camundaCloud',
+          url: 'camunda.com'
+        }
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      // then
+      expect(usedConfig[1]).to.have.property('useTLS', true);
     });
   });
 
