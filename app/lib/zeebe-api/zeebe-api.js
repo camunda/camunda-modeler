@@ -283,8 +283,7 @@ class ZeebeAPI {
           clientId: endpoint.clientId,
           clientSecret: endpoint.clientSecret,
           cacheOnDisk: false
-        },
-        useTLS: true
+        }
       };
     } else if (type === endpointTypes.CAMUNDA_CLOUD) {
       options = {
@@ -308,11 +307,10 @@ class ZeebeAPI {
   async _withTLSConfig(url, options) {
     const rootCerts = [];
 
-    // (0) force TLS only for https endpoints; don't parse the URL to avoid errors at this step
-    const tlsOptions = {};
-    if (/^https:\/\//.test(url)) {
-      tlsOptions.useTLS = true;
-    }
+    // (0) set `useTLS` according to the protocol
+    const tlsOptions = {
+      useTLS: options.useTLS || /^https:\/\//.test(url)
+    };
 
     // (1) use certificate from flag
     const customCertificatePath = this._flags.get('zeebe-ssl-certificate');
