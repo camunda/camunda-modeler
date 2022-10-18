@@ -32,14 +32,14 @@ export function FormPreviewToggle(props) {
     <div className={ classnames(css.FormPreviewToggle) }>
       <button
         className={ classnames('btn', { 'btn--active': !previewOpen }) }
-        title="Open design"
+        title="Open design mode"
         onClick={ onCollapsePreview }
       >
         <DesignIcon /> Design
       </button>
       <button
         className={ classnames('btn', { 'btn--active': previewOpen }) }
-        title="Open validation"
+        title="Open validation mode"
         onClick={ onOpenPreview }
       >
         <ValidateIcon /> Validate

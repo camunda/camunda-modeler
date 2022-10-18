@@ -16,7 +16,7 @@ export function getFormWindowMenu(state) {
 
 function getPreviewEntries({ previewOpen }) {
   return [ {
-    label: previewOpen ? 'Open design' : 'Open validation',
+    label: previewOpen ? 'Open design mode' : 'Open validation mode',
     accelerator: 'CommandOrControl+P',
     action: previewOpen ? 'collapsePreview' : 'openPreview'
   } ];
