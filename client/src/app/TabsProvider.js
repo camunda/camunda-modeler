@@ -646,8 +646,8 @@ export default class TabsProvider {
     if (providersForExtension.length > 1) {
       const provider = findProviderForFile(providersForExtension, file);
 
-      // return the matching provider or the last provider as fallback
-      return provider || providersForExtension[providersForExtension.length - 1];
+      // return the matching provider or the first by priority provider as fallback
+      return provider || sortByPriority(providersForExtension)[0];
     }
 
     // no providers specified for the extension; return the first that can open the file
