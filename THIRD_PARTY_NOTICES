@@ -139,47 +139,48 @@ This project incorporates components from the projects listed below. The origina
 132.  @lezer/xml@1.0.0 (https://github.com/lezer-parser/xml)
 133.  @sentry/browser@6.3.6 (https://github.com/getsentry/sentry-javascript)
 134.  @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
-135.  bpmn-js-properties-panel@1.9.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+135.  bpmn-js-properties-panel@1.10.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 136.  bpmn-js@10.2.0 (https://github.com/bpmn-io/bpmn-js)
-137.  camunda-bpmn-js@0.21.0 (https://github.com/camunda/camunda-bpmn-js)
-138.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
-139.  camunda-dmn-js@0.7.0 (https://github.com/camunda/camunda-dmn-js)
-140.  canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
-141.  deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
-142.  diagram-js-direct-editing@1.8.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
-143.  diagram-js@9.1.0 (https://github.com/bpmn-io/diagram-js)
-144.  didi@8.0.2 (https://github.com/nikku/didi)
-145.  dmn-js-decision-table@13.0.0 (https://github.com/bpmn-io/dmn-js)
-146.  dmn-js-drd@13.0.0 (https://github.com/bpmn-io/dmn-js)
-147.  dmn-js-literal-expression@13.0.0 (https://github.com/bpmn-io/dmn-js)
-148.  dmn-js-shared@13.0.0 (https://github.com/bpmn-io/dmn-js)
-149.  dmn-js@13.0.0 (https://github.com/bpmn-io/dmn-js)
-150.  dmn-moddle@10.0.0 (https://github.com/bpmn-io/dmn-moddle)
-151.  drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
-152.  events@3.3.0 (https://github.com/Gozala/events)
-153.  formik@2.0.4 (https://github.com/jaredpalmer/formik)
-154.  hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
-155.  inherits-browser@0.1.0 (https://github.com/nikku/inherits-browser)
-156.  lezer-feel@0.14.1 (https://github.com/nikku/lezer-feel)
-157.  lodash-es@4.17.21 (https://github.com/lodash/lodash)
-158.  min-dash@3.8.1 (https://github.com/bpmn-io/min-dash)
-159.  min-dom@3.2.1 (https://github.com/bpmn-io/min-dom)
-160.  mitt@1.2.0 (https://github.com/developit/mitt)
-161.  mixpanel-browser@2.45.0 (https://github.com/mixpanel/mixpanel-js)
-162.  moddle-xml@9.0.6 (https://github.com/bpmn-io/moddle-xml)
-163.  p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
-164.  p-series@2.1.0 (https://github.com/sindresorhus/p-series)
-165.  path-intersection@2.2.1 (https://github.com/bpmn-io/path-intersection)
-166.  react-dom@16.8.6 (https://github.com/facebook/react)
-167.  react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
-168.  react@16.8.6 (https://github.com/facebook/react)
-169.  rgbcolor@0.0.4 (https://github.com/yetzt/node-rgbcolor)
-170.  scheduler@0.17.0 (https://github.com/facebook/react)
-171.  sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
-172.  stackblur@1.0.0
-173.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
-174.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
-175.  xmldom@0.1.27 (https://github.com/jindw/xmldom)
+137.  camunda-bpmn-js-behaviors@0.3.0 (https://github.com/camunda/camunda-bpmn-js-behaviors)
+138.  camunda-bpmn-js@0.21.1 (https://github.com/camunda/camunda-bpmn-js)
+139.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
+140.  camunda-dmn-js@0.7.0 (https://github.com/camunda/camunda-dmn-js)
+141.  canvg-browser@1.0.0 (https://github.com/bpmn-io/canvg-browser)
+142.  deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
+143.  diagram-js-direct-editing@1.8.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
+144.  diagram-js@9.1.0 (https://github.com/bpmn-io/diagram-js)
+145.  didi@8.0.2 (https://github.com/nikku/didi)
+146.  dmn-js-decision-table@13.0.0 (https://github.com/bpmn-io/dmn-js)
+147.  dmn-js-drd@13.0.0 (https://github.com/bpmn-io/dmn-js)
+148.  dmn-js-literal-expression@13.0.0 (https://github.com/bpmn-io/dmn-js)
+149.  dmn-js-shared@13.0.0 (https://github.com/bpmn-io/dmn-js)
+150.  dmn-js@13.0.0 (https://github.com/bpmn-io/dmn-js)
+151.  dmn-moddle@10.0.0 (https://github.com/bpmn-io/dmn-moddle)
+152.  drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
+153.  events@3.3.0 (https://github.com/Gozala/events)
+154.  formik@2.0.4 (https://github.com/jaredpalmer/formik)
+155.  hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
+156.  inherits-browser@0.1.0 (https://github.com/nikku/inherits-browser)
+157.  lezer-feel@0.14.1 (https://github.com/nikku/lezer-feel)
+158.  lodash-es@4.17.21 (https://github.com/lodash/lodash)
+159.  min-dash@3.8.1 (https://github.com/bpmn-io/min-dash)
+160.  min-dom@3.2.1 (https://github.com/bpmn-io/min-dom)
+161.  mitt@1.2.0 (https://github.com/developit/mitt)
+162.  mixpanel-browser@2.45.0 (https://github.com/mixpanel/mixpanel-js)
+163.  moddle-xml@9.0.6 (https://github.com/bpmn-io/moddle-xml)
+164.  p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
+165.  p-series@2.1.0 (https://github.com/sindresorhus/p-series)
+166.  path-intersection@2.2.1 (https://github.com/bpmn-io/path-intersection)
+167.  react-dom@16.8.6 (https://github.com/facebook/react)
+168.  react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
+169.  react@16.8.6 (https://github.com/facebook/react)
+170.  rgbcolor@0.0.4 (https://github.com/yetzt/node-rgbcolor)
+171.  scheduler@0.17.0 (https://github.com/facebook/react)
+172.  sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
+173.  stackblur@1.0.0
+174.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
+175.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
+176.  xmldom@0.1.27 (https://github.com/jindw/xmldom)
 
 
 %% @grpc/grpc-js@1.7.1 NOTICES AND INFORMATION BEGIN HERE
@@ -4464,7 +4465,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF @sindresorhus/is@0.15.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@1.9.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@1.10.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -4488,7 +4489,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@1.9.0 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@1.10.0 NOTICES AND INFORMATION
 
 
 %% bpmn-js@10.2.0 NOTICES AND INFORMATION BEGIN HERE
@@ -4521,7 +4522,34 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 END OF bpmn-js@10.2.0 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@0.21.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js-behaviors@0.3.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2022-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF camunda-bpmn-js-behaviors@0.3.0 NOTICES AND INFORMATION
+
+
+%% camunda-bpmn-js@0.21.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -4545,7 +4573,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@0.21.0 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@0.21.1 NOTICES AND INFORMATION
 
 
 %% camunda-cmmn-moddle@1.0.0 NOTICES AND INFORMATION BEGIN HERE
