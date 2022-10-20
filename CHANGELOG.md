@@ -6,6 +6,21 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.4.2
+
+### General
+
+* `FIX`: do not use TLS with HTTP endpoints when deploying to Zeebe ([#3242](https://github.com/camunda/camunda-modeler/pull/3242))
+
+### BPMN
+
+* `FIX`: remove _Cycle_ option of _Timer_ _Type_ of interrupting timer start event ([#802](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/802))
+* `FIX`: remove timer expression if not allowed after element changed ([#15](https://github.com/camunda/camunda-bpmn-js-behaviors/pull/15))
+
+### Forms
+
+* `FIX`: align default static values ([#355](https://github.com/bpmn-io/form-js/pull/355))
+
 ## 5.4.1
 
 ### General
