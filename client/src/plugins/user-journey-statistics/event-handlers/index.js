@@ -10,10 +10,12 @@
 
 import DeploymentEventHandler from './DeploymentEventHandler';
 import LinkEventHandler from './LinkEventHandler';
+import OverlayEventHandler from './OverlayEventHandler';
 import TabEventHandler from './TabEventHandler';
 
 export default [
   DeploymentEventHandler,
   LinkEventHandler,
+  OverlayEventHandler,
   TabEventHandler
 ];
