@@ -329,6 +329,70 @@ describe('MenuBuilder', () => {
     });
 
 
+    it('should inform about triggered by shortcut', () => {
+
+      // given
+      const action = sinon.spy(ElectronApp, 'emit');
+      const menuBuilder = new MenuBuilder({
+        state: {
+          editMenu: [ {
+            label: 'label',
+            enabled: true,
+            action
+          } ]
+        }
+      });
+
+      // when
+      const { menu } = menuBuilder.build();
+
+      // then
+      const editMenu = menu.find(item => item.label === 'Edit');
+      const { click } = editMenu.submenu[0];
+
+      expect(click).to.exist;
+
+      callAction(click, {}, true);
+
+      const call = action.getCall(0).args[2];
+      expect(call).to.eql({ triggeredByShortcut: true });
+    });
+
+
+    it('should inform about triggered by shortcut - sub menu', () => {
+
+      // given
+      const action = sinon.spy(ElectronApp, 'emit');
+      const menuBuilder = new MenuBuilder({
+        state: {
+          editMenu: [ {
+            submenu: [
+              {
+                label: 'label',
+                enabled: true,
+                action
+              }
+            ]
+          } ]
+        }
+      });
+
+      // when
+      const { menu } = menuBuilder.build();
+
+      // then
+      const editMenu = menu.find(item => item.label === 'Edit');
+      const { click } = editMenu.submenu[0].submenu[0];
+
+      expect(click).to.exist;
+
+      callAction(click, {}, true);
+
+      const call = action.getCall(0).args[2];
+      expect(call).to.eql({ triggeredByShortcut: true });
+    });
+
+
     it('should NOT call action if triggered via shortcut with no browser window', () => {
 
       // given
