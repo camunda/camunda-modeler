@@ -138,6 +138,20 @@ describe('<FormEditor>', function() {
   });
 
 
+  it('#getFormPreviewState', async function() {
+
+    // given
+    const { instance } = await renderEditor(schema);
+
+    // when
+    const previewState = instance.getFormPreviewState();
+
+    // then
+    expect(previewState).not.to.be.undefined;
+    expect(previewState).to.equal(null);
+  });
+
+
   describe('#listen', function() {
 
     function expectHandleChanged(event) {
@@ -1152,6 +1166,68 @@ describe('<FormEditor>', function() {
         layout,
         triggeredBy: 'foo'
       });
+    });
+
+
+    it('should notify when form preview was touched', async function() {
+
+      // given
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          form: new FormPlaygroundMock({
+            form: {
+              _getState: () => Math.random()
+            }
+          })
+        },
+        __destroy: () => {}
+      });
+
+      const {
+        wrapper
+      } = await renderEditor(engineProfileSchema, {
+        cache,
+        onAction: recordActions
+      });
+
+      const editor = wrapper.find(FormEditor).getDOMNode();
+
+      const previewContainer = editor.querySelector('.cfp-preview-container');
+
+      // when
+      previewContainer.dispatchEvent(new Event('focusin', { 'bubbles': true }));
+      previewContainer.dispatchEvent(new Event('focusout', { 'bubbles': true }));
+
+      // then
+      const previewChangedEvent = getEvent(emittedEvents, 'form.modeler.previewChanged');
+
+      expect(previewChangedEvent).to.exist;
+    });
+
+
+    it('should NOT notify when form preview was not touched', async function() {
+
+      // given
+      const {
+        wrapper
+      } = await renderEditor(engineProfileSchema, {
+        onAction: recordActions
+      });
+
+      const editor = wrapper.find(FormEditor).getDOMNode();
+
+      const previewContainer = editor.querySelector('.cfp-preview-container');
+
+      // when
+      previewContainer.dispatchEvent(new Event('focusin', { 'bubbles': true }));
+      previewContainer.dispatchEvent(new Event('focusout', { 'bubbles': true }));
+
+      // then
+      const previewChangedEvent = getEvent(emittedEvents, 'form.modeler.previewChanged');
+
+      expect(previewChangedEvent).to.not.exist;
     });
 
 

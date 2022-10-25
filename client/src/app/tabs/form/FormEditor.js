@@ -280,6 +280,8 @@ export class FormEditor extends CachedComponent {
     ].forEach((event) => editor[ fn ](event, this.handleChanged));
 
     this.handleDataEditorInteraction(fn);
+    this.handleFormPreviewInteraction(fn);
+
     if (fn === 'on') {
       editor.on('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
       form.on('formPlayground.layoutChanged', this.handlePlaygroundLayoutChanged);
@@ -323,6 +325,45 @@ export class FormEditor extends CachedComponent {
     } else {
       dataEditorNode.removeEventListener('focusin', handleInteractionStart);
       dataEditorNode.removeEventListener('focusout', handleInteractionEnd);
+    }
+  }
+
+  handleFormPreviewInteraction(fn) {
+    const {
+      onAction
+    } = this.props;
+
+    const formPreviewNode = this.ref.current.querySelector('.cfp-preview-container');
+
+    if (!formPreviewNode) {
+      return;
+    }
+
+    let formPreviewState;
+
+    const handleInteractionStart = () => {
+      formPreviewState = this.getFormPreviewState();
+    };
+
+    const handleInteractionEnd = () => {
+      const newformPreviewState = this.getFormPreviewState();
+
+      // fire event once preview was touched (changed)
+      if (formPreviewState !== newformPreviewState) {
+        onAction('emit-event', {
+          type: 'form.modeler.previewChanged'
+        });
+      }
+
+      formPreviewState = null;
+    };
+
+    if (fn === 'on') {
+      formPreviewNode.addEventListener('focusin', handleInteractionStart);
+      formPreviewNode.addEventListener('focusout', handleInteractionEnd);
+    } else {
+      formPreviewNode.removeEventListener('focusin', handleInteractionStart);
+      formPreviewNode.removeEventListener('focusout', handleInteractionEnd);
     }
   }
 
@@ -549,6 +590,14 @@ export class FormEditor extends CachedComponent {
     } = this.getCached();
 
     return form.getDataEditor().getValue();
+  }
+
+  getFormPreviewState() {
+    const {
+      form
+    } = this.getCached();
+
+    return form.getForm()._getState();
   }
 
   triggerAction(action, context) {
