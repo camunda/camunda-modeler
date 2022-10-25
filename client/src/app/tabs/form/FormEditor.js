@@ -279,12 +279,50 @@ export class FormEditor extends CachedComponent {
       'selection.changed'
     ].forEach((event) => editor[ fn ](event, this.handleChanged));
 
+    this.handleDataEditorInteraction(fn);
     if (fn === 'on') {
       editor.on('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
       form.on('formPlayground.layoutChanged', this.handlePlaygroundLayoutChanged);
     } else if (fn === 'off') {
       editor.off('commandStack.changed', this.handleLintingDebounced);
       form.off('formPlayground.layoutChanged', this.handlePlaygroundLayoutChanged);
+    }
+  }
+
+  handleDataEditorInteraction(fn) {
+    const {
+      onAction
+    } = this.props;
+
+    const dataEditorNode = this.ref.current.querySelector('.cfp-data-container');
+
+    if (!dataEditorNode) {
+      return;
+    }
+
+    let data;
+
+    const handleInteractionStart = () => {
+      data = this.getInputData();
+    };
+
+    const handleInteractionEnd = () => {
+      const newData = this.getInputData();
+
+      // fire event once data was touched (changed)
+      if (data !== newData) {
+        onAction('emit-event', {
+          type: 'form.modeler.inputDataChanged'
+        });
+      }
+    };
+
+    if (fn === 'on') {
+      dataEditorNode.addEventListener('focusin', handleInteractionStart);
+      dataEditorNode.addEventListener('focusout', handleInteractionEnd);
+    } else {
+      dataEditorNode.removeEventListener('focusin', handleInteractionStart);
+      dataEditorNode.removeEventListener('focusout', handleInteractionEnd);
     }
   }
 
@@ -503,6 +541,14 @@ export class FormEditor extends CachedComponent {
     });
 
     return schema;
+  }
+
+  getInputData() {
+    const {
+      form
+    } = this.getCached();
+
+    return form.getDataEditor().getValue();
   }
 
   triggerAction(action, context) {
