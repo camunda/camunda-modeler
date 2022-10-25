@@ -151,7 +151,7 @@ describe('TabsProvider', function() {
       const tab = tabsProvider.createTabForFile(file);
 
       // then
-      expect(tab.type).to.eql('bpmn');
+      expect(tab.type).to.eql('cloud-bpmn');
       expect(tab.file.contents).to.exist;
       expect(tab.file.contents).to.have.lengthOf.above(0);
     });
@@ -170,7 +170,7 @@ describe('TabsProvider', function() {
       const tab = tabsProvider.createTabForFile(file);
 
       // then
-      expect(tab.type).to.eql('dmn');
+      expect(tab.type).to.eql('cloud-dmn');
       expect(tab.file.contents).to.exist;
       expect(tab.file.contents).to.have.lengthOf.above(0);
     });
@@ -347,7 +347,7 @@ describe('TabsProvider', function() {
       // then
       expect(tab.name).to.eql(file.name);
       expect(tab.title).to.eql(file.path);
-      expect(tab.type).to.eql('bpmn');
+      expect(tab.type).to.eql('cloud-bpmn');
     });
 
 
@@ -367,7 +367,7 @@ describe('TabsProvider', function() {
       // then
       expect(tab.name).to.eql(file.name);
       expect(tab.title).to.eql(file.path);
-      expect(tab.type).to.eql('bpmn');
+      expect(tab.type).to.eql('cloud-bpmn');
     });
 
 
