@@ -15,7 +15,7 @@
     "@bpmn-io/replace-ids": "^0.2.0",
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.1.2",
-    "@camunda/form-playground": "^0.1.2",
+    "@camunda/form-playground": "^0.2.0",
     "@camunda/linting": "^0.7.2",
     "@codemirror/commands": "^6.1.0",
     "@codemirror/lang-json": "^6.0.0",
