@@ -357,7 +357,15 @@ class MenuBuilder {
     if (action) {
       menuItemOptions = {
         ...menuItemOptions,
-        click: wrapActionInactiveInDevtools(() => app.emit('menu:action', action, options))
+        click: wrapActionInactiveInDevtools((...args) => {
+
+          const event = args[2];
+
+          app.emit('menu:action', action, {
+            ...options,
+            triggeredByShortcut: event.triggeredByAccelerator
+          });
+        })
       };
     }
 
@@ -710,7 +718,16 @@ function mapMenuEntryTemplate(entry) {
     label: entry.label,
     accelerator: entry.accelerator,
     enabled: entry.enabled !== undefined ? entry.enabled : true,
-    click: () => app.emit('menu:action', entry.action, entry.options),
+    click: (...args) => {
+      const event = args[2];
+
+      const options = {
+        ...entry.options,
+        triggeredByShortcut: event.triggeredByAccelerator
+      };
+
+      app.emit('menu:action', entry.action, options);
+    },
     icon: entry.icon ?
       getIconImage(entry.icon)
       : null
