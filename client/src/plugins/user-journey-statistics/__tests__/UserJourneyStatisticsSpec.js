@@ -316,11 +316,12 @@ describe('<UserJourneyStatistics>', () => {
     const eventHandlers = instance._eventHandlers;
 
     // expect
-    expect(eventHandlers).to.have.length(4);
+    expect(eventHandlers).to.have.length(5);
     expectHandler(eventHandlers[0], 'DeploymentEventHandler');
-    expectHandler(eventHandlers[1], 'LinkEventHandler');
-    expectHandler(eventHandlers[2], 'OverlayEventHandler');
-    expectHandler(eventHandlers[3], 'TabEventHandler');
+    expectHandler(eventHandlers[1], 'FormEditorEventHandler');
+    expectHandler(eventHandlers[2], 'LinkEventHandler');
+    expectHandler(eventHandlers[3], 'OverlayEventHandler');
+    expectHandler(eventHandlers[4], 'TabEventHandler');
   });
 
 });

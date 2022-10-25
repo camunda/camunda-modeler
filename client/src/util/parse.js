@@ -52,7 +52,7 @@ export async function getEngineProfile(contents, diagramType) {
   }
 
   if (diagramType === 'form') {
-    engineProfile = parseForm(contents);
+    engineProfile = parsFormExecutionPlatform(contents);
 
     if (!engineProfile) return null;
 
@@ -101,9 +101,14 @@ function getDefaultExecutionPlatform(type) {
   return ENGINES.PLATFORM;
 }
 
-function parseForm(contents) {
+function parsFormExecutionPlatform(contents) {
   try {
-    return JSON.parse(contents);
+    const value = JSON.parse(contents);
+
+    return {
+      executionPlatform: value.executionPlatform,
+      executionPlatformVersion: value.executionPlatformVersion
+    };
 
   } catch (error) {
     return null;
