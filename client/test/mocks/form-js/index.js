@@ -10,6 +10,8 @@
 
 import { assign } from 'min-dash';
 
+import { domify } from 'min-dom';
+
 import { CommandStack } from '../bpmn-js/Modeler';
 
 export class FormEditor {
@@ -108,16 +110,34 @@ export class FormPlayground {
 
     this._editor = new FormEditor(options);
 
+    this._dataEditor = options.dataEditor || {
+      getValue: () => null
+    };
+
+    this._form = options.form || {
+      _getState: () => null
+    };
+
     this._emitLayoutChanged = options.emitLayoutChanged;
+
+    // mock playground DOM elements
+    this._container = domify('<div class="forms-playground"></div>');
+    this._container.appendChild(domify('<input class="cfp-data-container" />"'));
+    this._container.appendChild(domify('<input class="cfp-preview-container" />"'));
 
     this.schema = null;
 
     this.listeners = {};
   }
 
-  attachTo() {}
+  attachTo(parent) {
+    parent.appendChild(this._container);
+  }
 
-  detach() {}
+  detach() {
+    const parent = this._container.parentNode;
+    parent && parent.removeChild(this._container);
+  }
 
   on(event, priority, callback) {
     if (!callback) {
@@ -149,6 +169,14 @@ export class FormPlayground {
 
   getEditor() {
     return this._editor;
+  }
+
+  getForm() {
+    return this._form;
+  }
+
+  getDataEditor() {
+    return this._dataEditor;
   }
 
   getSchema() {
