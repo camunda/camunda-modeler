@@ -21,6 +21,7 @@ import {
 
 import {
   DEFAULT_ENGINE_PROFILE,
+  FORM_PREVIEW_TRIGGER,
   FormEditor
 } from '../FormEditor';
 
@@ -1062,6 +1063,81 @@ describe('<FormEditor>', function() {
 
       expect(modelerCreatedEvent).to.exist;
       expect(payload).to.eql(form);
+    });
+
+
+    it('should notify on playground layout changes', async function() {
+
+      // given
+      const {
+        instance
+      } = await renderEditor(schema, {
+        onAction: recordActions
+      });
+
+      const {
+        form
+      } = instance.getCached();
+
+      const layout = {
+        'form-preview': { open: true },
+        'form-input': { open: false },
+        'form-output': { open: false }
+      };
+
+      // when
+      form.emit('formPlayground.layoutChanged', {
+        layout
+      });
+
+      // then
+      const playgroundChangedEvent = getEvent(emittedEvents, 'form.modeler.playgroundLayoutChanged');
+
+      const {
+        payload
+      } = playgroundChangedEvent;
+
+      expect(playgroundChangedEvent).to.exist;
+      expect(payload).to.eql({
+        layout,
+        triggeredBy: FORM_PREVIEW_TRIGGER.PREVIEW_PANEL
+      });
+    });
+
+
+    it('should add <triggeredBy> to layout changes', async function() {
+
+      // given
+      const {
+        instance
+      } = await renderEditor(schema, {
+        onAction: recordActions
+      });
+
+      const layout = {
+        'form-preview': { open: true },
+        'form-input': { open: false },
+        'form-output': { open: false }
+      };
+
+      // when
+      instance.setState({ triggeredBy: 'foo' });
+      instance.handlePlaygroundLayoutChanged({
+        layout
+      });
+
+      // then
+      const playgroundChangedEvent = getEvent(emittedEvents, 'form.modeler.playgroundLayoutChanged');
+
+      const {
+        payload
+      } = playgroundChangedEvent;
+
+      expect(playgroundChangedEvent).to.exist;
+      expect(payload).to.eql({
+        layout,
+        triggeredBy: 'foo'
+      });
     });
 
   });

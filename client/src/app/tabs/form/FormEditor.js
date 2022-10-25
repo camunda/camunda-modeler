@@ -65,6 +65,13 @@ const DEFAULT_LAYOUT = {
   'form-output': { open: false }
 };
 
+export const FORM_PREVIEW_TRIGGER = {
+  KEYBOARD_SHORTCUT: 'keyboardShortcut',
+  PREVIEW_PANEL: 'previewPanel',
+  STATUS_BAR: 'statusBar',
+  WINDOW_MENU: 'windowMenu'
+};
+
 
 export class FormEditor extends CachedComponent {
   constructor(props) {
@@ -78,7 +85,8 @@ export class FormEditor extends CachedComponent {
 
     this.state = {
       importing: false,
-      previewOpen: isValidation(getInitialFormLayout(layout))
+      previewOpen: isValidation(getInitialFormLayout(layout)),
+      triggeredBy: null
     };
 
     this.engineProfile = new EngineProfileHelper({
@@ -358,31 +366,55 @@ export class FormEditor extends CachedComponent {
     } = event;
 
     const {
+      onAction,
       onLayoutChanged
     } = this.props;
 
-    this.setState({
-      previewOpen: isValidation(layout)
-    });
-
+    // (1) persist layout in application
     if (isFunction(onLayoutChanged)) {
       onLayoutChanged({
         [FORM_LAYOUT_KEY]: layout
       });
     }
 
+    // (2) notify interested parties that playground layout has changed
+    onAction('emit-event', {
+      type: 'form.modeler.playgroundLayoutChanged',
+      payload: {
+        layout,
+
+        // assumption: everything else is internally triggered by the playground
+        triggeredBy: this.state.triggeredBy || FORM_PREVIEW_TRIGGER.PREVIEW_PANEL
+      }
+    });
+
+    // (3) toggle preview
+    this.setState({
+      previewOpen: isValidation(layout),
+      triggeredBy: null
+    });
+
+    // (4) update menus and others
     this.handleChanged();
   };
 
-  onCollapsePreview = () => {
+  onTogglePreview = (open, context = {}) => {
+    const {
+      triggeredBy,
+      triggeredByShortcut
+    } = context;
+
     const { form } = this.getCached();
-    form.collapse();
+    open ? form.open() : form.collapse();
+
+    this.setState({
+      triggeredBy: triggeredByShortcut ? FORM_PREVIEW_TRIGGER.KEYBOARD_SHORTCUT : triggeredBy
+    });
   };
 
-  onOpenPreview = () => {
-    const { form } = this.getCached();
-    form.open();
-  };
+  onCollapsePreview = (context) => this.onTogglePreview(false, context);
+
+  onOpenPreview = (context) => this.onTogglePreview(true, context);
 
   handleLinting = () => {
     const engineProfile = this.engineProfile.getCached();
@@ -477,11 +509,11 @@ export class FormEditor extends CachedComponent {
     const { form } = this.getCached();
 
     if (action === 'collapsePreview') {
-      return this.onCollapsePreview();
+      return this.onCollapsePreview(context);
     }
 
     if (action === 'openPreview') {
-      return this.onOpenPreview();
+      return this.onOpenPreview(context);
     }
 
     // editor is not yet available
