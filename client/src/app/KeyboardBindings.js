@@ -11,7 +11,12 @@
 import {
   isCmd as isCommandOrControl,
   isKey,
-  isShift
+  isSelectAll,
+  isCopy,
+  isPaste,
+  isCut,
+  isRedo,
+  isUndo
 } from 'diagram-js/lib/features/keyboard/KeyboardUtil';
 
 import {
@@ -257,39 +262,6 @@ export default class KeyboardBindings {
   setOnAction(onAction) {
     this.onAction = onAction;
   }
-}
-
-// helpers //////////
-
-// Ctrl + C
-function isCopy(event) {
-  return isKey([ 'c', 'C' ], event) && isCommandOrControl(event);
-}
-
-// Ctrl + X
-function isCut(event) {
-  return isKey([ 'x', 'X' ], event) && isCommandOrControl(event);
-}
-
-// Ctrl + V
-function isPaste(event) {
-  return isKey([ 'v', 'V' ], event) && isCommandOrControl(event);
-}
-
-// Ctrl + A
-function isSelectAll(event) {
-  return isKey([ 'a', 'A' ], event) && isCommandOrControl(event);
-}
-
-// Ctrl + Z
-function isUndo(event) {
-  return isKey([ 'z', 'Z' ], event) && isCommandOrControl(event) && !isShift(event);
-}
-
-// Ctrl + Y or Ctrl + Shift + Z
-function isRedo(event) {
-  return isCommandOrControl(event) &&
-    (isKey([ 'y', 'Y' ], event) || (isKey([ 'z', 'Z' ], event) && isShift(event)));
 }
 
 // Secondary delete shortcut
