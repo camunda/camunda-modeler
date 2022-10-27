@@ -14,6 +14,7 @@ on:
 jobs:
   Exec:
     name: Add issue to project
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/add-to-project@394bc02c66e25667a43d21b58881fb7d71559e69
