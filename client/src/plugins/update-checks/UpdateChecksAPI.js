@@ -30,6 +30,9 @@ export default class UpdateChecksAPI {
 
   async sendRequest(url) {
     const response = await fetch(url, { method: 'GET' });
+    if (response.status === 400) {
+      throw new Error('Your version is not compatible with update server.');
+    }
     const responseJSON = await response.json();
     return responseJSON;
   }
