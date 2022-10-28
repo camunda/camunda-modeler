@@ -129,6 +129,83 @@ describe('<XMLEditor>', function() {
       expect(state).to.have.property('searchable');
     });
 
+
+    it('can be saved in the XML view', function() {
+
+      // given
+      const changedSpy = (state) => {
+
+        // then
+        expect(state).to.include({
+          save: true,
+        });
+      };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          lastXML: XML,
+          editor: CodeMirror({
+            undo: 1,
+            redo: 1
+          }),
+          stackIdx: 2
+        },
+        __destroy: () => {}
+      });
+
+      const { instance } = renderEditor(XML, {
+        id: 'editor',
+        cache,
+        onChanged: changedSpy
+      });
+
+      instance.handleChanged();
+    });
+
+
+    it('can be saved if it is NOT dirty', function() {
+
+      // given
+      const changedSpy = (state) => {
+
+        // then
+        expect(state).to.include({
+          dirty: false,
+          save: true,
+        });
+      };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          lastXML: XML,
+          editor: CodeMirror({
+            undo: 1,
+            redo: 0
+          }),
+          stackIdx: 1
+        },
+        __destroy: () => {}
+      });
+
+      const { instance } = renderEditor(XML, {
+        id: 'editor',
+        cache,
+        onChanged: changedSpy
+      });
+
+      // when
+      const { editor } = instance.getCached();
+      editor.undo();
+      editor.execCommand(1);
+
+      // then
+      instance.handleChanged();
+    });
+
   });
 
 

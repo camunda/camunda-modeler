@@ -132,6 +132,7 @@ export class XMLEditor extends CachedComponent {
       canExport: false,
       dirty,
       redo: !!history.redo,
+      save: true,
       undo: !!history.undo
     };
 
