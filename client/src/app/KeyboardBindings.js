@@ -9,12 +9,6 @@
  */
 
 import {
-  isCmd as isCommandOrControl,
-  isKey,
-  isShift
-} from 'diagram-js/lib/features/keyboard/KeyboardUtil';
-
-import {
   findIndex,
   forEach,
   isArray,
@@ -261,35 +255,55 @@ export default class KeyboardBindings {
 
 // helpers //////////
 
+function isKey(keys, event) {
+  keys = isArray(keys) ? keys : [ keys ];
+  return keys.indexOf(event.key) !== -1 || keys.indexOf(event.code) !== -1;
+}
+
+function isCommandOrControl(event) {
+
+  // ensure we don't react to AltGr
+  // (mapped to CTRL + ALT)
+  if (event.altKey) {
+    return false;
+  }
+
+  return event.ctrlKey || event.metaKey;
+}
+
+function isShift(event) {
+  return event.shiftKey;
+}
+
 // Ctrl + C
 function isCopy(event) {
-  return isKey([ 'c', 'C' ], event) && isCommandOrControl(event);
+  return isKey([ 'c', 'C', 'KeyC' ], event) && isCommandOrControl(event);
 }
 
 // Ctrl + X
 function isCut(event) {
-  return isKey([ 'x', 'X' ], event) && isCommandOrControl(event);
+  return isKey([ 'x', 'X', 'KeyX' ], event) && isCommandOrControl(event);
 }
 
 // Ctrl + V
 function isPaste(event) {
-  return isKey([ 'v', 'V' ], event) && isCommandOrControl(event);
+  return isKey([ 'v', 'V', 'KeyV' ], event) && isCommandOrControl(event);
 }
 
 // Ctrl + A
 function isSelectAll(event) {
-  return isKey([ 'a', 'A' ], event) && isCommandOrControl(event);
+  return isKey([ 'a', 'A', 'KeyA' ], event) && isCommandOrControl(event);
 }
 
 // Ctrl + Z
-function isUndo(event) {
-  return isKey([ 'z', 'Z' ], event) && isCommandOrControl(event) && !isShift(event);
+export function isUndo(event) {
+  return isKey([ 'z', 'Z', 'KeyZ' ], event) && isCommandOrControl(event) && !isShift(event);
 }
 
 // Ctrl + Y or Ctrl + Shift + Z
-function isRedo(event) {
+export function isRedo(event) {
   return isCommandOrControl(event) &&
-    (isKey([ 'y', 'Y' ], event) || (isKey([ 'z', 'Z' ], event) && isShift(event)));
+    (isKey([ 'y', 'Y', 'KeyY' ], event) || (isKey([ 'z', 'Z', 'KeyZ' ], event) && isShift(event)));
 }
 
 // Secondary delete shortcut
