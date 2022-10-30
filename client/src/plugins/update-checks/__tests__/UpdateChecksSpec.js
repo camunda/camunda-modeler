@@ -335,7 +335,7 @@ describe('<UpdateChecks>', function() {
       // given
       const checkSpy = sinon.spy();
 
-      const error = new Error('These things happen.');
+      const error = new Error('Your version is not compatible with update server.');
 
       const {
         component
