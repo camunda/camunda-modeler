@@ -329,7 +329,6 @@ describe('<UpdateChecks>', function() {
     });
 
 
-
     it('should handle update check error', async () => {
 
       // given
