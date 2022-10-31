@@ -301,6 +301,46 @@ describe('<UpdateChecks>', function() {
     });
 
 
+    it('should handle bad request response', async function() {
+
+      const displaySpy = sinon.spy();
+
+      const error = new Error('Your version is not compatible with update server.');
+
+      const {
+        component,
+        instance
+      } = createComponent({
+        displayNotification: displaySpy
+      });
+
+      component.instance().updateChecksAPI.sendRequest = () => {
+        throw error;
+      };
+
+      // when
+      await instance.checkLatestVersion(null, false);
+      const notification = displaySpy.getCall(0).args[0];
+
+      // then
+      expect(displaySpy).to.have.been.calledOnce;
+      expect(
+        {
+          type: notification.type,
+          title: notification.title,
+          duration: notification.duration,
+          contentType: notification.content.type
+        }).to.eql(
+        {
+          type: 'error',
+          title: 'Modeler update check failed',
+          duration: 4000,
+          contentType: 'button'
+        }
+      );
+    });
+
+
     it('should handle update response', async function() {
 
       let setValue = {};
