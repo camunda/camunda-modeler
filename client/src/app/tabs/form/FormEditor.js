@@ -84,6 +84,8 @@ export class FormEditor extends CachedComponent {
     this.ref = createRef();
 
     this.state = {
+      lastFormPreviewState: null,
+      lastInputData: null,
       importing: false,
       previewOpen: isValidation(getInitialFormLayout(layout)),
       triggeredBy: null
@@ -291,79 +293,85 @@ export class FormEditor extends CachedComponent {
     }
   }
 
-  handleDataEditorInteraction(fn) {
+  handleDataEditorInteractionStart = () => {
+    this.setState({
+      lastInputData: this.getInputData()
+    });
+  };
+
+  handleDataEditorInteractionEnd = () => {
     const {
       onAction
     } = this.props;
 
+    const newData = this.getInputData();
+
+    // fire event once data was touched (changed)
+    if (this.state.lastInputData !== newData) {
+      onAction('emit-event', {
+        type: 'form.modeler.inputDataChanged'
+      });
+    }
+
+    this.setState({
+      lastInputData: null
+    });
+  };
+
+  handleDataEditorInteraction(fn) {
     const dataEditorNode = this.ref.current.querySelector('.cfp-data-container');
 
     if (!dataEditorNode) {
       return;
     }
 
-    let data;
-
-    const handleInteractionStart = () => {
-      data = this.getInputData();
-    };
-
-    const handleInteractionEnd = () => {
-      const newData = this.getInputData();
-
-      // fire event once data was touched (changed)
-      if (data !== newData) {
-        onAction('emit-event', {
-          type: 'form.modeler.inputDataChanged'
-        });
-      }
-    };
-
     if (fn === 'on') {
-      dataEditorNode.addEventListener('focusin', handleInteractionStart);
-      dataEditorNode.addEventListener('focusout', handleInteractionEnd);
+      dataEditorNode.addEventListener('focusin', this.handleDataEditorInteractionStart);
+      dataEditorNode.addEventListener('focusout', this.handleDataEditorInteractionEnd);
     } else {
-      dataEditorNode.removeEventListener('focusin', handleInteractionStart);
-      dataEditorNode.removeEventListener('focusout', handleInteractionEnd);
+      dataEditorNode.removeEventListener('focusin', this.handleDataEditorInteractionStart);
+      dataEditorNode.removeEventListener('focusout', this.handleDataEditorInteractionEnd);
     }
   }
 
-  handleFormPreviewInteraction(fn) {
+  handleFormPreviewInteractionStart = () => {
+    this.setState({
+      lastFormPreviewState: this.getFormPreviewState()
+    });
+  };
+
+  handleFormPreviewInteractionEnd = () => {
     const {
       onAction
     } = this.props;
 
+    const newformPreviewState = this.getFormPreviewState();
+
+    // fire event once preview was touched (changed)
+    if (this.state.lastFormPreviewState !== newformPreviewState) {
+      onAction('emit-event', {
+        type: 'form.modeler.previewChanged'
+      });
+    }
+
+    this.setState({
+      lastFormPreviewState: null
+    });
+  };
+
+  handleFormPreviewInteraction(fn) {
     const formPreviewNode = this.ref.current.querySelector('.cfp-preview-container');
 
     if (!formPreviewNode) {
       return;
     }
 
-    let formPreviewState;
-
-    const handleInteractionStart = () => {
-      formPreviewState = this.getFormPreviewState();
-    };
-
-    const handleInteractionEnd = () => {
-      const newformPreviewState = this.getFormPreviewState();
-
-      // fire event once preview was touched (changed)
-      if (formPreviewState !== newformPreviewState) {
-        onAction('emit-event', {
-          type: 'form.modeler.previewChanged'
-        });
-      }
-
-      formPreviewState = null;
-    };
-
     if (fn === 'on') {
-      formPreviewNode.addEventListener('focusin', handleInteractionStart);
-      formPreviewNode.addEventListener('focusout', handleInteractionEnd);
+      formPreviewNode.addEventListener('focusin', this.handleFormPreviewInteractionStart);
+      formPreviewNode.addEventListener('focusout', this.handleFormPreviewInteractionEnd);
     } else {
-      formPreviewNode.removeEventListener('focusin', handleInteractionStart);
-      formPreviewNode.removeEventListener('focusout', handleInteractionEnd);
+      formPreviewNode.removeEventListener('focusin', this.handleFormPreviewInteractionStart);
+      formPreviewNode.removeEventListener('focusout', this.handleFormPreviewInteractionEnd);
     }
   }
 
