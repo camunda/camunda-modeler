@@ -1231,6 +1231,48 @@ describe('<FormEditor>', function() {
     });
 
 
+    it('should NOT notify when form preview changed - unlisten', async function() {
+
+      // given
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          form: new FormPlaygroundMock({
+            form: {
+              _getState: () => Math.random()
+            }
+          })
+        },
+        __destroy: () => {}
+      });
+
+      const {
+        instance,
+        wrapper
+      } = await renderEditor(engineProfileSchema, {
+        cache,
+        onAction: recordActions
+      });
+
+      // when
+      instance.listen('off');
+
+      const editor = wrapper.find(FormEditor).getDOMNode();
+
+      const previewContainer = editor.querySelector('.cfp-preview-container');
+
+      // when
+      previewContainer.dispatchEvent(new Event('focusin', { 'bubbles': true }));
+      previewContainer.dispatchEvent(new Event('focusout', { 'bubbles': true }));
+
+      // then
+      const previewChangedEvent = getEvent(emittedEvents, 'form.modeler.previewChanged');
+
+      expect(previewChangedEvent).to.not.exist;
+    });
+
+
     it('should notify when form input editor was touched', async function() {
 
       // given
@@ -1283,6 +1325,47 @@ describe('<FormEditor>', function() {
       const dataContainer = editor.querySelector('.cfp-data-container');
 
       // when
+      dataContainer.dispatchEvent(new Event('focusin', { 'bubbles': true }));
+      dataContainer.dispatchEvent(new Event('focusout', { 'bubbles': true }));
+
+      // then
+      const inputDataChangedEvent = getEvent(emittedEvents, 'form.modeler.inputDataChanged');
+
+      expect(inputDataChangedEvent).to.not.exist;
+    });
+
+
+    it('should NOT notify when form input editor changed - unlisten', async function() {
+
+      // given
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          form: new FormPlaygroundMock({
+            dataEditor: {
+              getValue: () => Math.random()
+            }
+          })
+        },
+        __destroy: () => {}
+      });
+
+      const {
+        instance,
+        wrapper
+      } = await renderEditor(engineProfileSchema, {
+        cache,
+        onAction: recordActions
+      });
+
+      // when
+      instance.listen('off');
+
+      const editor = wrapper.find(FormEditor).getDOMNode();
+
+      const dataContainer = editor.querySelector('.cfp-data-container');
+
       dataContainer.dispatchEvent(new Event('focusin', { 'bubbles': true }));
       dataContainer.dispatchEvent(new Event('focusout', { 'bubbles': true }));
 
