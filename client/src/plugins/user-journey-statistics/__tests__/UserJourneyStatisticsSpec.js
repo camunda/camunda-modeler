@@ -308,6 +308,21 @@ describe('<UserJourneyStatistics>', () => {
     expect(disableSpy).to.have.been.called;
   });
 
+
+  it('should include event handlers', async () => {
+
+    // given
+    const instance = createJourneyStatistics();
+    const eventHandlers = instance._eventHandlers;
+
+    // expect
+    expect(eventHandlers).to.have.length(4);
+    expectHandler(eventHandlers[0], 'DeploymentEventHandler');
+    expectHandler(eventHandlers[1], 'LinkEventHandler');
+    expectHandler(eventHandlers[2], 'OverlayEventHandler');
+    expectHandler(eventHandlers[3], 'TabEventHandler');
+  });
+
 });
 
 
@@ -363,3 +378,6 @@ function getSubscriptionCallbackFromSpy(spy, key) {
   return null;
 }
 
+function expectHandler(handler, expectedHandlerName) {
+  expect(handler instanceof require(`../event-handlers/${expectedHandlerName}`).default).to.be.true;
+}
