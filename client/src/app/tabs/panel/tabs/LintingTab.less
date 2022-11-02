@@ -1,52 +1,68 @@
+:root {
+  --linting-issue-background-color: var(--color-grey-225-10-95);
+  --linting-issue-border-color: var(--color-grey-225-10-95);
+
+  --linting-issue-padding: 6px 8px;
+}
+
 :local(.LintingIssue) {
   display: flex;
-  align-items: flex-start;
-  padding: 3px 8px 3px 8px;
-  border-bottom: solid 1px var(--color-grey-225-10-95);
+  align-items: stretch;
+  border-bottom: solid 1px var(--linting-issue-border-color);
+  font-size: 14px;
+  cursor: default;
 
-  &:last-child {
-    border-bottom: none;
+  * {
+    user-select: text;
   }
 
-  .linting-issue__icon {
-    height: 20px;
+  &.linting-issue--selected,
+  &:not(.linting-issue--empty):hover {
+    background-color: var(--linting-issue-background-color);
+  }
+
+  .linting-issue__header {
+    display: flex;
+    align-items: flex-start;
+    width: 200px;
+    padding: var(--linting-issue-padding);
+    background-color: var(--linting-issue-error-background-color);
+    border-right: solid 1px var(--linting-issue-border-color);
 
     svg {
-      fill: var(--color-red-360-100-45);
-      margin-right: 8px;
-      width: 20px;
-      height: 20px;
+      margin-top: 1px;
+    }
+
+    .linting-issue__label {
+      display: inline-block;
+      max-width: 150px;
+      overflow: hidden;
+      margin-left: 10px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-weight: bold;
     }
   }
 
-  .linting-issue__text {
-    font-size: 14px;
-    line-height: 20px;
-    user-select: text;
+  .linting-issue__content {
+    display: flex;
+    width: calc(100% - 200px);
+    padding: var(--linting-issue-padding);
 
-    * {
-      user-select: text;
+    &.linting-issue__content--empty {
+      font-weight: bold;
     }
+  }
 
-    .linting-issue__link {
-      display: inline-block;
-      vertical-align: bottom;
-      max-width: 200px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      background-color: var(--color-blue-205-100-95);
-      border-radius: 4px;
-      margin-left: 4px;
-      margin-right: 4px;
-      padding: 0px 4px;
-      cursor: default;
-  
-      &:hover {
-        background-color: var(--color-blue-205-100-50);
-        color: var(--color-white);
+  &.linting-issue--empty {
+    border-bottom: none !important;
+
+    .linting-issue__header {
+      border-right: none;
+
+      .linting-issue__label {
+        font-weight: normal;
       }
     }
   }
-
 }
