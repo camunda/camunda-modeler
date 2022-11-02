@@ -1,6 +1,11 @@
+:root {
+  --panel-text-color: var(--color-grey-225-10-15);
+}
+
 :local(.Panel) {
   display: flex;
   flex-direction: column;
+  color: var(--panel-text-color);
 
   &.open {
     height: 200px;

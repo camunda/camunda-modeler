@@ -17,7 +17,8 @@ import Panel from '../Panel';
 import css from './LintingTab.less';
 
 import ErrorIcon from '../../../../../resources/icons/Error.svg';
-
+import SuccessIcon from '../../../../../resources/icons/Success.svg';
+import WarningIcon from '../../../../../resources/icons/Warning.svg';
 
 export default function LintingTab(props) {
   const {
@@ -33,7 +34,7 @@ export default function LintingTab(props) {
 
   return <Panel.Tab
     id="linting"
-    label="Errors"
+    label="Problems"
     layout={ layout }
     number={ linting.length }
     onLayoutChanged={ onLayoutChanged }
@@ -41,9 +42,10 @@ export default function LintingTab(props) {
     { linting.length
       ? null
       : (
-        <div className={ classnames(css.LintingIssue, 'linting-issue') }>
-          <div className="linting-issue__text">
-            <span className="linting-issue__message">No errors.</span>
+        <div className={ classnames(css.LintingIssue, 'linting-issue--empty') }>
+          <div className="linting-issue__header">
+            <SuccessIcon width="16" height="16" />
+            <span className="linting-issue__label">No problems found.</span>
           </div>
         </div>
       )
@@ -72,17 +74,25 @@ function LintingIssue(props) {
   } = props;
 
   const {
+    category,
     id,
     name,
     message
   } = issue;
 
-  return <div className={ classnames(css.LintingIssue, 'linting-issue') }>
-    <div className="linting-issue__icon">
-      <ErrorIcon viewBox="2 2 20 20" />
+  return <div
+    onClick={ onClick }
+    className={ classnames(css.LintingIssue, 'linting-issue', {
+      'linting-issue--error': category === 'error',
+      'linting-issue--warning': category === 'warn'
+    }) }>
+    <div className="linting-issue__header">
+      { category === 'error' ? <ErrorIcon width="16" height="16" /> : null }
+      { category === 'warn' ? <WarningIcon width="16" height="16" /> : null }
+      <span className="linting-issue__label">{ name || id }</span>
     </div>
-    <div className="linting-issue__text">
-      Error : <span className="linting-issue__link" onClick={ onClick }>{ name || id }</span> - <span className="linting-issue__message">{ message }</span>
+    <div className="linting-issue__content">
+      { message }
     </div>
   </div>;
 }
