@@ -140,7 +140,7 @@ This project incorporates components from the projects listed below. The origina
 133.  @sentry/browser@6.3.6 (https://github.com/getsentry/sentry-javascript)
 134.  @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
 135.  bpmn-js-properties-panel@1.10.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
-136.  bpmn-js@10.2.0 (https://github.com/bpmn-io/bpmn-js)
+136.  bpmn-js@10.2.1 (https://github.com/bpmn-io/bpmn-js)
 137.  camunda-bpmn-js-behaviors@0.3.0 (https://github.com/camunda/camunda-bpmn-js-behaviors)
 138.  camunda-bpmn-js@0.21.1 (https://github.com/camunda/camunda-bpmn-js)
 139.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
@@ -4492,7 +4492,7 @@ THE SOFTWARE.
 END OF bpmn-js-properties-panel@1.10.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js@10.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@10.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -4519,7 +4519,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js@10.2.0 NOTICES AND INFORMATION
+END OF bpmn-js@10.2.1 NOTICES AND INFORMATION
 
 
 %% camunda-bpmn-js-behaviors@0.3.0 NOTICES AND INFORMATION BEGIN HERE
