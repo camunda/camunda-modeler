@@ -6,6 +6,20 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.5.0
+
+### General
+* `FIX`: export overlay event handler ([#3251](https://github.com/camunda/camunda-modeler/pull/3251))
+* `FIX`: handle bad request for update check ([#3265](https://github.com/camunda/camunda-modeler/pull/3265))
+* `FIX`: save flag on handle change in xml editor ([9eafc90](https://github.com/camunda/camunda-modeler/commit/9eafc905793bb4d85ff070590760e6e4acf428d6))
+* `FIX`: create C8 diagram from empty bpmn file ([#3243](https://github.com/camunda/camunda-modeler/pull/3243))
+* `DEPS`: update bpmn-js to v10.2.1 ([#3266](https://github.com/camunda/camunda-modeler/pull/3266))
+
+### Forms
+* `FEAT`: integrate forms playground ([#3178](https://github.com/camunda/camunda-modeler/pull/3178))
+* `DEPS`: bump form-js to v0.9.9 ([#3178](https://github.com/camunda/camunda-modeler/pull/3178))
+* `DEPS`: add @camunda/form-playground ([#3178](https://github.com/camunda/camunda-modeler/pull/3178))
+
 ## 5.4.2
 
 ### General
