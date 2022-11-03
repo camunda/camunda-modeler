@@ -1,17 +1,43 @@
 :local(.Linting) {
-  svg {
-    fill: currentColor;
-    margin-right: 2px;
-    margin-left: -5px;
-    width: 24px;
-    height: 24px;
+  &.btn {
+    display: flex;
+    align-items: center;
   }
 
-  &.has-errors {
-    color: var(--color-red-360-100-45) !important;
+  svg {
+    fill: currentColor;
+    margin-right: 6px;
+  }
 
-    svg {
-      fill: var(--color-red-360-100-45);
+  .errors,
+  .warnings {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .warnings {
+    margin-left: 6px;
+  }
+
+  &:not(.has-errors) .errors {
+    svg path:first-child {
+      fill: var(--status-bar-icon-font-color) !important;
+    }
+  }
+
+  .warnings {
+    svg path:first-child {
+      fill: var(--color-grey-225-10-15) !important;
+    }
+  }
+
+  &:not(.has-warnings) .warnings {
+    svg path:first-child {
+      fill: transparent !important;
+    }
+
+    svg path:last-child {
+      fill: var(--status-bar-icon-font-color) !important;
     }
   }
 }

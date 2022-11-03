@@ -15,6 +15,7 @@ import classnames from 'classnames';
 import { Fill } from '../slot-fill';
 
 import ErrorIcon from '../../../resources/icons/Error.svg';
+import WarningIcon from '../../../resources/icons/Warning.svg';
 
 import css from './Linting.less';
 
@@ -28,7 +29,8 @@ export function Linting(props) {
 
   const { panel = {} } = layout;
 
-  const errors = linting.filter(({ category }) => category === 'error').length;
+  const errors = linting.filter(({ category }) => category === 'error').length,
+        warnings = linting.filter(({ category }) => category === 'warn').length;
 
   return <Fill slot="status-bar__file" group="9_linting">
     <button
@@ -36,14 +38,15 @@ export function Linting(props) {
         css.Linting,
         'btn',
         { 'btn--active': panel.open && panel.tab === 'linting',
-          'has-errors': errors > 0
+          'has-errors': errors > 0,
+          'has-warnings': warnings > 0
         }
       ) }
       onClick={ onToggleLinting }
-      title="Toggle Errors"
+      title="Toggle problems view"
     >
-      <ErrorIcon />
-      { errors } { errors === 1 ? 'error' : 'errors' }
+      <span className="errors"><ErrorIcon width="16" height="16" />{ errors }</span>
+      <span className="warnings"><WarningIcon width="16" height="16" />{ warnings }</span>
     </button>
   </Fill>;
 }
