@@ -36,19 +36,20 @@ describe('Linting', function() {
   });
 
 
-  describe('number of errors', function() {
+  describe('number of errors and warnings', function() {
 
-    it('should display 1 error', function() {
+    it('should display 1 error and 1 warning', function() {
 
       // when
       const wrapper = renderLinting();
 
       // then
-      expect(wrapper.find('.btn').text()).to.equal('1 error');
+      expect(wrapper.find('.errors').text()).to.equal('1');
+      expect(wrapper.find('.warnings').text()).to.equal('1');
     });
 
 
-    it('should display 2 errors', function() {
+    it('should display 2 errors and 1 warning', function() {
 
       // when
       const wrapper = renderLinting({
@@ -56,16 +57,15 @@ describe('Linting', function() {
           ...defaultLinting,
           {
             category: 'error',
-            id: 'bar',
-            label: 'Bar',
-            path: [],
-            message: 'Form field of type <checkbox> not supported by Camunda Cloud 1.0'
+            id: 'baz',
+            message: 'Baz'
           }
         ]
       });
 
       // then
-      expect(wrapper.find('.btn').text()).to.equal('2 errors');
+      expect(wrapper.find('.errors').text()).to.equal('2');
+      expect(wrapper.find('.warnings').text()).to.equal('1');
     });
 
   });
@@ -134,9 +134,12 @@ const defaultLinting = [
   {
     category: 'error',
     id: 'foo',
-    label: 'Foo',
-    path: [],
-    message: 'Form field of type <number> not supported by Camunda Cloud 1.0'
+    message: 'Foo message'
+  },
+  {
+    category: 'warn',
+    id: 'bar',
+    message: 'Bar message'
   }
 ];
 
