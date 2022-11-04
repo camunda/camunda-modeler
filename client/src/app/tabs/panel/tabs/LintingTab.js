@@ -23,53 +23,53 @@ import WarningIcon from '../../../../../resources/icons/Warning.svg';
 export default function LintingTab(props) {
   const {
     layout,
-    linting,
+    linting: reports,
     onAction,
     onLayoutChanged
   } = props;
 
-  const onClick = (issue) => () => {
-    onAction('showLintError', issue);
+  const onClick = (report) => () => {
+    onAction('showLintError', report);
   };
 
   return <Panel.Tab
     id="linting"
     label="Problems"
     layout={ layout }
-    number={ linting.length }
+    number={ reports.length }
     onLayoutChanged={ onLayoutChanged }
     priority={ 1 }>
-    { linting.length
+    { reports.length
       ? null
       : (
-        <div className={ classnames(css.LintingIssue, 'linting-issue--empty') }>
-          <div className="linting-issue__header">
+        <div className={ classnames(css.LintingTabItem, 'linting-tab-item--empty') }>
+          <div className="linting-tab-item__header">
             <SuccessIcon width="16" height="16" />
-            <span className="linting-issue__label">No problems found.</span>
+            <span className="linting-tab-item__label">No problems found.</span>
           </div>
         </div>
       )
     }
     {
-      sortIssues(linting).map((issue => {
+      sortReports(reports).map((report => {
         const {
           id,
           message
-        } = issue;
+        } = report;
 
-        return <LintingIssue
+        return <LintingTabItem
           key={ `${ id }-${ message }` }
-          issue={ issue }
-          onClick={ onClick(issue) }
+          report={ report }
+          onClick={ onClick(report) }
         />;
       }))
     }
   </Panel.Tab>;
 }
 
-function LintingIssue(props) {
+function LintingTabItem(props) {
   const {
-    issue,
+    report,
     onClick
   } = props;
 
@@ -78,30 +78,30 @@ function LintingIssue(props) {
     id,
     name,
     message
-  } = issue;
+  } = report;
 
   return <div
     onClick={ onClick }
-    className={ classnames(css.LintingIssue, 'linting-issue', {
-      'linting-issue--error': category === 'error',
-      'linting-issue--warning': category === 'warn'
+    className={ classnames(css.LintingTabItem, 'linting-tab-item', {
+      'linting-tab-item--error': category === 'error',
+      'linting-tab-item--warning': category === 'warn'
     }) }>
-    <div className="linting-issue__header">
+    <div className="linting-tab-item__header">
       { category === 'error' ? <ErrorIcon width="16" height="16" /> : null }
       { category === 'warn' ? <WarningIcon width="16" height="16" /> : null }
-      <span className="linting-issue__label">{ name || id }</span>
+      <span className="linting-tab-item__label">{ name || id }</span>
     </div>
-    <div className="linting-issue__content">
+    <div className="linting-tab-item__content">
       { message }
     </div>
   </div>;
 }
 
-function getName(issue) {
+function getReportName(report) {
   const {
     id,
     name
-  } = issue;
+  } = report;
 
   if (name) {
     return name.toLowerCase();
@@ -110,16 +110,34 @@ function getName(issue) {
   return id.toLowerCase();
 }
 
-function sortIssues(issues) {
-  return issues.sort((a, b) => {
-    a = getName(a),
-    b = getName(b);
+/**
+ * Sort reports by:
+ *
+ * 1. category
+ * 2. name or ID
+ *
+ * @param {Object[]} reports
+ *
+ * @returns {Object[]}
+ */
+function sortReports(reports) {
+  return [ ...reports ].sort((a, b) => {
+    if (a.category === b.category) {
 
-    if (a === b) {
-      return 0;
-    } else if (a < b) {
+      a = getReportName(a),
+      b = getReportName(b);
+
+      if (a === b) {
+        return 0;
+      } else if (a < b) {
+        return -1;
+      } else {
+        return 1;
+      }
+
+    } else if (a.category === 'error') {
       return -1;
-    } else {
+    } else if (b.category === 'error') {
       return 1;
     }
   });
