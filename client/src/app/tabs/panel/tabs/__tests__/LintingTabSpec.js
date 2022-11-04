@@ -40,8 +40,8 @@ describe('<LintingTab>', function() {
     expect(wrapper.find('.panel__link-number')).to.have.length(1);
     expect(wrapper.find('.panel__link-number').text()).to.equal('1');
 
-    expect(wrapper.find('.linting-issue__content')).to.have.length(1);
-    expect(wrapper.find('.linting-issue__content').text()).to.equal('Foo message');
+    expect(wrapper.find('.linting-tab-item__content')).to.have.length(1);
+    expect(wrapper.find('.linting-tab-item__content').text()).to.equal('Foo message');
   });
 
 
@@ -62,8 +62,8 @@ describe('<LintingTab>', function() {
     expect(wrapper.find('.panel__link-number')).to.have.length(1);
     expect(wrapper.find('.panel__link-number').text()).to.equal('0');
 
-    expect(wrapper.find('.linting-issue--empty')).to.have.length(1);
-    expect(wrapper.find('.linting-issue--empty').text()).to.equal('No problems found.');
+    expect(wrapper.find('.linting-tab-item--empty')).to.have.length(1);
+    expect(wrapper.find('.linting-tab-item--empty').text()).to.equal('No problems found.');
   });
 
 
@@ -104,12 +104,12 @@ describe('<LintingTab>', function() {
     });
 
     // then
-    expect(wrapper.find('.linting-issue__content')).to.have.length(5);
-    expect(wrapper.find('.linting-issue__content').at(0).text()).to.equal('bar 1 error');
-    expect(wrapper.find('.linting-issue__content').at(1).text()).to.equal('bar 2 error');
-    expect(wrapper.find('.linting-issue__content').at(2).text()).to.equal('baz 1 warning');
-    expect(wrapper.find('.linting-issue__content').at(3).text()).to.equal('baz 2 error');
-    expect(wrapper.find('.linting-issue__content').at(4).text()).to.equal('foo error');
+    expect(wrapper.find('.linting-tab-item__content')).to.have.length(5);
+    expect(wrapper.find('.linting-tab-item__content').at(0).text()).to.equal('bar 1 error');
+    expect(wrapper.find('.linting-tab-item__content').at(1).text()).to.equal('bar 2 error');
+    expect(wrapper.find('.linting-tab-item__content').at(2).text()).to.equal('baz 2 error');
+    expect(wrapper.find('.linting-tab-item__content').at(3).text()).to.equal('foo error');
+    expect(wrapper.find('.linting-tab-item__content').at(4).text()).to.equal('baz 1 warning');
   });
 
 
@@ -123,7 +123,7 @@ describe('<LintingTab>', function() {
     });
 
     // then
-    wrapper.find('.linting-issue').at(0).simulate('click');
+    wrapper.find('.linting-tab-item').at(0).simulate('click');
 
     // then
     expect(onActionSpy).to.have.been.calledOnce;

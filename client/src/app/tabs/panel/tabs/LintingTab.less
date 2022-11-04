@@ -1,14 +1,14 @@
 :root {
-  --linting-issue-background-color: var(--color-grey-225-10-95);
-  --linting-issue-border-color: var(--color-grey-225-10-95);
+  --linting-tab-item-background-color: var(--color-grey-225-10-95);
+  --linting-tab-item-border-color: var(--color-grey-225-10-95);
 
-  --linting-issue-padding: 6px 8px;
+  --linting-tab-item-padding: 6px 8px;
 }
 
-:local(.LintingIssue) {
+:local(.LintingTabItem) {
   display: flex;
   align-items: stretch;
-  border-bottom: solid 1px var(--linting-issue-border-color);
+  border-bottom: solid 1px var(--linting-tab-item-border-color);
   font-size: 14px;
   cursor: default;
 
@@ -16,24 +16,24 @@
     user-select: text;
   }
 
-  &.linting-issue--selected,
-  &:not(.linting-issue--empty):hover {
-    background-color: var(--linting-issue-background-color);
+  &.linting-tab-item--selected,
+  &:not(.linting-tab-item--empty):hover {
+    background-color: var(--linting-tab-item-background-color);
   }
 
-  .linting-issue__header {
+  .linting-tab-item__header {
     display: flex;
     align-items: flex-start;
     width: 200px;
-    padding: var(--linting-issue-padding);
-    background-color: var(--linting-issue-error-background-color);
-    border-right: solid 1px var(--linting-issue-border-color);
+    padding: var(--linting-tab-item-padding);
+    background-color: var(--linting-tab-item-error-background-color);
+    border-right: solid 1px var(--linting-tab-item-border-color);
 
     svg {
       margin-top: 1px;
     }
 
-    .linting-issue__label {
+    .linting-tab-item__label {
       display: inline-block;
       max-width: 150px;
       overflow: hidden;
@@ -44,23 +44,23 @@
     }
   }
 
-  .linting-issue__content {
+  .linting-tab-item__content {
     display: flex;
     width: calc(100% - 200px);
-    padding: var(--linting-issue-padding);
+    padding: var(--linting-tab-item-padding);
 
-    &.linting-issue__content--empty {
+    &.linting-tab-item__content--empty {
       font-weight: bold;
     }
   }
 
-  &.linting-issue--empty {
+  &.linting-tab-item--empty {
     border-bottom: none !important;
 
-    .linting-issue__header {
+    .linting-tab-item__header {
       border-right: none;
 
-      .linting-issue__label {
+      .linting-tab-item__label {
         font-weight: normal;
       }
     }
