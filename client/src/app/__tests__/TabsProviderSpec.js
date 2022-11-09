@@ -181,9 +181,26 @@ describe('TabsProvider', function() {
       // given
       const tabsProvider = new TabsProvider();
 
+      const latestPlatformVersion = ENGINE_PROFILES.find(
+        p => p.executionPlatform === ENGINES.PLATFORM
+      ).latestStable;
+
+      // when
+      const { file: { contents } } = tabsProvider.createTab('bpmn');
+
+      // then
+      expect(contents).to.include(`modeler:executionPlatformVersion="${ latestPlatformVersion }"`);
+    });
+
+
+    it('should replace version placeholder with actual latest version (Cloud BPMN)', function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
       const latestCloudVersion = ENGINE_PROFILES.find(
         p => p.executionPlatform === ENGINES.CLOUD
-      ).executionPlatformVersions[0];
+      ).latestStable;
 
       // when
       const { file: { contents } } = tabsProvider.createTab('cloud-bpmn');
@@ -217,7 +234,7 @@ describe('TabsProvider', function() {
 
       const latestCloudVersion = ENGINE_PROFILES.find(
         p => p.executionPlatform === ENGINES.CLOUD
-      ).executionPlatformVersions[0];
+      ).latestStable;
 
       // when
       const { file: { contents } } = tabsProvider.createTab('cloud-dmn');
