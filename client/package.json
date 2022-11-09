@@ -33,6 +33,7 @@
     "camunda-cmmn-moddle": "^1.0.0",
     "camunda-dmn-js": "^0.8.1",
     "camunda-dmn-moddle": "^1.2.0",
+    "camunda-modeler-plugin-helpers": "^5.1.0",
     "canvg-browser": "^1.0.0",
     "classnames": "^2.2.6",
     "cmmn-js": "^0.20.0",

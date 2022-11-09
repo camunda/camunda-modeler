@@ -10,6 +10,8 @@
 
 import './styles/style.less';
 
+import './plugins/linting/bpmnlint-recommended-rules';
+
 import {
   backend,
   config,
