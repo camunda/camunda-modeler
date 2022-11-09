@@ -25,8 +25,8 @@ _To be done immediately after creating this issue._
 _To be done before the code freeze._
 
 * [ ] inform QA about the release and its details so they can prepare for testing
-* [ ] Get in touch with the team (PM, UX and Engineering side), to clarify what topics will be included in the Release and their priority. Use this information to start preparing a concept for the *blog post* (see below) and *release info* (see below)
-    * [ ] (optional) if possible, already create feature branch to update [Release Info](https://github.com/camunda/camunda-modeler/blob/develop/client/src/plugins/version-info/ReleaseInfo.js) following our [guidelines](https://github.com/bpmn-io/internal-docs/tree/master/camunda-modeler#whats-new-communication)
+* [ ] get in touch with the team (PM, UX and Engineering side), to clarify what topics will be included in the Release and their priority. Use this information to start preparing a concept for the *blog post* (see below) and *release info* (see below)
+    * [ ] (optional) if possible, already create feature branch to update [Release Info](https://github.com/camunda/camunda-modeler/blob/develop/client/src/plugins/version-info/ReleaseInfo.js) following our [guidelines](https://github.com/bpmn-io/internal-docs/blob/master/releases/modeler/CAMUNDA_MODELER.md#whats-new-communication)
 
 _To be done after code freeze to prepare and test the release._
 
@@ -36,12 +36,12 @@ _To be done after code freeze to prepare and test the release._
 * [ ] close all issues which are solved by dependency updates
 * [ ] smoke test to verify all diagrams can be created
 * [ ] update [Release Info](https://github.com/camunda/camunda-modeler/blob/develop/client/src/plugins/version-info/ReleaseInfo.js)
-    * [ ] create a draft following [our guidelines](https://github.com/bpmn-io/internal-docs/tree/master/camunda-modeler#whats-new-communication) and based on priorities which were aligned with the team (PM, UX, and Engineering side)
+    * [ ] create a draft following [our guidelines](https://github.com/bpmn-io/internal-docs/blob/master/releases/modeler/CAMUNDA_MODELER.md#whats-new-communication) and based on priorities which were aligned with the team (PM, UX, and Engineering side)
    * [ ] create PR to merge the draft into `develop`. Assign to PM, UX and Engineering for review
 * [ ] update [`CHANGELOG`](https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md)
 * [ ] verify `develop` is up to date with `master`: `git checkout master && git pull && git checkout develop && git merge master`
 * [ ] merge to master: `git checkout master && git merge develop`
-* [ ] create release candidate (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/tree/master/release-schema); e.g `v1.0.0-rc.0`
+* [ ] create release candidate (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/blob/master/releases/RELEASE_SCHEMA.md); e.g `v1.0.0-rc.0`
     * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
 * [ ] execute [integration test](https://github.com/camunda/camunda-modeler/blob/master/docs/.project/INTEGRATION_TEST.md) on [released artifacts](https://github.com/camunda/camunda-modeler/releases)
     * [ ] Works on Linux
@@ -51,7 +51,7 @@ _To be done after code freeze to prepare and test the release._
 
 _To be done to build the release after release testing completed._
 
-* [ ] create release (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/tree/master/release-schema)
+* [ ] create release (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/blob/master/releases/RELEASE_SCHEMA.md)
     * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
 
 _To be done once the release is built._
@@ -65,8 +65,8 @@ _To be done once the release is built._
    * [ ] share the post with your colleagues for review
    * [ ] send the draft to `Christopher Rogers` to double check it and coordinate publishing
 * [ ] (if the Modeler UI appearance changed) update Camunda Modeler screenshots (and potentially text content) in the docs using [automation scripts](https://github.com/camunda/camunda-docs-modeler-screenshots)
-* [ ] send all information required to compile the [release notice email](https://github.com/bpmn-io/internal-docs/blob/master/camunda-modeler/README.md#release-notice-email) to the [`@product-release-presentation-dri` role](https://confluence.camunda.com/pages/viewpage.action?spaceKey=HAN&title=Release+Presentation+Process#ReleasePresentationProcess-OrganisingtheReleasePresentation)
-* [ ] request marketing to update the [downloads page](https://camunda.com/download/modeler/) via [request form](https://confluence.camunda.com/display/MAR/Change+request+to+Downloads+page)
+* [ ] send all information required to compile the [release notice email](https://github.com/bpmn-io/internal-docs/blob/master/releases/modeler/CAMUNDA_MODELER.md#release-notice-email) to the [`@product-release-presentation-dri` role](https://confluence.camunda.com/pages/viewpage.action?spaceKey=HAN&title=Release+Presentation+Process#ReleasePresentationProcess-OrganisingtheReleasePresentation)
+* [ ] request marketing to update the [downloads page](https://camunda.com/download/modeler/) via [request form](https://confluence.camunda.com/display/MAR/Marketing+Request+Form)
 * [ ] add new version to [update server releases](https://github.com/camunda/camunda-modeler-update-server/blob/master/releases.json)
 
 _To be done once release is publicly announced on release day._
