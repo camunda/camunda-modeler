@@ -29,7 +29,7 @@ import cloudForm from './tabs/form/initial-cloud.form';
 
 import {
   ENGINES,
-  ENGINE_PROFILES
+  getLatestStable as getLatestStablePlatformVersion
 } from '../util/Engines';
 
 import EmptyTab from './EmptyTab';
@@ -692,13 +692,8 @@ function sortByPriority(providers) {
 
 function replaceVersions(contents) {
 
-  const latestPlatformVersion = ENGINE_PROFILES.find(
-    p => p.executionPlatform === ENGINES.PLATFORM
-  ).latestStable;
-
-  const latestCloudVersion = ENGINE_PROFILES.find(
-    p => p.executionPlatform === ENGINES.CLOUD
-  ).latestStable;
+  const latestPlatformVersion = getLatestStablePlatformVersion(ENGINES.PLATFORM);
+  const latestCloudVersion = getLatestStablePlatformVersion(ENGINES.CLOUD);
 
   return (
     contents

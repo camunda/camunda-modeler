@@ -13,7 +13,7 @@ import TabsProvider from '../TabsProvider';
 import Flags, { DISABLE_DMN, DISABLE_ZEEBE, DISABLE_PLATFORM, DISABLE_CMMN } from '../../util/Flags';
 
 import {
-  ENGINE_PROFILES,
+  getLatestStable as getLatestStablePlatformVersion,
   ENGINES
 } from '../../util/Engines';
 
@@ -181,15 +181,13 @@ describe('TabsProvider', function() {
       // given
       const tabsProvider = new TabsProvider();
 
-      const latestPlatformVersion = ENGINE_PROFILES.find(
-        p => p.executionPlatform === ENGINES.PLATFORM
-      ).latestStable;
+      const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.PLATFORM);
 
       // when
       const { file: { contents } } = tabsProvider.createTab('bpmn');
 
       // then
-      expect(contents).to.include(`modeler:executionPlatformVersion="${ latestPlatformVersion }"`);
+      expect(contents).to.include(`modeler:executionPlatformVersion="${ expectedPlatformVersion }"`);
     });
 
 
@@ -198,15 +196,13 @@ describe('TabsProvider', function() {
       // given
       const tabsProvider = new TabsProvider();
 
-      const latestCloudVersion = ENGINE_PROFILES.find(
-        p => p.executionPlatform === ENGINES.CLOUD
-      ).latestStable;
+      const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.CLOUD);
 
       // when
       const { file: { contents } } = tabsProvider.createTab('cloud-bpmn');
 
       // then
-      expect(contents).to.include(`modeler:executionPlatformVersion="${ latestCloudVersion }"`);
+      expect(contents).to.include(`modeler:executionPlatformVersion="${ expectedPlatformVersion }"`);
     });
 
 
@@ -215,15 +211,13 @@ describe('TabsProvider', function() {
       // given
       const tabsProvider = new TabsProvider();
 
-      const latestPlatformVersion = ENGINE_PROFILES.find(
-        p => p.executionPlatform === ENGINES.PLATFORM
-      ).executionPlatformVersions[0];
+      const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.PLATFORM);
 
       // when
       const { file: { contents } } = tabsProvider.createTab('dmn');
 
       // then
-      expect(contents).to.include(`modeler:executionPlatformVersion="${ latestPlatformVersion }"`);
+      expect(contents).to.include(`modeler:executionPlatformVersion="${ expectedPlatformVersion }"`);
     });
 
 
@@ -232,15 +226,13 @@ describe('TabsProvider', function() {
       // given
       const tabsProvider = new TabsProvider();
 
-      const latestCloudVersion = ENGINE_PROFILES.find(
-        p => p.executionPlatform === ENGINES.CLOUD
-      ).latestStable;
+      const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.CLOUD);
 
       // when
       const { file: { contents } } = tabsProvider.createTab('cloud-dmn');
 
       // then
-      expect(contents).to.include(`modeler:executionPlatformVersion="${ latestCloudVersion }"`);
+      expect(contents).to.include(`modeler:executionPlatformVersion="${ expectedPlatformVersion }"`);
     });
 
 
