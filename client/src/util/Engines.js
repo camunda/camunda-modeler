@@ -30,3 +30,15 @@ export const ENGINE_LABELS = {
   [ ENGINES.PLATFORM ]: 'Camunda Platform 7',
   [ ENGINES.CLOUD ]: 'Camunda Platform 8'
 };
+
+export function getLatestStable(platform) {
+  const profile = ENGINE_PROFILES.find(
+    p => p.executionPlatform === platform
+  );
+
+  if (!profile) {
+    throw new Error(`no profile for platform <${platform}>`);
+  }
+
+  return profile.latestStable;
+}
