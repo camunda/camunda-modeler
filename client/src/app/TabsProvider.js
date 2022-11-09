@@ -694,11 +694,11 @@ function replaceVersions(contents) {
 
   const latestPlatformVersion = ENGINE_PROFILES.find(
     p => p.executionPlatform === ENGINES.PLATFORM
-  ).executionPlatformVersions[0];
+  ).latestStable;
 
   const latestCloudVersion = ENGINE_PROFILES.find(
     p => p.executionPlatform === ENGINES.CLOUD
-  ).executionPlatformVersions[0];
+  ).latestStable;
 
   return (
     contents
