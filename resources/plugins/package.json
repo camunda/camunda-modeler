@@ -1,0 +1,10 @@
+{
+  "name": "plugins",
+  "private": true,
+  "workspaces": [
+    "./*"
+  ],
+  "scripts": {
+    "build": "npm run all --workspaces --if-present"
+  }
+}
