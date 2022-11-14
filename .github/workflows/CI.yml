@@ -33,4 +33,4 @@ jobs:
       run: npm run all -- --x64 --no-compress
     - name: Upload coverage
       if: ${{ runner.OS == 'Linux' }}
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
