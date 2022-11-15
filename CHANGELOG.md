@@ -7,12 +7,14 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ___Note:__ Yet to be released changes appear here._
 
 * `DEPS`: bump `@camunda/linting` to v0.10.0 ([#3300](https://github.com/camunda/camunda-modeler/pull/3300))
+* `DEPS` bpmn `camunda-bpmn-js` to v0.23.0
 
 ### BPMN
 
 * `FEAT`: validate that at least one process is executable ([#56](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/56))
 * `FEAT`: validate that sequence flows whose source is (X)OR gateway have condition or are default ([#58](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/58))
 * `FEAT`: validate Camunda Platform 8.2 diagrams ([#59](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/59))
+* `FEAT`: add candidate users entry to assignment group ([#776](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/776))
 
 ## 5.5.0
 
