@@ -12,6 +12,8 @@ import React, { useState, useRef } from 'react';
 
 import classnames from 'classnames';
 
+import semverCompare from 'semver-compare';
+
 import {
   Overlay,
   Section
@@ -19,7 +21,7 @@ import {
 
 import { Fill } from '../slot-fill';
 
-import { ENGINES, ENGINE_LABELS, ENGINE_PROFILES } from '../../util/Engines';
+import { ENGINES, ENGINE_LABELS, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
 
 import css from './EngineProfile.less';
 
@@ -169,7 +171,7 @@ function EditableVersionSection(props) {
                 engineProfileVersions.map(version => {
                   return (
                     <option key={ version } value={ version }>
-                      { getAnnotatedVersion(toSemverMinor(version)) }
+                      { getAnnotatedVersion(toSemverMinor(version), executionPlatform) }
                     </option>
                   );
                 })
@@ -247,13 +249,23 @@ export function getStatusBarLabel(engineProfile) {
     return `${ENGINE_LABELS[executionPlatform]}`;
   } else if (executionPlatformVersion.startsWith('1.')) {
     return `${ENGINE_LABELS[executionPlatform]} (Zeebe ${toSemverMinor(executionPlatformVersion)})`;
+  } else if (isAlpha(executionPlatformVersion, executionPlatform)) {
+    return `Camunda Platform ${toSemverMinor(executionPlatformVersion)} (alpha)`;
   } else {
     return `Camunda Platform ${toSemverMinor(executionPlatformVersion)}`;
   }
 }
 
-export function getAnnotatedVersion(version) {
-  return version.startsWith('1.') ? 'Zeebe ' + version : version;
+export function getAnnotatedVersion(version, platform) {
+  if (version.startsWith('1.')) {
+    return 'Zeebe ' + version;
+  }
+
+  if (platform && isAlpha(version, platform)) {
+    return version + ' (alpha)';
+  }
+
+  return version;
 }
 
 export function engineProfilesEqual(a, b) {
@@ -370,4 +382,17 @@ export function toSemver(versionString) {
  */
 export function toSemverMinor(string) {
   return string && string.split(/\./).slice(0, 2).join('.');
+}
+
+/**
+ * Checks if the given version is an alpha of the selected platform.
+ *
+ * @param {string} version
+ * @param {string} platform
+ * @return {boolean} isAlpha
+ */
+function isAlpha(version, platform) {
+  const latest = getLatestStable(platform);
+
+  return semverCompare(version, latest) > 0;
 }
