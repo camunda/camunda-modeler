@@ -174,16 +174,19 @@ describe('<EngineProfile>', function() {
 
       // given
       const inputs =
-      [ [ '1.0', 'Zeebe 1.0' ],
-        [ '1.2', 'Zeebe 1.2' ],
-        [ '10.0', '10.0' ],
-        [ '7.14', '7.14' ],
-        [ '8.0', '8.0' ],
-        [ '8.1', '8.1' ] ];
+      [ [ ENGINES.CLOUD, '1.0', 'Zeebe 1.0' ],
+        [ ENGINES.CLOUD, '1.2', 'Zeebe 1.2' ],
+        [ ENGINES.CLOUD, '8.0', '8.0' ],
+        [ ENGINES.CLOUD, '8.1', '8.1' ],
+        [ ENGINES.CLOUD, '8.100', '8.100 (alpha)' ],
+        [ ENGINES.PLATFORM, '7.14', '7.14' ],
+        [ ENGINES.PLATFORM, '7.500', '7.500 (alpha)' ],
+        [ undefined, '10.0', '10.0' ],
+      ];
 
       // then
       inputs.forEach((input) => {
-        expect(getAnnotatedVersion(input[0])).to.equal(input[1]);
+        expect(getAnnotatedVersion(input[1], input[0])).to.equal(input[2]);
       });
 
     });
@@ -198,9 +201,11 @@ describe('<EngineProfile>', function() {
       const inputs =
       [ [ ENGINES.PLATFORM, '7.0', 'Camunda Platform 7.0' ],
         [ ENGINES.PLATFORM, '7.14', 'Camunda Platform 7.14' ],
+        [ ENGINES.PLATFORM, '7.500', 'Camunda Platform 7.500 (alpha)' ],
         [ ENGINES.PLATFORM, '', 'Camunda Platform 7' ],
         [ ENGINES.CLOUD, '1.3', 'Camunda Platform 8 (Zeebe 1.3)' ],
         [ ENGINES.CLOUD, '8.1', 'Camunda Platform 8.1' ],
+        [ ENGINES.CLOUD, '8.100', 'Camunda Platform 8.100 (alpha)' ],
         [ ENGINES.CLOUD, '', 'Camunda Platform 8' ] ];
 
       // then
