@@ -6,6 +6,13 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.5.1
+
+### BPMN
+
+* `FIX`: ensure `ImplementationProps` do not remove empty properties ([#3303](https://github.com/camunda/camunda-modeler/issues/3303), [#3304](https://github.com/camunda/camunda-modeler/issues/3304))
+* `DEPS`: update to `bpmn-js-properties-panel@1.11.2`
+
 ## 5.5.0
 
 ### General
