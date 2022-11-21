@@ -16,9 +16,17 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: validate Camunda Platform 8.2 diagrams ([#59](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/59))
 * `FEAT`: add candidate users entry to assignment group ([#776](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/776))
 
+## 5.5.1
+
+### BPMN
+
+* `FIX`: ensure `ImplementationProps` do not remove empty properties ([#3303](https://github.com/camunda/camunda-modeler/issues/3303), [#3304](https://github.com/camunda/camunda-modeler/issues/3304))
+* `DEPS`: update to `bpmn-js-properties-panel@1.11.2`
+
 ## 5.5.0
 
 ### General
+
 * `FIX`: export overlay event handler ([#3251](https://github.com/camunda/camunda-modeler/pull/3251))
 * `FIX`: handle bad request for update check ([#3265](https://github.com/camunda/camunda-modeler/pull/3265))
 * `FIX`: save flag on handle change in xml editor ([9eafc90](https://github.com/camunda/camunda-modeler/commit/9eafc905793bb4d85ff070590760e6e4acf428d6))
@@ -26,6 +34,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update bpmn-js to v10.2.1 ([#3266](https://github.com/camunda/camunda-modeler/pull/3266))
 
 ### Forms
+
 * `FEAT`: integrate forms playground ([#3178](https://github.com/camunda/camunda-modeler/pull/3178))
 * `DEPS`: bump form-js to v0.9.9 ([#3178](https://github.com/camunda/camunda-modeler/pull/3178))
 * `DEPS`: add @camunda/form-playground ([#3178](https://github.com/camunda/camunda-modeler/pull/3178))
