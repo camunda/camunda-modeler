@@ -18,10 +18,6 @@ import handToolOnSpaceModule from './features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
 import lintingAnnotationsModule from '@camunda/linting/modeler';
 
-import {
-  CamundaPlatformPropertiesProviderModule as platformPropertiesProviderModule
-} from 'bpmn-js-properties-panel';
-
 import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 
 
@@ -52,10 +48,7 @@ const extensionModules = [
   globalClipboardModule,
   handToolOnSpaceModule,
   propertiesPanelKeyboardBindingsModule,
-  lintingAnnotationsModule,
-
-  // TODO(nikku): remove this temporary fix to https://github.com/camunda/camunda-modeler/issues/3303
-  platformPropertiesProviderModule
+  lintingAnnotationsModule
 ];
 
 PlatformBpmnModeler.prototype._modules = [
