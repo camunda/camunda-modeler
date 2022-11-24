@@ -25,7 +25,7 @@
     "@codemirror/view": "^6.2.0",
     "@ibm/plex": "^6.0.0",
     "@sentry/browser": "^6.3.6",
-    "bpmn-js": "^10.2.1",
+    "bpmn-js": "^11.0.0",
     "bpmn-js-properties-panel": "^1.11.2",
     "bpmn-moddle": "^8.0.0",
     "camunda-bpmn-js": "^0.23.1",
