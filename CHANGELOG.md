@@ -6,6 +6,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: suppress EPIPE errors for app output ([#3313](https://github.com/camunda/camunda-modeler/issues/3313))
 * `DEPS`: bump `@camunda/linting` to v0.10.0 ([#3300](https://github.com/camunda/camunda-modeler/pull/3300))
 * `DEPS` bpmn `camunda-bpmn-js` to v0.23.0
 
@@ -202,7 +203,7 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 * `FIX`: improved file dialogs to match OS defaults ([#2300](https://github.com/camunda/camunda-modeler/issues/2300), [#2971](https://github.com/camunda/camunda-modeler/pull/2971))
 * `FIX`: reorder close file dialog buttons to match convention ([#2895](https://github.com/camunda/camunda-modeler/pull/2895))
 * `CHORE`: configure process env for mixpanel ([#2941](https://github.com/camunda/camunda-modeler/pull/2941))
-* `CHORE`: removed 'new' badge for C8 ([#2953](https://github.com/camunda/camunda-modeler/issues/2953)) 
+* `CHORE`: removed 'new' badge for C8 ([#2953](https://github.com/camunda/camunda-modeler/issues/2953))
 * `DEPS`: bump electron to 19.0.6 ([#2998](https://github.com/camunda/camunda-modeler/pull/2998), [#3004](https://github.com/camunda/camunda-modeler/pull/3004))
 * `DEPS`: bump properties-panel to 1.2.0 ([bc8b74870](https://github.com/camunda/camunda-modeler/commit/bc8b74870))
 * `DEPS`: bump diagram-js to 8.7.0 ([bc8b74870](https://github.com/camunda/camunda-modeler/commit/bc8b74870))
