@@ -56,6 +56,7 @@ const bootstrapLog = Log('app:main:bootstrap');
 const clientLog = Log('client');
 
 bootstrapLogging();
+bootstrapEPIPESuppression();
 
 const name = app.name = 'Camunda Modeler';
 const version = app.version = require('../package').version;
@@ -563,6 +564,22 @@ function bootstrapLogging() {
     // actual app errors in the client user interface
     // new logTransports.Client(renderer, () => app.clientReady)
   );
+}
+
+function bootstrapEPIPESuppression() {
+
+  let suppressing = false;
+  function logEPIPEErrorOnce() {
+    if (suppressing) {
+      return;
+    }
+
+    suppressing = true;
+    log.error('Detected EPIPE error; suppressing further EPIPE errors');
+  }
+
+  require('epipebomb')(process.stdout, logEPIPEErrorOnce);
+  require('epipebomb')(process.stderr, logEPIPEErrorOnce);
 }
 
 /**
