@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import PropertiesPanelKeyboardBindings from './PropertiesPanelKeyoardBindings';
+import PropertiesPanelKeyboardBindings from './PropertiesPanelKeyboardBindings';
 
 export default {
   __init__: [ 'propertiesPanelKeyboardBindings' ],
