@@ -21,6 +21,7 @@ _To be done immediately after creating this issue._
 * [ ] put up code freeze appointment in calendar (include `modeling`, `qa`, `infra`, and `Team-Support`)
 * [ ] put up release appointment in calendar (include `modeling`, `DevRel` and Marketing [ `Christopher Rogers` ])
 * [ ] add Slack role to release manager (`@modeling-release-manager`)
+* [ ] (optional) update [release presentation](https://confluence.camunda.com/display/HAN/Release+Presentation+Process) page
 
 _To be done before the code freeze._
 
