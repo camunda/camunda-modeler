@@ -12,7 +12,7 @@
 
 import Modeler from 'test/mocks/bpmn-js/Modeler';
 
-import PropertiesPanelKeyboardBindings from '../PropertiesPanelKeyoardBindings';
+import PropertiesPanelKeyboardBindings from '../PropertiesPanelKeyboardBindings';
 
 import {
   assign,
