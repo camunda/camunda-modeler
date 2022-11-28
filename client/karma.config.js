@@ -138,7 +138,8 @@ module.exports = function(karma) {
           '@camunda/linting': 'test/mocks/linting',
           '@camunda/linting/modeler': 'test/mocks/linting/modeler'
         }
-      }
+      },
+      devtool: 'eval-cheap-module-source-map'
     }
   });
 };
