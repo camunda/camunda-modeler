@@ -840,6 +840,9 @@ export class BpmnEditor extends CachedComponent {
       changeTemplateCommand: 'propertiesPanel.zeebe.changeTemplate',
       linting: {
         active: layout.panel && layout.panel.open && layout.panel.tab === 'linting'
+      },
+      propertiesPanel: {
+        feelTooltipContainer: '.editor'
       }
     });
 
