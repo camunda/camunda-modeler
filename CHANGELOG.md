@@ -15,6 +15,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: validate that at least one process is executable ([#56](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/56))
 * `FEAT`: validate that sequence flows whose source is (X)OR gateway have condition or are default ([#58](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/58))
 * `FEAT`: validate Camunda Platform 8.2 diagrams ([#59](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/59))
+* `FEAT`: support all elements for modeling in C8 diagrams ([#3331](https://github.com/camunda/camunda-modeler/issues/3331))
+* `FEAT`: support lint warnings in the UI ([#3330]([https://github.com/camunda/camunda-modeler/issues/3331](https://github.com/camunda/camunda-modeler/issues/3330)))
 * `FEAT`: add candidate users entry to assignment group ([#776](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/776))
 
 ## 5.5.1
