@@ -6,9 +6,14 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: add Camunda 8.2 and Camunda 7.19 preview profiles ([#3284](https://github.com/camunda/camunda-modeler/issues/3284), [#3301](https://github.com/camunda/camunda-modeler/issues/3301))
 * `FIX`: suppress EPIPE errors for app output ([#3313](https://github.com/camunda/camunda-modeler/issues/3313))
 * `DEPS`: bump `@camunda/linting` to v0.10.0 ([#3300](https://github.com/camunda/camunda-modeler/pull/3300))
 * `DEPS` bpmn `camunda-bpmn-js` to v0.23.0
+
+### FEEL Editing
+
+* `FIX`: correctly parse FEEL expression statements ([#3280](https://github.com/camunda/camunda-modeler/issues/3280))
 
 ### BPMN
 
@@ -18,6 +23,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: support all elements for modeling in C8 diagrams ([#3331](https://github.com/camunda/camunda-modeler/issues/3331))
 * `FEAT`: support lint warnings in the UI ([#3330](https://github.com/camunda/camunda-modeler/issues/3330))
 * `FEAT`: add candidate users entry to assignment group ([#776](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/776))
+* `FEAT`: show supported platform version with lint errors ([#3148](https://github.com/camunda/camunda-modeler/issues/3148))
+* `FIX`: correct apperance of ON/OFF switch ([#3233](https://github.com/camunda/camunda-modeler/issues/3233))
 
 ## 5.5.1
 
