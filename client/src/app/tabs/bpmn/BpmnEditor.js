@@ -715,6 +715,12 @@ export class BpmnEditor extends CachedComponent {
       };
     }
 
+    if (action === 'showLintError') {
+      this.getModeler().get('linting').showError(context);
+
+      return;
+    }
+
     if (action === 'elementTemplates.reload') {
       return this.loadTemplates();
     }
