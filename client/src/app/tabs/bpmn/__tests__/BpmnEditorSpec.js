@@ -1050,6 +1050,27 @@ describe('<BpmnEditor>', function() {
       expect(returnValue).to.equal('bar');
     });
 
+
+    it('should trigger showLintError', async function() {
+
+      // given
+      const lintError = {
+        id: 'foo',
+        message: 'Foo'
+      };
+
+      const { instance } = await renderEditor(diagramXML);
+
+      const showErrorSpy = spy(instance.getModeler().get('linting'), 'showError');
+
+      // when
+      instance.triggerAction('showLintError', lintError);
+
+      // then
+      expect(showErrorSpy).to.have.been.calledOnce;
+      expect(showErrorSpy).to.have.been.calledWithMatch(lintError);
+    });
+
   });
 
 
