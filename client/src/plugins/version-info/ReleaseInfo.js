@@ -44,8 +44,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Forms preview</h4>
-          The form editor now supports a preview mode, which allows you to see how forms will look for the end user while they're being created.
+          <h4>Model all elements for Camunda 8</h4>
+          The BPMN editor now supports drawing all BPMN symbols while it also indicates which elements are not supported in the engine.
+        </li>
+        <li>
+          <h4>Improved linting integration</h4>
+          A custom linter plugin can now display linting errors and warnings in the problems panel.
+        </li>
+        <li>
+          <h4>New replace menu UI in the BPMN editor</h4>
+          Easily find the replacement element you are looking for with the search feature in the menu.
+        </li>
+        <li>
+          <h4>Camunda 8.2 and 7.19 preview</h4>
+          Select the upcoming Camunda versions for preview of the new features. This includes support for link events in Camunda 8.
         </li>
       </ul>
     </div>
