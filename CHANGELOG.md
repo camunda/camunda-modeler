@@ -12,6 +12,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: add Camunda 8.2 and Camunda 7.19 preview profiles ([#3284](https://github.com/camunda/camunda-modeler/issues/3284), [#3301](https://github.com/camunda/camunda-modeler/issues/3301))
 * `FIX`: suppress EPIPE errors for app output ([#3313](https://github.com/camunda/camunda-modeler/issues/3313))
+* `FIX`: correctly parse path expressions in lists ([#3280](https://github.com/camunda/camunda-modeler/issues/3280))
 
 ### BPMN
 
@@ -33,10 +34,6 @@ ___Note:__ Yet to be released changes appear here._
 
 * `DEPS`: update to `camunda-dmn-moddle@1.2.0`
 * `DEPS`: update to `dmn-js-properties-panel@1.3.0`
-
-### FEEL Editing
-
-* `FIX`: correctly parse path expressions in lists ([#3280](https://github.com/camunda/camunda-modeler/issues/3280))
 
 ## 5.5.1
 
