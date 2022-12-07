@@ -49,7 +49,7 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Improved validation infrastructure</h4>
-          Editor now supports errors and warnings as problem types. Contribute your own validators throw <a href="https://github.com/camunda/camunda-modeler-custom-linter-rules-plugin">linter plug-ins</a>.
+          Editor now supports errors and warnings as problem types. Contribute your own validators with <a href="https://github.com/camunda/camunda-modeler-custom-linter-rules-plugin">linter plugins</a>.
         </li>
         <li>
           <h4>New replace menu UI in the BPMN editor</h4>
