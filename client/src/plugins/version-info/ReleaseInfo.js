@@ -48,8 +48,8 @@ export function ReleaseInfo(props) {
           The BPMN editor now supports drawing all BPMN symbols while it also indicates which elements are not supported in the engine.
         </li>
         <li>
-          <h4>Improved linting integration</h4>
-          A custom linter plugin can now display linting errors and warnings in the problems panel.
+          <h4>Improved validation infrastructure</h4>
+          Editor now supports errors and warnings as problem types. Contribute your own validators throw <a href="https://github.com/camunda/camunda-modeler-custom-linter-rules-plugin">linter plug-ins</a>.
         </li>
         <li>
           <h4>New replace menu UI in the BPMN editor</h4>
