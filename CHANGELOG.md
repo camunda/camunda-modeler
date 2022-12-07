@@ -6,17 +6,16 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.6.0
+
+### General
+
 * `FEAT`: add Camunda 8.2 and Camunda 7.19 preview profiles ([#3284](https://github.com/camunda/camunda-modeler/issues/3284), [#3301](https://github.com/camunda/camunda-modeler/issues/3301))
 * `FIX`: suppress EPIPE errors for app output ([#3313](https://github.com/camunda/camunda-modeler/issues/3313))
-* `DEPS`: bump `@camunda/linting` to v0.10.0 ([#3300](https://github.com/camunda/camunda-modeler/pull/3300))
-* `DEPS` bpmn `camunda-bpmn-js` to v0.23.0
-
-### FEEL Editing
-
-* `FIX`: correctly parse FEEL expression statements ([#3280](https://github.com/camunda/camunda-modeler/issues/3280))
 
 ### BPMN
 
+* `FEAT`: implement new replace menu UI
 * `FEAT`: validate that at least one process is executable ([#56](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/56))
 * `FEAT`: validate that sequence flows whose source is (X)OR gateway have condition or are default ([#58](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/58))
 * `FEAT`: validate Camunda Platform 8.2 diagrams ([#59](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/59))
@@ -25,6 +24,19 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add candidate users entry to assignment group ([#776](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/776))
 * `FEAT`: show supported platform version with lint errors ([#3148](https://github.com/camunda/camunda-modeler/issues/3148))
 * `FIX`: correct apperance of ON/OFF switch ([#3233](https://github.com/camunda/camunda-modeler/issues/3233))
+* `DEPS` update to `camunda-bpmn-js@0.24.0`
+* `DEPS`: update to `bpmn-js@11.0.3`
+* `DEPS`: update to `bpmn-js-properties-panel@1.12.0`
+* `DEPS`: update to `@camunda/linting@0.11.0`
+
+### DMN
+
+* `DEPS`: update to `camunda-dmn-moddle@1.2.0`
+* `DEPS`: update to `dmn-js-properties-panel@1.3.0`
+
+### FEEL Editing
+
+* `FIX`: correctly parse path expressions in lists ([#3280](https://github.com/camunda/camunda-modeler/issues/3280))
 
 ## 5.5.1
 
