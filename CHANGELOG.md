@@ -25,8 +25,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add candidate users entry to assignment group ([#776](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/776))
 * `FEAT`: show supported platform version with lint errors ([#3148](https://github.com/camunda/camunda-modeler/issues/3148))
 * `FIX`: correct apperance of ON/OFF switch ([#3233](https://github.com/camunda/camunda-modeler/issues/3233))
-* `DEPS`: update to `camunda-bpmn-js@0.24.0`
-* `DEPS`: update to `bpmn-js@11.0.3`
+* `DEPS`: update to `camunda-bpmn-js@0.24.1`
+* `DEPS`: update to `bpmn-js@11.0.5`
 * `DEPS`: update to `bpmn-js-properties-panel@1.12.0`
 * `DEPS`: update to `@camunda/linting@0.11.0`
 
