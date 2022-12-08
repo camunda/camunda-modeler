@@ -335,6 +335,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
           onChanged: changedSpy
         });
 
+        // reset history to avoid counting initial changed event
+        changedSpy.resetHistory();
         modeler._emit(event);
 
         expect(changedSpy).to.have.been.called;
@@ -376,6 +378,12 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
 
     it('searchPad.closed', expectHandleChanged('searchPad.closed'));
+
+
+    it('popupMenu.opened', expectHandleChanged('popupMenu.opened'));
+
+
+    it('popupMenu.closed', expectHandleChanged('popupMenu.closed'));
   });
 
 

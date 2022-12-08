@@ -121,9 +121,6 @@ export class BpmnEditor extends CachedComponent {
     this.handleResize = debounce(this.handleResize);
 
     this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
-
-    // TODO(barmac): remove when https://github.com/camunda/camunda-modeler/issues/3342 is fixed
-    this.debouncedHandleChanged = debounce(this.handleChanged.bind(this));
   }
 
   async componentDidMount() {
@@ -188,14 +185,6 @@ export class BpmnEditor extends CachedComponent {
   listen(fn) {
     const modeler = this.getModeler();
 
-    // TODO(barmac): remove when https://github.com/camunda/camunda-modeler/issues/3342 is fixed
-    [
-      'popupMenu.open',
-      'popupMenu.close'
-    ].forEach((event) => {
-      modeler[fn](event, this.debouncedHandleChanged);
-    });
-
     [
       'import.done',
       'saveXML.done',
@@ -208,7 +197,9 @@ export class BpmnEditor extends CachedComponent {
       'directEditing.activate',
       'directEditing.deactivate',
       'searchPad.closed',
-      'searchPad.opened'
+      'searchPad.opened',
+      'popupMenu.opened',
+      'popupMenu.closed'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
