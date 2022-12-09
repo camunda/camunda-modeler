@@ -32,8 +32,11 @@ ___Note:__ Yet to be released changes appear here._
 
 ### DMN
 
+* `FEAT`: implement new replace menu UI
+* `DEPS`: update to `camunda-dmn-js@0.8.0`
+* `DEPS`: update to `dmn-js@14.0.0`
 * `DEPS`: update to `camunda-dmn-moddle@1.2.0`
-* `DEPS`: update to `dmn-js-properties-panel@1.3.0`
+* `DEPS`: update to `dmn-js-properties-panel@1.3.1`
 
 ## 5.5.1
 
