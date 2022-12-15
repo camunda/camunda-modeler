@@ -230,7 +230,9 @@ export function getDiagramFindEntries({
 export function getSelectionEntries({
   inputActive,
   removeSelected,
-  selectAll
+  selectAll,
+  replaceElement
+
 }) {
   const menuEntries = [];
 
@@ -251,6 +253,16 @@ export function getSelectionEntries({
       enabled: removeSelected,
       action: 'removeSelection',
       role: inputActive && 'delete'
+    });
+  }
+
+
+  if (isDefined(replaceElement)) {
+    menuEntries.push({
+      label: 'Replace Element',
+      accelerator: 'R',
+      enabled: replaceElement,
+      action: 'replaceElement'
     });
   }
 

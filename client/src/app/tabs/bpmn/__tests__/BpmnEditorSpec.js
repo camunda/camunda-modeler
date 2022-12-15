@@ -734,6 +734,7 @@ describe('<BpmnEditor>', function() {
           paste: false,
           redo: true,
           removeSelected: false,
+          replaceElement: false,
           setColor: false,
           spaceTool: true,
           undo: true

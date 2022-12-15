@@ -418,6 +418,7 @@ export class BpmnEditor extends CachedComponent {
       propertiesPanel: true,
       redo: commandStack.canRedo(),
       removeSelected: !!selectionLength || inputActive,
+      replaceElement: !!selectionLength && selectionLength == 1 && !inputActive,
       save: true,
       selectAll: true,
       setColor: !!selectionLength,
@@ -647,7 +648,7 @@ export class BpmnEditor extends CachedComponent {
     }
   }
 
-  triggerAction = (action, context) => {
+  triggerAction = (action, context = {}) => {
     const {
       layout = {}
     } = this.props;
