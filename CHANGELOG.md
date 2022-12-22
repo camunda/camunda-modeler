@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `DEPS`: update to `dmn-js@14.0.2` and `camunda-dmn-js@0.8.1`
+
 ## 5.6.0
 
 ### General
