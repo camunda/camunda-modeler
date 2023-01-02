@@ -60,6 +60,7 @@ export default class KeyboardBindings {
     this.paste = null;
     this.selectAll = null;
     this.removeSelection = null;
+    this.replaceElement = null;
     this.undo = null;
     this.redo = null;
 
@@ -136,6 +137,11 @@ export default class KeyboardBindings {
       action = getAction(this.redo);
     }
 
+    // replace
+    if (isKey([ 'r', 'R' ], event) && isEnabled(this.replaceElement)) {
+      action = getAction(this.replaceElement);
+    }
+
     // custom
     if (this.hasCustomEntry(event)) {
       action = this.getCustomAction(event, 'keydown');
@@ -199,7 +205,7 @@ export default class KeyboardBindings {
     this.selectAll = findSelectAll(menu);
     this.undo = findUndo(menu);
     this.redo = findRedo(menu);
-
+    this.replaceElement = findReplaceElement(menu);
     this.updateCustomEntries(menu);
 
     return menu;
@@ -423,6 +429,10 @@ function findRedo(menu) {
 
 function findSelectAll(menu) {
   return find(menu, ({ accelerator }) => isAccelerator(accelerator, 'CommandOrControl+A'));
+}
+
+function findReplaceElement(menu) {
+  return find(menu, ({ accelerator }) => isAccelerator(accelerator, 'R'));
 }
 
 /**
