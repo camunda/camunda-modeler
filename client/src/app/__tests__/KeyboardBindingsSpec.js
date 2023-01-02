@@ -343,6 +343,25 @@ describe('KeyboardBindings', function() {
   });
 
 
+  it('replaceElement', function() {
+
+    // given
+    event = createKeyEvent('R');
+
+    keyboardBindings.update([ {
+      accelerator: 'R',
+      action: 'replaceElement'
+    } ]);
+
+    // when
+    keyboardBindings._keyDownHandler(event);
+
+    // then
+    expect(actionSpy).to.have.been.calledWith(null, 'replaceElement');
+
+  });
+
+
   it('#setOnAction', function() {
 
     // given
