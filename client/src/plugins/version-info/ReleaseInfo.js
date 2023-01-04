@@ -44,20 +44,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Model all elements for Camunda 8</h4>
-          The BPMN editor now supports drawing all BPMN symbols while it also indicates which elements are not supported in the engine.
+          <h4>New form fields and more in the Form editor</h4>
+          The form editor now supports text area, datetime, and image form fields. Add conditions to form fields to control visibility.
         </li>
         <li>
-          <h4>Improved validation infrastructure</h4>
-          Editor now supports errors and warnings as problem types. Contribute your own validators with <a href="https://github.com/camunda/camunda-modeler-custom-linter-rules-plugin">linter plugins</a>.
+          <h4>New color picker in the BPMN editor</h4>
+          Color one or more elements using the new color picker that is accessible through the context menu.
         </li>
         <li>
-          <h4>New replace menu UI in the BPMN editor</h4>
-          Easily find the replacement element you are looking for with the search feature in the menu.
+          <h4>Element templates accessible through replace menu</h4>
+          Apply and unlink element templates directly through the replace menu. With an element selected, press <kbd>R</kbd> to open the replace menu.
         </li>
         <li>
-          <h4>Camunda 8.2 and 7.19 preview</h4>
-          Select the upcoming Camunda versions for preview of the new features. This includes support for link events in Camunda 8.
+          <h4>Extended support for using FEEL in Camunda 8 BPMN</h4>
+          FEEL expressions can be used for script task implementations and as error codes.
         </li>
       </ul>
     </div>
