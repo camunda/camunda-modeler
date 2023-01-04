@@ -29,9 +29,11 @@ export async function getProcessVariablesCount(file, type) {
 
   const rootElements = definitions.get('rootElements');
 
-  rootElements.forEach((element) => {
-    processVariables.push(...getProcessVariables(element));
-  });
+  await Promise.all(
+    rootElements.map(async (element) => {
+      processVariables.push(...await getProcessVariables(element));
+    })
+  );
 
   return processVariables.length;
 }
