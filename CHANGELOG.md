@@ -6,7 +6,41 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `DEPS`: update to `dmn-js@14.0.2` and `camunda-dmn-js@0.8.1`
+## 5.7.0
+
+### General
+
+* `FEAT`: add replace menu shortcut <kbd>R</kbd> ([#3364](https://github.com/camunda/camunda-modeler/pull/3364))
+* `FEAT`: add support for nested variables to FEEL editor autocompletion ([#34](https://github.com/bpmn-io/feel-editor/pull/34))
+
+### BPMN
+
+* `FEAT`: add color picker ([#221](https://github.com/camunda/camunda-bpmn-js/pull/221))
+* `FEAT`: add support for applying and unlinking element templates through replace menu ([#207](https://github.com/camunda/camunda-bpmn-js/pull/207), [#219](https://github.com/camunda/camunda-bpmn-js/pull/219))
+* `FEAT`: add support for implementation as FEEL expression to script task ([#3321](https://github.com/camunda/camunda-modeler/issues/3321))
+* `FEAT`: add support for error code as FEEL expression ([#837](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/837))
+* `DEPS`: update to `bpmn-js@11.1.0`
+* `DEPS`: update to `bpmn-js-properties-panel@1.14.0`
+* `DEPS`: update to `camunda-bpmn-js@1.0.0`
+
+### DMN
+
+* `DEPS`: update to `dmn-js@14.0.2`
+* `DEPS`: update to `camunda-dmn-js@0.8.1`
+
+### Forms
+
+* `FEAT`: add support for conditional rendering of form fields ([#403](https://github.com/bpmn-io/form-js/pull/403))
+* `FEAT`: add text area form field ([#283](https://github.com/bpmn-io/form-js/issues/283))
+* `FEAT`: add image form field ([#385](https://github.com/bpmn-io/form-js/pull/385))
+* `FEAT`: add datetime form field ([#377](https://github.com/bpmn-io/form-js/pull/377))
+* `FEAT`: add support for FEEL to text field form fields ([#447](https://github.com/bpmn-io/form-js/pull/447))
+* `FEAT`: add support for prefix and suffix to text field and number form fields ([#460](https://github.com/bpmn-io/form-js/pull/460))
+* `FEAT`: add support for decimal numbers to number form field ([#421](https://github.com/bpmn-io/form-js/pull/421))
+* `FEAT`: add `email` and `phone` validation type to text field form fields ([#414](https://github.com/bpmn-io/form-js/pull/414))
+* `FEAT`: validate form input JSON in validate view ([#386](https://github.com/bpmn-io/form-js/pull/386))
+* `DEPS`: update to `@bpmn-io/form-js@0.10.1`
+* `DEPS`: update to `@camunda/form-playground@0.3.0`
 
 ## 5.6.0
 
