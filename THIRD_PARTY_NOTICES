@@ -93,54 +93,54 @@ This project incorporates components from the projects listed below. The origina
 86.   minimatch@3.0.4 (https://github.com/isaacs/minimatch)
 87.   mri@1.1.6 (https://github.com/lukeed/mri)
 88.   ms@2.1.2 (https://github.com/zeit/ms)
-89.   node-fetch@2.6.7 (https://github.com/bitinn/node-fetch)
-90.   normalize-url@4.5.1 (https://github.com/sindresorhus/normalize-url)
-91.   once@1.4.0 (https://github.com/isaacs/once)
-92.   p-cancelable@1.1.0 (https://github.com/sindresorhus/p-cancelable)
-93.   parents@1.0.1 (https://github.com/substack/node-parents)
-94.   path-is-absolute@1.0.1 (https://github.com/sindresorhus/path-is-absolute)
-95.   path-platform@0.11.15 (https://github.com/tjfontaine/node-path-platform)
-96.   prepend-http@2.0.0 (https://github.com/sindresorhus/prepend-http)
-97.   promise-retry@1.1.1 (https://github.com/IndigoUnited/node-promise-retry)
-98.   protobufjs@7.1.2 (https://github.com/protobufjs/protobuf.js)
-99.   pump@3.0.0 (https://github.com/mafintosh/pump)
-100.  require-directory@2.1.1 (https://github.com/troygoode/node-require-directory)
-101.  responselike@1.0.2 (https://github.com/lukechilds/responselike)
-102.  retry@0.10.1 (https://github.com/tim-kos/node-retry)
-103.  stack-trace@0.0.10 (https://github.com/felixge/node-stack-trace)
-104.  string-width@4.2.3 (https://github.com/sindresorhus/string-width)
-105.  strip-ansi@6.0.1 (https://github.com/chalk/strip-ansi)
-106.  strnum@1.0.5 (https://github.com/NaturalIntelligence/strnum)
-107.  supports-color@5.5.0 (https://github.com/chalk/supports-color)
-108.  supports-color@7.2.0 (https://github.com/chalk/supports-color)
-109.  to-readable-stream@1.0.0 (https://github.com/sindresorhus/to-readable-stream)
-110.  tr46@0.0.3 (https://github.com/Sebmaster/tr46.js)
-111.  tslib@1.14.1 (https://github.com/Microsoft/tslib)
-112.  typed-duration@1.0.13 (https://github.com/jwulf/typed-duration)
-113.  url-parse-lax@3.0.0 (https://github.com/sindresorhus/url-parse-lax)
-114.  uuid@3.4.0 (https://github.com/uuidjs/uuid)
-115.  webidl-conversions@3.0.1 (https://github.com/jsdom/webidl-conversions)
-116.  whatwg-url@5.0.0 (https://github.com/jsdom/whatwg-url)
-117.  wrap-ansi@7.0.0 (https://github.com/chalk/wrap-ansi)
-118.  wrappy@1.0.2 (https://github.com/npm/wrappy)
-119.  y18n@5.0.8 (https://github.com/yargs/y18n)
-120.  yargs-parser@20.2.9 (https://github.com/yargs/yargs-parser)
-121.  yargs@16.2.0 (https://github.com/yargs/yargs)
-122.  zeebe-node@8.1.0 (https://github.com/camunda-community-hub/zeebe-client-node-js)
-123.  @bpmn-io/add-exporter@0.2.0 (https://github.com/bpmn-io/add-exporter)
-124.  @bpmn-io/dmn-migrate@0.4.3 (https://github.com/bpmn-io/dmn-migrate)
-125.  @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
-126.  @camunda/execution-platform@0.3.2 (https://github.com/camunda/execution-platform)
-127.  @camunda/linting@0.11.0 (https://github.com/camunda/linting)
-128.  @codemirror/lang-xml@6.0.0 (https://github.com/codemirror/lang-xml)
+89.   node-addon-api@3.2.1 (https://github.com/nodejs/node-addon-api)
+90.   node-fetch@2.6.7 (https://github.com/bitinn/node-fetch)
+91.   normalize-url@4.5.1 (https://github.com/sindresorhus/normalize-url)
+92.   once@1.4.0 (https://github.com/isaacs/once)
+93.   p-cancelable@1.1.0 (https://github.com/sindresorhus/p-cancelable)
+94.   parents@1.0.1 (https://github.com/substack/node-parents)
+95.   path-is-absolute@1.0.1 (https://github.com/sindresorhus/path-is-absolute)
+96.   path-platform@0.11.15 (https://github.com/tjfontaine/node-path-platform)
+97.   prepend-http@2.0.0 (https://github.com/sindresorhus/prepend-http)
+98.   promise-retry@1.1.1 (https://github.com/IndigoUnited/node-promise-retry)
+99.   protobufjs@7.1.2 (https://github.com/protobufjs/protobuf.js)
+100.  pump@3.0.0 (https://github.com/mafintosh/pump)
+101.  require-directory@2.1.1 (https://github.com/troygoode/node-require-directory)
+102.  responselike@1.0.2 (https://github.com/lukechilds/responselike)
+103.  retry@0.10.1 (https://github.com/tim-kos/node-retry)
+104.  stack-trace@0.0.10 (https://github.com/felixge/node-stack-trace)
+105.  string-width@4.2.3 (https://github.com/sindresorhus/string-width)
+106.  strip-ansi@6.0.1 (https://github.com/chalk/strip-ansi)
+107.  strnum@1.0.5 (https://github.com/NaturalIntelligence/strnum)
+108.  supports-color@5.5.0 (https://github.com/chalk/supports-color)
+109.  supports-color@7.2.0 (https://github.com/chalk/supports-color)
+110.  to-readable-stream@1.0.0 (https://github.com/sindresorhus/to-readable-stream)
+111.  tr46@0.0.3 (https://github.com/Sebmaster/tr46.js)
+112.  tslib@1.14.1 (https://github.com/Microsoft/tslib)
+113.  typed-duration@1.0.13 (https://github.com/jwulf/typed-duration)
+114.  url-parse-lax@3.0.0 (https://github.com/sindresorhus/url-parse-lax)
+115.  uuid@3.4.0 (https://github.com/uuidjs/uuid)
+116.  vscode-windows-ca-certs@0.3.0 (https://github.com/Microsoft/vscode-windows-ca-certs)
+117.  webidl-conversions@3.0.1 (https://github.com/jsdom/webidl-conversions)
+118.  whatwg-url@5.0.0 (https://github.com/jsdom/whatwg-url)
+119.  wrap-ansi@7.0.0 (https://github.com/chalk/wrap-ansi)
+120.  wrappy@1.0.2 (https://github.com/npm/wrappy)
+121.  y18n@5.0.8 (https://github.com/yargs/y18n)
+122.  yargs-parser@20.2.9 (https://github.com/yargs/yargs-parser)
+123.  yargs@16.2.0 (https://github.com/yargs/yargs)
+124.  zeebe-node@8.1.0 (https://github.com/camunda-community-hub/zeebe-client-node-js)
+125.  @bpmn-io/add-exporter@0.2.0 (https://github.com/bpmn-io/add-exporter)
+126.  @bpmn-io/dmn-migrate@0.4.3 (https://github.com/bpmn-io/dmn-migrate)
+127.  @bpmn-io/replace-ids@0.2.0 (https://github.com/bpmn-io/replace-ids)
+128.  @camunda/execution-platform@0.3.2 (https://github.com/camunda/execution-platform)
 129.  @ibm/plex@6.0.0 (https://github.com/ibm/plex)
-130.  @lezer/xml@1.0.0 (https://github.com/lezer-parser/xml)
-131.  @sentry/browser@6.3.6 (https://github.com/getsentry/sentry-javascript)
-132.  @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
-133.  bpmn-moddle@7.1.3 (https://github.com/bpmn-io/bpmn-moddle)
-134.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
-135.  deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
-136.  diagram-js@11.3.0 (https://github.com/bpmn-io/diagram-js)
+130.  @sentry/browser@6.3.6 (https://github.com/getsentry/sentry-javascript)
+131.  @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
+132.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
+133.  deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
+134.  diagram-js-direct-editing@2.0.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
+135.  diagram-js@11.4.1 (https://github.com/bpmn-io/diagram-js)
+136.  didi@9.0.0 (https://github.com/nikku/didi)
 137.  dmn-moddle@8.0.4 (https://github.com/bpmn-io/dmn-moddle)
 138.  drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
 139.  events@3.3.0 (https://github.com/Gozala/events)
@@ -162,7 +162,6 @@ This project incorporates components from the projects listed below. The origina
 155.  tiny-svg@3.0.0 (https://github.com/bpmn-io/tiny-svg)
 156.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
 157.  tslib@1.9.3 (https://github.com/Microsoft/tslib)
-158.  zeebe-bpmn-moddle@0.15.0 (https://github.com/camunda/zeebe-bpmn-moddle)
 
 
 %% @grpc/grpc-js@1.7.1 NOTICES AND INFORMATION BEGIN HERE
@@ -3117,6 +3116,25 @@ SOFTWARE.
 END OF ms@2.1.2 NOTICES AND INFORMATION
 
 
+%% node-addon-api@3.2.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+=====================
+
+Copyright (c) 2017 Node.js API collaborators
+-----------------------------------
+
+*Node.js API collaborators listed at <https://github.com/nodejs/node-addon-api#collaborators>*
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+==========================================
+END OF node-addon-api@3.2.1 NOTICES AND INFORMATION
+
+
 %% node-fetch@2.6.7 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
@@ -3671,6 +3689,44 @@ SOFTWARE.
 END OF uuid@3.4.0 NOTICES AND INFORMATION
 
 
+%% vscode-windows-ca-certs@0.3.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+BSD 3-Clause License
+
+Copyright (c) 2016, Stas Ukolov
+Copyright (c) Microsoft Corporation
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==========================================
+END OF vscode-windows-ca-certs@0.3.0 NOTICES AND INFORMATION
+
+
 %% webidl-conversions@3.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 # The BSD 2-Clause License
@@ -4141,41 +4197,6 @@ THE SOFTWARE.
 END OF @camunda/execution-platform@0.3.2 NOTICES AND INFORMATION
 
 
-%% @camunda/linting@0.11.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT
-==========================================
-END OF @camunda/linting@0.11.0 NOTICES AND INFORMATION
-
-
-%% @codemirror/lang-xml@6.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (C) 2018-2021 by Marijn Haverbeke <marijnh@gmail.com> and others
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF @codemirror/lang-xml@6.0.0 NOTICES AND INFORMATION
-
-
 %% @ibm/plex@6.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright © 2017 IBM Corp. with Reserved Font Name "Plex"
@@ -4276,34 +4297,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 END OF @ibm/plex@6.0.0 NOTICES AND INFORMATION
 
 
-%% @lezer/xml@1.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (C) 2018 by Marijn Haverbeke <marijnh@gmail.com> and others
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF @lezer/xml@1.0.0 NOTICES AND INFORMATION
-
-
 %% @sentry/browser@6.3.6 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 BSD 3-Clause License
@@ -4354,33 +4347,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ==========================================
 END OF @sindresorhus/is@0.15.0 NOTICES AND INFORMATION
-
-
-%% bpmn-moddle@7.1.3 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2014 camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF bpmn-moddle@7.1.3 NOTICES AND INFORMATION
 
 
 %% camunda-cmmn-moddle@1.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -4438,7 +4404,34 @@ THE SOFTWARE.
 END OF deepmerge@2.2.1 NOTICES AND INFORMATION
 
 
-%% diagram-js@11.3.0 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js-direct-editing@2.0.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2014-2017 camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF diagram-js-direct-editing@2.0.0 NOTICES AND INFORMATION
+
+
+%% diagram-js@11.4.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -4462,7 +4455,35 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@11.3.0 NOTICES AND INFORMATION
+END OF diagram-js@11.4.1 NOTICES AND INFORMATION
+
+
+%% didi@9.0.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License
+
+Copyright (C) 2013 Vojta Jína.
+Copyright (C) 2015-present Nico Rehwaldt.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF didi@9.0.0 NOTICES AND INFORMATION
 
 
 %% dmn-moddle@8.0.4 NOTICES AND INFORMATION BEGIN HERE
@@ -5267,30 +5288,3 @@ END OF TERMS AND CONDITIONS
 
 ==========================================
 END OF tslib@1.9.3 NOTICES AND INFORMATION
-
-
-%% zeebe-bpmn-moddle@0.15.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2020-present Camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF zeebe-bpmn-moddle@0.15.0 NOTICES AND INFORMATION
