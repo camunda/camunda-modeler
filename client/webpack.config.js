@@ -187,6 +187,12 @@ function extractDependencies() {
     new LicenseWebpackPlugin({
       outputFilename: 'dependencies.json',
       perChunkOutput: false,
+      excludedPackageTest: (packageName) => {
+
+        // TODO(@philippfromme): workaround for https://github.com/camunda/camunda-modeler/issues/3249
+        // cf. https://github.com/xz64/license-webpack-plugin/issues/124
+        return packageName === 'camunda-modeler-client';
+      },
       renderLicenses: (modules) => {
 
         const usedModules = modules.reduce((result, m) => {
