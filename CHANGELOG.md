@@ -41,6 +41,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: validate form input JSON in validate view ([#386](https://github.com/bpmn-io/form-js/pull/386))
 * `DEPS`: update to `@bpmn-io/form-js@0.10.1`
 * `DEPS`: update to `@camunda/form-playground@0.3.0`
+* `DEPS`: update to `@camunda/form-linting@0.2.1`
 
 ## 5.6.0
 
