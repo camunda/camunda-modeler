@@ -138,7 +138,7 @@ export default class KeyboardBindings {
     }
 
     // replace
-    if (isKey([ 'r', 'R' ], event) && isEnabled(this.replaceElement)) {
+    if (isReplace(event) && isEnabled(this.replaceElement)) {
       action = getAction(this.replaceElement);
     }
 
@@ -296,6 +296,11 @@ function isUndo(event) {
 function isRedo(event) {
   return isCommandOrControl(event) &&
     (isKey([ 'y', 'Y' ], event) || (isKey([ 'z', 'Z' ], event) && isShift(event)));
+}
+
+// r
+function isReplace(event) {
+  return isKey([ 'r', 'R' ], event) && !isCommandOrControl(event) && !isShift(event);
 }
 
 // Secondary delete shortcut

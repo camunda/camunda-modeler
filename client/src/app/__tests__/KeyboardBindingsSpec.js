@@ -343,21 +343,44 @@ describe('KeyboardBindings', function() {
   });
 
 
-  it('replaceElement', function() {
+  describe('replaceElement', function() {
 
-    // given
-    event = createKeyEvent('R');
+    it('should trigger for R', function() {
 
-    keyboardBindings.update([ {
-      accelerator: 'R',
-      action: 'replaceElement'
-    } ]);
+      // given
+      event = createKeyEvent('R');
 
-    // when
-    keyboardBindings._keyDownHandler(event);
+      keyboardBindings.update([ {
+        accelerator: 'R',
+        action: 'replaceElement'
+      } ]);
 
-    // then
-    expect(actionSpy).to.have.been.calledWith(null, 'replaceElement');
+      // when
+      keyboardBindings._keyDownHandler(event);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith(null, 'replaceElement');
+
+    });
+
+
+    it('should not trigger for Cmd+R', function() {
+
+      // given
+      event = createKeyEvent('R', { ctrlKey: true });
+
+      keyboardBindings.update([ {
+        accelerator: 'R',
+        action: 'replaceElement'
+      } ]);
+
+      // when
+      keyboardBindings._keyDownHandler(event);
+
+      // then
+      expect(actionSpy).to.not.have.been.called;
+
+    });
 
   });
 
