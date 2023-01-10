@@ -6,7 +6,15 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-### BPMN
+* `DEPS`: update to `camunda-bpmn-js@1.1.2`
+* `DEPS`: update to `bpmn-js-properties-panel@1.15.1`
+
+### Key changes in Properties Panel
+
+* `FIX`: serialize templated properties in stable order ([bpmn-js-properties-panel#838](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/838))
+* `FIX`: do not sort IO mappings alphabetically ([bpmn-js-properties-panel#845](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/845), [bpmn-js-properties-panel#843](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/843))
+
+### Key changes in BPMN
 
 * `FEAT`: validate error code as FEEL expression ([#3319](https://github.com/camunda/camunda-modeler/issues/3319))
 
