@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### BPMN
+
+* `FEAT`: validate error code as FEEL expression ([#3319](https://github.com/camunda/camunda-modeler/issues/3319))
+
 ## 5.7.0
 
 ### General
