@@ -18,10 +18,11 @@ const getAppVersion = require('./app/util/get-version');
 process.env.NODE_ENV = 'development';
 
 // monkey-patch package version to indicate DEV mode in application
-const pkg = require('./package');
+const pkg = require('./app/package');
 
 pkg.version = getAppVersion(pkg, {
-  nightly: 'dev'
+  buildName: 'dev',
+  increment: true
 });
 
 // monkey-patch cli args to not open this file in application

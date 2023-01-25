@@ -18,6 +18,7 @@ var semver = require('semver');
  * @param {Object} pkg
  * @param {Object} options
  * @param {boolean} [options.nightly]
+ * @param {boolean} [options.increment]
  * @param {string} [options.buildName]
  *
  * @return {string} actual app version
@@ -28,11 +29,16 @@ module.exports = function getVersion(pkg, options) {
 
   var {
     buildName,
-    nightly
+    nightly,
+    increment = nightly,
   } = options;
 
+  if (increment) {
+    appVersion = semver.inc(appVersion, 'minor');
+  }
+
   if (nightly) {
-    appVersion = `${semver.inc(appVersion, 'minor')}-nightly.${today()}`;
+    appVersion = `${appVersion}-nightly.${today()}`;
   } else if (buildName) {
     appVersion = `${appVersion}-${buildName}`;
   }
