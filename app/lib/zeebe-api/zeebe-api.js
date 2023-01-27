@@ -13,7 +13,8 @@
 const path = require('path');
 const getSystemCertificates = require('./get-system-certificates');
 
-const log = require('../log')('app:zeebe-api');
+const createLog = require('../log');
+const { X509Certificate } = require('node:crypto');
 
 const {
   pick,
@@ -81,11 +82,12 @@ const endpointTypes = {
  */
 
 class ZeebeAPI {
-  constructor(fs, ZeebeNode, flags) {
+  constructor(fs, ZeebeNode, flags, log = createLog('app:zeebe-api')) {
     this._fs = fs;
 
     this._ZeebeNode = ZeebeNode;
     this._flags = flags;
+    this._log = log;
 
     this._zeebeClient = null;
   }
@@ -109,7 +111,7 @@ class ZeebeAPI {
       await client.topology();
       return { success: true };
     } catch (err) {
-      log.error('Failed to connect with config (secrets omitted):', withoutSecrets(parameters), err);
+      this._log.error('Failed to connect with config (secrets omitted):', withoutSecrets(parameters), err);
 
       return {
         success: false,
@@ -123,7 +125,7 @@ class ZeebeAPI {
    * Deploy Process.
    *
    * @param {ZeebeClientParameters & { name: string, filePath: string }} parameters
-   * @returns {{ success: boolean, response: object }}
+   * @returns {Promise<{ success: boolean, response: object }>}
    */
   async deploy(parameters) {
 
@@ -143,7 +145,7 @@ class ZeebeAPI {
     try {
       const response = await client.deployProcess({
         definition: contents,
-        name: prepareDeploymentName(name, filePath, diagramType)
+        name: this._prepareDeploymentName(name, filePath, diagramType)
       });
 
       return {
@@ -151,7 +153,7 @@ class ZeebeAPI {
         response: response
       };
     } catch (err) {
-      log.error('Failed to deploy with config (secrets omitted):', withoutSecrets(parameters), err);
+      this._log.error('Failed to deploy with config (secrets omitted):', withoutSecrets(parameters), err);
 
       return {
         success: false,
@@ -186,7 +188,7 @@ class ZeebeAPI {
         response: response
       };
     } catch (err) {
-      log.error('Failed to run instance with config (secrets omitted):', withoutSecrets(parameters), err);
+      this._log.error('Failed to run instance with config (secrets omitted):', withoutSecrets(parameters), err);
 
       return {
         success: false,
@@ -220,7 +222,7 @@ class ZeebeAPI {
         }
       };
     } catch (err) {
-      log.error('Failed to connect with config (secrets omitted):', withoutSecrets(parameters), err);
+      this._log.error('Failed to connect with config (secrets omitted):', withoutSecrets(parameters), err);
 
       return {
         success: false,
@@ -316,14 +318,10 @@ class ZeebeAPI {
     const customCertificatePath = this._flags.get('zeebe-ssl-certificate');
 
     if (customCertificatePath) {
-      try {
-        const absolutePath = path.isAbsolute(customCertificatePath) ?
-          customCertificatePath : path.join(process.cwd(), customCertificatePath);
-        const cert = this._fs.readFile(absolutePath);
+      const cert = this._readRootCertificate(customCertificatePath);
 
-        rootCerts.push(cert.contents);
-      } catch (err) {
-        log.error('Failed to read custom SSL certificate:', err);
+      if (cert) {
+        rootCerts.push(cert);
       }
     }
 
@@ -342,6 +340,69 @@ class ZeebeAPI {
         rootCerts: Buffer.from(rootCerts.join('\n'))
       }
     };
+  }
+
+  _readRootCertificate(certPath) {
+    let cert;
+
+    try {
+      const absolutePath = path.isAbsolute(certPath) ?
+        certPath : path.join(process.cwd(), certPath);
+
+      cert = this._fs.readFile(absolutePath).contents;
+
+    } catch (err) {
+      this._log.error('Failed to read custom SSL certificate:', err);
+
+      return;
+    }
+
+    let parsed;
+    try {
+      parsed = new X509Certificate(cert);
+    } catch (err) {
+      this._log.error('Failed to parse custom SSL certificate:', err);
+
+      return;
+    }
+
+    if (parsed.issuer !== parsed.subject) {
+      this._log.error('Custom SSL certificate is not a root certificate');
+
+      return;
+    }
+
+    return cert;
+  }
+
+  /**
+   * With zeebe-node 0.23.0, the deployment name should end with
+   * file type appropriate suffix.
+   *
+   * If name is empty, we'll return the file name with suffix added. If name is not empty
+   * but does not end with .bpmn, we'll add the suffix.
+   * @param {string} name
+   * @param {string} filePath
+   * @param {'bpmn'|'dmn'} [suffix='bpmn']
+   * @returns {`${string}.${'bpmn'|'dmn'}`}
+   */
+  _prepareDeploymentName(name, filePath, suffix = 'bpmn') {
+
+    try {
+      if (!name || name.length === 0) {
+        return `${path.basename(filePath, path.extname(filePath))}.${suffix}`;
+      }
+
+      if (!name.endsWith(suffix)) {
+        return `${name}.${suffix}`;
+      }
+
+    } catch (err) {
+
+      this._log.error('Error happened preparing deployment name: ', err);
+    }
+
+    return name;
   }
 }
 
@@ -416,41 +477,6 @@ function withoutSecrets(parameters) {
   const endpoint = pick(parameters.endpoint, [ 'type', 'url', 'clientId', 'oauthURL' ]);
 
   return { ...parameters, endpoint };
-}
-
-// With zeebe-node 0.23.0, the deployment name should end with
-// .bpmn suffix.
-//
-// If name is empty, we'll return the file name. If name is not empty
-// but does not end with .bpmn, we'll add the suffix.
-/**
- * With zeebe-node 0.23.0, the deployment name should end with
- * file type appropriate suffix.
- *
- * If name is empty, we'll return the file name with suffix added. If name is not empty
- * but does not end with .bpmn, we'll add the suffix.
- * @param {string} name
- * @param {string} filePath
- * @param {'bpmn'|'dmn'} [suffix='bpmn']
- * @returns {`${string}.${'bpmn'|'dmn'}`}
- */
-function prepareDeploymentName(name, filePath, suffix = 'bpmn') {
-
-  try {
-    if (!name || name.length === 0) {
-      return `${path.basename(filePath, path.extname(filePath))}.${suffix}`;
-    }
-
-    if (!name.endsWith(suffix)) {
-      return `${name}.${suffix}`;
-    }
-
-  } catch (err) {
-
-    log.error('Error happened preparing deployment name: ', err);
-  }
-
-  return name;
 }
 
 function asSerializedError(error) {
