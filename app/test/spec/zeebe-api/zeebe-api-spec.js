@@ -11,8 +11,10 @@
 'use strict';
 
 const sinon = require('sinon');
+const fs = require('fs');
+const path = require('path');
 
-const ZeebeAPI = require('../../lib/zeebe-api');
+const ZeebeAPI = require('../../../lib/zeebe-api');
 
 
 describe('ZeebeAPI', function() {
@@ -1394,51 +1396,6 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should pass root certificate from flag', async () => {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = mockZeebeNode({
-        flags: {
-          get() {
-            return '/path/to/cert.pem';
-          }
-        },
-        fs: {
-          readFile() {
-            return { contents: 'CERTIFICATE' };
-          }
-        },
-        ZBClient: function(...args) {
-          usedConfig = args;
-
-          return {
-            deployProcess: noop
-          };
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: 'selfHosted',
-          url: 'https://camunda.com'
-        }
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      const { customSSL } = usedConfig[1];
-      expect(customSSL).to.exist;
-
-      const { rootCerts } = customSSL;
-      console.log(rootCerts.toString('utf8'));
-      expect(Buffer.from('CERTIFICATE').equals(rootCerts)).to.be.true;
-    });
-
-
     it('should set `useTLS` to true for https endpoint', async () => {
 
       // given
@@ -1557,6 +1514,149 @@ describe('ZeebeAPI', function() {
       // then
       expect(usedConfig[1]).to.have.property('useTLS', true);
     });
+
+
+    describe('custom certificate', () => {
+
+      function setup(certificate) {
+        const configSpy = sinon.spy();
+        const log = {
+          error: sinon.spy()
+        };
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function(...args) {
+            configSpy(...args);
+
+            return {
+              deployProcess: noop
+            };
+          },
+          flags: {
+            get() {
+              return '/path/to/cert.pem';
+            }
+          },
+          fs: {
+            readFile() {
+              return { contents: certificate };
+            }
+          },
+          log
+        });
+
+        return {
+          configSpy,
+          log,
+          zeebeAPI
+        };
+      }
+
+      function readFile(filePath) {
+        return fs.readFileSync(path.join(__dirname, filePath), 'utf8');
+      }
+
+
+      it('should pass root certificate from flag', async () => {
+
+        // given
+        const cert = readFile('./root-self-signed.pem');
+        const {
+          configSpy,
+          zeebeAPI
+        } = setup(cert);
+
+        const parameters = {
+          filePath: '/path/to/file.bpmn',
+          endpoint: {
+            type: 'selfHosted',
+            url: 'https://camunda.com'
+          }
+        };
+
+        // when
+        await zeebeAPI.deploy(parameters);
+
+        // then
+        const { customSSL } = configSpy.args[0][1];
+        expect(customSSL).to.exist;
+
+        const { rootCerts } = customSSL;
+        expect(Buffer.from(cert).equals(rootCerts)).to.be.true;
+      });
+
+
+      it('should NOT log error when root certificate is passed via flag', async () => {
+
+        // given
+        const {
+          log,
+          zeebeAPI
+        } = setup(readFile('./root-self-signed.pem'));
+
+        const parameters = {
+          filePath: '/path/to/file.bpmn',
+          endpoint: {
+            type: 'selfHosted',
+            url: 'https://camunda.com'
+          }
+        };
+
+        // when
+        await zeebeAPI.deploy(parameters);
+
+        // then
+        expect(log.error).not.to.have.been.called;
+      });
+
+
+      it('should log error when non-root certificate is passed via flag', async () => {
+
+        // given
+        const {
+          log,
+          zeebeAPI
+        } = setup(readFile('./not-root.pem'));
+
+        const parameters = {
+          filePath: '/path/to/file.bpmn',
+          endpoint: {
+            type: 'selfHosted',
+            url: 'https://camunda.com'
+          }
+        };
+
+        // when
+        await zeebeAPI.deploy(parameters);
+
+        // then
+        expect(log.error).to.have.been.calledOnceWithExactly('Custom SSL certificate is not a root certificate');
+      });
+
+
+      it('should log error when invalid certificate is passed via flag', async () => {
+
+        // given
+        const {
+          log,
+          zeebeAPI
+        } = setup('invalid');
+
+        const parameters = {
+          filePath: '/path/to/file.bpmn',
+          endpoint: {
+            type: 'selfHosted',
+            url: 'https://camunda.com'
+          }
+        };
+
+        // when
+        await zeebeAPI.deploy(parameters);
+
+        // then
+        expect(log.error).to.have.been.calledOnce;
+        expect(log.error.args[0][0].startsWith('Failed to parse custom SSL certificate')).be.true;
+      });
+    });
   });
 
 });
@@ -1582,6 +1682,9 @@ function mockZeebeNode(options = {}) {
   const flags = options.flags || {
     get: () => {}
   };
+  const log = options.log || {
+    error() {}
+  };
 
   const ZeebeNode = {
     ZBClient: options.ZBClient || function() {
@@ -1594,7 +1697,7 @@ function mockZeebeNode(options = {}) {
     }
   };
 
-  return new ZeebeAPI(fs, ZeebeNode, flags);
+  return new ZeebeAPI(fs, ZeebeNode, flags, log);
 }
 
 function noop() {}
