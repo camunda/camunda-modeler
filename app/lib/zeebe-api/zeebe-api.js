@@ -361,15 +361,11 @@ class ZeebeAPI {
     try {
       parsed = new X509Certificate(cert);
     } catch (err) {
-      this._log.error('Failed to parse custom SSL certificate:', err);
-
-      return;
+      this._log.warn('Failed to parse custom SSL certificate:', err);
     }
 
-    if (parsed.issuer !== parsed.subject) {
-      this._log.error('Custom SSL certificate is not a root certificate');
-
-      return;
+    if (parsed && parsed.issuer !== parsed.subject) {
+      this._log.warn('Custom SSL certificate appears to be not a root certificate');
     }
 
     return cert;
