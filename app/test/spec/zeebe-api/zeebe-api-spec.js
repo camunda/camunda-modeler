@@ -1521,7 +1521,8 @@ describe('ZeebeAPI', function() {
       function setup(certificate) {
         const configSpy = sinon.spy();
         const log = {
-          error: sinon.spy()
+          error: sinon.spy(),
+          warn: sinon.spy()
         };
         const zeebeAPI = mockZeebeNode({
           ZBClient: function(...args) {
@@ -1585,6 +1586,64 @@ describe('ZeebeAPI', function() {
       });
 
 
+      it('should pass certificate to zeebe even if appears non-root', async () => {
+
+        // given
+        const cert = 'invalid';
+        const {
+          configSpy,
+          zeebeAPI
+        } = setup(cert);
+
+        const parameters = {
+          filePath: '/path/to/file.bpmn',
+          endpoint: {
+            type: 'selfHosted',
+            url: 'https://camunda.com'
+          }
+        };
+
+        // when
+        await zeebeAPI.deploy(parameters);
+
+        // then
+        const { customSSL } = configSpy.args[0][1];
+        expect(customSSL).to.exist;
+
+        const { rootCerts } = customSSL;
+        expect(Buffer.from(cert).equals(rootCerts)).to.be.true;
+      });
+
+
+      it('should pass certificate to zeebe even if appears invalid', async () => {
+
+        // given
+        const cert = readFile('./not-root.pem');
+        const {
+          configSpy,
+          zeebeAPI
+        } = setup(cert);
+
+        const parameters = {
+          filePath: '/path/to/file.bpmn',
+          endpoint: {
+            type: 'selfHosted',
+            url: 'https://camunda.com'
+          }
+        };
+
+        // when
+        await zeebeAPI.deploy(parameters);
+
+        // then
+        const { customSSL } = configSpy.args[0][1];
+        expect(customSSL).to.exist;
+
+        const { rootCerts } = customSSL;
+        expect(Buffer.from(cert).equals(rootCerts)).to.be.true;
+      });
+
+
       it('should NOT log error when root certificate is passed via flag', async () => {
 
         // given
@@ -1605,11 +1664,12 @@ describe('ZeebeAPI', function() {
         await zeebeAPI.deploy(parameters);
 
         // then
+        expect(log.warn).not.to.have.been.called;
         expect(log.error).not.to.have.been.called;
       });
 
 
-      it('should log error when non-root certificate is passed via flag', async () => {
+      it('should log warning when non-root certificate is passed via flag', async () => {
 
         // given
         const {
@@ -1629,11 +1689,11 @@ describe('ZeebeAPI', function() {
         await zeebeAPI.deploy(parameters);
 
         // then
-        expect(log.error).to.have.been.calledOnceWithExactly('Custom SSL certificate is not a root certificate');
+        expect(log.warn).to.have.been.calledOnceWithExactly('Custom SSL certificate appears to be not a root certificate');
       });
 
 
-      it('should log error when invalid certificate is passed via flag', async () => {
+      it('should log warn when invalid certificate is passed via flag', async () => {
 
         // given
         const {
@@ -1653,8 +1713,8 @@ describe('ZeebeAPI', function() {
         await zeebeAPI.deploy(parameters);
 
         // then
-        expect(log.error).to.have.been.calledOnce;
-        expect(log.error.args[0][0].startsWith('Failed to parse custom SSL certificate')).be.true;
+        expect(log.warn).to.have.been.calledOnce;
+        expect(log.warn.args[0][0].startsWith('Failed to parse custom SSL certificate')).be.true;
       });
     });
   });
