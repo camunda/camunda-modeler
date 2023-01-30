@@ -6,8 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `DEPS`: update to `camunda-bpmn-js@1.1.2`
-* `DEPS`: update to `bpmn-js-properties-panel@1.15.1`
+* `DEPS`: update to `camunda-bpmn-js@1.2.0`
+* `DEPS`: update to `bpmn-js-properties-panel@1.16.0`
+* `DEPS`: update to `@camunda/linting@0.14.0`
 
 ### Key changes in Properties Panel
 
