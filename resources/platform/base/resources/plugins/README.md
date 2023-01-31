@@ -2,7 +2,6 @@
 
 Place plugins into this directory to extend the Camunda Modeler.
 
-
 ## Learn More
 
 * [Example Plugins](https://github.com/camunda/camunda-modeler-plugins)

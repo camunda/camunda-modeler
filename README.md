@@ -6,7 +6,6 @@ An integrated modeling solution for BPMN, DMN, and Forms based on [bpmn.io](http
 
 ![Camunda Modeler](resources/screenshot.png)
 
-
 ## Resources
 
 * [Changelog](./CHANGELOG.md)
@@ -14,7 +13,6 @@ An integrated modeling solution for BPMN, DMN, and Forms based on [bpmn.io](http
 * [Give Feedback](https://forum.camunda.io/c/modeler/)
 * [Report a Bug](https://github.com/camunda/camunda-modeler/issues)
 * [User Documentation](https://docs.camunda.io/docs/components/modeler/desktop-modeler/)
-
 
 ## Building the Application
 
@@ -34,26 +32,22 @@ npm run all
 npm run build
 ```
 
-
 ### Development Setup
 
 Spin up the application for development, all strings attached:
 
-```
+```sh
 npm run dev
 ```
-
 
 ## Contributing
 
 Please checkout our [contributing guidelines](./.github/CONTRIBUTING.md) if you plan to
 file an issue or pull request.
 
-
 ## Code of Conduct
 
 By participating to this project, please uphold to our [Code of Conduct](https://github.com/camunda/.github/blob/main/.github/CODE_OF_CONDUCT.md).
-
 
 ## License
 
