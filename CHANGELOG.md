@@ -12,8 +12,8 @@ ___Note:__ Yet to be released changes appear here._
 
 ### Key changes in Properties Panel
 
-* `FIX`: serialize templated properties in stable order ([bpmn-js-properties-panel#838](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/838))
-* `FIX`: do not sort IO mappings alphabetically ([bpmn-js-properties-panel#845](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/845), [bpmn-js-properties-panel#843](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/843))
+* `FIX`: serialize templated properties in stable order ([bpmn-io/bpmn-js-properties-panel#838](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/838))
+* `FIX`: do not sort IO mappings alphabetically ([bpmn-io/bpmn-js-properties-panel#845](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/845), [bpmn-io/bpmn-js-properties-panel#843](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/843))
 
 ### Key changes in BPMN
 
@@ -109,7 +109,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: integrate forms playground ([#3178](https://github.com/camunda/camunda-modeler/pull/3178))
 * `DEPS`: bump form-js to v0.9.9 ([#3178](https://github.com/camunda/camunda-modeler/pull/3178))
-* `DEPS`: add @camunda/form-playground ([#3178](https://github.com/camunda/camunda-modeler/pull/3178))
+* `DEPS`: add [__@camunda/form-playground__](https://github.com/camunda/form-playground) ([#3178](https://github.com/camunda/camunda-modeler/pull/3178))
 
 ## 5.4.2
 
@@ -193,10 +193,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: restore focus after modal and overlay close ([#2942](https://github.com/camunda/camunda-modeler/issues/2942))
 * `FIX`: properly highlight selected text in XML editor ([#2923](https://github.com/camunda/camunda-modeler/issues/2923))
 * `FIX`: remove user path from Mixpanel tracking ([#3105](https://github.com/camunda/camunda-modeler/pull/3105))
-* `DEPS`: bump @camunda/linting to v0.5.0 ([#3118](https://github.com/camunda/camunda-modeler/pull/3118))
+* `DEPS`: bump [__@camunda/linting__](https://github.com/camunda/linting) to v0.5.0 ([#3118](https://github.com/camunda/camunda-modeler/pull/3118))
 * `DEPS`: bump codemirror to v6.0.1 ([#3103](https://github.com/camunda/camunda-modeler/pull/3103))
 * `DEPS`: bump diagram-js to v8.9.0 ([#3113](https://github.com/camunda/camunda-modeler/pull/3113))
-* `DEPS`: bump @bpmn-io/properties-panel to v0.20.1 ([#3120](https://github.com/camunda/camunda-modeler/pull/3120))
+* `DEPS`: bump [__@bpmn-io/properties-panel__](https://github.com/bpmn-io/properties-panel) to v0.20.1 ([#3120](https://github.com/camunda/camunda-modeler/pull/3120))
 
 ### BPMN
 
@@ -233,12 +233,11 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: fix error panel styles ([#3015](https://github.com/camunda/camunda-modeler/pull/3015))
 * `FIX`: load modeling styles globally ([#3031](https://github.com/camunda/camunda-modeler/pull/3031))
 * `FIX`: fix PNG export on DRD diagrams ([#3068](https://github.com/camunda/camunda-modeler/issues/3068))
-* `DEPS`: bump @camunda/linting to v0.3.4 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
+* `DEPS`: bump [__@camunda/linting__](https://github.com/camunda/linting) to v0.3.4 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
 * `DEPS`: bump diagram-js to v8.7.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
 * `DEPS`: bump diagram-js-direct-editing to v1.7.0 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
 * `DEPS`: bump diagram-js-origin to v1.3.3 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
 * `DEPS`: bump min-dom to v3.2.1 ([#3065](https://github.com/camunda/camunda-modeler/pull/3065))
-
 
 ### BPMN
 
@@ -260,7 +259,7 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 
 * `CHORE`: mask non-boolean flag values for ping event ([#2963](https://github.com/camunda/camunda-modeler/pull/2963))
 * `CHORE`: track set flags via ping event ([#2963](https://github.com/camunda/camunda-modeler/pull/2963))
-* `CHORE`: use @camunda/linting ([#2976](https://github.com/camunda/camunda-modeler/pull/2976))
+* `CHORE`: use [__@camunda/linting__](https://github.com/camunda/linting) ([#2976](https://github.com/camunda/camunda-modeler/pull/2976))
 * `CHORE`: implement mixpanel telemetry ([#2934](https://github.com/camunda/camunda-modeler/issues/2934))
 * `FIX`: debounced input fields no longer lose their values ([#2990](https://github.com/camunda/camunda-modeler/issues/2990))
 * `FIX`: always write file when save is triggered ([#2925](https://github.com/camunda/camunda-modeler/issues/2925))
@@ -274,7 +273,7 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 * `FIX`: improved file dialogs to match OS defaults ([#2300](https://github.com/camunda/camunda-modeler/issues/2300), [#2971](https://github.com/camunda/camunda-modeler/pull/2971))
 * `FIX`: reorder close file dialog buttons to match convention ([#2895](https://github.com/camunda/camunda-modeler/pull/2895))
 * `CHORE`: configure process env for mixpanel ([#2941](https://github.com/camunda/camunda-modeler/pull/2941))
-* `CHORE`: removed 'new' badge for C8 ([#2953](https://github.com/camunda/camunda-modeler/issues/2953))
+* `CHORE`: removed "new" badge for C8 ([#2953](https://github.com/camunda/camunda-modeler/issues/2953))
 * `DEPS`: bump electron to 19.0.6 ([#2998](https://github.com/camunda/camunda-modeler/pull/2998), [#3004](https://github.com/camunda/camunda-modeler/pull/3004))
 * `DEPS`: bump properties-panel to 1.2.0 ([bc8b74870](https://github.com/camunda/camunda-modeler/commit/bc8b74870))
 * `DEPS`: bump diagram-js to 8.7.0 ([bc8b74870](https://github.com/camunda/camunda-modeler/commit/bc8b74870))
@@ -310,10 +309,9 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 * `DEPS`: bump camunda-dmn-js to 0.5.0 ([#3019](https://github.com/camunda/camunda-modeler/pull/3019))
 * `DEPS`: bump dmn-js-properties-panel to 1.1.0 ([#3019](https://github.com/camunda/camunda-modeler/pull/3019))
 
-
 ### Forms
 
-* `FIX`: textfield 'regularExpressionPattern' now correctly sets 'pattern' in the form definition ([#2919](https://github.com/camunda/camunda-modeler/issues/2919))
+* `FIX`: textfield "regularExpressionPattern" now correctly sets "pattern" in the form definition ([#2919](https://github.com/camunda/camunda-modeler/issues/2919))
 * `DEPS`: bump form-js from 0.7.0 to 0.7.2 ([15aed67091](https://github.com/camunda/camunda-modeler/commit/15aed67091))
 
 ## 5.0.0
@@ -351,7 +349,7 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 * `FIX`: show properties-panel icon for ad-hoc subProcess ([#2749](https://github.com/camunda/camunda-modeler/issues/2749))
 * `FIX`: make labels for formType selection in properties panel easier to understand ([#2496](https://github.com/camunda/camunda-modeler/issues/2496))
 * `FIX`: avoid error in deployPlugin when file menu is used ([#2762](https://github.com/camunda/camunda-modeler/issues/2762))
-* `FIX`: allow copy&paste of linting errors on MacOS ([#2716](https://github.com/camunda/camunda-modeler/issues/2716))
+* `FIX`: allow copy\&paste of linting errors on MacOS ([#2716](https://github.com/camunda/camunda-modeler/issues/2716))
 * `FIX`: correctly show color icons in edit > color menu ([#2733](https://github.com/camunda/camunda-modeler/issues/2733))
 * `FIX`: show variableName and variableEvents for Conditional Events ([#2866](https://github.com/camunda/camunda-modeler/issues/2866))
 * `FIX`: correctly persist Message End Events with external task configuration to XML ([#2865](https://github.com/camunda/camunda-modeler/issues/2865))
@@ -373,7 +371,7 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 
 ### Forms
 
-* `DEPS`: bump to form-js@0.7.0 ([`3a20df`](https://github.com/camunda/camunda-modeler/commit/3a20df7a61d4fa498e250c8ae31ebc62b51a50f5))
+* `DEPS`: bump to form-js\@0.7.0 ([`3a20df`](https://github.com/camunda/camunda-modeler/commit/3a20df7a61d4fa498e250c8ae31ebc62b51a50f5))
 
 ### Breaking Changes
 
@@ -382,6 +380,7 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 ## 5.0.0-alpha.1
 
 ### BPMN
+
 * `FEAT`: support drilldown into subprocesses ([#1443](https://github.com/bpmn-io/bpmn-js/issues/1443))
 * `FEAT`: support linting in platform diagrams ([#2625](https://github.com/camunda/camunda-modeler/issues/2625))
 * `FEAT`: track userTask formRef usage ([#2737](https://github.com/camunda/camunda-modeler/pull/2737))
@@ -423,7 +422,7 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 * `FEAT`: use overlay for deploy and start instance tools ([#2489](https://github.com/camunda/camunda-modeler/issues/2489))
 * `FIX`: do not display compensation SubProcess in the list of activities to be compensated ([#2397](https://github.com/camunda/camunda-modeler/issues/2397))
 * `FIX`: rename "Target" to "Called element" for Camunda Cloud Call Activity ([#2586](https://github.com/camunda/camunda-modeler/issues/2586))
-* `FIX`: keep properties panel updated when root changes ([[#2374](https://github.com/camunda/camunda-modeler/issues/2374))
+* `FIX`: keep properties panel updated when root changes ([#2374](https://github.com/camunda/camunda-modeler/issues/2374))
 * `FIX`: set correct attributes when coloring connections ([#2599](https://github.com/camunda/camunda-modeler/issues/2599))
 * `FIX`: show proper tooltip on start instance tool ([#2429](https://github.com/camunda/camunda-modeler/issues/2429))
 * `DEPS`: update to `bpmn-js@8.9.1`
@@ -471,6 +470,7 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 * `FIX`: link to correct timer event documentation ([#2413](https://github.com/camunda/camunda-modeler/issues/2413))
 
 ### BPMN
+
 * `FEAT`: allow Form reference bindings for User Tasks and Start Events ([#2295](https://github.com/camunda/camunda-modeler/issues/2295))
 * `FIX`: allow deployment to Camunda Platform version 7.8.0 and below ([#2340](https://github.com/camunda/camunda-modeler/issues/2340))
 
@@ -552,8 +552,8 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 * `FIX`: set minimum window size ([#2235](https://github.com/camunda/camunda-modeler/pull/2235))
 * `FIX`: fix deployments of DMN to Camunda Platform ([#2241](https://github.com/camunda/camunda-modeler/issues/2241))
 * `FIX`: fix error that appears when starting process instance ([#2249](https://github.com/camunda/camunda-modeler/issues/2249))
-* `CHORE`: update to electron@12 ([#1926](https://github.com/camunda/camunda-modeler/issues/1926))
-* `CHORE`: update to zeebe-node@1.0.0 ([#2169](https://github.com/camunda/camunda-modeler/issues/2169))
+* `CHORE`: update to electron\@12 ([#1926](https://github.com/camunda/camunda-modeler/issues/1926))
+* `CHORE`: update to zeebe-node\@1.0.0 ([#2169](https://github.com/camunda/camunda-modeler/issues/2169))
 
 ### BPMN
 
@@ -958,27 +958,21 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 #### BPMN
 
 * `FEAT`: connecting and re-connecting shapes is now possible in both directions ([#1230](https://github.com/bpmn-io/bpmn-js/pull/1230))
-* `FIX`: render colored BPMN groups ([#1246](https://github.com/bpmn-io/bpmn-js/pull/1246))
-
-### Breaking Changes
-
 * `FEAT`: disable collapsing sub process ([`a2c008d0`](https://github.com/camunda/camunda-modeler/commit/a2c008d09effe200c857ec36a20889ae4dde598a))
+* `FIX`: render colored BPMN groups ([#1246](https://github.com/bpmn-io/bpmn-js/pull/1246))
 
 #### DMN
 
 * `FEAT(decision-table)`: preserve aggregation when COLLECT is selected again
 * `FEAT(decision-table)`: allow aggreation to be cleared from dropdown ([#370](https://github.com/bpmn-io/dmn-js/issues/370), [#389](https://github.com/bpmn-io/dmn-js/issues/389))
 * `FEAT(decision-table)`: use JUEL as the default input expression language ([#405](https://github.com/bpmn-io/dmn-js/issues/405))
+* `FEAT(decision-table)`: only allow standardized hit policy values
 * `FIX(decision-table)`: correctly handle value erasing ([#826](https://github.com/camunda/camunda-modeler/issues/826))
 * `FIX(decision-table)`: correctly display simple mode edit control when cell selection changes ([#341](https://github.com/bpmn-io/dmn-js/issues/341))
 * `FIX(decision-table)`: do not close input on user selection ([#421](https://github.com/bpmn-io/dmn-js/issues/421))
 * `FIX(decision-table)`: do not navigate when clearing pre-defined hints ([#431](https://github.com/bpmn-io/dmn-js/issues/431))
 * `FIX(decision-table)`: prevent context menu jump in larger tables
 * `FIX(decision-table)`: do not close context on user selection
-
-### Breaking Changes
-
-* `FEAT(decision-table)`: only allow standardized hit policy values
 
 ## 3.4.1
 
@@ -1012,11 +1006,11 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 
 * `FEAT`: add extension point for UI plugins ([#1490](https://github.com/camunda/camunda-modeler/issues/1490))
 * Introduce several application events to hook into:
-    * <tab.saved> ([#1498](https://github.com/camunda/camunda-modeler/pull/1498))
-    * <tab.activeSheetChanged> ([`403afc`](https://github.com/camunda/camunda-modeler/commit/403afc920cf6c745816c3cd456baeb99830b25ed))
-    * <app.activeTabChanged> ([`403afc`](https://github.com/camunda/camunda-modeler/commit/403afc920cf6c745816c3cd456baeb99830b25ed))
-    * <bpmn.modeler.configure> ([#1499](https://github.com/camunda/camunda-modeler/issues/1499))
-    * <bpmn.modeler.created> ([#1500](https://github.com/camunda/camunda-modeler/issues/1500))
+  * \<tab.saved> ([#1498](https://github.com/camunda/camunda-modeler/pull/1498))
+  * \<tab.activeSheetChanged> ([`403afc`](https://github.com/camunda/camunda-modeler/commit/403afc920cf6c745816c3cd456baeb99830b25ed))
+  * \<app.activeTabChanged> ([`403afc`](https://github.com/camunda/camunda-modeler/commit/403afc920cf6c745816c3cd456baeb99830b25ed))
+  * \<bpmn.modeler.configure> ([#1499](https://github.com/camunda/camunda-modeler/issues/1499))
+  * \<bpmn.modeler.created> ([#1500](https://github.com/camunda/camunda-modeler/issues/1500))
 
 ## 3.3.5
 
@@ -1164,7 +1158,7 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 * `FEAT`: restore _Diagram opened with warnings_ hint ([#1177](https://github.com/camunda/camunda-modeler/issues/1177))
 * `FEAT`: add simple way to restart editor without plug-ins ([#1253](https://github.com/camunda/camunda-modeler/issues/1253))
 * `CHORE`: add license headers to all source files ([#1231](https://github.com/camunda/camunda-modeler/issues/1231))
-* `CHORE`: add THIRD_PARTY_NOTICES ([#1233](https://github.com/camunda/camunda-modeler/issues/1233))
+* `CHORE`: add THIRD\_PARTY\_NOTICES ([#1233](https://github.com/camunda/camunda-modeler/issues/1233))
 * `FIX`: only show plug-ins menu if plug-ins are registered ([#1239](https://github.com/camunda/camunda-modeler/issues/1239))
 * `FIX`: restore menu state backwards compatibility ([#1193](https://github.com/camunda/camunda-modeler/issues/1193))
 * `FIX`: disable _reopen last tab_ menu button when there is no last tab ([#1173](https://github.com/camunda/camunda-modeler/issues/1173))
@@ -1247,15 +1241,12 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 * `CHORE`: deprecate global plug-in helpers in favor of logical paths ([`1de7af5a`](https://github.com/camunda/camunda-modeler/commit/1de7af5a89704715648ec2f3728a2ac4da660661))
 * `FIX`: give plug-ins stored in `{userData}` access to local assets ([#1135](https://github.com/camunda/camunda-modeler/issues/1135))
 
-
 ### Breaking Changes
 
 * The global plug-in helper `getPluginPaths()` did not work reliably and got deprecated. Use logical paths of the form `app-plugins://{pluginName}/{pathToResource}` to reference static plug-in assets ([`1de7af5a`](https://github.com/camunda/camunda-modeler/commit/1de7af5a89704715648ec2f3728a2ac4da660661)).
 * The global plug-in helper `getModelerPath()` was removed without replacement ([`1de7af5a`](https://github.com/camunda/camunda-modeler/commit/1de7af5a89704715648ec2f3728a2ac4da660661)).
 * Rewriting the modeler changed most CSS selectors outside the actual diagram editors / properties panels. This may break plug-ins that monkey patch the application styles.
 * To improve compatibility with external tools, we now prevent negative coordinates by aligning to `(0,0)` on diagram save. This results in slightly more noise in actual file changes ([#1096](https://github.com/camunda/camunda-modeler/issues/1096)).
-
-
 
 ## 3.0.0-0
 
@@ -1415,7 +1406,6 @@ _This is a pre-release_.
 * `FEAT`: snap `bpmn:Event` to center when creating message flows ([#887](https://github.com/camunda/camunda-modeler/issues/887))
 * `FIX`: prevent error dragging label onto `bpmn:MessageFlow` ([#888](https://github.com/camunda/camunda-modeler/issues/888))
 * `FIX`: round coordinates when dragging elements ([#886](https://github.com/camunda/camunda-modeler/issues/886))
-
 
 ## 2.0.0-2
 
