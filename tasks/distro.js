@@ -44,10 +44,10 @@ const version = (onDemand || nightly) && getVersion(pkg, {
 if (version) {
 
   const lernaPublishArgs = [
-    'publish',
-    `--repo-version=${version}`,
-    '--skip-npm',
-    '--skip-git',
+    'version',
+    `${version}`,
+    '--no-git-tag-version',
+    '--no-push',
     '--yes'
   ];
 
