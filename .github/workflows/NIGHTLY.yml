@@ -6,7 +6,18 @@ jobs:
   Build_nightly:
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-11, windows-2019 ]
+        include:
+        - os: ubuntu-latest
+          files:
+          - 'dist/camunda-modeler-nightly-linux-x64.tar.gz'
+        - os: macos-11
+          files:
+          - 'dist/camunda-modeler-nightly-mac.dmg'
+          - 'dist/camunda-modeler-nightly-mac.zip'
+        - os: windows-2019
+          files:
+          - 'dist/camunda-modeler-nightly-win-ia32.zip'
+          - 'dist/camunda-modeler-nightly-win-x64.zip'
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -23,10 +34,6 @@ jobs:
     - name: Build nightly (Linux)
       if: ${{ runner.os == 'Linux' }}
       env:
-        AWS_ACCESS_KEY_ID: "${{ secrets.AWS_NIGHTLY_ACCESS_KEY_ID }}"
-        AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_NIGHTLY_SECRET_ACCESS_KEY }}"
-        AWS_REGION: "${{ secrets.AWS_NIGHTLY_REGION }}"
-        AWS_BUCKET: "${{ secrets.AWS_NIGHTLY_BUCKET }}"
         CSC_LINK: "${{ secrets.CSC_LINK }}"
         CSC_KEY_PASSWORD: "${{ secrets.CSC_KEY_PASSWORD }}"
         ET_ENDPOINT: "${{ secrets.ET_ENDPOINT }}"
@@ -37,15 +44,11 @@ jobs:
         SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
-      run: npm run build -- --linux --publish --nightly
+      run: npm run build -- --linux --nightly
 
     - name: Build nightly (MacOS)
       if: ${{ runner.os == 'macOS' }}
       env:
-        AWS_ACCESS_KEY_ID: "${{ secrets.AWS_NIGHTLY_ACCESS_KEY_ID }}"
-        AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_NIGHTLY_SECRET_ACCESS_KEY }}"
-        AWS_REGION: "${{ secrets.AWS_NIGHTLY_REGION }}"
-        AWS_BUCKET: "${{ secrets.AWS_NIGHTLY_BUCKET }}"
         APPLE_DEVELOPER_ID: "${{ secrets.APPLE_DEVELOPER_ID }}"
         APPLE_DEVELOPER_ID_PASSWORD: "${{ secrets.APPLE_DEVELOPER_ID_PASSWORD }}"
         CSC_LINK: "${{ secrets.CSC_LINK }}"
@@ -58,15 +61,11 @@ jobs:
         SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
-      run: npm run build -- --mac --publish --nightly
+      run: npm run build -- --mac --nightly
 
     - name: Build nightly (Windows)
       if: ${{ runner.os == 'Windows' }}
       env:
-        AWS_ACCESS_KEY_ID: "${{ secrets.AWS_NIGHTLY_ACCESS_KEY_ID }}"
-        AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_NIGHTLY_SECRET_ACCESS_KEY }}"
-        AWS_REGION: "${{ secrets.AWS_NIGHTLY_REGION }}"
-        AWS_BUCKET: "${{ secrets.AWS_NIGHTLY_BUCKET }}"
         CSC_LINK: "${{ secrets.WIN_CSC_LINK }}"
         CSC_KEY_PASSWORD: "${{ secrets.WIN_CSC_KEY_PASSWORD }}"
         ET_ENDPOINT: "${{ secrets.ET_ENDPOINT }}"
@@ -77,7 +76,26 @@ jobs:
         SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
-      run: npm run build -- --win --publish --nightly
+      run: npm run build -- --win --nightly
+
+    - name: Import Secrets
+      id: secrets
+      uses: hashicorp/vault-action@v2.4.3
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/common/jenkins/downloads-camunda-cloud_google_sa_key DOWNLOAD_CENTER_GCLOUD_KEY_BYTES | GCP_CREDENTIALS_NAME;
+    - name: Upload artifact to Camunda Download Center
+      uses: camunda/infra-global-github-actions/download-center-upload@109b674585a8988a798b099cb7099619c5057b24
+      with:
+        gcp_credentials: ${{ steps.secrets.outputs.GCP_CREDENTIALS_NAME }}
+        env: 'prod'
+        artifact_subpath: 'nightly'
+        artifact_file: "${{ join(matrix.files, ' ') }}"
 
   Post-Failure:
     needs: Build_nightly

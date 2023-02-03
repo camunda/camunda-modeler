@@ -96,7 +96,7 @@ const platforms = [
 
 const platformOptions = platforms.map(p => `--${p}`);
 
-const publishOptions = getPublishOptions(publish, nightly, onDemand);
+const publishOptions = getPublishOptions(publish, onDemand);
 
 const signingOptions = [
   `-c.forceCodeSigning=${false}`
@@ -147,8 +147,8 @@ exec('electron-builder', args, {
   stdio: 'inherit'
 });
 
-function getPublishOptions(publish, nightly, onDemand) {
-  if (nightly || onDemand) {
+function getPublishOptions(publish, onDemand) {
+  if (onDemand) {
     const bucket = process.env.AWS_BUCKET;
 
     // region has to be set explicitly to avoid permissions problems
