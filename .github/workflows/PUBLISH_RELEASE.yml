@@ -1,0 +1,49 @@
+name: 'Publish release'
+on:
+  release:
+    types:
+    - released
+jobs:
+  Publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Retrieve version
+      id: retrieveVersion
+      run: echo "version=$(echo ${{ github.event.release.name }} | cut -c 2-)" >> $GITHUB_OUTPUT
+    - name: Download release artifacts
+      run: |
+        mkdir artifacts
+        echo ${{ github.event.release.assets.*.browser_download_url }} | jq '.[]' | xargs wget --directory-prefix artifacts
+
+    - name: Import Secrets
+      id: secrets
+      uses: hashicorp/vault-action@v2.4.3
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/common/jenkins/downloads-camunda-cloud_google_sa_key DOWNLOAD_CENTER_GCLOUD_KEY_BYTES | GCP_CREDENTIALS_NAME;
+    - name: Upload artifacts to Camunda Download Center
+      uses: camunda/infra-global-github-actions/download-center-upload@109b674585a8988a798b099cb7099619c5057b24
+      with:
+        gcp_credentials: ${{ steps.secrets.outputs.GCP_CREDENTIALS_NAME }}
+        env: 'prod'
+        version: ${{ steps.retrieveVersion.version }}
+        artifact_file: 'artifacts/*'
+
+  Post-Failure:
+    needs: Publish
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+    - name: Post to a Slack channel
+      uses: slackapi/slack-github-action@v1.15.0
+      with:
+        channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+        slack-message: "Failed to upload release. <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to the build.>"
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
