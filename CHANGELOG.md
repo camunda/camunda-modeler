@@ -6,6 +6,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: correctly deploy to Zeebe when extension missing in deployment name ([#3432](https://github.com/camunda/camunda-modeler/pull/3432))
 * `DEPS`: update to `camunda-bpmn-js@1.3.0`
 * `DEPS`: update to `bpmn-js@11.3.0`
 * `DEPS`: update to `bpmn-js-properties-panel@1.17.1`
