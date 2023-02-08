@@ -6,37 +6,49 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.8.0
+
+### General
+
 * `FIX`: correctly deploy to Zeebe when extension missing in deployment name ([#3432](https://github.com/camunda/camunda-modeler/pull/3432))
-* `DEPS`: update to `camunda-bpmn-js@1.3.0`
-* `DEPS`: update to `bpmn-js@11.3.0`
-* `DEPS`: update to `bpmn-js-properties-panel@1.17.1`
-* `DEPS`: update to `@camunda/linting@0.14.0`
-* `DEPS`: update to `camunda-dmn-js@0.9.0`
-* `DEPS`: update to `dmn-js@14.1.0`
+* `FIX`: correct reload shortcut ([#3390](https://github.com/camunda/camunda-modeler/issues/3390))
+* `CHORE`: log potentially invalid custom SSL certificates ([#3411](https://github.com/camunda/camunda-modeler/pull/3411), [#3415](https://github.com/camunda/camunda-modeler/pull/3415))
+* `DEPS`: update to `zeebe-node@8.1.5` ([#3431](https://github.com/camunda/camunda-modeler/pull/3431))
 
-### Key changes in Properties Panel
-
-* `FEAT`: Camunda 8 template properties can have `language` property ([bpmn-js-properties-panel#869](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/869))
-* `FEAT`: Camunda 8 template properties of type `Text` are resizable text areas ([bpmn-js-properties-panel#870](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/870))
-* `FIX`: serialize templated properties in stable order ([bpmn-io/bpmn-js-properties-panel#838](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/838))
-* `FIX`: do not sort IO mappings alphabetically ([bpmn-io/bpmn-js-properties-panel#845](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/845), [bpmn-io/bpmn-js-properties-panel#843](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/843))
-
-### Key changes in BPMN
+### BPMN
 
 * `FEAT`: feature `service` and `user` tasks more prominently in replace menu ([#1836](https://github.com/bpmn-io/bpmn-js/pull/1836))
-* `FEAT`: hide rare items initially from create/append menus ([#1836](https://github.com/bpmn-io/bpmn-js/pull/1836))
-* `FEAT`: retrieve instantiation modules with context ([#1835](https://github.com/bpmn-io/bpmn-js/pull/1835))
-* `FEAT`: append menu available via context pad ([#1802](https://github.com/bpmn-io/bpmn-js/pull/1802), [#1809](https://github.com/bpmn-io/bpmn-js/pull/1809), [#1815](https://github.com/bpmn-io/bpmn-js/pull/1815), [#1818](https://github.com/bpmn-io/bpmn-js/pull/1818), [#1831](https://github.com/bpmn-io/bpmn-js/pull/1831))
-* `FEAT`: create menu available via palette ([#1811](https://github.com/bpmn-io/bpmn-js/pull/1811), [#1809](https://github.com/bpmn-io/bpmn-js/pull/1809), [#1817](https://github.com/bpmn-io/bpmn-js/pull/1817))
-* `FEAT`: simplify connection-multi icon ([#1822](https://github.com/bpmn-io/bpmn-js/pull/1822))
+* `FEAT`: integrate create + append anything ([#1802](https://github.com/bpmn-io/bpmn-js/pull/1802), [#1809](https://github.com/bpmn-io/bpmn-js/pull/1809), [#1815](https://github.com/bpmn-io/bpmn-js/pull/1815), [#1818](https://github.com/bpmn-io/bpmn-js/pull/1818), [#1831](https://github.com/bpmn-io/bpmn-js/pull/1831), [#1811](https://github.com/bpmn-io/bpmn-js/pull/1811), [#1809](https://github.com/bpmn-io/bpmn-js/pull/1809), [#1817](https://github.com/bpmn-io/bpmn-js/pull/1817))
+* `FEAT`: simplify connection-multi icon ([#1822](https://github.com/bpmn-io/bpmn-js/pull/1822), [#2282](https://github.com/camunda/camunda-modeler/issues/2282))
 * `FEAT`: join paths `round` by default ([1827](https://github.com/bpmn-io/bpmn-js/pull/1827))
 * `FEAT`: improved BPMN symbol rendering ([#1830](https://github.com/bpmn-io/bpmn-js/pull/1830))
 * `FEAT`: round connection corners ([#1828](https://github.com/bpmn-io/bpmn-js/pull/1828))
-* `FEAT`: validate error code as FEEL expression ([#3319](https://github.com/camunda/camunda-modeler/issues/3319))
+* `FEAT`: support `FEEL` expressions in C8 error throw events ([#3319](https://github.com/camunda/camunda-modeler/issues/3319))
+* `FEAT`: support C8 escalation events ([#3318](https://github.com/camunda/camunda-modeler/issues/3318))
+* `FEAT`: improve editor support in C8 element templates for non `FEEL` languages ([bpmn-io/bpmn-js-properties-panel#858](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/858))
+* `FEAT`: autoresize `name` element in properties panel ([bpmn-io/bpmn-js-properties-panel#705](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/705))
+* `FIX`: serialize C8 templated properties in stable order ([bpmn-io/bpmn-js-properties-panel#838](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/838))
+* `FIX`: sort technical bindings in XML order ([bpmn-io/bpmn-js-properties-panel#845](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/845), [bpmn-io/bpmn-js-properties-panel#843](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/843), [#3400](https://github.com/camunda/camunda-modeler/issues/3400))
+* `FIX`: allow deletion of C8 extension properties on participant ([#3417](https://github.com/camunda/camunda-modeler/issues/3417))
+* `FIX`: allow C8 extension properties on all elements ([#3365](https://github.com/camunda/camunda-modeler/issues/3365))
+* `FIX`: correctly reset error when setting `Message#correlationKey` ([#3392](https://github.com/camunda/camunda-modeler/issues/3392))
+* `DEPS`: update to `camunda-bpmn-js@1.3.1`
+* `DEPS`: update to `bpmn-js@11.3.0`
+* `DEPS`: update to `bpmn-js-properties-panel@1.17.1`
+* `DEPS`: update to `@camunda/linting@0.14.0`
 
-### Key changes in DMN
+### DMN
 
-* `FEAT`: set decision table header as title
+* `FEAT`: set decision table header as title ([bpmn-io/dmn-js#719](https://github.com/bpmn-io/dmn-js/issues/719))
+* `DEPS`: update to `camunda-dmn-js@0.9.0`
+* `DEPS`: update to `dmn-js@14.1.0`
+
+### Forms
+
+* `FEAT`: add scalable palette component ([bpmn-io/form-js#503](https://github.com/bpmn-io/form-js/issues/503))
+* `FEAT`: support searchable selects ([bpmn-io/form-js#381](https://github.com/bpmn-io/form-js/issues/381))
+* `FIX`: correct various minor editing bugs ([#3382](https://github.com/camunda/camunda-modeler/issues/3382), [#3379](https://github.com/camunda/camunda-modeler/issues/3379), [#3383](https://github.com/camunda/camunda-modeler/issues/3383), [#3384](https://github.com/camunda/camunda-modeler/issues/3384), [#3381](https://github.com/camunda/camunda-modeler/issues/3381), [#3380](https://github.com/camunda/camunda-modeler/issues/3380), [#3274](https://github.com/camunda/camunda-modeler/issues/3274))
+* `DEPS`: update to [`form-js@0.12.1`](https://github.com/bpmn-io/form-js/blob/develop/packages/form-js/CHANGELOG.md#0120)
 
 ## 5.7.0
 
