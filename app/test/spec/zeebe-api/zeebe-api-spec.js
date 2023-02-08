@@ -801,6 +801,36 @@ describe('ZeebeAPI', function() {
     });
 
 
+    it('should add bpmn extension if name ends with bpmn without extension', async () => {
+
+      // given
+      const deployProcessSpy = sinon.spy();
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function() {
+          return {
+            deployProcess: deployProcessSpy,
+          };
+        }
+      });
+
+      // when
+      await zeebeAPI.deploy({
+        filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
+        name: 'orchestrae-location-check-bpmn',
+        endpoint: {
+          type: 'selfHosted',
+          url: 'testURL'
+        }
+      });
+
+      const { args } = deployProcessSpy.getCall(0);
+
+      // then
+      expect(args[0].name).to.eql('orchestrae-location-check-bpmn.bpmn');
+    });
+
+
     it('should add dmn suffix if extension is other than dmn and diagramType=dmn', async () => {
 
       // given
@@ -829,6 +859,37 @@ describe('ZeebeAPI', function() {
 
       // then
       expect(args[0].name).to.eql('xmlFile.dmn');
+    });
+
+
+    it('should add dmn extension if name ends with dmn without extension', async () => {
+
+      // given
+      const deployProcessSpy = sinon.spy();
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function() {
+          return {
+            deployProcess: deployProcessSpy,
+          };
+        }
+      });
+
+      // when
+      await zeebeAPI.deploy({
+        filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
+        name: 'orchestrae-location-check-dmn',
+        endpoint: {
+          type: 'selfHosted',
+          url: 'testURL'
+        },
+        diagramType: 'dmn'
+      });
+
+      const { args } = deployProcessSpy.getCall(0);
+
+      // then
+      expect(args[0].name).to.eql('orchestrae-location-check-dmn.dmn');
     });
 
   });

@@ -379,18 +379,20 @@ class ZeebeAPI {
    * but does not end with .bpmn, we'll add the suffix.
    * @param {string} name
    * @param {string} filePath
-   * @param {'bpmn'|'dmn'} [suffix='bpmn']
+   * @param {'bpmn'|'dmn'} [fileType='bpmn']
    * @returns {`${string}.${'bpmn'|'dmn'}`}
    */
-  _prepareDeploymentName(name, filePath, suffix = 'bpmn') {
+  _prepareDeploymentName(name, filePath, fileType = 'bpmn') {
+
+    const extension = `.${fileType}`;
 
     try {
       if (!name || name.length === 0) {
-        return `${path.basename(filePath, path.extname(filePath))}.${suffix}`;
+        return `${path.basename(filePath, path.extname(filePath))}${extension}`;
       }
 
-      if (!name.endsWith(suffix)) {
-        return `${name}.${suffix}`;
+      if (!name.endsWith(extension)) {
+        return `${name}${extension}`;
       }
 
     } catch (err) {
