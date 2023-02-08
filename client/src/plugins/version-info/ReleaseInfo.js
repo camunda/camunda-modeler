@@ -44,20 +44,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>New form fields and more in the Form editor</h4>
-          The form editor now supports text area, datetime, and image form fields. Add conditions to form fields to control visibility.
+          <h4>A scalable forms palette</h4>
+          The new palette helps you find what you need in our growing list of supported form elements.
         </li>
         <li>
-          <h4>New color picker in the BPMN editor</h4>
-          Color one or more elements using the new color picker that is accessible through the context menu.
+          <h4>Reworked BPMN rendering</h4>
+          Round connection corners and other BPMN element rendering improvements make it easier to look at, and understand bigger BPMN processes.
         </li>
         <li>
-          <h4>Element templates accessible through replace menu</h4>
-          Apply and unlink element templates directly through the replace menu. With an element selected, press <kbd>R</kbd> to open the replace menu.
+          <h4>Create/Append any BPMN element</h4>
+          Speed up modeling of executable BPMN processes using the new create/append anything tools.
         </li>
         <li>
-          <h4>Extended support for using FEEL in Camunda 8 BPMN</h4>
-          FEEL expressions can be used for script task implementations and as error codes.
+          <h4>Extended support for Camunda 8 BPMN</h4>
+          Added support for modeling escalation events. Try out upcoming Camunda 8.2 features today.
         </li>
       </ul>
     </div>
