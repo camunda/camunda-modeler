@@ -6,18 +6,36 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `DEPS`: update to `camunda-bpmn-js@1.2.0`
-* `DEPS`: update to `bpmn-js-properties-panel@1.16.0`
+* `DEPS`: update to `camunda-bpmn-js@1.3.0`
+* `DEPS`: update to `bpmn-js@11.3.0`
+* `DEPS`: update to `bpmn-js-properties-panel@1.17.1`
 * `DEPS`: update to `@camunda/linting@0.14.0`
+* `DEPS`: update to `camunda-dmn-js@0.9.0`
+* `DEPS`: update to `dmn-js@14.1.0`
 
 ### Key changes in Properties Panel
 
+* `FEAT`: Camunda 8 template properties can have `language` property ([bpmn-js-properties-panel#869](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/869))
+* `FEAT`: Camunda 8 template properties of type `Text` are resizable text areas ([bpmn-js-properties-panel#870](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/870))
 * `FIX`: serialize templated properties in stable order ([bpmn-io/bpmn-js-properties-panel#838](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/838))
 * `FIX`: do not sort IO mappings alphabetically ([bpmn-io/bpmn-js-properties-panel#845](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/845), [bpmn-io/bpmn-js-properties-panel#843](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/843))
 
 ### Key changes in BPMN
 
+* `FEAT`: feature `service` and `user` tasks more prominently in replace menu ([#1836](https://github.com/bpmn-io/bpmn-js/pull/1836))
+* `FEAT`: hide rare items initially from create/append menus ([#1836](https://github.com/bpmn-io/bpmn-js/pull/1836))
+* `FEAT`: retrieve instantiation modules with context ([#1835](https://github.com/bpmn-io/bpmn-js/pull/1835))
+* `FEAT`: append menu available via context pad ([#1802](https://github.com/bpmn-io/bpmn-js/pull/1802), [#1809](https://github.com/bpmn-io/bpmn-js/pull/1809), [#1815](https://github.com/bpmn-io/bpmn-js/pull/1815), [#1818](https://github.com/bpmn-io/bpmn-js/pull/1818), [#1831](https://github.com/bpmn-io/bpmn-js/pull/1831))
+* `FEAT`: create menu available via palette ([#1811](https://github.com/bpmn-io/bpmn-js/pull/1811), [#1809](https://github.com/bpmn-io/bpmn-js/pull/1809), [#1817](https://github.com/bpmn-io/bpmn-js/pull/1817))
+* `FEAT`: simplify connection-multi icon ([#1822](https://github.com/bpmn-io/bpmn-js/pull/1822))
+* `FEAT`: join paths `round` by default ([1827](https://github.com/bpmn-io/bpmn-js/pull/1827))
+* `FEAT`: improved BPMN symbol rendering ([#1830](https://github.com/bpmn-io/bpmn-js/pull/1830))
+* `FEAT`: round connection corners ([#1828](https://github.com/bpmn-io/bpmn-js/pull/1828))
 * `FEAT`: validate error code as FEEL expression ([#3319](https://github.com/camunda/camunda-modeler/issues/3319))
+
+### Key changes in DMN
+
+* `FEAT`: set decision table header as title
 
 ## 5.7.0
 
