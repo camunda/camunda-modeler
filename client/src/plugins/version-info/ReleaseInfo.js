@@ -49,7 +49,7 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Reworked BPMN rendering</h4>
-          Round connection corners and other BPMN element rendering improvements make it easier to look at, and understand bigger BPMN processes.
+          Round connection corners and other BPMN element rendering improvements make it easier to look at and understand bigger BPMN processes.
         </li>
         <li>
           <h4>Create/Append any BPMN element</h4>
