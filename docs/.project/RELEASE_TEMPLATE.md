@@ -61,7 +61,7 @@ _To be done once the release is built._
    * [ ] create blog from [release blog post template](https://docs.google.com/document/d/1_QxdkGmeaXL1jOZd_e_Eg0V1fvK322uT-OKT9Saa3cA/edit#)
    * [ ] share the post with your colleagues for review
    * [ ] share the post with [`#top-blog-submission`](https://camunda.slack.com/archives/C03NMMN2R28) for checkup and publishing
-* [ ] update Camunda Modeler screenshots (and potentially text content) in the docs by running [screenshots workflow](https://github.com/camunda/camunda-docs-modeler-screenshots/actions/workflows/createScreenshots.yml). Download artifacts and create PRs for:
+* [ ] update Camunda Modeler screenshots (and potentially text content) in the docs by running [screenshots workflow](https://github.com/camunda/camunda-docs-modeler-screenshots/actions/workflows/CREATE_SCREENSHOTS.yml). Download artifacts and create PRs for:
    * [ ] [camunda-docs-static](https://github.com/camunda/camunda-docs-static)
    * [ ] [camunda-docs-manual](https://github.com/camunda/camunda-docs-manual)
    * [ ] [camunda-docs-platform](https://github.com/camunda/camunda-platform-docs)
