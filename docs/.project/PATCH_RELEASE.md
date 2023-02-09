@@ -1,49 +1,9 @@
 # Patch Release
 
-This document contains the procedures to execute a patch release.
+__[Draft a patch release](https://github.com/camunda/camunda-modeler/issues/new?body=%3C%21--%20apply%20template%20from%20https%3A%2F%2Fgithub.com%2Fcamunda%2Fcamunda-modeler%2Fblob%2Fmaster%2Fdocs%2F.project%2FPATCH_RELEASE_TEMPLATE.md%20--%3E&title=Release+Camunda+Modeler+vX.X.X&labels=release)__ or head over to [patch release documentation](./PATCH_RELEASE.md).
 
 ## Template
 
-A list of things to perform to cut a Camunda Modeler patch release.
-
-```markdown
-## What's inside?
-
-<!-- link changelog if available and/or a version range (i.e. [`v4.9.0...develop`](https://github.com/camunda/camunda-modeler/compare/v4.9.0...develop)) -->
-
-* ...
-* ...
-* ...
-
-
-## Release Checklist
-
-_To be done immediately after creating this issue._
-
-* [ ] add Slack role to release manager (`@modeling-release-manager`)
-
-_To be done to prepare and build the release._
-
-* [ ] make sure changes in upstream libraries are merged and released
-    * `bpmn-js`, `dmn-js`, `*-properties-panel`, `*-moddle`, `camunda-bpmn-js`, `form-js`, ...
-* [ ] make sure dependencies to upstream libraries are updated and can be installed (`rm -rf node_modules && npm i && npm run all` works)
-* [ ] close all issues which are solved by dependency updates
-* [ ] smoke test to verify all diagrams can be created
-* [ ] update [Release Info](https://github.com/camunda/camunda-modeler/blob/master/client/src/plugins/version-info/ReleaseInfo.js)
-* [ ] update [`CHANGELOG`](https://github.com/camunda/camunda-modeler/blob/master/CHANGELOG.md)
-* [ ] create release (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/tree/master/release-schema)
-    * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
-* [ ] prepare a list of what was changed or needs to be tested
-* [ ] execute integration test, verifying fixed things are actually fixed
-* [ ] optionally trigger QA for testing
-
-_To be done to make the release publicly available._
-
-* [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
-* [ ] trigger mirroring of release to [Camunda Download Center](https://downloads.camunda.cloud/release/camunda-modeler/) via [Jenkins](https://ci.cambpm.camunda.cloud/job/sideprojects/job/camunda-modeler-desktop-RELEASE/build?delay=0sec)
-* [ ] request marketing to update the [downloads page](https://camunda.com/download/modeler/) via [request form](https://confluence.camunda.com/display/MAR/Change+request+to+Downloads+page)
-* [ ] add new version to [update server releases](https://github.com/camunda/camunda-modeler-update-server/blob/master/releases.json)
-* [ ] publish release via update server (push to `live`)
-```
+Checkout the [template](./PATCH_RELEASE_TEMPLATE.md) for activities to cut a Camunda Modeler minor or major release. For patch releases turn to [this documentation](./PATCH_RELEASE.md).
 
 You may create a blank issue and copy the template into it.
