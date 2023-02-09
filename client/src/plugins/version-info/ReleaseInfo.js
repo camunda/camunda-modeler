@@ -45,7 +45,7 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>A scalable forms palette</h4>
-          The new palette helps you find what you need in our growing list of supported form elements.
+          The new palette helps you find what you need in our growing list of <a href="https://docs.camunda.io/docs/next/components/modeler/forms/form-element-library/forms-element-library/">supported form elements</a>.
         </li>
         <li>
           <h4>Reworked BPMN rendering</h4>
