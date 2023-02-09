@@ -26,12 +26,12 @@ _To be done to prepare and build the release._
     * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
 * [ ] prepare a list of what was changed or needs to be tested
 * [ ] execute integration test, verifying fixed things are actually fixed
-* [ ] optionally trigger QA for testing
+* [ ] (optional) trigger QA for testing
 
 _To be done to make the release publicly available._
 
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
 * [ ] trigger mirroring of release to [Camunda Download Center](https://downloads.camunda.cloud/release/camunda-modeler/) via [Jenkins](https://ci.cambpm.camunda.cloud/job/sideprojects/job/camunda-modeler-desktop-RELEASE/build?delay=0sec)
-* [ ] request marketing to update the [downloads page](https://camunda.com/download/modeler/) via [request form](https://confluence.camunda.com/display/MAR/Change+request+to+Downloads+page)
+* [ ] trigger [downloads page](https://camunda.com/download/modeler/) update via [marketing request form](https://confluence.camunda.com/display/MAR/Marketing+Request+Form)
 * [ ] add new version to [update server releases](https://github.com/camunda/camunda-modeler-update-server/blob/master/releases.json)
 * [ ] publish release via update server (push to `live`)
