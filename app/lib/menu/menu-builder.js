@@ -302,7 +302,7 @@ class MenuBuilder {
 
   appendSwitchTab(submenu) {
     this.menu.append(new MenuItem({
-      label: 'Switch Tab..',
+      label: 'Switch Tab...',
       submenu: submenu || Menu.buildFromTemplate([ {
         label: 'Select Next Tab',
         enabled: canSwitchTab(this.options.state),
@@ -313,6 +313,22 @@ class MenuBuilder {
         label: 'Select Previous Tab',
         enabled: canSwitchTab(this.options.state),
         accelerator: 'Control+SHIFT+TAB',
+        click: () => app.emit('menu:action', 'select-tab', 'previous')
+      },
+      {
+        label: 'Select Next Tab',
+        enabled: canSwitchTab(this.options.state),
+        accelerator: 'CommandOrControl+SHIFT+]',
+        visible: false,
+        acceleratorWorksWhenHidden: true,
+        click: () => app.emit('menu:action', 'select-tab', 'next')
+      },
+      {
+        label: 'Select Previous Tab',
+        enabled: canSwitchTab(this.options.state),
+        accelerator: 'CommandOrControl+SHIFT+[',
+        visible: false,
+        acceleratorWorksWhenHidden: true,
         click: () => app.emit('menu:action', 'select-tab', 'previous')
       } ])
     }));
