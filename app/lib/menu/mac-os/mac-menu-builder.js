@@ -28,10 +28,14 @@ class MacMenuBuilder extends MenuBuilder {
       template: [ {
         label: 'About ' + this.options.appName,
         role: 'about'
-      }, {
-        label: 'Check for Updates',
-        click: () => app.emit('menu:action', 'emit-event', { type: 'updateChecks.execute' })
-      },{
+      },
+      ... (app.flags && !app.flags.get('disable-remote-interaction')) ? [
+        {
+          label: 'Check for Updates',
+          click: () => app.emit('menu:action', 'emit-event', { type: 'updateChecks.execute' })
+        }
+      ] : [],
+      {
         type: 'separator'
       }, {
         label: 'Services',
