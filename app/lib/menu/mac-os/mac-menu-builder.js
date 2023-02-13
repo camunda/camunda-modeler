@@ -12,6 +12,7 @@
 
 const {
   app,
+  Menu,
   MenuItem
 } = require('electron');
 
@@ -93,6 +94,47 @@ class MacMenuBuilder extends MenuBuilder {
     return submenuTemplate;
   }
 
+  /**
+   * Add Mac-specific Cmd+Shift+[/] shortcuts
+   */
+  appendSwitchTab(submenu) {
+    this.menu.append(new MenuItem({
+      label: 'Switch Tab...',
+      submenu: submenu || Menu.buildFromTemplate([ {
+        label: 'Select Next Tab',
+        enabled: canSwitchTab(this.options.state),
+        accelerator: 'Control+TAB',
+        click: () => app.emit('menu:action', 'select-tab', 'next')
+      },
+      {
+        label: 'Select Previous Tab',
+        enabled: canSwitchTab(this.options.state),
+        accelerator: 'Control+SHIFT+TAB',
+        click: () => app.emit('menu:action', 'select-tab', 'previous')
+      },
+      {
+        label: 'Select Next Tab',
+        enabled: canSwitchTab(this.options.state),
+        accelerator: 'Command+SHIFT+]',
+        visible: false,
+        acceleratorWorksWhenHidden: true,
+        click: () => app.emit('menu:action', 'select-tab', 'next')
+      },
+      {
+        label: 'Select Previous Tab',
+        enabled: canSwitchTab(this.options.state),
+        accelerator: 'Command+SHIFT+[',
+        visible: false,
+        acceleratorWorksWhenHidden: true,
+        click: () => app.emit('menu:action', 'select-tab', 'previous')
+      } ])
+    }));
+
+    this.appendSeparator();
+
+    return this;
+  }
+
   build() {
     this.appendAppMenu();
 
@@ -103,3 +145,7 @@ class MacMenuBuilder extends MenuBuilder {
 }
 
 module.exports = MacMenuBuilder;
+
+function canSwitchTab(state) {
+  return state.tabsCount > 1;
+}

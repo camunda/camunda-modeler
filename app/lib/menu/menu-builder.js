@@ -302,7 +302,7 @@ class MenuBuilder {
 
   appendSwitchTab(submenu) {
     this.menu.append(new MenuItem({
-      label: 'Switch Tab..',
+      label: 'Switch Tab...',
       submenu: submenu || Menu.buildFromTemplate([ {
         label: 'Select Next Tab',
         enabled: canSwitchTab(this.options.state),
@@ -314,7 +314,8 @@ class MenuBuilder {
         enabled: canSwitchTab(this.options.state),
         accelerator: 'Control+SHIFT+TAB',
         click: () => app.emit('menu:action', 'select-tab', 'previous')
-      } ])
+      }
+      ])
     }));
 
     this.appendSeparator();
