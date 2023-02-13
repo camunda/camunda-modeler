@@ -596,8 +596,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       displayNotification,
       endpoint: {
         targetType: CAMUNDA_CLOUD,
-        camundaCloudClusterUrl: 'clusterId.region.zeebe.camunda.io',
-        camundaCloudClusterRegion:'region'
+        camundaCloudClusterRegion: 'REGION',
+        camundaCloudClusterId: 'CLUSTER_ID'
       }
     });
 
@@ -614,7 +614,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
         type: notification.type,
         title: notification.title,
         duration: notification.duration
-      }).to.eql(
+      }
+    ).to.eql(
       {
         type: 'success',
         title: 'Process definition deployed',
@@ -622,8 +623,13 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       }
     );
 
-    expect(notification.content).to.not.be.null;
+    expect(notification.content).to.exist;
 
+    const notificationHTML = shallow(notification.content).html().replace(/&amp;/g, '&');
+
+    expect(notificationHTML).to.include(
+      'https://REGION.operate.camunda.io/CLUSTER_ID/instances/?process=test&version=all&active=true&incidents=true'
+    );
   });
 
 

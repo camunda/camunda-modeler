@@ -613,8 +613,8 @@ function CloudLink(props) {
   } = props;
 
   const {
-    camundaCloudClusterUrl,
-    camundaCloudClusterRegion
+    camundaCloudClusterRegion,
+    camundaCloudClusterId
   } = endpoint;
 
   const processId = getProcessId(response);
@@ -624,8 +624,7 @@ function CloudLink(props) {
   }
 
   const query = `?process=${processId}&version=all&active=true&incidents=true`;
-  const cluster = camundaCloudClusterUrl.substring(0, camundaCloudClusterUrl.indexOf('.'));
-  const cloudUrl = `https://${camundaCloudClusterRegion}.operate.camunda.io/${cluster}/instances/${query}`;
+  const cloudUrl = `https://${camundaCloudClusterRegion}.operate.camunda.io/${camundaCloudClusterId}/instances/${query}`;
 
   return (
     <div className={ css.CloudLink }>
