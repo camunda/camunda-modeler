@@ -314,23 +314,8 @@ class MenuBuilder {
         enabled: canSwitchTab(this.options.state),
         accelerator: 'Control+SHIFT+TAB',
         click: () => app.emit('menu:action', 'select-tab', 'previous')
-      },
-      {
-        label: 'Select Next Tab',
-        enabled: canSwitchTab(this.options.state),
-        accelerator: 'CommandOrControl+SHIFT+]',
-        visible: false,
-        acceleratorWorksWhenHidden: true,
-        click: () => app.emit('menu:action', 'select-tab', 'next')
-      },
-      {
-        label: 'Select Previous Tab',
-        enabled: canSwitchTab(this.options.state),
-        accelerator: 'CommandOrControl+SHIFT+[',
-        visible: false,
-        acceleratorWorksWhenHidden: true,
-        click: () => app.emit('menu:action', 'select-tab', 'previous')
-      } ])
+      }
+      ])
     }));
 
     this.appendSeparator();
