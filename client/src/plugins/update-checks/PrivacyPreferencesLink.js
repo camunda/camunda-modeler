@@ -22,13 +22,10 @@ export default class PrivacyPreferencesLink extends PureComponent {
       !updateChecksEnabled && (
         <div>
           <p>
-            Periodic checks for new updates are currently <b>disabled</b>.
-          </p>
-          <p>
+            Periodic update checks are currently <b>disabled</b>. Enable them in the {' '}
             <a href="#" onClick={ onOpenPrivacyPreferences }>
-              Open the Privacy Preferences
-            </a>
-            {' '} to enable them.
+              Privacy Preferences
+            </a>.
           </p>
         </div>
       )
