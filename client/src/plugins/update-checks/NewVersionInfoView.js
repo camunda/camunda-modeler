@@ -42,7 +42,7 @@ class NewVersionInfoView extends PureComponent {
         <div
           className="htmlSnippetItem"
           key={ version }>
-          <div><b>{ version }</b></div>
+          <h4>{ version }</h4>
           <div dangerouslySetInnerHTML={ { __html: releaseNoteHTML } } />
         </div>
       );
@@ -72,13 +72,14 @@ class NewVersionInfoView extends PureComponent {
         <Modal.Title>{ MODAL_TITLE }</Modal.Title>
 
         <Modal.Body>
-          <div className="newVersionInfoText">
+          <p>
             { infoTextProcessed }
-          </div>
-          <br />
-          { INFO_TEXT2 }
+          </p>
+          <p>
+            { INFO_TEXT2 }
+          </p>
           <div className="releaseNotesContainer">
-            <b className="releaseNotesTitle"> { RELEASE_NOTES_TITLE } </b>
+            <h4>{ RELEASE_NOTES_TITLE }</h4>
             <div className="htmlSnippet">
               { this.renderHtmlSnippets(releases) }
             </div>
