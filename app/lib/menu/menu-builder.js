@@ -46,7 +46,9 @@ class MenuBuilder {
         exportAs: false,
         development: process.env.NODE_ENV === 'development',
         devtools: false,
-        lastTab: false
+        lastTab: false,
+        tabs: [],
+        activeTab: null
       },
       providers: {}
     }, options);
@@ -748,11 +750,11 @@ function getSeparatorTemplate() {
 }
 
 function canSwitchTab(state) {
-  return state.tabsCount > 1;
+  return state.tabs.length > 1;
 }
 
 function canCloseTab(state) {
-  return Boolean(state.tabsCount);
+  return Boolean(state.tabs.length);
 }
 
 function wrapPluginAction(fn, pluginName) {
