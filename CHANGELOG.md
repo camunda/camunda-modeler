@@ -6,6 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: correctly display error message for error code ([#3443](https://github.com/camunda/camunda-modeler/issues/3443))
+* `DEPS`: update to `@camunda/lintint@0.15.1`
+
 ## 5.8.0
 
 ### General
