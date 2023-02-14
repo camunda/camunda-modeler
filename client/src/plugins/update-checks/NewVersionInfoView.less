@@ -16,8 +16,17 @@
     margin-top: 10px;
   }
 
-  .releaseNotesContainer {
-    margin-top: 20px;
+  .htmlSnippet * {
+    user-select: text;
+  }
+
+  .releaseNotesContainer h4 {
+    margin-bottom: .25rem;
+    margin-top: .5rem;
+  }
+
+  .releaseNotesContainer p {
+    margin: 0.25rem 0 1rem;
   }
 
   .doNotShowContainer {
@@ -32,11 +41,11 @@
     height: 200px;
     overflow-y: auto;
     border: 1px solid gray;
-    margin-top: 10px;
-    padding: 5px;
+    margin: .5rem 0;
+    padding: 0 .5rem;
   }
 
-  .htmlSnippetItem {
-    margin-bottom: 25px;
+  .htmlSnippetItem + .htmlSnippetItem {
+    margin-top: 2rem;
   }
 }
