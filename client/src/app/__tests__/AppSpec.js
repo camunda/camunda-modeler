@@ -249,7 +249,7 @@ describe('<App>', function() {
       ]);
 
       // then
-      expect(updateMenuSpy.args[0][0]).to.have.property('tabs');
+      expect(updateMenuSpy.args[0][0]).to.have.property('tabs', app.state.tabs);
     });
 
 
