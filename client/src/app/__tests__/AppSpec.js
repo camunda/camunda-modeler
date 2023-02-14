@@ -252,6 +252,54 @@ describe('<App>', function() {
       expect(updateMenuSpy.args[0][0]).to.have.property('tabs');
     });
 
+
+    describe('should include activeTab', function() {
+
+      it('opened tab', async function() {
+
+        // given
+        const updateMenuSpy = spy();
+
+        const {
+          app
+        } = createApp({
+          onMenuUpdate: updateMenuSpy
+        }, mount);
+
+        // when
+        await app.openFiles([
+          createFile('1.bpmn')
+        ]);
+
+        // then
+        expect(updateMenuSpy.args[0][0]).to.have.property('activeTab', app.state.tabs[0]);
+      });
+
+
+      it('closed tab', async function() {
+
+        // given
+        const updateMenuSpy = spy();
+
+        const {
+          app
+        } = createApp({
+          onMenuUpdate: updateMenuSpy
+        }, mount);
+
+        // when
+        await app.openFiles([
+          createFile('1.bpmn')
+        ]);
+
+        await app.triggerAction('close-all-tabs');
+
+        // then
+        expect(updateMenuSpy.args[1][0]).to.have.deep.property('activeTab', EMPTY_TAB);
+      });
+
+    });
+
   });
 
 
@@ -273,6 +321,7 @@ describe('<App>', function() {
       expect(tabs).to.be.empty;
       expect(activeTab).to.equal(EMPTY_TAB);
     });
+
   });
 
 
