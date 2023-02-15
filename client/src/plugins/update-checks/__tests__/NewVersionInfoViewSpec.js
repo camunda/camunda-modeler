@@ -125,7 +125,6 @@ describe('<NewVersionInfoView>', () => {
   });
 
 
-
   it('should close', () => {
 
     const onCloseSpy = spy();
