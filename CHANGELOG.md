@@ -30,6 +30,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: support C8 escalation events ([#3318](https://github.com/camunda/camunda-modeler/issues/3318))
 * `FEAT`: improve editor support in C8 element templates for non `FEEL` languages ([bpmn-io/bpmn-js-properties-panel#858](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/858))
 * `FEAT`: autoresize `name` element in properties panel ([bpmn-io/bpmn-js-properties-panel#705](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/705))
+* `FEAT`: validate `zeebe:candidateUsers` support ([#3385](https://github.com/camunda/camunda-modeler/issues/3385))
+* `FEAT`: don't show execution related lint errors on non-executable pools ([#3368](https://github.com/camunda/camunda-modeler/issues/3368))
 * `FIX`: serialize C8 templated properties in stable order ([bpmn-io/bpmn-js-properties-panel#838](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/838))
 * `FIX`: sort technical bindings in XML order ([bpmn-io/bpmn-js-properties-panel#845](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/845), [bpmn-io/bpmn-js-properties-panel#843](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/843), [#3400](https://github.com/camunda/camunda-modeler/issues/3400))
 * `FIX`: allow deletion of C8 extension properties on participant ([#3417](https://github.com/camunda/camunda-modeler/issues/3417))
