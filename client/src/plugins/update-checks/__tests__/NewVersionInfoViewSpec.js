@@ -17,8 +17,6 @@ import {
 
 import {
   MODAL_TITLE,
-  INFO_TEXT,
-  RELEASE_NOTES_TITLE,
   BUTTON_NEGATIVE,
   BUTTON_POSITIVE
 } from '../constants';
@@ -61,48 +59,71 @@ describe('<NewVersionInfoView>', () => {
   });
 
 
-  it('should render info text', () => {
-
-    const expectedText = INFO_TEXT.replace('@@1', 'v3.7.0').replace('@@2', 'v3.4.0');
-
-    const infoText = wrapper.find('.newVersionInfoText');
-
-    expect(infoText.text()).to.be.eql(expectedText);
-  });
-
-
-  it('should render release notes title', () => {
-
-    const releaseNotesTitle = wrapper.find('.releaseNotesTitle');
-
-    expect(releaseNotesTitle.text().trim()).to.be.eql(RELEASE_NOTES_TITLE);
-  });
-
-
-  it('should render positive button', () => {
-
-    const positiveButton = wrapper.find('.btn-primary');
-
-    expect(positiveButton.text().trim()).to.be.eql(BUTTON_POSITIVE);
-  });
-
-
-  it('should auto focus primary button', () => {
+  it('should render body', () => {
 
     // given
-    const positiveButton = wrapper.find('.btn-primary');
+    const expectedText = `
+      Camunda Modeler v3.7.0 is available. Your version is v3.4.0.
+
+      Would you like to download it now?
+
+      Release notes
+
+      v3.5.0
+      HTML 1
+
+      v3.6.0
+      HTML 2
+
+      Periodic update checks are currently disabled. Enable them in the  Privacy Preferences.
+    `;
+
+    const expectedFragments = expectedText.split('\n').map(l => l.trim()).filter(l => l);
+
+    // when
+    const body = wrapper.find('.modal-body');
+
+    const text = body.text();
 
     // then
-    expect(positiveButton.instance()).to.be.eql(document.activeElement);
+    for (const expectedText of expectedFragments) {
+      expect(text, 'body text').to.include(expectedText);
+    }
   });
 
 
-  it('should render negative button', () => {
+  describe('footer', () => {
 
-    const negativeButton = wrapper.find('.btn-secondary');
+    it('should render <Download> button', () => {
 
-    expect(negativeButton.text().trim()).to.be.eql(BUTTON_NEGATIVE);
+      // given
+      const footer = wrapper.find('.modal-footer');
+
+      // when
+      const downloadButton = footer.find('.btn-primary');
+
+      // then
+      expect(downloadButton.text().trim()).to.be.eql(BUTTON_POSITIVE);
+
+      // and auto-focussed
+      expect(downloadButton.instance()).to.eql(document.activeElement);
+    });
+
+
+    it('should render <Skip> button', () => {
+
+      // given
+      const footer = wrapper.find('.modal-footer');
+
+      // when
+      const skipButton = footer.find('.btn-secondary');
+
+      // then
+      expect(skipButton.text().trim()).to.be.eql(BUTTON_NEGATIVE);
+    });
+
   });
+
 
 
   it('should close', () => {
