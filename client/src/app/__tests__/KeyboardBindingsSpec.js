@@ -360,7 +360,6 @@ describe('KeyboardBindings', function() {
 
       // then
       expect(actionSpy).to.have.been.calledWith('replaceElement', event);
-
     });
 
 
@@ -379,7 +378,86 @@ describe('KeyboardBindings', function() {
 
       // then
       expect(actionSpy).to.not.have.been.called;
+    });
 
+  });
+
+
+  describe('createElement', function() {
+
+    it('should trigger for N', function() {
+
+      // given
+      event = createKeyEvent('N');
+
+      keyboardBindings.update([ {
+        accelerator: 'N',
+        action: 'createElement'
+      } ]);
+
+      // when
+      keyboardBindings._keyDownHandler(event);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('createElement');
+    });
+
+
+    it('should not trigger for Cmd+N', function() {
+
+      // given
+      event = createKeyEvent('N', { ctrlKey: true });
+
+      keyboardBindings.update([ {
+        accelerator: 'N',
+        action: 'createElement'
+      } ]);
+
+      // when
+      keyboardBindings._keyDownHandler(event);
+
+      // then
+      expect(actionSpy).to.not.have.been.called;
+    });
+
+  });
+
+
+  describe('appendElement', function() {
+
+    it('should trigger for N', function() {
+
+      // given
+      event = createKeyEvent('A');
+
+      keyboardBindings.update([ {
+        accelerator: 'A',
+        action: 'appendElement'
+      } ]);
+
+      // when
+      keyboardBindings._keyDownHandler(event);
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('appendElement');
+    });
+
+
+    it('should not trigger for Cmd+A', function() {
+
+      // given
+      event = createKeyEvent('A', { ctrlKey: true });
+
+      keyboardBindings.update([ {
+        accelerator: 'A',
+        action: 'appendElement'
+      } ]);
+
+      // when
+      keyboardBindings._keyDownHandler(event);
+
+      // then
+      expect(actionSpy).to.not.have.been.called;
     });
 
   });
