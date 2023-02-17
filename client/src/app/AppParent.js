@@ -168,7 +168,18 @@ export default class AppParent extends PureComponent {
 
     const app = this.getApp();
 
-    app.setLayout(layout);
+    const {
+      log: logLayout = {}
+    } = layout;
+
+    // do not open log initially; it will be opened automatically on error
+    app.setLayout({
+      ...layout,
+      log: {
+        ...logLayout,
+        open: false
+      }
+    });
 
     // remember to-be restored files but postpone opening + activation
     // until <client:started> batch restore workspace files + files opened
