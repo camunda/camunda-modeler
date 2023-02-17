@@ -247,7 +247,7 @@ describe('<AppParent>', function() {
       const quitAllowedSpy = spy(backend, 'sendQuitAllowed');
 
       // when
-      await appParent.triggerAction({}, 'quit');
+      await appParent.triggerAction('quit');
 
       // then
       expect(closeAllTabsSpy).to.be.calledWith('close-all-tabs');
@@ -271,7 +271,7 @@ describe('<AppParent>', function() {
       const quitAbortedSpy = spy(backend, 'sendQuitAborted');
 
       // when
-      await appParent.triggerAction({}, 'quit');
+      await appParent.triggerAction('quit');
 
       // then
       expect(closeTabsStub).to.be.calledOnce;

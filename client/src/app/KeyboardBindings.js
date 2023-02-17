@@ -148,7 +148,7 @@ export default class KeyboardBindings {
     }
 
     if (action && onAction) {
-      onAction(null, action);
+      onAction(action, event);
 
       event.preventDefault();
     }
@@ -167,7 +167,7 @@ export default class KeyboardBindings {
     var { key } = event;
 
     if (action && onAction && !this.pressedKeys[ key ]) {
-      onAction(null, action);
+      onAction(action, event);
 
       this.pressedKeys[ key ] = true;
 
@@ -186,7 +186,7 @@ export default class KeyboardBindings {
     }
 
     if (action && onAction) {
-      onAction(null, action);
+      onAction(action, event);
 
       event.preventDefault();
     }

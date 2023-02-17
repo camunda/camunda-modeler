@@ -49,18 +49,18 @@ export default class AppParent extends PureComponent {
     this.appRef = React.createRef();
   }
 
-  triggerAction = (event, action, options) => {
+  triggerAction = (action, context) => {
 
     // fail-safe trigger given action
     const exec = async () => {
 
-      log('trigger action %s, %o', action, options);
+      log('trigger action %s, %o', action, context);
 
       const {
         backend
       } = this.props.globals;
 
-      const result = await this.getApp().triggerAction(action, options);
+      const result = await this.getApp().triggerAction(action, context);
 
       if (action === 'quit') {
 
@@ -243,11 +243,11 @@ export default class AppParent extends PureComponent {
     this.getBackend().sendReady();
   };
 
-  handleResize = () => this.triggerAction(null, 'resize');
+  handleResize = () => this.triggerAction('resize');
 
-  handleFocus = (event) => {
-    this.triggerAction(event, 'check-file-changed');
-    this.triggerAction(event, 'notify-focus-change');
+  handleFocus = () => {
+    this.triggerAction('check-file-changed');
+    this.triggerAction('notify-focus-change');
   };
 
   handleStarted = async () => {
@@ -316,7 +316,7 @@ export default class AppParent extends PureComponent {
    * @param {string} entry.action
    */
   logToClient(entry) {
-    this.triggerAction(null, 'log', entry);
+    this.triggerAction('log', entry);
   }
 
   /**
@@ -338,7 +338,7 @@ export default class AppParent extends PureComponent {
     backend.once('client:started', this.handleStarted);
 
     this.subscriptions = [
-      backend.on('menu:action', this.triggerAction),
+      backend.on('menu:action', (_, action, options) => this.triggerAction(action, options)),
       backend.on('client:open-files', this.handleOpenFiles),
       backend.on('client:window-focused', this.handleFocus),
       backend.on('backend:error', this.handleBackendError)

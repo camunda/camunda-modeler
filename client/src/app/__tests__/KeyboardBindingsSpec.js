@@ -61,7 +61,7 @@ describe('KeyboardBindings', function() {
       // then
       expect(actionSpy).to.have.been.calledTwice;
 
-      expect(actionSpy.alwaysCalledWith(null, 'foo')).to.be.true;
+      expect(actionSpy.alwaysCalledWith('foo', event)).to.be.true;
     });
 
 
@@ -89,7 +89,7 @@ describe('KeyboardBindings', function() {
       // then
       expect(actionSpy).to.have.been.calledTwice;
 
-      expect(actionSpy.alwaysCalledWith(null, 'foo')).to.be.true;
+      expect(actionSpy.alwaysCalledWith('foo', event)).to.be.true;
     });
 
 
@@ -113,7 +113,7 @@ describe('KeyboardBindings', function() {
       // then
       expect(actionSpy).to.have.been.calledTwice;
 
-      expect(actionSpy.alwaysCalledWith(null, 'foo')).to.be.true;
+      expect(actionSpy.alwaysCalledWith('foo', event)).to.be.true;
     });
 
   });
@@ -133,7 +133,7 @@ describe('KeyboardBindings', function() {
     keyboardBindings._keyDownHandler(event);
 
     // then
-    expect(actionSpy).to.have.been.calledWith(null, 'copy');
+    expect(actionSpy).to.have.been.calledWith('copy', event);
   });
 
 
@@ -151,7 +151,7 @@ describe('KeyboardBindings', function() {
     keyboardBindings._keyDownHandler(event);
 
     // then
-    expect(actionSpy).to.have.been.calledWith(null, 'cut');
+    expect(actionSpy).to.have.been.calledWith('cut', event);
   });
 
 
@@ -169,7 +169,7 @@ describe('KeyboardBindings', function() {
     keyboardBindings._keyDownHandler(event);
 
     // then
-    expect(actionSpy).to.have.been.calledWith(null, 'paste');
+    expect(actionSpy).to.have.been.calledWith('paste', event);
   });
 
 
@@ -187,7 +187,7 @@ describe('KeyboardBindings', function() {
     keyboardBindings._keyDownHandler(event);
 
     // then
-    expect(actionSpy).to.have.been.calledWith(null, 'undo');
+    expect(actionSpy).to.have.been.calledWith('undo', event);
   });
 
 
@@ -207,7 +207,7 @@ describe('KeyboardBindings', function() {
       keyboardBindings._keyDownHandler(event);
 
       // then
-      expect(actionSpy).to.have.been.calledWith(null, 'redo');
+      expect(actionSpy).to.have.been.calledWith('redo', event);
     });
 
 
@@ -225,7 +225,7 @@ describe('KeyboardBindings', function() {
       keyboardBindings._keyDownHandler(event);
 
       // then
-      expect(actionSpy).to.have.been.calledWith(null, 'redo');
+      expect(actionSpy).to.have.been.calledWith('redo', event);
     });
 
   });
@@ -245,7 +245,7 @@ describe('KeyboardBindings', function() {
     keyboardBindings._keyDownHandler(event);
 
     // then
-    expect(actionSpy).to.have.been.calledWith(null, 'selectAll');
+    expect(actionSpy).to.have.been.calledWith('selectAll', event);
   });
 
 
@@ -315,7 +315,7 @@ describe('KeyboardBindings', function() {
       keyboardBindings._keyDownHandler(event);
 
       // then
-      expect(actionSpy).to.have.been.calledWith(null, 'removeSelection');
+      expect(actionSpy).to.have.been.calledWith('removeSelection', event);
     });
 
 
@@ -338,7 +338,7 @@ describe('KeyboardBindings', function() {
       keyboardBindings._keyDownHandler(event);
 
       // then
-      expect(actionSpy).to.have.been.calledWith(null, 'removeSelection');
+      expect(actionSpy).to.have.been.calledWith('removeSelection', event);
     });
   });
 
@@ -359,7 +359,7 @@ describe('KeyboardBindings', function() {
       keyboardBindings._keyDownHandler(event);
 
       // then
-      expect(actionSpy).to.have.been.calledWith(null, 'replaceElement');
+      expect(actionSpy).to.have.been.calledWith('replaceElement', event);
 
     });
 
@@ -404,7 +404,7 @@ describe('KeyboardBindings', function() {
     keyboardBindings._keyDownHandler(event);
 
     expect(actionSpy).not.to.have.been.called;
-    expect(newActionSpy).to.have.been.calledWith(null, 'selectAll');
+    expect(newActionSpy).to.have.been.calledWith('selectAll', event);
   });
 
 
