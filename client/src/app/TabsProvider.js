@@ -32,6 +32,7 @@ import {
 } from '../util/Engines';
 
 import EmptyTab from './EmptyTab';
+import SettingsTab from './SettingsTab';
 
 import parseDiagramType from './util/parseDiagramType';
 
@@ -137,6 +138,17 @@ export default class TabsProvider {
         },
         getComponent() {
           return EmptyTab;
+        },
+        getIcon() {
+          return null;
+        }
+      },
+      settings: {
+        canOpen(file) {
+          return false;
+        },
+        getComponent() {
+          return SettingsTab;
         },
         getIcon() {
           return null;

@@ -43,6 +43,12 @@ export class RecentTabs {
   }
 
   push(element) {
+
+    // a special tab
+    if (!element.file) {
+      return;
+    }
+
     this.elements = [
       ...this.elements
         .filter(e => (e.file.path !== element.file.path))
