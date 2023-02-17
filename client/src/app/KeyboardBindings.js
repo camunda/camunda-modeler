@@ -142,6 +142,16 @@ export default class KeyboardBindings {
       action = getAction(this.replaceElement);
     }
 
+    // create
+    if (isCreate(event) && isEnabled(this.createElement)) {
+      action = getAction(this.createElement);
+    }
+
+    // append
+    if (isAppend(event) && isEnabled(this.appendElement)) {
+      action = getAction(this.appendElement);
+    }
+
     // custom
     if (this.hasCustomEntry(event)) {
       action = this.getCustomAction(event, 'keydown');
@@ -206,6 +216,8 @@ export default class KeyboardBindings {
     this.undo = findUndo(menu);
     this.redo = findRedo(menu);
     this.replaceElement = findReplaceElement(menu);
+    this.createElement = findCreateElement(menu);
+    this.appendElement = findAppendElement(menu);
     this.updateCustomEntries(menu);
 
     return menu;
@@ -301,6 +313,16 @@ function isRedo(event) {
 // r
 function isReplace(event) {
   return isKey([ 'r', 'R' ], event) && !isCommandOrControl(event) && !isShift(event);
+}
+
+// n
+function isCreate(event) {
+  return isKey([ 'n', 'N' ], event) && !isCommandOrControl(event) && !isShift(event);
+}
+
+// a
+function isAppend(event) {
+  return isKey([ 'a', 'A' ], event) && !isCommandOrControl(event) && !isShift(event);
 }
 
 // Secondary delete shortcut
@@ -438,6 +460,14 @@ function findSelectAll(menu) {
 
 function findReplaceElement(menu) {
   return find(menu, ({ accelerator }) => isAccelerator(accelerator, 'R'));
+}
+
+function findCreateElement(menu) {
+  return find(menu, ({ accelerator }) => isAccelerator(accelerator, 'N'));
+}
+
+function findAppendElement(menu) {
+  return find(menu, ({ accelerator }) => isAccelerator(accelerator, 'A'));
 }
 
 /**

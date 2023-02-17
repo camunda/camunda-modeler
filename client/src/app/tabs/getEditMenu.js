@@ -231,7 +231,9 @@ export function getSelectionEntries({
   inputActive,
   removeSelected,
   selectAll,
-  replaceElement
+  replaceElement,
+  createElement,
+  appendElement
 
 }) {
   const menuEntries = [];
@@ -256,6 +258,26 @@ export function getSelectionEntries({
     });
   }
 
+  if (isDefined(appendElement)) {
+    menuEntries.push({
+      label: 'Append Element',
+      accelerator: 'A',
+      enabled: appendElement,
+      action: 'appendElement'
+    });
+  }
+
+  if (isDefined(createElement)) {
+    menuEntries.push({
+      label: 'Create Element',
+      accelerator: 'N',
+      enabled: createElement,
+      action: 'createElement',
+      options: {
+        opt: 'bpmn:Task'
+      }
+    });
+  }
 
   if (isDefined(replaceElement)) {
     menuEntries.push({

@@ -396,9 +396,11 @@ export class BpmnEditor extends CachedComponent {
 
     const newState = {
       align: selectionLength > 1,
+      appendElement: !inputActive,
       close: true,
       copy: !!selectionLength,
       cut: false,
+      createElement: !inputActive,
       defaultCopyCutPaste: inputActive,
       defaultUndoRedo: inputActive,
       dirty,
