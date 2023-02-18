@@ -419,10 +419,10 @@ app.createEditorWindow = function() {
     minWidth: MINIMUM_SIZE.width,
     minHeight: MINIMUM_SIZE.height,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.resolve(__dirname, '../preload/preload.js'),
       contextIsolation: true,
       nodeIntegration,
-      sandbox: false
+      sandbox: !nodeIntegration // sandbox needs to be disabled for nodeIntegration=true
     }
   };
 

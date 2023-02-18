@@ -1,5 +1,6 @@
 app/node_modules/
 app/public/
+app/preload/
 client/node_modules/
 client/build/
 coverage/
