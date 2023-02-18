@@ -4,7 +4,10 @@
   ],
   "overrides": [
     {
-      "files": [ "dev.js" ],
+      "files": [
+        "dev.js",
+        "webpack.config.js"
+      ],
       "extends": "plugin:bpmn-io/node"
     }
   ]
