@@ -28,17 +28,17 @@ describe('util - generateImage', function() {
 
   keys(expectedImagesByType).forEach(function(type) {
 
-    it('should export <' + type + '>', function() {
+    it('should export <' + type + '>', async function() {
 
-      const image = generateImage(type, svg);
+      const image = await generateImage(type, svg);
 
       expect(image).to.exist;
     });
 
 
-    it('should automatically handle large images <' + type + '>', function() {
+    it('should automatically handle large images <' + type + '>', async function() {
 
-      const image = generateImage(type, outOfBoundsSVG);
+      const image = await generateImage(type, outOfBoundsSVG);
 
       // if image cannot be generated properly it returns a data string with
       // 6 characters. If it is generated, image.length returns the actual size
@@ -47,9 +47,9 @@ describe('util - generateImage', function() {
     }).timeout(10000); // downscaling may exceed the default timeout 2000ms.
 
 
-    it('should generate expected images <' + type + '>', function() {
+    it('should generate expected images <' + type + '>', async function() {
 
-      const image = generateImage(type, svg),
+      const image = await generateImage(type, svg),
             expectedImage = expectedImagesByType[ type ];
 
       expect(image).to.be.eql(expectedImage);
