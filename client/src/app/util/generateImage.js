@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import canvg from 'canvg-browser';
+import { Canvg } from 'canvg';
 
 // list of defined encodings
 const ENCODINGS = [
@@ -23,7 +23,7 @@ const SCALE_STEP = 1;
 const DATA_URL_REGEX = /^data:((?:\w+\/(?:(?!;).)+)?)((?:;[\w\W]*?[^;])*),(.+)$/;
 
 
-export default function generateImage(type, svg) {
+export default async function generateImage(type, svg) {
   const encoding = 'image/' + type;
 
   if (ENCODINGS.indexOf(encoding) === -1) {
@@ -42,11 +42,12 @@ export default function generateImage(type, svg) {
       return `width="${parseInt(widthStr, 10) * scale}" height="${parseInt(heightStr, 10) * scale}"`;
     });
 
-    canvg(canvas, svg);
+    const context = canvas.getContext('2d');
+
+    const canvg = Canvg.fromString(context, svg);
+    await canvg.render();
 
     // make the background white for every format
-    let context = canvas.getContext('2d');
-
     context.globalCompositeOperation = 'destination-over';
     context.fillStyle = 'white';
 
