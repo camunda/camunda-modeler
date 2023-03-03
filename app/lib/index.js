@@ -40,6 +40,7 @@ const ZeebeAPI = require('./zeebe-api');
 const {
   readFile,
   readFileStats,
+  readFolderStats,
   writeFile
 } = require('./file-system');
 
@@ -199,6 +200,14 @@ renderer.on('dialog:open-file-explorer', function(options, done) {
   fileExplorerOpen(path);
 
   done(null, undefined);
+});
+
+renderer.on('dialog:open-folder', async function(options, done) {
+  const folderPath = await dialog.showOpenFolderDialog(options);
+
+  const folder = readFolderStats(folderPath);
+
+  done(null, folder);
 });
 
 // clipboard ///////////

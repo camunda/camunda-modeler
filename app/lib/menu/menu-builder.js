@@ -64,7 +64,9 @@ class MenuBuilder {
     this.appendFileMenu(
       new MenuBuilder(this.options)
         .appendNewFile()
-        .appendOpen()
+        .appendOpenFile()
+        .appendOpenFolder()
+        .appendCloseFolder()
         .appendSeparator()
         .appendSwitchTab()
         .appendSaveFile()
@@ -189,7 +191,7 @@ class MenuBuilder {
     }, []);
   }
 
-  appendOpen() {
+  appendOpenFile() {
     this.menu.append(new MenuItem({
       label: 'Open File...',
       accelerator: 'CommandOrControl+O',
@@ -199,6 +201,30 @@ class MenuBuilder {
     }));
 
     this.appendReopenLastTab();
+
+    return this;
+  }
+
+  appendOpenFolder() {
+    this.menu.append(new MenuItem({
+      label: 'Open Folder...',
+      accelerator: 'CommandOrControl+Shift+O',
+      click: function() {
+        app.emit('menu:action', 'open-folder');
+      }
+    }));
+
+    return this;
+  }
+
+  appendCloseFolder() {
+    this.menu.append(new MenuItem({
+      label: 'Close Folder',
+      enabled: this.options.state.folder,
+      click: function() {
+        app.emit('menu:action', 'close-folder');
+      }
+    }));
 
     return this;
   }

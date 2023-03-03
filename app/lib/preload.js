@@ -26,6 +26,7 @@ const allowedEvents = [
   'dialog:open-file-error',
   'dialog:open-file-explorer',
   'dialog:open-files',
+  'dialog:open-folder',
   'dialog:save-file',
   'dialog:show',
   'errorTracking:turnedOff',

@@ -176,4 +176,17 @@ export default class Dialog {
     });
   };
 
+  /**
+   * Show open folder dialog.
+   *
+   * @param {Object} [options] Options.
+   * @param {string} [options.defaultPath] Default path.
+   * @param {string} [options.title] Dialog title.
+   *
+   * @returns {Promise}
+   */
+  showOpenFolderDialog(options = {}) {
+    return this.backend.send('dialog:open-folder', options);
+  }
+
 }

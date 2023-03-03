@@ -13,6 +13,8 @@
 const fs = require('fs'),
       path = require('path');
 
+const directoryTree = require('directory-tree');
+
 const {
   assign,
   pick
@@ -167,6 +169,22 @@ function createFile(oldFile, newFile) {
 
   return assign({}, oldFile, newFile);
 }
+
+/**
+ * @typedef {Object} FolderDescriptor
+ * @property {string} path
+ */
+
+/**
+ * Read stats for folder.
+ *
+ * @param {string} folderPath
+ *
+ * @return {FolderDescriptor|null}
+ */
+module.exports.readFolderStats = function(folderPath) {
+  return directoryTree(folderPath);
+};
 
 
 /**

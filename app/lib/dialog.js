@@ -133,6 +133,28 @@ class Dialog {
     });
   }
 
+  showOpenFolderDialog(options = {}) {
+    const {
+      title
+    } = options;
+
+    return this.electronDialog.showOpenDialog(this.browserWindow, {
+      properties: [ 'openDirectory' ],
+      title: title || 'Open Folder'
+    }).then(response => {
+
+      const {
+        filePaths
+      } = response;
+
+      if (filePaths) {
+        return filePaths[ 0 ];
+      }
+
+      return null;
+    });
+  }
+
   showDialog(options) {
     let { buttons } = options;
 

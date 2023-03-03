@@ -1,0 +1,37 @@
+:local(.Explorer) {
+  z-index: 1000;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .open-editors, .folder {
+    label {
+      padding-top: 0.5rem;
+      padding-left: 0.5rem;
+      font-size: 1rem;
+      width: 100%;
+      border-bottom: solid 1px var(--color-grey-225-10-85);
+      padding: 0.5rem;
+    }
+  }
+
+  .folder {
+    &.folder-empty {
+      text-align: center;
+
+      button {
+        margin: 1rem;
+      }
+    }
+
+    label {
+      border-top: solid 1px var(--color-grey-225-10-85);
+      margin-top: 0.5rem;
+    }
+  }
+}

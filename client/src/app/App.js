@@ -33,9 +33,12 @@ import { WithCache } from './cached';
 import { DropZone } from './drop-zone';
 
 import {
-  SlotFillRoot
+  SlotFillRoot,
+  Fill
 } from './slot-fill';
 
+import Explorer from './Explorer';
+import LeftPanel from './LeftPanel';
 import Log from './Log';
 
 import { StatusBar } from './status-bar';
@@ -64,6 +67,10 @@ import css from './App.less';
 
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 
+import PluginIcon from '../../resources/icons/Plugin.svg';
+import SettingsIcon from '../../resources/icons/Settings.svg';
+import UploadIcon from '../../resources/icons/Upload.svg';
+
 
 const log = debug('App');
 
@@ -90,7 +97,8 @@ const INITIAL_STATE = {
   logEntries: [],
   notifications: [],
   currentModal: null,
-  endpoints: []
+  endpoints: [],
+  folder: null
 };
 
 
@@ -518,6 +526,14 @@ export class App extends PureComponent {
     await this.openFiles(files);
   };
 
+  showOpenFolderDialog = async () => {
+    const dialog = this.getGlobal('dialog');
+
+    const folder = await dialog.showOpenFolderDialog();
+
+    this.openFolder(folder);
+  };
+
   showCloseFileDialog = (file) => {
     const { name } = file;
 
@@ -630,6 +646,32 @@ export class App extends PureComponent {
 
     return openedTabs;
   };
+
+  /**
+   * Open a folder.
+   *
+   * @param {Object} folder
+   */
+  openFolder(folder) {
+    this.setState({
+      folder
+    });
+
+    this.workspaceChanged();
+  }
+
+  /**
+   * Close the open folder.
+   */
+  closeFolder() {
+    this.closeTabs(t => true);
+
+    this.setState({
+      folder: null
+    });
+
+    this.workspaceChanged();
+  }
 
   readFileList = async filePaths => {
     const readOperations = filePaths.map(this.readFileFromPath);
@@ -1114,14 +1156,16 @@ export class App extends PureComponent {
       layout,
       tabs,
       activeTab,
-      endpoints
+      endpoints,
+      folder
     } = this.state;
 
     return onWorkspaceChanged({
       tabs,
       activeTab,
       layout,
-      endpoints
+      endpoints,
+      folder
     });
   };
 
@@ -1525,11 +1569,20 @@ export class App extends PureComponent {
 
     const { onMenuUpdate } = this.props;
 
+    console.log('update menu', {
+      ...options,
+      activeTab: this.state.activeTab,
+      lastTab: !!this.closedTabs.get(),
+      tabs: this.state.tabs,
+      folder: this.state.folder
+    });
+
     onMenuUpdate({
       ...options,
       activeTab: this.state.activeTab,
       lastTab: !!this.closedTabs.get(),
-      tabs: this.state.tabs
+      tabs: this.state.tabs,
+      folder: this.state.folder
     });
   };
 
@@ -1678,6 +1731,23 @@ export class App extends PureComponent {
       return;
     }
 
+    if (action === 'show-tab') {
+      let {
+        path,
+        tab
+      } = options;
+
+      if (path) {
+        tab = this.findOpenTab({ path });
+      }
+
+      if (tab) {
+        return this.showTab(tab);
+      }
+
+      this.readFileList([ path ]).then(files => this.openFiles(files));
+    }
+
     if (action === 'create-bpmn-diagram') {
       return this.createDiagram('bpmn');
     }
@@ -1708,6 +1778,20 @@ export class App extends PureComponent {
 
     if (action === 'open-diagram') {
       return this.showOpenFilesDialog();
+    }
+
+    if (action === 'open-file') {
+      const { path } = options;
+
+      return this.readFileList([ path ]).then(files => this.openFiles(files));
+    }
+
+    if (action === 'open-folder') {
+      return this.showOpenFolderDialog();
+    }
+
+    if (action === 'close-folder') {
+      return this.closeFolder();
     }
 
     if (action === 'save-all') {
@@ -1931,7 +2015,8 @@ export class App extends PureComponent {
       layout,
       logEntries,
       dirtyTabs,
-      unsavedTabs
+      unsavedTabs,
+      folder
     } = this.state;
 
     const Tab = this.getTabComponent(activeTab);
@@ -1947,56 +2032,89 @@ export class App extends PureComponent {
 
             <SlotFillRoot>
 
-              <div className="tabs">
-                <TabLinks
-                  tabs={ tabs }
-                  dirtyTabs={ dirtyTabs }
-                  unsavedTabs={ unsavedTabs }
-                  activeTab={ activeTab }
-                  getTabIcon={ this._getTabIcon }
-                  onSelect={ this.selectTab }
-                  onMoveTab={ this.moveTab }
-                  onContextMenu={ this.openTabLinksMenu }
-                  onClose={ this.handleCloseTab }
-                  placeholder={ tabs.length ? false : {
-                    label: 'Welcome',
-                    title: 'Welcome Screen'
-                  } }
-                  draggable
-                />
+              <div className="top">
 
-                <TabContainer className="main">
-                  {
-                    <Tab
-                      key={ activeTab.id }
-                      tab={ activeTab }
-                      layout={ layout }
-                      linting={ this.getLintingState(activeTab) }
-                      onChanged={ this.handleTabChanged(activeTab) }
-                      onError={ this.handleTabError(activeTab) }
-                      onWarning={ this.handleTabWarning(activeTab) }
-                      onShown={ this.handleTabShown(activeTab) }
-                      onLayoutChanged={ this.handleLayoutChanged }
-                      onContextMenu={ this.openTabMenu }
-                      onAction={ this.triggerAction }
-                      onModal={ this.openModal }
-                      onUpdateMenu={ this.updateMenu }
-                      getConfig={ this.getConfig }
-                      setConfig={ this.setConfig }
-                      getPlugins={ this.getPlugins }
-                      ref={ this.tabRef }
+                <LeftPanel>
+                  <Explorer
+                    tabs={ tabs }
+                    activeTab={ activeTab }
+                    folder={ folder }
+                    triggerAction={ this.triggerAction } />
+
+                  <Fill slot="left-panel_nav">
+                    <button>
+                      <UploadIcon />
+                    </button>
+                  </Fill>
+                  <Fill slot="left-panel_nav">
+                    <button>
+                      <PluginIcon />
+                    </button>
+                  </Fill>
+                  <Fill slot="left-panel_nav">
+                    <button>
+                      <SettingsIcon />
+                    </button>
+                  </Fill>
+                </LeftPanel>
+
+                <div className="right">
+
+                  <div className="tabs">
+                    <TabLinks
+                      tabs={ tabs }
+                      dirtyTabs={ dirtyTabs }
+                      unsavedTabs={ unsavedTabs }
+                      activeTab={ activeTab }
+                      getTabIcon={ this._getTabIcon }
+                      onSelect={ this.selectTab }
+                      onMoveTab={ this.moveTab }
+                      onContextMenu={ this.openTabLinksMenu }
+                      onClose={ this.handleCloseTab }
+                      placeholder={ tabs.length ? false : {
+                        label: 'Welcome',
+                        title: 'Welcome Screen'
+                      } }
+                      draggable
                     />
-                  }
-                </TabContainer>
+
+                    <TabContainer className="main">
+                      {
+                        <Tab
+                          key={ activeTab.id }
+                          tab={ activeTab }
+                          layout={ layout }
+                          linting={ this.getLintingState(activeTab) }
+                          onChanged={ this.handleTabChanged(activeTab) }
+                          onError={ this.handleTabError(activeTab) }
+                          onWarning={ this.handleTabWarning(activeTab) }
+                          onShown={ this.handleTabShown(activeTab) }
+                          onLayoutChanged={ this.handleLayoutChanged }
+                          onContextMenu={ this.openTabMenu }
+                          onAction={ this.triggerAction }
+                          onModal={ this.openModal }
+                          onUpdateMenu={ this.updateMenu }
+                          getConfig={ this.getConfig }
+                          setConfig={ this.setConfig }
+                          getPlugins={ this.getPlugins }
+                          ref={ this.tabRef }
+                        />
+                      }
+                    </TabContainer>
+                  </div>
+
+                  <Log
+                    entries={ logEntries }
+                    layout={ layout }
+                    onClear={ this.clearLog }
+                    onLayoutChanged={ this.handleLayoutChanged }
+                    onUpdateMenu={ this.updateMenu }
+                  />
+
+                </div>
+
               </div>
 
-              <Log
-                entries={ logEntries }
-                layout={ layout }
-                onClear={ this.clearLog }
-                onLayoutChanged={ this.handleLayoutChanged }
-                onUpdateMenu={ this.updateMenu }
-              />
 
               <StatusBar />
 

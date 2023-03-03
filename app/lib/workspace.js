@@ -16,6 +16,8 @@ const log = require('./log')('app:workspace');
 
 const { forEach } = require('min-dash');
 
+const { readFolderStats } = require('./file-system');
+
 
 class Workspace {
   constructor(config) {
@@ -48,11 +50,18 @@ class Workspace {
 
       workspace.endpoints = workspace.endpoints || [];
 
-      done(null, workspace);
+      done(null, {
+        ...workspace,
+        folder: workspace.folder ? readFolderStats(workspace.folder) : null
+      });
     });
 
     renderer.on('workspace:save', (workspace, done) => {
       log.info('saving');
+
+      if (workspace.folder) {
+        workspace.folder = workspace.folder.path;
+      }
 
       config.set('workspace', workspace);
 
