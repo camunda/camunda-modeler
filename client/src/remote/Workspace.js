@@ -17,6 +17,8 @@ export default class Workspace {
   }
 
   save(config) {
+    console.log('save workspace', config)
+
     return this.backend.send('workspace:save', config);
   }
 

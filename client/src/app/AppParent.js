@@ -33,7 +33,7 @@ const DEFAULT_CONFIG = {
   files: [],
   layout: {},
   endpoints: [],
-  folder: null
+  project: null
 };
 
 
@@ -133,14 +133,14 @@ export default class AppParent extends PureComponent {
 
     const endpoints = config.endpoints;
 
-    const folder = config.folder;
+    const project = config.project;
 
     const workspaceConfig = {
       files,
       activeFile,
       layout,
       endpoints,
-      folder
+      project
     };
 
     try {
@@ -168,7 +168,7 @@ export default class AppParent extends PureComponent {
       activeFile,
       files,
       layout,
-      folder
+      project
     } = restored;
 
     const app = this.getApp();
@@ -181,7 +181,7 @@ export default class AppParent extends PureComponent {
     this.prereadyState = {
       activeFile: this.prereadyState.activeFile || files[activeFile],
       files: mergeFiles(this.prereadyState.files, files),
-      folder
+      project
     };
 
     log('workspace restored');
@@ -270,7 +270,7 @@ export default class AppParent extends PureComponent {
     const {
       files,
       activeFile,
-      folder
+      project
     } = prereadyState;
 
     // mark as ready
@@ -280,8 +280,8 @@ export default class AppParent extends PureComponent {
 
     await this.getApp().openFiles(files, activeFile);
 
-    if (folder) {
-      this.getApp().openFolder(folder);
+    if (project) {
+      this.getApp().openProject(project);
     }
 
     if (typeof onStarted === 'function') {

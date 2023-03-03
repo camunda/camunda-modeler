@@ -189,4 +189,14 @@ export default class Dialog {
     return this.backend.send('dialog:open-folder', options);
   }
 
+  /**
+   * Show open project dialog.
+   *
+   * @param {Object} [options]
+   *
+   * @returns {Promise}
+   */
+  showOpenProjectDialog(options = {}) {
+    return this.backend.send('dialog:open-project', options);
+  }
 }

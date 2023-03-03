@@ -210,6 +210,22 @@ renderer.on('dialog:open-folder', async function(options, done) {
   done(null, folder);
 });
 
+renderer.on('dialog:open-project', async function(options, done) {
+  const projectPath = await dialog.showOpenDialog(options);
+
+  const project = readFile(projectPath);
+
+  project.path = projectPath;
+
+  project.folders.forEach((folderPath, index) => {
+    const folder = readFolderStats(folderPath);
+
+    project.folders[ index ] = folder;
+  });
+
+  done(null, project);
+});
+
 // clipboard ///////////
 
 renderer.on('system-clipboard:write-text', function(options, done) {

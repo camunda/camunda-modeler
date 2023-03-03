@@ -8,15 +8,13 @@
  * except in compliance with the MIT License.
  */
 
-const { readFile } = require('./file-system');
+const { readFile, readFolderStats } = require('./file-system');
 
 const renderer = require('./util/renderer');
 
 const log = require('./log')('app:workspace');
 
-const { forEach } = require('min-dash');
-
-const { readFolderStats } = require('./file-system');
+const { forEach, isString } = require('min-dash');
 
 
 class Workspace {
@@ -50,17 +48,32 @@ class Workspace {
 
       workspace.endpoints = workspace.endpoints || [];
 
+      if (workspace.project) {
+        if (isString(workspace.project)) {
+          workspace.project = readFile(workspace.project);
+        }
+
+        workspace.project.folders.forEach((folderPath, index) => {
+          const folder = readFolderStats(folderPath);
+
+          workspace.project.folders[ index ] = folder;
+        });
+      }
+
       done(null, {
-        ...workspace,
-        folder: workspace.folder ? readFolderStats(workspace.folder) : null
+        ...workspace
       });
     });
 
     renderer.on('workspace:save', (workspace, done) => {
       log.info('saving');
 
-      if (workspace.folder) {
-        workspace.folder = workspace.folder.path;
+      if (workspace.project) {
+        if (workspace.project.path) {
+          workspace.project = workspace.project.path;
+        } else {
+          workspace.project.folders = workspace.project.folders.map(folder => folder.path);
+        }
       }
 
       config.set('workspace', workspace);

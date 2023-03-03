@@ -19,7 +19,9 @@ import {
   groupBy,
   isString,
   map,
-  reduce
+  matchPattern,
+  reduce,
+  without
 } from 'min-dash';
 
 import EventEmitter from 'events';
@@ -98,7 +100,7 @@ const INITIAL_STATE = {
   notifications: [],
   currentModal: null,
   endpoints: [],
-  folder: null
+  project: null
 };
 
 
@@ -526,12 +528,18 @@ export class App extends PureComponent {
     await this.openFiles(files);
   };
 
-  showOpenFolderDialog = async () => {
+  showOpenFolderDialog = async (options = {}) => {
+    const { addToProject = false } = options;
+
     const dialog = this.getGlobal('dialog');
 
     const folder = await dialog.showOpenFolderDialog();
 
-    this.openFolder(folder);
+    if (addToProject) {
+      this.addFolderToProject(folder);
+    } else {
+      this.openFolder(folder);
+    }
   };
 
   showCloseFileDialog = (file) => {
@@ -648,26 +656,92 @@ export class App extends PureComponent {
   };
 
   /**
-   * Open a folder.
+   * Open folder.
    *
    * @param {Object} folder
    */
   openFolder(folder) {
     this.setState({
-      folder
+      project: {
+        folders: [
+          folder
+        ],
+
+        // unsaved project
+        path: null
+      }
     });
 
     this.workspaceChanged();
   }
 
   /**
-   * Close the open folder.
+   * Close open folder.
    */
   closeFolder() {
+    this.closeProject();
+  }
+
+  /**
+   * Open project.
+   *
+   * @param {Object} folder
+   */
+  openProject(project) {
+    this.setState({
+      project
+    });
+
+    this.workspaceChanged();
+  }
+
+  /**
+   * Close open project.
+   */
+  closeProject() {
     this.closeTabs(t => true);
 
     this.setState({
-      folder: null
+      project: null
+    });
+
+    this.workspaceChanged();
+  }
+
+  /**
+   * Add folder to open project. If no open project create one.
+   *
+   * @param {Object} folder
+   */
+  addFolderToProject(folder) {
+    if (!this.state.project) {
+      return this.openFolder(folder);
+    }
+
+    this.setState({
+      project: {
+        ...this.state.project,
+        folders: [
+          ...this.state.project.folders,
+          folder
+        ]
+      }
+    });
+
+    this.workspaceChanged();
+  }
+
+  /**
+   * Remove folder from open project.
+   *
+   * @param {Object} folder
+   */
+  removeFolderFromProject(folder) {
+    this.setState({
+      project: {
+        ...this.state.project,
+        folders: without(this.state.project.folders, matchPattern({ path: folder.path }))
+      }
     });
 
     this.workspaceChanged();
@@ -1157,7 +1231,7 @@ export class App extends PureComponent {
       tabs,
       activeTab,
       endpoints,
-      folder
+      project
     } = this.state;
 
     return onWorkspaceChanged({
@@ -1165,7 +1239,7 @@ export class App extends PureComponent {
       activeTab,
       layout,
       endpoints,
-      folder
+      project
     });
   };
 
@@ -1787,7 +1861,7 @@ export class App extends PureComponent {
     }
 
     if (action === 'open-folder') {
-      return this.showOpenFolderDialog();
+      return this.showOpenFolderDialog(options);
     }
 
     if (action === 'close-folder') {
@@ -2016,7 +2090,7 @@ export class App extends PureComponent {
       logEntries,
       dirtyTabs,
       unsavedTabs,
-      folder
+      project
     } = this.state;
 
     const Tab = this.getTabComponent(activeTab);
@@ -2038,7 +2112,7 @@ export class App extends PureComponent {
                   <Explorer
                     tabs={ tabs }
                     activeTab={ activeTab }
-                    folder={ folder }
+                    folders={ project ? project.folders : [] }
                     triggerAction={ this.triggerAction } />
 
                   <Fill slot="left-panel_nav">

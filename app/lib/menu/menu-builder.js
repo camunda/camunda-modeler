@@ -68,6 +68,8 @@ class MenuBuilder {
         .appendOpenFolder()
         .appendCloseFolder()
         .appendSeparator()
+        .appendAddFolderToProject()
+        .appendSeparator()
         .appendSwitchTab()
         .appendSaveFile()
         .appendSaveAsFile()
@@ -223,6 +225,17 @@ class MenuBuilder {
       enabled: this.options.state.folder,
       click: function() {
         app.emit('menu:action', 'close-folder');
+      }
+    }));
+
+    return this;
+  }
+
+  appendAddFolderToProject() {
+    this.menu.append(new MenuItem({
+      label: 'Add Folder to Project',
+      click: function() {
+        app.emit('menu:action', 'open-folder', { addToProject: true });
       }
     }));
 

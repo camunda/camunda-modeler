@@ -32,7 +32,7 @@ export default function Explorer(props) {
   const {
     tabs,
     activeTab,
-    folder,
+    folders,
     triggerAction
   } = props;
 
@@ -62,10 +62,10 @@ export default function Explorer(props) {
             }
           </TreeView>
         </div>
-        <div className={ classNames('folder', { 'folder-empty': !folder }) }>
-          <Tree folder={ folder } triggerAction={ triggerAction } />
+        <div className={ classNames('folder', { 'folder-empty': !folders.length }) }>
+          <Folders folders={ folders } triggerAction={ triggerAction } />
           {
-            !folder
+            !folders.length
               ? <button className="btn btn-primary" onClick={ () => triggerAction('open-folder') }>Open Folder</button>
               : null
           }
@@ -75,27 +75,31 @@ export default function Explorer(props) {
   </>;
 }
 
-function Tree(props) {
+function Folders(props) {
   const {
-    folder,
+    folders,
     triggerAction
   } = props;
 
   let label;
 
-  if (!folder) {
+  if (!folders.length) {
     label = 'No open folder';
+  } else if (folders.length > 1) {
+    label = `${ folders[ 0 ].name } (Project)`;
   } else {
-    label = folder.name;
+    label = folders[ 0 ].name;
   }
 
   return <TreeView label={ label } size="xs" selected={ [] }>
     {
-
-      // TODO: multi-folder
-      (folder ? [ folder ] : []).map(folder => {
-        return <Folder key={ folder.path } folder={ folder } triggerAction={ triggerAction } />;
-      })
+      folders.length
+        ? (
+          <FolderChildren
+            children={ folders.length > 1 ? folders : folders[ 0 ].children }
+            triggerAction={ triggerAction } />
+        )
+        : null
     }
   </TreeView>;
 }
@@ -119,28 +123,38 @@ function Folder(props) {
     selected={ [] }
     onSelect={ () => console.log('TODO') }
     isExpanded={ true }>
+    <FolderChildren children={ folder.children } depth={ depth + 1 } triggerAction={ triggerAction } />
+  </TreeNode>;
+}
 
-    {
-      folder.children
-        ? sortChildren(folder.children).map(child => {
-          if (child.children) {
-            return <Folder key={ child.path } depth={ depth } folder={ child } triggerAction={ triggerAction } />;
-          }
+function FolderChildren(props) {
+  const {
+    children = [],
+    depth = 0,
+    triggerAction
+  } = props;
 
-          return <TreeNode
-            depth={ depth + 1 }
-            key={ child.path }
-            id={ child.path }
-            label={ <span>{ child.name }</span> }
-            renderIcon={ getIcon(child) }
-            value={ child.path }
-            selected={ [] }
-          onSelect={ () => triggerAction('show-tab', { path: child.path }) } />;
-        })
-        : null
+  if (!children.length) {
+    return null;
+  }
+
+  return sortChildren(children).map(child => {
+    if (child.children) {
+      return <Folder key={ child.path } depth={ depth } folder={ child } triggerAction={ triggerAction } />;
     }
 
-  </TreeNode>;
+    return (
+      <TreeNode
+        depth={ depth }
+        key={ child.path }
+        id={ child.path }
+        label={ <span>{ child.name }</span> }
+        renderIcon={ getIcon(child) }
+        value={ child.path }
+        selected={ [] }
+        onSelect={ () => triggerAction('show-tab', { path: child.path }) } />
+    );
+  });
 }
 
 function getIcon(node) {
