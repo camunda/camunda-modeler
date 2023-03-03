@@ -19,9 +19,11 @@ import {
   groupBy,
   isString,
   map,
+  matchPattern,
   merge,
+  pick,
   reduce,
-  pick
+  without
 } from 'min-dash';
 
 import EventEmitter from 'events';
@@ -35,8 +37,12 @@ import { WithCache } from './cached';
 import { DropZone } from './drop-zone';
 
 import {
-  SlotFillRoot
+  SlotFillRoot,
+  Fill
 } from './slot-fill';
+
+import Explorer from './Explorer';
+import LeftPanel from './LeftPanel';
 
 import PanelContainer from './resizable-container/PanelContainer';
 
@@ -72,6 +78,10 @@ import * as css from './App.less';
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 import { RecentTabs } from './RecentTabs';
 
+import PluginIcon from '../../resources/icons/Plugin.svg';
+import SettingsIcon from '../../resources/icons/Settings.svg';
+import UploadIcon from '../../resources/icons/Upload.svg';
+
 const log = debug('App');
 
 export const EMPTY_TAB = {
@@ -98,7 +108,8 @@ const INITIAL_STATE = {
   logEntries: [],
   notifications: [],
   currentModal: null,
-  endpoints: []
+  endpoints: [],
+  project: null
 };
 
 
@@ -592,6 +603,20 @@ export class App extends PureComponent {
     await this.openFiles(files);
   };
 
+  showOpenFolderDialog = async (options = {}) => {
+    const { addToProject = false } = options;
+
+    const dialog = this.getGlobal('dialog');
+
+    const folder = await dialog.showOpenFolderDialog();
+
+    if (addToProject) {
+      this.addFolderToProject(folder);
+    } else {
+      this.openFolder(folder);
+    }
+  };
+
   showCloseFileDialog = (file) => {
     const { name } = file;
 
@@ -704,6 +729,98 @@ export class App extends PureComponent {
 
     return openedTabs;
   };
+
+  /**
+   * Open folder.
+   *
+   * @param {Object} folder
+   */
+  openFolder(folder) {
+    this.setState({
+      project: {
+        folders: [
+          folder
+        ],
+
+        // unsaved project
+        path: null
+      }
+    });
+
+    this.workspaceChanged();
+  }
+
+  /**
+   * Close open folder.
+   */
+  closeFolder() {
+    this.closeProject();
+  }
+
+  /**
+   * Open project.
+   *
+   * @param {Object} folder
+   */
+  openProject(project) {
+    this.setState({
+      project
+    });
+
+    this.workspaceChanged();
+  }
+
+  /**
+   * Close open project.
+   */
+  closeProject() {
+    this.closeTabs(t => true);
+
+    this.setState({
+      project: null
+    });
+
+    this.workspaceChanged();
+  }
+
+  /**
+   * Add folder to open project. If no open project create one.
+   *
+   * @param {Object} folder
+   */
+  addFolderToProject(folder) {
+    if (!this.state.project) {
+      return this.openFolder(folder);
+    }
+
+    this.setState({
+      project: {
+        ...this.state.project,
+        folders: [
+          ...this.state.project.folders,
+          folder
+        ]
+      }
+    });
+
+    this.workspaceChanged();
+  }
+
+  /**
+   * Remove folder from open project.
+   *
+   * @param {Object} folder
+   */
+  removeFolderFromProject(folder) {
+    this.setState({
+      project: {
+        ...this.state.project,
+        folders: without(this.state.project.folders, matchPattern({ path: folder.path }))
+      }
+    });
+
+    this.workspaceChanged();
+  }
 
   readFileList = async filePaths => {
     const readOperations = filePaths.map(this.readFileFromPath);
@@ -1192,14 +1309,16 @@ export class App extends PureComponent {
       layout,
       tabs,
       activeTab,
-      endpoints
+      endpoints,
+      project
     } = this.state;
 
     return onWorkspaceChanged({
       tabs,
       activeTab,
       layout,
-      endpoints
+      endpoints,
+      project
     });
   };
 
@@ -1621,12 +1740,21 @@ export class App extends PureComponent {
 
     const { onMenuUpdate } = this.props;
 
+    console.log('update menu', {
+      ...options,
+      activeTab: this.state.activeTab,
+      lastTab: !!this.closedTabs.get(),
+      tabs: this.state.tabs,
+      folder: this.state.folder
+    });
+
     onMenuUpdate({
       ...options,
       activeTab: this.state.activeTab,
       lastTab: !!this.closedTabs.get(),
       closedTabs: this.state.recentTabs,
-      tabs: this.state.tabs
+      tabs: this.state.tabs,
+      folder: this.state.folder
     });
   };
 
@@ -1775,6 +1903,23 @@ export class App extends PureComponent {
       return;
     }
 
+    if (action === 'show-tab') {
+      let {
+        path,
+        tab
+      } = options;
+
+      if (path) {
+        tab = this.findOpenTab({ path });
+      }
+
+      if (tab) {
+        return this.showTab(tab);
+      }
+
+      this.readFileList([ path ]).then(files => this.openFiles(files));
+    }
+
     if (action === 'create-bpmn-diagram') {
       return this.createDiagram('bpmn');
     }
@@ -1813,6 +1958,20 @@ export class App extends PureComponent {
 
     if (action === 'open-diagram') {
       return this.showOpenFilesDialog();
+    }
+
+    if (action === 'open-file') {
+      const { path } = options;
+
+      return this.readFileList([ path ]).then(files => this.openFiles(files));
+    }
+
+    if (action === 'open-folder') {
+      return this.showOpenFolderDialog(options);
+    }
+
+    if (action === 'close-folder') {
+      return this.closeFolder();
     }
 
     if (action === 'save-all') {
@@ -2068,7 +2227,10 @@ export class App extends PureComponent {
       tabs,
       activeTab,
       layout,
-      logEntries
+      logEntries,
+      dirtyTabs,
+      unsavedTabs,
+      project
     } = this.state;
 
     const isDirty = (tab) => {
@@ -2089,46 +2251,79 @@ export class App extends PureComponent {
 
             <SlotFillRoot>
 
-              <div className="tabs">
-                <TabLinks
-                  tabs={ tabs }
-                  isDirty={ isDirty }
-                  activeTab={ activeTab }
-                  getTabIcon={ this._getTabIcon }
-                  onSelect={ this.selectTab }
-                  onMoveTab={ this.moveTab }
-                  onContextMenu={ this.openTabLinksMenu }
-                  onClose={ this.handleCloseTab }
-                  placeholder={ tabs.length ? false : {
-                    label: 'Welcome',
-                    title: 'Welcome Screen'
-                  } }
-                  draggable
-                />
+              <div className="top">
 
-                <TabContainer className="main">
-                  {
-                    <Tab
-                      key={ activeTab.id }
-                      tab={ activeTab }
-                      layout={ layout }
-                      linting={ this.getLintingState(activeTab) }
-                      onChanged={ this.handleTabChanged(activeTab) }
-                      onError={ this.handleTabError(activeTab) }
-                      onWarning={ this.handleTabWarning(activeTab) }
-                      onShown={ this.handleTabShown(activeTab) }
-                      onLayoutChanged={ this.handleLayoutChanged }
-                      onContextMenu={ this.openTabMenu }
-                      onAction={ this.triggerAction }
-                      onModal={ this.openModal }
-                      onUpdateMenu={ this.updateMenu }
-                      getConfig={ this.getConfig }
-                      setConfig={ this.setConfig }
-                      getPlugins={ this.getPlugins }
-                      ref={ this.tabRef }
+                <LeftPanel>
+                  <Explorer
+                    tabs={ tabs }
+                    activeTab={ activeTab }
+                    folders={ project ? project.folders : [] }
+                    triggerAction={ this.triggerAction } />
+
+                  <Fill slot="left-panel_nav">
+                    <button>
+                      <UploadIcon />
+                    </button>
+                  </Fill>
+                  <Fill slot="left-panel_nav">
+                    <button>
+                      <PluginIcon />
+                    </button>
+                  </Fill>
+                  <Fill slot="left-panel_nav">
+                    <button>
+                      <SettingsIcon />
+                    </button>
+                  </Fill>
+                </LeftPanel>
+
+                <div className="right">
+
+                  <div className="tabs">
+                    <TabLinks
+                      tabs={ tabs }
+                      dirtyTabs={ dirtyTabs }
+                      unsavedTabs={ unsavedTabs }
+                      activeTab={ activeTab }
+                      getTabIcon={ this._getTabIcon }
+                      onSelect={ this.selectTab }
+                      onMoveTab={ this.moveTab }
+                      onContextMenu={ this.openTabLinksMenu }
+                      onClose={ this.handleCloseTab }
+                      placeholder={ tabs.length ? false : {
+                        label: 'Welcome',
+                        title: 'Welcome Screen'
+                      } }
+                      draggable
                     />
-                  }
-                </TabContainer>
+
+                    <TabContainer className="main">
+                      {
+                        <Tab
+                          key={ activeTab.id }
+                          tab={ activeTab }
+                          layout={ layout }
+                          linting={ this.getLintingState(activeTab) }
+                          onChanged={ this.handleTabChanged(activeTab) }
+                          onError={ this.handleTabError(activeTab) }
+                          onWarning={ this.handleTabWarning(activeTab) }
+                          onShown={ this.handleTabShown(activeTab) }
+                          onLayoutChanged={ this.handleLayoutChanged }
+                          onContextMenu={ this.openTabMenu }
+                          onAction={ this.triggerAction }
+                          onModal={ this.openModal }
+                          onUpdateMenu={ this.updateMenu }
+                          getConfig={ this.getConfig }
+                          setConfig={ this.setConfig }
+                          getPlugins={ this.getPlugins }
+                          ref={ this.tabRef }
+                        />
+                      }
+                    </TabContainer>
+                  </div>
+
+                </div>
+
               </div>
 
               <PanelContainer

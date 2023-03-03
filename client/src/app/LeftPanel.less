@@ -1,0 +1,42 @@
+:local(.LeftPanel) {
+  background-color: var(--color-grey-225-10-95);
+  z-index: 1000;
+  display: flex;
+  flex-direction: row;
+
+  .nav {
+    width: 50px;
+    background-color: var(--color-grey-225-10-85);
+    border-right: solid 1px var(--color-grey-225-10-75);
+
+    button {
+      width: 50px;
+      height: 50px;
+      border: none;
+      background: none;
+      box-sizing: border-box;
+      border-left: solid 4px transparent;
+
+      svg {
+        width: 24px;
+        height: 24px;
+        color: var(--color-grey-225-10-35);
+      }
+
+      &.active {
+        background-color: var(--color-grey-225-10-75);
+        border-left-color: var(--color-blue-205-100-50);
+      }
+
+      &:hover {
+        background-color: var(--color-grey-225-10-75);
+      }
+    }
+  }
+
+  .content {
+    width: 400px;
+    background-color: var(--color-grey-225-10-95);
+    border-right: solid 1px var(--color-grey-225-10-75);
+  }
+}

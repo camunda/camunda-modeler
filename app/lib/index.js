@@ -44,6 +44,7 @@ const {
 const {
   readFile,
   readFileStats,
+  readFolderStats,
   writeFile
 } = require('./file-system');
 
@@ -203,6 +204,30 @@ renderer.on('dialog:open-file-explorer', function(options, done) {
   fileExplorerOpen(path);
 
   done(null, undefined);
+});
+
+renderer.on('dialog:open-folder', async function(options, done) {
+  const folderPath = await dialog.showOpenFolderDialog(options);
+
+  const folder = readFolderStats(folderPath);
+
+  done(null, folder);
+});
+
+renderer.on('dialog:open-project', async function(options, done) {
+  const projectPath = await dialog.showOpenDialog(options);
+
+  const project = readFile(projectPath);
+
+  project.path = projectPath;
+
+  project.folders.forEach((folderPath, index) => {
+    const folder = readFolderStats(folderPath);
+
+    project.folders[ index ] = folder;
+  });
+
+  done(null, project);
 });
 
 // clipboard ///////////

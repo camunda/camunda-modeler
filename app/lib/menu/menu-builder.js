@@ -65,7 +65,11 @@ class MenuBuilder {
     this.appendFileMenu(
       new MenuBuilder(this.options)
         .appendNewFile()
-        .appendOpen()
+        .appendOpenFile()
+        .appendOpenFolder()
+        .appendCloseFolder()
+        .appendSeparator()
+        .appendAddFolderToProject()
         .appendSeparator()
         .appendSwitchTab()
         .appendSaveFile()
@@ -186,7 +190,7 @@ class MenuBuilder {
     }, []);
   }
 
-  appendOpen() {
+  appendOpenFile() {
     this.menu.append(new MenuItem({
       label: 'Open File...',
       accelerator: 'CommandOrControl+O',
@@ -196,6 +200,41 @@ class MenuBuilder {
     }));
 
     this.appendOpenRecent();
+
+    return this;
+  }
+
+  appendOpenFolder() {
+    this.menu.append(new MenuItem({
+      label: 'Open Folder...',
+      accelerator: 'CommandOrControl+Shift+O',
+      click: function() {
+        app.emit('menu:action', 'open-folder');
+      }
+    }));
+
+    return this;
+  }
+
+  appendCloseFolder() {
+    this.menu.append(new MenuItem({
+      label: 'Close Folder',
+      enabled: this.options.state.folder,
+      click: function() {
+        app.emit('menu:action', 'close-folder');
+      }
+    }));
+
+    return this;
+  }
+
+  appendAddFolderToProject() {
+    this.menu.append(new MenuItem({
+      label: 'Add Folder to Project',
+      click: function() {
+        app.emit('menu:action', 'open-folder', { addToProject: true });
+      }
+    }));
 
     return this;
   }
