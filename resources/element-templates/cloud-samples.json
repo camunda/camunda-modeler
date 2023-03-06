@@ -282,8 +282,16 @@
           "notEmpty": true
         },
         "condition": {
-          "property": "authenticationType",
-          "equals": "basic"
+          "allMatch": [
+            {
+              "property": "httpMethod",
+              "oneOf": ["patch", "post", "delete"]
+            },
+            {
+              "property": "authenticationType",
+              "equals": "basic"
+            }
+          ]
         }
       },
       {
@@ -298,8 +306,16 @@
           "notEmpty": true
         },
         "condition": {
-          "property": "authenticationType",
-          "equals": "basic"
+          "allMatch": [
+            {
+              "property": "httpMethod",
+              "oneOf": ["patch", "post", "delete"]
+            },
+            {
+              "property": "authenticationType",
+              "equals": "basic"
+            }
+          ]
         }
       },
       {
