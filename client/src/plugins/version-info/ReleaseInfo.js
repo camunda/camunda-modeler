@@ -44,20 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>A scalable forms palette</h4>
-          The new palette helps you find what you need in our growing list of <a href="https://docs.camunda.io/docs/next/components/modeler/forms/form-element-library/forms-element-library/">supported form elements</a>.
-        </li>
-        <li>
-          <h4>Reworked BPMN rendering</h4>
-          Round connection corners and other BPMN element rendering improvements make it easier to look at and understand bigger BPMN processes.
-        </li>
-        <li>
-          <h4>Create/Append any BPMN element</h4>
-          Speed up modeling of executable BPMN processes using the new create/append anything tools.
+          <h4>More Complex Conditions for Element Template Properties</h4>
+          Element Templates now support multiple conditions and allow you to create more complex templates. Learn how to use conditional properties in <a href="https://docs.camunda.io/docs/next/components/modeler/desktop-modeler/element-templates/defining-templates/#defining-conditional-properties">our docs</a>.
         </li>
         <li>
           <h4>Extended support for Camunda 8 BPMN</h4>
-          Added support for modeling escalation events. Try out upcoming Camunda 8.2 features today.
+          Added support for modeling catch-all events. Try out upcoming Camunda 8.2 features today.
+        </li>
+        <li>
+          <h4>And More!</h4>
+          This release includes a lot of smaller improvements and bug-fixes. Check out the full <a href="https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md#590">Changelog</a> for more details.
         </li>
       </ul>
     </div>
