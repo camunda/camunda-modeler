@@ -6,8 +6,38 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.9.0
+
+### General
+
+* `FEAT`: support MaxOS shortcuts to switch tabs ([#3444](https://github.com/camunda/camunda-modeler/issues/3444))
+* `FEAT`: run renderer in sandbox per default ([#3475](https://github.com/camunda/camunda-modeler/pull/3475))
+* `FEAT`: expose activeTab to menu ([#3458](https://github.com/camunda/camunda-modeler/issues/3458))
+* `FIX`: send original event from keyboard shortcuts ([#3474](https://github.com/camunda/camunda-modeler/pull/3474))
+
+### BPMN
+
+* `FEAT`: element templates support properties with multiple conditions ([bpmn-js-properties-panel#884](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/884))
+* `FEAT`: add create-append-anything shortcuts ([#3472](https://github.com/camunda/camunda-modeler/issues/3472))
+* `FEAT`: allow external variable providers to be added ([variable-resolver#1](https://github.com/bpmn-io/variable-resolver/pull/1))
+* `FIX`: restore undo/redo behavior for german keyboard layout ([diagram-js#749](https://github.com/bpmn-io/diagram-js/pull/749))
+* `FIX`: conditional props are applied when creating elements from element templates ([bpmn-js-properties-panel#878](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/878))
+* `FIX`: correct order of variable name and FEEL expression in Script Tasks ([bpmn-js-properties-panel#886](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/886))
+* `FIX`: enforce minimum Textarea height ([properties-panel#220](https://github.com/bpmn-io/properties-panel/pull/220))
 * `FIX`: correctly display error message for error code ([#3443](https://github.com/camunda/camunda-modeler/issues/3443))
-* `DEPS`: update to `@camunda/linting@0.15.1`
+* `FIX`: correct SaaS deployment link ([https://github.com/camunda/camunda-modeler/issues/3433](#3433))
+* `DEPS`: update to `@bpmn-io/properties-panel@1.4.0`
+* `DEPS`: update to `@camunda/linting@0.16.0`
+* `DEPS`: update to `bpmn-js@11.5.0`
+* `DEPS`: update to `bpmn-js-properties-panel@1.19.1`
+* `DEPS`: update to `camunda-bpmn-js@1.5.0`
+* `DEPS`: update to `diagram-js@11.11.0`
+
+## DMN
+
+* `FEAT`: allow multi-line headers in decision tables ([dmn-js#719](https://github.com/bpmn-io/dmn-js/issues/719))
+* `DEPS`: update to `dmn-js@14.1.1`
+
 
 ## 5.8.0
 
