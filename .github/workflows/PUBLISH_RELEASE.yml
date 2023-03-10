@@ -14,7 +14,7 @@ jobs:
     - name: Download release artifacts
       run: |
         mkdir artifacts
-        echo ${{ toJSON(github.event.release.assets.*.browser_download_url) }} | jq '.[]' | xargs wget --directory-prefix artifacts
+        echo '${{ toJSON(github.event.release.assets.*.browser_download_url) }}' | jq '.[]' | xargs wget --directory-prefix artifacts
 
     - name: Import Secrets
       id: secrets
