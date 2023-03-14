@@ -848,7 +848,8 @@ export class BpmnEditor extends CachedComponent {
       },
       propertiesPanel: {
         feelTooltipContainer: '.editor'
-      }
+      },
+      elementTemplateChooser: false
     });
 
     const commandStack = modeler.get('commandStack');
