@@ -12,7 +12,9 @@ import React from 'react';
 
 import classnames from 'classnames';
 
-import Panel from '../Panel';
+import Panel from '../../Panel';
+
+import LintingStatusBarItem from './LintingStatusBarItem';
 
 import css from './LintingTab.less';
 
@@ -22,7 +24,7 @@ import WarningIcon from '../../../../../resources/icons/Warning.svg';
 
 export default function LintingTab(props) {
   const {
-    layout,
+    layout = {},
     linting: reports,
     onAction,
     onLayoutChanged
@@ -32,39 +34,54 @@ export default function LintingTab(props) {
     onAction('showLintError', report);
   };
 
-  return <Panel.Tab
-    id="linting"
-    label="Problems"
-    layout={ layout }
-    number={ reports.length }
-    onLayoutChanged={ onLayoutChanged }
-    priority={ 1 }>
-    { reports.length
-      ? null
-      : (
-        <div className={ classnames(css.LintingTabItem, 'linting-tab-item--empty') }>
-          <div className="linting-tab-item__header">
-            <SuccessIcon width="16" height="16" />
-            <span className="linting-tab-item__label">No problems found.</span>
-          </div>
-        </div>
-      )
-    }
-    {
-      sortReports(reports).map((report => {
-        const {
-          id,
-          message
-        } = report;
+  const onToggle = () => {
+    const { panel = {} } = layout;
 
-        return <LintingTabItem
-          key={ `${ id }-${ message }` }
-          report={ report }
-          onClick={ onClick(report) }
-        />;
-      }))
+    if (!panel.open || panel.tab !== 'linting') {
+      onAction('open-panel', { tab: 'linting' });
+    } else if (panel.tab === 'linting') {
+      onAction('close-panel');
     }
-  </Panel.Tab>;
+  };
+
+  return <>
+    <Panel.Tab
+      id="linting"
+      label="Problems"
+      layout={ layout }
+      onLayoutChanged={ onLayoutChanged }
+      priority={ 1 }>
+      { reports.length
+        ? null
+        : (
+          <div className={ classnames(css.LintingTabItem, 'linting-tab-item--empty') }>
+            <div className="linting-tab-item__header">
+              <SuccessIcon width="16" height="16" />
+              <span className="linting-tab-item__label">No problems found.</span>
+            </div>
+          </div>
+        )
+      }
+      {
+        sortReports(reports).map((report => {
+          const {
+            id,
+            message
+          } = report;
+
+          return <LintingTabItem
+            key={ `${ id }-${ message }` }
+            report={ report }
+            onClick={ onClick(report) }
+          />;
+        }))
+      }
+    </Panel.Tab>
+    <LintingStatusBarItem
+      layout={ layout }
+      linting={ reports }
+      onToggle={ onToggle } />
+  </>;
 }
 
 function LintingTabItem(props) {

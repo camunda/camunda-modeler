@@ -17,7 +17,9 @@ import { isDefined } from 'min-dash';
 import {
   Fill,
   Slot
-} from '../../slot-fill';
+} from '../slot-fill';
+
+import CloseIcon from '../../../resources/icons/Close.svg';
 
 import css from './Panel.less';
 
@@ -73,8 +75,20 @@ export default class Panel extends PureComponent {
   render() {
     const {
       children,
-      layout = {}
+      layout = {},
+      onLayoutChanged
     } = this.props;
+
+    const close = () => {
+      const { panel = {} } = layout;
+
+      onLayoutChanged({
+        panel: {
+          ...panel,
+          open: false
+        }
+      });
+    };
 
     const { panel = {} } = layout;
 
@@ -85,8 +99,16 @@ export default class Panel extends PureComponent {
     }
 
     return <div className={ classnames(css.Panel, { open }) }>
-      <div className="panel__links">
-        <Slot name="panel-link" />
+      <div className="panel__header">
+        <div className="panel__links">
+          <Slot name="panel-link" />
+        </div>
+        <div className="panel__actions">
+          <Slot name="panel-action" />
+          <button key="close" className="panel__action" title="Close panel" onClick={ close }>
+            <CloseIcon />
+          </button>
+        </div>
       </div>
       <div tabIndex="0" className="panel__body" onFocus={ this.updateMenu }>
         <div className="panel__inner">
@@ -104,6 +126,7 @@ Panel.Tab = Tab;
 
 function Tab(props) {
   const {
+    actions = null,
     children,
     id,
     label,
@@ -126,10 +149,10 @@ function Tab(props) {
     });
   };
 
-  return <div>
+  return <>
     <Fill slot="panel-link" priority={ priority }>
       <button
-        className={ classnames('panel__link', { 'panel__link--active': panel.tab === id }) }
+        className={ classnames('panel__link', { 'panel__link--active': tab === id }) }
         onClick={ onClick }>
         <span className="panel__link-label">
           { label }
@@ -142,13 +165,26 @@ function Tab(props) {
       </button>
     </Fill>
     {
+      actions && tab === id && <Fill slot="panel-action">
+        {
+          actions.map(action => {
+            const Icon = action.icon;
+
+            return <button key={ action.title } className="panel__action" title={ action.title } onClick={ action.onClick }>
+              <Icon />
+            </button>;
+          })
+        }
+      </Fill>
+    }
+    {
       tab === id && (
         <Fill slot="panel-body">
           { children }
         </Fill>
       )
     }
-  </div>;
+  </>;
 }
 
 

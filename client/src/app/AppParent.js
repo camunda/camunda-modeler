@@ -168,7 +168,16 @@ export default class AppParent extends PureComponent {
 
     const app = this.getApp();
 
-    app.setLayout(layout);
+    const { panel = { open: false } } = layout;
+
+    // set log closed by default
+    app.setLayout({
+      ...layout,
+      panel: {
+        ...panel,
+        open: panel.tab === 'log' ? false : panel.open
+      }
+    });
 
     // remember to-be restored files but postpone opening + activation
     // until <client:started> batch restore workspace files + files opened

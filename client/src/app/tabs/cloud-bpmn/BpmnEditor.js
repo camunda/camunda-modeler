@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { isFunction } from 'min-dash';
 
@@ -56,12 +56,6 @@ import {
 } from '../EngineProfile';
 
 import EngineProfileHelper from '../EngineProfileHelper';
-
-import { Linting } from '../Linting';
-
-import Panel from '../panel/Panel';
-
-import LintingTab from '../panel/tabs/LintingTab';
 
 import {
   ENGINES
@@ -186,6 +180,16 @@ export class BpmnEditor extends CachedComponent {
 
     if (prevProps.linting !== this.props.linting) {
       this.getModeler().get('linting').setErrors(this.props.linting || []);
+    }
+
+    const { layout = {} } = this.props;
+
+    const { panel = {} } = layout;
+
+    if (panel.open && panel.tab === 'linting') {
+      this.getModeler().get('linting').activate();
+    } else if (!panel.open || panel.tab !== 'linting') {
+      this.getModeler().get('linting').deactivate();
     }
   }
 
@@ -458,32 +462,6 @@ export class BpmnEditor extends CachedComponent {
 
   isLintingActive = () => {
     return this.getModeler().get('linting').isActive();
-  };
-
-  handleToggleLinting = () => {
-    const { onLayoutChanged } = this.props;
-
-    const linting = this.getModeler().get('linting');
-
-    if (linting.isActive()) {
-      linting.deactivate();
-
-      onLayoutChanged({
-        panel: {
-          open: false,
-          tab: 'linting'
-        }
-      });
-    } else {
-      linting.activate();
-
-      onLayoutChanged({
-        panel: {
-          open: true,
-          tab: 'linting'
-        }
-      });
-    }
   };
 
   isDirty() {
@@ -765,8 +743,7 @@ export class BpmnEditor extends CachedComponent {
       layout,
       linting = [],
       onAction,
-      onLayoutChanged,
-      onUpdateMenu
+      onLayoutChanged
     } = this.props;
 
     const imported = this.getModeler().getDefinitions();
@@ -799,24 +776,6 @@ export class BpmnEditor extends CachedComponent {
           type="bpmn"
           engineProfile={ engineProfile }
           onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } />
-        }
-
-        {
-          engineProfile && <Fragment>
-            <Panel
-              layout={ layout }
-              onUpdateMenu={ onUpdateMenu }>
-              <LintingTab
-                layout={ layout }
-                linting={ linting }
-                onAction={ onAction }
-                onLayoutChanged={ onLayoutChanged } />
-            </Panel>
-            <Linting
-              layout={ layout }
-              linting={ linting }
-              onToggleLinting={ this.handleToggleLinting } />
-          </Fragment>
         }
       </div>
     );
