@@ -1,0 +1,32 @@
+:root {
+  --log-font-family: var(--font-family-monospace);
+  --log-font-size: var(--font-size-default);
+  --log-color: var(--color-grey-225-10-15);
+  --log-border-color: var(--color-grey-225-10-75);
+  --log-background-color: var(--color-white);
+  --log-resizer-border-color: var(--color-grey-225-10-75);
+  --log-button-background-color: var(--color-grey-225-10-95);
+  --log-button-border-color: var(--color-grey-225-10-75);
+  --log-button-hover-background-color: var(--color-grey-225-10-97);
+}
+
+:local(.LogTab) {
+  position: relative;
+  font-size: var(--log-font-size);
+  font-family: var(--log-font-family);
+  color: var(--log-color);
+
+  white-space: pre-wrap;
+  padding: 5px;
+  resize: none;
+  outline: none;
+
+  width: 100%;
+  display: block;
+
+  .entry {
+    * {
+      user-select: text;
+    }
+  }
+}

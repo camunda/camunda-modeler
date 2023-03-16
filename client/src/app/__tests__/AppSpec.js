@@ -21,7 +21,7 @@ import {
   getOpenFileErrorDialog
 } from '../App';
 
-import Log from '../Log';
+import Panel from '../panel/Panel';
 
 import Flags, { DISABLE_REMOTE_INTERACTION } from '../../util/Flags';
 
@@ -1725,9 +1725,30 @@ describe('<App>', function() {
   });
 
 
-  describe('log', function() {
+  describe('panel', function() {
 
-    it('should toggle open', function() {
+    it('should render', function() {
+
+      // given
+      const {
+        app,
+        tree
+      } = createApp();
+
+      // when
+      app.setLayout({
+        panel: {
+          open: true,
+          tab: 'log'
+        }
+      });
+
+      // then
+      expect(tree.find(Panel).exists()).to.be.true;
+    });
+
+
+    it('should open', function() {
 
       // given
       const { app } = createApp();
@@ -1735,86 +1756,117 @@ describe('<App>', function() {
       app.setLayout({});
 
       // when
-      app.toggleLog(true);
+      app.openPanel('log');
 
       // then
       expect(app.state.layout).to.eql({
-        log: { open: true }
+        panel: {
+          open: true,
+          tab: 'log'
+        }
       });
     });
 
 
-    it('should toggle closed', function() {
+    it('should close', function() {
 
       // given
       const { app } = createApp();
 
       app.setLayout({
-        log: { open: true }
+        panel: {
+          open: true,
+          tab: 'log'
+        }
       });
 
       // when
-      app.toggleLog(false);
+      app.closePanel();
 
       // then
       expect(app.state.layout).to.eql({
-        log: { open: false }
+        panel: {
+          open: false,
+          tab: 'log'
+        }
       });
     });
 
 
-    it('should clear', function() {
+    describe('#triggerAction', function() {
 
-      // given
-      const { app } = createApp();
+      it('should open', function() {
 
-      app.setState({ logEntries: [ 'A', 'B' ] });
+        // given
+        const { app } = createApp();
 
-      // when
-      app.clearLog();
+        app.setLayout({});
 
-      // then
-      expect(app.state.logEntries).to.be.empty;
-    });
+        // when
+        app.triggerAction('open-panel', { tab: 'log' });
 
-
-    it('should render with expanded state', function() {
-
-      // given
-      const { tree, app } = createApp();
-
-      app.setLayout({ log: { open: true } });
-
-      // when
-      const log = tree.find(Log).first();
-
-      // then
-      expect(log.props().layout.log.open).to.be.true;
-    });
-
-
-    it('should log entry', async function() {
-
-      // given
-      const { tree, app } = createApp();
-
-      app.setLayout({ log: { open: false } });
-
-      // when
-      await app.triggerAction('log', {
-        message: 'foo',
-        category: 'bar'
+        // then
+        expect(app.state.layout).to.eql({
+          panel: {
+            open: true,
+            tab: 'log'
+          }
+        });
       });
 
-      // then
-      const log = tree.find(Log).first();
 
-      expect(app.state.logEntries).to.eql([ {
-        message: 'foo',
-        category: 'bar'
-      } ]);
+      it('should close', function() {
 
-      expect(log.props().layout.log.open).to.be.true;
+        // given
+        const { app } = createApp();
+
+        app.setLayout({
+          panel: {
+            open: true,
+            tab: 'log'
+          }
+        });
+
+        // when
+        app.triggerAction('close-panel');
+
+        // then
+        expect(app.state.layout).to.eql({
+          panel: {
+            open: false,
+            tab: 'log'
+          }
+        });
+      });
+
+    });
+
+
+    describe('log', function() {
+
+      describe('#triggerAction', function() {
+
+        it('should open', function() {
+
+          // given
+          const { app } = createApp();
+
+          app.setLayout({});
+
+          // when
+          app.triggerAction('open-log');
+
+          // then
+          expect(app.state.layout).to.eql({
+            panel: {
+              open: true,
+              tab: 'log'
+            }
+          });
+        });
+
+      });
+
     });
 
   });
@@ -2902,6 +2954,7 @@ describe('<App>', function() {
           type: 'form'
         })
       ]);
+
       const currentTab = openedTabs[ 0 ];
 
       // when
@@ -2926,6 +2979,7 @@ describe('<App>', function() {
           type: 'form'
         })
       ]);
+
       const currentTab = openedTabs[ 0 ];
 
       // when
@@ -2958,6 +3012,7 @@ describe('<App>', function() {
           type: 'form'
         })
       ]);
+
       const currentTab = openedTabs[ 0 ];
 
 
@@ -2980,6 +3035,7 @@ describe('<App>', function() {
       const openedTabs = await app.openFiles([
         createFile('1.dmn')
       ]);
+
       const currentTab = openedTabs[ 0 ];
 
       // when
@@ -2988,7 +3044,7 @@ describe('<App>', function() {
       // then
       const lintingState = app.getLintingState(currentTab);
 
-      expect(lintingState).not.to.exist;
+      expect(lintingState).to.be.empty;
     });
 
 
@@ -3003,6 +3059,7 @@ describe('<App>', function() {
           type: 'form'
         })
       ]);
+
       const currentTab = openedTabs[ 0 ];
 
       // when
@@ -3048,6 +3105,18 @@ describe('<App>', function() {
       // then
       expect(getLinterSpy).to.have.been.calledOnce;
       expect(getLinterSpy).to.have.been.calledWith([ 'FooPlugin', 'BarPlugin', 'BazPlugin' ]);
+    });
+
+
+    it('should return empty linting state', async function() {
+
+      // given
+      const { app } = createApp();
+
+      // then
+      const lintingState = app.getLintingState(EMPTY_TAB);
+
+      expect(lintingState).to.be.empty;
     });
 
   });

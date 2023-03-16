@@ -16,7 +16,7 @@ import { mount } from 'enzyme';
 
 import { SlotFillRoot } from '../../../../slot-fill';
 
-import Panel from '../../Panel';
+import Panel from '../../../Panel';
 
 import LintingTab from '../LintingTab';
 
@@ -37,9 +37,6 @@ describe('<LintingTab>', function() {
     expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Problems');
     expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
 
-    expect(wrapper.find('.panel__link-number')).to.have.length(1);
-    expect(wrapper.find('.panel__link-number').text()).to.equal('1');
-
     expect(wrapper.find('.linting-tab-item__content')).to.have.length(1);
     expect(wrapper.find('.linting-tab-item__content').text()).to.equal('Foo message');
   });
@@ -58,9 +55,6 @@ describe('<LintingTab>', function() {
 
     expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Problems');
     expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
-
-    expect(wrapper.find('.panel__link-number')).to.have.length(1);
-    expect(wrapper.find('.panel__link-number').text()).to.equal('0');
 
     expect(wrapper.find('.linting-tab-item--empty')).to.have.length(1);
     expect(wrapper.find('.linting-tab-item--empty').text()).to.equal('No problems found.');
@@ -115,14 +109,14 @@ describe('<LintingTab>', function() {
 
   it('should show lint error on click', function() {
 
-    // when
+    // given
     const onActionSpy = spy();
 
     const wrapper = renderLintingTab({
       onAction: onActionSpy
     });
 
-    // then
+    // when
     wrapper.find('.linting-tab-item').at(0).simulate('click');
 
     // then

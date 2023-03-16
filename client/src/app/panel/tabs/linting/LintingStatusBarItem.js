@@ -12,19 +12,19 @@ import React from 'react';
 
 import classnames from 'classnames';
 
-import { Fill } from '../slot-fill';
+import { Fill } from '../../../slot-fill';
 
-import ErrorIcon from '../../../resources/icons/Error.svg';
-import WarningIcon from '../../../resources/icons/Warning.svg';
+import ErrorIcon from '../../../../../resources/icons/Error.svg';
+import WarningIcon from '../../../../../resources/icons/Warning.svg';
 
-import css from './Linting.less';
+import css from './LintingStatusBarItem.less';
 
 
-export function Linting(props) {
+export default function LintingStatusBarItem(props) {
   const {
     layout,
     linting,
-    onToggleLinting
+    onToggle
   } = props;
 
   const { panel = {} } = layout;
@@ -35,14 +35,14 @@ export function Linting(props) {
   return <Fill slot="status-bar__file" group="9_linting">
     <button
       className={ classnames(
-        css.Linting,
+        css.LintingStatusBarItem,
         'btn',
         { 'btn--active': panel.open && panel.tab === 'linting',
           'has-errors': errors > 0,
           'has-warnings': warnings > 0
         }
       ) }
-      onClick={ onToggleLinting }
+      onClick={ onToggle }
       title="Toggle problems view"
     >
       <span className="errors"><ErrorIcon width="16" height="16" />{ errors }</span>

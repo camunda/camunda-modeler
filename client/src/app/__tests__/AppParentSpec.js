@@ -156,6 +156,46 @@ describe('<AppParent>', function() {
     });
 
 
+    it('should set log closed by default', function(done) {
+
+      // given
+      const backend = new Backend({
+        sendReady() {
+          expect(appParent.getApp().state.layout).to.eql({
+            panel: {
+              open: false,
+              tab: 'log'
+            }
+          });
+
+          done();
+        }
+      });
+
+      const workspace = new Workspace({
+        restore(defaultConfig) {
+          return Promise.resolve({
+            ...defaultConfig,
+            layout: {
+              panel: {
+                open: true,
+                tab: 'log'
+              }
+            }
+          });
+        }
+      });
+
+      // when
+      const { appParent } = createAppParent({
+        globals: {
+          backend,
+          workspace
+        }
+      }, mount);
+    });
+
+
     it('should return promise on workspace save', async function() {
 
       // given

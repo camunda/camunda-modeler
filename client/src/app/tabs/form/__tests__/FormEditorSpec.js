@@ -789,18 +789,6 @@ describe('<FormEditor>', function() {
       });
 
 
-      it('should show linting in status bar', async function() {
-
-        // when
-        const { wrapper } = await renderEditor(engineProfileSchema);
-
-        wrapper.update();
-
-        // then
-        expect(wrapper.find('Linting').exists()).to.be.true;
-      });
-
-
       it('should unsubscribe on unmount', async function() {
 
         // given
@@ -825,93 +813,6 @@ describe('<FormEditor>', function() {
 
         // then
         expect(calls).to.have.lengthOf(1);
-      });
-
-    });
-
-
-    describe('#onToggleLinting', function() {
-
-      it('should open', async function() {
-
-        // given
-        const onLayoutChangedSpy = spy();
-
-        const { instance } = await renderEditor(schema, {
-          layout: {
-            panel: {
-              open: false
-            }
-          },
-          onLayoutChanged: onLayoutChangedSpy
-        });
-
-        // when
-        instance.onToggleLinting();
-
-        // then
-        expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
-          panel: {
-            open: true,
-            tab: 'linting'
-          }
-        });
-      });
-
-
-      it('should open (different tab open)', async function() {
-
-        // given
-        const onLayoutChangedSpy = spy();
-
-        const { instance } = await renderEditor(schema, {
-          layout: {
-            panel: {
-              open: true,
-              tab: 'foo'
-            }
-          },
-          onLayoutChanged: onLayoutChangedSpy
-        });
-
-        // when
-        instance.onToggleLinting();
-
-        // then
-        expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
-          panel: {
-            open: true,
-            tab: 'linting'
-          }
-        });
-      });
-
-
-      it('should close', async function() {
-
-        // given
-        const onLayoutChangedSpy = spy();
-
-        const { instance } = await renderEditor(schema, {
-          layout: {
-            panel: {
-              open: true,
-              tab: 'linting'
-            }
-          },
-          onLayoutChanged: onLayoutChangedSpy
-        });
-
-        // when
-        instance.onToggleLinting();
-
-        // then
-        expect(onLayoutChangedSpy).to.have.been.calledOnceWith({
-          panel: {
-            open: false,
-            tab: 'linting'
-          }
-        });
       });
 
     });

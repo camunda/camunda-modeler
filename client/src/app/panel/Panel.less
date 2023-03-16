@@ -11,22 +11,27 @@
     height: 200px;
   }
 
-  .panel__links {
+  .panel__header {
     background-color: var(--color-grey-225-10-95);
     border-bottom: solid 1px var(--color-grey-225-10-75);
     border-top: solid 1px var(--color-grey-225-10-75);
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 
-    .panel__link {
+    .panel__link,
+    .panel__action {
       font-family: var(--font-family);
       font-size: 14px;
       color: var(--color-grey-225-10-35);
       background: none;
       border: none;
-      border-bottom: solid 2px transparent;
       outline: none;
       padding: 4px 8px;
+    }
+
+    .panel__link {
+      border-bottom: solid 2px transparent;
 
       &.panel__link--active {
         border-bottom: solid 2px var(--color-grey-225-10-35);
@@ -39,6 +44,21 @@
         display: inline-block;
         margin-left: 6px;
         padding: 1px 7px;
+      }
+    }
+
+    .panel__action {
+      width: 28px;
+      height: 28px;
+      padding: 7px;
+
+      &:hover {
+        background-color: var(--color-grey-225-10-85);
+      }
+
+      svg {
+        width: 14px;
+        height: 14px;
       }
     }
   }

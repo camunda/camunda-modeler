@@ -37,7 +37,10 @@ import {
   SlotFillRoot
 } from './slot-fill';
 
-import Log from './Log';
+import Panel from './panel/Panel';
+
+import LintingTab from './panel/tabs/linting/LintingTab';
+import LogTab from './panel/tabs/log/LogTab';
 
 import { StatusBar } from './status-bar';
 
@@ -64,7 +67,6 @@ import { PluginsRoot } from './plugins';
 import css from './App.less';
 
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
-
 
 const log = debug('App');
 
@@ -895,7 +897,7 @@ export class App extends PureComponent {
   };
 
   getLintingState = (tab) => {
-    return this.state.lintingState[ tab.id ];
+    return this.state.lintingState[ tab.id ] || [];
   };
 
   setLintingState = (tab, results) => {
@@ -1194,7 +1196,7 @@ export class App extends PureComponent {
   logEntry(message, category, action, silent) {
 
     if (!silent) {
-      this.toggleLog(true);
+      this.openPanel('log');
     }
 
     const logEntry = {
@@ -1469,14 +1471,32 @@ export class App extends PureComponent {
     });
   };
 
-  toggleLog = (open) => {
+  openPanel = (tab = 'log') => {
+    const { layout = {} } = this.state;
+
+    const { panel = {} } = layout;
+
     this.handleLayoutChanged({
-      log: {
-        ...this.state.layout.log,
-        open
+      panel: {
+        ...panel,
+        open: true,
+        tab
       }
     });
   };
+
+  closePanel() {
+    const { layout = {} } = this.state;
+
+    const { panel = {} } = layout;
+
+    this.handleLayoutChanged({
+      panel: {
+        ...panel,
+        open: false
+      }
+    });
+  }
 
   closeTabs = (matcher) => {
 
@@ -1827,7 +1847,17 @@ export class App extends PureComponent {
     }
 
     if (action === 'open-log') {
-      return this.toggleLog(true);
+      return this.openPanel('log');
+    }
+
+    if (action === 'open-panel') {
+      const { tab } = options;
+
+      return this.openPanel(tab);
+    }
+
+    if (action === 'close-panel') {
+      return this.closePanel();
     }
 
     if (action === 'display-notification') {
@@ -2016,13 +2046,23 @@ export class App extends PureComponent {
                 </TabContainer>
               </div>
 
-              <Log
-                entries={ logEntries }
+              <Panel
                 layout={ layout }
-                onClear={ this.clearLog }
                 onLayoutChanged={ this.handleLayoutChanged }
-                onUpdateMenu={ this.updateMenu }
-              />
+                onUpdateMenu={ this.updateMenu } />
+
+              <LogTab
+                layout={ layout }
+                entries={ logEntries }
+                onClear={ this.clearLog }
+                onAction={ this.triggerAction }
+                onLayoutChanged={ this.handleLayoutChanged } />
+
+              <LintingTab
+                layout={ layout }
+                linting={ this.getLintingState(activeTab) }
+                onAction={ this.triggerAction }
+                onLayoutChanged={ this.handleLayoutChanged } />
 
               <StatusBar />
 

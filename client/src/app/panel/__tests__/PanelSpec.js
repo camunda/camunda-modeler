@@ -14,7 +14,7 @@ import React from 'react';
 
 import { mount } from 'enzyme';
 
-import { SlotFillRoot } from '../../../slot-fill';
+import { SlotFillRoot } from '../../slot-fill';
 
 import Panel from '../Panel';
 

@@ -17,22 +17,22 @@ import { mount } from 'enzyme';
 import {
   SlotFillRoot,
   Slot
-} from '../../slot-fill';
+} from '../../../../slot-fill';
 
-import { Linting } from '../Linting';
+import LintingStatusBarItem from '../LintingStatusBarItem';
 
 const spy = sinon.spy;
 
 
-describe('Linting', function() {
+describe('LintingStatusBarItem', function() {
 
   it('should render', function() {
 
     // when
-    const wrapper = renderLinting();
+    const wrapper = renderLintingStatusBarItem();
 
     // then
-    expect(wrapper.find(Linting).exists()).to.be.true;
+    expect(wrapper.find(LintingStatusBarItem).exists()).to.be.true;
   });
 
 
@@ -41,7 +41,7 @@ describe('Linting', function() {
     it('should display 1 error and 1 warning', function() {
 
       // when
-      const wrapper = renderLinting();
+      const wrapper = renderLintingStatusBarItem();
 
       // then
       expect(wrapper.find('.errors').text()).to.equal('1');
@@ -52,7 +52,7 @@ describe('Linting', function() {
     it('should display 2 errors and 1 warning', function() {
 
       // when
-      const wrapper = renderLinting({
+      const wrapper = renderLintingStatusBarItem({
         linting: [
           ...defaultLinting,
           {
@@ -76,7 +76,7 @@ describe('Linting', function() {
     it('should be active (open)', function() {
 
       // when
-      const wrapper = renderLinting({
+      const wrapper = renderLintingStatusBarItem({
         layout: {
           panel: {
             open: true,
@@ -93,7 +93,7 @@ describe('Linting', function() {
     it('should not be active (closed)', function() {
 
       // when
-      const wrapper = renderLinting();
+      const wrapper = renderLintingStatusBarItem();
 
       // then
       expect(wrapper.find('.btn').hasClass('btn--active')).to.be.false;
@@ -103,17 +103,17 @@ describe('Linting', function() {
     it('should call callback on toggle', function() {
 
       // given
-      const onToggleLintingSpy = spy();
+      const onToggleSpy = spy();
 
-      const wrapper = renderLinting({
-        onToggleLinting: onToggleLintingSpy
+      const wrapper = renderLintingStatusBarItem({
+        onToggle: onToggleSpy
       });
 
       // when
       wrapper.find('.btn').simulate('click');
 
       // then
-      expect(onToggleLintingSpy).to.have.been.calledOnce;
+      expect(onToggleSpy).to.have.been.calledOnce;
     });
 
   });
@@ -143,20 +143,20 @@ const defaultLinting = [
   }
 ];
 
-function renderLinting(options = {}) {
+function renderLintingStatusBarItem(options = {}) {
   const {
     layout = defaultLayout,
     linting = defaultLinting,
-    onToggleLinting
+    onToggle
   } = options;
 
   return mount(
     <SlotFillRoot>
       <Slot name="status-bar__file" />
-      <Linting
+      <LintingStatusBarItem
         layout={ layout }
         linting={ linting }
-        onToggleLinting={ onToggleLinting } />
+        onToggle={ onToggle } />
     </SlotFillRoot>
   );
 }

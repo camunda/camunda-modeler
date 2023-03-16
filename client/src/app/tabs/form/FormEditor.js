@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { createRef, Fragment } from 'react';
+import React, { createRef } from 'react';
 
 import { isFunction, keys } from 'min-dash';
 
@@ -43,13 +43,7 @@ import EngineProfileHelper from '../EngineProfileHelper';
 
 import { ENGINES } from '../../../util/Engines';
 
-import { Linting } from '../Linting';
-
 import { FormPreviewToggle } from './FormPreviewToggle';
-
-import Panel from '../panel/Panel';
-
-import LintingTab from '../panel/tabs/LintingTab';
 
 const LOW_PRIORITY = 500;
 
@@ -152,6 +146,16 @@ export class FormEditor extends CachedComponent {
 
     if (isCacheStateChanged(prevProps, this.props)) {
       this.handleChanged();
+    }
+
+    const { layout = {} } = this.props;
+
+    const { panel = {} } = layout;
+
+    if (panel.open && panel.tab === 'linting') {
+      this.getForm().get('linting').activate();
+    } else if (!panel.open || panel.tab !== 'linting') {
+      this.getForm().get('linting').deactivate();
     }
   }
 
@@ -519,44 +523,6 @@ export class FormEditor extends CachedComponent {
     onAction('lint-tab', { contents });
   };
 
-  onToggleLinting = () => {
-    const {
-      layout = {},
-      onLayoutChanged
-    } = this.props;
-
-    const { panel = {} } = layout;
-
-    if (!panel.open) {
-      onLayoutChanged({
-        panel: {
-          open: true,
-          tab: 'linting'
-        }
-      });
-
-      return;
-    }
-
-    if (panel.tab === 'linting') {
-      onLayoutChanged({
-        panel: {
-          open: false,
-          tab: 'linting'
-        }
-      });
-
-      return;
-    }
-
-    onLayoutChanged({
-      panel: {
-        open: true,
-        tab: 'linting'
-      }
-    });
-  };
-
   isDirty() {
     const {
       form,
@@ -566,6 +532,14 @@ export class FormEditor extends CachedComponent {
     const commandStack = form.getEditor().get('commandStack');
 
     return commandStack._stackIdx !== stackIdx;
+  }
+
+  getForm() {
+    const {
+      form
+    } = this.getCached();
+
+    return form;
   }
 
   getXML() {
@@ -639,14 +613,6 @@ export class FormEditor extends CachedComponent {
     const engineProfile = this.engineProfile.getCached();
 
     const {
-      layout,
-      linting = [],
-      onAction,
-      onLayoutChanged,
-      onUpdateMenu
-    } = this.props;
-
-    const {
       importing,
       previewOpen
     } = this.state;
@@ -664,24 +630,6 @@ export class FormEditor extends CachedComponent {
         { engineProfile && <EngineProfile
           engineProfile={ engineProfile }
           onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } /> }
-
-        {
-          engineProfile && <Fragment>
-            <Panel
-              layout={ layout }
-              onUpdateMenu={ onUpdateMenu }>
-              <LintingTab
-                layout={ layout }
-                linting={ linting }
-                onAction={ onAction }
-                onLayoutChanged={ onLayoutChanged } />
-            </Panel>
-            <Linting
-              layout={ layout }
-              linting={ linting }
-              onToggleLinting={ this.onToggleLinting } />
-          </Fragment>
-        }
 
         <FormPreviewToggle
           previewOpen={ previewOpen }
