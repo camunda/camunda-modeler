@@ -10,7 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `FEAT`: support MaxOS shortcuts to switch tabs ([#3444](https://github.com/camunda/camunda-modeler/issues/3444))
+* `FEAT`: support MacOS shortcuts to switch tabs ([#3444](https://github.com/camunda/camunda-modeler/issues/3444))
 * `FEAT`: run renderer in sandbox per default ([#3475](https://github.com/camunda/camunda-modeler/pull/3475))
 * `FEAT`: expose activeTab to menu ([#3458](https://github.com/camunda/camunda-modeler/issues/3458))
 * `FIX`: send original event from keyboard shortcuts ([#3474](https://github.com/camunda/camunda-modeler/pull/3474))
