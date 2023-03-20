@@ -22,6 +22,10 @@ import MixpanelHandler from '../MixpanelHandler';
 
 describe('<UserJourneyStatistics>', () => {
 
+  const getGlobal = () => ({
+    appPlugins: []
+  });
+
   afterEach(() => {
     Flags.reset();
     Metadata.init({ version:'test-version' });
@@ -31,7 +35,7 @@ describe('<UserJourneyStatistics>', () => {
 
   it('should render', () => {
 
-    shallow(<UserJourneyStatistics subscribe={ () => {} } />);
+    shallow(<UserJourneyStatistics subscribe={ () => {} } _getGlobal={ getGlobal } />);
   });
 
 
@@ -316,12 +320,13 @@ describe('<UserJourneyStatistics>', () => {
     const eventHandlers = instance._eventHandlers;
 
     // expect
-    expect(eventHandlers).to.have.length(5);
+    expect(eventHandlers).to.have.length(6);
     expectHandler(eventHandlers[0], 'DeploymentEventHandler');
     expectHandler(eventHandlers[1], 'FormEditorEventHandler');
     expectHandler(eventHandlers[2], 'LinkEventHandler');
     expectHandler(eventHandlers[3], 'OverlayEventHandler');
-    expectHandler(eventHandlers[4], 'TabEventHandler');
+    expectHandler(eventHandlers[4], 'PingEventHandler');
+    expectHandler(eventHandlers[5], 'TabEventHandler');
   });
 
 });
