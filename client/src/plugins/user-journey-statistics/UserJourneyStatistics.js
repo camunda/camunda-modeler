@@ -62,7 +62,9 @@ export default class UserJourneyStatistics extends PureComponent {
     eventHandlers.forEach((eventHandlerConstructor) => {
       this._eventHandlers.push(new eventHandlerConstructor({
         subscribe: props.subscribe,
-        track: this.mixpanel.track.bind(this.mixpanel)
+        track: this.mixpanel.track.bind(this.mixpanel),
+        getGlobal: props._getGlobal,
+        config: props.config
       }));
     });
   }
