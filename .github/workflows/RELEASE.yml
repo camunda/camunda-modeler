@@ -45,7 +45,6 @@ jobs:
       env:
         CSC_LINK: "${{ secrets.CSC_LINK }}"
         CSC_KEY_PASSWORD: "${{ secrets.CSC_KEY_PASSWORD }}"
-        ET_ENDPOINT: "${{ secrets.ET_ENDPOINT }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "prod"
         SENTRY_AUTH_TOKEN: "${{ secrets.SENTRY_AUTH_TOKEN }}"
@@ -62,7 +61,6 @@ jobs:
         APPLE_DEVELOPER_ID_PASSWORD: "${{ secrets.APPLE_DEVELOPER_ID_PASSWORD }}"
         CSC_LINK: "${{ secrets.CSC_LINK }}"
         CSC_KEY_PASSWORD: "${{ secrets.CSC_KEY_PASSWORD }}"
-        ET_ENDPOINT: "${{ secrets.ET_ENDPOINT }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "prod"
         SENTRY_AUTH_TOKEN: "${{ secrets.SENTRY_AUTH_TOKEN }}"
@@ -77,7 +75,6 @@ jobs:
       env:
         CSC_LINK: "${{ secrets.WIN_CSC_LINK }}"
         CSC_KEY_PASSWORD: "${{ secrets.WIN_CSC_KEY_PASSWORD }}"
-        ET_ENDPOINT: "${{ secrets.ET_ENDPOINT }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "prod"
         SENTRY_AUTH_TOKEN: "${{ secrets.SENTRY_AUTH_TOKEN }}"
