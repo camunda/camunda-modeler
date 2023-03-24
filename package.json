@@ -23,7 +23,7 @@
     "build:test-distro": "node tasks/test-distro.js",
     "build": "run-s preload:build client:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
     "lint": "eslint .",
-    "postinstall": "electron-builder install-app-deps && lerna bootstrap",
+    "postinstall": "lerna bootstrap",
     "preload:build": "webpack -c webpack.config.js",
     "prerelease": "run-s update-license-book",
     "update-license-book": "node tasks/license-book.js -o THIRD_PARTY_NOTICES -c",
