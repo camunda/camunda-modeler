@@ -73,6 +73,7 @@ import {
 } from '../../../util/Engines';
 
 import { getPlatformTemplates } from '../../../util/elementTemplates';
+import Flags, { DEFAULT_C7_EXECUTION_ENGINE_VERSION } from '../../../util/Flags';
 
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
 
@@ -84,8 +85,19 @@ const NAMESPACE_CAMUNDA = {
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 export const DEFAULT_ENGINE_PROFILE = {
-  executionPlatform: ENGINES.PLATFORM
+  executionPlatform: ENGINES.PLATFORM,
+  executionPlatformVersion: getDefaultEnginePlatformVersion()
 };
+
+function getDefaultEnginePlatformVersion() {
+  console.log('getDefaultEnginePlatformVersion');
+  if (Flags.get(DEFAULT_C7_EXECUTION_ENGINE_VERSION)) {
+    console.log(`DEFAULT_C7_EXECUTION_ENGINE_VERSION flag set to ${Flags.get(DEFAULT_C7_EXECUTION_ENGINE_VERSION)}`);
+    return Flags.get(DEFAULT_C7_EXECUTION_ENGINE_VERSION);
+  }
+  console.log('DEFAULT_C7_EXECUTION_ENGINE_VERSION flag not set');
+  return undefined;
+}
 
 const LOW_PRIORITY = 500;
 

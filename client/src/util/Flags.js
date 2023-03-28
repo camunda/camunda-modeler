@@ -46,3 +46,5 @@ export const SENTRY_DSN = 'sentry-dsn';
 export const MIXPANEL_TOKEN = 'mixpanel-token';
 export const MIXPANEL_STAGE = 'mixpanel-stage';
 export const DISPLAY_VERSION = 'display-version';
+export const DEFAULT_C7_EXECUTION_ENGINE_VERSION = 'default-c7-execution-engine-version';
+
