@@ -19,13 +19,14 @@ import Flags from '../../../../util/Flags';
 describe('<PingEventHandlerSpec>', () => {
 
   let track = sinon.spy();
+  const subscribe = sinon.spy();
 
   beforeEach(() => {
     const getGlobal = () => ({
       appPlugins: [ { name: 'pluginName' } ]
     });
 
-    new PingEventHandler({ track, getGlobal });
+    new PingEventHandler({ track, getGlobal, subscribe });
 
     MixpanelHandler.getInstance().enable('token', 'id', 'stage');
   });
@@ -33,9 +34,36 @@ describe('<PingEventHandlerSpec>', () => {
   afterEach(sinon.restore);
 
 
+  describe('should subscribe', () => {
+
+    it('should subscribe to telemetry.enabled', () => {
+      expect(subscribe.getCall(0).args[0]).to.eql('telemetry.enabled');
+    });
+
+
+    it('should subscribe to telemetry.disabled', () => {
+      expect(subscribe.getCall(1).args[0]).to.eql('telemetry.disabled');
+    });
+
+  });
+
+
   describe('should send', () => {
 
-    it('should send initially', () => {
+    it('should not send before enabled', async () => {
+
+      // then
+      expect(track).to.not.have.been.called;
+    });
+
+
+    it('should send initially', async () => {
+
+      // given
+      const handleTelemetryActivation = subscribe.getCall(0).args[1];
+
+      // when
+      await handleTelemetryActivation();
 
       // then
       expect(track).to.have.been.called;
@@ -57,7 +85,13 @@ describe('<PingEventHandlerSpec>', () => {
 
   describe('plugins', () => {
 
-    it('should send installed plugins', () => {
+    it('should send installed plugins', async () => {
+
+      // given
+      const handleTelemetryActivation = subscribe.getCall(0).args[1];
+
+      // when
+      await handleTelemetryActivation();
 
       // then
       expect(track).to.have.been.calledWith('ping', {
@@ -70,11 +104,23 @@ describe('<PingEventHandlerSpec>', () => {
 
   describe('flags', () => {
 
+    let track;
+
+    const handlePing = async () => {
+      track = sinon.spy();
+      const subscribe = sinon.spy();
+
+      new PingEventHandler({ track, getGlobal: () => ({}), subscribe });
+      const handleTelemetryActivation = subscribe.getCall(0).args[1];
+
+      await handleTelemetryActivation();
+    };
+
     afterEach(() => {
       Flags.reset();
     });
 
-    it('should send set flags', () => {
+    it('should send set flags', async () => {
 
       // given
       Flags.init({
@@ -82,10 +128,8 @@ describe('<PingEventHandlerSpec>', () => {
         myFlagB: false
       });
 
-      const track = sinon.spy();
-
       // when
-      new PingEventHandler({ track, getGlobal: () => ({}) });
+      await handlePing();
 
       // then
       expect(track).to.have.been.calledWith('ping', {
@@ -98,17 +142,15 @@ describe('<PingEventHandlerSpec>', () => {
     });
 
 
-    it('should mask non-boolean flags', () => {
+    it('should mask non-boolean flags', async () => {
 
       // given
       Flags.init({
         flagWithPrivateDataSet: 'my/custom/filepath'
       });
 
-      const track = sinon.spy();
-
       // when
-      new PingEventHandler({ track, getGlobal: () => ({}) });
+      await handlePing();
 
       // then
       expect(track).to.have.been.calledWith('ping', {
@@ -118,17 +160,15 @@ describe('<PingEventHandlerSpec>', () => {
     });
 
 
-    it('should not overwrite original Flags through masking', () => {
+    it('should not overwrite original Flags through masking', async () => {
 
       // given
       Flags.init({
         flagWithPrivateDataSet: 'my/custom/filepath'
       });
 
-      const track = sinon.spy();
-
       // when
-      new PingEventHandler({ track, getGlobal: () => ({}) });
+      await handlePing();
 
       // then
       expect(Flags.data.flagWithPrivateDataSet).to.eql('my/custom/filepath');

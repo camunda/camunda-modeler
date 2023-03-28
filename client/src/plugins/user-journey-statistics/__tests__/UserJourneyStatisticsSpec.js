@@ -176,6 +176,8 @@ describe('<UserJourneyStatistics>', () => {
       }
     });
 
+    const emitSpy = sinon.stub(instance, 'emit');
+
     const mixpanel = instance.mixpanel;
 
     expect(mixpanel.isEnabled()).to.be.false;
@@ -185,6 +187,7 @@ describe('<UserJourneyStatistics>', () => {
 
     // then
     expect(mixpanel.isEnabled()).to.be.true;
+    expect(emitSpy).to.have.been.calledWith('telemetry.enabled');
   });
 
 
@@ -202,6 +205,8 @@ describe('<UserJourneyStatistics>', () => {
       }
     });
 
+    const emitSpy = sinon.stub(instance, 'emit');
+
     const mixpanel = instance.mixpanel;
 
     // when
@@ -211,6 +216,7 @@ describe('<UserJourneyStatistics>', () => {
 
     // then
     expect(mixpanel.isEnabled()).to.eql(false);
+    expect(emitSpy).to.have.been.calledWith('telemetry.disabled');
   });
 
 
@@ -363,7 +369,8 @@ function createJourneyStatistics(props = {}) {
         });
       }
     },
-    _getGlobal: () => ({})
+    _getGlobal: () => ({}),
+    triggerAction: () => {}
   });
 }
 
