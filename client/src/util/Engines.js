@@ -17,12 +17,12 @@ export const ENGINE_PROFILES = [
   {
     executionPlatform: ENGINES.PLATFORM,
     executionPlatformVersions: [ '7.19.0', '7.18.0', '7.17.0', '7.16.0', '7.15.0' ],
-    latestStable: '7.18.0'
+    latestStable: '7.19.0'
   },
   {
     executionPlatform: ENGINES.CLOUD,
     executionPlatformVersions: [ '8.2.0', '8.1.0', '8.0.0', '1.3.0', '1.2.0', '1.1.0', '1.0.0' ],
-    latestStable: '8.1.0'
+    latestStable: '8.2.0'
   }
 ];
 
