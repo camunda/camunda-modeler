@@ -75,13 +75,20 @@ export default class UserJourneyStatistics extends PureComponent {
     log('Enabling');
 
     this.mixpanel.enable(this.MIXPANEL_TOKEN, this._editorID, this.MIXPANEL_STAGE);
+
+    this.emit('telemetry.enabled');
   };
+
+  emit(event, payload) {
+    this.props.triggerAction('emit-event', { type: event, payload });
+  }
 
   disable = () => {
     log('Disabling.');
 
     this.mixpanel.disable();
-    this.emit('telemetry:disabled');
+
+    this.emit('telemetry.disabled');
   };
 
   async setEditorId() {

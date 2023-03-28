@@ -16,7 +16,8 @@ export default class PingEventHandler {
   constructor(props) {
 
     const {
-      track
+      track,
+      subscribe
     } = props;
 
     this.track = track;
@@ -25,7 +26,13 @@ export default class PingEventHandler {
     this.sentInitially = false;
     this._intervalID = null;
 
-    this.configurePing();
+    subscribe('telemetry.enabled', () => {
+      this.configurePing();
+    });
+
+    subscribe('telemetry.disabled', () => {
+      clearInterval(this._intervalID);
+    });
   }
 
   getPlugins = () => {
