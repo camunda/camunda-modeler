@@ -47,8 +47,6 @@ export default class UserJourneyStatistics extends PureComponent {
     this.MIXPANEL_TOKEN = Flags.get(MIXPANEL_TOKEN) || DEFINED_MIXPANEL_TOKEN;
     this.MIXPANEL_STAGE = Flags.get(MIXPANEL_STAGE) || DEFINED_MIXPANEL_STAGE;
 
-    this._isEnabled = false;
-
     this._buttonRef = React.createRef(null);
 
     this.mixpanel = MixpanelHandler.getInstance();
@@ -70,21 +68,20 @@ export default class UserJourneyStatistics extends PureComponent {
   }
 
   isEnabled = () => {
-    return this._isEnabled;
+    return MixpanelHandler.getInstance().isEnabled();
   };
 
   enable = () => {
     log('Enabling');
 
     this.mixpanel.enable(this.MIXPANEL_TOKEN, this._editorID, this.MIXPANEL_STAGE);
-    this._isEnabled = true;
   };
 
   disable = () => {
     log('Disabling.');
 
     this.mixpanel.disable();
-    this._isEnabled = false;
+    this.emit('telemetry:disabled');
   };
 
   async setEditorId() {
