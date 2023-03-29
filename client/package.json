@@ -16,7 +16,7 @@
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.6.0",
     "@camunda/form-playground": "^0.5.1",
-    "@camunda/linting": "^0.17.0",
+    "@camunda/linting": "^1.0.0",
     "@codemirror/commands": "^6.1.3",
     "@codemirror/lang-json": "^6.0.1",
     "@codemirror/lang-xml": "^6.0.1",
