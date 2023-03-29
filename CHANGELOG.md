@@ -8,6 +8,15 @@ ___Note:__ Yet to be released changes appear here._
 
 * `DEPS`: update to `zeebe-node@8.1.6`
 
+### Forms
+
+* `FEAT`: allow primitives for multi select values ([#542](https://github.com/bpmn-io/form-js/issues/542))
+* `FEAT`: support more flexible rows layout with columns ([#560](https://github.com/bpmn-io/form-js/issues/560))
+* `FEAT`: support FEEL templating in `text` components ([#567](https://github.com/bpmn-io/form-js/pull/567))
+* `DEPS`: update to `form-js` to 0.13.0
+* `DEPS`: update to `form-linting` to 0.6.0
+* `DEPS`: update to `form-playground` to 0.5.0
+
 ## 5.9.0
 
 ### General
