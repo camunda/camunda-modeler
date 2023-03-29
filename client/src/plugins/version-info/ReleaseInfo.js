@@ -44,16 +44,21 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>More Complex Conditions for Element Template Properties</h4>
-          Element Templates now support multiple conditions and allow you to create more complex templates. Learn how to use conditional properties in <a href="https://docs.camunda.io/docs/next/components/modeler/desktop-modeler/element-templates/defining-templates/#defining-conditional-properties">our docs</a>.
+          <h4>New features in forms</h4>
+          Text components now support FEEL templating.
+          Forms now support more flexible layouts by allowing to arrange components in columns.
         </li>
         <li>
-          <h4>Extended support for Camunda 8 BPMN</h4>
-          Added support for modeling catch-all events. Try out upcoming Camunda 8.2 features today.
+          <h4>Visual grid for diagrams</h4>
+          Modeling BPMN and DMN diagrams is easier with the new visual grid.
         </li>
         <li>
-          <h4>And More!</h4>
-          This release includes a lot of smaller improvements and bug-fixes. Check out the full <a href="https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md#590">Changelog</a> for more details.
+          <h4>Example data output for Camunda 8 BPMN</h4>
+          The added `Data` section the the properties panel allows adding example data to elements which is used to provide variable suggestions in output mappings and/or the process.
+        </li>
+        <li>
+          <h4>Extended support for Camunda 8 and Camunda 7 BPMN</h4>
+          Added support for due and follow-Up date properties for user tasks, catch-all error events, and signal start events in Camunda 8.
         </li>
       </ul>
     </div>
