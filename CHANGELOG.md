@@ -6,7 +6,32 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.10.0
+
+### General
+
+* `FEAT`: remove ET telemetry and migrate "ping" event to Mixpanel ([#3519](https://github.com/camunda/camunda-modeler/pull/3519), [#3521](https://github.com/camunda/camunda-modeler/pull/3521)) 
+* `FEAT`: add latest execution platform versions ([#3522](https://github.com/camunda/camunda-modeler/pull/3522))
 * `DEPS`: update to `zeebe-node@8.1.6`
+
+### BPMN
+
+* `FEAT`: allow adding example data to elements in cloud modeler ([#264](https://github.com/camunda/camunda-bpmn-js/pull/264))
+* `FEAT`: add visual grid to editors ([#266](https://github.com/camunda/camunda-bpmn-js/pull/266))
+* `FIX`: esure element template properties order is maintained ([bpmn-js-properties-panel#898](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/898))
+* `FIX`: only provide external variable suggestions in fields backed by IO mappings ([bpmn-io/bpmn-js-properties-panel#902](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/902))
+* `DEPS`: update to `diagram-js@11.12.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@1.7.0`
+* `DEPS`: update to `bpmn-js@12.0.0`
+* `DEPS`: update to `bpmn-js-properties-panel@1.20.3`
+* `DEPS`: update to `camunda-bpmn-js@2.1.1`
+* `DEPS`: update to `@camunda/linting@1.0.0`
+
+### DMN
+
+* `FEAT`: add visual grid to editors ([#67](https://github.com/camunda/camunda-dmn-js/pull/67))
+* `DEPS`: update to `dmn-js-properties-panel@1.3.2`
+* `DEPS`: update to `camunda-dmn-js@0.10.0`
 
 ### Forms
 
