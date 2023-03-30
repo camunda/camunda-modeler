@@ -87,6 +87,8 @@ export default class TestClient extends Component {
      * `status-bar__app` slots instead.
      */
 
+    return null;
+
     return (
       <Fragment>
         <Fill slot="toolbar">

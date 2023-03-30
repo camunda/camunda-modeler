@@ -21,6 +21,8 @@ import {
 
 import { Fill } from '../slot-fill';
 
+import chat from '../chat.json';
+
 import { ENGINES, ENGINE_LABELS, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
 
 import css from './EngineProfile.less';
@@ -78,7 +80,7 @@ export function EngineProfile(props) {
         onClick={ toggle } ref={ buttonRef }
         title={ handleChange ? 'Change execution platform' : 'Display execution platform information' }
       >
-        { label }
+        { chat.engine || label }
       </button>
     </Fill>
   );

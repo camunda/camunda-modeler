@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 
 import { isFunction } from 'min-dash';
 
@@ -68,6 +68,11 @@ import {
 } from '../../../util/Engines';
 
 import { getCloudTemplates } from '../../../util/elementTemplates';
+
+import BotIcon from '../../../../resources/icons/Bot.svg';
+import UserIcon from '../../../../resources/icons/User.svg';
+
+import chat from '../../chat.json';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
@@ -134,7 +139,7 @@ export class BpmnEditor extends CachedComponent {
 
     this.listen('on');
 
-    modeler.attachTo(this.ref.current);
+    // modeler.attachTo(this.ref.current);
 
     const minimap = modeler.get('minimap');
 
@@ -144,7 +149,7 @@ export class BpmnEditor extends CachedComponent {
 
     const propertiesPanel = modeler.get('propertiesPanel');
 
-    propertiesPanel.attachTo(this.propertiesPanelRef.current);
+    // propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
 
     try {
@@ -751,9 +756,11 @@ export class BpmnEditor extends CachedComponent {
     return (
       <div className={ css.BpmnEditor }>
 
-        <Loader hidden={ imported && !importing } />
+        <Chat />
 
-        <div className="editor">
+        {/* <Loader hidden={ imported && !importing } /> */}
+
+        {/* <div className="editor">
           <div
             className="diagram"
             ref={ this.ref }
@@ -766,7 +773,7 @@ export class BpmnEditor extends CachedComponent {
             layout={ layout }
             ref={ this.propertiesPanelRef }
             onLayoutChanged={ onLayoutChanged } />
-        </div>
+        </div> */}
 
         { engineProfile && <EngineProfile
           type="bpmn"
@@ -863,7 +870,7 @@ export class BpmnEditor extends CachedComponent {
 
     return {
       __destroy: () => {
-        modeler.destroy();
+        // modeler.destroy();
       },
       engineProfile: null,
       lastXML: null,
@@ -882,4 +889,162 @@ export default WithCache(WithCachedState(BpmnEditor));
 
 function isCacheStateChanged(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
+}
+
+function Chat() {
+  const [ messageIndex, setMessageIndex ] = useState(chat.startMessageIndex || 0);
+  const [ userMessage, setUserMessage ] = useState('');
+
+  const onKeypress = async ({ key }) => {
+    if (key !== ' ' || messageIndex === chat.messages.length) return;
+
+    // user types message
+    setUserMessage(chat.messages[ messageIndex ].prompt);
+
+    await wait(chat.messages[ messageIndex ].prompt.length * 50 + 2000);
+
+    console.log('user pressed ENTER');
+
+    // user presses ENTER
+    setUserMessage('');
+
+    setMessageIndex(messageIndex + 1);
+  };
+
+  useEffect(() => {
+    window.addEventListener('keypress', onKeypress);
+
+    return () => window.removeEventListener('keypress', onKeypress);
+  }, [ onKeypress ]);
+
+  return <div className="editor">
+    <div className="chat">
+      <div className="chat-inner">
+        {
+          chat.intro && chat.intro.length ? (
+            <Message
+              key={ -1 }
+              message={ chat.intro }
+              className="chat-message chat-message-bot"
+              type="bot" />
+          ) : null
+        }
+        {
+          chat.messages.slice(0, messageIndex + 1).map(({ prompt, response }, index) => {
+            return (
+              <>
+                <Message
+                  key={ 'prompt' + index }
+                  message={ prompt }
+                  className="chat-message chat-message-user"
+                  type="user"
+                  typeWrite={ false } />
+                <Message
+                  key={ 'response' + index }
+                  message={ response }
+                  className="chat-message chat-message-bot"
+                  type="bot"
+                  typeWrite={ !chat.startMessageIndex || index > chat.startMessageIndex } />
+              </>
+            );
+          })
+        }
+      </div>
+    </div>
+    <div className="input">
+      <Input message={ userMessage } />
+    </div>
+  </div>;
+}
+
+function Message(props) {
+  const {
+    className,
+    message,
+    type,
+    typeWrite
+  } = props;
+
+  const typedMessage = useTypewriter(message, null, 2000);
+
+  return <div className={ className }>
+    <div className="icon">
+      {
+        type === 'bot' ? <BotIcon /> : <UserIcon />
+      }
+    </div>
+    <div className="message">{ typeWrite ? typedMessage : message }</div>
+  </div>;
+}
+
+function useTypewriter(message, ref = null, delay = 0) {
+  const timeout = 50;
+
+  const [ typedMessage, setTypedMessage ] = useState('');
+
+  useEffect(() => {
+    if (!delay) return;
+
+    let i = 0;
+
+    const placeholder = '...';
+
+    function typeWrite() {
+      if (i <= placeholder.length) {
+        setTypedMessage(placeholder.substring(0, i));
+
+        i++;
+
+        setTimeout(typeWrite, delay / placeholder.length);
+      }
+    }
+
+    typeWrite();
+  }, []);
+
+  useEffect(() => {
+    let i = 0;
+
+    function typeWrite() {
+      if (i <= message.length) {
+        setTypedMessage(message.substring(0, i));
+
+        if (ref && ref.current) resizeToContents(ref.current);
+
+        i++;
+
+        setTimeout(typeWrite, timeout * (Math.random() + 0.5));
+      }
+    }
+
+    wait(delay).then(typeWrite);
+  }, [ message ]);
+
+  return delay && !typedMessage.length ? '...' : typedMessage;
+}
+
+function Input(props) {
+  const { message } = props;
+
+  const ref = useRef();
+
+  const typedMessage = useTypewriter(message, ref);
+
+  return <div className="input-inner">
+    <textarea ref={ ref } spellCheck="false" value={ typedMessage } placeholder="Send a message..." />
+  </div>;
+}
+
+function wait(ms = 300) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+function resizeToContents(element) {
+  element.style.height = 'auto';
+
+  // a 2px pixel offset is required to prevent scrollbar from
+  // appearing on OS with a full length scroll bar (Windows/Linux)
+  element.style.height = `${ element.scrollHeight + 2 }px`;
 }

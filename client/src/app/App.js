@@ -71,7 +71,7 @@ import Notifications, { NOTIFICATION_TYPES } from './notifications';
 
 import PluginIcon from '../../resources/icons/Plugin.svg';
 import SettingsIcon from '../../resources/icons/Settings.svg';
-import UploadIcon from '../../resources/icons/Upload.svg';
+import BotIcon from '../../resources/icons/Bot.svg';
 
 
 const log = debug('App');
@@ -2109,15 +2109,15 @@ export class App extends PureComponent {
               <div className="top">
 
                 <LeftPanel>
-                  <Explorer
+                  {/* <Explorer
                     tabs={ tabs }
                     activeTab={ activeTab }
                     folders={ project ? project.folders : [] }
-                    triggerAction={ this.triggerAction } />
+                    triggerAction={ this.triggerAction } /> */}
 
                   <Fill slot="left-panel_nav">
-                    <button>
-                      <UploadIcon />
+                    <button className="active">
+                      <BotIcon />
                     </button>
                   </Fill>
                   <Fill slot="left-panel_nav">

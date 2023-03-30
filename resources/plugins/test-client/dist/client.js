@@ -67,6 +67,7 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
     await config.setForPlugin(PLUGIN_NAME, 'saveCounter', this.state.saveCounter);
   }
   render() {
+    return null;
     const {
       saveCounter
     } = this.state;
@@ -201,10 +202,10 @@ const Modal = window.components.Modal;
 /**
  * Overlay component.
  *
- * @type {import('react').ComponentType<{ 
- *  onClose: Function, 
- *  anchor: Node, 
- *  offset?: { top?: number, bottom?: number, left?: number, right?: number }, 
+ * @type {import('react').ComponentType<{
+ *  onClose: Function,
+ *  anchor: Node,
+ *  offset?: { top?: number, bottom?: number, left?: number, right?: number },
  *  maxWidth?: number | string,
  *  maxHeight?: number | string,
  *  minWidth?: number | string,
@@ -212,7 +213,7 @@ const Modal = window.components.Modal;
  * }>}
  *
  * @example
- * 
+ *
  * import { Overlay } from 'camunda-modeler-plugin-helpers/components';
  *
  * function CustomOverlay(props) {
@@ -241,7 +242,7 @@ const Modal = window.components.Modal;
  * @type {import('react').ComponentType<{ maxHeight: Number | String, relativePos: Boolean } }>}
  *
  * @example
- * 
+ *
  * import { Section } from 'camunda-modeler-plugin-helpers/components';
  *
  * function CustomSection(props) {
@@ -270,7 +271,7 @@ const Section = window.components.Section || NotCompatible('5.0');
  * @type {import('react').ComponentType<{ id: string, name: string, label?: string, switcherLabel?: string, description?: string }>}
  *
  * @example
- * 
+ *
  * import { ToggleSwitch } from 'camunda-modeler-plugin-helpers/components';
  *
  * function CustomToggle(props) {
@@ -701,7 +702,7 @@ module.exports = window.react;
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/ 	
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -715,14 +716,14 @@ module.exports = window.react;
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/ 	
+/******/
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/ 	
+/******/
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat get default export */
 /******/ 	(() => {
@@ -735,7 +736,7 @@ module.exports = window.react;
 /******/ 			return getter;
 /******/ 		};
 /******/ 	})();
-/******/ 	
+/******/
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -747,12 +748,12 @@ module.exports = window.react;
 /******/ 			}
 /******/ 		};
 /******/ 	})();
-/******/ 	
+/******/
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
-/******/ 	
+/******/
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -763,7 +764,7 @@ module.exports = window.react;
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
 /******/ 	})();
-/******/ 	
+/******/
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.

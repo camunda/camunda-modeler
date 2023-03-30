@@ -29,7 +29,7 @@ import {
 
 import { Fill } from '../../../app/slot-fill';
 
-import UploadIcon from 'icons/Upload.svg';
+import DeployIcon from 'icons/Deploy.svg';
 
 import { ENGINES } from '../../../util/Engines';
 
@@ -564,14 +564,14 @@ export default class DeploymentTool extends PureComponent {
     };
 
     return <React.Fragment>
-      { isCamundaTab(activeTab) && <Fill slot="left-panel_nav" group="8_deploy">
+      { isCamundaTab(activeTab) && <Fill slot="status-bar__file" group="8_deploy">
         <button
           onClick={ onClick }
           title="Deploy current diagram"
           className={ classNames('btn', css.DeploymentTool, { 'btn--active': isDeployOpen() }) }
           ref={ this._anchorRef }
         >
-          <UploadIcon className="icon" />
+          <DeployIcon className="icon" />
         </button>
       </Fill> }
 

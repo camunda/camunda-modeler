@@ -179,8 +179,8 @@ export default class AppParent extends PureComponent {
     // until <client:started> batch restore workspace files + files opened
     // via command line
     this.prereadyState = {
-      activeFile: this.prereadyState.activeFile || files[activeFile],
-      files: mergeFiles(this.prereadyState.files, files),
+      activeFile: null,
+      files: [],
       project
     };
 
@@ -287,6 +287,8 @@ export default class AppParent extends PureComponent {
     if (typeof onStarted === 'function') {
       onStarted();
     }
+
+    this.getApp().createDiagram('cloud-bpmn');
   };
 
   getApp() {

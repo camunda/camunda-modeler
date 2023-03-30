@@ -29,8 +29,8 @@ export function Linting(props) {
 
   const { panel = {} } = layout;
 
-  const errors = linting.filter(({ category }) => category === 'error').length,
-        warnings = linting.filter(({ category }) => category === 'warn').length;
+  const errors = 0,
+        warnings = 0;
 
   return <Fill slot="status-bar__file" group="9_linting">
     <button

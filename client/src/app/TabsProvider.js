@@ -50,7 +50,7 @@ import {
 
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM, DISABLE_CMMN } from '../util/Flags';
 
-import BPMNIcon from '../../resources/icons/file-types/BPMN-16x16.svg';
+import ChatIcon from '../../resources/icons/Chat.svg';
 import DMNIcon from '../../resources/icons/file-types/DMN-16x16.svg';
 import FormIcon from '../../resources/icons/file-types/Form-16x16.svg';
 
@@ -170,7 +170,7 @@ export default class TabsProvider {
           return import('./tabs/cloud-bpmn');
         },
         getIcon() {
-          return BPMNIcon;
+          return ChatIcon;
         },
         getInitialContents(options) {
           return cloudBpmnDiagram;
@@ -211,7 +211,7 @@ export default class TabsProvider {
           return import('./tabs/bpmn');
         },
         getIcon() {
-          return BPMNIcon;
+          return ChatIcon;
         },
         getInitialContents(options) {
           return bpmnDiagram;

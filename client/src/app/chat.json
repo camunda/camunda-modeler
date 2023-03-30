@@ -1,0 +1,21 @@
+{
+  "tabName": "Onboarding",
+  "version": "6.0.0-chatmunda",
+  "engine": "Chatmunda 8.2",
+  "intro": "",
+  "startMessageIndex": 1,
+  "messages": [
+    {
+      "prompt": "Hi, I need to create a process for onboarding new employees. Can you help me with that?",
+      "response": "Sure, I'd be happy to help. Let's start by defining the steps involved in the process. What are the first few things you need to do when you onboard a new employee?"
+    },
+    {
+      "prompt": "Well, we need to gather their personal information, assign them a company email and computer, and give them an overview of our policies and procedures.",
+      "response": "Great, those are the initial steps. Let's break them down into smaller tasks. For example, to gather their personal information, you might need to ask for their name, address, phone number, and social security number. Does that sound right?"
+    },
+    {
+      "prompt": "Yes, that's correct.",
+      "response": "Okay, let's add those tasks to the process. What comes next?"
+    }
+  ]
+}

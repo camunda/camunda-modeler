@@ -22,6 +22,8 @@ import { TabActions } from '../tab-actions';
 
 import TabCloseIcon from '../../../resources/icons/TabClose.svg';
 
+import { tabName } from '../chat.json';
+
 const noop = () => {};
 
 const TABS_OPTS = {
@@ -205,7 +207,8 @@ function Tab(props) {
         {
           dirty && <TabDirty />
         }
-        <p className="tab__name">{tab.name}</p>
+        <p className="tab__name">{ tabName || tab.name }</p>
+        {/* <p className="tab__name">{tab.name}</p> */}
         {
           (active || !small) && (
             <TabClose

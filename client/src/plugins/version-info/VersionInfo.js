@@ -23,6 +23,8 @@ import { VersionInfoOverlay } from './VersionInfoOverlay';
 
 import css from './VersionInfo.less';
 
+import chat from '../../app/chat.json';
+
 
 const CONFIG_KEY = 'versionInfo';
 
@@ -119,7 +121,7 @@ export class VersionInfo extends PureComponent {
             title="Toggle version info"
             onClick={ toggle }
             ref={ buttonRef }
-          >{ version } {unread && <UnreadMarker />}</button>
+          >{ chat.version || version } {unread && <UnreadMarker />}</button>
         </Fill>
         {
           open && <VersionInfoOverlay
