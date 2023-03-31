@@ -891,6 +891,8 @@ function isCacheStateChanged(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
 }
 
+const timeout = 10;
+
 function Chat() {
   const innerRef = useRef();
 
@@ -914,7 +916,7 @@ function Chat() {
       // user types message
       setUserMessage(message.prompt);
 
-      await wait(message.prompt.length * 50 + 2000);
+      await wait(message.prompt.length * timeout + timeout * 50);
 
       console.log('user pressed ENTER');
 
@@ -926,10 +928,6 @@ function Chat() {
     }
 
   }, [ messageIndex, setMessageIndex, setUserMessage ]);
-
-  useEffect(() => {
-    innerRef.current && innerRef.current.scrollTo(0, innerRef.current.scrollHeight);
-  });
 
   useEffect(() => {
     window.addEventListener('keyup', onKeypress);
@@ -957,7 +955,8 @@ function Chat() {
                 message={ prompt || response }
                 className={ `chat-message chat-message-${prompt ? 'user' : 'bot'}` }
                 type={ prompt ? 'user' : 'bot' }
-                typeWrite={ index > (chat.startMessageIndex || -1) && response } />
+                typeWrite={ index > (chat.startMessageIndex || -1) && response }
+                scrollMe={ innerRef } />
             );
           })
         }
@@ -991,10 +990,11 @@ function Message(props) {
     className,
     message,
     type,
-    typeWrite
+    typeWrite,
+    scrollMe
   } = props;
 
-  const typedMessage = useTypewriter(message, null, 2000);
+  const typedMessage = useTypewriter(message, null, 2000, scrollMe);
 
   return <div className={ className }>
     <div className="icon">
@@ -1006,12 +1006,13 @@ function Message(props) {
   </div>;
 }
 
-function useTypewriter(message, ref = null, delay = 0) {
-  const timeout = 25;
+function useTypewriter(message, ref = null, delay = 0, scrollMe) {
 
   const [ typedMessage, setTypedMessage ] = useState('');
 
   useEffect(() => {
+    scrollMe && scrollMe.current && scrollMe.current.scrollTo(0, 100000000000000000);
+
     if (!delay) return;
 
     let i = 0;
@@ -1021,6 +1022,10 @@ function useTypewriter(message, ref = null, delay = 0) {
     function typeWrite() {
       if (i <= placeholder.length) {
         setTypedMessage(placeholder.substring(0, i));
+
+        console.log(scrollMe.current);
+
+        scrollMe && scrollMe.current && scrollMe.current.scrollTo(0, 100000000000000000);
 
         i++;
 
@@ -1032,6 +1037,8 @@ function useTypewriter(message, ref = null, delay = 0) {
   }, []);
 
   useEffect(() => {
+    scrollMe && scrollMe.current && scrollMe.current.scrollTo(0, 100000000000000000);
+
     let i = 0;
 
     function typeWrite() {
@@ -1039,6 +1046,8 @@ function useTypewriter(message, ref = null, delay = 0) {
         setTypedMessage(message.substring(0, i));
 
         if (ref && ref.current) resizeToContents(ref.current);
+
+        scrollMe && scrollMe.current && scrollMe.current.scrollTo(0, 100000000000000000);
 
         i++;
 

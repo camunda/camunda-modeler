@@ -83,7 +83,7 @@ Task 4: Repeat Performance Review Process Annually`
 
 9. The emergency contact information provided by the candidate is for a fictional character, resulting in HR frantically calling "Batman" in the event of an emergency.
 
-10.The company handbook is accidentally printed on toilet paper, resulting in a major lawsuit and the loss of all company stock.`
+10. The company handbook is accidentally printed on toilet paper, resulting in a major lawsuit and the loss of all company stock.`
     },
     {
       'prompt': 'Thanks, I get it now.'
