@@ -72,7 +72,7 @@ import { getCloudTemplates } from '../../../util/elementTemplates';
 import BotIcon from '../../../../resources/icons/Bot.svg';
 import UserIcon from '../../../../resources/icons/User.svg';
 
-import chat from '../../chat.json';
+import chat from '../../question.json';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 

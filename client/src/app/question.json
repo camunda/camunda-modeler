@@ -1,0 +1,21 @@
+{
+  "tabName": "DetailedQuestion",
+  "version": "6.0.0-chatmunda",
+  "engine": "Chatmunda 8.2",
+  "intro": "Hello, how can I help you regarding your onboarding process?",
+  "startMessageIndex": 0,
+  "messages": [
+    {
+      "prompt": "Hi, one question regarding notebook delivery. Why do new colleagues with the name Mike receive their notebooks two weeks late? Happened twice in the last month."
+    },
+    {
+      "response": "I'm glad you ask. Rachel implemented that three years ago. Optimization of your procurement processes."
+    },
+    {
+      "prompt": "But why?"
+    },
+    {
+      "response": "From the conversation history I see that Mikes, according to your numbers start their onboarding delayed. But maybe there is more to it. Better to reach out to her directly. "
+    }
+  ]
+}
