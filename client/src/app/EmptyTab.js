@@ -113,11 +113,11 @@ export default class EmptyTab extends PureComponent {
           <h3>Learn more</h3>
           <div className="article relative">
             <p>Introduction to Camunda 8</p>
-            <a href="https://camunda.com/blog/2022/04/camunda-platform-8-orchestrate-all-the-things?utm_source=modeler&utm_medium=referral">Read blog post</a>
+            <a href="https://docs.camunda.io/docs/guides/">Camunda 8 Docs</a>
           </div>
           <div className="article relative">
             <p>Migrating from Camunda 7</p>
-            <a href="https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/">Camunda Docs</a>
+            <a href="https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/">Camunda 8 Docs</a>
           </div>
           <div className="article">
             <p>About Modeler 5</p>
