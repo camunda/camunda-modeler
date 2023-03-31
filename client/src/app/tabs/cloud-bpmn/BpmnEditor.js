@@ -72,7 +72,7 @@ import { getCloudTemplates } from '../../../util/elementTemplates';
 import BotIcon from '../../../../resources/icons/Bot.svg';
 import UserIcon from '../../../../resources/icons/User.svg';
 
-import chat from '../../question.json';
+import chat from '../../chat';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
@@ -892,6 +892,8 @@ function isCacheStateChanged(prevProps, props) {
 }
 
 function Chat() {
+  const innerRef = useRef();
+
   const [ messageIndex, setMessageIndex ] = useState(chat.startMessageIndex || 0);
   const [ userMessage, setUserMessage ] = useState('');
 
@@ -926,6 +928,10 @@ function Chat() {
   }, [ messageIndex, setMessageIndex, setUserMessage ]);
 
   useEffect(() => {
+    innerRef.current && innerRef.current.scrollTo(0, innerRef.current.scrollHeight);
+  });
+
+  useEffect(() => {
     window.addEventListener('keyup', onKeypress);
 
     return () => window.removeEventListener('keyup', onKeypress);
@@ -933,7 +939,7 @@ function Chat() {
 
   return <div className="editor">
     <div className="chat">
-      <div className="chat-inner">
+      <div ref={ innerRef } className="chat-inner">
         {
           chat.intro && chat.intro.length ? (
             <Message
@@ -1001,7 +1007,7 @@ function Message(props) {
 }
 
 function useTypewriter(message, ref = null, delay = 0) {
-  const timeout = 50;
+  const timeout = 25;
 
   const [ typedMessage, setTypedMessage ] = useState('');
 

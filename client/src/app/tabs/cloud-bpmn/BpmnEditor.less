@@ -81,10 +81,23 @@
   .chat {
     flex-grow: 1;
     position: relative;
-    overflow-y: auto;
-    position: relative;
+
+    .chat-inner {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+    }
+
+    .bjs-powered-bya {
+      bottom: 20px !important;
+      right: 20px !important;
+    }
 
     .chat-message {
+      max-width: 100%;
       border-bottom: solid 1px var(--color-grey-225-10-75);
       padding: var(--chat-padding);
       display: flex;
@@ -104,6 +117,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        white-space: pre-wrap;
       }
 
       &.chat-message-bot {

@@ -21,7 +21,7 @@ import {
 
 import { Fill } from '../slot-fill';
 
-import chat from '../chat.json';
+import chat from '../chat';
 
 import { ENGINES, ENGINE_LABELS, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
 

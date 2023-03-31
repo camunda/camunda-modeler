@@ -23,7 +23,7 @@ import { VersionInfoOverlay } from './VersionInfoOverlay';
 
 import css from './VersionInfo.less';
 
-import chat from '../../app/chat.json';
+import chat from '../../app/chat';
 
 
 const CONFIG_KEY = 'versionInfo';
