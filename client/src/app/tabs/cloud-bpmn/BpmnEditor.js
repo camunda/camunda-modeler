@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 
 import { isFunction } from 'min-dash';
 
@@ -895,21 +895,28 @@ function Chat() {
   const [ messageIndex, setMessageIndex ] = useState(chat.startMessageIndex || 0);
   const [ userMessage, setUserMessage ] = useState('');
 
-  const onKeypress = async ({ key }) => {
+  const onKeypress = useCallback(async ({ key }) => {
     if (key !== ' ' || messageIndex === chat.messages.length) return;
 
-    // user types message
-    setUserMessage(chat.messages[ messageIndex ].prompt);
+    const message = chat.messages[ messageIndex ];
 
-    await wait(chat.messages[ messageIndex ].prompt.length * 50 + 2000);
+    if (message.prompt) {
 
-    console.log('user pressed ENTER');
+      // user types message
+      setUserMessage(message.prompt);
 
-    // user presses ENTER
-    setUserMessage('');
+      await wait(message.prompt.length * 50 + 2000);
 
-    setMessageIndex(messageIndex + 1);
-  };
+      console.log('user pressed ENTER');
+
+      // user presses ENTER
+      setUserMessage('');
+      setMessageIndex(messageIndex + 1);
+    } else {
+      setMessageIndex(messageIndex + 1);
+    }
+
+  }, [ messageIndex, setMessageIndex, setUserMessage ]);
 
   useEffect(() => {
     window.addEventListener('keypress', onKeypress);
@@ -923,29 +930,21 @@ function Chat() {
         {
           chat.intro && chat.intro.length ? (
             <Message
-              key={ -1 }
+              key={ 'message-intro' }
               message={ chat.intro }
               className="chat-message chat-message-bot"
               type="bot" />
           ) : null
         }
         {
-          chat.messages.slice(0, messageIndex + 1).map(({ prompt, response }, index) => {
+          chat.messages.slice(0, messageIndex).map(({ prompt, response }, index) => {
             return (
-              <>
-                <Message
-                  key={ 'prompt' + index }
-                  message={ prompt }
-                  className="chat-message chat-message-user"
-                  type="user"
-                  typeWrite={ false } />
-                <Message
-                  key={ 'response' + index }
-                  message={ response }
-                  className="chat-message chat-message-bot"
-                  type="bot"
-                  typeWrite={ !chat.startMessageIndex || index > chat.startMessageIndex } />
-              </>
+              <Message
+                key={ 'message' + index }
+                message={ prompt || response }
+                className={ `chat-message chat-message-${prompt ? 'user' : 'bot'}` }
+                type={ prompt ? 'user' : 'bot' }
+                typeWrite={ index > (chat.startMessageIndex || -1) && response } />
             );
           })
         }
