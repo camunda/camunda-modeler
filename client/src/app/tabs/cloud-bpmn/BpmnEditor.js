@@ -896,6 +896,13 @@ function Chat() {
   const [ userMessage, setUserMessage ] = useState('');
 
   const onKeypress = useCallback(async ({ key }) => {
+    if (key === 'Escape') {
+      setMessageIndex(chat.startMessageIndex || 0);
+      setUserMessage('');
+
+      return;
+    }
+
     if (key !== ' ' || messageIndex === chat.messages.length) return;
 
     const message = chat.messages[ messageIndex ];
@@ -919,9 +926,9 @@ function Chat() {
   }, [ messageIndex, setMessageIndex, setUserMessage ]);
 
   useEffect(() => {
-    window.addEventListener('keypress', onKeypress);
+    window.addEventListener('keyup', onKeypress);
 
-    return () => window.removeEventListener('keypress', onKeypress);
+    return () => window.removeEventListener('keyup', onKeypress);
   }, [ onKeypress ]);
 
   return <div className="editor">
