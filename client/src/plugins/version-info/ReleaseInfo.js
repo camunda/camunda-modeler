@@ -58,7 +58,7 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Extended support for Camunda 8 and Camunda 7 BPMN</h4>
-          Added support for due and follow-Up date properties for user tasks, catch-all error events, and signal start events in Camunda 8.
+          Added support for due and follow-up date properties for user tasks, catch-all error events, and signal start events in Camunda 8.
         </li>
       </ul>
     </div>
