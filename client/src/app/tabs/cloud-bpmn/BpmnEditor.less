@@ -76,25 +76,20 @@
     }
   }
 
+  --chat-padding: 20px;
+
   .chat {
     flex-grow: 1;
     position: relative;
-
-    .chat-inner {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      overflow-y: auto;
-      padding-bottom: 128px;
-    }
+    overflow-y: auto;
+    position: relative;
 
     .chat-message {
       border-bottom: solid 1px var(--color-grey-225-10-75);
-      padding: 16px 10% 16px 10%;
+      padding: var(--chat-padding);
       display: flex;
       flex-direction: row;
+      line-height: 1.2;
 
       .icon {
         margin-right: 16px;
@@ -106,6 +101,9 @@
 
       .message {
         font-size: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
       &.chat-message-bot {
@@ -116,24 +114,26 @@
         background-color: white;
       }
     }
+
+    .bjs-powered-bya {
+      position: absolute;
+      bottom: 0;
+      right: var(--chat-padding);
+    }
   }
 
   .input {
-    height: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+    flex: 0;
+    margin: var(--chat-padding);
+    height: fit-content;
 
     .input-inner {
       // background-color: var(--color-grey-225-10-97);
       // border-top: solid 1px var(--color-grey-225-10-75);
       box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16);
-      width: 80%;
-      height: 48px;
+      width: 100%;
       display: flex;
-      position: absolute;
-      bottom: 32px;
       height: fit-content;
 
       textarea {
