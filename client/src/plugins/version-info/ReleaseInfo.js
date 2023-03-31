@@ -54,7 +54,7 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Example data output for Camunda 8 BPMN</h4>
-          The added `Data` section the the properties panel allows adding example data to elements which is used to provide variable suggestions in output mappings and/or the process.
+          The added `Data` section in the properties panel allows adding example data to elements which is used to provide variable suggestions in output mappings and/or the process.
         </li>
         <li>
           <h4>Extended support for Camunda 8 and Camunda 7 BPMN</h4>
