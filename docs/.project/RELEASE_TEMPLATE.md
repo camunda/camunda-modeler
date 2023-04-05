@@ -56,7 +56,6 @@ _To be done to build the release after release testing completed._
 _To be done once the release is built._
 
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
-* [ ] trigger mirroring of release to [Camunda Download Center](https://downloads.camunda.cloud/release/camunda-modeler/) via [Jenkins](https://ci.cambpm.camunda.cloud/job/sideprojects/job/camunda-modeler-desktop-RELEASE/build?delay=0sec)
 * [ ] write blog post for the [Camunda Blog](https://camunda.com/blog/) according to [guidelines](https://confluence.camunda.com/x/Wi_SBg):
    * [ ] create blog from [release blog post template](https://docs.google.com/document/d/1_QxdkGmeaXL1jOZd_e_Eg0V1fvK322uT-OKT9Saa3cA/edit#)
    * [ ] share the post with your colleagues for review
