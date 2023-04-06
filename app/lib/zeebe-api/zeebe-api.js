@@ -350,9 +350,9 @@ class ZeebeAPI {
       ...options,
       ...tlsOptions,
       ...oAuthOptions,
-      customSSL: {
+      /*customSSL: {
         rootCerts: rootCertsBuffer
-      }
+      }*/
     };
   }
 
