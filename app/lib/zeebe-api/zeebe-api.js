@@ -333,11 +333,25 @@ class ZeebeAPI {
       return { ...options, ...tlsOptions };
     }
 
+    const rootCertsBuffer = Buffer.from(rootCerts.join('\n'));
+
+    // (3) add custom SSL certificate to oAuth options
+    let oAuthOptions = {};
+    if (options.oAuth) {
+      oAuthOptions = {
+        oAuth: {
+          ...options.oAuth,
+          customRootCert: rootCertsBuffer
+        }
+      };
+    }
+
     return {
       ...options,
       ...tlsOptions,
+      ...oAuthOptions,
       customSSL: {
-        rootCerts: Buffer.from(rootCerts.join('\n'))
+        rootCerts: rootCertsBuffer
       }
     };
   }

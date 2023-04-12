@@ -1647,6 +1647,35 @@ describe('ZeebeAPI', function() {
       });
 
 
+      it('should pass root certificate in oAuth config too', async () => {
+
+        // given
+        const cert = readFile('./root-self-signed.pem');
+        const {
+          configSpy,
+          zeebeAPI
+        } = setup(cert);
+
+        const parameters = {
+          filePath: '/path/to/file.bpmn',
+          endpoint: {
+            type: 'oauth',
+            url: 'https://camunda.com'
+          }
+        };
+
+        // when
+        await zeebeAPI.deploy(parameters);
+
+        // then
+        const { oAuth } = configSpy.args[0][1];
+        expect(oAuth).to.exist;
+
+        const { customRootCert } = oAuth;
+        expect(Buffer.from(cert).equals(customRootCert)).to.be.true;
+      });
+
+
       it('should pass certificate to zeebe even if appears non-root', async () => {
 
         // given
