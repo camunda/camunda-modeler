@@ -19,6 +19,7 @@ import {
   groupBy,
   isString,
   map,
+  merge,
   reduce
 } from 'min-dash';
 
@@ -766,10 +767,9 @@ export class App extends PureComponent {
       layout
     } = this.state;
 
-    this.setLayout({
-      ...layout,
-      ...newLayout
-    });
+    const latestLayout = merge({}, layout, newLayout);
+
+    this.setLayout(latestLayout);
   };
 
 

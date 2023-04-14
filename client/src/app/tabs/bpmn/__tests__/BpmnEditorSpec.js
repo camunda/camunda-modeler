@@ -1189,6 +1189,79 @@ describe('<BpmnEditor>', function() {
 
     });
 
+
+    it('should supply layout to properties panel', async function() {
+
+      // given
+      const propertiesPanelLayout = {
+        open: true,
+        groups: {
+          customGroup: {
+            open: true
+          }
+        }
+      };
+
+      const layout = {
+        propertiesPanel: propertiesPanelLayout
+      };
+
+      // when
+      const { instance } = await renderEditor(diagramXML, {
+        layout
+      });
+
+
+      // then
+      const modeler = instance.getModeler();
+
+      expect(modeler.options.propertiesPanel.layout).to.exist;
+      expect(modeler.options.propertiesPanel.layout).to.eql(propertiesPanelLayout);
+
+    });
+
+
+    it('should update cached layout', async function() {
+
+      // given
+      const cache = new Cache();
+
+      const modeler = new BpmnModeler({
+        propertiesPanel: {
+          layout: { }
+        }
+      });
+
+      cache.add('editor', {
+        cached: {
+          modeler: modeler
+        },
+        __destroy: () => {}
+      });
+
+      const propertiesPanel = modeler.get('propertiesPanel');
+
+      const layoutSpy = spy(propertiesPanel, 'setLayout');
+
+      // when
+      await renderEditor(diagramXML, {
+        id: 'editor',
+        cache,
+        layout: {
+          propertiesPanel: {
+            groups: {
+              general: {
+                open: true
+              }
+            }
+          }
+        }
+      });
+
+      // then
+      expect(layoutSpy).to.have.been.called;
+    });
+
   });
 
 
