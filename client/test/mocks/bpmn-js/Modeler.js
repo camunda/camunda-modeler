@@ -59,6 +59,8 @@ class PropertiesPanel {
   detach() {}
 
   update() {}
+
+  setLayout() {}
 }
 
 class Linting {

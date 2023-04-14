@@ -133,6 +133,7 @@ export class BpmnEditor extends CachedComponent {
     this.handleResize = debounce(this.handleResize);
 
     this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
+    this.handlePropertiesPanelLayoutChange = this.handlePropertiesPanelLayoutChange.bind(this);
   }
 
   async componentDidMount() {
@@ -155,6 +156,10 @@ export class BpmnEditor extends CachedComponent {
     }
 
     const propertiesPanel = modeler.get('propertiesPanel');
+
+    if (layout.propertiesPanel) {
+      propertiesPanel.setLayout(layout.propertiesPanel);
+    }
 
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
@@ -222,11 +227,19 @@ export class BpmnEditor extends CachedComponent {
 
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
 
+    modeler[fn]('propertiesPanel.layoutChanged', this.handlePropertiesPanelLayoutChange);
+
     if (fn === 'on') {
       modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
     } else if (fn === 'off') {
       modeler[ fn ]('commandStack.changed', this.handleLintingDebounced);
     }
+  }
+
+  handlePropertiesPanelLayoutChange(e) {
+    this.handleLayoutChange({
+      propertiesPanel: e.layout
+    });
   }
 
   async loadTemplates() {
@@ -890,6 +903,9 @@ export class BpmnEditor extends CachedComponent {
       changeTemplateCommand: 'propertiesPanel.camunda.changeTemplate',
       linting: {
         active: layout.panel && layout.panel.open && layout.panel.tab === 'linting'
+      },
+      propertiesPanel: {
+        layout: layout.propertiesPanel
       }
     });
 
