@@ -6,11 +6,15 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `FIX`: use custom SSL certificate for oAuth connection
+
 ## 5.10.0
 
 ### General
 
-* `FEAT`: remove ET telemetry and migrate "ping" event to Mixpanel ([#3519](https://github.com/camunda/camunda-modeler/pull/3519), [#3521](https://github.com/camunda/camunda-modeler/pull/3521)) 
+* `FEAT`: remove ET telemetry and migrate "ping" event to Mixpanel ([#3519](https://github.com/camunda/camunda-modeler/pull/3519), [#3521](https://github.com/camunda/camunda-modeler/pull/3521))
 * `FEAT`: add latest execution platform versions ([#3522](https://github.com/camunda/camunda-modeler/pull/3522))
 * `DEPS`: update to `zeebe-node@8.1.6`
 
