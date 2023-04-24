@@ -10,6 +10,12 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FIX`: use custom SSL certificate for oAuth connection
 
+### DMN
+
+* `FIX`: fix crashes when `typeRef` is missing ([#3553](https://github.com/camunda/camunda-modeler/issues/3553))
+* `DEPS`: update to `camunda-dmn-js@0.10.1`
+* `DEPS`: update to `dmn-js@14.1.5`
+
 ## 5.10.0
 
 ### General
