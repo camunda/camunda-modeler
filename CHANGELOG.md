@@ -16,6 +16,13 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-dmn-js@0.10.1`
 * `DEPS`: update to `dmn-js@14.1.5`
 
+### Forms
+
+* `FEAT`: support `required` for `checkbox`, `checklist` and `taglist` ([#3529](https://github.com/camunda/camunda-modeler/issues/3529))
+* `DEPS`: update to `form-js` to 0.14.1
+* `DEPS`: update to `form-linting` to 0.7.1
+* `DEPS`: update to `form-playground` to 0.6.0
+
 ## 5.10.0
 
 ### General
