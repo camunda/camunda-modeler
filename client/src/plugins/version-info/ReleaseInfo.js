@@ -45,20 +45,16 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>New features in forms</h4>
-          Text components now support FEEL templating.
-          Forms now support more flexible layouts by allowing to arrange components in columns.
+          Checkbox, checklist, and taglist components can now be required.
         </li>
         <li>
-          <h4>Visual grid for diagrams</h4>
-          Modeling BPMN and DMN diagrams is easier with the new visual grid.
+          <h4>Properties panel layout persistance</h4>
+          The properties panel layout is now persisted across sessions.
+          This makes it easier to continue working where you left off.
         </li>
         <li>
-          <h4>Example data output for Camunda 8 BPMN</h4>
-          The added `Data` section in the properties panel allows adding example data to elements which is used to provide variable suggestions in output mappings and/or the process.
-        </li>
-        <li>
-          <h4>Extended support for Camunda 8 and Camunda 7 BPMN</h4>
-          Added support for due and follow-up date properties for user tasks, catch-all error events, and signal start events in Camunda 8.
+          <h4>Message event templates support</h4>
+          This allows to use message catch event connectors in Camunda 8.
         </li>
       </ul>
     </div>
