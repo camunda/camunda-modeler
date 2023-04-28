@@ -24,30 +24,26 @@ This project incorporates components from the projects listed below. The origina
 17.   bpmn-moddle@8.0.1 (https://github.com/bpmn-io/bpmn-moddle)
 18.   deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
 19.   diagram-js-direct-editing@2.0.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
-20.   diagram-js@11.12.0 (https://github.com/bpmn-io/diagram-js)
-21.   didi@9.0.2 (https://github.com/nikku/didi)
-22.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
-23.   events@3.3.0 (https://github.com/Gozala/events)
-24.   formik@2.0.4 (https://github.com/jaredpalmer/formik)
-25.   hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
-26.   inherits-browser@0.1.0 (https://github.com/nikku/inherits-browser)
-27.   lodash-es@4.17.21 (https://github.com/lodash/lodash)
-28.   min-dash@3.8.1 (https://github.com/bpmn-io/min-dash)
-29.   min-dom@3.2.1 (https://github.com/bpmn-io/min-dom)
-30.   mitt@1.2.0 (https://github.com/developit/mitt)
-31.   mixpanel-browser@2.45.0 (https://github.com/mixpanel/mixpanel-js)
-32.   moddle-xml@10.0.0 (https://github.com/bpmn-io/moddle-xml)
-33.   moddle@6.0.0 (https://github.com/bpmn-io/moddle)
-34.   p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
-35.   p-series@2.1.0 (https://github.com/sindresorhus/p-series)
-36.   react-dom@16.8.6 (https://github.com/facebook/react)
-37.   react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
-38.   react@16.8.6 (https://github.com/facebook/react)
-39.   scheduler@0.17.0 (https://github.com/facebook/react)
-40.   sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
-41.   tiny-svg@3.0.0 (https://github.com/bpmn-io/tiny-svg)
-42.   tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
-43.   tslib@1.9.3 (https://github.com/Microsoft/tslib)
+20.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
+21.   events@3.3.0 (https://github.com/Gozala/events)
+22.   formik@2.0.4 (https://github.com/jaredpalmer/formik)
+23.   hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
+24.   lodash-es@4.17.21 (https://github.com/lodash/lodash)
+25.   min-dash@3.8.1 (https://github.com/bpmn-io/min-dash)
+26.   min-dom@3.2.1 (https://github.com/bpmn-io/min-dom)
+27.   mitt@1.2.0 (https://github.com/developit/mitt)
+28.   mixpanel-browser@2.45.0 (https://github.com/mixpanel/mixpanel-js)
+29.   moddle-xml@10.0.0 (https://github.com/bpmn-io/moddle-xml)
+30.   moddle@6.0.0 (https://github.com/bpmn-io/moddle)
+31.   p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
+32.   p-series@2.1.0 (https://github.com/sindresorhus/p-series)
+33.   react-dom@16.8.6 (https://github.com/facebook/react)
+34.   react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
+35.   react@16.8.6 (https://github.com/facebook/react)
+36.   scheduler@0.17.0 (https://github.com/facebook/react)
+37.   sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
+38.   tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
+39.   tslib@1.9.3 (https://github.com/Microsoft/tslib)
 
 
 %% @sentry/core@6.3.6 NOTICES AND INFORMATION BEGIN HERE
@@ -641,61 +637,6 @@ THE SOFTWARE.
 END OF diagram-js-direct-editing@2.0.0 NOTICES AND INFORMATION
 
 
-%% diagram-js@11.12.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2014-present Camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF diagram-js@11.12.0 NOTICES AND INFORMATION
-
-
-%% didi@9.0.2 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License
-
-Copyright (C) 2013 Vojta Jína.
-Copyright (C) 2015-present Nico Rehwaldt.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF didi@9.0.2 NOTICES AND INFORMATION
-
-
 %% drag-tabs@2.3.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
@@ -814,28 +755,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ==========================================
 END OF hoist-non-react-statics@3.3.1 NOTICES AND INFORMATION
-
-
-%% inherits-browser@0.1.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The ISC License
-
-Copyright (c) 2022-present Nico Rehwaldt
-Copyright (c) 2011-2022 Isaac Z. Schlueter
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-==========================================
-END OF inherits-browser@0.1.0 NOTICES AND INFORMATION
 
 
 %% lodash-es@4.17.21 NOTICES AND INFORMATION BEGIN HERE
@@ -1407,34 +1326,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ==========================================
 END OF sourcemapped-stacktrace@1.1.9 NOTICES AND INFORMATION
-
-
-%% tiny-svg@3.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2014 Nico Rehwaldt
-Copyright (c) 2015-present camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF tiny-svg@3.0.0 NOTICES AND INFORMATION
 
 
 %% tiny-warning@1.0.3 NOTICES AND INFORMATION BEGIN HERE
