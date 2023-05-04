@@ -123,6 +123,7 @@ export class BpmnEditor extends CachedComponent {
     this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
 
     this.handlePropertiesPanelLayoutChange = this.handlePropertiesPanelLayoutChange.bind(this);
+    this.handleLayoutChange = this.handleLayoutChange.bind(this);
   }
 
   async componentDidMount() {
@@ -228,6 +229,9 @@ export class BpmnEditor extends CachedComponent {
   handlePropertiesPanelLayoutChange(e) {
     this.handleLayoutChange({
       propertiesPanel: e.layout
+    },
+    {
+      applyToPropertiesPanel: false
     });
   }
 
@@ -727,10 +731,17 @@ export class BpmnEditor extends CachedComponent {
     }
   };
 
-  handleLayoutChange(newLayout) {
+  handleLayoutChange(newLayout, options = { applyToPropertiesPanel: true }) {
     const {
       onLayoutChanged
     } = this.props;
+
+
+    if (options.applyToPropertiesPanel) {
+      const modeler = this.getModeler();
+      const propertiesPanel = modeler.get('propertiesPanel');
+      propertiesPanel.setLayout(newLayout.propertiesPanel);
+    }
 
     if (isFunction(onLayoutChanged)) {
       onLayoutChanged(newLayout);
@@ -781,7 +792,7 @@ export class BpmnEditor extends CachedComponent {
             className="properties"
             layout={ layout }
             ref={ this.propertiesPanelRef }
-            onLayoutChanged={ onLayoutChanged } />
+            onLayoutChanged={ this.handleLayoutChange } />
         </div>
 
         { engineProfile && <EngineProfile
