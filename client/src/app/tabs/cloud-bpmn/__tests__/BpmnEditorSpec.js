@@ -1016,11 +1016,14 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       }
 
       const {
-        wrapper
+        wrapper,
+        instance
       } = await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
+
+      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
 
       wrapper.update();
 
@@ -1032,6 +1035,12 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // then
       expect(layout.propertiesPanel.open).to.be.true;
       expect(layout.propertiesPanel.width).to.equal(280);
+
+      expect(setLayoutSpy).to.have.been.calledOnce;
+      expect(setLayoutSpy).to.have.been.calledWith({
+        open: true,
+        width: 280
+      });
     });
 
 
@@ -1049,11 +1058,14 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       }
 
       const {
-        wrapper
+        wrapper,
+        instance
       } = await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
+
+      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
 
       wrapper.update();
 
@@ -1065,6 +1077,12 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // then
       expect(layout.propertiesPanel.open).to.be.true;
       expect(layout.propertiesPanel.width).to.equal(280);
+
+      expect(setLayoutSpy).to.have.been.calledOnce;
+      expect(setLayoutSpy).to.have.been.calledWith({
+        open: true,
+        width: 280
+      });
     });
 
 
@@ -1082,11 +1100,14 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       }
 
       const {
-        wrapper
+        wrapper,
+        instance
       } = await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
+
+      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
 
       const toggle = wrapper.find('.toggle');
 
@@ -1095,6 +1116,12 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       // then
       expect(layout.propertiesPanel.open).to.be.false;
+
+      expect(setLayoutSpy).to.have.been.calledOnce;
+      expect(setLayoutSpy).to.have.been.calledWith({
+        open: false,
+        width: 280
+      });
     });
 
 
