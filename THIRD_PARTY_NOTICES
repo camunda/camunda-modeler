@@ -34,7 +34,7 @@ This project incorporates components from the projects listed below. The origina
 27.   mitt@1.2.0 (https://github.com/developit/mitt)
 28.   mixpanel-browser@2.45.0 (https://github.com/mixpanel/mixpanel-js)
 29.   moddle-xml@10.0.0 (https://github.com/bpmn-io/moddle-xml)
-30.   moddle@6.0.0 (https://github.com/bpmn-io/moddle)
+30.   moddle@6.2.3 (https://github.com/bpmn-io/moddle)
 31.   p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
 32.   p-series@2.1.0 (https://github.com/sindresorhus/p-series)
 33.   react-dom@16.8.6 (https://github.com/facebook/react)
@@ -1122,7 +1122,7 @@ THE SOFTWARE.
 END OF moddle-xml@10.0.0 NOTICES AND INFORMATION
 
 
-%% moddle@6.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% moddle@6.2.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1146,7 +1146,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF moddle@6.0.0 NOTICES AND INFORMATION
+END OF moddle@6.2.3 NOTICES AND INFORMATION
 
 
 %% p-defer@3.0.0 NOTICES AND INFORMATION BEGIN HERE
