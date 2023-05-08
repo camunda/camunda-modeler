@@ -18,6 +18,11 @@ import handToolOnSpaceModule from '../../bpmn/modeler/features/hand-tool-on-spac
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
 import lintingAnnotationsModule from '@camunda/linting/modeler';
 
+import {
+  BpmnJSTracking as bpmnJSTracking,
+  BpmnJSTrackingModules as bpmnJSTrackingModules
+} from 'bpmn-js-tracking';
+
 import Flags, {
   DISABLE_ADJUST_ORIGIN
 } from '../../../../util/Flags';
@@ -45,6 +50,8 @@ const defaultModules = BpmnModeler.prototype._modules;
 CloudBpmnModeler.prototype._modules = [
   ...defaultModules,
   addExporterModule,
+  bpmnJSTracking,
+  bpmnJSTrackingModules,
   completeDirectEditingModule,
   globalClipboardModule,
   handToolOnSpaceModule,
