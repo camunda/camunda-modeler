@@ -18,9 +18,9 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: support templating of message events ([#3403](https://github.com/camunda/camunda-modeler/issues/3403))
 * `FIX`: merge process variables schemas ([#3562](https://github.com/camunda/camunda-modeler/issues/3562))
 * `FIX`: unlink event template when replaced with mismatching event definition ([#3537](https://github.com/camunda/camunda-modeler/issues/3537))
-* `DEPS`: update to `camunda-bpmn-js@2.3.0`
+* `DEPS`: update to `camunda-bpmn-js@2.3.1`
 * `DEPS`: update to `bpmn-js@13.0.4`
-* `DEPS`: update to `bpmn-js-properties-panel@1.22.0`
+* `DEPS`: update to `bpmn-js-properties-panel@1.22.1`
 
 ### DMN
 
