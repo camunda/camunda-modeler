@@ -36,8 +36,11 @@ export default class MixpanelHandler {
   }
 
   enable(token, id, stage) {
+    const debug = stage === 'prod' ? false : true;
+
     mixpanel.init(token, {
-      property_blacklist: [ '$current_url' ]
+      property_blacklist: [ '$current_url' ],
+      debug
     });
 
     mixpanel.identify(id);
