@@ -10,7 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `FIX`: use custom SSL certificate for oAuth connection
+* `FIX`: use custom SSL certificate for oAuth connection ([#3554](https://github.com/camunda/camunda-modeler/pull/3554))
 
 ### BPMN
 
