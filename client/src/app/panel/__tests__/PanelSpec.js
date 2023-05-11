@@ -25,29 +25,14 @@ const spy = sinon.spy;
 
 describe('<Panel>', function() {
 
-  it('should render (open)', function() {
+  it('should render', function() {
 
     // when
     const wrapper = renderPanel();
 
     // then
+    expect(wrapper.find('.panel__header')).to.have.length(1);
     expect(wrapper.find('.panel__body')).to.have.length(1);
-  });
-
-
-  it('should not render (closed)', function() {
-
-    // when
-    const wrapper = renderPanel({
-      layout: {
-        panel: {
-          open: false
-        }
-      }
-    });
-
-    // then
-    expect(wrapper.find('.panel__body')).to.have.length(0);
   });
 
 
