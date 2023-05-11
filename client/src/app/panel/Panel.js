@@ -90,15 +90,7 @@ export default class Panel extends PureComponent {
       });
     };
 
-    const { panel = {} } = layout;
-
-    const { open } = panel;
-
-    if (!open) {
-      return null;
-    }
-
-    return <div className={ classnames(css.Panel, { open }) }>
+    return <div className={ css.Panel }>
       <div className="panel__header">
         <div className="panel__links">
           <Slot name="panel-link" />

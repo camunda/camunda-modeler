@@ -37,6 +37,8 @@ import {
   SlotFillRoot
 } from './slot-fill';
 
+import PanelContainer from './resizable-container/PanelContainer';
+
 import Panel from './panel/Panel';
 
 import LintingTab from './panel/tabs/linting/LintingTab';
@@ -2046,23 +2048,27 @@ export class App extends PureComponent {
                 </TabContainer>
               </div>
 
-              <Panel
+              <PanelContainer
                 layout={ layout }
-                onLayoutChanged={ this.handleLayoutChanged }
-                onUpdateMenu={ this.updateMenu } />
+                onLayoutChanged={ this.handleLayoutChanged }>
+                <Panel
+                  layout={ layout }
+                  onLayoutChanged={ this.handleLayoutChanged }
+                  onUpdateMenu={ this.updateMenu } />
 
-              <LogTab
-                layout={ layout }
-                entries={ logEntries }
-                onClear={ this.clearLog }
-                onAction={ this.triggerAction }
-                onLayoutChanged={ this.handleLayoutChanged } />
+                <LogTab
+                  layout={ layout }
+                  entries={ logEntries }
+                  onClear={ this.clearLog }
+                  onAction={ this.triggerAction }
+                  onLayoutChanged={ this.handleLayoutChanged } />
 
-              <LintingTab
-                layout={ layout }
-                linting={ this.getLintingState(activeTab) }
-                onAction={ this.triggerAction }
-                onLayoutChanged={ this.handleLayoutChanged } />
+                <LintingTab
+                  layout={ layout }
+                  linting={ this.getLintingState(activeTab) }
+                  onAction={ this.triggerAction }
+                  onLayoutChanged={ this.handleLayoutChanged } />
+              </PanelContainer>
 
               <StatusBar />
 
