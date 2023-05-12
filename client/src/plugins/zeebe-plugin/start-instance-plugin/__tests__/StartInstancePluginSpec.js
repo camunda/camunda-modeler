@@ -378,7 +378,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
         displayNotification,
         deploymentEndpoint: {
           targetType: CAMUNDA_CLOUD,
-          camundaCloudClusterRegion: 'REGION',
+          camundaCloudClusterRegion: 'region',
           camundaCloudClusterId: 'CLUSTER_ID'
         },
       });
