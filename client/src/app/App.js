@@ -1879,15 +1879,17 @@ export class App extends PureComponent {
   };
 
   async quit() {
+    const saveResults = await this.triggerAction('save-all');
+
+    const canQuit = saveResults.every(result => result);
+
     try {
       await this.workspaceChanged(false);
     } catch (error) {
       log('workspace saved error', error);
     }
 
-    const closeResults = await this.triggerAction('close-all-tabs');
-
-    return closeResults.every(result => result);
+    return canQuit;
   }
 
   composeAction = (...args) => {
