@@ -9,21 +9,29 @@
  */
 
 /**
- * Get a link to instances in Operate.
+ * Get a link to cluster in Operate.
  *
  * @param {Endpoint} endpoint
  */
-export function getCloudLink(endpoint) {
+export function getClusterUrl(endpoint) {
   const {
     camundaCloudClusterId,
     camundaCloudClusterRegion
   } = endpoint;
 
-  const url = new URL(`https://${camundaCloudClusterRegion}.operate.camunda.io/${camundaCloudClusterId}/instances`);
+  const url = new URL(`https://${camundaCloudClusterRegion}.operate.camunda.io/${camundaCloudClusterId}`);
 
   return url;
 }
 
+function getProcess(apiResponse) {
+  return apiResponse?.processes?.[0] || null;
+}
+
 export function getProcessId(response) {
-  return response.processes && response.processes[0] && response.processes[0].bpmnProcessId || null;
+  return getProcess(response)?.bpmnProcessId || null;
+}
+
+export function getProcessVersion(response) {
+  return getProcess(response)?.version || null;
 }

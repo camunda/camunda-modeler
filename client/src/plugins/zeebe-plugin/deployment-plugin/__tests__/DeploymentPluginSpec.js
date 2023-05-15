@@ -628,7 +628,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     const notificationHTML = shallow(notification.content).html().replace(/&amp;/g, '&');
 
     expect(notificationHTML).to.include(
-      'https://region.operate.camunda.io/CLUSTER_ID/instances?process=test&version=all&active=true&incidents=true'
+      'https://region.operate.camunda.io/CLUSTER_ID/processes?process=test&version=1&active=true&incidents=true'
     );
   });
 
@@ -1509,7 +1509,7 @@ function MockZeebeAPI(options = {}) {
     }
 
     const result = deploymentResult ||
-      { success: true, response: { processes: [ { bpmnProcessId: 'test' } ] } };
+      { success: true, response: { processes: [ { bpmnProcessId: 'test', version: 1 } ] } };
 
     return Promise.resolve(result);
   };

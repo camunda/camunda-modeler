@@ -39,8 +39,9 @@ import { ENGINES } from '../../../util/Engines';
 import css from './DeploymentPlugin.less';
 
 import {
-  getCloudLink,
-  getProcessId
+  getClusterUrl,
+  getProcessId,
+  getProcessVersion
 } from '../shared/util';
 
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
@@ -623,11 +624,12 @@ function CloudLink(props) {
     return null;
   }
 
-  const cloudUrl = getCloudLink(endpoint, response);
-  cloudUrl.searchParams.set('process', processId);
-  cloudUrl.searchParams.set('version', 'all');
-  cloudUrl.searchParams.set('active', 'true');
-  cloudUrl.searchParams.set('incidents', 'true');
+  const clusterUrl = getClusterUrl(endpoint, response);
+  const processesUrl = new URL(`${clusterUrl}/processes`);
+  processesUrl.searchParams.set('process', processId);
+  processesUrl.searchParams.set('version', getProcessVersion(response) || 'all');
+  processesUrl.searchParams.set('active', 'true');
+  processesUrl.searchParams.set('incidents', 'true');
 
   return (
     <div className={ css.CloudLink }>
@@ -635,7 +637,7 @@ function CloudLink(props) {
         Process Definition ID:
         <code>{processId}</code>
       </div>
-      <a href={ cloudUrl.toString() }>
+      <a href={ processesUrl.toString() }>
         Open in Camunda Operate
       </a>
     </div>
