@@ -38,6 +38,11 @@ import { ENGINES } from '../../../util/Engines';
 
 import css from './DeploymentPlugin.less';
 
+import {
+  getCloudLink,
+  getProcessId
+} from '../shared/util';
+
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 
 const ZEEBE_ENDPOINTS_CONFIG_KEY = 'zeebeEndpoints';
@@ -612,19 +617,17 @@ function CloudLink(props) {
     response
   } = props;
 
-  const {
-    camundaCloudClusterRegion,
-    camundaCloudClusterId
-  } = endpoint;
-
   const processId = getProcessId(response);
 
   if (!processId) {
     return null;
   }
 
-  const query = `?process=${processId}&version=all&active=true&incidents=true`;
-  const cloudUrl = `https://${camundaCloudClusterRegion}.operate.camunda.io/${camundaCloudClusterId}/instances/${query}`;
+  const cloudUrl = getCloudLink(endpoint, response);
+  cloudUrl.searchParams.set('process', processId);
+  cloudUrl.searchParams.set('version', 'all');
+  cloudUrl.searchParams.set('active', 'true');
+  cloudUrl.searchParams.set('incidents', 'true');
 
   return (
     <div className={ css.CloudLink }>
@@ -632,7 +635,7 @@ function CloudLink(props) {
         Process Definition ID:
         <code>{processId}</code>
       </div>
-      <a href={ cloudUrl }>
+      <a href={ cloudUrl.toString() }>
         Open in Camunda Operate
       </a>
     </div>
@@ -687,10 +690,6 @@ function getGRPCErrorCode(error) {
 
 function createCamundaCloudClusterUrl(camundaCloudClusterId) {
   return camundaCloudClusterId + '.bru-2.zeebe.camunda.io:443';
-}
-
-function getProcessId(response) {
-  return response.processes && response.processes[0] && response.processes[0].bpmnProcessId || null;
 }
 
 function patchWithProtocol(config = {}) {

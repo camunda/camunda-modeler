@@ -596,7 +596,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       displayNotification,
       endpoint: {
         targetType: CAMUNDA_CLOUD,
-        camundaCloudClusterRegion: 'REGION',
+        camundaCloudClusterRegion: 'region',
         camundaCloudClusterId: 'CLUSTER_ID'
       }
     });
@@ -628,7 +628,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     const notificationHTML = shallow(notification.content).html().replace(/&amp;/g, '&');
 
     expect(notificationHTML).to.include(
-      'https://REGION.operate.camunda.io/CLUSTER_ID/instances/?process=test&version=all&active=true&incidents=true'
+      'https://region.operate.camunda.io/CLUSTER_ID/instances?process=test&version=all&active=true&incidents=true'
     );
   });
 

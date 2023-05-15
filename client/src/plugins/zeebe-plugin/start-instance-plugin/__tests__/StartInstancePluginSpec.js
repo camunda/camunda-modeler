@@ -378,7 +378,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
         displayNotification,
         deploymentEndpoint: {
           targetType: CAMUNDA_CLOUD,
-          camundaCloudClusterRegion: 'REGION',
+          camundaCloudClusterRegion: 'region',
           camundaCloudClusterId: 'CLUSTER_ID'
         },
       });
@@ -409,7 +409,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
       const notificationHTML = shallow(notification.content).html().replace(/&amp;/g, '&');
 
       expect(notificationHTML).to.include(
-        'https://REGION.operate.camunda.io/CLUSTER_ID/instances/undefined'
+        'https://region.operate.camunda.io/CLUSTER_ID/instances/test'
       );
     });
 
@@ -498,7 +498,7 @@ function MockZeebeAPI({ runSpy, runResult } = {}) {
     }
 
     const result = runResult ||
-      { success: true, response: {} };
+      { success: true, response: { processInstanceKey: 'test' } };
 
     return Promise.resolve(result);
   };
