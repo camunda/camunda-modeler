@@ -20,7 +20,7 @@ import pDefer from 'p-defer';
 import classNames from 'classnames';
 import { CAMUNDA_CLOUD } from '../shared/ZeebeTargetTypes';
 import StartInstanceConfigOverlay from './StartInstanceConfigOverlay';
-import { getCloudLink } from '../shared/util';
+import { getClusterUrl } from '../shared/util';
 
 const DEFAULT_CONFIGURATION = { variables: '' };
 
@@ -342,8 +342,8 @@ function CloudLink(props) {
     processInstanceKey
   } = response;
 
-  const cloudUrl = getCloudLink(endpoint);
-  const url = cloudUrl.toString() + `/${processInstanceKey}`;
+  const clusterUrl = getClusterUrl(endpoint);
+  const url = `${clusterUrl}/instances/${processInstanceKey}`;
 
   return (
     <div className={ css.CloudLink }>

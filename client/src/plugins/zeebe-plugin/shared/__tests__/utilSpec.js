@@ -9,14 +9,16 @@
  */
 
 import {
-  getCloudLink
+  getClusterUrl,
+  getProcessId,
+  getProcessVersion
 } from '../util';
 
 describe('util', () => {
 
-  describe('getCloudLink', () => {
+  describe('getClusterUrl', () => {
 
-    it('should return cloud link', () => {
+    it('should return cluster url', () => {
 
       // given
       const endpoint = {
@@ -25,10 +27,112 @@ describe('util', () => {
       };
 
       // when
-      const url = getCloudLink(endpoint);
+      const url = getClusterUrl(endpoint);
 
       // then
-      expect(url.toString()).to.eql('https://camundacloudclusterregion.operate.camunda.io/camundaCloudClusterId/instances');
+      expect(url.toString()).to.eql('https://camundacloudclusterregion.operate.camunda.io/camundaCloudClusterId');
     });
+  });
+
+
+  describe('getProcessId', () => {
+
+    it('should return process id', () => {
+
+      // given
+      const response = {
+        processes: [
+          {
+            bpmnProcessId: 'processId'
+          }
+        ]
+      };
+
+      // when
+      const processId = getProcessId(response);
+
+      // then
+      expect(processId).to.eql('processId');
+    });
+
+
+    it('should return null for empty response', () => {
+
+      // given
+      const response = {};
+
+      // when
+      const processId = getProcessId(response);
+
+      // then
+      expect(processId).to.be.null;
+    });
+
+
+    it('should return null if process missing', () => {
+
+      // given
+      const response = {
+        processes: []
+      };
+
+      // when
+      const processId = getProcessId(response);
+
+      // then
+      expect(processId).to.be.null;
+    });
+  });
+
+
+  describe('getProcessVersion', () => {
+
+    it('should return version', () => {
+
+      // given
+      const response = {
+        processes: [
+          {
+            bpmnProcessId: 'processId',
+            version: 2
+          }
+        ]
+      };
+
+      // when
+      const version = getProcessVersion(response);
+
+      // then
+      expect(version).to.eql(2);
+    });
+
+
+    it('should return null for empty response', () => {
+
+      // given
+      const response = {};
+
+      // when
+      const version = getProcessVersion(response);
+
+      // then
+      expect(version).to.be.null;
+    });
+
+
+    it('should return null if process missing', () => {
+
+      // given
+      const response = {
+        processes: []
+      };
+
+      // when
+      const version = getProcessVersion(response);
+
+      // then
+      expect(version).to.be.null;
+    });
+
   });
 });
