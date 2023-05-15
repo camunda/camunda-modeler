@@ -39,6 +39,7 @@ export const CLIENT_ID_MUST_NOT_BE_EMPTY = 'Client ID must not be empty.';
 export const CLIENT_SECRET_MUST_NOT_BE_EMPTY = 'Client Secret must not be empty.';
 export const FILL_IN_ALL_THE_FIELDS = 'You must fill in all the fields';
 export const CLUSTER_URL_MUST_BE_VALID_CLOUD_URL = 'Must be a valid Camunda Cloud URL.';
+export const TROUBLESHOOTING_URL = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/troubleshooting/';
 
 export const ERROR_REASONS = {
   UNKNOWN: 'UNKNOWN',
@@ -53,13 +54,13 @@ export const ERROR_REASONS = {
 };
 
 export const CONNECTION_ERROR_MESSAGES = {
-  [ ERROR_REASONS.CONTACT_POINT_UNAVAILABLE ]: 'Should point to a running Zeebe cluster.',
-  [ ERROR_REASONS.CLUSTER_UNAVAILABLE ]: 'Should point to a running Zeebe cluster.',
-  [ ERROR_REASONS.UNAUTHORIZED ]: 'Credentials do not match with the server.',
+  [ ERROR_REASONS.CONTACT_POINT_UNAVAILABLE ]: 'Cannot connect to Zeebe cluster.',
+  [ ERROR_REASONS.CLUSTER_UNAVAILABLE ]: 'Cannot connect to Zeebe cluster.',
+  [ ERROR_REASONS.UNAUTHORIZED ]: 'Credentials rejected by server.',
   [ ERROR_REASONS.FORBIDDEN ]: 'This user is not permitted to deploy. Please use different credentials or get this user enabled to deploy.',
-  [ ERROR_REASONS.OAUTH_URL ]: 'Should point to a running OAuth service.',
+  [ ERROR_REASONS.OAUTH_URL ]: 'Cannot connect to OAuth service.',
   [ ERROR_REASONS.UNKNOWN ]: 'Unknown error. Please check Zeebe cluster status.',
   [ ERROR_REASONS.UNSUPPORTED_ENGINE ]: 'Unsupported Zeebe version.',
-  [ ERROR_REASONS.INVALID_CLIENT_ID ]: 'Please provide a valid Client ID.',
+  [ ERROR_REASONS.INVALID_CLIENT_ID ]: 'Invalid Client ID.',
   [ ERROR_REASONS.INVALID_CREDENTIALS ]: 'The client secret is not valid for the Client ID provided.'
 };

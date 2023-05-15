@@ -29,7 +29,8 @@ import {
   CLUSTER_URL,
   REMEMBER_CREDENTIALS,
   ERROR_REASONS,
-  CONNECTION_ERROR_MESSAGES
+  CONNECTION_ERROR_MESSAGES,
+  TROUBLESHOOTING_URL
 } from './DeploymentPluginConstants';
 
 import { AUTH_TYPES } from './../shared/ZeebeAuthTypes';
@@ -116,7 +117,9 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
     switch (failureReason) {
     case ERROR_REASONS.CONTACT_POINT_UNAVAILABLE:
       return fieldName === 'contactPoint' &&
-        CONNECTION_ERROR_MESSAGES[failureReason];
+        <>
+          { CONNECTION_ERROR_MESSAGES[failureReason] } <a href={ TROUBLESHOOTING_URL }>Troubleshoot</a>
+        </>;
     case ERROR_REASONS.CLUSTER_UNAVAILABLE:
       return fieldName === 'camundaCloudClusterUrl' && CONNECTION_ERROR_MESSAGES[failureReason];
     case ERROR_REASONS.UNSUPPORTED_ENGINE:
