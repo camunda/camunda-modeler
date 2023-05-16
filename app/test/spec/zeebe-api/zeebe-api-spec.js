@@ -16,6 +16,8 @@ const path = require('path');
 
 const ZeebeAPI = require('../../../lib/zeebe-api');
 
+const TEST_URL = 'http://localhost:26500';
+
 
 describe('ZeebeAPI', function() {
 
@@ -91,7 +93,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted'
+            type: 'selfHosted',
+            url: TEST_URL
           }
         };
 
@@ -169,7 +172,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted'
+            type: 'selfHosted',
+            url: TEST_URL
           }
         };
 
@@ -195,7 +199,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth'
+            type: 'oauth',
+            url: TEST_URL
           }
         };
 
@@ -247,7 +252,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted'
+            type: 'selfHosted',
+            url: TEST_URL
           }
         };
 
@@ -325,7 +331,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth'
+            type: 'oauth',
+            url: TEST_URL
           }
         };
 
@@ -351,7 +358,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth'
+            type: 'oauth',
+            url: TEST_URL
           }
         };
 
@@ -377,7 +385,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth'
+            type: 'oauth',
+            url: TEST_URL
           }
         };
 
@@ -403,7 +412,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted'
+            type: 'selfHosted',
+            url: TEST_URL
           }
         };
 
@@ -430,7 +440,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       };
 
@@ -459,7 +469,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       };
 
@@ -490,7 +500,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       };
 
@@ -515,7 +525,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       };
 
@@ -546,7 +556,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       };
 
@@ -578,7 +588,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       };
 
@@ -604,7 +614,7 @@ describe('ZeebeAPI', function() {
         filePath: 'filePath',
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       };
 
@@ -638,7 +648,7 @@ describe('ZeebeAPI', function() {
         name: 'not_suffixed',
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       });
 
@@ -668,7 +678,7 @@ describe('ZeebeAPI', function() {
         name: 'not_suffixed',
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         },
         diagramType: 'dmn'
       });
@@ -699,7 +709,7 @@ describe('ZeebeAPI', function() {
         name: 'suffixed.bpmn',
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       });
 
@@ -729,7 +739,7 @@ describe('ZeebeAPI', function() {
         name: 'suffixed.dmn',
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         },
         diagramType: 'dmn'
       });
@@ -760,7 +770,7 @@ describe('ZeebeAPI', function() {
         name: '',
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       });
 
@@ -790,7 +800,7 @@ describe('ZeebeAPI', function() {
         name: '',
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       });
 
@@ -820,7 +830,7 @@ describe('ZeebeAPI', function() {
         name: 'orchestrae-location-check-bpmn',
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       });
 
@@ -850,7 +860,7 @@ describe('ZeebeAPI', function() {
         name: '',
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         },
         diagramType: 'dmn'
       });
@@ -881,7 +891,7 @@ describe('ZeebeAPI', function() {
         name: 'orchestrae-location-check-dmn',
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         },
         diagramType: 'dmn'
       });
@@ -1004,7 +1014,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted'
+            type: 'selfHosted',
+            url: TEST_URL
           }
         };
 
@@ -1082,7 +1093,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted'
+            type: 'selfHosted',
+            url: TEST_URL
           }
         };
 
@@ -1108,7 +1120,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth'
+            type: 'oauth',
+            url: TEST_URL
           }
         };
 
@@ -1160,7 +1173,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted'
+            type: 'selfHosted',
+            url: TEST_URL
           }
         };
 
@@ -1238,7 +1252,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth'
+            type: 'oauth',
+            url: TEST_URL
           }
         };
 
@@ -1264,7 +1279,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth'
+            type: 'oauth',
+            url: TEST_URL
           }
         };
 
@@ -1290,7 +1306,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth'
+            type: 'oauth',
+            url: TEST_URL
           }
         };
 
@@ -1372,7 +1389,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       };
 
@@ -1401,7 +1418,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       };
 
@@ -1412,7 +1429,7 @@ describe('ZeebeAPI', function() {
         ...parameters,
         endpoint: {
           type: 'oauth',
-          url: 'testURL'
+          url: TEST_URL
         }
       });
 
@@ -1437,7 +1454,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: 'selfHosted',
-          url: 'testURL'
+          url: TEST_URL
         }
       };
 
@@ -1448,7 +1465,7 @@ describe('ZeebeAPI', function() {
         ...parameters,
         endpoint: {
           type: 'oauth',
-          url: 'testURL'
+          url: TEST_URL
         }
       });
 
@@ -1574,6 +1591,96 @@ describe('ZeebeAPI', function() {
 
       // then
       expect(usedConfig[1]).to.have.property('useTLS', true);
+    });
+
+
+    it('should NOT change provided port', async () => {
+
+      // given
+      let usedConfig;
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function(...args) {
+          usedConfig = args;
+
+          return {
+            deployProcess: noop
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'http://camunda.com:1337'
+        }
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      // then
+      expect(usedConfig[1]).not.to.have.property('port');
+    });
+
+
+    it('should infer port=80 if missing for http endpoint', async () => {
+
+      // given
+      let usedConfig;
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function(...args) {
+          usedConfig = args;
+
+          return {
+            deployProcess: noop
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'http://camunda.com'
+        }
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      // then
+      expect(usedConfig[1]).to.have.property('port', '80');
+    });
+
+
+    it('should infer port=443 if missing for https endpoint', async () => {
+
+      // given
+      let usedConfig;
+
+      const zeebeAPI = mockZeebeNode({
+        ZBClient: function(...args) {
+          usedConfig = args;
+
+          return {
+            deployProcess: noop
+          };
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: 'selfHosted',
+          url: 'https://camunda.com'
+        }
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      // then
+      expect(usedConfig[1]).to.have.property('port', '443');
     });
 
 

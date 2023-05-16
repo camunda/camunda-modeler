@@ -56,12 +56,14 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
       const noPortZeebeContactPoint = 'foo.bar';
       const missingProtocolZeebeContactPoint = 'foo.bar:0001';
       const validZeebeContactPointFullURL = 'https://foo.bar:0001';
+      const validZeebeContactPointNoPortURL = 'https://foo.bar';
 
       // then
       expect(validator.validateZeebeContactPoint(emptyZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_NOT_BE_EMPTY);
       expect(validator.validateZeebeContactPoint(noPortZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_START_WITH_PROTOCOL);
       expect(validator.validateZeebeContactPoint(missingProtocolZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_START_WITH_PROTOCOL);
       expect(validator.validateZeebeContactPoint(validZeebeContactPointFullURL)).to.not.exist;
+      expect(validator.validateZeebeContactPoint(validZeebeContactPointNoPortURL)).to.not.exist;
 
     });
 

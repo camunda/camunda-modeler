@@ -302,6 +302,7 @@ class ZeebeAPI {
     }
 
     options = await this._withTLSConfig(url, options);
+    options = this._withPortConfig(url, options);
 
     return new this._ZeebeNode.ZBClient(url, options);
   }
@@ -353,6 +354,26 @@ class ZeebeAPI {
       customSSL: {
         rootCerts: rootCertsBuffer
       }
+    };
+  }
+
+  _withPortConfig(url, options) {
+
+    // do not override camunda cloud port (handled by zeebe-node)
+    if (options.camundaCloud) {
+      return options;
+    }
+
+    const parsedUrl = new URL(url);
+
+    // do not override port if already set in url
+    if (parsedUrl.port) {
+      return options;
+    }
+
+    return {
+      ...options,
+      port: parsedUrl.protocol === 'https:' ? '443' : '80'
     };
   }
 
