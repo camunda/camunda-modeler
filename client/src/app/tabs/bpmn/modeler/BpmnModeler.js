@@ -20,10 +20,12 @@ import lintingAnnotationsModule from '@camunda/linting/modeler';
 
 import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 
-import {
-  BpmnJSTracking as bpmnJSTracking,
-  BpmnJSTrackingModules as bpmnJSTrackingModules
-} from 'bpmn-js-tracking';
+import { BpmnJSTracking as bpmnJSTracking } from 'bpmn-js-tracking';
+
+import contextPadTracking from 'bpmn-js-tracking/lib/features/context-pad';
+import modelingTracking from 'bpmn-js-tracking/lib/features/modeling';
+import popupMenuTracking from 'bpmn-js-tracking/lib/features/popup-menu';
+import paletteTracking from 'bpmn-js-tracking/lib/features/palette';
 
 
 export default class PlatformBpmnModeler extends BpmnModeler {
@@ -49,13 +51,16 @@ const defaultModules = BpmnModeler.prototype._modules;
 
 const extensionModules = [
   addExporterModule,
-  bpmnJSTracking,
-  bpmnJSTrackingModules,
   completeDirectEditingModule,
   globalClipboardModule,
   handToolOnSpaceModule,
   propertiesPanelKeyboardBindingsModule,
-  lintingAnnotationsModule
+  lintingAnnotationsModule,
+  bpmnJSTracking,
+  contextPadTracking,
+  modelingTracking,
+  popupMenuTracking,
+  paletteTracking
 ];
 
 PlatformBpmnModeler.prototype._modules = [
