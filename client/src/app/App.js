@@ -363,13 +363,13 @@ export class App extends PureComponent {
   }
 
   /**
-   * Close tab.
+   * Handle the saving dialog when closing a tab.
    *
    * @param {Tab} tab
    *
-   * @return {Promise<boolean>} resolved to true if tab is closed
+   * @return {Promise<boolean>} resolved to true if tab can be safely closed
    */
-  closeTab = async (tab) => {
+  saveBeforeClose = async (tab) => {
     const { file } = tab;
 
     const { name } = file;
@@ -386,6 +386,23 @@ export class App extends PureComponent {
       } else if (button === 'cancel') {
         return false;
       }
+    }
+
+    return true;
+  };
+
+  /**
+   * Close tab.
+   *
+   * @param {Tab} tab
+   *
+   * @return {Promise<boolean>} resolved to true if tab is closed
+   */
+  closeTab = async (tab) => {
+    const canClose = await this.saveBeforeClose(tab);
+
+    if (!canClose) {
+      return false;
     }
 
     this.triggerAction('emit-event', {
@@ -1879,9 +1896,15 @@ export class App extends PureComponent {
   };
 
   async quit() {
-    const saveResults = await this.triggerAction('save-all');
+    const { tabs } = this.state;
 
-    const canQuit = saveResults.every(result => result);
+    const quitTasks = tabs.map((tab) => {
+      return () => this.saveBeforeClose(tab);
+    });
+
+    const quitResults = await pSeries(quitTasks);
+
+    const canQuit = quitResults.every(result => result);
 
     try {
       await this.workspaceChanged(false);

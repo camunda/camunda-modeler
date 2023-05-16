@@ -243,8 +243,9 @@ describe('<AppParent>', function() {
         } = createAppParent({ globals: { backend } }, mount);
 
         const app = appParent.getApp();
+        app.state.tabs = [ createTab() ];
 
-        const saveAllTabsSpy = spy(app, 'triggerAction');
+        const saveTabsStub = spy(app, 'saveBeforeClose');
 
         const quitAllowedSpy = spy(backend, 'sendQuitAllowed');
 
@@ -252,7 +253,7 @@ describe('<AppParent>', function() {
         await appParent.triggerAction('quit');
 
         // then
-        expect(saveAllTabsSpy).to.have.been.calledWith('save-all');
+        expect(saveTabsStub).to.have.been.calledOnce;
         expect(quitAllowedSpy).to.have.been.called;
       });
 
@@ -267,8 +268,9 @@ describe('<AppParent>', function() {
         } = createAppParent({ globals: { backend } }, mount);
 
         const app = appParent.getApp();
+        app.state.tabs = [ createTab() ];
 
-        const saveTabsStub = sinon.stub(app, 'saveAllTabs').resolves([ false ]);
+        const saveTabsStub = sinon.stub(app, 'saveBeforeClose').resolves(false);
 
         const quitAbortedSpy = spy(backend, 'sendQuitAborted');
 
@@ -291,6 +293,7 @@ describe('<AppParent>', function() {
         } = createAppParent({ globals: { backend } }, mount);
 
         const app = appParent.getApp();
+        app.state.tabs = [ createTab() ];
 
         const closeAllTabsSpy = spy(app, 'triggerAction');
 
