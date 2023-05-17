@@ -73,6 +73,13 @@ export const EMPTY_TAB = {
   type: 'empty'
 };
 
+export const SETTINGS_TAB = {
+  id: '__settings',
+  type: 'settings',
+  name: 'Settings',
+  title: 'Settings'
+};
+
 const ENCODING_UTF8 = 'utf8';
 
 const FILTER_ALL_EXTENSIONS = {
@@ -370,11 +377,11 @@ export class App extends PureComponent {
    * @return {Promise<boolean>} resolved to true if tab is closed
    */
   closeTab = async (tab) => {
-    const { file } = tab;
-
-    const { name } = file;
-
     if (this.isDirty(tab)) {
+      const { file } = tab;
+
+      const { name } = file;
+
       const { button } = await this.showCloseFileDialog({ name });
 
       if (button === 'save') {
@@ -402,6 +409,10 @@ export class App extends PureComponent {
 
   isEmptyTab = (tab) => {
     return tab === EMPTY_TAB;
+  };
+
+  isSettingsTab = (tab) => {
+    return tab === SETTINGS_TAB;
   };
 
   isDirty = (tab) => {
@@ -1511,6 +1522,14 @@ export class App extends PureComponent {
     return Promise.reject(new Error('no last tab'));
   };
 
+  openSettings = () => {
+    if (!this.state.tabs.includes(SETTINGS_TAB)) {
+      this.addTab(SETTINGS_TAB);
+    }
+
+    return this.selectTab(SETTINGS_TAB);
+  };
+
   showShortcuts = () => this.openModal('KEYBOARD_SHORTCUTS');
 
   /**
@@ -1688,6 +1707,10 @@ export class App extends PureComponent {
 
     if (action === 'create-cmmn-diagram') {
       return this.createDiagram('cmmn');
+    }
+
+    if (action === 'open-settings') {
+      return this.openSettings();
     }
 
     if (action === 'create-form') {
