@@ -231,51 +231,80 @@ describe('<AppParent>', function() {
 
   describe('trigger action', function() {
 
-    it('should handle quit', async function() {
+    describe('quit', function() {
 
-      // given
-      const backend = new Backend();
+      it('should handle quit', async function() {
 
-      const {
-        appParent
-      } = createAppParent({ globals: { backend } }, mount);
+        // given
+        const backend = new Backend();
 
-      const app = appParent.getApp();
+        const {
+          appParent
+        } = createAppParent({ globals: { backend } }, mount);
 
-      const closeAllTabsSpy = spy(app, 'triggerAction');
+        const app = appParent.getApp();
+        app.state.tabs = [ createTab() ];
 
-      const quitAllowedSpy = spy(backend, 'sendQuitAllowed');
+        const saveTabsStub = spy(app, 'saveBeforeClose');
 
-      // when
-      await appParent.triggerAction('quit');
+        const quitAllowedSpy = spy(backend, 'sendQuitAllowed');
 
-      // then
-      expect(closeAllTabsSpy).to.be.calledWith('close-all-tabs');
-      expect(quitAllowedSpy).to.have.been.called;
-    });
+        // when
+        await appParent.triggerAction('quit');
+
+        // then
+        expect(saveTabsStub).to.have.been.calledOnce;
+        expect(quitAllowedSpy).to.have.been.called;
+      });
 
 
-    it('should handle quit aborted', async function() {
+      it('should handle quit aborted', async function() {
 
-      // given
-      const backend = new Backend();
+        // given
+        const backend = new Backend();
 
-      const {
-        appParent
-      } = createAppParent({ globals: { backend } }, mount);
+        const {
+          appParent
+        } = createAppParent({ globals: { backend } }, mount);
 
-      const app = appParent.getApp();
+        const app = appParent.getApp();
+        app.state.tabs = [ createTab() ];
 
-      const closeTabsStub = sinon.stub(app, 'closeTabs').resolves([ false ]);
+        const saveTabsStub = sinon.stub(app, 'saveBeforeClose').resolves(false);
 
-      const quitAbortedSpy = spy(backend, 'sendQuitAborted');
+        const quitAbortedSpy = spy(backend, 'sendQuitAborted');
 
-      // when
-      await appParent.triggerAction('quit');
+        // when
+        await appParent.triggerAction('quit');
 
-      // then
-      expect(closeTabsStub).to.be.calledOnce;
-      expect(quitAbortedSpy).to.have.been.called;
+        // then
+        expect(saveTabsStub).to.have.been.calledOnce;
+        expect(quitAbortedSpy).to.have.been.called;
+      });
+
+
+      it('should not close tabs', async function() {
+
+        // given
+        const backend = new Backend();
+
+        const {
+          appParent
+        } = createAppParent({ globals: { backend } }, mount);
+
+        const app = appParent.getApp();
+        app.state.tabs = [ createTab() ];
+
+        const closeAllTabsSpy = spy(app, 'triggerAction');
+
+        // when
+        await appParent.triggerAction('quit');
+
+        // then
+        expect(closeAllTabsSpy).not.to.have.been.calledWith('close-tab');
+        expect(closeAllTabsSpy).not.to.have.been.calledWith('close-all-tabs');
+      });
+
     });
 
 

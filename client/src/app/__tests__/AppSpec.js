@@ -1704,7 +1704,7 @@ describe('<App>', function() {
       });
 
 
-      it('on quit', function() {
+      it('on quit', async function() {
 
         // given
         const changedSpy = spy(() => {});
@@ -1714,7 +1714,7 @@ describe('<App>', function() {
         });
 
         // when
-        app.quit();
+        await app.quit();
 
         // then
         expect(changedSpy).to.have.been.calledOnce;
