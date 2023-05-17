@@ -16,7 +16,7 @@ import {
   CLIENT_ID_MUST_NOT_BE_EMPTY,
   CLIENT_SECRET_MUST_NOT_BE_EMPTY,
   CLUSTER_URL_MUST_BE_VALID_CLOUD_URL,
-  CONTACT_POINT_MUST_BE_URL_OR_IP,
+  CONTACT_POINT_MUST_BE_URL,
   CONTACT_POINT_MUST_START_WITH_PROTOCOL
 } from './DeploymentPluginConstants';
 
@@ -43,7 +43,7 @@ export default class DeploymentPluginValidator {
 
   validateZeebeContactPoint = (value) => {
     return this.validateNonEmpty(value, CONTACT_POINT_MUST_NOT_BE_EMPTY) ||
-      validateUrl(value, CONTACT_POINT_MUST_BE_URL_OR_IP);
+      validateUrl(value, CONTACT_POINT_MUST_BE_URL);
   };
 
   validateOAuthURL = (value) => {
