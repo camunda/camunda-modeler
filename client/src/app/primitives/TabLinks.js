@@ -83,16 +83,6 @@ export default class TabLinks extends PureComponent {
     onMoveTab(tab, newIndex);
   };
 
-  isDirty = (tab) => {
-    const {
-      dirtyTabs,
-      unsavedTabs
-    } = this.props;
-
-    return (dirtyTabs && !!dirtyTabs[ tab.id ]) ||
-           (unsavedTabs && !!unsavedTabs[ tab.id ]);
-  };
-
   render() {
 
     const {
@@ -103,7 +93,8 @@ export default class TabLinks extends PureComponent {
       onContextMenu,
       onClose,
       placeholder,
-      className
+      className,
+      isDirty = () => false
     } = this.props;
 
     return (
@@ -113,7 +104,7 @@ export default class TabLinks extends PureComponent {
         <div className="tabs-container">
           {
             tabs.map(tab => {
-              const dirty = this.isDirty(tab);
+              const dirty = isDirty(tab);
               const active = tab === activeTab;
 
               return (

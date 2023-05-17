@@ -1954,10 +1954,12 @@ export class App extends PureComponent {
       tabs,
       activeTab,
       layout,
-      logEntries,
-      dirtyTabs,
-      unsavedTabs
+      logEntries
     } = this.state;
+
+    const isDirty = (tab) => {
+      return this.isUnsaved(tab) || this.isDirty(tab);
+    };
 
     const Tab = this.getTabComponent(activeTab);
 
@@ -1975,8 +1977,7 @@ export class App extends PureComponent {
               <div className="tabs">
                 <TabLinks
                   tabs={ tabs }
-                  dirtyTabs={ dirtyTabs }
-                  unsavedTabs={ unsavedTabs }
+                  isDirty={ isDirty }
                   activeTab={ activeTab }
                   getTabIcon={ this._getTabIcon }
                   onSelect={ this.selectTab }
