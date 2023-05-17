@@ -20,7 +20,7 @@ import {
   CLIENT_ID_MUST_NOT_BE_EMPTY,
   CLIENT_SECRET_MUST_NOT_BE_EMPTY,
   CLUSTER_URL_MUST_BE_VALID_CLOUD_URL,
-  CONTACT_POINT_MUST_BE_URL_OR_IP
+  CONTACT_POINT_MUST_BE_URL
 } from '../DeploymentPluginConstants';
 
 
@@ -44,7 +44,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
       expect(validator.validateZeebeContactPoint(noProtocolZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_START_WITH_PROTOCOL);
       expect(validator.validateZeebeContactPoint(noPortZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_START_WITH_PROTOCOL);
       expect(validator.validateZeebeContactPoint(noPortZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_START_WITH_PROTOCOL);
-      expect(validator.validateZeebeContactPoint(invalidUrlZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_BE_URL_OR_IP);
+      expect(validator.validateZeebeContactPoint(invalidUrlZeebeContactPoint)).to.eql(CONTACT_POINT_MUST_BE_URL);
       expect(validator.validateZeebeContactPoint(validZeebeContactPoint)).to.not.exist;
     });
 
