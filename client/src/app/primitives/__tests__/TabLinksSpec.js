@@ -24,10 +24,7 @@ import {
 } from './mocks';
 
 const [
-  tab1,
-  tab2,
-  tab3,
-  tab4
+  tab1
 ] = defaultTabs;
 
 const { spy } = sinon;
@@ -137,9 +134,7 @@ describe('<TabLinks>', function() {
       const {
         tree
       } = renderTabLinks({
-        dirtyTabs: {
-          tab1: true
-        }
+        isDirty: (tab) => tab.id === 'tab1'
       });
 
       // when
@@ -156,9 +151,7 @@ describe('<TabLinks>', function() {
       const {
         tree
       } = renderTabLinks({
-        dirtyTabs: {
-          tab1: false
-        }
+        isDirty: (tab) => tab.id !== 'tab1'
       });
 
       // when
@@ -233,44 +226,6 @@ describe('<TabLinks>', function() {
 
       // then
       expect(closeSpy).to.have.been.calledWith(tab1);
-    });
-
-  });
-
-
-  describe('dirty state', function() {
-
-    it('should be dirty if dirty OR unsaved', function() {
-
-      // given
-      const {
-        tabLinks
-      } = renderTabLinks({
-        dirtyTabs: {
-          tab1: false,
-          tab2: false,
-          tab3: true,
-          tab4: true
-        },
-        unsavedTabs: {
-          tab1: false,
-          tab2: true,
-          tab3: false,
-          tab4: true
-        }
-      });
-
-      // when
-      const tab1Dirty = tabLinks.isDirty(tab1),
-            tab2Dirty = tabLinks.isDirty(tab2),
-            tab3Dirty = tabLinks.isDirty(tab3),
-            tab4Dirty = tabLinks.isDirty(tab4);
-
-      // then
-      expect(tab1Dirty).to.be.false;
-      expect(tab2Dirty).to.be.true;
-      expect(tab3Dirty).to.be.true;
-      expect(tab4Dirty).to.be.true;
     });
 
   });
@@ -485,8 +440,7 @@ function renderTabLinks(options = {}) {
     onContextMenu,
     onMoveTab,
     onSelect,
-    dirtyTabs,
-    unsavedTabs,
+    isDirty = () => false,
     placeholder
   } = options;
 
@@ -500,8 +454,7 @@ function renderTabLinks(options = {}) {
         onClose={ onClose || noop }
         onMoveTab={ onMoveTab || noop }
         onSelect={ onSelect || noop }
-        dirtyTabs={ dirtyTabs || {} }
-        unsavedTabs={ unsavedTabs || {} }
+        isDirty={ isDirty }
         placeholder={ placeholder } />
     </SlotFillRoot>
   );
