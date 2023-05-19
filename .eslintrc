@@ -6,7 +6,6 @@
     {
       "files": [
         "dev.js",
-        "webpack.config.js",
         "forge.config.js"
       ],
       "extends": "plugin:bpmn-io/node"

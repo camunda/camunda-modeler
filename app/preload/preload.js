@@ -13,7 +13,7 @@ const {
   ipcRenderer
 } = require('electron');
 
-const generateId = require('./util/generate-id');
+const generateId = require('./lib/util/generate-id');
 
 const allowedEvents = [
   'app:quit-aborted',

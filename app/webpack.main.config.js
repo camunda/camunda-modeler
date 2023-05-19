@@ -13,15 +13,8 @@ const path = require('path');
 /** @type {import('webpack').Configuration} */
 const config = {
   mode: 'production',
-  target: 'electron-preload',
-  entry: './app/lib/preload.js',
-  output: {
-    path: path.resolve(__dirname, 'app/preload'),
-    filename: 'preload.js'
-  },
-  resolve: {
-    mainFields: [ 'main' ],
-  }
+  target: 'electron-main',
+  entry: path.resolve(__dirname, 'prod.js')
 };
 
 module.exports = config;

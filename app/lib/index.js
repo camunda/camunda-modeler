@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+/* global MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY, MAIN_WINDOW_WEBPACK_ENTRY */
+
 const {
   app,
   dialog: electronDialog,
@@ -419,7 +421,7 @@ app.createEditorWindow = function() {
     minWidth: MINIMUM_SIZE.width,
     minHeight: MINIMUM_SIZE.height,
     webPreferences: {
-      preload: path.resolve(__dirname, '../preload/preload.js'),
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       contextIsolation: true,
       nodeIntegration,
       sandbox: !nodeIntegration // sandbox needs to be disabled for nodeIntegration=true
@@ -436,13 +438,7 @@ app.createEditorWindow = function() {
 
   dialog.setActiveWindow(mainWindow);
 
-  let url = 'file://' + path.resolve(__dirname + '/../public/index.html');
-
-  if (process.env.NODE_ENV === 'development') {
-    url = 'file://' + path.resolve(__dirname + '/../../client/build/index.html');
-  }
-
-  mainWindow.loadURL(url);
+  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // handling case when user clicks on window close button
   mainWindow.on('close', function(e) {
