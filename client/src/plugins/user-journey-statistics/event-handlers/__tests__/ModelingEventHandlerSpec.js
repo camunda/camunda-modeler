@@ -85,25 +85,84 @@ describe('<ModelingEventHandler>', () => {
     });
 
 
-    it('shoud trasform data', () => {
+    describe('should transform data', () => {
 
-      callSubscriber({
-        on: (_, callback) => {
-          callback({
-            name: 'some.event',
-            data: {
-              nonAnElement: 'someValue',
-              element: create('shape'),
-              elementArray: [ create('shape') ]
-            }
-          });
-        }
+      it('diagram elements', () => {
+
+        callSubscriber({
+          on: (_, callback) => {
+            callback({
+              name: 'some.event',
+              data: {
+                nonAnElement: 'someValue',
+                element: create('shape'),
+                elementArray: [ create('shape') ]
+              }
+            });
+          }
+        });
+
+        expect(track).to.have.been.calledWith('some:event', {
+          nonAnElement: 'someValue',
+          element: {},
+          elementArray: [ {} ]
+        });
       });
 
-      expect(track).to.have.been.calledWith('some:event', {
-        nonAnElement: 'someValue',
-        element: {},
-        elementArray: [ {} ]
+
+      describe('popupmenu.trigger - element templates id', () => {
+
+        const subscribeToPopupTrigger = (id) => {
+          callSubscriber({
+            on: (_, callback) => {
+              callback({
+                name: 'popupMenu.trigger',
+                data: {
+                  entryId: id
+                }
+              });
+            }
+          });
+        };
+
+        it('append', () => {
+
+          // when
+          subscribeToPopupTrigger('append.template-id');
+
+          // then
+          expect(track).to.have.been.calledWith('popupMenu:trigger', {
+            entryId: 'append.template-id',
+            templateId: 'id'
+          });
+        });
+
+
+        it('replace', () => {
+
+          // when
+          subscribeToPopupTrigger('replace.template-id');
+
+          // then
+          expect(track).to.have.been.calledWith('popupMenu:trigger', {
+            entryId: 'replace.template-id',
+            templateId: 'id'
+          });
+        });
+
+
+        it('create', () => {
+
+          // when
+          subscribeToPopupTrigger('create.template-id');
+
+          // then
+          expect(track).to.have.been.calledWith('popupMenu:trigger', {
+            entryId: 'create.template-id',
+            templateId: 'id'
+          });
+        });
+
       });
     });
   });
