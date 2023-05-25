@@ -498,10 +498,12 @@ describe('<CmmnEditor>', function() {
         onLayoutChanged
       });
 
-      const toggle = wrapper.find('.toggle');
+      const toggle = wrapper.find('.resizer');
 
       // when
-      toggle.simulate('click');
+      toggle.simulate('mousedown');
+
+      window.dispatchEvent(new MouseEvent('mouseup'));
 
       // then
       expect(layout.propertiesPanel.open).to.be.true;
@@ -528,10 +530,12 @@ describe('<CmmnEditor>', function() {
         onLayoutChanged
       });
 
-      const toggle = wrapper.find('.toggle');
+      const toggle = wrapper.find('.resizer');
 
       // when
-      toggle.simulate('click');
+      toggle.simulate('mousedown');
+
+      window.dispatchEvent(new MouseEvent('mouseup'));
 
       // then
       expect(layout.propertiesPanel.open).to.be.false;

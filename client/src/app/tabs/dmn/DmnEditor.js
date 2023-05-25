@@ -35,7 +35,7 @@ import {
 
 import OverviewContainer from './OverviewContainer';
 
-import PropertiesContainer from '../PropertiesContainer';
+import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
 
 import CamundaDmnModeler from './modeler';
 
@@ -58,8 +58,6 @@ import Metadata from '../../../util/Metadata';
 import { findUsages as findNamespaceUsages } from '../util/namespace';
 
 import { migrateDiagram } from '@bpmn-io/dmn-migrate';
-
-import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesContainer';
 
 import { DEFAULT_LAYOUT as overviewDefaultLayout } from './OverviewContainer';
 
@@ -670,7 +668,7 @@ export class DmnEditor extends CachedComponent {
     if (action === 'toggleProperties') {
       const newLayout = {
         propertiesPanel: {
-          ...propertiesPanelDefaultLayout,
+          ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
           ...propertiesPanelLayout,
           open: !propertiesPanelLayout.open
         }
@@ -682,7 +680,7 @@ export class DmnEditor extends CachedComponent {
     if (action === 'resetProperties') {
       const newLayout = {
         propertiesPanel: {
-          ...propertiesPanelDefaultLayout,
+          ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
           open: true
         }
       };
@@ -931,10 +929,9 @@ export class DmnEditor extends CachedComponent {
 
           {
             hasPropertiesPanel && (
-              <PropertiesContainer
-                className="properties"
-                layout={ layout }
+              <PropertiesPanelContainer
                 ref={ this.propertiesPanelRef }
+                layout={ layout }
                 onLayoutChanged={ onLayoutChanged } />
             )
           }

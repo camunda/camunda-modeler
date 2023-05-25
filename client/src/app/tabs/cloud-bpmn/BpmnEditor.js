@@ -26,7 +26,7 @@ import {
   CachedComponent
 } from '../../cached';
 
-import PropertiesContainer from '../PropertiesContainer';
+import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
 
 import BpmnModeler from './modeler';
 
@@ -47,8 +47,6 @@ import applyDefaultTemplates from '../bpmn-shared/modeler/features/apply-default
 import configureModeler from '../bpmn-shared/util/configure';
 
 import Metadata from '../../../util/Metadata';
-
-import { DEFAULT_LAYOUT as propertiesPanelDefaultLayout } from '../PropertiesContainer';
 
 import {
   EngineProfile,
@@ -619,7 +617,7 @@ export class BpmnEditor extends CachedComponent {
     if (action === 'toggleProperties') {
       const newLayout = {
         propertiesPanel: {
-          ...propertiesPanelDefaultLayout,
+          ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
           ...propertiesPanelLayout,
           open: !propertiesPanelLayout.open
         }
@@ -631,7 +629,7 @@ export class BpmnEditor extends CachedComponent {
     if (action === 'resetProperties') {
       const newLayout = {
         propertiesPanel: {
-          ...propertiesPanelDefaultLayout,
+          ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
           open: true
         }
       };
@@ -739,12 +737,7 @@ export class BpmnEditor extends CachedComponent {
   render() {
     const engineProfile = this.engineProfile.getCached();
 
-    const {
-      layout,
-      linting = [],
-      onAction,
-      onLayoutChanged
-    } = this.props;
+    const { layout } = this.props;
 
     const imported = this.getModeler().getDefinitions();
 
@@ -765,10 +758,9 @@ export class BpmnEditor extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
           ></div>
 
-          <PropertiesContainer
-            className="properties"
-            layout={ layout }
+          <PropertiesPanelContainer
             ref={ this.propertiesPanelRef }
+            layout={ layout }
             onLayoutChanged={ this.handleLayoutChange } />
         </div>
 
