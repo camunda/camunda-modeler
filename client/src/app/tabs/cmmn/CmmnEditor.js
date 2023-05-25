@@ -24,7 +24,7 @@ import {
   debounce
 } from '../../../util';
 
-import PropertiesContainer from '../PropertiesContainer';
+import PropertiesPanelContainer from '../../resizable-container/PropertiesPanelContainer';
 
 import CamundaCmmnModeler from './modeler';
 
@@ -505,10 +505,9 @@ export class CmmnEditor extends CachedComponent {
           onContextMenu={ this.handleContextMenu }
         ></div>
 
-        <PropertiesContainer
-          className="properties"
-          layout={ layout }
+        <PropertiesPanelContainer
           ref={ this.propertiesPanelRef }
+          layout={ layout }
           onLayoutChanged={ onLayoutChanged } />
 
       </div>

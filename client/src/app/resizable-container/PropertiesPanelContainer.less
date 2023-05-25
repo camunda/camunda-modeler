@@ -1,0 +1,24 @@
+:local(.PropertiesPanelContainer) {
+  position: relative;
+  flex: none;
+  outline: none;
+
+  &.open {
+    outline: solid 1px var(--color-grey-225-10-75);
+  }
+
+  .properties-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow-y: auto;
+  }
+
+  .bio-properties-panel {
+    --font-family: inherit;
+    --font-family-monospace: inherit;
+    background: var(--color-white);
+  }
+}
