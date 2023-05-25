@@ -56,8 +56,7 @@ export default class ModelingEventHandler {
         // format event name to be consistent
         const eventName = name.replace('.', ':');
 
-        // replace diagram elements with serializable data
-        const serializableData = filterDiagramElements(data);
+        const serializableData = filterData(name, data);
 
         this.track(eventName, serializableData);
       });
@@ -104,4 +103,30 @@ function getTemplateIdFromElement(element) {
   const businessObject = getBusinessObject(element);
 
   return businessObject && businessObject.modelerTemplate;
+}
+
+function getTemplateIdFromEntry(data) {
+  let entryId = data.entryId;
+
+  if (entryId.includes('replace.template-')) {
+    entryId = entryId.replace('replace.template-', '');
+  } else if (entryId.includes('append.template-')) {
+    entryId = entryId.replace('append.template-', '');
+  } else if (entryId.includes('create.template-')) {
+    entryId = entryId.replace('create.template-', '');
+  }
+  return entryId;
+}
+
+function filterData(eventName, data) {
+
+  // replace diagram elements with serializable data
+  let serializableData = filterDiagramElements(data);
+
+  // get template id from popup menu entry
+  if (eventName === 'popupMenu.trigger') {
+    serializableData.templateId = getTemplateIdFromEntry(data);
+  }
+
+  return serializableData;
 }
