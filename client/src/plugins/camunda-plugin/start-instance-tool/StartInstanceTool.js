@@ -267,6 +267,8 @@ export default class StartInstanceTool extends PureComponent {
         endpoint
       } = deploymentConfig;
 
+      startConfiguration.businessKey = startConfiguration.businessKey === '' ? null : startConfiguration.businessKey;
+
       const processInstance =
          await this.startWithConfiguration(this.decorateVariables(startConfiguration), processDefinition, endpoint);
 
