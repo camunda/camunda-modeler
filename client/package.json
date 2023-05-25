@@ -28,7 +28,7 @@
     "bpmn-js": "^13.0.0",
     "bpmn-js-properties-panel": "^1.22.1",
     "bpmn-moddle": "^8.0.1",
-    "bpmn-js-tracking": "0.2.0",
+    "bpmn-js-tracking": "0.3.0",
     "camunda-bpmn-js": "^2.3.1",
     "camunda-bpmn-moddle": "^7.0.1",
     "camunda-cmmn-moddle": "^1.0.0",
