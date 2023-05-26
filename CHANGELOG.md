@@ -7,6 +7,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: infer default port when connecting to Zeebe instances ([#3412](https://github.com/camunda/camunda-modeler/issues/3412))
+* `FEAT`: point to troubleshooting guide on connection problems ([#3618](https://github.com/camunda/camunda-modeler/pull/3618))
 
 ### BPMN
 
@@ -15,9 +16,15 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add _Inputs_ group for signal intermediate throw and end events ([bpmn-js-properties-panel911](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/911))
 * `FEAT`: change signal Name entry to optional FEEL entry ([bpmn-js-properties-panel#911](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/911))
 * `FEAT`: validate custom dropdown and textArea entries ([bpmn-js-properties-panel#922](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/922))
-* `FIX`: allow to configure variable events for conditional start event in event subprocess ([bpmn-js-properties-panel#925](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/925))
+* `FEAT`: validate receive task after event-based gateway ([#3569](https://github.com/camunda/camunda-modeler/issues/3569))
+* `FEAT`: support signal throw and end event in Camunda 8.3 ([#3555](https://github.com/camunda/camunda-modeler/issues/3555))
+* `FEAT`: variable suggestions take the expression position into account ([\`@bpmn-io/variable-resolver#19](https://github.com/bpmn-io/variable-resolver/pull/19), [#3510](https://github.com/camunda/camunda-modeler/issues/3510))
+* `FIX`: handle missing `resultExpression` value ([\`@bpmn-io/variable-resolver#20](https://github.com/bpmn-io/variable-resolver/pull/20), [#3599](https://github.com/camunda/camunda-modeler/issues/3599))
+* `FIX`: allow to configure variable events for conditional start event in event subprocess ([bpmn-js-properties-panel#925](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/925), [#3568](https://github.com/camunda/camunda-modeler/issues/3568))
 * `FIX`: unlink templated message instead of removing ([bpmn-js-properties-panel#914](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/914))
+* `FIX`: hover indicator missing for create/append anything ([#3435](https://github.com/camunda/camunda-modeler/issues/3435))
 * `FIX`: handle undefined values in custom properties validator ([bpmn-js-properties-panel#926](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/926))
+* `FIX`: correct properties panel being hidden when resizing from closed state ([#3602](https://github.com/camunda/camunda-modeler/issues/3602))
 * `DEPS`: update to `camunda-bpmn-js@2.5.0`
 
 ## 5.11.0
@@ -104,7 +111,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correct order of variable name and FEEL expression in Script Tasks ([bpmn-js-properties-panel#886](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/886))
 * `FIX`: enforce minimum Textarea height ([properties-panel#220](https://github.com/bpmn-io/properties-panel/pull/220))
 * `FIX`: correctly display error message for error code ([#3443](https://github.com/camunda/camunda-modeler/issues/3443))
-* `FIX`: correct SaaS deployment link ([https://github.com/camunda/camunda-modeler/issues/3433](#3433))
+* `FIX`: correct SaaS deployment link ([#3433](https://github.com/camunda/camunda-modeler/issues/3433))
 * `DEPS`: update to `@bpmn-io/properties-panel@1.4.0`
 * `DEPS`: update to `@camunda/linting@0.16.0`
 * `DEPS`: update to `bpmn-js@11.5.0`
@@ -116,7 +123,6 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: allow multi-line headers in decision tables ([dmn-js#719](https://github.com/bpmn-io/dmn-js/issues/719))
 * `DEPS`: update to `dmn-js@14.1.1`
-
 
 ## 5.8.0
 
