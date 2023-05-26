@@ -8,6 +8,18 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: infer default port when connecting to Zeebe instances ([#3412](https://github.com/camunda/camunda-modeler/issues/3412))
 
+### BPMN
+
+* `FEAT`: support icons on all events ([@bpmn-io/element-template-icon-renderer#14](https://github.com/bpmn-io/element-template-icon-renderer/pull/14))
+* `FEAT`: allow event rendering without icons ([bpmn-js#1917](https://github.com/bpmn-io/bpmn-js/pull/1917))
+* `FEAT`: add _Inputs_ group for signal intermediate throw and end events ([bpmn-js-properties-panel911](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/911))
+* `FEAT`: change signal Name entry to optional FEEL entry ([bpmn-js-properties-panel#911](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/911))
+* `FEAT`: validate custom dropdown and textArea entries ([bpmn-js-properties-panel#922](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/922))
+* `FIX`: allow to configure variable events for conditional start event in event subprocess ([bpmn-js-properties-panel#925](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/925))
+* `FIX`: unlink templated message instead of removing ([bpmn-js-properties-panel#914](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/914))
+* `FIX`: handle undefined values in custom properties validator ([bpmn-js-properties-panel#926](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/926))
+* `DEPS`: update to `camunda-bpmn-js@2.5.0`
+
 ## 5.11.0
 
 ### General
