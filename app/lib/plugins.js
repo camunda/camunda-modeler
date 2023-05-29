@@ -69,7 +69,7 @@ class Plugins {
           style,
           script,
           menu
-        } = require(pluginPath);
+        } = global.require(pluginPath);
 
         if (!name) {
           throw new Error('plug-in descriptor is missing <name>');
@@ -111,7 +111,7 @@ class Plugins {
           const menuPath = path.join(base, menu);
 
           try {
-            plugin.menu = require(menuPath);
+            plugin.menu = global.require(menuPath);
           } catch (error) {
             log.error('failed to load menu extension %s', menuPath, error);
 

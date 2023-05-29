@@ -7,3 +7,4 @@ plugins/**
 coverage
 .nyc_output
 .linked-dependencies
+.webpack

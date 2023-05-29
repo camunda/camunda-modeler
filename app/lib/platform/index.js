@@ -10,10 +10,22 @@
 
 'use strict';
 
-var requirePlatform = require('../util/require-platform');
-
 module.exports.create = function create(platform, app, config) {
-  var Platform = requirePlatform(platform, __dirname);
+  let Platform;
+
+  switch (platform) {
+  case 'darwin':
+    Platform = require('./mac-os');
+    break;
+  case 'win32':
+    Platform = require('./windows');
+    break;
+  case 'linux':
+    Platform = require('./linux');
+    break;
+  default:
+    throw new Error('Unsupported platform: ' + platform);
+  }
 
   return new Platform(app, config);
 };
