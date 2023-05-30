@@ -916,6 +916,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       function onLayoutChanged(newLayout) {
         layout = newLayout;
+        wrapper.setProps({ layout });
       }
 
       const {
@@ -960,6 +961,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       function onLayoutChanged(newLayout) {
         layout = newLayout;
+        wrapper.setProps({ layout });
       }
 
       const {
@@ -1004,6 +1006,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       function onLayoutChanged(newLayout) {
         layout = newLayout;
+        wrapper.setProps({ layout });
       }
 
       const {
@@ -1075,6 +1078,73 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       expect(modeler.options.propertiesPanel.layout).to.exist;
       expect(modeler.options.propertiesPanel.layout).to.eql(propertiesPanelLayout);
 
+    });
+
+
+    it('should react to new layout', async function() {
+
+      // given
+      let layout = {
+        propertiesPanel: {
+          open: false
+        }
+      };
+
+      const {
+        wrapper,
+        instance
+      } = await renderEditor(diagramXML, {
+        layout
+      });
+
+      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+
+      // when
+      wrapper.setProps({
+        layout: {
+          propertiesPanel: {
+            open: true
+          }
+        }
+      });
+
+      // then
+      expect(setLayoutSpy).to.have.been.calledOnce;
+      expect(setLayoutSpy).to.have.been.calledWith({
+        open: true
+      });
+    });
+
+
+    it('should NOT react to new layout without changes', async function() {
+
+      // given
+      let layout = {
+        propertiesPanel: {
+          open: false
+        }
+      };
+
+      const {
+        wrapper,
+        instance
+      } = await renderEditor(diagramXML, {
+        layout
+      });
+
+      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+
+      // when
+      wrapper.setProps({
+        layout: {
+          propertiesPanel: {
+            open: false
+          }
+        }
+      });
+
+      // then
+      expect(setLayoutSpy).not.to.have.been.called;
     });
 
 
@@ -1953,26 +2023,24 @@ function renderEditor(xml, options = {}) {
     };
 
     wrapper = mount(
-      <SlotFillRoot>
-        <TestEditor
-          cache={ cache }
-          getConfig={ getConfig }
-          getPlugins={ getPlugins }
-          id={ id }
-          isNew={ isNew }
-          layout={ layout }
-          linting={ linting }
-          onAction={ onAction }
-          onChanged={ onChanged }
-          onContentUpdated={ onContentUpdated }
-          onError={ onError }
-          onImport={ waitForImport ? resolveOnImport : onImport }
-          onLayoutChanged={ onLayoutChanged }
-          onModal={ onModal }
-          onWarning={ onWarning }
-          xml={ xml }
-        />
-      </SlotFillRoot>
+      <WrappedEditor
+        cache={ cache }
+        getConfig={ getConfig }
+        getPlugins={ getPlugins }
+        id={ id }
+        isNew={ isNew }
+        layout={ layout }
+        linting={ linting }
+        onAction={ onAction }
+        onChanged={ onChanged }
+        onContentUpdated={ onContentUpdated }
+        onError={ onError }
+        onImport={ waitForImport ? resolveOnImport : onImport }
+        onLayoutChanged={ onLayoutChanged }
+        onModal={ onModal }
+        onWarning={ onWarning }
+        xml={ xml }
+      />
     );
 
     instance = wrapper.find(BpmnEditor).instance();
@@ -1988,4 +2056,16 @@ function renderEditor(xml, options = {}) {
 
 function getEvent(events, eventName) {
   return find(events, e => e.type === eventName);
+}
+
+/**
+ * We need to create a component for this so props set via `wrapper.setProps`
+ * are passed on to the editor.
+ */
+function WrappedEditor(props) {
+  return (
+    <SlotFillRoot>
+      <TestEditor { ...props } />
+    </SlotFillRoot>
+  );
 }
