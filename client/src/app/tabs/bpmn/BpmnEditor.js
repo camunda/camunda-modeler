@@ -242,9 +242,6 @@ export class BpmnEditor extends CachedComponent {
   handlePropertiesPanelLayoutChange(e) {
     this.handleLayoutChange({
       propertiesPanel: e.layout
-    },
-    {
-      applyToPropertiesPanel: false
     });
   }
 
@@ -751,17 +748,10 @@ export class BpmnEditor extends CachedComponent {
     }
   };
 
-  handleLayoutChange(newLayout, options = { applyToPropertiesPanel: true }) {
+  handleLayoutChange(newLayout) {
     const {
       onLayoutChanged
     } = this.props;
-
-
-    if (options.applyToPropertiesPanel) {
-      const modeler = this.getModeler();
-      const propertiesPanel = modeler.get('propertiesPanel');
-      propertiesPanel.setLayout(newLayout.propertiesPanel);
-    }
 
     if (isFunction(onLayoutChanged)) {
       onLayoutChanged(newLayout);
