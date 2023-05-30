@@ -161,14 +161,18 @@ describe('<AppParent>', function() {
       // given
       const backend = new Backend({
         sendReady() {
-          expect(appParent.getApp().state.layout).to.eql({
-            panel: {
-              open: false,
-              tab: 'log'
-            }
-          });
+          try {
+            expect(appParent.getApp().state.layout).to.eql({
+              panel: {
+                open: false,
+                tab: 'log'
+              }
+            });
 
-          done();
+            done();
+          } catch (error) {
+            done(error);
+          }
         }
       });
 
