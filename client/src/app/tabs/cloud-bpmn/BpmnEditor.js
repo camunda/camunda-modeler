@@ -189,6 +189,14 @@ export class BpmnEditor extends CachedComponent {
     } else if (!panel.open || panel.tab !== 'linting') {
       this.getModeler().get('linting').deactivate();
     }
+
+    if (isPropertiesPanelLayoutChanged(prevProps, this.props)) {
+      const modeler = this.getModeler();
+      const propertiesPanel = modeler.get('propertiesPanel');
+
+      propertiesPanel.setLayout(this.props.layout.propertiesPanel);
+    }
+
   }
 
   listen(fn) {
@@ -852,4 +860,20 @@ export default WithCache(WithCachedState(BpmnEditor));
 
 function isCacheStateChanged(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
+}
+
+function isPropertiesPanelLayoutChanged(prevProps, props) {
+
+  // same Object
+  if (props.layout === prevProps.layout) {
+    return false;
+  }
+
+  // deleted in one of the two
+  if (!props.layout || !prevProps.layout) {
+    return true;
+  }
+
+  // check JSON equality
+  return JSON.stringify(prevProps.layout.propertiesPanel) !== JSON.stringify(props.layout.propertiesPanel);
 }
