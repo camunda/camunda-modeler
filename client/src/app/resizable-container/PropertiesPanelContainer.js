@@ -39,7 +39,7 @@ export default forwardRef(function PropertiesPanelContainer(props, ref) {
         width
       }
     });
-  }, [ onLayoutChanged ]);
+  }, [ onLayoutChanged, layout ]);
 
   const { propertiesPanel = DEFAULT_LAYOUT } = layout;
 
