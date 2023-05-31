@@ -37,7 +37,7 @@ export default function PanelContainer(props) {
         height
       }
     });
-  }, [ onLayoutChanged ]);
+  }, [ onLayoutChanged, layout ]);
 
   const { panel = DEFAULT_LAYOUT } = layout;
 
