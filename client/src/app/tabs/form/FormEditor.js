@@ -147,16 +147,6 @@ export class FormEditor extends CachedComponent {
     if (isCacheStateChanged(prevProps, this.props)) {
       this.handleChanged();
     }
-
-    const { layout = {} } = this.props;
-
-    const { panel = {} } = layout;
-
-    if (panel.open && panel.tab === 'linting') {
-      this.getForm().get('linting').activate();
-    } else if (!panel.open || panel.tab !== 'linting') {
-      this.getForm().get('linting').deactivate();
-    }
   }
 
   checkImport(prevProps) {

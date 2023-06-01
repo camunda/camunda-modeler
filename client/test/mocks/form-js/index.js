@@ -31,7 +31,6 @@ export class FormEditor {
         fire() {}
       },
       commandStack: new CommandStack(),
-      linting: new Linting(),
       selection: {
         get() {
           return [];
@@ -207,26 +206,4 @@ export class FormPlayground {
       }
     });
   }
-}
-
-class Linting {
-  constructor(options = {}) {
-    this._isActive = options.active;
-  }
-
-  activate() {
-    this._isActive = true;
-  }
-
-  deactivate() {
-    this._isActive = false;
-  }
-
-  isActive() {
-    return this._isActive;
-  }
-
-  setErrors() {}
-
-  showError() {}
 }
