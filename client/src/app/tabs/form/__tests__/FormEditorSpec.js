@@ -815,6 +815,29 @@ describe('<FormEditor>', function() {
         expect(calls).to.have.lengthOf(1);
       });
 
+
+      it('should NOT break application with linting tab open', async function() {
+
+        // given
+        const props = {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'linting'
+            }
+          }
+        };
+
+        // when
+        try {
+          await renderEditor(schema, props);
+        } catch (error) {
+
+          // then
+          expect(true, 'should not reach error block').to.be.false;
+        }
+      });
+
     });
 
   });
@@ -1293,7 +1316,6 @@ async function renderEditor(schema, options = {}) {
     getConfig = noop,
     id = 'editor',
     layout = {},
-    linting = [],
     onAction = noop,
     onChanged = noop,
     onContentUpdated = noop,
@@ -1324,7 +1346,6 @@ async function renderEditor(schema, options = {}) {
           getConfig={ getConfig }
           id={ id }
           layout={ layout }
-          linting={ linting }
           onAction={ onAction }
           onChanged={ onChanged }
           onContentUpdated={ onContentUpdated }
