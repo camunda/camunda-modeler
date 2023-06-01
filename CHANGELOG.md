@@ -27,6 +27,19 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correct properties panel being hidden when resizing from closed state ([#3602](https://github.com/camunda/camunda-modeler/issues/3602))
 * `DEPS`: update to `camunda-bpmn-js@2.5.0`
 
+### Forms
+
+* `FEAT`: support `readonly` property for form fields ([#636](https://github.com/bpmn-io/form-js/pull/636))
+* `FEAT`: support FEEL expressions in `readonldy` property ([#3600](https://github.com/camunda/camunda-modeler/issues/3600))
+* `FEAT`: make editor form fields accessible via keyboard ([#173](https://github.com/bpmn-io/form-js/issues/173))
+* `FEAT`: display editor form fields as readonly ([#636](https://github.com/bpmn-io/form-js/pull/636))
+* `FEAT`: allow uneven columns ([#605](https://github.com/bpmn-io/form-js/issues/605))
+* `FEAT`: resize form fields ([#566](https://github.com/bpmn-io/form-js/issues/566))
+* `FEAT`: support FEEL for labels and descriptions ([#658](https://github.com/bpmn-io/form-js/pull/658))
+* `DEPS`: update to `form-js` to 1.0.0-alpha.2
+* `DEPS`: update to `form-linting` to 0.8.0
+* `DEPS`: update to `form-playground` to 0.7.0-alpha.1
+
 ## 5.11.0
 
 ### General
