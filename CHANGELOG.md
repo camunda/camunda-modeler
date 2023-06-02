@@ -30,7 +30,7 @@ ___Note:__ Yet to be released changes appear here._
 ### Forms
 
 * `FEAT`: support `readonly` property for form fields ([#636](https://github.com/bpmn-io/form-js/pull/636))
-* `FEAT`: support FEEL expressions in `readonldy` property ([#3600](https://github.com/camunda/camunda-modeler/issues/3600))
+* `FEAT`: support FEEL expressions in `readonly` property ([#3600](https://github.com/camunda/camunda-modeler/issues/3600))
 * `FEAT`: make editor form fields accessible via keyboard ([#173](https://github.com/bpmn-io/form-js/issues/173))
 * `FEAT`: display editor form fields as readonly ([#636](https://github.com/bpmn-io/form-js/pull/636))
 * `FEAT`: allow uneven columns ([#605](https://github.com/bpmn-io/form-js/issues/605))
