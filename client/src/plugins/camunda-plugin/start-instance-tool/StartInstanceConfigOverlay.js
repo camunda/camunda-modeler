@@ -42,7 +42,8 @@ export default class StartInstanceConfigOverlay extends React.PureComponent {
       configuration: values,
       title,
       anchor,
-      ref,height
+      ref,
+      height
     } = this.props;
 
     return (
