@@ -322,8 +322,8 @@ export default class StartInstanceTool extends PureComponent {
     const startInstance = providedConfiguration || {};
 
     return {
-      businessKey: 'default',
-      variables: '',
+      businessKey: null,
+      variables: null,
       ...startInstance
     };
   }
@@ -370,6 +370,11 @@ export default class StartInstanceTool extends PureComponent {
           overlayState: null,
           activeButton: false
         });
+
+        // set businessKey to `null`
+        if (configuration && !configuration.businessKey) {
+          configuration.businessKey = null;
+        }
 
         // contract: if configuration provided, user closed with O.K.
         // otherwise they canceled it
