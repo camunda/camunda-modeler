@@ -643,6 +643,51 @@ describe('<StartInstanceTool>', () => {
     });
 
 
+    it('should start instance with businessKey=null', async () => {
+
+      // given
+      const startSpy = sinon.spy();
+
+      const activeTab = createTab({ name: 'foo.bpmn' });
+
+      const userConfiguration = {
+        businessKey: ''
+      };
+
+      const config = {
+        getForFile: () => {
+          return { };
+        }
+      };
+
+      const deployService = {
+        getSavedDeployConfiguration: () => {
+          return {
+            deployment: { name: 'foo' },
+            endpoint: {}
+          };
+        }
+      };
+
+      const {
+        instance
+      } = createStartInstanceTool({
+        activeTab,
+        config,
+        deployService,
+        startSpy,
+        ...userConfiguration,
+      });
+
+      // when
+      await instance.startInstance({ configure: true });
+
+      // then
+      expect(startSpy).to.have.been.calledOnce;
+      expect(startSpy.args[0][0].businessKey).to.be.null;
+    });
+
+
     it('should NOT start instance with no executable process', async () =>{
 
       // given
