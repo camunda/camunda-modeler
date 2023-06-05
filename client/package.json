@@ -26,7 +26,7 @@
     "@ibm/plex": "^6.0.0",
     "@sentry/browser": "^6.3.6",
     "bpmn-js": "^13.0.0",
-    "bpmn-js-properties-panel": "^1.22.1",
+    "bpmn-js-properties-panel": "^2.0.0",
     "bpmn-js-tracking": "0.3.0",
     "bpmn-moddle": "^8.0.1",
     "camunda-bpmn-js": "^2.5.0",
