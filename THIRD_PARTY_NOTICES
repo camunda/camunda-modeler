@@ -18,32 +18,39 @@ This project incorporates components from the projects listed below. The origina
 11.   parents@1.0.1 (https://github.com/substack/node-parents)
 12.   path-platform@0.11.15 (https://github.com/tjfontaine/node-path-platform)
 13.   tslib@1.14.1 (https://github.com/Microsoft/tslib)
-14.   @ibm/plex@6.0.0 (https://github.com/ibm/plex)
-15.   @sentry/browser@6.3.6 (https://github.com/getsentry/sentry-javascript)
-16.   @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
-17.   bpmn-moddle@8.0.1 (https://github.com/bpmn-io/bpmn-moddle)
-18.   deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
-19.   diagram-js-direct-editing@2.0.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
-20.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
-21.   events@3.3.0 (https://github.com/Gozala/events)
-22.   formik@2.0.4 (https://github.com/jaredpalmer/formik)
-23.   hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
-24.   lodash-es@4.17.21 (https://github.com/lodash/lodash)
-25.   min-dash@3.8.1 (https://github.com/bpmn-io/min-dash)
-26.   min-dom@3.2.1 (https://github.com/bpmn-io/min-dom)
-27.   mitt@1.2.0 (https://github.com/developit/mitt)
-28.   mixpanel-browser@2.45.0 (https://github.com/mixpanel/mixpanel-js)
-29.   moddle-xml@10.0.0 (https://github.com/bpmn-io/moddle-xml)
-30.   moddle@6.2.3 (https://github.com/bpmn-io/moddle)
-31.   p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
-32.   p-series@2.1.0 (https://github.com/sindresorhus/p-series)
-33.   react-dom@16.8.6 (https://github.com/facebook/react)
-34.   react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
-35.   react@16.8.6 (https://github.com/facebook/react)
-36.   scheduler@0.17.0 (https://github.com/facebook/react)
-37.   sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
-38.   tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
-39.   tslib@1.9.3 (https://github.com/Microsoft/tslib)
+14.   @bpmn-io/form-js-editor@1.0.0-alpha.2 (https://github.com/bpmn-io/form-js)
+15.   @bpmn-io/form-js-playground@1.0.0-alpha.2 (https://github.com/bpmn-io/form-js)
+16.   @bpmn-io/form-js-viewer@1.0.0-alpha.1 (https://github.com/bpmn-io/form-js)
+17.   @camunda/form-playground@0.7.0-alpha.1 (https://github.com/camunda/form-playground)
+18.   @ibm/plex@6.0.0 (https://github.com/ibm/plex)
+19.   @sentry/browser@6.3.6 (https://github.com/getsentry/sentry-javascript)
+20.   @sindresorhus/is@0.15.0 (https://github.com/sindresorhus/is)
+21.   big.js@6.2.1 (https://github.com/MikeMcl/big.js)
+22.   bpmn-moddle@8.0.1 (https://github.com/bpmn-io/bpmn-moddle)
+23.   camunda-dmn-js@1.0.0 (https://github.com/camunda/camunda-dmn-js)
+24.   deepmerge@2.2.1 (https://github.com/KyleAMathews/deepmerge)
+25.   diagram-js-direct-editing@2.0.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
+26.   dmn-js-properties-panel@2.0.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
+27.   drag-tabs@2.3.0 (https://github.com/bpmn-io/drag-tabs)
+28.   events@3.3.0 (https://github.com/Gozala/events)
+29.   formik@2.0.4 (https://github.com/jaredpalmer/formik)
+30.   hoist-non-react-statics@3.3.1 (https://github.com/mridgway/hoist-non-react-statics)
+31.   lodash-es@4.17.21 (https://github.com/lodash/lodash)
+32.   min-dash@3.8.1 (https://github.com/bpmn-io/min-dash)
+33.   min-dom@3.2.1 (https://github.com/bpmn-io/min-dom)
+34.   mitt@1.2.0 (https://github.com/developit/mitt)
+35.   mixpanel-browser@2.45.0 (https://github.com/mixpanel/mixpanel-js)
+36.   moddle-xml@10.0.0 (https://github.com/bpmn-io/moddle-xml)
+37.   moddle@6.2.3 (https://github.com/bpmn-io/moddle)
+38.   p-defer@3.0.0 (https://github.com/sindresorhus/p-defer)
+39.   p-series@2.1.0 (https://github.com/sindresorhus/p-series)
+40.   react-dom@16.8.6 (https://github.com/facebook/react)
+41.   react-fast-compare@2.0.4 (https://github.com/FormidableLabs/react-fast-compare)
+42.   react@16.8.6 (https://github.com/facebook/react)
+43.   scheduler@0.17.0 (https://github.com/facebook/react)
+44.   sourcemapped-stacktrace@1.1.9 (https://github.com/novocaine/sourcemapped-stacktrace)
+45.   tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning)
+46.   tslib@1.9.3 (https://github.com/Microsoft/tslib)
 
 
 %% @sentry/core@6.3.6 NOTICES AND INFORMATION BEGIN HERE
@@ -403,6 +410,120 @@ PERFORMANCE OF THIS SOFTWARE.
 END OF tslib@1.14.1 NOTICES AND INFORMATION
 
 
+%% @bpmn-io/form-js-editor@1.0.0-alpha.2 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+Copyright (c) 2021-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in the
+Software without restriction, including without limitation the rights to use, copy,
+modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+The source code responsible for displaying the bpmn.io project watermark that
+links back to https://bpmn.io as part of rendered diagrams MUST NOT be
+removed or changed. When this software is being used in a website or application,
+the watermark must stay fully visible and not visually overlapped by other elements.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+==========================================
+END OF @bpmn-io/form-js-editor@1.0.0-alpha.2 NOTICES AND INFORMATION
+
+
+%% @bpmn-io/form-js-playground@1.0.0-alpha.2 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+Copyright (c) 2021-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in the
+Software without restriction, including without limitation the rights to use, copy,
+modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+The source code responsible for displaying the bpmn.io project watermark that
+links back to https://bpmn.io as part of rendered diagrams MUST NOT be
+removed or changed. When this software is being used in a website or application,
+the watermark must stay fully visible and not visually overlapped by other elements.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+==========================================
+END OF @bpmn-io/form-js-playground@1.0.0-alpha.2 NOTICES AND INFORMATION
+
+
+%% @bpmn-io/form-js-viewer@1.0.0-alpha.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+Copyright (c) 2021-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in the
+Software without restriction, including without limitation the rights to use, copy,
+modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+The source code responsible for displaying the bpmn.io project watermark that
+links back to https://bpmn.io as part of rendered diagrams MUST NOT be
+removed or changed. When this software is being used in a website or application,
+the watermark must stay fully visible and not visually overlapped by other elements.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+==========================================
+END OF @bpmn-io/form-js-viewer@1.0.0-alpha.1 NOTICES AND INFORMATION
+
+
+%% @camunda/form-playground@0.7.0-alpha.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2022 camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF @camunda/form-playground@0.7.0-alpha.1 NOTICES AND INFORMATION
+
+
 %% @ibm/plex@6.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright © 2017 IBM Corp. with Reserved Font Name "Plex"
@@ -555,6 +676,39 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF @sindresorhus/is@0.15.0 NOTICES AND INFORMATION
 
 
+%% big.js@6.2.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+=====================
+
+Copyright © `<2022>` `Michael Mclaughlin`
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the “Software”), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+
+==========================================
+END OF big.js@6.2.1 NOTICES AND INFORMATION
+
+
 %% bpmn-moddle@8.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
@@ -580,6 +734,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
 END OF bpmn-moddle@8.0.1 NOTICES AND INFORMATION
+
+
+%% camunda-dmn-js@1.0.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2022-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF camunda-dmn-js@1.0.0 NOTICES AND INFORMATION
 
 
 %% deepmerge@2.2.1 NOTICES AND INFORMATION BEGIN HERE
@@ -635,6 +816,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
 END OF diagram-js-direct-editing@2.0.0 NOTICES AND INFORMATION
+
+
+%% dmn-js-properties-panel@2.0.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2015-2018 camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF dmn-js-properties-panel@2.0.0 NOTICES AND INFORMATION
 
 
 %% drag-tabs@2.3.0 NOTICES AND INFORMATION BEGIN HERE
