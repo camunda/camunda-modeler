@@ -45,16 +45,24 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>New features in forms</h4>
-          Checkbox, checklist, and taglist components can now be required.
+          Form elements can now be resized on the grid.
+          Input fields can be configured to be read-only.
         </li>
         <li>
-          <h4>Properties panel layout persistance</h4>
-          The properties panel layout is now persisted across sessions.
-          This makes it easier to continue working where you left off.
+          <h4>Improvements to deployment tool</h4>
+          The deployment tool has received some UX improvements, such as: linking to a troubleshooting page with common connection problems; automatically inferring port if not provided; and providing a deep link to the deployed process definition.
         </li>
         <li>
-          <h4>Message event templates support</h4>
-          This allows to use message catch event connectors in Camunda 8.
+          <h4>Unified bottom panel</h4>
+          The log and problems panels have been merged into a single resizable bottom panel.
+        </li>
+        <li>
+          <h4>Extended support for Camunda 8 BPMN</h4>
+          Added support for signal intermediate throw and end events. Try out upcoming Camunda 8.3 features today.
+        </li>
+        <li>
+          <h4>And many more general improvements</h4>
+          This release is packed with small improvements and bug fixes. Check out the full <a href="https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md#5120">Changelog</a> for more details.
         </li>
       </ul>
     </div>
