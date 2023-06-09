@@ -11,6 +11,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: infer default port when connecting to Zeebe instances ([#3412](https://github.com/camunda/camunda-modeler/issues/3412))
 * `FEAT`: point to troubleshooting guide on connection problems ([#3618](https://github.com/camunda/camunda-modeler/pull/3618))
 * `FIX`: default empty business key to null in starting process instance ([#3644](https://github.com/camunda/camunda-modeler/pull/3644))
+* `FIX`: account for custom SSL certificates when connecting to C8 SaaS 
+* `DEPS`: update to `zeebe-node@8.2.4`
 
 ### BPMN
 
