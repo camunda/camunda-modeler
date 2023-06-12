@@ -28,7 +28,6 @@
 
   .resizer-top .resizer-border {
     height: 3px;
-    transform-origin: center center;
     bottom: 0;
     right: 0;
     left: 0;
@@ -36,7 +35,6 @@
 
   .resizer-left .resizer-border {
     width: 3px;
-    transform-origin: center center;
     right: 0;
     top: 0;
     bottom: 0;
@@ -55,10 +53,9 @@
 
   .resizer-top .handlebar {
     position: absolute;
-    transform-origin: center right;
-    transform: rotate(90deg);
+    transform: translate(-50%, 0);
     left: 50%;
-    top: -23px;
+    top: 0;
   }
 
   .resizer-left {
@@ -74,9 +71,9 @@
 
   .resizer-left .handlebar {
     position: absolute;
-    transform-origin: center right;
+    transform: translate(0, -50%);
     top: 50%;
-    left: -0px;
+    left: 0;
   }
 
   .handlebar {
