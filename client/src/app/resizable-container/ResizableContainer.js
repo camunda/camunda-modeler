@@ -12,7 +12,8 @@ import React, { useCallback, useRef } from 'react';
 
 import classNames from 'classnames';
 
-import HandleBar from '../../../resources/icons/HandleBar.svg';
+import HandleBarX from '../../../resources/icons/HandleBarX.svg';
+import HandleBarY from '../../../resources/icons/HandleBarY.svg';
 
 import css from './ResizableContainer.less';
 
@@ -175,7 +176,11 @@ function Resizer(props) {
       className={ classNames('resizer', `resizer-${ direction }`) }
       onMouseDown={ onMouseDown }
     >
-      <HandleBar className="handlebar" />
+      {
+        isHorizontal(direction)
+          ? <HandleBarX className="handlebar" />
+          : <HandleBarY className="handlebar" />
+      }
       <div className="resizer-border"></div>
     </div>
   );
