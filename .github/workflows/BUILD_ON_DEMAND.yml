@@ -54,6 +54,7 @@ jobs:
         AWS_BUCKET: "${{ secrets.AWS_ON_DEMAND_BUCKET }}"
         APPLE_DEVELOPER_ID: "${{ secrets.APPLE_DEVELOPER_ID }}"
         APPLE_DEVELOPER_ID_PASSWORD: "${{ secrets.APPLE_DEVELOPER_ID_PASSWORD }}"
+        APPLE_TEAM_ID: "${{ secrets.APPLE_TEAM_ID }}"
         CSC_LINK: "${{ secrets.CSC_LINK }}"
         CSC_KEY_PASSWORD: "${{ secrets.CSC_KEY_PASSWORD }}"
       run: npm run build -- --mac --publish --on-demand
