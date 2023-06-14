@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-const { notarize } = require('electron-notarize');
+const { notarize } = require('@electron/notarize');
 
 module.exports = async function(context) {
   const {
@@ -36,13 +36,13 @@ module.exports = async function(context) {
   }
 
   const {
-    appId,
     productName: appName
   } = packager.config;
 
   const {
     APPLE_DEVELOPER_ID: appleId,
-    APPLE_DEVELOPER_ID_PASSWORD: appleIdPassword
+    APPLE_DEVELOPER_ID_PASSWORD: appleIdPassword,
+    APPLE_TEAM_ID: appleTeamId
   } = process.env;
 
   const appPath = `${appOutDir}/${appName}.app`;
@@ -50,9 +50,10 @@ module.exports = async function(context) {
   console.log(`  • notarizing app from path: ${appPath}`);
 
   return await notarize({
-    appBundleId: appId,
     appPath,
     appleId,
-    appleIdPassword
+    appleIdPassword,
+    teamId: appleTeamId,
+    tool: 'notarytool'
   });
 };

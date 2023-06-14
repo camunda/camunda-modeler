@@ -6,13 +6,15 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `DEPS`: migrate from `electron-notarize` to `@electron/notarize` ([[#3669](https://github.com/camunda/camunda-modeler/issues/3669))
+
 ## 5.12.0
 
 * `FEAT`: _Log_ and _Problems_ merged into single resizable bottom panel with _Output_ and _Problems_ tab ([#3509](https://github.com/camunda/camunda-modeler/pull/3509))
 * `FEAT`: infer default port when connecting to Zeebe instances ([#3412](https://github.com/camunda/camunda-modeler/issues/3412))
 * `FEAT`: point to troubleshooting guide on connection problems ([#3618](https://github.com/camunda/camunda-modeler/pull/3618))
 * `FIX`: default empty business key to null in starting process instance ([#3644](https://github.com/camunda/camunda-modeler/pull/3644))
-* `FIX`: account for custom SSL certificates when connecting to C8 SaaS 
+* `FIX`: account for custom SSL certificates when connecting to C8 SaaS
 * `DEPS`: update to `zeebe-node@8.2.4`
 
 ### BPMN
