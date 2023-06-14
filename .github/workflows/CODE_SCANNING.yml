@@ -6,6 +6,8 @@ on:
     branches: [ master, develop ]
   pull_request:
     branches: [ master, develop ]
+    paths-ignore:
+      - '**/*.md'
 
 jobs:
   CodeQL-Build:
@@ -25,6 +27,11 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: javascript
+          config: |
+            paths-ignore:
+              - '**/__tests__'
+              - '**/test'
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
+
