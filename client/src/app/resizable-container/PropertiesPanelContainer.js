@@ -50,7 +50,7 @@ export default forwardRef(function PropertiesPanelContainer(props, ref) {
 
   return (
     <ResizableContainer
-      className={ css.PropertiesPanelContainer }
+      className={ `${css.PropertiesPanelContainer} properties` }
       direction="left"
       open={ open }
       width={ width }
