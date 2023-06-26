@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.12.1
+
+* `FIX`: restore compatibility with token simulation plug-in ([#3672](https://github.com/camunda/camunda-modeler/issues/3672), [#3674](https://github.com/camunda/camunda-modeler/pull/3674))
+
 ## 5.12.0
 
 * `FEAT`: infer default port when connecting to Zeebe instances ([#3412](https://github.com/camunda/camunda-modeler/issues/3412))
