@@ -8,6 +8,11 @@ ___Note:__ Yet to be released changes appear here._
 
 * `DEPS`: migrate from `electron-notarize` to `@electron/notarize` ([[#3669](https://github.com/camunda/camunda-modeler/issues/3669))
 
+### BPMN
+
+* `FEAT`: integrate Camunda Platform 7.20 linting rules ([@camunda/linting#3668](https://github.com/camunda/linting/pull/59))
+* `DEPS`: update to `@camunda/linting@2.1.0`
+
 ## 5.12.0
 
 * `FEAT`: _Log_ and _Problems_ merged into single resizable bottom panel with _Output_ and _Problems_ tab ([#3509](https://github.com/camunda/camunda-modeler/pull/3509))
