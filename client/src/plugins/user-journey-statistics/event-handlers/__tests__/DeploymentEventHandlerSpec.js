@@ -588,6 +588,37 @@ describe('<DeploymentEventHandler>', () => {
     expect(targetType).to.eql(cloudTargetType);
   });
 
+
+  it('should send template ids in diagram', async () => {
+
+    // given
+    const tab = createTab({
+      type: 'bpmn'
+    });
+
+    const handleBpmnCreated = subscribe.getCall(2).args[1];
+
+    await handleBpmnCreated({ modeler: {
+      get: () => {
+        return {
+          getAll: () => [
+            { id: 'foo', modelerTemplate: 'templateId_foo' },
+            { id: 'bar', modelerTemplate: 'templateId_bar' }
+          ]
+        };}
+    } });
+
+    // when
+    const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+    await handleDeploymentDone({ tab });
+
+    // then
+    const { templateIds } = track.getCall(0).args[1];
+    expect(templateIds).to.have.length(2);
+  });
+
+
 });
 
 

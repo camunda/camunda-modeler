@@ -471,6 +471,36 @@ describe('<TabEventHandler>', () => {
     });
 
   });
+
+
+  it('should send template ids in diagram', async () => {
+
+    // given
+    const tab = createTab({
+      file: {},
+      type: 'bpmn'
+    });
+
+    // when
+    const bpmnCallback = subscribe.getCall(0).args[1];
+
+    await bpmnCallback({
+      tab,
+      modeler: {
+        get: () => {
+          return {
+            getAll: () => [
+              { id: 'foo', modelerTemplate: 'templateId_foo' },
+              { id: 'bar', modelerTemplate: 'templateId_bar' }
+            ]
+          };}
+      } });
+
+    // then
+    const { templateIds } = track.getCall(0).args[1];
+    expect(templateIds).to.have.length(2);
+  });
+
 });
 
 

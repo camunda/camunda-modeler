@@ -12,6 +12,8 @@ import {
   getEngineProfile
 } from '../../../util/parse';
 
+import { getTemplateIds } from '../util';
+
 const types = {
   BPMN: 'bpmn',
   DMN: 'dmn',
@@ -28,6 +30,7 @@ export default class TabEventHandler {
     } = props;
 
     this.track = track;
+    this.modeler = null;
 
     this.subscribeToTabEvents(subscribe);
   }
@@ -35,6 +38,8 @@ export default class TabEventHandler {
   subscribeToTabEvents = (subscribe) => {
 
     subscribe('bpmn.modeler.created', async (event) => {
+      this.modeler = event.modeler;
+
       await this.trackDiagramOpened(types.BPMN, event);
     });
 
@@ -91,6 +96,15 @@ export default class TabEventHandler {
       payload = {
         ...payload,
         ...engineProfile
+      };
+    }
+
+    const templateIds = getTemplateIds(this.modeler);
+
+    if (templateIds.length) {
+      payload = {
+        ...payload,
+        templateIds
       };
     }
 

@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
 import {
   find,
   keys
@@ -27,4 +28,23 @@ export function getDiagramType(tabType) {
   return find(keys(DIAGRAM_BY_TAB_TYPE), function(diagramType) {
     return DIAGRAM_BY_TAB_TYPE[diagramType].includes(tabType);
   });
+}
+
+export function getTemplateIds(modeler) {
+  const templateIds = [];
+
+  modeler && modeler.get('elementRegistry').getAll().forEach((element) => {
+    const template = getTemplateIdFromElement(element);
+    if (template) {
+      templateIds.push(template);
+    }
+  });
+
+  return templateIds;
+}
+
+function getTemplateIdFromElement(element) {
+  const businessObject = getBusinessObject(element);
+
+  return businessObject && businessObject.modelerTemplate;
 }

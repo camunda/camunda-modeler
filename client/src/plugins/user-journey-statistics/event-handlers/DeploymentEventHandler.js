@@ -9,7 +9,8 @@
  */
 
 import {
-  getDiagramType
+  getDiagramType,
+  getTemplateIds
 } from '../util';
 
 import {
@@ -25,9 +26,19 @@ export default class DeploymentEventHandler {
     } = props;
 
     this.track = track;
+    this.modeler = null;
 
     this.subscribeToDeploymentEvents(subscribe);
+    this.handleBpmnModelerConfigure(subscribe);
   }
+
+  handleBpmnModelerConfigure = (subscribe) => {
+
+    subscribe('bpmn.modeler.created', (event) => {
+      this.modeler = event.modeler;
+    });
+
+  };
 
   subscribeToDeploymentEvents = (subscribe) => {
 
@@ -98,6 +109,15 @@ export default class DeploymentEventHandler {
       payload = {
         ...payload,
         deployedTo
+      };
+    }
+
+    const templateIds = getTemplateIds(this.modeler);
+
+    if (templateIds.length) {
+      payload = {
+        ...payload,
+        templateIds
       };
     }
 
