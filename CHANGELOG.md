@@ -6,7 +6,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `DEPS`: migrate from `electron-notarize` to `@electron/notarize` ([[#3669](https://github.com/camunda/camunda-modeler/issues/3669))
+* `DEPS`: migrate from `electron-notarize` to `@electron/notarize` ([#3669](https://github.com/camunda/camunda-modeler/issues/3669))
 
 ### BPMN
 
