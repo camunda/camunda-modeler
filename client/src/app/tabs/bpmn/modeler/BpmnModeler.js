@@ -23,6 +23,7 @@ import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
 import { BpmnJSTracking as bpmnJSTracking } from 'bpmn-js-tracking';
 
 import contextPadTracking from 'bpmn-js-tracking/lib/features/context-pad';
+import elementTemplatesTracking from 'bpmn-js-tracking/lib/features/element-templates';
 import modelingTracking from 'bpmn-js-tracking/lib/features/modeling';
 import popupMenuTracking from 'bpmn-js-tracking/lib/features/popup-menu';
 import paletteTracking from 'bpmn-js-tracking/lib/features/palette';
@@ -58,6 +59,7 @@ const extensionModules = [
   lintingAnnotationsModule,
   bpmnJSTracking,
   contextPadTracking,
+  elementTemplatesTracking,
   modelingTracking,
   popupMenuTracking,
   paletteTracking
