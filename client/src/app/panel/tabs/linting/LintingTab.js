@@ -94,8 +94,22 @@ function LintingTabItem(props) {
     category,
     id,
     name,
-    message
+    message,
+    rule
   } = report;
+
+  if (isRuleError(report)) {
+    return <div
+      className={ classnames(css.LintingTabItem, 'linting-tab-item', 'linting-tab-item--rule-error') }>
+      <div className="linting-tab-item__header">
+        <ErrorIcon width="16" height="16" />
+        <span className="linting-tab-item__label">Rule error</span>
+      </div>
+      <div className="linting-tab-item__content">
+        { `Rule <${ rule }> errored with the following message: ${ message }` }
+      </div>
+    </div>;
+  }
 
   return <div
     onClick={ onClick }
@@ -130,8 +144,9 @@ function getReportName(report) {
 /**
  * Sort reports by:
  *
- * 1. category
- * 2. name or ID
+ * 1. rule success or error
+ * 2. category
+ * 3. name or ID
  *
  * @param {Object[]} reports
  *
@@ -139,8 +154,13 @@ function getReportName(report) {
  */
 function sortReports(reports) {
   return [ ...reports ].sort((a, b) => {
-    if (a.category === b.category) {
+    if (isRuleError(a)) {
+      return 1;
+    } else if (isRuleError(b)) {
+      return -1;
+    }
 
+    if (a.category === b.category) {
       a = getReportName(a),
       b = getReportName(b);
 
@@ -158,4 +178,8 @@ function sortReports(reports) {
       return 1;
     }
   });
+}
+
+function isRuleError(report) {
+  return report.category === 'rule-error';
 }
