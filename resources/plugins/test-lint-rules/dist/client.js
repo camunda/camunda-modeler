@@ -16,6 +16,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/no-manual-task */ "./bpmnlint-plugin-custom/rules/no-manual-task.js");
 /* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/rule-error */ "./bpmnlint-plugin-custom/rules/rule-error.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1__);
 
 const cache = {};
 
@@ -47,7 +49,8 @@ Resolver.prototype.resolveConfig = function(pkg, configName) {
 const resolver = new Resolver();
 
 const rules = {
-  "custom/no-manual-task": "warn"
+  "custom/no-manual-task": "warn",
+  "custom/rule-error": "error"
 };
 
 const config = {
@@ -67,6 +70,9 @@ const bundle = {
 
 
 cache['bpmnlint-plugin-custom/no-manual-task'] = (bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0___default());
+
+
+cache['bpmnlint-plugin-custom/rule-error'] = (bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1___default());
 
 /***/ }),
 
@@ -534,8 +540,43 @@ module.exports = function() {
 
   function check(node, reporter) {
     if (is(node, 'bpmn:ManualTask')) {
-      reporter.report(node.id, 'Element has disallowed type bpmn:ManualTask');
+      reporter.report(node.id, 'Element has disallowed type bpmn:ManualTask', {
+        name: node.name
+      });
     }
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
+/***/ "./bpmnlint-plugin-custom/rules/rule-error.js":
+/*!****************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/rule-error.js ***!
+  \****************************************************/
+/***/ ((module) => {
+
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+/**
+ * Rule that just blows up.
+ */
+module.exports = function() {
+
+  function check(node, reporter) {
+    throw new Error('I blow up');
   }
 
   return {

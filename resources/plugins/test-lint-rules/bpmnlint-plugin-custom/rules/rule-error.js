@@ -8,13 +8,16 @@
  * except in compliance with the MIT License.
  */
 
-module.exports = {
-  configs: {
-    recommended: {
-      rules: {
-        'no-manual-task': 'error',
-        'rule-error': 'error'
-      }
-    }
+/**
+ * Rule that just blows up.
+ */
+module.exports = function() {
+
+  function check(node, reporter) {
+    throw new Error('I blow up');
   }
+
+  return {
+    check: check
+  };
 };
