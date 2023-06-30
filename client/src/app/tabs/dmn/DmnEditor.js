@@ -237,10 +237,13 @@ export class DmnEditor extends CachedComponent {
     const stackIdx = modeler.getStackIdx();
 
     let engineProfile = null;
-    try {
-      engineProfile = this.engineProfile.get();
-    } catch (err) {
-      error = err;
+
+    if (!error) {
+      try {
+        engineProfile = this.engineProfile.get();
+      } catch (err) {
+        error = err;
+      }
     }
 
     onImport(error, warnings);
