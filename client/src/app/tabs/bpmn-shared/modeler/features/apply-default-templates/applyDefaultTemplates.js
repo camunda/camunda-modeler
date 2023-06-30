@@ -9,6 +9,11 @@
  */
 
 export default function applyDefaultTemplates(elementRegistry, elementTemplates, commandStack, changeTemplateCommand) {
+
+  if (!changeTemplateCommand) {
+    throw new Error('<config.changeTemplateCommand> not provided');
+  }
+
   const elements = elementRegistry.getAll();
 
   const commands = elements.reduce((currentCommands, element) => {
@@ -35,7 +40,8 @@ export default function applyDefaultTemplates(elementRegistry, elementTemplates,
 applyDefaultTemplates.$inject = [
   'elementRegistry',
   'elementTemplates',
-  'commandStack'
+  'commandStack',
+  'config.changeTemplateCommand'
 ];
 
 
