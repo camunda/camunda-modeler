@@ -325,10 +325,22 @@ export class BpmnEditor extends CachedComponent {
 
     let engineProfile = null;
 
-    try {
-      engineProfile = this.engineProfile.get(true);
-    } catch (err) {
-      error = err;
+    if (!error) {
+      try {
+        engineProfile = this.engineProfile.get(true);
+      } catch (err) {
+        error = err;
+      }
+    }
+
+    if (!error && isNew && !defaultTemplatesApplied) {
+      try {
+        modeler.invoke(applyDefaultTemplates);
+
+        defaultTemplatesApplied = true;
+      } catch (err) {
+        error = err;
+      }
     }
 
     if (error) {
@@ -338,20 +350,20 @@ export class BpmnEditor extends CachedComponent {
         lastXML: null
       });
     } else {
-      if (isNew && !defaultTemplatesApplied) {
-        modeler.invoke(applyDefaultTemplates);
-
-        defaultTemplatesApplied = true;
-      }
-
       this.setCached({
         defaultTemplatesApplied,
         engineProfile,
         lastXML: xml,
         stackIdx
       });
+    }
 
-      this.handleLinting();
+    if (!error) {
+      try {
+        this.handleLinting();
+      } catch (err) {
+        error = err;
+      }
     }
 
     this.setState({
