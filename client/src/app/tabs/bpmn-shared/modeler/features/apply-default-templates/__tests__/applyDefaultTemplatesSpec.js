@@ -27,6 +27,13 @@ describe('applyDefaultTemplates', function() {
   });
 
 
+  it('should depend on <config.changeTemplateCommand>', function() {
+    expect(
+      applyDefaultTemplates.$inject
+    ).to.include('config.changeTemplateCommand');
+  });
+
+
   it('should not throw errors for empty diagram', function() {
 
     // given
@@ -151,7 +158,8 @@ describe('applyDefaultTemplates', function() {
 
 
 
-// helpers //////
+// helpers ///////////
+
 function getDependencies(mockModules = {}) {
   const modeler = new Modeler({
     modules: {
