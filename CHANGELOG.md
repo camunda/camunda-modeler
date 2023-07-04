@@ -6,12 +6,22 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.13.0
+
+* `FEAT`: gracefully handle failing diagram validation rules ([#3637](https://github.com/camunda/camunda-modeler/issues/3637))
+* `FEAT`: gracefully handle post-import errors ([#3691](https://github.com/camunda/camunda-modeler/pull/3691))
+* `FIX`: correct resize handle position ([#3665](https://github.com/camunda/camunda-modeler/issues/3665))
 * `DEPS`: migrate from `electron-notarize` to `@electron/notarize` ([#3669](https://github.com/camunda/camunda-modeler/issues/3669))
+* `DEPS`: update `sentry`
 
 ### BPMN
 
-* `FEAT`: integrate Camunda Platform 7.20 linting rules ([@camunda/linting#3668](https://github.com/camunda/linting/pull/59))
-* `DEPS`: update to `@camunda/linting@2.1.0`
+* `FEAT`: integrate Camunda Platform 7.20 linting rules ([@camunda/linting#59](https://github.com/camunda/linting/pull/59), [#3632](https://github.com/camunda/camunda-modeler/issues/3632))
+* `FEAT`: track connector usage ([#3539](https://github.com/camunda/camunda-modeler/issues/3539))
+* `FIX`: correctly create diagram with process default templates ([#3687](https://github.com/camunda/camunda-modeler/issues/3687))
+* `FIX`: show non-interrupting event version in replace menu ([bpmn-js#1924](https://github.com/bpmn-io/bpmn-js/pull/1924))
+* `DEPS`: update to `bpmn-js@13.2.1`
+* `DEPS`: update to `@camunda/linting@3.0.0`
 
 ## 5.12.1
 
