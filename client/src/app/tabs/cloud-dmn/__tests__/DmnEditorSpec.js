@@ -54,6 +54,8 @@ import {
   DEFAULT_LAYOUT
 } from '../../dmn/OverviewContainer';
 
+import Flags, { CLOUD_ENGINE_VERSION } from '../../../../util/Flags';
+
 const { spy } = sinon;
 
 
@@ -2001,6 +2003,21 @@ describe('<DmnEditor>', function() {
       executionPlatform: 'Camunda Cloud',
       executionPlatformVersion: '8.0.1'
     }));
+
+
+    it('should respect flags', async function() {
+
+      // given
+      Flags.init({
+        [CLOUD_ENGINE_VERSION]: '8.2.0'
+      });
+
+      // then
+      expectEngineProfile(engineProfileXML, {
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '8.2.0'
+      });
+    });
 
 
     it('should reject unknown engine profile', async function() {

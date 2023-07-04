@@ -45,10 +45,13 @@ import { ENGINES } from '../../../util/Engines';
 
 import { FormPreviewToggle } from './FormPreviewToggle';
 
+import Flags, { CLOUD_ENGINE_VERSION } from '../../../util/Flags';
+
 const LOW_PRIORITY = 500;
 
 export const DEFAULT_ENGINE_PROFILE = {
-  executionPlatform: ENGINES.PLATFORM
+  executionPlatform: ENGINES.PLATFORM,
+  executionPlatformVersion: undefined
 };
 
 const FORM_LAYOUT_KEY = 'formEditor';
@@ -91,7 +94,10 @@ export class FormEditor extends CachedComponent {
 
         const schema = form.getSchema();
 
-        return getEngineProfileFromForm(schema, DEFAULT_ENGINE_PROFILE);
+        return getEngineProfileFromForm(schema, {
+          executionPlatform: DEFAULT_ENGINE_PROFILE.executionPlatform,
+          executionPlatformVersion: Flags.get(CLOUD_ENGINE_VERSION, DEFAULT_ENGINE_PROFILE.executionPlatformVersion)
+        });
       },
       set: (engineProfile) => {
         const { form } = this.getCached();

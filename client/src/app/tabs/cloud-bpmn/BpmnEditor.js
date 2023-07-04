@@ -61,10 +61,13 @@ import {
 
 import { getCloudTemplates } from '../../../util/elementTemplates';
 
+import Flags, { CLOUD_ENGINE_VERSION } from '../../../util/Flags';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 export const DEFAULT_ENGINE_PROFILE = {
-  executionPlatform: ENGINES.CLOUD
+  executionPlatform: ENGINES.CLOUD,
+  executionPlatformVersion: undefined
 };
 
 const LOW_PRIORITY = 500;
@@ -86,7 +89,10 @@ export class BpmnEditor extends CachedComponent {
 
         const definitions = modeler.getDefinitions();
 
-        return getEngineProfileFromBpmn(definitions, DEFAULT_ENGINE_PROFILE);
+        return getEngineProfileFromBpmn(definitions, {
+          executionPlatform: DEFAULT_ENGINE_PROFILE.executionPlatform,
+          executionPlatformVersion: Flags.get(CLOUD_ENGINE_VERSION, DEFAULT_ENGINE_PROFILE.executionPlatformVersion)
+        });
       },
       set: (engineProfile) => {
         const modeler = this.getModeler();

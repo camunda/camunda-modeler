@@ -66,6 +66,8 @@ import {
 
 import { getPlatformTemplates } from '../../../util/elementTemplates';
 
+import Flags, { PLATFORM_ENGINE_VERSION } from '../../../util/Flags';
+
 const NAMESPACE_URL_ACTIVITI = 'http://activiti.org/bpmn';
 
 const NAMESPACE_CAMUNDA = {
@@ -76,7 +78,8 @@ const NAMESPACE_CAMUNDA = {
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 export const DEFAULT_ENGINE_PROFILE = {
-  executionPlatform: ENGINES.PLATFORM
+  executionPlatform: ENGINES.PLATFORM,
+  executionPlatformVersion: undefined
 };
 
 const LOW_PRIORITY = 500;
@@ -98,7 +101,10 @@ export class BpmnEditor extends CachedComponent {
 
         const definitions = modeler.getDefinitions();
 
-        return getEngineProfileFromBpmn(definitions, DEFAULT_ENGINE_PROFILE);
+        return getEngineProfileFromBpmn(definitions, {
+          executionPlatform: DEFAULT_ENGINE_PROFILE.executionPlatform,
+          executionPlatformVersion: Flags.get(PLATFORM_ENGINE_VERSION, DEFAULT_ENGINE_PROFILE.executionPlatformVersion)
+        });
       },
       set: (engineProfile) => {
         const modeler = this.getModeler();

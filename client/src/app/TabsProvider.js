@@ -48,7 +48,15 @@ import {
   generateId
 } from '../util';
 
-import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM, DISABLE_CMMN } from '../util/Flags';
+import Flags, {
+  DISABLE_DMN,
+  DISABLE_FORM,
+  DISABLE_ZEEBE,
+  DISABLE_PLATFORM,
+  DISABLE_CMMN,
+  PLATFORM_ENGINE_VERSION,
+  CLOUD_ENGINE_VERSION
+} from '../util/Flags';
 
 import BPMNIcon from '../../resources/icons/file-types/BPMN-16x16.svg';
 import DMNIcon from '../../resources/icons/file-types/DMN-16x16.svg';
@@ -692,13 +700,13 @@ function sortByPriority(providers) {
 
 function replaceVersions(contents) {
 
-  const latestPlatformVersion = getLatestStablePlatformVersion(ENGINES.PLATFORM);
-  const latestCloudVersion = getLatestStablePlatformVersion(ENGINES.CLOUD);
+  const platformVersion = Flags.get(PLATFORM_ENGINE_VERSION, getLatestStablePlatformVersion(ENGINES.PLATFORM));
+  const cloudVersion = Flags.get(CLOUD_ENGINE_VERSION, getLatestStablePlatformVersion(ENGINES.CLOUD));
 
   return (
     contents
-      .replace('{{ CAMUNDA_PLATFORM_VERSION }}', latestPlatformVersion)
-      .replace('{{ CAMUNDA_CLOUD_VERSION }}', latestCloudVersion)
+      .replace('{{ CAMUNDA_PLATFORM_VERSION }}', platformVersion)
+      .replace('{{ CAMUNDA_CLOUD_VERSION }}', cloudVersion)
   );
 }
 

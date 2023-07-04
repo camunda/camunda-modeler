@@ -43,6 +43,8 @@ import patchEngineProfile from '../../__tests__/EngineProfile.patch.platform.for
 
 import { SlotFillRoot } from '../../../slot-fill';
 
+import Flags, { PLATFORM_ENGINE_VERSION } from '../../../../util/Flags';
+
 const { spy } = sinon;
 
 
@@ -665,6 +667,20 @@ describe('<FormEditor>', function() {
       executionPlatform: 'Camunda Platform',
       executionPlatformVersion: '7.16.1'
     }));
+
+    it('should respect flags', async function() {
+
+      // given
+      Flags.init({
+        [PLATFORM_ENGINE_VERSION]: '7.19.0'
+      });
+
+      // then
+      expectEngineProfile(engineProfileSchema, {
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.19.0'
+      });
+    });
 
 
     it('should update cached engine profile on change', async function() {

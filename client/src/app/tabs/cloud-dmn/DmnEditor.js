@@ -67,6 +67,8 @@ import EngineProfileHelper from '../EngineProfileHelper';
 
 import { ENGINES } from '../../../util/Engines';
 
+import Flags, { CLOUD_ENGINE_VERSION } from '../../../util/Flags';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 const NAMESPACE_URL_DMN11 = 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
@@ -101,7 +103,10 @@ export class DmnEditor extends CachedComponent {
         const executionPlatform = executionPlatformHelper.getExecutionPlatform();
 
         if (!executionPlatform) {
-          return DEFAULT_ENGINE_PROFILE;
+          return {
+            executionPlatform: DEFAULT_ENGINE_PROFILE.executionPlatform,
+            executionPlatformVersion: Flags.get(CLOUD_ENGINE_VERSION, DEFAULT_ENGINE_PROFILE.executionPlatformVersion)
+          };
         }
 
         return {

@@ -54,6 +54,8 @@ import {
 
 import { SlotFillRoot } from '../../../slot-fill';
 
+import Flags, { PLATFORM_ENGINE_VERSION } from '../../../../util/Flags';
+
 const { spy } = sinon;
 
 
@@ -2029,6 +2031,21 @@ describe('<BpmnEditor>', function() {
       executionPlatform: 'Camunda Platform',
       executionPlatformVersion: '7.16.1'
     }));
+
+
+    it('should respect flags', async function() {
+
+      // given
+      Flags.init({
+        [PLATFORM_ENGINE_VERSION]: '7.19.0'
+      });
+
+      // then
+      expectEngineProfile(engineProfileXML, {
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.19.0'
+      });
+    });
 
 
     it('should not open form if unknown execution profile', async function() {
