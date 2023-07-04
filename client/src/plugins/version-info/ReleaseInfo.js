@@ -44,25 +44,13 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>New features in forms</h4>
-          Form elements can now be resized on the grid.
-          Input fields can be configured to be read-only.
+          <h4>Robust diagram validation</h4>
+          The release improves the handling of broken diagram validation rules.
+          We got you and your users covered in case you maintain a <a href="https://github.com/camunda/camunda-modeler-custom-linter-rules-plugin">linter plug-in</a>.
         </li>
         <li>
-          <h4>Improvements to deployment tool</h4>
-          The deployment tool has received some UX improvements, such as: linking to a troubleshooting page with common connection problems; automatically inferring port if not provided; and providing a deep link to the deployed process definition.
-        </li>
-        <li>
-          <h4>Unified bottom panel</h4>
-          The log and problems panels have been merged into a single resizable bottom panel.
-        </li>
-        <li>
-          <h4>Extended support for Camunda 8 BPMN</h4>
-          Added support for signal intermediate throw and end events. Try out upcoming Camunda 8.3 features today.
-        </li>
-        <li>
-          <h4>And many more general improvements</h4>
-          This release is packed with small improvements and bug fixes. Check out the full <a href="https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md#5120">Changelog</a> for more details.
+          <h4>Bug fixes and more</h4>
+          As always this release incorporates bug fixes and additional minor improvements.
         </li>
       </ul>
     </div>
