@@ -10,7 +10,14 @@
 
 import TabsProvider from '../TabsProvider';
 
-import Flags, { DISABLE_DMN, DISABLE_ZEEBE, DISABLE_PLATFORM, DISABLE_CMMN } from '../../util/Flags';
+import Flags, {
+  DISABLE_DMN,
+  DISABLE_ZEEBE,
+  DISABLE_PLATFORM,
+  DISABLE_CMMN,
+  CLOUD_ENGINE_VERSION,
+  PLATFORM_ENGINE_VERSION
+} from '../../util/Flags';
 
 import {
   getLatestStable as getLatestStablePlatformVersion,
@@ -233,6 +240,209 @@ describe('TabsProvider', function() {
 
       // then
       expect(contents).to.include(`modeler:executionPlatformVersion="${ expectedPlatformVersion }"`);
+    });
+
+
+    describe('engine version flag support', function() {
+
+      afterEach(Flags.reset);
+
+
+      it('should replace version placeholder with version from flag (BPMN)', function() {
+
+        // given
+        Flags.init({
+          [PLATFORM_ENGINE_VERSION]: '7.18.0'
+        });
+        const tabsProvider = new TabsProvider();
+
+        // when
+        const { file: { contents } } = tabsProvider.createTab('bpmn');
+
+        // then
+        expect(contents).to.include('modeler:executionPlatformVersion="7.18.0"');
+      });
+
+
+      it('should replace version placeholder with version from flag (Cloud BPMN)', function() {
+
+        // given
+        Flags.init({
+          [CLOUD_ENGINE_VERSION]: '8.0.0'
+        });
+        const tabsProvider = new TabsProvider();
+
+        // when
+        const { file: { contents } } = tabsProvider.createTab('cloud-bpmn');
+
+        // then
+        expect(contents).to.include('modeler:executionPlatformVersion="8.0.0"');
+      });
+
+
+      it('should replace version placeholder with version from flag (DMN)', function() {
+
+        // given
+        Flags.init({
+          [PLATFORM_ENGINE_VERSION]: '7.18.0'
+        });
+        const tabsProvider = new TabsProvider();
+
+        // when
+        const { file: { contents } } = tabsProvider.createTab('dmn');
+
+        // then
+        expect(contents).to.include('modeler:executionPlatformVersion="7.18.0"');
+      });
+
+
+      it('should replace version placeholder with version from flag (Cloud DMN)', function() {
+
+        // given
+        Flags.init({
+          [CLOUD_ENGINE_VERSION]: '8.0.0'
+        });
+        const tabsProvider = new TabsProvider();
+
+        // when
+        const { file: { contents } } = tabsProvider.createTab('cloud-dmn');
+
+        // then
+        expect(contents).to.include('modeler:executionPlatformVersion="8.0.0"');
+      });
+
+
+      it('should replace version placeholder with version from flag (FORM)', function() {
+
+        // given
+        Flags.init({
+          [PLATFORM_ENGINE_VERSION]: '7.18.0'
+        });
+        const tabsProvider = new TabsProvider();
+
+        // when
+        const { file: { contents } } = tabsProvider.createTab('form');
+
+        // then
+        expect(contents).to.include('"executionPlatformVersion": "7.18.0"');
+      });
+
+
+      it('should replace version placeholder with version from flag (Cloud FORM)', function() {
+
+        // given
+        Flags.init({
+          [CLOUD_ENGINE_VERSION]: '8.0.0'
+        });
+        const tabsProvider = new TabsProvider();
+
+        // when
+        const { file: { contents } } = tabsProvider.createTab('cloud-form');
+
+        // then
+        expect(contents).to.include('"executionPlatformVersion": "8.0.0"');
+      });
+
+
+      describe('invalid flag', function() {
+
+        beforeEach(function() {
+          Flags.init({
+            [PLATFORM_ENGINE_VERSION]: 'abc',
+            [CLOUD_ENGINE_VERSION]: 'cde'
+          });
+        });
+
+
+        it('should replace version placeholder with actual latest version (BPMN)', function() {
+
+          // given
+          const tabsProvider = new TabsProvider();
+
+          const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.PLATFORM);
+
+          // when
+          const { file: { contents } } = tabsProvider.createTab('bpmn');
+
+          // then
+          expect(contents).to.include(`modeler:executionPlatformVersion="${ expectedPlatformVersion }"`);
+        });
+
+
+        it('should replace version placeholder with actual latest version (Cloud BPMN)', function() {
+
+          // given
+          const tabsProvider = new TabsProvider();
+
+          const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.CLOUD);
+
+          // when
+          const { file: { contents } } = tabsProvider.createTab('cloud-bpmn');
+
+          // then
+          expect(contents).to.include(`modeler:executionPlatformVersion="${ expectedPlatformVersion }"`);
+        });
+
+
+        it('should replace version placeholder with actual latest version (DMN)', function() {
+
+          // given
+          const tabsProvider = new TabsProvider();
+
+          const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.PLATFORM);
+
+          // when
+          const { file: { contents } } = tabsProvider.createTab('dmn');
+
+          // then
+          expect(contents).to.include(`modeler:executionPlatformVersion="${ expectedPlatformVersion }"`);
+        });
+
+
+        it('should replace version placeholder with actual latest version (Cloud DMN)', function() {
+
+          // given
+          const tabsProvider = new TabsProvider();
+
+          const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.CLOUD);
+
+          // when
+          const { file: { contents } } = tabsProvider.createTab('cloud-dmn');
+
+          // then
+          expect(contents).to.include(`modeler:executionPlatformVersion="${ expectedPlatformVersion }"`);
+        });
+
+
+        it('should replace version placeholder with actual latest version (FORM)', function() {
+
+          // given
+          const tabsProvider = new TabsProvider();
+
+          const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.PLATFORM);
+
+          // when
+          const { file: { contents } } = tabsProvider.createTab('form');
+
+          // then
+          expect(contents).to.include(`"executionPlatformVersion": "${ expectedPlatformVersion }"`);
+        });
+
+
+        it('should replace version placeholder with actual latest version (Cloud FORM)', function() {
+
+          // given
+          const tabsProvider = new TabsProvider();
+
+          const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.CLOUD);
+
+          // when
+          const { file: { contents } } = tabsProvider.createTab('cloud-form');
+
+          // then
+          expect(contents).to.include(`"executionPlatformVersion": "${ expectedPlatformVersion }"`);
+        });
+      });
     });
 
 

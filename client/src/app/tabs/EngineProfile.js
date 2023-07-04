@@ -14,6 +14,12 @@ import classnames from 'classnames';
 
 import semverCompare from 'semver-compare';
 
+
+import Flags, {
+  PLATFORM_ENGINE_VERSION,
+  CLOUD_ENGINE_VERSION
+} from '../../util/Flags';
+
 import {
   Overlay,
   Section
@@ -266,6 +272,29 @@ export function getAnnotatedVersion(version, platform) {
   }
 
   return version;
+}
+
+export function getDefaultVersion(engine) {
+  const flagVersion = getFlagVersion(engine);
+
+  const versions = getVersions(engine);
+  if (isKnownVersion(versions, flagVersion)) {
+    return flagVersion;
+  }
+
+  return getLatestStable(engine);
+}
+
+function getFlagVersion(engine) {
+  if (engine === ENGINES.PLATFORM) {
+    return Flags.get(PLATFORM_ENGINE_VERSION);
+  } else if (engine === ENGINES.CLOUD) {
+    return Flags.get(CLOUD_ENGINE_VERSION);
+  }
+}
+
+function getVersions(engine) {
+  return ENGINE_PROFILES.find(profile => profile.executionPlatform === engine).executionPlatformVersions;
 }
 
 export function engineProfilesEqual(a, b) {
