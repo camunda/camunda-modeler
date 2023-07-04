@@ -28,8 +28,7 @@ import form from './tabs/form/initial.form';
 import cloudForm from './tabs/form/initial-cloud.form';
 
 import {
-  ENGINES,
-  getLatestStable as getLatestStablePlatformVersion
+  ENGINES
 } from '../util/Engines';
 
 import EmptyTab from './EmptyTab';
@@ -48,11 +47,18 @@ import {
   generateId
 } from '../util';
 
-import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM, DISABLE_CMMN } from '../util/Flags';
+import Flags, {
+  DISABLE_DMN,
+  DISABLE_FORM,
+  DISABLE_ZEEBE,
+  DISABLE_PLATFORM,
+  DISABLE_CMMN
+} from '../util/Flags';
 
 import BPMNIcon from '../../resources/icons/file-types/BPMN-16x16.svg';
 import DMNIcon from '../../resources/icons/file-types/DMN-16x16.svg';
 import FormIcon from '../../resources/icons/file-types/Form-16x16.svg';
+import { getDefaultVersion } from './tabs/EngineProfile';
 
 const BPMN_HELP_MENU = [
   {
@@ -692,13 +698,13 @@ function sortByPriority(providers) {
 
 function replaceVersions(contents) {
 
-  const latestPlatformVersion = getLatestStablePlatformVersion(ENGINES.PLATFORM);
-  const latestCloudVersion = getLatestStablePlatformVersion(ENGINES.CLOUD);
+  const platformVersion = getDefaultVersion(ENGINES.PLATFORM);
+  const cloudVersion = getDefaultVersion(ENGINES.CLOUD);
 
   return (
     contents
-      .replace('{{ CAMUNDA_PLATFORM_VERSION }}', latestPlatformVersion)
-      .replace('{{ CAMUNDA_CLOUD_VERSION }}', latestCloudVersion)
+      .replace('{{ CAMUNDA_PLATFORM_VERSION }}', platformVersion)
+      .replace('{{ CAMUNDA_CLOUD_VERSION }}', cloudVersion)
   );
 }
 
