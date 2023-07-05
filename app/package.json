@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@sentry/node": "^6.3.6",
+    "@sentry/node": "^7.57.0",
     "epipebomb": "^1.0.0",
     "form-data": "^2.5.1",
     "glob": "^7.1.6",
