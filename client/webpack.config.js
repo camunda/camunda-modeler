@@ -30,7 +30,7 @@ const {
 
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 
 const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 
@@ -144,10 +144,11 @@ function sentryIntegration() {
   // necessary SENTRY_AUTH_TOKEN, SENTRY_ORG and SENTRY_PROJECT environment
   // variables are injected via CI when building.
   return [
-    new SentryWebpackPlugin({
+    sentryWebpackPlugin({
       release: NODE_ENV === 'production' ? version : 'dev',
-      include: '.',
-      ignore: [ 'node_modules', 'webpack.config.js', '*Spec.js' ],
+      sourcemaps: {
+        assets: [ '../app/public/**' ]
+      }
     })
   ];
 }
