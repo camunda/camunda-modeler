@@ -170,7 +170,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-bpmn-js@1.5.0`
 * `DEPS`: update to `diagram-js@11.11.0`
 
-## DMN
+### DMN
 
 * `FEAT`: allow multi-line headers in decision tables ([dmn-js#719](https://github.com/bpmn-io/dmn-js/issues/719))
 * `DEPS`: update to `dmn-js@14.1.1`
