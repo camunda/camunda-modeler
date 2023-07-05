@@ -45,12 +45,11 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Robust diagram validation</h4>
-          The release improves the handling of broken diagram validation rules.
-          We got you and your users covered in case you maintain a <a href="https://github.com/camunda/camunda-modeler-custom-linter-rules-plugin">linter plug-in</a>.
+          This release improves the handling of broken diagram validation rules, adding a safeguard for authors and users of <a href="https://github.com/camunda/camunda-modeler-custom-linter-rules-plugin">custom linter rule plug-ins</a>.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
-          As always this release incorporates bug fixes and additional minor improvements.
+          As always, this release incorporates bug fixes and additional minor improvements.
         </li>
       </ul>
     </div>
