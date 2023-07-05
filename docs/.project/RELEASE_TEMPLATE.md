@@ -41,7 +41,7 @@ _To be done after code freeze to prepare and test the release._
 * [ ] update [`CHANGELOG`](https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md)
 * [ ] compile a list of blog worthy changes as input to [release blog](https://confluence.camunda.com/pages/viewpage.action?pageId=178590449)
 * [ ] merge to master: `git checkout master && git merge develop`
-* [ ] create release candidate (`npm run release:rc -- [prepatch|preminor|premajor]`), cf. [release schema](https://github.com/bpmn-io/internal-docs/blob/master/releases/RELEASE_SCHEMA.md)
+* [ ] create release candidate (`npm run release:rc -- [preminor|premajor|prerelease]`), cf. [release schema](https://github.com/bpmn-io/internal-docs/blob/master/releases/RELEASE_SCHEMA.md)
     * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
 * [ ] execute [integration test](https://github.com/camunda/camunda-modeler/blob/master/docs/.project/INTEGRATION_TEST.md) on [released artifacts](https://github.com/camunda/camunda-modeler/releases)
     * [ ] Works on Linux
