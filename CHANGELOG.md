@@ -10,7 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `FEAT`: gracefully handle failing diagram validation rules ([#3637](https://github.com/camunda/camunda-modeler/issues/3637))
+* `FEAT`: gracefully handle failing diagram validation rules ([#3637](https://github.com/camunda/camunda-modeler/issues/3637), [#3686](https://github.com/camunda/camunda-modeler/pull/3686))
 * `FEAT`: gracefully handle post-import errors ([#3691](https://github.com/camunda/camunda-modeler/pull/3691))
 * `FIX`: correct resize handle position ([#3665](https://github.com/camunda/camunda-modeler/issues/3665))
 * `DEPS`: migrate from `electron-notarize` to `@electron/notarize` ([#3669](https://github.com/camunda/camunda-modeler/issues/3669))
