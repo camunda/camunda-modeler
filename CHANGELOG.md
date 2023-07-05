@@ -8,6 +8,8 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 5.13.0
 
+### General
+
 * `FEAT`: gracefully handle failing diagram validation rules ([#3637](https://github.com/camunda/camunda-modeler/issues/3637))
 * `FEAT`: gracefully handle post-import errors ([#3691](https://github.com/camunda/camunda-modeler/pull/3691))
 * `FIX`: correct resize handle position ([#3665](https://github.com/camunda/camunda-modeler/issues/3665))
