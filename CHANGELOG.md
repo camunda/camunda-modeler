@@ -10,6 +10,17 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: add flags for default execution platform version ([#3515](https://github.com/camunda/camunda-modeler/issues/3515))
 
+### Forms
+
+* `FEAT`: support FEEL and templates for prefix and suffix appearance ([#663](https://github.com/bpmn-io/form-js/pull/663))
+* `FEAT`: support templates for `alt` and `source` properties ([#663](https://github.com/bpmn-io/form-js/pull/663))
+* `FEAT`: support populate multiselect values via FEEL expression ([#673](https://github.com/bpmn-io/form-js/issues/673))
+* `FEAT`: support FEEL for `min`, `max`, `minLength` and `maxLength` validation ([#668](https://github.com/bpmn-io/form-js/pull/668))
+* `DEPS`: update to `form-js` to 1.0.0
+* `DEPS`: update to `form-linting` to 0.9.0
+* `DEPS`: update to `form-playground` to 0.7.0
+
+
 ## 5.13.0
 
 ### General
