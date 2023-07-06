@@ -20,6 +20,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: integrate Camunda Platform 7.20 linting rules ([@camunda/linting#59](https://github.com/camunda/linting/pull/59), [#3632](https://github.com/camunda/camunda-modeler/issues/3632))
 * `FEAT`: track connector usage ([#3539](https://github.com/camunda/camunda-modeler/issues/3539))
+* `FIX`: correctly tracking of palette/context pad usage ([#3711](https://github.com/camunda/camunda-modeler/pull/3711))
 * `FIX`: correctly create diagram with process default templates ([#3687](https://github.com/camunda/camunda-modeler/issues/3687))
 * `FIX`: show non-interrupting event version in replace menu ([bpmn-js#1924](https://github.com/bpmn-io/bpmn-js/pull/1924))
 * `DEPS`: update to `bpmn-js@13.2.1`
