@@ -11,7 +11,7 @@
     "@bpmn-io/dmn-migrate": "^0.4.3",
     "@bpmn-io/extract-process-variables": "^0.8.0",
     "@bpmn-io/form-js": "^1.0.0-alpha.8",
-    "@bpmn-io/properties-panel": "^2.2.1",
+    "@bpmn-io/properties-panel": "^3.0.0",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.8.0",
