@@ -1974,6 +1974,10 @@ describe('<DmnEditor>', function() {
       };
     }
 
+    afterEach(() => {
+      Flags.reset();
+    });
+
 
     it('should show engine profile (no engine profile)', expectEngineProfile(noEngineProfileXML, {
       executionPlatform: 'Camunda Cloud',

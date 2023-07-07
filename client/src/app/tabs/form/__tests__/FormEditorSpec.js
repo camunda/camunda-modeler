@@ -644,6 +644,10 @@ describe('<FormEditor>', function() {
       };
     }
 
+    afterEach(() => {
+      Flags.reset();
+    });
+
 
     it('should show engine profile (no engine profile)', expectEngineProfile(noEngineProfile, {
       executionPlatform: 'Camunda Platform',
