@@ -28,8 +28,7 @@ import form from './tabs/form/initial.form';
 import cloudForm from './tabs/form/initial-cloud.form';
 
 import {
-  ENGINES,
-  getLatestStable as getLatestStablePlatformVersion
+  ENGINES
 } from '../util/Engines';
 
 import EmptyTab from './EmptyTab';
@@ -53,14 +52,13 @@ import Flags, {
   DISABLE_FORM,
   DISABLE_ZEEBE,
   DISABLE_PLATFORM,
-  DISABLE_CMMN,
-  PLATFORM_ENGINE_VERSION,
-  CLOUD_ENGINE_VERSION
+  DISABLE_CMMN
 } from '../util/Flags';
 
 import BPMNIcon from '../../resources/icons/file-types/BPMN-16x16.svg';
 import DMNIcon from '../../resources/icons/file-types/DMN-16x16.svg';
 import FormIcon from '../../resources/icons/file-types/Form-16x16.svg';
+import { getDefaultVersion } from './tabs/EngineProfile';
 
 const BPMN_HELP_MENU = [
   {
@@ -700,8 +698,8 @@ function sortByPriority(providers) {
 
 function replaceVersions(contents) {
 
-  const platformVersion = Flags.get(PLATFORM_ENGINE_VERSION, getLatestStablePlatformVersion(ENGINES.PLATFORM));
-  const cloudVersion = Flags.get(CLOUD_ENGINE_VERSION, getLatestStablePlatformVersion(ENGINES.CLOUD));
+  const platformVersion = getDefaultVersion(ENGINES.PLATFORM);
+  const cloudVersion = getDefaultVersion(ENGINES.CLOUD);
 
   return (
     contents
