@@ -42,6 +42,31 @@ describe('<LintingTab>', function() {
   });
 
 
+  it('should render with documentation link', function() {
+
+    // when
+    const wrapper = renderLintingTab({
+      linting: [
+        {
+          category: 'error',
+          id: 'foo',
+          name: 'Foo',
+          message: 'Foo message',
+          rule: 'foo-rule',
+          documentation: {
+            url: 'https://foo.bar'
+          }
+        }
+      ]
+    });
+
+    // then
+    expect(wrapper.find('.linting-tab-item__content')).to.have.length(1);
+    expect(wrapper.find('.linting-tab-item__content').text()).to.equal('Foo message');
+    expect(wrapper.find('.linting-tab-item__link')).to.have.length(1);
+  });
+
+
   it('should render (rule error)', function() {
 
     // when
