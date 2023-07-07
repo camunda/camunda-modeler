@@ -12,6 +12,8 @@ import React from 'react';
 
 import classnames from 'classnames';
 
+import { isNil } from 'min-dash';
+
 import Panel from '../../Panel';
 
 import LintingStatusBarItem from './LintingStatusBarItem';
@@ -19,6 +21,7 @@ import LintingStatusBarItem from './LintingStatusBarItem';
 import css from './LintingTab.less';
 
 import ErrorIcon from '../../../../../resources/icons/Error.svg';
+import LaunchIcon from '../../../../../resources/icons/Launch.svg';
 import SuccessIcon from '../../../../../resources/icons/Success.svg';
 import WarningIcon from '../../../../../resources/icons/Warning.svg';
 
@@ -92,6 +95,7 @@ function LintingTabItem(props) {
 
   const {
     category,
+    documentation = {},
     id,
     name,
     message,
@@ -111,6 +115,8 @@ function LintingTabItem(props) {
     </div>;
   }
 
+  const { url: documentationUrl = null } = documentation;
+
   return <div
     onClick={ onClick }
     className={ classnames(css.LintingTabItem, 'linting-tab-item', {
@@ -124,6 +130,13 @@ function LintingTabItem(props) {
     </div>
     <div className="linting-tab-item__content">
       { message }
+      {
+        !isNil(documentationUrl) && <>
+          <a className="linting-tab-item__link" href={ documentationUrl } target="_blank" rel="noopener noreferrer" onClick={ stopPropagation }>
+            <LaunchIcon width="12" height="12" viewBox="0 0 12 12" />
+          </a>
+        </>
+      }
     </div>
   </div>;
 }
@@ -182,4 +195,8 @@ function sortReports(reports) {
 
 function isRuleError(report) {
   return report.category === 'rule-error';
+}
+
+function stopPropagation(event) {
+  event.stopPropagation();
 }

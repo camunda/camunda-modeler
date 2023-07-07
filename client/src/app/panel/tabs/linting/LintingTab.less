@@ -44,10 +44,23 @@
     }
   }
 
+  &:not(:hover) .linting-tab-item__link {
+    display: none;
+  }
+
   .linting-tab-item__content {
-    display: flex;
     width: calc(100% - 200px);
     padding: var(--linting-tab-item-padding);
+
+    .linting-tab-item__link {
+      margin-left: 8px;
+      margin-right: 8px;
+
+      svg {
+        position: relative;
+        top: 2px;
+      }
+    }
 
     &.linting-tab-item__content--empty {
       font-weight: bold;
