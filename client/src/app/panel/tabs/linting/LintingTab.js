@@ -132,7 +132,12 @@ function LintingTabItem(props) {
       { message }
       {
         !isNil(documentationUrl) && <>
-          <a className="linting-tab-item__link" href={ documentationUrl } target="_blank" rel="noopener noreferrer" onClick={ stopPropagation }>
+          <a
+            className="linting-tab-item__link"
+            href={ documentationUrl }
+            target="_blank" rel="noopener noreferrer"
+            onClick={ stopPropagation }
+            title="Go to documentation">
             <LaunchIcon width="12" height="12" viewBox="0 0 12 12" />
           </a>
         </>
