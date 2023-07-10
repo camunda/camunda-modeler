@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `FEAT`: add flags for default execution platform version ([#3515](https://github.com/camunda/camunda-modeler/issues/3515))
+
 ## 5.13.0
 
 ### General
