@@ -22,6 +22,16 @@ describe('tabs/bpmn', function() {
       expect(contents).to.contain('id="Process_{{ ID:process }}"');
     });
 
+
+    it('should contain defaults', function() {
+
+      // when
+      const contents = require('../diagram.bpmn');
+
+      // then
+      expect(contents).to.contain('camunda:historyTimeToLive="180"');
+    });
+
   });
 
 });
