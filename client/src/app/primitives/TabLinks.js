@@ -33,8 +33,6 @@ const TABS_OPTS = {
   }
 };
 
-const MIDDLE_MOUSE_BUTTON = 1;
-
 /**
  * markers to indicate a tab has less width than
  * a defined threshold
@@ -190,14 +188,6 @@ function Tab(props) {
         'tab--smaller': smaller
       }) }
       onClick={ (event) => onSelect(tab, event) }
-      onAuxClick={ (event) => {
-        if (event.button === MIDDLE_MOUSE_BUTTON) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          onClose && onClose(tab);
-        }
-      } }
       onContextMenu={ (event) => (onContextMenu || noop)(tab, event) }
       draggable
     >
@@ -245,9 +235,9 @@ function TabClose(props) {
     <span
       className="tab__close"
       title="Close tab"
-      onClick={ (event) => {
-        event.preventDefault();
-        event.stopPropagation();
+      onClick={ e => {
+        e.preventDefault();
+        e.stopPropagation();
 
         onClose && onClose(tab);
       } }
