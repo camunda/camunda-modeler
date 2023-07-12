@@ -60,6 +60,9 @@ import DMNIcon from '../../resources/icons/file-types/DMN-16x16.svg';
 import FormIcon from '../../resources/icons/file-types/Form-16x16.svg';
 import { getDefaultVersion } from './tabs/EngineProfile';
 
+import { getCloudTemplates } from '../util/elementTemplates';
+import { CloudElementTemplatesLinterPlugin } from 'bpmn-js-element-templates';
+
 const BPMN_HELP_MENU = [
   {
     label: 'BPMN 2.0 Tutorial',
@@ -194,10 +197,16 @@ export default class TabsProvider {
             action: 'create-cloud-bpmn-diagram'
           } ];
         },
-        getLinter(plugins) {
+        async getLinter(plugins = [], tab, app) {
+          const templates = await app.getConfig('bpmn.elementTemplates', tab.file) || [];
+          const cloudTemplates = getCloudTemplates(templates);
+
           return new BpmnLinter({
             modeler: 'desktop',
-            plugins
+            plugins: [
+              ...plugins,
+              CloudElementTemplatesLinterPlugin(cloudTemplates)
+            ]
           });
         }
       },
