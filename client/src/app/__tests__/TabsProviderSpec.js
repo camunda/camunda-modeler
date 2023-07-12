@@ -951,7 +951,7 @@ describe('TabsProvider', function() {
       'dmn'
     ].forEach((type) => {
 
-      it(type, function() {
+      it(type, async function() {
 
         // given
         Flags.init({
@@ -961,7 +961,7 @@ describe('TabsProvider', function() {
         const tabsProvider = new TabsProvider().getProvider(type);
 
         // when
-        const linter = tabsProvider.getLinter();
+        const linter = await tabsProvider.getLinter();
 
         // then
         expect(linter).to.be.null;
@@ -976,13 +976,17 @@ describe('TabsProvider', function() {
       'form'
     ].forEach((type) => {
 
-      it(type, function() {
+      it(type, async function() {
 
         // given
         const tabsProvider = new TabsProvider().getProvider(type);
 
         // when
-        const linter = tabsProvider.getLinter();
+        const linter = await tabsProvider.getLinter(
+          [],
+          { },
+          { getConfig: () => {} }
+        );
 
         // then
         expect(linter).to.exist;
@@ -991,32 +995,90 @@ describe('TabsProvider', function() {
     });
 
 
-    [
-      'bpmn',
-      'cloud-bpmn'
-    ].forEach((type) => {
+    it('cloud-bpmn should configure element template plugin', async function() {
 
-      it(`${ type } plugins`, function() {
+      // given
+      const tabsProvider = new TabsProvider().getProvider('cloud-bpmn');
+      const templates = [
+        {
+          '$schema': 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+          'name': 'empty',
+          'id': 'constraints.empty',
+          'appliesTo': [
+            'bpmn:Task'
+          ],
+          'properties': []
+        }
+      ];
+      const appMock = {
+        getConfig: () => templates
+      };
 
-        // given
-        const plugin = {
-          config: {},
-          resolver: {
-            resolveConfig() {},
-            resolveRule() {}
-          }
-        };
+      const tabMock = { file: 'foo' };
 
-        const tabsProvider = new TabsProvider().getProvider(type);
+      // when
+      const linter = await tabsProvider.getLinter(
+        [],
+        tabMock,
+        appMock
+      );
 
-        // when
-        const linter = tabsProvider.getLinter([ plugin ]);
+      // then
+      const plugins = linter.getPlugins();
 
-        // then
-        expect(linter).to.exist;
-        expect(linter.getPlugins()).to.have.length(1);
-      });
+      expect(linter).to.exist;
+      expect(plugins).to.have.length(1);
 
+      const rules = plugins[0].config.rules;
+      expect(rules['element-templates/validate']).to.exist;
+      expect(rules['element-templates/validate'][1].templates).to.eql(templates);
+    });
+
+
+    it('cloud-bpmn plugins', async function() {
+
+      // given
+      const plugin = {
+        config: {},
+        resolver: {
+          resolveConfig() {},
+          resolveRule() {}
+        }
+      };
+
+      const tabsProvider = new TabsProvider().getProvider('cloud-bpmn');
+
+      // when
+      const linter = await tabsProvider.getLinter(
+        [ plugin ],
+        {},
+        { getConfig: () => {} });
+
+      // then
+      expect(linter).to.exist;
+      expect(linter.getPlugins()).to.have.length(2);
+    });
+
+
+    it('bpmn plugins', async function() {
+
+      // given
+      const plugin = {
+        config: {},
+        resolver: {
+          resolveConfig() {},
+          resolveRule() {}
+        }
+      };
+
+      const tabsProvider = new TabsProvider().getProvider('bpmn');
+
+      // when
+      const linter = await tabsProvider.getLinter([ plugin ]);
+
+      // then
+      expect(linter).to.exist;
+      expect(linter.getPlugins()).to.have.length(1);
     });
 
   });
