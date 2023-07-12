@@ -33,6 +33,8 @@ const TABS_OPTS = {
   }
 };
 
+const MIDDLE_MOUSE_BUTTON = 1;
+
 /**
  * markers to indicate a tab has less width than
  * a defined threshold
