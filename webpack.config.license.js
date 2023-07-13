@@ -12,6 +12,8 @@ const path = require('path');
 const { IgnorePlugin } = require('webpack');
 const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 
+const overrides = require('./tasks/license-book-handlers/license-book-overrides');
+
 /** @type {import('webpack').Configuration} */
 const config = {
   mode: 'development',
@@ -35,6 +37,7 @@ const config = {
       }
     }),
     new LicenseWebpackPlugin({
+      ...overrides,
       outputFilename: 'dependencies.json',
       perChunkOutput: false,
       excludedPackageTest: (packageName) => {

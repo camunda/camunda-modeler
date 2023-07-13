@@ -24,6 +24,8 @@ const UPDATES_SERVER_PRODUCT_NAME = process.env.UPDATES_SERVER_PRODUCT_NAME || '
 
 const pkg = require('./package.json');
 
+const licenseBookOverrides = require('../tasks/license-book-handlers/license-book-overrides');
+
 const {
   DefinePlugin
 } = require('webpack');
@@ -184,6 +186,7 @@ function extractDependencies() {
 
   return [
     new LicenseWebpackPlugin({
+      ...licenseBookOverrides,
       outputFilename: 'dependencies.json',
       perChunkOutput: false,
       excludedPackageTest: (packageName) => {

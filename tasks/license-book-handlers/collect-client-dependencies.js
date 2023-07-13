@@ -22,7 +22,8 @@ module.exports = async function collectClientDependencies() {
     cwd: path.join(process.cwd(), 'client'),
     env: {
       LICENSE_CHECK: '1'
-    }
+    },
+    stdio: 'inherit'
   });
 
   const dependencies = await fs.readFile('app/public/dependencies.json', 'utf-8');
