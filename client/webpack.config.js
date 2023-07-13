@@ -193,23 +193,7 @@ function extractDependencies() {
         return packageName === 'camunda-modeler-client';
       },
       renderLicenses: (modules) => {
-
-        const usedModules = modules.reduce((result, m) => {
-
-          const {
-            name,
-            version
-          } = m.packageJson;
-
-          const id = `${name}@${version}`;
-
-          return {
-            ...result,
-            [id]: true
-          };
-        }, {});
-
-        return JSON.stringify(usedModules);
+        return JSON.stringify(modules, null, 2);
       }
     })
   ];

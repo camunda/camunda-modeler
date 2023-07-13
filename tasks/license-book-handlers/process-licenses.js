@@ -8,39 +8,44 @@
  * except in compliance with the MIT License.
  */
 
-const fs = require('fs');
-
+/**
+ *
+ *
+ * @returns {{
+ *  name: string,
+ *  repository: string,
+ *  licenseId: string,
+ *  licenseText: string,
+ *  version: string
+ * }[]}
+ */
 module.exports = function processLicenses(dependencies) {
   const processedLicenses = [];
   const warnings = [];
 
-  for (const name in dependencies) {
-    const details = dependencies[name];
-
+  for (const dependency of dependencies) {
     const {
-      licenseFile,
-      repository,
-      licenses
-    } = details;
+      licenseId,
+      licenseText,
+      packageJson: {
+        name,
+        repository,
+        version
+      }
+    } = dependency;
 
     if (!repository) {
       warnings.push(`missing repository: ${name}`);
     }
 
-    const licenseFileValid = isValidFile(licenseFile);
-
-    if (!licenseFileValid) {
-      warnings.push(`missing license file: ${name}`);
+    if (!licenseText) {
+      warnings.push(`missing license text: ${name}`);
     }
 
-    const licenseText = licenseFileValid
-      ? fs.readFileSync(licenseFile, 'utf-8')
-      : licenses;
-
     processedLicenses.push({
-      ...details,
-      name,
-      repository,
+      name: `${name}@${version}`,
+      repository: repository && repository.url || repository,
+      licenseId,
       licenseText
     });
   }
@@ -50,7 +55,3 @@ module.exports = function processLicenses(dependencies) {
     warnings
   };
 };
-
-function isValidFile(file) {
-  return file && !/README(\.md)?/i.test(file);
-}

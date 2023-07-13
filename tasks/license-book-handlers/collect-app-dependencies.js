@@ -10,22 +10,17 @@
 
 'use strict';
 
-const path = require('path');
-
 const fs = require('fs/promises');
 
-const exec = require('execa').sync;
+const exec = require('execa');
 
-module.exports = async function collectClientDependencies() {
+module.exports = async function collectAppDependencies() {
 
-  await exec('npm', [ 'run', 'build' ], {
-    cwd: path.join(process.cwd(), 'client'),
-    env: {
-      LICENSE_CHECK: '1'
-    }
+  await exec('npm', [ 'run', 'app:collect-licenses' ], {
+    cwd: process.cwd()
   });
 
-  const dependencies = await fs.readFile('app/public/dependencies.json', 'utf-8');
+  const dependencies = await fs.readFile('tmp/dependencies.json', 'utf-8');
 
   return JSON.parse(dependencies);
 };
