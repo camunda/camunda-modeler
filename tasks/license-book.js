@@ -17,7 +17,6 @@ const mri = require('mri');
 const exec = require('execa').sync;
 
 const {
-  collectClientDependencies,
   collectLicenses,
   createLicenseBook,
   generateSummary,
@@ -74,16 +73,9 @@ async function run(args) {
     commit
   } = args;
 
-  console.log('Collecting client dependencies...');
+  console.log('Collecting dependencies...');
 
-  const clientDependencies = collectClientDependencies();
-
-  console.log('Analyzing dependencies...');
-
-  const combinedLicenses = await collectLicenses(
-    { name: 'app' },
-    { name: 'client', filter: name => clientDependencies[name] }
-  );
+  const combinedLicenses = await collectLicenses();
 
   console.log();
   console.log('Processing licenses...');

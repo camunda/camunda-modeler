@@ -10,9 +10,6 @@
 
 'use strict';
 
-const { asSummary: createLicensesSummary } = require('license-checker');
-
-
 module.exports = function generateSummary(processedLicenses, warnings = []) {
   return `${warnings.join('\n')}
 Summary of used third party licenses:
@@ -20,3 +17,16 @@ ${createLicensesSummary(processedLicenses)}
 * = license name is deduced from README and/or license text
   `;
 };
+
+function createLicensesSummary(processedLicenses) {
+  const licenseCounts = {};
+
+  for (const licenseInfo of processedLicenses) {
+    const licenseName = licenseInfo.licenseId || 'unknown';
+    licenseCounts[licenseName] = (licenseCounts[licenseName] || 0) + 1;
+  }
+
+  return Object.entries(licenseCounts).map(([ licenseName, count ]) => {
+    return `- ${licenseName} - ${count}`;
+  }).join('\n');
+}

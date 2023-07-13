@@ -8,83 +8,14 @@
  * except in compliance with the MIT License.
  */
 
-'use strict';
+const collectAppDependencies = require('./collect-app-dependencies');
+const collectClientDependencies = require('./collect-client-dependencies');
 
-const path = require('path');
+module.exports = async function() {
+  const deps = await Promise.all([
+    collectAppDependencies(),
+    collectClientDependencies()
+  ]);
 
-const licenseChecker = require('license-checker');
-
-/**
- * @typedef {Object} PackageInfo
- * @property {string} name
- * @property {(Object) => boolean} [filter]
- */
-
-/**
- * @param  {PackageInfo[]} packages
- */
-module.exports = async function collectLicenses(...packages) {
-  let combinedLicenses = {};
-
-  for (const pkg of packages) {
-    const { name, filter } = pkg;
-
-    const packageLicenses = await collectPackageLicenses(name, filter);
-
-    combinedLicenses = { ...combinedLicenses, ...packageLicenses };
-  }
-
-  return combinedLicenses;
+  return deps.flat(1);
 };
-
-async function collectPackageLicenses(pkg, filter) {
-  console.log(`${pkg}: scanning licenses`);
-
-  const licenses = await scanLicenses(pkg);
-
-  if (!filter) {
-    return licenses;
-  }
-
-  return Object.entries(licenses).filter(
-    (entry) => {
-      const [ name ] = entry;
-
-      return filter(name);
-    }
-  ).reduce(
-    (result, entry) => {
-      const [ name, details ] = entry;
-
-      return {
-        ...result,
-        [name]: details
-      };
-    }, {}
-  );
-}
-
-
-function scanLicenses(pkg) {
-
-  const args = {
-    production: true,
-    start: path.join(process.cwd(), pkg),
-    excludePrivatePackages: true
-  };
-
-  return new Promise(function(resolve, reject) {
-
-    licenseChecker.init(args, function(err, json) {
-
-      if (err) {
-        return reject(err);
-      }
-
-      return resolve(json);
-
-    });
-
-  });
-
-}
