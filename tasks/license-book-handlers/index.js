@@ -9,7 +9,6 @@
  */
 
 module.exports = {
-  collectClientDependencies: require('./collect-client-dependencies'),
   collectLicenses: require('./collect-licenses'),
   createLicenseBook: require('./create-license-book'),
   generateSummary: require('./generate-summary'),

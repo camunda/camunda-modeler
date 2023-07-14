@@ -21,7 +21,6 @@ const { Diff2Html: diff2html } = require('diff2html');
 const mri = require('mri');
 
 const {
-  collectClientDependencies,
   collectLicenses,
   generateSummary,
   processLicenses
@@ -141,12 +140,7 @@ function getPreviousVersion() {
 }
 
 async function getSummary() {
-  const clientDependencies = collectClientDependencies();
-
-  const combinedLicenses = await collectLicenses(
-    { name: 'app' },
-    { name: 'client', filter: name => clientDependencies[name] }
-  );
+  const combinedLicenses = await collectLicenses();
 
   const {
     processedLicenses
