@@ -17,7 +17,7 @@ jobs:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/add-to-project@a800ee63826928f6b421744e6fdf24cabf39f7f0
+      - uses: actions/add-to-project@0a99102a6562a4307b8bbc995c279ba01f217d91
         with:
           project-url: ${{ secrets.CONNECTORS_PROJECT_URL }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
