@@ -9,6 +9,11 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FEAT`: add flags for default execution platform version ([#3515](https://github.com/camunda/camunda-modeler/issues/3515))
+* `DEPS`: update to `@bpmn-io/properties-panel@3.1.0`
+* `DEPS`: update to `bpmn-js-properties-panel@3.0.0`
+* `DEPS`: update to `dmn-js-properties-panel@3.0.0`
+* `DEPS`: update to `camunda-bpmn-js@3.0.0`
+* `DEPS`: update to `camunda-dmn-js@1.1.0`
 
 ### Forms
 
