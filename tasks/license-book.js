@@ -14,7 +14,7 @@ const fs = require('fs');
 
 const mri = require('mri');
 
-const exec = require('execa').sync;
+const { execaSync: exec } = require('execa');
 
 const {
   collectLicenses,

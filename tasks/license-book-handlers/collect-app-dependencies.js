@@ -12,7 +12,7 @@
 
 const fs = require('fs/promises');
 
-const exec = require('execa');
+const { execa: exec } = require('execa');
 
 module.exports = async function collectAppDependencies() {
 

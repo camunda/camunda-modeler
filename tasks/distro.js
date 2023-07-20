@@ -12,7 +12,7 @@
 
 const argv = require('mri')(process.argv);
 
-const exec = require('execa').sync;
+const { execaSync: exec } = require('execa');
 
 const getVersion = require('../app/util/get-version');
 

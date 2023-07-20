@@ -12,7 +12,7 @@
 
 const fs = require('fs');
 
-const exec = require('execa').sync;
+const { execaSync: exec } = require('execa');
 
 const nodemailer = require('nodemailer');
 

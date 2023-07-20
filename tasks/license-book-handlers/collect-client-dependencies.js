@@ -14,7 +14,7 @@ const path = require('path');
 
 const fs = require('fs/promises');
 
-const exec = require('execa').sync;
+const { execa: exec } = require('execa');
 
 module.exports = async function collectClientDependencies() {
 

@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-const exec = require('execa').sync;
+const { execaSync: exec } = require('execa');
 
 const del = require('del').sync;
 
