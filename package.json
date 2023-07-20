@@ -63,7 +63,7 @@
     "eslint-plugin-bpmn-io": "^1.0.0",
     "eslint-plugin-camunda-licensed": "^0.4.6",
     "eslint-plugin-import": "^2.22.1",
-    "execa": "^1.0.0",
+    "execa": "^7.0.0",
     "lerna": "^5.4.3",
     "license-webpack-plugin": "^4.0.2",
     "mocha": "^10.0.0",
