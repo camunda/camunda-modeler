@@ -985,7 +985,7 @@ describe('TabsProvider', function() {
         const linter = await tabsProvider.getLinter(
           [],
           { },
-          { getConfig: () => {} }
+          () => {}
         );
 
         // then
@@ -1010,9 +1010,7 @@ describe('TabsProvider', function() {
           'properties': []
         }
       ];
-      const appMock = {
-        getConfig: () => templates
-      };
+      const getConfig = () => templates ;
 
       const tabMock = { file: 'foo' };
 
@@ -1020,7 +1018,7 @@ describe('TabsProvider', function() {
       const linter = await tabsProvider.getLinter(
         [],
         tabMock,
-        appMock
+        getConfig
       );
 
       // then
@@ -1052,7 +1050,8 @@ describe('TabsProvider', function() {
       const linter = await tabsProvider.getLinter(
         [ plugin ],
         {},
-        { getConfig: () => {} });
+        () => {}
+      );
 
       // then
       expect(linter).to.exist;

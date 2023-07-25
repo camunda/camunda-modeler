@@ -197,8 +197,8 @@ export default class TabsProvider {
             action: 'create-cloud-bpmn-diagram'
           } ];
         },
-        async getLinter(plugins = [], tab, app) {
-          const templates = await app.getConfig('bpmn.elementTemplates', tab.file) || [];
+        async getLinter(plugins = [], tab, getConfig) {
+          const templates = await getConfig('bpmn.elementTemplates', tab.file) || [];
           const cloudTemplates = getCloudTemplates(templates);
 
           return new BpmnLinter({
