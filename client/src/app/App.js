@@ -883,7 +883,7 @@ export class App extends PureComponent {
 
     const plugins = this.getPlugins(`lintRules.${ type }`);
 
-    const linter = await tabProvider.getLinter(plugins, tab, this);
+    const linter = await tabProvider.getLinter(plugins, tab, this.getConfig);
 
     if (!linter) {
       return;
