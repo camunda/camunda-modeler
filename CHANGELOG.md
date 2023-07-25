@@ -14,6 +14,13 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `dmn-js-properties-panel@3.0.0`
 * `DEPS`: update to `camunda-bpmn-js@3.0.0`
 * `DEPS`: update to `camunda-dmn-js@1.1.0`
+* `DEPS`: update to `@camunda/linting@3.3.0`
+
+### BPMN
+
+* `FEAT`: support converging inclusive gateway in C8 ([#3613](https://github.com/camunda/camunda-modeler/issues/3613))
+* `FIX`: open properties panel when history time to live error is clicked ([#3712](https://github.com/camunda/camunda-modeler/issues/3712))
+* `FIX`: detect and notify unsupported multiple start events in C8 ([#3577](https://github.com/camunda/camunda-modeler/issues/3577))
 
 ### Forms
 
