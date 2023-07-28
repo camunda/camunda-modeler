@@ -1451,7 +1451,45 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     });
 
 
-    it('should ONLY load platform templates', async function() {
+    it('should reload templates on save', async function() {
+
+      // given
+      const getConfigSpy = sinon.spy(),
+            setTemplatesSpy = sinon.spy(),
+            elementTemplatesLoaderMock = { setTemplates: setTemplatesSpy };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              elementTemplatesLoader: elementTemplatesLoaderMock
+            }
+          })
+        }
+      });
+
+      const { wrapper } = await renderEditor(diagramXML, {
+        cache,
+        getConfig: getConfigSpy,
+        file: { path: '/bar' }
+      });
+
+      getConfigSpy.resetHistory();
+      setTemplatesSpy.resetHistory();
+
+      // when
+      await wrapper.setProps({ file: { path: '/foo' } });
+
+      // expect
+      expect(getConfigSpy).to.be.calledOnce;
+      expect(getConfigSpy).to.be.calledWith('bpmn.elementTemplates');
+      expect(setTemplatesSpy).to.be.calledOnce;
+    });
+
+
+    it('should ONLY load cloud templates', async function() {
 
       // given
       const cloudTemplates = [
