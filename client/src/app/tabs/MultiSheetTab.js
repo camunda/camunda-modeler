@@ -388,6 +388,7 @@ export class MultiSheetTab extends CachedComponent {
         <TabContainer className="content tab">
           <Editor
             ref={ this.editorRef }
+            file={ tab.file }
             id={ `${id}-${activeSheet.provider.type}` }
             xml={ lastXML || xml }
             isNew={ isNew }

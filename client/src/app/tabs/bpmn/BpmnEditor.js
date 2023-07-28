@@ -191,6 +191,10 @@ export class BpmnEditor extends CachedComponent {
       this.getModeler().get('linting').setErrors(this.props.linting || []);
     }
 
+    if (prevProps.file !== this.props.file) {
+      this.loadTemplates();
+    }
+
     const { layout = {} } = this.props;
 
     const { panel = {} } = layout;
