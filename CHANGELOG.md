@@ -8,29 +8,34 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `FEAT`: show element template errors in the errors panel ([#3357](https://github.com/camunda/camunda-modeler/issues/3357))
 * `FEAT`: add flags for default execution platform version ([#3515](https://github.com/camunda/camunda-modeler/issues/3515))
-* `DEPS`: update to `@bpmn-io/properties-panel@3.1.0`
-* `DEPS`: update to `bpmn-js-properties-panel@3.0.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.2.1`
+* `DEPS`: update to `bpmn-js-properties-panel@4.0.2`
 * `DEPS`: update to `dmn-js-properties-panel@3.0.0`
-* `DEPS`: update to `camunda-bpmn-js@3.0.0`
+* `DEPS`: update to `camunda-bpmn-js@3.1.0`
 * `DEPS`: update to `camunda-dmn-js@1.1.0`
 * `DEPS`: update to `@camunda/linting@3.4.0`
 
 ### BPMN
 
+* `FEAT`: migrate long descriptions and descriptions with documentation links to tooltips ([bpmn-js-properties-panel#946](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/946))
+* `FEAT`: show element template errors in the errors panel ([#3357](https://github.com/camunda/camunda-modeler/issues/3357))
+* `FEAT`: show errors in group header ([properties-panel#256](https://github.com/bpmn-io/properties-panel/pull/256))
 * `FIX`: open properties panel when history time to live error is clicked ([#3712](https://github.com/camunda/camunda-modeler/issues/3712))
 * `FIX`: detect and notify unsupported multiple start events in C8 ([#3577](https://github.com/camunda/camunda-modeler/issues/3577))
+* `FIX`: allow removing templates from root elements ([bpmn-js-element-templates#7](https://github.com/bpmn-io/bpmn-js-element-templates/pull/7))
 
 ### Forms
 
-* `FEAT`: support FEEL and templates for prefix and suffix appearance ([#663](https://github.com/bpmn-io/form-js/pull/663))
-* `FEAT`: support templates for `alt` and `source` properties ([#663](https://github.com/bpmn-io/form-js/pull/663))
-* `FEAT`: support populate multiselect values via FEEL expression ([#673](https://github.com/bpmn-io/form-js/issues/673))
-* `FEAT`: support FEEL for `min`, `max`, `minLength` and `maxLength` validation ([#668](https://github.com/bpmn-io/form-js/pull/668))
-* `DEPS`: update to `form-js` to 1.0.0
-* `DEPS`: update to `form-linting` to 0.9.0
-* `DEPS`: update to `form-playground` to 0.7.0
+* `FEAT`: add `spacer` component ([form-js#731](https://github.com/bpmn-io/form-js/issues/731))
+* `FEAT`: eagerly validate on blur and input ([form-js#610](https://github.com/bpmn-io/form-js/pull/610))
+* `FEAT`: support FEEL and templates for prefix and suffix appearance ([form-js#663](https://github.com/bpmn-io/form-js/pull/663))
+* `FEAT`: support templates for `alt` and `source` properties ([form-js#663](https://github.com/bpmn-io/form-js/pull/663))
+* `FEAT`: support populate multiselect values via FEEL expression ([form-js#673](https://github.com/bpmn-io/form-js/issues/673))
+* `FEAT`: support FEEL for `min`, `max`, `minLength` and `maxLength` validation ([form-js#668](https://github.com/bpmn-io/form-js/pull/668))
+* `DEPS`: update to `form-js` to 1.1.0
+* `DEPS`: update to `form-linting` to 0.10.0
+* `DEPS`: update to `form-playground` to 0.8.0
 
 
 ## 5.13.0
