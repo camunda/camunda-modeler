@@ -44,8 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Robust diagram validation</h4>
-          This release improves the handling of broken diagram validation rules, adding a safeguard for authors and users of <a href="https://github.com/camunda/camunda-modeler-custom-linter-rules-plugin">custom linter rule plug-ins</a>.
+          <h4>Tooltips in the properties panel</h4>
+          With this update, explanation and hints for BPMN elements are now presented as tooltips instead of in-line text in the Properties Panel. This makes it easier to access relevant information while designing your process models.
+        </li>
+        <li>
+          <h4>Element template errors in the problems panel</h4>
+          Element Template errors are now also shown in the Problems panel, so you can conveniently view all errors across your entire diagram in one consolidated place.
+        </li>
+        <li>
+          <h4>New functionality for forms</h4>
+          In this release, we've implemented various enhancements to form-js. For example, you can take advantage of the new spacer element to better organize your forms. Check out the full changelog <a href="https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md#5140">here</a>.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
