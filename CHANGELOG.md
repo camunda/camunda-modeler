@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.14.0
+
 ### General
 
 * `FEAT`: add flags for default execution platform version ([#3515](https://github.com/camunda/camunda-modeler/issues/3515))
@@ -24,6 +26,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: open properties panel when history time to live error is clicked ([#3712](https://github.com/camunda/camunda-modeler/issues/3712))
 * `FIX`: detect and notify unsupported multiple start events in C8 ([#3577](https://github.com/camunda/camunda-modeler/issues/3577))
 * `FIX`: allow removing templates from root elements ([bpmn-js-element-templates#7](https://github.com/bpmn-io/bpmn-js-element-templates/pull/7))
+* `FIX`: reload element templates on save ([#3471](https://github.com/camunda/camunda-modeler/issues/3471))
 
 ### Forms
 
