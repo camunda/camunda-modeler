@@ -88,7 +88,7 @@ This project incorporates components from the projects listed below. The origina
 81.   epipebomb@1.0.0 (git://github.com/mhart/epipebomb.git)
 82.   @sindresorhus/is@0.15.0 (sindresorhus/is)
 83.   @camunda/form-playground@0.8.0 (git+https://github.com/camunda/form-playground.git)
-84.   @camunda/linting@3.4.0 (https://github.com/camunda/linting)
+84.   @camunda/linting@3.4.1 (https://github.com/camunda/linting)
 85.   camunda-bpmn-js@3.1.0 (https://github.com/camunda/camunda-bpmn-js)
 86.   camunda-dmn-js@1.1.0 (https://github.com/camunda/camunda-dmn-js)
 87.   css-loader@6.7.1 (webpack-contrib/css-loader)
@@ -3079,7 +3079,7 @@ THE SOFTWARE.
 END OF @camunda/form-playground@0.8.0 NOTICES AND INFORMATION
 
 
-%% @camunda/linting@3.4.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/linting@3.4.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -3103,7 +3103,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/linting@3.4.0 NOTICES AND INFORMATION
+END OF @camunda/linting@3.4.1 NOTICES AND INFORMATION
 
 
 %% camunda-bpmn-js@3.1.0 NOTICES AND INFORMATION BEGIN HERE
