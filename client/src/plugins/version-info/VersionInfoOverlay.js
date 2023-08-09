@@ -14,7 +14,6 @@ import { Overlay, Section } from '../../shared/ui';
 
 import { ReleaseInfo } from './ReleaseInfo';
 
-const RELEASE_NOTES_LINK = 'https://camunda.com/blog/category/releases/?s=desktop+modeler&utm_source=modeler&utm_medium=referral';
 const DOCS_LINK = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/?utm_source=modeler&utm_medium=referral';
 const CHANGELOG_LINK = 'https://github.com/camunda/camunda-modeler/blob/master/CHANGELOG.md';
 
@@ -54,7 +53,6 @@ function LearnMoreSection(props) {
       </Section.Header>
       <Section.Body>
         <ul className="dashed">
-          <li><a href={ RELEASE_NOTES_LINK }>Release Notes on Camunda blog</a></li>
           <li><a href={ DOCS_LINK }>Camunda Modeler docs</a></li>
           <li><a href={ CHANGELOG_LINK }>Changelog on GitHub</a></li>
         </ul>
