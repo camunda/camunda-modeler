@@ -23,6 +23,7 @@
     "@codemirror/search": "^6.2.3",
     "@codemirror/state": "^6.2.0",
     "@codemirror/view": "^6.7.1",
+    "@floating-ui/dom": "^1.5.1",
     "@ibm/plex": "^6.0.0",
     "@sentry/browser": "^7.57.0",
     "bpmn-js": "^13.2.1",

@@ -153,6 +153,10 @@ export class BpmnEditor extends CachedComponent {
     }
 
     this.checkImport();
+
+    this.props.onAction('emit-event', {
+      type: 'diagram.created'
+    });
   }
 
   componentWillUnmount() {
