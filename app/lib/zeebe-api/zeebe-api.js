@@ -143,9 +143,11 @@ class ZeebeAPI {
     const client = await this._getZeebeClient(endpoint);
 
     try {
-      const response = await client.deployProcess({
-        definition: contents,
-        name: this._prepareDeploymentName(name, filePath, diagramType)
+      const response = await client.deployResource({
+        process: contents,
+        name: this._prepareDeploymentName(name, filePath, diagramType),
+
+        // tenantId
       });
 
       return {
@@ -181,7 +183,12 @@ class ZeebeAPI {
 
     try {
 
-      const response = await client.createProcessInstance(processId, variables);
+      const response = await client.createProcessInstance({
+        bpmnProcessId: processId,
+        variables,
+
+        // tenantId
+      });
 
       return {
         success: true,
