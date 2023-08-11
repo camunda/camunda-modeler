@@ -14,6 +14,7 @@ import 'shepherd.js/dist/css/shepherd.css';
 import * as selectors from './Selectors';
 import { offset } from '@floating-ui/dom';
 import { DEFAULT_WIDTH } from '../../app/resizable-container/PropertiesPanelContainer';
+const CONFIG_KEY = 'editor.privacyPreferences';
 
 let tour = null;
 
@@ -22,12 +23,22 @@ export default class IntroductionTour extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.createTour();
-    this.createDiagramSteps();
-
     this.props.subscribe('bpmn.modeler.created', async (event) => {
       this.modeler = event.modeler;
     });
+  }
+
+  async componentDidMount() {
+    const {
+      config
+    } = this.props;
+
+    let result = await config.get(CONFIG_KEY);
+
+    if (!result) {
+      this.createTour();
+      this.createDiagramSteps();
+    }
   }
 
   componentWillUnmount() {
@@ -98,6 +109,7 @@ export default class IntroductionTour extends PureComponent {
 
       startEventStep.on('before-hide', () => {
         unwrapOverlayDiv();
+        this.modeler.get('selection').select(null);
       });
 
       // properties panel
