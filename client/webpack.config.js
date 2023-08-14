@@ -147,10 +147,7 @@ function sentryIntegration() {
   // variables are injected via CI when building.
   return [
     sentryWebpackPlugin({
-      release: NODE_ENV === 'production' ? version : 'dev',
-      sourcemaps: {
-        assets: [ '../app/public/**' ]
-      }
+      release: NODE_ENV === 'production' ? version : 'dev'
     })
   ];
 }
