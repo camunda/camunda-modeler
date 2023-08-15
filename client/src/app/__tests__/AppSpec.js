@@ -3073,6 +3073,28 @@ describe('<App>', function() {
     });
 
 
+    it('should lint tab after save', async function() {
+
+      // given
+      const { app } = createApp();
+
+      await app.openFiles([
+        createFile('1.form', {
+          contents: 'linting-errors',
+          type: 'form'
+        })
+      ]);
+
+      const triggerActionSpy = sinon.spy(app, 'triggerAction');
+
+      // when
+      await app.triggerAction('save');
+
+      // then
+      expect(triggerActionSpy).to.have.been.calledWith('lint-tab');
+    });
+
+
     it('should pass plugins to linter', async function() {
 
       // given

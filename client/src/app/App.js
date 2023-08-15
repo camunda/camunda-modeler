@@ -989,6 +989,7 @@ export class App extends PureComponent {
     });
 
     this.emit('tab.saved', { tab });
+    this.triggerAction('lint-tab', { tab });
 
     return tab;
   }
