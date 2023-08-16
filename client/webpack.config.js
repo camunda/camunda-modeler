@@ -143,11 +143,24 @@ function sentryIntegration() {
 
   const { version } = pkg;
 
-  // necessary SENTRY_AUTH_TOKEN, SENTRY_ORG and SENTRY_PROJECT environment
-  // variables are injected via CI when building.
   return [
     sentryWebpackPlugin({
-      release: NODE_ENV === 'production' ? version : 'dev'
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      release: {
+        name: NODE_ENV === 'production' ? version : 'dev',
+        uploadLegacySourcemaps: {
+          paths: [ '.' ],
+          ignore: [
+            'node_modules',
+            '*.config.js',
+            '*Spec.js',
+            'src',
+            'test'
+          ]
+        }
+      }
     })
   ];
 }
