@@ -446,8 +446,8 @@ async function expectNormalization(prefix) {
   beforeSend(event);
 
   // then
-  expect(event.request.url).to.eql('build/2.2.js');
-  expect(event.exception.values[0].stacktrace.frames[0].filename).to.eql('build/2.2.js');
+  expect(event.request.url).to.eql('file:///build/2.2.js');
+  expect(event.exception.values[0].stacktrace.frames[0].filename).to.eql('file:///build/2.2.js');
 }
 
 function createMockSentryEvent(path) {
