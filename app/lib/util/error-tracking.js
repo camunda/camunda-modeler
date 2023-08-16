@@ -184,5 +184,5 @@ function normalizeUrl(path) {
 
   // eslint-disable-next-line
   const filename = path.replace(/^.*[\\\/]/, '');
-  return 'build/' + filename;
+  return 'file:///build/' + filename;
 }
