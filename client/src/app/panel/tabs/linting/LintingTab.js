@@ -34,7 +34,9 @@ export default function LintingTab(props) {
   } = props;
 
   const onClick = (report) => () => {
-    onAction('showLintError', report);
+    if (!window.getSelection().toString().length) {
+      onAction('showLintError', report);
+    }
   };
 
   const onToggle = () => {
