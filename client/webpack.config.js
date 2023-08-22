@@ -22,7 +22,7 @@ const LICENSE_CHECK = process.env.LICENSE_CHECK;
 
 const UPDATES_SERVER_PRODUCT_NAME = process.env.UPDATES_SERVER_PRODUCT_NAME || 'Camunda Modeler';
 
-const pkg = require('./package.json');
+const getVersion = require('../app/util/get-version');
 
 const licenseBookOverrides = require('../tasks/license-book-handlers/license-book-overrides');
 
@@ -141,7 +141,7 @@ function sentryIntegration() {
     return [];
   }
 
-  const { version } = pkg;
+  const version = getVersion();
 
   return [
     sentryWebpackPlugin({
@@ -149,7 +149,7 @@ function sentryIntegration() {
       project: process.env.SENTRY_PROJECT,
       authToken: process.env.SENTRY_AUTH_TOKEN,
       release: {
-        name: NODE_ENV === 'production' ? version : 'dev',
+        name: version,
         uploadLegacySourcemaps: {
           paths: [ '.' ],
           ignore: [
