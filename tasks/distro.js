@@ -18,8 +18,9 @@ const getVersion = require('../app/util/get-version');
 
 const pkg = require('../app/package');
 
+const nightly = process.env.NIGHTLY;
+
 const {
-  nightly,
   publish,
   config,
   'on-demand': onDemand

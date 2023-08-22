@@ -10,15 +10,11 @@
 
 'use strict';
 
-var argv = require('mri')(process.argv);
 var semver = require('semver');
 
 var IS_DEV = process.env.NODE_ENV !== 'production';
 var BUILD_NAME = process.env.BUILD_NAME;
-
-var {
-  nightly
-} = argv;
+var IS_NIGHTLY = process.env.NIGHTLY;
 
 var pkg = require('../package.json');
 
@@ -35,13 +31,13 @@ var pkg = require('../package.json');
  */
 module.exports = function getVersion() {
   var appVersion = pkg.version;
-  var increment = nightly || IS_DEV;
+  var increment = IS_NIGHTLY || IS_DEV;
 
   if (increment) {
     appVersion = semver.inc(appVersion, 'minor');
   }
 
-  if (nightly) {
+  if (IS_NIGHTLY) {
     appVersion = `${appVersion}-nightly.${today()}`;
   } else if (BUILD_NAME) {
     appVersion = `${appVersion}-${BUILD_NAME}`;
