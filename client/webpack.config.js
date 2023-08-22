@@ -149,17 +149,7 @@ function sentryIntegration() {
       project: process.env.SENTRY_PROJECT,
       authToken: process.env.SENTRY_AUTH_TOKEN,
       release: {
-        name: version,
-        uploadLegacySourcemaps: {
-          paths: [ '.' ],
-          ignore: [
-            'node_modules',
-            '*.config.js',
-            '*Spec.js',
-            'src',
-            'test'
-          ]
-        }
+        name: version
       }
     })
   ];
