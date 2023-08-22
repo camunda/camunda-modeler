@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@electron/notarize": "^2.0.0",
-    "archiver": "^5.0.0",
+    "archiver": "^6.0.0",
     "chai": "^4.2.0",
     "cpx": "^1.5.0",
     "del": "^3.0.0",
