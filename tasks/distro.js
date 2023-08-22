@@ -36,12 +36,9 @@ if (onDemand) {
   buildName = process.env.BUILD_NAME;
 }
 
-const version = (onDemand || nightly) && getVersion(pkg, {
-  nightly,
-  buildName
-});
+const version = getVersion();
 
-if (version) {
+if (version !== pkg.version) {
 
   const lernaPublishArgs = [
     'version',
