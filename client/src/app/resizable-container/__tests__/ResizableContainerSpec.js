@@ -131,7 +131,7 @@ describe('<ResizableContainer>', function() {
         // then
         expect(onResized).to.have.been.calledWith({
           open: false,
-          [ dimension ]: 0
+          [ dimension ]: 300
         });
       });
 
