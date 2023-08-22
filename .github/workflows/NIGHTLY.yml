@@ -38,12 +38,13 @@ jobs:
         CSC_KEY_PASSWORD: "${{ secrets.CSC_KEY_PASSWORD }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "int"
+        NIGHTLY: 1
         SENTRY_AUTH_TOKEN: "${{ secrets.SENTRY_AUTH_TOKEN }}"
         SENTRY_DSN: "${{ secrets.SENTRY_DSN }}"
         SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
-      run: npm run build -- --linux --nightly
+      run: npm run build -- --linux
 
     - name: Build nightly (MacOS)
       if: ${{ runner.os == 'macOS' }}
@@ -55,12 +56,13 @@ jobs:
         CSC_KEY_PASSWORD: "${{ secrets.CSC_KEY_PASSWORD }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "int"
+        NIGHTLY: 1
         SENTRY_AUTH_TOKEN: "${{ secrets.SENTRY_AUTH_TOKEN }}"
         SENTRY_DSN: "${{ secrets.SENTRY_DSN }}"
         SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
-      run: npm run build -- --mac --nightly
+      run: npm run build -- --mac
 
     - name: Build nightly (Windows)
       if: ${{ runner.os == 'Windows' }}
@@ -69,12 +71,13 @@ jobs:
         CSC_KEY_PASSWORD: "${{ secrets.WIN_CSC_KEY_PASSWORD }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "int"
+        NIGHTLY: 1
         SENTRY_AUTH_TOKEN: "${{ secrets.SENTRY_AUTH_TOKEN }}"
         SENTRY_DSN: "${{ secrets.SENTRY_DSN }}"
         SENTRY_ORG: "${{ secrets.SENTRY_ORG }}"
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
-      run: npm run build -- --win --nightly
+      run: npm run build -- --win
 
     - name: Import Secrets
       id: secrets

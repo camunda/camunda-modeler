@@ -35,8 +35,9 @@ function currentPlatform() {
   return 'linux';
 }
 
+const nightly = process.env.NIGHTLY;
+
 const {
-  nightly,
   win,
   linux,
   mac,
