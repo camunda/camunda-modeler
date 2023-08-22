@@ -118,7 +118,7 @@ export default function ResizableContainer(props) {
       const newOpen = newWidth > CLOSED_THRESHOLD;
 
       onResized({
-        width: newOpen ? newWidth : 0,
+        width: newOpen ? newWidth : width,
         open: newOpen
       });
     } else {
@@ -127,7 +127,7 @@ export default function ResizableContainer(props) {
       const newOpen = newHeight > CLOSED_THRESHOLD;
 
       onResized({
-        height: newOpen ? newHeight : 0,
+        height: newOpen ? newHeight : height,
         open: newOpen
       });
     }
