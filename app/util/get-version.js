@@ -10,7 +10,17 @@
 
 'use strict';
 
+var argv = require('mri')(process.argv);
 var semver = require('semver');
+
+var IS_DEV = process.env.NODE_ENV !== 'production';
+var BUILD_NAME = process.env.BUILD_NAME;
+
+var {
+  nightly
+} = argv;
+
+var pkg = require('../package.json');
 
 /**
  * Get the semantic version of the application.
@@ -23,15 +33,9 @@ var semver = require('semver');
  *
  * @return {string} actual app version
  */
-module.exports = function getVersion(pkg, options) {
-
+module.exports = function getVersion() {
   var appVersion = pkg.version;
-
-  var {
-    buildName,
-    nightly,
-    increment = nightly,
-  } = options;
+  var increment = nightly || IS_DEV;
 
   if (increment) {
     appVersion = semver.inc(appVersion, 'minor');
@@ -39,8 +43,10 @@ module.exports = function getVersion(pkg, options) {
 
   if (nightly) {
     appVersion = `${appVersion}-nightly.${today()}`;
-  } else if (buildName) {
-    appVersion = `${appVersion}-${buildName}`;
+  } else if (BUILD_NAME) {
+    appVersion = `${appVersion}-${BUILD_NAME}`;
+  } else if (IS_DEV) {
+    appVersion = `${appVersion}-dev`;
   }
 
   return appVersion;

@@ -20,10 +20,7 @@ process.env.NODE_ENV = 'development';
 // monkey-patch package version to indicate DEV mode in application
 const pkg = require('./app/package');
 
-pkg.version = getAppVersion(pkg, {
-  buildName: 'dev',
-  increment: true
-});
+pkg.version = getAppVersion();
 
 // monkey-patch cli args to not open this file in application
 process.argv = process.argv.filter(arg => !arg.includes('dev.js'));
