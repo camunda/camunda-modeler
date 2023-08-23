@@ -79,7 +79,6 @@
     "tar-stream": "^3.0.0",
     "webpack": "^5.88.1",
     "webpack-cli": "^5.0.0",
-    "which": "^1.2.0",
     "yauzl": "^2.10.0"
   },
   "remarkConfig": {
