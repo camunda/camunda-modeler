@@ -18,7 +18,7 @@
     "ids": "^1.0.0",
     "min-dash": "^4.0.0",
     "mri": "^1.1.6",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.0.0",
     "parents": "^1.0.1",
     "zeebe-node": "8.3.0-alpha4"
   },
