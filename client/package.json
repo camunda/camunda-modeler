@@ -57,7 +57,7 @@
     "mixpanel-browser": "^2.45.0",
     "modeler-moddle": "^0.2.0",
     "p-defer": "^3.0.0",
-    "p-series": "^2.1.0",
+    "p-series": "^3.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "scroll-tabs": "^1.0.1",
