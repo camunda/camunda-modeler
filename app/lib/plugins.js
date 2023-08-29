@@ -9,7 +9,7 @@
  */
 
 const path = require('path');
-const glob = require('glob');
+const { globSync } = require('glob');
 
 const log = require('./log')('app:plugins');
 
@@ -87,7 +87,9 @@ class Plugins {
 
         if (style) {
           const stylePath = path.join(base, style);
-          const styleFiles = glob.sync(stylePath);
+          const styleFiles = globSync(stylePath, {
+            absolute: true
+          });
 
           if (!styleFiles.length) {
             plugin.error = true;
@@ -98,7 +100,7 @@ class Plugins {
 
         if (script) {
           const scriptPath = path.join(base, script);
-          const scriptFiles = glob.sync(scriptPath);
+          const scriptFiles = globSync(scriptPath);
 
           if (!scriptFiles.length) {
             plugin.error = true;

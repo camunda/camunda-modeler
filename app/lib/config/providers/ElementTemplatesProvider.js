@@ -9,7 +9,7 @@
  */
 
 const fs = require('fs');
-const glob = require('glob');
+const { globSync } = require('glob');
 const parents = require('parents');
 const path = require('path');
 
@@ -149,5 +149,5 @@ function globTemplates(path) {
     realpath: true
   };
 
-  return glob.sync('element-templates/**/*.json', globOptions);
+  return globSync('element-templates/**/*.json', globOptions);
 }
