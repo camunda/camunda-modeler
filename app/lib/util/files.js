@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-const glob = require('glob');
+const { globSync } = require('glob');
 
 const fs = require('fs');
 
@@ -126,10 +126,11 @@ function globFiles(options) {
 
   return searchPaths.reduce((paths, searchPath) => {
 
-    const newPaths = glob.sync(pattern, {
+    const newPaths = globSync(pattern, {
       cwd: searchPath,
       nodir: true,
-      realpath: true
+      realpath: true,
+      absolute: true
     });
 
     return [
