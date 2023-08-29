@@ -9,7 +9,7 @@
  */
 
 const fs = require('fs');
-const { globSync } = require('glob');
+const { globSync } = require('fast-glob');
 const parents = require('parents');
 const path = require('path');
 
@@ -145,8 +145,8 @@ function getTemplatesForPath(path) {
 function globTemplates(path) {
   const globOptions = {
     cwd: path,
-    nodir: true,
-    realpath: true
+    onlyFiles: true,
+    absolute: true
   };
 
   return globSync('element-templates/**/*.json', globOptions);

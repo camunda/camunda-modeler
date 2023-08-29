@@ -9,7 +9,7 @@
  */
 
 const path = require('path');
-const { globSync } = require('glob');
+const { globSync } = require('fast-glob');
 
 const log = require('./log')('app:plugins');
 
@@ -100,7 +100,9 @@ class Plugins {
 
         if (script) {
           const scriptPath = path.join(base, script);
-          const scriptFiles = globSync(scriptPath);
+          const scriptFiles = globSync(scriptPath, {
+            absolute: true
+          });
 
           if (!scriptFiles.length) {
             plugin.error = true;

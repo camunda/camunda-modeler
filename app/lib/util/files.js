@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-const { globSync } = require('glob');
+const { globSync } = require('fast-glob');
 
 const fs = require('fs');
 
@@ -129,8 +129,8 @@ function globFiles(options) {
     const newPaths = globSync(pattern, {
       cwd: searchPath,
       nodir: true,
-      realpath: true,
-      absolute: true
+      absolute: true,
+
     });
 
     return [
