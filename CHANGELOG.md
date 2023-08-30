@@ -6,6 +6,24 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `DEPS` update to @bpmn-io/properties-panel@3.4.0
+* `DEPS` update to @camunda/linting@3.6.0
+* `DEPS` update to bpmn-js-element-templates@1.4.0
+* `DEPS` update to bpmn-js-properties-panel@5.1.0
+* `DEPS` update to camunda-bpmn-js@3.2.0
+
+### BPMN
+
+* `FEAT`: move "Call Activity" to "Sub Processes" group in options menu ([bpmn-js-create-append-anything#14](https://github.com/bpmn-io/bpmn-js-create-append-anything/pull/14))
+* `FEAT`: add _Input propagation_ group ([#3793](https://github.com/camunda/camunda-modeler/issues/3793))
+* `FEAT`: visually show deprecated templates in properties panel ([bpmn-js-element-templates#11](https://github.com/bpmn-io/bpmn-js-element-templates/issues/11))
+* `FEAT`: suggest variables from form schema ([#3780](https://github.com/camunda/camunda-modeler/issues/3780))
+* `FIX`: remove output group from error end events ([#3782](https://github.com/camunda/camunda-modeler/issues/3782))
+* `FIX`: show all FEEL errors in problems panel ([#3806](https://github.com/camunda/camunda-modeler/issues/3806))
+* `CHORE`: example data is no longer scoped to the element that defines it ([#3728](https://github.com/camunda/camunda-modeler/issues/3728))
+
 ## 5.14.0
 
 ### General
