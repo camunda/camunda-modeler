@@ -120,5 +120,5 @@ describe('files', function() {
 
 
 function absPath(file) {
-  return path.resolve(__dirname, file);
+  return path.resolve(__dirname, file).split(path.sep).join(path.posix.sep);
 }
