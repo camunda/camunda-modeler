@@ -18,6 +18,10 @@ class ClientTransport {
 
   info() {}
 
+  debug() {}
+
+  warn() {}
+
   /**
    *
    * @param {string} message

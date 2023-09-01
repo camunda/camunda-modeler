@@ -27,6 +27,10 @@ class Log {
 
   log(type, args) {
 
+    if (type === 'debug' && !process.env.DEBUG) {
+      return;
+    }
+
     const message = format(...args);
 
     createLog.transports.forEach(transport => {
@@ -44,6 +48,10 @@ class Log {
 
   error(...args) {
     this.log('error', args);
+  }
+
+  debug(...args) {
+    this.log('debug', args);
   }
 }
 
