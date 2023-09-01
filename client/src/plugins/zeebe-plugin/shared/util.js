@@ -25,7 +25,7 @@ export function getClusterUrl(endpoint) {
 }
 
 function getProcess(apiResponse) {
-  return apiResponse?.processes?.[0] || null;
+  return apiResponse?.deployments?.[0]?.process || null;
 }
 
 export function getProcessId(response) {

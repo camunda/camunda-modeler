@@ -41,9 +41,11 @@ describe('util', () => {
 
       // given
       const response = {
-        processes: [
+        deployments: [
           {
-            bpmnProcessId: 'processId'
+            process: {
+              bpmnProcessId: 'processId'
+            }
           }
         ]
       };
@@ -73,7 +75,7 @@ describe('util', () => {
 
       // given
       const response = {
-        processes: []
+        deployments: []
       };
 
       // when
@@ -91,10 +93,12 @@ describe('util', () => {
 
       // given
       const response = {
-        processes: [
+        deployments: [
           {
-            bpmnProcessId: 'processId',
-            version: 2
+            process: {
+              bpmnProcessId: 'processId',
+              version: 2
+            }
           }
         ]
       };
@@ -124,7 +128,7 @@ describe('util', () => {
 
       // given
       const response = {
-        processes: []
+        deployments: []
       };
 
       // when
@@ -135,4 +139,5 @@ describe('util', () => {
     });
 
   });
+
 });
