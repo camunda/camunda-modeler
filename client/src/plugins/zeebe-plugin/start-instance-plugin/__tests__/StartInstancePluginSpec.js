@@ -218,7 +218,16 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
       // given
       const processId = '123';
       const deploymentResult = {
-        success: true, response: { processes: [ { bpmnProcessId: processId } ] }
+        success: true,
+        response: {
+          deployments: [
+            {
+              process: {
+                bpmnProcessId: processId
+              }
+            }
+          ]
+        }
       };
       const runSpy = sinon.spy();
       const zeebeAPI = new MockZeebeAPI({ runSpy });
@@ -423,7 +432,16 @@ function createStartInstancePlugin({
   zeebeAPI = new MockZeebeAPI(),
   activeTab = createTab(),
   deploymentResult = {
-    success: true, response: { processes: [ { bpmnProcessId: 'test' } ] }
+    success: true,
+    response: {
+      deployments: [
+        {
+          process: {
+            bpmnProcessId: 'test'
+          }
+        }
+      ]
+    }
   },
   deploymentEndpoint = {},
   ...props

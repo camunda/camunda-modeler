@@ -638,7 +638,14 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     // given
     const displayNotification = sinon.spy();
     const { instance } = createDeploymentPlugin({
-      zeebeAPI: new MockZeebeAPI({ deploymentResult: { success: true, response: { processes: [] } } }),
+      zeebeAPI: new MockZeebeAPI({
+        deploymentResult: {
+          success: true,
+          response: {
+            deployments: []
+          }
+        }
+      }),
       displayNotification,
       endpoint : {
         targetType: CAMUNDA_CLOUD,
@@ -1508,8 +1515,19 @@ function MockZeebeAPI(options = {}) {
       deploySpy(...args);
     }
 
-    const result = deploymentResult ||
-      { success: true, response: { processes: [ { bpmnProcessId: 'test', version: 1 } ] } };
+    const result = deploymentResult || {
+      success: true,
+      response: {
+        deployments: [
+          {
+            process: {
+              bpmnProcessId: 'test',
+              version: 1
+            }
+          }
+        ]
+      }
+    };
 
     return Promise.resolve(result);
   };
