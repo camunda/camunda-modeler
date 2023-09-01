@@ -36,7 +36,7 @@ class ElementTemplatesProvider {
    * @returns {Array<Template>}
    */
   get(_, file) {
-    const localPaths = file && file.path ? parents(file.path) : [];
+    const localPaths = file && file.path ? parents(path.dirname(file.path)) : [];
 
     const paths = [
       ...suffixAll(localPaths, '.camunda'),
