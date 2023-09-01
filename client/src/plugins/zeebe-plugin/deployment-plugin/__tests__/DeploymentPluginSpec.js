@@ -1448,12 +1448,16 @@ function createDeploymentPlugin({
   };
 
   const triggerAction = (event, context) => {
-    switch (true) {
-    case (event === 'save'):
+
+    if (event === 'save') {
       return activeTab;
-    case (props.actionTriggered &&
-      props.actionTriggered.emitEvent == event &&
-      props.actionTriggered.type == (context ? context.type : undefined)):
+    }
+
+    if (
+      props.actionTriggered &&
+      props.actionTriggered.emitEvent === event &&
+      props.actionTriggered.type === (context ? context.type : undefined)
+    ) {
       props.actionTriggered.handler(context);
     }
   };
