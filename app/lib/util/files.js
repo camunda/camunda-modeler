@@ -10,6 +10,7 @@
 
 const { globSync } = require('fast-glob');
 
+const path = require('path');
 const fs = require('fs');
 
 /**
@@ -129,9 +130,8 @@ function globFiles(options) {
     const newPaths = globSync(pattern, {
       cwd: searchPath,
       nodir: true,
-      absolute: true,
-
-    });
+      absolute: true
+    }).map(p => p.split(path.posix.sep).join(path.sep));
 
     return [
       ...paths,
