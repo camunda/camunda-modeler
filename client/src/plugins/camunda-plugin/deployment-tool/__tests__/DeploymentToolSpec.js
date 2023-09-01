@@ -593,7 +593,7 @@ describe('<DeploymentTool>', () => {
               actionTriggered = {
                 emitEvent: 'emit-event',
                 type: 'deployment.done',
-                handler:actionSpy
+                handler: actionSpy
               };
 
         const {
