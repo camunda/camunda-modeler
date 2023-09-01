@@ -133,7 +133,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     // then
     expect(deploySpy).to.have.been.calledOnce;
-    expect(userActionSpy).to.not.have.been.called;
+    expect(userActionSpy).not.to.have.been.called;
   });
 
 
@@ -410,7 +410,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
         callSubscriber({ activeTab: createTab() });
 
         // expect
-        expect(wrapper.html().includes('form')).to.not.be.true;
+        expect(wrapper.html().includes('form')).not.to.be.true;
       });
 
     });
@@ -749,7 +749,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       silent: true
     });
 
-    expect(actionSpy).to.not.have.been.called;
+    expect(actionSpy).not.to.have.been.called;
     notification.content.props.onClick();
     expect(actionSpy).to.have.been.calledOnce;
 
@@ -1127,7 +1127,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       await instance.deploy();
 
       // then
-      expect(actionSpy).to.not.have.been.calledOnce;
+      expect(actionSpy).not.to.have.been.called;
     });
 
 
@@ -1284,7 +1284,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
       // then
       expect(actionSpy).to.have.been.calledOnce;
-      expect(deployedTo).to.not.exist;
+      expect(deployedTo).not.to.exist;
     });
 
 
@@ -1352,7 +1352,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       await instance.deploy();
 
       // then
-      expect(actionSpy).to.not.have.been.calledOnce;
+      expect(actionSpy).not.to.have.been.calledOnce;
     });
 
   });
