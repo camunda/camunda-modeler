@@ -28,6 +28,7 @@ describe('log', function() {
       expect(log.info).to.exist;
       expect(log.warn).to.exist;
       expect(log.error).to.exist;
+      expect(log.debug).to.exist;
     });
 
   });
@@ -46,7 +47,8 @@ describe('log', function() {
       const transport = sinon.stub({
         info() {},
         warn() {},
-        error() {}
+        error() {},
+        debug() {}
       });
 
       // then

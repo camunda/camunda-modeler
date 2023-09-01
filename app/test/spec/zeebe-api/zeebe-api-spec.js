@@ -1939,8 +1939,12 @@ function mockZeebeNode(options = {}) {
   const flags = options.flags || {
     get: () => {}
   };
-  const log = options.log || {
-    error() {}
+  const log = {
+    error() {},
+    debug() {},
+    warn() {},
+    info() {},
+    ...(options.log || {})
   };
 
   const ZeebeNode = {

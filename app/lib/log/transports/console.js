@@ -25,6 +25,10 @@ class ConsoleTransport {
   error(message) {
     this.log('error', message);
   }
+
+  debug(message) {
+    this.log('debug', message);
+  }
 }
 
 module.exports = ConsoleTransport;
