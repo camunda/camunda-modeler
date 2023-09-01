@@ -18,7 +18,8 @@ const { X509Certificate } = require('node:crypto');
 
 const {
   pick,
-  values
+  values,
+  reduce
 } = require('min-dash');
 
 const errorReasons = {
@@ -111,7 +112,9 @@ class ZeebeAPI {
       await client.topology();
       return { success: true };
     } catch (err) {
-      this._log.error('Failed to connect with config (secrets omitted):', withoutSecrets(parameters), err);
+      this._log.error('connection check failed', {
+        parameters: withoutSecrets(parameters)
+      }, err);
 
       return {
         success: false,
@@ -140,6 +143,10 @@ class ZeebeAPI {
       contents
     } = this._fs.readFile(filePath, { encoding: false });
 
+    this._log.debug('deploy', {
+      parameters: withoutSecrets(parameters)
+    });
+
     const client = await this._getZeebeClient(endpoint);
 
     try {
@@ -155,7 +162,7 @@ class ZeebeAPI {
         response: response
       };
     } catch (err) {
-      this._log.error('Failed to deploy with config (secrets omitted):', withoutSecrets(parameters), err);
+      this._log.error('deploy failed', withoutSecrets(parameters), err);
 
       return {
         success: false,
@@ -179,6 +186,10 @@ class ZeebeAPI {
       processId
     } = parameters;
 
+    this._log.debug('run', {
+      parameters: withoutSecrets(parameters)
+    });
+
     const client = await this._getZeebeClient(endpoint);
 
     try {
@@ -195,7 +206,9 @@ class ZeebeAPI {
         response: response
       };
     } catch (err) {
-      this._log.error('Failed to run instance with config (secrets omitted):', withoutSecrets(parameters), err);
+      this._log.error('run failed', {
+        parameters: withoutSecrets(parameters)
+      }, err);
 
       return {
         success: false,
@@ -217,6 +230,10 @@ class ZeebeAPI {
       endpoint
     } = parameters;
 
+    this._log.debug('fetch gateway version', {
+      parameters: withoutSecrets(parameters)
+    });
+
     const client = await this._getZeebeClient(endpoint);
 
     try {
@@ -229,7 +246,9 @@ class ZeebeAPI {
         }
       };
     } catch (err) {
-      this._log.error('Failed to connect with config (secrets omitted):', withoutSecrets(parameters), err);
+      this._log.error('fetch gateway version failed', {
+        parameters: withoutSecrets(parameters)
+      }, err);
 
       return {
         success: false,
@@ -310,6 +329,16 @@ class ZeebeAPI {
 
     options = await this._withTLSConfig(url, options);
     options = this._withPortConfig(url, options);
+
+    this._log.debug('creating client', {
+      url,
+      options: filterRecursive(options, [
+        'clientId:secret',
+        'clientSecret:secret',
+        'customRootCert:blob',
+        'rootCerts:blob'
+      ])
+    });
 
     return new this._ZeebeNode.ZBClient(url, options);
   }
@@ -439,7 +468,7 @@ class ZeebeAPI {
 
     } catch (err) {
 
-      this._log.error('Error happened preparing deployment name: ', err);
+      this._log.error('prepare deployment name failed', err);
     }
 
     return name;
@@ -514,11 +543,53 @@ function isHashEqual(parameter1, parameter2) {
 }
 
 function withoutSecrets(parameters) {
-  const endpoint = pick(parameters.endpoint, [ 'type', 'url', 'clientId', 'oauthURL' ]);
+
+  const endpointSecrets = [
+    'clientId',
+    'clientSecret',
+  ];
+
+  const endpoint = reduce(parameters.endpoint, (filteredEndpoint, value, key) => {
+
+    if (endpointSecrets.includes(key)) {
+      value = '******';
+    }
+
+    filteredEndpoint[key] = value;
+
+    return filteredEndpoint;
+  }, {});
 
   return { ...parameters, endpoint };
 }
 
 function asSerializedError(error) {
   return pick(error, [ 'message', 'code', 'details' ]);
+}
+
+function filterRecursive(obj, keys) {
+
+  const overrides = keys.reduce((overrides, name) => {
+    const [ key, type ] = name.split(':');
+
+    overrides[key] = type;
+
+    return overrides;
+  }, {});
+
+  return JSON.parse(
+    JSON.stringify(obj, (key, value) => {
+      const override = overrides[key];
+
+      if (override === 'secret') {
+        return '******';
+      }
+
+      if (override === 'blob') {
+        return '...';
+      }
+
+      return value;
+    })
+  );
 }
