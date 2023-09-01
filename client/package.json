@@ -62,7 +62,7 @@
     "react-dom": "^16.8.6",
     "scroll-tabs": "^1.0.1",
     "semver-compare": "^1.0.0",
-    "sourcemapped-stacktrace": "^1.1.9",
+    "sourcemapped-stacktrace": "^1.1.11",
     "ua-parser-js": "^1.0.0",
     "zeebe-bpmn-moddle": "^1.0.0"
   },
