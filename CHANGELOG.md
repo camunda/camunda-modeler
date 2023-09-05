@@ -16,14 +16,22 @@ ___Note:__ Yet to be released changes appear here._
 
 ### BPMN
 
-* `FEAT`: move "Call Activity" to "Sub Processes" group in options menu ([bpmn-js-create-append-anything#14](https://github.com/bpmn-io/bpmn-js-create-append-anything/pull/14))
+* `FEAT`: move _Call Activity_ to _Sub Processes_ group in options menu ([bpmn-js-create-append-anything#14](https://github.com/bpmn-io/bpmn-js-create-append-anything/pull/14))
 * `FEAT`: add _Input propagation_ group ([#3793](https://github.com/camunda/camunda-modeler/issues/3793))
 * `FEAT`: visually show deprecated templates in properties panel ([bpmn-js-element-templates#11](https://github.com/bpmn-io/bpmn-js-element-templates/issues/11))
 * `FEAT`: suggest variables from form schema ([#3780](https://github.com/camunda/camunda-modeler/issues/3780))
-* `FIX`: remove output group from error end events ([#3782](https://github.com/camunda/camunda-modeler/issues/3782))
-* `FIX`: show all FEEL errors in problems panel ([#3806](https://github.com/camunda/camunda-modeler/issues/3806))
+* `FIX`: remove _Outputs_ group from error end events ([#3782](https://github.com/camunda/camunda-modeler/issues/3782))
+* `FIX`: show all FEEL errors in _Problems_ panel ([#3806](https://github.com/camunda/camunda-modeler/issues/3806))
 * `CHORE`: example data is no longer scoped to the element that defines it ([#3728](https://github.com/camunda/camunda-modeler/issues/3728))
 
+### Linting
+
+* `FEAT`: add `no-loop` rule
+* `FEAT`: add `no-propagate-all-parent-variables` rule
+* `FEAT`: add `link-event` rule
+* `FEAT`: add `secrets` rule
+* `FEAT`: add `start-form` rule ([#75](https://github.com/camunda/linting/pull/75))
+* `FEAT`: add documentation links to problems ([#74](https://github.com/camunda/linting/pull/74))
 ## 5.14.0
 
 ### General
