@@ -9,7 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `DEPS` update to @bpmn-io/properties-panel@3.4.0
-* `DEPS` update to @camunda/linting@3.6.0
+* `DEPS` update to @camunda/linting@3.7.0
 * `DEPS` update to bpmn-js-element-templates@1.4.0
 * `DEPS` update to bpmn-js-properties-panel@5.1.0
 * `DEPS` update to camunda-bpmn-js@3.2.0
