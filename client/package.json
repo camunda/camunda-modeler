@@ -14,7 +14,7 @@
     "@bpmn-io/properties-panel": "^3.4.0",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@camunda/execution-platform": "^0.3.2",
-    "@camunda/form-linting": "^0.10.0",
+    "@camunda/form-linting": "^0.11.0",
     "@camunda/form-playground": "^0.8.0",
     "@camunda/linting": "^3.7.0",
     "@codemirror/commands": "^6.1.3",
