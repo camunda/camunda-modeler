@@ -29,7 +29,10 @@ const config = {
   plugins: [
     new IgnorePlugin({
       checkResource(resource) {
-        if (process.platform !== 'win32' && /^vscode-windows-ca-certs/.test(resource)) {
+
+        // WONTFIX(barmac): ignore C++ modules for now
+        // they are added to the license book through optional-dependencies.js
+        if (/^vscode-windows-ca-certs/.test(resource)) {
           return true;
         }
 
