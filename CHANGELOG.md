@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.15.0
+
 ### General
 
 * `DEPS` update to @bpmn-io/properties-panel@3.4.0
@@ -20,6 +22,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add _Input propagation_ group ([#3793](https://github.com/camunda/camunda-modeler/issues/3793))
 * `FEAT`: visually show deprecated templates in properties panel ([bpmn-js-element-templates#11](https://github.com/bpmn-io/bpmn-js-element-templates/issues/11))
 * `FEAT`: suggest variables from form schema ([#3780](https://github.com/camunda/camunda-modeler/issues/3780))
+* `FEAT`: do not hide overlays on canvas move per default ([bpmn-io/diagram-js#798](https://github.com/bpmn-io/diagram-js/issues/798))
+* `FIX`: allow to create connection + event-based gateway ([bpmn-io/bpmn-js#1490](https://github.com/bpmn-io/bpmn-js/issues/1490))
+* `FIX`: correct copy of default sequence flow elements ([bpmn-io/bpmn-js#1935](https://github.com/bpmn-io/bpmn-js/issues/1935))
+* `FIX`: make breadcrumb styling more robust ([bpmn-io/bpmn-js#1945](https://github.com/bpmn-io/bpmn-js/pull/1945))
 * `FIX`: remove _Outputs_ group from error end events ([#3782](https://github.com/camunda/camunda-modeler/issues/3782))
 * `FIX`: show all FEEL errors in _Problems_ panel ([#3806](https://github.com/camunda/camunda-modeler/issues/3806))
 * `CHORE`: example data is no longer scoped to the element that defines it ([#3728](https://github.com/camunda/camunda-modeler/issues/3728))
