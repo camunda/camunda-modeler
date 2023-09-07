@@ -44,16 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Tooltips in the properties panel</h4>
-          With this update, explanation and hints for BPMN elements are now presented as tooltips instead of in-line text in the Properties Panel. This makes it easier to access relevant information while designing your process models.
+          <h4>Validation improvements</h4>
+          Errors shown in the Problems panel now link to relevant documentation making it easier to understand the error and how to fix it.
         </li>
         <li>
-          <h4>Element template errors in the problems panel</h4>
-          Element Template errors are now also shown in the Problems panel, so you can conveniently view all errors across your entire diagram in one consolidated place.
+          <h4>FEEL editor autocomplete for forms</h4>
+          Variables defined in the context of an embedded form are now available in the FEEL editor autocomplete.
         </li>
         <li>
-          <h4>New functionality for forms</h4>
-          In this release, we've implemented various enhancements to form-js. For example, you can take advantage of the new spacer element to better organize your forms. Check out the full changelog <a href="https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md#5140">here</a>.
+          <h4>Deprecation of element templates</h4>
+          Element templates marked as deprecated are now indicated as such in the properties panel.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
