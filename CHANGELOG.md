@@ -12,7 +12,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS` update to @camunda/linting@3.7.0
 * `DEPS` update to bpmn-js-element-templates@1.4.0
 * `DEPS` update to bpmn-js-properties-panel@5.1.0
-* `DEPS` update to camunda-bpmn-js@3.2.0
+* `DEPS` update to camunda-bpmn-js@3.3.0
 
 ### BPMN
 
@@ -32,6 +32,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add `secrets` rule
 * `FEAT`: add `start-form` rule ([#75](https://github.com/camunda/linting/pull/75))
 * `FEAT`: add documentation links to problems ([#74](https://github.com/camunda/linting/pull/74))
+
 ## 5.14.0
 
 ### General
