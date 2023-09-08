@@ -97,7 +97,7 @@ This project incorporates components from the projects listed below. The origina
 90.   epipebomb@1.0.0 (git://github.com/mhart/epipebomb.git)
 91.   @sindresorhus/is@0.15.0 (sindresorhus/is)
 92.   @camunda/form-playground@0.8.0 (git+https://github.com/camunda/form-playground.git)
-93.   @camunda/linting@3.7.0 (https://github.com/camunda/linting)
+93.   @camunda/linting@3.7.1 (https://github.com/camunda/linting)
 94.   camunda-bpmn-js@3.3.0 (https://github.com/camunda/camunda-bpmn-js)
 95.   camunda-dmn-js@1.1.0 (https://github.com/camunda/camunda-dmn-js)
 96.   css-loader@6.7.1 (webpack-contrib/css-loader)
@@ -141,7 +141,7 @@ This project incorporates components from the projects listed below. The origina
 134.  uuid@9.0.0 (https://github.com/uuidjs/uuid.git)
 135.  bpmn-js-properties-panel@5.1.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 136.  bpmn-js@14.0.0 (https://github.com/bpmn-io/bpmn-js)
-137.  bpmnlint-plugin-camunda-compat@2.7.0 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
+137.  bpmnlint-plugin-camunda-compat@2.7.1 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
 138.  classnames@2.3.1 (https://github.com/JedWatson/classnames.git)
 139.  ms@2.1.2 (zeit/ms)
 140.  debug@4.3.4 (git://github.com/debug-js/debug.git)
@@ -3321,7 +3321,7 @@ THE SOFTWARE.
 END OF @camunda/form-playground@0.8.0 NOTICES AND INFORMATION
 
 
-%% @camunda/linting@3.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/linting@3.7.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -3345,7 +3345,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/linting@3.7.0 NOTICES AND INFORMATION
+END OF @camunda/linting@3.7.1 NOTICES AND INFORMATION
 
 
 %% camunda-bpmn-js@3.3.0 NOTICES AND INFORMATION BEGIN HERE
@@ -4663,7 +4663,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 END OF bpmn-js@14.0.0 NOTICES AND INFORMATION
 
 
-%% bpmnlint-plugin-camunda-compat@2.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmnlint-plugin-camunda-compat@2.7.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -4687,7 +4687,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmnlint-plugin-camunda-compat@2.7.0 NOTICES AND INFORMATION
+END OF bpmnlint-plugin-camunda-compat@2.7.1 NOTICES AND INFORMATION
 
 
 %% classnames@2.3.1 NOTICES AND INFORMATION BEGIN HERE
