@@ -29,6 +29,9 @@ jobs:
     permissions:
       contents: write
 
+    env:
+      NODE_ENV: 'production'
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
