@@ -29,9 +29,6 @@ jobs:
     permissions:
       contents: write
 
-    env:
-      NODE_ENV: 'production'
-
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -56,6 +53,7 @@ jobs:
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
         GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        NODE_ENV: "production"
       run: npm run build -- --linux --publish
     - name: Build release (MacOS)
       if: ${{ runner.os == 'macOS' }}
@@ -73,6 +71,7 @@ jobs:
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
         GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        NODE_ENV: "production"
       run: npm run build -- --mac --publish
     - name: Build release (Windows)
       if: ${{ runner.os == 'Windows' }}
@@ -87,6 +86,7 @@ jobs:
         SENTRY_PROJECT: "${{ secrets.SENTRY_PROJECT }}"
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
         GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        NODE_ENV: "production"
       run: npm run build -- --win --publish
 
   Post_release:
