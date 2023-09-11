@@ -35,7 +35,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add `no-loop` rule
 * `FEAT`: add `no-propagate-all-parent-variables` rule
 * `FEAT`: add `link-event` rule
-* `FEAT`: add `secrets` rule
 * `FEAT`: add `start-form` rule ([#75](https://github.com/camunda/linting/pull/75))
 * `FEAT`: add documentation links to problems ([#74](https://github.com/camunda/linting/pull/74))
 
