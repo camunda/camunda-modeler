@@ -6,6 +6,15 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `DEPS`: update to bpmn-js-properties-panel@5.2.0
+* `DEPS`: update to camunda-bpmn-js@3.3.1
+
+### BPMN
+
+* `FEAT`: improve tooltip content ([bpmn-js-properties-panel#955](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/955))
+
 ## 5.15.0
 
 ### General
