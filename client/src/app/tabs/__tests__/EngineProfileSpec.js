@@ -199,14 +199,14 @@ describe('<EngineProfile>', function() {
 
       // given
       const inputs =
-      [ [ ENGINES.PLATFORM, '7.0', 'Camunda Platform 7.0' ],
-        [ ENGINES.PLATFORM, '7.14', 'Camunda Platform 7.14' ],
-        [ ENGINES.PLATFORM, '7.500', 'Camunda Platform 7.500 (alpha)' ],
-        [ ENGINES.PLATFORM, '', 'Camunda Platform 7' ],
-        [ ENGINES.CLOUD, '1.3', 'Camunda Platform 8 (Zeebe 1.3)' ],
-        [ ENGINES.CLOUD, '8.1', 'Camunda Platform 8.1' ],
-        [ ENGINES.CLOUD, '8.100', 'Camunda Platform 8.100 (alpha)' ],
-        [ ENGINES.CLOUD, '', 'Camunda Platform 8' ] ];
+      [ [ ENGINES.PLATFORM, '7.0', 'Camunda 7.0' ],
+        [ ENGINES.PLATFORM, '7.14', 'Camunda 7.14' ],
+        [ ENGINES.PLATFORM, '7.500', 'Camunda 7.500 (alpha)' ],
+        [ ENGINES.PLATFORM, '', 'Camunda 7' ],
+        [ ENGINES.CLOUD, '1.3', 'Camunda 8 (Zeebe 1.3)' ],
+        [ ENGINES.CLOUD, '8.1', 'Camunda 8.1' ],
+        [ ENGINES.CLOUD, '8.100', 'Camunda 8.100 (alpha)' ],
+        [ ENGINES.CLOUD, '', 'Camunda 8' ] ];
 
       // then
       inputs.forEach((input) => {

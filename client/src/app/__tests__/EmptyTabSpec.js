@@ -147,7 +147,7 @@ describe('<EmptyTab>', function() {
       expect(tree.find('.welcome-card')).to.have.length(3);
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda Platform 7')
+          wrapper => wrapper.text().startsWith('Camunda 7')
         ).exists()
       ).to.be.true;
     });
@@ -168,7 +168,7 @@ describe('<EmptyTab>', function() {
       expect(tree.find('.welcome-card')).to.have.length(2);
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda Platform 7')
+          wrapper => wrapper.text().startsWith('Camunda 7')
         ).exists()
       ).to.be.false;
     });
@@ -192,7 +192,7 @@ describe('<EmptyTab>', function() {
       expect(tree.find('.welcome-card')).to.have.length(3);
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda Platform 8')
+          wrapper => wrapper.text().startsWith('Camunda 8')
         ).exists()
       ).to.be.true;
     });
@@ -213,7 +213,7 @@ describe('<EmptyTab>', function() {
       expect(tree.find('.welcome-card')).to.have.length(2);
       expect(
         tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda Platform 8')
+          wrapper => wrapper.text().startsWith('Camunda 8')
         ).exists()
       ).to.be.false;
     });

@@ -252,11 +252,11 @@ export const ApiErrors = {
 
 export const ApiErrorMessages = {
   [ NO_INTERNET_CONNECTION ]: 'Could not establish a network connection.',
-  [ CONNECTION_FAILED ]: 'Should point to a running Camunda Platform REST API.',
+  [ CONNECTION_FAILED ]: 'Should point to a running Camunda REST API.',
   [ DIAGRAM_PARSE_ERROR ]: 'Server could not parse the diagram. Please check log for errors.',
   [ UNAUTHORIZED ]: 'Credentials do not match with the server.',
   [ FORBIDDEN ]: 'This user is not permitted to deploy. Please use different credentials or get this user enabled to deploy.',
-  [ NOT_FOUND ]: 'Should point to a running Camunda Platform REST API.',
+  [ NOT_FOUND ]: 'Should point to a running Camunda REST API.',
   [ INTERNAL_SERVER_ERROR ]: 'Camunda is reporting an error. Please check the server status.',
   [ UNAVAILABLE_ERROR ]: 'Camunda is reporting an error. Please check the server status.'
 };

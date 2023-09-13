@@ -649,19 +649,19 @@ describe('<FormEditor>', function() {
     }));
 
 
-    it('should show engine profile (Camunda Platform 7.16.0)', expectEngineProfile(engineProfileSchema, {
+    it('should show engine profile (Camunda 7.16.0)', expectEngineProfile(engineProfileSchema, {
       executionPlatform: 'Camunda Platform',
       executionPlatformVersion: '7.16.0'
     }));
 
 
-    it('should show engine profile (Camunda Platform 7.16)', expectEngineProfile(missingPatchEngineProfile, {
+    it('should show engine profile (Camunda 7.16)', expectEngineProfile(missingPatchEngineProfile, {
       executionPlatform: 'Camunda Platform',
       executionPlatformVersion: '7.16.0'
     }));
 
 
-    it('should show engine profile (Camunda Platform 7.16.1)', expectEngineProfile(patchEngineProfile, {
+    it('should show engine profile (Camunda 7.16.1)', expectEngineProfile(patchEngineProfile, {
       executionPlatform: 'Camunda Platform',
       executionPlatformVersion: '7.16.1'
     }));
