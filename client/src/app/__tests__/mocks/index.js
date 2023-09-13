@@ -140,7 +140,7 @@ export class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'BPMN diagram',
-            group: 'Camunda Platform 7',
+            group: 'Camunda 7',
             action: 'create-bpmn-diagram'
           } ];
         },
@@ -161,7 +161,7 @@ export class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'BPMN diagram',
-            group: 'Camunda Platform 8',
+            group: 'Camunda 8',
             action: 'create-cloud-bpmn-diagram'
           } ];
         },

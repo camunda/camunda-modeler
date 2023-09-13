@@ -256,9 +256,9 @@ export function getStatusBarLabel(engineProfile) {
   } else if (executionPlatformVersion.startsWith('1.')) {
     return `${ENGINE_LABELS[executionPlatform]} (Zeebe ${toSemverMinor(executionPlatformVersion)})`;
   } else if (isAlpha(executionPlatformVersion, executionPlatform)) {
-    return `Camunda Platform ${toSemverMinor(executionPlatformVersion)} (alpha)`;
+    return `Camunda ${toSemverMinor(executionPlatformVersion)} (alpha)`;
   } else {
-    return `Camunda Platform ${toSemverMinor(executionPlatformVersion)}`;
+    return `Camunda ${toSemverMinor(executionPlatformVersion)}`;
   }
 }
 

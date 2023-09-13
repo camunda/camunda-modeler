@@ -1986,19 +1986,19 @@ describe('<DmnEditor>', function() {
     }));
 
 
-    it('should show engine profile (Camunda Platform 7.16.0)', expectEngineProfile(engineProfileXML, {
+    it('should show engine profile (Camunda 7.16.0)', expectEngineProfile(engineProfileXML, {
       executionPlatform: 'Camunda Platform',
       executionPlatformVersion: '7.16.0'
     }));
 
 
-    it('should show engine profile (Camunda Platform 7.16)', expectEngineProfile(missingPatchEngineProfileXML, {
+    it('should show engine profile (Camunda 7.16)', expectEngineProfile(missingPatchEngineProfileXML, {
       executionPlatform: 'Camunda Platform',
       executionPlatformVersion: '7.16.0'
     }));
 
 
-    it('should show engine profile (Camunda Platform 7.16.1)', expectEngineProfile(patchEngineProfileXML, {
+    it('should show engine profile (Camunda 7.16.1)', expectEngineProfile(patchEngineProfileXML, {
       executionPlatform: 'Camunda Platform',
       executionPlatformVersion: '7.16.1'
     }));

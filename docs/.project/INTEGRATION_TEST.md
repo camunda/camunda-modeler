@@ -81,10 +81,10 @@ Based on the [test diagram](./test.bpmn.png):
 - [ ] add a regular expression (`^CAM-[0-9]+$`) to the invoice number field
 - [ ] save file on disk as `test.form`
 - [ ] file imports correctly after save
-- [ ] Set the **Execution Platform Version** to `Camunda Platform 8 (Zeebe 1.0)`
+- [ ] Set the **Execution Platform Version** to `Camunda 8 (Zeebe 1.0)`
   - [ ] 4 errors are shown: `Text`, `Number`, `Checkbox`, and `Radio` are not supported
   - [ ] Clicking on an error focuses the respective element
-- [ ] Set the **Execution Platform Version** to `Camunda Platform 8 (Zeebe 1.2)`
+- [ ] Set the **Execution Platform Version** to `Camunda 8 (Zeebe 1.2)`
   - [ ] 0 errors are shown
 
 #### BPMN + Camunda Forms deployment
