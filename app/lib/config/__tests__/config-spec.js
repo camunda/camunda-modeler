@@ -200,7 +200,7 @@ describe('Config', function() {
 
       // when
       expect(() => config.get('bpmn.elementTemplates', file))
-        .to.throw(/template .* parse error: Unexpected token I.*/);
+        .to.throw(/template .* parse error: Unexpected token 'I', "I AM NOT JSON!"*/);
     });
 
   });
