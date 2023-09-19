@@ -9,13 +9,10 @@
  */
 
 const path = require('path');
-const { globSync } = require('fast-glob');
 
 const log = require('./log')('app:plugins');
 
-const {
-  globFiles
-} = require('./util/files');
+const { globFiles } = require('./util/files');
 
 const PLUGINS_PATTERN = 'plugins/*/index.js';
 
@@ -42,9 +39,8 @@ class Plugins {
 
     log.info('searching for %s in paths %O', PLUGINS_PATTERN, searchPaths);
 
-    const pluginPaths = globFiles({
-      searchPaths,
-      pattern: PLUGINS_PATTERN
+    const pluginPaths = globFiles(PLUGINS_PATTERN, {
+      searchPaths
     });
 
     log.info('found plug-in entries %O', pluginPaths);
@@ -86,10 +82,9 @@ class Plugins {
         };
 
         if (style) {
-          const stylePath = path.join(base, style);
-          const styleFiles = globSync(stylePath, {
-            absolute: true
-          });
+          const stylePath = path.posix.join(base, style);
+
+          const styleFiles = globFiles(stylePath);
 
           if (!styleFiles.length) {
             plugin.error = true;
@@ -99,10 +94,9 @@ class Plugins {
         }
 
         if (script) {
-          const scriptPath = path.join(base, script);
-          const scriptFiles = globSync(scriptPath, {
-            absolute: true
-          });
+          const scriptPath = path.posix.join(base, script);
+
+          const scriptFiles = globFiles(scriptPath);
 
           if (!scriptFiles.length) {
             plugin.error = true;
