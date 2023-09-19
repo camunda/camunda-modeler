@@ -30,9 +30,8 @@ class Flags {
       config,
       files,
       errors
-    } = globJSON({
-      searchPaths,
-      pattern: FLAGS_PATTERN
+    } = globJSON(FLAGS_PATTERN, {
+      searchPaths
     });
 
     log.info('found %O', files);

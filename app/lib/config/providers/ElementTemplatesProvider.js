@@ -9,11 +9,12 @@
  */
 
 const fs = require('fs');
-const { globSync } = require('fast-glob');
 const parents = require('parents');
 const path = require('path');
 
 const { isArray } = require('min-dash');
+
+const { globFiles } = require('../../util/files');
 
 const log = require('../../log')('app:config:element-templates');
 
@@ -143,11 +144,7 @@ function getTemplatesForPath(path) {
  * @return {Array<string>}
  */
 function globTemplates(path) {
-  const globOptions = {
-    cwd: path,
-    onlyFiles: true,
-    absolute: true
-  };
-
-  return globSync('element-templates/**/*.json', globOptions);
+  return globFiles('element-templates/**/*.json', {
+    cwd: path
+  });
 }
