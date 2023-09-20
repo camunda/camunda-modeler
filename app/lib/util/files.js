@@ -122,7 +122,7 @@ function readFileAsJSON(file) {
  * @param {Object} [options]
  * @param {string[]} [options.searchPaths]
  * @param {boolean} [options.absolute=true]
- * @param {boolean} [options.nodir=true]
+ * @param {boolean} [options.onlyFiles=true]
  *
  * @return {string[]}
  */
