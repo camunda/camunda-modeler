@@ -58,7 +58,7 @@ export const CONNECTION_ERROR_MESSAGES = {
   [ ERROR_REASONS.CLUSTER_UNAVAILABLE ]: 'Cannot connect to Zeebe cluster.',
   [ ERROR_REASONS.UNAUTHORIZED ]: 'Credentials rejected by server.',
   [ ERROR_REASONS.FORBIDDEN ]: 'This user is not permitted to deploy. Please use different credentials or get this user enabled to deploy.',
-  [ ERROR_REASONS.OAUTH_URL ]: 'Cannot connect to OAuth service.',
+  [ ERROR_REASONS.OAUTH_URL ]: 'Cannot connect to OAuth token endpoint.',
   [ ERROR_REASONS.UNKNOWN ]: 'Unknown error. Please check Zeebe cluster status.',
   [ ERROR_REASONS.UNSUPPORTED_ENGINE ]: 'Unsupported Zeebe version.',
   [ ERROR_REASONS.INVALID_CLIENT_ID ]: 'Invalid Client ID.',
