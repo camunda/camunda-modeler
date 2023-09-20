@@ -50,12 +50,12 @@ describe('Plugins', function() {
       // then
       const registeredPlugins = plugins.getAll();
 
-      expect(registeredPlugins.map(p => p.name)).to.eql([
-        'broken-menu',
-        'ghost-paths',
-        'OK',
-        'with-script',
-        'with-style'
+      expect(registeredPlugins.map(({ name, error }) => [ name, error ])).to.eql([
+        [ 'broken-menu', true ],
+        [ 'ghost-paths', true ],
+        [ 'OK', undefined ],
+        [ 'with-script', undefined ],
+        [ 'with-style', undefined ]
       ]);
     });
 
