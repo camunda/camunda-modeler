@@ -74,26 +74,26 @@ This project incorporates components from the projects listed below. The origina
 67.   resolve-alpn@1.2.1 (git+https://github.com/szmarczak/resolve-alpn.git)
 68.   mri@1.2.0 (lukeed/mri)
 69.   min-dash@4.0.0 (git+https://github.com/bpmn-io/min-dash.git)
-70.   fast-glob@3.3.1 (mrmlnc/fast-glob)
-71.   glob-parent@5.1.2 (gulpjs/glob-parent)
-72.   is-glob@4.0.3 (micromatch/is-glob)
-73.   is-extglob@2.1.1 (jonschlinkert/is-extglob)
-74.   micromatch@4.0.5 (micromatch/micromatch)
-75.   braces@3.0.2 (micromatch/braces)
-76.   fill-range@7.0.1 (jonschlinkert/fill-range)
-77.   to-regex-range@5.0.1 (micromatch/to-regex-range)
-78.   is-number@7.0.0 (jonschlinkert/is-number)
-79.   picomatch@2.3.1 (micromatch/picomatch)
-80.   merge2@1.4.1 (git@github.com:teambition/merge2.git)
-81.   @nodelib/fs.walk@1.2.8 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk)
-82.   @nodelib/fs.scandir@2.1.5 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir)
-83.   @nodelib/fs.stat@2.0.5 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat)
-84.   run-parallel@1.2.0 (git://github.com/feross/run-parallel.git)
-85.   queue-microtask@1.2.3 (git://github.com/feross/queue-microtask.git)
-86.   fastq@1.13.0 (git+https://github.com/mcollina/fastq.git)
-87.   reusify@1.0.4 (git+https://github.com/mcollina/reusify.git)
-88.   parents@1.0.1 (git://github.com/substack/node-parents.git)
-89.   path-platform@0.11.15 (http://github.com/tjfontaine/node-path-platform.git)
+70.   parents@1.0.1 (git://github.com/substack/node-parents.git)
+71.   path-platform@0.11.15 (http://github.com/tjfontaine/node-path-platform.git)
+72.   fast-glob@3.3.1 (mrmlnc/fast-glob)
+73.   glob-parent@5.1.2 (gulpjs/glob-parent)
+74.   is-glob@4.0.3 (micromatch/is-glob)
+75.   is-extglob@2.1.1 (jonschlinkert/is-extglob)
+76.   micromatch@4.0.5 (micromatch/micromatch)
+77.   braces@3.0.2 (micromatch/braces)
+78.   fill-range@7.0.1 (jonschlinkert/fill-range)
+79.   to-regex-range@5.0.1 (micromatch/to-regex-range)
+80.   is-number@7.0.0 (jonschlinkert/is-number)
+81.   picomatch@2.3.1 (micromatch/picomatch)
+82.   merge2@1.4.1 (git@github.com:teambition/merge2.git)
+83.   @nodelib/fs.walk@1.2.8 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk)
+84.   @nodelib/fs.scandir@2.1.5 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir)
+85.   @nodelib/fs.stat@2.0.5 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat)
+86.   run-parallel@1.2.0 (git://github.com/feross/run-parallel.git)
+87.   queue-microtask@1.2.3 (git://github.com/feross/queue-microtask.git)
+88.   fastq@1.13.0 (git+https://github.com/mcollina/fastq.git)
+89.   reusify@1.0.4 (git+https://github.com/mcollina/reusify.git)
 90.   epipebomb@1.0.0 (git://github.com/mhart/epipebomb.git)
 91.   deepmerge@2.2.1 (git://github.com/KyleAMathews/deepmerge.git)
 92.   drag-tabs@2.3.0 (git+ssh://git@github.com/bpmn-io/drag-tabs.git)
@@ -2738,6 +2738,41 @@ THE SOFTWARE.
 END OF min-dash@4.0.0 NOTICES AND INFORMATION
 
 
+%% parents@1.0.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+This software is released under the MIT license:
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF parents@1.0.1 NOTICES AND INFORMATION
+
+
+%% path-platform@0.11.15 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT -- see https://github.com/joyent/node for license
+
+This file is pulled directly from Node.js
+
+==========================================
+END OF path-platform@0.11.15 NOTICES AND INFORMATION
+
+
 %% fast-glob@3.3.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
@@ -3225,41 +3260,6 @@ SOFTWARE.
 
 ==========================================
 END OF reusify@1.0.4 NOTICES AND INFORMATION
-
-
-%% parents@1.0.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-This software is released under the MIT license:
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF parents@1.0.1 NOTICES AND INFORMATION
-
-
-%% path-platform@0.11.15 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT -- see https://github.com/joyent/node for license
-
-This file is pulled directly from Node.js
-
-==========================================
-END OF path-platform@0.11.15 NOTICES AND INFORMATION
 
 
 %% epipebomb@1.0.0 NOTICES AND INFORMATION BEGIN HERE
