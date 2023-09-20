@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.15.1
+
+* `FIX`: fix element templates and plugins not found error on Windows ([#3863](https://github.com/camunda/camunda-modeler/pull/3863))
+
 ## 5.15.0
 
 ### General
