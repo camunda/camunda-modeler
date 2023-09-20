@@ -121,7 +121,10 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
           { CONNECTION_ERROR_MESSAGES[failureReason] } <a href={ TROUBLESHOOTING_URL }>Troubleshoot</a>
         </>;
     case ERROR_REASONS.CLUSTER_UNAVAILABLE:
-      return fieldName === 'camundaCloudClusterUrl' && CONNECTION_ERROR_MESSAGES[failureReason];
+      return fieldName === 'camundaCloudClusterUrl' &&
+        <>
+          { CONNECTION_ERROR_MESSAGES[failureReason] } <a href={ TROUBLESHOOTING_URL }>Troubleshoot</a>
+        </>;
     case ERROR_REASONS.UNSUPPORTED_ENGINE:
       return [
         'contactPoint',
@@ -143,7 +146,10 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
         'contactPoint',
         'camundaCloudClusterUrl',
         'oauthURL'
-      ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
+      ].includes(fieldName) &&
+        <>
+          { CONNECTION_ERROR_MESSAGES[failureReason] } <a href={ TROUBLESHOOTING_URL }>Troubleshoot</a>
+        </>;
     case ERROR_REASONS.INVALID_CLIENT_ID:
       return fieldName === 'camundaCloudClientId' && CONNECTION_ERROR_MESSAGES[failureReason];
     case ERROR_REASONS.INVALID_CREDENTIALS:
