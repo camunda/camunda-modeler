@@ -134,6 +134,7 @@ function globFiles(pattern, options = {}) {
 
   const {
     searchPaths,
+    cwd,
     ...otherOptions
   } = options;
 
@@ -141,22 +142,22 @@ function globFiles(pattern, options = {}) {
     return searchPaths.reduce((paths, searchPath) => {
       return [
         ...paths,
-        ...globSync(toPosixPath(pattern), {
-          ...defaultOptions,
+        ...globFiles(pattern, {
           ...otherOptions,
-          cwd: toPosixPath(searchPath)
-        }).map(toPosixPath)
+          cwd: searchPath
+        })
       ];
     }, []);
   }
 
-  if (otherOptions.cwd) {
-    otherOptions.cwd = toPosixPath(otherOptions.cwd);
-  }
+  const cwdOptions = cwd
+    ? { cwd: toPosixPath(cwd) }
+    : {};
 
   return globSync(toPosixPath(pattern), {
     ...defaultOptions,
-    ...otherOptions
+    ...otherOptions,
+    ...cwdOptions
   }).map(toPosixPath);
 }
 
