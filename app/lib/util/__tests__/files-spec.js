@@ -12,7 +12,8 @@ const path = require('path');
 
 const {
   globJSON,
-  globFiles
+  globFiles,
+  toPosixPath
 } = require('../files');
 
 
@@ -20,13 +21,12 @@ describe('files', function() {
 
   describe('#globJSON', function() {
 
-    it('should load by name', function() {
+    it('should read given file name', function() {
 
       // when
-      const { config } = globJSON({
-        name: 'config.json',
+      const { config } = globJSON('config.json', {
         searchPaths: [
-          absPath('files/bar')
+          toAbsolutePath('files/bar')
         ]
       });
 
@@ -35,13 +35,12 @@ describe('files', function() {
     });
 
 
-    it('should load by pattern', function() {
+    it('should read given pattern', function() {
 
       // when
-      const { config } = globJSON({
-        name: '**/config.json',
+      const { config } = globJSON('**/config.json', {
         searchPaths: [
-          absPath('files')
+          toAbsolutePath('files')
         ]
       });
 
@@ -56,10 +55,9 @@ describe('files', function() {
     it('should consider defaults', function() {
 
       // when
-      const { config } = globJSON({
-        name: 'config.json',
+      const { config } = globJSON('config.json', {
         searchPaths: [
-          absPath('files/bar')
+          toAbsolutePath('files/bar')
         ],
         defaults: {
           foo: 'default FOO',
@@ -78,10 +76,9 @@ describe('files', function() {
     it('should handle errors gracefully', function() {
 
       // when
-      const { config } = globJSON({
-        name: '**/*-json.json',
+      const { config } = globJSON('**/*-json.json', {
         searchPaths: [
-          absPath('files')
+          toAbsolutePath('files')
         ]
       });
 
@@ -99,17 +96,16 @@ describe('files', function() {
     it('should find files by pattern', function() {
 
       // when
-      const files = globFiles({
-        pattern: '**/*-json.json',
+      const files = globFiles('**/*-json.json', {
         searchPaths: [
-          absPath('files')
+          toAbsolutePath('files')
         ]
       });
 
       // then
       expect(files).to.eql([
-        absPath('files/bar/good-json.json'),
-        absPath('files/foo/not-json.json')
+        toAbsolutePath('files/bar/good-json.json'),
+        toAbsolutePath('files/foo/not-json.json')
       ]);
 
     });
@@ -119,6 +115,6 @@ describe('files', function() {
 });
 
 
-function absPath(file) {
-  return path.resolve(__dirname, file);
+function toAbsolutePath(file) {
+  return toPosixPath(path.resolve(__dirname, file));
 }

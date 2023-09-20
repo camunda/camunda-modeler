@@ -13,34 +13,45 @@ const { globSync } = require('fast-glob');
 const path = require('path');
 const fs = require('fs');
 
+const { merge } = require('min-dash');
+
 /**
- * Load JSON configuration from multiple paths.
+ * Find JSON files in one or more paths. Return the merged result, the files
+ * that were read and errors that occurred. Optionally, provide defaults that
+ * will be merged into the result.
+ *
+ * @param {string} pattern
+ * @param {Object} [options]
+ * @param {string[]} [options.searchPaths]
+ * @param {Object} [options.defaults]
  *
  * @example
  *
  * const {
+ *   config,
  *   errors,
- *   files,
- *   config
- * } = globJSON({
- *   name: 'config.json',
- *   searchPaths: [ __dirname, process.cwd() ]
+ *   files
+ * } = globJSON('config.json', {
+ *   searchPaths: [
+ *     __dirname,
+ *     process.cwd()
+ *   ]
  * });
  *
- * @return { config, files, errors }
+ * @return { {
+ *   config: Object,
+ *   errors: Error[],
+ *   files: string[]
+ * } }
  */
-function globJSON(options) {
-
+function globJSON(pattern, options) {
   const {
-    name,
-    pattern,
     searchPaths,
-    defaults
+    defaults = {}
   } = options;
 
-  const files = globFiles({
-    searchPaths,
-    pattern: name || pattern
+  const files = globFiles(pattern, {
+    searchPaths
   });
 
   const {
@@ -59,10 +70,6 @@ function globJSON(options) {
 
 module.exports.globJSON = globJSON;
 
-
-function merge(...objects) {
-  return Object.assign({}, ...objects);
-}
 
 /**
  * Read the given files and return { contents: [], errors: [] }.
@@ -99,7 +106,6 @@ module.exports.readJSON = readJSON;
 
 
 function readFileAsJSON(file) {
-
   try {
     const contents = fs.readFileSync(file, { encoding: 'UTF-8' });
 
@@ -110,35 +116,55 @@ function readFileAsJSON(file) {
 }
 
 /**
- * Find files by pattern in a list of search paths.
+ * Find files matching a given pattern in one or more search paths.
  *
- * @param {Object} options
- * @param {Array<string>} options.searchPaths
- * @param {string} options.pattern
+ * @param {string} pattern
+ * @param {Object} [options]
+ * @param {string[]} [options.searchPaths]
+ * @param {boolean} [options.absolute=true]
+ * @param {boolean} [options.onlyFiles=true]
  *
- * @return {Array<string>} list of found, absolute path names
+ * @return {string[]}
  */
-function globFiles(options) {
+function globFiles(pattern, options = {}) {
+  const defaultOptions = {
+    absolute: true,
+    onlyFiles: true
+  };
 
   const {
     searchPaths,
-    pattern
+    cwd,
+    ...otherOptions
   } = options;
 
-  return searchPaths.reduce((paths, searchPath) => {
+  if (searchPaths) {
+    return searchPaths.reduce((paths, searchPath) => {
+      return [
+        ...paths,
+        ...globFiles(pattern, {
+          ...otherOptions,
+          cwd: searchPath
+        })
+      ];
+    }, []);
+  }
 
-    const newPaths = globSync(pattern, {
-      cwd: searchPath,
-      nodir: true,
-      absolute: true
-    }).map(p => p.split(path.posix.sep).join(path.sep));
+  const cwdOptions = cwd
+    ? { cwd: toPosixPath(cwd) }
+    : {};
 
-    return [
-      ...paths,
-      ...newPaths
-    ];
-  }, []);
-
+  return globSync(toPosixPath(pattern), {
+    ...defaultOptions,
+    ...otherOptions,
+    ...cwdOptions
+  }).map(toPosixPath);
 }
 
 module.exports.globFiles = globFiles;
+
+function toPosixPath(filePath) {
+  return filePath.split(path.sep).join(path.posix.sep);
+}
+
+module.exports.toPosixPath = toPosixPath;
