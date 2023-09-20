@@ -133,14 +133,16 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
         'clientId',
         'clientSecret',
         'camundaCloudClientId',
-        'camundaCloudClientSecret'
+        'camundaCloudClientSecret',
+        'audience'
       ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
     case ERROR_REASONS.OAUTH_URL:
       return fieldName === 'oauthURL' && CONNECTION_ERROR_MESSAGES[failureReason];
     case ERROR_REASONS.UNKNOWN:
       return [
         'contactPoint',
-        'camundaCloudClusterUrl'
+        'camundaCloudClusterUrl',
+        'oauthURL'
       ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
     case ERROR_REASONS.INVALID_CLIENT_ID:
       return fieldName === 'camundaCloudClientId' && CONNECTION_ERROR_MESSAGES[failureReason];
