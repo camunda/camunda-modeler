@@ -157,6 +157,60 @@ describe('ZeebeAPI', function() {
       });
 
 
+      it('for <endpoint-unavailable> (self-managed)', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('Error: 13 INTERNAL:');
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.checkConnection(parameters);
+
+        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
+      });
+
+
+      it('for <endpoint-unavailable> (self-managed)', async () => {
+
+        // given
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              topology: function() {
+                throw new NetworkError('Error: 14 UNAVAILABLE:');
+              }
+            };
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.checkConnection(parameters);
+
+        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
+      });
+
+
       it('for <not-found>', async () => {
 
         // given

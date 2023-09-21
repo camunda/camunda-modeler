@@ -480,11 +480,26 @@ module.exports = ZeebeAPI;
 
 // helpers //////////////////////
 
+/**
+ * @param {string} message
+ * @return {number|undefined}
+ */
+function getErrorCode(message) {
+
+  if (message.includes('13 INTERNAL:')) {
+    return 13;
+  }
+
+  if (message.includes('14 UNAVAILABLE:')) {
+    return 14;
+  }
+}
+
 function getErrorReason(error, endpoint) {
 
   const {
-    code,
-    message
+    message,
+    code = message && getErrorCode(message)
   } = error;
 
   const {
@@ -492,13 +507,10 @@ function getErrorReason(error, endpoint) {
   } = endpoint;
 
   // (1) handle grpc errors
-  if (code === 14) {
-    return (type === endpointTypes.CAMUNDA_CLOUD
+  if (code === 14 || code === 13) {
+    return type === endpointTypes.CAMUNDA_CLOUD
       ? errorReasons.CLUSTER_UNAVAILABLE
-      : errorReasons.CONTACT_POINT_UNAVAILABLE
-    );
-  } else if (code === 13 && type === endpointTypes.CAMUNDA_CLOUD) {
-    return errorReasons.CLUSTER_UNAVAILABLE;
+      : errorReasons.CONTACT_POINT_UNAVAILABLE;
   } else if (code === 12) {
     return errorReasons.UNSUPPORTED_ENGINE;
   }
