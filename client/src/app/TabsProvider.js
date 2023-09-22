@@ -203,6 +203,7 @@ export default class TabsProvider {
 
           return new BpmnLinter({
             modeler: 'desktop',
+            type: 'cloud',
             plugins: [
               ...plugins,
               CloudElementTemplatesLinterPlugin(cloudTemplates)
@@ -247,6 +248,7 @@ export default class TabsProvider {
         getLinter(plugins) {
           return new BpmnLinter({
             modeler: 'desktop',
+            type: 'platform',
             plugins
           });
         }
