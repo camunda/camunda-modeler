@@ -29,6 +29,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: use FEEL editor in decision table cell editor ([bpmn-io/dmn-js#774](https://github.com/bpmn-io/dmn-js/issues/774))
 * `FEAT`: use FEEL editor in decision table input expression ([bpmn-io/dmn-js#768](https://github.com/bpmn-io/dmn-js/issues/768))
+* `FEAT`: render FEEL expressions in tables as `monospace` font
 * `FIX`: increase decision table cell editor line height
 
 ## 5.15.1
