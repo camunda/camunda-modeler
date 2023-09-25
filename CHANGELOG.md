@@ -10,10 +10,19 @@ ___Note:__ Yet to be released changes appear here._
 
 * `DEPS`: update to bpmn-js-properties-panel@5.2.0
 * `DEPS`: update to camunda-bpmn-js@3.3.1
+* `DEPS`: update to form-js@1.3.0
+* `DEPS`: update to form-linting@0.11.0
+* `DEPS`: update to form-playground@0.9.0
 
 ### BPMN
 
 * `FEAT`: improve tooltip content ([bpmn-js-properties-panel#955](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/955))
+
+### Forms
+
+* `FEAT`: support group component ([bpmn-io/form-js#768](https://github.com/bpmn-io/form-js/pull/768))
+* `FEAT`: support nested component keys ([bpmn-io/form-js#464](https://github.com/bpmn-io/form-js/issues/464))
+* `FEAT`: add placeholder on empty form input panel ([bpmn-io/form-js#773](https://github.com/bpmn-io/form-js/pull/773))
 
 ## 5.15.1
 
