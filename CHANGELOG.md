@@ -13,6 +13,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to form-js@1.3.0
 * `DEPS`: update to form-linting@0.11.0
 * `DEPS`: update to form-playground@0.9.0
+* `DEPS`: update to camunda-dmn-js@1.2.1
 
 ### BPMN
 
@@ -23,6 +24,12 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: support group component ([bpmn-io/form-js#768](https://github.com/bpmn-io/form-js/pull/768))
 * `FEAT`: support nested component keys ([bpmn-io/form-js#464](https://github.com/bpmn-io/form-js/issues/464))
 * `FEAT`: add placeholder on empty form input panel ([bpmn-io/form-js#773](https://github.com/bpmn-io/form-js/pull/773))
+
+### DMN
+
+* `FEAT`: use FEEL editor in decision table cell editor ([bpmn-io/dmn-js#774](https://github.com/bpmn-io/dmn-js/issues/774))
+* `FEAT`: use FEEL editor in decision table input expression ([bpmn-io/dmn-js#768](https://github.com/bpmn-io/dmn-js/issues/768))
+* `FIX`: increase decision table cell editor line height
 
 ## 5.15.1
 
