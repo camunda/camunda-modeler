@@ -8,6 +8,10 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: make OAuth URL in deploy dialog more explicit ([#3868](https://github.com/camunda/camunda-modeler/pull/3868))
+* `FEAT`: drop missleading audience hint in deploy dialog ([#3864](https://github.com/camunda/camunda-modeler/issues/3864))
+* `FEAT`: improve error messages shown in deploy dialog ([#3808](https://github.com/camunda/camunda-modeler/issues/3808), [#3873](https://github.com/camunda/camunda-modeler/pull/3873))
+* `FEAT`: mark `8.3` as stable ([#3882](https://github.com/camunda/camunda-modeler/issues/3882))
 * `DEPS`: update to bpmn-js-properties-panel@5.8.0
 * `DEPS`: update to camunda-bpmn-js@3.4.0
 * `DEPS`: update to camunda-dmn-js@1.2.1
@@ -17,9 +21,13 @@ ___Note:__ Yet to be released changes appear here._
 
 ### BPMN
 
+* `FEAT`: support signal catch events for Camunda 8 ([#3819](https://github.com/camunda/camunda-modeler/issues/3819))
 * `FEAT`: improve tooltip content ([bpmn-js-properties-panel#955](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/955))
+* `FEAT`: warn on deprecated secrets format ([#3834](https://github.com/camunda/camunda-modeler/issues/3834))
+* `FIX`: correct FEEL error switching ([#3845](https://github.com/camunda/camunda-modeler/issues/3845))
 * `FIX`: correct dirty marker not updating ([#3815](https://github.com/camunda/camunda-modeler/issues/3815))
-
+* `FIX`: correct HTTL incorrectly reported as error ([#3853](https://github.com/camunda/camunda-modeler/issues/3853))
+* 
 ### Forms
 
 * `FEAT`: support group component ([bpmn-io/form-js#768](https://github.com/bpmn-io/form-js/pull/768))
