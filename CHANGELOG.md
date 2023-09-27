@@ -8,16 +8,17 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `DEPS`: update to bpmn-js-properties-panel@5.2.0
-* `DEPS`: update to camunda-bpmn-js@3.3.1
+* `DEPS`: update to bpmn-js-properties-panel@5.8.0
+* `DEPS`: update to camunda-bpmn-js@3.4.0
+* `DEPS`: update to camunda-dmn-js@1.2.1
 * `DEPS`: update to form-js@1.3.0
 * `DEPS`: update to form-linting@0.11.0
 * `DEPS`: update to form-playground@0.9.0
-* `DEPS`: update to camunda-dmn-js@1.2.1
 
 ### BPMN
 
 * `FEAT`: improve tooltip content ([bpmn-js-properties-panel#955](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/955))
+* `FIX`: correct dirty marker not updating ([#3815](https://github.com/camunda/camunda-modeler/issues/3815))
 
 ### Forms
 
