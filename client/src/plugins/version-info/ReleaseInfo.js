@@ -44,20 +44,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Validation improvements</h4>
-          Errors shown in the Problems panel now link to relevant documentation making it easier to understand the error and how to fix it.
+          <h4>Forms improvements</h4>
+          Added a group component and support for nested data (form keys).
         </li>
         <li>
-          <h4>FEEL editor autocomplete for forms</h4>
-          Variables defined in the context of an embedded form are now available in the FEEL editor autocomplete.
+          <h4>FEEL tooling inside the DMN editor</h4>
+          Integrated inside the DMN editor, our FEEL tooling helps you to create better decision tables faster.
         </li>
         <li>
-          <h4>Deprecation of element templates</h4>
-          Element templates marked as deprecated are now indicated as such in the properties panel.
+          <h4>A better deploy experience</h4>
+          The deploy tool ships with improved UI and error handling, providing more useful feedback when things go awry.
         </li>
         <li>
-          <h4>Bug fixes and more</h4>
-          As always, this release incorporates bug fixes and additional minor improvements.
+          <h4>Improved Camunda 8 coverage, bug fixes, and more</h4>
+          Added support for signal events, a new Camunda 8 feature. As always, this release incorporates bug fixes and additional minor improvements.
         </li>
       </ul>
     </div>
