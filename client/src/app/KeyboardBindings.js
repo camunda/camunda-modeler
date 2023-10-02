@@ -21,6 +21,7 @@ import {
   omit
 } from 'min-dash';
 
+import { active as isInputActive } from '../util/dom/isInput';
 
 /**
  * Fixes issues with Electron applications on Linux, Windows and Mac. Checks for
@@ -86,6 +87,7 @@ export default class KeyboardBindings {
   }
 
   _keyDownHandler = (event) => {
+    if (isInputActive()) return;
     let action = null;
 
     const {
@@ -165,6 +167,7 @@ export default class KeyboardBindings {
   };
 
   _keyPressHandler = (event) => {
+    if (isInputActive()) return;
     let action = null;
 
     const { onAction } = this;
@@ -186,6 +189,7 @@ export default class KeyboardBindings {
   };
 
   _keyUpHandler = (event) => {
+    if (isInputActive()) return;
     let action = null;
 
     const { onAction } = this;
