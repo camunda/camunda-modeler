@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.16.0
+
 ### General
 
 * `FEAT`: make OAuth URL in deploy dialog more explicit ([#3868](https://github.com/camunda/camunda-modeler/pull/3868))
@@ -27,7 +29,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correct FEEL error switching ([#3845](https://github.com/camunda/camunda-modeler/issues/3845))
 * `FIX`: correct dirty marker not updating ([#3815](https://github.com/camunda/camunda-modeler/issues/3815))
 * `FIX`: correct HTTL incorrectly reported as error ([#3853](https://github.com/camunda/camunda-modeler/issues/3853))
-* 
+*
 ### Forms
 
 * `FEAT`: support group component ([bpmn-io/form-js#768](https://github.com/bpmn-io/form-js/pull/768))
@@ -40,6 +42,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: use FEEL editor in decision table input expression ([bpmn-io/dmn-js#768](https://github.com/bpmn-io/dmn-js/issues/768))
 * `FEAT`: render FEEL expressions in tables as `monospace` font
 * `FIX`: increase decision table cell editor line height
+
+## 5.15.2
+
+* `DEPS`: fix `npm audit` warnings (includes a fix for CVE-2023-4863)
 
 ## 5.15.1
 
