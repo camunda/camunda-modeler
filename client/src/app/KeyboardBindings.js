@@ -86,6 +86,7 @@ export default class KeyboardBindings {
   }
 
   _keyDownHandler = (event) => {
+    if (keyHandlerExceptions(event)) return;
     let action = null;
 
     const {
@@ -165,6 +166,7 @@ export default class KeyboardBindings {
   };
 
   _keyPressHandler = (event) => {
+    if (keyHandlerExceptions(event)) return;
     let action = null;
 
     const { onAction } = this;
@@ -186,6 +188,7 @@ export default class KeyboardBindings {
   };
 
   _keyUpHandler = (event) => {
+    if (keyHandlerExceptions(event)) return;
     let action = null;
 
     const { onAction } = this;
@@ -493,4 +496,8 @@ function getCustomEntries(menu) {
   return findAll(menu, entry => {
     return entry.custom;
   });
+}
+
+function keyHandlerExceptions(event) {
+  return (event.target.tagName === 'INPUT');
 }
