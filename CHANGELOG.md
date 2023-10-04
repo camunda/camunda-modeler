@@ -45,7 +45,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 5.15.2
 
-* `DEPS`: fix `npm audit` warnings (includes a fix for CVE-2023-4863)
+* `DEPS`: fix `npm audit` warnings (includes a fix for [CVE-2023-4863](https://nvd.nist.gov/vuln/detail/CVE-2023-4863))
 
 ## 5.15.1
 
