@@ -68,14 +68,9 @@ export default function LintingTab(props) {
         )
       }
       {
-        sortReports(reports).map((report => {
-          const {
-            id,
-            message
-          } = report;
-
+        sortReports(reports).map(((report, index) => {
           return <LintingTabItem
-            key={ `${ id }-${ message }` }
+            key={ index }
             report={ report }
             onClick={ onClick(report) }
           />;
