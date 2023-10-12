@@ -1,14 +1,47 @@
 name: Release Issue
 on:
   issues:
-    types: [closed]
+    types: [closed, assigned]
 jobs:
   createReleaseIssue:
     runs-on: ubuntu-latest
+    name: Create new Release Issue
+    if: | 
+      contains(github.event.issue.labels.*.name, 'release') &&
+      github.event.action == 'closed'
+    outputs:
+      assignee: ${{ steps.createReleaseIssue.outputs.assignee }}
     steps:
-     - if: contains(github.event.issue.labels.*.name, 'release')
-       name: Create new Release Issue
-       uses: bpmn-io/actions/release-issue@latest
-       with:
-         template-path: 'docs/.project/RELEASE_TEMPLATE.md'
-         package-path: 'app/package.json'
+    - id: createReleaseIssue
+      name: Create new Release Issue
+      uses: bpmn-io/actions/release-issue@latest
+      with:
+        template-path: 'docs/.project/RELEASE_TEMPLATE.md'
+        package-path: 'app/package.json'
+
+  updateSlackRole:
+    if: contains(github.event.issue.labels.*.name, 'release')
+    name: Sync Slack roles
+    needs: createReleaseIssue
+    steps:
+    - name: Import Secrets
+      id: secrets
+      uses: hashicorp/vault-action@v2.4.3
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/products/desktop-modeler/ci/slack_integration RELEASE_MANAGER_GROUP_ID;
+          secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
+          secret/data/products/desktop-modeler/ci/slack_integration TEAM_MEMBER_IDS;
+    - name: Update slack
+      env: 
+        BOT_TOKEN: ${{ steps.secrets.outputs.SLACK_BOT_TOKEN }}
+        GROUP_ID: ${{ steps.secrets.outputs.RELEASE_MANAGER_GROUP_ID }}
+        # User ID is either the assignee from the newly created issue or the new assigned from the `assigned` trigger
+        USER_ID: ${{ fromJSON(steps.secrets.outputs.TEAM_MEMBER_IDS)[ needs.createReleaseIssue.outputs.assignee || github.event.issue.assignee.login ] }}
+      run: |
+        curl -X POST -H "application/x-www-form-urlencoded" -d "token=${BOT_TOKEN}&usergroup=${GROUP_ID}&users=${USER_ID}" https://slack.com/api/usergroups.users.update
