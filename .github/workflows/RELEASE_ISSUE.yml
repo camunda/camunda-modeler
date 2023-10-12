@@ -20,6 +20,7 @@ jobs:
         package-path: 'app/package.json'
 
   updateSlackRole:
+    runs-on: ubuntu-latest
     if: contains(github.event.issue.labels.*.name, 'release')
     name: Sync Slack roles
     needs: createReleaseIssue
