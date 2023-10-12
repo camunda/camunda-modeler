@@ -21,7 +21,9 @@ jobs:
 
   updateSlackRole:
     runs-on: ubuntu-latest
-    if: contains(github.event.issue.labels.*.name, 'release')
+    if: |
+      always() &&
+      contains(github.event.issue.labels.*.name, 'release')
     name: Sync Slack roles
     needs: createReleaseIssue
     steps:
