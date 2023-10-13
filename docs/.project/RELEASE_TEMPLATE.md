@@ -18,7 +18,6 @@ labels:
 
 _To be done immediately after creating this issue._
 
-* [ ] add Slack role to release manager (`@desktop-modeler-release-manager`)
 * [ ] (optional) update [release presentation](https://confluence.camunda.com/display/HAN/Release+Presentation+Process) page
 
 _To be done before the code freeze._
