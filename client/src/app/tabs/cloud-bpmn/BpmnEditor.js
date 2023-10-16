@@ -220,7 +220,11 @@ export class BpmnEditor extends CachedComponent {
       'searchPad.closed',
       'searchPad.opened',
       'popupMenu.opened',
-      'popupMenu.closed'
+      'popupMenu.closed',
+      'feelPopup.opened',
+      'feelPopup.closed',
+      'feelPopup.focusin',
+      'feelPopup.focusout'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
@@ -838,6 +842,7 @@ export class BpmnEditor extends CachedComponent {
       },
       propertiesPanel: {
         feelTooltipContainer: '.editor',
+        feelPopupContainer: '.bjs-container',
         layout: layout.propertiesPanel
       },
       elementTemplateChooser: false
