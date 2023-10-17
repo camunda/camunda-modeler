@@ -33,7 +33,7 @@ _To be done after code freeze to prepare and test the release._
 * [ ] make sure dependencies to upstream libraries are updated and can be installed (`rm -rf node_modules && npm i && npm run all` works)
 * [ ] verify `develop` is up to date with `master`: `git checkout master && git pull && git checkout develop && git merge master`
 * [ ] close all issues which are solved by dependency updates
-* [ ] Ensure that the modeler is free of major security vulnerabilities via `npm audit`
+* [ ] ensure that the modeler is free of major security vulnerabilities via `npm audit`
 * [ ] smoke test to verify all diagrams can be created
 * [ ] update [Release Info](https://github.com/camunda/camunda-modeler/blob/develop/client/src/plugins/version-info/ReleaseInfo.js)
     * [ ] create a draft following [our guidelines](https://github.com/bpmn-io/internal-docs/blob/master/releases/modeler/CAMUNDA_MODELER.md#whats-new-communication) and based on priorities which were aligned with the team (PM, UX, and Engineering side)
