@@ -19,6 +19,7 @@ _To be done to prepare and build the release._
     * `bpmn-js`, `dmn-js`, `*-properties-panel`, `*-moddle`, `camunda-bpmn-js`, `form-js`, ...
 * [ ] make sure dependencies to upstream libraries are updated and can be installed (`rm -rf node_modules && npm i && npm run all` works)
 * [ ] close all issues which are solved by dependency updates
+* [ ] ensure that the modeler is free of major security vulnerabilities via `npm audit`
 * [ ] smoke test to verify all diagrams can be created
 * [ ] update [Release Info](https://github.com/camunda/camunda-modeler/blob/master/client/src/plugins/version-info/ReleaseInfo.js)
 * [ ] update [`CHANGELOG`](https://github.com/camunda/camunda-modeler/blob/master/CHANGELOG.md)
