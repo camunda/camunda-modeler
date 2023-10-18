@@ -138,7 +138,7 @@ describe('EditorActions', function() {
     });
 
 
-    it('should return element templates', function() {
+    it('should return latest element templates', function() {
 
       // given
       const editorActions = modeler.get('editorActions');
@@ -150,8 +150,12 @@ describe('EditorActions', function() {
 
       // then
       expect(elementTemplates).to.exist;
-      expect(elementTemplates).not.to.be.empty;
+
+      // exclude deprecated
+      // exclude old versions
+      expect(elementTemplates).to.have.length(5);
     });
+
   });
 
 

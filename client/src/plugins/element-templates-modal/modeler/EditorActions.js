@@ -48,7 +48,7 @@ export default class EditorActions {
     });
 
     editorActions.register('getElementTemplates', () => {
-      return elementTemplates.getAll();
+      return elementTemplates.getLatest();
     });
 
     // helper //////////////////////////////////
