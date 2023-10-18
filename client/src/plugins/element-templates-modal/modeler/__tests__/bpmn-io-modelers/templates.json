@@ -3,6 +3,15 @@
     "appliesTo": [
       "bpmn:ServiceTask"
     ],
+    "id": "deprecated-template",
+    "deprecated": true,
+    "name": "Deprecated",
+    "properties": []
+  },
+  {
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
     "id": "another-rpa-template",
     "metadata": {
       "catalogOrganizationId": "00000000-0000-0000-0000-000000000000",
