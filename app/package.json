@@ -16,7 +16,7 @@
     "fast-glob": "^3.3.1",
     "form-data": "^2.5.1",
     "ids": "^1.0.0",
-    "min-dash": "^4.0.0",
+    "min-dash": "^4.1.1",
     "mri": "^1.1.6",
     "parents": "^1.0.1",
     "zeebe-node": "8.3.0-alpha4"
