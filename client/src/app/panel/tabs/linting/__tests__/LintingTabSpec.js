@@ -147,18 +147,25 @@ describe('<LintingTab>', function() {
           id: 'baz',
           message: 'baz 2 error',
           rule: 'baz-rule'
+        },
+        {
+          category: 'info',
+          id: 'baz',
+          message: 'baz 1 info',
+          rule: 'baz-rule'
         }
       ]
     });
 
     // then
-    expect(wrapper.find('.linting-tab-item__content')).to.have.length(6);
+    expect(wrapper.find('.linting-tab-item__content')).to.have.length(7);
     expect(wrapper.find('.linting-tab-item__content').at(0).text()).to.equal('bar 1 error');
     expect(wrapper.find('.linting-tab-item__content').at(1).text()).to.equal('bar 2 error');
     expect(wrapper.find('.linting-tab-item__content').at(2).text()).to.equal('baz 2 error');
     expect(wrapper.find('.linting-tab-item__content').at(3).text()).to.equal('foo error');
     expect(wrapper.find('.linting-tab-item__content').at(4).text()).to.equal('baz 1 warning');
-    expect(wrapper.find('.linting-tab-item__content').at(5).text()).to.equal('Rule <baz-rule> errored with the following message: Baz');
+    expect(wrapper.find('.linting-tab-item__content').at(5).text()).to.equal('baz 1 info');
+    expect(wrapper.find('.linting-tab-item__content').at(6).text()).to.equal('Rule <baz-rule> errored with the following message: Baz');
   });
 
 

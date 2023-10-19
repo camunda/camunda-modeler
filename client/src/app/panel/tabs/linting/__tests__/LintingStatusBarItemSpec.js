@@ -36,7 +36,7 @@ describe('LintingStatusBarItem', function() {
   });
 
 
-  describe('number of errors and warnings', function() {
+  describe('number of errors, warnings and info messages', function() {
 
     it('should display 1 error and 1 warning', function() {
 
@@ -46,10 +46,11 @@ describe('LintingStatusBarItem', function() {
       // then
       expect(wrapper.find('.errors').text()).to.equal('1');
       expect(wrapper.find('.warnings').text()).to.equal('1');
+      expect(wrapper.find('.infos').text()).to.equal('1');
     });
 
 
-    it('should display 2 errors and 1 warning', function() {
+    it('should display 3 errors, 1 warning and 2 info messages', function() {
 
       // when
       const wrapper = renderLintingStatusBarItem({
@@ -59,13 +60,24 @@ describe('LintingStatusBarItem', function() {
             category: 'error',
             id: 'baz',
             message: 'Baz'
+          },
+          {
+            category: 'error',
+            id: 'baz2',
+            message: 'Baz2'
+          },
+          {
+            category: 'info',
+            id: 'buz2',
+            message: 'Buz2'
           }
         ]
       });
 
       // then
-      expect(wrapper.find('.errors').text()).to.equal('2');
+      expect(wrapper.find('.errors').text()).to.equal('3');
       expect(wrapper.find('.warnings').text()).to.equal('1');
+      expect(wrapper.find('.infos').text()).to.equal('2');
     });
 
   });
@@ -140,6 +152,11 @@ const defaultLinting = [
     category: 'warn',
     id: 'bar',
     message: 'Bar message'
+  },
+  {
+    category: 'info',
+    id: 'buz',
+    message: 'Buz message'
   }
 ];
 
