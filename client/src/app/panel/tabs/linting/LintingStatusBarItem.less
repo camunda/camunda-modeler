@@ -1,4 +1,6 @@
 :local(.LintingStatusBarItem) {
+  --icon-margin: 6px;
+
   &.btn {
     display: flex;
     align-items: center;
@@ -6,17 +8,22 @@
 
   svg {
     fill: currentColor;
-    margin-right: 6px;
+    margin-right: var(--icon-margin);
   }
 
   .errors,
-  .warnings {
+  .warnings,
+  .infos {
     display: inline-flex;
     align-items: center;
   }
 
   .warnings {
-    margin-left: 6px;
+    margin-left: var(--icon-margin);
+  }
+
+  .infos {
+    margin-left: var(--icon-margin);
   }
 
   &:not(.has-errors) .errors {
@@ -32,6 +39,22 @@
   }
 
   &:not(.has-warnings) .warnings {
+    svg path:first-child {
+      fill: transparent !important;
+    }
+
+    svg path:last-child {
+      fill: var(--status-bar-icon-font-color) !important;
+    }
+  }
+
+  .infos {
+    svg path:first-child {
+      fill: transparent !important;
+    }
+  }
+
+  &:not(.has-infos) .infos {
     svg path:first-child {
       fill: transparent !important;
     }

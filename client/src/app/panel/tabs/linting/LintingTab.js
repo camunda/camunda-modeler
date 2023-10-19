@@ -24,6 +24,7 @@ import ErrorIcon from '../../../../../resources/icons/Error.svg';
 import LaunchIcon from '../../../../../resources/icons/Launch.svg';
 import SuccessIcon from '../../../../../resources/icons/Success.svg';
 import WarningIcon from '../../../../../resources/icons/Warning.svg';
+import InfoIcon from '../../../../../resources/icons/InformationCircle.svg';
 
 export default function LintingTab(props) {
   const {
@@ -118,11 +119,13 @@ function LintingTabItem(props) {
     onClick={ onClick }
     className={ classnames(css.LintingTabItem, 'linting-tab-item', {
       'linting-tab-item--error': category === 'error',
-      'linting-tab-item--warning': category === 'warn'
+      'linting-tab-item--warning': category === 'warn',
+      'linting-tab-item--info': category === 'info'
     }) }>
     <div className="linting-tab-item__header">
       { category === 'error' ? <ErrorIcon width="16" height="16" /> : null }
       { category === 'warn' ? <WarningIcon width="16" height="16" /> : null }
+      { category === 'info' ? <InfoIcon width="16" height="16" /> : null }
       <span className="linting-tab-item__label">{ name || id }</span>
     </div>
     <div className="linting-tab-item__content">
@@ -161,6 +164,9 @@ function getReportName(report) {
  *
  * 1. rule success or error
  * 2. category
+ *   2.1 error
+ *   2.2 warning
+ *   2.3 info
  * 3. name or ID
  *
  * @param {Object[]} reports
@@ -189,7 +195,11 @@ function sortReports(reports) {
 
     } else if (a.category === 'error') {
       return -1;
+    } else if (a.category === 'warning') {
+      return -1;
     } else if (b.category === 'error') {
+      return 1;
+    } else if (b.category === 'warning') {
       return 1;
     }
   });
