@@ -50,6 +50,20 @@ describe('LintingStatusBarItem', function() {
     });
 
 
+    it('should always show error and warning handles', function() {
+
+      // when
+      const wrapper = renderLintingStatusBarItem({
+        linting: []
+      });
+
+      // then
+      expect(wrapper.find('.errors').text()).to.equal('0');
+      expect(wrapper.find('.warnings').text()).to.equal('0');
+      expect(wrapper.find('.infos').exists()).to.be.false;
+    });
+
+
     it('should display 3 errors, 1 warning and 2 info messages', function() {
 
       // when
