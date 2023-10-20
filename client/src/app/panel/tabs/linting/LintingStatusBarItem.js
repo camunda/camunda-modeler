@@ -50,7 +50,7 @@ export default function LintingStatusBarItem(props) {
     >
       <span className="errors"><ErrorIcon width="16" height="16" />{ errors }</span>
       <span className="warnings"><WarningIcon width="16" height="16" />{ warnings }</span>
-      <span className="infos"><InfoIcon width="16" height="16" />{ infos }</span>
+      { infos > 0 ? <span className="infos"><InfoIcon width="16" height="16" />{ infos }</span> : null }
     </button>
   </Fill>;
 }
