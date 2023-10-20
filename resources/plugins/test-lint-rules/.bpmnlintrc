@@ -3,6 +3,7 @@
     "plugin:custom/recommended"
   ],
   "rules": {
-    "custom/no-manual-task": "warn"
+    "custom/no-manual-task": "warn",
+    "custom/awesome-send-task": "info"
   }
 }
