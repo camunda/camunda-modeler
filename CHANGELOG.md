@@ -6,6 +6,17 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `DEPS`: update to `camunda-dmn-js@1.4.0`
+* `DEPS`: update to `camunda-dmn-moddle@1.3.0`
+* `DEPS`: update to `dmn-moddle@14.5.0`
+
+### DMN
+
+* `FEAT`: use FEEL editor in literal expression editor ([bpmn-io/dmn-js#780](https://github.com/bpmn-io/dmn-js/issues/780))
+* `FEAT`: implement variable suggestions ([bpmn-io/dmn-js#785](https://github.com/bpmn-io/dmn-js/issues/785))
+
 ## 5.16.0
 
 ### General
