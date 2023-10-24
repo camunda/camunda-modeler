@@ -11,6 +11,11 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-dmn-js@1.4.0`
 * `DEPS`: update to `camunda-dmn-moddle@1.3.0`
 * `DEPS`: update to `dmn-moddle@14.5.0`
+* `DEPS`: update to `camunda-bpmn-js@3.6.1`
+
+### BPMN
+
+* `FIX`: display multi-instance configuration in properties panel ([#3396](https://github.com/camunda/camunda-modeler/issues/3396))
 
 ### DMN
 
