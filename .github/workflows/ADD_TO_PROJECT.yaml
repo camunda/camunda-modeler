@@ -17,8 +17,19 @@ jobs:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
+      - name: Import Secrets
+        id: secrets
+        uses: hashicorp/vault-action@v2.4.3
+        with:
+          url: ${{ secrets.VAULT_ADDR }}
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          exportEnv: false
+          secrets: |
+            secret/data/products/desktop-modeler/ci/ADD_TO_PROJECT_PAT ADD_TO_PROJECT_PAT;
       - uses: actions/add-to-project@v0.5.0
         with:
           project-url: ${{ secrets.CONNECTORS_PROJECT_URL }}
-          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          github-token: ${{ steps.secrets.outputs.ADD_TO_PROJECT_PAT }}
           labeled: connectors
