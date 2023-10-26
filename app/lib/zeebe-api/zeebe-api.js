@@ -108,6 +108,10 @@ class ZeebeAPI {
 
     const client = await this._getZeebeClient(endpoint);
 
+    this._log.debug('check connection', {
+      parameters: withoutSecrets(parameters)
+    });
+
     try {
       await client.topology();
       return { success: true };
@@ -136,6 +140,7 @@ class ZeebeAPI {
       endpoint,
       filePath,
       name,
+      tenantId,
       diagramType
     } = parameters;
 
@@ -150,12 +155,16 @@ class ZeebeAPI {
     const client = await this._getZeebeClient(endpoint);
 
     try {
-      const response = await client.deployResource({
+      const resource = {
         process: contents,
         name: this._prepareDeploymentName(name, filePath, diagramType),
+      };
 
-        // tenantId
-      });
+      if (tenantId) {
+        resource.tenantId = tenantId;
+      }
+
+      const response = await client.deployResource(resource);
 
       return {
         success: true,
@@ -183,7 +192,8 @@ class ZeebeAPI {
     const {
       endpoint,
       variables,
-      processId
+      processId,
+      tenantId
     } = parameters;
 
     this._log.debug('run', {
@@ -197,8 +207,7 @@ class ZeebeAPI {
       const response = await client.createProcessInstance({
         bpmnProcessId: processId,
         variables,
-
-        // tenantId
+        tenantId
       });
 
       return {

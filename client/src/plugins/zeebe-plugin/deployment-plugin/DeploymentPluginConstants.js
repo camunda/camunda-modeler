@@ -28,6 +28,7 @@ export const CLIENT_ID = 'Client ID';
 export const CLIENT_SECRET = 'Client secret';
 export const CLUSTER_URL = 'Cluster URL';
 export const REMEMBER_CREDENTIALS = 'Remember credentials';
+export const TENANT_ID = 'Tenant ID';
 
 export const MUST_PROVIDE_A_VALUE = 'Must provide a value.';
 export const CONTACT_POINT_MUST_NOT_BE_EMPTY = 'Cluster endpoint must not be empty.';

@@ -24,6 +24,7 @@ import {
   CONTACT_POINT_HINT,
   OAUTH_URL,
   AUDIENCE,
+  TENANT_ID,
   CLIENT_ID,
   CLIENT_SECRET,
   CLUSTER_URL,
@@ -193,12 +194,19 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
   }
 
   handleFormSubmit = async (values, { setSubmitting }) => {
-    const { endpoint } = values;
+    const {
+      deployment,
+      endpoint
+    } = values;
 
     // Extract clusterId and clusterRegion as required by zeebeAPI for camundaCloud
     if (endpoint.targetType === CAMUNDA_CLOUD && endpoint.camundaCloudClusterUrl) {
       endpoint.camundaCloudClusterId = extractClusterId(endpoint.camundaCloudClusterUrl);
       endpoint.camundaCloudClusterRegion = extractClusterRegion(endpoint.camundaCloudClusterUrl);
+    }
+
+    if (endpoint.authType === AUTH_TYPES.NONE) {
+      delete deployment.tenantId;
     }
 
     // check connection
@@ -273,6 +281,17 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
                                 hint={ CONTACT_POINT_HINT }
                                 autoFocus
                               />
+                              {
+                                form.values.endpoint.targetType === SELF_HOSTED &&
+                                  form.values.endpoint.authType === AUTH_TYPES.OAUTH && (
+                                  <Field
+                                    name="deployment.tenantId"
+                                    component={ TextInput }
+                                    label={ TENANT_ID }
+                                    hint="Optional"
+                                  />
+                                )
+                              }
                               <Field
                                 name="endpoint.authType"
                                 component={ Radio }

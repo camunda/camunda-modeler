@@ -171,7 +171,7 @@ describe('<ZeebeAPI>', function() {
 
   describe('#deploy', () => {
 
-    it('should execute', () => {
+    it('should deploy without OAuth', () => {
 
       // given
       const zeebeAPI = new ZeebeAPI(backend);
@@ -202,6 +202,55 @@ describe('<ZeebeAPI>', function() {
         endpoint: {
           type: targetTypes.SELF_HOSTED,
           url: contactPoint
+        }
+      });
+
+    });
+
+
+    it('should deploy with OAuth', () => {
+
+      // given
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const contactPoint = 'contactPoint';
+
+      const filePath = 'filePath';
+
+      const name = 'deployment';
+
+      const tenantId = 'tenant-1';
+
+      const endpoint = {
+        targetType: targetTypes.SELF_HOSTED,
+        authType: authTypes.OAUTH,
+        contactPoint,
+        oauthURL: 'oauthURL',
+        audience: 'audience',
+        clientId: 'oauthClientId',
+        clientSecret: 'oauthClientSecret'
+      };
+
+      // when
+      zeebeAPI.deploy({
+        filePath,
+        name,
+        endpoint,
+        tenantId
+      });
+
+      // then
+      expect(sendSpy).to.have.been.calledWith('zeebe:deploy', {
+        filePath,
+        name,
+        tenantId,
+        endpoint: {
+          type: authTypes.OAUTH,
+          url: contactPoint,
+          oauthURL: 'oauthURL',
+          audience: 'audience',
+          clientId: 'oauthClientId',
+          clientSecret: 'oauthClientSecret'
         }
       });
 
