@@ -208,7 +208,10 @@ export default class DeploymentPlugin extends PureComponent {
   deployTab(tab, config) {
     const { file: { path } } = tab;
     const {
-      deployment: { name },
+      deployment: {
+        name,
+        tenantId
+      },
       endpoint
     } = config;
 
@@ -217,6 +220,7 @@ export default class DeploymentPlugin extends PureComponent {
     return zeebeAPI.deploy({
       filePath: path,
       name,
+      tenantId,
       endpoint,
       diagramType: tab.type === 'cloud-dmn' ? 'dmn' : 'bpmn'
     });

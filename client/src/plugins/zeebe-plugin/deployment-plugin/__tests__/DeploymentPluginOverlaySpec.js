@@ -16,6 +16,13 @@ import { mount } from 'enzyme';
 
 import DeploymentPluginOverlay from '../DeploymentPluginOverlay';
 
+import { AUTH_TYPES } from '../../shared/ZeebeAuthTypes';
+
+import {
+  SELF_HOSTED,
+  CAMUNDA_CLOUD
+} from '../../shared/ZeebeTargetTypes';
+
 describe('<DeploymentPluginModal> (Zeebe)', () => {
 
   var anchor;
@@ -75,7 +82,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
       validator,
       config: {
         endpoint: {
-          targetType: 'camundaCloud',
+          targetType: CAMUNDA_CLOUD,
           camundaCloudClusterUrl: '7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443'
         }
       }
@@ -100,6 +107,146 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
+  describe('tenantId', () => {
+
+    it('should not show for self-managed without OAuth', () => {
+
+      // given
+      const { wrapper } = createDeploymentPluginModal({
+        anchor,
+        config: {
+          endpoint: {
+            targetType: SELF_HOSTED,
+            authType: AUTH_TYPES.NONE,
+            contactPoint: 'https://google.com'
+          },
+          deployment: {
+            tenantId: 'tenant-1'
+          }
+        }
+      });
+
+      // when
+      const tenantIdInput = wrapper.find('input[name="deployment.tenantId"]');
+
+      // then
+      expect(tenantIdInput.exists()).to.be.false;
+    });
+
+
+    it('should show for self-managed with OAuth', () => {
+
+      // given
+      const { wrapper } = createDeploymentPluginModal({
+        anchor,
+        config: {
+          endpoint: {
+            targetType: SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
+            contactPoint: 'https://google.com'
+          },
+          deployment: {
+            tenantId: 'tenant-1'
+          }
+        }
+      });
+
+      // when
+      const tenantIdInput = wrapper.find('input[name="deployment.tenantId"]');
+
+      // then
+      expect(tenantIdInput.exists()).to.be.true;
+      expect(tenantIdInput.instance().value).to.eql('tenant-1');
+    });
+
+
+    it('should not pass on deploy without OAuth', done => {
+
+      // given
+      const { wrapper } = createDeploymentPluginModal({
+        anchor,
+        onDeploy,
+        config: {
+          endpoint: {
+            targetType: SELF_HOSTED,
+            authType: AUTH_TYPES.NONE,
+            contactPoint: 'https://google.com',
+          },
+          deployment: {
+            tenantId: 'tenant-1'
+          }
+        }
+      });
+
+      // when deploy
+      wrapper.find('form').simulate('submit');
+
+      // then
+      function onDeploy(values) {
+        const { deployment } = values;
+
+        expect(deployment.tenantId).not.to.exist;
+
+        done();
+      }
+    });
+
+
+    it('should pass on deploy with OAuth', done => {
+
+      // given
+      const { wrapper } = createDeploymentPluginModal({
+        anchor,
+        onDeploy,
+        config: {
+          endpoint: {
+            targetType: SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
+            contactPoint: 'https://google.com',
+          },
+          deployment: {
+            tenantId: 'tenant-1'
+          }
+        }
+      });
+
+      // when deploy
+      wrapper.find('form').simulate('submit');
+
+      // then
+      function onDeploy(values) {
+        const { deployment } = values;
+
+        expect(deployment.tenantId).to.eql('tenant-1');
+
+        done();
+      }
+    });
+
+
+    it('should not show for SaaS', () => {
+
+      // given
+      const { wrapper } = createDeploymentPluginModal({
+        anchor,
+        config: {
+          endpoint: {
+            targetType: CAMUNDA_CLOUD,
+            camundaCloudClusterUrl: '7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443'
+          }
+        }
+      });
+
+      // when
+      const tenantIdInput = wrapper.find('input[name="deployment.tenantId"]');
+
+      // then
+      expect(tenantIdInput.exists()).to.be.false;
+    });
+
+  });
+
+
   it('should extract clusterId and clusterRegion', done => {
 
     // given
@@ -108,7 +255,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
       onDeploy,
       config: {
         endpoint: {
-          targetType: 'camundaCloud',
+          targetType: CAMUNDA_CLOUD,
           camundaCloudClusterUrl: '7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443'
         }
       } });
@@ -136,7 +283,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
       onDeploy,
       config: {
         endpoint: {
-          targetType: 'camundaCloud',
+          targetType: CAMUNDA_CLOUD,
           camundaCloudClusterUrl: 'https://7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443'
         }
       } });
@@ -187,8 +334,8 @@ function createConfig({ endpoint = {}, deployment = {} } = {}) {
       ...deployment
     },
     endpoint: {
-      targetType: 'selfHosted',
-      authType: 'none',
+      targetType: SELF_HOSTED,
+      authType: AUTH_TYPES.NONE,
       contactPoint: 'https://google.com',
       ...endpoint
     }
