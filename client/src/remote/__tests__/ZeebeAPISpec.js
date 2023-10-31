@@ -13,8 +13,8 @@
 import ZeebeAPI from '../ZeebeAPI';
 
 import {
-  targetTypes,
-  authTypes
+  AUTH_TYPES,
+  ENDPOINT_TYPES
 } from '../ZeebeAPI';
 
 
@@ -41,8 +41,8 @@ describe('<ZeebeAPI>', function() {
       const contactPoint = 'contactPoint';
 
       const endpoint = {
-        targetType: targetTypes.SELF_HOSTED,
-        authType: authTypes.NONE,
+        targetType: ENDPOINT_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
         contactPoint
       };
 
@@ -52,7 +52,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(sendSpy).to.have.been.calledWith('zeebe:checkConnection', {
         endpoint: {
-          type: targetTypes.SELF_HOSTED,
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: contactPoint
         }
       });
@@ -64,8 +64,8 @@ describe('<ZeebeAPI>', function() {
       // given
       const zeebeAPI = new ZeebeAPI(backend);
 
-      const targetType = targetTypes.SELF_HOSTED;
-      const authType = authTypes.OAUTH;
+      const targetType = ENDPOINT_TYPES.SELF_HOSTED;
+      const authType = AUTH_TYPES.OAUTH;
       const contactPoint = 'contactPoint';
       const oauthURL = 'oauthURL';
       const audience = 'audience';
@@ -103,7 +103,7 @@ describe('<ZeebeAPI>', function() {
       // given
       const zeebeAPI = new ZeebeAPI(backend);
 
-      const targetType = targetTypes.CAMUNDA_CLOUD;
+      const targetType = ENDPOINT_TYPES.CAMUNDA_CLOUD;
       const camundaCloudClientId = 'camundaCloudClientId';
       const camundaCloudClientSecret = 'camundaCloudClientSecret';
       const camundaCloudClusterId = 'camundaCloudClusterId';
@@ -120,7 +120,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(sendSpy).to.have.been.calledWith('zeebe:checkConnection', {
         endpoint: {
-          type: targetTypes.CAMUNDA_CLOUD,
+          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
           clientId: camundaCloudClientId,
           clientSecret: camundaCloudClientSecret,
           clusterId: camundaCloudClusterId
@@ -144,8 +144,8 @@ describe('<ZeebeAPI>', function() {
       const processId = 'processId';
 
       const endpoint = {
-        targetType: targetTypes.SELF_HOSTED,
-        authType: authTypes.NONE,
+        targetType: ENDPOINT_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
         contactPoint
       };
 
@@ -159,7 +159,7 @@ describe('<ZeebeAPI>', function() {
       expect(sendSpy).to.have.been.calledWith('zeebe:run', {
         processId,
         endpoint: {
-          type: targetTypes.SELF_HOSTED,
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: contactPoint
         }
       });
@@ -183,8 +183,8 @@ describe('<ZeebeAPI>', function() {
       const name = 'deployment';
 
       const endpoint = {
-        targetType: targetTypes.SELF_HOSTED,
-        authType: authTypes.NONE,
+        targetType: ENDPOINT_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
         contactPoint
       };
 
@@ -200,7 +200,7 @@ describe('<ZeebeAPI>', function() {
         filePath,
         name,
         endpoint: {
-          type: targetTypes.SELF_HOSTED,
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: contactPoint
         }
       });
@@ -222,8 +222,8 @@ describe('<ZeebeAPI>', function() {
       const tenantId = 'tenant-1';
 
       const endpoint = {
-        targetType: targetTypes.SELF_HOSTED,
-        authType: authTypes.OAUTH,
+        targetType: ENDPOINT_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.OAUTH,
         contactPoint,
         oauthURL: 'oauthURL',
         audience: 'audience',
@@ -245,7 +245,7 @@ describe('<ZeebeAPI>', function() {
         name,
         tenantId,
         endpoint: {
-          type: authTypes.OAUTH,
+          type: AUTH_TYPES.OAUTH,
           url: contactPoint,
           oauthURL: 'oauthURL',
           audience: 'audience',
@@ -269,8 +269,8 @@ describe('<ZeebeAPI>', function() {
       const contactPoint = 'contactPoint';
 
       const endpoint = {
-        targetType: targetTypes.SELF_HOSTED,
-        authType: authTypes.NONE,
+        targetType: ENDPOINT_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
         contactPoint
       };
 
@@ -280,7 +280,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(sendSpy).to.have.been.calledWith('zeebe:getGatewayVersion', {
         endpoint: {
-          type: targetTypes.SELF_HOSTED,
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: contactPoint
         }
       });
