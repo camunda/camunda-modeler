@@ -47,7 +47,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should deploy BPMN tab with correct diagram type', async () => {
+  it('should deploy BPMN tab with correct resource type', async () => {
 
     // given
     const deploySpy = sinon.spy();
@@ -59,11 +59,11 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     // then
     expect(deploySpy).to.have.been.calledOnce;
-    expect(deploySpy.args[0][0]).to.have.property('diagramType', 'bpmn');
+    expect(deploySpy.args[0][0]).to.have.property('resourceType', 'bpmn');
   });
 
 
-  it('should deploy DMN tab with correct diagram type', async () => {
+  it('should deploy DMN tab with correct resource type', async () => {
 
     // given
     const deploySpy = sinon.spy();
@@ -75,7 +75,23 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     // then
     expect(deploySpy).to.have.been.calledOnce;
-    expect(deploySpy.args[0][0]).to.have.property('diagramType', 'dmn');
+    expect(deploySpy.args[0][0]).to.have.property('resourceType', 'dmn');
+  });
+
+
+  it('should deploy form tab with correct resource type', async () => {
+
+    // given
+    const deploySpy = sinon.spy();
+    const zeebeAPI = new MockZeebeAPI({ deploySpy });
+    const { instance } = createDeploymentPlugin({ zeebeAPI, activeTab: createTab({ type: 'cloud-form' }) });
+
+    // when
+    await instance.deploy();
+
+    // then
+    expect(deploySpy).to.have.been.calledOnce;
+    expect(deploySpy.args[0][0]).to.have.property('resourceType', 'form');
   });
 
 

@@ -43,7 +43,7 @@ export async function getBpmnDefinitions(xml, diagramType) {
 }
 
 
-export async function getEngineProfile(contents, diagramType) {
+export async function getEngineProfile(contents, resourceType) {
 
   let engineProfile;
 
@@ -51,7 +51,7 @@ export async function getEngineProfile(contents, diagramType) {
     return {};
   }
 
-  if (diagramType === 'form') {
+  if (resourceType === 'form') {
     engineProfile = parsFormExecutionPlatform(contents);
 
     if (!engineProfile) return null;
@@ -64,7 +64,7 @@ export async function getEngineProfile(contents, diagramType) {
 
   const { executionPlatform } = engineProfile;
 
-  engineProfile.executionPlatform = executionPlatform || getDefaultExecutionPlatform(diagramType);
+  engineProfile.executionPlatform = executionPlatform || getDefaultExecutionPlatform(resourceType);
 
   return engineProfile;
 }

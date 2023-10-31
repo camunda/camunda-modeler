@@ -40,6 +40,12 @@ const endpointTypes = {
   CAMUNDA_CLOUD: 'camundaCloud'
 };
 
+const resourceTypes = {
+  BPMN: 'bpmn',
+  DMN: 'dmn',
+  FORM: 'form'
+};
+
 /**
  * @typedef {object} ZeebeClientParameters
  * @property {Endpoint} endpoint
@@ -140,8 +146,7 @@ class ZeebeAPI {
       endpoint,
       filePath,
       name,
-      tenantId,
-      diagramType
+      resourceType = 'bpmn'
     } = parameters;
 
     const {
@@ -155,14 +160,11 @@ class ZeebeAPI {
     const client = await this._getZeebeClient(endpoint);
 
     try {
-      const resource = {
-        process: contents,
-        name: this._prepareDeploymentName(name, filePath, diagramType),
-      };
+      const resourceName = this._prepareDeploymentName(name, filePath, resourceType);
 
-      if (tenantId) {
-        resource.tenantId = tenantId;
-      }
+      const resource = getResource(parameters, contents, resourceName);
+
+      this._log.debug('deploying resource', resource);
 
       const response = await client.deployResource(resource);
 
@@ -457,22 +459,23 @@ class ZeebeAPI {
    *
    * If name is empty, we'll return the file name with suffix added. If name is not empty
    * but does not end with .bpmn, we'll add the suffix.
+   *
    * @param {string} name
    * @param {string} filePath
-   * @param {'bpmn'|'dmn'} [fileType='bpmn']
-   * @returns {`${string}.${'bpmn'|'dmn'}`}
+   * @param {'bpmn'|'dmn'|'form'} [fileType='bpmn']
+   * @returns {`${string}.${'bpmn'|'dmn'|'form'}`}
    */
   _prepareDeploymentName(name, filePath, fileType = 'bpmn') {
 
-    const extension = `.${fileType}`;
+    const extension = `.${ fileType }`;
 
     try {
       if (!name || name.length === 0) {
-        return `${path.basename(filePath, path.extname(filePath))}${extension}`;
+        return `${ path.basename(filePath, path.extname(filePath)) }${ extension }`;
       }
 
       if (!name.endsWith(extension)) {
-        return `${name}${extension}`;
+        return `${ name }${ extension }`;
       }
 
     } catch (err) {
@@ -613,4 +616,29 @@ function filterRecursive(obj, keys) {
       return value;
     })
   );
+}
+
+function getResource(parameters, contents, resourceName) {
+  const {
+    resourceType = 'bpmn',
+    tenantId
+  } = parameters;
+
+  const resource = {
+    name: resourceName
+  };
+
+  if (resourceType === resourceTypes.BPMN) {
+    resource.process = contents;
+  } else if (resourceType === resourceTypes.DMN) {
+    resource.decision = contents;
+  } else if (resourceType === resourceTypes.FORM) {
+    resource.form = contents;
+  }
+
+  if (tenantId) {
+    resource.tenantId = tenantId;
+  }
+
+  return resource;
 }
