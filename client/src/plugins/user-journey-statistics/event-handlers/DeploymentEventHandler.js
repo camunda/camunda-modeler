@@ -9,7 +9,7 @@
  */
 
 import {
-  getDiagramType,
+  getResourceType,
   getTemplateIds
 } from '../util';
 
@@ -44,21 +44,21 @@ export default class DeploymentEventHandler {
 
     subscribe('deployment.done', async (event) => {
       const { tab } = event;
-      const type = getDiagramType(tab.type);
+      const type = getResourceType(tab.type);
 
       await this.trackDeploymentAction(type, true, event);
     });
 
     subscribe('deployment.error', async (event) => {
       const { tab } = event;
-      const type = getDiagramType(tab.type);
+      const type = getResourceType(tab.type);
 
       await this.trackDeploymentAction(type, false, event);
     });
 
   };
 
-  trackDeploymentAction = async (diagramType, success, event) => {
+  trackDeploymentAction = async (resourceType, success, event) => {
     const {
       context,
       deployedTo,
@@ -75,7 +75,7 @@ export default class DeploymentEventHandler {
       contents
     } = file;
 
-    if (!diagramType) {
+    if (!resourceType) {
       return;
     }
 
@@ -84,10 +84,10 @@ export default class DeploymentEventHandler {
 
     const eventName = baseEvent + ':' + outcome;
 
-    const engineProfile = await getEngineProfile(contents, diagramType);
+    const engineProfile = await getEngineProfile(contents, resourceType);
 
     let payload = {
-      diagramType,
+      diagramType: resourceType, // legacy
       ...engineProfile
     };
 

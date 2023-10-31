@@ -86,7 +86,7 @@ export default class TabEventHandler {
     });
   };
 
-  trackDiagramOpened = async (diagramType, { tab }, engineProfile) => {
+  trackDiagramOpened = async (resourceType, { tab }, engineProfile) => {
 
     const {
       file
@@ -96,9 +96,9 @@ export default class TabEventHandler {
       contents
     } = file;
 
-    engineProfile = await getEngineProfile(contents, diagramType);
+    engineProfile = await getEngineProfile(contents, resourceType);
 
-    let payload = { diagramType };
+    let payload = { diagramType: resourceType }; // legacy
 
     if (engineProfile) {
       payload = {
