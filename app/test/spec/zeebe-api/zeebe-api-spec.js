@@ -18,6 +18,17 @@ const ZeebeAPI = require('../../../lib/zeebe-api');
 
 const TEST_URL = 'http://localhost:26500';
 
+const AUTH_TYPES = {
+  NONE: 'none',
+  OAUTH: 'oauth',
+};
+
+const ENDPOINT_TYPES = {
+  SELF_HOSTED: 'selfHosted',
+  OAUTH: 'oauth',
+  CAMUNDA_CLOUD: 'camundaCloud'
+};
+
 
 describe('ZeebeAPI', function() {
 
@@ -683,277 +694,558 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should suffix deployment name with .bpmn if necessary', async () => {
+    describe('resource types', function() {
 
-      // given
-      const deployResourceSpy = sinon.spy();
+      it('should deploy BPMN', async () => {
 
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: deployResourceSpy,
-          };
-        }
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy
+            };
+          },
+          fs: {
+            readFile() {
+              return { contents: '</>' };
+            }
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'process.bpmn',
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          }
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].process).to.exist;
+        expect(args[0].process).to.eql('</>');
       });
 
-      // when
-      await zeebeAPI.deploy({
-        filePath: 'filePath',
-        name: 'not_suffixed',
-        endpoint: {
-          type: 'selfHosted',
-          url: TEST_URL
-        }
+
+      it('should deploy DMN', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy
+            };
+          },
+          fs: {
+            readFile() {
+              return { contents: '</>' };
+            }
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'decision.dmn',
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceType: 'dmn'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].decision).to.exist;
+        expect(args[0].decision).to.eql('</>');
       });
 
-      const { args } = deployResourceSpy.getCall(0);
 
-      // then
-      expect(args[0].name).to.eql('not_suffixed.bpmn');
+      it('should deploy form', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy
+            };
+          },
+          fs: {
+            readFile() {
+              return { contents: '{}' };
+            }
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'form.form',
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceType: 'form'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].form).to.exist;
+        expect(args[0].form).to.eql('{}');
+      });
+
     });
 
 
-    it('should suffix deployment name with .dmn if necessary', async () => {
+    describe('deployment name', function() {
 
-      // given
-      const deployResourceSpy = sinon.spy();
+      it('should suffix deployment name with .bpmn if necessary', async () => {
 
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: deployResourceSpy,
-          };
-        }
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'not_suffixed',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          }
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('not_suffixed.bpmn');
       });
 
-      // when
-      await zeebeAPI.deploy({
-        filePath: 'filePath',
-        name: 'not_suffixed',
-        endpoint: {
-          type: 'selfHosted',
-          url: TEST_URL
-        },
-        diagramType: 'dmn'
+
+      it('should suffix deployment name with .dmn if necessary', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'not_suffixed',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          },
+          resourceType: 'dmn'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('not_suffixed.dmn');
       });
 
-      const { args } = deployResourceSpy.getCall(0);
 
-      // then
-      expect(args[0].name).to.eql('not_suffixed.dmn');
+      it('should suffix deployment name with .form if necessary', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'not_suffixed',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          },
+          resourceType: 'form'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('not_suffixed.form');
+      });
+
+
+      it('should not suffix deployment name with .bpmn if not necessary', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'suffixed.bpmn',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          }
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('suffixed.bpmn');
+      });
+
+
+      it('should not suffix deployment name with .dmn if not necessary', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'suffixed.dmn',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          },
+          resourceType: 'dmn'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('suffixed.dmn');
+      });
+
+
+      it('should not suffix deployment name with .form if not necessary', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'suffixed.form',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          },
+          resourceType: 'form'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('suffixed.form');
+      });
+
+
+      it('should use file path if deployment name is empty', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: '/Users/Test/Stuff/Zeebe/process.bpmn',
+          name: '',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          }
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('process.bpmn');
+      });
+
+
+      it('should add bpmn suffix to filename if extension is other than bpmn', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
+          name: '',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          }
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('xmlFile.bpmn');
+      });
+
+
+      it('should add bpmn extension if name ends with bpmn without extension', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
+          name: 'orchestrae-location-check-bpmn',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          }
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('orchestrae-location-check-bpmn.bpmn');
+      });
+
+
+      it('should add dmn suffix if extension is other than dmn and resourceType=dmn', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
+          name: '',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          },
+          resourceType: 'dmn'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('xmlFile.dmn');
+      });
+
+
+      it('should add dmn extension if name ends with dmn without extension', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
+          name: 'orchestrae-location-check-dmn',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          },
+          resourceType: 'dmn'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('orchestrae-location-check-dmn.dmn');
+      });
+
+
+      it('should add form suffix if extension is other than form and resourceType=form', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: '/Users/Test/Stuff/Zeebe/jsonFile.json',
+          name: '',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          },
+          resourceType: 'form'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('jsonFile.form');
+      });
+
+
+      it('should add form extension if name ends with form without extension', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy,
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: '/Users/Test/Stuff/Zeebe/jsonFile.json',
+          name: 'application-form',
+          endpoint: {
+            type: 'selfHosted',
+            url: TEST_URL
+          },
+          resourceType: 'form'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('application-form.form');
+      });
+
     });
 
 
-    it('should not suffix deployment name with .bpmn if not necessary', async () => {
+    describe('tenant ID', function() {
 
-      // given
-      const deployResourceSpy = sinon.spy();
+      it('should add tenant ID if exists', async () => {
 
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: deployResourceSpy,
-          };
-        }
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: function() {
+            return {
+              deployResource: deployResourceSpy
+            };
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'process.bpmn',
+          endpoint: {
+            type: AUTH_TYPES.OAUTH,
+            url: TEST_URL,
+            oauthURL: 'oauthURL',
+            audience: 'audience',
+            clientId: 'clientId',
+            clientSecret: 'clientSecret'
+          },
+          tenantId: 'tenantId'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].tenantId).to.eql('tenantId');
       });
 
-      // when
-      await zeebeAPI.deploy({
-        filePath: 'filePath',
-        name: 'suffixed.bpmn',
-        endpoint: {
-          type: 'selfHosted',
-          url: TEST_URL
-        }
-      });
-
-      const { args } = deployResourceSpy.getCall(0);
-
-      // then
-      expect(args[0].name).to.eql('suffixed.bpmn');
-    });
-
-
-    it('should not suffix deployment name with .dmn if not necessary', async () => {
-
-      // given
-      const deployResourceSpy = sinon.spy();
-
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: deployResourceSpy,
-          };
-        }
-      });
-
-      // when
-      await zeebeAPI.deploy({
-        filePath: 'filePath',
-        name: 'suffixed.dmn',
-        endpoint: {
-          type: 'selfHosted',
-          url: TEST_URL
-        },
-        diagramType: 'dmn'
-      });
-
-      const { args } = deployResourceSpy.getCall(0);
-
-      // then
-      expect(args[0].name).to.eql('suffixed.dmn');
-    });
-
-
-    it('should use file path if deployment name is empty', async () => {
-
-      // given
-      const deployResourceSpy = sinon.spy();
-
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: deployResourceSpy,
-          };
-        }
-      });
-
-      // when
-      await zeebeAPI.deploy({
-        filePath: '/Users/Test/Stuff/Zeebe/process.bpmn',
-        name: '',
-        endpoint: {
-          type: 'selfHosted',
-          url: TEST_URL
-        }
-      });
-
-      const { args } = deployResourceSpy.getCall(0);
-
-      // then
-      expect(args[0].name).to.eql('process.bpmn');
-    });
-
-
-    it('should add bpmn suffix to filename if extension is other than bpmn', async () => {
-
-      // given
-      const deployResourceSpy = sinon.spy();
-
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: deployResourceSpy,
-          };
-        }
-      });
-
-      // when
-      await zeebeAPI.deploy({
-        filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
-        name: '',
-        endpoint: {
-          type: 'selfHosted',
-          url: TEST_URL
-        }
-      });
-
-      const { args } = deployResourceSpy.getCall(0);
-
-      // then
-      expect(args[0].name).to.eql('xmlFile.bpmn');
-    });
-
-
-    it('should add bpmn extension if name ends with bpmn without extension', async () => {
-
-      // given
-      const deployResourceSpy = sinon.spy();
-
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: deployResourceSpy,
-          };
-        }
-      });
-
-      // when
-      await zeebeAPI.deploy({
-        filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
-        name: 'orchestrae-location-check-bpmn',
-        endpoint: {
-          type: 'selfHosted',
-          url: TEST_URL
-        }
-      });
-
-      const { args } = deployResourceSpy.getCall(0);
-
-      // then
-      expect(args[0].name).to.eql('orchestrae-location-check-bpmn.bpmn');
-    });
-
-
-    it('should add dmn suffix if extension is other than dmn and diagramType=dmn', async () => {
-
-      // given
-      const deployResourceSpy = sinon.spy();
-
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: deployResourceSpy,
-          };
-        }
-      });
-
-      // when
-      await zeebeAPI.deploy({
-        filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
-        name: '',
-        endpoint: {
-          type: 'selfHosted',
-          url: TEST_URL
-        },
-        diagramType: 'dmn'
-      });
-
-      const { args } = deployResourceSpy.getCall(0);
-
-      // then
-      expect(args[0].name).to.eql('xmlFile.dmn');
-    });
-
-
-    it('should add dmn extension if name ends with dmn without extension', async () => {
-
-      // given
-      const deployResourceSpy = sinon.spy();
-
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: deployResourceSpy,
-          };
-        }
-      });
-
-      // when
-      await zeebeAPI.deploy({
-        filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
-        name: 'orchestrae-location-check-dmn',
-        endpoint: {
-          type: 'selfHosted',
-          url: TEST_URL
-        },
-        diagramType: 'dmn'
-      });
-
-      const { args } = deployResourceSpy.getCall(0);
-
-      // then
-      expect(args[0].name).to.eql('orchestrae-location-check-dmn.dmn');
     });
 
   });

@@ -68,6 +68,12 @@ const GRPC_ERROR_CODES = {
   16: 'UNAUTHENTICATED'
 };
 
+const RESOURCE_TYPES = {
+  BPMN: 'bpmn',
+  DMN: 'dmn',
+  FORM: 'form'
+};
+
 export default class DeploymentPlugin extends PureComponent {
 
   constructor(props) {
@@ -207,6 +213,7 @@ export default class DeploymentPlugin extends PureComponent {
 
   deployTab(tab, config) {
     const { file: { path } } = tab;
+
     const {
       deployment: {
         name,
@@ -222,7 +229,7 @@ export default class DeploymentPlugin extends PureComponent {
       name,
       tenantId,
       endpoint,
-      diagramType: tab.type === 'cloud-dmn' ? 'dmn' : 'bpmn'
+      resourceType: getResourceType(tab)
     });
   }
 
@@ -495,7 +502,17 @@ export default class DeploymentPlugin extends PureComponent {
   }
 
   _getSuccessNotification(tab) {
-    return `${tab.type === 'cloud-dmn' ? 'Decision' : 'Process'} definition deployed`;
+    const resourceType = getResourceType(tab);
+
+    if (resourceType === RESOURCE_TYPES.BPMN) {
+      return 'Process definition deployed';
+    } else if (resourceType === RESOURCE_TYPES.DMN) {
+      return 'Decision definition deployed';
+    } else if (resourceType === RESOURCE_TYPES.FORM) {
+      return 'Form definition deployed';
+    }
+
+    return null;
   }
 
   onDeploymentError(response, configuration, options = {}) {
@@ -683,7 +700,7 @@ function withoutCredentials(endpointConfiguration) {
 }
 
 function isZeebeTab(tab) {
-  return tab && [ 'cloud-bpmn', 'cloud-dmn' ].includes(tab.type);
+  return tab && [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form' ].includes(tab.type);
 }
 
 function getGRPCErrorCode(error) {
@@ -722,4 +739,20 @@ function patchWithProtocol(config = {}) {
       contactPoint: 'http://' + endpoint.contactPoint
     }
   };
+}
+
+function getResourceType({ type }) {
+  if (type === 'cloud-bpmn') {
+    return RESOURCE_TYPES.BPMN;
+  }
+
+  if (type === 'cloud-dmn') {
+    return RESOURCE_TYPES.DMN;
+  }
+
+  if (type === 'cloud-form') {
+    return RESOURCE_TYPES.FORM;
+  }
+
+  return null;
 }
