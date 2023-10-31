@@ -9,7 +9,7 @@
  */
 
 import {
-  getDiagramType
+  getResourceType
 } from '../util';
 
 import {
@@ -34,14 +34,14 @@ export default class UIEventHandler {
     // deploy
     subscribe('deployment.opened', async (event) => {
       const { tab } = event;
-      const type = getDiagramType(tab.type);
+      const type = getResourceType(tab.type);
 
       await this.trackDeploymentOverlay(type, 'opened', event);
     });
 
     subscribe('deployment.closed', async (event) => {
       const { tab } = event;
-      const type = getDiagramType(tab.type);
+      const type = getResourceType(tab.type);
 
       await this.trackDeploymentOverlay(type, 'closed', event);
     });
@@ -54,7 +54,7 @@ export default class UIEventHandler {
     });
   };
 
-  trackDeploymentOverlay = async (diagramType, action, event) => {
+  trackDeploymentOverlay = async (resourceType, action, event) => {
 
     const {
       context,
@@ -72,10 +72,10 @@ export default class UIEventHandler {
     const baseEvent = context === 'deploymentTool' ? 'deploy' : 'startInstance';
     const eventName = `overlay:${baseEvent}:${action}`;
 
-    const engineProfile = await getEngineProfile(contents, diagramType);
+    const engineProfile = await getEngineProfile(contents, resourceType);
 
     this.track(eventName, {
-      diagramType,
+      diagramType: resourceType,
       ...engineProfile
     });
   };

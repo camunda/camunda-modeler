@@ -14,19 +14,24 @@ import {
   keys
 } from 'min-dash';
 
-const BPMN_TAB_TYPE = 'bpmn';
-const CLOUD_BPMN_TAB_TYPE = 'cloud-bpmn';
-const DMN_TAB_TYPE = 'dmn';
-const CLOUD_DMN_TAB_TYPE = 'cloud-dmn';
-
-const DIAGRAM_BY_TAB_TYPE = {
-  'bpmn': [ BPMN_TAB_TYPE, CLOUD_BPMN_TAB_TYPE ],
-  'dmn': [ DMN_TAB_TYPE, CLOUD_DMN_TAB_TYPE ]
+const TAB_TYPES = {
+  BPMN: 'bpmn',
+  CLOUD_BPMN: 'cloud-bpmn',
+  CLOUD_DMN: 'cloud-dmn',
+  CLOUD_FORM: 'cloud-form',
+  DMN: 'dmn',
+  FORM: 'form'
 };
 
-export function getDiagramType(tabType) {
-  return find(keys(DIAGRAM_BY_TAB_TYPE), function(diagramType) {
-    return DIAGRAM_BY_TAB_TYPE[diagramType].includes(tabType);
+const TAB_TYPES_BY_RESOUCE_TYPE = {
+  'bpmn': [ TAB_TYPES.BPMN, TAB_TYPES.CLOUD_BPMN ],
+  'dmn': [ TAB_TYPES.DMN, TAB_TYPES.CLOUD_DMN ],
+  'form': [ TAB_TYPES.FORM, TAB_TYPES.CLOUD_FORM ]
+};
+
+export function getResourceType(tabType) {
+  return find(keys(TAB_TYPES_BY_RESOUCE_TYPE), function(resourceType) {
+    return TAB_TYPES_BY_RESOUCE_TYPE[ resourceType ].includes(tabType);
   });
 }
 
