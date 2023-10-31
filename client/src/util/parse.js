@@ -93,6 +93,55 @@ export async function getAllElementsByType(xml, elementType, diagramType) {
   return elements;
 }
 
+export function parseFormFieldCounts(contents) {
+
+  if (!contents) {
+    return {};
+  }
+
+  // parse form content
+  let form;
+  try {
+    form = JSON.parse(contents);
+  } catch (error) {
+    return {};
+  }
+
+  // flatten nested components
+  const components = form.components || [];
+
+  function getComponents(components) {
+    const formFields = [];
+
+    components.forEach((component) => {
+      formFields.push(component);
+
+      if (component.components && component.components.length > 0) {
+        formFields.push(...getComponents(component.components));
+      }
+    });
+
+    return formFields;
+  }
+
+  const formFields = getComponents(components);
+
+  // collect form field counts by type
+  const typeCounts = {};
+
+  formFields.forEach((component) => {
+    const { type } = component;
+
+    if (typeCounts[type]) {
+      typeCounts[type]++;
+    } else {
+      typeCounts[type] = 1;
+    }
+  });
+
+  return typeCounts;
+}
+
 function getDefaultExecutionPlatform(type) {
   if (/^cloud/.test(type)) {
     return ENGINES.CLOUD;

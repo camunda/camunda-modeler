@@ -31,6 +31,8 @@ import engineProfilePlatformDMN from './fixtures/engine-platform.dmn';
 
 import engineProfileCloudDMN from './fixtures/engine-cloud.dmn';
 
+import nestedForm from './fixtures/nested.form';
+
 
 describe('<TabEventHandler>', () => {
 
@@ -500,6 +502,72 @@ describe('<TabEventHandler>', () => {
     const { templateIds } = track.getCall(0).args[1];
     expect(templateIds).to.have.length(2);
   });
+
+
+  describe('should send form field types', () => {
+
+    it('closed - simple form', async () => {
+
+      // given
+      const tab = createTab({
+        file: {
+          contents: engineProfileCloud
+        },
+        type: 'form'
+      });
+
+      // when
+      const callback = subscribe.getCall(3).args[1];
+
+      await callback({
+        tab
+      });
+
+      // then
+      expect(track).to.have.been.calledWith('diagram:closed', {
+        diagramType: 'form',
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '1.1',
+        formFieldTypes: {
+          textfield: 1,
+          button: 1
+        }
+      });
+    });
+
+
+    it('closed - nested form', async () => {
+
+      // given
+      const tab = createTab({
+        file: {
+          contents: nestedForm
+        },
+        type: 'form'
+      });
+
+      // when
+      const callback = subscribe.getCall(3).args[1];
+
+      await callback({
+        tab
+      });
+
+      // then
+      expect(track).to.have.been.calledWith('diagram:closed', {
+        diagramType: 'form',
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '8.4',
+        formFieldTypes: {
+          group: 5,
+          image: 5,
+          textfield: 6
+        }
+      });
+    });
+
+  });
+
 
 });
 
