@@ -22,7 +22,7 @@ const {
   reduce
 } = require('min-dash');
 
-const errorReasons = {
+const ERROR_REASONS = {
   UNKNOWN: 'UNKNOWN',
   CONTACT_POINT_UNAVAILABLE: 'CONTACT_POINT_UNAVAILABLE',
   UNAUTHORIZED: 'UNAUTHORIZED',
@@ -34,20 +34,20 @@ const errorReasons = {
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS'
 };
 
-const endpointTypes = {
+const ENDPOINT_TYPES = {
   SELF_HOSTED: 'selfHosted',
   OAUTH: 'oauth',
   CAMUNDA_CLOUD: 'camundaCloud'
 };
 
-const resourceTypes = {
+const RESOURCE_TYPES = {
   BPMN: 'bpmn',
   DMN: 'dmn',
   FORM: 'form'
 };
 
 /**
- * @typedef {object} ZeebeClientParameters
+ * @typedef {Object} ZeebeClientParameters
  * @property {Endpoint} endpoint
  */
 
@@ -56,13 +56,13 @@ const resourceTypes = {
  */
 
 /**
- * @typedef {object} SelfHostedNoAuthEndpoint
+ * @typedef {Object} SelfHostedNoAuthEndpoint
  * @property {'selfHosted'} type
  * @property {string} url
  */
 
 /**
- * @typedef {object} SelfHostedOAuthEndpoint
+ * @typedef {Object} SelfHostedOAuthEndpoint
  * @property {'oauth'} type
  * @property {string} url
  * @property {string} audience
@@ -71,7 +71,7 @@ const resourceTypes = {
  */
 
 /**
- * @typedef {object} CamundaCloudEndpoint
+ * @typedef {Object} CamundaCloudEndpoint
  * @property {'camundaCloud'} type
  * @property {string} clusterId
  * @property {string} clientId
@@ -80,7 +80,7 @@ const resourceTypes = {
  */
 
 /**
- * @typedef {object} TopologyResponse
+ * @typedef {Object} TopologyResponse
  * @property {'brokers'} type
  * @property {number} clusterSize
  * @property {number} partitionsCount
@@ -104,7 +104,8 @@ class ZeebeAPI {
    * Check connection with given broker/cluster.
    *
    * @param {ZeebeClientParameters} parameters
-   * @returns {{ success: boolean, reason?: string }}
+   *
+   * @return {{ success: boolean, reason?: string }}
    */
   async checkConnection(parameters) {
 
@@ -138,7 +139,8 @@ class ZeebeAPI {
    * Deploy Process.
    *
    * @param {ZeebeClientParameters & { name: string, filePath: string }} parameters
-   * @returns {Promise<{ success: boolean, response: object }>}
+   *
+   * @return {Promise<{ success: boolean, response: object }>}
    */
   async deploy(parameters) {
 
@@ -187,7 +189,8 @@ class ZeebeAPI {
    * Run process instance.
    *
    * @param {ZeebeClientParameters & { endpoint: object, processId: string, variables: object }} parameters
-   * @returns {{ success: boolean, response: object }}
+   *
+   * @return {{ success: boolean, response: object }}
    */
   async run(parameters) {
 
@@ -233,7 +236,8 @@ class ZeebeAPI {
    * Get gateway version of given broker/cluster endpoint.
    *
    * @param {ZeebeClientParameters} parameters
-   * @returns {{ success: boolean, response?: object, response?.gatewayVersion: string }}
+   *
+   * @return {{ success: boolean, response?: object, response?.gatewayVersion: string }}
    */
   async getGatewayVersion(parameters) {
 
@@ -309,11 +313,11 @@ class ZeebeAPI {
       retry: false
     };
 
-    if (!values(endpointTypes).includes(type)) {
+    if (!values(ENDPOINT_TYPES).includes(type)) {
       return;
     }
 
-    if (type === endpointTypes.OAUTH) {
+    if (type === ENDPOINT_TYPES.OAUTH) {
       options = {
         ...options,
         oAuth: {
@@ -324,7 +328,7 @@ class ZeebeAPI {
           cacheOnDisk: false
         }
       };
-    } else if (type === endpointTypes.CAMUNDA_CLOUD) {
+    } else if (type === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
       options = {
         ...options,
         camundaCloud: {
@@ -463,7 +467,8 @@ class ZeebeAPI {
    * @param {string} name
    * @param {string} filePath
    * @param {'bpmn'|'dmn'|'form'} [fileType='bpmn']
-   * @returns {`${string}.${'bpmn'|'dmn'|'form'}`}
+   *
+   * @return {`${string}.${'bpmn'|'dmn'|'form'}`}
    */
   _prepareDeploymentName(name, filePath, fileType = 'bpmn') {
 
@@ -490,10 +495,11 @@ class ZeebeAPI {
 module.exports = ZeebeAPI;
 
 
-// helpers //////////////////////
+// helpers //////////
 
 /**
  * @param {string} message
+ *
  * @return {number|undefined}
  */
 function getErrorCode(message) {
@@ -520,46 +526,46 @@ function getErrorReason(error, endpoint) {
 
   // (1) handle grpc errors
   if (code === 14 || code === 13) {
-    return type === endpointTypes.CAMUNDA_CLOUD
-      ? errorReasons.CLUSTER_UNAVAILABLE
-      : errorReasons.CONTACT_POINT_UNAVAILABLE;
+    return type === ENDPOINT_TYPES.CAMUNDA_CLOUD
+      ? ERROR_REASONS.CLUSTER_UNAVAILABLE
+      : ERROR_REASONS.CONTACT_POINT_UNAVAILABLE;
   } else if (code === 12) {
-    return errorReasons.UNSUPPORTED_ENGINE;
+    return ERROR_REASONS.UNSUPPORTED_ENGINE;
   }
 
   // (2) handle <unknown>
   if (!message) {
-    return errorReasons.UNKNOWN;
+    return ERROR_REASONS.UNKNOWN;
   }
 
   // (3) handle <not found>
   if (message.includes('ENOTFOUND') || message.includes('Not Found')) {
-    if (type === endpointTypes.OAUTH) {
-      return errorReasons.OAUTH_URL;
-    } else if (type === endpointTypes.CAMUNDA_CLOUD) {
-      return errorReasons.INVALID_CLIENT_ID;
+    if (type === ENDPOINT_TYPES.OAUTH) {
+      return ERROR_REASONS.OAUTH_URL;
+    } else if (type === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
+      return ERROR_REASONS.INVALID_CLIENT_ID;
     }
 
-    return errorReasons.CONTACT_POINT_UNAVAILABLE;
+    return ERROR_REASONS.CONTACT_POINT_UNAVAILABLE;
   }
 
   // (4) handle other error messages
   if (message.includes('Unauthorized')) {
-    return (type === endpointTypes.CAMUNDA_CLOUD
-      ? errorReasons.INVALID_CREDENTIALS
-      : errorReasons.UNAUTHORIZED
+    return (type === ENDPOINT_TYPES.CAMUNDA_CLOUD
+      ? ERROR_REASONS.INVALID_CREDENTIALS
+      : ERROR_REASONS.UNAUTHORIZED
     );
   }
 
   if (message.includes('Forbidden')) {
-    return errorReasons.FORBIDDEN;
+    return ERROR_REASONS.FORBIDDEN;
   }
 
-  if (message.includes('Unsupported protocol') && type === endpointTypes.OAUTH) {
-    return errorReasons.OAUTH_URL;
+  if (message.includes('Unsupported protocol') && type === ENDPOINT_TYPES.OAUTH) {
+    return ERROR_REASONS.OAUTH_URL;
   }
 
-  return errorReasons.UNKNOWN;
+  return ERROR_REASONS.UNKNOWN;
 }
 
 function isHashEqual(parameter1, parameter2) {
@@ -628,11 +634,11 @@ function getResource(parameters, contents, resourceName) {
     name: resourceName
   };
 
-  if (resourceType === resourceTypes.BPMN) {
+  if (resourceType === RESOURCE_TYPES.BPMN) {
     resource.process = contents;
-  } else if (resourceType === resourceTypes.DMN) {
+  } else if (resourceType === RESOURCE_TYPES.DMN) {
     resource.decision = contents;
-  } else if (resourceType === resourceTypes.FORM) {
+  } else if (resourceType === RESOURCE_TYPES.FORM) {
     resource.form = contents;
   }
 

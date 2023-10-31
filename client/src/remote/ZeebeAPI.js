@@ -8,12 +8,12 @@
  * except in compliance with the MIT License.
  */
 
-export const authTypes = {
+export const AUTH_TYPES = {
   NONE: 'none',
   OAUTH: 'oauth',
 };
 
-export const targetTypes = {
+export const ENDPOINT_TYPES = {
   SELF_HOSTED: 'selfHosted',
   CAMUNDA_CLOUD: 'camundaCloud'
 };
@@ -65,7 +65,6 @@ export default class ZeebeAPI {
     return this.backend.send('zeebe:getGatewayVersion', { endpoint: configuration });
   }
 
-
 }
 
 
@@ -87,18 +86,18 @@ function getEndpointConfiguration(endpoint) {
     camundaCloudClusterRegion
   } = endpoint;
 
-  if (targetType === targetTypes.SELF_HOSTED) {
+  if (targetType === ENDPOINT_TYPES.SELF_HOSTED) {
     switch (authType) {
 
-    case authTypes.NONE:
+    case AUTH_TYPES.NONE:
       return {
-        type: targetTypes.SELF_HOSTED,
+        type: ENDPOINT_TYPES.SELF_HOSTED,
         url: contactPoint
       };
 
-    case authTypes.OAUTH:
+    case AUTH_TYPES.OAUTH:
       return {
-        type: authTypes.OAUTH,
+        type: AUTH_TYPES.OAUTH,
         url: contactPoint,
         oauthURL,
         audience,
@@ -108,9 +107,9 @@ function getEndpointConfiguration(endpoint) {
     }
   }
 
-  if (targetType === targetTypes.CAMUNDA_CLOUD) {
+  if (targetType === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
     return {
-      type: targetTypes.CAMUNDA_CLOUD,
+      type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
       clientId: camundaCloudClientId,
       clientSecret: camundaCloudClientSecret,
       clusterId: camundaCloudClusterId,

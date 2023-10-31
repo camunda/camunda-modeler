@@ -46,7 +46,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'https://google.com'
         }
       };
@@ -74,7 +74,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'https://google.com'
         }
       };
@@ -104,7 +104,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         };
@@ -131,7 +131,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'camundaCloud'
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
           }
         };
 
@@ -157,7 +157,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'camundaCloud'
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
           }
         };
 
@@ -183,7 +183,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         };
@@ -210,7 +210,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         };
@@ -237,7 +237,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         };
@@ -264,7 +264,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth',
+            type: ENDPOINT_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -291,7 +291,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'camundaCloud'
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
           }
         };
 
@@ -317,7 +317,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         };
@@ -344,7 +344,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'camundaCloud'
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
           }
         };
 
@@ -370,7 +370,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'camundaCloud'
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
           }
         };
 
@@ -396,7 +396,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth',
+            type: ENDPOINT_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -423,7 +423,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth',
+            type: ENDPOINT_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -450,7 +450,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth',
+            type: ENDPOINT_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -477,7 +477,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         };
@@ -504,7 +504,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         }
       };
@@ -533,7 +533,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         }
       };
@@ -564,7 +564,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         }
       };
@@ -589,7 +589,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         }
       };
@@ -620,7 +620,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         }
       };
@@ -652,7 +652,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         }
       };
@@ -678,7 +678,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         filePath: 'filePath',
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         }
       };
@@ -828,7 +828,7 @@ describe('ZeebeAPI', function() {
           filePath: 'filePath',
           name: 'not_suffixed',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         });
@@ -858,7 +858,7 @@ describe('ZeebeAPI', function() {
           filePath: 'filePath',
           name: 'not_suffixed',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
           resourceType: 'dmn'
@@ -889,7 +889,7 @@ describe('ZeebeAPI', function() {
           filePath: 'filePath',
           name: 'not_suffixed',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
           resourceType: 'form'
@@ -920,7 +920,7 @@ describe('ZeebeAPI', function() {
           filePath: 'filePath',
           name: 'suffixed.bpmn',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         });
@@ -950,7 +950,7 @@ describe('ZeebeAPI', function() {
           filePath: 'filePath',
           name: 'suffixed.dmn',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
           resourceType: 'dmn'
@@ -981,7 +981,7 @@ describe('ZeebeAPI', function() {
           filePath: 'filePath',
           name: 'suffixed.form',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
           resourceType: 'form'
@@ -1012,7 +1012,7 @@ describe('ZeebeAPI', function() {
           filePath: '/Users/Test/Stuff/Zeebe/process.bpmn',
           name: '',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         });
@@ -1042,7 +1042,7 @@ describe('ZeebeAPI', function() {
           filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
           name: '',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         });
@@ -1072,7 +1072,7 @@ describe('ZeebeAPI', function() {
           filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
           name: 'orchestrae-location-check-bpmn',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         });
@@ -1102,7 +1102,7 @@ describe('ZeebeAPI', function() {
           filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
           name: '',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
           resourceType: 'dmn'
@@ -1133,7 +1133,7 @@ describe('ZeebeAPI', function() {
           filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
           name: 'orchestrae-location-check-dmn',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
           resourceType: 'dmn'
@@ -1164,7 +1164,7 @@ describe('ZeebeAPI', function() {
           filePath: '/Users/Test/Stuff/Zeebe/jsonFile.json',
           name: '',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
           resourceType: 'form'
@@ -1195,7 +1195,7 @@ describe('ZeebeAPI', function() {
           filePath: '/Users/Test/Stuff/Zeebe/jsonFile.json',
           name: 'application-form',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
           resourceType: 'form'
@@ -1270,7 +1270,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'https://google.com'
         }
       };
@@ -1300,7 +1300,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'https://google.com'
         }
       };
@@ -1329,7 +1329,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'https://google.com'
         }
       };
@@ -1360,7 +1360,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         };
@@ -1387,7 +1387,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'camundaCloud'
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
           }
         };
 
@@ -1413,7 +1413,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'camundaCloud'
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
           }
         };
 
@@ -1439,7 +1439,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         };
@@ -1466,7 +1466,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth',
+            type: ENDPOINT_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -1493,7 +1493,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'camundaCloud'
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
           }
         };
 
@@ -1519,7 +1519,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         };
@@ -1546,7 +1546,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'camundaCloud'
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
           }
         };
 
@@ -1572,7 +1572,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'camundaCloud'
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
           }
         };
 
@@ -1598,7 +1598,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth',
+            type: ENDPOINT_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -1625,7 +1625,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth',
+            type: ENDPOINT_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -1652,7 +1652,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: 'oauth',
+            type: ENDPOINT_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -1687,7 +1687,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'https://camunda.com'
         }
       };
@@ -1734,7 +1734,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         }
       };
@@ -1763,7 +1763,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         }
       };
@@ -1774,7 +1774,7 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy({
         ...parameters,
         endpoint: {
-          type: 'oauth',
+          type: ENDPOINT_TYPES.OAUTH,
           url: TEST_URL
         }
       });
@@ -1799,7 +1799,7 @@ describe('ZeebeAPI', function() {
       });
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         }
       };
@@ -1810,7 +1810,7 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy({
         ...parameters,
         endpoint: {
-          type: 'oauth',
+          type: ENDPOINT_TYPES.OAUTH,
           url: TEST_URL
         }
       });
@@ -1837,7 +1837,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'https://camunda.com'
         }
       };
@@ -1867,7 +1867,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'http://camunda.com'
         }
       };
@@ -1897,7 +1897,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'oauth',
+          type: ENDPOINT_TYPES.OAUTH,
           url: 'http://camunda.com'
         }
       };
@@ -1927,7 +1927,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'camundaCloud',
+          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
           url: 'camunda.com'
         }
       };
@@ -1957,7 +1957,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'http://camunda.com:1337'
         }
       };
@@ -1987,7 +1987,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'http://camunda.com'
         }
       };
@@ -2017,7 +2017,7 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: 'selfHosted',
+          type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'https://camunda.com'
         }
       };
@@ -2083,7 +2083,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           filePath: '/path/to/file.bpmn',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
           }
         };
@@ -2112,7 +2112,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           filePath: '/path/to/file.bpmn',
           endpoint: {
-            type: 'oauth',
+            type: ENDPOINT_TYPES.OAUTH,
             url: 'https://camunda.com'
           }
         };
@@ -2141,7 +2141,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           filePath: '/path/to/file.bpmn',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
           }
         };
@@ -2170,7 +2170,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           filePath: '/path/to/file.bpmn',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
           }
         };
@@ -2198,7 +2198,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           filePath: '/path/to/file.bpmn',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
           }
         };
@@ -2223,7 +2223,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           filePath: '/path/to/file.bpmn',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
           }
         };
@@ -2247,7 +2247,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           filePath: '/path/to/file.bpmn',
           endpoint: {
-            type: 'selfHosted',
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
           }
         };
