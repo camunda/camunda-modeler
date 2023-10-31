@@ -9,7 +9,8 @@
  */
 
 import {
-  getEngineProfile
+  getEngineProfile,
+  parseFormFieldCounts
 } from '../../../util/parse';
 
 import { getTemplateIds } from '../util';
@@ -65,12 +66,19 @@ export default class TabEventHandler {
 
       const engineProfile = await getEngineProfile(contents, type);
 
-      let payload = { diagramType: tab.type };
+      let payload = { diagramType: type };
 
       if (engineProfile) {
         payload = {
           ...payload,
           ...engineProfile
+        };
+      }
+
+      if (type === types.FORM) {
+        payload = {
+          ...payload,
+          formFieldTypes: parseFormFieldCounts(contents)
         };
       }
 
