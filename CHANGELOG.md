@@ -12,6 +12,9 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-dmn-moddle@1.3.0`
 * `DEPS`: update to `dmn-moddle@14.5.0`
 * `DEPS`: update to `camunda-bpmn-js@3.6.1`
+* `DEPS`: update to `@bpmn-io/form-js@1.4.0`
+* `DEPS`: update to `@camunda/form-linting@0.12.0`
+* `DEPS`: update to `@camunda/form-playground@0.10.0`
 
 ### BPMN
 
@@ -21,6 +24,12 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: use FEEL editor in literal expression editor ([bpmn-io/dmn-js#780](https://github.com/bpmn-io/dmn-js/issues/780))
 * `FEAT`: implement variable suggestions ([bpmn-io/dmn-js#785](https://github.com/bpmn-io/dmn-js/issues/785))
+
+### Forms
+
+* `FEAT`: support `separator` form field ([#480](https://github.com/bpmn-io/form-js/issues/480))
+* `FEAT`: keyboard support for palette entries ([#536](https://github.com/bpmn-io/form-js/issues/536))
+* `FEAT`: make it easier to navigate over tags in `taglist` component via keyboard ([#435](https://github.com/bpmn-io/form-js/issues/435))
 
 ## 5.16.0
 
