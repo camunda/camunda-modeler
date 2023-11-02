@@ -14,7 +14,7 @@ jobs:
           files:
           - 'dist/camunda-modeler-nightly-mac.dmg'
           - 'dist/camunda-modeler-nightly-mac.zip'
-        - os: windows-2019
+        - os: windows-2022
           files:
           - 'dist/camunda-modeler-nightly-win-ia32.zip'
           - 'dist/camunda-modeler-nightly-win-x64.zip'
