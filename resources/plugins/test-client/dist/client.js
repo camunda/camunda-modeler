@@ -12,9 +12,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ TestClient)
 /* harmony export */ });
-/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "./node_modules/camunda-modeler-plugin-helpers/react.js");
+/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "../node_modules/camunda-modeler-plugin-helpers/react.js");
 /* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/components */ "./node_modules/camunda-modeler-plugin-helpers/components.js");
+/* harmony import */ var camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/components */ "../node_modules/camunda-modeler-plugin-helpers/components.js");
 /**
  * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
  * under one or more contributor license agreements. See the NOTICE file
@@ -116,10 +116,10 @@ function TestIcon() {
 
 /***/ }),
 
-/***/ "./node_modules/camunda-modeler-plugin-helpers/components.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/camunda-modeler-plugin-helpers/components.js ***!
-  \*******************************************************************/
+/***/ "../node_modules/camunda-modeler-plugin-helpers/components.js":
+/*!********************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/components.js ***!
+  \********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -295,10 +295,10 @@ const ToggleSwitch = window.components.ToggleSwitch || NotCompatible('5.0');
 
 /***/ }),
 
-/***/ "./node_modules/camunda-modeler-plugin-helpers/index.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/camunda-modeler-plugin-helpers/index.js ***!
-  \**************************************************************/
+/***/ "../node_modules/camunda-modeler-plugin-helpers/index.js":
+/*!***************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/index.js ***!
+  \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -678,10 +678,10 @@ function getPluginsDirectory() {
 
 /***/ }),
 
-/***/ "./node_modules/camunda-modeler-plugin-helpers/react.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/camunda-modeler-plugin-helpers/react.js ***!
-  \**************************************************************/
+/***/ "../node_modules/camunda-modeler-plugin-helpers/react.js":
+/*!***************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/react.js ***!
+  \***************************************************************/
 /***/ ((module) => {
 
 if (!window.react) {
@@ -773,7 +773,7 @@ var __webpack_exports__ = {};
   !*** ./client/index.js ***!
   \*************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers */ "./node_modules/camunda-modeler-plugin-helpers/index.js");
+/* harmony import */ var camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers */ "../node_modules/camunda-modeler-plugin-helpers/index.js");
 /* harmony import */ var _TestClient__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TestClient */ "./client/TestClient.js");
 /**
  * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
