@@ -44,20 +44,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Forms improvements</h4>
-          Added a group component and support for nested data (form keys).
+          <h4>Preview Append on Hover</h4>
+          Advance your BPMN diagrams with confidence using this new feature. Hover over a context pad entry to see a preview of the element to create.
         </li>
         <li>
-          <h4>FEEL tooling inside the DMN editor</h4>
-          Integrated inside the DMN editor, our FEEL tooling helps you to create better decision tables faster.
+          <h4>Form Deployment to Camunda 8</h4>
+          You can now deploy forms directly from the forms tab to Camunda 8. To use the deployed form, you can reference it in your BPMN diagram as a linked form.
         </li>
         <li>
-          <h4>A better deploy experience</h4>
-          The deploy tool ships with improved UI and error handling, providing more useful feedback when things go awry.
+          <h4>Easier Toggle for Non-Interrupting Events</h4>
+          We simplified toggling of an event's interrupted state. You can now find a toggle in the replace menu header.
         </li>
         <li>
-          <h4>Improved Camunda 8 coverage, bug fixes, and more</h4>
-          Added support for signal events, a new Camunda 8 feature. As always, this release incorporates bug fixes and additional minor improvements.
+          <h4>Bug fixes and more</h4>
+          As always, this release incorporates bug fixes and additional minor improvements.
         </li>
       </ul>
     </div>
