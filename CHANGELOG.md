@@ -15,7 +15,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add FEEL popup menu ([#3877](https://github.com/camunda/camunda-modeler/issues/3877))
 * `DEPS`: update to `camunda-dmn-js@1.5.0`
 * `DEPS`: update to `camunda-dmn-moddle@1.3.0`
-* `DEPS`: update to `diagram-js@12.7.2`
+* `DEPS`: update to `diagram-js@12.7.3`
 * `DEPS`: update to `dmn-js@14.7.0`
 * `DEPS`: update to `bpmn-js@15.1.3`
 * `DEPS`: update to `bpmn-js-element-templates@1.7.0`
