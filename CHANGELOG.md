@@ -6,18 +6,36 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.17.0
+
 ### General
 
+* `FEAT`: Add Camunda 8.4 and 7.21 as engine profiles ([#3921](https://github.com/camunda/camunda-modeler/issues/3921))
+* `FEAT`: support multi-tenancy when deploying or running a process ([#3716](https://github.com/camunda/camunda-modeler/issues/3716))
+* `FEAT`: add FEEL popup menu ([#3877](https://github.com/camunda/camunda-modeler/issues/3877))
 * `DEPS`: update to `camunda-dmn-js@1.4.0`
 * `DEPS`: update to `camunda-dmn-moddle@1.3.0`
+* `DEPS`: update to `diagram-js@12.7.2`
+* `DEPS`: update to `dmn-js@14.6.0`
 * `DEPS`: update to `dmn-moddle@14.5.0`
-* `DEPS`: update to `camunda-bpmn-js@3.6.1`
-* `DEPS`: update to `@bpmn-io/form-js@1.4.0`
+* `DEPS`: update to `bpmn-js@15.1.3`
+* `DEPS`: update to `bpmn-js-element-templates@1.7.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.6.1`
+* `DEPS`: update to `camunda-bpmn-js@3.8.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.4.1`
 * `DEPS`: update to `@camunda/form-linting@0.12.0`
-* `DEPS`: update to `@camunda/form-playground@0.10.0`
+* `DEPS`: update to `@camunda/form-playground@0.10.1`
 
 ### BPMN
 
+* `FEAT`: add toggle for non-interrupting events ([bpmn-io/bpmn-js#2000](https://github.com/bpmn-io/bpmn-js/pull/2000))
+* `FEAT`: keep events non-interrupting when using `bpmnReplace` by default ([bpmn-io/bpmn-js#2000](https://github.com/bpmn-io/bpmn-js/pull/2000))
+* `FEAT`: preview append on hover ([bpmn-io/bpmn-js#1985](https://github.com/bpmn-io/bpmn-js/pull/1985))
+* `FEAT`: align selection outline with element's shape ([bpmn-io/bpmn-io/bpmn-js#1996]((https://github.com/bpmn-io/bpmn-js/pull/1985)))
+* `FEAT`: make space tool local per default ([bpmn-io/diagram-js#811](https://github.com/bpmn-io/diagram-js/pull/811), [bpmn-io/bpmn-js#1975](https://github.com/bpmn-io/bpmn-js/issues/1975))
+* `FEAT`: support Camunda 8 form reference ([bpmn-io/bpmn-js-properties-panel#978](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/978), [bpmn-io/bpmn-js-properties-panel#949](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/949))
+* `FEAT`: add link to learning resources from the FEEL popup editor ([@bpmn-io/properties-panel#308](https://github.com/bpmn-io/properties-panel/pull/308))
+* `FEAT`: support `zeebe:taskDefinition` binding ([bpmn-io/bpmn-js-element-templates#29](https://github.com/bpmn-io/bpmn-js-element-templates/pull/29))
 * `FIX`: display multi-instance configuration in properties panel ([#3396](https://github.com/camunda/camunda-modeler/issues/3396))
 
 ### DMN
@@ -27,9 +45,11 @@ ___Note:__ Yet to be released changes appear here._
 
 ### Forms
 
+* `FEAT`: support standalone Form deployment ([#3656](https://github.com/camunda/camunda-modeler/issues/3656))
 * `FEAT`: support `separator` form field ([#480](https://github.com/bpmn-io/form-js/issues/480))
 * `FEAT`: keyboard support for palette entries ([#536](https://github.com/bpmn-io/form-js/issues/536))
 * `FEAT`: make it easier to navigate over tags in `taglist` component via keyboard ([#435](https://github.com/bpmn-io/form-js/issues/435))
+* `FIX`: allow `0` as a valid minimum for number fields ([#3913](https://github.com/camunda/camunda-modeler/issues/3913))
 
 ## 5.16.0
 
