@@ -13,11 +13,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: Add Camunda 8.4 and 7.21 as engine profiles ([#3921](https://github.com/camunda/camunda-modeler/issues/3921))
 * `FEAT`: support multi-tenancy when deploying or running a process ([#3716](https://github.com/camunda/camunda-modeler/issues/3716))
 * `FEAT`: add FEEL popup menu ([#3877](https://github.com/camunda/camunda-modeler/issues/3877))
-* `DEPS`: update to `camunda-dmn-js@1.4.0`
+* `DEPS`: update to `camunda-dmn-js@1.5.0`
 * `DEPS`: update to `camunda-dmn-moddle@1.3.0`
 * `DEPS`: update to `diagram-js@12.7.2`
-* `DEPS`: update to `dmn-js@14.6.0`
-* `DEPS`: update to `dmn-moddle@14.5.0`
+* `DEPS`: update to `dmn-js@14.7.0`
 * `DEPS`: update to `bpmn-js@15.1.3`
 * `DEPS`: update to `bpmn-js-element-templates@1.7.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.6.1`
@@ -42,6 +41,10 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: use FEEL editor in literal expression editor ([bpmn-io/dmn-js#780](https://github.com/bpmn-io/dmn-js/issues/780))
 * `FEAT`: implement variable suggestions ([bpmn-io/dmn-js#785](https://github.com/bpmn-io/dmn-js/issues/785))
+* `FEAT`: adjust selection outline to shapes ([bpmn-io/dmn-js#799](https://github.com/bpmn-io/dmn-js/issues/799))
+* `FEAT`: implement search in DRD ([bpmn-io/dmn-js#792](https://github.com/bpmn-io/dmn-js/pull/792))
+* `FIX`: make literal expression box grow with content ([bpmn-io/dmn-js#789](https://github.com/bpmn-io/dmn-js/issues/789))
+* `FIX`: add missing translations ([bpmn-io/dmn-js#793](https://github.com/bpmn-io/dmn-js/issues/793))
 
 ### Forms
 
