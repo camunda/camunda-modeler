@@ -48,8 +48,8 @@ export function ReleaseInfo(props) {
           Advance your BPMN diagrams with confidence using this new feature. Hover over a context pad entry to see a preview of the element to create.
         </li>
         <li>
-          <h4>Support for Upcoming Camunda 8 Features - Standalone Form Deployment and Linking</h4>
-          You can now deploy forms directly from the forms tab to Camunda 8. To use the deployed form, you can reference it in your BPMN diagram as a linked form.
+          <h4>Standalone Form Deployment and Linking</h4>
+          Supporting upcoming Camunda 8 features, you can now deploy forms directly from the forms tab. Reference it from a user task inside a BPMN diagram and Tasklist will pick it up for task completion.
         </li>
         <li>
           <h4>Easier Toggle for Non-Interrupting Events</h4>
