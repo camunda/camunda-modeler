@@ -52,8 +52,8 @@ export function ReleaseInfo(props) {
           Supporting upcoming Camunda 8 features, you can now deploy forms directly from the forms tab. Reference it from a user task inside a BPMN diagram and Tasklist will pick it up for task completion.
         </li>
         <li>
-          <h4>Easier Toggle for Non-Interrupting Events</h4>
-          We simplified toggling of an event's interrupted state. You can now find a toggle in the replace menu header.
+          <h4>Improved FEEL Editor Tooling</h4>
+          We've enhanced the FEEL expression editing experience with a popup editor for large expressions. Additionally, the FEEL autocompletion now contains the typed argument list for all built-in functions.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
