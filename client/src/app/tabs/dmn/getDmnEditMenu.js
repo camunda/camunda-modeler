@@ -13,6 +13,7 @@ import {
   getCopyCutPasteEntries,
   getAlignDistributeEntries,
   getDefaultCopyCutPasteEntries,
+  getDiagramFindEntries,
   getSelectionEntries,
   getToolEntries,
   getUndoRedoEntries
@@ -54,6 +55,7 @@ export function getDmnDrdEditMenu(state) {
     copyCutPasteEntries,
     getToolEntries(state),
     getAlignDistributeEntries(state),
+    getDiagramFindEntries(state),
     getCanvasEntries(state),
     getSelectionEntries(state)
   ];
