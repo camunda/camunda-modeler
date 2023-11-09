@@ -406,6 +406,7 @@ export class DmnEditor extends CachedComponent {
         defaultUndoRedo: inputActive,
         distribute: selectionLength > 2,
         editLabel: !inputActive && !!selectionLength,
+        find: !inputActive,
         lassoTool: !inputActive,
         moveCanvas: !inputActive,
         moveSelection: !inputActive && !!selectionLength,
