@@ -140,7 +140,7 @@ This project incorporates components from the projects listed below. The origina
 133.  css-loader@6.8.1 (webpack-contrib/css-loader)
 134.  ms@2.1.2 (zeit/ms)
 135.  debug@4.3.4 (git://github.com/debug-js/debug.git)
-136.  diagram-js@12.7.2 (https://github.com/bpmn-io/diagram-js)
+136.  diagram-js@12.7.3 (https://github.com/bpmn-io/diagram-js)
 137.  dmn-js-properties-panel@3.1.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
 138.  focus-trap@7.5.2 (git+https://github.com/focus-trap/focus-trap.git)
 139.  hoist-non-react-statics@3.3.2 (git://github.com/mridgway/hoist-non-react-statics.git)
@@ -4648,7 +4648,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF debug@4.3.4 NOTICES AND INFORMATION
 
 
-%% diagram-js@12.7.2 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@12.7.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -4672,7 +4672,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@12.7.2 NOTICES AND INFORMATION
+END OF diagram-js@12.7.3 NOTICES AND INFORMATION
 
 
 %% dmn-js-properties-panel@3.1.0 NOTICES AND INFORMATION BEGIN HERE
