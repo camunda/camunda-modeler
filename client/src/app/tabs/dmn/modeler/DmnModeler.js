@@ -26,6 +26,8 @@ import overviewRendererModule from './features/overview/overview-renderer';
 import executionPlatformModule from '@camunda/execution-platform';
 import modelerModdle from 'modeler-moddle/resources/dmn-modeler.json';
 
+import { HighContrastCanvasModule as highContrastCanvasModule } from '@camunda/improved-canvas';
+
 const NOOP_MODULE = [ 'value', null ];
 
 const poweredByModule = {
@@ -61,7 +63,8 @@ export default class CamundaDmnModeler extends DmnModeler {
       ...otherOptions,
       drd: mergeModules(drd, [
         propertiesPanelKeyboardBindingsModule,
-        executionPlatformModule
+        executionPlatformModule,
+        highContrastCanvasModule
       ]),
       decisionTable: mergeModules(decisionTable, [
         decisionTableKeyboardModule,

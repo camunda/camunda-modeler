@@ -19,6 +19,7 @@ import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/p
 import lintingAnnotationsModule from '@camunda/linting/modeler';
 
 import { BpmnJSTracking as bpmnJSTracking } from 'bpmn-js-tracking';
+import { HighContrastCanvasModule as highContrastCanvasModule } from '@camunda/improved-canvas';
 
 import contextPadTracking from 'bpmn-js-tracking/lib/features/context-pad';
 import elementTemplates from 'bpmn-js-tracking/lib/features/element-templates';
@@ -63,5 +64,6 @@ CloudBpmnModeler.prototype._modules = [
   elementTemplates,
   modelingTracking,
   popupMenuTracking,
-  paletteTracking
+  paletteTracking,
+  highContrastCanvasModule
 ];

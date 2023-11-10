@@ -28,6 +28,8 @@ import modelingTracking from 'bpmn-js-tracking/lib/features/modeling';
 import popupMenuTracking from 'bpmn-js-tracking/lib/features/popup-menu';
 import paletteTracking from 'bpmn-js-tracking/lib/features/palette';
 
+import { HighContrastCanvasModule as highContrastCanvasModule } from '@camunda/improved-canvas';
+
 
 export default class PlatformBpmnModeler extends BpmnModeler {
 
@@ -62,7 +64,8 @@ const extensionModules = [
   elementTemplatesTracking,
   modelingTracking,
   popupMenuTracking,
-  paletteTracking
+  paletteTracking,
+  highContrastCanvasModule
 ];
 
 PlatformBpmnModeler.prototype._modules = [
