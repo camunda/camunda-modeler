@@ -34,6 +34,7 @@ import {
   getCanvasEntries,
   getAlignDistributeEntries,
   getCopyCutPasteEntries,
+  getDiagramFindEntries,
   getSelectionEntries,
   getToolEntries,
   getUndoRedoEntries
@@ -708,6 +709,27 @@ describe('<DmnEditor>', function() {
         });
 
 
+        it('should provide find entries', async function() {
+
+          // given
+          const changedSpy = (state) => {
+
+            const editMenuEntries = getDiagramFindEntries(state);
+
+            // then
+            expect(state.editMenu).to.deep.include(editMenuEntries);
+
+          };
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          // when
+          instance.handleChanged();
+        });
+
+
         it('should provide canvas entries', async function() {
 
           // given
@@ -800,6 +822,31 @@ describe('<DmnEditor>', function() {
           instance.handleChanged();
         });
 
+
+        it('should NOT provide find entries', async function() {
+
+          // given
+          const changedSpy = sinon.spy();
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          changedSpy.resetHistory();
+
+          // when
+          const modeler = instance.getModeler();
+
+          modeler.open({ type: 'decisionTable' });
+          instance.handleChanged();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+          expect(hasMenuEntry(state.editMenu, 'Find')).to.be.false;
+        });
+
       });
 
 
@@ -829,6 +876,31 @@ describe('<DmnEditor>', function() {
 
           expect(hasMenuEntry(state.editMenu, 'Remove Selected')).to.be.true;
           expect(getMenuEntry(state.editMenu, 'Remove Selected').role).to.equal('delete');
+        });
+
+
+        it('should NOT provide find entries', async function() {
+
+          // given
+          const changedSpy = sinon.spy();
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          changedSpy.resetHistory();
+
+          // when
+          const modeler = instance.getModeler();
+
+          modeler.open({ type: 'literalExpression' });
+          instance.handleChanged();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+          expect(hasMenuEntry(state.editMenu, 'Find')).to.be.false;
         });
 
       });
