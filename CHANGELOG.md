@@ -6,6 +6,15 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `DEPS`: update to `camunda-bpmn-js@3.9.0`
+* `DEPS`: update to `bpmn-js-element-templates@1.8.0`
+
+### BPMN
+
+* `FEAT`: support receive and send task message templating ([bpmn-io/bpmn-js-element-templates#30](https://github.com/bpmn-io/bpmn-js-element-templates/pull/30))
+
 ## 5.17.0
 
 ### General
