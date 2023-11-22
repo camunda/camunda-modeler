@@ -907,7 +907,7 @@ export class DmnEditor extends CachedComponent {
           !isDrd && (
             <div className="top">
               <button id="button-edit-drd" className="button" onClick={ this.handleEditDrdClick }>Edit DRD</button>
-              <button id="button-toggle-overview" className="button" onClick={ this.toggleOverview }>{ overviewOpen ? 'Close' : 'Open' } Overview</button>
+              <button id="button-toggle-overview" className="button" onClick={ this.toggleOverview }>{ overviewOpen ? 'Close' : 'Open' } overview</button>
             </div>
           )
         }
