@@ -44,10 +44,6 @@
     }
   }
 
-  &:not(:hover) .linting-tab-item__link {
-    display: none;
-  }
-
   .linting-tab-item__content {
     width: calc(100% - 200px);
     padding: var(--linting-tab-item-padding);
@@ -60,6 +56,10 @@
         color: var(--color-blue-205-100-50);
         position: relative;
         top: 2px;
+      }
+
+      &:hover svg {
+        color: var(--color-blue-205-100-45);
       }
     }
 
