@@ -63,7 +63,7 @@
     "eslint-plugin-camunda-licensed": "^0.4.6",
     "eslint-plugin-import": "^2.28.1",
     "execa": "^1.0.0",
-    "lerna": "^7.2.0",
+    "lerna": "^8.0.0",
     "license-webpack-plugin": "^4.0.2",
     "mocha": "^10.0.0",
     "mri": "^1.1.4",
