@@ -2055,20 +2055,18 @@ export class App extends PureComponent {
                 <Panel
                   layout={ layout }
                   onLayoutChanged={ this.handleLayoutChanged }
-                  onUpdateMenu={ this.updateMenu } />
+                  onUpdateMenu={ this.updateMenu }>
+                  <LogTab
+                    layout={ layout }
+                    entries={ logEntries }
+                    onClear={ this.clearLog }
+                    onAction={ this.triggerAction } />
 
-                <LogTab
-                  layout={ layout }
-                  entries={ logEntries }
-                  onClear={ this.clearLog }
-                  onAction={ this.triggerAction }
-                  onLayoutChanged={ this.handleLayoutChanged } />
-
-                <LintingTab
-                  layout={ layout }
-                  linting={ this.getLintingState(activeTab) }
-                  onAction={ this.triggerAction }
-                  onLayoutChanged={ this.handleLayoutChanged } />
+                  <LintingTab
+                    layout={ layout }
+                    linting={ this.getLintingState(activeTab) }
+                    onAction={ this.triggerAction } />
+                </Panel>
               </PanelContainer>
 
               <StatusBar />
