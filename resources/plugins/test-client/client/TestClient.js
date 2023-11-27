@@ -41,8 +41,15 @@ export default class TestClient extends Component {
       });
     });
 
+    subscribe('app.activeTabChanged', ({ activeTab }) => {
+      this.setState({
+        tabType: activeTab.type
+      });
+    });
+
     this.state = {
-      saveCounter: 0
+      saveCounter: 0,
+      tabType: null
     };
   }
 
@@ -76,7 +83,8 @@ export default class TestClient extends Component {
   render() {
 
     const {
-      saveCounter
+      saveCounter,
+      tabType
     } = this.state;
 
     /**
@@ -104,6 +112,11 @@ export default class TestClient extends Component {
             Saved: { saveCounter }
           </div>
         </Fill>
+
+        {tabType === 'cloud-bpmn' && <Fill slot="bottom-panel" label="Cloud Plugin" id="cloudPlugin">
+          <h1>Hello World</h1>
+        </Fill>
+        }
       </Fragment>
     );
   }

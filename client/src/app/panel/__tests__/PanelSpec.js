@@ -14,7 +14,7 @@ import React from 'react';
 
 import { mount } from 'enzyme';
 
-import { SlotFillRoot } from '../../slot-fill';
+import { Fill, SlotFillRoot } from '../../slot-fill';
 
 import Panel from '../Panel';
 
@@ -57,6 +57,25 @@ describe('<Panel>', function() {
       expect(wrapper.find('.foo')).to.have.length(1);
     });
 
+
+    it('should add Tab as Plugin', function() {
+
+      // when
+      const wrapper = renderPanel({
+        children: <Fill slot="bottom-panel" label="Foo" id="foo">
+          <div className="foo" />
+        </Fill>
+      });
+
+      // then
+      expect(wrapper.find('.panel__link')).to.have.length(1);
+      expect(wrapper.find('.panel__link--active')).to.have.length(1);
+
+      expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Foo');
+      expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
+
+      expect(wrapper.find('.foo')).to.have.length(1);
+    });
 
     it('should render two tabs', function() {
 
