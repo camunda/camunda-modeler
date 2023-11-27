@@ -10,7 +10,7 @@
 
 import React, { PureComponent } from 'react';
 
-import Panel from '../../Panel';
+import { Fill } from '../../../slot-fill';
 
 import css from './LogTab.less';
 
@@ -116,7 +116,7 @@ export default class LogTab extends PureComponent {
 
     return (
       <>
-        <Panel.Tab
+        <Fill slot="bottom-panel"
           id="log"
           label="Output"
           priority={ 2 }
@@ -174,7 +174,7 @@ export default class LogTab extends PureComponent {
               })
             }
           </div>
-        </Panel.Tab>
+        </Fill>
       </>
     );
   }

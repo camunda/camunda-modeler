@@ -14,7 +14,7 @@ import classnames from 'classnames';
 
 import { isNil } from 'min-dash';
 
-import Panel from '../../Panel';
+import { Fill } from '../../../slot-fill';
 
 import LintingStatusBarItem from './LintingStatusBarItem';
 
@@ -50,7 +50,7 @@ export default function LintingTab(props) {
   };
 
   return <>
-    <Panel.Tab
+    <Fill slot="bottom-panel"
       id="linting"
       label="Problems"
       layout={ layout }
@@ -75,7 +75,7 @@ export default function LintingTab(props) {
           />;
         }))
       }
-    </Panel.Tab>
+    </Fill>
     <LintingStatusBarItem
       layout={ layout }
       linting={ reports }
