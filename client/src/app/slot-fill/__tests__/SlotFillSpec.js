@@ -11,6 +11,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
+import sinon from 'sinon';
+
 import {
   SlotFillRoot,
   Fill,
@@ -209,6 +211,29 @@ describe('slot-fill', function() {
           slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
 
       expect(slot.contains(fill)).to.be.true;
+    });
+
+
+    it('should render fills in custom Component', function() {
+
+      // given
+      const CustomComponent = sinon.spy(() => null);
+
+      // when
+      ReactDOM.render(
+        <SlotFillRoot>
+          <Fill slot="foo" customProp="foo">
+            <div className="fill" />
+          </Fill>
+          <div className="slot">
+            <Slot name="foo" Component={ CustomComponent } />
+          </div>
+        </SlotFillRoot>,
+        container
+      );
+
+      // then
+      expect(CustomComponent).to.have.been.calledWithMatch({ customProp: 'foo' });
     });
 
 

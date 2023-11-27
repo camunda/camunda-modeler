@@ -45,7 +45,8 @@ export default class Slot extends PureComponent {
       name,
       group = groupFills,
       separator = nonSeparator,
-      limit
+      limit,
+      Component
     } = this.props;
 
     return (
@@ -60,7 +61,7 @@ export default class Slot extends PureComponent {
 
           const grouped = group(cropped);
 
-          return createFills(grouped, fillFragment, separator);
+          return createFills(grouped, fillFragment(Component), separator);
         }
       }</SlotContext.Consumer>
     );
@@ -68,9 +69,15 @@ export default class Slot extends PureComponent {
 
 }
 
-function fillFragment(fill) {
-  return <Fragment key={ fill.id }>{fill.props.children}</Fragment>;
-}
+const fillFragment = (Component) => (fill) => {
+  const { id, props } = fill;
+
+  if (!Component) {
+    return <Fragment key={ id }>{props.children}</Fragment>;
+  }
+
+  return <Component key={ id } { ...props }></Component>;
+};
 
 function nonSeparator(key) {
   return null;
