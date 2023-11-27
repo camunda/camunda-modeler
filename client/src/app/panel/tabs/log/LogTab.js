@@ -111,9 +111,7 @@ export default class LogTab extends PureComponent {
   render() {
     const {
       entries = [],
-      layout,
       onClear,
-      onLayoutChanged
     } = this.props;
 
     return (
@@ -121,8 +119,6 @@ export default class LogTab extends PureComponent {
         <Panel.Tab
           id="log"
           label="Output"
-          layout={ layout }
-          onLayoutChanged={ onLayoutChanged }
           priority={ 2 }
           actions={
             [

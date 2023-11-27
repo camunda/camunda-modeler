@@ -30,8 +30,7 @@ export default function LintingTab(props) {
   const {
     layout = {},
     linting: reports,
-    onAction,
-    onLayoutChanged
+    onAction
   } = props;
 
   const onClick = (report) => () => {
@@ -55,7 +54,6 @@ export default function LintingTab(props) {
       id="linting"
       label="Problems"
       layout={ layout }
-      onLayoutChanged={ onLayoutChanged }
       priority={ 1 }>
       { reports.length
         ? null

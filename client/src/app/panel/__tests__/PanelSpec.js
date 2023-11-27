@@ -155,16 +155,15 @@ describe('<Panel>', function() {
           createTab({
             id: 'foo',
             label: 'Foo',
-            onLayoutChanged: onLayoutChangedSpy,
             children: <div className="foo" />
           }),
           createTab({
             id: 'bar',
             label: 'Bar',
-            onLayoutChanged: onLayoutChangedSpy,
             children: <div className="bar" />
           })
-        ]
+        ],
+        onLayoutChanged: onLayoutChangedSpy,
       });
 
       // when
@@ -255,6 +254,7 @@ function renderPanel(options = {}) {
   const {
     children,
     layout = defaultLayout,
+    onLayoutChanged = noop,
     onUpdateMenu = noop
   } = options;
 
@@ -262,7 +262,8 @@ function renderPanel(options = {}) {
     <SlotFillRoot>
       <Panel
         layout={ layout }
-        onUpdateMenu={ onUpdateMenu }>
+        onUpdateMenu={ onUpdateMenu }
+        onLayoutChanged={ onLayoutChanged }>
         { children }
       </Panel>
     </SlotFillRoot>

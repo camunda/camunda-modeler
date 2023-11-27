@@ -8,25 +8,25 @@
  * except in compliance with the MIT License.
  */
 
-import React, { PureComponent, useCallback, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import classnames from 'classnames';
 
 import { isDefined } from 'min-dash';
-
-import {
-  Fill,
-  Slot
-} from '../slot-fill';
 
 import CloseIcon from '../../../resources/icons/Close.svg';
 
 import css from './Panel.less';
 
 
-export default function Panel(props) {
+const TabContext = React.createContext({
+  tabs: [],
+  addTab: () => {},
+  removeTab: () => {}
+});
 
-  const { onUpdateMenu } = props;
+export default function Panel({ children, layout = {}, onLayoutChanged, onUpdateMenu }) {
+  const { panel = {} } = layout;
 
   const updateMenu = useCallback(() => {
     const enabled = hasSelection();
@@ -65,16 +65,22 @@ export default function Panel(props) {
     onUpdateMenu({ editMenu });
   }, [ onUpdateMenu ]);
 
+  const [ tabs, setTabs ] = useState([]);
 
-  const {
-    children,
-    layout = {},
-    onLayoutChanged
-  } = props;
+  const { tab: activeTabId } = panel;
+  const activeTab = tabs.find(t => t.id === activeTabId) || {};
+
+  const contextValue = {
+    tabs,
+    addTab: (tab) => {
+      setTabs(tabs => [ ...tabs, tab ]);
+    },
+    removeTab: (tab) => {
+      setTabs(tabs => tabs.filter(t => t !== tab));
+    }
+  };
 
   const close = () => {
-    const { panel = {} } = layout;
-
     onLayoutChanged({
       panel: {
         ...panel,
@@ -83,92 +89,94 @@ export default function Panel(props) {
     });
   };
 
-  return <div className={ css.Panel }>
-    <div className="panel__header">
-      <div className="panel__links">
-        <Slot name="panel-link" />
+  return <TabContext.Provider value={ contextValue }>
+    <div className={ css.Panel }>
+      <div className="panel__header">
+        <div className="panel__links">
+          {tabs.sort((a, b) => b.priority - a.priority).map(tab => (
+            <button
+              key={ tab.id }
+              className={ classnames('panel__link', { 'panel__link--active': tab === activeTab }) }
+              onClick={ () => onLayoutChanged({
+                panel: {
+                  ...panel,
+                  tab: tab.id
+                }
+              }) }
+            >
+              {tab.link}
+            </button>
+          ))}
+        </div>
+        <div className="panel__actions">
+          {activeTab.actions}
+          <button key="close" className="panel__action" title="Close panel" onClick={ close }>
+            <CloseIcon />
+          </button>
+        </div>
       </div>
-      <div className="panel__actions">
-        <Slot name="panel-action" />
-        <button key="close" className="panel__action" title="Close panel" onClick={ close }>
-          <CloseIcon />
-        </button>
+      <div tabIndex="0" className="panel__body" onFocus={ updateMenu }>
+        <div className="panel__inner">
+          {activeTab.body}
+        </div>
       </div>
+      {
+        children
+      }
     </div>
-    <div tabIndex="0" className="panel__body" onFocus={ updateMenu }>
-      <div className="panel__inner">
-        <Slot name="panel-body" />
-      </div>
-    </div>
-    {
-      children
-    }
-  </div>;
+  </TabContext.Provider>;
 }
 
 Panel.Tab = Tab;
 
 function Tab(props) {
   const {
-    actions = null,
+    actions = [],
     children,
     id,
     label,
-    layout = {},
     number,
-    onLayoutChanged,
     priority
   } = props;
 
-  const { panel = {} } = layout;
+  const { addTab, removeTab } = useContext(TabContext);
 
-  const { tab } = panel;
-
-  const onClick = () => {
-    onLayoutChanged({
-      panel: {
-        ...panel,
-        tab: id
-      }
-    });
-  };
-
-  return <>
-    <Fill slot="panel-link" priority={ priority }>
-      <button
-        className={ classnames('panel__link', { 'panel__link--active': tab === id }) }
-        onClick={ onClick }>
-        <span className="panel__link-label">
-          { label }
-        </span>
-        {
-          isDefined(number)
-            ? <span className="panel__link-number">{ number }</span>
-            : null
-        }
-      </button>
-    </Fill>
+  const Link = <>
+    <span className="panel__link-label">
+      { label }
+    </span>
     {
-      actions && tab === id && <Fill slot="panel-action">
-        {
-          actions.map(action => {
-            const Icon = action.icon;
-
-            return <button key={ action.title } className="panel__action" title={ action.title } onClick={ action.onClick }>
-              <Icon />
-            </button>;
-          })
-        }
-      </Fill>
-    }
-    {
-      tab === id && (
-        <Fill slot="panel-body">
-          { children }
-        </Fill>
-      )
+      isDefined(number)
+        ? <span className="panel__link-number">{ number }</span>
+        : null
     }
   </>;
+
+  const Actions = actions.map(action => {
+    const Icon = action.icon;
+
+    return <button key={ action.title } className="panel__action" title={ action.title } onClick={ action.onClick }>
+      <Icon />
+    </button>;
+  });
+
+  const TabContent = {
+    id,
+    priority,
+    link: Link,
+    actions: Actions,
+    body: children
+  };
+
+  useEffect(() => {
+    addTab(TabContent);
+
+    return () => {
+      removeTab(TabContent);
+    };
+  }, []);
+
+  return null;
 }
 
 
