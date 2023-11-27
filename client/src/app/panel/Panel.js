@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useCallback, useState } from 'react';
 
 import classnames from 'classnames';
 
@@ -24,18 +24,11 @@ import CloseIcon from '../../../resources/icons/Close.svg';
 import css from './Panel.less';
 
 
-export default class Panel extends PureComponent {
-  constructor(props) {
-    super(props);
+export default function Panel(props) {
 
-    this.state = {
-      activeTab: null
-    };
-  }
+  const { onUpdateMenu } = props;
 
-  updateMenu = () => {
-    const { onUpdateMenu } = this.props;
-
+  const updateMenu = useCallback(() => {
     const enabled = hasSelection();
 
     const editMenu = [
@@ -70,48 +63,47 @@ export default class Panel extends PureComponent {
     ];
 
     onUpdateMenu({ editMenu });
+  }, [ onUpdateMenu ]);
+
+
+  const {
+    children,
+    layout = {},
+    onLayoutChanged
+  } = props;
+
+  const close = () => {
+    const { panel = {} } = layout;
+
+    onLayoutChanged({
+      panel: {
+        ...panel,
+        open: false
+      }
+    });
   };
 
-  render() {
-    const {
-      children,
-      layout = {},
-      onLayoutChanged
-    } = this.props;
-
-    const close = () => {
-      const { panel = {} } = layout;
-
-      onLayoutChanged({
-        panel: {
-          ...panel,
-          open: false
-        }
-      });
-    };
-
-    return <div className={ css.Panel }>
-      <div className="panel__header">
-        <div className="panel__links">
-          <Slot name="panel-link" />
-        </div>
-        <div className="panel__actions">
-          <Slot name="panel-action" />
-          <button key="close" className="panel__action" title="Close panel" onClick={ close }>
-            <CloseIcon />
-          </button>
-        </div>
+  return <div className={ css.Panel }>
+    <div className="panel__header">
+      <div className="panel__links">
+        <Slot name="panel-link" />
       </div>
-      <div tabIndex="0" className="panel__body" onFocus={ this.updateMenu }>
-        <div className="panel__inner">
-          <Slot name="panel-body" />
-        </div>
+      <div className="panel__actions">
+        <Slot name="panel-action" />
+        <button key="close" className="panel__action" title="Close panel" onClick={ close }>
+          <CloseIcon />
+        </button>
       </div>
-      {
-        children
-      }
-    </div>;
-  }
+    </div>
+    <div tabIndex="0" className="panel__body" onFocus={ updateMenu }>
+      <div className="panel__inner">
+        <Slot name="panel-body" />
+      </div>
+    </div>
+    {
+      children
+    }
+  </div>;
 }
 
 Panel.Tab = Tab;
