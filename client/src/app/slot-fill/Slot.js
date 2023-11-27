@@ -76,7 +76,7 @@ const fillFragment = (Component) => (fill) => {
     return <Fragment key={ id }>{props.children}</Fragment>;
   }
 
-  return <Component key={ id } { ...props }></Component>;
+  return <Component key={ id } { ...props } />;
 };
 
 function nonSeparator(key) {
