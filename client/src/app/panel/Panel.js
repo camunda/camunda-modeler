@@ -14,6 +14,8 @@ import classnames from 'classnames';
 
 import { isDefined } from 'min-dash';
 
+import { Slot } from '../slot-fill';
+
 import CloseIcon from '../../../resources/icons/Close.svg';
 
 import css from './Panel.less';
@@ -123,6 +125,7 @@ export default function Panel({ children, layout = {}, onLayoutChanged, onUpdate
       {
         children
       }
+      <Slot name="bottom-panel" Component={ Tab } />
     </div>
   </TabContext.Provider>;
 }
@@ -161,7 +164,7 @@ function Tab(props) {
   });
 
   const TabContent = {
-    id,
+    id: id || label,
     priority,
     link: Link,
     actions: Actions,

@@ -46,8 +46,16 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
         saveCounter: saveCounter + 1
       });
     });
+    subscribe('app.activeTabChanged', ({
+      activeTab
+    }) => {
+      this.setState({
+        tabType: activeTab.type
+      });
+    });
     this.state = {
-      saveCounter: 0
+      saveCounter: 0,
+      tabType: null
     };
   }
   async componentDidMount() {
@@ -68,7 +76,8 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
   }
   render() {
     const {
-      saveCounter
+      saveCounter,
+      tabType
     } = this.state;
 
     /**
@@ -98,7 +107,11 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
         background: '#10ad73',
         color: '#FEFEFE'
       }
-    }, "Saved: ", saveCounter)));
+    }, "Saved: ", saveCounter)), tabType === 'cloud-bpmn' && /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__.Fill, {
+      slot: "bottom-panel",
+      label: "Cloud Plugin",
+      id: "cloudPlugin"
+    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Hello World")));
   }
 }
 function TestIcon() {
