@@ -13,6 +13,7 @@ import debug from 'debug';
 import { PureComponent } from 'react';
 
 import * as Sentry from '@sentry/browser';
+import { RewriteFrames } from '@sentry/integrations';
 
 import Metadata from '../../util/Metadata';
 
@@ -83,15 +84,18 @@ export default class ErrorTracking extends PureComponent {
       this._sentry.init({
         dsn: this.SENTRY_DSN,
         release: releaseTag,
-        beforeSend: (event) => {
+        integrations: [
+          new RewriteFrames({
+            iteratee: (frame) => {
+              if (!frame.filename) {
+                return frame;
+              }
 
-          // We need to normalize the event path to match with uploaded sourcemaps.
-          // Since we're distributing the app to the clients, every exception
-          // has a different path. That's why if we skip this step, we'd have
-          // unmeaningful exceptions in Sentry.
-          // See this: https://github.com/camunda/camunda-modeler/issues/1831
-          return this.normalizeEventPath(event);
-        }
+              frame.filename = normalizeUrl(frame.filename);
+              return frame;
+            }
+          })
+        ]
       });
 
       // OS information already exists by default in Sentry.
@@ -196,31 +200,6 @@ export default class ErrorTracking extends PureComponent {
     return this.recheckSentry();
   };
 
-  normalizeEventPath = (event) => {
-    try {
-      const { exception, request } = event;
-      const { values } = exception;
-
-      if (request) {
-        request.url = normalizeUrl(request.url);
-      }
-
-      values.forEach((exceptionVal) => {
-        const { stacktrace } = exceptionVal;
-        const { frames } = stacktrace;
-
-        frames.forEach((frame) => {
-          frame.filename = normalizeUrl(frame.filename);
-        });
-      });
-
-      return event;
-    } catch (err) {
-
-      this.props.log(err);
-      return null;
-    }
-  };
 
   render() {
     return null;
@@ -230,7 +209,7 @@ export default class ErrorTracking extends PureComponent {
 
 // helpers ////////////////
 
-function normalizeUrl(path) {
+export function normalizeUrl(path) {
 
   // eslint-disable-next-line
   const filename = path.replace(/^.*[\\\/]/, '');

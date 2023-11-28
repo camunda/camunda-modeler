@@ -12,6 +12,8 @@ const os = require('os');
 
 const log = require('../log')('app:error-tracking');
 
+const { RewriteFrames } = require('@sentry/integrations');
+
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const EDITOR_ID_CONFIG_KEY = 'editor.id';
 const CRASH_REPORTS_CONFIG_KEY = 'ENABLE_CRASH_REPORTS';
@@ -116,9 +118,18 @@ function initializeSentry(Sentry, editorID, release, dsn) {
     Sentry.init({
       dsn,
       release,
-      beforeSend: (event) => {
-        return normalizeEventPath(event);
-      }
+      integrations: [
+        new RewriteFrames({
+          iteratee: (frame) => {
+            if (!frame.filename) {
+              return frame;
+            }
+
+            frame.filename = normalizeUrl(frame.filename);
+            return frame;
+          }
+        })
+      ]
     });
 
     Sentry.configureScope(scope => {
@@ -151,32 +162,6 @@ function closeSentry(Sentry) {
   } catch (err) {
 
     log.error('Error happened closing Sentry', err);
-  }
-}
-
-function normalizeEventPath(event) {
-  try {
-    const { exception, request } = event;
-    const { values } = exception;
-
-    if (request) {
-      request.url = normalizeUrl(request.url);
-    }
-
-    values.forEach((exceptionVal) => {
-      const { stacktrace } = exceptionVal;
-      const { frames } = stacktrace;
-
-      frames.forEach((frame) => {
-        frame.filename = normalizeUrl(frame.filename);
-      });
-    });
-
-    return event;
-  } catch (err) {
-
-    log.error('Error happened normalizing Path', err);
-    return null;
   }
 }
 
