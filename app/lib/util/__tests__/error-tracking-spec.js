@@ -116,7 +116,7 @@ describe('error-tracking', function() {
     // then
     expect(params.dsn).to.eql('SOME_SENTRY_DSN');
     expect(params.release).to.eql('v2');
-    expect(params.beforeSend).to.exist;
+    expect(params.integrations).to.have.length(1);
   });
 
 

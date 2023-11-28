@@ -17,7 +17,7 @@ import { shallow } from 'enzyme';
 import Flags, { SENTRY_DSN, DISABLE_REMOTE_INTERACTION } from '../../../util/Flags';
 import Metadata from '../../../util/Metadata';
 
-import ErrorTracking from '../ErrorTracking';
+import ErrorTracking, { normalizeUrl } from '../ErrorTracking';
 
 describe('<ErrorTracking>', () => {
 
@@ -181,7 +181,7 @@ describe('<ErrorTracking>', () => {
 
     expect(args[0].dsn).to.eql('TEST_DSN');
     expect(args[0].release).to.eql('3.5.0');
-    expect(args[0].beforeSend).to.exist;
+    expect(args[0].integrations).to.have.length(1);
   });
 
 
@@ -421,54 +421,18 @@ describe('<ErrorTracking>', () => {
   });
 });
 
+// Handling of Stack frames is done in the sentry `RewriteFrames` integration,
+// we only check that our replace function is correct.
 async function expectNormalization(prefix) {
 
   // given
   const url = prefix + '2.2.js';
 
-  const sentryInitSpy = sinon.spy();
-
-  const instance = createErrorTracking({
-    sentryInitSpy,
-    dsn: 'TEST_DSN',
-    configValues: { 'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true } }
-  });
-
   // when
-  await instance.componentDidMount();
-
-  const args = sentryInitSpy.getCall(0).args;
-
-  const { beforeSend } = args[0];
-
-  let event = createMockSentryEvent(url);
-
-  beforeSend(event);
+  const result = normalizeUrl(url);
 
   // then
-  expect(event.request.url).to.eql('file:///build/2.2.js');
-  expect(event.exception.values[0].stacktrace.frames[0].filename).to.eql('file:///build/2.2.js');
-}
-
-function createMockSentryEvent(path) {
-  return {
-    exception: {
-      values: [
-        {
-          stacktrace: {
-            frames: [
-              {
-                filename: path
-              }
-            ]
-          }
-        }
-      ]
-    },
-    request: {
-      url: 'file://' + path
-    }
-  };
+  expect(result).to.eql('file:///build/2.2.js');
 }
 
 function createErrorTracking(props = {}) {
