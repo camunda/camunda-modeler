@@ -39,7 +39,7 @@ export const AUDIENCE_MUST_NOT_BE_EMPTY = 'Audience must not be empty.';
 export const CLIENT_ID_MUST_NOT_BE_EMPTY = 'Client ID must not be empty.';
 export const CLIENT_SECRET_MUST_NOT_BE_EMPTY = 'Client Secret must not be empty.';
 export const FILL_IN_ALL_THE_FIELDS = 'You must fill in all the fields';
-export const CLUSTER_URL_MUST_BE_VALID_CLOUD_URL = 'Must be a valid Camunda Cloud URL.';
+export const CLUSTER_URL_MUST_BE_VALID_CLOUD_URL = 'Must be a valid Camunda 8 SaaS URL.';
 export const TROUBLESHOOTING_URL = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/troubleshooting/#i-cannot-connect-to-zeebe';
 
 export const ERROR_REASONS = {
