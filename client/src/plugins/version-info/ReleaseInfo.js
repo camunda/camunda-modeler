@@ -44,16 +44,15 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Preview Append on Hover</h4>
-          Advance your BPMN diagrams with confidence using this new feature. Hover over a context pad entry to see a preview of the element to create.
+          <h4>Receive and Send Task Message templates</h4>
+          Message templates for Send and Receive Tasks are now supported. You can configure message name and, in the case of Receive Tasks, subscription correlation key.</li>
+        <li>
+          <h4>More comparison operators for element templates</h4>
+          In addition to <code>equals</code> and <code>oneOf</code>, you can now use <code>isActive</code> to check if the referenced property is currently active or hidden by other conditions.
         </li>
         <li>
-          <h4>Standalone Form Deployment and Linking</h4>
-          Supporting upcoming Camunda 8 features, you can now deploy forms directly from the forms tab. Reference it from a user task inside a BPMN diagram and Tasklist will pick it up for task completion.
-        </li>
-        <li>
-          <h4>Improved FEEL Editor Tooling</h4>
-          We've enhanced the FEEL expression editing experience with a popup editor for large expressions. Additionally, the FEEL autocompletion now contains the typed argument list for all built-in functions.
+          <h4>Simplified selection outlines for connections</h4>
+          Selection outlines for single connections were removed to reduce visual noise.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
