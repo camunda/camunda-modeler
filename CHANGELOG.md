@@ -6,14 +6,38 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.18.0
+
 ### General
 
-* `DEPS`: update to `camunda-bpmn-js@3.9.0`
-* `DEPS`: update to `bpmn-js-element-templates@1.8.0`
+* `DEPS`: update to `camunda-bpmn-js@3.10.2`
+* `DEPS`: update to `bpmn-js-element-templates@1.9.2`
+* `DEPS`: update to `bpmn-js@15.2.1`
+* `DEPS`: update to `diagram-js@12.8.1`
+* `DEPS`: update to `dmn-js@14.7.1`
+* `DEPS`: update to `dmn-js-properties-panel@3.2.1`
 
 ### BPMN
 
+* `FEAT`: remove selection outline from connections ([diagram-js#826](https://github.com/bpmn-io/diagram-js/pull/826))
+* `FEAT`: position context pad according to last waypoint for connections ([diagram-js#826](https://github.com/bpmn-io/diagram-js/pull/826))
+* `FEAT`: support `isActive` condition ([bpmn-js-element-templates#19](https://github.com/bpmn-io/bpmn-js-element-templates/issues/19))
+* `FEAT`: add conditional `correlationKey` rendering ([bpmn-js-element-templates#19](https://github.com/bpmn-io/bpmn-js-element-templates/issues/19))
 * `FEAT`: support receive and send task message templating ([bpmn-io/bpmn-js-element-templates#30](https://github.com/bpmn-io/bpmn-js-element-templates/pull/30))
+* `FIX`: prevent access of non-existing connection bounds ([diagram-js#824](https://github.com/bpmn-io/diagram-js/pull/824))
+* `FIX`: disallow subscription binding for `bpmn:SendTask`
+* `FIX`: correct selection outline size for end event ([bpmn-js#2026](https://github.com/bpmn-io/bpmn-js/pull/2026))
+* `FIX`: remove unneeded `camunda-cloud` rules ([camunda-bpmn-js#325](https://github.com/camunda/camunda-bpmn-js/pull/325))
+* `FIX`: remove unused `typescript` prod dependency ([camunda-bpmn-js#326](https://github.com/camunda/camunda-bpmn-js/pull/326))
+* `FIX`: keep custom value on element templates update when the condition was changed ([bpmn-js-element-templates#32](https://github.com/bpmn-io/bpmn-js-element-templates/issues/32))
+
+## DMN
+
+* `FEAT`: remove selection outline from connections ([diagram-js#826](https://github.com/bpmn-io/diagram-js/pull/826))
+* `FEAT`: position context pad according to last waypoint for connections ([diagram-js#826](https://github.com/bpmn-io/diagram-js/pull/826))
+* `FEAT`: provide element ID in variable suggestions ([camunda-dmn-js#83](https://github.com/camunda/camunda-dmn-js/issues/83))
+* `FEAT`: support documentation fields ([dmn-js-properties-panel#62](https://github.com/bpmn-io/dmn-js-properties-panel/issues/62))
+* `FIX`: prevent access of non-existing connection bounds ([diagram-js#824](https://github.com/bpmn-io/diagram-js/pull/824))
 
 ## 5.17.0
 
