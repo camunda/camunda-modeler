@@ -39,6 +39,17 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: support documentation fields ([dmn-js-properties-panel#62](https://github.com/bpmn-io/dmn-js-properties-panel/issues/62))
 * `FIX`: prevent access of non-existing connection bounds ([diagram-js#824](https://github.com/bpmn-io/diagram-js/pull/824))
 
+## Forms
+
+* `FEAT`: support `iFrame` component ([form-js#887](https://github.com/bpmn-io/form-js/issues/887))
+* `FIX`: properly close dropdowns when opening other dropdowns ([form-js#878](https://github.com/bpmn-io/form-js/issues/878))
+* `FIX`: improved input data sanitation ([form-js#894](https://github.com/bpmn-io/form-js/issues/894))
+* `FIX`: ensure values not in options clear ([form-js#817](https://github.com/bpmn-io/form-js/issues/817))
+* `FIX`: fixed an issue dragging rows into groups ([form-js#861](https://github.com/bpmn-io/form-js/issues/861))
+* `FIX`: adjusted palette size ([form-js#846](https://github.com/bpmn-io/form-js/issues/846))
+* `FIX`: renamed checklist and radio ([form-js#846](https://github.com/bpmn-io/form-js/issues/846))
+* `FIX`: add `tabIndex` to json editors ([ad6c00fb](https://github.com/bpmn-io/form-js/commit/ad6c00fb581943d4fb278f7dbcda02d5c544dfca))
+
 ## 5.17.0
 
 ### General
