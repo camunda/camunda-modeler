@@ -10,6 +10,9 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: add plugin point for bottom panels ([#3998](https://github.com/camunda/camunda-modeler/pull/3998))
+* `FIX`: integrate DRD find ([#3977](https://github.com/camunda/camunda-modeler/pull/3977))
+* `CHORE`: always show linting documentation link if available ([#3992](https://github.com/camunda/camunda-modeler/pull/3992))
 * `DEPS`: update to `camunda-bpmn-js@3.10.2`
 * `DEPS`: update to `bpmn-js-element-templates@1.9.2`
 * `DEPS`: update to `bpmn-js@15.2.1`
@@ -38,6 +41,17 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: provide element ID in variable suggestions ([camunda-dmn-js#83](https://github.com/camunda/camunda-dmn-js/issues/83))
 * `FEAT`: support documentation fields ([dmn-js-properties-panel#62](https://github.com/bpmn-io/dmn-js-properties-panel/issues/62))
 * `FIX`: prevent access of non-existing connection bounds ([diagram-js#824](https://github.com/bpmn-io/diagram-js/pull/824))
+
+## Forms
+
+* `FEAT`: support `iFrame` component ([form-js#887](https://github.com/bpmn-io/form-js/issues/887))
+* `FIX`: properly close dropdowns when opening other dropdowns ([form-js#878](https://github.com/bpmn-io/form-js/issues/878))
+* `FIX`: improved input data sanitation ([form-js#894](https://github.com/bpmn-io/form-js/issues/894))
+* `FIX`: ensure values not in options clear ([form-js#817](https://github.com/bpmn-io/form-js/issues/817))
+* `FIX`: fixed an issue dragging rows into groups ([form-js#861](https://github.com/bpmn-io/form-js/issues/861))
+* `FIX`: adjusted palette size ([form-js#846](https://github.com/bpmn-io/form-js/issues/846))
+* `FIX`: renamed checklist and radio ([form-js#846](https://github.com/bpmn-io/form-js/issues/846))
+* `FIX`: add `tabIndex` to json editors ([ad6c00fb](https://github.com/bpmn-io/form-js/commit/ad6c00fb581943d4fb278f7dbcda02d5c544dfca))
 
 ## 5.17.0
 
