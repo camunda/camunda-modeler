@@ -431,6 +431,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
 function createStartInstancePlugin({
   zeebeAPI = new MockZeebeAPI(),
   activeTab = createTab(),
+  deployment = { name: 'Hello' },
   deploymentResult = {
     success: true,
     response: {
@@ -465,7 +466,13 @@ function createStartInstancePlugin({
     }
 
     if (key === 'getDeployConfig') {
-      body.done({ deploymentConfig: { deployment:{ name:'hello' }, endpoint: deploymentEndpoint } });
+      body.done({
+        config: {
+          deployment,
+          endpoint: deploymentEndpoint,
+          savedTab: activeTab
+        }
+      });
     }
 
     if (key === 'deployWithConfig') {
