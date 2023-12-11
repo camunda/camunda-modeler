@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import classnames from 'classnames';
 
@@ -134,7 +134,7 @@ Panel.Tab = Tab;
 
 function Tab(props) {
   const {
-    actions = [],
+    actions,
     children,
     id,
     label,
@@ -144,32 +144,34 @@ function Tab(props) {
 
   const { addTab, removeTab } = useContext(TabContext);
 
-  const Link = <>
-    <span className="panel__link-label">
-      { label }
-    </span>
-    {
-      isDefined(number)
-        ? <span className="panel__link-number">{ number }</span>
-        : null
-    }
-  </>;
+  const TabContent = useMemo(() => {
+    const Link = <>
+      <span className="panel__link-label">
+        { label }
+      </span>
+      {
+        isDefined(number)
+          ? <span className="panel__link-number">{ number }</span>
+          : null
+      }
+    </>;
 
-  const Actions = actions.map(action => {
-    const Icon = action.icon;
+    const Actions = (actions || []).map(action => {
+      const Icon = action.icon;
 
-    return <button key={ action.title } className="panel__action" title={ action.title } onClick={ action.onClick }>
-      <Icon />
-    </button>;
-  });
+      return <button key={ action.title } className="panel__action" title={ action.title } onClick={ action.onClick }>
+        <Icon />
+      </button>;
+    });
 
-  const TabContent = {
-    id: id || label,
-    priority,
-    link: Link,
-    actions: Actions,
-    body: children
-  };
+    return {
+      id: id || label,
+      priority: priority || 0,
+      link: Link,
+      actions: Actions,
+      body: children
+    };
+  }, [ actions, children, id, label, number, priority ]);
 
   useEffect(() => {
     addTab(TabContent);
@@ -177,7 +179,7 @@ function Tab(props) {
     return () => {
       removeTab(TabContent);
     };
-  }, []);
+  }, [ TabContent ]);
 
   return null;
 }

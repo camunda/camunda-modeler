@@ -10,7 +10,7 @@
 
 /* global sinon */
 
-import React from 'react';
+import React, { Component } from 'react';
 
 import { mount } from 'enzyme';
 
@@ -76,6 +76,47 @@ describe('<Panel>', function() {
 
       expect(wrapper.find('.foo')).to.have.length(1);
     });
+
+
+    it('should update Tab on prop changes', async function() {
+
+      // given
+      class CustomComponent extends Component {
+        constructor(props) {
+          super(props);
+          this.state = { label: 'Foo' };
+        }
+
+        render() {
+          const { label } = this.state;
+
+          return <Fill slot="bottom-panel" label={ label } id="foo">
+            <div className={ 'foo' } />
+          </Fill>;
+        }
+      }
+
+      const wrapper = renderPanel({
+        children: <CustomComponent />
+      });
+
+      // assume
+      expect(wrapper.find('.panel__link')).to.have.length(1);
+      expect(wrapper.find('.panel__link--active')).to.have.length(1);
+
+      expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Foo');
+      expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
+
+      // when
+      wrapper.find(CustomComponent).setState({ label: 'Bar' });
+
+      // then
+      return expectEventually(() => {
+        expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Bar');
+        expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
+      });
+    });
+
 
     it('should render two tabs', function() {
 
@@ -287,4 +328,31 @@ function renderPanel(options = {}) {
       </Panel>
     </SlotFillRoot>
   );
+}
+
+async function expectEventually(expectStatement) {
+  const sleep = time => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, time);
+    });
+  };
+
+  for (let i = 0; i < 10; i++) {
+    try {
+      expectStatement();
+
+      // success
+      return;
+    } catch {
+
+      // do nothing
+    }
+
+    await sleep(50);
+  }
+
+  // let it fail correctly
+  expectStatement();
 }
