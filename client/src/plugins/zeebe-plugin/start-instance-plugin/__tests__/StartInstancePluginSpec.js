@@ -163,7 +163,8 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
             message: 'Error'
           }
         },
-        zeebeAPI });
+        zeebeAPI
+      });
 
       // when
       await instance.startInstance();
