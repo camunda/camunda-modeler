@@ -151,7 +151,7 @@ export default class StartInstancePlugin extends PureComponent {
       // (3.1) trigger run
       const startInstanceResult = await zeebeAPI.run({
         processId,
-        tenantId: deploymentConfig.tenantId,
+        tenantId: deploymentConfig.config.deployment.tenantId,
         endpoint,
         ...decoratedConfig
       });
