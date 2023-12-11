@@ -126,6 +126,31 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
+    it('should start process instance if deployment was successful (multi-tenancy)', async () => {
+
+      // given
+      const runSpy = sinon.spy(function(args) {
+        expect(args.name).to.eql('DEPLOYMENT_NAME');
+        expect(args.tenantId).to.eql('TENANT_ID');
+      });
+
+      const zeebeAPI = new MockZeebeAPI({ runSpy });
+      const { instance } = createStartInstancePlugin({
+        deployment: {
+          name: 'DEPLOYMENT_NAME',
+          tenantId: 'TENANT_ID'
+        },
+        zeebeAPI
+      });
+
+      // when
+      await instance.startInstance();
+
+      // then
+      expect(runSpy).to.have.been.calledOnce;
+    });
+
+
     it('should NOT start process instance if deployment failed', async () => {
 
       // given
