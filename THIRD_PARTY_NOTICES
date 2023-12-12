@@ -119,7 +119,7 @@ This project incorporates components from the projects listed below. The origina
 112.  preact-hooks@0.1.0
 113.  jsx-runtime@1.0.0
 114.  @bpmn-io/replace-ids@0.2.0 (git+https://github.com/bpmn-io/replace-ids.git)
-115.  @camunda/form-linting@0.12.0
+115.  @camunda/form-linting@0.13.0
 116.  @camunda/linting@3.10.0 (https://github.com/camunda/linting)
 117.  @sentry-internal/tracing@7.82.0 (git://github.com/getsentry/sentry-javascript.git)
 118.  @sentry/browser@7.82.0 (git://github.com/getsentry/sentry-javascript.git)
@@ -135,9 +135,9 @@ This project incorporates components from the projects listed below. The origina
 128.  bpmnlint-plugin-camunda-compat@2.11.1 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
 129.  bpmnlint@9.2.0 (https://github.com/bpmn-io/bpmnlint)
 130.  camunda-bpmn-js@3.10.2 (https://github.com/camunda/camunda-bpmn-js)
-131.  classnames@2.3.1 (https://github.com/JedWatson/classnames.git)
-132.  @camunda/form-playground@0.10.1 (git+https://github.com/camunda/form-playground.git)
-133.  camunda-dmn-js@1.5.0 (https://github.com/camunda/camunda-dmn-js)
+131.  classnames@2.3.2 (https://github.com/JedWatson/classnames.git)
+132.  @camunda/form-playground@0.11.0 (git+https://github.com/camunda/form-playground.git)
+133.  camunda-dmn-js@1.7.0 (https://github.com/camunda/camunda-dmn-js)
 134.  css-loader@6.8.1 (webpack-contrib/css-loader)
 135.  ms@2.1.2 (zeit/ms)
 136.  debug@4.3.4 (git://github.com/debug-js/debug.git)
@@ -174,11 +174,11 @@ This project incorporates components from the projects listed below. The origina
 167.  moddle@6.2.3 (https://github.com/bpmn-io/moddle)
 168.  bpmnlint-utils@1.1.1 (https://github.com/bpmn-io/bpmnlint-utils)
 169.  crelt@1.0.5 (git+https://github.com/marijnh/crelt.git)
-170.  feelers@1.1.0
-171.  feelin@1.2.0 (https://github.com/nikku/feelin)
+170.  feelers@1.2.0
+171.  feelin@2.3.0 (https://github.com/nikku/feelin)
 172.  lang-feel@1.0.0 (https://github.com/nikku/lang-feel.git)
 173.  lezer-feel@1.2.0 (https://github.com/nikku/lezer-feel.git)
-174.  luxon@3.3.0 (https://github.com/moment/luxon)
+174.  luxon@3.4.4 (https://github.com/moment/luxon)
 175.  p-defer@4.0.0 (sindresorhus/p-defer)
 176.  p-series@3.0.0 (sindresorhus/p-series)
 177.  style-mod@4.1.0 (git+https://github.com/marijnh/style-mod.git)
@@ -231,7 +231,7 @@ This project incorporates components from the projects listed below. The origina
 224.  bpmn-js-tracking@0.3.3 (git+https://github.com/bpmn-io/bpmn-js-tracking.git)
 225.  camunda-bpmn-js-behaviors@1.2.2 (https://github.com/camunda/camunda-bpmn-js-behaviors)
 226.  diagram-js-minimap@4.1.0 (git@github.com:bpmn-io/diagram-js-minimap.git)
-227.  @bpmn-io/form-js-viewer@1.4.0 (git+https://github.com/bpmn-io/form-js.git)
+227.  @bpmn-io/form-js-viewer@1.5.0 (git+https://github.com/bpmn-io/form-js.git)
 228.  flatpickr@4.6.13 (git+https://github.com/chmln/flatpickr.git)
 229.  preact-markup@2.1.1 (https://github.com/developit/preact-markup.git)
 230.  showdown@2.1.0 (https://github.com/showdownjs/showdown.git)
@@ -248,8 +248,8 @@ This project incorporates components from the projects listed below. The origina
 241.  @bpmn-io/element-template-icon-renderer@0.5.1 (git+ssh://git@github.com/bpmn-io/element-template-icon-renderer.git)
 242.  @bpmn-io/form-variable-provider@1.2.0 (git+https://github.com/bpmn-io/form-variable-provider.git)
 243.  @camunda/example-data-properties-provider@1.2.0
-244.  @bpmn-io/form-js-editor@1.4.1 (git+https://github.com/bpmn-io/form-js.git)
-245.  @bpmn-io/form-js-playground@1.4.1 (git+https://github.com/bpmn-io/form-js.git)
+244.  @bpmn-io/form-js-editor@1.5.0 (git+https://github.com/bpmn-io/form-js.git)
+245.  @bpmn-io/form-js-playground@1.5.0 (git+https://github.com/bpmn-io/form-js.git)
 246.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
 247.  file-drops@0.4.0 (git+ssh://git@github.com/nikku/file-drops.git)
 248.  @bpmn-io/draggle@4.0.0 (https://github.com/bpmn-io/draggle.git)
@@ -4299,7 +4299,7 @@ THE SOFTWARE.
 END OF @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION
 
 
-%% @camunda/form-linting@0.12.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/form-linting@0.13.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -4324,7 +4324,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @camunda/form-linting@0.12.0 NOTICES AND INFORMATION
+END OF @camunda/form-linting@0.13.0 NOTICES AND INFORMATION
 
 
 %% @camunda/linting@3.10.0 NOTICES AND INFORMATION BEGIN HERE
@@ -4677,7 +4677,7 @@ THE SOFTWARE.
 END OF camunda-bpmn-js@3.10.2 NOTICES AND INFORMATION
 
 
-%% classnames@2.3.1 NOTICES AND INFORMATION BEGIN HERE
+%% classnames@2.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -4702,10 +4702,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF classnames@2.3.1 NOTICES AND INFORMATION
+END OF classnames@2.3.2 NOTICES AND INFORMATION
 
 
-%% @camunda/form-playground@0.10.1 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/form-playground@0.11.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -4729,10 +4729,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @camunda/form-playground@0.10.1 NOTICES AND INFORMATION
+END OF @camunda/form-playground@0.11.0 NOTICES AND INFORMATION
 
 
-%% camunda-dmn-js@1.5.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-dmn-js@1.7.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -4756,7 +4756,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-dmn-js@1.5.0 NOTICES AND INFORMATION
+END OF camunda-dmn-js@1.7.0 NOTICES AND INFORMATION
 
 
 %% css-loader@6.8.1 NOTICES AND INFORMATION BEGIN HERE
@@ -5858,7 +5858,7 @@ THE SOFTWARE.
 END OF crelt@1.0.5 NOTICES AND INFORMATION
 
 
-%% feelers@1.1.0 NOTICES AND INFORMATION BEGIN HERE
+%% feelers@1.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2023-present Camunda Services GmbH
 
@@ -5878,10 +5878,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF feelers@1.1.0 NOTICES AND INFORMATION
+END OF feelers@1.2.0 NOTICES AND INFORMATION
 
 
-%% feelin@1.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% feelin@2.3.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -5905,7 +5905,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF feelin@1.2.0 NOTICES AND INFORMATION
+END OF feelin@2.3.0 NOTICES AND INFORMATION
 
 
 %% lang-feel@1.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -5964,7 +5964,7 @@ THE SOFTWARE.
 END OF lezer-feel@1.2.0 NOTICES AND INFORMATION
 
 
-%% luxon@3.3.0 NOTICES AND INFORMATION BEGIN HERE
+%% luxon@3.4.4 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright 2019 JS Foundation and other contributors
 
@@ -5975,7 +5975,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF luxon@3.3.0 NOTICES AND INFORMATION
+END OF luxon@3.4.4 NOTICES AND INFORMATION
 
 
 %% p-defer@4.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -7716,7 +7716,7 @@ THE SOFTWARE.
 END OF diagram-js-minimap@4.1.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/form-js-viewer@1.4.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/form-js-viewer@1.5.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2021-present Camunda Services GmbH
 
@@ -7742,7 +7742,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/form-js-viewer@1.4.0 NOTICES AND INFORMATION
+END OF @bpmn-io/form-js-viewer@1.5.0 NOTICES AND INFORMATION
 
 
 %% flatpickr@4.6.13 NOTICES AND INFORMATION BEGIN HERE
@@ -8201,7 +8201,7 @@ THE SOFTWARE.
 END OF @camunda/example-data-properties-provider@1.2.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/form-js-editor@1.4.1 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/form-js-editor@1.5.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2021-present Camunda Services GmbH
 
@@ -8227,10 +8227,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/form-js-editor@1.4.1 NOTICES AND INFORMATION
+END OF @bpmn-io/form-js-editor@1.5.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/form-js-playground@1.4.1 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/form-js-playground@1.5.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2021-present Camunda Services GmbH
 
@@ -8256,7 +8256,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/form-js-playground@1.4.1 NOTICES AND INFORMATION
+END OF @bpmn-io/form-js-playground@1.5.0 NOTICES AND INFORMATION
 
 
 %% downloadjs@1.4.7 NOTICES AND INFORMATION BEGIN HERE
