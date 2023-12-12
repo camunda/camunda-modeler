@@ -12,6 +12,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: add plugin point for bottom panels ([#3998](https://github.com/camunda/camunda-modeler/pull/3998))
 * `FIX`: integrate DRD find ([#3977](https://github.com/camunda/camunda-modeler/pull/3977))
+* `FIX`: pull `tenantId` from correct place ([#4022](https://github.com/camunda/camunda-modeler/pull/4022))
 * `CHORE`: always show linting documentation link if available ([#3992](https://github.com/camunda/camunda-modeler/pull/3992))
 * `DEPS`: update to `camunda-bpmn-js@3.10.2`
 * `DEPS`: update to `bpmn-js-element-templates@1.9.2`
