@@ -12,6 +12,10 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/form-linting@0.14.0`
 * `DEPS`: update to `@camunda/form-playground@0.12.0`
 
+### BPMN
+
+* `FEAT`: allow collapsed subprocess in 8.4 ([#4020](https://github.com/camunda/camunda-modeler/issues/4020))
+
 ## Forms
 
 * `FEAT`: add dynamic list component ([#796](https://github.com/bpmn-io/form-js/issues/796))
