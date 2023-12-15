@@ -6,6 +6,17 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `DEPS`: update to `@bpmn-io/form-js@1.6.0`
+* `DEPS`: update to `@camunda/form-linting@0.14.0`
+* `DEPS`: update to `@camunda/form-playground@0.12.0`
+
+## Forms
+
+* `FEAT`: add dynamic list component ([#796](https://github.com/bpmn-io/form-js/issues/796))
+* `FEAT`: add table component ([#888](https://github.com/bpmn-io/form-js/issues/888))
+
 ## 5.18.0
 
 ### General
@@ -20,9 +31,9 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `diagram-js@12.8.1`
 * `DEPS`: update to `dmn-js@14.7.1`
 * `DEPS`: update to `dmn-js-properties-panel@3.2.1`
-* `DEPS`: update to `@bpmn-io/form-js@1.6.0`
-* `DEPS`: update to `@camunda/form-linting@0.14.0`
-* `DEPS`: update to `@camunda/form-playground@0.12.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.5.0`
+* `DEPS`: update to `@camunda/form-linting@0.13.0`
+* `DEPS`: update to `@camunda/form-playground@0.11.0`
 
 ### BPMN
 
@@ -56,8 +67,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: adjusted palette size ([form-js#846](https://github.com/bpmn-io/form-js/issues/846))
 * `FIX`: renamed checklist and radio ([form-js#846](https://github.com/bpmn-io/form-js/issues/846))
 * `FIX`: add `tabIndex` to json editors ([ad6c00fb](https://github.com/bpmn-io/form-js/commit/ad6c00fb581943d4fb278f7dbcda02d5c544dfca))
-* `FEAT`: add dynamic list component ([#796](https://github.com/bpmn-io/form-js/issues/796))
-* `FEAT`: add table component ([#888](https://github.com/bpmn-io/form-js/issues/888))
 
 ## 5.17.0
 
