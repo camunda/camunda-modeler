@@ -8,14 +8,16 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `DEPS`: update to `@bpmn-io/form-js@1.6.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.6.1`
 * `DEPS`: update to `@camunda/form-linting@0.14.0`
 * `DEPS`: update to `@camunda/form-playground@0.12.0`
+* `DEPS`: update to `camunda-bpmn-js@3.11.0`
 * `DEPS`: update to `bpmn-js@16.3.0`
 * `DEPS`: update to `diagram-js@13.3.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.7.0`
 * `DEPS`: update to `bpmn-js-element-templates@1.10.0`
-* `DEPS`: update to `camunda-bpmn-js@3.11.0`
+* `DEPS`: update to `camunda-dmn-js@1.7.0`
+* `DEPS`: update to `dmn-js@15.0.0`
 * `DEPS`: update to `electron@28.0.0` ([4007](https://github.com/camunda/camunda-modeler/pull/4007))
 
 ### BPMN
@@ -33,6 +35,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correct parsing of nested lists in FEEL editor
 * `FIX`: correct parsing of incomplete `QuantifiedExpression` in FEEL editor
 * `FIX`: only allow legal `Name` start characters in FEEL editor
+
+## DMN
+
+* `FEAT`: make drilldown buttons navigable via keyboard ([bpmn-io/dmn-js#778](https://github.com/bpmn-io/dmn-js/issues/778))
 
 ## Forms
 
