@@ -11,19 +11,28 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/form-js@1.6.0`
 * `DEPS`: update to `@camunda/form-linting@0.14.0`
 * `DEPS`: update to `@camunda/form-playground@0.12.0`
-* `DEPS`: update to `bpmn-js@16.0.0`
+* `DEPS`: update to `bpmn-js@16.3.0`
 * `DEPS`: update to `diagram-js@13.3.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.7.0`
 * `DEPS`: update to `bpmn-js-element-templates@1.10.0`
 * `DEPS`: update to `camunda-bpmn-js@3.11.0`
 * `DEPS`: update to `electron@28.0.0` ([4007](https://github.com/camunda/camunda-modeler/pull/4007))
 
 ### BPMN
 
+* `FEAT`: simplify compensation modeling ([bpmn-io/bpmn-js#2038](https://github.com/bpmn-io/bpmn-js/issues/2038))
 * `FEAT`: render vertical pools and lanes ([#2024](https://github.com/bpmn-io/bpmn-js/pull/2024))
 * `FEAT`: sentence case titles and labels ([#2023](https://github.com/bpmn-io/bpmn-js/issues/2023))
 * `FEAT`: allow non-searchable entries in popup menu ([#835](https://github.com/bpmn-io/diagram-js/pull/835))
 * `FEAT`: be able to template `zeebe:calledElement` ([bpmn-io/bpmn-js-element-templates#37](https://github.com/bpmn-io/bpmn-js-element-templates/pull/37))
 * `FEAT`: allow collapsed subprocess in 8.4 ([#4020](https://github.com/camunda/camunda-modeler/issues/4020))
+* `FEAT`: capitalize `Camunda Form` ([bpmn-io/bpmn-js-properties-panel#1005](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1005))
+* `FEAT`: improve FEEL popup editor icon ([bpmn-io/properties-panel#310](https://github.com/bpmn-io/properties-panel/issues/310))
+* `FEAT`: add contextual keyword completion in FEEL editor
+* `FEAT`: support `zeebe:calledElement` binding in element template ([bpmn-io/bpmn-js-element-templates#37](https://github.com/bpmn-io/bpmn-js-element-templates/pull/37))
+* `FIX`: correct parsing of nested lists in FEEL editor
+* `FIX`: correct parsing of incomplete `QuantifiedExpression` in FEEL editor
+* `FIX`: only allow legal `Name` start characters in FEEL editor
 
 ## Forms
 
