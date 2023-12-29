@@ -77,7 +77,7 @@
     "babel-plugin-istanbul": "^6.0.0",
     "bpmnlint-loader": "^0.1.6",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
-    "chai": "^4.2.0",
+    "chai": "^5.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.0",
     "css-loader": "^6.8.1",
