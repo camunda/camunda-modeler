@@ -18,7 +18,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js-element-templates@1.10.0`
 * `DEPS`: update to `camunda-dmn-js@1.7.0`
 * `DEPS`: update to `dmn-js@15.0.0`
-* `DEPS`: update to `electron@28.0.0` ([4007](https://github.com/camunda/camunda-modeler/pull/4007))
+* `DEPS`: update to `electron@28.0.0` ([#4007](https://github.com/camunda/camunda-modeler/pull/4007))
 
 ### BPMN
 
