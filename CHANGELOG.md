@@ -31,7 +31,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: capitalize `Camunda Form` ([bpmn-io/bpmn-js-properties-panel#1005](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1005))
 * `FEAT`: improve FEEL popup editor icon ([bpmn-io/properties-panel#310](https://github.com/bpmn-io/properties-panel/issues/310))
 * `FEAT`: add contextual keyword completion in FEEL editor
-* `FEAT`: support `zeebe:calledElement` binding in element template ([bpmn-io/bpmn-js-element-templates#37](https://github.com/bpmn-io/bpmn-js-element-templates/pull/37))
 * `FIX`: correct parsing of nested lists in FEEL editor
 * `FIX`: correct parsing of incomplete `QuantifiedExpression` in FEEL editor
 * `FIX`: only allow legal `Name` start characters in FEEL editor
