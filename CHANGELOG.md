@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.19.0
+
 ### General
 
 * `DEPS`: update to `@bpmn-io/form-js@1.6.1`
