@@ -44,15 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Receive and Send Task Message templates</h4>
-          Message templates for Send and Receive Tasks are now supported. You can configure message name and, in the case of Receive Tasks, subscription correlation key.</li>
-        <li>
-          <h4>More comparison operators for element templates</h4>
-          In addition to <code>equals</code> and <code>oneOf</code>, you can now use <code>isActive</code> to check if the referenced property is currently active or hidden by other conditions.
+          <h4>New form fields</h4>
+          The form editor now supports dynamic lists and tables. This allows you to work with static and dynamic lists of data in complex forms.
         </li>
         <li>
-          <h4>Simplified selection outlines for connections</h4>
-          Selection outlines for single connections were removed to reduce visual noise.
+          <h4>Simplified compensation modeling</h4>
+          The BPMN editor ships with improved compensation handling. Turn any activity into a compensation activity by connecting it to a  compensation boundary event.
+        </li>
+        <li>
+          <h4>FEEL editor improvements</h4>
+          The FEEL editor now offers better contextual autocompletion.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
