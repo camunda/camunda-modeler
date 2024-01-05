@@ -132,10 +132,10 @@ This project incorporates components from the projects listed below. The origina
 125.  bpmn-js-element-templates@1.10.0 (https://github.com/bpmn-io/bpmn-js-element-templates)
 126.  uuid@9.0.0 (https://github.com/uuidjs/uuid.git)
 127.  bpmn-js-properties-panel@5.7.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
-128.  bpmn-js@16.3.0 (https://github.com/bpmn-io/bpmn-js)
+128.  bpmn-js@16.3.1 (https://github.com/bpmn-io/bpmn-js)
 129.  bpmnlint-plugin-camunda-compat@2.13.0 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
 130.  bpmnlint@9.2.0 (https://github.com/bpmn-io/bpmnlint)
-131.  camunda-bpmn-js@3.12.0 (https://github.com/camunda/camunda-bpmn-js)
+131.  camunda-bpmn-js@3.12.1 (https://github.com/camunda/camunda-bpmn-js)
 132.  classnames@2.3.2 (https://github.com/JedWatson/classnames.git)
 133.  camunda-dmn-js@1.8.0 (https://github.com/camunda/camunda-dmn-js)
 134.  @camunda/form-playground@0.12.0 (git+https://github.com/camunda/form-playground.git)
@@ -4593,7 +4593,7 @@ THE SOFTWARE.
 END OF bpmn-js-properties-panel@5.7.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js@16.3.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@16.3.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -4620,7 +4620,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js@16.3.0 NOTICES AND INFORMATION
+END OF bpmn-js@16.3.1 NOTICES AND INFORMATION
 
 
 %% bpmnlint-plugin-camunda-compat@2.13.0 NOTICES AND INFORMATION BEGIN HERE
@@ -4677,7 +4677,7 @@ THE SOFTWARE.
 END OF bpmnlint@9.2.0 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@3.12.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@3.12.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -4701,7 +4701,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@3.12.0 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@3.12.1 NOTICES AND INFORMATION
 
 
 %% classnames@2.3.2 NOTICES AND INFORMATION BEGIN HERE
