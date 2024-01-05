@@ -13,8 +13,8 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/form-js@1.6.1`
 * `DEPS`: update to `@camunda/form-linting@0.14.0`
 * `DEPS`: update to `@camunda/form-playground@0.12.0`
-* `DEPS`: update to `camunda-bpmn-js@3.11.0`
-* `DEPS`: update to `bpmn-js@16.3.0`
+* `DEPS`: update to `camunda-bpmn-js@3.12.1`
+* `DEPS`: update to `bpmn-js@16.3.1`
 * `DEPS`: update to `diagram-js@13.3.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.7.0`
 * `DEPS`: update to `bpmn-js-element-templates@1.10.0`
