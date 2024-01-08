@@ -10,6 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: mark Camunda 8.4 as `latest`
 * `DEPS`: update to `@bpmn-io/form-js@1.6.1`
 * `DEPS`: update to `@camunda/form-linting@0.14.0`
 * `DEPS`: update to `@camunda/form-playground@0.12.0`
