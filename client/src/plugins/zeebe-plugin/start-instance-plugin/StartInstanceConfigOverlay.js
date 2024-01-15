@@ -86,6 +86,7 @@ export default class StartInstanceConfigOverlay extends React.PureComponent {
                             return null;
                           }
                         } }
+                        spellcheck="false"
                       />
                     </div>
                   </fieldset>
