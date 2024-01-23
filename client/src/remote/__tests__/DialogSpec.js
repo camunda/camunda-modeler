@@ -264,4 +264,47 @@ describe('dialog', function() {
     dialog.showFileExplorerDialog(options);
   });
 
+
+  it('#showReloadDialog', function() {
+
+    // given
+    const sendSpy = (type, opts) => {
+
+      // then
+      expect(type).to.equal('dialog:show');
+
+      const isLinux = process.platform === 'linux';
+
+      let buttons;
+
+      if (isLinux) {
+        buttons = [
+          { id: 'cancel', label: 'Cancel' },
+          { id: 'reload', label: 'Continue without saving' },
+          { id: 'save', label: 'Save' }
+        ];
+      } else {
+        buttons = [
+          { id: 'save', label: 'Save' },
+          { id: 'reload', label: 'Continue without saving' },
+          { id: 'cancel', label: 'Cancel' }
+        ];
+      }
+
+      expect(opts).to.eql({
+        buttons,
+        defaultId: isLinux ? 2 : 0,
+        type: 'question',
+        title: 'Reload Modeler',
+        message: 'Reloading the modeler will discard all unsaved changes. Do you want to save before reloading?'
+      });
+    };
+
+    const backend = new Backend({ send: sendSpy });
+    const dialog = new Dialog(backend);
+
+    // when
+    dialog.showEmptyFileDialog();
+
+  });
 });

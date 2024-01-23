@@ -16,6 +16,7 @@ const {
 const generateId = require('./util/generate-id');
 
 const allowedEvents = [
+  'app:reload',
   'app:quit-aborted',
   'app:quit-allowed',
   'client:error',

@@ -3143,6 +3143,120 @@ describe('<App>', function() {
 
   });
 
+
+  describe('reload', function() {
+
+    describe('no unsaved changed', function() {
+
+      it('should not show dialog', async function() {
+
+        // given
+        const dialog = new Dialog();
+
+        const { app } = createApp({
+          globals: {
+            dialog
+          }
+        });
+
+        const reload = spy(app, 'reload');
+        const showReloadDialog = spy(dialog, 'showReloadDialog');
+
+        // when
+        dialog.setShowReloadModelerDialogResponse({ button: 'reload' });
+        app.reloadModeler();
+
+        // then
+        expect(reload).to.have.been.called;
+        expect(showReloadDialog).to.not.have.been.called;
+      });
+
+    });
+
+
+    describe('unsaved changes', function() {
+
+      it('should sve changes and reload app', async function() {
+
+        // given
+        const dialog = new Dialog();
+
+        const { app } = createApp({
+          globals: {
+            dialog
+          }
+        });
+
+        sinon.stub(app, 'hasUnsavedTabs').returns(true);
+
+        const reload = spy(app, 'reload');
+        const showReloadDialog = spy(dialog, 'showReloadDialog');
+        const save = spy(app, 'saveAllTabs');
+
+        // when
+        dialog.setShowReloadModelerDialogResponse({ button: 'save' });
+        await app.reloadModeler();
+
+        // then
+        expect(showReloadDialog).to.have.been.called;
+        expect(save).to.have.been.called;
+        expect(reload).to.have.been.called;
+      });
+
+      it('should reload app without saving', async function() {
+
+        // given
+        const dialog = new Dialog();
+
+        const { app } = createApp({
+          globals: {
+            dialog
+          }
+        });
+
+        sinon.stub(app, 'hasUnsavedTabs').returns(true);
+
+        const reload = spy(app, 'reload');
+        const showReloadDialog = spy(dialog, 'showReloadDialog');
+
+        // when
+        dialog.setShowReloadModelerDialogResponse({ button: 'reload' });
+        await app.reloadModeler();
+
+        // then
+        expect(showReloadDialog).to.have.been.called;
+        expect(reload).to.have.been.called;
+      });
+
+
+      it('should NOT reload app', async function() {
+
+        // given
+        const dialog = new Dialog();
+
+        const { app } = createApp({
+          globals: {
+            dialog
+          }
+        });
+
+        sinon.stub(app, 'hasUnsavedTabs').returns(true);
+
+        const reload = spy(app, 'reload');
+        const showReloadDialog = spy(dialog, 'showReloadDialog');
+
+        // when
+        dialog.setShowReloadModelerDialogResponse({ button: 'cancel' });
+        app.reloadModeler();
+
+        // then
+        expect(showReloadDialog).to.have.been.called;
+        expect(reload).to.not.have.been.called;
+      });
+
+    });
+  });
+
 });
 
 

@@ -421,6 +421,46 @@ export class App extends PureComponent {
     return true;
   };
 
+  /**
+   * Reload modeler.
+   *
+   * @return {Promise<boolean>} resolved to true if modeler is reloaded
+   */
+  reloadModeler = async () => {
+    const dialog = this.getGlobal('dialog');
+    const hasUnsavedTabs = this.hasUnsavedTabs();
+
+    if (!hasUnsavedTabs) {
+      this.reload();
+      return;
+    }
+
+    const { button } = await dialog.showReloadDialog(hasUnsavedTabs);
+
+    if (button === 'save') {
+      await this.saveAllTabs();
+      this.reload();
+
+    } else if (button === 'reload') {
+      this.reload();
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+
+  hasUnsavedTabs = () => {
+    const { tabs } = this.state;
+    return tabs.some((tab) => {
+      return this.isDirty(tab) || this.isUnsaved(tab);
+    });
+  };
+
+  reload = async (options) => {
+    this.getGlobal('backend').send('app:reload', options);
+  };
+
   isEmptyTab = (tab) => {
     return tab === EMPTY_TAB;
   };
@@ -1836,6 +1876,10 @@ export class App extends PureComponent {
 
     if (action === 'resize') {
       return this.resizeTab();
+    }
+
+    if (action === 'reload-modeler') {
+      return this.reloadModeler(options);
     }
 
     if (action === 'log') {
