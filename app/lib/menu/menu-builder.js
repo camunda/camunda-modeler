@@ -445,7 +445,7 @@ class MenuBuilder {
     submenuTemplate.push({
       label: 'Reload',
       accelerator: 'CommandOrControl+R',
-      click: (_, browserWindow) => browserWindow.reload()
+      click: () => app.emit('menu:action', 'reload-modeler')
     });
 
     submenuTemplate.push({

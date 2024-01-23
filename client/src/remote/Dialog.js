@@ -176,4 +176,31 @@ export default class Dialog {
     });
   };
 
+  /**
+   * Shows dialog asking user for confirmation to reload the modeler.
+  */
+  showReloadDialog() {
+    const isLinux = this.backend.getPlatform() == 'linux';
+
+    const buttons = [
+      { id: 'save', label: 'Save' },
+      { id: 'reload', label: 'Continue without saving' },
+      { id: 'cancel', label: 'Cancel' },
+    ];
+
+    // Re-order buttons for linux
+    if (isLinux) {
+      buttons.push(buttons.shift());
+    }
+
+    return this.show({
+      buttons,
+      defaultId: isLinux ? 2 : 0,
+      message: 'Reloading the modeler will discard all unsaved changes. Do you want to save before reloading?',
+      type: 'question',
+      title: 'Reload Modeler'
+    });
+  }
+
+
 }

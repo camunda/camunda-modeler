@@ -344,6 +344,10 @@ renderer.on('client:error', function(...args) {
   done(null);
 });
 
+renderer.on('app:reload', async function() {
+  app.mainWindow.reload();
+});
+
 app.on('web-contents-created', (event, webContents) => {
 
   // open new window externally

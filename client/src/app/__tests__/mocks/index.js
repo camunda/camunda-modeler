@@ -320,6 +320,7 @@ export class Dialog extends Mock {
     this.showCloseFileDialogResponse = new Response();
     this.showEmptyFileDialogResponse = new Response();
     this.showFileExplorerDialogResponse = new Response();
+    this.showReloadModelerDialogResponse = new Response();
   }
 
   setShowOpenFilesDialogResponse(index, response) {
@@ -348,6 +349,10 @@ export class Dialog extends Mock {
 
   setShowEmptyFileDialogResponse(index, response) {
     this.showEmptyFileDialogResponse.setResponse(index, response);
+  }
+
+  setShowReloadModelerDialogResponse(index, response) {
+    this.showReloadModelerDialogResponse.setResponse(index, response);
   }
 
   showOpenFilesDialog() {
@@ -381,6 +386,11 @@ export class Dialog extends Mock {
   showFileExplorerDialog() {
     return this.showFileExplorerDialogResponse.next();
   }
+
+  showReloadDialog() {
+    return this.showReloadModelerDialogResponse.next();
+  }
+
 }
 
 export class FileSystem extends Mock {
