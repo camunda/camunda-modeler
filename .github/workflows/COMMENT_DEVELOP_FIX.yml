@@ -31,4 +31,4 @@ jobs:
           body: |
             This Pull Request targets `develop` branch, but contains `fix` commits.
 
-            Consider targeting `master` instead.
+            Consider targeting `main` instead.
