@@ -35,7 +35,7 @@ module.exports = async function(context) {
     electronPlatformName
   } = context;
 
-  const tag = version.endsWith('-nightly') ? 'master' : `v${version}`;
+  const tag = version.endsWith('-nightly') ? 'main' : `v${version}`;
 
   const options = {
     transform: replaceTag(tag)
