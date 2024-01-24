@@ -36,7 +36,7 @@ linkDependencies(dependencies);
 /**
  * Parse and return dependencies stored in LINKED_DEPENDENCIES environment variable.
  * It expects that dependencies are passed in form of:
- * `LINKED_DEPENDENCIES=bpmn-io/dmn-js#master,bpmn-io/bpmn-js#develop`
+ * `LINKED_DEPENDENCIES=bpmn-io/dmn-js#main,bpmn-io/bpmn-js#develop`
  *
  * @returns {Dependency[]>}
  */

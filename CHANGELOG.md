@@ -901,7 +901,7 @@ _Adds a multi-element context, improves overall selection UX in diagram editors,
 
 ### Breaking Changes
 
-* The properties panel extensions for `0.x` series don't work with the new properties panel. Check out [the project's changelog](https://github.com/bpmn-io/bpmn-js-properties-panel/blob/master/CHANGELOG.md#breaking-changes) with the example migration for guidance.
+* The properties panel extensions for `0.x` series don't work with the new properties panel. Check out [the project's changelog](https://github.com/bpmn-io/bpmn-js-properties-panel/blob/main/CHANGELOG.md#breaking-changes) with the example migration for guidance.
 * The `toolbar` slot has been removed. Consider moving your plugin's buttons to the status bar. Check out [the `how to migrate your Camunda Modeler plugin` blog post](https://camunda.com/blog/2022/01/how-to-migrate-your-camunda-modeler-plugins-to-work-with-camunda-modeler-5-x/) for guidance.
 
 ## 4.12.0
