@@ -218,13 +218,15 @@ class MenuBuilder {
           }
         },
         getSeparatorTemplate(),
-        ...(this.options.state.closedTabs.reverse().map((tab) => {
-          return {
-            label: tab.file.path,
-            enabled: true,
-            click: () => app.emit('menu:action', 'reopen-file', tab)
-          };
-        }))
+        ...(this.options.state.closedTabs.slice()
+          .reverse()
+          .map((tab) => {
+            return {
+              label: tab.file.path,
+              enabled: true,
+              click: () => app.emit('menu:action', 'reopen-file', tab)
+            };
+          }))
       ])
     }));
 
