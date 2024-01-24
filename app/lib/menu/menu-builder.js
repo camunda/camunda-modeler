@@ -47,6 +47,7 @@ class MenuBuilder {
         development: process.env.NODE_ENV === 'development',
         devtools: false,
         lastTab: false,
+        closedTabs: [],
         tabs: [],
         activeTab: null
       },
@@ -99,7 +100,7 @@ class MenuBuilder {
         .appendSeparator()
         .appendContextRevealInFileExplorerTab()
         .appendSeparator()
-        .appendReopenLastTab();
+        .appendOpenRecent();
     }
 
     if (contextMenu) {
@@ -198,19 +199,33 @@ class MenuBuilder {
       }
     }));
 
-    this.appendReopenLastTab();
+    this.appendOpenRecent();
 
     return this;
   }
 
-  appendReopenLastTab() {
+  appendOpenRecent() {
     this.menu.append(new MenuItem({
-      label: 'Reopen Last File',
-      enabled: this.options.state.lastTab,
-      accelerator: 'CommandOrControl+Shift+T',
-      click: function() {
-        app.emit('menu:action', 'reopen-last-tab');
-      }
+      label: 'Open Recent',
+      enabled: true,
+      submenu: Menu.buildFromTemplate([
+        {
+          label: 'Reopen Last File',
+          enabled: this.options.state.lastTab,
+          accelerator: 'CommandOrControl+Shift+T',
+          click: function() {
+            app.emit('menu:action', 'reopen-last-tab');
+          }
+        },
+        getSeparatorTemplate(),
+        ...(this.options.state.closedTabs.reverse().map((tab) => {
+          return {
+            label: tab.file.path,
+            enabled: true,
+            click: () => app.emit('menu:action', 'reopen-file', tab)
+          };
+        }))
+      ])
     }));
 
     return this;
