@@ -142,7 +142,9 @@ describe('<App>', function() {
         // then
         // 1 - initial tab rendered
         // 2 - empty tab rendered
-        expect(updateMenuSpy).to.have.been.calledTwice;
+        // 3 - tab closed
+        // 4 - second tab closed
+        expect(updateMenuSpy).to.have.callCount(4);
 
         expect(app.state.tabState).to.eql({});
       });
@@ -249,7 +251,7 @@ describe('<App>', function() {
       ]);
 
       // then
-      expect(updateMenuSpy.args[0][0]).to.have.property('tabs', app.state.tabs);
+      expect(updateMenuSpy.firstCall.args[0]).to.have.property('tabs', app.state.tabs);
     });
 
 
@@ -272,7 +274,7 @@ describe('<App>', function() {
         ]);
 
         // then
-        expect(updateMenuSpy.args[0][0]).to.have.property('activeTab', app.state.tabs[0]);
+        expect(updateMenuSpy.firstCall.args[0]).to.have.property('activeTab', app.state.tabs[0]);
       });
 
 
@@ -295,7 +297,7 @@ describe('<App>', function() {
         await app.triggerAction('close-all-tabs');
 
         // then
-        expect(updateMenuSpy.args[1][0]).to.have.deep.property('activeTab', EMPTY_TAB);
+        expect(updateMenuSpy.lastCall.args[0]).to.have.deep.property('activeTab', EMPTY_TAB);
       });
 
     });
@@ -1561,6 +1563,122 @@ describe('<App>', function() {
   });
 
 
+  describe('recently closed tabs', function() {
+
+    let app, openedTabs;
+
+    beforeEach(async function() {
+
+      const rendered = createApp();
+
+      app = rendered.app;
+
+      const file1 = createFile('1.bpmn');
+      const file2 = createFile('2.bpmn');
+
+      openedTabs = [
+        await app.createDiagram(),
+        ...(await app.openFiles([ file1, file2 ])),
+        await app.createDiagram(),
+      ];
+
+      // assume
+      const {
+        tabs,
+        activeTab
+      } = app.state;
+
+      expect(tabs).to.eql(openedTabs);
+      expect(activeTab).to.eql(openedTabs[3]);
+    });
+
+
+    it('keep history', async function() {
+
+      // given
+      const savedTab1 = openedTabs[1];
+      const savedTab2 = openedTabs[2];
+
+      // when
+      await app.closeTab(savedTab1);
+      await app.closeTab(savedTab2);
+
+      // when
+      const {
+        recentTabs
+      } = app.state;
+
+      expect(recentTabs).to.eql([ savedTab1, savedTab2 ]);
+    });
+
+
+    it('reopen recent tab', async function() {
+
+      // given
+      const savedTab = openedTabs[2];
+      const file = savedTab.file;
+
+      await app.closeTab(savedTab);
+
+      // when
+      await app.triggerAction('reopen-file', savedTab);
+
+      // then
+      const {
+        recentTabs,
+        activeTab
+      } = app.state;
+
+      expect(activeTab.file).to.eql(file);
+      expect(recentTabs).to.eql([ savedTab ]);
+    });
+
+
+    it('should focus already open tab', async function() {
+
+      // given
+      const savedTab = openedTabs[2];
+      const file = savedTab.file;
+
+      // when
+      await app.triggerAction('reopen-file', savedTab);
+
+      // then
+      const {
+        activeTab
+      } = app.state;
+
+      expect(activeTab.file).to.eql(file);
+    });
+
+
+    it('should reorder tabs on close', async function() {
+
+      // given
+      const savedTab1 = openedTabs[1];
+      const savedTab2 = openedTabs[2];
+      await app.closeTab(savedTab1);
+      await app.closeTab(savedTab2);
+
+      let {
+        recentTabs
+      } = app.state;
+
+      // assume
+      expect(recentTabs).to.eql([ savedTab1, savedTab2 ]);
+
+      // when
+      await app.triggerAction('reopen-file', savedTab1);
+      await app.closeTab(app.state.activeTab);
+
+      // then
+      recentTabs = app.state.recentTabs;
+
+      expect(recentTabs.map(tab => tab.file)).to.eql([ savedTab2.file, savedTab1.file ]);
+    });
+
+  });
+
   describe('tab errors', function() {
 
     it('should propagate', async function() {
@@ -2616,6 +2734,9 @@ describe('<App>', function() {
           config
         }
       });
+
+      // ignore calls from App rendering
+      getConfigSpy.resetHistory();
 
       // when
       app.getConfig('foo');

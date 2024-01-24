@@ -69,6 +69,7 @@ import { PluginsRoot } from './plugins';
 import css from './App.less';
 
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
+import { RecentTabs } from './RecentTabs';
 
 const log = debug('App');
 
@@ -88,6 +89,7 @@ const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
   dirtyTabs: {},
   unsavedTabs: {},
+  recentTabs: [],
   layout: {},
   tabs: [],
   tabState: {},
@@ -118,6 +120,10 @@ export class App extends PureComponent {
 
     // TODO(nikku): make state
     this.closedTabs = new History();
+    this.recentTabs = new RecentTabs({
+      setState: value => this.setState({ recentTabs: value }),
+      config: this.getGlobal('config')
+    });
 
     this.tabRef = React.createRef();
 
@@ -446,7 +452,8 @@ export class App extends PureComponent {
 
     const {
       navigationHistory,
-      closedTabs
+      closedTabs,
+      recentTabs
     } = this;
 
     const {
@@ -462,6 +469,8 @@ export class App extends PureComponent {
     if (!this.isUnsaved(tab)) {
       closedTabs.push(tab);
     }
+
+    recentTabs.push(tab);
 
     if (activeTab === tab) {
 
@@ -1047,6 +1056,7 @@ export class App extends PureComponent {
     const {
       activeTab,
       tabs,
+      recentTabs,
       tabLoadingState,
       tabState,
       layout,
@@ -1090,7 +1100,10 @@ export class App extends PureComponent {
     }
 
 
-    if (tabState !== prevState.tabState) {
+    if (
+      tabState !== prevState.tabState ||
+      recentTabs !== prevState.recentTabs
+    ) {
       this.updateMenu(tabState);
     }
 
@@ -1569,6 +1582,7 @@ export class App extends PureComponent {
       ...options,
       activeTab: this.state.activeTab,
       lastTab: !!this.closedTabs.get(),
+      closedTabs: this.state.recentTabs,
       tabs: this.state.tabs
     });
   };
@@ -1744,6 +1758,10 @@ export class App extends PureComponent {
 
     if (action === 'create-cloud-dmn-diagram') {
       return this.createDiagram('cloud-dmn');
+    }
+
+    if (action === 'reopen-file') {
+      return this.openFiles([ options.file ]);
     }
 
     if (action === 'open-diagram') {
