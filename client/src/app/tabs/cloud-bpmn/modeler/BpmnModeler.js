@@ -22,6 +22,7 @@ import { BpmnJSTracking as bpmnJSTracking } from 'bpmn-js-tracking';
 
 import contextPadTracking from 'bpmn-js-tracking/lib/features/context-pad';
 import elementTemplates from 'bpmn-js-tracking/lib/features/element-templates';
+import feelPopupTracking from 'bpmn-js-tracking/lib/features/feel-popup';
 import modelingTracking from 'bpmn-js-tracking/lib/features/modeling';
 import popupMenuTracking from 'bpmn-js-tracking/lib/features/popup-menu';
 import paletteTracking from 'bpmn-js-tracking/lib/features/palette';
@@ -61,6 +62,7 @@ CloudBpmnModeler.prototype._modules = [
   bpmnJSTracking,
   contextPadTracking,
   elementTemplates,
+  feelPopupTracking,
   modelingTracking,
   popupMenuTracking,
   paletteTracking
