@@ -73,7 +73,7 @@ export function ReportFeedbackSystemInfoSection(props) {
   return (
     <Section>
       <Section.Header>
-        Don't forget to add system information
+        Share your system information
       </Section.Header>
       <Section.Body>
         <Formik
@@ -94,19 +94,19 @@ export function ReportFeedbackSystemInfoSection(props) {
                   name="operatingSystem"
                   component={ CheckBox }
                   type="checkbox"
-                  label="Operating System"
+                  label="Operating system"
                 />
                 <Field
                   name="installedPlugins"
                   component={ CheckBox }
                   type="checkbox"
-                  label="Installed Plugins"
+                  label="Installed plugins"
                 />
                 <Field
                   name="executionPlatform"
                   component={ CheckBox }
                   type="checkbox"
-                  label="Execution Platform"
+                  label="Execution platform"
                 />
                 {formik.errors._form && allFieldsTruthy(formik.touched) && <div className="feedback__message">{formik.errors._form}</div>}
 
@@ -116,7 +116,7 @@ export function ReportFeedbackSystemInfoSection(props) {
                     className="btn btn-primary"
                     disabled={ hasSubmitCompleted }
                   >
-                    {!hasSubmitCompleted ? 'Copy to clipboard' : 'Copied!' }
+                    {!hasSubmitCompleted ? 'Copy system information' : 'Copied!' }
                   </button>
                 </Section.Actions>
               </Form>
