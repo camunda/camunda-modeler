@@ -50,16 +50,14 @@ function ReportFeedbackChannelsSection(props) {
   return (
     <Section>
       <Section.Header>
-        Your feedback is welcome
+        Share your feedback
       </Section.Header>
       <Section.Body>
         <p>
-          Have you found an issue or would like to send a feature request?<br />
-          <a onClick={ onClose } href={ REPORT_ISSUE_LINK }>Report an issue on GitHub</a>
+          <a onClick={ onClose } href={ USER_FORUM_LINK }>Visit our user forum</a> to share general feedback on the Modeler.
         </p>
         <p>
-          Would you like to discuss with other users?<br />
-          <a onClick={ onClose } href={ USER_FORUM_LINK }>Visit the User Forum</a>
+          <a onClick={ onClose } href={ REPORT_ISSUE_LINK }>Open an issue on GitHub</a> to report a bug or request a new feature.
         </p>
       </Section.Body>
     </Section>
