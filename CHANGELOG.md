@@ -6,6 +6,19 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## General
+
+* `DEPS`: update to `@bpmn-io/form-js@1.7.0`
+* `DEPS`: update to `@camunda/form-linting@0.15.0`
+* `DEPS`: update to `@camunda/form-playground@0.13.0`
+
+## Forms
+
+* `FEAT`: implement HTML component and cleanup Text component ([bpmn-io/form-js#999](https://github.com/bpmn-io/form-js/pull/999))
+* `FIX`: resize textarea on input changes ([bpmn-io/form-js#1011](https://github.com/bpmn-io/form-js/issues/1011))
+* `FIX`: prevent demo data from being created on edited tables ([bpmn-io/form-js#1005](https://github.com/bpmn-io/form-js/pull/1005))
+
+
 ## 5.19.0
 
 ### General
@@ -44,8 +57,8 @@ ___Note:__ Yet to be released changes appear here._
 
 ## Forms
 
-* `FEAT`: add dynamic list component ([#796](https://github.com/bpmn-io/form-js/issues/796))
-* `FEAT`: add table component ([#888](https://github.com/bpmn-io/form-js/issues/888))
+* `FEAT`: add dynamic list component ([bpmn-io/form-js#796](https://github.com/bpmn-io/form-js/issues/796))
+* `FEAT`: add table component ([bpmn-io/form-js#888](https://github.com/bpmn-io/form-js/issues/888))
 
 ## 5.18.0
 
