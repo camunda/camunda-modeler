@@ -6,13 +6,48 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-## General
+## 5.20.0
 
+### General
+
+* `FEAT`: allow users to re-open recently used files ([#3917](https://github.com/camunda/camunda-modeler/issues/3917))
+* `FEAT`: confirm on unsaved files before reload ([#3886](https://github.com/camunda/camunda-modeler/issues/3886), [#3240](https://github.com/camunda/camunda-modeler/issues/3240))
+* `FEAT`: rework report feedback widget ([#4086](https://github.com/camunda/camunda-modeler/issues/4086))
+* `FEAT`: improve resizer and popup editor toggle interaction ([#3895](https://github.com/camunda/camunda-modeler/issues/3895))
+* `FIX`: correct user forum link ([#4085](https://github.com/camunda/camunda-modeler/issues/4085))
+* `CHORE`: track popup editor usage ([#4004](https://github.com/camunda/camunda-modeler/issues/4004))
 * `DEPS`: update to `@bpmn-io/form-js@1.7.0`
 * `DEPS`: update to `@camunda/form-linting@0.15.0`
 * `DEPS`: update to `@camunda/form-playground@0.13.0`
+* `DEPS`: update to `bpmn-js@16.4.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.11.1`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.18.1`
+* `DEPS`: update to `camunda-bpmn-js-behaviors@1.2.3`
+* `DEPS`: update to `bpmn-js-element-templates@1.13.1`
 
-## Forms
+### BPMN
+
+* `FEAT`: allow text annotations to overlap with the borders of subprocesses and pools ([bpmn-io/bpmn-js#2049](https://github.com/bpmn-io/bpmn-js/issues/2049), [#4035](https://github.com/camunda/camunda-modeler/issues/4035))
+* `FIX`: support core replace in compensation behavior ([bpmn-io/bpmn-js#2073](https://github.com/bpmn-io/bpmn-js/issues/2073), [#4070](https://github.com/camunda/camunda-modeler/issues/4070))
+* `FEAT`: improve Camunda 7 variable events tooltip ([#1016](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1016))
+* `FEAT`: make FEEL error more forgiving ([#3991](https://github.com/camunda/camunda-modeler/issues/3991))
+* `FEAT`: display element template icon found in XML ([bpmn-io/bpmn-js-properties-panel#1011](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1011))
+* `FEAT`: align zeebe input propagation label and tooltip ([bpmn-io/bpmn-js-properties-panel@`5d8bd68`](https://github.com/bpmn-io/bpmn-js-properties-panel/commit/5d8bd6846efcbbc7c67322df5a6c6fe28d63fb9b), [#4051](https://github.com/camunda/camunda-modeler/issues/4051))
+* `FEAT`: allow tooltip re-usability ([bpmn-io/properties-panel#321](https://github.com/bpmn-io/properties-panel/pull/321))
+* `FEAT`: word wrap FEEL expressions, textarea style ([bpmn-io/properties-panel#319](https://github.com/bpmn-io/properties-panel/pull/319))
+* `FEAT`: always show documentation field ([bpmn-io/bpmn-js-element-templates#50](https://github.com/bpmn-io/bpmn-js-element-templates/pull/50), [#4037](https://github.com/camunda/camunda-modeler/issues/4037))
+* `FEAT`: validate Camunda 7 text area and select ([bpmn-io/bpmn-js-element-templates#55](https://github.com/bpmn-io/bpmn-js-element-templates/issues/55))
+* `FEAT`: ensure Camunda 8 user tasks have a form definition ([#151](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/151))
+* `FIX`: attach popup editor toggle to the top ([bpmn-io/bpmn-js-properties-panel@`e6681f7`](https://github.com/bpmn-io/properties-panel/commit/e6681f74ad6268c8f533a721351bdeea376dac26))
+* `FIX`: close popup editor when properties panel gets detached ([bpmn-io/bpmn-js-properties-panel@`7defc52`](https://github.com/bpmn-io/properties-panel/commit/7defc525400c62f253651cda589fe2f5058518a6))
+* `FIX`: close popup editor when source component gets unmounted ([bpmn-io/bpmn-js-properties-panel@`1fa3330`](https://github.com/bpmn-io/properties-panel/commit/1fa3330ebdcbc7c0ac405a49eb510817fc3aa71c))
+* `FIX`: correct re-validation of entries when validator changes ([bpmn-io/bpmn-js-properties-panel@`e93e986`](https://github.com/bpmn-io/properties-panel/commit/e93e986573d32adc361c64a1bc53cf1e38454715), [#3070](https://github.com/camunda/camunda-modeler/issues/3070))
+* `FIX`: drop unnecessary variable propagation behavior ([camunda/camunda-bpmn-js-behaviors#57](https://github.com/camunda/camunda-bpmn-js-behaviors/pull/57))
+* `FIX`: prevent infinite loop when suggesting variables ([bpmn-io/variable-resolver#23](https://github.com/bpmn-io/variable-resolver/pull/23))
+* `FIX`: show scrollbars in popup editor ([bpmn-io/properties-panel#319](https://github.com/bpmn-io/properties-panel/pull/319))
+
+
+### Forms
 
 * `FEAT`: implement HTML component and cleanup Text component ([bpmn-io/form-js#999](https://github.com/bpmn-io/form-js/pull/999))
 * `FIX`: resize textarea on input changes ([bpmn-io/form-js#1011](https://github.com/bpmn-io/form-js/issues/1011))
