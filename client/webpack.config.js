@@ -101,7 +101,7 @@ module.exports = {
           {
 
             // exclude files served otherwise
-            exclude: [ /\.(js|jsx|mjs|bpmnlintrc)$/, /\.html$/, /\.json$/ ],
+            exclude: [ /\.(js|jsx|cjs|mjs|bpmnlintrc)$/, /\.html$/, /\.json$/ ],
             type: 'asset/resource'
           }
         ]
