@@ -46,13 +46,11 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: prevent infinite loop when suggesting variables ([bpmn-io/variable-resolver#23](https://github.com/bpmn-io/variable-resolver/pull/23))
 * `FIX`: show scrollbars in popup editor ([bpmn-io/properties-panel#319](https://github.com/bpmn-io/properties-panel/pull/319))
 
-
 ### Forms
 
 * `FEAT`: implement HTML component and cleanup Text component ([bpmn-io/form-js#999](https://github.com/bpmn-io/form-js/pull/999))
 * `FIX`: resize textarea on input changes ([bpmn-io/form-js#1011](https://github.com/bpmn-io/form-js/issues/1011))
 * `FIX`: prevent demo data from being created on edited tables ([bpmn-io/form-js#1005](https://github.com/bpmn-io/form-js/pull/1005))
-
 
 ## 5.19.0
 
