@@ -45,15 +45,15 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>New form fields</h4>
-          The form editor now supports a HTML component that allows you to embed simple custom widgets.
+          The form editor now supports an HTML component that allows you to embed simple custom widgets.
         </li>
         <li>
-          <h4>Improved properties and FEEL editing</h4>
-          We improved various aspects of our properties and FEEL editing experience and made FEEL validation errors more helpful.
+          <h4>Improved FEEL editing</h4>
+          We improved various aspects of FEEL editing, including more helpful FEEL validation errors.
         </li>
         <li>
-          <h4>Remember recently opened files</h4>
-          The app remembers which diagrams you worked on and allows you to re-open those you closed recently.
+          <h4>Recently opened files</h4>
+          The app remembers which files you worked on and allows you to reopen those you closed recently.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
