@@ -97,7 +97,7 @@
     "mocha": "^10.2.0",
     "mocha-test-container-support": "0.2.0",
     "npm-run-all2": "^6.0.0",
-    "puppeteer": "^21.11.0",
+    "puppeteer": "^22.0.0",
     "react-svg-loader": "^3.0.3",
     "react-test-renderer": "^16.8.6",
     "sinon": "^17.0.1",
