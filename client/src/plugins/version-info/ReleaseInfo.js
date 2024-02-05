@@ -45,15 +45,15 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>New form fields</h4>
-          The form editor now supports dynamic lists and tables. This allows you to work with static and dynamic lists of data in complex forms.
+          The form editor now supports a HTML component that allows you to embed simple custom widgets.
         </li>
         <li>
-          <h4>Simplified compensation modeling</h4>
-          The BPMN editor ships with improved compensation handling. Turn any activity into a compensation activity by connecting it to a  compensation boundary event.
+          <h4>Improved properties and FEEL editing</h4>
+          We improved various aspects of our properties and FEEL editing experience and made FEEL validation errors more helpful.
         </li>
         <li>
-          <h4>FEEL editor improvements</h4>
-          The FEEL editor now offers better contextual autocompletion.
+          <h4>Remember recently opened files</h4>
+          The app remembers which diagrams you worked on and allows you to re-open those you closed recently.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
