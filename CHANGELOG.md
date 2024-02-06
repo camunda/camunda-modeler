@@ -36,7 +36,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: word wrap FEEL expressions, textarea style ([bpmn-io/properties-panel#319](https://github.com/bpmn-io/properties-panel/pull/319))
 * `FEAT`: always show documentation field ([bpmn-io/bpmn-js-element-templates#50](https://github.com/bpmn-io/bpmn-js-element-templates/pull/50), [#4037](https://github.com/camunda/camunda-modeler/issues/4037))
 * `FEAT`: validate Camunda 7 text area and select ([bpmn-io/bpmn-js-element-templates#55](https://github.com/bpmn-io/bpmn-js-element-templates/issues/55))
-* `FEAT`: ensure Camunda 8 user tasks have a form definition ([#151](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/151))
+* `FEAT`: ensure Camunda 8 user tasks have a form definition ([camunda/bpmnlint-plugin-camunda-compat#151](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/151))
 * `FIX`: support core replace in compensation behavior ([bpmn-io/bpmn-js#2073](https://github.com/bpmn-io/bpmn-js/issues/2073), [#4070](https://github.com/camunda/camunda-modeler/issues/4070))
 * `FIX`: attach popup editor toggle to the top ([bpmn-io/bpmn-js-properties-panel@`e6681f7`](https://github.com/bpmn-io/properties-panel/commit/e6681f74ad6268c8f533a721351bdeea376dac26))
 * `FIX`: close popup editor when properties panel gets detached ([bpmn-io/bpmn-js-properties-panel@`7defc52`](https://github.com/bpmn-io/properties-panel/commit/7defc525400c62f253651cda589fe2f5058518a6))
