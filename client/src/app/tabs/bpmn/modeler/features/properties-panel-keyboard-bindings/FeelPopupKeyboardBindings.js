@@ -13,7 +13,6 @@ export default class FeelPopupKeyboardBindings {
     this._eventBus = eventBus;
 
     eventBus.on('feelPopup.opened', this._addEventListeners);
-    eventBus.on('feelPopup.close', this._removeEventListeners);
   }
 
   _addEventListeners = (event) => {
@@ -21,13 +20,11 @@ export default class FeelPopupKeyboardBindings {
 
     container.addEventListener('focusin', this.handleFocusin);
     container.addEventListener('focusout', this.handleFocusout);
-  };
 
-  _removeEventListeners = () => {
-    const container = this._getContainer();
-
-    container.removeEventListener('focusin', this.handleFocusin);
-    container.removeEventListener('focusout', this.handleFocusout);
+    this._eventBus.once('feelPopup.close', () => {
+      container.removeEventListener('focusin', this.handleFocusin);
+      container.removeEventListener('focusout', this.handleFocusout);
+    });
   };
 
   handleFocusin = () => {
@@ -37,10 +34,6 @@ export default class FeelPopupKeyboardBindings {
   handleFocusout = () => {
     this._eventBus.fire('feelPopup.focusout');
   };
-
-  _getContainer() {
-    return document.querySelector('.bio-properties-panel-feel-popup');
-  }
 }
 
 FeelPopupKeyboardBindings.$inject = [ 'eventBus' ];
