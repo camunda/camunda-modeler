@@ -1612,6 +1612,23 @@ describe('<App>', function() {
     });
 
 
+    it('should NOT track unsaved files', async function() {
+
+      // given
+      const unsavedTab1 = openedTabs[0];
+
+      // when
+      await app.closeTab(unsavedTab1);
+
+      // when
+      const {
+        recentTabs
+      } = app.state;
+
+      expect(recentTabs).to.eql([ ]);
+    });
+
+
     it('reopen recent tab', async function() {
 
       // given
