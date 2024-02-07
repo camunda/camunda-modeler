@@ -508,9 +508,8 @@ export class App extends PureComponent {
 
     if (!this.isUnsaved(tab)) {
       closedTabs.push(tab);
+      recentTabs.push(tab);
     }
-
-    recentTabs.push(tab);
 
     if (activeTab === tab) {
 
