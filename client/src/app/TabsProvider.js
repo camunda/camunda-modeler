@@ -53,7 +53,8 @@ import Flags, {
   DISABLE_ZEEBE,
   DISABLE_PLATFORM,
   DISABLE_CMMN,
-  DISABLE_HTTL_HINT
+  DISABLE_HTTL_HINT,
+  DEFAULT_HISTORY_TTL
 } from '../util/Flags';
 
 import BPMNIcon from '../../resources/icons/file-types/BPMN-16x16.svg';
@@ -627,7 +628,7 @@ export default class TabsProvider {
   _getInitialFileContents(type) {
     const rawContents = this.getProvider(type).getInitialContents();
 
-    return rawContents && replaceExporter(replaceVersions(replaceIds(rawContents, generateId)));
+    return rawContents && replaceHistoryTimeToLive(replaceExporter(replaceVersions(replaceIds(rawContents, generateId))));
   }
 
   _getTabType(file) {
@@ -749,4 +750,14 @@ function DisableHTTLHintPlugin() {
       }
     }
   };
+}
+
+function replaceHistoryTimeToLive(contents) {
+  if (!Flags.get(DEFAULT_HISTORY_TTL)) {
+    return contents.replace('camunda:historyTimeToLive="{{ DEFAULT_HISTORY_TTL }}"', '');
+  }
+  return (
+    contents
+      .replace('{{ DEFAULT_HISTORY_TTL }}', Flags.get(DEFAULT_HISTORY_TTL))
+  );
 }
