@@ -76,7 +76,7 @@
     "sinon": "^17.0.1",
     "sinon-chai": "^3.5.0",
     "tar-stream": "^3.1.7",
-    "webpack": "^5.90.1",
+    "webpack": "^5.90.2",
     "webpack-cli": "^5.0.0",
     "yauzl": "^3.0.0"
   },

@@ -103,7 +103,7 @@
     "sinon": "^17.0.1",
     "sinon-chai": "^3.7.0",
     "style-loader": "^3.3.4",
-    "webpack": "^5.90.1",
+    "webpack": "^5.90.2",
     "webpack-cli": "^5.0.0"
   },
   "scripts": {
