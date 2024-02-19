@@ -64,6 +64,7 @@ _To be done once the release is built._
 * [ ] provide content to the [release presentation and notice](https://confluence.camunda.com/x/Uq-gBQ#ReleasePresentationProcess-OrganisingtheReleasePresentation)
 * [ ] trigger [downloads page](https://camunda.com/download/modeler/) update via [marketing request form](https://confluence.camunda.com/x/rTGSBg)
 * [ ] add new version to [update server releases](https://github.com/camunda/camunda-modeler-update-server/blob/master/releases.json)
+* [ ] (optional) update [supported environments page](https://docs.camunda.io/docs/reference/supported-environments/)
 
 _To be done once release is publicly announced on release day._
 
