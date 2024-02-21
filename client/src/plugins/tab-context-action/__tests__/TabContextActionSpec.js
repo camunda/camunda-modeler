@@ -260,19 +260,19 @@ describe('<TabContextAction>', function() {
 
 function createTabAction(options = {}) {
   const {
-    getTabIcon,
-    onSelect,
-    subscribe,
+    getTabIcon = noop,
+    onSelect = noop,
+    subscribe = createSubscribe,
     tabs = DEFAULT_TABS,
-    triggerAction
+    triggerAction = noop
   } = options;
 
   const tree = mount(
     <TabContextAction
-      getTabIcon={ getTabIcon || noop }
-      onSelect={ onSelect || noop }
-      subscribe={ subscribe || createSubscribe() }
-      triggerAction={ triggerAction || noop } />
+      getTabIcon={ getTabIcon }
+      onSelect={ onSelect }
+      subscribe={ subscribe }
+      triggerAction={ triggerAction } />
   );
 
   const instance = tree.instance();
