@@ -12,6 +12,8 @@
 
 import React from 'react';
 
+import { act } from 'react-dom/test-utils';
+
 import {
   mount
 } from 'enzyme';
@@ -284,9 +286,10 @@ function createTabAction(options = {}) {
 }
 
 function setTabs(tabs, wrapper, instance) {
-  instance.setState({
+  act(() => instance.setState({
     tabs
-  });
+  }));
+
   return wrapper.update();
 }
 
