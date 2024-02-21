@@ -297,6 +297,9 @@ function noop() {}
 
 function createSubscribe() {
 
+  /**
+   * @type { (...args) => void }
+   */
   let cb = noop;
 
   function subscribe(_, callback) {
