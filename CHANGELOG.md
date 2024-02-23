@@ -8,7 +8,18 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: improve `camunda:historyTimeToLive` error reporting ([#4062](https://github.com/camunda/camunda-modeler/issues/4062))
+* `FEAT`: do not provide `camunda:historyTimeToLive` default value ([#4150](https://github.com/camunda/camunda-modeler/pull/4150))
+* `DEPS`: update to `bpmnlint-plugin-camunda-compat@2.16.0`
+* `DEPS`: update to `@camunda/linting@3.16.0`
 * `DEPS`: update to `electron@29.0.0`
+
+### Linting
+
+* `FEAT`: make `history-time-to-live` an informative hint ([camunda/bpmnlint-plugin-camunda-compat#160](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/160))
+* `FEAT`: report missing form definition as warning, not error ([camunda/bpmnlint-plugin-camunda-compat#154](https://github.com/camunda/bpmnlint-plugin-camunda-compat/issues/154), [camunda/bpmnlint-plugin-camunda-compat#157](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/157))
+* `FIX`: correct `escalation-reference` to allow start event without `escalationRef` ([camunda/bpmnlint-plugin-camunda-compat#158](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/158))
+* `FIX`: report `secrets` as `warn`, not `error` ([camunda/bpmnlint-plugin-camunda-compat#157](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/157))
 
 ## 5.20.0
 
