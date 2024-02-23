@@ -48,3 +48,4 @@ export const MIXPANEL_STAGE = 'mixpanel-stage';
 export const DISPLAY_VERSION = 'display-version';
 export const CLOUD_ENGINE_VERSION = 'c8-engine-version';
 export const PLATFORM_ENGINE_VERSION = 'c7-engine-version';
+export const DISABLE_HTTL_HINT = 'disable-httl-hint';

@@ -16,7 +16,8 @@ import Flags, {
   DISABLE_PLATFORM,
   DISABLE_CMMN,
   CLOUD_ENGINE_VERSION,
-  PLATFORM_ENGINE_VERSION
+  PLATFORM_ENGINE_VERSION,
+  DISABLE_HTTL_HINT
 } from '../../util/Flags';
 
 import {
@@ -1131,6 +1132,32 @@ describe('TabsProvider', function() {
 
       // then
       expect(tabsProvider.hasProvider('cmmn')).to.be.true;
+    });
+
+
+    it('should disable HTTL hint', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider().getProvider('bpmn');
+
+      // when
+      const defaultLinter = await tabsProvider.getLinter([]);
+
+      // then
+      expect(defaultLinter).to.exist;
+      expect(defaultLinter.getPlugins()).to.be.empty;
+
+      // but when
+      Flags.init({
+        [DISABLE_HTTL_HINT]: true
+      });
+
+      // when
+      const customLinter = await tabsProvider.getLinter([]);
+
+      // then
+      expect(customLinter).to.exist;
+      expect(customLinter.getPlugins()).to.have.length(1);
     });
 
   });
