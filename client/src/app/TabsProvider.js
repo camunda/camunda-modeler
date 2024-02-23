@@ -52,7 +52,8 @@ import Flags, {
   DISABLE_FORM,
   DISABLE_ZEEBE,
   DISABLE_PLATFORM,
-  DISABLE_CMMN
+  DISABLE_CMMN,
+  DISABLE_HTTL_HINT
 } from '../util/Flags';
 
 import BPMNIcon from '../../resources/icons/file-types/BPMN-16x16.svg';
@@ -246,6 +247,14 @@ export default class TabsProvider {
           } ];
         },
         getLinter(plugins) {
+
+          if (Flags.get(DISABLE_HTTL_HINT)) {
+            plugins = [
+              DisableHTTLHintPlugin(),
+              ...plugins
+            ];
+          }
+
           return new BpmnLinter({
             modeler: 'desktop',
             type: 'platform',
@@ -730,4 +739,14 @@ function replaceExporter(contents) {
       .replace('{{ EXPORTER_NAME }}', name)
       .replace('{{ EXPORTER_VERSION }}', version)
   );
+}
+
+function DisableHTTLHintPlugin() {
+  return {
+    config: {
+      rules: {
+        'bpmnlint-plugin-camunda-compat/history-time-to-live': 'off'
+      }
+    }
+  };
 }
