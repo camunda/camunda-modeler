@@ -28,7 +28,7 @@
     "@sentry/integrations": "^7.82.0",
     "bpmn-js": "^17.0.0",
     "bpmn-js-element-templates": "^1.13.2",
-    "bpmn-js-properties-panel": "^5.11.1",
+    "bpmn-js-properties-panel": "^5.11.2",
     "bpmn-js-tracking": "^0.4.0",
     "bpmn-moddle": "^8.1.0",
     "camunda-bpmn-js": "^3.13.0",

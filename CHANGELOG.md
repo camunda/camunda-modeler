@@ -11,8 +11,14 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: improve `camunda:historyTimeToLive` error reporting ([#4062](https://github.com/camunda/camunda-modeler/issues/4062))
 * `FEAT`: do not provide `camunda:historyTimeToLive` default value ([#4150](https://github.com/camunda/camunda-modeler/pull/4150))
 * `DEPS`: update to `bpmnlint-plugin-camunda-compat@2.16.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.11.2`
 * `DEPS`: update to `@camunda/linting@3.16.0`
 * `DEPS`: update to `electron@29.0.0`
+
+### BPMN
+
+* `FEAT`: improve `retries` tooltip ([#4148](https://github.com/camunda/camunda-modeler/issues/4148))
+* `FIX`: hide output mappings unsupported for terminate end event ([#4096](https://github.com/camunda/camunda-modeler/issues/4096))
 
 ### Linting
 
