@@ -13,6 +13,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmnlint-plugin-camunda-compat@2.16.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.11.2`
 * `DEPS`: update to `@camunda/linting@3.16.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.7.1`
 * `DEPS`: update to `electron@29.0.0`
 
 ### BPMN
@@ -27,6 +28,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correct `escalation-reference` to allow start event without `escalationRef` ([camunda/bpmnlint-plugin-camunda-compat#158](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/158))
 * `FIX`: report `secrets` as `warn`, not `error` ([camunda/bpmnlint-plugin-camunda-compat#157](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/157))
 
+### Forms
+
+* `FIX`: correct HTML field documentation link ([#4118](https://github.com/camunda/camunda-modeler/issues/4118))
+ 
 ## 5.20.0
 
 ### General
