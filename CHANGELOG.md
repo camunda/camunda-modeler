@@ -8,18 +8,32 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `FEAT`: improve `camunda:historyTimeToLive` error reporting ([#4062](https://github.com/camunda/camunda-modeler/issues/4062))
-* `FEAT`: do not provide `camunda:historyTimeToLive` default value ([#4150](https://github.com/camunda/camunda-modeler/pull/4150))
-* `DEPS`: update to `bpmnlint-plugin-camunda-compat@2.16.0`
-* `DEPS`: update to `bpmn-js-properties-panel@5.11.2`
-* `DEPS`: update to `@camunda/linting@3.16.0`
 * `DEPS`: update to `@bpmn-io/form-js@1.7.1`
+* `DEPS`: update to `@camunda/linting@3.16.0`
+* `DEPS`: update to `bpmn-js@17.0.2`
+* `DEPS`: update to `bpmn-js-element-templates@1.14.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.11.2`
+* `DEPS`: update to `bpmnlint-plugin-camunda-compat@2.16.0`
+* `DEPS`: update to `camunda-bpmn-js@4.1.0`
+* `DEPS`: update to `diagram-js@14.1.0`
 * `DEPS`: update to `electron@29.0.0`
 
 ### BPMN
 
 * `FEAT`: improve `retries` tooltip ([#4148](https://github.com/camunda/camunda-modeler/issues/4148))
+* `FEAT`: always display `documentation` field in Camunda 7 diagrams ([bpmn-io/bpmn-js-element-templates#67](https://github.com/bpmn-io/bpmn-js-element-templates/pull/67), [#4037](https://github.com/camunda/camunda-modeler/issues/4037))
+* `FEAT`: always display `multi-instance` group in Camunda 7 diagrams ([bpmn-io/bpmn-js-element-templates#68](https://github.com/bpmn-io/bpmn-js-element-templates/pull/68))
+* `FEAT`: allow `Boolean` and `Number` types in Camunda 8 diagrams ([bpmn-io/bpmn-js-element-templates#64](https://github.com/bpmn-io/bpmn-js-element-templates/pull/64), [#3622](https://github.com/camunda/camunda-modeler/issues/3622))
+* `FEAT`: improve `camunda:historyTimeToLive` error reporting ([#4062](https://github.com/camunda/camunda-modeler/issues/4062))
+* `FEAT`: do not provide `camunda:historyTimeToLive` default value ([#4150](https://github.com/camunda/camunda-modeler/pull/4150))
+* `FEAT`: improve `camunda:historyTimeToLive` tooltip
 * `FIX`: hide output mappings unsupported for terminate end event ([#4096](https://github.com/camunda/camunda-modeler/issues/4096))
+* `FIX`: apply all chained conditional properties ([bpmn-js-element-templates#49](https://github.com/bpmn-io/bpmn-js-element-templates/issues/49))
+* `FIX`: adjust FEEL parsing to accept certain broken expressions ([camunda-modeler#4073](https://github.com/camunda/camunda-modeler/issues/4073))
+
+### DMN
+
+* `FEAT`: improve `camunda:historyTimeToLive` tooltip
 
 ### Linting
 
