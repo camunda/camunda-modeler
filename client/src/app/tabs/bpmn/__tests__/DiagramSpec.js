@@ -29,7 +29,7 @@ describe('tabs/bpmn', function() {
       const contents = require('../diagram.bpmn');
 
       // then
-      expect(contents).to.contain('camunda:historyTimeToLive="180"');
+      expect(contents).not.to.contain('camunda:historyTimeToLive="180"');
     });
 
   });
