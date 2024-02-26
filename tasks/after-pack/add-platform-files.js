@@ -12,7 +12,7 @@ const fs = require('fs');
 
 const {
   copy: _copyGlob
-} = require('cpx');
+} = require('cpx2');
 
 const { promisify } = require('util');
 
