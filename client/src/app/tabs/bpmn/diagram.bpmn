@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_{{ ID }}" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" exporter="{{ EXPORTER_NAME }}" exporterVersion="{{ EXPORTER_VERSION }}" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="{{ CAMUNDA_PLATFORM_VERSION }}">
-  <bpmn:process id="Process_{{ ID:process }}" isExecutable="true" camunda:historyTimeToLive="{{ DEFAULT_HISTORY_TTL }}">
+  <bpmn:process id="Process_{{ ID:process }}" isExecutable="true" camunda:historyTimeToLive="{{ DEFAULT_HTTL }}">
     <bpmn:startEvent id="StartEvent_1" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
