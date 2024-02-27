@@ -54,7 +54,7 @@ import Flags, {
   DISABLE_PLATFORM,
   DISABLE_CMMN,
   DISABLE_HTTL_HINT,
-  DEFAULT_HISTORY_TTL
+  DEFAULT_HTTL
 } from '../util/Flags';
 
 import BPMNIcon from '../../resources/icons/file-types/BPMN-16x16.svg';
@@ -753,11 +753,11 @@ function DisableHTTLHintPlugin() {
 }
 
 function replaceHistoryTimeToLive(contents) {
-  if (!Flags.get(DEFAULT_HISTORY_TTL)) {
-    return contents.replace('camunda:historyTimeToLive="{{ DEFAULT_HISTORY_TTL }}"', '');
+  if (!Flags.get(DEFAULT_HTTL)) {
+    return contents.replace('camunda:historyTimeToLive="{{ DEFAULT_HTTL }}"', '');
   }
   return (
     contents
-      .replace('{{ DEFAULT_HISTORY_TTL }}', Flags.get(DEFAULT_HISTORY_TTL))
+      .replace('{{ DEFAULT_HTTL }}', Flags.get(DEFAULT_HTTL))
   );
 }

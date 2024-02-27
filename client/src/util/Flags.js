@@ -49,5 +49,5 @@ export const DISPLAY_VERSION = 'display-version';
 export const CLOUD_ENGINE_VERSION = 'c8-engine-version';
 export const PLATFORM_ENGINE_VERSION = 'c7-engine-version';
 export const DISABLE_HTTL_HINT = 'disable-httl-hint';
-export const DEFAULT_HISTORY_TTL = 'default-history-ttl';
+export const DEFAULT_HTTL = 'default-httl';
 
