@@ -17,7 +17,8 @@ import Flags, {
   DISABLE_CMMN,
   CLOUD_ENGINE_VERSION,
   PLATFORM_ENGINE_VERSION,
-  DISABLE_HTTL_HINT
+  DISABLE_HTTL_HINT,
+  DEFAULT_HISTORY_TTL
 } from '../../util/Flags';
 
 import {
@@ -1134,7 +1135,6 @@ describe('TabsProvider', function() {
       expect(tabsProvider.hasProvider('cmmn')).to.be.true;
     });
 
-
     it('should disable HTTL hint', async function() {
 
       // given
@@ -1159,6 +1159,36 @@ describe('TabsProvider', function() {
       expect(customLinter).to.exist;
       expect(customLinter.getPlugins()).to.have.length(1);
     });
+
+    it('should return default history ttl', function() {
+
+      // given
+      Flags.init({});
+      const tabsProvider = new TabsProvider();
+
+      // when
+      const { file: { contents } } = tabsProvider.createTab('bpmn');
+
+      // then
+      expect(contents).to.not.include('historyTimeToLive');
+
+    });
+
+    it('should replace history ttl placeholder with version from flag (BPMN)', function() {
+
+      // given
+      Flags.init({
+        [DEFAULT_HISTORY_TTL]: '30'
+      });
+      const tabsProvider = new TabsProvider();
+
+      // when
+      const { file: { contents } } = tabsProvider.createTab('bpmn');
+
+      // then
+      expect(contents).to.include('historyTimeToLive="30"');
+    });
+
 
   });
 
