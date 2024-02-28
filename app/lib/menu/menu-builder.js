@@ -592,7 +592,7 @@ class MenuBuilder {
       },
       {
         label: 'User Forum',
-        click: () => browserOpen('https://forum.camunda.io/c/modeler/')
+        click: () => browserOpen('https://forum.camunda.io/c/bpmn-modeling/')
       },
       {
         label: 'Keyboard Shortcuts',
