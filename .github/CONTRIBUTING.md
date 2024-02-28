@@ -1,6 +1,6 @@
 # How to Contribute
 
-Great to see you! Help us out by [filing bugs or feature requests](#working-with-issues), assisting others in our [forums](https://forum.camunda.io/c/modeler/) or by [contributing improvements](#contributing-improvements).
+Great to see you! Help us out by [filing bugs or feature requests](#working-with-issues), assisting others in our [forums](https://forum.camunda.io/c/bpmn-modeling/) or by [contributing improvements](#contributing-improvements).
 
 
 ## Table of Contents
