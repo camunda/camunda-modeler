@@ -9,7 +9,7 @@
  */
 
 export const OVERLAY_TITLE = 'Deploy diagram';
-export const ENDPOINT_CONFIGURATION_TITLE = 'Endpoint Configuration';
+export const ENDPOINT_CONFIGURATION_TITLE = 'Endpoint configuration';
 export const CANCEL = 'Cancel';
 export const DEPLOY = 'Deploy';
 export const NEXT = 'Next';
@@ -22,7 +22,7 @@ export const CAMUNDA_CLOUD_TEXT = 'Camunda 8 SaaS';
 export const CONTACT_POINT = 'Cluster endpoint';
 export const DEPLOYMENT_NAME_HINT = 'Default value is the file name.';
 export const CONTACT_POINT_HINT = 'http://localhost:26500';
-export const OAUTH_URL = 'OAuth Token URL';
+export const OAUTH_URL = 'OAuth token URL';
 export const AUDIENCE = 'Audience';
 export const CLIENT_ID = 'Client ID';
 export const CLIENT_SECRET = 'Client secret';
@@ -63,5 +63,5 @@ export const CONNECTION_ERROR_MESSAGES = {
   [ ERROR_REASONS.UNKNOWN ]: 'Unknown error. Please check Zeebe cluster status.',
   [ ERROR_REASONS.UNSUPPORTED_ENGINE ]: 'Unsupported Zeebe version.',
   [ ERROR_REASONS.INVALID_CLIENT_ID ]: 'Invalid Client ID.',
-  [ ERROR_REASONS.INVALID_CREDENTIALS ]: 'The client secret is not valid for the Client ID provided.'
+  [ ERROR_REASONS.INVALID_CREDENTIALS ]: 'The client secret is not valid for the client ID provided.'
 };
