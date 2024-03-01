@@ -1432,6 +1432,7 @@ class TestDeploymentPlugin extends DeploymentPlugin {
         contactPoint: '',
         oauthURL: 'url',
         audience: 'audience',
+        scope: 'scope',
         rememberCredentials: false
       } ];
     }

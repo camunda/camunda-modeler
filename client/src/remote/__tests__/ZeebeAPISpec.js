@@ -69,6 +69,7 @@ describe('<ZeebeAPI>', function() {
       const contactPoint = 'contactPoint';
       const oauthURL = 'oauthURL';
       const audience = 'audience';
+      const scope = 'scope';
       const clientId = 'oauthClientId';
       const clientSecret = 'oauthClientSecret';
       const endpoint = {
@@ -77,6 +78,7 @@ describe('<ZeebeAPI>', function() {
         contactPoint,
         oauthURL,
         audience,
+        scope,
         clientId,
         clientSecret
       };
@@ -91,6 +93,7 @@ describe('<ZeebeAPI>', function() {
           url: contactPoint,
           oauthURL,
           audience,
+          scope,
           clientId,
           clientSecret
         }
@@ -227,6 +230,7 @@ describe('<ZeebeAPI>', function() {
         contactPoint,
         oauthURL: 'oauthURL',
         audience: 'audience',
+        scope: 'scope',
         clientId: 'oauthClientId',
         clientSecret: 'oauthClientSecret'
       };
@@ -249,6 +253,7 @@ describe('<ZeebeAPI>', function() {
           url: contactPoint,
           oauthURL: 'oauthURL',
           audience: 'audience',
+          scope: 'scope',
           clientId: 'oauthClientId',
           clientSecret: 'oauthClientSecret'
         }

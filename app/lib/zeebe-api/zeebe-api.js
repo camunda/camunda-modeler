@@ -66,6 +66,7 @@ const RESOURCE_TYPES = {
  * @property {'oauth'} type
  * @property {string} url
  * @property {string} audience
+ * @property {string} [scope]
  * @property {string} clientId
  * @property {string} clientSecret
  */
@@ -323,6 +324,7 @@ class ZeebeAPI {
         oAuth: {
           url: endpoint.oauthURL,
           audience: endpoint.audience,
+          scope: endpoint.scope,
           clientId: endpoint.clientId,
           clientSecret: endpoint.clientSecret,
           cacheOnDisk: false
