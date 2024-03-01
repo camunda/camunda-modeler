@@ -202,7 +202,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
           endpoint: {
             targetType: SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
-            contactPoint: 'https://google.com',
+            contactPoint: 'https://google.com'
           },
           deployment: {
             tenantId: 'tenant-1'
@@ -247,6 +247,75 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
+  describe('oAuth', () => {
+
+    it('should pass config on deploy', done => {
+
+      // given
+      const { wrapper } = createDeploymentPluginModal({
+        anchor,
+        onDeploy,
+        config: {
+          endpoint: {
+            targetType: SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
+            contactPoint: 'https://google.com',
+            audience: 'audience'
+          }
+        }
+      });
+
+      // when deploy
+      wrapper.find('form').simulate('submit');
+
+      // then
+      function onDeploy(values) {
+
+        const { endpoint } = values;
+
+        expect(endpoint.scope).not.to.exists;
+        expect(endpoint.audience).to.eql('audience');
+
+        done();
+      }
+    });
+
+
+    it('should pass <scope> on deploy', done => {
+
+      // given
+      const { wrapper } = createDeploymentPluginModal({
+        anchor,
+        onDeploy,
+        config: {
+          endpoint: {
+            targetType: SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
+            contactPoint: 'https://google.com',
+            audience: 'audience',
+            scope: 'scope'
+          }
+        }
+      });
+
+      // when deploy
+      wrapper.find('form').simulate('submit');
+
+      // then
+      function onDeploy(values) {
+
+        const { endpoint } = values;
+
+        expect(endpoint.scope).to.eql('scope');
+        expect(endpoint.audience).to.eql('audience');
+
+        done();
+      }
+    });
+
+  });
+
+
   it('should extract clusterId and clusterRegion', done => {
 
     // given
@@ -261,8 +330,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
       } });
 
     // when
-    const form = wrapper.find('form');
-    form.simulate('submit');
+    wrapper.find('form').simulate('submit');
 
     // then
     function onDeploy(values) {

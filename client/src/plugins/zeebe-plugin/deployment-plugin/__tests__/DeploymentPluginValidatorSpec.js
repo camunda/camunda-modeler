@@ -92,6 +92,9 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
+    it.skip('should validate scope');
+
+
     it('should validate client id', () => {
 
       // given

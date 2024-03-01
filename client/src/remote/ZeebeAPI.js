@@ -75,6 +75,7 @@ function getEndpointConfiguration(endpoint) {
   const {
     authType,
     audience,
+    scope,
     targetType,
     clientId,
     clientSecret,
@@ -101,6 +102,7 @@ function getEndpointConfiguration(endpoint) {
         url: contactPoint,
         oauthURL,
         audience,
+        scope,
         clientId,
         clientSecret
       };

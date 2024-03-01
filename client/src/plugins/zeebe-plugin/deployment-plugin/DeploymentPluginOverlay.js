@@ -24,6 +24,7 @@ import {
   CONTACT_POINT_HINT,
   OAUTH_URL,
   AUDIENCE,
+  SCOPE,
   TENANT_ID,
   CLIENT_ID,
   CLIENT_SECRET,
@@ -80,6 +81,7 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
       contactPoint: validator.validateZeebeContactPoint,
       oauthURL: validator.validateOAuthURL,
       audience: validator.validateAudience,
+      scope: validator.validateScope,
       clientId: validator.validateClientId,
       clientSecret: validator.validateClientSecret,
       camundaCloudClientId: validator.validateClientId,
@@ -138,7 +140,8 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
         'clientSecret',
         'camundaCloudClientId',
         'camundaCloudClientSecret',
-        'audience'
+        'audience',
+        'scope'
       ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
     case ERROR_REASONS.OAUTH_URL:
       return fieldName === 'oauthURL' && CONNECTION_ERROR_MESSAGES[failureReason];
@@ -159,15 +162,20 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
   }
 
   scheduleConnectionCheck = formValues => {
-    this.connectionChecker.check(formValues.endpoint);
-
     const { endpoint } = formValues;
+
+    // empty scope shall not be passed
+    if (!endpoint.scope) {
+      delete endpoint.scope;
+    }
 
     // Extract clusterId and clusterRegion as required by zeebeAPI for camundaCloud
     if (endpoint.targetType === CAMUNDA_CLOUD && endpoint.camundaCloudClusterUrl) {
       endpoint.camundaCloudClusterId = extractClusterId(endpoint.camundaCloudClusterUrl);
       endpoint.camundaCloudClusterRegion = extractClusterRegion(endpoint.camundaCloudClusterUrl);
     }
+
+    this.connectionChecker.check(endpoint);
 
     this.setState({ configValues: formValues });
   };
@@ -203,6 +211,10 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
     if (endpoint.targetType === CAMUNDA_CLOUD && endpoint.camundaCloudClusterUrl) {
       endpoint.camundaCloudClusterId = extractClusterId(endpoint.camundaCloudClusterUrl);
       endpoint.camundaCloudClusterRegion = extractClusterRegion(endpoint.camundaCloudClusterUrl);
+    }
+
+    if (!endpoint.scope) {
+      delete endpoint.scope;
     }
 
     if (endpoint.authType === AUTH_TYPES.NONE) {
@@ -246,7 +258,7 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
             form => (
               <form onSubmit={ form.handleSubmit }>
                 <Section>
-                  <Section.Header> { OVERLAY_TITLE } </Section.Header>
+                  <Section.Header>{ OVERLAY_TITLE }</Section.Header>
                   <Section.Body>
                     <fieldset className="fieldset">
                       <div className="fields">
@@ -338,6 +350,13 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
                                 label={ AUDIENCE }
                                 fieldError={ this.endpointConfigurationFieldError }
                                 validate={ validatorFunctionsByFieldNames.audience }
+                              />
+                              <Field
+                                name="endpoint.scope"
+                                component={ TextInput }
+                                label={ SCOPE }
+                                fieldError={ this.endpointConfigurationFieldError }
+                                validate={ validatorFunctionsByFieldNames.scope }
                               />
                             </React.Fragment>
                           )

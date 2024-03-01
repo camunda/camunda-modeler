@@ -1210,6 +1210,59 @@ describe('ZeebeAPI', function() {
     });
 
 
+    describe('OAuth', function() {
+
+      it('should pass configuration', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const ZBClientMock = sinon.spy(function() {
+          return {
+            deployResource: deployResourceSpy
+          };
+        });
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: ZBClientMock
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'process.bpmn',
+          endpoint: {
+            type: AUTH_TYPES.OAUTH,
+            url: TEST_URL,
+            oauthURL: 'oauthURL',
+            audience: 'audience',
+            scope: 'scope',
+            clientId: 'clientId',
+            clientSecret: 'clientSecret'
+          }
+        });
+
+        // then
+        const [ url, config ] = ZBClientMock.getCall(0).args;
+
+        // ZBClient is invoked accordingly
+        expect(url).to.eql(TEST_URL);
+
+        expect(config.oAuth).to.include.keys({
+          audience: 'audience',
+          clientId: 'clientId',
+          clientSecret: 'clientSecret',
+          scope: 'scope',
+          url: 'oauthURL'
+        });
+
+        // deployment is executed appropriately
+        expect(deployResourceSpy).to.have.been.calledWith({ name: 'process.bpmn', process: undefined });
+      });
+
+    });
+
+
     describe('tenant ID', function() {
 
       it('should add tenant ID if exists', async () => {
@@ -1233,7 +1286,6 @@ describe('ZeebeAPI', function() {
             type: AUTH_TYPES.OAUTH,
             url: TEST_URL,
             oauthURL: 'oauthURL',
-            audience: 'audience',
             clientId: 'clientId',
             clientSecret: 'clientSecret'
           },

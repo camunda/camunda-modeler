@@ -54,6 +54,10 @@ export default class DeploymentPluginValidator {
     return this.validateNonEmpty(value, AUDIENCE_MUST_NOT_BE_EMPTY);
   };
 
+  validateScope = (value) => {
+    return null;
+  };
+
   validateClientId = (value) => {
     return this.validateNonEmpty(value, CLIENT_ID_MUST_NOT_BE_EMPTY);
   };
