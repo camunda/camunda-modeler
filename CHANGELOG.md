@@ -9,17 +9,18 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `DEPS`: update to `@bpmn-io/form-js@1.7.1`
-* `DEPS`: update to `@camunda/linting@3.16.0`
+* `DEPS`: update to `@camunda/linting@3.17.0`
 * `DEPS`: update to `bpmn-js@17.0.2`
 * `DEPS`: update to `bpmn-js-element-templates@1.14.0`
-* `DEPS`: update to `bpmn-js-properties-panel@5.11.2`
+* `DEPS`: update to `bpmn-js-properties-panel@5.13.0`
 * `DEPS`: update to `bpmnlint-plugin-camunda-compat@2.16.0`
-* `DEPS`: update to `camunda-bpmn-js@4.1.0`
+* `DEPS`: update to `camunda-bpmn-js@4.3.0`
 * `DEPS`: update to `diagram-js@14.1.0`
 * `DEPS`: update to `electron@29.0.0`
 
 ### BPMN
 
+* `FEAT`: support Zeebe user task ([#4087](https://github.com/camunda/camunda-modeler/issues/4087))
 * `FEAT`: improve `retries` tooltip ([#4148](https://github.com/camunda/camunda-modeler/issues/4148))
 * `FEAT`: always display `documentation` field in Camunda 7 diagrams ([bpmn-io/bpmn-js-element-templates#67](https://github.com/bpmn-io/bpmn-js-element-templates/pull/67), [#4037](https://github.com/camunda/camunda-modeler/issues/4037))
 * `FEAT`: always display `multi-instance` group in Camunda 7 diagrams ([bpmn-io/bpmn-js-element-templates#68](https://github.com/bpmn-io/bpmn-js-element-templates/pull/68))
