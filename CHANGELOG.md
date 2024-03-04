@@ -8,6 +8,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: add Camunda 8.5 as engine profile
 * `DEPS`: update to `@bpmn-io/form-js@1.7.1`
 * `DEPS`: update to `@camunda/linting@3.17.0`
 * `DEPS`: update to `bpmn-js@17.0.2`
@@ -46,7 +47,7 @@ ___Note:__ Yet to be released changes appear here._
 ### Forms
 
 * `FIX`: correct HTML field documentation link ([#4118](https://github.com/camunda/camunda-modeler/issues/4118))
- 
+
 ## 5.20.0
 
 ### General
