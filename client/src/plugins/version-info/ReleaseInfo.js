@@ -48,8 +48,8 @@ export function ReleaseInfo(props) {
           For Camunda 7 diagrams, the History Time to Live (HTTL) is no longer automatically set, preventing accidental overrides of globally configured HTTL settings. Learn more about configuring HTTL options in <a href="https://docs.camunda.io/docs/next/components/modeler/reference/modeling-guidance/rules/history-time-to-live/">our documentation</a>.
         </li>
         <li>
-          <h4>Support for Zeebe User Tasks</h4>
-          As a preview for the upcoming Camunda 8.5 release, we introduce the ability to configure Zeebe User Tasks. With Zeebe User Tasks, you will be able to use task lifecycle events in a custom tasklist.
+          <h4>Support for Upcoming Camunda 8.5 Features</h4>
+          With this release, we introduce OAuth scope for Camunda 8 Self Managed Authentication, enabling support for all OAuth providers. Additionally, we introduce the ability to configure Zeebe User Tasks.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
