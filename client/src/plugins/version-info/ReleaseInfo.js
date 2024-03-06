@@ -44,16 +44,12 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>New form fields</h4>
-          The form editor now supports an HTML component that allows you to embed simple custom widgets.
+          <h4>Improved History Time to Live Configuration</h4>
+          For Camunda 7 diagrams, the History Time to Live (HTTL) is no longer automatically set, preventing accidental overrides of globally configured HTTL settings. Learn more about configuring HTTL options in <a href="https://docs.camunda.io/docs/next/components/modeler/reference/modeling-guidance/rules/history-time-to-live/">our documentation</a>.
         </li>
         <li>
-          <h4>Improved FEEL editing</h4>
-          We improved various aspects of FEEL editing, including more helpful FEEL validation errors.
-        </li>
-        <li>
-          <h4>Recently opened files</h4>
-          The app remembers which files you worked on and allows you to reopen those you closed recently.
+          <h4>Support for Zeebe User Tasks</h4>
+          As a preview for the upcoming Camunda 8.5 release, we introduce the ability to configure Zeebe User Tasks. With Zeebe User Tasks, you will be able to use task lifecycle events in a custom tasklist.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
