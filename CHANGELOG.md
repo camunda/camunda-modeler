@@ -9,13 +9,14 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FEAT`: add Camunda 8.5 as engine profile
-* `DEPS`: update to `@bpmn-io/form-js@1.7.1`
+* `DEPS`: update to `@bpmn-io/dmn-migrate@0.5.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.7.2`
 * `DEPS`: update to `@camunda/linting@3.17.0`
 * `DEPS`: update to `bpmn-js@17.0.2`
-* `DEPS`: update to `bpmn-js-element-templates@1.14.0`
+* `DEPS`: update to `bpmn-js-element-templates@1.14.1`
 * `DEPS`: update to `bpmn-js-properties-panel@5.13.0`
 * `DEPS`: update to `bpmnlint-plugin-camunda-compat@2.16.0`
-* `DEPS`: update to `camunda-bpmn-js@4.3.0`
+* `DEPS`: update to `camunda-bpmn-js@4.3.1`
 * `DEPS`: update to `diagram-js@14.1.0`
 * `DEPS`: update to `electron@29.0.0`
 
