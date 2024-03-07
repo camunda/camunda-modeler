@@ -25,7 +25,7 @@ jobs:
           fi
       - name: Create comment
         if: ${{ env.FIX_COMMITS_PRESENT == 'true' }}
-        uses: peter-evans/create-or-update-comment@4e4c9d2bf6469297d6559f2d6dd2491723ec8326
+        uses: peter-evans/create-or-update-comment@cddb6360ca21b43f052f9af35e35cb3233f3b5c5
         with:
           issue-number: ${{ github.event.number }}
           body: |
