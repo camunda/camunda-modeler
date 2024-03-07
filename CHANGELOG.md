@@ -43,7 +43,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: make `history-time-to-live` an informative hint ([camunda/bpmnlint-plugin-camunda-compat#160](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/160))
 * `FEAT`: report missing form definition as warning, not error ([camunda/bpmnlint-plugin-camunda-compat#154](https://github.com/camunda/bpmnlint-plugin-camunda-compat/issues/154), [camunda/bpmnlint-plugin-camunda-compat#157](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/157))
 * `FIX`: correct `escalation-reference` to allow start event without `escalationRef` ([camunda/bpmnlint-plugin-camunda-compat#158](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/158))
-* `FIX`: report `secrets` as `warn`, not `error` ([camunda/bpmnlint-plugin-camunda-compat#157](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/157))
+* `FIX`: report missing user task form as `warn`, not `error` ([camunda/bpmnlint-plugin-camunda-compat#157](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/157))
 
 ### Forms
 
