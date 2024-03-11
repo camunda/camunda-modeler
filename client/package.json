@@ -53,7 +53,7 @@
     "ids": "^1.0.0",
     "inherits-browser": "^0.1.0",
     "min-dash": "^4.1.1",
-    "min-dom": "^4.0.3",
+    "min-dom": "^5.0.0",
     "mitt": "^3.0.0",
     "mixpanel-browser": "^2.45.0",
     "modeler-moddle": "^0.2.0",
