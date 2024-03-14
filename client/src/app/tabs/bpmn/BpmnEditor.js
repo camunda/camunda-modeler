@@ -230,7 +230,8 @@ export class BpmnEditor extends CachedComponent {
       'searchPad.closed',
       'searchPad.opened',
       'popupMenu.opened',
-      'popupMenu.closed'
+      'popupMenu.closed',
+      'elementTemplates.select'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
