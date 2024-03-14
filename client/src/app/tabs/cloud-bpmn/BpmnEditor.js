@@ -224,7 +224,8 @@ export class BpmnEditor extends CachedComponent {
       'feelPopup.opened',
       'feelPopup.closed',
       'feelPopup.focusin',
-      'feelPopup.focusout'
+      'feelPopup.focusout',
+      'elementTemplates.select'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
