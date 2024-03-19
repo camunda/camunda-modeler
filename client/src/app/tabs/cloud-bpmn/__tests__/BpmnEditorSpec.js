@@ -384,6 +384,9 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
 
     it('popupMenu.closed', expectHandleChanged('popupMenu.closed'));
+
+
+    it('elementTemplates.select', expectHandleChanged('elementTemplates.select'));
   });
 
 
