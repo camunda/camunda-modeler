@@ -6,6 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: prevent Maximum call stack size exceeded in variable resolver ([#4139](https://github.com/camunda/camunda-modeler/issues/4139), [@bpmn-io/variable-resolver#30](https://github.com/bpmn-io/variable-resolver/pull/30))
+* `DEPS`: update to `camunda-bpmn-js@4.3.2`
+
 ## 5.21.0
 
 ### General
