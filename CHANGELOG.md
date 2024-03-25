@@ -7,9 +7,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: support compensation events in C8 ([#3945](https://github.com/camunda/camunda-modeler/issues/3945))
+* `FEAT`: improve form related tooltips ([#4183](https://github.com/camunda/camunda-modeler/issues/4183))
 * `FIX`: prevent Maximum call stack size exceeded in variable resolver ([#4139](https://github.com/camunda/camunda-modeler/issues/4139), [@bpmn-io/variable-resolver#30](https://github.com/bpmn-io/variable-resolver/pull/30))
-* `DEPS`: update to `camunda-bpmn-js@4.3.2`
+* `DEPS`: update to `camunda-bpmn-js@4.5.0`
 * `DEPS`: update to `@camunda/linting@3.18.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.14.0`
 
 ## 5.21.0
 
