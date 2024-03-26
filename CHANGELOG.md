@@ -6,12 +6,33 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.22.0
+
+### General
+
+* `FIX`: disable shortcuts when template selection modal is open ([#3483](https://github.com/camunda/camunda-modeler/issues/3483))
+* `DEPS`: update to `camunda-bpmn-js@4.5.0`
+* `DEPS`: update to `camunda-dmn-js@2.1.0`
+* `DEPS`: update to `@camunda/linting@3.18.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.14.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.8.1`
+* `DEPS`: update to `@camunda/form-linting@0.16.0`
+* `DEPS`: update to `@camunda/form-playground@0.14.0`
+
+### BPMN
+
 * `FEAT`: support compensation events in C8 ([#3945](https://github.com/camunda/camunda-modeler/issues/3945))
 * `FEAT`: improve form related tooltips ([#4183](https://github.com/camunda/camunda-modeler/issues/4183))
 * `FIX`: prevent Maximum call stack size exceeded in variable resolver ([#4139](https://github.com/camunda/camunda-modeler/issues/4139), [@bpmn-io/variable-resolver#30](https://github.com/bpmn-io/variable-resolver/pull/30))
-* `DEPS`: update to `camunda-bpmn-js@4.5.0`
-* `DEPS`: update to `@camunda/linting@3.18.0`
-* `DEPS`: update to `bpmn-js-properties-panel@5.14.0`
+
+### Forms
+
+* `FEAT`: implemented new `expression` field, allowing precomputation of data at runtime using FEEL ([bpmn-io/form-js#1073](https://github.com/bpmn-io/form-js/issues/1073))
+* `FEAT`: overhaul the JSON editor components ([bpmn-io/form-js#1101](https://github.com/bpmn-io/form-js/issues/1101))
+* `FIX`: improved the editor selection autoscroll ([bpmn-io/form-js#1106](https://github.com/bpmn-io/form-js/issues/1106))
+* `FIX`: display groups with no outline with a dashed outline in the editor ([bpmn-io/form-js#1084](https://github.com/bpmn-io/form-js/issues/1084))
+* `FIX`: variables with keyword names like `duration` can now be used in feel expression ([bpmn-io/form-js#975](https://github.com/bpmn-io/form-js/issues/975))
+* `FIX`: ensure dynamic list and tables interact safely ([bpmn-io/form-js#1064](https://github.com/bpmn-io/form-js/issues/1064))
 
 ## 5.21.0
 
