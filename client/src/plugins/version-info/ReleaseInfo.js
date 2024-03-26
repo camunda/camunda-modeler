@@ -44,12 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Improved History Time to Live Configuration</h4>
-          For Camunda 7 diagrams, the History Time to Live (HTTL) is no longer automatically set, preventing accidental overrides of globally configured HTTL settings. Learn more about configuring HTTL options in <a href="https://docs.camunda.io/docs/next/components/modeler/reference/modeling-guidance/rules/history-time-to-live/">our documentation</a>.
+          <h4>Support for Camunda 8.5 features</h4>
+          With this release, we introduce support for compensation events in Camunda 8. You can now model compensation throw and boundary events, and set compensation activities.
         </li>
         <li>
-          <h4>Support for Upcoming Camunda 8.5 Features</h4>
-          With this release, we introduce OAuth scope for Camunda 8 Self Managed Authentication, enabling support for all OAuth providers. Additionally, we introduce the ability to configure Zeebe User Tasks.
+          <h4>Improved user task tooltips</h4>
+          We've improved the tooltips to provide better guidance on Zeebe user task usage.
+        </li>
+        <li>
+          <h4>Expression field in Forms</h4>
+          With the new expression field, you can precompute data at runtime using FEEL.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
