@@ -15,7 +15,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-dmn-js@2.1.0`
 * `DEPS`: update to `@camunda/linting@3.18.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.14.0`
-* `DEPS`: update to `@bpmn-io/form-js@1.8.1`
+* `DEPS`: update to `@bpmn-io/form-js@1.8.2`
 * `DEPS`: update to `@camunda/form-linting@0.16.0`
 * `DEPS`: update to `@camunda/form-playground@0.14.0`
 
@@ -33,6 +33,9 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: display groups with no outline with a dashed outline in the editor ([bpmn-io/form-js#1084](https://github.com/bpmn-io/form-js/issues/1084))
 * `FIX`: variables with keyword names like `duration` can now be used in feel expression ([bpmn-io/form-js#975](https://github.com/bpmn-io/form-js/issues/975))
 * `FIX`: ensure dynamic list and tables interact safely ([bpmn-io/form-js#1064](https://github.com/bpmn-io/form-js/issues/1064))
+* `FIX`: prevent crash when illegal key and path is used ([#4217](https://github.com/camunda/camunda-modeler/issues/4217), [#4218](https://github.com/camunda/camunda-modeler/issues/4218))
+* `FIX`: make the output panel readonly ([#4216](https://github.com/camunda/camunda-modeler/issues/4216))
+
 
 ## 5.21.0
 
