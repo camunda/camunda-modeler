@@ -45,7 +45,9 @@ app.on('app:window-created', async () => {
 try {
 
   // reload on changes but ignore client source (we want to watch build dir)
-  require('electron-reloader')(module, { ignore: [ 'client/src' ] });
+  require('electron-reloader')(module, {
+    ignore: [ 'client/src', 'resources/diagram' ]
+  });
 } catch (err) {
 
   // ignore it
