@@ -557,10 +557,11 @@ export default class DeploymentTool extends PureComponent {
     };
 
     const onClick = () => {
-      if (overlayState)
+      if (overlayState) {
         this.closeOverlay(overlayState);
-
-      else this.deploy({ configure: true });
+      } else {
+        this.deploy({ configure: true });
+      }
     };
 
     return <React.Fragment>
