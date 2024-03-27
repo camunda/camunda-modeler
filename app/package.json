@@ -15,7 +15,7 @@
     "@sentry/node": "^7.82.0",
     "epipebomb": "^1.0.0",
     "fast-glob": "^3.3.1",
-    "form-data": "^2.5.1",
+    "form-data": "^4.0.0",
     "ids": "^1.0.0",
     "min-dash": "^4.1.1",
     "mri": "^1.1.6",
