@@ -49,7 +49,7 @@
     "dmn-js-properties-panel": "^3.3.0",
     "drag-tabs": "^2.3.1",
     "events": "^3.0.0",
-    "formik": "^2.4.5",
+    "formik": "2.0.4",
     "ids": "^1.0.0",
     "inherits-browser": "^0.1.0",
     "min-dash": "^4.1.1",
