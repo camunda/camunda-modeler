@@ -22,6 +22,7 @@ import { merge } from 'min-dash';
 import AuthTypes from '../../shared/AuthTypes';
 import DeploymentConfigOverlay from '../DeploymentConfigOverlay';
 import DeploymentConfigValidator from '../validation/DeploymentConfigValidator';
+import { act } from 'react-test-renderer';
 
 let mounted;
 
@@ -122,7 +123,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should display hint if token is missing', (done) => {
+    it('should display hint if token is missing', async () => {
 
       // given
       const configuration = {
@@ -145,22 +146,23 @@ describe('<DeploymentConfigOverlay>', () => {
       }, mount);
 
       // when
-      instance.setState({ isAuthNeeded: true });
-      instance.isOnBeforeSubmit = true;
-      wrapper.find('.btn-primary').simulate('submit');
+      act(() => {
+        instance.setState({ isAuthNeeded: true });
+        instance.isOnBeforeSubmit = true;
+      });
+
+      act(() => {
+        wrapper.find('.btn-primary').simulate('submit');
+      });
+
+      await sleep(200);
 
       // then
-      setTimeout(() => {
+      act(() => {
         wrapper.setProps({});
+      });
 
-        try {
-          expect(wrapper.find('.invalid-feedback')).to.have.length(1);
-        } catch (err) {
-          return done(err);
-        }
-
-        return done();
-      }, 100);
+      expect(wrapper.find('.invalid-feedback')).to.have.length(1);
     });
 
 
@@ -793,4 +795,8 @@ class MockValidator extends DeploymentConfigValidator {
 
     Object.assign(this, { ...apiStubs });
   }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
