@@ -104,7 +104,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Post to a Slack channel
-      uses: slackapi/slack-github-action@v1.15.0
+      uses: slackapi/slack-github-action@v1.25.0
       with:
         channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
         slack-message: "Nightly build failed. <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to the build.>"

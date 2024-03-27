@@ -23,7 +23,7 @@ jobs:
         git merge -m 'Merge main to develop' --no-edit origin/main
         git push
     - name: Notify on Slack if merge fails
-      uses: slackapi/slack-github-action@v1.15.0
+      uses: slackapi/slack-github-action@v1.25.0
       if: failure()
       with:
         channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
