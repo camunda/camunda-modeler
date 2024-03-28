@@ -6,6 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `DEPS`: update to `bpmn-js-element-templates@1.15.0`
+* `FIX`: prevent infinite loop when applying conditional template ([bpmn-io/bpmn-js-element-templates#78](https://github.com/bpmn-io/bpmn-js-element-templates/issues/78))
+
 ## 5.22.0
 
 ### General
