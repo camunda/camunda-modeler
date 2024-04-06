@@ -58,7 +58,7 @@
     "electron-devtools-installer": "^3.1.1",
     "electron-publisher-s3": "^20.17.2",
     "electron-reloader": "^1.2.0",
-    "eslint": "^8.56.0",
+    "eslint": "^9.0.0",
     "eslint-plugin-bpmn-io": "^1.0.0",
     "eslint-plugin-camunda-licensed": "^0.4.6",
     "eslint-plugin-import": "^2.29.1",
