@@ -21,7 +21,7 @@ import { Fill } from '../../app/slot-fill';
 import { ReportFeedbackOverlay } from './ReportFeedbackOverlay';
 import { ClipboardCopySystemInfo } from './ClipboardCopySystemInfo';
 
-import css from './ReportFeedback.less';
+import * as css from './ReportFeedback.less';
 
 
 export class ReportFeedback extends PureComponent {

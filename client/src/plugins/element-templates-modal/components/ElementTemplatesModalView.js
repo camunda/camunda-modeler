@@ -17,7 +17,7 @@ import { Modal } from '../../../shared/ui';
 import Dropdown from './Dropdown';
 import Input from './Input';
 
-import css from './ElementTemplatesModalView.less';
+import * as css from './ElementTemplatesModalView.less';
 
 import {
   groupBy,

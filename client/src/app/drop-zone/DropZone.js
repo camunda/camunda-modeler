@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import css from './DropZone.less';
+import * as css from './DropZone.less';
 
 const VSCODE_FILE_TYPE = 'codefiles';
 

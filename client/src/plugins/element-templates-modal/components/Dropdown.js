@@ -15,7 +15,7 @@ import classNames from 'classnames';
 import CaretDownIcon from '../icons/CaretDown.svg';
 import CaretUpIcon from '../icons/CaretUp.svg';
 
-import css from './Dropdown.less';
+import * as css from './Dropdown.less';
 
 export default class Dropdown extends PureComponent {
   constructor(props) {

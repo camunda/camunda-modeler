@@ -16,7 +16,7 @@ import { isFunction } from 'min-dash';
 
 import dragger from '../../../util/dom/dragger';
 
-import css from './OverviewContainer.less';
+import * as css from './OverviewContainer.less';
 
 import { throttle } from '../../../util';
 

@@ -20,7 +20,7 @@ import {
   CachedComponent
 } from '../cached';
 
-import css from './MultiSheetTab.less';
+import * as css from './MultiSheetTab.less';
 import { Fill } from '../slot-fill';
 
 

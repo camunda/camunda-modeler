@@ -18,7 +18,7 @@ import { Fill } from '../../../slot-fill';
 
 import LintingStatusBarItem from './LintingStatusBarItem';
 
-import css from './LintingTab.less';
+import * as css from './LintingTab.less';
 
 import ErrorIcon from '../../../../../resources/icons/Error.svg';
 import LaunchIcon from '../../../../../resources/icons/Launch.svg';

@@ -14,7 +14,7 @@ import {
   omit
 } from 'min-dash';
 
-import css from './DeploymentConfigOverlay.less';
+import * as css from './DeploymentConfigOverlay.less';
 import AuthTypes from '../shared/AuthTypes';
 
 import {

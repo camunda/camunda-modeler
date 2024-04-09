@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import { Fill } from '../../../slot-fill';
 
-import css from './LogTab.less';
+import * as css from './LogTab.less';
 
 import CopyIcon from '../../../../../resources/icons/Copy.svg';
 import DeleteIcon from '../../../../../resources/icons/Delete.svg';

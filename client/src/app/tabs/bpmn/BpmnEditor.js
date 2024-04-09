@@ -38,7 +38,7 @@ import { getBpmnEditMenu } from './getBpmnEditMenu';
 
 import getBpmnWindowMenu from './getBpmnWindowMenu';
 
-import css from './BpmnEditor.less';
+import * as css from './BpmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 

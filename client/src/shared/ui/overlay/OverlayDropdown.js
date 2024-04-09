@@ -15,7 +15,7 @@ import { map } from 'min-dash';
 
 import { Overlay, Section } from '..';
 
-import css from './OverlayDropdown.less';
+import * as css from './OverlayDropdown.less';
 
 const LIST_ITEM_SELECTOR = 'li[role="menuitem"]';
 

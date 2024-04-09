@@ -14,7 +14,7 @@ import { Fill } from '../../../app/slot-fill';
 
 import PlayIcon from 'icons/Play.svg';
 
-import css from './StartInstancePlugin.less';
+import * as css from './StartInstancePlugin.less';
 
 import pDefer from 'p-defer';
 import classNames from 'classnames';

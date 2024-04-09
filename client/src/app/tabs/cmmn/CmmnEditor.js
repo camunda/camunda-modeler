@@ -28,7 +28,7 @@ import PropertiesPanelContainer from '../../resizable-container/PropertiesPanelC
 
 import CamundaCmmnModeler from './modeler';
 
-import css from './CmmnEditor.less';
+import * as css from './CmmnEditor.less';
 
 import { active as isInputActive } from '../../../util/dom/isInput';
 

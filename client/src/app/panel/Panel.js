@@ -18,7 +18,7 @@ import { Slot } from '../slot-fill';
 
 import CloseIcon from '../../../resources/icons/Close.svg';
 
-import css from './Panel.less';
+import * as css from './Panel.less';
 
 
 const TabContext = React.createContext({

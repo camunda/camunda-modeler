@@ -55,7 +55,7 @@ import {
   Section
 } from '../../../shared/ui';
 
-import css from './DeploymentPluginOverlay.less';
+import * as css from './DeploymentPluginOverlay.less';
 
 
 const CONNECTION_STATE = {

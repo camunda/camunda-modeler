@@ -15,7 +15,7 @@ import classNames from 'classnames';
 import HandleBarX from '../../../resources/icons/HandleBarX.svg';
 import HandleBarY from '../../../resources/icons/HandleBarY.svg';
 
-import css from './ResizableContainer.less';
+import * as css from './ResizableContainer.less';
 
 export function isLeft(direction) {
   return direction === 'left';

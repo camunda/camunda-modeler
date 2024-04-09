@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import css from './StartInstanceConfigOverlay.less';
+import * as css from './StartInstanceConfigOverlay.less';
 
 import {
   Overlay,

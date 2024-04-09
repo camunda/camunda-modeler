@@ -18,7 +18,7 @@ import ErrorIcon from '../../../../../resources/icons/Error.svg';
 import WarningIcon from '../../../../../resources/icons/Warning.svg';
 import InfoIcon from '../../../../../resources/icons/InformationCircle.svg';
 
-import css from './LintingStatusBarItem.less';
+import * as css from './LintingStatusBarItem.less';
 
 
 export default function LintingStatusBarItem(props) {

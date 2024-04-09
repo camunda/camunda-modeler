@@ -29,7 +29,7 @@ import { Fill } from '../slot-fill';
 
 import { ENGINES, ENGINE_LABELS, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
 
-import css from './EngineProfile.less';
+import * as css from './EngineProfile.less';
 
 const HELP_LINKS = {
   [ ENGINES.PLATFORM ]: 'https://docs.camunda.org/manual/latest/',

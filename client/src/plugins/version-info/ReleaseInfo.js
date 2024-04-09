@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import css from './ReleaseInfo.less';
+import * as css from './ReleaseInfo.less';
 
 /**
  * Release info notice which is displayed once user clicks the version number on the status bar.

@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import classnames from 'classnames';
 
-import css from './Notification.less';
+import * as css from './Notification.less';
 
 import CloseIcon from '../../../resources/icons/notifications/Close.svg';
 import InfoIcon from '../../../resources/icons/notifications/Info.svg';

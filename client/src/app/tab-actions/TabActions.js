@@ -14,7 +14,7 @@ import {
   Slot
 } from '../slot-fill';
 
-import css from './TabActions.less';
+import * as css from './TabActions.less';
 
 
 export function TabActions() {

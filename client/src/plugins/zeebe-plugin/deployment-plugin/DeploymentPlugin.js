@@ -36,7 +36,7 @@ import DeploymentPluginValidator from './DeploymentPluginValidator';
 
 import { ENGINES } from '../../../util/Engines';
 
-import css from './DeploymentPlugin.less';
+import * as css from './DeploymentPlugin.less';
 
 import {
   getClusterUrl,
