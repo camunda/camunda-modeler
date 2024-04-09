@@ -29,8 +29,6 @@ import { Fill } from '../slot-fill';
 
 import { ENGINES, ENGINE_LABELS, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
 
-import * as css from './EngineProfile.less';
-
 const HELP_LINKS = {
   [ ENGINES.PLATFORM ]: 'https://docs.camunda.org/manual/latest/',
   [ ENGINES.CLOUD ]: 'https://docs.camunda.io/?utm_source=modeler&utm_medium=referral'
@@ -98,7 +96,7 @@ function EngineProfileOverlay(props) {
   } = props;
 
   return (
-    <Overlay anchor={ anchor } onClose={ onClose } className={ css.EngineProfileOverlay }>
+    <Overlay anchor={ anchor } onClose={ onClose }>
 
       {
         onChange
