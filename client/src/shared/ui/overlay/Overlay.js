@@ -23,7 +23,7 @@ import {
   KeyboardInteractionTrap
 } from '../trap';
 
-import css from './Overlay.less';
+import * as css from './Overlay.less';
 
 const DEFAULT_OFFSET = {
   bottom: 1,

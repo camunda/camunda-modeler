@@ -18,7 +18,7 @@ import StartInstanceConfigOverlay from './StartInstanceConfigOverlay';
 
 import { DeploymentError, StartInstanceError } from '../shared/CamundaAPI';
 
-import css from './StartInstanceTool.less';
+import * as css from './StartInstanceTool.less';
 
 import { Fill } from '../../../app/slot-fill';
 

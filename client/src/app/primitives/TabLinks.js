@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
-import css from './Tabbed.less';
+import * as css from './Tabbed.less';
 
 import {
   addDragger

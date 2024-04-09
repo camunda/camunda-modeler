@@ -10,7 +10,7 @@
 
 import React, { PureComponent } from 'react';
 
-import css from './ErrorTab.less';
+import * as css from './ErrorTab.less';
 
 import {
   TabContainer

@@ -25,7 +25,7 @@ import {
   INFO_TEXT2
 } from './constants';
 
-import css from './NewVersionInfoView.less';
+import * as css from './NewVersionInfoView.less';
 
 class NewVersionInfoView extends PureComponent {
   renderHtmlSnippets(releases) {

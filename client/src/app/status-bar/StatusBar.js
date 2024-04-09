@@ -12,7 +12,7 @@ import React from 'react';
 import {
   Slot
 } from '../slot-fill';
-import css from './StatusBar.less';
+import * as css from './StatusBar.less';
 
 
 export function StatusBar(props) {

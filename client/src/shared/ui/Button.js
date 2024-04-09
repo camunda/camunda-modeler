@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
-import css from './Button.less';
+import * as css from './Button.less';
 
 
 export default class Button extends PureComponent {

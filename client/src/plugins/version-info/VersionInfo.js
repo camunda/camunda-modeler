@@ -21,7 +21,7 @@ import { Fill } from '../../app/slot-fill';
 import Metadata from '../../util/Metadata';
 import { VersionInfoOverlay } from './VersionInfoOverlay';
 
-import css from './VersionInfo.less';
+import * as css from './VersionInfo.less';
 
 
 const CONFIG_KEY = 'versionInfo';

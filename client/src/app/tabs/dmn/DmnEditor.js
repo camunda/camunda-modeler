@@ -49,7 +49,7 @@ import {
 
 import getDmnWindowMenu from './getDmnWindowMenu';
 
-import css from './DmnEditor.less';
+import * as css from './DmnEditor.less';
 
 import generateImage from '../../util/generateImage';
 

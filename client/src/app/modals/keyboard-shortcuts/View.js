@@ -14,7 +14,7 @@ import {
   Modal
 } from '../../../shared/ui';
 
-import css from './View.less';
+import * as css from './View.less';
 
 
 class View extends PureComponent {

@@ -15,7 +15,7 @@ import classNames from 'classnames';
 import CloseIcon from '../icons/Close.svg';
 import SearchIcon from '../icons/Search.svg';
 
-import css from './Input.less';
+import * as css from './Input.less';
 
 export default class Input extends PureComponent {
   onChange = event => {

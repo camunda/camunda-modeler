@@ -13,7 +13,7 @@ import { createPortal } from 'react-dom';
 
 import Notification from './Notification';
 
-import css from './Notifications.less';
+import * as css from './Notifications.less';
 
 
 export default class Notifications extends PureComponent {

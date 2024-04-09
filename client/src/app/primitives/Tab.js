@@ -12,7 +12,7 @@ import React from 'react';
 
 import classNames from 'classnames';
 
-import css from './Tabbed.less';
+import * as css from './Tabbed.less';
 
 
 export default function Tab(props) {

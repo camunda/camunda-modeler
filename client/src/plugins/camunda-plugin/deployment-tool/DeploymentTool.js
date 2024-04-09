@@ -21,7 +21,7 @@ import DeploymentConfigOverlay from './DeploymentConfigOverlay';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
 import { DeploymentError } from '../shared/CamundaAPI';
 
-import css from './DeploymentTool.less';
+import * as css from './DeploymentTool.less';
 
 import {
   generateId

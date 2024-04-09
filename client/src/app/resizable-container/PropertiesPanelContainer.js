@@ -12,7 +12,7 @@ import React, { forwardRef, useCallback } from 'react';
 
 import ResizableContainer from './ResizableContainer';
 
-import css from './PropertiesPanelContainer.less';
+import * as css from './PropertiesPanelContainer.less';
 
 export const MIN_WIDTH = 280;
 export const MAX_WIDTH = MIN_WIDTH * 3;

@@ -10,7 +10,7 @@
 
 import React, { PureComponent } from 'react';
 
-import css from './PluginParent.less';
+import * as css from './PluginParent.less';
 
 
 export default class PluginParent extends PureComponent {

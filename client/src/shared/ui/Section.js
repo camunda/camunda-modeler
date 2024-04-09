@@ -12,7 +12,7 @@ import { isString } from 'min-dash';
 
 import React from 'react';
 
-import css from './Section.less';
+import * as css from './Section.less';
 
 
 export function Section(props) {
