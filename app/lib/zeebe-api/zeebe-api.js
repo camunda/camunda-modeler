@@ -110,10 +110,10 @@ const CLIENT_OPTIONS_SECRETS = [
  */
 
 class ZeebeAPI {
-  constructor(fs, ZeebeGrpcApiClient, flags, log = createLog('app:zeebe-api')) {
+  constructor(fs, Camunda8, flags, log = createLog('app:zeebe-api')) {
     this._fs = fs;
 
-    this._ZeebeGrpcApiClient = ZeebeGrpcApiClient;
+    this._Camunda8 = Camunda8;
     this._flags = flags;
     this._log = log;
 
@@ -387,7 +387,7 @@ class ZeebeAPI {
       )
     });
 
-    return new this._ZeebeGrpcApiClient({ config: options });
+    return (new this._Camunda8(options)).getZeebeGrpcApiClient();
   }
 
   async _withTLSConfig(url, options) {

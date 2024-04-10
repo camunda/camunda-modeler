@@ -22,7 +22,7 @@ const path = require('path');
 
 const fs = require('fs');
 
-const Camunda8 = require('@camunda8/sdk');
+const { Camunda8 } = require('@camunda8/sdk');
 
 const Cli = require('./cli');
 const Config = require('./config');
@@ -680,7 +680,7 @@ function bootstrap() {
   errorTracking.setTag(Sentry, 'plugins', generatePluginsTag(plugins));
 
   // (9) zeebe API
-  const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8.ZeebeGrpcApiClient, flags);
+  const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8, flags);
 
   return {
     config,
