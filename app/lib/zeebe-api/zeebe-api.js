@@ -110,10 +110,10 @@ const CLIENT_OPTIONS_SECRETS = [
  */
 
 class ZeebeAPI {
-  constructor(fs, ZeebeNode, flags, log = createLog('app:zeebe-api')) {
+  constructor(fs, ZeebeGrpcApiClient, flags, log = createLog('app:zeebe-api')) {
     this._fs = fs;
 
-    this._ZeebeNode = ZeebeNode;
+    this._ZeebeGrpcApiClient = ZeebeGrpcApiClient;
     this._flags = flags;
     this._log = log;
 
@@ -331,8 +331,9 @@ class ZeebeAPI {
       url
     } = endpoint;
 
+    /** @type {Camunda8PlatformConfiguration} */
     let options = {
-      retry: false
+      zeebeGrpcSettings: { ZEEBE_GRPC_CLIENT_RETRY: false }
     };
 
     if (!values(ENDPOINT_TYPES).includes(type) || !values(AUTH_TYPES).includes(authType)) {
@@ -350,26 +351,23 @@ class ZeebeAPI {
     } else if (authType === AUTH_TYPES.OAUTH) {
       options = {
         ...options,
-        oAuth: {
-          url: endpoint.oauthURL,
-          audience: endpoint.audience,
-          scope: endpoint.scope,
-          clientId: endpoint.clientId,
-          clientSecret: endpoint.clientSecret,
-          cacheOnDisk: false
-        }
+        ZEEBE_ADDRESS: endpoint.oauthURL,
+        CAMUNDA_ZEEBE_OAUTH_AUDIENCE: endpoint.audience,
+        CAMUNDA_TOKEN_SCOPE: endpoint.scope,
+        CAMUNDA_ZEEBE_CLIENT_ID: endpoint.clientId,
+        CAMUNDA_ZEEBE_CLIENT_SECRET: endpoint.clientSecret,
+        CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true
       };
     } else if (type === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
       options = {
         ...options,
-        camundaCloud: {
-          clientId: endpoint.clientId,
-          clientSecret: endpoint.clientSecret,
-          clusterId: endpoint.clusterId,
-          cacheOnDisk: false,
-          ...(endpoint.clusterRegion ? { clusterRegion: endpoint.clusterRegion } : {})
-        },
-        useTLS: true
+        ZEEBE_ADDRESS: endpoint.camundaCloudClusterUrl,
+        CAMUNDA_ZEEBE_OAUTH_AUDIENCE: endpoint.audience,
+        CAMUNDA_TOKEN_SCOPE: endpoint.scope,
+        CAMUNDA_ZEEBE_CLIENT_ID: endpoint.clientId,
+        CAMUNDA_ZEEBE_CLIENT_SECRET: endpoint.clientSecret,
+        CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true,
+        CAMUNDA_SECURE_CONNECTION: true
       };
     }
 
@@ -389,7 +387,7 @@ class ZeebeAPI {
       )
     });
 
-    return new this._ZeebeNode.ZBClient(url, options);
+    return new this._ZeebeGrpcApiClient({ config: options });
   }
 
   async _withTLSConfig(url, options) {
