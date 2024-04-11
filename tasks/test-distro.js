@@ -82,10 +82,13 @@ const expectedFiles = {
     }
   ],
   mac: [
-    'camunda-modeler-${version}-mac.dmg',
     {
-      name: 'camunda-modeler-${version}-mac.zip',
-      archs: [ 'x64' ],
+      name: 'camunda-modeler-${version}-mac-${arch}.dmg',
+      archs: [ 'x64', 'arm64' ]
+    },
+    {
+      name: 'camunda-modeler-${version}-mac-${arch}.zip',
+      archs: [ 'x64', 'arm64' ],
       contents: [
         'Camunda Modeler.app/Contents/Info.plist'
       ]

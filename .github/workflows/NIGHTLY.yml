@@ -12,8 +12,10 @@ jobs:
           - 'dist/camunda-modeler-nightly-linux-x64.tar.gz'
         - os: macos-12
           files:
-          - 'dist/camunda-modeler-nightly-mac.dmg'
-          - 'dist/camunda-modeler-nightly-mac.zip'
+          - 'dist/camunda-modeler-nightly-mac-arm64.dmg'
+          - 'dist/camunda-modeler-nightly-mac-arm64.zip'
+          - 'dist/camunda-modeler-nightly-mac-x64.dmg'
+          - 'dist/camunda-modeler-nightly-mac-x64.zip'
         - os: windows-2022
           files:
           - 'dist/camunda-modeler-nightly-win-ia32.zip'

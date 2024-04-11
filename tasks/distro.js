@@ -78,7 +78,6 @@ if (nightly) {
 
 const artifactOptions = [
   '-c.artifactName=${name}-${version}-${os}-${arch}.${ext}',
-  '-c.dmg.artifactName=${name}-${version}-${os}.${ext}',
   '-c.nsis.artifactName=${name}-${version}-${os}-setup.${ext}',
   '-c.nsisWeb.artifactName=${name}-${version}-${os}-web-setup.${ext}',
   argv.compress === false && '-c.compression=store'
@@ -105,12 +104,12 @@ if (certificateFingerprint) {
   signingOptions.push(`-c.win.certificateSha1=${certificateFingerprint}`);
 }
 
-if (publish && (argv.ia32 || argv.x64)) {
+if (publish && (argv.ia32 || argv.x64 || argv.arm64)) {
   console.error('Do not override arch; is manually pinned');
   process.exit(1);
 }
 
-const archOptions = [ 'x64', 'ia32' ].filter(a => argv[a]).map(a => `--${a}`);
+const archOptions = [ 'x64', 'ia32', 'arm64' ].filter(a => argv[a]).map(a => `--${a}`);
 
 const extraMetadataOptions = [
   `-c.extraMetadata.SENTRY_DSN=${ process.env.SENTRY_DSN || null }`
