@@ -12,6 +12,8 @@
 
 import React from 'react';
 
+import { act } from 'react-dom/test-utils';
+
 import {
   mount,
   shallow
@@ -145,13 +147,21 @@ describe('<DeploymentConfigOverlay>', () => {
       }, mount);
 
       // when
-      instance.setState({ isAuthNeeded: true });
+      act(() => {
+        instance.setState({ isAuthNeeded: true });
+      });
+
       instance.isOnBeforeSubmit = true;
-      wrapper.find('.btn-primary').simulate('submit');
+
+      wrapper.update();
+
+      act(() => {
+        wrapper.find('.btn-primary').simulate('submit');
+      });
 
       // then
       setTimeout(() => {
-        wrapper.setProps({});
+        wrapper.update();
 
         try {
           expect(wrapper.find('.invalid-feedback')).to.have.length(1);
