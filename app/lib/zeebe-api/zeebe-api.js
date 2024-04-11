@@ -372,7 +372,11 @@ class ZeebeAPI {
     }
 
     options = await this._withTLSConfig(url, options);
-    options = this._withPortConfig(url, options);
+
+    // do not override camunda cloud port (handled by the client)
+    if (type !== ENDPOINT_TYPES.CAMUNDA_CLOUD) {
+      options = this._withPortConfig(url, options);
+    }
 
     this._log.debug('creating client', {
       url,
@@ -441,12 +445,6 @@ class ZeebeAPI {
   }
 
   _withPortConfig(url, options) {
-
-    // do not override camunda cloud port (handled by zeebe-node)
-    if (options.camundaCloud) {
-      return options;
-    }
-
     const parsedUrl = new URL(url);
 
     // do not override port if already set in url

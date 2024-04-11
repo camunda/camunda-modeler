@@ -36,7 +36,7 @@ describe('ZeebeAPI', function() {
     it('should set success=true for correct check', async () => {
 
       // given
-      const zeebeAPI = mockZeebeNode();
+      const zeebeAPI = mockCamundaClient();
 
       const parameters = {
         endpoint: {
@@ -56,13 +56,11 @@ describe('ZeebeAPI', function() {
     it('should set success=false on failure', async () => {
 
       // given
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            topology: function() {
-              throw new Error('TEST ERROR.');
-            }
-          };
+      const zeebeAPI = mockCamundaClient({
+        ZBClient: {
+          topology: function() {
+            throw new Error('TEST ERROR.');
+          }
         }
       });
 
@@ -86,13 +84,11 @@ describe('ZeebeAPI', function() {
       it('for <endpoint-unavailable>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('TEST ERROR.', 14);
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('TEST ERROR.', 14);
+            }
           }
         });
 
@@ -113,13 +109,11 @@ describe('ZeebeAPI', function() {
       it('for <endpoint-unavailable> (Cloud)', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('TEST ERROR.', 14);
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('TEST ERROR.', 14);
+            }
           }
         });
 
@@ -139,13 +133,11 @@ describe('ZeebeAPI', function() {
       it('for <endpoint-unavailable> (Cloud)', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('TEST ERROR.', 13);
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('TEST ERROR.', 13);
+            }
           }
         });
 
@@ -165,13 +157,11 @@ describe('ZeebeAPI', function() {
       it('for <endpoint-unavailable> (self-managed)', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Error: 13 INTERNAL:');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Error: 13 INTERNAL:');
+            }
           }
         });
 
@@ -192,13 +182,11 @@ describe('ZeebeAPI', function() {
       it('for <endpoint-unavailable> (self-managed)', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Error: 14 UNAVAILABLE:');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Error: 14 UNAVAILABLE:');
+            }
           }
         });
 
@@ -219,13 +207,11 @@ describe('ZeebeAPI', function() {
       it('for <not-found>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('ENOTFOUND');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('ENOTFOUND');
+            }
           }
         });
 
@@ -246,13 +232,11 @@ describe('ZeebeAPI', function() {
       it('for <not-found> (OAuth)', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('ENOTFOUND');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('ENOTFOUND');
+            }
           }
         });
 
@@ -274,13 +258,11 @@ describe('ZeebeAPI', function() {
       it('for <not-found> (Cloud)', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('ENOTFOUND');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('ENOTFOUND');
+            }
           }
         });
 
@@ -300,13 +282,11 @@ describe('ZeebeAPI', function() {
       it('for <unauthorized>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Unauthorized');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Unauthorized');
+            }
           }
         });
 
@@ -327,13 +307,11 @@ describe('ZeebeAPI', function() {
       it('for <unauthorized> - Cloud', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Unauthorized');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Unauthorized');
+            }
           }
         });
 
@@ -353,13 +331,11 @@ describe('ZeebeAPI', function() {
       it('for <forbidden>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Forbidden');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Forbidden');
+            }
           }
         });
 
@@ -379,13 +355,11 @@ describe('ZeebeAPI', function() {
       it('for <unsupported-protocol>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Unsupported protocol');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Unsupported protocol');
+            }
           }
         });
 
@@ -407,13 +381,11 @@ describe('ZeebeAPI', function() {
       it('for <unknown>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Some random error');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Some random error');
+            }
           }
         });
 
@@ -434,13 +406,11 @@ describe('ZeebeAPI', function() {
       it('for no message', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError();
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError();
+            }
           }
         });
 
@@ -461,13 +431,11 @@ describe('ZeebeAPI', function() {
       it('for <Method not found>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Method not found', 12);
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Method not found', 12);
+            }
           }
         });
 
@@ -496,7 +464,7 @@ describe('ZeebeAPI', function() {
     it('should set success=true for successful instance run', async () => {
 
       // given
-      const zeebeAPI = mockZeebeNode();
+      const zeebeAPI = mockCamundaClient();
 
       const parameters = {
         endpoint: {
@@ -517,13 +485,11 @@ describe('ZeebeAPI', function() {
     it('should set success=false on failure', async () => {
 
       // given
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            createProcessInstance: function() {
-              throw new Error('TEST ERROR.');
-            }
-          };
+      const zeebeAPI = mockCamundaClient({
+        ZBClient: {
+          createProcessInstance: function() {
+            throw new Error('TEST ERROR.');
+          }
         }
       });
 
@@ -548,13 +514,11 @@ describe('ZeebeAPI', function() {
     it('should return serialized error', async function() {
 
       // given
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            createProcessInstance: function() {
-              throw new Error('TEST ERROR.');
-            }
-          };
+      const zeebeAPI = mockCamundaClient({
+        ZBClient: {
+          createProcessInstance: function() {
+            throw new Error('TEST ERROR.');
+          }
         }
       });
 
@@ -581,7 +545,7 @@ describe('ZeebeAPI', function() {
     it('should set success=true for successful deployment', async () => {
 
       // given
-      const zeebeAPI = mockZeebeNode();
+      const zeebeAPI = mockCamundaClient();
 
       const parameters = {
         endpoint: {
@@ -604,13 +568,11 @@ describe('ZeebeAPI', function() {
       // given
       const error = new Error('test');
 
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: function() {
-              throw error;
-            }
-          };
+      const zeebeAPI = mockCamundaClient({
+        ZBClient: {
+          deployResource: function() {
+            throw error;
+          }
         }
       });
 
@@ -636,13 +598,11 @@ describe('ZeebeAPI', function() {
       // given
       const error = new Error('test');
 
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: function() {
-              throw error;
-            }
-          };
+      const zeebeAPI = mockCamundaClient({
+        ZBClient: {
+          deployResource: function() {
+            throw error;
+          }
         }
       });
 
@@ -669,7 +629,7 @@ describe('ZeebeAPI', function() {
         readFile: sinon.spy(() => ({}))
       };
 
-      const zeebeAPI = mockZeebeNode({ fs });
+      const zeebeAPI = mockCamundaClient({ fs });
 
       const parameters = {
         filePath: 'filePath',
@@ -697,7 +657,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy
@@ -733,7 +693,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy
@@ -770,7 +730,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy
@@ -811,7 +771,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -841,7 +801,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -872,7 +832,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -903,7 +863,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -933,7 +893,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -964,7 +924,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -995,7 +955,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -1025,7 +985,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -1055,7 +1015,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -1085,7 +1045,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -1116,7 +1076,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -1147,7 +1107,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -1178,7 +1138,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy,
@@ -1267,7 +1227,7 @@ describe('ZeebeAPI', function() {
           };
         });
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: ZBClientMock
         });
 
@@ -1315,7 +1275,7 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function() {
             return {
               deployResource: deployResourceSpy
@@ -1356,13 +1316,11 @@ describe('ZeebeAPI', function() {
       // given
       const topologyResponse = { clusterSize: 3, gatewayVersion: '0.26.0' };
 
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            topology: function() {
-              return topologyResponse;
-            }
-          };
+      const zeebeAPI = mockCamundaClient({
+        ZBClient: {
+          topology: function() {
+            return topologyResponse;
+          }
         }
       });
 
@@ -1386,13 +1344,11 @@ describe('ZeebeAPI', function() {
       // given
       const topologyResponse = { clusterSize: 3, gatewayVersion: '0.26.0' };
 
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            topology: function() {
-              return topologyResponse;
-            }
-          };
+      const zeebeAPI = mockCamundaClient({
+        ZBClient: {
+          topology: function() {
+            return topologyResponse;
+          }
         }
       });
 
@@ -1415,13 +1371,11 @@ describe('ZeebeAPI', function() {
     it('should set success=false on failure', async () => {
 
       // given
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            topology: function() {
-              throw new Error('TEST ERROR.');
-            }
-          };
+      const zeebeAPI = mockCamundaClient({
+        ZBClient: {
+          topology: function() {
+            throw new Error('TEST ERROR.');
+          }
         }
       });
 
@@ -1446,13 +1400,11 @@ describe('ZeebeAPI', function() {
       it('for <endpoint-unavailable>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('TEST ERROR.', 14);
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('TEST ERROR.', 14);
+            }
           }
         });
 
@@ -1473,13 +1425,11 @@ describe('ZeebeAPI', function() {
       it('for <endpoint-unavailable> (Cloud)', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('TEST ERROR.', 14);
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('TEST ERROR.', 14);
+            }
           }
         });
 
@@ -1499,13 +1449,11 @@ describe('ZeebeAPI', function() {
       it('for <endpoint-unavailable> (Cloud)', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('TEST ERROR.', 13);
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('TEST ERROR.', 13);
+            }
           }
         });
 
@@ -1525,13 +1473,11 @@ describe('ZeebeAPI', function() {
       it('for <not-found>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('ENOTFOUND');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('ENOTFOUND');
+            }
           }
         });
 
@@ -1552,13 +1498,11 @@ describe('ZeebeAPI', function() {
       it('for <not-found> (OAuth)', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('ENOTFOUND');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('ENOTFOUND');
+            }
           }
         });
 
@@ -1580,13 +1524,11 @@ describe('ZeebeAPI', function() {
       it('for <not-found> (Cloud)', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('ENOTFOUND');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('ENOTFOUND');
+            }
           }
         });
 
@@ -1606,13 +1548,11 @@ describe('ZeebeAPI', function() {
       it('for <unauthorized>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Unauthorized');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Unauthorized');
+            }
           }
         });
 
@@ -1633,13 +1573,11 @@ describe('ZeebeAPI', function() {
       it('for <unauthorized> - Cloud', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Unauthorized');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Unauthorized');
+            }
           }
         });
 
@@ -1659,13 +1597,11 @@ describe('ZeebeAPI', function() {
       it('for <forbidden>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Forbidden');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Forbidden');
+            }
           }
         });
 
@@ -1685,13 +1621,11 @@ describe('ZeebeAPI', function() {
       it('for <unsupported-protocol>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Unsupported protocol');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Unsupported protocol');
+            }
           }
         });
 
@@ -1713,13 +1647,11 @@ describe('ZeebeAPI', function() {
       it('for <unknown>', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Some random error');
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Some random error');
+            }
           }
         });
 
@@ -1740,13 +1672,11 @@ describe('ZeebeAPI', function() {
       it('for no message', async () => {
 
         // given
-        const zeebeAPI = mockZeebeNode({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError();
-              }
-            };
+        const zeebeAPI = mockCamundaClient({
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError();
+            }
           }
         });
 
@@ -1775,7 +1705,7 @@ describe('ZeebeAPI', function() {
       // given
       let usedConfig;
 
-      const zeebeAPI = mockZeebeNode({
+      const zeebeAPI = mockCamundaClient({
         ZBClient: function(...args) {
           usedConfig = args;
 
@@ -1805,7 +1735,7 @@ describe('ZeebeAPI', function() {
       // given
       const createSpy = sinon.spy();
 
-      const zeebeAPI = mockZeebeNode({
+      const zeebeAPI = mockCamundaClient({
         ZBClient: createSpy
       });
 
@@ -1828,7 +1758,7 @@ describe('ZeebeAPI', function() {
       // given
       const createSpy = sinon.spy();
 
-      const zeebeAPI = mockZeebeNode({
+      const zeebeAPI = mockCamundaClient({
         ZBClient: createSpy
       });
 
@@ -1857,7 +1787,7 @@ describe('ZeebeAPI', function() {
         close: noop
       });
 
-      const zeebeAPI = mockZeebeNode({
+      const zeebeAPI = mockCamundaClient({
         ZBClient: createSpy
       });
 
@@ -1890,12 +1820,10 @@ describe('ZeebeAPI', function() {
       // given
       const closeSpy = sinon.spy();
 
-      const zeebeAPI = mockZeebeNode({
-        ZBClient: function() {
-          return {
-            deployResource: noop,
-            close: closeSpy
-          };
+      const zeebeAPI = mockCamundaClient({
+        ZBClient: {
+          deployResource: noop,
+          close: closeSpy
         }
       });
       const parameters = {
@@ -1926,7 +1854,7 @@ describe('ZeebeAPI', function() {
       // given
       let usedConfig;
 
-      const zeebeAPI = mockZeebeNode({
+      const zeebeAPI = mockCamundaClient({
         ZBClient: function(...args) {
           usedConfig = args;
 
@@ -1956,7 +1884,7 @@ describe('ZeebeAPI', function() {
       // given
       let usedConfig;
 
-      const zeebeAPI = mockZeebeNode({
+      const zeebeAPI = mockCamundaClient({
         ZBClient: function(...args) {
           usedConfig = args;
 
@@ -1986,7 +1914,7 @@ describe('ZeebeAPI', function() {
       // given
       let usedConfig;
 
-      const zeebeAPI = mockZeebeNode({
+      const zeebeAPI = mockCamundaClient({
         ZBClient: function(...args) {
           usedConfig = args;
 
@@ -2017,7 +1945,7 @@ describe('ZeebeAPI', function() {
       // given
       let usedConfig;
 
-      const zeebeAPI = mockZeebeNode({
+      const zeebeAPI = mockCamundaClient({
         ZBClient: function(...args) {
           usedConfig = args;
 
@@ -2047,7 +1975,7 @@ describe('ZeebeAPI', function() {
       // given
       let usedConfig;
 
-      const zeebeAPI = mockZeebeNode({
+      const zeebeAPI = mockCamundaClient({
         ZBClient: function(...args) {
           usedConfig = args;
 
@@ -2077,7 +2005,7 @@ describe('ZeebeAPI', function() {
       // given
       let usedConfig;
 
-      const zeebeAPI = mockZeebeNode({
+      const zeebeAPI = mockCamundaClient({
         ZBClient: function(...args) {
           usedConfig = args;
 
@@ -2107,7 +2035,7 @@ describe('ZeebeAPI', function() {
       // given
       let usedConfig;
 
-      const zeebeAPI = mockZeebeNode({
+      const zeebeAPI = mockCamundaClient({
         ZBClient: function(...args) {
           usedConfig = args;
 
@@ -2140,7 +2068,7 @@ describe('ZeebeAPI', function() {
           error: sinon.spy(),
           warn: sinon.spy()
         };
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: function(...args) {
             configSpy(...args);
 
@@ -2527,7 +2455,7 @@ function setupPlatformStub() {
   });
 }
 
-function mockZeebeNode(options = {}) {
+function mockCamundaClient(options = {}) {
   const fs = options.fs || {
     readFile: () => ({})
   };
@@ -2542,18 +2470,18 @@ function mockZeebeNode(options = {}) {
     ...(options.log || {})
   };
 
-  const ZeebeNode = {
-    ZBClient: options.ZBClient || function() {
-      return {
+  class CamundaClient {
+    getZeebeGrpcApiClient() {
+      return options.ZBClient || {
         topology: noop,
         deployResource: noop,
         createProcessInstance: noop,
         close: noop
       };
     }
-  };
+  }
 
-  return new ZeebeAPI(fs, ZeebeNode, flags, log);
+  return new ZeebeAPI(fs, CamundaClient, flags, log);
 }
 
 function noop() {}
