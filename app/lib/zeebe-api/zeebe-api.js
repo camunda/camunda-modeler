@@ -351,7 +351,7 @@ class ZeebeAPI {
     } else if (authType === AUTH_TYPES.OAUTH) {
       options = {
         ...options,
-        ZEEBE_ADDRESS: endpoint.oauthURL,
+        ZEEBE_ADDRESS: endpoint.url,
         CAMUNDA_ZEEBE_OAUTH_AUDIENCE: endpoint.audience,
         CAMUNDA_TOKEN_SCOPE: endpoint.scope,
         CAMUNDA_ZEEBE_CLIENT_ID: endpoint.clientId,
@@ -368,6 +368,11 @@ class ZeebeAPI {
         CAMUNDA_ZEEBE_CLIENT_SECRET: endpoint.clientSecret,
         CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true,
         CAMUNDA_SECURE_CONNECTION: true
+      };
+    } else if (type === ENDPOINT_TYPES.SELF_HOSTED) {
+      options = {
+        ...options,
+        ZEEBE_ADDRESS: endpoint.url
       };
     }
 
