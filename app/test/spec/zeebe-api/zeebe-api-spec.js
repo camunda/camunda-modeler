@@ -2472,12 +2472,12 @@ function mockCamundaClient(options = {}) {
 
   class CamundaClient {
     getZeebeGrpcApiClient() {
-      return options.ZBClient || {
+      return Object.assign({
         topology: noop,
         deployResource: noop,
         createProcessInstance: noop,
         close: noop
-      };
+      }, options.ZBClient);
     }
   }
 
