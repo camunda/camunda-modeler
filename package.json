@@ -55,7 +55,7 @@
     "diff2html": "^3.4.19",
     "electron": "^30.0.6",
     "electron-builder": "^24.9.1",
-    "electron-devtools-installer": "^3.1.1",
+    "electron-extension-installer": "^1.2.0",
     "electron-publisher-s3": "^20.17.2",
     "electron-reloader": "^1.2.0",
     "eslint": "^8.56.0",
