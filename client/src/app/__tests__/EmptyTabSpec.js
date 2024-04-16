@@ -10,9 +10,9 @@
 
 import React from 'react';
 
-import {
-  shallow
-} from 'enzyme';
+import { render } from '@testing-library/react';
+
+import MochaTestContainer from 'mocha-test-container-support';
 
 import EmptyTab from '../EmptyTab';
 
@@ -23,19 +23,23 @@ import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM } fro
 
 describe('<EmptyTab>', function() {
 
+  let container;
+
+  beforeEach(function() {
+    container = MochaTestContainer.get(this);
+  });
+
   describe('dispatching action', function() {
 
     it('should dispatch create-* actions', function() {
 
       // given
       const onAction = sinon.spy();
-      const {
-        tree
-      } = createEmptyTab({ onAction });
-      const buttons = tree.find('button');
+      const { tree } = createEmptyTab({ onAction });
+      const buttons = tree.querySelectorAll('button');
 
       // when
-      buttons.forEach(wrapper => wrapper.simulate('click'));
+      buttons.forEach(wrapper => wrapper.click());
 
       // then
       expect(onAction).to.have.callCount(6);
@@ -68,8 +72,8 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
-      expect(tree.findWhere(
-        wrapper => wrapper.text().startsWith('DMN diagram')).first().exists()).to.be.false;
+      expect(findWhere(tree,
+        wrapper => wrapper.textContent.startsWith('DMN diagram'))).to.be.empty;
     });
 
 
@@ -82,8 +86,8 @@ describe('<EmptyTab>', function() {
 
       // then
       expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('DMN diagram')
+        findWhere(tree,
+          wrapper => wrapper.textContent.startsWith('DMN diagram')
         )
       ).to.have.length(2);
     });
@@ -106,10 +110,10 @@ describe('<EmptyTab>', function() {
 
       // then
       expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Form')
-        ).first().exists()
-      ).to.be.false;
+        findWhere(tree,
+          wrapper => wrapper.textContent.startsWith('Form')
+        )
+      ).to.be.empty;
     });
 
 
@@ -122,8 +126,8 @@ describe('<EmptyTab>', function() {
 
       // then
       expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Form')
+        findWhere(tree,
+          wrapper => wrapper.textContent.startsWith('Form')
         )
       ).to.have.length(2);
     });
@@ -143,13 +147,13 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
-      expect(tree.find('.welcome-header')).to.have.length(1);
-      expect(tree.find('.welcome-card')).to.have.length(3);
+      expect(find(tree, '.welcome-header')).to.have.length(1);
+      expect(find(tree, '.welcome-card')).to.have.length(3);
       expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda 7')
-        ).exists()
-      ).to.be.true;
+        findWhere(tree,
+          wrapper => wrapper.textContent.startsWith('Camunda 7')
+        )
+      ).not.to.be.empty;
     });
 
 
@@ -164,13 +168,13 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
-      expect(tree.find('.welcome-header')).to.have.length(0);
-      expect(tree.find('.welcome-card')).to.have.length(2);
+      expect(find(tree, '.welcome-header')).to.have.length(0);
+      expect(find(tree, '.welcome-card')).to.have.length(2);
       expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda 7')
-        ).exists()
-      ).to.be.false;
+        findWhere(tree,
+          wrapper => wrapper.textContent.startsWith('Camunda 7')
+        )
+      ).to.be.empty;
     });
 
   });
@@ -188,13 +192,13 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
-      expect(tree.find('.welcome-header')).to.have.length(1);
-      expect(tree.find('.welcome-card')).to.have.length(3);
+      expect(find(tree, '.welcome-header')).to.have.length(1);
+      expect(find(tree, '.welcome-card')).to.have.length(3);
       expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda 8')
-        ).exists()
-      ).to.be.true;
+        findWhere(tree,
+          wrapper => wrapper.textContent.startsWith('Camunda 8')
+        )
+      ).not.to.be.empty;
     });
 
 
@@ -209,17 +213,31 @@ describe('<EmptyTab>', function() {
       } = createEmptyTab();
 
       // then
-      expect(tree.find('.welcome-header')).to.have.length(0);
-      expect(tree.find('.welcome-card')).to.have.length(2);
+      expect(find(tree, '.welcome-header')).to.have.length(0);
+      expect(find(tree, '.welcome-card')).to.have.length(2);
       expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda 8')
-        ).exists()
-      ).to.be.false;
+        findWhere(tree,
+          wrapper => wrapper.textContent.startsWith('Camunda 8')
+        )
+      ).to.be.empty;
     });
 
   });
 
+
+  function createEmptyTab(options = {}) {
+    const result = render(
+      <EmptyTab
+        onAction={ options.onAction || noop }
+        onShown={ options.onShown || noop }
+      />, { container }
+    );
+
+    return {
+      tree: container,
+      result
+    };
+  }
 });
 
 
@@ -227,25 +245,10 @@ describe('<EmptyTab>', function() {
 
 function noop() {}
 
-function createEmptyTab(options = {}, mountFn = shallow) {
+function findWhere(tree, predicate) {
+  return Array.from(tree.querySelectorAll('*')).filter(predicate);
+}
 
-  if (typeof options === 'function') {
-    mountFn = options;
-    options = {};
-  }
-
-  const tree = mountFn(
-    <EmptyTab
-      onAction={ options.onAction || noop }
-      onShown={ options.onShown || noop }
-    />
-  );
-
-  const instance = tree.instance();
-
-  return {
-    tree,
-    instance
-  };
-
+function find(tree, selector) {
+  return Array.from(tree.querySelectorAll(selector));
 }

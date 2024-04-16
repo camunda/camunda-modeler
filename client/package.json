@@ -26,6 +26,7 @@
     "@ibm/plex": "^6.4.0",
     "@sentry/browser": "^7.108.0",
     "@sentry/integrations": "^7.108.0",
+    "@testing-library/react": "^10.4.9",
     "bpmn-js": "^17.2.1",
     "bpmn-js-element-templates": "^1.15.0",
     "bpmn-js-properties-panel": "^5.14.0",
