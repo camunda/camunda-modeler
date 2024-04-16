@@ -10,9 +10,11 @@
 
 const log = require('./app/lib/log')('app:dev');
 
-const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
+const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-extension-installer');
 
 const getAppVersion = require('./app/util/get-version');
+
+const AXE_DEVTOOLS = 'lhdoppojpmngadmnindnejefpokejbdd';
 
 // enable development perks
 process.env.NODE_ENV = 'development';
@@ -34,11 +36,20 @@ app.on('before-quit', function() {
 });
 
 app.on('app:window-created', async () => {
-  try {
-    const name = await installExtension(REACT_DEVELOPER_TOOLS);
-    log.info('added extension <%s>', name);
-  } catch (err) {
-    log.error('failed to add extension', err);
+  for (const extension of [
+    REACT_DEVELOPER_TOOLS,
+    AXE_DEVTOOLS
+  ]) {
+    try {
+      const name = await installExtension(extension, {
+        loadExtensionOptions: {
+          allowFileAccess: true
+        }
+      });
+      log.info('added extension <%s>', name);
+    } catch (err) {
+      log.error('failed to add extension', err);
+    }
   }
 });
 
