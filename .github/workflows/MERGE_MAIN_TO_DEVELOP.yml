@@ -20,7 +20,7 @@ jobs:
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
-        git merge -m 'Merge main to develop' --no-edit origin/main
+        git merge -m 'chore: merge main to develop' --no-edit origin/main
         git push
     - name: Notify on Slack if merge fails
       uses: slackapi/slack-github-action@v1.15.0
