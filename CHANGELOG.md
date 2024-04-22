@@ -6,9 +6,16 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
 * `DEPS`: update to `bpmn-js-element-templates@1.15.1`
+* `DEPS`: update to `camunda-bpmn-js@4.5.1`
+
+### BPMN
+
 * `FIX`: prevent infinite loop when applying conditional template ([bpmn-io/bpmn-js-element-templates#78](https://github.com/bpmn-io/bpmn-js-element-templates/issues/78))
 * `FIX`: preserve valid user input when changing element template ([bpmn-io/bpmn-js-element-templates#86](https://github.com/bpmn-io/bpmn-js-element-templates/pull/86), [#4249](https://github.com/camunda/camunda-modeler/issues/4249))
+* `FIX`: mark non-object JSON as invalid example data ([example-data-properties-provider#17](https://github.com/camunda/example-data-properties-provider/pull/17))
 
 ## 5.22.0
 
