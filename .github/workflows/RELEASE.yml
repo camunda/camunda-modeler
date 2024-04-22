@@ -56,6 +56,7 @@ jobs:
         GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         NODE_ENV: "production"
       run: npm run build -- --linux --publish
+
     - name: Build release (MacOS)
       if: ${{ runner.os == 'macOS' }}
       env:
@@ -74,10 +75,26 @@ jobs:
         GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         NODE_ENV: "production"
       run: npm run build -- --mac --publish
+
+    - name: Import Secrets (Windows)
+      id: windows-secrets
+      uses: hashicorp/vault-action@v3.0.0
+      if: ${{ runner.os == 'Windows' }}
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/products/desktop-modeler/ci/certificates CSC_CERT_WIN;
+    - name: Decode Secret
+      if: ${{ runner.os == 'Windows' }}
+      run: echo "${{ steps.windows-secrets.outputs.CSC_CERT_WIN }}" | base64 -i --decode > ./cert.pfx
     - name: Build release (Windows)
       if: ${{ runner.os == 'Windows' }}
       env:
-        CSC_LINK: "${{ secrets.WIN_CSC_LINK }}"
+        CSC_LINK: "./cert.pfx"
         CSC_KEY_PASSWORD: "${{ secrets.WIN_CSC_KEY_PASSWORD }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "prod"

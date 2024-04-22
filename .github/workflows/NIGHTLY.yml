@@ -66,10 +66,25 @@ jobs:
         UPDATES_SERVER_PRODUCT_NAME: "${{ secrets.UPDATES_SERVER_PRODUCT_NAME }}"
       run: npm run build -- --mac
 
+    - name: Import Secrets (Windows)
+      id: windows-secrets
+      uses: hashicorp/vault-action@v3.0.0
+      if: ${{ runner.os == 'Windows' }}
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/products/desktop-modeler/ci/certificates CSC_CERT_WIN;
+    - name: Decode Secret
+      if: ${{ runner.os == 'Windows' }}
+      run: echo "${{ steps.windows-secrets.outputs.CSC_CERT_WIN }}" | base64 -i --decode > ./cert.pfx
     - name: Build nightly (Windows)
       if: ${{ runner.os == 'Windows' }}
       env:
-        CSC_LINK: "${{ secrets.WIN_CSC_LINK }}"
+        CSC_LINK: "./cert.pfx"
         CSC_KEY_PASSWORD: "${{ secrets.WIN_CSC_KEY_PASSWORD }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "int"
