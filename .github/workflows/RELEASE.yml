@@ -88,13 +88,10 @@ jobs:
         exportEnv: false
         secrets: |
           secret/data/products/desktop-modeler/ci/certificates CSC_CERT_WIN;
-    - name: Decode Secret
-      if: ${{ runner.os == 'Windows' }}
-      run: echo "${{ steps.windows-secrets.outputs.CSC_CERT_WIN }}" | base64 -i --decode > ./cert.pfx
     - name: Build release (Windows)
       if: ${{ runner.os == 'Windows' }}
       env:
-        CSC_LINK: "./cert.pfx"
+        CSC_LINK: "${{ steps.windows-secrets.outputs.CSC_CERT_WIN }}"
         CSC_KEY_PASSWORD: "${{ secrets.WIN_CSC_KEY_PASSWORD }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "prod"

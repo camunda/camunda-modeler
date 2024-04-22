@@ -71,9 +71,6 @@ jobs:
         exportEnv: false
         secrets: |
           secret/data/products/desktop-modeler/ci/certificates CSC_CERT_WIN;
-    - name: Decode Secret
-      if: ${{ runner.os == 'Windows' }}
-      run: echo "${{ steps.windows-secrets.outputs.CSC_CERT_WIN }}" | base64 -i --decode > ./cert.pfx
     - name: Build distro (Windows)
       if: ${{ runner.os == 'Windows' }}
       env:
@@ -82,6 +79,6 @@ jobs:
         AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_ON_DEMAND_SECRET_ACCESS_KEY }}"
         AWS_REGION: "${{ secrets.AWS_ON_DEMAND_REGION }}"
         AWS_BUCKET: "${{ secrets.AWS_ON_DEMAND_BUCKET }}"
-        CSC_LINK: "./cert.pfx"
+        CSC_LINK: "${{ steps.windows-secrets.outputs.CSC_CERT_WIN }}"
         CSC_KEY_PASSWORD: "${{ secrets.WIN_CSC_KEY_PASSWORD }}"
       run: npm run build -- --win --publish --on-demand
