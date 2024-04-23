@@ -14,13 +14,13 @@
   "afterPack": "./tasks/after-pack.js",
   "afterSign": "./tasks/after-sign.js",
   "win": {
+    "certificateSha1": "98B80B9F9F7526306371EEA8FB5FB52B945B4A90",
     "target": [
       {
         "target": "zip",
         "arch": [ "x64", "ia32" ]
       }
-    ],
-    "certificateSubjectName": "Camunda Services GmbH"
+    ]
   },
   "linux": {
     "category": "Development",
