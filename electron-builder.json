@@ -19,7 +19,8 @@
         "target": "zip",
         "arch": [ "x64", "ia32" ]
       }
-    ]
+    ],
+    "certificateSubjectName": "Camunda Services GmbH"
   },
   "linux": {
     "category": "Development",
