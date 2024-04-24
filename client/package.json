@@ -43,7 +43,7 @@
     "codemirror": "^6.0.1",
     "debug": "^4.1.1",
     "diagram-js": "^14.0.0",
-    "diagram-js-direct-editing": "^2.1.2",
+    "diagram-js-direct-editing": "^3.0.0",
     "diagram-js-origin": "^1.4.0",
     "dmn-js": "^16.0.2",
     "dmn-js-properties-panel": "^3.3.0",
