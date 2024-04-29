@@ -67,8 +67,6 @@ jobs:
     - name: Build nightly (Windows)
       if: ${{ runner.os == 'Windows' }}
       env:
-        CSC_LINK: "${{ secrets.WIN_CSC_LINK }}"
-        CSC_KEY_PASSWORD: "${{ secrets.WIN_CSC_KEY_PASSWORD }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "int"
         NIGHTLY: 1
