@@ -67,6 +67,4 @@ jobs:
         AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_ON_DEMAND_SECRET_ACCESS_KEY }}"
         AWS_REGION: "${{ secrets.AWS_ON_DEMAND_REGION }}"
         AWS_BUCKET: "${{ secrets.AWS_ON_DEMAND_BUCKET }}"
-        CSC_LINK: "${{ secrets.WIN_CSC_LINK }}"
-        CSC_KEY_PASSWORD: "${{ secrets.WIN_CSC_KEY_PASSWORD }}"
       run: npm run build -- --win --publish --on-demand

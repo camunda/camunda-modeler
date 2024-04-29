@@ -77,8 +77,6 @@ jobs:
     - name: Build release (Windows)
       if: ${{ runner.os == 'Windows' }}
       env:
-        CSC_LINK: "${{ secrets.WIN_CSC_LINK }}"
-        CSC_KEY_PASSWORD: "${{ secrets.WIN_CSC_KEY_PASSWORD }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "prod"
         SENTRY_AUTH_TOKEN: "${{ secrets.SENTRY_AUTH_TOKEN }}"
