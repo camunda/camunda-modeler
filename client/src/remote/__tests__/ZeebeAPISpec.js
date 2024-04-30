@@ -59,6 +59,36 @@ describe('<ZeebeAPI>', function() {
     });
 
 
+    it('should check on basic auth', () => {
+
+      // given
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const contactPoint = 'contactPoint';
+
+      const endpoint = {
+        targetType: ENDPOINT_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.BASIC,
+        basicAuthUsername: 'username',
+        basicAuthPassword: 'password',
+        contactPoint
+      };
+
+      // when
+      zeebeAPI.checkConnection(endpoint);
+
+      // then
+      expect(sendSpy).to.have.been.calledWith('zeebe:checkConnection', {
+        endpoint: {
+          type: AUTH_TYPES.BASIC,
+          url: contactPoint,
+          basicAuthUsername: 'username',
+          basicAuthPassword: 'password'
+        }
+      });
+    });
+
+
     it('should check on oauth', () => {
 
       // given
@@ -89,7 +119,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(sendSpy).to.have.been.calledWith('zeebe:checkConnection', {
         endpoint: {
-          type: 'oauth',
+          type: AUTH_TYPES.OAUTH,
           url: contactPoint,
           oauthURL,
           audience,
@@ -174,7 +204,7 @@ describe('<ZeebeAPI>', function() {
 
   describe('#deploy', () => {
 
-    it('should deploy without OAuth', () => {
+    it('should deploy without auth', () => {
 
       // given
       const zeebeAPI = new ZeebeAPI(backend);
@@ -208,6 +238,46 @@ describe('<ZeebeAPI>', function() {
         }
       });
 
+    });
+
+
+    it('should deploy with basic auth', () => {
+
+      // given
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const contactPoint = 'contactPoint';
+
+      const filePath = 'filePath';
+
+      const name = 'deployment';
+
+      const endpoint = {
+        targetType: ENDPOINT_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.BASIC,
+        basicAuthUsername: 'username',
+        basicAuthPassword: 'password',
+        contactPoint
+      };
+
+      // when
+      zeebeAPI.deploy({
+        filePath,
+        name,
+        endpoint
+      });
+
+      // then
+      expect(sendSpy).to.have.been.calledWith('zeebe:deploy', {
+        filePath,
+        name,
+        endpoint: {
+          type: AUTH_TYPES.BASIC,
+          url: contactPoint,
+          basicAuthUsername: 'username',
+          basicAuthPassword: 'password'
+        }
+      });
     });
 
 

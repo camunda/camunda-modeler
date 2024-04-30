@@ -10,7 +10,8 @@
 
 export const AUTH_TYPES = {
   NONE: 'none',
-  OAUTH: 'oauth',
+  BASIC: 'basic',
+  OAUTH: 'oauth'
 };
 
 export const ENDPOINT_TYPES = {
@@ -79,6 +80,8 @@ function getEndpointConfiguration(endpoint) {
     targetType,
     clientId,
     clientSecret,
+    basicAuthUsername,
+    basicAuthPassword,
     oauthURL,
     contactPoint,
     camundaCloudClientId,
@@ -94,6 +97,14 @@ function getEndpointConfiguration(endpoint) {
       return {
         type: ENDPOINT_TYPES.SELF_HOSTED,
         url: contactPoint
+      };
+
+    case AUTH_TYPES.BASIC:
+      return {
+        type: AUTH_TYPES.BASIC,
+        url: contactPoint,
+        basicAuthUsername,
+        basicAuthPassword
       };
 
     case AUTH_TYPES.OAUTH:

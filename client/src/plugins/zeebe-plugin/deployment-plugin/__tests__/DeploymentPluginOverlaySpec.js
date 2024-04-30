@@ -247,6 +247,42 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
+  describe('basic auth', () => {
+
+    it('should pass config on deploy', done => {
+
+      // given
+      const { wrapper } = createDeploymentPluginModal({
+        anchor,
+        onDeploy,
+        config: {
+          endpoint: {
+            targetType: SELF_HOSTED,
+            authType: AUTH_TYPES.BASIC,
+            basicAuthUsername: 'username',
+            basicAuthPassword: 'password'
+          }
+        }
+      });
+
+      // when deploy
+      wrapper.find('form').simulate('submit');
+
+      // then
+      function onDeploy(values) {
+
+        const { endpoint } = values;
+
+        expect(endpoint.basicAuthUsername).to.eql('username');
+        expect(endpoint.basicAuthPassword).to.eql('password');
+
+        done();
+      }
+    });
+
+  });
+
+
   describe('oAuth', () => {
 
     it('should pass config on deploy', done => {

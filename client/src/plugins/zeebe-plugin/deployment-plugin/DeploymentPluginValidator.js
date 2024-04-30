@@ -11,6 +11,8 @@
 import {
   MUST_PROVIDE_A_VALUE,
   CONTACT_POINT_MUST_NOT_BE_EMPTY,
+  BASIC_AUTH_USERNAME_MUST_NOT_BE_EMPTY,
+  BASIC_AUTH_PASSWORD_MUST_NOT_BE_EMPTY,
   OAUTH_URL_MUST_NOT_BE_EMPTY,
   AUDIENCE_MUST_NOT_BE_EMPTY,
   CLIENT_ID_MUST_NOT_BE_EMPTY,
@@ -44,6 +46,14 @@ export default class DeploymentPluginValidator {
   validateZeebeContactPoint = (value) => {
     return this.validateNonEmpty(value, CONTACT_POINT_MUST_NOT_BE_EMPTY) ||
       validateUrl(value, CONTACT_POINT_MUST_BE_URL);
+  };
+
+  validateBasicAuthUsername = (value) => {
+    return this.validateNonEmpty(value, BASIC_AUTH_USERNAME_MUST_NOT_BE_EMPTY);
+  };
+
+  validateBasicAuthPassword = (value) => {
+    return this.validateNonEmpty(value, BASIC_AUTH_PASSWORD_MUST_NOT_BE_EMPTY);
   };
 
   validateOAuthURL = (value) => {

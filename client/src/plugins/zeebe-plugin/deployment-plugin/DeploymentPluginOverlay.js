@@ -16,12 +16,15 @@ import {
   NEXT,
   DEPLOYMENT_NAME,
   SELF_HOSTED_TEXT,
-  OAUTH_TEXT,
   NONE,
+  BASIC_AUTH_TEXT,
+  OAUTH_TEXT,
   CAMUNDA_CLOUD_TEXT,
   CONTACT_POINT,
   DEPLOYMENT_NAME_HINT,
   CONTACT_POINT_HINT,
+  BASIC_AUTH_USERNAME,
+  BASIC_AUTH_PASSWORD,
   OAUTH_URL,
   AUDIENCE,
   SCOPE,
@@ -79,6 +82,8 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
 
     this.validatorFunctionsByFieldNames = {
       contactPoint: validator.validateZeebeContactPoint,
+      basicAuthUsername: validator.validateBasicAuthUsername,
+      basicAuthPassword: validator.validateBasicAuthPassword,
       oauthURL: validator.validateOAuthURL,
       audience: validator.validateAudience,
       scope: validator.validateScope,
@@ -311,9 +316,32 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
                                 values={
                                   [
                                     { value: AUTH_TYPES.NONE, label: NONE },
+                                    { value: AUTH_TYPES.BASIC, label: BASIC_AUTH_TEXT },
                                     { value: AUTH_TYPES.OAUTH, label: OAUTH_TEXT }
                                   ]
                                 }
+                              />
+                            </React.Fragment>
+                          )
+                        }
+                        {
+                          form.values.endpoint.targetType === SELF_HOSTED &&
+                            form.values.endpoint.authType === AUTH_TYPES.BASIC && (
+                            <React.Fragment>
+                              <Field
+                                name="endpoint.basicAuthUsername"
+                                component={ TextInput }
+                                label={ BASIC_AUTH_USERNAME }
+                                fieldError={ this.endpointConfigurationFieldError }
+                                validate={ validatorFunctionsByFieldNames.basicAuthUsername }
+                              />
+                              <Field
+                                name="endpoint.basicAuthPassword"
+                                component={ TextInput }
+                                label={ BASIC_AUTH_PASSWORD }
+                                fieldError={ this.endpointConfigurationFieldError }
+                                validate={ validatorFunctionsByFieldNames.basicAuthPassword }
+                                type="password"
                               />
                             </React.Fragment>
                           )
