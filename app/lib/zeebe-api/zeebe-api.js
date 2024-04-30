@@ -36,6 +36,7 @@ const ERROR_REASONS = {
 
 const ENDPOINT_TYPES = {
   SELF_HOSTED: 'selfHosted',
+  BASIC: 'basic',
   OAUTH: 'oauth',
   CAMUNDA_CLOUD: 'camundaCloud'
 };
@@ -52,13 +53,20 @@ const RESOURCE_TYPES = {
  */
 
 /**
- * @typedef {SelfHostedNoAuthEndpoint|SelfHostedOAuthEndpoint|CamundaCloudEndpoint} Endpoint
+ * @typedef {SelfHostedNoAuthEndpoint|SelfHostedBasicAuthEndpoint|SelfHostedOAuthEndpoint|CamundaCloudEndpoint} Endpoint
  */
 
 /**
  * @typedef {Object} SelfHostedNoAuthEndpoint
  * @property {'selfHosted'} type
  * @property {string} url
+ */
+
+/**
+ * @typedef {Object} SelfHostedBasicAuthEndpoint
+ * @property {'basic'} type
+ * @property {string} username
+ * @property {string} password
  */
 
 /**
@@ -316,6 +324,16 @@ class ZeebeAPI {
 
     if (!values(ENDPOINT_TYPES).includes(type)) {
       return;
+    }
+
+    if (type === ENDPOINT_TYPES.BASIC) {
+      options = {
+        ...options,
+        basicAuth: {
+          username: endpoint.basicAuthUsername,
+          password: endpoint.basicAuthPassword
+        }
+      };
     }
 
     if (type === ENDPOINT_TYPES.OAUTH) {

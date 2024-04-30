@@ -20,6 +20,7 @@ const TEST_URL = 'http://localhost:26500';
 
 const AUTH_TYPES = {
   NONE: 'none',
+  BASIC: 'basic',
   OAUTH: 'oauth',
 };
 
@@ -1205,6 +1206,53 @@ describe('ZeebeAPI', function() {
 
         // then
         expect(args[0].name).to.eql('application-form.form');
+      });
+
+    });
+
+
+    describe('basic auth', function() {
+
+      it('should pass configuration', async () => {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const ZBClientMock = sinon.spy(function() {
+          return {
+            deployResource: deployResourceSpy
+          };
+        });
+
+        const zeebeAPI = mockZeebeNode({
+          ZBClient: ZBClientMock
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          filePath: 'filePath',
+          name: 'process.bpmn',
+          endpoint: {
+            type: AUTH_TYPES.BASIC,
+            url: TEST_URL,
+            basicAuthUsername: 'username',
+            basicAuthPassword: 'password'
+          }
+        });
+
+        // then
+        const [ url, config ] = ZBClientMock.getCall(0).args;
+
+        // ZBClient is invoked accordingly
+        expect(url).to.eql(TEST_URL);
+
+        expect(config.basicAuth).to.include.keys({
+          username: 'username',
+          password: 'password'
+        });
+
+        // deployment is executed appropriately
+        expect(deployResourceSpy).to.have.been.calledWith({ name: 'process.bpmn', process: undefined });
       });
 
     });

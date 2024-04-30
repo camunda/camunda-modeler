@@ -15,6 +15,8 @@ import DeploymentPluginValidator from '../DeploymentPluginValidator';
 import {
   CONTACT_POINT_MUST_NOT_BE_EMPTY,
   CONTACT_POINT_MUST_START_WITH_PROTOCOL,
+  BASIC_AUTH_USERNAME_MUST_NOT_BE_EMPTY,
+  BASIC_AUTH_PASSWORD_MUST_NOT_BE_EMPTY,
   OAUTH_URL_MUST_NOT_BE_EMPTY,
   AUDIENCE_MUST_NOT_BE_EMPTY,
   CLIENT_ID_MUST_NOT_BE_EMPTY,
@@ -65,6 +67,30 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
       expect(validator.validateZeebeContactPoint(validZeebeContactPointFullURL)).to.not.exist;
       expect(validator.validateZeebeContactPoint(validZeebeContactPointNoPortURL)).to.not.exist;
 
+    });
+
+
+    it('should validate basic auth username', () => {
+
+      // given
+      const nonValidBasicAuthUsername = '';
+      const validBasicAuthUsername = 'validBasicAuthUsername';
+
+      // then
+      expect(validator.validateBasicAuthUsername(nonValidBasicAuthUsername)).to.eql(BASIC_AUTH_USERNAME_MUST_NOT_BE_EMPTY);
+      expect(validator.validateBasicAuthUsername(validBasicAuthUsername)).to.not.exist;
+    });
+
+
+    it('should validate basic auth password', () => {
+
+      // given
+      const nonValidBasicAuthPassword = '';
+      const validBasicAuthPassword = 'validBasicAuthPassword';
+
+      // then
+      expect(validator.validateBasicAuthPassword(nonValidBasicAuthPassword)).to.eql(BASIC_AUTH_PASSWORD_MUST_NOT_BE_EMPTY);
+      expect(validator.validateBasicAuthPassword(validBasicAuthPassword)).to.not.exist;
     });
 
 
