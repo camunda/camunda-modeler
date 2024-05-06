@@ -21,7 +21,7 @@ import {
 
 import { merge } from 'min-dash';
 
-import AuthTypes from '../../shared/AuthTypes';
+import AUTH_TYPES from '../../shared/AuthTypes';
 import DeploymentConfigOverlay from '../DeploymentConfigOverlay';
 import DeploymentConfigValidator from '../validation/DeploymentConfigValidator';
 
@@ -85,7 +85,7 @@ describe('<DeploymentConfigOverlay>', () => {
         },
         endpoint: {
           url: 'http://localhost:8088/engine-rest',
-          authType: AuthTypes.basic
+          authType: AUTH_TYPES.BASIC
         }
       };
 
@@ -134,7 +134,7 @@ describe('<DeploymentConfigOverlay>', () => {
         },
         endpoint: {
           url: 'http://localhost:8088/engine-rest',
-          authType: AuthTypes.bearer
+          authType: AUTH_TYPES.BEARER
         }
       };
 
@@ -184,7 +184,7 @@ describe('<DeploymentConfigOverlay>', () => {
         },
         endpoint: {
           url: 'http://localhost:8088/engine-rest',
-          authType: AuthTypes.basic,
+          authType: AUTH_TYPES.BASIC,
           username: 'demo',
           password: 'demo'
         }
@@ -226,7 +226,7 @@ describe('<DeploymentConfigOverlay>', () => {
         },
         endpoint: {
           url: 'http://localhost:8088/engine-rest',
-          authType: AuthTypes.basic
+          authType: AUTH_TYPES.BASIC
         }
       };
 
@@ -268,7 +268,7 @@ describe('<DeploymentConfigOverlay>', () => {
         },
         endpoint: {
           url: 'http://localhost:8088/engine-rest',
-          authType: AuthTypes.basic
+          authType: AUTH_TYPES.BASIC
         }
       };
 
@@ -306,7 +306,7 @@ describe('<DeploymentConfigOverlay>', () => {
         },
         endpoint: {
           url: 'http://localhost:8088/engine-rest',
-          authType: AuthTypes.bearer
+          authType: AUTH_TYPES.BEARER
         }
       };
 
@@ -344,7 +344,7 @@ describe('<DeploymentConfigOverlay>', () => {
       },
       endpoint: {
         url: 'http://localhost:8088/engine-rest',
-        authType: AuthTypes.basic
+        authType: AUTH_TYPES.BASIC
       }
     };
 
@@ -377,7 +377,7 @@ describe('<DeploymentConfigOverlay>', () => {
       },
       endpoint: {
         url: 'http://localhost:8088/engine-rest',
-        authType: AuthTypes.basic,
+        authType: AUTH_TYPES.BASIC,
         rememberCredentials: true,
         username: 'username1',
         password: '12345',
@@ -414,7 +414,7 @@ describe('<DeploymentConfigOverlay>', () => {
       },
       endpoint: {
         url: 'http://localhost:8088/engine-rest',
-        authType: AuthTypes.basic,
+        authType: AUTH_TYPES.BASIC,
         rememberCredentials: false
       }
     };
@@ -497,7 +497,7 @@ describe('<DeploymentConfigOverlay>', () => {
       },
       endpoint: {
         url: 'http://localhost:8088/engine-rest',
-        authType: AuthTypes.basic
+        authType: AUTH_TYPES.BASIC
       }
     };
 
@@ -530,7 +530,7 @@ describe('<DeploymentConfigOverlay>', () => {
       },
       endpoint: {
         url: 'http://localhost:8088/engine-rest',
-        authType: AuthTypes.basic
+        authType: AUTH_TYPES.BASIC
       }
     };
 
@@ -791,7 +791,7 @@ function getDefaultConfiguration() {
     },
     endpoint: {
       url: 'http://localhost:8080/engine-rest',
-      authType: AuthTypes.basic
+      authType: AUTH_TYPES.BASIC
     }
   };
 }

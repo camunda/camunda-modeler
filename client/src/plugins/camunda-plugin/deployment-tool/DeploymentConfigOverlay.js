@@ -15,7 +15,7 @@ import {
 } from 'min-dash';
 
 import * as css from './DeploymentConfigOverlay.less';
-import AuthTypes from '../shared/AuthTypes';
+import AUTH_TYPES from '../shared/AuthTypes';
 
 import {
   Radio,
@@ -183,11 +183,11 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
         endpoint
       } = values;
 
-      if (authType !== AuthTypes.basic) {
+      if (authType !== AUTH_TYPES.BASIC) {
         endpoint = omit(endpoint, [ 'username', 'password' ]);
       }
 
-      if (authType !== AuthTypes.bearer) {
+      if (authType !== AUTH_TYPES.BEARER) {
         endpoint = omit(endpoint, [ 'token' ]);
       }
 
@@ -328,15 +328,15 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                               } }
                               values={
                                 [
-                                  { value: AuthTypes.basic, label: 'HTTP Basic' },
-                                  { value: AuthTypes.bearer, label: 'Bearer token' }
+                                  { value: AUTH_TYPES.BASIC, label: 'HTTP Basic' },
+                                  { value: AUTH_TYPES.BEARER, label: 'Bearer token' }
                                 ]
                               }
                             />
                           )
                         }
 
-                        { isAuthNeeded && form.values.endpoint.authType === AuthTypes.basic && (
+                        { isAuthNeeded && form.values.endpoint.authType === AUTH_TYPES.BASIC && (
                           <React.Fragment>
                             <Field
                               name="endpoint.username"
@@ -361,7 +361,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                           </React.Fragment>
                         )}
 
-                        { isAuthNeeded && form.values.endpoint.authType === AuthTypes.bearer && (
+                        { isAuthNeeded && form.values.endpoint.authType === AUTH_TYPES.BEARER && (
                           <Field
                             name="endpoint.token"
                             component={ TextInput }

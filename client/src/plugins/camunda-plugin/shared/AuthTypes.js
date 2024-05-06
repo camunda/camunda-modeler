@@ -8,9 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-const AuthTypes = {
-  basic: 'basic',
-  bearer: 'bearer'
+const AUTH_TYPES = {
+  BASIC: 'basic',
+  BEARER: 'bearer'
 };
 
-export default AuthTypes;
+export default AUTH_TYPES;
