@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import AuthTypes from './AuthTypes';
+import AUTH_TYPES from './AuthTypes';
 
 import debug from 'debug';
 
@@ -141,12 +141,12 @@ export default class CamundaAPI {
     } = endpoint;
 
     switch (authType) {
-    case AuthTypes.basic:
+    case AUTH_TYPES.BASIC:
       return {
         username,
         password
       };
-    case AuthTypes.bearer:
+    case AUTH_TYPES.BEARER:
       return {
         token
       };

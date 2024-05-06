@@ -15,7 +15,7 @@ import { omit } from 'min-dash';
 import classNames from 'classnames';
 
 import { default as CamundaAPI, ApiErrors, ConnectionError } from '../shared/CamundaAPI';
-import AuthTypes from '../shared/AuthTypes';
+import AUTH_TYPES from '../shared/AuthTypes';
 
 import DeploymentConfigOverlay from './DeploymentConfigOverlay';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
@@ -41,7 +41,7 @@ const SELF_HOSTED = 'selfHosted';
 
 const DEFAULT_ENDPOINT = {
   url: 'http://localhost:8080/rest',
-  authType: AuthTypes.basic,
+  authType: AUTH_TYPES.BASIC,
   rememberCredentials: false
 };
 
@@ -495,9 +495,9 @@ export default class DeploymentTool extends PureComponent {
       defaultUrl = TOMCAT_DEFAULT_URL;
     }
 
-    // since we have deprecated AuthTypes.none, we should correct existing
+    // since we have deprecated AUTH_TYPES.none, we should correct existing
     // configurations
-    if (endpoint.authType !== AuthTypes.basic && endpoint.authType !== AuthTypes.bearer) {
+    if (endpoint.authType !== AUTH_TYPES.BASIC && endpoint.authType !== AUTH_TYPES.BEARER) {
       endpoint.authType = DEFAULT_ENDPOINT.authType;
     }
 

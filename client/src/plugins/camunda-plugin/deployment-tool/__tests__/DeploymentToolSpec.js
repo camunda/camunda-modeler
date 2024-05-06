@@ -20,7 +20,7 @@ import {
 import { Config } from './../../../../app/__tests__/mocks';
 
 import DeploymentTool from '../DeploymentTool';
-import AuthTypes from '../../shared/AuthTypes';
+import AUTH_TYPES from '../../shared/AuthTypes';
 import { DeploymentError,
   ConnectionError } from '../../shared/CamundaAPI';
 import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
@@ -130,7 +130,7 @@ describe('<DeploymentTool>', () => {
       // given
       const savedEndpoint = {
         id: 'endpointId',
-        authType: AuthTypes.basic,
+        authType: AUTH_TYPES.BASIC,
         username: 'demo',
         password: 'demo',
         url: 'http://localhost:8088/engine-rest',
@@ -534,7 +534,7 @@ describe('<DeploymentTool>', () => {
       // given
       const savedEndpoint = {
         id: 'endpointId',
-        authType: AuthTypes.basic,
+        authType: AUTH_TYPES.BASIC,
         username: 'demo',
         password: 'demo',
         url: 'http://localhost:8088/engine-rest',
@@ -971,7 +971,7 @@ describe('<DeploymentTool>', () => {
 
       const savedEndpoint = {
         id: 'endpointId',
-        authType: AuthTypes.basic,
+        authType: AUTH_TYPES.BASIC,
         url: 'http://localhost:8088/engine-rest',
         rememberCredentials: true
       };
@@ -1113,7 +1113,7 @@ describe('<DeploymentTool>', () => {
         id: 'endpointId',
         username: 'username',
         password: 'password',
-        authType: AuthTypes.basic,
+        authType: AUTH_TYPES.BASIC,
         url: 'http://localhost:8088/engine-rest',
         rememberCredentials: true
       };
@@ -1499,7 +1499,7 @@ function createConfiguration(deployment, endpoint) {
     endpoint: {
       id: 'endpointId',
       url: 'http://localhost:8088/engine-rest',
-      authType: AuthTypes.basic,
+      authType: AUTH_TYPES.BASIC,
       username: 'demo',
       password: 'demo',
       rememberCredentials: true,

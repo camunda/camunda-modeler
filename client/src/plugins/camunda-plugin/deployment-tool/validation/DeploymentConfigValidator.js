@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import AuthTypes from '../../shared/AuthTypes';
+import AUTH_TYPES from '../../shared/AuthTypes';
 
 import { default as CamundaAPI, ApiErrorMessages } from '../../shared/CamundaAPI';
 
@@ -63,7 +63,7 @@ export default class DeploymentConfigValidator {
 
   onExternalError = (authType, details, code, setFieldError) => {
     if (code === 'UNAUTHORIZED') {
-      if (authType === AuthTypes.basic) {
+      if (authType === AUTH_TYPES.BASIC) {
         this.usernameValidator.onExternalError(details, setFieldError);
         this.passwordValidator.onExternalError(details, setFieldError);
       } else {
@@ -117,9 +117,9 @@ export default class DeploymentConfigValidator {
 
     return this.validate(endpoint, {
       url: this.validateEndpointURL,
-      token: endpoint.authType === AuthTypes.bearer && this.validateToken,
-      password: endpoint.authType === AuthTypes.basic && this.validatePassword,
-      username: endpoint.authType === AuthTypes.basic && this.validateUsername
+      token: endpoint.authType === AUTH_TYPES.BEARER && this.validateToken,
+      password: endpoint.authType === AUTH_TYPES.BASIC && this.validatePassword,
+      username: endpoint.authType === AUTH_TYPES.BASIC && this.validateUsername
     });
   }
 

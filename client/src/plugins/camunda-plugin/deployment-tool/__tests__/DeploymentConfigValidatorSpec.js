@@ -11,7 +11,7 @@
 /* global sinon */
 
 import DeploymentConfigValidator from '../validation/DeploymentConfigValidator';
-import AuthTypes from '../../shared/AuthTypes';
+import AUTH_TYPES from '../../shared/AuthTypes';
 
 const EMPTY_ENDPOINT_ERROR = 'Endpoint URL must not be empty.';
 const EMPTY_DEPLOYMENT_NAME_ERROR = 'Deployment name must not be empty.';
@@ -70,7 +70,7 @@ describe('<DeploymentConfigValidator>', () => {
 
     // given
     const validate = url => validator.validateEndpoint({
-      authType: AuthTypes.basic,
+      authType: AUTH_TYPES.BASIC,
       url
     });
 
@@ -240,7 +240,7 @@ describe('<DeploymentConfigValidator>', () => {
     usernameValidator.setCachedValue('username');
 
     // when
-    onExternalError(AuthTypes.basic, 'error', 'UNAUTHORIZED', noop);
+    onExternalError(AUTH_TYPES.BASIC, 'error', 'UNAUTHORIZED', noop);
 
     // then
     expect(validateUsername('username', false)).to.eql('error');
@@ -259,7 +259,7 @@ describe('<DeploymentConfigValidator>', () => {
     passwordValidator.setCachedValue('password');
 
     // when
-    onExternalError(AuthTypes.basic, 'error', 'UNAUTHORIZED', noop);
+    onExternalError(AUTH_TYPES.BASIC, 'error', 'UNAUTHORIZED', noop);
 
     // then
     expect(validatePassword('password', false)).to.eql('error');
@@ -278,7 +278,7 @@ describe('<DeploymentConfigValidator>', () => {
     tokenValidator.setCachedValue('token');
 
     // when
-    onExternalError(AuthTypes.bearer, 'error', 'UNAUTHORIZED', noop);
+    onExternalError(AUTH_TYPES.BEARER, 'error', 'UNAUTHORIZED', noop);
 
     // then
     expect(validateToken('token', false)).to.eql('error');
@@ -349,7 +349,7 @@ describe('<DeploymentConfigValidator>', () => {
           attachments: []
         },
         endpoint: {
-          authType: AuthTypes.bearer,
+          authType: AUTH_TYPES.BEARER,
           url: 'http://localhost',
           token: 'token',
         }
@@ -371,7 +371,7 @@ describe('<DeploymentConfigValidator>', () => {
           } ]
         },
         endpoint: {
-          authType: AuthTypes.bearer,
+          authType: AUTH_TYPES.BEARER,
           url: 'http://localhost',
           token: 'token',
         }
@@ -401,7 +401,7 @@ describe('<DeploymentConfigValidator>', () => {
           attachments: []
         },
         endpoint: {
-          authType: AuthTypes.bearer,
+          authType: AUTH_TYPES.BEARER,
           url: 'http://localhost',
           token: '',
         }
@@ -432,7 +432,7 @@ describe('<DeploymentConfigValidator>', () => {
       // given
       const config = {
         endpoint: {
-          authType: AuthTypes.bearer,
+          authType: AUTH_TYPES.BEARER,
           url: 'http://localhost',
           token: '',
         }
