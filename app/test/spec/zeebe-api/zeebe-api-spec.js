@@ -2365,6 +2365,152 @@ describe('ZeebeAPI', function() {
     });
   });
 
+
+  describe('log', function() {
+
+    it('should not log secrets (basic auth)', async function() {
+
+      // given
+      const logSpy = sinon.spy();
+
+      const log = {
+        debug: logSpy,
+        error: logSpy,
+        info: logSpy,
+        warn: logSpy
+      };
+
+      const zeebeAPI = mockZeebeNode({ log });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.BASIC,
+          basicAuthUsername: 'username',
+          basicAuthPassword: 'password',
+          url: TEST_URL
+        }
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      // then
+      console.log(logSpy.getCalls().map(call => JSON.stringify(call.args), null, 2));
+
+      expect(logSpy).to.have.been.called;
+
+      const createClientCall = logSpy.getCalls().find(call => call.args[ 0 ] === 'creating client');
+
+      expect(createClientCall).to.exist;
+
+      expect(createClientCall.args[ 1 ]).to.eql({
+        url: 'http://localhost:26500',
+        options:{
+          retry: false,
+          basicAuth: {
+            username: '******',
+            password: '******'
+          },
+          useTLS: false
+        }
+      });
+
+      const deployCall = logSpy.getCalls().find(call => call.args[ 0 ] === 'deploy');
+
+      expect(deployCall).to.exist;
+
+      expect(deployCall.args[ 1 ]).to.eql({
+        parameters: {
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.BASIC,
+            basicAuthUsername: '******',
+            basicAuthPassword: '******',
+            url: TEST_URL
+          }
+        }
+      });
+    });
+
+
+    it('should not log secrets (oauth)', async function() {
+
+      // given
+      const logSpy = sinon.spy();
+
+      const log = {
+        debug: logSpy,
+        error: logSpy,
+        info: logSpy,
+        warn: logSpy
+      };
+
+      const zeebeAPI = mockZeebeNode({ log });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.OAUTH,
+          url: TEST_URL,
+          oauthURL: 'oauthURL',
+          audience: 'audience',
+          scope: 'scope',
+          clientId: 'clientId',
+          clientSecret: 'clientSecret'
+        }
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      // then
+      console.log(logSpy.getCalls().map(call => JSON.stringify(call.args), null, 2));
+
+      expect(logSpy).to.have.been.called;
+
+      const createClientCall = logSpy.getCalls().find(call => call.args[ 0 ] === 'creating client');
+
+      expect(createClientCall).to.exist;
+
+      expect(createClientCall.args[ 1 ]).to.eql({
+        url: 'http://localhost:26500',
+        options:{
+          retry: false,
+          oAuth: {
+            url: 'oauthURL',
+            audience: 'audience',
+            scope: 'scope',
+            clientId: '******',
+            clientSecret: '******',
+            cacheOnDisk: false,
+          },
+          useTLS: false
+        }
+      });
+
+      const deployCall = logSpy.getCalls().find(call => call.args[ 0 ] === 'deploy');
+
+      expect(deployCall).to.exist;
+
+      expect(deployCall.args[ 1 ]).to.eql({
+        parameters: {
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
+            url: TEST_URL,
+            oauthURL: 'oauthURL',
+            audience: 'audience',
+            scope: 'scope',
+            clientId: '******',
+            clientSecret: '******'
+          }
+        }
+      });
+    });
+
+  });
+
 });
 
 

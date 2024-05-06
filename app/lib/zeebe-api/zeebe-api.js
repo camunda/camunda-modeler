@@ -17,9 +17,11 @@ const createLog = require('../log');
 const { X509Certificate } = require('node:crypto');
 
 const {
+  get,
+  isDefined,
   pick,
-  values,
-  reduce
+  set,
+  values
 } = require('min-dash');
 
 const ERROR_REASONS = {
@@ -44,6 +46,18 @@ const RESOURCE_TYPES = {
   DMN: 'dmn',
   FORM: 'form'
 };
+
+const ENDPOINT_SECRETS = [
+  'endpoint.clientId',
+  'endpoint.clientSecret',
+  'endpoint.basicAuthUsername',
+  'endpoint.basicAuthPassword'
+];
+
+const CLIENT_OPTIONS_SECRETS = [
+  'options.basicAuth.username',
+  'options.basicAuth.password'
+];
 
 /**
  * @typedef {Object} ZeebeClientParameters
@@ -123,7 +137,7 @@ class ZeebeAPI {
     const client = await this._getZeebeClient(endpoint);
 
     this._log.debug('check connection', {
-      parameters: withoutSecrets(parameters)
+      parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
     });
 
     try {
@@ -131,7 +145,7 @@ class ZeebeAPI {
       return { success: true };
     } catch (err) {
       this._log.error('connection check failed', {
-        parameters: withoutSecrets(parameters)
+        parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
       }, err);
 
       return {
@@ -163,7 +177,7 @@ class ZeebeAPI {
     } = this._fs.readFile(filePath, { encoding: false });
 
     this._log.debug('deploy', {
-      parameters: withoutSecrets(parameters)
+      parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -182,7 +196,7 @@ class ZeebeAPI {
         response: response
       };
     } catch (err) {
-      this._log.error('deploy failed', withoutSecrets(parameters), err);
+      this._log.error('deploy failed', withoutSecrets(parameters, ENDPOINT_SECRETS), err);
 
       return {
         success: false,
@@ -209,7 +223,7 @@ class ZeebeAPI {
     } = parameters;
 
     this._log.debug('run', {
-      parameters: withoutSecrets(parameters)
+      parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -228,7 +242,7 @@ class ZeebeAPI {
       };
     } catch (err) {
       this._log.error('run failed', {
-        parameters: withoutSecrets(parameters)
+        parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
       }, err);
 
       return {
@@ -253,7 +267,7 @@ class ZeebeAPI {
     } = parameters;
 
     this._log.debug('fetch gateway version', {
-      parameters: withoutSecrets(parameters)
+      parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -269,7 +283,7 @@ class ZeebeAPI {
       };
     } catch (err) {
       this._log.error('fetch gateway version failed', {
-        parameters: withoutSecrets(parameters)
+        parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
       }, err);
 
       return {
@@ -364,12 +378,15 @@ class ZeebeAPI {
 
     this._log.debug('creating client', {
       url,
-      options: filterRecursive(options, [
-        'clientId:secret',
-        'clientSecret:secret',
-        'customRootCert:blob',
-        'rootCerts:blob'
-      ])
+      options: withoutSecrets(
+        filterRecursive(options, [
+          'clientId:secret',
+          'clientSecret:secret',
+          'customRootCert:blob',
+          'rootCerts:blob'
+        ]),
+        CLIENT_OPTIONS_SECRETS
+      )
     });
 
     return new this._ZeebeNode.ZBClient(url, options);
@@ -590,25 +607,18 @@ function isHashEqual(parameter1, parameter2) {
   return JSON.stringify(parameter1) === JSON.stringify(parameter2);
 }
 
-function withoutSecrets(parameters) {
+function withoutSecrets(parameters, paths) {
+  paths.forEach(secret => {
+    const path = secret.split('.');
 
-  const endpointSecrets = [
-    'clientId',
-    'clientSecret',
-  ];
+    const value = get(parameters, path);
 
-  const endpoint = reduce(parameters.endpoint, (filteredEndpoint, value, key) => {
-
-    if (endpointSecrets.includes(key)) {
-      value = '******';
+    if (isDefined(value)) {
+      set(parameters, path, '******');
     }
+  });
 
-    filteredEndpoint[key] = value;
-
-    return filteredEndpoint;
-  }, {});
-
-  return { ...parameters, endpoint };
+  return parameters;
 }
 
 function asSerializedError(error) {
