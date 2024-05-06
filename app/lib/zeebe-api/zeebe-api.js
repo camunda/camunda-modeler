@@ -34,12 +34,10 @@ const ERROR_REASONS = {
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS'
 };
 
-const ENDPOINT_TYPES = {
-  SELF_HOSTED: 'selfHosted',
-  BASIC: 'basic',
-  OAUTH: 'oauth',
-  CAMUNDA_CLOUD: 'camundaCloud'
-};
+const {
+  AUTH_TYPES,
+  ENDPOINT_TYPES
+} = require('./constants');
 
 const RESOURCE_TYPES = {
   BPMN: 'bpmn',
@@ -315,6 +313,7 @@ class ZeebeAPI {
   async _createZeebeClient(endpoint) {
     const {
       type,
+      authType = AUTH_TYPES.NONE,
       url
     } = endpoint;
 
@@ -322,11 +321,11 @@ class ZeebeAPI {
       retry: false
     };
 
-    if (!values(ENDPOINT_TYPES).includes(type)) {
+    if (!values(ENDPOINT_TYPES).includes(type) || !values(AUTH_TYPES).includes(authType)) {
       return;
     }
 
-    if (type === ENDPOINT_TYPES.BASIC) {
+    if (authType === AUTH_TYPES.BASIC) {
       options = {
         ...options,
         basicAuth: {
@@ -334,9 +333,7 @@ class ZeebeAPI {
           password: endpoint.basicAuthPassword
         }
       };
-    }
-
-    if (type === ENDPOINT_TYPES.OAUTH) {
+    } else if (authType === AUTH_TYPES.OAUTH) {
       options = {
         ...options,
         oAuth: {
@@ -541,7 +538,8 @@ function getErrorReason(error, endpoint) {
   } = error;
 
   const {
-    type
+    type,
+    authType = AUTH_TYPES.NONE
   } = endpoint;
 
   // (1) handle grpc errors
@@ -560,7 +558,7 @@ function getErrorReason(error, endpoint) {
 
   // (3) handle <not found>
   if (message.includes('ENOTFOUND') || message.includes('Not Found')) {
-    if (type === ENDPOINT_TYPES.OAUTH) {
+    if (authType === AUTH_TYPES.OAUTH) {
       return ERROR_REASONS.OAUTH_URL;
     } else if (type === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
       return ERROR_REASONS.INVALID_CLIENT_ID;
@@ -581,7 +579,7 @@ function getErrorReason(error, endpoint) {
     return ERROR_REASONS.FORBIDDEN;
   }
 
-  if (message.includes('Unsupported protocol') && type === ENDPOINT_TYPES.OAUTH) {
+  if (message.includes('Unsupported protocol') && authType === AUTH_TYPES.OAUTH) {
     return ERROR_REASONS.OAUTH_URL;
   }
 

@@ -18,17 +18,10 @@ const ZeebeAPI = require('../../../lib/zeebe-api');
 
 const TEST_URL = 'http://localhost:26500';
 
-const AUTH_TYPES = {
-  NONE: 'none',
-  BASIC: 'basic',
-  OAUTH: 'oauth',
-};
-
-const ENDPOINT_TYPES = {
-  SELF_HOSTED: 'selfHosted',
-  OAUTH: 'oauth',
-  CAMUNDA_CLOUD: 'camundaCloud'
-};
+const {
+  AUTH_TYPES,
+  ENDPOINT_TYPES
+} = require('../../../lib/zeebe-api/constants');
 
 
 describe('ZeebeAPI', function() {
@@ -265,7 +258,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -397,7 +391,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -1233,7 +1228,8 @@ describe('ZeebeAPI', function() {
           filePath: 'filePath',
           name: 'process.bpmn',
           endpoint: {
-            type: AUTH_TYPES.BASIC,
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.BASIC,
             url: TEST_URL,
             basicAuthUsername: 'username',
             basicAuthPassword: 'password'
@@ -1280,7 +1276,8 @@ describe('ZeebeAPI', function() {
           filePath: 'filePath',
           name: 'process.bpmn',
           endpoint: {
-            type: AUTH_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
             url: TEST_URL,
             oauthURL: 'oauthURL',
             audience: 'audience',
@@ -1331,7 +1328,8 @@ describe('ZeebeAPI', function() {
           filePath: 'filePath',
           name: 'process.bpmn',
           endpoint: {
-            type: AUTH_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
             url: TEST_URL,
             oauthURL: 'oauthURL',
             clientId: 'clientId',
@@ -1566,7 +1564,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -1698,7 +1697,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -1874,7 +1874,8 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy({
         ...parameters,
         endpoint: {
-          type: ENDPOINT_TYPES.OAUTH,
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.OAUTH,
           url: TEST_URL
         }
       });
@@ -1997,7 +1998,8 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: ENDPOINT_TYPES.OAUTH,
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.OAUTH,
           url: 'http://camunda.com'
         }
       };
@@ -2212,7 +2214,8 @@ describe('ZeebeAPI', function() {
         const parameters = {
           filePath: '/path/to/file.bpmn',
           endpoint: {
-            type: ENDPOINT_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
             url: 'https://camunda.com'
           }
         };
