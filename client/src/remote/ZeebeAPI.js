@@ -96,12 +96,14 @@ function getEndpointConfiguration(endpoint) {
     case AUTH_TYPES.NONE:
       return {
         type: ENDPOINT_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
         url: contactPoint
       };
 
     case AUTH_TYPES.BASIC:
       return {
-        type: AUTH_TYPES.BASIC,
+        type: ENDPOINT_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.BASIC,
         url: contactPoint,
         basicAuthUsername,
         basicAuthPassword
@@ -109,7 +111,8 @@ function getEndpointConfiguration(endpoint) {
 
     case AUTH_TYPES.OAUTH:
       return {
-        type: AUTH_TYPES.OAUTH,
+        type: ENDPOINT_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.OAUTH,
         url: contactPoint,
         oauthURL,
         audience,
