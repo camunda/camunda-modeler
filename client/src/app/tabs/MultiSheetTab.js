@@ -467,7 +467,7 @@ function getErrorDialog({
   return {
     type: 'error',
     title: 'Import Error',
-    message: 'Ooops!',
+    message: 'Import Error',
     buttons: [ {
       id: 'close',
       label: 'Close'
@@ -478,7 +478,7 @@ function getErrorDialog({
     detail: [
       error.message,
       '',
-      'Do you believe "' + name + '" is valid ' + type.toUpperCase() + ' diagram?',
+      'It seems that "' + name + '" is not a valid ' + type.toUpperCase() + ' diagram.',
       '',
       'Post this error with your diagram in our forum for help.'
     ].join('\n')
