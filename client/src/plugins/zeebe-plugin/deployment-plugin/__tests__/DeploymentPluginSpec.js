@@ -306,6 +306,8 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       await instance.deploy();
 
       // then
+      expect(getDefaultEndpointSpy.args[0][0]).to.have.property('basicAuthUsername', '');
+      expect(getDefaultEndpointSpy.args[0][0]).to.have.property('basicAuthPassword', '');
       expect(getDefaultEndpointSpy.args[0][0]).to.have.property('clientId', '');
       expect(getDefaultEndpointSpy.args[0][0]).to.have.property('clientSecret', '');
       expect(getDefaultEndpointSpy.args[0][0]).to.have.property('camundaCloudClientId', '');

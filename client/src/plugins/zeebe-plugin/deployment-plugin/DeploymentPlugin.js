@@ -374,6 +374,8 @@ export default class DeploymentPlugin extends PureComponent {
 
   async getDefaultEndpoint(tab) {
     const credentials = {
+      basicAuthUsername: '',
+      basicAuthPassword: '',
       clientId: '',
       clientSecret: '',
       camundaCloudClientId: '',
