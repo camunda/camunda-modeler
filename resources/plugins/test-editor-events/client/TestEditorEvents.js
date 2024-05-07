@@ -130,7 +130,7 @@ function addDmnModule(extensionModule) {
   return (config) => {
     const newConfig = { ...config };
 
-    for (const viewer of [ 'drd', 'decisionTable', 'literalExpression' ]) {
+    for (const viewer of [ 'drd', 'decisionTable', 'literalExpression', 'boxedExpression' ]) {
       newConfig[viewer] = newConfig[viewer] || {};
 
       const additionalModules = (newConfig[viewer] && newConfig[viewer].additionalModules) || [];

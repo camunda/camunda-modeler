@@ -110,6 +110,7 @@ export default function configureModeler(
 
   const middlewares = [
     moddleExtensionsMiddleware,
+    additionalModulesMiddleware('boxedExpression'),
     additionalModulesMiddleware('drd'),
     additionalModulesMiddleware('decisionTable'),
     additionalModulesMiddleware('literalExpression'),

@@ -17,6 +17,46 @@ describe('tabs/dmn/util - configure', function() {
 
     describe('should recognize plug-in points', function() {
 
+      it('dmn.modeler.boxedExpression.additionalModules', function() {
+
+        // given
+        var module1 = { __id: 1 };
+        var module2 = { __id: 2 };
+        var existingModule = { __id: 'EXISTING' };
+
+        var getPlugins = setupPlugins([
+          [ 'dmn.modeler.boxedExpression.additionalModules', module1 ],
+          [ 'dmn.modeler.boxedExpression.additionalModules', module2 ]
+        ]);
+
+        // when
+        var {
+          options,
+          warnings
+        } = configureModeler(getPlugins, {
+          boxedExpression: {
+            additionalModules: [
+              existingModule
+            ]
+          }
+        });
+
+        // then
+        expect(options).to.eql({
+          boxedExpression: {
+            additionalModules: [
+              existingModule,
+              module1,
+              module2
+            ]
+          }
+
+        });
+
+        expect(warnings).to.be.empty;
+      });
+
+
       it('dmn.modeler.drd.additionalModules', function() {
 
         // given

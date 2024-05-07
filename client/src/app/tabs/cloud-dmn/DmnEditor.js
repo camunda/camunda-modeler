@@ -42,6 +42,7 @@ import CamundaDmnModeler from './modeler';
 import { active as isInputActive } from '../../../util/dom/isInput';
 
 import {
+  getDmnBoxedExpressionEditMenu,
   getDmnDrdEditMenu,
   getDmnDecisionTableEditMenu,
   getDmnLiteralExpressionEditMenu
@@ -445,6 +446,22 @@ export class DmnEditor extends CachedComponent {
       newState.inputActive = true;
 
       editMenu = getDmnLiteralExpressionEditMenu(newState);
+    } else if (activeView.type === 'boxedExpression') {
+
+      // TODO(@barmac): handle boxed expression differently than literal expression when needed
+      assign(newState, {
+        defaultCopyCutPaste: true,
+        defaultUndoRedo: true,
+        removeSelected: true,
+        selectAll: true
+      });
+
+      // The boxedExpression editor does not fire events when
+      // elements are selected, so we always set inputActive to true.
+      // cf. https://github.com/camunda/camunda-modeler/pull/2394
+      newState.inputActive = true;
+
+      editMenu = getDmnBoxedExpressionEditMenu(newState);
     }
 
     // ensure backwards compatibility

@@ -126,6 +126,35 @@ describe('<DmnEditor>', function() {
 
   describe('plugins', function() {
 
+    it('should accept <boxedExpression> plugins', async function() {
+
+      // given
+      const additionalModule = {
+        __init__: [ 'foo' ],
+        foo: [ 'type', noop ]
+      };
+
+      // when
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        getPlugins(type) {
+          switch (type) {
+          case 'dmn.modeler.boxedExpression.additionalModules':
+            return [ additionalModule ];
+          }
+
+          return [];
+        }
+      });
+
+      // then
+      const { modeler } = instance.getCached();
+
+      expect(modeler.modules.boxedExpression.additionalModules).to.include(additionalModule);
+    });
+
+
     it('should accept <drd> plugins', async function() {
 
       // given
@@ -905,6 +934,62 @@ describe('<DmnEditor>', function() {
 
       });
 
+
+      describe('boxed expression', function() {
+
+        it('Remove shortcut should always have role: delete', async function() {
+
+          // given
+          const changedSpy = sinon.spy();
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          changedSpy.resetHistory();
+
+          // when
+          const modeler = instance.getModeler();
+
+          modeler.open({ type: 'boxedExpression' });
+          instance.handleChanged();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+
+          expect(hasMenuEntry(state.editMenu, 'Remove Selected')).to.be.true;
+          expect(getMenuEntry(state.editMenu, 'Remove Selected').role).to.equal('delete');
+        });
+
+
+        it('should NOT provide find entries', async function() {
+
+          // given
+          const changedSpy = sinon.spy();
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          changedSpy.resetHistory();
+
+          // when
+          const modeler = instance.getModeler();
+
+          modeler.open({ type: 'boxedExpression' });
+          instance.handleChanged();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+          expect(hasMenuEntry(state.editMenu, 'Find')).to.be.false;
+        });
+
+      });
+
     });
 
 
@@ -952,6 +1037,33 @@ describe('<DmnEditor>', function() {
         const modeler = instance.getModeler();
 
         modeler.open({ type: 'literalExpression' });
+        instance.handleChanged();
+
+        // then
+        expect(changedSpy).to.be.calledOnce;
+
+        const state = changedSpy.firstCall.args[0];
+
+        expect(hasMenuEntry(state.windowMenu, 'Toggle Overview')).to.be.true;
+        expect(hasMenuEntry(state.windowMenu, 'Reset Overview')).to.be.true;
+      });
+
+
+      it('should provide toggle/reset overview entries for boxed expression', async function() {
+
+        // given
+        const changedSpy = sinon.spy();
+
+        const { instance } = await renderEditor(diagramXML, {
+          onChanged: changedSpy
+        });
+
+        changedSpy.resetHistory();
+
+        // when
+        const modeler = instance.getModeler();
+
+        modeler.open({ type: 'boxedExpression' });
         instance.handleChanged();
 
         // then

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="definitions_0pm5f1p" name="Decision" namespace="http://camunda.org/schema/1.0/dmn">
-  <decision id="Decision_13nychf" name="Which Season">
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="definitions_0pm5f1p" name="Decision" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.23.0-dev">
+  <decision id="DecisionTable" name="Which Season">
     <informationRequirement id="InformationRequirement_14co6no">
       <requiredInput href="#InputData_1srou0x" />
     </informationRequirement>
@@ -8,19 +8,28 @@
       <output id="OutputClause_0op0fkk" typeRef="string" />
     </decisionTable>
   </decision>
-  <decision id="Decision_17gs2k3" name="Which Region">
+  <decision id="LiteralExpression" name="Which Region">
     <variable id="InformationItem_1xcwjob" name="InformationItem_1xcwjob" />
+    <knowledgeRequirement id="KnowledgeRequirement_0c62hpz">
+      <requiredKnowledge href="#GetTravelCost" />
+    </knowledgeRequirement>
     <literalExpression id="LiteralExpression_169mwud" />
   </decision>
   <inputData id="InputData_1srou0x" name="Regional Weather" />
-  <decision id="Decision_1kizwj6" name="Go on Holidays?">
+  <decision id="NoLogic" name="Go on Holidays?">
     <informationRequirement id="InformationRequirement_00ajgoz">
-      <requiredDecision href="#Decision_13nychf" />
+      <requiredDecision href="#DecisionTable" />
     </informationRequirement>
     <informationRequirement id="InformationRequirement_1ugvlci">
-      <requiredDecision href="#Decision_17gs2k3" />
+      <requiredDecision href="#LiteralExpression" />
     </informationRequirement>
   </decision>
+  <businessKnowledgeModel id="GetTravelCost" name="Get travel cost">
+    <variable name="Get travel cost" id="InformationItem_0lt3xuh" />
+    <encapsulatedLogic id="FunctionDefinition_1u45ejd">
+      <literalExpression id="LiteralExpression_1ajbn0e" />
+    </encapsulatedLogic>
+  </businessKnowledgeModel>
   <textAnnotation id="TextAnnotation_1ytoitl">
     <text>We decide for holidays when we agreed on
 season + region</text>
@@ -30,46 +39,53 @@ season + region</text>
     <targetRef href="#TextAnnotation_1ytoitl" />
   </association>
   <association id="Association_11uhskx">
-    <sourceRef href="#Decision_1kizwj6" />
+    <sourceRef href="#NoLogic" />
     <targetRef href="#TextAnnotation_1ytoitl" />
   </association>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram>
-      <dmndi:DMNShape dmnElementRef="Decision_13nychf">
-        <dc:Bounds height="80" width="180" x="61" y="261" />
+      <dmndi:DMNShape dmnElementRef="DecisionTable">
+        <dc:Bounds height="80" width="180" x="181" y="261" />
       </dmndi:DMNShape>
       <dmndi:DMNEdge dmnElementRef="InformationRequirement_14co6no">
-        <di:waypoint x="105" y="447" />
-        <di:waypoint x="149" y="341" />
+        <di:waypoint x="225" y="447" />
+        <di:waypoint x="269" y="341" />
       </dmndi:DMNEdge>
-      <dmndi:DMNShape dmnElementRef="Decision_17gs2k3">
-        <dc:Bounds height="80" width="180" x="360" y="252" />
+      <dmndi:DMNShape dmnElementRef="LiteralExpression">
+        <dc:Bounds height="80" width="180" x="480" y="252" />
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="InputData_1srou0x">
-        <dc:Bounds height="45" width="125" x="37" y="447" />
+        <dc:Bounds height="45" width="125" x="157" y="447" />
       </dmndi:DMNShape>
-      <dmndi:DMNShape dmnElementRef="Decision_1kizwj6">
-        <dc:Bounds height="80" width="180" x="198" y="68" />
+      <dmndi:DMNShape dmnElementRef="NoLogic">
+        <dc:Bounds height="80" width="180" x="318" y="68" />
       </dmndi:DMNShape>
       <dmndi:DMNEdge dmnElementRef="InformationRequirement_00ajgoz">
-        <di:waypoint x="196" y="261" />
-        <di:waypoint x="274" y="148" />
+        <di:waypoint x="316" y="261" />
+        <di:waypoint x="394" y="148" />
       </dmndi:DMNEdge>
       <dmndi:DMNEdge dmnElementRef="InformationRequirement_1ugvlci">
-        <di:waypoint x="405" y="252" />
-        <di:waypoint x="345" y="148" />
+        <di:waypoint x="525" y="252" />
+        <di:waypoint x="465" y="148" />
       </dmndi:DMNEdge>
       <dmndi:DMNShape dmnElementRef="TextAnnotation_1ytoitl">
-        <dc:Bounds height="80" width="100" x="484" y="36" />
+        <dc:Bounds height="80" width="100" x="604" y="36" />
       </dmndi:DMNShape>
       <dmndi:DMNEdge dmnElementRef="Association_0ni2cyy">
         <di:waypoint x="389" y="113" />
         <di:waypoint x="567" y="63" />
       </dmndi:DMNEdge>
       <dmndi:DMNEdge dmnElementRef="Association_11uhskx">
-        <di:waypoint x="378" y="98" />
-        <di:waypoint x="484" y="86" />
+        <di:waypoint x="498" y="98" />
+        <di:waypoint x="604" y="86" />
       </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="DMNEdge_15vlbrx" dmnElementRef="KnowledgeRequirement_0c62hpz">
+        <di:waypoint x="570" y="453" />
+        <di:waypoint x="570" y="332" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_0ijw0rj" dmnElementRef="GetTravelCost">
+        <dc:Bounds height="46" width="135" x="502" y="453" />
+      </dmndi:DMNShape>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
 </definitions>

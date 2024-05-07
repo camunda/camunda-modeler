@@ -59,6 +59,13 @@ export default class CamundaDmnModeler extends DmnModeler {
 
     super({
       ...otherOptions,
+      boxedExpression: mergeModules(otherOptions.boxedExpression, [
+        poweredByModule,
+        executionPlatformModule,
+        {
+          viewDrd: NOOP_MODULE
+        }
+      ]),
       drd: mergeModules(drd, [
         propertiesPanelKeyboardBindingsModule,
         executionPlatformModule

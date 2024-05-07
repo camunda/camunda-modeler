@@ -89,3 +89,17 @@ export function getDmnLiteralExpressionEditMenu(state) {
     getSelectionEntries(state)
   ];
 }
+
+export function getDmnBoxedExpressionEditMenu(state) {
+  const { defaultCopyCutPaste } = state;
+
+  const copyCutPasteEntries = defaultCopyCutPaste
+    ? getDefaultCopyCutPasteEntries(true)
+    : getCopyCutPasteEntries(state);
+
+  return [
+    getUndoRedoEntries(state),
+    copyCutPasteEntries,
+    getSelectionEntries(state)
+  ];
+}
