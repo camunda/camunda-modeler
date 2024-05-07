@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import { isAny } from 'dmn-js-shared/lib/util/ModelUtil';
+import { getBoxedExpression, isAny } from 'dmn-js-shared/lib/util/ModelUtil';
 
 import { getBBox } from 'diagram-js/lib/util/Elements';
 
@@ -86,11 +86,9 @@ export default class OpenDrgElement {
   }
 
   canOpenDrgElement = (element) => {
-    const { businessObject } = element;
+    const boxedExpression = getBoxedExpression(element);
 
-    const hasDecisionLogic = !!businessObject.decisionLogic;
-
-    return isAny(element, [ 'dmn:Decision', 'dmn:LiteralExpression' ]) && hasDecisionLogic;
+    return isAny(boxedExpression, [ 'dmn:DecisionTable', 'dmn:LiteralExpression' ]);
   };
 
   centerViewbox = element => {

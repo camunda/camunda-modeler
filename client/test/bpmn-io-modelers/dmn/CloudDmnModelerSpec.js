@@ -317,11 +317,11 @@ describe('DmnModeler', function() {
 
       // when
       modeler._overview.getActiveViewer().get('eventBus').fire('openDrgElement', {
-        id: 'Decision_13nychf'
+        id: 'DecisionTable'
       });
 
       // then
-      expect(modeler.getActiveView().element.id).to.equal('Decision_13nychf');
+      expect(modeler.getActiveView().element.id).to.equal('DecisionTable');
     });
 
 
@@ -344,6 +344,52 @@ describe('DmnModeler', function() {
       expect(spy).to.have.been.called;
     });
 
+
+    describe('#canOpenDrgElement', function() {
+
+      it('should return `true` for a BKM with literal expression', async function() {
+
+        // given
+        const openDrgElement = modeler._overview.getActiveViewer().get('openDrgElement');
+        const bkm = modeler.getDefinitions().get('drgElement').find(element => element.id === 'GetTravelCost');
+
+        // then
+        expect(openDrgElement.canOpenDrgElement(bkm)).to.be.true;
+      });
+
+
+      it('should return `true` for a Decision with literal expression', async function() {
+
+        // given
+        const openDrgElement = modeler._overview.getActiveViewer().get('openDrgElement');
+        const decision = modeler.getDefinitions().get('drgElement').find(element => element.id === 'LiteralExpression');
+
+        // then
+        expect(openDrgElement.canOpenDrgElement(decision)).to.be.true;
+      });
+
+
+      it('should return `true` for a Decision with decision table', async function() {
+
+        // given
+        const openDrgElement = modeler._overview.getActiveViewer().get('openDrgElement');
+        const decision = modeler.getDefinitions().get('drgElement').find(element => element.id === 'DecisionTable');
+
+        // then
+        expect(openDrgElement.canOpenDrgElement(decision)).to.be.true;
+      });
+
+
+      it('should return `false` for a Decision without logic', async function() {
+
+        // given
+        const openDrgElement = modeler._overview.getActiveViewer().get('openDrgElement');
+        const decision = modeler.getDefinitions().get('drgElement').find(element => element.id === 'NoLogic');
+
+        // then
+        expect(openDrgElement.canOpenDrgElement(decision)).to.be.false;
+      });
+    });
   });
 
 

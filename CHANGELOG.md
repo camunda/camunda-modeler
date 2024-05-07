@@ -10,12 +10,25 @@ ___Note:__ Yet to be released changes appear here._
 
 * `DEPS`: update to `bpmn-js-element-templates@1.15.1`
 * `DEPS`: update to `camunda-bpmn-js@4.5.1`
+* `DEPS`: update to `camunda-dmn-js@2.3.1`
+* `DEPS`: update to `dmn-js@16.3.0`
 
 ### BPMN
 
 * `FIX`: prevent infinite loop when applying conditional template ([bpmn-io/bpmn-js-element-templates#78](https://github.com/bpmn-io/bpmn-js-element-templates/issues/78))
 * `FIX`: preserve valid user input when changing element template ([bpmn-io/bpmn-js-element-templates#86](https://github.com/bpmn-io/bpmn-js-element-templates/pull/86), [#4249](https://github.com/camunda/camunda-modeler/issues/4249))
 * `FIX`: mark non-object JSON as invalid example data ([example-data-properties-provider#17](https://github.com/camunda/example-data-properties-provider/pull/17))
+
+### DMN
+
+* `FEAT`: context pad position absolute instead of relative to element ([bpmn-io/diagram-js#888](https://github.com/bpmn-io/diagram-js/pull/888))
+* `FEAT`: do not scale context pad and popup menu by default ([bpmn-io/diagram-js#883](https://github.com/bpmn-io/diagram-js/pull/883))
+* `FEAT`: add support for implementing BKM as literal expression ([bpmn-io/dmn-js#704](https://github.com/bpmn-io/dmn-js/issues/704), [bpmn-io/dmn-js#826](https://github.com/bpmn-io/dmn-js/issues/826))
+* `FEAT`: remove background for DRGElements ([bpmn-io/dmn-js#855](https://github.com/bpmn-io/dmn-js/pull/855))
+* `FEAT`: allow to provide accessible names to form fields ([bpmn-io/dmn-js#843](https://github.com/bpmn-io/dmn-js/pull/843))
+* `FIX`: add accessible names to multiple components ([bpmn-io/dmn-js#843](https://github.com/bpmn-io/dmn-js/pull/843))
+* `FIX`: improve contrast
+* `FIX`: make table cells visible to screen readers ([bpmn-io/dmn-js#821](https://github.com/bpmn-io/dmn-js/issue/821))
 
 ## 5.22.0
 
