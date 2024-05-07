@@ -6,18 +6,31 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.23.0
+
 ### General
 
-* `DEPS`: update to `bpmn-js-element-templates@1.15.1`
+* `FEAT`: build for arm64 on MacOS ([#4238](https://github.com/camunda/camunda-modeler/pull/4238))
+* `FEAT`: add basic auth for deployments to C8 self-managed ([#4269](https://github.com/camunda/camunda-modeler/pull/4269))
+* `DEPS`: update to `@bpmn-io/form-js@1.8.6`
+* `DEPS`: update to `@camunda/linting@3.18.1`
+* `DEPS`: update to `bpmn-js-element-templates@1.15.2`
+* `DEPS`: update to `bpmn-js-tracking@0.6.0`
 * `DEPS`: update to `camunda-bpmn-js@4.5.1`
 * `DEPS`: update to `camunda-dmn-js@2.3.1`
 * `DEPS`: update to `dmn-js@16.3.0`
 
 ### BPMN
 
+* `FEAT`: remove background for embedded labels ([bpmn-io/bpmn-js#2147](https://github.com/bpmn-io/bpmn-js/pull/2147))
+* `FEAT`: add tooltip for `Called decision` group ([bpmn-io/bpmn-js-properties-panel#1039](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1039))
+* `FEAT`: make popup menu fully keyboard navigatable ([bpmn-io/diagram-js#871](https://github.com/bpmn-io/diagram-js/issues/871))
+* `FEAT`: do not scale context pad and popup menu by default ([bpmn-io/diagram-js#883](https://github.com/bpmn-io/diagram-js/pull/883))
+* `FEAT`: context pad position absolute instead of relative to element ([bpmn-io/diagram-js#888](https://github.com/bpmn-io/diagram-js/pull/888))
 * `FIX`: prevent infinite loop when applying conditional template ([bpmn-io/bpmn-js-element-templates#78](https://github.com/bpmn-io/bpmn-js-element-templates/issues/78))
 * `FIX`: preserve valid user input when changing element template ([bpmn-io/bpmn-js-element-templates#86](https://github.com/bpmn-io/bpmn-js-element-templates/pull/86), [#4249](https://github.com/camunda/camunda-modeler/issues/4249))
 * `FIX`: mark non-object JSON as invalid example data ([example-data-properties-provider#17](https://github.com/camunda/example-data-properties-provider/pull/17))
+* `FIX`: select participant when process ref lint error is selected ([camunda/linting#104](https://github.com/camunda/linting/pull/104))
 
 ### DMN
 
@@ -29,6 +42,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: add accessible names to multiple components ([bpmn-io/dmn-js#843](https://github.com/bpmn-io/dmn-js/pull/843))
 * `FIX`: improve contrast
 * `FIX`: make table cells visible to screen readers ([bpmn-io/dmn-js#821](https://github.com/bpmn-io/dmn-js/issue/821))
+
+### Forms
+
+* `FIX`: prevent expressions from recomputing more than once ([bpmn-io/form-js#1154](https://github.com/bpmn-io/form-js/pull/1154))
 
 ## 5.22.0
 
