@@ -44,16 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Support for Camunda 8.5 features</h4>
-          With this release, we introduce support for compensation events in Camunda 8. You can now model compensation throw and boundary events, and set compensation activities.
+          <h4>Business knowledge model editing added to DMN modeling</h4>
+          DMN modeling now supports implementing business knowledge models as literal expressions, offering more flexibility in decision modeling.
         </li>
         <li>
-          <h4>Improved user task tooltips</h4>
-          We've improved the tooltips to provide better guidance on Zeebe user task usage.
+          <h4>Basic auth support for deployments to Camunda 8 self-managed</h4>
+          For deployments to self-managed Camunda 8 instances secured with basic auth, you can now provide credentials when deploying.
         </li>
         <li>
-          <h4>Expression field in Forms</h4>
-          With the new expression field, you can precompute data at runtime using FEEL.
+          <h4>Support for arm64 on MacOS</h4>
+          This release introduces arm64 support for MacOS, ensuring compatibility with Apple's latest hardware.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
