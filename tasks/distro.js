@@ -96,7 +96,8 @@ const platformOptions = platforms.map(p => `--${p}`);
 const publishOptions = getPublishOptions(publish, onDemand);
 
 const signingOptions = [
-  `-c.forceCodeSigning=${false}`
+  '-c.forceCodeSigning=true',
+  '-c.win.certificateSubjectName=Camunda Services GmbH'
 ];
 
 const certificateFingerprint = process.env.WIN_CSC_FINGERPRINT;
