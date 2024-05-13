@@ -57,6 +57,17 @@ Based on the [test diagram](./test.bpmn.png):
   - [ ] Change task to Send Task; properties are kept
   - [ ] Change task to UserTask; implementation property is gone from XML (except Retry Time Cycle, Input/output Mapping and `asyncBefore`)
 
+#### Version chooser
+
+- [ ] I can select the latest (alpha?) version of a diagram
+  - [ ] For Camunda 7, BPMN, validation works
+  - [ ] For Camunda 8, BPMN, validation works
+
+#### Problems panel
+
+- [ ] In a Camunda 8 BPMN the problems panel indicates missing implementation details
+- [ ] In a Camunda 7 BPMN diagram the problems panel indicates missing HTTL (`Process > History time to live`)
+
 #### DMN modeling
 
 - [ ] create a new DMN diagram
