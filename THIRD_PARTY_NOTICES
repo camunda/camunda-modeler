@@ -96,9 +96,9 @@ This project incorporates components from the projects listed below. The origina
 89.   style-loader@4.0.0 (webpack-contrib/style-loader)
 90.   css-loader@7.1.0 (webpack-contrib/css-loader)
 91.   @camunda/form-playground@0.14.0 (git+https://github.com/camunda/form-playground.git)
-92.   camunda-bpmn-js@4.6.2 (https://github.com/camunda/camunda-bpmn-js)
+92.   camunda-bpmn-js@4.6.3 (https://github.com/camunda/camunda-bpmn-js)
 93.   camunda-dmn-js@2.3.3 (https://github.com/camunda/camunda-dmn-js)
-94.   @camunda/linting@3.18.1 (https://github.com/camunda/linting)
+94.   @camunda/linting@3.19.0 (https://github.com/camunda/linting)
 95.   @ibm/plex@6.4.0 (https://github.com/ibm/plex.git)
 96.   min-dash@4.2.1 (git+https://github.com/bpmn-io/min-dash.git)
 97.   react@16.14.0 (git+https://github.com/facebook/react.git)
@@ -178,12 +178,12 @@ This project incorporates components from the projects listed below. The origina
 171.  sourcemapped-stacktrace@1.1.11 (http://github.com/novocaine/sourcemapped-stacktrace)
 172.  @bpmn-io/replace-ids@0.2.0 (git+https://github.com/bpmn-io/replace-ids.git)
 173.  bpmnlint@10.2.0 (https://github.com/bpmn-io/bpmnlint)
-174.  bpmnlint-plugin-camunda-compat@2.18.0 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
+174.  bpmnlint-plugin-camunda-compat@2.19.0 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
 175.  bpmnlint-utils@1.1.1 (https://github.com/bpmn-io/bpmnlint-utils)
 176.  semver-compare@1.0.0 (git://github.com/substack/semver-compare.git)
 177.  @bpmn-io/moddle-utils@0.2.1 (https://github.com/bpmn-io/moddle-utils)
 178.  @camunda/form-linting@0.16.0
-179.  bpmn-js-element-templates@1.15.2 (https://github.com/bpmn-io/bpmn-js-element-templates)
+179.  bpmn-js-element-templates@1.15.3 (https://github.com/bpmn-io/bpmn-js-element-templates)
 180.  @bpmn-io/element-templates-validator@2.0.1 (git+https://github.com/bpmn-io/element-templates-validator.git)
 181.  uuid@9.0.1 (https://github.com/uuidjs/uuid.git)
 182.  @codemirror/search@6.5.6 (https://github.com/codemirror/search.git)
@@ -3473,7 +3473,7 @@ THE SOFTWARE.
 END OF @camunda/form-playground@0.14.0 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@4.6.2 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@4.6.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -3497,7 +3497,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@4.6.2 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@4.6.3 NOTICES AND INFORMATION
 
 
 %% camunda-dmn-js@2.3.3 NOTICES AND INFORMATION BEGIN HERE
@@ -3527,7 +3527,7 @@ THE SOFTWARE.
 END OF camunda-dmn-js@2.3.3 NOTICES AND INFORMATION
 
 
-%% @camunda/linting@3.18.1 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/linting@3.19.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -3551,7 +3551,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/linting@3.18.1 NOTICES AND INFORMATION
+END OF @camunda/linting@3.19.0 NOTICES AND INFORMATION
 
 
 %% @ibm/plex@6.4.0 NOTICES AND INFORMATION BEGIN HERE
@@ -5926,7 +5926,7 @@ THE SOFTWARE.
 END OF bpmnlint@10.2.0 NOTICES AND INFORMATION
 
 
-%% bpmnlint-plugin-camunda-compat@2.18.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmnlint-plugin-camunda-compat@2.19.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -5950,7 +5950,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmnlint-plugin-camunda-compat@2.18.0 NOTICES AND INFORMATION
+END OF bpmnlint-plugin-camunda-compat@2.19.0 NOTICES AND INFORMATION
 
 
 %% bpmnlint-utils@1.1.1 NOTICES AND INFORMATION BEGIN HERE
@@ -6060,7 +6060,7 @@ SOFTWARE.
 END OF @camunda/form-linting@0.16.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-element-templates@1.15.2 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-element-templates@1.15.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -6084,7 +6084,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-element-templates@1.15.2 NOTICES AND INFORMATION
+END OF bpmn-js-element-templates@1.15.3 NOTICES AND INFORMATION
 
 
 %% @bpmn-io/element-templates-validator@2.0.1 NOTICES AND INFORMATION BEGIN HERE
