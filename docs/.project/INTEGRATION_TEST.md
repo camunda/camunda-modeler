@@ -63,7 +63,7 @@ Based on the [test diagram](./test.bpmn.png):
   - [ ] For Camunda 7, BPMN, validation works
   - [ ] For Camunda 8, BPMN, validation works
 
-#### Problems Panel
+#### Problems panel
 
 - [ ] In a Camunda 8 BPMN the problems panel indicates missing implementation details
 - [ ] In a Camunda 7 BPMN diagram the problems panel indicates missing HTTL (`Process > History time to live`)
