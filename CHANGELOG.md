@@ -13,12 +13,12 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: build for arm64 on MacOS ([#4238](https://github.com/camunda/camunda-modeler/pull/4238))
 * `FEAT`: add basic auth for deployments to C8 self-managed ([#4269](https://github.com/camunda/camunda-modeler/pull/4269))
 * `DEPS`: update to `@bpmn-io/form-js@1.8.6`
-* `DEPS`: update to `@camunda/linting@3.18.1`
+* `DEPS`: update to `@camunda/linting@3.19.0`
 * `DEPS`: update to `bpmn-js-element-templates@1.15.3`
 * `DEPS`: update to `bpmn-js-tracking@0.6.0`
 * `DEPS`: update to `camunda-bpmn-js@4.6.3`
-* `DEPS`: update to `camunda-dmn-js@2.3.1`
-* `DEPS`: update to `dmn-js@16.3.0`
+* `DEPS`: update to `camunda-dmn-js@2.3.3`
+* `DEPS`: update to `dmn-js@16.3.2`
 
 ### BPMN
 
