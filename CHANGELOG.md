@@ -14,9 +14,9 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add basic auth for deployments to C8 self-managed ([#4269](https://github.com/camunda/camunda-modeler/pull/4269))
 * `DEPS`: update to `@bpmn-io/form-js@1.8.6`
 * `DEPS`: update to `@camunda/linting@3.18.1`
-* `DEPS`: update to `bpmn-js-element-templates@1.15.2`
+* `DEPS`: update to `bpmn-js-element-templates@1.15.3`
 * `DEPS`: update to `bpmn-js-tracking@0.6.0`
-* `DEPS`: update to `camunda-bpmn-js@4.5.1`
+* `DEPS`: update to `camunda-bpmn-js@4.6.3`
 * `DEPS`: update to `camunda-dmn-js@2.3.1`
 * `DEPS`: update to `dmn-js@16.3.0`
 
@@ -31,6 +31,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: preserve valid user input when changing element template ([bpmn-io/bpmn-js-element-templates#86](https://github.com/bpmn-io/bpmn-js-element-templates/pull/86), [#4249](https://github.com/camunda/camunda-modeler/issues/4249))
 * `FIX`: mark non-object JSON as invalid example data ([example-data-properties-provider#17](https://github.com/camunda/example-data-properties-provider/pull/17))
 * `FIX`: select participant when process ref lint error is selected ([camunda/linting#104](https://github.com/camunda/linting/pull/104))
+* `FIX`: correctly apply condition depending on boolean on initial load ([bpmn-io/bpmn-js-element-templates#74](https://github.com/bpmn-io/bpmn-js-element-templates/issues/94))
 
 ### DMN
 
