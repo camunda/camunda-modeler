@@ -210,7 +210,7 @@ class MenuBuilder {
       enabled: true,
       submenu: Menu.buildFromTemplate([
         {
-          label: 'Reopen Last File',
+          label: this.options.state.closedTabs.length > 0 ? 'Reopen Last File' : 'No Files Opened',
           enabled: this.options.state.lastTab,
           accelerator: 'CommandOrControl+Shift+T',
           click: function() {
