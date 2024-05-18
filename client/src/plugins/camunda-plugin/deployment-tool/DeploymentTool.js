@@ -17,6 +17,8 @@ import classNames from 'classnames';
 import { default as CamundaAPI, ApiErrors, ConnectionError } from '../shared/CamundaAPI';
 import AUTH_TYPES from '../shared/AuthTypes';
 
+import CockpitDeploymentLink from '../shared/ui/CockpitDeploymentLink';
+
 import DeploymentConfigOverlay from './DeploymentConfigOverlay';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
 import { DeploymentError } from '../shared/CamundaAPI';
@@ -192,7 +194,7 @@ export default class DeploymentTool extends PureComponent {
     displayNotification({
       type: 'success',
       title: `${getDeploymentType(tab)} deployed`,
-      content: <CockpitLink endpointUrl={ url } deployment={ deployment } />,
+      content: <CockpitDeploymentLink engineRestUrl={ url } deployment={ deployment } />,
       duration: 8000
     });
 
@@ -597,39 +599,6 @@ export default class DeploymentTool extends PureComponent {
 
 }
 
-function CockpitLink(props) {
-  const {
-    endpointUrl,
-    deployment
-  } = props;
-
-  const {
-    id,
-    deployedProcessDefinition
-  } = deployment;
-
-  const baseUrl = getWebAppsBaseUrl(endpointUrl);
-
-  const query = `deploymentsQuery=%5B%7B%22type%22:%22id%22,%22operator%22:%22eq%22,%22value%22:%22${id}%22%7D%5D`;
-  const cockpitUrl = `${baseUrl}/cockpit/default/#/repository/?${query}`;
-
-  return (
-    <div className={ css.CockpitLink }>
-      {deployedProcessDefinition ?
-        (
-          <div>
-            Process definition ID:
-            <code>{deployedProcessDefinition.id} </code>
-          </div>
-        )
-        : null}
-      <a href={ cockpitUrl }>
-        Open in Camunda Cockpit
-      </a>
-    </div>
-  );
-}
-
 // helpers //////////
 
 function withoutExtension(name) {
@@ -696,14 +665,4 @@ function withSerializedAttachments(deployment) {
 
 function basename(filePath) {
   return filePath.split('\\').pop().split('/').pop();
-}
-
-function getWebAppsBaseUrl(url) {
-  const [ protocol,, host, restRoot ] = url.split('/');
-
-  return isTomcat(restRoot) ? `${protocol}//${host}/camunda/app` : `${protocol}//${host}/app`;
-}
-
-function isTomcat(restRoot) {
-  return restRoot === 'engine-rest';
 }

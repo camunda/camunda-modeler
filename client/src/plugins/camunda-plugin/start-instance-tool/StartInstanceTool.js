@@ -18,6 +18,8 @@ import StartInstanceConfigOverlay from './StartInstanceConfigOverlay';
 
 import { DeploymentError, StartInstanceError } from '../shared/CamundaAPI';
 
+import CockpitProcessInstanceLink from '../shared/ui/CockpitProcessInstanceLink';
+
 import * as css from './StartInstanceTool.less';
 
 import { Fill } from '../../../app/slot-fill';
@@ -412,7 +414,7 @@ export default class StartInstanceTool extends PureComponent {
     displayNotification({
       type: 'success',
       title: 'Process instance started',
-      content: <CockpitLink endpointUrl={ url } processInstance={ processInstance } />,
+      content: <CockpitProcessInstanceLink engineRestUrl={ url } processInstance={ processInstance } />,
       duration: 8000
     });
   }
@@ -562,47 +564,8 @@ export default class StartInstanceTool extends PureComponent {
 
 }
 
-
-function CockpitLink(props) {
-  const {
-    endpointUrl,
-    processInstance
-  } = props;
-
-  const {
-    id
-  } = processInstance;
-
-  const baseUrl = getWebAppsBaseUrl(endpointUrl);
-
-  const cockpitUrl = `${baseUrl}/cockpit/default/#/process-instance/${id}`;
-
-  return (
-    <div className={ css.CockpitLink }>
-      <div>
-        Process instance ID:
-        <code>{id}</code>
-      </div>
-      <a href={ cockpitUrl }>
-        Open in Camunda Cockpit
-      </a>
-    </div>
-  );
-}
-
-
 // helpers //////////
 
 function isBpmnTab(tab) {
   return tab && tab.type === 'bpmn';
-}
-
-function getWebAppsBaseUrl(url) {
-  const [ protocol,, host, restRoot ] = url.split('/');
-
-  return isTomcat(restRoot) ? `${protocol}//${host}/camunda/app` : `${protocol}//${host}/app`;
-}
-
-function isTomcat(restRoot) {
-  return restRoot === 'engine-rest';
 }
