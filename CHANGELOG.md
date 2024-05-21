@@ -6,6 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `DEPS`: update to `electron@30.0.6`
+* `FIX`: prevent crash on start ([#4299](https://github.com/camunda/camunda-modeler/issues/4299))
+
 ## 5.23.0
 
 ### General
