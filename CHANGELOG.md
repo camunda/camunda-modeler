@@ -19,6 +19,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-bpmn-js@4.6.3`
 * `DEPS`: update to `camunda-dmn-js@2.3.3`
 * `DEPS`: update to `dmn-js@16.3.2`
+* `DEPS`: update to `electron@30` ([#4246](https://github.com/camunda/camunda-modeler/pull/4246))
 
 ### BPMN
 
