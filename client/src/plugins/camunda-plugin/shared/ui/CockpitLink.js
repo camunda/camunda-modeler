@@ -8,45 +8,67 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Children, useMemo } from 'react';
+import React, { Children, useEffect, useMemo, useState } from 'react';
+import { forEngineRestUrl } from '../WellKnownAPI';
 
 import * as css from './CockpitLink.less';
 
 export default function CockpitLink(props) {
   const {
     engineRestUrl,
-    cockpitPath,
+    cockpitPath = '',
+    cockpitQuery = '',
     children
   } = props;
 
-  const cockpitBaseUrl = useMemo(() => {
-
-    // TODO Integrate well known endpoint base url for Camunda Web Apps
-    const webAppsBaseUrl = getWebAppsBaseUrl(engineRestUrl);
-
-    // TODO ensure a single slash between base url and relative path segment
-    return webAppsBaseUrl + '/cockpit/default/#';
+  const [ cockpitBaseUrl, setCockpitBaseUrl ] = useState();
+  useEffect(() => {
+    forEngineRestUrl(engineRestUrl)
+      .getCockpitUrl()
+      .then(url => {
+        console.debug(`Using cockpit url from well known endpoint: ${url}`);
+        setCockpitBaseUrl(url);
+      })
+      .catch(e => {
+        const fallbackUrl = getCockpitBaseUrl(engineRestUrl);
+        console.debug(`An error occured retrieving the cockpit url from well known endpoint, falling back to ${fallbackUrl}. Cause: ${e}`);
+        setCockpitBaseUrl(fallbackUrl);
+      });
   }, [ engineRestUrl ]);
 
-  // TODO ensure a single slash between base url and relative path segment
-  const link = useMemo(() => `${cockpitBaseUrl}${cockpitPath}`);
+  const link = useMemo(() => {
+    if (!cockpitBaseUrl) {
+      return null;
+    }
+
+    if (cockpitQuery) {
+      return `${cockpitBaseUrl}${cockpitPath}${cockpitQuery}`;
+    } else {
+      return `${cockpitBaseUrl}${cockpitPath}`;
+    }
+  }, [ cockpitBaseUrl, cockpitPath, cockpitQuery ]);
 
   return (
     <div className={ css.CockpitLink }>
       { Children.toArray(children) }
-      <a href={ link }>
-        Open in Camunda Cockpit
-      </a>
+      {
+        link
+          ? (
+            <a href={ link }>
+              Open in Camunda Cockpit
+            </a>
+          ) : null
+      }
     </div>
   );
 }
 
 // helpers //////////
 
-function getWebAppsBaseUrl(url) {
+function getCockpitBaseUrl(url) {
   const [ protocol,, host, restRoot ] = url.split('/');
 
-  return isTomcat(restRoot) ? `${protocol}//${host}/camunda/app` : `${protocol}//${host}/app`;
+  return isTomcat(restRoot) ? `${protocol}//${host}/camunda/app/cockpit/` : `${protocol}//${host}/cockpit/`;
 }
 
 function isTomcat(restRoot) {
