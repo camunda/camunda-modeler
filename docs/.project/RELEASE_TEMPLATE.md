@@ -30,6 +30,7 @@ _To be done after code freeze to prepare and test the release._
 
 * [ ] make sure changes in upstream libraries are merged and released
     * `bpmn-js`, `dmn-js`, `*-properties-panel`, `*-moddle`, `camunda-bpmn-js`, `form-js`, ...
+* [ ] make sure potential new engine versions are available and marked correctly (alpha/stable)
 * [ ] make sure dependencies to upstream libraries are updated and can be installed (`rm -rf node_modules && npm i && npm run all` works)
 * [ ] verify `develop` is up to date with `main`: `git checkout main && git pull && git checkout develop && git merge main`
 * [ ] close all issues which are solved by dependency updates
