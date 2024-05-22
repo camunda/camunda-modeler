@@ -12,8 +12,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_TITLE: "Remove alpha tag from latest engine profile"
           ISSUE_BODY: |
-            **What should we do?**
+            ### What should we do?
             Mark the latest alpha versions as stable.
 
-            **Why should we do it?**
+            ### Why should we do it?
             In the next release cycle, the current alpha versions will be relased as stable.
