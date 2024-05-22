@@ -1147,7 +1147,7 @@ describe('ZeebeAPI', function() {
           };
         });
 
-        const zeebeAPI = mockZeebeNode({
+        const zeebeAPI = mockCamundaClient({
           ZBClient: ZBClientMock
         });
 
@@ -2230,7 +2230,7 @@ describe('ZeebeAPI', function() {
         warn: logSpy
       };
 
-      const zeebeAPI = mockZeebeNode({ log });
+      const zeebeAPI = mockCamundaClient({ log });
 
       const parameters = {
         endpoint: {
@@ -2296,7 +2296,7 @@ describe('ZeebeAPI', function() {
         warn: logSpy
       };
 
-      const zeebeAPI = mockZeebeNode({ log });
+      const zeebeAPI = mockCamundaClient({ log });
 
       const parameters = {
         endpoint: {
@@ -2315,8 +2315,6 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      console.log(logSpy.getCalls().map(call => JSON.stringify(call.args), null, 2));
-
       expect(logSpy).to.have.been.called;
 
       const createClientCall = logSpy.getCalls().find(call => call.args[ 0 ] === 'creating client');
@@ -2326,15 +2324,15 @@ describe('ZeebeAPI', function() {
       expect(createClientCall.args[ 1 ]).to.eql({
         url: 'http://localhost:26500',
         options:{
-          retry: false,
-          oAuth: {
-            url: 'oauthURL',
-            audience: 'audience',
-            scope: 'scope',
-            clientId: '******',
-            clientSecret: '******',
-            cacheOnDisk: false,
+          zeebeGrpcSettings: {
+            ZEEBE_GRPC_CLIENT_RETRY: false
           },
+          CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true,
+          CAMUNDA_TOKEN_SCOPE: 'scope',
+          CAMUNDA_ZEEBE_CLIENT_ID: '******',
+          CAMUNDA_ZEEBE_CLIENT_SECRET: '******',
+          CAMUNDA_ZEEBE_OAUTH_AUDIENCE: 'audience',
+          ZEEBE_ADDRESS: 'http://localhost:26500',
           useTLS: false
         }
       });
