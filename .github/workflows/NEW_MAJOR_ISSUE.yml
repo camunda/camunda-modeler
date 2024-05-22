@@ -1,0 +1,19 @@
+name: Add Major version reminder
+on:
+  schedule:
+    # Before the April and October releases
+    - cron: '0 8 15 MAR,SEP *'
+jobs:
+  createIssue:
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh issue create --title "$ISSUE_TITLE" --body "$ISSUE_BODY" --label "ready" --repo $GITHUB_REPOSITORY
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_TITLE: "Remove alpha tag from latest engine profile"
+          ISSUE_BODY: |
+            **What should we do?**
+            Mark the latest alpha versions as stable.
+
+            **Why should we do it?**
+            In the next release cycle, the current alpha versions will be relased as stable.
