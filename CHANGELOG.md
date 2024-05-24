@@ -6,8 +6,15 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
 * `DEPS`: update to `electron@30.0.6`
+* `DEPS`: update to `@camunda/linting@3.20.0`
 * `FIX`: prevent crash on start ([#4299](https://github.com/camunda/camunda-modeler/issues/4299))
+
+### BPMN
+
+* `FEAT`: warn about missing bpmnDi ([#4277](https://github.com/camunda/camunda-modeler/issues/4277))
 
 ## 5.23.0
 
