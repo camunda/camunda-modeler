@@ -66,7 +66,7 @@
     {
       "id": "boolean-required",
       "type": "Boolean",
-      "value": true,
+      "value": "true",
       "label": "boolean-required",
       "binding": {
         "name": "boolean-required",
