@@ -18,8 +18,6 @@ import handToolOnSpaceModule from './features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
 import lintingAnnotationsModule from '@camunda/linting/modeler';
 
-import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
-
 import { BpmnJSTracking as bpmnJSTracking } from 'bpmn-js-tracking';
 
 import contextPadTracking from 'bpmn-js-tracking/lib/features/context-pad';
@@ -28,22 +26,40 @@ import modelingTracking from 'bpmn-js-tracking/lib/features/modeling';
 import popupMenuTracking from 'bpmn-js-tracking/lib/features/popup-menu';
 import paletteTracking from 'bpmn-js-tracking/lib/features/palette';
 
+import { BpmnImprovedCanvasModule } from '@camunda/improved-canvas';
+
+import Flags, {
+  DISABLE_ADJUST_ORIGIN,
+  ENABLE_NEW_CONTEXT_PAD
+} from '../../../../util/Flags';
 
 export default class PlatformBpmnModeler extends BpmnModeler {
 
   constructor(options = {}) {
 
-    const {
-      moddleExtensions,
+    let {
+      additionalModules = [],
+      moddleExtensions = {},
       ...otherOptions
     } = options;
 
+    if (Flags.get(ENABLE_NEW_CONTEXT_PAD, false)) {
+      additionalModules = [
+        ...additionalModules,
+        {
+          __depends__: [ BpmnImprovedCanvasModule ],
+          resourceLinkingContextPadProvider: [ 'value', null ],
+          resourceLinkingRules: [ 'value', null ],
+          showComments: [ 'value', null ]
+        }
+      ];
+    }
+
     super({
       ...otherOptions,
-      disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN),
-      moddleExtensions: {
-        ...(moddleExtensions || {})
-      }
+      additionalModules,
+      moddleExtensions,
+      disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN)
     });
   }
 }

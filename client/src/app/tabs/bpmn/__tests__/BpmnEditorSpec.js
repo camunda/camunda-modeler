@@ -54,6 +54,8 @@ import {
 
 import { SlotFillRoot } from '../../../slot-fill';
 
+import Flags, { ENABLE_NEW_CONTEXT_PAD } from '../../../../util/Flags';
+
 const { spy } = sinon;
 
 
@@ -2087,6 +2089,43 @@ describe('<BpmnEditor>', function() {
       expect(onImportSpy).to.have.been.calledWith(sinon.match({ message: 'An unknown execution platform (Camunda Unknown 7.15.0) was detected.' }), []);
 
       expect(instance.getCached().engineProfile).to.be.null;
+    });
+
+  });
+
+
+  describe('new context pad', function() {
+
+    beforeEach(function() {
+      Flags.reset();
+    });
+
+
+    it('should disable new context pad by default', async function() {
+
+      // when
+      const { instance } = await renderEditor(diagramXML);
+
+      // then
+      expect(instance).to.exist;
+      expect(instance.getModeler().additionalModules).to.exist;
+      expect(instance.getModeler().additionalModules).to.have.length(0);
+    });
+
+
+    it('should enable new context pad if enabled through flag', async function() {
+
+      // when
+      Flags.init({
+        [ ENABLE_NEW_CONTEXT_PAD ]: true
+      });
+
+      const { instance } = await renderEditor(diagramXML);
+
+      // then
+      expect(instance).to.exist;
+      expect(instance.getModeler().additionalModules).to.exist;
+      expect(instance.getModeler().additionalModules).to.have.length(1);
     });
 
   });
