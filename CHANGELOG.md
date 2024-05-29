@@ -8,13 +8,21 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FIX`: prevent crash on start ([#4299](https://github.com/camunda/camunda-modeler/issues/4299))
 * `DEPS`: update to `electron@30.0.6`
 * `DEPS`: update to `@camunda/linting@3.20.0`
-* `FIX`: prevent crash on start ([#4299](https://github.com/camunda/camunda-modeler/issues/4299))
+* `DEPS`: update to `bpmn-js@17.7.1`
+* `DEPS`: update to `bpmn-js-properties-panel@5.17.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.19.0`
+* `DEPS`: update to `camunda-bpmn-js@4.8.0`
 
 ### BPMN
 
 * `FEAT`: warn about missing bpmnDi ([#4277](https://github.com/camunda/camunda-modeler/issues/4277))
+* `FEAT`: add hint for the process ID field in the Camunda 7 ([bpmn-io/bpmn-js-properties-panel#1038](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1038))
+* `FEAT`: drop alphabetic sorting of list entries ([bpmn-io/bpmn-js-properties-panel##1047](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1047))
+* `FIX`: correct call activity outline ([bpmn-io/bpmn-js#2167](https://github.com/bpmn-io/bpmn-js/issues/2167))
+* `FIX`: gracefully handle missing `BPMNDiagram#plane` ([bpmn-io/bpmn-js#2172](https://github.com/bpmn-io/bpmn-js/pull/2172), [bpmn-io/bpmn-js#2171](https://github.com/bpmn-io/bpmn-js/pull/2171))
 
 ## 5.23.0
 
