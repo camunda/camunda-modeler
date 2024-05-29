@@ -105,6 +105,8 @@ export default class Modeler {
 
     this.modules = assign(this._getDefaultModules(options), options.modules || {});
 
+    this.additionalModules = options.additionalModules || [];
+
     this.xml = null;
 
     this.listeners = {};

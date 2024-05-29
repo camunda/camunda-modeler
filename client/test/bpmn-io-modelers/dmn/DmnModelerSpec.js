@@ -17,6 +17,8 @@ import DrdViewer from '../../../src/app/tabs/dmn/modeler/DrdViewer';
 
 import diagramXML from './diagram.dmn';
 
+import Flags, { ENABLE_NEW_CONTEXT_PAD } from '../../../src/util/Flags';
+
 const DEFAULT_OPTIONS = {
   exporter: {
     name: 'my-tool',
@@ -418,6 +420,39 @@ describe('DmnModeler', function() {
       });
       expect(xml).to.contain('xmlns:modeler="http://camunda.org/schema/modeler/1.0"');
     });
+  });
+
+
+  describe('new context pad', function() {
+
+    beforeEach(function() {
+      Flags.reset();
+    });
+
+
+    it('should disable new context pad by default', async function() {
+
+      // when
+      const modeler = await createModeler();
+
+      // then
+      expect(modeler.getActiveViewer().get('improvedCanvas', false)).not.to.exist;
+    });
+
+
+    it('should enable new context pad if enabled through flag', async function() {
+
+      // when
+      Flags.init({
+        [ ENABLE_NEW_CONTEXT_PAD ]: true
+      });
+
+      const modeler = await createModeler();
+
+      // then
+      expect(modeler.getActiveViewer().get('improvedCanvas', false)).to.exist;
+    });
+
   });
 
 });

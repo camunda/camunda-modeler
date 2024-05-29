@@ -18,13 +18,18 @@ import completeDirectEditingModule from '../../bpmn/modeler/features/complete-di
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
 import decisionTableKeyboardModule from './features/decision-table-keyboard';
 
-import Flags, { DISABLE_ADJUST_ORIGIN } from '../../../../util/Flags';
+import Flags, {
+  DISABLE_ADJUST_ORIGIN,
+  ENABLE_NEW_CONTEXT_PAD
+} from '../../../../util/Flags';
 
 import openDrgElementModule from './features/overview/open-drg-element';
 import overviewRendererModule from './features/overview/overview-renderer';
 
 import executionPlatformModule from '@camunda/execution-platform';
 import modelerModdle from 'modeler-moddle/resources/dmn-modeler.json';
+
+import { DmnImprovedCanvasModule } from '@camunda/improved-canvas';
 
 const NOOP_MODULE = [ 'value', null ];
 
@@ -44,7 +49,7 @@ export default class CamundaDmnModeler extends DmnModeler {
 
     const {
       moddleExtensions = {},
-      drd: drdConfig,
+      drd,
       decisionTable,
       literalExpression,
       exporter,
@@ -52,10 +57,14 @@ export default class CamundaDmnModeler extends DmnModeler {
       ...otherOptions
     } = options;
 
-    const drd = {
-      ...drdConfig,
-      disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN)
-    };
+    let additionalModules = [];
+
+    if (Flags.get(ENABLE_NEW_CONTEXT_PAD, false)) {
+      additionalModules = [
+        ...additionalModules,
+        DmnImprovedCanvasModule
+      ];
+    }
 
     super({
       ...otherOptions,
@@ -66,9 +75,13 @@ export default class CamundaDmnModeler extends DmnModeler {
           viewDrd: NOOP_MODULE
         }
       ]),
-      drd: mergeModules(drd, [
+      drd: mergeModules({
+        ...drd,
+        disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN)
+      }, [
         propertiesPanelKeyboardBindingsModule,
-        executionPlatformModule
+        executionPlatformModule,
+        ...additionalModules
       ]),
       decisionTable: mergeModules(decisionTable, [
         decisionTableKeyboardModule,
