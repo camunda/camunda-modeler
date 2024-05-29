@@ -94,13 +94,9 @@ class MenuBuilder {
     const { contextMenu } = this.options.state;
 
     if (this.options.type === 'tab') {
-      return this.appendNewFile()
+      return this.appendContextCloseTab()
         .appendSeparator()
-        .appendContextCloseTab()
-        .appendSeparator()
-        .appendContextRevealInFileExplorerTab()
-        .appendSeparator()
-        .appendOpenRecent();
+        .appendContextRevealInFileExplorerTab();
     }
 
     if (contextMenu) {

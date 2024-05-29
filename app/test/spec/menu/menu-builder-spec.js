@@ -67,6 +67,13 @@ describe('MenuBuilder', () => {
     const contextMenu = menuBuilder.buildContextMenu();
 
     expect(contextMenu).to.exist;
+    expectMenu(contextMenu, [
+      'Close Tab',
+      'Close All Tabs',
+      'Close Other Tabs',
+      undefined,
+      'Reveal in File Explorer'
+    ]);
   });
 
 
@@ -531,4 +538,10 @@ function callAction(fn, browserWindow = {}, triggeredByAccelerator = false) {
   }
 
   return fn(null, browserWindow, { triggeredByAccelerator });
+}
+
+function expectMenu(actual, expected) {
+  const menu = actual.menu.map(item => item.label);
+
+  expect(menu).to.eql(expected);
 }
