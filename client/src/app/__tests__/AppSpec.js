@@ -720,6 +720,86 @@ describe('<App>', function() {
     });
 
 
+    it('should ask user to save or discard changes before quiting', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      const {
+        app
+      } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const showCloseFileDialogSpy = spy(dialog, 'showCloseFileDialog'),
+            saveTabSpy = spy(app, 'saveTab');
+
+      const tab = await app.createDiagram();
+
+      app.setState({
+        ...app.setDirty(tab)
+      });
+
+      dialog.setShowCloseFileDialogResponse({ button: 'discard' });
+
+      // when
+      await app.quit();
+
+      // then
+      expect(showCloseFileDialogSpy).to.have.been.calledWith({
+        name: tab.file.name
+      });
+
+      expect(saveTabSpy).not.to.have.been.called;
+    });
+
+
+    it('should stop asking the user on cancel', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      const {
+        app
+      } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const showCloseFileDialogSpy = spy(dialog, 'showCloseFileDialog'),
+            saveTabSpy = spy(app, 'saveTab');
+
+      const tab = await app.createDiagram();
+      const tab2 = await app.createDiagram();
+
+
+      app.setState({
+        ...app.setDirty(tab)
+      });
+
+      app.setState({
+        ...app.setDirty(tab2)
+      });
+
+      dialog.setShowCloseFileDialogResponse({ button: 'cancel' });
+
+      // when
+      await app.quit();
+
+      // then
+      expect(showCloseFileDialogSpy).to.have.been.calledOnce;
+
+      expect(showCloseFileDialogSpy).to.have.been.calledWith({
+        name: tab.file.name
+      });
+
+      expect(saveTabSpy).not.to.have.been.called;
+    });
+
+
     it('should not close tab when saving dialog is canceled', async function() {
 
       // given
@@ -984,7 +1064,7 @@ describe('<App>', function() {
     });
 
 
-    it('should save  multiple times', async function() {
+    it('should save multiple times', async function() {
 
       // given
       const file = createFile('diagram_1.bpmn');
