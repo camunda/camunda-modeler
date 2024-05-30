@@ -1992,13 +1992,14 @@ export class App extends PureComponent {
   async quit() {
     const { tabs } = this.state;
 
-    const quitTasks = tabs.map((tab) => {
-      return () => this.saveBeforeClose(tab);
-    });
+    let canQuit = true;
+    for (const tab of tabs) {
+      canQuit = await this.saveBeforeClose(tab);
 
-    const quitResults = await pSeries(quitTasks);
-
-    const canQuit = quitResults.every(result => result);
+      if (!canQuit) {
+        break;
+      }
+    }
 
     try {
       await this.workspaceChanged(false);
