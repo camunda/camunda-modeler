@@ -11,18 +11,24 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: prevent crash on start ([#4299](https://github.com/camunda/camunda-modeler/issues/4299))
 * `DEPS`: update to `electron@30.0.6`
 * `DEPS`: update to `@camunda/linting@3.20.0`
-* `DEPS`: update to `bpmn-js@17.7.1`
-* `DEPS`: update to `bpmn-js-properties-panel@5.17.0`
+* `DEPS`: update to `bpmn-js@17.8.1`
+* `DEPS`: update to `bpmn-js-properties-panel@5.17.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.19.0`
-* `DEPS`: update to `camunda-bpmn-js@4.8.0`
+* `DEPS`: update to `camunda-bpmn-js@4.9.0`
+* `DEPS`: update to `diagram-js@14.7.1`
 
 ### BPMN
 
 * `FEAT`: warn about missing bpmnDi ([#4277](https://github.com/camunda/camunda-modeler/issues/4277))
-* `FEAT`: add hint for the process ID field in the Camunda 7 ([bpmn-io/bpmn-js-properties-panel#1038](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1038))
-* `FEAT`: drop alphabetic sorting of list entries ([bpmn-io/bpmn-js-properties-panel##1047](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1047))
+* `FEAT`: add hint for the process ID field in Camunda 7 ([bpmn-io/bpmn-js-properties-panel#1038](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1038))
+* `FEAT`: drop alphabetic sorting of list entries in Camunda 7 properties panel ([bpmn-io/bpmn-js-properties-panel##1047](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1047))
+* `FEAT`: keep global elements when deleting last participant ([bpmn-io/bpmn-js#2175](https://github.com/bpmn-io/bpmn-js/pull/2175))
 * `FIX`: correct call activity outline ([bpmn-io/bpmn-js#2167](https://github.com/bpmn-io/bpmn-js/issues/2167))
-* `FIX`: gracefully handle missing `BPMNDiagram#plane` ([bpmn-io/bpmn-js#2172](https://github.com/bpmn-io/bpmn-js/pull/2172), [bpmn-io/bpmn-js#2171](https://github.com/bpmn-io/bpmn-js/pull/2171))
+* `FIX`: gracefully handle missing `BPMNDiagram#plane` ([bpmn-io/bpmn-js#2172](https://github.com/bpmn-io/bpmn-js/pull/2172), [bpmn-io/bpmn-js#2171](https://github.com/bpmn-io/bpmn-js/pull/2171), [#4315](https://github.com/camunda/camunda-modeler/issues/4315))
+* `FIX`: allow undo after deleting last participants and data store ([bpmn-io/bpmn-js#1676](https://github.com/bpmn-io/bpmn-js/issues/1676))
+* `FIX`: gracefully handle missing process DI in drilldown ([bpmn-io/bpmn-js#2180](https://github.com/bpmn-io/bpmn-js/pull/2180))
+* `FIX`: correct duplicate `Process Name` in Camunda 7 properties panel ([bpmn-io/bpmn-js-properties-panel#1055](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1055), [#4317](https://github.com/camunda/camunda-modeler/issues/4317))
+* `FIX`: be able to color element markers via CSS ([#4307](https://github.com/camunda/camunda-modeler/issues/4307))
 
 ## 5.23.0
 
