@@ -16,6 +16,8 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/properties-panel@3.19.0`
 * `DEPS`: update to `camunda-bpmn-js@4.9.0`
 * `DEPS`: update to `diagram-js@14.7.1`
+* `DEPS`: update to `camunda-dmn-js@2.4.0`
+* `DEPS`: update to `dmn-js@16.4.0`
 
 ### BPMN
 
@@ -29,6 +31,12 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: gracefully handle missing process DI in drilldown ([bpmn-io/bpmn-js#2180](https://github.com/bpmn-io/bpmn-js/pull/2180))
 * `FIX`: correct duplicate `Process Name` in Camunda 7 properties panel ([bpmn-io/bpmn-js-properties-panel#1055](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1055), [#4317](https://github.com/camunda/camunda-modeler/issues/4317))
 * `FIX`: be able to color element markers via CSS ([#4307](https://github.com/camunda/camunda-modeler/issues/4307))
+
+### DMN
+
+* `FEAT`: autocomplete BKMs as snippets ([bpmn-io/dmn-js#785](https://github.com/bpmn-io/dmn-js/issues/785), [#bpmn-io/dmn-js827](https://github.com/bpmn-io/dmn-js/issues/827))
+* `FEAT`: make inputs commit on blur, and let browser handle undo/redo ([bpmn-io/dmn-js#859](https://github.com/bpmn-io/dmn-js/issues/859))
+* `FIX`: show FEEL expressions with line wrapping ([bpmn-io/dmn-js#838](https://github.com/bpmn-io/dmn-js/issues/838))
 
 ## 5.23.0
 
