@@ -12,15 +12,17 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `electron@30.0.6`
 * `DEPS`: update to `@camunda/linting@3.21.0`
 * `DEPS`: update to `bpmn-js@17.8.1`
+* `DEPS`: update to `bpmn-js-element-templates@1.16.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.17.1`
-* `DEPS`: update to `@bpmn-io/properties-panel@3.19.0`
-* `DEPS`: update to `camunda-bpmn-js@4.9.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.20.0`
+* `DEPS`: update to `camunda-bpmn-js@4.10.0`
 * `DEPS`: update to `diagram-js@14.7.1`
 * `DEPS`: update to `camunda-dmn-js@2.4.0`
 * `DEPS`: update to `dmn-js@16.4.0`
 
 ### BPMN
 
+* `FEAT`: support placeholders on String and Text properties ([bpmn-io/bpmn-js-element-templates#92](https://github.com/bpmn-io/bpmn-js-element-templates/issues/92))
 * `FEAT`: warn about missing bpmnDi ([#4277](https://github.com/camunda/camunda-modeler/issues/4277))
 * `FEAT`: add hint for the process ID field in Camunda 7 ([bpmn-io/bpmn-js-properties-panel#1038](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1038))
 * `FEAT`: drop alphabetic sorting of list entries in Camunda 7 properties panel ([bpmn-io/bpmn-js-properties-panel##1047](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1047))
