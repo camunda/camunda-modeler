@@ -42,18 +42,18 @@ import * as css from './ReleaseInfo.less';
 export function ReleaseInfo(props) {
   return (
     <div className={ css.ReleaseInfo }>
-      <ul className="dashed">
+       <ul className="dashed">
         <li>
           <h4>Properties panel quality of life improvements</h4>
-          We removed automatic (magic) sorting from all properties panels. Additional minor improvements ensure that implementing Camunda 7 and 8 is simpler then ever.
+          We removed automatic (magic) sorting from all properties panels. Additional minor improvements ensure that implementing Camunda 7 and 8 is simpler than ever.
         </li>
         <li>
           <h4>More robust BPMN diagram import</h4>
-          Various improvements ensure that the modeler is able to import even what is (accidentally) broken.
+          Various improvements ensure that the modeler can import even what is (accidentally) broken.
         </li>
         <li>
-          <h4>New modeling experience inside</h4>
-          You can now enable our reworked modeling experience via <a href="https://docs.camunda.io/docs/next/components/modeler/desktop-modeler/flags/#enable-new-context-pad" target="_blank" rel="noopener">a feature toggle</a>.
+          <h4>New context pad inside</h4>
+          You can now enable our reworked context pad via <a href="https://docs.camunda.io/docs/next/components/modeler/desktop-modeler/flags/#enable-new-context-pad" target="_blank" rel="noopener">a feature toggle</a>.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
