@@ -42,7 +42,7 @@ import * as css from './ReleaseInfo.less';
 export function ReleaseInfo(props) {
   return (
     <div className={ css.ReleaseInfo }>
-       <ul className="dashed">
+      <ul className="dashed">
         <li>
           <h4>Properties panel quality of life improvements</h4>
           We removed automatic (magic) sorting from all properties panels. Additional minor improvements ensure that implementing Camunda 7 and 8 is simpler than ever.
