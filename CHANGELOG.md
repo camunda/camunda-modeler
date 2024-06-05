@@ -9,7 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FIX`: prevent crash on start ([#4299](https://github.com/camunda/camunda-modeler/issues/4299))
-* `DEPS`: update to `electron@30.0.6`
+* `DEPS`: update to `electron@30.0.9`
 * `DEPS`: update to `@camunda/linting@3.21.0`
 * `DEPS`: update to `bpmn-js@17.8.1`
 * `DEPS`: update to `bpmn-js-element-templates@1.16.0`
