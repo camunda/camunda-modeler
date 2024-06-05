@@ -19,6 +19,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `diagram-js@14.7.1`
 * `DEPS`: update to `camunda-dmn-js@2.4.0`
 * `DEPS`: update to `dmn-js@16.4.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.8.7`
 
 ### BPMN
 
