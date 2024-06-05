@@ -55,7 +55,7 @@
     "ids": "^1.0.0",
     "inherits-browser": "^0.1.0",
     "min-dash": "^4.1.1",
-    "min-dom": "^5.0.0",
+    "min-dom": "^4.2.1",
     "mitt": "^3.0.0",
     "mixpanel-browser": "^2.49.0",
     "modeler-moddle": "^0.2.0",
