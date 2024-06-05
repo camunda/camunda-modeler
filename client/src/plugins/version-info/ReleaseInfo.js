@@ -44,16 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Business knowledge model editing added to DMN modeling</h4>
-          DMN modeling now supports implementing business knowledge models as literal expressions, offering more flexibility in decision modeling.
+          <h4>Properties panel quality of life improvements</h4>
+          We removed automatic (magic) sorting from all properties panels. Additional minor improvements ensure that implementing Camunda 7 and 8 is simpler then ever.
         </li>
         <li>
-          <h4>Basic auth support for deployments to Camunda 8 self-managed</h4>
-          For deployments to self-managed Camunda 8 instances secured with basic auth, you can now provide credentials when deploying.
+          <h4>More robust BPMN diagram import</h4>
+          Various improvements ensure that the modeler is able to import even what is (accidentally) broken.
         </li>
         <li>
-          <h4>Support for arm64 on MacOS</h4>
-          This release introduces arm64 support for MacOS, ensuring compatibility with Apple's latest hardware.
+          <h4>New modeling experience inside</h4>
+          You can now enable our reworked modeling experience via <a href="https://docs.camunda.io/docs/next/components/modeler/desktop-modeler/flags/#enable-new-context-pad" target="_blank" rel="noopener">a feature toggle</a>.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
