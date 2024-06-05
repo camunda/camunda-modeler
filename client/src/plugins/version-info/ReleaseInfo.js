@@ -52,7 +52,7 @@ export function ReleaseInfo(props) {
           Various improvements ensure that the modeler can import even what is (accidentally) broken.
         </li>
         <li>
-          <h4>New context pad inside</h4>
+          <h4>New modeling experience inside</h4>
           You can now enable our reworked context pad via <a href="https://docs.camunda.io/docs/next/components/modeler/desktop-modeler/flags/#enable-new-context-pad" target="_blank" rel="noopener">a feature toggle</a>.
         </li>
         <li>
