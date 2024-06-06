@@ -68,6 +68,7 @@ export default class StartInstancePlugin extends PureComponent {
 
     // (2.1) user cancelled
     if (!deploymentConfig) {
+      this.setState({ activeButton: false });
       return;
     }
 
@@ -84,8 +85,9 @@ export default class StartInstancePlugin extends PureComponent {
       configuration : startInstanceConfig
     } = await this.getConfigurationFromUser(startConfiguration);
 
-    // (3.3) handle user cancelation
+    // (3.3) handle user cancellation
     if (action === 'cancel') {
+      this.setState({ activeButton: false });
       return;
     }
 
