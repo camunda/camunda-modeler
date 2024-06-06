@@ -35,3 +35,7 @@ _To be done to make the release publicly available._
 * [ ] trigger [downloads page](https://camunda.com/download/modeler/) update via [marketing request form](https://confluence.camunda.com/display/MAR/Marketing+Request+Form)
 * [ ] add new version to [update server releases](https://github.com/camunda/camunda-modeler-update-server/blob/master/releases.json)
 * [ ] publish release via update server (push to `live`)
+
+_To be done post release._
+
+* [ ] communicate closed support related issues to [#ask-support](https://camunda.slack.com/archives/CHAC0L80M)
