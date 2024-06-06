@@ -6,7 +6,7 @@ labels:
 ---
 ## What's inside?
 
-<!-- link changelog if available and/or a version range (i.e. [`v4.9.0...develop`](https://github.com/camunda/camunda-modeler/compare/v4.9.0...develop)) -->
+<!-- link changelog, version range (i.e. [`v4.9.0...develop`](https://github.com/camunda/camunda-modeler/compare/v4.9.0...develop)), [milestoned tasks](https://tasks.bpmn.io/board/?c=%21Inbox%2C%21Done&s=milestone%3A%22M77%22) -->
 <!-- ensure that a list of changes is provided to make testing easier -->
 
 * ...
@@ -15,10 +15,6 @@ labels:
 
 
 ## Release Checklist
-
-_To be done immediately after creating this issue._
-
-* [ ] (optional) update [release presentation](https://confluence.camunda.com/display/HAN/Release+Presentation+Process) page
 
 _To be done before the code freeze._
 
