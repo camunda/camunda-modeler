@@ -173,7 +173,7 @@ renderer.on('external:download-update', async function(options) {
 
   const updateZipFile = downloadedFile.getSavePath();
 
-  const updateScript = isWindows ? '/update.bat' : '/update.ps1';
+  const updateScript = isWindows ? 'update.ps1' : '/update.sh';
 
   log.info('downloading update to', options);
 
