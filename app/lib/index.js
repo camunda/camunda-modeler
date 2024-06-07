@@ -16,6 +16,8 @@ const {
   BrowserWindow
 } = require('electron');
 
+const { download } = require('electron-dl');
+
 const Sentry = require('@sentry/node');
 
 const path = require('path');
@@ -50,6 +52,7 @@ const renderer = require('./util/renderer');
 
 const errorTracking = require('./util/error-tracking');
 const { pick } = require('min-dash');
+const { spawn } = require('child_process');
 
 const log = Log('app:main');
 const bootstrapLog = Log('app:main:bootstrap');
@@ -145,6 +148,43 @@ renderer.on('external:open-url', function(options) {
   const url = options.url;
 
   browserOpen(url);
+});
+
+renderer.on('external:download-update', async function(options) {
+
+  const baseURL = options.url;
+  const isWindows = process.platform === 'win32';
+
+  const tmpPath = app.getPath('temp');
+
+  const downloadUrl = `${baseURL}${getFileName(baseURL)}`;
+
+  const win = BrowserWindow.getFocusedWindow();
+
+  log.info('downloading', downloadUrl);
+
+  const downloadedFile = await download(win, downloadUrl, {
+    directory: tmpPath
+  });
+
+  log.info('downloaded', downloadedFile.getSavePath());
+
+  const installPath = path.dirname(app.getPath('exe'));
+
+  const updateZipFile = downloadedFile.getSavePath();
+
+  const updateScript = isWindows ? '/update.bat' : '/update.ps1';
+
+  log.info('downloading update to', options);
+
+  log.info(installPath + updateScript);
+
+  spawn(`${installPath}/${updateScript}`, [ updateZipFile, installPath ], {
+    detached: true,
+    stdio: 'inherit'
+  }).unref();
+
+  app.exit();
 });
 
 // dialogs //////////
@@ -727,5 +767,31 @@ function setUserPath(path = DEFAULT_USER_PATH) {
 }
 
 
+// Helper function that creates the name of the file. Extracts the version number from the URL
+// like `https://downloads.camunda.cloud/release/camunda-modeler/{version}/` ands adds it to the file name.
+// File names are constructed like this:
+// Linux: camunda-modeler-{version}-linux-x64.tar.gz
+// Windows64 bit: camunda-modeler-{version}-win-x64.zip
+// Windows32 bit: camunda-modeler-{version}-win-ia32.zip
+function getFileName(url) {
+  const version = url.match(/\/release\/camunda-modeler\/([0-9.]+)\//)[1];
+  const platform = process.platform;
+  const arch = process.arch;
+
+  let fileName = `camunda-modeler-${version}-`;
+
+  if (platform === 'linux') {
+    fileName += 'linux-x64.tar.gz';
+  } else if (platform === 'win32') {
+    fileName += arch === 'x64' ? 'win-x64.zip' : 'win-ia32.zip';
+  }
+
+  return fileName;
+}
+
+
 // expose app
 module.exports = app;
+
+
+

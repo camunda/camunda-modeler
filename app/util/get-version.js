@@ -31,21 +31,24 @@ var pkg = require('../package.json');
  */
 module.exports = function getVersion() {
   var appVersion = pkg.version;
-  var increment = IS_NIGHTLY || IS_DEV;
-
-  if (increment) {
-    appVersion = semver.inc(appVersion, 'minor');
-  }
-
-  if (IS_NIGHTLY) {
-    appVersion = `${appVersion}-nightly.${today()}`;
-  } else if (BUILD_NAME) {
-    appVersion = `${appVersion}-${BUILD_NAME}`;
-  } else if (IS_DEV) {
-    appVersion = `${appVersion}-dev`;
-  }
 
   return appVersion;
+
+  // var increment = IS_NIGHTLY || IS_DEV;
+
+  // if (increment) {
+  //   appVersion = semver.inc(appVersion, 'minor');
+  // }
+
+  // if (IS_NIGHTLY) {
+  //   appVersion = `${appVersion}-nightly.${today()}`;
+  // } else if (BUILD_NAME) {
+  //   appVersion = `${appVersion}-${BUILD_NAME}`;
+  // } else if (IS_DEV) {
+  //   appVersion = `${appVersion}-dev`;
+  // }
+
+  // return appVersion;
 };
 
 function pad(n) {

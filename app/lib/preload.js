@@ -32,6 +32,7 @@ const allowedEvents = [
   'errorTracking:turnedOff',
   'errorTracking:turnedOn',
   'external:open-url',
+  'external:download-update',
   'file:read',
   'file:read-stats',
   'file:write',

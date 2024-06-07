@@ -56,7 +56,8 @@ class NewVersionInfoView extends PureComponent {
       onClose,
       onGoToDownloadPage,
       onOpenPrivacyPreferences,
-      updateChecksEnabled
+      updateChecksEnabled,
+      autoUpdate
     } = this.props;
 
     const {
@@ -97,7 +98,7 @@ class NewVersionInfoView extends PureComponent {
               className="btn btn-primary"
               onClick={ onGoToDownloadPage }
               autoFocus
-            > { BUTTON_POSITIVE } </button>
+            > { autoUpdate ? 'Update Modeler' : BUTTON_POSITIVE } </button>
           </div>
         </Modal.Footer>
 

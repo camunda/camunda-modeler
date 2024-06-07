@@ -1,6 +1,6 @@
 {
   "name": "camunda-modeler",
-  "version": "5.22.0",
+  "version": "5.20.0",
   "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
   "private": true,
   "main": "prod.js",
@@ -14,6 +14,7 @@
     "@sentry/integrations": "^7.82.0",
     "@sentry/node": "^7.82.0",
     "epipebomb": "^1.0.0",
+    "electron-dl": "^3.5.2",
     "fast-glob": "^3.3.1",
     "form-data": "^2.5.1",
     "ids": "^1.0.0",

@@ -30,9 +30,11 @@ class NoopComponent extends PureComponent {
   }
 }
 
-const DEFAULT_UPDATE_SERVER_URL = process.env.NODE_ENV === 'production'
-  ? 'https://camunda-modeler-updates.camunda.com'
-  : 'https://camunda-modeler-update-server-staging.camunda.com';
+// const DEFAULT_UPDATE_SERVER_URL = process.env.NODE_ENV === 'production'
+//   ? 'https://camunda-modeler-updates.camunda.com'
+//   : 'https://camunda-modeler-update-server-staging.camunda.com';
+
+const DEFAULT_UPDATE_SERVER_URL = 'https://camunda-modeler-updates.camunda.com';
 
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const UPDATE_CHECKS_CONFIG_KEY = 'editor.updateChecks';
@@ -55,7 +57,8 @@ export default class UpdateChecks extends PureComponent {
     this.updateChecksAPI = new UpdateChecksAPI(updateServerUrl);
 
     this.state = {
-      showModal: false
+      showModal: false,
+      autoUpdate: true // Flags.get(AUTOMATIC_UPDATE)
     };
   }
 
@@ -324,14 +327,20 @@ export default class UpdateChecks extends PureComponent {
 
   onGoToDownloadPage = () => {
     const {
-      latestVersionInfo
+      latestVersionInfo,
+      autoUpdate
     } = this.state;
 
     const {
       _getGlobal
     } = this.props;
 
-    _getGlobal('backend').send('external:open-url', { url: latestVersionInfo.downloadURL });
+    if (autoUpdate) {
+      _getGlobal('backend').send('external:download-update', { url: latestVersionInfo.downloadURL });
+    } else {
+      _getGlobal('backend').send('external:open-url', { url: latestVersionInfo.downloadURL });
+    }
+
     this.onClose();
   };
 
@@ -340,13 +349,15 @@ export default class UpdateChecks extends PureComponent {
       showModal,
       latestVersionInfo,
       currentVersion,
-      updateChecksEnabled
+      updateChecksEnabled,
+      autoUpdate
     } = this.state;
 
     return (
       <React.Fragment>
         {showModal && (
           <NewVersionInfoView
+            autoUpdate={ autoUpdate }
             onClose={ this.onClose }
             onGoToDownloadPage={ this.onGoToDownloadPage }
             onOpenPrivacyPreferences={ this.openPrivacyPreferences }
