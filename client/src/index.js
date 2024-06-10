@@ -74,6 +74,11 @@ const globals = {
 
 async function render() {
 
+  if (process.env.NODE_ENV !== 'production') {
+    const { loadA11yHelper } = await import('./util/a11y');
+    await loadA11yHelper();
+  }
+
   // load plugins
   plugins.bindHelpers(window);
 
