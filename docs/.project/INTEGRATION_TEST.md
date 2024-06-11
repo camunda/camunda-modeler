@@ -10,6 +10,7 @@ We use a number of pre-defined steps to ensure the stability of our releases thr
 
 - [ ] fetch [latest release/nightly](https://camunda.org/release/camunda-modeler/)
 - [ ] fetch [latest version of Cawemo plugin](https://downloads.camunda.cloud/enterprise-release/cawemo/cloud-connect-modeler-plugin/)
+- [ ] fetch [latest version of A11y-checker plugin](https://github.com/bpmn-io/camunda-modeler-plugin-a11y-checker)
 - [ ] test changes of the release from the users' perspective end-2-end (e.g., include deployment where appropriate) (see [release issue](https://github.com/camunda/camunda-modeler/labels/release) and [changelog](https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md))
 - [ ] click like crazy (see [below](#test-checklist))
 
@@ -119,6 +120,11 @@ Based on the [test diagram](./test.bpmn.png):
 #### Error Handling
 
 - [ ] Open [`broken.bpmn`](./broken.bpmn) and verify a proper error message is shown (_No diagram to display_)
+
+#### Accessibility
+
+- [ ] No new issues were reported in the devtools console
+- [ ] Running `window.__A11Y_CHECKER__.getViolations()` returns an empty array
 
 #### Installers (platform specific)
 
