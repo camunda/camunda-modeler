@@ -123,8 +123,8 @@ Based on the [test diagram](./test.bpmn.png):
 
 #### Accessibility
 
-- [ ] No new issues were reported in the devtools console
-- [ ] Running `window.__A11Y_CHECKER__.getViolations()` returns an empty array
+- [ ] No new issues were reported during the tests
+- [ ] The modal opened via "Accessibility issues" button is empty
 
 #### Installers (platform specific)
 
