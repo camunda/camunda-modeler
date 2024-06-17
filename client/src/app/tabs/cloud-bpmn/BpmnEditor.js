@@ -60,6 +60,7 @@ import {
 } from '../../../util/Engines';
 
 import { getCloudTemplates } from '../../../util/elementTemplates';
+import VariableTab from '../../panel/tabs/variable-outline/variableOutlineTab';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
@@ -788,6 +789,12 @@ export class BpmnEditor extends CachedComponent {
           engineProfile={ engineProfile }
           onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } />
         }
+
+        <VariableTab
+          id={ this.props.id }
+          layout={ layout }
+          onAction={ this.triggerAction }
+          injector={ this.getModeler().get('injector') } />
       </div>
     );
   }

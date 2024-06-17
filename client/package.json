@@ -67,7 +67,8 @@
     "semver-compare": "^1.0.0",
     "sourcemapped-stacktrace": "^1.1.11",
     "ua-parser-js": "^1.0.37",
-    "zeebe-bpmn-moddle": "^1.2.0"
+    "zeebe-bpmn-moddle": "^1.2.0",
+    "@bpmn-io/variable-outline": "github:bpmn-io/variable-outline#065acf6"
   },
   "homepage": ".",
   "devDependencies": {

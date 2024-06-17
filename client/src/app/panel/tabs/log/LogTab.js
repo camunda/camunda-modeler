@@ -119,7 +119,7 @@ export default class LogTab extends PureComponent {
         <Fill slot="bottom-panel"
           id="log"
           label="Output"
-          priority={ 2 }
+          priority={ 20 }
           actions={
             [
               {

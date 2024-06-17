@@ -2129,6 +2129,7 @@ export class App extends PureComponent {
                   layout={ layout }
                   linting={ this.getLintingState(activeTab) }
                   onAction={ this.triggerAction } />
+
               </PanelContainer>
 
               <StatusBar />

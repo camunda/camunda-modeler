@@ -54,7 +54,7 @@ export default function LintingTab(props) {
       id="linting"
       label="Problems"
       layout={ layout }
-      priority={ 1 }>
+      priority={ 10 }>
       { reports.length
         ? null
         : (
