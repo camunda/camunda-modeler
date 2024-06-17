@@ -9,11 +9,11 @@
   display: flex;
   align-items: stretch;
   border-bottom: solid 1px var(--linting-tab-item-border-color);
-  font-size: 14px;
   cursor: default;
 
   * {
     user-select: text;
+    font-size: 14px;
   }
 
   &.linting-tab-item--selected,
@@ -23,8 +23,9 @@
 
   .linting-tab-item__header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     width: 200px;
+    border: none;
     padding: var(--linting-tab-item-padding);
     background-color: var(--linting-tab-item-error-background-color);
     border-right: solid 1px var(--linting-tab-item-border-color);

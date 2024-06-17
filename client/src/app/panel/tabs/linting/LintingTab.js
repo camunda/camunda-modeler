@@ -120,12 +120,12 @@ function LintingTabItem(props) {
       'linting-tab-item--warning': category === 'warn',
       'linting-tab-item--info': category === 'info'
     }) }>
-    <div className="linting-tab-item__header">
+    <button className="linting-tab-item__header" onClick={ onClick }>
       { category === 'error' ? <ErrorIcon width="16" height="16" /> : null }
       { category === 'warn' ? <WarningIcon width="16" height="16" /> : null }
       { category === 'info' ? <InfoIcon width="16" height="16" /> : null }
       <span className="linting-tab-item__label">{ name || id }</span>
-    </div>
+    </button>
     <div className="linting-tab-item__content">
       { message }
       {
