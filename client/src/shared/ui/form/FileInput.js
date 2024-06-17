@@ -32,7 +32,8 @@ import ErrorIcon from '../../../../resources/icons/Error.svg';
 export default function FileInput(props) {
   const {
     field,
-    form
+    form,
+    label
   } = props;
 
   const {
@@ -67,7 +68,7 @@ export default function FileInput(props) {
         ref={ inputRef }
       />
 
-      <label htmlFor={ name }>
+      <label aria-label={ label } htmlFor={ name }>
         <CreateIcon />
       </label>
 
