@@ -105,7 +105,7 @@ describe('<PrivacyPreferencesView>', function() {
 
       const privacyPolicyMoreInfoField = wrapper.find('.privacyMoreInfoField').find('p');
 
-      expect(privacyPolicyMoreInfoField.text()).to.be.eql(LEARN_MORE_TEXT + PRIVACY_POLICY_TEXT);
+      expect(privacyPolicyMoreInfoField.text()).to.be.eql(LEARN_MORE_TEXT + ' ' + PRIVACY_POLICY_TEXT);
     });
 
 

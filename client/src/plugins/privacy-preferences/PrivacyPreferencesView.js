@@ -112,7 +112,7 @@ class PrivacyPreferencesView extends PureComponent {
           </div>
           <div className="privacyMoreInfoField">
             <p>
-              { LEARN_MORE_TEXT }
+              { LEARN_MORE_TEXT }{' '}
               <a href={ PRIVACY_POLICY_URL }>
                 { PRIVACY_POLICY_TEXT }
               </a>
