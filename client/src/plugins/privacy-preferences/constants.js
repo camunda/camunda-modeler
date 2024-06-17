@@ -14,7 +14,7 @@ export const PRIVACY_POLICY_URL = 'https://camunda.com/legal/privacy/?utm_source
 
 export const LEARN_MORE_TEXT = 'With any of these options, none of your personal information or stored data will be submitted. Learn more:';
 
-export const PRIVACY_POLICY_TEXT = ' Camunda Privacy Policy';
+export const PRIVACY_POLICY_TEXT = 'Camunda Privacy Policy';
 
 export const OK_BUTTON_TEXT = 'Save';
 
