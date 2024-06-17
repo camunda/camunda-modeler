@@ -23,26 +23,28 @@ export default function ToggleSwitch(props) {
     ...restProps
   } = props;
 
+  const entryLabel = label || switcherLabel;
+
   return (
     <div className="form-group">
       <div className="custom-control-toggle" data-entry-id={ id }>
         <div className="toggle-switch">
-          <label className="label"
-            htmlFor={ id }>
-            { label }
-          </label>
           <div className="field-wrapper">
-            <label className="toggle-switch__switcher">
-              <input
-                type="checkbox"
-                { ...field }
-                { ...restProps }
-                defaultChecked={ field.value }
-                disabled={ disabled }
-              />
-              <span className="toggle-switch__slider" />
+            <label>
+              <div className="toggle-switch__switcher">
+                <input
+                  type="checkbox"
+                  { ...field }
+                  { ...restProps }
+                  defaultChecked={ field.value }
+                  disabled={ disabled }
+                />
+                <span className="toggle-switch__slider" />
+              </div>
+              <span className="toggle-switch__label">
+                { entryLabel }
+              </span>
             </label>
-            <p className="toggle-switch__label">{ switcherLabel }</p>
           </div>
         </div>
         { description && <div className="description">{ description }</div> }
