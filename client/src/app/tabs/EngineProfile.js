@@ -150,6 +150,7 @@ function EditableVersionSection(props) {
   } = engineProfile;
 
   const engineLabel = ENGINE_LABELS[executionPlatform];
+  const name = 'engineProfile.version';
 
   return (
     <Section>
@@ -159,13 +160,14 @@ function EditableVersionSection(props) {
       <Section.Body>
         <form onSubmit={ handleApply } className="fields">
           <div className="form-group">
-            <label htmlFor="engineProfile.version">Version</label>
+            <label htmlFor={ name }>Version</label>
 
             <select
               className="form-control"
               onChange={ handleVersionChanged }
               value={ engineProfile.executionPlatformVersion || '' }
-              name="engineProfile.version">
+              id={ name }
+              name={ name }>
               {
                 isKnownVersion(engineProfileVersions, engineProfile.executionPlatformVersion)
                   ? null

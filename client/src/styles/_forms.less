@@ -5,12 +5,7 @@
   --toggle-switch-disabled-background-color: var(--color-grey-225-10-85);
   --toggle-switch-switcher-background-color: var(--color-white);
 
-  input[type=password].form-control,
-  input[type=number].form-control,
-  input[type=text].form-control,
-  textarea.form-control,
-  p.form-control,
-  select.form-control {
+  .form-control {
     border-radius: 3px;
     border: solid 1px var(--color-grey-225-10-75);
     background-color: var(--input-background-color);
@@ -417,29 +412,21 @@
 
 .custom-control-toggle {
 
-  margin-top: -8px;
-
   > .description {
-    margin:6px 0 6px 38px;
+    margin: 6px 0 6px 38px;
     font-size: 13px;
     color: var(--color-grey-225-10-35);
 
   }
 
-  .toggle-switch .field-wrapper {
+  .toggle-switch .field-wrapper > label {
     display: flex;
-    flex-direction: row;
     align-items: center;
-  }
-
-  .toggle-switch > .label {
-    font-size: var(--text-size-base);
   }
 
   .toggle-switch .toggle-switch__label {
     margin: 0;
     margin-left: 6px;
-    font-size: var(--text-size-base);
   }
 
   .toggle-switch .toggle-switch__switcher {
