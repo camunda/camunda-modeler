@@ -55,6 +55,9 @@ export default function create() {
         language,
         tabSize,
         searchExtension,
+        EditorView.contentAttributes.of({
+          'aria-label': 'JSON editor'
+        }),
         ...extensions
       ]
     });
