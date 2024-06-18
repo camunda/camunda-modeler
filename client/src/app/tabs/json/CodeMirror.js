@@ -56,7 +56,8 @@ export default function create() {
         tabSize,
         searchExtension,
         EditorView.contentAttributes.of({
-          'aria-label': 'JSON editor'
+          'aria-label': 'JSON editor',
+          'tabindex': 0
         }),
         ...extensions
       ]
