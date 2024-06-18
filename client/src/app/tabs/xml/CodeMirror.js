@@ -55,6 +55,10 @@ export default function create() {
         language,
         tabSize,
         searchExtension,
+        EditorView.contentAttributes.of({
+          'aria-label': 'XML editor',
+          'tabindex': 0
+        }),
         ...extensions
       ]
     });
