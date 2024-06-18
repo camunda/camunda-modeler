@@ -419,7 +419,6 @@ app.createEditorWindow = function() {
   const windowOptions = {
     resizable: true,
     show: false,
-    title: 'Camunda Modeler' + getTitleSuffix(app.metadata.version),
     minWidth: MINIMUM_SIZE.width,
     minHeight: MINIMUM_SIZE.height,
     webPreferences: {
@@ -692,20 +691,6 @@ function bootstrap() {
     windowManager,
     zeebeAPI
   };
-}
-
-/**
- * Returns the app title suffix based on app version.
- *
- * @param {string} version
- * @return {string}
- */
-function getTitleSuffix(version) {
-  if (version.includes('dev')) {
-    return ' (dev)';
-  }
-
-  return '';
 }
 
 function generatePluginsTag(plugins) {
