@@ -44,16 +44,12 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Properties panel quality of life improvements</h4>
-          We removed automatic (magic) sorting from all properties panels. Additional minor improvements ensure that implementing Camunda 7 and 8 is simpler than ever.
+          <h4>Accessibility improvements</h4>
+          This release enhances keyboard navigation, adds screen-reader friendly labels, and better visual cues for the benefit of our users.
         </li>
         <li>
-          <h4>More robust BPMN diagram import</h4>
-          Various improvements ensure that the modeler can import even what is (accidentally) broken.
-        </li>
-        <li>
-          <h4>New modeling experience inside</h4>
-          You can now enable our reworked context pad via <a href="https://docs.camunda.io/docs/next/components/modeler/desktop-modeler/flags/#enable-new-context-pad" target="_blank" rel="noopener">a feature toggle</a>.
+          <h4>Form component documentation</h4>
+          Documentation links embedded into the properties panel give you quick access to functions and configurations each Form component supports.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
