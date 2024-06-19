@@ -6,6 +6,43 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `CHORE`: add accessible names to the XML/JSON editors ([#4370](https://github.com/camunda/camunda-modeler/issues/4370))
+* `CHORE`: set window title via HTML ([#4376](https://github.com/camunda/camunda-modeler/issues/4376))
+* `CHORE`: add accessible names to all inputs ([#4367](https://github.com/camunda/camunda-modeler/issues/4367))
+* `CHORE`: make privacy policy link sufficiently distinguishable ([#4369](https://github.com/camunda/camunda-modeler/issues/4369))
+* `DEPS`: update to `@bpmn-io/form-js@1.9.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.21.0`
+* `DEPS`: update to `@camunda/form-playground@0.15.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.7.1`
+* `DEPS`: update to `@camunda/linting@3.21.1`
+* `DEPS`: update to `bpmn-js@17.8.2`
+* `DEPS`: update to `camunda-bpmn-js@4.11.0`
+* `DEPS`: update to `camunda-dmn-js@2.5.0`
+* `DEPS`: update to `dmn-js-properties-panel@3.3.2`
+* `DEPS`: update to `dmn-js-shared@16.5.0`
+* `DEPS`: update to `electron@31.0.1`
+
+### BPMN
+
+* `FIX`: do not show boundary event menu for compensation activities ([#4348](https://github.com/camunda/camunda-modeler/issues/4348)) 
+* `FIX`: allow deployment after initial save was cancled ([#4370](https://github.com/camunda/camunda-modeler/issues/4370))
+* `FIX`: do not suggest root elements in search ([bpmn-js#2143](https://github.com/bpmn-io/bpmn-js/issues/2143)) 
+* `CHORE`: make problem panel entries keyboard-focusable ([#4368](https://github.com/camunda/camunda-modeler/issues/4368))
+* `CHORE`: align template documentation link style ([#4245](https://github.com/camunda/camunda-modeler/issues/4245))
+
+### DMN
+
+* `FEAT`: add edit input/output button ([bpmn-io/dmn-js#845](https://github.com/bpmn-io/dmn-js/issues/845))
+* `FIX`: keep missing ID error ([bpmn-io/dmn-js-properties-panel#85](https://github.com/bpmn-io/dmn-js-properties-panel/issues/85))
+
+### Forms
+
+* `FEAT`: show link to field documentation in the properties panel  ([bpmn-io/form-js#1201](https://github.com/bpmn-io/form-js/pull/1201))
+* `FIX`: button labels properly evaluate expressions ([bpmn-io/form-js#1181](https://github.com/bpmn-io/form-js/issues/1181))
+* `FIX`: ensure group paths are properly registered on add ([bpmn-io/form-js#1173](https://github.com/bpmn-io/form-js/issues/1173))
+
 ## 5.24.0
 
 ### General
