@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.25.0
+
 ### General
 
 * `CHORE`: add accessible names to the XML/JSON editors ([#4370](https://github.com/camunda/camunda-modeler/issues/4370))
