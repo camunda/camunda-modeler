@@ -13,19 +13,21 @@ ___Note:__ Yet to be released changes appear here._
 * `CHORE`: add accessible names to all inputs ([#4367](https://github.com/camunda/camunda-modeler/issues/4367))
 * `CHORE`: make privacy policy link sufficiently distinguishable ([#4369](https://github.com/camunda/camunda-modeler/issues/4369))
 * `DEPS`: update to `@bpmn-io/form-js@1.9.0`
-* `DEPS`: update to `@bpmn-io/properties-panel@3.21.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.22.0`
 * `DEPS`: update to `@camunda/form-playground@0.15.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.7.1`
 * `DEPS`: update to `@camunda/linting@3.21.1`
 * `DEPS`: update to `bpmn-js@17.8.2`
-* `DEPS`: update to `camunda-bpmn-js@4.11.0`
-* `DEPS`: update to `camunda-dmn-js@2.5.0`
-* `DEPS`: update to `dmn-js-properties-panel@3.3.2`
+* `DEPS`: update to `camunda-bpmn-js@4.12.0`
+* `DEPS`: update to `camunda-dmn-js@2.6.0`
+* `DEPS`: update to `dmn-js-properties-panel@3.4.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.18.0`
 * `DEPS`: update to `dmn-js-shared@16.5.0`
 * `DEPS`: update to `electron@31.0.1`
 
 ### BPMN
 
+* `FIX`: do not render properties panel entry with outdated component ([#4382](https://github.com/camunda/camunda-modeler/issues/4382), [bpmn-io/properties-panel#369](https://github.com/bpmn-io/properties-panel/pull/369))
 * `FIX`: do not show boundary event menu for compensation activities ([#4348](https://github.com/camunda/camunda-modeler/issues/4348)) 
 * `FIX`: allow deployment after initial save was cancled ([#4370](https://github.com/camunda/camunda-modeler/issues/4370))
 * `FIX`: do not suggest root elements in search ([bpmn-js#2143](https://github.com/bpmn-io/bpmn-js/issues/2143)) 
