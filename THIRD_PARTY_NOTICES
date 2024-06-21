@@ -132,8 +132,8 @@ This project incorporates components from the projects listed below. The origina
 125.  style-loader@4.0.0 (webpack-contrib/style-loader)
 126.  css-loader@7.1.0 (webpack-contrib/css-loader)
 127.  @camunda/form-playground@0.15.0 (git+https://github.com/camunda/form-playground.git)
-128.  camunda-bpmn-js@4.11.0 (https://github.com/camunda/camunda-bpmn-js)
-129.  camunda-dmn-js@2.5.0 (https://github.com/camunda/camunda-dmn-js)
+128.  camunda-bpmn-js@4.12.0 (https://github.com/camunda/camunda-bpmn-js)
+129.  camunda-dmn-js@2.6.0 (https://github.com/camunda/camunda-dmn-js)
 130.  @camunda/linting@3.21.1 (https://github.com/camunda/linting)
 131.  @ibm/plex@6.4.0 (https://github.com/ibm/plex.git)
 132.  min-dash@4.2.1 (git+https://github.com/bpmn-io/min-dash.git)
@@ -149,22 +149,22 @@ This project incorporates components from the projects listed below. The origina
 142.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning.git)
 143.  hoist-non-react-statics@3.3.2 (git://github.com/mridgway/hoist-non-react-statics.git)
 144.  react-is@16.13.1 (https://github.com/facebook/react.git)
-145.  @bpmn-io/properties-panel@3.21.0 (git+https://github.com/bpmn-io/properties-panel.git)
+145.  @bpmn-io/properties-panel@3.22.0 (git+https://github.com/bpmn-io/properties-panel.git)
 146.  preact-hooks@0.1.0
 147.  preact@10.19.3 (preactjs/preact)
 148.  preact-compat@4.0.0
 149.  jsx-runtime@1.0.0
 150.  min-dom@4.1.0 (https://github.com/bpmn-io/min-dom)
 151.  feelers@1.4.0
-152.  @lezer/lr@1.4.0 (https://github.com/lezer-parser/lr.git)
+152.  @lezer/lr@1.4.1 (https://github.com/lezer-parser/lr.git)
 153.  @lezer/common@1.2.1 (https://github.com/lezer-parser/common.git)
 154.  @lezer/highlight@1.2.0 (https://github.com/lezer-parser/highlight.git)
 155.  feelin@3.1.0 (https://github.com/nikku/feelin)
 156.  luxon@3.4.4 (https://github.com/moment/luxon)
-157.  lezer-feel@1.2.8 (https://github.com/nikku/lezer-feel.git)
+157.  lezer-feel@1.2.9 (https://github.com/nikku/lezer-feel.git)
 158.  @codemirror/autocomplete@6.16.2 (https://github.com/codemirror/autocomplete.git)
 159.  @codemirror/state@6.4.1 (https://github.com/codemirror/state.git)
-160.  @codemirror/view@6.27.0 (https://github.com/codemirror/view.git)
+160.  @codemirror/view@6.28.1 (https://github.com/codemirror/view.git)
 161.  style-mod@4.1.0 (git+https://github.com/marijnh/style-mod.git)
 162.  w3c-keyname@2.2.6 (git+https://github.com/marijnh/w3c-keyname.git)
 163.  @codemirror/language@6.10.2 (https://github.com/codemirror/language.git)
@@ -174,17 +174,17 @@ This project incorporates components from the projects listed below. The origina
 167.  @lezer/markdown@1.3.0 (https://github.com/lezer-parser/markdown.git)
 168.  @bpmn-io/feel-lint@1.2.0 (git+https://github.com/bpmn-io/feel-linter.git)
 169.  @bpmn-io/cm-theme@0.1.0-alpha.2
-170.  @bpmn-io/feel-editor@1.5.0 (git+https://github.com/bpmn-io/feel-editor.git)
-171.  lang-feel@2.0.0 (https://github.com/nikku/lang-feel.git)
+170.  @bpmn-io/feel-editor@1.6.0 (git+https://github.com/bpmn-io/feel-editor.git)
+171.  lang-feel@2.1.1 (https://github.com/nikku/lang-feel.git)
 172.  focus-trap@7.5.2 (git+https://github.com/focus-trap/focus-trap.git)
 173.  tabbable@6.2.0 (git+https://github.com/focus-trap/tabbable.git)
-174.  bpmn-js-properties-panel@5.17.1 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+174.  bpmn-js-properties-panel@5.18.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 175.  bpmn-js@17.8.2 (https://github.com/bpmn-io/bpmn-js)
 176.  diagram-js@14.7.1 (https://github.com/bpmn-io/diagram-js)
 177.  ids@1.0.5 (https://github.com/bpmn-io/ids)
 178.  @bpmn-io/extract-process-variables@0.8.0 (git+https://github.com/bpmn-io/extract-process-variables.git)
 179.  array-move@4.0.0 (sindresorhus/array-move)
-180.  dmn-js-properties-panel@3.3.2 (https://github.com/bpmn-io/dmn-js-properties-panel)
+180.  dmn-js-properties-panel@3.4.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
 181.  debug@4.3.4 (git://github.com/debug-js/debug.git)
 182.  ms@2.1.2 (zeit/ms)
 183.  events@3.3.0 (git://github.com/Gozala/events.git)
@@ -9005,7 +9005,7 @@ THE SOFTWARE.
 END OF @camunda/form-playground@0.15.0 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@4.11.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@4.12.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -9029,10 +9029,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@4.11.0 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@4.12.0 NOTICES AND INFORMATION
 
 
-%% camunda-dmn-js@2.5.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-dmn-js@2.6.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -9056,7 +9056,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-dmn-js@2.5.0 NOTICES AND INFORMATION
+END OF camunda-dmn-js@2.6.0 NOTICES AND INFORMATION
 
 
 %% @camunda/linting@3.21.1 NOTICES AND INFORMATION BEGIN HERE
@@ -9583,7 +9583,7 @@ SOFTWARE.
 END OF react-is@16.13.1 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/properties-panel@3.21.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/properties-panel@3.22.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -9607,7 +9607,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/properties-panel@3.21.0 NOTICES AND INFORMATION
+END OF @bpmn-io/properties-panel@3.22.0 NOTICES AND INFORMATION
 
 
 %% preact-hooks@0.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -9773,7 +9773,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 END OF feelers@1.4.0 NOTICES AND INFORMATION
 
 
-%% @lezer/lr@1.4.0 NOTICES AND INFORMATION BEGIN HERE
+%% @lezer/lr@1.4.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -9798,7 +9798,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @lezer/lr@1.4.0 NOTICES AND INFORMATION
+END OF @lezer/lr@1.4.1 NOTICES AND INFORMATION
 
 
 %% @lezer/common@1.2.1 NOTICES AND INFORMATION BEGIN HERE
@@ -9898,7 +9898,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF luxon@3.4.4 NOTICES AND INFORMATION
 
 
-%% lezer-feel@1.2.8 NOTICES AND INFORMATION BEGIN HERE
+%% lezer-feel@1.2.9 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -9923,7 +9923,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF lezer-feel@1.2.8 NOTICES AND INFORMATION
+END OF lezer-feel@1.2.9 NOTICES AND INFORMATION
 
 
 %% @codemirror/autocomplete@6.16.2 NOTICES AND INFORMATION BEGIN HERE
@@ -9982,7 +9982,7 @@ THE SOFTWARE.
 END OF @codemirror/state@6.4.1 NOTICES AND INFORMATION
 
 
-%% @codemirror/view@6.27.0 NOTICES AND INFORMATION BEGIN HERE
+%% @codemirror/view@6.28.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -10007,7 +10007,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @codemirror/view@6.27.0 NOTICES AND INFORMATION
+END OF @codemirror/view@6.28.1 NOTICES AND INFORMATION
 
 
 %% style-mod@4.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -10250,7 +10250,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 END OF @bpmn-io/cm-theme@0.1.0-alpha.2 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/feel-editor@1.5.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/feel-editor@1.6.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -10274,10 +10274,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/feel-editor@1.5.0 NOTICES AND INFORMATION
+END OF @bpmn-io/feel-editor@1.6.0 NOTICES AND INFORMATION
 
 
-%% lang-feel@2.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% lang-feel@2.1.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -10302,7 +10302,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF lang-feel@2.0.0 NOTICES AND INFORMATION
+END OF lang-feel@2.1.1 NOTICES AND INFORMATION
 
 
 %% focus-trap@7.5.2 NOTICES AND INFORMATION BEGIN HERE
@@ -10362,7 +10362,7 @@ SOFTWARE.
 END OF tabbable@6.2.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@5.17.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@5.18.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -10386,7 +10386,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@5.17.1 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@5.18.0 NOTICES AND INFORMATION
 
 
 %% bpmn-js@17.8.2 NOTICES AND INFORMATION BEGIN HERE
@@ -10516,7 +10516,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF array-move@4.0.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-properties-panel@3.3.2 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-properties-panel@3.4.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -10540,7 +10540,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF dmn-js-properties-panel@3.3.2 NOTICES AND INFORMATION
+END OF dmn-js-properties-panel@3.4.0 NOTICES AND INFORMATION
 
 
 %% debug@4.3.4 NOTICES AND INFORMATION BEGIN HERE
