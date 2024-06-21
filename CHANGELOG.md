@@ -31,7 +31,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FIX`: do not render properties panel entry with outdated component ([#4382](https://github.com/camunda/camunda-modeler/issues/4382), [bpmn-io/properties-panel#369](https://github.com/bpmn-io/properties-panel/pull/369))
 * `FIX`: do not show boundary event menu for compensation activities ([#4348](https://github.com/camunda/camunda-modeler/issues/4348)) 
-* `FIX`: allow deployment after initial save was cancled ([#4370](https://github.com/camunda/camunda-modeler/issues/4370))
+* `FIX`: allow deployment after initial save was cancelled ([#3450](https://github.com/camunda/camunda-modeler/issues/3450))
 * `FIX`: do not suggest root elements in search ([bpmn-js#2143](https://github.com/bpmn-io/bpmn-js/issues/2143)) 
 * `CHORE`: make problem panel entries keyboard-focusable ([#4368](https://github.com/camunda/camunda-modeler/issues/4368))
 * `CHORE`: align template documentation link style ([#4245](https://github.com/camunda/camunda-modeler/issues/4245))
