@@ -174,7 +174,7 @@ This project incorporates components from the projects listed below. The origina
 167.  @lezer/markdown@1.3.0 (https://github.com/lezer-parser/markdown.git)
 168.  @bpmn-io/feel-lint@1.2.0 (git+https://github.com/bpmn-io/feel-linter.git)
 169.  @bpmn-io/cm-theme@0.1.0-alpha.2
-170.  @bpmn-io/feel-editor@1.6.0 (git+https://github.com/bpmn-io/feel-editor.git)
+170.  @bpmn-io/feel-editor@1.6.1 (git+https://github.com/bpmn-io/feel-editor.git)
 171.  lang-feel@2.1.1 (https://github.com/nikku/lang-feel.git)
 172.  focus-trap@7.5.2 (git+https://github.com/focus-trap/focus-trap.git)
 173.  tabbable@6.2.0 (git+https://github.com/focus-trap/tabbable.git)
@@ -10250,7 +10250,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 END OF @bpmn-io/cm-theme@0.1.0-alpha.2 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/feel-editor@1.6.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/feel-editor@1.6.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -10274,7 +10274,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/feel-editor@1.6.0 NOTICES AND INFORMATION
+END OF @bpmn-io/feel-editor@1.6.1 NOTICES AND INFORMATION
 
 
 %% lang-feel@2.1.1 NOTICES AND INFORMATION BEGIN HERE
