@@ -7,9 +7,30 @@ on:
     types: ['closed']
 
 jobs:
-  assignMilestone:
+  check-permissions:
+    runs-on: ubuntu-latest
+    name: Check Repo Permission
+    outputs:
+      permission: ${{ steps.checkPermissions.outputs.PERMISSION }}
+    steps:
+      - name: Check Permissions
+        id: checkPermissions
+        env: 
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PERMISSION=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/collaborators/${{ github.event.sender.login }}/permission \
+            --jq '.permission')
+          echo "PERMISSION=$PERMISSION" >> $GITHUB_OUTPUT
+
+  assign-milestone:
     runs-on: ubuntu-latest
     name: Assign Milestone
+    needs: check-permissions
+    if: | 
+      needs.check-permissions.outputs.permission == 'admin' || 
+      needs.check-permissions.outputs.permission == 'write'
     steps:
       - name: Get current Milestone
         id: getMilestone
