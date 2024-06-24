@@ -1,0 +1,55 @@
+name: Assign Milestones
+
+on:
+  issues:
+    types: ['closed']
+  pull_request:
+    types: ['closed']
+
+jobs:
+  assignMilestone:
+    runs-on: ubuntu-latest
+    name: Assign Milestone
+    steps:
+      - name: Get current Milestone
+        id: getMilestone
+        env: 
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Fetch the list of milestones for the repository
+          # Filter for milestones that start with 'M' and are open
+          MILESTONE=$(gh api -H "Accept: application/vnd.github.v3+json" \
+            /repos/${{ github.repository }}/milestones \
+            --jq '.[] | select(.title | startswith("M")) | .number'
+          )
+          
+          echo "MILESTONE_NUMBER=$MILESTONE" >> $GITHUB_OUTPUT
+      - name: Assign Issue
+        if: |
+          github.event.issue &&
+          github.event.issue.state_reason != 'not_planned' &&
+          github.event.issue.milestone == null
+        env:
+          MILESTONE_NUMBER: ${{steps.getMilestone.outputs.MILESTONE_NUMBER}}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/issues/${{github.event.issue.number}} \
+            -F "milestone=$MILESTONE_NUMBER"
+
+      - name: Assign PR
+        if: |
+          github.event.pull_request &&
+          github.event.pull_request.merged_at &&
+          github.event.pull_request.milestone == null
+        env:
+          MILESTONE_NUMBER: ${{steps.getMilestone.outputs.MILESTONE_NUMBER}}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/issues/${{github.event.pull_request.number}} \
+            -F "milestone=$MILESTONE_NUMBER"
