@@ -68,4 +68,3 @@ _To be done once release is publicly announced on release day._
 * [ ] publish release via update server (push to `live`)
 * [ ] announce the release via the Camunda internal [#c8-release-announcements](https://camunda.slack.com/archives/C03NFMH4KC6) channel
 * [ ] communicate closed support related issues to [#ask-support](https://camunda.slack.com/archives/CHAC0L80M)
-* [ ] close [current milestone](https://github.com/camunda/camunda-modeler/milestones)
