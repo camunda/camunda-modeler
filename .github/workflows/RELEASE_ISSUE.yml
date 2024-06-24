@@ -19,6 +19,50 @@ jobs:
         template-path: 'docs/.project/RELEASE_TEMPLATE.md'
         package-path: 'app/package.json'
 
+  createMilestone:
+    needs: createReleaseIssue
+    if: github.event.issue.milestone
+    runs-on: ubuntu-latest
+    name: Create new Milestones
+    steps:
+      - name: Close old Milestone
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/milestones/${{ github.event.issue.milestone.number }} \
+            -f "state=closed"
+      - name: Create and Assign new Milestone
+        env: 
+          GH_TOKEN: ${{ github.token }}
+          TITLE: ${{github.event.issue.milestone.title}}
+        run: |
+          # Generate new Milestone Title (M<number+1>)
+          MILESTONE_NUMBER=${TITLE:1}
+          INCREMENTED_NUMBER=$((MILESTONE_NUMBER + 1))
+          MILESTONE_NAME=M$INCREMENTED_NUMBER
+
+          # Create new Milestone
+          echo "Creating Milestone" $MILESTONE_NAME
+          NEW_MILESTONE_NUMBER=$(gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/milestones \
+            -f "title=$MILESTONE_NAME" -f "state=open" \
+            --jq '.number'
+          )
+          echo "Created Milestone" $NEW_MILESTONE_NUMBER
+
+          # Assign new Milestone to new issue
+          echo "Assigning Milestone to release issue"
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/issues/${{ fromJson(needs.createReleaseIssue.outputs.issue).number }} \
+            -F "milestone=$MILESTONE_NUMBER"
+ 
   updateSlackRole:
     runs-on: ubuntu-latest
     if: |
