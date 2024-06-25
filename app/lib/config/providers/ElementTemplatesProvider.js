@@ -145,6 +145,7 @@ function getTemplatesForPath(path) {
  */
 function globTemplates(path) {
   return globFiles('element-templates/**/*.json', {
-    cwd: path
+    cwd: path,
+    dot: true
   });
 }

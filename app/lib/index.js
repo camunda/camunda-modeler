@@ -36,6 +36,7 @@ const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
+const updateConnectorTemplates = require('./connector-templates/updateConnectorTemplates');
 
 const {
   readFile,
@@ -680,6 +681,13 @@ function bootstrap() {
 
   // (9) zeebe API
   const zeebeAPI = new ZeebeAPI({ readFile }, ZeebeNode, flags);
+
+  // (10) connector templates
+  if (flags.get('enable-connector-templates', false)) {
+    app.on('app:client-ready', function() {
+      updateConnectorTemplates(renderer, userPath);
+    });
+  }
 
   return {
     config,
