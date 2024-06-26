@@ -54,6 +54,7 @@ _To be done to build the release after release testing completed._
 _To be done once the release is built._
 
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
+* [ ] close [current milestone](https://github.com/camunda/camunda-modeler/milestones)
 * [ ] update Camunda Modeler screenshots (and potentially text content) in the docs by running [screenshots workflow](https://github.com/camunda/camunda-docs-modeler-screenshots/actions/workflows/CREATE_SCREENSHOTS.yml). Download artifacts and create PRs for:
    * [ ] [camunda-docs-static](https://github.com/camunda/camunda-docs-static)
    * [ ] [camunda-docs-manual](https://github.com/camunda/camunda-docs-manual)

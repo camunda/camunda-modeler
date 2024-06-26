@@ -1,0 +1,29 @@
+name: Create new Milestone
+
+on:
+  milestone:
+    types: ['closed']
+
+jobs:
+  create-milestone:
+    runs-on: ubuntu-latest
+    name: Create new Milestone
+    if: startsWith(github.event.milestone.title, 'M')
+    steps:
+      - name: Get new Milestone Title
+        id: getTitle
+        env: 
+          TITLE: ${{github.event.milestone.title}}
+        run: |
+          MILESTONE_NUMBER=${TITLE:1}
+          INCREMENTED_NUMBER=$((MILESTONE_NUMBER + 1))
+          echo "MILESTONE_NAME=M$INCREMENTED_NUMBER" >> $GITHUB_OUTPUT
+      - name: Create new Milestone
+        env:
+          TITLE: ${{steps.getTitle.outputs.MILESTONE_NAME}}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api \
+            --method POST \
+            /repos/${{ github.repository }}/milestones \
+            -f "title=$TITLE" -f "state=open"
