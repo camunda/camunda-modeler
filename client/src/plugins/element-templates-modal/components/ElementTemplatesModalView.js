@@ -22,12 +22,15 @@ import {
   groupBy,
   isDefined,
   isNil,
-  isUndefined
+  isUndefined,
+  sortBy
 } from 'min-dash';
 
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
 
 const MAX_DESCRIPTION_LENGTH = 200;
+
+const DEFAULT_CATEGORY = '__default';
 
 class ElementTemplatesView extends PureComponent {
   constructor(props) {
@@ -162,12 +165,17 @@ class ElementTemplatesView extends PureComponent {
 
     const canApply = elementTemplatesFiltered.find(({ id }) => id === selected);
 
+    const elementTemplatesGrouped = groupBy(elementTemplatesFiltered, ({ category = {} }) => category.name || DEFAULT_CATEGORY);
+
+    const categoriesSorted = sortBy(Object.keys(elementTemplatesGrouped), category => category === DEFAULT_CATEGORY ? '' : category.toLowerCase());
+
     return (
       <Modal className={ css.ElementTemplatesModalView } onClose={ onClose }>
 
         <Modal.Title>Select template</Modal.Title>
 
         <Modal.Body onScroll={ this.onScroll }>
+
           <div className={ classNames('header', { 'header--scroll': scroll }) }>
             <h2 className="header__title">Templates</h2>
             <div className="header__filter">
@@ -175,31 +183,45 @@ class ElementTemplatesView extends PureComponent {
             </div>
           </div>
 
-          <ul className="element-templates-list">
-            {
-              elementTemplatesFiltered.length
-                ? elementTemplatesFiltered.map(elementTemplate => {
-                  const { id, version } = elementTemplate;
+          {
+            categoriesSorted.map((category) => {
+              const elementTemplates = elementTemplatesGrouped[ category ];
 
-                  return (
-                    <ElementTemplatesListItem
-                      key={ getKey(id, version) }
-                      applied={ applied }
-                      expanded={ expanded }
-                      elementTemplate={ elementTemplate }
-                      onSelect={ () => this.onSelect(elementTemplate) }
-                      onToggleExpanded={ () => this.onToggleExpanded(elementTemplate) }
-                      selected={ selected } />
-                  );
-                })
-                : null
-            }
-            {
-              !elementTemplatesFiltered.length ? (
+              return (
+                <div key={ category }>
+                  {
+                    category !== DEFAULT_CATEGORY && <h3 className="element-templates-list__group">{ category }</h3>
+                  }
+                  <ul className="element-templates-list">
+                    {
+                      elementTemplates.map(elementTemplate => {
+                        const { id, version } = elementTemplate;
+
+                        return (
+                          <ElementTemplatesListItem
+                            key={ getKey(id, version) }
+                            applied={ applied }
+                            expanded={ expanded }
+                            elementTemplate={ elementTemplate }
+                            onSelect={ () => this.onSelect(elementTemplate) }
+                            onToggleExpanded={ () => this.onToggleExpanded(elementTemplate) }
+                            selected={ selected } />
+                        );
+                      })
+                    }
+                  </ul>
+                </div>
+              );
+            })
+          }
+
+          {
+            !elementTemplatesFiltered.length ? (
+              <ul className="element-templates-list">
                 <ElementTemplatesListItemEmpty />
-              ) : null
-            }
-          </ul>
+              </ul>
+            ) : null
+          }
         </Modal.Body>
 
         <Modal.Footer>
