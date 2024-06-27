@@ -26,7 +26,7 @@ import modelingTracking from 'bpmn-js-tracking/lib/features/modeling';
 import popupMenuTracking from 'bpmn-js-tracking/lib/features/popup-menu';
 import paletteTracking from 'bpmn-js-tracking/lib/features/palette';
 
-import { BpmnImprovedCanvasModule } from '@camunda/improved-canvas';
+import { BpmnImprovedCanvasModule } from './features/improved-canvas';
 
 import Flags, {
   DISABLE_ADJUST_ORIGIN,
