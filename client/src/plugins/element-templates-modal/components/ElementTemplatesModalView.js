@@ -14,7 +14,6 @@ import classNames from 'classnames';
 
 import { Modal } from '../../../shared/ui';
 
-import Dropdown from './Dropdown';
 import Input from './Input';
 
 import * as css from './ElementTemplatesModalView.less';
@@ -40,7 +39,6 @@ class ElementTemplatesView extends PureComponent {
       elementTemplatesFiltered: [],
       expanded: null,
       filter: {
-        tags: [],
         search: ''
       },
       scroll: false,
@@ -135,15 +133,6 @@ class ElementTemplatesView extends PureComponent {
     });
   };
 
-  onTagsChange = tags => {
-    const { filter } = this.state;
-
-    this.setFilter({
-      ...filter,
-      tags
-    });
-  };
-
   setFilter = filter => {
     const { elementTemplates } = this.state;
 
@@ -164,7 +153,6 @@ class ElementTemplatesView extends PureComponent {
 
     const {
       applied,
-      elementTemplates,
       elementTemplatesFiltered,
       expanded,
       filter,
@@ -172,29 +160,18 @@ class ElementTemplatesView extends PureComponent {
       selected
     } = this.state;
 
-    const {
-      tags
-    } = filter;
-
-    const tagCounts = getTagCounts(elementTemplates);
-
     const canApply = elementTemplatesFiltered.find(({ id }) => id === selected);
 
     return (
       <Modal className={ css.ElementTemplatesModalView } onClose={ onClose }>
 
-        <Modal.Title>Catalog</Modal.Title>
+        <Modal.Title>Select template</Modal.Title>
 
         <Modal.Body onScroll={ this.onScroll }>
           <div className={ classNames('header', { 'header--scroll': scroll }) }>
             <h2 className="header__title">Templates</h2>
             <div className="header__filter">
               <Input className="header__filter-item" value={ filter.search } onChange={ this.onSearchChange } />
-              {
-                Object.keys(tagCounts).length
-                  ? <Dropdown className="header__filter-item" tagCounts={ tagCounts } tagsSelected={ tags } onChange={ this.onTagsChange } />
-                  : null
-              }
             </div>
           </div>
 
@@ -275,25 +252,7 @@ export class ElementTemplatesListItem extends React.PureComponent {
       name
     } = elementTemplate;
 
-    let meta = [];
-
-    const tags = getTags(elementTemplate),
-          versionOrDate = getVersionOrDate(elementTemplate);
-
-    // Assume first tag is catalog name
-    if (tags.length) {
-      meta = [
-        ...meta,
-        tags[ 0 ]
-      ];
-    }
-
-    if (versionOrDate) {
-      meta = [
-        ...meta,
-        versionOrDate
-      ];
-    }
+    const version = getVersion(elementTemplate);
 
     return (
       <li className={
@@ -307,7 +266,7 @@ export class ElementTemplatesListItem extends React.PureComponent {
         <div className="element-templates-list__item-header">
           <span className="element-templates-list__item-name">{ name }</span>
           {
-            meta.length ? <span className="element-templates-list__item-meta">{ meta.join(' | ') }</span> : null
+            !isNil(version) ? <span className="element-templates-list__item-meta">Version { version }</span> : null
           }
         </div>
         {
@@ -339,7 +298,7 @@ export class ElementTemplatesListItem extends React.PureComponent {
 
 export class ElementTemplatesListItemEmpty extends PureComponent {
   render() {
-    return <li className="element-templates-list__item element-templates-list__item--empty">No matching catalog templates found.</li>;
+    return <li className="element-templates-list__item element-templates-list__item--empty">No matching templates found.</li>;
   }
 }
 
@@ -364,20 +323,12 @@ function filterByLatest(elementTemplates) {
 
 function filterElementTemplates(elementTemplates, filter) {
   return elementTemplates.filter(elementTemplate => {
-    const {
-      tags,
-      search
-    } = filter;
+    const { search } = filter;
 
     const {
       description,
       name
     } = elementTemplate;
-
-    // Assume first tag is Cawemo catalog project name
-    if (tags && tags.length && !tags.includes(getTags(elementTemplate)[ 0 ])) {
-      return false;
-    }
 
     if (search
       && search.length
@@ -390,40 +341,8 @@ function filterElementTemplates(elementTemplates, filter) {
   });
 }
 
-function getTags(elementTemplate) {
-  const { metadata } = elementTemplate;
-
-  if (!metadata) {
-    return [];
-  }
-
-  const { tags } = metadata;
-
-  if (!tags) {
-    return [];
-  }
-
-  return tags;
-}
-
 function getKey(id, version = '_') {
   return `${ id }-${ version }`;
-}
-
-function getTagCounts(elementTemplates) {
-  return elementTemplates.reduce((tagCounts, elementTemplate) => {
-    const tags = getTags(elementTemplate);
-
-    tags.forEach(tag => {
-      if (tagCounts[ tag ]) {
-        tagCounts[ tag ] += 1;
-      } else {
-        tagCounts[ tag ] = 1;
-      }
-    });
-
-    return tagCounts;
-  }, {});
 }
 
 function sortAlphabetically(elementTemplates) {
@@ -436,49 +355,12 @@ function sortAlphabetically(elementTemplates) {
   });
 }
 
-function leftPad(string, length, character) {
-  while (string.length < length) {
-    string = `${ character }${ string }`;
-  }
-
-  return string;
-}
-
-export function getVersionOrDate(elementTemplate) {
-  const {
-    metadata,
-    version
-  } = elementTemplate;
-
-  if (metadata) {
-    const { created, updated } = metadata;
-
-    if (isDefined(created)) {
-      return `Version ${ toDateString(created) }`;
-    } else if (isDefined(updated)) {
-      return `Version ${ toDateString(updated) }`;
-    }
-  }
+export function getVersion(elementTemplate) {
+  const { version } = elementTemplate;
 
   if (isUndefined(version)) {
     return null;
   }
 
-  return `Version ${ version }`;
-}
-
-function toDateString(timestamp) {
-  const date = new Date(timestamp);
-
-  if (date.toTimeString() === 'Invalid Date') {
-    return null;
-  }
-
-  const year = date.getFullYear();
-
-  const month = leftPad(String(date.getMonth() + 1), 2, '0');
-
-  const day = leftPad(String(date.getDate()), 2, '0');
-
-  return `${ day }.${ month }.${ year }`;
+  return version;
 }

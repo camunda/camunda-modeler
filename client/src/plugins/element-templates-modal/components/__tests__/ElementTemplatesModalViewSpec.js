@@ -17,10 +17,8 @@ import { mount } from 'enzyme';
 import ElementTemplatesView, {
   ElementTemplatesListItem,
   ElementTemplatesListItemEmpty,
-  getVersionOrDate
+  getVersion
 } from '../ElementTemplatesModalView';
-
-import Dropdown from '../Dropdown';
 
 import BpmnModdle from 'bpmn-moddle';
 import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
@@ -150,7 +148,7 @@ describe('<ElementTemplatesView>', function() {
 
       const meta = listItem.find('.element-templates-list__item-meta').first();
 
-      expect(meta.text()).to.match(/Joe's Catalog | Version [0-9]{2}\.[0-9]{2}\.[0-9]{4}/);
+      expect(meta.text()).to.equal('Version 2');
     });
 
 
@@ -316,37 +314,6 @@ describe('<ElementTemplatesView>', function() {
     });
 
 
-    it('should filter by tag', async function() {
-
-      // given
-      const {
-        instance,
-        wrapper
-      } = await createElementTemplatesModalView();
-
-      // when
-      instance.onTagsChange([ 'Walt\'s Catalog' ]);
-
-      wrapper.update();
-
-      // then
-      expect(wrapper.find(ElementTemplatesListItem)).to.have.length(1);
-      expect(wrapper.find(ElementTemplatesListItem).first().prop('elementTemplate')).to.equal(DEFAULT_ELEMENT_TEMPLATES.find(({ name }) => name === 'Template 1'));
-    });
-
-
-    it('should not show tag filter (no tags)', async function() {
-
-      // when
-      const { wrapper } = await createElementTemplatesModalView({
-        elementTemplates: []
-      });
-
-      // then
-      expect(wrapper.find(Dropdown)).to.have.length(0);
-    });
-
-
     it('should disable apply button if selected element template does not match filter', async function() {
 
       // given
@@ -373,26 +340,7 @@ describe('<ElementTemplatesView>', function() {
   });
 
 
-  describe('#getVersionOrDate', function() {
-
-    it('should get version as date string', function() {
-
-      // given
-      const template = {
-        version: 1,
-        metadata: {
-          created: 1000000000000,
-          updated: 1000000000000
-        }
-      };
-
-      // when
-      const versionOrDate = getVersionOrDate(template);
-
-      // then
-      expect(versionOrDate).to.match(/Version [0-9]{2}\.[0-9]{2}\.[0-9]{4}/);
-    });
-
+  describe('#getVersion', function() {
 
     it('should get version', function() {
 
@@ -402,10 +350,10 @@ describe('<ElementTemplatesView>', function() {
       };
 
       // when
-      const versionOrDate = getVersionOrDate(template);
+      const version = getVersion(template);
 
       // then
-      expect(versionOrDate).to.equal('Version 1');
+      expect(version).to.equal(1);
     });
 
 
@@ -415,10 +363,10 @@ describe('<ElementTemplatesView>', function() {
       const template = {};
 
       // when
-      const versionOrDate = getVersionOrDate(template);
+      const version = getVersion(template);
 
       // then
-      expect(versionOrDate).to.be.null;
+      expect(version).to.be.null;
     });
 
   });
@@ -433,15 +381,6 @@ const DEFAULT_ELEMENT_TEMPLATES = [
       'bpmn:ServiceTask'
     ],
     id: 'another-rpa-template',
-    metadata: {
-      catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
-      catalogTemplateId: '00000000-0000-0000-0000-000000000001',
-      created: 1000000000000,
-      tags: [
-        'Donald\'s Catalog'
-      ],
-      updated: 1000000000000
-    },
     name: 'Template 2',
     properties: []
   },
@@ -450,15 +389,6 @@ const DEFAULT_ELEMENT_TEMPLATES = [
       'bpmn:UserTask'
     ],
     id: 'user-task-template',
-    metadata: {
-      catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
-      catalogTemplateId: '00000000-0000-0000-0000-000000000002',
-      created: 1000000000000,
-      tags: [
-        'Donald\'s Catalog'
-      ],
-      updated: 1000000000000
-    },
     name: 'Template 3',
     properties: []
   },
@@ -468,15 +398,6 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     ],
     id: 'some-rpa-template',
     description: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    metadata: {
-      catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
-      catalogTemplateId: '00000000-0000-0000-0000-000000000000',
-      created: 1000000000000,
-      tags: [
-        'Walt\'s Catalog'
-      ],
-      updated: 1000000000000
-    },
     name: 'Template 1',
     properties: []
   },
@@ -493,15 +414,6 @@ const DEFAULT_ELEMENT_TEMPLATES = [
       'bpmn:SendTask'
     ],
     id: 'versioned-template',
-    metadata: {
-      catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
-      catalogTemplateId: '00000000-0000-0000-0000-000000000003',
-      created: 1000000000000,
-      tags: [
-        'Joe\'s Catalog'
-      ],
-      updated: 1000000000000
-    },
     version: 1,
     name: 'Template 5 v1',
     properties: []
@@ -511,15 +423,6 @@ const DEFAULT_ELEMENT_TEMPLATES = [
       'bpmn:SendTask'
     ],
     id: 'versioned-template',
-    metadata: {
-      catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
-      catalogTemplateId: '00000000-0000-0000-0000-000000000004',
-      created: 1000000000000,
-      tags: [
-        'Joe\'s Catalog'
-      ],
-      updated: 1000000000000
-    },
     version: 2,
     name: 'Template 5 v2',
     properties: []
