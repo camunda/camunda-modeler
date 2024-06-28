@@ -44,19 +44,4 @@ describe('<Input>', function() {
     expect(onChangeSpy).to.have.been.calledWith('foo');
   });
 
-
-  it('#onClear', function() {
-
-    // given
-    const onChangeSpy = sinon.spy();
-
-    const wrapper = mount(<Input value="foo" onChange={ onChangeSpy } />);
-
-    // when
-    wrapper.find('button').first().simulate('click');
-
-    // then
-    expect(onChangeSpy).to.have.been.calledWith('');
-  });
-
 });

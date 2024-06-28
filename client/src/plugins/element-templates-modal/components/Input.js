@@ -12,7 +12,6 @@ import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
-import CloseIcon from '../icons/Close.svg';
 import SearchIcon from '../icons/Search.svg';
 
 import * as css from './Input.less';
@@ -24,12 +23,6 @@ export default class Input extends PureComponent {
     onChange(event.target.value);
   };
 
-  onClear = () => {
-    const { onChange } = this.props;
-
-    onChange('');
-  };
-
   render() {
     const {
       className,
@@ -39,27 +32,14 @@ export default class Input extends PureComponent {
 
     return (
       <div className={ classNames(css.Input, className) }>
+        <SearchIcon className="input__search-icon" width="14" height="14" />
         <input
           className="input__text"
           type="text"
           value={ value }
           placeholder={ placeholder || 'Type to search...' }
-          onChange={ this.onChange } />
-        {
-          value && value.length
-            ? (
-              <button className="input__clear" onClick={ this.onClear }>
-                <span className="input__clear-icon">
-                  <CloseIcon width="10" height="10" />
-                </span>
-              </button>
-            )
-            : (
-              <span className="input__search-icon">
-                <SearchIcon width="10" height="10" />
-              </span>
-            )
-        }
+          onChange={ this.onChange }
+          spellCheck={ false } />
       </div>
     );
   }
