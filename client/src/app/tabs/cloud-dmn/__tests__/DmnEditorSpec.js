@@ -2187,7 +2187,7 @@ describe('<DmnEditor>', function() {
     }));
 
 
-    it('should reject unknown engine profile', async function() {
+    it('should open unknown engine profile as Camunda Cloud', async function() {
 
       // given
       const onImportSpy = spy();
@@ -2197,9 +2197,11 @@ describe('<DmnEditor>', function() {
 
       // then
       expect(onImportSpy).to.have.been.calledOnce;
-      expect(onImportSpy).to.have.been.calledWith(sinon.match({ message: 'An unknown execution platform (Camunda Unknown 7.15.0) was detected.' }), []);
 
-      expect(instance.getCached().engineProfile).to.be.null;
+      expect(instance.getCached().engineProfile).to.eql({
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '7.15.0'
+      });
     });
 
   });

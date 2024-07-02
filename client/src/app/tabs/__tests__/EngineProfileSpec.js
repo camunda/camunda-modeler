@@ -19,7 +19,7 @@ import {
   Slot
 } from '../../slot-fill';
 
-import { EngineProfile, getAnnotatedVersion, getStatusBarLabel } from '../EngineProfile';
+import { EngineProfile, getAnnotatedVersion, getStatusBarLabel, toSemverMinor } from '../EngineProfile';
 
 import { ENGINES, ENGINE_PROFILES } from '../../../util/Engines';
 
@@ -125,7 +125,7 @@ describe('<EngineProfile>', function() {
         // then
         expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
 
-        expectVersion(wrapper, executionPlatformVersion);
+        expectVersion(wrapper, toSemverMinor(executionPlatformVersion));
       });
 
     });
@@ -199,13 +199,13 @@ describe('<EngineProfile>', function() {
 
       // given
       const inputs =
-      [ [ ENGINES.PLATFORM, '7.0', 'Camunda 7.0' ],
-        [ ENGINES.PLATFORM, '7.14', 'Camunda 7.14' ],
-        [ ENGINES.PLATFORM, '7.500', 'Camunda 7.500 (alpha)' ],
+      [ [ ENGINES.PLATFORM, '7.0', 'Camunda 7.0 (unsupported)' ],
+        [ ENGINES.PLATFORM, '7.15', 'Camunda 7.15' ],
+        [ ENGINES.PLATFORM, '7.500', 'Camunda 7.500 (unsupported)' ],
         [ ENGINES.PLATFORM, '', 'Camunda 7' ],
         [ ENGINES.CLOUD, '1.3', 'Camunda 8 (Zeebe 1.3)' ],
         [ ENGINES.CLOUD, '8.1', 'Camunda 8.1' ],
-        [ ENGINES.CLOUD, '8.100', 'Camunda 8.100 (alpha)' ],
+        [ ENGINES.CLOUD, '8.100', 'Camunda 8.100 (unsupported)' ],
         [ ENGINES.CLOUD, '', 'Camunda 8' ] ];
 
       // then
@@ -422,7 +422,11 @@ function renderEngineProfile(options = {}) {
 
 function eachProfile(fn) {
   ENGINE_PROFILES.forEach(({ executionPlatform, executionPlatformVersions }) => {
-    [ undefined, ...executionPlatformVersions ].forEach((executionPlatformVersion) => {
+    [
+      undefined,
+      ...executionPlatformVersions,
+      ...executionPlatformVersions.map(incrementPatchVersion)
+    ].forEach((executionPlatformVersion) => {
       fn(executionPlatform, executionPlatformVersion);
     });
   });
@@ -459,4 +463,10 @@ function expectVersion(wrapper, version) {
   const select = wrapper.find('select');
 
   expect(select.prop('value')).to.equal(version || '');
+}
+
+function incrementPatchVersion(version) {
+  const [ major, minor, patch ] = version.split('.').map(Number);
+
+  return `${major}.${minor}.${patch + 1}`;
 }
