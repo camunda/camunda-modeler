@@ -34,6 +34,8 @@ const HELP_LINKS = {
   [ ENGINES.CLOUD ]: 'https://docs.camunda.io/?utm_source=modeler&utm_medium=referral'
 };
 
+const DONWLOAD_PAGE = 'https://camunda.com/download/modeler/';
+
 export function EngineProfile(props) {
   const {
     filterVersions = () => true,
@@ -131,7 +133,7 @@ function EditableVersionSection(props) {
   const [ engineProfile, setEngineProfile ] = useState(_engineProfile);
 
   const handleVersionChanged = event => {
-    const executionPlatformVersion = event.target.value;
+    const executionPlatformVersion = toSemver(event.target.value);
 
     setEngineProfile({
       executionPlatform: engineProfile.executionPlatform,
@@ -152,6 +154,11 @@ function EditableVersionSection(props) {
   const engineLabel = ENGINE_LABELS[executionPlatform];
   const name = 'engineProfile.version';
 
+  const currentMinorVersion = toSemverMinor(engineProfile.executionPlatformVersion);
+  const minorVersions = engineProfileVersions.map(toSemverMinor);
+
+  const isKnowVersion = isKnownVersion(engineProfileVersions, engineProfile.executionPlatformVersion);
+
   return (
     <Section>
       <Section.Header>
@@ -165,19 +172,19 @@ function EditableVersionSection(props) {
             <select
               className="form-control"
               onChange={ handleVersionChanged }
-              value={ engineProfile.executionPlatformVersion || '' }
+              value={ currentMinorVersion || '' }
               id={ name }
               name={ name }>
               {
-                isKnownVersion(engineProfileVersions, engineProfile.executionPlatformVersion)
+                isKnowVersion
                   ? null
-                  : <option value={ engineProfile.executionPlatformVersion || '' }>{ engineProfile.executionPlatformVersion || '<unset>' }</option>
+                  : <option value={ currentMinorVersion || '' }>{ currentMinorVersion ? `${currentMinorVersion} (unsupported)` : '<unset>' }</option>
               }
               {
-                engineProfileVersions.map(version => {
+                minorVersions.map(version => {
                   return (
                     <option key={ version } value={ version }>
-                      { getAnnotatedVersion(toSemverMinor(version), executionPlatform) }
+                      { getAnnotatedVersion(version, executionPlatform) }
                     </option>
                   );
                 })
@@ -185,7 +192,10 @@ function EditableVersionSection(props) {
             </select>
           </div>
 
-          <PlatformHint className="form-group form-description" executionPlatform={ executionPlatform } displayLabel={ engineLabel } />
+          {(isKnowVersion || !currentMinorVersion) ?
+            <PlatformHint className="form-group form-description" executionPlatform={ executionPlatform } displayLabel={ engineLabel } /> :
+            <UnknownVerisonHint className="form-group form-description" executionPlatform={ executionPlatform } executionPlatformVersion={ engineProfile.executionPlatformVersion } displayLabel={ engineLabel } />
+          }
 
           <Section.Actions>
             <button className="btn btn-primary" type="submit">Apply</button>
@@ -222,7 +232,6 @@ function ReadonlyVersionSection(props) {
   );
 }
 
-
 function PlatformHint(props) {
   const {
     executionPlatform,
@@ -236,6 +245,21 @@ function PlatformHint(props) {
       The properties panel provides the related implementation features. <a href={ HELP_LINKS[executionPlatform] }>
         Learn more
       </a>
+    </div>
+  );
+}
+
+function UnknownVerisonHint(props) {
+  const {
+    displayLabel,
+    className
+  } = props;
+
+  return (
+    <div className={ className }>
+      This { displayLabel } diagram uses an unsupported version. Some features might not work as expected. To use the latest features, please <a href={ DONWLOAD_PAGE }>
+        check for an updated modeler version
+      </a>.
     </div>
   );
 }
@@ -255,10 +279,8 @@ export function getStatusBarLabel(engineProfile) {
     return `${ENGINE_LABELS[executionPlatform]}`;
   } else if (executionPlatformVersion.startsWith('1.')) {
     return `${ENGINE_LABELS[executionPlatform]} (Zeebe ${toSemverMinor(executionPlatformVersion)})`;
-  } else if (isAlpha(executionPlatformVersion, executionPlatform)) {
-    return `Camunda ${toSemverMinor(executionPlatformVersion)} (alpha)`;
   } else {
-    return `Camunda ${toSemverMinor(executionPlatformVersion)}`;
+    return `Camunda ${toDisplayVersion(engineProfile)}`;
   }
 }
 
@@ -412,6 +434,26 @@ export function toSemver(versionString) {
 export function toSemverMinor(string) {
   return string && string.split(/\./).slice(0, 2).join('.');
 }
+
+function toDisplayVersion(engineProfile) {
+  const {
+    executionPlatformVersion,
+    executionPlatform
+  } = engineProfile;
+
+  const version = toSemverMinor(executionPlatformVersion);
+
+  if (!isKnownEngineProfile(engineProfile)) {
+    return `${version} (unsupported)`;
+  }
+
+  if (executionPlatform && isAlpha(version, executionPlatform)) {
+    return `${version} (alpha)`;
+  }
+
+  return version;
+}
+
 
 /**
  * Checks if the given version is an alpha of the selected platform.

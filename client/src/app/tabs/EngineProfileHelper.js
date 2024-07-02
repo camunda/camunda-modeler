@@ -25,7 +25,7 @@ export default class EngineProfileHelper {
     const engineProfile = this._get();
 
     if (!isKnownEngineProfile(engineProfile)) {
-      throw new Error(getUnknownEngineProfileErrorMessage(engineProfile));
+      return fixExecutionPlatform(engineProfile);
     }
 
     return engineProfile;
@@ -54,11 +54,17 @@ export default class EngineProfileHelper {
   }
 }
 
-function getUnknownEngineProfileErrorMessage(engineProfile = {}) {
+function fixExecutionPlatform(engineProfile = {}) {
   const {
-    executionPlatform = '<no-execution-platform>',
-    executionPlatformVersion = '<no-execution-platform-version>'
+    executionPlatform = 'Camunda Cloud'
   } = engineProfile;
 
-  return `An unknown execution platform (${ executionPlatform } ${ executionPlatformVersion }) was detected.`;
+  if ([ 'Camunda Platform', 'Camunda Cloud' ].includes(executionPlatform)) {
+    return engineProfile;
+  }
+
+  return {
+    ...engineProfile,
+    executionPlatform: 'Camunda Cloud'
+  };
 }
