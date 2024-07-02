@@ -157,7 +157,7 @@ function EditableVersionSection(props) {
   const currentMinorVersion = toSemverMinor(engineProfile.executionPlatformVersion);
   const minorVersions = engineProfileVersions.map(toSemverMinor);
 
-  const isKnowVersion = isKnownVersion(engineProfileVersions, engineProfile.executionPlatformVersion);
+  const versionRecognized = isKnownVersion(engineProfileVersions, engineProfile.executionPlatformVersion);
 
   return (
     <Section>
@@ -176,7 +176,7 @@ function EditableVersionSection(props) {
               id={ name }
               name={ name }>
               {
-                isKnowVersion
+                versionRecognized
                   ? null
                   : <option value={ currentMinorVersion || '' }>{ currentMinorVersion ? `${currentMinorVersion} (unsupported)` : '<unset>' }</option>
               }
@@ -192,7 +192,7 @@ function EditableVersionSection(props) {
             </select>
           </div>
 
-          {(isKnowVersion || !currentMinorVersion) ?
+          {(versionRecognized || !currentMinorVersion) ?
             <PlatformHint className="form-group form-description" executionPlatform={ executionPlatform } displayLabel={ engineLabel } /> :
             <UnknownVerisonHint className="form-group form-description" executionPlatform={ executionPlatform } executionPlatformVersion={ engineProfile.executionPlatformVersion } displayLabel={ engineLabel } />
           }
