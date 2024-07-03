@@ -92,7 +92,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: autocomplete BKMs as snippets ([bpmn-io/dmn-js#785](https://github.com/bpmn-io/dmn-js/issues/785), [#bpmn-io/dmn-js827](https://github.com/bpmn-io/dmn-js/issues/827))
 * `FEAT`: make inputs commit on blur, and let browser handle undo/redo ([bpmn-io/dmn-js#859](https://github.com/bpmn-io/dmn-js/issues/859))
-* `FIX`: show FEEL expressions with line wrapping ([bpmn-io/dmn-js#838](https://github.com/bpmn-io/dmn-js/issues/838))
+* `FIX`: show FEEL expressions with line wrapping ([#4098](https://github.com/camunda/camunda-modeler/issues/4098), [bpmn-io/dmn-js#838](https://github.com/bpmn-io/dmn-js/issues/838))
 
 ## 5.23.0
 
