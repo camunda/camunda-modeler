@@ -76,4 +76,4 @@ jobs:
         # User ID is either the assignee from the newly created issue or the new assigned from the `assigned` trigger
         USER_ID: ${{ fromJSON(steps.secrets.outputs.TEAM_MEMBER_IDS)[ needs.createReleaseIssue.outputs.assignee || github.event.issue.assignee.login ] }}
       run: |
-        curl -X POST -H "application/x-www-form-urlencoded" -d "token=${BOT_TOKEN}&usergroup=${GROUP_ID}&users=${USER_ID}" https://slack.com/api/usergroups.users.update
+        curl --fail-with-body -X POST -H "application/x-www-form-urlencoded" -d "token=${BOT_TOKEN}&usergroup=${GROUP_ID}&users=${USER_ID}" https://slack.com/api/usergroups.users.update
