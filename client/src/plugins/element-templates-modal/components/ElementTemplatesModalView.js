@@ -270,6 +270,7 @@ export class ElementTemplatesListItem extends React.PureComponent {
 
     const {
       description,
+      icon = {},
       id,
       name
     } = elementTemplate;
@@ -286,6 +287,11 @@ export class ElementTemplatesListItem extends React.PureComponent {
         )
       } onClick={ id !== applied && id !== selected ? this.onSelect : null }>
         <div className="element-templates-list__item-header">
+          {
+            icon.contents && (
+              <img className="element-templates-list__item-icon" src={ icon.contents } />
+            )
+          }
           <span className="element-templates-list__item-name">{ name }</span>
           {
             !isNil(version) ? <span className="element-templates-list__item-meta">Version { version }</span> : null
