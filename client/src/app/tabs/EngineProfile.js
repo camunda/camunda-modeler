@@ -194,7 +194,7 @@ function EditableVersionSection(props) {
 
           {(versionRecognized || !currentMinorVersion) ?
             <PlatformHint className="form-group form-description" executionPlatform={ executionPlatform } displayLabel={ engineLabel } /> :
-            <UnknownVerisonHint className="form-group form-description" executionPlatform={ executionPlatform } executionPlatformVersion={ engineProfile.executionPlatformVersion } displayLabel={ engineLabel } />
+            <UnknownVersionHint className="form-group form-description" executionPlatform={ executionPlatform } executionPlatformVersion={ engineProfile.executionPlatformVersion } displayLabel={ engineLabel } />
           }
 
           <Section.Actions>
@@ -249,7 +249,7 @@ function PlatformHint(props) {
   );
 }
 
-function UnknownVerisonHint(props) {
+function UnknownVersionHint(props) {
   const {
     displayLabel,
     className
