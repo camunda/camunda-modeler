@@ -13,7 +13,7 @@ ___Note:__ Yet to be released changes appear here._
 ### BPMN
 
 * `FEAT`: support converging inclusive gateway ([#3613](https://github.com/camunda/camunda-modeler/issues/3613))
-* `FIX`: improve `no-loop` performance ([bpmnlint-plugin-camunda-compat#165](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/165))
+* `FIX`: improve `no-loop` performance ([camunda/bpmnlint-plugin-camunda-compat#165](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/165))
 
 ## 5.25.0
 
