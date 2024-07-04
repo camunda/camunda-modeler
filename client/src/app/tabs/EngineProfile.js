@@ -257,9 +257,16 @@ function UnknownVerisonHint(props) {
 
   return (
     <div className={ className }>
-      This { displayLabel } diagram uses an unsupported version. Some features might not work as expected. To use the latest features, please <a href={ DONWLOAD_PAGE }>
-        check for an updated modeler version
-      </a>.
+      <p>
+        This diagram uses an unsupported { displayLabel } version.
+        As a result, some features might not work as expected.
+      </p>
+
+      <p>
+        To use the latest features, please <a href={ DONWLOAD_PAGE }>
+          check for an updated modeler version
+        </a>.
+      </p>
     </div>
   );
 }
