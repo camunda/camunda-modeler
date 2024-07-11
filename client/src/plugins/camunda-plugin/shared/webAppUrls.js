@@ -8,15 +8,23 @@
  * except in compliance with the MIT License.
  */
 
-import { forEngineRestUrl } from '../WellKnownAPI';
+import { forEngineRestUrl } from './WellKnownAPI';
 
 export async function determineCockpitUrl(engineUrl) {
   try {
     const cockpitUrl = await forEngineRestUrl(engineUrl).getCockpitUrl();
-    console.debug(`Using cockpit url from well known endpoint: ${engineUrl}`);
-    return cockpitUrl;
+
+    if (cockpitUrl) {
+      console.debug(`Using cockpit url from well known endpoint: ${engineUrl}`);
+      return cockpitUrl;
+    }
+
+    const fallbackUrl = getDefaultCockpitUrl(engineUrl);
+    console.debug(`The well known endpoint did not provide a cockpit url, falling back to ${fallbackUrl}.`);
+    return fallbackUrl;
+
   } catch (e) {
-    const fallbackUrl = getFallbackWebAppsBaseUrl(engineUrl) + 'cockpit/default/#/';
+    const fallbackUrl = getDefaultCockpitUrl(engineUrl);
     console.debug(`An error occurred retrieving the cockpit url from well known endpoint, falling back to ${fallbackUrl}. Cause: ${e}`);
     return fallbackUrl;
   }
@@ -24,7 +32,11 @@ export async function determineCockpitUrl(engineUrl) {
 
 // helpers //////////
 
-function getFallbackWebAppsBaseUrl(engineUrl) {
+function getDefaultCockpitUrl(engineUrl) {
+  return getDefaultWebAppsBaseUrl(engineUrl) + 'cockpit/default/#/';
+}
+
+function getDefaultWebAppsBaseUrl(engineUrl) {
   const [ protocol,, host, restRoot ] = engineUrl.split('/');
 
   return isTomcat(restRoot) ? `${protocol}//${host}/camunda/app/` : `${protocol}//${host}/app/`;

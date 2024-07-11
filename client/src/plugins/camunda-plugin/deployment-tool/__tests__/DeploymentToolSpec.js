@@ -24,7 +24,6 @@ import AUTH_TYPES from '../../shared/AuthTypes';
 import { DeploymentError,
   ConnectionError } from '../../shared/CamundaAPI';
 import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
-import { getFallbackCockpitUrl } from "../../shared/util/webAppUrls";
 
 const CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';

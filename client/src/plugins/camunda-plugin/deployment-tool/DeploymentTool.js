@@ -33,7 +33,7 @@ import { Fill } from '../../../app/slot-fill';
 import DeployIcon from 'icons/Deploy.svg';
 
 import { ENGINES } from '../../../util/Engines';
-import { determineCockpitUrl } from '../shared/util/webAppUrls';
+import { determineCockpitUrl } from '../shared/webAppUrls';
 
 const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
