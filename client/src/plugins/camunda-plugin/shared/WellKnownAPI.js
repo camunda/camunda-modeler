@@ -31,15 +31,15 @@ export default class WellKnownAPI {
 
     if (response.ok) {
       const {
-        admin,
-        tasklist,
-        cockpit
+        adminUrl,
+        cockpitUrl,
+        tasklistUrl,
       } = await response.json();
 
       return {
-        admin: this.normalizeWebAppUrl(admin, 'admin'),
-        cockpit: this.normalizeWebAppUrl(cockpit, 'cockpit'),
-        tasklist: this.normalizeWebAppUrl(tasklist, 'tasklist'),
+        admin: this.normalizeWebAppUrl(adminUrl, 'admin'),
+        cockpit: this.normalizeWebAppUrl(cockpitUrl, 'cockpit'),
+        tasklist: this.normalizeWebAppUrl(tasklistUrl, 'tasklist'),
       };
     }
 
