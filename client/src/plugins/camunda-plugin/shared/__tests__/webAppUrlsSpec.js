@@ -10,8 +10,9 @@
 
 /* global sinon */
 
+import { ConnectionError } from '../RestAPI';
 import { determineCockpitUrl } from '../webAppUrls';
-import WellKnownAPI, { ConnectionError } from '../WellKnownAPI';
+import WellKnownAPI from '../WellKnownAPI';
 
 let getCockpitUrlStub;
 
