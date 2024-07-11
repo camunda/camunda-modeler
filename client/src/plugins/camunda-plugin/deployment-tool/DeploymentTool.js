@@ -14,14 +14,13 @@ import { omit } from 'min-dash';
 
 import classNames from 'classnames';
 
-import { default as CamundaAPI, ApiErrors, ConnectionError } from '../shared/CamundaAPI';
+import { default as CamundaAPI, ApiErrors, ConnectionError, DeploymentError } from '../shared/CamundaAPI';
 import AUTH_TYPES from '../shared/AuthTypes';
 
 import CockpitDeploymentLink from '../shared/ui/CockpitDeploymentLink';
 
 import DeploymentConfigOverlay from './DeploymentConfigOverlay';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
-import { DeploymentError } from '../shared/CamundaAPI';
 
 import * as css from './DeploymentTool.less';
 
@@ -34,6 +33,7 @@ import { Fill } from '../../../app/slot-fill';
 import DeployIcon from 'icons/Deploy.svg';
 
 import { ENGINES } from '../../../util/Engines';
+import { determineCockpitUrl } from '../shared/util/webAppUrls';
 
 const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
@@ -177,7 +177,7 @@ export default class DeploymentTool extends PureComponent {
     }
   }
 
-  handleDeploymentSuccess(tab, deployment, version, configuration) {
+  async handleDeploymentSuccess(tab, deployment, version, configuration) {
     const {
       displayNotification,
       triggerAction
@@ -191,10 +191,12 @@ export default class DeploymentTool extends PureComponent {
       url
     } = endpoint;
 
+    const cockpitUrl = await this.getCockpitUrl(url);
+
     displayNotification({
       type: 'success',
       title: `${getDeploymentType(tab)} deployed`,
-      content: <CockpitDeploymentLink engineRestUrl={ url } deployment={ deployment } />,
+      content: <CockpitDeploymentLink cockpitUrl={ cockpitUrl } deployment={ deployment } />,
       duration: 8000
     });
 
@@ -211,6 +213,10 @@ export default class DeploymentTool extends PureComponent {
         context: 'deploymentTool'
       }
     });
+  }
+
+  async getCockpitUrl(engineUrl) {
+    return await determineCockpitUrl(engineUrl);
   }
 
   async saveProcessDefinition(tab, deployment) {

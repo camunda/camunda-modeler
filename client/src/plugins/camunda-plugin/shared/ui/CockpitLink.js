@@ -8,69 +8,36 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Children, useEffect, useMemo, useState } from 'react';
-import { forEngineRestUrl } from '../WellKnownAPI';
+import React, { useMemo } from 'react';
 
 import * as css from './CockpitLink.less';
 
+function combineUrlSegments(url, path, query) {
+  if (!url) {
+    return null;
+  }
+
+  if (query) {
+    return `${url}${path}${query}`;
+  } else {
+    return `${url}${path}`;
+  }
+}
+
 export default function CockpitLink(props) {
   const {
-    engineRestUrl,
-    cockpitPath = '',
-    cockpitQuery = '',
+    cockpitUrl,
+    path = '',
+    query = '',
     children
   } = props;
 
-  const [ cockpitBaseUrl, setCockpitBaseUrl ] = useState();
-  useEffect(() => {
-    forEngineRestUrl(engineRestUrl)
-      .getCockpitUrl()
-      .then(url => {
-        console.debug(`Using cockpit url from well known endpoint: ${url}`);
-        setCockpitBaseUrl(url);
-      })
-      .catch(e => {
-        const fallbackUrl = getCockpitBaseUrl(engineRestUrl);
-        console.debug(`An error occured retrieving the cockpit url from well known endpoint, falling back to ${fallbackUrl}. Cause: ${e}`);
-        setCockpitBaseUrl(fallbackUrl);
-      });
-  }, [ engineRestUrl ]);
-
-  const link = useMemo(() => {
-    if (!cockpitBaseUrl) {
-      return null;
-    }
-
-    if (cockpitQuery) {
-      return `${cockpitBaseUrl}${cockpitPath}${cockpitQuery}`;
-    } else {
-      return `${cockpitBaseUrl}${cockpitPath}`;
-    }
-  }, [ cockpitBaseUrl, cockpitPath, cockpitQuery ]);
+  const link = useMemo(() => combineUrlSegments(cockpitUrl, path, query), [cockpitUrl, path, query]);
 
   return (
     <div className={ css.CockpitLink }>
-      { Children.toArray(children) }
-      {
-        link
-          ? (
-            <a href={ link }>
-              Open in Camunda Cockpit
-            </a>
-          ) : null
-      }
+      { children }
+      { link ? <a href={ link }>Open in Camunda Cockpit</a> : null }
     </div>
   );
-}
-
-// helpers //////////
-
-function getCockpitBaseUrl(url) {
-  const [ protocol,, host, restRoot ] = url.split('/');
-
-  return isTomcat(restRoot) ? `${protocol}//${host}/camunda/app/cockpit/` : `${protocol}//${host}/cockpit/`;
-}
-
-function isTomcat(restRoot) {
-  return restRoot === 'engine-rest';
 }

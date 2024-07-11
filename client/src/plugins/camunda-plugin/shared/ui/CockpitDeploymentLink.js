@@ -14,7 +14,7 @@ import CockpitLink from './CockpitLink';
 
 export default function CockpitDeploymentLink(props) {
   const {
-    engineRestUrl,
+    cockpitUrl,
     deployment
   } = props;
 
@@ -27,7 +27,7 @@ export default function CockpitDeploymentLink(props) {
   const cockpitQuery = useMemo(() => `?deploymentsQuery=%5B%7B%22type%22:%22id%22,%22operator%22:%22eq%22,%22value%22:%22${id}%22%7D%5D`, [ id ]);
 
   return (
-    <CockpitLink engineRestUrl={ engineRestUrl } cockpitPath={ cockpitPath } cockpitQuery={ cockpitQuery }>
+    <CockpitLink cockpitUrl={ cockpitUrl } path={ cockpitPath } query={ cockpitQuery }>
       {
         deployedProcessDefinition
           ? (

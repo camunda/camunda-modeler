@@ -24,6 +24,7 @@ import AUTH_TYPES from '../../shared/AuthTypes';
 import { DeploymentError,
   ConnectionError } from '../../shared/CamundaAPI';
 import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
+import { getFallbackCockpitUrl } from "../../shared/util/webAppUrls";
 
 const CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
@@ -1299,13 +1300,16 @@ describe('<DeploymentTool>', () => {
 
           const configuration = createConfiguration();
 
+          const getCockpitUrlSpy = sinon.stub().returns('http://localhost:8080/app/cockpit/default/#/');
+
           const {
             instance
           } = createDeploymentTool({
             activeTab,
             configuration,
             displayNotification,
-            deploySpy
+            deploySpy,
+            getCockpitUrlSpy,
           });
 
           // when
@@ -1315,7 +1319,7 @@ describe('<DeploymentTool>', () => {
 
             // then
             try {
-              const cockpitLink = shallow(notification.content).find('a').first();
+              const cockpitLink = mount(notification.content).find('a').first();
               const { href } = cockpitLink.props();
 
               expect(href).to.eql(expectedCockpitLink);
@@ -1334,11 +1338,9 @@ describe('<DeploymentTool>', () => {
 
 
       it('should display Spring-specific Cockpit link', testCockpitLink(
-        `http://localhost:8080/app/cockpit/default/#/repository/?${query('foo')}`
+        `http://localhost:8080/app/cockpit/default/#/repository?${query('foo')}`
       ));
     });
-
-
   });
 
 
@@ -1363,6 +1365,11 @@ describe('<DeploymentTool>', () => {
       }
 
       return this.props.deploySpy && this.props.deploySpy(...args);
+    }
+
+    // removes WellKnownAPI dependency
+    async getCockpitUrl(engineUrl) {
+      return this.props.getCockpitUrlSpy && await this.props.getCockpitUrlSpy(engineUrl);
     }
 
     getVersion(...args) {

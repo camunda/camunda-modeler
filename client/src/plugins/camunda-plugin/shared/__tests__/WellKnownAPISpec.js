@@ -10,7 +10,7 @@
 
 /* global sinon */
 
-import WellKnownAPI, { ConnectionError } from '../WellKnownApi';
+import WellKnownAPI, { ConnectionError } from '../WellKnownAPI';
 
 
 describe('<WellKnownAPI>', () => {

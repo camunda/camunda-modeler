@@ -12,11 +12,9 @@ import React, { PureComponent } from 'react';
 
 import PlayIcon from 'icons/Play.svg';
 
-import CamundaAPI, { ConnectionError } from '../shared/CamundaAPI';
+import CamundaAPI, { ConnectionError, DeploymentError, StartInstanceError } from '../shared/CamundaAPI';
 
 import StartInstanceConfigOverlay from './StartInstanceConfigOverlay';
-
-import { DeploymentError, StartInstanceError } from '../shared/CamundaAPI';
 
 import CockpitProcessInstanceLink from '../shared/ui/CockpitProcessInstanceLink';
 
@@ -30,6 +28,7 @@ import isExecutable from './util/isExecutable';
 
 import { ENGINES } from '../../../util/Engines';
 import classNames from 'classnames';
+import { determineCockpitUrl } from '../shared/util/webAppUrls';
 
 const START_DETAILS_CONFIG_KEY = 'start-instance-tool';
 
@@ -402,7 +401,7 @@ export default class StartInstanceTool extends PureComponent {
     return api.startInstance(processDefinition, configuration);
   }
 
-  handleStartSuccess(processInstance, endpoint) {
+  async handleStartSuccess(processInstance, endpoint) {
     const {
       displayNotification
     } = this.props;
@@ -411,10 +410,12 @@ export default class StartInstanceTool extends PureComponent {
       url
     } = endpoint;
 
+    const cockpitUrl = await this.getCockpitUrl(url);
+
     displayNotification({
       type: 'success',
       title: 'Process instance started',
-      content: <CockpitProcessInstanceLink engineRestUrl={ url } processInstance={ processInstance } />,
+      content: <CockpitProcessInstanceLink cockpitUrl={ cockpitUrl } processInstance={ processInstance } />,
       duration: 8000
     });
   }
@@ -524,6 +525,10 @@ export default class StartInstanceTool extends PureComponent {
       // (1.2) close deploy overlay
       this.props.deployService.closeOverlay();
     }
+  }
+
+  async getCockpitUrl(engineUrl) {
+    return await determineCockpitUrl(engineUrl);
   }
 
   render() {
