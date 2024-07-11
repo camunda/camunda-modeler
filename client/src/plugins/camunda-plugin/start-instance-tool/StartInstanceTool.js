@@ -28,7 +28,7 @@ import isExecutable from './util/isExecutable';
 
 import { ENGINES } from '../../../util/Engines';
 import classNames from 'classnames';
-import { determineCockpitUrl } from '../shared/util/webAppUrls';
+import { determineCockpitUrl } from '../shared/webAppUrls';
 
 const START_DETAILS_CONFIG_KEY = 'start-instance-tool';
 
