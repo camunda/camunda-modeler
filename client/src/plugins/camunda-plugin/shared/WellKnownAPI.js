@@ -36,9 +36,6 @@ export default class WellKnownAPI {
         cockpit
       } = await response.json();
 
-      console.error('RAW COCKPIT: ' + cockpit);
-      console.error('COCKPIT: ' + this.normalizeWebAppUrl(cockpit, 'cockpit'));
-
       return {
         admin: this.normalizeWebAppUrl(admin, 'admin'),
         cockpit: this.normalizeWebAppUrl(cockpit, 'cockpit'),

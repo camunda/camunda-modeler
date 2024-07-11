@@ -14,7 +14,7 @@ import CockpitLink from './CockpitLink';
 
 export default function CockpitProcessInstanceLink(props) {
   const {
-    engineRestUrl,
+    cockpitUrl,
     processInstance
   } = props;
 
@@ -25,7 +25,7 @@ export default function CockpitProcessInstanceLink(props) {
   const cockpitPath = useMemo(() => `process-instance/${id}`, [ id ]);
 
   return (
-    <CockpitLink engineRestUrl={ engineRestUrl } cockpitPath={ cockpitPath }>
+    <CockpitLink cockpitUrl={ cockpitUrl } path={ cockpitPath }>
       <div>
         Process instance ID:
         <code>{id}</code>
