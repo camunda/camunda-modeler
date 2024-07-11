@@ -25,9 +25,10 @@ import StartInstanceTool from '../StartInstanceTool';
 
 import {
   DeploymentError,
-  ConnectionError,
   StartInstanceError
 } from '../../shared/CamundaAPI';
+
+import { ConnectionError } from '../../shared/RestAPI';
 
 import {
   Slot,

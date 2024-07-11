@@ -14,7 +14,8 @@ import { omit } from 'min-dash';
 
 import classNames from 'classnames';
 
-import { default as CamundaAPI, ApiErrors, ConnectionError, DeploymentError } from '../shared/CamundaAPI';
+import { default as CamundaAPI, DeploymentError } from '../shared/CamundaAPI';
+import { ConnectionError, GenericApiErrors } from '../shared/RestAPI';
 import AUTH_TYPES from '../shared/AuthTypes';
 
 import CockpitDeploymentLink from '../shared/ui/CockpitDeploymentLink';
@@ -541,9 +542,9 @@ export default class DeploymentTool extends PureComponent {
 
     const { code } = result;
 
-    return (code !== ApiErrors.NO_INTERNET_CONNECTION &&
-            code !== ApiErrors.CONNECTION_FAILED &&
-              code !== ApiErrors.NOT_FOUND);
+    return (code !== GenericApiErrors.NO_INTERNET_CONNECTION &&
+            code !== GenericApiErrors.CONNECTION_FAILED &&
+              code !== GenericApiErrors.NOT_FOUND);
   }
 
   closeOverlay(overlayState) {

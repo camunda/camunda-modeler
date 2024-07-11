@@ -10,7 +10,8 @@
 
 /* global sinon */
 
-import WellKnownAPI, { ConnectionError } from '../WellKnownAPI';
+import { ConnectionError } from '../RestAPI';
+import WellKnownAPI from '../WellKnownAPI';
 
 
 describe('<WellKnownAPI>', () => {
@@ -37,9 +38,9 @@ describe('<WellKnownAPI>', () => {
 
       fetchSpy.resolves(new Response({
         json: () => ({
-          'admin': 'http://localhost:18080/camunda/apps/admin/default/#/',
-          'tasklist': 'http://localhost:18080/camunda/apps/tasklist/default/#/',
-          'cockpit': 'http://localhost/camunda/apps/cockpit/default/#/'
+          'adminUrl': 'http://localhost:18080/camunda/apps/admin/default/#/',
+          'tasklistUrl': 'http://localhost:18080/camunda/apps/tasklist/default/#/',
+          'cockpitUrl': 'http://localhost/camunda/apps/cockpit/default/#/'
         }),
       }));
 
@@ -153,9 +154,9 @@ describe('<WellKnownAPI>', () => {
 
             resolve(new Response({
               json: () => ({
-                'admin': 'http://localhost:18080/camunda/apps/admin/default/#/',
-                'tasklist': 'http://localhost:18080/camunda/apps/tasklist/default/#/',
-                'cockpit': 'http://localhost/camunda/apps/cockpit/default/#/'
+                'adminUrl': 'http://localhost:18080/camunda/apps/admin/default/#/',
+                'tasklistUrl': 'http://localhost:18080/camunda/apps/tasklist/default/#/',
+                'cockpitUrl': 'http://localhost/camunda/apps/cockpit/default/#/'
               }),
             }));
           });
@@ -189,7 +190,7 @@ describe('<WellKnownAPI>', () => {
 
       fetchSpy.resolves(new Response({
         json: () => ({
-          'cockpit': 'http://localhost/camunda/apps/cockpit/default/#/'
+          'cockpitUrl': 'http://localhost/camunda/apps/cockpit/default/#/'
         }),
       }));
 
@@ -208,7 +209,7 @@ describe('<WellKnownAPI>', () => {
 
       fetchSpy.resolves(new Response({
         json: () => ({
-          'cockpit': 'http://localhost/camunda/apps/cockpit/default/#/'
+          'cockpitUrl': 'http://localhost/camunda/apps/cockpit/default/#/'
         }),
       }));
 
@@ -227,7 +228,7 @@ describe('<WellKnownAPI>', () => {
 
       fetchSpy.resolves(new Response({
         json: () => ({
-          'cockpit': 'http://localhost/camunda/apps/cockpit/default/#/'
+          'cockpitUrl': 'http://localhost/camunda/apps/cockpit/default/#/'
         }),
       }));
 
@@ -339,7 +340,7 @@ describe('<WellKnownAPI>', () => {
 
             resolve(new Response({
               json: () => ({
-                'cockpit': 'http://localhost/camunda/apps/cockpit/default/#/'
+                'cockpitUrl': 'http://localhost/camunda/apps/cockpit/default/#/'
               }),
             }));
           });

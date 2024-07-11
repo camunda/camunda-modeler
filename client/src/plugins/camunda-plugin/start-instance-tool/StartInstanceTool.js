@@ -12,7 +12,8 @@ import React, { PureComponent } from 'react';
 
 import PlayIcon from 'icons/Play.svg';
 
-import CamundaAPI, { ConnectionError, DeploymentError, StartInstanceError } from '../shared/CamundaAPI';
+import CamundaAPI, { DeploymentError, StartInstanceError } from '../shared/CamundaAPI';
+import { ConnectionError } from '../shared/RestAPI';
 
 import StartInstanceConfigOverlay from './StartInstanceConfigOverlay';
 

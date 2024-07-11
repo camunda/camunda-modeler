@@ -21,8 +21,8 @@ import { Config } from './../../../../app/__tests__/mocks';
 
 import DeploymentTool from '../DeploymentTool';
 import AUTH_TYPES from '../../shared/AuthTypes';
-import { DeploymentError,
-  ConnectionError } from '../../shared/CamundaAPI';
+import { DeploymentError } from '../../shared/CamundaAPI';
+import { ConnectionError } from '../../shared/RestAPI';
 import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
 
 const CONFIG_KEY = 'deployment-tool';
