@@ -9,6 +9,7 @@
  */
 
 import BaseInputValidator from './BaseInputValidator';
+import { GenericApiErrors } from "../../shared/RestAPI";
 
 export default class EndpointURLValidator extends BaseInputValidator {
 
@@ -78,9 +79,9 @@ export default class EndpointURLValidator extends BaseInputValidator {
         }
 
         onConnectionStatusUpdate(code);
-        onAuthDetection(code === 'UNAUTHORIZED');
+        onAuthDetection(code === GenericApiErrors.UNAUTHORIZED);
 
-        if (code !== 'UNAUTHORIZED') {
+        if (code !== GenericApiErrors.UNAUTHORIZED) {
           return this.setFieldError(details, setFieldError);
         }
       } else {
