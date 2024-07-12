@@ -203,6 +203,34 @@ describe('Config', function() {
         .to.throw(/template .* parse error: Unexpected token 'I', "I AM NOT JSON!"*/);
     });
 
+
+    it('should not get if path is ignored', function() {
+
+      // given
+      const file = {
+        path: getAbsolutePath('fixtures/project/bar.bpmn')
+      };
+
+      const config = new Config({
+        resourcesPaths: [
+          getAbsolutePath('fixtures/ok')
+        ],
+        userPath: 'foo',
+        ignoredPaths: [
+          getAbsolutePath('fixtures/ok/element-templates/list.json')
+        ]
+      });
+
+      // when
+      const templates = config.get('bpmn.elementTemplates', file);
+
+      // then
+      expect(templates).to.eql([
+        { id: 'com.foo.Bar' }, // local
+        { id: 'single', FOO: 'BAR' } // global
+      ]);
+    });
+
   });
 
 

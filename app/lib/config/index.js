@@ -25,13 +25,14 @@ class Config {
   constructor(options) {
     const {
       resourcesPaths,
-      userPath
+      userPath,
+      ignoredPaths = []
     } = options;
 
     const defaultProvider = this._defaultProvider = new DefaultProvider(path.join(userPath, 'config.json'));
 
     this._providers = {
-      'bpmn.elementTemplates': new ElementTemplatesProvider(resourcesPaths, defaultProvider),
+      'bpmn.elementTemplates': new ElementTemplatesProvider(resourcesPaths, ignoredPaths, defaultProvider),
       'editor.id': new UUIDProvider(path.join(userPath, '.editorid')),
       'os.info': new OSInfoProvider()
     };

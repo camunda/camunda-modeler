@@ -14,7 +14,7 @@ const path = require('path');
 
 const { isArray } = require('min-dash');
 
-const { globFiles } = require('../../util/files');
+const { globFiles, toPosixPath } = require('../../util/files');
 
 const log = require('../../log')('app:config:element-templates');
 
@@ -23,8 +23,9 @@ const log = require('../../log')('app:config:element-templates');
  * Get element templates.
  */
 class ElementTemplatesProvider {
-  constructor(paths, defaultProvider) {
+  constructor(paths, ignoredPaths, defaultProvider) {
     this._paths = paths;
+    this._ignoredPaths = ignoredPaths;
     this._defaultProvider = defaultProvider;
   }
 
@@ -45,7 +46,7 @@ class ElementTemplatesProvider {
     ];
 
     return [
-      ...getTemplates(paths),
+      ...getTemplates(paths, this._ignoredPaths),
       ...this._defaultProvider.get('elementTemplates', [])
     ];
   }
@@ -72,16 +73,17 @@ function suffixAll(paths, suffix) {
  * Get element templates.
  *
  * @param  {Array<string>} paths
+ * @param  {Array<string>} ignoredPaths
  *
  * @return {Array<Template>}
  */
-function getTemplates(paths) {
+function getTemplates(paths, ignoredPaths) {
   return paths.reduce((templates, path) => {
     let files;
 
     // do not throw if file not accessible or no such file
     try {
-      files = globTemplates(path);
+      files = globTemplates(path, ignoredPaths);
     } catch (error) {
       log.error(`templates ${ path } glob error`, error);
 
@@ -140,11 +142,14 @@ function getTemplatesForPath(path) {
  * Glob element templates from `<path>/resources`.
  *
  * @param {string} path
+ * @param {Array<string>} ignoredPaths
  *
  * @return {Array<string>}
  */
-function globTemplates(path) {
+function globTemplates(path, ignoredPaths) {
   return globFiles('element-templates/**/*.json', {
-    cwd: path
+    cwd: path,
+    dot: true,
+    ignore: ignoredPaths.map(toPosixPath)
   });
 }
