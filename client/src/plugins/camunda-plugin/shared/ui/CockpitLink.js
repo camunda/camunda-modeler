@@ -32,7 +32,7 @@ export default function CockpitLink(props) {
     children
   } = props;
 
-  const link = useMemo(() => combineUrlSegments(cockpitUrl, path, query), [cockpitUrl, path, query]);
+  const link = useMemo(() => combineUrlSegments(cockpitUrl, path, query), [ cockpitUrl, path, query ]);
 
   return (
     <div className={ css.CockpitLink }>
