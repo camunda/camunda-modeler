@@ -36,6 +36,10 @@ const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
+const {
+  getConnectorTemplatesPath,
+  updateConnectorTemplates
+} = require('./connector-templates/updateConnectorTemplates');
 
 const {
   readFile,
@@ -617,17 +621,24 @@ function bootstrap() {
     ];
   }
 
-  // (2) config
-  const config = new Config({
-    appPath,
-    resourcesPaths,
-    userPath
-  });
-
-  // (3) flags
+  // (2) flags
   const flags = new Flags({
     paths: resourcesPaths,
     overrides: flagOverrides
+  });
+
+  // (3) config
+  const ignoredPaths = [];
+
+  if (!flags.get('enable-connector-templates', false)) {
+    ignoredPaths.push(getConnectorTemplatesPath(userPath));
+  }
+
+  const config = new Config({
+    appPath,
+    resourcesPaths,
+    userPath,
+    ignoredPaths
   });
 
   // error tracking can start as soon as config and flags are initialized.
@@ -680,6 +691,13 @@ function bootstrap() {
 
   // (9) zeebe API
   const zeebeAPI = new ZeebeAPI({ readFile }, ZeebeNode, flags);
+
+  // (10) connector templates
+  if (flags.get('enable-connector-templates', false)) {
+    app.on('app:client-ready', function() {
+      updateConnectorTemplates(renderer, userPath);
+    });
+  }
 
   return {
     config,
