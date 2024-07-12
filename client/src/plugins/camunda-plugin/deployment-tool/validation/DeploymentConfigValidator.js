@@ -11,6 +11,7 @@
 import AUTH_TYPES from '../../shared/AuthTypes';
 
 import { default as CamundaAPI, ApiErrorMessages } from '../../shared/CamundaAPI';
+import { GenericApiErrors } from '../../shared/RestAPI';
 
 import EndpointURLValidator from './EndpointURLValidator';
 
@@ -62,7 +63,7 @@ export default class DeploymentConfigValidator {
   };
 
   onExternalError = (authType, details, code, setFieldError) => {
-    if (code === 'UNAUTHORIZED') {
+    if (code === GenericApiErrors.UNAUTHORIZED) {
       if (authType === AUTH_TYPES.BASIC) {
         this.usernameValidator.onExternalError(details, setFieldError);
         this.passwordValidator.onExternalError(details, setFieldError);
