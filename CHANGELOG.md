@@ -8,11 +8,18 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `DEPS`: update to `camunda-bpmn-js@4.12.1`
+* `DEPS`: update to `bpmn-js@17.9.1`
+* `DEPS`: update to `diagram-js@14.8.0`
 * `DEPS`: update to `@camunda/linting@3.22.0`
 
 ### BPMN
 
 * `FEAT`: support converging inclusive gateway ([#3613](https://github.com/camunda/camunda-modeler/issues/3613))
+* `FIX`: improve performance of deselecting multiple elements ([#4335](https://github.com/camunda/camunda-modeler/issues/4335))
+* `FIX`: show delete action for labels ([bpmn-io/bpmn-js#2163](https://github.com/bpmn-io/bpmn-js/issues/2163))
+* `FIX`: remove incorrect attribute in replace menu ([#4383](https://github.com/camunda/camunda-modeler/issues/4383))
+* `FIX`: add accessible label to drill down button ([#4394](https://github.com/camunda/camunda-modeler/issues/4394))
 * `FIX`: improve `no-loop` performance ([camunda/bpmnlint-plugin-camunda-compat#165](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/165))
 
 ## 5.25.0
