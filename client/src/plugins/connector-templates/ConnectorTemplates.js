@@ -10,6 +10,8 @@
 
 import React, { Fragment, PureComponent } from 'react';
 
+const DOCUMENTATION_URL = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/';
+
 export default class ConnectorTemplates extends PureComponent {
   constructor(props) {
     super(props);
@@ -46,6 +48,8 @@ export default class ConnectorTemplates extends PureComponent {
             <Fragment key={ index }>
               { warning }
               { index === warnings.length - 1 ? null : <br /> }
+              <br />
+              <a href={ DOCUMENTATION_URL }>Learn more</a>
             </Fragment>
           ))
         });
@@ -56,6 +60,7 @@ export default class ConnectorTemplates extends PureComponent {
       displayNotification({
         type: 'success',
         title: hasNew ? 'Camunda Connector templates updated' : 'Camunda Connector templates up to date',
+        content: <a href={ DOCUMENTATION_URL }>Learn more</a>
       });
     });
 
@@ -63,7 +68,11 @@ export default class ConnectorTemplates extends PureComponent {
       displayNotification({
         type: 'error',
         title: 'Error updating Camunda Connector templates',
-        content: message
+        content: <Fragment>
+          <span>{ message }</span>
+          <br />
+          <a href={ DOCUMENTATION_URL }>Learn more</a>
+        </Fragment>
       });
     });
   }
