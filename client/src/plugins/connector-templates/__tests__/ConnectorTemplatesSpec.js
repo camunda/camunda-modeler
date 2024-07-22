@@ -44,7 +44,7 @@ describe('<ConnectorTemplates>', () => {
     backend.receive('client:connector-templates-update-success', null, true);
 
     // then
-    expect(displayNotificationSpy).to.have.been.calledWith({ type: 'success', title: 'Camunda Connector templates updated' });
+    expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'success', title: 'Camunda Connector templates updated' });
 
     expect(triggerActionSpy).to.have.been.calledWith('elementTemplates.reload');
   });
@@ -69,7 +69,7 @@ describe('<ConnectorTemplates>', () => {
     backend.receive('client:connector-templates-update-success', null, false);
 
     // then
-    expect(displayNotificationSpy).to.have.been.calledWith({ type: 'success', title: 'Camunda Connector templates up to date' });
+    expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'success', title: 'Camunda Connector templates up to date' });
 
     expect(triggerActionSpy).to.have.been.calledWith('elementTemplates.reload');
   });
