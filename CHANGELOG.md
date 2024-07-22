@@ -8,6 +8,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `CHORE`: remove outdated Camunda 8 platform versions ([#4396](https://github.com/camunda/camunda-modeler/issues/4396))
 * `DEPS`: update to `camunda-bpmn-js@4.12.1`
 * `DEPS`: update to `bpmn-js@17.9.1`
 * `DEPS`: update to `diagram-js@14.8.0`
