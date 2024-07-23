@@ -9,19 +9,25 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `CHORE`: remove outdated Camunda 8 platform versions ([#4396](https://github.com/camunda/camunda-modeler/issues/4396))
-* `DEPS`: update to `camunda-bpmn-js@4.12.1`
+* `DEPS`: update to `camunda-bpmn-js@4.14.0`
 * `DEPS`: update to `bpmn-js@17.9.1`
 * `DEPS`: update to `diagram-js@14.8.0`
 * `DEPS`: update to `@camunda/linting@3.22.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.22.3`
+* `DEPS`: update to `bpmn-js-properties-panel@5.19.0`
+* `DEPS`: update to `zeebe-bpmn-moddle@1.2.0`
 
 ### BPMN
 
 * `FEAT`: support converging inclusive gateway ([#3613](https://github.com/camunda/camunda-modeler/issues/3613))
+* `FEAT`: change Header value and Field Injection value to text areas ([bpmn-io/bpmn-js-properties-panel#1065](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1065))
+* `FEAT`: support Zeebe execution listeners ([bpmn-io/bpmn-js-properties-panel#1048](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1048))
 * `FIX`: improve performance of deselecting multiple elements ([#4335](https://github.com/camunda/camunda-modeler/issues/4335))
 * `FIX`: show delete action for labels ([bpmn-io/bpmn-js#2163](https://github.com/bpmn-io/bpmn-js/issues/2163))
 * `FIX`: remove incorrect attribute in replace menu ([#4383](https://github.com/camunda/camunda-modeler/issues/4383))
 * `FIX`: add accessible label to drill down button ([#4394](https://github.com/camunda/camunda-modeler/issues/4394))
 * `FIX`: improve `no-loop` performance ([camunda/bpmnlint-plugin-camunda-compat#165](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/165))
+* `FIX`: improve behavior of text areas with `autoResize` property ([#4419](https://github.com/camunda/camunda-modeler/issues/4419))
 
 ## 5.25.0
 
