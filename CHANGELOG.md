@@ -186,7 +186,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: prevent crash when illegal key and path is used ([#4217](https://github.com/camunda/camunda-modeler/issues/4217), [#4218](https://github.com/camunda/camunda-modeler/issues/4218))
 * `FIX`: make the output panel readonly ([#4216](https://github.com/camunda/camunda-modeler/issues/4216))
 
-
 ## 5.21.0
 
 ### General
@@ -394,7 +393,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add toggle for non-interrupting events ([bpmn-io/bpmn-js#2000](https://github.com/bpmn-io/bpmn-js/pull/2000))
 * `FEAT`: keep events non-interrupting when using `bpmnReplace` by default ([bpmn-io/bpmn-js#2000](https://github.com/bpmn-io/bpmn-js/pull/2000))
 * `FEAT`: preview append on hover ([bpmn-io/bpmn-js#1985](https://github.com/bpmn-io/bpmn-js/pull/1985))
-* `FEAT`: align selection outline with element's shape ([bpmn-io/bpmn-io/bpmn-js#1996]((https://github.com/bpmn-io/bpmn-js/pull/1985)))
+* `FEAT`: align selection outline with element's shape ([bpmn-io/bpmn-io/bpmn-js#1996](https://github.com/bpmn-io/bpmn-js/pull/1985))
 * `FEAT`: make space tool local per default ([bpmn-io/diagram-js#811](https://github.com/bpmn-io/diagram-js/pull/811), [bpmn-io/bpmn-js#1975](https://github.com/bpmn-io/bpmn-js/issues/1975))
 * `FEAT`: support Camunda 8 form reference ([bpmn-io/bpmn-js-properties-panel#978](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/978), [bpmn-io/bpmn-js-properties-panel#949](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/949))
 * `FEAT`: add link to learning resources from the FEEL popup editor ([@bpmn-io/properties-panel#308](https://github.com/bpmn-io/properties-panel/pull/308))
@@ -426,12 +425,12 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: drop missleading audience hint in deploy dialog ([#3864](https://github.com/camunda/camunda-modeler/issues/3864))
 * `FEAT`: improve error messages shown in deploy dialog ([#3808](https://github.com/camunda/camunda-modeler/issues/3808), [#3873](https://github.com/camunda/camunda-modeler/pull/3873))
 * `FEAT`: mark `8.3` as stable ([#3882](https://github.com/camunda/camunda-modeler/issues/3882))
-* `DEPS`: update to bpmn-js-properties-panel@5.8.0
-* `DEPS`: update to camunda-bpmn-js@3.4.0
-* `DEPS`: update to camunda-dmn-js@1.2.1
-* `DEPS`: update to form-js@1.3.0
-* `DEPS`: update to form-linting@0.11.0
-* `DEPS`: update to form-playground@0.9.0
+* `DEPS`: update to `bpmn-js-properties-panel@5.8.0`
+* `DEPS`: update to `camunda-bpmn-js@3.4.0`
+* `DEPS`: update to `camunda-dmn-js@1.2.1`
+* `DEPS`: update to `form-js@1.3.0`
+* `DEPS`: update to `form-linting@0.11.0`
+* `DEPS`: update to `form-playground@0.9.0`
 
 ### BPMN
 
@@ -442,6 +441,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correct dirty marker not updating ([#3815](https://github.com/camunda/camunda-modeler/issues/3815))
 * `FIX`: correct HTTL incorrectly reported as error ([#3853](https://github.com/camunda/camunda-modeler/issues/3853))
 *
+
 ### Forms
 
 * `FEAT`: support group component ([bpmn-io/form-js#768](https://github.com/bpmn-io/form-js/pull/768))
@@ -467,11 +467,11 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `DEPS` update to @bpmn-io/properties-panel@3.4.0
-* `DEPS` update to @camunda/linting@3.7.1
-* `DEPS` update to bpmn-js-element-templates@1.4.0
-* `DEPS` update to bpmn-js-properties-panel@5.1.0
-* `DEPS` update to camunda-bpmn-js@3.3.0
+* `DEPS` update to `@bpmn-io/properties-panel@3.4.0`
+* `DEPS` update to `@camunda/linting@3.7.1`
+* `DEPS` update to `bpmn-js-element-templates@1.4.0`
+* `DEPS` update to `bpmn-js-properties-panel@5.1.0`
+* `DEPS` update to `camunda-bpmn-js@3.3.0`
 
 ### BPMN
 
@@ -528,7 +528,6 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `form-js` to 1.1.0
 * `DEPS`: update to `form-linting` to 0.10.0
 * `DEPS`: update to `form-playground` to 0.8.0
-
 
 ## 5.13.0
 

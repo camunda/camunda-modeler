@@ -6,7 +6,6 @@
 * ...
 * ...
 
-
 ## Release Checklist
 
 _To be done immediately after creating this issue._
@@ -16,7 +15,7 @@ _To be done immediately after creating this issue._
 _To be done to prepare and build the release._
 
 * [ ] make sure changes in upstream libraries are merged and released
-    * `bpmn-js`, `dmn-js`, `*-properties-panel`, `*-moddle`, `camunda-bpmn-js`, `form-js`, ...
+  * `bpmn-js`, `dmn-js`, `*-properties-panel`, `*-moddle`, `camunda-bpmn-js`, `form-js`, ...
 * [ ] make sure dependencies to upstream libraries are updated and can be installed (`rm -rf node_modules && npm i && npm run all` works)
 * [ ] close all issues which are solved by dependency updates
 * [ ] ensure that the modeler is free of major security vulnerabilities via `npm audit`
@@ -24,7 +23,7 @@ _To be done to prepare and build the release._
 * [ ] update [Release Info](https://github.com/camunda/camunda-modeler/blob/master/client/src/plugins/version-info/ReleaseInfo.js)
 * [ ] update [`CHANGELOG`](https://github.com/camunda/camunda-modeler/blob/master/CHANGELOG.md)
 * [ ] create release (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/tree/master/release-schema)
-    * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
+  * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
 * [ ] prepare a list of what was changed or needs to be tested
 * [ ] execute integration test, verifying fixed things are actually fixed
 * [ ] (optional) trigger QA for testing
