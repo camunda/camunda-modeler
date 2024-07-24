@@ -10,9 +10,9 @@ steps to try out your changes.
 
 To ensure you provided everything we need to look at your PR:
 
-* [ ] **Brief textual description** of the changes present
-* [ ] **Visual demo** attached
-* [ ] **Steps to try out** present, i.e. [using the `@bpmn-io/sr` tool](https://github.com/bpmn-io/sr)
+* [ ] __Brief textual description__ of the changes present
+* [ ] __Visual demo__ attached
+* [ ] __Steps to try out__ present, i.e. [using the `@bpmn-io/sr` tool](https://github.com/bpmn-io/sr)
 * [ ] Related issue linked via `Closes {LINK_TO_ISSUE}` or `Related to {LINK_TO_ISSUE}`
 
 <!--
