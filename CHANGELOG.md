@@ -13,7 +13,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: make text area auto resize by default ([#3660](https://github.com/camunda/camunda-modeler/issues/3660))
 * `CHORE`: remove outdated Camunda 8 platform versions ([#4396](https://github.com/camunda/camunda-modeler/issues/4396))
 * `DEPS`: update to `@bpmn-io/properties-panel@3.23.0`
-* `DEPS`: update to `@camunda/linting@3.23.0`
+* `DEPS`: update to `@camunda/linting@3.24.0`
 * `DEPS`: update to `bpmn-js@17.9.1`
 * `DEPS`: update to `bpmn-js-create-append-anything@0.5.2`
 * `DEPS`: update to `bpmn-js-element-templates@2.1.0`
@@ -27,7 +27,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### BPMN
 
-* `FEAT`: add `Binding` entry to business rule task, call activity and user task ([bpmn-io/bpmn-js-properties-panel#1067](https://github.com/camunda/camunda-modeler/issues/4385))
+* `FEAT`: support `bindingType` for business rule task, call activity, and user task ([#4385](https://github.com/camunda/camunda-modeler/issues/4385), [#4386](https://github.com/camunda/camunda-modeler/issues/4386))
 * `FEAT`: support converging inclusive gateway ([#3613](https://github.com/camunda/camunda-modeler/issues/3613))
 * `FEAT`: change Header value and Field Injection value to text areas ([bpmn-io/bpmn-js-properties-panel#1065](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1065))
 * `FEAT`: support Zeebe execution listeners ([#3951](https://github.com/camunda/camunda-modeler/issues/3951))
