@@ -27,7 +27,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### BPMN
 
-* `FEAT`: add `Binding` entry to busines rule task, call activity and user task ([bpmn-io/bpmn-js-properties-panel#1067](https://github.com/camunda/camunda-modeler/issues/4385))
+* `FEAT`: add `Binding` entry to business rule task, call activity and user task ([bpmn-io/bpmn-js-properties-panel#1067](https://github.com/camunda/camunda-modeler/issues/4385))
 * `FEAT`: support converging inclusive gateway ([#3613](https://github.com/camunda/camunda-modeler/issues/3613))
 * `FEAT`: change Header value and Field Injection value to text areas ([bpmn-io/bpmn-js-properties-panel#1065](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1065))
 * `FEAT`: support Zeebe execution listeners ([#3951](https://github.com/camunda/camunda-modeler/issues/3951))
