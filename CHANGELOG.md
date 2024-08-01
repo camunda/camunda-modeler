@@ -6,32 +6,46 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.26.0
+
 ### General
 
+* `FEAT`: make text area auto resize by default ([#3660](https://github.com/camunda/camunda-modeler/issues/3660))
 * `CHORE`: remove outdated Camunda 8 platform versions ([#4396](https://github.com/camunda/camunda-modeler/issues/4396))
-* `DEPS`: update to `camunda-bpmn-js@4.15.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.23.0`
+* `DEPS`: update to `@camunda/linting@3.23.0`
 * `DEPS`: update to `bpmn-js@17.9.1`
-* `DEPS`: update to `diagram-js@14.8.0`
-* `DEPS`: update to `@camunda/linting@3.22.0`
-* `DEPS`: update to `@bpmn-io/properties-panel@3.22.3`
-* `DEPS`: update to `bpmn-js-element-templates@2.0.0`
 * `DEPS`: update to `bpmn-js-create-append-anything@0.5.2`
-* `DEPS`: update to `bpmn-js-properties-panel@5.19.0`
-* `DEPS`: update to `zeebe-bpmn-moddle@1.2.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.1.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.21.0`
+* `DEPS`: update to `camunda-bpmn-js@4.17.0`
+* `DEPS`: update to `camunda-dmn-js@2.7.0`
+* `DEPS`: update to `diagram-js@14.8.0`
+* `DEPS`: update to `dmn-js@16.6.1`
+* `DEPS`: update to `dmn-js-properties-panel@3.4.1`
+* `DEPS`: update to `zeebe-bpmn-moddle@1.4.0`
 
 ### BPMN
 
+* `FEAT`: add `Binding` entry to busines rule task, call activity and user task ([bpmn-io/bpmn-js-properties-panel#1067](https://github.com/camunda/camunda-modeler/issues/4385))
 * `FEAT`: support converging inclusive gateway ([#3613](https://github.com/camunda/camunda-modeler/issues/3613))
 * `FEAT`: change Header value and Field Injection value to text areas ([bpmn-io/bpmn-js-properties-panel#1065](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1065))
-* `FEAT`: support Zeebe execution listeners ([bpmn-io/bpmn-js-properties-panel#1048](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1048))
-* `FIX`: safely remove message when changing template ([bpmn-io/bpmn-js-element-templates#111](https://github.com/bpmn-io/bpmn-js-element-templates/pull/111), [#4357](https://github.com/camunda/camunda-modeler/issues/4357))
-* `FIX`: remove existing event definition when applying template ([bpmn-io/bpmn-js-element-templates#111](https://github.com/bpmn-io/bpmn-js-element-templates/pull/111), [#4357](https://github.com/camunda/camunda-modeler/issues/4357))
+* `FEAT`: support Zeebe execution listeners ([#3951](https://github.com/camunda/camunda-modeler/issues/3951))
+* `FIX`: safely remove message when changing template ([#4357](https://github.com/camunda/camunda-modeler/issues/4357))
+* `FIX`: remove existing event definition when applying template ([#4357](https://github.com/camunda/camunda-modeler/issues/4357))
 * `FIX`: improve performance of deselecting multiple elements ([#4335](https://github.com/camunda/camunda-modeler/issues/4335))
 * `FIX`: show delete action for labels ([bpmn-io/bpmn-js#2163](https://github.com/bpmn-io/bpmn-js/issues/2163))
 * `FIX`: remove incorrect attribute in replace menu ([#4383](https://github.com/camunda/camunda-modeler/issues/4383))
 * `FIX`: add accessible label to drill down button ([#4394](https://github.com/camunda/camunda-modeler/issues/4394))
 * `FIX`: improve `no-loop` performance ([camunda/bpmnlint-plugin-camunda-compat#165](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/165))
 * `FIX`: improve behavior of text areas with `autoResize` property ([#4419](https://github.com/camunda/camunda-modeler/issues/4419))
+
+### DMN
+
+* `FEAT`: add `Modeling#updateModdleProperties` ([bpmn-io/dmn-js#886](https://github.com/bpmn-io/dmn-js/pull/886))
+* `FIX`: make it work in web components ([bpmn-io/dmn-js#631](https://github.com/bpmn-io/dmn-js/issues/631))
+* `FIX`: remove incorrect attribute in replace menu ([#4383](https://github.com/camunda/camunda-modeler/issues/4383))
+* `FIX`: make name field a text area ([bpmn-io/dmn-js-properties-panel#94](https://github.com/bpmn-io/dmn-js-properties-panel/issues/94))
 
 ## 5.25.0
 
