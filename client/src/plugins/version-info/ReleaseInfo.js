@@ -44,12 +44,12 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Accessibility improvements</h4>
-          This release enhances keyboard navigation, adds screen-reader friendly labels, and better visual cues for the benefit of our users.
+          <h4>Support for Camunda 8.6 features</h4>
+          This release adds support for upcoming Camunda 8.6 features, including execution listeners, the new binding type property, and converging inclusive gateways.
         </li>
         <li>
-          <h4>Form component documentation</h4>
-          Documentation links embedded into the properties panel give you quick access to functions and configurations each Form component supports.
+          <h4>Adaptable inputs</h4>
+          For multi-line entries in the properties panel, the height of the input fields now adapts to the content.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
