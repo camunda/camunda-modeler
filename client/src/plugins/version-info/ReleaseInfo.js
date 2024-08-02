@@ -48,8 +48,8 @@ export function ReleaseInfo(props) {
           This release adds support for upcoming Camunda 8.6 features, including execution listeners, the new binding type property, and converging inclusive gateways.
         </li>
         <li>
-          <h4>Adaptable inputs</h4>
-          For multi-line entries in the properties panel, the height of the input fields now adapts to the content.
+          <h4>Adaptable input fields</h4>
+          For multi-line entries in the Properties panel, the height of the input fields now adapts to the content.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
