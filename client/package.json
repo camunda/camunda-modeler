@@ -68,7 +68,7 @@
     "sourcemapped-stacktrace": "^1.1.11",
     "ua-parser-js": "^1.0.37",
     "zeebe-bpmn-moddle": "^1.2.0",
-    "@bpmn-io/variable-outline": "github:bpmn-io/variable-outline#065acf6"
+    "@bpmn-io/variable-outline": "github:bpmn-io/variable-outline#868ee33d069535a79785ae3039ad6645bebf499e"
   },
   "homepage": ".",
   "devDependencies": {
