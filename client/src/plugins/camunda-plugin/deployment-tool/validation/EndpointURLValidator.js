@@ -9,7 +9,7 @@
  */
 
 import BaseInputValidator from './BaseInputValidator';
-import { GenericApiErrors } from "../../shared/RestAPI";
+import { GenericApiErrors } from '../../shared/RestAPI';
 
 export default class EndpointURLValidator extends BaseInputValidator {
 
