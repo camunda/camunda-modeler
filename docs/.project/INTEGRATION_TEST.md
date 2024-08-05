@@ -92,11 +92,6 @@ Based on the [test diagram](./test.bpmn.png):
 * [ ] add a regular expression (`^CAM-[0-9]+$`) to the invoice number field
 * [ ] save file on disk as `test.form`
 * [ ] file imports correctly after save
-* [ ] Set the __Execution Platform Version__ to `Camunda 8 (Zeebe 1.0)`
-  * [ ] 4 errors are shown: `Text`, `Number`, `Checkbox`, and `Radio` are not supported
-  * [ ] Clicking on an error focuses the respective element
-* [ ] Set the __Execution Platform Version__ to `Camunda 8 (Zeebe 1.2)`
-  * [ ] 0 errors are shown
 
 #### BPMN + Camunda Forms deployment
 
@@ -123,7 +118,7 @@ Based on the [test diagram](./test.bpmn.png):
 #### Accessibility
 
 * [ ] No new issues were reported during the tests
-* [ ] The modal opened via "Accessibility issues" button is empty
+* [ ] The modal opened via "Accessibility violations" button is empty
 
 #### Installers (platform specific)
 
