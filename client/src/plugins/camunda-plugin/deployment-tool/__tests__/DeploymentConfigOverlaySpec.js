@@ -24,6 +24,7 @@ import { merge } from 'min-dash';
 import AUTH_TYPES from '../../shared/AuthTypes';
 import DeploymentConfigOverlay from '../DeploymentConfigOverlay';
 import DeploymentConfigValidator from '../validation/DeploymentConfigValidator';
+import { GenericApiErrors } from '../../shared/RestAPI';
 
 let mounted;
 
@@ -92,7 +93,7 @@ describe('<DeploymentConfigOverlay>', () => {
       const validator = new MockValidator({
         validateConnection: () => new Promise((resolve, err) => {
           resolve({
-            code: 'UNAUTHORIZED'
+            code: GenericApiErrors.UNAUTHORIZED
           });
         })
       });

@@ -25,9 +25,10 @@ import StartInstanceTool from '../StartInstanceTool';
 
 import {
   DeploymentError,
-  ConnectionError,
   StartInstanceError
 } from '../../shared/CamundaAPI';
+
+import { ConnectionError } from '../../shared/RestAPI';
 
 import {
   Slot,
@@ -1145,13 +1146,17 @@ describe('<StartInstanceTool>', () => {
             }
           };
 
+          const [ protocol,, host ] = deploymentUrl.split('/');
+          const getCockpitUrlSpy = sinon.stub().returns(`${protocol}//${host}/app/cockpit/default/#/`);
+
           const {
             instance
           } = createStartInstanceTool({
             activeTab,
             deployService,
             displayNotification,
-            startSpy
+            startSpy,
+            getCockpitUrlSpy,
           });
 
           // when
@@ -1161,7 +1166,7 @@ describe('<StartInstanceTool>', () => {
 
             // then
             try {
-              const cockpitLink = shallow(notification.content).find('a').first();
+              const cockpitLink = mount(notification.content).find('a').first();
               const { href } = cockpitLink.props();
 
               expect(href).to.eql(expectedCockpitLink);
@@ -1175,21 +1180,9 @@ describe('<StartInstanceTool>', () => {
       }
 
 
-      it('should display Spring-specific Cockpit link', testCockpitLink(
+      it('should display Cockpit link', testCockpitLink(
         'http://localhost:8080/rest',
         'http://localhost:8080/app/cockpit/default/#/process-instance/foo'
-      ));
-
-
-      it('should display Tomcat-specific Cockpit link', testCockpitLink(
-        'http://localhost:8080/engine-rest',
-        'http://localhost:8080/camunda/app/cockpit/default/#/process-instance/foo'
-      ));
-
-
-      it('should display Spring-specific Cockpit link for custom rest url', testCockpitLink(
-        'http://customized-camunda.bpmn.io/custom-rest',
-        'http://customized-camunda.bpmn.io/app/cockpit/default/#/process-instance/foo'
       ));
     });
 
@@ -1217,6 +1210,11 @@ class TestStartInstanceTool extends StartInstanceTool {
     }
 
     return this.props.startSpy && this.props.startSpy(...args);
+  }
+
+  // removes WellKnownAPI dependency
+  async getCockpitUrl(engineUrl) {
+    return this.props.getCockpitUrlSpy && await this.props.getCockpitUrlSpy(engineUrl);
   }
 
   async deploy(...args) {

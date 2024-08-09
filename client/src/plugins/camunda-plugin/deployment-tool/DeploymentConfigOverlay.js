@@ -30,6 +30,7 @@ import {
   Formik,
   Field
 } from 'formik';
+import { GenericApiErrors } from '../shared/RestAPI';
 
 export default class DeploymentConfigOverlay extends React.PureComponent {
 
@@ -153,7 +154,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
         code
       } = connectionValidation;
 
-      if (code === 'UNAUTHORIZED') {
+      if (code === GenericApiErrors.UNAUTHORIZED) {
         this.setState({
           isAuthNeeded: true
         });
@@ -213,7 +214,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
       if (!result) {
         this.onAuthDetection(false);
       } else if (!result.isExpired) {
-        this.onAuthDetection(!!result && (result.code === 'UNAUTHORIZED'));
+        this.onAuthDetection(!!result && (result.code === GenericApiErrors.UNAUTHORIZED));
       }
     });
   };

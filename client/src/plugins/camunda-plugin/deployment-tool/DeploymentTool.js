@@ -14,12 +14,14 @@ import { omit } from 'min-dash';
 
 import classNames from 'classnames';
 
-import { default as CamundaAPI, ApiErrors, ConnectionError } from '../shared/CamundaAPI';
+import { default as CamundaAPI, DeploymentError } from '../shared/CamundaAPI';
+import { ConnectionError, GenericApiErrors } from '../shared/RestAPI';
 import AUTH_TYPES from '../shared/AuthTypes';
+
+import CockpitDeploymentLink from '../shared/ui/CockpitDeploymentLink';
 
 import DeploymentConfigOverlay from './DeploymentConfigOverlay';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
-import { DeploymentError } from '../shared/CamundaAPI';
 
 import * as css from './DeploymentTool.less';
 
@@ -32,6 +34,7 @@ import { Fill } from '../../../app/slot-fill';
 import DeployIcon from 'icons/Deploy.svg';
 
 import { ENGINES } from '../../../util/Engines';
+import { determineCockpitUrl } from '../shared/webAppUrls';
 
 const DEPLOYMENT_DETAILS_CONFIG_KEY = 'deployment-tool';
 const ENGINE_ENDPOINTS_CONFIG_KEY = 'camundaEngineEndpoints';
@@ -175,7 +178,7 @@ export default class DeploymentTool extends PureComponent {
     }
   }
 
-  handleDeploymentSuccess(tab, deployment, version, configuration) {
+  async handleDeploymentSuccess(tab, deployment, version, configuration) {
     const {
       displayNotification,
       triggerAction
@@ -189,10 +192,12 @@ export default class DeploymentTool extends PureComponent {
       url
     } = endpoint;
 
+    const cockpitUrl = await this.getCockpitUrl(url);
+
     displayNotification({
       type: 'success',
       title: `${getDeploymentType(tab)} deployed`,
-      content: <CockpitLink endpointUrl={ url } deployment={ deployment } />,
+      content: <CockpitDeploymentLink cockpitUrl={ cockpitUrl } deployment={ deployment } />,
       duration: 8000
     });
 
@@ -209,6 +214,10 @@ export default class DeploymentTool extends PureComponent {
         context: 'deploymentTool'
       }
     });
+  }
+
+  async getCockpitUrl(engineUrl) {
+    return await determineCockpitUrl(engineUrl);
   }
 
   async saveProcessDefinition(tab, deployment) {
@@ -533,9 +542,9 @@ export default class DeploymentTool extends PureComponent {
 
     const { code } = result;
 
-    return (code !== ApiErrors.NO_INTERNET_CONNECTION &&
-            code !== ApiErrors.CONNECTION_FAILED &&
-              code !== ApiErrors.NOT_FOUND);
+    return (code !== GenericApiErrors.NO_INTERNET_CONNECTION &&
+            code !== GenericApiErrors.CONNECTION_FAILED &&
+              code !== GenericApiErrors.NOT_FOUND);
   }
 
   closeOverlay(overlayState) {
@@ -595,39 +604,6 @@ export default class DeploymentTool extends PureComponent {
     </React.Fragment>;
   }
 
-}
-
-function CockpitLink(props) {
-  const {
-    endpointUrl,
-    deployment
-  } = props;
-
-  const {
-    id,
-    deployedProcessDefinition
-  } = deployment;
-
-  const baseUrl = getWebAppsBaseUrl(endpointUrl);
-
-  const query = `deploymentsQuery=%5B%7B%22type%22:%22id%22,%22operator%22:%22eq%22,%22value%22:%22${id}%22%7D%5D`;
-  const cockpitUrl = `${baseUrl}/cockpit/default/#/repository/?${query}`;
-
-  return (
-    <div className={ css.CockpitLink }>
-      {deployedProcessDefinition ?
-        (
-          <div>
-            Process definition ID:
-            <code>{deployedProcessDefinition.id} </code>
-          </div>
-        )
-        : null}
-      <a href={ cockpitUrl }>
-        Open in Camunda Cockpit
-      </a>
-    </div>
-  );
 }
 
 // helpers //////////
@@ -696,14 +672,4 @@ function withSerializedAttachments(deployment) {
 
 function basename(filePath) {
   return filePath.split('\\').pop().split('/').pop();
-}
-
-function getWebAppsBaseUrl(url) {
-  const [ protocol,, host, restRoot ] = url.split('/');
-
-  return isTomcat(restRoot) ? `${protocol}//${host}/camunda/app` : `${protocol}//${host}/app`;
-}
-
-function isTomcat(restRoot) {
-  return restRoot === 'engine-rest';
 }
