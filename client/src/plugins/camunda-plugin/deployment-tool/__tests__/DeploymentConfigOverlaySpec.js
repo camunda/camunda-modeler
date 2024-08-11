@@ -12,8 +12,6 @@
 
 import React from 'react';
 
-import { act } from 'react-dom/test-utils';
-
 import {
   mount,
   shallow
@@ -139,39 +137,38 @@ describe('<DeploymentConfigOverlay>', () => {
         }
       };
 
+      const validator = new MockValidator({
+        validateConnection: () => new Promise((resolve, err) => {
+          resolve({
+            code: GenericApiErrors.UNAUTHORIZED
+          });
+        })
+      });
+
       const {
         wrapper,
         instance
       } = createOverlay({
         anchor,
-        configuration
+        configuration,
+        validator
       }, mount);
 
       // when
-      act(() => {
-        instance.setState({ isAuthNeeded: true });
-      });
+      setTimeout(() => {
 
-      instance.isOnBeforeSubmit = true;
-
-      wrapper.update();
-
-      act(() => {
+        // delayed execution because it is async that the deployment
+        // tool knows if the authentication is necessary
+        instance.isOnBeforeSubmit = true;
         wrapper.find('.btn-primary').simulate('submit');
       });
 
       // then
       setTimeout(() => {
         wrapper.update();
-
-        try {
-          expect(wrapper.find('.invalid-feedback')).to.have.length(1);
-        } catch (err) {
-          return done(err);
-        }
-
-        return done();
-      }, 100);
+        expect(wrapper.find('.invalid-feedback')).to.have.length(1);
+        done();
+      }, 200);
     });
 
 
