@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import CockpitLink from './CockpitLink';
 
@@ -24,7 +24,7 @@ export default function CockpitDeploymentLink(props) {
   } = deployment;
 
   const cockpitPath = 'repository';
-  const cockpitQuery = useMemo(() => `?deploymentsQuery=%5B%7B%22type%22:%22id%22,%22operator%22:%22eq%22,%22value%22:%22${id}%22%7D%5D`, [ id ]);
+  const cockpitQuery = `?deploymentsQuery=%5B%7B%22type%22:%22id%22,%22operator%22:%22eq%22,%22value%22:%22${id}%22%7D%5D`;
 
   return (
     <CockpitLink cockpitUrl={ cockpitUrl } path={ cockpitPath } query={ cockpitQuery }>
