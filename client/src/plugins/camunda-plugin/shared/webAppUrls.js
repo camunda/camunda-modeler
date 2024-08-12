@@ -8,24 +8,28 @@
  * except in compliance with the MIT License.
  */
 
+import debug from 'debug';
+
 import { forEngineRestUrl } from './WellKnownAPI';
+
+const log = debug('WebAppUrls');
 
 export async function determineCockpitUrl(engineUrl) {
   try {
     const cockpitUrl = await forEngineRestUrl(engineUrl).getCockpitUrl();
 
     if (cockpitUrl) {
-      console.debug(`Using cockpit url from well known endpoint: ${engineUrl}`);
+      log(`Using cockpit url from well known endpoint: ${engineUrl}`);
       return cockpitUrl;
     }
 
     const fallbackUrl = getDefaultCockpitUrl(engineUrl);
-    console.debug(`The well known endpoint did not provide a cockpit url, falling back to ${fallbackUrl}.`);
+    log(`The well known endpoint did not provide a cockpit url, falling back to ${fallbackUrl}.`);
     return fallbackUrl;
 
   } catch (e) {
     const fallbackUrl = getDefaultCockpitUrl(engineUrl);
-    console.debug(`An error occurred retrieving the cockpit url from well known endpoint, falling back to ${fallbackUrl}. Cause: ${e}`);
+    log(`An error occurred retrieving the cockpit url from well known endpoint, falling back to ${fallbackUrl}. Cause: ${e}`);
     return fallbackUrl;
   }
 }
