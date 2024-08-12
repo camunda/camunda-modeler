@@ -22,7 +22,7 @@ export default function CockpitProcessInstanceLink(props) {
     id
   } = processInstance;
 
-  const cockpitPath = useMemo(() => `process-instance/${id}`, [ id ]);
+  const cockpitPath = `process-instance/${id}`;
 
   return (
     <CockpitLink cockpitUrl={ cockpitUrl } path={ cockpitPath }>
