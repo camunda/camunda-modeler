@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import CockpitLink from './CockpitLink';
 
