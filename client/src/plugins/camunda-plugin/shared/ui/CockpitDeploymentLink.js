@@ -23,7 +23,7 @@ export default function CockpitDeploymentLink(props) {
     deployedProcessDefinition
   } = deployment;
 
-  const cockpitPath = useMemo(() => 'repository');
+  const cockpitPath = 'repository';
   const cockpitQuery = useMemo(() => `?deploymentsQuery=%5B%7B%22type%22:%22id%22,%22operator%22:%22eq%22,%22value%22:%22${id}%22%7D%5D`, [ id ]);
 
   return (
