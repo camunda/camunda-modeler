@@ -10,6 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: automatically download Camunda connectors ([#4302](https://github.com/camunda/camunda-modeler/issues/4302))
 * `FEAT`: make text area auto resize by default ([#3660](https://github.com/camunda/camunda-modeler/issues/3660))
 * `CHORE`: remove outdated Camunda 8 platform versions ([#4396](https://github.com/camunda/camunda-modeler/issues/4396))
 * `DEPS`: update to `@bpmn-io/properties-panel@3.23.0`
