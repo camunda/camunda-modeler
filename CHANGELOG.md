@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `FEAT`: automatically download Camunda connectors ([#4302](https://github.com/camunda/camunda-modeler/issues/4302))
+
 ## 5.26.0
 
 ### General
