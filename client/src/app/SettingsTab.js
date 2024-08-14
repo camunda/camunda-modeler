@@ -31,17 +31,43 @@ export default class SettingsTab extends PureComponent {
 
     return (
       <Tab className={ css.SettingsTab }>
-        <h1>This is the settings page</h1>
+        <div className="settings-container">
+          <h1>Settings</h1>
 
-        <p>
-          Lorem ipsum foo bar wat.
-        </p>
+          <p>
+            Configure the look and feel of the editor.
+          </p>
 
-        <h3>Startup Flags</h3>
+          <section>
+            <h2>Canvas</h2>
 
-        <pre>
-          { JSON.stringify(Flags.data, 0, 2) }
-        </pre>
+            <p>
+              <div className="alert-warning">
+                This setting is overridden via a <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/flags">feature flag</a>.
+              </div>
+
+              <label><input type="checkbox" /> Enable <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/flags/#enable-new-context-pad">improved context pad</a>.</label>
+            </p>
+          </section>
+
+          <section>
+            <h2>Connectors</h2>
+
+            <p>
+              <label><input type="checkbox" /> Make <a href="https://docs.camunda.io/docs/next/components/modeler/desktop-modeler/use-connectors/">Camunda Connectors</a> available.</label>
+            </p>
+          </section>
+
+          <section>
+            <h2>Startup Flags</h2>
+
+            <p><a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/flags">Feature flags</a> recognized at application startup, overriding local settings:</p>
+
+            <pre>
+              { JSON.stringify(Flags.data, 0, 2) }
+            </pre>
+          </section>
+        </div>
       </Tab>
     );
   }

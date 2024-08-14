@@ -1,137 +1,45 @@
 :local(.SettingsTab) {
+  --warning-color: var(--color-yellow-47-88-53);
+  --warning-background: var(--color-yellow-47-86-91);
+
   display: flex;
   flex-direction: column;
 
-  align-items: center;
-  justify-content: center;
-
-  padding: 7px;
+  align-items: flex-start;
+  justify-content: flex-start;
   overflow-y: auto;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-
+  overflow-y: auto;
 
   font-size: 14px;
   font-weight: 400;
   font-family: 'IBM Plex Sans';
 
-  .flex-spacer {
-    min-width: 5px;
-    max-width: 40px;
-    width: 1%;
-  }
-
-  h2.welcome-header {
-    font-size: 18px;
-    font-weight: 400;
-    margin-bottom: 35px;
-  }
-
-  .welcome-cards {
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    flex-direction: row;
-  }
-
-  .welcome-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .settings-container {
     background-color: var(--color-grey-225-10-97);
     color: var(--color-grey-225-10-15);
     border-radius: 10px;
-    width: 280px;
-    min-height: 390px;
-    padding: 15px;
-    padding-top: 20px;
+    width: 100%;
+    padding: 0 15px;
+    margin: 7px;
     position: relative;
 
-    h3 {
-      font-size: 16px;
-      font-weight: 400;
-      white-space: nowrap;
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 20px 0 14px 0;
     }
+  }
 
-    a {
-      color: var(--color-blue-205-100-50);
-      font-weight: 14px;
-    }
-
-    .relative {
-      position: relative;
-    }
-
-    .cloud-icon {
-      margin-left: -10px;
-    }
-
-    .platform-icon {
-      margin-left: -20px;
-      margin-right: -7px;
-    }
-
-    .engine-icon {
-      color: var(--color-grey-225-10-35);
-    }
-
-    .engine-info {
-      .engine-info-heading {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .learn-more {
-      padding-right: 20px;
-      align-items: flex-start;
-
-      h3 {
-        margin-top: 22px;
-        margin-bottom: 34px;
-      }
-
-      .article {
-        margin-bottom: 25px;
-
-        p {
-          margin-bottom: 0;
-        }
-      }
-    }
-  
-    button {
-      margin: 0.5em;
-      background-color: var(--color-blue-205-100-50);
-      color:white;
-      font-weight: normal;
-      display: flex;
-      align-items: center;
-      width: 200px;
-      height:42px;
-      border: none;
-      border-radius: 4px;
-      padding: 10px;
-      box-shadow: none;
-
-      &:hover {
-        background-color: var(--color-blue-205-100-45);
-      }
-
-      svg {
-        margin-right: 10px;
-        width: 24px;
-        height: 24px;
-      }
-    }
+  .alert-warning {
+    padding: 12px;
+    border: solid 1px var(--warning-color);
+    border-left-width: 3px;
+    background: var(--warning-background);
+    margin-bottom: 16px;
   }
 }
