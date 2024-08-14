@@ -28,6 +28,8 @@ import {
 
 import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
 
+import VariableTab from '../../panel/tabs/variable-outline/VariableOutlineTab';
+
 import BpmnModeler from './modeler';
 
 import { active as isInputActive } from '../../../util/dom/isInput';
@@ -788,6 +790,11 @@ export class BpmnEditor extends CachedComponent {
           engineProfile={ engineProfile }
           onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } />
         }
+
+        <VariableTab
+          id={ this.props.id }
+          layout={ layout }
+          injector={ this.getModeler().get('injector') } />
       </div>
     );
   }
