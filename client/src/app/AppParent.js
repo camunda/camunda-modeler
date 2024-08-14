@@ -280,11 +280,13 @@ export default class AppParent extends PureComponent {
 
     log('restoring / opening files', files, activeFile);
 
-    await this.getApp().openFiles(files, activeFile);
+    await this.getApp().openFiles(files, false);
 
     if (typeof onStarted === 'function') {
       onStarted();
     }
+
+    await this.getApp().openSettings();
   };
 
   getApp() {
