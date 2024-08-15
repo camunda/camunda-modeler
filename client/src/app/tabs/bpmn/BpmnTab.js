@@ -15,11 +15,12 @@ import { createTab } from '../EditorTab';
 
 
 const BpmnTab = createTab('BpmnTab', [
-  {
-    type: 'bpmn',
-    editor: BpmnEditor,
-    defaultName: 'Diagram (Camunda Platform)'
-  },
+
+  // {
+  //   type: 'bpmn',
+  //   editor: BpmnEditor,
+  //   defaultName: 'Diagram (Camunda Platform)'
+  // },
   {
     type: 'xml',
     editor: XMLEditor,

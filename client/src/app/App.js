@@ -1791,6 +1791,10 @@ export class App extends PureComponent {
       return this.createDiagram('form');
     }
 
+    if (action === 'create-robot') {
+      return this.createDiagram('robot');
+    }
+
     if (action === 'create-cloud-form') {
       return this.createDiagram('cloud-form');
     }

@@ -16,20 +16,18 @@ import {
   CachedComponent
 } from '../../cached';
 
-import CodeMirror from './CodeMirror';
+import Monaco from './Monaco';
 
 import * as css from './XMLEditor.less';
 
-import { getXMLEditMenu } from './getXMLEditMenu';
-
-import getXMLWindowMenu from './getXMLWindowMenu';
+import { getRobotEditMenu } from './getRobotEditMenu';
 
 import {
   isString
 } from 'min-dash';
 
 
-export class XMLEditor extends CachedComponent {
+export class RobotEditor extends CachedComponent {
 
   constructor(props) {
     super(props);
@@ -92,11 +90,8 @@ export class XMLEditor extends CachedComponent {
     if (isXMLChange(lastXML, xml)) {
       editor.importXML(xml);
 
-      const stackIdx = editor._stackIdx;
-
       this.setCached({
-        lastXML: xml,
-        stackIdx
+        lastXML: xml
       });
     }
   }
@@ -104,10 +99,10 @@ export class XMLEditor extends CachedComponent {
   isDirty() {
     const {
       editor,
-      stackIdx
+      lastXML
     } = this.getCached();
 
-    return editor._stackIdx !== stackIdx;
+    return isXMLChange(editor.getValue(), lastXML);
   }
 
   handleChanged = () => {
@@ -119,21 +114,20 @@ export class XMLEditor extends CachedComponent {
       editor
     } = this.getCached();
 
-    const history = editor.historySize();
+    const undoState = {
+      redo: editor.editor.getModel().canRedo(),
+      undo: editor.editor.getModel().canUndo()
+    };
 
-    const editMenu = getXMLEditMenu({
-      redo: !!history.redo,
-      undo: !!history.undo
-    });
+    const editMenu = getRobotEditMenu(undoState);
 
     const dirty = this.isDirty();
 
     const newState = {
       canExport: false,
       dirty,
-      redo: !!history.redo,
       save: true,
-      undo: !!history.undo
+      ...undoState
     };
 
     // ensure backwards compatibility
@@ -141,7 +135,7 @@ export class XMLEditor extends CachedComponent {
     newState.editable = true;
     newState.searchable = true;
 
-    const windowMenu = getXMLWindowMenu();
+    const windowMenu = [];
 
     if (typeof onChanged === 'function') {
       onChanged({
@@ -183,7 +177,7 @@ export class XMLEditor extends CachedComponent {
 
   static createCachedState() {
 
-    const editor = CodeMirror();
+    const editor = Monaco();
 
     const stackIdx = editor._stackIdx;
 
@@ -199,7 +193,7 @@ export class XMLEditor extends CachedComponent {
 
 }
 
-export default WithCache(WithCachedState(XMLEditor));
+export default WithCache(WithCachedState(RobotEditor));
 
 // helpers //////////
 

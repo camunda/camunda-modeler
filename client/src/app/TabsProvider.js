@@ -25,6 +25,7 @@ import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
 import cloudDmnDiagram from './tabs/cloud-dmn/diagram.dmn';
 import form from './tabs/form/initial.form';
+import initialRobot from './tabs/robot/initial.robot';
 import cloudForm from './tabs/form/initial-cloud.form';
 
 import {
@@ -478,6 +479,40 @@ export default class TabsProvider {
         },
         getLinter() {
           return formLinter;
+        }
+      },
+      robot: {
+        name: 'ROBOT',
+        encoding: ENCODING_UTF8,
+        exports: {},
+        extensions: [ 'robot' ],
+        canOpen(file) {
+          return file.name.endsWith('.robot');
+        },
+        getComponent(options) {
+          return import('./tabs/robot');
+        },
+        getIcon() {
+          return FormIcon;
+        },
+        getInitialContents() {
+          return initialRobot;
+        },
+        getInitialFilename(suffix) {
+          return `robot_${suffix}.robot`;
+        },
+        getHelpMenu() {
+          return [];
+        },
+        getNewFileMenu() {
+          return [ {
+            label: 'Robot',
+            group: 'Camunda 8',
+            action: 'create-robot'
+          } ];
+        },
+        getLinter() {
+          return null;
         }
       }
     };

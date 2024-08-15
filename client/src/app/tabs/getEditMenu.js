@@ -365,6 +365,7 @@ export function getUndoRedoEntries({
   redo,
   undo
 }) {
+  console.log('getUndoRedoEntries', undo, redo);
   return [ {
     label: 'Undo',
     accelerator: 'CommandOrControl+Z',
