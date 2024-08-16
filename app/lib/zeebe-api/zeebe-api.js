@@ -110,11 +110,11 @@ const CLIENT_OPTIONS_SECRETS = [
  */
 
 class ZeebeAPI {
-  constructor(fs, ZeebeNode, flags, log = createLog('app:zeebe-api')) {
+  constructor(fs, ZeebeNode, customCertificatePath, log = createLog('app:zeebe-api')) {
     this._fs = fs;
 
     this._ZeebeNode = ZeebeNode;
-    this._flags = flags;
+    this._customCertificatePath = customCertificatePath;
     this._log = log;
 
     this._zeebeClient = null;
@@ -400,8 +400,8 @@ class ZeebeAPI {
       useTLS: options.useTLS || /^https:\/\//.test(url)
     };
 
-    // (1) use certificate from flag
-    const customCertificatePath = this._flags.get('zeebe-ssl-certificate');
+    // (1) use certificate from custom path
+    const customCertificatePath = this._customCertificatePath;
 
     if (customCertificatePath) {
       const cert = this._readRootCertificate(customCertificatePath);

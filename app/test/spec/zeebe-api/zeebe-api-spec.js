@@ -2148,11 +2148,7 @@ describe('ZeebeAPI', function() {
               deployResource: noop
             };
           },
-          flags: {
-            get() {
-              return '/path/to/cert.pem';
-            }
-          },
+          customCertificatePath: '/path/to/cert.pem',
           fs: {
             readFile() {
               return { contents: certificate };
@@ -2173,7 +2169,7 @@ describe('ZeebeAPI', function() {
       }
 
 
-      it('should pass root certificate from flag', async () => {
+      it('should pass root certificate', async () => {
 
         // given
         const cert = readFile('./root-self-signed.pem');
@@ -2531,9 +2527,7 @@ function mockZeebeNode(options = {}) {
   const fs = options.fs || {
     readFile: () => ({})
   };
-  const flags = options.flags || {
-    get: () => {}
-  };
+  const customCertificatePath = options.customCertificatePath;
   const log = {
     error() {},
     debug() {},
@@ -2553,7 +2547,7 @@ function mockZeebeNode(options = {}) {
     }
   };
 
-  return new ZeebeAPI(fs, ZeebeNode, flags, log);
+  return new ZeebeAPI(fs, ZeebeNode, customCertificatePath, log);
 }
 
 function noop() {}
