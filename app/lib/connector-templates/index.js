@@ -177,3 +177,31 @@ function mergeConnectorTemplates(connectorTemplates, latestConnectorTemplates) {
     replaced
   };
 }
+
+const ONE_DAY_MS = 1000 * 60 * 60 * 24;
+
+/**
+ * @param {import('../util/renderer') } renderer
+ * @param {string} userPath
+ */
+function registerConnectorTemplateUpdater(renderer, userPath) {
+
+  let shouldUpdate = true;
+
+  setInterval(() => {
+    shouldUpdate = true;
+  }, ONE_DAY_MS);
+
+  const handleTabChange = (newActive) => {
+
+    if (newActive?.type === 'cloud-bpmn' && shouldUpdate) {
+      shouldUpdate = false;
+
+      updateConnectorTemplates(renderer, userPath);
+    }
+  };
+
+  renderer.on('activeTab:change', handleTabChange);
+}
+
+module.exports.registerConnectorTemplateUpdater = registerConnectorTemplateUpdater;
