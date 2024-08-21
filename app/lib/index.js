@@ -38,7 +38,7 @@ const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
 const {
   getConnectorTemplatesPath,
-  updateConnectorTemplates
+  registerConnectorTemplateUpdater
 } = require('./connector-templates');
 
 const {
@@ -694,9 +694,7 @@ function bootstrap() {
 
   // (10) connector templates
   if (flags.get('enable-connector-templates', false)) {
-    app.on('app:client-ready', function() {
-      updateConnectorTemplates(renderer, userPath);
-    });
+    registerConnectorTemplateUpdater(renderer, userPath);
   }
 
   return {
