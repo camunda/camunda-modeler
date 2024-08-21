@@ -31,6 +31,11 @@ function getConnectorTemplatesPath(userPath) {
 module.exports.getConnectorTemplatesPath = getConnectorTemplatesPath;
 
 async function updateConnectorTemplates(renderer, userPath) {
+
+  const t = Date.now();
+
+  log.info('Starting update');
+
   try {
     const connectorTemplatesPath = getConnectorTemplatesPath(userPath);
 
@@ -65,6 +70,8 @@ async function updateConnectorTemplates(renderer, userPath) {
   } catch (error) {
     renderer.send('client:connector-templates-update-error', error.message);
   }
+
+  log.info('Update done in %sms', Date.now() - t);
 }
 
 module.exports.updateConnectorTemplates = updateConnectorTemplates;
@@ -76,12 +83,14 @@ module.exports.updateConnectorTemplates = updateConnectorTemplates;
  * @returns {Promise<Template[]>}
  */
 async function fetchLatestConnectorTemplates() {
-  log.info('Fetching Camunda connector templates');
+  log.info('Fetching latest templates');
 
   let response = await fetch(`${ MARKET_PLACE_API_URL }/connectors?creatorType=camunda`);
 
   if (!response.ok) {
-    throw new Error('Failed to fetch Camunda connector templates');
+    log.warn('Failed to fetch templates (HTTP %s)', response.status);
+
+    throw new Error('Failed to fetch templates');
   }
 
   const { items } = await response.json();
@@ -93,9 +102,9 @@ async function fetchLatestConnectorTemplates() {
     response = await fetch(`${ MARKET_PLACE_API_URL }/connectors/${ item.id }`);
 
     if (!response.ok) {
-      log.warn('Failed to fetch Camunda connector template', item.name);
+      log.warn('Failed to fetch template', item.name);
 
-      warnings.push(`Unable to fetch Camunda connector template ${ item.name }`);
+      warnings.push(`Unable to fetch template ${ item.name }`);
 
       continue;
     }
@@ -106,9 +115,9 @@ async function fetchLatestConnectorTemplates() {
       response = await fetch(template.url);
 
       if (!response.ok) {
-        log.warn('Failed to fetch Camunda connector template', item.name);
+        log.warn('Failed to fetch template', item.name);
 
-        warnings.push(`Unable to fetch Camunda connector template ${ item.name }`);
+        warnings.push(`Unable to fetch template ${ item.name }`);
 
         continue;
       }
@@ -120,16 +129,18 @@ async function fetchLatestConnectorTemplates() {
 
         latestConnectorTemplates.push(templateJson);
 
-        log.info('Fetched Camunda connector template', templateJson.id);
+        log.info('Fetched template', templateJson.id);
       } catch (error) {
-        log.warn('Failed to fetch Camunda connector template', item.name);
+        log.warn('Failed to fetch template', item.name);
 
-        warnings.push(`Unable to fetch Camunda connector template ${ item.name }`);
+        warnings.push(`Unable to fetch template ${ item.name }`);
 
         continue;
       }
     }
   }
+
+  log.info('Fetched latest templates');
 
   return { latestConnectorTemplates, warnings };
 }
@@ -161,13 +172,13 @@ function mergeConnectorTemplates(connectorTemplates, latestConnectorTemplates) {
 
       replaced++;
 
-      log.info('Replaced Camunda connector template', latestConnectorTemplate.id);
+      log.info('Replaced template', latestConnectorTemplate.id);
     } else {
       mergedConnectorTemplates.push(latestConnectorTemplate);
 
       added++;
 
-      log.info('Added Camunda connector template', latestConnectorTemplate.id);
+      log.info('Added template', latestConnectorTemplate.id);
     }
   }
 

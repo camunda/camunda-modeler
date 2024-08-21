@@ -298,7 +298,7 @@ describe('updateConnectorTemplates', function() {
 
         // then
         expect(sendSpy).to.have.been.calledWith('client:connector-templates-update-success', true, [
-          'Unable to fetch Camunda connector template Foo'
+          'Unable to fetch template Foo'
         ]);
 
         expectConnectorTemplates(userPath, [
@@ -373,7 +373,7 @@ describe('updateConnectorTemplates', function() {
 
         // then
         expect(sendSpy).to.have.been.calledWith('client:connector-templates-update-success', true, [
-          'Unable to fetch Camunda connector template Foo'
+          'Unable to fetch template Foo'
         ]);
 
         expectConnectorTemplates(userPath, [
@@ -448,7 +448,7 @@ describe('updateConnectorTemplates', function() {
 
         // then
         expect(sendSpy).to.have.been.calledWith('client:connector-templates-update-success', true, [
-          'Unable to fetch Camunda connector template Foo'
+          'Unable to fetch template Foo'
         ]);
 
         expectConnectorTemplates(userPath, [
