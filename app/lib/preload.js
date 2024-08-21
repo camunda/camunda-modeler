@@ -35,6 +35,7 @@ const allowedEvents = [
   'file:read',
   'file:read-stats',
   'file:write',
+  'activeTab:change',
   'menu:register',
   'menu:update',
   'system-clipboard:write-text',
@@ -116,12 +117,12 @@ function createBackend(ipcRenderer, platform) {
   }
 
   /**
-     * Subscribe to event.
-     *
-     * @param {string} event
-     * @param {Function} callback
-     * @returns {{ cancel: () => void }}
-     */
+   * Subscribe to event.
+   *
+   * @param {string} event
+   * @param {Function} callback
+   * @returns {{ cancel: () => void }}
+   */
   function on(event, callback) {
     ipcRenderer.on(event, callback);
 
