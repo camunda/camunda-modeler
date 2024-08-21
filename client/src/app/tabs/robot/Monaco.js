@@ -10,6 +10,8 @@
 
 import * as monaco from 'monaco-editor';
 
+import './editorConfig';
+
 export default function create() {
 
   // const model = monaco.editor.createModel('', 'robotframework');
@@ -18,6 +20,7 @@ export default function create() {
   _container.style.width = '100%';
   _container.style.height = '100%';
   const editor = monaco.editor.create(_container, {
+    language: 'robotframework',
     automaticLayout: true,
     value: 'This is a test'
   });
@@ -53,6 +56,12 @@ export default function create() {
 
   instance.historySize = () => 0;
   instance.detach = () => {
+
+    // remove cotainer from DOM tree
+    _container.remove();
+  };
+
+  instance.destroy = () => {
     editor.dispose();
   };
 
