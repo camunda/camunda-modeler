@@ -17,9 +17,10 @@ const { Agent, MockAgent, setGlobalDispatcher } = require('undici');
 
 const { isString } = require('min-dash');
 
-const { updateConnectorTemplates } = require('../updateConnectorTemplates');
+const { updateConnectorTemplates } = require('..');
 
 const userPath = path.resolve(__dirname, 'tmp');
+
 
 describe('updateConnectorTemplates', function() {
 
