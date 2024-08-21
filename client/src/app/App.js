@@ -20,7 +20,8 @@ import {
   isString,
   map,
   merge,
-  reduce
+  reduce,
+  pick
 } from 'min-dash';
 
 import EventEmitter from 'events';
@@ -351,6 +352,8 @@ export class App extends PureComponent {
       return tabShown.promise;
     }
 
+    this.handleActiveTabChange(tab, activeTab);
+
     if (!this.isEmptyTab(tab)) {
       const navigationHistory = this.navigationHistory;
 
@@ -360,6 +363,7 @@ export class App extends PureComponent {
     }
 
     const deferred = pDefer();
+
 
     this.setState({
       activeTab: tab,
@@ -1941,6 +1945,12 @@ export class App extends PureComponent {
 
     return tab.triggerAction(action, options);
   }, this.handleError);
+
+  handleActiveTabChange(newActive, oldActive) {
+    const stripTab = (tab) => tab && pick(tab, [ 'id', 'type' ]);
+
+    this.getGlobal('backend').send('activeTab:change', stripTab(newActive), stripTab(oldActive));
+  }
 
   openExternalUrl(options) {
     this.getGlobal('backend').send('external:open-url', options);

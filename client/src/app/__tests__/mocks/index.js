@@ -461,6 +461,8 @@ export class Backend extends Mock {
 
   sendReady() { }
 
+  send() { }
+
   on(event, listener) {
     this.listeners[event] = (this.listeners[event] || []).concat([ listener.bind(this) ]);
 

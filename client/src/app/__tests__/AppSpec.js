@@ -1776,6 +1776,7 @@ describe('<App>', function() {
 
   });
 
+
   describe('tab errors', function() {
 
     it('should propagate', async function() {
@@ -2754,6 +2755,36 @@ describe('<App>', function() {
 
     // then
     expect(sendSpy).to.have.been.calledWith('external:open-url', options);
+  });
+
+
+  it('#handleActiveTabChange', async function() {
+
+    // given
+    const sendSpy = spy();
+
+    const backend = new Backend({
+      send: sendSpy
+    });
+
+    const { app } = createApp({
+      globals: {
+        backend
+      }
+    });
+
+    // when
+    const {
+      id,
+      type
+    } = await app.createDiagram('cloud-bpmn');
+
+    // then
+    expect(sendSpy).to.have.been.calledWith(
+      'activeTab:change',
+      { id, type },
+      EMPTY_TAB
+    );
   });
 
 
