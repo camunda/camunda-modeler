@@ -39,7 +39,7 @@ const ZeebeAPI = require('./zeebe-api');
 const {
   getConnectorTemplatesPath,
   updateConnectorTemplates
-} = require('./connector-templates/updateConnectorTemplates');
+} = require('./connector-templates');
 
 const {
   readFile,
