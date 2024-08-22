@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { act, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 
 import {
   mount,
@@ -76,7 +76,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should display hint if the username and password are missing when submitting', (done) => {
+    it('should display hint if the username and password are missing when submitting', () => {
 
       // given
       const configuration = {
@@ -107,21 +107,16 @@ describe('<DeploymentConfigOverlay>', () => {
         validator
       }, mount);
 
-      // when
-      setTimeout(() => {
-
-        // delayed execution because it is async that the deployment
-        // tool knows if the authentication is necessary
-        instance.isOnBeforeSubmit = true;
-        wrapper.find('.btn-primary').simulate('submit');
-      });
+      // delayed execution because it is async that the deployment
+      // tool knows if the authentication is necessary
+      instance.isOnBeforeSubmit = true;
+      wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      setTimeout(() => {
+      waitFor(() => {
         wrapper.update();
         expect(wrapper.find('.invalid-feedback')).to.have.length(2);
-        done();
-      }, 200);
+      });
     });
 
 
@@ -154,14 +149,10 @@ describe('<DeploymentConfigOverlay>', () => {
         validator
       }, mount);
 
-      // when
-      act(() => {
-
-        // delayed execution because it is async that the deployment
-        // tool knows if the authentication is necessary
-        instance.isOnBeforeSubmit = true;
-        wrapper.find('.btn-primary').simulate('submit');
-      });
+      // delayed execution because it is async that the deployment
+      // tool knows if the authentication is necessary
+      instance.isOnBeforeSubmit = true;
+      wrapper.find('.btn-primary').simulate('submit');
 
       // then
       waitFor(() => {
@@ -171,7 +162,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should not display hint if the username and password are complete', (done) => {
+    it('should not display hint if the username and password are complete', () => {
 
       // given
       const configuration = {
@@ -205,15 +196,14 @@ describe('<DeploymentConfigOverlay>', () => {
       wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      setTimeout(() => {
+      waitFor(() => {
         wrapper.update();
         expect(wrapper.find('.invalid-feedback')).to.have.length(0);
-        done();
       });
     });
 
 
-    it('should not disable deploy button when connection cannot be established', (done) => {
+    it('should not disable deploy button when connection cannot be established', () => {
 
       // given
       const configuration = {
@@ -247,15 +237,14 @@ describe('<DeploymentConfigOverlay>', () => {
       wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      setTimeout(() => {
+      waitFor(() => {
         wrapper.setProps({});
         expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', false);
-        done();
       });
     });
 
 
-    it('should hide username password fields if auth is not needed', (done) => {
+    it('should hide username password fields if auth is not needed', () => {
 
       // given
       const configuration = {
@@ -284,16 +273,15 @@ describe('<DeploymentConfigOverlay>', () => {
       }, mount);
 
       // then
-      setTimeout(() => {
+      waitFor(() => {
         wrapper.update();
         expect(wrapper.find('[id="endpoint.username"]')).to.have.length(0);
         expect(wrapper.find('[id="endpoint.password"]')).to.have.length(0);
-        done();
       });
     });
 
 
-    it('should hide token field if auth is not needed', (done) => {
+    it('should hide token field if auth is not needed', () => {
 
       // given
       const configuration = {
@@ -322,16 +310,15 @@ describe('<DeploymentConfigOverlay>', () => {
       }, mount);
 
       // then
-      setTimeout(() => {
+      waitFor(() => {
         wrapper.update();
         expect(wrapper.find('[id="endpoint.token"]')).to.have.length(0);
-        done();
       });
     });
   });
 
 
-  it('should not disable deploy button when form is invalid', (done) => {
+  it('should not disable deploy button when form is invalid', () => {
 
     // given
     const configuration = {
@@ -356,10 +343,9 @@ describe('<DeploymentConfigOverlay>', () => {
     wrapper.find('.btn-primary').simulate('click');
 
     // then
-    setTimeout(() => {
+    waitFor(() => {
       wrapper.update();
       expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', false);
-      done();
     });
   });
 
