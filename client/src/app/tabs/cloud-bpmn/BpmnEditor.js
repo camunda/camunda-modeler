@@ -760,7 +760,9 @@ export class BpmnEditor extends CachedComponent {
 
     const { layout } = this.props;
 
-    const imported = this.getModeler().getDefinitions();
+    const modeler = this.getModeler();
+    const imported = modeler.getDefinitions();
+    const injector = modeler.get('injector');
 
     const {
       importing
@@ -794,7 +796,7 @@ export class BpmnEditor extends CachedComponent {
         <VariableTab
           id={ this.props.id }
           layout={ layout }
-          injector={ this.getModeler().get('injector') } />
+          injector={ injector } />
       </div>
     );
   }
