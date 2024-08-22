@@ -51,6 +51,7 @@ import {
 } from '../../getEditMenu';
 
 import { SlotFillRoot } from '../../../slot-fill';
+import Panel from '../../../panel/Panel';
 
 import Flags, { ENABLE_NEW_CONTEXT_PAD } from '../../../../util/Flags';
 
@@ -2052,6 +2053,18 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
   });
 
+
+  describe('Bottom Panel', function() {
+
+    it('should show variable tab', async function() {
+      const { wrapper } = await renderEditor(diagramXML);
+
+      // then
+      expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Variables');
+    });
+
+  });
+
 });
 
 
@@ -2147,6 +2160,7 @@ function WrappedEditor(props) {
   return (
     <SlotFillRoot>
       <TestEditor { ...props } />
+      <Panel layout={ props.layout } />
     </SlotFillRoot>
   );
 }

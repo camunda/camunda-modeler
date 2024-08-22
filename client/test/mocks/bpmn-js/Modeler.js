@@ -114,6 +114,9 @@ export default class Modeler {
 
   _getDefaultModules(options = {}) {
     return {
+      injector: {
+        get() {}
+      },
       eventBus: {
         fire() {}
       },
