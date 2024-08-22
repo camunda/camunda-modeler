@@ -25,6 +25,7 @@ import { getRobotEditMenu } from './getRobotEditMenu';
 import {
   isString
 } from 'min-dash';
+import BottomPanel from './BottomPanel';
 
 
 export class RobotEditor extends CachedComponent {
@@ -168,9 +169,19 @@ export class RobotEditor extends CachedComponent {
   }
 
   render() {
+    const {
+      editor
+    } = this.getCached();
+
     return (
       <div className={ css.XMLEditor }>
         <div className="content" ref={ this.ref }></div>
+        <BottomPanel
+          getValue={
+            () => editor.getValue()
+          }
+          name={ this.props.file?.name }
+        />
       </div>
     );
   }
