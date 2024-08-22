@@ -12,6 +12,8 @@
 
 import React from 'react';
 
+import { act, waitFor } from '@testing-library/react';
+
 import {
   mount,
   shallow
@@ -123,7 +125,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should display hint if token is missing', (done) => {
+    it('should display hint if token is missing', () => {
 
       // given
       const configuration = {
@@ -138,10 +140,8 @@ describe('<DeploymentConfigOverlay>', () => {
       };
 
       const validator = new MockValidator({
-        validateConnection: () => new Promise((resolve, err) => {
-          resolve({
-            code: GenericApiErrors.UNAUTHORIZED
-          });
+        validateConnection: () => Promise.resolve({
+          code: GenericApiErrors.UNAUTHORIZED
         })
       });
 
@@ -155,7 +155,7 @@ describe('<DeploymentConfigOverlay>', () => {
       }, mount);
 
       // when
-      setTimeout(() => {
+      act(() => {
 
         // delayed execution because it is async that the deployment
         // tool knows if the authentication is necessary
@@ -164,11 +164,10 @@ describe('<DeploymentConfigOverlay>', () => {
       });
 
       // then
-      setTimeout(() => {
+      waitFor(() => {
         wrapper.update();
         expect(wrapper.find('.invalid-feedback')).to.have.length(1);
-        done();
-      }, 200);
+      });
     });
 
 
