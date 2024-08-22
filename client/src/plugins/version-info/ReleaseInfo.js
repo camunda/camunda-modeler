@@ -44,8 +44,8 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Support for Camunda 8.6 features</h4>
-          This release adds support for upcoming Camunda 8.6 features, including execution listeners, the new binding type property, and converging inclusive gateways.
+          <h4>Camunda 8 Connector support</h4>
+          Use Camunda 8 Connectors to access a growing range of external services and communication protocols. You can now quickly and easily add pre-built Camunda connectors to your BPMN processes. To learn how to configure this feature, check out the <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/">connector documentation</a>.
         </li>
         <li>
           <h4>Adaptable input fields</h4>
