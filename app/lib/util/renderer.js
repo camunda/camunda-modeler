@@ -20,6 +20,8 @@ const {
 } = require('min-dash');
 
 
+const log = require('../log')('app:renderer');
+
 function on(event, callback, that) {
 
   ipcMain.on(event, function(evt, id, args) {
@@ -64,6 +66,12 @@ module.exports.onSync = onSync;
 
 function send() {
   var args = Array.prototype.slice.call(arguments);
+
+  if (!app.mainWindow) {
+    log.warn('trying to send to non-existing client window', args[0]);
+
+    return;
+  }
 
   app.mainWindow.webContents.send.apply(app.mainWindow.webContents, args);
 }
