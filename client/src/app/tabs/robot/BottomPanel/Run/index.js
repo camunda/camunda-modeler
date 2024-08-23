@@ -21,7 +21,7 @@ export default function(props) {
 
 
   return <>
-    <RobotOutputTab { ...props } output={ output } isRunning={ isRunning }></RobotOutputTab>
+    <RobotOutputTab { ...props } setOutput={ setOutput } setIsRunning={ setIsRunning } output={ output } isRunning={ isRunning }></RobotOutputTab>
     <RunButton setOutput={ setOutput } setIsRunning={ setIsRunning } { ...props }></RunButton>
   </>;
 

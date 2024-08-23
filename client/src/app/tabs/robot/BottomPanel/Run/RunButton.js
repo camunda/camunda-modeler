@@ -20,7 +20,7 @@ import { Overlay } from '../../../../../shared/ui';
 import RunForm from './RunForm';
 
 
-export default function RunButton(props) {
+export default function RunButtonFill(props) {
 
   const [ cachedValues, setCachedValues ] = useState({});
   const [ isOpen, setIsOpen ] = useState(false);
@@ -31,18 +31,17 @@ export default function RunButton(props) {
   };
 
   return <>
-    {
-      <Fill slot="status-bar__file" group="9_deploy" priority={ 2 }>
-        <button
-          ref={ buttonRef }
-          onClick={ () => setIsOpen(!isOpen) }
-          title="Run robot script"
-          className={ classNames('btn', css.DeploymentPlugin, { 'btn--active': isOpen }) }
-        >
-          <RunIcon className="icon" />
-        </button>
-      </Fill>
-    }
+    <Fill slot="status-bar__file" group="9_deploy" priority={ 2 }>
+      <button
+        ref={ buttonRef }
+        onClick={ () => setIsOpen(!isOpen) }
+        title="Run robot script"
+        className={ classNames('btn', css.DeploymentPlugin, { 'btn--active': isOpen }) }
+      >
+        <RunIcon className="icon" />
+      </button>
+    </Fill>
+
     { isOpen &&
       <Overlay
         onClose={ onClose }
@@ -55,6 +54,43 @@ export default function RunButton(props) {
           { ...props }
         />
       </Overlay>
+    }
+  </>;
+}
+
+export function RunButton(props) {
+  const [ cachedValues, setCachedValues ] = useState({});
+  const [ isOpen, setIsOpen ] = useState(false);
+  const buttonRef = useRef();
+
+  const onClose = () => {
+    setIsOpen(false);
+  };
+
+
+  return <>
+    <span
+      ref={ buttonRef }
+      onClick={ () => setIsOpen(!isOpen) }
+
+      // title="Run robot script"
+      // className={ classNames('btn', css.DeploymentPlugin, { 'btn--active': isOpen }) }
+    >
+      <RunIcon className="icon" />
+    </span>
+    { isOpen &&
+    <Overlay
+      offset={ { left: -300 } }
+      onClose={ onClose }
+      anchor={ buttonRef.current }
+    >
+      <RunForm
+        cachedValues={ cachedValues }
+        setCachedValues={ setCachedValues }
+        onClose={ onClose }
+        { ...props }
+      />
+    </Overlay>
     }
   </>;
 }
