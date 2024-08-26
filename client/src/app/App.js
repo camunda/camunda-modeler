@@ -1933,6 +1933,7 @@ export class App extends PureComponent {
     }
 
     if (action === 'display-notification') {
+      console.log('display-notification', options);
       return this.displayNotification(options);
     }
 

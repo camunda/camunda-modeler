@@ -173,6 +173,8 @@ export class RobotEditor extends CachedComponent {
       editor
     } = this.getCached();
 
+    console.log(this.props);
+
     return (
       <div className={ css.XMLEditor }>
         <div className="content" ref={ this.ref }></div>
@@ -181,6 +183,8 @@ export class RobotEditor extends CachedComponent {
             () => editor.getValue()
           }
           name={ this.props.file?.name }
+          id={ this.props.id }
+          onAction={ this.props.onAction }
         />
       </div>
     );

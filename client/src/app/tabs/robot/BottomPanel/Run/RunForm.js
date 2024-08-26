@@ -27,6 +27,7 @@ import {
   Field
 } from 'formik';
 import { runFile } from '../Deployment/API';
+import { useLocalState } from '../useLocalState';
 
 export default function DeploymentForm(props) {
   const {
@@ -35,18 +36,17 @@ export default function DeploymentForm(props) {
     name,
     setIsRunning,
     setOutput,
-    cachedValues,
-    setCachedValues
+    id
   } = props;
 
-  const values = {
-    'name': cachedValues.name || name.split('.')[0],
-    'endpoint': cachedValues.endpoint || 'http://localhost:36227/',
-    'variables': cachedValues.variables || ''
-  };
+  const [ values, setValues ] = useLocalState(id + 'robotTab', {
+    'name': name.split('.')[0],
+    'endpoint': 'http://localhost:36227/',
+    'variables': ''
+  });
 
   const onSubmit = async (values, ...rest) => {
-    setCachedValues(values);
+    setValues(values);
     setIsRunning(true);
     onClose();
     const response = await runFile({
@@ -71,7 +71,7 @@ export default function DeploymentForm(props) {
 
           <Section>
 
-            <Section.Header>Deploy Script</Section.Header>
+            <Section.Header>Run Script</Section.Header>
 
             <Section.Body>
 

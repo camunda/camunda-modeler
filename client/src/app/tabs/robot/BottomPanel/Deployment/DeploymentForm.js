@@ -33,32 +33,42 @@ import {
   Field
 } from 'formik';
 import { deployFile } from './API';
+import { useLocalState } from '../useLocalState';
 
 
 export default function DeploymentForm(props) {
   const {
     onClose,
     getValue,
-    name
+    name,
+    id,
+    onAction
   } = props;
 
-  const values = {
+  const [ defaultValues, setValues ] = useLocalState(id + 'robotTab', {
     'name': name.split('.')[0],
-    'endpoint': 'http://localhost:36227/'
-  };
+    'endpoint': 'http://localhost:36227/',
+    'variables': ''
+  });
+
 
   const onSubmit = async (values, ...rest) => {
+    setValues({ ...defaultValues, ...values });
     await deployFile({
       ...values,
       script: getValue()
     });
 
     onClose();
-
+    onAction('display-notification', {
+      type: 'success',
+      title: 'Script deployed',
+      content: `The script "${values.name}" was successfully deployed.`
+    });
   };
 
   return (<Formik
-    initialValues={ values }
+    initialValues={ defaultValues }
     onSubmit={ onSubmit }
     validateOnBlur={ false }
     validateOnMount
@@ -80,7 +90,8 @@ export default function DeploymentForm(props) {
                     name="name"
                     component={ TextInput }
                     label={ 'Script Name' }
-                    hint={ 'Used to reference the script in your BPMN' }
+                    hint={ 'Script Name' }
+                    description={ 'Used to reference the robot script in your BPMN' }
                   />
 
                   <Field

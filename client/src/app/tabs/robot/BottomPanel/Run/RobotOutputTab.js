@@ -17,21 +17,14 @@ import RunIcon from 'icons/Play.svg';
 import RunForm from './RunForm';
 
 import './RobotOutputTab.less';
+import { CodeSnippet, Heading, InlineLoading, Section } from '@carbon/react';
+
+import './carbon.scss';
 
 export default function RobotOutputTab(props) {
   const {
     layout = {}
   } = props;
-
-  // const [ cachedValues, setCachedValues ] = useState({});
-  // const [ isOpen, setIsOpen ] = useState(false);
-  // const buttonRef = useRef();
-
-  // console.log(buttonRef);
-
-  // const onClose = () => {
-  //   setIsOpen(false);
-  // };
 
   return <>
     <Fill slot="bottom-panel"
@@ -49,24 +42,15 @@ export default function RobotOutputTab(props) {
       }
     >
       <div>
-        <h3>Last run:</h3>
-        <Content { ...props } />
+        <Section>
+          <Heading>Script Testing</Heading>
+          <Section>
+            <Content { ...props } />
+          </Section>
+        </Section>
       </div>
     </Fill>
 
-    {/* { isOpen &&
-    <Overlay
-      onClose={ onClose }
-      anchor={ buttonRef.current }
-    >
-      <RunForm
-        cachedValues={ cachedValues }
-        setCachedValues={ setCachedValues }
-        onClose={ onClose }
-        { ...props }
-      />
-    </Overlay> */}
-    {/* } */}
   </>;
 }
 
@@ -80,7 +64,7 @@ function Content(props) {
   console.log(output);
 
   if (isRunning) {
-    return <div className="running">Running...</div>;
+    return <InlineLoading description="Script is executing..." />;
   }
   else if (!output) {
     return <div className="empty">Run a script to see the Output here.</div>;
@@ -99,9 +83,11 @@ function RobotReport(props) {
   const [ showReport, setShowReport ] = useState(false);
 
   return <div className="output">
-    <pre>{output.stdOut}</pre>
+    <Heading>Output:</Heading>
+    <CodeSnippet type="multi">{output.stdOut}</CodeSnippet>
     <button onClick={ () => setShowReport('log') }>Show Log</button>
-    {/* <button onClick={ () => setShowReport('report') }>Show Report</button> */}
+    <Heading>Variables:</Heading>
+    <CodeSnippet>{JSON.stringify(output.variables, null, 2)}</CodeSnippet>
     {showReport && <Report content={ output[showReport] } onClose={ () => setShowReport(false) } />}
   </div>;
 }
@@ -131,29 +117,3 @@ function Report(props) {
   );
 
 }
-
-
-
-{/* export function RunButton(props) {
-  const [ cachedValues, setCachedValues ] = useState({});
-  const [ isOpen, setIsOpen ] = useState(false);
-  const buttonRef = useRef();
-
-  const onClose = () => {
-    setIsOpen(false);
-  };
-
-
-  return <>
-    <button
-      ref={ buttonRef }
-      onClick={ () => setIsOpen(!isOpen) }
-      title="Run robot script"
-      className={ classNames('btn', css.DeploymentPlugin, { 'btn--active': isOpen }) }
-    >
-      <RunIcon className="icon" />
-    </button>;
-
-    }
-  </>;
-} */}
