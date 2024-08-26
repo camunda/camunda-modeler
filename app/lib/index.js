@@ -630,7 +630,7 @@ function bootstrap() {
   // (3) config
   const ignoredPaths = [];
 
-  if (!flags.get('enable-connector-templates', true)) {
+  if (flags.get('disable-connector-templates', false)) {
     ignoredPaths.push(getConnectorTemplatesPath(userPath));
   }
 
@@ -693,7 +693,7 @@ function bootstrap() {
   const zeebeAPI = new ZeebeAPI({ readFile }, ZeebeNode, flags);
 
   // (10) connector templates
-  if (flags.get('enable-connector-templates', true)) {
+  if (!flags.get('disable-connector-templates', false)) {
     registerConnectorTemplateUpdater(renderer, userPath);
   }
 
