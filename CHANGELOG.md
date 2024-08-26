@@ -13,6 +13,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `zeebe-bpmn-moddle@1.5.1`
 * `DEPS`: update to `camunda-bpmn-js@4.18.0`
 * `DEPS`: update to `@camunda/linting@3.25.0`
+* `DEPS`: upddate to `@bpmn-io/form-js@1.10.0`
 
 ### General
 
@@ -23,6 +24,14 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: do not apply `*length` and `pattern` validation to FEEL expressions ([bpmn-io/bpmn-js-element-templates#115](https://github.com/bpmn-io/bpmn-js-element-templates/pull/115))
 * `FEAT`: support maintaining `zeebe:priorityDefinition:priority` for user task ([bpmn-io/bpmn-js-properties-panel#1072](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1072))
 * `FIX`: rename task definition type label ([bpmn-io/bpmn-js-properties-panel#1070](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1070))
+
+### Key Changes in Forms
+
+* `FEAT`: support specifying version tag ([#4463](https://github.com/camunda/camunda-modeler/issues/4463))
+* `FIX`: correct various minor FEEL evaluation issues 
+* `FIX`: disallow drop when no formfield is found ([bpmn-io/form-js#1219](https://github.com/bpmn-io/form-js/pull/1219))
+* `FIX`: ensure dynamic lists submit collapsed values ([bpmn-io/form-js#1230](https://github.com/bpmn-io/form-js/issues/1230))
+* `FIX`: ensure dates are parsed timezone agnostically ([bpmn-io/form-js#1234](https://github.com/bpmn-io/form-js/pull/1234))
 
 ## 5.26.0
 
