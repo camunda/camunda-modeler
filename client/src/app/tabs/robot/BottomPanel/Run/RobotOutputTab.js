@@ -8,16 +8,14 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Fill } from '../../../../slot-fill';
-import { Modal, Overlay } from '../../../../../shared/ui';
+import { Modal } from '../../../../../shared/ui';
 
 import { RunButton } from './RunButton';
-import RunIcon from 'icons/Play.svg';
-import RunForm from './RunForm';
 
 import './RobotOutputTab.less';
-import { CodeSnippet, Heading, InlineLoading, Section } from '@carbon/react';
+import { Button, CodeSnippet, CodeSnippetSkeleton, Column, FlexGrid, Grid, Heading, Row, Section, Tile } from '@carbon/react';
 
 import './carbon.scss';
 
@@ -29,7 +27,7 @@ export default function RobotOutputTab(props) {
   return <>
     <Fill slot="bottom-panel"
       id="robot-output"
-      label="Robot Output"
+      label="Robot Testing"
       layout={ layout }
       priority={ 15 }
       actions={ [
@@ -41,14 +39,11 @@ export default function RobotOutputTab(props) {
       ]
       }
     >
-      <div>
+      <Section className="robotOutput" style={ { height: '100%', padding: '10px' } }>
         <Section>
-          <Heading>Script Testing</Heading>
-          <Section>
-            <Content { ...props } />
-          </Section>
+          <Content { ...props } />
         </Section>
-      </div>
+      </Section>
     </Fill>
 
   </>;
@@ -61,10 +56,8 @@ function Content(props) {
     isRunning
   } = props;
 
-  console.log(output);
-
   if (isRunning) {
-    return <InlineLoading description="Script is executing..." />;
+    return <RobotReport output={ {} } />;
   }
   else if (!output) {
     return <div className="empty">Run a script to see the Output here.</div>;
@@ -74,7 +67,6 @@ function Content(props) {
   }
 }
 
-
 function RobotReport(props) {
   const {
     output
@@ -82,14 +74,24 @@ function RobotReport(props) {
 
   const [ showReport, setShowReport ] = useState(false);
 
-  return <div className="output">
-    <Heading>Output:</Heading>
-    <CodeSnippet type="multi">{output.stdOut}</CodeSnippet>
-    <button onClick={ () => setShowReport('log') }>Show Log</button>
-    <Heading>Variables:</Heading>
-    <CodeSnippet>{JSON.stringify(output.variables, null, 2)}</CodeSnippet>
-    {showReport && <Report content={ output[showReport] } onClose={ () => setShowReport(false) } />}
-  </div>;
+  console.log(output);
+
+  return <Grid condensed={ true }>
+    <Column sm="75%" md="75%" lg="75%">
+      <Tile>
+        <Heading>Output</Heading>
+        {output.stdOut ? <CodeSnippet type="multi">{output.stdOut}</CodeSnippet> : <CodeSnippetSkeleton type="multi" />}
+        {output.log && <Button onClick={ () => setShowReport('log') }>Show Log</Button>}
+        {showReport && <Report content={ output.log } onClose={ () => setShowReport(false) } />}
+      </Tile>
+    </Column>
+    <Column sm="25%" md="25%" lg="25%">
+      <Tile>
+        <Heading>Variables</Heading>
+        {output.variables ? <CodeSnippet type="multi">{JSON.stringify(output.variables, null, 2)}</CodeSnippet> : <CodeSnippetSkeleton type="multi" />}
+      </Tile>
+    </Column>
+  </Grid> ;
 }
 
 function Report(props) {
