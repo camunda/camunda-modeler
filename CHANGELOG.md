@@ -13,6 +13,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `zeebe-bpmn-moddle@1.5.1`
 * `DEPS`: update to `camunda-bpmn-js@4.18.0`
 * `DEPS`: update to `@camunda/linting@3.25.0`
+* `DEPS`: update to `electron@31.4.0`
 
 ### General
 
