@@ -10,7 +10,8 @@
 
 const {
   contextBridge,
-  ipcRenderer
+  ipcRenderer,
+  webUtils
 } = require('electron');
 
 const generateId = require('./util/generate-id');
@@ -33,6 +34,7 @@ const allowedEvents = [
   'errorTracking:turnedOn',
   'external:open-url',
   'file:read',
+  'file:read-path',
   'file:read-stats',
   'file:write',
   'activeTab:change',
@@ -96,6 +98,11 @@ function createBackend(ipcRenderer, platform) {
   function send(event, ...args) {
     if (!allowedEvents.includes(event)) {
       throw new Error(`Disallowed event: ${event}`);
+    }
+
+    // handled in browser context
+    if (event === 'file:read-path') {
+      return Promise.resolve(webUtils.getPathForFile(args[0]));
     }
 
     const id = generateId();

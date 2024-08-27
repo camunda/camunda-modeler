@@ -9,6 +9,7 @@
  */
 
 import React from 'react';
+import { webUtils } from 'electron';
 
 import * as css from './DropZone.less';
 
@@ -139,7 +140,7 @@ export function isDropableItem(item) {
 function handleDropFromFileSystem(dropEvent) {
   const { files } = dropEvent.dataTransfer;
 
-  return Array.from(files).map(file => file.path);
+  return Array.from(files).map(file => webUtils.getPathForFile(file));
 }
 
 /**

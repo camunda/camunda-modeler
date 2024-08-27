@@ -56,4 +56,8 @@ export default class FileSystem {
     return this.backend.send('file:write', filePath, file, options);
   }
 
+  readFilePath(file) {
+
+  }
+
 }
