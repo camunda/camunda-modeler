@@ -13,13 +13,14 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `zeebe-bpmn-moddle@1.5.1`
 * `DEPS`: update to `camunda-bpmn-js@4.18.0`
 * `DEPS`: update to `@camunda/linting@3.25.0`
+* `DEPS`: update to `@bpmn-io/variable-outline@1.0.2`
 * `DEPS`: update to `electron@31.4.0`
 
 ### General
 
 * `FEAT`: automatically download Camunda connectors ([#4302](https://github.com/camunda/camunda-modeler/issues/4302))
 
-### Key Changes in Properties Panel
+### BPMN
 
 * `FEAT`: do not apply `*length` and `pattern` validation to FEEL expressions ([bpmn-io/bpmn-js-element-templates#115](https://github.com/bpmn-io/bpmn-js-element-templates/pull/115))
 * `FEAT`: support maintaining `zeebe:priorityDefinition:priority` for user task ([bpmn-io/bpmn-js-properties-panel#1072](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1072))
