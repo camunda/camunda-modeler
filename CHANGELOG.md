@@ -11,6 +11,9 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js-element-templates@2.2.0`
 * `DEPS`: update to `camunda-bpmn-js-behaviors@1.6.1`
 * `DEPS`: update to `diagram-js@14.9.0`
+* `DEPS`: update to `dmn-js@16.6.2`
+* `DEPS`: update to `dmn-js-properties-panel@3.5.2`
+* `DEPS`: update to `camunda-dmn-js@2.8.1`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.6.0`
 * `DEPS`: update to `camunda-bpmn-js@4.18.0`
 * `DEPS`: update to `@camunda/linting@3.25.0`
@@ -28,6 +31,12 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: do not apply `*length` and `pattern` validation to FEEL expressions ([bpmn-io/bpmn-js-element-templates#115](https://github.com/bpmn-io/bpmn-js-element-templates/pull/115))
 * `FEAT`: support maintaining `zeebe:priorityDefinition:priority` for user task ([bpmn-io/bpmn-js-properties-panel#1072](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1072))
 * `FIX`: rename task definition type label ([bpmn-io/bpmn-js-properties-panel#1070](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1070))
+
+### DMN
+
+* `FEAT`: support maintaining of Camunda 8 `Version Tag` ([#4463](https://github.com/camunda/camunda-modeler/issues/4454))
+* `FIX`: provide BKM and Input Data name in variable suggestions ([camunda/camunda-dmn-js#117](https://github.com/camunda/camunda-dmn-js/issues/117))
+* `FIX`: correct flashing edit button when adding new decision table column ([#4388](https://github.com/camunda/camunda-modeler/issues/4388))
 
 ### Forms
 
