@@ -15,6 +15,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-bpmn-js@4.18.0`
 * `DEPS`: update to `@camunda/linting@3.25.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@1.0.2`
+* `DEPS`: update to `@bpmn-io/form-js@1.10.0`
 * `DEPS`: update to `electron@31.4.0`
 
 ### General
@@ -27,6 +28,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: do not apply `*length` and `pattern` validation to FEEL expressions ([bpmn-io/bpmn-js-element-templates#115](https://github.com/bpmn-io/bpmn-js-element-templates/pull/115))
 * `FEAT`: support maintaining `zeebe:priorityDefinition:priority` for user task ([bpmn-io/bpmn-js-properties-panel#1072](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1072))
 * `FIX`: rename task definition type label ([bpmn-io/bpmn-js-properties-panel#1070](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1070))
+
+### Forms
+
+* `FEAT`: support maintaining of `Version Tag` ([#4463](https://github.com/camunda/camunda-modeler/issues/4463))
 
 ## 5.26.0
 
