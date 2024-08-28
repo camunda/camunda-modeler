@@ -18,7 +18,7 @@
     "@camunda/form-linting": "^0.16.0",
     "@camunda/form-playground": "^0.15.0",
     "@camunda/improved-canvas": "^1.7.1",
-    "@camunda/linting": "^3.25.0",
+    "@camunda/linting": "^3.26.0",
     "@codemirror/commands": "^6.1.3",
     "@codemirror/lang-json": "^6.0.1",
     "@codemirror/lang-xml": "^6.1.0",
@@ -30,10 +30,10 @@
     "@sentry/integrations": "^7.108.0",
     "bpmn-js": "^17.9.1",
     "bpmn-js-element-templates": "^2.1.0",
-    "bpmn-js-properties-panel": "^5.22.0",
+    "bpmn-js-properties-panel": "^5.23.0",
     "bpmn-js-tracking": "^0.6.0",
     "bpmn-moddle": "^9.0.1",
-    "camunda-bpmn-js": "^4.18.0",
+    "camunda-bpmn-js": "^4.19.0",
     "camunda-bpmn-moddle": "^7.0.1",
     "camunda-cmmn-moddle": "^1.0.0",
     "camunda-dmn-js": "^2.7.0",
@@ -68,7 +68,7 @@
     "semver-compare": "^1.0.0",
     "sourcemapped-stacktrace": "^1.1.11",
     "ua-parser-js": "^1.0.37",
-    "zeebe-bpmn-moddle": "^1.5.1"
+    "zeebe-bpmn-moddle": "^1.6.0"
   },
   "homepage": ".",
   "devDependencies": {

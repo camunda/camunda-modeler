@@ -7,10 +7,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ___Note:__ Yet to be released changes appear here._
 
 * `DEPS`: update to `bpmn-js@17.9.2`
-* `DEPS`: update to `bpmn-js-properties-panel@5.22.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.23.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.2.0`
+* `DEPS`: update to `camunda-bpmn-js-behaviors@1.6.1`
 * `DEPS`: update to `diagram-js@14.9.0`
-* `DEPS`: update to `zeebe-bpmn-moddle@1.5.1`
+* `DEPS`: update to `zeebe-bpmn-moddle@1.6.0`
 * `DEPS`: update to `camunda-bpmn-js@4.18.0`
 * `DEPS`: update to `@camunda/linting@3.25.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@1.0.2`
@@ -22,6 +23,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### BPMN
 
+* `FEAT`: support maintaining of Camunda 8 `Version Tag` ([#4462](https://github.com/camunda/camunda-modeler/issues/4462), [#4461](https://github.com/camunda/camunda-modeler/issues/4461), [#4460](https://github.com/camunda/camunda-modeler/issues/4460), [#4453](https://github.com/camunda/camunda-modeler/issues/4453), [#4480](https://github.com/camunda/camunda-modeler/issues/4480))
 * `FEAT`: do not apply `*length` and `pattern` validation to FEEL expressions ([bpmn-io/bpmn-js-element-templates#115](https://github.com/bpmn-io/bpmn-js-element-templates/pull/115))
 * `FEAT`: support maintaining `zeebe:priorityDefinition:priority` for user task ([bpmn-io/bpmn-js-properties-panel#1072](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1072))
 * `FIX`: rename task definition type label ([bpmn-io/bpmn-js-properties-panel#1070](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1070))
