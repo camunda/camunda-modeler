@@ -18,43 +18,40 @@ import * as css from './DeploymentPlugin.less';
 import { Fill } from '../../../../slot-fill';
 import { Overlay } from '../../../../../shared/ui';
 import RunForm from './RunForm';
+import { Chemistry } from '@carbon/react/icons';
 
 
 export default function RunButtonFill(props) {
 
-  const [ cachedValues, setCachedValues ] = useState({});
-  const [ isOpen, setIsOpen ] = useState(false);
+  const {
+    layout,
+    onAction
+  } = props;
+
   const buttonRef = useRef();
 
-  const onClose = () => {
-    setIsOpen(false);
+  const { panel = {} } = layout;
+
+  const onToggle = () => {
+
+    if (!panel.open || panel.tab !== 'robot-output') {
+      onAction('open-panel', { tab: 'robot-output' });
+    } else if (panel.tab === 'robot-output') {
+      onAction('close-panel');
+    }
   };
 
   return <>
-    <Fill slot="status-bar__file" group="9_deploy" priority={ 2 }>
+    <Fill slot="status-bar__file" group="8_deploy" priority={ 10 }>
       <button
         ref={ buttonRef }
-        onClick={ () => setIsOpen(!isOpen) }
-        title="Run robot script"
-        className={ classNames('btn', css.DeploymentPlugin, { 'btn--active': isOpen }) }
+        onClick={ () => onToggle() }
+        title="Test ROBOT script"
+        className={ classNames('btn', css.DeploymentPlugin, { 'btn--active': panel.open && panel.tab === 'robot-output' }) }
       >
-        <RunIcon className="icon" />
+        <Chemistry />
       </button>
     </Fill>
-
-    { isOpen &&
-      <Overlay
-        onClose={ onClose }
-        anchor={ buttonRef.current }
-      >
-        <RunForm
-          cachedValues={ cachedValues }
-          setCachedValues={ setCachedValues }
-          onClose={ onClose }
-          { ...props }
-        />
-      </Overlay>
-    }
   </>;
 }
 

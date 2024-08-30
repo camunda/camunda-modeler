@@ -8,17 +8,14 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useState } from 'react';
-import RunButton from './RunButton';
-import RobotOutputTab from './RobotOutputTab';
+import { useEffect, useState } from 'react';
 
+export default function useAsyncMemo(fn, deps, initialValue) {
+  const [ value, setValue ] = useState(initialValue);
 
+  useEffect(() => {
+    fn().then(setValue);
+  }, deps);
 
-export default function(props) {
-
-  return <>
-    <RobotOutputTab { ...props }></RobotOutputTab>
-    <RunButton { ...props }></RunButton>
-  </>;
-
+  return value;
 }

@@ -29,7 +29,7 @@ import {
 import { runFile } from '../Deployment/API';
 import { useLocalState } from '../useLocalState';
 
-export default function DeploymentForm(props) {
+export default function RunForm(props) {
   const {
     onClose,
     getValue,
