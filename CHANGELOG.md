@@ -11,9 +11,9 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js-element-templates@2.2.0`
 * `DEPS`: update to `camunda-bpmn-js-behaviors@1.6.1`
 * `DEPS`: update to `diagram-js@14.9.0`
-* `DEPS`: update to `dmn-js@16.6.2`
+* `DEPS`: update to `dmn-js@16.7.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.5.2`
-* `DEPS`: update to `camunda-dmn-js@2.8.1`
+* `DEPS`: update to `camunda-dmn-js@2.9.0`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.6.0`
 * `DEPS`: update to `camunda-bpmn-js@4.18.0`
 * `DEPS`: update to `@camunda/linting@3.25.0`
@@ -36,6 +36,7 @@ ___Note:__ Yet to be released changes appear here._
 ### DMN
 
 * `FEAT`: support maintenance of Camunda 8 `Version tag` ([#4463](https://github.com/camunda/camunda-modeler/issues/4454))
+* `FEAT`: support keyboard navigation in decision table context menu ([bpmn-io/dmn-js#848](https://github.com/bpmn-io/dmn-js/issues/848))
 * `FIX`: provide BKM and Input Data name in variable suggestions ([camunda/camunda-dmn-js#117](https://github.com/camunda/camunda-dmn-js/issues/117))
 * `FIX`: correct flashing edit button when adding new decision table column ([#4388](https://github.com/camunda/camunda-modeler/issues/4388))
 
