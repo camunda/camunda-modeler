@@ -15,7 +15,7 @@
     "@bpmn-io/replace-ids": "^0.2.0",
     "@bpmn-io/variable-outline": "1.0.2",
     "@camunda/execution-platform": "^0.3.2",
-    "@camunda/form-linting": "^0.16.0",
+    "@camunda/form-linting": "^0.17.0",
     "@camunda/form-playground": "^0.15.0",
     "@camunda/improved-canvas": "^1.7.2",
     "@camunda/linting": "^3.26.0",
