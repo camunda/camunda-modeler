@@ -27,6 +27,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### BPMN
 
+* `FEAT`: add variable outline tab ([#4459](https://github.com/camunda/camunda-modeler/pull/4459))
 * `FEAT`: support maintenance of Camunda 8 `Version tag` ([#4462](https://github.com/camunda/camunda-modeler/issues/4462), [#4461](https://github.com/camunda/camunda-modeler/issues/4461), [#4460](https://github.com/camunda/camunda-modeler/issues/4460), [#4453](https://github.com/camunda/camunda-modeler/issues/4453), [#4480](https://github.com/camunda/camunda-modeler/issues/4480))
 * `FEAT`: do not apply `*length` and `pattern` validation to FEEL expressions ([bpmn-io/bpmn-js-element-templates#115](https://github.com/bpmn-io/bpmn-js-element-templates/pull/115))
 * `FEAT`: support maintaining `zeebe:priorityDefinition:priority` for user task ([bpmn-io/bpmn-js-properties-panel#1072](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1072))
