@@ -44,12 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Camunda 8 Connector support</h4>
-          Use Camunda 8 Connectors to access a growing range of external services and communication protocols. You can now quickly and easily add pre-built Camunda connectors to your BPMN processes. To learn how to configure this feature, check out the <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/">connector documentation</a>.
+          <h4>New variable overview</h4>
+          Get an overview of the variables used in your process through the new <i>Variables</i> tab in the bottom panel.
         </li>
         <li>
-          <h4>Adaptable input fields</h4>
-          For multi-line entries in the Properties panel, the height of the input fields now adapts to the content.
+          <h4>Support for new Camunda 8 features</h4>
+          Edit new Camunda 8 properties such as the new <i>Version tag</i> and the new user task <i>Priority</i>.
+        </li>
+        <li>
+          <h4>Camunda 8 Connectors enabled by default</h4>
+          You can now use out-of-the-box Camunda 8 Connectors by default. To learn how to configure this feature, check out the <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/">connectors documentation</a>.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
