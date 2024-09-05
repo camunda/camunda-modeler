@@ -23,14 +23,14 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `FEAT`: automatically download Camunda connectors ([#4302](https://github.com/camunda/camunda-modeler/issues/4302))
+* `FEAT`: automatically download Camunda connectors by default ([#4302](https://github.com/camunda/camunda-modeler/issues/4302))
 
 ### BPMN
 
 * `FEAT`: add variable outline tab ([#4459](https://github.com/camunda/camunda-modeler/pull/4459))
 * `FEAT`: support maintenance of Camunda 8 `Version tag` ([#4462](https://github.com/camunda/camunda-modeler/issues/4462), [#4461](https://github.com/camunda/camunda-modeler/issues/4461), [#4460](https://github.com/camunda/camunda-modeler/issues/4460), [#4453](https://github.com/camunda/camunda-modeler/issues/4453), [#4480](https://github.com/camunda/camunda-modeler/issues/4480))
+* `FEAT`: support maintenance of Camunda 8 user task `Priority` ([bpmn-io/bpmn-js-properties-panel#1072](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1072))
 * `FEAT`: do not apply `*length` and `pattern` validation to FEEL expressions ([bpmn-io/bpmn-js-element-templates#115](https://github.com/bpmn-io/bpmn-js-element-templates/pull/115))
-* `FEAT`: support maintaining `zeebe:priorityDefinition:priority` for user task ([bpmn-io/bpmn-js-properties-panel#1072](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1072))
 * `FIX`: rename task definition type label ([bpmn-io/bpmn-js-properties-panel#1070](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1070))
 * `FIX`: allow to add annotation to pool via new context pad ([#4451](https://github.com/camunda/camunda-modeler/issues/4451))
 
@@ -38,8 +38,8 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: support maintenance of Camunda 8 `Version tag` ([#4463](https://github.com/camunda/camunda-modeler/issues/4454))
 * `FEAT`: support keyboard navigation in decision table context menu ([bpmn-io/dmn-js#848](https://github.com/bpmn-io/dmn-js/issues/848))
-* `FIX`: provide BKM and Input Data name in variable suggestions ([camunda/camunda-dmn-js#117](https://github.com/camunda/camunda-dmn-js/issues/117))
-* `FIX`: correct flashing edit button when adding new decision table column ([#4388](https://github.com/camunda/camunda-modeler/issues/4388))
+* `FIX`: provide business knowledge model and input data names in variable suggestions ([camunda/camunda-dmn-js#117](https://github.com/camunda/camunda-dmn-js/issues/117))
+* `FIX`: prevent flashing edit button when adding new decision table column ([#4388](https://github.com/camunda/camunda-modeler/issues/4388))
 
 ### Forms
 
