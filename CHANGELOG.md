@@ -11,7 +11,6 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js@17.9.2`
 * `DEPS`: update to `bpmn-js-properties-panel@5.23.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.2.0`
-* `DEPS`: update to `camunda-bpmn-js-behaviors@1.6.1`
 * `DEPS`: update to `diagram-js@14.9.0`
 * `DEPS`: update to `dmn-js@16.7.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.5.2`
