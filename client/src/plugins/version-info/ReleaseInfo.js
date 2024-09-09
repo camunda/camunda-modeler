@@ -53,7 +53,7 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Camunda 8 Connectors enabled by default</h4>
-          You can now use out-of-the-box Camunda 8 Connectors by default. To learn how to configure this feature, check out the <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/">connectors documentation</a>.
+          You can now use pre-built Camunda 8 Connectors by default. To learn how to configure this feature, check out the <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/">connectors documentation</a>.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
