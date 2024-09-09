@@ -12,6 +12,7 @@ import React from 'react';
 
 import VariableOutline from '@bpmn-io/variable-outline';
 import '@bpmn-io/variable-outline/dist/style.css';
+import './VariableOutlineTab.less';
 
 import { Fill } from '../../../slot-fill';
 
