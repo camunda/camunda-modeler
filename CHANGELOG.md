@@ -11,14 +11,13 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js@17.9.2`
 * `DEPS`: update to `bpmn-js-properties-panel@5.23.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.2.0`
-* `DEPS`: update to `camunda-bpmn-js-behaviors@1.6.1`
 * `DEPS`: update to `diagram-js@14.9.0`
 * `DEPS`: update to `dmn-js@16.7.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.5.2`
 * `DEPS`: update to `camunda-dmn-js@2.9.0`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.6.0`
-* `DEPS`: update to `camunda-bpmn-js@4.18.0`
-* `DEPS`: update to `@camunda/linting@3.25.0`
+* `DEPS`: update to `camunda-bpmn-js@4.19.0`
+* `DEPS`: update to `@camunda/linting@3.26.1`
 * `DEPS`: update to `@bpmn-io/variable-outline@1.0.2`
 * `DEPS`: update to `@bpmn-io/form-js@1.10.0`
 * `DEPS`: update to `electron@31.4.0`
