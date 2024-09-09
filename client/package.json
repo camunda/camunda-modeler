@@ -28,7 +28,7 @@
     "@ibm/plex": "^6.4.0",
     "@sentry/browser": "^8.0.0",
     "@sentry/integrations": "^7.108.0",
-    "bpmn-js": "^17.9.1",
+    "bpmn-js": "^17.9.2",
     "bpmn-js-element-templates": "^2.1.0",
     "bpmn-js-properties-panel": "^5.23.0",
     "bpmn-js-tracking": "^0.6.0",
