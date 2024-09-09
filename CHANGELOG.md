@@ -18,7 +18,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-dmn-js@2.9.0`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.6.0`
 * `DEPS`: update to `camunda-bpmn-js@4.18.0`
-* `DEPS`: update to `@camunda/linting@3.25.0`
+* `DEPS`: update to `@camunda/linting@3.26.1`
 * `DEPS`: update to `@bpmn-io/variable-outline@1.0.2`
 * `DEPS`: update to `@bpmn-io/form-js@1.10.0`
 * `DEPS`: update to `electron@31.4.0`
