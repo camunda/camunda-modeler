@@ -134,7 +134,7 @@ This project incorporates components from the projects listed below. The origina
 127.  @camunda/form-playground@0.15.0 (git+https://github.com/camunda/form-playground.git)
 128.  camunda-bpmn-js@4.19.0 (https://github.com/camunda/camunda-bpmn-js)
 129.  camunda-dmn-js@2.9.0 (https://github.com/camunda/camunda-dmn-js)
-130.  @camunda/linting@3.26.0 (https://github.com/camunda/linting)
+130.  @camunda/linting@3.26.1 (https://github.com/camunda/linting)
 131.  @ibm/plex@6.4.0 (https://github.com/ibm/plex.git)
 132.  min-dash@4.2.1 (git+https://github.com/bpmn-io/min-dash.git)
 133.  react@16.14.0 (git+https://github.com/facebook/react.git)
@@ -9086,7 +9086,7 @@ THE SOFTWARE.
 END OF camunda-dmn-js@2.9.0 NOTICES AND INFORMATION
 
 
-%% @camunda/linting@3.26.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/linting@3.26.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -9110,7 +9110,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/linting@3.26.0 NOTICES AND INFORMATION
+END OF @camunda/linting@3.26.1 NOTICES AND INFORMATION
 
 
 %% @ibm/plex@6.4.0 NOTICES AND INFORMATION BEGIN HERE
