@@ -168,6 +168,25 @@ describe('<LintingTab>', function() {
     expect(wrapper.find('.linting-tab-item__content').at(6).text()).to.equal('Rule <baz-rule> errored with the following message: Baz');
   });
 
+  it('should render when report is missing id and name', function() {
+
+    // when
+    const wrapper = renderLintingTab({
+      linting: [
+        {
+          category: 'error',
+          message: 'foo error',
+          rule: 'foo-rule'
+        }
+      ]
+    });
+
+    // then
+    expect(wrapper.find('.linting-tab-item')).to.have.length(1);
+    expect(wrapper.find('.linting-tab-item__label').at(0).text()).to.equal('');
+    expect(wrapper.find('.linting-tab-item__content').at(0).text()).to.equal('foo error');
+  });
+
 
   it('should show lint error on click', function() {
 
