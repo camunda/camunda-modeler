@@ -92,8 +92,6 @@ function LintingTabItem(props) {
   const {
     category,
     documentation = {},
-    id,
-    name,
     message,
     rule
   } = report;
@@ -112,6 +110,7 @@ function LintingTabItem(props) {
   }
 
   const { url: documentationUrl = null } = documentation;
+  const reportName = getReportName(report);
 
   return <div
     onClick={ onClick }
@@ -124,7 +123,7 @@ function LintingTabItem(props) {
       { category === 'error' ? <ErrorIcon width="16" height="16" /> : null }
       { category === 'warn' ? <WarningIcon width="16" height="16" /> : null }
       { category === 'info' ? <InfoIcon width="16" height="16" /> : null }
-      <span className="linting-tab-item__label">{ name || id }</span>
+      <span className="linting-tab-item__label">{ reportName }</span>
     </button>
     <div className="linting-tab-item__content">
       { message }
@@ -147,14 +146,11 @@ function LintingTabItem(props) {
 function getReportName(report) {
   const {
     id,
-    name
+    name,
   } = report;
 
-  if (name) {
-    return name.toLowerCase();
-  }
-
-  return id.toLowerCase();
+  const reportName = name || id || '';
+  return reportName.toLowerCase();
 }
 
 /**
