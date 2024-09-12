@@ -185,6 +185,7 @@ export class RobotEditor extends CachedComponent {
           name={ this.props.file?.name }
           id={ this.props.id }
           onAction={ this.props.onAction }
+          key={ this.props.id }
           { ...this.props }
         />
       </div>

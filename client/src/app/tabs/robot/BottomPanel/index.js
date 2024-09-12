@@ -18,8 +18,8 @@ import EngineInfo from './EngineInfo';
 export default function(props) {
   return <>
     <EngineInfo />
-    <DeploymentButton { ...props }></DeploymentButton>
-    <Run { ...props }></Run>
+    <DeploymentButton key={ props.id } { ...props }></DeploymentButton>
+    <Run key={ props.id } { ...props }></Run>
   </>;
 
 }

@@ -45,6 +45,8 @@ export default function DeploymentForm(props) {
     onAction
   } = props;
 
+  console.log(id + 'robotTab');
+
   const [ defaultValues, setValues ] = useLocalState(id + 'robotTab', {
     'name': name.split('.')[0],
     'endpoint': 'http://localhost:36227/',

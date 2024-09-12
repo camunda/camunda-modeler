@@ -29,7 +29,6 @@ export default function RobotOutputTab(props) {
   const [ output, setOutput ] = useLocalState(id + 'output', '');
   const [ isRunning, setIsRunning ] = useState(false);
 
-
   return <>
     <Fill slot="bottom-panel"
       id="robot-output"
@@ -43,7 +42,7 @@ export default function RobotOutputTab(props) {
             <Column span={ 4 }>
               <Tile>
                 <Layer>
-                  <CarbonRunForm { ...props } setOutput={ setOutput } isRunning={ isRunning } setIsRunning={ setIsRunning } />
+                  <CarbonRunForm key={ props.id } { ...props } setOutput={ setOutput } isRunning={ isRunning } setIsRunning={ setIsRunning } />
                 </Layer>
               </Tile>
             </Column>
@@ -146,6 +145,8 @@ function CarbonRunForm(props) {
     setOutput,
     id
   } = props;
+
+  console.log(id + 'robotTab');
 
   const [ values, setValues ] = useLocalState(id + 'robotTab', {
     'name': name?.split('.')?.[0],
