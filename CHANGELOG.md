@@ -6,6 +6,15 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `DEPS`: update to `dmn-js@16.7.1`
+* `DEPS`: update to `dmn-js-shared@16.7.1`
+
+### DMN
+
+* `FIX`: make literal expression focus hitbox larger ([#4342](https://github.com/camunda/camunda-modeler/issues/4342))
+
 ## 5.27.0
 
 * `DEPS`: update to `bpmn-js@17.9.2`
