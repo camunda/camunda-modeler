@@ -10,6 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `DEPS`: update to `dmn-js@16.7.1`
 * `DEPS`: update to `dmn-js-shared@16.7.1`
+* `DEPS`: update to `camunda-dmn-js@2.9.1`
 
 ### DMN
 
