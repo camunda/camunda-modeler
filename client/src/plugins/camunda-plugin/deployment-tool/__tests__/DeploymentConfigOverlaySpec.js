@@ -76,7 +76,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should display hint if the username and password are missing when submitting', () => {
+    it('should display hint if the username and password are missing when submitting', async () => {
 
       // given
       const configuration = {
@@ -120,7 +120,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should display hint if token is missing', () => {
+    it('should display hint if token is missing', async () => {
 
       // given
       const configuration = {
@@ -162,7 +162,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should not display hint if the username and password are complete', () => {
+    it('should not display hint if the username and password are complete', async () => {
 
       // given
       const configuration = {
@@ -203,7 +203,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should not disable deploy button when connection cannot be established', () => {
+    it('should not disable deploy button when connection cannot be established', async () => {
 
       // given
       const configuration = {
@@ -244,7 +244,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should hide username password fields if auth is not needed', () => {
+    it('should hide username password fields if auth is not needed', async () => {
 
       // given
       const configuration = {
@@ -281,7 +281,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should hide token field if auth is not needed', () => {
+    it('should hide token field if auth is not needed', async () => {
 
       // given
       const configuration = {
@@ -318,7 +318,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should not disable deploy button when form is invalid', () => {
+  it('should not disable deploy button when form is invalid', async () => {
 
     // given
     const configuration = {
@@ -343,7 +343,7 @@ describe('<DeploymentConfigOverlay>', () => {
     wrapper.find('.btn-primary').simulate('click');
 
     // then
-      await waitFor(() => {
+    await waitFor(() => {
       wrapper.update();
       expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', false);
     });
@@ -383,7 +383,6 @@ describe('<DeploymentConfigOverlay>', () => {
 
     // then
     expect(saveCredentials).to.have.been.called;
-
   });
 
 
