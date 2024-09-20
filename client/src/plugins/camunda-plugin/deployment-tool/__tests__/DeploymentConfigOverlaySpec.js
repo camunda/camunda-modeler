@@ -113,7 +113,7 @@ describe('<DeploymentConfigOverlay>', () => {
       wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      waitFor(() => {
+      await waitFor(() => {
         wrapper.update();
         expect(wrapper.find('.invalid-feedback')).to.have.length(2);
       });
@@ -155,7 +155,7 @@ describe('<DeploymentConfigOverlay>', () => {
       wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      waitFor(() => {
+      await waitFor(() => {
         wrapper.update();
         expect(wrapper.find('.invalid-feedback')).to.have.length(1);
       });
@@ -196,7 +196,7 @@ describe('<DeploymentConfigOverlay>', () => {
       wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      waitFor(() => {
+      await waitFor(() => {
         wrapper.update();
         expect(wrapper.find('.invalid-feedback')).to.have.length(0);
       });
@@ -237,7 +237,7 @@ describe('<DeploymentConfigOverlay>', () => {
       wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      waitFor(() => {
+      await waitFor(() => {
         wrapper.setProps({});
         expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', false);
       });
@@ -273,7 +273,7 @@ describe('<DeploymentConfigOverlay>', () => {
       }, mount);
 
       // then
-      waitFor(() => {
+      await waitFor(() => {
         wrapper.update();
         expect(wrapper.find('[id="endpoint.username"]')).to.have.length(0);
         expect(wrapper.find('[id="endpoint.password"]')).to.have.length(0);
@@ -310,7 +310,7 @@ describe('<DeploymentConfigOverlay>', () => {
       }, mount);
 
       // then
-      waitFor(() => {
+      await waitFor(() => {
         wrapper.update();
         expect(wrapper.find('[id="endpoint.token"]')).to.have.length(0);
       });
@@ -343,7 +343,7 @@ describe('<DeploymentConfigOverlay>', () => {
     wrapper.find('.btn-primary').simulate('click');
 
     // then
-    waitFor(() => {
+      await waitFor(() => {
       wrapper.update();
       expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', false);
     });

@@ -27,6 +27,7 @@ describe('<webAppUrls>', () => {
     getCockpitUrlStub.restore();
   });
 
+
   describe('reachable well known api', () => {
     it('should return specific Cockpit link', async () => {
 
@@ -40,6 +41,7 @@ describe('<webAppUrls>', () => {
       expect(cockpitUrl).to.be.equal('http://localhost:18080/camunda/app/cockpit/default/#/');
     });
 
+
     it('should return default for missing Cockpit link', async () => {
 
       // given
@@ -51,6 +53,7 @@ describe('<webAppUrls>', () => {
       // then
       expect(cockpitUrl).to.be.equal('http://localhost:8080/app/cockpit/default/#/');
     });
+
 
     it('should return default for empty Cockpit link', async () => {
 
@@ -65,11 +68,13 @@ describe('<webAppUrls>', () => {
     });
   });
 
+
   describe('unreachable well known api', () => {
 
     beforeEach(() => {
       stubGetCockpitUrl().throws(new ConnectionError({ ok: false, status: 404 }));
     });
+
 
     it('should return Spring-specific Cockpit link', async () => {
 
@@ -83,6 +88,7 @@ describe('<webAppUrls>', () => {
       expect(cockpitUrl).to.be.equal('http://localhost:8080/app/cockpit/default/#/');
     });
 
+
     it('should return Tomcat-specific Cockpit link', async () => {
 
       // given
@@ -94,6 +100,7 @@ describe('<webAppUrls>', () => {
       // then
       expect(cockpitUrl).to.be.equal('http://localhost:8080/camunda/app/cockpit/default/#/');
     });
+
 
     it('should return Spring-specific Cockpit link for custom rest url', async () => {
 
