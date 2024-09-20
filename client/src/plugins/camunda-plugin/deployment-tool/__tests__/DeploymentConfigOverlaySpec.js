@@ -107,10 +107,13 @@ describe('<DeploymentConfigOverlay>', () => {
         validator
       }, mount);
 
-      // delayed execution because it is async that the deployment
-      // tool knows if the authentication is necessary
-      instance.isOnBeforeSubmit = true;
-      wrapper.find('.btn-primary').simulate('submit');
+      setTimeout(() => {
+
+        // delayed execution because it is async that the deployment
+        // tool knows if the authentication is necessary
+        instance.isOnBeforeSubmit = true;
+        wrapper.find('.btn-primary').simulate('submit');
+      });
 
       // then
       await waitFor(() => {
@@ -149,10 +152,14 @@ describe('<DeploymentConfigOverlay>', () => {
         validator
       }, mount);
 
-      // delayed execution because it is async that the deployment
-      // tool knows if the authentication is necessary
-      instance.isOnBeforeSubmit = true;
-      wrapper.find('.btn-primary').simulate('submit');
+
+      setTimeout(() => {
+
+        // delayed execution because it is async that the deployment
+        // tool knows if the authentication is necessary
+        instance.isOnBeforeSubmit = true;
+        wrapper.find('.btn-primary').simulate('submit');
+      });
 
       // then
       await waitFor(() => {
