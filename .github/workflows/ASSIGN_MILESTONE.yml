@@ -41,7 +41,7 @@ jobs:
           # Filter for milestones that start with 'M' and are open
           MILESTONE=$(gh api -H "Accept: application/vnd.github.v3+json" \
             /repos/${{ github.repository }}/milestones \
-            --jq '.[] | select(.title | startswith("M")) | .number'
+            --jq '[.[] | select(.title | startswith("M")) | .number' ][0]
           )
           
           echo "MILESTONE_NUMBER=$MILESTONE" >> $GITHUB_OUTPUT
