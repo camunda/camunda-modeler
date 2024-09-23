@@ -180,7 +180,7 @@ This project incorporates components from the projects listed below. The origina
 173.  tabbable@6.2.0 (git+https://github.com/focus-trap/tabbable.git)
 174.  bpmn-js-properties-panel@5.24.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 175.  bpmn-js@17.11.1 (https://github.com/bpmn-io/bpmn-js)
-176.  diagram-js@14.11.0 (https://github.com/bpmn-io/diagram-js)
+176.  diagram-js@14.11.1 (https://github.com/bpmn-io/diagram-js)
 177.  ids@1.0.5 (https://github.com/bpmn-io/ids)
 178.  @bpmn-io/extract-process-variables@0.9.0 (git+https://github.com/bpmn-io/extract-process-variables.git)
 179.  array-move@4.0.0 (sindresorhus/array-move)
@@ -10446,7 +10446,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 END OF bpmn-js@17.11.1 NOTICES AND INFORMATION
 
 
-%% diagram-js@14.11.0 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@14.11.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -10470,7 +10470,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@14.11.0 NOTICES AND INFORMATION
+END OF diagram-js@14.11.1 NOTICES AND INFORMATION
 
 
 %% ids@1.0.5 NOTICES AND INFORMATION BEGIN HERE
