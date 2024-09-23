@@ -9,6 +9,8 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FEAT`: mark Camunda 7.22 and Camunda 8.6 as latest ([#4522](https://github.com/camunda/camunda-modeler/issues/4522))
+* `FEAT`: lint first item access ([bpmn-io/feel-lint#25](https://github.com/bpmn-io/feel-lint/issues/25))
+* `FEAT`: support Camunda 8.6 built-ins ([bpmn-io/feel-editor#62](https://github.com/bpmn-io/feel-editor/pull/62), [#4500](https://github.com/camunda/camunda-modeler/issues/4500))
 * `DEPS`: update to `dmn-js@16.7.1`
 * `DEPS`: update to `dmn-js-shared@16.7.1`
 * `DEPS`: update to `camunda-dmn-js@2.9.1`
@@ -25,8 +27,6 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: align search styles with other popups ([#2187](https://github.com/bpmn-io/bpmn-js/pull/2187))
 * `FEAT`: prioritize start of tokens in search results ([#2187](https://github.com/bpmn-io/bpmn-js/pull/2187))
-* `FEAT`: support Camunda 8.6 built-ins ([bpmn-io/feel-editor#62](https://github.com/bpmn-io/feel-editor/pull/62), [#4500](https://github.com/camunda/camunda-modeler/issues/4500))
-* `FEAT`: lint first item access ([bpmn-io/feel-lint#25](https://github.com/bpmn-io/feel-lint/issues/25))
 * `FIX`: pasting compensation activity without boundary event ([bpmn-io/bpmn-js#2070](https://github.com/bpmn-io/bpmn-js/issues/2070))
 * `FIX`: lane resize constraints for se and nw direction ([bpmn-io/bpmn-js#2209](https://github.com/bpmn-io/bpmn-js/issues/2209))
 * `FIX`: auto place elements vertically in sub-processes ([bpmn-io/bpmn-js#2127](https://github.com/bpmn-io/bpmn-js/issues/2127))
