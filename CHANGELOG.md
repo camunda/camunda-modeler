@@ -14,7 +14,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `dmn-js@16.7.1`
 * `DEPS`: update to `dmn-js-shared@16.7.1`
 * `DEPS`: update to `camunda-dmn-js@2.9.1`
-* `DEPS`: update to `diagram-js@14.10.0`
+* `DEPS`: update to `diagram-js@14.11.1`
 * `DEPS`: update to `bpmn-js@17.11.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.24.1`
 * `DEPS`: update to `bpmn-jsproperties-panel@5.24.0`
