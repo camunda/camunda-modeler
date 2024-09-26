@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.28.0
+
 ### General
 
 * `FEAT`: mark Camunda 7.22 and Camunda 8.6 as latest ([#4522](https://github.com/camunda/camunda-modeler/issues/4522))
