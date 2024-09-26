@@ -9,6 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `DEPS`: update to Electron 32 ([#4483](https://github.com/camunda/camunda-modeler/issues/4483))
+* `DEPS`: update to `@camunda/improved-canvas@1.7.5`
 
 ## 5.28.0
 
