@@ -43,7 +43,6 @@ ___Note:__ Yet to be released changes appear here._
 ### Forms
 
 * `FIX`: serialize object table cells using the JSON serializer ([bpmn-io/form-js#1139](https://github.com/bpmn-io/form-js/issues/1139))
-* `FIX`: fix carbonization ([bpmn-io/form-js#1253](https://github.com/bpmn-io/form-js/pull/1253))
 * `FIX`: don't clip radio buttons ([bpmn-io/form-js#1261](https://github.com/bpmn-io/form-js/pull/1261))
 
 ## 5.27.0
