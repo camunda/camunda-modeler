@@ -13,7 +13,7 @@ import { Fill } from '../../../../slot-fill';
 import { Modal } from '../../../../../shared/ui';
 
 import './RobotOutputTab.less';
-import { Button, CodeSnippet, CodeSnippetSkeleton, Column, Grid, Heading, Layer, Section, Stack, TextInput, Tile, Form, TextArea, FlexGrid } from '@carbon/react';
+import { Button, CodeSnippet, CodeSnippetSkeleton, Column, Grid, Heading, Layer, Section, Stack, TextInput, Tile, Form, TextArea } from '@carbon/react';
 
 import './carbon.scss';
 import { useLocalState } from '../useLocalState';

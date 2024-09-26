@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import RunButton from './RunButton';
 import RobotOutputTab from './RobotOutputTab';
 

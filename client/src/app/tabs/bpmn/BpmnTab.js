@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import BpmnEditor from './BpmnEditor';
+// import BpmnEditor from './BpmnEditor';
 import XMLEditor from '../xml';
 
 import { createTab } from '../EditorTab';

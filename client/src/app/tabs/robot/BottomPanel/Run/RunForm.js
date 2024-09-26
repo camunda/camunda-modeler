@@ -153,10 +153,10 @@ const validateEndpointURL = async (value) => {
   }
 };
 
-const validateVariables = async (value) => {
-  try {
-    JSON.parse(value);
-  } catch (error) {
-    return 'Invalid JSON';
-  }
-};
+// const validateVariables = async (value) => {
+//   try {
+//     JSON.parse(value);
+//   } catch (error) {
+//     return 'Invalid JSON';
+//   }
+// };
