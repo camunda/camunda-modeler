@@ -40,6 +40,11 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FIX`: make literal expression focus hitbox larger ([#4342](https://github.com/camunda/camunda-modeler/issues/4342))
 
+### Forms
+
+* `FIX`: serialize object table cells using the JSON serializer ([bpmn-io/form-js#1139](https://github.com/bpmn-io/form-js/issues/1139))
+* `FIX`: don't clip radio buttons ([bpmn-io/form-js#1261](https://github.com/bpmn-io/form-js/pull/1261))
+
 ## 5.27.0
 
 * `DEPS`: update to `bpmn-js@17.9.2`
