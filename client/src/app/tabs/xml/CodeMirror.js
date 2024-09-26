@@ -59,6 +59,7 @@ export default function create() {
           'aria-label': 'XML editor',
           'tabindex': 0
         }),
+        EditorView.lineWrapping,
         ...extensions
       ]
     });
