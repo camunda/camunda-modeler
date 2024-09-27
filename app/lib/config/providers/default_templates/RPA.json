@@ -1,0 +1,51 @@
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "name": "RPA Task",
+  "id": "323540f6-0c23-4f27-b9a1-f821ed92585e",
+  "appliesTo": [
+    "bpmn:Task"
+  ],
+  "elementType": {
+    "value": "bpmn:ServiceTask"
+  },
+  "entriesVisible": false,
+  "groups": [
+    {
+      "id": "RPA",
+      "label": "RPA Configuration"
+    }
+  ],
+  "properties": [
+    {
+      "group": "RPA",
+      "label": "Script Name",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+          "type": "zeebe:input",
+          "name": "camundaRpaTaskType"
+      },
+      "description": "Set during deployment of your Script"
+    },
+    {
+      "group": "RPA",
+      "label": "Variable Input mapping",
+      "type": "String",
+      "feel": "required",
+      "binding": {
+          "type": "zeebe:input",
+          "name": "camundaRpaTaskInput"
+      }
+    },
+    {
+      "type": "Hidden",
+      "binding": {
+        "type": "zeebe:taskDefinition:type"
+      },
+      "value": "=\"camunda::RPA-Task::\" + camundaRpaTaskType"
+    }
+  ],
+  "icon": {
+    "contents": "data:image/png;base64,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"
+  }
+}

@@ -18,6 +18,11 @@ const { globFiles, toPosixPath } = require('../../util/files');
 
 const log = require('../../log')('app:config:element-templates');
 
+const RPA = require('./default_templates/RPA.json');
+
+const DEFAULT_TEMPLATES = [
+  RPA
+];
 
 /**
  * Get element templates.
@@ -94,7 +99,7 @@ function getTemplates(paths, ignoredPaths) {
       ...templates,
       ...getTemplatesForPaths(files)
     ];
-  }, []);
+  }, DEFAULT_TEMPLATES);
 }
 
 /**
