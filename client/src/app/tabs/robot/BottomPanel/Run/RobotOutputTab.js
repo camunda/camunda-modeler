@@ -18,7 +18,7 @@ import { Button, CodeSnippet, CodeSnippetSkeleton, Column, Grid, Heading, Layer,
 import './carbon.scss';
 import { useLocalState } from '../useLocalState';
 import { runFile } from '../Deployment/API';
-import useAsyncMemo from '../useAsyncMemo';
+import usePeriodicUpdate from '../usePeriodicUpdate';
 
 export default function RobotOutputTab(props) {
   const {
@@ -146,25 +146,32 @@ function CarbonRunForm(props) {
     id
   } = props;
 
-  console.log(id + 'robotTab');
-
   const [ values, setValues ] = useLocalState(id + 'robotTab', {
     'name': name?.split('.')?.[0],
     'endpoint': 'http://localhost:36227/',
     'variables': ''
   });
 
-  const onSubmit = async (...rest) => {
+  const onSubmit = async () => {
     setIsRunning(true);
-    const response = await runFile({
-      ...values,
-      script: getValue()
-    });
-    setIsRunning(false);
-    setOutput(response);
+    try {
+      const response = await runFile({
+        ...values,
+        script: getValue()
+      });
+      setIsRunning(false);
+      setOutput(response);
+    } catch (error) {
+      console.log('heeeeeelp', error);
+
+      console.error(error);
+      setOutput({ stdOut: error.message });
+      setIsRunning(false);
+      return;
+    }
   };
 
-  const jsonValid = useMemo(() => {
+  const jsonInvalid = useMemo(() => {
     const value = values.variables;
     if (value && value.trim().length > 0) {
       try {
@@ -176,9 +183,9 @@ function CarbonRunForm(props) {
     }
   }, [ values.variables ]);
 
-  const endpointValid = useAsyncMemo(() => {
+  const endpointInvalid = usePeriodicUpdate(() => {
     return validateEndpointURL(values.endpoint);
-  }, [ values.endpoint ], false);
+  }, [ values.endpoint ], false, 10000);
 
   return <Form>
     <Stack gap={ 3 }>
@@ -194,7 +201,7 @@ function CarbonRunForm(props) {
         value={ values.endpoint }
         onChange={ e => setValues({ ...values, endpoint: e.target.value }) }
         invalidText="Could not connect to RPA runtine. Make sure the RPA runtime is running."
-        invalid={ !!endpointValid }
+        invalid={ !!endpointInvalid }
       />
       <TextArea
         rows="3"
@@ -205,9 +212,9 @@ function CarbonRunForm(props) {
         value={ values.variables }
         onChange={ e => setValues({ ...values, variables: e.target.value }) }
         invalidText="Variables is not valid JSON"
-        invalid={ !!jsonValid }
+        invalid={ !!jsonInvalid }
       />
-      <Button onClick={ onSubmit } disabled={ isRunning }>Run Script</Button>
+      <Button onClick={ onSubmit } disabled={ isRunning || jsonInvalid || endpointInvalid }>Run Script</Button>
     </Stack>
   </Form>;
 }
@@ -215,8 +222,7 @@ function CarbonRunForm(props) {
 
 const validateEndpointURL = async (value) => {
   try {
-    const response = await fetch(value + 'status');
-    console.log(response);
+    await fetch(value + 'status');
   } catch (error) {
     console.error(error);
     return 'Could not connect to RPA runtine. Make sure the RPA runtime is running.';

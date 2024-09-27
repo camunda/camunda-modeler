@@ -49,9 +49,8 @@ export async function runFile({ endpoint, name, script, variables }) {
     headers: {
       'Content-Type': 'application/json',
     },
+  });
 
-  }
-  );
 
   return await response.json();
 }
