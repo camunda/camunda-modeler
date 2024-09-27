@@ -139,8 +139,8 @@ export default class Dialog {
    * Shows dialog asking the user to create a new file.
    *
    * @param {Object} options - Options.
-   * @param {string} file - File.
-   * @param {string} type - Filetype.
+   * @param {string} options.file - path to the file
+   * @param {string} options.type - Filetype.
    */
   showEmptyFileDialog = async (options) => {
     const {

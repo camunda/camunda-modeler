@@ -18,7 +18,7 @@ import {
 
 import {
   DropZone,
-  isDropableItem
+  isDroppableItem
 } from '../DropZone';
 
 
@@ -238,7 +238,7 @@ describe('DropZone - isDropableItem', function() {
 
     // then
     droppables.forEach((item) => {
-      if (!isDropableItem(item)) {
+      if (!isDroppableItem(item)) {
         throw new Error(`expected ${JSON.stringify(item)} to be droppable`);
       }
     });
@@ -257,7 +257,7 @@ describe('DropZone - isDropableItem', function() {
 
     // then
     nonDroppables.forEach((item) => {
-      if (isDropableItem(item)) {
+      if (isDroppableItem(item)) {
         throw new Error(`expected ${JSON.stringify(item)} to be non-droppable`);
       }
     });

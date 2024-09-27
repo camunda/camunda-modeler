@@ -11,9 +11,9 @@
 import React from 'react';
 
 import * as css from './DropZone.less';
+import { DropHandler } from './DropHandler';
 
-const VSCODE_FILE_TYPE = 'codefiles';
-
+export { isDroppableItem } from './DropHandler';
 
 export class DropZone extends React.PureComponent {
   constructor(props) {
@@ -22,61 +22,25 @@ export class DropZone extends React.PureComponent {
     this.state = {
       draggingOver: false
     };
+    this.dropHandler = new DropHandler(props.onDrop);
   }
 
   handleDragOver = event => {
-    if (!this.isDragAllowed(event)) {
-      return;
-    }
+    const state = this.dropHandler.handleDragOver(event);
 
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'copy';
-
-    if (this.state.draggingOver) {
-      return;
-    }
-
-    event.stopPropagation();
-
-    this.setState({ draggingOver: true });
+    this.setState({ draggingOver: state });
   };
 
-  /**
-   * @param {DragEvent} event
-   */
-  isDragAllowed(event) {
-    const { dataTransfer } = event;
-
-    return Array.from(dataTransfer.items).some(isDropableItem);
-  }
-
   handleDragLeave = event => {
-    event.preventDefault();
-    event.stopPropagation();
+    const state = this.dropHandler.handleDragLeave(event);
 
-    if (this.state.draggingOver && !event.relatedTarget) {
-      this.setState({ draggingOver: false });
-    }
+    this.setState({ draggingOver: state });
   };
 
   handleDrop = async (event) => {
-    if (!this.state.draggingOver) {
-      return;
-    }
+    const state = this.dropHandler.handleDrop(event);
 
-    event.preventDefault();
-    event.stopPropagation();
-
-    this.setState({ draggingOver: false });
-
-    const filesToOpen = await Promise.all([
-      handleDropFromFileSystem(event),
-      handleDropFromVSCode(event)
-    ]).then(result => result.flat());
-
-    if (filesToOpen.length) {
-      this.props.onDrop(filesToOpen);
-    }
+    this.setState({ draggingOver: state });
   };
 
   render() {
@@ -87,7 +51,7 @@ export class DropZone extends React.PureComponent {
         onDragLeave={ this.handleDragLeave }
         onDrop={ this.handleDrop }
       >
-        { this.state.draggingOver ? <DropOverlay /> : null }
+        { this.state.draggingOver === DropHandler.STATES.DRAGGING ? <DropOverlay /> : null }
         { this.props.children }
       </div>
     );
@@ -106,65 +70,4 @@ function DropOverlay() {
       </div>
     </div>
   );
-}
-
-
-/**
- * Checks for droppable items e.g. text/foo, text/plain, application/foo+xml,
- * application/bpmn, application/cmmn, application/dmn.
- *
- * @param {DataTransferItem} item - Item to be dropped.
- *
- * @returns {boolean}
- */
-export function isDropableItem(item) {
-  const { kind, type } = item;
-
-  if (kind === 'string' && type === VSCODE_FILE_TYPE) {
-    return true;
-  }
-
-  if (kind !== 'file') {
-    return false;
-  }
-
-  return /^(text\/.*|application\/([^+]*\+)?xml|application\/(cmmn|bpmn|dmn|camunda-form))?$/.test(type);
-}
-
-/**
- * Retrieve file paths from file system drop event.
- *
- * @param {DragEvent} dropEvent
- */
-function handleDropFromFileSystem(dropEvent) {
-  const { files } = dropEvent.dataTransfer;
-
-  return Array.from(files).map(file => file.path);
-}
-
-/**
- * Retrieve file paths from VS Code drop event.
- *
- * @param {DragEvent} dropEvent
- */
-async function handleDropFromVSCode(dropEvent) {
-  const { items } = dropEvent.dataTransfer;
-
-  const vscodeFilesItem = Array.from(items).find(item => item.type === VSCODE_FILE_TYPE);
-
-  if (!vscodeFilesItem) {
-    return [];
-  }
-
-  try {
-    const filePaths = await new Promise(resolve => {
-      vscodeFilesItem.getAsString(itemContent => {
-        resolve(JSON.parse(itemContent));
-      });
-    });
-
-    return filePaths;
-  } catch (error) {
-    return [];
-  }
 }
