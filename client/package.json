@@ -16,7 +16,7 @@
     "@bpmn-io/variable-outline": "1.0.2",
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.17.0",
-    "@camunda/form-playground": "^0.16.1",
+    "@camunda/form-playground": "^0.15.0",
     "@camunda/improved-canvas": "^1.7.2",
     "@camunda/linting": "^3.27.1",
     "@codemirror/commands": "^6.1.3",
