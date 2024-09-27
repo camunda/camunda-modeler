@@ -22,7 +22,7 @@ export class DropZone extends React.PureComponent {
     this.state = {
       draggingOver: false
     };
-    this.dropHandler = new DropHandler(props.onDrop);
+    this.dropHandler = new DropHandler(props.onDrop, props.getFilePath);
   }
 
   handleDragOver = event => {
@@ -59,7 +59,8 @@ export class DropZone extends React.PureComponent {
 }
 
 DropZone.defaultProps = {
-  onDrop: () => {}
+  onDrop: () => {},
+  getFilePath: () => {}
 };
 
 function DropOverlay() {

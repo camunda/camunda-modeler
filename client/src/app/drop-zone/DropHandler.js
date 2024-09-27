@@ -17,8 +17,9 @@ export class DropHandler {
     NOT_DRAGGING: 'not-dragging'
   };
 
-  constructor(onDrop) {
+  constructor(onDrop, getFilePath) {
     this._onDrop = onDrop;
+    this._getFilePath = getFilePath;
   }
 
   /**
@@ -48,7 +49,7 @@ export class DropHandler {
     event.stopPropagation();
 
     const filesToOpen = await Promise.all([
-      handleDropFromFileSystem(event),
+      handleDropFromFileSystem(event, this._getFilePath),
       handleDropFromVSCode(event)
     ]).then(result => result.flat());
 
@@ -96,10 +97,11 @@ export function isDroppableItem(item) {
  *
  * @param {DragEvent} dropEvent
  */
-function handleDropFromFileSystem(dropEvent) {
+function handleDropFromFileSystem(dropEvent, getFilePath) {
   const { files } = dropEvent.dataTransfer;
+  const paths = Array.from(files).map(file => getFilePath(file));
 
-  return Array.from(files).map(file => file.path);
+  return Promise.all(paths);
 }
 
 /**

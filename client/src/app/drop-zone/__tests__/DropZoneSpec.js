@@ -137,7 +137,7 @@ describe('<DropZone>', function() {
       const wrapper = shallow(<DropZone />);
 
       const dragOverEvent = new MockDragEvent(fileItem('bpmn'));
-      const dropEvent = new MockDragEvent(fileItem('bpmn', '/path.bpmn'));
+      const dropEvent = new MockDragEvent(fileItem('bpmn'));
 
       // when
       wrapper.simulate('dragover', dragOverEvent);
@@ -173,11 +173,12 @@ describe('<DropZone>', function() {
 
       // given
       const dropSpy = sinon.spy();
+      const getFilePath = () => Promise.resolve('/diagram_1.bpmn');
 
-      const wrapper = shallow(<DropZone onDrop={ dropSpy } />);
+      const wrapper = shallow(<DropZone onDrop={ dropSpy } getFilePath={ getFilePath } />);
 
       const dragOverEvent = new MockDragEvent(fileItem('text/bpmn'));
-      const dropEvent = new MockDragEvent(fileItem('text/bpmn', '/diagram_1.bpmn'));
+      const dropEvent = new MockDragEvent(fileItem('text/bpmn'));
 
       // when
       wrapper.simulate('dragover', dragOverEvent);
@@ -272,7 +273,7 @@ class MockDragEvent {
   constructor(...items) {
     this.dataTransfer = {
       items,
-      files: items.filter(item => item.path)
+      files: items.filter(item => item.kind === 'file')
     };
   }
 
@@ -289,8 +290,8 @@ function item(kind, type, rest) {
   };
 }
 
-function fileItem(type = '', path = '') {
-  return item('file', type, { path });
+function fileItem(type = '') {
+  return item('file', type);
 }
 
 function vsCodeItem(...filepaths) {

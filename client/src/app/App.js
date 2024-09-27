@@ -1979,6 +1979,11 @@ export class App extends PureComponent {
     }
   };
 
+  _getFilePath = async (file) => {
+    const fileSystem = this.getGlobal('fileSystem');
+    return fileSystem.getFilePath(file);
+  };
+
   getConfig = (key, ...args) => {
     const config = this.getGlobal('config');
 
@@ -2070,6 +2075,7 @@ export class App extends PureComponent {
 
     return (
       <DropZone
+        getFilePath={ this._getFilePath }
         onDrop={ this.handleDrop }
       >
 
