@@ -10,12 +10,18 @@
 
 const {
   contextBridge,
-  ipcRenderer
+  ipcRenderer,
+  webUtils
 } = require('electron');
 
 const generateId = require('./util/generate-id');
 
+const handledInPreload = [
+  'file:get-path'
+];
+
 const allowedEvents = [
+  ...handledInPreload,
   'app:reload',
   'app:quit-aborted',
   'app:quit-allowed',
@@ -96,6 +102,10 @@ function createBackend(ipcRenderer, platform) {
   function send(event, ...args) {
     if (!allowedEvents.includes(event)) {
       throw new Error(`Disallowed event: ${event}`);
+    }
+
+    if (handledInPreload.includes(event)) {
+      return handleInPreload(event, ...args);
     }
 
     const id = generateId();
@@ -180,5 +190,17 @@ function createBackend(ipcRenderer, platform) {
 
   function getPlatform() {
     return platform;
+  }
+}
+
+function handleInPreload(event, ...args) {
+  if (event === 'file:get-path') {
+    try {
+      const path = webUtils.getPathForFile(args[0]);
+
+      return path || null;
+    } catch {
+      return null;
+    }
   }
 }
