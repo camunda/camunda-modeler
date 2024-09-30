@@ -82,9 +82,9 @@ export default class Plugins {
       Section,
       TextInput,
       ToggleSwitch,
+      CachedComponent,
       WithCache,
       WithCachedState,
-      CachedComponent,
       createTab
     };
 
