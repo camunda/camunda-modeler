@@ -10,10 +10,11 @@
 
 import React from 'camunda-modeler-plugin-helpers/react';
 
-import { registerClientPlugin } from 'camunda-modeler-plugin-helpers';
+import { registerClientExtension, registerClientPlugin } from 'camunda-modeler-plugin-helpers';
 
 import component from './robot';
 import initialRobot from './robot/initial.robot';
+import { Fill } from 'camunda-modeler-plugin-helpers/components';
 
 
 
@@ -54,4 +55,11 @@ const tab = {
   }
 };
 
+const EmptyTabEntry = () => {
+  return <Fill slot="cloud-welcome" action={ [ 'create-diagram', 'robot' ] } title="Robot" icon={ null } />;
+};
+
+
 registerClientPlugin(tab, 'tabs');
+registerClientExtension(EmptyTabEntry);
+

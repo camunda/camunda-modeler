@@ -40,12 +40,20 @@ export default class EmptyTab extends PureComponent {
       onAction
     } = this.props;
 
+    const actionArgs = typeof action === 'string' ? [ action ] : action;
+
     return (
-      <button className="btn btn-secondary" onClick={ () => onAction(action) }>
+      <button className="btn btn-secondary" onClick={ () => onAction(...actionArgs) }>
         {icon}
         {title}
       </button>
     );
+  };
+
+  AdditionalButton = (props) => {
+    const { action, title, icon } = props;
+
+    return this.renderDiagramButton(action, title, icon);
   };
 
   renderCloudColumn = () => {
@@ -73,7 +81,7 @@ export default class EmptyTab extends PureComponent {
             this.renderDiagramButton('create-cloud-form', 'Form', <FormIcon />)
           )
         }
-        <Slot name="cloud-welcome" />
+        <Slot name="cloud-welcome" Component={ this.AdditionalButton } />
       </div>
     );
   };
@@ -103,7 +111,7 @@ export default class EmptyTab extends PureComponent {
             this.renderDiagramButton('create-form', 'Form', <FormIcon />)
           )
         }
-        <Slot name="platform-welcome" />
+        <Slot name="platform-welcome" Component={ this.AdditionalButton } />
       </div>
     );
   };
