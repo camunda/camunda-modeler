@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `DEPS`: update to Electron 32 ([#4483](https://github.com/camunda/camunda-modeler/issues/4483))
+
 ## 5.28.0
 
 ### General
@@ -19,11 +23,10 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `diagram-js@14.11.1`
 * `DEPS`: update to `bpmn-js@17.11.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.24.1`
-* `DEPS`: update to `bpmn-jsproperties-panel@5.24.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.24.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.2.1`
 * `DEPS`: update to `camunda-bpmn-js@4.20.0`
 * `DEPS`: update to `@camunda/linting@3.27.1`
-* `DEPS`: update to `@bpmn-io/form-js@1.10.1`
 
 ### BPMN
 

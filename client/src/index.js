@@ -90,6 +90,8 @@ async function render() {
     document.querySelector('body > .spinner-border').classList.add('hidden');
   };
 
+  const tabsProvider = new TabsProvider(plugins.get('tabs'));
+
   ReactDOM.render(
     <AppParent
       keyboardBindings={ keyboardBindings }

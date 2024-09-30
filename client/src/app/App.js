@@ -2189,6 +2189,8 @@ export class App extends PureComponent {
       items = [
         ...items,
         ...entries.map(entry => {
+
+          // This allows tab providers to pass options, e.g. for the diagram type
           const actionArgs = typeof action === 'string' ? [ entry.action ] : entry.action;
 
           return {

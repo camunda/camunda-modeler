@@ -86,6 +86,23 @@ describe('preload', function() {
       expect(result).to.not.exist;
     });
 
+
+    it('should handle in preload', async function() {
+
+      // given
+      const { backend } = createPreload().getAppPreload();
+
+      // when
+      let error;
+      try {
+        await backend.send('file:get-path', new File([], 'foo'));
+      } catch (e) {
+        error = e;
+      }
+
+      // then
+      expect(error).to.not.exist;
+    });
   });
 
 

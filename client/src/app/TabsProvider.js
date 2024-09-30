@@ -128,7 +128,7 @@ const formLinter = new FormLinter();
  */
 export default class TabsProvider {
 
-  constructor(plugins) {
+  constructor(plugins = []) {
 
     this.providers = {
       empty: {
