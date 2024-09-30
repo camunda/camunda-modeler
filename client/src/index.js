@@ -95,8 +95,8 @@ async function render() {
   ReactDOM.render(
     <AppParent
       keyboardBindings={ keyboardBindings }
-      tabsProvider={ tabsProvider }
       globals={ globals }
+      tabsProvider={ tabsProvider }
       onStarted={ onStarted }
     />, rootElement
   );

@@ -25,7 +25,6 @@ import {
 import App from './App';
 
 import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../util/Flags';
-import TabsProvider from './TabsProvider';
 
 const log = debug('AppParent');
 
@@ -46,8 +45,6 @@ export default class AppParent extends PureComponent {
       files: [],
       workspace: {}
     };
-
-    this.tabsProvider = new TabsProvider(props.globals.plugins.get('tabs'));
 
     this.appRef = React.createRef();
   }
@@ -309,7 +306,7 @@ export default class AppParent extends PureComponent {
   registerMenus() {
     const backend = this.getBackend();
 
-    forEach(this.tabsProvider.getProviders(), (provider, type) => {
+    forEach(this.props.tabsProvider.getProviders(), (provider, type) => {
       const options = {
         helpMenu: provider.getHelpMenu && provider.getHelpMenu(),
         newFileMenu: provider.getNewFileMenu && provider.getNewFileMenu()
@@ -383,13 +380,14 @@ export default class AppParent extends PureComponent {
 
   render() {
     const {
+      tabsProvider,
       globals
     } = this.props;
 
     return (
       <App
         ref={ this.appRef }
-        tabsProvider={ this.tabsProvider }
+        tabsProvider={ tabsProvider }
         globals={ globals }
         onMenuUpdate={ this.handleMenuUpdate }
         onContextMenu={ this.handleContextMenu }
