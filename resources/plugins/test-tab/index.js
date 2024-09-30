@@ -9,8 +9,6 @@
  */
 
 module.exports = {
-  tabs: './tabs',
-  menu: './menu',
-  name: 'test',
-  style: './style.css'
+  script: './dist/client.js',
+  name: 'robot-tab'
 };

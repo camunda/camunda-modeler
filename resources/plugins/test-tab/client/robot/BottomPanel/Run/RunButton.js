@@ -8,15 +8,15 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'camunda-modeler-plugin-helpers/react';
 
 import classNames from 'classnames';
 
 import RunIcon from 'icons/Play.svg';
 
 import * as css from './DeploymentPlugin.less';
-import { Fill } from '../../../../slot-fill';
-import { Overlay } from '../../../../../shared/ui';
+import { Fill, Overlay } from 'camunda-modeler-plugin-helpers/components';
+
 import RunForm from './RunForm';
 import { Chemistry } from '@carbon/react/icons';
 

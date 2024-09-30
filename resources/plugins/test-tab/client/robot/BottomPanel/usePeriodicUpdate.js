@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'camunda-modeler-plugin-helpers/react';
 
 // Check a status and re-check periodically to ensure it is still valid
 export default function usePeriodicUpdate(fn, deps, initialValue, intervalDuration = 1000) {

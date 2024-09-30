@@ -8,9 +8,8 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useMemo, useState } from 'react';
-import { Fill } from '../../../../slot-fill';
-import { Modal } from '../../../../../shared/ui';
+import React, { useMemo, useState } from 'camunda-modeler-plugin-helpers/react';
+import { Fill, Modal } from 'camunda-modeler-plugin-helpers/components';
 
 import './RobotOutputTab.less';
 import { Button, CodeSnippet, CodeSnippetSkeleton, Column, Grid, Heading, Layer, Section, Stack, TextInput, Tile, Form, TextArea } from '@carbon/react';

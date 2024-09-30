@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'camunda-modeler-plugin-helpers/react';
 
 export function useLocalState(localStorageKey, defaultValue) {
 

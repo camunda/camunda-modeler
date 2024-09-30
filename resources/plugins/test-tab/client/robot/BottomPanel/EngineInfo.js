@@ -8,8 +8,8 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
-import { Fill } from '../../../slot-fill';
+import React from 'camunda-modeler-plugin-helpers/react';
+import { Fill } from 'camunda-modeler-plugin-helpers/components';
 
 export default function() {
   return <>

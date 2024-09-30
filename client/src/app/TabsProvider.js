@@ -25,7 +25,6 @@ import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
 import cloudDmnDiagram from './tabs/cloud-dmn/diagram.dmn';
 import form from './tabs/form/initial.form';
-import initialRobot from './tabs/robot/initial.robot';
 import cloudForm from './tabs/form/initial-cloud.form';
 
 import {
@@ -129,7 +128,9 @@ const formLinter = new FormLinter();
  */
 export default class TabsProvider {
 
-  constructor() {
+  constructor(plugins) {
+
+    console.log(plugins);
 
     this.providers = {
       empty: {
@@ -481,48 +482,37 @@ export default class TabsProvider {
           return formLinter;
         }
       },
-      robot: {
-        name: 'ROBOT',
-        encoding: ENCODING_UTF8,
-        exports: {},
-        extensions: [ 'robot' ],
-        canOpen(file) {
-          return file.name.endsWith('.robot');
-        },
-        getComponent(options) {
-          return import('./tabs/robot');
-        },
-        getIcon() {
-          return FormIcon;
-        },
-        getInitialContents() {
-          return initialRobot;
-        },
-        getInitialFilename(suffix) {
-          return `robot_${suffix}.robot`;
-        },
-        getHelpMenu() {
-          return [];
-        },
-        getNewFileMenu() {
-          return [ {
-            label: 'Robot',
-            group: 'Camunda 8',
-            action: 'create-robot'
-          } ];
-        },
-        getLinter() {
-          return null;
-        }
-      }
     };
 
-    this.providersByFileType = {
-      bpmn: [ this.providers['cloud-bpmn'], this.providers.bpmn ],
-      dmn: [ this.providers['cloud-dmn'], this.providers.dmn ],
-      cmmn: [ this.providers.cmmn ],
-      form: [ this.providers['cloud-form'], this.providers.form ]
-    };
+    plugins.forEach((tabs) => {
+      this.providers = {
+        ...this.providers,
+        ...tabs
+      };
+    });
+
+    console.log(this.providers);
+
+    this.providersByFileType = Object.entries(this.providers).reduce((acc, [ key, provider ]) => {
+      const { extensions } = provider;
+      if (!extensions) {
+        return acc;
+      }
+
+      extensions.forEach(extension => {
+        acc[extension] = acc[extension] || [];
+        acc[extension].push(provider);
+      });
+
+      return acc;
+    }, {});
+
+    // this.providersByFileType = {
+    //   bpmn: [ this.providers['cloud-bpmn'], this.providers.bpmn ],
+    //   dmn: [ this.providers['cloud-dmn'], this.providers.dmn ],
+    //   cmmn: [ this.providers.cmmn ],
+    //   form: [ this.providers['cloud-form'], this.providers.form ]
+    // };
 
     if (Flags.get(DISABLE_ZEEBE)) {
       this.providersByFileType.bpmn = this.providersByFileType.bpmn.filter(p => p !== this.providers['cloud-bpmn']);

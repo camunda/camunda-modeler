@@ -56,8 +56,6 @@ const keyboardBindings = new KeyboardBindings({
   isMac
 });
 
-const tabsProvider = new TabsProvider();
-
 const globals = {
   backend,
   config,
@@ -96,7 +94,6 @@ async function render() {
     <AppParent
       keyboardBindings={ keyboardBindings }
       globals={ globals }
-      tabsProvider={ tabsProvider }
       onStarted={ onStarted }
     />, rootElement
   );

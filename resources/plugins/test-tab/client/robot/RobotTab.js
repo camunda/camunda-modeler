@@ -8,14 +8,17 @@
  * except in compliance with the MIT License.
  */
 
-import { useEffect, useState } from 'react';
+import RobotEditor from './RobotEditor';
 
-export default function useAsyncMemo(fn, deps, initialValue) {
-  const [ value, setValue ] = useState(initialValue);
+// import { createTab } from 'camunda-modeler-plugin-helpers/components';
+const { createTab } = window.components;
 
-  useEffect(() => {
-    fn().then(setValue);
-  }, deps);
+const RobotTab = createTab('RobotTab', [
+  {
+    type: 'robot',
+    editor: RobotEditor,
+    defaultName: 'Robot'
+  }
+]);
 
-  return value;
-}
+export default RobotTab;

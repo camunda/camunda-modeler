@@ -8,15 +8,16 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'camunda-modeler-plugin-helpers/react';
+
+import { Fill, Overlay } from 'camunda-modeler-plugin-helpers/components';
+
 
 import classNames from 'classnames';
 
-import DeployIcon from 'icons/Deploy.svg';
+import DeployIcon from './Deploy.svg';
 
-import * as css from './DeploymentPlugin.less';
-import { Fill } from '../../../../slot-fill';
-import { Overlay } from '../../../../../shared/ui';
+import './DeploymentPlugin.less';
 import DeploymentForm from './DeploymentForm';
 
 
@@ -36,7 +37,7 @@ export default function DeploymentButton(props) {
           ref={ buttonRef }
           onClick={ () => setIsOpen(!isOpen) }
           title="Deploy robot script"
-          className={ classNames('btn', css.DeploymentPlugin, { 'btn--active': isOpen }) }
+          className={ classNames('btn', 'RobotDeploymentPlugin', { 'btn--active': isOpen }) }
         >
           <DeployIcon className="icon" />
         </button>

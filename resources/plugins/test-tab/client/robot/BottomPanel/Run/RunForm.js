@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+import React from 'camunda-modeler-plugin-helpers/react';
 
 // import {
 //   omit
@@ -17,10 +17,9 @@ import React from 'react';
 // import * as css from './DeploymentConfigOverlay.less';
 // import AUTH_TYPES from '../shared/AuthTypes';
 
-import {
-  TextInput,
-  Section
-} from '../../../../../shared/ui';
+// import { TextInput, Section } from 'camunda-modeler-plugin-helpers/components';
+
+const { TextInput, Section } = window.components;
 
 import {
   Formik,

@@ -8,17 +8,19 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
-import RunButton from './RunButton';
-import RobotOutputTab from './RobotOutputTab';
+import React from 'camunda-modeler-plugin-helpers/react';
 
+import DeploymentButton from './Deployment/Deployment';
 
+import Run from './Run';
+import EngineInfo from './EngineInfo';
 
 export default function(props) {
-
   return <>
-    <RobotOutputTab { ...props }></RobotOutputTab>
-    <RunButton { ...props }></RunButton>
+    <EngineInfo />
+    <DeploymentButton key={ props.id } { ...props }></DeploymentButton>
+    <Run key={ props.id } { ...props }></Run>
   </>;
 
 }
+

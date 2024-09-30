@@ -8,10 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-import {
-  getUndoRedoEntries
-} from '../getEditMenu';
-
 function getXMLFindEntries() {
   return [ {
     label: 'Find',
@@ -58,4 +54,21 @@ export function getRobotEditMenu(state) {
     getXMLCopyCutPasteEntries(),
     getXMLFindEntries()
   ];
+}
+
+function getUndoRedoEntries({
+  redo,
+  undo
+}) {
+  return [ {
+    label: 'Undo',
+    accelerator: 'CommandOrControl+Z',
+    enabled: undo,
+    action: 'undo'
+  }, {
+    label: 'Redo',
+    accelerator: 'CommandOrControl+Y',
+    enabled: redo,
+    action: 'redo'
+  } ];
 }

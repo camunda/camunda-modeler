@@ -8,17 +8,24 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+import React from 'camunda-modeler-plugin-helpers/react';
 
-import {
+// import {
+//   WithCache,
+//   WithCachedState,
+//   CachedComponent
+// } from 'camunda-modeler-plugin-helpers/components';
+
+const {
   WithCache,
   WithCachedState,
   CachedComponent
-} from '../../cached';
+} = window.components;
+
 
 import Monaco from './Monaco';
 
-import * as css from './XMLEditor.less';
+import './XMLEditor.less';
 
 import { getRobotEditMenu } from './getRobotEditMenu';
 
@@ -173,10 +180,10 @@ export class RobotEditor extends CachedComponent {
       editor
     } = this.getCached();
 
-    console.log(this.props);
+    // console.log(css.XMLEditor);
 
     return (
-      <div className={ css.XMLEditor }>
+      <div className="robotTab">
         <div className="content" ref={ this.ref }></div>
         <BottomPanel
           getValue={

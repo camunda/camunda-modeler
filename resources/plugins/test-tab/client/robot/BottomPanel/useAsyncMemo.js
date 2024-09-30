@@ -8,9 +8,14 @@
  * except in compliance with the MIT License.
  */
 
-module.exports = {
-  tabs: './tabs',
-  menu: './menu',
-  name: 'test',
-  style: './style.css'
-};
+import { useEffect, useState } from 'camunda-modeler-plugin-helpers/react';
+
+export default function useAsyncMemo(fn, deps, initialValue) {
+  const [ value, setValue ] = useState(initialValue);
+
+  useEffect(() => {
+    fn().then(setValue);
+  }, deps);
+
+  return value;
+}
