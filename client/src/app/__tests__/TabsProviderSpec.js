@@ -45,6 +45,35 @@ describe('TabsProvider', function() {
   });
 
 
+  it('should be pluggable', function() {
+
+    // given
+    const tabsProvider = new TabsProvider([ {
+      coolTab: {
+        canOpen(file) {
+          return true;
+        },
+        getComponent() {
+          return 'MyComponent';
+        },
+        getInitialContents() {
+          return 'initial contents';
+        },
+        getIcon() {
+          return null;
+        }
+      },
+    } ]);
+
+    // when
+    const provider = tabsProvider.getProvider('coolTab');
+
+    // then
+    expect(provider.getComponent()).to.eql('MyComponent');
+    expect(provider.getInitialContents()).to.eql('initial contents');
+  });
+
+
   it('should provide BPMN, DMN, FORM and empty tab without flags', function() {
 
     // given

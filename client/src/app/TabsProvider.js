@@ -128,7 +128,7 @@ const formLinter = new FormLinter();
  */
 export default class TabsProvider {
 
-  constructor() {
+  constructor(plugins = []) {
 
     this.providers = {
       empty: {
@@ -482,12 +482,26 @@ export default class TabsProvider {
       }
     };
 
-    this.providersByFileType = {
-      bpmn: [ this.providers['cloud-bpmn'], this.providers.bpmn ],
-      dmn: [ this.providers['cloud-dmn'], this.providers.dmn ],
-      cmmn: [ this.providers.cmmn ],
-      form: [ this.providers['cloud-form'], this.providers.form ]
-    };
+    plugins.forEach((tabs) => {
+      this.providers = {
+        ...this.providers,
+        ...tabs
+      };
+    });
+
+    this.providersByFileType = Object.entries(this.providers).reduce((acc, [ key, provider ]) => {
+      const { extensions } = provider;
+      if (!extensions) {
+        return acc;
+      }
+
+      extensions.forEach(extension => {
+        acc[extension] = acc[extension] || [];
+        acc[extension].push(provider);
+      });
+
+      return acc;
+    }, {});
 
     if (Flags.get(DISABLE_ZEEBE)) {
       this.providersByFileType.bpmn = this.providersByFileType.bpmn.filter(p => p !== this.providers['cloud-bpmn']);
