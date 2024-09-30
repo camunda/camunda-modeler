@@ -10,12 +10,12 @@
 
 import React from 'camunda-modeler-plugin-helpers/react';
 
-import { registerClientExtension, registerClientPlugin } from 'camunda-modeler-plugin-helpers';
+import { registerClientExtension, registerClientPlugin, registerCloudBpmnJSPlugin } from 'camunda-modeler-plugin-helpers';
+import bpmnJSPlugin from './bpmn';
 
 import component from './robot';
 import initialRobot from './robot/initial.robot';
 import { Fill } from 'camunda-modeler-plugin-helpers/components';
-
 
 
 const tab = {
@@ -62,4 +62,4 @@ const EmptyTabEntry = () => {
 
 registerClientPlugin(tab, 'tabs');
 registerClientExtension(EmptyTabEntry);
-
+registerCloudBpmnJSPlugin(bpmnJSPlugin);
