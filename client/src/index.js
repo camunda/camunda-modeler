@@ -56,8 +56,6 @@ const keyboardBindings = new KeyboardBindings({
   isMac
 });
 
-const tabsProvider = new TabsProvider();
-
 const globals = {
   backend,
   config,
@@ -91,6 +89,8 @@ async function render() {
     // mark as finished loading
     document.querySelector('body > .spinner-border').classList.add('hidden');
   };
+
+  const tabsProvider = new TabsProvider(plugins.get('tabs'));
 
   ReactDOM.render(
     <AppParent
