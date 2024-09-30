@@ -1746,7 +1746,6 @@ export class App extends PureComponent {
   }
 
   triggerAction = failSafe((action, options) => {
-
     const {
       activeTab
     } = this.state;
@@ -1801,6 +1800,10 @@ export class App extends PureComponent {
 
     if (action === 'create-cloud-dmn-diagram') {
       return this.createDiagram('cloud-dmn');
+    }
+
+    if (action === 'create-diagram') {
+      return this.createDiagram(options);
     }
 
     if (action === 'reopen-file') {
@@ -2186,11 +2189,13 @@ export class App extends PureComponent {
       items = [
         ...items,
         ...entries.map(entry => {
+          const actionArgs = typeof action === 'string' ? [ entry.action ] : entry.action;
+
           return {
             text: entry.label,
             group: entry.group,
             icon: provider.getIcon(),
-            onClick: () => this.triggerAction(entry.action)
+            onClick: () => this.triggerAction(...actionArgs)
           };
         })
       ];

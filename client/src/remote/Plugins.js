@@ -14,8 +14,19 @@ import {
   Modal,
   Overlay,
   Section,
+  TextInput,
   ToggleSwitch
 } from '../shared/ui';
+
+import {
+  WithCache,
+  WithCachedState,
+  CachedComponent
+} from '../app/cached';
+
+import {
+  createTab
+} from '../app/tabs/EditorTab';
 
 import { Fill } from '../app/slot-fill';
 
@@ -69,7 +80,12 @@ export default class Plugins {
       Modal,
       Overlay,
       Section,
-      ToggleSwitch
+      TextInput,
+      ToggleSwitch,
+      CachedComponent,
+      WithCache,
+      WithCachedState,
+      createTab
     };
 
     // deprecated helpers
