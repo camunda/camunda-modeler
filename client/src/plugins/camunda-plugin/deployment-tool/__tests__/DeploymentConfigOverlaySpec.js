@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { act } from 'react-dom/test-utils';
+import { waitFor } from '@testing-library/react';
 
 import {
   mount,
@@ -24,6 +24,7 @@ import { merge } from 'min-dash';
 import AUTH_TYPES from '../../shared/AuthTypes';
 import DeploymentConfigOverlay from '../DeploymentConfigOverlay';
 import DeploymentConfigValidator from '../validation/DeploymentConfigValidator';
+import { GenericApiErrors } from '../../shared/RestAPI';
 
 let mounted;
 
@@ -75,7 +76,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should display hint if the username and password are missing when submitting', (done) => {
+    it('should display hint if the username and password are missing when submitting', async () => {
 
       // given
       const configuration = {
@@ -92,7 +93,7 @@ describe('<DeploymentConfigOverlay>', () => {
       const validator = new MockValidator({
         validateConnection: () => new Promise((resolve, err) => {
           resolve({
-            code: 'UNAUTHORIZED'
+            code: GenericApiErrors.UNAUTHORIZED
           });
         })
       });
@@ -106,7 +107,6 @@ describe('<DeploymentConfigOverlay>', () => {
         validator
       }, mount);
 
-      // when
       setTimeout(() => {
 
         // delayed execution because it is async that the deployment
@@ -116,15 +116,14 @@ describe('<DeploymentConfigOverlay>', () => {
       });
 
       // then
-      setTimeout(() => {
+      await waitFor(() => {
         wrapper.update();
         expect(wrapper.find('.invalid-feedback')).to.have.length(2);
-        done();
-      }, 200);
+      });
     });
 
 
-    it('should display hint if token is missing', (done) => {
+    it('should display hint if token is missing', async () => {
 
       // given
       const configuration = {
@@ -138,43 +137,39 @@ describe('<DeploymentConfigOverlay>', () => {
         }
       };
 
+      const validator = new MockValidator({
+        validateConnection: () => Promise.resolve({
+          code: GenericApiErrors.UNAUTHORIZED
+        })
+      });
+
       const {
         wrapper,
         instance
       } = createOverlay({
         anchor,
-        configuration
+        configuration,
+        validator
       }, mount);
 
-      // when
-      act(() => {
-        instance.setState({ isAuthNeeded: true });
-      });
 
-      instance.isOnBeforeSubmit = true;
+      setTimeout(() => {
 
-      wrapper.update();
-
-      act(() => {
+        // delayed execution because it is async that the deployment
+        // tool knows if the authentication is necessary
+        instance.isOnBeforeSubmit = true;
         wrapper.find('.btn-primary').simulate('submit');
       });
 
       // then
-      setTimeout(() => {
+      await waitFor(() => {
         wrapper.update();
-
-        try {
-          expect(wrapper.find('.invalid-feedback')).to.have.length(1);
-        } catch (err) {
-          return done(err);
-        }
-
-        return done();
-      }, 100);
+        expect(wrapper.find('.invalid-feedback')).to.have.length(1);
+      });
     });
 
 
-    it('should not display hint if the username and password are complete', (done) => {
+    it('should not display hint if the username and password are complete', async () => {
 
       // given
       const configuration = {
@@ -208,15 +203,14 @@ describe('<DeploymentConfigOverlay>', () => {
       wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      setTimeout(() => {
+      await waitFor(() => {
         wrapper.update();
         expect(wrapper.find('.invalid-feedback')).to.have.length(0);
-        done();
       });
     });
 
 
-    it('should not disable deploy button when connection cannot be established', (done) => {
+    it('should not disable deploy button when connection cannot be established', async () => {
 
       // given
       const configuration = {
@@ -250,15 +244,14 @@ describe('<DeploymentConfigOverlay>', () => {
       wrapper.find('.btn-primary').simulate('submit');
 
       // then
-      setTimeout(() => {
+      await waitFor(() => {
         wrapper.setProps({});
         expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', false);
-        done();
       });
     });
 
 
-    it('should hide username password fields if auth is not needed', (done) => {
+    it('should hide username password fields if auth is not needed', async () => {
 
       // given
       const configuration = {
@@ -287,16 +280,15 @@ describe('<DeploymentConfigOverlay>', () => {
       }, mount);
 
       // then
-      setTimeout(() => {
+      await waitFor(() => {
         wrapper.update();
         expect(wrapper.find('[id="endpoint.username"]')).to.have.length(0);
         expect(wrapper.find('[id="endpoint.password"]')).to.have.length(0);
-        done();
       });
     });
 
 
-    it('should hide token field if auth is not needed', (done) => {
+    it('should hide token field if auth is not needed', async () => {
 
       // given
       const configuration = {
@@ -325,16 +317,15 @@ describe('<DeploymentConfigOverlay>', () => {
       }, mount);
 
       // then
-      setTimeout(() => {
+      await waitFor(() => {
         wrapper.update();
         expect(wrapper.find('[id="endpoint.token"]')).to.have.length(0);
-        done();
       });
     });
   });
 
 
-  it('should not disable deploy button when form is invalid', (done) => {
+  it('should not disable deploy button when form is invalid', async () => {
 
     // given
     const configuration = {
@@ -359,10 +350,9 @@ describe('<DeploymentConfigOverlay>', () => {
     wrapper.find('.btn-primary').simulate('click');
 
     // then
-    setTimeout(() => {
+    await waitFor(() => {
       wrapper.update();
       expect(wrapper.find('.btn-primary').props()).to.have.property('disabled', false);
-      done();
     });
   });
 
@@ -400,7 +390,6 @@ describe('<DeploymentConfigOverlay>', () => {
 
     // then
     expect(saveCredentials).to.have.been.called;
-
   });
 
 
