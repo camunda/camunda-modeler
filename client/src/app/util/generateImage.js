@@ -8,20 +8,11 @@
  * except in compliance with the MIT License.
  */
 
-import { Canvg } from 'canvg';
-
 // list of defined encodings
 const ENCODINGS = [
   'image/png',
   'image/jpeg'
 ];
-
-const INITIAL_SCALE = 3;
-const FINAL_SCALE = 1;
-const SCALE_STEP = 1;
-
-const DATA_URL_REGEX = /^data:((?:\w+\/(?:(?!;).)+)?)((?:;[\w\W]*?[^;])*),(.+)$/;
-
 
 export default async function generateImage(type, svg) {
   const encoding = 'image/' + type;
@@ -30,35 +21,50 @@ export default async function generateImage(type, svg) {
     throw new Error('<' + type + '> is an unknown type for converting svg to image');
   }
 
-  const initialSVG = svg;
+  const dataUrl = asDataURL(svg);
+  const image = await loadImage(dataUrl);
+  const {
+    height,
+    width
+  } = getSize(svg);
 
-  let dataURL = '';
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
 
-  for (let scale = INITIAL_SCALE; scale >= FINAL_SCALE; scale -= SCALE_STEP) {
+  const context = canvas.getContext('2d');
+  context.drawImage(image, 0, 0, width, height);
 
-    let canvas = document.createElement('canvas');
+  // make the background white for every format
+  context.globalCompositeOperation = 'destination-over';
+  context.fillStyle = 'white';
+  context.fillRect(0, 0, canvas.width, canvas.height);
 
-    svg = initialSVG.replace(/width="([^"]+)" height="([^"]+)"/, function(_, widthStr, heightStr) {
-      return `width="${parseInt(widthStr, 10) * scale}" height="${parseInt(heightStr, 10) * scale}"`;
-    });
+  return canvas.toDataURL(encoding, 1.0);
+}
 
-    const context = canvas.getContext('2d');
+function asDataURL(svg) {
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
 
-    const canvg = Canvg.fromString(context, svg);
-    await canvg.render();
+async function loadImage(url) {
+  const img = new Image();
+  img.src = url;
+  return new Promise((resolve, reject) => {
+    img.onload = () => resolve(img);
+    img.onerror = () => {
+      const error = new Error('Error happened generating image.');
 
-    // make the background white for every format
-    context.globalCompositeOperation = 'destination-over';
-    context.fillStyle = 'white';
+      reject(error);
+    };
+    img.src = url;
+  });
+}
 
-    context.fillRect(0, 0, canvas.width, canvas.height);
+function getSize(svg) {
+  const match = /width="(?<width>[^"]+)" height="(?<height>[^"]+)"/.exec(svg);
+  const width = parseInt(match.groups.width, 10),
+        height = parseInt(match.groups.height, 10);
 
-    dataURL = canvas.toDataURL(encoding);
-
-    if (DATA_URL_REGEX.test(dataURL)) {
-      return dataURL;
-    }
-  }
-
-  throw new Error('Error happened generating image. Diagram size is too big.');
+  return { width, height };
 }

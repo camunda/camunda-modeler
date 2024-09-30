@@ -24,7 +24,8 @@ const expectedImagesByType = {
 describe('util - generateImage', function() {
 
   const svg = require('./diagram.svg'),
-        outOfBoundsSVG = require('./out_of_bounds_diagram.svg');
+        outOfBoundsSVG = require('./out_of_bounds_diagram.svg'),
+        webhookSVG = require('./webhook.svg');
 
   keys(expectedImagesByType).forEach(function(type) {
 
@@ -32,7 +33,7 @@ describe('util - generateImage', function() {
 
       const image = await generateImage(type, svg);
 
-      expect(image).to.exist;
+      expectToBeAnImage(image);
     });
 
 
@@ -40,10 +41,7 @@ describe('util - generateImage', function() {
 
       const image = await generateImage(type, outOfBoundsSVG);
 
-      // if image cannot be generated properly it returns a data string with
-      // 6 characters. If it is generated, image.length returns the actual size
-      // of the generated image which is more than 6.
-      expect(image.length).to.be.greaterThan(6);
+      expectToBeAnImage(image);
     }).timeout(10000); // downscaling may exceed the default timeout 2000ms.
 
 
@@ -54,6 +52,25 @@ describe('util - generateImage', function() {
 
       expect(image).to.be.eql(expectedImage);
     });
+
+
+    it('should handle webhook icon <' + type + '>', async function() {
+
+      const image = await generateImage(type, webhookSVG);
+
+      expectToBeAnImage(image);
+    });
   });
 
 });
+
+
+/**
+ * If image cannot be generated properly it returns a data string with
+ * 6 characters. If it is generated, image.length returns the actual size
+ * of the generated image which is more than 6.
+ */
+function expectToBeAnImage(image) {
+  expect(image).to.exist;
+  expect(image.length).to.be.greaterThan(6);
+}
