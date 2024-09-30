@@ -23,6 +23,7 @@ import {
 } from './primitives';
 
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM } from '../util/Flags';
+import { Slot } from './slot-fill';
 
 
 export default class EmptyTab extends PureComponent {
@@ -72,6 +73,7 @@ export default class EmptyTab extends PureComponent {
             this.renderDiagramButton('create-cloud-form', 'Form', <FormIcon />)
           )
         }
+        <Slot name="cloud-welcome" />
       </div>
     );
   };
@@ -101,6 +103,7 @@ export default class EmptyTab extends PureComponent {
             this.renderDiagramButton('create-form', 'Form', <FormIcon />)
           )
         }
+        <Slot name="platform-welcome" />
       </div>
     );
   };

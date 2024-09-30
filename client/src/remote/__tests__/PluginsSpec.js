@@ -198,6 +198,31 @@ describe('plugins', function() {
     );
 
 
+    it('should expose UI components via window#components', () => {
+
+      // given
+      const global = {};
+
+      const plugins = new Plugins();
+
+      // when
+      plugins.bindHelpers(global);
+
+      // then
+      expect(global.components).to.exist;
+      expect(global.components).to.have.property('Fill');
+      expect(global.components).to.have.property('Modal');
+      expect(global.components).to.have.property('Overlay');
+      expect(global.components).to.have.property('Section');
+      expect(global.components).to.have.property('TextInput');
+      expect(global.components).to.have.property('ToggleSwitch');
+      expect(global.components).to.have.property('CachedComponent');
+      expect(global.components).to.have.property('WithCache');
+      expect(global.components).to.have.property('WithCachedState');
+      expect(global.components).to.have.property('createTab');
+    });
+
+
     it('should expose properties panel preact with subpackages via window#vendor.propertiesPanel.preact[...]',
       function() {
 
