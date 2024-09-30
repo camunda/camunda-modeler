@@ -15,6 +15,7 @@
     "camunda-modeler-plugin-helpers": "^5.0.0",
     "camunda-modeler-webpack-plugin": "^0.1.0",
     "formik": "2.0.4",
+    "monaco-editor": "^0.52.0",
     "sass": "^1.77.8",
     "sass-loader": "^16.0.1",
     "webpack": "^5.74.0",

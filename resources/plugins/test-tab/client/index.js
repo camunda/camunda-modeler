@@ -8,9 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment, Component } from 'camunda-modeler-plugin-helpers/react';
+import React from 'camunda-modeler-plugin-helpers/react';
 
-import { registerClientExtension, registerClientPlugin } from 'camunda-modeler-plugin-helpers';
+import { registerClientPlugin } from 'camunda-modeler-plugin-helpers';
 
 import component from './robot';
 import initialRobot from './robot/initial.robot';
@@ -45,7 +45,7 @@ const tab = {
       return [ {
         label: 'Robot',
         group: 'Camunda 8',
-        action: 'create-robot'
+        action: [ 'create-diagram', 'robot' ]
       } ];
     },
     getLinter() {
