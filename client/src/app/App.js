@@ -1791,10 +1791,6 @@ export class App extends PureComponent {
       return this.createDiagram('form');
     }
 
-    if (action === 'create-robot') {
-      return this.createDiagram('robot');
-    }
-
     if (action === 'create-cloud-form') {
       return this.createDiagram('cloud-form');
     }
@@ -1933,7 +1929,6 @@ export class App extends PureComponent {
     }
 
     if (action === 'display-notification') {
-      console.log('display-notification', options);
       return this.displayNotification(options);
     }
 
@@ -1982,6 +1977,11 @@ export class App extends PureComponent {
     } catch (error) {
       this.handleError(error);
     }
+  };
+
+  _getFilePath = async (file) => {
+    const fileSystem = this.getGlobal('fileSystem');
+    return fileSystem.getFilePath(file);
   };
 
   getConfig = (key, ...args) => {
@@ -2075,6 +2075,7 @@ export class App extends PureComponent {
 
     return (
       <DropZone
+        getFilePath={ this._getFilePath }
         onDrop={ this.handleDrop }
       >
 

@@ -186,7 +186,6 @@ export default class Plugins {
    * @returns {Array}
    */
   getClientPlugins() {
-    console.warn('clientPlugins', window.plugins);
     return window.plugins || [];
   }
 

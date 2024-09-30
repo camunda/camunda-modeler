@@ -56,4 +56,11 @@ export default class FileSystem {
     return this.backend.send('file:write', filePath, file, options);
   }
 
+  /**
+   * Get file path of a web File object.
+   * @param {File} file
+   */
+  getFilePath(file) {
+    return this.backend.send('file:get-path', file);
+  }
 }

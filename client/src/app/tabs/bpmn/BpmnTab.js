@@ -8,19 +8,18 @@
  * except in compliance with the MIT License.
  */
 
-// import BpmnEditor from './BpmnEditor';
+import BpmnEditor from './BpmnEditor';
 import XMLEditor from '../xml';
 
 import { createTab } from '../EditorTab';
 
 
 const BpmnTab = createTab('BpmnTab', [
-
-  // {
-  //   type: 'bpmn',
-  //   editor: BpmnEditor,
-  //   defaultName: 'Diagram (Camunda Platform)'
-  // },
+  {
+    type: 'bpmn',
+    editor: BpmnEditor,
+    defaultName: 'Diagram (Camunda Platform)'
+  },
   {
     type: 'xml',
     editor: XMLEditor,

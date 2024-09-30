@@ -130,8 +130,6 @@ export default class TabsProvider {
 
   constructor(plugins) {
 
-    console.log(plugins);
-
     this.providers = {
       empty: {
         canOpen(file) {
@@ -491,8 +489,6 @@ export default class TabsProvider {
       };
     });
 
-    console.log(this.providers);
-
     this.providersByFileType = Object.entries(this.providers).reduce((acc, [ key, provider ]) => {
       const { extensions } = provider;
       if (!extensions) {
@@ -506,13 +502,6 @@ export default class TabsProvider {
 
       return acc;
     }, {});
-
-    // this.providersByFileType = {
-    //   bpmn: [ this.providers['cloud-bpmn'], this.providers.bpmn ],
-    //   dmn: [ this.providers['cloud-dmn'], this.providers.dmn ],
-    //   cmmn: [ this.providers.cmmn ],
-    //   form: [ this.providers['cloud-form'], this.providers.form ]
-    // };
 
     if (Flags.get(DISABLE_ZEEBE)) {
       this.providersByFileType.bpmn = this.providersByFileType.bpmn.filter(p => p !== this.providers['cloud-bpmn']);

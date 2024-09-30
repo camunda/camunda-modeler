@@ -72,7 +72,6 @@ export default class EmptyTab extends PureComponent {
             this.renderDiagramButton('create-cloud-form', 'Form', <FormIcon />)
           )
         }
-        {this.renderDiagramButton('create-robot', 'RPA Script', <FormIcon />)}
       </div>
     );
   };

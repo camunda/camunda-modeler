@@ -194,7 +194,6 @@ export default class AppParent extends PureComponent {
   };
 
   hasPlugins() {
-    console.log('hasPlugins', this.getPlugins());
     return this.getPlugins().getAppPlugins().length;
   }
 

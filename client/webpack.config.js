@@ -80,7 +80,7 @@ module.exports = {
             use: 'react-svg-loader'
           },
           {
-            test: /\.(bpmn|cmmn|dmn|form|robot)$/,
+            test: /\.(bpmn|cmmn|dmn|form)$/,
             type: 'asset/source'
           },
           {
@@ -96,14 +96,6 @@ module.exports = {
               'style-loader',
               cssLoader(),
               'less-loader'
-            ]
-          },
-          {
-            test: /\.s[ac]ss$/,
-            use: [
-              'style-loader',
-              cssLoader(),
-              'sass-loader',
             ]
           },
           {

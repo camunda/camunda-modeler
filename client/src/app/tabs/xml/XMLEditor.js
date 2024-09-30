@@ -122,8 +122,8 @@ export class XMLEditor extends CachedComponent {
     const history = editor.historySize();
 
     const editMenu = getXMLEditMenu({
-      redo: !!history.redo,
-      undo: !!history.undo
+      canRedo: !!history.redo,
+      canUndo: !!history.undo
     });
 
     const dirty = this.isDirty();
