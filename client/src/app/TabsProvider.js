@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import React, { forwardRef } from 'react';
+
 import {
   find,
   forEach,
@@ -57,9 +59,9 @@ import Flags, {
   DEFAULT_HTTL
 } from '../util/Flags';
 
-import BPMNIcon from '../../resources/icons/file-types/BPMN-16x16.svg';
-import DMNIcon from '../../resources/icons/file-types/DMN-16x16.svg';
-import FormIcon from '../../resources/icons/file-types/Form-16x16.svg';
+import BPMNIcon from '../../resources/icons/file-types/BPMN.svg';
+import DMNIcon from '../../resources/icons/file-types/DMN.svg';
+import FormIcon from '../../resources/icons/file-types/Form.svg';
 import { getDefaultVersion } from './tabs/EngineProfile';
 
 import { getCloudTemplates } from '../util/elementTemplates';
@@ -129,14 +131,16 @@ const formLinter = new FormLinter();
 export default class TabsProvider {
 
   constructor(plugins = []) {
-
+    const self = this;
     this.providers = {
       empty: {
         canOpen(file) {
           return false;
         },
         getComponent() {
-          return EmptyTab;
+          return forwardRef((props, ref) => {
+            return <EmptyTab ref={ ref } { ...props } tabsProvider={ self } />;
+          });
         },
         getIcon() {
           return null;
