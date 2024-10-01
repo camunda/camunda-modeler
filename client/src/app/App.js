@@ -1804,7 +1804,7 @@ export class App extends PureComponent {
     }
 
     if (action === 'create-diagram') {
-      return this.createDiagram(options);
+      return this.createDiagram(options.type);
     }
 
     if (action === 'reopen-file') {
@@ -2190,15 +2190,11 @@ export class App extends PureComponent {
       items = [
         ...items,
         ...entries.map(entry => {
-
-          // This allows tab providers to pass options, e.g. for the diagram type
-          const actionArgs = typeof action === 'string' ? [ entry.action ] : entry.action;
-
           return {
             text: entry.label,
             group: entry.group,
             icon: provider.getIcon(),
-            onClick: () => this.triggerAction(...actionArgs)
+            onClick: () => this.triggerAction(entry.action, entry.options)
           };
         })
       ];

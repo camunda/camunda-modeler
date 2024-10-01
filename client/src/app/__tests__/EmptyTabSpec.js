@@ -15,6 +15,7 @@ import {
 } from 'enzyme';
 
 import EmptyTab from '../EmptyTab';
+import TabsProvider from '../TabsProvider';
 
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../util/Flags';
 
@@ -40,12 +41,12 @@ describe('<EmptyTab>', function() {
       // then
       expect(onAction).to.have.callCount(6);
       expect(onAction.args).to.eql([
-        [ 'create-cloud-bpmn-diagram' ],
-        [ 'create-cloud-dmn-diagram' ],
-        [ 'create-cloud-form' ],
-        [ 'create-bpmn-diagram' ],
-        [ 'create-dmn-diagram' ],
-        [ 'create-form' ]
+        [ 'create-cloud-bpmn-diagram', undefined ],
+        [ 'create-cloud-dmn-diagram', undefined ],
+        [ 'create-cloud-form', undefined ],
+        [ 'create-bpmn-diagram', undefined ],
+        [ 'create-dmn-diagram', undefined ],
+        [ 'create-form', undefined ]
       ]);
     });
 
@@ -229,6 +230,8 @@ function noop() {}
 
 function createEmptyTab(options = {}, mountFn = shallow) {
 
+  const tabsProvider = new TabsProvider();
+
   if (typeof options === 'function') {
     mountFn = options;
     options = {};
@@ -238,6 +241,7 @@ function createEmptyTab(options = {}, mountFn = shallow) {
     <EmptyTab
       onAction={ options.onAction || noop }
       onShown={ options.onShown || noop }
+      tabsProvider={ tabsProvider }
     />
   );
 

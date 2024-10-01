@@ -12,9 +12,6 @@ import React, { PureComponent } from 'react';
 
 import CloudIcon from '../../resources/icons/Cloud.svg';
 import PlatformIcon from '../../resources/icons/Platform.svg';
-import BPMNIcon from '../../resources/icons/file-types/BPMN.svg';
-import DMNIcon from '../../resources/icons/file-types/DMN.svg';
-import FormIcon from '../../resources/icons/file-types/Form.svg';
 
 import * as css from './EmptyTab.less';
 
@@ -22,8 +19,7 @@ import {
   Tab
 } from './primitives';
 
-import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM } from '../util/Flags';
-import { Slot } from './slot-fill';
+import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../util/Flags';
 
 
 export default class EmptyTab extends PureComponent {
@@ -34,29 +30,40 @@ export default class EmptyTab extends PureComponent {
 
   triggerAction() { }
 
-  renderDiagramButton = (action, title, icon) => {
-
+  renderDiagramButton = (key, entry) => {
     const {
       onAction
     } = this.props;
 
-    const actionArgs = typeof action === 'string' ? [ action ] : action;
-
     return (
-      <button className="btn btn-secondary" onClick={ () => onAction(...actionArgs) }>
-        {icon}
-        {title}
+      <button key={ key } className="btn btn-secondary" onClick={ () => onAction(entry.action, entry.options) }>
+        {entry.icon && <entry.icon />}
+        {entry.label}
       </button>
     );
   };
 
-  AdditionalButton = (props) => {
-    const { action, title, icon } = props;
+  /**
+   * @param {string} group
+   *
+   * @return {React.JSX.Element[]}
+   */
+  getCreateButtons(group) {
+    const providers = this.props.tabsProvider?.getProviders() || {};
 
-    return this.renderDiagramButton(action, title, icon);
-  };
+    const tabs = Object.values(providers)
+      .flatMap(tab => tab.getNewFileMenu && tab.getNewFileMenu().map(entry => ({ ...entry, icon: tab.getIcon() })))
+      .filter(entry => entry?.group === group)
+      .map((entry, index) => {
+        return this.renderDiagramButton(index, entry);
+      });
+
+    return tabs;
+  }
 
   renderCloudColumn = () => {
+
+    const createButtons = this.getCreateButtons('Camunda 8');
 
     return (
       <div id="welcome-page-cloud" className="welcome-card relative">
@@ -70,23 +77,14 @@ export default class EmptyTab extends PureComponent {
 
         <p>Create a new file</p>
 
-        {this.renderDiagramButton('create-cloud-bpmn-diagram', 'BPMN diagram', <BPMNIcon />)}
-        {
-          !Flags.get(DISABLE_DMN) && (
-            this.renderDiagramButton('create-cloud-dmn-diagram', 'DMN diagram', <DMNIcon />)
-          )
-        }
-        {
-          !Flags.get(DISABLE_FORM) && (
-            this.renderDiagramButton('create-cloud-form', 'Form', <FormIcon />)
-          )
-        }
-        <Slot name="cloud-welcome" Component={ this.AdditionalButton } />
+        {createButtons}
       </div>
     );
   };
 
   renderPlatformColumn = () => {
+
+    const createButtons = this.getCreateButtons('Camunda 7');
 
     return (
       <div id="welcome-page-platform" className="welcome-card">
@@ -100,18 +98,7 @@ export default class EmptyTab extends PureComponent {
 
         <p>Create a new file</p>
 
-        {this.renderDiagramButton('create-bpmn-diagram', 'BPMN diagram', <BPMNIcon />)}
-        {
-          !Flags.get(DISABLE_DMN) && (
-            this.renderDiagramButton('create-dmn-diagram', 'DMN diagram', <DMNIcon />)
-          )
-        }
-        {
-          !Flags.get(DISABLE_FORM) && (
-            this.renderDiagramButton('create-form', 'Form', <FormIcon />)
-          )
-        }
-        <Slot name="platform-welcome" Component={ this.AdditionalButton } />
+        {createButtons}
       </div>
     );
   };
@@ -157,3 +144,4 @@ export default class EmptyTab extends PureComponent {
     );
   }
 }
+
