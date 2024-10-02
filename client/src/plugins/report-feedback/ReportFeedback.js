@@ -100,7 +100,7 @@ export class ReportFeedback extends PureComponent {
 
     return (
       <Fragment>
-        <Fill slot="status-bar__app" group="9_feedback">
+        <Fill slot="status-bar__app" group="8_feedback">
           <button
             className={ classNames('btn', { 'btn--active': open }, css.ReportFeedback) }
             title="Provide Feedback"
