@@ -10,6 +10,7 @@
   --status-bar-active-font-color: var(--color-grey-225-10-15);
   --status-bar-active-icon-font-color: var(--color-grey-225-10-35);
   --status-bar-font-size: var(--font-size-default);
+  --status-bar-hover-update-button: var(--color-blue-205-100-45)
 }
 
 :local(.StatusBar) {
@@ -95,4 +96,18 @@
   .btn + .btn {
     margin-left: 1px;
   }
+
+  .update-btn {
+    background-color: rgba(0, 119, 204, 1);
+    color: rgb(254, 254, 254)
+  }
+
+  .update-btn:hover {
+    background-color: var(--status-bar-hover-update-button);
+  }
+
+  .update-btn:focus {
+    background-color: var(--status-bar-hover-update-button);
+  }
+  
 }

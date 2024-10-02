@@ -20,7 +20,11 @@ import UpdateChecksAPI from './UpdateChecksAPI';
 
 import Flags, { DISABLE_REMOTE_INTERACTION, FORCE_UPDATE_CHECKS, UPDATE_SERVER_URL } from '../../util/Flags';
 
+import { Fill } from '../../app/slot-fill';
+
 import Metadata from '../../util/Metadata';
+
+import { UpdateAvailableOverlay } from './UpdateAvailableOverlay';
 
 const log = debug('UpdateChecks');
 
@@ -45,7 +49,6 @@ export default class UpdateChecks extends PureComponent {
 
   constructor(props) {
     super(props);
-
     if (Flags.get(DISABLE_REMOTE_INTERACTION)) {
       return new NoopComponent();
     }
@@ -54,8 +57,12 @@ export default class UpdateChecks extends PureComponent {
 
     this.updateChecksAPI = new UpdateChecksAPI(updateServerUrl);
 
+    this._buttonRef = React.createRef(null);
+
     this.state = {
-      showModal: false
+      showModal: false,
+      openUpdateAvailablePopUp: false,
+      updateAvailable: false
     };
   }
 
@@ -72,7 +79,6 @@ export default class UpdateChecks extends PureComponent {
     subscribe('updateChecks.execute', async () => {
 
       const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY) || {};
-
       self.checkLatestVersion({
         ...updateCheckInfo,
         stagedRollout: false,
@@ -212,7 +218,10 @@ export default class UpdateChecks extends PureComponent {
       return this.checkSkipped('not-due');
     }
 
-    return this.checkLatestVersion(updateCheckInfo);
+    return this.checkLatestVersion({
+      ...updateCheckInfo,
+      latestVersion: `v${Metadata.data.version}`
+    });
   }
 
   async handleUpdateCheckSuccess(update, silentCheck = true) {
@@ -254,21 +263,26 @@ export default class UpdateChecks extends PureComponent {
 
     this.setState({
       currentVersion,
+      updateAvailable : true,
       latestVersionInfo: {
         latestVersion,
         downloadURL,
         releases
       },
       updateChecksEnabled,
-      showModal: true
     });
+
+    if (!silentCheck) {
+      this.setState({
+        showModal: true
+      });
+    }
 
   }
 
   async checkLatestVersion(updateCheckInfo, silentCheck = true) {
 
     log('Checking for update');
-
     const {
       config,
       _getGlobal,
@@ -322,6 +336,23 @@ export default class UpdateChecks extends PureComponent {
     });
   };
 
+  toggle = () => {
+    log('toggle');
+    if (this.state.openUpdateAvailablePopUp) {
+      this.close();
+    } else {
+      this.open();
+    }
+  };
+
+  open = () => {
+    this.setState({ openUpdateAvailablePopUp: true });
+  };
+
+  close = () => {
+    this.setState({ openUpdateAvailablePopUp: false });
+  };
+
   onGoToDownloadPage = () => {
     const {
       latestVersionInfo
@@ -335,16 +366,45 @@ export default class UpdateChecks extends PureComponent {
     this.onClose();
   };
 
+  openVersionInfoPage = () => {
+    this.setState({
+      showModal: true,
+    });
+  };
+
   render() {
     const {
       showModal,
       latestVersionInfo,
       currentVersion,
-      updateChecksEnabled
+      updateChecksEnabled,
+      openUpdateAvailablePopUp,
+      updateAvailable
     } = this.state;
 
+    const {
+      toggle,
+      _buttonRef: buttonRef,
+      close,
+      openVersionInfoPage,
+    } = this;
     return (
       <React.Fragment>
+        {updateAvailable && <Fill slot="status-bar__app" group="9_update_checks">
+          <button
+            className="btn btn-primary update-btn"
+            title="Toggle update info"
+            onClick={ toggle }
+            ref={ buttonRef }
+          >{ 'Update' } </button>
+        </Fill>}
+        {openUpdateAvailablePopUp && <UpdateAvailableOverlay
+          anchor={ buttonRef.current }
+          openVersionInfoPage={ openVersionInfoPage }
+          onGoToDownloadPage={ this.onGoToDownloadPage }
+          onClose={ close }
+          version={ latestVersionInfo.latestVersion }
+        />}
         {showModal && (
           <NewVersionInfoView
             onClose={ this.onClose }
@@ -356,6 +416,7 @@ export default class UpdateChecks extends PureComponent {
           />
         )}
       </React.Fragment>
+
     );
   }
 }
