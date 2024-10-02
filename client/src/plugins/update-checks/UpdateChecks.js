@@ -20,7 +20,11 @@ import UpdateChecksAPI from './UpdateChecksAPI';
 
 import Flags, { DISABLE_REMOTE_INTERACTION, FORCE_UPDATE_CHECKS, UPDATE_SERVER_URL } from '../../util/Flags';
 
+import { Fill } from '../../app/slot-fill';
+
 import Metadata from '../../util/Metadata';
+
+import { UpdateAvailableOverlay } from './UpdateAvailableOverlay';
 
 const log = debug('UpdateChecks');
 
@@ -54,8 +58,11 @@ export default class UpdateChecks extends PureComponent {
 
     this.updateChecksAPI = new UpdateChecksAPI(updateServerUrl);
 
+    this._buttonRef = React.createRef(null);
+
     this.state = {
-      showModal: false
+      showModal: false,
+      open: false
     };
   }
 
@@ -64,14 +71,12 @@ export default class UpdateChecks extends PureComponent {
       config,
       subscribe
     } = this.props;
-
+    console.log(config);
     const self = this;
 
     self.scheduleCheck();
-
+    const updateCheckInfo = self.initUpdateCheck();
     subscribe('updateChecks.execute', async () => {
-
-      const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY) || {};
 
       self.checkLatestVersion({
         ...updateCheckInfo,
@@ -79,10 +84,22 @@ export default class UpdateChecks extends PureComponent {
         latestVersion: `v${Metadata.data.version}`
       }, false);
     });
+
+
   }
+
 
   componentWillUnmount() {
     this.unscheduleChecks();
+  }
+
+  async initUpdateCheck() {
+    const { config } = this.props;
+    const updateCheckInfo = await config.get(UPDATE_CHECKS_CONFIG_KEY) || {};
+    console.log(updateCheckInfo);
+    console.log(`currentVersion: v${Metadata.data.version}`);
+    this.setState({ latestVersion: updateCheckInfo.latestVersion });
+    return updateCheckInfo;
   }
 
   rescheduleCheck() {
@@ -335,16 +352,93 @@ export default class UpdateChecks extends PureComponent {
     this.onClose();
   };
 
+  _triggerEvent(event) {
+    if (event.type === 'open') {
+      this.props.triggerAction('emit-event', { type: 'updateCheck.opened', payload: event });
+    }
+  }
+
+  toggle = () => {
+    log('toggle');
+    if (this.state.open) {
+      this.close();
+    } else {
+      this.open();
+    }
+  };
+
+  open(source = 'statusBar') {
+    this.setState({ open: true });
+
+    this._onOpen(source);
+  }
+
+  async _onOpen(source) {
+    this._triggerEvent({ type: 'open', source });
+
+    if (!this.state.unread) {
+      return;
+    }
+
+    const { config } = this.props;
+
+    // const oldConfig = await config.get(CONFIG_KEY);
+    // await config.set(CONFIG_KEY, { ...oldConfig, lastOpenedVersion: this._version });
+
+    this.setState({ unread: false });
+  }
+
+  close = () => {
+    this.setState({ open: false });
+  };
+
+  openVersionInfoPage = () => {
+    this.close();
+    const {
+      triggerAction
+    } = this.props;
+
+    triggerAction('emit-event', {
+      type: 'updateChecks.execute'
+    });
+  };
+
   render() {
     const {
       showModal,
       latestVersionInfo,
       currentVersion,
-      updateChecksEnabled
+      updateChecksEnabled,
+      open,
+      latestVersion
     } = this.state;
 
+    const {
+      toggle,
+      _buttonRef: buttonRef,
+      close,
+      openVersionInfoPage,
+    } = this;
+
+    console.log('updateChecks buttonref:', buttonRef);
+    console.log(latestVersionInfo);
     return (
       <React.Fragment>
+        {latestVersion && <Fill slot="status-bar__app" group="10_update_checks">
+          <button
+
+            // className={ classNames('btn', { 'btn--active': open }) }
+            title="Toggle update info"
+            onClick={ toggle }
+            ref={ buttonRef }
+          >{ 'Update' } </button>
+        </Fill>}
+        {open && <UpdateAvailableOverlay
+          anchor={ buttonRef.current }
+          openVersionInfoPage={ openVersionInfoPage }
+          onClose={ close }
+          version={ latestVersion }
+        />}
         {showModal && (
           <NewVersionInfoView
             onClose={ this.onClose }
