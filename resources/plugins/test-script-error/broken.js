@@ -13,6 +13,8 @@
  */
 
 function ReactFoo() {
+
+  // eslint-disable-next-line react/react-in-jsx-scope
   return <div>Hello</div>;
 }
 
