@@ -165,7 +165,7 @@ export default class DropdownButton extends PureComponent {
       items,
       children,
       onClick,
-      closeOnClick, // eslint-disable-line
+      closeOnClick,
       title,
       ...rest
     } = this.props;
