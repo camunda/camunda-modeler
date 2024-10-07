@@ -47,7 +47,6 @@
   },
   "devDependencies": {
     "@electron/notarize": "^2.0.0",
-    "@testing-library/react": "^16.0.0",
     "archiver": "^7.0.0",
     "chai": "^4.5.0",
     "cpx2": "^7.0.0",
