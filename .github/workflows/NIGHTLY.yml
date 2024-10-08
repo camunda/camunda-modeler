@@ -10,7 +10,7 @@ jobs:
         - os: ubuntu-latest
           files:
           - 'dist/camunda-modeler-nightly-linux-x64.tar.gz'
-        - os: macos-12
+        - os: macos-latest
           files:
           - 'dist/camunda-modeler-nightly-mac-arm64.dmg'
           - 'dist/camunda-modeler-nightly-mac-arm64.zip'
