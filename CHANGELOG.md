@@ -8,6 +8,8 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: populate empty tab values from available create options ([#4575](https://github.com/camunda/camunda-modeler/pull/4575))
+* `FEAT`: allow plug-ins to contribute custom file types ([#4568](https://github.com/camunda/camunda-modeler/pull/4568))
 * `DEPS`: update to Electron 32 ([#4483](https://github.com/camunda/camunda-modeler/issues/4483))
 * `DEPS`: update to `@camunda/improved-canvas@1.7.5`
 
