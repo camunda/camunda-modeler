@@ -10,7 +10,9 @@ jobs:
     steps:
     - name: Retrieve version
       id: retrieveVersion
-      run: echo "version=$(echo ${{ github.event.release.name }} | cut -c 2-)" >> $GITHUB_OUTPUT
+      env:
+        RELEASE_NAME: ${{ github.event.release.name }}
+      run: echo "version=$(echo $RELEASE_NAME | cut -c 2-)" >> $GITHUB_OUTPUT
     - name: Download release artifacts
       run: |
         mkdir artifacts
