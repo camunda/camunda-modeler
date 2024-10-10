@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-const del = require('del').sync;
+const del = require('del').deleteSync;
 
 const archiver = require('archiver');
 
