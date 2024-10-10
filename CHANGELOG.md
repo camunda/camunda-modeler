@@ -8,6 +8,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FIX`: show lint errors for FEEL expressions used in BPMN processes ([camunda/bpmnlint-plugin-camunda-compat#175](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/175))
 * `DEPS`: update to `@camunda/linting@3.27.2`
+* `FIX`: add explicit styles for welcome tab ([#4555](https://github.com/camunda/camunda-modeler/issues/4555))
 
 ## 5.28.0
 
