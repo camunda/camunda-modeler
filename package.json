@@ -5,7 +5,7 @@
   "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
-    "app:dev": "electron ./dev.js --force-update-checks resources/diagram/simple.bpmn",
+    "app:dev": "electron ./dev.js --force-update-checks -- resources/diagram/simple.bpmn",
     "app:test": "nyc --reporter lcov --exclude \"app/test/**\" --exclude \"app/**/__tests__\" mocha --require ./app/test/expect \"app/**/*-spec.js\"",
     "app:collect-licenses": "webpack -c webpack.config.license.js",
     "client:build": "npm run build --workspace=client",

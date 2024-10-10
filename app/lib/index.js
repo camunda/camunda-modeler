@@ -690,7 +690,8 @@ function bootstrap() {
   errorTracking.setTag(Sentry, 'plugins', generatePluginsTag(plugins));
 
   // (9) zeebe API
-  const zeebeAPI = new ZeebeAPI({ readFile }, ZeebeNode, flags);
+  const zeebeCustomCertificatePath = flags.get('zeebe-ssl-certificate');
+  const zeebeAPI = new ZeebeAPI({ readFile }, ZeebeNode, zeebeCustomCertificatePath);
 
   // (10) connector templates
   if (!flags.get('disable-connector-templates', false)) {

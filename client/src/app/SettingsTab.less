@@ -1,0 +1,45 @@
+:local(.SettingsTab) {
+  --warning-color: var(--color-yellow-47-88-53);
+  --warning-background: var(--color-yellow-47-86-91);
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow-y: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'IBM Plex Sans';
+
+  .settings-container {
+    background-color: var(--color-grey-225-10-97);
+    color: var(--color-grey-225-10-15);
+    border-radius: 10px;
+    width: 100%;
+    padding: 0 15px;
+    margin: 7px;
+    position: relative;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 20px 0 14px 0;
+    }
+  }
+
+  .alert-warning {
+    padding: 12px;
+    border: solid 1px var(--warning-color);
+    border-left-width: 3px;
+    background: var(--warning-background);
+    margin-bottom: 16px;
+  }
+}

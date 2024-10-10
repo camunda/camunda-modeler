@@ -75,6 +75,8 @@ class MenuBuilder {
         .appendExportAs()
         .appendCloseTab()
         .appendSeparator()
+        .appendSettings()
+        .appendSeparator()
         .appendQuit()
         .get()
     );
@@ -344,6 +346,17 @@ class MenuBuilder {
       accelerator: 'CommandOrControl+Q',
       click: function() {
         app.emit('app:quit');
+      }
+    }));
+
+    return this;
+  }
+
+  appendSettings() {
+    this.menu.append(new MenuItem({
+      label: 'Settings',
+      click: function() {
+        app.emit('menu:action', 'open-settings');
       }
     }));
 
