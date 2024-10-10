@@ -149,8 +149,7 @@ function getReportName(report) {
     name,
   } = report;
 
-  const reportName = name || id || '';
-  return reportName.toLowerCase();
+  return name || id || '';
 }
 
 /**
@@ -176,8 +175,8 @@ function sortReports(reports) {
     }
 
     if (a.category === b.category) {
-      a = getReportName(a),
-      b = getReportName(b);
+      a = getReportName(a).toLowerCase(),
+      b = getReportName(b).toLowerCase();
 
       if (a === b) {
         return 0;

@@ -37,6 +37,8 @@ describe('<LintingTab>', function() {
     expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Problems');
     expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
 
+    expect(wrapper.find('.linting-tab-item__label')).to.have.length(1);
+    expect(wrapper.find('.linting-tab-item__label').text()).to.equal('Foo');
     expect(wrapper.find('.linting-tab-item__content')).to.have.length(1);
     expect(wrapper.find('.linting-tab-item__content').text()).to.equal('Foo message');
   });
@@ -61,6 +63,8 @@ describe('<LintingTab>', function() {
     });
 
     // then
+    expect(wrapper.find('.linting-tab-item__label')).to.have.length(1);
+    expect(wrapper.find('.linting-tab-item__label').text()).to.equal('Foo');
     expect(wrapper.find('.linting-tab-item__content')).to.have.length(1);
     expect(wrapper.find('.linting-tab-item__content').text()).to.equal('Foo message');
     expect(wrapper.find('.linting-tab-item__link')).to.have.length(1);
@@ -81,6 +85,8 @@ describe('<LintingTab>', function() {
     });
 
     // then
+    expect(wrapper.find('.linting-tab-item__label')).to.have.length(1);
+    expect(wrapper.find('.linting-tab-item__label').text()).to.equal('Rule error');
     expect(wrapper.find('.linting-tab-item__content')).to.have.length(1);
     expect(wrapper.find('.linting-tab-item__content').text()).to.equal('Rule <bar-rule> errored with the following message: Bar');
   });
@@ -158,13 +164,28 @@ describe('<LintingTab>', function() {
     });
 
     // then
+    expect(wrapper.find('.linting-tab-item__label')).to.have.length(7);
     expect(wrapper.find('.linting-tab-item__content')).to.have.length(7);
+
+    expect(wrapper.find('.linting-tab-item__label').at(0).text()).to.equal('Bar 1');
     expect(wrapper.find('.linting-tab-item__content').at(0).text()).to.equal('bar 1 error');
+
+    expect(wrapper.find('.linting-tab-item__label').at(1).text()).to.equal('Bar 2');
     expect(wrapper.find('.linting-tab-item__content').at(1).text()).to.equal('bar 2 error');
+
+    expect(wrapper.find('.linting-tab-item__label').at(2).text()).to.equal('baz');
     expect(wrapper.find('.linting-tab-item__content').at(2).text()).to.equal('baz 2 error');
+
+    expect(wrapper.find('.linting-tab-item__label').at(3).text()).to.equal('Foo');
     expect(wrapper.find('.linting-tab-item__content').at(3).text()).to.equal('foo error');
+
+    expect(wrapper.find('.linting-tab-item__label').at(4).text()).to.equal('baz');
     expect(wrapper.find('.linting-tab-item__content').at(4).text()).to.equal('baz 1 warning');
+
+    expect(wrapper.find('.linting-tab-item__label').at(5).text()).to.equal('baz');
     expect(wrapper.find('.linting-tab-item__content').at(5).text()).to.equal('baz 1 info');
+
+    expect(wrapper.find('.linting-tab-item__label').at(6).text()).to.equal('Rule error');
     expect(wrapper.find('.linting-tab-item__content').at(6).text()).to.equal('Rule <baz-rule> errored with the following message: Baz');
   });
 
