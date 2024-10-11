@@ -12,7 +12,7 @@ import React from 'react';
 
 import { Slot } from './slot-fill';
 
-import css from './LeftPanel.less';
+import * as css from './LeftPanel.less';
 
 export default function LeftPanel(props) {
   return (

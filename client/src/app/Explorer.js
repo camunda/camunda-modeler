@@ -26,7 +26,7 @@ import FileIcon from '../../resources/icons/File.svg';
 import FolderIcon from '../../resources/icons/Folder.svg';
 import CrossIcon from '../../resources/icons/Cross.svg';
 
-import css from './Explorer.less';
+import * as css from './Explorer.less';
 
 export default function Explorer(props) {
   const {
@@ -45,7 +45,7 @@ export default function Explorer(props) {
     <Fill slot="left-panel_content">
       <div className={ css.Explorer }>
         <div className="open-editors">
-          <TreeView label="Open Editors" size="xs" selected={ [] }>
+          {/* <TreeView label="Open Editors" size="xs" selected={ [] }>
             {
               tabs.map(tab => {
                 return <TreeNode
@@ -60,13 +60,13 @@ export default function Explorer(props) {
                 />;
               })
             }
-          </TreeView>
+          </TreeView> */}
         </div>
         <div className={ classNames('folder', { 'folder-empty': !folders.length }) }>
-          <Folders folders={ folders } triggerAction={ triggerAction } />
+          {/* <Folders folders={ folders } triggerAction={ triggerAction } /> */}
           {
             !folders.length
-              ? <button className="btn btn-primary" onClick={ () => triggerAction('open-folder') }>Open Folder</button>
+              ? <button className="btn btn-primary" onClick={ () => triggerAction('open-folder') }>Open Process Application</button>
               : null
           }
         </div>
