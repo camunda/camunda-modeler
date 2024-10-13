@@ -402,19 +402,20 @@ describe('<UpdateChecks>', function() {
 
       // given
       const {
-        component
+        component,
+        instance
       } = createComponent();
 
-      mockServerResponse(component, {
-        update: {
-          latestVersion: 'v3.7.0',
-          downloadURL: 'test-download-url',
-          releases: []
-        }
-      });
+      const update = {
+        latestVersion: 'v3.7.0',
+        downloadURL: 'test-download-url',
+        releases: []
+      };
+
+      mockServerResponse(component, { update });
 
       // when
-      await tick(component);
+      await instance.checkLatestVersion(update, false);
 
       // then
       expect(component.state().showModal).to.be.true;
@@ -612,6 +613,44 @@ describe('<UpdateChecks>', function() {
 
       // then
       expect(logSpy).to.not.have.been.called;
+    });
+
+    it('should show <update-available> button', async function() {
+
+      // given
+      const {
+        component
+      } = createComponent();
+
+      mockServerResponse(component, {
+        update: {
+          latestVersion: 'v3.7.0',
+          downloadURL: 'test-download-url',
+          releases: []
+        }
+      });
+
+      // when
+      await tick(component);
+
+      // then
+      expect(component.state().updateAvailable).to.be.true;
+    });
+
+    it('should not show <update-available> button if no update', async function() {
+
+      // given
+      const {
+        component
+      } = createComponent();
+
+      mockServerResponse(component, {});
+
+      // when
+      await tick(component);
+
+      // then
+      expect(component.state().updateAvailable).to.be.false;
     });
 
   });
