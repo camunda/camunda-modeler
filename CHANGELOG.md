@@ -6,6 +6,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: correct broken styles after loading variable outline ([#4555](https://github.com/camunda/camunda-modeler/issues/4555))
 * `FIX`: show lint errors for FEEL expressions used in BPMN processes ([camunda/bpmnlint-plugin-camunda-compat#175](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/175))
 * `DEPS`: update to `@camunda/linting@3.27.2`
 
