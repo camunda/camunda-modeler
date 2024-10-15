@@ -13,10 +13,6 @@
   bottom: 0;
   left: 0;
 
-  font-size: var(--font-size-default);
-  font-weight: 400;
-  font-family: 'IBM Plex Sans';
-
   .flex-spacer {
     min-width: 5px;
     max-width: 40px;
@@ -29,13 +25,17 @@
     margin-bottom: 35px;
   }
 
-  /* Carbon override */
+  /* <carbon-override> */
+  line-height: var(--line-height-default);
+  font-size: var(--font-size-default);
+
   p {
-    font-size: 14px;
+    font-size: var(--font-size-default);
 
     margin-top: 1em;
     margin-bottom: 1em;
   }
+  /* </carbon-override> */
 
   .welcome-cards {
     width: 100%;
