@@ -72,12 +72,12 @@
   },
   "homepage": ".",
   "devDependencies": {
-    "@testing-library/react": "^12.0.0",
     "@axe-core/react": "^4.10.0",
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-react": "^7.24.7",
     "@sentry/webpack-plugin": "^2.11.0",
+    "@testing-library/react": "^12.0.0",
     "babel-loader": "^9.2.1",
     "babel-plugin-istanbul": "^7.0.0",
     "bpmnlint-loader": "^0.1.6",
