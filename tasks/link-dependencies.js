@@ -13,9 +13,9 @@ const { shellSync: exec } = require('execa');
 const path = require('path');
 
 const customLinkersMap = {
-  'bpmn-io/bpmn-js': linkBpmnJs,
+  'bpmn-io/bpmn-js': linkWithYarn,
   'bpmn-io/dmn-js': linkDmnJs,
-  'bpmn-io/diagram-js': linkDiagramJs,
+  'bpmn-io/diagram-js': linkWithYarn,
   'bpmn-io/form-js': linkFormJs
 };
 
@@ -136,41 +136,13 @@ function linkDmnJs({ repo, ref }) {
  *
  * @param {Dependency} dependency
  */
-function linkBpmnJs({ repo, ref }) {
-  gitClone(repo);
+function linkWithYarn({ repo, ref }) {
+  const targetDir = toDirName(repo);
+
+  gitClone(repo, targetDir);
   console.log(`Cloned ${repo}.`);
 
-  const rootDir = path.join(dependenciesDir, 'bpmn-js');
-  exec(`git checkout ${ref}`, { cwd: rootDir });
-  console.log(`Checked out ${ref}.`);
-
-  exec('npm ci', { cwd: rootDir });
-  console.log('Installed dependencies.');
-
-  try {
-    exec('yarn link diagram-js', { cwd: rootDir });
-    console.log('Linked diagram-js.');
-  } catch (error) {
-    console.log('Unable to link diagram-js.');
-  }
-
-  exec('npm run distro', { cwd: rootDir });
-  console.log('Built distro.');
-
-  exec('yarn link', { cwd: rootDir });
-
-  exec('yarn link bpmn-js', { cwd: clientDir });
-}
-
-/**
- *
- * @param {Dependency} dependency
- */
-function linkDiagramJs({ repo, ref }) {
-  gitClone(repo);
-  console.log(`Cloned ${repo}.`);
-
-  const rootDir = path.join(dependenciesDir, 'diagram-js');
+  const rootDir = path.join(dependenciesDir, targetDir);
   exec(`git checkout ${ref}`, { cwd: rootDir });
   console.log(`Checked out ${ref}.`);
 
@@ -179,7 +151,12 @@ function linkDiagramJs({ repo, ref }) {
 
   exec('yarn link', { cwd: rootDir });
 
-  exec('yarn link diagram-js', { cwd: clientDir });
+  const packageJson = path.join(rootDir, 'package.json');
+  const packageName = getPackageName(packageJson);
+
+  exec(`yarn link ${packageName}`, { cwd: clientDir });
+
+  console.log(`Linked ${packageName}.`);
 }
 
 /**
@@ -213,14 +190,24 @@ function linkFormJs({ repo, ref }) {
   exec('yarn link @bpmn-io/form-js', { cwd: clientDir });
 }
 
-function gitClone(repo) {
+function gitClone(repo, target = toDirName(repo)) {
   const repoUrl = getRepoUrl(repo);
 
-  exec(`git clone ${repoUrl}`, { cwd: dependenciesDir });
+  exec(`git clone ${repoUrl} ${target}`, { cwd: dependenciesDir });
 }
 
 function getRepoUrl(repo) {
   return `https://github.com/${repo}.git`;
+}
+
+function toDirName(repo) {
+  return repo.replaceAll('/', '-');
+}
+
+function getPackageName(jsonPath) {
+  const packageJson = JSON.parse(fs.readFileSync(jsonPath, { encoding: 'utf8' }));
+
+  return packageJson.name;
 }
 
 async function del(path) {
