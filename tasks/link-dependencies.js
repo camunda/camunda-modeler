@@ -10,7 +10,7 @@
 
 const fs = require('fs');
 const { shellSync: exec } = require('execa');
-const { deleteSync: del } = require('del');
+const del = require('del').deleteSync;
 const path = require('path');
 
 const customLinkersMap = {
