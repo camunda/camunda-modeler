@@ -8,8 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-const del = require('del').deleteSync;
-
 const archiver = require('archiver');
 
 const fs = require('fs');
@@ -95,11 +93,9 @@ async function archive(path, archivePath, archiveType) {
 
   console.log(`  • re-building     file=${archivePath}, archiveType=${archiveType}`);
 
+  await del(archivePath);
 
   return new Promise(function(resolve, reject) {
-
-    del(archivePath);
-
     var archive,
         output;
 
@@ -126,4 +122,10 @@ async function archive(path, archivePath, archiveType) {
 
     archive.directory(path, 'camunda-modeler').finalize();
   });
+}
+
+async function del(path) {
+  const delModule = await import('del');
+
+  return delModule.deleteAsync(path);
 }

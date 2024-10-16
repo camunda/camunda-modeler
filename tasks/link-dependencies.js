@@ -10,7 +10,6 @@
 
 const fs = require('fs');
 const { shellSync: exec } = require('execa');
-const { deleteSync: del } = require('del');
 const path = require('path');
 
 const customLinkersMap = {
@@ -75,7 +74,7 @@ async function linkDependencies(dependencies) {
     return;
   }
 
-  del(dependenciesDir);
+  await del(dependenciesDir);
   fs.mkdirSync(dependenciesDir);
 
   for (const dependency of dependencies) {
@@ -222,4 +221,10 @@ function gitClone(repo) {
 
 function getRepoUrl(repo) {
   return `https://github.com/${repo}.git`;
+}
+
+async function del(path) {
+  const delModule = await import('del');
+
+  return delModule.deleteAsync(path);
 }
