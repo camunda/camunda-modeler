@@ -89,5 +89,8 @@
         false
       ]
     ]
+  },
+  "overrides": {
+    "diagram-js": "15.0.0-alpha-keyboard"
   }
 }
