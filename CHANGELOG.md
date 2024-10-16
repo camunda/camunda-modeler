@@ -10,6 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: populate empty tab values from available create options ([#4575](https://github.com/camunda/camunda-modeler/pull/4575))
 * `FEAT`: allow plug-ins to contribute custom file types ([#4568](https://github.com/camunda/camunda-modeler/pull/4568))
+* `FIX`: correct broken styles after loading variable outline ([#4555](https://github.com/camunda/camunda-modeler/issues/4555))
 * `FIX`: show lint errors for FEEL expressions used in BPMN processes ([camunda/bpmnlint-plugin-camunda-compat#175](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/175))
 * `DEPS`: update to Electron 32 ([#4483](https://github.com/camunda/camunda-modeler/issues/4483))
 * `DEPS`: update to `@camunda/improved-canvas@1.7.5`

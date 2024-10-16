@@ -133,7 +133,7 @@ export default class TabLinks extends PureComponent {
               onClick={ placeholder.onClick }
               title={ placeholder.title }
             >
-              <span className="tab__content">
+              <span className="tab__content tab__name">
                 { placeholder.label }
               </span>
             </div>
