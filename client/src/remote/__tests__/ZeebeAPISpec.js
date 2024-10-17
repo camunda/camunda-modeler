@@ -23,7 +23,7 @@ describe('<ZeebeAPI>', function() {
   let backend,
       sendSpy;
 
-  beforeEach(() => {
+  beforeEach(function() {
     sendSpy = sinon.spy();
 
     backend = new BackendMock({
@@ -31,9 +31,9 @@ describe('<ZeebeAPI>', function() {
     });
   });
 
-  describe('#checkConnection', () => {
+  describe('#checkConnection', function() {
 
-    it('should check on self hosted', () => {
+    it('should check on self hosted', function() {
 
       // given
       const zeebeAPI = new ZeebeAPI(backend);
@@ -60,7 +60,7 @@ describe('<ZeebeAPI>', function() {
     });
 
 
-    it('should check on basic auth', () => {
+    it('should check on basic auth', function() {
 
       // given
       const zeebeAPI = new ZeebeAPI(backend);
@@ -91,7 +91,7 @@ describe('<ZeebeAPI>', function() {
     });
 
 
-    it('should check on oauth', () => {
+    it('should check on oauth', function() {
 
       // given
       const zeebeAPI = new ZeebeAPI(backend);
@@ -134,7 +134,7 @@ describe('<ZeebeAPI>', function() {
     });
 
 
-    it('should check on camunda cloud', () => {
+    it('should check on camunda cloud', function() {
 
       // given
       const zeebeAPI = new ZeebeAPI(backend);
@@ -168,9 +168,9 @@ describe('<ZeebeAPI>', function() {
   });
 
 
-  describe('#run', () => {
+  describe('#run', function() {
 
-    it('should execute', () => {
+    it('should execute', function() {
 
       // given
       const zeebeAPI = new ZeebeAPI(backend);
@@ -206,9 +206,9 @@ describe('<ZeebeAPI>', function() {
   });
 
 
-  describe('#deploy', () => {
+  describe('#deploy', function() {
 
-    it('should deploy without auth', () => {
+    it('should deploy without auth', function() {
 
       // given
       const zeebeAPI = new ZeebeAPI(backend);
@@ -246,7 +246,7 @@ describe('<ZeebeAPI>', function() {
     });
 
 
-    it('should deploy with basic auth', () => {
+    it('should deploy with basic auth', function() {
 
       // given
       const zeebeAPI = new ZeebeAPI(backend);
@@ -287,7 +287,7 @@ describe('<ZeebeAPI>', function() {
     });
 
 
-    it('should deploy with OAuth', () => {
+    it('should deploy with OAuth', function() {
 
       // given
       const zeebeAPI = new ZeebeAPI(backend);
@@ -341,9 +341,9 @@ describe('<ZeebeAPI>', function() {
   });
 
 
-  describe('#getGatewayVersion', () => {
+  describe('#getGatewayVersion', function() {
 
-    it('should execute', () => {
+    it('should execute', function() {
 
       // given
       const zeebeAPI = new ZeebeAPI(backend);

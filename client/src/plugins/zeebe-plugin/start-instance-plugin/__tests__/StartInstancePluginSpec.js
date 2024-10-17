@@ -23,16 +23,16 @@ import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
 const BUTTON_SELECTOR = '[title="Start current diagram"]';
 
 
-describe('<StartInstancePlugin> (Zeebe)', () => {
+describe('<StartInstancePlugin> (Zeebe)', function() {
 
-  describe('render', () => {
+  describe('render', function() {
 
-    it('should render', () => {
+    it('should render', function() {
       createStartInstancePlugin();
     });
 
 
-    it('should display for active zeebe tabs', () => {
+    it('should display for active zeebe tabs', function() {
 
       // when
       const { wrapper } = createStartInstancePlugin({
@@ -46,7 +46,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should NOT display when no active tab', () => {
+    it('should NOT display when no active tab', function() {
 
       // when
       const { wrapper } = createStartInstancePlugin({
@@ -58,7 +58,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should NOT display for other tabs', () => {
+    it('should NOT display for other tabs', function() {
 
       // when
       const { wrapper } = createStartInstancePlugin();
@@ -70,9 +70,9 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
   });
 
 
-  describe('deploy', () => {
+  describe('deploy', function() {
 
-    it('should send "getDeployConfig" message', async () => {
+    it('should send "getDeployConfig" message', async function() {
 
       // given
       const runSpy = sinon.spy();
@@ -90,7 +90,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should send "deployWithConfig" message', async () => {
+    it('should send "deployWithConfig" message', async function() {
 
       // given
       const runSpy = sinon.spy();
@@ -109,9 +109,9 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
   });
 
 
-  describe('start instance', () => {
+  describe('start instance', function() {
 
-    it('should start process instance if deployment was successful', async () => {
+    it('should start process instance if deployment was successful', async function() {
 
       // given
       const runSpy = sinon.spy();
@@ -126,7 +126,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should start process instance if deployment was successful (multi-tenancy)', async () => {
+    it('should start process instance if deployment was successful (multi-tenancy)', async function() {
 
       // given
       const runSpy = sinon.spy(function(args) {
@@ -151,7 +151,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should NOT start process instance if deployment failed', async () => {
+    it('should NOT start process instance if deployment failed', async function() {
 
       // given
       const runSpy = sinon.spy();
@@ -174,7 +174,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should NOT start process instance if deployment was cancelled', async () => {
+    it('should NOT start process instance if deployment was cancelled', async function() {
 
       // given
       const runSpy = sinon.spy();
@@ -189,7 +189,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should NOT start process instance if user cancelled', async () => {
+    it('should NOT start process instance if user cancelled', async function() {
 
       // given
       const runSpy = sinon.spy();
@@ -204,7 +204,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should start process instance with variables', async () => {
+    it('should start process instance with variables', async function() {
 
       // given
       const runSpy = sinon.spy();
@@ -239,7 +239,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should invoke zeebe API with the process id', async () => {
+    it('should invoke zeebe API with the process id', async function() {
 
       // given
       const processId = '123';
@@ -267,7 +267,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should handle start instance error', async () => {
+    it('should handle start instance error', async function() {
 
       // given
       const runSpy = sinon.stub().throws(new Error());
@@ -289,7 +289,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
 
   describe('overlay', function() {
 
-    it('should open', async () => {
+    it('should open', async function() {
 
       // given
       const activeTab = createTab({ type: 'cloud-bpmn' });
@@ -315,7 +315,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should close when active tab changes', async () => {
+    it('should close when active tab changes', async function() {
 
       // given
       const activeTab = createTab({ type: 'cloud-bpmn' });
@@ -349,7 +349,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should close when button is clicked', async () => {
+    it('should close when button is clicked', async function() {
 
       // given
       const activeTab = createTab({ type: 'cloud-bpmn' });
@@ -383,9 +383,9 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
   });
 
 
-  describe('Operate link', () => {
+  describe('Operate link', function() {
 
-    it('should display notification without link after starting process instance', async () => {
+    it('should display notification without link after starting process instance', async function() {
 
       // given
       const displayNotification = sinon.spy();
@@ -405,7 +405,7 @@ describe('<StartInstancePlugin> (Zeebe)', () => {
     });
 
 
-    it('should display notification with link after starting process instance', async () => {
+    it('should display notification with link after starting process instance', async function() {
 
       // given
       const displayNotification = sinon.spy();

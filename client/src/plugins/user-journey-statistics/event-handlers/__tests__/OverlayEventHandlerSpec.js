@@ -22,11 +22,11 @@ import engineProfileDMN from './fixtures/engine-platform.dmn';
 import engineProfileCloudXML from './fixtures/engine-cloud.bpmn';
 import engineProfileCloudDMN from './fixtures/engine-cloud.dmn';
 
-describe('<OverlayEventHandler>', () => {
+describe('<OverlayEventHandler>', function() {
 
   let subscribe, track;
 
-  beforeEach(() => {
+  beforeEach(function() {
 
     subscribe = sinon.spy();
 
@@ -41,34 +41,34 @@ describe('<OverlayEventHandler>', () => {
   });
 
 
-  describe('should subscribe', () => {
+  describe('should subscribe', function() {
 
-    it('should subscribe to deployment.opened', () => {
+    it('should subscribe to deployment.opened', function() {
       expect(subscribe.getCall(0).args[0]).to.eql('deployment.opened');
     });
 
 
-    it('should subscribe to deployment.closed', () => {
+    it('should subscribe to deployment.closed', function() {
       expect(subscribe.getCall(1).args[0]).to.eql('deployment.closed');
     });
 
 
-    it('should subscribe to versionInfo.opened', () => {
+    it('should subscribe to versionInfo.opened', function() {
       expect(subscribe.getCall(2).args[0]).to.eql('versionInfo.opened');
     });
 
   });
 
 
-  describe('deploy overlay', () => {
+  describe('deploy overlay', function() {
 
-    describe('should send for type', () => {
+    describe('should send for type', function() {
 
-      describe('deployment.opened', () => {
+      describe('deployment.opened', function() {
 
-        describe('deployment tool', () => {
+        describe('deployment tool', function() {
 
-          it('bpmn', async () => {
+          it('bpmn', async function() {
 
             // given
             const tab = createTab({
@@ -90,7 +90,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('cloud bpmn', async () => {
+          it('cloud bpmn', async function() {
 
             // given
             const tab = createTab({
@@ -112,7 +112,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('dmn', async () => {
+          it('dmn', async function() {
 
             // given
             const tab = createTab({
@@ -134,7 +134,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('cloud dmn', async () => {
+          it('cloud dmn', async function() {
 
             // given
             const tab = createTab({
@@ -159,9 +159,9 @@ describe('<OverlayEventHandler>', () => {
         });
 
 
-        describe('start instance tool', () => {
+        describe('start instance tool', function() {
 
-          it('bpmn', async () => {
+          it('bpmn', async function() {
 
             // given
             const tab = createTab({
@@ -183,7 +183,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('cloud bpmn', async () => {
+          it('cloud bpmn', async function() {
 
             // given
             const tab = createTab({
@@ -205,7 +205,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('dmn', async () => {
+          it('dmn', async function() {
 
             // given
             const tab = createTab({
@@ -227,7 +227,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('cloud dmn', async () => {
+          it('cloud dmn', async function() {
 
             // given
             const tab = createTab({
@@ -253,11 +253,11 @@ describe('<OverlayEventHandler>', () => {
       });
 
 
-      describe('deployment.closed', () => {
+      describe('deployment.closed', function() {
 
-        describe('deployment tool', () => {
+        describe('deployment tool', function() {
 
-          it('bpmn', async () => {
+          it('bpmn', async function() {
 
             // given
             const tab = createTab({
@@ -279,7 +279,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('cloud bpmn', async () => {
+          it('cloud bpmn', async function() {
 
             // given
             const tab = createTab({
@@ -301,7 +301,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('dmn', async () => {
+          it('dmn', async function() {
 
             // given
             const tab = createTab({
@@ -323,7 +323,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('cloud dmn', async () => {
+          it('cloud dmn', async function() {
 
             // given
             const tab = createTab({
@@ -348,9 +348,9 @@ describe('<OverlayEventHandler>', () => {
         });
 
 
-        describe('start instance tool', () => {
+        describe('start instance tool', function() {
 
-          it('bpmn', async () => {
+          it('bpmn', async function() {
 
             // given
             const tab = createTab({
@@ -372,7 +372,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('cloud bpmn', async () => {
+          it('cloud bpmn', async function() {
 
             // given
             const tab = createTab({
@@ -394,7 +394,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('dmn', async () => {
+          it('dmn', async function() {
 
             // given
             const tab = createTab({
@@ -416,7 +416,7 @@ describe('<OverlayEventHandler>', () => {
           });
 
 
-          it('cloud dmn', async () => {
+          it('cloud dmn', async function() {
 
             // given
             const tab = createTab({
@@ -443,11 +443,11 @@ describe('<OverlayEventHandler>', () => {
     });
 
 
-    describe('should send engine profile', () => {
+    describe('should send engine profile', function() {
 
-      describe('set engine profile', () => {
+      describe('set engine profile', function() {
 
-        it('bpmn', async () => {
+        it('bpmn', async function() {
 
           // given
           const tab = createTab({
@@ -471,7 +471,7 @@ describe('<OverlayEventHandler>', () => {
         });
 
 
-        it('cloud bpmn', async () => {
+        it('cloud bpmn', async function() {
 
           // given
           const tab = createTab({
@@ -494,7 +494,7 @@ describe('<OverlayEventHandler>', () => {
         });
 
 
-        it('dmn', async () => {
+        it('dmn', async function() {
 
           // given
           const tab = createTab({
@@ -519,7 +519,7 @@ describe('<OverlayEventHandler>', () => {
         });
 
 
-        it('cloud dmn', async () => {
+        it('cloud dmn', async function() {
 
           // given
           const tab = createTab({
@@ -542,9 +542,9 @@ describe('<OverlayEventHandler>', () => {
 
       });
 
-      describe('default engine profile', () => {
+      describe('default engine profile', function() {
 
-        it('bpmn', async () => {
+        it('bpmn', async function() {
 
           // given
           const tab = createTab({
@@ -566,7 +566,7 @@ describe('<OverlayEventHandler>', () => {
         });
 
 
-        it('dmn', async () => {
+        it('dmn', async function() {
 
           // given
           const tab = createTab({
@@ -594,9 +594,9 @@ describe('<OverlayEventHandler>', () => {
   });
 
 
-  describe('version info overlay', () => {
+  describe('version info overlay', function() {
 
-    it('should send source', async () => {
+    it('should send source', async function() {
 
       // given
       const tab = createTab({

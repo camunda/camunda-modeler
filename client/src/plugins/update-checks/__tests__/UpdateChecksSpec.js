@@ -29,22 +29,22 @@ const OS_INFO_CONFIG_KEY = 'os.info';
 
 describe('<UpdateChecks>', function() {
 
-  beforeEach(() => {
+  beforeEach(function() {
     Metadata.init({ name: 'test-name', version: '3.5.0' });
   });
 
-  afterEach(() => {
+  afterEach(function() {
     Flags.reset();
     Metadata.init({});
   });
 
 
-  it('should render', () => {
+  it('should render', function() {
     createComponent();
   });
 
 
-  describe('update checks', () => {
+  describe('update checks', function() {
 
     it('should NOT check if DISABLE_REMOTE_INTERACTION flag is set', async function() {
 
@@ -329,7 +329,7 @@ describe('<UpdateChecks>', function() {
     });
 
 
-    it('should handle update check error', async () => {
+    it('should handle update check error', async function() {
 
       // given
       const checkSpy = sinon.spy();
@@ -361,7 +361,7 @@ describe('<UpdateChecks>', function() {
     it('should check periodically (every N minutes)');
 
 
-    it('should check with URL encoded parameters', async () => {
+    it('should check with URL encoded parameters', async function() {
 
       // given
 
@@ -396,9 +396,9 @@ describe('<UpdateChecks>', function() {
   });
 
 
-  describe('visuals', () => {
+  describe('visuals', function() {
 
-    it('should show modal for positive server response', async () => {
+    it('should show modal for positive server response', async function() {
 
       // given
       const {
@@ -421,7 +421,7 @@ describe('<UpdateChecks>', function() {
     });
 
 
-    it('should NOT show modal for empty server response', async () => {
+    it('should NOT show modal for empty server response', async function() {
 
       // given
       const {
@@ -438,7 +438,7 @@ describe('<UpdateChecks>', function() {
     });
 
 
-    it('should show <no-updates> notification', async () => {
+    it('should show <no-updates> notification', async function() {
 
       // given
       const displaySpy = sinon.spy();
@@ -460,7 +460,7 @@ describe('<UpdateChecks>', function() {
     });
 
 
-    it('should NOT show <no-updates> notification on background checks', async () => {
+    it('should NOT show <no-updates> notification on background checks', async function() {
 
       // given
       const displaySpy = sinon.spy();
@@ -481,7 +481,7 @@ describe('<UpdateChecks>', function() {
     });
 
 
-    it('should show <update-check-error> notification', async () => {
+    it('should show <update-check-error> notification', async function() {
 
       // given
       const displaySpy = sinon.spy();
@@ -524,7 +524,7 @@ describe('<UpdateChecks>', function() {
     });
 
 
-    it('should NOT show <update-check-error> notification on background checks', async () => {
+    it('should NOT show <update-check-error> notification on background checks', async function() {
 
       // given
       const displaySpy = sinon.spy();
@@ -549,7 +549,7 @@ describe('<UpdateChecks>', function() {
     });
 
 
-    it('should show log via <update-check-error> notification', async () => {
+    it('should show log via <update-check-error> notification', async function() {
 
       // given
       const displayNotification = sinon.spy();
@@ -590,7 +590,7 @@ describe('<UpdateChecks>', function() {
     });
 
 
-    it('should NOT show <update-check-error> log on background checks', async () => {
+    it('should NOT show <update-check-error> log on background checks', async function() {
 
       // given
       const logSpy = sinon.spy();

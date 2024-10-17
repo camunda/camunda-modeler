@@ -14,24 +14,24 @@ import { ConnectionError } from '../RestAPI';
 import WellKnownAPI from '../WellKnownAPI';
 
 
-describe('<WellKnownAPI>', () => {
+describe('<WellKnownAPI>', function() {
 
   /**
    * @type {sinon.SinonStub<fetch>}
    */
   let fetchSpy;
 
-  beforeEach(() => {
+  beforeEach(function() {
     fetchSpy = sinon.stub(window, 'fetch');
   });
 
-  afterEach(() => {
+  afterEach(function() {
     fetchSpy.restore();
   });
 
-  describe('#getWellKnownWebAppUrls', () => {
+  describe('#getWellKnownWebAppUrls', function() {
 
-    it('should retrieve well known urls', async () => {
+    it('should retrieve well known urls', async function() {
 
       // given
       const api = createWellKnownAPI();
@@ -55,7 +55,7 @@ describe('<WellKnownAPI>', () => {
     });
 
 
-    it('should throw when fetch fails', async () => {
+    it('should throw when fetch fails', async function() {
 
       // given
       const api = createWellKnownAPI();
@@ -76,7 +76,7 @@ describe('<WellKnownAPI>', () => {
     });
 
 
-    it('should throw when response is not ok', async () => {
+    it('should throw when response is not ok', async function() {
 
       // given
       const api = createWellKnownAPI();
@@ -99,7 +99,7 @@ describe('<WellKnownAPI>', () => {
     });
 
 
-    it('should handle failed response with non-JSON body', async () => {
+    it('should handle failed response with non-JSON body', async function() {
 
       // given
       const api = createWellKnownAPI();
@@ -126,18 +126,18 @@ describe('<WellKnownAPI>', () => {
     });
 
 
-    describe('timeout handling', () => {
+    describe('timeout handling', function() {
 
       let clock;
 
-      before(() => {
+      before(function() {
         clock = sinon.useFakeTimers();
       });
 
-      after(() => clock.restore());
+      after(function() { return clock.restore(); });
 
 
-      it('should abort request on timeout', async () => {
+      it('should abort request on timeout', async function() {
 
         // given
         const api = createWellKnownAPI();
@@ -181,28 +181,9 @@ describe('<WellKnownAPI>', () => {
 
   });
 
-  describe('#getCockpitUrl', () => {
+  describe('#getCockpitUrl', function() {
 
-    it('should retrieve well known url', async () => {
-
-      // given
-      const api = createWellKnownAPI();
-
-      fetchSpy.resolves(new Response({
-        json: () => ({
-          'cockpitUrl': 'http://localhost/camunda/apps/cockpit/default/#/'
-        }),
-      }));
-
-      // when
-      const resultUrl = await api.getCockpitUrl();
-
-      // then
-      expectFetched(fetchSpy);
-      expect(resultUrl).to.equal('http://localhost/camunda/apps/cockpit/default/#/');
-    });
-
-    it('should add trailing slash to well known url', async () => {
+    it('should retrieve well known url', async function() {
 
       // given
       const api = createWellKnownAPI();
@@ -221,7 +202,26 @@ describe('<WellKnownAPI>', () => {
       expect(resultUrl).to.equal('http://localhost/camunda/apps/cockpit/default/#/');
     });
 
-    it('should add default engine to to well known url', async () => {
+    it('should add trailing slash to well known url', async function() {
+
+      // given
+      const api = createWellKnownAPI();
+
+      fetchSpy.resolves(new Response({
+        json: () => ({
+          'cockpitUrl': 'http://localhost/camunda/apps/cockpit/default/#/'
+        }),
+      }));
+
+      // when
+      const resultUrl = await api.getCockpitUrl();
+
+      // then
+      expectFetched(fetchSpy);
+      expect(resultUrl).to.equal('http://localhost/camunda/apps/cockpit/default/#/');
+    });
+
+    it('should add default engine to to well known url', async function() {
 
       // given
       const api = createWellKnownAPI();
@@ -241,7 +241,7 @@ describe('<WellKnownAPI>', () => {
     });
 
 
-    it('should throw when fetch fails', async () => {
+    it('should throw when fetch fails', async function() {
 
       // given
       const api = createWellKnownAPI();
@@ -262,7 +262,7 @@ describe('<WellKnownAPI>', () => {
     });
 
 
-    it('should throw when response is not ok', async () => {
+    it('should throw when response is not ok', async function() {
 
       // given
       const api = createWellKnownAPI();
@@ -285,7 +285,7 @@ describe('<WellKnownAPI>', () => {
     });
 
 
-    it('should handle failed response with non-JSON body', async () => {
+    it('should handle failed response with non-JSON body', async function() {
 
       // given
       const api = createWellKnownAPI();
@@ -312,18 +312,18 @@ describe('<WellKnownAPI>', () => {
     });
 
 
-    describe('timeout handling', () => {
+    describe('timeout handling', function() {
 
       let clock;
 
-      before(() => {
+      before(function() {
         clock = sinon.useFakeTimers();
       });
 
-      after(() => clock.restore());
+      after(function() { return clock.restore(); });
 
 
-      it('should abort request on timeout', async () => {
+      it('should abort request on timeout', async function() {
 
         // given
         const api = createWellKnownAPI();

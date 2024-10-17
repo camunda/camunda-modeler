@@ -15,7 +15,7 @@ import { shallow } from 'enzyme';
 import { ReleaseInfo } from '../ReleaseInfo';
 
 
-describe('<ReleaseInfo>', () => {
+describe('<ReleaseInfo>', function() {
 
   it('should render', function() {
 

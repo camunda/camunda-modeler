@@ -24,11 +24,11 @@ import engineProfilePlatform from './fixtures/engine-platform.form';
 import engineProfileCloud from './fixtures/engine-cloud.form';
 
 
-describe('<FormEditorEventHandler>', () => {
+describe('<FormEditorEventHandler>', function() {
 
   let subscribe, track;
 
-  beforeEach(() => {
+  beforeEach(function() {
 
     subscribe = sinon.spy();
 
@@ -43,17 +43,17 @@ describe('<FormEditorEventHandler>', () => {
   });
 
 
-  describe('formEditor:layoutChanged', () => {
+  describe('formEditor:layoutChanged', function() {
 
 
-    it('should subscribe to form.modeler.playgroundLayoutChanged', () => {
+    it('should subscribe to form.modeler.playgroundLayoutChanged', function() {
 
       // then
       expect(subscribe.getCall(0).args[0]).to.eql('form.modeler.playgroundLayoutChanged');
     });
 
 
-    it('should send layout', async () => {
+    it('should send layout', async function() {
 
       // given
       const tab = createTab({
@@ -83,7 +83,7 @@ describe('<FormEditorEventHandler>', () => {
     });
 
 
-    it('should send triggeredBy', async () => {
+    it('should send triggeredBy', async function() {
 
       // given
       const tab = createTab({
@@ -117,7 +117,7 @@ describe('<FormEditorEventHandler>', () => {
     });
 
 
-    it('should send engine profile - C7', async () => {
+    it('should send engine profile - C7', async function() {
 
       // given
       const tab = createTab({
@@ -141,7 +141,7 @@ describe('<FormEditorEventHandler>', () => {
     });
 
 
-    it('should send engine profile - C8', async () => {
+    it('should send engine profile - C8', async function() {
 
       // given
       const tab = createTab({
@@ -167,17 +167,17 @@ describe('<FormEditorEventHandler>', () => {
   });
 
 
-  describe('formEditor:inputDataChanged', () => {
+  describe('formEditor:inputDataChanged', function() {
 
 
-    it('should subscribe to form.modeler.inputDataChanged', () => {
+    it('should subscribe to form.modeler.inputDataChanged', function() {
 
       // then
       expect(subscribe.getCall(1).args[0]).to.eql('form.modeler.inputDataChanged');
     });
 
 
-    it('should send engine profile - C7', async () => {
+    it('should send engine profile - C7', async function() {
 
       // given
       const tab = createTab({
@@ -200,7 +200,7 @@ describe('<FormEditorEventHandler>', () => {
     });
 
 
-    it('should send engine profile - C8', async () => {
+    it('should send engine profile - C8', async function() {
 
       // given
       const tab = createTab({
@@ -225,17 +225,17 @@ describe('<FormEditorEventHandler>', () => {
   });
 
 
-  describe('formEditor:previewChanged', () => {
+  describe('formEditor:previewChanged', function() {
 
 
-    it('should subscribe to form.modeler.previewChanged', () => {
+    it('should subscribe to form.modeler.previewChanged', function() {
 
       // then
       expect(subscribe.getCall(2).args[0]).to.eql('form.modeler.previewChanged');
     });
 
 
-    it('should send engine profile - C7', async () => {
+    it('should send engine profile - C7', async function() {
 
       // given
       const tab = createTab({
@@ -258,7 +258,7 @@ describe('<FormEditorEventHandler>', () => {
     });
 
 
-    it('should send engine profile - C8', async () => {
+    it('should send engine profile - C8', async function() {
 
       // given
       const tab = createTab({

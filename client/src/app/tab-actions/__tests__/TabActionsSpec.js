@@ -19,7 +19,7 @@ import { TabActions } from '../TabActions';
 
 describe('<TabActions>', function() {
 
-  it('should provide slots', () => {
+  it('should provide slots', function() {
 
     // given
     const { tree } = createTabActions();

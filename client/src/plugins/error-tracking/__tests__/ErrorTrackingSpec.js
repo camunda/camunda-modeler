@@ -19,21 +19,21 @@ import Metadata from '../../../util/Metadata';
 
 import ErrorTracking, { normalizeUrl } from '../ErrorTracking';
 
-describe('<ErrorTracking>', () => {
+describe('<ErrorTracking>', function() {
 
-  afterEach(() => {
+  afterEach(function() {
     Flags.reset();
     Metadata.init({});
   });
 
 
-  it('should render', () => {
+  it('should render', function() {
 
     shallow(<ErrorTracking />);
   });
 
 
-  it('should not initialize if Sentry DSN not set', async () => {
+  it('should not initialize if Sentry DSN not set', async function() {
 
     // given
     const initializeSentry = sinon.spy();
@@ -48,7 +48,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should not initialize if Privacy Preferences not set', async () => {
+  it('should not initialize if Privacy Preferences not set', async function() {
 
     // given
     const initializeSentry = sinon.spy();
@@ -63,7 +63,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should not initialize if Error Tracking not enabled', async () => {
+  it('should not initialize if Error Tracking not enabled', async function() {
 
     // given
     const initializeSentry = sinon.spy();
@@ -81,7 +81,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should initialize', async () => {
+  it('should initialize', async function() {
 
     // given
     const initializeSentry = sinon.spy();
@@ -100,7 +100,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should use sentry-dsn flag', async () => {
+  it('should use sentry-dsn flag', async function() {
 
     // given
     Flags.init({
@@ -115,7 +115,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should not initialize if DISABLE_REMOTE_INTERACTION flag is set', async () => {
+  it('should not initialize if DISABLE_REMOTE_INTERACTION flag is set', async function() {
 
     // given
     Flags.init({
@@ -139,7 +139,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should not schedule check if DISABLE_REMOTE_INTERACTION flag is set', async () => {
+  it('should not schedule check if DISABLE_REMOTE_INTERACTION flag is set', async function() {
 
     // given
     Flags.init({
@@ -158,7 +158,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should initialize sentry with dsn and release', async () => {
+  it('should initialize sentry with dsn and release', async function() {
 
     // given
     Metadata.init({ version: '3.5.0' });
@@ -185,7 +185,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should configure Sentry scope', async () => {
+  it('should configure Sentry scope', async function() {
 
     // given
     const setTagSpy = sinon.spy();
@@ -210,7 +210,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should subscribe to app.error-handled event on initialization', async () => {
+  it('should subscribe to app.error-handled event on initialization', async function() {
 
     // given
     const subscribeSpy = sinon.spy();
@@ -229,7 +229,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should capture exceptions', async () => {
+  it('should capture exceptions', async function() {
 
     // given
     const handledError = new Error('THIS IS HANDLED');
@@ -256,7 +256,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should initialize after user enables error tracking', async () => {
+  it('should initialize after user enables error tracking', async function() {
 
     // given
     let areCrashReportsEnabled = false;
@@ -297,7 +297,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should close Sentry after user disables error tracking', async () => {
+  it('should close Sentry after user disables error tracking', async function() {
 
     // given
     let areCrashReportsEnabled = true;
@@ -339,7 +339,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should attach plugins to scope', async () => {
+  it('should attach plugins to scope', async function() {
 
     // given
     const setTagSpy = sinon.spy();
@@ -365,7 +365,7 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  it('should attach <none> as plugins tag to scope', async () => {
+  it('should attach <none> as plugins tag to scope', async function() {
 
     // given
     const setTagSpy = sinon.spy();
@@ -388,33 +388,33 @@ describe('<ErrorTracking>', () => {
   });
 
 
-  describe('Path normalization', () => {
+  describe('Path normalization', function() {
 
-    it('should normalize Windows paths', () => {
+    it('should normalize Windows paths', function() {
 
       return expectNormalization('/C:/Users/user/test-user/Desktop/Camunda/resources/app.asar/public/');
     });
 
 
-    it('should normalize Windows paths with backslash', () => {
+    it('should normalize Windows paths with backslash', function() {
 
       return expectNormalization('C:\\Users\\user\\test-user\\Desktop\\Camunda\\resources\\app.asar\\public\\');
     });
 
 
-    it('should normalize Linux paths', () => {
+    it('should normalize Linux paths', function() {
 
       return expectNormalization('/home/testuser/Aplications/camunda-modeler-4.0.0-linux-x64/resources/app.asar/public/');
     });
 
 
-    it('should normalize Mac paths', () => {
+    it('should normalize Mac paths', function() {
 
       return expectNormalization('/Applications/Camunda Modeler.app/Contents/Resources/app.asar/public/');
     });
 
 
-    it('should normalize dev paths', () => {
+    it('should normalize dev paths', function() {
 
       return expectNormalization('webpack-internal:///./src/plugins/camunda-plugin/deployment-tool/');
     });

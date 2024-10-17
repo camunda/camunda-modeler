@@ -86,7 +86,7 @@ describe('<CreateNewAction>', function() {
   });
 
 
-  it('should open via event', () => {
+  it('should open via event', function() {
 
     // given
     const subscribe = createSubscribe();

@@ -17,7 +17,7 @@ import MochaTestContainer from 'mocha-test-container-support';
 import { VersionInfoOverlay } from '../VersionInfoOverlay';
 
 
-describe('<VersionInfoOverlay>', () => {
+describe('<VersionInfoOverlay>', function() {
 
   it('should render', function() {
 
