@@ -320,7 +320,9 @@ function createResizableContainer(props = {}, mountFn = mount) {
       maxHeight={ maxHeight }
       open={ open }
       onResized={ onResized }
-      children={ children } />);
+    >
+      { children }
+    </ResizableContainer>);
 
   const instance = wrapper.instance();
 
