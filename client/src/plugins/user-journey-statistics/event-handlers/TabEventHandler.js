@@ -60,6 +60,11 @@ export default class TabEventHandler {
         type
       } = tab;
 
+      // a special tab
+      if (!file) {
+        return;
+      }
+
       const {
         contents
       } = file;
