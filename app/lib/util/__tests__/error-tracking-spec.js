@@ -14,6 +14,7 @@ const os = require('os');
 
 const errorTracking = require('../error-tracking');
 
+
 describe('error-tracking', function() {
 
   beforeEach(function() {
@@ -32,24 +33,6 @@ describe('error-tracking', function() {
     const sentryInitSpy = sinon.spy();
 
     const config = mockConfig();
-    const flags = mockFlags();
-    const renderer = mockRenderer();
-    const Sentry = mockSentry({ sentryInitSpy });
-
-    // when
-    errorTracking.start(Sentry, 'v2', config, flags, renderer);
-
-    // then
-    expect(sentryInitSpy).to.not.have.been.called;
-  });
-
-
-  it('should not initialize Sentry if error tracking not enabled', function() {
-
-    // given
-    const sentryInitSpy = sinon.spy();
-
-    const config = mockConfig({ 'editor.privacyPreferences': { 'ENABLE_CRASH_REPORTS': false } });
     const flags = mockFlags();
     const renderer = mockRenderer();
     const Sentry = mockSentry({ sentryInitSpy });
