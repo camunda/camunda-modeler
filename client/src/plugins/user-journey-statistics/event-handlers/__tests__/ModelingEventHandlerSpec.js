@@ -13,6 +13,7 @@
 import { create } from 'diagram-js/lib/model';
 import ModelingEventHandler from '../ModelingEventHandler';
 
+
 describe('<ModelingEventHandler>', function() {
 
   let subscribe, track;
@@ -37,7 +38,7 @@ describe('<ModelingEventHandler>', function() {
     });
 
 
-    it('should subscribe to telemetry.disabled', function() {
+    it('should subscribe to telemetry.enabled', function() {
       expect(subscribe.getCall(1).args[0]).to.eql('telemetry.enabled');
     });
 
