@@ -9,7 +9,7 @@
  */
 
 const fs = require('fs');
-const { shellSync: exec } = require('execa');
+const { shellSync } = require('execa');
 const path = require('path');
 
 const customLinkersMap = {
@@ -214,4 +214,11 @@ async function del(path) {
   const delModule = await import('del');
 
   return delModule.deleteAsync(path);
+}
+
+function exec(...args) {
+  const { stdout, stderr } = shellSync(...args);
+
+  stdout && console.log(stdout);
+  stderr && console.error(stderr);
 }
