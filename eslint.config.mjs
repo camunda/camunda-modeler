@@ -1,88 +1,93 @@
 import bpmnIoPlugin from 'eslint-plugin-bpmn-io';
 import camundaLicensedPlugin from 'eslint-plugin-camunda-licensed';
 
+const files = {
+  client: [
+    'client/src/**/*.js',
+    'client/test/**/*.js',
+    'resources/plugins/*/client/**/*.js'
+  ],
+  sources: [
+    'app/*.js',
+    'app/lib/**/*.js',
+    'client/src/**/*.js'
+  ],
+  tests: [
+    '**/test/**/*.js',
+    '**/__tests__/**/*.js'
+  ],
+  ignored: [
+    'app/preload',
+    'app/public',
+    'client/build',
+    'coverage',
+    'dist',
+    'docs',
+    'resources/plugins/*/dist',
+    'resources/plugins/test-script-error/broken.js',
+    'tmp'
+  ]
+};
+
 export default [
+  {
+    ignores: files.ignored
+  },
+
+  // license header
   ...camundaLicensedPlugin.configs.mit.map((config) => {
     return {
       ...config,
-      files: [
-        'app/lib/**/*.js',
-        'client/src/**/*.js'
-      ]
+      files: files.sources
     };
   }),
+
+  // build + app
   ...bpmnIoPlugin.configs.node.map((config) => {
     return {
       ...config,
-      files: [
-        'app/lib/**/*.js',
-        'resources/**/*.js',
-        'tasks/**/*.js',
-        '*.js',
-        '*.mjs'
-      ]
+      ignores: files.client
     };
   }),
-  ...bpmnIoPlugin.configs.mocha.map((config) => {
-    return {
-      ...config,
-      files: [
-        '**/__tests__/**/*.js',
-        'test/**/*.js'
-      ],
-      rules: {
-        'no-mocha-arrows': 'off'
-      }
-    };
-  }),
+
+  // client
   ...bpmnIoPlugin.configs.browser.map((config) => {
     return {
       ...config,
-      files: [
-        'client/src/**/*.js',
-        'resources/plugins/**/*.js'
-      ]
+      files: files.client
     };
   }),
   ...bpmnIoPlugin.configs.jsx.map((config) => {
     return {
       ...config,
-      files: [
-        'client/src/**/*.js',
-        'resources/plugins/**/*.js'
-      ]
+      files: files.client
     };
   }),
   {
-    files: [
-      'client/**/*.js'
-    ],
     languageOptions: {
       globals: {
         process: 'readonly'
       }
-    }
+    },
+    settings: {
+      react: { version: '16.14.0' }
+    },
+    files: files.client
   },
+
+  // test
+  ...bpmnIoPlugin.configs.mocha.map((config) => {
+    return {
+      ...config,
+      files: files.tests
+    };
+  }),
   {
-    files: [
-      '**/__tests__/**/*.js'
-    ],
     languageOptions: {
       globals: {
         require: 'readonly'
       }
-    }
-  },
-  {
-    ignores: [
-      '**/dist',
-      '**/node_modules',
-      'app/public',
-      'app/preload',
-      'client/build',
-      'coverage',
-      'docs',
-      'tmp'
-    ]
+    },
+    files: files.tests
   }
 ];
