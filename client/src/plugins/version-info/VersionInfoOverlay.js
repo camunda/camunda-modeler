@@ -37,7 +37,7 @@ function WhatsNewSection(props) {
   return (
     <Section maxHeight="500px">
       <Section.Header>
-        What's new in Modeler { props.version }
+        What&apos;s new in Modeler { props.version }
       </Section.Header>
       <Section.Body>
         <ReleaseInfo />
