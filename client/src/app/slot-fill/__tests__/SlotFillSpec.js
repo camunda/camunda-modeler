@@ -120,6 +120,8 @@ describe('slot-fill', function() {
 
   describe('<Fill>', function() {
 
+    /* eslint-disable react/no-render-return-value */
+
     it('should register fill', function() {
       var slotFillRoot = ReactDOM.render(
         <SlotFillRoot>
