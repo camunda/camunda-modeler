@@ -26,13 +26,13 @@ import {
 } from '../DeploymentPluginConstants';
 
 
-describe('<DeploymentPluginValidator> (Zeebe)', () => {
+describe('<DeploymentPluginValidator> (Zeebe)', function() {
 
-  describe('Basic validation', () => {
+  describe('Basic validation', function() {
 
     const validator = new DeploymentPluginValidator(null);
 
-    it('should validate Zeebe contact point - IP address', () => {
+    it('should validate Zeebe contact point - IP address', function() {
 
       // given
       const emptyZeebeContactPoint = '';
@@ -51,7 +51,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    it('should validate Zeebe contact point - URL', () => {
+    it('should validate Zeebe contact point - URL', function() {
 
       // given
       const emptyZeebeContactPoint = '';
@@ -70,7 +70,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    it('should validate basic auth username', () => {
+    it('should validate basic auth username', function() {
 
       // given
       const nonValidBasicAuthUsername = '';
@@ -82,7 +82,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    it('should validate basic auth password', () => {
+    it('should validate basic auth password', function() {
 
       // given
       const nonValidBasicAuthPassword = '';
@@ -94,7 +94,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    it('should validate OAuth URL', () => {
+    it('should validate OAuth URL', function() {
 
       // given
       const nonValidOAuthURL = '';
@@ -106,7 +106,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    it('should validate audience', () => {
+    it('should validate audience', function() {
 
       // given
       const nonValidAudience = '';
@@ -121,7 +121,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     it.skip('should validate scope');
 
 
-    it('should validate client id', () => {
+    it('should validate client id', function() {
 
       // given
       const nonValidClientId = '';
@@ -133,7 +133,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    it('should validate client secret', () => {
+    it('should validate client secret', function() {
 
       // given
       const nonValidClientSecret = '';
@@ -145,7 +145,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    it('should validate cluster url', () => {
+    it('should validate cluster url', function() {
 
       // given
       const nonValidClusterUrl = '';
@@ -169,7 +169,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    it('should validate config (camunda cloud)', () => {
+    it('should validate config (camunda cloud)', function() {
 
       // given
       const config = {
@@ -199,7 +199,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    it('should validate config (self hosted none auth)', () => {
+    it('should validate config (self hosted none auth)', function() {
 
       // given
       const config = {
@@ -228,7 +228,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    it('should validate config (self hosted oauth)', () => {
+    it('should validate config (self hosted oauth)', function() {
 
       // given
       const config = {
@@ -265,9 +265,9 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
   });
 
 
-  describe('<ConnectionChecker>', () => {
+  describe('<ConnectionChecker>', function() {
 
-    it('should be created', () => {
+    it('should be created', function() {
 
       // given
       const connectionChecker = createConnectionChecker();
@@ -277,9 +277,9 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    describe('#check', () => {
+    describe('#check', function() {
 
-      it('should work', async () => {
+      it('should work', async function() {
 
         // given
         const connectionChecker = createConnectionChecker();
@@ -292,7 +292,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
       });
 
 
-      it('should return last result if endpoint did not change', async () => {
+      it('should return last result if endpoint did not change', async function() {
 
         // given
         const spy = sinon.spy(() => Promise.resolve({ success: true, response: {} }));
@@ -308,7 +308,7 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
       });
 
 
-      it('should check again if endpoint changed', async () => {
+      it('should check again if endpoint changed', async function() {
 
         // given
         const spy = sinon.spy(() => Promise.resolve({ success: true, response: {} }));
@@ -326,9 +326,9 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    describe('#subscribe', () => {
+    describe('#subscribe', function() {
 
-      it('should work', async () => {
+      it('should work', async function() {
 
         // given
         const onStart = sinon.spy();
@@ -348,9 +348,9 @@ describe('<DeploymentPluginValidator> (Zeebe)', () => {
     });
 
 
-    describe('#unsubscribe', () => {
+    describe('#unsubscribe', function() {
 
-      it('should work', async () => {
+      it('should work', async function() {
 
         // given
         const onStart = sinon.spy();

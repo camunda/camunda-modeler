@@ -11,17 +11,17 @@
 import Metadata from '../../../util/Metadata';
 import MixpanelHandler from '../MixpanelHandler';
 
-describe('<MixpanelHandler>', () => {
+describe('<MixpanelHandler>', function() {
 
   const mixpanel = MixpanelHandler.getInstance();
 
-  it('should be disabled by default', async () => {
+  it('should be disabled by default', async function() {
 
     expect(mixpanel.isEnabled()).to.be.false;
   });
 
 
-  it('should send request to Mixpanel', async () => {
+  it('should send request to Mixpanel', async function() {
 
     // given
     Metadata.init({ version:'test-version' });
@@ -38,7 +38,7 @@ describe('<MixpanelHandler>', () => {
   });
 
 
-  it('should NOT send request to Mixpanel if not enabled', async () => {
+  it('should NOT send request to Mixpanel if not enabled', async function() {
 
     // given
     mixpanel.disable();
@@ -51,7 +51,7 @@ describe('<MixpanelHandler>', () => {
   });
 
 
-  it('should include common properties in request to Mixpanel', async () => {
+  it('should include common properties in request to Mixpanel', async function() {
 
     // given
     Metadata.init({ version:'test-version' });

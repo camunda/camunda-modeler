@@ -33,7 +33,7 @@ describe('ZeebeAPI', function() {
 
   describe('#checkConnection', function() {
 
-    it('should set success=true for correct check', async () => {
+    it('should set success=true for correct check', async function() {
 
       // given
       const zeebeAPI = mockZeebeNode();
@@ -53,7 +53,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set success=false on failure', async () => {
+    it('should set success=false on failure', async function() {
 
       // given
       const zeebeAPI = mockZeebeNode({
@@ -83,7 +83,7 @@ describe('ZeebeAPI', function() {
 
     describe('should return correct error reason on failure', function() {
 
-      it('for <endpoint-unavailable>', async () => {
+      it('for <endpoint-unavailable>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -110,7 +110,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (Cloud)', async () => {
+      it('for <endpoint-unavailable> (Cloud)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -136,7 +136,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (Cloud)', async () => {
+      it('for <endpoint-unavailable> (Cloud)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -162,7 +162,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (self-managed)', async () => {
+      it('for <endpoint-unavailable> (self-managed)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -189,7 +189,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (self-managed)', async () => {
+      it('for <endpoint-unavailable> (self-managed)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -216,7 +216,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <not-found>', async () => {
+      it('for <not-found>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -243,7 +243,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <not-found> (OAuth)', async () => {
+      it('for <not-found> (OAuth)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -271,7 +271,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <not-found> (Cloud)', async () => {
+      it('for <not-found> (Cloud)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -297,7 +297,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <unauthorized>', async () => {
+      it('for <unauthorized>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -324,7 +324,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <unauthorized> - Cloud', async () => {
+      it('for <unauthorized> - Cloud', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -350,7 +350,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <forbidden>', async () => {
+      it('for <forbidden>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -376,7 +376,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <unsupported-protocol>', async () => {
+      it('for <unsupported-protocol>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -404,7 +404,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <unknown>', async () => {
+      it('for <unknown>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -431,7 +431,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for no message', async () => {
+      it('for no message', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -458,7 +458,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <Method not found>', async () => {
+      it('for <Method not found>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -493,7 +493,7 @@ describe('ZeebeAPI', function() {
 
   describe('#run', function() {
 
-    it('should set success=true for successful instance run', async () => {
+    it('should set success=true for successful instance run', async function() {
 
       // given
       const zeebeAPI = mockZeebeNode();
@@ -514,7 +514,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set success=false on failure', async () => {
+    it('should set success=false on failure', async function() {
 
       // given
       const zeebeAPI = mockZeebeNode({
@@ -578,7 +578,7 @@ describe('ZeebeAPI', function() {
 
   describe('#deploy', function() {
 
-    it('should set success=true for successful deployment', async () => {
+    it('should set success=true for successful deployment', async function() {
 
       // given
       const zeebeAPI = mockZeebeNode();
@@ -599,7 +599,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set success=false for failure', async () => {
+    it('should set success=false for failure', async function() {
 
       // given
       const error = new Error('test');
@@ -662,7 +662,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should read file as buffer', async () => {
+    it('should read file as buffer', async function() {
 
       // given
       const fs = {
@@ -692,7 +692,7 @@ describe('ZeebeAPI', function() {
 
     describe('resource types', function() {
 
-      it('should deploy BPMN', async () => {
+      it('should deploy BPMN', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -728,7 +728,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should deploy DMN', async () => {
+      it('should deploy DMN', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -765,7 +765,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should deploy form', async () => {
+      it('should deploy form', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -806,7 +806,7 @@ describe('ZeebeAPI', function() {
 
     describe('deployment name', function() {
 
-      it('should suffix deployment name with .bpmn if necessary', async () => {
+      it('should suffix deployment name with .bpmn if necessary', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -836,7 +836,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should suffix deployment name with .dmn if necessary', async () => {
+      it('should suffix deployment name with .dmn if necessary', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -867,7 +867,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should suffix deployment name with .form if necessary', async () => {
+      it('should suffix deployment name with .form if necessary', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -898,7 +898,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should not suffix deployment name with .bpmn if not necessary', async () => {
+      it('should not suffix deployment name with .bpmn if not necessary', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -928,7 +928,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should not suffix deployment name with .dmn if not necessary', async () => {
+      it('should not suffix deployment name with .dmn if not necessary', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -959,7 +959,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should not suffix deployment name with .form if not necessary', async () => {
+      it('should not suffix deployment name with .form if not necessary', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -990,7 +990,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should use file path if deployment name is empty', async () => {
+      it('should use file path if deployment name is empty', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1020,7 +1020,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should add bpmn suffix to filename if extension is other than bpmn', async () => {
+      it('should add bpmn suffix to filename if extension is other than bpmn', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1050,7 +1050,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should add bpmn extension if name ends with bpmn without extension', async () => {
+      it('should add bpmn extension if name ends with bpmn without extension', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1080,7 +1080,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should add dmn suffix if extension is other than dmn and resourceType=dmn', async () => {
+      it('should add dmn suffix if extension is other than dmn and resourceType=dmn', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1111,7 +1111,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should add dmn extension if name ends with dmn without extension', async () => {
+      it('should add dmn extension if name ends with dmn without extension', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1142,7 +1142,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should add form suffix if extension is other than form and resourceType=form', async () => {
+      it('should add form suffix if extension is other than form and resourceType=form', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1173,7 +1173,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should add form extension if name ends with form without extension', async () => {
+      it('should add form extension if name ends with form without extension', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1208,7 +1208,7 @@ describe('ZeebeAPI', function() {
 
     describe('basic auth', function() {
 
-      it('should pass configuration', async () => {
+      it('should pass configuration', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1256,7 +1256,7 @@ describe('ZeebeAPI', function() {
 
     describe('OAuth', function() {
 
-      it('should pass configuration', async () => {
+      it('should pass configuration', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1310,7 +1310,7 @@ describe('ZeebeAPI', function() {
 
     describe('tenant ID', function() {
 
-      it('should add tenant ID if exists', async () => {
+      it('should add tenant ID if exists', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1351,7 +1351,7 @@ describe('ZeebeAPI', function() {
 
   describe('#getGatewayVersion', function() {
 
-    it('should set success=true if topology was retrieved', async () => {
+    it('should set success=true if topology was retrieved', async function() {
 
       // given
       const topologyResponse = { clusterSize: 3, gatewayVersion: '0.26.0' };
@@ -1381,7 +1381,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should return gatewayVersion if topology was retrieved', async () => {
+    it('should return gatewayVersion if topology was retrieved', async function() {
 
       // given
       const topologyResponse = { clusterSize: 3, gatewayVersion: '0.26.0' };
@@ -1412,7 +1412,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set success=false on failure', async () => {
+    it('should set success=false on failure', async function() {
 
       // given
       const zeebeAPI = mockZeebeNode({
@@ -1443,7 +1443,7 @@ describe('ZeebeAPI', function() {
 
     describe('should return correct error reason on failure', function() {
 
-      it('for <endpoint-unavailable>', async () => {
+      it('for <endpoint-unavailable>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1470,7 +1470,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (Cloud)', async () => {
+      it('for <endpoint-unavailable> (Cloud)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1496,7 +1496,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (Cloud)', async () => {
+      it('for <endpoint-unavailable> (Cloud)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1522,7 +1522,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <not-found>', async () => {
+      it('for <not-found>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1549,7 +1549,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <not-found> (OAuth)', async () => {
+      it('for <not-found> (OAuth)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1577,7 +1577,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <not-found> (Cloud)', async () => {
+      it('for <not-found> (Cloud)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1603,7 +1603,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <unauthorized>', async () => {
+      it('for <unauthorized>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1630,7 +1630,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <unauthorized> - Cloud', async () => {
+      it('for <unauthorized> - Cloud', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1656,7 +1656,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <forbidden>', async () => {
+      it('for <forbidden>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1682,7 +1682,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <unsupported-protocol>', async () => {
+      it('for <unsupported-protocol>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1710,7 +1710,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <unknown>', async () => {
+      it('for <unknown>', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1737,7 +1737,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for no message', async () => {
+      it('for no message', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1768,9 +1768,9 @@ describe('ZeebeAPI', function() {
   });
 
 
-  describe('create client', () => {
+  describe('create client', function() {
 
-    it('should create client with correct url', async () => {
+    it('should create client with correct url', async function() {
 
       // given
       let usedConfig;
@@ -1800,7 +1800,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should not create a client for unknown endpoint type', async () => {
+    it('should not create a client for unknown endpoint type', async function() {
 
       // given
       const createSpy = sinon.spy();
@@ -1823,7 +1823,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should reuse the client instance if config is the same', async () => {
+    it('should reuse the client instance if config is the same', async function() {
 
       // given
       const createSpy = sinon.spy();
@@ -1849,7 +1849,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should create new client instance if config is different', async () => {
+    it('should create new client instance if config is different', async function() {
 
       // given
       const createSpy = sinon.stub().returns({
@@ -1885,7 +1885,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should close client instance when creating new one', async () => {
+    it('should close client instance when creating new one', async function() {
 
       // given
       const closeSpy = sinon.spy();
@@ -1921,7 +1921,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set `useTLS` to true for https endpoint', async () => {
+    it('should set `useTLS` to true for https endpoint', async function() {
 
       // given
       let usedConfig;
@@ -1951,7 +1951,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set `useTLS=false` for http endpoint (no auth)', async () => {
+    it('should set `useTLS=false` for http endpoint (no auth)', async function() {
 
       // given
       let usedConfig;
@@ -1981,7 +1981,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set `useTLS=false` for http endpoint (oauth)', async () => {
+    it('should set `useTLS=false` for http endpoint (oauth)', async function() {
 
       // given
       let usedConfig;
@@ -2012,7 +2012,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set `useTLS=true` for no protocol endpoint (cloud)', async () => {
+    it('should set `useTLS=true` for no protocol endpoint (cloud)', async function() {
 
       // given
       let usedConfig;
@@ -2042,7 +2042,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should NOT change provided port', async () => {
+    it('should NOT change provided port', async function() {
 
       // given
       let usedConfig;
@@ -2072,7 +2072,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should infer port=80 if missing for http endpoint', async () => {
+    it('should infer port=80 if missing for http endpoint', async function() {
 
       // given
       let usedConfig;
@@ -2102,7 +2102,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should infer port=443 if missing for https endpoint', async () => {
+    it('should infer port=443 if missing for https endpoint', async function() {
 
       // given
       let usedConfig;
@@ -2132,7 +2132,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    describe('custom certificate', () => {
+    describe('custom certificate', function() {
 
       function setup(certificate) {
         const configSpy = sinon.spy();
@@ -2173,7 +2173,7 @@ describe('ZeebeAPI', function() {
       }
 
 
-      it('should pass root certificate from flag', async () => {
+      it('should pass root certificate from flag', async function() {
 
         // given
         const cert = readFile('./root-self-signed.pem');
@@ -2202,7 +2202,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should pass root certificate in oAuth config too', async () => {
+      it('should pass root certificate in oAuth config too', async function() {
 
         // given
         const cert = readFile('./root-self-signed.pem');
@@ -2232,7 +2232,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should pass certificate to zeebe even if appears non-root', async () => {
+      it('should pass certificate to zeebe even if appears non-root', async function() {
 
         // given
         const cert = 'invalid';
@@ -2261,7 +2261,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should pass certificate to zeebe even if appears invalid', async () => {
+      it('should pass certificate to zeebe even if appears invalid', async function() {
 
         // given
         const cert = readFile('./not-root.pem');
@@ -2290,7 +2290,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should NOT log error when root certificate is passed via flag', async () => {
+      it('should NOT log error when root certificate is passed via flag', async function() {
 
         // given
         const {
@@ -2315,7 +2315,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should log warning when non-root certificate is passed via flag', async () => {
+      it('should log warning when non-root certificate is passed via flag', async function() {
 
         // given
         const {
@@ -2339,7 +2339,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should log warn when invalid certificate is passed via flag', async () => {
+      it('should log warn when invalid certificate is passed via flag', async function() {
 
         // given
         const {
@@ -2518,11 +2518,11 @@ describe('ZeebeAPI', function() {
 function setupPlatformStub() {
   let platformStub;
 
-  before(() => {
+  before(function() {
     platformStub = sinon.stub(process, 'platform').value('CI');
   });
 
-  after(() => {
+  after(function() {
     platformStub.restore();
   });
 }

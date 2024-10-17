@@ -21,7 +21,7 @@ describe('<Fill>', function() {
 
   let fill;
 
-  afterEach(() => fill.unmount());
+  afterEach(function() { return fill.unmount(); });
 
   describe('render', function() {
 

@@ -35,16 +35,16 @@ import {
   SlotFillRoot
 } from '../../../../app/slot-fill';
 
-describe('<StartInstanceTool>', () => {
+describe('<StartInstanceTool>', function() {
 
-  it('should render', () => {
+  it('should render', function() {
     createStartInstanceTool();
   });
 
 
-  describe('deploy', () => {
+  describe('deploy', function() {
 
-    it('should deploy with saved configuration', async () => {
+    it('should deploy with saved configuration', async function() {
 
       // given
       const deploySpy = sinon.spy();
@@ -74,7 +74,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should deploy with user configuration', async () => {
+    it('should deploy with user configuration', async function() {
 
       // given
       const deploySpy = sinon.spy();
@@ -98,7 +98,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should ask for deployment config on connection error', async () => {
+    it('should ask for deployment config on connection error', async function() {
 
       // given
       const deploySpy = sinon.spy();
@@ -134,7 +134,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should ask for deployment config when starting with new configuration', async () => {
+    it('should ask for deployment config when starting with new configuration', async function() {
 
       // given
       const deploySpy = sinon.spy();
@@ -170,7 +170,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should save deployment configuration', async () => {
+    it('should save deployment configuration', async function() {
 
       // given
       const activeTab = createTab({ name: 'foo.bpmn' });
@@ -194,7 +194,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should NOT save deployment configuration if user cancelled', async () => {
+    it('should NOT save deployment configuration if user cancelled', async function() {
 
       // given
       const activeTab = createTab({ name: 'foo.bpmn' });
@@ -222,7 +222,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should save process definition after successful deployment', async () => {
+    it('should save process definition after successful deployment', async function() {
 
       // given
       const activeTab = createTab({ name: 'foo.bpmn' });
@@ -256,7 +256,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should get version after successful deployment', async () => {
+    it('should get version after successful deployment', async function() {
 
       // given
       const activeTab = createTab({ name: 'foo.bpmn' });
@@ -288,7 +288,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should deploy even if version could not be fetched due to a ConnectionError', async () => {
+    it('should deploy even if version could not be fetched due to a ConnectionError', async function() {
 
       // given
       let deployedTo;
@@ -314,7 +314,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should NOT hide errors other than Connection Error', async () => {
+    it('should NOT hide errors other than Connection Error', async function() {
 
       // given
       const handler = sinon.spy();
@@ -344,7 +344,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should handle deployment error given a DeploymentError', async () => {
+    it('should handle deployment error given a DeploymentError', async function() {
 
       // given
       const activeTab = createTab({ name: 'foo.bpmn' });
@@ -363,7 +363,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should not handle deployment error given a non DeploymentError', async () => {
+    it('should not handle deployment error given a non DeploymentError', async function() {
 
       // given
       const deploymentErrorSpy = sinon.spy(),
@@ -397,9 +397,9 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    describe('emit-event action', () => {
+    describe('emit-event action', function() {
 
-      it('should trigger deployment.done action after successful deployment', async () => {
+      it('should trigger deployment.done action after successful deployment', async function() {
 
         // given
         const activeTab = createTab({ name: 'foo.bpmn' });
@@ -423,7 +423,7 @@ describe('<StartInstanceTool>', () => {
       });
 
 
-      it('should include executionPlatform details in deployment.done', async () => {
+      it('should include executionPlatform details in deployment.done', async function() {
 
         // given
         const activeTab = createTab({ name: 'foo.bpmn' });
@@ -457,7 +457,7 @@ describe('<StartInstanceTool>', () => {
       });
 
 
-      it('should not trigger deployment.done action after failed deployment', async () => {
+      it('should not trigger deployment.done action after failed deployment', async function() {
 
         // given
         const activeTab = createTab({ name: 'foo.bpmn' });
@@ -483,7 +483,7 @@ describe('<StartInstanceTool>', () => {
       });
 
 
-      it('should trigger deployment.error action after failed deployment', async () => {
+      it('should trigger deployment.error action after failed deployment', async function() {
 
         // given
         const activeTab = createTab({ name: 'foo.bpmn' });
@@ -509,7 +509,7 @@ describe('<StartInstanceTool>', () => {
       });
 
 
-      it('should include executionPlatform details in deployment.error', async () => {
+      it('should include executionPlatform details in deployment.error', async function() {
 
         // given
         const activeTab = createTab({ name: 'foo.bpmn' });
@@ -540,7 +540,7 @@ describe('<StartInstanceTool>', () => {
       });
 
 
-      it('should not trigger deployment.error action after successful deployment', async () => {
+      it('should not trigger deployment.error action after successful deployment', async function() {
 
         // given
         const activeTab = createTab({ name: 'foo.bpmn' });
@@ -567,9 +567,9 @@ describe('<StartInstanceTool>', () => {
   });
 
 
-  describe('start instance', () => {
+  describe('start instance', function() {
 
-    it('should start instance with saved configuration', async () => {
+    it('should start instance with saved configuration', async function() {
 
       // given
       const startSpy = sinon.spy();
@@ -599,7 +599,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should start instance with user configuration', async () => {
+    it('should start instance with user configuration', async function() {
 
       // given
       const startSpy = sinon.spy();
@@ -644,7 +644,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should start instance with businessKey=null', async () => {
+    it('should start instance with businessKey=null', async function() {
 
       // given
       const startSpy = sinon.spy();
@@ -689,7 +689,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should NOT start instance with no executable process', async () =>{
+    it('should NOT start instance with no executable process', async function() {
 
       // given
       const executableStub = sinon.stub().returns(false);
@@ -721,7 +721,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should NOT start instance if deployment failed', async () => {
+    it('should NOT start instance if deployment failed', async function() {
 
       // given
       const startSpy = sinon.spy();
@@ -757,7 +757,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should NOT start instance if user cancelled deployment step', async () => {
+    it('should NOT start instance if user cancelled deployment step', async function() {
 
       // given
       const startSpy = sinon.spy();
@@ -788,7 +788,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should NOT start instance if user cancelled start step', async () => {
+    it('should NOT start instance if user cancelled start step', async function() {
 
       // given
       const startSpy = sinon.spy();
@@ -811,7 +811,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should handle start instance error given StartInstanceError', async () => {
+    it('should handle start instance error given StartInstanceError', async function() {
 
       // given
       const startSpy = sinon.stub().throws(new StartInstanceError({ status: 500 }));
@@ -851,7 +851,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should not handle start instance error given non StartInstanceError', async () => {
+    it('should not handle start instance error given non StartInstanceError', async function() {
 
       // given
       const errorThrown = new Error({ status: 500 });
@@ -894,7 +894,7 @@ describe('<StartInstanceTool>', () => {
       expect(logSpy.args.length).to.eql(0);
     });
 
-    it('should start process instance with variables', async () => {
+    it('should start process instance with variables', async function() {
 
       // given
       const startSpy = sinon.spy();
@@ -936,7 +936,7 @@ describe('<StartInstanceTool>', () => {
     });
 
 
-    it('should open log error via StartInstanceError notification', async () => {
+    it('should open log error via StartInstanceError notification', async function() {
 
       // given
       const startSpy = sinon.stub().throws(new StartInstanceError({ status: 500 }));
@@ -983,9 +983,9 @@ describe('<StartInstanceTool>', () => {
 
     describe('overlay', function() {
 
-      describe('overlay dropdown', () => {
+      describe('overlay dropdown', function() {
 
-        it('should open', async () => {
+        it('should open', async function() {
 
           // given
           const activeTab = createTab({ type: 'bpmn' });
@@ -1001,7 +1001,7 @@ describe('<StartInstanceTool>', () => {
         });
 
 
-        it('should close on button click', async () => {
+        it('should close on button click', async function() {
 
           // given
           const activeTab = createTab({ type: 'bpmn' });
@@ -1023,7 +1023,7 @@ describe('<StartInstanceTool>', () => {
         });
 
 
-        it('should close on background click', async () => {
+        it('should close on background click', async function() {
 
           // given
           const activeTab = createTab({ type: 'bpmn' });
@@ -1048,7 +1048,7 @@ describe('<StartInstanceTool>', () => {
       });
 
 
-      it('should open', async () => {
+      it('should open', async function() {
 
         // given
         const activeTab = createTab({ type: 'bpmn' });
@@ -1069,7 +1069,7 @@ describe('<StartInstanceTool>', () => {
       });
 
 
-      it('should close when button is clicked', async () => {
+      it('should close when button is clicked', async function() {
 
         // given
         const activeTab = createTab({ type: 'bpmn' });
@@ -1095,7 +1095,7 @@ describe('<StartInstanceTool>', () => {
       });
 
 
-      it('should close when active tab changes', async () => {
+      it('should close when active tab changes', async function() {
 
         // given
         const activeTab = createTab({ type: 'bpmn' });

@@ -13,11 +13,11 @@
 import { create } from 'diagram-js/lib/model';
 import ModelingEventHandler from '../ModelingEventHandler';
 
-describe('<ModelingEventHandler>', () => {
+describe('<ModelingEventHandler>', function() {
 
   let subscribe, track;
 
-  beforeEach(() => {
+  beforeEach(function() {
 
     subscribe = sinon.spy();
 
@@ -30,30 +30,30 @@ describe('<ModelingEventHandler>', () => {
   });
 
 
-  describe('should subscribe', () => {
+  describe('should subscribe', function() {
 
-    it('should subscribe to bpmn.modeler.created', () => {
+    it('should subscribe to bpmn.modeler.created', function() {
       expect(subscribe.getCall(0).args[0]).to.eql('bpmn.modeler.created');
     });
 
 
-    it('should subscribe to telemetry.disabled', () => {
+    it('should subscribe to telemetry.disabled', function() {
       expect(subscribe.getCall(1).args[0]).to.eql('telemetry.enabled');
     });
 
 
-    it('should subscribe to telemetry.disabled', () => {
+    it('should subscribe to telemetry.disabled', function() {
       expect(subscribe.getCall(2).args[0]).to.eql('telemetry.disabled');
     });
 
   });
 
 
-  describe('should track modeling events', () => {
+  describe('should track modeling events', function() {
 
     const { subscribe, callSubscriber } = createSubscribe();
 
-    beforeEach(() => {
+    beforeEach(function() {
       track = sinon.spy();
 
       new ModelingEventHandler({
@@ -63,7 +63,7 @@ describe('<ModelingEventHandler>', () => {
 
     });
 
-    it('shoud subscribe to bpmnJSTracking events', () => {
+    it('shoud subscribe to bpmnJSTracking events', function() {
 
       const onSpy = sinon.spy();
 
@@ -73,7 +73,7 @@ describe('<ModelingEventHandler>', () => {
     });
 
 
-    it('shoud track bpmnJSTracking events', () => {
+    it('shoud track bpmnJSTracking events', function() {
 
       callSubscriber({
         on: (_, callback) => {
@@ -85,9 +85,9 @@ describe('<ModelingEventHandler>', () => {
     });
 
 
-    describe('should transform data', () => {
+    describe('should transform data', function() {
 
-      it('diagram elements', () => {
+      it('diagram elements', function() {
 
         callSubscriber({
           on: (_, callback) => {
@@ -110,7 +110,7 @@ describe('<ModelingEventHandler>', () => {
       });
 
 
-      describe('popupmenu.trigger - element templates id', () => {
+      describe('popupmenu.trigger - element templates id', function() {
 
         const subscribeToPopupTrigger = (id) => {
           callSubscriber({
@@ -125,7 +125,7 @@ describe('<ModelingEventHandler>', () => {
           });
         };
 
-        it('append', () => {
+        it('append', function() {
 
           // when
           subscribeToPopupTrigger('append.template-id');
@@ -138,7 +138,7 @@ describe('<ModelingEventHandler>', () => {
         });
 
 
-        it('replace', () => {
+        it('replace', function() {
 
           // when
           subscribeToPopupTrigger('replace.template-id');
@@ -151,7 +151,7 @@ describe('<ModelingEventHandler>', () => {
         });
 
 
-        it('create', () => {
+        it('create', function() {
 
           // when
           subscribeToPopupTrigger('create.template-id');

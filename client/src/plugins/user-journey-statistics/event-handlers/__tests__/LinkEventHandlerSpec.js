@@ -16,7 +16,7 @@ import MixpanelHandler from '../../MixpanelHandler';
 import LinkEventHandler from '../LinkEventHandler';
 
 
-describe('<LinkEventHandler>', () => {
+describe('<LinkEventHandler>', function() {
 
   let container, linkInside, linkOutside, linkHttp, button, buttonOutside, track;
 
@@ -52,9 +52,9 @@ describe('<LinkEventHandler>', () => {
   });
 
 
-  describe('should send', () => {
+  describe('should send', function() {
 
-    it('internal link', () => {
+    it('internal link', function() {
 
       // when
       linkInside.click();
@@ -68,7 +68,7 @@ describe('<LinkEventHandler>', () => {
     });
 
 
-    it('external link', () => {
+    it('external link', function() {
 
       // when
       linkHttp.click();
@@ -83,7 +83,7 @@ describe('<LinkEventHandler>', () => {
     });
 
 
-    it('button', () => {
+    it('button', function() {
 
       // when
       button.click();
@@ -99,9 +99,9 @@ describe('<LinkEventHandler>', () => {
   });
 
 
-  describe('should not send if out of scope', () => {
+  describe('should not send if out of scope', function() {
 
-    it('link', () => {
+    it('link', function() {
 
       // when
       linkOutside.click();
@@ -111,7 +111,7 @@ describe('<LinkEventHandler>', () => {
     });
 
 
-    it('button', () => {
+    it('button', function() {
 
       // when
       buttonOutside.click();

@@ -28,7 +28,7 @@ import { GenericApiErrors } from '../../shared/RestAPI';
 
 let mounted;
 
-describe('<DeploymentConfigOverlay>', () => {
+describe('<DeploymentConfigOverlay>', function() {
 
   var anchor;
 
@@ -36,12 +36,12 @@ describe('<DeploymentConfigOverlay>', () => {
     anchor = document.createElement('button');
   });
 
-  it('should render', () => {
+  it('should render', function() {
     createOverlay();
   });
 
 
-  it('should render with customizations', () => {
+  it('should render with customizations', function() {
 
     // given
     const options = {
@@ -66,9 +66,9 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  describe('connection check', () => {
+  describe('connection check', function() {
 
-    afterEach(() => {
+    afterEach(function() {
       if (mounted && mounted.exists()) {
         mounted.unmount();
         mounted = null;
@@ -76,7 +76,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should display hint if the username and password are missing when submitting', async () => {
+    it('should display hint if the username and password are missing when submitting', async function() {
 
       // given
       const configuration = {
@@ -123,7 +123,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should display hint if token is missing', async () => {
+    it('should display hint if token is missing', async function() {
 
       // given
       const configuration = {
@@ -169,7 +169,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should not display hint if the username and password are complete', async () => {
+    it('should not display hint if the username and password are complete', async function() {
 
       // given
       const configuration = {
@@ -210,7 +210,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should not disable deploy button when connection cannot be established', async () => {
+    it('should not disable deploy button when connection cannot be established', async function() {
 
       // given
       const configuration = {
@@ -251,7 +251,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should hide username password fields if auth is not needed', async () => {
+    it('should hide username password fields if auth is not needed', async function() {
 
       // given
       const configuration = {
@@ -288,7 +288,7 @@ describe('<DeploymentConfigOverlay>', () => {
     });
 
 
-    it('should hide token field if auth is not needed', async () => {
+    it('should hide token field if auth is not needed', async function() {
 
       // given
       const configuration = {
@@ -325,7 +325,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should not disable deploy button when form is invalid', async () => {
+  it('should not disable deploy button when form is invalid', async function() {
 
     // given
     const configuration = {
@@ -357,7 +357,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should save credentials when closed and rememberCredentials is checked', () => {
+  it('should save credentials when closed and rememberCredentials is checked', function() {
 
     // given
     const configuration = {
@@ -393,7 +393,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should remove credentials when closed and rememberCredentials is not checked', () => {
+  it('should remove credentials when closed and rememberCredentials is not checked', function() {
 
     // given
     const configuration = {
@@ -426,7 +426,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should subscribe to focus change event when mounted', () => {
+  it('should subscribe to focus change event when mounted', function() {
 
     // given
     const subscribeToFocusChange = sinon.spy();
@@ -441,7 +441,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should unsubscribe from focus change event when unmounted', () => {
+  it('should unsubscribe from focus change event when unmounted', function() {
 
     // given
     const subscribeToFocusChange = sinon.spy();
@@ -456,7 +456,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should unsubscribe from focus change event when unmounted', () => {
+  it('should unsubscribe from focus change event when unmounted', function() {
 
     // given
     const unsubscribeFromFocusChange = sinon.spy();
@@ -476,7 +476,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should validate connection when overlay is opened if endpoint has a connection error', () => {
+  it('should validate connection when overlay is opened if endpoint has a connection error', function() {
 
     // given
     const configuration = {
@@ -509,7 +509,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should not validate connection when overlay is opened if endpoint does not have a connection error', () => {
+  it('should not validate connection when overlay is opened if endpoint does not have a connection error', function() {
 
     // given
     const configuration = {
@@ -545,7 +545,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should validate connection when app gains focus if endpoint has a connection error', () => {
+  it('should validate connection when app gains focus if endpoint has a connection error', function() {
 
     // given
     const validateConnection = sinon.spy();
@@ -573,7 +573,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should check auth status on focus change', () => {
+  it('should check auth status on focus change', function() {
 
     // given
     const checkAuthStatusSpy = sinon.spy();
@@ -592,7 +592,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should clear endpoint url errors on focus change if connection validated', async () => {
+  it('should clear endpoint url errors on focus change if connection validated', async function() {
 
     // given
     const valuesCache = {};
@@ -619,7 +619,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should update endpoint url errors on focus change if connection not validated', async () => {
+  it('should update endpoint url errors on focus change if connection not validated', async function() {
 
     // given
     const valuesCache = {};
@@ -646,7 +646,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should not update endpoint url errors on focus change if connection invalidated with a connection error', async () => {
+  it('should not update endpoint url errors on focus change if connection invalidated with a connection error', async function() {
 
     // given
     const valuesCache = {};
@@ -673,7 +673,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should not validate connection when app gains focus if endpoint does not have a connection error', () => {
+  it('should not validate connection when app gains focus if endpoint does not have a connection error', function() {
 
     // given
     const validateConnection = sinon.spy();
@@ -701,7 +701,7 @@ describe('<DeploymentConfigOverlay>', () => {
   });
 
 
-  it('should reset validator cancel flag when mounted', () => {
+  it('should reset validator cancel flag when mounted', function() {
 
     // given
     const resetCancel = sinon.spy();

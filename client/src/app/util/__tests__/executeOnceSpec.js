@@ -59,7 +59,7 @@ describe('util - executeOnce', function() {
   });
 
 
-  describe('without identifier', async function() {
+  describe('without identifier', function() {
 
     it('should execute wrapped function once', async function() {
 

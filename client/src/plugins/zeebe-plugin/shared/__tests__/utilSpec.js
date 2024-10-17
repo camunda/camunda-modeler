@@ -14,11 +14,11 @@ import {
   getProcessVersion
 } from '../util';
 
-describe('util', () => {
+describe('util', function() {
 
-  describe('getClusterUrl', () => {
+  describe('getClusterUrl', function() {
 
-    it('should return cluster url', () => {
+    it('should return cluster url', function() {
 
       // given
       const endpoint = {
@@ -35,9 +35,9 @@ describe('util', () => {
   });
 
 
-  describe('getProcessId', () => {
+  describe('getProcessId', function() {
 
-    it('should return process id', () => {
+    it('should return process id', function() {
 
       // given
       const response = {
@@ -58,7 +58,7 @@ describe('util', () => {
     });
 
 
-    it('should return null for empty response', () => {
+    it('should return null for empty response', function() {
 
       // given
       const response = {};
@@ -71,7 +71,7 @@ describe('util', () => {
     });
 
 
-    it('should return null if process missing', () => {
+    it('should return null if process missing', function() {
 
       // given
       const response = {
@@ -87,9 +87,9 @@ describe('util', () => {
   });
 
 
-  describe('getProcessVersion', () => {
+  describe('getProcessVersion', function() {
 
-    it('should return version', () => {
+    it('should return version', function() {
 
       // given
       const response = {
@@ -111,7 +111,7 @@ describe('util', () => {
     });
 
 
-    it('should return null for empty response', () => {
+    it('should return null for empty response', function() {
 
       // given
       const response = {};
@@ -124,7 +124,7 @@ describe('util', () => {
     });
 
 
-    it('should return null if process missing', () => {
+    it('should return null if process missing', function() {
 
       // given
       const response = {

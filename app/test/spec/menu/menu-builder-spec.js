@@ -28,16 +28,16 @@ const MenuBuilder = proxyquire('../../../lib/menu/menu-builder.js', {
 });
 
 
-describe('MenuBuilder', () => {
+describe('MenuBuilder', function() {
 
-  it('should instantiate', () => {
+  it('should instantiate', function() {
     const menuBuilder = new MenuBuilder();
 
     expect(menuBuilder).to.exist;
   });
 
 
-  it('should build menu', () => {
+  it('should build menu', function() {
     const menuBuilder = new MenuBuilder();
 
     const menu = menuBuilder.build();
@@ -46,7 +46,7 @@ describe('MenuBuilder', () => {
   });
 
 
-  it('should build context menu', () => {
+  it('should build context menu', function() {
     const menuBuilder = new MenuBuilder({
       type: 'tab',
       attrs: {
@@ -79,7 +79,7 @@ describe('MenuBuilder', () => {
 
   describe('plugins menu', function() {
 
-    it('should accept callable values for enabled', () => {
+    it('should accept callable values for enabled', function() {
 
       // given
       const pluginName = 'test';
@@ -112,7 +112,7 @@ describe('MenuBuilder', () => {
     });
 
 
-    it('should disable menu item if enable function returns falsy value', () => {
+    it('should disable menu item if enable function returns falsy value', function() {
 
       // given
       const falsyValues = [
@@ -182,7 +182,7 @@ describe('MenuBuilder', () => {
     });
 
 
-    it('should accept non-callable values for enabled', () => {
+    it('should accept non-callable values for enabled', function() {
 
       // given
       const pluginName = 'test';
@@ -273,14 +273,14 @@ describe('MenuBuilder', () => {
   });
 
 
-  describe('edit menu', () => {
+  describe('edit menu', function() {
 
-    afterEach(() => {
+    afterEach(function() {
       sinon.restore();
     });
 
 
-    it('should call action when item is clicked', () => {
+    it('should call action when item is clicked', function() {
 
       // given
       const action = sinon.spy(ElectronApp, 'emit');
@@ -308,7 +308,7 @@ describe('MenuBuilder', () => {
     });
 
 
-    it('should call action when shortcut is used in a window', () => {
+    it('should call action when shortcut is used in a window', function() {
 
       // given
       const action = sinon.spy(ElectronApp, 'emit');
@@ -336,7 +336,7 @@ describe('MenuBuilder', () => {
     });
 
 
-    it('should inform about triggered by shortcut', () => {
+    it('should inform about triggered by shortcut', function() {
 
       // given
       const action = sinon.spy(ElectronApp, 'emit');
@@ -366,7 +366,7 @@ describe('MenuBuilder', () => {
     });
 
 
-    it('should inform about triggered by shortcut - sub menu', () => {
+    it('should inform about triggered by shortcut - sub menu', function() {
 
       // given
       const action = sinon.spy(ElectronApp, 'emit');
@@ -400,7 +400,7 @@ describe('MenuBuilder', () => {
     });
 
 
-    it('should NOT call action if triggered via shortcut with no browser window', () => {
+    it('should NOT call action if triggered via shortcut with no browser window', function() {
 
       // given
       const action = sinon.spy(ElectronApp, 'emit');
@@ -429,9 +429,9 @@ describe('MenuBuilder', () => {
   });
 
 
-  describe('new file menu', () => {
+  describe('new file menu', function() {
 
-    it('should separate by group', () => {
+    it('should separate by group', function() {
 
       // given
       const providers = [
@@ -472,9 +472,9 @@ describe('MenuBuilder', () => {
   });
 
 
-  describe('help menu', () => {
+  describe('help menu', function() {
 
-    it('should prevent duplicates', () => {
+    it('should prevent duplicates', function() {
 
       // given
       const providers = [

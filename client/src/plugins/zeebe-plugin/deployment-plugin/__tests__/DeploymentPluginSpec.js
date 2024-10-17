@@ -25,14 +25,14 @@ const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 const ZEEBE_ENDPOINTS_CONFIG_KEY = 'zeebeEndpoints';
 
 
-describe('<DeploymentPlugin> (Zeebe)', () => {
+describe('<DeploymentPlugin> (Zeebe)', function() {
 
-  it('should render', () => {
+  it('should render', function() {
     createDeploymentPlugin();
   });
 
 
-  it('should deploy', async () => {
+  it('should deploy', async function() {
 
     // given
     const deploySpy = sinon.spy();
@@ -47,7 +47,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should deploy BPMN tab with correct resource type', async () => {
+  it('should deploy BPMN tab with correct resource type', async function() {
 
     // given
     const deploySpy = sinon.spy();
@@ -63,7 +63,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should deploy DMN tab with correct resource type', async () => {
+  it('should deploy DMN tab with correct resource type', async function() {
 
     // given
     const deploySpy = sinon.spy();
@@ -79,7 +79,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should deploy form tab with correct resource type', async () => {
+  it('should deploy form tab with correct resource type', async function() {
 
     // given
     const deploySpy = sinon.spy();
@@ -95,7 +95,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should getGatewayVersion', async () => {
+  it('should getGatewayVersion', async function() {
 
     // given
     const getGatewayVersionSpy = sinon.spy();
@@ -110,7 +110,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should deploy immediately if configured', async () => {
+  it('should deploy immediately if configured', async function() {
 
     // given
     const storedTabConfiguration = {
@@ -153,7 +153,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should ask for configuration - missing endpoint', async () => {
+  it('should ask for configuration - missing endpoint', async function() {
 
     // given
     const storedTabConfiguration = {
@@ -184,7 +184,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should ask for configuration - missing deployment', async () => {
+  it('should ask for configuration - missing deployment', async function() {
 
     // given
     const storedTabConfiguration = {
@@ -220,7 +220,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should ask for configuration - connection failed', async () => {
+  it('should ask for configuration - connection failed', async function() {
 
     // given
     const userActionSpy = sinon.spy();
@@ -266,7 +266,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should save tab before deploy', async () => {
+  it('should save tab before deploy', async function() {
 
     // given
     const config = { set: sinon.spy() };
@@ -280,7 +280,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should save tab on close', async () => {
+  it('should save tab on close', async function() {
 
     // given
     const config = { set: sinon.spy() };
@@ -294,9 +294,9 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  describe('default endpoint', async () => {
+  describe('default endpoint', function() {
 
-    it('should add null credential values if remember credentials was turned off', async () => {
+    it('should add null credential values if remember credentials was turned off', async function() {
 
       // given
       const getDefaultEndpointSpy = sinon.stub();
@@ -317,12 +317,12 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  describe('ui', () => {
+  describe('ui', function() {
 
     const BUTTON_SELECTOR = '[title="Deploy current diagram"]';
 
 
-    it('should display button if there is active Cloud BPMN tab', () => {
+    it('should display button if there is active Cloud BPMN tab', function() {
 
       // given
       const { wrapper } = createDeploymentPlugin({
@@ -336,7 +336,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should display button if there is active Cloud DMN tab', () => {
+    it('should display button if there is active Cloud DMN tab', function() {
 
       // given
       const { wrapper } = createDeploymentPlugin({
@@ -350,7 +350,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should NOT display button if there is no active zeebe tab', () => {
+    it('should NOT display button if there is no active zeebe tab', function() {
 
       // given
       const { wrapper } = createDeploymentPlugin({ activeTab: createTab({ type: 'form' }) });
@@ -360,7 +360,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should NOT display button if there is no active tab', () => {
+    it('should NOT display button if there is no active tab', function() {
 
       // given
       const { wrapper } = createDeploymentPlugin({ activeTab: null });
@@ -372,7 +372,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
     describe('overlay', function() {
 
-      it('should open', async () => {
+      it('should open', async function() {
 
         // given
         const activeTab = createTab({ type: 'cloud-bpmn' });
@@ -398,7 +398,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
       });
 
 
-      it('should close when active tab changes', async () => {
+      it('should close when active tab changes', async function() {
 
         // given
         const activeTab = createTab({ type: 'cloud-bpmn' });
@@ -435,7 +435,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should use stored endpoint configuration', async () => {
+  it('should use stored endpoint configuration', async function() {
 
     // given
     const deploySpy = sinon.spy();
@@ -470,7 +470,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should migrate clusterID given no clusterURL', async () => {
+  it('should migrate clusterID given no clusterURL', async function() {
 
     // given
     const deploySpy = sinon.spy();
@@ -509,7 +509,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should save tab configuration', async () => {
+  it('should save tab configuration', async function() {
 
     // given
     const setConfigSpy = sinon.spy();
@@ -526,7 +526,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should save endpoint', async () => {
+  it('should save endpoint', async function() {
 
     // given
     const setEndpointsSpy = sinon.spy();
@@ -557,7 +557,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should display notification without link on deployment success', async () => {
+  it('should display notification without link on deployment success', async function() {
 
     // given
     const displayNotificationSpy = sinon.spy();
@@ -581,7 +581,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should display notification without link on DMN deployment success', async () => {
+  it('should display notification without link on DMN deployment success', async function() {
 
     // given
     const displayNotificationSpy = sinon.spy();
@@ -606,7 +606,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should display notification with link after deployment to Cloud success', async () => {
+  it('should display notification with link after deployment to Cloud success', async function() {
 
     // given
     const displayNotification = sinon.spy();
@@ -651,7 +651,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should display notification without link after DMN deployment to Cloud success', async () => {
+  it('should display notification without link after DMN deployment to Cloud success', async function() {
 
     // given
     const displayNotification = sinon.spy();
@@ -698,7 +698,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should display notification on deployment failure', async () => {
+  it('should display notification on deployment failure', async function() {
 
     // given
     const displayNotificationSpy = sinon.spy();
@@ -733,7 +733,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should open log via deployment failure notification', async () => {
+  it('should open log via deployment failure notification', async function() {
 
     // given
     const displayNotificationSpy = sinon.spy();
@@ -774,7 +774,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should allow to get deploy config via message', done => {
+  it('should allow to get deploy config via message', function(done) {
 
     const body = {
       isStart: true,
@@ -798,7 +798,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should allow to deploy with config via message', done => {
+  it('should allow to deploy with config via message', function(done) {
 
     const body = {
       done: doneCallback,
@@ -823,7 +823,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should pass null if tab was not saved', done => {
+  it('should pass null if tab was not saved', function(done) {
 
     const body = {
       isStart: true,
@@ -855,7 +855,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should pass null if config was not provided', done => {
+  it('should pass null if config was not provided', function(done) {
 
     const body = {
       isStart: true,
@@ -887,7 +887,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should pass both the deployment result and endpoint config', done => {
+  it('should pass both the deployment result and endpoint config', function(done) {
 
     // given
     const deploySpy = sinon.spy();
@@ -927,7 +927,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should subscribe to messaging when mounted', () => {
+  it('should subscribe to messaging when mounted', function() {
 
     // given
     const subscribeToMessaging = sinon.spy();
@@ -938,7 +938,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should unsubscribe from messaging when unmounted', () => {
+  it('should unsubscribe from messaging when unmounted', function() {
 
     // given
     const unsubscribeFromMessaging = sinon.spy();
@@ -952,7 +952,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  it('should not display notification if skipNotificationOnSuccess is true', async () => {
+  it('should not display notification if skipNotificationOnSuccess is true', async function() {
 
     // given
     const displayNotificationSpy = sinon.spy();
@@ -968,9 +968,9 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
   });
 
 
-  describe('emit-event action', () => {
+  describe('emit-event action', function() {
 
-    it('should trigger deployment.done action after successful deployment', async () => {
+    it('should trigger deployment.done action after successful deployment', async function() {
 
       // given
       const deploymentResult = {
@@ -1000,7 +1000,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should send target type on deployment.done', async () => {
+    it('should send target type on deployment.done', async function() {
 
       // given
       const deploymentResult = {
@@ -1036,7 +1036,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should send deployedTo on deployment.done', async () => {
+    it('should send deployedTo on deployment.done', async function() {
 
       // given
       const deploymentResult = {
@@ -1080,7 +1080,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should trigger deployment.done with start instance context', async () => {
+    it('should trigger deployment.done with start instance context', async function() {
 
       // given
       const deploymentResult = {
@@ -1116,7 +1116,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should not trigger deployment.done action after failed deployment', async () => {
+    it('should not trigger deployment.done action after failed deployment', async function() {
 
       // given
       const deploymentResult = {
@@ -1149,7 +1149,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should trigger deployment.error action after failed deployment', async () => {
+    it('should trigger deployment.error action after failed deployment', async function() {
 
       // given
       const deploymentResult = {
@@ -1182,7 +1182,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should send target type on deployment.error', async () => {
+    it('should send target type on deployment.error', async function() {
 
       // given
       const deploymentResult = {
@@ -1219,7 +1219,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should send deployedTo on deployment.error given getGatewayVersion was successful', async () => {
+    it('should send deployedTo on deployment.error given getGatewayVersion was successful', async function() {
 
       // given
       const deploymentResult = {
@@ -1264,7 +1264,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should not send deployedTo on deployment.error given getGatewayVersion was not successful', async () => {
+    it('should not send deployedTo on deployment.error given getGatewayVersion was not successful', async function() {
 
       // given
       const deploymentResult = {
@@ -1306,7 +1306,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
     });
 
 
-    it('should trigger deployment.done with start instance context', async () => {
+    it('should trigger deployment.done with start instance context', async function() {
 
       // given
       const deploymentResult = {
@@ -1344,7 +1344,7 @@ describe('<DeploymentPlugin> (Zeebe)', () => {
 
 
 
-    it('should not trigger deployment.error action after successful deployment', async () => {
+    it('should not trigger deployment.error action after successful deployment', async function() {
 
       // given
       const deploymentResult = {

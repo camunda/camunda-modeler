@@ -23,7 +23,7 @@ import {
   CAMUNDA_CLOUD
 } from '../../shared/ZeebeTargetTypes';
 
-describe('<DeploymentPluginModal> (Zeebe)', () => {
+describe('<DeploymentPluginModal> (Zeebe)', function() {
 
   var anchor;
 
@@ -31,12 +31,12 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
     anchor = document.createElement('button');
   });
 
-  it('should render', () => {
+  it('should render', function() {
     createDeploymentPluginModal({ anchor });
   });
 
 
-  it('should check connection initially', (done) => {
+  it('should check connection initially', function(done) {
 
     // given
     const spy = sinon.spy();
@@ -53,7 +53,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
-  it('should deploy', done => {
+  it('should deploy', function(done) {
 
     // given
     const { wrapper } = createDeploymentPluginModal({ anchor, onDeploy });
@@ -69,7 +69,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
-  it('should check connection with updated cluster values on input change', (done) => {
+  it('should check connection with updated cluster values on input change', function(done) {
 
     // given
     const spy = sinon.stub();
@@ -107,9 +107,9 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
-  describe('tenantId', () => {
+  describe('tenantId', function() {
 
-    it('should not show for self-managed without OAuth', () => {
+    it('should not show for self-managed without OAuth', function() {
 
       // given
       const { wrapper } = createDeploymentPluginModal({
@@ -134,7 +134,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
     });
 
 
-    it('should show for self-managed with OAuth', () => {
+    it('should show for self-managed with OAuth', function() {
 
       // given
       const { wrapper } = createDeploymentPluginModal({
@@ -160,7 +160,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
     });
 
 
-    it('should not pass on deploy without OAuth', done => {
+    it('should not pass on deploy without OAuth', function(done) {
 
       // given
       const { wrapper } = createDeploymentPluginModal({
@@ -192,7 +192,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
     });
 
 
-    it('should pass on deploy with OAuth', done => {
+    it('should pass on deploy with OAuth', function(done) {
 
       // given
       const { wrapper } = createDeploymentPluginModal({
@@ -224,7 +224,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
     });
 
 
-    it('should not show for SaaS', () => {
+    it('should not show for SaaS', function() {
 
       // given
       const { wrapper } = createDeploymentPluginModal({
@@ -247,9 +247,9 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
-  describe('basic auth', () => {
+  describe('basic auth', function() {
 
-    it('should pass config on deploy', done => {
+    it('should pass config on deploy', function(done) {
 
       // given
       const { wrapper } = createDeploymentPluginModal({
@@ -283,9 +283,9 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
-  describe('oAuth', () => {
+  describe('oAuth', function() {
 
-    it('should pass config on deploy', done => {
+    it('should pass config on deploy', function(done) {
 
       // given
       const { wrapper } = createDeploymentPluginModal({
@@ -317,7 +317,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
     });
 
 
-    it('should pass <scope> on deploy', done => {
+    it('should pass <scope> on deploy', function(done) {
 
       // given
       const { wrapper } = createDeploymentPluginModal({
@@ -352,7 +352,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
-  it('should extract clusterId and clusterRegion', done => {
+  it('should extract clusterId and clusterRegion', function(done) {
 
     // given
     const { wrapper } = createDeploymentPluginModal({
@@ -379,7 +379,7 @@ describe('<DeploymentPluginModal> (Zeebe)', () => {
   });
 
 
-  it('should extract clusterId with https', done => {
+  it('should extract clusterId with https', function(done) {
 
     // given
     const { wrapper } = createDeploymentPluginModal({

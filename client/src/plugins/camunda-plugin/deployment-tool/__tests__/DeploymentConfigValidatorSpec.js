@@ -26,19 +26,19 @@ const ENDPOINT_URL_FIELDNAME = 'endpoint.url';
 
 const noop = () => {};
 
-describe('<DeploymentConfigValidator>', () => {
+describe('<DeploymentConfigValidator>', function() {
 
   /**
    * @type {DeploymentConfigValidator}
    */
   let validator;
 
-  beforeEach(() => {
+  beforeEach(function() {
     validator = new DeploymentConfigValidator();
   });
 
 
-  it('should validate deployment name', () => {
+  it('should validate deployment name', function() {
 
     // given
     const validate = name => validator.validateDeploymentName(name, true);
@@ -50,7 +50,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should validate attachments', () => {
+  it('should validate attachments', function() {
 
     // given
     const validate = attachments => validator.validateAttachments(attachments);
@@ -66,7 +66,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should validate endpoint url', () => {
+  it('should validate endpoint url', function() {
 
     // given
     const validate = url => validator.validateEndpoint({
@@ -83,7 +83,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should validate username', () => {
+  it('should validate username', function() {
 
     // given
     const validate = username => validator.validateUsername(username, true);
@@ -95,7 +95,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should validate password', () => {
+  it('should validate password', function() {
 
     // given
     const validate = password => validator.validatePassword(password, true);
@@ -107,7 +107,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should validate token', () => {
+  it('should validate token', function() {
 
     // given
     const validate = token => validator.validateToken(token, true);
@@ -119,7 +119,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should validate endpoint URL completeness delayed if not submitting', (done) => {
+  it('should validate endpoint URL completeness delayed if not submitting', function(done) {
 
     // given
     const setFieldErrorSpy = sinon.spy();
@@ -143,7 +143,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should validate endpoint URL completeness non delayed if submitting', () => {
+  it('should validate endpoint URL completeness non delayed if submitting', function() {
 
     // given
     const setFieldErrorSpy = noop;
@@ -162,7 +162,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should discard timed out connection checks', async () => {
+  it('should discard timed out connection checks', async function() {
 
     // given
     validator.validateConnection = () => new Promise((resolve) => {
@@ -186,7 +186,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should skip deployment name validation after submission if not resubmitted', () => {
+  it('should skip deployment name validation after submission if not resubmitted', function() {
 
     // given
     const {
@@ -200,7 +200,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should skip username validation after submission if not resubmitted', () => {
+  it('should skip username validation after submission if not resubmitted', function() {
 
     // given
     const {
@@ -214,7 +214,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should skip password validation after submission if not resubmitted', () => {
+  it('should skip password validation after submission if not resubmitted', function() {
 
     // given
     const {
@@ -228,7 +228,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should have sticky username errors', () => {
+  it('should have sticky username errors', function() {
 
     // given
     const {
@@ -247,7 +247,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should have sticky password errors', () => {
+  it('should have sticky password errors', function() {
 
     // given
     const {
@@ -266,7 +266,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should have sticky token errors', () => {
+  it('should have sticky token errors', function() {
 
     // given
     const {
@@ -285,7 +285,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should notify connection status to parent', (done) => {
+  it('should notify connection status to parent', function(done) {
 
     // given
     const setFieldError = noop;
@@ -316,7 +316,7 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  it('should cancel endpoint url validation', (done) => {
+  it('should cancel endpoint url validation', function(done) {
 
     // given
     const onConnectionStatusUpdate = sinon.spy();
@@ -338,9 +338,9 @@ describe('<DeploymentConfigValidator>', () => {
   });
 
 
-  describe('#isConfigurationValid', () => {
+  describe('#isConfigurationValid', function() {
 
-    it('should return true for valid configuration', () => {
+    it('should return true for valid configuration', function() {
 
       // given
       const config = {
@@ -360,7 +360,7 @@ describe('<DeploymentConfigValidator>', () => {
     });
 
 
-    it('should return false for missing attachments', () => {
+    it('should return false for missing attachments', function() {
 
       // given
       const config = {
@@ -382,7 +382,7 @@ describe('<DeploymentConfigValidator>', () => {
     });
 
 
-    it('should return false for missing configuration', () => {
+    it('should return false for missing configuration', function() {
 
       // then
       expect(validator.isConfigurationValid()).to.be.false;
@@ -392,7 +392,7 @@ describe('<DeploymentConfigValidator>', () => {
     // TODO(@barmac): The following test cases fail due to broken validation logic. To put it short,
     // most validators ignore invalid values if no `isOnBeforeSubmit` parameter is passed to them.
     // We should rewrite the validators so that they no longer care about the form state.
-    it.skip('should return false for invalid configuration', () => {
+    it.skip('should return false for invalid configuration', function() {
 
       // given
       const config = {
@@ -412,7 +412,7 @@ describe('<DeploymentConfigValidator>', () => {
     });
 
 
-    it.skip('should return false for missing endpoint', () => {
+    it.skip('should return false for missing endpoint', function() {
 
       // given
       const config = {
@@ -427,7 +427,7 @@ describe('<DeploymentConfigValidator>', () => {
     });
 
 
-    it.skip('should return false for missing deployment', () => {
+    it.skip('should return false for missing deployment', function() {
 
       // given
       const config = {
