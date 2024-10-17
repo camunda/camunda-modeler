@@ -2,12 +2,13 @@ name: NIGHTLY
 on:
   schedule:
     - cron: '0 18 * * *'
+  workflow_dispatch:
 jobs:
   Build_nightly:
     strategy:
       matrix:
         include:
-        - os: ubuntu-latest
+        - os: ubuntu-24.04
           files:
           - 'dist/camunda-modeler-nightly-linux-x64.tar.gz'
         - os: macos-latest
@@ -95,7 +96,7 @@ jobs:
       run: npm run build -- --win
 
     - name: Upload artifact to Camunda Download Center
-      uses: camunda/infra-global-github-actions/download-center-upload@adc932a586d745b8a147a7f52117e683d5c59b54
+      uses: camunda/infra-global-github-actions/download-center-upload@gsutil-replacement
       with:
         gcp_credentials: ${{ steps.secrets.outputs.GCP_CREDENTIALS_NAME }}
         env: 'prod'
