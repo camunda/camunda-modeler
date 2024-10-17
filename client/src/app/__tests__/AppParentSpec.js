@@ -473,7 +473,7 @@ describe('<AppParent>', function() {
     }
 
 
-    it('should batch open files', async () => {
+    it('should batch open files', async function() {
 
       // given
       const fooFile = createFile('foo');

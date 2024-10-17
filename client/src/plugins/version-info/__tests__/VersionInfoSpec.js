@@ -22,9 +22,9 @@ import Metadata from '../../../util/Metadata';
 /* global sinon */
 
 
-describe('<VersionInfo>', () => {
+describe('<VersionInfo>', function() {
 
-  it('should render', () => {
+  it('should render', function() {
 
     // given
     const render = () => createVersionInfo();
@@ -34,7 +34,7 @@ describe('<VersionInfo>', () => {
   });
 
 
-  it('should open when button is clicked', () => {
+  it('should open when button is clicked', function() {
 
     // given
     const wrapper = createVersionInfo();
@@ -47,7 +47,7 @@ describe('<VersionInfo>', () => {
   });
 
 
-  it('should open via menu events', () => {
+  it('should open via menu events', function() {
 
     // given
     const subscribe = createSubscribe();
@@ -61,7 +61,7 @@ describe('<VersionInfo>', () => {
   });
 
 
-  it('should close when button is clicked again', () => {
+  it('should close when button is clicked again', function() {
 
     // given
     const wrapper = createVersionInfo();
@@ -75,14 +75,14 @@ describe('<VersionInfo>', () => {
   });
 
 
-  describe('unread marker', () => {
+  describe('unread marker', function() {
 
-    beforeEach(() => {
+    beforeEach(function() {
       Metadata.init({ version: 'TEST_VERSION' });
     });
 
 
-    it('should display unread marker when app is opened for the first time', () => {
+    it('should display unread marker when app is opened for the first time', function() {
 
       // given
       const wrapper = createVersionInfo();
@@ -92,7 +92,7 @@ describe('<VersionInfo>', () => {
     });
 
 
-    it('should display unread marker when current version is opened for the first time', () => {
+    it('should display unread marker when current version is opened for the first time', function() {
 
       // given
       const get = key => key === 'versionInfo' && { lastOpenedVersion: 'OLD' };
@@ -104,7 +104,7 @@ describe('<VersionInfo>', () => {
     });
 
 
-    it('should NOT display unread marker when overlay is clicked', () => {
+    it('should NOT display unread marker when overlay is clicked', function() {
 
       // given
       const get = key => key === 'versionInfo' && { lastOpenedVersion: 'OLD' };
@@ -121,7 +121,7 @@ describe('<VersionInfo>', () => {
     });
 
 
-    it('should NOT display unread marker if it has been already opened', () => {
+    it('should NOT display unread marker if it has been already opened', function() {
 
       // given
       const get = key => key === 'versionInfo' && { lastOpenedVersion: 'TEST_VERSION' };
@@ -136,9 +136,9 @@ describe('<VersionInfo>', () => {
   });
 
 
-  describe('events', () => {
+  describe('events', function() {
 
-    it('should notify that overlay was opened', () => {
+    it('should notify that overlay was opened', function() {
 
       // given
       const triggerAction = sinon.spy();
@@ -154,7 +154,7 @@ describe('<VersionInfo>', () => {
     });
 
 
-    it('should propagate the source', () => {
+    it('should propagate the source', function() {
 
       // given
       const triggerAction = sinon.spy();
@@ -171,7 +171,7 @@ describe('<VersionInfo>', () => {
     });
 
 
-    it('should NOT notify again when overlay is already open', () => {
+    it('should NOT notify again when overlay is already open', function() {
 
       // given
       const triggerAction = sinon.spy();
@@ -190,9 +190,9 @@ describe('<VersionInfo>', () => {
   });
 
 
-  describe('version', () => {
+  describe('version', function() {
 
-    it('should show version from Metadata', async () => {
+    it('should show version from Metadata', async function() {
 
       // given
       Metadata.init({ version: '0.1.2' });
@@ -207,7 +207,7 @@ describe('<VersionInfo>', () => {
     });
 
 
-    it('should show custom version if configured via flag', async () => {
+    it('should show custom version if configured via flag', async function() {
 
       // given
       Flags.init({ [ DISPLAY_VERSION ]: '1.2.3.4' });

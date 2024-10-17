@@ -16,26 +16,26 @@ import { shallow } from 'enzyme';
 
 import CamundaPlugin from '..';
 
-describe('<CamundaPlugin>', () => {
+describe('<CamundaPlugin>', function() {
 
   let fetch;
 
-  beforeEach(() => {
+  beforeEach(function() {
     fetch = sinon.stub(window, 'fetch').rejects(new Error('fetch is disabled'));
   });
 
 
-  afterEach(() => {
+  afterEach(function() {
     fetch.restore();
   });
 
 
-  it('should render', () => {
+  it('should render', function() {
     shallow(<CamundaPlugin />);
   });
 
 
-  it('should expose DeployService', () => {
+  it('should expose DeployService', function() {
 
     // given
     const tree = shallow(<CamundaPlugin />);

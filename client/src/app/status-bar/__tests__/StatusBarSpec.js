@@ -19,7 +19,7 @@ import { StatusBar } from '../StatusBar';
 
 describe('<StatusBar>', function() {
 
-  it('should provide slots', () => {
+  it('should provide slots', function() {
 
     // given
     const { tree } = createStatusBar();

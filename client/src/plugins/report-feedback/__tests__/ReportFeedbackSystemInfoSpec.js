@@ -15,7 +15,7 @@ import { shallow } from 'enzyme';
 import { ReportFeedbackSystemInfoSection } from '../ReportFeedbackSystemInfoSection';
 
 
-describe('<ReportFeedbackSystemInfoSection>', () => {
+describe('<ReportFeedbackSystemInfoSection>', function() {
 
   it('should render', function() {
 

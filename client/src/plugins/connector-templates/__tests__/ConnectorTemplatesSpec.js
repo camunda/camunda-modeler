@@ -18,14 +18,14 @@ import ConnectorTemplates from '..';
 
 import { Backend } from '../../../app/__tests__/mocks';
 
-describe('<ConnectorTemplates>', () => {
+describe('<ConnectorTemplates>', function() {
 
-  it('should render', () => {
+  it('should render', function() {
     createConnectorTemplates();
   });
 
 
-  it('should show success notification (connector templates updated) on success and trigger reload of element templates', async () => {
+  it('should show success notification (connector templates updated) on success and trigger reload of element templates', async function() {
 
     // given
     const backend = new Backend();
@@ -50,7 +50,7 @@ describe('<ConnectorTemplates>', () => {
   });
 
 
-  it('should show success notification (connector templates up to date) on success and trigger reload of element templates', async () => {
+  it('should show success notification (connector templates up to date) on success and trigger reload of element templates', async function() {
 
     // given
     const backend = new Backend();
@@ -75,7 +75,7 @@ describe('<ConnectorTemplates>', () => {
   });
 
 
-  it('should show success notification with warnings on success with warnings', async () => {
+  it('should show success notification with warnings on success with warnings', async function() {
 
     // given
     const backend = new Backend();
@@ -99,7 +99,7 @@ describe('<ConnectorTemplates>', () => {
   });
 
 
-  it('should show error notification on error', async () => {
+  it('should show error notification on error', async function() {
 
     // given
     const backend = new Backend();

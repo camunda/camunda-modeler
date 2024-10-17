@@ -16,12 +16,12 @@ import PingEventHandler from '../PingEventHandler';
 import Flags from '../../../../util/Flags';
 
 
-describe('<PingEventHandlerSpec>', () => {
+describe('<PingEventHandlerSpec>', function() {
 
   let track = sinon.spy();
   const subscribe = sinon.spy();
 
-  beforeEach(() => {
+  beforeEach(function() {
     const getGlobal = () => ({
       appPlugins: [ { name: 'pluginName' } ]
     });
@@ -34,30 +34,30 @@ describe('<PingEventHandlerSpec>', () => {
   afterEach(sinon.restore);
 
 
-  describe('should subscribe', () => {
+  describe('should subscribe', function() {
 
-    it('should subscribe to telemetry.enabled', () => {
+    it('should subscribe to telemetry.enabled', function() {
       expect(subscribe.getCall(0).args[0]).to.eql('telemetry.enabled');
     });
 
 
-    it('should subscribe to telemetry.disabled', () => {
+    it('should subscribe to telemetry.disabled', function() {
       expect(subscribe.getCall(1).args[0]).to.eql('telemetry.disabled');
     });
 
   });
 
 
-  describe('should send', () => {
+  describe('should send', function() {
 
-    it('should not send before enabled', async () => {
+    it('should not send before enabled', async function() {
 
       // then
       expect(track).to.not.have.been.called;
     });
 
 
-    it('should send initially', async () => {
+    it('should send initially', async function() {
 
       // given
       const handleTelemetryActivation = subscribe.getCall(0).args[1];
@@ -70,7 +70,7 @@ describe('<PingEventHandlerSpec>', () => {
     });
 
 
-    it('should send on interval', async () => {
+    it('should send on interval', async function() {
 
       // when
       new Promise(resolve => setTimeout(resolve, 1000)).then(() => {
@@ -83,9 +83,9 @@ describe('<PingEventHandlerSpec>', () => {
   });
 
 
-  describe('plugins', () => {
+  describe('plugins', function() {
 
-    it('should send installed plugins', async () => {
+    it('should send installed plugins', async function() {
 
       // given
       const handleTelemetryActivation = subscribe.getCall(0).args[1];
@@ -102,7 +102,7 @@ describe('<PingEventHandlerSpec>', () => {
   });
 
 
-  describe('flags', () => {
+  describe('flags', function() {
 
     let track;
 
@@ -116,11 +116,11 @@ describe('<PingEventHandlerSpec>', () => {
       await handleTelemetryActivation();
     };
 
-    afterEach(() => {
+    afterEach(function() {
       Flags.reset();
     });
 
-    it('should send set flags', async () => {
+    it('should send set flags', async function() {
 
       // given
       Flags.init({
@@ -142,7 +142,7 @@ describe('<PingEventHandlerSpec>', () => {
     });
 
 
-    it('should mask non-boolean flags', async () => {
+    it('should mask non-boolean flags', async function() {
 
       // given
       Flags.init({
@@ -160,7 +160,7 @@ describe('<PingEventHandlerSpec>', () => {
     });
 
 
-    it('should not overwrite original Flags through masking', async () => {
+    it('should not overwrite original Flags through masking', async function() {
 
       // given
       Flags.init({

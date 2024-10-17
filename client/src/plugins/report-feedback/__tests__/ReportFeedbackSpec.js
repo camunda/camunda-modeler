@@ -15,9 +15,9 @@ import { shallow } from 'enzyme';
 import { ReportFeedback } from '../ReportFeedback';
 
 
-describe('<ReportFeedback>', () => {
+describe('<ReportFeedback>', function() {
 
-  it('should render', () => {
+  it('should render', function() {
 
     // given
     const render = () => createReportFeedback();
@@ -27,7 +27,7 @@ describe('<ReportFeedback>', () => {
   });
 
 
-  it('should open when button is clicked', () => {
+  it('should open when button is clicked', function() {
 
     // given
     const wrapper = createReportFeedback();
@@ -40,7 +40,7 @@ describe('<ReportFeedback>', () => {
   });
 
 
-  it('should open via menu events', () => {
+  it('should open via menu events', function() {
 
     // given
     const subscribe = createSubscribe('reportFeedback.open');
@@ -54,7 +54,7 @@ describe('<ReportFeedback>', () => {
   });
 
 
-  it('should close when button is clicked again', () => {
+  it('should close when button is clicked again', function() {
 
     // given
     const wrapper = createReportFeedback();
@@ -68,7 +68,7 @@ describe('<ReportFeedback>', () => {
   });
 
 
-  it('should keep state of latest active tab', () => {
+  it('should keep state of latest active tab', function() {
 
     // given
     const subscribe = createSubscribe('app.activeTabChanged');

@@ -198,7 +198,7 @@ describe('plugins', function() {
     );
 
 
-    it('should expose UI components via window#components', () => {
+    it('should expose UI components via window#components', function() {
 
       // given
       const global = {};

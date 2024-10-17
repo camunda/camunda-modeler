@@ -15,12 +15,12 @@ describe('<UpdateChecksAPI>', function() {
 
   let API, fetchStub;
 
-  beforeEach(() => {
+  beforeEach(function() {
     API = new UpdateChecksAPI('http://myEndpoint');
     fetchStub = sinon.stub(window, 'fetch');
   });
 
-  afterEach(() => {
+  afterEach(function() {
     window.fetch.restore();
   });
 

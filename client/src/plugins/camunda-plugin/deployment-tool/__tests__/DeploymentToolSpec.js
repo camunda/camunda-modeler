@@ -34,26 +34,26 @@ const TOMCAT_DEFAULT_URL = 'http://localhost:8080/engine-rest';
 const BUTTON_SELECTOR = '[title="Deploy current diagram"]';
 
 
-describe('<DeploymentTool>', () => {
+describe('<DeploymentTool>', function() {
 
   let fetch;
 
-  beforeEach(() => {
+  beforeEach(function() {
     fetch = sinon.stub(window, 'fetch').rejects(new Error('fetch is disabled'));
   });
 
 
-  afterEach(() => {
+  afterEach(function() {
     fetch.restore();
   });
 
 
-  it('should render', () => {
+  it('should render', function() {
     createDeploymentTool();
   });
 
 
-  it('should display the button if there is an active bpmn tab', () => {
+  it('should display the button if there is an active bpmn tab', function() {
 
     // given
     const activeTab = createTab({ type: 'bpmn' });
@@ -66,7 +66,7 @@ describe('<DeploymentTool>', () => {
   });
 
 
-  it('should display the button if there is an active form tab', () => {
+  it('should display the button if there is an active form tab', function() {
 
     // given
     const activeTab = createTab({ type: 'form' });
@@ -79,7 +79,7 @@ describe('<DeploymentTool>', () => {
   });
 
 
-  it('should NOT display the button if there is no active tab', () => {
+  it('should NOT display the button if there is no active tab', function() {
 
     // given
     const activeTab = createTab({ type: 'empty', id: '__empty' });
@@ -92,7 +92,7 @@ describe('<DeploymentTool>', () => {
   });
 
 
-  it('should NOT display the button if there is no camunda tab', () => {
+  it('should NOT display the button if there is no camunda tab', function() {
 
     // given
     const activeTab = createTab();
@@ -105,9 +105,9 @@ describe('<DeploymentTool>', () => {
   });
 
 
-  describe('deploy', () => {
+  describe('deploy', function() {
 
-    it('should derive deployment name from filename', async () => {
+    it('should derive deployment name from filename', async function() {
 
       // given
       const deploySpy = sinon.spy();
@@ -125,7 +125,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should use saved config for deployed file', async () => {
+    it('should use saved config for deployed file', async function() {
 
       // given
       const savedEndpoint = {
@@ -183,7 +183,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should read and save config for deployed file', async () => {
+    it('should read and save config for deployed file', async function() {
 
       // given
       const config = {
@@ -218,7 +218,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should deploy with saved attachments', async () => {
+    it('should deploy with saved attachments', async function() {
 
       // given
       const file = {
@@ -266,7 +266,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should deploy with user-provided configuration if file read fails', async () => {
+    it('should deploy with user-provided configuration if file read fails', async function() {
 
       // given
       const file = {
@@ -316,7 +316,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should save credentials', async () => {
+    it('should save credentials', async function() {
 
       // given
       const config = {
@@ -343,7 +343,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should not save credentials if `rememberCredentials` was set to false', async () => {
+    it('should not save credentials if `rememberCredentials` was set to false', async function() {
 
       // given
       const config = {
@@ -372,7 +372,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should save process definition after deployment', async () => {
+    it('should save process definition after deployment', async function() {
 
       // given
       const deployedProcessDefinition = { id: 'foo' };
@@ -402,7 +402,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should handle deployment error given a DeploymentError', async () => {
+    it('should handle deployment error given a DeploymentError', async function() {
 
       // given
       const deploymentErrorSpy = sinon.spy(),
@@ -423,7 +423,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should not handle deployment error given a non DeploymentError during getVersion', async () => {
+    it('should not handle deployment error given a non DeploymentError during getVersion', async function() {
 
       // given
       const deploymentErrorSpy = sinon.spy(),
@@ -458,7 +458,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should not handle deployment error given a non DeploymentError during deployment', async () => {
+    it('should not handle deployment error given a non DeploymentError during deployment', async function() {
 
       // given
       const deploymentErrorSpy = sinon.spy(),
@@ -493,7 +493,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should fetch the executionPlatformVersion', async () => {
+    it('should fetch the executionPlatformVersion', async function() {
 
       // given
       const deploySpy = sinon.spy();
@@ -511,7 +511,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should fetch the executionPlatformVersion but no version is available', async () => {
+    it('should fetch the executionPlatformVersion but no version is available', async function() {
 
       // given
       const deploySpy = sinon.spy();
@@ -529,7 +529,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should use saved config to fetch executionPlatformVersion', async () => {
+    it('should use saved config to fetch executionPlatformVersion', async function() {
 
       // given
       const savedEndpoint = {
@@ -581,9 +581,9 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    describe('emit-event action', () => {
+    describe('emit-event action', function() {
 
-      it('should trigger deployment.done action after successful deployment', async () => {
+      it('should trigger deployment.done action after successful deployment', async function() {
 
         // given
         const configuration = createConfiguration(),
@@ -607,7 +607,7 @@ describe('<DeploymentTool>', () => {
         expect(actionSpy).to.have.been.calledOnce;
       });
 
-      it('should send target type on deployment.done', async () => {
+      it('should send target type on deployment.done', async function() {
 
         // given
         const configuration = createConfiguration(),
@@ -638,7 +638,7 @@ describe('<DeploymentTool>', () => {
       });
 
 
-      it('should include executionPlatform metrics in deployment.done', async () => {
+      it('should include executionPlatform metrics in deployment.done', async function() {
 
         // given
         const configuration = createConfiguration(),
@@ -669,7 +669,7 @@ describe('<DeploymentTool>', () => {
       });
 
 
-      it('should not trigger deployment.done action after failed deployment', async () => {
+      it('should not trigger deployment.done action after failed deployment', async function() {
 
         // given
         const configuration = createConfiguration(),
@@ -696,7 +696,7 @@ describe('<DeploymentTool>', () => {
       });
 
 
-      it('should trigger deployment.error action given deployment error', async () => {
+      it('should trigger deployment.error action given deployment error', async function() {
 
         // given
         const configuration = createConfiguration(),
@@ -723,7 +723,7 @@ describe('<DeploymentTool>', () => {
       });
 
 
-      it('should not trigger deployment.error action given non-deployment error', async () => {
+      it('should not trigger deployment.error action given non-deployment error', async function() {
 
         // given
         const configuration = createConfiguration(),
@@ -758,7 +758,7 @@ describe('<DeploymentTool>', () => {
       });
 
 
-      it('should not trigger deployment.error action after successful deployment', async () => {
+      it('should not trigger deployment.error action after successful deployment', async function() {
 
         // given
         const configuration = createConfiguration(),
@@ -783,7 +783,7 @@ describe('<DeploymentTool>', () => {
       });
 
 
-      it('should include executionPlatform metrics in deployment.error given deploymentError', async () => {
+      it('should include executionPlatform metrics in deployment.error given deploymentError', async function() {
 
         // given
         const configuration = createConfiguration(),
@@ -818,9 +818,9 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    describe('default url', () => {
+    describe('default url', function() {
 
-      it('should use Spring-specific endpoint url per default', async () => {
+      it('should use Spring-specific endpoint url per default', async function() {
 
         // given
         const deploySpy = sinon.spy();
@@ -838,7 +838,7 @@ describe('<DeploymentTool>', () => {
       });
 
 
-      it('should use Tomcat-specific endpoint url if can be connected to', async () => {
+      it('should use Tomcat-specific endpoint url if can be connected to', async function() {
 
         // given
         const deploySpy = sinon.spy(),
@@ -866,9 +866,9 @@ describe('<DeploymentTool>', () => {
   });
 
 
-  describe('save', () => {
+  describe('save', function() {
 
-    it('should save configuration when user decided to only save it', async () => {
+    it('should save configuration when user decided to only save it', async function() {
 
       // given
       const configuration = createConfiguration();
@@ -902,7 +902,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should not deploy when user decided to only save configuration', async () => {
+    it('should not deploy when user decided to only save configuration', async function() {
 
       // given
       const deploySpy = sinon.spy();
@@ -918,7 +918,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should not get version when user decided to only save configuration', async () => {
+    it('should not get version when user decided to only save configuration', async function() {
 
       // given
       const getVersionSpy = sinon.spy();
@@ -935,9 +935,9 @@ describe('<DeploymentTool>', () => {
   });
 
 
-  describe('cancel', () => {
+  describe('cancel', function() {
 
-    it('should not save config if user cancelled the deployment', async () => {
+    it('should not save config if user cancelled the deployment', async function() {
 
       // given
       const config = {
@@ -960,9 +960,9 @@ describe('<DeploymentTool>', () => {
   });
 
 
-  describe('#saveCredentials', () => {
+  describe('#saveCredentials', function() {
 
-    it('should save credentials', async () => {
+    it('should save credentials', async function() {
 
       // given
       const configSetSpy = sinon.spy();
@@ -1025,7 +1025,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should NOT save credentials - no configuration saved', async () => {
+    it('should NOT save credentials - no configuration saved', async function() {
 
       // given
       const configSetSpy = sinon.spy();
@@ -1057,7 +1057,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should NOT save credentials - no endpoint available', async () => {
+    it('should NOT save credentials - no endpoint available', async function() {
 
       // given
       const configSetSpy = sinon.spy();
@@ -1100,9 +1100,9 @@ describe('<DeploymentTool>', () => {
   });
 
 
-  describe('#removeCredentials', () => {
+  describe('#removeCredentials', function() {
 
-    it('should remove credentials', async () => {
+    it('should remove credentials', async function() {
 
       // given
       const configSetSpy = sinon.spy();
@@ -1161,7 +1161,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should NOT remove credentials - no configuration saved', async () => {
+    it('should NOT remove credentials - no configuration saved', async function() {
 
       // given
       const configSetSpy = sinon.spy();
@@ -1187,7 +1187,7 @@ describe('<DeploymentTool>', () => {
     });
 
 
-    it('should NOT remove credentials - no endpoint available', async () => {
+    it('should NOT remove credentials - no endpoint available', async function() {
 
       // given
       const configSetSpy = sinon.spy();
@@ -1224,7 +1224,7 @@ describe('<DeploymentTool>', () => {
 
     describe('overlay', function() {
 
-      it('should open', async () => {
+      it('should open', async function() {
 
         // given
         const activeTab = createTab({ type: 'bpmn' });
@@ -1250,7 +1250,7 @@ describe('<DeploymentTool>', () => {
       });
 
 
-      it('should close when active tab changes', async () => {
+      it('should close when active tab changes', async function() {
 
         // given
         const activeTab = createTab({ type: 'bpmn' });

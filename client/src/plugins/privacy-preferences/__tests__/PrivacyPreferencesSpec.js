@@ -21,16 +21,16 @@ import PrivacyPreferences from '../PrivacyPreferences';
 
 const { spy } = sinon;
 
-describe('<PrivacyPreferences>', () => {
+describe('<PrivacyPreferences>', function() {
 
-  it('should render', async () => {
+  it('should render', async function() {
 
     // given
     await createPrivacyPreferences();
   });
 
 
-  it('should show modal on start if config non existent', async () => {
+  it('should show modal on start if config non existent', async function() {
 
     // when
     const wrapper = await createPrivacyPreferences({
@@ -48,7 +48,7 @@ describe('<PrivacyPreferences>', () => {
   });
 
 
-  it('should not show modal on start if config existent', async () => {
+  it('should not show modal on start if config existent', async function() {
 
     // when
     const wrapper = await createPrivacyPreferences({
@@ -66,7 +66,7 @@ describe('<PrivacyPreferences>', () => {
   });
 
 
-  it('should set isInitialPreferences on start if config non existent', async () => {
+  it('should set isInitialPreferences on start if config non existent', async function() {
 
     // when
     const wrapper = await createPrivacyPreferences({
@@ -84,7 +84,7 @@ describe('<PrivacyPreferences>', () => {
   });
 
 
-  it('should subscribe to show-privacy-preferences', async () => {
+  it('should subscribe to show-privacy-preferences', async function() {
 
     // given
     const subscribeSpy = spy();
@@ -105,7 +105,7 @@ describe('<PrivacyPreferences>', () => {
   });
 
 
-  it('should save config', async () => {
+  it('should save config', async function() {
 
     // given
     const setSpy = spy();
@@ -136,7 +136,7 @@ describe('<PrivacyPreferences>', () => {
   });
 
 
-  it('should open modal on show-privacy-preferences', async () => {
+  it('should open modal on show-privacy-preferences', async function() {
 
     // given
     let subscribeFunc;
@@ -174,7 +174,7 @@ describe('<PrivacyPreferences>', () => {
   });
 
 
-  it('should not save config on cancel', async () => {
+  it('should not save config on cancel', async function() {
 
     // given
     let subscribeFunc;

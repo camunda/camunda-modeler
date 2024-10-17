@@ -26,11 +26,11 @@ import MixpanelHandler from '../../MixpanelHandler';
 const EXAMPLE_ERROR = 'something went wrong';
 
 
-describe('<DeploymentEventHandler>', () => {
+describe('<DeploymentEventHandler>', function() {
 
   let subscribe, track;
 
-  beforeEach(() => {
+  beforeEach(function() {
 
     subscribe = sinon.spy();
 
@@ -42,27 +42,27 @@ describe('<DeploymentEventHandler>', () => {
   });
 
 
-  describe('should subcribe', () => {
+  describe('should subcribe', function() {
 
-    it('should subscribe to deployment.done', () => {
+    it('should subscribe to deployment.done', function() {
       expect(subscribe.getCall(0).args[0]).to.eql('deployment.done');
     });
 
 
-    it('should subscribe to deployment.error', () => {
+    it('should subscribe to deployment.error', function() {
       expect(subscribe.getCall(1).args[0]).to.eql('deployment.error');
     });
 
   });
 
 
-  describe('deployment.done', () => {
+  describe('deployment.done', function() {
 
-    describe('deployment tool', () => {
+    describe('deployment tool', function() {
 
-      describe('should send for type', () => {
+      describe('should send for type', function() {
 
-        it('bpmn', async () => {
+        it('bpmn', async function() {
 
           // given
           const tab = createTab({
@@ -92,7 +92,7 @@ describe('<DeploymentEventHandler>', () => {
         });
 
 
-        it('cloud-bpmn', async () => {
+        it('cloud-bpmn', async function() {
 
           // given
           const tab = createTab({
@@ -114,7 +114,7 @@ describe('<DeploymentEventHandler>', () => {
         });
 
 
-        it('dmn', async () => {
+        it('dmn', async function() {
 
           // given
           const tab = createTab({
@@ -144,7 +144,7 @@ describe('<DeploymentEventHandler>', () => {
         });
 
 
-        it('cloud dmn', async () => {
+        it('cloud dmn', async function() {
 
           // given
           const tab = createTab({
@@ -176,7 +176,7 @@ describe('<DeploymentEventHandler>', () => {
       });
 
 
-      it('should NOT send for type cmmn', async () => {
+      it('should NOT send for type cmmn', async function() {
 
         // given
         const tab = createTab({
@@ -195,12 +195,12 @@ describe('<DeploymentEventHandler>', () => {
     });
 
 
-    describe('start instance tool', () => {
+    describe('start instance tool', function() {
 
-      describe('should send for type', () => {
+      describe('should send for type', function() {
 
 
-        it('bpmn', async () => {
+        it('bpmn', async function() {
 
           // given
           const tab = createTab({
@@ -230,7 +230,7 @@ describe('<DeploymentEventHandler>', () => {
         });
 
 
-        it('cloud-bpmn', async () => {
+        it('cloud-bpmn', async function() {
 
           // given
           const tab = createTab({
@@ -252,7 +252,7 @@ describe('<DeploymentEventHandler>', () => {
         });
 
 
-        it('dmn', async () => {
+        it('dmn', async function() {
 
           // given
           const tab = createTab({
@@ -282,7 +282,7 @@ describe('<DeploymentEventHandler>', () => {
         });
 
 
-        it('cloud dmn', async () => {
+        it('cloud dmn', async function() {
 
           // given
           const tab = createTab({
@@ -314,7 +314,7 @@ describe('<DeploymentEventHandler>', () => {
       });
 
 
-      it('should NOT send for type cmmn', async () => {
+      it('should NOT send for type cmmn', async function() {
 
         // given
         const tab = createTab({
@@ -335,10 +335,10 @@ describe('<DeploymentEventHandler>', () => {
   });
 
 
-  describe('deployment.error', () => {
+  describe('deployment.error', function() {
 
 
-    it('deployment tool', async () => {
+    it('deployment tool', async function() {
 
       // given
       const tab = createTab({
@@ -377,7 +377,7 @@ describe('<DeploymentEventHandler>', () => {
     });
 
 
-    it('start instance tool', async () => {
+    it('start instance tool', async function() {
 
       // given
       const tab = createTab({
@@ -418,11 +418,11 @@ describe('<DeploymentEventHandler>', () => {
   });
 
 
-  describe('should send engine profile', () => {
+  describe('should send engine profile', function() {
 
-    describe('set engine profile', () => {
+    describe('set engine profile', function() {
 
-      it('bpmn', async () => {
+      it('bpmn', async function() {
 
         // given
         const tab = createTab({
@@ -446,7 +446,7 @@ describe('<DeploymentEventHandler>', () => {
       });
 
 
-      it('cloud bpmn', async () => {
+      it('cloud bpmn', async function() {
 
         // given
         const tab = createTab({
@@ -469,7 +469,7 @@ describe('<DeploymentEventHandler>', () => {
       });
 
 
-      it('dmn', async () => {
+      it('dmn', async function() {
 
         // given
         const tab = createTab({
@@ -493,7 +493,7 @@ describe('<DeploymentEventHandler>', () => {
       });
 
 
-      it('cloud dmn', async () => {
+      it('cloud dmn', async function() {
 
         // given
         const tab = createTab({
@@ -517,9 +517,9 @@ describe('<DeploymentEventHandler>', () => {
     });
 
 
-    describe('default engine profile', () => {
+    describe('default engine profile', function() {
 
-      it('bpmn', async () => {
+      it('bpmn', async function() {
 
         // given
         const tab = createTab({
@@ -541,7 +541,7 @@ describe('<DeploymentEventHandler>', () => {
       });
 
 
-      it('dmn', async () => {
+      it('dmn', async function() {
 
         // given
         const tab = createTab({
@@ -568,7 +568,7 @@ describe('<DeploymentEventHandler>', () => {
   });
 
 
-  it('should send target type', async () => {
+  it('should send target type', async function() {
 
     // given
     const tab = createTab({
@@ -589,7 +589,7 @@ describe('<DeploymentEventHandler>', () => {
   });
 
 
-  it('should send template ids in diagram', async () => {
+  it('should send template ids in diagram', async function() {
 
     // given
     const tab = createTab({

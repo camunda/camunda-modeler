@@ -118,12 +118,12 @@ describe('Integration', function() {
     modalRoot.id = 'modal-root';
 
 
-    beforeEach(() => {
+    beforeEach(function() {
       document.body.appendChild(modalRoot);
     });
 
 
-    afterEach(() => {
+    afterEach(function() {
       document.body.removeChild(modalRoot);
     });
 
