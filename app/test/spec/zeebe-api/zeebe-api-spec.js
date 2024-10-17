@@ -110,7 +110,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (Cloud)', async function() {
+      it('for <endpoint-unavailable> (Cloud) (code=14)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -136,7 +136,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (Cloud)', async function() {
+      it('for <endpoint-unavailable> (Cloud) (code=13)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -189,7 +189,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (self-managed)', async function() {
+      it('for <endpoint-unavailable> (self-managed) (code=14)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -1496,7 +1496,7 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (Cloud)', async function() {
+      it('for <endpoint-unavailable> (Cloud) (code=13)', async function() {
 
         // given
         const zeebeAPI = mockZeebeNode({
@@ -2518,10 +2518,12 @@ describe('ZeebeAPI', function() {
 function setupPlatformStub() {
   let platformStub;
 
+  // eslint-disable-next-line mocha/no-top-level-hooks
   before(function() {
     platformStub = sinon.stub(process, 'platform').value('CI');
   });
 
+  // eslint-disable-next-line mocha/no-top-level-hooks
   after(function() {
     platformStub.restore();
   });

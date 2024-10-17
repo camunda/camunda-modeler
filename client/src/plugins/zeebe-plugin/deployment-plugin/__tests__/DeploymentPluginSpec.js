@@ -1080,7 +1080,7 @@ describe('<DeploymentPlugin> (Zeebe)', function() {
     });
 
 
-    it('should trigger deployment.done with start instance context', async function() {
+    it('should trigger deployment.done with start instance context, successful deplyoyment', async function() {
 
       // given
       const deploymentResult = {
@@ -1306,7 +1306,7 @@ describe('<DeploymentPlugin> (Zeebe)', function() {
     });
 
 
-    it('should trigger deployment.done with start instance context', async function() {
+    it('should trigger deployment.done with start instance context, unsuccessful deplyoyment', async function() {
 
       // given
       const deploymentResult = {

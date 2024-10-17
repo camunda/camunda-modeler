@@ -441,7 +441,7 @@ describe('<DeploymentConfigOverlay>', function() {
   });
 
 
-  it('should unsubscribe from focus change event when unmounted', function() {
+  it('should subscribe to focus change event on mount', function() {
 
     // given
     const subscribeToFocusChange = sinon.spy();
