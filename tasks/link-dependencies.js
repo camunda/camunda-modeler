@@ -19,7 +19,7 @@ const customLinkersMap = {
   'bpmn-io/form-js': linkFormJs
 };
 
-const clientDir = path.join(__dirname, '..', 'client');
+const builderDir = path.join(__dirname, '..');
 const dependenciesDir = path.join(__dirname, '.linked-dependencies');
 
 const dependencies = getDependencies();
@@ -98,7 +98,7 @@ async function linkDependencies(dependencies) {
  * @param {Dependency} dependency
  */
 function linkFromGitHub({ repo, ref }) {
-  exec(`npm i ${repo}#${ref}`, { cwd: clientDir });
+  exec(`npm i ${repo}#${ref}`, { cwd: builderDir });
 }
 
 /**
@@ -129,7 +129,7 @@ function linkDmnJs({ repo, ref }) {
   const dmnJsDir = path.join(rootDir, 'packages', 'dmn-js');
   exec('yarn link', { cwd: dmnJsDir });
 
-  exec('yarn link dmn-js', { cwd: clientDir });
+  exec('yarn link dmn-js', { cwd: builderDir });
 }
 
 /**
@@ -154,7 +154,7 @@ function linkWithYarn({ repo, ref }) {
   const packageJson = path.join(rootDir, 'package.json');
   const packageName = getPackageName(packageJson);
 
-  exec(`yarn link ${packageName}`, { cwd: clientDir });
+  exec(`yarn link ${packageName}`, { cwd: builderDir });
 
   console.log(`Linked ${packageName}.`);
 }
@@ -187,7 +187,7 @@ function linkFormJs({ repo, ref }) {
   const formJsDir = path.join(rootDir, 'packages', 'form-js');
   exec('yarn link', { cwd: formJsDir });
 
-  exec('yarn link @bpmn-io/form-js', { cwd: clientDir });
+  exec('yarn link @bpmn-io/form-js', { cwd: builderDir });
 }
 
 function gitClone(repo, target = toDirName(repo)) {
