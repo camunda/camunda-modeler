@@ -16,20 +16,20 @@ import WellKnownAPI from '../WellKnownAPI';
 
 let getCockpitUrlStub;
 
-describe('<webAppUrls>', () => {
+describe('<webAppUrls>', function() {
 
   function stubGetCockpitUrl() {
     getCockpitUrlStub = sinon.stub(WellKnownAPI.prototype, 'getCockpitUrl');
     return getCockpitUrlStub;
   }
 
-  afterEach(() => {
+  afterEach(function() {
     getCockpitUrlStub.restore();
   });
 
 
-  describe('reachable well known api', () => {
-    it('should return specific Cockpit link', async () => {
+  describe('reachable well known api', function() {
+    it('should return specific Cockpit link', async function() {
 
       // given
       stubGetCockpitUrl().returns('http://localhost:18080/camunda/app/cockpit/default/#/');
@@ -42,7 +42,7 @@ describe('<webAppUrls>', () => {
     });
 
 
-    it('should return default for missing Cockpit link', async () => {
+    it('should return default for missing Cockpit link', async function() {
 
       // given
       stubGetCockpitUrl().returns(undefined);
@@ -55,7 +55,7 @@ describe('<webAppUrls>', () => {
     });
 
 
-    it('should return default for empty Cockpit link', async () => {
+    it('should return default for empty Cockpit link', async function() {
 
       // given
       stubGetCockpitUrl().returns('');
@@ -69,14 +69,14 @@ describe('<webAppUrls>', () => {
   });
 
 
-  describe('unreachable well known api', () => {
+  describe('unreachable well known api', function() {
 
-    beforeEach(() => {
+    beforeEach(function() {
       stubGetCockpitUrl().throws(new ConnectionError({ ok: false, status: 404 }));
     });
 
 
-    it('should return Spring-specific Cockpit link', async () => {
+    it('should return Spring-specific Cockpit link', async function() {
 
       // given
       const engineRestUrl = 'http://localhost:8080/rest';
@@ -89,7 +89,7 @@ describe('<webAppUrls>', () => {
     });
 
 
-    it('should return Tomcat-specific Cockpit link', async () => {
+    it('should return Tomcat-specific Cockpit link', async function() {
 
       // given
       const engineRestUrl = 'http://localhost:8080/engine-rest';
@@ -102,7 +102,7 @@ describe('<webAppUrls>', () => {
     });
 
 
-    it('should return Spring-specific Cockpit link for custom rest url', async () => {
+    it('should return Spring-specific Cockpit link for custom rest url', async function() {
 
       // given
       const engineRestUrl = 'http://customized-camunda.bpmn.io/custom-rest';

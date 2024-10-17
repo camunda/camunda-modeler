@@ -16,9 +16,9 @@ import {
 
 import StartInstanceConfigOverlay from '../StartInstanceConfigOverlay';
 
-describe('<StartInstanceConfigOverlay>', () => {
+describe('<StartInstanceConfigOverlay>', function() {
 
-  it('should render', () => {
+  it('should render', function() {
     shallow(<StartInstanceConfigOverlay />);
   });
 

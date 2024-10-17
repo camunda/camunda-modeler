@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-function EditorEventsLogger(eventBus) {
+export default function EditorEventsLogger(eventBus) {
 
   eventBus.on('shape.added', function(event) {
     console.log('[EditorEventsLogger]', 'shape got added', event);
@@ -17,5 +17,3 @@ function EditorEventsLogger(eventBus) {
 }
 
 EditorEventsLogger.$inject = [ 'eventBus' ];
-
-module.exports = EditorEventsLogger;

@@ -171,7 +171,7 @@ describe('<PrivacyPreferencesView>', function() {
       });
     });
 
-    it('should not set autofocus', async () => {
+    it('should not set autofocus', async function() {
 
       // given
       const preferenceKey = PREFERENCES_LIST[2].key;
@@ -185,7 +185,7 @@ describe('<PrivacyPreferencesView>', function() {
 
 
 
-    it('should set autofocus if specified', async () => {
+    it('should set autofocus if specified', async function() {
 
       // given
       const preferenceKey = PREFERENCES_LIST[2].key;

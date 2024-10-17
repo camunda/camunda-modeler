@@ -13,23 +13,23 @@
 import CamundaAPI from '../CamundaAPI';
 
 
-describe('<CamundaAPI>', () => {
+describe('<CamundaAPI>', function() {
 
   /**
    * @type {sinon.SinonStub<fetch>}
    */
   let fetchSpy;
 
-  beforeEach(() => {
+  beforeEach(function() {
     fetchSpy = sinon.stub(window, 'fetch');
   });
 
-  afterEach(() => {
+  afterEach(function() {
     fetchSpy.restore();
   });
 
 
-  describe('#deployDiagram', () => {
+  describe('#deployDiagram', function() {
 
     const diagram = {
       name: 'diagram',
@@ -41,7 +41,7 @@ describe('<CamundaAPI>', () => {
     };
 
 
-    it('should deploy diagram', async () => {
+    it('should deploy diagram', async function() {
 
       // given
       const api = createCamundaAPI({
@@ -62,7 +62,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should deploy diagram with tenant ID', async () => {
+    it('should deploy diagram with tenant ID', async function() {
 
       // given
       const deployment = {
@@ -82,7 +82,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should deploy with basic auth', async () => {
+    it('should deploy with basic auth', async function() {
 
       // given
       const api = createCamundaAPI({
@@ -108,7 +108,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should deploy with bearer token', async () => {
+    it('should deploy with bearer token', async function() {
 
       // given
       const api = createCamundaAPI({
@@ -133,7 +133,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should deploy with attachments', async () => {
+    it('should deploy with attachments', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -153,7 +153,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should throw when fetch fails', async () => {
+    it('should throw when fetch fails', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -176,7 +176,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should throw when response is not ok', async () => {
+    it('should throw when response is not ok', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -197,7 +197,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should handle failed response with non-JSON body', async () => {
+    it('should handle failed response with non-JSON body', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -223,7 +223,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should deploy with correct flags', async () => {
+    it('should deploy with correct flags', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -244,9 +244,9 @@ describe('<CamundaAPI>', () => {
   });
 
 
-  describe('#checkConnection', () => {
+  describe('#checkConnection', function() {
 
-    it('should check server connection', async () => {
+    it('should check server connection', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -258,7 +258,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should throw when fetch fails', async () => {
+    it('should throw when fetch fails', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -280,7 +280,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should throw when response is not ok', async () => {
+    it('should throw when response is not ok', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -302,7 +302,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should handle failed response with non-JSON body', async () => {
+    it('should handle failed response with non-JSON body', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -328,18 +328,18 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    describe('timeout handling', () => {
+    describe('timeout handling', function() {
 
       let clock;
 
-      before(() => {
+      before(function() {
         clock = sinon.useFakeTimers();
       });
 
-      after(() => clock.restore());
+      after(function() { return clock.restore(); });
 
 
-      it('should abort request on timeout', async () => {
+      it('should abort request on timeout', async function() {
 
         // given
         const api = createCamundaAPI();
@@ -377,9 +377,9 @@ describe('<CamundaAPI>', () => {
   });
 
 
-  describe('#getVersion', () => {
+  describe('#getVersion', function() {
 
-    it('should return server version', async () => {
+    it('should return server version', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -400,7 +400,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should return undefined if version cannot be parsed', async () => {
+    it('should return undefined if version cannot be parsed', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -419,7 +419,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should throw when fetch fails', async () => {
+    it('should throw when fetch fails', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -441,7 +441,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should throw when response is not ok', async () => {
+    it('should throw when response is not ok', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -463,7 +463,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should handle failed response with non-JSON body', async () => {
+    it('should handle failed response with non-JSON body', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -489,18 +489,18 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    describe('timeout handling', () => {
+    describe('timeout handling', function() {
 
       let clock;
 
-      before(() => {
+      before(function() {
         clock = sinon.useFakeTimers();
       });
 
-      after(() => clock.restore());
+      after(function() { return clock.restore(); });
 
 
-      it('should abort request on timeout', async () => {
+      it('should abort request on timeout', async function() {
 
         // given
         const api = createCamundaAPI();
@@ -538,7 +538,7 @@ describe('<CamundaAPI>', () => {
   });
 
 
-  describe('#startInstance', () => {
+  describe('#startInstance', function() {
 
     const processDefinition = {
       id: 'processDefinition'
@@ -548,7 +548,7 @@ describe('<CamundaAPI>', () => {
       businessKey: 'businessKey'
     };
 
-    it('should start process', async () => {
+    it('should start process', async function() {
 
       // given
       const api = createCamundaAPI({
@@ -569,7 +569,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should throw when fetch fails', async () => {
+    it('should throw when fetch fails', async function() {
 
       // given
       const api = createCamundaAPI();
@@ -592,7 +592,7 @@ describe('<CamundaAPI>', () => {
     });
 
 
-    it('should throw when response is not ok', async () => {
+    it('should throw when response is not ok', async function() {
 
       // given
       const api = createCamundaAPI();

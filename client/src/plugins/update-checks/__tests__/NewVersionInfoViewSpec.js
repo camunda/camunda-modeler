@@ -26,11 +26,11 @@ import NewVersionInfoView from '../NewVersionInfoView';
 /* global sinon */
 const { spy } = sinon;
 
-describe('<NewVersionInfoView>', () => {
+describe('<NewVersionInfoView>', function() {
 
   let wrapper;
 
-  beforeEach(() => {
+  beforeEach(function() {
 
     wrapper = mount(<NewVersionInfoView latestVersionInfo={ {
       latestVersion: 'v3.7.0',
@@ -45,13 +45,13 @@ describe('<NewVersionInfoView>', () => {
   });
 
 
-  it('should render', () => {
+  it('should render', function() {
 
     shallow(<NewVersionInfoView latestVersionInfo={ {} } />);
   });
 
 
-  it('should render title', () => {
+  it('should render title', function() {
 
     const title = wrapper.find('.modal-title');
 
@@ -59,7 +59,7 @@ describe('<NewVersionInfoView>', () => {
   });
 
 
-  it('should render body', () => {
+  it('should render body', function() {
 
     // given
     const expectedText = `
@@ -92,9 +92,9 @@ describe('<NewVersionInfoView>', () => {
   });
 
 
-  describe('footer', () => {
+  describe('footer', function() {
 
-    it('should render <Download> button', () => {
+    it('should render <Download> button', function() {
 
       // given
       const footer = wrapper.find('.modal-footer');
@@ -110,7 +110,7 @@ describe('<NewVersionInfoView>', () => {
     });
 
 
-    it('should render <Skip> button', () => {
+    it('should render <Skip> button', function() {
 
       // given
       const footer = wrapper.find('.modal-footer');
@@ -125,7 +125,7 @@ describe('<NewVersionInfoView>', () => {
   });
 
 
-  it('should close', () => {
+  it('should close', function() {
 
     const onCloseSpy = spy();
 
@@ -141,7 +141,7 @@ describe('<NewVersionInfoView>', () => {
   });
 
 
-  it('should go to download page', () => {
+  it('should go to download page', function() {
 
     const onGoToDownloadPageSpy = spy();
 
@@ -157,7 +157,7 @@ describe('<NewVersionInfoView>', () => {
   });
 
 
-  it('should render HTML snippets', () => {
+  it('should render HTML snippets', function() {
 
     const component = shallow(
       <NewVersionInfoView latestVersionInfo={ {

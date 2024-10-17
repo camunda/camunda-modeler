@@ -69,7 +69,7 @@ export default class Slot extends PureComponent {
 
 }
 
-const fillFragment = (Component) => (fill) => {
+const fillFragment = (Component) => function FragmentFill(fill) {
   const { id, props } = fill;
 
   if (!Component) {

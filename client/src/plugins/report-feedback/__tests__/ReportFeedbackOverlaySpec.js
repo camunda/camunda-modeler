@@ -17,7 +17,7 @@ import MochaTestContainer from 'mocha-test-container-support';
 import { ReportFeedbackOverlay } from '../ReportFeedbackOverlay';
 
 
-describe('<ReportFeedbackOverlay>', () => {
+describe('<ReportFeedbackOverlay>', function() {
 
   it('should render', function() {
 

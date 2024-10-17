@@ -11,6 +11,7 @@
 /**
  * Untranspiled garbage here
  */
+import React from 'react';
 
 function ReactFoo() {
   return <div>Hello</div>;

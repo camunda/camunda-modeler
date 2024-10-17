@@ -99,7 +99,6 @@ export default function(Comp) {
       } = this.props;
 
       const {
-        // eslint-disable-next-line
         __destroy,
         cached
       } = this.state;

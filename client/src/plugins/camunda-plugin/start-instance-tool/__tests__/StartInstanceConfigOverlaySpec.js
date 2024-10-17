@@ -17,14 +17,14 @@ import {
 
 import StartInstanceConfigOverlay from '../StartInstanceConfigOverlay';
 
-describe('<StartInstanceConfigOverlay>', () => {
+describe('<StartInstanceConfigOverlay>', function() {
 
-  it('should render', () => {
+  it('should render', function() {
     createOverlay();
   });
 
 
-  it('should render with customizations', () => {
+  it('should render with customizations', function() {
 
     // given
     const anchor = document.createElement('button');

@@ -20,26 +20,26 @@ import Metadata from '../../../util/Metadata';
 import UserJourneyStatistics from '../UserJourneyStatistics';
 import MixpanelHandler from '../MixpanelHandler';
 
-describe('<UserJourneyStatistics>', () => {
+describe('<UserJourneyStatistics>', function() {
 
   const getGlobal = () => ({
     appPlugins: []
   });
 
-  afterEach(() => {
+  afterEach(function() {
     Flags.reset();
     Metadata.init({ version:'test-version' });
     MixpanelHandler.getInstance().disable();
   });
 
 
-  it('should render', () => {
+  it('should render', function() {
 
     shallow(<UserJourneyStatistics subscribe={ () => {} } _getGlobal={ getGlobal } />);
   });
 
 
-  it('should NOT enable if Mixpanel project token not configured', async () => {
+  it('should NOT enable if Mixpanel project token not configured', async function() {
 
     // given
     const instance = createJourneyStatistics();
@@ -56,7 +56,7 @@ describe('<UserJourneyStatistics>', () => {
   });
 
 
-  it('should NOT enable if remote interaction is disabled via flag', async () => {
+  it('should NOT enable if remote interaction is disabled via flag', async function() {
 
     // given
     Flags.init({
@@ -79,7 +79,7 @@ describe('<UserJourneyStatistics>', () => {
   });
 
 
-  it('should NOT enable if usage statistics preference turned off', async () => {
+  it('should NOT enable if usage statistics preference turned off', async function() {
 
     // given
     Flags.init({
@@ -105,7 +105,7 @@ describe('<UserJourneyStatistics>', () => {
   });
 
 
-  it('should NOT enable if editor id is missing', async () => {
+  it('should NOT enable if editor id is missing', async function() {
 
     // given
     Flags.init({
@@ -136,7 +136,7 @@ describe('<UserJourneyStatistics>', () => {
   });
 
 
-  it('should enable when mounted', async () => {
+  it('should enable when mounted', async function() {
 
     // given
     Flags.init({
@@ -162,7 +162,7 @@ describe('<UserJourneyStatistics>', () => {
   });
 
 
-  it('should enable Mixpanel', async () => {
+  it('should enable Mixpanel', async function() {
 
     // given
     Flags.init({
@@ -191,7 +191,7 @@ describe('<UserJourneyStatistics>', () => {
   });
 
 
-  it('should disable mixpanel', async () => {
+  it('should disable mixpanel', async function() {
 
     // given
     Flags.init({
@@ -220,7 +220,7 @@ describe('<UserJourneyStatistics>', () => {
   });
 
 
-  it('should listen to privacy preference change event', async () => {
+  it('should listen to privacy preference change event', async function() {
 
     // given
     Flags.init({
@@ -245,7 +245,7 @@ describe('<UserJourneyStatistics>', () => {
   });
 
 
-  it('should enable when usage statistics preference switched on', async () => {
+  it('should enable when usage statistics preference switched on', async function() {
 
     // given
     Flags.init({
@@ -284,7 +284,7 @@ describe('<UserJourneyStatistics>', () => {
   });
 
 
-  it('should disable when usage statistics preference switched off', async () => {
+  it('should disable when usage statistics preference switched off', async function() {
 
     // given
     Flags.init({
@@ -319,7 +319,7 @@ describe('<UserJourneyStatistics>', () => {
   });
 
 
-  it('should include event handlers', async () => {
+  it('should include event handlers', async function() {
 
     // given
     const instance = createJourneyStatistics();

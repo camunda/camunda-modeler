@@ -34,11 +34,11 @@ import engineProfileCloudDMN from './fixtures/engine-cloud.dmn';
 import nestedForm from './fixtures/nested.form';
 
 
-describe('<TabEventHandler>', () => {
+describe('<TabEventHandler>', function() {
 
   let subscribe, track;
 
-  beforeEach(() => {
+  beforeEach(function() {
 
     subscribe = sinon.spy();
 
@@ -53,29 +53,29 @@ describe('<TabEventHandler>', () => {
   });
 
 
-  describe('should subscribe', () => {
-    it('should subscribe to bpmn.modeler.created', () => {
+  describe('should subscribe', function() {
+    it('should subscribe to bpmn.modeler.created', function() {
 
       // then
       expect(subscribe.getCall(0).args[0]).to.eql('bpmn.modeler.created');
     });
 
 
-    it('should subscribe to dmn.modeler.created', () => {
+    it('should subscribe to dmn.modeler.created', function() {
 
       // then
       expect(subscribe.getCall(1).args[0]).to.eql('dmn.modeler.created');
     });
 
 
-    it('should subscribe to form.modeler.created', () => {
+    it('should subscribe to form.modeler.created', function() {
 
       // then
       expect(subscribe.getCall(2).args[0]).to.eql('form.modeler.created');
     });
 
 
-    it('should subscribe to tab.closed', () => {
+    it('should subscribe to tab.closed', function() {
 
       // then
       expect(subscribe.getCall(3).args[0]).to.eql('tab.closed');
@@ -83,11 +83,11 @@ describe('<TabEventHandler>', () => {
   });
 
 
-  describe('should send with diagram type', () => {
+  describe('should send with diagram type', function() {
 
-    describe('open', () => {
+    describe('open', function() {
 
-      it('bpmn', async () => {
+      it('bpmn', async function() {
 
         // given
         const tab = createTab({
@@ -109,7 +109,7 @@ describe('<TabEventHandler>', () => {
       });
 
 
-      it('dmn', async () => {
+      it('dmn', async function() {
 
         // given
         const tab = createTab({
@@ -131,7 +131,7 @@ describe('<TabEventHandler>', () => {
       });
 
 
-      it('form', async () => {
+      it('form', async function() {
 
         // given
         const tab = createTab({
@@ -155,7 +155,7 @@ describe('<TabEventHandler>', () => {
     });
 
 
-    it('closed', async () => {
+    it('closed', async function() {
 
       // given
       const tab = createTab({
@@ -179,13 +179,13 @@ describe('<TabEventHandler>', () => {
   });
 
 
-  describe('should send engine profile', () => {
+  describe('should send engine profile', function() {
 
-    describe('open', () => {
+    describe('open', function() {
 
-      describe('set engine profile', () => {
+      describe('set engine profile', function() {
 
-        it('bpmn', async () => {
+        it('bpmn', async function() {
 
           // given
           const tab = createTab({
@@ -208,7 +208,7 @@ describe('<TabEventHandler>', () => {
         });
 
 
-        it('cloud bpmn', async () => {
+        it('cloud bpmn', async function() {
 
           // given
           const tab = createTab({
@@ -231,7 +231,7 @@ describe('<TabEventHandler>', () => {
         });
 
 
-        it('dmn', async () => {
+        it('dmn', async function() {
 
           // given
           const tab = createTab({
@@ -254,7 +254,7 @@ describe('<TabEventHandler>', () => {
         });
 
 
-        it('cloud dmn', async () => {
+        it('cloud dmn', async function() {
 
           // given
           const tab = createTab({
@@ -277,7 +277,7 @@ describe('<TabEventHandler>', () => {
         });
 
 
-        it('form', async () => {
+        it('form', async function() {
 
           // given
           const tab = createTab({
@@ -300,7 +300,7 @@ describe('<TabEventHandler>', () => {
         });
 
 
-        it('cloud form ', async () => {
+        it('cloud form ', async function() {
 
           // given
           const tab = createTab({
@@ -325,9 +325,9 @@ describe('<TabEventHandler>', () => {
       });
 
 
-      describe('default engine profile', () => {
+      describe('default engine profile', function() {
 
-        it('bpmn', async () => {
+        it('bpmn', async function() {
 
           // given
           const tab = createTab({
@@ -349,7 +349,7 @@ describe('<TabEventHandler>', () => {
         });
 
 
-        it('dmn', async () => {
+        it('dmn', async function() {
 
           // given
           const tab = createTab({
@@ -371,7 +371,7 @@ describe('<TabEventHandler>', () => {
         });
 
 
-        it('form', async () => {
+        it('form', async function() {
 
           // given
           const tab = createTab({
@@ -395,9 +395,9 @@ describe('<TabEventHandler>', () => {
       });
 
 
-      describe('close', () => {
+      describe('close', function() {
 
-        it('bpmn', async () => {
+        it('bpmn', async function() {
 
           // given
           const tab = createTab({
@@ -421,7 +421,7 @@ describe('<TabEventHandler>', () => {
         });
 
 
-        it('dmn', async () => {
+        it('dmn', async function() {
 
           // given
           const tab = createTab({
@@ -445,7 +445,7 @@ describe('<TabEventHandler>', () => {
         });
 
 
-        it('form', async () => {
+        it('form', async function() {
 
           // given
           const tab = createTab({
@@ -475,7 +475,7 @@ describe('<TabEventHandler>', () => {
   });
 
 
-  it('should send template ids in diagram', async () => {
+  it('should send template ids in diagram', async function() {
 
     // given
     const tab = createTab({
@@ -504,9 +504,9 @@ describe('<TabEventHandler>', () => {
   });
 
 
-  describe('should send form field types', () => {
+  describe('should send form field types', function() {
 
-    it('closed - simple form', async () => {
+    it('closed - simple form', async function() {
 
       // given
       const tab = createTab({
@@ -536,7 +536,7 @@ describe('<TabEventHandler>', () => {
     });
 
 
-    it('closed - nested form', async () => {
+    it('closed - nested form', async function() {
 
       // given
       const tab = createTab({
