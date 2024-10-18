@@ -1,9 +1,0 @@
-{
-  "extends": "plugin:bpmn-io/node",
-  "overrides": [
-    {
-      "files": [ "test/**/*.js", "**/__tests__/**/*.js" ],
-      "extends": "plugin:bpmn-io/mocha"
-    }
-  ]
-}
