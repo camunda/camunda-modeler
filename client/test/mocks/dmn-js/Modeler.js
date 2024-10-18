@@ -74,7 +74,9 @@ class Viewer {
         fire() {}
       },
       canvas: {
-        resized() {}
+        resized() {},
+        isFocused() { return true; },
+        restoreFocus() {},
       },
       commandStack: new CommandStack(),
       executionPlatform: new ExecutionPlatform(),

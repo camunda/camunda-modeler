@@ -208,6 +208,8 @@ export class BpmnEditor extends CachedComponent {
   listen(fn) {
     const modeler = this.getModeler();
 
+    modeler[fn]('attach', this.handleAttach);
+
     [
       'import.done',
       'saveXML.done',
@@ -217,17 +219,7 @@ export class BpmnEditor extends CachedComponent {
       'elements.copied',
       'propertiesPanel.focusin',
       'propertiesPanel.focusout',
-      'directEditing.activate',
-      'directEditing.deactivate',
-      'searchPad.closed',
-      'searchPad.opened',
-      'popupMenu.opened',
-      'popupMenu.closed',
-      'feelPopup.opened',
-      'feelPopup.closed',
-      'feelPopup.focusin',
-      'feelPopup.focusout',
-      'elementTemplates.select'
+      'canvas.focus.changed'
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
@@ -303,6 +295,12 @@ export class BpmnEditor extends CachedComponent {
     errors.forEach(error => {
       onWarning({ message: error.message });
     });
+  };
+
+  handleAttach = (event) => {
+    const modeler = this.getModeler();
+
+    modeler.get('canvas').focus();
   };
 
   handleError = (event) => {
@@ -400,38 +398,41 @@ export class BpmnEditor extends CachedComponent {
 
     const inputActive = isInputActive();
 
+    const canvasFocused = modeler.get('canvas').isFocused();
+
     const newState = {
       align: selectionLength > 1,
-      appendElement: !inputActive,
+      appendElement: canvasFocused,
+      canvasFocused,
       close: true,
       copy: !!selectionLength,
       cut: false,
-      createElement: !inputActive,
-      defaultCopyCutPaste: inputActive,
-      defaultUndoRedo: inputActive,
+      createElement: canvasFocused,
+      defaultCopyCutPaste: !canvasFocused,
+      defaultUndoRedo: !canvasFocused,
       dirty,
       distribute: selectionLength > 2,
-      editLabel: !inputActive && !!selectionLength,
+      editLabel: canvasFocused && selectionLength === 1,
       exportAs: EXPORT_AS,
-      find: !inputActive,
-      globalConnectTool: !inputActive,
-      handTool: !inputActive,
+      find: canvasFocused,
+      globalConnectTool: canvasFocused,
+      handTool: canvasFocused,
       inputActive,
-      lassoTool: !inputActive,
-      moveCanvas: !inputActive,
-      moveToOrigin: !inputActive,
-      moveSelection: !inputActive && !!selectionLength,
+      lassoTool: canvasFocused,
+      moveCanvas: canvasFocused,
+      moveToOrigin: canvasFocused,
+      moveSelection: canvasFocused && !!selectionLength,
       paste: !modeler.get('clipboard').isEmpty(),
       platform: 'cloud',
       propertiesPanel: true,
-      redo: commandStack.canRedo(),
-      removeSelected: !!selectionLength || inputActive,
-      replaceElement: !!selectionLength && selectionLength == 1 && !inputActive,
+      redo: canvasFocused && commandStack.canRedo(),
+      removeSelected: canvasFocused && !!selectionLength,
+      replaceElement: canvasFocused && selectionLength == 1,
       save: true,
-      selectAll: true,
+      selectAll: canvasFocused || inputActive,
       setColor: !!selectionLength,
-      spaceTool: !inputActive,
-      undo: commandStack.canUndo(),
+      spaceTool: canvasFocused,
+      undo: canvasFocused && commandStack.canUndo(),
       zoom: true
     };
 
@@ -845,7 +846,10 @@ export class BpmnEditor extends CachedComponent {
         feelPopupContainer: '.bjs-container',
         layout: layout.propertiesPanel
       },
-      elementTemplateChooser: false
+      elementTemplateChooser: false,
+      keyboard: {
+        bind: false
+      }
     });
 
     const commandStack = modeler.get('commandStack');
