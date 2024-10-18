@@ -138,7 +138,7 @@ export default class TabsProvider {
           return false;
         },
         getComponent() {
-          return forwardRef((props, ref) => {
+          return forwardRef(function EmptyTabProducer(props, ref) {
             return <EmptyTab ref={ ref } { ...props } tabsProvider={ self } />;
           });
         },
