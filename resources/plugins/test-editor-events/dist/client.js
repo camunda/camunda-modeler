@@ -550,7 +550,7 @@ function addDmnModule(extensionModule) {
   return (config) => {
     const newConfig = { ...config };
 
-    for (const viewer of [ 'drd', 'decisionTable', 'literalExpression' ]) {
+    for (const viewer of [ 'drd', 'decisionTable', 'literalExpression', 'boxedExpression' ]) {
       newConfig[viewer] = newConfig[viewer] || {};
 
       const additionalModules = (newConfig[viewer] && newConfig[viewer].additionalModules) || [];
@@ -572,8 +572,13 @@ function addDmnModule(extensionModule) {
 /*!*****************************************************************!*\
   !*** ./client/bpmn-modeler-extension/TestEditorEventsLogger.js ***!
   \*****************************************************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ EditorEventsLogger)
+/* harmony export */ });
 /**
  * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
  * under one or more contributor license agreements. See the NOTICE file
@@ -594,7 +599,6 @@ function EditorEventsLogger(eventBus) {
 
 EditorEventsLogger.$inject = [ 'eventBus' ];
 
-module.exports = EditorEventsLogger;
 
 /***/ }),
 
@@ -610,7 +614,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TestEditorEventsLogger */ "./client/bpmn-modeler-extension/TestEditorEventsLogger.js");
-/* harmony import */ var _TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__);
 /**
  * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
  * under one or more contributor license agreements. See the NOTICE file
@@ -625,7 +628,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   __init__: [ 'testEditorEventsLogger' ],
-  testEditorEventsLogger: [ 'type', (_TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0___default()) ]
+  testEditorEventsLogger: [ 'type', _TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__["default"] ]
 });
 
 /***/ }),
@@ -634,8 +637,13 @@ __webpack_require__.r(__webpack_exports__);
 /*!*******************************************************************!*\
   !*** ./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js ***!
   \*******************************************************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ EditorEventsLogger)
+/* harmony export */ });
 /**
  * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
  * under one or more contributor license agreements. See the NOTICE file
@@ -664,8 +672,6 @@ function EditorEventsLogger(eventBus) {
 
 EditorEventsLogger.$inject = [ 'eventBus' ];
 
-module.exports = EditorEventsLogger;
-
 
 /***/ }),
 
@@ -681,7 +687,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DmnTestEditorEventsLogger */ "./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js");
-/* harmony import */ var _DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__);
 /**
  * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
  * under one or more contributor license agreements. See the NOTICE file
@@ -696,7 +701,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   __init__: [ 'testEditorEventsLogger' ],
-  testEditorEventsLogger: [ 'type', (_DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0___default()) ]
+  testEditorEventsLogger: [ 'type', _DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__["default"] ]
 });
 
 
