@@ -56,7 +56,7 @@ export function Section(props) {
 }
 
 
-Section.Header = function(props) {
+Section.Header = function Header(props) {
   return (
     <h3 className="section__header">
       { props.children }
@@ -64,13 +64,13 @@ Section.Header = function(props) {
   );
 };
 
-Section.Actions = function(props) {
+Section.Actions = function Actions(props) {
   return (
     <span className="section__actions">{ props.children }</span>
   );
 };
 
-Section.Body = function(props) {
+Section.Body = function Body(props) {
   return (
     <div className="section__body">
       { props.children }
