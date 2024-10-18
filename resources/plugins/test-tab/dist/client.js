@@ -492,7 +492,6 @@ __webpack_require__.r(__webpack_exports__);
  * except in compliance with the MIT License.
  */
 
-// eslint-disable-next-line no-unused-vars
 
 
 class HelloWorldTab extends react__WEBPACK_IMPORTED_MODULE_0__.PureComponent {
