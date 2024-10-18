@@ -16,7 +16,6 @@ import addExporter from '@bpmn-io/add-exporter/add-exporter';
 import completeDirectEditingModule from '../../bpmn/modeler/features/complete-direct-editing';
 
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
-import decisionTableKeyboardModule from '../../dmn/modeler/features/decision-table-keyboard';
 
 import Flags, {
   DISABLE_ADJUST_ORIGIN,
@@ -84,7 +83,6 @@ export default class CamundaDmnModeler extends DmnModeler {
         ...additionalModules
       ]),
       decisionTable: mergeModules(decisionTable, [
-        decisionTableKeyboardModule,
         poweredByModule,
         executionPlatformModule,
         {

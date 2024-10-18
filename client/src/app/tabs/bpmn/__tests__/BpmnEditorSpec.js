@@ -372,25 +372,6 @@ describe('<BpmnEditor>', function() {
     it('propertiesPanel.focusout', expectHandleChanged('propertiesPanel.focusout'));
 
 
-    it('directEditing.activate', expectHandleChanged('directEditing.activate'));
-
-
-    it('directEditing.deactivate', expectHandleChanged('directEditing.deactivate'));
-
-
-    it('searchPad.opened', expectHandleChanged('searchPad.opened'));
-
-
-    it('searchPad.closed', expectHandleChanged('searchPad.closed'));
-
-
-    it('popupMenu.opened', expectHandleChanged('popupMenu.opened'));
-
-
-    it('popupMenu.closed', expectHandleChanged('popupMenu.closed'));
-
-
-    it('elementTemplates.select', expectHandleChanged('elementTemplates.select'));
   });
 
 
@@ -626,6 +607,7 @@ describe('<BpmnEditor>', function() {
         // then
         expect(state).to.include({
           align: false,
+          canvasFocused: true,
           copy: false,
           defaultCopyCutPaste: false,
           defaultUndoRedo: false,

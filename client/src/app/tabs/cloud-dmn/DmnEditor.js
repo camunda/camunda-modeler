@@ -401,18 +401,22 @@ export class DmnEditor extends CachedComponent {
     let editMenu;
 
     if (activeView.type === 'drd') {
+
+      const canvasFocused = activeViewer.get('canvas').isFocused();
+
       assign(newState, {
         align: selectionLength > 1,
-        defaultCopyCutPaste: inputActive,
-        defaultUndoRedo: inputActive,
+        canvasFocused,
+        defaultCopyCutPaste: !canvasFocused,
+        defaultUndoRedo: !canvasFocused,
         distribute: selectionLength > 2,
-        editLabel: !inputActive && !!selectionLength,
-        find: !inputActive,
-        lassoTool: !inputActive,
-        moveCanvas: !inputActive,
-        moveSelection: !inputActive && !!selectionLength,
-        removeSelected: inputActive || !!selectionLength,
-        selectAll: true,
+        editLabel: canvasFocused && !!selectionLength,
+        find: canvasFocused,
+        lassoTool: canvasFocused,
+        moveCanvas: canvasFocused,
+        moveSelection: canvasFocused && !!selectionLength,
+        removeSelected: !canvasFocused || !!selectionLength,
+        selectAll: canvasFocused || inputActive,
         zoom: true
       });
 
@@ -1000,7 +1004,10 @@ export class DmnEditor extends CachedComponent {
 
     const modeler = new CamundaDmnModeler({
       ...options,
-      position: 'absolute'
+      position: 'absolute',
+      keyboard: {
+        bind: false
+      }
     });
 
     const stackIdx = modeler.getStackIdx();

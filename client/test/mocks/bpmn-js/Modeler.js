@@ -122,7 +122,10 @@ export default class Modeler {
       },
       canvas: {
         getRootElement() {},
-        resized() {}
+        resized() {},
+        isFocused() { return true; },
+        restoreFocus() {},
+        focus() {}
       },
       clipboard: {
         isEmpty() {}
