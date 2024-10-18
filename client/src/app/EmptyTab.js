@@ -136,8 +136,8 @@ export default class EmptyTab extends PureComponent {
       <Tab className={ css.EmptyTab }>
         {!Flags.get(DISABLE_ZEEBE) && !Flags.get(DISABLE_PLATFORM) && <h2 className="welcome-header">Choose the right version for your project:</h2>}
         <div className="welcome-cards">
-          {!Flags.get(DISABLE_ZEEBE) && <>{this.renderCloudColumn()}<div className="flex-spacer" /></>}
-          {!Flags.get(DISABLE_PLATFORM) && <>{this.renderPlatformColumn()}<div className="flex-spacer" /></>}
+          {!Flags.get(DISABLE_ZEEBE) && <>{this.renderCloudColumn()}</>}
+          {!Flags.get(DISABLE_PLATFORM) && <>{this.renderPlatformColumn()}</>}
           {this.renderLearnMoreColumn()}
         </div>
       </Tab>

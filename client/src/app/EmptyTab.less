@@ -13,12 +13,6 @@
   bottom: 0;
   left: 0;
 
-  .flex-spacer {
-    min-width: 5px;
-    max-width: 40px;
-    width: 1%;
-  }
-
   h2.welcome-header {
     font-size: 18px;
     font-weight: 400;
@@ -43,6 +37,7 @@
     justify-content: center;
     display: flex;
     flex-direction: row;
+    gap: clamp(5px, 1%, 40px);
   }
 
   .welcome-card {
@@ -113,7 +108,7 @@
         }
       }
     }
-  
+
     button {
       margin: 0 auto 1em auto;
       background-color: var(--color-blue-205-100-50);
