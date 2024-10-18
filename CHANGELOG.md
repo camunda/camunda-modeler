@@ -23,7 +23,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/linting@3.27.2`
 * `DEPS`: update to `dmn-js@16.8.1`
 * `DEPS`: update to `dmn-js-shared@16.8.0`
-* `DEPS`: update to `@camunda-dmn-js@2.10.0`
+* `DEPS`: update to `camunda-dmn-js@2.10.0`
 
 ## 5.28.0
 
