@@ -10,11 +10,20 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: populate empty tab values from available create options ([#4575](https://github.com/camunda/camunda-modeler/pull/4575))
 * `FEAT`: allow plug-ins to contribute custom file types ([#4568](https://github.com/camunda/camunda-modeler/pull/4568))
+* `FEAT`: support Camunda 8 FEEL built-ins ([bpmn-io/feel-editor#62](https://github.com/bpmn-io/feel-editor/pull/62))
 * `FIX`: correct broken styles after loading variable outline ([#4555](https://github.com/camunda/camunda-modeler/issues/4555))
 * `FIX`: show lint errors for FEEL expressions used in BPMN processes ([camunda/bpmnlint-plugin-camunda-compat#175](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/175))
+* `FIX`: display parameterless functions suggestion correctly ([bpmn-io/dmn-js#898](https://github.com/bpmn-io/dmn-js/issues/898))
+* `FIX`: improve validation of `first-item` FEEL rule ([bpmn-io/dmn-js#894](https://github.com/bpmn-io/dmn-js/issues/894))
+* `FIX`: variable name changes when element name\label changes ([bpmn-io/dmn-js#863](https://github.com/bpmn-io/dmn-js/issues/863))
+* `FIX`: make literal expression editor hitbox bigger in BKM ([#4545](https://github.com/camunda/camunda-modeler/issues/4545))
+* `FIX`: make literal expression variables table styles explicit ([#4550](https://github.com/camunda/camunda-modeler/issues/4550))
 * `DEPS`: update to Electron 32 ([#4483](https://github.com/camunda/camunda-modeler/issues/4483))
 * `DEPS`: update to `@camunda/improved-canvas@1.7.5`
 * `DEPS`: update to `@camunda/linting@3.27.2`
+* `DEPS`: update to `dmn-js@16.8.1`
+* `DEPS`: update to `dmn-js-shared@16.8.0`
+* `DEPS`: update to `camunda-dmn-js@2.10.0`
 
 ## 5.28.0
 
