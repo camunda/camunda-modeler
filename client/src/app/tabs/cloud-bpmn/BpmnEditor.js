@@ -219,15 +219,18 @@ export class BpmnEditor extends CachedComponent {
       'propertiesPanel.focusout',
       'directEditing.activate',
       'directEditing.deactivate',
-      'searchPad.closed',
-      'searchPad.opened',
-      'popupMenu.opened',
-      'popupMenu.closed',
-      'feelPopup.opened',
-      'feelPopup.closed',
-      'feelPopup.focusin',
-      'feelPopup.focusout',
-      'elementTemplates.select'
+
+      // 'searchPad.closed',
+      // 'searchPad.opened',
+      // 'popupMenu.opened',
+      // 'popupMenu.closed',
+      // 'feelPopup.opened',
+      // 'feelPopup.closed',
+      // 'feelPopup.focusin',
+      // 'feelPopup.focusout',
+      'elementTemplates.select',
+      'canvas.focusin',
+      'canvas.focusout',
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
@@ -400,13 +403,15 @@ export class BpmnEditor extends CachedComponent {
 
     const inputActive = isInputActive();
 
+    const canvasFocused = modeler.get('canvas')._focused;
+
     const newState = {
       align: selectionLength > 1,
-      appendElement: !inputActive,
+      appendElement: canvasFocused,
       close: true,
       copy: !!selectionLength,
       cut: false,
-      createElement: !inputActive,
+      createElement: canvasFocused,
       defaultCopyCutPaste: inputActive,
       defaultUndoRedo: inputActive,
       dirty,
@@ -415,12 +420,12 @@ export class BpmnEditor extends CachedComponent {
       exportAs: EXPORT_AS,
       find: !inputActive,
       globalConnectTool: !inputActive,
-      handTool: !inputActive,
+      handTool: canvasFocused,
       inputActive,
-      lassoTool: !inputActive,
-      moveCanvas: !inputActive,
-      moveToOrigin: !inputActive,
-      moveSelection: !inputActive && !!selectionLength,
+      lassoTool: canvasFocused,
+      moveCanvas: canvasFocused,
+      moveToOrigin: canvasFocused,
+      moveSelection: canvasFocused && !!selectionLength,
       paste: !modeler.get('clipboard').isEmpty(),
       platform: 'cloud',
       propertiesPanel: true,
@@ -428,9 +433,9 @@ export class BpmnEditor extends CachedComponent {
       removeSelected: !!selectionLength || inputActive,
       replaceElement: !!selectionLength && selectionLength == 1 && !inputActive,
       save: true,
-      selectAll: true,
+      selectAll: canvasFocused,
       setColor: !!selectionLength,
-      spaceTool: !inputActive,
+      spaceTool: canvasFocused,
       undo: commandStack.canUndo(),
       zoom: true
     };
