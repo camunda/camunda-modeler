@@ -8,7 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-// eslint-disable-next-line no-unused-vars
 import React, { PureComponent } from 'react';
 
 import { registerClientPlugin } from 'camunda-modeler-plugin-helpers';

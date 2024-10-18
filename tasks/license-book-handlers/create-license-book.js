@@ -59,7 +59,6 @@ ${dependencies.map(createEntry).join('\n\n\n')}
 `;
 }
 
-/* eslint-disable-next-line no-unused-vars */
 function createLicenseBook_HTML(dependencies) {
 
   function createEntry(dependency) {
