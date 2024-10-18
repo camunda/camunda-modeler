@@ -217,9 +217,9 @@ export class BpmnEditor extends CachedComponent {
       'elements.copied',
       'propertiesPanel.focusin',
       'propertiesPanel.focusout',
-      'directEditing.activate',
-      'directEditing.deactivate',
 
+      // 'directEditing.activate',
+      // 'directEditing.deactivate',
       // 'searchPad.closed',
       // 'searchPad.opened',
       // 'popupMenu.opened',
@@ -228,9 +228,8 @@ export class BpmnEditor extends CachedComponent {
       // 'feelPopup.closed',
       // 'feelPopup.focusin',
       // 'feelPopup.focusout',
-      'elementTemplates.select',
-      'canvas.focusin',
-      'canvas.focusout',
+      // 'elementTemplates.select',
+      'canvas.focus.changed',
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
@@ -403,7 +402,7 @@ export class BpmnEditor extends CachedComponent {
 
     const inputActive = isInputActive();
 
-    const canvasFocused = modeler.get('canvas')._focused;
+    const canvasFocused = modeler.get('canvas').isFocused();
 
     const newState = {
       align: selectionLength > 1,
@@ -412,14 +411,14 @@ export class BpmnEditor extends CachedComponent {
       copy: !!selectionLength,
       cut: false,
       createElement: canvasFocused,
-      defaultCopyCutPaste: inputActive,
-      defaultUndoRedo: inputActive,
+      defaultCopyCutPaste: !canvasFocused,
+      defaultUndoRedo: !canvasFocused,
       dirty,
       distribute: selectionLength > 2,
-      editLabel: !inputActive && !!selectionLength,
+      editLabel: canvasFocused && selectionLength === 1,
       exportAs: EXPORT_AS,
-      find: !inputActive,
-      globalConnectTool: !inputActive,
+      find: canvasFocused,
+      globalConnectTool: canvasFocused,
       handTool: canvasFocused,
       inputActive,
       lassoTool: canvasFocused,
@@ -430,8 +429,8 @@ export class BpmnEditor extends CachedComponent {
       platform: 'cloud',
       propertiesPanel: true,
       redo: commandStack.canRedo(),
-      removeSelected: !!selectionLength || inputActive,
-      replaceElement: !!selectionLength && selectionLength == 1 && !inputActive,
+      removeSelected: canvasFocused && !!selectionLength,
+      replaceElement: canvasFocused && selectionLength == 1,
       save: true,
       selectAll: canvasFocused,
       setColor: !!selectionLength,
