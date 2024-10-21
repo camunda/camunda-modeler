@@ -88,5 +88,8 @@
         false
       ]
     ]
+  },
+  "overrides": {
+    "diagram-js": "github:bpmn-io/diagram-js#keyboard-bind"
   }
 }
