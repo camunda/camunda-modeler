@@ -20,10 +20,16 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: make literal expression variables table styles explicit ([#4550](https://github.com/camunda/camunda-modeler/issues/4550))
 * `DEPS`: update to Electron 32 ([#4483](https://github.com/camunda/camunda-modeler/issues/4483))
 * `DEPS`: update to `@camunda/improved-canvas@1.7.5`
-* `DEPS`: update to `@camunda/linting@3.27.2`
+* `DEPS`: update to `@camunda/linting@3.28.0`
 * `DEPS`: update to `dmn-js@16.8.1`
 * `DEPS`: update to `dmn-js-shared@16.8.0`
 * `DEPS`: update to `camunda-dmn-js@2.10.0`
+
+### BPMN
+
+* `FEAT`: add Camunda 8.7 and 7.23 linter configurations ([camunda/bpmnlint-plugin-camunda-compat#176](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/176))
+* `FEAT`: lint user tasks to be implemented as Zeebe user tasks starting with Camunda 8.7 ([camunda/bpmnlint-plugin-camunda-compat#179](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/179))
+* `FIX`: lint message end events for task definition ([camunda/bpmnlint-plugin-camunda-compat#180](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/180))
 
 ## 5.28.0
 
