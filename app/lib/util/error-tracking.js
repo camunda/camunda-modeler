@@ -57,9 +57,7 @@ module.exports.setTag = function(Sentry, key, value) {
   additionalTags.push({ key, value });
 
   if (isActive) {
-    Sentry.configureScope(scope => {
-      scope.setTag(key, value);
-    });
+    Sentry.setTag(key, value);
   }
 };
 
@@ -132,16 +130,16 @@ function initializeSentry(Sentry, editorID, release, dsn) {
       ]
     });
 
-    Sentry.configureScope(scope => {
-      scope.setTag('editor-id', editorID);
-      scope.setTag('is-backend-error', true);
-      scope.setTag('platform', os.platform());
-      scope.setTag('os-version', os.release());
+    Sentry.setTag('editor-id', editorID);
+    Sentry.setTag('is-backend-error', true);
+    Sentry.setTag('platform', os.platform());
+    Sentry.setTag('os-version', os.release());
 
-      additionalTags.forEach(({ key, value }) => {
-        scope.setTag(key, value);
-      });
+    additionalTags.forEach(({ key, value }) => {
+      Sentry.setTag(key, value);
     });
+
+    Sentry.setUser({ id: editorID });
 
     log.info('Sentry initialized.');
     isActive = true;

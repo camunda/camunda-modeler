@@ -210,6 +210,30 @@ describe('<ErrorTracking>', function() {
   });
 
 
+  it('should configure Sentry user', async function() {
+
+    // given
+    const setUserSpy = sinon.spy();
+
+    const instance = createErrorTracking({
+      setUserSpy,
+      dsn: 'TEST_DSN',
+      configValues: {
+        'editor.privacyPreferences': { ENABLE_CRASH_REPORTS: true },
+        'editor.id': 'TEST_EDITOR_ID'
+      }
+    });
+
+    // when
+    await instance.componentDidMount();
+
+    // then
+    expect(setUserSpy).to.have.been.calledWith({
+      id: 'TEST_EDITOR_ID'
+    });
+  });
+
+
   it('should subscribe to app.error-handled event on initialization', async function() {
 
     // given
@@ -498,14 +522,15 @@ function createErrorTracking(props = {}) {
         props.sentryInitSpy(initParam);
       }
     },
-    configureScope: (fn) => {
-      fn({
-        setTag: (key, value) => {
-          if (props.setTagSpy) {
-            props.setTagSpy({ key, value });
-          }
-        }
-      });
+    setTag: (key, value) => {
+      if (props.setTagSpy) {
+        props.setTagSpy({ key, value });
+      }
+    },
+    setUser: (user) => {
+      if (props.setUserSpy) {
+        props.setUserSpy(user);
+      }
     },
     captureException: (err) => {
       if (props.sentryCaptureExceptionSpy) {
