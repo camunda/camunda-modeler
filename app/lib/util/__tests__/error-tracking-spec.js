@@ -149,6 +149,29 @@ describe('error-tracking', function() {
   });
 
 
+  it('should configure user', function() {
+
+    // given
+    const setUserSpy = sinon.spy();
+
+    const config = mockConfig({
+      'editor.id': 'TEST_EDITOR_ID',
+      'editor.privacyPreferences': { 'ENABLE_CRASH_REPORTS': true }
+    });
+    const flags = mockFlags();
+    const renderer = mockRenderer();
+    const Sentry = mockSentry({ setUserSpy });
+
+    // when
+    errorTracking.start(Sentry, 'v2', config, flags, renderer);
+
+    // then
+    expect(setUserSpy).to.have.been.calledWith({
+      id: 'TEST_EDITOR_ID'
+    });
+  });
+
+
   it('should listen to frontend', function() {
 
     // given
@@ -300,14 +323,15 @@ function mockSentry(props = {}) {
         props.sentryInitSpy(initParam);
       }
     },
-    configureScope: (fn) => {
-      fn({
-        setTag: (key, value) => {
-          if (props.setTagSpy) {
-            props.setTagSpy({ key, value });
-          }
-        }
-      });
+    setTag: (key, value) => {
+      if (props.setTagSpy) {
+        props.setTagSpy({ key, value });
+      }
+    },
+    setUser: (user) => {
+      if (props.setUserSpy) {
+        props.setUserSpy(user);
+      }
     },
     close: () => {
       if (props.sentryCloseSpy) {

@@ -100,13 +100,12 @@ export default class ErrorTracking extends PureComponent {
 
       // OS information already exists by default in Sentry.
       // We'll set editor ID and Camunda Modeler version.
-      this._sentry.configureScope(scope => { scope.setTag('editor-id', editorID); });
+      this._sentry.setTag('editor-id', editorID);
+      this._sentry.setUser({ id: editorID });
 
       // add plugins information
       const plugins = _getGlobal('plugins').getAppPlugins();
-      this._sentry.configureScope(scope => {
-        scope.setTag('plugins', generatePluginsTag(plugins));
-      });
+      this._sentry.setTag('plugins', generatePluginsTag(plugins));
 
       const { subscribe } = this.props;
 
