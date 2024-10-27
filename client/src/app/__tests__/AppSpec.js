@@ -2114,6 +2114,92 @@ describe('<App>', function() {
 
     });
 
+
+    describe('bottom-panel', function() {
+
+      describe('#triggerAction', function() {
+
+        it('should open', function() {
+
+          // given
+          const { app } = createApp();
+
+          app.setLayout({
+            panel: {
+              open: false,
+            }
+          });
+
+          // when
+          app.triggerAction('toggle-panel');
+
+          // then
+          expect(app.state.layout).to.eql({
+            panel: {
+              open: true,
+              tab: 'log'
+            }
+          });
+        });
+
+
+        it('should close', function() {
+
+          // given
+          const { app } = createApp();
+
+          app.setLayout({
+            panel: {
+              open: true,
+            }
+          });
+
+          // when
+          app.triggerAction('toggle-panel');
+
+          // then
+          expect(app.state.layout).to.eql({
+            panel: {
+              open: false
+            }
+          });
+        });
+
+
+        it('should preserve state when reopened after being closed', function() {
+
+          // given
+          const { app } = createApp();
+
+          app.setLayout({
+            panel: {
+              open: true,
+              tab: 'variable-outline'
+            }
+          });
+
+          // when
+
+          // close
+          app.triggerAction('toggle-panel');
+
+          // open
+          app.triggerAction('toggle-panel');
+
+
+          // then
+          expect(app.state.layout).to.eql({
+            panel: {
+              open: true,
+              tab: 'variable-outline'
+            }
+          });
+        });
+
+      });
+
+    });
+
   });
 
 

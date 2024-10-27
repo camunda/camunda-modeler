@@ -462,6 +462,10 @@ class MenuBuilder {
     });
 
     submenuTemplate.push({
+      label: 'Toggle Bottom Panel',
+      accelerator: 'CommandOrControl+B',
+      click: () => app.emit('menu:action', 'toggle-panel')
+    }, {
       label: 'Toggle DevTools',
       accelerator: 'F12',
       click: (_, browserWindow) => {

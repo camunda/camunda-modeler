@@ -1946,6 +1946,11 @@ export class App extends PureComponent {
       return this.emitWithTab(type, activeTab, payload);
     }
 
+    if (action === 'toggle-panel') {
+      const { panel } = this.state.layout;
+      return panel.open ? this.closePanel() : this.openPanel(panel.tab);
+    }
+
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
