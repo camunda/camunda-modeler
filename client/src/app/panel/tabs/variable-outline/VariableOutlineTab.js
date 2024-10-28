@@ -16,13 +16,25 @@ import './VariableOutlineTab.less';
 
 import { Fill } from '../../../slot-fill';
 
+import VariableOutlineStatusBarItem from './VariableOutlineStatusBarItem';
 
 export default function VariableTab(props) {
   const {
     layout = {},
     injector,
-    id
+    id,
+    onAction
   } = props;
+
+  const onToggle = () => {
+    const { panel = {} } = layout;
+
+    if (!panel.open || panel.tab !== 'variable-outline') {
+      onAction('open-panel', { tab: 'variable-outline' });
+    } else if (panel.tab === 'variable-outline') {
+      onAction('close-panel');
+    }
+  };
 
   return <>
     <Fill slot="bottom-panel"
@@ -34,5 +46,9 @@ export default function VariableTab(props) {
         <VariableOutline injector={ injector } key={ id } />
       </div>
     </Fill>
+
+    <VariableOutlineStatusBarItem
+      layout={ layout }
+      onToggle={ onToggle } />
   </>;
 }

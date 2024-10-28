@@ -758,7 +758,7 @@ export class BpmnEditor extends CachedComponent {
   render() {
     const engineProfile = this.engineProfile.getCached();
 
-    const { layout } = this.props;
+    const { layout, onAction } = this.props;
 
     const modeler = this.getModeler();
     const imported = modeler.getDefinitions();
@@ -796,7 +796,8 @@ export class BpmnEditor extends CachedComponent {
         <VariableTab
           id={ this.props.id }
           layout={ layout }
-          injector={ injector } />
+          injector={ injector }
+          onAction={ onAction } />
       </div>
     );
   }
