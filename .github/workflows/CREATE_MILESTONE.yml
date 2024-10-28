@@ -22,8 +22,22 @@ jobs:
         env:
           TITLE: ${{steps.getTitle.outputs.MILESTONE_NAME}}
           GH_TOKEN: ${{ github.token }}
+        shell: bash
         run: |
-          gh api \
+          response=$(gh api \
             --method POST \
             /repos/${{ github.repository }}/milestones \
-            -f "title=$TITLE" -f "state=open"
+            -f "title=$TITLE" -f "state=open")
+
+          # if response has a errors[].code === "already_exists" in a JSON response, we do nothing
+          if echo "$response" | jq -e '.errors | map(select(.code == "already_exists")) | length > 0' > /dev/null; then
+            echo "Milestone $TITLE already exists, no action needed"
+          # if there is .title === $TITLE in the response, we successfully created the milestone
+          elif echo "$response" | jq -e ".title == \"$TITLE\"" >/dev/null; then
+            echo "Milestone $TITLE created successfully"
+          # otherwise, we print the error
+          else
+            echo "Error creating milestone $TITLE"
+            echo $response
+            exit 1
+          fi
