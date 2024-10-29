@@ -10,6 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: support Camunda 8.7 and 7.23 ([#4610](https://github.com/camunda/camunda-modeler/issues/4610))
 * `FEAT`: populate empty tab values from available create options ([#4575](https://github.com/camunda/camunda-modeler/pull/4575))
 * `FEAT`: allow plug-ins to contribute custom file types ([#4568](https://github.com/camunda/camunda-modeler/pull/4568))
 * `FEAT`: support Camunda 8 FEEL built-ins ([bpmn-io/feel-editor#62](https://github.com/bpmn-io/feel-editor/pull/62))
