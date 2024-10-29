@@ -19,6 +19,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: make literal expression editor hitbox bigger in BKM ([#4545](https://github.com/camunda/camunda-modeler/issues/4545))
 * `FIX`: make literal expression variables table styles explicit ([#4550](https://github.com/camunda/camunda-modeler/issues/4550))
 * `DEPS`: update to Electron 32 ([#4483](https://github.com/camunda/camunda-modeler/issues/4483))
+* `DEPS`: update to `bpmn-js-element-templates@2.3.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.7.5`
 * `DEPS`: update to `@camunda/linting@3.28.0`
 * `DEPS`: update to `dmn-js@16.8.1`
