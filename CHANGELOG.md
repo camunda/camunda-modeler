@@ -35,6 +35,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: show lint errors for FEEL expressions used in BPMN processes ([camunda/bpmnlint-plugin-camunda-compat#175](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/175))
 * `FIX`: search result highlight ([#4538](https://github.com/camunda/camunda-modeler/issues/4538))
 * `FIX`: do not change zoom when search openes ([bpmn-io/diagram-js#931](https://github.com/bpmn-io/diagram-js/pull/931))
+* `FIX`: prevent search from shifting down the canvas ([#4547](https://github.com/camunda/camunda-modeler/issues/4547))
 
 ### DMN
 
