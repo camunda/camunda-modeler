@@ -6,20 +6,14 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.29.0
+
 ### General
 
 * `FEAT`: populate empty tab values from available create options ([#4575](https://github.com/camunda/camunda-modeler/pull/4575))
 * `FEAT`: allow plug-ins to contribute custom file types ([#4568](https://github.com/camunda/camunda-modeler/pull/4568))
 * `FEAT`: support Camunda 8 FEEL built-ins ([bpmn-io/feel-editor#62](https://github.com/bpmn-io/feel-editor/pull/62))
-* `FIX`: correct broken styles after loading variable outline ([#4555](https://github.com/camunda/camunda-modeler/issues/4555))
-* `FIX`: show lint errors for FEEL expressions used in BPMN processes ([camunda/bpmnlint-plugin-camunda-compat#175](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/175))
-* `FIX`: display parameterless functions suggestion correctly ([bpmn-io/dmn-js#898](https://github.com/bpmn-io/dmn-js/issues/898))
 * `FIX`: improve validation of `first-item` FEEL rule ([bpmn-io/dmn-js#894](https://github.com/bpmn-io/dmn-js/issues/894))
-* `FIX`: variable name changes when element name\label changes ([bpmn-io/dmn-js#863](https://github.com/bpmn-io/dmn-js/issues/863))
-* `FIX`: make literal expression editor hitbox bigger in BKM ([#4545](https://github.com/camunda/camunda-modeler/issues/4545))
-* `FIX`: make literal expression variables table styles explicit ([#4550](https://github.com/camunda/camunda-modeler/issues/4550))
-* `FIX`: search result highlight ([#4538](https://github.com/camunda/camunda-modeler/issues/4538))
-* `FIX`: do not change zoom when search openes ([bpmn-io/diagram-js#931](https://github.com/bpmn-io/diagram-js/pull/931))
 * `DEPS`: update to Electron 32 ([#4483](https://github.com/camunda/camunda-modeler/issues/4483))
 * `DEPS`: update to `bpmn-js-properties-panel@5.25.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.3.0`
@@ -36,6 +30,24 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add Camunda 8.7 and 7.23 linter configurations ([camunda/bpmnlint-plugin-camunda-compat#176](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/176))
 * `FEAT`: lint user tasks to be implemented as Zeebe user tasks starting with Camunda 8.7 ([camunda/bpmnlint-plugin-camunda-compat#179](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/179))
 * `FIX`: lint message end events for task definition ([camunda/bpmnlint-plugin-camunda-compat#180](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/180))
+* `FIX`: correct broken styles after loading variable outline ([#4555](https://github.com/camunda/camunda-modeler/issues/4555))
+* `FIX`: show lint errors for FEEL expressions used in BPMN processes ([camunda/bpmnlint-plugin-camunda-compat#175](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/175))
+* `FIX`: search result highlight ([#4538](https://github.com/camunda/camunda-modeler/issues/4538))
+* `FIX`: do not change zoom when search openes ([bpmn-io/diagram-js#931](https://github.com/bpmn-io/diagram-js/pull/931))
+
+### DMN
+
+* `FIX`: display parameterless functions suggestion correctly ([bpmn-io/dmn-js#898](https://github.com/bpmn-io/dmn-js/issues/898))
+* `FIX`: variable name changes when element name/label changes ([bpmn-io/dmn-js#863](https://github.com/bpmn-io/dmn-js/issues/863))
+* `FIX`: make literal expression editor hitbox bigger in BKM ([#4545](https://github.com/camunda/camunda-modeler/issues/4545))
+* `FIX`: make literal expression variables table styles explicit ([#4550](https://github.com/camunda/camunda-modeler/issues/4550))
+
+### Forms
+
+- `FEAT`: implement `filepicker` component ([bpmn-io/form-js#1264](https://github.com/bpmn-io/form-js/pull/1264))
+- `FIX`: align drag preview/sticker properly ([bpmn-io/form-js#1267](https://github.com/bpmn-io/form-js/pull/1267))
+- `FIX`: adjust the am/pm time placeholder to `hh:mm --` ([bpmn-io/form-js#1289](https://github.com/bpmn-io/form-js/pull/1289))
+- `FIX`: do not create a simple label in datetime components ([bpmn-io/form-js#1292](https://github.com/bpmn-io/form-js/pull/1292))
 
 ## 5.28.0
 
