@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-describe('tabs/bpmn', function() {
+describe('tabs/cloud-bpmn', function() {
 
   describe('initial diagram', function() {
 
@@ -20,7 +20,6 @@ describe('tabs/bpmn', function() {
       // then
       expect(contents).to.contain('id="Definitions_{{ ID }}"');
       expect(contents).to.contain('id="Process_{{ ID:process }}"');
-      expect(contents).to.contain('historyTimeToLive="{{ DEFAULT_HTTL }}');
     });
 
 
