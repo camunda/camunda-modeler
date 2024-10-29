@@ -44,8 +44,12 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Support for new Camunda 8 features</h4>
-          Enjoy code completion for built-in FEEL functions that ship with Camunda 8.6.
+          <h4>New form components</h4>
+          Attach files to your Camunda 8.7 forms and get guidance as you upgrade.
+        </li>
+        <li>
+          <h4>Support for new Camunda versions</h4>
+          Model diagrams for upcoming 8.7 and 7.23 versions.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
