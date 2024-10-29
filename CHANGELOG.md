@@ -18,6 +18,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: variable name changes when element name\label changes ([bpmn-io/dmn-js#863](https://github.com/bpmn-io/dmn-js/issues/863))
 * `FIX`: make literal expression editor hitbox bigger in BKM ([#4545](https://github.com/camunda/camunda-modeler/issues/4545))
 * `FIX`: make literal expression variables table styles explicit ([#4550](https://github.com/camunda/camunda-modeler/issues/4550))
+* `FIX`: search result highlight ([#4538](https://github.com/camunda/camunda-modeler/issues/4538))
+* `FIX`: do not change zoom when search openes ([bpmn-io/diagram-js#931](https://github.com/bpmn-io/diagram-js/pull/931))
 * `DEPS`: update to Electron 32 ([#4483](https://github.com/camunda/camunda-modeler/issues/4483))
 * `DEPS`: update to `bpmn-js-properties-panel@5.25.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.3.0`
@@ -25,7 +27,9 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/linting@3.28.0`
 * `DEPS`: update to `dmn-js@16.8.1`
 * `DEPS`: update to `dmn-js-shared@16.8.0`
-* `DEPS`: update to `camunda-dmn-js@2.10.0`
+* `DEPS`: update to `camunda-dmn-js@2.10.1`
+* `DEPS`: update to `camunda-bpmn-js@4.20.2`
+* `DEPS`: update to `diagram-js@14.11.3`
 
 ### BPMN
 
