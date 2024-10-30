@@ -6,7 +6,7 @@ jobs:
   createReleaseIssue:
     runs-on: ubuntu-latest
     name: Create new Release Issue
-    if: | 
+    if: |
       contains(github.event.issue.labels.*.name, 'release') &&
       github.event.action == 'closed'
     outputs:
@@ -36,10 +36,10 @@ jobs:
             /repos/${{ github.repository }}/milestones \
             --jq '.[] | select(.title | startswith("M")) | .number'
           )
-          
+
           echo "MILESTONE_NUMBER=$MILESTONE" >> $GITHUB_OUTPUT
       - name: Assign Milestone to new Issue
-        env: 
+        env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh api \
@@ -47,7 +47,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             /repos/${{ github.repository }}/issues/${{ fromJson(needs.createReleaseIssue.outputs.issue).number }} \
             -F "milestone=${{steps.getMilestone.outputs.MILESTONE_NUMBER}}"
- 
+
   updateSlackRole:
     runs-on: ubuntu-latest
     if: |
