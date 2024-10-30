@@ -22,11 +22,29 @@ jobs:
         git config user.email github-actions@github.com
         git merge -m 'chore: merge main to develop' --no-edit origin/main
         git push
+
+  Post-Failure:
+    needs: Merge_main_to_develop
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+    - name: Import Secrets
+      id: secrets
+      uses: hashicorp/vault-action@v3.0.0
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/products/desktop-modeler/ci/slack_integration SLACK_CHANNEL_ID;
+          secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
     - name: Notify on Slack if merge fails
-      uses: slackapi/slack-github-action@v1.15.0
+      uses: slackapi/slack-github-action@v1
       if: failure()
       with:
-        channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+        channel-id: ${{ steps.secrets.outputs.SLACK_CHANNEL_ID }}
         slack-message: "Automatic merge of <https://github.com/${{ github.repository }}/tree/${{ github.ref }}|${{ github.ref }}> to <https://github.com/${{ github.repository }}/tree/develop|${{ github.repository }}#develop> failed."
       env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_BOT_TOKEN: ${{ steps.secrets.outputs.SLACK_BOT_TOKEN }}

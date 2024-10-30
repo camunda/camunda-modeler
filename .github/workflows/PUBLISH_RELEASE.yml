@@ -42,10 +42,22 @@ jobs:
     if: failure()
     runs-on: ubuntu-latest
     steps:
+    - name: Import Secrets
+      id: secrets
+      uses: hashicorp/vault-action@v3.0.0
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/products/desktop-modeler/ci/slack_integration SLACK_CHANNEL_ID;
+          secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
     - name: Post to a Slack channel
       uses: slackapi/slack-github-action@v1.15.0
       with:
-        channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+        channel-id: ${{ steps.secrets.outputs.SLACK_CHANNEL_ID }}
         slack-message: "Failed to upload release. <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to the build.>"
       env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_BOT_TOKEN: ${{ steps.secrets.outputs.SLACK_BOT_TOKEN }}
