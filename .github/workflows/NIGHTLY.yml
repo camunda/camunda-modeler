@@ -3,7 +3,8 @@ on:
   schedule:
     - cron: '0 18 * * *'
 jobs:
-  Build_nightly:
+  build_nightly:
+    name: Build nightly
     strategy:
       matrix:
         include:
@@ -102,8 +103,9 @@ jobs:
         artifact_subpath: 'nightly'
         artifact_file: "${{ join(matrix.files, ' ') }}"
 
-  Post-Failure:
-    needs: Build_nightly
+  post_failure:
+    name: Notify failure
+    needs: build_nightly
     if: failure()
     runs-on: ubuntu-latest
     steps:

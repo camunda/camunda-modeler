@@ -7,7 +7,7 @@ on:
     types: ['closed']
 
 jobs:
-  check-permissions:
+  check_permissions:
     runs-on: ubuntu-latest
     name: Check Repo Permission
     outputs:
@@ -24,13 +24,13 @@ jobs:
             --jq '.permission')
           echo "PERMISSION=$PERMISSION" >> $GITHUB_OUTPUT
 
-  assign-milestone:
+  assign_milestone:
     runs-on: ubuntu-latest
     name: Assign Milestone
-    needs: check-permissions
+    needs: check_permissions
     if: | 
-      needs.check-permissions.outputs.permission == 'admin' || 
-      needs.check-permissions.outputs.permission == 'write'
+      needs.check_permissions.outputs.permission == 'admin' || 
+      needs.check_permissions.outputs.permission == 'write'
     steps:
       - name: Get current Milestone
         id: getMilestone

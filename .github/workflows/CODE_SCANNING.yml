@@ -10,7 +10,9 @@ on:
       - '**/*.md'
 
 jobs:
-  CodeQL-Build:
+  codeql_build:
+    name: Scan with CodeQL
+
     # CodeQL runs on ubuntu-latest, windows-latest, and macos-latest
     runs-on: ubuntu-latest
 

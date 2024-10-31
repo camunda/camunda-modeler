@@ -4,7 +4,8 @@ on:
     # Before the April and October releases
     - cron: '0 8 15 MAR,SEP *'
 jobs:
-  createIssue:
+  create_issue:
+    name: Create issue
     runs-on: ubuntu-latest
     steps:
       - run: gh issue create --title "$ISSUE_TITLE" --body "$ISSUE_BODY" --label "ready" --repo $GITHUB_REPOSITORY

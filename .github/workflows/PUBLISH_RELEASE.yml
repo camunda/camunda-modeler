@@ -4,7 +4,7 @@ on:
     types:
     - released
 jobs:
-  Publish:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,8 +37,9 @@ jobs:
         version: ${{ steps.retrieveVersion.outputs.version }}
         artifact_file: 'artifacts/*'
 
-  Post-Failure:
-    needs: Publish
+  post_failure:
+    name: Notify failure
+    needs: publish
     if: failure()
     runs-on: ubuntu-latest
     steps:

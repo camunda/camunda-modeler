@@ -9,7 +9,7 @@ on:
         description: 'Dependencies to link from GitHub (format: bpmn-js#develop,dmn-js#9.0.0)'
         default: ''
 jobs:
-  Build:
+  build:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-2022 ]
