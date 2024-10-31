@@ -5,7 +5,7 @@ on:
     - "main"
 
 jobs:
-  Merge_main_to_develop:
+  merge_main_to_develop:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -23,8 +23,9 @@ jobs:
         git merge -m 'chore: merge main to develop' --no-edit origin/main
         git push
 
-  Post-Failure:
-    needs: Merge_main_to_develop
+  post_failure:
+    name: Notify failure
+    needs: merge_main_to_develop
     if: failure()
     runs-on: ubuntu-latest
     steps:

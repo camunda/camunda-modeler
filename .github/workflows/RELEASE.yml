@@ -4,7 +4,8 @@ on:
     tags:
       - 'v*'
 jobs:
-  Pre_release:
+  pre_release:
+    name: Prepare release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -18,8 +19,9 @@ jobs:
         TAG=$(git describe --tags --abbrev=0)
         gh release create $TAG --draft --title $TAG
 
-  Build_release:
-    needs: Pre_release
+  build_release:
+    name: Build release
+    needs: pre_release
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-2022 ]
@@ -102,8 +104,9 @@ jobs:
         NODE_ENV: "production"
       run: npm run build -- --win --publish
 
-  Post_release:
-    needs: Build_release
+  post_release:
+    name: Post release
+    needs: build_release
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
