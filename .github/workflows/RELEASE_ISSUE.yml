@@ -24,7 +24,6 @@ jobs:
     needs: create_release_issue
     if: github.event.issue.milestone
     runs-on: ubuntu-latest
-    name: Assign Milestone
     steps:
       - name: Get current Milestone
         id: getMilestone
