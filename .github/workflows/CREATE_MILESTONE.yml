@@ -11,33 +11,36 @@ jobs:
     if: startsWith(github.event.milestone.title, 'M')
     steps:
       - name: Get new Milestone Title
-        id: getTitle
-        env: 
+        id: get_title
+        env:
           TITLE: ${{github.event.milestone.title}}
         run: |
           MILESTONE_NUMBER=${TITLE:1}
           INCREMENTED_NUMBER=$((MILESTONE_NUMBER + 1))
           echo "MILESTONE_NAME=M$INCREMENTED_NUMBER" >> $GITHUB_OUTPUT
-      - name: Create new Milestone
+      - name: Check if Milestone already exists
+        id: check_if_milestone_exists
         env:
-          TITLE: ${{steps.getTitle.outputs.MILESTONE_NAME}}
+          TITLE: ${{steps.get_title.outputs.MILESTONE_NAME}}
+        run: |
+          existing_milestones=$(
+            gh api -H "Accept: application/vnd.github.v3+json" \
+              /repos/${{ github.repository }}/milestones \
+              --jq '[.[] | select(.title | startswith("'$TITLE'")) | .number ][0]'
+          )
+          if [ -z "$existing_milestones" ]; then
+            echo "MILESTONE_EXISTS=false" >> $GITHUB_OUTPUT
+          else
+            echo "MILESTONE_EXISTS=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Create new Milestone
+        if: steps.check_if_milestone_exists.outputs.MILESTONE_EXISTS == 'false'
+        env:
+          TITLE: ${{steps.get_title.outputs.MILESTONE_NAME}}
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          response=$(gh api \
+          gh api \
             --method POST \
             /repos/${{ github.repository }}/milestones \
-            -f "title=$TITLE" -f "state=open")
-
-          # if response has a errors[].code === "already_exists" in a JSON response, we do nothing
-          if echo "$response" | jq -e '.errors | map(select(.code == "already_exists")) | length > 0' > /dev/null; then
-            echo "Milestone $TITLE already exists, no action needed"
-          # if there is .title === $TITLE in the response, we successfully created the milestone
-          elif echo "$response" | jq -e ".title == \"$TITLE\"" >/dev/null; then
-            echo "Milestone $TITLE created successfully"
-          # otherwise, we print the error
-          else
-            echo "Error creating milestone $TITLE"
-            echo $response
-            exit 1
-          fi
+            -f "title=$TITLE" -f "state=open"
