@@ -10,7 +10,8 @@
   --status-bar-active-font-color: var(--color-grey-225-10-15);
   --status-bar-active-icon-font-color: var(--color-grey-225-10-35);
   --status-bar-font-size: var(--font-size-default);
-  --status-bar-hover-update-button: var(--color-blue-205-100-45)
+  --status-bar-primary-background-color: var(--color-blue-205-100-45);
+  --status-bar-primary-hover-background-color: var(--color-blue-205-100-40);
 }
 
 :local(.StatusBar) {
@@ -97,17 +98,13 @@
     margin-left: 1px;
   }
 
-  .update-btn {
-    background-color: rgba(0, 119, 204, 1);
-    color: rgb(254, 254, 254)
+  .btn--primary {
+    background-color: var(--status-bar-primary-background-color);
+    color: var(--color-white);
   }
 
-  .update-btn:hover {
-    background-color: var(--status-bar-hover-update-button);
+  .btn--primary:hover,
+  .btn--primary:focus {
+    background-color: var(--status-bar-primary-hover-background-color);
   }
-
-  .update-btn:focus {
-    background-color: var(--status-bar-hover-update-button);
-  }
-  
 }
