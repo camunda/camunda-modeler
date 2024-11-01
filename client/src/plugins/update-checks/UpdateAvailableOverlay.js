@@ -24,25 +24,29 @@ export function UpdateAvailableOverlay(props) {
       offset={ OFFSET }>
       <UpdateAvailableSection
         version={ props.version }
-        openVersionInfoPage={ props.openVersionInfoPage }
-        onGoToDownloadPage={ props.onGoToDownloadPage } />
+        onOpenNewVersionInfoView={ props.onOpenNewVersionInfoView }
+        onOpenDownloadUrl={ props.onOpenDownloadUrl } />
     </Overlay>
   );
 }
 
-function UpdateAvailableSection({ version, openVersionInfoPage, onGoToDownloadPage }) {
+function UpdateAvailableSection(props) {
+  const {
+    onOpenDownloadUrl,
+    onOpenNewVersionInfoView,
+    version
+  } = props;
+
   return (
-    <div className={ css.UpdateAvailableOverlay }>
-      <Section maxHeight="500px">
-        <Section.Header>
-          Update available
-        </Section.Header>
-        <Section.Body>
-          <p>Camunda Desktop Modeler {version} is available for use.</p>
-          <a className="links" onClick={ onGoToDownloadPage }>Update now</a>
-          <a className="links" onClick={ openVersionInfoPage }>Learn what&apos;s new</a>
-        </Section.Body>
-      </Section>
-    </div>
+    <Section className={ css.UpdateAvailableOverlay } maxHeight="500px">
+      <Section.Header>
+        Update available
+      </Section.Header>
+      <Section.Body>
+        <p>Camunda Desktop Modeler {version} is available for use.</p>
+        <a className="links" onClick={ onOpenDownloadUrl }>Update now</a>
+        <a className="links" onClick={ onOpenNewVersionInfoView }>Learn what&apos;s new</a>
+      </Section.Body>
+    </Section>
   );
 }

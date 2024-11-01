@@ -30,7 +30,7 @@ describe('<Section>', function() {
 
   it('should render', function() {
     const wrapper = shallow(
-      <Section>
+      <Section className="foo">
         <Section.Header>
           <span>{ 'HEADER' }</span>
           <Section.Actions>
@@ -44,7 +44,7 @@ describe('<Section>', function() {
     );
 
     expectHTML(wrapper, `
-      <section>
+      <section class="section foo">
         <h3 class="section__header">
           <span>HEADER</span>
           <span class="section__actions">
