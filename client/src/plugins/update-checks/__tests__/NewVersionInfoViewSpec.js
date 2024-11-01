@@ -143,17 +143,17 @@ describe('<NewVersionInfoView>', function() {
 
   it('should go to download page', function() {
 
-    const onGoToDownloadPageSpy = spy();
+    const onOpenDownloadUrlSpy = spy();
 
     const component = shallow(
-      <NewVersionInfoView latestVersionInfo={ {} } onGoToDownloadPage={ onGoToDownloadPageSpy } />
+      <NewVersionInfoView latestVersionInfo={ {} } onOpenDownloadUrl={ onOpenDownloadUrlSpy } />
     );
 
     const positiveButton = component.find('.btn-primary');
 
     positiveButton.simulate('click');
 
-    expect(onGoToDownloadPageSpy).to.have.been.called;
+    expect(onOpenDownloadUrlSpy).to.have.been.called;
   });
 
 

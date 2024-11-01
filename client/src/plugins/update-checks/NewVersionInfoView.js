@@ -54,7 +54,7 @@ class NewVersionInfoView extends PureComponent {
       latestVersionInfo,
       currentVersion,
       onClose,
-      onGoToDownloadPage,
+      onOpenDownloadUrl,
       onOpenPrivacyPreferences,
       updateChecksEnabled
     } = this.props;
@@ -95,7 +95,7 @@ class NewVersionInfoView extends PureComponent {
             <button className="btn btn-secondary" onClick={ onClose }> { BUTTON_NEGATIVE } </button>
             <button
               className="btn btn-primary"
-              onClick={ onGoToDownloadPage }
+              onClick={ onOpenDownloadUrl }
               autoFocus
             > { BUTTON_POSITIVE } </button>
           </div>

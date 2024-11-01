@@ -396,7 +396,7 @@ describe('<UpdateChecks>', function() {
   });
 
 
-  describe('visuals', function() {
+  describe('UI', function() {
 
     it('should show modal for positive server response', async function() {
 
@@ -418,7 +418,7 @@ describe('<UpdateChecks>', function() {
       await instance.checkLatestVersion(update, false);
 
       // then
-      expect(component.state().showModal).to.be.true;
+      expect(component.state().newVersionInfoViewOpen).to.be.true;
     });
 
 
@@ -435,7 +435,7 @@ describe('<UpdateChecks>', function() {
       await tick(component);
 
       // then
-      expect(component.state().showModal).to.be.false;
+      expect(component.state().newVersionInfoViewOpen).to.be.false;
     });
 
 

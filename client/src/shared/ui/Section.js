@@ -12,13 +12,15 @@ import { isString } from 'min-dash';
 
 import React from 'react';
 
-import * as css from './Section.less';
+import classNames from 'classnames';
 
+import * as css from './Section.less';
 
 export function Section(props) {
 
   const {
     children,
+    className,
     maxHeight,
     relativePos
   } = props;
@@ -47,7 +49,9 @@ export function Section(props) {
 
   return (
     <section
-      className={ css.Section }
+      className={ classNames(css.Section, 'section', {
+        [ className ]: className
+      }) }
       style={ style }
     >
       { children }

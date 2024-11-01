@@ -57,12 +57,12 @@ export default class UpdateChecks extends PureComponent {
 
     this.updateChecksAPI = new UpdateChecksAPI(updateServerUrl);
 
-    this._buttonRef = React.createRef(null);
+    this.updateAvailableButtonRef = React.createRef(null);
 
     this.state = {
-      showModal: false,
-      openUpdateAvailablePopUp: false,
-      updateAvailable: false
+      newVersionInfoViewOpen: false,
+      updateAvailable: false,
+      updateAvailableOverlayOpen: false
     };
   }
 
@@ -274,15 +274,15 @@ export default class UpdateChecks extends PureComponent {
 
     if (!silentCheck) {
       this.setState({
-        showModal: true
+        newVersionInfoViewOpen: true
       });
     }
 
   }
 
   async checkLatestVersion(updateCheckInfo, silentCheck = true) {
-
     log('Checking for update');
+
     const {
       config,
       _getGlobal,
@@ -330,30 +330,31 @@ export default class UpdateChecks extends PureComponent {
     return Math.abs(Date.now() - previousTime) >= TWENTY_FOUR_HOURS_MS;
   }
 
-  onClose = () => {
-    this.setState({
-      showModal: false
-    });
+  openNewVersionInfoView = () => {
+    this.setState({ newVersionInfoViewOpen: true });
   };
 
-  toggle = () => {
-    log('toggle');
-    if (this.state.openUpdateAvailablePopUp) {
-      this.close();
+  closeNewVersionInfoView = () => {
+    this.setState({ newVersionInfoViewOpen: false });
+  };
+
+  toggleUpdateAvailableOverlay = () => {
+    if (this.state.updateAvailableOverlayOpen) {
+      this.closeUpdateAvailableOverlay();
     } else {
-      this.open();
+      this.openUpdateAvailableOverlay();
     }
   };
 
-  open = () => {
-    this.setState({ openUpdateAvailablePopUp: true });
+  openUpdateAvailableOverlay = () => {
+    this.setState({ updateAvailableOverlayOpen: true });
   };
 
-  close = () => {
-    this.setState({ openUpdateAvailablePopUp: false });
+  closeUpdateAvailableOverlay = () => {
+    this.setState({ updateAvailableOverlayOpen: false });
   };
 
-  onGoToDownloadPage = () => {
+  onOpenDownloadUrl = () => {
     const {
       latestVersionInfo
     } = this.state;
@@ -363,31 +364,20 @@ export default class UpdateChecks extends PureComponent {
     } = this.props;
 
     _getGlobal('backend').send('external:open-url', { url: latestVersionInfo.downloadURL });
-    this.onClose();
-  };
 
-  openVersionInfoPage = () => {
-    this.setState({
-      showModal: true,
-    });
+    this.closeNewVersionInfoView();
   };
 
   render() {
     const {
-      showModal,
+      newVersionInfoViewOpen,
       latestVersionInfo,
       currentVersion,
       updateChecksEnabled,
-      openUpdateAvailablePopUp,
+      updateAvailableOverlayOpen,
       updateAvailable
     } = this.state;
 
-    const {
-      toggle,
-      _buttonRef: buttonRef,
-      close,
-      openVersionInfoPage,
-    } = this;
     return (
       <React.Fragment>
         {
@@ -395,23 +385,22 @@ export default class UpdateChecks extends PureComponent {
             <button
               className="btn btn--primary"
               title="Toggle update info"
-              onClick={ toggle }
-              ref={ buttonRef }
-            >Update</button>
+              onClick={ this.toggleUpdateAvailableOverlay }
+              ref={ this.updateAvailableButtonRef }>Update</button>
           </Fill>
         }
         {
-          openUpdateAvailablePopUp && <UpdateAvailableOverlay
-            anchor={ buttonRef.current }
-            openVersionInfoPage={ openVersionInfoPage }
-            onGoToDownloadPage={ this.onGoToDownloadPage }
-            onClose={ close }
+          updateAvailableOverlayOpen && <UpdateAvailableOverlay
+            anchor={ this.updateAvailableButtonRef.current }
+            onOpenNewVersionInfoView={ this.openNewVersionInfoView }
+            onOpenDownloadUrl={ this.onOpenDownloadUrl }
+            onClose={ this.closeUpdateAvailableOverlay }
             version={ latestVersionInfo.latestVersion } />
         }
         {
-          showModal && <NewVersionInfoView
-            onClose={ this.onClose }
-            onGoToDownloadPage={ this.onGoToDownloadPage }
+          newVersionInfoViewOpen && <NewVersionInfoView
+            onClose={ this.closeNewVersionInfoView }
+            onOpenDownloadUrl={ this.onOpenDownloadUrl }
             onOpenPrivacyPreferences={ this.openPrivacyPreferences }
             latestVersionInfo={ latestVersionInfo }
             updateChecksEnabled={ updateChecksEnabled }
