@@ -392,11 +392,11 @@ export default class UpdateChecks extends PureComponent {
       <React.Fragment>
         {updateAvailable && <Fill slot="status-bar__app" group="9_update_checks">
           <button
-            className="btn btn-primary update-btn"
+            className="btn btn--primary"
             title="Toggle update info"
             onClick={ toggle }
             ref={ buttonRef }
-          >{ 'Update' } </button>
+          >Update</button>
         </Fill>}
         {openUpdateAvailablePopUp && <UpdateAvailableOverlay
           anchor={ buttonRef.current }
@@ -405,16 +405,15 @@ export default class UpdateChecks extends PureComponent {
           onClose={ close }
           version={ latestVersionInfo.latestVersion }
         />}
-        {showModal && (
-          <NewVersionInfoView
-            onClose={ this.onClose }
-            onGoToDownloadPage={ this.onGoToDownloadPage }
-            onOpenPrivacyPreferences={ this.openPrivacyPreferences }
-            latestVersionInfo={ latestVersionInfo }
-            updateChecksEnabled={ updateChecksEnabled }
-            currentVersion={ currentVersion }
-          />
-        )}
+        {showModal && <NewVersionInfoView
+          onClose={ this.onClose }
+          onGoToDownloadPage={ this.onGoToDownloadPage }
+          onOpenPrivacyPreferences={ this.openPrivacyPreferences }
+          latestVersionInfo={ latestVersionInfo }
+          updateChecksEnabled={ updateChecksEnabled }
+          currentVersion={ currentVersion }
+        />
+        }
       </React.Fragment>
 
     );
