@@ -1,4 +1,4 @@
-name: Add Major version reminder
+name: NEW_MAJOR_ISSUE
 on:
   schedule:
     # Before the April and October releases

@@ -1,4 +1,4 @@
-name: Assign Milestones
+name: ASSIGN_MILESTONE
 
 on:
   issues:

@@ -1,4 +1,4 @@
-name: Add Alpha version reminder
+name: NEW_ALPHA_ISSUE
 on:
   schedule:
     # After the April and October releases
