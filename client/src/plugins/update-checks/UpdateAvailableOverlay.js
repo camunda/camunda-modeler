@@ -17,18 +17,20 @@ import * as css from './UpdateAvailableOverlay.less';
 const OFFSET = { right: 0 };
 
 export function UpdateAvailableOverlay(props) {
-
   return (
-    <Overlay
-      id="update-available-overlay" anchor={ props.anchor } onClose={ props.onClose } offset={ OFFSET }
-    >
-      <UpdateAvailableSection version={ props.version } openVersionInfoPage={ props.openVersionInfoPage } onGoToDownloadPage={ props.onGoToDownloadPage } />
+    <Overlay id="update-available-overlay"
+      anchor={ props.anchor }
+      onClose={ props.onClose }
+      offset={ OFFSET }>
+      <UpdateAvailableSection
+        version={ props.version }
+        openVersionInfoPage={ props.openVersionInfoPage }
+        onGoToDownloadPage={ props.onGoToDownloadPage } />
     </Overlay>
   );
 }
 
 function UpdateAvailableSection({ version, openVersionInfoPage, onGoToDownloadPage }) {
-
   return (
     <div className={ css.UpdateAvailableOverlay }>
       <Section maxHeight="500px">
