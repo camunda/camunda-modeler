@@ -390,29 +390,32 @@ export default class UpdateChecks extends PureComponent {
     } = this;
     return (
       <React.Fragment>
-        {updateAvailable && <Fill slot="status-bar__app" group="9_update_checks">
-          <button
-            className="btn btn--primary"
-            title="Toggle update info"
-            onClick={ toggle }
-            ref={ buttonRef }
-          >Update</button>
-        </Fill>}
-        {openUpdateAvailablePopUp && <UpdateAvailableOverlay
-          anchor={ buttonRef.current }
-          openVersionInfoPage={ openVersionInfoPage }
-          onGoToDownloadPage={ this.onGoToDownloadPage }
-          onClose={ close }
-          version={ latestVersionInfo.latestVersion }
-        />}
-        {showModal && <NewVersionInfoView
-          onClose={ this.onClose }
-          onGoToDownloadPage={ this.onGoToDownloadPage }
-          onOpenPrivacyPreferences={ this.openPrivacyPreferences }
-          latestVersionInfo={ latestVersionInfo }
-          updateChecksEnabled={ updateChecksEnabled }
-          currentVersion={ currentVersion }
-        />
+        {
+          updateAvailable && <Fill slot="status-bar__app" group="9_update_checks">
+            <button
+              className="btn btn--primary"
+              title="Toggle update info"
+              onClick={ toggle }
+              ref={ buttonRef }
+            >Update</button>
+          </Fill>
+        }
+        {
+          openUpdateAvailablePopUp && <UpdateAvailableOverlay
+            anchor={ buttonRef.current }
+            openVersionInfoPage={ openVersionInfoPage }
+            onGoToDownloadPage={ this.onGoToDownloadPage }
+            onClose={ close }
+            version={ latestVersionInfo.latestVersion } />
+        }
+        {
+          showModal && <NewVersionInfoView
+            onClose={ this.onClose }
+            onGoToDownloadPage={ this.onGoToDownloadPage }
+            onOpenPrivacyPreferences={ this.openPrivacyPreferences }
+            latestVersionInfo={ latestVersionInfo }
+            updateChecksEnabled={ updateChecksEnabled }
+            currentVersion={ currentVersion } />
         }
       </React.Fragment>
 
