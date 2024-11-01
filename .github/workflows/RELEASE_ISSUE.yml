@@ -1,4 +1,4 @@
-name: Release Issue
+name: RELEASE_ISSUE
 on:
   issues:
     types: [closed, assigned]

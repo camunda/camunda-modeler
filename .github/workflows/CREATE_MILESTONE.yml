@@ -1,4 +1,4 @@
-name: Create new Milestone
+name: CREATE_NEW_MILESTONE
 
 on:
   milestone:
