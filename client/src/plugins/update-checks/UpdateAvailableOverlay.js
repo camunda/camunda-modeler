@@ -37,7 +37,7 @@ function UpdateAvailableSection({ version, openVersionInfoPage, onGoToDownloadPa
         </Section.Header>
         <Section.Body>
           <p>Camunda Desktop Modeler {version} is available for use.</p>
-          <a className="links" onClick={ onGoToDownloadPage }> Update now </a>
+          <a className="links" onClick={ onGoToDownloadPage }>Update now</a>
           <a className="links" onClick={ openVersionInfoPage }>Learn what&apos;s new</a>
         </Section.Body>
       </Section>
