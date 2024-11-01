@@ -6,6 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `FEAT`: show update button if update available ([#4606](https://github.com/camunda/camunda-modeler/pull/4606)) 
 * `DEPS`: update to Electron 33 ([#4609](https://github.com/camunda/camunda-modeler/pull/4609))
 
 ## 5.29.0
