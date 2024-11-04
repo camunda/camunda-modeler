@@ -10,6 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: show update button if update available ([#4606](https://github.com/camunda/camunda-modeler/pull/4606)) 
 * `DEPS`: update to Electron 33 ([#4609](https://github.com/camunda/camunda-modeler/pull/4609))
+* `DEPS`: update to `diagram-js@15.0.0`
 
 ## 5.29.0
 
