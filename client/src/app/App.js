@@ -1438,6 +1438,7 @@ export class App extends PureComponent {
     } = options;
 
     const provider = tabsProvider.getProvider(fileType);
+    const saveType = provider.extensions[0];
 
     let savePath;
 
@@ -1464,7 +1465,7 @@ export class App extends PureComponent {
       encoding,
       originalFile: file,
       savePath,
-      saveType: fileType
+      saveType
     };
 
   }
