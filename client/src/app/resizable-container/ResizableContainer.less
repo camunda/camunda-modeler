@@ -1,4 +1,12 @@
 :local(.ResizableContainer) {
+
+  --resize-box-height: 10px;
+  --resize-box-top: calc(var(--resize-box-height) / -2);
+  --resize-box-closed-offset: -2px;
+
+  --resizer-height: 3px;
+  --resizer-handlebar-offset: calc(var(--resizer-height) * -2);
+
   position: relative;
 
   .children {
@@ -27,53 +35,53 @@
   }
 
   .resizer-top .resizer-border {
-    height: 3px;
-    bottom: 0;
+    height: var(--resizer-height);
+    bottom: var(--resizer-height);
     right: 0;
     left: 0;
   }
 
   .resizer-left .resizer-border {
-    width: 3px;
-    right: 0;
+    width: var(--resizer-height);
+    right: var(--resizer-height);
     top: 0;
     bottom: 0;
   }
 
   .resizer-top {
-    top: -13px;
+    top: var(--resize-box-top);
     width: 100%;
-    height: 16px;
+    height: var(--resize-box-height);
     cursor: ns-resize;
   }
 
   &:not(.open) .resizer-top {
-    height: 13px;
+    margin-top: var(--resize-box-closed-offset);
   }
 
   .resizer-top .handlebar {
     position: absolute;
     transform: translate(-50%, 0);
     left: 50%;
-    top: 0;
+    top: var(--resizer-handlebar-offset);
   }
 
   .resizer-left {
-    left: -13px;
-    width: 16px;
+    left: var(--resize-box-top);
+    width: var(--resize-box-height);
     height: 100%;
     cursor: ew-resize;
   }
 
   &:not(.open) .resizer-left {
-    width: 13px;
+    margin-left: var(--resize-box-closed-offset);
   }
 
   .resizer-left .handlebar {
     position: absolute;
     transform: translate(0, -50%);
     top: 50%;
-    left: 0;
+    left: var(--resizer-handlebar-offset);
   }
 
   .handlebar {
