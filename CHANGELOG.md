@@ -9,6 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FEAT`: show update button if update available ([#4606](https://github.com/camunda/camunda-modeler/pull/4606)) 
+* `FIX`: correct default extension used when saving Camunda 8 BPMN diagrams ([#4661](https://github.com/camunda/camunda-modeler/issues/4661))
 * `DEPS`: update to Electron 33 ([#4609](https://github.com/camunda/camunda-modeler/pull/4609))
 
 ## 5.29.0

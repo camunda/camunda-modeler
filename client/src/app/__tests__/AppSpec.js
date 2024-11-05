@@ -1035,6 +1035,35 @@ describe('<App>', function() {
     });
 
 
+    it('should save tab with correct extension', async function() {
+
+      // given
+      const file = createFile('diagram_1.bpmn', { type: 'cloud-bpmn' });
+
+      await app.openFiles([ file ]);
+
+      dialog.setShowSaveFileDialogResponse('diagram_2');
+
+      // when
+      await app.triggerAction('save-as');
+
+      // then
+      expect(showSaveFileDialogSpy).to.have.been.called;
+
+      expect(writeFileSpy).to.have.been.calledWith(
+        'diagram_2',
+        {
+          ...file,
+          contents: 'CONTENTS'
+        },
+        {
+          encoding: 'utf8',
+          fileType: 'bpmn'
+        }
+      );
+    });
+
+
     it('should save as existing tab', async function() {
 
       // given
