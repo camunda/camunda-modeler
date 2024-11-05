@@ -52,10 +52,10 @@ ___Note:__ Yet to be released changes appear here._
 
 ### Forms
 
-- `FEAT`: implement `filepicker` component ([bpmn-io/form-js#1264](https://github.com/bpmn-io/form-js/pull/1264))
-- `FIX`: align drag preview/sticker properly ([bpmn-io/form-js#1267](https://github.com/bpmn-io/form-js/pull/1267))
-- `FIX`: adjust the am/pm time placeholder to `hh:mm --` ([bpmn-io/form-js#1289](https://github.com/bpmn-io/form-js/pull/1289))
-- `FIX`: do not create a simple label in datetime components ([bpmn-io/form-js#1292](https://github.com/bpmn-io/form-js/pull/1292))
+* `FEAT`: implement `filepicker` component ([bpmn-io/form-js#1264](https://github.com/bpmn-io/form-js/pull/1264))
+* `FIX`: align drag preview/sticker properly ([bpmn-io/form-js#1267](https://github.com/bpmn-io/form-js/pull/1267))
+* `FIX`: adjust the am/pm time placeholder to `hh:mm --` ([bpmn-io/form-js#1289](https://github.com/bpmn-io/form-js/pull/1289))
+* `FIX`: do not create a simple label in datetime components ([bpmn-io/form-js#1292](https://github.com/bpmn-io/form-js/pull/1292))
 
 ## 5.28.0
 
