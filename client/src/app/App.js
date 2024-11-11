@@ -97,8 +97,7 @@ const INITIAL_STATE = {
   lintingState: {},
   logEntries: [],
   notifications: [],
-  currentModal: null,
-  endpoints: []
+  currentModal: null
 };
 
 
@@ -1102,8 +1101,7 @@ export class App extends PureComponent {
       recentTabs,
       tabLoadingState,
       tabState,
-      layout,
-      endpoints
+      layout
     } = this.state;
 
     const {
@@ -1136,8 +1134,7 @@ export class App extends PureComponent {
     if (
       activeTab !== prevState.activeTab ||
       tabs !== prevState.tabs ||
-      layout !== prevState.layout ||
-      endpoints !== prevState.endpoints
+      layout !== prevState.layout
     ) {
       this.workspaceChanged();
     }
@@ -1191,15 +1188,13 @@ export class App extends PureComponent {
     const {
       layout,
       tabs,
-      activeTab,
-      endpoints
+      activeTab
     } = this.state;
 
     return onWorkspaceChanged({
       tabs,
       activeTab,
-      layout,
-      endpoints
+      layout
     });
   };
 
