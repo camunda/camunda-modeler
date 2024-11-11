@@ -46,8 +46,6 @@ class Workspace {
 
       workspace.files = files;
 
-      workspace.endpoints = workspace.endpoints || [];
-
       done(null, workspace);
     });
 

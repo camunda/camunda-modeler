@@ -31,8 +31,7 @@ const log = debug('AppParent');
 const DEFAULT_CONFIG = {
   activeFile: -1,
   files: [],
-  layout: {},
-  endpoints: []
+  layout: {}
 };
 
 
@@ -130,13 +129,10 @@ export default class AppParent extends PureComponent {
 
     const layout = config.layout;
 
-    const endpoints = config.endpoints;
-
     const workspaceConfig = {
       files,
       activeFile,
-      layout,
-      endpoints
+      layout
     };
 
     try {
