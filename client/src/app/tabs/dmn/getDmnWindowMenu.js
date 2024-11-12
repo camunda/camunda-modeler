@@ -46,10 +46,6 @@ function getPropertiesPanelEntries({ propertiesPanel }) {
     label: 'Toggle Properties Panel',
     accelerator: 'CommandOrControl+P',
     action: 'toggleProperties'
-  }, {
-    label: 'Reset Properties Panel',
-    accelerator: 'CommandOrControl+Shift+P',
-    action: 'resetProperties'
   } ] : [];
 }
 

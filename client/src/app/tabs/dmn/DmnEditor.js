@@ -698,17 +698,6 @@ export class DmnEditor extends CachedComponent {
       return handleLayoutChange(newLayout);
     }
 
-    if (action === 'resetProperties') {
-      const newLayout = {
-        propertiesPanel: {
-          ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
-          open: true
-        }
-      };
-
-      return handleLayoutChange(newLayout);
-    }
-
     if (action === 'zoomIn') {
       action = 'stepZoom';
 
