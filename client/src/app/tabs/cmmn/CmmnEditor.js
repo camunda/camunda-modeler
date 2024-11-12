@@ -406,17 +406,6 @@ export class CmmnEditor extends CachedComponent {
       return handleLayoutChange(newLayout);
     }
 
-    if (action === 'resetProperties') {
-      const newLayout = {
-        propertiesPanel: {
-          width: 280,
-          open: true
-        }
-      };
-
-      return handleLayoutChange(newLayout);
-    }
-
     if (action === 'zoomIn') {
       action = 'stepZoom';
 

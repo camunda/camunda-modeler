@@ -654,17 +654,6 @@ export class BpmnEditor extends CachedComponent {
       return this.handleLayoutChange(newLayout);
     }
 
-    if (action === 'resetProperties') {
-      const newLayout = {
-        propertiesPanel: {
-          ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
-          open: true
-        }
-      };
-
-      return this.handleLayoutChange(newLayout);
-    }
-
     if (action === 'zoomIn') {
       action = 'stepZoom';
 

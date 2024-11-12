@@ -1853,29 +1853,6 @@ describe('<DmnEditor>', function() {
       });
     });
 
-
-    it('should reset properties panel', async function() {
-
-      // given
-      const onLayoutChangedSpy = sinon.spy();
-      const {
-        instance
-      } = await renderEditor(diagramXML, {
-        onLayoutChanged: onLayoutChangedSpy
-      });
-
-      // when
-      instance.triggerAction('resetProperties');
-
-      // then
-      expect(onLayoutChangedSpy).to.be.calledOnceWith({
-        propertiesPanel: {
-          open: true,
-          width: 280
-        }
-      });
-    });
-
   });
 
 
