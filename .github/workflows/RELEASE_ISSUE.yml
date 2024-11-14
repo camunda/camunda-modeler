@@ -11,6 +11,7 @@ jobs:
       github.event.action == 'closed'
     outputs:
       assignee: ${{ steps.create_release_issue.outputs.assignee }}
+      issue: ${{ steps.create_release_issue.outputs.issue }}
     steps:
     - id: create_release_issue
       name: Create new Release Issue
