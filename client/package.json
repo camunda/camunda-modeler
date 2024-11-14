@@ -13,7 +13,7 @@
     "@bpmn-io/form-js": "^1.11.3",
     "@bpmn-io/properties-panel": "^3.24.1",
     "@bpmn-io/replace-ids": "^0.2.0",
-    "@bpmn-io/variable-outline": "1.0.2",
+    "@bpmn-io/variable-outline": "^1.0.3",
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.18.0",
     "@camunda/form-playground": "^0.17.4",
