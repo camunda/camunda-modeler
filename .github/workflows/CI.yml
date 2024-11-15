@@ -38,7 +38,7 @@ jobs:
           secret/data/products/desktop-modeler/ci/CODECOV_TOKEN CODECOV_TOKEN;
     - name: Upload coverage
       if: ${{ runner.OS == 'Linux' }}
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         fail_ci_if_error: true
       env:
