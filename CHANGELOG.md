@@ -10,15 +10,32 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: show update button if update available ([#4606](https://github.com/camunda/camunda-modeler/pull/4606))
 * `FEAT`: make bottom panel toggleable via keyboard ([#4516](https://github.com/camunda/camunda-modeler/issues/4516))
+* `FEAT`: trigger core editor keyboard shortcuts on canvas focus only ([#4620](https://github.com/camunda/camunda-modeler/pull/4620))
+* `FEAT`: integrate implicit keyboard binding into BPMN and DMN editors ([#4620](https://github.com/camunda/camunda-modeler/pull/4620))
+* `FEAT`: expose `canvasFocus` state to menu actions ([#4620](https://github.com/camunda/camunda-modeler/pull/4620))
 * `CHORE`: remove reset properties panel menu item ([#4516](https://github.com/camunda/camunda-modeler/issues/4516))
 * `DEPS`: update to `electron@33.0.0` ([#4609](https://github.com/camunda/camunda-modeler/pull/4609))
 * `DEPS`: update to `@bpmn-io/variable-outline@1.0.3`
+* `DEPS`: update to `@bpmn-io/form-js@1.12.0`
+* `DEPS`: update to `diagram-js@15.2.2`
+* `DEPS`: update to `bpmn-js@18.0.0` 
+* `DEPS`: update to `dmn-js@17.0.3` 
+* `DEPS`: update to `camunda-bpmn-js@5.0.0`
+* `DEPS`: update to `camunda-dmn-js@3.0.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.25.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.28.0`
+* `DEPS`: update to `dmn-js-properties-panel@3.7.0`
 
 ### BPMN
 
 * `FEAT`: make variables tab accessible via the application footer ([#4516](https://github.com/camunda/camunda-modeler/issues/4516))
+* `FEAT`: support task listeners ([bpmn-io/bpmn-js-properties-panel#1088](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1088))
 * `FIX`: prevent long element name from shrinking icon ([#4505](https://github.com/camunda/camunda-modeler/issues/4505))
 * `FIX`: correct default extension used when saving Camunda 8 BPMN diagrams ([#4661](https://github.com/camunda/camunda-modeler/issues/4661))
+
+### DMN
+
+* `FIX`: correct changing literal expression name from properties panel ([#4684](https://github.com/camunda/camunda-modeler/issues/4684))
 
 ## 5.29.0
 
