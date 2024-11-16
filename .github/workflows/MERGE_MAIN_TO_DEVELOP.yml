@@ -42,7 +42,7 @@ jobs:
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_CHANNEL_ID;
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
     - name: Notify on Slack if merge fails
-      uses: slackapi/slack-github-action@v1
+      uses: slackapi/slack-github-action@v2
       if: failure()
       with:
         channel-id: ${{ steps.secrets.outputs.SLACK_CHANNEL_ID }}
