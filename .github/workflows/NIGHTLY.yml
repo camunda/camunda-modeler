@@ -122,7 +122,7 @@ jobs:
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_CHANNEL_ID;
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
     - name: Post to a Slack channel
-      uses: slackapi/slack-github-action@v1
+      uses: slackapi/slack-github-action@v2
       with:
         channel-id: ${{ steps.secrets.outputs.SLACK_CHANNEL_ID }}
         slack-message: "Nightly build failed. <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to the build.>"

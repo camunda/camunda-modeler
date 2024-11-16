@@ -100,7 +100,7 @@ jobs:
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_CHANNEL_ID;
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
     - name: Post to a Slack channel
-      uses: slackapi/slack-github-action@v1
+      uses: slackapi/slack-github-action@v2
       with:
         channel-id: ${{ steps.secrets.outputs.SLACK_CHANNEL_ID }}
         slack-message: "Assigned <https://github.com/${{ env.RELEASE_MANAGER }}|@${{ env.RELEASE_MANAGER }}> as the release manager. Go to <${{ env.ISSUE_LINK }}|the release issue> to update if necessary."
