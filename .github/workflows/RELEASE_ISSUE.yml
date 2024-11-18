@@ -102,10 +102,12 @@ jobs:
     - name: Post to a Slack channel
       uses: slackapi/slack-github-action@v2
       with:
-        channel-id: ${{ steps.secrets.outputs.SLACK_CHANNEL_ID }}
-        slack-message: "Assigned <https://github.com/${{ env.RELEASE_MANAGER }}|@${{ env.RELEASE_MANAGER }}> as the release manager. Go to <${{ env.ISSUE_LINK }}|the release issue> to update if necessary."
+        method: chat.postMessage
+        token: ${{ steps.secrets.outputs.SLACK_BOT_TOKEN }}
+        payload: |
+          channel: ${{ steps.secrets.outputs.SLACK_CHANNEL_ID }}
+          text: "Assigned <https://github.com/${{ env.RELEASE_MANAGER }}|@${{ env.RELEASE_MANAGER }}> as the release manager. Go to <${{ env.ISSUE_LINK }}|the release issue> to update if necessary."
       env:
-        SLACK_BOT_TOKEN: ${{ steps.secrets.outputs.SLACK_BOT_TOKEN }}
         # Release manager is either the assignee from the newly created issue or the new assigned from the `assigned` trigger
         RELEASE_MANAGER: ${{ needs.create_release_issue.outputs.assignee || github.event.issue.assignee.login }}
         ISSUE_LINK: https://github.com/${{ github.repository }}/issues/${{ fromJson(needs.create_release_issue.outputs.issue).number }}
