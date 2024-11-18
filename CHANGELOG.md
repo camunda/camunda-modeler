@@ -8,7 +8,10 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `FEAT`: show update button if update available ([#4606](https://github.com/camunda/camunda-modeler/pull/4606)) 
+* `FEAT`: show update button if update available ([#4606](https://github.com/camunda/camunda-modeler/pull/4606))
+* `FEAT`: make variables tab accessible via the application footer ([#4516](https://github.com/camunda/camunda-modeler/issues/4516))
+* `FEAT`: make bottom panel toggleable via keyboard ([#4516](https://github.com/camunda/camunda-modeler/issues/4516))
+* `CHORE`: remove reset properties panel menu item ([#4516](https://github.com/camunda/camunda-modeler/issues/4516))
 * `FIX`: correct default extension used when saving Camunda 8 BPMN diagrams ([#4661](https://github.com/camunda/camunda-modeler/issues/4661))
 * `DEPS`: update to Electron 33 ([#4609](https://github.com/camunda/camunda-modeler/pull/4609))
 
