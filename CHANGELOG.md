@@ -13,12 +13,17 @@ ___Note:__ Yet to be released changes appear here._
 * `CHORE`: remove reset properties panel menu item ([#4516](https://github.com/camunda/camunda-modeler/issues/4516))
 * `DEPS`: update to `electron@33.0.0` ([#4609](https://github.com/camunda/camunda-modeler/pull/4609))
 * `DEPS`: update to `@bpmn-io/variable-outline@1.0.3`
+* `DEPS`: update to `camunda-dmn-js@3.0.0`
 
 ### BPMN
 
 * `FEAT`: make variables tab accessible via the application footer ([#4516](https://github.com/camunda/camunda-modeler/issues/4516))
 * `FIX`: prevent long element name from shrinking icon ([#4505](https://github.com/camunda/camunda-modeler/issues/4505))
 * `FIX`: correct default extension used when saving Camunda 8 BPMN diagrams ([#4661](https://github.com/camunda/camunda-modeler/issues/4661))
+
+### DMN
+
+* `FIX`: formal parameter suggestions sync without requiring view refresh ([#4544](https://github.com/camunda/camunda-modeler/issues/4544))
 
 ## 5.29.0
 
