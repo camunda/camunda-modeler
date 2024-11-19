@@ -26,7 +26,7 @@ import ErrorIcon from '../../../../resources/icons/Error.svg';
  * @typedef FileDescriptor
  * @property {Uint8Array|Blob|null} contents
  * @property {string} name
- * @property {string} path
+ * @property {number} lastModified
  */
 
 export default function FileInput(props) {
@@ -82,6 +82,10 @@ export default function FileInput(props) {
   );
 }
 
+/**
+ * @param {object} props
+ * @param {FileDescriptor[]} props.files
+ */
 function FileList(props) {
   const {
     errors: formErrors,
@@ -96,7 +100,7 @@ function FileList(props) {
     <ul className={ classNames('file-list', { 'is-invalid': invalid }) }>
       { files.map((file, index) => (
         <ListItem
-          key={ file.path } name={ file.name } onRemove={ () => onRemove(file) }
+          key={ fileToKey(file) } name={ file.name } onRemove={ () => onRemove(file) }
           error={ getIn(formErrors, `${fieldName}[${index}]`) } />
       ))}
     </ul>
@@ -134,7 +138,6 @@ function toFileDescriptors(fileList) {
     .map(file => {
       return {
         name: file.name,
-        path: file.path,
         lastModified: file.lastModified,
         contents: file
       };
@@ -166,4 +169,12 @@ function getIconFromFileType(name, error) {
   default:
     return <div className="default_file-icon" />;
   }
+}
+
+/**
+ * @param {FileDescriptor} file
+ * @returns {string}
+ */
+function fileToKey(file) {
+  return `${file.name}_${file.lastModified}`;
 }
