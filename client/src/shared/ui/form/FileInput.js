@@ -47,8 +47,9 @@ export default function FileInput(props) {
   function onChange() {
     const { files } = inputRef.current;
     const fileDescriptors = toFileDescriptors(files);
+    const newValue = uniqueBy(file => fileToKey(file), value, fileDescriptors);
 
-    form.setFieldValue(name, uniqueBy('path', value, fileDescriptors));
+    form.setFieldValue(name, newValue);
   }
 
   function removeFile(fileToRemove) {
