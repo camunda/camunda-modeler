@@ -159,7 +159,11 @@ export default function ResizableContainer(props) {
       ref={ ref }
       style={ getCSSFromProps(props) }
     >
-      <div className="children">{props.children}</div>
+      <div
+        className={ classNames(
+          { 'no-display': !open },
+          'children',
+        ) }>{props.children}</div>
       <Resizer direction={ direction } onMouseDown={ onMouseDown } />
     </div>
   );
