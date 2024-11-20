@@ -32,6 +32,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: support task listeners ([bpmn-io/bpmn-js-properties-panel#1088](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1088))
 * `FIX`: prevent long element name from shrinking icon ([#4505](https://github.com/camunda/camunda-modeler/issues/4505))
 * `FIX`: correct default extension used when saving Camunda 8 BPMN diagrams ([#4661](https://github.com/camunda/camunda-modeler/issues/4661))
+* `FIX`: correctly handle duplicate entries and whitespace in `search` ([bpmn-io/diagram-js#932](https://github.com/bpmn-io/diagram-js/pull/932))
+* `FIX`: find `search` terms across all keys ([bpmn-io/diagram-js#932](https://github.com/bpmn-io/diagram-js/pull/932), [#4182](https://github.com/camunda/camunda-modeler/issues/4182))
+* `FIX`: correct dangling selection after search pad interaction ([bpmn-io/diagram-js#947](https://github.com/bpmn-io/diagram-js/pull/947))
+* `FIX`: create new user task form only if user task form referenced ([camunda/camunda-bpmn-js-behaviors#85](https://github.com/camunda/camunda-bpmn-js-behaviors/pull/85), [#4658](https://github.com/camunda/camunda-modeler/issues/4658))
 
 ### DMN
 
