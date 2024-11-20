@@ -282,6 +282,7 @@ export default class DeploymentTool extends PureComponent {
 
   async saveConfiguration(tab, configuration) {
 
+    const fileSystem = this.props._getGlobal('fileSystem');
     const {
       endpoint,
       deployment
@@ -289,8 +290,11 @@ export default class DeploymentTool extends PureComponent {
 
     await this.saveEndpoint(endpoint);
 
+    const deploymentWithAttachments = await withSerializedAttachments(
+      deployment, file => fileSystem.getFilePath(file)
+    );
     const tabConfiguration = {
-      deployment: withSerializedAttachments(deployment),
+      deployment: deploymentWithAttachments,
       endpointId: endpoint.id
     };
 
@@ -663,9 +667,14 @@ function getDeploymentType(tab) {
   }
 }
 
-function withSerializedAttachments(deployment) {
+async function withSerializedAttachments(deployment, getPath) {
   const { attachments: fileList = [] } = deployment;
-  const attachments = fileList.map(file => ({ path: file.path }));
+  const attachments = await Promise.all(fileList.map(async file => {
+    const path = file.path || await getPath(file.contents);
+    return {
+      path
+    };
+  }));
 
   return { ...deployment, attachments };
 }

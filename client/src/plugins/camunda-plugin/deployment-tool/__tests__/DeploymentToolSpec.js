@@ -270,12 +270,11 @@ describe('<DeploymentTool>', function() {
 
       // given
       const file = {
-        path: '/file/path/user.form',
         name: 'user.form',
         contents: []
       };
       const attachments = [ {
-        path: file.path
+        path: '/non/existing/path/user.form'
       } ];
       const savedConfiguration = createConfiguration({ attachments });
       const config = {
@@ -310,7 +309,6 @@ describe('<DeploymentTool>', function() {
       const { attachments: deployedAttachments } = deploySpy.args[0][1].deployment;
 
       expect(deployedAttachments[0]).have.property('name', file.name);
-      expect(deployedAttachments[0]).have.property('path', file.path);
       expect(deployedAttachments[0]).have.property('contents');
       expect(deployedAttachments[0].contents).not.to.be.null;
     });
@@ -1523,6 +1521,9 @@ function createSavedConfiguration(configuration) {
 
 function createFileSystem(overrides = {}) {
   return {
+    getFilePath() {
+      return '/file/path';
+    },
     readFile() {},
     ...overrides
   };
