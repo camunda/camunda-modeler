@@ -680,5 +680,5 @@ async function withSerializedAttachments(deployment, getPath) {
 }
 
 function basename(filePath) {
-  return filePath.split('\\').pop().split('/').pop();
+  return filePath ? filePath.split('\\').pop().split('/').pop() : '<unnamed>';
 }
