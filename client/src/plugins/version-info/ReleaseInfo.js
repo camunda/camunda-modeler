@@ -44,12 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>New form components</h4>
-          Attach files to your Camunda 8.7 forms and get guidance as you upgrade.
+          <h4>Support for task listeners in Camunda 8</h4>
+          Define user task listeners in your Camunda 8.7 diagrams, and get guidance along way.
         </li>
         <li>
-          <h4>Support for new Camunda versions</h4>
-          Model diagrams for upcoming 8.7 and 7.23 versions.
+          <h4>Improved variables panel</h4>
+          Toggle the variables panel with a shortcut or from the application footer.
+        </li>
+        <li>
+          <h4>More accurate search</h4>
+          Elements search now displays the exact matches first. This allows to find elements faster.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
