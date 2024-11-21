@@ -18,16 +18,18 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/variable-outline@1.0.3`
 * `DEPS`: update to `@bpmn-io/form-js@1.12.0`
 * `DEPS`: update to `diagram-js@15.2.2`
-* `DEPS`: update to `bpmn-js@18.0.0` 
-* `DEPS`: update to `dmn-js@17.0.3` 
+* `DEPS`: update to `bpmn-js@18.0.0`
+* `DEPS`: update to `dmn-js@17.0.3`
 * `DEPS`: update to `camunda-bpmn-js@5.0.0`
 * `DEPS`: update to `camunda-dmn-js@3.0.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.25.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.28.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.7.0`
+* `DEPS`: update to `@camunda/linting@3.29.0`
 
 ### BPMN
 
+* `FEAT`: support user task listeners in Camunda 8 ([#4590](https://github.com/camunda/camunda-modeler/issues/4590))
 * `FEAT`: make variables tab accessible via the application footer ([#4516](https://github.com/camunda/camunda-modeler/issues/4516))
 * `FEAT`: support task listeners ([bpmn-io/bpmn-js-properties-panel#1088](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1088))
 * `FIX`: prevent long element name from shrinking icon ([#4505](https://github.com/camunda/camunda-modeler/issues/4505))
