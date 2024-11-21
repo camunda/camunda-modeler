@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.30.0
+
 ### General
 
 * `FEAT`: show update button if update available ([#4606](https://github.com/camunda/camunda-modeler/pull/4606))
@@ -13,35 +15,41 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: trigger core editor keyboard shortcuts on canvas focus only ([#4620](https://github.com/camunda/camunda-modeler/pull/4620))
 * `FEAT`: integrate implicit keyboard binding into BPMN and DMN editors ([#4620](https://github.com/camunda/camunda-modeler/pull/4620))
 * `FEAT`: expose `canvasFocus` state to menu actions ([#4620](https://github.com/camunda/camunda-modeler/pull/4620))
+* `FEAT`: adjust bottom panel resize for better UX ([#4093](https://github.com/camunda/camunda-modeler/issues/4093))
+* `FIX`: display status bar items in correct order ([#4714](https://github.com/camunda/camunda-modeler/pull/4714))
+* `FIX`: handle multi-file deployment correctly in Camunda 7 ([#4694](https://github.com/camunda/camunda-modeler/issues/4694))
 * `CHORE`: remove reset properties panel menu item ([#4516](https://github.com/camunda/camunda-modeler/issues/4516))
 * `DEPS`: update to `electron@33.0.0` ([#4609](https://github.com/camunda/camunda-modeler/pull/4609))
-* `DEPS`: update to `@bpmn-io/variable-outline@1.0.3`
 * `DEPS`: update to `@bpmn-io/form-js@1.12.0`
-* `DEPS`: update to `diagram-js@15.2.2`
-* `DEPS`: update to `bpmn-js@18.0.0`
-* `DEPS`: update to `dmn-js@17.0.3`
-* `DEPS`: update to `camunda-bpmn-js@5.0.0`
-* `DEPS`: update to `camunda-dmn-js@3.0.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.25.0`
-* `DEPS`: update to `bpmn-js-properties-panel@5.28.0`
-* `DEPS`: update to `dmn-js-properties-panel@3.7.0`
+* `DEPS`: update to `@bpmn-io/variable-outline@1.0.3`
 * `DEPS`: update to `@camunda/linting@3.29.0`
+* `DEPS`: update to `bpmn-js@18.1.1`
+* `DEPS`: update to `bpmn-js-properties-panel@5.28.0`
+* `DEPS`: update to `camunda-bpmn-js@5.2.1`
+* `DEPS`: update to `camunda-dmn-js@3.0.0`
+* `DEPS`: update to `diagram-js@15.2.3`
+* `DEPS`: update to `dmn-js@17.0.3`
+* `DEPS`: update to `dmn-js-properties-panel@3.7.0`
+* `DEPS`: update to `zeebe-bpmn-moddle@1.7.0`
 
 ### BPMN
 
 * `FEAT`: support user task listeners in Camunda 8 ([#4590](https://github.com/camunda/camunda-modeler/issues/4590))
 * `FEAT`: make variables tab accessible via the application footer ([#4516](https://github.com/camunda/camunda-modeler/issues/4516))
-* `FEAT`: support task listeners ([bpmn-io/bpmn-js-properties-panel#1088](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1088))
 * `FIX`: prevent long element name from shrinking icon ([#4505](https://github.com/camunda/camunda-modeler/issues/4505))
+* `FEAT`: display exact matches on top of search ([#3439](https://github.com/camunda/camunda-modeler/issues/3439), [#4122](https://github.com/camunda/camunda-modeler/issues/4122))
 * `FIX`: correct default extension used when saving Camunda 8 BPMN diagrams ([#4661](https://github.com/camunda/camunda-modeler/issues/4661))
 * `FIX`: correctly handle duplicate entries and whitespace in `search` ([bpmn-io/diagram-js#932](https://github.com/bpmn-io/diagram-js/pull/932))
 * `FIX`: find `search` terms across all keys ([bpmn-io/diagram-js#932](https://github.com/bpmn-io/diagram-js/pull/932), [#4182](https://github.com/camunda/camunda-modeler/issues/4182))
 * `FIX`: correct dangling selection after search pad interaction ([bpmn-io/diagram-js#947](https://github.com/bpmn-io/diagram-js/pull/947))
 * `FIX`: create new user task form only if user task form referenced ([camunda/camunda-bpmn-js-behaviors#85](https://github.com/camunda/camunda-bpmn-js-behaviors/pull/85), [#4658](https://github.com/camunda/camunda-modeler/issues/4658))
+* `FIX`: keep multi-instance characteristics on type change ([#4310](https://github.com/camunda/camunda-modeler/issues/4310))
 
 ### DMN
 
 * `FIX`: correct changing literal expression name from properties panel ([#4684](https://github.com/camunda/camunda-modeler/issues/4684))
+* `FIX`: update formal parameters suggestions on change ([#4544](https://github.com/camunda/camunda-modeler/issues/4544))
 
 ## 5.29.0
 
