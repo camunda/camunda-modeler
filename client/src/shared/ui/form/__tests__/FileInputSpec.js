@@ -154,7 +154,6 @@ function createFileInput(options = {}, render = shallow) {
 function createFile(options = {}) {
   return {
     name: 'file',
-    path: '/fake/path',
     lastModified: 1,
     contents: 'contents',
     ...options
@@ -164,7 +163,6 @@ function createFile(options = {}) {
 function createFileDescriptor(file = {}) {
   return {
     name: 'file',
-    path: '/fake/path',
     lastModified: 1,
     contents: file
   };
