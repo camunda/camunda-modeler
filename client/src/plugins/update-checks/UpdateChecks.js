@@ -378,10 +378,12 @@ export default class UpdateChecks extends PureComponent {
       updateAvailable
     } = this.state;
 
+    // using group starting with Z to display at the end of the status bar
+    // cf. https://github.com/camunda/camunda-modeler/commit/b79fe1dec26fac603980b2639a46dc8656661dcd#r149356417
     return (
       <React.Fragment>
         {
-          updateAvailable && <Fill slot="status-bar__app" group="9_update_checks">
+          updateAvailable && <Fill slot="status-bar__app" group="Z_update_checks">
             <button
               className="btn btn--primary"
               title="Toggle update info"
