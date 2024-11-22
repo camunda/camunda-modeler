@@ -49,10 +49,10 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Enhanced variables panel</h4>
-          Quickly access the variables panel from the application footer or toggle it using a keyboard shortcut.
+          Quickly access the Variables panel from the application footer or toggle it using a keyboard shortcut.
         </li>
         <li>
-          <h4>Improved on canvas search</h4>
+          <h4>Improved on-canvas search</h4>
           Locate elements and details more efficiently within BPMN diagrams, thanks to upgraded search and filtering capabilities.
         </li>
         <li>
