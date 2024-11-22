@@ -45,19 +45,19 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Support for task listeners in Camunda 8</h4>
-          Define user task listeners in your Camunda 8.7 diagrams, and get guidance along way.
+          Define user task listeners in your Camunda 8.7 diagrams, with helpful guidance provided every step of the way.
         </li>
         <li>
-          <h4>Improved variables panel</h4>
-          Access the variables panel easily from the application footer or toggle it through a keyboard shortcut.
+          <h4>Enhanced Variables panel</h4>
+          Quickly access the Variables panel from the application footer or toggle it using a keyboard shortcut.
         </li>
         <li>
-          <h4>Improved on canvas search</h4>
-          Find more things inside a BPMN diagram, using improved search and filter functionality.
+          <h4>Improved on-canvas search</h4>
+          Locate elements and details more efficiently within BPMN diagrams, thanks to upgraded search and filtering capabilities.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
-          As always, this release incorporates bug fixes and additional minor improvements.
+          This release includes bug fixes and additional minor improvements to enhance your experience.
         </li>
       </ul>
     </div>
