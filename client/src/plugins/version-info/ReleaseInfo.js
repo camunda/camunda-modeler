@@ -49,11 +49,11 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Improved variables panel</h4>
-          Toggle the variables panel with a shortcut or from the application footer.
+          Access the variables panel easily from the application footer or toggle it through a keyboard shortcut.
         </li>
         <li>
-          <h4>More accurate search</h4>
-          Elements search now displays the exact matches first. This allows to find elements faster.
+          <h4>Improved on canvas search</h4>
+          Find more things inside a BPMN diagram, using improved search and filter functionality.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
