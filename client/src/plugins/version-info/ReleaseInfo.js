@@ -48,7 +48,7 @@ export function ReleaseInfo(props) {
           Define user task listeners in your Camunda 8.7 diagrams, with helpful guidance provided every step of the way.
         </li>
         <li>
-          <h4>Enhanced variables panel</h4>
+          <h4>Enhanced Variables panel</h4>
           Quickly access the Variables panel from the application footer or toggle it using a keyboard shortcut.
         </li>
         <li>
