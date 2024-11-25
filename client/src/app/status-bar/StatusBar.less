@@ -90,7 +90,10 @@
     &:focus {
       outline: none;
       box-shadow: none;
-      background-color: var(--status-bar-focus-background-color);
+    }
+
+    &:focus-visible {
+      box-shadow: inset var(--focus-shadow);
     }
   }
 
