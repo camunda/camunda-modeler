@@ -45,6 +45,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correct dangling selection after search pad interaction ([bpmn-io/diagram-js#947](https://github.com/bpmn-io/diagram-js/pull/947))
 * `FIX`: create new user task form only if user task form referenced ([camunda/camunda-bpmn-js-behaviors#85](https://github.com/camunda/camunda-bpmn-js-behaviors/pull/85), [#4658](https://github.com/camunda/camunda-modeler/issues/4658))
 * `FIX`: keep multi-instance characteristics on type change ([#4310](https://github.com/camunda/camunda-modeler/issues/4310))
+* `FIX`: do not mark job worker user task as incorrect ([#4718](https://github.com/camunda/camunda-modeler/issues/4718))
 
 ### DMN
 
