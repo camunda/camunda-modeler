@@ -105,8 +105,12 @@ Based on the [test diagram](./test.bpmn.png):
 * [ ] Reference the form in the user task via `Camunda Forms -> reference=foo`
 * [ ] Verify that deployment of BPMN + Form file works
 
-#### FS integration (platform specific)
+#### File system integration (platform specific)
 
+* [ ] bindings register:
+  * [ ] [Windows](https://github.com/camunda/camunda-modeler/tree/develop/resources/platform/win32/support)
+  * [ ] [Linux](https://github.com/camunda/camunda-modeler/tree/develop/resources/platform/linux/support)
+  * [ ] MacOS - done automatically
 * [ ] external change detection works
   * [ ] change file in external editor
   * [ ] focus editor with file open
