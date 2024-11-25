@@ -8,7 +8,7 @@ __Target:__ Perform tests on nightly builds on supported platforms.
 
 ### Test Procedure
 
-* [ ] fetch [latest release/nightly](https://camunda.org/release/camunda-modeler/)
+* [ ] fetch [the release](https://github.com/camunda/camunda-modeler/releases)
 * [ ] fetch [latest version of A11y-checker plugin](https://github.com/bpmn-io/camunda-modeler-plugin-a11y-checker)
 * [ ] test changes of the release from the users' perspective end-2-end (e.g., include deployment where appropriate) (see [release issue](https://github.com/camunda/camunda-modeler/labels/release) and [changelog](https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md))
 * [ ] click like crazy (see [below](#test-checklist))
