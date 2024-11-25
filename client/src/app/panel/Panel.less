@@ -25,6 +25,11 @@
       border: none;
       outline: none;
       padding: 4px 8px;
+
+      &:focus {
+        outline: 2px solid var(--focus-outline-color);
+        outline-offset: -2px;
+      }
     }
 
     .panel__link {
@@ -48,6 +53,7 @@
       width: 28px;
       height: 28px;
       padding: 7px;
+      border-radius: 50%;
 
       &:hover {
         background-color: var(--color-grey-225-10-85);
@@ -73,6 +79,12 @@
       bottom: 0;
       left: 0;
       overflow-y: auto;
+      margin: 1px;
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: inset var(--focus-shadow);
     }
   }
 }
