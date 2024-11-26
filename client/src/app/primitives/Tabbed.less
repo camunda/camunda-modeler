@@ -65,6 +65,11 @@
     border-right: 1px solid var(--tab-border-right-color);
     user-select: none;
 
+    &:focus-visible {
+      outline: 2px solid var(--focus-outline-color);
+      outline-offset: -2px;
+    }
+
     .tab__content {
       position: absolute;
       display: flex;
@@ -128,11 +133,12 @@
       line-height: 26px;
       width: 18px;
       height: 18px;
+      border: none;
       border-radius: 50%;
       background-color: var(--tab-close-background-color);
 
       .tab__icon-close {
-        margin: auto 0 auto -1px;
+        margin: auto 0 1px -1px;
         fill: var(--tab-close-icon-fill-color);
       }
 
