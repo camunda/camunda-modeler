@@ -22,6 +22,7 @@ jobs:
         id: check_if_milestone_exists
         env:
           TITLE: ${{steps.get_title.outputs.MILESTONE_NAME}}
+          GH_TOKEN: ${{ github.token }}
         run: |
           existing_milestones=$(
             gh api -H "Accept: application/vnd.github.v3+json" \
