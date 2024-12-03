@@ -182,8 +182,8 @@ function Resizer(props) {
     >
       {
         isHorizontal(direction)
-          ? <HandleBarX className="handlebar" />
-          : <HandleBarY className="handlebar" />
+          ? <HandleBarX tabIndex="0" className="handlebar" />
+          : <HandleBarY tabIndex="0" className="handlebar" />
       }
       <div className="resizer-border"></div>
     </div>
