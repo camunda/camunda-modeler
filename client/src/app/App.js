@@ -65,6 +65,9 @@ import pSeries from 'p-series';
 
 import History from './History';
 
+import ProcessApplications from './process-applications';
+import { ProcessApplicationsStatusBar } from './process-applications/components';
+
 import { PluginsRoot } from './plugins';
 
 import * as css from './App.less';
@@ -91,6 +94,7 @@ const INITIAL_STATE = {
   dirtyTabs: {},
   unsavedTabs: {},
   recentTabs: [],
+  processApplication: null,
   layout: {},
   tabs: [],
   tabState: {},
@@ -123,6 +127,27 @@ export class App extends PureComponent {
     this.recentTabs = new RecentTabs({
       setState: value => this.setState({ recentTabs: value }),
       config: this.getGlobal('config')
+    });
+
+    const processApplications = this.processApplications = new ProcessApplications(this);
+
+    this.on('process-applications:changed', async () => {
+      console.log('process-applications:changed');
+
+      const hasOpenProcessApplication = processApplications.hasOpen();
+
+      if (!hasOpenProcessApplication) {
+        this.setState({
+          processApplication: null
+        });
+      } else {
+        this.setState({
+          processApplication: {
+            ...processApplications.getOpen(),
+            items: processApplications.getItems()
+          }
+        });
+      }
     });
 
     this.tabRef = React.createRef();
@@ -427,6 +452,8 @@ export class App extends PureComponent {
 
     await this._removeTab(tab);
 
+    // this.getGlobal('backend').send('file-context:remove-file', tab.file.path);
+
     return true;
   };
 
@@ -700,6 +727,10 @@ export class App extends PureComponent {
         await this.selectTab(activeTab);
       }
     }
+
+    openedTabs.forEach(tab => {
+      // this.getGlobal('backend').send('file-context:add-file', tab.file.path);
+    });
 
     return openedTabs;
   };
@@ -1101,8 +1132,11 @@ export class App extends PureComponent {
       recentTabs,
       tabLoadingState,
       tabState,
-      layout
+      layout,
+      processApplication
     } = this.state;
+
+    console.log('processApplication', this.state.processApplication);
 
     const {
       onTabChanged,
@@ -1150,6 +1184,10 @@ export class App extends PureComponent {
     if (layout !== prevState.layout) {
       this.triggerAction('resize');
     }
+
+    if (processApplication !== prevState.processApplication) {
+      this.workspaceChanged();
+    }
   }
 
   componentDidCatch(error, info) {
@@ -1188,13 +1226,15 @@ export class App extends PureComponent {
     const {
       layout,
       tabs,
-      activeTab
+      activeTab,
+      processApplication
     } = this.state;
 
     return onWorkspaceChanged({
       tabs,
       activeTab,
-      layout
+      layout,
+      processApplication
     });
   };
 
@@ -1215,9 +1255,7 @@ export class App extends PureComponent {
   };
 
   getGlobal = (name) => {
-    const {
-      globals
-    } = this.props;
+    const globals = this.props.globals;
 
     if (name in globals) {
       return globals[name];
@@ -1487,6 +1525,8 @@ export class App extends PureComponent {
 
         const savedFile = await this.saveTabAsFile(saveOptions);
 
+        // this.getGlobal('backend').send('file-context:add-file', savedFile.path);
+
         return this.tabSaved(tab, savedFile);
       } catch (err) {
 
@@ -1741,6 +1781,80 @@ export class App extends PureComponent {
     return this.getGlobal('dialog').show(options);
   }
 
+  async showOpenProcessApplicationDialog(options) {
+    const dialog = this.getGlobal('dialog');
+
+    const filters = [
+      {
+        name: 'Process Application',
+        extensions: [ 'process-application' ]
+      }
+    ];
+
+    const filePaths = await dialog.showOpenFilesDialog({
+      activeFile: this.state.activeTab.file,
+      filters
+    });
+
+    if (filePaths.length !== 1) {
+      return;
+    }
+
+    await this.openProcessApplication(filePaths[0]);
+  }
+
+  /**
+   * Open process application.
+   *
+   * @param {string} path
+   */
+  openProcessApplication(processApplication) {
+    this.processApplications.open(processApplication);
+  }
+
+  async showCreateProcessApplicationDialog() {
+    const dialog = this.getGlobal('dialog');
+
+    const [ directoryPath ] = await dialog.showOpenFilesDialog({
+      properties: [ 'openDirectory' ],
+      title: 'Create Process Application'
+    });
+
+    return directoryPath;
+  }
+
+  /**
+   * Create and save new process application.
+   */
+  async createProcessApplication() {
+    const directoryPath = this.showCreateProcessApplicationDialog();
+
+    if (!directoryPath) {
+      return;
+    }
+
+    const file = {
+      name: 'new-process-application.process-application',
+      contents: JSON.stringify({
+        name: 'New Process Application'
+      }, null, 2),
+      path: null
+    };
+
+    const fileSystem = this.getGlobal('fileSystem');
+
+    const savedFile = await fileSystem.writeFile(`${directoryPath}/${file.name}`, file);
+
+    this.processApplications.open(`${directoryPath}/${file.name}`);
+  }
+
+  /**
+   * Close process application.
+   */
+  closeProcessApplication() {
+    this.processApplications.close();
+  }
+
   triggerAction = failSafe((action, options) => {
 
     const {
@@ -1749,6 +1863,18 @@ export class App extends PureComponent {
 
 
     log('App#triggerAction %s %o', action, options);
+
+    if (action === 'open-process-application') {
+      return this.showOpenProcessApplicationDialog();
+    }
+
+    if (action === 'create-process-application') {
+      return this.createProcessApplication();
+    }
+
+    if (action === 'close-process-application') {
+      return this.closeProcessApplication();
+    }
 
     if (action === 'lint-tab') {
       const {
@@ -2100,6 +2226,7 @@ export class App extends PureComponent {
                     title: 'Welcome Screen'
                   } }
                   draggable
+                  processApplication={ this.state.processApplication }
                 />
 
                 <TabContainer className="main">
@@ -2149,6 +2276,15 @@ export class App extends PureComponent {
 
               <StatusBar />
 
+              <ProcessApplicationsStatusBar
+                processApplication={ this.state.processApplication }
+                onOpen={ async (path) => {
+                  const files = await this.readFileList([ path ]);
+
+                  await this.openFiles(files);
+                } }
+              />
+
               <PluginsRoot
                 app={ this }
                 plugins={ this.plugins }
@@ -2173,7 +2309,19 @@ export class App extends PureComponent {
   }
 
   _getNewFileItems = () => {
-    let items = [];
+    let items = [
+      {
+        text: 'Process application',
+        group: 'Camunda 8',
+        icon: () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" width="24" height="24">
+          <path fill="#000" d="m6.387 2.824-1.735-1.73H1.015V11.24h2.323q.087.522.25 1.015H1.016A1.015 1.015 0 0 1 0 11.24V1.094A1.015 1.015 0 0 1 1.015.079h3.637a1.01 1.01 0 0 1 .72.3l1.73 1.73h6.088a1.015 1.015 0 0 1 1.015 1.014v1.6a7 7 0 0 0-1.015-.636v-.964H6.681z"></path>
+          <path fill="#000" d="m11.959 10.57-2.007 1.661a.586.586 0 0 1-.957-.445V8.464a.58.58 0 0 1 .336-.525.59.59 0 0 1 .62.08l2.008 1.66a.58.58 0 0 1 .155.692.6.6 0 0 1-.155.2"></path>
+          <path fill="#000" fillRule="evenodd" d="M10.766 15.891a.284.284 0 0 0 .248-.234l.151-.868a.3.3 0 0 1 .222-.237c.372-.1.73-.246 1.065-.435a.31.31 0 0 1 .32.01l.727.508a.285.285 0 0 0 .341-.009q.472-.38.855-.848a.28.28 0 0 0 .009-.34l-.51-.717a.3.3 0 0 1-.012-.322q.286-.502.438-1.057a.3.3 0 0 1 .237-.22l.002-.001.874-.15a.28.28 0 0 0 .236-.246q.02-.203.028-.411v-.04q.011-.375-.028-.75a.28.28 0 0 0-.236-.245l-.888-.152a.3.3 0 0 1-.238-.218 4.5 4.5 0 0 0-.44-1.034.3.3 0 0 1 .012-.325l.525-.739a.28.28 0 0 0-.009-.339 6 6 0 0 0-.855-.848.284.284 0 0 0-.341-.01l-.76.534a.3.3 0 0 1-.323.013 4.6 4.6 0 0 0-1.02-.412.3.3 0 0 1-.222-.238l-.16-.918a.28.28 0 0 0-.248-.234 6 6 0 0 0-.59-.031h-.014q-.303 0-.604.03a.28.28 0 0 0-.248.235l-.155.89a.3.3 0 0 1-.223.238c-.365.098-.717.24-1.047.424a.31.31 0 0 1-.319-.01l-.74-.52a.284.284 0 0 0-.342.008 6 6 0 0 0-.855.85.28.28 0 0 0-.009.339l.512.72a.3.3 0 0 1 .011.324q-.288.5-.442 1.055a.3.3 0 0 1-.24.22l-.87.149a.28.28 0 0 0-.236.245q-.062.601 0 1.201c.014.125.111.224.236.246l.87.149a.3.3 0 0 1 .24.219c.1.365.249.72.442 1.055a.3.3 0 0 1-.011.325l-.512.72a.28.28 0 0 0 .01.338q.382.469.854.85c.098.079.238.08.341.008l.74-.519a.3.3 0 0 1 .32-.011q.252.14.517.247.26.109.535.186c.111.031.197.12.219.23l.154.89a.28.28 0 0 0 .248.233q.604.06 1.208 0m-.604-2.288c.929 0 1.82-.366 2.477-1.019a3.47 3.47 0 0 0 1.026-2.46c0-.922-.37-1.806-1.026-2.459a3.52 3.52 0 0 0-2.477-1.018c-.929 0-1.82.366-2.477 1.018a3.47 3.47 0 0 0-1.026 2.46c0 .922.37 1.807 1.026 2.46a3.52 3.52 0 0 0 2.477 1.018" clipRule="evenodd"></path>
+        </svg>,
+        onClick: () => this.triggerAction('create-process-application')
+      }
+    ];
+
     const providers = this.props.tabsProvider.getProviders();
 
     forEach(providers, provider => {

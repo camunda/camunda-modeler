@@ -105,6 +105,8 @@ class Dialog {
   showOpenDialog(options) {
     const {
       filters,
+      properties,
+      setDefaultPath = true,
       title
     } = options;
 
@@ -117,7 +119,7 @@ class Dialog {
     return this.electronDialog.showOpenDialog(this.browserWindow, {
       defaultPath,
       filters,
-      properties: [ 'openFile', 'multiSelections' ],
+      properties: properties || [ 'openFile', 'multiSelections' ],
       title: title || 'Open File'
     }).then(response => {
 
@@ -125,7 +127,7 @@ class Dialog {
         filePaths
       } = response;
 
-      if (filePaths && filePaths[0]) {
+      if (filePaths && filePaths[0] && setDefaultPath) {
         this.setDefaultPath(filePaths);
       }
 

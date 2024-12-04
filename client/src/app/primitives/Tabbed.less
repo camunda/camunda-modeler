@@ -65,6 +65,10 @@
     border-right: 1px solid var(--tab-border-right-color);
     user-select: none;
 
+    &.tab--process-application {
+      background: linear-gradient(90deg, fuchsia 0%, transparent 50%);
+    }
+
     .tab__content {
       position: absolute;
       display: flex;
@@ -132,7 +136,7 @@
       background-color: var(--tab-close-background-color);
 
       .tab__icon-close {
-        margin: auto 0 auto -1px;
+        margin: 1px 0px 1px -1px;
         fill: var(--tab-close-icon-fill-color);
       }
 

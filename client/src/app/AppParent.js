@@ -31,7 +31,8 @@ const log = debug('AppParent');
 const DEFAULT_CONFIG = {
   activeFile: -1,
   files: [],
-  layout: {}
+  layout: {},
+  processApplication: null
 };
 
 
@@ -41,8 +42,7 @@ export default class AppParent extends PureComponent {
     super(props);
 
     this.prereadyState = {
-      files: [],
-      workspace: {}
+      ...DEFAULT_CONFIG
     };
 
     this.appRef = React.createRef();
@@ -129,10 +129,13 @@ export default class AppParent extends PureComponent {
 
     const layout = config.layout;
 
+    const processApplication = config.processApplication ? config.processApplication.file : null;
+
     const workspaceConfig = {
       files,
       activeFile,
-      layout
+      layout,
+      processApplication
     };
 
     try {
@@ -156,10 +159,13 @@ export default class AppParent extends PureComponent {
       return log('failed to restore workspace', e);
     }
 
+    console.log('restored', restored);
+
     const {
       activeFile,
       files,
-      layout
+      layout,
+      processApplication
     } = restored;
 
     const app = this.getApp();
@@ -180,7 +186,8 @@ export default class AppParent extends PureComponent {
     // via command line
     this.prereadyState = {
       activeFile: this.prereadyState.activeFile || files[activeFile],
-      files: mergeFiles(this.prereadyState.files, files)
+      files: mergeFiles(this.prereadyState.files, files),
+      processApplication
     };
 
     log('workspace restored');
@@ -277,6 +284,14 @@ export default class AppParent extends PureComponent {
     log('restoring / opening files', files, activeFile);
 
     await this.getApp().openFiles(files, activeFile);
+
+    console.log('[AppParent] handleStarted');
+
+    if (prereadyState.processApplication) {
+      console.log('[AppParent] opening process application');
+
+      this.getApp().openProcessApplication(prereadyState.processApplication.path);
+    }
 
     if (typeof onStarted === 'function') {
       onStarted();
