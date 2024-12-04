@@ -71,9 +71,11 @@ class MenuBuilder {
         .appendSaveFile()
         .appendSaveAsFile()
         .appendSaveAllFiles()
+        .appendSaveAsProcessApplication()
         .appendSeparator()
         .appendExportAs()
         .appendCloseTab()
+        .appendCloseProcessApplication()
         .appendSeparator()
         .appendQuit()
         .get()
@@ -195,6 +197,13 @@ class MenuBuilder {
       }
     }));
 
+    this.menu.append(new MenuItem({
+      label: 'Open Process Application...',
+      click: function() {
+        app.emit('menu:action', 'open-process-application');
+      }
+    }));
+
     this.appendOpenRecent();
 
     return this;
@@ -268,6 +277,17 @@ class MenuBuilder {
     return this;
   }
 
+  appendSaveAsProcessApplication() {
+    this.menu.append(new MenuItem({
+      label: 'Save Process Application As..',
+      click: function() {
+        app.emit('menu:action', 'save-process-application');
+      }
+    }));
+
+    return this;
+  }
+
   appendExportAs() {
     const exportState = this.options.state.exportAs;
     const enabled = exportState && exportState.length > 0;
@@ -309,6 +329,18 @@ class MenuBuilder {
       enabled: canSwitchTab(this.options.state),
       click: function() {
         app.emit('menu:action', 'close-other-tabs');
+      }
+    }));
+
+    return this;
+  }
+
+  appendCloseProcessApplication() {
+    this.menu.append(new MenuItem({
+      label: 'Close Process Application',
+      enabled: this.options.state.openProcessApplication,
+      click: function() {
+        app.emit('menu:action', 'close-process-application');
       }
     }));
 
