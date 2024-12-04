@@ -40,6 +40,7 @@ const {
   getConnectorTemplatesPath,
   registerConnectorTemplateUpdater
 } = require('./connector-templates');
+const FileContext = require('./file-context/file-context');
 
 const {
   readFile,
@@ -80,6 +81,7 @@ const {
 const {
   config,
   dialog,
+  fileContext,
   files,
   flags,
   menu,
@@ -213,6 +215,55 @@ renderer.on('system-clipboard:write-text', function(options, done) {
   clipboardWriteText(text);
 
   done(null, undefined);
+});
+
+// file context //////////
+renderer.on('file-context:add-root', function(filePath, done) {
+  fileContext.addRoot(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:remove-root', function(filePath, done) {
+  fileContext.removeRoot(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:add-file', function(filePath, done) {
+  fileContext.addFile(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:update-file', function(filePath, done) {
+  fileContext.updateFile(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:remove-file', function(filePath, done) {
+  fileContext.removeFile(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:file-opened', function(fileProps, done) {
+  fileContext.fileOpened(fileProps);
+
+  done(null);
+});
+
+renderer.on('file-context:file-content-changed', function(fileProps, done) {
+  fileContext.fileContentChanged(fileProps);
+
+  done(null);
+});
+
+renderer.on('file-context:file-closed', function(filePath, done) {
+  fileContext.fileClosed(filePath);
+
+  done(null);
 });
 
 // filesystem //////////
@@ -697,9 +748,14 @@ function bootstrap() {
     registerConnectorTemplateUpdater(renderer, userPath);
   }
 
+  const fileContext = new FileContext({
+    logger: Log('app:file-context')
+  });
+
   return {
     config,
     dialog,
+    fileContext,
     files,
     flags,
     menu,
