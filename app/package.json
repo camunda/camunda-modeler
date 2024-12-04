@@ -13,6 +13,7 @@
   "dependencies": {
     "@sentry/integrations": "^7.113.0",
     "@sentry/node": "^8.0.0",
+    "chokidar": "^4.0.1",
     "epipebomb": "^1.0.0",
     "fast-glob": "^3.3.1",
     "ids": "^1.0.0",

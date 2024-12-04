@@ -40,6 +40,7 @@ const {
   getConnectorTemplatesPath,
   registerConnectorTemplateUpdater
 } = require('./connector-templates');
+const FileContext = require('./file-context/file-context');
 
 const {
   readFile,
@@ -80,6 +81,7 @@ const {
 const {
   config,
   dialog,
+  fileContext,
   files,
   flags,
   menu,
@@ -213,6 +215,61 @@ renderer.on('system-clipboard:write-text', function(options, done) {
   clipboardWriteText(text);
 
   done(null, undefined);
+});
+
+// file context //////////
+renderer.on('file-context:add-root', function(filePath, done) {
+  fileContext.addRoot(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:remove-root', function(filePath, done) {
+  fileContext.removeRoot(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:add-file', function(filePath, done) {
+  fileContext.addFile(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:update-file', function(filePath, done) {
+  fileContext.updateFile(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:remove-file', function(filePath, done) {
+  fileContext.removeFile(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:file-opened', function(fileProps, done) {
+  fileContext.fileOpened(fileProps);
+
+  done(null);
+});
+
+renderer.on('file-context:file-content-changed', function(fileProps, done) {
+  fileContext.fileContentChanged(fileProps);
+
+  done(null);
+});
+
+renderer.on('file-context:file-closed', function(filePath, done) {
+  fileContext.fileClosed(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:indexer-get-items', function(done) {
+  const items = fileContext._indexer.getItems();
+
+  done(null, items.map(({ file, metadata = {} }) => ({ file, metadata })));
 });
 
 // filesystem //////////
@@ -697,9 +754,29 @@ function bootstrap() {
     registerConnectorTemplateUpdater(renderer, userPath);
   }
 
+  // (11) file context
+  const fileContext = new FileContext(Log('app:file-context'));
+
+  function onIndexerUpdated() {
+    const items = fileContext._indexer.getItems();
+
+    renderer.send('file-context:indexer-items-updated', items.map(({ file, metadata = {} }) => {
+      return {
+        file,
+        metadata
+      };
+    }));
+  }
+
+  fileContext.on('indexer:updated', onIndexerUpdated);
+  fileContext.on('indexer:removed', onIndexerUpdated);
+
+  app.on('quit', () => fileContext.close());
+
   return {
     config,
     dialog,
+    fileContext,
     files,
     flags,
     menu,
