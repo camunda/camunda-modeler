@@ -8,24 +8,24 @@
  * except in compliance with the MIT License.
  */
 
-import {
+const {
   FSWatcher
-} from 'chokidar';
+} = require('chokidar');
 
-import {
+const {
   extname
-} from 'node:path';
+} = require('node:path');
 
-import {
+const {
   pathToFileURL,
   fileURLToPath
-} from 'node:url';
+} = require('node:url');
 
 /**
  * @typedef { import('./types').Processor } Processor
  */
 
-export default class Watcher {
+module.exports = class Watcher {
 
   /**
    * @param { import('./logger').default } logger
@@ -49,7 +49,7 @@ export default class Watcher {
      */
     this._files = new Set();
 
-    this._logger.log('watcher:start');
+    this._logger.info('watcher:start');
 
     /**
      * @type { import('chokidar').FSWatcher }
@@ -80,7 +80,7 @@ export default class Watcher {
     });
 
     /\*|events/.test(process.env.DEBUG) && this._chokidar.on('all', (event, arg0) => {
-      this._logger.log(event, arg0);
+      this._logger.info(event, arg0);
     });
 
     this._chokidar.on('ready', () => {
@@ -130,7 +130,7 @@ export default class Watcher {
    * @param {string} uri
    */
   addFolder(uri) {
-    this._logger.log('watcher:addFolder', uri);
+    this._logger.info('watcher:addFolder', uri);
 
     const path = fileURLToPath(uri);
 
@@ -149,7 +149,7 @@ export default class Watcher {
    * @param {string} uri
    */
   removeFolder(uri) {
-    this._logger.log('watcher:removeFolder', uri);
+    this._logger.info('watcher:removeFolder', uri);
 
     const path = fileURLToPath(uri);
 
@@ -163,8 +163,8 @@ export default class Watcher {
   }
 
   close() {
-    this._logger.log('watcher:close');
+    this._logger.info('watcher:close');
 
     return this._chokidar.close();
   }
-}
+};

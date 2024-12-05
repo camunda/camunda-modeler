@@ -12,7 +12,7 @@
  * @typedef { import('./types.js').IndexItem } IndexItem
  */
 
-export default class Processor {
+module.exports = class Processor {
 
   constructor(logger, processors) {
     this._logger = logger;
@@ -26,9 +26,9 @@ export default class Processor {
    * @returns {Promise<any>}
    */
   async process(item) {
-    this._logger.log('processor:process', item);
+    this._logger.info('processor:process', item);
 
     return null;
   }
 
-}
+};

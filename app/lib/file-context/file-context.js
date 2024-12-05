@@ -8,12 +8,12 @@
  * except in compliance with the MIT License.
  */
 
-import { EventEmitter } from 'node:events';
+const { EventEmitter } = require('node:events');
 
-import Indexer from './indexer.js';
-import Processor from './processor.js';
-import Watcher from './watcher.js';
-import Workqueue from './workqueue.js';
+const Indexer = require('./indexer.js');
+const Processor = require('./processor.js');
+const Watcher = require('./watcher.js');
+const Workqueue = require('./workqueue.js');
 
 /**
  * @typedef { import('./types').Processor } Processor
@@ -50,7 +50,7 @@ const DEFAULT_OPTIONS = {
 /**
  * File context that indexes and processes files.
  */
-export default class FileContext extends EventEmitter {
+module.exports = class FileContext extends EventEmitter {
 
   /**
    * @param {import('./types.js').Logger} logger
@@ -174,4 +174,4 @@ export default class FileContext extends EventEmitter {
     }
   }
 
-}
+};

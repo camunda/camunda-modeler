@@ -748,9 +748,7 @@ function bootstrap() {
     registerConnectorTemplateUpdater(renderer, userPath);
   }
 
-  const fileContext = new FileContext({
-    logger: Log('app:file-context')
-  });
+  const fileContext = new FileContext(Log('app:file-context', 'bgRed'));
 
   return {
     config,

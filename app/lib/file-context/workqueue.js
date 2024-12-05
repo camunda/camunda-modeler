@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-export default class Workqueue {
+module.exports = class Workqueue {
 
   /**
    * @type {Set<Promise<any>>}
@@ -44,4 +44,4 @@ export default class Workqueue {
     });
   }
 
-}
+};

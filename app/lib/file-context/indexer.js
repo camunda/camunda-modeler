@@ -8,14 +8,14 @@
  * except in compliance with the MIT License.
  */
 
-import { read } from 'to-vfile';
-import { VFile } from 'vfile';
+const { read } = require('to-vfile');
+const VFile = require('vfile');
 
 /**
  * @typedef { import('./types').IndexItem } IndexItem
  */
 
-export default class Indexer {
+module.exports = class Indexer {
 
   /**
    * @type { Set<string> }
@@ -95,7 +95,7 @@ export default class Indexer {
    * @param { string } [localValue]
    */
   add(uri, localValue) {
-    this._logger.log('indexer:add', uri, !!localValue);
+    this._logger.info('indexer:add', uri, !!localValue);
 
     let indexItem = this.items.get(uri);
 
@@ -161,7 +161,7 @@ export default class Indexer {
    * @param {boolean} [local]
    */
   remove(uri, local = false) {
-    this._logger.log('indexer:remove', uri, local);
+    this._logger.info('indexer:remove', uri, local);
 
     const item = this.items.get(uri);
 
@@ -197,14 +197,14 @@ export default class Indexer {
     } = item;
 
     if (!_read) {
-      this._logger.log('indexer:reading item ' + item.uri);
+      this._logger.info('indexer:reading item ' + item.uri);
 
       _read = item._read = () => this._readItem(item);
       _parsed = null;
     }
 
     if (!_process) {
-      this._logger.log('indexer:processing item ' + item.uri);
+      this._logger.info('indexer:processing item ' + item.uri);
 
       _process = item._process = () => this._processItem(item);
       _parsed = null;
@@ -216,7 +216,7 @@ export default class Indexer {
 
         return item;
       }, err => {
-        this._logger.log('indexer:failed to parse item ' + item.uri, err);
+        this._logger.error('indexer:failed to parse item ' + item.uri, err);
 
         throw err;
       });
@@ -273,7 +273,7 @@ export default class Indexer {
    * @param {IndexItem} item
    */
   _updated(item) {
-    this._logger.log('indexer:updated', item.uri);
+    this._logger.info('indexer:updated', item.uri);
 
     this._emit('updated', item);
   }
@@ -314,14 +314,14 @@ export default class Indexer {
     return Array.from(this.items.values());
   }
 
-}
+};
 
 /**
  * @param { { uri: string, version?: string, localValue?: string } } item
  *
  * @return { IndexItem }
  */
-export function createIndexItem(item) {
+function createIndexItem(item) {
 
   const {
     uri,
@@ -358,6 +358,6 @@ export function createIndexItem(item) {
  *
  * @return { File }
  */
-export function createFile(props) {
+function createFile(props) {
   return /** @type File */ (new VFile(props));
 }

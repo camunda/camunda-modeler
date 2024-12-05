@@ -51,7 +51,15 @@ const allowedEvents = [
   'zeebe:checkConnection',
   'zeebe:deploy',
   'zeebe:getGatewayVersion',
-  'zeebe:run'
+  'zeebe:run',
+  'file-context:add-root',
+  'file-context:remove-root',
+  'file-context:add-file',
+  'file-context:update-file',
+  'file-context:remove-file',
+  'file-context:file-opened',
+  'file-context:file-content-changed',
+  'file-context:file-closed'
 ];
 
 let executed = false;

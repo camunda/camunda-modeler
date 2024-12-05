@@ -20,8 +20,8 @@
     "min-dash": "^4.1.1",
     "mri": "^1.1.6",
     "parents": "^1.0.1",
-    "to-vfile": "^8.0.0",
-    "vfile": "^6.0.3",
+    "to-vfile": "^6.1.0",
+    "vfile": "^4.2.1",
     "zeebe-node": "^8.3.2"
   },
   "homepage": "https://github.com/camunda/camunda-modeler",
