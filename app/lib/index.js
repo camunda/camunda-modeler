@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+const VFile = require('vfile');
+
 const {
   app,
   dialog: electronDialog,
@@ -272,7 +274,19 @@ renderer.on('file:read', function(filePath, options = {}, done) {
   try {
     const newFile = readFile(filePath, options);
 
-    done(null, newFile);
+    if (newFile instanceof VFile) {
+      done(null, {
+        basename: newFile.basename,
+        contents: newFile.contents,
+        cwd: newFile.cwd,
+        dirname: newFile.dirname,
+        extname: newFile.extname,
+        path: newFile.path,
+        stem: newFile.stem
+      });
+    } else {
+      done(null, newFile);
+    }
   } catch (err) {
     done(err);
   }
@@ -749,6 +763,14 @@ function bootstrap() {
   }
 
   const fileContext = new FileContext(Log('app:file-context', 'bgRed'));
+
+  fileContext.on('indexer:updated', (item) => {
+    renderer.send('file-context:indexer:updated', item);
+  });
+
+  fileContext.on('indexer:removed', (item) => {
+    renderer.send('file-context:indexer:removed', item);
+  });
 
   return {
     config,

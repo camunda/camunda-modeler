@@ -28,7 +28,7 @@ export default function ProcessApplicationStatusBar(props) {
   return <>
     <Fill slot="status-bar__file" group="0_process-application">
       <button className="btn" ref={ ref } onClick={ () => setIsOpen(!isOpen) }>
-        Process application
+        { processApplication.name || 'Process application' }
       </button>
     </Fill>
     {

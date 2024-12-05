@@ -131,14 +131,25 @@ export class App extends PureComponent {
 
     const processApplications = this.processApplications = new ProcessApplications(this);
 
-    this.on('process-applications:changed', () => {
+    this.on('process-applications:changed', async () => {
       console.log('process-applications:changed');
 
-      this.setState({
-        processApplication: {
-          files: []
-        }
-      });
+      const hasOpenProcessApplication = processApplications.hasOpen();
+
+      if (!hasOpenProcessApplication) {
+        this.setState({
+          processApplication: null
+        });
+      } else {
+        const files = await this.processApplications.getFiles();
+
+        this.setState({
+          processApplication: {
+            ...processApplications.getOpen(),
+            files
+          }
+        });
+      }
     });
 
     this.tabRef = React.createRef();
@@ -443,6 +454,8 @@ export class App extends PureComponent {
 
     await this._removeTab(tab);
 
+    this.getGlobal('backend').send('file-context:remove-file', tab.file.path);
+
     return true;
   };
 
@@ -716,6 +729,10 @@ export class App extends PureComponent {
         await this.selectTab(activeTab);
       }
     }
+
+    openedTabs.forEach(tab => {
+      this.getGlobal('backend').send('file-context:add-file', tab.file.path);
+    });
 
     return openedTabs;
   };
@@ -1509,6 +1526,8 @@ export class App extends PureComponent {
         }
 
         const savedFile = await this.saveTabAsFile(saveOptions);
+
+        this.getGlobal('backend').send('file-context:add-file', savedFile.path);
 
         return this.tabSaved(tab, savedFile);
       } catch (err) {

@@ -59,7 +59,9 @@ const allowedEvents = [
   'file-context:remove-file',
   'file-context:file-opened',
   'file-context:file-content-changed',
-  'file-context:file-closed'
+  'file-context:file-closed',
+  'file-context:indexer:updated',
+  'file-context:indexer:removed'
 ];
 
 let executed = false;

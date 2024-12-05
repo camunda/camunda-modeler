@@ -13,6 +13,8 @@
 const fs = require('fs'),
       path = require('path');
 
+const { readSync, writeSync } = require('to-vfile');
+
 const {
   assign,
   pick
@@ -55,6 +57,12 @@ module.exports.readFile = function(filePath, options = {}) {
     encoding = ENCODING_UTF8;
   }
 
+  const foo = readSync(filePath, encoding);
+
+  log.info('read file %s', filePath, foo);
+
+  return foo;
+
   const fileContents = encoding ? fs.readFileSync(filePath, encoding) : fs.readFileSync(filePath);
 
   return createFile({
@@ -72,6 +80,8 @@ module.exports.readFile = function(filePath, options = {}) {
  * @return {FileDescriptor}
  */
 module.exports.readFileStats = function(file) {
+  return readSync(file.path);
+
   const { path } = file;
 
   return createFile(file, {
@@ -90,6 +100,8 @@ module.exports.readFileStats = function(file) {
  * @return {Object}
  */
 module.exports.writeFile = function(filePath, file, options = {}) {
+  return writeSync(file);
+
   let { contents } = file;
 
   let {

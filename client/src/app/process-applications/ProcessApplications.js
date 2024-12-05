@@ -13,6 +13,7 @@ export default class ProcessApplications {
     this._app = app;
 
     this._processApplication = null;
+    this._files = [];
   }
 
   /**
@@ -22,7 +23,20 @@ export default class ProcessApplications {
     try {
       const file = await this._app.getGlobal('fileSystem').readFile(path);
 
-      this._processApplication = this._createFromFile(file);
+      const {
+        contents,
+        dirname
+      } = file;
+
+      this._cancelOnFileUpdated = this._app.getGlobal('backend').on('file-context:indexer:updated', this._onFileUpdated);
+      this._cancelOnFileRemoved = this._app.getGlobal('backend').on('file-context:indexer:removed', this._onFileRemoved);
+
+      this._app.getGlobal('backend').send('file-context:add-root', `file://${dirname}`);
+
+      this._processApplication = {
+        file,
+        ...JSON.parse(contents)
+      };
     } catch (err) {
       console.error(err);
     }
@@ -30,14 +44,43 @@ export default class ProcessApplications {
     this._app.emit('process-applications:changed');
   }
 
-  _createFromFile(file) {
-    return {
-      ...JSON.parse(file.contents),
-      file
-    };
+  close() {
+    if (this._onFileUpdated) {
+      this._cancelOnFileUpdated();
+
+      this._cancelOnFileUpdated = null;
+    }
+
+    if (this._cancelOnFileRemoved) {
+      this._cancelOnFileRemoved();
+
+      this._cancelOnFileRemoved = null;
+    }
+
+    this._app.getGlobal('backend').send('file-context:remove-root', `file://${this._processApplication.file.dirname}`);
+
+    this._processApplication = null;
+
+    this._app.emit('process-applications:changed');
   }
 
-  get() {
+  _onFileUpdated = (item) => {
+    debugger;
+  };
+
+  _onFileRemoved = (item) => {
+    debugger;
+  };
+
+  getOpen() {
     return this._processApplication;
+  }
+
+  hasOpen() {
+    return !!this._processApplication;
+  }
+
+  getFiles() {
+    return this._files;
   }
 }
