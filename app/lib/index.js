@@ -762,15 +762,28 @@ function bootstrap() {
     registerConnectorTemplateUpdater(renderer, userPath);
   }
 
-  const fileContext = new FileContext(Log('app:file-context', 'bgRed'));
+  // (11) file context
+  const fileContext = new FileContext(Log('app:file-context'));
 
-  fileContext.on('indexer:updated', (item) => {
-    renderer.send('file-context:indexer:updated', item);
-  });
+  function sendFilesUpdated() {
+    const files = fileContext._indexer.getItems().map(({ file }) => {
+      return {
+        basename: file.basename,
+        contents: file.contents,
+        cwd: file.cwd,
+        dirname: file.dirname,
+        extname: file.extname,
+        path: file.path,
+        stem: file.stem
+      };
+    });
 
-  fileContext.on('indexer:removed', (item) => {
-    renderer.send('file-context:indexer:removed', item);
-  });
+    renderer.send('file-context:files-updated', files);
+  }
+
+  fileContext.on('indexer:updated', sendFilesUpdated);
+
+  fileContext.on('indexer:removed', sendFilesUpdated);
 
   return {
     config,

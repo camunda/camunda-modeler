@@ -57,11 +57,10 @@ const allowedEvents = [
   'file-context:add-file',
   'file-context:update-file',
   'file-context:remove-file',
-  'file-context:file-opened',
-  'file-context:file-content-changed',
-  'file-context:file-closed',
-  'file-context:indexer:updated',
-  'file-context:indexer:removed'
+  'file-context:file-opened', // TODO: fix naming (this event is renderer -> main)
+  'file-context:file-content-changed', // TODO: fix naming (this event is renderer -> main)
+  'file-context:file-closed', // TODO: fix naming (this event is renderer -> main)
+  'file-context:files-updated' // TODO: fix naming (this event is main -> renderer)
 ];
 
 let executed = false;

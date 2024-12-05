@@ -28,8 +28,7 @@ export default class ProcessApplications {
         dirname
       } = file;
 
-      this._cancelOnFileUpdated = this._app.getGlobal('backend').on('file-context:indexer:updated', this._onFileUpdated);
-      this._cancelOnFileRemoved = this._app.getGlobal('backend').on('file-context:indexer:removed', this._onFileRemoved);
+      this._cancelOnFilesUpdated = this._app.getGlobal('backend').on('file-context:files-updated', this._onFilesUpdated);
 
       this._app.getGlobal('backend').send('file-context:add-root', `file://${dirname}`);
 
@@ -45,16 +44,10 @@ export default class ProcessApplications {
   }
 
   close() {
-    if (this._onFileUpdated) {
-      this._cancelOnFileUpdated();
+    if (this._onFilesUpdated) {
+      this._cancelOnFilesUpdated();
 
-      this._cancelOnFileUpdated = null;
-    }
-
-    if (this._cancelOnFileRemoved) {
-      this._cancelOnFileRemoved();
-
-      this._cancelOnFileRemoved = null;
+      this._cancelOnFilesUpdated = null;
     }
 
     this._app.getGlobal('backend').send('file-context:remove-root', `file://${this._processApplication.file.dirname}`);
@@ -64,11 +57,7 @@ export default class ProcessApplications {
     this._app.emit('process-applications:changed');
   }
 
-  _onFileUpdated = (item) => {
-    debugger;
-  };
-
-  _onFileRemoved = (item) => {
+  _onFilesUpdated = (_, files) => {
     debugger;
   };
 
