@@ -351,7 +351,7 @@ function CloudLink(props) {
   } = response;
 
   const clusterUrl = getClusterUrl(endpoint);
-  const url = `${clusterUrl}/instances/${processInstanceKey}`;
+  const url = `${clusterUrl}/processes/${processInstanceKey}`;
 
   return (
     <div className={ css.CloudLink }>
