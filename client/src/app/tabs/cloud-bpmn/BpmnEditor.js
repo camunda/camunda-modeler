@@ -203,6 +203,20 @@ export class BpmnEditor extends CachedComponent {
       propertiesPanel.setLayout(this.props.layout.propertiesPanel);
     }
 
+    if (isExecutionPlatformVersionChange(prevProps, this.props)) {
+      const platformVersion = this.props.cachedState.engineProfile.executionPlatformVersion;
+
+      const elementTemplates = this.getModeler().get('elementTemplates');
+      const elementTemplatesEngines = elementTemplates.getEngines();
+      const engines = {
+        ...elementTemplatesEngines,
+        camunda: platformVersion
+      };
+      elementTemplates.setEngines(engines);
+
+      this.loadTemplates();
+    }
+
   }
 
   listen(fn) {
@@ -849,6 +863,11 @@ export class BpmnEditor extends CachedComponent {
       elementTemplateChooser: false,
       keyboard: {
         bind: false
+      },
+      elementTemplates: {
+        engines: {
+          camundaModeler: version
+        }
       }
     });
 
@@ -901,4 +920,16 @@ function isPropertiesPanelLayoutChanged(prevProps, props) {
 
   // check JSON equality
   return JSON.stringify(prevProps.layout.propertiesPanel) !== JSON.stringify(props.layout.propertiesPanel);
+}
+
+function isExecutionPlatformVersionChange(prevProps, props) {
+  if (!props.cachedState.engineProfile || !props.cachedState.engineProfile.executionPlatformVersion) {
+    return false;
+  }
+
+  if (prevProps.cachedState.engineProfile === props.cachedState.engineProfile) {
+    return false;
+  }
+
+  return JSON.stringify(prevProps.cachedState.engineProfile) !== JSON.stringify(props.cachedState.engineProfile);
 }
