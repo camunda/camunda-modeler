@@ -444,7 +444,7 @@ describe('<StartInstancePlugin> (Zeebe)', function() {
       const notificationHTML = shallow(notification.content).html().replace(/&amp;/g, '&');
 
       expect(notificationHTML).to.include(
-        'https://region.operate.camunda.io/CLUSTER_ID/instances/test'
+        'https://region.operate.camunda.io/CLUSTER_ID/processes/test'
       );
     });
 
