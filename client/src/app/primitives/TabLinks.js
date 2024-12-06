@@ -180,6 +180,7 @@ function Tab(props) {
 
   return (
     <div
+      tabIndex="0"
       ref={ tabRef }
       data-tab-id={ tab.id }
       title={ getTitleTag(tab, dirty) }
@@ -242,7 +243,7 @@ function TabClose(props) {
   } = props;
 
   return (
-    <span
+    <button
       className="tab__close"
       title="Close tab"
       onClick={ (event) => {
@@ -253,7 +254,7 @@ function TabClose(props) {
       } }
     >
       <TabCloseIcon className="tab__icon-close" />
-    </span>
+    </button>
   );
 }
 
