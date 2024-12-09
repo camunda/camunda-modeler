@@ -262,7 +262,7 @@ export class BpmnEditor extends CachedComponent {
 
     elementTemplates.setEngines(engines);
 
-    // Do I need to loadTemplates here?
+    this.loadTemplates();
   };
 
   async loadTemplates() {
