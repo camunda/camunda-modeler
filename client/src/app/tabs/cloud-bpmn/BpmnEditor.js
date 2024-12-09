@@ -82,6 +82,8 @@ export class BpmnEditor extends CachedComponent {
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
 
+    this.handleEngineProfileChangeDebounced = debounce(this.handleEngineProfileChange);
+
     this.engineProfile = new EngineProfileHelper({
       get: () => {
         const modeler = this.getModeler();
@@ -109,7 +111,10 @@ export class BpmnEditor extends CachedComponent {
         });
       },
       getCached: () => this.getCached(),
-      setCached: (state) => this.setCached(state)
+      setCached: (state) => {
+        this.handleEngineProfileChangeDebounced(state);
+        this.setCached(state);
+      }
     });
 
     this.handleResize = debounce(this.handleResize);
@@ -202,21 +207,6 @@ export class BpmnEditor extends CachedComponent {
 
       propertiesPanel.setLayout(this.props.layout.propertiesPanel);
     }
-
-    if (isExecutionPlatformVersionChange(prevProps, this.props)) {
-      const platformVersion = this.props.cachedState.engineProfile.executionPlatformVersion;
-
-      const elementTemplates = this.getModeler().get('elementTemplates');
-      const elementTemplatesEngines = elementTemplates.getEngines();
-      const engines = {
-        ...elementTemplatesEngines,
-        camunda: platformVersion
-      };
-      elementTemplates.setEngines(engines);
-
-      this.loadTemplates();
-    }
-
   }
 
   listen(fn) {
@@ -258,6 +248,22 @@ export class BpmnEditor extends CachedComponent {
       propertiesPanel: e.layout
     });
   }
+
+  handleEngineProfileChange = ({ engineProfile }) => {
+    const { executionPlatformVersion: version } = engineProfile;
+    if (!version) return;
+
+    const elementTemplates = this.getModeler().get('elementTemplates');
+
+    const engines = {
+      ...elementTemplates.getEngines(),
+      camunda: version
+    };
+
+    elementTemplates.setEngines(engines);
+
+    // Do I need to loadTemplates here?
+  };
 
   async loadTemplates() {
     const { getConfig } = this.props;
@@ -920,16 +926,4 @@ function isPropertiesPanelLayoutChanged(prevProps, props) {
 
   // check JSON equality
   return JSON.stringify(prevProps.layout.propertiesPanel) !== JSON.stringify(props.layout.propertiesPanel);
-}
-
-function isExecutionPlatformVersionChange(prevProps, props) {
-  if (!props.cachedState.engineProfile || !props.cachedState.engineProfile.executionPlatformVersion) {
-    return false;
-  }
-
-  if (prevProps.cachedState.engineProfile === props.cachedState.engineProfile) {
-    return false;
-  }
-
-  return JSON.stringify(prevProps.cachedState.engineProfile) !== JSON.stringify(props.cachedState.engineProfile);
 }
