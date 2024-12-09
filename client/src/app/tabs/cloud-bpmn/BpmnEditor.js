@@ -82,6 +82,8 @@ export class BpmnEditor extends CachedComponent {
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
 
+    this.handleEngineProfileChangeDebounced = debounce(this.handleEngineProfileChange);
+
     this.engineProfile = new EngineProfileHelper({
       get: () => {
         const modeler = this.getModeler();
@@ -109,7 +111,10 @@ export class BpmnEditor extends CachedComponent {
         });
       },
       getCached: () => this.getCached(),
-      setCached: (state) => this.setCached(state)
+      setCached: (state) => {
+        this.handleEngineProfileChangeDebounced(state);
+        this.setCached(state);
+      }
     });
 
     this.handleResize = debounce(this.handleResize);
@@ -202,7 +207,6 @@ export class BpmnEditor extends CachedComponent {
 
       propertiesPanel.setLayout(this.props.layout.propertiesPanel);
     }
-
   }
 
   listen(fn) {
@@ -244,6 +248,22 @@ export class BpmnEditor extends CachedComponent {
       propertiesPanel: e.layout
     });
   }
+
+  handleEngineProfileChange = ({ engineProfile }) => {
+    const { executionPlatformVersion: version } = engineProfile;
+    if (!version) return;
+
+    const elementTemplates = this.getModeler().get('elementTemplates');
+
+    const engines = {
+      ...elementTemplates.getEngines(),
+      camunda: version
+    };
+
+    elementTemplates.setEngines(engines);
+
+    this.loadTemplates();
+  };
 
   async loadTemplates() {
     const { getConfig } = this.props;
@@ -849,6 +869,11 @@ export class BpmnEditor extends CachedComponent {
       elementTemplateChooser: false,
       keyboard: {
         bind: false
+      },
+      elementTemplates: {
+        engines: {
+          camundaModeler: version
+        }
       }
     });
 
