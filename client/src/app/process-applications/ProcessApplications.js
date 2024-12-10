@@ -60,6 +60,12 @@ export default class ProcessApplications {
 
     this._app.getGlobal('backend').send('file-context:remove-root', this._processApplication.file.dirname);
 
+    this._app.closeTabs(tab => {
+
+      // TODO: tab.file and item.file are not the same
+      return this._items.some(({ file }) => tab.file.path === file.path);
+    });
+
     this._processApplication = null;
 
     this._app.emit('process-applications:changed');
