@@ -55,6 +55,7 @@ const renderer = require('./util/renderer');
 
 const errorTracking = require('./util/error-tracking');
 const { pick } = require('min-dash');
+const { toFileUrl } = require('./file-context/util');
 
 const log = Log('app:main');
 const bootstrapLog = Log('app:main:bootstrap');
@@ -218,58 +219,25 @@ renderer.on('system-clipboard:write-text', function(options, done) {
 });
 
 // file context //////////
-renderer.on('file-context:add-root', function(filePath, done) {
-  fileContext.addRoot(filePath);
+renderer.on('file:opened', function(filePath, done) {
+  fileContext.fileOpened({ uri: toFileUrl(filePath) });
 
   done(null);
 });
 
-renderer.on('file-context:remove-root', function(filePath, done) {
-  fileContext.removeRoot(filePath);
+renderer.on('file:closed', function(filePath, done) {
+  fileContext.fileClosed(toFileUrl(filePath));
 
   done(null);
 });
 
-renderer.on('file-context:add-file', function(filePath, done) {
-  fileContext.addFile(filePath);
+renderer.on('file:content-changed', function(filePath, contents, done) {
+  fileContext.fileContentChanged({
+    uri: toFileUrl(filePath),
+    value: contents
+  });
 
   done(null);
-});
-
-renderer.on('file-context:update-file', function(filePath, done) {
-  fileContext.updateFile(filePath);
-
-  done(null);
-});
-
-renderer.on('file-context:remove-file', function(filePath, done) {
-  fileContext.removeFile(filePath);
-
-  done(null);
-});
-
-renderer.on('file-context:file-opened', function(fileProps, done) {
-  fileContext.fileOpened(fileProps);
-
-  done(null);
-});
-
-renderer.on('file-context:file-content-changed', function(fileProps, done) {
-  fileContext.fileContentChanged(fileProps);
-
-  done(null);
-});
-
-renderer.on('file-context:file-closed', function(filePath, done) {
-  fileContext.fileClosed(filePath);
-
-  done(null);
-});
-
-renderer.on('file-context:indexer-get-items', function(done) {
-  const items = fileContext._indexer.getItems();
-
-  done(null, items.map(({ file, metadata = {} }) => ({ file, metadata })));
 });
 
 // filesystem //////////
@@ -755,17 +723,17 @@ function bootstrap() {
   }
 
   // (11) file context
-  const fileContext = new FileContext(Log('app:file-context'));
+  const fileContextLog = Log('app:file-context');
+
+  const fileContext = new FileContext(fileContextLog);
 
   /**
    * @param { import('./file-context/types').IndexItem } item
    */
   function onIndexerUpdated(item) {
+    fileContextLog.info('files', JSON.stringify(fileContext._indexer.getItems().map(({ file, metadata }) => ({ file: { ...file, contents: file.contents.substring(0, 10) + '...' }, metadata })), null, 2));
 
-    renderer.send('file-context:changed', {
-      file: item.file,
-      metadata: item.metadata
-    });
+    renderer.send('file-context:changed', fileContext._indexer.getItems().map(({ file, metadata }) => ({ file, metadata })));
   }
 
   fileContext.on('indexer:updated', onIndexerUpdated);

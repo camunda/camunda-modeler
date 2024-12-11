@@ -16,6 +16,7 @@ const moddle = new BpmnModdle({ zeebe });
 
 const {
   findExtensionElement,
+  findFileInParentDirectories,
   is,
   traverse
 } = require('./util');
@@ -23,6 +24,8 @@ const {
 module.exports = {
   extensions: [ '.bpmn', '.xml' ],
   process: async (item) => {
+    const processApplicationFilePath = findFileInParentDirectories(item.file.path, '.process-application');
+
     const { rootElement } = await moddle.fromXML(item.file.contents);
 
     return {
@@ -32,7 +35,8 @@ module.exports = {
         ...findLinkedProcessIds(rootElement),
         ...findLinkedDecisionIds(rootElement),
         ...findLinkedFormIds(rootElement)
-      ]
+      ],
+      processApplication: processApplicationFilePath
     };
   }
 };

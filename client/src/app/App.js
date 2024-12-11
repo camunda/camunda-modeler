@@ -233,7 +233,21 @@ export class App extends PureComponent {
   }
 
   _onTabOpened(tab) {
-    console.log('FIX ME: send to backend');
+    if (!this.isUnsaved(tab)) {
+      this.getGlobal('backend').send('file:opened', tab.file.path);
+    }
+  }
+
+  _onTabClosed(tab) {
+    if (!this.isUnsaved(tab)) {
+      this.getGlobal('backend').send('file:closed', tab.file.path);
+    }
+  }
+
+  _onTabChanged(tab) {
+    if (!this.isUnsaved(tab)) {
+      this.getGlobal('backend').send('file:content-changed', tab.file.path, tab.file.contents);
+    }
   }
 
   /**
@@ -457,7 +471,7 @@ export class App extends PureComponent {
 
     await this._removeTab(tab);
 
-    // this.getGlobal('backend').send('file-context:remove-file', tab.file.path);
+    this._onTabClosed(tab);
 
     return true;
   };
@@ -947,6 +961,8 @@ export class App extends PureComponent {
     if ('dirty' in properties) {
       dirtyState = this.setDirty(tab, properties.dirty);
     }
+
+    this._onTabChanged(tab);
 
     this.setState({
       ...dirtyState,
@@ -1525,8 +1541,6 @@ export class App extends PureComponent {
         }
 
         const savedFile = await this.saveTabAsFile(saveOptions);
-
-        // this.getGlobal('backend').send('file-context:add-file', savedFile.path);
 
         return this.tabSaved(tab, savedFile);
       } catch (err) {

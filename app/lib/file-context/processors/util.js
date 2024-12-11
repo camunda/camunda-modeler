@@ -8,6 +8,9 @@
  * except in compliance with the MIT License.
  */
 
+const fs = require('fs');
+const path = require('path');
+
 function findExtensionElement(element, type) {
   const extensionElements = element.get('extensionElements');
 
@@ -62,3 +65,23 @@ function traverse(element, options) {
 }
 
 module.exports.traverse = traverse;
+
+function findFileInParentDirectories(filePath, extname) {
+  let dirname = path.dirname(filePath);
+
+  while (dirname !== path.parse(dirname).root) {
+    const files = fs.readdirSync(dirname);
+
+    const file = files.find(file => path.extname(file) === extname);
+
+    if (file) {
+      return path.join(dirname, file);
+    }
+
+    dirname = path.dirname(dirname);
+  }
+
+  return false;
+}
+
+module.exports.findFileInParentDirectories = findFileInParentDirectories;

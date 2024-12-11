@@ -135,7 +135,7 @@ export default class AppParent extends PureComponent {
       files,
       activeFile,
       layout,
-      processApplication
+      // processApplication
     };
 
     try {
@@ -165,7 +165,7 @@ export default class AppParent extends PureComponent {
       activeFile,
       files,
       layout,
-      processApplication
+      // processApplication
     } = restored;
 
     const app = this.getApp();
@@ -187,7 +187,7 @@ export default class AppParent extends PureComponent {
     this.prereadyState = {
       activeFile: this.prereadyState.activeFile || files[activeFile],
       files: mergeFiles(this.prereadyState.files, files),
-      processApplication
+      // processApplication
     };
 
     log('workspace restored');
@@ -287,11 +287,11 @@ export default class AppParent extends PureComponent {
 
     console.log('[AppParent] handleStarted');
 
-    if (prereadyState.processApplication) {
-      console.log('[AppParent] opening process application');
+    // if (prereadyState.processApplication) {
+    //   console.log('[AppParent] opening process application');
 
-      this.getApp().openProcessApplication(prereadyState.processApplication.path);
-    }
+    //   this.getApp().openProcessApplication(prereadyState.processApplication.path);
+    // }
 
     if (typeof onStarted === 'function') {
       onStarted();

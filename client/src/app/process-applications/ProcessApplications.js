@@ -12,6 +12,40 @@ export default class ProcessApplications {
   constructor(app) {
     this._app = app;
 
+    this._app.getGlobal('backend').on('file-context:changed', (_, items) => {
+      this._items = items;
+
+      const activeTab = this._app.state.activeTab;
+
+      if (activeTab && activeTab.file) {
+        const { file } = activeTab;
+
+        const item = this._items.find(item => item.file.path === file.path);
+
+        if (item && item.metadata.processApplication) {
+          this.open(item.metadata.processApplication);
+        }
+      }
+    });
+
+    this._app.on('app.activeTabChanged', ({ activeTab }) => {
+      const { file } = activeTab;
+
+      const item = this._items.find(item => item.file.path === file.path);
+
+      if (!item || !item.metadata.processApplication) {
+        this._processApplication && this.close();
+
+        return;
+      }
+
+      const { metadata } = item;
+
+      if (metadata.processApplication) {
+        this.open(metadata.processApplication);
+      }
+    });
+
     this._processApplication = null;
     this._items = [];
   }
@@ -32,13 +66,7 @@ export default class ProcessApplications {
         dirname
       } = file;
 
-      const { cancel } = this._app.getGlobal('backend').on('file-context:indexer-items-updated', this._onIndexerUpdated);
-
-      this._cancelOnFilesUpdated = cancel;
-
       this._app.getGlobal('backend').send('file-context:add-root', dirname);
-
-      this._items = await this._app.getGlobal('backend').send('file-context:indexer-get-items');
 
       this._processApplication = {
         file,
@@ -52,30 +80,12 @@ export default class ProcessApplications {
   }
 
   close() {
-    if (this._onIndexerUpdated) {
-      this._cancelOnFilesUpdated();
-
-      this._cancelOnFilesUpdated = null;
-    }
-
     this._app.getGlobal('backend').send('file-context:remove-root', this._processApplication.file.dirname);
-
-    this._app.closeTabs(tab => {
-
-      // TODO: tab.file and item.file are not the same
-      return this._items.some(({ file }) => tab.file.path === file.path);
-    });
 
     this._processApplication = null;
 
     this._app.emit('process-applications:changed');
   }
-
-  _onIndexerUpdated = (_, items) => {
-    this._items = items;
-
-    this._app.emit('process-applications:changed');
-  };
 
   getOpen() {
     return this._processApplication;
@@ -86,6 +96,12 @@ export default class ProcessApplications {
   }
 
   getItems() {
-    return this._items;
+    if (!this._processApplication) {
+      return [];
+    }
+
+    const items = this._items.filter(({ metadata }) => metadata.processApplication === this._processApplication.file.path);
+
+    return items;
   }
 }
