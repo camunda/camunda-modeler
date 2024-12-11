@@ -111,7 +111,7 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FEAT`: mark Camunda 7.22 and Camunda 8.6 as latest ([#4522](https://github.com/camunda/camunda-modeler/issues/4522))
-* `FEAT`: lint first item access ([bpmn-io/feel-lint#25](https://github.com/bpmn-io/feel-lint/issues/25))
+* `FEAT`: lint first item access ([#3604](https://github.com/camunda/camunda-modeler/issues/3604), [bpmn-io/feel-lint#25](https://github.com/bpmn-io/feel-lint/issues/25))
 * `FEAT`: support Camunda 8.6 built-ins ([bpmn-io/feel-editor#62](https://github.com/bpmn-io/feel-editor/pull/62), [#4500](https://github.com/camunda/camunda-modeler/issues/4500))
 * `DEPS`: update to `dmn-js@16.7.1`
 * `DEPS`: update to `dmn-js-shared@16.7.1`
