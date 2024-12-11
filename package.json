@@ -88,5 +88,8 @@
         false
       ]
     ]
+  },
+  "dependencies": {
+    "@camunda/rpa-integration": "^0.2.4"
   }
 }

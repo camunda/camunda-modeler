@@ -28,6 +28,7 @@ import dmnDiagram from './tabs/dmn/diagram.dmn';
 import cloudDmnDiagram from './tabs/cloud-dmn/diagram.dmn';
 import form from './tabs/form/initial.form';
 import cloudForm from './tabs/form/initial-cloud.form';
+import rpaScript from './tabs/rpa/initial.rpa';
 
 import {
   ENGINES
@@ -143,6 +144,43 @@ export default class TabsProvider {
           });
         },
         getIcon() {
+          return null;
+        }
+      },
+      'rpa': {
+        name: 'RPA',
+        encoding: 'utf8',
+        exports: {},
+        extensions: [ 'rpa' ],
+        canOpen(file) {
+          return file.name.endsWith('.rpa');
+        },
+        getComponent(options) {
+          return import('./tabs/rpa');
+        },
+        getIcon() {
+          return null;
+        },
+        getInitialContents() {
+          return rpaScript;
+        },
+        getInitialFilename(suffix) {
+          return `script_${suffix}.rpa`;
+        },
+        getHelpMenu() {
+          return [];
+        },
+        getNewFileMenu() {
+          return [ {
+            label: 'RPA script',
+            group: 'Camunda 8',
+            action: 'create-diagram',
+            options: {
+              type: 'rpa'
+            }
+          } ];
+        },
+        getLinter() {
           return null;
         }
       },
