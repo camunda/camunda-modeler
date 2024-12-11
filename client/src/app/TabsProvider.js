@@ -18,6 +18,8 @@ import {
 
 import replaceIds from '@bpmn-io/replace-ids';
 
+import { Bot } from '@carbon/icons-react';
+
 import { Linter as BpmnLinter } from '@camunda/linting';
 import { FormLinter } from '@camunda/form-linting/lib/FormLinter';
 
@@ -28,6 +30,7 @@ import dmnDiagram from './tabs/dmn/diagram.dmn';
 import cloudDmnDiagram from './tabs/cloud-dmn/diagram.dmn';
 import form from './tabs/form/initial.form';
 import cloudForm from './tabs/form/initial-cloud.form';
+import rpaScript from './tabs/rpa/initial.rpa';
 
 import {
   ENGINES
@@ -482,6 +485,43 @@ export default class TabsProvider {
         },
         getLinter() {
           return formLinter;
+        }
+      },
+      'rpa': {
+        name: 'RPA',
+        encoding: 'utf8',
+        exports: {},
+        extensions: [ 'rpa' ],
+        canOpen(file) {
+          return file.name.endsWith('.rpa');
+        },
+        getComponent(options) {
+          return import('./tabs/rpa');
+        },
+        getIcon() {
+          return Bot;
+        },
+        getInitialContents() {
+          return rpaScript;
+        },
+        getInitialFilename(suffix) {
+          return `script_${suffix}.rpa`;
+        },
+        getHelpMenu() {
+          return [];
+        },
+        getNewFileMenu() {
+          return [ {
+            label: 'RPA script',
+            group: 'Camunda 8',
+            action: 'create-diagram',
+            options: {
+              type: 'rpa'
+            }
+          } ];
+        },
+        getLinter() {
+          return null;
         }
       }
     };
