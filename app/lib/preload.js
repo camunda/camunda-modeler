@@ -52,16 +52,7 @@ const allowedEvents = [
   'zeebe:deploy',
   'zeebe:getGatewayVersion',
   'zeebe:run',
-  'file-context:add-root',
-  'file-context:remove-root',
-  'file-context:add-file',
-  'file-context:update-file',
-  'file-context:remove-file',
-  'file-context:file-opened', // TODO: fix naming (this event is renderer -> main)
-  'file-context:file-content-changed', // TODO: fix naming (this event is renderer -> main)
-  'file-context:file-closed', // TODO: fix naming (this event is renderer -> main)
-  'file-context:indexer-get-items', // TODO: fix naming (this event is renderer -> main)
-  'file-context:indexer-items-updated' // TODO: fix naming (this event is main -> renderer)
+  'file-context:changed'
 ];
 
 let executed = false;

@@ -217,6 +217,8 @@ export class App extends PureComponent {
         unsavedState = this.setUnsaved(tab, properties.unsaved);
       }
 
+      this._onTabOpened(tab);
+
       return {
         ...unsavedState,
         tabs: [
@@ -230,6 +232,9 @@ export class App extends PureComponent {
     return tab;
   }
 
+  _onTabOpened(tab) {
+    console.log('FIX ME: send to backend');
+  }
 
   /**
    * Navigate shown tabs in given direction.
@@ -727,10 +732,6 @@ export class App extends PureComponent {
         await this.selectTab(activeTab);
       }
     }
-
-    openedTabs.forEach(tab => {
-      // this.getGlobal('backend').send('file-context:add-file', tab.file.path);
-    });
 
     return openedTabs;
   };

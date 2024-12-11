@@ -757,19 +757,18 @@ function bootstrap() {
   // (11) file context
   const fileContext = new FileContext(Log('app:file-context'));
 
-  function onIndexerUpdated() {
-    const items = fileContext._indexer.getItems();
+  /**
+   * @param { import('./file-context/types').IndexItem } item
+   */
+  function onIndexerUpdated(item) {
 
-    renderer.send('file-context:indexer-items-updated', items.map(({ file, metadata = {} }) => {
-      return {
-        file,
-        metadata
-      };
-    }));
+    renderer.send('file-context:changed', {
+      file: item.file,
+      metadata: item.metadata
+    });
   }
 
   fileContext.on('indexer:updated', onIndexerUpdated);
-  fileContext.on('indexer:removed', onIndexerUpdated);
 
   app.on('quit', () => fileContext.close());
 
