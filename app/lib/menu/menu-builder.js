@@ -75,7 +75,6 @@ class MenuBuilder {
         .appendSeparator()
         .appendExportAs()
         .appendCloseTab()
-        .appendCloseProcessApplication()
         .appendSeparator()
         .appendQuit()
         .get()
@@ -194,13 +193,6 @@ class MenuBuilder {
       accelerator: 'CommandOrControl+O',
       click: function() {
         app.emit('menu:action', 'open-diagram');
-      }
-    }));
-
-    this.menu.append(new MenuItem({
-      label: 'Open Process Application...',
-      click: function() {
-        app.emit('menu:action', 'open-process-application');
       }
     }));
 
@@ -329,18 +321,6 @@ class MenuBuilder {
       enabled: canSwitchTab(this.options.state),
       click: function() {
         app.emit('menu:action', 'close-other-tabs');
-      }
-    }));
-
-    return this;
-  }
-
-  appendCloseProcessApplication() {
-    this.menu.append(new MenuItem({
-      label: 'Close Process Application',
-      enabled: this.options.state.openProcessApplication,
-      click: function() {
-        app.emit('menu:action', 'close-process-application');
       }
     }));
 

@@ -1,18 +1,29 @@
 :local(.ProcessApplicationsButton) {
-  background: linear-gradient(90deg, fuchsia 0%, transparent 100%) !important;
+  background: hsl(205, 100%, 45%) !important;
+
+  svg {
+    fill: white;
+  }
 }
   
 :local(.ProcessApplicationsOverlay) {
+  width: min-content;
+
   .link {
     cursor: pointer;
     text-decoration: underline;
   }
 
-  .section {
-    height: 500px !important;
+  ul {
+    padding: 0;
   }
 
-  ul.dashed {
-    max-height: none !important;
+  li {
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-right: 6px;
+    }
   }
 }

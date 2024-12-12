@@ -8,14 +8,19 @@
  * except in compliance with the MIT License.
  */
 
+const { findFileInParentDirectories } = require('./util');
+
 module.exports = {
   extensions: [ '.form' ],
   process: async (item) => {
+    const processApplicationFilePath = findFileInParentDirectories(item.file.path, '.process-application');
+
     const form = JSON.parse(item.file.contents);
 
     return {
       type: 'form',
-      ids: [ form.id ]
+      ids: [ form.id ],
+      processApplication: processApplicationFilePath
     };
   }
 };

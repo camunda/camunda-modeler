@@ -219,6 +219,18 @@ renderer.on('system-clipboard:write-text', function(options, done) {
 });
 
 // file context //////////
+renderer.on('file-context:add-root', function(filePath, done) {
+  fileContext.addRoot(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:remove-root', function(filePath, done) {
+  fileContext.removeRoot(filePath);
+
+  done(null);
+});
+
 renderer.on('file:opened', function(filePath, done) {
   fileContext.fileOpened({ uri: toFileUrl(filePath) });
 
@@ -727,16 +739,18 @@ function bootstrap() {
 
   const fileContext = new FileContext(fileContextLog);
 
-  /**
-   * @param { import('./file-context/types').IndexItem } item
-   */
-  function onIndexerUpdated(item) {
+  function onIndexerUpdated() {
     fileContextLog.info('files', JSON.stringify(fileContext._indexer.getItems().map(({ file, metadata }) => ({ file: { ...file, contents: file.contents.substring(0, 10) + '...' }, metadata })), null, 2));
 
-    renderer.send('file-context:changed', fileContext._indexer.getItems().map(({ file, metadata }) => ({ file, metadata })));
+
+    /* @type {import('./file-context/types').IndexItem} */
+    const items = fileContext._indexer.getItems();
+
+    renderer.send('file-context:changed', items.map(({ file, metadata }) => ({ file, metadata })));
   }
 
   fileContext.on('indexer:updated', onIndexerUpdated);
+  fileContext.on('indexer:removed', onIndexerUpdated);
 
   app.on('quit', () => fileContext.close());
 

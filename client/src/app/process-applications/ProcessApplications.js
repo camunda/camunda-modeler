@@ -17,8 +17,16 @@ export default class ProcessApplications {
 
       const activeTab = this._app.state.activeTab;
 
-      if (activeTab && activeTab.file) {
+      if (this.hasOpen()) {
+        this._processApplicationItems = this._items.filter(item => item.metadata.processApplication === this._processApplication.file.path);
+
+        this._app.emit('process-applications:changed');
+      } else if (activeTab) {
         const { file } = activeTab;
+
+        if (!file) {
+          return;
+        }
 
         const item = this._items.find(item => item.file.path === file.path);
 
@@ -31,6 +39,12 @@ export default class ProcessApplications {
     this._app.on('app.activeTabChanged', ({ activeTab }) => {
       const { file } = activeTab;
 
+      if (!file) {
+        this.close();
+
+        return;
+      }
+
       const item = this._items.find(item => item.file.path === file.path);
 
       if (!item || !item.metadata.processApplication) {
@@ -39,14 +53,13 @@ export default class ProcessApplications {
         return;
       }
 
-      const { metadata } = item;
-
-      if (metadata.processApplication) {
-        this.open(metadata.processApplication);
+      if (item.metadata.processApplication) {
+        this.open(item.metadata.processApplication);
       }
     });
 
     this._processApplication = null;
+    this._processApplicationItems = [];
     this._items = [];
   }
 
@@ -66,12 +79,14 @@ export default class ProcessApplications {
         dirname
       } = file;
 
-      this._app.getGlobal('backend').send('file-context:add-root', dirname);
-
       this._processApplication = {
         file,
         ...JSON.parse(contents)
       };
+
+      this._processApplicationItems = [];
+
+      this._app.getGlobal('backend').send('file-context:add-root', dirname);
     } catch (err) {
       console.error(err);
     }
@@ -83,6 +98,7 @@ export default class ProcessApplications {
     this._app.getGlobal('backend').send('file-context:remove-root', this._processApplication.file.dirname);
 
     this._processApplication = null;
+    this._processApplicationItems = [];
 
     this._app.emit('process-applications:changed');
   }
@@ -96,12 +112,10 @@ export default class ProcessApplications {
   }
 
   getItems() {
-    if (!this._processApplication) {
-      return [];
-    }
+    return this._processApplicationItems;
+  }
 
-    const items = this._items.filter(({ metadata }) => metadata.processApplication === this._processApplication.file.path);
-
-    return items;
+  getItem(path) {
+    return this._processApplicationItems.find(item => item.file.path === path);
   }
 }

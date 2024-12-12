@@ -13,6 +13,7 @@ const DmnModdle = require('dmn-moddle');
 const moddle = new DmnModdle();
 
 const {
+  findFileInParentDirectories,
   is,
   traverse
 } = require('./util');
@@ -20,11 +21,14 @@ const {
 module.exports = {
   extensions: [ '.dmn' ],
   process: async (item) => {
+    const processApplicationFilePath = findFileInParentDirectories(item.file.path, '.process-application');
+
     const { rootElement } = await moddle.fromXML(item.file.contents);
 
     return {
       type: 'dmn',
-      ids: findDecisionIds(rootElement)
+      ids: findDecisionIds(rootElement),
+      processApplication: processApplicationFilePath
     };
   }
 };
