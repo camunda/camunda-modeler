@@ -65,6 +65,20 @@
     border-right: 1px solid var(--tab-border-right-color);
     user-select: none;
 
+    // &.tab--process-application {
+    //   background: hsl(205, 100%, 45%) !important;
+    //   color: white;
+
+    //   .tab__close svg path {
+    //     fill: white !important;
+    //   }
+
+    //   &.tab--active::after,
+    //   &:not(.tab--active):hover::after {
+    //     background: white !important;
+    //   }
+    // }
+
     .tab__content {
       position: absolute;
       display: flex;
@@ -129,10 +143,10 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background-color: var(--tab-close-background-color);
+      // background-color: var(--tab-close-background-color);
 
       .tab__icon-close {
-        margin: auto 0 auto -1px;
+        margin: 1px 0px 1px -1px;
         fill: var(--tab-close-icon-fill-color);
       }
 

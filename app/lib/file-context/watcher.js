@@ -1,0 +1,170 @@
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+const {
+  FSWatcher
+} = require('chokidar');
+
+const {
+  getFileExtension,
+  toFilePath,
+  toFileUrl
+} = require('./util');
+
+/**
+ * @typedef { import('./types').Processor } Processor
+ */
+
+module.exports = class Watcher {
+
+  /**
+   * @param { import('./logger').default } logger
+   * @param { import('node:events').EventEmitter } eventBus
+   * @param { Processor[] } processors
+   */
+  constructor(logger, eventBus, processors) {
+
+    this._logger = logger;
+    this._eventBus = eventBus;
+
+    const extensions = processors.flatMap(processor => processor.extensions);
+
+    /**
+     * @type { string[] }
+     */
+    this._roots = [];
+
+    /**
+     * @type {Set<string>}
+     */
+    this._files = new Set();
+
+    this._logger.info('watcher:start');
+
+    /**
+     * @type { import('chokidar').FSWatcher }
+     */
+    this._chokidar = new FSWatcher({
+      ignored: /\/(node_modules|\.git)\//i,
+      atomic: 300
+    });
+
+    this._chokidar.on('add', path => {
+      this._logger.info('watcher:add');
+
+      if (!extensions.includes(getFileExtension(path))) {
+        return;
+      }
+
+      this._files.add(path);
+
+      this._emit('add', toFileUrl(path).toString());
+
+      this._changed();
+    });
+
+    this._chokidar.on('unlink', path => {
+      this._emit('remove', toFileUrl(path).toString());
+
+      this._files.delete(path);
+
+      this._changed();
+    });
+
+    // /\*|events/.test(process.env.DEBUG) && this._chokidar.on('all', (event, arg0) => {
+    this._chokidar.on('all', (event, arg0) => {
+      this._logger.info(event, arg0);
+    });
+
+    this._chokidar.on('ready', () => {
+      this._emit('ready');
+    });
+
+    eventBus.on('indexer:roots:add', (uri) => {
+      this.addFolder(uri);
+    });
+
+    eventBus.on('indexer:roots:remove', (uri) => {
+      this.removeFolder(uri);
+    });
+
+  }
+
+  /**
+   * @param { string } event
+   *
+   * @param { ...any[] } args
+   */
+  _emit(event, ...args) {
+    this._eventBus.emit('watcher:' + event, ...args);
+  }
+
+  /**
+   * @internal
+   */
+  _changed() {
+    clearTimeout(this._changedTimer);
+
+    this._changedTimer = setTimeout(() => {
+      this._emit('changed');
+    }, 300);
+  }
+
+  /**
+   * @return {string[]}
+   */
+  getFiles() {
+    return Array.from(this._files);
+  }
+
+  /**
+   * Add watched folder
+   *
+   * @param {string} uri
+   */
+  addFolder(uri) {
+    this._logger.info('watcher:addFolder', uri);
+
+    const path = toFilePath(uri);
+
+    if (this._roots.some(root => path.startsWith(root))) {
+      return;
+    }
+
+    this._roots.push(path);
+
+    this._chokidar.add(path);
+  }
+
+  /**
+   * Remove watched folder
+   *
+   * @param {string} uri
+   */
+  removeFolder(uri) {
+    this._logger.info('watcher:removeFolder', uri);
+
+    const path = toFilePath(uri);
+
+    if (!this._roots.some(root => path.startsWith(root))) {
+      return;
+    }
+
+    this._chokidar.unwatch(path);
+
+    this._roots = this._roots.filter(p => p !== path);
+  }
+
+  close() {
+    this._logger.info('watcher:close');
+
+    return this._chokidar.close();
+  }
+};

@@ -1,1 +1,4 @@
-{}
+{
+  "enable-new-context-pad": true,
+  "disable-connector-templates": true
+}

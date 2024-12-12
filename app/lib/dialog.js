@@ -105,6 +105,7 @@ class Dialog {
   showOpenDialog(options) {
     const {
       filters,
+      properties,
       title
     } = options;
 
@@ -117,7 +118,7 @@ class Dialog {
     return this.electronDialog.showOpenDialog(this.browserWindow, {
       defaultPath,
       filters,
-      properties: [ 'openFile', 'multiSelections' ],
+      properties: properties || [ 'openFile', 'multiSelections' ],
       title: title || 'Open File'
     }).then(response => {
 

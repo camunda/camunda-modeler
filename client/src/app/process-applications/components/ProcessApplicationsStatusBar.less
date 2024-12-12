@@ -1,0 +1,29 @@
+:local(.ProcessApplicationsButton) {
+  background: hsl(205, 100%, 45%) !important;
+
+  svg {
+    fill: white;
+  }
+}
+  
+:local(.ProcessApplicationsOverlay) {
+  width: min-content;
+
+  .link {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  ul {
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-right: 6px;
+    }
+  }
+}
