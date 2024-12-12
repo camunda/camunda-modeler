@@ -8,8 +8,10 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: element templates runtime versions ([#4530](https://github.com/camunda/camunda-modeler/issues/4530))
 * `FIX`: use `/processes` route for run instance link ([#4741](https://github.com/camunda/camunda-modeler/issues/4741))
 * `DEPS`: update to `@camunda/form-linting@0.19.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.4.0`
 
 ### Forms
 
