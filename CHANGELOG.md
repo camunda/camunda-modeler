@@ -9,10 +9,13 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FIX`: use `/processes` route for run instance link ([#4741](https://github.com/camunda/camunda-modeler/issues/4741))
-* `DEPS`: update to `@camunda/form-linting@0.19.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.13.1`
+* `DEPS`: update to `@camunda/form-linting@0.20.0`
+* `DEPS`: update to `@camunda/form-playground@0.19.1`
 
 ### Forms
 
+* `FEAT`: add `documentPreview` component ([bpmn-io/form-js#1329](https://github.com/bpmn-io/form-js/pull/1329), [bpmn-io/form-js#1332](https://github.com/bpmn-io/form-js/pull/1332))
 * `FIX`: mark filepicker as unavailable in Camunda 7 ([#4733](https://github.com/camunda/camunda-modeler/issues/4733))
 
 ## 5.30.0
