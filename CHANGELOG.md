@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.31.0
+
 ### General
 
 * `FIX`: use `/processes` route for run instance link ([#4741](https://github.com/camunda/camunda-modeler/issues/4741))
