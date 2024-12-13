@@ -13,16 +13,20 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/form-linting@0.20.0`
 * `DEPS`: update to `@camunda/form-playground@0.19.1`
 * `DEPS`: update to `@camunda/form-linting@0.19.0`
+* `DEPS`: update to `@camunda/linting@3.30.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.4.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.30.0`
-* `DEPS`: update to `camunda-bpmn-js@5.3.0`
+* `DEPS`: update to `camunda-bpmn-js@5.4.0`
 
 ### BPMN
 
+* `FEAT`: mark job worker-based user task managed by Camunda as deprecated ([#4690](https://github.com/camunda/camunda-modeler/issues/4690))
 * `FEAT`: element templates runtime versions ([#4530](https://github.com/camunda/camunda-modeler/issues/4530))
-* `FEAT`: make "Zeebe user task" the default implementation of user task ([camunda/camunda-bpmn-js-behaviors#86](https://github.com/camunda/camunda-bpmn-js-behaviors/pull/86))
-* `FEAT`: rename "Zeebe user task" to "Camunda user task" ([bpmn-io/bpmn-js-properties-panel#1097](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1097))
-* `FIX`: move template selector right below documentation group ([bpmn-io/bpmn-js-element-templates#130](https://github.com/bpmn-io/bpmn-js-element-templates/pull/130))
+* `FEAT`: make "Zeebe user task" the default implementation of user task ([#4648](https://github.com/camunda/camunda-modeler/issues/4648))
+* `FEAT`: rename "Zeebe user task" to "Camunda user task" ([#4749](https://github.com/camunda/camunda-modeler/issues/4749))
+* `FEAT`: rename task listener event types ([#4748](https://github.com/camunda/camunda-modeler/issues/4748))
+* `FIX`: move template selector right below documentation group ([#4617](https://github.com/camunda/camunda-modeler/issues/4617))
+* `FIX`: parse script task result as FEEL context ([#4614](https://github.com/camunda/camunda-modeler/issues/4614))
 
 ### Forms
 
