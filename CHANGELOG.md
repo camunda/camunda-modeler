@@ -9,7 +9,9 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FIX`: use `/processes` route for run instance link ([#4741](https://github.com/camunda/camunda-modeler/issues/4741))
-* `DEPS`: update to `@camunda/form-linting@0.19.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.13.1`
+* `DEPS`: update to `@camunda/form-linting@0.20.0`
+* `DEPS`: update to `@camunda/form-playground@0.19.1`
 
 ### Forms
 
