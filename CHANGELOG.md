@@ -18,7 +18,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/linting@3.30.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.4.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.30.0`
-* `DEPS`: update to `camunda-bpmn-js@5.4.0`
+* `DEPS`: update to `camunda-bpmn-js@5.4.1`
 
 ### BPMN
 
@@ -28,7 +28,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: rename "Zeebe user task" to "Camunda user task" ([#4749](https://github.com/camunda/camunda-modeler/issues/4749))
 * `FEAT`: rename task listener event types ([#4748](https://github.com/camunda/camunda-modeler/issues/4748))
 * `FIX`: move template selector right below documentation group ([#4617](https://github.com/camunda/camunda-modeler/issues/4617))
-* `FIX`: parse script task result as FEEL context ([#4614](https://github.com/camunda/camunda-modeler/issues/4614))
+* `FIX`: parse script task result as FEEL context ([#4614](https://github.com/camunda/camunda-modeler/issues/4614), [#4759](https://github.com/camunda/camunda-modeler/issues/4759))
 
 ### Forms
 
