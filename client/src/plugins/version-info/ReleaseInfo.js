@@ -45,15 +45,15 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Element template runtime versions</h4>
-          Define the runtime version for each element template to ensure compatibility with the Camunda runtime.
+          Define runtime compatibility for your element templates to promote safe use across different Camunda versions.
         </li>
         <li>
           <h4>Zeebe user task is now Camunda user task</h4>
           Implement user tasks as Camunda user tasks to ensure full compatibility.
         </li>
         <li>
-          <h4>Improved FEEL support</h4>
-          Access script task result expression easily thanks to context keys suggestions.
+          <h4>Improved Camunda 8 editor intelligence</h4>
+          Editor intelligence now picks data provided by script tasks.
         </li>
         <li>
           <h4>Document preview component in Forms</h4>
