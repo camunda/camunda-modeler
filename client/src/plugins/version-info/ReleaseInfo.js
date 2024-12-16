@@ -44,16 +44,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Support for task listeners in Camunda 8</h4>
-          Define user task listeners in your Camunda 8.7 diagrams, with helpful guidance provided every step of the way.
+          <h4>Element template runtime versions</h4>
+          Define the runtime version for each element template to ensure compatibility with the Camunda runtime.
         </li>
         <li>
-          <h4>Enhanced Variables panel</h4>
-          Quickly access the Variables panel from the application footer or toggle it using a keyboard shortcut.
+          <h4>Zeebe user task is now Camunda user task</h4>
+          Implement user tasks as Camunda user tasks to ensure full compatibility.
         </li>
         <li>
-          <h4>Improved on-canvas search</h4>
-          Locate elements and details more efficiently within BPMN diagrams, thanks to upgraded search and filtering capabilities.
+          <h4>Improved FEEL support</h4>
+          Access script task result expression easily thanks to context keys suggestions.
+        </li>
+        <li>
+          <h4>Document preview component in Forms</h4>
+          Model and view uploaded documents in a new preview component.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
