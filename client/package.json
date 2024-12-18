@@ -1,6 +1,6 @@
 {
   "name": "camunda-modeler-client",
-  "version": "5.31.0-rc.0",
+  "version": "5.31.0-dev",
   "description": "Camunda Modeler client application",
   "private": true,
   "license": "MIT",
@@ -21,6 +21,7 @@
     "@camunda/linting": "^3.30.0",
     "@camunda/rpa-integration": "0.0.1-alpha.0",
     "@carbon/icons-react": "^11.53.0",
+    "@carbon/styles": "^1.71.0",
     "@codemirror/commands": "^6.6.2",
     "@codemirror/lang-json": "^6.0.1",
     "@codemirror/lang-xml": "^6.1.0",
