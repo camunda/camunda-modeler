@@ -19,7 +19,7 @@
     "@camunda/form-playground": "^0.19.1",
     "@camunda/improved-canvas": "^1.7.5",
     "@camunda/linting": "^3.30.0",
-    "@camunda/rpa-integration": "0.0.1-alpha.0",
+    "@camunda/rpa-integration": "0.0.1-alpha.1",
     "@carbon/icons-react": "^11.53.0",
     "@carbon/styles": "^1.71.0",
     "@codemirror/commands": "^6.6.2",
