@@ -18,10 +18,6 @@ import { Fill } from '../../slot-fill';
 import classNames from 'classnames';
 
 export default function DeployButton(props) {
-  const editor = props.editor || {};
-
-  const eventBus = editor.eventBus;
-
   const [ isOpen, setIsOpen ] = useState(false);
   const buttonRef = useRef();
 
@@ -29,17 +25,6 @@ export default function DeployButton(props) {
     setIsOpen(false);
   };
 
-  useEffect(() => {
-    const cb = () => {
-      setIsOpen(true);
-    };
-
-    eventBus?.on('dialog.run.open', cb);
-
-    return () => {
-      eventBus?.off('dialog.run.open', cb);
-    };
-  }, [ eventBus ]);
 
   return <>
     {
