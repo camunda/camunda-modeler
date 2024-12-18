@@ -10,24 +10,13 @@
 
 import React from 'react';
 
-// import {
-//   WithCache,
-//   WithCachedState,
-//   CachedComponent
-// } from 'camunda-modeler-plugin-helpers/components';
-
-const {
+import {
   WithCache,
   WithCachedState,
   CachedComponent
-} = window.components;
-
-
-// import Monaco from './Monaco';
+} from '../../cached';
 
 import * as css from './RPAEditor.less';
-
-// import { getRobotEditMenu } from './getRobotEditMenu';
 
 import {
   isString
