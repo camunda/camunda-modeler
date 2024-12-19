@@ -9,15 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      tag: ${{ steps.tag.outputs.TAG }}
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+    - name: Get tag
+      id: tag
+      run: |
+        echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
     - name: Create GitHub release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        TAG=$(git describe --tags --abbrev=0)
-        gh release create $TAG --draft --title $TAG
+        gh release create ${{ steps.tag.outputs.TAG }} --draft --title ${{ steps.tag.outputs.TAG }}
 
   build_release:
     name: Build release
@@ -125,3 +130,64 @@ jobs:
         EMAIL_TO: "${{ secrets.EMAIL_TO }}"
         EMAIL_USERNAME: "${{ secrets.EMAIL_USERNAME }}"
       run: npm run send-license-book-summary
+
+  communicate_release:
+    name: Communicate release
+    needs:
+    - pre_release
+    - build_release
+    runs-on: ubuntu-latest
+
+    # skip for release candidates
+    if: contains(needs.pre_release.outputs.tag, 'rc') == false
+    steps:
+    - name: Import Secrets
+      id: secrets
+      uses: hashicorp/vault-action@v3.0.0
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/products/desktop-modeler/ci/slack_integration SUPPORT_SLACK_CHANNEL_ID;
+          secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
+    - name: Get changelog link
+      id: changelog
+      run: |
+        VERSION="$(echo ${{ needs.pre_release.outputs.tag }} | sed 's/v//' | tr -d '.')"
+        echo "LINK=https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md#$VERSION" >> $GITHUB_OUTPUT
+    - name: Get milestone link
+      id: milestone
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # Fetch the list of milestones for the repository
+        # Filter for milestones that start with 'M' and are open
+        MILESTONE=$(gh api -H "Accept: application/vnd.github.v3+json" \
+          /repos/${{ github.repository }}/milestones \
+          --jq '[.[] | select(.title | startswith("M")) | .number ][0]'
+        )
+        echo "LINK=https://github.com/camunda/camunda-modeler/issues?q=is%3Aissue+label%3Achannel%3Asupport+milestone%3A$MILESTONE" >> $GITHUB_OUTPUT
+    - name: Post to a Slack channel
+      uses: slackapi/slack-github-action@v2
+      with:
+        method: chat.postMessage
+        token: ${{ steps.secrets.outputs.SLACK_BOT_TOKEN }}
+        payload: |
+          channel: ${{ steps.secrets.outputs.SUPPORT_SLACK_CHANNEL_ID }}
+          blocks:
+            - type: section
+              text:
+                type: plain_text
+                text: '[fyi] Hi, Desktop Modeler ${{ needs.pre_release.outputs.tag }} release is upcoming.'
+            - type: section
+              text:
+                type: mrkdwn
+                text: '${{ steps.changelog.outputs.LINK }}|Changelog>'
+            - type: section
+              text:
+                type: mrkdwn
+                text: '<${{ steps.milestone.outputs.LINK }}|Closed issues related to support>'
+
