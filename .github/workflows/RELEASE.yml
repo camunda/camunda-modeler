@@ -181,7 +181,7 @@ jobs:
             - type: section
               text:
                 type: plain_text
-                text: '[fyi] Hi, Desktop Modeler ${{ needs.pre_release.outputs.tag }} release is upcoming.'
+                text: '[fyi] Hi, Desktop Modeler ${{ needs.pre_release.outputs.tag }} release is upcoming. Contact @desktop-modeler-release-manager in case of any questions.'
             - type: section
               text:
                 type: mrkdwn
@@ -190,4 +190,3 @@ jobs:
               text:
                 type: mrkdwn
                 text: '<${{ steps.milestone.outputs.LINK }}|Closed issues related to support>'
-
