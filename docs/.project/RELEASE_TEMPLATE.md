@@ -56,6 +56,7 @@ _To be done once the release is built._
 
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
 * [ ] close [current milestone](https://github.com/camunda/camunda-modeler/milestones)
+* [ ] communicate the release to [support](https://app.slack.com/client/T0PM0P1SA/CHAC0L80M) (changelog link, closed support issues; [example message](https://camunda.slack.com/archives/CHAC0L80M/p1733480373630349))
 
 _To be done as a post-release activity._
 
