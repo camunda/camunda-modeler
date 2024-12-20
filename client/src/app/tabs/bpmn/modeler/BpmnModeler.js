@@ -59,7 +59,10 @@ export default class PlatformBpmnModeler extends BpmnModeler {
       ...otherOptions,
       additionalModules,
       moddleExtensions,
-      disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN)
+      disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN),
+      canvas: {
+        autoFocus: true
+      }
     });
   }
 }

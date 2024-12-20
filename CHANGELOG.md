@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `DEPS`: update to `camunda-bpmn-js@5.4.2`
+
 ## 5.31.0
 
 ### General

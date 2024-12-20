@@ -99,6 +99,9 @@ export default class CamundaDmnModeler extends DmnModeler {
       moddleExtensions: {
         ...moddleExtensions,
         modeler: modelerModdle
+      },
+      canvas: {
+        autoFocus: true
       }
     });
 
