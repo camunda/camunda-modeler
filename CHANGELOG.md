@@ -9,6 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FEAT`: support Camunda 8.8
+* `FEAT`: recognize documentation URLs provided via lint rules ([#4491](https://github.com/camunda/camunda-modeler/issues/4491))
 * `DEPS`: update to `@camunda/improved-canvas@1.7.6`
 * `DEPS`: update to `@camunda/linting@3.32.1`
 
