@@ -115,7 +115,7 @@ export default class EmptyTab extends PureComponent {
           </div>
           <div className="article relative">
             <p>Migrating from Camunda 7</p>
-            <a href="https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/">Camunda Docs</a>
+            <a href="https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/?utm_source=modeler&utm_medium=referral">Camunda Docs</a>
           </div>
           <div className="article">
             <p>About Modeler 5</p>
@@ -123,7 +123,7 @@ export default class EmptyTab extends PureComponent {
           </div>
           <div className="article">
             <p>Model your first diagram</p>
-            <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/model-your-first-diagram/">Camunda Modeler Docs</a>
+            <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/model-your-first-diagram/?utm_source=modeler&utm_medium=referral">Camunda Modeler Docs</a>
           </div>
         </div>
       </div>
