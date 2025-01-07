@@ -78,6 +78,13 @@ const BPMN_HELP_MENU = [
   }
 ];
 
+const C7_HELP_MENU = [
+  {
+    label: 'Migrate to Camunda 8',
+    action: 'https://docs.camunda.io/docs/guides/migrating-from-camunda-7/?utm_source=modeler&utm_medium=referral'
+  }
+];
+
 const DMN_HELP_MENU = [
   {
     label: 'DMN Tutorial',
@@ -242,7 +249,7 @@ export default class TabsProvider {
           return `diagram_${suffix}.bpmn`;
         },
         getHelpMenu() {
-          return BPMN_HELP_MENU;
+          return BPMN_HELP_MENU.concat(C7_HELP_MENU);
         },
         getNewFileMenu() {
           return [ {
@@ -354,7 +361,7 @@ export default class TabsProvider {
           return `diagram_${suffix}.dmn`;
         },
         getHelpMenu() {
-          return DMN_HELP_MENU;
+          return DMN_HELP_MENU.concat(C7_HELP_MENU);
         },
         getNewFileMenu() {
           return [ {
