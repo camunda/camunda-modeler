@@ -80,7 +80,7 @@ const BPMN_HELP_MENU = [
 
 const C7_HELP_MENU = [
   {
-    label: 'Migrate to Camunda 8',
+    label: 'Camunda 8 Migration Guide',
     action: 'https://docs.camunda.io/docs/guides/migrating-from-camunda-7/?utm_source=modeler&utm_medium=referral'
   }
 ];
