@@ -45,7 +45,7 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Element template runtime versions</h4>
-          Define runtime compatibility for your element templates to promote safe use across different Camunda versions.
+          We now check element templates compatibility with your runtime version for templates that provide <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/defining-templates/#template-compatibility">compatibility information</a>.
         </li>
         <li>
           <h4>“Zeebe user task” renamed to “Camunda user task”</h4>
