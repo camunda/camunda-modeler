@@ -48,20 +48,16 @@ export function ReleaseInfo(props) {
           Define runtime compatibility for your element templates to promote safe use across different Camunda versions.
         </li>
         <li>
-          <h4>Zeebe user task is now Camunda user task</h4>
-          Implement user tasks as Camunda user tasks to ensure full compatibility.
+          <h4>“Zeebe user task” renamed to “Camunda user task”</h4>
+          Camunda user tasks are now the preferred implementation for all user tasks.
         </li>
         <li>
-          <h4>Improved Camunda 8 editor intelligence</h4>
-          Editor intelligence now picks data provided by script tasks.
+          <h4>Enhanced FEEL support</h4>
+          Easily access script task result expressions with the help of context key suggestions.
         </li>
         <li>
           <h4>Document preview component in Forms</h4>
-          Model and view uploaded documents in a new preview component.
-        </li>
-        <li>
-          <h4>Bug fixes and more</h4>
-          This release includes bug fixes and additional minor improvements to enhance your experience.
+          Model and preview uploaded documents with the new document preview component.
         </li>
       </ul>
     </div>
