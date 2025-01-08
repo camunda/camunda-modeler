@@ -38,6 +38,10 @@ export class DropHandler {
   }
 
   handleDragLeave(event) {
+    if (!this.isDragAllowed(event)) {
+      return DropHandler.STATES.NOT_DRAGGING;
+    }
+
     event.preventDefault();
     event.stopPropagation();
 
