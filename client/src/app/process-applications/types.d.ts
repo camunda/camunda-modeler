@@ -17,6 +17,11 @@ export type Reference = {
   }
 };
 
+export type AutoCompletion = {
+  value: string,
+  uri: string
+};
+
 export type File = {
   contents: string,
   dirname: string,

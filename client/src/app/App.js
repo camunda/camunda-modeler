@@ -69,6 +69,7 @@ import ProcessApplications from './process-applications';
 import { ProcessApplicationsStatusBar } from './process-applications/components';
 
 import References from './process-applications/References';
+import AutoCompletions from './process-applications/AutoCompletions';
 
 import { PluginsRoot } from './plugins';
 
@@ -161,6 +162,7 @@ export class App extends PureComponent {
     });
 
     this.references = new References(processApplications);
+    this.autoCompletions = new AutoCompletions(processApplications);
 
     this.tabRef = React.createRef();
 
