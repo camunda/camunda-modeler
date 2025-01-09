@@ -18,6 +18,8 @@ jobs:
         cache: 'npm'
     - name: Install dependencies
       run: npm ci
+    - name: Setup project
+      run: bpmn-io/actions/setup@latest
     - name: Build with code coverage
       if: ${{ runner.OS == 'Linux' }}
       run: COVERAGE=1 npm run all -- --x64 --no-compress
