@@ -68,6 +68,8 @@ import History from './History';
 import ProcessApplications from './process-applications';
 import { ProcessApplicationsStatusBar } from './process-applications/components';
 
+import References from './process-applications/References';
+
 import { PluginsRoot } from './plugins';
 
 import * as css from './App.less';
@@ -157,6 +159,8 @@ export class App extends PureComponent {
         });
       }
     });
+
+    this.references = new References(processApplications);
 
     this.tabRef = React.createRef();
 
