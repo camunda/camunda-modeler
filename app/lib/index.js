@@ -41,6 +41,13 @@ const {
   registerConnectorTemplateUpdater
 } = require('./connector-templates');
 
+const FileContext = require('./file-context/file-context');
+const { toFileUrl, toFilePath } = require('./file-context/util');
+const {
+  findProcessApplicationFile,
+  isProcessApplicationFile
+} = require('./file-context/processors/util');
+
 const {
   readFile,
   readFileStats,
@@ -80,6 +87,7 @@ const {
 const {
   config,
   dialog,
+  fileContext,
   files,
   flags,
   menu,
@@ -213,6 +221,46 @@ renderer.on('system-clipboard:write-text', function(options, done) {
   clipboardWriteText(text);
 
   done(null, undefined);
+});
+
+// file context //////////
+renderer.on('file-context:add-root', function(filePath, done) {
+  fileContext.addRoot(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:remove-root', function(filePath, done) {
+  fileContext.removeRoot(filePath);
+
+  done(null);
+});
+
+renderer.on('file-context:file-opened', function(filePath, value, done) {
+  fileContext.fileOpened({ uri: toFileUrl(filePath), value });
+
+  done(null);
+});
+
+renderer.on('file-context:file-content-changed', function(filePath, value, done) {
+  fileContext.fileContentChanged({ uri: toFileUrl(filePath), value });
+
+  done(null);
+});
+
+renderer.on('file-context:file-closed', function(filePath, done) {
+  fileContext.fileClosed(toFileUrl(filePath));
+
+  done(null);
+});
+
+renderer.on('file:content-changed', function(filePath, contents, done) {
+  fileContext.fileContentChanged({
+    uri: toFileUrl(filePath),
+    value: contents
+  });
+
+  done(null);
 });
 
 // filesystem //////////
@@ -697,9 +745,53 @@ function bootstrap() {
     registerConnectorTemplateUpdater(renderer, userPath);
   }
 
+  // (11) file context
+  const fileContextLog = Log('app:file-context');
+
+  const fileContext = new FileContext(fileContextLog);
+
+  let lastItems = [];
+
+  function onIndexerUpdated() {
+    const items = fileContext._indexer.getItems();
+
+    const added = items.filter(({ uri }) => !lastItems.find(({ uri: lastUri }) => uri === lastUri));
+    const removed = lastItems.filter(({ uri }) => !items.find(({ uri: newUri }) => uri === newUri));
+
+    lastItems = items;
+
+    fileContextLog.info('added', added.map(({ file }) => file.path));
+    fileContextLog.info('removed', removed.map(({ file }) => file.path));
+    fileContextLog.info('items', items.map(({ uri, metadata }) => ({ uri, metadata: JSON.stringify(metadata, null, 2) })));
+
+    renderer.send('file-context:changed', items.map(({ file, metadata }) => ({ file, metadata })));
+  }
+
+  fileContext.on('indexer:updated', onIndexerUpdated);
+  fileContext.on('indexer:removed', onIndexerUpdated);
+
+  function onFileOpened(fileUri) {
+    const filePath = toFilePath(fileUri);
+
+    if (isProcessApplicationFile(filePath)) {
+      return;
+    }
+
+    const processApplicationFile = findProcessApplicationFile(filePath);
+
+    if (processApplicationFile) {
+      fileContext.addRoot(path.dirname(processApplicationFile));
+    }
+  };
+
+  fileContext.on('indexer:file-opened', onFileOpened);
+
+  app.on('quit', () => fileContext.close());
+
   return {
     config,
     dialog,
+    fileContext,
     files,
     flags,
     menu,

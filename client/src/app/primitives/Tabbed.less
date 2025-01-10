@@ -194,7 +194,8 @@
     }
 
     /* tab bottom lines (active + hover) */
-    &.tab--active::after,
+    &.tab--active:after,
+    &.tab--process-application:after,
     &:not(.tab--active):hover::after {
       z-index: 3;
       position: absolute;
@@ -205,12 +206,16 @@
       height: 2px;
     }
 
-    &:not(.tab--active):hover::after {
+    &:not(.tab--active):hover:after {
       background-color: var(--tab-line-hover-background-color);
     }
 
-    &.tab--active::after {
+    &.tab--active:after {
       background-color: var(--tab-line-active-background-color);
+    }
+
+    &.tab--process-application:not(.tab--active):after {
+      background-color: var(--color-grey-225-10-75);
     }
   }
 }

@@ -65,12 +65,17 @@ import pSeries from 'p-series';
 
 import History from './History';
 
+import ProcessApplications from './process-applications';
+import { ProcessApplicationsStatusBar } from './process-applications/components';
+
 import { PluginsRoot } from './plugins';
 
 import * as css from './App.less';
 
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 import { RecentTabs } from './RecentTabs';
+
+import ProcessApplicationIcon from '../../resources/icons/file-types/ProcessApplication.svg';
 
 const log = debug('App');
 
@@ -91,6 +96,7 @@ const INITIAL_STATE = {
   dirtyTabs: {},
   unsavedTabs: {},
   recentTabs: [],
+  processApplication: null,
   layout: {},
   tabs: [],
   tabState: {},
@@ -123,6 +129,33 @@ export class App extends PureComponent {
     this.recentTabs = new RecentTabs({
       setState: value => this.setState({ recentTabs: value }),
       config: this.getGlobal('config')
+    });
+
+    const processApplications = this.processApplications = new ProcessApplications(this);
+
+    this.getGlobal('backend').on('file-context:changed', (_, items) => {
+      processApplications.emit('items-changed', items);
+    });
+
+    this.on('app.activeTabChanged', ({ activeTab }) => {
+      processApplications.emit('activeTab-changed', activeTab);
+    });
+
+    processApplications.on('changed', () => {
+      const hasOpenProcessApplication = processApplications.hasOpen();
+
+      if (!hasOpenProcessApplication) {
+        this.setState({
+          processApplication: null
+        });
+      } else {
+        this.setState({
+          processApplication: {
+            ...processApplications.getOpen(),
+            items: processApplications.getItems()
+          }
+        });
+      }
     });
 
     this.tabRef = React.createRef();
@@ -192,6 +225,8 @@ export class App extends PureComponent {
         unsavedState = this.setUnsaved(tab, properties.unsaved);
       }
 
+      this._onTabOpened(tab);
+
       return {
         ...unsavedState,
         tabs: [
@@ -204,7 +239,6 @@ export class App extends PureComponent {
 
     return tab;
   }
-
 
   /**
    * Navigate shown tabs in given direction.
@@ -426,6 +460,8 @@ export class App extends PureComponent {
     });
 
     await this._removeTab(tab);
+
+    this._onTabClosed(tab);
 
     return true;
   };
@@ -1041,6 +1077,8 @@ export class App extends PureComponent {
 
     this.emit('tab.saved', { tab });
     this.triggerAction('lint-tab', { tab });
+
+    this._onTabSaved(tab);
 
     return tab;
   }
@@ -1741,6 +1779,40 @@ export class App extends PureComponent {
     return this.getGlobal('dialog').show(options);
   }
 
+  async showCreateProcessApplicationDialog() {
+    const dialog = this.getGlobal('dialog');
+
+    const [ directoryPath ] = await dialog.showOpenFilesDialog({
+      properties: [ 'openDirectory' ],
+      title: 'Create Process Application'
+    });
+
+    return directoryPath;
+  }
+
+  /**
+   * Create and save new process application.
+   */
+  async createProcessApplication() {
+    const directoryPath = await this.showCreateProcessApplicationDialog();
+
+    if (!directoryPath) {
+      return;
+    }
+
+    const file = {
+      name: '.process-application',
+      contents: JSON.stringify({}, null, 2),
+      path: null
+    };
+
+    const fileSystem = this.getGlobal('fileSystem');
+
+    await fileSystem.writeFile(`${directoryPath}/${file.name}`, file);
+
+    this.getGlobal('backend').send('file-context:file-opened', `${directoryPath}/${file.name}`, undefined);
+  }
+
   triggerAction = failSafe((action, options) => {
 
     const {
@@ -1749,6 +1821,10 @@ export class App extends PureComponent {
 
 
     log('App#triggerAction %s %o', action, options);
+
+    if (action === 'create-process-application') {
+      return this.createProcessApplication();
+    }
 
     if (action === 'lint-tab') {
       const {
@@ -2063,6 +2139,22 @@ export class App extends PureComponent {
     return fn;
   };
 
+  _onTabOpened(tab) {
+    if (!this.isUnsaved(tab)) {
+      this.getGlobal('backend').send('file-context:file-opened', tab.file.path, undefined);
+    }
+  }
+
+  _onTabClosed(tab) {
+    if (!this.isUnsaved(tab)) {
+      this.getGlobal('backend').send('file-context:file-closed', tab.file.path);
+    }
+  }
+
+  _onTabSaved(tab) {
+    this.getGlobal('backend').send('file-context:file-content-changed', tab.file.path, undefined);
+  }
+
   render() {
 
     const {
@@ -2105,6 +2197,7 @@ export class App extends PureComponent {
                     title: 'Welcome Screen'
                   } }
                   draggable
+                  processApplication={ this.state.processApplication }
                 />
 
                 <TabContainer className="main">
@@ -2154,6 +2247,17 @@ export class App extends PureComponent {
 
               <StatusBar />
 
+              <ProcessApplicationsStatusBar
+                activeTab={ activeTab }
+                processApplication={ this.state.processApplication }
+                onOpen={ async (path) => {
+                  const files = await this.readFileList([ path ]);
+
+                  await this.openFiles(files);
+                } }
+                tabsProvider={ this.props.tabsProvider }
+              />
+
               <PluginsRoot
                 app={ this }
                 plugins={ this.plugins }
@@ -2178,7 +2282,15 @@ export class App extends PureComponent {
   }
 
   _getNewFileItems = () => {
-    let items = [];
+    let items = [
+      {
+        text: 'Process application',
+        group: 'Camunda 8',
+        icon: ProcessApplicationIcon,
+        onClick: () => this.triggerAction('create-process-application')
+      }
+    ];
+
     const providers = this.props.tabsProvider.getProviders();
 
     forEach(providers, provider => {
