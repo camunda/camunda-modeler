@@ -142,12 +142,12 @@ describe('<ZeebeAPI>', function() {
       const targetType = ENDPOINT_TYPES.CAMUNDA_CLOUD;
       const camundaCloudClientId = 'camundaCloudClientId';
       const camundaCloudClientSecret = 'camundaCloudClientSecret';
-      const camundaCloudClusterId = 'camundaCloudClusterId';
+      const camundaCloudClusterUrl = 'camundaCloudClusterUrl';
       const endpoint = {
         targetType,
         camundaCloudClientId,
         camundaCloudClientSecret,
-        camundaCloudClusterId
+        camundaCloudClusterUrl
       };
 
       // when
@@ -159,7 +159,7 @@ describe('<ZeebeAPI>', function() {
           type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
           clientId: camundaCloudClientId,
           clientSecret: camundaCloudClientSecret,
-          clusterId: camundaCloudClusterId
+          url: camundaCloudClusterUrl
         }
       });
 

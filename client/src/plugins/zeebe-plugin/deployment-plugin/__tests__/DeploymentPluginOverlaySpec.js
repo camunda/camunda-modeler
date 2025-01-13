@@ -90,8 +90,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
 
     // assume
     expect(spy).to.have.been.calledOnce;
-    expect(spy.getCall(0).args[0].camundaCloudClusterId).to.equal('7edda473-891c-4978-aa27-2e727d8560ff');
-    expect(spy.getCall(0).args[0].camundaCloudClusterRegion).to.equal('ber-5');
+    expect(spy.getCall(0).args[0].camundaCloudClusterUrl).to.equal('7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443');
 
     // when
     const input = wrapper.find('input[id="endpoint.camundaCloudClusterUrl"]');
@@ -100,8 +99,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
 
     // then
     expect(spy).to.have.been.calledTwice;
-    expect(spy.getCall(1).args[0].camundaCloudClusterId).to.equal('a-b-c');
-    expect(spy.getCall(1).args[0].camundaCloudClusterRegion).to.equal('foo-1');
+    expect(spy.getCall(1).args[0].camundaCloudClusterUrl).to.equal('a-b-c.foo-1.zeebe.camunda.io:443');
 
     done();
   });
