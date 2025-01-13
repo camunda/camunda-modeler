@@ -22,7 +22,7 @@ const path = require('path');
 
 const fs = require('fs');
 
-const ZeebeNode = require('zeebe-node');
+const { Camunda8 } = require('@camunda8/sdk');
 
 const Cli = require('./cli');
 const Config = require('./config');
@@ -690,7 +690,7 @@ function bootstrap() {
   errorTracking.setTag(Sentry, 'plugins', generatePluginsTag(plugins));
 
   // (9) zeebe API
-  const zeebeAPI = new ZeebeAPI({ readFile }, ZeebeNode, flags);
+  const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8, flags);
 
   // (10) connector templates
   if (!flags.get('disable-connector-templates', false)) {

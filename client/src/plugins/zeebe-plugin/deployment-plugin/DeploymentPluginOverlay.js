@@ -174,12 +174,6 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
       delete endpoint.scope;
     }
 
-    // Extract clusterId and clusterRegion as required by zeebeAPI for camundaCloud
-    if (endpoint.targetType === CAMUNDA_CLOUD && endpoint.camundaCloudClusterUrl) {
-      endpoint.camundaCloudClusterId = extractClusterId(endpoint.camundaCloudClusterUrl);
-      endpoint.camundaCloudClusterRegion = extractClusterRegion(endpoint.camundaCloudClusterUrl);
-    }
-
     this.connectionChecker.check(endpoint);
 
     this.setState({ configValues: formValues });
