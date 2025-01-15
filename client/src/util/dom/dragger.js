@@ -8,10 +8,10 @@
  * except in compliance with the MIT License.
  */
 
-import {
-  domify
-} from 'min-dom';
-
+// This is a 1x1px transparent GIF. It's used to override the default drag preview image.
+// For macOS, this has to be an actual image and has to be loaded before we set it.
+const EMPTY_IMAGE = new Image(1, 1);
+EMPTY_IMAGE.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
 /**
  * Add a dragger that calls back the passed function with
@@ -45,7 +45,7 @@ export default function createDragger(fn) {
 
     // (1) prevent preview image
     if (event.dataTransfer) {
-      event.dataTransfer.setDragImage(emptyCanvas(), 0, 0);
+      event.dataTransfer.setDragImage(EMPTY_IMAGE, 0, 0);
     }
 
     // (2) setup drag listeners
@@ -73,11 +73,6 @@ export default function createDragger(fn) {
   }
 
   return onDragStart;
-}
-
-
-function emptyCanvas() {
-  return domify('<canvas width="0" height="0" />');
 }
 
 function preventDefault(event) {
