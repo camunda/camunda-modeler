@@ -1,0 +1,40 @@
+:local(.ProcessApplicationsButton) {
+  background: hsl(205, 100%, 45%) !important;
+
+  svg {
+    fill: white;
+  }
+}
+  
+:local(.ProcessApplicationsOverlay) {
+  width: min-content;
+
+  .section__header {
+    white-space: nowrap;
+  }
+
+  .link {
+    cursor: pointer;
+    text-decoration: underline;
+    white-space: nowrap;
+
+    &.active {
+      cursor: default;
+      text-decoration: none;
+      color: hsl(205, 100%, 45%);
+    }
+  }
+
+  ul {
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-right: 6px;
+    }
+  }
+}

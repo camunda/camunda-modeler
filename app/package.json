@@ -13,12 +13,16 @@
   "dependencies": {
     "@sentry/integrations": "^7.113.0",
     "@sentry/node": "^8.0.0",
+    "bpmn-moddle": "^9.0.1",
+    "chokidar": "^4.0.1",
+    "dmn-moddle": "^10.0.0",
     "epipebomb": "^1.0.0",
     "fast-glob": "^3.3.1",
     "ids": "^1.0.0",
     "min-dash": "^4.1.1",
     "mri": "^1.1.6",
     "parents": "^1.0.1",
+    "zeebe-bpmn-moddle": "^1.7.0",
     "zeebe-node": "^8.3.2"
   },
   "homepage": "https://github.com/camunda/camunda-modeler",
