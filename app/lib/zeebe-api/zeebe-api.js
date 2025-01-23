@@ -668,6 +668,12 @@ function getResource(parameters, contents, resourceName) {
     resource.decision = contents;
   } else if (resourceType === RESOURCE_TYPES.FORM) {
     resource.form = contents;
+  } else {
+
+    // Fallback for unknown resource, cf.
+    // https://github.com/camunda-community-hub/zeebe-client-node-js/blob/7969ce1808c96a87519cb1a3f279287f30637c4b/src/zb/ZBClient.ts#L873-L886
+
+    resource.form = contents;
   }
 
   if (tenantId) {

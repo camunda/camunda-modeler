@@ -18,7 +18,8 @@ import Flags, {
   CLOUD_ENGINE_VERSION,
   PLATFORM_ENGINE_VERSION,
   DISABLE_HTTL_HINT,
-  DEFAULT_HTTL
+  DEFAULT_HTTL,
+  DISABLE_RPA
 } from '../../util/Flags';
 
 import {
@@ -886,7 +887,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM', 'RPA' ]);
 
     });
 
@@ -903,7 +904,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN', 'FORM' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN', 'FORM', 'RPA' ]);
 
     });
 
@@ -920,7 +921,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM', 'RPA' ]);
 
     });
 
@@ -1162,6 +1163,21 @@ describe('TabsProvider', function() {
 
       // then
       expect(tabsProvider.hasProvider('cmmn')).to.be.true;
+    });
+
+
+    it('should disable RPA', function() {
+
+      // given
+      Flags.init({
+        [DISABLE_RPA]: true
+      });
+
+      // when
+      const tabsProvider = new TabsProvider();
+
+      // then
+      expect(tabsProvider.hasProvider('rpa')).to.be.false;
     });
 
 

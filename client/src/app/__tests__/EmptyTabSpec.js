@@ -39,11 +39,12 @@ describe('<EmptyTab>', function() {
       buttons.forEach(wrapper => wrapper.simulate('click'));
 
       // then
-      expect(onAction).to.have.callCount(6);
+      expect(onAction).to.have.callCount(7);
       expect(onAction.args).to.eql([
         [ 'create-cloud-bpmn-diagram', undefined ],
         [ 'create-cloud-dmn-diagram', undefined ],
         [ 'create-cloud-form', undefined ],
+        [ 'create-diagram', { type: 'rpa' } ],
         [ 'create-bpmn-diagram', undefined ],
         [ 'create-dmn-diagram', undefined ],
         [ 'create-form', undefined ]
