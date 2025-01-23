@@ -1,0 +1,25 @@
+:root {
+  --xml-editor-button-color: var(--color-grey-225-10-15);
+  --xml-editor-button-border-color: var(--color-grey-225-10-75);
+  --xml-editor-button-background-color: var(--color-grey-225-10-95);
+  --xml-editor-font-size: var(--font-size-default);
+  --xml-editor-font-size-small: 13px;
+  --xml-editor-tag-color: #10f;
+  --xml-editor-string-color: #a11;
+}
+
+.robotTab {
+  display: flex;
+  flex: 1;
+
+  flex-direction: row;
+  overflow: auto;
+
+  .content {
+    width: 100%;
+    height: 100%;
+    position: absolute !important;
+    flex: 1;
+    overflow: hidden;
+  }
+}

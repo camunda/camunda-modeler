@@ -18,7 +18,8 @@ import Flags, {
   CLOUD_ENGINE_VERSION,
   PLATFORM_ENGINE_VERSION,
   DISABLE_HTTL_HINT,
-  DEFAULT_HTTL
+  DEFAULT_HTTL,
+  DISABLE_RPA
 } from '../../util/Flags';
 
 import {
@@ -473,6 +474,21 @@ describe('TabsProvider', function() {
           // then
           expect(contents).to.include(`"executionPlatformVersion": "${ expectedPlatformVersion }"`);
         });
+
+
+        it('should replace version placeholder with actual latest version (RPA)', function() {
+
+          // given
+          const tabsProvider = new TabsProvider();
+
+          const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.CLOUD);
+
+          // when
+          const { file: { contents } } = tabsProvider.createTab('rpa');
+
+          // then
+          expect(contents).to.include(`"executionPlatformVersion": "${ expectedPlatformVersion }"`);
+        });
       });
     });
 
@@ -556,6 +572,7 @@ describe('TabsProvider', function() {
     expect(tabsProvider.createTab('dmn')).to.exist;
     expect(tabsProvider.createTab('cloud-dmn')).to.exist;
     expect(tabsProvider.createTab('form')).to.exist;
+    expect(tabsProvider.createTab('rpa')).to.exist;
   });
 
 
@@ -870,6 +887,7 @@ describe('TabsProvider', function() {
     expect(providers['cmmn']).to.exist;
     expect(providers['dmn']).to.exist;
     expect(providers['cloud-dmn']).to.exist;
+    expect(providers['rpa']).to.exist;
     expect(providers['empty']).to.exist;
   });
 
@@ -886,7 +904,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM', 'RPA' ]);
 
     });
 
@@ -903,7 +921,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN', 'FORM' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN', 'FORM', 'RPA' ]);
 
     });
 
@@ -920,7 +938,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM', 'RPA' ]);
 
     });
 
@@ -1165,6 +1183,21 @@ describe('TabsProvider', function() {
     });
 
 
+    it('should disable RPA', function() {
+
+      // given
+      Flags.init({
+        [DISABLE_RPA]: true
+      });
+
+      // when
+      const tabsProvider = new TabsProvider();
+
+      // then
+      expect(tabsProvider.hasProvider('rpa')).to.be.false;
+    });
+
+
     it('should disable HTTL hint', async function() {
 
       // given
@@ -1242,7 +1275,8 @@ describe('TabsProvider', function() {
       'dmn',
       'cloud-dmn',
       'form',
-      'cloud-form'
+      'cloud-form',
+      'rpa'
     ].forEach((type) => {
 
       it(`should have icon <${type}>`, function() {
