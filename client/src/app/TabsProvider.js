@@ -18,6 +18,8 @@ import {
 
 import replaceIds from '@bpmn-io/replace-ids';
 
+import { Bot } from '@carbon/icons-react';
+
 import { Linter as BpmnLinter } from '@camunda/linting';
 import { FormLinter } from '@camunda/form-linting/lib/FormLinter';
 
@@ -28,6 +30,7 @@ import dmnDiagram from './tabs/dmn/diagram.dmn';
 import cloudDmnDiagram from './tabs/cloud-dmn/diagram.dmn';
 import form from './tabs/form/initial.form';
 import cloudForm from './tabs/form/initial-cloud.form';
+import rpaScript from './tabs/rpa/resources/initial.rpa';
 
 import {
   ENGINES
@@ -56,7 +59,8 @@ import Flags, {
   DISABLE_PLATFORM,
   DISABLE_CMMN,
   DISABLE_HTTL_HINT,
-  DEFAULT_HTTL
+  DEFAULT_HTTL,
+  DISABLE_RPA
 } from '../util/Flags';
 
 import BPMNIcon from '../../resources/icons/file-types/BPMN.svg';
@@ -490,6 +494,43 @@ export default class TabsProvider {
         getLinter() {
           return formLinter;
         }
+      },
+      'rpa': {
+        name: 'RPA',
+        encoding: 'utf8',
+        exports: {},
+        extensions: [ 'rpa' ],
+        canOpen(file) {
+          return file.name.endsWith('.rpa');
+        },
+        getComponent(options) {
+          return import('./tabs/rpa');
+        },
+        getIcon() {
+          return Bot;
+        },
+        getInitialContents() {
+          return rpaScript;
+        },
+        getInitialFilename(suffix) {
+          return `script_${suffix}.rpa`;
+        },
+        getHelpMenu() {
+          return [];
+        },
+        getNewFileMenu() {
+          return [ {
+            label: 'RPA script',
+            group: 'Camunda 8',
+            action: 'create-diagram',
+            options: {
+              type: 'rpa'
+            }
+          } ];
+        },
+        getLinter() {
+          return null;
+        }
       }
     };
 
@@ -518,9 +559,12 @@ export default class TabsProvider {
       this.providersByFileType.bpmn = this.providersByFileType.bpmn.filter(p => p !== this.providers['cloud-bpmn']);
       this.providersByFileType.dmn = this.providersByFileType.dmn.filter(p => p !== this.providers['cloud-dmn']);
       this.providersByFileType.form = this.providersByFileType.form.filter(p => p !== this.providers['cloud-form']);
+      this.providersByFileType.rpa = [];
+
       delete this.providers['cloud-bpmn'];
       delete this.providers['cloud-dmn'];
       delete this.providers['cloud-form'];
+      delete this.providers['rpa'];
     }
 
     if (Flags.get(DISABLE_PLATFORM)) {
@@ -551,6 +595,11 @@ export default class TabsProvider {
       delete this.providers.form;
       delete this.providers['cloud-form'];
       delete this.providersByFileType.form;
+    }
+
+    if (Flags.get(DISABLE_RPA)) {
+      delete this.providers.rpa;
+      delete this.providersByFileType.rpa;
     }
   }
 
