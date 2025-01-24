@@ -8,14 +8,37 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 5.32.0
 
-* `DEPS`: update to bpmn-js@18.1.2
-* `DEPS`: update to diagram-js@15.2.4
-* `DEPS`: update to `camunda-bpmn-js@5.4.2`
-* `DEPS`: update to `bpmnlint@11`
+* `DEPS`: update to `@bpmn-io/extract-process-variables@1.0.1`
+* `DEPS`: update to `@bpmn-io/form-js@1.13.2`
+* `DEPS`: update to `@camunda/form-playground@0.19.2`
+* `DEPS`: update to `@camunda/linting@3.31.0`
+* `DEPS`: update to `bpmn-js@18.2.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.5.1`
+* `DEPS`: update to `bpmn-js-properties-panel@5.31.0`
+* `DEPS`: update to `bpmnlint@11.0.0`
+* `DEPS`: update to `camunda-bpmn-js@5.5.0`
+* `DEPS`: update to `camunda-dmn-js@3.0.0`
+* `DEPS`: update to `diagram-js@15.2.4`
+* `DEPS`: update to `dmn-js@17.1.0`
+* `DEPS`: update to `dmn-js-shared@17.1.0`
+* `DEPS`: update to `zeebe-bpmn-moddle@1.9.0`
 * `DEPS`: update to `electron@34`
+
+### BPMN
+
+* `FEAT`: support ad-hoc subprocesses in replace menu ([bpmn-js#2276](https://github.com/bpmn-io/bpmn-js/pull/2276))
+* `FEAT`: support ad-hoc subprocesses in create/append anything menu ([bpmn-js-create-append-anything#47](https://github.com/bpmn-io/bpmn-js-create-append-anything/pull/47))
+* `FEAT`: support _Active elements_ properties for ad-hoc subprocesses ([bpmn-js-properties-panel#1105](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1105))
+* `FEAT`: suggest latest Camunda FEEL built-ins ([bpmn-io/feel-editor#65](https://github.com/bpmn-io/feel-editor/pull/65))
+* `FEAT`: support binding type `zeebe:linkedResource` ([bpmn-js-element-templates#137](https://github.com/bpmn-io/bpmn-js-element-templates/issues/137))
+* `FIX`: take scope into account when resolving variables ([bpmn-io/variable-resolver#43](https://github.com/bpmn-io/variable-resolver/pull/43))
+* `FIX`: require `feel` to be `optional` or `static` for `Boolean` and `Number` inputs and outputs ([camunda/element-templates-json-schema#156](https://github.com/camunda/element-templates-json-schema/pull/156))
 
 ### DMN
 
+* `FEAT`: suggest latest Camunda FEEL built-ins ([bpmn-io/feel-editor#65](https://github.com/bpmn-io/feel-editor/pull/65))
+* `FIX`: make name change behavior not break on name change ([bpmn-io/dmn-js#917](https://github.com/bpmn-io/dmn-js/pull/917))
+* `FIX`: display updated formal parameters suggestions ([bpmn-io/dmn-js#914](https://github.com/bpmn-io/dmn-js/pull/914))
 * `FIX`: prevent flashing and drag preview icon for overview resize action ([#4781](https://github.com/camunda/camunda-modeler/pull/4781))
 
 ## 5.31.0
