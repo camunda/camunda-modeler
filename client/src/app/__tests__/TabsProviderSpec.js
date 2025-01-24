@@ -474,6 +474,21 @@ describe('TabsProvider', function() {
           // then
           expect(contents).to.include(`"executionPlatformVersion": "${ expectedPlatformVersion }"`);
         });
+
+
+        it('should replace version placeholder with actual latest version (RPA)', function() {
+
+          // given
+          const tabsProvider = new TabsProvider();
+
+          const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.CLOUD);
+
+          // when
+          const { file: { contents } } = tabsProvider.createTab('rpa');
+
+          // then
+          expect(contents).to.include(`"executionPlatformVersion": "${ expectedPlatformVersion }"`);
+        });
       });
     });
 
@@ -557,6 +572,7 @@ describe('TabsProvider', function() {
     expect(tabsProvider.createTab('dmn')).to.exist;
     expect(tabsProvider.createTab('cloud-dmn')).to.exist;
     expect(tabsProvider.createTab('form')).to.exist;
+    expect(tabsProvider.createTab('rpa')).to.exist;
   });
 
 
@@ -871,6 +887,7 @@ describe('TabsProvider', function() {
     expect(providers['cmmn']).to.exist;
     expect(providers['dmn']).to.exist;
     expect(providers['cloud-dmn']).to.exist;
+    expect(providers['rpa']).to.exist;
     expect(providers['empty']).to.exist;
   });
 
@@ -1258,7 +1275,8 @@ describe('TabsProvider', function() {
       'dmn',
       'cloud-dmn',
       'form',
-      'cloud-form'
+      'cloud-form',
+      'rpa'
     ].forEach((type) => {
 
       it(`should have icon <${type}>`, function() {

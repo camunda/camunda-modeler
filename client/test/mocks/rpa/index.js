@@ -12,12 +12,13 @@ export class MockEventBus {
   }
 
   fire(event, ...payload) {
-    this.listeners[event](...payload);
+    this.listeners[event]?.(...payload);
   }
 }
 
 export class RPACodeEditor {
   constructor({
+    state = {},
     eventBus = new MockEventBus(),
     value = '{}'
   } = {}) {
@@ -26,10 +27,12 @@ export class RPACodeEditor {
     this.value = value;
     this.canUndo = false;
     this.canRedo = false;
+    this._state = state;
   }
 
   editor = {
-    execCommand: () => {},
+    trigger: () => {},
+    getAction: () => {},
     getModel: () => ({
       canRedo: () => this.canRedo,
       canUndo: () => this.canUndo
@@ -42,8 +45,7 @@ export class RPACodeEditor {
 
   setState = () => {};
 
-  getState = () => {};
-
+  getState = () => this._state;
 
   on = () => {};
   off = () => {};

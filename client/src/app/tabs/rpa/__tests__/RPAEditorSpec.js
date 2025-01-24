@@ -21,9 +21,9 @@ import { RPAEditor } from '../RPAEditor';
 
 import { RPACodeEditor as MockRPACodeEditor } from 'test/mocks/rpa';
 
-
 const RPA = '{}';
 
+/* global sinon */
 
 describe('<RPAEditor>', function() {
 
@@ -155,6 +155,62 @@ describe('<RPAEditor>', function() {
       const dirty = instance.isDirty();
 
       expect(dirty).to.be.true;
+    });
+
+  });
+
+
+  describe('actions', function() {
+
+    let instance;
+
+    beforeEach(function() {
+      instance = renderEditor(RPA).instance;
+    });
+
+    [ 'undo', 'redo' ].forEach(action => {
+
+      it(`should trigger ${action}`, function() {
+
+        // given
+        const { editor } = instance.getCached();
+
+        const triggerSpy = sinon.spy(editor.editor, 'trigger');
+
+        // when
+        instance.triggerAction(action);
+
+        // then
+        expect(triggerSpy).to.have.been.calledWith('menu', action);
+      });
+
+    });
+
+    [
+      [ 'find', 'actions.find' ],
+      [ 'findNext', 'editor.action.nextMatchFindAction' ],
+      [ 'findPrev', 'editor.action.previousMatchFindAction' ],
+      [ 'replace', 'editor.action.startFindReplaceAction' ]
+    ].forEach(([ action, monacoAction ]) => {
+
+      it(`should map ${action} to monaco action`, function() {
+
+        // given
+        const { editor } = instance.getCached();
+
+        const getActionStub = sinon.stub(editor.editor, 'getAction');
+
+        const runSpy = sinon.spy();
+
+        getActionStub.withArgs(monacoAction).returns({ run: runSpy });
+
+        // when
+        instance.triggerAction(action);
+
+        // then
+        expect(runSpy).to.have.been.calledOnce;
+      });
+
     });
 
   });
