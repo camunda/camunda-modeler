@@ -6,7 +6,17 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.32.0
+
+* `DEPS`: update to bpmn-js@18.1.2
+* `DEPS`: update to diagram-js@15.2.4
 * `DEPS`: update to `camunda-bpmn-js@5.4.2`
+* `DEPS`: update to `bpmnlint@11`
+* `DEPS`: update to `electron@34`
+
+### DMN
+
+* `FIX`: prevent flashing and drag preview icon for overview resize action ([#4781](https://github.com/camunda/camunda-modeler/pull/4781))
 
 ## 5.31.0
 
