@@ -44,20 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Element template runtime versions</h4>
-          We now check element templates compatibility with your runtime version for templates that provide <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/defining-templates/?utm_source=modeler&utm_medium=referral#template-compatibility">compatibility information</a>.
+          <h4>Support for upcoming Camunda 8 features</h4>
+          You can now model an Ad-hoc subprocess and define its active elements. <a href="https://docs.camunda.io/docs/next/components/modeler/bpmn/ad-hoc/?utm_source=modeler&utm_medium=referral">Learn more.</a>
         </li>
         <li>
-          <h4>“Zeebe user task” renamed to “Camunda user task”</h4>
-          Camunda user tasks are now the preferred implementation for all user tasks.
+          <h4>Support for latest Camunda 8 FEEL built-ins</h4>
+          The FEEL expression editor now supports the latest built-in functions. <a href="https://docs.camunda.io/docs/components/modeler/feel/builtin-functions/feel-built-in-functions-introduction/">Learn more.</a>
         </li>
         <li>
-          <h4>Enhanced FEEL support</h4>
-          Easily access script task result expressions with the help of context key suggestions.
-        </li>
-        <li>
-          <h4>Document preview component in Forms</h4>
-          Model and preview uploaded documents with the new <a href="https://docs.camunda.io/docs/next/components/modeler/forms/form-element-library/forms-element-library-document-preview/?utm_source=modeler&utm_medium=referral">document preview component</a>.
+          <h4>Bug fixes and more</h4>
+          As always, this release incorporates bug fixes and additional minor improvements.
         </li>
       </ul>
     </div>
