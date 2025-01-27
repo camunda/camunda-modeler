@@ -183,6 +183,8 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
       endpoint.camundaZeebeAddress = extractUrlWithoutProtocol(endpoint.camundaCloudClusterUrl);
     }
 
+    endpoint.contactPointWithoutProtocol = extractUrlWithoutProtocol(endpoint.contactPoint);
+
     this.connectionChecker.check(endpoint);
 
     this.setState({ configValues: formValues });

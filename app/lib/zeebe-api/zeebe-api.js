@@ -374,6 +374,11 @@ class ZeebeAPI {
         CAMUNDA_CONSOLE_CLIENT_ID: endpoint.clientId,
         CAMUNDA_CONSOLE_CLIENT_SECRET: endpoint.clientSecret
       };
+    } else if (type === ENDPOINT_TYPES.SELF_HOSTED) {
+      options = {
+        ...options,
+        CAMUNDA_OAUTH_DISABLED: true,
+      };
     }
 
     options = await this._withTLSConfig(url, options);
