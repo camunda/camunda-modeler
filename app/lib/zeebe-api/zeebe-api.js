@@ -351,14 +351,13 @@ class ZeebeAPI {
     } else if (authType === AUTH_TYPES.OAUTH) {
       options = {
         ...options,
-        oAuth: {
-          url: endpoint.oauthURL,
-          audience: endpoint.audience,
-          scope: endpoint.scope,
-          clientId: endpoint.clientId,
-          clientSecret: endpoint.clientSecret,
-          cacheOnDisk: false
-        }
+        CAMUNDA_AUTH_STRATEGY: 'OAUTH',
+        ZEEBE_CLIENT_ID: endpoint.clientId,
+        ZEEBE_CLIENT_SECRET: endpoint.clientSecret,
+        CAMUNDA_OAUTH_URL: endpoint.oauthURL,
+        CAMUNDA_TOKEN_SCOPE: endpoint.scope,
+        CAMUNDA_CONSOLE_OAUTH_AUDIENCE: endpoint.audience,
+        CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true
       };
     } else if (type === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
       options = {

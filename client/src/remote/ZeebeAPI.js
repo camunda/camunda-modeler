@@ -117,6 +117,7 @@ function getEndpointConfiguration(endpoint) {
         type: ENDPOINT_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.OAUTH,
         url: contactPoint,
+        urlWithoutProtocol: contactPointWithoutProtocol,
         oauthURL,
         audience,
         scope,

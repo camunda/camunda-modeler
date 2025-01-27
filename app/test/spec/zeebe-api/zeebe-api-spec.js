@@ -1189,16 +1189,14 @@ describe('ZeebeAPI', function() {
       it('should pass configuration', async function() {
 
         // given
+        const configSpy = sinon.spy();
         const deployResourceSpy = sinon.spy();
 
-        const ZBClientMock = sinon.spy(function() {
-          return {
-            deployResource: deployResourceSpy
-          };
-        });
-
         const zeebeAPI = mockCamundaClient({
-          ZBClient: ZBClientMock
+          configSpy,
+          ZBClient: {
+            deployResource: deployResourceSpy
+          }
         });
 
         // when
@@ -1209,6 +1207,7 @@ describe('ZeebeAPI', function() {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
             url: TEST_URL,
+            urlWithoutProtocol,
             oauthURL: 'oauthURL',
             audience: 'audience',
             scope: 'scope',
@@ -1218,17 +1217,19 @@ describe('ZeebeAPI', function() {
         });
 
         // then
-        const [ url, config ] = ZBClientMock.getCall(0).args;
+        const config = configSpy.getCall(0).args[0];
 
         // ZBClient is invoked accordingly
-        expect(url).to.eql(TEST_URL);
+        expect(config.ZEEBE_GRPC_ADDRESS).to.eql(urlWithoutProtocol);
 
-        expect(config.oAuth).to.include.keys({
-          audience: 'audience',
-          clientId: 'clientId',
-          clientSecret: 'clientSecret',
-          scope: 'scope',
-          url: 'oauthURL'
+        expect(config).to.include.keys({
+          CAMUNDA_AUTH_STRATEGY: 'OAUTH',
+          CAMUNDA_CONSOLE_OAUTH_AUDIENCE: 'audience',
+          ZEEBE_CLIENT_ID: 'clientId',
+          ZEEBE_CLIENT_SECRET: 'clientSecret',
+          CAMUNDA_TOKEN_SCOPE: 'scope',
+          CAMUNDA_OAUTH_URL: 'oauthURL',
+          CAMUNDA_TOKEN_DISK_CACHE_DISABLE: 'true'
         });
 
         // deployment is executed appropriately
@@ -1467,12 +1468,10 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = mockCamundaClient({
-          ZBClient: function() {
-            return {
+          ZBClient: {
               topology: function() {
                 throw new NetworkError('ENOTFOUND');
               }
-            };
           }
         });
 
@@ -1568,12 +1567,10 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = mockCamundaClient({
-          ZBClient: function() {
-            return {
+          ZBClient: {
               topology: function() {
                 throw new NetworkError('Forbidden');
               }
-            };
           }
         });
 
@@ -1594,12 +1591,10 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = mockCamundaClient({
-          ZBClient: function() {
-            return {
+          ZBClient: {
               topology: function() {
                 throw new NetworkError('Unsupported protocol');
               }
-            };
           }
         });
 
@@ -1622,12 +1617,10 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = mockCamundaClient({
-          ZBClient: function() {
-            return {
+          ZBClient: {
               topology: function() {
                 throw new NetworkError('Some random error');
               }
-            };
           }
         });
 
@@ -1649,12 +1642,10 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = mockCamundaClient({
-          ZBClient: function() {
-            return {
+          ZBClient: {
               topology: function() {
                 throw new NetworkError();
               }
-            };
           }
         });
 
@@ -2352,6 +2343,7 @@ describe('ZeebeAPI', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.OAUTH,
           url: TEST_URL,
+          urlWithoutProtocol: urlWithoutProtocol,
           oauthURL: 'oauthURL',
           audience: 'audience',
           scope: 'scope',
@@ -2375,16 +2367,17 @@ describe('ZeebeAPI', function() {
       expect(createClientCall.args[ 1 ]).to.eql({
         url: 'http://localhost:26500',
         options:{
-          retry: false,
-          oAuth: {
-            url: 'oauthURL',
-            audience: 'audience',
-            scope: 'scope',
-            clientId: '******',
-            clientSecret: '******',
-            cacheOnDisk: false,
+          zeebeGrpcSettings: {
+            ZEEBE_GRPC_CLIENT_RETRY: false
           },
-          useTLS: false
+          ZEEBE_GRPC_ADDRESS: 'localhost:26500',
+          CAMUNDA_AUTH_STRATEGY: 'OAUTH',
+          CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true,
+          CAMUNDA_TOKEN_SCOPE: 'scope',
+          ZEEBE_CLIENT_ID: '******',
+          ZEEBE_CLIENT_SECRET: '******',
+          CAMUNDA_CONSOLE_OAUTH_AUDIENCE: 'audience',
+          CAMUNDA_OAUTH_URL: 'oauthURL',
         }
       });
 
@@ -2398,6 +2391,7 @@ describe('ZeebeAPI', function() {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
             url: TEST_URL,
+            urlWithoutProtocol: urlWithoutProtocol,
             oauthURL: 'oauthURL',
             audience: 'audience',
             scope: 'scope',
