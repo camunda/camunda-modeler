@@ -9,20 +9,25 @@ ___Note:__ Yet to be released changes appear here._
 ## 5.32.0
 
 * `DEPS`: update to `@bpmn-io/extract-process-variables@1.0.1`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.26.0`
 * `DEPS`: update to `@bpmn-io/form-js@1.13.2`
 * `DEPS`: update to `@camunda/form-playground@0.19.2`
 * `DEPS`: update to `@camunda/linting@3.31.0`
 * `DEPS`: update to `bpmn-js@18.2.0`
-* `DEPS`: update to `bpmn-js-element-templates@2.5.1`
+* `DEPS`: update to `bpmn-js-element-templates@2.5.2`
 * `DEPS`: update to `bpmn-js-properties-panel@5.31.0`
 * `DEPS`: update to `bpmnlint@11.0.0`
-* `DEPS`: update to `camunda-bpmn-js@5.5.0`
+* `DEPS`: update to `camunda-bpmn-js@5.5.1`
 * `DEPS`: update to `camunda-dmn-js@3.0.0`
 * `DEPS`: update to `diagram-js@15.2.4`
 * `DEPS`: update to `dmn-js@17.1.0`
 * `DEPS`: update to `dmn-js-shared@17.1.0`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.9.0`
 * `DEPS`: update to `electron@34`
+
+### General
+
+* `FEAT`: suggest latest Camunda FEEL built-ins ([@bpmn-io/feel-editor#65](https://github.com/bpmn-io/feel-editor/pull/65))
 
 ### BPMN
 
@@ -32,7 +37,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: suggest latest Camunda FEEL built-ins ([bpmn-io/feel-editor#65](https://github.com/bpmn-io/feel-editor/pull/65))
 * `FEAT`: support binding type `zeebe:linkedResource` ([bpmn-js-element-templates#137](https://github.com/bpmn-io/bpmn-js-element-templates/issues/137))
 * `FIX`: take scope into account when resolving variables ([bpmn-io/variable-resolver#43](https://github.com/bpmn-io/variable-resolver/pull/43))
-* `FIX`: require `feel` to be `optional` or `static` for `Boolean` and `Number` inputs and outputs ([camunda/element-templates-json-schema#156](https://github.com/camunda/element-templates-json-schema/pull/156))
+* `FIX`: make `feel` default value `static` for inputs and outputs ([#4593](https://github.com/camunda/camunda-modeler/issues/4593))
 
 ### DMN
 
