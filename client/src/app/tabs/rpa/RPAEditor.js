@@ -115,6 +115,11 @@ export class RPAEditor extends CachedComponent {
       value: this.props.xml
     });
 
+    // Prevent scrolling
+    editor.editor.updateOptions({
+      scrollBeyondLastLine: false
+    });
+
     this.setCached({
       editor,
       lastXML: this.props.xml,
