@@ -324,8 +324,8 @@ export class RPAEditor extends CachedComponent {
             <DebugInfo editor={ editor } />
           </Fill>
 
-          <RunButton editor={ editor } layout={ this.props.layout } onAction={ this.props.onAction } />
           <StatusButton getConfig={ this.props.getConfig } setConfig={ this.props.getConfig } editor={ editor } />
+          <RunButton editor={ editor } layout={ this.props.layout } onAction={ this.props.onAction } />
         </>
         }
 

@@ -43,7 +43,7 @@ export default function StatusButton(props) {
 
   return <>
     {
-      <Fill slot="status-bar__file" group="8_deploy" priority={ 0 }>
+      <Fill slot="status-bar__file" group="8_deploy" priority={ 40 }>
         <button
           ref={ buttonRef }
           onClick={ () => setIsOpen(!isOpen) }
