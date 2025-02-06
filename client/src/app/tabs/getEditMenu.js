@@ -19,24 +19,24 @@ const COLORS = [
     stroke: undefined
   }, {
     title: 'Blue',
-    fill: 'rgb(187, 222, 251)',
-    stroke: 'rgb(30, 136, 229)'
+    fill: '#BBDEFB',
+    stroke: '#0D4372'
   }, {
     title: 'Orange',
-    fill: 'rgb(255, 224, 178)',
-    stroke: 'rgb(251, 140, 0)'
+    fill: '#FFE0B2',
+    stroke: '#6B3C00'
   }, {
     title: 'Green',
-    fill: 'rgb(200, 230, 201)',
-    stroke: 'rgb(67, 160, 71)'
+    fill: '#C8E6C9',
+    stroke: '#205022'
   }, {
     title: 'Red',
-    fill: 'rgb(255, 205, 210)',
-    stroke: 'rgb(229, 57, 53)'
+    fill: '#FFCDD2',
+    stroke: '#831311'
   }, {
     title: 'Purple',
-    fill: 'rgb(225, 190, 231)',
-    stroke: 'rgb(142, 36, 170)'
+    fill: '#E1BEE7',
+    stroke: '#5B176D'
   } ];
 
 export function getAlignDistributeEntries({
