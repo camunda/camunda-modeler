@@ -1811,7 +1811,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set `useTLS` to true for https endpoint', async function() {
+    it('should set `CAMUNDA_SECURE_CONNECTION` to true for https endpoint', async function() {
 
       // given
       let usedConfig;
@@ -1833,11 +1833,11 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(usedConfig).to.have.property('useTLS', true);
+      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', true);
     });
 
 
-    it('should set `useTLS=false` for http endpoint (no auth)', async function() {
+    it('should set `CAMUNDA_SECURE_CONNECTION=false` for http endpoint (no auth)', async function() {
 
       // given
       let usedConfig;
@@ -1859,11 +1859,11 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(usedConfig).to.have.property('useTLS', false);
+      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', false);
     });
 
 
-    it('should set `useTLS=false` for http endpoint (oauth)', async function() {
+    it('should set `CAMUNDA_SECURE_CONNECTION=false` for http endpoint (oauth)', async function() {
 
       // given
       let usedConfig;
@@ -1886,11 +1886,11 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(usedConfig).to.have.property('useTLS', false);
+      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', false);
     });
 
 
-    it('should set `useTLS=true` for no protocol endpoint (cloud)', async function() {
+    it('should set `CAMUNDA_SECURE_CONNECTION=true` for no protocol endpoint (cloud)', async function() {
 
       // given
       let usedConfig;
@@ -1912,7 +1912,7 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(usedConfig).to.have.property('useTLS', true);
+      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', true);
     });
 
 
@@ -1936,8 +1936,6 @@ describe('ZeebeAPI', function() {
 
       // when
       await zeebeAPI.deploy(parameters);
-
-      console.log(usedConfig, 'config');
 
       // then
       expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', true);
@@ -2031,13 +2029,7 @@ describe('ZeebeAPI', function() {
           warn: sinon.spy()
         };
         const zeebeAPI = mockCamundaClient({
-          ZBClient: function(...args) {
-            configSpy(...args);
-
-            return {
-              deployResource: noop
-            };
-          },
+          configSpy,
           flags: {
             get() {
               return '/path/to/cert.pem';
@@ -2084,11 +2076,10 @@ describe('ZeebeAPI', function() {
         await zeebeAPI.deploy(parameters);
 
         // then
-        const { customSSL } = configSpy.args[0][1];
-        expect(customSSL).to.exist;
+        const { CAMUNDA_CUSTOM_ROOT_CERT_STRING } = configSpy.getCall(0).args[0];
 
-        const { rootCerts } = customSSL;
-        expect(Buffer.from(cert).equals(rootCerts)).to.be.true;
+        expect(CAMUNDA_CUSTOM_ROOT_CERT_STRING).to.exist;
+        expect(Buffer.from(cert).equals(CAMUNDA_CUSTOM_ROOT_CERT_STRING)).to.be.true;
       });
 
 
@@ -2114,11 +2105,10 @@ describe('ZeebeAPI', function() {
         await zeebeAPI.deploy(parameters);
 
         // then
-        const { oAuth } = configSpy.args[0][1];
-        expect(oAuth).to.exist;
+        const { CAMUNDA_AUTH_STRATEGY, CAMUNDA_CUSTOM_ROOT_CERT_STRING } = configSpy.getCall(0).args[0];
 
-        const { customRootCert } = oAuth;
-        expect(Buffer.from(cert).equals(customRootCert)).to.be.true;
+        expect(CAMUNDA_AUTH_STRATEGY).to.equal('OAUTH');
+        expect(Buffer.from(cert).equals(CAMUNDA_CUSTOM_ROOT_CERT_STRING)).to.be.true;
       });
 
 
@@ -2143,11 +2133,10 @@ describe('ZeebeAPI', function() {
         await zeebeAPI.deploy(parameters);
 
         // then
-        const { customSSL } = configSpy.args[0][1];
-        expect(customSSL).to.exist;
+        const { CAMUNDA_CUSTOM_ROOT_CERT_STRING } = configSpy.getCall(0).args[0];
 
-        const { rootCerts } = customSSL;
-        expect(Buffer.from(cert).equals(rootCerts)).to.be.true;
+        expect(CAMUNDA_CUSTOM_ROOT_CERT_STRING).to.exist;
+        expect(Buffer.from(cert).equals(CAMUNDA_CUSTOM_ROOT_CERT_STRING)).to.be.true;
       });
 
 
@@ -2172,11 +2161,10 @@ describe('ZeebeAPI', function() {
         await zeebeAPI.deploy(parameters);
 
         // then
-        const { customSSL } = configSpy.args[0][1];
-        expect(customSSL).to.exist;
+        const { CAMUNDA_CUSTOM_ROOT_CERT_STRING } = configSpy.getCall(0).args[0];
 
-        const { rootCerts } = customSSL;
-        expect(Buffer.from(cert).equals(rootCerts)).to.be.true;
+        expect(CAMUNDA_CUSTOM_ROOT_CERT_STRING).to.exist;
+        expect(Buffer.from(cert).equals(CAMUNDA_CUSTOM_ROOT_CERT_STRING)).to.be.true;
       });
 
 
@@ -2378,6 +2366,7 @@ describe('ZeebeAPI', function() {
           ZEEBE_CLIENT_SECRET: '******',
           CAMUNDA_CONSOLE_OAUTH_AUDIENCE: 'audience',
           CAMUNDA_OAUTH_URL: 'oauthURL',
+          CAMUNDA_SECURE_CONNECTION: false
         }
       });
 

@@ -407,7 +407,7 @@ class ZeebeAPI {
 
     // (0) set `useTLS` according to the protocol
     const tlsOptions = {
-      useTLS: options.useTLS || /^https:\/\//.test(url)
+      CAMUNDA_SECURE_CONNECTION: options.CAMUNDA_SECURE_CONNECTION || /^https:\/\//.test(url)
     };
 
     // (1) use certificate from flag
@@ -431,24 +431,10 @@ class ZeebeAPI {
 
     const rootCertsBuffer = Buffer.from(rootCerts.join('\n'));
 
-    // (3) add custom SSL certificate to oAuth options
-    let oAuthOptions = {};
-    if (options.oAuth) {
-      oAuthOptions = {
-        oAuth: {
-          ...options.oAuth,
-          customRootCert: rootCertsBuffer
-        }
-      };
-    }
-
     return {
       ...options,
       ...tlsOptions,
-      ...oAuthOptions,
-      customSSL: {
-        rootCerts: rootCertsBuffer
-      }
+      CAMUNDA_CUSTOM_ROOT_CERT_STRING: rootCertsBuffer
     };
   }
 
