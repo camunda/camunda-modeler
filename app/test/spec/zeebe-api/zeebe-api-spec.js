@@ -30,6 +30,7 @@ describe('ZeebeAPI', function() {
   // TODO(barmac): remove when system keychain certificates are tested
   setupPlatformStub();
 
+  const urlWithoutProtocol = extractUrlWithoutProtocol(TEST_URL);
 
   describe('#checkConnection', function() {
 
@@ -1401,12 +1402,10 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = mockCamundaClient({
-          ZBClient: function() {
-            return {
+          ZBClient: {
               topology: function() {
                 throw new NetworkError('TEST ERROR.', 14);
               }
-            };
           }
         });
 
@@ -1423,16 +1422,14 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (Cloud) (code=13)', async function() {
+      it('for <endpoint-unavailable> (Cloud) - error 13', async function() {
 
         // given
         const zeebeAPI = mockCamundaClient({
-          ZBClient: function() {
-            return {
+          ZBClient: {
               topology: function() {
                 throw new NetworkError('TEST ERROR.', 13);
               }
-            };
           }
         });
 
@@ -1508,12 +1505,10 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = mockCamundaClient({
-          ZBClient: function() {
-            return {
+          ZBClient: {
               topology: function() {
                 throw new NetworkError('ENOTFOUND');
               }
-            };
           }
         });
 
@@ -1561,12 +1556,10 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = mockCamundaClient({
-          ZBClient: function() {
-            return {
-              topology: function() {
-                throw new NetworkError('Unauthorized');
-              }
-            };
+          ZBClient: {
+            topology: function() {
+              throw new NetworkError('Unauthorized');
+            }
           }
         });
 
@@ -1945,12 +1938,8 @@ describe('ZeebeAPI', function() {
       let usedConfig;
 
       const zeebeAPI = mockCamundaClient({
-        ZBClient: function(...args) {
-          usedConfig = args;
-
-          return {
-            deployResource: noop
-          };
+        configSpy(config) {
+          usedConfig = config;
         }
       });
 
@@ -1965,7 +1954,35 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(usedConfig[1]).to.have.property('useTLS', true);
+      expect(usedConfig).to.have.property('useTLS', true);
+    });
+
+
+    it('should have secure connection for no protocol endpoint (cloud)', async function() {
+
+      // given
+      let usedConfig;
+
+      const zeebeAPI = mockCamundaClient({
+        configSpy(config) {
+          usedConfig = config;
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+          url: 'camunda.com'
+        }
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      console.log(usedConfig, 'config');
+
+      // then
+      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', true);
     });
 
 
@@ -2454,6 +2471,10 @@ function setupPlatformStub() {
   after(function() {
     platformStub.restore();
   });
+}
+
+function extractUrlWithoutProtocol(url) {
+  return url.replace(/^https?:\/\//, '');
 }
 
 function mockCamundaClient(options = {}) {

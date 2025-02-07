@@ -362,19 +362,25 @@ class ZeebeAPI {
     } else if (type === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
       options = {
         ...options,
-        camundaCloud: {
-          clientId: endpoint.clientId,
-          clientSecret: endpoint.clientSecret,
-          clusterId: endpoint.clusterId,
-          cacheOnDisk: false,
-          ...(endpoint.clusterRegion ? { clusterRegion: endpoint.clusterRegion } : {})
-        },
-        useTLS: true
+        CAMUNDA_AUTH_STRATEGY: 'OAUTH',
+        CAMUNDA_OAUTH_URL: 'https://login.cloud.camunda.io/oauth/token',
+        CAMUNDA_CONSOLE_OAUTH_AUDIENCE: endpoint.audience,
+        CAMUNDA_TOKEN_SCOPE: endpoint.scope,
+        ZEEBE_CLIENT_ID: endpoint.clientId,
+        ZEEBE_CLIENT_SECRET: endpoint.clientSecret,
+        CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true,
+        CAMUNDA_SECURE_CONNECTION: true,
+        CAMUNDA_CONSOLE_CLIENT_ID: endpoint.clientId,
+        CAMUNDA_CONSOLE_CLIENT_SECRET: endpoint.clientSecret
       };
     }
 
     options = await this._withTLSConfig(url, options);
-    options = this._withPortConfig(url, options);
+
+    // do not override camunda cloud port (handled by the client)
+    if (type !== ENDPOINT_TYPES.CAMUNDA_CLOUD) {
+      options = this._withPortConfig(url, options);
+    }
 
     this._log.debug('creating client', {
       url,
