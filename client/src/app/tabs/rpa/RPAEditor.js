@@ -196,7 +196,8 @@ export class RPAEditor extends CachedComponent {
 
     const {
       lastXML,
-      lastWorkerConfig
+      lastWorkerConfig,
+      editor
     } = this.getCached();
 
     if (isXMLChange(lastXML, xml)) {
@@ -204,10 +205,10 @@ export class RPAEditor extends CachedComponent {
       return;
     }
 
-
     const rpaConfig = await this.props.getConfig('rpa', {});
-    if (rpaConfig.workerConfig !== lastWorkerConfig) {
-      this.createEditor();
+    if (isWorkerConfigChange(rpaConfig.workerConfig, lastWorkerConfig)) {
+      editor.workerConfig = rpaConfig.workerConfig;
+      editor.eventBus.fire('config.changed', rpaConfig.workerConfig);
       return;
     }
   }
@@ -360,6 +361,10 @@ export default WithCache(WithCachedState(RPAEditor));
 
 function isXMLChange(prevXML, xml) {
   return trim(prevXML) !== trim(xml);
+}
+
+function isWorkerConfigChange(prevConfig, config) {
+  return JSON.stringify(prevConfig) !== JSON.stringify(config);
 }
 
 function trim(string) {
