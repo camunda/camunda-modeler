@@ -95,6 +95,7 @@ const INITIAL_STATE = {
   recentTabs: [],
   layout: {},
   tabs: [],
+  tabGroups: {},
   tabState: {},
   lintingState: {},
   logEntries: [],
@@ -154,6 +155,29 @@ export class App extends PureComponent {
     }
 
     this.currentNotificationId = 0;
+  }
+
+  /**
+   * Set group for tab.
+   *
+   * @param {string} id ID of the tab
+   * @param {string} group Group name
+   */
+  setTabGroup(id, group) {
+    const tab = this.state.tabs.find((tab) => tab.id === id);
+
+    if (!tab) {
+      throw new Error(`Tab with ID ${id} not found`);
+    }
+
+    this.setState(({ tabGroups }) => {
+      return {
+        tabGroups: {
+          ...tabGroups,
+          [ id ]: group
+        }
+      };
+    });
   }
 
   createDiagram = async (type = 'bpmn') => {
@@ -1757,6 +1781,15 @@ export class App extends PureComponent {
 
     log('App#triggerAction %s %o', action, options);
 
+    if (action === 'set-tab-group') {
+      const {
+        id,
+        group
+      } = options;
+
+      return this.setTabGroup(id, group);
+    }
+
     if (action === 'lint-tab') {
       const {
         tab,
@@ -2096,6 +2129,7 @@ export class App extends PureComponent {
 
     const {
       tabs,
+      tabGroups,
       activeTab,
       layout,
       logEntries
@@ -2122,6 +2156,7 @@ export class App extends PureComponent {
               <div className="tabs">
                 <TabLinks
                   tabs={ tabs }
+                  tabGroups={ tabGroups }
                   isDirty={ isDirty }
                   activeTab={ activeTab }
                   getTabIcon={ this._getTabIcon }

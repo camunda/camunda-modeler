@@ -91,6 +91,47 @@ export default function ProcessApplicationsPlugin(props) {
     });
   }, []);
 
+  useEffect(() => {
+    const tabGroups = tabs.reduce((tabGroups, tab) => {
+      if (!tab.file) {
+        return {
+          ...tabGroups,
+          [ tab.id ]: null
+        };
+      }
+
+      const item = processApplications.findItem(tab.file.path);
+
+      if (!item) {
+        return {
+          ...tabGroups,
+          [ tab.id ]: null
+        };
+      }
+
+      const processApplicationItemForItem = processApplications.findProcessApplicationItemForItem(item);
+
+      if (!processApplicationItemForItem) {
+        return {
+          ...tabGroups,
+          [ tab.id ]: null
+        };
+      }
+
+      return {
+        ...tabGroups,
+        [ tab.id ]: processApplicationItemForItem.file.path
+      };
+    }, {});
+
+    for (const [ id, group ] of Object.entries(tabGroups)) {
+      triggerAction('set-tab-group', {
+        id,
+        group
+      });
+    }
+  }, [ items, tabs ]);
+
   return <ProcessApplicationsStatusBar
     activeTab={ activeTab }
     processApplication={ processApplication }
