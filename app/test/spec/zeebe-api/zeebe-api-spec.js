@@ -1143,14 +1143,13 @@ describe('ZeebeAPI', function() {
         // given
         const deployResourceSpy = sinon.spy();
 
-        const ZBClientMock = sinon.spy(function() {
-          return {
-            deployResource: deployResourceSpy
-          };
-        });
+        const configSpy = sinon.spy();
 
         const zeebeAPI = mockCamundaClient({
-          ZBClient: ZBClientMock
+          configSpy,
+          ZBClient: {
+            deployResource: deployResourceSpy
+          }
         });
 
         // when
@@ -1161,20 +1160,23 @@ describe('ZeebeAPI', function() {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             authType: AUTH_TYPES.BASIC,
             url: TEST_URL,
+            urlWithoutProtocol: urlWithoutProtocol,
             basicAuthUsername: 'username',
             basicAuthPassword: 'password'
           }
         });
 
         // then
-        const [ url, config ] = ZBClientMock.getCall(0).args;
+        const [ config ] = configSpy.getCall(0).args;
 
         // ZBClient is invoked accordingly
-        expect(url).to.eql(TEST_URL);
+        expect(config.ZEEBE_GRPC_ADDRESS).to.eql(urlWithoutProtocol);
 
-        expect(config.basicAuth).to.include.keys({
-          username: 'username',
-          password: 'password'
+        expect(config).to.include.keys({
+          ZEEBE_GRPC_ADDRESS: 'url',
+          CAMUNDA_AUTH_STRATEGY: 'basic',
+          CAMUNDA_BASIC_AUTH_USERNAME: 'username',
+          CAMUNDA_BASIC_AUTH_PASSWORD: 'password'
         });
 
         // deployment is executed appropriately
@@ -2266,7 +2268,8 @@ describe('ZeebeAPI', function() {
           authType: AUTH_TYPES.BASIC,
           basicAuthUsername: 'username',
           basicAuthPassword: 'password',
-          url: TEST_URL
+          url: TEST_URL,
+          urlWithoutProtocol: urlWithoutProtocol
         }
       };
 
@@ -2285,12 +2288,14 @@ describe('ZeebeAPI', function() {
       expect(createClientCall.args[ 1 ]).to.eql({
         url: 'http://localhost:26500',
         options:{
-          retry: false,
-          basicAuth: {
-            username: '******',
-            password: '******'
+          zeebeGrpcSettings: {
+            ZEEBE_GRPC_CLIENT_RETRY: false
           },
-          useTLS: false
+          ZEEBE_GRPC_ADDRESS: 'localhost:26500',
+          CAMUNDA_AUTH_STRATEGY: 'BASIC',
+          CAMUNDA_BASIC_AUTH_USERNAME: '******',
+          CAMUNDA_BASIC_AUTH_PASSWORD: '******',
+          CAMUNDA_SECURE_CONNECTION: false
         }
       });
 
@@ -2305,7 +2310,8 @@ describe('ZeebeAPI', function() {
             authType: AUTH_TYPES.BASIC,
             basicAuthUsername: '******',
             basicAuthPassword: '******',
-            url: TEST_URL
+            url: TEST_URL,
+            urlWithoutProtocol: urlWithoutProtocol
           }
         }
       });

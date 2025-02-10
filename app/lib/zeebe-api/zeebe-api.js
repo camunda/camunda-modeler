@@ -343,10 +343,9 @@ class ZeebeAPI {
     if (authType === AUTH_TYPES.BASIC) {
       options = {
         ...options,
-        basicAuth: {
-          username: endpoint.basicAuthUsername,
-          password: endpoint.basicAuthPassword
-        }
+        CAMUNDA_AUTH_STRATEGY: 'BASIC',
+        CAMUNDA_BASIC_AUTH_USERNAME: endpoint.basicAuthUsername,
+        CAMUNDA_BASIC_AUTH_PASSWORD: endpoint.basicAuthPassword
       };
     } else if (authType === AUTH_TYPES.OAUTH) {
       options = {

@@ -108,6 +108,7 @@ function getEndpointConfiguration(endpoint) {
         type: ENDPOINT_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.BASIC,
         url: contactPoint,
+        urlWithoutProtocol: contactPointWithoutProtocol,
         basicAuthUsername,
         basicAuthPassword
       };
