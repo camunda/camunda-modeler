@@ -332,6 +332,7 @@ class ZeebeAPI {
     } = endpoint;
 
     let options = {
+      ZEEBE_GRPC_ADDRESS: endpoint.urlWithoutProtocol,
       zeebeGrpcSettings: { ZEEBE_GRPC_CLIENT_RETRY: false }
     };
 
