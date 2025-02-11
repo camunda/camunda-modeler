@@ -28,7 +28,7 @@
     "@codemirror/state": "^6.4.1",
     "@codemirror/view": "^6.34.1",
     "@ibm/plex": "^6.4.1",
-    "@sentry/browser": "^8.0.0",
+    "@sentry/browser": "^9.0.0",
     "@sentry/integrations": "^7.108.0",
     "bpmn-js": "^18.2.0",
     "bpmn-js-element-templates": "^2.5.2",
