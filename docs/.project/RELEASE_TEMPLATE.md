@@ -17,6 +17,12 @@ labels:
 
 ## Release Checklist
 
+_To be done when the release manager is assigned._
+
+* [ ] communicate the code freeze to the team
+  * [ ] create a calendar event
+  * [ ] announce the code freeze in the [#team-moddeling-group](https://camunda.slack.com/archives/C032H77434N) Slack channel
+
 _To be done before the code freeze._
 
 * [ ] inform QA about the release and its details so they can prepare for testing
