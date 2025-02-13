@@ -134,8 +134,15 @@ export default class Modeler {
       elementTemplatesLoader: {
         setTemplates() {}
       },
+      elementTemplates: {
+        setEngines() {},
+        getEngines() {}
+      },
       minimap: {
         toggle() {}
+      },
+      modeling: {
+        updateModdleProperties() {}
       },
       propertiesPanel: new PropertiesPanel(),
       selection: new Selection(),
