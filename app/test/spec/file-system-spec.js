@@ -11,9 +11,11 @@
 'use strict';
 
 const fs = require('fs'),
-      os = require('os');
+      os = require('os'),
+      path = require('path');
 
 const {
+  createFile,
   readFile,
   readFileStats,
   writeFile
@@ -292,6 +294,77 @@ describe('FileSystem', function() {
 
       // then
       expect(writeFile).to.throw();
+    });
+
+  });
+
+
+  describe('#createFile', function() {
+
+    it('should create file', function() {
+
+      // given
+      const newFile = {
+        path: path.posix.resolve(__dirname, 'foo/bar/baz.file'),
+        contents: 'foo',
+        lastModified: 1234567890,
+        messages: [
+          {
+            error: true,
+            message: 'error',
+            source: 'source'
+          }
+        ]
+      };
+
+      // when
+      const file = createFile(newFile);
+
+      // then
+      expect(file).to.have.property('contents').eql('foo');
+      expect(file).to.have.property('lastModified').eql(1234567890);
+      expect(file).to.have.property('name').eql('baz.file');
+      expect(file).to.have.property('path').match(/foo\/bar\/baz\.file/);
+      expect(file).to.have.property('messages').with.length(1);
+      expect(file).to.have.property('dirname').match(/foo\/bar/);
+      expect(file).to.have.property('extname').eql('.file');
+      expect(file).to.have.property('uri').match(/file:\/\/\/.*\/foo\/bar\/baz\.file/);
+    });
+
+
+    it('should create new file from old file', function() {
+
+      // given
+      const oldFile = {
+        path: path.posix.resolve(__dirname, 'foo/bar/baz.file'),
+        contents: 'foo',
+        lastModified: 1234567890,
+        messages: [
+          {
+            error: true,
+            message: 'error',
+            source: 'source'
+          }
+        ]
+      };
+
+      const newFile = {
+        ...oldFile,
+        contents: 'bar'
+      };
+
+      // when
+      const file = createFile(oldFile, newFile);
+
+      // then
+      expect(file).to.have.property('contents').eql('bar');
+      expect(file).to.have.property('lastModified').eql(1234567890);
+      expect(file).to.have.property('name').eql('baz.file');
+      expect(file).to.have.property('path').match(/foo\/bar\/baz\.file/);
+      expect(file).to.have.property('messages').with.length(1);
+      expect(file).to.have.property('dirname').match(/foo\/bar/);
+      expect(file).to.have.property('extname').eql('.file');
+      expect(file).to.have.property('uri').match(/file:\/\/\/.*\/foo\/bar\/baz\.file/);
     });
 
   });

@@ -20,7 +20,8 @@ import { SlotFillRoot } from '../../slot-fill';
 
 import {
   defaultActiveTab,
-  defaultTabs
+  defaultTabs,
+  defaultTabGroups
 } from './mocks';
 
 const [
@@ -159,6 +160,44 @@ describe('<TabLinks>', function() {
 
       // then
       expect(close.exists()).to.be.false;
+    });
+
+  });
+
+
+  describe('grouping', function() {
+
+    it('should group tabs', function() {
+
+      // given
+      const {
+        tree
+      } = renderTabLinks();
+
+      // when
+      const tab1 = tree.find('.tab[data-tab-id="tab1"]'),
+            tab2 = tree.find('.tab[data-tab-id="tab2"]'),
+            tab3 = tree.find('.tab[data-tab-id="tab3"]'),
+            tab4 = tree.find('.tab[data-tab-id="tab4"]');
+
+      // then
+      expect(tab1.exists()).to.be.true;
+      expect(tab1.hasClass('tab--group')).to.be.true;
+      expect(tab1.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.exist;
+
+      expect(tab2.exists()).to.be.true;
+      expect(tab2.hasClass('tab--group')).to.be.true;
+      expect(tab2.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.exist;
+      expect(tab2.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.equal(tab1.getDOMNode().style.getPropertyValue('--tab-line-group-background-color'));
+
+      expect(tab3.exists()).to.be.true;
+      expect(tab3.hasClass('tab--group')).to.be.true;
+      expect(tab3.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.exist;
+      expect(tab3.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).not.to.equal(tab1.getDOMNode().style.getPropertyValue('--tab-line-group-background-color'));
+
+      expect(tab4.exists()).to.be.true;
+      expect(tab4.hasClass('tab--group')).to.be.false;
+      expect(tab4.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.equal('');
     });
 
   });
@@ -435,6 +474,7 @@ function renderTabLinks(options = {}) {
   const {
     activeTab,
     tabs,
+    tabGroups,
     getTabIcon,
     onClose,
     onContextMenu,
@@ -449,6 +489,7 @@ function renderTabLinks(options = {}) {
       <TabLinks
         activeTab={ activeTab || defaultActiveTab }
         tabs={ tabs || defaultTabs }
+        tabGroups={ tabGroups || defaultTabGroups }
         getTabIcon={ getTabIcon || noop }
         onContextMenu={ onContextMenu || noop }
         onClose={ onClose || noop }
