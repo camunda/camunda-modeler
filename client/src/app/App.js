@@ -72,6 +72,8 @@ import * as css from './App.less';
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 import { RecentTabs } from './RecentTabs';
 
+import ProcessApplicationIcon from '../../resources/icons/file-types/ProcessApplication.svg';
+
 const log = debug('App');
 
 export const EMPTY_TAB = {
@@ -192,6 +194,8 @@ export class App extends PureComponent {
         unsavedState = this.setUnsaved(tab, properties.unsaved);
       }
 
+      this._onTabOpened(tab);
+
       return {
         ...unsavedState,
         tabs: [
@@ -204,7 +208,6 @@ export class App extends PureComponent {
 
     return tab;
   }
-
 
   /**
    * Navigate shown tabs in given direction.
@@ -426,6 +429,8 @@ export class App extends PureComponent {
     });
 
     await this._removeTab(tab);
+
+    this._onTabClosed(tab);
 
     return true;
   };
@@ -1041,6 +1046,8 @@ export class App extends PureComponent {
 
     this.emit('tab.saved', { tab });
     this.triggerAction('lint-tab', { tab });
+
+    this._onTabSaved(tab);
 
     return tab;
   }
@@ -1741,7 +1748,7 @@ export class App extends PureComponent {
     return this.getGlobal('dialog').show(options);
   }
 
-  triggerAction = failSafe((action, options) => {
+  triggerAction = failSafe((action, options = {}) => {
 
     const {
       activeTab
@@ -1808,6 +1815,12 @@ export class App extends PureComponent {
     }
 
     if (action === 'open-diagram') {
+      const { path } = options;
+
+      if (path) {
+        return this.readFileFromPath(path).then(file => this.openFiles([ file ]));
+      }
+
       return this.showOpenFilesDialog();
     }
 
@@ -2063,6 +2076,22 @@ export class App extends PureComponent {
     return fn;
   };
 
+  _onTabOpened(tab) {
+    if (!this.isUnsaved(tab)) {
+      this.getGlobal('backend').send('file-context:file-opened', tab.file.path, undefined);
+    }
+  }
+
+  _onTabClosed(tab) {
+    if (!this.isUnsaved(tab)) {
+      this.getGlobal('backend').send('file-context:file-closed', tab.file.path);
+    }
+  }
+
+  _onTabSaved(tab) {
+    this.getGlobal('backend').send('file-context:file-content-changed', tab.file.path, undefined);
+  }
+
   render() {
 
     const {
@@ -2178,7 +2207,17 @@ export class App extends PureComponent {
   }
 
   _getNewFileItems = () => {
-    let items = [];
+    let items = [
+
+      // TODO: make this configurable
+      {
+        text: 'Process application',
+        group: 'Camunda 8',
+        icon: ProcessApplicationIcon,
+        onClick: () => this.triggerAction('emit-event', { type: 'create-process-application' })
+      }
+    ];
+
     const providers = this.props.tabsProvider.getProviders();
 
     forEach(providers, provider => {
