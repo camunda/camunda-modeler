@@ -55,6 +55,8 @@ import Panel from '../../../panel/Panel';
 
 import Flags, { ENABLE_NEW_CONTEXT_PAD } from '../../../../util/Flags';
 
+import Metadata from '../../../../util/Metadata';
+
 const { spy } = sinon;
 
 
@@ -1534,6 +1536,64 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // expect
       expect(elementTemplatesLoaderStub.setTemplates).not.to.be.calledWith(allTemplates);
       expect(elementTemplatesLoaderStub.setTemplates).to.be.calledWith(cloudTemplates);
+    });
+
+
+    it('should provide modeler version for element templates', async function() {
+
+      // given
+      const modelerVersion = '5.30.0';
+
+      Metadata.init({ version: modelerVersion });
+
+      // when
+      const { instance } = await renderEditor(engineProfileXML);
+      const { modeler } = instance.getCached();
+
+      // then
+      expect(modeler.options.elementTemplates.engines).to.eql({ camundaDesktopModeler: modelerVersion });
+    });
+
+
+    it('should set templates engines when runtime version changes', async function() {
+
+      // given
+      const appVersion = '5.30.0';
+
+      Metadata.init({ version: appVersion });
+
+      const elementTemplatesMock = {
+        setEngines: sinon.spy(),
+        getEngines: () => ({ camundaDesktopModeler: appVersion })
+      };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              elementTemplates: elementTemplatesMock
+            }
+          })
+        }
+      });
+
+      // when
+      const { instance } = await renderEditor(engineProfileXML, { cache });
+
+      instance.engineProfile.set({
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '8.5'
+      });
+
+      // then
+      const expectedEngines = {
+        camundaDesktopModeler: appVersion,
+        camunda: '8.5'
+      };
+
+      expect(elementTemplatesMock.setEngines).to.be.calledWith(expectedEngines);
     });
 
 
