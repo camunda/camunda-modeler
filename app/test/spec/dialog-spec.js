@@ -217,6 +217,51 @@ describe('Dialog', function() {
     };
 
 
+    it('should open dialog to open files (default)', async function() {
+
+      // given
+      const options = {
+        title: 'foo'
+      };
+
+      const filePaths = [ 'foo.file' ];
+
+      electronDialog.setResponse({ filePaths });
+
+      // when
+      await dialog.showOpenDialog(options);
+
+      // then
+      const args = getDialogArgs(electronDialog.showOpenDialog);
+
+      expect(args.properties).to.include('openFile');
+      expect(args.properties).to.include('multiSelections');
+    });
+
+
+    it('should open dialog to open directory', async function() {
+
+      // given
+      const options = {
+        title: 'foo',
+        properties: [ 'openDirectory' ]
+      };
+
+      const directoryPaths = [ 'foo' ];
+
+      // given
+      electronDialog.setResponse({ filePaths: directoryPaths });
+
+      // when
+      await dialog.showOpenDialog(options);
+
+      // then
+      const args = getDialogArgs(electronDialog.showOpenDialog);
+
+      expect(args.properties).to.include('openDirectory');
+    });
+
+
     it('should return filepaths', async function() {
 
       // given

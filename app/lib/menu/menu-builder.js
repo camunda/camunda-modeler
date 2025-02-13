@@ -65,6 +65,7 @@ class MenuBuilder {
     this.appendFileMenu(
       new MenuBuilder(this.options)
         .appendNewFile()
+        .appendNewProcessApplication()
         .appendOpen()
         .appendSeparator()
         .appendSwitchTab()
@@ -262,6 +263,17 @@ class MenuBuilder {
       enabled: this.options.state.save,
       click: function() {
         app.emit('menu:action', 'save-all');
+      }
+    }));
+
+    return this;
+  }
+
+  appendNewProcessApplication() {
+    this.menu.append(new MenuItem({
+      label: 'New Process Application...',
+      click: function() {
+        app.emit('menu:action', 'emit-event', { type: 'create-process-application' });
       }
     }));
 
@@ -706,13 +718,15 @@ class MenuBuilder {
           tabs = this.options.state.tabs,
           tabId = attrs.tabId;
 
-    const tabFilePath = tabs.find(t => t.id === tabId).file.path;
+    const filePath = tabs.find(t => t.id === tabId).file.path;
 
     this.menu.append(new MenuItem({
       label: 'Reveal in File Explorer',
-      enabled: !!tabFilePath,
+      enabled: !!filePath,
       click: function() {
-        app.emit('menu:action', 'reveal-tab', attrs);
+        app.emit('menu:action', 'reveal-in-file-explorer', {
+          filePath
+        });
       }
     }));
 

@@ -13,6 +13,8 @@
 const fs = require('fs'),
       path = require('path');
 
+const { pathToFileURL } = require('node:url');
+
 const {
   assign,
   pick
@@ -21,18 +23,26 @@ const {
 const log = require('./log')('app:file-system');
 
 /**
+ * @typedef {Object} FileMessage
+ * @property {boolean} error
+ * @property {string} message
+ * @property {string} source
+ *
  * @typedef FileDescriptor
  * @property {string|Buffer} contents
  * @property {number} lastModified
  * @property {string} name
  * @property {string} path
+ * @property {string} uri
+ * @property {Array<FileMessage>} messages
  */
 
 const FILE_PROPERTIES = [
   'contents',
   'lastModified',
   'name',
-  'path'
+  'path',
+  'messages'
 ];
 
 const ENCODING_BASE64 = 'base64',
@@ -163,11 +173,17 @@ function createFile(oldFile, newFile) {
 
   if (newFile.path) {
     newFile.name = path.basename(newFile.path);
+    newFile.dirname = path.dirname(newFile.path);
+    newFile.extname = path.extname(newFile.path);
+    newFile.uri = pathToFileURL(newFile.path).toString();
   }
+
+  newFile.messages = newFile.messages || [];
 
   return assign({}, oldFile, newFile);
 }
 
+module.exports.createFile = createFile;
 
 /**
  * Ensure that the file path has an extension,

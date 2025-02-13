@@ -29,3 +29,9 @@ export const defaultTabs = [
     name: 'tab4.tab'
   }
 ];
+
+export const defaultTabGroups = {
+  tab1: 'group1',
+  tab2: 'group1',
+  tab3: 'group2'
+};
