@@ -6,6 +6,14 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `DEPS`: update to `@camunda/improved-canvas@1.7.6`
+
+### BPMN
+
+* `FIX`: suggest ad-hoc subprocess with new context pad ([#4813](https://github.com/camunda/camunda-modeler/issues/4813))
+
 ## 5.32.0
 
 * `DEPS`: update to `@bpmn-io/extract-process-variables@1.0.1`
