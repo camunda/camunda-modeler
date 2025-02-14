@@ -218,6 +218,10 @@ describe('TabsProvider', function() {
     it('should replace version placeholder with actual latest version (BPMN)', function() {
 
       // given
+      Flags.init({
+        [DISABLE_RPA]: false
+      });
+
       const tabsProvider = new TabsProvider();
 
       const expectedPlatformVersion = getLatestStablePlatformVersion(ENGINES.PLATFORM);
@@ -478,6 +482,10 @@ describe('TabsProvider', function() {
 
         it('should replace version placeholder with actual latest version (RPA)', function() {
 
+          Flags.init({
+            [DISABLE_RPA]: false
+          });
+
           // given
           const tabsProvider = new TabsProvider();
 
@@ -560,7 +568,8 @@ describe('TabsProvider', function() {
 
     // given
     Flags.init({
-      [DISABLE_CMMN]: false
+      [DISABLE_CMMN]: false,
+      [DISABLE_RPA]: false
     });
 
     const tabsProvider = new TabsProvider();
@@ -873,7 +882,8 @@ describe('TabsProvider', function() {
 
     // given
     Flags.init({
-      [DISABLE_CMMN]: false
+      [DISABLE_CMMN]: false,
+      [DISABLE_RPA]: false
     });
 
     const tabsProvider = new TabsProvider();
@@ -904,7 +914,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM', 'RPA' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM' ]);
 
     });
 
@@ -913,7 +923,8 @@ describe('TabsProvider', function() {
 
       // given
       Flags.init({
-        [DISABLE_CMMN]: false
+        [DISABLE_CMMN]: false,
+        [DISABLE_RPA]: false
       });
       const tabsProvider = new TabsProvider();
 
@@ -930,7 +941,8 @@ describe('TabsProvider', function() {
 
       // given
       Flags.init({
-        [DISABLE_PLATFORM]: true
+        [DISABLE_PLATFORM]: true,
+        [DISABLE_RPA]: false
       });
       const tabsProvider = new TabsProvider();
 
@@ -1263,7 +1275,8 @@ describe('TabsProvider', function() {
 
     beforeEach(function() {
       Flags.init({
-        [DISABLE_CMMN]: false
+        [DISABLE_CMMN]: false,
+        [DISABLE_RPA]: false
       });
 
       tabsProvider = new TabsProvider();
