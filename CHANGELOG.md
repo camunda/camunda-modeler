@@ -8,6 +8,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: support Camunda 8.8
 * `DEPS`: update to `@camunda/improved-canvas@1.7.6`
 
 ### BPMN
