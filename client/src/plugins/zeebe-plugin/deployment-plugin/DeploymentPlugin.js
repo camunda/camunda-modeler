@@ -71,7 +71,8 @@ const GRPC_ERROR_CODES = {
 const RESOURCE_TYPES = {
   BPMN: 'bpmn',
   DMN: 'dmn',
-  FORM: 'form'
+  FORM: 'form',
+  RPA: 'rpa'
 };
 
 export default class DeploymentPlugin extends PureComponent {
@@ -512,6 +513,8 @@ export default class DeploymentPlugin extends PureComponent {
       return 'Decision definition deployed';
     } else if (resourceType === RESOURCE_TYPES.FORM) {
       return 'Form definition deployed';
+    } else if (resourceType === RESOURCE_TYPES.RPA) {
+      return 'RPA Script deployed';
     }
 
     return null;
@@ -702,7 +705,7 @@ function withoutCredentials(endpointConfiguration) {
 }
 
 function isZeebeTab(tab) {
-  return tab && [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form' ].includes(tab.type);
+  return tab && [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form', 'rpa' ].includes(tab.type);
 }
 
 function getGRPCErrorCode(error) {
@@ -754,6 +757,10 @@ function getResourceType({ type }) {
 
   if (type === 'cloud-form') {
     return RESOURCE_TYPES.FORM;
+  }
+
+  if (type === 'rpa') {
+    return RESOURCE_TYPES.RPA;
   }
 
   return null;
