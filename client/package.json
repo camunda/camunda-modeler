@@ -52,7 +52,7 @@
     "dmn-js-shared": "^17.1.0",
     "drag-tabs": "^2.3.1",
     "events": "^3.0.0",
-    "formik": "2.0.4",
+    "formik": "2.4.6",
     "ids": "^1.0.0",
     "inherits-browser": "^0.1.0",
     "min-dash": "^4.1.1",
