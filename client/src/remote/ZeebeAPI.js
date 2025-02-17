@@ -84,10 +84,12 @@ function getEndpointConfiguration(endpoint) {
     basicAuthPassword,
     oauthURL,
     contactPoint,
+    contactPointWithoutProtocol,
     camundaCloudClientId,
     camundaCloudClientSecret,
     camundaCloudClusterId,
-    camundaCloudClusterRegion
+    camundaCloudClusterRegion,
+    camundaZeebeAddress
   } = endpoint;
 
   if (targetType === ENDPOINT_TYPES.SELF_HOSTED) {
@@ -97,7 +99,8 @@ function getEndpointConfiguration(endpoint) {
       return {
         type: ENDPOINT_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
-        url: contactPoint
+        url: contactPoint,
+        urlWithoutProtocol: contactPointWithoutProtocol
       };
 
     case AUTH_TYPES.BASIC:
@@ -105,6 +108,7 @@ function getEndpointConfiguration(endpoint) {
         type: ENDPOINT_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.BASIC,
         url: contactPoint,
+        urlWithoutProtocol: contactPointWithoutProtocol,
         basicAuthUsername,
         basicAuthPassword
       };
@@ -114,6 +118,7 @@ function getEndpointConfiguration(endpoint) {
         type: ENDPOINT_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.OAUTH,
         url: contactPoint,
+        urlWithoutProtocol: contactPointWithoutProtocol,
         oauthURL,
         audience,
         scope,
@@ -128,6 +133,7 @@ function getEndpointConfiguration(endpoint) {
       type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
       clientId: camundaCloudClientId,
       clientSecret: camundaCloudClientSecret,
+      urlWithoutProtocol: camundaZeebeAddress,
       clusterId: camundaCloudClusterId,
       ...(camundaCloudClusterRegion ? { clusterRegion: camundaCloudClusterRegion } : {})
     };

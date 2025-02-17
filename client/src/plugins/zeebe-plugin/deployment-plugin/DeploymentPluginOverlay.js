@@ -178,7 +178,12 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
     if (endpoint.targetType === CAMUNDA_CLOUD && endpoint.camundaCloudClusterUrl) {
       endpoint.camundaCloudClusterId = extractClusterId(endpoint.camundaCloudClusterUrl);
       endpoint.camundaCloudClusterRegion = extractClusterRegion(endpoint.camundaCloudClusterUrl);
+
+      // required by camunda8/sdk
+      endpoint.camundaZeebeAddress = extractUrlWithoutProtocol(endpoint.camundaCloudClusterUrl);
     }
+
+    endpoint.contactPointWithoutProtocol = extractUrlWithoutProtocol(endpoint.contactPoint);
 
     this.connectionChecker.check(endpoint);
 
@@ -469,4 +474,15 @@ function extractClusterId(camundaCloudClusterUrl) {
 function extractClusterRegion(camundaCloudClusterUrl) {
   const matches = camundaCloudClusterUrl.match(/(?<=\.)[a-z]+-[\d]+/g);
   return matches ? matches[0] : null;
+}
+
+
+/**
+ * extractZeebeAddress
+ *
+ * @param  {type} clusterUrl
+ * @return {type} clusterUrlWithoutProtocol
+ */
+function extractUrlWithoutProtocol(url) {
+  return url.replace(/^https?:\/\//, '');
 }

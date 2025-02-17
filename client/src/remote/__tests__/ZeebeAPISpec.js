@@ -39,11 +39,13 @@ describe('<ZeebeAPI>', function() {
       const zeebeAPI = new ZeebeAPI(backend);
 
       const contactPoint = 'contactPoint';
+      const contactPointWithoutProtocol = 'contactPointWithoutProtocol';
 
       const endpoint = {
         targetType: ENDPOINT_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
-        contactPoint
+        contactPoint,
+        contactPointWithoutProtocol
       };
 
       // when
@@ -54,7 +56,8 @@ describe('<ZeebeAPI>', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.NONE,
-          url: contactPoint
+          url: contactPoint,
+          urlWithoutProtocol: contactPointWithoutProtocol
         }
       });
     });
@@ -66,13 +69,15 @@ describe('<ZeebeAPI>', function() {
       const zeebeAPI = new ZeebeAPI(backend);
 
       const contactPoint = 'contactPoint';
+      const contactPointWithoutProtocol = 'contactPointWithoutProtocol';
 
       const endpoint = {
         targetType: ENDPOINT_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.BASIC,
         basicAuthUsername: 'username',
         basicAuthPassword: 'password',
-        contactPoint
+        contactPoint,
+        contactPointWithoutProtocol
       };
 
       // when
@@ -84,6 +89,7 @@ describe('<ZeebeAPI>', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.BASIC,
           url: contactPoint,
+          urlWithoutProtocol: contactPointWithoutProtocol,
           basicAuthUsername: 'username',
           basicAuthPassword: 'password'
         }
@@ -99,6 +105,7 @@ describe('<ZeebeAPI>', function() {
       const targetType = ENDPOINT_TYPES.SELF_HOSTED;
       const authType = AUTH_TYPES.OAUTH;
       const contactPoint = 'contactPoint';
+      const contactPointWithoutProtocol = 'contactPointWithoutProtocol';
       const oauthURL = 'oauthURL';
       const audience = 'audience';
       const scope = 'scope';
@@ -108,6 +115,7 @@ describe('<ZeebeAPI>', function() {
         targetType,
         authType,
         contactPoint,
+        contactPointWithoutProtocol,
         oauthURL,
         audience,
         scope,
@@ -124,6 +132,7 @@ describe('<ZeebeAPI>', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.OAUTH,
           url: contactPoint,
+          urlWithoutProtocol: contactPointWithoutProtocol,
           oauthURL,
           audience,
           scope,
@@ -143,11 +152,13 @@ describe('<ZeebeAPI>', function() {
       const camundaCloudClientId = 'camundaCloudClientId';
       const camundaCloudClientSecret = 'camundaCloudClientSecret';
       const camundaCloudClusterId = 'camundaCloudClusterId';
+      const camundaZeebeAddress = 'camundaZeebeAddress';
       const endpoint = {
         targetType,
         camundaCloudClientId,
         camundaCloudClientSecret,
-        camundaCloudClusterId
+        camundaCloudClusterId,
+        camundaZeebeAddress
       };
 
       // when
@@ -159,7 +170,8 @@ describe('<ZeebeAPI>', function() {
           type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
           clientId: camundaCloudClientId,
           clientSecret: camundaCloudClientSecret,
-          clusterId: camundaCloudClusterId
+          clusterId: camundaCloudClusterId,
+          urlWithoutProtocol: camundaZeebeAddress
         }
       });
 
@@ -176,13 +188,15 @@ describe('<ZeebeAPI>', function() {
       const zeebeAPI = new ZeebeAPI(backend);
 
       const contactPoint = 'contactPoint';
+      const contactPointWithoutProtocol = 'contactPointWithoutProtocol';
 
       const processId = 'processId';
 
       const endpoint = {
         targetType: ENDPOINT_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
-        contactPoint
+        contactPoint,
+        contactPointWithoutProtocol
       };
 
       // when
@@ -197,7 +211,8 @@ describe('<ZeebeAPI>', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.NONE,
-          url: contactPoint
+          url: contactPoint,
+          urlWithoutProtocol: contactPointWithoutProtocol
         }
       });
 
@@ -215,6 +230,8 @@ describe('<ZeebeAPI>', function() {
 
       const contactPoint = 'contactPoint';
 
+      const contactPointWithoutProtocol = 'contactPointWithoutProtocol';
+
       const filePath = 'filePath';
 
       const name = 'deployment';
@@ -222,7 +239,8 @@ describe('<ZeebeAPI>', function() {
       const endpoint = {
         targetType: ENDPOINT_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
-        contactPoint
+        contactPoint,
+        contactPointWithoutProtocol
       };
 
       // when
@@ -239,7 +257,8 @@ describe('<ZeebeAPI>', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.NONE,
-          url: contactPoint
+          url: contactPoint,
+          urlWithoutProtocol: contactPointWithoutProtocol
         }
       });
 
@@ -253,6 +272,8 @@ describe('<ZeebeAPI>', function() {
 
       const contactPoint = 'contactPoint';
 
+      const contactPointWithoutProtocol = 'contactPointWithoutProtocol';
+
       const filePath = 'filePath';
 
       const name = 'deployment';
@@ -262,7 +283,8 @@ describe('<ZeebeAPI>', function() {
         authType: AUTH_TYPES.BASIC,
         basicAuthUsername: 'username',
         basicAuthPassword: 'password',
-        contactPoint
+        contactPoint,
+        contactPointWithoutProtocol
       };
 
       // when
@@ -280,6 +302,7 @@ describe('<ZeebeAPI>', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.BASIC,
           url: contactPoint,
+          urlWithoutProtocol: contactPointWithoutProtocol,
           basicAuthUsername: 'username',
           basicAuthPassword: 'password'
         }
@@ -294,6 +317,8 @@ describe('<ZeebeAPI>', function() {
 
       const contactPoint = 'contactPoint';
 
+      const contactPointWithoutProtocol = 'contactPointWithoutProtocol';
+
       const filePath = 'filePath';
 
       const name = 'deployment';
@@ -304,6 +329,7 @@ describe('<ZeebeAPI>', function() {
         targetType: ENDPOINT_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.OAUTH,
         contactPoint,
+        contactPointWithoutProtocol,
         oauthURL: 'oauthURL',
         audience: 'audience',
         scope: 'scope',
@@ -328,6 +354,7 @@ describe('<ZeebeAPI>', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.OAUTH,
           url: contactPoint,
+          urlWithoutProtocol: contactPointWithoutProtocol,
           oauthURL: 'oauthURL',
           audience: 'audience',
           scope: 'scope',
@@ -350,10 +377,13 @@ describe('<ZeebeAPI>', function() {
 
       const contactPoint = 'contactPoint';
 
+      const contactPointWithoutProtocol = 'contactPointWithoutProtocol';
+
       const endpoint = {
         targetType: ENDPOINT_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
-        contactPoint
+        contactPoint,
+        contactPointWithoutProtocol
       };
 
       // when
@@ -364,7 +394,8 @@ describe('<ZeebeAPI>', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.NONE,
-          url: contactPoint
+          url: contactPoint,
+          urlWithoutProtocol: contactPointWithoutProtocol
         }
       });
 
