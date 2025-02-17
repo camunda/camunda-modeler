@@ -35,7 +35,7 @@ jobs:
       run: npm ci
     - name: Import Secrets
       id: secrets
-      uses: hashicorp/vault-action@v3.0.0
+      uses: hashicorp/vault-action@v3.1.0
       with:
         url: ${{ secrets.VAULT_ADDR }}
         method: approle
@@ -111,7 +111,7 @@ jobs:
     steps:
     - name: Import Secrets
       id: secrets
-      uses: hashicorp/vault-action@v3.0.0
+      uses: hashicorp/vault-action@v3.1.0
       with:
         url: ${{ secrets.VAULT_ADDR }}
         method: approle
