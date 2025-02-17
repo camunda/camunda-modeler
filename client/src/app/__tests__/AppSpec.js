@@ -364,6 +364,144 @@ describe('<App>', function() {
   });
 
 
+  describe('file context', function() {
+
+    it('should send <file-context:opened> event to backend on tab opened', async function() {
+
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      // when
+      const file1 = createFile('1.bpmn');
+
+      await app.openFiles([ file1 ]);
+
+      // then
+      expect(sendSpy).to.have.been.calledWith('file-context:file-opened', file1.path, undefined);
+    });
+
+
+    it('should not send <file-context:opened> to backend event on unsaved tab opened', async function() {
+
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      // when
+      await app.createDiagram('bpmn');
+
+      // then
+      expect(sendSpy).not.to.have.been.calledWith('file-context:file-opened');
+    });
+
+
+    it('should send <file-context:file-closed> to backend on tab closed', async function() {
+
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      // when
+      const file1 = createFile('1.bpmn');
+
+      const [ tab ] = await app.openFiles([ file1 ]);
+
+      await app.closeTab(tab);
+
+      // then
+      expect(sendSpy).to.have.been.calledWith('file-context:file-closed', file1.path);
+    });
+
+
+    it('should not send <file-context:file-closed> to backend on unsaved tab closed', async function() {
+
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      // when
+      const tab = await app.createDiagram('bpmn');
+
+      await app.closeTab(tab);
+
+      // then
+      expect(sendSpy).not.to.have.been.calledWith('file-context:file-closed');
+    });
+
+
+    it('should send <file-context:file-content-changed> to backend on tab saved', async function() {
+
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const fileSystem = new FileSystem();
+
+      const { app } = createApp({
+        globals: {
+          backend,
+          fileSystem
+        }
+      });
+
+      // when
+      const file1 = createFile('1.bpmn');
+
+      fileSystem.setWriteFileResponse(0, Promise.resolve({
+        ...file1
+      }));
+
+      await app.openFiles([ file1 ]);
+
+      await app.triggerAction('save');
+
+      // then
+      expect(sendSpy).to.have.been.calledWith('file-context:file-content-changed', file1.path, undefined);
+    });
+
+  });
+
+
   describe('#openFiles', function() {
 
     it('should create tabs', async function() {
