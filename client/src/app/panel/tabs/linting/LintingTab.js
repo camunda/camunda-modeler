@@ -91,7 +91,7 @@ function LintingTabItem(props) {
 
   const {
     category,
-    documentation = {},
+    meta = {},
     message,
     rule
   } = report;
@@ -109,7 +109,7 @@ function LintingTabItem(props) {
     </div>;
   }
 
-  const { url: documentationUrl = null } = documentation;
+  const documentationUrl = meta?.documentation?.url;
   const reportName = getReportName(report);
 
   return <div

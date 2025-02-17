@@ -55,8 +55,10 @@ describe('<LintingTab>', function() {
           name: 'Foo',
           message: 'Foo message',
           rule: 'foo-rule',
-          documentation: {
-            url: 'https://foo.bar'
+          meta: {
+            documentation: {
+              url: 'https://foo.bar'
+            }
           }
         }
       ]
