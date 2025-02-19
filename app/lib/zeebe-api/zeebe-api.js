@@ -360,6 +360,9 @@ class ZeebeAPI {
     };
 
     if (!values(ENDPOINT_TYPES).includes(type) || !values(AUTH_TYPES).includes(authType)) {
+
+      // TODO(nikku): this should throw an error as consumers of this method
+      //   _never_ handle a null zeebe client appropriately
       return;
     }
 
