@@ -157,6 +157,33 @@ describe('FileContext', function() {
     expect(fileContext._indexer.getItems()).to.have.length(5);
   });
 
+
+  it('should NOT throw for unrecognized extension', async function() {
+
+    // given
+    const filePath = path.resolve(__dirname, './fixtures/extensions/bpmn.unrecognized');
+
+    // when
+    const file = await fileContext.addFile(filePath);
+
+    // then
+    expect(file).to.exist;
+    expect(file).to.have.property('type');
+  });
+
+
+  it('should NOT throw for missing extension', async function() {
+
+    // given
+    const filePath = path.resolve(__dirname, './fixtures/extensions/no-extension');
+
+    // when
+    const file = await fileContext.addFile(filePath);
+
+    // then
+    expect(file).to.exist;
+    expect(file).to.have.property('type');
+  });
 });
 
 function createWaitFor(fileContext) {

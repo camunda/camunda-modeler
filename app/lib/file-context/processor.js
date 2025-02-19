@@ -40,6 +40,10 @@ module.exports = class Processor {
 
     const processor = this._processors.find(processor => processor.extensions.includes(getFileExtension(item.file.path)));
 
+    if (!processor) {
+      return { type: 'unknown' };
+    }
+
     return processor.process(item);
   }
 };
