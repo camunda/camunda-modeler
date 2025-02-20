@@ -17,12 +17,8 @@ const createLog = require('../log');
 const { X509Certificate } = require('node:crypto');
 
 const {
-  get,
-  isDefined,
   pick,
-  set,
-  values,
-  merge
+  values
 } = require('min-dash');
 
 const ERROR_REASONS = {
@@ -47,18 +43,6 @@ const RESOURCE_TYPES = {
   DMN: 'dmn',
   FORM: 'form'
 };
-
-const ENDPOINT_SECRETS = [
-  'endpoint.clientId',
-  'endpoint.clientSecret',
-  'endpoint.basicAuthUsername',
-  'endpoint.basicAuthPassword'
-];
-
-const CLIENT_OPTIONS_SECRETS = [
-  'options.basicAuth.username',
-  'options.basicAuth.password'
-];
 
 /**
  * @typedef {Object} ZeebeClientParameters
@@ -156,7 +140,7 @@ class ZeebeAPI {
     const client = await this._getZeebeClient(endpoint);
 
     this._log.debug('check connection', {
-      parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
+      parameters: filterEndpointParameters(parameters)
     });
 
     try {
@@ -164,7 +148,7 @@ class ZeebeAPI {
       return { success: true };
     } catch (err) {
       this._log.error('connection check failed', {
-        parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
+        parameters: filterEndpointParameters(parameters)
       }, err);
 
       return {
@@ -196,7 +180,7 @@ class ZeebeAPI {
     } = this._fs.readFile(filePath, { encoding: false });
 
     this._log.debug('deploy', {
-      parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
+      parameters: filterEndpointParameters(parameters)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -215,7 +199,7 @@ class ZeebeAPI {
         response: response
       };
     } catch (err) {
-      this._log.error('deploy failed', withoutSecrets(parameters, ENDPOINT_SECRETS), err);
+      this._log.error('deploy failed', filterEndpointParameters(parameters), err);
 
       return {
         success: false,
@@ -242,7 +226,7 @@ class ZeebeAPI {
     } = parameters;
 
     this._log.debug('run', {
-      parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
+      parameters: filterEndpointParameters(parameters)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -261,7 +245,7 @@ class ZeebeAPI {
       };
     } catch (err) {
       this._log.error('run failed', {
-        parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
+        parameters: filterEndpointParameters(parameters)
       }, err);
 
       return {
@@ -286,7 +270,7 @@ class ZeebeAPI {
     } = parameters;
 
     this._log.debug('fetch gateway version', {
-      parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
+      parameters: filterEndpointParameters(parameters)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -302,7 +286,7 @@ class ZeebeAPI {
       };
     } catch (err) {
       this._log.error('fetch gateway version failed', {
-        parameters: withoutSecrets(parameters, ENDPOINT_SECRETS)
+        parameters: filterEndpointParameters(parameters)
       }, err);
 
       return {
@@ -420,15 +404,7 @@ class ZeebeAPI {
 
     this._log.debug('creating client', {
       url,
-      options: withoutSecrets(
-        filterRecursive(options, [
-          'clientId:secret',
-          'clientSecret:secret',
-          'customRootCert:blob',
-          'rootCerts:blob'
-        ]),
-        CLIENT_OPTIONS_SECRETS
-      )
+      options: filterCamunda8Options(options)
     });
 
     const camundaClient = new this._Camunda8(options);
@@ -637,25 +613,40 @@ function isHashEqual(parameter1, parameter2) {
   return JSON.stringify(parameter1) === JSON.stringify(parameter2);
 }
 
-function withoutSecrets(parameters, paths) {
-
-  const newParameters = merge({}, parameters);
-
-  paths.forEach(secret => {
-    const path = secret.split('.');
-
-    const value = get(parameters, path);
-
-    if (isDefined(value)) {
-      set(newParameters, path, '******');
-    }
-  });
-
-  return newParameters;
-}
-
 function asSerializedError(error) {
   return pick(error, [ 'message', 'code', 'details' ]);
+}
+
+/**
+ * Filter endpoint connection parameters, so they can safely logged
+ * without leaking secrets.
+ *
+ * @param {any} parameters
+ *
+ * @return {any} filtered parameters
+ */
+function filterEndpointParameters(parameters) {
+  return filterRecursive(parameters, [
+    'clientSecret:secret',
+    'basicAuthPassword:secret'
+  ]);
+}
+
+/**
+ * Filter Camunda8 options, so they can safely logged
+ * without leaking secrets.
+ *
+ * @param {any} options
+ *
+ * @return {any} filtered options
+ */
+function filterCamunda8Options(options) {
+  return filterRecursive(options, [
+    'ZEEBE_CLIENT_SECRET:secret',
+    'CAMUNDA_CONSOLE_CLIENT_SECRET:secret',
+    'CAMUNDA_BASIC_AUTH_PASSWORD:secret',
+    'CAMUNDA_CUSTOM_ROOT_CERT_STRING:blob'
+  ]);
 }
 
 function filterRecursive(obj, keys) {
