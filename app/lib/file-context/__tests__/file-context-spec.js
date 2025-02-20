@@ -168,7 +168,7 @@ describe('FileContext', function() {
 
     // then
     expect(file).to.exist;
-    expect(file).to.have.property('type');
+    expect(file.metadata).to.have.property('type');
   });
 
 
@@ -182,7 +182,7 @@ describe('FileContext', function() {
 
     // then
     expect(file).to.exist;
-    expect(file).to.have.property('type');
+    expect(file.metadata).to.have.property('type');
   });
 
 
@@ -198,7 +198,7 @@ describe('FileContext', function() {
 
       // then
       expect(file).to.exist;
-      expect(file).to.have.property('type');
+      expect(file.metadata).to.have.property('type');
     });
 
 
@@ -212,7 +212,7 @@ describe('FileContext', function() {
 
       // then
       expect(file).to.exist;
-      expect(file).to.have.property('type');
+      expect(file.metadata).to.have.property('type');
     });
 
 
@@ -226,7 +226,7 @@ describe('FileContext', function() {
 
       // then
       expect(file).to.exist;
-      expect(file).to.have.property('type');
+      expect(file.metadata).to.have.property('type');
     });
 
 
@@ -240,7 +240,7 @@ describe('FileContext', function() {
 
       // then
       expect(file).to.exist;
-      expect(file).to.have.property('type');
+      expect(file.metadata).to.have.property('type');
     });
   });
 
