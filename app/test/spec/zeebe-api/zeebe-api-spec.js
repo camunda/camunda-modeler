@@ -2288,7 +2288,7 @@ describe('ZeebeAPI', function() {
           },
           ZEEBE_GRPC_ADDRESS: 'localhost:26500',
           CAMUNDA_AUTH_STRATEGY: 'BASIC',
-          CAMUNDA_BASIC_AUTH_USERNAME: '******',
+          CAMUNDA_BASIC_AUTH_USERNAME: 'username',
           CAMUNDA_BASIC_AUTH_PASSWORD: '******',
           CAMUNDA_SECURE_CONNECTION: false
         }
@@ -2303,7 +2303,7 @@ describe('ZeebeAPI', function() {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             authType: AUTH_TYPES.BASIC,
-            basicAuthUsername: '******',
+            basicAuthUsername: 'username',
             basicAuthPassword: '******',
             url: TEST_URL
           }
@@ -2361,7 +2361,7 @@ describe('ZeebeAPI', function() {
           CAMUNDA_AUTH_STRATEGY: 'OAUTH',
           CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true,
           CAMUNDA_TOKEN_SCOPE: 'scope',
-          ZEEBE_CLIENT_ID: '******',
+          ZEEBE_CLIENT_ID: 'clientId',
           ZEEBE_CLIENT_SECRET: '******',
           CAMUNDA_CONSOLE_OAUTH_AUDIENCE: 'audience',
           CAMUNDA_OAUTH_URL: 'oauthURL',
@@ -2382,7 +2382,7 @@ describe('ZeebeAPI', function() {
             oauthURL: 'oauthURL',
             audience: 'audience',
             scope: 'scope',
-            clientId: '******',
+            clientId: 'clientId',
             clientSecret: '******'
           }
         }
