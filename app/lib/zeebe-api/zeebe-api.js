@@ -21,7 +21,8 @@ const {
   isDefined,
   pick,
   set,
-  values
+  values,
+  merge
 } = require('min-dash');
 
 const ERROR_REASONS = {
@@ -637,17 +638,20 @@ function isHashEqual(parameter1, parameter2) {
 }
 
 function withoutSecrets(parameters, paths) {
+
+  const newParameters = merge({}, parameters);
+
   paths.forEach(secret => {
     const path = secret.split('.');
 
     const value = get(parameters, path);
 
     if (isDefined(value)) {
-      set(parameters, path, '******');
+      set(newParameters, path, '******');
     }
   });
 
-  return parameters;
+  return newParameters;
 }
 
 function asSerializedError(error) {
