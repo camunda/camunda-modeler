@@ -10,9 +10,11 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: support Camunda 8.8
 * `DEPS`: update to `@camunda/improved-canvas@1.7.6`
+* `DEPS`: update to `@camunda/linting@3.32.1`
 
 ### BPMN
 
+* `FEAT`: improve ad-hoc subprocess linting ([#4811](https://github.com/camunda/camunda-modeler/issues/4811))
 * `FIX`: suggest ad-hoc subprocess with new context pad ([#4813](https://github.com/camunda/camunda-modeler/issues/4813))
 
 ## 5.32.0
