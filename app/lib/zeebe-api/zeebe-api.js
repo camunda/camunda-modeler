@@ -339,7 +339,12 @@ class ZeebeAPI {
   }
 
   _shutdownZeebeClientInstance() {
-    this._zeebeClient && this._zeebeClient.close();
+
+    if (this._zeebeClient) {
+      this._log.debug('shutdown zeebe client');
+
+      this._zeebeClient.close();
+    }
   }
 
   /**
