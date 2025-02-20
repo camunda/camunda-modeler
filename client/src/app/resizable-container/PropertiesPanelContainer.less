@@ -21,4 +21,9 @@
     --font-family-monospace: inherit;
     background: var(--color-white);
   }
+
+  // This makes the text inside of a tooltip selectable
+  .bio-properties-panel :has(.bio-properties-panel-tooltip-content) * {
+    user-select: text;
+  }
 }
