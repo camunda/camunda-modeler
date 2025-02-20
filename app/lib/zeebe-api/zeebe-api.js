@@ -103,7 +103,7 @@ class ZeebeAPI {
 
   /**
    * @param { any } fs
-   * @param { Camunda8Constructor } Camunda8Constructor
+   * @param { Camunda8Constructor } Camunda8
    * @param { any } flags
    * @param { any } [log]
    */
