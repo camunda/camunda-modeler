@@ -8,13 +8,18 @@
  * except in compliance with the MIT License.
  */
 
+const assert = require('node:assert');
+
 module.exports = {
   extensions: [ '.form' ],
   process: async (item) => {
-    let form;
+    let formId;
 
     try {
-      form = JSON.parse(item.file.contents);
+      const form = JSON.parse(item.file.contents);
+      formId = form.id;
+
+      assert(formId, 'Form must have an id');
     } catch (error) {
       return {
         type: 'form',
@@ -25,7 +30,7 @@ module.exports = {
 
     return {
       type: 'form',
-      ids: [ form.id ]
+      ids: [ formId ]
     };
   }
 };
