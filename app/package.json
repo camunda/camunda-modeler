@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@camunda8/sdk": "^8.6.23",
+    "@camunda8/sdk": "^8.6.25",
     "@sentry/integrations": "^7.113.0",
     "@sentry/node": "^9.0.0",
     "epipebomb": "^1.0.0",
