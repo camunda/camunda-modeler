@@ -72,8 +72,6 @@ import * as css from './App.less';
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 import { RecentTabs } from './RecentTabs';
 
-import ProcessApplicationIcon from '../../resources/icons/file-types/ProcessApplication.svg';
-
 const log = debug('App');
 
 export const EMPTY_TAB = {
@@ -2242,16 +2240,9 @@ export class App extends PureComponent {
   }
 
   _getNewFileItems = () => {
-    let items = [
 
-      // TODO: make this configurable
-      {
-        text: 'Process application',
-        group: 'Camunda 8',
-        icon: ProcessApplicationIcon,
-        onClick: () => this.triggerAction('emit-event', { type: 'create-process-application' })
-      }
-    ];
+    // TODO: make this configurable
+    let items = [];
 
     const providers = this.props.tabsProvider.getProviders();
 
