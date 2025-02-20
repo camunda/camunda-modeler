@@ -53,7 +53,8 @@ module.exports = class Watcher {
      */
     this._chokidar = new FSWatcher({
       ignored: /\/(node_modules|\.git)\//i,
-      atomic: 300
+      atomic: 300,
+      followSymlinks: false
     });
 
     this._chokidar.on('add', path => {

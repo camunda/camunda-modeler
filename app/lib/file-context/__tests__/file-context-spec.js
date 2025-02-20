@@ -184,6 +184,92 @@ describe('FileContext', function() {
     expect(file).to.exist;
     expect(file).to.have.property('type');
   });
+
+
+  describe('broken files', function() {
+
+    it('should NOT throw for empty BPMN', async function() {
+
+      // given
+      const filePath = path.resolve(__dirname, './fixtures/broken-files/empty.dmn');
+
+      // when
+      const file = await fileContext.addFile(filePath);
+
+      // then
+      expect(file).to.exist;
+      expect(file).to.have.property('type');
+    });
+
+
+    it('should NOT throw for empty DMN', async function() {
+
+      // given
+      const filePath = path.resolve(__dirname, './fixtures/broken-files/empty.bpmn');
+
+      // when
+      const file = await fileContext.addFile(filePath);
+
+      // then
+      expect(file).to.exist;
+      expect(file).to.have.property('type');
+    });
+
+
+    it('should NOT throw for empty FORM', async function() {
+
+      // given
+      const filePath = path.resolve(__dirname, './fixtures/broken-files/empty.json');
+
+      // when
+      const file = await fileContext.addFile(filePath);
+
+      // then
+      expect(file).to.exist;
+      expect(file).to.have.property('type');
+    });
+
+
+    it('should NOT throw for FORM without `id`', async function() {
+
+      // given
+      const filePath = path.resolve(__dirname, './fixtures/broken-files/form-null.json');
+
+      // when
+      const file = await fileContext.addFile(filePath);
+
+      // then
+      expect(file).to.exist;
+      expect(file).to.have.property('type');
+    });
+  });
+
+
+  describe('symlinks', function() {
+
+    it('should not follow symlinks', async function() {
+
+      // given
+      const directoryPath = path.resolve(__dirname, './fixtures/symlink');
+
+      // when
+      await waitFor(() => {
+        fileContext.addRoot(directoryPath);
+      }, 'watcher:ready');
+
+      // then
+      expect(fileContext._indexer.getRoots()).to.have.length(1);
+
+      expectItems(fileContext, [
+        {
+          uri: toFileUrl(path.resolve(__dirname, './fixtures/symlink/.process-application'))
+        },
+        {
+          uri: toFileUrl(path.resolve(__dirname, './fixtures/symlink/bar/empty.bpmn'))
+        }
+      ]);
+    });
+  });
 });
 
 function createWaitFor(fileContext) {
