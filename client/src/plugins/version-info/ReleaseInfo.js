@@ -45,11 +45,15 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Support for upcoming Camunda 8 features</h4>
-          You can now model an Ad-hoc subprocess and define its active elements. <a href="https://docs.camunda.io/docs/next/components/modeler/bpmn/ad-hoc/?utm_source=modeler&utm_medium=referral">Learn more.</a>
+          You can now add user task listener of type `updating`. <a href="https://docs.camunda.io/docs/next/components/concepts/user-task-listeners?utm_source=modeler&utm_medium=referral#supported-events">Learn more.</a>
         </li>
         <li>
-          <h4>Support for latest Camunda 8 FEEL built-ins</h4>
-          The FEEL expression editor now supports the latest built-in functions. <a href="https://docs.camunda.io/docs/components/modeler/feel/builtin-functions/feel-built-in-functions-introduction/">Learn more.</a>
+          <h4>Support for new Camunda versions</h4>
+          Model diagrams for Camunda 8.8.
+        </li>
+        <li>
+          <h4>Better modeling guidance</h4>
+          We added guidance for more elements. You can now go directly to the documentation from the Problems panel.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
