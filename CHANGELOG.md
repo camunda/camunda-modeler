@@ -6,13 +6,23 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.33.0
+
+* `DEPS`: update to `bpmn-js@18.3.1`
+* `DEPS`: update to `bpmn-js-element-templates@2.5.3`
+* `DEPS`: update to `bpmn-js-properties-panel@5.32.1`
+* `DEPS`: update to `camunda-bpmn-js@5.6.1`
+* `DEPS`: update to `camunda-dmn-js@3.1.1`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.26.2`
+* `DEPS`: update to `@camunda/improved-canvas@1.7.6`
+* `DEPS`: update to `@camunda/linting@3.32.1`
+
 ### General
 
 * `FEAT`: support Camunda 8.8
 * `FEAT`: recognize documentation URLs provided via lint rules ([#4491](https://github.com/camunda/camunda-modeler/issues/4491))
-* `DEPS`: update to `@camunda/improved-canvas@1.7.6`
-* `DEPS`: update to `@camunda/linting@3.32.1`
-* `DEPS`: update to `camunda-bpmn-js@5.6.0`
+* `FEAT`: add RPA editor to Camunda Modeler ([#4807](https://github.com/camunda/camunda-modeler/pull/4807))
+* `FIX`: allow selecting text from tooltips ([#4834](https://github.com/camunda/camunda-modeler/issues/4834))
 
 ### BPMN
 
@@ -20,6 +30,13 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: annotate popup menu entries with Camunda specific details ([#4802](https://github.com/camunda/camunda-modeler/issues/4802), [camunda/camunda-bpmn-js#400](https://github.com/camunda/camunda-bpmn-js/pull/40))
 * `FEAT`: allow to replace between variants of typed events ([#4523](https://github.com/camunda/camunda-modeler/issues/4523), [bpmn-io/bpmn-js#2282](https://github.com/bpmn-io/bpmn-js/pull/2282))
 * `FIX`: suggest ad-hoc subprocess with new context pad ([#4813](https://github.com/camunda/camunda-modeler/issues/4813))
+* `FIX`: move artifacts with local space tool ([#4172](https://github.com/camunda/camunda-modeler/issues/4172))
+* `FIX`: subscription coorelation key tooltip added ([#4833](https://github.com/camunda/camunda-modeler/issues/4833))
+* `FIX`: use color picker colors in the menu action ([#4756](https://github.com/camunda/camunda-modeler/issues/4756))
+
+### DMN
+
+* `FIX`: display only a single version tag field in Camunda 7 ([#4844](https://github.com/camunda/camunda-modeler/issues/4844))
 
 ## 5.32.0
 
