@@ -12,10 +12,13 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: recognize documentation URLs provided via lint rules ([#4491](https://github.com/camunda/camunda-modeler/issues/4491))
 * `DEPS`: update to `@camunda/improved-canvas@1.7.6`
 * `DEPS`: update to `@camunda/linting@3.32.1`
+* `DEPS`: update to `camunda-bpmn-js@5.6.0`
 
 ### BPMN
 
 * `FEAT`: improve ad-hoc subprocess linting ([#4811](https://github.com/camunda/camunda-modeler/issues/4811))
+* `FEAT`: annotate popup menu entries with Camunda specific details ([#4802](https://github.com/camunda/camunda-modeler/issues/4802), [camunda/camunda-bpmn-js#400](https://github.com/camunda/camunda-bpmn-js/pull/40))
+* `FEAT`: allow to replace between variants of typed events ([#4523](https://github.com/camunda/camunda-modeler/issues/4523), [bpmn-io/bpmn-js#2282](https://github.com/bpmn-io/bpmn-js/pull/2282))
 * `FIX`: suggest ad-hoc subprocess with new context pad ([#4813](https://github.com/camunda/camunda-modeler/issues/4813))
 
 ## 5.32.0
