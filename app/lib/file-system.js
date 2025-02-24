@@ -13,6 +13,9 @@
 const fs = require('fs'),
       path = require('path');
 
+
+const { pathToFileURL } = require('node:url');
+
 const {
   assign,
   pick
@@ -163,11 +166,15 @@ function createFile(oldFile, newFile) {
 
   if (newFile.path) {
     newFile.name = path.basename(newFile.path);
+    newFile.dirname = path.dirname(newFile.path);
+    newFile.extname = path.extname(newFile.path);
+    newFile.uri = pathToFileURL(newFile.path).toString();
   }
 
   return assign({}, oldFile, newFile);
 }
 
+module.exports.createFile = createFile;
 
 /**
  * Ensure that the file path has an extension,

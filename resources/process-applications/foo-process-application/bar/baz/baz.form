@@ -1,0 +1,52 @@
+{
+  "components": [
+    {
+      "text": "# BazForm",
+      "type": "text",
+      "layout": {
+        "row": "Row_1l1cdcl",
+        "columns": null
+      },
+      "id": "Field_05plz1j"
+    },
+    {
+      "label": "Text field",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1m6rjof",
+        "columns": null
+      },
+      "id": "Field_1spc3pd",
+      "key": "textfield_obha1"
+    },
+    {
+      "label": "Text area",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0sblw61",
+        "columns": null
+      },
+      "id": "Field_0swxobm",
+      "key": "textarea_g3hy67"
+    },
+    {
+      "label": "Number",
+      "type": "number",
+      "layout": {
+        "row": "Row_0y94u98",
+        "columns": null
+      },
+      "id": "Field_0fk8rvs",
+      "key": "number_k6z07b"
+    }
+  ],
+  "type": "default",
+  "id": "BazForm",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.6.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.29.0"
+  },
+  "schemaVersion": 17
+}
