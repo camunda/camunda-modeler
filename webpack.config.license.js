@@ -30,6 +30,11 @@ const config = {
     new IgnorePlugin({
       checkResource(resource) {
 
+        // ignore native node modules
+        if (/\.node$/.test(resource)) {
+          return true;
+        }
+
         // WONTFIX(barmac): ignore C++ modules for now
         // they are added to the license book through optional-dependencies.js
         if (/^vscode-windows-ca-certs/.test(resource)) {
