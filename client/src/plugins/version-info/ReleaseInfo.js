@@ -45,11 +45,11 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Support for upcoming Camunda 8 features</h4>
-          You can now create diagrams for Camunda 8.8. We added support for an <code>updating</code> user task listener. <a href="https://docs.camunda.io/docs/next/components/concepts/user-task-listeners?utm_source=modeler&utm_medium=referral#supported-events">Learn more.</a>
+          You can now create diagrams for Camunda 8.8. We also added support for an <code>updating</code> user task listener. <a href="https://docs.camunda.io/docs/next/components/concepts/user-task-listeners?utm_source=modeler&utm_medium=referral#supported-events">Learn more.</a>
         </li>
         <li>
           <h4>Better modeling guidance</h4>
-          We improved our validation of Camunda 8 ad-hoc subprocess. Additionally, the modeler now recognizes documentation URLs provided by linter plug-ins. <a href="https://github.com/camunda/camunda-modeler/pull/4843">Learn more.</a>
+          We improved our validation of Camunda 8 ad-hoc subprocesses. Additionally, the modeler now recognizes documentation URLs provided by linter plug-ins. <a href="https://github.com/camunda/camunda-modeler/pull/4843">Learn more.</a>
         </li>
         <li>
           <h4>BPMN modeling improvements</h4>
