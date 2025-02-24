@@ -15,7 +15,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-dmn-js@3.1.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.26.2`
 * `DEPS`: update to `@camunda/improved-canvas@1.7.6`
-* `DEPS`: update to `@camunda/linting@3.32.1`
+* `DEPS`: update to `@camunda/linting@3.33.0`
 
 ### General
 
