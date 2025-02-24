@@ -52,8 +52,8 @@ export function ReleaseInfo(props) {
           We improved our validation of Camunda 8 ad-hoc subprocess. Additionally, the modeler now recognizes documentation URLs provided by linter plug-ins. <a href="https://github.com/camunda/camunda-modeler/pull/4843">Learn more.</a>
         </li>
         <li>
-          <h4>Improved replace menu search</h4>
-          The replace menu now provides more relevant suggestions, such as allowing you to replace typed events with their variants.
+          <h4>BPMN modeling improvements</h4>
+          Find elements using Camunda specific search terms. Change a message end event to an intermediate event without loosing its implementation details.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
