@@ -45,15 +45,15 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Support for upcoming Camunda 8 features</h4>
-          You can now create diagrams for Camunda 8.8. We also added support for an <code>updating</code> user task listener. <a href="https://docs.camunda.io/docs/next/components/concepts/user-task-listeners?utm_source=modeler&utm_medium=referral#supported-events">Learn more.</a>
+          You can now create diagrams for Camunda 8.8. We also added support for an <code>updating</code> <a href="https://docs.camunda.io/docs/next/components/concepts/user-task-listeners?utm_source=modeler&utm_medium=referral#supported-events">user task listener.</a>
         </li>
         <li>
           <h4>Better modeling guidance</h4>
-          We improved our validation of Camunda 8 ad-hoc subprocesses. Additionally, the modeler now recognizes documentation URLs provided by linter plug-ins. <a href="https://github.com/camunda/camunda-modeler/pull/4843">Learn more.</a>
+          We improved our validation of Camunda 8 ad-hoc subprocesses. Additionally, the modeler now <a href="https://github.com/camunda/camunda-modeler/pull/4843">recognizes documentation URLs provided by linter plug-ins.</a>
         </li>
         <li>
           <h4>BPMN modeling improvements</h4>
-          Find elements using Camunda specific search terms. Change a message end event to an intermediate event without loosing its implementation details.
+          Find elements using Camunda-specific search terms. Change the type of an event without losing its implementation details.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
