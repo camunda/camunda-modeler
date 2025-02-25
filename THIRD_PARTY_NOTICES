@@ -186,7 +186,7 @@ This project incorporates components from the projects listed below. The origina
 179.  @camunda/form-playground@0.20.0 (git+https://github.com/camunda/form-playground.git)
 180.  camunda-bpmn-js@5.6.1 (https://github.com/camunda/camunda-bpmn-js)
 181.  camunda-dmn-js@3.1.1 (https://github.com/camunda/camunda-dmn-js)
-182.  @camunda/linting@3.32.1 (https://github.com/camunda/linting)
+182.  @camunda/linting@3.33.0 (https://github.com/camunda/linting)
 183.  @ibm/plex@6.4.1 (https://github.com/ibm/plex.git)
 184.  min-dash@4.2.2 (git+https://github.com/bpmn-io/min-dash.git)
 185.  react@16.14.0 (git+https://github.com/facebook/react.git)
@@ -266,7 +266,7 @@ This project incorporates components from the projects listed below. The origina
 259.  p-series@3.0.0 (sindresorhus/p-series)
 260.  sourcemapped-stacktrace@1.1.11 (http://github.com/novocaine/sourcemapped-stacktrace)
 261.  @bpmn-io/replace-ids@0.2.0 (git+https://github.com/bpmn-io/replace-ids.git)
-262.  bpmnlint@11.2.0 (https://github.com/bpmn-io/bpmnlint)
+262.  bpmnlint@11.3.0 (https://github.com/bpmn-io/bpmnlint)
 263.  bpmnlint-plugin-camunda-compat@2.33.1 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
 264.  bpmnlint-utils@1.1.1 (https://github.com/bpmn-io/bpmnlint-utils)
 265.  semver-compare@1.0.0 (git://github.com/substack/semver-compare.git)
@@ -12776,7 +12776,7 @@ THE SOFTWARE.
 END OF camunda-dmn-js@3.1.1 NOTICES AND INFORMATION
 
 
-%% @camunda/linting@3.32.1 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/linting@3.33.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -12800,7 +12800,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/linting@3.32.1 NOTICES AND INFORMATION
+END OF @camunda/linting@3.33.0 NOTICES AND INFORMATION
 
 
 %% @ibm/plex@6.4.1 NOTICES AND INFORMATION BEGIN HERE
@@ -15218,7 +15218,7 @@ THE SOFTWARE.
 END OF @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION
 
 
-%% bpmnlint@11.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmnlint@11.3.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -15242,7 +15242,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmnlint@11.2.0 NOTICES AND INFORMATION
+END OF bpmnlint@11.3.0 NOTICES AND INFORMATION
 
 
 %% bpmnlint-plugin-camunda-compat@2.33.1 NOTICES AND INFORMATION BEGIN HERE
