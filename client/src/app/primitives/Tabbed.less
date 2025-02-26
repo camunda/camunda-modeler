@@ -15,7 +15,7 @@
   --tab-line-hover-background-color: var(--color-grey-225-10-55);
   --tab-dirty-marker-background-color: var(--color-blue-205-100-50);
   --tab-dirty-marker-border-color: var(--color-blue-205-100-45);
-  --tab-dirty-marker-box-shadow-color: var(--color-grey-225-10-85);
+  --tab-active-background-color: var(--color-grey-225-10-75);
 }
 
 .tab-base() {
@@ -121,7 +121,7 @@
       background-color: var(--tab-dirty-marker-background-color);
       border: 1px solid var(--tab-dirty-marker-border-color);
       box-sizing: content-box;
-      box-shadow: 0 0 0 2px var(--tab-dirty-marker-box-shadow-color);
+      box-shadow: 0 0 0 2px var(--tab-bar-background-color);
     }
 
     .tab__close {
@@ -194,7 +194,11 @@
 
     &.tab--active,
     &:not(.tab--active):hover {
-      background-color: var(--color-grey-225-10-75);
+      background-color: var(--tab-active-background-color);
+
+      .tab__dirty-marker {
+        box-shadow: 0 0 0 2px var(--tab-active-background-color);
+      }
     }
 
     &.tab--group:after {
