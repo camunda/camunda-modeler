@@ -1,0 +1,21 @@
+{
+  "name": "test-carbon",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "all": "webpack",
+    "dev": "webpack --watch"
+  },
+  "description": "Camunda Modeler test plugin using Carbon styles",
+  "devDependencies": {
+    "camunda-modeler-plugin-helpers": "^5.0.0",
+    "camunda-modeler-webpack-plugin": "^0.1.0",
+    "sass": "^1.83.4",
+    "sass-loader": "^16.0.4",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.0"
+  },
+  "dependencies": {
+    "@carbon/react": "^1.74.0"
+  }
+}
