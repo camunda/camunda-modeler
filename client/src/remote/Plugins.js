@@ -32,6 +32,9 @@ import { Fill } from '../app/slot-fill';
 
 import React, * as ReactExports from 'react';
 
+import * as CarbonReactExports from '@carbon/react';
+import * as CarbonIconsReactExports from '@carbon/icons-react';
+
 import * as PropertiesPanel from '@bpmn-io/properties-panel';
 import * as Preact from '@bpmn-io/properties-panel/preact';
 import PreactCompat, * as PreactCompatExports from '@bpmn-io/properties-panel/preact/compat';
@@ -87,6 +90,10 @@ export default class Plugins {
       WithCachedState,
       createTab
     };
+
+    // Carbon React exports for the client plugins
+    global.carbon = CarbonReactExports;
+    global.carbonicons = CarbonIconsReactExports;
 
     // deprecated helpers
     global.getModelerDirectory = () => {
