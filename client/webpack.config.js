@@ -99,6 +99,14 @@ module.exports = {
             ]
           },
           {
+            test: /\.s[ac]ss$/i,
+            use: [
+              'style-loader',
+              cssLoader(),
+              'sass-loader',
+            ],
+          },
+          {
 
             // exclude files served otherwise
             exclude: [ /\.(js|jsx|cjs|mjs|bpmnlintrc)$/, /\.html$/, /\.json$/ ],
