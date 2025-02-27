@@ -276,7 +276,7 @@ This project incorporates components from the projects listed below. The origina
 269.  semver@7.6.3 (git+https://github.com/npm/node-semver.git)
 270.  @bpmn-io/element-templates-validator@2.3.3 (git+https://github.com/bpmn-io/element-templates-validator.git)
 271.  uuid@11.0.3 (https://github.com/uuidjs/uuid.git)
-272.  @carbon/icons-react@11.53.0 (https://github.com/carbon-design-system/carbon.git)
+272.  @carbon/icons-react@11.55.0 (https://github.com/carbon-design-system/carbon.git)
 273.  @carbon/icon-helpers@10.54.0 (https://github.com/carbon-design-system/carbon.git)
 274.  prop-types@15.8.1 (facebook/prop-types)
 275.  monaco-editor@0.52.0 (https://github.com/microsoft/monaco-editor)
@@ -288,95 +288,93 @@ This project incorporates components from the projects listed below. The origina
 281.  @camunda/example-data-properties-provider@1.2.1
 282.  camunda-bpmn-js-behaviors@1.9.1 (https://github.com/camunda/camunda-bpmn-js-behaviors)
 283.  @carbon/feature-flags@0.24.0 (https://github.com/carbon-design-system/carbon.git)
-284.  @carbon/layout@11.29.0 (https://github.com/carbon-design-system/carbon.git)
-285.  @carbon/react@1.71.1 (https://github.com/carbon-design-system/carbon.git)
+284.  @carbon/layout@11.30.0 (https://github.com/carbon-design-system/carbon.git)
+285.  @carbon/react@1.76.0 (https://github.com/carbon-design-system/carbon.git)
 286.  copy-to-clipboard@3.3.3 (git+https://github.com/sudodoki/copy-to-clipboard)
 287.  downshift@9.0.8 (https://github.com/downshift-js/downshift.git)
 288.  flatpickr@4.6.13 (git+https://github.com/chmln/flatpickr.git)
 289.  invariant@2.2.4 (https://github.com/zertosh/invariant)
-290.  lodash.debounce@4.0.8 (lodash/lodash)
-291.  lodash.omit@4.5.0 (lodash/lodash)
-292.  lodash.throttle@4.1.1 (lodash/lodash)
-293.  resize-observer-polyfill@1.5.1 (https://github.com/que-etc/resize-observer-polyfill.git)
-294.  toggle-selection@1.0.6 (git+https://github.com/sudodoki/toggle-selection)
-295.  use-resize-observer@6.1.0 (git@github.com:ZeeCoder/use-resize-observer.git)
-296.  window-or-global@1.0.1 (purposeindustries/window-or-global)
-297.  @bpmn-io/add-exporter@0.2.0 (git+ssh://git@github.com/bpmn-io/add-exporter.git)
-298.  @bpmn-io/variable-resolver@1.3.3
-299.  domify@2.0.0 (sindresorhus/domify)
-300.  bpmn-js-color-picker@0.7.1 (https://github.com/bpmn-io/bpmn-js-color-picker.git)
-301.  bpmn-js-create-append-anything@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-create-append-anything.git)
-302.  bpmn-js-executable-fix@0.2.1 (git+https://github.com/bpmn-io/bpmn-js-executable-fix.git)
-303.  bpmn-js-tracking@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-tracking.git)
-304.  diagram-js-direct-editing@3.2.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
-305.  diagram-js-minimap@5.2.0 (git@github.com:bpmn-io/diagram-js-minimap.git)
-306.  @camunda/improved-canvas@1.7.6 (git+https://github.com/camunda/improved-canvas.git)
-307.  diagram-js-grid@1.1.0 (git@github.com:bpmn-io/diagram-js-grid.git)
-308.  @bpmn-io/align-to-origin@0.7.0 (git+ssh://git@github.com/bpmn-io/align-to-origin.git)
-309.  rgbcolor@1.0.1 (https://github.com/yetzt/node-rgbcolor.git)
-310.  diagram-js-origin@1.4.0 (https://github.com/bpmn-io/diagram-js-origin)
-311.  performance-now@2.1.0 (git://github.com/braveg1rl/performance-now.git)
-312.  raf@3.4.1 (git://github.com/chrisdickinson/raf.git)
-313.  stackblur-canvas@2.5.0 (https://github.com/flozz/StackBlur.git)
-314.  htm@3.1.1 (developit/htm)
-315.  htm_preact@undefined
-316.  @bpmn-io/form-js-viewer@1.14.0 (git+https://github.com/bpmn-io/form-js.git)
-317.  lodash@4.17.21 (lodash/lodash)
-318.  cmmn-js-properties-panel@0.9.0 (https://github.com/bpmn-io/cmmn-js-properties-panel)
-319.  cmmn-js@0.20.0 (https://github.com/bpmn-io/cmmn-js)
-320.  didi@4.0.0 (git://github.com/nikku/didi.git)
-321.  path-intersection@1.1.1 (https://github.com/bpmn-io/path-intersection)
-322.  cmmn-moddle@5.0.0 (https://github.com/bpmn-io/cmmn-moddle)
-323.  hat@0.0.3 (http://github.com/substack/node-hat.git)
-324.  inherits@2.0.4 (git://github.com/isaacs/inherits)
-325.  scroll-tabs@1.0.1 (git+ssh://git@github.com/bpmn-io/scroll-tabs.git)
-326.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape.git)
-327.  selection-update@0.1.2 (git+ssh://git@github.com/nikku/selection-update.git)
-328.  @bpmn-io/dmn-migrate@0.5.0 (git+https://github.com/bpmn-io/dmn-migrate.git)
-329.  @bpmn-io/dmn-variable-resolver@0.7.0
-330.  @camunda/execution-platform@0.3.2 (git+ssh://git@github.com/camunda/execution-platform.git)
-331.  dmn-js-boxed-expression@17.1.0 (https://github.com/bpmn-io/dmn-js)
-332.  dmn-js-decision-table@17.1.0 (https://github.com/bpmn-io/dmn-js)
-333.  dmn-js-drd@17.1.0 (https://github.com/bpmn-io/dmn-js)
-334.  dmn-js-literal-expression@17.1.0 (https://github.com/bpmn-io/dmn-js)
-335.  dmn-js-shared@17.1.0 (https://github.com/bpmn-io/dmn-js)
-336.  dmn-js@17.1.0 (https://github.com/bpmn-io/dmn-js)
-337.  dmn-moddle@10.0.0 (https://github.com/bpmn-io/dmn-moddle)
-338.  escape-html@1.0.3 (component/escape-html)
-339.  inferno@5.6.3 (https://github.com/infernojs/inferno)
-340.  selection-ranges@3.0.3 (git+ssh://git@github.com/nikku/selection-ranges.git)
-341.  table-js@9.2.0 (https://github.com/bpmn-io/table-js)
-342.  @bpmn-io/form-js-editor@1.14.0 (git+https://github.com/bpmn-io/form-js.git)
-343.  @bpmn-io/form-js-playground@1.14.0 (git+https://github.com/bpmn-io/form-js.git)
-344.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
-345.  file-drops@0.5.0 (git+ssh://git@github.com/nikku/file-drops.git)
-346.  @camunda/rpa-integration@0.1.0 (https://github.com/camunda/rpa-frontend)
-347.  @carbon/styles@1.70.0 (https://github.com/carbon-design-system/carbon.git)
-348.  @codemirror/search@6.5.6 (https://github.com/codemirror/search.git)
-349.  codemirror@6.0.1 (https://github.com/codemirror/basic-setup.git)
-350.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
-351.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
-352.  canvg@4.0.2 (https://github.com/canvg/canvg)
-353.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
-354.  clsx@2.1.0 (lukeed/clsx)
-355.  big.js@6.2.2 (https://github.com/MikeMcl/big.js.git)
-356.  dompurify@3.2.4 (git://github.com/cure53/DOMPurify.git)
-357.  marked@15.0.7 (git://github.com/markedjs/marked.git)
+290.  resize-observer-polyfill@1.5.1 (https://github.com/que-etc/resize-observer-polyfill.git)
+291.  toggle-selection@1.0.6 (git+https://github.com/sudodoki/toggle-selection)
+292.  use-resize-observer@6.1.0 (git@github.com:ZeeCoder/use-resize-observer.git)
+293.  window-or-global@1.0.1 (purposeindustries/window-or-global)
+294.  @bpmn-io/add-exporter@0.2.0 (git+ssh://git@github.com/bpmn-io/add-exporter.git)
+295.  @bpmn-io/variable-resolver@1.3.3
+296.  domify@2.0.0 (sindresorhus/domify)
+297.  bpmn-js-color-picker@0.7.1 (https://github.com/bpmn-io/bpmn-js-color-picker.git)
+298.  bpmn-js-create-append-anything@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-create-append-anything.git)
+299.  bpmn-js-executable-fix@0.2.1 (git+https://github.com/bpmn-io/bpmn-js-executable-fix.git)
+300.  bpmn-js-tracking@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-tracking.git)
+301.  diagram-js-direct-editing@3.2.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
+302.  diagram-js-minimap@5.2.0 (git@github.com:bpmn-io/diagram-js-minimap.git)
+303.  @camunda/improved-canvas@1.7.6 (git+https://github.com/camunda/improved-canvas.git)
+304.  diagram-js-grid@1.1.0 (git@github.com:bpmn-io/diagram-js-grid.git)
+305.  @bpmn-io/align-to-origin@0.7.0 (git+ssh://git@github.com/bpmn-io/align-to-origin.git)
+306.  rgbcolor@1.0.1 (https://github.com/yetzt/node-rgbcolor.git)
+307.  diagram-js-origin@1.4.0 (https://github.com/bpmn-io/diagram-js-origin)
+308.  performance-now@2.1.0 (git://github.com/braveg1rl/performance-now.git)
+309.  raf@3.4.1 (git://github.com/chrisdickinson/raf.git)
+310.  stackblur-canvas@2.5.0 (https://github.com/flozz/StackBlur.git)
+311.  htm@3.1.1 (developit/htm)
+312.  htm_preact@undefined
+313.  @bpmn-io/form-js-viewer@1.14.0 (git+https://github.com/bpmn-io/form-js.git)
+314.  lodash@4.17.21 (lodash/lodash)
+315.  cmmn-js-properties-panel@0.9.0 (https://github.com/bpmn-io/cmmn-js-properties-panel)
+316.  cmmn-js@0.20.0 (https://github.com/bpmn-io/cmmn-js)
+317.  didi@4.0.0 (git://github.com/nikku/didi.git)
+318.  path-intersection@1.1.1 (https://github.com/bpmn-io/path-intersection)
+319.  cmmn-moddle@5.0.0 (https://github.com/bpmn-io/cmmn-moddle)
+320.  hat@0.0.3 (http://github.com/substack/node-hat.git)
+321.  inherits@2.0.4 (git://github.com/isaacs/inherits)
+322.  scroll-tabs@1.0.1 (git+ssh://git@github.com/bpmn-io/scroll-tabs.git)
+323.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape.git)
+324.  selection-update@0.1.2 (git+ssh://git@github.com/nikku/selection-update.git)
+325.  @bpmn-io/dmn-migrate@0.5.0 (git+https://github.com/bpmn-io/dmn-migrate.git)
+326.  @bpmn-io/dmn-variable-resolver@0.7.0
+327.  @camunda/execution-platform@0.3.2 (git+ssh://git@github.com/camunda/execution-platform.git)
+328.  dmn-js-boxed-expression@17.1.0 (https://github.com/bpmn-io/dmn-js)
+329.  dmn-js-decision-table@17.1.0 (https://github.com/bpmn-io/dmn-js)
+330.  dmn-js-drd@17.1.0 (https://github.com/bpmn-io/dmn-js)
+331.  dmn-js-literal-expression@17.1.0 (https://github.com/bpmn-io/dmn-js)
+332.  dmn-js-shared@17.1.0 (https://github.com/bpmn-io/dmn-js)
+333.  dmn-js@17.1.0 (https://github.com/bpmn-io/dmn-js)
+334.  dmn-moddle@10.0.0 (https://github.com/bpmn-io/dmn-moddle)
+335.  escape-html@1.0.3 (component/escape-html)
+336.  inferno@5.6.3 (https://github.com/infernojs/inferno)
+337.  selection-ranges@3.0.3 (git+ssh://git@github.com/nikku/selection-ranges.git)
+338.  table-js@9.2.0 (https://github.com/bpmn-io/table-js)
+339.  @bpmn-io/form-js-editor@1.14.0 (git+https://github.com/bpmn-io/form-js.git)
+340.  @bpmn-io/form-js-playground@1.14.0 (git+https://github.com/bpmn-io/form-js.git)
+341.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
+342.  file-drops@0.5.0 (git+ssh://git@github.com/nikku/file-drops.git)
+343.  @camunda/rpa-integration@0.1.0 (https://github.com/camunda/rpa-frontend)
+344.  @carbon/styles@1.76.0 (https://github.com/carbon-design-system/carbon.git)
+345.  codemirror@6.0.1 (https://github.com/codemirror/basic-setup.git)
+346.  @codemirror/search@6.5.6 (https://github.com/codemirror/search.git)
+347.  canvg@4.0.2 (https://github.com/canvg/canvg)
+348.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
+349.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
+350.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
+351.  clsx@2.1.0 (lukeed/clsx)
+352.  @floating-ui/react@0.26.22 (https://github.com/floating-ui/floating-ui.git)
+353.  @floating-ui/utils@0.2.7 (https://github.com/floating-ui/floating-ui.git)
+354.  @floating-ui/react-dom@2.1.1 (https://github.com/floating-ui/floating-ui.git)
+355.  @floating-ui/dom@1.6.10 (https://github.com/floating-ui/floating-ui.git)
+356.  @floating-ui/core@1.6.7 (https://github.com/floating-ui/floating-ui.git)
+357.  es-toolkit@1.32.0 (https://github.com/toss/es-toolkit.git)
 358.  @babel/runtime@7.25.4 (https://github.com/babel/babel.git)
-359.  @floating-ui/core@1.6.7 (https://github.com/floating-ui/floating-ui.git)
-360.  @floating-ui/dom@1.6.10 (https://github.com/floating-ui/floating-ui.git)
-361.  @floating-ui/react-dom@2.1.1 (https://github.com/floating-ui/floating-ui.git)
-362.  @floating-ui/react@0.26.22 (https://github.com/floating-ui/floating-ui.git)
-363.  @floating-ui/utils@0.2.7 (https://github.com/floating-ui/floating-ui.git)
-364.  compute-scroll-into-view@3.1.0 (git+https://github.com/scroll-into-view/compute-scroll-into-view.git)
-365.  tslib@2.6.3 (https://github.com/Microsoft/tslib.git)
-366.  camunda-dmn-moddle@1.3.0 (https://github.com/camunda/camunda-dmn-moddle)
-367.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
-368.  @bpmn-io/draggle@4.1.1 (https://github.com/bpmn-io/draggle.git)
-369.  @codemirror/lang-json@6.0.1 (https://github.com/codemirror/lang-json.git)
-370.  @lezer/json@1.0.0 (https://github.com/lezer-parser/json.git)
-371.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
-372.  vscode-windows-ca-certs@0.3.0 (git+https://github.com/Microsoft/vscode-windows-ca-certs.git)
+359.  compute-scroll-into-view@3.1.1 (git+https://github.com/scroll-into-view/compute-scroll-into-view.git)
+360.  tslib@2.6.3 (https://github.com/Microsoft/tslib.git)
+361.  camunda-dmn-moddle@1.3.0 (https://github.com/camunda/camunda-dmn-moddle)
+362.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
+363.  big.js@6.2.2 (https://github.com/MikeMcl/big.js.git)
+364.  dompurify@3.2.4 (git://github.com/cure53/DOMPurify.git)
+365.  marked@15.0.7 (git://github.com/markedjs/marked.git)
+366.  @codemirror/lang-json@6.0.1 (https://github.com/codemirror/lang-json.git)
+367.  @lezer/json@1.0.0 (https://github.com/lezer-parser/json.git)
+368.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
+369.  @bpmn-io/draggle@4.1.1 (https://github.com/bpmn-io/draggle.git)
+370.  vscode-windows-ca-certs@0.3.0 (git+https://github.com/Microsoft/vscode-windows-ca-certs.git)
 
 
 %% @sentry/node@9.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -15472,7 +15470,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF uuid@11.0.3 NOTICES AND INFORMATION
 
 
-%% @carbon/icons-react@11.53.0 NOTICES AND INFORMATION BEGIN HERE
+%% @carbon/icons-react@11.55.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -15677,7 +15675,7 @@ END OF uuid@11.0.3 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @carbon/icons-react@11.53.0 NOTICES AND INFORMATION
+END OF @carbon/icons-react@11.55.0 NOTICES AND INFORMATION
 
 
 %% @carbon/icon-helpers@10.54.0 NOTICES AND INFORMATION BEGIN HERE
@@ -16323,7 +16321,7 @@ END OF camunda-bpmn-js-behaviors@1.9.1 NOTICES AND INFORMATION
 END OF @carbon/feature-flags@0.24.0 NOTICES AND INFORMATION
 
 
-%% @carbon/layout@11.29.0 NOTICES AND INFORMATION BEGIN HERE
+%% @carbon/layout@11.30.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -16528,10 +16526,10 @@ END OF @carbon/feature-flags@0.24.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @carbon/layout@11.29.0 NOTICES AND INFORMATION
+END OF @carbon/layout@11.30.0 NOTICES AND INFORMATION
 
 
-%% @carbon/react@1.71.1 NOTICES AND INFORMATION BEGIN HERE
+%% @carbon/react@1.76.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -16736,7 +16734,7 @@ END OF @carbon/layout@11.29.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @carbon/react@1.71.1 NOTICES AND INFORMATION
+END OF @carbon/react@1.76.0 NOTICES AND INFORMATION
 
 
 %% copy-to-clipboard@3.3.3 NOTICES AND INFORMATION BEGIN HERE
@@ -16848,168 +16846,6 @@ SOFTWARE.
 
 ==========================================
 END OF invariant@2.2.4 NOTICES AND INFORMATION
-
-
-%% lodash.debounce@4.0.8 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-Copyright jQuery Foundation and other contributors <https://jquery.org/>
-
-Based on Underscore.js, copyright Jeremy Ashkenas,
-DocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>
-
-This software consists of voluntary contributions made by many
-individuals. For exact contribution history, see the revision history
-available at https://github.com/lodash/lodash
-
-The following license applies to all parts of this software except as
-documented below:
-
-====
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-====
-
-Copyright and related rights for sample code are waived via CC0. Sample
-code is defined as all source code displayed within the prose of the
-documentation.
-
-CC0: http://creativecommons.org/publicdomain/zero/1.0/
-
-====
-
-Files located in the node_modules and vendor directories are externally
-maintained libraries used by this software which have their own
-licenses; we recommend you read them, as their terms may differ from the
-terms above.
-
-==========================================
-END OF lodash.debounce@4.0.8 NOTICES AND INFORMATION
-
-
-%% lodash.omit@4.5.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-Copyright jQuery Foundation and other contributors <https://jquery.org/>
-
-Based on Underscore.js, copyright Jeremy Ashkenas,
-DocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>
-
-This software consists of voluntary contributions made by many
-individuals. For exact contribution history, see the revision history
-available at https://github.com/lodash/lodash
-
-The following license applies to all parts of this software except as
-documented below:
-
-====
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-====
-
-Copyright and related rights for sample code are waived via CC0. Sample
-code is defined as all source code displayed within the prose of the
-documentation.
-
-CC0: http://creativecommons.org/publicdomain/zero/1.0/
-
-====
-
-Files located in the node_modules and vendor directories are externally
-maintained libraries used by this software which have their own
-licenses; we recommend you read them, as their terms may differ from the
-terms above.
-
-==========================================
-END OF lodash.omit@4.5.0 NOTICES AND INFORMATION
-
-
-%% lodash.throttle@4.1.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-Copyright jQuery Foundation and other contributors <https://jquery.org/>
-
-Based on Underscore.js, copyright Jeremy Ashkenas,
-DocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>
-
-This software consists of voluntary contributions made by many
-individuals. For exact contribution history, see the revision history
-available at https://github.com/lodash/lodash
-
-The following license applies to all parts of this software except as
-documented below:
-
-====
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-====
-
-Copyright and related rights for sample code are waived via CC0. Sample
-code is defined as all source code displayed within the prose of the
-documentation.
-
-CC0: http://creativecommons.org/publicdomain/zero/1.0/
-
-====
-
-Files located in the node_modules and vendor directories are externally
-maintained libraries used by this software which have their own
-licenses; we recommend you read them, as their terms may differ from the
-terms above.
-
-==========================================
-END OF lodash.throttle@4.1.1 NOTICES AND INFORMATION
 
 
 %% resize-observer-polyfill@1.5.1 NOTICES AND INFORMATION BEGIN HERE
@@ -18862,7 +18698,7 @@ production systems.
 END OF @camunda/rpa-integration@0.1.0 NOTICES AND INFORMATION
 
 
-%% @carbon/styles@1.70.0 NOTICES AND INFORMATION BEGIN HERE
+%% @carbon/styles@1.76.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -19067,7 +18903,35 @@ END OF @camunda/rpa-integration@0.1.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @carbon/styles@1.70.0 NOTICES AND INFORMATION
+END OF @carbon/styles@1.76.0 NOTICES AND INFORMATION
+
+
+%% codemirror@6.0.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (C) 2018-2021 by Marijn Haverbeke <marijnh@gmail.com> and others
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF codemirror@6.0.1 NOTICES AND INFORMATION
 
 
 %% @codemirror/search@6.5.6 NOTICES AND INFORMATION BEGIN HERE
@@ -19098,11 +18962,11 @@ THE SOFTWARE.
 END OF @codemirror/search@6.5.6 NOTICES AND INFORMATION
 
 
-%% codemirror@6.0.1 NOTICES AND INFORMATION BEGIN HERE
+%% canvg@4.0.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-MIT License
+The MIT License (MIT)
 
-Copyright (C) 2018-2021 by Marijn Haverbeke <marijnh@gmail.com> and others
+Copyright (c) 2010 - present Gabe Lerner (gabelerner@gmail.com) - https://github.com/canvg/canvg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19111,10 +18975,37 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF canvg@4.0.2 NOTICES AND INFORMATION
+
+
+%% svg-pathdata@6.0.3 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+Copyright © 2017 Nicolas Froidure
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -19123,7 +19014,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF codemirror@6.0.1 NOTICES AND INFORMATION
+END OF svg-pathdata@6.0.3 NOTICES AND INFORMATION
 
 
 %% @codemirror/lang-xml@6.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -19182,11 +19073,225 @@ THE SOFTWARE.
 END OF @lezer/xml@1.0.1 NOTICES AND INFORMATION
 
 
-%% canvg@4.0.2 NOTICES AND INFORMATION BEGIN HERE
+%% clsx@2.1.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-The MIT License (MIT)
+MIT License
 
-Copyright (c) 2010 - present Gabe Lerner (gabelerner@gmail.com) - https://github.com/canvg/canvg
+Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF clsx@2.1.0 NOTICES AND INFORMATION
+
+
+%% @floating-ui/react@0.26.22 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2021-present Floating UI contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF @floating-ui/react@0.26.22 NOTICES AND INFORMATION
+
+
+%% @floating-ui/utils@0.2.7 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2021-present Floating UI contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF @floating-ui/utils@0.2.7 NOTICES AND INFORMATION
+
+
+%% @floating-ui/react-dom@2.1.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2021-present Floating UI contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF @floating-ui/react-dom@2.1.1 NOTICES AND INFORMATION
+
+
+%% @floating-ui/dom@1.6.10 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2021-present Floating UI contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF @floating-ui/dom@1.6.10 NOTICES AND INFORMATION
+
+
+%% @floating-ui/core@1.6.7 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2021-present Floating UI contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF @floating-ui/core@1.6.7 NOTICES AND INFORMATION
+
+
+%% es-toolkit@1.32.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2024 Viva Republica, Inc
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Some of the test code in this software comes from the lodash library (https://github.com/lodash/lodash).
+
+The copyright for this imported test code from lodash is owned by the JS Foundation and other contributors <https://js.foundation/>.
+
+==========================================
+END OF es-toolkit@1.32.0 NOTICES AND INFORMATION
+
+
+%% @babel/runtime@7.25.4 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF @babel/runtime@7.25.4 NOTICES AND INFORMATION
+
+
+%% compute-scroll-into-view@3.1.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2025 Cody Olsen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19207,16 +19312,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF canvg@4.0.2 NOTICES AND INFORMATION
+END OF compute-scroll-into-view@3.1.1 NOTICES AND INFORMATION
 
 
-%% svg-pathdata@6.0.3 NOTICES AND INFORMATION BEGIN HERE
+%% tslib@2.6.3 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+==========================================
+END OF tslib@2.6.3 NOTICES AND INFORMATION
+
+
+%% camunda-dmn-moddle@1.3.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
-Copyright © 2017 Nicolas Froidure
+
+Copyright (c) 2014-2018 camunda Services GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
+of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -19225,32 +19349,42 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
 ==========================================
-END OF svg-pathdata@6.0.3 NOTICES AND INFORMATION
+END OF camunda-dmn-moddle@1.3.0 NOTICES AND INFORMATION
 
 
-%% clsx@2.1.0 NOTICES AND INFORMATION BEGIN HERE
+%% zeebe-dmn-moddle@1.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-MIT License
+The MIT License (MIT)
 
-Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
+Copyright (c) 2020-present Camunda Services GmbH
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 ==========================================
-END OF clsx@2.1.0 NOTICES AND INFORMATION
+END OF zeebe-dmn-moddle@1.0.0 NOTICES AND INFORMATION
 
 
 %% big.js@6.2.2 NOTICES AND INFORMATION BEGIN HERE
@@ -19912,298 +20046,6 @@ This software is provided by the copyright holders and contributors “as is” 
 END OF marked@15.0.7 NOTICES AND INFORMATION
 
 
-%% @babel/runtime@7.25.4 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF @babel/runtime@7.25.4 NOTICES AND INFORMATION
-
-
-%% @floating-ui/core@1.6.7 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2021-present Floating UI contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF @floating-ui/core@1.6.7 NOTICES AND INFORMATION
-
-
-%% @floating-ui/dom@1.6.10 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2021-present Floating UI contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF @floating-ui/dom@1.6.10 NOTICES AND INFORMATION
-
-
-%% @floating-ui/react-dom@2.1.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2021-present Floating UI contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF @floating-ui/react-dom@2.1.1 NOTICES AND INFORMATION
-
-
-%% @floating-ui/react@0.26.22 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2021-present Floating UI contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF @floating-ui/react@0.26.22 NOTICES AND INFORMATION
-
-
-%% @floating-ui/utils@0.2.7 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2021-present Floating UI contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF @floating-ui/utils@0.2.7 NOTICES AND INFORMATION
-
-
-%% compute-scroll-into-view@3.1.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2023 Cody Olsen
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF compute-scroll-into-view@3.1.0 NOTICES AND INFORMATION
-
-
-%% tslib@2.6.3 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-==========================================
-END OF tslib@2.6.3 NOTICES AND INFORMATION
-
-
-%% camunda-dmn-moddle@1.3.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2014-2018 camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF camunda-dmn-moddle@1.3.0 NOTICES AND INFORMATION
-
-
-%% zeebe-dmn-moddle@1.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2020-present Camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF zeebe-dmn-moddle@1.0.0 NOTICES AND INFORMATION
-
-
-%% @bpmn-io/draggle@4.1.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright © 2015-2016 Nicolas Bevacqua
-Copyright © 2023 bpmn-io
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF @bpmn-io/draggle@4.1.1 NOTICES AND INFORMATION
-
-
 %% @codemirror/lang-json@6.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
@@ -20284,6 +20126,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
 END OF camunda-cmmn-moddle@1.0.0 NOTICES AND INFORMATION
+
+
+%% @bpmn-io/draggle@4.1.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright © 2015-2016 Nicolas Bevacqua
+Copyright © 2023 bpmn-io
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF @bpmn-io/draggle@4.1.1 NOTICES AND INFORMATION
 
 
 %% vscode-windows-ca-certs@0.3.0 NOTICES AND INFORMATION BEGIN HERE
