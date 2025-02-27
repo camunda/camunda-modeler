@@ -29,7 +29,7 @@ class Workspace {
       let files = [];
 
       // ensure backwards compatibility
-      forEach((workspace.files || workspace.tabs), file => {
+      forEach((workspace.files), file => {
         const { path } = file;
 
         try {
@@ -45,8 +45,6 @@ class Workspace {
       });
 
       workspace.files = files;
-
-      workspace.endpoints = workspace.endpoints || [];
 
       done(null, workspace);
     });
