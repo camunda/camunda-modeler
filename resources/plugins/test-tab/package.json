@@ -10,7 +10,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
-    "babel-loader": "^9.1.0",
+    "babel-loader": "^10.0.0",
     "camunda-modeler-plugin-helpers": "^5.0.0",
     "camunda-modeler-webpack-plugin": "^0.1.0",
     "webpack": "^5.74.0",
