@@ -153,6 +153,7 @@ jobs:
         secrets: |
           secret/data/products/desktop-modeler/ci/slack_integration SUPPORT_SLACK_CHANNEL_ID;
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
+          secret/data/products/desktop-modeler/ci/slack_integration RELEASE_MANAGER_GROUP_ID;
     - name: Get changelog link
       id: changelog
       run: |
@@ -179,8 +180,8 @@ jobs:
           blocks:
             - type: section
               text:
-                type: plain_text
-                text: '[fyi] Hi, Desktop Modeler ${{ needs.pre_release.outputs.tag }} release is upcoming. Contact @desktop-modeler-release-manager in case of any questions.'
+                type: mrkdwn
+                text: '[fyi] Hi, Desktop Modeler ${{ needs.pre_release.outputs.tag }} release is upcoming. Contact <!subteam^${{ steps.secrets.outputs.RELEASE_MANAGER_GROUP_ID }}> in case of any questions.'
             - type: section
               text:
                 type: mrkdwn
