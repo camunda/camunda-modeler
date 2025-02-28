@@ -185,7 +185,7 @@ jobs:
             - type: section
               text:
                 type: mrkdwn
-                text: '${{ steps.changelog.outputs.LINK }}|Changelog>'
+                text: '<${{ steps.changelog.outputs.LINK }}|Changelog>'
             - type: section
               text:
                 type: mrkdwn
