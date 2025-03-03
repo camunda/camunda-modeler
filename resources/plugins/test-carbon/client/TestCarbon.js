@@ -8,7 +8,8 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect } from 'camunda-modeler-plugin-helpers/react';
+// alias `react: camunda-modeler-plugin-helpers/react` from CamundaModelerWebpackPlugin
+import React, { useEffect } from 'react';
 
 import { Fill, Modal } from 'camunda-modeler-plugin-helpers/components';
 
