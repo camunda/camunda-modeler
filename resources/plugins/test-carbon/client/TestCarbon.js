@@ -12,8 +12,8 @@ import React, { useEffect } from 'camunda-modeler-plugin-helpers/react';
 
 import { Fill, Modal } from 'camunda-modeler-plugin-helpers/components';
 
-import { Button, Theme, IconButton, TextInput } from '@carbon/react';
-import { Add } from '@carbon/react/icons';
+import { Button, Theme, IconButton, TextInput } from 'camunda-modeler-plugin-helpers/@carbon/react';
+import { Add } from 'camunda-modeler-plugin-helpers/@carbon/icons-react';
 
 // import './TestCarbon.scss';
 
