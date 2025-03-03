@@ -63,7 +63,9 @@ describe('FileContext', function() {
 
     // when
     await waitFor(() => {
-      fileContext.addFile(filePath, 'foo');
+      fileContext.addFile(filePath, {
+        localValue: 'foo'
+      });
     });
 
     // then
@@ -71,6 +73,28 @@ describe('FileContext', function() {
       {
         uri: toFileUrl(path.resolve(__dirname, './fixtures/foo-process-application/foo.bpmn')),
         localValue: 'foo'
+      }
+    ]);
+  });
+
+
+  it('adding file with explicit processor', async function() {
+
+    // given
+    const filePath = path.resolve(__dirname, './fixtures/extensions/bpmn.unrecognized');
+
+    // when
+    await waitFor(() => {
+      fileContext.addFile(filePath, {
+        processor: 'bpmn'
+      });
+    });
+
+    // then
+    expectItems(fileContext, [
+      {
+        uri: toFileUrl(path.resolve(__dirname, './fixtures/extensions/bpmn.unrecognized')),
+        processor: 'bpmn'
       }
     ]);
   });
@@ -158,35 +182,35 @@ describe('FileContext', function() {
   });
 
 
-  it('should NOT throw for unrecognized extension', async function() {
+  describe('error handling', function() {
 
-    // given
-    const filePath = path.resolve(__dirname, './fixtures/extensions/bpmn.unrecognized');
+    it('should NOT throw for unrecognized extension', async function() {
 
-    // when
-    const file = await fileContext.addFile(filePath);
+      // given
+      const filePath = path.resolve(__dirname, './fixtures/extensions/bpmn.unrecognized');
 
-    // then
-    expect(file).to.exist;
-    expect(file.metadata).to.have.property('type');
-  });
+      // when
+      const file = await fileContext.addFile(filePath);
 
-
-  it('should NOT throw for missing extension', async function() {
-
-    // given
-    const filePath = path.resolve(__dirname, './fixtures/extensions/no-extension');
-
-    // when
-    const file = await fileContext.addFile(filePath);
-
-    // then
-    expect(file).to.exist;
-    expect(file.metadata).to.have.property('type');
-  });
+      // then
+      expect(file).to.exist;
+      expect(file.metadata).to.have.property('type');
+    });
 
 
-  describe('broken files', function() {
+    it('should NOT throw for no extension', async function() {
+
+      // given
+      const filePath = path.resolve(__dirname, './fixtures/extensions/no-extension');
+
+      // when
+      const file = await fileContext.addFile(filePath);
+
+      // then
+      expect(file).to.exist;
+      expect(file.metadata).to.have.property('type');
+    });
+
 
     it('should NOT throw for empty BPMN', async function() {
 

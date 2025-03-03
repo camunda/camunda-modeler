@@ -38,6 +38,16 @@ module.exports = class Processor {
   process(item) {
     this._logger.info('processor:process', item.uri);
 
+    if (item.processor) {
+      const processor = this._processors.find(processor => processor.id === item.processor);
+
+      if (processor) {
+        return processor.process(item);
+      }
+
+      this._logger.warn('processor:process', `Processor with id ${ item.processor } not found`);
+    }
+
     const processor = this._processors.find(processor => processor.extensions.includes(getFileExtension(item.file.path)));
 
     if (!processor) {

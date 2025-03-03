@@ -9,6 +9,7 @@
  */
 
 module.exports = {
+  id: 'processApplication',
   extensions: [ '.process-application' ],
   process: async (item) => {
     return {

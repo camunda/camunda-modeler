@@ -18,6 +18,7 @@ const {
 } = require('./util');
 
 module.exports = {
+  id: 'dmn',
   extensions: [ '.dmn' ],
   process: async (item) => {
     let rootElement, ids;

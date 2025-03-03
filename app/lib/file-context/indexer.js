@@ -96,17 +96,24 @@ module.exports = class Indexer {
 
   /**
    * @param { string } uri
-   * @param { string } [localValue]
+   * @param { { localValue?: string, processor?: string } } [options]
+   *
+   * @returns { Promise<undefined> }
    */
-  add(uri, localValue) {
+  add(uri, options = {}) {
     uri = toFileUrl(uri);
 
-    this._logger.info('indexer:add', uri, localValue);
+    const {
+      localValue,
+      processor
+    } = options;
+
+    this._logger.info('indexer:add', uri, localValue, processor);
 
     let indexItem = this.items.get(uri);
 
     if (!indexItem) {
-      indexItem = createIndexItem({ uri, localValue });
+      indexItem = createIndexItem({ uri, localValue, processor });
 
       this.items.set(uri, indexItem);
     }
@@ -126,35 +133,30 @@ module.exports = class Indexer {
   /**
    * Notify file opened
    *
-   * @param { { uri: string, value: string } } fileProps
+   * @param { string } uri
+   * @param { { processor?: string } } [options]
+   *
+   * @returns { Promise<undefined> }
    */
-  fileOpened(fileProps) {
-
-    const {
-      uri,
-      value
-    } = fileProps;
-
+  fileOpened(uri, options = {}) {
     this._emit('file-opened', uri);
 
-    return this.add(toFileUrl(uri), value);
+    return this.add(toFileUrl(uri), options);
   }
 
   /**
    * Notify file content changed
    *
-   * @param { { uri: string, value: string } } fileProps
+   * @param { string } uri
+   * @param { string } value
+   * @param { { processor?: string } } [options]
+   *
+   * @returns { Promise<undefined> }
    */
-  fileContentChanged(fileProps) {
-
-    const {
-      uri,
-      value
-    } = fileProps;
-
+  fileContentChanged(uri, value, options = {}) {
     this._emit('file-content-changed', uri);
 
-    return this.add(toFileUrl(uri), value);
+    return this.add(toFileUrl(uri), value, options);
   }
 
   /**
@@ -345,7 +347,8 @@ module.exports = class Indexer {
 /**
  * @param { {
  *  uri: string,
- *  localValue?: string
+ *  localValue?: string,
+ *  processor?: string
  * } } item
  *
  * @return {IndexItem}
@@ -355,6 +358,7 @@ function createIndexItem(item) {
   const {
     uri,
     localValue,
+    processor,
     ...rest
   } = item;
 
@@ -373,7 +377,8 @@ function createIndexItem(item) {
       this.localValue = value;
     },
     file,
-    localValue
+    localValue,
+    processor
   };
 
 }

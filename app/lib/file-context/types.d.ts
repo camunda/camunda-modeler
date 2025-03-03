@@ -22,6 +22,7 @@ export type IndexItem = {
   file: File,
   localValue?: any,
   metadata: Metadata,
+  processor?: string,
   uri: string,
   value: any,
   [key: string]: any

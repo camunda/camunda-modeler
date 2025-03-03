@@ -21,7 +21,8 @@ const {
 } = require('./util');
 
 module.exports = {
-  extensions: [ '.bpmn', '.xml' ],
+  id: 'bpmn',
+  extensions: [ '.bpmn' ],
   process: async (item) => {
     let rootElement, ids, linkedIds;
 

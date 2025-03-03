@@ -2109,18 +2109,34 @@ export class App extends PureComponent {
 
   _onTabOpened(tab) {
     if (!this.isUnsaved(tab)) {
-      this.getGlobal('backend').send('file-context:file-opened', tab.file.path, undefined);
+      const {
+        file,
+        type
+      } = tab;
+
+      this.getGlobal('backend').send('file-context:file-opened', file.path, {
+        processor: getProcessor(type)
+      });
     }
   }
 
   _onTabClosed(tab) {
     if (!this.isUnsaved(tab)) {
-      this.getGlobal('backend').send('file-context:file-closed', tab.file.path);
+      const { file } = tab;
+
+      this.getGlobal('backend').send('file-context:file-closed', file.path);
     }
   }
 
   _onTabSaved(tab) {
-    this.getGlobal('backend').send('file-context:file-content-changed', tab.file.path, undefined);
+    const {
+      file,
+      type
+    } = tab;
+
+    this.getGlobal('backend').send('file-context:file-content-changed', file.path, file.contents, {
+      processor: getProcessor(type)
+    });
   }
 
   render() {
@@ -2536,4 +2552,20 @@ function failSafe(fn, errorHandler) {
       errorHandler(error);
     }
   };
+}
+
+function getProcessor(type) {
+  if (type === 'cloud-bpmn') {
+    return 'bpmn';
+  }
+
+  if (type === 'cloud-dmn') {
+    return 'dmn';
+  }
+
+  if (type === 'cloud-form') {
+    return 'form';
+  }
+
+  return null;
 }

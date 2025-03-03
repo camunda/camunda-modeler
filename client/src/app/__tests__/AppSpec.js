@@ -382,12 +382,14 @@ describe('<App>', function() {
       });
 
       // when
-      const file1 = createFile('1.bpmn');
+      const file1 = createFile('1.cloud-bpmn');
 
       await app.openFiles([ file1 ]);
 
       // then
-      expect(sendSpy).to.have.been.calledWith('file-context:file-opened', file1.path, undefined);
+      expect(sendSpy).to.have.been.calledWith('file-context:file-opened', file1.path, {
+        processor: 'bpmn'
+      });
     });
 
 
@@ -407,7 +409,7 @@ describe('<App>', function() {
       });
 
       // when
-      await app.createDiagram('bpmn');
+      await app.createDiagram('cloud-bpmn');
 
       // then
       expect(sendSpy).not.to.have.been.calledWith('file-context:file-opened');
@@ -430,7 +432,7 @@ describe('<App>', function() {
       });
 
       // when
-      const file1 = createFile('1.bpmn');
+      const file1 = createFile('1.cloud-bpmn');
 
       const [ tab ] = await app.openFiles([ file1 ]);
 
@@ -457,7 +459,7 @@ describe('<App>', function() {
       });
 
       // when
-      const tab = await app.createDiagram('bpmn');
+      const tab = await app.createDiagram('cloud-bpmn');
 
       await app.closeTab(tab);
 
@@ -485,7 +487,7 @@ describe('<App>', function() {
       });
 
       // when
-      const file1 = createFile('1.bpmn');
+      const file1 = createFile('1.cloud-bpmn');
 
       fileSystem.setWriteFileResponse(0, Promise.resolve({
         ...file1
@@ -496,7 +498,9 @@ describe('<App>', function() {
       await app.triggerAction('save');
 
       // then
-      expect(sendSpy).to.have.been.calledWith('file-context:file-content-changed', file1.path, undefined);
+      expect(sendSpy).to.have.been.calledWith('file-context:file-content-changed', file1.path, file1.contents, {
+        processor: 'bpmn'
+      });
     });
 
   });
@@ -1176,7 +1180,7 @@ describe('<App>', function() {
     it('should save tab with correct extension', async function() {
 
       // given
-      const file = createFile('diagram_1.bpmn', { type: 'cloud-bpmn' });
+      const file = createFile('diagram_1.bpmn');
 
       await app.openFiles([ file ]);
 
@@ -3452,8 +3456,7 @@ describe('<App>', function() {
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
-          contents: 'foo',
-          type: 'form'
+          contents: 'foo'
         })
       ]);
 
@@ -3477,8 +3480,7 @@ describe('<App>', function() {
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
-          contents: 'linting-errors',
-          type: 'form'
+          contents: 'linting-errors'
         })
       ]);
 
@@ -3510,8 +3512,7 @@ describe('<App>', function() {
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
-          contents,
-          type: 'form'
+          contents
         })
       ]);
 
@@ -3557,8 +3558,7 @@ describe('<App>', function() {
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
-          contents: 'foo',
-          type: 'form'
+          contents: 'foo'
         })
       ]);
 
@@ -3582,8 +3582,7 @@ describe('<App>', function() {
 
       await app.openFiles([
         createFile('1.form', {
-          contents: 'linting-errors',
-          type: 'form'
+          contents: 'linting-errors'
         })
       ]);
 
@@ -3854,16 +3853,14 @@ function createFile(name, options = {}) {
   const {
     contents = 'foo',
     lastModified,
-    path = name,
-    type = 'bpmn'
+    path = name
   } = options;
 
   return {
     contents,
     lastModified,
     name,
-    path,
-    type
+    path
   };
 }
 

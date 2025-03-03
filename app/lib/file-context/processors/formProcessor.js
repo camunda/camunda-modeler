@@ -11,6 +11,7 @@
 const assert = require('node:assert');
 
 module.exports = {
+  id: 'form',
   extensions: [ '.form' ],
   process: async (item) => {
     let formId;

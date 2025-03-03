@@ -79,25 +79,20 @@ module.exports = class FileContext extends EventEmitter {
    * Add file.
    *
    * @param { string } uri
-   * @param { string } [localValue]
-   */
-  addFile(uri, localValue) {
-    return this._indexer.add(toFileUrl(uri), localValue);
-  }
-
-  /**
-   * Update file.
+   * @param { { localValue?: string, processor?: string } } [options]
    *
-   * @param { string } uri
+   * @returns { Promise<undefined> }
    */
-  updateFile(uri) {
-    return this.addFile(toFileUrl(uri));
+  addFile(uri, options) {
+    return this._indexer.add(toFileUrl(uri), options);
   }
 
   /**
    * Remove file.
    *
    * @param { string } uri
+   *
+   * @returns { undefined }
    */
   removeFile(uri) {
     return this._indexer.remove(toFileUrl(uri));
@@ -106,19 +101,24 @@ module.exports = class FileContext extends EventEmitter {
   /**
    * Handle file opened.
    *
-   * @param { { uri: string, value: string } } fileProps
+   * @param { string } uri
+   * @param { { processor?: string } }
+   *
+   * @returns { Promise<undefined> }
    */
-  fileOpened(fileProps) {
-    return this._indexer.fileOpened(fileProps);
+  fileOpened(uri, options) {
+    return this._indexer.fileOpened(uri, options);
   }
 
   /**
    * Handle file content changed.
    *
-   * @param { { uri: string, value: string } } fileProps
+   * @param { string } uri
+   * @param { string } value
+   * @param { { processor?: string } } [options]
    */
-  fileContentChanged(fileProps) {
-    return this._indexer.fileContentChanged(fileProps);
+  fileContentChanged(uri, value, options) {
+    return this._indexer.fileContentChanged(uri, value, options);
   }
 
   /**
