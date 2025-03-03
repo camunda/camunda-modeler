@@ -13,8 +13,8 @@ import React, { useEffect } from 'react';
 
 import { Fill, Modal } from 'camunda-modeler-plugin-helpers/components';
 
-import { Button, Theme, IconButton, TextInput } from 'camunda-modeler-plugin-helpers/@carbon/react';
-import { Add } from 'camunda-modeler-plugin-helpers/@carbon/icons-react';
+import { Button, Theme, IconButton, TextInput } from '@carbon/react';
+import { Add } from '@carbon/icons-react';
 
 // import './TestCarbon.scss';
 

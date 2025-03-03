@@ -21,6 +21,9 @@ module.exports = {
   plugins: [
     new CamundaModelerWebpackPlugin({
       type: 'react'
+    }),
+    new CamundaModelerWebpackPlugin({
+      type: 'carbon-react'
     })
   ],
   module: {

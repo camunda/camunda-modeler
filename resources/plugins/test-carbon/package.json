@@ -9,7 +9,7 @@
   "description": "Camunda Modeler test plugin using Carbon styles",
   "devDependencies": {
     "camunda-modeler-plugin-helpers": "github:camunda/camunda-modeler-plugin-helpers#carbon-components",
-    "camunda-modeler-webpack-plugin": "^0.1.0",
+    "camunda-modeler-webpack-plugin": "github:camunda/camunda-modeler-webpack-plugin#carbon",
     "sass": "^1.83.4",
     "sass-loader": "^16.0.4",
     "webpack": "^5.97.1",
