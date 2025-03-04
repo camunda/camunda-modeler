@@ -1223,7 +1223,7 @@ describe('ZeebeAPI', function() {
 
         expect(config).to.include.keys({
           CAMUNDA_AUTH_STRATEGY: 'OAUTH',
-          CAMUNDA_CONSOLE_OAUTH_AUDIENCE: 'audience',
+          CAMUNDA_ZEEBE_OAUTH_AUDIENCE: 'audience',
           ZEEBE_CLIENT_ID: 'clientId',
           ZEEBE_CLIENT_SECRET: 'clientSecret',
           CAMUNDA_TOKEN_SCOPE: 'scope',
@@ -2363,7 +2363,7 @@ describe('ZeebeAPI', function() {
           CAMUNDA_TOKEN_SCOPE: 'scope',
           ZEEBE_CLIENT_ID: 'clientId',
           ZEEBE_CLIENT_SECRET: '******',
-          CAMUNDA_CONSOLE_OAUTH_AUDIENCE: 'audience',
+          CAMUNDA_ZEEBE_OAUTH_AUDIENCE: 'audience',
           CAMUNDA_OAUTH_URL: 'oauthURL',
           CAMUNDA_SECURE_CONNECTION: false
         }

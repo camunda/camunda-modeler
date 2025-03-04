@@ -371,7 +371,7 @@ class ZeebeAPI {
         ZEEBE_CLIENT_SECRET: endpoint.clientSecret,
         CAMUNDA_OAUTH_URL: endpoint.oauthURL,
         CAMUNDA_TOKEN_SCOPE: endpoint.scope,
-        CAMUNDA_CONSOLE_OAUTH_AUDIENCE: endpoint.audience,
+        CAMUNDA_ZEEBE_OAUTH_AUDIENCE: endpoint.audience,
         CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true
       };
     } else if (type === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
@@ -379,7 +379,7 @@ class ZeebeAPI {
         ...options,
         CAMUNDA_AUTH_STRATEGY: 'OAUTH',
         CAMUNDA_OAUTH_URL: 'https://login.cloud.camunda.io/oauth/token',
-        CAMUNDA_CONSOLE_OAUTH_AUDIENCE: endpoint.audience,
+        CAMUNDA_ZEEBE_OAUTH_AUDIENCE: endpoint.audience,
         CAMUNDA_TOKEN_SCOPE: endpoint.scope,
         ZEEBE_CLIENT_ID: endpoint.clientId,
         ZEEBE_CLIENT_SECRET: endpoint.clientSecret,
