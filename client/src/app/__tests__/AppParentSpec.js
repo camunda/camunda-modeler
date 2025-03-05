@@ -27,6 +27,7 @@ import {
   KeyboardBindings,
   Log,
   Plugins,
+  Settings,
   SystemClipboard,
   TabsProvider,
   Workspace,
@@ -1031,6 +1032,7 @@ function createAppParent(options = {}, mountFn = shallow) {
     fileSystem: new FileSystem(),
     log: new Log(),
     plugins: new Plugins(),
+    settings: new Settings(),
     systemClipboard: new SystemClipboard(),
     workspace: new Workspace(),
     zeebeAPI: new ZeebeAPI()

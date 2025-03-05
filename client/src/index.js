@@ -30,7 +30,8 @@ import ReactDOM from 'react-dom';
 import {
   AppParent,
   KeyboardBindings,
-  TabsProvider
+  TabsProvider,
+  Settings
 } from './app';
 
 import Metadata from './util/Metadata';
@@ -56,6 +57,10 @@ const keyboardBindings = new KeyboardBindings({
   isMac
 });
 
+const settings = new Settings({
+  config
+});
+
 const globals = {
   backend,
   config,
@@ -64,6 +69,7 @@ const globals = {
   isMac,
   log,
   plugins,
+  settings,
   systemClipboard,
   workspace,
   zeebeAPI
@@ -90,7 +96,7 @@ async function render() {
     document.querySelector('body > .spinner-border').classList.add('hidden');
   };
 
-  const tabsProvider = new TabsProvider(plugins.get('tabs'));
+  const tabsProvider = new TabsProvider(plugins.get('tabs'), settings);
 
   ReactDOM.render(
     <AppParent

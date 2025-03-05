@@ -1972,6 +1972,10 @@ export class App extends PureComponent {
       return panel.open ? this.closePanel() : this.openPanel(panel.tab);
     }
 
+    if (action === 'settings-open') {
+      return this.emit('app.settings-open');
+    }
+
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
@@ -2187,6 +2191,7 @@ export class App extends PureComponent {
                       setConfig={ this.setConfig }
                       getPlugins={ this.getPlugins }
                       ref={ this.tabRef }
+                      settings={ this.getGlobal('settings') }
                     />
                   }
                 </TabContainer>

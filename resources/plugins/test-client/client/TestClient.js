@@ -51,6 +51,39 @@ export default class TestClient extends Component {
       saveCounter: 0,
       tabType: null
     };
+
+    const pluginSettings = {
+      id: 'testClientPlugin',
+      title: 'Test Client Plugin',
+      properties: {
+        'testClientPlugin.heartbeat': {
+          type: 'boolean',
+          default: true,
+          label: 'Will My Heart Go On?',
+          description: 'Enable the heart icon in the status bar.'
+        },
+        'testClientPlugin.iconColor': {
+          type: 'text',
+          default: '#10ad73',
+          label: 'Icon color',
+          description: 'Color of the lovely heart icon.'
+        },
+      }
+    };
+
+    settings.register(pluginSettings);
+
+    settings.subscribe('testClientPlugin.iconColor', ({ value }) => {
+      this.setState({
+        color: value,
+      });
+    });
+
+    settings.subscribe('testClientPlugin.heartbeat', ({ value }) => {
+      this.setState({
+        heartbeat: value,
+      });
+    });
   }
 
   async componentDidMount() {

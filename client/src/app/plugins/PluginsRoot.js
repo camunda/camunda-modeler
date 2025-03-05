@@ -29,6 +29,7 @@ export default class PluginsRoot extends PureComponent {
     } = props;
 
     this.config = app.getGlobal('config');
+    this.settings = app.getGlobal('settings');
 
     // this is non-reactive, by design
     this.pluginsAndSubscribers = plugins.map(plugin => {
@@ -57,7 +58,8 @@ export default class PluginsRoot extends PureComponent {
 
     const {
       config,
-      pluginsAndSubscribers
+      settings,
+      pluginsAndSubscribers,
     } = this;
 
     return pluginsAndSubscribers.map((pluginAndSubscriber, index) => {
@@ -92,6 +94,7 @@ export default class PluginsRoot extends PureComponent {
             subscribe={ subscribe }
             log={ this.log }
             displayNotification={ this.displayNotification }
+            settings={ settings }
             _getFromApp={ getFromApp }
             _getGlobal={ app.getGlobal }
           />
